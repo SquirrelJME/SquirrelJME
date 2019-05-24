@@ -729,8 +729,7 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doNew(ClassName __cn, JavaStackResult.Output __out)
 	{
-		this.codebuilder.add(NativeInstructionType.NEW,
-			__cn, __out.register);
+		this.__invokeNew(__cn, __out.register);
 	}
 	
 	/**
@@ -1069,6 +1068,7 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		ByteCodeState state = this.state;
 		List<JavaStackEnqueueList> returns = this._returns;
+		VolatileRegisterStack volatiles = this.volatiles;
 		
 		// Temporary register base
 		int tempreg = state.stack.usedregisters;
@@ -1103,31 +1103,15 @@ public final class NearNativeByteCodeHandler
 			// Set label target for this one
 			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
 			
-			// The class name used
-			ClassName exn = csl.classname;
+			// Allocate class object
+			this.__invokeNew(csl.classname, NativeCode.EXCEPTION_REGISTER);
 			
-			if (true)
-				throw new todo.TODO();
-			/*
-			// Allocate exception at the highest register point which acts
-			// as a temporary
-			codebuilder.add(NativeInstructionType.NEW, exn,
-				NativeCode.EXCEPTION_REGISTER);
+			// Initialize the exception
+			this.__invokeInstance(InvokeType.SPECIAL, csl.classname, "<init>",
+				"()V", new RegisterList(NativeCode.EXCEPTION_REGISTER));
 				
-			// Load invocation pointer
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				new InvokedMethod(InvokeType.SPECIAL, new MethodHandle(exn,
-					new MethodName("<init>"), new MethodDescriptor("()V"))),
-				NativeCode.VOLATILE_A_REGISTER);
-			
-			// Initialize object with constructor
-			codebuilder.add(NativeInstructionType.INVOKE,
-				NativeCode.VOLATILE_A_REGISTER,
-				new RegisterList(NativeCode.EXCEPTION_REGISTER));
-			
 			// Generate jump to exception handler
 			codebuilder.addGoto(csl.label);
-			*/
 		}
 		
 		// Generate exception handler tables
@@ -1832,6 +1816,26 @@ public final class NearNativeByteCodeHandler
 	 * @since 2019/05/24
 	 */
 	private final void __invokeInstance(InvokeType __it, ClassName __cl,
+		String __mn, String __mt, RegisterList __args)
+		throws NullPointerException
+	{
+		this.__invokeInstance(__it, __cl, new MethodName(__mn),
+			new MethodDescriptor(__mt), __args);
+	}
+	
+	/**
+	 * Invokes instance method, doing the needed pool loading and all the
+	 * complicated stuff in a simple point of code.
+	 *
+	 * @param __it The invocation type.
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	private final void __invokeInstance(InvokeType __it, ClassName __cl,
 		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -1877,6 +1881,41 @@ public final class NearNativeByteCodeHandler
 		volatiles.remove(volclassid);
 		volatiles.remove(volvtable);
 		volatiles.remove(methodptr);
+	}
+	
+	/**
+	 * Allocates a new object.
+	 *
+	 * @param __cl The class to create.
+	 * @param __out The output register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	private final void __invokeNew(ClassName __cl, int __out)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Need a volatile
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volwantcl = volatiles.get();
+		
+		// Load class data
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			__cl, volwantcl);
+		
+		// Call allocator
+		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS, "jvmNew",
+			"(I)I", volwantcl);
+		
+		// Not needed
+		volatiles.remove(volwantcl);
+		
+		// Copy result
+		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out);
 	}
 	
 	/**
