@@ -8,9 +8,8 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.classfile.nncc;
+package dev.shadowtail.classfile.pool;
 
-import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassName;

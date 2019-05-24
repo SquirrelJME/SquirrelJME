@@ -8,47 +8,54 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.classfile.nncc;
+package dev.shadowtail.classfile.pool;
 
 /**
- * This represents when a field is being accessed.
+ * Represents how a field is being accessed.
  *
  * @since 2019/03/24
  */
-public enum FieldAccessTime
+public enum FieldAccessType
 {
-	/** Written by constructor or static initializer. */
-	INITIALIZER,
+	/** Static. */
+	STATIC,
 	
-	/** Written by non-constructor. */
-	NORMAL,
-	
-	/** Read access. */
-	READ,
+	/** Instance. */
+	INSTANCE,
 	
 	/** End. */
 	;
 	
 	/**
-	 * Returns the access time for the given ordinal.
+	 * Is this field access static?
+	 *
+	 * @return If this is a static field access.
+	 * @since 2019/04/22
+	 */
+	public final boolean isStatic()
+	{
+		return this == STATIC;
+	}
+	
+	/**
+	 * Returns the access type for the given ordinal.
 	 *
 	 * @param __i The ordinal.
-	 * @return The access time.
+	 * @return The access type.
 	 * @throws IllegalArgumentException If it is not valid.
 	 * @since 2019/04/17
 	 */
-	public static final FieldAccessTime of(int __i)
+	public static final FieldAccessType of(int __i)
 		throws IllegalArgumentException
 	{
 		switch (__i)
 		{
-			case 0:	return INITIALIZER;
-			case 1: return NORMAL;
-			case 2: return READ;
+			case 0:	return STATIC;
+			case 1: return INSTANCE;
 		}
 		
-		// {@squirreljme.error JC3u Unknown access time. (The index)}
-		throw new IllegalArgumentException("JC3u " + __i);
+		// {@squirreljme.error JC3v Unknown access type. (The index)}
+		throw new IllegalArgumentException("JC3v " + __i);
 	}
 }
 

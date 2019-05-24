@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.classfile.nncc;
+package dev.shadowtail.classfile.pool;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

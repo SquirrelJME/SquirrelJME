@@ -9,14 +9,14 @@
 
 package dev.shadowtail.classfile.mini;
 
-import dev.shadowtail.classfile.nncc.AccessedField;
-import dev.shadowtail.classfile.nncc.ClassPool;
-import dev.shadowtail.classfile.nncc.FieldAccessTime;
-import dev.shadowtail.classfile.nncc.FieldAccessType;
-import dev.shadowtail.classfile.nncc.InvokedMethod;
-import dev.shadowtail.classfile.nncc.MethodIndex;
-import dev.shadowtail.classfile.nncc.UsedString;
-import dev.shadowtail.classfile.xlate.InvokeType;
+import dev.shadowtail.classfile.pool.AccessedField;
+import dev.shadowtail.classfile.pool.ClassPool;
+import dev.shadowtail.classfile.pool.FieldAccessTime;
+import dev.shadowtail.classfile.pool.FieldAccessType;
+import dev.shadowtail.classfile.pool.InvokeType;
+import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;

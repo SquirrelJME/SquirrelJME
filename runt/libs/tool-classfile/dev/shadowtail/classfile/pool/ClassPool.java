@@ -7,37 +7,39 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.classfile.nncc;
+package dev.shadowtail.classfile.pool;
+
+import net.multiphasicapps.classfile.ClassName;
 
 /**
- * Represents a string which was used.
+ * Represents the constant pool of another class, used for loading.
  *
- * @since 2019/04/27
+ * @since 2019/04/22
  */
-public final class UsedString
+public final class ClassPool
 {
-	/** The used string. */
-	public final String string;
+	/** The class name to load for. */
+	public final ClassName name;
 	
 	/**
-	 * Initializes the used string.
+	 * Initializes the class pool.
 	 *
-	 * @param __s The string to use.
+	 * @param __cl The class name.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/27
+	 * @since 2019/04/22
 	 */
-	public UsedString(String __s)
+	public ClassPool(ClassName __cl)
 		throws NullPointerException
 	{
-		if (__s == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		this.string = __s;
+		this.name = __cl;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/27
+	 * @since 2019/04/22
 	 */
 	@Override
 	public final boolean equals(Object __o)
@@ -45,33 +47,30 @@ public final class UsedString
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof UsedString))
+		if (!(__o instanceof ClassPool))
 			return false;
 		
-		if (this.hashCode() != __o.hashCode())
-			return false;
-		
-		return this.string.equals(((UsedString)__o).string);
+		return this.name.equals(((ClassPool)__o).name);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/27
+	 * @since 2019/04/22
 	 */
 	@Override
 	public final int hashCode()
 	{
-		return this.string.hashCode();
+		return this.name.hashCode();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/27
+	 * @since 2019/04/22
 	 */
 	@Override
 	public final String toString()
 	{
-		return this.string;
+		return this.name.toString();
 	}
 }
 

@@ -122,11 +122,11 @@ public enum MinimizedPoolEntryType
 				return LONG;
 			case "java.lang.Double":
 				return DOUBLE;
-			case "dev.shadowtail.classfile.nncc.AccessedField":
+			case "dev.shadowtail.classfile.pool.AccessedField":
 				return ACCESSED_FIELD;
-			case "dev.shadowtail.classfile.nncc.ClassPool":
+			case "dev.shadowtail.classfile.pool.ClassPool":
 				return CLASS_POOL;
-			case "dev.shadowtail.classfile.nncc.InvokedMethod":
+			case "dev.shadowtail.classfile.pool.InvokedMethod":
 				return INVOKED_METHOD;
 			case "net.multiphasicapps.classfile.ClassName":
 				return CLASS_NAME;
@@ -136,9 +136,9 @@ public enum MinimizedPoolEntryType
 				return CLASS_NAMES;
 			case "net.multiphasicapps.classfile.MethodDescriptor":
 				return METHOD_DESCRIPTOR;
-			case "dev.shadowtail.classfile.nncc.UsedString":
+			case "dev.shadowtail.classfile.pool.UsedString":
 				return USED_STRING;
-			case "dev.shadowtail.classfile.nncc.MethodIndex":
+			case "dev.shadowtail.classfile.pool.MethodIndex":
 				return METHOD_INDEX;
 		}
 		
