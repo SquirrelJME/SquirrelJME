@@ -192,17 +192,22 @@ public final class NearNativeByteCodeHandler
 		// Check array bounds
 		this.__basicCheckArrayBound(__in.register, __dx.register);
 		
+		// Grab some volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volaip = volatiles.get();
+		
 		// Determine array index position
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
-			__dx.register, __dt.size(), NativeCode.VOLATILE_A_REGISTER);
+			__dx.register, __dt.size(), volaip);
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-			NativeCode.VOLATILE_A_REGISTER, Kernel.ARRAY_BASE_SIZE,
-			NativeCode.VOLATILE_A_REGISTER);
+			volaip, Kernel.ARRAY_BASE_SIZE, volaip);
 		
 		// Do the memory read
 		codebuilder.addMemoryOffReg(__dt, true,
-			__v.register,
-			__in.register, NativeCode.VOLATILE_A_REGISTER);
+			__v.register, __in.register, volaip);
+		
+		// Not used anymore
+		volatiles.remove(volaip);
 		
 		// If reading an object reference count up!
 		if (__dt == DataType.OBJECT)
@@ -235,12 +240,15 @@ public final class NearNativeByteCodeHandler
 		// Check array bounds
 		this.__basicCheckArrayBound(__in.register, __dx.register);
 		
-		// Determine array index position (use sticky register)
+		// Grab some volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volaip = volatiles.get();
+		
+		// Determine array index position
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
-			__dx.register, __dt.size(), NativeCode.VOLATILE_S_REGISTER);
+			__dx.register, __dt.size(), volaip);
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-			NativeCode.VOLATILE_S_REGISTER, Kernel.ARRAY_BASE_SIZE,
-			NativeCode.VOLATILE_S_REGISTER);
+			volaip, Kernel.ARRAY_BASE_SIZE, volaip);
 		
 		// If we are storing an object....
 		if (__v.type.isObject())
@@ -251,7 +259,7 @@ public final class NearNativeByteCodeHandler
 			// Read existing object so it can be uncounted
 			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
 				NativeCode.RETURN_REGISTER + 1,
-				__in.register, NativeCode.VOLATILE_S_REGISTER);
+				__in.register, volaip);
 			
 			// Uncount this object
 			this.__refUncount(NativeCode.RETURN_REGISTER + 1);
@@ -260,10 +268,13 @@ public final class NearNativeByteCodeHandler
 			this.__refCount(__v.register);
 		}
 		
-		// Store value (volatile S is index offset)
+		// Store value
 		codebuilder.addMemoryOffReg(__dt, false,
 			__v.register,
-			__in.register, NativeCode.VOLATILE_S_REGISTER);
+			__in.register, volaip);
+		
+		// No longer used
+		volatiles.remove(volaip);
 		
 		// Clear references
 		this.__refClear();
@@ -360,8 +371,11 @@ public final class NearNativeByteCodeHandler
 		// Must be the given class
 		this.__basicCheckCCE(ireg, __fr.className());
 		
+		// Determine volatile registers
+		VolatileRegisterStack volatiles = this.volatiles;
+		int tempreg = volatiles.get();
+		
 		// Read field offset
-		int tempreg = NativeCode.VOLATILE_A_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, true), tempreg);
 		
@@ -373,6 +387,9 @@ public final class NearNativeByteCodeHandler
 		// Count it up?
 		if (__fr.memberType().isObject())
 			this.__refCount(__v.register);
+		
+		// Not used anymore
+		volatiles.remove(tempreg);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -400,15 +417,22 @@ public final class NearNativeByteCodeHandler
 		// Must be the given class
 		this.__basicCheckCCE(ireg, __fr.className());
 		
+		// Get volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volfioff = volatiles.get();
+		
 		// Read field offset
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, false),
-			NativeCode.VOLATILE_A_REGISTER);
+			volfioff);
 		
 		// Write to memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
-			__v.register, ireg, NativeCode.VOLATILE_A_REGISTER);
+			__v.register, ireg, volfioff);
+		
+		// No longer used
+		volatiles.remove(volfioff);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -444,33 +468,23 @@ public final class NearNativeByteCodeHandler
 		// Push reference
 		this.__refPush();
 		
-		// The method we are going to call is in the kernel so we need to
-		// load its pool identifier
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS), NativeCode.NEXT_POOL_REGISTER);
+		// Need volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volwantcldx = volatiles.get();
 		
-		// Load the class index into the temporary
+		// Load desired class index type
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, NativeCode.VOLATILE_A_REGISTER);
+			__cl, volwantcldx);
 		
-		// Load method pointer
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
-			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
-			NativeCode.VOLATILE_B_REGISTER);
-			
-		// Load kernel pool
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS),
-			NativeCode.NEXT_POOL_REGISTER);
+		// Invoke helper method
+		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+			"jvmIsInstance", "(II)I", __v.register, volwantcldx);
 		
-		// Call the instance checker (__ir, checkclassid)
-		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_B_REGISTER,
-			new RegisterList(__v.register, NativeCode.VOLATILE_A_REGISTER));
-		
-		// Copy value over
+		// Use result
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
+		
+		// No longer needed
+		volatiles.remove(volwantcldx);
 		
 		// Clear references in the event it was overwritten
 		this.__refClear();
@@ -484,376 +498,67 @@ public final class NearNativeByteCodeHandler
 	public final void doInvoke(InvokeType __t, MethodReference __r,
 		JavaStackResult.Output __out, JavaStackResult.Input... __in)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		
 		// Target class
 		ClassName targetclass = __r.handle().outerClass();
 		
-		// Assembly method
+		// Invocation of assembly method?
 		if ("cc/squirreljme/runtime/cldc/vki/Assembly".equals(
 			targetclass.toString()))
 		{
-			// Force exception cancel for these operations
-			this.state.canexception = false;
+			// Forward
+			this.__invokeAssembly(__r.handle().name(),
+				__r.handle().descriptor(), __out, __in);
 			
-			// Depends on the assembly function
-			String asmfunc;
-			switch ((asmfunc = __r.handle().name().toString()))
-			{
-					// Read lenght of array
-				case "arrayLength":
-					this.doArrayLength(__in[0], __out);
-					break;
-					
-					// Breakpoint
-				case "breakpoint":
-					codebuilder.add(NativeInstructionType.BREAKPOINT);
-					break;
-					
-					// Long/Double bits
-				case "doubleToRawLongBits":
-				case "longBitsToDouble":
-					if (__in[0].register != __out.register)
-						codebuilder.addCopyWide(__in[0].register,
-							__out.register);
-					break;
-					
-					// Exception handling
-				case "exceptionHandle":
-					// This generates no actual codes to check the exception,
-					// it just makes the exception check run so that they are
-					// checked
-					this.state.canexception = true;
-					break;
-					
-					// Integer/Float bits
-				case "floatToRawIntBits":
-				case "intBitsToFloat":
-					if (__in[0].register != __out.register)
-						codebuilder.addCopy(__in[0].register, __out.register);
-					break;
-					
-					// Invoke method, no return value is read
-				case "invoke":
-					{
-						// Invoked methods can thrown an exception, so do
-						// checks! Otherwise the behavior we expect might not
-						// happen
-						this.state.canexception = true;
-						
-						// Build the register List
-						List<Integer> args = new ArrayList<>();
-						int n = __in.length;
-						for (int i = 1; i < n; i++)
-							args.add(__in[i].register);
-						
-						// Invoke pointer with arguments
-						codebuilder.add(NativeInstructionType.INVOKE,
-							__in[0].register, new RegisterList(args));
-					}
-					break;
-					
-					// Invoke method, then read return value
-				case "invokeV":
-					{
-						// Invoked methods can thrown an exception, so do
-						// checks! Otherwise the behavior we expect might not
-						// happen
-						this.state.canexception = true;
-						
-						// Build the register List
-						List<Integer> args = new ArrayList<>();
-						int n = __in.length;
-						for (int i = 1; i < n; i++)
-							args.add(__in[i].register);
-						
-						// Invoke pointer with arguments
-						codebuilder.add(NativeInstructionType.INVOKE,
-							__in[0].register, new RegisterList(args));
-						
-						// Copy return value
-						codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-							__out.register);
-					}
-					break;
-					
-					// Load value from class table
-				case "loadClass":
-					codebuilder.addLoadTable(__out.register,
-						NativeCode.CLASS_TABLE_REGISTER, __in[0].register);
-					break;
-					
-					// Load value from constant pool
-				case "loadPool":
-					codebuilder.addLoadTable(__out.register,
-						NativeCode.POOL_REGISTER, __in[0].register);
-					break;
-					
-					// Read byte memory
-				case "memReadByte":
-					codebuilder.addMemoryOffReg(DataType.BYTE,
-						true, __out.register,
-						__in[0].register, __in[1].register);
-					break;
-					
-					// Read int memory
-				case "memReadInt":
-					codebuilder.addMemoryOffReg(DataType.INTEGER,
-						true, __out.register,
-						__in[0].register, __in[1].register);
-					break;
-					
-					// Read short memory
-				case "memReadShort":
-					codebuilder.addMemoryOffReg(DataType.SHORT,
-						true, __out.register,
-						__in[0].register, __in[1].register);
-					break;
-					
-					// Write byte memory
-				case "memWriteByte":
-					codebuilder.addMemoryOffReg(DataType.BYTE,
-						false, __in[2].register,
-						__in[0].register, __in[1].register);
-					break;
-					
-					// Write int memory
-				case "memWriteInt":
-					codebuilder.addMemoryOffReg(DataType.INTEGER,
-						false, __in[2].register,
-						__in[0].register, __in[1].register);
-					break;
-					
-					// Write short memory
-				case "memWriteShort":
-					codebuilder.addMemoryOffReg(DataType.SHORT,
-						false, __in[2].register,
-						__in[0].register, __in[1].register);
-					break;
-				
-					// object -> pointer
-				case "objectToPointer":
-					if (__in[0].register != __out.register)
-						codebuilder.addCopy(__in[0].register, __out.register);
-					break;
-					
-					// object -> pointer, with ref clear
-				case "objectToPointerRefQueue":
-					// Push references
-					this.__refPush();
-					
-					// Do the copy
-					if (__in[0].register != __out.register)
-						codebuilder.addCopy(__in[0].register, __out.register);
-					
-					// Clear references
-					this.__refClear();
-					break;
-				
-					// pointer -> object
-				case "pointerToObject":
-					if (__in[0].register != __out.register)
-						codebuilder.addCopy(__in[0].register, __out.register);
-					
-					// The returned object is electable for reference
-					// counting so we need to count it up otherwise it will
-					// be just freed (this is just a plain copy)
-					this.__refCount(__out.register);
-					break;
-					
-					// Return from frame
-				case "returnFrame":
-					// This may be a variant which returns multiple values
-					switch (__r.handle().descriptor().toString())
-					{
-						case "(II)V":
-							codebuilder.addCopy(__in[0].register,
-								NativeCode.RETURN_REGISTER);
-							codebuilder.addCopy(__in[1].register,
-								NativeCode.RETURN_REGISTER + 1);
-							break;
-							
-						case "(I)V":
-							codebuilder.addCopy(__in[0].register,
-								NativeCode.RETURN_REGISTER);
-							break;
-					}
-					
-					// Always return at the end
-					this.__generateReturn();
-					break;
-					
-					// Get class table register
-				case "specialGetClassTableRegister":
-					codebuilder.addCopy(NativeCode.CLASS_TABLE_REGISTER,
-						__out.register);
-					break;
-					
-					// Get the exception register
-				case "specialGetExceptionRegister":
-					codebuilder.addCopy(NativeCode.EXCEPTION_REGISTER,
-						__out.register);
-					break;
-					
-					// Gets the pool register
-				case "specialGetPoolRegister":
-					codebuilder.addCopy(NativeCode.POOL_REGISTER,
-						__out.register);
-					break;
-					
-					// Read return register
-				case "specialGetReturnRegister":
-				case "specialGetReturnHighRegister":
-					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-						__out.register);
-					break;
-					
-					// Read return register (low value)
-				case "specialGetReturnLowRegister":
-					codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
-						__out.register);
-					break;
-					
-					// Get static field register
-				case "specialGetStaticFieldRegister":
-					codebuilder.addCopy(NativeCode.STATIC_FIELD_REGISTER,
-						__out.register);
-					break;
-					
-					// Get thread register
-				case "specialGetThreadRegister":
-					codebuilder.addCopy(NativeCode.THREAD_REGISTER,
-						__out.register);
-					break;
-					
-					// Set class table register
-				case "specialSetClassTableRegister":
-					codebuilder.addCopy(__in[0].register,
-						NativeCode.CLASS_TABLE_REGISTER);
-					break;
-					
-					// Set the exception register
-				case "specialSetExceptionRegister":
-					codebuilder.addCopy(__in[0].register,
-						NativeCode.EXCEPTION_REGISTER);
-					break;
-					
-					// Set pool register
-				case "specialSetPoolRegister":
-					codebuilder.addCopy(__in[0].register,
-						NativeCode.POOL_REGISTER);
-					break;
-					
-					// Set static field register
-				case "specialSetStaticFieldRegister":
-					codebuilder.addCopy(__in[0].register,
-						NativeCode.STATIC_FIELD_REGISTER);
-					break;
-					
-					// Set thread register
-				case "specialSetThreadRegister":
-					codebuilder.addCopy(__in[0].register,
-						NativeCode.THREAD_REGISTER);
-					break;
-					
-					// System call
-				case "sysCall":
-					{
-						// Invoked methods can thrown an exception, so do
-						// checks! Otherwise the behavior we expect might not
-						// happen
-						this.state.canexception = true;
-						
-						// Build the register List
-						List<Integer> args = new ArrayList<>();
-						int n = __in.length;
-						for (int i = 1; i < n; i++)
-							args.add(__in[i].register);
-						
-						// Invoke pointer with arguments
-						codebuilder.add(NativeInstructionType.SYSTEM_CALL,
-							__in[0].register, new RegisterList(args));
-					}
-					break;
-					
-					// System call with return value
-				case "sysCallV":
-					{
-						// Invoked methods can thrown an exception, so do
-						// checks! Otherwise the behavior we expect might not
-						// happen
-						this.state.canexception = true;
-						
-						// Build the register List
-						List<Integer> args = new ArrayList<>();
-						int n = __in.length;
-						for (int i = 1; i < n; i++)
-							args.add(__in[i].register);
-						
-						// Invoke pointer with arguments
-						codebuilder.add(NativeInstructionType.SYSTEM_CALL,
-							__in[0].register, new RegisterList(args));
-						
-						// Copy return value
-						codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-							__out.register);
-					}
-					break;
-				
-				default:
-					throw new todo.OOPS(asmfunc);
-			}
+			// Do nothing else
+			return;
 		}
 		
-		// Normal invoke
+		// Code generator
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Push references
+		this.__refPush();
+		
+		// Fill in call arguments
+		List<Integer> callargs = new ArrayList<>(__in.length * 2);
+		for (int i = 0, n = __in.length; i < n; i++)
+		{
+			// Add the input register
+			JavaStackResult.Input in = __in[i];
+			callargs.add(in.register);
+			
+			// But also if it is wide, we need to pass the other one or
+			// else the value will be clipped
+			if (in.type.isWide())
+				callargs.add(in.register + 1);
+		}
+		
+		// Actual arguments to the call
+		RegisterList reglist = new RegisterList(callargs);
+		
+		// If invoking static method, use our helper method
+		if (__t == InvokeType.STATIC)
+		{
+			MethodHandle mh = __r.handle();
+			this.__invokeStatic(__t, mh.outerClass(), mh.name(),
+				mh.descriptor(), reglist);
+		}
+		
+		// Interface, special, or virtual
 		else
 		{
-			// Push references
-			this.__refPush();
+			// Check that the object is of the given class type and is not null
+			int ireg = __in[0].register;
+			this.__basicCheckNPE(ireg);
+			this.__basicCheckCCE(ireg, __r.handle().outerClass());
 			
-			// Checks on the instance
-			if (__t.hasInstance())
+			// Invoking interface method
+			if (__t == InvokeType.INTERFACE)
 			{
-				// The instance register
-				int ireg = __in[0].register;
+				if (true)
+					throw new todo.TODO();
 				
-				// Cannot be null
-				this.__basicCheckNPE(ireg);
-				
-				// Must be the given class
-				this.__basicCheckCCE(ireg, __r.handle().outerClass());
-			}
-			
-			// Fill in call arguments
-			List<Integer> callargs = new ArrayList<>(__in.length * 2);
-			for (int i = 0, n = __in.length; i < n; i++)
-			{
-				// Add the input register
-				JavaStackResult.Input in = __in[i];
-				callargs.add(in.register);
-				
-				// But also if it is wide, we need to pass the other one or
-				// else the value will be clipped
-				if (in.type.isWide())
-					callargs.add(in.register + 1);
-			}
-			
-			// Load pool of target class
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				new ClassPool(targetclass), NativeCode.NEXT_POOL_REGISTER);
-			
-			// Static invocations always have direct pointers
-			if (__t == InvokeType.STATIC)
-			{
-				// Load method pointer
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new InvokedMethod(__t, __r.handle()),
-					NativeCode.VOLATILE_A_REGISTER);
-			}
-			
-			// Invocation of interface method
-			else if (__t == InvokeType.INTERFACE)
-			{
+				/*
 				// Load the interface class into A
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
 					__r.handle().outerClass(),
@@ -884,11 +589,16 @@ public final class NearNativeByteCodeHandler
 				// Copy it into volatile A since invoke is done on that.
 				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
 					NativeCode.VOLATILE_A_REGISTER);
+				*/
 			}
 			
-			// Need to load the correct method to execute off a vtable
+			// Special or virtual
 			else
 			{
+				if (true)
+					throw new todo.TODO();
+				
+				/*
 				// Use special invoke table for the instance
 				String vtablename;
 				if (__t == InvokeType.SPECIAL)
@@ -938,24 +648,21 @@ public final class NearNativeByteCodeHandler
 					NativeCode.VOLATILE_A_REGISTER,
 					NativeCode.VOLATILE_A_REGISTER,
 					NativeCode.VOLATILE_B_REGISTER);
+				*/
 			}
-			
-			// Add invocation
-			codebuilder.add(NativeInstructionType.INVOKE,
-				NativeCode.VOLATILE_A_REGISTER, new RegisterList(callargs));
-			
-			// Read in return value, it is just a copy
-			if (__out != null)
-				if (__out.type.isWide())
-					codebuilder.addCopyWide(NativeCode.RETURN_REGISTER,
-						__out.register);
-				else
-					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-						__out.register);
-			
-			// Clear references
-			this.__refClear();
 		}
+		
+		// Read in return value, it is just a copy
+		if (__out != null)
+			if (__out.type.isWide())
+				codebuilder.addCopyWide(NativeCode.RETURN_REGISTER,
+					__out.register);
+			else
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+					__out.register);
+		
+		// Clear references
+		this.__refClear();
 	}
 	
 	/**
@@ -1032,42 +739,39 @@ public final class NearNativeByteCodeHandler
 	public final void doMultiANewArray(ClassName __cl, int __numdims,
 		JavaStackResult.Output __o, JavaStackResult.Input... __dims)
 	{
-		// Load class object into S
-		this.__loadClassObject(__cl, NativeCode.VOLATILE_S_REGISTER);
+		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Determine the number of integer arguments to use
+		// Need volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volclassobj = volatiles.get();
+		
+		// Load the class we want to allocate
+		this.__loadClassObject(__cl, volclassobj);
+		
+		// Determine the number of integer arguments to use, since we
+		// are passing multiple arguments to multianewarray
 		StringBuilder sb = new StringBuilder(__numdims);
 		for (int i = 0; i < __numdims; i++)
 			sb.append('I');
-		
-		// Load array allocation helper into B
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, new MethodHandle(
-				new ClassName("cc/squirreljme/runtime/cldc/lang/ArrayUtils"),
-				new MethodName("multiANewArray"),
-				new MethodDescriptor(
-					"(Ljava/lang/Class;I" + sb + ")Ljava/lang/Object;"))),
-			NativeCode.VOLATILE_B_REGISTER);
-		
-		// Need to builder register list (class, skip, args);
+			
+		// Build arguments to the method call (class, skip, args);
 		List<Integer> rl = new ArrayList<>();
-		rl.add(NativeCode.VOLATILE_S_REGISTER);
+		rl.add(volclassobj);
 		rl.add(0);
 		for (int i = 0; i < __numdims; i++)
 			rl.add(__dims[i].register);
 		
-		// Load target pool entry
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(
-				new ClassName("cc/squirreljme/runtime/cldc/lang/ArrayUtils")),
-			NativeCode.NEXT_POOL_REGISTER);
+		// Invoke array utility
+		this.__invokeStatic(InvokeType.STATIC,
+			"cc/squirreljme/runtime/cldc/lang/ArrayUtils", "multiANewArray",
+			"(Ljava/lang/Class;I" + sb + ")Ljava/lang/Object;",
+			new RegisterList(rl));
 		
-		// Perform the invoke
-		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_B_REGISTER, new RegisterList(rl));
-		
-		// Copy result
+		// Use this result
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
+		
+		// Not needed anymore
+		volatiles.remove(volclassobj);
 	}
 	
 	/**
@@ -1091,35 +795,30 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Determine fixed class type
-		int ctype = FixedClassIDs.of(__at.toString());
+		// Need volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volclassdx = volatiles.get();
 		
-		// If not fixed, then rely on the value in the pool
-		if (ctype < 0)
+		// If not a fixed class index, then rely on the value in the pool
+		int wantfixedtype = FixedClassIDs.of(__at.toString());
+		if (wantfixedtype < 0)
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				__at, NativeCode.VOLATILE_A_REGISTER);
+				__at, volclassdx);
 		
-		// Otherwise use pre-determined ID
+		// Otherwise use the fixed class identifier
 		else
 			codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-				0, ctype, NativeCode.VOLATILE_A_REGISTER);
+				0, wantfixedtype, volclassdx);
 		
-		// Call kernel method for array creation
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, KERNEL_CLASS.toString(),
-			"jvmNewArray", "(II)I"), NativeCode.VOLATILE_B_REGISTER);
-		
-		// Pool for the kernel
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS), NativeCode.NEXT_POOL_REGISTER);
-		
-		// Invoke method
-		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_B_REGISTER,
-			new RegisterList(NativeCode.VOLATILE_A_REGISTER, __len.register));
+		// Call internal handler
+		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS, "jvmNewArray",
+			"(II)I", volclassdx, __len.register);
 		
 		// Copy result
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
+		
+		// No longer needed
+		volatiles.remove(volclassdx);
 	}
 	
 	/**
@@ -1218,20 +917,27 @@ public final class NearNativeByteCodeHandler
 		// Push references
 		this.__refPush();
 		
+		// Need volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volsfo = volatiles.get();
+		
 		// Read static offset
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.STATIC, __fr, true),
-			NativeCode.VOLATILE_A_REGISTER);
+			volsfo);
 		
 		// Read from memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
 			__v.register, NativeCode.STATIC_FIELD_REGISTER,
-			NativeCode.VOLATILE_A_REGISTER);
+			volsfo);
 		
 		// Count it up?
 		if (__fr.memberType().isObject())
 			this.__refCount(__v.register);
+		
+		// Not needed
+		volatiles.remove(volsfo);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -1254,17 +960,24 @@ public final class NearNativeByteCodeHandler
 		// Push references
 		this.__refPush();
 		
+		// Need volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volsfo = volatiles.get();
+		
 		// Read field offset
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.STATIC, __fr, false),
-			NativeCode.VOLATILE_A_REGISTER);
+			volsfo);
 		
 		// Write to memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
 			__v.register, NativeCode.STATIC_FIELD_REGISTER,
-			NativeCode.VOLATILE_A_REGISTER);
-			
+			volsfo);
+		
+		// Not needed
+		volatiles.remove(volsfo);
+		
 		// Clear references as needed
 		this.__refClear();
 	}
@@ -1451,6 +1164,9 @@ public final class NearNativeByteCodeHandler
 			// The class name used
 			ClassName exn = csl.classname;
 			
+			if (true)
+				throw new todo.TODO();
+			/*
 			// Allocate exception at the highest register point which acts
 			// as a temporary
 			codebuilder.add(NativeInstructionType.NEW, exn,
@@ -1469,6 +1185,7 @@ public final class NearNativeByteCodeHandler
 			
 			// Generate jump to exception handler
 			codebuilder.addGoto(csl.label);
+			*/
 		}
 		
 		// Generate exception handler tables
@@ -1510,6 +1227,10 @@ public final class NearNativeByteCodeHandler
 			// Go through and build the exception handler table
 			for (ExceptionHandler eh : ehtable)
 			{
+				if (true)
+					throw new todo.TODO();
+				
+				/*
 				// The method we are going to call is in the kernel so we need
 				// to load its pool identifier
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -1542,6 +1263,7 @@ public final class NearNativeByteCodeHandler
 				codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
 					this.__labelJavaTransition(sops,
 						new InstructionJumpTarget(eh.handlerAddress())));
+				*/
 			}
 			
 			// No exception handler is available so, just fall through to the
@@ -1601,15 +1323,22 @@ public final class NearNativeByteCodeHandler
 		// If the index is negative then it is out of bounds
 		codebuilder.addIfICmp(CompareType.LESS_THAN, __dxr, 0, lab);
 		
+		// Need volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volarraylen = volatiles.get();
+		
 		// Read length of array
-		codebuilder.addMemoryOffConst(DataType.INTEGER,
-			true, NativeCode.VOLATILE_A_REGISTER,
+		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
+			volarraylen,
 			__ir, Kernel.ARRAY_LENGTH_OFFSET);
 		
 		// If the index is greater or equal to the length then the access
 		// is invalid
 		codebuilder.addIfICmp(CompareType.GREATER_THAN_OR_EQUALS,
-			__dxr, NativeCode.VOLATILE_A_REGISTER, lab);
+			__dxr, volarraylen, lab);
+		
+		// No longer needed
+		volatiles.remove(volarraylen);
 	}
 	
 	/**
@@ -1623,22 +1352,9 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Load method pointer
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
-			new MethodName("jvmCanArrayStore"),
-			new MethodDescriptor("(II)I"))),
-			NativeCode.VOLATILE_B_REGISTER);
-		
-		// Load kernel pool
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS),
-			NativeCode.NEXT_POOL_REGISTER);
-		
-		// Call the instance checker (__ir, checkclassid)
-		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_B_REGISTER,
-			new RegisterList(__ir, __vr));
+		// Call helper class
+		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+			"jvmCanArrayStore", "(II)I", __ir, __vr);
 		
 		// Was it invalid?
 		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
@@ -1660,30 +1376,17 @@ public final class NearNativeByteCodeHandler
 			
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// The method we are going to call is in the kernel so we need to
-		// load its pool identifier
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS), NativeCode.NEXT_POOL_REGISTER);
+		// Need volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volwantcldx = volatiles.get();
 		
-		// Load the class index into the temporary
+		// Load desired target class type
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, NativeCode.VOLATILE_A_REGISTER);
+			__cl, volwantcldx);
 		
-		// Load method pointer
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
-			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
-			NativeCode.VOLATILE_B_REGISTER);
-		
-		// Load kernel pool
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS),
-			NativeCode.NEXT_POOL_REGISTER);
-		
-		// Call the instance checker (__ir, checkclassid)
-		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_B_REGISTER,
-			new RegisterList(__ir, NativeCode.VOLATILE_A_REGISTER));
+		// Call helper class
+		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+			"jvmIsInstance", "(II)I", __ir, volwantcldx);
 		
 		// If the resulting method call returns zero then it is not an instance
 		// of the given class. The return register is checked because the
@@ -1691,6 +1394,9 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
 			this.__labelRefClearJump(this.__labelMakeException(
 			"java/lang/ClassCastException")));
+		
+		// No longer needed
+		volatiles.remove(volwantcldx);
 	}
 	
 	/**
@@ -1701,20 +1407,9 @@ public final class NearNativeByteCodeHandler
 	 */
 	private final void __basicCheckIsArray(int __ir)
 	{
-		// Load method pointer
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
-			new MethodName("jvmIsArray"), new MethodDescriptor("(I)I"))),
-			NativeCode.VOLATILE_A_REGISTER);
-		
-		// Load kernel pool
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS),
-			NativeCode.NEXT_POOL_REGISTER);
-		
-		// Call the instance checker (__ir, checkclassid)
-		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__ir));
+		// Call internal helper
+		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS, "jvmIsArray",
+			"(I)I", __ir);
 		
 		// If this is not an array, throw a class cast exception
 		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
@@ -1865,6 +1560,441 @@ public final class NearNativeByteCodeHandler
 		// Note that we do not return the recursive result because that
 		// will be for another enqueue state
 		return lb;
+	}
+	
+	/**
+	 * Invokes an assembly method.
+	 *
+	 * @param __name The method name.
+	 * @param __type The method type.
+	 * @param __out The result.
+	 * @param __in The input.
+	 * @throws NullPointerException If no name or type were specified.
+	 * @since 2019/05/24
+	 */
+	private final void __invokeAssembly(MethodName __name,
+		MethodDescriptor __type, JavaStackResult.Output __out,
+		JavaStackResult.Input... __in)
+		throws NullPointerException
+	{
+		if (__name == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		// Code generator
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Force exception cancel for these operations
+		this.state.canexception = false;
+		
+		// Depends on the assembly function
+		String asmfunc;
+		switch ((asmfunc = __name.toString()))
+		{
+				// Read lenght of array
+			case "arrayLength":
+				this.doArrayLength(__in[0], __out);
+				break;
+				
+				// Breakpoint
+			case "breakpoint":
+				codebuilder.add(NativeInstructionType.BREAKPOINT);
+				break;
+				
+				// Long/Double bits
+			case "doubleToRawLongBits":
+			case "longBitsToDouble":
+				if (__in[0].register != __out.register)
+					codebuilder.addCopyWide(__in[0].register,
+						__out.register);
+				break;
+				
+				// Exception handling
+			case "exceptionHandle":
+				// This generates no actual codes to check the exception,
+				// it just makes the exception check run so that they are
+				// checked
+				this.state.canexception = true;
+				break;
+				
+				// Integer/Float bits
+			case "floatToRawIntBits":
+			case "intBitsToFloat":
+				if (__in[0].register != __out.register)
+					codebuilder.addCopy(__in[0].register, __out.register);
+				break;
+				
+				// Invoke method, no return value is read
+			case "invoke":
+				{
+					// Invoked methods can thrown an exception, so do
+					// checks! Otherwise the behavior we expect might not
+					// happen
+					this.state.canexception = true;
+					
+					// Build the register List
+					List<Integer> args = new ArrayList<>();
+					int n = __in.length;
+					for (int i = 1; i < n; i++)
+						args.add(__in[i].register);
+					
+					// Invoke pointer with arguments
+					codebuilder.add(NativeInstructionType.INVOKE,
+						__in[0].register, new RegisterList(args));
+				}
+				break;
+				
+				// Invoke method, then read return value
+			case "invokeV":
+				{
+					// Invoked methods can thrown an exception, so do
+					// checks! Otherwise the behavior we expect might not
+					// happen
+					this.state.canexception = true;
+					
+					// Build the register List
+					List<Integer> args = new ArrayList<>();
+					int n = __in.length;
+					for (int i = 1; i < n; i++)
+						args.add(__in[i].register);
+					
+					// Invoke pointer with arguments
+					codebuilder.add(NativeInstructionType.INVOKE,
+						__in[0].register, new RegisterList(args));
+					
+					// Copy return value
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+						__out.register);
+				}
+				break;
+				
+				// Load value from class table
+			case "loadClass":
+				codebuilder.addLoadTable(__out.register,
+					NativeCode.CLASS_TABLE_REGISTER, __in[0].register);
+				break;
+				
+				// Load value from constant pool
+			case "loadPool":
+				codebuilder.addLoadTable(__out.register,
+					NativeCode.POOL_REGISTER, __in[0].register);
+				break;
+				
+				// Read byte memory
+			case "memReadByte":
+				codebuilder.addMemoryOffReg(DataType.BYTE,
+					true, __out.register,
+					__in[0].register, __in[1].register);
+				break;
+				
+				// Read int memory
+			case "memReadInt":
+				codebuilder.addMemoryOffReg(DataType.INTEGER,
+					true, __out.register,
+					__in[0].register, __in[1].register);
+				break;
+				
+				// Read short memory
+			case "memReadShort":
+				codebuilder.addMemoryOffReg(DataType.SHORT,
+					true, __out.register,
+					__in[0].register, __in[1].register);
+				break;
+				
+				// Write byte memory
+			case "memWriteByte":
+				codebuilder.addMemoryOffReg(DataType.BYTE,
+					false, __in[2].register,
+					__in[0].register, __in[1].register);
+				break;
+				
+				// Write int memory
+			case "memWriteInt":
+				codebuilder.addMemoryOffReg(DataType.INTEGER,
+					false, __in[2].register,
+					__in[0].register, __in[1].register);
+				break;
+				
+				// Write short memory
+			case "memWriteShort":
+				codebuilder.addMemoryOffReg(DataType.SHORT,
+					false, __in[2].register,
+					__in[0].register, __in[1].register);
+				break;
+			
+				// object -> pointer
+			case "objectToPointer":
+				if (__in[0].register != __out.register)
+					codebuilder.addCopy(__in[0].register, __out.register);
+				break;
+				
+				// object -> pointer, with ref clear
+			case "objectToPointerRefQueue":
+				// Push references
+				this.__refPush();
+				
+				// Do the copy
+				if (__in[0].register != __out.register)
+					codebuilder.addCopy(__in[0].register, __out.register);
+				
+				// Clear references
+				this.__refClear();
+				break;
+			
+				// pointer -> object
+			case "pointerToObject":
+				if (__in[0].register != __out.register)
+					codebuilder.addCopy(__in[0].register, __out.register);
+				
+				// The returned object is electable for reference
+				// counting so we need to count it up otherwise it will
+				// be just freed (this is just a plain copy)
+				this.__refCount(__out.register);
+				break;
+				
+				// Return from frame
+			case "returnFrame":
+				// This may be a variant which returns multiple values
+				switch (__type.toString())
+				{
+					case "(II)V":
+						codebuilder.addCopy(__in[0].register,
+							NativeCode.RETURN_REGISTER);
+						codebuilder.addCopy(__in[1].register,
+							NativeCode.RETURN_REGISTER + 1);
+						break;
+						
+					case "(I)V":
+						codebuilder.addCopy(__in[0].register,
+							NativeCode.RETURN_REGISTER);
+						break;
+				}
+				
+				// Always return at the end
+				this.__generateReturn();
+				break;
+				
+				// Get class table register
+			case "specialGetClassTableRegister":
+				codebuilder.addCopy(NativeCode.CLASS_TABLE_REGISTER,
+					__out.register);
+				break;
+				
+				// Get the exception register
+			case "specialGetExceptionRegister":
+				codebuilder.addCopy(NativeCode.EXCEPTION_REGISTER,
+					__out.register);
+				break;
+				
+				// Gets the pool register
+			case "specialGetPoolRegister":
+				codebuilder.addCopy(NativeCode.POOL_REGISTER,
+					__out.register);
+				break;
+				
+				// Read return register
+			case "specialGetReturnRegister":
+			case "specialGetReturnHighRegister":
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+					__out.register);
+				break;
+				
+				// Read return register (low value)
+			case "specialGetReturnLowRegister":
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+					__out.register);
+				break;
+				
+				// Get static field register
+			case "specialGetStaticFieldRegister":
+				codebuilder.addCopy(NativeCode.STATIC_FIELD_REGISTER,
+					__out.register);
+				break;
+				
+				// Get thread register
+			case "specialGetThreadRegister":
+				codebuilder.addCopy(NativeCode.THREAD_REGISTER,
+					__out.register);
+				break;
+				
+				// Set class table register
+			case "specialSetClassTableRegister":
+				codebuilder.addCopy(__in[0].register,
+					NativeCode.CLASS_TABLE_REGISTER);
+				break;
+				
+				// Set the exception register
+			case "specialSetExceptionRegister":
+				codebuilder.addCopy(__in[0].register,
+					NativeCode.EXCEPTION_REGISTER);
+				break;
+				
+				// Set pool register
+			case "specialSetPoolRegister":
+				codebuilder.addCopy(__in[0].register,
+					NativeCode.POOL_REGISTER);
+				break;
+				
+				// Set static field register
+			case "specialSetStaticFieldRegister":
+				codebuilder.addCopy(__in[0].register,
+					NativeCode.STATIC_FIELD_REGISTER);
+				break;
+				
+				// Set thread register
+			case "specialSetThreadRegister":
+				codebuilder.addCopy(__in[0].register,
+					NativeCode.THREAD_REGISTER);
+				break;
+				
+				// System call
+			case "sysCall":
+				{
+					// Invoked methods can thrown an exception, so do
+					// checks! Otherwise the behavior we expect might not
+					// happen
+					this.state.canexception = true;
+					
+					// Build the register List
+					List<Integer> args = new ArrayList<>();
+					int n = __in.length;
+					for (int i = 1; i < n; i++)
+						args.add(__in[i].register);
+					
+					// Invoke pointer with arguments
+					codebuilder.add(NativeInstructionType.SYSTEM_CALL,
+						__in[0].register, new RegisterList(args));
+				}
+				break;
+				
+				// System call with return value
+			case "sysCallV":
+				{
+					// Invoked methods can thrown an exception, so do
+					// checks! Otherwise the behavior we expect might not
+					// happen
+					this.state.canexception = true;
+					
+					// Build the register List
+					List<Integer> args = new ArrayList<>();
+					int n = __in.length;
+					for (int i = 1; i < n; i++)
+						args.add(__in[i].register);
+					
+					// Invoke pointer with arguments
+					codebuilder.add(NativeInstructionType.SYSTEM_CALL,
+						__in[0].register, new RegisterList(args));
+					
+					// Copy return value
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+						__out.register);
+				}
+				break;
+			
+			default:
+				throw new todo.OOPS(asmfunc);
+		}
+	}
+	
+	/**
+	 * Invokes static method, doing the needed pool loading and all the
+	 * complicated stuff in a simple point of code.
+	 *
+	 * @param __it The invocation type.
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	private final void __invokeStatic(InvokeType __it, String __cl,
+		String __mn, String __mt, int... __args)
+		throws NullPointerException
+	{
+		this.__invokeStatic(__it, new ClassName(__cl), new MethodName(__mn),
+			new MethodDescriptor(__mt), new RegisterList(__args));
+	}
+	
+	/**
+	 * Invokes static method, doing the needed pool loading and all the
+	 * complicated stuff in a simple point of code.
+	 *
+	 * @param __it The invocation type.
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	private final void __invokeStatic(InvokeType __it, String __cl,
+		String __mn, String __mt, RegisterList __args)
+		throws NullPointerException
+	{
+		this.__invokeStatic(__it, new ClassName(__cl), new MethodName(__mn),
+			new MethodDescriptor(__mt), __args);
+	}
+	
+	/**
+	 * Invokes static method, doing the needed pool loading and all the
+	 * complicated stuff in a simple point of code.
+	 *
+	 * @param __it The invocation type.
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	private final void __invokeStatic(InvokeType __it, ClassName __cl,
+		String __mn, String __mt, int... __args)
+		throws NullPointerException
+	{
+		this.__invokeStatic(__it, __cl, new MethodName(__mn),
+			new MethodDescriptor(__mt), new RegisterList(__args));
+	}
+	
+	/**
+	 * Invokes static method, doing the needed pool loading and all the
+	 * complicated stuff in a simple point of code.
+	 *
+	 * @param __it The invocation type.
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	private final void __invokeStatic(InvokeType __it, ClassName __cl,
+		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
+		throws NullPointerException
+	{
+		if (__it == null || __cl == null || __mn == null || __mt == null ||
+			__args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		
+		
+		/*
+		// Load address of target method
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new InvokedMethod(InvokeType.STATIC, new MethodHandle(
+			KERNEL_CLASS, new MethodName((__enter ? "jvmMonitorEnter" :
+				"jvmMonitorExit")), new MethodDescriptor("(I)V"))),
+			NativeCode.VOLATILE_A_REGISTER);
+		
+		// Load kernel pool
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS),
+			NativeCode.NEXT_POOL_REGISTER);
+		
+		// Call the monitor function
+		codebuilder.add(NativeInstructionType.INVOKE,
+			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__r));
+		*/
 	}
 	
 	/**
@@ -2085,6 +2215,9 @@ public final class NearNativeByteCodeHandler
 	 */
 	private final void __loadClassObject(ClassName __cl, int __r)
 	{
+		throw new todo.TODO();
+		
+		/*
 		// Need to calculate the offset of the class in the class table
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			__cl, __r);
@@ -2105,6 +2238,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addMemoryOffReg(
 			DataType.OBJECT, true,
 			__r, __r, NativeCode.VOLATILE_A_REGISTER);
+		*/
 	}
 	
 	/**
@@ -2116,21 +2250,9 @@ public final class NearNativeByteCodeHandler
 	 */
 	private final void __monitor(boolean __enter, int __r)
 	{
-		// Load address of target method
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, new MethodHandle(
-			KERNEL_CLASS, new MethodName((__enter ? "jvmMonitorEnter" :
-				"jvmMonitorExit")), new MethodDescriptor("(I)V"))),
-			NativeCode.VOLATILE_A_REGISTER);
-		
-		// Load kernel pool
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS),
-			NativeCode.NEXT_POOL_REGISTER);
-		
-		// Call the monitor function
-		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__r));
+		// Call helper method
+		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+			(__enter ? "jvmMonitorEnter" : "jvmMonitorExit"), "(I)V", __r);
 	}
 	
 	/**
@@ -2243,34 +2365,30 @@ public final class NearNativeByteCodeHandler
 		NativeCodeLabel ncj = new NativeCodeLabel("refnouncount",
 			this._refclunk++);
 		
+		// Need volatiles
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volnowcount = volatiles.get();
+		
 		// Do not do any uncounting if this is zero
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		codebuilder.addIfZero(__r, ncj);
 		
 		// Add uncount
 		codebuilder.add(NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET,
-			NativeCode.VOLATILE_A_REGISTER, __r, Kernel.OBJECT_COUNT_OFFSET);
+			volnowcount, __r, Kernel.OBJECT_COUNT_OFFSET);
 		
 		// If the count is still positive, we do not GC
-		codebuilder.addIfNonZero(NativeCode.VOLATILE_A_REGISTER, ncj);
+		codebuilder.addIfNonZero(volnowcount, ncj);
 		
-		// But here we will be garbage collecting this object
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, KERNEL_CLASS.toString(),
-			"jvmGarbageCollectObject", "(I)V"),
-			NativeCode.VOLATILE_A_REGISTER);
-		
-		// Load kernel pool
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS),
-			NativeCode.NEXT_POOL_REGISTER);
-		
-		// Call GC method
-		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__r));
+		// Call garbage collect on object via helper
+		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+			"jvmGarbageCollectObject", "(I)V", __r);
 		
 		// No uncount or not GCed are jumped here
 		codebuilder.label(ncj);
+		
+		// No longer needed
+		volatiles.remove(volnowcount);
 	}
 	
 	/**
