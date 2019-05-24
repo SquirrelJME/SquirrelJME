@@ -15,5 +15,6 @@
  * @since 2018/02/24
  */
 
+@Deprecated
 package cc.squirreljme.runtime.cldc.string;
 
