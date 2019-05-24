@@ -1144,43 +1144,24 @@ public final class NearNativeByteCodeHandler
 			// Go through and build the exception handler table
 			for (ExceptionHandler eh : ehtable)
 			{
-				if (true)
-					throw new todo.TODO();
-				
-				/*
-				// The method we are going to call is in the kernel so we need
-				// to load its pool identifier
+				// Load the class type for the exception to check against
+				int volehclassdx = volatiles.get();
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new ClassPool(KERNEL_CLASS),
-					NativeCode.NEXT_POOL_REGISTER);
+					eh.type(), volehclassdx);
 				
-				// Load the class index into the temporary
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					eh.type(), NativeCode.VOLATILE_A_REGISTER);
+				// Call instance handler check
+				this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+					"jvmIsInstance", "(II)I",
+					NativeCode.EXCEPTION_REGISTER, volehclassdx);
 				
-				// Load address of target method
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new InvokedMethod(InvokeType.STATIC, new MethodHandle(
-					KERNEL_CLASS, new MethodName("jvmIsInstance"),
-					new MethodDescriptor("(II)I"))),
-					NativeCode.VOLATILE_B_REGISTER);
+				// Cleanup
+				volatiles.remove(volehclassdx);
 				
-				// Load kernel pool
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new ClassPool(KERNEL_CLASS),
-					NativeCode.NEXT_POOL_REGISTER);
-				
-				// Call the instance checker (__ir, checkclassid)
-				codebuilder.add(NativeInstructionType.INVOKE,
-					NativeCode.VOLATILE_B_REGISTER, new RegisterList(
-					NativeCode.EXCEPTION_REGISTER,
-					NativeCode.VOLATILE_A_REGISTER));
-				
-				// Jump to handler if it is met
-				codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
+				// If the return value is non-zero then it is an instance, in
+				// which case we jump to the handler address.
+				codebuilder.addIfNonZero(NativeCode.RETURN_REGISTER,
 					this.__labelJavaTransition(sops,
 						new InstructionJumpTarget(eh.handlerAddress())));
-				*/
 			}
 			
 			// No exception handler is available so, just fall through to the
