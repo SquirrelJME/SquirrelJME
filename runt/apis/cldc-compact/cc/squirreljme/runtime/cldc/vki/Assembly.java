@@ -32,6 +32,15 @@ public final class Assembly
 	}
 	
 	/**
+	 * Returns the array length of the given object.
+	 *
+	 * @param __o The object to get the length of.
+	 * @return The length of the array.
+	 * @since 2019/05/24
+	 */
+	public static native int arrayLength(Object __o);
+	
+	/**
 	 * Trigger breakpoint within the virtual machine.
 	 *
 	 * @since 2019/04/21
@@ -45,7 +54,7 @@ public final class Assembly
 	 * @return The raw long bits.
 	 * @since 2018/11/03
 	 */
-	public static final native long doubleToRawLongBits(double __d);
+	public static native long doubleToRawLongBits(double __d);
 	
 	/**
 	 * Performs explicit exception handling.
@@ -61,7 +70,7 @@ public final class Assembly
 	 * @return The raw int bits.
 	 * @since 2018/11/04
 	 */
-	public static final native int floatToRawIntBits(float __f);
+	public static native int floatToRawIntBits(float __f);
 	
 	/**
 	 * Integer bits to float.
@@ -70,7 +79,7 @@ public final class Assembly
 	 * @return The resulting float.
 	 * @since 2018/11/04
 	 */
-	public static final native float intBitsToFloat(int __b);
+	public static native float intBitsToFloat(int __b);
 	
 	/**
 	 * Invoke method at pointer.
@@ -330,7 +339,7 @@ public final class Assembly
 	 * @return The resulting double.
 	 * @since 2018/11/03
 	 */
-	public static final native double longBitsToDouble(long __b);
+	public static native double longBitsToDouble(long __b);
 	
 	/**
 	 * Reads byte from address.

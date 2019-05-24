@@ -1123,6 +1123,11 @@ public final class SpringThreadWorker
 		// Depends on the function
 		switch (__func)
 		{
+				// Return the length of the array
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"arrayLength:(Ljava/lang/Object;)I":
+				return ((SpringArrayObject)__args[0]).length();
+				
 				// Gets the raw bits for the given double value
 			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
 				"doubleToRawLongBits:(D)J":
@@ -1479,11 +1484,6 @@ public final class SpringThreadWorker
 				return this.allocateObject(this.loadClass(
 					new ClassName(this.<String>asNativeObject(
 					String.class, ((SpringObject)__args[0])))));
-				
-				// Return the length of the array
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"arrayLength:(Ljava/lang/Object;)I":
-				return ((SpringArrayObject)__args[0]).length();
 			
 				// Allocate array of a given class
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +

@@ -83,8 +83,8 @@ public final class System
 		// {@squirreljme.error ZZ19 Copy operation would exceed the bounds of
 		// the array. (Source offset; Source length; Destination offset;
 		// Destination length; The copy length)}
-		int srclen = ObjectAccess.arrayLength(__src),
-			destlen = ObjectAccess.arrayLength(__dest);
+		int srclen = Assembly.arrayLength(__src),
+			destlen = Assembly.arrayLength(__dest);
 		if (__srcoff + __copylen > srclen ||
 			__destoff + __copylen > destlen)
 			throw new IndexOutOfBoundsException(String.format(
