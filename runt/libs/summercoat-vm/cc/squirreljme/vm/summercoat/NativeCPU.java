@@ -461,6 +461,14 @@ public final class NativeCPU
 					}
 					break;
 					
+					// Load from constant pool
+				case NativeInstructionType.LOAD_POOL:
+					{
+						lr[args[1]] = memory.memReadInt(
+							lr[NativeCode.POOL_REGISTER] + (args[0] * 4));
+					}
+					break;
+					
 					// Integer math
 				case NativeInstructionType.MATH_CONST_INT:
 				case NativeInstructionType.MATH_REG_INT:
