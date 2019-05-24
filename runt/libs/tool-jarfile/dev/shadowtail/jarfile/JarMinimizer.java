@@ -161,16 +161,21 @@ public final class JarMinimizer
 	/**
 	 * Returns the ID of the class.
 	 *
+	 * @param __init The initializer.
 	 * @param __cl The class to get the ID of.
 	 * @return The ID of the class.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
-	private final int __classId(ClassName __cl)
+	private final int __classId(Initializer __init, ClassName __cl)
 		throws NullPointerException
 	{
-		if (__cl == null)
+		if (__init == null || __cl == null)
 			throw new NullPointerException("NARG");
+		
+		todo.TODO.note("Do not return zero!");
+		if (true)
+			return 0;
 		
 		throw new todo.TODO();
 		/*
@@ -390,7 +395,7 @@ public final class JarMinimizer
 					// Class ID
 				case CLASS_NAME:
 					__init.memWriteInt(Modifier.RAM_OFFSET,
-						ep, this.__classId((ClassName)pv));
+						ep, this.__classId(__init, (ClassName)pv));
 					break;
 					
 					// Class constant pool
@@ -559,6 +564,10 @@ public final class JarMinimizer
 				ksfa = new int[1];
 			Initializer init = this.__init(poolptr, ksfa);
 			
+			// Load class IDs for the byte array
+			int clab = this.__classId(init, new ClassName("[B")),
+				claab = this.__classId(init, new ClassName("[[B"));
+			
 			// Write boot memory
 			byte[] bootmem = init.toByteArray();
 			jdos.write(bootmem);
@@ -574,8 +583,8 @@ public final class JarMinimizer
 				"cc/squirreljme/runtime/cldc/vki/__Bootstrap__",
 				"__start",
 				null));
-			__dos.writeInt(this.__classId(new ClassName("[B")));
-			__dos.writeInt(this.__classId(new ClassName("[[B")));
+			__dos.writeInt(clab);
+			__dos.writeInt(claab);
 		}
 		
 		// No boot data
