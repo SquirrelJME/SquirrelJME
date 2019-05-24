@@ -19,6 +19,7 @@ package cc.squirreljme.runtime.cldc.string;
  *
  * @since 2018/11/11
  */
+@Deprecated
 public final class ClassConstantCharArraySequence
 	extends BasicSequence
 {

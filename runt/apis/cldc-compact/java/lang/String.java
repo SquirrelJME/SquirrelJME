@@ -66,6 +66,7 @@ public final class String
 		0b0000_0000__0000_0010;
 	
 	/** The basic character sequence data. */
+	@Deprecated
 	private final BasicSequence _sequence;
 	
 	/** Quick determination flags for speedy operations. */
@@ -283,6 +284,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/24
 	 */
+	@Deprecated
 	String(BasicSequence __bs)
 		throws NullPointerException
 	{
@@ -297,6 +299,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/24
 	 */
+	@Deprecated
 	private String(BasicSequence __bs, short __qf)
 		throws NullPointerException
 	{

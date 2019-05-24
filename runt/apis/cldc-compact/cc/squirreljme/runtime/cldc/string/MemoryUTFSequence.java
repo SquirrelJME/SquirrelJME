@@ -14,6 +14,7 @@ package cc.squirreljme.runtime.cldc.string;
  *
  * @since 2019/04/30
  */
+@Deprecated
 public final class MemoryUTFSequence
 	extends BasicSequence
 {

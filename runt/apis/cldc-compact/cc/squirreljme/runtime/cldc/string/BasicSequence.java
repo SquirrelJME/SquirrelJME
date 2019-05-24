@@ -21,6 +21,7 @@ package cc.squirreljme.runtime.cldc.string;
  *
  * @since 2018/02/24
  */
+@Deprecated
 public abstract class BasicSequence
 {
 	/**
