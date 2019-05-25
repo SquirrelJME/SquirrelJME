@@ -402,44 +402,15 @@ public final class Kernel
 		if (lock != 0)
 			throw new VirtualMachineError("ZZ41");
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
-		/*
-		// Determine if scanning needs to be done (to free all the field
-		// references and such)
-		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
-		boolean scan;
-		switch (pcl)
-		{
-				// These have nothing to be cleared
-			case FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY:
-			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
-			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
-			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
-			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
-			case FixedClassIDs.PRIMITIVE_LONG_ARRAY:
-			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
-			case FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY:
-			case FixedClassIDs.OBJECT:
-				scan = false;
-				break;
-			
-				// These do need to be cleared
-			default:
-				scan = true;
-				break;
-		}
-		
-		// Scan the object for fields and such to clear out
-		if (scan)
+		// Go through the object and recursively uncount any used references
+		if (false)
 		{
 			Assembly.breakpoint();
 			throw new todo.TODO();
 		}
 		
-		// Free the object in the memory chain
+		// Free object in the chain
 		Allocator.free(__p);
-		*/
 	}
 	
 	/**
