@@ -1,0 +1,55 @@
+# 2019/05/24
+
+## 09:01
+
+I have been thinking and I think the `BasicSequence` stuff in `String` is a
+bit to complicated. It makes strings less sharable across VMs and such, and
+when I initialize strings it gets complicated.
+
+## 10:01
+
+Actually this is going to end up being much faster because there will be less
+overhead with strings!
+
+## 14:36
+
+I think I want to make it so math operations on long, float, and double are
+done purely in software. It will have some overhead but it should simplify the
+number of instructions that need to be handled. Additionally everything can be
+tuned purely to 32-bit registers. This way I do not need conversion for long
+and double types. I also would not need comparisons as well.
+
+## 16:21
+
+So not exactly sure what to do for the vtable. There is ClassDataV2 but that
+makes instance invocations so complicated. Like I have to load that, then load
+off that just to get the pointer I want to execute. So I wonder if there is a
+faster way? Maybe every object can instead just have a reference to its own
+vtable? That will just waste tons of space though. So just need to figure out
+the best way to store and then access these vtables because they are not
+constant for a class. Maybe just maybe the class ID and pointer into the class
+table is wrong? Like what if class names should just point to the actual
+class data for that class? That would simplify things a bit and I would not
+need a gigantic table to manage classes in. Although there would be no real
+way to have shared types which are compatible. But I guess that is just going
+to be how it is. Well, there could actually just be pre-initialized and fixed
+stuff for the bootstrap. Like anything will try to use any bootstrap defined
+classes first no matter what. I think in the long run this will be the
+simplest solution. It will complicate the initial bootstrap stage however but
+if everything were `ClassDataV2` then suddenly I have access to instance
+objects because I can just static boot vtables and such. So at this point I
+may as well just go all the way and initialize everything at once. Things
+would be far easier if I had access to `String` instead of doing all of this
+magical raw UTF stuff. Initializing the first startup task would also be
+easier as well with instances. So then this is pretty much settled.
+
+## 18:48
+
+In the exception handler code, if an exception is not an instance of the
+exception then it jumps to the handler so I think this might have been why it
+has been messing up in the code. It should be not zero, not zero.
+
+## 20:37
+
+Problem with `jvmIsInstance` is that the instance lookup will never end when
+casting to a ClassDataV2 using `pointerToObject`, so I need an unchecked one.
