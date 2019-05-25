@@ -115,7 +115,8 @@ public final class VirtualMemory
 				vaddr = __addr - cbase;
 			
 			if (vaddr >= 0 && vaddr < csize)
-				((WritableMemory)c).memWriteByte(vaddr, __v);
+				if (c instanceof WritableMemory)
+					((WritableMemory)c).memWriteByte(vaddr, __v);
 		}
 	}
 }
