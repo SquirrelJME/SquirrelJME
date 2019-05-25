@@ -104,17 +104,33 @@ public final class Minimizer
 		if (1 != (pidx = pool.add(input.thisName().toString())))
 			throw new IllegalArgumentException("JC4b " + pidx);
 		
-		// {@squirreljme.error JC4c Class name as class was not the second
-		// entry in the pool.}
-		if (2 != (pidx = pool.add(input.thisName())))
-			throw new IllegalArgumentException("JC4c " + pidx);
+		// Add sort of fixed entries but it gets messed up due to there
+		// being array elements stored
+		boolean isarray = input.thisName().isArray();
+		if (isarray)
+		{
+			// Name of this class
+			pool.add(input.thisName());
+			
+			// Reference to self pool
+			pool.add(new ClassPool(input.thisName()));
+		}
 		
-		// For the first entry in the pool, always have it be a reference to
-		// the current class pool
-		// {@squirreljme.error JC4d Reference to the current class pool was
-		// not the third entry of the pool.}
-		if (3 != (pidx = pool.add(new ClassPool(input.thisName()))))
-			throw new IllegalArgumentException("JC4d " + pidx);
+		// Add fixed entries
+		else
+		{
+			// {@squirreljme.error JC4c Class name as class was not the second
+			// entry in the pool.}
+			if (2 != (pidx = pool.add(input.thisName())))
+				throw new IllegalArgumentException("JC4c " + pidx);
+			
+			// For the first entry in the pool, always have it be a reference
+			// to the current class pool
+			// {@squirreljme.error JC4d Reference to the current class pool was
+			// not the third entry of the pool.}
+			if (3 != (pidx = pool.add(new ClassPool(input.thisName()))))
+				throw new IllegalArgumentException("JC4d " + pidx);
+		}
 		
 		// Write magic number to specify this format
 		__dos.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
@@ -175,7 +191,7 @@ public final class Minimizer
 			__TempFields__ tf = fields[i];
 			
 			__dos.writeShort(Minimizer.__checkUShort(tf._count));
-			__dos.writeShort(Minimizer.__checkUShort(tf._bytes));
+			__dos.writeShort(Minimizer.__checkUShort((tf._bytes + 3) & (~3)));
 			__dos.writeShort(Minimizer.__checkUShort(tf._objects));
 		}
 		
@@ -306,15 +322,20 @@ public final class Minimizer
 		// order.
 		if (isobject)
 		{
-			// Synthetic + Transient + Final
+			// (ClassDataV2) Synthetic + Transient + Final
 			sorted.add(0, new Field(new FieldFlags(0x1090),
 				new FieldName("_class"),
-				FieldDescriptor.SHORT, null, null));
+				FieldDescriptor.INTEGER, null, null));
 			
-			// Synthetic + Transient + Volatile
+			// (Reference count) Synthetic + Transient + Volatile
 			sorted.add(1, new Field(new FieldFlags(0x10c0),
 				new FieldName("_refcount"),
-				FieldDescriptor.SHORT, null, null));
+				FieldDescriptor.INTEGER, null, null));
+			
+			// (monitor owning thread) Synthetic + Transient + Volatile
+			sorted.add(2, new Field(new FieldFlags(0x10c0),
+				new FieldName("_monitor"),
+				FieldDescriptor.INTEGER, null, null));
 		}
 		
 		// If an array, add the length of the array

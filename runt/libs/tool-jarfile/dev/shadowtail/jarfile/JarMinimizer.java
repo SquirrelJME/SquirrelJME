@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.lang.ClassDataV2;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -106,6 +107,35 @@ public final class JarMinimizer
 	}
 	
 	/**
+	 * Returns the class allocation size.
+	 *
+	 * @param __cl The class to get the allocation size for.
+	 * @return The allocation size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/25
+	 */
+	public final int __classAllocSize(ClassName __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Lookup pre-cached size
+		__BootInfo__ bi = this._boots.get(__cl);
+		int rv = bi._allocsize,
+			basep;
+		if (rv != 0)
+			return rv;
+		
+		// Calculate and cache size
+		ClassName supercl = bi._class.superName();
+		bi._baseoff = (basep = (supercl == null ? 0 :
+			this.__classAllocSize(supercl)));
+		bi._allocsize = (rv = basep + bi._class.header.ifbytes);
+		return rv;
+	}
+	
+	/**
 	 * Returns the offset of the field.
 	 *
 	 * @param __init The initializer used.
@@ -173,19 +203,147 @@ public final class JarMinimizer
 		if (__init == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
-		todo.TODO.note("Do not return zero!");
-		if (true)
-			return 0;
+		// Find boot info
+		Map<ClassName, __BootInfo__> boots = this._boots;
+		__BootInfo__ bi = boots.get(__cl);
 		
-		throw new todo.TODO();
-		/*
-		// Use a fixed class ID, if there is none then this is normalized to
-		// -1 which means it must be handled later
-		int rv = FixedClassIDs.of(__cl.toString());
-		if (rv <= 0)
-			return -1;
+		// If it is missing, this likely refers to an array or similar
+		if (bi == null)
+			boots.put(__cl, (bi = new __BootInfo__(
+				Minimizer.minimizeAndDecode(
+					ClassFile.special(__cl.field())), 0)));
+		
+		// If it has already been initialized use it
+		int rv = bi._classdata;
+		if (rv != 0)
+			return rv;
+		
+		// Debug
+		todo.DEBUG.note("Writing CDV2 for %s", __cl);
+		
+		// Need the class data object to work with
+		ClassName cdcln = new ClassName(
+			"cc/squirreljme/runtime/cldc/lang/ClassDataV2");
+		
+		// Get information on the class data structure
+		__BootInfo__ cdi = boots.get(cdcln);
+		
+		// Allocate pointer to the class data, then get the base pointer
+		bi._classdata = (rv = __init.allocate(this.__classAllocSize(cdcln)));
+		
+		// Initialize all fields for all super classes!
+		for (ClassName at = cdcln, atsuper = null; at != null; at = atsuper)
+		{
+			// Get info for this
+			__BootInfo__ ai = boots.get(at);
+			
+			// Get super class
+			atsuper = ai._class.superName();
+			
+			// Base offset for this class
+			this.__classAllocSize(at);
+			int base = ai._baseoff;
+			
+			// Go through and place field values
+			for (MinimizedField mf : ai._class.fields(false))
+			{
+				// Get pointer value to write int
+				int wp = base + mf.offset;
+				
+				// Depends on the type
+				String key = mf.name + ":" + mf.type;
+				switch (key)
+				{
+						// Class<?> pointer, allocated when needed
+					case "classobjptr:I":
+						__init.memWriteInt(
+							wp, 0);
+						break;
+						
+						// Magic number
+					case "magic:I":
+						__init.memWriteInt(
+							wp, ClassDataV2.MAGIC_NUMBER);
+						break;
+						
+						// Pointer to the class data in ROM
+					case "miniptr:I":
+						__init.memWriteInt(Modifier.JAR_OFFSET,
+							wp, bi._classoffset);
+						break;
+						
+						// Super class' ClassDataV2
+					case "superclass:I":
+						__init.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.__classId(__init, atsuper));
+						break;
+						
+						// VTable for special calls
+					case "vtablespecial:I":
+						todo.TODO.note("Write special VTable!");
+						__init.memWriteInt(Modifier.RAM_OFFSET,
+							wp, 0);
+						break;
+						
+						// VTable for virtual calls
+					case "vtablevirtual:I":
+						todo.TODO.note("Write virtual VTable!");
+						__init.memWriteInt(Modifier.RAM_OFFSET,
+							wp, 0);
+						break;
+						
+						// Base offset for the class
+					case "base:S":
+						this.__classAllocSize(__cl);
+						__init.memWriteShort(
+							wp, bi._baseoff);
+						break;
+						
+						// Allocation size of the class
+					case "size:S":
+						__init.memWriteShort(
+							wp, this.__classAllocSize(__cl));
+						break;
+						
+						// Dimensions
+					case "dimensions:B":
+						__init.memWriteByte(
+							wp, __cl.dimensions());
+						break;
+						
+						// ClassData version
+					case "version:B":
+						__init.memWriteByte(
+							wp, 2);
+						break;
+						
+						// Is ClassDataV2 instance
+					case "_class:I":
+						__init.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.__classId(__init, cdcln));
+						break;
+						
+						// Reference count for this class data, should never
+						// be freed
+					case "_refcount:I":
+						__init.memWriteInt(
+							wp, 99999);
+						break;
+						
+						// Thread owning the monitor (which there is none)
+					case "_monitor:I":
+						__init.memWriteInt(
+							wp, 0);
+						break;
+					
+					default:
+						throw new todo.OOPS(key);
+				}
+			}
+		}
+		
+		// Return the pointer to the class data
 		return rv;
-		*/
 	}
 	
 	/**
@@ -196,7 +354,7 @@ public final class JarMinimizer
 	 * @param __mt The method type, if {@code null} then the type is
 	 * disregarded.
 	 * @return The address of the given method.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointer-Exception On null arguments.
 	 * @since 2019/04/28
 	 */
 	private final int __classMethodCodeAddress(String __cl, String __mn,

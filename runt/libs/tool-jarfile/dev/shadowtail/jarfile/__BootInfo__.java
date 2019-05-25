@@ -30,6 +30,15 @@ final class __BootInfo__
 	/** Static memory offset. */
 	int _smemoff;
 	
+	/** The class data V2 offset. */
+	int _classdata;
+	
+	/** The size of instances for this class. */
+	int _allocsize;
+	
+	/** The base pointer position for fields. */
+	int _baseoff;
+	
 	/**
 	 * Initializes the boot info.
 	 *
