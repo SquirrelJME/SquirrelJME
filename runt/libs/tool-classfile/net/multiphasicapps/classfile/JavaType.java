@@ -129,6 +129,20 @@ public final class JavaType
 	}
 	
 	/**
+	 * Returns the class name of the type.
+	 *
+	 * @return The type class name.
+	 * @since 2019/05/24
+	 */
+	public final ClassName className()
+	{
+		FieldDescriptor type = this.type;
+		if (type == null)
+			return null;
+		return type.className();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/07/28
 	 */

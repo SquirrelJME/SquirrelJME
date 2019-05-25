@@ -368,7 +368,8 @@ public final class NearNativeByteCodeHandler
 		this.__basicCheckNPE(ireg);
 		
 		// Must be the given class
-		this.__basicCheckCCE(ireg, __fr.className());
+		if (!__i.isCompatible(__fr.className()))
+			this.__basicCheckCCE(ireg, __fr.className());
 		
 		// Determine volatile registers
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -414,7 +415,8 @@ public final class NearNativeByteCodeHandler
 		this.__basicCheckNPE(ireg);
 		
 		// Must be the given class
-		this.__basicCheckCCE(ireg, __fr.className());
+		if (!__i.isCompatible(__fr.className()))
+			this.__basicCheckCCE(ireg, __fr.className());
 		
 		// Get volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -550,7 +552,9 @@ public final class NearNativeByteCodeHandler
 			// Check that the object is of the given class type and is not null
 			int ireg = __in[0].register;
 			this.__basicCheckNPE(ireg);
-			this.__basicCheckCCE(ireg, __r.handle().outerClass());
+			
+			if (__in[0].isCompatible(__r.handle().outerClass()))
+				this.__basicCheckCCE(ireg, __r.handle().outerClass());
 			
 			// Invoking interface method
 			if (__t == InvokeType.INTERFACE)

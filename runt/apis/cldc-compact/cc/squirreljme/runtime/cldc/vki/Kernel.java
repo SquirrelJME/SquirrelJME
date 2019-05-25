@@ -547,6 +547,7 @@ public final class Kernel
 	public static final int jvmNew(int __cl)
 		throws OutOfMemoryError
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
