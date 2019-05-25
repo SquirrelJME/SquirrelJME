@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.JavaType;
 
 /**
@@ -382,6 +383,25 @@ public final class JavaStackResult
 		public final int hashCode()
 		{
 			throw new todo.TODO();
+		}
+		
+		/**
+		 * Checks if this type is quickly compatible with the given class.
+		 *
+		 * @param __cl If this is compatible with the given class.
+		 * @return True if this is quickly compatible.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/05/24
+		 */
+		public final boolean isCompatible(ClassName __cl)
+			throws NullPointerException
+		{
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+			
+			JavaType type = this.type;
+			return (type.isObject() || type.isPrimitive()) &&
+				__cl.equals(type.className());
 		}
 		
 		/**
