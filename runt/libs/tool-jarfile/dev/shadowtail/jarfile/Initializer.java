@@ -139,6 +139,44 @@ public final class Initializer
 	 *
 	 * @param __addr The address to write to.
 	 * @param __v The value to write.
+	 * @since 2019/05/25
+	 */
+	public final void memWriteLong(int __addr, long __v)
+	{
+		this.memWriteLong(null, __addr, __v);
+	}
+	
+	/**
+	 * Writes a value to the given address.
+	 *
+	 * @param __m The modifier to use when writing.
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @since 2019/05/25
+	 */
+	public final void memWriteLong(Modifier __m, int __addr, long __v)
+	{
+		// Record action?
+		if (__m != null && __m != Modifier.NONE)
+			this._ops.add(new Operation(__m, 8, __addr));
+		
+		// Write data
+		byte[] bytes = this._bytes;
+		bytes[__addr++] = (byte)(__v >>> 56L);
+		bytes[__addr++] = (byte)(__v >>> 48L);
+		bytes[__addr++] = (byte)(__v >>> 40L);
+		bytes[__addr++] = (byte)(__v >>> 32L);
+		bytes[__addr++] = (byte)(__v >>> 24L);
+		bytes[__addr++] = (byte)(__v >>> 16L);
+		bytes[__addr++] = (byte)(__v >>> 8L);
+		bytes[__addr++] = (byte)(__v);
+	}
+	
+	/**
+	 * Writes a value to the given address.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
 	 * @since 2019/04/30
 	 */
 	public final void memWriteShort(int __addr, int __v)
