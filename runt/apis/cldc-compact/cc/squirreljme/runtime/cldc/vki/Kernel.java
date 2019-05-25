@@ -618,90 +618,13 @@ public final class Kernel
 				throw new OutOfMemoryError();
 		}
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
-		/*
-		// Determine the allocation size according to the type
-		int cellsize;
-		switch (__at)
-		{
-				// Boolean, Byte
-			case FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY:
-			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
-				cellsize = 1;
-				break;
-				
-				// Short, Character
-			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
-			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
-				cellsize = 2;
-				break;
-				
-				// Integer, Float, Object, String
-			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY_ARRAY:
-			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
-			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
-			case FixedClassIDs.OBJECT_ARRAY:
-			case FixedClassIDs.STRING_ARRAY:
-				cellsize = 4;
-				break;
-				
-				// Long, Double
-			case FixedClassIDs.PRIMITIVE_LONG_ARRAY:
-			case FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY:
-				cellsize = 8;
-				break;
-				
-				// Non-default type
-			default:
-				if (true)
-				{
-					Assembly.breakpoint();
-					throw new todo.TODO();
-				}
-				break;
-		}
-		
-		// Determine the allocation size
-		int allocsize = ARRAY_BASE_SIZE + (cellsize * __len);
-		
-		// Try to allocate twice
-		int rv;
-		boolean retry = false;
-		for (;;)
-		{
-			// Attempt allocation
-			rv = Allocator.allocate(allocsize);
-			
-			// Allocation has failed
-			if (rv == 0)
-			{
-				// {@squirreljme.error ZZ3v Not enough memory to allocate
-				// array.}
-				if (retry)
-					throw new OutOfMemoryError("ZZ3v");
-				
-				// Perform aggressive garbage collection to free as much
-				// memory as possible
-				Kernel.jvmGarbageCollect();
-				
-				// Try again
-				retry = true;
-				continue;
-			}
-			
-			// Stop otherwise
-			break;
-		}
-		
 		// Class type, initial count, and length
 		Assembly.memWriteInt(rv, OBJECT_CLASS_OFFSET, __at);
 		Assembly.memWriteInt(rv, OBJECT_COUNT_OFFSET, 1);
 		Assembly.memWriteInt(rv, ARRAY_LENGTH_OFFSET, __len);
 		
-		// Return the array
+		// Use this array
 		return rv;
-		*/
 	}
 }
 
