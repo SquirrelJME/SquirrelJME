@@ -8,16 +8,16 @@
 # DESCRIPTION: libRetro Description for SquirrelJME
 
 # Name displayed when the user is selecting the core:
-display_name = "Java ME/J2ME (SquirrelJME)"
+display_name = "Java ME/J2ME (SquirrelJME RatufaCoat)"
 
 # Name of the authors who wrote the core:
-authors = "Stephanie Gawroriski"
+authors = "Stephanie Gawroriski (Xer Shadow Tail)"
 
 # List of extensions the core supports:
 supported_extensions = "jar"
 
 # Name of the core:
-corename = "SquirrelJME"
+corename = "SquirrelJME RatufaCoat"
 
 # Name of the manufacturer who produced the emulated system:
 manufacturer = "Oracle Corporation"
@@ -43,7 +43,7 @@ license = "GPLv3"
 permissions = ""
 
 # Version of the core:
-display_version = "0.3.0"
+display_version = "0.4.0"
 
 # Whether or not the core requires an external file to work:
 supports_no_game = "true"
