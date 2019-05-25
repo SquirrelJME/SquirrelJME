@@ -123,7 +123,7 @@ final class __TempMethods__
 				
 				// Code
 				ddos.writeInt(codeoff + offcode[i]);
-				ddos.writeShort(Minimizer.__checkUShort(lencode[i]));
+				ddos.writeInt(lencode[i]);
 			}
 			
 			// Write end of table
