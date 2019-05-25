@@ -340,6 +340,28 @@ public final class JarMinimizer
 							wp, __cl.dimensions());
 						break;
 						
+						// Cell size
+					case "cellsize:S":
+						{
+							// Determine the cell size
+							int cellsize;
+							switch (__cl.toString())
+							{
+								case "[Z":
+								case "[B":	cellsize = 1; break;
+								case "[S":
+								case "[C":	cellsize = 2; break;
+								case "[J":
+								case "[D":	cellsize = 8; break;
+								default:	cellsize = 4; break;
+							}
+							
+							// Write
+							__init.memWriteShort(
+								wp, cellsize);
+						}
+						break;
+						
 						// ClassData version
 					case "version:B":
 						__init.memWriteByte(

@@ -466,6 +466,11 @@ public final class Kernel
 		ClassDataV2 cd = Assembly.pointerToObjectClassDataV2(
 			Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET));
 		
+		// {@squirreljme.error ZZ4a Corrupt object when checking if it is an
+		// array.}
+		if (cd.magic != ClassDataV2.MAGIC_NUMBER)
+			throw new VirtualMachineError("ZZ4a");
+		
 		// Is considered an array if it has more than zero dimensions
 		return (cd.dimensions > 0 ? 1 : 0);
 	}
@@ -492,8 +497,15 @@ public final class Kernel
 			if (at == __cldx)
 				return 1;
 			
-			// Go up to super class
+			// Need the data
 			ClassDataV2 d = Assembly.pointerToObjectClassDataV2(at);
+			
+			// {@squirreljme.error ZZ4b Corrupt object when checking if it is
+			// an instance of a given object.}
+			if (d.magic != ClassDataV2.MAGIC_NUMBER)
+				throw new VirtualMachineError("ZZ4b");
+			
+			// Go up to super class
 			at = d.superclass;
 		}
 		
@@ -569,6 +581,12 @@ public final class Kernel
 		// negative length.}
 		if (__len < 0)
 			throw new NegativeArraySizeException("ZZ3u");
+		
+		// {@squirreljme.error ZZ4c Attempt to allocate an array from a
+		// corrupted class type.}
+		ClassDataV2 data = Assembly.pointerToObjectClassDataV2(__at);
+		if (data.magic != ClassDataV2.MAGIC_NUMBER)
+			throw new VirtualMachineError("ZZ4c");
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
