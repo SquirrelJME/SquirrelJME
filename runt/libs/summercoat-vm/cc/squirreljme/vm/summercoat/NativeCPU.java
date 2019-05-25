@@ -558,6 +558,9 @@ public final class NativeCPU
 							
 							// Set value
 							lr[args[0]] = v;
+							
+							// Debug
+							todo.DEBUG.note("%08x -> %d (%08x)", addr, v, v);
 						}
 						
 						// Stores
@@ -591,6 +594,9 @@ public final class NativeCPU
 								default:
 									throw new todo.OOPS(dt.name());
 							}
+							
+							// Debug
+							todo.DEBUG.note("%08x <- %d (%08x)", addr, v, v);
 						}
 					}
 					break;
