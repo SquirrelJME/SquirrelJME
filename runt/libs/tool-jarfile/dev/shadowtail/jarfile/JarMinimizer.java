@@ -244,9 +244,6 @@ public final class JarMinimizer
 		if (rv != 0)
 			return rv;
 		
-		// Debug
-		todo.DEBUG.note("Writing CDV2 for %s", __cl);
-		
 		// Need the class data object to work with
 		ClassName cdcln = new ClassName(
 			"cc/squirreljme/runtime/cldc/lang/ClassDataV2");
@@ -256,6 +253,10 @@ public final class JarMinimizer
 		
 		// Allocate pointer to the class data, then get the base pointer
 		bi._classdata = (rv = __init.allocate(this.__classAllocSize(cdcln)));
+		
+		// Debug
+		todo.DEBUG.note("Writing CDV2 for %s (%d, virt %d)", __cl, rv,
+			rv + 1048576);
 		
 		// Initialize all fields for all super classes!
 		for (ClassName at = cdcln, atsuper = null; at != null; at = atsuper)
@@ -268,7 +269,7 @@ public final class JarMinimizer
 			
 			// Base offset for this class
 			this.__classAllocSize(at);
-			int base = ai._baseoff;
+			int base = rv + ai._baseoff;
 			
 			// Go through and place field values
 			for (MinimizedField mf : ai._class.fields(false))
@@ -530,9 +531,6 @@ public final class JarMinimizer
 		if (rv != 0)
 			return rv;
 		
-		// Debug
-		todo.DEBUG.note("Building %s", __cl);
-		
 		// Get constant pool
 		MinimizedClassFile mcl = bi._class;
 		MinimizedPool pool = mcl.pool;
@@ -543,6 +541,9 @@ public final class JarMinimizer
 		// Allocate and store space needed for the active pool contents
 		int n = pool.size();
 		bi._pooloffset = (rv = __init.allocate(n * 4));
+		
+		// Debug
+		todo.DEBUG.note("Building %s at %d (virt %d)", __cl, rv, rv + 1048576);
 		
 		// Process the constant pool
 		for (int i = 1; i < n; i++)
