@@ -342,7 +342,7 @@ public final class Minimizer
 		if (isarray)
 		{
 			// Synthetic + Transient + Final
-			sorted.add(0, new Field(new FieldFlags(0x1090),
+			sorted.add(3, new Field(new FieldFlags(0x1090),
 				new FieldName("_length"),
 				FieldDescriptor.INTEGER, null, null));
 		}
