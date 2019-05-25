@@ -26,7 +26,7 @@ public final class Allocator
 	
 	/** Bits which cannot be set on allocation. */
 	public static final int BAD_BITS =
-		MEMPART_FREE_BIT | PROTECTION_BITS;
+		0xD0000001;
 	
 	/** Offset to size of memory partition. */
 	public static final int OFF_MEMPART_SIZE =
