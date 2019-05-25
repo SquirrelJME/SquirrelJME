@@ -602,6 +602,22 @@ public final class Kernel
 		if (data.dimensions <= 0)
 			throw new VirtualMachineError("ZZ4d");
 		
+		// Determine allocation size
+		int allocsize = data.size + (__len * data.cellsize);
+		
+		// Allocate memory
+		int rv = Allocator.allocate(allocsize);
+		if (rv == 0)
+		{
+			// Perform garbage collection
+			Kernel.jvmGarbageCollect();
+			
+			// Try to allocate again, fail completely if this fails
+			rv = Allocator.allocate(allocsize);
+			if (rv == 0)
+				throw new OutOfMemoryError();
+		}
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 		/*
