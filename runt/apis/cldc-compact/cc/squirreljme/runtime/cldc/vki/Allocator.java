@@ -54,7 +54,7 @@ public final class Allocator
 	public static final int allocate(int __sz)
 	{
 		// Cannot allocate zero bytes
-		if (__sz == 0)
+		if (__sz <= 0)
 			return 0;
 		
 		// Round allocations to nearest 4 bytes since the VM expects this
