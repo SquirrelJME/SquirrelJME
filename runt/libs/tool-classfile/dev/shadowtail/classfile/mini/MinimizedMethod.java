@@ -53,6 +53,9 @@ public final class MinimizedMethod
 	/** Method flags. */
 	private Reference<MethodFlags> _flags;
 	
+	/** String representation. */
+	private Reference<String> _string;
+	
 	/**
 	 * Initializes the minimized method.
 	 *
@@ -123,6 +126,25 @@ public final class MinimizedMethod
 		if (ref == null || null == (rv = ref.get()))
 			this._flags = new WeakReference<>((rv =
 				new MethodFlags(this.flags)));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/24
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"%s:%s{flags=%x, dx=%d, co=%d}",
+				this.name, this.type, this.flags, this.index,
+				this.codeoffset)));
 		
 		return rv;
 	}

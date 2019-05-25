@@ -33,6 +33,9 @@ public class ClassDataV2
 	/** The dimensions this class uses, if it is an array. */
 	public final byte dimensions;
 	
+	/** The super class data. */
+	public final int superclass;
+	
 	/** Pointer to the class object. */
 	public final int classobjptr;
 	
@@ -47,18 +50,21 @@ public class ClassDataV2
 	 *
 	 * @param __fl Class flags.
 	 * @param __dim Dimensions.
+	 * @param __scl The super class data.
 	 * @param __cop Pointer to the class object.
 	 * @param __vtv Virtual invoke VTable address.
 	 * @param __vts Special invoke VTable address.
 	 * @since 2019/04/26
 	 */
-	public ClassDataV2(short __fl, byte __dim, int __cop, int __vtv, int __vts)
+	public ClassDataV2(short __fl, byte __dim, int __scl, int __cop, int __vtv,
+		int __vts)
 	{
 		super(2);
 		
 		// Set
 		this.flags = __fl;
 		this.dimensions = __dim;
+		this.superclass = __scl;
 		this.classobjptr = __cop;
 		this.vtablevirtual = __vtv;
 		this.vtablespecial = __vts;

@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
  * Contains temporary method information.
@@ -66,6 +67,7 @@ final class __TempMethods__
 			throw new NullPointerException("NARG");
 		
 		// Write
+		MinimizedMethod lastm = null;
 		try
 		{
 			List<MinimizedMethod> methods = this._methods;
@@ -110,6 +112,7 @@ final class __TempMethods__
 			for (int i = 0; i < count; i++)
 			{
 				MinimizedMethod m = methods.get(i);
+				lastm = m;
 				
 				// Flags, name, and type
 				ddos.writeInt(m.flags);
@@ -131,10 +134,11 @@ final class __TempMethods__
 			return dbytes.toByteArray();
 		}
 		
-		// Should not occur
-		catch (IOException e)
+		// {@squirreljme.error JC4g Could not process the method. (The method
+		// this stopped at)}
+		catch (InvalidClassFormatException|IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new InvalidClassFormatException("JC4g " + lastm, e);
 		}
 	}
 }
