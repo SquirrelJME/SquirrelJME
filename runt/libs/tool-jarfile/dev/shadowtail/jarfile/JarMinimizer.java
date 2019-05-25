@@ -144,6 +144,32 @@ public final class JarMinimizer
 	 * @param __ft The field type.
 	 * @return The offset of the field.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/25
+	 */
+	private final int __classFieldInstanceOffset(Initializer __init,
+		ClassName __cl, FieldName __fn, FieldDescriptor __ft)
+		throws NullPointerException
+	{
+		if (__cl == null || __fn == null || __ft == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the boot information
+		__BootInfo__ bi = this._boots.get(__cl);
+		
+		// Determine offset to field
+		this.__classAllocSize(__cl);
+		return bi._baseoff + bi._class.field(false, __fn, __ft).offset;
+	}
+	
+	/**
+	 * Returns the offset of the field.
+	 *
+	 * @param __init The initializer used.
+	 * @param __cl The class name.
+	 * @param __fn The field name.
+	 * @param __ft The field type.
+	 * @return The offset of the field.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
 	private final int __classFieldStaticOffset(Initializer __init,
@@ -249,6 +275,9 @@ public final class JarMinimizer
 			{
 				// Get pointer value to write int
 				int wp = base + mf.offset;
+				
+				// Debug
+				todo.DEBUG.note("%s:%s @ %d", mf.name, mf.type, wp);
 				
 				// Depends on the type
 				String key = mf.name + ":" + mf.type;
@@ -546,7 +575,12 @@ public final class JarMinimizer
 						
 						// Instance fields are not yet known
 						else
-							__init.memWriteInt(ep, -1);
+							__init.memWriteInt(ep,
+								this.__classFieldInstanceOffset(
+									__init,
+									af.field.className(),
+									af.field.memberName(),
+									af.field.memberType()));
 					}
 					break;
 				
