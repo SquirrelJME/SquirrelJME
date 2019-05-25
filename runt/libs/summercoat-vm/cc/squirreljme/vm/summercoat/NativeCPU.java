@@ -466,6 +466,9 @@ public final class NativeCPU
 					{
 						lr[args[1]] = memory.memReadInt(
 							lr[NativeCode.POOL_REGISTER] + (args[0] * 4));
+						
+						// Debug
+						todo.DEBUG.note("Read pool: %d", lr[args[1]]);
 					}
 					break;
 					
