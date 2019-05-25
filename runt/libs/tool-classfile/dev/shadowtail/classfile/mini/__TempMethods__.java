@@ -122,7 +122,7 @@ final class __TempMethods__
 				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.type)));
 				
 				// Code
-				ddos.writeShort(Minimizer.__checkUShort(codeoff + offcode[i]));
+				ddos.writeInt(codeoff + offcode[i]);
 				ddos.writeShort(Minimizer.__checkUShort(lencode[i]));
 			}
 			
