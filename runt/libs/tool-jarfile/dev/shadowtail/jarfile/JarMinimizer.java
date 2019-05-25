@@ -203,6 +203,54 @@ public final class JarMinimizer
 			
 			// Set next pointer area
 			this._sfieldnext = snext;
+			
+			// Initialize static field values
+			for (MinimizedField mf : bi._class.fields(true))
+			{
+				// No value here?
+				Object val = mf.value;
+				if (val == null)
+					continue;
+				
+				// Write pointer for this field
+				int wp = smemoff + mf.offset;
+				
+				// Write constant value
+				switch (mf.type.toString())
+				{
+					case "B":
+					case "Z":
+						__init.memWriteByte(wp, ((Number)val).byteValue());
+						break;
+					
+					case "S":
+					case "C":
+						__init.memWriteShort(wp, ((Number)val).shortValue());
+						break;
+					
+					case "I":
+						__init.memWriteInt(wp, ((Number)val).intValue());
+						break;
+					
+					case "J":
+						__init.memWriteLong(wp, ((Number)val).longValue());
+						break;
+					
+					case "F":
+						__init.memWriteInt(wp, Float.floatToRawIntBits(
+							((Number)val).floatValue()));
+						break;
+					
+					case "D":
+						__init.memWriteLong(wp, Double.doubleToRawLongBits(
+							((Number)val).doubleValue()));
+						break;
+					
+					default:
+						todo.TODO.note("Write constant value");
+						break;
+				}
+			}
 		}
 		
 		// Try to get static field
