@@ -434,6 +434,22 @@ public final class Assembly
 	public static native ClassDataV2 pointerToObjectClassDataV2(int __p);
 	
 	/**
+	 * Perform reference counting logic on object.
+	 *
+	 * @param __p The object to count up.
+	 * @since 2019/05/25
+	 */
+	public static native void refCount(int __p);
+	
+	/**
+	 * Perform reference uncounting logic on object.
+	 *
+	 * @param __p The object to count down.
+	 * @since 2019/05/25
+	 */
+	public static native void refUncount(int __p);
+	
+	/**
 	 * Return from the current frame.
 	 *
 	 * @since 2019/04/21

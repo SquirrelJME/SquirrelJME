@@ -1651,6 +1651,16 @@ public final class NearNativeByteCodeHandler
 				this.__refCount(__out.register);
 				break;
 				
+				// Reference count up
+			case "refCount":
+				this.__refCount(__in[0].register);
+				break;
+				
+				// Reference count down
+			case "refUncount":
+				this.__refUncount(__in[0].register);
+				break;
+				
 				// Return from frame
 			case "returnFrame":
 				// This may be a variant which returns multiple values

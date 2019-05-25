@@ -549,6 +549,28 @@ public final class Assembly
 	}
 	
 	/**
+	 * Perform reference counting logic on object.
+	 *
+	 * @param __p The object to count up.
+	 * @since 2019/05/25
+	 */
+	public static final void refCount(int __p)
+	{
+		// No work needed
+	}
+	
+	/**
+	 * Perform reference uncounting logic on object.
+	 *
+	 * @param __p The object to count down.
+	 * @since 2019/05/25
+	 */
+	public static final void refUncount(int __p)
+	{
+		// No work needed
+	}
+	
+	/**
 	 * Return from the current frame.
 	 *
 	 * @since 2019/04/21
