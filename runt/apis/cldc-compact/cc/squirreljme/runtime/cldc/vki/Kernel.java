@@ -463,7 +463,7 @@ public final class Kernel
 			return 0;
 		
 		// Get the ClassDataV2 for this object
-		ClassDataV2 cd = (ClassDataV2)Assembly.pointerToObject(
+		ClassDataV2 cd = Assembly.pointerToObjectClassDataV2(
 			Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET));
 		
 		// Is considered an array if it has more than zero dimensions
@@ -493,8 +493,8 @@ public final class Kernel
 				return 1;
 			
 			// Go up to super class
-			ClassDataV2 cd = (ClassDataV2)Assembly.pointerToObject(at);
-			at = cd.superclass;
+			ClassDataV2 d = Assembly.pointerToObjectClassDataV2(at);
+			at = d.superclass;
 		}
 		
 		// Not an instance
