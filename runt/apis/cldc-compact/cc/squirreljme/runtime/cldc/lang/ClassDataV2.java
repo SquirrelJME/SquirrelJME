@@ -37,6 +37,9 @@ public class ClassDataV2
 	/** The flags for this class. */
 	public final short flags;
 	
+	/** The allocation size of this class. */
+	public final short size;
+	
 	/** The dimensions this class uses, if it is an array. */
 	public final byte dimensions;
 	
@@ -57,6 +60,7 @@ public class ClassDataV2
 	 *
 	 * @param __magic Version 2 magic number (to detect corruption).
 	 * @param __fl Class flags.
+	 * @param __sz The size of this class.
 	 * @param __dim Dimensions.
 	 * @param __scl The super class data.
 	 * @param __cop Pointer to the class object.
@@ -64,14 +68,15 @@ public class ClassDataV2
 	 * @param __vts Special invoke VTable address.
 	 * @since 2019/04/26
 	 */
-	public ClassDataV2(int __magic, short __fl, byte __dim, int __scl,
-		int __cop, int __vtv, int __vts)
+	public ClassDataV2(int __magic, short __fl, short __sz, byte __dim,
+		int __scl, int __cop, int __vtv, int __vts)
 	{
 		super(2);
 		
 		// Set
 		this.magic = __magic;
 		this.flags = __fl;
+		this.size = __sz;
 		this.dimensions = __dim;
 		this.superclass = __scl;
 		this.classobjptr = __cop;
