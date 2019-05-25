@@ -588,6 +588,11 @@ public final class Kernel
 		if (data.magic != ClassDataV2.MAGIC_NUMBER)
 			throw new VirtualMachineError("ZZ4c");
 		
+		// {@squirreljme.error ZZ4d Attempt to allocate an array of a type
+		// which is not an array.}
+		if (data.dimensions <= 0)
+			throw new VirtualMachineError("ZZ4d");
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 		/*
