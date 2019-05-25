@@ -484,42 +484,21 @@ public final class Kernel
 		if (__p == 0)
 			return 0;
 		
-		// If the class exactly matches the given type then no further
-		// checking is needed
-		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
-		if (pcl == __cldx)
-			return 1;
-		
-		Assembly.breakpoint();
-		throw new todo.TODO();
-		/*
-		// If we are checking if this is an object, it very much will be
-		// unless a primitive type is used
-		if (__cldx == FixedClassIDs.OBJECT)
+		// Recursively go up the class chain
+		int at = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
+		while (at != 0)
 		{
-			// Primitive types are not objects
-			switch (pcl)
-			{
-				case FixedClassIDs.NONE:
-				case FixedClassIDs.PRIMITIVE_BOOLEAN:
-				case FixedClassIDs.PRIMITIVE_BYTE:
-				case FixedClassIDs.PRIMITIVE_SHORT:
-				case FixedClassIDs.PRIMITIVE_CHARACTER:
-				case FixedClassIDs.PRIMITIVE_INTEGER:
-				case FixedClassIDs.PRIMITIVE_LONG:
-				case FixedClassIDs.PRIMITIVE_FLOAT:
-				case FixedClassIDs.PRIMITIVE_DOUBLE:
-					return 0;
-			}
+			// Is a match?
+			if (at == __cldx)
+				return 1;
 			
-			// Otherwise, everything is an object
-			return 1;
+			// Go up to super class
+			ClassDataV2 cd = (ClassDataV2)Assembly.pointerToObject(at);
+			at = cd.superclass;
 		}
 		
-		// Need to go through and check a bunch of things
-		Assembly.breakpoint();
-		throw new todo.TODO();
-		*/
+		// Not an instance
+		return 0;
 	}
 	
 	/**
