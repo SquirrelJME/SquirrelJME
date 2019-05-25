@@ -30,7 +30,7 @@ public final class MinimizedMethod
 {
 	/** The size of encoded entries. */
 	public static final int ENCODE_ENTRY_SIZE =
-		14;
+		16;
 	
 	/** Flags that are used for the method. */
 	public final int flags;
@@ -190,7 +190,7 @@ public final class MinimizedMethod
 					(String)__p._values[dis.readUnsignedShort()]);
 				MethodDescriptor type =
 					(MethodDescriptor)__p._values[dis.readUnsignedShort()];
-				int offcode = dis.readUnsignedShort(), 
+				int offcode = dis.readInt(), 
 					lencode = dis.readUnsignedShort();
 				
 				// Read code?
