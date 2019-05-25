@@ -190,7 +190,7 @@ public final class JarMinimizer
 		
 		// Need to allocate static field area?
 		int smemoff = bi._smemoff;
-		if (smemoff == 0)
+		if (smemoff < 0)
 		{
 			// Use next pointer area
 			int sfieldnext = this._sfieldnext;

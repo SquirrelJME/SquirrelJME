@@ -28,7 +28,8 @@ final class __BootInfo__
 	int _pooloffset;
 	
 	/** Static memory offset. */
-	int _smemoff;
+	int _smemoff =
+		-1;
 	
 	/** The class data V2 offset. */
 	int _classdata;
