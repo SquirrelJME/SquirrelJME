@@ -169,6 +169,18 @@ public final class JavaType
 	}
 	
 	/**
+	 * Is this an array type?
+	 *
+	 * @return True if this is an array.
+	 * @since 2019/05/25
+	 */
+	public final boolean isArray()
+	{
+		FieldDescriptor type = this.type;
+		return (type != null && type.isObject() && type.isArray());
+	}
+	
+	/**
 	 * Is this an object type?
 	 *
 	 * @return {@code true} if this is an object type.
