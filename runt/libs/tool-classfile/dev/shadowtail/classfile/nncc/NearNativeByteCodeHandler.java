@@ -158,7 +158,8 @@ public final class NearNativeByteCodeHandler
 		this.__basicCheckNPE(__in.register);
 		
 		// Must be an array
-		this.__basicCheckIsArray(__in.register);
+		if (!__in.isArray())
+			this.__basicCheckIsArray(__in.register);
 		
 		// Read length
 		codebuilder.addMemoryOffConst(DataType.INTEGER, true, __len.register,
@@ -186,7 +187,8 @@ public final class NearNativeByteCodeHandler
 		this.__basicCheckNPE(__in.register);
 		
 		// Must be an array
-		this.__basicCheckIsArray(__in.register);
+		if (!__in.isArray())
+			this.__basicCheckIsArray(__in.register);
 		
 		// Check array bounds
 		this.__basicCheckArrayBound(__in.register, __dx.register);
@@ -234,7 +236,8 @@ public final class NearNativeByteCodeHandler
 		this.__basicCheckNPE(__in.register);
 		
 		// Must be an array
-		this.__basicCheckIsArray(__in.register);
+		if (!__in.isArray())
+			this.__basicCheckIsArray(__in.register);
 		
 		// Check array bounds
 		this.__basicCheckArrayBound(__in.register, __dx.register);

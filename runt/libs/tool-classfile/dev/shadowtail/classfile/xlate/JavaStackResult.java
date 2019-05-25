@@ -386,6 +386,18 @@ public final class JavaStackResult
 		}
 		
 		/**
+		 * Checks if the type is an array.
+		 *
+		 * @return True if the type is an array.
+		 * @since 2019/05/25
+		 */
+		public final boolean isArray()
+		{
+			JavaType type = this.type;
+			return type.isObject() && type.isArray();
+		}
+		
+		/**
 		 * Checks if this type is quickly compatible with the given class.
 		 *
 		 * @param __cl If this is compatible with the given class.
