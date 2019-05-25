@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.cldc.vki;
 
+import cc.squirreljme.runtime.cldc.lang.ClassDataV2;
+
 /**
  * This class is used special by the compiler to transform all the various
  * operations into regular instructions rather than method calls.
@@ -421,6 +423,15 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native Object pointerToObject(int __p);
+	
+	/**
+	 * Used to convert a pointer to a class data v2 type.
+	 *
+	 * @param __p The pointer.
+	 * @return The object of the pointer.
+	 * @since 2019/04/21
+	 */
+	public static native ClassDataV2 pointerToObjectClassDataV2(int __p);
 	
 	/**
 	 * Return from the current frame.

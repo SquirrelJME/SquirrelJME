@@ -1632,8 +1632,9 @@ public final class NearNativeByteCodeHandler
 				this.__refClear();
 				break;
 			
-				// pointer -> object
+				// pointer -> object (and variants)
 			case "pointerToObject":
+			case "pointerToObjectClassDataV2":
 				if (__in[0].register != __out.register)
 					codebuilder.addCopy(__in[0].register, __out.register);
 				
