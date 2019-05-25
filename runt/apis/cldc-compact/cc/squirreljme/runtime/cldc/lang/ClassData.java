@@ -24,7 +24,7 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 public abstract class ClassData
 {
 	/** The version of the class data. */
-	public final int version;
+	public final byte version;
 	
 	/**
 	 * Initializes the base class data.
@@ -34,7 +34,7 @@ public abstract class ClassData
 	 */
 	public ClassData(int __v)
 	{
-		this.version = __v;
+		this.version = (byte)__v;
 	}
 	
 	/**
