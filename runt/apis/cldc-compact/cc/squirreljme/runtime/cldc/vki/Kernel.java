@@ -387,6 +387,15 @@ public final class Kernel
 		if (__p == 0)
 			throw new VirtualMachineError("ZZ40");
 		
+		// Get the ClassDataV2 for this object
+		ClassDataV2 cd = Assembly.pointerToObjectClassDataV2(
+			Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET));
+		
+		// {@squirreljme.error ZZ4e Attempt to garbage collect an object
+		// which has been corrupted.}
+		if (cd.magic != ClassDataV2.MAGIC_NUMBER)
+			throw new VirtualMachineError("ZZ4e");
+		
 		// {@squirreljme.error ZZ41 Cannot garbage collect an object which
 		// is locked by a thread.}
 		int lock = Assembly.memReadInt(__p, OBJECT_MONITOR_OFFSET);
