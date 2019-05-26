@@ -367,7 +367,7 @@ public final class JarMinimizer
 							wp, bi._classoffset);
 						break;
 						
-						// Super class' ClassDataV2
+						// Super class info
 					case "superclass:I":
 						__init.memWriteInt(Modifier.RAM_OFFSET,
 							wp, this.__classId(__init, atsuper));
@@ -434,7 +434,7 @@ public final class JarMinimizer
 							wp, 2);
 						break;
 						
-						// Is ClassDataV2 instance
+						// Is class info instance
 					case "_class:I":
 						__init.memWriteInt(Modifier.RAM_OFFSET,
 							wp, this.__classId(__init, cdcln));
