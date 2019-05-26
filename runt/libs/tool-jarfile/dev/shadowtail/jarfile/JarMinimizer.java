@@ -503,6 +503,33 @@ public final class JarMinimizer
 	}
 	
 	/**
+	 * Returns the method base for the class.
+	 *
+	 * @param __cl The class to get the index base of.
+	 * @return The method base.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/26
+	 */
+	private final int __classMethodBase(ClassName __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Get class method might be in
+		Map<ClassName, __BootInfo__> boots = this._boots;
+		__BootInfo__ bi = boots.get(__cl);
+		
+		// If this has no super class, then the base is zero
+		ClassName supername = bi._class.superName();
+		if (supername == null)
+			return 0;
+		
+		// Otherwise it is the number of available methods in the super class
+		return this.__classMethodSize(supername);
+	}
+	
+	/**
 	 * Returns the address of the given method.
 	 *
 	 * @param __cl The class to look in.
@@ -510,7 +537,7 @@ public final class JarMinimizer
 	 * @param __mt The method type, if {@code null} then the type is
 	 * disregarded.
 	 * @return The address of the given method.
-	 * @throws NullPointer-Exception On null arguments.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/28
 	 */
 	private final int __classMethodCodeAddress(String __cl, String __mn,
@@ -555,6 +582,67 @@ public final class JarMinimizer
 		// Otherwise fallback to instance methods
 		return bi._classoffset + mcf.header.imoff +
 			mcf.method(false, __mn, __mt).codeoffset;
+	}
+	
+	/**
+	 * Returns the method index for the given method.
+	 *
+	 * @param __cl The class the method is in.
+	 * @param __mn The name of the method.
+	 * @param __mt The descriptor of the method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/26
+	 */
+	private final int __classMethodIndex(ClassName __cl,
+		MethodName __mn, MethodDescriptor __mt)
+		throws NullPointerException
+	{
+		if (__cl == null || __mn == null || __mt == null)
+			throw new NullPointerException("NARG");
+		
+		// Primitives and array types are not real, so just have everything
+		// about them point to object!
+		if (__cl.isPrimitive() || __cl.isArray())
+			return this.__classMethodIndex(new ClassName("java/lang/Object"),
+				__mn, __mt);
+		
+		// {@squirreljme.error BC0a Could not locate the method. (The class;
+		// Method name; Method type)}
+		MinimizedMethod mm = this._boots.get(__cl)._class.method(false, __mn,
+			__mt);
+		if (mm == null)
+			throw new InvalidClassFormatException(
+				String.format("BC0a %s %s %s", __cl, __mn, __mt));
+		
+		// Return the base along with the actual index
+		return this.__classMethodBase(__cl) + mm.index;
+	}
+	
+	/**
+	 * Returns the number of methods to use in the method table.
+	 *
+	 * @param __cl The class to get the method size of.
+	 * @return The method size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/26
+	 */
+	private final int __classMethodSize(ClassName __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Get class method might be in
+		Map<ClassName, __BootInfo__> boots = this._boots;
+		__BootInfo__ bi = boots.get(__cl);
+		
+		// If there is no super class it is just the count
+		ClassName supername = bi._class.superName();
+		if (supername == null)
+			return bi._class.header.imcount;
+		
+		// Otherwise include the super class count as well
+		return this.__classMethodSize(supername) + bi._class.header.imcount;
 	}
 	
 	/**
@@ -675,7 +763,12 @@ public final class JarMinimizer
 					break;
 					
 				case METHOD_INDEX:
-					todo.TODO.note("Write method index: %s", pv);
+					{
+						MethodIndex mi = (MethodIndex)pv;
+						__init.memWriteInt(
+							ep, this.__classMethodIndex(mi.inclass,
+								mi.name, mi.type));
+					}
 					break;
 					
 					// Write the pointer to the UTF data
