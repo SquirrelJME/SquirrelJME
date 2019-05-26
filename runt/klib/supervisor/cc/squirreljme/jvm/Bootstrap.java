@@ -46,6 +46,10 @@ public final class Bootstrap
 		byte[][] __mainargs, boolean __ismidlet, int __gd, int __rombase,
 		int __romtoc)
 	{
+		// Initialize the RAM links to setup dirty bits and initialize the
+		// last block of memory with anything that remains
+		Allocator.__initRamLinks(__rambase, __ramsize);
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}

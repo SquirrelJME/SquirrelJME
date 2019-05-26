@@ -82,7 +82,7 @@ public final class Initializer
 		int rv = nowat + CHUNK_LENGTH;
 		
 		// Debug
-		todo.DEBUG.note("%d (%d) + %d => %d", nowat, rv, __sz, nextat);
+		todo.DEBUG.note("%d (%d) + %d => %d", nowat, rv, chunksize, nextat);
 		
 		// Record size of chunk and the next chunk position in RAM
 		this.memWriteInt(null,
@@ -242,8 +242,11 @@ public final class Initializer
 		byte[] bytes = this._bytes;
 		int size = this._size;
 		
-		// Round up
+		// Round up to prevent uneven sizes
 		size = (size + 3) & (~3);
+		
+		// Give extra bytes for the terminator chunk
+		size += CHUNK_LENGTH;
 		
 		// Write initializer RAM
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
