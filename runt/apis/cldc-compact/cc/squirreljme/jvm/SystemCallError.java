@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.vki;
+package cc.squirreljme.jvm;
 
 /**
  * This interface contains the various error codes for all of the system calls.

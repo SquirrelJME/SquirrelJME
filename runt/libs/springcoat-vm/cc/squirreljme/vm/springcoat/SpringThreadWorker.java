@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
@@ -17,8 +19,6 @@ import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
-import cc.squirreljme.runtime.cldc.vki.SystemCallError;
-import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.PrintStream;
 import java.util.Formatter;
@@ -1124,48 +1124,48 @@ public final class SpringThreadWorker
 		switch (__func)
 		{
 				// Return the length of the array
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"arrayLength:(Ljava/lang/Object;)I":
 				return ((SpringArrayObject)__args[0]).length();
 				
 				// Gets the raw bits for the given double value
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"doubleToRawLongBits:(D)J":
 				return Double.doubleToRawLongBits((Double)__args[0]);
 				
 				// Float to raw int bits
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"floatToRawIntBits:(F)I":
 				return Float.floatToRawIntBits((Float)__args[0]);
 				
 				// Int bits to float
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"intBitsToFloat:(I)F":
 				return Float.intBitsToFloat((Integer)__args[0]);
 				
 				// Convert long bits to double
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"longBitsToDouble:(J)D":
 				return Double.longBitsToDouble((Long)__args[0]);
 				
 				// System calls (no return value)
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(S)V":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SI)V":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SII)V":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SIII)V":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SIIII)V":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SIIIII)V":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SIIIIII)V":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SIIIIIII)V":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SIIIIIIII)V":
 				{
 					// System call index and number of arguments used
@@ -1183,23 +1183,23 @@ public final class SpringThreadWorker
 				}
 				
 				// System calls (returns value)
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(S)I":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SI)I":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SII)I":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SIII)I":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SIIII)I":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SIIIII)I":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SIIIIII)I":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SIIIIIII)I":
-			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SIIIIIIII)I":
 				{
 					// System call index and number of arguments used

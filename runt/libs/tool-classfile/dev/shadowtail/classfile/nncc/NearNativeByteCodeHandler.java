@@ -506,7 +506,7 @@ public final class NearNativeByteCodeHandler
 		ClassName targetclass = __r.handle().outerClass();
 		
 		// Invocation of assembly method?
-		if ("cc/squirreljme/runtime/cldc/vki/Assembly".equals(
+		if ("cc/squirreljme/jvm/Assembly".equals(
 			targetclass.toString()))
 		{
 			// Forward

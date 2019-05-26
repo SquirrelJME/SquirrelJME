@@ -9,6 +9,10 @@
 
 package cc.squirreljme.runtime.cldc.vki;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
+
 /**
  * This contains static methods which are very similar to existing C
  * methods. These are not implemented in C, however with many C based APIs

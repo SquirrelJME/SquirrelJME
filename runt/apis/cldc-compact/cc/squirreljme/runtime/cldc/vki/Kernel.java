@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.vki;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.runtime.cldc.lang.ClassDataV2;
 
 /**

@@ -10,15 +10,15 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
-import cc.squirreljme.runtime.cldc.vki.Assembly;
-import cc.squirreljme.runtime.cldc.vki.SystemCallError;
-import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
 import java.util.HashMap;
 import java.util.Map;
 

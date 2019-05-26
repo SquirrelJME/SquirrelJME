@@ -7,10 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.vki;
-
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+package cc.squirreljme.jvm;
 
 /**
  * This contains the index of system calls.
@@ -20,67 +17,54 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 public final class SystemCallIndex
 {
 	/** Checks if the system call is supported. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short QUERY_INDEX =
 		0;
 	
 	/** Gets the last error state. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short ERROR_GET =
 		1;
 	
 	/** Sets the last error state. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short ERROR_SET =
 		2;
 	
 	/** Current wall clock milliseconds (low). */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short TIME_LO_MILLI_WALL =
 		3;
 	
 	/** Current wall clock milliseconds (high). */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short TIME_HI_MILLI_WALL =
 		4;
 	
 	/** Current monotonic clock nanoseconds (low). */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short TIME_LO_NANO_MONO =
 		5;
 	
 	/** Current monotonic clock nanoseconds (high). */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short TIME_HI_NANO_MONO =
 		6;
 	
 	/** VM Information: Free memory in bytes. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short VMI_MEM_FREE =
 		7;
 	
 	/** VM Information: Used memory in bytes. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short VMI_MEM_USED =
 		8;
 	
 	/** VM Information: Max memory in bytes. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short VMI_MEM_MAX =
 		9;
 	
 	/** Invoke the garbage collector. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short GARBAGE_COLLECT =
 		10;
 	
 	/** Exit the VM. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short EXIT =
 		11;
 	
 	/** The API Level of the VM. */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short API_LEVEL =
 		12;
 	
