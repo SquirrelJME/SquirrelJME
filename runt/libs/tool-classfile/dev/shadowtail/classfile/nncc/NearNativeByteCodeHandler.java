@@ -767,9 +767,34 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doPoolLoad(Object __v, JavaStackResult.Output __out)
 	{
-		this.codebuilder.add(NativeInstructionType.LOAD_POOL,
-			(__v instanceof String ? new UsedString(__v.toString()) : __v),
-			__out.register);
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Loading string value?
+		if (__v instanceof String)
+		{
+			// Need volatiles
+			VolatileRegisterStack volatiles = this.volatiles;
+			
+			// Load the string pointer into a temporary
+			int volstrptr = volatiles.get();
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				__v, volstrptr);
+			
+			// Call internal string loader
+			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				"jvmLoadString", "(I)I", volstrptr);
+			
+			// Cleanup
+			volatiles.remove(volstrptr);
+			
+			// Copy return value to the output register
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
+		}
+		
+		// Some other value
+		else
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				__v, __out.register);
 	}
 	
 	/**
@@ -2231,23 +2256,20 @@ public final class NearNativeByteCodeHandler
 	{
 		VolatileRegisterStack volatiles = this.volatiles;
 		
-		// Load the ClassDataV2 for the class
+		// Load the class info for the class
 		int volcdvt = volatiles.get();
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			__cl, volcdvt);
 		
-		// Load the class object pointer from the class data
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new AccessedField(FieldAccessTime.NORMAL, FieldAccessType.INSTANCE,
-			new FieldReference(
-				new ClassName("cc/squirreljme/jvm/ClassInfo"),
-				new FieldName("classobjptr"), FieldDescriptor.INTEGER)),
-			__r);
-		codebuilder.addMemoryOffReg(DataType.OBJECT, true,
-			__r, volcdvt, __r);
+		// Call internal class object loader
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+			"jvmLoadClass", "(I)I", volcdvt);
 		
 		// Cleanup
 		volatiles.remove(volcdvt);
+		
+		// Copy return value to the output register
+		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
 	}
 	
 	/**
