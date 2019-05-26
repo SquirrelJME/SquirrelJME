@@ -221,7 +221,7 @@ public final class JarMinimizer
 					continue;
 				
 				// Write pointer for this field
-				int wp = smemoff + mf.offset;
+				int wp = sfieldarea + smemoff + mf.offset;
 				
 				// Write constant value
 				switch (mf.type.toString())

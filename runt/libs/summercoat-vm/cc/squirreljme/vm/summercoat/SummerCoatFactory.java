@@ -162,24 +162,25 @@ public class SummerCoatFactory
 				}
 				
 				// Depends on operation size
+				int before;
 				switch (siz)
 				{
 						// Byte
 					case 1:
 						vmem.memWriteByte(addr,
-							vmem.memReadByte(addr) + off);
+							(before = vmem.memReadByte(addr)) + off);
 						break;
 					
 						// Short
 					case 2:
 						vmem.memWriteShort(addr,
-							vmem.memReadShort(addr) + off);
+							(before = vmem.memReadShort(addr)) + off);
 						break;
 					
 						// Integer
 					case 4:
 						vmem.memWriteInt(addr,
-							vmem.memReadInt(addr) + off);
+							(before = vmem.memReadInt(addr)) + off);
 						break;
 					
 						// {@squirreljme.error AE03 Corrupt Boot RAM with
@@ -187,6 +188,10 @@ public class SummerCoatFactory
 					default:
 						throw new VMException("AE03 " + siz);
 				}
+				
+				// Debug
+				todo.DEBUG.note("Seed %08x (mod=%s, siz=%d): %08x -> %08x",
+					addr, (mod == 1 ? "R" : "J"), siz, before, before + off);
 			}
 			
 			// {@squirreljme.AE04 Expected value at end of initializer

@@ -34,7 +34,7 @@ public final class Operation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
-	public Operation(Modifier __m, int __s, int __a)
+	public Operation(Modifier __m, byte __s, int __a)
 		throws NullPointerException
 	{
 		if (__m == null)
