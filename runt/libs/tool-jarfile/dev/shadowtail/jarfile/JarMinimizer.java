@@ -9,7 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.runtime.cldc.lang.ClassDataV2;
+import cc.squirreljme.jvm.ClassInfo;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -309,7 +309,7 @@ public final class JarMinimizer
 		
 		// Need the class data object to work with
 		ClassName cdcln = new ClassName(
-			"cc/squirreljme/runtime/cldc/lang/ClassDataV2");
+			"cc/squirreljme/jvm/ClassInfo");
 		
 		// Get information on the class data structure
 		__BootInfo__ cdi = boots.get(cdcln);
@@ -356,7 +356,7 @@ public final class JarMinimizer
 						// Magic number
 					case "magic:I":
 						__init.memWriteInt(
-							wp, ClassDataV2.MAGIC_NUMBER);
+							wp, ClassInfo.MAGIC_NUMBER);
 						break;
 						
 						// Pointer to the class data in ROM
@@ -386,26 +386,26 @@ public final class JarMinimizer
 						break;
 						
 						// Base offset for the class
-					case "base:S":
+					case "base:I":
 						this.__classAllocSize(__cl);
-						__init.memWriteShort(
+						__init.memWriteInt(
 							wp, bi._baseoff);
 						break;
 						
 						// Allocation size of the class
-					case "size:S":
-						__init.memWriteShort(
+					case "size:I":
+						__init.memWriteInt(
 							wp, this.__classAllocSize(__cl));
 						break;
 						
 						// Dimensions
-					case "dimensions:B":
-						__init.memWriteByte(
+					case "dimensions:I":
+						__init.memWriteInt(
 							wp, __cl.dimensions());
 						break;
 						
 						// Cell size
-					case "cellsize:S":
+					case "cellsize:I":
 						{
 							// Determine the cell size
 							int cellsize;
@@ -421,14 +421,14 @@ public final class JarMinimizer
 							}
 							
 							// Write
-							__init.memWriteShort(
+							__init.memWriteInt(
 								wp, cellsize);
 						}
 						break;
 						
 						// ClassData version
-					case "version:B":
-						__init.memWriteByte(
+					case "version:I":
+						__init.memWriteInt(
 							wp, 2);
 						break;
 						
