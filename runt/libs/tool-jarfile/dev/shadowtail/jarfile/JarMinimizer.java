@@ -30,7 +30,9 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,7 @@ import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This class is responsible for creating minimized Jar files which will then
@@ -377,7 +380,7 @@ public final class JarMinimizer
 					case "vtablevirtual:[I":
 						todo.TODO.note("Write virtual VTable!");
 						__init.memWriteInt(Modifier.RAM_OFFSET,
-							wp, 0);
+							wp, this.__classVTable(__init, __cl));
 						break;
 						
 						// Base offset for the class
@@ -636,6 +639,23 @@ public final class JarMinimizer
 		
 		// Otherwise include the super class count as well
 		return this.__classMethodSize(supername) + bi._class.header.imcount;
+	}
+	
+	/**
+	 * This allocations and returns the vtable for this class.
+	 *
+	 * @param __init The initializer.
+	 * @param __cl The class to build the vtable for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/26
+	 */
+	private final int __classVTable(Initializer __init, ClassName __cl)
+		throws NullPointerException
+	{
+		if (__init == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
