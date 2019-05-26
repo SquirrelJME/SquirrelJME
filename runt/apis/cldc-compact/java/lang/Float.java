@@ -10,9 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.vki.Assembly;
 
 public final class Float
 	extends Number

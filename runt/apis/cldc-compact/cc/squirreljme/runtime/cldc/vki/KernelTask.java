@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.cldc.vki;
 
+import cc.squirreljme.jvm.Assembly;
+
 /**
  * This class manages the tasks for the kernel and such.
  *

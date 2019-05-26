@@ -10,7 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
+import cc.squirreljme.jvm.SystemCallIndex;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

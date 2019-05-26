@@ -10,9 +10,9 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.vki.Assembly;
-import cc.squirreljme.runtime.cldc.vki.SystemCallError;
-import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
 
 /**
  * This class contains information about the host memory environment along
