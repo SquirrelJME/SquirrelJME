@@ -1,0 +1,30 @@
+# 2019/05/25
+
+## 13:02
+
+So it seems the `LOAD_POOL` on the array type is not correct?
+
+## 13:28
+
+I think it would be easiest if the initial allocator used the actual memory
+blocks and such rather than taking a huge chunk of things. It would enable
+things to actually be freed.
+
+## 16:37
+
+I was thinking... having the bootstrap in CLDC is a bit complicated if I could
+say. So I was wondering... what if I could make a kind of mini-bootstrap VM
+kind of project which has its own object an dusch. Just a few basic classes
+that have a specific set of rules for them. Something that completely is
+standalone and definitely does not represent the entire VM and such. So this
+could include stuff such as debugging information and otherwise. But it could
+be enough to initialize the VM with the absolute minimum requirement for
+starting it. I could also have debugging stuff in the bootstrap and basic
+system call handling as in doing no-ops except for printing to the console.
+
+## 20:12
+
+Okay so now that I have a supervisor in its own little package with like the
+very minimalist of classes, I just need to solve having the assembly in
+multiple places so that it is not duplicated. So co-dependencies for the
+CLDC and supervisor to share the same assembly stuff.
