@@ -640,15 +640,24 @@ public final class JarMinimizer
 				case LONG:
 				case DOUBLE:
 				case METHOD_INDEX:
-				case USED_STRING:
-					__init.memWriteInt(ep, -1);
-					break;
 					
 					// Write the pointer to the UTF data
 				case STRING:
 					{
 						__init.memWriteInt(Modifier.JAR_OFFSET,
 							ep, jarpooloff + pool.offset(i) + 4);
+					}
+					break;
+					
+					// Write pointer to the string UTF data
+				case USED_STRING:
+					{
+						// Get the string index
+						int sdx = pp[0];
+						
+						// Write offset of that string
+						__init.memWriteInt(Modifier.JAR_OFFSET,
+							ep, jarpooloff + pool.offset(sdx) + 4);
 					}
 					break;
 					
