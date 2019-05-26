@@ -373,13 +373,6 @@ public final class JarMinimizer
 							wp, this.__classId(__init, atsuper));
 						break;
 						
-						// VTable for special calls
-					case "vtablespecial:[I":
-						todo.TODO.note("Write special VTable!");
-						__init.memWriteInt(Modifier.RAM_OFFSET,
-							wp, 0);
-						break;
-						
 						// VTable for virtual calls
 					case "vtablevirtual:[I":
 						todo.TODO.note("Write virtual VTable!");
