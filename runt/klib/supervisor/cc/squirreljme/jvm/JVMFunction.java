@@ -152,6 +152,10 @@ public final class JVMFunction
 		if (pcl == __cldx)
 			return 1;
 		
+		// Corrupted object?
+		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
