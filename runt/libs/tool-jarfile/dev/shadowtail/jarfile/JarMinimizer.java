@@ -444,7 +444,7 @@ public final class JarMinimizer
 						// be freed
 					case "_refcount:I":
 						__init.memWriteInt(
-							wp, 99999);
+							wp, 999999);
 						break;
 						
 						// Thread owning the monitor (which there is none)
@@ -460,6 +460,45 @@ public final class JarMinimizer
 		}
 		
 		// Return the pointer to the class data
+		return rv;
+	}
+	
+	/**
+	 * This contains a list of class IDs.
+	 *
+	 * @param __init The initializer used.
+	 * @param __cls The class names to write.
+	 * @return The pointer where the class names were written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/26
+	 */
+	private final int __classIds(Initializer __init, ClassNames __cls)
+		throws NullPointerException
+	{
+		if (__init == null || __cls == null)
+			throw new NullPointerException("NARG");
+		
+		// The IDs are contained within int[] arrays for simplicity
+		int n = __cls.size(),
+			rv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * n));
+		
+		// Write object details
+		__init.memWriteInt(Modifier.RAM_OFFSET,
+			rv + Kernel.OBJECT_CLASS_OFFSET,
+			this.__classId(__init, new ClassName("[I")));
+		__init.memWriteInt(
+			rv + Kernel.OBJECT_COUNT_OFFSET,
+			999999);
+		__init.memWriteInt(
+			rv + Kernel.ARRAY_LENGTH_OFFSET,
+			n);
+		
+		// Write ID elements
+		for (int i = 0, wp = rv + Kernel.ARRAY_BASE_SIZE; i < n; i++, wp += 4)
+			__init.memWriteInt(Modifier.RAM_OFFSET,
+				wp, this.__classId(__init, __cls.get(i)));
+		
+		// Use this pointer here
 		return rv;
 	}
 	
@@ -631,15 +670,13 @@ public final class JarMinimizer
 					// These have no effect on runtime
 				case NULL:
 				case METHOD_DESCRIPTOR:
-					break;
-					
-					// These are initialized at the second stage bootstrap
-				case CLASS_NAMES:
-				case INTEGER:
-				case FLOAT:
 				case LONG:
 				case DOUBLE:
+					break;
+					
 				case METHOD_INDEX:
+					todo.TODO.note("Write method index: %s", pv);
+					break;
 					
 					// Write the pointer to the UTF data
 				case STRING:
@@ -647,6 +684,17 @@ public final class JarMinimizer
 						__init.memWriteInt(Modifier.JAR_OFFSET,
 							ep, jarpooloff + pool.offset(i) + 4);
 					}
+					break;
+					
+					// Integer constant
+				case INTEGER:
+					__init.memWriteInt(ep, ((Number)pv).intValue());
+					break;
+				
+					// Float constant
+				case FLOAT:
+					__init.memWriteInt(ep,
+						Float.floatToRawIntBits(((Number)pv).floatValue()));
 					break;
 					
 					// Write pointer to the string UTF data
@@ -689,6 +737,12 @@ public final class JarMinimizer
 				case CLASS_NAME:
 					__init.memWriteInt(Modifier.RAM_OFFSET,
 						ep, this.__classId(__init, (ClassName)pv));
+					break;
+					
+					// List of class IDs
+				case CLASS_NAMES:
+					__init.memWriteInt(Modifier.RAM_OFFSET,
+						ep, this.__classIds(__init, (ClassNames)pv));
 					break;
 					
 					// Class constant pool

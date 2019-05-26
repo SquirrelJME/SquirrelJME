@@ -317,14 +317,6 @@ public final class Assembly
 		int __d, int __e, int __f, int __g, int __h);
 	
 	/**
-	 * Loads a value from the constant pool at the given index.
-	 *
-	 * @return The index of the value in the constant pool.
-	 * @since 2019/04/28
-	 */
-	public static native int loadPool(int __i);
-	
-	/**
 	 * Long bits to double.
 	 *
 	 * @param __b The input bits.

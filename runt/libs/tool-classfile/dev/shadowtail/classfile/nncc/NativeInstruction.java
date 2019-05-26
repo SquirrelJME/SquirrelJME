@@ -308,6 +308,7 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_POINT:
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFEQ_CONST:
+			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.LOAD_TABLE:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_REG_FLOAT:
@@ -375,7 +376,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT);
 			
 				// [u16, u16|u16]
-			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 			case NativeInstructionType.CONVERSION_TO_WIDE:
 			case NativeInstructionType.CONVERSION_FROM_WIDE:
 				return ArgumentFormat.of(
@@ -405,7 +405,9 @@ public final class NativeInstruction
 					ArgumentFormat.VPOOL);
 				
 				// [u16, u16, u16]
+			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 			case NativeInstructionType.DEBUG_POINT:
+			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.LOAD_TABLE:
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_REG_INT:
@@ -633,6 +635,8 @@ public final class NativeInstruction
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
+			case NativeInstructionType.LOAD_FROM_INTARRAY:
+				return "LOAD_FROM_INTARRAY";
 			case NativeInstructionType.LOAD_TABLE:		return "LOAD_TABLE";
 			case NativeInstructionType.RETURN:			return "RETURN";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
