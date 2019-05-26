@@ -397,17 +397,6 @@ public final class Assembly
 	}
 	
 	/**
-	 * Loads a value from the constant pool at the given index.
-	 *
-	 * @return The index of the value in the constant pool.
-	 * @since 2019/04/28
-	 */
-	public static final int loadPool(int __i)
-	{
-		throw new todo.OOPS();
-	}
-	
-	/**
 	 * Long bits to double.
 	 *
 	 * @param __b The input bits.

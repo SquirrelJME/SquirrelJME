@@ -1597,12 +1597,6 @@ public final class NearNativeByteCodeHandler
 				}
 				break;
 				
-				// Load value from constant pool
-			case "loadPool":
-				codebuilder.addLoadTable(__out.register,
-					NativeCode.POOL_REGISTER, __in[0].register);
-				break;
-				
 				// Read byte memory
 			case "memReadByte":
 				codebuilder.addMemoryOffReg(DataType.BYTE,
@@ -1883,10 +1877,11 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
 			volvtable, volclassid, volvtable);
 		
-		// Load method pointer
+		// Load method pointer (from integer based array)
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new MethodIndex(__cl, __mn, __mt), methodptr);
-		codebuilder.addLoadTable(methodptr, volvtable, methodptr);
+		codebuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
+			methodptr, volvtable, methodptr);
 		
 		// Invoke the method pointer
 		codebuilder.add(NativeInstructionType.INVOKE,
