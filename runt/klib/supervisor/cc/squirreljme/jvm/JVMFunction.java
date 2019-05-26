@@ -144,6 +144,18 @@ public final class JVMFunction
 	 */
 	public static final int jvmLoadString(int __p)
 	{
+		// Ignore null pointers
+		if (__p == 0)
+			return 0;
+		
+		// Read length of the raw bytes
+		int rawlen = Assembly.memReadShort(__p, 0) & 0xFFFF;
+		
+		// Load the string data into bytes
+		byte[] bytes = new byte[rawlen];
+		for (int i = 0, base = __p + 2; i < rawlen; i++)
+			bytes[i] = (byte)Assembly.memReadByte(base, i);
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
