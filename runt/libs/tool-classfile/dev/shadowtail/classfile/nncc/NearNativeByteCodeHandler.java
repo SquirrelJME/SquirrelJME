@@ -1872,7 +1872,7 @@ public final class NearNativeByteCodeHandler
 				new ClassName("cc/squirreljme/jvm/ClassInfo"),
 				new FieldName((__it == InvokeType.SPECIAL ? "vtablespecial" :
 					"vtablevirtual")),
-				FieldDescriptor.INTEGER)),
+				new FieldDescriptor("[I"))),
 			volvtable);
 		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
 			volvtable, volclassid, volvtable);

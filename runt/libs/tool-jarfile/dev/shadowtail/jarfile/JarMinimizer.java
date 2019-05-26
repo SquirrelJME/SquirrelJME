@@ -350,7 +350,7 @@ public final class JarMinimizer
 				switch (key)
 				{
 						// Class<?> pointer, allocated when needed
-					case "classobjptr:I":
+					case "classobjptr:Ljava/lang/Class;":
 						__init.memWriteInt(
 							wp, 0);
 						break;
@@ -368,20 +368,20 @@ public final class JarMinimizer
 						break;
 						
 						// Super class info
-					case "superclass:I":
+					case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
 						__init.memWriteInt(Modifier.RAM_OFFSET,
 							wp, this.__classId(__init, atsuper));
 						break;
 						
 						// VTable for special calls
-					case "vtablespecial:I":
+					case "vtablespecial:[I":
 						todo.TODO.note("Write special VTable!");
 						__init.memWriteInt(Modifier.RAM_OFFSET,
 							wp, 0);
 						break;
 						
 						// VTable for virtual calls
-					case "vtablevirtual:I":
+					case "vtablevirtual:[I":
 						todo.TODO.note("Write virtual VTable!");
 						__init.memWriteInt(Modifier.RAM_OFFSET,
 							wp, 0);
