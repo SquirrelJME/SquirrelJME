@@ -20,6 +20,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This represents a method which has been mimized.
@@ -52,6 +53,9 @@ public final class MinimizedMethod
 	
 	/** Method flags. */
 	private Reference<MethodFlags> _flags;
+	
+	/** Name and type. */
+	private Reference<MethodNameAndType> _nat;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -126,6 +130,24 @@ public final class MinimizedMethod
 		if (ref == null || null == (rv = ref.get()))
 			this._flags = new WeakReference<>((rv =
 				new MethodFlags(this.flags)));
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the name and type for this method.
+	 *
+	 * @return The name and type for this method.
+	 * @since 2019/05/26
+	 */
+	public final MethodNameAndType nameAndType()
+	{
+		Reference<MethodNameAndType> ref = this._nat;
+		MethodNameAndType rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._nat = new WeakReference<>(
+				(rv = new MethodNameAndType(this.name, this.type)));
 		
 		return rv;
 	}
