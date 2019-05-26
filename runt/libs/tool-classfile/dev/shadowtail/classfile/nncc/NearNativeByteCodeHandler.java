@@ -1860,18 +1860,61 @@ public final class NearNativeByteCodeHandler
 			volvtable = volatiles.get(),
 			methodptr = volatiles.get();
 		
-		// Load the class ID
-		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-			volclassid, __args.get(0), Kernel.OBJECT_CLASS_OFFSET);
+		// Special invocation?
+		boolean isspecial = (__it == InvokeType.SPECIAL);
 		
-		// Load the VTable
+		// Performing a special invoke which has some modified rules
+		if (isspecial)
+		{
+			// Are we calling a constructor?
+			boolean wantcons = __mn.isInstanceInitializer();
+			
+			// Is the target in this same class?
+			boolean sameclass = __cl.equals(this.state.classname);
+			
+			// Use the exactly specified method if:
+			//  * It is an initializer, we want to call that exact one
+			//  * The target class is the same class of the current class
+			//    being processed (private method)
+			if (wantcons || sameclass)
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					__cl, volclassid);
+			
+			// Otherwise, we will be calling a super method so we need to load
+			// the super class of our current class
+			else
+			{
+				// Read the super class of our current class
+				int volscfo = volatiles.get();
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new AccessedField(FieldAccessTime.NORMAL,
+						FieldAccessType.INSTANCE,
+					new FieldReference(
+						new ClassName("cc/squirreljme/jvm/ClassInfo"),
+						new FieldName("superclass"),
+						new FieldDescriptor(
+							"Lcc/squirreljme/jvm/ClassInfo;"))),
+					volvtable);
+				codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+					volclassid, volclassid, volscfo);
+				
+				// Cleanup
+				volatiles.remove(volscfo);
+			}
+		}
+		
+		// Otherwise, we will purely act on the class of the instance type
+		else
+			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+				volclassid, __args.get(0), Kernel.OBJECT_CLASS_OFFSET);
+		
+		// Load the VTable (from the class we obtained above)
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new AccessedField(FieldAccessTime.NORMAL,
 				FieldAccessType.INSTANCE,
 			new FieldReference(
 				new ClassName("cc/squirreljme/jvm/ClassInfo"),
-				new FieldName((__it == InvokeType.SPECIAL ? "vtablespecial" :
-					"vtablevirtual")),
+				new FieldName("vtablevirtual"),
 				new FieldDescriptor("[I"))),
 			volvtable);
 		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
