@@ -203,12 +203,45 @@ public final class JVMFunction
 	 * @param __at The array type.
 	 * @param __len The length of the array.
 	 * @return The resulting array pointer.
+	 * @throws NegativeArraySizeException If an attempt is made to allocate
+	 * an array of a negative size.
+	 * @throws OutOfMemoryError If there is not enough memory left.
 	 * @since 2019/04/24
 	 */
 	public static final int jvmNewArray(int __at, int __len)
+		throws NegativeArraySizeException, OutOfMemoryError
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Do not initialize null class
+		if (__at == 0)
+			throw new VirtualMachineError();
+		
+		// Cannot allocate negative length
+		if (__len < 0)
+			throw new NegativeArraySizeException();
+		
+		// Get the class information for the array we want to allocate
+		ClassInfo info = Assembly.pointerToClassInfo(__at);
+		
+		// Determine the actual size of allocation
+		int allocsize = info.size + (info.cellsize * __len);
+		
+		// Allocate the memory
+		int rv = Allocator.allocate(allocsize);
+		if (rv == 0)
+			throw new OutOfMemoryError();
+		
+		// Write class information with an initial count of one
+		Assembly.memWriteInt(rv, Constants.OBJECT_CLASS_OFFSET,
+			__at);
+		Assembly.memWriteInt(rv, Constants.OBJECT_COUNT_OFFSET,
+			1);
+		
+		// Write length of array
+		Assembly.memWriteInt(rv, Constants.ARRAY_LENGTH_OFFSET,
+			__len);
+		
+		// Use this pointer
+		return rv;
 	}
 }
 
