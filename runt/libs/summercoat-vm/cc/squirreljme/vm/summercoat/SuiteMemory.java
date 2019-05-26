@@ -198,8 +198,8 @@ public final class SuiteMemory
 		todo.DEBUG.note("Initialize suite %s @%08d", libname, this.offset);
 		
 		// Minimize and format the JAR
-		byte[] jf = JarMinimizer.minimize((libname.equals("cldc-compact") ||
-			libname.equals("cldc-compact.jar")), clib);
+		byte[] jf = JarMinimizer.minimize((libname.equals("supervisor") ||
+			libname.equals("supervisor.jar")), clib);
 		
 		// {@squirreljme.error AE0u Suite chunk size limit was exceeded.
 		// (The chunk size)}

@@ -218,14 +218,14 @@ public final class SuitesMemory
 			return;
 		this._didconfiginit = true;
 		
-		// The bootstrap is in CLDC compact
+		// Initialize the bootstrap
 		SuiteMemory cldc = this._suitemap.get("supervisor.jar");
 		try
 		{
 			cldc.__init();
 		}
 		
-		// {@squirreljme.error AE0t Could not initialize CLDC library.}
+		// {@squirreljme.error AE0t Could not initialize the supervisor.}
 		catch (IOException e)
 		{
 			throw new RuntimeException("AE0t", e);
