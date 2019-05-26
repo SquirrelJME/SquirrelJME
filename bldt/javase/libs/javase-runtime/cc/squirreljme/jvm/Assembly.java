@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-import cc.squirreljme.runtime.cldc.lang.ClassDataV2;
 import java.lang.reflect.Array;
 
 /**
@@ -537,13 +536,13 @@ public final class Assembly
 	}
 	
 	/**
-	 * Used to convert a pointer to a class data type.
+	 * Used to convert a pointer to a class info type.
 	 *
 	 * @param __p The pointer.
 	 * @return The object of the pointer.
 	 * @since 2019/04/21
 	 */
-	public static final ClassDataV2 pointerToObjectClassDataV2(int __p)
+	public static final ClassInfo pointerToClassInfo(int __p)
 	{
 		throw new todo.TODO();
 	}

@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.lang.ClassDataV2;
  *
  * @since 2019/04/20
  */
+@Deprecated
 public final class Kernel
 {
 	/** The offset for the object's class type. */
@@ -384,6 +385,9 @@ public final class Kernel
 	 */
 	public static final void jvmGarbageCollectObject(int __p)
 	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		// {@squirreljme.error ZZ40 Cannot garbage collect a null pointer.}
 		if (__p == 0)
 			throw new VirtualMachineError("ZZ40");
@@ -412,6 +416,7 @@ public final class Kernel
 		
 		// Free object in the chain
 		Allocator.free(__p);
+		*/
 	}
 	
 	/**
@@ -440,6 +445,9 @@ public final class Kernel
 	 */
 	public static final int jvmIsArray(int __p)
 	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		if (__p == 0)
 			return 0;
 		
@@ -454,6 +462,7 @@ public final class Kernel
 		
 		// Is considered an array if it has more than zero dimensions
 		return (cd.dimensions > 0 ? 1 : 0);
+		*/
 	}
 	
 	/**
@@ -467,6 +476,9 @@ public final class Kernel
 	 */
 	public static final int jvmIsInstance(int __p, int __cldx)
 	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		if (__p == 0)
 			return 0;
 		
@@ -492,6 +504,7 @@ public final class Kernel
 		
 		// Not an instance
 		return 0;
+		*/
 	}
 	
 	/**
@@ -558,6 +571,9 @@ public final class Kernel
 	public static final int jvmNewArray(int __at, int __len)
 		throws NegativeArraySizeException, OutOfMemoryError
 	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		// {@squirreljme.error ZZ3u Cannot allocate an array which is of a
 		// negative length.}
 		if (__len < 0)
@@ -597,6 +613,7 @@ public final class Kernel
 		
 		// Use this array
 		return rv;
+		*/
 	}
 }
 
