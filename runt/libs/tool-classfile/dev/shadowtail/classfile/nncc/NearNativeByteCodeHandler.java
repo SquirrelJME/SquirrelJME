@@ -1850,7 +1850,7 @@ public final class NearNativeByteCodeHandler
 			new AccessedField(FieldAccessTime.NORMAL,
 				FieldAccessType.INSTANCE,
 			new FieldReference(
-				new ClassName("cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
+				new ClassName("cc/squirreljme/jvm/ClassInfo"),
 				new FieldName((__it == InvokeType.SPECIAL ? "vtablespecial" :
 					"vtablevirtual")),
 				FieldDescriptor.INTEGER)),
@@ -2240,7 +2240,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new AccessedField(FieldAccessTime.NORMAL, FieldAccessType.INSTANCE,
 			new FieldReference(
-				new ClassName("cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
+				new ClassName("cc/squirreljme/jvm/ClassInfo"),
 				new FieldName("classobjptr"), FieldDescriptor.INTEGER)),
 			__r);
 		codebuilder.addMemoryOffReg(DataType.OBJECT, true,
