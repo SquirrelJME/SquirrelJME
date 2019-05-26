@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.vki.Kernel;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
@@ -459,6 +460,12 @@ public final class NativeCPU
 						// Entering some other frame
 						reload = true;
 					}
+					break;
+					
+					// Load value from int array
+				case NativeInstructionType.LOAD_FROM_INTARRAY:
+					lr[args[0]] = memory.memReadInt(lr[args[1]] +
+						Kernel.ARRAY_BASE_SIZE + (lr[args[2]] * 4));
 					break;
 					
 					// Load from constant pool
