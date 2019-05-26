@@ -322,5 +322,17 @@ public final class JVMFunction
 		// Use this pointer
 		return rv;
 	}
+	
+	/**
+	 * If this is an invoked then it just throws an exception to indicate that
+	 * an illegal abstract method was called.
+	 *
+	 * @since 2019/05/26
+	 */
+	public static final void jvmPureVirtualCall()
+	{
+		Assembly.breakpoint();
+		throw new VirtualMachineError();
+	}
 }
 

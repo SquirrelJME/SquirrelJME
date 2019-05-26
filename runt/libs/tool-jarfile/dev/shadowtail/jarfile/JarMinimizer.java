@@ -656,7 +656,39 @@ public final class JarMinimizer
 		if (__init == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Abstract methods which are not bound to anything will instead
+		// be bound to this method which indicates failure.
+		int jpvc = this.__classMethodCodeAddress(
+			"cc/squirreljme/jvm/JVMFunction", "jvmPureVirtualCall", "()V");
+		
+		// Initialize method table with initial values
+		int numv = this.__classMethodSize(__cl);
+		List<Integer> entries = new ArrayList<>(numv);
+		for (int i = 0; i < numv; i++)
+			entries.add(jpvc);
+		
+		// Allocate array
+		int rv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * numv));
+		
+		// Write array details
+		__init.memWriteInt(Modifier.RAM_OFFSET,
+			rv + Kernel.OBJECT_CLASS_OFFSET,
+			this.__classId(__init, new ClassName("[I")));
+		__init.memWriteInt(
+			rv + Kernel.OBJECT_COUNT_OFFSET,
+			999999);
+		__init.memWriteInt(
+			rv + Kernel.ARRAY_LENGTH_OFFSET,
+			numv);
+		
+		// Write in entries
+		int wp = rv + Kernel.ARRAY_BASE_SIZE;
+		for (int i = 0; i < numv; i++, wp += 4)
+			__init.memWriteInt(Modifier.JAR_OFFSET,
+				wp, entries.get(i));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
