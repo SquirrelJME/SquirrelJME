@@ -70,7 +70,7 @@ public final class SystemCallIndex
 	
 	/** System call count. */
 	public static final int NUM_SYSCALLS =
-		12;
+		13;
 	
 	/**
 	 * Not used.
