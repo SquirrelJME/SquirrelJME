@@ -47,8 +47,12 @@ public final class Bootstrap
 		int __romtoc)
 	{
 		// Initialize the RAM links to setup dirty bits and initialize the
-		// last block of memory with anything that remains
+		// last block of memory with anything that remains. This makes it so
+		// the RAM is actually useable.
 		Allocator.__initRamLinks(__rambase, __ramsize);
+		
+		// Debug
+		todo.DEBUG.note("Hello adorable and cute squirrels!");
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
