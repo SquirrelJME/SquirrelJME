@@ -1641,7 +1641,7 @@ public final class NearNativeByteCodeHandler
 			
 				// pointer -> object (and variants)
 			case "pointerToObject":
-			case "pointerToObjectClassDataV2":
+			case "pointerToClassInfo":
 				if (__in[0].register != __out.register)
 					codebuilder.addCopy(__in[0].register, __out.register);
 				
