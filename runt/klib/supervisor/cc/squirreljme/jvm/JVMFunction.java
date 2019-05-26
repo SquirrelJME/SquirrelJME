@@ -119,6 +119,15 @@ public final class JVMFunction
 	 */
 	public static final int jvmIsInstance(int __p, int __cldx)
 	{
+		// Not instance of null class
+		if (__p == 0)
+			return 0;
+		
+		// If the object's class type is a direct match then quickly return
+		int pcl = Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET);
+		if (pcl == __cldx)
+			return 1;
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -156,8 +165,8 @@ public final class JVMFunction
 		for (int i = 0, base = __p + 2; i < rawlen; i++)
 			bytes[i] = (byte)Assembly.memReadByte(base, i);
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Initialize and intern string
+		return Assembly.objectToPointer(new String(bytes).intern());
 	}
 	
 	/**
@@ -193,8 +202,26 @@ public final class JVMFunction
 	 */
 	public static final int jvmNew(int __cl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Cannot allocate a null class
+		if (__cl == 0)
+			throw new VirtualMachineError();
+		
+		// Get the class information for the object to allocate
+		ClassInfo info = Assembly.pointerToClassInfo(__cl);
+		
+		// Allocate the memory
+		int rv = Allocator.allocate(info.size);
+		if (rv == 0)
+			throw new OutOfMemoryError();
+		
+		// Write class information with an initial count of one
+		Assembly.memWriteInt(rv, Constants.OBJECT_CLASS_OFFSET,
+			__cl);
+		Assembly.memWriteInt(rv, Constants.OBJECT_COUNT_OFFSET,
+			1);
+		
+		// Use this pointer
+		return rv;
 	}
 	
 	/**
