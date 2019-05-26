@@ -39,6 +39,7 @@ import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 
@@ -156,9 +157,16 @@ public final class JarMinimizer
 		// Get the boot information
 		__BootInfo__ bi = this._boots.get(__cl);
 		
+		// {@squirreljme.error BC04 Could not locate instance field. (Class;
+		// Field Name; Field Type)}
+		MinimizedField mf = bi._class.field(false, __fn, __ft);
+		if (mf == null)
+			throw new InvalidClassFormatException(
+				String.format("BC04 %s %s %s", __cl, __fn, __ft));
+		
 		// Determine offset to field
 		this.__classAllocSize(__cl);
-		return bi._baseoff + bi._class.field(false, __fn, __ft).offset;
+		return bi._baseoff + mf.offset;
 	}
 	
 	/**
@@ -253,10 +261,12 @@ public final class JarMinimizer
 			}
 		}
 		
-		// Try to get static field
+		// {@squirreljme.error BC05 Could not locate static field. (Class;
+		// Field Name; Field Type)}
 		MinimizedField mf = bi._class.field(true, __fn, __ft);
 		if (mf == null)
-			return -1;
+			throw new InvalidClassFormatException(
+				String.format("BC05 %s %s %s", __cl, __fn, __ft));
 		
 		// Return offset to it
 		return smemoff + mf.offset;
@@ -282,10 +292,15 @@ public final class JarMinimizer
 		__BootInfo__ bi = boots.get(__cl);
 		
 		// If it is missing, this likely refers to an array or similar
-		if (bi == null)
+		if (bi == null && (__cl.isPrimitive() || __cl.isArray()))
 			boots.put(__cl, (bi = new __BootInfo__(
 				Minimizer.minimizeAndDecode(
 					ClassFile.special(__cl.field())), 0)));
+		
+		// {@squirreljme.error BC07 Could not locate class. (The class)}
+		else if (bi == null)
+			throw new InvalidClassFormatException(
+				String.format("BC07 %s", __cl));
 		
 		// If it has already been initialized use it
 		int rv = bi._classdata;

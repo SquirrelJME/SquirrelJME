@@ -60,8 +60,8 @@ public final class NearNativeByteCodeHandler
 	implements ByteCodeHandler
 {
 	/** The kernel class. */
-	public static final ClassName KERNEL_CLASS =
-		new ClassName("cc/squirreljme/runtime/cldc/vki/Kernel");
+	public static final ClassName JVMFUNC_CLASS =
+		new ClassName("cc/squirreljme/jvm/JVMFunction");
 	
 	/** State of the byte code. */
 	public final ByteCodeState state =
@@ -481,7 +481,7 @@ public final class NearNativeByteCodeHandler
 			__cl, volwantcldx);
 		
 		// Invoke helper method
-		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
 			"jvmIsInstance", "(II)I", __v.register, volwantcldx);
 		
 		// Use result
@@ -576,7 +576,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Use helper method to find the method pointer to invoke
 				// for this interface
-				this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+				this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
 					"jvmInterfacePointer", "(III)I",
 					ireg, voliclass, volimethdx);
 				
@@ -750,7 +750,7 @@ public final class NearNativeByteCodeHandler
 			__at, volclassdx);
 		
 		// Call internal handler
-		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS, "jvmNewArray",
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmNewArray",
 			"(II)I", volclassdx, __len.register);
 		
 		// Copy result
@@ -1157,7 +1157,7 @@ public final class NearNativeByteCodeHandler
 					eh.type(), volehclassdx);
 				
 				// Call instance handler check
-				this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+				this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
 					"jvmIsInstance", "(II)I",
 					NativeCode.EXCEPTION_REGISTER, volehclassdx);
 				
@@ -1258,7 +1258,7 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
 		// Call helper class
-		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
 			"jvmCanArrayStore", "(II)I", __ir, __vr);
 		
 		// Was it invalid?
@@ -1290,7 +1290,7 @@ public final class NearNativeByteCodeHandler
 			__cl, volwantcldx);
 		
 		// Call helper class
-		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
 			"jvmIsInstance", "(II)I", __ir, volwantcldx);
 		
 		// If the resulting method call returns zero then it is not an instance
@@ -1313,7 +1313,7 @@ public final class NearNativeByteCodeHandler
 	private final void __basicCheckIsArray(int __ir)
 	{
 		// Call internal helper
-		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS, "jvmIsArray",
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmIsArray",
 			"(I)I", __ir);
 		
 		// If this is not an array, throw a class cast exception
@@ -1898,7 +1898,7 @@ public final class NearNativeByteCodeHandler
 			__cl, volwantcl);
 		
 		// Call allocator
-		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS, "jvmNew",
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmNew",
 			"(I)I", volwantcl);
 		
 		// Not needed
@@ -2260,7 +2260,7 @@ public final class NearNativeByteCodeHandler
 	private final void __monitor(boolean __enter, int __r)
 	{
 		// Call helper method
-		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
 			(__enter ? "jvmMonitorEnter" : "jvmMonitorExit"), "(I)V", __r);
 	}
 	
@@ -2390,7 +2390,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addIfNonZero(volnowcount, ncj);
 		
 		// Call garbage collect on object via helper
-		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
 			"jvmGarbageCollectObject", "(I)V", __r);
 		
 		// No uncount or not GCed are jumped here
