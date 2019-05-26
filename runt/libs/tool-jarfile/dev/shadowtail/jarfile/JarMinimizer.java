@@ -534,7 +534,7 @@ public final class JarMinimizer
 		
 		Map<ClassName, __BootInfo__> boots = this._boots;
 		ClassName kn = new ClassName(
-			"cc/squirreljme/runtime/cldc/vki/__Bootstrap__");
+			"cc/squirreljme/jvm/Bootstrap");
 		
 		// Initializer used for memory purposes
 		Initializer rv = new Initializer();
@@ -589,9 +589,13 @@ public final class JarMinimizer
 		// Treat as invalid for these
 		if (__cl.isPrimitive() || __cl.isArray())
 			return -1;
+			
+		// {@squirreljme.error BC08 No such class exists. (The class)}
+		__BootInfo__ bi = this._boots.get(__cl);
+		if (bi == null)
+			throw new InvalidClassFormatException("BC08 " + __cl);
 		
 		// Only calculate it once
-		__BootInfo__ bi = this._boots.get(__cl);
 		int rv = bi._pooloffset;
 		if (rv != 0)
 			return rv;
@@ -860,7 +864,7 @@ public final class JarMinimizer
 			__dos.writeInt(poolptr[0]);
 			__dos.writeInt(ksfa[0]);
 			__dos.writeInt(this.__classMethodCodeAddress(
-				"cc/squirreljme/runtime/cldc/vki/__Bootstrap__",
+				"cc/squirreljme/jvm/Bootstrap",
 				"__start",
 				null));
 			__dos.writeInt(clab);

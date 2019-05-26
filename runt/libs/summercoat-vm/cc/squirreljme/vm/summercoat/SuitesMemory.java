@@ -219,7 +219,7 @@ public final class SuitesMemory
 		this._didconfiginit = true;
 		
 		// The bootstrap is in CLDC compact
-		SuiteMemory cldc = this._suitemap.get("cldc-compact.jar");
+		SuiteMemory cldc = this._suitemap.get("supervisor.jar");
 		try
 		{
 			cldc.__init();
