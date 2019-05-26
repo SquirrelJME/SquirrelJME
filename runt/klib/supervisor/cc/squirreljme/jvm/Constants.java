@@ -39,5 +39,9 @@ public interface Constants
 	/** The base size for arrays. */
 	public static final int ARRAY_BASE_SIZE =
 		16;
+	
+	/** Bad magic number. */
+	public static final int BAD_MAGIC =
+		0xE7E5E7E4;
 }
 

@@ -36,6 +36,10 @@ public final class JVMFunction
 	 */
 	public static final int jvmCanArrayStore(int __p, int __v)
 	{
+		// Access of invalid object?
+		if (__p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -50,6 +54,10 @@ public final class JVMFunction
 	 */
 	public static final int jvmComponentType(int __clid)
 	{
+		// Access of invalid class?
+		if (__clid == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -74,6 +82,10 @@ public final class JVMFunction
 	 */
 	public static final void jvmGarbageCollectObject(int __p)
 	{
+		// Access of invalid object?
+		if (__p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -91,6 +103,10 @@ public final class JVMFunction
 	 */
 	public static final int jvmInterfacePointer(int __p, int __icl, int __mdx)
 	{
+		// Access of invalid object?
+		if (__p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -104,6 +120,10 @@ public final class JVMFunction
 	 */
 	public static final int jvmIsArray(int __p)
 	{
+		// Access of invalid object?
+		if (__p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -119,6 +139,10 @@ public final class JVMFunction
 	 */
 	public static final int jvmIsInstance(int __p, int __cldx)
 	{
+		// Access of invalid object?
+		if (__p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		// Not instance of null class
 		if (__p == 0)
 			return 0;
@@ -141,6 +165,10 @@ public final class JVMFunction
 	 */
 	public static final int jvmLoadClass(int __cldx)
 	{
+		// Access of invalid class?
+		if (__cldx == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -153,6 +181,10 @@ public final class JVMFunction
 	 */
 	public static final int jvmLoadString(int __p)
 	{
+		// Access of invalid object?
+		if (__p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		// Ignore null pointers
 		if (__p == 0)
 			return 0;
@@ -177,6 +209,10 @@ public final class JVMFunction
 	 */
 	public static final void jvmMonitorEnter(int __p)
 	{
+		// Access of invalid object?
+		if (__p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -189,6 +225,10 @@ public final class JVMFunction
 	 */
 	public static final void jvmMonitorExit(int __p)
 	{
+		// Access of invalid object?
+		if (__p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -202,6 +242,10 @@ public final class JVMFunction
 	 */
 	public static final int jvmNew(int __cl)
 	{
+		// Access of invalid class?
+		if (__cl == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		// Cannot allocate a null class
 		if (__cl == 0)
 			throw new VirtualMachineError();
@@ -238,6 +282,10 @@ public final class JVMFunction
 	public static final int jvmNewArray(int __at, int __len)
 		throws NegativeArraySizeException, OutOfMemoryError
 	{
+		// Access of invalid class?
+		if (__at == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
 		// Do not initialize null class
 		if (__at == 0)
 			throw new VirtualMachineError();
