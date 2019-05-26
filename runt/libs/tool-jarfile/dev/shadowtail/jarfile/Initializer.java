@@ -119,7 +119,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, 1, __addr));
+			this._ops.add(new Operation(__m, (byte)1, __addr));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -148,9 +148,12 @@ public final class Initializer
 	 */
 	public final void memWriteInt(Modifier __m, int __addr, int __v)
 	{
+		// Debug
+		todo.DEBUG.note("(m=%s, a=%08x, v=%d)", __m, __addr, __v);
+		
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, 4, __addr));
+			this._ops.add(new Operation(__m, (byte)4, __addr));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -184,7 +187,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, 8, __addr));
+			this._ops.add(new Operation(__m, (byte)8, __addr));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -222,7 +225,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, 2, __addr));
+			this._ops.add(new Operation(__m, (byte)2, __addr));
 		
 		// Write data
 		byte[] bytes = this._bytes;
