@@ -311,8 +311,10 @@ public final class JarMinimizer
 		ClassName cdcln = new ClassName(
 			"cc/squirreljme/jvm/ClassInfo");
 		
-		// Get information on the class data structure
+		// {@squirreljme.error BC09 No ClassInfo exists.}
 		__BootInfo__ cdi = boots.get(cdcln);
+		if (cdi == null)
+			throw new InvalidClassFormatException("BC09");
 		
 		// Allocate pointer to the class data, then get the base pointer
 		bi._classdata = (rv = __init.allocate(this.__classAllocSize(cdcln)));
