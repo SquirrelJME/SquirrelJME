@@ -9,27 +9,32 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-
 /**
- * This represents a boxed integer.
+ * This is thrown when an index access was out of bounds.
  *
- * @since 2019/05/25
+ * @since 2019/05/26
  */
-public final class Integer
-	extends Number
+public class IndexOutOfBoundsException
+	extends RuntimeException
 {
 	/**
-	 * Returns a boxed value.
+	 * Initializes the exception with no message or cause.
 	 *
-	 * @param __v The value to use.
-	 * @return The boxed value.
 	 * @since 2019/05/26
 	 */
-	public static final Integer valueOf(int __v)
+	public IndexOutOfBoundsException()
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2019/05/26
+	 */
+	public IndexOutOfBoundsException(String __m)
+	{
+		super(__m);
 	}
 }
 
