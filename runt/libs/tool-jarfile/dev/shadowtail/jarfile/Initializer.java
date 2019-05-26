@@ -29,6 +29,18 @@ import java.util.List;
  */
 public final class Initializer
 {
+	/** Memory chunk size offset. */
+	public static final int CHUNK_SIZE_OFFSET =
+		0;
+	
+	/** Next chunk address. */
+	public static final int CHUNK_NEXT_OFFSET =
+		4;
+	
+	/** The length of chunks. */
+	public static final int CHUNK_LENGTH =
+		8;
+	
 	/** Operations. */
 	private final List<Operation> _ops =
 		new ArrayList<>();
@@ -36,9 +48,9 @@ public final class Initializer
 	/** Current allocated temporary space. */
 	private byte[] _bytes = new byte[65536];
 	
-	/** Current size of the initializer, includes mem link for freeing. */
+	/** Current size of the initializer. */
 	private int _size =
-		8;
+		0;
 	
 	/**
 	 * Allocates memory in the initialization sequence.
@@ -49,24 +61,38 @@ public final class Initializer
 	 */
 	public final int allocate(int __sz)
 	{
+		// Force minimum size, otherwise things will get very messed up
+		if (__sz < 1)
+			__sz = 1;
+		
 		// Round allocation to 4-bytes
 		__sz = (__sz + 3) & (~3);
 		
 		// Calculate the next size of the boot area
-		int nowsize = this._size,
-			nextsize = nowsize + __sz;
+		int nowat = this._size,
+			chunksize = __sz + CHUNK_LENGTH,
+			nextat = nowat + chunksize;
 		
 		// If the memory space is too small, grow it
 		byte[] bytes = this._bytes;
-		if (nextsize > bytes.length)
-			this._bytes = (bytes = Arrays.copyOf(bytes, nextsize + 2048));
+		if (nextat > bytes.length)
+			this._bytes = (bytes = Arrays.copyOf(bytes, nextat + 2048));
+		
+		// The return address is after the chunk length
+		int rv = nowat + CHUNK_LENGTH;
 		
 		// Debug
-		todo.DEBUG.note("%d + %d => %d", nowsize, __sz, nextsize);
+		todo.DEBUG.note("%d (%d) + %d => %d", nowat, rv, __sz, nextat);
+		
+		// Record size of chunk and the next chunk position in RAM
+		this.memWriteInt(null,
+			nowat + CHUNK_SIZE_OFFSET, chunksize);
+		this.memWriteInt(Modifier.RAM_OFFSET,
+			nowat + CHUNK_NEXT_OFFSET, nextat);
 		
 		// Continue at the end
-		this._size = nextsize;
-		return nowsize;
+		this._size = nextat;
+		return rv;
 	}
 	
 	/**
@@ -218,13 +244,6 @@ public final class Initializer
 		
 		// Round up
 		size = (size + 3) & (~3);
-		
-		// The initializer memory is actually a chunk of allocated memory so
-		// store the block information for usage.
-		this.memWriteInt(null, Allocator.OFF_MEMPART_SIZE,
-			size);
-		this.memWriteInt(Modifier.RAM_OFFSET, Allocator.OFF_MEMPART_NEXT,
-			size);
 		
 		// Write initializer RAM
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
