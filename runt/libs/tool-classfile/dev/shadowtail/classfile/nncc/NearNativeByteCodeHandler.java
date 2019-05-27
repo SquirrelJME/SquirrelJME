@@ -2519,7 +2519,7 @@ public final class NearNativeByteCodeHandler
 		VolatileRegisterStack volatiles = this.volatiles;
 		int volnowcount = volatiles.get();
 		
-		// Do not do any uncounting if this is zero
+		// Do not do any uncounting if this is null
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		codebuilder.addIfZero(__r, ncj);
 		

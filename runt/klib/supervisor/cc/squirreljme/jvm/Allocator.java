@@ -118,6 +118,21 @@ public final class Allocator
 	}
 	
 	/**
+	 * Frees the specified memory pointer, making it available for later use.
+	 *
+	 * @param __p The pointer to free.
+	 * @since 2019/05/27
+	 */
+	static final void free(int __p)
+	{
+		if (__p == 0 || __p == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Initializes the RAM links.
 	 *
 	 * @param __rambase The base of RAM.
