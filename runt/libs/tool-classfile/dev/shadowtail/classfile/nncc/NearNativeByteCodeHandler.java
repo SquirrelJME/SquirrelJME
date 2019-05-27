@@ -754,9 +754,14 @@ public final class NearNativeByteCodeHandler
 			boolean iswide = __dt.isWide();
 			
 			// A, B, and C register
-			int a = __a.register,
-				b = __b.register,
-				c = __c.register;
+			int ah = __a.register,
+				bh = __b.register,
+				ch = __c.register;
+			
+			// Low registers
+			int al = (ah == 0 ? 0 : ah + 1),
+				bl = (bh == 0 ? 0 : bh + 1),
+				cl = (ch == 0 ? 0 : ch + 1);
 			
 			// Determine the call signature
 			String type;
@@ -769,12 +774,12 @@ public final class NearNativeByteCodeHandler
 					if (iswide)
 					{
 						type = "(II)V";
-						args = new RegisterList(a, a + 1);
+						args = new RegisterList(ah, al);
 					}
 					else
 					{
 						type = "(I)V";
-						args = new RegisterList(a);
+						args = new RegisterList(ah);
 					}
 					break;
 				
@@ -784,12 +789,12 @@ public final class NearNativeByteCodeHandler
 					if (iswide)
 					{
 						type = "(III)V";
-						args = new RegisterList(a, a + 1, b);
+						args = new RegisterList(ah, al, bh);
 					}
 					else
 					{
 						type = "(II)V";
-						args = new RegisterList(a, b);
+						args = new RegisterList(ah, bh);
 					}
 					break;
 				
@@ -797,12 +802,12 @@ public final class NearNativeByteCodeHandler
 					if (iswide)
 					{
 						type = "(IIII)V";
-						args = new RegisterList(a, a + 1, b, b + 1);
+						args = new RegisterList(ah, al, bh, bl);
 					}
 					else
 					{
 						type = "(II)V";
-						args = new RegisterList(a, b);
+						args = new RegisterList(ah, bh);
 					}
 					break;
 			}
@@ -814,11 +819,11 @@ public final class NearNativeByteCodeHandler
 			// Read out return value
 			if (iswide)
 			{
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER, c);
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, c + 1);
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER, ch);
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, cl);
 			}
 			else
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER, c);
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER, ch);
 		}
 	}
 	
