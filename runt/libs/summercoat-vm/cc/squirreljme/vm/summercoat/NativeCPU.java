@@ -916,15 +916,10 @@ public final class NativeCPU
 			return dis.readUTF();
 		}
 		
-		// Could not read string, just try and decode some UTF-8 from it
+		// Could not read string, use some other string form
 		catch (IOException e)
 		{
-			// Read in raw bytes
-			byte[] raw = new byte[strlen];
-			memory.memReadBytes(__addr + 2, raw, 0, strlen);
-			
-			// Decode it as some string
-			return new String(raw);
+			return String.format("??? @%08x (len=%d)", __addr, strlen);
 		}
 	}
 	

@@ -48,6 +48,9 @@ public final class ClassInfo
 	/** Virtual invoke VTable. */
 	public final int[] vtablevirtual;
 	
+	/** Virtual invoke VTable pool entries. */
+	public final int[] vtablepool;
+	
 	/**
 	 * Class information constructor.
 	 *
@@ -59,10 +62,11 @@ public final class ClassInfo
 	 * @param __scl The super class data.
 	 * @param __cop Pointer to the class object.
 	 * @param __vtv Virtual invoke VTable address.
+	 * @param __vtp Virtual invoke VTable pool addresses.
 	 * @since 2019/04/26
 	 */
 	public ClassInfo(int __minip, int __sz, int __bz, int __dim, int __csz,
-		ClassInfo __scl, Class<?> __cop, int[] __vtv)
+		ClassInfo __scl, Class<?> __cop, int[] __vtv, int[] __vtp)
 	{
 		// Always implicitly set magic
 		this.magic = MAGIC_NUMBER;
@@ -76,6 +80,7 @@ public final class ClassInfo
 		this.superclass = __scl;
 		this.classobjptr = __cop;
 		this.vtablevirtual = __vtv;
+		this.vtablepool = __vtp;
 	}
 }
 

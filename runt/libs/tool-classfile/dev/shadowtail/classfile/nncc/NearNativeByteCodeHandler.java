@@ -1858,7 +1858,8 @@ public final class NearNativeByteCodeHandler
 		VolatileRegisterStack volatiles = this.volatiles;
 		int volclassid = volatiles.get(),
 			volvtable = volatiles.get(),
-			methodptr = volatiles.get();
+			methodptr = volatiles.get(),
+			volptable = volatiles.get();
 		
 		// Special invocation?
 		boolean isspecial = (__it == InvokeType.SPECIAL);
@@ -1920,9 +1921,27 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
 			volvtable, volclassid, volvtable);
 		
-		// Load method pointer (from integer based array)
+		// Load the pool table which is mapped with the vtable
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new AccessedField(FieldAccessTime.NORMAL,
+				FieldAccessType.INSTANCE,
+			new FieldReference(
+				new ClassName("cc/squirreljme/jvm/ClassInfo"),
+				new FieldName("vtablepool"),
+				new FieldDescriptor("[I"))),
+			volptable);
+		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+			volptable, volclassid, volptable);
+		
+		// Method index
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new MethodIndex(__cl, __mn, __mt), methodptr);
+			
+		// Load from the pool table
+		codebuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
+			NativeCode.NEXT_POOL_REGISTER, volptable, methodptr);
+		
+		// Load method pointer (from integer based array)
 		codebuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
 			methodptr, volvtable, methodptr);
 		
@@ -1934,6 +1953,7 @@ public final class NearNativeByteCodeHandler
 		volatiles.remove(volclassid);
 		volatiles.remove(volvtable);
 		volatiles.remove(methodptr);
+		volatiles.remove(volptable);
 	}
 	
 	/**
