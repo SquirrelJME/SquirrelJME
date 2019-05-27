@@ -10,6 +10,7 @@
 package dev.shadowtail.classfile.nncc;
 
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.jvm.SystemCallIndex;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
@@ -1824,48 +1825,16 @@ public final class NearNativeByteCodeHandler
 					NativeCode.THREAD_REGISTER);
 				break;
 				
-				// System call
+				// System calls
 			case "sysCall":
-				{
-					// Invoked methods can thrown an exception, so do
-					// checks! Otherwise the behavior we expect might not
-					// happen
-					this.state.canexception = true;
-					
-					// Build the register List
-					List<Integer> args = new ArrayList<>();
-					int n = __in.length;
-					for (int i = 1; i < n; i++)
-						args.add(__in[i].register);
-					
-					// Invoke pointer with arguments
-					codebuilder.add(NativeInstructionType.SYSTEM_CALL,
-						__in[0].register, new RegisterList(args));
-				}
+			case "sysCallV":
+				this.__invokeSysCall(false, __out, __in);
 				break;
 				
-				// System call with return value
-			case "sysCallV":
-				{
-					// Invoked methods can thrown an exception, so do
-					// checks! Otherwise the behavior we expect might not
-					// happen
-					this.state.canexception = true;
-					
-					// Build the register List
-					List<Integer> args = new ArrayList<>();
-					int n = __in.length;
-					for (int i = 1; i < n; i++)
-						args.add(__in[i].register);
-					
-					// Invoke pointer with arguments
-					codebuilder.add(NativeInstructionType.SYSTEM_CALL,
-						__in[0].register, new RegisterList(args));
-					
-					// Copy return value
-					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-						__out.register);
-				}
+				// Pure system calls
+			case "sysCallP":
+			case "sysCallPV":
+				this.__invokeSysCall(true, __out, __in);
 				break;
 			
 			default:
@@ -2153,6 +2122,57 @@ public final class NearNativeByteCodeHandler
 		
 		// Not needed
 		volatiles.remove(volsmp);
+	}
+	
+	/**
+	 * Invokes a system call, which can either be pure or unpure.
+	 *
+	 * @param __pure Is the system call pure?
+	 * @param __out The return register, may be set.
+	 * @param __in The input system call arguments.
+	 * @since 2109/05/27
+	 */
+	private final void __invokeSysCall(boolean __pure,
+		JavaStackResult.Output __out, JavaStackResult.Input... __in)
+	{
+		// Invoked methods can thrown an exception, so do
+		// checks! Otherwise the behavior we expect might not
+		// happen
+		this.state.canexception = true;
+		
+		// Invoke of pure system call?
+		if (__pure)
+		{
+			// Build the register List
+			List<Integer> args = new ArrayList<>();
+			int n = __in.length;
+			for (int i = 1; i < n; i++)
+				args.add(__in[i].register);
+			
+			// Perform the pure call
+			codebuilder.add(NativeInstructionType.SYSTEM_CALL,
+				__in[0].register, new RegisterList(args));
+		}
+		
+		// Unpure system call (may be adapted)
+		else
+		{
+			// Since this is a standard invocation, we just pass all the
+			// input arguments as is
+			int n = __in.length;
+			int[] args = new int[n];
+			for (int i = 0; i < n; i++)
+				args[i] = __in[i].register;
+			
+			// Perform the unpure call into the JVM helper
+			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				"jvmSystemCall", "(SIIIIIIII)I", args);
+		}
+		
+		// Copy return value
+		if (__out != null)
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+				__out.register);
 	}
 	
 	/**

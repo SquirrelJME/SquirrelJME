@@ -68,9 +68,21 @@ public final class SystemCallIndex
 	public static final short API_LEVEL =
 		12;
 	
-	/** System call count. */
-	public static final int NUM_SYSCALLS =
+	/** The pipe descriptor for stdin. */
+	public static final short PD_OF_STDIN =
 		13;
+	
+	/** The pipe descriptor for stdout. */
+	public static final short PD_OF_STDOUT =
+		14;
+	
+	/** The pipe descriptor for stderr. */
+	public static final short PD_OF_STDERR =
+		15;
+	
+	/** System call count. */
+	public static final short NUM_SYSCALLS =
+		16;
 	
 	/**
 	 * Not used.
