@@ -197,6 +197,10 @@ public interface NativeInstructionType
 	public static final short INVOKE =
 		0xF7;
 	
+	/** Copy value in register. */
+	public static final short COPY =
+		0xF8;
+	
 	/** Atomically decrements a memory addres and gets the value. */
 	public static final short ATOMIC_INT_DECREMENT_AND_GET =
 		0xF9;
