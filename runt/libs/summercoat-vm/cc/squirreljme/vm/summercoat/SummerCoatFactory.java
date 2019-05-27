@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.Constants;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
@@ -17,7 +18,6 @@ import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
-import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
@@ -576,18 +576,18 @@ public class SummerCoatFactory
 		}
 		
 		// Allocate data
-		int rv = __sa.allocate(Kernel.ARRAY_BASE_SIZE + encode.length);
+		int rv = __sa.allocate(Constants.ARRAY_BASE_SIZE + encode.length);
 		
 		// Write class ID, initial refcount, and length
-		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
+		__wm.memWriteInt(rv + Constants.OBJECT_CLASS_OFFSET,
 			__rams + __mjh.bootclassidba);
-		__wm.memWriteInt(rv + Kernel.OBJECT_COUNT_OFFSET,
+		__wm.memWriteInt(rv + Constants.OBJECT_COUNT_OFFSET,
 			1);
-		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
+		__wm.memWriteInt(rv + Constants.ARRAY_LENGTH_OFFSET,
 			encode.length);
 		
 		// Write byte data
-		int vbase = rv + Kernel.ARRAY_BASE_SIZE;
+		int vbase = rv + Constants.ARRAY_BASE_SIZE;
 		for (int i = 0, n = encode.length; i < n; i++, vbase++)
 			__wm.memWriteByte(vbase, encode[i]);
 		
@@ -622,18 +622,18 @@ public class SummerCoatFactory
 		int n = __ss.length;
 		
 		// Allocate data
-		int rv = __sa.allocate(Kernel.ARRAY_BASE_SIZE + (n * 4));
+		int rv = __sa.allocate(Constants.ARRAY_BASE_SIZE + (n * 4));
 		
 		// Write class ID, initial refcount, and length
-		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
+		__wm.memWriteInt(rv + Constants.OBJECT_CLASS_OFFSET,
 			__rams + __mjh.bootclassidbaa);
-		__wm.memWriteInt(rv + Kernel.OBJECT_COUNT_OFFSET,
+		__wm.memWriteInt(rv + Constants.OBJECT_COUNT_OFFSET,
 			1);
-		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
+		__wm.memWriteInt(rv + Constants.ARRAY_LENGTH_OFFSET,
 			n);
 		
 		// Write byte data
-		int vbase = rv + Kernel.ARRAY_BASE_SIZE;
+		int vbase = rv + Constants.ARRAY_BASE_SIZE;
 		for (int i = 0; i < n; i++, vbase += 4)
 		{
 			String s = __ss[i];
