@@ -1,0 +1,86 @@
+# 2019/05/26
+
+## 08:08
+
+In the Boot RAM I am going to make everything actual chunks so it could be
+freed more easily.
+
+## 08:45
+
+This looks a bit strange, but:
+
+ * `Seed 00100004 (mod=R, siz=4): 00000004 -> 00100004`
+
+My initial RAM value seems to be seeded with its own address? Maybe the boot
+RAM loader is wrong or the boot RAM writer?
+
+## 08:47
+
+Okay so the first initializer is that 0x00000004 should not be 4 but it should
+be the address of the next block. So perhaps the block links are incorrect?
+
+## 08:49
+
+So I also have in the initializer writing `0 (8) + 248 => 248`. So 248 should
+be written to 0x00000004. So a byte is written then the address. And it is
+read back in the correct order.
+
+## 08:54
+
+Okay so I have confirmed that 248 is written to the first two addresses.
+
+## 08:59
+
+Actually scrolling by I see `(m=null, a=00000000, v=8)` so somewhere in the
+bootstrap there is a bad write that is not writing in the correct offset
+position, so it ends up being replaced.
+
+## 09:01
+
+Definitely saw an error in the static field initializers, it just used the
+static RAM offset. The values 4 and 8 being written makes sense because those
+are the values for the offset static fields.
+
+## 09:02
+
+Now the RAM links run longer, so I think it is working.
+
+## 15:08
+
+So I need like actual method indexes and offsets, along with initializing the
+vtable for classes. So do wonder how I will do this... I could either do it
+in the initializers at static bootram time (faster) or at VM time. But I think
+it will be easier to do it at bootram time.
+
+## 17:05
+
+Okay, I do not believe I need an actual `vtable` for SPECIAL and VIRTUAL
+invokes. Okay so, here is my logic. Any virtual call will always call the
+highest virtually replaced method in a class. Now `SPECIAL` works on
+constructors and super-classes which are not virtually replaced at all for
+the most part. So virtual works on the class type of the instance, while
+special operates on the class type that was specified. It uses the same
+virtual lookup. It uses the same virtual lookup as normal stuff but it ends
+at that class instance. Of course this is not the case because. We just want
+to work on the virtual table of the super class. The only difference being
+the constructors and such which have slightly different logic. Okay so I got
+it, maybe. If the class we are targetting is the same... actually forget
+that. If we are calling an instance initialization method we want to call the
+exact one. But I am pretty sure I can get away with using the special stuff
+using only a single table.
+
+## 18:38
+
+Not sure how I want to do vtable initialization. It is a bit complicated! As
+there are package bounds for package-private and no bounds for private
+methods. But this is literally the last thing to do.
+
+## 20:50
+
+Okay so I need to load the pool for the target method and that has to be done
+in the instance code. So the vtable also needs to contain the pointer to the
+constant pool of the class. So I guess I will need to multiply by two and then
+add one just to get the pool data. That is really the only way I can think of
+to get both things at once. However, it could just be in another array and I
+think that is the simplest really. Once I know the class to load the vtable
+from I can load the constant pool array as well.
