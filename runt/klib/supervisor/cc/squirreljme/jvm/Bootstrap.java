@@ -54,6 +54,8 @@ public final class Bootstrap
 		// Debug
 		todo.DEBUG.note("Hello adorable and cute squirrels!");
 		
+		double x = 7.0 * __rambase;
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}

@@ -45,6 +45,7 @@ import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldReference;
+import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -731,8 +732,94 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __a, JavaStackResult.Input __b,
 		JavaStackResult.Output __c)
 	{
-		this.codebuilder.addMathReg(__dt, __mt, __a.register, __b.register,
-			__c.register);
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Integer math is supported natively
+		if (__dt == StackJavaType.INTEGER)
+		{
+			codebuilder.addMathReg(__dt, __mt, __a.register, __b.register,
+				__c.register);
+		}
+		
+		// Other kinds of math are done in software
+		else
+		{
+			// Get the software math class for the type
+			ClassName smc = __dt.softwareMathClass();
+			
+			// The function to call is just the lowercased enum
+			String func = __mt.name().toLowerCase();
+			
+			// Handling wide math?
+			boolean iswide = __dt.isWide();
+			
+			// A, B, and C register
+			int a = __a.register,
+				b = __b.register,
+				c = __c.register;
+			
+			// Determine the call signature
+			String type;
+			RegisterList args;
+			switch (__mt)
+			{
+				case NEG:
+				case SIGNX8:
+				case SIGNX16:
+					if (iswide)
+					{
+						type = "(II)V";
+						args = new RegisterList(a, a + 1);
+					}
+					else
+					{
+						type = "(I)V";
+						args = new RegisterList(a);
+					}
+					break;
+				
+				case SHL:
+				case SHR:
+				case USHR:
+					if (iswide)
+					{
+						type = "(III)V";
+						args = new RegisterList(a, a + 1, b);
+					}
+					else
+					{
+						type = "(II)V";
+						args = new RegisterList(a, b);
+					}
+					break;
+				
+				default:
+					if (iswide)
+					{
+						type = "(IIII)V";
+						args = new RegisterList(a, a + 1, b, b + 1);
+					}
+					else
+					{
+						type = "(II)V";
+						args = new RegisterList(a, b);
+					}
+					break;
+			}
+			
+			// Perform the call
+			this.__invokeStatic(InvokeType.STATIC, smc.toString(),
+				func, type, args);
+			
+			// Read out return value
+			if (iswide)
+			{
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER, c);
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, c + 1);
+			}
+			else
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER, c);
+		}
 	}
 	
 	/**
@@ -743,8 +830,58 @@ public final class NearNativeByteCodeHandler
 	public final void doMath(StackJavaType __dt, MathType __mt,
 		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c)
 	{
-		this.codebuilder.addMathConst(__dt, __mt, __a.register, __b,
-			__c.register);
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Integer math on constants is natively supported
+		if (__dt == StackJavaType.INTEGER)
+		{
+			codebuilder.addMathConst(__dt, __mt, __a.register, __b,
+				__c.register);
+		}
+		
+		// Otherwise store the constant and then do register math on it
+		else
+		{
+			// Need working registers, these must be next to each other!
+			VolatileRegisterStack volatiles = this.volatiles;
+			int volbh = -1, volbl = -7;
+			while (volbl != (volbh + 1))
+			{
+				volbh = volatiles.get();
+				volbl = volatiles.get();
+			}
+			
+			// Read in raw value
+			if (__b instanceof Float)
+				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+					0, Float.floatToRawIntBits(__b.floatValue()), volbh);
+			else if (__b instanceof Double)
+			{
+				long bits = Double.doubleToRawLongBits(__b.doubleValue());
+				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+					0, (int)(bits >>> 32), volbh);
+				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+					0, (int)(bits), volbl);
+			}
+			else
+			{
+				long bits = __b.longValue();
+				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+					0, (int)(bits >>> 32), volbh);
+				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+					0, (int)(bits), volbl);
+			}
+			
+			// Same as register math except the constant value is
+			// virtualized now
+			this.doMath(__dt, __mt,
+				__a, new JavaStackResult.Input(volbh, JavaType.INTEGER, true),
+				__c);
+			
+			// Cleanup
+			volatiles.remove(volbh);
+			volatiles.remove(volbl);
+		}
 	}
 	
 	/**

@@ -103,6 +103,18 @@ public class SoftFloat
 	}
 	
 	/**
+	 * Ors a value, used for constant loading.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @since 2019/05/24
+	 */
+	public static void or(int __a, int __b)
+	{
+		Assembly.returnFrame(__a | __b);
+	}
+	
+	/**
 	 * Remainders a value.
 	 *
 	 * @param __a A.

@@ -25,30 +25,6 @@ public interface NativeInstructionType
 		0x00;
 	
 	/**
-	 * Math, R=RR, Float.
-	 * {@code iiiiMMMM, r3 = r1 ? r2}.
-	 */
-	@Deprecated
-	public static final short MATH_REG_FLOAT =
-		0x10;
-	
-	/**
-	 * Math, R=RR, Long.
-	 * {@code iiiiMMMM, r3 = r1 ? r2}.
-	 */
-	@Deprecated
-	public static final short MATH_REG_LONG =
-		0x20;
-	
-	/**
-	 * Math, R=RR, Double.
-	 * {@code iiiiMMMM, r3 = r1 ? r2}.
-	 */
-	@Deprecated
-	public static final short MATH_REG_DOUBLE =
-		0x30;
-	
-	/**
 	 * Int comparison, then maybe jump.
 	 * {@code iiiiRccc, if (r1 ? r2) jump->j3}.
 	 */
@@ -77,30 +53,6 @@ public interface NativeInstructionType
 	 */
 	public static final short MATH_CONST_INT =
 		0x80;
-	
-	/**
-	 * Math, R=RC, Float.
-	 * {@code iiiiMMMM, r3 = r1 ? c2}.
-	 */
-	@Deprecated
-	public static final short MATH_CONST_FLOAT =
-		0x90;
-	
-	/**
-	 * Math, R=RC, Long.
-	 * {@code iiiiMMMM, r3 = r1 ? c2}.
-	 */
-	@Deprecated
-	public static final short MATH_CONST_LONG =
-		0xA0;
-	
-	/**
-	 * Math, R=RC, Double.
-	 * {@code iiiiMMMM, r3 = r1 ? c2}.
-	 */
-	@Deprecated
-	public static final short MATH_CONST_DOUBLE =
-		0xB0;
 	
 	/**
 	 * Memory access, offset is a constant.
