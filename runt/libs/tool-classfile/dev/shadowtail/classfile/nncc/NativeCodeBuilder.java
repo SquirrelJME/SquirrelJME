@@ -153,22 +153,8 @@ public final class NativeCodeBuilder
 	 */
 	public final NativeInstruction addCopy(int __from, int __to)
 	{
-		return this.addConversion(StackJavaType.INTEGER, __from,
-			StackJavaType.INTEGER, __to);
-	}
-	
-	/**
-	 * Adds a copy from one register to another, using wide values.
-	 *
-	 * @param __from The source.
-	 * @param __to The destination.
-	 * @return The resulting instruction.
-	 * @since 2019/04/12
-	 */
-	public final NativeInstruction addCopyWide(int __from, int __to)
-	{
-		return this.addConversion(StackJavaType.LONG, __from,
-			StackJavaType.LONG, __to);
+		return this.add(NativeInstructionType.COPY,
+			__from, __to);
 	}
 	
 	/**

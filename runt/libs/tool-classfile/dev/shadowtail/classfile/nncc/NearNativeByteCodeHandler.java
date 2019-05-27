@@ -349,7 +349,10 @@ public final class NearNativeByteCodeHandler
 		// Perform the copy, make sure to correctly handle wide copies!
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		if (__in.type.isWide())
-			codebuilder.addCopyWide(__in.register, __out.register);
+		{
+			codebuilder.addCopy(__in.register, __out.register);
+			codebuilder.addCopy(__in.register + 1, __out.register + 1);
+		}
 		else
 			codebuilder.addCopy(__in.register, __out.register);
 		
@@ -636,12 +639,18 @@ public final class NearNativeByteCodeHandler
 		
 		// Read in return value, it is just a copy
 		if (__out != null)
+		{
+			int a = NativeCode.RETURN_REGISTER,
+				b = __out.register;
+			
 			if (__out.type.isWide())
-				codebuilder.addCopyWide(NativeCode.RETURN_REGISTER,
-					__out.register);
+			{
+				codebuilder.addCopy(a, b);
+				codebuilder.addCopy(a + 1, b + 1);
+			}
 			else
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-					__out.register);
+				codebuilder.addCopy(a, b);
+		}
 		
 		// Clear references
 		this.__refClear();
@@ -844,12 +853,18 @@ public final class NearNativeByteCodeHandler
 		
 		// Returning a value? Copy it to the return register
 		if (__in != null)
+		{
+			int a = __in.register,
+				b = NativeCode.RETURN_REGISTER;
+			
 			if (__in.type.isWide())
-				codebuilder.addCopyWide(__in.register,
-					NativeCode.RETURN_REGISTER);
+			{
+				codebuilder.addCopy(a, b);
+				codebuilder.addCopy(a + 1, b + 1);
+			}
 			else
-				codebuilder.addCopy(__in.register,
-					NativeCode.RETURN_REGISTER);
+				codebuilder.addCopy(a, b);
+		}
 		
 		// Uncount anything which was enqueued
 		for (int q : this.state.result.enqueue())
@@ -892,7 +907,8 @@ public final class NearNativeByteCodeHandler
 					break;
 				
 				case WIDE_COPY:
-					codebuilder.addCopyWide(op.a, op.b);
+					codebuilder.addCopy(op.a, op.b);
+					codebuilder.addCopy(op.a + 1, op.b + 1);
 					break;
 				
 				default:
@@ -1596,8 +1612,13 @@ public final class NearNativeByteCodeHandler
 			case "doubleToRawLongBits":
 			case "longBitsToDouble":
 				if (__in[0].register != __out.register)
-					codebuilder.addCopyWide(__in[0].register,
-						__out.register);
+				{
+					int a = __in[0].register,
+						b = __out.register;
+					
+					codebuilder.addCopy(a, b);
+					codebuilder.addCopy(a + 1, b + 1);
+				}
 				break;
 				
 				// Exception handling
