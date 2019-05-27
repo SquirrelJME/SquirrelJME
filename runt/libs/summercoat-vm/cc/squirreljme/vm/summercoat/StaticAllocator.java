@@ -49,9 +49,6 @@ public final class StaticAllocator
 		int oldsize = this._size;
 		this._size = oldsize + __sz;
 		
-		// Debug
-		todo.DEBUG.note("Allocate %d at @%08x", __sz, this.base + oldsize);
-		
 		// Return pointer
 		return this.base + oldsize;
 	}

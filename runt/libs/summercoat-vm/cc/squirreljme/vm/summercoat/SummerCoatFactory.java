@@ -113,21 +113,13 @@ public class SummerCoatFactory
 				__args);
 		
 		// Load the boot RAM
-		todo.DEBUG.note("Header %s (off %08x, boot %08x)", bjh, bjo, bra);
 		try (DataInputStream dis = new DataInputStream(
 			new ReadableMemoryInputStream(vmem, bra, bjh.bootsize)))
 		{
-			// Debug
-			todo.DEBUG.note("Loading boot RAM @%08x (len %d)", bra,
-				bjh.bootsize);
-			
 			// Read entire RAM space
 			lram = dis.readInt();
 			byte[] bram = new byte[lram];
 			dis.readFully(bram);
-			
-			// Debug
-			todo.DEBUG.note("Boot RAM length %d", lram);
 			
 			// Write into memory
 			vmem.memWriteBytes(ramstart, bram, 0, lram);
