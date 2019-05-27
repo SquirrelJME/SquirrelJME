@@ -430,10 +430,37 @@ public final class NearNativeByteCodeHandler
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, false),
 			volfioff);
 		
+		// If we are storing an object, we need to uncount the value already
+		// in this field
+		int voltemp = -1;
+		boolean isobject;
+		if ((isobject = __fr.memberType().isObject()))
+		{
+			// Read the value of the field for later clear
+			voltemp = volatiles.get();
+			codebuilder.addMemoryOffReg(
+				DataType.of(__fr.memberType().primitiveType()), false,
+				voltemp, ireg, volfioff);
+			
+			// Count our own reference up
+			this.__refCount(__v.register);
+		}
+		
 		// Write to memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
 			__v.register, ireg, volfioff);
+		
+		// If we stored an object, reference count the field after it has
+		// been written to
+		if (isobject)
+		{
+			// Uncount
+			this.__refCount(voltemp);
+			
+			// Not needed
+			volatiles.remove(voltemp);
+		}
 		
 		// No longer used
 		volatiles.remove(volfioff);
@@ -933,11 +960,37 @@ public final class NearNativeByteCodeHandler
 			this.__fieldAccess(FieldAccessType.STATIC, __fr, false),
 			volsfo);
 		
+		// If we are storing an object, we need to uncount the value already
+		// in this field
+		int voltemp = -1;
+		boolean isobject;
+		if ((isobject = __fr.memberType().isObject()))
+		{
+			// Read the value of the field for later clear
+			voltemp = volatiles.get();
+			codebuilder.addMemoryOffReg(
+				DataType.of(__fr.memberType().primitiveType()), false,
+				voltemp, NativeCode.STATIC_FIELD_REGISTER, volsfo);
+			
+			// Count our own reference up
+			this.__refCount(__v.register);
+		}
+		
 		// Write to memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
-			__v.register, NativeCode.STATIC_FIELD_REGISTER,
-			volsfo);
+			__v.register, NativeCode.STATIC_FIELD_REGISTER, volsfo);
+		
+		// If we wrote an object, uncount the old destination after it
+		// has been overwritten
+		if (isobject)
+		{
+			// Uncount
+			this.__refUncount(voltemp);
+			
+			// Not needed
+			volatiles.remove(voltemp);
+		}
 		
 		// Not needed
 		volatiles.remove(volsfo);
