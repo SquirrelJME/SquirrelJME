@@ -40,9 +40,11 @@ import net.multiphasicapps.io.HexDumpOutputStream;
 public final class NativeCPU
 	implements Runnable
 {
-	/** Is debugging enabled? */
+	/**
+	 * {@squirreljme.properly cc.squirreljme.summercoat.debug=boolean
+	 * Should SummerCoat print lots of debugging information?}*/
 	public static final boolean ENABLE_DEBUG =
-		true;
+		Boolean.getBoolean("cc.squirreljme.summercoat.debug");
 	
 	/** Maximum amount of CPU registers. */
 	public static final int MAX_REGISTERS =
@@ -482,7 +484,8 @@ public final class NativeCPU
 							lr[NativeCode.POOL_REGISTER] + (args[0] * 4));
 						
 						// Debug
-						todo.DEBUG.note("Read pool: %d", lr[args[1]]);
+						if (ENABLE_DEBUG)
+							todo.DEBUG.note("Read pool: %d", lr[args[1]]);
 					}
 					break;
 					
@@ -574,7 +577,9 @@ public final class NativeCPU
 							lr[args[0]] = v;
 							
 							// Debug
-							todo.DEBUG.note("%08x -> %d (%08x)", addr, v, v);
+							if (ENABLE_DEBUG)
+								todo.DEBUG.note("%08x -> %d (%08x)",
+									addr, v, v);
 						}
 						
 						// Stores
@@ -610,7 +615,9 @@ public final class NativeCPU
 							}
 							
 							// Debug
-							todo.DEBUG.note("%08x <- %d (%08x)", addr, v, v);
+							if (ENABLE_DEBUG)
+								todo.DEBUG.note("%08x <- %d (%08x)",
+									addr, v, v);
 						}
 					}
 					break;
