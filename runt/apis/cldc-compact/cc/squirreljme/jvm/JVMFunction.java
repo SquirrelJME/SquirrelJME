@@ -205,5 +205,31 @@ public final class JVMFunction
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * This handles an unpure system call which may modify the behavior of
+	 * any system call which needs to be done. Some system calls might not be
+	 * supported by the host machine or they might not make sense (such as
+	 * garbage collection), so as such this allows their behavior to modified.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @param __h Argument.
+	 * @return The result.
+	 * @since 2019/05/27
+	 */
+	public static final int jvmSystemCall(short __si, int __a, int __b,
+		int __c, int __d, int __e, int __f, int __g, int __h)
+	{
+		// Call pure form
+		return Assembly.sysCallPV(__si, __a, __b, __c, __d, __e, __f, __g,
+			__h);
+	}
 }
 

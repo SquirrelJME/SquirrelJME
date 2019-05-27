@@ -9,8 +9,10 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.runtime.cldc.vki.Kernel;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
@@ -59,6 +61,10 @@ public final class NativeCPU
 	/** Stack frames. */
 	private final LinkedList<Frame> _frames =
 		new LinkedList<>();
+	
+	/** System call error states for this CPU. */
+	private final int[] _syscallerrors =
+		new int[SystemCallIndex.NUM_SYSCALLS];
 	
 	/**
 	 * Initializes the native CPU.
@@ -465,7 +471,7 @@ public final class NativeCPU
 					// Load value from int array
 				case NativeInstructionType.LOAD_FROM_INTARRAY:
 					lr[args[0]] = memory.memReadInt(lr[args[1]] +
-						Kernel.ARRAY_BASE_SIZE + (lr[args[2]] * 4));
+						Constants.ARRAY_BASE_SIZE + (lr[args[2]] * 4));
 					break;
 					
 					// Load from constant pool
@@ -656,6 +662,17 @@ public final class NativeCPU
 								(now != null ? now._pc : 0));
 					}
 					break;
+				
+					// System call
+				case NativeInstructionType.SYSTEM_CALL:
+					{
+						// Set the return register to whatever system call
+						// was used
+						lr[NativeCode.RETURN_REGISTER] = this.__sysCall(
+							(short)lr[args[0]], reglist);
+					}
+					break;
+					
 				
 				default:
 					throw new todo.OOPS(NativeInstruction.mnemonic(op));
@@ -921,6 +938,145 @@ public final class NativeCPU
 		{
 			return String.format("??? @%08x (len=%d)", __addr, strlen);
 		}
+	}
+	
+	/**
+	 * Internal system call handling.
+	 *
+	 * @param __si System call index.
+	 * @param __args Arguments.
+	 * @return The result.
+	 * @since 2019/05/23
+	 */
+	private final int __sysCall(short __si, int... __args)
+	{
+		// Error state for the last call of this type
+		int[] errors = this._syscallerrors;
+		
+		// Return value with error value, to set if any
+		int rv,
+			err;
+		
+		// Depends on the system call type
+		switch (__si)
+		{
+				// Get error
+			case SystemCallIndex.ERROR_GET:
+				{
+					// If the ID is valid then a bad array access will be used
+					int dx = __args[0];
+					if (dx < 0 || dx >= SystemCallIndex.NUM_SYSCALLS)
+						dx = SystemCallIndex.QUERY_INDEX;
+					
+					// Return the stored error code
+					synchronized (errors)
+					{
+						rv = errors[dx];
+					}
+					
+					// Always succeeds
+					err = 0;
+				}
+				break;
+				
+				// Set error
+			case SystemCallIndex.ERROR_SET:
+				{
+					// If the ID is valid then a bad array access will be used
+					int dx = __args[0];
+					if (dx < 0 || dx >= SystemCallIndex.NUM_SYSCALLS)
+						dx = SystemCallIndex.QUERY_INDEX;
+					
+					// Return last error code, and set new one
+					synchronized (errors)
+					{
+						rv = errors[dx];
+						errors[dx] = __args[0];
+					}
+					
+					// Always succeeds
+					err = 0;
+				}
+				break;
+			
+				// Current wall clock milliseconds (low).
+			case SystemCallIndex.TIME_LO_MILLI_WALL:
+				{
+					rv = (int)(System.currentTimeMillis());
+					err = 0;
+				}
+				break;
+
+				// Current wall clock milliseconds (high).
+			case SystemCallIndex.TIME_HI_MILLI_WALL:
+				{
+					rv = (int)(System.currentTimeMillis() >>> 32);
+					err = 0;
+				}
+				break;
+
+				// Current monotonic clock nanoseconds (low).
+			case SystemCallIndex.TIME_LO_NANO_MONO:
+				{
+					rv = (int)(System.nanoTime());
+					err = 0;
+				}
+				break;
+
+				// Current monotonic clock nanoseconds (high).
+			case SystemCallIndex.TIME_HI_NANO_MONO:
+				{
+					rv = (int)(System.nanoTime() >>> 32);
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory free bytes
+			case SystemCallIndex.VMI_MEM_FREE:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().freeMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory used bytes
+			case SystemCallIndex.VMI_MEM_USED:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().totalMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory max bytes
+			case SystemCallIndex.VMI_MEM_MAX:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().maxMemory());
+					err = 0;
+				}
+				break;
+				
+			default:
+				// Returns no value but sets an error
+				rv = -1;
+				err = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
+				
+				// If the ID is valid then a bad array access will be used
+				if (__si < 0 || __si >= SystemCallIndex.NUM_SYSCALLS)
+					__si = SystemCallIndex.QUERY_INDEX;
+				break;
+		}
+		
+		// Set error state as needed
+		synchronized (errors)
+		{
+			errors[__si] = err;
+		}
+		
+		// Use returning value
+		return rv;
 	}
 	
 	/**

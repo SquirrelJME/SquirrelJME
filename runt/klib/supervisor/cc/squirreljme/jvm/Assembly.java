@@ -674,6 +674,241 @@ public final class Assembly
 		int __d, int __e, int __f, int __g, int __h);
 	
 	/**
+	 * Invoke pure system call at the given index.
+	 *
+	 * @param __addr The address to invoke.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si, int __a);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si, int __a, int __b);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si, int __a, int __b, int __c);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si, int __a, int __b, int __c,
+		int __d);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si, int __a, int __b, int __c,
+		int __d, int __e);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f, int __g);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @param __h Argument.
+	 * @since 2019/05/27
+	 */
+	public static native void sysCallP(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f, int __g, int __h);
+	
+	/**
+	 * Invoke pure system call at the given index.
+	 *
+	 * @param __si System call index.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si, int __a);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si, int __a, int __b);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si, int __a, int __b, int __c);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d, int __e);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f, int __g);
+	
+	/**
+	 * Invoke pure system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @param __h Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/27
+	 */
+	public static native int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f, int __g, int __h);
+	
+	/**
 	 * Invoke system call at the given index.
 	 *
 	 * @param __si System call index.
@@ -795,4 +1030,3 @@ public final class Assembly
 	public static native int sysCallV(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g, int __h);
 }
-

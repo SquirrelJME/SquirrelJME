@@ -856,6 +856,296 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index.
 	 *
+	 * @param __addr The address to invoke.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si)
+	{
+		Assembly.__sysCall(__si);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si, int __a)
+	{
+		Assembly.__sysCall(__si, __a);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si, int __a, int __b)
+	{
+		Assembly.__sysCall(__si, __a, __b);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si, int __a, int __b, int __c)
+	{
+		Assembly.__sysCall(__si, __a, __b, __c);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si, int __a, int __b, int __c,
+		int __d)
+	{
+		Assembly.__sysCall(__si, __a, __b, __c, __d);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si, int __a, int __b, int __c,
+		int __d, int __e)
+	{
+		Assembly.__sysCall(__si, __a, __b, __c, __d, __e);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f)
+	{
+		Assembly.__sysCall(__si, __a, __b, __c, __d, __e, __f);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f, int __g)
+	{
+		Assembly.__sysCall(__si, __a, __b, __c, __d, __e, __f, __g);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @param __h Argument.
+	 * @since 2019/05/23
+	 */
+	public static final void sysCallP(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f, int __g, int __h)
+	{
+		Assembly.__sysCall(__si, __a, __b, __c, __d, __e, __f, __g, __h);
+	}
+	
+	/**
+	 * Invoke system call at the given index.
+	 *
+	 * @param __si System call index.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si)
+	{
+		return Assembly.__sysCall(__si);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si, int __a)
+	{
+		return Assembly.__sysCall(__si, __a);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si, int __a, int __b)
+	{
+		return Assembly.__sysCall(__si, __a, __b);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si, int __a, int __b, int __c)
+	{
+		return Assembly.__sysCall(__si, __a, __b, __c);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d)
+	{
+		return Assembly.__sysCall(__si, __a, __b, __c, __d);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d, int __e)
+	{
+		return Assembly.__sysCall(__si, __a, __b, __c, __d, __e);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f)
+	{
+		return Assembly.__sysCall(__si, __a, __b, __c, __d, __e, __f);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f, int __g)
+	{
+		return Assembly.__sysCall(__si, __a, __b, __c, __d, __e, __f, __g);
+	}
+	
+	/**
+	 * Invoke system call at the given index, with arguments.
+	 *
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @param __h Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/05/23
+	 */
+	public static final int sysCallPV(short __si, int __a, int __b, int __c,
+		int __d, int __e, int __f, int __g, int __h)
+	{
+		return Assembly.__sysCall(__si, __a, __b, __c, __d, __e, __f, __g,
+			__h);
+	}
+	
+	/**
+	 * Invoke system call at the given index.
+	 *
 	 * @param __si System call index.
 	 * @return The result of the invocation.
 	 * @since 2019/05/23

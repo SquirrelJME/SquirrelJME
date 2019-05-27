@@ -10,6 +10,8 @@
 package todo;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
 
 /**
  * Contains basic debug output printing.
@@ -37,6 +39,11 @@ public final class DEBUG
 	 */
 	public static final void note(String __fmt, Object... __args)
 	{
+		// Get the pipe descriptor for standard error, ignore if it fails
+		int fd = Assembly.sysCallV(SystemCallIndex.PD_OF_STDERR);
+		if (SystemCallError.getError(SystemCallIndex.PD_OF_STDERR) != 0)
+			return;
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}

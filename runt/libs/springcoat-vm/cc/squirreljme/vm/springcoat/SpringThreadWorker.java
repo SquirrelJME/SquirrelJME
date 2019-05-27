@@ -1167,6 +1167,24 @@ public final class SpringThreadWorker
 				"sysCall:(SIIIIIII)V":
 			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(SIIIIIIII)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(S)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(SI)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(SII)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(SIII)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(SIIII)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(SIIIII)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(SIIIIII)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(SIIIIIII)V":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallP:(SIIIIIIII)V":
 				{
 					// System call index and number of arguments used
 					int si = (Integer)__args[0],
@@ -1201,6 +1219,24 @@ public final class SpringThreadWorker
 				"sysCallV:(SIIIIIII)I":
 			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCallV:(SIIIIIIII)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(S)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(SI)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(SII)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(SIII)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(SIIII)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(SIIIII)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(SIIIIII)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(SIIIIIII)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPV:(SIIIIIIII)I":
 				{
 					// System call index and number of arguments used
 					int si = (Integer)__args[0],
