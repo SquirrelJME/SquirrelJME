@@ -57,8 +57,14 @@ public class SoftInteger
 	 */
 	public static void toLong(int __a)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// If the integer has the sign bit, then it will be sign extended
+		// meaning all the upper bits get set
+		if ((__a & 0x80000000) != 0)
+			Assembly.returnFrame(0xFFFFFFFF, __a);
+		
+		// Otherwise the top is just zero
+		else
+			Assembly.returnFrame(0, __a);
 	}
 }
 
