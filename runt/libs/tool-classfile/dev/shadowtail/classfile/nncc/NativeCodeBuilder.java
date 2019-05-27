@@ -100,50 +100,6 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
-	 * Adds conversion from one type to another.
-	 *
-	 * @param __fromt The source type.
-	 * @param __from The source register.
-	 * @param __tot The target type.
-	 * @param __to The target register.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/12
-	 */
-	public final NativeInstruction addConversion(StackJavaType __fromt,
-		int __from, StackJavaType __tot, int __to)
-		throws NullPointerException
-	{
-		if (__fromt == null || __tot == null)
-			throw new NullPointerException("NARG");
-		
-		// Build operation to use
-		int rop = NativeInstructionType.CONVERSION |
-			(__fromt.ordinal() << 2) | (__tot.ordinal());
-		
-		// Convert from wide (then to wide, or to narrow)
-		if (__fromt.isWide())
-			if (__tot.isWide())
-				return this.add(rop,
-					__from, (__from == 0 ? 0 : __from + 1),
-					__to, (__to == 0 ? 0 : __to + 1));
-			else
-				return this.add(rop,
-					__from, (__from == 0 ? 0 : __from + 1),
-					__to);
-		
-		// Convert to wide
-		else if (__tot.isWide())
-			return this.add(rop,
-				__from,
-				__to, (__to == 0 ? 0 : __to + 1));
-		
-		// narrow to narrow
-		else
-			return this.add(rop, __from, __to);
-	}
-	
-	/**
 	 * Adds a copy from one register to another.
 	 *
 	 * @param __from The source.

@@ -331,8 +331,50 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __a, StackJavaType __bs,
 		JavaStackResult.Output __b)
 	{
-		this.codebuilder.addConversion(__as, __a.register,
-			__bs, __b.register);
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Doing just a copy
+		if (__as == __bs)
+		{
+			int a = __a.register,
+				b = __b.register;
+			
+			if (__as.isWide())
+			{
+				codebuilder.addCopy(a, b);
+				codebuilder.addCopy(a + 1, b + 1);
+			}
+			else
+				codebuilder.addCopy(a, b);
+		}
+		
+		// Otherwise a conversion
+		else
+		{
+			// Get the software math class for the source type
+			ClassName smc = __as.softwareMathClass();
+			
+			// Invoke converter method (which might be wide)
+			if (__as.isWide())
+				this.__invokeStatic(InvokeType.STATIC, smc,
+					"to" + __bs.boxedType(), "(II)V",
+					__a.register, __a.register + 1);
+			else
+				this.__invokeStatic(InvokeType.STATIC, smc,
+					"to" + __bs.boxedType(), "(I)V",
+					__a.register);
+			
+			// Read out return value
+			int a = NativeCode.RETURN_REGISTER,
+				b = __b.register;
+			if (__bs.isWide())
+			{
+				codebuilder.addCopy(a, b);
+				codebuilder.addCopy(a + 1, b + 1);
+			}
+			else
+				codebuilder.addCopy(a, b);
+		}
 	}
 	
 	/**

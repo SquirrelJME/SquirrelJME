@@ -115,7 +115,7 @@ public enum DataType
 	{
 		switch (this)
 		{
-			case OBJECT:
+			case OBJECT:	
 			case BYTE:
 			case SHORT:
 			case CHARACTER:
@@ -213,6 +213,31 @@ public enum DataType
 			throw new NullPointerException("NARG");
 		
 		return DataType.of(__t.primitiveType());
+	}
+	
+	/**
+	 * Returns the data type of the given stack type.
+	 *
+	 * @param __t The stack type used.
+	 * @return The resulting data type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/27
+	 */
+	public static final DataType of(StackJavaType __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__t)
+		{
+			case INTEGER:	return INTEGER;
+			case FLOAT:		return FLOAT;
+			case LONG:		return LONG;
+			case DOUBLE:	return DOUBLE;
+		}
+		
+		throw new todo.OOPS();
 	}
 }
 

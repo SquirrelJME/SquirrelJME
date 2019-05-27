@@ -103,38 +103,6 @@ public interface NativeInstructionType
 		0xB0;
 	
 	/**
-	 * Conversion (narrow to narrow).
-	 * {@code iiiiFFTT, r2 <= r1}.
-	 */
-	@Deprecated
-	public static final short CONVERSION =
-		0b1100_00_00;
-	
-	/**
-	 * Conversion (narrow to wide).
-	 * {@code iiiiFFTT, r2 <= r1}.
-	 */
-	@Deprecated
-	public static final short CONVERSION_TO_WIDE =
-		0b1100_00_01;
-	
-	/**
-	 * Conversion (wide to narrow).
-	 * {@code iiiiFFTT, r2 <= r1}.
-	 */
-	@Deprecated
-	public static final short CONVERSION_FROM_WIDE =
-		0b1100_01_00;
-	
-	/**
-	 * Conversion (wide to wide).
-	 * {@code iiiiFFTT, r2 <= r1}.
-	 */
-	@Deprecated
-	public static final short CONVERSION_WIDE =
-		0b1100_01_01;
-	
-	/**
 	 * Memory access, offset is a constant.
 	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
 	 */
