@@ -83,7 +83,7 @@ public final class JVMFunction
 	public static final void jvmGarbageCollectObject(int __p)
 	{
 		// Access of invalid object?
-		if (__p == Constants.BAD_MAGIC)
+		if (__p == 0 || __p == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
 		
 		Assembly.breakpoint();

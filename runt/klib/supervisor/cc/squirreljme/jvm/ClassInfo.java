@@ -33,6 +33,9 @@ public final class ClassInfo
 	/** The base offset for fields in this class. */
 	public final int base;
 	
+	/** The number of objects in the instance fields, for GC. */
+	public final int numobjects;
+	
 	/** The dimensions this class uses, if it is an array. */
 	public final int dimensions;
 	
@@ -57,6 +60,7 @@ public final class ClassInfo
 	 * @param __minip Pointer to the hardware class data in ROM.
 	 * @param __sz The size of this class.
 	 * @param __bz The base offset for fields.
+	 * @param __no The number of objects in the field instance.
 	 * @param __dim Dimensions.
 	 * @param __csz Cell size.
 	 * @param __scl The super class data.
@@ -65,8 +69,8 @@ public final class ClassInfo
 	 * @param __vtp Virtual invoke VTable pool addresses.
 	 * @since 2019/04/26
 	 */
-	public ClassInfo(int __minip, int __sz, int __bz, int __dim, int __csz,
-		ClassInfo __scl, Class<?> __cop, int[] __vtv, int[] __vtp)
+	public ClassInfo(int __minip, int __sz, int __bz, int __no, int __dim,
+		int __csz, ClassInfo __scl, Class<?> __cop, int[] __vtv, int[] __vtp)
 	{
 		// Always implicitly set magic
 		this.magic = MAGIC_NUMBER;
@@ -75,6 +79,7 @@ public final class ClassInfo
 		this.miniptr = __minip;
 		this.size = __sz;
 		this.base = __bz;
+		this.numobjects = __no;
 		this.dimensions = __dim;
 		this.cellsize = __csz;
 		this.superclass = __scl;

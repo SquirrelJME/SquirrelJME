@@ -393,6 +393,12 @@ public final class JarMinimizer
 							wp, bi._baseoff);
 						break;
 						
+						// The number of objects in this class
+					case "numobjects:I":
+						__init.memWriteInt(
+							wp, bi._class.header.ifobjs);
+						break;
+						
 						// Allocation size of the class
 					case "size:I":
 						__init.memWriteInt(
