@@ -86,8 +86,38 @@ public final class JVMFunction
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Attempt to garbage collect object with no class or is invalid
+		int pcl = Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET);
+		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
+			throw new VirtualMachineError();
+		
+		// Get class info for this type
+		ClassInfo pinfo = Assembly.pointerToClassInfo(pcl);
+		
+		// If this is an array, elements have to be uncounted
+		if ((pinfo.flags & Constants.CIF_IS_ARRAY) != 0)
+		{
+			// This only needs to be done for objects
+			if ((pinfo.flags & Constants.CIF_IS_ARRAY_OF_OBJECTS) != 0)
+			{
+				// Go through all elements and uncount them
+				for (int i = 0, n = Assembly.memReadInt(__p,
+					Constants.ARRAY_LENGTH_OFFSET),
+					bp = __p + Constants.ARRAY_BASE_SIZE,
+					xp = 0; i < n; i++, xp += 4)
+					Assembly.refUncount(Assembly.memReadInt(bp, 0));
+			}
+		}
+		
+		// Otherwise uncount the instance field information
+		else
+		{
+			Assembly.breakpoint();
+			throw new todo.TODO();
+		}
+		
+		// Free this memory
+		Allocator.free(__p);
 	}
 	
 	/**
