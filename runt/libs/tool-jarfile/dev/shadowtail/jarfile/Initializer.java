@@ -81,9 +81,6 @@ public final class Initializer
 		// The return address is after the chunk length
 		int rv = nowat + CHUNK_LENGTH;
 		
-		// Debug
-		todo.DEBUG.note("%d (%d) + %d => %d", nowat, rv, chunksize, nextat);
-		
 		// Record size of chunk and the next chunk position in RAM
 		this.memWriteInt(null,
 			nowat + CHUNK_SIZE_OFFSET, chunksize);
@@ -148,9 +145,6 @@ public final class Initializer
 	 */
 	public final void memWriteInt(Modifier __m, int __addr, int __v)
 	{
-		// Debug
-		todo.DEBUG.note("(m=%s, a=%08x, v=%d)", __m, __addr, __v);
-		
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
 			this._ops.add(new Operation(__m, (byte)4, __addr));
