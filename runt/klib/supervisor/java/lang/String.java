@@ -45,6 +45,28 @@ public final class String
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/26
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/26
+	 */
+	@Override
+	public final int hashCode()
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns a string which is a unique internal representation of a string.
 	 *
 	 * @return The unique interned string.
@@ -54,6 +76,16 @@ public final class String
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/26
+	 */
+	@Override
+	public final String toString()
+	{
+		return this;
 	}
 }
 

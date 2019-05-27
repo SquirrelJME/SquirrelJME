@@ -2,34 +2,32 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.lang;
-
-import cc.squirreljme.jvm.Assembly;
+package java.lang.annotation;
 
 /**
- * This represents the Java accessible class object which describes this
- * class.
+ * Specifies how far through compilation and running of code that an annotation
+ * should be visible.
  *
- * @param <C> The class type.
- * @since 2019/05/26
+ * @since 2014/10/13
  */
-public final class Class<C>
+public enum RetentionPolicy
 {
-	/**
-	 * Returns the super class of this class.
-	 *
-	 * @return The super class of this class.
-	 * @since 2019/05/26
-	 */
-	public final Class<?> getSuperclass()
-	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
-	}
+	/** Kept after compilation, but not visible at runtime. */
+	CLASS(),
+	
+	/** Kept after compilation and visible at runtime. */
+	RUNTIME(),
+	
+	/** Removed after compilation, does not appear in the class file. */
+	SOURCE(),
+	
+	/** End. */
+	;
 }
 

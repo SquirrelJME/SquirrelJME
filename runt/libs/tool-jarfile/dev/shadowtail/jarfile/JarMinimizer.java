@@ -346,9 +346,6 @@ public final class JarMinimizer
 				// Get pointer value to write int
 				int wp = base + mf.offset;
 				
-				// Debug
-				todo.DEBUG.note("%s:%s @ %d", mf.name, mf.type, wp);
-				
 				// Depends on the type
 				String key = mf.name + ":" + mf.type;
 				switch (key)
@@ -379,7 +376,6 @@ public final class JarMinimizer
 						
 						// VTable for virtual calls
 					case "vtablevirtual:[I":
-						todo.TODO.note("Write virtual VTable!");
 						__init.memWriteInt(Modifier.RAM_OFFSET,
 							wp, this.__classVTable(__init, __cl));
 						break;
@@ -665,6 +661,13 @@ public final class JarMinimizer
 		// We need boot information to get class information!
 		Map<ClassName, __BootInfo__> boots = this._boots;
 		
+		// Did we already make the VTable for this? This will happen in the
+		// event arrays or primitives are virtualized
+		__BootInfo__ selfbi = boots.get(__cl);
+		int rv = selfbi._vtable;
+		if (rv >= 0)
+			return rv;
+		
 		// Build array of all the classes that are used in the method and
 		// super class chain
 		List<__BootInfo__> classes = new ArrayList<>();
@@ -740,9 +743,8 @@ public final class JarMinimizer
 						continue;
 					
 					// Debug
-					todo.DEBUG.note("Link: %s:%s -> %s:%s",
-						mcfname, mnat,
-						pcfname, mnat);
+					todo.DEBUG.note("Link: (%s) %s -> %s : %s",
+						__cl, mcfname, pcfname, mnat);
 						
 					// Use this method
 					entries.set(vat, pbi._classoffset + pcf.header.imoff +
@@ -753,7 +755,8 @@ public final class JarMinimizer
 		}
 		
 		// Allocate array
-		int rv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * numv));
+		rv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * numv));
+		selfbi._vtable = rv;
 		
 		// Write array details
 		__init.memWriteInt(Modifier.RAM_OFFSET,

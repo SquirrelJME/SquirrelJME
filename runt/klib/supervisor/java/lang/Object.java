@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
+
 /**
  * This class defines the base class for every class which exists.
  *
@@ -17,12 +19,37 @@ package java.lang;
 public class Object
 {
 	/**
+	 * Clones this object.
+	 *
+	 * @return The clone of this object.
+	 * @since 2019/05/26
+	 */
+	protected Object clone()
+		throws CloneNotSupportedException
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the class type for this object.
+	 *
+	 * @return The class type.
+	 * @since 2019/05/26
+	 */
+	public final Class<?> getClass()
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the hash code for this object.
 	 *
 	 * @return The object hash code.
 	 * @since 2019/05/25
 	 */
-	public final int hashCode()
+	public int hashCode()
 	{
 		return 1234;
 	}
@@ -34,7 +61,7 @@ public class Object
 	 * @return If the objects are equal.
 	 * @since 2019/05/25
 	 */
-	public final boolean equals(Object __o)
+	public boolean equals(Object __o)
 	{
 		return this == __o;
 	}
@@ -45,7 +72,7 @@ public class Object
 	 * @return The string representation.
 	 * @since 2019/05/25
 	 */
-	public final String toString()
+	public String toString()
 	{
 		return "AnObject";
 	}
