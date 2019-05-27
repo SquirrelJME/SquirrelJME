@@ -382,30 +382,9 @@ public final class NativeCPU
 					}
 					break;
 				
-					// Conversion (Narrow)
-				case NativeInstructionType.CONVERSION:
-					{
-						StackJavaType a = StackJavaType.of((op >> 2) & 0x3),
-							b = StackJavaType.of(op & 0x03);
-						
-						// The value to convert
-						int va = lr[args[0]],
-							old = va;
-						
-						if (a == StackJavaType.INTEGER)
-						{
-							if (b == StackJavaType.FLOAT)
-								va = Float.floatToRawIntBits((float)va);
-						}
-						else
-						{
-							if (b == StackJavaType.INTEGER)
-								va = (int)Float.intBitsToFloat(va);
-						}
-						
-						// Set destination
-						lr[args[1]] = va;
-					}
+					// Copy
+				case NativeInstructionType.COPY:
+					lr[args[1]] = lr[args[0]];
 					break;
 					
 					// Compare integers and possibly jump
