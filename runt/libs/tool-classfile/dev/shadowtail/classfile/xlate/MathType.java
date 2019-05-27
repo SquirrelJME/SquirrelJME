@@ -61,10 +61,10 @@ public enum MathType
 	CMPG,
 	
 	/** Sign 8-bit value. */
-	SIGN_X8,
+	SIGNX8,
 	
-	/** Sign half (int = x16, long = x32). */
-	SIGN_HALF,
+	/** Sign 16-bit value. */
+	SIGNX16,
 	
 	/** End. */
 	;
@@ -94,8 +94,8 @@ public enum MathType
 			case 11:	return XOR;
 			case 12:	return CMPL;
 			case 13:	return CMPG;
-			case 14:	return SIGN_X8;
-			case 15:	return SIGN_HALF;
+			case 14:	return SIGNX8;
+			case 15:	return SIGNX16;
 		}
 		
 		// {@squirreljme.error JC39 Invalid math operation.}
