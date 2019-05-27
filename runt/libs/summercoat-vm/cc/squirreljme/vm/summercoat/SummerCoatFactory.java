@@ -188,10 +188,6 @@ public class SummerCoatFactory
 					default:
 						throw new VMException("AE03 " + siz);
 				}
-				
-				// Debug
-				todo.DEBUG.note("Seed %08x (mod=%s, siz=%d): %08x -> %08x",
-					addr, (mod == 1 ? "R" : "J"), siz, before, before + off);
 			}
 			
 			// {@squirreljme.AE04 Expected value at end of initializer
