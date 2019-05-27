@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.vki;
+package cc.squirreljme.jvm;
 
 /**
  * Software math operations on 64-bit double.
@@ -34,8 +34,9 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleAdd(int __ah, int __al, int __bh, int __bl)
+	public static void add(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -48,8 +49,9 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleCmpL(int __ah, int __al, int __bh, int __bl)
+	public static void cmpl(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -62,8 +64,9 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleCmpG(int __ah, int __al, int __bh, int __bl)
+	public static void cmpg(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -76,8 +79,9 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleDiv(int __ah, int __al, int __bh, int __bl)
+	public static void div(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -90,8 +94,9 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleMul(int __ah, int __al, int __bh, int __bl)
+	public static void mul(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -102,8 +107,9 @@ public class SoftDouble
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleNeg(int __ah, int __al)
+	public static void neg(int __ah, int __al)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -116,8 +122,9 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleRem(int __ah, int __al, int __bh, int __bl)
+	public static void rem(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -130,8 +137,9 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleSub(int __ah, int __al, int __bh, int __bl)
+	public static void sub(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -142,8 +150,9 @@ public class SoftDouble
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleToFloat(int __ah, int __al)
+	public static void toFloat(int __ah, int __al)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -154,8 +163,9 @@ public class SoftDouble
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleToInteger(int __ah, int __al)
+	public static void toInteger(int __ah, int __al)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -166,19 +176,9 @@ public class SoftDouble
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void doubleToLong(int __ah, int __al)
+	public static void toLong(int __ah, int __al)
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Converts to double.
-	 *
-	 * @param __a A.
-	 * @since 2019/05/24
-	 */
-	public static void intToDouble(int __a)
-	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 }

@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.JavaType;
 
 /**
@@ -34,6 +35,25 @@ public enum StackJavaType
 	;
 	
 	/**
+	 * Returns the boxed type.
+	 *
+	 * @return The boxed type.
+	 * @since 2019/05/27
+	 */
+	public final String boxedType()
+	{
+		switch (this)
+		{
+			case INTEGER:	return "Integer";
+			case LONG:		return "Long";
+			case FLOAT:		return "Float";
+			case DOUBLE:	return "Double";
+		}
+		
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * Is this a wide type?
 	 *
 	 * @return If this is wide.
@@ -42,6 +62,29 @@ public enum StackJavaType
 	public final boolean isWide()
 	{
 		return (this == LONG || this == DOUBLE);
+	}
+	
+	/**
+	 * Returns the software math class.
+	 *
+	 * @return The software math class.
+	 * @since 2019/05/27
+	 */
+	public final ClassName softwareMathClass()
+	{
+		String base;
+		switch (this)
+		{
+			case INTEGER:	base = "SoftInteger"; break;
+			case LONG:		base = "SoftLong"; break;
+			case FLOAT:		base = "SoftFloat"; break;
+			case DOUBLE:	base = "SoftDouble"; break;
+			
+			default:
+				throw new todo.TODO();
+		}
+		
+		return new ClassName("cc/squirreljme/jvm/" + base);
 	}
 	
 	/**

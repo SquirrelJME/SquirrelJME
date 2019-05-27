@@ -295,7 +295,6 @@ public final class NativeInstruction
 			
 			case NativeInstructionType.ARRAYLEN:
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
-			case NativeInstructionType.CONVERSION:
 			case NativeInstructionType.COPY:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
@@ -303,8 +302,6 @@ public final class NativeInstruction
 				return 2;
 					
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
-			case NativeInstructionType.CONVERSION_TO_WIDE:
-			case NativeInstructionType.CONVERSION_FROM_WIDE:
 			case NativeInstructionType.DEBUG_ENTRY:
 			case NativeInstructionType.DEBUG_POINT:
 			case NativeInstructionType.IF_ICMP:
@@ -319,7 +316,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 				return 3;
 			
-			case NativeInstructionType.CONVERSION_WIDE:
 			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
 				return 4;
@@ -371,25 +367,8 @@ public final class NativeInstruction
 					
 				// [u16, u16]
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
-			case NativeInstructionType.CONVERSION:
 			case NativeInstructionType.COPY:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT);
-			
-				// [u16, u16|u16]
-			case NativeInstructionType.CONVERSION_TO_WIDE:
-			case NativeInstructionType.CONVERSION_FROM_WIDE:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT);
-				
-				// [u16|u16, u16|u16]
-			case NativeInstructionType.CONVERSION_WIDE:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 				
@@ -528,27 +507,6 @@ public final class NativeInstruction
 			upper == NativeInstructionType.SPECIAL_B)
 			return __op;
 		
-		// Conversion types might be going to a wide type, from a wide type,
-		// or between wide types (so they need more registers
-		else if (upper == NativeInstructionType.CONVERSION)
-		{
-			// Use specific set of operations
-			switch (__op & NativeInstructionType.CONVERSION_WIDE)
-			{
-				case NativeInstructionType.CONVERSION:
-					return NativeInstructionType.CONVERSION;
-				
-				case NativeInstructionType.CONVERSION_TO_WIDE:
-					return NativeInstructionType.CONVERSION_TO_WIDE;
-					
-				case NativeInstructionType.CONVERSION_FROM_WIDE:
-					return NativeInstructionType.CONVERSION_FROM_WIDE;
-					
-				case NativeInstructionType.CONVERSION_WIDE:
-					return NativeInstructionType.CONVERSION_WIDE;
-			}
-		}
-		
 		// Memory offset register
 		else if (upper == NativeInstructionType.MEMORY_OFF_REG)
 			if ((__op & 0b110) == 0b110)
@@ -612,19 +570,6 @@ public final class NativeInstruction
 					"_" +
 					(((__op & 0x80) != 0) ? "ICONST" : "REG");
 				
-			case NativeInstructionType.CONVERSION:
-			case NativeInstructionType.CONVERSION_TO_WIDE:
-			case NativeInstructionType.CONVERSION_FROM_WIDE:
-			case NativeInstructionType.CONVERSION_WIDE:
-				{
-					StackJavaType a = StackJavaType.of((__op >> 2) & 0x3),
-						b = StackJavaType.of(__op & 0x03);
-					if (a == b)
-						return "COPY_" + a.name();
-					
-					return "CONV_" + a.name() + "_TO_" + b.name();
-				}
-
 			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 				return "ATOMIC_INT_DECREMENT_AND_GET";

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.vki;
+package cc.squirreljme.jvm;
 
 /**
  * Software math operations on 64-bit integer types.
@@ -26,17 +26,6 @@ public final class SoftLong
 	}
 	
 	/**
-	 * Converts to long.
-	 *
-	 * @param __a A.
-	 * @since 2019/05/24
-	 */
-	public static void intToLong(int __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Adds two values.
 	 *
 	 * @param __ah A high.
@@ -45,8 +34,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longAdd(int __ah, int __al, int __bh, int __bl)
+	public static void add(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -59,8 +49,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longAnd(int __ah, int __al, int __bh, int __bl)
+	public static void and(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -73,8 +64,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longCmp(int __ah, int __al, int __bh, int __bl)
+	public static void cmp(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -87,8 +79,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longDiv(int __ah, int __al, int __bh, int __bl)
+	public static void div(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -101,8 +94,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longMul(int __ah, int __al, int __bh, int __bl)
+	public static void mul(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -113,8 +107,9 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void longNeg(int __ah, int __al)
+	public static void neg(int __ah, int __al)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -127,8 +122,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longOr(int __ah, int __al, int __bh, int __bl)
+	public static void or(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -141,8 +137,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longRem(int __ah, int __al, int __bh, int __bl)
+	public static void rem(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -154,8 +151,9 @@ public final class SoftLong
 	 * @param __s Shift amount.
 	 * @since 2019/05/24
 	 */
-	public static void longShl(int __ah, int __al, int __s)
+	public static void shl(int __ah, int __al, int __s)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -167,8 +165,9 @@ public final class SoftLong
 	 * @param __s Shift amount.
 	 * @since 2019/05/24
 	 */
-	public static void longShr(int __ah, int __al, int __s)
+	public static void shr(int __ah, int __al, int __s)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -181,20 +180,21 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longSub(int __ah, int __al, int __bh, int __bl)
+	public static void sub(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
 	/**
 	 * Converts to double.
 	 *
-	 * @param __ah A high.
-	 * @param __al A low.
+	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void longToDouble(int __ah, int __al)
+	public static void toDouble(int __ah, int __al)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -205,8 +205,9 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void longToFloat(int __ah, int __al)
+	public static void toFloat(int __ah, int __al)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -217,8 +218,9 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void longToInteger(int __ah, int __al)
+	public static void toInteger(int __ah, int __al)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -230,8 +232,9 @@ public final class SoftLong
 	 * @param __s Shift amount.
 	 * @since 2019/05/24
 	 */
-	public static void longUShr(int __ah, int __al, int __s)
+	public static void ushr(int __ah, int __al, int __s)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -244,8 +247,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void longXor(int __ah, int __al, int __bh, int __bl)
+	public static void xor(int __ah, int __al, int __bh, int __bl)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 }

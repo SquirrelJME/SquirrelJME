@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.vki;
+package cc.squirreljme.jvm;
 
 /**
  * Software math operations on 32-bit floats.
@@ -32,8 +32,9 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void floatAdd(int __a, int __b)
+	public static void add(int __a, int __b)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -44,8 +45,9 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void floatCmpL(int __a, int __b)
+	public static void cmpl(int __a, int __b)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -56,8 +58,9 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void floatCmpG(int __a, int __b)
+	public static void cmpg(int __a, int __b)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -68,8 +71,9 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void floatDiv(int __a, int __b)
+	public static void div(int __a, int __b)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -80,8 +84,9 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void floatMul(int __a, int __b)
+	public static void mul(int __a, int __b)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -91,8 +96,9 @@ public class SoftFloat
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void floatNeg(int __a)
+	public static void neg(int __a)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -103,8 +109,9 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void floatRem(int __a, int __b)
+	public static void rem(int __a, int __b)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -115,8 +122,9 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void floatSub(int __a, int __b)
+	public static void sub(int __a, int __b)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -126,8 +134,9 @@ public class SoftFloat
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void floatToDouble(int __a)
+	public static void toDouble(int __a)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -137,8 +146,9 @@ public class SoftFloat
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void floatToInteger(int __a)
+	public static void toInteger(int __a)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -148,19 +158,9 @@ public class SoftFloat
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void floatToLong(int __a)
+	public static void toLong(int __a)
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Converts to float.
-	 *
-	 * @param __a A.
-	 * @since 2019/05/24
-	 */
-	public static void intToFloat(int __a)
-	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 }
