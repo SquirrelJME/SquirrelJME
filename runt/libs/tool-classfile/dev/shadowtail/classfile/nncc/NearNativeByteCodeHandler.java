@@ -253,27 +253,35 @@ public final class NearNativeByteCodeHandler
 			volaip, Kernel.ARRAY_BASE_SIZE, volaip);
 		
 		// If we are storing an object....
-		if (__v.type.isObject())
+		int voltemp = -1;
+		boolean isobject;
+		if ((isobject = __v.type.isObject()))
 		{
 			// Check if the array type is compatible
 			this.__basicCheckArrayStore(__in.register, __v.register);
 			
-			// Read existing object so it can be uncounted
-			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-				NativeCode.RETURN_REGISTER + 1,
-				__in.register, volaip);
-			
-			// Uncount this object
-			this.__refUncount(NativeCode.RETURN_REGISTER + 1);
-			
 			// Count the object being stored
 			this.__refCount(__v.register);
+			
+			// Read existing object so it can be uncounted later
+			voltemp = volatiles.get();
+			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+				voltemp, __in.register, volaip);
 		}
 		
 		// Store value
 		codebuilder.addMemoryOffReg(__dt, false,
-			__v.register,
-			__in.register, volaip);
+			__v.register, __in.register, volaip);
+		
+		// Reference uncount old value
+		if (isobject)
+		{
+			// Uncount old
+			this.__refUncount(voltemp);
+			
+			// Not needed
+			volatiles.remove(voltemp);
+		}
 		
 		// No longer used
 		volatiles.remove(volaip);
@@ -436,14 +444,14 @@ public final class NearNativeByteCodeHandler
 		boolean isobject;
 		if ((isobject = __fr.memberType().isObject()))
 		{
+			// Count our own reference up
+			this.__refCount(__v.register);
+			
 			// Read the value of the field for later clear
 			voltemp = volatiles.get();
 			codebuilder.addMemoryOffReg(
-				DataType.of(__fr.memberType().primitiveType()), false,
+				DataType.of(__fr.memberType().primitiveType()), true,
 				voltemp, ireg, volfioff);
-			
-			// Count our own reference up
-			this.__refCount(__v.register);
 		}
 		
 		// Write to memory
@@ -966,14 +974,14 @@ public final class NearNativeByteCodeHandler
 		boolean isobject;
 		if ((isobject = __fr.memberType().isObject()))
 		{
+			// Count our own reference up
+			this.__refCount(__v.register);
+			
 			// Read the value of the field for later clear
 			voltemp = volatiles.get();
 			codebuilder.addMemoryOffReg(
-				DataType.of(__fr.memberType().primitiveType()), false,
+				DataType.of(__fr.memberType().primitiveType()), true,
 				voltemp, NativeCode.STATIC_FIELD_REGISTER, volsfo);
-			
-			// Count our own reference up
-			this.__refCount(__v.register);
 		}
 		
 		// Write to memory
