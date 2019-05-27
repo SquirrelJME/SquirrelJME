@@ -80,9 +80,13 @@ public final class SystemCallIndex
 	public static final short PD_OF_STDERR =
 		15;
 	
+	/** Pipe descriptor: Write single byte. */
+	public static final short PD_WRITE_BYTE =
+		16;
+	
 	/** System call count. */
 	public static final short NUM_SYSCALLS =
-		16;
+		17;
 	
 	/**
 	 * Not used.

@@ -23,6 +23,7 @@ import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -666,10 +667,18 @@ public final class NativeCPU
 					// System call
 				case NativeInstructionType.SYSTEM_CALL:
 					{
+						// The arguments to the system calls are in registers
+						// so they must be extracted first before they can be
+						// known
+						int nrl = reglist.length;
+						int[] sargs = new int[nrl];
+						for (int i = 0; i < nrl; i++)
+							sargs[i] = lr[reglist[i]];
+						
 						// Set the return register to whatever system call
 						// was used
 						lr[NativeCode.RETURN_REGISTER] = this.__sysCall(
-							(short)lr[args[0]], reglist);
+							(short)lr[args[0]], sargs);
 					}
 					break;
 					
@@ -753,7 +762,8 @@ public final class NativeCPU
 			trace.methodName() + ":" + trace.methodDescriptor());
 		
 		// Is this an invoke?
-		boolean isinvoke = (__op == NativeInstructionType.INVOKE);
+		boolean isinvoke = (__op == NativeInstructionType.INVOKE ||
+			__op == NativeInstructionType.SYSTEM_CALL);
 		
 		// Arguments to print, invocations get 1 (pc) + register list
 		int naf = (isinvoke ? 1 + __reglist.length:
@@ -1077,8 +1087,45 @@ public final class NativeCPU
 				// Pipe descriptor of standard error
 			case SystemCallIndex.PD_OF_STDERR:
 				{
-					rv = 1;
+					rv = 2;
 					err = 0;
+				}
+				break;
+				
+				// Write single byte to PD
+			case SystemCallIndex.PD_WRITE_BYTE:
+				{
+					// Depends on the stream
+					int pd = __args[0];
+					OutputStream os = (pd == 1 ? System.out :
+						(pd == 2 ? System.err : null));
+					
+					// Write
+					if (os != null)
+					{
+						try
+						{
+							os.write(__args[1]);
+							
+							// Okay
+							rv = 1;
+							err = 0;
+						}
+						
+						// Failed
+						catch (IOException e)
+						{
+							rv = -1;
+							err = SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE;
+						}
+					}
+					
+					// Failed
+					else
+					{
+						rv = -1;
+						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
+					}
 				}
 				break;
 				

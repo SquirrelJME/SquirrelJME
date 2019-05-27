@@ -44,8 +44,33 @@ public final class DEBUG
 		if (SystemCallError.getError(SystemCallIndex.PD_OF_STDERR) != 0)
 			return;
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Print char by char to the console
+		for (int i = 0, n = __fmt.length(); i < n; i++)
+		{
+			// Read character here
+			char c = __fmt.charAt(i);
+			
+			// Single byte sequence
+			if (c <= 0x7F)
+			{
+				// Forward
+				Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
+					fd, c & 0xFF);
+			}
+			
+			// Double byte sequence
+			else
+			{
+				// Forward
+				Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
+					fd, (c >>> 6) | 0b1100_0000);
+				Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
+					fd, (c & 0b111111));
+			}
+		}
+		
+		// End with newline sequence
+		Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE, fd, '\n');
 	}
 }
 

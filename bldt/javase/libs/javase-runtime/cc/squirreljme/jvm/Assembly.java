@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
 
 /**
@@ -1473,6 +1475,43 @@ public final class Assembly
 				{
 					rv = 1;
 					err = 0;
+				}
+				break;
+				
+				// Write single byte to PD
+			case SystemCallIndex.PD_WRITE_BYTE:
+				{
+					// Depends on the stream
+					int pd = __args[0];
+					OutputStream os = (pd == 1 ? System.out :
+						(pd == 2 ? System.err : null));
+					
+					// Write
+					if (os != null)
+					{
+						try
+						{
+							os.write(__args[1]);
+							
+							// Okay
+							rv = 1;
+							err = 0;
+						}
+						
+						// Failed
+						catch (IOException e)
+						{
+							rv = -1;
+							err = SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE;
+						}
+					}
+					
+					// Failed
+					else
+					{
+						rv = -1;
+						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
+					}
 				}
 				break;
 			
