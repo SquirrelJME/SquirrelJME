@@ -36,8 +36,17 @@ public final class SoftLong
 	 */
 	public static void add(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Add the higher/lower parts
+		int ch = __ah + __bh,
+			cl = __al + __bl;
+		
+		// If the low addition carried a bit over, then set that bit in the
+		// high part
+		if ((cl + 0x80000000) < (__al + 0x80000000))
+			ch++;
+		
+		// Return result
+		Assembly.returnFrame(ch, cl);
 	}
 	
 	/**
@@ -51,8 +60,7 @@ public final class SoftLong
 	 */
 	public static void and(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		Assembly.returnFrame(__ah & __bh, __al & __bl);
 	}
 	
 	/**
@@ -124,8 +132,7 @@ public final class SoftLong
 	 */
 	public static void or(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		Assembly.returnFrame(__ah | __bh, __al | __bl);
 	}
 	
 	/**
@@ -220,8 +227,8 @@ public final class SoftLong
 	 */
 	public static void toInteger(int __ah, int __al)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Just return the low order bits
+		Assembly.returnFrame(__al);
 	}
 	
 	/**
@@ -249,8 +256,7 @@ public final class SoftLong
 	 */
 	public static void xor(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		Assembly.returnFrame(__ah ^ __bh, __al ^ __bl);
 	}
 }
 
