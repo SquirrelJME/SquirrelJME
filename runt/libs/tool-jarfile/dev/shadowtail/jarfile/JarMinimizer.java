@@ -613,8 +613,13 @@ public final class JarMinimizer
 			return bi._classoffset + mcf.header.smoff + mm.codeoffset;
 		
 		// Otherwise fallback to instance methods
-		return bi._classoffset + mcf.header.imoff +
-			mcf.method(false, __mn, __mt).codeoffset;
+		// {@squirreljme.error BC0b Could not locate the given method.
+		// (The class; The name; The type)}
+		mm = mcf.method(false, __mn, __mt);
+		if (mm == null)
+			throw new InvalidClassFormatException(
+				String.format("BC0b %s %s %s", __cl, __mn, __mt));
+		return bi._classoffset + mcf.header.imoff + mm.codeoffset;
 	}
 	
 	/**

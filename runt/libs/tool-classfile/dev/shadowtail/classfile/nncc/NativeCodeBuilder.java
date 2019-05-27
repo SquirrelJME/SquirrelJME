@@ -227,28 +227,17 @@ public final class NativeCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		int op;
-		boolean wide;
 		switch (__jt)
 		{
 			case INTEGER:
 				op = NativeInstructionType.MATH_CONST_INT;
-				wide = false;
 				break;
 				
+				// {@squirreljme.error JC4h May only do math on integer.}
 			case LONG:
-				op = NativeInstructionType.MATH_CONST_LONG;
-				wide = true;
-				break;
-				
 			case FLOAT:
-				op = NativeInstructionType.MATH_CONST_FLOAT;
-				wide = false;
-				break;
-				
 			case DOUBLE:
-				op = NativeInstructionType.MATH_CONST_DOUBLE;
-				wide = true;
-				break;
+				throw new RuntimeException("JC4h");
 			
 			default:
 				throw new todo.OOPS(__jt.name());
@@ -256,11 +245,6 @@ public final class NativeCodeBuilder
 		
 		// Build operation
 		int rop = op | __mf.ordinal();
-		if (wide)
-			return this.add(rop,
-				__a, (__a == 0 ? 0 : __a + 1),
-				__b,
-				__c, (__c == 0 ? 0 : __c + 1));
 		return this.add(rop, __a, __b, __c);
 	}
 	
@@ -284,28 +268,17 @@ public final class NativeCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		int op;
-		boolean wide;
 		switch (__jt)
 		{
 			case INTEGER:
 				op = NativeInstructionType.MATH_REG_INT;
-				wide = false;
 				break;
 				
+				// {@squirreljme.error JC4h May only do math on integer.}
 			case LONG:
-				op = NativeInstructionType.MATH_REG_LONG;
-				wide = true;
-				break;
-				
 			case FLOAT:
-				op = NativeInstructionType.MATH_REG_FLOAT;
-				wide = false;
-				break;
-				
 			case DOUBLE:
-				op = NativeInstructionType.MATH_REG_DOUBLE;
-				wide = true;
-				break;
+				throw new RuntimeException("JC4h");
 			
 			default:
 				throw new todo.OOPS(__jt.name());
@@ -313,11 +286,6 @@ public final class NativeCodeBuilder
 		
 		// Build operation
 		int rop = op | __mf.ordinal();
-		if (wide)
-			return this.add(rop,
-				__a, (__a == 0 ? 0 : __a + 1),
-				__b, (__b == 0 ? 0 : __b + 1),
-				__c, (__c == 0 ? 0 : __c + 1));
 		return this.add(rop, __a, __b, __c);
 	}
 	

@@ -777,8 +777,6 @@ public final class NativeCPU
 					i == 2) ||
 				(encoding == NativeInstructionType.MATH_CONST_INT &&
 					i == 1) ||
-				(encoding == NativeInstructionType.MATH_CONST_FLOAT &&
-					i == 1) ||
 				(encoding == NativeInstructionType.IFEQ_CONST &&
 					i == 1) ||
 				(encoding == NativeInstructionType.ATOMIC_INT_INCREMENT &&

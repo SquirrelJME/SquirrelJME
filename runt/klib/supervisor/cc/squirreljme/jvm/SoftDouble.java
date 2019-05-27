@@ -114,6 +114,20 @@ public class SoftDouble
 	}
 	
 	/**
+	 * ORs value, used for constants.
+	 *
+	 * @param __ah A high.
+	 * @param __al A low.
+	 * @param __bh B high.
+	 * @param __bl B low.
+	 * @since 2019/05/27
+	 */
+	public static void or(int __ah, int __al, int __bh, int __bl)
+	{
+		Assembly.returnFrame(__ah | __bh, __al | __bl);
+	}
+	
+	/**
 	 * Remainders a value.
 	 *
 	 * @param __ah A high.

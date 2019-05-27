@@ -309,9 +309,7 @@ public final class NativeInstruction
 			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.LOAD_TABLE:
 			case NativeInstructionType.MATH_REG_INT:
-			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_CONST_INT:
-			case NativeInstructionType.MATH_CONST_FLOAT:
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 				return 3;
@@ -319,14 +317,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
 				return 4;
-				
-			case NativeInstructionType.MATH_CONST_LONG:
-			case NativeInstructionType.MATH_CONST_DOUBLE:
-				return 5;
-				
-			case NativeInstructionType.MATH_REG_LONG:
-			case NativeInstructionType.MATH_REG_DOUBLE:
-				return 6;
 				
 				// {@squirreljme.error JC2r Unknown instruction argument
 				// count.}
@@ -390,7 +380,6 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_POINT:
 			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.LOAD_TABLE:
-			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
 				return ArgumentFormat.of(
@@ -405,48 +394,12 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
-					
-				// [u16|u16, u16|u16, u16|u16]
-			case NativeInstructionType.MATH_REG_DOUBLE:
-			case NativeInstructionType.MATH_REG_LONG:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT);
 			
 				// [u16, i32, u16]
 			case NativeInstructionType.MATH_CONST_INT:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.INT32,
-					ArgumentFormat.VUINT);
-			
-				// [u16, f32, u16]
-			case NativeInstructionType.MATH_CONST_FLOAT:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.FLOAT32,
-					ArgumentFormat.VUINT);
-			
-				// [u16|u16, l64, u16|u16]
-			case NativeInstructionType.MATH_CONST_LONG:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.INT64,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT);
-				
-				// [u16|u16, d64, u16|u16]
-			case NativeInstructionType.MATH_CONST_DOUBLE:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.FLOAT64,
-					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 				
 				// [u16, u16, i32]
@@ -537,13 +490,7 @@ public final class NativeInstruction
 		switch (NativeInstruction.encoding(__op))
 		{
 			case NativeInstructionType.MATH_REG_INT:
-			case NativeInstructionType.MATH_REG_LONG:
-			case NativeInstructionType.MATH_REG_FLOAT:
-			case NativeInstructionType.MATH_REG_DOUBLE:
 			case NativeInstructionType.MATH_CONST_INT:
-			case NativeInstructionType.MATH_CONST_LONG:
-			case NativeInstructionType.MATH_CONST_FLOAT:
-			case NativeInstructionType.MATH_CONST_DOUBLE:
 				return StackJavaType.of((__op >> 4) & 0x3).name() +
 					"_" +
 					MathType.of(__op & 0x0F).name() +
