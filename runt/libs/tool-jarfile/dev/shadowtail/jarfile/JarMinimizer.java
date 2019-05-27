@@ -656,6 +656,31 @@ public final class JarMinimizer
 		if (__init == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
+		// Primitive types and array types do not exist so they just use the
+		// same vtable as Object
+		if (__cl.isPrimitive() || __cl.isArray())
+			return this.__classVTable(__init,
+				new ClassName("java/lang/Object"));
+		
+		// We need boot information to get class information!
+		Map<ClassName, __BootInfo__> boots = this._boots;
+		
+		// Build array of all the classes that are used in the method and
+		// super class chain
+		List<__BootInfo__> classes = new ArrayList<>();
+		for (ClassName at = __cl, su = null; at != null; at = su)
+		{
+			// Load class info for this
+			__BootInfo__ bi = boots.get(at);
+			
+			// Add this class to the start of the chain (so super classes
+			// go in at the start)
+			classes.add(0, bi);
+			
+			// Set super class for next run
+			su = bi._class.superName();
+		}
+		
 		// Abstract methods which are not bound to anything will instead
 		// be bound to this method which indicates failure.
 		int jpvc = this.__classMethodCodeAddress(
@@ -666,6 +691,66 @@ public final class JarMinimizer
 		List<Integer> entries = new ArrayList<>(numv);
 		for (int i = 0; i < numv; i++)
 			entries.add(jpvc);
+		
+		// Go through every class and fill the table information
+		// The class index here will be used as a stopping point since methods
+		// at higher points will stop here
+		for (int ci = 0, cn = classes.size(); ci < cn; ci++)
+		{
+			// Get the class to scan through
+			__BootInfo__ mbi = classes.get(ci);
+			MinimizedClassFile mcf = mbi._class;
+			
+			// Get the VTable base for this class
+			ClassName mcfname = mcf.thisName();
+			int vb = this.__classMethodBase(mcfname);
+			
+			// Process each interface method in this class
+			for (MinimizedMethod mm : mcf.methods(false))
+			{
+				// Determine the actual index of this entry
+				int vat = vb + mm.index;
+				
+				// Private visibility modifies how lookup is done
+				boolean ispriv = mm.flags().isPrivate(),
+					ispkpriv = mm.flags().isPackagePrivate();
+				
+				// Start at the end of the class scan to find the highest
+				// replacing class member
+				// Note that for any methods which are private the lookup
+				// only starts at the base class because those are not visible
+				// to any other method
+				MethodNameAndType mnat = mm.nameAndType();
+				for (int pi = (ispriv ? ci : cn - 1); pi >= ci; pi--)
+				{
+					// Get the class information for this one
+					__BootInfo__ pbi = classes.get(pi);
+					MinimizedClassFile pcf = pbi._class;
+					ClassName pcfname = pcf.thisName();
+					
+					// If our method is package private and the other class
+					// is not in the same package then we cannot link to that
+					// method because it does not inherit.
+					if (ispkpriv && !mcfname.isInSamePackage(pcfname))
+						continue;
+					
+					// If the class has no such method then stop
+					MinimizedMethod pm = pcf.method(false, mnat);
+					if (pm == null)
+						continue;
+					
+					// Debug
+					todo.DEBUG.note("Link: %s:%s -> %s:%s",
+						mcfname, mnat,
+						pcfname, mnat);
+						
+					// Use this method
+					entries.set(vat, pbi._classoffset + pcf.header.imoff +
+						pm.codeoffset);
+					break;
+				}
+			}
+		}
 		
 		// Allocate array
 		int rv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * numv));
