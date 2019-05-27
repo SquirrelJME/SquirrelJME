@@ -613,7 +613,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathType.SIGN_X8,
+						MathType.SIGNX8,
 						0,
 					};
 				break;
@@ -660,7 +660,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathType.SIGN_HALF,
+						MathType.SIGNX16,
 						0,
 					};
 				break;

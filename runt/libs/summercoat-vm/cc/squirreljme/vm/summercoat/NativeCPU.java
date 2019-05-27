@@ -493,8 +493,8 @@ public final class NativeCPU
 							case AND:		c = a & b; break;
 							case OR:		c = a | b; break;
 							case XOR:		c = a ^ b; break;
-							case SIGN_X8:	c = (byte)a; break;
-							case SIGN_HALF:	c = (short)a; break;
+							case SIGNX8:	c = (byte)a; break;
+							case SIGNX16:	c = (short)a; break;
 							
 							case CMPL:
 							case CMPG:
