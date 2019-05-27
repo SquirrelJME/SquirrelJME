@@ -2,6 +2,7 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -9,27 +10,31 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-
 /**
- * This represents the Java accessible class object which describes this
- * class.
+ * This is thrown when cloning is not supported for the given object.
  *
- * @param <C> The class type.
- * @since 2019/05/26
+ * @since 2018/12/04
  */
-public final class Class<C>
+public class CloneNotSupportedException
+	extends Exception
 {
 	/**
-	 * Returns the super class of this class.
+	 * Initializes the exception with no message or cause.
 	 *
-	 * @return The super class of this class.
-	 * @since 2019/05/26
+	 * @since 2018/12/04
 	 */
-	public final Class<?> getSuperclass()
+	public CloneNotSupportedException()
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public CloneNotSupportedException(String __m)
+	{
+		super(__m);
 	}
 }
 

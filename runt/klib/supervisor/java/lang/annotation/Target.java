@@ -2,34 +2,29 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.lang;
-
-import cc.squirreljme.jvm.Assembly;
+package java.lang.annotation;
 
 /**
- * This represents the Java accessible class object which describes this
- * class.
+ * Specifies the context in which the annotation is valid.
  *
- * @param <C> The class type.
- * @since 2019/05/26
+ * @since 2014/10/13
  */
-public final class Class<C>
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE})
+public @interface Target
 {
 	/**
-	 * Returns the super class of this class.
+	 * A list of valid contexts where the annotation may be used.
 	 *
-	 * @return The super class of this class.
-	 * @since 2019/05/26
+	 * @return An array of permitted targets.
+	 * @since 2014/10/13
 	 */
-	public final Class<?> getSuperclass()
-	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
-	}
+	ElementType[] value();
 }
 

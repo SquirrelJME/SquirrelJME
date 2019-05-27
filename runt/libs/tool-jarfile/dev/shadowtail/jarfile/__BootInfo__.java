@@ -40,6 +40,10 @@ final class __BootInfo__
 	/** The base pointer position for fields. */
 	int _baseoff;
 	
+	/** The VTable for this class. */
+	int _vtable =
+		-1;
+	
 	/**
 	 * Initializes the boot info.
 	 *
