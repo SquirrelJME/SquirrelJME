@@ -18,8 +18,17 @@ import cc.squirreljme.jvm.Assembly;
  */
 public final class String
 {
+	/** The first interned string. */
+	private static volatile String _FIRST_INTERN;
+	
 	/** The backing array. */
 	transient final char[] _chars;
+	
+	/** The hashcode for this string. */
+	transient int _hashcode;
+	
+	/** The next intern string in the chain. */
+	private transient volatile String _nextintern;
 	
 	/**
 	 * Initializes an empty string.
@@ -99,8 +108,32 @@ public final class String
 	@Override
 	public final boolean equals(Object __o)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof String))
+			return false;
+		
+		String o = (String)__o;
+		if (this.hashCode() != o.hashCode())
+			return false;
+			
+		// Character data
+		char[] ac = this._chars,
+			bc = o._chars;
+		
+		// If the length differs, they are not equal
+		int n = ac.length;
+		if (n != bc.length)
+			return false;
+		
+		// Compare individual characters
+		for (int i = 0; i < n; i++)
+			if (ac[i] != bc[i])
+				return false;
+		
+		// Would be a match!
+		return true;
 	}
 	
 	/**
@@ -110,8 +143,21 @@ public final class String
 	@Override
 	public final int hashCode()
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// If the hashcode was already determined before then use that
+		// cache
+		int rv = this._hashcode;
+		if (rv != 0)
+			return rv;
+		
+		// Calculate the hashCode(), the JavaDoc gives the following formula:
+		// == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes!
+		char[] ch = this._chars;
+		for (int i = 0, n = ch.length; i < n; i++)
+			rv = ((rv << 5) - rv) + ch[i];
+		
+		// Cache hashcode for later
+		this._hashcode = rv;
+		return rv;
 	}
 	
 	/**
@@ -122,8 +168,32 @@ public final class String
 	 */
 	public final String intern()
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// If no strings have ever been interned before, make this intern
+		String first = _FIRST_INTERN;
+		if (first == null)
+		{
+			_FIRST_INTERN = this;
+			return this;
+		}
+		
+		// Go through the linked list chain finding our string
+		String at = first;
+		while (at != null)
+		{
+			// Use the target string if it is the same
+			if (this.equals(at))
+				return at;
+			
+			// Go to the next link
+			at = at._nextintern;
+		}
+		
+		// Next intern is the first and the first becomes this one
+		this._nextintern = first;
+		_FIRST_INTERN = this;
+		
+		// Return our string since it was not in the chain
+		return this;
 	}
 	
 	/**
