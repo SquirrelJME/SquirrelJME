@@ -296,6 +296,7 @@ public final class NativeInstruction
 			case NativeInstructionType.ARRAYLEN:
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.CONVERSION:
+			case NativeInstructionType.COPY:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
 			case NativeInstructionType.SYSTEM_CALL:
@@ -371,6 +372,7 @@ public final class NativeInstruction
 				// [u16, u16]
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.CONVERSION:
+			case NativeInstructionType.COPY:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
@@ -629,6 +631,7 @@ public final class NativeInstruction
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 				return "ATOMIC_INT_INCREMENT";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
+			case NativeInstructionType.COPY:			return "COPY";
 			case NativeInstructionType.DEBUG_ENTRY:		return "DEBUG_ENTRY";
 			case NativeInstructionType.DEBUG_EXIT:		return "DEBUG_EXIT";
 			case NativeInstructionType.DEBUG_POINT:		return "DEBUG_POINT";
