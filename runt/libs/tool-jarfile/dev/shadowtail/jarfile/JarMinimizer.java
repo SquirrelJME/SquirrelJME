@@ -55,6 +55,13 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  */
 public final class JarMinimizer
 {
+	/**
+	 * {@squirreljme.property dev.shadowtail.jarfile.debug=boolean
+	 * Should debugging text be printed for the JAR minimizer?}
+	 */
+	static final boolean _ENABLE_DEBUG =
+		Boolean.getBoolean("dev.shadowtail.jarfile.debug");
+	
 	/** Is this a boot JAR? */
 	protected final boolean boot;
 	
@@ -324,8 +331,9 @@ public final class JarMinimizer
 		bi._classdata = (rv = __init.allocate(this.__classAllocSize(cdcln)));
 		
 		// Debug
-		todo.DEBUG.note("Writing CDV2 for %s (%d, virt %d)", __cl, rv,
-			rv + 1048576);
+		if (_ENABLE_DEBUG)
+			todo.DEBUG.note("Writing CDV2 for %s (%d, virt %d)", __cl, rv,
+				rv + 1048576);
 		
 		// Initialize all fields for all super classes!
 		for (ClassName at = cdcln, atsuper = null; at != null; at = atsuper)
@@ -782,8 +790,9 @@ public final class JarMinimizer
 						continue;
 					
 					// Debug
-					todo.DEBUG.note("Link: (%s) %s -> %s : %s",
-						__cl, mcfname, pcfname, mnat);
+					if (_ENABLE_DEBUG)
+						todo.DEBUG.note("Link: (%s) %s -> %s : %s",
+							__cl, mcfname, pcfname, mnat);
 						
 					// Use this method
 					entries.set(vat, pbi._classoffset + pcf.header.imoff +
@@ -934,7 +943,9 @@ public final class JarMinimizer
 		bi._pooloffset = (rv = __init.allocate(n * 4));
 		
 		// Debug
-		todo.DEBUG.note("Building %s at %d (virt %d)", __cl, rv, rv + 1048576);
+		if (_ENABLE_DEBUG)
+			todo.DEBUG.note("Building %s at %d (virt %d)",
+				__cl, rv, rv + 1048576);
 		
 		// Process the constant pool
 		for (int i = 1; i < n; i++)
@@ -1192,7 +1203,8 @@ public final class JarMinimizer
 			__dos.writeInt((injaraddr = (reloff + (baseaddr = jdos.size()))));
 			
 			// Debug
-			todo.DEBUG.note("Boot RAM written at @%08x", injaraddr);
+			if (_ENABLE_DEBUG)
+				todo.DEBUG.note("Boot RAM written at @%08x", injaraddr);
 			
 			// Initialize and write startup memory
 			int[] poolptr = new int[1],

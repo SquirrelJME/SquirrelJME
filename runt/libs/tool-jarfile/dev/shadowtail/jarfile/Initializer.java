@@ -269,7 +269,8 @@ public final class Initializer
 			dos.writeInt(-1);
 			
 			// Debug
-			todo.DEBUG.note("Wrote %d bytes, %d ops", dos.size(), n);
+			if (JarMinimizer._ENABLE_DEBUG)
+				todo.DEBUG.note("Wrote %d bytes, %d ops", dos.size(), n);
 			
 			// Done!
 			return baos.toByteArray();
