@@ -128,8 +128,37 @@ public final class Allocator
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Determine the seeker position for this chunk
+		int seeker = __p - CHUNK_LENGTH;
+		
+		// Read chunk properties
+		int csz = Assembly.memReadInt(seeker, CHUNK_SIZE_OFFSET),
+			cnx = Assembly.memReadInt(seeker, CHUNK_NEXT_OFFSET);
+		
+		// Parameters used for memory corruption
+		int i = CHUNK_LENGTH,
+			bm = Constants.BAD_MAGIC,
+			rci = CHUNK_LENGTH + Constants.OBJECT_COUNT_OFFSET;
+		
+		// Corrupt anything up to the reference count index
+		for (; i < rci; i+= 4)
+			Assembly.memWriteInt(seeker, i, bm);
+		
+		// Make sure the reference count index is zero, to detect uncount
+		// after free
+		if (i < csz)
+		{
+			Assembly.memWriteInt(seeker, i, 0);
+			i += 4;
+		}
+		
+		// Then just wipe the remaining memory
+		for (; i < csz; i+= 4)
+			Assembly.memWriteInt(seeker, i, bm);
+		
+		// Set as free
+		Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
+			csz | MEMPART_FREE_BIT);
 	}
 	
 	/**
