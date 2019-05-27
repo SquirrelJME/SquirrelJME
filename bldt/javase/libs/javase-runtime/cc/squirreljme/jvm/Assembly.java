@@ -1451,6 +1451,30 @@ public final class Assembly
 					err = 0;
 				}
 				break;
+				
+				// Pipe descriptor of standard input
+			case SystemCallIndex.PD_OF_STDIN:
+				{
+					rv = 0;
+					err = 0;
+				}
+				break;
+				
+				// Pipe descriptor of standard output
+			case SystemCallIndex.PD_OF_STDOUT:
+				{
+					rv = 1;
+					err = 0;
+				}
+				break;
+				
+				// Pipe descriptor of standard error
+			case SystemCallIndex.PD_OF_STDERR:
+				{
+					rv = 1;
+					err = 0;
+				}
+				break;
 			
 			default:
 				// Returns no value but sets an error
