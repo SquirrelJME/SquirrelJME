@@ -130,7 +130,7 @@ public final class JVMFunction
 	 * @param __cldx The class index pointer.
 	 * @since 2019/05/26
 	 */
-	public static final int jvmLoadClass(int __cldx)
+	public static final Class<?> jvmLoadClass(int __cldx)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -142,7 +142,7 @@ public final class JVMFunction
 	 * @param __p The pointer to load the string bytes from.
 	 * @since 2019/05/26
 	 */
-	public static final int jvmLoadString(int __p)
+	public static final String jvmLoadString(int __p)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();

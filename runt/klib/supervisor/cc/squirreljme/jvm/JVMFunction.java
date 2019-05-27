@@ -167,7 +167,7 @@ public final class JVMFunction
 	 * @param __cldx The class index pointer.
 	 * @since 2019/05/26
 	 */
-	public static final int jvmLoadClass(int __cldx)
+	public static final Class<?> jvmLoadClass(int __cldx)
 	{
 		// Access of invalid class?
 		if (__cldx == Constants.BAD_MAGIC)
@@ -183,15 +183,15 @@ public final class JVMFunction
 	 * @param __p The pointer to load the string bytes from.
 	 * @since 2019/05/26
 	 */
-	public static final int jvmLoadString(int __p)
+	public static final String jvmLoadString(int __p)
 	{
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
 		
-		// Ignore null pointers
+		// Cannot load from a null string
 		if (__p == 0)
-			return 0;
+			throw new VirtualMachineError();
 		
 		// Read length of the raw bytes
 		int rawlen = Assembly.memReadShort(__p, 0) & 0xFFFF;
@@ -202,7 +202,7 @@ public final class JVMFunction
 			bytes[i] = (byte)Assembly.memReadByte(base, i);
 		
 		// Initialize and intern string
-		return Assembly.objectToPointer(new String(bytes).intern());
+		return new String(bytes).intern();
 	}
 	
 	/**

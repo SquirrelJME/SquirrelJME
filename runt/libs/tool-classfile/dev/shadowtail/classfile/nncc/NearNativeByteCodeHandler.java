@@ -817,7 +817,7 @@ public final class NearNativeByteCodeHandler
 			
 			// Call internal string loader
 			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
-				"jvmLoadString", "(I)I", volstrptr);
+				"jvmLoadString", "(I)Ljava/lang/String;", volstrptr);
 			
 			// Cleanup
 			volatiles.remove(volstrptr);
@@ -2382,7 +2382,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Call internal class object loader
 		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
-			"jvmLoadClass", "(I)I", volcdvt);
+			"jvmLoadClass", "(I)Ljava/lang/Class;", volcdvt);
 		
 		// Cleanup
 		volatiles.remove(volcdvt);
