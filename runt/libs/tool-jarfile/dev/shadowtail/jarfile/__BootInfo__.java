@@ -44,6 +44,10 @@ final class __BootInfo__
 	int _vtable =
 		-1;
 	
+	/** The constant pool references for this class vtable. */
+	int _vtablepool =
+		-1;
+	
 	/**
 	 * Initializes the boot info.
 	 *

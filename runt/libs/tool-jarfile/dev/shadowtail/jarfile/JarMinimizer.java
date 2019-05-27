@@ -377,7 +377,13 @@ public final class JarMinimizer
 						// VTable for virtual calls
 					case "vtablevirtual:[I":
 						__init.memWriteInt(Modifier.RAM_OFFSET,
-							wp, this.__classVTable(__init, __cl));
+							wp, this.__classVTable(__init, __cl)[0]);
+						break;
+						
+						// VTable for pool setting
+					case "vtablepool:[I":
+						__init.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.__classVTable(__init, __cl)[1]);
 						break;
 						
 						// Base offset for the class
@@ -643,10 +649,11 @@ public final class JarMinimizer
 	 *
 	 * @param __init The initializer.
 	 * @param __cl The class to build the vtable for.
+	 * @return The VTable address and the pool table address.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/26
 	 */
-	private final int __classVTable(Initializer __init, ClassName __cl)
+	private final int[] __classVTable(Initializer __init, ClassName __cl)
 		throws NullPointerException
 	{
 		if (__init == null || __cl == null)
@@ -666,7 +673,7 @@ public final class JarMinimizer
 		__BootInfo__ selfbi = boots.get(__cl);
 		int rv = selfbi._vtable;
 		if (rv >= 0)
-			return rv;
+			return new int[]{rv, selfbi._vtablepool};
 		
 		// Build array of all the classes that are used in the method and
 		// super class chain
@@ -687,13 +694,19 @@ public final class JarMinimizer
 		// Abstract methods which are not bound to anything will instead
 		// be bound to this method which indicates failure.
 		int jpvc = this.__classMethodCodeAddress(
-			"cc/squirreljme/jvm/JVMFunction", "jvmPureVirtualCall", "()V");
+			"cc/squirreljme/jvm/JVMFunction", "jvmPureVirtualCall", "()V"),
+			jpvp = this.__initPool(__init, "cc/squirreljme/jvm/JVMFunction");
 		
 		// Initialize method table with initial values
 		int numv = this.__classMethodSize(__cl);
 		List<Integer> entries = new ArrayList<>(numv);
 		for (int i = 0; i < numv; i++)
 			entries.add(jpvc);
+		
+		// Also there need to be pointers to the constant pool as well
+		List<Integer> pools = new ArrayList<>(numv);
+		for (int i = 0; i < numv; i++)
+			pools.add(jpvp);
 		
 		// Go through every class and fill the table information
 		// The class index here will be used as a stopping point since methods
@@ -749,6 +762,7 @@ public final class JarMinimizer
 					// Use this method
 					entries.set(vat, pbi._classoffset + pcf.header.imoff +
 						pm.codeoffset);
+					pools.set(vat, this.__initPool(__init, pcfname));
 					break;
 				}
 			}
@@ -775,8 +789,29 @@ public final class JarMinimizer
 			__init.memWriteInt(Modifier.JAR_OFFSET,
 				wp, entries.get(i));
 		
+		// Also write in the pool values
+		int pv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * numv));
+		selfbi._vtablepool = pv;
+		
+		// Write array details
+		__init.memWriteInt(Modifier.RAM_OFFSET,
+			pv + Kernel.OBJECT_CLASS_OFFSET,
+			this.__classId(__init, new ClassName("[I")));
+		__init.memWriteInt(
+			pv + Kernel.OBJECT_COUNT_OFFSET,
+			999999);
+		__init.memWriteInt(
+			pv + Kernel.ARRAY_LENGTH_OFFSET,
+			numv);
+		
+		// Write in pools
+		wp = pv + Kernel.ARRAY_BASE_SIZE;
+		for (int i = 0; i < numv; i++, wp += 4)
+			__init.memWriteInt(Modifier.RAM_OFFSET,
+				wp, pools.get(i));
+		
 		// Return it
-		return rv;
+		return new int[]{rv, pv};
 	}
 	
 	/**
