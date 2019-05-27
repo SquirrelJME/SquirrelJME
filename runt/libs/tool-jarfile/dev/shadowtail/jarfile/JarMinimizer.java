@@ -10,8 +10,8 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.ClassInfo;
+import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
-import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
@@ -485,21 +485,22 @@ public final class JarMinimizer
 		
 		// The IDs are contained within int[] arrays for simplicity
 		int n = __cls.size(),
-			rv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * n));
+			rv = __init.allocate(Constants.ARRAY_BASE_SIZE + (4 * n));
 		
 		// Write object details
 		__init.memWriteInt(Modifier.RAM_OFFSET,
-			rv + Kernel.OBJECT_CLASS_OFFSET,
+			rv + Constants.OBJECT_CLASS_OFFSET,
 			this.__classId(__init, new ClassName("[I")));
 		__init.memWriteInt(
-			rv + Kernel.OBJECT_COUNT_OFFSET,
+			rv + Constants.OBJECT_COUNT_OFFSET,
 			999999);
 		__init.memWriteInt(
-			rv + Kernel.ARRAY_LENGTH_OFFSET,
+			rv + Constants.ARRAY_LENGTH_OFFSET,
 			n);
 		
 		// Write ID elements
-		for (int i = 0, wp = rv + Kernel.ARRAY_BASE_SIZE; i < n; i++, wp += 4)
+		for (int i = 0, wp = rv + Constants.ARRAY_BASE_SIZE;
+			i < n; i++, wp += 4)
 			__init.memWriteInt(Modifier.RAM_OFFSET,
 				wp, this.__classId(__init, __cls.get(i)));
 		
@@ -775,43 +776,43 @@ public final class JarMinimizer
 		}
 		
 		// Allocate array
-		rv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * numv));
+		rv = __init.allocate(Constants.ARRAY_BASE_SIZE + (4 * numv));
 		selfbi._vtable = rv;
 		
 		// Write array details
 		__init.memWriteInt(Modifier.RAM_OFFSET,
-			rv + Kernel.OBJECT_CLASS_OFFSET,
+			rv + Constants.OBJECT_CLASS_OFFSET,
 			this.__classId(__init, new ClassName("[I")));
 		__init.memWriteInt(
-			rv + Kernel.OBJECT_COUNT_OFFSET,
+			rv + Constants.OBJECT_COUNT_OFFSET,
 			999999);
 		__init.memWriteInt(
-			rv + Kernel.ARRAY_LENGTH_OFFSET,
+			rv + Constants.ARRAY_LENGTH_OFFSET,
 			numv);
 		
 		// Write in entries
-		int wp = rv + Kernel.ARRAY_BASE_SIZE;
+		int wp = rv + Constants.ARRAY_BASE_SIZE;
 		for (int i = 0; i < numv; i++, wp += 4)
 			__init.memWriteInt(Modifier.JAR_OFFSET,
 				wp, entries.get(i));
 		
 		// Also write in the pool values
-		int pv = __init.allocate(Kernel.ARRAY_BASE_SIZE + (4 * numv));
+		int pv = __init.allocate(Constants.ARRAY_BASE_SIZE + (4 * numv));
 		selfbi._vtablepool = pv;
 		
 		// Write array details
 		__init.memWriteInt(Modifier.RAM_OFFSET,
-			pv + Kernel.OBJECT_CLASS_OFFSET,
+			pv + Constants.OBJECT_CLASS_OFFSET,
 			this.__classId(__init, new ClassName("[I")));
 		__init.memWriteInt(
-			pv + Kernel.OBJECT_COUNT_OFFSET,
+			pv + Constants.OBJECT_COUNT_OFFSET,
 			999999);
 		__init.memWriteInt(
-			pv + Kernel.ARRAY_LENGTH_OFFSET,
+			pv + Constants.ARRAY_LENGTH_OFFSET,
 			numv);
 		
 		// Write in pools
-		wp = pv + Kernel.ARRAY_BASE_SIZE;
+		wp = pv + Constants.ARRAY_BASE_SIZE;
 		for (int i = 0; i < numv; i++, wp += 4)
 			__init.memWriteInt(Modifier.RAM_OFFSET,
 				wp, pools.get(i));

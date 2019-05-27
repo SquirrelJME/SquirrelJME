@@ -9,7 +9,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
-import cc.squirreljme.runtime.cldc.vki.Kernel;
+import cc.squirreljme.jvm.Constants;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
@@ -59,7 +59,7 @@ import net.multiphasicapps.classfile.MethodReference;
 public final class NearNativeByteCodeHandler
 	implements ByteCodeHandler
 {
-	/** The kernel class. */
+	/** The jvm functions class. */
 	public static final ClassName JVMFUNC_CLASS =
 		new ClassName("cc/squirreljme/jvm/JVMFunction");
 	
@@ -163,7 +163,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Read length
 		codebuilder.addMemoryOffConst(DataType.INTEGER, true, __len.register,
-			__in.register, Kernel.ARRAY_LENGTH_OFFSET);
+			__in.register, Constants.ARRAY_LENGTH_OFFSET);
 		
 		// Clear references
 		this.__refClear();
@@ -201,7 +201,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
 			__dx.register, __dt.size(), volaip);
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-			volaip, Kernel.ARRAY_BASE_SIZE, volaip);
+			volaip, Constants.ARRAY_BASE_SIZE, volaip);
 		
 		// Do the memory read
 		codebuilder.addMemoryOffReg(__dt, true,
@@ -250,7 +250,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
 			__dx.register, __dt.size(), volaip);
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-			volaip, Kernel.ARRAY_BASE_SIZE, volaip);
+			volaip, Constants.ARRAY_BASE_SIZE, volaip);
 		
 		// If we are storing an object....
 		int voltemp = -1;
@@ -1321,7 +1321,7 @@ public final class NearNativeByteCodeHandler
 		// Read length of array
 		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
 			volarraylen,
-			__ir, Kernel.ARRAY_LENGTH_OFFSET);
+			__ir, Constants.ARRAY_LENGTH_OFFSET);
 		
 		// If the index is greater or equal to the length then the access
 		// is invalid
@@ -1968,7 +1968,7 @@ public final class NearNativeByteCodeHandler
 		// Otherwise, we will purely act on the class of the instance type
 		else
 			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-				volclassid, __args.get(0), Kernel.OBJECT_CLASS_OFFSET);
+				volclassid, __args.get(0), Constants.OBJECT_CLASS_OFFSET);
 		
 		// Load the VTable (from the class we obtained above)
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -2447,7 +2447,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Add count
 		codebuilder.add(NativeInstructionType.ATOMIC_INT_INCREMENT,
-			__r, Kernel.OBJECT_COUNT_OFFSET);
+			__r, Constants.OBJECT_COUNT_OFFSET);
 		
 		// No count is jumped here
 		codebuilder.label(ncj);
@@ -2525,7 +2525,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Add uncount
 		codebuilder.add(NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET,
-			volnowcount, __r, Kernel.OBJECT_COUNT_OFFSET);
+			volnowcount, __r, Constants.OBJECT_COUNT_OFFSET);
 		
 		// If the count is still positive, we do not GC
 		codebuilder.addIfNonZero(volnowcount, ncj);
