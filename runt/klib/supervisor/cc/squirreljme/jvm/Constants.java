@@ -47,5 +47,13 @@ public interface Constants
 	/** Class info flag: Is array type? */
 	public static final int CIF_IS_ARRAY =
 		0x00000001;
+	
+	/** Class info flag: Is array of objects? */
+	public static final int CIF_IS_ARRAY_OF_OBJECTS =
+		0x00000002;
+	
+	/** Is this a primitive type? */
+	public static final int CIF_IS_PRIMITIVE =
+		0x00000004;
 }
 
