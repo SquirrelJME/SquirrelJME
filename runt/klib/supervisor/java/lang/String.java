@@ -102,6 +102,23 @@ public final class String
 	}
 	
 	/**
+	 * Returns the character at the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The character here.
+	 * @throws IndexOutOfBoundsException If it is not within bounds.
+	 * @since 2019/05/27
+	 */
+	public final char charAt(int __i)
+		throws IndexOutOfBoundsException
+	{
+		char[] chars = this._chars;
+		if (__i < 0 || __i >= chars.length)
+			throw new IndexOutOfBoundsException();
+		return chars[__i];
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/26
 	 */
@@ -194,6 +211,17 @@ public final class String
 		
 		// Return our string since it was not in the chain
 		return this;
+	}
+	
+	/**
+	 * Returns the string length.
+	 *
+	 * @return The string length.
+	 * @since 2019/05/27
+	 */
+	public final int length()
+	{
+		return this._chars.length;
 	}
 	
 	/**

@@ -24,6 +24,14 @@ public final class SystemCallError
 	public static final short UNSUPPORTED_SYSTEM_CALL =
 		-1;
 	
+	/** The pipe descriptor is not valid. */
+	public static final short PIPE_DESCRIPTOR_INVALID =
+		-2;
+	
+	/** Write error when writing to the pipe. */
+	public static final short PIPE_DESCRIPTOR_BAD_WRITE =
+		-3;
+	
 	/**
 	 * Not used.
 	 *
