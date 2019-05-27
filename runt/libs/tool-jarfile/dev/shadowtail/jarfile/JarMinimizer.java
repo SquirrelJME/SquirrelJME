@@ -362,6 +362,31 @@ public final class JarMinimizer
 							wp, ClassInfo.MAGIC_NUMBER);
 						break;
 						
+						// Class info flags
+					case "flags:I":
+						{
+							int flags = 0;
+							
+							// Is this array?
+							if (__cl.isArray())
+							{
+								// Flag it
+								flags |= Constants.CIF_IS_ARRAY;
+								
+								// Is its component an object as well?
+								if (!__cl.componentType().isPrimitive())
+									flags |= Constants.CIF_IS_ARRAY_OF_OBJECTS;
+							}
+							
+							// Is this primitive?
+							if (__cl.isPrimitive())
+								flags |= Constants.CIF_IS_PRIMITIVE;
+							
+							// Write flags
+							__init.memWriteInt(wp, flags);
+						}
+						break;
+						
 						// Pointer to the class data in ROM
 					case "miniptr:I":
 						__init.memWriteInt(Modifier.JAR_OFFSET,
@@ -431,12 +456,6 @@ public final class JarMinimizer
 							__init.memWriteInt(
 								wp, cellsize);
 						}
-						break;
-						
-						// ClassData version
-					case "version:I":
-						__init.memWriteInt(
-							wp, 2);
 						break;
 						
 						// Is class info instance

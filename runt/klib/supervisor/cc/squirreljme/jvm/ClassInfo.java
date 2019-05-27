@@ -24,6 +24,9 @@ public final class ClassInfo
 	/** Magic number used to detect corruption. */
 	public final int magic;
 	
+	/** Class information flags. */
+	public final int flags;
+	
 	/** The pointer to the minimized class file. */
 	public final int miniptr;
 	
@@ -57,6 +60,7 @@ public final class ClassInfo
 	/**
 	 * Class information constructor.
 	 *
+	 * @param __fl Class information flags.
 	 * @param __minip Pointer to the hardware class data in ROM.
 	 * @param __sz The size of this class.
 	 * @param __bz The base offset for fields.
@@ -69,13 +73,15 @@ public final class ClassInfo
 	 * @param __vtp Virtual invoke VTable pool addresses.
 	 * @since 2019/04/26
 	 */
-	public ClassInfo(int __minip, int __sz, int __bz, int __no, int __dim,
-		int __csz, ClassInfo __scl, Class<?> __cop, int[] __vtv, int[] __vtp)
+	public ClassInfo(int __fl, int __minip, int __sz, int __bz, int __no,
+		int __dim, int __csz, ClassInfo __scl, Class<?> __cop, int[] __vtv,
+		int[] __vtp)
 	{
 		// Always implicitly set magic
 		this.magic = MAGIC_NUMBER;
 		
 		// Set
+		this.flags = __fl;
 		this.miniptr = __minip;
 		this.size = __sz;
 		this.base = __bz;
