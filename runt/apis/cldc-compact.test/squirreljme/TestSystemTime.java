@@ -9,8 +9,8 @@
 
 package squirreljme;
 
-import cc.squirreljme.runtime.cldc.vki.Assembly;
-import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCallIndex;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
