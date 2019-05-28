@@ -19,12 +19,24 @@
 ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_native_t* native,
 	int argc, char** argv)
 {
+	ratufacoat_machine_t* rv;
+	
 	// This needs to be passed, if not then it shall fail
 	if (native == NULL)
 		return NULL;
 	
+	// Try to allocate the machine data
+	rv = malloc(sizeof(*rv));
+	if (rv == NULL)
+		return NULL;
+	
+	// Clear and set the native handlers since those are pretty static
+	memset(rv, 0, sizeof(*rv));
+	rv->native = native;
+	
 	ratufacoat_todo();
-	return NULL;
+	
+	return rv;
 }
 
 /** Fails with a ToDo message. */
