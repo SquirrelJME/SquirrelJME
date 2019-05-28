@@ -1,0 +1,21 @@
+# 2019/05/27
+
+## 08:15
+
+Corrected an issue with reference counts with field puts.
+
+## 09:29
+
+Okay so there are system calls which do not make sense to be system calls in
+the VM, they would be super complicated. So in this case I am going to do
+pure and unpure system calls. All normal `sysCall`s are treated as unpure and
+so a special handler method will be called in its place. This will allow
+any of them to be replaced by the VM itself. However for SpringCoat and
+JavaSE all system calls will be considered pure. Since there are things like
+garbage collection that could be done. So this makes it much easier and I
+can override any of them.
+
+## 11:49
+
+Think it would be time to remove the conversions and anything related to
+long/float/double.
