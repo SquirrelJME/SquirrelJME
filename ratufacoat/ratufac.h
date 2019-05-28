@@ -37,15 +37,6 @@ extern "C"
 /****************************************************************************/
 
 /**
- * RatufaCoat active machine definition.
- * 
- * @since 2019/05/28
- */
-typedef struct ratufacoat_machine_t
-{
-} ratufacoat_machine_t;
-
-/**
  * Native functions support for RatufaCoat.
  * 
  * @since 2019/05/28
@@ -53,6 +44,17 @@ typedef struct ratufacoat_machine_t
 typedef struct ratufacoat_native_t
 {
 } ratufacoat_native_t;
+
+/**
+ * RatufaCoat active machine definition.
+ * 
+ * @since 2019/05/28
+ */
+typedef struct ratufacoat_machine_t
+{
+	/** Native function handlers. */
+	ratufacoat_native_t* native;
+} ratufacoat_machine_t;
 
 /**
  * Creates a RatufaCoat machine.
