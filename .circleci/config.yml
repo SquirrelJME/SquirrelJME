@@ -40,6 +40,13 @@ jobs:
       - run:
           name: Shade JavaME
           command: ~/squirreljme/build.sh dist javame
+  build_summercoatrom:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Building SummerCoat ROM
+          command: ~/squirreljme/build.sh dist summercoatrom
   tests_springcoat:
     executor: buildenv
     steps:
@@ -101,6 +108,7 @@ workflows:
     jobs:
       - build_javase
       - build_javame
+      - build_summercoatrom
       - tests_springcoat:
           requires:
             - build_javase
