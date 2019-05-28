@@ -28,15 +28,12 @@ int main(int argc, char** argv)
 	ratufacoat_native_t* native;
 	
 	// Allocate native functions
-	native = malloc(sizeof(*native));
+	native = calloc(1, sizeof(*native));
 	if (native == NULL)
 	{
 		fprintf(stderr, "Could not allocate native handler!\n");
 		return EXIT_FAILURE;
 	}
-	
-	// Setup native functions
-	memset(native, 0, sizeof(*native));
 	
 	// Create the machine
 	machine = ratufacoat_createmachine(native, argc, argv);

@@ -26,12 +26,11 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_native_t* native,
 		return NULL;
 	
 	// Try to allocate the machine data
-	rv = malloc(sizeof(*rv));
+	rv = calloc(1, sizeof(*rv));
 	if (rv == NULL)
 		return NULL;
 	
-	// Clear and set the native handlers since those are pretty static
-	memset(rv, 0, sizeof(*rv));
+	// Set the native handlers since those are pretty static
 	rv->native = native;
 	
 	ratufacoat_todo();
