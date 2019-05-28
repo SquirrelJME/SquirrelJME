@@ -17,6 +17,13 @@
 #ifndef SJME_hGRATUFACOATRATACHRATUFACH
 #define SJME_hGRATUFACOATRATACHRATUFACH
 
+/** Common includes. */
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <string.h>
+
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -28,6 +35,41 @@ extern "C"
 #endif /** #ifdef __cplusplus */
 
 /****************************************************************************/
+
+/**
+ * RatufaCoat active machine definition.
+ * 
+ * @since 2019/05/28
+ */
+typedef struct ratufacoat_machine_t
+{
+} ratufacoat_machine_t;
+
+/**
+ * Native functions support for RatufaCoat.
+ * 
+ * @since 2019/05/28
+ */
+typedef struct ratufacoat_native_t
+{
+} ratufacoat_native_t;
+
+/**
+ * Creates a RatufaCoat machine.
+ * 
+ * @param argc Argument count.
+ * @param argv Arguments.
+ * @since 2019/05/28
+ */
+ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_native_t* native,
+	int argc, char** argv);
+
+/**
+ * Fails the VM with a fatal ToDo.
+ *
+ * @since 2019/05/28
+ */
+void ratufacoat_todo(void);
 
 /****************************************************************************/
 

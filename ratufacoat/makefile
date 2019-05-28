@@ -6,3 +6,11 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Makefile for building SquirrelJME RatufaCoat.
+
+CC=gcc
+
+ratufacoat:	rc_main.o rci_stdc.c
+		$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+%.o:		%.c
+		$(CC) -c -o $@ $< $(CFLAGS)
