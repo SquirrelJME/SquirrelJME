@@ -8,7 +8,7 @@
 # DESCRIPTION: libRetro Description for SquirrelJME
 
 # Name displayed when the user is selecting the core:
-display_name = "Java ME/J2ME (SquirrelJME RatufaCoat)"
+display_name = "Java ME (SquirrelJME RatufaCoat)"
 
 # Name of the authors who wrote the core:
 authors = "Stephanie Gawroriski (Xer Shadow Tail)"
@@ -26,7 +26,7 @@ manufacturer = "Oracle Corporation"
 categories = "Emulator"
 
 # Name of the system that the core targets (optional):
-systemname = "Java ME/J2ME"
+systemname = "Java ME"
 
 # ID of the primary platform the core uses.
 # Use other core info files as guidance if possible.
