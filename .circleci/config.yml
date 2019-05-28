@@ -24,6 +24,12 @@ commands:
       - run:
           name: Setup directory
           command: mkdir -p ~/squirreljme-build
+      - run:
+          name: Install build-essential
+          command: sudo apt-get install --no-install-recommends -y build-essential
+      - run:
+          name: Install qemu-user
+          command: sudo apt-get install --no-install-recommends -y qemu-user
 
 jobs:
   build_javase:
@@ -47,6 +53,21 @@ jobs:
       - run:
           name: Building SummerCoat ROM
           command: ~/squirreljme/build.sh dist summercoatrom
+  tests_baseline:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Clear old test results and snapshot
+          command: rm -f bljut/baseline/results.xml baseline.nps
+      - run:
+          name: Create test directory
+          command: mkdir -p bljut/baseline
+      - run:
+          name: Running SpringCoat VM
+          command: ~/squirreljme/utils-dev/hostedlaunch.sh tac-runner > bljut/baseline/results.xml
+      - store_test_results:
+          path: bljut
   tests_springcoat:
     executor: buildenv
     steps:
@@ -109,6 +130,7 @@ workflows:
       - build_javase
       - build_javame
       - build_summercoatrom
+      - tests_baseline
       - tests_springcoat:
           requires:
             - build_javase
