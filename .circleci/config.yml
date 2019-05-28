@@ -64,7 +64,7 @@ jobs:
           name: Create test directory
           command: mkdir -p bljut/baseline
       - run:
-          name: Running SpringCoat VM
+          name: Running Baseline Tests
           command: ~/squirreljme/utils-dev/hostedlaunch.sh tac-runner > bljut/baseline/results.xml
       - store_test_results:
           path: bljut
