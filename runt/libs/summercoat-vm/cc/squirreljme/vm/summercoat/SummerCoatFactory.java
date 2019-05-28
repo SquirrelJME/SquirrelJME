@@ -674,7 +674,7 @@ public class SummerCoatFactory
 			throw new NullPointerException("NARG");
 		
 		// Setup
-		int n = __s.size();
+		int n = __s.size() * 2;
 		String[] rv = new String[n];
 		
 		// Map in keys and values
