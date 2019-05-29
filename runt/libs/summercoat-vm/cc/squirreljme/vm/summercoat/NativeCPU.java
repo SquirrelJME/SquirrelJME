@@ -249,6 +249,7 @@ public final class NativeCPU
 				{
 					// Variable sized entries, may be pool values
 					case VUINT:
+					case VUREG:
 					case VPOOL:
 					case VJUMP:
 						{

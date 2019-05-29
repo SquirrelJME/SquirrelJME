@@ -75,15 +75,44 @@ public final class NativeCodeBuilder
 	public final NativeInstruction add(int __op, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// {@squirreljme.error JC2q Operation has an incorrect number of
-		// arguments. (The mnemonic; The input arguments)}
-		if (NativeInstruction.argumentCount(__op) != __args.length)
-			throw new IllegalArgumentException("JC2q " +
-				NativeInstruction.mnemonic(__op) + " " + __args.length);
+		// Needed for argument format check
+		ArgumentFormat[] afmt = NativeInstruction.argumentFormat(__op);
+		int fnar = afmt.length;
 		
-		for (Object o : __args)
+		// {@squirreljme.error JC2q Operation has an incorrect number of
+		// arguments. (The operation)}
+		if (fnar != __args.length)
+			throw new IllegalArgumentException("JC2q " + __op);
+		
+		// Check format
+		for (int i = 0; i < fnar; i++)
+		{
+			// Cannot be null
+			Object o = __args[i];
 			if (o == null)
 				throw new NullPointerException("NARG");
+			
+			// Integer value?
+			int oi = ((o instanceof Number) ? ((Number)o).intValue() : -1);
+			
+			// Make sure values are good
+			switch (afmt[i])
+			{
+					// {@squirreljme.error JC4j Use of register which is out
+					// of range of the maximum register count. (The operation)}
+				case VUREG:
+					if (oi < 0 || oi >= NativeCode.MAX_REGISTERS)
+						throw new IllegalArgumentException("JC4j " + __op);
+					break;
+				
+					// {@squirreljme.error JC4i Cannot jump to a non-label.
+					// (The operation)}
+				case VJUMP:
+					if (!(o instanceof NativeCodeLabel))
+						throw new IllegalArgumentException("JC4i " + __op);
+					break;
+			}
+		}
 		
 		// Create instruction
 		int atdx = this._nextaddr++;
@@ -190,21 +219,6 @@ public final class NativeCodeBuilder
 		
 		return this.addIfICmp(CompareType.TRUE, NativeCode.ZERO_REGISTER,
 			NativeCode.ZERO_REGISTER, __jt);
-	}
-	
-	/**
-	 * Adds a load of a table.
-	 *
-	 * @param __d The destination register.
-	 * @param __tr The table register.
-	 * @param __i The index of that table.
-	 * @return The resulting instruction.
-	 * @since 2019/04/30
-	 */
-	public final NativeInstruction addLoadTable(int __d, int __tr, int __i)
-	{
-		return this.add(NativeInstructionType.LOAD_TABLE,
-			__d, __tr, __i);
 	}
 	
 	/**

@@ -19,6 +19,9 @@ public enum ArgumentFormat
 	/** Variable unsigned int. */
 	VUINT,
 	
+	/** Variable register (unsigned int). */
+	VUREG,
+	
 	/** Variable pool entry. */
 	VPOOL,
 	
