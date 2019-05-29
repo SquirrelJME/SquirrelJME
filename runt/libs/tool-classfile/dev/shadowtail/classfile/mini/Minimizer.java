@@ -54,6 +54,14 @@ import net.multiphasicapps.classfile.PrimitiveType;
  */
 public final class Minimizer
 {
+	/** Jump shifts. */
+	private static final int _JUMP_SHIFT =
+		20;
+	
+	/** Jump mask. */
+	private static final int _JUMP_MASK =
+		(1 << _JUMP_SHIFT) - 1;
+	
 	/** Counter for UUIDs. */
 	private static volatile int _UUID_COUNTER =
 		17;
@@ -436,9 +444,19 @@ public final class Minimizer
 					// Translate code
 					transcode = this.__translateCode(rc);
 				}
+				
+				// {@squirreljme.error JC4r Error during translation of the
+				// specified method. (The current class; The method)}
+				catch (InvalidClassFormatException e)
+				{
+					throw new InvalidClassFormatException("JC4s " +
+						input.thisName() + " " + m.nameAndType(), e);
+				}
+				
+				// {@squirreljme.error JC4r IOException translating code.}
 				catch (IOException e)
 				{
-					throw new RuntimeException(e);
+					throw new RuntimeException("JC4r", e);
 				}
 			}
 			
@@ -528,11 +546,28 @@ public final class Minimizer
 								break;
 								
 							case VJUMP:
-								jumpreps.put((cdx << 16) | dos.size(),
-									(InstructionJumpTarget)v);
-								
-								// Do not know if the full address can fit
-								vm = 32767;
+								{
+									// {@squirreljme.error JC4p Out of range
+									// jump. (Index; Instruction)}
+									int dss = dos.size();
+									if (dss < 0 || dss > _JUMP_MASK)
+										throw new InvalidClassFormatException(
+											"JC4p " + dss + " " + i);
+									
+									// {@squirreljme.error JC4q Out if range
+									// index. (Index; Instruction)}
+									if (((cdx << _JUMP_SHIFT) >>>
+										_JUMP_SHIFT) != cdx)
+										throw new InvalidClassFormatException(
+											"JC4q " + cdx + " " + i);
+									
+									// Store for later modification
+									jumpreps.put((cdx << _JUMP_SHIFT) | dss,
+										(InstructionJumpTarget)v);
+									
+									// Do not know if the full address can fit
+									vm = 32767;
+								}
 								break;
 							
 							case VUINT:
@@ -639,9 +674,19 @@ public final class Minimizer
 		// Replace jumps
 		for (Map.Entry<Integer, InstructionJumpTarget> e : jumpreps.entrySet())
 		{
-			int cdx = e.getKey() >>> 16,
-				ai = e.getKey() & 0xFFFF,
-				jt = indexpos[e.getValue().target()] - indexpos[cdx];
+			// {@squirreljme.error JC4o Instruction the specified index jumps
+			// to an invalid address. (The original jump target; The
+			// instruction index; The address into the method; the number
+			// of instructions available)}
+			int cdx = e.getKey() >>> 20,
+				ai = e.getKey() & 0xFFFFF,
+				origjt = e.getValue().target();
+			if (origjt < 0 || origjt >= cdn)
+				throw new InvalidClassFormatException("JC4o " + origjt + 
+					" " + cdx + " " + ai + " " + cdn);
+			
+			// Calculate target
+			int jt = indexpos[origjt] - indexpos[cdx];
 			
 			// Wide
 			if ((rv[ai] & 0x80) != 0)
