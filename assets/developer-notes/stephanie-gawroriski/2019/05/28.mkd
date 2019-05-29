@@ -1,0 +1,21 @@
+# 2019/05/28
+
+## 07:47
+
+Okay, so I am starting work on RatufaCoat which is the C port of the
+SummerCoat VM. Like what I turned SummerCoat into, most of the heavy
+lifting is done by the code running in the VM. This will make it so I do not
+have to write tons of C because C is interesting.
+
+## 17:09
+
+Okay so the JAR minimizer takes a single JAR file which may also be a
+bootstrap and then allows you to get a byte array from it. Or just write to
+some stream. So I guess what I can do is just pass it a bunch of JARs from the
+build system potentially. Then at least one of them will be the bootstap JAR
+and such which is just loaded.
+
+## 17:17
+
+I wonder if I can make the tests runnable on the host JVM without needing
+meep-swm.
