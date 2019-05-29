@@ -4,6 +4,7 @@ X-SquirrelJME-Error: BI
 X-SquirrelJME-Name: Compiled JAR Packfile Support
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.3.0
+X-SquirrelJME-Depends: tool-jarfile
 X-SquirrelJME-Description: This project is used to build the packed ROM 
  files needed by SummerCoat and RatufaCoat to function.
 Microedition-Configuration: CLDC-1.8-Compact
