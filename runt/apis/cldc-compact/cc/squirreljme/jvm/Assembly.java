@@ -354,6 +354,26 @@ public final class Assembly
 	public static native int memReadInt(int __p, int __o);
 	
 	/**
+	 * Reads big endian Java integer from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2019/05/29
+	 */
+	public static native int memReadJavaInt(int __p, int __o);
+	
+	/**
+	 * Reads big endian Java short from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2019/05/29
+	 */
+	public static native int memReadJavaShort(int __p, int __o);
+	
+	/**
 	 * Reads short from address.
 	 *
 	 * @param __p The pointer.
@@ -382,6 +402,26 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native void memWriteInt(int __p, int __o, int __v);
+	
+	/**
+	 * Writes big endian Java integer to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2019/05/29
+	 */
+	public static native void memWriteJavaInt(int __p, int __o, int __v);
+	
+	/**
+	 * Writes big endian Java short to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2019/05/29
+	 */
+	public static native void memWriteJavaShort(int __p, int __o, int __v);
 	
 	/**
 	 * Writes short to address.

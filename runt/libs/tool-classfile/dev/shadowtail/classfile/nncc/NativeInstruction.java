@@ -310,7 +310,9 @@ public final class NativeInstruction
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_CONST_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
+			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
+			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 				return 3;
 				
 				// {@squirreljme.error JC2r Unknown instruction argument
@@ -388,6 +390,7 @@ public final class NativeInstruction
 			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
+			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
@@ -402,6 +405,7 @@ public final class NativeInstruction
 				
 				// [r16, r16, i32]
 			case NativeInstructionType.MEMORY_OFF_ICONST:
+			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
@@ -492,6 +496,16 @@ public final class NativeInstruction
 					DataType.of(__op & 0x07).name() +
 					"_" +
 					(((__op & 0x80) != 0) ? "ICONST" : "REG");
+			
+			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
+			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
+				return "MEM_" +
+					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
+					"_" +
+					DataType.of(__op & 0x07).name() +
+					"_" +
+					(((__op & 0x80) != 0) ? "ICONST" : "REG") +
+					"_JAVA";
 				
 			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:

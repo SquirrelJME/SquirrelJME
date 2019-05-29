@@ -331,6 +331,33 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds memory offset by constant, using Java format.
+	 *
+	 * @param __dt The data type used.
+	 * @param __load Is this a load operation?
+	 * @param __v The value to store.
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The generated instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/29
+	 */
+	public final NativeInstruction addMemoryOffConstJava(DataType __dt,
+		boolean __load, int __v, int __p, int __o)
+		throws NullPointerException
+	{
+		if (__dt == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC4n Cannot access wide memory.}
+		if (__dt.isWide())
+			throw new IllegalArgumentException("JC4n");
+		
+		return this.add(NativeInstructionType.MEMORY_OFF_ICONST_JAVA |
+			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
+	}
+	
+	/**
 	 * Adds memory offset by register.
 	 *
 	 * @param __dt The data type used.
@@ -355,6 +382,34 @@ public final class NativeCodeBuilder
 		
 		// Generate
 		return this.add(NativeInstructionType.MEMORY_OFF_REG |
+			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
+	}
+	
+	/**
+	 * Adds memory offset by register, using Java format.
+	 *
+	 * @param __dt The data type used.
+	 * @param __load Is this a load operation?
+	 * @param __v The value to store.
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The generated instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/29
+	 */
+	public final NativeInstruction addMemoryOffRegJava(DataType __dt,
+		boolean __load, int __v, int __p, int __o)
+		throws NullPointerException
+	{
+		if (__dt == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC4m Cannot access wide memory.}
+		if (__dt.isWide())
+			throw new IllegalArgumentException("JC4m");
+		
+		// Generate
+		return this.add(NativeInstructionType.MEMORY_OFF_REG_JAVA |
 			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
 	}
 	
