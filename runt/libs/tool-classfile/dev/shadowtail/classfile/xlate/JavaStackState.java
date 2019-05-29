@@ -938,105 +938,94 @@ public final class JavaStackState
 			localenq = new ArrayList<>();
 		List<StateOperation> ops = new ArrayList<>();
 		
-		// Go through and transition the stack
+		// Source and destination stacks
 		Info[] asta = this._stack,
-			bsta = __ts._stack;
-		for (int i = 0; i < atop; i++)
-		{
-			Info a = asta[i],
-				b = bsta[i];
-			
-			// No need to transition the same values
-			if (a.equals(b))
-				continue;
-				
-			JavaType at = a.type,
-				bt = b.type;
-			
-			// {@squirreljme.error JC3m A transition cannot be made
-			// to the target type because the types are not compatible.
-			// (The source; The target)}
-			if (at.isObject() != bt.isObject() ||
-				(!at.isObject() && !at.equals(bt)))
-				throw new InvalidClassFormatException(
-					"JC3m " + a + " " + b);
-			
-			// Transitioning from no-counting to counting means that A
-			// was never counted
-			if (!a.canEnqueue() && b.canEnqueue())
-				ops.add(StateOperation.count(a.value));
-			
-			// Copy to destination, if the values differ
-			if (a.value != b.value)
-				ops.add(StateOperation.copy(
-					at.isWide(), a.value, b.value));
-			
-			// Going from counting to no counting means we probably have
-			// an extra count somewhere
-			if (a.canEnqueue() && !b.canEnqueue())
-				ops.add(StateOperation.uncount(b.value));
-		}
-		
-		// Go through and transition the locals
-		Info[] aloc = this._locals,
+			bsta = __ts._stack,
+			aloc = this._locals,
 			bloc = __ts._locals;
-		for (int i = 0, n = aloc.length; i < n; i++)
+		
+		// Transition both the stack and the locals
+		for (int z = 0; z < 2; z++)
 		{
-			Info a = aloc[i],
-				b = bloc[i];
+			Info[] ainf,
+				binf;
+			int cap;
 			
-			// They are exactly the same, so nothing needs to be done
-			if (a.equals(b))
-				continue;
-			
-			// The source is nothing
-			JavaType at = a.type,
-				bt = b.type;
-			if (at.isNothing())
+			// Stack transition
+			if (z == 0)
 			{
-				// Transition to a non-nothing type, just copy zero to it
-				if (!bt.isNothing())
-					ops.add(StateOperation.copy(
-						bt.isWide(), 0, b.value));
+				ainf = asta;
+				binf = bsta;
+				cap = atop;
 			}
 			
-			// If the target is transitioning to nothing, then it will be
-			// removed
-			else if (bt.isNothing())
-			{
-				// If the A local is an object that is countable, then just
-				// uncount it
-				if (a.canEnqueue())
-				{
-					localenq.add(a.value);
-					ops.add(StateOperation.uncount(a.value));
-				}
-			}
-			
-			// Check if the types and values are compatible
+			// Local transition
 			else
 			{
-				// Transitioning from no-counting to counting means that A
-				// was never counted
-				if (!a.canEnqueue() && b.canEnqueue())
-					ops.add(StateOperation.count(a.value));
+				ainf = aloc;
+				binf = bloc;
+				cap = aloc.length;
+			}
+			
+			// Go through and transition the locals
+			for (int i = 0, n = cap; i < n; i++)
+			{
+				Info a = ainf[i],
+					b = binf[i];
 				
-				// Transition from non-compatible types means that a copy
-				// from zero is performed
-				if (at.isObject() != bt.isObject() ||
-					(!at.isObject() && !at.equals(bt)))
-					ops.add(StateOperation.copy(
-						bt.isWide(), 0, b.value));
+				// They are exactly the same, so nothing needs to be done
+				if (a.equals(b))
+					continue;
 				
-				// Copy to destination, if the values differ
-				else if (a.value != b.value)
-					ops.add(StateOperation.copy(
-						at.isWide(), a.value, b.value));
+				// The source is nothing
+				JavaType at = a.type,
+					bt = b.type;
+				if (at.isNothing())
+				{
+					// Transition to a non-nothing type, just copy zero to it
+					if (!bt.isNothing())
+						ops.add(StateOperation.copy(
+							bt.isWide(), 0, b.value));
+				}
 				
-				// Going from counting to no counting means we probably have
-				// an extra count somewhere
-				if (a.canEnqueue() && !b.canEnqueue())
-					ops.add(StateOperation.uncount(b.value));
+				// If the target is transitioning to nothing, then it will be
+				// removed
+				else if (bt.isNothing())
+				{
+					// If the A local is an object that is countable, then just
+					// uncount it
+					if (a.canEnqueue())
+					{
+						localenq.add(a.value);
+						ops.add(StateOperation.uncount(a.value));
+					}
+				}
+				
+				// Check if the types and values are compatible
+				else
+				{
+					// Transitioning from no-counting to counting means that A
+					// was never counted
+					if (!a.canEnqueue() && b.canEnqueue())
+						ops.add(StateOperation.count(a.value));
+					
+					// Transition from non-compatible types means that a copy
+					// from zero is performed
+					if (at.isObject() != bt.isObject() ||
+						(!at.isObject() && !at.equals(bt)))
+						ops.add(StateOperation.copy(
+							bt.isWide(), 0, b.value));
+					
+					// Copy to destination, if the values differ
+					else if (a.value != b.value)
+						ops.add(StateOperation.copy(
+							at.isWide(), a.value, b.value));
+					
+					// Going from counting to no counting means we probably
+					// have an extra count somewhere
+					if (a.canEnqueue() && !b.canEnqueue())
+						ops.add(StateOperation.uncount(b.value));
+				}
 			}
 		}
 		
