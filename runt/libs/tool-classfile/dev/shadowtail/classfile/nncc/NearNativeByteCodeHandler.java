@@ -1968,6 +1968,20 @@ public final class NearNativeByteCodeHandler
 					__in[0].register, __in[1].register);
 				break;
 				
+				// Read java int memory
+			case "memReadJavaInt":
+				codebuilder.addMemoryOffRegJava(DataType.INTEGER,
+					true, __out.register,
+					__in[0].register, __in[1].register);
+				break;
+				
+				// Read short memory
+			case "memReadJavaShort":
+				codebuilder.addMemoryOffRegJava(DataType.SHORT,
+					true, __out.register,
+					__in[0].register, __in[1].register);
+				break;
+				
 				// Read short memory
 			case "memReadShort":
 				codebuilder.addMemoryOffReg(DataType.SHORT,
@@ -1985,6 +1999,20 @@ public final class NearNativeByteCodeHandler
 				// Write int memory
 			case "memWriteInt":
 				codebuilder.addMemoryOffReg(DataType.INTEGER,
+					false, __in[2].register,
+					__in[0].register, __in[1].register);
+				break;
+				
+				// Write Java int memory
+			case "memWriteJavaInt":
+				codebuilder.addMemoryOffRegJava(DataType.INTEGER,
+					false, __in[2].register,
+					__in[0].register, __in[1].register);
+				break;
+				
+				// Write Java short memory
+			case "memWriteJavaShort":
+				codebuilder.addMemoryOffRegJava(DataType.SHORT,
 					false, __in[2].register,
 					__in[0].register, __in[1].register);
 				break;

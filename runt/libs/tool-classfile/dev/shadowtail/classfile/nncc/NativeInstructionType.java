@@ -29,14 +29,21 @@ public interface NativeInstructionType
 	 * {@code iiiiRccc, if (r1 ? r2) jump->j3}.
 	 */
 	public static final short IF_ICMP =
-		0x40;
+		0x10;
 	
 	/**
 	 * Memory access, offset is in register.
 	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
 	 */
 	public static final short MEMORY_OFF_REG =
-		0x50;
+		0x20;
+	
+	/**
+	 * Memory access to big endian Java format, offset is in register.
+	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
+	 */
+	public static final short MEMORY_OFF_REG_JAVA =
+		0x30;
 	
 	/**
 	 * Math, R=RC, Integer.
@@ -50,11 +57,18 @@ public interface NativeInstructionType
 	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
 	 */
 	public static final short MEMORY_OFF_ICONST =
-		0xD0;
+		0xA0;
 	
 	/**
-	 * Unused.
-	 * {@code iiii????}.
+	 * Memory access to big endian Java format, offset is a constant.
+	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
+	 */
+	public static final short MEMORY_OFF_ICONST_JAVA =
+		0xB0;
+	
+	/**
+	 * Special.
+	 * {@code iiiixxxx}.
 	 */
 	public static final short SPECIAL_A =
 		0xE0;

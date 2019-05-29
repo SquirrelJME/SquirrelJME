@@ -437,6 +437,32 @@ public final class Assembly
 	}
 	
 	/**
+	 * Reads big endian Java integer from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2019/05/29
+	 */
+	public static final int memReadJavaInt(int __p, int __o)
+	{
+		throw new todo.OOPS();
+	}
+	
+	/**
+	 * Reads big endian Java short from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2019/05/29
+	 */
+	public static final int memReadJavaShort(int __p, int __o)
+	{
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * Reads short from address.
 	 *
 	 * @param __p The pointer.
@@ -471,6 +497,32 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static final void memWriteInt(int __p, int __o, int __v)
+	{
+		throw new todo.OOPS();
+	}
+	
+	/**
+	 * Writes big endian Java integer to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2019/05/29
+	 */
+	public static final void memWriteJavaInt(int __p, int __o, int __v)
+	{
+		throw new todo.OOPS();
+	}
+	
+	/**
+	 * Writes big endian Java short to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2019/05/29
+	 */
+	public static final void memWriteJavaShort(int __p, int __o, int __v)
 	{
 		throw new todo.OOPS();
 	}

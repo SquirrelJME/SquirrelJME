@@ -513,7 +513,9 @@ public final class NativeCPU
 				
 					// Read off memory
 				case NativeInstructionType.MEMORY_OFF_REG:
+				case NativeInstructionType.MEMORY_OFF_REG_JAVA:
 				case NativeInstructionType.MEMORY_OFF_ICONST:
+				case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 					{
 						// Is this a load operation?
 						boolean load = ((op & 0b1000) != 0);
