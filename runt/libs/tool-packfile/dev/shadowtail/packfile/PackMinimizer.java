@@ -130,7 +130,20 @@ public class PackMinimizer
 			// Write location of JAR and its minimized data
 			int baseat;
 			tdos.writeInt(reloff + (baseat = jdos.size()));
-			JarMinimizer.minimize(isboot, lib, jdos);
+			
+			// Writing could fail however, so this makes it easier to find
+			// the location of that failure
+			try
+			{
+				JarMinimizer.minimize(isboot, lib, jdos);
+			}
+			
+			// {@squirreljme.error BI01 Could not minimize the JAR due to
+			// an invalid class file. (The name)}
+			catch (InvalidClassFormatException e)
+			{
+				throw new InvalidClassFormatException("BI01 " + name, e);
+			}
 			
 			// Write size of the data
 			tdos.writeInt(jdos.size() - baseat);
