@@ -36,6 +36,10 @@ public final class NativeCode
 	public static final int RETURN_REGISTER =
 		1;
 	
+	/** Second return register. */
+	public static final int RETURN_TWO_REGISTER =
+		2;
+	
 	/** The exception register. */
 	public static final int EXCEPTION_REGISTER =
 		3;
@@ -46,23 +50,23 @@ public final class NativeCode
 	
 	/** Register which represents the current thread of execution. */
 	public static final int THREAD_REGISTER =
-		6;
+		5;
 	
-	/** Base for local registers (arguments start here). */
+	/** Base for local registers (locals start here). */
 	public static final int LOCAL_REGISTER_BASE =
-		8;
+		6;
 	
 	/** The register containing the constant pool. */
 	public static final int POOL_REGISTER =
-		9;
+		6;
 	
 	/** The register which contains the next pool pointer to use. */
 	public static final int NEXT_POOL_REGISTER =
-		10;
+		7;
 	
 	/** The register of the first argument. */
 	public static final int ARGUMENT_REGISTER_BASE =
-		16;
+		8;
 	
 	/** Maximum number of registers possible to use. */
 	public static final int MAX_REGISTERS =
