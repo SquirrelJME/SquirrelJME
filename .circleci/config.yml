@@ -30,6 +30,9 @@ commands:
       - run:
           name: Install qemu-user
           command: sudo apt-get install --no-install-recommends -y qemu-user
+      - run:
+          name: Install unzip
+          command: sudo apt-get install --no-install-recommends -y unzip
 
 jobs:
   build_javase:
@@ -122,6 +125,30 @@ jobs:
       - store_artifacts:
           path: summercoat.nps
           destination: /nps/summercoat.nps
+  tests_summercoatrom:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Clear old test results and snapshot
+          command: rm -f svjut/summercoatrom/results.xml summercoatrom.nps
+      - run:
+          name: Create test directory
+          command: mkdir -p svjut/summercoatrom
+      - run:
+          name: Build SummerCoat ROM with tests
+          command: ~/squirreljme/build.sh dist summercoatrom-test
+      - run:
+          name: Extract distribution
+          command: unzip -of squirreljme-summercoatrom-test.zip
+      - run:
+          name: Running SummerCoat VM
+          command: ~/squirreljme/build.sh launch -v summercoatrom -n summercoatrom.nps -Dcc.squirreljme.debug=false -Dcc.squirreljme.romfile=squirreljme.sqc tac-runner > svjut/summercoatrom/results.xml
+      - store_test_results:
+          path: svjut
+      - store_artifacts:
+          path: summercoatrom.nps
+          destination: /nps/summercoatrom.nps
 
 workflows:
   version: 2
@@ -137,4 +164,8 @@ workflows:
       - tests_summercoat:
           requires:
             - build_javase
+      - tests_summercoatrom:
+          requires:
+            - build_javase
+            - build_summercoatrom
 
