@@ -38,13 +38,11 @@ public final class Bootstrap
 	 * @param __ismidlet Is this a MIDlet?
 	 * @param __gd The current guest depth.
 	 * @param __rombase Base address of the ROM (for offset calculation).
-	 * @param __romtoc The address of the table of contents.
 	 * @since 2019/05/25
 	 */
 	static final void __start(int __rambase, int __ramsize, int __bootsize,
 		byte[][] __classpath, byte[][] __sysprops, byte[] __mainclass,
-		byte[][] __mainargs, boolean __ismidlet, int __gd, int __rombase,
-		int __romtoc)
+		byte[][] __mainargs, boolean __ismidlet, int __gd, int __rombase)
 	{
 		// Initialize the RAM links to setup dirty bits and initialize the
 		// last block of memory with anything that remains. This makes it so
