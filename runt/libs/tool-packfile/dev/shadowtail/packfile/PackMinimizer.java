@@ -98,7 +98,8 @@ public class PackMinimizer
 		
 		// Boot positions
 		int bji = 0,
-			bjo = 0;
+			bjo = 0,
+			bjs = 0;
 		
 		// Go through each library, minimize and write!
 		for (int i = 0; i < numlibs; i++)
@@ -147,7 +148,12 @@ public class PackMinimizer
 			}
 			
 			// Write size of the data
-			tdos.writeInt(jdos.size() - baseat);
+			int dsize;
+			tdos.writeInt((dsize = (jdos.size() - baseat)));
+			
+			// Write size of the BootJAR
+			if (isboot)
+				bjs = dsize;
 			
 			// Manifest offset and length (for quicker access)
 			MinimizedJarHeader mjh = mjha[0];
@@ -171,6 +177,7 @@ public class PackMinimizer
 		dos.writeInt(numlibs);
 		dos.writeInt(bji);
 		dos.writeInt(bjo);
+		dos.writeInt(bjs);
 		dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
 		
 		// Write TOC and JAR data
