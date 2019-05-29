@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.common.TextStorage;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.util.Arrays;
 
@@ -50,8 +51,8 @@ public class Text
 		11;
 	
 	/** Storage for the text. */
-	private final __Storage__ _storage =
-		new __Storage__();
+	private final TextStorage _storage =
+		new TextStorage();
 	
 	/** The width. */
 	private int _width;
@@ -186,7 +187,7 @@ public class Text
 		throws IndexOutOfBoundsException
 	{
 		// Perform the delete
-		this._storage.__delete(__i, __l);
+		this._storage.delete(__i, __l);
 		
 		// Deleting nothing?
 		if (__l <= 0)
@@ -259,23 +260,23 @@ public class Text
 		
 		// Need to extract the character and font to determine the width and
 		// the height of it
-		__Storage__ storage = this._storage;
+		TextStorage storage = this._storage;
 		
 		// Exceeds storage size?
-		if (__i >= storage._size)
+		if (__i >= storage.size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Default font?
-		Font font = storage._font[__i];
+		Font font = storage.font[__i];
 		if (font == null)
 			font = this._defaultfont;
 		
 		// Set extents, the width and height come from the character data
 		try
 		{
-			__ext[0] = storage._x[__i];
-			__ext[1] = storage._y[__i];
-			__ext[2] = font.charWidth(storage._chars[__i]);
+			__ext[0] = storage.x[__i];
+			__ext[1] = storage.y[__i];
+			__ext[2] = font.charWidth(storage.chars[__i]);
 			__ext[3] = font.getHeight();
 		}
 		catch (IndexOutOfBoundsException e)
@@ -314,14 +315,14 @@ public class Text
 	public Font getFont(int __i)
 		throws IndexOutOfBoundsException
 	{
-		__Storage__ storage = this._storage;
+		TextStorage storage = this._storage;
 		
 		// Exceeds storage size?
-		if (__i >= storage._size)
+		if (__i >= storage.size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Only if a font is set
-		Font rv = storage._font[__i];
+		Font rv = storage.font[__i];
 		if (rv != null)
 			return rv;
 		return this._defaultfont;
@@ -348,14 +349,14 @@ public class Text
 	public int getForegroundColor(int __i)
 		throws IndexOutOfBoundsException
 	{
-		__Storage__ storage = this._storage;
+		TextStorage storage = this._storage;
 		
 		// Exceeds storage size?
-		if (__i >= storage._size)
+		if (__i >= storage.size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Zero means that the default color is to be used
-		int rv = storage._color[__i];
+		int rv = storage.color[__i];
 		if (rv != 0)
 			return rv;
 		return this._defaultcolor;
@@ -494,15 +495,15 @@ public class Text
 	public String getText(int __i, int __l)
 		throws IndexOutOfBoundsException
 	{
-		__Storage__ storage = this._storage;
+		TextStorage storage = this._storage;
 		
 		// Exceeds storage size?
-		int size = storage._size;
+		int size = storage.size;
 		if (__l < 0 || __i >= size || (__i + __l) > size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Create string from it
-		return new String(storage._chars, __i, __l);
+		return new String(storage.chars, __i, __l);
 	}
 	
 	/**
@@ -513,7 +514,7 @@ public class Text
 	 */
 	public int getTextLength()
 	{
-		return this._storage._size;
+		return this._storage.size;
 	}
 	
 	/**
@@ -548,18 +549,18 @@ public class Text
 			return;
 		
 		// The index is always in the bounds of the storage
-		__Storage__ storage = this._storage;
+		TextStorage storage = this._storage;
 		if (__i < 0)
 			__i = 0;
-		else if (__i > storage._size)
-			__i = storage._size;
+		else if (__i > storage.size)
+			__i = storage.size;
 		
 		// Insert space to store the characters
 		int sn = __s.length();
-		storage.__insert(__i, sn);
+		storage.insert(__i, sn);
 		
 		// Set character data here
-		char[] chars = storage._chars;
+		char[] chars = storage.chars;
 		for (int i = 0; i < sn; i++)
 			chars[__i++] = __s.charAt(i);
 		
@@ -667,15 +668,15 @@ public class Text
 	 */
 	public void setFont(Font __f, int __i, int __l)
 	{
-		__Storage__ storage = this._storage;
+		TextStorage storage = this._storage;
 		
 		// Exceeds storage size?
-		int size = storage._size;
+		int size = storage.size;
 		if (__i < 0 || __l < 0 || __i >= size || (__i + __l) > size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Set
-		Font[] font = storage._font;
+		Font[] font = storage.font;
 		for (int i = 0; i < __l; i++)
 			font[__i++] = __f;
 		
@@ -707,15 +708,15 @@ public class Text
 	 */
 	public void setForegroundColor(int __argb, int __i, int __l)
 	{
-		__Storage__ storage = this._storage;
+		TextStorage storage = this._storage;
 		
 		// Exceeds storage size?
-		int size = storage._size;
+		int size = storage.size;
 		if (__i < 0 || __l < 0 || __i >= size || (__i + __l) > size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Set
-		int[] color = storage._color;
+		int[] color = storage.color;
 		for (int i = 0; i < __l; i++)
 			color[__i++] = __argb;
 		
@@ -901,11 +902,11 @@ public class Text
 		boolean dortl = (direction == DIRECTION_RTL);
 		
 		// Will use this storage stuff
-		__Storage__ storage = this._storage;
-		char[] chars = storage._chars;
-		Font[] font = storage._font;
-		short[] cx = storage._x;
-		short[] cy = storage._y;
+		TextStorage storage = this._storage;
+		char[] chars = storage.chars;
+		Font[] font = storage.font;
+		short[] cx = storage.x;
+		short[] cy = storage.y;
 		
 		// The starting Y position is 
 		// The starting X and Y position is always zero, when other alignments
@@ -942,7 +943,7 @@ public class Text
 			linemaxheight = 0,
 			linemaxascent = 0,
 			linemaxdescent = 0;
-		for (int i = 0, n = storage._size; i <= n; i++)
+		for (int i = 0, n = storage.size; i <= n; i++)
 		{
 			// Since we need to handle line indentation, justification and
 			// otherwise we need a flag to know when the next line was hit
@@ -1119,141 +1120,6 @@ public class Text
 			
 		// Has been updated, no longer dirty
 		this._dirty = false;
-	}
-	
-	/**
-	 * Manages the storage for the text in multiple different arrays at once
-	 * for simplicity.
-	 *
-	 * @since 2018/11/30
-	 */
-	private static final class __Storage__
-	{
-		/** The number of characters to grow at a time. */
-		private static final int _GROWTH =
-			16;
-		
-		/** Character storage. */
-		char[] _chars =
-			new char[0];
-		
-		/** Font storage. */
-		Font[] _font =
-			new Font[0];
-		
-		/** Color storage, zero is use default. */
-		int[] _color =
-			new int[0];
-		
-		/** X position. */
-		short[] _x =
-			new short[0];
-		
-		/** Y position. */
-		short[] _y =
-			new short[0];
-		
-		/** The number of stored characters and their attributes. */
-		int _size;
-		
-		/** The limit of the arrays. */
-		int _limit;
-		
-		/**
-		 * Deletes space at the given index.
-		 *
-		 * @param __i The index.
-		 * @param __l The length.
-		 * @throws IndexOutOfBoundsException If the deletion index is out
-		 * of bounds.
-		 * @since 2018/12/02
-		 */
-		final void __delete(int __i, int __l)
-			throws IndexOutOfBoundsException
-		{
-			// Check bounds
-			int size = this._size;
-			if (__i < 0 || __i > size || __l < 0 || (__i + __l) > size)
-				throw new IndexOutOfBoundsException("IOOB");
-			
-			// Storage areas
-			char[] chars = this._chars;
-			Font[] font = this._font;
-			int[] color = this._color;
-			
-			// Determine the new size
-			int newsize = size - __l;
-			
-			// Move everything down from the higher point
-			for (int o = __i, eo = __i + __l, i = eo; o < eo && i < size;
-				o++, i++)
-			{
-				chars[o] = chars[i];
-				font[o] = font[i];
-				color[o] = color[i];
-			}
-			
-			// Set new size
-			this._size = newsize;
-		}
-		
-		/**
-		 * Inserts space to store the given length at the given index.
-		 *
-		 * @param __i The index.
-		 * @param __l The length.
-		 * @throws IndexOutOfBoundsException If the insertion index is negative
-		 * or exceeds the size of the storage, or if the length is negative.
-		 * @since 2018/11/30
-		 */
-		final void __insert(int __i, int __l)
-			throws IndexOutOfBoundsException
-		{
-			int size = this._size;
-			if (__i < 0 || __i > size || __l < 0)
-				throw new IndexOutOfBoundsException("IOOB");
-			
-			// Storage areas
-			char[] chars = this._chars;
-			Font[] font = this._font;
-			int[] color = this._color;
-			short[] x = this._x;
-			short[] y = this._y;
-			
-			// Need to grow the buffer?
-			int newsize = size + __l,
-				limit = this._limit;
-			if (newsize > limit)
-			{
-				// Calculate a new limit with some extra room
-				int newlimit = newsize + _GROWTH;
-				
-				// Resize all the arrays
-				this._chars = (chars = Arrays.copyOf(chars, newlimit));
-				this._font = (font = Arrays.<Font>copyOf(font, newlimit));
-				this._color = (color = Arrays.copyOf(color, newlimit));
-				this._x = (x = Arrays.copyOf(x, newlimit));
-				this._y = (y = Arrays.copyOf(y, newlimit));
-				
-				// Set new limit
-				this._limit = (limit = newlimit);
-			}
-			
-			// Move over all the entries to the index to make room for this
-			// start from the very right end
-			// X and Y are resized but their values are not moved around
-			// because the insertion of new elements makes things dirty and
-			// all of the X and Y values would be invalidated anyway
-			for (int o = newsize - 1, i = size - 1; i >= __i; o--, i--)
-			{
-				chars[o] = chars[i];
-				font[o] = font[i];
-				color[o] = color[i];
-			}
-			
-			// Set new size
-			this._size = newsize;
-		}
 	}
 }
 
