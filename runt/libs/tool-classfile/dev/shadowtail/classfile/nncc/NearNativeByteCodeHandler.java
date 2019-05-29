@@ -210,7 +210,7 @@ public final class NearNativeByteCodeHandler
 		{
 			// Read memory
 			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
-				"jvmMemReadLong", "(II)L",
+				"jvmMemReadLong", "(II)J",
 				__in.register, volaip);
 			
 			// Copy return value
@@ -471,7 +471,7 @@ public final class NearNativeByteCodeHandler
 		{
 			// Read memory
 			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
-				"jvmMemReadLong", "(II)L",
+				"jvmMemReadLong", "(II)J",
 				ireg, tempreg);
 			
 			// Copy return value
@@ -1192,7 +1192,7 @@ public final class NearNativeByteCodeHandler
 		{
 			// Read memory
 			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
-				"jvmMemReadLong", "(II)L",
+				"jvmMemReadLong", "(II)J",
 				NativeCode.STATIC_FIELD_REGISTER, volsfo);
 			
 			// Copy return value
