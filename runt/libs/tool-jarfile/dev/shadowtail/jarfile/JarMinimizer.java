@@ -77,6 +77,9 @@ public final class JarMinimizer
 	/** Static field area next pointer. */
 	private int _sfieldnext;
 	
+	/** The resulting JAR header. */
+	private MinimizedJarHeader _jheader;
+	
 	/**
 	 * Initializes the minimizer worker.
 	 *
@@ -1200,15 +1203,20 @@ public final class JarMinimizer
 		// Write header
 		__dos.writeInt(MinimizedJarHeader.MAGIC_NUMBER);
 		
+		// Fields to store the header
+		int[] hfs = new int[MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC / 4];
+		int hat = 0;
+		
 		// Number of resources
-		__dos.writeInt(numrc);
+		__dos.writeInt((hfs[hat++] = numrc));
 		
 		// Offset to table of contents
-		__dos.writeInt(MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC);
+		__dos.writeInt((hfs[hat++] =
+			MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC));
 		
 		// Manifest offset and its length, if any
-		__dos.writeInt(manifestoff);
-		__dos.writeInt(manifestlen);
+		__dos.writeInt((hfs[hat++] = manifestoff));
+		__dos.writeInt((hfs[hat++] = manifestlen));
 		
 		// Building pre-boot state
 		if (boots != null)
@@ -1220,7 +1228,8 @@ public final class JarMinimizer
 			// Write address to the boot table
 			int baseaddr,
 				injaraddr;
-			__dos.writeInt((injaraddr = (reloff + (baseaddr = jdos.size()))));
+			__dos.writeInt((hfs[hat++] = 
+				(injaraddr = (reloff + (baseaddr = jdos.size())))));
 			
 			// Debug
 			if (_ENABLE_DEBUG)
@@ -1240,18 +1249,18 @@ public final class JarMinimizer
 			jdos.write(bootmem);
 			
 			// Write length of the boot RAM initialize area
-			__dos.writeInt(bootmem.length);
+			__dos.writeInt((hfs[hat++] = bootmem.length));
 			
 			// Bootstrap pool, static field pointer offset, and the offset
 			// to the bootstrap's code
-			__dos.writeInt(poolptr[0]);
-			__dos.writeInt(ksfa[0]);
+			__dos.writeInt((hfs[hat++] = poolptr[0]));
+			__dos.writeInt((hfs[hat++] = ksfa[0]));
 			__dos.writeInt(this.__classMethodCodeAddress(
 				"cc/squirreljme/jvm/Bootstrap",
 				"__start",
 				null));
-			__dos.writeInt(clab);
-			__dos.writeInt(claab);
+			__dos.writeInt((hfs[hat++] = clab));
+			__dos.writeInt((hfs[hat++] = claab));
 		}
 		
 		// No boot data
@@ -1269,6 +1278,9 @@ public final class JarMinimizer
 			__dos.writeInt(0);
 			__dos.writeInt(0);
 		}
+		
+		// Build header
+		this._jheader = new MinimizedJarHeader(hfs);
 		
 		// Write table of contents and JAR data
 		tbaos.writeTo(__dos);
@@ -1318,10 +1330,34 @@ public final class JarMinimizer
 		OutputStream __out)
 		throws IOException, NullPointerException
 	{
+		JarMinimizer.minimize(__boot, __in, __out, null);
+	}
+	
+	/**
+	 * Minimizes the specified Jar file.
+	 *
+	 * @param __boot Should pre-created boot memory be created to quickly
+	 * initialize the virtual machine?
+	 * @param __in The input JAR file.
+	 * @param __out The stream where JAR data will be placed.
+	 * @param __mjh The output JAR header.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/29
+	 */
+	public static final void minimize(boolean __boot, VMClassLibrary __in,
+		OutputStream __out, MinimizedJarHeader[] __mjh)
+		throws IOException, NullPointerException
+	{
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
 		// Use helper class
-		new JarMinimizer(__boot, __in).__process(new DataOutputStream(__out));
+		JarMinimizer jm = new JarMinimizer(__boot, __in);
+		jm.__process(new DataOutputStream(__out));
+		
+		// Set header that was generated
+		if (__mjh != null && __mjh.length > 0)
+			__mjh[0] = jm._jheader;
 	}
 }

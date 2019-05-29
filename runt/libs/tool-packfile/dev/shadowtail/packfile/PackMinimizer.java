@@ -86,7 +86,7 @@ public class PackMinimizer
 		// Calculate relative offset to the JAR data
 		int numlibs = __libs.length;
 		int reloff = MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC +
-			(12 * numlibs);
+			(20 * numlibs);
 		
 		// Output table of contents
 		ByteArrayOutputStream taos = new ByteArrayOutputStream(4096);
@@ -133,9 +133,10 @@ public class PackMinimizer
 			
 			// Writing could fail however, so this makes it easier to find
 			// the location of that failure
+			MinimizedJarHeader[] mjha = new MinimizedJarHeader[1];
 			try
 			{
-				JarMinimizer.minimize(isboot, lib, jdos);
+				JarMinimizer.minimize(isboot, lib, jdos, mjha);
 			}
 			
 			// {@squirreljme.error BI01 Could not minimize the JAR due to
@@ -147,6 +148,22 @@ public class PackMinimizer
 			
 			// Write size of the data
 			tdos.writeInt(jdos.size() - baseat);
+			
+			// Manifest offset and length (for quicker access)
+			MinimizedJarHeader mjh = mjha[0];
+			if (mjha != null)
+			{
+				tdos.writeInt(reloff + baseat + mjh.manifestoff);
+				tdos.writeInt(mjh.manifestlen);
+			}
+			
+			// No header was returned, so put as nothing being valid here or
+			// has to be scanned
+			else
+			{
+				tdos.writeInt(0);
+				tdos.writeInt(0);
+			}
 		}
 		
 		// Write pack header
