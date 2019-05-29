@@ -27,7 +27,7 @@ public final class MinimizedJarHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		36;
+		44;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -38,6 +38,12 @@ public final class MinimizedJarHeader
 	
 	/** Table of contents offset. */
 	public final int tocoffset;
+	
+	/** Manifest offset. */
+	public final int manifestoff;
+	
+	/** Manifest length. */
+	public final int manifestlen;
 	
 	/** Boot initializer offset. */
 	public final int bootoffset;
@@ -79,6 +85,10 @@ public final class MinimizedJarHeader
 		this.numrc = __fs[at++];
 		this.tocoffset = __fs[at++];
 		
+		// The offset to the manifest and its length
+		this.manifestoff = __fs[at++];
+		this.manifestlen = __fs[at++];
+		
 		// Boot initializer
 		this.bootoffset = __fs[at++];
 		this.bootsize = __fs[at++];
@@ -115,6 +125,10 @@ public final class MinimizedJarHeader
 		return new MinimizedJarHeader(
 			/* numrc */ din.readInt(),
 			/* tocoffset */ din.readInt(),
+			
+			// Manifest
+			/* manifestoff */ din.readInt(),
+			/* manifestlen */ din.readInt(),
 			
 			// Boot initializer
 			/* bootoffset */ din.readInt(),

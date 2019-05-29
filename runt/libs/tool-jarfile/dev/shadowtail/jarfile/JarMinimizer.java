@@ -1101,6 +1101,10 @@ public final class JarMinimizer
 		String[] rcnames = input.listResources();
 		int numrc = rcnames.length;
 		
+		// Manifest offset and length
+		int manifestoff = 0,
+			manifestlen = 0;
+		
 		// Table of contents
 		ByteArrayOutputStream tbaos = new ByteArrayOutputStream(2048);
 		DataOutputStream tdos = new DataOutputStream(tbaos);
@@ -1171,6 +1175,13 @@ public final class JarMinimizer
 			tdos.writeInt((clpos = (reloff + jdos.size())));
 			tdos.writeInt(bytes.length);
 			
+			// Is this the manifest?
+			if (rc.equals("META-INF/MANIFEST.MF"))
+			{
+				manifestoff = clpos;
+				manifestlen = bytes.length;
+			}
+			
 			// If boot processing is going to be done, we need to
 			// know about this class file if it is one
 			if (boots != null && isclass)
@@ -1194,6 +1205,10 @@ public final class JarMinimizer
 		
 		// Offset to table of contents
 		__dos.writeInt(MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC);
+		
+		// Manifest offset and its length, if any
+		__dos.writeInt(manifestoff);
+		__dos.writeInt(manifestlen);
 		
 		// Building pre-boot state
 		if (boots != null)
