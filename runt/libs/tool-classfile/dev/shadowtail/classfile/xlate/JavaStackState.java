@@ -179,20 +179,13 @@ public final class JavaStackState
 			if (a.equals(b))
 				continue;
 			
-			// If the target type is nothing then there is no collision
-			// since the source can be dropped
+			// If either the source or the target or nothing then there can
+			// be a transition, one will either be a set to zero or an uncount
+			// if an object
 			JavaType at = a.type,
 				bt = b.type;
-			if (bt.isNothing())
+			if (at.isNothing() || bt.isNothing())
 				continue;
-				
-			// {@squirreljme.error JC3l A collision cannot be found
-			// to the target type because the types are not compatible.
-			// (The source; The target)}
-			if (at.isObject() != bt.isObject() ||
-				(!at.isObject() && !at.equals(bt)))
-				throw new InvalidClassFormatException(
-					"JC3l " + a + " " + b);
 			
 			// The target entry is cached, but it has a value which does not
 			// map to this register
