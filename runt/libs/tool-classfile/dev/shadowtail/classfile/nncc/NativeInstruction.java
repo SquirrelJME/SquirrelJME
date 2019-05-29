@@ -307,7 +307,6 @@ public final class NativeInstruction
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFEQ_CONST:
 			case NativeInstructionType.LOAD_FROM_INTARRAY:
-			case NativeInstructionType.LOAD_TABLE:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_CONST_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
@@ -343,30 +342,30 @@ public final class NativeInstruction
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
 				
-				// System call
+				// [r16, reglist]
 			case NativeInstructionType.SYSTEM_CALL:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
+					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
 				
-				// [u16, u16]
+				// [r16, r16]
 			case NativeInstructionType.ARRAYLEN:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT);
-					
-				// [u16, u16]
-			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.COPY:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG);
+				
+				// [r16, u16]
+			case NativeInstructionType.ATOMIC_INT_INCREMENT:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
 					ArgumentFormat.VUINT);
 				
-				// [p16, u16]
+				// [p16, r16]
 			case NativeInstructionType.LOAD_POOL:
 				return ArgumentFormat.of(
 					ArgumentFormat.VPOOL,
-					ArgumentFormat.VUINT);
+					ArgumentFormat.VUREG);
 					
 				// [p16, p16, p16]
 			case NativeInstructionType.DEBUG_ENTRY:
@@ -376,16 +375,27 @@ public final class NativeInstruction
 					ArgumentFormat.VPOOL);
 				
 				// [u16, u16, u16]
-			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 			case NativeInstructionType.DEBUG_POINT:
-			case NativeInstructionType.LOAD_FROM_INTARRAY:
-			case NativeInstructionType.LOAD_TABLE:
-			case NativeInstructionType.MATH_REG_INT:
-			case NativeInstructionType.MEMORY_OFF_REG:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
+				
+				// [r16, r16, u16]
+			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUINT);
+				
+				// [r16, r16, r16]
+			case NativeInstructionType.LOAD_FROM_INTARRAY:
+			case NativeInstructionType.MATH_REG_INT:
+			case NativeInstructionType.MEMORY_OFF_REG:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG);
 				
 				// [u16|u16, u16, u16]
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
@@ -395,18 +405,18 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 			
-				// [u16, i32, u16]
+				// [r16, i32, r16]
 			case NativeInstructionType.MATH_CONST_INT:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
+					ArgumentFormat.VUREG,
 					ArgumentFormat.INT32,
-					ArgumentFormat.VUINT);
+					ArgumentFormat.VUREG);
 				
-				// [u16, u16, i32]
+				// [r16, r16, i32]
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
 					ArgumentFormat.INT32);
 				
 				// [u16|u16, u16, i32]
@@ -417,24 +427,24 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT,
 					ArgumentFormat.INT32);
 				
-				// [u16, u16, j16]
+				// [r16, r16, j16]
 			case NativeInstructionType.IF_ICMP:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
 					ArgumentFormat.VJUMP);
 			
-				// [u16, i32, j16]
+				// [r16, i32, j16]
 			case NativeInstructionType.IFEQ_CONST:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
+					ArgumentFormat.VUREG,
 					ArgumentFormat.INT32,
 					ArgumentFormat.VJUMP);
 				
 				// [reg w/ memaddr, reglist]
 			case NativeInstructionType.INVOKE:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
+					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
 		}
 		
@@ -532,7 +542,6 @@ public final class NativeInstruction
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
 			case NativeInstructionType.LOAD_FROM_INTARRAY:
 				return "LOAD_FROM_INTARRAY";
-			case NativeInstructionType.LOAD_TABLE:		return "LOAD_TABLE";
 			case NativeInstructionType.RETURN:			return "RETURN";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
 			

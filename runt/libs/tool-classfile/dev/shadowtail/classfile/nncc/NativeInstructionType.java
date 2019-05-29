@@ -133,10 +133,6 @@ public interface NativeInstructionType
 	public static final short SYSTEM_CALL =
 		0xFB;
 	
-	/** Load from table that is of native int/pointer size. */
-	public static final short LOAD_TABLE =
-		0xFC;
-	
 	/**
 	 * Load from pool, note that at code gen time this is aliased.
 	 * {@code iiiixxxx}.

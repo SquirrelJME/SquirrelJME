@@ -64,6 +64,10 @@ public final class NativeCode
 	public static final int ARGUMENT_REGISTER_BASE =
 		16;
 	
+	/** Maximum number of registers possible to use. */
+	public static final int MAX_REGISTERS =
+		64;
+	
 	/** This bit XORed NEG bit == set, means memory access is volatile. */
 	@Deprecated
 	public static final int MEMORY_OFF_VOLATILE_BIT =

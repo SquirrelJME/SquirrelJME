@@ -516,6 +516,7 @@ public final class Minimizer
 				{
 						// Variable 16-bit unsigned integer
 					case VUINT:
+					case VUREG:
 					case VPOOL:
 					case VJUMP:
 						// Remap value
@@ -535,6 +536,7 @@ public final class Minimizer
 								break;
 							
 							case VUINT:
+							case VUREG:
 								vm = ((Number)v).intValue();
 								break;
 						}
@@ -625,7 +627,7 @@ public final class Minimizer
 					
 						// Unknown
 					default:
-						throw new todo.OOPS();
+						throw new todo.OOPS(i.toString());
 				}
 			}
 		}
