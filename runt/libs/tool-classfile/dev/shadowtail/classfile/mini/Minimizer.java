@@ -551,10 +551,11 @@ public final class Minimizer
 						}
 						
 						// {@squirreljme.error JC3r 15-bit integer out of
-						// range. (The value)}
+						// range. (The value; The instruction index; The
+						// invalid instruction)}
 						else
 							throw new InvalidClassFormatException(
-								"JC3r " + vm);
+								"JC3r " + vm + " " + cdx + " " + i);
 						break;
 						
 						// Register List
