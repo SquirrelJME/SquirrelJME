@@ -322,12 +322,12 @@ public final class NativeCodeBuilder
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// Generate
-		int op = NativeInstructionType.MEMORY_OFF_ICONST |
-			(__load ? 0b1000 : 0) | __dt.ordinal();
+		// {@squirreljme.error JC4k Cannot access wide memory.}
 		if (__dt.isWide())
-			return this.add(op, __v, (__v == 0 ? 0 : __v + 1), __p, __o);
-		return this.add(op, __v, __p, __o);
+			throw new IllegalArgumentException("JC4k");
+		
+		return this.add(NativeInstructionType.MEMORY_OFF_ICONST |
+			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
 	}
 	
 	/**
@@ -349,12 +349,13 @@ public final class NativeCodeBuilder
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// Generate
-		int op = NativeInstructionType.MEMORY_OFF_REG |
-			(__load ? 0b1000 : 0) | __dt.ordinal();
+		// {@squirreljme.error JC4l Cannot access wide memory.}
 		if (__dt.isWide())
-			return this.add(op, __v, (__v == 0 ? 0 : __v + 1), __p, __o);
-		return this.add(op, __v, __p, __o);
+			throw new IllegalArgumentException("JC4l");
+		
+		// Generate
+		return this.add(NativeInstructionType.MEMORY_OFF_REG |
+			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
 	}
 	
 	/**

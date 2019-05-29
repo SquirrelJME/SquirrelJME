@@ -38,15 +38,6 @@ public interface NativeInstructionType
 	public static final short MEMORY_OFF_REG =
 		0x50;
 	
-	/** Memory access, off a register using long value. */
-	@Deprecated
-	public static final short MEMORY_OFF_REG_WIDE =
-		0x57;
-	
-	/** Wide array access. */
-	public static final short ARRAY_ACCESS_WIDE =
-		0b0111_1100;
-	
 	/**
 	 * Math, R=RC, Integer.
 	 * {@code iiiiMMMM, r3 = r1 ? c2}.
@@ -60,11 +51,6 @@ public interface NativeInstructionType
 	 */
 	public static final short MEMORY_OFF_ICONST =
 		0xD0;
-	
-	/** Memory access, offset is a constant, long value. */
-	@Deprecated
-	public static final short MEMORY_OFF_ICONST_WIDE =
-		0xD7;
 	
 	/**
 	 * Unused.

@@ -312,10 +312,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 				return 3;
-			
-			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
-			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
-				return 4;
 				
 				// {@squirreljme.error JC2r Unknown instruction argument
 				// count.}
@@ -396,14 +392,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG);
-				
-				// [u16|u16, u16, u16]
-			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT);
 			
 				// [r16, i32, r16]
 			case NativeInstructionType.MATH_CONST_INT:
@@ -417,14 +405,6 @@ public final class NativeInstruction
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
-					ArgumentFormat.INT32);
-				
-				// [u16|u16, u16, i32]
-			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT,
 					ArgumentFormat.INT32);
 				
 				// [r16, r16, j16]
@@ -469,20 +449,6 @@ public final class NativeInstruction
 		if (upper == NativeInstructionType.SPECIAL_A ||
 			upper == NativeInstructionType.SPECIAL_B)
 			return __op;
-		
-		// Memory offset register
-		else if (upper == NativeInstructionType.MEMORY_OFF_REG)
-			if ((__op & 0b110) == 0b110)
-				return NativeInstructionType.MEMORY_OFF_REG_WIDE;
-			else
-				return NativeInstructionType.MEMORY_OFF_REG;
-		
-		// Memory offset constant
-		else if (upper == NativeInstructionType.MEMORY_OFF_ICONST)
-			if ((__op & 0b110) == 0b110)
-				return NativeInstructionType.MEMORY_OFF_ICONST_WIDE;
-			else
-				return NativeInstructionType.MEMORY_OFF_ICONST;
 		
 		// Plain
 		return upper;

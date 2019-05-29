@@ -205,9 +205,25 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
 			volaip, Constants.ARRAY_BASE_SIZE, volaip);
 		
-		// Do the memory read
-		codebuilder.addMemoryOffReg(__dt, true,
-			__v.register, __in.register, volaip);
+		// Use helper function
+		if (__dt.isWide())
+		{
+			// Read memory
+			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				"jvmMemReadLong", "(II)L",
+				__in.register, volaip);
+			
+			// Copy return value
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+				__v.register);
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+				__v.register + 1);
+		}
+		
+		// Use native read
+		else
+			codebuilder.addMemoryOffReg(__dt, true,
+				__v.register, __in.register, volaip);
 		
 		// Not used anymore
 		volatiles.remove(volaip);
@@ -271,9 +287,19 @@ public final class NearNativeByteCodeHandler
 				voltemp, __in.register, volaip);
 		}
 		
+		// Use helper function
+		if (__dt.isWide())
+		{
+			// Write memory
+			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				"jvmMemWriteLong", "(IIII)V",
+				__in.register, volaip, __v.register, __v.register + 1);
+		}
+		
 		// Store value
-		codebuilder.addMemoryOffReg(__dt, false,
-			__v.register, __in.register, volaip);
+		else
+			codebuilder.addMemoryOffReg(__dt, false,
+				__v.register, __in.register, volaip);
 		
 		// Reference uncount old value
 		if (isobject)
@@ -437,10 +463,29 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, true), tempreg);
 		
+		// Data type used
+		DataType dt = DataType.of(__fr.memberType().primitiveType());
+		
+		// Use helper function?
+		if (dt.isWide())
+		{
+			// Read memory
+			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				"jvmMemReadLong", "(II)L",
+				ireg, tempreg);
+			
+			// Copy return value
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+				__v.register);
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+				__v.register + 1);
+		}
+		
 		// Read from memory
-		codebuilder.addMemoryOffReg(
-			DataType.of(__fr.memberType().primitiveType()), true,
-			__v.register, ireg, tempreg);
+		else
+			codebuilder.addMemoryOffReg(
+				dt, true,
+				__v.register, ireg, tempreg);
 		
 		// Count it up?
 		if (__fr.memberType().isObject())
@@ -485,6 +530,9 @@ public final class NearNativeByteCodeHandler
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, false),
 			volfioff);
 		
+		// Data type used
+		DataType dt = DataType.of(__fr.memberType().primitiveType());
+		
 		// If we are storing an object, we need to uncount the value already
 		// in this field
 		int voltemp = -1;
@@ -497,14 +545,24 @@ public final class NearNativeByteCodeHandler
 			// Read the value of the field for later clear
 			voltemp = volatiles.get();
 			codebuilder.addMemoryOffReg(
-				DataType.of(__fr.memberType().primitiveType()), true,
+				dt, true,
 				voltemp, ireg, volfioff);
 		}
 		
+		// Use helper function?
+		if (dt.isWide())
+		{
+			// Write memory
+			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				"jvmMemWriteLong", "(IIII)V",
+				ireg, volfioff, __v.register, __v.register + 1);
+		}
+		
 		// Write to memory
-		codebuilder.addMemoryOffReg(
-			DataType.of(__fr.memberType().primitiveType()), false,
-			__v.register, ireg, volfioff);
+		else
+			codebuilder.addMemoryOffReg(
+				dt, false,
+				__v.register, ireg, volfioff);
 		
 		// If we stored an object, reference count the field after it has
 		// been written to
@@ -1126,11 +1184,29 @@ public final class NearNativeByteCodeHandler
 			this.__fieldAccess(FieldAccessType.STATIC, __fr, true),
 			volsfo);
 		
+		// The datatype used
+		DataType dt = DataType.of(__fr.memberType().primitiveType());
+		
+		// Use helper function?
+		if (dt.isWide())
+		{
+			// Read memory
+			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				"jvmMemReadLong", "(II)L",
+				NativeCode.STATIC_FIELD_REGISTER, volsfo);
+			
+			// Copy return value
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+				__v.register);
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+				__v.register + 1);
+		}
+		
 		// Read from memory
-		codebuilder.addMemoryOffReg(
-			DataType.of(__fr.memberType().primitiveType()), true,
-			__v.register, NativeCode.STATIC_FIELD_REGISTER,
-			volsfo);
+		else
+			codebuilder.addMemoryOffReg(
+				dt, true,
+				__v.register, NativeCode.STATIC_FIELD_REGISTER, volsfo);
 		
 		// Count it up?
 		if (__fr.memberType().isObject())
@@ -1169,6 +1245,9 @@ public final class NearNativeByteCodeHandler
 			this.__fieldAccess(FieldAccessType.STATIC, __fr, false),
 			volsfo);
 		
+		// Data type used
+		DataType dt = DataType.of(__fr.memberType().primitiveType());
+		
 		// If we are storing an object, we need to uncount the value already
 		// in this field
 		int voltemp = -1;
@@ -1181,14 +1260,25 @@ public final class NearNativeByteCodeHandler
 			// Read the value of the field for later clear
 			voltemp = volatiles.get();
 			codebuilder.addMemoryOffReg(
-				DataType.of(__fr.memberType().primitiveType()), true,
+				dt, true,
 				voltemp, NativeCode.STATIC_FIELD_REGISTER, volsfo);
 		}
 		
+		// Use helper function?
+		if (dt.isWide())
+		{
+			// Write memory
+			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				"jvmMemWriteLong", "(IIII)V",
+				NativeCode.STATIC_FIELD_REGISTER, volsfo,
+				__v.register, __v.register + 1);
+		}
+		
 		// Write to memory
-		codebuilder.addMemoryOffReg(
-			DataType.of(__fr.memberType().primitiveType()), false,
-			__v.register, NativeCode.STATIC_FIELD_REGISTER, volsfo);
+		else
+			codebuilder.addMemoryOffReg(
+				dt, false,
+				__v.register, NativeCode.STATIC_FIELD_REGISTER, volsfo);
 		
 		// If we wrote an object, uncount the old destination after it
 		// has been overwritten
