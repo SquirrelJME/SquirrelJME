@@ -130,7 +130,7 @@ final class __TempMethods__
 			ddos.writeInt(0xFFFFFFFF);
 			
 			// Merge in the code and line information
-			ddos.write(cbytes.toByteArray());
+			cbytes.writeTo(ddos);
 			return dbytes.toByteArray();
 		}
 		

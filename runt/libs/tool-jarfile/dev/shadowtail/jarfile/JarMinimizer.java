@@ -1256,8 +1256,8 @@ public final class JarMinimizer
 		}
 		
 		// Write table of contents and JAR data
-		__dos.write(tbaos.toByteArray());
-		__dos.write(jbaos.toByteArray());
+		tbaos.writeTo(__dos);
+		jbaos.writeTo(__dos);
 	}
 	
 	/**
