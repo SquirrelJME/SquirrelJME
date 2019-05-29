@@ -1,0 +1,5 @@
+# SummerCoat ROM Usage
+
+This is a ROM file which must be used with SummerCoat or RatufaCoat for it to
+function properly.
+

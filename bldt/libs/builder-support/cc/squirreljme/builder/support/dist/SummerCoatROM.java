@@ -9,8 +9,12 @@
 
 package cc.squirreljme.builder.support.dist;
 
+import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
+import cc.squirreljme.builder.support.vm.BuildClassLibrary;
+import cc.squirreljme.vm.VMClassLibrary;
+import dev.shadowtail.packfile.PackMinimizer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
@@ -43,7 +47,35 @@ public class SummerCoatROM
 	protected void specific(ProjectManager __pm, ZipCompilerOutput __zip)
 		throws IOException, NullPointerException
 	{
-		throw new todo.TODO();
+		// All the libraries need to be compiled!!
+		Binary[] bins = __pm.buildAll(TimeSpaceType.RUNTIME);
+		
+		// Bootstrap library used as the kernel entry point
+		String boot = null;
+		
+		// Translate these to VMClassLibraries and find the bootstrap
+		int n = bins.length;
+		VMClassLibrary[] libs = new VMClassLibrary[n];
+		for (int i = 0; i < n; i++)
+		{
+			Binary b = bins[i];
+			
+			// Wrap library
+			BuildClassLibrary lib;
+			libs[i] = (lib = new BuildClassLibrary(b));
+			
+			// Use the supervisor as the booting point
+			String name = lib.name().toString();
+			if (name.equals("supervisor") || name.equals("supervisor.jar"))
+				boot = name;
+		}
+		
+		// Write SummerCoat ROM file
+		try (OutputStream out = __zip.output("squirreljme.sqc"))
+		{
+			// Minimize
+			PackMinimizer.minimize(out, boot, libs);
+		}
 	}
 }
 
