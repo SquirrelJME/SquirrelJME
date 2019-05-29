@@ -117,9 +117,12 @@ public final class MinimizedJarHeader
 		// Need to read fields
 		DataInputStream din = new DataInputStream(__in);
 		
-		// {@squirreljme.error BC01 Invalid minimized Jar magic number.}
-		if (MAGIC_NUMBER != din.readInt())
-			throw new InvalidClassFormatException("BC01");
+		// {@squirreljme.error BC01 Invalid minimized Jar magic number.
+		// (The read magic number; The expected magic number)}
+		int wasmagic;
+		if (MAGIC_NUMBER != (wasmagic = din.readInt()))
+			throw new InvalidClassFormatException(String.format(
+				"BC01 %08x %08x", wasmagic, MAGIC_NUMBER));
 		
 		// Build
 		return new MinimizedJarHeader(

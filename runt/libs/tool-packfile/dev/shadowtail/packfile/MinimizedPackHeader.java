@@ -23,11 +23,19 @@ public final class MinimizedPackHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		16;
+		20;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
 		HEADER_SIZE_WITHOUT_MAGIC + 4;
+	
+	/** The offset to the BootJAR offset (which has BootRAM), with magic. */
+	public static final int OFFSET_OF_BOOTJAROFFSET =
+		12;
+	
+	/** The offset to the BootJAR size, with magic. */
+	public static final int OFFSET_OF_BOOTJARSIZE =
+		16;
 	
 	/** The number of jars in this packfile. */
 	public final int numjars;
@@ -37,6 +45,9 @@ public final class MinimizedPackHeader
 	
 	/** The offset into the packfile where the boot entry is. */
 	public final int bootjaroffset;
+	
+	/** The size of the boot jar. */
+	public final int bootjarsize;
 	
 	/** The offset to the table of contents. */
 	public final int tocoffset;
@@ -62,6 +73,7 @@ public final class MinimizedPackHeader
 		// Boot JAR that may be specified
 		this.bootjarindex = __fs[at++];
 		this.bootjaroffset = __fs[at++];
+		this.bootjarsize = __fs[at++];
 		
 		// Table of contents offset (names and offsets of the JARs)
 		this.tocoffset = __fs[at++];

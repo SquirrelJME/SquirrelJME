@@ -17,12 +17,18 @@ import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
+import dev.shadowtail.packfile.MinimizedPackHeader;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMFactory;
 import cc.squirreljme.vm.VMSuiteManager;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -77,10 +83,69 @@ public class SummerCoatFactory
 		// Virtual memory which provides access to many parts of memory
 		VirtualMemory vmem = new VirtualMemory();
 		
-		// Initialize suite memory
+		// The ROM always starts here
 		int rombase = SUITE_BASE_ADDR;
-		SuitesMemory sm = new SuitesMemory(rombase, __sm);
-		vmem.mapRegion(sm);
+		
+		// Try to load a specific ROM file instead of the dynamically
+		// generate one?
+		String romfile = __sprops.get("cc.squirreljme.romfile");
+		if (romfile == null)
+			try
+			{
+				romfile = System.getProperty("cc.squirreljme.romfile");
+			}
+			catch (SecurityException e)
+			{
+			}
+		
+		// Load existing ROM file
+		if (romfile != null)
+		{
+			// Debug
+			todo.DEBUG.note("Using ROM %s", romfile);
+			
+			// Copy all of the file data
+			Path p = Paths.get(romfile);
+			try (InputStream in = Files.newInputStream(p,
+					StandardOpenOption.READ);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream(
+					(int)Files.size(p)))
+			{
+				// Read data
+				byte[] buf = new byte[512];
+				for (;;)
+				{
+					int rc = in.read(buf);
+					
+					if (rc < 0)
+						break;
+					
+					baos.write(buf, 0, rc);
+				}
+				
+				// Initialize memory with the ROM data
+				ReadableMemory sm = new ByteArrayMemory(rombase,
+					baos.toByteArray());
+				vmem.mapRegion(sm);
+			}
+			
+			// {@squirreljme.error AE05 Could not load SummerCoat ROM. (File)}
+			catch (IOException e)
+			{
+				throw new RuntimeException("AE05 " + romfile, e);
+			}
+		}
+		
+		// Dynamically initialized suite memory
+		else
+		{
+			// Create and map dynamic suite region
+			SuitesMemory sm = new SuitesMemory(rombase, __sm);
+			vmem.mapRegion(sm);
+			
+			// Initialize suite memory explicitly since we need it!
+			sm.__init();
+		}
 		
 		// Initialize RAM
 		int ramsize = DefaultConfiguration.DEFAULT_RAM_SIZE,
@@ -91,13 +156,28 @@ public class SummerCoatFactory
 		WritableMemory cmem = new RawMemory(CONFIG_BASE_ADDR, 8192);
 		vmem.mapRegion(cmem);
 		
-		// Initialize suite memory explicitly since we need it!
-		sm.__init();
+		// Read the boot JAR offset of this packfile
+		int bootjaroff = rombase + vmem.memReadInt(rombase +
+				MinimizedPackHeader.OFFSET_OF_BOOTJAROFFSET),
+			bootjarsize = vmem.memReadInt(rombase +
+				MinimizedPackHeader.OFFSET_OF_BOOTJARSIZE);
 		
 		// Load the bootstrap JAR header
-		MinimizedJarHeader bjh = sm._bootjarheader;
-		int bjo = sm.offset + sm._bootjaroff,
-			bra = bjo + bjh.bootoffset,
+		MinimizedJarHeader bjh;
+		try (InputStream bin = new ReadableMemoryInputStream(vmem,
+			bootjaroff, bootjarsize))
+		{
+			bjh = MinimizedJarHeader.decode(bin);
+		}
+		
+		// {@squirreljme.error AE06 Could not read the boot JAR header.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AE06", e);
+		}
+		
+		// Load the bootstrap JAR header
+		int bra = bootjaroff + bjh.bootoffset,
 			lram;
 		
 		// Allocate and initialize configuration data
@@ -143,7 +223,7 @@ public class SummerCoatFactory
 					
 						// JAR
 					case 2:
-						off = bjo;
+						off = bootjaroff;
 						break;
 					
 						// {@squirreljme.error AE02 Corrupt Boot RAM with
@@ -197,7 +277,7 @@ public class SummerCoatFactory
 		
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(vmem);
-		NativeCPU.Frame iframe = cpu.enterFrame(bjo + bjh.bootstart,
+		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh.bootstart,
 			ramstart, ramsize, lram, xxclasspth, xxsysprops, xxmainclss,
 			xxmainargs, (__ismid ? 1 : 0), __gd, rombase);
 		
