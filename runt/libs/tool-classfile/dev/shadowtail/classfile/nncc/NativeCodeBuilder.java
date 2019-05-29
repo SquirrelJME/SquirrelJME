@@ -79,10 +79,13 @@ public final class NativeCodeBuilder
 		ArgumentFormat[] afmt = NativeInstruction.argumentFormat(__op);
 		int fnar = afmt.length;
 		
+		// Build instruction
+		NativeInstruction rv = new NativeInstruction(__op, __args);
+		
 		// {@squirreljme.error JC2q Operation has an incorrect number of
-		// arguments. (The operation)}
+		// arguments. (The instruction)}
 		if (fnar != __args.length)
-			throw new IllegalArgumentException("JC2q " + __op);
+			throw new IllegalArgumentException("JC2q " + rv);
 		
 		// Check format
 		for (int i = 0; i < fnar; i++)
@@ -99,24 +102,24 @@ public final class NativeCodeBuilder
 			switch (afmt[i])
 			{
 					// {@squirreljme.error JC4j Use of register which is out
-					// of range of the maximum register count. (The operation)}
+					// of range of the maximum register count.
+					// (The instruction)}
 				case VUREG:
 					if (oi < 0 || oi >= NativeCode.MAX_REGISTERS)
-						throw new IllegalArgumentException("JC4j " + __op);
+						throw new IllegalArgumentException("JC4j " + rv);
 					break;
 				
 					// {@squirreljme.error JC4i Cannot jump to a non-label.
-					// (The operation)}
+					// (The instruction)}
 				case VJUMP:
 					if (!(o instanceof NativeCodeLabel))
-						throw new IllegalArgumentException("JC4i " + __op);
+						throw new IllegalArgumentException("JC4i " + rv);
 					break;
 			}
 		}
 		
 		// Create instruction
 		int atdx = this._nextaddr++;
-		NativeInstruction rv = new NativeInstruction(__op, __args);
 		
 		// Debug
 		if (__Debug__.ENABLED)
