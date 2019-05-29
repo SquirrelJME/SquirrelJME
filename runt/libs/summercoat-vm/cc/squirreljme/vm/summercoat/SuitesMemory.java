@@ -136,7 +136,7 @@ public final class SuitesMemory
 			tdos.writeInt(-1);
 			
 			// Build configuration space
-			tdos.write(sbaos.toByteArray());
+			sbaos.writeTo(tdos);
 		}
 		
 		// {@squirreljme.error AE04 Could not build the table of contents.}

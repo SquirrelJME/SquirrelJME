@@ -432,8 +432,8 @@ public final class MinimizedPoolBuilder
 			
 			// Merge the data bytes into the table then use the completed
 			// table
-			tdos.write(obytes.toByteArray());
-			tdos.write(dbytes.toByteArray());
+			obytes.writeTo(tdos);
+			dbytes.writeTo(tdos);
 			return tbytes.toByteArray();
 		}
 		

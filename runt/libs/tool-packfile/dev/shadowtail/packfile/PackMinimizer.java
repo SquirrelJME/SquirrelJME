@@ -80,7 +80,72 @@ public class PackMinimizer
 		if (__os == null || __libs == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Formatted data is used
+		DataOutputStream dos = new DataOutputStream(__os);
+		
+		// Calculate relative offset to the JAR data
+		int numlibs = __libs.length;
+		int reloff = MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC +
+			(12 * numlibs);
+		
+		// Output table of contents
+		ByteArrayOutputStream taos = new ByteArrayOutputStream(4096);
+		DataOutputStream tdos = new DataOutputStream(taos);
+		
+		// Jar data
+		ByteArrayOutputStream jaos = new ByteArrayOutputStream(1048576);
+		DataOutputStream jdos = new DataOutputStream(jaos);
+		
+		// Boot positions
+		int bji = 0,
+			bjo = 0;
+		
+		// Go through each library, minimize and write!
+		for (int i = 0; i < numlibs; i++)
+		{
+			VMClassLibrary lib = __libs[i];
+			String name = lib.name();
+			
+			// Is this a boot library?
+			boolean isboot;
+			if ((isboot = name.equals(__boot)))
+				bji = i;
+			
+			// Pad where the string would be
+			while (((reloff + jdos.size()) & 1) != 0)
+				jdos.write(0);
+			
+			// Write location of string and name of it
+			tdos.writeInt(reloff + jdos.size());
+			jdos.writeUTF(name);
+			
+			// Pad where the JAR would be
+			while (((reloff + jdos.size()) & 7) != 0)
+				jdos.write(0);
+			
+			// The boot JAR is located here
+			if (isboot)
+				bjo = reloff + jdos.size();
+			
+			// Write location of JAR and its minimized data
+			int baseat;
+			tdos.writeInt(reloff + (baseat = jdos.size()));
+			JarMinimizer.minimize(isboot, lib, jdos);
+			
+			// Write size of the data
+			tdos.writeInt(jdos.size() - baseat);
+		}
+		
+		// Write pack header
+		dos.writeInt(MinimizedPackHeader.MAGIC_NUMBER);
+		dos.writeInt(numlibs);
+		dos.writeInt(bji);
+		dos.writeInt(bjo);
+		dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
+		
+		// Write TOC and JAR data
+		taos.writeTo(dos);
+		jaos.writeTo(dos);
 	}
 }
 
