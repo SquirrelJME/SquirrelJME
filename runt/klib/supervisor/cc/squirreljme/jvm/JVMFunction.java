@@ -236,6 +236,50 @@ public final class JVMFunction
 	}
 	
 	/**
+	 * Reads a long value from the given address
+	 *
+	 * @param __addr The address to access.
+	 * @param __off The address offset.
+	 * @return The read value.
+	 * @since 2019/05/29
+	 */
+	public static final long jvmMemReadLong(int __addr, int __off)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes a long value to the given address
+	 *
+	 * @param __addr The address to access.
+	 * @param __off The address offset.
+	 * @param __hv The high value.
+	 * @param __lv The low value.
+	 * @since 2019/05/29
+	 */
+	public static final void jvmMemWriteLong(int __addr, int __off, int __hv,
+		int __lv)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes a long value to the given address
+	 *
+	 * @param __addr The address to access.
+	 * @param __off The address offset.
+	 * @param __v The value
+	 * @since 2019/05/29
+	 */
+	public static final void jvmMemWriteLong(int __addr, int __off, long __v)
+	{
+		JVMFunction.jvmMemWriteLong(__addr, __off,
+			(int)(__v >>> 32), (int)__v);
+	}
+	
+	/**
 	 * Enters the monitor for the given object.
 	 *
 	 * @param __p The object to enter.
