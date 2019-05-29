@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -54,14 +55,6 @@ import net.multiphasicapps.classfile.PrimitiveType;
  */
 public final class Minimizer
 {
-	/** Jump shifts. */
-	private static final int _JUMP_SHIFT =
-		20;
-	
-	/** Jump mask. */
-	private static final int _JUMP_MASK =
-		(1 << _JUMP_SHIFT) - 1;
-	
 	/** Counter for UUIDs. */
 	private static volatile int _UUID_COUNTER =
 		17;
@@ -500,7 +493,7 @@ public final class Minimizer
 		int[] indexpos = new int[cdn];
 		
 		// Locations which have jump targets to be replaced
-		Map<Integer, InstructionJumpTarget> jumpreps = new HashMap<>();
+		List<__Jump__> jumpreps = new LinkedList<>();
 		
 		// Operations will reference this constant pool
 		MinimizedPoolBuilder pool = this.pool;
@@ -547,23 +540,9 @@ public final class Minimizer
 								
 							case VJUMP:
 								{
-									// {@squirreljme.error JC4p Out of range
-									// jump. (Index; Instruction)}
-									int dss = dos.size();
-									if (dss < 0 || dss > _JUMP_MASK)
-										throw new InvalidClassFormatException(
-											"JC4p " + dss + " " + i);
-									
-									// {@squirreljme.error JC4q Out if range
-									// index. (Index; Instruction)}
-									if (((cdx << _JUMP_SHIFT) >>>
-										_JUMP_SHIFT) != cdx)
-										throw new InvalidClassFormatException(
-											"JC4q " + cdx + " " + i);
-									
 									// Store for later modification
-									jumpreps.put((cdx << _JUMP_SHIFT) | dss,
-										(InstructionJumpTarget)v);
+									jumpreps.add(new __Jump__(cdx, dos.size(),
+										((InstructionJumpTarget)v).target()));
 									
 									// Do not know if the full address can fit
 									vm = 32767;
@@ -672,21 +651,13 @@ public final class Minimizer
 		int codesize = rv.length;
 		
 		// Replace jumps
-		for (Map.Entry<Integer, InstructionJumpTarget> e : jumpreps.entrySet())
+		for (__Jump__ j : jumpreps)
 		{
-			// {@squirreljme.error JC4o Instruction the specified index jumps
-			// to an invalid address. (The original jump target; The
-			// instruction index; The address into the method; the number
-			// of instructions available)}
-			int cdx = e.getKey() >>> 20,
-				ai = e.getKey() & 0xFFFFF,
-				origjt = e.getValue().target();
-			if (origjt < 0 || origjt >= cdn)
-				throw new InvalidClassFormatException("JC4o " + origjt + 
-					" " + cdx + " " + ai + " " + cdn);
-			
 			// Calculate target
-			int jt = indexpos[origjt] - indexpos[cdx];
+			int cdx = j.cdx,
+				ai = j.dss,
+				origjt = j.jt,
+				jt = indexpos[origjt] - indexpos[cdx];
 			
 			// Wide
 			if ((rv[ai] & 0x80) != 0)
