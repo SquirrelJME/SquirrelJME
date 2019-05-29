@@ -736,10 +736,12 @@ public final class JavaStackState
 			pushed.add(inf);
 		}
 		
-		// Convert infos to I/O
+		// Convert infos to I/O, note that there is a rare case in the compiler
+		// where it nukes stack entries to nothing.
 		List<JavaStackResult.InputOutput> ios = new ArrayList<>();
 		for (Info i : popped)
-			ios.add(JavaStackResult.makeInput(i));
+			ios.add((i.isNothing() ? JavaStackResult.INPUT_ZERO :
+				JavaStackResult.makeInput(i)));
 		for (Info o : pushed)
 			ios.add(JavaStackResult.makeOutput(o));
 		
@@ -952,7 +954,8 @@ public final class JavaStackState
 			int cap;
 			
 			// Stack transition
-			if (z == 0)
+			boolean isstack = (z == 0);
+			if (isstack)
 			{
 				ainf = asta;
 				binf = bsta;
@@ -999,6 +1002,12 @@ public final class JavaStackState
 						localenq.add(a.value);
 						ops.add(StateOperation.uncount(a.value));
 					}
+					
+					// If this is a nothing being put on the stack put a
+					// zero value there to wipe it!
+					if (isstack)
+						ops.add(StateOperation.copy(
+							false, a.value, b.register));
 				}
 				
 				// Check if the types and values are compatible
@@ -1556,6 +1565,17 @@ public final class JavaStackState
 					this.value + (this.readonly ? 12873 : -18723) +
 					(this.nocounting ? 987214 : -2143));
 			return rv;
+		}
+		
+		/**
+		 * Is this the nothing type?
+		 *
+		 * @return If this is the nothing type.
+		 * @since 2019/05/29
+		 */
+		public final boolean isNothing()
+		{
+			return this.type.isNothing();
 		}
 		
 		/**
