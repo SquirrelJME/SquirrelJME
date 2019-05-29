@@ -1,4 +1,5 @@
 cc.squirreljme.builder.support.dist.ShadedJavaMEDist
 cc.squirreljme.builder.support.dist.ShadedJavaSEDist
 cc.squirreljme.builder.support.dist.SummerCoatROM
+cc.squirreljme.builder.support.dist.SummerCoatROMTest
 

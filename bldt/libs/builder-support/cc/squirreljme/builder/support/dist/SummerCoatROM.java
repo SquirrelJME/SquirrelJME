@@ -29,6 +29,9 @@ import net.multiphasicapps.javac.ZipCompilerOutput;
 public class SummerCoatROM
 	extends DistBuilder
 {
+	/** The timespace to use. */
+	protected final TimeSpaceType timespace;
+	
 	/**
 	 * Initializes the service.
 	 *
@@ -36,7 +39,26 @@ public class SummerCoatROM
 	 */
 	public SummerCoatROM()
 	{
-		super("summercoatrom");
+		this("summercoatrom", TimeSpaceType.RUNTIME);
+	}
+	
+	/**
+	 * Initializes the service with the given name and type.
+	 *
+	 * @param __name The name to use.
+	 * @param __ts The timespace type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/29
+	 */
+	public SummerCoatROM(String __name, TimeSpaceType __ts)
+		throws NullPointerException
+	{
+		super(__name);
+		
+		if (__ts == null)
+			throw new NullPointerException("NARG");
+		
+		this.timespace = __ts;
 	}
 	
 	/**
@@ -48,7 +70,7 @@ public class SummerCoatROM
 		throws IOException, NullPointerException
 	{
 		// All the libraries need to be compiled!!
-		Binary[] bins = __pm.buildAll(TimeSpaceType.RUNTIME);
+		Binary[] bins = __pm.buildAll(this.timespace);
 		
 		// Bootstrap library used as the kernel entry point
 		String boot = null;
