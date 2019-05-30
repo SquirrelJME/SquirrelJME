@@ -86,7 +86,7 @@ public class PackMinimizer
 		// Calculate relative offset to the JAR data
 		int numlibs = __libs.length;
 		int reloff = MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC +
-			(20 * numlibs);
+			(MinimizedPackHeader.TOC_ENTRY_SIZE * numlibs);
 		
 		// Output table of contents
 		ByteArrayOutputStream taos = new ByteArrayOutputStream(4096);

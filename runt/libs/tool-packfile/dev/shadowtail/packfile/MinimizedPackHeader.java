@@ -37,6 +37,10 @@ public final class MinimizedPackHeader
 	public static final int OFFSET_OF_BOOTJARSIZE =
 		16;
 	
+	/** Size of individual table of contents entry. */
+	public static final int TOC_ENTRY_SIZE =
+		20;
+	
 	/** The number of jars in this packfile. */
 	public final int numjars;
 	
