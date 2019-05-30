@@ -116,7 +116,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, (byte)1, __addr));
+			this._ops.add(new Operation(__m, (byte)1, __addr, __v));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -147,7 +147,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, (byte)4, __addr));
+			this._ops.add(new Operation(__m, (byte)4, __addr, __v));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -181,7 +181,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, (byte)8, __addr));
+			this._ops.add(new Operation(__m, (byte)8, __addr, __v));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -219,7 +219,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, (byte)2, __addr));
+			this._ops.add(new Operation(__m, (byte)2, __addr, __v));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -263,6 +263,30 @@ public final class Initializer
 				// Write operation tag and address offset
 				dos.writeByte((op.size << 4) | (op.mod.ordinal()));
 				dos.writeInt(op.addr);
+				
+				// Write the value
+				Number v = op.value;
+				switch (op.size)
+				{
+					case 1:
+						dos.writeByte(v.byteValue());
+						break;
+						
+					case 2:
+						dos.writeShort(v.shortValue());
+						break;
+						
+					case 4:
+						dos.writeInt(v.intValue());
+						break;
+						
+					case 8:
+						dos.writeLong(v.longValue());
+						break;
+					
+					default:
+						throw new todo.OOPS();
+				}
 			}
 			
 			// End mark

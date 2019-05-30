@@ -233,25 +233,30 @@ public class SummerCoatFactory
 				}
 				
 				// Depends on operation size
-				int before;
 				switch (siz)
 				{
 						// Byte
 					case 1:
-						vmem.memWriteByte(addr,
-							(before = vmem.memReadByte(addr)) + off);
+						vmem.memWriteByte(addr, dis.readByte() + off);
 						break;
 					
 						// Short
 					case 2:
-						vmem.memWriteShort(addr,
-							(before = vmem.memReadShort(addr)) + off);
+						vmem.memWriteShort(addr, dis.readShort() + off);
 						break;
 					
 						// Integer
 					case 4:
-						vmem.memWriteInt(addr,
-							(before = vmem.memReadInt(addr)) + off);
+						vmem.memWriteInt(addr, dis.readInt() + off);
+						break;
+						
+						// Long
+					case 8:
+						{
+							long v = dis.readLong() + off;
+							vmem.memWriteInt(addr, (int)(v >>> 32));
+							vmem.memWriteInt(addr + 4, (int)(v));
+						}
 						break;
 					
 						// {@squirreljme.error AE03 Corrupt Boot RAM with
