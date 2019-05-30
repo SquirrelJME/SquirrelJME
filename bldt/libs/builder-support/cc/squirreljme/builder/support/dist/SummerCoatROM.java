@@ -69,8 +69,9 @@ public class SummerCoatROM
 	protected void specific(ProjectManager __pm, ZipCompilerOutput __zip)
 		throws IOException, NullPointerException
 	{
-		// All the libraries need to be compiled!!
+		// Compile everything and include the launcher bits as well
 		Binary[] bins = __pm.buildAll(this.timespace);
+		Binary[] lbins = __pm.build(this.timespace, "launcher");
 		
 		// Bootstrap library used as the kernel entry point
 		String boot = null;
@@ -92,11 +93,35 @@ public class SummerCoatROM
 				boot = name;
 		}
 		
+		// Try to find the starting libraries for the launcher
+		int numlbins = lbins.length;
+		String[] lstrs = new String[numlbins];
+		for (int i = 0; i < numlbins; i++)
+		{
+			// Get source name
+			String name = lbins[0].name().toString();
+			
+			// Find the library for it
+			for (int j = 0; j < n; j++)
+			{
+				String ln = libs[j].name();
+				
+				// Matching name?
+				if (name.equals(ln) || name.equals(ln + ".jar") ||
+					(name + ".jar").equals(ln) ||
+					(name + ".jar").equals(ln + ".jar"))
+				{
+					lstrs[i] = ln;
+					break;
+				}
+			}
+		}
+		
 		// Write SummerCoat ROM file
 		try (OutputStream out = __zip.output("squirreljme.sqc"))
 		{
 			// Minimize
-			PackMinimizer.minimize(out, boot, libs);
+			PackMinimizer.minimize(out, boot, lstrs, libs);
 		}
 	}
 }

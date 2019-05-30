@@ -23,7 +23,7 @@ public final class MinimizedPackHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		20;
+		28;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -53,6 +53,12 @@ public final class MinimizedPackHeader
 	/** The size of the boot jar. */
 	public final int bootjarsize;
 	
+	/** Initial class path library indexes. */
+	public final int booticpoffset;
+	
+	/** Initial clsas path library index count. */
+	public final int booticpsize;
+	
 	/** The offset to the table of contents. */
 	public final int tocoffset;
 	
@@ -78,6 +84,8 @@ public final class MinimizedPackHeader
 		this.bootjarindex = __fs[at++];
 		this.bootjaroffset = __fs[at++];
 		this.bootjarsize = __fs[at++];
+		this.booticpoffset = __fs[at++];
+		this.booticpsize = __fs[at++];
 		
 		// Table of contents offset (names and offsets of the JARs)
 		this.tocoffset = __fs[at++];
