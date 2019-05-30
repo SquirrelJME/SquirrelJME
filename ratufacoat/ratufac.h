@@ -63,6 +63,23 @@ typedef struct ratufacoat_machine_t
 } ratufacoat_machine_t;
 
 /**
+ * Searches the argument list for the given argument.
+ *
+ * @param machine The machine to search in.
+ * @param find The argument to find.
+ * @param at The starting index to search in, this can be used to possibly
+ * scan for all values.
+ * @param key The output key pointer, if this was detected to be a key type.
+ * @param keyn The number of characters that make up the key.
+ * @param value The output value pointer, if this has a value (equal sign).
+ * @param valuen The number of characters which make up the value.
+ * @return The index of the argument or {@code -1} if it was not found.
+ * @since 2019/05/30
+ */
+int ratufacoat_findargument(ratufacoat_machine_t* machine, char* find, int at,
+	char** key, int* keyn, char** value, int* valuen);
+
+/**
  * Creates a RatufaCoat machine.
  * 
  * @param argc Argument count.
