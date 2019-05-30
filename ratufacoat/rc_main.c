@@ -33,6 +33,10 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_native_t* native,
 	// Set the native handlers since those are pretty static
 	rv->native = native;
 	
+	// Set arguments
+	rv->argc = argc;
+	rv->argv = argv;
+	
 	ratufacoat_todo();
 	
 	return rv;

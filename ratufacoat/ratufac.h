@@ -54,6 +54,12 @@ typedef struct ratufacoat_machine_t
 {
 	/** Native function handlers. */
 	ratufacoat_native_t* native;
+	
+	/** Argument count. */
+	int argc;
+	
+	/** Arguments. */
+	char** argv;
 } ratufacoat_machine_t;
 
 /**
@@ -61,6 +67,8 @@ typedef struct ratufacoat_machine_t
  * 
  * @param argc Argument count.
  * @param argv Arguments.
+ * @return The resulting virtual machine, will be {@code NULL} if it could
+ * not be created.
  * @since 2019/05/28
  */
 ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_native_t* native,
