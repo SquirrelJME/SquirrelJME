@@ -13,9 +13,11 @@ import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
+import dev.shadowtail.packfile.MinimizedPackHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.MethodFlags;
@@ -47,23 +49,17 @@ public final class SuitesMemory
 	/** The size of this memory region. */
 	protected final int size;
 	
-	/** The suite configuration table (addresses of suites). */
-	protected final ReadableMemory configtable;
-	
 	/** The individual regions of suite memory. */
 	private final SuiteMemory[] _suitemem;
 	
 	/** This is the mapping of suite names to memory. */
 	private final Map<String, SuiteMemory> _suitemap;
 	
+	/** The suite configuration table (addresses of suites). */
+	private volatile ReadableMemory _configtable;
+	
 	/** Was the config table initialized? */
 	private volatile boolean _didconfiginit;
-	
-	/** Boot JAR header. */
-	volatile MinimizedJarHeader _bootjarheader;
-	
-	/** The offset to the boot JAR. */
-	volatile int _bootjaroff;
 	
 	/**
 	 * Initializes the suites memory.
@@ -86,69 +82,24 @@ public final class SuitesMemory
 		String[] libnames = __sm.listLibraryNames();
 		int n = libnames.length;
 		
-		// Output stream for table of contents
-		ByteArrayOutputStream tbaos = new ByteArrayOutputStream(4096);
-		DataOutputStream tdos = new DataOutputStream(tbaos);
-		
-		// Jar name fills
-		ByteArrayOutputStream sbaos = new ByteArrayOutputStream(4096);
-		DataOutputStream sdos = new DataOutputStream(sbaos);
-		
-		// Relative offset for the string table
-		int reloff = (n * 8) + 8;
-		
 		// Setup suite memory area
 		SuiteMemory[] suitemem = new SuiteMemory[n];
 		Map<String, SuiteMemory> suitemap = new LinkedHashMap<>();
 		
-		// Write table of contents and memory map suites
+		// Setup memory regions for the various suites
 		int off = CONFIG_TABLE_SIZE;
-		try
+		for (int i = 0; i < n; i++, off += SUITE_CHUNK_SIZE)
 		{
-			// Setup memory regions for the various suites
-			for (int i = 0; i < n; i++, off += SUITE_CHUNK_SIZE)
-			{
-				// Set
-				String ln = libnames[i];
-				SuiteMemory sm;
-				suitemem[i] = (sm = new SuiteMemory(off, __sm, ln));
-				
-				// Also use map for quick access
-				suitemap.put(ln, sm);
-				
-				// Write offset to suite ROM
-				tdos.writeInt(off);
-				
-				// Write name of suite
-				tdos.writeInt(reloff + sdos.size());
-				sdos.writeUTF(ln);
-				
-				// Round table data
-				while ((sdos.size() & 1) != 0)
-					sdos.write(0);
-				
-				// Debug
-				todo.DEBUG.note("MMap Suite %s -> %08x", ln, __off + off);
-			}
+			// Need the suite name for later lookup on init
+			String libname = libnames[i];
 			
-			// End of table
-			tdos.writeInt(-1);
-			tdos.writeInt(-1);
+			// Map suite
+			SuiteMemory sm;
+			suitemem[i] = (sm = new SuiteMemory(off, __sm, libname));
 			
-			// Build configuration space
-			sbaos.writeTo(tdos);
+			// Also use map for quick access
+			suitemap.put(libname, sm);
 		}
-		
-		// {@squirreljme.error AE04 Could not build the table of contents.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("AE04", e);
-		}
-		
-		// Store memory
-		ReadableMemory configtable = new ByteArrayMemory(__off,
-			tbaos.toByteArray());
-		this.configtable = configtable;
 		
 		// Store all the various suite memories
 		this._suitemem = suitemem;
@@ -172,7 +123,7 @@ public final class SuitesMemory
 		
 		// Reading from the config table?
 		if (__addr < CONFIG_TABLE_SIZE)
-			return this.configtable.memReadByte(__addr);
+			return this._configtable.memReadByte(__addr);
 		
 		// Determine the suite index we are wanting to look in memory
 		int si = (__addr - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE;
@@ -219,10 +170,10 @@ public final class SuitesMemory
 		this._didconfiginit = true;
 		
 		// Initialize the bootstrap
-		SuiteMemory cldc = this._suitemap.get("supervisor.jar");
+		SuiteMemory superv = this._suitemap.get("supervisor.jar");
 		try
 		{
-			cldc.__init();
+			superv.__init();
 		}
 		
 		// {@squirreljme.error AE0t Could not initialize the supervisor.}
@@ -231,9 +182,70 @@ public final class SuitesMemory
 			throw new RuntimeException("AE0t", e);
 		}
 		
-		// Get and initialize boot JAR header
-		this._bootjarheader = cldc._jarheader;
-		this._bootjaroff = cldc.offset;
+		// Get suites and the number of them for processing
+		SuiteMemory[] suitemem = this._suitemem;
+		int numsuites = suitemem.length;
+		
+		// Build a virtualized pack header which works with SummerCoat and
+		// matches the ROM format (just appears as a larger ROM)
+		int packoffset = this.offset;
+		try (ByteArrayOutputStream pbaos = new ByteArrayOutputStream(4096);
+			DataOutputStream dos = new DataOutputStream(pbaos))
+		{
+			// Relative offset for names
+			int reloff = MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC +
+				(MinimizedPackHeader.TOC_ENTRY_SIZE * numsuites);
+			
+			// Write pack header
+			dos.writeInt(MinimizedPackHeader.MAGIC_NUMBER);
+			dos.writeInt(numsuites);
+			dos.writeInt(Arrays.asList(suitemem).indexOf(superv));
+			dos.writeInt(superv.offset);
+			dos.writeInt(SUITE_CHUNK_SIZE);
+			dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
+			
+			// Name table output
+			ByteArrayOutputStream nbaos = new ByteArrayOutputStream(4096);
+			DataOutputStream ndos = new DataOutputStream(nbaos);
+			
+			// Write TOC
+			for (int i = 0; i < numsuites; i++)
+			{
+				SuiteMemory suite = suitemem[i];
+				
+				// Align name
+				while (((reloff + ndos.size()) & 1) != 0)
+					ndos.write(0);
+				
+				// Name position
+				dos.writeInt(reloff + ndos.size());
+				
+				// Write name
+				ndos.writeUTF(suite.libname);
+				
+				// Offset and size of the chunk
+				dos.writeInt(suite.offset);
+				dos.writeInt(SUITE_CHUNK_SIZE);
+				
+				// The manifest is not known, must be searched
+				dos.writeInt(0);
+				dos.writeInt(0);
+			}
+			
+			// Write name table
+			nbaos.writeTo(dos);
+			
+			// Store written configuration table
+			ReadableMemory configtable = new ByteArrayMemory(packoffset,
+				pbaos.toByteArray());
+			this._configtable = configtable;
+		}
+		
+		// {@squirreljme.error AE07 Could not write the virtual packfile.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AE07", e);
+		}
 	}
 }
 
