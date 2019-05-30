@@ -46,4 +46,4 @@ ci-comment*.txt
 assets/wintercoat/wintercoat
 assets/wintercoat/wintercoat.exe
 *.bak
-
+*.sqc
