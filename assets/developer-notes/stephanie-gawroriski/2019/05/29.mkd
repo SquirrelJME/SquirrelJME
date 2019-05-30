@@ -1,0 +1,55 @@
+# 2019/05/29
+
+## 07:38
+
+Now to write the ROM file out so I can work with RatufaCoat.
+
+## 09:02
+
+Oh wow `Text._dirty()` uses a massive number of registers, I need to actually
+see if I can reduce that down!
+
+## 09:15
+
+Actually the temporary register is seen as 253 and that comes from a volatile
+so maybe volatiles are not being cleared but just stacked up?
+
+## 15:46
+
+Okay so it seems that transitions can make it so that stack entries get
+trashed into nothing, so is a bit weird.
+
+## 17:11
+
+I also have another issue where it seems the code jumps off the end of the
+method so it may be a method where there is a cached value and nothing happens
+or similar. So I might need a nop.
+
+## 18:14
+
+Going to make it so the BootRAM can be endian independent. Of course I will
+still have the giant memory chunk since this will act as the seed but the
+operations will include the value to be written as well. This simplifies
+things and will allow me to handle both little and big endian data.
+
+## 18:44
+
+So actually before I go into reworking the bootstrap to be a bit more any
+endian friendly I am going to make it so SummerCoat can actually use the ROM
+file. That will help for RatufaCoat and then additionally I can add tests as
+well. But actually since I need tests, I need to actually build a ROM using
+the test namespace to get access to all of them. So I need to fork the
+stuff real quick.
+
+## 21:15
+
+Okay so tomorrow:
+
+ * Decide about booting the initial program:
+   * Store the classpath needed to initialize it and start it.
+   * Perform some very basic dependency resolution in the supervisor so it
+     can load it.
+ * Add short/integer/long/float/double values to the BootRAM initializer
+   instructions so that it can work regardless of endianess. (RatufaCoat
+   will have to be able to run any endianess).
+ * Write RatufaCoat and bring it up to speed to SummerCoat's level.
