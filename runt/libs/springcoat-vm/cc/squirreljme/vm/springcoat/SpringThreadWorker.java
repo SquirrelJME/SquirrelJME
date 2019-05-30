@@ -1844,6 +1844,11 @@ public final class SpringThreadWorker
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
 				"startTask:([Ljava/lang/String;Ljava/lang/String;" +
 				"[Ljava/lang/String;)I":
+			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
+				"startTask:([Ljava/lang/String;Ljava/lang/String;" +
+				"[Ljava/lang/String;[Ljava/lang/String;" +
+				"Lcc/squirreljme/runtime/cldc/asm/ConsoleCallback;" +
+				"Lcc/squirreljme/runtime/cldc/asm/ConsoleCallback;)I":
 				return this.machine.taskManager().startTask(
 					this.<String[]>asNativeObject(String[].class, __args[0]),
 					this.<String>asNativeObject(String.class, __args[1]),
