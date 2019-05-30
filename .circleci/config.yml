@@ -143,7 +143,7 @@ jobs:
           command: unzip -of squirreljme-summercoatrom-test.zip
       - run:
           name: Running SummerCoat VM
-          command: ~/squirreljme/build.sh launch -v summercoatrom -n summercoatrom.nps -Dcc.squirreljme.debug=false -Dcc.squirreljme.romfile=squirreljme.sqc tac-runner > svjut/summercoatrom/results.xml
+          command: ~/squirreljme/build.sh launch -v summercoat -n summercoatrom.nps -Dcc.squirreljme.debug=false -Dcc.squirreljme.romfile=squirreljme.sqc tac-runner > svjut/summercoatrom/results.xml
       - store_test_results:
           path: svjut
       - store_artifacts:
