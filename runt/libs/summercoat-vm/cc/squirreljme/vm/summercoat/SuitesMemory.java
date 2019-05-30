@@ -202,6 +202,8 @@ public final class SuitesMemory
 			dos.writeInt(Arrays.asList(suitemem).indexOf(superv));
 			dos.writeInt(superv.offset);
 			dos.writeInt(SUITE_CHUNK_SIZE);
+			dos.writeInt(0);
+			dos.writeInt(0);
 			dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
 			
 			// Name table output

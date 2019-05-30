@@ -39,6 +39,7 @@ public class PackMinimizer
 	 * Minimizes the class library.
 	 *
 	 * @param __boot The boot class used for the entry point.
+	 * @param __initcp The initial classpath, if any.
 	 * @param __libs The libraries to minimize.
 	 * @return The resulting minimized pack file.
 	 * @throws IOException On read/write errors.
@@ -46,7 +47,7 @@ public class PackMinimizer
 	 * @since 2019/05/29
 	 */
 	public static final byte[] minimize(String __boot,
-		VMClassLibrary... __libs)
+		String[] __initcp, VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
 		if (__libs == null)
@@ -56,7 +57,7 @@ public class PackMinimizer
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1048576))
 		{
 			// Minimize
-			PackMinimizer.minimize(baos, __boot, __libs);
+			PackMinimizer.minimize(baos, __boot, __initcp, __libs);
 			
 			// Return result
 			return baos.toByteArray();
@@ -68,17 +69,24 @@ public class PackMinimizer
 	 *
 	 * @param __os The stream to write the minimized file to.
 	 * @param __boot The boot class used for the entry point.
+	 * @param __initcp Initial classpath.
 	 * @param __libs The libraries to minimize.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/29
 	 */
 	public static final void minimize(OutputStream __os, String __boot,
-		VMClassLibrary... __libs)
+		String[] __initcp, VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
 		if (__os == null || __libs == null)
 			throw new NullPointerException("NARG");
+		
+		// Defensive copy and check for nulls
+		__initcp = (__initcp == null ? new String[0] : __initcp.clone());
+		for (int i = 0, n = __initcp.length; i < n; i++)
+			if (__initcp[i] == null)
+				throw new NullPointerException("NARG");
 		
 		// Formatted data is used
 		DataOutputStream dos = new DataOutputStream(__os);
@@ -101,11 +109,23 @@ public class PackMinimizer
 			bjo = 0,
 			bjs = 0;
 		
+		// Initialize classpath indexes
+		int numinitcp = __initcp.length;
+		int[] cpdx = new int[numinitcp];
+		
 		// Go through each library, minimize and write!
 		for (int i = 0; i < numlibs; i++)
 		{
 			VMClassLibrary lib = __libs[i];
 			String name = lib.name();
+			
+			// Find library used in the initial classpath
+			for (int j = 0; j < numinitcp; j++)
+				if (name.equals(__initcp[j]))
+				{
+					cpdx[j] = i;
+					break;
+				}
 			
 			// Is this a boot library?
 			boolean isboot;
@@ -172,12 +192,23 @@ public class PackMinimizer
 			}
 		}
 		
+		// Round for the initial default classpath
+		while (((reloff + jdos.size()) & 3) != 0)
+			jdos.write(0);
+		
+		// Write initial classpath
+		int icpat = reloff + jdos.size();
+		for (int i = 0; i < numinitcp; i++)
+			jdos.writeInt(cpdx[i]);
+		
 		// Write pack header
 		dos.writeInt(MinimizedPackHeader.MAGIC_NUMBER);
 		dos.writeInt(numlibs);
 		dos.writeInt(bji);
 		dos.writeInt(bjo);
 		dos.writeInt(bjs);
+		dos.writeInt(icpat);
+		dos.writeInt(numinitcp);
 		dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
 		
 		// Write TOC and JAR data
