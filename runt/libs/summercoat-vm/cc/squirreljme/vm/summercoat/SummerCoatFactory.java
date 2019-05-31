@@ -216,6 +216,11 @@ public class SummerCoatFactory
 				int off;
 				switch (mod)
 				{
+						// Nothing
+					case 0:
+						off = 0;
+						break;
+						
 						// RAM
 					case 1:
 						off = ramstart;

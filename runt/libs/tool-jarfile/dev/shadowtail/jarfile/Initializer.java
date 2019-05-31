@@ -146,8 +146,9 @@ public final class Initializer
 	public final void memWriteInt(Modifier __m, int __addr, int __v)
 	{
 		// Record action?
-		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, (byte)4, __addr, __v));
+		if (__m == null)
+			__m = Modifier.NONE;
+		this._ops.add(new Operation(__m, (byte)4, __addr, __v));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -180,8 +181,9 @@ public final class Initializer
 	public final void memWriteLong(Modifier __m, int __addr, long __v)
 	{
 		// Record action?
-		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, (byte)8, __addr, __v));
+		if (__m == null)
+			__m = Modifier.NONE;
+		this._ops.add(new Operation(__m, (byte)8, __addr, __v));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -218,8 +220,9 @@ public final class Initializer
 	public final void memWriteShort(Modifier __m, int __addr, int __v)
 	{
 		// Record action?
-		if (__m != null && __m != Modifier.NONE)
-			this._ops.add(new Operation(__m, (byte)2, __addr, __v));
+		if (__m == null)
+			__m = Modifier.NONE;
+		this._ops.add(new Operation(__m, (byte)2, __addr, __v));
 		
 		// Write data
 		byte[] bytes = this._bytes;

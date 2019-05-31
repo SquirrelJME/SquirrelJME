@@ -103,8 +103,8 @@ void ratufacoat_memfree(void* p)
 #endif
 }
 
-/** Reads a Java short from memory. */
-int16_t ratufacoat_memreadjshort(void* p, int32_t o)
+/** Reads a Java byte from memory. */
+int8_t ratufacoat_memreadjbyte(void* p, int32_t o)
 {
 	uint8_t* rp;
 	
@@ -112,8 +112,7 @@ int16_t ratufacoat_memreadjshort(void* p, int32_t o)
 	rp = (uint8_t*)(((uintptr_t)p) + o);
 	
 	// Read from memory
-	return (int16_t)(((((uint32_t)rp[0]) & 0xFF) << 8) |
-		(((uint32_t)rp[1]) & 0xFF));
+	return ((int8_t)(rp[0] & 0xFF));
 }
 
 /** Reads a Java int from memory. */
@@ -129,4 +128,17 @@ int32_t ratufacoat_memreadjint(void* p, int32_t o)
 		((((uint32_t)rp[1]) & 0xFF) << 16) |
 		((((uint32_t)rp[2]) & 0xFF) << 8) |
 		((((uint32_t)rp[3]) & 0xFF)));
+}
+
+/** Reads a Java short from memory. */
+int16_t ratufacoat_memreadjshort(void* p, int32_t o)
+{
+	uint8_t* rp;
+	
+	// Determine real pointer to use
+	rp = (uint8_t*)(((uintptr_t)p) + o);
+	
+	// Read from memory
+	return (int16_t)(((((uint32_t)rp[0]) & 0xFF) << 8) |
+		(((uint32_t)rp[1]) & 0xFF));
 }
