@@ -85,7 +85,7 @@ typedef struct ratufacoat_boot_t
 	ratufacoat_native_t* native;
 	
 	/** ROM data. */
-	void* romdata;
+	void* rom;
 	
 	/** The size of the ROM. */
 	size_t romsize;
@@ -112,6 +112,12 @@ typedef struct ratufacoat_machine_t
 	
 	/** The size of RAM. */
 	uint32_t ramsize;
+	
+	/** The JVM's ROM. */
+	void* rom;
+	
+	/** The size of ROM. */
+	uint32_t romsize;
 } ratufacoat_machine_t;
 
 /**
