@@ -224,7 +224,7 @@ public final class JVMFunction
 			throw new VirtualMachineError();
 		
 		// Read length of the raw bytes
-		int rawlen = Assembly.memReadShort(__p, 0) & 0xFFFF;
+		int rawlen = Assembly.memReadJavaShort(__p, 0) & 0xFFFF;
 		
 		// Load the string data into bytes
 		byte[] bytes = new byte[rawlen];
