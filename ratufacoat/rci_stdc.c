@@ -25,20 +25,53 @@
 int main(int argc, char** argv)
 {
 	ratufacoat_machine_t* machine;
+	ratufacoat_boot_t* boot;
 	ratufacoat_native_t* native;
+	ratufacoat_args_t* args;
+	
+	// Allocate boot argument
+	args = calloc(1, sizeof(*args));
+	if (args == NULL)
+	{
+		fprintf(stderr, "Could not allocate arguments!\n");
+		return EXIT_FAILURE;
+	}
+	
+	// Set arguments
+	args->argc = argc;
+	args->argv = argv;
 	
 	// Allocate native functions
 	native = calloc(1, sizeof(*native));
 	if (native == NULL)
 	{
+		free(args);
+		
 		fprintf(stderr, "Could not allocate native handler!\n");
 		return EXIT_FAILURE;
 	}
 	
+	// Allocate boot settings
+	boot = calloc(1, sizeof(*boot));
+	if (boot == NULL)
+	{
+		free(args);
+		free(native);
+		
+		fprintf(stderr, "Could not allocate boot parameters!\n");
+		return EXIT_FAILURE;
+	}
+	
+	// Set boot parameters
+	boot->native = native;
+	boot->args = args;
+	
 	// Create the machine
-	machine = ratufacoat_createmachine(native, argc, argv);
+	machine = ratufacoat_createmachine(boot);
 	if (machine == NULL)
 	{
+		free(args);
+		free(boot);
 		free(native);
 		
 		fprintf(stderr, "Could not create RatufaCoat machine!\n");

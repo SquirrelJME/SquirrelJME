@@ -46,6 +46,34 @@ typedef struct ratufacoat_native_t
 } ratufacoat_native_t;
 
 /**
+ * Argument handling.
+ *
+ * @since 2019/05/31
+ */
+typedef struct ratufacoat_args_t
+{
+	/** Argument count. */
+	int argc;
+	
+	/** Arguments. */
+	char** argv;
+} ratufacoat_args_t;
+
+/**
+ * Boot options for RatufaCoat.
+ *
+ * @since 2019/05/31
+ */
+typedef struct ratufacoat_boot_t
+{
+	/** Arguments to use. */
+	ratufacoat_args_t* args;
+	
+	/** Native functions. */
+	ratufacoat_native_t* native;
+} ratufacoat_boot_t;
+
+/**
  * RatufaCoat active machine definition.
  * 
  * @since 2019/05/28
@@ -55,11 +83,8 @@ typedef struct ratufacoat_machine_t
 	/** Native function handlers. */
 	ratufacoat_native_t* native;
 	
-	/** Argument count. */
-	int argc;
-	
 	/** Arguments. */
-	char** argv;
+	ratufacoat_args_t* args;
 } ratufacoat_machine_t;
 
 /**
@@ -82,14 +107,12 @@ int ratufacoat_findargument(ratufacoat_machine_t* machine, char* find, int at,
 /**
  * Creates a RatufaCoat machine.
  * 
- * @param argc Argument count.
- * @param argv Arguments.
+ * @param boot Boot options.
  * @return The resulting virtual machine, will be {@code NULL} if it could
  * not be created.
  * @since 2019/05/28
  */
-ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_native_t* native,
-	int argc, char** argv);
+ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot);
 
 /**
  * Fails the VM with a fatal ToDo.
