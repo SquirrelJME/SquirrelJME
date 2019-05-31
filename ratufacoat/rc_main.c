@@ -16,13 +16,12 @@
 #include "ratufac.h"
 
 /** Creates RatufaCoat machine. */
-ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_native_t* native,
-	int argc, char** argv)
+ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 {
 	ratufacoat_machine_t* rv;
 	
 	// This needs to be passed, if not then it shall fail
-	if (native == NULL)
+	if (boot == NULL || boot->native == NULL)
 		return NULL;
 	
 	// Try to allocate the machine data
@@ -30,12 +29,9 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_native_t* native,
 	if (rv == NULL)
 		return NULL;
 	
-	// Set the native handlers since those are pretty static
-	rv->native = native;
-	
-	// Set arguments
-	rv->argc = argc;
-	rv->argv = argv;
+	// Copy some basic boot parameters
+	rv->native = boot->native;
+	rv->args = boot->args;
 	
 	ratufacoat_todo();
 	
