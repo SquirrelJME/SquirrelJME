@@ -15,6 +15,55 @@
 
 #include "ratufac.h"
 
+/* Offset to the BootJAR. */
+#define RATUFACOAT_OFFSET_OF_BOOTJAROFFSET 12
+
+/* Offset to the BootJAR size. */
+#define RATUFACOAT_OFFSET_OF_BOOTJARSIZE 16
+
+/** Magic number for the boot JAR. */
+#define RATUFACOAT_JAR_MAGIC_NUMBER UINT32_C(0x00456570)
+
+/**
+ * Searches for and initializes the BootRAM.
+ * 
+ * @param mach The machine being initialized.
+ * @return Non-zero on success.
+ * @since 2019/05/31
+ */
+static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
+{
+	void* ram;
+	void* rom;
+	void* bootjar;
+	uint32_t bootlen;
+	
+	// Load RAM and ROM pointers
+	ram = mach->ram;
+	rom = mach->rom;
+	
+	// Read BootJAR position parameters
+	bootjar = (void*)((uintptr_t)rom + ratufacoat_memreadjint(rom,
+		RATUFACOAT_OFFSET_OF_BOOTJAROFFSET));
+	bootlen = ratufacoat_memreadjint(rom,
+		RATUFACOAT_OFFSET_OF_BOOTJARSIZE);
+	
+	// Note them
+	ratufacoat_log("BootJAR @ %p (%d bytes)", bootjar, bootlen);
+	
+	// Double check magic
+	if (ratufacoat_memreadjint(bootjar, 0) != RATUFACOAT_JAR_MAGIC_NUMBER)
+	{
+		ratufacoat_log("BootJAR has an invalid magic number!");
+		
+		return 0;
+	}
+	
+	
+	ratufacoat_todo();
+	return 0;
+}
+
 /** Creates RatufaCoat machine. */
 ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 {
@@ -67,6 +116,17 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 	
 	// Note it
 	ratufacoat_log("ROM @ %p (%d bytes)", rom, (int)romsize);
+	
+	// Initialize the BootRAM
+	if (!ratufacoat_initbootram(rv))
+	{
+		ratufacoat_log("Could not initialize the BootRAM!");
+		
+		ratufacoat_memfree(ram);
+		ratufacoat_memfree(rv);
+		
+		return NULL;
+	}
 	
 	ratufacoat_todo();
 	
