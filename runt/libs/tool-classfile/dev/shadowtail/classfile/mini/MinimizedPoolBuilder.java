@@ -372,6 +372,10 @@ public final class MinimizedPoolBuilder
 							
 							// Write string UTF data
 							ddos.writeUTF((String)value);
+							
+							// Write NUL terminator to make it C-like as
+							// well
+							ddos.write(0);
 						}
 						break;
 						
