@@ -18,6 +18,7 @@
 #define SJME_hGRATUFACOATRATACHRATUFACH
 
 /** Common includes. */
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
