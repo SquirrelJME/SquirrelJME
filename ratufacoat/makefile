@@ -9,7 +9,7 @@
 
 CC=gcc
 
-ratufacoat:	rc_main.o rci_stdc.c
+ratufacoat:	rc_main.o rc_args.o rci_stdc.o
 		$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 %.o:		%.c
