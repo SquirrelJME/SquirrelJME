@@ -28,39 +28,87 @@ int main(int argc, char** argv)
 	ratufacoat_boot_t* boot;
 	ratufacoat_native_t* native;
 	ratufacoat_args_t* args;
+	FILE* romfile;
+	void* romdata;
+	size_t romsize,
+		readsize,
+		count;
 	
-	// Allocate boot argument
-	args = calloc(1, sizeof(*args));
-	if (args == NULL)
+	// Open ROM file
+	romfile = fopen("squirreljme.sqc", "rb");
+	if (romfile == NULL)
 	{
-		fprintf(stderr, "Could not allocate arguments!\n");
+		fprintf(stderr, "Could not open the ROM file.");
+		return EXIT_FAILURE;
+	}
+	
+	// Read size of file
+	fseek(romfile, 0, SEEK_END);
+	romsize = ftell(romfile);
+	fseek(romfile, 0, SEEK_SET);
+	
+	// Allocate ROM data
+	romdata = calloc(1, romsize);
+	if (romdata == NULL)
+	{
+		fclose(romfile);
+		
+		fprintf(stderr, "Could not allocate the ROM file!");
+		return EXIT_FAILURE;
+	}
+	
+	// Read the entire ROM
+	for (readsize = 0; readsize < romsize;)
+	{
+		// Read the data
+		count = fread((void*)((uintptr_t)romdata + readsize),
+			1, romsize - readsize, romfile);
+		
+		// EOF?
+		if (count <= 0)
+		{
+			// Error?
+			if (ferror(romfile))
+			{
+				fclose(romfile);
+				
+				free(romdata);
+				
+				fprintf(stderr, "Could not read the ROM! (%s)\n",
+					strerror(errno));
+				
+				return EXIT_FAILURE;
+			}
+			
+			// Okay!
+			break;
+		}
+		
+		// Read size goes up!
+		readsize += count;
+	}
+	
+	// Close ROM
+	fclose(romfile);
+	
+	// Allocate all the structures the JVM needs
+	args = calloc(1, sizeof(*args));
+	native = calloc(1, sizeof(*native));
+	boot = calloc(1, sizeof(*boot));
+	if (args == NULL || native == NULL || boot == NULL)
+	{
+		free(args);
+		free(boot);
+		free(native);
+		free(romdata);
+		
+		fprintf(stderr, "Could not allocate structure memory!");
 		return EXIT_FAILURE;
 	}
 	
 	// Set arguments
 	args->argc = argc;
 	args->argv = argv;
-	
-	// Allocate native functions
-	native = calloc(1, sizeof(*native));
-	if (native == NULL)
-	{
-		free(args);
-		
-		fprintf(stderr, "Could not allocate native handler!\n");
-		return EXIT_FAILURE;
-	}
-	
-	// Allocate boot settings
-	boot = calloc(1, sizeof(*boot));
-	if (boot == NULL)
-	{
-		free(args);
-		free(native);
-		
-		fprintf(stderr, "Could not allocate boot parameters!\n");
-		return EXIT_FAILURE;
-	}
 	
 	// Set boot parameters
 	boot->native = native;
@@ -73,6 +121,7 @@ int main(int argc, char** argv)
 		free(args);
 		free(boot);
 		free(native);
+		free(romdata);
 		
 		fprintf(stderr, "Could not create RatufaCoat machine!\n");
 		return EXIT_FAILURE;
