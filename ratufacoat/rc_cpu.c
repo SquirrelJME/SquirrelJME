@@ -84,11 +84,41 @@
 /** Compare and exchange. */
 #define RATUFACOAT_OP_BREAKPOINT UINT8_C(0xFF)
 
+/**
+ * Decodes a variable unsigned integer.
+ * 
+ * @param pc The PC pointer.
+ * @since 2019/05/31
+ */
+static int32_t ratuacoat_decodevuint(void** pc)
+{
+	int32_t rv;
+	uint8_t* xpc;
+	
+	// Get current PC pointer
+	xpc = *pc;
+	
+	// Read single byte value
+	rv = *xpc++;
+	if (rv & 0x80)
+	{
+		rv = (rv & 0x7F) << 8;
+		rv |= *xpc++;
+	}
+	
+	// Set next
+	*pc = xpc;
+	
+	// Return the decoded value
+	return rv;
+}
+
 /** Executes the specified CPU. */
 void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 {
-	uint8_t op, xop;
+	uint8_t op;
 	void* pc;
+	void* nextpc;
 	int32_t* r;
 	
 	// Do nothing if no CPU was specified
@@ -99,22 +129,42 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 	r = cpu->r;
 	
 	// CPU runs within an infinite loop!
-	for (;;)
-	{
-		// Get CPU PC address
-		pc = (void*)((uintptr_t)cpu->pc);
-		
+	for (pc = (void*)((uintptr_t)cpu->pc);; pc = nextpc)
+	{	
 		// Read the operation to be performed
 		op = *((uint8_t*)pc);
-		xop = op;
+		
+		// Seed next address, it is +1 for no-argument values
+		nextpc = (void*)((uintptr_t)pc + 1);
 		
 		// Depends on the operation
 		switch (op)
 		{
+			case RATUFACOAT_OP_DEBUG_ENTRY:
+				{
+					// Load indexes into the pool
+					int cldx = ratuacoat_decodevuint(&nextpc);
+					int mndx = ratuacoat_decodevuint(&nextpc);
+					int mtdx = ratuacoat_decodevuint(&nextpc);
+					
+					// Need the pool to load the values from
+					uint32_t* pool = (uint32_t*)(
+						(uintptr_t)r[RATUFACOAT_POOL_REGISTER]);
+					
+					// Load pool values
+					cpu->debuginclass = (char*)((uintptr_t)pool[cldx] + 2);
+					cpu->debuginname = (char*)((uintptr_t)pool[mndx] + 2);
+					cpu->debugintype = (char*)((uintptr_t)pool[mtdx] + 2);
+					
+					ratufacoat_log("In %s::%s:%s", cpu->debuginclass,
+						cpu->debuginname, cpu->debugintype);
+				}
+				break;
+				
 				// Invalid operation
 			default:
-				ratufacoat_log("Invalid operation (%d/0x%02X)!",
-					(int)op, (int)op);
+				ratufacoat_log("Invalid operation (%d/0x%02X) @ %p!",
+					(int)op, (int)op, pc);
 				return;
 		}
 	}

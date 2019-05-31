@@ -102,10 +102,12 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach,
 	// Initial CPU parameters
 	cpu->pc = (uint32_t)((uintptr_t)bootjar + ratufacoat_memreadjint(bootjar,
 		RATUFACOAT_OFFSET_OF_JARBOOTSTART));
-	cpu->r[RATUFACOAT_STATIC_FIELD_REGISTER] = ratufacoat_memreadjint(bootjar,
-		RATUFACOAT_OFFSET_OF_JARBOOTSFIELDBASE);
-	cpu->r[RATUFACOAT_POOL_REGISTER] = ratufacoat_memreadjint(bootjar,
-		RATUFACOAT_OFFSET_OF_JARBOOTPOOL);
+	cpu->r[RATUFACOAT_STATIC_FIELD_REGISTER] = (uint32_t)((uintptr_t)ram +
+		ratufacoat_memreadjint(bootjar,
+			RATUFACOAT_OFFSET_OF_JARBOOTSFIELDBASE));
+	cpu->r[RATUFACOAT_POOL_REGISTER] = (uint32_t)((uintptr_t)ram +
+		ratufacoat_memreadjint(bootjar,
+			RATUFACOAT_OFFSET_OF_JARBOOTPOOL));
 	
 	// Note them
 	ratufacoat_log("BootRAM @ %p (%d bytes)", bootram, bootramlen);
