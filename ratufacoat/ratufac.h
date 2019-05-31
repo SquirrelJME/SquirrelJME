@@ -168,6 +168,15 @@ typedef struct ratufacoat_cpu_t
 	
 	/** PC address. */
 	uint32_t pc;
+	
+	/** Debug in class. */
+	char* debuginclass;
+	
+	/** Debug in method name. */
+	char* debuginname;
+	
+	/** Debug in method type. */
+	char* debugintype;
 } ratufacoat_cpu_t;
 
 /**
