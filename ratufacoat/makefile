@@ -8,8 +8,9 @@
 # DESCRIPTION: Makefile for building SquirrelJME RatufaCoat.
 
 CC=gcc
+CFLAGS=-O0 -g3
 
-ratufacoat:	rc_main.o rc_args.o rci_stdc.o
+ratufacoat:	rc_main.o rc_args.o rc_mem.o rci_stdc.o
 		$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 %.o:		%.c

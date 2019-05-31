@@ -33,6 +33,8 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 	rv->native = boot->native;
 	rv->args = boot->args;
 	
+	fprintf(stderr, "Hello!\n");
+	
 	ratufacoat_todo();
 	
 	return rv;
@@ -42,6 +44,7 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 void ratufacoat_todo(void)
 {
 	fprintf(stderr, "TODO hit!\n");
+	raise(SIGABRT);
 	exit(7);
 }
 
