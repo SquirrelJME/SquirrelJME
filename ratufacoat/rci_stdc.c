@@ -28,6 +28,7 @@ int main(int argc, char** argv)
 	ratufacoat_boot_t* boot;
 	ratufacoat_native_t* native;
 	ratufacoat_args_t* args;
+	ratufacoat_cpu_t* cpu;
 	FILE* romfile;
 	void* romdata;
 	size_t romsize,
@@ -115,7 +116,7 @@ int main(int argc, char** argv)
 	boot->romsize = romsize;
 	
 	// Create the machine
-	machine = ratufacoat_createmachine(boot);
+	machine = ratufacoat_createmachine(boot, &cpu);
 	if (machine == NULL)
 	{
 		ratufacoat_memfree(args);

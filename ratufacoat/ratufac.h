@@ -43,10 +43,43 @@ extern "C"
 	#define RATUFACOAT_ISLINUX 1
 #endif
 
-// Default amount of memory to use
+/** Default amount of memory to use. */
 #if !defined(RATUFACOAT_DEFAULT_MEMORY_SIZE)
 	#define RATUFACOAT_DEFAULT_MEMORY_SIZE 16777216
 #endif
+
+/** Maximum number of CPU registers. */
+#define RATUFACOAT_MAX_REGISTERS 64
+
+/** The zero register. */
+#define RATUFACOAT_ZERO_REGISTER 0
+
+/** The return value register (two slots, 1 + 2). */
+#define RATUFACOAT_RETURN_REGISTER 1
+
+/** Second return register. */
+#define RATUFACOAT_RETURN_TWO_REGISTER 2
+
+/** The exception register. */
+#define RATUFACOAT_EXCEPTION_REGISTER 3
+
+/** The pointer containing static field data. */
+#define RATUFACOAT_STATIC_FIELD_REGISTER 4
+
+/** Register which represents the current thread of execution. */
+#define RATUFACOAT_THREAD_REGISTER 5
+
+/** Base for local registers (locals start here). */
+#define RATUFACOAT_LOCAL_REGISTER_BASE 6
+
+/** The register containing the constant pool. */
+#define RATUFACOAT_POOL_REGISTER 6
+
+/** The register which contains the next pool pointer to use. */
+#define RATUFACOAT_NEXT_POOL_REGISTER 7
+
+/** The register of the first argument. */
+#define RATUFACOAT_ARGUMENT_REGISTER_BASE 8
 
 /**
  * Native functions support for RatufaCoat.
@@ -121,14 +154,33 @@ typedef struct ratufacoat_machine_t
 } ratufacoat_machine_t;
 
 /**
+ * This represents the state of a RatufaCoat CPU.
+ * 
+ * @since 2019/05/31
+ */
+typedef struct ratufacoat_cpu_t
+{
+	/** The host machine. */
+	ratufacoat_machine_t* machine;
+	
+	/** CPU registers. */
+	int32_t r[RATUFACOAT_MAX_REGISTERS];
+	
+	/** PC address. */
+	uint32_t pc;
+} ratufacoat_cpu_t;
+
+/**
  * Creates a RatufaCoat machine.
  * 
  * @param boot Boot options.
+ * @param xcpu Initial CPU output.
  * @return The resulting virtual machine, will be {@code NULL} if it could
  * not be created.
  * @since 2019/05/28
  */
-ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot);
+ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot,
+	ratufacoat_cpu_t** xcpu);
 
 /**
  * Logs a message.

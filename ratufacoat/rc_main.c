@@ -49,10 +49,12 @@
  * Searches for and initializes the BootRAM.
  * 
  * @param mach The machine being initialized.
+ * @param cpu The bootstrap CPU.
  * @return Non-zero on success.
  * @since 2019/05/31
  */
-static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
+static int ratufacoat_initbootram(ratufacoat_machine_t* mach,
+	ratufacoat_cpu_t* cpu)
 {
 	void* ram;
 	void* rom;
@@ -65,6 +67,10 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
 	uint32_t initchunklen, initseeds, seed, check;
 	uint32_t soff, ahi, alo, xhi, xlo;
 	uint8_t skey, smod, ssiz;
+	
+	// CPU needs to be specified
+	if (cpu == NULL)
+		return 0;
 	
 	// Load RAM and ROM pointers
 	ram = mach->ram;
@@ -92,6 +98,14 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
 		RATUFACOAT_OFFSET_OF_JARBOOTOFFSET));
 	bootramlen = ratufacoat_memreadjint(bootjar,
 		RATUFACOAT_OFFSET_OF_JARBOOTSIZE);
+	
+	// Initial CPU parameters
+	cpu->pc = (uint32_t)((uintptr_t)bootjar + ratufacoat_memreadjint(bootjar,
+		RATUFACOAT_OFFSET_OF_JARBOOTSTART));
+	cpu->r[RATUFACOAT_STATIC_FIELD_REGISTER] = ratufacoat_memreadjint(bootjar,
+		RATUFACOAT_OFFSET_OF_JARBOOTSFIELDBASE);
+	cpu->r[RATUFACOAT_POOL_REGISTER] = ratufacoat_memreadjint(bootjar,
+		RATUFACOAT_OFFSET_OF_JARBOOTPOOL);
 	
 	// Note them
 	ratufacoat_log("BootRAM @ %p (%d bytes)", bootram, bootramlen);
@@ -232,15 +246,17 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
 }
 
 /** Creates RatufaCoat machine. */
-ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
+ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot,
+	ratufacoat_cpu_t** xcpu)
 {
 	ratufacoat_machine_t* rv;
 	void* ram;
 	void* rom;
 	uint32_t ramsize, romsize;
+	ratufacoat_cpu_t* cpu;
 	
 	// This needs to be passed, if not then it shall fail
-	if (boot == NULL || boot->native == NULL)
+	if (boot == NULL || boot->native == NULL || xcpu == NULL)
 		return NULL;
 	
 	// Entry point banner
@@ -262,9 +278,16 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 	if (ramsize == 0)
 		ramsize = RATUFACOAT_DEFAULT_MEMORY_SIZE;
 	ram = ratufacoat_memalloc(ramsize);
-	if (ram == NULL)
+	
+	// Allocate boot CPU as well
+	cpu = ratufacoat_memalloc(sizeof(*cpu));
+	
+	// Make sure they really got allocated
+	if (ram == NULL || cpu == NULL)
 	{
 		ratufacoat_memfree(rv);
+		ratufacoat_memfree(cpu);
+		
 		return NULL;
 	}
 	
@@ -284,8 +307,11 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 	// Note it
 	ratufacoat_log("ROM @ %p (%d bytes)", rom, (int)romsize);
 	
+	// Setup common CPU stuff
+	cpu->machine = rv;
+	
 	// Initialize the BootRAM
-	if (!ratufacoat_initbootram(rv))
+	if (!ratufacoat_initbootram(rv, cpu))
 	{
 		ratufacoat_log("Could not initialize the BootRAM!");
 		
@@ -295,7 +321,40 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 		return NULL;
 	}
 	
-	ratufacoat_todo();
+	// Setup remaining CPU parameters
+	// __rambase
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 0] =
+		(uint32_t)((uintptr_t)ram);
+	// __ramsize
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 1] =
+		ramsize;
+	// __bootsize (old)
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 2] =
+		0;
+	// __classpath
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 3] =
+		0;
+	// __sysprops
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 4] =
+		0;
+	// __mainclass
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 5] =
+		0;
+	// __mainargs
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 6] =
+		0;
+	// __ismidlet
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 7] =
+		0;
+	// __gd
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 8] =
+		0;
+	// __rombase
+	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 9] =
+		(uint32_t)((uintptr_t)rom);
+	
+	// Set resulting CPU
+	*xcpu = cpu;
 	
 	return rv;
 }
