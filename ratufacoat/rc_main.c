@@ -25,7 +25,7 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 		return NULL;
 	
 	// Try to allocate the machine data
-	rv = calloc(1, sizeof(*rv));
+	rv = ratufacoat_memalloc(sizeof(*rv));
 	if (rv == NULL)
 		return NULL;
 	
