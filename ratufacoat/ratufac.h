@@ -151,6 +151,26 @@ void* ratufacoat_memalloc(size_t len);
 void ratufacoat_memfree(void* p);
 
 /**
+ * Reads a Java short from memory.
+ * 
+ * @param p The address to read from.
+ * @param o The offset.
+ * @return The value at the address.
+ * @since 2019/05/31
+ */
+int16_t ratufacoat_memreadjshort(void* p, int32_t o);
+
+/**
+ * Reads a Java int from memory.
+ * 
+ * @param p The address to read from.
+ * @param o The offset.
+ * @return The value at the address.
+ * @since 2019/05/31
+ */
+int32_t ratufacoat_memreadjint(void* p, int32_t o);
+
+/**
  * Fails the VM with a fatal ToDo.
  *
  * @since 2019/05/28
