@@ -1,0 +1,7 @@
+# 2019/05/30
+
+## 09:01
+
+Okay so I did the first two bullet points for the initializer change and also
+the classpath change. So the next thing to do now is to bring up RatufaCoat to
+be in line with SummerCoat.
