@@ -29,7 +29,8 @@ int main(int argc, char** argv)
 	ratufacoat_native_t* native;
 	ratufacoat_args_t* args;
 	FILE* romfile;
-	void* romdata;
+	ratufacoat_pointer_t romdata;
+	void* rpromdata;
 	size_t romsize,
 		readsize,
 		count;
@@ -48,8 +49,8 @@ int main(int argc, char** argv)
 	fseek(romfile, 0, SEEK_SET);
 	
 	// Allocate ROM data
-	romdata = calloc(1, romsize);
-	if (romdata == NULL)
+	romdata = ratufacoat_memalloc(romsize);
+	if (romdata == 0)
 	{
 		fclose(romfile);
 		
@@ -58,10 +59,11 @@ int main(int argc, char** argv)
 	}
 	
 	// Read the entire ROM
+	rpromdata = ratufacoat_memrealptr(romdata);
 	for (readsize = 0; readsize < romsize;)
 	{
 		// Read the data
-		count = fread((void*)((uintptr_t)romdata + readsize),
+		count = fread((void*)((uintptr_t)rpromdata + readsize),
 			1, romsize - readsize, romfile);
 		
 		// EOF?
@@ -72,7 +74,7 @@ int main(int argc, char** argv)
 			{
 				fclose(romfile);
 				
-				free(romdata);
+				ratufacoat_memfree(romdata);
 				
 				fprintf(stderr, "Could not read the ROM! (%s)\n",
 					strerror(errno));
@@ -100,7 +102,7 @@ int main(int argc, char** argv)
 		free(args);
 		free(boot);
 		free(native);
-		free(romdata);
+		ratufacoat_memfree(romdata);
 		
 		fprintf(stderr, "Could not allocate structure memory!");
 		return EXIT_FAILURE;
@@ -113,6 +115,8 @@ int main(int argc, char** argv)
 	// Set boot parameters
 	boot->native = native;
 	boot->args = args;
+	boot->romdata = romdata;
+	boot->romsize = romsize;
 	
 	// Create the machine
 	machine = ratufacoat_createmachine(boot);
@@ -121,7 +125,7 @@ int main(int argc, char** argv)
 		free(args);
 		free(boot);
 		free(native);
-		free(romdata);
+		ratufacoat_memfree(romdata);
 		
 		fprintf(stderr, "Could not create RatufaCoat machine!\n");
 		return EXIT_FAILURE;
