@@ -13,19 +13,23 @@
  * @since 2019/05/31
  */
 
-#include <sys/mman.h>
-
 #include "ratufac.h"
 
-/** Allocates a pointer in the encoded address space. */
-ratufacoat_pointer_t ratufacoat_memalloc(size_t len)
-{
-#if defined(RATUFACOAT_32BIT)
-	// No need to do special pointer stuff
-	return (uintptr_t)calloc(1, len);
+#if defined(RATUFACOAT_ISLINUX)
+	// If this is a 64-bit system then use mmap for 32-bit addresses
+	#if __WORDSIZE == 64
+		#define RATUFACOAT_USELINUXMMAP 1
+	#endif
+	
+	// Header with memory map
+	#include <sys/mman.h>
+#endif
 
-#elif defined(__linux__)
-	// Use MMap in Linux to map to this space
+/** Allocates a pointer in the low 4GiB of memory for 32-bit pointer usage. */
+void* ratufacoat_memalloc(size_t len)
+{
+#if defined(RATUFACOAT_USELINUXMMAP)
+	// Use Linux mmap method to allocate in the low address space
 	void* sp;
 	size_t vlen;
 	uintptr_t usp;
@@ -38,70 +42,63 @@ ratufacoat_pointer_t ratufacoat_memalloc(size_t len)
 	sp = mmap(NULL, vlen, PROT_READ | PROT_WRITE,
 		MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
 	if (sp == MAP_FAILED)
-		return 0;
+		return NULL;
 	
 	// Check to ensure the pointer is in range
 	usp = (uintptr_t)sp;
-	vsp = (uint32_t)usp;
-	if (usp != vsp)
+	if (usp > (uintptr_t)UINT32_MAX)
 	{
 		munmap(sp, vlen);
-		return 0;
+		return NULL;
 	}
 	
 	// Encode vlen
 	*((uint32_t*)sp) = vlen;
 	
 	// Return mapped pointer
-	return vsp + 4;
+	return (void*)(usp + 4);
 #else
-	ratufacoat_todo();
-	return 0;
-#endif
-}
-
-/** Frees a pointer in the encoded address space. */
-void ratufacoat_memfree(ratufacoat_pointer_t vp)
-{
-#if defined(RATUFACOAT_32BIT)
-	// Do nothing for NULL pointers
-	if (vp == 0)
-		return;
+	// Use standard C function
+	void* p;
+	uintptr_t up;
 	
-	free((void*)((uintptr_t)p));
-#elif defined(__linux__)
-	void* xp;
-	size_t len;
-	
-	// Do nothing for NULL pointers
-	if (vp == 0)
-		return;
-	
-	// Get the true base pointer
-	xp = (void*)((uintptr_t)(vp - 4));
-	
-	// Read mapping length
-	len = *((uint32_t*)(((uintptr_t)vp) - 4));
-	
-	// Unmap
-	munmap(xp, len);
-#else
-	ratufacoat_todo();
-	return;
-#endif
-}
-
-/** Returns the real memory pointer for the given encoded pointer. */
-void* ratufacoat_memrealptr(ratufacoat_pointer_t vp)
-{
-	// Null pointers get mapped to NULL
-	if (vp == 0)
+	// Allocate memory
+	p = calloc(1, len);
+	if (p == NULL)
 		return NULL;
 	
-#if defined(RATUFACOAT_32BIT) || defined(__linux__)
-	return (void*)((uintptr_t)vp);
+	// Check to ensure the pointer is in range
+	up = (uintptr_t)p;
+	if (up > (uintptr_t)UINT32_MAX)
+	{
+		free(p);
+		return NULL;
+	}
+	
+	// Use this pointer
+	return p;
+#endif
+}
+
+/** Frees a pointer which was previously allocated with ratufacoat_memalloc. */
+void ratufacoat_memfree(void* p)
+{
+#if defined(RATUFACOAT_USELINUXMMAP)
+	void* xp;
+#endif
+	
+	// Do nothing on NULL pointers
+	if (p == NULL)
+		return;
+	
+#if defined(RATUFACOAT_USELINUXMMAP)
+	// Get the true base pointer
+	xp = (void*)(((uintptr_t)p) - 4);
+	
+	// Unmap, be sure to use the base pointer!
+	munmap(xp, *(((uint32_t*)xp)));
 #else
-	ratufacoat_todo();
-	return NULL;
+	// Use standard C free
+	free(p);
 #endif
 }

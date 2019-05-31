@@ -29,8 +29,7 @@ int main(int argc, char** argv)
 	ratufacoat_native_t* native;
 	ratufacoat_args_t* args;
 	FILE* romfile;
-	ratufacoat_pointer_t romdata;
-	void* rpromdata;
+	void* romdata;
 	size_t romsize,
 		readsize,
 		count;
@@ -39,7 +38,7 @@ int main(int argc, char** argv)
 	romfile = fopen("squirreljme.sqc", "rb");
 	if (romfile == NULL)
 	{
-		fprintf(stderr, "Could not open the ROM file.");
+		fprintf(stderr, "Could not open the ROM file.\n");
 		return EXIT_FAILURE;
 	}
 	
@@ -50,20 +49,19 @@ int main(int argc, char** argv)
 	
 	// Allocate ROM data
 	romdata = ratufacoat_memalloc(romsize);
-	if (romdata == 0)
+	if (romdata == NULL)
 	{
 		fclose(romfile);
 		
-		fprintf(stderr, "Could not allocate the ROM file!");
+		fprintf(stderr, "Could not allocate the ROM file!\n");
 		return EXIT_FAILURE;
 	}
 	
 	// Read the entire ROM
-	rpromdata = ratufacoat_memrealptr(romdata);
 	for (readsize = 0; readsize < romsize;)
 	{
 		// Read the data
-		count = fread((void*)((uintptr_t)rpromdata + readsize),
+		count = fread((void*)((uintptr_t)romdata + readsize),
 			1, romsize - readsize, romfile);
 		
 		// EOF?
@@ -73,12 +71,10 @@ int main(int argc, char** argv)
 			if (ferror(romfile))
 			{
 				fclose(romfile);
-				
 				ratufacoat_memfree(romdata);
 				
 				fprintf(stderr, "Could not read the ROM! (%s)\n",
 					strerror(errno));
-				
 				return EXIT_FAILURE;
 			}
 			
@@ -94,17 +90,17 @@ int main(int argc, char** argv)
 	fclose(romfile);
 	
 	// Allocate all the structures the JVM needs
-	args = calloc(1, sizeof(*args));
-	native = calloc(1, sizeof(*native));
-	boot = calloc(1, sizeof(*boot));
+	args = ratufacoat_memalloc(sizeof(*args));
+	native = ratufacoat_memalloc(sizeof(*native));
+	boot = ratufacoat_memalloc(sizeof(*boot));
 	if (args == NULL || native == NULL || boot == NULL)
 	{
-		free(args);
-		free(boot);
-		free(native);
+		ratufacoat_memfree(args);
+		ratufacoat_memfree(boot);
+		ratufacoat_memfree(native);
 		ratufacoat_memfree(romdata);
 		
-		fprintf(stderr, "Could not allocate structure memory!");
+		fprintf(stderr, "Could not allocate structure memory!\n");
 		return EXIT_FAILURE;
 	}
 	
@@ -122,9 +118,9 @@ int main(int argc, char** argv)
 	machine = ratufacoat_createmachine(boot);
 	if (machine == NULL)
 	{
-		free(args);
-		free(boot);
-		free(native);
+		ratufacoat_memfree(args);
+		ratufacoat_memfree(boot);
+		ratufacoat_memfree(native);
 		ratufacoat_memfree(romdata);
 		
 		fprintf(stderr, "Could not create RatufaCoat machine!\n");
