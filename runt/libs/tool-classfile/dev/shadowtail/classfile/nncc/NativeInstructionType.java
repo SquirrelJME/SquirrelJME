@@ -97,13 +97,6 @@ public interface NativeInstructionType
 		0xEA;
 	
 	/**
-	 * Array length. 
-	 * {@code iiiixxxx, r2 = r1.length}.
-	 */
-	public static final short ARRAYLEN =
-		0xF2;
-	
-	/**
 	 * Return. 
 	 * {@code iiiixxxx, return}.
 	 */

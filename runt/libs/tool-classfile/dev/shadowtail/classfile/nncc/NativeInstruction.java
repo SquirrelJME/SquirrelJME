@@ -293,7 +293,6 @@ public final class NativeInstruction
 			case NativeInstructionType.RETURN:
 				return 0;
 			
-			case NativeInstructionType.ARRAYLEN:
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.COPY:
 			case NativeInstructionType.INVOKE:
@@ -347,7 +346,6 @@ public final class NativeInstruction
 					ArgumentFormat.REGLIST);
 				
 				// [r16, r16]
-			case NativeInstructionType.ARRAYLEN:
 			case NativeInstructionType.COPY:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
@@ -507,7 +505,6 @@ public final class NativeInstruction
 					(((__op & 0x80) != 0) ? "ICONST" : "REG") +
 					"_JAVA";
 				
-			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 				return "ATOMIC_INT_DECREMENT_AND_GET";
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
