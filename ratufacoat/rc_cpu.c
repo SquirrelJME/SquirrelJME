@@ -66,7 +66,7 @@
 /** Copy value in register. */
 #define RATUFACOAT_OP_COPY UINT8_C(0xF8)
 
-/** Atomically decrements a memory addres and gets the value. */
+/** Atomically decrements a memory address and gets the value. */
 #define RATUFACOAT_OP_ATOMIC_INT_DECREMENT_AND_GET UINT8_C(0xF9)
 
 /** Atomically increments a memory address. */
