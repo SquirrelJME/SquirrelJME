@@ -24,6 +24,27 @@
 /** Magic number for the boot JAR. */
 #define RATUFACOAT_JAR_MAGIC_NUMBER UINT32_C(0x00456570)
 
+/** Boot initializer offset. */
+#define RATUFACOAT_OFFSET_OF_JARBOOTOFFSET 20
+
+/** Boot initializer size. */
+#define RATUFACOAT_OFFSET_OF_JARBOOTSIZE 24
+
+/** The boot pool offset. */
+#define RATUFACOAT_OFFSET_OF_JARBOOTPOOL 28
+
+/** Static field basein RAM. */
+#define RATUFACOAT_OFFSET_OF_JARBOOTSFIELDBASE 32
+
+/** The start method offset. */
+#define RATUFACOAT_OFFSET_OF_JARBOOTSTART 36
+
+/** The ClassDataV2 for {@code byte[]}. */
+#define RATUFACOAT_OFFSET_OF_JARBOOTCLASSIDBA 40
+
+/** The ClassDataV2 for {@code byte[][]}. */
+#define RATUFACOAT_OFFSET_OF_JARBOOTCLASSIDBAA 44
+
 /**
  * Searches for and initializes the BootRAM.
  * 
@@ -36,7 +57,12 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
 	void* ram;
 	void* rom;
 	void* bootjar;
-	uint32_t bootlen;
+	void* bootram;
+	uint32_t readp;
+	uint32_t bootlen, bootramlen;
+	uint32_t initchunklen, initseeds, seed;
+	uint32_t soff;
+	uint8_t skey, smod, ssiz;
 	
 	// Load RAM and ROM pointers
 	ram = mach->ram;
@@ -59,6 +85,62 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
 		return 0;
 	}
 	
+	// Get BootRAM Position
+	bootram = (void*)((uintptr_t)bootjar + ratufacoat_memreadjint(bootjar,
+		RATUFACOAT_OFFSET_OF_JARBOOTOFFSET));
+	bootramlen = ratufacoat_memreadjint(bootjar,
+		RATUFACOAT_OFFSET_OF_JARBOOTSIZE);
+	
+	// Note them
+	ratufacoat_log("BootRAM @ %p (%d bytes)", bootram, bootramlen);
+	
+	// Determine the length of the seed chunk
+	initchunklen = ratufacoat_memreadjint(bootram, 0);
+	readp = 4;
+	
+	// Load the seed into RAM
+	memmove(ram, (void*)((uintptr_t)bootram + readp), initchunklen);
+	readp += initchunklen;
+	
+	// Read seed count
+	initseeds = ratufacoat_memreadjint(bootram, readp);
+	readp += 4;
+	
+	// Debug that
+	ratufacoat_log("MvSeeds %d", initseeds);
+	
+	// Process all seeds
+	for (seed = 0; seed < initseeds; seed++)
+	{
+		// Read key
+		skey = ratufacoat_memreadjbyte(bootram, readp);
+		readp += 1;
+		
+		// Decode key into modifier and size
+		smod = (skey & 0x0F);
+		ssiz = ((skey & 0xF0) >> 4);
+		
+		// Determine offset to the vlaue
+		switch (smod)
+		{
+				// Nothing
+			case 0:
+				soff = 0;
+				break;
+				
+				// RAM
+			case 1:
+				soff = (uint32_t)((uintptr_t)ram);
+				break;
+				
+				// JAR
+			case 2:
+				soff = (uint32_t)((uintptr_t)bootjar);
+				break;
+		}
+		
+		ratufacoat_todo();
+	}
 	
 	ratufacoat_todo();
 	return 0;
