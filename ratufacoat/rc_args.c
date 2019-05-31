@@ -15,12 +15,3 @@
 
 #include "ratufac.h"
 
-/** Searches for an argument. */
-int ratufacoat_findargument(ratufacoat_machine_t* machine, char* find, int at,
-	char** key, int* keyn, char** value, int* valuen)
-{
-	ratufacoat_todo();
-	
-	// Not found
-	return -1;
-}
