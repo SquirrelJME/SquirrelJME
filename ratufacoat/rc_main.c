@@ -58,10 +58,12 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
 	void* rom;
 	void* bootjar;
 	void* bootram;
+	void* wa;
+	void* wb;
 	uint32_t readp;
 	uint32_t bootlen, bootramlen;
-	uint32_t initchunklen, initseeds, seed;
-	uint32_t soff;
+	uint32_t initchunklen, initseeds, seed, check;
+	uint32_t soff, ahi, alo, xhi, xlo;
 	uint8_t skey, smod, ssiz;
 	
 	// Load RAM and ROM pointers
@@ -137,13 +139,96 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach)
 			case 2:
 				soff = (uint32_t)((uintptr_t)bootjar);
 				break;
+				
+				// Invalid
+			default:
+				ratufacoat_log("Corrupt BootRAM (modifier %d).", (int)smod);
+				return 0;
 		}
 		
-		ratufacoat_todo();
+		// Read the address to write to
+		wa = (void*)((uintptr_t)ram + ratufacoat_memreadjint(bootram, readp));
+		wb = (void*)((uintptr_t)wa + 4);
+		readp += 4;
+		
+		// Read value and calculate what to write at memory
+		switch (ssiz)
+		{
+				// byte
+			case 1:
+				*((int8_t*)wa) = ((int8_t)(
+					ratufacoat_memreadjint(bootram, readp) + soff));
+				readp += 1;
+				break;
+				
+				// short
+			case 2:
+				*((int16_t*)wa) = ((int16_t)(
+					ratufacoat_memreadjint(bootram, readp) + soff));
+				readp += 2;
+				break;
+				
+				// int/float
+			case 4:
+				*((int32_t*)wa) = ((int32_t)(
+					ratufacoat_memreadjint(bootram, readp) + soff));
+				readp += 4;
+				break;
+				
+				// long/double
+			case 8:
+				{
+					// Read the high and low parts of the value in their
+					// Java format (it does not matter if they get swapped
+					// back for the native CPU)
+					ahi = ratufacoat_memreadjint(bootram, readp);
+					alo = ratufacoat_memreadjint(bootram, readp + 4);
+					
+					// Perform some 64-bit math to get the true offset for
+					// this value. Note that the offset is always a low
+					// value!
+					xhi = ahi;
+					xlo = alo + soff;
+					
+					// There was an overflow adding
+					if (xlo < alo)
+						xhi++;
+					
+					// Write both values to memory
+					*((int32_t*)wa) = ahi;
+					*((int32_t*)wb) = alo;
+					
+					// Read in the written high value and if it differs
+					// from what the value is, then our system is likely
+					// little endian. So write again in opposite order
+					if (ratufacoat_memreadjint(wa, 0) != ahi)
+					{
+						*((int32_t*)wb) = ahi;
+						*((int32_t*)wa) = alo;
+					}
+					
+					// Read pointer goes up by eight
+					readp += 8;
+				}
+				break;
+			
+				// Invalid
+			default:
+				ratufacoat_log("Corrupt BootRAM (size %d).", (int)ssiz);
+				return 0;
+		}
 	}
 	
-	ratufacoat_todo();
-	return 0;
+	// Read in the check value
+	check = ratufacoat_memreadjint(bootram, readp);
+	if (check != UINT32_C(0xFFFFFFFF))
+	{
+		ratufacoat_log("Corrupt BootRAM (check %08x).", (int)check);
+		return 0;
+	}
+	
+	// Initialized okay!
+	return 1;
 }
 
 /** Creates RatufaCoat machine. */
