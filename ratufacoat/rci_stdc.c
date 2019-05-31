@@ -111,7 +111,7 @@ int main(int argc, char** argv)
 	// Set boot parameters
 	boot->native = native;
 	boot->args = args;
-	boot->romdata = romdata;
+	boot->rom = romdata;
 	boot->romsize = romsize;
 	
 	// Create the machine

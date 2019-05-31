@@ -20,7 +20,8 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 {
 	ratufacoat_machine_t* rv;
 	void* ram;
-	uint32_t ramsize;
+	void* rom;
+	uint32_t ramsize, romsize;
 	
 	// This needs to be passed, if not then it shall fail
 	if (boot == NULL || boot->native == NULL)
@@ -57,6 +58,15 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot)
 	// Set the machine RAM space
 	rv->ram = ram;
 	rv->ramsize = ramsize;
+	
+	// Set and note ROM address
+	rom = boot->rom;
+	romsize = boot->romsize;
+	rv->rom = rom;
+	rv->romsize = romsize;
+	
+	// Note it
+	ratufacoat_log("ROM @ %p (%d bytes)", rom, (int)romsize);
 	
 	ratufacoat_todo();
 	
