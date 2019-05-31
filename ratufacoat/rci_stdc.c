@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	romfile = fopen("squirreljme.sqc", "rb");
 	if (romfile == NULL)
 	{
-		fprintf(stderr, "Could not open the ROM file.\n");
+		ratufacoat_log("Could not open the ROM file.");
 		return EXIT_FAILURE;
 	}
 	
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 	{
 		fclose(romfile);
 		
-		fprintf(stderr, "Could not allocate the ROM file!\n");
+		ratufacoat_log("Could not allocate the ROM file!");
 		return EXIT_FAILURE;
 	}
 	
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 				fclose(romfile);
 				ratufacoat_memfree(romdata);
 				
-				fprintf(stderr, "Could not read the ROM! (%s)\n",
+				ratufacoat_log("Could not read the ROM! (%s)",
 					strerror(errno));
 				return EXIT_FAILURE;
 			}
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 		ratufacoat_memfree(native);
 		ratufacoat_memfree(romdata);
 		
-		fprintf(stderr, "Could not allocate structure memory!\n");
+		ratufacoat_log("Could not allocate structure memory!");
 		return EXIT_FAILURE;
 	}
 	
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
 		ratufacoat_memfree(native);
 		ratufacoat_memfree(romdata);
 		
-		fprintf(stderr, "Could not create RatufaCoat machine!\n");
+		ratufacoat_log("Could not create RatufaCoat machine!");
 		return EXIT_FAILURE;
 	}
 	

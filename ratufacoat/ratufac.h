@@ -18,13 +18,14 @@
 #define SJME_hGRATUFACOATRATACHRATUFACH
 
 /** Common includes. */
-#include <errno.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
 #include <signal.h>
+#include <errno.h>
 
 /** Anti-C++. */
 #ifdef _cplusplus
@@ -40,6 +41,11 @@ extern "C"
 
 #if defined(__linux__) || defined(__gnu_linux__)
 	#define RATUFACOAT_ISLINUX 1
+#endif
+
+// Default amount of memory to use
+#if !defined(RATUFACOAT_DEFAULT_MEMORY_SIZE)
+	#define RATUFACOAT_DEFAULT_MEMORY_SIZE 16777216
 #endif
 
 /**
@@ -83,6 +89,9 @@ typedef struct ratufacoat_boot_t
 	
 	/** The size of the ROM. */
 	size_t romsize;
+	
+	/** The size of RAM. */
+	uint32_t ramsize;
 } ratufacoat_boot_t;
 
 /**
@@ -97,6 +106,12 @@ typedef struct ratufacoat_machine_t
 	
 	/** Arguments. */
 	ratufacoat_args_t* args;
+	
+	/** The machine's RAM. */
+	void* ram;
+	
+	/** The size of RAM. */
+	uint32_t ramsize;
 } ratufacoat_machine_t;
 
 /**
@@ -110,11 +125,13 @@ typedef struct ratufacoat_machine_t
 ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot);
 
 /**
- * Fails the VM with a fatal ToDo.
- *
- * @since 2019/05/28
+ * Logs a message.
+ * 
+ * @param fmt The format.
+ * @param ... The arguments.
+ * @since 2019/05/31
  */
-void ratufacoat_todo(void);
+void ratufacoat_log(char* fmt, ...);
 
 /**
  * Allocates a pointer in the low 4GiB of memory for 32-bit pointer usage.
@@ -132,6 +149,13 @@ void* ratufacoat_memalloc(size_t len);
  * @since 2019/05/31
  */
 void ratufacoat_memfree(void* p);
+
+/**
+ * Fails the VM with a fatal ToDo.
+ *
+ * @since 2019/05/28
+ */
+void ratufacoat_todo(void);
 
 /****************************************************************************/
 
