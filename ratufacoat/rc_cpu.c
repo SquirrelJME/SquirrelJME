@@ -113,7 +113,7 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 		{
 				// Invalid operation
 			default:
-				ratufacoat_log("Invalid operation (%d/%02x)!",
+				ratufacoat_log("Invalid operation (%d/0x%02X)!",
 					(int)op, (int)op);
 				return;
 		}
