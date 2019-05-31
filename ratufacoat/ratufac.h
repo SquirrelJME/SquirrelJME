@@ -171,6 +171,14 @@ typedef struct ratufacoat_cpu_t
 } ratufacoat_cpu_t;
 
 /**
+ * Executes the specified CPU.
+ * 
+ * @param cpu The CPU to execute.
+ * @since 2019/05/31
+ */
+void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu);
+
+/**
  * Creates a RatufaCoat machine.
  * 
  * @param boot Boot options.

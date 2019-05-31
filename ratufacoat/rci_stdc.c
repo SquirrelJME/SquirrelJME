@@ -128,5 +128,9 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	
+	// Run RatufaCoat now!
+	ratufacoat_cpuexec(cpu);
+	
+	// It worked!
 	return EXIT_SUCCESS;
 }
