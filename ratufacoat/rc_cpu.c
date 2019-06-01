@@ -283,7 +283,6 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 	void* ma;
 	ratufacoat_register_t* r;
 	ratufacoat_register_t* oldr;
-	ratufacoat_register_t* dr;
 	int32_t ia, ib, ic, id, i, j;
 	ratufacoat_register_t ra, rb, rc, rd;
 	uint32_t ua, ub, uc, ud;
@@ -372,7 +371,7 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					link->next = cpu->links;
 					
 					// Old registers needed for copy
-					oldr = cpu->state.r;
+					oldr = &cpu->state.r;
 					
 					// Load new PC address
 					ua = r[ratufacoat_decodevuint(&nextpc)];
@@ -528,14 +527,19 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 			case RATUFACOAT_ENC_MEMORY_OFF_ICONST_JAVA:
 				{
 					// Source/Destination register
-					dr = &r[ratufacoat_decodevuint(&nextpc)];
+					rc = ratufacoat_decodevuint(&nextpc);
 					
-					// Source address by the offset
-					ma = (void*)(((intptr_t)(
-						(uint32_t)r[ratufacoat_decodevuint(&nextpc)])) +
-						(intptr_t)(en >= 0x80 ?
-							ratufacoat_decodeint(&nextpc) :
-							r[ratufacoat_decodevuint(&nextpc)]));
+					// Base address and offset
+					ia = r[ratufacoat_decodevuint(&nextpc)];
+					ib = (en >= 0x80 ? ratufacoat_decodeint(&nextpc) :
+						r[ratufacoat_decodevuint(&nextpc)]);
+					
+					// Is this a Java type? The lowest bit in the
+					// encoding is used to indicate this
+					j = (op & 0x10);
+					
+					// Calculate actual address
+					ma = (void*)((uintptr_t)((uint32_t)(ia + ib)));
 					
 					// Load
 					if ((op & RATUFACOAT_MEM_LOAD_MASK) != 0)
@@ -546,16 +550,29 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 							case RATUFACOAT_DATATYPE_OBJECT:
 							case RATUFACOAT_DATATYPE_INTEGER:
 							case RATUFACOAT_DATATYPE_FLOAT:
-								*((int32_t*)ma) = *dr;
+								if (j)
+									r[rc] = ratufacoat_memreadjint(ma, 0);
+								else
+									r[rc] = *((int32_t*)ma);
 								break;
 								
 							case RATUFACOAT_DATATYPE_BYTE:
-								*((int8_t*)ma) = *dr;
+								r[rc] = *((int8_t*)ma);
 								break;
 								
 							case RATUFACOAT_DATATYPE_SHORT:
+								if (j)
+									r[rc] = ratufacoat_memreadjshort(ma, 0);
+								else
+									r[rc] = *((int16_t*)ma);
+								break;
+								
 							case RATUFACOAT_DATATYPE_CHARACTER:
-								*((int16_t*)ma) = *dr;
+								if (j)
+									r[rc] = (uint16_t)ratufacoat_memreadjshort(
+										ma, 0);
+								else
+									r[rc] = *((uint16_t*)ma);
 								break;
 						}
 					}
@@ -569,19 +586,16 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 							case RATUFACOAT_DATATYPE_OBJECT:
 							case RATUFACOAT_DATATYPE_INTEGER:
 							case RATUFACOAT_DATATYPE_FLOAT:
-								*dr = *((int32_t*)ma);
+								*((int32_t*)ma) = r[rc];
 								break;
 								
 							case RATUFACOAT_DATATYPE_BYTE:
-								*dr = *((int8_t*)ma);
+								*((int8_t*)ma) = r[rc];
 								break;
 								
 							case RATUFACOAT_DATATYPE_SHORT:
-								*dr = *((int16_t*)ma);
-								break;
-								
 							case RATUFACOAT_DATATYPE_CHARACTER:
-								*dr = *((uint16_t*)ma);
+								*((int16_t*)ma) = r[rc];
 								break;
 						}
 					}
