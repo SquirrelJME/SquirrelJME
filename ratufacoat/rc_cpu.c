@@ -84,12 +84,13 @@
 #define RATUFACOAT_OP_BREAKPOINT UINT8_C(0xFF)
 
 /**
- * Decodes a variable unsigned integer.
- * 
- * @param pc The PC pointer.
- * @since 2019/05/31
+ * Decodes a single unsigned byte value.
+ *
+ * @param pc The PC address.
+ * @return The resulting value.
+ * @since 2019/06/01
  */
-static int32_t ratuacoat_decodevuint(void** pc)
+static uint32_t ratufacoat_decodeubyte(void** pc)
 {
 	int32_t rv;
 	uint8_t* xpc;
@@ -98,11 +99,62 @@ static int32_t ratuacoat_decodevuint(void** pc)
 	xpc = *pc;
 	
 	// Read single byte value
-	rv = *xpc++;
+	rv = (*xpc++) & 0xFF;
+	
+	// Set next
+	*pc = xpc;
+	
+	// Return the decoded value
+	return rv;
+}
+/**
+ * Decodes a single unsigned short value.
+ *
+ * @param pc The PC address.
+ * @return The resulting value.
+ * @since 2019/06/01
+ */
+static uint32_t ratufacoat_decodeushort(void** pc)
+{
+	int32_t rv;
+	uint8_t* xpc;
+	
+	// Get current PC pointer
+	xpc = *pc;
+	
+	// Read in both values
+	rv = (*xpc++) & 0xFF;
+	rv <<= 8;
+	rv |= (*xpc++) & 0xFF;
+	
+	// Set next
+	*pc = xpc;
+	
+	// Return the decoded value
+	return rv;
+}
+
+/**
+ * Decodes a variable unsigned integer.
+ * 
+ * @param pc The PC pointer.
+ * @since 2019/05/31
+ */
+static uint32_t ratuacoat_decodevuint(void** pc)
+{
+	int32_t rv;
+	uint8_t* xpc;
+	
+	// Get current PC pointer
+	xpc = *pc;
+	
+	// Read single byte value, check if it is wide
+	rv = (*xpc++) & 0xFF;
 	if (rv & 0x80)
 	{
+		// Read remaining part
 		rv = (rv & 0x7F) << 8;
-		rv |= *xpc++;
+		rv |= (*xpc++) & 0xFF;
 	}
 	
 	// Set next
@@ -119,6 +171,11 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 	void* pc;
 	void* nextpc;
 	int32_t* r;
+	int32_t* oldr;
+	int32_t ia, ib, ic, id, i, j;
+	uint32_t ua, ub, uc, ud;
+	uint32_t* pool;
+	ratufacoat_cpustatelink_t* link;
 	
 	// Do nothing if no CPU was specified
 	if (cpu == NULL)
@@ -143,21 +200,20 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 			case RATUFACOAT_OP_DEBUG_ENTRY:
 				{
 					// Load indexes into the pool
-					uint32_t cldx = ratuacoat_decodevuint(&nextpc);
-					uint32_t mndx = ratuacoat_decodevuint(&nextpc);
-					uint32_t mtdx = ratuacoat_decodevuint(&nextpc);
+					ua = ratuacoat_decodevuint(&nextpc);
+					ub = ratuacoat_decodevuint(&nextpc);
+					uc = ratuacoat_decodevuint(&nextpc);
 					
 					// Need the pool to load the values from
-					uint32_t* pool = (uint32_t*)(
-						(uintptr_t)r[RATUFACOAT_POOL_REGISTER]);
+					pool = (uint32_t*)((uintptr_t)r[RATUFACOAT_POOL_REGISTER]);
 					
 					// Load pool values
 					cpu->state.debuginclass =
-						(char*)((uintptr_t)pool[cldx] + 2);
+						(char*)((uintptr_t)pool[ua] + 2);
 					cpu->state.debuginname =
-						(char*)((uintptr_t)pool[mndx] + 2);
+						(char*)((uintptr_t)pool[ub] + 2);
 					cpu->state.debugintype =
-						(char*)((uintptr_t)pool[mtdx] + 2);
+						(char*)((uintptr_t)pool[uc] + 2);
 				}
 				break;
 			
@@ -174,7 +230,63 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 				// Invoke pointer
 			case RATUFACOAT_OP_INVOKE:
 				{
-					ratufacoat_todo();
+					// Create new link, to load values into
+					link = ratufacoat_memalloc(sizeof(*link));
+					if (link == NULL)
+					{
+						ratufacoat_log("Could not allocate CPU link!");
+						return;
+					}
+					
+					// Store our old state in this link
+					link->state = cpu->state;
+					link->next = cpu->links;
+					
+					// Old registers needed for copy
+					oldr = cpu->state.r;
+					
+					// Load new PC address
+					ua = r[ratuacoat_decodevuint(&nextpc)];
+					
+					// Base output register
+					j = RATUFACOAT_ARGUMENT_REGISTER_BASE;
+					
+					// Wide register list
+					ub = ratufacoat_decodeubyte(&nextpc);
+					if ((ub & 0x80) != 0)
+					{
+						// Read next byte to get the true count
+						ub = ((ub & 0x7F) << 8);
+						ub |= ratufacoat_decodeubyte(&nextpc);
+						
+						// Read register list
+						for (i = 0; i < ub; i++, j++)
+							r[j] = oldr[ratufacoat_decodeushort(&nextpc)];
+					}
+					
+					// Narrow register list
+					else
+					{
+						// Read register list
+						for (i = 0; i < ub; i++, j++)
+							r[j] = oldr[ratufacoat_decodeubyte(&nextpc)];
+					}
+					
+					// Set remaining registers to zero
+					for (; j < RATUFACOAT_MAX_REGISTERS; j++)
+						r[j] = 0;
+					
+					// Copy next pool to pool
+					r[RATUFACOAT_POOL_REGISTER] =
+						oldr[RATUFACOAT_NEXT_POOL_REGISTER];
+					
+					// Store our old PC address and switch ours
+					link->state.pc = nextpc;
+					nextpc = (void*)((uintptr_t)ua);
+					
+					// Link in state
+					link->next = cpu->links;
+					cpu->links = link;
 				}
 				break;
 				
@@ -182,15 +294,14 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 			case RATUFACOAT_OP_LOAD_POOL:
 				{
 					// Read pool index and destination register
-					uint32_t pdx = ratuacoat_decodevuint(&nextpc);
-					uint32_t drr = ratuacoat_decodevuint(&nextpc);
+					ua = ratuacoat_decodevuint(&nextpc);
+					ub = ratuacoat_decodevuint(&nextpc);
 					
 					// Need the pool to load the values from
-					uint32_t* pool = (uint32_t*)(
-						(uintptr_t)r[RATUFACOAT_POOL_REGISTER]);
+					pool = (uint32_t*)((uintptr_t)r[RATUFACOAT_POOL_REGISTER]);
 					
 					// Set destination register to the value in the pool
-					r[drr] = pool[pdx];
+					r[ub] = pool[ua];
 				}
 				break;
 				
@@ -200,8 +311,8 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					(int)op, (int)op, pc);
 				ratufacoat_log("In %s::%s:%s (L%d / J%d@%d)",
 					cpu->state.debuginclass, cpu->state.debuginname,
-					cpu->state.debugintype, cpu->state.debugline,
-					cpu->state.debugjop, cpu->state.debugjpc);
+					cpu->state.debugintype, (int)cpu->state.debugline,
+					(int)cpu->state.debugjop, (int)cpu->state.debugjpc);
 				return;
 		}
 	}
