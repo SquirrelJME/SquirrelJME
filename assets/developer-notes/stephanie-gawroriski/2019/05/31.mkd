@@ -1,0 +1,6 @@
+# 2019/05/31
+
+## 14:38
+
+For short/int/long I need to always write seed values because they could be
+used by little endian systems and the order has to be correct in memory!
