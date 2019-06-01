@@ -140,6 +140,7 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 		// Depends on the operation
 		switch (op)
 		{
+				// Entry point into method
 			case RATUFACOAT_OP_DEBUG_ENTRY:
 				{
 					// Load indexes into the pool
@@ -157,13 +158,24 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					cpu->debugintype = (char*)((uintptr_t)pool[mtdx] + 2);
 				}
 				break;
+			
+				// Single point in the method
+			case RATUFACOAT_OP_DEBUG_POINT:
+				{
+					// Load location information
+					cpu->debugline = ratuacoat_decodevuint(&nextpc);
+					cpu->debugjop = ratuacoat_decodevuint(&nextpc);
+					cpu->debugjpc = ratuacoat_decodevuint(&nextpc);
+				}
+				break;
 				
 				// Invalid operation
 			default:
 				ratufacoat_log("Invalid operation (%d/0x%02X) @ %p!",
 					(int)op, (int)op, pc);
-				ratufacoat_log("In %s::%s:%s", cpu->debuginclass,
-					cpu->debuginname, cpu->debugintype);
+				ratufacoat_log("In %s::%s:%s (L%d / J%d@%d)",
+					cpu->debuginclass, cpu->debuginname, cpu->debugintype,
+					cpu->debugline, cpu->debugjop, cpu->debugjpc);
 				return;
 		}
 	}
