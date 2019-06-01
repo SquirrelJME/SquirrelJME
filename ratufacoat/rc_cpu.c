@@ -307,6 +307,9 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 		// Seed next address, it is +1 for no-argument values
 		nextpc = (void*)((uintptr_t)pc + 1);
 		
+		// Register zero is always zero!
+		r[0] = 0;
+		
 		// Depends on the operation
 		switch (en)
 		{
