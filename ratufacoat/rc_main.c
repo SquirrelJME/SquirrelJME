@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
-// ---------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
@@ -100,14 +99,13 @@ static int ratufacoat_initbootram(ratufacoat_machine_t* mach,
 		RATUFACOAT_OFFSET_OF_JARBOOTSIZE);
 	
 	// Initial CPU parameters
-	cpu->pc = (uint32_t)((uintptr_t)bootjar + ratufacoat_memreadjint(bootjar,
-		RATUFACOAT_OFFSET_OF_JARBOOTSTART));
-	cpu->r[RATUFACOAT_STATIC_FIELD_REGISTER] = (uint32_t)((uintptr_t)ram +
-		ratufacoat_memreadjint(bootjar,
+	cpu->state.pc = (uint32_t)((uintptr_t)bootjar +
+		ratufacoat_memreadjint(bootjar, RATUFACOAT_OFFSET_OF_JARBOOTSTART));
+	cpu->state.r[RATUFACOAT_STATIC_FIELD_REGISTER] = (uint32_t)(
+		(uintptr_t)ram + ratufacoat_memreadjint(bootjar,
 			RATUFACOAT_OFFSET_OF_JARBOOTSFIELDBASE));
-	cpu->r[RATUFACOAT_POOL_REGISTER] = (uint32_t)((uintptr_t)ram +
-		ratufacoat_memreadjint(bootjar,
-			RATUFACOAT_OFFSET_OF_JARBOOTPOOL));
+	cpu->state.r[RATUFACOAT_POOL_REGISTER] = (uint32_t)((uintptr_t)ram +
+		ratufacoat_memreadjint(bootjar, RATUFACOAT_OFFSET_OF_JARBOOTPOOL));
 	
 	// Note them
 	ratufacoat_log("BootRAM @ %p (%d bytes)", bootram, bootramlen);
@@ -325,34 +323,34 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot,
 	
 	// Setup remaining CPU parameters
 	// __rambase
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 0] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 0] =
 		(uint32_t)((uintptr_t)ram);
 	// __ramsize
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 1] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 1] =
 		ramsize;
 	// __bootsize (old)
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 2] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 2] =
 		0;
 	// __classpath
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 3] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 3] =
 		0;
 	// __sysprops
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 4] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 4] =
 		0;
 	// __mainclass
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 5] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 5] =
 		0;
 	// __mainargs
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 6] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 6] =
 		0;
 	// __ismidlet
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 7] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 7] =
 		0;
 	// __gd
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 8] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 8] =
 		0;
 	// __rombase
-	cpu->r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 9] =
+	cpu->state.r[RATUFACOAT_ARGUMENT_REGISTER_BASE + 9] =
 		(uint32_t)((uintptr_t)rom);
 	
 	// Set resulting CPU

@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
-// ---------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
@@ -154,15 +153,12 @@ typedef struct ratufacoat_machine_t
 } ratufacoat_machine_t;
 
 /**
- * This represents the state of a RatufaCoat CPU.
+ * This contains the CPU state.
  * 
- * @since 2019/05/31
+ * @since 2019/06/01
  */
-typedef struct ratufacoat_cpu_t
+typedef struct ratufacoat_cpustate_t
 {
-	/** The host machine. */
-	ratufacoat_machine_t* machine;
-	
 	/** CPU registers. */
 	int32_t r[RATUFACOAT_MAX_REGISTERS];
 	
@@ -186,6 +182,20 @@ typedef struct ratufacoat_cpu_t
 	
 	/** Debug Java address. */
 	int debugjpc;
+} ratufacoat_cpustate_t;
+
+/**
+ * This represents the state of a RatufaCoat CPU.
+ * 
+ * @since 2019/05/31
+ */
+typedef struct ratufacoat_cpu_t
+{
+	/** The host machine. */
+	ratufacoat_machine_t* machine;
+	
+	/** Current CPU state. */
+	ratufacoat_cpustate_t state;
 } ratufacoat_cpu_t;
 
 /**
