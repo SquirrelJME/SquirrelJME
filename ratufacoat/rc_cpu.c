@@ -528,8 +528,8 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					dr = &r[ratufacoat_decodevuint(&nextpc)];
 					
 					// Source address by the offset
-					ma = (void*)(
-						(intptr_t)r[ratufacoat_decodevuint(&nextpc)] +
+					ma = (void*)(((intptr_t)(
+						(uint32_t)r[ratufacoat_decodevuint(&nextpc)])) +
 						(intptr_t)(en >= 0x80 ?
 							r[ratufacoat_decodeint(&nextpc)] :
 							r[ratufacoat_decodevuint(&nextpc)]));
