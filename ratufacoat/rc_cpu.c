@@ -484,6 +484,7 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					// Store value
 					r[ratufacoat_decodevuint(&nextpc)] = ic;
 				}
+				break;
 				
 				// Invalid operation
 			default:
