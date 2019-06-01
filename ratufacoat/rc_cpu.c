@@ -134,6 +134,36 @@
 /** Sign 16-bit. */
 #define RATUFACOAT_MATH_SIGNX16 UINT8_C(15)
 
+/** Mask for read/write in memory. */
+#define RATUFACOAT_MEM_LOAD_MASK UINT8_C(0x08)
+
+/** Mask for data types in memory. */
+#define RATUFACOAT_MEM_DATATYPE_MASK UINT8_C(0x07)
+
+/** Object. */
+#define RATUFACOAT_DATATYPE_OBJECT UINT8_C(0)
+
+/** Byte. */
+#define RATUFACOAT_DATATYPE_BYTE UINT8_C(1)
+
+/** Short. */
+#define RATUFACOAT_DATATYPE_SHORT UINT8_C(2)
+
+/** Character. */
+#define RATUFACOAT_DATATYPE_CHARACTER UINT8_C(3)
+
+/** Integer. */
+#define RATUFACOAT_DATATYPE_INTEGER UINT8_C(4)
+
+/** Float. */
+#define RATUFACOAT_DATATYPE_FLOAT UINT8_C(5)
+
+/** Long. */
+#define RATUFACOAT_DATATYPE_LONG UINT8_C(6)
+
+/** Double. */
+#define RATUFACOAT_DATATYPE_DOUBLE UINT8_C(7)
+
 /**
  * Decodes a single unsigned byte value.
  *
@@ -250,8 +280,10 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 	uint8_t op, en;
 	void* pc;
 	void* nextpc;
+	void* ma;
 	ratufacoat_register_t* r;
 	ratufacoat_register_t* oldr;
+	ratufacoat_register_t* dr;
 	int32_t ia, ib, ic, id, i, j;
 	ratufacoat_register_t ra, rb, rc, rd;
 	uint32_t ua, ub, uc, ud;
@@ -483,6 +515,73 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					
 					// Store value
 					r[ratufacoat_decodevuint(&nextpc)] = ic;
+				}
+				break;
+				
+				// Memory Access
+			case RATUFACOAT_ENC_MEMORY_OFF_REG:
+			case RATUFACOAT_ENC_MEMORY_OFF_REG_JAVA:
+			case RATUFACOAT_ENC_MEMORY_OFF_ICONST:
+			case RATUFACOAT_ENC_MEMORY_OFF_ICONST_JAVA:
+				{
+					// Source/Destination register
+					dr = &r[ratufacoat_decodevuint(&nextpc)];
+					
+					// Source address by the offset
+					ma = (void*)(
+						(intptr_t)r[ratufacoat_decodevuint(&nextpc)] +
+						(intptr_t)(en >= 0x80 ?
+							r[ratufacoat_decodeint(&nextpc)] :
+							r[ratufacoat_decodevuint(&nextpc)]));
+					
+					// Load
+					if ((op & RATUFACOAT_MEM_LOAD_MASK) != 0)
+					{
+						// Depends on the type
+						switch (op & RATUFACOAT_MEM_DATATYPE_MASK)
+						{
+							case RATUFACOAT_DATATYPE_OBJECT:
+							case RATUFACOAT_DATATYPE_INTEGER:
+							case RATUFACOAT_DATATYPE_FLOAT:
+								*((int32_t*)ma) = *dr;
+								break;
+								
+							case RATUFACOAT_DATATYPE_BYTE:
+								*((int8_t*)ma) = *dr;
+								break;
+								
+							case RATUFACOAT_DATATYPE_SHORT:
+							case RATUFACOAT_DATATYPE_CHARACTER:
+								*((int16_t*)ma) = *dr;
+								break;
+						}
+					}
+					
+					// Store
+					else
+					{
+						// Depends on the type
+						switch (op & RATUFACOAT_MEM_DATATYPE_MASK)
+						{
+							case RATUFACOAT_DATATYPE_OBJECT:
+							case RATUFACOAT_DATATYPE_INTEGER:
+							case RATUFACOAT_DATATYPE_FLOAT:
+								*dr = *((int32_t*)ma);
+								break;
+								
+							case RATUFACOAT_DATATYPE_BYTE:
+								*dr = *((int8_t*)ma);
+								break;
+								
+							case RATUFACOAT_DATATYPE_SHORT:
+								*dr = *((int16_t*)ma);
+								break;
+								
+							case RATUFACOAT_DATATYPE_CHARACTER:
+								*dr = *((uint16_t*)ma);
+								break;
+						}
+					}
 				}
 				break;
 				
