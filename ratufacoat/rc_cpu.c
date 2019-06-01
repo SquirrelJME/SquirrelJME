@@ -23,6 +23,9 @@
 /** Int comparison, then maybe jump. */
 #define RATUFACOAT_ENC_IF_ICMP UINT8_C(0x10)
 
+/** Math type mask. */
+#define RATUFACOAT_ENC_MATH_MASK UINT8_C(0x0F)
+
 /** Memory access, offset is in register. */
 #define RATUFACOAT_ENC_MEMORY_OFF_REG UINT8_C(0x20)
 
@@ -43,102 +46,6 @@
 
 /** Special.*/
 #define RATUFACOAT_ENC_SPECIAL_B UINT8_C(0xF0)
-
-/** Math (Register): Add. */
-#define RATUFACOAT_OP_MATH_REG_INT_ADD UINT8_C(0x00)
-
-/** Math (Register): Subtract. */
-#define RATUFACOAT_OP_MATH_REG_INT_SUB UINT8_C(0x01)
-
-/** Math (Register): Multiply. */
-#define RATUFACOAT_OP_MATH_REG_INT_MUL UINT8_C(0x02)
-
-/** Math (Register): Divide. */
-#define RATUFACOAT_OP_MATH_REG_INT_DIV UINT8_C(0x03)
-
-/** Math (Register): Remainder. */
-#define RATUFACOAT_OP_MATH_REG_INT_REM UINT8_C(0x04)
-
-/** Math (Register): Negative. */
-#define RATUFACOAT_OP_MATH_REG_INT_NEG UINT8_C(0x05)
-
-/** Math (Register): Shift left. */
-#define RATUFACOAT_OP_MATH_REG_INT_SHL UINT8_C(0x06)
-
-/** Math (Register): Shift right. */
-#define RATUFACOAT_OP_MATH_REG_INT_SHR UINT8_C(0x07)
-
-/** Math (Register): Unsigned shift right. */
-#define RATUFACOAT_OP_MATH_REG_INT_USHR UINT8_C(0x08)
-
-/** Math (Register): And. */
-#define RATUFACOAT_OP_MATH_REG_INT_AND UINT8_C(0x09)
-
-/** Math (Register): Or. */
-#define RATUFACOAT_OP_MATH_REG_INT_OR UINT8_C(0x0A)
-
-/** Math (Register): XOr. */
-#define RATUFACOAT_OP_MATH_REG_INT_XOR UINT8_C(0x0B)
-
-/** Math (Register): Compare (Lower). */
-#define RATUFACOAT_OP_MATH_REG_INT_CMPL UINT8_C(0x0C)
-
-/** Math (Register): Compare (Higher). */
-#define RATUFACOAT_OP_MATH_REG_INT_CMPG UINT8_C(0x0D)
-
-/** Math (Register): Sign x8. */
-#define RATUFACOAT_OP_MATH_REG_INT_SIGNX8 UINT8_C(0x0E)
-
-/** Math (Register): Sign x16. */
-#define RATUFACOAT_OP_MATH_REG_INT_SIGNX16 UINT8_C(0x0F)
-
-/** Math (Constant): Add. */
-#define RATUFACOAT_OP_MATH_CON_INT_ADD UINT8_C(0x80)
-
-/** Math (Constant): Subtract. */
-#define RATUFACOAT_OP_MATH_CON_INT_SUB UINT8_C(0x81)
-
-/** Math (Constant): Multiply. */
-#define RATUFACOAT_OP_MATH_CON_INT_MUL UINT8_C(0x82)
-
-/** Math (Constant): Divide. */
-#define RATUFACOAT_OP_MATH_CON_INT_DIV UINT8_C(0x83)
-
-/** Math (Constant): Remainder. */
-#define RATUFACOAT_OP_MATH_CON_INT_REM UINT8_C(0x84)
-
-/** Math (Constant): Negative. */
-#define RATUFACOAT_OP_MATH_CON_INT_NEG UINT8_C(0x85)
-
-/** Math (Constant): Shift left. */
-#define RATUFACOAT_OP_MATH_CON_INT_SHL UINT8_C(0x86)
-
-/** Math (Constant): Shift right. */
-#define RATUFACOAT_OP_MATH_CON_INT_SHR UINT8_C(0x87)
-
-/** Math (Constant): Unsigned shift right. */
-#define RATUFACOAT_OP_MATH_CON_INT_USHR UINT8_C(0x88)
-
-/** Math (Constant): And. */
-#define RATUFACOAT_OP_MATH_CON_INT_AND UINT8_C(0x89)
-
-/** Math (Constant): Or. */
-#define RATUFACOAT_OP_MATH_CON_INT_OR UINT8_C(0x8A)
-
-/** Math (Constant): XOr. */
-#define RATUFACOAT_OP_MATH_CON_INT_XOR UINT8_C(0x8B)
-
-/** Math (Constant): Compare (Lower). */
-#define RATUFACOAT_OP_MATH_CON_INT_CMPL UINT8_C(0x8C)
-
-/** Math (Constant): Compare (Higher). */
-#define RATUFACOAT_OP_MATH_CON_INT_CMPG UINT8_C(0x8D)
-
-/** Math (Constant): Sign x8. */
-#define RATUFACOAT_OP_MATH_CON_INT_SIGNX8 UINT8_C(0x8E)
-
-/** Math (Constant): Sign x16. */
-#define RATUFACOAT_OP_MATH_CON_INT_SIGNX16 UINT8_C(0x8F)
 
 /** If equal to constant. */
 #define RATUFACOAT_OP_IFEQ_CONST UINT8_C(0xE6)
@@ -178,6 +85,54 @@
 
 /** Compare and exchange. */
 #define RATUFACOAT_OP_BREAKPOINT UINT8_C(0xFF)
+
+/** Add. */
+#define RATUFACOAT_MATH_ADD UINT8_C(0)
+
+/** Subtract. */
+#define RATUFACOAT_MATH_SUB UINT8_C(1)
+
+/** Multiply. */
+#define RATUFACOAT_MATH_MUL UINT8_C(2)
+
+/** Divide. */
+#define RATUFACOAT_MATH_DIV UINT8_C(3)
+
+/** Remainder. */
+#define RATUFACOAT_MATH_REM UINT8_C(4)
+
+/** Negate. */
+#define RATUFACOAT_MATH_NEG UINT8_C(5)
+
+/** Shift left. */
+#define RATUFACOAT_MATH_SHL UINT8_C(6)
+
+/** Shift right. */
+#define RATUFACOAT_MATH_SHR UINT8_C(7)
+
+/** Unsigned shift right. */
+#define RATUFACOAT_MATH_USHR UINT8_C(8)
+
+/** And. */
+#define RATUFACOAT_MATH_AND UINT8_C(9)
+
+/** Or. */
+#define RATUFACOAT_MATH_OR UINT8_C(10)
+
+/** Xor. */
+#define RATUFACOAT_MATH_XOR UINT8_C(11)
+
+/** Compare (Less). */
+#define RATUFACOAT_MATH_CMPL UINT8_C(12)
+
+/** Compare (Greater). */
+#define RATUFACOAT_MATH_CMPG UINT8_C(13)
+
+/** Sign 8-bit. */
+#define RATUFACOAT_MATH_SIGNX8 UINT8_C(14)
+
+/** Sign 16-bit. */
+#define RATUFACOAT_MATH_SIGNX16 UINT8_C(15)
 
 /**
  * Decodes a single unsigned byte value.
@@ -292,7 +247,7 @@ static uint32_t ratufacoat_decodevuint(void** pc)
 /** Executes the specified CPU. */
 void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 {
-	uint8_t op;
+	uint8_t op, en;
 	void* pc;
 	void* nextpc;
 	ratufacoat_register_t* r;
@@ -315,12 +270,13 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 	{	
 		// Read the operation to be performed
 		op = *((uint8_t*)pc);
+		en = (op >= RATUFACOAT_ENC_SPECIAL_A ? op : op & RATUFACOAT_ENC_MASK);
 		
 		// Seed next address, it is +1 for no-argument values
 		nextpc = (void*)((uintptr_t)pc + 1);
 		
 		// Depends on the operation
-		switch (op)
+		switch (en)
 		{
 				// Copy value in one register to another
 			case RATUFACOAT_OP_COPY:
@@ -443,286 +399,91 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 				}
 				break;
 				
-				// Add
-			case RATUFACOAT_OP_MATH_REG_INT_ADD:
+				// Math operations
+			case RATUFACOAT_ENC_MATH_REG_INT:
+			case RATUFACOAT_ENC_MATH_CONST_INT:
 				{
+					// Read parameters
 					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia + ib);
+					ib = (en == RATUFACOAT_ENC_MATH_CONST_INT ?
+						((int32_t)r[ratufacoat_decodeint(&nextpc)]) :
+						((int32_t)r[ratufacoat_decodevuint(&nextpc)]));
+					
+					// Do the math
+					switch (op & RATUFACOAT_ENC_MATH_MASK)
+					{
+						case RATUFACOAT_MATH_ADD:
+							ic = ia + ib;
+							break;
+							
+						case RATUFACOAT_MATH_SUB:
+							ic = ia - ib;
+							break;
+							
+						case RATUFACOAT_MATH_MUL:
+							ic = ia * ib;
+							break;
+							
+						case RATUFACOAT_MATH_DIV:
+							ic = ia / ib;
+							break;
+							
+						case RATUFACOAT_MATH_REM:
+							ic = ia % ib;
+							break;
+							
+						case RATUFACOAT_MATH_NEG:
+							ic = -ia;
+							break;
+							
+						case RATUFACOAT_MATH_SHL:
+							ic = ia << (ib & 0x1F);
+							break;
+							
+						case RATUFACOAT_MATH_SHR:
+							ic = ia >> (ib & 0x1F);
+							break;
+							
+						case RATUFACOAT_MATH_USHR:
+							ic = (int32_t)(
+								(uint32_t)ia >> ((uint32_t)ib & 0x1F));
+							break;
+							
+						case RATUFACOAT_MATH_AND:
+							ic = ia & ib;
+							break;
+							
+						case RATUFACOAT_MATH_OR:
+							ic = ia | ib;
+							break;
+							
+						case RATUFACOAT_MATH_XOR:
+							ic = ia ^ ib;
+							break;
+							
+						case RATUFACOAT_MATH_CMPL:
+						case RATUFACOAT_MATH_CMPG:
+							ic = (ia < ib ? -1 : (ia > ib ? 1 : 0));
+							break;
+						
+						case RATUFACOAT_MATH_SIGNX8:
+							if ((ia & 0x80) != 0)
+								ic = RATUFACOAT_REGISTER_C(0xFFFFFF00);
+							else
+								ic = ia;
+							break;
+							
+						case RATUFACOAT_MATH_SIGNX16:
+							if ((ia & 0x8000) != 0)
+								ic = RATUFACOAT_REGISTER_C(0xFFFF0000);
+							else
+								ic = ia;
+							break;
+					}
+					
+					// Store value
+					r[ratufacoat_decodevuint(&nextpc)] = ic;
 				}
-				break;
-				
-				// Subtract
-			case RATUFACOAT_OP_MATH_REG_INT_SUB:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia - ib);
-				}
-				break;
-				
-				// Multiply
-			case RATUFACOAT_OP_MATH_REG_INT_MUL:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia * ib);
-				}
-				break;
-				
-				// Divide
-			case RATUFACOAT_OP_MATH_REG_INT_DIV:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia / ib);
-				}
-				break;
-				
-				// Remainder
-			case RATUFACOAT_OP_MATH_REG_INT_REM:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia % ib);
-				}
-				break;
-				
-				// Negative
-			case RATUFACOAT_OP_MATH_REG_INT_NEG:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (-ia);
-				}
-				break;
-				
-				// Shift left
-			case RATUFACOAT_OP_MATH_REG_INT_SHL:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia << (ib & 0x1F));
-				}
-				break;
-				
-				// Shift right
-			case RATUFACOAT_OP_MATH_REG_INT_SHR:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia >> (ib & 0x1F));
-				}
-				break;
-				
-				// Unsigned shift right
-			case RATUFACOAT_OP_MATH_REG_INT_USHR:
-				{
-					ua = ((uint32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ub = ((uint32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ua >> (ub & 0x1F));
-				}
-				break;
-				
-			case RATUFACOAT_OP_MATH_REG_INT_AND:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia & ib);
-				}
-				break;
-				
-				// OR
-			case RATUFACOAT_OP_MATH_REG_INT_OR:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia | ib);
-				}
-				break;
-				
-				// XOR
-			case RATUFACOAT_OP_MATH_REG_INT_XOR:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia ^ ib);
-				}
-				break;
-				
-				// Compare
-			case RATUFACOAT_OP_MATH_REG_INT_CMPL:
-			case RATUFACOAT_OP_MATH_REG_INT_CMPG:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia < ib ? -1 :
-						(ia > ib ? 1 : 0));
-				}
-				break;
-				
-				// Sign 8-bit
-			case RATUFACOAT_OP_MATH_REG_INT_SIGNX8:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					if ((ia & 0x80) != 0)
-						ia |= RATUFACOAT_REGISTER_C(0xFFFFFF00);
-					r[ratufacoat_decodevuint(&nextpc)] = ia;
-				}
-				break;
-				
-				// Sign 16-bit
-			case RATUFACOAT_OP_MATH_REG_INT_SIGNX16:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					if ((ia & 0x8000) != 0)
-						ia |= RATUFACOAT_REGISTER_C(0xFFFF0000);
-					r[ratufacoat_decodevuint(&nextpc)] = ia;
-				}
-				break;
-
-				// Add
-			case RATUFACOAT_OP_MATH_CON_INT_ADD:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia + ib);
-				}
-				break;
-				
-				// Subtract
-			case RATUFACOAT_OP_MATH_CON_INT_SUB:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia - ib);
-				}
-				break;
-				
-				// Multiply
-			case RATUFACOAT_OP_MATH_CON_INT_MUL:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia * ib);
-				}
-				break;
-				
-				// Divide
-			case RATUFACOAT_OP_MATH_CON_INT_DIV:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia / ib);
-				}
-				break;
-				
-				// Remainder
-			case RATUFACOAT_OP_MATH_CON_INT_REM:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia % ib);
-				}
-				break;
-				
-				// Negative
-			case RATUFACOAT_OP_MATH_CON_INT_NEG:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (-ia);
-				}
-				break;
-				
-				// Shift left
-			case RATUFACOAT_OP_MATH_CON_INT_SHL:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia << (ib & 0x1F));
-				}
-				break;
-				
-				// Shift Right
-			case RATUFACOAT_OP_MATH_CON_INT_SHR:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia >> (ib & 0x1F));
-				}
-				break;
-				
-				// Unsigned shift right
-			case RATUFACOAT_OP_MATH_CON_INT_USHR:
-				{
-					ua = ((uint32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ub = ((uint32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ua >> (ub & 0x1F));
-				}
-				break;
-				
-				// AND
-			case RATUFACOAT_OP_MATH_CON_INT_AND:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia & ib);
-				}
-				break;
-				
-				// OR
-			case RATUFACOAT_OP_MATH_CON_INT_OR:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia | ib);
-				}
-				break;
-				
-				// XOR
-			case RATUFACOAT_OP_MATH_CON_INT_XOR:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia ^ ib);
-				}
-				break;
-				
-				// Compare
-			case RATUFACOAT_OP_MATH_CON_INT_CMPL:
-			case RATUFACOAT_OP_MATH_CON_INT_CMPG:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					r[ratufacoat_decodevuint(&nextpc)] = (ia < ib ? -1 :
-						(ia > ib ? 1 : 0));
-				}
-				break;
-				
-				// Sign 8-bit
-			case RATUFACOAT_OP_MATH_CON_INT_SIGNX8:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					if ((ia & 0x80) != 0)
-						ia |= RATUFACOAT_REGISTER_C(0xFFFFFF00);
-					r[ratufacoat_decodevuint(&nextpc)] = ia;
-				}
-				break;
-				
-				// Sign 16-bit
-			case RATUFACOAT_OP_MATH_CON_INT_SIGNX16:
-				{
-					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
-					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
-					if ((ia & 0x8000) != 0)
-						ia |= RATUFACOAT_REGISTER_C(0xFFFF0000);
-					r[ratufacoat_decodevuint(&nextpc)] = ia;
-				}
-				break;
 				
 				// Invalid operation
 			default:
