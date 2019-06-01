@@ -177,6 +177,15 @@ typedef struct ratufacoat_cpu_t
 	
 	/** Debug in method type. */
 	char* debugintype;
+	
+	/** Debug line. */
+	int debugline;
+	
+	/** Debug Java operation. */
+	int debugjop;
+	
+	/** Debug Java address. */
+	int debugjpc;
 } ratufacoat_cpu_t;
 
 /**
