@@ -169,6 +169,13 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 				}
 				break;
 				
+				// Invoke pointer
+			case RATUFACOAT_OP_INVOKE:
+				{
+					ratufacoat_todo();
+				}
+				break;
+				
 				// Load from constant pool
 			case RATUFACOAT_OP_LOAD_POOL:
 				{
