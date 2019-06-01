@@ -144,9 +144,9 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 			case RATUFACOAT_OP_DEBUG_ENTRY:
 				{
 					// Load indexes into the pool
-					int cldx = ratuacoat_decodevuint(&nextpc);
-					int mndx = ratuacoat_decodevuint(&nextpc);
-					int mtdx = ratuacoat_decodevuint(&nextpc);
+					uint32_t cldx = ratuacoat_decodevuint(&nextpc);
+					uint32_t mndx = ratuacoat_decodevuint(&nextpc);
+					uint32_t mtdx = ratuacoat_decodevuint(&nextpc);
 					
 					// Need the pool to load the values from
 					uint32_t* pool = (uint32_t*)(
@@ -166,6 +166,22 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					cpu->debugline = ratuacoat_decodevuint(&nextpc);
 					cpu->debugjop = ratuacoat_decodevuint(&nextpc);
 					cpu->debugjpc = ratuacoat_decodevuint(&nextpc);
+				}
+				break;
+				
+				// Load from constant pool
+			case RATUFACOAT_OP_LOAD_POOL:
+				{
+					// Read pool index and destination register
+					uint32_t pdx = ratuacoat_decodevuint(&nextpc);
+					uint32_t drr = ratuacoat_decodevuint(&nextpc);
+					
+					// Need the pool to load the values from
+					uint32_t* pool = (uint32_t*)(
+						(uintptr_t)r[RATUFACOAT_POOL_REGISTER]);
+					
+					// Set destination register to the value in the pool
+					r[drr] = pool[pdx];
 				}
 				break;
 				
