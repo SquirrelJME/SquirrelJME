@@ -44,6 +44,102 @@
 /** Special.*/
 #define RATUFACOAT_ENC_SPECIAL_B UINT8_C(0xF0)
 
+/** Math (Register): Add. */
+#define RATUFACOAT_OP_MATH_REG_INT_ADD UINT8_C(0x00)
+
+/** Math (Register): Subtract. */
+#define RATUFACOAT_OP_MATH_REG_INT_SUB UINT8_C(0x01)
+
+/** Math (Register): Multiply. */
+#define RATUFACOAT_OP_MATH_REG_INT_MUL UINT8_C(0x02)
+
+/** Math (Register): Divide. */
+#define RATUFACOAT_OP_MATH_REG_INT_DIV UINT8_C(0x03)
+
+/** Math (Register): Remainder. */
+#define RATUFACOAT_OP_MATH_REG_INT_REM UINT8_C(0x04)
+
+/** Math (Register): Negative. */
+#define RATUFACOAT_OP_MATH_REG_INT_NEG UINT8_C(0x05)
+
+/** Math (Register): Shift left. */
+#define RATUFACOAT_OP_MATH_REG_INT_SHL UINT8_C(0x06)
+
+/** Math (Register): Shift right. */
+#define RATUFACOAT_OP_MATH_REG_INT_SHR UINT8_C(0x07)
+
+/** Math (Register): Unsigned shift right. */
+#define RATUFACOAT_OP_MATH_REG_INT_USHR UINT8_C(0x08)
+
+/** Math (Register): And. */
+#define RATUFACOAT_OP_MATH_REG_INT_AND UINT8_C(0x09)
+
+/** Math (Register): Or. */
+#define RATUFACOAT_OP_MATH_REG_INT_OR UINT8_C(0x0A)
+
+/** Math (Register): XOr. */
+#define RATUFACOAT_OP_MATH_REG_INT_XOR UINT8_C(0x0B)
+
+/** Math (Register): Compare (Lower). */
+#define RATUFACOAT_OP_MATH_REG_INT_CMPL UINT8_C(0x0C)
+
+/** Math (Register): Compare (Higher). */
+#define RATUFACOAT_OP_MATH_REG_INT_CMPG UINT8_C(0x0D)
+
+/** Math (Register): Sign x8. */
+#define RATUFACOAT_OP_MATH_REG_INT_SIGNX8 UINT8_C(0x0E)
+
+/** Math (Register): Sign x16. */
+#define RATUFACOAT_OP_MATH_REG_INT_SIGNX16 UINT8_C(0x0F)
+
+/** Math (Constant): Add. */
+#define RATUFACOAT_OP_MATH_CON_INT_ADD UINT8_C(0x80)
+
+/** Math (Constant): Subtract. */
+#define RATUFACOAT_OP_MATH_CON_INT_SUB UINT8_C(0x81)
+
+/** Math (Constant): Multiply. */
+#define RATUFACOAT_OP_MATH_CON_INT_MUL UINT8_C(0x82)
+
+/** Math (Constant): Divide. */
+#define RATUFACOAT_OP_MATH_CON_INT_DIV UINT8_C(0x83)
+
+/** Math (Constant): Remainder. */
+#define RATUFACOAT_OP_MATH_CON_INT_REM UINT8_C(0x84)
+
+/** Math (Constant): Negative. */
+#define RATUFACOAT_OP_MATH_CON_INT_NEG UINT8_C(0x85)
+
+/** Math (Constant): Shift left. */
+#define RATUFACOAT_OP_MATH_CON_INT_SHL UINT8_C(0x86)
+
+/** Math (Constant): Shift right. */
+#define RATUFACOAT_OP_MATH_CON_INT_SHR UINT8_C(0x87)
+
+/** Math (Constant): Unsigned shift right. */
+#define RATUFACOAT_OP_MATH_CON_INT_USHR UINT8_C(0x88)
+
+/** Math (Constant): And. */
+#define RATUFACOAT_OP_MATH_CON_INT_AND UINT8_C(0x89)
+
+/** Math (Constant): Or. */
+#define RATUFACOAT_OP_MATH_CON_INT_OR UINT8_C(0x8A)
+
+/** Math (Constant): XOr. */
+#define RATUFACOAT_OP_MATH_CON_INT_XOR UINT8_C(0x8B)
+
+/** Math (Constant): Compare (Lower). */
+#define RATUFACOAT_OP_MATH_CON_INT_CMPL UINT8_C(0x8C)
+
+/** Math (Constant): Compare (Higher). */
+#define RATUFACOAT_OP_MATH_CON_INT_CMPG UINT8_C(0x8D)
+
+/** Math (Constant): Sign x8. */
+#define RATUFACOAT_OP_MATH_CON_INT_SIGNX8 UINT8_C(0x8E)
+
+/** Math (Constant): Sign x16. */
+#define RATUFACOAT_OP_MATH_CON_INT_SIGNX16 UINT8_C(0x8F)
+
 /** If equal to constant. */
 #define RATUFACOAT_OP_IFEQ_CONST UINT8_C(0xE6)
 
@@ -90,6 +186,34 @@
  * @return The resulting value.
  * @since 2019/06/01
  */
+static int32_t ratufacoat_decodeint(void** pc)
+{
+	int32_t rv;
+	uint8_t* xpc;
+	
+	// Get current PC pointer
+	xpc = *pc;
+	
+	// Read byte values
+	rv = ((*xpc++) & 0xFF) << 24;
+	rv |= ((*xpc++) & 0xFF) << 16;
+	rv |= ((*xpc++) & 0xFF) << 8;
+	rv |= (*xpc++) & 0xFF;
+	
+	// Set next
+	*pc = xpc;
+	
+	// Return the decoded value
+	return rv;
+}
+
+/**
+ * Decodes a single unsigned byte value.
+ *
+ * @param pc The PC address.
+ * @return The resulting value.
+ * @since 2019/06/01
+ */
 static uint32_t ratufacoat_decodeubyte(void** pc)
 {
 	uint32_t rv;
@@ -107,6 +231,7 @@ static uint32_t ratufacoat_decodeubyte(void** pc)
 	// Return the decoded value
 	return rv;
 }
+
 /**
  * Decodes a single unsigned short value.
  *
@@ -315,6 +440,287 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					
 					// Set destination register to the value in the pool
 					r[ub] = pool[ua];
+				}
+				break;
+				
+				// Add
+			case RATUFACOAT_OP_MATH_REG_INT_ADD:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia + ib);
+				}
+				break;
+				
+				// Subtract
+			case RATUFACOAT_OP_MATH_REG_INT_SUB:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia - ib);
+				}
+				break;
+				
+				// Multiply
+			case RATUFACOAT_OP_MATH_REG_INT_MUL:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia * ib);
+				}
+				break;
+				
+				// Divide
+			case RATUFACOAT_OP_MATH_REG_INT_DIV:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia / ib);
+				}
+				break;
+				
+				// Remainder
+			case RATUFACOAT_OP_MATH_REG_INT_REM:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia % ib);
+				}
+				break;
+				
+				// Negative
+			case RATUFACOAT_OP_MATH_REG_INT_NEG:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (-ia);
+				}
+				break;
+				
+				// Shift left
+			case RATUFACOAT_OP_MATH_REG_INT_SHL:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia << (ib & 0x1F));
+				}
+				break;
+				
+				// Shift right
+			case RATUFACOAT_OP_MATH_REG_INT_SHR:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia >> (ib & 0x1F));
+				}
+				break;
+				
+				// Unsigned shift right
+			case RATUFACOAT_OP_MATH_REG_INT_USHR:
+				{
+					ua = ((uint32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ub = ((uint32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ua >> (ub & 0x1F));
+				}
+				break;
+				
+			case RATUFACOAT_OP_MATH_REG_INT_AND:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia & ib);
+				}
+				break;
+				
+				// OR
+			case RATUFACOAT_OP_MATH_REG_INT_OR:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia | ib);
+				}
+				break;
+				
+				// XOR
+			case RATUFACOAT_OP_MATH_REG_INT_XOR:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia ^ ib);
+				}
+				break;
+				
+				// Compare
+			case RATUFACOAT_OP_MATH_REG_INT_CMPL:
+			case RATUFACOAT_OP_MATH_REG_INT_CMPG:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia < ib ? -1 :
+						(ia > ib ? 1 : 0));
+				}
+				break;
+				
+				// Sign 8-bit
+			case RATUFACOAT_OP_MATH_REG_INT_SIGNX8:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					if ((ia & 0x80) != 0)
+						ia |= RATUFACOAT_REGISTER_C(0xFFFFFF00);
+					r[ratufacoat_decodevuint(&nextpc)] = ia;
+				}
+				break;
+				
+				// Sign 16-bit
+			case RATUFACOAT_OP_MATH_REG_INT_SIGNX16:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					if ((ia & 0x8000) != 0)
+						ia |= RATUFACOAT_REGISTER_C(0xFFFF0000);
+					r[ratufacoat_decodevuint(&nextpc)] = ia;
+				}
+				break;
+
+				// Add
+			case RATUFACOAT_OP_MATH_CON_INT_ADD:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia + ib);
+				}
+				break;
+				
+				// Subtract
+			case RATUFACOAT_OP_MATH_CON_INT_SUB:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia - ib);
+				}
+				break;
+				
+				// Multiply
+			case RATUFACOAT_OP_MATH_CON_INT_MUL:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia * ib);
+				}
+				break;
+				
+				// Divide
+			case RATUFACOAT_OP_MATH_CON_INT_DIV:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia / ib);
+				}
+				break;
+				
+				// Remainder
+			case RATUFACOAT_OP_MATH_CON_INT_REM:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia % ib);
+				}
+				break;
+				
+				// Negative
+			case RATUFACOAT_OP_MATH_CON_INT_NEG:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (-ia);
+				}
+				break;
+				
+				// Shift left
+			case RATUFACOAT_OP_MATH_CON_INT_SHL:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia << (ib & 0x1F));
+				}
+				break;
+				
+				// Shift Right
+			case RATUFACOAT_OP_MATH_CON_INT_SHR:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia >> (ib & 0x1F));
+				}
+				break;
+				
+				// Unsigned shift right
+			case RATUFACOAT_OP_MATH_CON_INT_USHR:
+				{
+					ua = ((uint32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ub = ((uint32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ua >> (ub & 0x1F));
+				}
+				break;
+				
+				// AND
+			case RATUFACOAT_OP_MATH_CON_INT_AND:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia & ib);
+				}
+				break;
+				
+				// OR
+			case RATUFACOAT_OP_MATH_CON_INT_OR:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia | ib);
+				}
+				break;
+				
+				// XOR
+			case RATUFACOAT_OP_MATH_CON_INT_XOR:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia ^ ib);
+				}
+				break;
+				
+				// Compare
+			case RATUFACOAT_OP_MATH_CON_INT_CMPL:
+			case RATUFACOAT_OP_MATH_CON_INT_CMPG:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					r[ratufacoat_decodevuint(&nextpc)] = (ia < ib ? -1 :
+						(ia > ib ? 1 : 0));
+				}
+				break;
+				
+				// Sign 8-bit
+			case RATUFACOAT_OP_MATH_CON_INT_SIGNX8:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					if ((ia & 0x80) != 0)
+						ia |= RATUFACOAT_REGISTER_C(0xFFFFFF00);
+					r[ratufacoat_decodevuint(&nextpc)] = ia;
+				}
+				break;
+				
+				// Sign 16-bit
+			case RATUFACOAT_OP_MATH_CON_INT_SIGNX16:
+				{
+					ia = ((int32_t)r[ratufacoat_decodevuint(&nextpc)]);
+					ib = ((int32_t)r[ratufacoat_decodeint(&nextpc)]);
+					if ((ia & 0x8000) != 0)
+						ia |= RATUFACOAT_REGISTER_C(0xFFFF0000);
+					r[ratufacoat_decodevuint(&nextpc)] = ia;
 				}
 				break;
 				
