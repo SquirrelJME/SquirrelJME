@@ -155,9 +155,6 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 					cpu->debuginclass = (char*)((uintptr_t)pool[cldx] + 2);
 					cpu->debuginname = (char*)((uintptr_t)pool[mndx] + 2);
 					cpu->debugintype = (char*)((uintptr_t)pool[mtdx] + 2);
-					
-					ratufacoat_log("In %s::%s:%s", cpu->debuginclass,
-						cpu->debuginname, cpu->debugintype);
 				}
 				break;
 				
@@ -165,6 +162,8 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu)
 			default:
 				ratufacoat_log("Invalid operation (%d/0x%02X) @ %p!",
 					(int)op, (int)op, pc);
+				ratufacoat_log("In %s::%s:%s", cpu->debuginclass,
+					cpu->debuginname, cpu->debugintype);
 				return;
 		}
 	}
