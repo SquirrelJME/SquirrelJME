@@ -152,6 +152,9 @@ typedef struct ratufacoat_machine_t
 	uint32_t romsize;
 } ratufacoat_machine_t;
 
+/** Register value. */
+typedef int32_t ratufacoat_register_t;
+
 /**
  * This contains the CPU state.
  * 
@@ -160,7 +163,7 @@ typedef struct ratufacoat_machine_t
 typedef struct ratufacoat_cpustate_t
 {
 	/** CPU registers. */
-	int32_t r[RATUFACOAT_MAX_REGISTERS];
+	ratufacoat_register_t r[RATUFACOAT_MAX_REGISTERS];
 	
 	/** PC address. */
 	void* pc;
