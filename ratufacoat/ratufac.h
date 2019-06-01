@@ -80,6 +80,9 @@ extern "C"
 /** The register of the first argument. */
 #define RATUFACOAT_ARGUMENT_REGISTER_BASE 8
 
+/** Register value constant type. */
+#define RATUFACOAT_REGISTER_C(x) INT32_C(x)
+
 /**
  * Native functions support for RatufaCoat.
  * 
