@@ -163,7 +163,7 @@ typedef struct ratufacoat_cpustate_t
 	int32_t r[RATUFACOAT_MAX_REGISTERS];
 	
 	/** PC address. */
-	uint32_t pc;
+	void* pc;
 	
 	/** Debug in class. */
 	char* debuginclass;
@@ -185,6 +185,20 @@ typedef struct ratufacoat_cpustate_t
 } ratufacoat_cpustate_t;
 
 /**
+ * Old CPU state chains.
+ *
+ * @since 2019/06/01
+ */
+typedef struct ratufacoat_cpustatelink_t
+{
+	/** The CPU state. */
+	ratufacoat_cpustate_t state;
+	
+	/** The next in the chain. */
+	struct ratufacoat_cpustatelink_t* next;
+} ratufacoat_cpustatelink_t;
+
+/**
  * This represents the state of a RatufaCoat CPU.
  * 
  * @since 2019/05/31
@@ -196,6 +210,9 @@ typedef struct ratufacoat_cpu_t
 	
 	/** Current CPU state. */
 	ratufacoat_cpustate_t state;
+	
+	/** Old invocation states. */
+	ratufacoat_cpustatelink_t* links;
 } ratufacoat_cpu_t;
 
 /**
