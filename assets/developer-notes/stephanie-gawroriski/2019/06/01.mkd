@@ -1,0 +1,12 @@
+# 2019/06/01
+
+## 08:50
+
+Okay yay new month! Also I figured out why Kate was messing up with
+indentation always with C, and that is because of the modelines. I really
+do not need them so I removed them.
+
+## 17:36
+
+Need to do a slight refactor of my CPU handler, but having nicer types and
+such perhaps. Perhaps I can just do unions.
