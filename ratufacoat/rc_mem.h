@@ -16,6 +16,11 @@
 #ifndef SJME_hGRATUFACOATRC_MEMHRC_MEMH
 #define SJME_hGRATUFACOATRC_MEMHRC_MEMH
 
+/** Do not include elsewhere! */
+#if !defined(SJME_CHECK_INCLUDE)
+	#error Internal header was included elsewhere!
+#endif
+
 /** Include RatufaCoat header. */
 #include "ratufac.h"
 

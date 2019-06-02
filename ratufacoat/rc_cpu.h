@@ -16,6 +16,11 @@
 #ifndef SJME_hGRATUFACOATRC_CPUHRC_CPUH
 #define SJME_hGRATUFACOATRC_CPUHRC_CPUH
 
+/** Do not include elsewhere! */
+#if !defined(SJME_CHECK_INCLUDE)
+	#error Internal header was included elsewhere!
+#endif
+
 /** Include the main header. */
 #include "ratufac.h"
 

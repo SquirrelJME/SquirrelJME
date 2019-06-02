@@ -12,5 +12,10 @@
  * @since 2019/05/30
  */
 
+/** Include check. */
+#if !defined(SJME_CHECK_INCLUDE)
+	#define SJME_CHECK_INCLUDE
+#endif
+
 #include "ratufac.h"
 
