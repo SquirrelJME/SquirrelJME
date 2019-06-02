@@ -51,6 +51,9 @@ void* ratufacoat_memalloc(size_t len)
 		return NULL;
 	}
 	
+	// Clear it
+	memset(sp, 0, vlen);
+	
 	// Encode vlen
 	*((uint32_t*)sp) = vlen;
 	
