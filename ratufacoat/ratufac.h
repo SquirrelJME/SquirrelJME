@@ -38,6 +38,21 @@ extern "C"
 
 /****************************************************************************/
 
+/** Boolean. */
+typedef uint8_t sjme_jboolean;
+
+/** Byte. */
+typedef int8_t sjme_jbyte;
+
+/** Short. */
+typedef int16_t sjme_jshort;
+
+/** Char. */
+typedef uint16_t sjme_jchar;
+
+/** Integer. */
+typedef int32_t sjme_jint;
+
 #if defined(__linux__) || defined(__gnu_linux__)
 	#define RATUFACOAT_ISLINUX 1
 #endif
