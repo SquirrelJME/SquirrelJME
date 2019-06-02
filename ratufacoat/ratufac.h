@@ -64,6 +64,33 @@ typedef uint16_t sjme_jchar;
 /** Integer. */
 typedef int32_t sjme_jint;
 
+/** Register. */
+typedef sjme_jint sjme_jregister;
+
+/** UTF-8 Character. */
+typedef sjme_jbyte sjme_jutfchar;
+
+/** Memory that is addressable by SquirrelJME. */
+typedef void* sjme_jaddress;
+
+/** Macro for byte. */
+#define SJME_JBYTE_C(x) INT8_C(x)
+
+/** Macro for short. */
+#define SJME_JSHORT_C(x) INT16_C(x)
+
+/** Macro for char. */
+#define SJME_JCHAR_C(x) UINT16_C(x)
+
+/** Macro for int. */
+#define SJME_JINT_C(x) INT32_C(x)
+
+/** Macro for registers. */
+#define SJME_JREGISTER_C(x) SJME_JINT_C(x)
+
+/** Macro for UTF-8 characters. */
+#define SJME_JUTFCHAR_C(x) SJME_JBYTE_C(x)
+
 #if defined(__linux__) || defined(__gnu_linux__)
 	#define RATUFACOAT_ISLINUX 1
 #endif
@@ -73,179 +100,77 @@ typedef int32_t sjme_jint;
 	#define RATUFACOAT_DEFAULT_MEMORY_SIZE 16777216
 #endif
 
-/** Maximum number of CPU registers. */
-#define RATUFACOAT_MAX_REGISTERS 64
-
-/** The zero register. */
-#define RATUFACOAT_ZERO_REGISTER 0
-
-/** The return value register (two slots, 1 + 2). */
-#define RATUFACOAT_RETURN_REGISTER 1
-
-/** Second return register. */
-#define RATUFACOAT_RETURN_TWO_REGISTER 2
-
-/** The exception register. */
-#define RATUFACOAT_EXCEPTION_REGISTER 3
-
-/** The pointer containing static field data. */
-#define RATUFACOAT_STATIC_FIELD_REGISTER 4
-
-/** Register which represents the current thread of execution. */
-#define RATUFACOAT_THREAD_REGISTER 5
-
-/** Base for local registers (locals start here). */
-#define RATUFACOAT_LOCAL_REGISTER_BASE 6
-
-/** The register containing the constant pool. */
-#define RATUFACOAT_POOL_REGISTER 6
-
-/** The register which contains the next pool pointer to use. */
-#define RATUFACOAT_NEXT_POOL_REGISTER 7
-
-/** The register of the first argument. */
-#define RATUFACOAT_ARGUMENT_REGISTER_BASE 8
-
-/** Register value constant type. */
-#define RATUFACOAT_REGISTER_C(x) INT32_C(x)
-
 /**
  * Native functions support for RatufaCoat.
  * 
  * @since 2019/05/28
  */
-typedef struct ratufacoat_native_t
+typedef struct sjme_native_t
 {
-} ratufacoat_native_t;
+} sjme_native_t;
 
 /**
  * Argument handling.
  *
  * @since 2019/05/31
  */
-typedef struct ratufacoat_args_t
+typedef struct sjme_args_t
 {
 	/** Argument count. */
 	int argc;
 	
 	/** Arguments. */
 	char** argv;
-} ratufacoat_args_t;
+} sjme_args_t;
 
 /**
  * Boot options for RatufaCoat.
  *
  * @since 2019/05/31
  */
-typedef struct ratufacoat_boot_t
+typedef struct sjme_boot_t
 {
 	/** Arguments to use. */
-	ratufacoat_args_t* args;
+	sjme_args* args;
 	
 	/** Native functions. */
-	ratufacoat_native_t* native;
+	sjme_native* native;
 	
 	/** ROM data. */
-	void* rom;
+	sjme_jaddress* rom;
 	
 	/** The size of the ROM. */
-	size_t romsize;
+	sjme_jint romsize;
 	
 	/** The size of RAM. */
-	uint32_t ramsize;
-} ratufacoat_boot_t;
+	sjme_jint ramsize;
+} sjme_boot;
 
 /**
  * RatufaCoat active machine definition.
  * 
  * @since 2019/05/28
  */
-typedef struct ratufacoat_machine_t
+typedef struct sjme_machine
 {
 	/** Native function handlers. */
-	ratufacoat_native_t* native;
+	sjme_native* native;
 	
 	/** Arguments. */
-	ratufacoat_args_t* args;
+	sjme_args* args;
 	
 	/** The machine's RAM. */
-	void* ram;
+	sjme_jaddress* ram;
 	
 	/** The size of RAM. */
-	uint32_t ramsize;
+	sjme_jint ramsize;
 	
 	/** The JVM's ROM. */
-	void* rom;
+	sjme_jaddress* rom;
 	
 	/** The size of ROM. */
-	uint32_t romsize;
-} ratufacoat_machine_t;
-
-/** Register value. */
-typedef int32_t ratufacoat_register_t;
-
-/**
- * This contains the CPU state.
- * 
- * @since 2019/06/01
- */
-typedef struct ratufacoat_cpustate_t
-{
-	/** CPU registers. */
-	ratufacoat_register_t r[RATUFACOAT_MAX_REGISTERS];
-	
-	/** PC address. */
-	void* pc;
-	
-	/** Debug in class. */
-	char* debuginclass;
-	
-	/** Debug in method name. */
-	char* debuginname;
-	
-	/** Debug in method type. */
-	char* debugintype;
-	
-	/** Debug line. */
-	int debugline;
-	
-	/** Debug Java operation. */
-	int debugjop;
-	
-	/** Debug Java address. */
-	int debugjpc;
-} ratufacoat_cpustate_t;
-
-/**
- * Old CPU state chains.
- *
- * @since 2019/06/01
- */
-typedef struct ratufacoat_cpustatelink_t
-{
-	/** The CPU state. */
-	ratufacoat_cpustate_t state;
-	
-	/** The next in the chain. */
-	struct ratufacoat_cpustatelink_t* next;
-} ratufacoat_cpustatelink_t;
-
-/**
- * This represents the state of a RatufaCoat CPU.
- * 
- * @since 2019/05/31
- */
-typedef struct ratufacoat_cpu_t
-{
-	/** The host machine. */
-	ratufacoat_machine_t* machine;
-	
-	/** Current CPU state. */
-	ratufacoat_cpustate_t state;
-	
-	/** Old invocation states. */
-	ratufacoat_cpustatelink_t* links;
-} ratufacoat_cpu_t;
+	sjme_jint romsize;
+} sjme_machine;
 
 /**
  * Executes the specified CPU.
@@ -253,7 +178,7 @@ typedef struct ratufacoat_cpu_t
  * @param cpu The CPU to execute.
  * @since 2019/05/31
  */
-void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu);
+void sjme_cpuexec(sjme_cpu* cpu);
 
 /**
  * Creates a RatufaCoat machine.
@@ -264,8 +189,8 @@ void ratufacoat_cpuexec(ratufacoat_cpu_t* cpu);
  * not be created.
  * @since 2019/05/28
  */
-ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot,
-	ratufacoat_cpu_t** xcpu);
+sjme_machine* sjme_createmachine(sjme_boot* boot,
+	sjme_cpu** xcpu);
 
 /**
  * Logs a message.
@@ -274,7 +199,7 @@ ratufacoat_machine_t* ratufacoat_createmachine(ratufacoat_boot_t* boot,
  * @param ... The arguments.
  * @since 2019/05/31
  */
-void ratufacoat_log(char* fmt, ...);
+void sjme_log(char* fmt, ...);
 
 /**
  * Allocates a pointer in the low 4GiB of memory for 32-bit pointer usage.
@@ -283,15 +208,15 @@ void ratufacoat_log(char* fmt, ...);
  * @return The allocated memory.
  * @since 2019/05/31
  */
-void* ratufacoat_memalloc(size_t len);
+void* sjme_memalloc(size_t len);
 
 /**
- * Frees a pointer which was previously allocated with ratufacoat_memalloc.
+ * Frees a pointer which was previously allocated with sjme_memalloc.
  * 
  * @param p The pointer to free.
  * @since 2019/05/31
  */
-void ratufacoat_memfree(void* p);
+void sjme_memfree(void* p);
 
 /**
  * Reads a Java byte from memory.
@@ -301,7 +226,7 @@ void ratufacoat_memfree(void* p);
  * @return The value at the address.
  * @since 2019/05/31
  */
-int8_t ratufacoat_memreadjbyte(void* p, int32_t o);
+int8_t sjme_memreadjbyte(void* p, int32_t o);
 
 /**
  * Reads a Java int from memory.
@@ -311,7 +236,7 @@ int8_t ratufacoat_memreadjbyte(void* p, int32_t o);
  * @return The value at the address.
  * @since 2019/05/31
  */
-int32_t ratufacoat_memreadjint(void* p, int32_t o);
+int32_t sjme_memreadjint(void* p, int32_t o);
 
 /**
  * Reads a Java short from memory.
@@ -321,14 +246,14 @@ int32_t ratufacoat_memreadjint(void* p, int32_t o);
  * @return The value at the address.
  * @since 2019/05/31
  */
-int16_t ratufacoat_memreadjshort(void* p, int32_t o);
+int16_t sjme_memreadjshort(void* p, int32_t o);
 
 /**
  * Fails the VM with a fatal ToDo.
  *
  * @since 2019/05/28
  */
-void ratufacoat_todo(void);
+void sjme_todo(void);
 
 /****************************************************************************/
 
