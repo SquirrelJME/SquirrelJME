@@ -38,6 +38,17 @@ extern "C"
 
 /****************************************************************************/
 
+/** Is this a 64-bit system? */
+#if defined(_LP64) || defined(__LP64__) || defined(__x86_64__) || \
+	defined(_M_X64) || defined(_M_AMD64) || defined(__aarch64__) || \
+	defined(__ia64__) || defined(__ia64) || defined(_M_IA64) || \
+	defined(__itanium__) || defined(__powerpc64__) || defined(__ppc64__) || \
+	defined(_ARCH_PPC64) || defined(_ARCH_PPC64)
+	#define SQUIRRELJME_BITS 64
+#else
+	#define SQUIRRELJME_BITS 32
+#endif
+
 /** Boolean. */
 typedef uint8_t sjme_jboolean;
 
