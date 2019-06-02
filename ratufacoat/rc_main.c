@@ -12,6 +12,11 @@
  * @since 2019/05/28
  */
 
+/** Include check. */
+#if !defined(SJME_CHECK_INCLUDE)
+	#define SJME_CHECK_INCLUDE
+#endif
+
 #include "ratufac.h"
 
 /* Offset to the BootJAR. */
