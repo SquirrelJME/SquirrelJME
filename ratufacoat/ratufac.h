@@ -117,10 +117,10 @@ typedef struct sjme_native_t
 typedef struct sjme_args_t
 {
 	/** Argument count. */
-	int argc;
+	sjme_jint argc;
 	
 	/** Arguments. */
-	char** argv;
+	sjme_jutfchar** argv;
 } sjme_args_t;
 
 /**
@@ -137,7 +137,7 @@ typedef struct sjme_boot_t
 	sjme_native* native;
 	
 	/** ROM data. */
-	sjme_jaddress* rom;
+	sjme_jaddress rom;
 	
 	/** The size of the ROM. */
 	sjme_jint romsize;
@@ -160,13 +160,13 @@ typedef struct sjme_machine
 	sjme_args* args;
 	
 	/** The machine's RAM. */
-	sjme_jaddress* ram;
+	sjme_jaddress ram;
 	
 	/** The size of RAM. */
 	sjme_jint ramsize;
 	
 	/** The JVM's ROM. */
-	sjme_jaddress* rom;
+	sjme_jaddress rom;
 	
 	/** The size of ROM. */
 	sjme_jint romsize;
@@ -200,53 +200,6 @@ sjme_machine* sjme_createmachine(sjme_boot* boot,
  * @since 2019/05/31
  */
 void sjme_log(char* fmt, ...);
-
-/**
- * Allocates a pointer in the low 4GiB of memory for 32-bit pointer usage.
- * 
- * @param len The number of bytes to allocate.
- * @return The allocated memory.
- * @since 2019/05/31
- */
-void* sjme_memalloc(size_t len);
-
-/**
- * Frees a pointer which was previously allocated with sjme_memalloc.
- * 
- * @param p The pointer to free.
- * @since 2019/05/31
- */
-void sjme_memfree(void* p);
-
-/**
- * Reads a Java byte from memory.
- * 
- * @param p The address to read from.
- * @param o The offset.
- * @return The value at the address.
- * @since 2019/05/31
- */
-int8_t sjme_memreadjbyte(void* p, int32_t o);
-
-/**
- * Reads a Java int from memory.
- * 
- * @param p The address to read from.
- * @param o The offset.
- * @return The value at the address.
- * @since 2019/05/31
- */
-int32_t sjme_memreadjint(void* p, int32_t o);
-
-/**
- * Reads a Java short from memory.
- * 
- * @param p The address to read from.
- * @param o The offset.
- * @return The value at the address.
- * @since 2019/05/31
- */
-int16_t sjme_memreadjshort(void* p, int32_t o);
 
 /**
  * Fails the VM with a fatal ToDo.
