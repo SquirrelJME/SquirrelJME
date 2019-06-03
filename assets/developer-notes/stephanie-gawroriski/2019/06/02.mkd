@@ -1,0 +1,7 @@
+# 2019/06/02
+
+## 09:18
+
+Okay, so going to rework RatufaCoat to be more like JNI and using all those
+types and such. It is possible that it may even become JNI compatible
+perhaps?
