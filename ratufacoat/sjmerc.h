@@ -28,6 +28,65 @@ extern "C"
 
 /****************************************************************************/
 
+/**
+ * Native functions available for the JVM to use.
+ *
+ * @since 2019/06/03
+ */
+typedef struct sjme_nativefuncs
+{
+} sjme_nativefuncs;
+
+/** Standard C format for arguments. */
+#define SJME_JVMARG_FORMAT_STDC 1
+
+/**
+ * Java virtual machine arguments.
+ *
+ * @since 2019/06/03
+ */
+typedef struct sjme_jvmargs
+{
+	/** The format of the arguments. */
+	int format;
+	
+	/** Arguments that can be used. */
+	union
+	{
+		/** Standard C. */
+		struct
+		{
+			/** Argument count. */
+			int argc;
+			
+			/** Arguments. */
+			char** argv;
+		} stdc;
+	} args;
+} sjme_jvmargs;
+
+/** Instance of the JVM. */
+typedef struct sjme_jvm* sjme_jvm;
+
+/**
+ * Executes code running within the JVM.
+ *
+ * @param jvm The JVM to execute.
+ * @return Non-zero if the JVM is resuming, otherwise zero on its exit.
+ * @since 2019/06/05
+ */
+int sjme_jvmexec(sjme_jvm* jvm);
+
+/**
+ * Creates a new instance of a SquirrelJME JVM.
+ *
+ * @param args Arguments to the VM.
+ * @param nativefuncs Native functions used in the JVM.
+ * @return The resulting JVM or {@code NULL} if it could not be created.
+ * @since 2019/06/03
+ */
+sjme_jvm* sjme_jvmnew(sjme_jvmargs* args, sjme_nativefuncs* nativefuncs);
+
 /****************************************************************************/
 
 /** Anti-C++. */

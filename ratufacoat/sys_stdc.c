@@ -16,9 +16,15 @@
  
 /****************************************************************************/
 
+#include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "sjmerc.h"
+
+/** Standard C functions. */
+static sjme_nativefuncs stdcfuncs;
 
 /**
  * Main entry point.
@@ -29,6 +35,29 @@
  */
 int main(int argc, char** argv)
 {
+	sjme_jvmargs args;
+	sjme_jvm* jvm;
+	
+	// Setup arguments
+	memset(&args, 0, sizeof(args));
+	args.format = SJME_JVMARG_FORMAT_STDC;
+	args.args.stdc.argc = argc;
+	args.args.stdc.argv = argv;
+	
+	// Setup native functions
+	
+	// Create VM
+	jvm = sjme_jvmnew(&args, &stdcfuncs);
+	if (jvm == NULL)
+	{
+		fprintf(stderr, "Failed to create the JVM!\n");
+		return EXIT_FAILURE;
+	}
+	
+	// Execute until termination
+	while (sjme_jvmexec(jvm) != 0)
+		continue;
+	
 	return EXIT_SUCCESS;
 }
 

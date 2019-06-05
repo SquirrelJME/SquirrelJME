@@ -10,4 +10,4 @@
 FILES=sjmerc.c sys_stdc.c
 
 squirreljme-stdc:	$(FILES)
-			$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+			$(CC) -o $@ $^ -DSQUIRRELJME_PORT_STDC $(CFLAGS) $(LIBS)
