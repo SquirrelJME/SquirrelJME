@@ -34,6 +34,11 @@
 	#endif
 #endif
 
+/** Linux. */
+#if defined(__linux__) || defined(__gnu_linux__)
+	#include <sys/mman.h>
+#endif
+
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -56,8 +61,11 @@ typedef int32_t sjme_jint;
  */
 typedef struct sjme_nativefuncs
 {
-	/** Currently supported API level. */
-	sjme_jint (*apilevel)(void);
+	/** Current monotonic nano-seconds, returns low nanos. */
+	sjme_jint (*nanotime)(sjme_jint* hi);
+	
+	/** Current system clock in Java time, returns low time. */
+	sjme_jint (*millitime)(sjme_jint* hi);
 } sjme_nativefuncs;
 
 /** Standard C format for arguments. */

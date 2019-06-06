@@ -14,6 +14,12 @@
 
 #include "sjmerc.h"
 
+void* sjme_malloc(sjme_jint size)
+{
+	if (size <= 0)
+		return NULL;
+}
+
 /** Executes code running within the JVM. */
 int sjme_jvmexec(sjme_jvm* jvm)
 {
@@ -28,11 +34,11 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 {
 	sjme_jvmoptions nulloptions;
 	
-	// We need native functions
+	/* We need native functions. */
 	if (nativefuncs == NULL)
 		return NULL;
 	
-	// If there were no options specified, just use a null set
+	/* If there were no options specified, just use a null set. */
 	if (options == NULL)
 	{
 		memset(&nulloptions, 0, sizeof(nulloptions));

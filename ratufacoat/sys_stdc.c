@@ -38,15 +38,15 @@ int main(int argc, char** argv)
 	sjme_jvmoptions options;
 	sjme_jvm* jvm;
 	
-	// Setup arguments
+	/* Setup arguments. */
 	memset(&options, 0, sizeof(options));
 	options.args.format = SJME_JVMARG_FORMAT_STDC;
 	options.args.args.stdc.argc = argc;
 	options.args.args.stdc.argv = argv;
 	
-	// Setup native functions
+	/* Setup native functions. */
 	
-	// Create VM
+	/* Create VM. */
 	jvm = sjme_jvmnew(&options, &stdcfuncs);
 	if (jvm == NULL)
 	{
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	
-	// Execute until termination
+	/* Execute until termination. */
 	while (sjme_jvmexec(jvm) != 0)
 		continue;
 	
