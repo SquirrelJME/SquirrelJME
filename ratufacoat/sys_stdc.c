@@ -35,19 +35,19 @@ static sjme_nativefuncs stdcfuncs;
  */
 int main(int argc, char** argv)
 {
-	sjme_jvmargs args;
+	sjme_jvmoptions options;
 	sjme_jvm* jvm;
 	
 	// Setup arguments
-	memset(&args, 0, sizeof(args));
-	args.format = SJME_JVMARG_FORMAT_STDC;
-	args.args.stdc.argc = argc;
-	args.args.stdc.argv = argv;
+	memset(&options, 0, sizeof(options));
+	options.args.format = SJME_JVMARG_FORMAT_STDC;
+	options.args.args.stdc.argc = argc;
+	options.args.args.stdc.argv = argv;
 	
 	// Setup native functions
 	
 	// Create VM
-	jvm = sjme_jvmnew(&args, &stdcfuncs);
+	jvm = sjme_jvmnew(&options, &stdcfuncs);
 	if (jvm == NULL)
 	{
 		fprintf(stderr, "Failed to create the JVM!\n");

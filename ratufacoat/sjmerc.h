@@ -16,6 +16,24 @@
 #ifndef SJME_hGRATUFACOATSJMERCHSJMERCH
 #define SJME_hGRATUFACOATSJMERCHSJMERCH
 
+/** Standard Includes. */
+#include <stddef.h>
+#include <limits.h>
+#include <string.h>
+
+/** C99 includes. */
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+	#include <stdint.h>
+
+/** Guessed otherwise. */
+#else
+	#if INT_MAX == 32768
+		typedef signed long int32_t;
+	#else
+		typedef signed int int32_t;
+	#endif
+#endif
+
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -28,6 +46,9 @@ extern "C"
 
 /****************************************************************************/
 
+/** {@code int} type. */
+typedef int32_t sjme_jint;
+
 /**
  * Native functions available for the JVM to use.
  *
@@ -35,6 +56,8 @@ extern "C"
  */
 typedef struct sjme_nativefuncs
 {
+	/** Currently supported API level. */
+	sjme_jint (*apilevel)(void);
 } sjme_nativefuncs;
 
 /** Standard C format for arguments. */
@@ -65,6 +88,20 @@ typedef struct sjme_jvmargs
 	} args;
 } sjme_jvmargs;
 
+/**
+ * Options used to initialize the virtual machine.
+ *
+ * @since 2019/06/06
+ */
+typedef struct sjme_jvmoptions
+{
+	/** The amount of RAM to allocate, 0 is default. */
+	sjme_jint ramsize;
+	
+	/** Command line arguments sent to the VM. */
+	sjme_jvmargs args;
+} sjme_jvmoptions;
+
 /** Instance of the JVM. */
 typedef struct sjme_jvm* sjme_jvm;
 
@@ -80,12 +117,13 @@ int sjme_jvmexec(sjme_jvm* jvm);
 /**
  * Creates a new instance of a SquirrelJME JVM.
  *
- * @param args Arguments to the VM.
+ * @param args Arguments to the JVM.
+ * @param options Options used to initialize the JVM.
  * @param nativefuncs Native functions used in the JVM.
  * @return The resulting JVM or {@code NULL} if it could not be created.
  * @since 2019/06/03
  */
-sjme_jvm* sjme_jvmnew(sjme_jvmargs* args, sjme_nativefuncs* nativefuncs);
+sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs);
 
 /****************************************************************************/
 

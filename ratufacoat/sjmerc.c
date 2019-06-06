@@ -12,8 +12,6 @@
  * @since 2019/06/02
  */
 
-#include <stddef.h>
-
 #include "sjmerc.h"
 
 /** Executes code running within the JVM. */
@@ -26,9 +24,18 @@ int sjme_jvmexec(sjme_jvm* jvm)
 }
 
 /** Creates a new instance of the JVM. */
-sjme_jvm* sjme_jvmnew(sjme_jvmargs* args, sjme_nativefuncs* nativefuncs)
+sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 {
+	sjme_jvmoptions nulloptions;
+	
 	// We need native functions
 	if (nativefuncs == NULL)
 		return NULL;
+	
+	// If there were no options specified, just use a null set
+	if (options == NULL)
+	{
+		memset(&nulloptions, 0, sizeof(nulloptions));
+		options = &nulloptions;
+	}
 }
