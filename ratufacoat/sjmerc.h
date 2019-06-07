@@ -33,26 +33,23 @@
 #include <stddef.h>
 #include <limits.h>
 #include <string.h>
+#include <stdlib.h>
 
 /** C99 includes. */
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || \
+	(defined(__WATCOMC__) && __WATCOMC__ >= 1270)
 	#include <stdint.h>
-	
-	#define SJME_JINT_C(x) INT32_C(x)
-	
-	#define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
-	#define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)(x)))
 
 /** Guessed otherwise. */
 #else
 	#if defined(INT_MAX) && INT_MAX == 32767
 		typedef signed long int32_t;
 		
-		#define SJME_JINT_C(x) x##L
+		#define INT32_C(x) x##L
 	#else
 		typedef signed int int32_t;
 		
-		#define SJME_JINT_C(x) x
+		#define INT32_C(x) x
 	#endif
 #endif
 
@@ -77,6 +74,13 @@ extern "C"
 
 /** {@code int} type. */
 typedef int32_t sjme_jint;
+
+/** Constant value. */
+#define SJME_JINT_C(x) INT32_C(x)
+
+/** Pointer conversion. */
+#define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
+#define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)(x)))
 
 /**
  * Native functions available for the JVM to use.
@@ -129,6 +133,9 @@ typedef struct sjme_jvmoptions
 {
 	/** The amount of RAM to allocate, 0 is default. */
 	sjme_jint ramsize;
+	
+	/** Preset ROM pointer, does not need loading? */
+	void* presetrom;
 	
 	/** Command line arguments sent to the VM. */
 	sjme_jvmargs args;
