@@ -38,8 +38,10 @@ int main(int argc, char** argv)
 	sjme_jvmoptions options;
 	sjme_jvm* jvm;
 	
-	/* Setup arguments. */
+	/** Wipe options because it will get set and such. */
 	memset(&options, 0, sizeof(options));
+	
+	/* Setup arguments. */
 	options.args.format = SJME_JVMARG_FORMAT_STDC;
 	options.args.args.stdc.argc = argc;
 	options.args.args.stdc.argv = argv;
