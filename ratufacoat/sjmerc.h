@@ -16,6 +16,19 @@
 #ifndef SJME_hGRATUFACOATSJMERCHSJMERCH
 #define SJME_hGRATUFACOATSJMERCHSJMERCH
 
+/** Is this a 64-bit system? */
+#if !defined(SJME_BITS)
+	#if defined(_LP64) || defined(__LP64__) || defined(__x86_64__) || \
+		defined(_M_X64) || defined(_M_AMD64) || defined(__aarch64__) || \
+		defined(__ia64__) || defined(__ia64) || defined(_M_IA64) || \
+		defined(__itanium__) || defined(__powerpc64__) || \
+		defined(__ppc64__) || defined(_ARCH_PPC64) || defined(_ARCH_PPC64)
+		#define SJME_BITS 64
+	#else
+		#define SJME_BITS 32
+	#endif
+#endif
+
 /** Standard Includes. */
 #include <stddef.h>
 #include <limits.h>
@@ -24,18 +37,29 @@
 /** C99 includes. */
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 	#include <stdint.h>
+	
+	#define SJME_JINT_C(x) INT32_C(x)
+	
+	#define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
+	#define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)(x)))
 
 /** Guessed otherwise. */
 #else
 	#if defined(INT_MAX) && INT_MAX == 32767
 		typedef signed long int32_t;
+		
+		#define SJME_JINT_C(x) x##L
 	#else
 		typedef signed int int32_t;
+		
+		#define SJME_JINT_C(x) x
 	#endif
 #endif
 
 /** Linux. */
 #if defined(__linux__) || defined(__gnu_linux__)
+	#define SJME_IS_LINUX 1
+	
 	#include <sys/mman.h>
 #endif
 
