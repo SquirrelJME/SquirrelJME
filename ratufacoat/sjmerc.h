@@ -27,7 +27,7 @@
 
 /** Guessed otherwise. */
 #else
-	#if INT_MAX == 32768
+	#if defined(INT_MAX) && INT_MAX == 32767
 		typedef signed long int32_t;
 	#else
 		typedef signed int int32_t;
