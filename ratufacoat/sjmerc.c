@@ -14,6 +14,9 @@
 
 #include "sjmerc.h"
 
+/** Default RAM size. */
+#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
+
 /**
  * Allocates the given number of bytes.
  *
@@ -66,6 +69,7 @@ int sjme_jvmexec(sjme_jvm* jvm)
 sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 {
 	sjme_jvmoptions nulloptions;
+	void* ram;
 	
 	/* We need native functions. */
 	if (nativefuncs == NULL)
@@ -77,4 +81,13 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 		memset(&nulloptions, 0, sizeof(nulloptions));
 		options = &nulloptions;
 	}
+	
+	/* If no RAM size was specified then use the default. */
+	if (options->ramsize <= 0)
+		options->ramsize = SJME_DEFAULT_RAM_SIZE;
+	
+	/* Allocate RAM. */
+	ram = sjme_malloc(options->ramsize);
+	if (ram == NULL)
+		return NULL;
 }
