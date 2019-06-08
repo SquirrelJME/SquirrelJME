@@ -20,6 +20,9 @@
 /** Magic number for ROMs. */
 #define SJME_ROM_MAGIC_NUMBER SJME_JINT_C(0x58455223)
 
+/** Magic number for JARs. */
+#define SJME_JAR_MAGIC_NUMBER SJME_JINT_C(0x00456570)
+
 /** Virtual machine state. */
 typedef struct sjme_jvm
 {
@@ -311,6 +314,22 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDROMMAGIC;
+		
+		return 0;
+	}
+	
+	/* Ignore JAR count and BootJAR index. */
+	sjme_memjreadp(4, &rp);
+	sjme_memjreadp(4, &rp);
+	
+	/* Read and calculate BootJAR position. */
+	rp = SJME_POINTER_OFFSET(rom, sjme_memjreadp(4, &rp));
+	
+	/* Check JAR magic number. */
+	if (sjme_memjreadp(4, &rp) != SJME_JAR_MAGIC_NUMBER)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDJARMAGIC;
 		
 		return 0;
 	}
