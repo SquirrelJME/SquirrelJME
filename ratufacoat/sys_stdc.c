@@ -66,7 +66,12 @@ sjme_nativefile* sjme_stdc_fileopen(sjme_nativefilename* filename,
 	int err;
 	
 	if (filename == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDARG;
+		
 		return NULL;
+	}
 	
 	/* Allocate returning file. */
 	rv = calloc(1, sizeof(*rv));
@@ -105,10 +110,16 @@ void sjme_stdc_fileclose(sjme_nativefile* file, sjme_jint* error)
 	
 	/* Not closing a file? */
 	if (file == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDARG;
+		
 		return;
+	}
 	
 	/* Close and clear pointer. */
 	rv = fclose(file->file);
+	file->file = NULL;
 	
 	/* Set error state? */
 	if (error != NULL)
@@ -116,6 +127,97 @@ void sjme_stdc_fileclose(sjme_nativefile* file, sjme_jint* error)
 	
 	/* Free resources. */
 	free(file);
+}
+
+/** Returns the size of the file. */
+sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_jint* error)
+{
+	long now, size;
+	
+	/* Not valid? */
+	if (file == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDARG;
+		
+		return SJME_JINT_C(-1);
+	}
+	
+	/* Remember current file size, to go back. */
+	now = ftell(file->file);
+	
+	/* Seek to end. */
+	if (fseek(file->file, 0, SEEK_END) != 0)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_UNKNOWN;
+		
+		return SJME_JINT_C(-1);
+	}
+	
+	/* Set size. */
+	size = ftell(file->file);
+	if (size < 0)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_UNKNOWN;
+		
+		return SJME_JINT_C(-1);
+	}
+	
+	/* Seek back. */
+	if (fseek(file->file, now, SEEK_SET) != 0)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_UNKNOWN;
+		
+		return SJME_JINT_C(-1);
+	}
+	
+	/* Return the size. */
+	if (size >= SJME_JINT_MAX_VALUE)
+		return SJME_JINT_MAX_VALUE;
+	return (sjme_jint)size;
+}
+
+/** Reads from a file. */
+sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
+	sjme_jint* error)
+{
+	size_t rv;
+	
+	/* Invalid argument? */
+	if (file == NULL || dest == NULL || len < 0)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDARG;
+		
+		return SJME_JINT_C(-1);
+	}
+	
+	/* Read from file. */
+	rv = fread(dest, 1, len, file->file);
+	if (rv == 0)
+	{
+		/* End of file? */
+		if (feof(file->file) != 0)
+		{
+			if (error != NULL)
+				*error = SJME_ERROR_ENDOFFILE;
+		}
+		
+		/* Another error. */
+		else
+		{
+			if (error != NULL)
+				*error = SJME_ERROR_UNKNOWN;
+		}
+		
+		return SJME_JINT_C(-1);
+	}
+	
+	/* Return the read bytes. */
+	return (sjme_jint)rv;
 }
 
 /**
@@ -142,6 +244,8 @@ int main(int argc, char** argv)
 	stdcfuncs.nativeromfile = sjme_stdc_nativeromfile;
 	stdcfuncs.fileopen = sjme_stdc_fileopen;
 	stdcfuncs.fileclose = sjme_stdc_fileclose;
+	stdcfuncs.filesize = sjme_stdc_filesize;
+	stdcfuncs.fileread = sjme_stdc_fileread;
 	
 	/* Create VM. */
 	jvm = sjme_jvmnew(&options, &stdcfuncs);

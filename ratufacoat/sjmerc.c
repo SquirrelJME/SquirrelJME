@@ -87,10 +87,12 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs)
 	void* rv;
 	sjme_nativefilename* fn;
 	sjme_nativefile* file;
+	sjme_jint romsize, error, readat, readcount;
 	
 	/* Need native functions. */
 	if (nativefuncs == NULL || nativefuncs->nativeromfile == NULL ||
-		nativefuncs->fileopen == NULL)
+		nativefuncs->fileopen == NULL || nativefuncs->filesize == NULL ||
+		nativefuncs->fileread == NULL)
 		return NULL;
 	
 	/* Load file name used for the native ROM. */
@@ -105,7 +107,40 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs)
 	file = nativefuncs->fileopen(fn, SJME_OPENMODE_READ, NULL);
 	if (file != NULL)
 	{
-		fprintf(stderr, "File opened!\n");
+		/* Need ROM size. */
+		romsize = nativefuncs->filesize(file, NULL);
+		
+		/* Allocate ROM into memory. */
+		rv = sjme_malloc(romsize);
+		if (rv != NULL)
+		{
+			/* Read whatever is possible. */
+			for (readat = 0; readat < romsize;)
+			{
+				/* Read into raw memory. */
+				readcount = nativefuncs->fileread(file,
+					SJME_POINTER_OFFSET(rv, readat), romsize - readat,
+					&error);
+				
+				/* EOF or error? */
+				if (readcount < 0)
+				{
+					// End of file reached?
+					if (error == SJME_ERROR_ENDOFFILE)
+						break;
+					
+					// Otherwise fail
+					else
+					{
+						sjme_free(rv);
+						rv = NULL;
+					}
+				}
+				
+				/* Read count goes up. */
+				readat += readcount;
+			}
+		}
 		
 		/* Close when done. */
 		if (nativefuncs->fileclose != NULL)

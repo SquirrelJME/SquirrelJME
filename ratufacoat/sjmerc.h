@@ -111,9 +111,16 @@ typedef int32_t sjme_jint;
 #define SJME_JCHAR_C(x) UINT16_C(x)
 #define SJME_JINT_C(x) INT32_C(x)
 
+/** Maximum values. */
+#define SJME_JINT_MAX_VALUE INT32_C(0x7FFFFFFF)
+
 /** Pointer conversion. */
 #define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
 #define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)(x)))
+
+/** Pointer path. */
+#define SJME_POINTER_OFFSET(p, o) SJME_JINT_TO_POINTER( \
+	SJME_POINTER_TO_JINT(p) + ((sjme_jint)(o)))
 
 /** Standard C format for arguments. */
 #define SJME_JVMARG_FORMAT_STDC SJME_JINT_C(1)
@@ -135,6 +142,12 @@ typedef int32_t sjme_jint;
 
 /** File does not exist. */
 #define SJME_ERROR_NOSUCHFILE SJME_JINT_C(-2)
+
+/** Invalid argument. */
+#define SJME_ERROR_INVALIDARG SJME_JINT_C(-3)
+
+/** End of file reached. */
+#define SJME_ERROR_ENDOFFILE SJME_JINT_C(-4)
 
 /**
  * Java virtual machine arguments.
@@ -223,6 +236,13 @@ typedef struct sjme_nativefuncs
 	
 	/** Closes the specified file. */
 	void (*fileclose)(sjme_nativefile* file, sjme_jint* error);
+	
+	/** Returns the size of the file. */
+	sjme_jint (*filesize)(sjme_nativefile* file, sjme_jint* error);
+	
+	/** Reads part of a file. */
+	sjme_jint (*fileread)(sjme_nativefile* file, void* dest, sjme_jint len,
+		sjme_jint* error);
 } sjme_nativefuncs;
 
 /**
