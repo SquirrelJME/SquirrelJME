@@ -173,6 +173,9 @@ typedef int32_t sjme_jint;
 /** Invalid ROM magic number. */
 #define SJME_ERROR_INVALIDROMMAGIC SJME_JINT_C(-8)
 
+/** Invalid JAR magic number. */
+#define SJME_ERROR_INVALIDJARMAGIC SJME_JINT_C(-9)
+
 /**
  * Java virtual machine arguments.
  *
