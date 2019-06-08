@@ -17,6 +17,11 @@
 /** Default RAM size. */
 #define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
 
+/** Virtual machine state. */
+typedef struct sjme_jvm
+{
+} sjme_jvm;
+
 /**
  * Allocates the given number of bytes.
  *
@@ -53,7 +58,7 @@ void* sjme_malloc(sjme_jint size)
 	*((sjme_jint*)rv) = size;
 	
 	/* Return the adjusted pointer. */
-	return SJME_JINT_TO_POINTER(SJME_POINTER_TO_JINT(rv) + SJME_JINT_C(4));
+	return SJME_POINTER_OFFSET(rv, 4);
 }
 
 /**
@@ -64,6 +69,27 @@ void* sjme_malloc(sjme_jint size)
  */
 void sjme_free(void* p)
 {
+	void* basep;
+	sjme_jint size;
+	
+	/* Ignore null pointers. */
+	if (p == NULL)
+		return;
+	
+	/* Base pointer which is size shifted. */
+	basep = SJME_POINTER_OFFSET(p, -4);
+	
+	/* Read size. */
+	size = *((sjme_jint*)basep);
+
+#if defined(SJME_IS_LINUX) && SJME_BITS > 32
+	/* Remove the memory mapping. */
+	munmap(basep, size);
+	
+#else
+	/* Use Standard C free. */
+	free(basep);
+#endif
 }
 
 /** Executes code running within the JVM. */
@@ -161,11 +187,15 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs)
  * @param rom The ROM.
  * @param ram The RAM.
  * @param ramsize The size of RAM.
+ * @param jvm The Java VM to initialize.
  * @return Non-zero on success.
  * @since 2019/06/07
  */
-int sjme_initbootram(void* rom, void* ram, sjme_jint ramsize)
+int sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm)
 {
+	/* Invalid arguments. */
+	if (rom == NULL || ram == NULL || ramsize <= 0 || jvm == NULL)
+		return 0;
 }
 
 /** Creates a new instance of the JVM. */
@@ -174,9 +204,15 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 	sjme_jvmoptions nulloptions;
 	void* ram;
 	void* rom;
+	sjme_jvm* rv;
 	
 	/* We need native functions. */
 	if (nativefuncs == NULL)
+		return NULL;
+	
+	/* Allocate VM state. */
+	rv = sjme_malloc(sizeof(*rv));
+	if (rv == NULL)
 		return NULL;
 	
 	/* If there were no options specified, just use a null set. */
@@ -205,15 +241,20 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 		/* Could not load the ROM? */
 		if (rom == NULL)
 		{
+			sjme_free(rv);
 			sjme_free(ram);
 			return NULL;
 		}
 	}
 	
-	/* Initialize the BootRAM. */
-	if (sjme_initbootram(rom, ram, options->ramsize) == 0)
+	/* Initialize the BootRAM and boot the CPU. */
+	if (sjme_initboot(rom, ram, options->ramsize, rv) == 0)
 	{
+		sjme_free(rv);
 		sjme_free(ram);
 		return NULL;
 	}
+	
+	/* The JVM is ready to use. */
+	return rv;
 }
