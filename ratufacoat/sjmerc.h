@@ -114,6 +114,9 @@ typedef int32_t sjme_jint;
 /** Maximum values. */
 #define SJME_JINT_MAX_VALUE INT32_C(0x7FFFFFFF)
 
+/** Unsigned short mask. */
+#define SJME_JINT_USHORT_MASK INT32_C(0xFFFF)
+
 /** Pointer conversion. */
 #define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
 #define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)(x)))
@@ -206,7 +209,7 @@ typedef struct sjme_nativefilename sjme_nativefilename;
 typedef struct sjme_nativefile sjme_nativefile;
 
 /** Instance of the JVM. */
-typedef struct sjme_jvm* sjme_jvm;
+typedef struct sjme_jvm sjme_jvm;
 
 /**
  * Native functions available for the JVM to use.
