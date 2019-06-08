@@ -353,7 +353,12 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	/* Allocate RAM. */
 	ram = sjme_malloc(options->ramsize);
 	if (ram == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_NOMEMORY;
+		
 		return NULL;
+	}
 	
 	/* Needed by the VM. */
 	rv->ram = ram;
