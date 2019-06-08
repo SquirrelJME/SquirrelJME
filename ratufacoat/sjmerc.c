@@ -84,9 +84,40 @@ int sjme_jvmexec(sjme_jvm* jvm)
  */
 void* sjme_loadrom(sjme_nativefuncs* nativefuncs)
 {
-	/** Need native functions. */
-	if (nativefuncs == NULL)
+	void* rv;
+	sjme_nativefilename* fn;
+	sjme_nativefile* file;
+	
+	/* Need native functions. */
+	if (nativefuncs == NULL || nativefuncs->nativeromfile == NULL ||
+		nativefuncs->fileopen == NULL)
 		return NULL;
+	
+	/* Load file name used for the native ROM. */
+	fn = nativefuncs->nativeromfile();
+	if (fn == NULL)
+		return NULL;
+	
+	/* Set to nothing. */
+	rv = NULL;
+	
+	/* Open ROM. */
+	file = nativefuncs->fileopen(fn, SJME_OPENMODE_READ, NULL);
+	if (file != NULL)
+	{
+		fprintf(stderr, "File opened!\n");
+		
+		/* Close when done. */
+		if (nativefuncs->fileclose != NULL)
+			nativefuncs->fileclose(file, NULL);
+	}
+	
+	/* Free file name when done. */
+	if (nativefuncs->freefilename != NULL)
+		nativefuncs->freefilename(fn);
+	
+	/* Whatever value was used, if possible */
+	return rv;
 }
 
 /**
