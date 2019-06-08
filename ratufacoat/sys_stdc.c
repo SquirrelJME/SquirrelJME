@@ -231,6 +231,7 @@ int main(int argc, char** argv)
 {
 	sjme_jvmoptions options;
 	sjme_jvm* jvm;
+	sjme_jint error;
 	
 	/** Wipe options because it will get set and such. */
 	memset(&options, 0, sizeof(options));
@@ -248,10 +249,11 @@ int main(int argc, char** argv)
 	stdcfuncs.fileread = sjme_stdc_fileread;
 	
 	/* Create VM. */
-	jvm = sjme_jvmnew(&options, &stdcfuncs);
+	error = 0;
+	jvm = sjme_jvmnew(&options, &stdcfuncs, &error);
 	if (jvm == NULL)
 	{
-		fprintf(stderr, "Failed to create the JVM!\n");
+		fprintf(stderr, "Failed to create the JVM! (Error %d)\n", (int)error);
 		return EXIT_FAILURE;
 	}
 	
