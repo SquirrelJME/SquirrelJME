@@ -20,6 +20,14 @@
 /** Virtual machine state. */
 typedef struct sjme_jvm
 {
+	/** RAM. */
+	void* ram;
+	
+	/** The size of RAM. */
+	sjme_jint ramsize;
+	
+	/** ROM. */
+	void* rom;
 } sjme_jvm;
 
 /**
@@ -231,6 +239,10 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 	if (ram == NULL)
 		return NULL;
 	
+	/* Needed by the VM. */
+	rv->ram = ram;
+	rv->ramsize = options->ramsize;
+	
 	/* Load the ROM? */
 	rom = options->presetrom;
 	if (rom == NULL)
@@ -246,6 +258,9 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 			return NULL;
 		}
 	}
+	
+	/* Set JVM rom space. */
+	rv->rom = rom;
 	
 	/* Initialize the BootRAM and boot the CPU. */
 	if (sjme_initboot(rom, ram, options->ramsize, rv) == 0)
