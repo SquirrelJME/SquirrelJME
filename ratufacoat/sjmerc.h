@@ -29,6 +29,15 @@
 	#endif
 #endif
 
+/** Possibly detect endianess. */
+#if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
+	
+	/** Just set little endian if no endianess was defined */
+	#if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
+		#define SJME_LITTLE_ENDIAN
+	#endif
+#endif
+
 /** Standard Includes. */
 #include <stddef.h>
 #include <limits.h>
@@ -97,7 +106,7 @@ extern "C"
 typedef int8_t sjme_jbyte;
 
 /** {@code short} type. */
-typedef int16_t sjme_short;
+typedef int16_t sjme_jshort;
 
 /** {@code char} type. */
 typedef uint16_t sjme_jchar;
@@ -151,6 +160,18 @@ typedef int32_t sjme_jint;
 
 /** End of file reached. */
 #define SJME_ERROR_ENDOFFILE SJME_JINT_C(-4)
+
+/** No memory available. */
+#define SJME_ERROR_NOMEMORY SJME_JINT_C(-5)
+
+/** No native ROM file specified. */
+#define SJME_ERROR_NONATIVEROM SJME_JINT_C(-6)
+
+/** No support for files. */
+#define SJME_ERROR_NOFILES SJME_JINT_C(-7)
+
+/** Invalid ROM magic number. */
+#define SJME_ERROR_INVALIDROMMAGIC SJME_JINT_C(-8)
 
 /**
  * Java virtual machine arguments.
@@ -263,10 +284,12 @@ int sjme_jvmexec(sjme_jvm* jvm);
  * @param args Arguments to the JVM.
  * @param options Options used to initialize the JVM.
  * @param nativefuncs Native functions used in the JVM.
+ * @param error Error flag.
  * @return The resulting JVM or {@code NULL} if it could not be created.
  * @since 2019/06/03
  */
-sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs);
+sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
+	sjme_jint* error);
 
 /****************************************************************************/
 

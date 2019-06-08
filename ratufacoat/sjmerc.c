@@ -17,6 +17,9 @@
 /** Default RAM size. */
 #define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
 
+/** Magic number for ROMs. */
+#define SJME_ROM_MAGIC_NUMBER SJME_JINT_C(0x58455223)
+
 /** Virtual machine state. */
 typedef struct sjme_jvm
 {
@@ -100,6 +103,75 @@ void sjme_free(void* p)
 #endif
 }
 
+/**
+ * Reads a big endian Java value from memory.
+ * 
+ * @param size The size of the value to read.
+ * @param ptr The pointer to read from.
+ * @param off The offset.
+ * @return The read value.
+ * @since 2019/06/08
+ */
+sjme_jint sjme_memjread(sjme_jint size, void* ptr, sjme_jint off)
+{
+	sjme_jint rv;
+	
+	/* Get the true pointer. */
+	ptr = SJME_POINTER_OFFSET(ptr, off);
+	
+	/* Read value from memory. */
+	switch (size)
+	{
+			/* Byte */
+		case 1:
+			return *((sjme_jbyte*)ptr);
+		
+			/* Short */
+		case 2:
+			rv = *((sjme_jshort*)ptr);
+#if defined(SJME_LITTLE_ENDIAN)
+			rv = (rv & SJME_JINT_C(0xFFFF0000)) |
+				(((rv << SJME_JINT_C(8)) & SJME_JINT_C(0xFF00)) |
+				((rv >> SJME_JINT_C(8)) & SJME_JINT_C(0x00FF)));
+#endif
+			return rv;
+			
+			/* Integer */
+		case 4:
+		default:
+			rv = *((sjme_jint*)ptr);
+#if defined(SJME_LITTLE_ENDIAN)
+			rv = (((rv >> SJME_JINT_C(24)) & SJME_JINT_C(0x000000FF)) |
+				((rv >> SJME_JINT_C(8)) & SJME_JINT_C(0x0000FF00)) |
+				((rv << SJME_JINT_C(8)) & SJME_JINT_C(0x00FF0000)) |
+				((rv << SJME_JINT_C(24)) & SJME_JINT_C(0xFF000000)));
+#endif
+			return rv;
+	}
+}
+
+/**
+ * Read Java value from memory and increment pointer.
+ *
+ * @param size The size of value to read.
+ * @param ptr The pointer to read from.
+ * @return The resulting value.
+ * @since 2019/06/08
+ */
+sjme_jint sjme_memjreadp(sjme_jint size, void** ptr)
+{
+	sjme_jint rv;
+	
+	/* Read pointer value. */
+	rv = sjme_memjread(size, *ptr, 0);
+	
+	/* Increment pointer. */
+	*ptr = SJME_POINTER_OFFSET(*ptr, size);
+	
+	/* Return result. */
+	return rv;
+}
+
 /** Executes code running within the JVM. */
 int sjme_jvmexec(sjme_jvm* jvm)
 {
@@ -113,36 +185,47 @@ int sjme_jvmexec(sjme_jvm* jvm)
  * Attempts to load a built-in ROM file.
  *
  * @param nativefuncs Native functions.
+ * @param error Error flag.
  * @return The loaded ROM data or {@code NULL} if no ROM was loaded.
  * @since 2019/06/07
  */
-void* sjme_loadrom(sjme_nativefuncs* nativefuncs)
+void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* error)
 {
 	void* rv;
 	sjme_nativefilename* fn;
 	sjme_nativefile* file;
-	sjme_jint romsize, error, readat, readcount;
+	sjme_jint romsize, xerror, readat, readcount;
 	
 	/* Need native functions. */
 	if (nativefuncs == NULL || nativefuncs->nativeromfile == NULL ||
 		nativefuncs->fileopen == NULL || nativefuncs->filesize == NULL ||
 		nativefuncs->fileread == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_NOFILES;
+		
 		return NULL;
+	}
 	
 	/* Load file name used for the native ROM. */
 	fn = nativefuncs->nativeromfile();
 	if (fn == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_NONATIVEROM;
+		
 		return NULL;
+	}
 	
 	/* Set to nothing. */
 	rv = NULL;
 	
 	/* Open ROM. */
-	file = nativefuncs->fileopen(fn, SJME_OPENMODE_READ, NULL);
+	file = nativefuncs->fileopen(fn, SJME_OPENMODE_READ, error);
 	if (file != NULL)
 	{
 		/* Need ROM size. */
-		romsize = nativefuncs->filesize(file, NULL);
+		romsize = nativefuncs->filesize(file, error);
 		
 		/* Allocate ROM into memory. */
 		rv = sjme_malloc(romsize);
@@ -154,18 +237,22 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs)
 				/* Read into raw memory. */
 				readcount = nativefuncs->fileread(file,
 					SJME_POINTER_OFFSET(rv, readat), romsize - readat,
-					&error);
+					&xerror);
 				
 				/* EOF or error? */
 				if (readcount < 0)
 				{
-					// End of file reached?
-					if (error == SJME_ERROR_ENDOFFILE)
+					/* End of file reached? */
+					if (xerror == SJME_ERROR_ENDOFFILE)
 						break;
 					
-					// Otherwise fail
+					/* Otherwise fail */
 					else
 					{
+						/* Copy error over. */
+						*error = xerror;
+						
+						/* Free resources. */
 						sjme_free(rv);
 						rv = NULL;
 					}
@@ -174,6 +261,13 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs)
 				/* Read count goes up. */
 				readat += readcount;
 			}
+		}
+		
+		/* Just set error. */
+		else
+		{
+			if (error != NULL)
+				*error = SJME_ERROR_NOMEMORY;
 		}
 		
 		/* Close when done. */
@@ -196,18 +290,35 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs)
  * @param ram The RAM.
  * @param ramsize The size of RAM.
  * @param jvm The Java VM to initialize.
+ * @param error Error flag.
  * @return Non-zero on success.
  * @since 2019/06/07
  */
-int sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm)
+sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
+	sjme_jint* error)
 {
+	void* rp;
+	
 	/* Invalid arguments. */
 	if (rom == NULL || ram == NULL || ramsize <= 0 || jvm == NULL)
 		return 0;
+	
+	/* Set boot pointer to start of ROM. */
+	rp = rom;
+	
+	/* Check ROM magic number. */
+	if (sjme_memjreadp(4, &rp) != SJME_ROM_MAGIC_NUMBER)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDROMMAGIC;
+		
+		return 0;
+	}
 }
 
 /** Creates a new instance of the JVM. */
-sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
+sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
+	sjme_jint* error)
 {
 	sjme_jvmoptions nulloptions;
 	void* ram;
@@ -221,7 +332,12 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 	/* Allocate VM state. */
 	rv = sjme_malloc(sizeof(*rv));
 	if (rv == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_NOMEMORY;
+		
 		return NULL;
+	}
 	
 	/* If there were no options specified, just use a null set. */
 	if (options == NULL)
@@ -248,7 +364,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 	if (rom == NULL)
 	{
 		/* Call sub-routine which can load the ROM. */
-		rom = sjme_loadrom(nativefuncs);
+		rom = sjme_loadrom(nativefuncs, error);
 		
 		/* Could not load the ROM? */
 		if (rom == NULL)
@@ -263,7 +379,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs)
 	rv->rom = rom;
 	
 	/* Initialize the BootRAM and boot the CPU. */
-	if (sjme_initboot(rom, ram, options->ramsize, rv) == 0)
+	if (sjme_initboot(rom, ram, options->ramsize, rv, error) == 0)
 	{
 		sjme_free(rv);
 		sjme_free(ram);
