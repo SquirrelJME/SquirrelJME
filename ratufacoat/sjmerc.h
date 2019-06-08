@@ -34,6 +34,14 @@
 #include <limits.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
+
+/** Linux. */
+#if defined(__linux__) || defined(__gnu_linux__)
+	#define SJME_IS_LINUX 1
+	
+	#include <sys/mman.h>
+#endif
 
 /** C99 includes. */
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || \
@@ -42,22 +50,35 @@
 
 /** Guessed otherwise. */
 #else
-	#if defined(INT_MAX) && INT_MAX == 32767
-		typedef signed long int32_t;
+	#if defined(SCHAR_MAX) && SCHAR_MAX == 127
+		typedef signed char int8_t;
 		
-		#define INT32_C(x) x##L
-	#else
+		#define INT8_C(x) x
+	#endif
+	
+	#if defined(INT_MAX) && INT_MAX == 32767
+		typedef signed int int16_t;
+		typedef unsigned int uint16_t;
+		
+		#define INT16_C(x) x
+		#define UINT16_C(x) x##U
+	#elif defined(SHORT_MAX) && SHORT_MAX == 32767
+		typedef signed short int16_t;
+		typedef unsigned short uint16_t;
+		
+		#define INT16_C(x) x
+		#define UINT16_C(x) x##U
+	#endif
+	
+	#if defined(INT_MAX) && INT_MAX > 32767
 		typedef signed int int32_t;
 		
 		#define INT32_C(x) x
+	#elif defined(LONG_MAX) && LONG_MAX > 32767
+		typedef signed long int32_t;
+		
+		#define INT32_C(x) x##L
 	#endif
-#endif
-
-/** Linux. */
-#if defined(__linux__) || defined(__gnu_linux__)
-	#define SJME_IS_LINUX 1
-	
-	#include <sys/mman.h>
 #endif
 
 /** Anti-C++. */
@@ -72,32 +93,48 @@ extern "C"
 
 /****************************************************************************/
 
+/** {@code byte} type. */
+typedef int8_t sjme_jbyte;
+
+/** {@code short} type. */
+typedef int16_t sjme_short;
+
+/** {@code char} type. */
+typedef uint16_t sjme_jchar;
+
 /** {@code int} type. */
 typedef int32_t sjme_jint;
 
-/** Constant value. */
+/** Constant value macros. */
+#define SJME_JBYTE_C(x) INT8_C(x)
+#define SJME_JSHORT_C(x) INT16_C(x)
+#define SJME_JCHAR_C(x) UINT16_C(x)
 #define SJME_JINT_C(x) INT32_C(x)
 
 /** Pointer conversion. */
 #define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
 #define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)(x)))
 
-/**
- * Native functions available for the JVM to use.
- *
- * @since 2019/06/03
- */
-typedef struct sjme_nativefuncs
-{
-	/** Current monotonic nano-seconds, returns low nanos. */
-	sjme_jint (*nanotime)(sjme_jint* hi);
-	
-	/** Current system clock in Java time, returns low time. */
-	sjme_jint (*millitime)(sjme_jint* hi);
-} sjme_nativefuncs;
-
 /** Standard C format for arguments. */
-#define SJME_JVMARG_FORMAT_STDC 1
+#define SJME_JVMARG_FORMAT_STDC SJME_JINT_C(1)
+
+/** Open file for reading. */
+#define SJME_OPENMODE_READ SJME_JINT_C(1)
+
+/** Open file for read and writing. */
+#define SJME_OPENMODE_READWRITE SJME_JINT_C(2)
+
+/** Open file for read and writing, create new file or truncate existing. */
+#define SJME_OPENMODE_READWRITETRUNCATE SJME_JINT_C(3)
+
+/** No error. */
+#define SJME_ERROR_NONE SJME_JINT_C(0)
+
+/** Unknown error. */
+#define SJME_ERROR_UNKNOWN SJME_JINT_C(-1)
+
+/** File does not exist. */
+#define SJME_ERROR_NOSUCHFILE SJME_JINT_C(-2)
 
 /**
  * Java virtual machine arguments.
@@ -141,8 +178,52 @@ typedef struct sjme_jvmoptions
 	sjme_jvmargs args;
 } sjme_jvmoptions;
 
+/**
+ * This represents the name of a file in native form, system dependent.
+ *
+ * @since 2019/06/08
+ */
+typedef struct sjme_nativefilename sjme_nativefilename;
+
+/**
+ * Represents an open file.
+ *
+ * @since 2019/06/08
+ */
+typedef struct sjme_nativefile sjme_nativefile;
+
 /** Instance of the JVM. */
 typedef struct sjme_jvm* sjme_jvm;
+
+/**
+ * Native functions available for the JVM to use.
+ *
+ * @since 2019/06/03
+ */
+typedef struct sjme_nativefuncs
+{
+	/** Current monotonic nano-seconds, returns low nanos. */
+	sjme_jint (*nanotime)(sjme_jint* hi);
+	
+	/** Current system clock in Java time, returns low time. */
+	sjme_jint (*millitime)(sjme_jint* hi);
+	
+	/** The filename to use for the native ROM. */
+	sjme_nativefilename* (*nativeromfile)(void);
+	
+	/** Converts the Java char sequence to native filename. */
+	sjme_nativefilename* (*nativefilename)(sjme_jint len, sjme_jchar* chars);
+	
+	/** Frees the specified filename. */
+	void (*freefilename)(sjme_nativefilename* filename);
+	
+	/** Opens the specified file. */
+	sjme_nativefile* (*fileopen)(sjme_nativefilename* filename,
+		sjme_jint mode, sjme_jint* error);
+	
+	/** Closes the specified file. */
+	void (*fileclose)(sjme_nativefile* file, sjme_jint* error);
+} sjme_nativefuncs;
 
 /**
  * Executes code running within the JVM.
