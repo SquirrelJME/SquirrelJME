@@ -222,7 +222,8 @@
 #define SJME_THREAD_STATE_RUNNING 1
 
 /** Virtual CPU. */
-typedef struct sjme_cpu
+typedef struct sjme_cpu sjme_cpu;
+struct sjme_cpu
 {
 	/** The state of this thread. */
 	sjme_jint state;
@@ -250,7 +251,10 @@ typedef struct sjme_cpu
 	
 	/** Debug: Java Address. */
 	sjme_jint debugjpc;
-} sjme_cpu;
+	
+	/** The parent CPU state. */
+	sjme_cpu* parent;
+};
 
 /** Virtual machine state. */
 typedef struct sjme_jvm
@@ -525,7 +529,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 	void* nextpc;
 	void* tempp;
 	sjme_jint* r;
-	sjme_jint ia;
+	sjme_jint ia, ib, ic;
+	sjme_cpu* oldcpu;
 	
 	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)
@@ -594,6 +599,66 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					cpu->debugline = sjme_opdecodeui(&nextpc);
 					cpu->debugjop = sjme_opdecodeui(&nextpc);
 					cpu->debugjpc = sjme_opdecodeui(&nextpc);
+				}
+				break;
+				
+				/* Invoke method. */
+			case SJME_OP_INVOKE:
+				{
+					/* Allocate to store old CPU state. */
+					oldcpu = sjme_malloc(sizeof(*oldcpu));
+					if (oldcpu == NULL)
+					{
+						if (error != NULL)
+							*error = SJME_ERROR_NOMEMORY;
+						
+						return cycles;
+					}
+					
+					/* Copy and store state. */
+					*oldcpu = *cpu;
+					cpu->parent = oldcpu;
+					
+					/* Setup CPU state for invoke run, move pool up. */
+					for (ia = SJME_ARGBASE_REGISTER;
+						ia < SJME_MAX_REGISTERS; ia++)
+						r[ia] = 0;
+					r[SJME_POOL_REGISTER] = r[SJME_NEXT_POOL_REGISTER];
+					r[SJME_NEXT_POOL_REGISTER] = 0;
+					
+					/* The address to execute. */
+					ia = oldcpu->r[sjme_opdecodeui(&nextpc)];
+					
+					/* Load in register list (wide). */
+					ib = sjme_memjreadp(1, &nextpc);
+					if ((ib & SJME_JINT_C(0x80)) != 0)
+					{
+						/* Read lower values. */
+						ib &= SJME_JINT_C(0x7F);
+						ib <<= 8;
+						ib |= (sjme_memjreadp(1, &nextpc) & SJME_JINT_C(0xFF));
+						
+						/* Read values. */
+						for (ic = 0; ic < ib; ic++)
+							r[SJME_ARGBASE_REGISTER + ic] =
+								oldcpu->r[sjme_memjreadp(2, &nextpc)];
+					}
+					
+					/* Narrow format list. */
+					else
+					{
+						/* Read values. */
+						for (ic = 0; ic < ib; ic++)
+							r[SJME_ARGBASE_REGISTER + ic] =
+								oldcpu->r[sjme_memjreadp(1, &nextpc)];
+					}
+					
+					/* Old PC address resumes where this read ended. */
+					oldcpu->pc = nextpc;
+					
+					/* Our next PC becomes the target address. */
+					nextpc = SJME_JINT_TO_POINTER(ia);
+					cpu->pc = nextpc;
 				}
 				break;
 				
