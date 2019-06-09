@@ -57,7 +57,7 @@
 #define SJME_NEXT_POOL_REGISTER SJME_JINT_C(7)
 
 /** The register of the first argument. */
-#define SJME_ARGUMENT_REGISTER_BASE SJME_JINT_C(8)
+#define SJME_ARGBASE_REGISTER SJME_JINT_C(8)
 
 /** Virtual CPU. */
 typedef struct sjme_cpu
@@ -483,6 +483,21 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	cpu->r[SJME_POOL_REGISTER] = sjme_memjreadp(4, &rp);
 	cpu->r[SJME_STATIC_FIELD_REGISTER] = sjme_memjreadp(4, &rp);
 	cpu->pc = SJME_JINT_TO_POINTER(sjme_memjreadp(4, &rp));
+	
+	/* Bootstrap entry arguments. */
+	/* (int __rambase, int __ramsize, int __bootsize, byte[][] __classpath, */
+	/* byte[][] __sysprops, byte[] __mainclass, byte[][] __mainargs, */
+	/* boolean __ismidlet, int __gd, int __rombase) */
+	cpu->r[SJME_ARGBASE_REGISTER + 0] = SJME_POINTER_TO_JINT(ram);
+	cpu->r[SJME_ARGBASE_REGISTER + 1] = ramsize;
+	cpu->r[SJME_ARGBASE_REGISTER + 2] = 0;
+	cpu->r[SJME_ARGBASE_REGISTER + 3] = 0;
+	cpu->r[SJME_ARGBASE_REGISTER + 4] = 0;
+	cpu->r[SJME_ARGBASE_REGISTER + 5] = 0;
+	cpu->r[SJME_ARGBASE_REGISTER + 6] = 0;
+	cpu->r[SJME_ARGBASE_REGISTER + 7] = 0;
+	cpu->r[SJME_ARGBASE_REGISTER + 8] = 0;
+	cpu->r[SJME_ARGBASE_REGISTER + 9] = SJME_POINTER_TO_JINT(rom);
 	
 	/* Address where the BootRAM is read from. */
 	rp = SJME_POINTER_OFFSET(bootjar, bootoff);
