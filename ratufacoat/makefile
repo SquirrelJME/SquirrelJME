@@ -14,4 +14,4 @@ squirreljme-stdc:	$(FILES)
 			$(CC) -o $@ $^ -DSQUIRRELJME_PORT_STDC $(CFLAGS) $(LIBS)
 
 clean:			
-			rm -fsquirreljme-stdc sjmerc.o sys_stdc.o
+			rm -f squirreljme-stdc sjmerc.o sys_stdc.o
