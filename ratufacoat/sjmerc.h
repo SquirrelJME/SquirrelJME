@@ -287,6 +287,12 @@ typedef struct sjme_nativefuncs
 	/** Reads part of a file. */
 	sjme_jint (*fileread)(sjme_nativefile* file, void* dest, sjme_jint len,
 		sjme_jint* error);
+	
+	/** Writes single byte to standard output. */
+	sjme_jint (*stdout_write)(sjme_jint b);
+	
+	/** Writes single byte to standard error. */
+	sjme_jint (*stderr_write)(sjme_jint b);
 } sjme_nativefuncs;
 
 /**

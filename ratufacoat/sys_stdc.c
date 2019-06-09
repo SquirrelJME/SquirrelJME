@@ -220,6 +220,48 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 	return (sjme_jint)rv;
 }
 
+/** Writes single byte to standard output. */
+sjme_jint sjme_stdc_stdout_write(sjme_jint b)
+{
+	sjme_jbyte v;
+	size_t check;
+	
+	/* Write. */
+	v = (sjme_jbyte)b;
+	check = fwrite(&v, 1, 1, stdout);
+	
+	/* EOF? */
+	if (feof(check))
+		return SJME_JINT_C(0);
+	
+	/* Error? */
+	if (ferror(check))
+		return SJME_JINT_C(-1);
+	
+	return SJME_JINT_C(1);
+}
+
+/** Writes single byte to standard error. */
+sjme_jint sjme_stdc_stderr_write(sjme_jint b)
+{
+	sjme_jbyte v;
+	size_t check;
+	
+	/* Write. */
+	v = (sjme_jbyte)b;
+	check = fwrite(&v, 1, 1, stderr);
+	
+	/* EOF? */
+	if (feof(check))
+		return SJME_JINT_C(0);
+	
+	/* Error? */
+	if (ferror(check))
+		return SJME_JINT_C(-1);
+	
+	return SJME_JINT_C(1);
+}
+
 /**
  * Main entry point.
  *
@@ -247,6 +289,8 @@ int main(int argc, char** argv)
 	stdcfuncs.fileclose = sjme_stdc_fileclose;
 	stdcfuncs.filesize = sjme_stdc_filesize;
 	stdcfuncs.fileread = sjme_stdc_fileread;
+	stdcfuncs.stdout_write = sjme_stdc_stdout_write;
+	stdcfuncs.stderr_write = sjme_stdc_stderr_write;
 	
 	/* Create VM. */
 	error = 0;
