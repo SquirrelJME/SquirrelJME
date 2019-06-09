@@ -253,13 +253,26 @@ int main(int argc, char** argv)
 	jvm = sjme_jvmnew(&options, &stdcfuncs, &error);
 	if (jvm == NULL)
 	{
-		fprintf(stderr, "Failed to create the JVM! (Error %d)\n", (int)error);
+		fprintf(stderr, "Failed to create the JVM! (Error %d/0x%X)\n",
+			(int)error, (unsigned int)error);
 		return EXIT_FAILURE;
 	}
 	
 	/* Execute until termination. */
-	while (sjme_jvmexec(jvm, SJME_JINT_MAX_VALUE) != 0)
+	error = 0;
+	while (sjme_jvmexec(jvm, &error, SJME_JINT_MAX_VALUE) != 0)
+	{
+		/* The JVM hit some kind of error? */
+		if (error != SJME_ERROR_NONE)
+		{
+			fprintf(stderr, "JVM execution fault! (Error %d/0x%X)\n",
+				(int)error, (unsigned int)error);
+			return EXIT_FAILURE;
+		}
+		
+		/* Keep going! */
 		continue;
+	}
 	
 	return EXIT_SUCCESS;
 }
