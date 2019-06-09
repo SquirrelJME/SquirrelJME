@@ -1062,6 +1062,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Completely restore the old state. */
 					*cpu = *oldcpu;
 					
+					/* Restore continuing PC address. */
+					nextpc = cpu->pc;
+					
 					/* Free the parent as it is not needed. */
 					sjme_free(oldcpu);
 					
