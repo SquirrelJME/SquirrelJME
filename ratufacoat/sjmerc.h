@@ -182,6 +182,9 @@ typedef int32_t sjme_jint;
 /** Invalid BootRAM seed. */
 #define SJME_ERROR_INVALIDBOOTRAMSEED SJME_JINT_C(-11)
 
+/** Invalid CPU operation. */
+#define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
+
 /**
  * Java virtual machine arguments.
  *
@@ -282,11 +285,12 @@ typedef struct sjme_nativefuncs
  * Executes code running within the JVM.
  *
  * @param jvm The JVM to execute.
+ * @param error JVM execution error.
  * @param cycles The number of cycles to execute for.
  * @return Non-zero if the JVM is resuming, otherwise zero on its exit.
  * @since 2019/06/05
  */
-sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint cycles);
+sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles);
 
 /**
  * Creates a new instance of a SquirrelJME JVM.

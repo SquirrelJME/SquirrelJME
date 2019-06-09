@@ -318,15 +318,26 @@ sjme_jint sjme_memjreadp(sjme_jint size, void** ptr)
  *
  * @param jvm JVM state.
  * @param cpu CPU state.
+ * @param error Execution error.
  * @param cycles The number of cycles to execute, a negative value means
  * forever.
  * @return The number of remaining cycles.
  * @since 2019/06/08
  */
-sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint cycles)
+sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
+	sjme_jint cycles)
 {
+	sjme_jint op;
+	void* nextpc;
+	
+	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDARG;
+		
 		return cycles;
+	}
 	
 	/* Near-Infinite execution loop. */
 	for (;;)
@@ -339,6 +350,23 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint cycles)
 			if ((--cycles) <= 0)
 				break;
 		}
+		
+		/* Seed next PC address. */
+		nextpc = cpu->pc;
+		
+		/* Read operation. */
+		op = sjme_memjreadp(1, &nextpc);
+		
+		/* Depends on the operation. */
+		switch (op)
+		{
+				/* Invalid operation. */
+			default:
+				if (error != NULL)
+					*error = (SJME_ERROR_INVALIDOP + op);
+				
+				return cycles;
+		}
 	}
 	
 	/* Return remaining cycles. */
@@ -346,14 +374,27 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint cycles)
 }
 
 /** Executes code running within the JVM. */
-sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint cycles)
+sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
 {
 	sjme_jint threadid, parkid;
 	sjme_cpu* cpu;
+	sjme_jint xerror;
+	
+	/* Fallback error state. */
+	if (error == NULL)
+		error = &xerror;
+	
+	/* Clear error always. */
+	*error = SJME_ERROR_NONE;
 	
 	/* Do nothing. */
 	if (jvm == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDARG;
+		
 		return 0;
+	}
 	
 	/* Run cooperatively threaded style CPU. */
 	for (threadid = jvm->fairthreadid;;
@@ -374,13 +415,18 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint cycles)
 			continue;
 		
 		/* Execute CPU engine. */
-		cycles = sjme_cpuexec(jvm, cpu, cycles);
+		cycles = sjme_cpuexec(jvm, cpu, error, cycles);
+		
+		/* CPU fault, stop! */
+		if (*error != SJME_ERROR_NONE)
+			break;
 	}
 	
 	/* Start next run on the CPU that was last executing. */
 	jvm->fairthreadid = (threadid & SJME_THREAD_MASK);
 	
-	return 0;
+	/* Returning remaining number of cycles. */
+	return cycles;
 }
 
 /**
@@ -556,7 +602,7 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	/* Seed initial CPU state. */
 	cpu->r[SJME_POOL_REGISTER] = sjme_memjreadp(4, &rp);
 	cpu->r[SJME_STATIC_FIELD_REGISTER] = sjme_memjreadp(4, &rp);
-	cpu->pc = SJME_JINT_TO_POINTER(sjme_memjreadp(4, &rp));
+	cpu->pc = SJME_POINTER_OFFSET(bootjar, sjme_memjreadp(4, &rp));
 	
 	/* Bootstrap entry arguments. */
 	/* (int __rambase, int __ramsize, int __bootsize, byte[][] __classpath, */
