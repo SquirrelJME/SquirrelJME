@@ -232,6 +232,24 @@ typedef struct sjme_cpu
 	
 	/** Registers. */
 	sjme_jint r[SJME_MAX_REGISTERS];
+	
+	/** Debug: Class name. */
+	void* debugclassname;
+	
+	/** Debug: Method name. */
+	void* debugmethodname;
+	
+	/** Debug: Method type. */
+	void* debugmethodtype;
+	
+	/** Debug: Current line. */
+	sjme_jint debugline;
+	
+	/** Debug: Java Operation. */
+	sjme_jint debugjop;
+	
+	/** Debug: Java Address. */
+	sjme_jint debugjpc;
 } sjme_cpu;
 
 /** Virtual machine state. */
@@ -464,6 +482,32 @@ sjme_jint sjme_memjreadp(sjme_jint size, void** ptr)
 }
 
 /**
+ * Decodes a variable unsigned int operation argument.
+ *
+ * @param ptr The pointer to read from.
+ * @return The resulting decoded value.
+ * @since 2019/06/09
+ */
+sjme_jint sjme_opdecodeui(void** ptr)
+{
+	sjme_jint rv;
+	
+	/* Read single byte value from pointer. */
+	rv = (sjme_memjreadp(1, ptr) & SJME_JINT_C(0xFF));
+	
+	/* Encoded as a 15-bit value? */
+	if ((rv & SJME_JINT_C(0x80)) != 0)
+	{
+		rv &= SJME_JINT_C(0x7F);
+		rv <<= SJME_JINT_C(8);
+		rv |= (sjme_memjreadp(1, ptr) & SJME_JINT_C(0xFF));
+	}
+	
+	/* Use read value. */
+	return rv;
+}
+
+/**
  * Executes single CPU state.
  *
  * @param jvm JVM state.
@@ -479,6 +523,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 {
 	sjme_jint op;
 	void* nextpc;
+	void* tempp;
+	sjme_jint* r;
+	sjme_jint ia;
 	
 	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)
@@ -488,6 +535,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		
 		return cycles;
 	}
+	
+	/* Quick register access. */
+	r = cpu->r;
 	
 	/* Near-Infinite execution loop. */
 	for (;;)
@@ -505,11 +555,60 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		nextpc = cpu->pc;
 		
 		/* Read operation. */
-		op = sjme_memjreadp(1, &nextpc);
+		op = (sjme_memjreadp(1, &nextpc) & SJME_JINT_C(0xFF));
+		
+		/* Temporary debug. */
+		fprintf(stderr, "pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
+			cpu->pc,
+			(unsigned int)op,
+			(cpu->debugclassname == NULL ? NULL :
+				SJME_POINTER_OFFSET(cpu->debugclassname, 2)),
+			(cpu->debugmethodname == NULL ? NULL :
+				SJME_POINTER_OFFSET(cpu->debugmethodname, 2)),
+			(cpu->debugmethodname == NULL ? NULL :
+				SJME_POINTER_OFFSET(cpu->debugmethodname, 2)),
+			(int)cpu->debugline,
+			(unsigned int)cpu->debugjop,
+			(int)cpu->debugjpc);
 		
 		/* Depends on the operation. */
 		switch (op)
 		{
+				/* Debug entry. */
+			case SJME_OP_DEBUG_ENTRY:
+				{
+					tempp = SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]);
+					
+					cpu->debugclassname = SJME_JINT_TO_POINTER(
+						((sjme_jint*)tempp)[sjme_opdecodeui(&nextpc)]);
+					cpu->debugmethodname = SJME_JINT_TO_POINTER(
+						((sjme_jint*)tempp)[sjme_opdecodeui(&nextpc)]);
+					cpu->debugmethodtype = SJME_JINT_TO_POINTER(
+						((sjme_jint*)tempp)[sjme_opdecodeui(&nextpc)]);
+				}
+				break;
+				
+				/* Debug point. */
+			case SJME_OP_DEBUG_POINT:
+				{
+					cpu->debugline = sjme_opdecodeui(&nextpc);
+					cpu->debugjop = sjme_opdecodeui(&nextpc);
+					cpu->debugjpc = sjme_opdecodeui(&nextpc);
+				}
+				break;
+				
+				/* Load value from constant pool. */
+			case SJME_OP_LOAD_POOL:
+				{
+					/* The index to read from. */
+					ia = sjme_opdecodeui(&nextpc);
+					
+					/* Write into destination register. */
+					r[sjme_opdecodeui(&nextpc)] = ((sjme_jint*)
+						SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]))[ia];
+				}
+				break;
+			
 				/* Invalid operation. */
 			default:
 				if (error != NULL)
@@ -517,6 +616,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				
 				return cycles;
 		}
+		
+		/* Set next PC address. */
+		cpu->pc = nextpc;
 	}
 	
 	/* Return remaining cycles. */
@@ -750,8 +852,10 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	sjme_memjreadp(4, &rp);
 	
 	/* Seed initial CPU state. */
-	cpu->r[SJME_POOL_REGISTER] = sjme_memjreadp(4, &rp);
-	cpu->r[SJME_STATIC_FIELD_REGISTER] = sjme_memjreadp(4, &rp);
+	cpu->r[SJME_POOL_REGISTER] = SJME_POINTER_TO_JINT(
+		SJME_POINTER_OFFSET(ram, sjme_memjreadp(4, &rp)));
+	cpu->r[SJME_STATIC_FIELD_REGISTER] = SJME_POINTER_TO_JINT(
+		SJME_POINTER_OFFSET(ram, sjme_memjreadp(4, &rp)));
 	cpu->pc = SJME_POINTER_OFFSET(bootjar, sjme_memjreadp(4, &rp));
 	
 	/* Bootstrap entry arguments. */
