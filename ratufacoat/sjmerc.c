@@ -565,8 +565,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				SJME_POINTER_OFFSET(cpu->debugclassname, 2)),
 			(cpu->debugmethodname == NULL ? NULL :
 				SJME_POINTER_OFFSET(cpu->debugmethodname, 2)),
-			(cpu->debugmethodname == NULL ? NULL :
-				SJME_POINTER_OFFSET(cpu->debugmethodname, 2)),
+			(cpu->debugmethodtype == NULL ? NULL :
+				SJME_POINTER_OFFSET(cpu->debugmethodtype, 2)),
 			(int)cpu->debugline,
 			(unsigned int)cpu->debugjop,
 			(int)cpu->debugjpc);
