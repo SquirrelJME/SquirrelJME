@@ -12,3 +12,6 @@ FILES=sjmerc.c sys_stdc.c
 
 squirreljme-stdc:	$(FILES)
 			$(CC) -o $@ $^ -DSQUIRRELJME_PORT_STDC $(CFLAGS) $(LIBS)
+
+clean:			
+			rm -fsquirreljme-stdc sjmerc.o sys_stdc.o

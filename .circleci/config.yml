@@ -152,6 +152,60 @@ jobs:
       - store_artifacts:
           path: summercoatrom.nps
           destination: /nps/summercoatrom.nps
+  tests_ratufacoat_default:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Clear old test results and snapshot
+          command: rm -f rdjut/ratufacoatdef/results.xml
+      - run:
+          name: Create test directory
+          command: mkdir -p rdjut/ratufacoatdef
+      - run:
+          name: Build SummerCoat ROM with tests
+          command: ~/squirreljme/build.sh dist summercoatrom-test
+      - run:
+          name: Extract distribution
+          command: unzip -of squirreljme-summercoatrom-test.zip
+      - run:
+          name: Cleaning RatufaCoat VM (Default)
+          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
+      - run:
+          name: Building RatufaCoat VM (Default)
+          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc
+      - run:
+          name: Running RatufaCoat VM (Default)
+          command: ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rdjut/ratufacoatdef/results.xml
+      - store_test_results:
+          path: rdjut
+  tests_ratufacoat_ppc:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Clear old test results and snapshot
+          command: rm -f rpjut/ratufacoatppc/results.xml
+      - run:
+          name: Create test directory
+          command: mkdir -p rpjut/ratufacoatppc
+      - run:
+          name: Build SummerCoat ROM with tests
+          command: ~/squirreljme/build.sh dist summercoatrom-test
+      - run:
+          name: Extract distribution
+          command: unzip -of squirreljme-summercoatrom-test.zip
+      - run:
+          name: Cleaning RatufaCoat VM (Default)
+          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
+      - run:
+          name: Building RatufaCoat VM (Default)
+          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc CC=powerpc-linux-gnu-gcc CFLAGS='-static -DSJME_BIG_ENDIAN'
+      - run:
+          name: Running RatufaCoat VM (Default)
+          command: qemu-ppc ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rpjut/ratufacoatppc/results.xml
+      - store_test_results:
+          path: rpjut
 
 workflows:
   version: 2
@@ -171,4 +225,12 @@ workflows:
           requires:
             - build_javase
             - build_summercoatrom
+      - tests_ratufacoat_default:
+          requires:
+            - build_summercoatrom
+            - tests_ratufacoat_default
+      - tests_ratufacoat_ppc:
+          requires:
+            - build_summercoatrom
+            - tests_ratufacoat_ppc
 
