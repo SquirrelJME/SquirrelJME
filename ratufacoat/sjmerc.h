@@ -184,6 +184,9 @@ typedef int32_t sjme_jint;
 /** Invalid BootRAM seed. */
 #define SJME_ERROR_INVALIDBOOTRAMSEED SJME_JINT_C(-11)
 
+/** CPU hit breakpoint. */
+#define SJME_ERROR_CPUBREAKPOINT SJME_JINT_C(-12)
+
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
 
