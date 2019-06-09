@@ -1064,6 +1064,11 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					
 					/* Free the parent as it is not needed. */
 					sjme_free(oldcpu);
+					
+					/* Temporary debug. */
+					fprintf(stderr, "Returns: %d %d\n",
+						(int)r[SJME_RETURN_REGISTER],
+						(int)r[SJME_RETURN_REGISTER + 1]);
 				}
 				break;
 			
