@@ -516,6 +516,14 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		// This volume
+		int vid = this._vid;
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -523,7 +531,21 @@ public class RecordStore
 			// Check open
 			this.__checkOpen();
 			
-			throw new todo.TODO();
+			// Need to know the size of the record
+			int size = vinyl.pageSize(vid, __id);
+			RecordStore.__checkError(size);
+			
+			// {@squirreljme.error DC0h The record does not fit into the
+			// output.}
+			if (size < 0 || (__o + size) > __b.length)
+				throw new ArrayIndexOutOfBoundsException("DC0h");
+			
+			// Read data
+			int read = vinyl.pageRead(vid, __id, __b, __o, size);
+			RecordStore.__checkError(read);
+			
+			// Size is used as the return value
+			return size;
 		}
 	}
 	
