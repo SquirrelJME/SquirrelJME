@@ -230,17 +230,13 @@ public abstract class Displayable
 		if (__c == null)
 			return;
 		
-		throw new todo.TODO();
-		/*
-		// If the command was removed, then do an update
-		if (this._commands.remove(__c))
-		{
-			// Update if the display is attached
-			Display cd = this.__currentDisplay();
-			if (cd != null)
-				cd.__updateUIStack();
-		}
-		*/
+		// Remove the command
+		this._actions.remove(__c);
+		
+		// Repaint display?
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint();
 	}
 	
 	public void removeCommandOrMenu(int __p)
