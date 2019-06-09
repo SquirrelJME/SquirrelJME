@@ -28,6 +28,9 @@ commands:
           name: Install build-essential
           command: sudo apt-get install --no-install-recommends -y build-essential
       - run:
+          name: Install crossbuild-essential-powerpc
+          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-powerpc
+      - run:
           name: Install qemu-user
           command: sudo apt-get install --no-install-recommends -y qemu-user
       - run:
