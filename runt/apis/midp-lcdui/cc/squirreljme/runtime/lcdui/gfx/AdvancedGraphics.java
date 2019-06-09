@@ -211,8 +211,12 @@ public class AdvancedGraphics
 		this.transy = __aty;
 		
 		// Initial clipping rectangle has the image bounds
+		this.clipsx = 0;
+		this.clipsy = 0;
 		this.clipex = __w;
 		this.clipey = __h;
+		this.clipw = __w;
+		this.cliph = __h;
 		
 		// Reset all initial functions
 		this.resetParameters(true);
