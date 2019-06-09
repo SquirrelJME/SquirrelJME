@@ -65,6 +65,9 @@
 /** Math, R=RR, Integer. */
 #define SJME_ENC_MATH_REG_INT UINT8_C(0x00)
 
+/** Comparison mask. */
+#define SJME_ENC_COMPARE_MASK UINT8_C(0x07)
+
 /** Int comparison, then maybe jump. */
 #define SJME_ENC_IF_ICMP UINT8_C(0x10)
 
@@ -211,6 +214,30 @@
 
 /** Double. */
 #define SJME_DATATYPE_DOUBLE UINT8_C(7)
+
+/** Equals. */
+#define SJME_COMPARETYPE_EQUALS SJME_JINT_C(0)
+
+/** Not equals. */
+#define SJME_COMPARETYPE_NOT_EQUALS SJME_JINT_C(1)
+
+/** Less than. */
+#define SJME_COMPARETYPE_LESS_THAN SJME_JINT_C(2)
+
+/** Less or equals. */
+#define SJME_COMPARETYPE_LESS_THAN_OR_EQUALS SJME_JINT_C(3)
+
+/** Greater than. */
+#define SJME_COMPARETYPE_GREATER_THAN SJME_JINT_C(4)
+
+/** Greater or equals. */
+#define SJME_COMPARETYPE_GREATER_THAN_OR_EQUALS SJME_JINT_C(5)
+
+/** Always true. */
+#define SJME_COMPARETYPE_TRUE SJME_JINT_C(6)
+
+/** Always false. */
+#define SJME_COMPARETYPE_FALSE SJME_JINT_C(7)
 
 /** Maximum number of threads. */
 #define SJME_THREAD_MAX SJME_JINT_C(32)
@@ -660,6 +687,68 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		/* Depends on the operation. */
 		switch (enc)
 		{
+				/* Compare two register values. */
+			case SJME_ENC_IF_ICMP:
+				{
+					/* Values to compare. */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					ib = r[sjme_opdecodeui(&nextpc)];
+					
+					/* Target PC address. */
+					ic = sjme_opdecodeui(&nextpc);
+					if ((ic & SJME_JINT_C(0x00004000)) != 0)
+						ic |= SJME_JINT_C(0xFFFF8000);
+					tempp = SJME_POINTER_OFFSET(cpu->pc, ic);
+					
+					/* Check depends. */
+					ic = 0;
+					switch (op & SJME_ENC_COMPARE_MASK)
+					{
+						case SJME_COMPARETYPE_EQUALS:
+							if (ia == ib)
+								ic = 1;
+							break;
+							
+						case SJME_COMPARETYPE_NOT_EQUALS:
+							if (ia != ib)
+								ic = 1;
+							break;
+							
+						case SJME_COMPARETYPE_LESS_THAN:
+							if (ia < ib)
+								ic = 1;
+							break;
+							
+						case SJME_COMPARETYPE_LESS_THAN_OR_EQUALS:
+							if (ia <= ib)
+								ic = 1;
+							break;
+							
+						case SJME_COMPARETYPE_GREATER_THAN:
+							if (ia > ib)
+								ic = 1;
+							break;
+							
+						case SJME_COMPARETYPE_GREATER_THAN_OR_EQUALS:
+							if (ia >= ib)
+								ic = 1;
+							break;
+							
+						case SJME_COMPARETYPE_TRUE:
+							ic = 1;
+							break;
+							
+						case SJME_COMPARETYPE_FALSE:
+							ic = 0;
+							break;
+					}
+					
+					/* Branch success? */
+					if (ic != 0)
+						nextpc = tempp;
+				}
+				break;
+				
 				/* Math. */
 			case SJME_ENC_MATH_REG_INT:
 			case SJME_ENC_MATH_CONST_INT:
