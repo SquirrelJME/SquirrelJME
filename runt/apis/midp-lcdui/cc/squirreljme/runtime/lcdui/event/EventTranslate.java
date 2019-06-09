@@ -39,17 +39,23 @@ public final class EventTranslate
 	 */
 	public static final int gameActionToKeyCode(int __gc)
 	{
+		// This performs the reverse of keyCodeToGameAction() except that
+		// it maps game keys back to associated number keys.
+		// [A ^ B] > [1 2 3]
+		// [< F >] > [4 5 6]
+		// [C v D] > [7 8 9]
+		// [* 0 #] > [* 0 #]
 		switch (__gc)
 		{
-			case Canvas.UP:		return NonStandardKey.VGAME_UP;
-			case Canvas.DOWN:	return NonStandardKey.VGAME_DOWN;
-			case Canvas.LEFT:	return NonStandardKey.VGAME_LEFT;
-			case Canvas.RIGHT:	return NonStandardKey.VGAME_RIGHT;
-			case Canvas.FIRE:	return NonStandardKey.VGAME_FIRE;
-			case Canvas.GAME_A:	return NonStandardKey.VGAME_A;
-			case Canvas.GAME_B:	return NonStandardKey.VGAME_B;
-			case Canvas.GAME_C:	return NonStandardKey.VGAME_C;
-			case Canvas.GAME_D:	return NonStandardKey.VGAME_D;
+			case Canvas.GAME_A:	return Canvas.KEY_NUM1;
+			case Canvas.UP:		return Canvas.KEY_NUM2;
+			case Canvas.GAME_B:	return Canvas.KEY_NUM3;
+			case Canvas.LEFT:	return Canvas.KEY_NUM4;
+			case Canvas.FIRE:	return Canvas.KEY_NUM5;
+			case Canvas.RIGHT:	return Canvas.KEY_NUM6;
+			case Canvas.GAME_C:	return Canvas.KEY_NUM7;
+			case Canvas.DOWN:	return Canvas.KEY_NUM8;
+			case Canvas.GAME_D:	return Canvas.KEY_NUM9;
 		}
 		
 		return 0;
@@ -64,25 +70,36 @@ public final class EventTranslate
 	 */
 	public static final int keyCodeToGameAction(int __kc)
 	{
+		// Game actions are mapped to physical keys such as left/right/up/down
+		// and select. Also since some phones only have a dial pad this means
+		// that game actions take up actual digits on the phone itself, so
+		// this means we have to map those accordingly.
+		// [1 2 3] > [A ^ B]
+		// [4 5 6] > [< F >]
+		// [7 8 9] > [C v D]
+		// [* 0 #] > [* 0 #]
 		switch (__kc)
 		{
-				// Map these keys to standard keys
+				// Map these to game keys using number pad layout
+			case Canvas.KEY_NUM1:	return Canvas.GAME_A;
+			case Canvas.KEY_NUM2:	return Canvas.UP;
+			case Canvas.KEY_NUM3:	return Canvas.GAME_B;
+			case Canvas.KEY_NUM4:	return Canvas.LEFT;
+			case Canvas.KEY_NUM5:	return Canvas.FIRE;
+			case Canvas.KEY_NUM6:	return Canvas.RIGHT;
+			case Canvas.KEY_NUM7:	return Canvas.GAME_C;
+			case Canvas.KEY_NUM8:	return Canvas.DOWN;
+			case Canvas.KEY_NUM9:	return Canvas.GAME_D;
+			
+				// Arrow keys map to their direct game keys
 			case Canvas.KEY_UP:		return Canvas.UP;
 			case Canvas.KEY_DOWN:	return Canvas.DOWN;
 			case Canvas.KEY_LEFT:	return Canvas.LEFT;
 			case Canvas.KEY_RIGHT:	return Canvas.RIGHT;
 			
-				// Map these character keys to specific keys
+				// Map space bar and enter to fire
 			case ' ':
 			case '\n':			return Canvas.FIRE;
-			case 'a': case 'A':
-			case 'h': case 'H':	return Canvas.GAME_A;
-			case 's': case 'S':
-			case 'j': case 'J':	return Canvas.GAME_B;
-			case 'd': case 'D':
-			case 'k': case 'K':	return Canvas.GAME_C;
-			case 'f': case 'F':
-			case 'l': case 'L':	return Canvas.GAME_D;
 			
 				// Virtually mapped game keys, likely from a VM running on top
 			case NonStandardKey.VGAME_UP:		return Canvas.UP;
