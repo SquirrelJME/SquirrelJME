@@ -79,6 +79,30 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/06/09
+	 */
+	@Override
+	public final int pageDelete(int __vid, int __pid)
+	{
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		// Locate the page
+		Page page = vol._pages.get(__pid);
+		if (page == null)
+			return ERROR_NO_PAGE;
+		
+		// Just remove it
+		vol._pages.remove(__pid);
+		
+		// Return ID of the deleted page
+		return __pid;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/15
 	 */
 	@Override
