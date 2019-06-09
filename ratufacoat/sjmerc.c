@@ -1064,6 +1064,27 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				}
 				break;
 				
+				/* If equal to constant? */
+			case SJME_OP_IFEQ_CONST:
+				{
+					/* A value. */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					
+					/* B value. */
+					ib = sjme_memjreadp(4, &nextpc);
+					
+					/* Target PC address. */
+					ic = sjme_opdecodeui(&nextpc);
+					if ((ic & SJME_JINT_C(0x00004000)) != 0)
+						ic |= SJME_JINT_C(0xFFFF8000);
+					tempp = SJME_POINTER_OFFSET(cpu->pc, ic);
+					
+					/* Jump on equals? */
+					if (ia == ib)
+						nextpc = tempp;
+				}
+				break;
+				
 				/* Invoke method. */
 			case SJME_OP_INVOKE:
 				{
