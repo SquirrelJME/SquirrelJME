@@ -958,6 +958,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				}
 				break;
 				
+				/* Exit method. */
+			case SJME_OP_DEBUG_EXIT:
+				break;
+				
 				/* Debug point. */
 			case SJME_OP_DEBUG_POINT:
 				{
