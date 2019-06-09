@@ -933,6 +933,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					abort();
 				}
 				break;
+				
+				/* Breakpoint. */
+			case SJME_OP_BREAKPOINT:
+				if (error != NULL)
+					*error = SJME_ERROR_CPUBREAKPOINT;
+				
+				return cycles;
 			
 				/* Copy value. */
 			case SJME_OP_COPY:
@@ -993,7 +1000,6 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						ia < SJME_MAX_REGISTERS; ia++)
 						r[ia] = 0;
 					r[SJME_POOL_REGISTER] = r[SJME_NEXT_POOL_REGISTER];
-					r[SJME_NEXT_POOL_REGISTER] = 0;
 					
 					/* The address to execute. */
 					ia = oldcpu->r[sjme_opdecodeui(&nextpc)];
@@ -1040,6 +1046,24 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Write into destination register. */
 					r[sjme_opdecodeui(&nextpc)] = ((sjme_jint*)
 						SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]))[ia];
+				}
+				break;
+				
+				/* Return from method. */
+			case SJME_OP_RETURN:
+				{
+					/* Get parent CPU state. */
+					oldcpu = cpu->parent;
+					
+					/* Copy global values back. */
+					for (ia = 0; ia < SJME_LOCAL_REGISTER_BASE; ia++)
+						oldcpu->r[ia] = cpu->r[ia];
+					
+					/* Completely restore the old state. */
+					*cpu = *oldcpu;
+					
+					/* Free the parent as it is not needed. */
+					sjme_free(oldcpu);
 				}
 				break;
 			
