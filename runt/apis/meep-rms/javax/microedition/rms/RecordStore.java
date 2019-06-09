@@ -571,7 +571,12 @@ public class RecordStore
 			// Check open
 			this.__checkOpen();
 			
-			throw new todo.TODO();
+			// Need to know the size of the record
+			int size = vinyl.pageSize(vid, __id);
+			RecordStore.__checkError(size);
+			
+			// Return it
+			return size;
 		}
 	}
 	
