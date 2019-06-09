@@ -231,11 +231,11 @@ sjme_jint sjme_stdc_stdout_write(sjme_jint b)
 	check = fwrite(&v, 1, 1, stdout);
 	
 	/* EOF? */
-	if (feof(check))
+	if (feof(stdout))
 		return SJME_JINT_C(0);
 	
 	/* Error? */
-	if (ferror(check))
+	if (ferror(stdout))
 		return SJME_JINT_C(-1);
 	
 	return SJME_JINT_C(1);
@@ -252,11 +252,11 @@ sjme_jint sjme_stdc_stderr_write(sjme_jint b)
 	check = fwrite(&v, 1, 1, stderr);
 	
 	/* EOF? */
-	if (feof(check))
+	if (feof(stderr))
 		return SJME_JINT_C(0);
 	
 	/* Error? */
-	if (ferror(check))
+	if (ferror(stderr))
 		return SJME_JINT_C(-1);
 	
 	return SJME_JINT_C(1);

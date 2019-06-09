@@ -877,6 +877,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		enc = ((op >= SJME_ENC_SPECIAL_A) ? op : (op & SJME_ENC_MASK));
 		
 		/* Temporary debug. */
+#if 0
 		fprintf(stderr, "pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
 			cpu->pc,
 			(unsigned int)op,
@@ -889,6 +890,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			(int)cpu->debugline,
 			(unsigned int)cpu->debugjop,
 			(int)cpu->debugjpc);
+#endif
 		
 		/* Depends on the operation. */
 		switch (enc)
@@ -1397,11 +1399,6 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					
 					/* Free the parent as it is not needed. */
 					sjme_free(oldcpu);
-					
-					/* Temporary debug. */
-					fprintf(stderr, "Returns: %d %d\n",
-						(int)r[SJME_RETURN_REGISTER],
-						(int)r[SJME_RETURN_REGISTER + 1]);
 				}
 				break;
 				
