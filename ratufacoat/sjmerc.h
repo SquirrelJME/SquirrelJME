@@ -282,10 +282,11 @@ typedef struct sjme_nativefuncs
  * Executes code running within the JVM.
  *
  * @param jvm The JVM to execute.
+ * @param cycles The number of cycles to execute for.
  * @return Non-zero if the JVM is resuming, otherwise zero on its exit.
  * @since 2019/06/05
  */
-int sjme_jvmexec(sjme_jvm* jvm);
+sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint cycles);
 
 /**
  * Creates a new instance of a SquirrelJME JVM.
