@@ -361,7 +361,27 @@ public class RecordStore
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			// Check open
+			this.__checkOpen();
+			
+			long[] time = new long[1];
+			int rv = vinyl.volumeModTime(this._vid, time);
+			
+			try
+			{
+				RecordStore.__checkError(rv);
+			}
+			catch (RecordStoreException e)
+			{
+				if (e instanceof RecordStoreNotOpenException)
+					throw (RecordStoreNotOpenException)e;
+				
+				// {@squirreljme.error DC0i Could not get the record store
+				// time.}
+				throw new RuntimeException("DC0i", e);
+			}
+			
+			return time[0];
 		}
 	}
 	
@@ -572,7 +592,7 @@ public class RecordStore
 			this.__checkOpen();
 			
 			// Need to know the size of the record
-			int size = vinyl.pageSize(vid, __id);
+			int size = vinyl.pageSize(this._vid, __id);
 			RecordStore.__checkError(size);
 			
 			// Return it

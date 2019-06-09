@@ -163,6 +163,18 @@ public interface VinylRecord
 	public abstract int volumeModCount(int __vid);
 	
 	/**
+	 * Returns the modification time of the volume.
+	 *
+	 * @param __vid The volume ID.
+	 * @param __time The output time.
+	 * @return Zero or an error.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/13
+	 */
+	public abstract int volumeModTime(int __vid, long[] __time)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the name of the given record.
 	 *
 	 * @param __vid Volume ID.
