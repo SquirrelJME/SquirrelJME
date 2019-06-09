@@ -564,13 +564,13 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
+			// Check open
+			this.__checkOpen();
+			
 			throw new todo.TODO();
 		}
 	}
@@ -638,13 +638,13 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
+			// Check open
+			this.__checkOpen();
+			
 			// Get and check tag
 			int rv = vinyl.pageTag(this._vid, __id);
 			RecordStore.__checkError(rv);
@@ -664,13 +664,13 @@ public class RecordStore
 	public int getVersion()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
+			// Check open
+			this.__checkOpen();
+			
 			int rv = vinyl.volumeModCount(this._vid);
 			
 			try
@@ -832,13 +832,13 @@ public class RecordStore
 	final int[] __listPages()
 		throws RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
+			// Check open
+			this.__checkOpen();
+			
 			return vinyl.pageList(this._vid);
 		}
 	}
