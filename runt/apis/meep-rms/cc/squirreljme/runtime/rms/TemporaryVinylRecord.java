@@ -71,6 +71,7 @@ public final class TemporaryVinylRecord
 		
 		// Volume modified
 		vol._modcount++;
+		vol._modtime = System.currentTimeMillis();
 		
 		// Store page data, will return the PID or error
 		return page.setData(__b, __o, __l, __tag);
@@ -163,6 +164,7 @@ public final class TemporaryVinylRecord
 			
 		// Volume modified
 		vol._modcount++;
+		vol._modtime = System.currentTimeMillis();
 		
 		// Store page data, will return the PID or error
 		return page.setData(__b, __o, __l, __tag);
@@ -276,6 +278,27 @@ public final class TemporaryVinylRecord
 			return ERROR_NO_VOLUME;
 		
 		return vol._modcount;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/09
+	 */
+	@Override
+	public final int volumeModTime(int __vid, long[] __time)
+		throws NullPointerException
+	{
+		if (__time == null)
+			throw new NullPointerException("NARG");
+		
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		if (__time.length > 0)
+			__time[0] = vol._modtime;
+		return 0;
 	}
 	
 	/**
@@ -422,6 +445,10 @@ public final class TemporaryVinylRecord
 		/** Modification count. */
 		volatile int _modcount =
 			0;
+		
+		/** Modification time. */
+		volatile long _modtime =
+			System.currentTimeMillis();
 		
 		/**
 		 * Initializes the volume.
