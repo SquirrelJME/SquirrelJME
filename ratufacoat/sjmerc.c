@@ -59,9 +59,21 @@
 /** The register of the first argument. */
 #define SJME_ARGBASE_REGISTER SJME_JINT_C(8)
 
+/** Maximum number of threads. */
+#define SJME_THREAD_MAX SJME_JINT_C(32)
+
+/** Thread does not exist. */
+#define SJME_THREAD_STATE_NONE 0
+
+/** Thread is running. */
+#define SJME_THREAD_STATE_RUNNING 1
+
 /** Virtual CPU. */
 typedef struct sjme_cpu
 {
+	/** The state of this thread. */
+	sjme_jint state;
+	
 	/** PC. */
 	void* pc;
 	
@@ -80,6 +92,9 @@ typedef struct sjme_jvm
 	
 	/** ROM. */
 	void* rom;
+	
+	/** Threads. */
+	sjme_cpu threads[SJME_THREAD_MAX];
 } sjme_jvm;
 
 /**
@@ -427,15 +442,9 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	if (rom == NULL || ram == NULL || ramsize <= 0 || jvm == NULL)
 		return 0;
 	
-	/* Allocate CPU. */
-	cpu = sjme_malloc(sizeof(*cpu));
-	if (cpu == NULL)
-	{
-		if (error != NULL)
-			*error = SJME_ERROR_NOMEMORY;
-		
-		return 0;
-	}
+	/* Set initial CPU (the first). */
+	cpu = &jvm->threads[0];
+	cpu->state = SJME_THREAD_STATE_RUNNING;
 	
 	/* Set boot pointer to start of ROM. */
 	rp = rom;
@@ -446,7 +455,6 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDROMMAGIC;
 		
-		sjme_free(cpu);
 		return 0;
 	}
 	
@@ -463,7 +471,6 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDJARMAGIC;
 		
-		sjme_free(cpu);
 		return 0;
 	}
 	
@@ -538,7 +545,6 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 			if (error != NULL)
 				*error = SJME_ERROR_INVALIDBOOTRAMSEED;
 			
-			sjme_free(cpu);
 			return 0;
 		}
 		
@@ -571,7 +577,6 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDBOOTRAMEND;
 		
-		sjme_free(cpu);
 		return 0;
 	}
 }
