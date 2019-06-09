@@ -71,6 +71,9 @@
 /** Math type mask. */
 #define SJME_ENC_MATH_MASK UINT8_C(0x0F)
 
+/** Mask for Java order mode. */
+#define SJME_ENC_MEMORY_JAVA_MASK UINT8_C(0x10)
+
 /** Memory access, offset is in register. */
 #define SJME_ENC_MEMORY_OFF_REG UINT8_C(0x20)
 
@@ -184,9 +187,6 @@
 
 /** Mask for data types in memory. */
 #define SJME_MEM_DATATYPE_MASK UINT8_C(0x07)
-
-/** Mask for math operations. */
-#define SJME_MATH_MASK UINT8_C(0x0F)
 
 /** Object. */
 #define SJME_DATATYPE_OBJECT UINT8_C(0)
@@ -673,7 +673,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						r[sjme_opdecodeui(&nextpc)]);
 					
 					/* Perform the math. */
-					switch (op & SJME_MATH_MASK)
+					switch (op & SJME_ENC_MATH_MASK)
 					{
 						case SJME_MATH_ADD:
 							ic = ia + ib;
@@ -727,7 +727,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 							
 							/* Mask in or mask out the dragged sign bit. */
 							if (((ia & SJME_JINT_C(0x80000000)) != 0) &&
-								((op & SJME_MATH_MASK) == SJME_MATH_SHR))
+								((op & SJME_ENC_MATH_MASK) == SJME_MATH_SHR))
 								ic |= sjme_sh_umask[ib];
 							else
 								ic &= sjme_sh_lmask[31 - ib];
@@ -768,6 +768,80 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					
 					/* Store result. */
 					r[sjme_opdecodeui(&nextpc)] = ic;
+				}
+				break;
+				
+				/* Memory (native byte order). */
+			case SJME_ENC_MEMORY_OFF_REG:
+			case SJME_ENC_MEMORY_OFF_ICONST:
+				{
+					/* Destination/source register. */
+					ic = sjme_opdecodeui(&nextpc);
+					
+					/* The address to access. */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					ib = (enc >= SJME_ENC_MEMORY_OFF_ICONST ?
+						sjme_memjreadp(4, &nextpc) :
+						r[sjme_opdecodeui(&nextpc)]);
+					tempp = SJME_JINT_TO_POINTER(ia);
+					
+					/* Load value */
+					if ((op & SJME_MEM_LOAD_MASK) != 0)
+					{
+						switch (op & SJME_MEM_DATATYPE_MASK)
+						{
+							case SJME_DATATYPE_BYTE:
+								r[ic] = sjme_memread(1, tempp, ib);
+								break;
+								
+							case SJME_DATATYPE_CHARACTER:
+								r[ic] = (sjme_memread(2, tempp, ib) &
+									SJME_JINT_C(0xFFFF));
+								break;
+								
+							case SJME_DATATYPE_SHORT:
+								r[ic] = sjme_memread(2, tempp, ib);
+								break;
+								
+							case SJME_DATATYPE_OBJECT:
+							case SJME_DATATYPE_INTEGER:
+							case SJME_DATATYPE_FLOAT:
+							default:
+								r[ic] = sjme_memread(4, tempp, ib);
+								break;
+						}
+					}
+					
+					/* Store value */
+					else
+					{
+						switch (op & SJME_MEM_DATATYPE_MASK)
+						{	
+							case SJME_DATATYPE_BYTE:
+								sjme_memwrite(1, tempp, ib, r[ic]);
+								break;
+								
+							case SJME_DATATYPE_CHARACTER:
+							case SJME_DATATYPE_SHORT:
+								sjme_memwrite(2, tempp, ib, r[ic]);
+								break;
+								
+							case SJME_DATATYPE_OBJECT:
+							case SJME_DATATYPE_INTEGER:
+							case SJME_DATATYPE_FLOAT:
+							default:
+								sjme_memwrite(4, tempp, ib, r[ic]);
+								break;
+						}
+					}
+				}
+				break;
+				
+				/* Memory (Java byte order). */
+			case SJME_ENC_MEMORY_OFF_REG_JAVA:
+			case SJME_ENC_MEMORY_OFF_ICONST_JAVA:
+				{
+					abort();
 				}
 				break;
 			
