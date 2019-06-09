@@ -735,15 +735,33 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreFullException, RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		// {@squirreljme.error DC0g Cannot write record to read-only store.}
+		if (!this._write)
+			throw new RecordStoreException("DC0g");
+		
+		// Used for later
+		RecordListener[] listeners = this.__listeners();
 		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			// Check open
+			this.__checkOpen();
+			
+			// Set the page
+			__id = vinyl.pageSet(this._vid, __id, __b, __o, __l, __tag);
+			RecordStore.__checkError(__id);
 		}
+		
+		// Report to the listeners
+		for (RecordListener l : listeners)
+			l.recordChanged(this, __id);
 	}
 	
 	/**
