@@ -930,7 +930,51 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_ENC_MEMORY_OFF_REG_JAVA:
 			case SJME_ENC_MEMORY_OFF_ICONST_JAVA:
 				{
-					abort();
+					/* Destination/source register. */
+					ic = sjme_opdecodeui(&nextpc);
+					
+					/* The address to access. */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					ib = (enc >= SJME_ENC_MEMORY_OFF_ICONST ?
+						sjme_memjreadp(4, &nextpc) :
+						r[sjme_opdecodeui(&nextpc)]);
+					tempp = SJME_JINT_TO_POINTER(ia);
+					
+					/* Load value */
+					if ((op & SJME_MEM_LOAD_MASK) != 0)
+					{
+						switch (op & SJME_MEM_DATATYPE_MASK)
+						{
+							case SJME_DATATYPE_BYTE:
+								r[ic] = sjme_memjread(1, tempp, ib);
+								break;
+								
+							case SJME_DATATYPE_CHARACTER:
+								r[ic] = (sjme_memjread(2, tempp, ib) &
+									SJME_JINT_C(0xFFFF));
+								break;
+								
+							case SJME_DATATYPE_SHORT:
+								r[ic] = sjme_memjread(2, tempp, ib);
+								break;
+								
+							case SJME_DATATYPE_OBJECT:
+							case SJME_DATATYPE_INTEGER:
+							case SJME_DATATYPE_FLOAT:
+							default:
+								r[ic] = sjme_memjread(4, tempp, ib);
+								break;
+						}
+					}
+					
+					/* Store value */
+					else
+					{
+						if (error != NULL)
+							*error = SJME_ERROR_NOJAVAWRITE;
+						
+						return cycles;
+					}
 				}
 				break;
 				

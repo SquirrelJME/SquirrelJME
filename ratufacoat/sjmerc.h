@@ -187,6 +187,9 @@ typedef int32_t sjme_jint;
 /** CPU hit breakpoint. */
 #define SJME_ERROR_CPUBREAKPOINT SJME_JINT_C(-12)
 
+/** Cannot write Java values. */
+#define SJME_ERROR_NOJAVAWRITE SJME_JINT_C(-13)
+
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
 
