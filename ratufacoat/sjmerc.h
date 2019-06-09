@@ -16,6 +16,13 @@
 #ifndef SJME_hGRATUFACOATSJMERCHSJMERCH
 #define SJME_hGRATUFACOATSJMERCHSJMERCH
 
+/** Standard Includes. */
+#include <stddef.h>
+#include <limits.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 /** Is this a 64-bit system? */
 #if !defined(SJME_BITS)
 	#if defined(_LP64) || defined(__LP64__) || defined(__x86_64__) || \
@@ -37,13 +44,6 @@
 		#define SJME_LITTLE_ENDIAN
 	#endif
 #endif
-
-/** Standard Includes. */
-#include <stddef.h>
-#include <limits.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 /** Linux. */
 #if defined(__linux__) || defined(__gnu_linux__)
@@ -128,7 +128,7 @@ typedef int32_t sjme_jint;
 
 /** Pointer conversion. */
 #define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
-#define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)(x)))
+#define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)((sjme_jint)(x))))
 
 /** Pointer path. */
 #define SJME_POINTER_OFFSET(p, o) SJME_JINT_TO_POINTER( \
@@ -175,6 +175,12 @@ typedef int32_t sjme_jint;
 
 /** Invalid JAR magic number. */
 #define SJME_ERROR_INVALIDJARMAGIC SJME_JINT_C(-9)
+
+/** Invalid end of BootRAM. */
+#define SJME_ERROR_INVALIDBOOTRAMEND SJME_JINT_C(-10)
+
+/** Invalid BootRAM seed. */
+#define SJME_ERROR_INVALIDBOOTRAMSEED SJME_JINT_C(-11)
 
 /**
  * Java virtual machine arguments.
