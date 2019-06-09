@@ -216,6 +216,10 @@ public class RecordStore
 	 */
 	public void addRecordListener(RecordListener __l)
 	{
+		// Ignore
+		if (__l == null)
+			return;
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -224,7 +228,12 @@ public class RecordStore
 			if (this._opens <= 0)
 				return;
 			
-			throw new todo.TODO();
+			// Add listener
+			Set<RecordListener> listeners = this._listeners;
+			synchronized (listeners)
+			{
+				listeners.add(__l);
+			}
 		}
 	}
 	
@@ -725,7 +734,25 @@ public class RecordStore
 	 */
 	public void removeRecordListener(RecordListener __l)
 	{
-		throw new todo.TODO();
+		// Ignore
+		if (__l == null)
+			return;
+		
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			// No effect if closed
+			if (this._opens <= 0)
+				return;
+			
+			// Remove listener
+			Set<RecordListener> listeners = this._listeners;
+			synchronized (listeners)
+			{
+				listeners.remove(__l);
+			}
+		}
 	}
 	
 	/**
