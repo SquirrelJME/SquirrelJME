@@ -196,13 +196,13 @@ jobs:
           name: Extract distribution
           command: unzip -o squirreljme-summercoatrom-test.zip
       - run:
-          name: Cleaning RatufaCoat VM (Default)
+          name: Cleaning RatufaCoat VM (PowerPC)
           command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
       - run:
-          name: Building RatufaCoat VM (Default)
+          name: Building RatufaCoat VM (PowerPC)
           command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc CC=powerpc-linux-gnu-gcc CFLAGS='-static -DSJME_BIG_ENDIAN'
       - run:
-          name: Running RatufaCoat VM (Default)
+          name: Running RatufaCoat VM (PowerPC)
           command: qemu-ppc ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rpjut/ratufacoatppc/results.xml
       - store_test_results:
           path: rpjut
