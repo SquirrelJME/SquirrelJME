@@ -185,6 +185,9 @@
 /** Mask for data types in memory. */
 #define SJME_MEM_DATATYPE_MASK UINT8_C(0x07)
 
+/** Mask for math operations. */
+#define SJME_MATH_MASK UINT8_C(0x0F)
+
 /** Object. */
 #define SJME_DATATYPE_OBJECT UINT8_C(0)
 
@@ -220,6 +223,80 @@
 
 /** Thread is running. */
 #define SJME_THREAD_STATE_RUNNING 1
+
+/** Upper shift value mask, since shifting off the type is undefined. */
+static sjme_jint sjme_sh_umask[32] =
+{
+	SJME_JINT_C(0xFFFFFFFF),
+	SJME_JINT_C(0xFFFFFFFE),
+	SJME_JINT_C(0xFFFFFFFC),
+	SJME_JINT_C(0xFFFFFFF8),
+	SJME_JINT_C(0xFFFFFFF0),
+	SJME_JINT_C(0xFFFFFFE0),
+	SJME_JINT_C(0xFFFFFFC0),
+	SJME_JINT_C(0xFFFFFF80),
+	SJME_JINT_C(0xFFFFFF00),
+	SJME_JINT_C(0xFFFFFE00),
+	SJME_JINT_C(0xFFFFFC00),
+	SJME_JINT_C(0xFFFFF800),
+	SJME_JINT_C(0xFFFFF000),
+	SJME_JINT_C(0xFFFFE000),
+	SJME_JINT_C(0xFFFFC000),
+	SJME_JINT_C(0xFFFF8000),
+	SJME_JINT_C(0xFFFF0000),
+	SJME_JINT_C(0xFFFE0000),
+	SJME_JINT_C(0xFFFC0000),
+	SJME_JINT_C(0xFFF80000),
+	SJME_JINT_C(0xFFF00000),
+	SJME_JINT_C(0xFFE00000),
+	SJME_JINT_C(0xFFC00000),
+	SJME_JINT_C(0xFF800000),
+	SJME_JINT_C(0xFF000000),
+	SJME_JINT_C(0xFE000000),
+	SJME_JINT_C(0xFC000000),
+	SJME_JINT_C(0xF8000000),
+	SJME_JINT_C(0xF0000000),
+	SJME_JINT_C(0xE0000000),
+	SJME_JINT_C(0xC0000000),
+	SJME_JINT_C(0x80000000)
+};
+
+/** Lower shift value mask, since shifting off the type is undefined. */
+static sjme_jint sjme_sh_lmask[32] =
+{
+	SJME_JINT_C(0xFFFFFFFF),
+	SJME_JINT_C(0x7FFFFFFF),
+	SJME_JINT_C(0x3FFFFFFF),
+	SJME_JINT_C(0x1FFFFFFF),
+	SJME_JINT_C(0x0FFFFFFF),
+	SJME_JINT_C(0x07FFFFFF),
+	SJME_JINT_C(0x03FFFFFF),
+	SJME_JINT_C(0x01FFFFFF),
+	SJME_JINT_C(0x00FFFFFF),
+	SJME_JINT_C(0x007FFFFF),
+	SJME_JINT_C(0x003FFFFF),
+	SJME_JINT_C(0x001FFFFF),
+	SJME_JINT_C(0x000FFFFF),
+	SJME_JINT_C(0x0007FFFF),
+	SJME_JINT_C(0x0003FFFF),
+	SJME_JINT_C(0x0001FFFF),
+	SJME_JINT_C(0x0000FFFF),
+	SJME_JINT_C(0x00007FFF),
+	SJME_JINT_C(0x00003FFF),
+	SJME_JINT_C(0x00001FFF),
+	SJME_JINT_C(0x00000FFF),
+	SJME_JINT_C(0x000007FF),
+	SJME_JINT_C(0x000003FF),
+	SJME_JINT_C(0x000001FF),
+	SJME_JINT_C(0x000000FF),
+	SJME_JINT_C(0x0000007F),
+	SJME_JINT_C(0x0000003F),
+	SJME_JINT_C(0x0000001F),
+	SJME_JINT_C(0x0000000F),
+	SJME_JINT_C(0x00000007),
+	SJME_JINT_C(0x00000003),
+	SJME_JINT_C(0x00000001)
+};
 
 /** Virtual CPU. */
 typedef struct sjme_cpu sjme_cpu;
@@ -525,7 +602,7 @@ sjme_jint sjme_opdecodeui(void** ptr)
 sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 	sjme_jint cycles)
 {
-	sjme_jint op;
+	sjme_jint op, enc;
 	void* nextpc;
 	void* tempp;
 	sjme_jint* r;
@@ -556,11 +633,15 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				break;
 		}
 		
+		/* The zero register always must be zero. */
+		r[0] = 0;
+		
 		/* Seed next PC address. */
 		nextpc = cpu->pc;
 		
-		/* Read operation. */
+		/* Read operation and determine encoding. */
 		op = (sjme_memjreadp(1, &nextpc) & SJME_JINT_C(0xFF));
+		enc = ((op >= SJME_ENC_SPECIAL_A) ? op : (op & SJME_ENC_MASK));
 		
 		/* Temporary debug. */
 		fprintf(stderr, "pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
@@ -577,8 +658,129 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			(int)cpu->debugjpc);
 		
 		/* Depends on the operation. */
-		switch (op)
+		switch (enc)
 		{
+				/* Math. */
+			case SJME_ENC_MATH_REG_INT:
+			case SJME_ENC_MATH_CONST_INT:
+				{
+					/* A Value. */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					
+					/* B value. */
+					ib = (enc == SJME_ENC_MATH_CONST_INT ?
+						sjme_memjreadp(4, &nextpc) :
+						r[sjme_opdecodeui(&nextpc)]);
+					
+					/* Perform the math. */
+					switch (op & SJME_MATH_MASK)
+					{
+						case SJME_MATH_ADD:
+							ic = ia + ib;
+							break;
+							
+						case SJME_MATH_SUB:
+							ic = ia - ib;
+							break;
+							
+						case SJME_MATH_MUL:
+							ic = ia * ib;
+							break;
+							
+						case SJME_MATH_DIV:
+							ic = ia / ib;
+							break;
+							
+						case SJME_MATH_REM:
+							ic = ia % ib;
+							break;
+							
+						case SJME_MATH_NEG:
+							ic = -ia;
+							break;
+							
+						case SJME_MATH_SHL:
+							/* Shift is truncated. */
+							ib = (ib & SJME_JINT_C(0x1F));
+							
+							/* Shifting values off the type is undefined, */
+							/* so only keep the part of the value which is */
+							/* not shifted off! */
+							if (ib == 0)
+								ic = ia;
+							else
+								ic = ((ia & sjme_sh_lmask[ib]) << ib);
+							break;
+							
+						case SJME_MATH_SHR:
+						case SJME_MATH_USHR:
+							/* Shift is truncated. */
+							ib = (ib & SJME_JINT_C(0x1F));
+							
+							/* Shifting values off the type is undefined, */
+							/* so only keep the part of the value which is */
+							/* not shifted off! */
+							if (ib == 0)
+								ic = ia;
+							else
+								ic = (((ia & sjme_sh_umask[ib])) >> ib);
+							
+							/* Mask in or mask out the dragged sign bit. */
+							if (((ia & SJME_JINT_C(0x80000000)) != 0) &&
+								((op & SJME_MATH_MASK) == SJME_MATH_SHR))
+								ic |= sjme_sh_umask[ib];
+							else
+								ic &= sjme_sh_lmask[31 - ib];
+							break;
+							
+						case SJME_MATH_AND:
+							ic = ia & ib;
+							break;
+							
+						case SJME_MATH_OR:
+							ic = ia | ib;
+							break;
+							
+						case SJME_MATH_XOR:
+							ic = ia ^ ib;
+							break;
+							
+						case SJME_MATH_SIGNX8:
+							if (ia & SJME_JINT_C(0x80))
+								ic = (ia | SJME_JINT_C(0xFFFFFF00));
+							else
+								ic = (ia & SJME_JINT_C(0x000000FF));
+							break;
+							
+						case SJME_MATH_SIGNX16:
+							if (ia & SJME_JINT_C(0x8000))
+								ic = (ia | SJME_JINT_C(0xFFFF0000));
+							else
+								ic = (ia & SJME_JINT_C(0x0000FFFF));
+							break;
+						
+						case SJME_MATH_CMPL:
+						case SJME_MATH_CMPG:
+							ic = (ia < ib ? SJME_JINT_C(-1) :
+								(ia > ib ? SJME_JINT_C(1) : SJME_JINT_C(0)));
+							break;
+					}
+					
+					/* Store result. */
+					r[sjme_opdecodeui(&nextpc)] = ic;
+				}
+				break;
+			
+				/* Copy value. */
+			case SJME_OP_COPY:
+				{
+					ia = sjme_opdecodeui(&nextpc);
+					ib = sjme_opdecodeui(&nextpc);
+					
+					r[ib] = r[ia];
+				}
+				break;
+			
 				/* Debug entry. */
 			case SJME_OP_DEBUG_ENTRY:
 				{
