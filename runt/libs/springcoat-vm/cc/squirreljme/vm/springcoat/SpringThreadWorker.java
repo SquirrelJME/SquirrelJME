@@ -4149,6 +4149,38 @@ public final class SpringThreadWorker
 		// Depends on the system call type
 		switch (__si)
 		{
+				// Check if system call is supported
+			case SystemCallIndex.QUERY_INDEX:
+				{
+					err = 0;
+					switch (__args[0])
+					{
+						case SystemCallIndex.ERROR_GET:
+						case SystemCallIndex.ERROR_SET:
+						case SystemCallIndex.TIME_LO_MILLI_WALL:
+						case SystemCallIndex.TIME_HI_MILLI_WALL:
+						case SystemCallIndex.TIME_LO_NANO_MONO:
+						case SystemCallIndex.TIME_HI_NANO_MONO:
+						case SystemCallIndex.VMI_MEM_FREE:
+						case SystemCallIndex.VMI_MEM_USED:
+						case SystemCallIndex.VMI_MEM_MAX:
+						case SystemCallIndex.GARBAGE_COLLECT:
+						case SystemCallIndex.EXIT:
+						case SystemCallIndex.API_LEVEL:
+						case SystemCallIndex.PD_OF_STDIN:
+						case SystemCallIndex.PD_OF_STDOUT:
+						case SystemCallIndex.PD_OF_STDERR:
+						case SystemCallIndex.PD_WRITE_BYTE:
+							rv = 1;
+							break;
+						
+						default:
+							rv = 0;
+							break;
+					}
+				}
+				break;
+				
 				// Get error
 			case SystemCallIndex.ERROR_GET:
 				{

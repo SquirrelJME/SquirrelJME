@@ -29,6 +29,9 @@
 /** Maximum CPU registers. */
 #define SJME_MAX_REGISTERS SJME_JINT_C(64)
 
+/** Maximum system call arguments. */
+#define SJME_MAX_SYSCALLARGS SJME_JINT_C(8)
+
 /** The zero register. */
 #define SJME_ZERO_REGISTER SJME_JINT_C(0)
 
@@ -253,6 +256,77 @@
 
 /** Base size of arrays. */
 #define SJME_ARRAY_BASE_SIZE SJME_JINT_C(16)
+/** Checks if the system call is supported. */
+#define SJME_SYSCALL_QUERY_INDEX SJME_JINT_C(0)
+
+/** Gets the last error state. */
+#define SJME_SYSCALL_ERROR_GET SJME_JINT_C(1)
+
+/** Sets the last error state. */
+#define SJME_SYSCALL_ERROR_SET SJME_JINT_C(2)
+
+/** Current wall clock milliseconds (low). */
+#define SJME_SYSCALL_TIME_LO_MILLI_WALL SJME_JINT_C(3)
+
+/** Current wall clock milliseconds (high). */
+#define SJME_SYSCALL_TIME_HI_MILLI_WALL SJME_JINT_C(4)
+
+/** Current monotonic clock nanoseconds (low). */
+#define SJME_SYSCALL_TIME_LO_NANO_MONO SJME_JINT_C(5)
+
+/** Current monotonic clock nanoseconds (high). */
+#define SJME_SYSCALL_TIME_HI_NANO_MONO SJME_JINT_C(6)
+
+/** VM Information: Free memory in bytes. */
+#define SJME_SYSCALL_VMI_MEM_FREE SJME_JINT_C(7)
+
+/** VM Information: Used memory in bytes. */
+#define SJME_SYSCALL_VMI_MEM_USED SJME_JINT_C(8)
+
+/** VM Information: Max memory in bytes. */
+#define SJME_SYSCALL_VMI_MEM_MAX SJME_JINT_C(9)
+
+/** Invoke the garbage collector. */
+#define SJME_SYSCALL_GARBAGE_COLLECT SJME_JINT_C(10)
+
+/** Exit the VM. */
+#define SJME_SYSCALL_EXIT SJME_JINT_C(11)
+
+/** The API Level of the VM. */
+#define SJME_SYSCALL_API_LEVEL SJME_JINT_C(12)
+
+/** The pipe descriptor for stdin. */
+#define SJME_SYSCALL_PD_OF_STDIN SJME_JINT_C(13)
+
+/** The pipe descriptor for stdout. */
+#define SJME_SYSCALL_PD_OF_STDOUT SJME_JINT_C(14)
+
+/** The pipe descriptor for stderr. */
+#define SJME_SYSCALL_PD_OF_STDERR SJME_JINT_C(15)
+
+/** Pipe descriptor: Write single byte. */
+#define SJME_SYSCALL_PD_WRITE_BYTE SJME_JINT_C(16)
+
+/** System call count. */
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(17)
+
+/** No error, or success. */
+#define SJME_SYSCALL_ERROR_NO_ERROR SJME_JINT_C(0)
+
+/** The system call is not supported. */
+#define SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL SJME_JINT_C(-1)
+
+/** The pipe descriptor is not valid. */
+#define SJME_SYSCALL_ERROR_PIPE_DESCRIPTOR_INVALID SJME_JINT_C(-2)
+
+/** Write error when writing to the pipe. */
+#define SJME_SYSCALL_ERROR_PIPE_DESCRIPTOR_BAD_WRITE SJME_JINT_C(-3)
+
+/** Pipe descriptor for standard output. */
+#define SJME_PIPE_FD_STDOUT SJME_JINT_C(1)
+
+/** Pipe descriptor for standard error. */
+#define SJME_PIPE_FD_STDERR SJME_JINT_C(2)
 
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[32] =
@@ -341,6 +415,12 @@ struct sjme_cpu
 	/** Registers. */
 	sjme_jint r[SJME_MAX_REGISTERS];
 	
+	/* System call arguments. */
+	sjme_jint syscallargs[SJME_MAX_SYSCALLARGS];
+	
+	/* System call error numbers. */
+	sjme_jint syscallerr[SJME_SYSCALL_NUM_SYSCALLS];
+	
 	/** Debug: Class name. */
 	void* debugclassname;
 	
@@ -374,6 +454,9 @@ typedef struct sjme_jvm
 	
 	/** ROM. */
 	void* rom;
+	
+	/* Native functions. */
+	sjme_nativefuncs* nativefuncs;
 	
 	/** Linearly fair CPU execution engine. */
 	sjme_jint fairthreadid;
@@ -616,6 +699,126 @@ sjme_jint sjme_opdecodeui(void** ptr)
 	
 	/* Use read value. */
 	return rv;
+}
+
+/**
+ * Handles system calls.
+ *
+ * @param jvm The JVM.
+ * @param cpu The CPU.
+ * @param error Error state.
+ * @param callid The system call type.
+ * @param args Arguments to the call.
+ * @return The result of the call.
+ * @since 2019/06/09
+ */
+sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
+	sjme_jshort callid, sjme_jint* args)
+{
+	sjme_jint* syserr;
+	sjme_jint ia, ib;
+	
+	/* Called wrong? */
+	if (jvm == NULL || cpu == NULL || args == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDARG;
+		
+		return 0;
+	}
+	
+	/* Calculate index to set for system call errors. */
+	syserr = ((callid < 0 || callid >= SJME_SYSCALL_NUM_SYSCALLS) ?
+		&cpu->syscallerr[SJME_SYSCALL_QUERY_INDEX] : &cpu->syscallerr[callid]);
+	
+	/* Depends on the system call. */
+	switch (callid)
+	{
+			/* Query support for system call. */
+		case SJME_SYSCALL_QUERY_INDEX:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			switch (args[0])
+			{
+				case SJME_SYSCALL_ERROR_GET:
+				case SJME_SYSCALL_ERROR_SET:
+				case SJME_SYSCALL_PD_OF_STDOUT:
+				case SJME_SYSCALL_PD_OF_STDERR:
+				case SJME_SYSCALL_PD_WRITE_BYTE:
+					return SJME_JINT_C(1);
+			}
+			return SJME_JINT_C(0);
+			
+			/* Get error state. */
+		case SJME_SYSCALL_ERROR_GET:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			
+			ia = args[0];
+			if (ia < 0 || ia >= SJME_SYSCALL_NUM_SYSCALLS)
+				ia = SJME_SYSCALL_QUERY_INDEX;
+			
+			return cpu->syscallerr[ia];
+			
+			/* Set error state, return old one. */
+		case SJME_SYSCALL_ERROR_SET:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			
+			ia = args[0];
+			if (ia < 0 || ia >= SJME_SYSCALL_NUM_SYSCALLS)
+				ia = SJME_SYSCALL_QUERY_INDEX;
+			
+			ib = cpu->syscallerr[ia];
+			cpu->syscallerr[ia] = args[1];
+			return ib;
+			
+			/* Pipe descriptor of standard output. */
+		case SJME_SYSCALL_PD_OF_STDOUT:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return SJME_JINT_C(SJME_PIPE_FD_STDOUT);
+			
+			/* Pipe descriptor of standard error. */
+		case SJME_SYSCALL_PD_OF_STDERR:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return SJME_JINT_C(SJME_PIPE_FD_STDERR);
+			
+			/* Write single byte to a stream. */
+		case SJME_SYSCALL_PD_WRITE_BYTE:
+			ia = -1;
+			switch (args[0])
+			{
+					/* Standard output. */
+				case SJME_PIPE_FD_STDOUT:
+					if (jvm->nativefuncs->stdout_write != NULL)
+						ia = jvm->nativefuncs->stdout_write(args[1]);
+					break;
+				
+					/* Standard error. */
+				case SJME_PIPE_FD_STDERR:
+					if (jvm->nativefuncs->stderr_write != NULL)
+						ia = jvm->nativefuncs->stderr_write(args[1]);
+					break;
+					
+					/* Unknown descriptor. */
+				default:
+					*syserr = SJME_SYSCALL_ERROR_PIPE_DESCRIPTOR_INVALID;
+					return SJME_JINT_C(-1);
+			}
+			
+			/* Write error? */
+			if (ia < 0)
+			{
+				*syserr = SJME_SYSCALL_ERROR_PIPE_DESCRIPTOR_INVALID;
+				return SJME_JINT_C(-1);
+			}
+			
+			/* Success. */
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return SJME_JINT_C(1);
+		
+			/* Unknown or unsupported system call. */
+		default:
+			*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+			return SJME_JINT_C(-1);
+	}
 }
 
 /**
@@ -1182,6 +1385,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					for (ia = 0; ia < SJME_LOCAL_REGISTER_BASE; ia++)
 						oldcpu->r[ia] = cpu->r[ia];
 					
+					/* Copy system call errors back. */
+					for (ia = 0; ia < SJME_SYSCALL_NUM_SYSCALLS; ia++)
+						oldcpu->syscallerr[ia] = cpu->syscallerr[ia];
+					
 					/* Completely restore the old state. */
 					*cpu = *oldcpu;
 					
@@ -1195,6 +1402,38 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					fprintf(stderr, "Returns: %d %d\n",
 						(int)r[SJME_RETURN_REGISTER],
 						(int)r[SJME_RETURN_REGISTER + 1]);
+				}
+				break;
+				
+				/* System call. */
+			case SJME_OP_SYSTEM_CALL:
+				{
+					/* Clear system call arguments. */
+					for (ia = 0; ia < SJME_MAX_SYSCALLARGS; ia++)
+						cpu->syscallargs[ia] = 0;
+					
+					/* Load call type. */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					
+					/* Load call arguments. */
+					ic = sjme_opdecodeui(&nextpc);
+					for (ib = 0; ib < ic; ib++)
+					{
+						/* Get value. */
+						id = r[sjme_opdecodeui(&nextpc)];
+						
+						/* Set but never exceed the system call limit. */
+						if (ib < SJME_MAX_SYSCALLARGS)
+							cpu->syscallargs[ib] = id;
+					}
+					
+					/* Call it and place result into the return register. */
+					r[SJME_RETURN_REGISTER] = sjme_syscall(jvm, cpu, error,
+						ia, cpu->syscallargs);
+					
+					/* Stop if an error was set. */
+					if (error != NULL && *error != SJME_ERROR_NONE)
+						return cycles;
 				}
 				break;
 			
@@ -1584,6 +1823,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	/* Needed by the VM. */
 	rv->ram = ram;
 	rv->ramsize = options->ramsize;
+	rv->nativefuncs = nativefuncs;
 	
 	/* Load the ROM? */
 	rom = options->presetrom;
