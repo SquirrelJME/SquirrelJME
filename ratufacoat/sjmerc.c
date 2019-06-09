@@ -251,6 +251,9 @@
 /** Thread is running. */
 #define SJME_THREAD_STATE_RUNNING 1
 
+/** Base size of arrays. */
+#define SJME_ARRAY_BASE_SIZE SJME_JINT_C(16)
+
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[32] =
 {
@@ -1117,6 +1120,22 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Our next PC becomes the target address. */
 					nextpc = SJME_JINT_TO_POINTER(ia);
 					cpu->pc = nextpc;
+				}
+				break;
+				
+				/* Load value from integer array. */
+			case SJME_OP_LOAD_FROM_INTARRAY:
+				{
+					/* Destination register. */
+					ic = sjme_opdecodeui(&nextpc);
+					
+					/* Address and index */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					ib = r[sjme_opdecodeui(&nextpc)];
+					
+					/* Load from array. */
+					r[ic] = sjme_memread(4, SJME_JINT_TO_POINTER(ia),
+						SJME_ARRAY_BASE_SIZE + (ib * SJME_JINT_C(4)));
 				}
 				break;
 				
