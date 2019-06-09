@@ -633,7 +633,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 	void* nextpc;
 	void* tempp;
 	sjme_jint* r;
-	sjme_jint ia, ib, ic;
+	sjme_jint ia, ib, ic, id;
 	sjme_cpu* oldcpu;
 	
 	/* Invalid argument? */
@@ -975,6 +975,45 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						
 						return cycles;
 					}
+				}
+				break;
+				
+				/* Atomic decrement and get. */
+			case SJME_OP_ATOMIC_INT_DECREMENT_AND_GET:
+				{
+					/* Target register. */
+					id = sjme_opdecodeui(&nextpc);
+					
+					/* Load address and offset. */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					ib = sjme_opdecodeui(&nextpc);
+					
+					/* Read value here. */
+					ic = sjme_memread(4, SJME_JINT_TO_POINTER(ia), ib);
+					
+					/* Decrement value. */
+					ic = ic - 1;
+					
+					/* Store value. */
+					sjme_memwrite(4, SJME_JINT_TO_POINTER(ia), ib, ic);
+					
+					/* Set destination value. */
+					r[id] = ic;
+				}
+				break;
+				
+				/* Atomic increment. */
+			case SJME_OP_ATOMIC_INT_INCREMENT:
+				{
+					/* Load address and offset. */
+					ia = r[sjme_opdecodeui(&nextpc)];
+					ib = sjme_opdecodeui(&nextpc);
+					
+					/* Read value here. */
+					ic = sjme_memread(4, SJME_JINT_TO_POINTER(ia), ib);
+					
+					/* And write incremented value. */
+					sjme_memwrite(4, SJME_JINT_TO_POINTER(ia), ib, ic + 1);
 				}
 				break;
 				
