@@ -23,6 +23,52 @@
 /** Magic number for JARs. */
 #define SJME_JAR_MAGIC_NUMBER SJME_JINT_C(0x00456570)
 
+/** Check magic for BootRAM. */
+#define SJME_BOOTRAM_CHECK_MAGIC SJME_JINT_C(0xFFFFFFFF)
+
+/** Maximum CPU registers. */
+#define SJME_MAX_REGISTERS SJME_JINT_C(64)
+
+/** The zero register. */
+#define SJME_ZERO_REGISTER SJME_JINT_C(0)
+
+/** The return value register (two slots, 1 + 2). */
+#define SJME_RETURN_REGISTER SJME_JINT_C(1)
+
+/** Second return register. */
+#define SJME_RETURN_TWO_REGISTER SJME_JINT_C(2)
+
+/** The exception register. */
+#define SJME_EXCEPTION_REGISTER SJME_JINT_C(3)
+
+/** The pointer containing static field data. */
+#define SJME_STATIC_FIELD_REGISTER SJME_JINT_C(4)
+
+/** Register which represents the current thread of execution. */
+#define SJME_THREAD_REGISTER SJME_JINT_C(5)
+
+/** Base for local registers (locals start here). */
+#define SJME_LOCAL_REGISTER_BASE SJME_JINT_C(6)
+
+/** The register containing the constant pool. */
+#define SJME_POOL_REGISTER SJME_JINT_C(6)
+
+/** The register which contains the next pool pointer to use. */
+#define SJME_NEXT_POOL_REGISTER SJME_JINT_C(7)
+
+/** The register of the first argument. */
+#define SJME_ARGUMENT_REGISTER_BASE SJME_JINT_C(8)
+
+/** Virtual CPU. */
+typedef struct sjme_cpu
+{
+	/** PC. */
+	void* pc;
+	
+	/** Registers. */
+	sjme_jint r[SJME_MAX_REGISTERS];
+} sjme_cpu;
+
 /** Virtual machine state. */
 typedef struct sjme_jvm
 {
@@ -104,6 +150,77 @@ void sjme_free(void* p)
 	/* Use Standard C free. */
 	free(basep);
 #endif
+}
+
+/**
+ * Reads a value from memory.
+ *
+ * @param size The size of the value to read.
+ * @param ptr The pointer to read from.
+ * @param off The offset.
+ * @return The read value.
+ * @since 2019/06/08
+ */
+sjme_jint sjme_memread(sjme_jint size, void* ptr, sjme_jint off)
+{
+	sjme_jint rv;
+	
+	/* Get the true pointer. */
+	ptr = SJME_POINTER_OFFSET(ptr, off);
+	
+	/* Read value from memory. */
+	switch (size)
+	{
+			/* Byte */
+		case 1:
+			return *((sjme_jbyte*)ptr);
+		
+			/* Short */
+		case 2:
+			return *((sjme_jshort*)ptr);
+			
+			/* Integer */
+		case 4:
+		default:
+			return *((sjme_jint*)ptr);
+	}
+}
+
+/**
+ * Writes a value to memory.
+ *
+ * @param size The size of the value to write.
+ * @param ptr The pointer to read to.
+ * @param off The offset.
+ * @param value The value to write.
+ * @since 2019/06/08
+ */
+void sjme_memwrite(sjme_jint size, void* ptr, sjme_jint off, sjme_jint value)
+{
+	sjme_jint rv;
+	
+	/* Get the true pointer. */
+	ptr = SJME_POINTER_OFFSET(ptr, off);
+	
+	/* Write value to memory. */
+	switch (size)
+	{
+			/* Byte */
+		case 1:
+			*((sjme_jbyte*)ptr) = (sjme_jbyte)value;
+			break;
+		
+			/* Short */
+		case 2:
+			*((sjme_jshort*)ptr) = (sjme_jshort)value;
+			break;
+			
+			/* Integer */
+		case 4:
+		default:
+			*((sjme_jint*)ptr) = value;
+			break;
+	}
 }
 
 /**
@@ -301,10 +418,24 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	sjme_jint* error)
 {
 	void* rp;
+	void* bootjar;
+	sjme_jbyte* byteram;
+	sjme_jint bootoff, i, n, seedop, seedaddr, seedvalh, seedvall, seedsize;
+	sjme_cpu* cpu;
 	
 	/* Invalid arguments. */
 	if (rom == NULL || ram == NULL || ramsize <= 0 || jvm == NULL)
 		return 0;
+	
+	/* Allocate CPU. */
+	cpu = sjme_malloc(sizeof(*cpu));
+	if (cpu == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_NOMEMORY;
+		
+		return 0;
+	}
 	
 	/* Set boot pointer to start of ROM. */
 	rp = rom;
@@ -315,6 +446,7 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDROMMAGIC;
 		
+		sjme_free(cpu);
 		return 0;
 	}
 	
@@ -323,7 +455,7 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	sjme_memjreadp(4, &rp);
 	
 	/* Read and calculate BootJAR position. */
-	rp = SJME_POINTER_OFFSET(rom, sjme_memjreadp(4, &rp));
+	rp = bootjar = SJME_POINTER_OFFSET(rom, sjme_memjreadp(4, &rp));
 	
 	/* Check JAR magic number. */
 	if (sjme_memjreadp(4, &rp) != SJME_JAR_MAGIC_NUMBER)
@@ -331,6 +463,100 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDJARMAGIC;
 		
+		sjme_free(cpu);
+		return 0;
+	}
+	
+	/* Ignore numrc, tocoffset, manifestoff, manifestlen. */
+	sjme_memjreadp(4, &rp);
+	sjme_memjreadp(4, &rp);
+	sjme_memjreadp(4, &rp);
+	sjme_memjreadp(4, &rp);
+	
+	/* Read boot offset for later. */
+	bootoff = sjme_memjreadp(4, &rp);
+	
+	/* Ignore bootsize. */
+	sjme_memjreadp(4, &rp);
+	
+	/* Seed initial CPU state. */
+	cpu->r[SJME_POOL_REGISTER] = sjme_memjreadp(4, &rp);
+	cpu->r[SJME_STATIC_FIELD_REGISTER] = sjme_memjreadp(4, &rp);
+	cpu->pc = SJME_JINT_TO_POINTER(sjme_memjreadp(4, &rp));
+	
+	/* Address where the BootRAM is read from. */
+	rp = SJME_POINTER_OFFSET(bootjar, bootoff);
+	
+	/* Copy initial base memory bytes, which is pure big endian. */
+	byteram = (sjme_jbyte*)ram;
+	n = sjme_memjreadp(4, &rp);
+	for (i = 0; i < n; i++)
+		byteram[i] = sjme_memjreadp(1, &rp);
+	
+	/* Load all seeds, which restores natural byte order. */
+	n = sjme_memjreadp(4, &rp);
+	for (i = 0; i < n; i++)
+	{
+		/* Read seed information. */
+		seedop = sjme_memjreadp(1, &rp);
+		seedsize = (seedop >> SJME_JINT_C(4)) & SJME_JINT_C(0xF);
+		seedop = (seedop & SJME_JINT_C(0xF));
+		seedaddr = sjme_memjreadp(4, &rp);
+		
+		/* Wide value. */
+		if (seedsize == 8)
+		{
+			seedvalh = sjme_memjreadp(4, &rp);
+			seedvall = sjme_memjreadp(4, &rp);
+		}
+		
+		/* Narrow value. */
+		else
+			seedvalh = sjme_memjreadp(seedsize, &rp);
+		
+		/* Make sure the seed types are correct. */
+		if ((seedsize != 1 && seedsize != 2 &&
+			seedsize != 4 && seedsize != 8) || 
+			(seedop != 0 && seedop != 1 && seedop != 2) ||
+			(seedsize == 8 && seedop != 0))
+		{
+			if (error != NULL)
+				*error = SJME_ERROR_INVALIDBOOTRAMSEED;
+			
+			sjme_free(cpu);
+			return 0;
+		}
+		
+		/* Offset value if it is in RAM or JAR ROM. */
+		if (seedop == 1)
+			seedvalh += SJME_POINTER_TO_JINT(ram);
+		else if (seedop == 2)
+			seedvalh += SJME_POINTER_TO_JINT(bootjar);
+		
+		/* Write long value. */
+		if (seedsize == 8)
+		{
+#if defined(SJME_BIG_ENDIAN)
+			sjme_memwrite(4, ram, seedaddr, seedvalh);
+			sjme_memwrite(4, ram, seedaddr + SJME_JINT_C(4), seedvall);
+#else
+			sjme_memwrite(4, ram, seedaddr, seedvall);
+			sjme_memwrite(4, ram, seedaddr + SJME_JINT_C(4), seedvalh);
+#endif
+		}
+		
+		/* Write narrow value. */
+		else
+			sjme_memwrite(seedsize, ram, seedaddr, seedvalh);
+	}
+	
+	/* Check end value. */
+	if (sjme_memjreadp(4, &rp) != SJME_BOOTRAM_CHECK_MAGIC)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDBOOTRAMEND;
+		
+		sjme_free(cpu);
 		return 0;
 	}
 }
