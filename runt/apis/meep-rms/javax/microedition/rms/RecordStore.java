@@ -291,15 +291,24 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreNotOpenException,
 			RecordStoreException, SecurityException
 	{
-		// Check open
-		this.__checkOpen();
+		// Used later
+		RecordListener[] listeners = this.__listeners();
 		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			// Check open
+			this.__checkOpen();
+			
+			// Delete it
+			int rv = vinyl.pageDelete(this._vid, __id);
+			RecordStore.__checkError(rv);
 		}
+		
+		// Report to the listeners
+		for (RecordListener l : listeners)
+			l.recordDeleted(this, __id);
 	}
 	
 	/**

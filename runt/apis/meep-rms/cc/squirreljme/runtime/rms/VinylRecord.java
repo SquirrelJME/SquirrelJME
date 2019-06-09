@@ -60,6 +60,16 @@ public interface VinylRecord
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
+	 * Deletes the given page.
+	 *
+	 * @param __vid The volume ID.
+	 * @param __pid The page ID.
+	 * @return The page that was deleted or an error.
+	 * @since 2019/06/09
+	 */
+	public abstract int pageDelete(int __vid, int __pid);
+	
+	/**
 	 * Returns the list of pages in the volume.
 	 *
 	 * @param __vid The volume ID.
