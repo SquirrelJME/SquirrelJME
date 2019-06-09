@@ -81,10 +81,12 @@
 	
 	#if defined(INT_MAX) && INT_MAX > 32767
 		typedef signed int int32_t;
+		typedef unsigned int uint32_t;
 		
 		#define INT32_C(x) x
 	#elif defined(LONG_MAX) && LONG_MAX > 32767
 		typedef signed long int32_t;
+		typedef unsigned long uint32_t;
 		
 		#define INT32_C(x) x##L
 	#endif
