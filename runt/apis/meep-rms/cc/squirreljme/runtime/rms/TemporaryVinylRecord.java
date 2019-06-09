@@ -139,6 +139,37 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/06/09
+	 */
+	@Override
+	public final int pageSet(int __vid, int __pid, byte[] __b, int __o,
+		int __l, int __tag)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		// Locate the page
+		Page page = vol._pages.get(__pid);
+		if (page == null)
+			return ERROR_NO_PAGE;
+			
+		// Volume modified
+		vol._modcount++;
+		
+		// Store page data, will return the PID or error
+		return page.setData(__b, __o, __l, __tag);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/05/01
 	 */
 	@Override

@@ -88,6 +88,25 @@ public interface VinylRecord
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
+	 * Sets a page to the given value.
+	 *
+	 * @param __vid The volume ID.
+	 * @param __pid The page ID.
+	 * @param __b The data to store.
+	 * @param __o The offset into the array.
+	 * @param __l The length of the array.
+	 * @param __tag The tag to identify the given record with.
+	 * @return Should be the ID of the same page, otherwise an error.
+	 * @throws IndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/09
+	 */
+	public abstract int pageSet(int __vid, int __pid, byte[] __b, int __o,
+		int __l, int __tag)
+		throws IndexOutOfBoundsException, NullPointerException;
+	
+	/**
 	 * Returns the size of the given page.
 	 *
 	 * @param __vid The volume ID.
