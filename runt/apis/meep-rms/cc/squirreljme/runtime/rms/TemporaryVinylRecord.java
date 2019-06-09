@@ -102,6 +102,22 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/06/09
+	 */
+	@Override
+	public final int pageNextId(int __vid)
+	{
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		// Return guessed next ID
+		return vol._nextpid;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/05/13
 	 */
 	@Override
