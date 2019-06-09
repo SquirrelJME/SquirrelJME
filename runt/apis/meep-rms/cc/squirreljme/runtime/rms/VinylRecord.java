@@ -70,6 +70,15 @@ public interface VinylRecord
 	public abstract int[] pageList(int __vid);
 	
 	/**
+	 * Returns the ID of the next page ID that might be used.
+	 *
+	 * @param __vid The volume ID.
+	 * @return The next page ID or an error.
+	 * @since 2019/06/09
+	 */
+	public abstract int pageNextId(int __vid);
+	
+	/**
 	 * Returns the data of the given page.
 	 *
 	 * @param __vid The volume ID.

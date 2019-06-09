@@ -426,14 +426,18 @@ public class RecordStore
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			// Check open
+			this.__checkOpen();
+			
+			// Get next ID as a guess
+			int rv = vinyl.pageNextId(this._vid);
+			RecordStore.__checkError(rv);
+			
+			return rv;
 		}
 	}
 	
