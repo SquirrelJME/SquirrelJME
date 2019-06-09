@@ -228,9 +228,7 @@ workflows:
       - tests_ratufacoat_default:
           requires:
             - build_summercoatrom
-            - tests_ratufacoat_default
       - tests_ratufacoat_ppc:
           requires:
             - build_summercoatrom
-            - tests_ratufacoat_ppc
 
