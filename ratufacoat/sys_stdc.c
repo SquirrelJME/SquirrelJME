@@ -52,7 +52,11 @@ sjme_nativefilename* sjme_stdc_nativeromfile(void)
 		return NULL;
 	
 	/* Set with string copy. */
+#if defined(MSDOS) || defined(_MSDOS) || defined(__MSDOS__) || defined(__DOS__)
+	rv->filename = strdup("sjme.sqc");
+#else
 	rv->filename = strdup("squirreljme.sqc");
+#endif
 	
 	/* Use this one! */
 	return rv;
