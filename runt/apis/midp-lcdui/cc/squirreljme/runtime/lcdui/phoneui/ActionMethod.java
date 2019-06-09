@@ -161,14 +161,14 @@ public enum ActionMethod
 			// Focusing a new item?
 			switch (EventTranslate.keyCodeToGameAction(__kc))
 			{
-					// Move up
+					// Move up, ignore number input
 				case Canvas.UP:
-					wantdx--;
+					wantdx = focusdx - 1;
 					break;
 				
-					// Move down
+					// Move down, ignore number input
 				case Canvas.DOWN:
-					wantdx++;
+					wantdx = focusdx + 1;
 					break;
 					
 					// Select item
