@@ -62,6 +62,9 @@
 /** Maximum number of threads. */
 #define SJME_THREAD_MAX SJME_JINT_C(32)
 
+/** Mask for CPU threads. */
+#define SJME_THREAD_MASK SJME_JINT_C(31)
+
 /** Thread does not exist. */
 #define SJME_THREAD_STATE_NONE 0
 
@@ -92,6 +95,9 @@ typedef struct sjme_jvm
 	
 	/** ROM. */
 	void* rom;
+	
+	/** Linearly fair CPU execution engine. */
+	sjme_jint fairthreadid;
 	
 	/** Threads. */
 	sjme_cpu threads[SJME_THREAD_MAX];
@@ -307,11 +313,72 @@ sjme_jint sjme_memjreadp(sjme_jint size, void** ptr)
 	return rv;
 }
 
-/** Executes code running within the JVM. */
-int sjme_jvmexec(sjme_jvm* jvm)
+/**
+ * Executes single CPU state.
+ *
+ * @param jvm JVM state.
+ * @param cpu CPU state.
+ * @param cycles The number of cycles to execute, a negative value means
+ * forever.
+ * @return The number of remaining cycles.
+ * @since 2019/06/08
+ */
+sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint cycles)
 {
+	if (jvm == NULL || cpu == NULL)
+		return cycles;
+	
+	/* Near-Infinite execution loop. */
+	for (;;)
+	{
+		/* Check if we ran out of cycles. */
+		if (cycles >= 0)
+		{
+			if (cycles == 0)
+				break;
+			if ((--cycles) <= 0)
+				break;
+		}
+	}
+	
+	/* Return remaining cycles. */
+	return cycles;
+}
+
+/** Executes code running within the JVM. */
+sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint cycles)
+{
+	sjme_jint threadid, parkid;
+	sjme_cpu* cpu;
+	
+	/* Do nothing. */
 	if (jvm == NULL)
 		return 0;
+	
+	/* Run cooperatively threaded style CPU. */
+	for (threadid = jvm->fairthreadid;;
+		threadid = ((threadid + 1) & SJME_THREAD_MASK))
+	{
+		/* Have we used all our execution cycles? */
+		if (cycles >= 0)
+		{
+			if (cycles == 0)
+				break;
+			if ((--cycles) <= 0)
+				break;
+		}
+		
+		/* Ignore CPUs which are not turned on. */
+		cpu = &jvm->threads[threadid];
+		if (cpu->state == SJME_THREAD_STATE_NONE)
+			continue;
+		
+		/* Execute CPU engine. */
+		cycles = sjme_cpuexec(jvm, cpu, cycles);
+	}
+	
+	/* Start next run on the CPU that was last executing. */
+	jvm->fairthreadid = (threadid & SJME_THREAD_MASK);
 	
 	return 0;
 }

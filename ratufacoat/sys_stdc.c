@@ -258,7 +258,7 @@ int main(int argc, char** argv)
 	}
 	
 	/* Execute until termination. */
-	while (sjme_jvmexec(jvm) != 0)
+	while (sjme_jvmexec(jvm, SJME_JINT_MAX_VALUE) != 0)
 		continue;
 	
 	return EXIT_SUCCESS;
