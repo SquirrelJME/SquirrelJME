@@ -1362,7 +1362,7 @@ public class AdvancedGraphics
 		
 		// Anchor horizontally?
 		if ((__anch & HCENTER) == HCENTER)
-			__xdest -= __wdest >>> 1;
+			__xdest -= __wdest >> 1;
 		
 		// Anchor right?
 		else if ((__anch & RIGHT) == RIGHT)
@@ -1370,7 +1370,7 @@ public class AdvancedGraphics
 		
 		// Anchor middle?
 		if ((__anch & VCENTER) == VCENTER)
-			__ydest -= __hdest >>> 1;
+			__ydest -= __hdest >> 1;
 		
 		// Anchor bottom?
 		else if ((__anch & BOTTOM) == BOTTOM)
