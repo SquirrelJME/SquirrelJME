@@ -623,7 +623,11 @@ public class RecordStore
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			// Get and check tag
+			int rv = vinyl.pageTag(this._vid, __id);
+			RecordStore.__checkError(rv);
+			
+			return rv;
 		}
 	}
 	
