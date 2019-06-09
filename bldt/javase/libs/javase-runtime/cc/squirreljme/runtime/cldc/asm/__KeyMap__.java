@@ -99,6 +99,26 @@ final class __KeyMap__
 			case KeyEvent.VK_F24:
 				return NonStandardKey.F1 +
 					(keycode - KeyEvent.VK_F1);
+					
+				// Map the keyboard virtually onto a number pad so that
+				// those without a number pad (such as myself) can actually
+				// use the input in its natural order without
+				// [q w e] > [1 2 3]
+				// [a s d] > [4 5 6]
+				// [z x c] > [7 8 9]
+				// [v b n] > [* 0 #]
+			case KeyEvent.VK_Q:					return Canvas.KEY_NUM1;
+			case KeyEvent.VK_W:					return Canvas.KEY_NUM2;
+			case KeyEvent.VK_E:					return Canvas.KEY_NUM3;
+			case KeyEvent.VK_A:					return Canvas.KEY_NUM4;
+			case KeyEvent.VK_S:					return Canvas.KEY_NUM5;
+			case KeyEvent.VK_D:					return Canvas.KEY_NUM6;
+			case KeyEvent.VK_Z:					return Canvas.KEY_NUM7;
+			case KeyEvent.VK_X:					return Canvas.KEY_NUM8;
+			case KeyEvent.VK_C:					return Canvas.KEY_NUM9;
+			case KeyEvent.VK_V:					return Canvas.KEY_STAR;
+			case KeyEvent.VK_B:					return Canvas.KEY_NUM0;
+			case KeyEvent.VK_N:					return Canvas.KEY_POUND;
 
 			case KeyEvent.VK_ADD:				return '+';
 			case KeyEvent.VK_AMPERSAND:			return '&';
