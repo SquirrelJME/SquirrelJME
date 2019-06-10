@@ -191,7 +191,7 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 	size_t rv;
 	
 	/* Too many bytes to read? */
-	if (len > (sjme_jint)SIZE_MAX)
+	if (sizeof(len) > sizeof(rv) && len > (sjme_jint)SIZE_MAX)
 		len = (sjme_jint)SIZE_MAX;
 	
 	/* Invalid argument? */
