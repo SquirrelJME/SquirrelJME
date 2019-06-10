@@ -79,9 +79,10 @@ Oracle's Java JDK can be downloaded from:
 
  * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
 
-The script used for building is `build.cmd`. This requires the command prompt
-which may be accessed by running `cmd`. This may be found in the start menu
-or may be accessed via **Windows Key + R**, typing `cmd`, then hitting enter.
+The script used for building is `build.cmd` (referred to as `build` hereafter).
+This requires the command prompt which may be accessed by running `cmd`.
+This may be found in the start menu or may be accessed via **Windows Key + R**,
+typing `cmd`, then hitting enter.
 
 Recommended setup for running the environment, assuming SquirrelJME source
 code is located in the example `c:\users\stephanie\desktop\squirreljme`:
@@ -93,7 +94,7 @@ code is located in the example `c:\users\stephanie\desktop\squirreljme`:
 
 ### UNIX-Like: Linux, Mac OS X, Solaris, BSD, etc.
 
-The script used for building is `build.sh`.
+The script used for building is `build.sh` (referred to as `build` hereafter).
 
 Recommended setup for running the environment, assuming SquirrelJME source
 code is located in the example `/home/stephanie/squirreljme`:
@@ -103,7 +104,21 @@ code is located in the example `/home/stephanie/squirreljme`:
  * `cd squirreljme-build`
  * `/home/stephanie/squirreljme/build.sh`
 
-# Building Shaded SquirrelJME JARs
+# Compiled SummerCoat ROM
+
+This ROM file is required in order to work with SummerCoat or RatufaCoat.
+
+ * `build dist summercoatrom`
+
+This will create a file called `squirreljme-summercoatrom.zip` which will
+contain the needed ROM file `squirreljme.sqc`.
+
+Additionally if all tests need to be built then a test ROM can be included as
+well.
+
+ * `build dist summercoatrom-test`
+
+# Shaded JARs for Java SE
 
 Shaded SquirrelJME JARs are standalone JARs which can run on an existing
 Java SE or Java ME system depending on which target it was built for.
@@ -116,32 +131,17 @@ of using and running the class library. This virtual machine has a speed
 penalty because it is running the Java byte code itself however it is a
 compatible environment.
 
-Building of shaded JARs will result in two flavors:
+## Building For Java SE
 
- * _Bootstrapped_ -- Add code which is needed to make it operate in
-   environments which may be different from Java ME, such as Java SE.
- * _Native_ -- Built without a bootstrap, requires that everything is naturally
-   supported.
+ * `build dist javase`  
 
 It is recommended that an out-of-tree build is performed (this means building
 from another directory that is not in the SquirrelJME source tree). All the
 commands pertain specifically to the build system itself.
-
-## Building for Java SE (Or With Bootstrap)
-
-This build requires a run-time that bridges what SquirrelJME needs with what
-Java SE provides, as such it must be specified in the build.
-
- * `vmshade -b squirreljme-javase.jar`
-
-If for some reason you wish to use an alternative bootstrap:
-
- * `vmshade -p bootstrap.jar -b squirreljme-other.jar`
 
 ## Building for Java ME
 
 ***NOTE:*** If the shaded JAR is not running on SquirrelJME, some features
 will not be available for use. It should still run however.
 
- * `vmshade squirreljme-javame.jar`
-
+ * `build dist javame`
