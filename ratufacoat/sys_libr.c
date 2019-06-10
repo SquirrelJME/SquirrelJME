@@ -30,6 +30,12 @@ static void fallback_log(enum retro_log_level level, const char* fmt, ...)
 {
 }
 
+/** Returns the supported RetroArch version. */
+unsigned retro_api_version(void)
+{
+	return RETRO_API_VERSION;
+}
+
 /** Sets system information on RetroArch. */
 void retro_get_system_info(struct retro_system_info* info)
 {
@@ -149,4 +155,9 @@ void retro_init(void)
 	/* Try setting it, ignore otherwise? */
 	if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &format))
 		log_cb(RETRO_LOG_INFO, "Using XRGB8888?\n");
+}
+
+/** Destroy. */
+void retro_deinit(void)
+{
 }
