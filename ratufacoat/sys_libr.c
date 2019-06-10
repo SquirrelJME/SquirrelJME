@@ -224,6 +224,18 @@ void retro_reset(void)
 /** Runs single frame. */
 void retro_run(void)
 {
+#define VIDEO_RAM_SIZE (320 * 240)
+	static uint32_t videoram[VIDEO_RAM_SIZE];
+	static uint32_t seed = 1234567;
+	uint32_t i;
+	
+	for (i = 0; i < VIDEO_RAM_SIZE; i++)
+	{
+		videoram[i] = i + (seed * 65536) + seed;
+		seed = (seed * 7) + i;
+	}
+	
+	video_cb(videoram, 240, 320, 240 * sizeof(uint32_t));
 }
 
 /** Serialize size? */
