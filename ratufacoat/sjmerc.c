@@ -476,6 +476,10 @@ typedef struct sjme_jvm
  */
 void* sjme_malloc(sjme_jint size)
 {
+#if defined(__WATCOMC__) && defined(SJME_IS_DOS)
+	sjme_jint c, d;
+	void* vp;
+#endif
 	void* rv;
 	
 	/* These will never allocate. */
@@ -499,6 +503,20 @@ void* sjme_malloc(sjme_jint size)
 	rv = halloc((((long)size) / 4L), (size_t)4);
 	if (rv == NULL)
 		return NULL;
+	
+	/* Wipe it. */
+	vp = rv;
+	for (c = size; c > 0; c -= SJME_JINT_C(65535))
+	{
+		/* Bytes to clear at a time. */
+		d = (c > SJME_JINT_C(65535) ? SJME_JINT_C(65535) : c);
+		
+		/* Clear these bytes. */
+		memset(vp, 0, d);
+		
+		/* Move up. */
+		vp = SJME_POINTER_OFFSET(vp, d);
+	}
 #else
 	/* Exceeds maximum permitted allocation size? */
 	if (sizeof(sjme_jint) > sizeof(size_t) && size > (sjme_jint)SIZE_MAX)
