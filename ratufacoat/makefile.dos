@@ -9,4 +9,4 @@
 # $ wmake -f makefile.dos
 
 sjme_dos.exe:	sjmerc.c sys_stdc.c
-		wcl -fe=$@ -l=dos -dSQUIRRELJME_PORT_STDC -d__DOS__ sjmerc.c sys_stdc.c
+		wcl -fe=$@ -l=dos -mh -dSQUIRRELJME_PORT_STDC -d__DOS__ sjmerc.c sys_stdc.c

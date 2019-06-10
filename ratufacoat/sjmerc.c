@@ -1656,7 +1656,7 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	rp = bootjar = SJME_POINTER_OFFSET(rom, sjme_memjreadp(4, &rp));
 	
 	/* Check JAR magic number. */
-	if (sjme_memjreadp(4, &rp) != SJME_JAR_MAGIC_NUMBER)
+	if ((i = sjme_memjreadp(4, &rp)) != SJME_JAR_MAGIC_NUMBER)
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDJARMAGIC;
