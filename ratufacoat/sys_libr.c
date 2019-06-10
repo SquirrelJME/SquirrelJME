@@ -156,16 +156,12 @@ void retro_set_environment(retro_environment_t cb)
 		};
 	struct retro_variable vars[] =
 		{
+			{"squirreljme_debug_notes",
+				"Enable Debug Notes; disabled|enabled"},
+			
 			/* End. */
 			{0}
 		};
-	{ "palm_emu_feature_fast_cpu", "Custom CPU Speeds; disabled|enabled" },
-	{ "palm_emu_feature_synced_rtc", "Force Match System Clock; disabled|enabled" },
-	{ "palm_emu_feature_hle_apis", "HLE API Implementations; disabled|enabled" },
-	{ "palm_emu_feature_durable", "Ignore Invalid Behavior; disabled|enabled" },
-	{ "palm_emu_use_joystick_as_mouse", "Use Left Joystick As Mouse; disabled|enabled" },
-	{ 0 }
-	};
 	
 	/* Use this environment callback. */
 	environ_cb = cb;
