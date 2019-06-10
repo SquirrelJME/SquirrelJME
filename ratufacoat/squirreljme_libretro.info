@@ -34,7 +34,7 @@ license = "GPLv3"
 permissions = ""
 
 # Version of the core:
-display_version = "0.4.0"
+display_version = "0.3.0"
 
 # Whether or not the core requires an external file to work:
 supports_no_game = "true"
