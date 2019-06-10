@@ -190,6 +190,9 @@ typedef int32_t sjme_jint;
 /** Cannot write Java values. */
 #define SJME_ERROR_NOJAVAWRITE SJME_JINT_C(-13)
 
+/** Read error. */
+#define SJME_ERROR_READERROR SJME_JINT_C(-14)
+
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
 
@@ -305,6 +308,16 @@ typedef struct sjme_nativefuncs
  * @since 2019/06/05
  */
 sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles);
+
+/**
+ * Destroys the virtual machine instance.
+ *
+ * @param jvm The JVM to destroy.
+ * @param error The error state.
+ * @return Non-zero if successful.
+ * @since 2019/06/09
+ */
+sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error);
 
 /**
  * Creates a new instance of a SquirrelJME JVM.

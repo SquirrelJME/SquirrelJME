@@ -455,6 +455,9 @@ typedef struct sjme_jvm
 	/** ROM. */
 	void* rom;
 	
+	/** Preset ROM. */
+	void* presetrom;
+	
 	/* Native functions. */
 	sjme_nativefuncs* nativefuncs;
 	
@@ -1574,12 +1577,17 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* error)
 					/* Otherwise fail */
 					else
 					{
+						/* Force error to be set. */
+						if (xerror == SJME_ERROR_NONE)
+							xerror = SJME_ERROR_READERROR;
+						
 						/* Copy error over. */
 						*error = xerror;
 						
 						/* Free resources. */
 						sjme_free(rv);
 						rv = NULL;
+						break;
 					}
 				}
 				
@@ -1656,7 +1664,7 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	rp = bootjar = SJME_POINTER_OFFSET(rom, sjme_memjreadp(4, &rp));
 	
 	/* Check JAR magic number. */
-	if ((i = sjme_memjreadp(4, &rp)) != SJME_JAR_MAGIC_NUMBER)
+	if (sjme_memjreadp(4, &rp) != SJME_JAR_MAGIC_NUMBER)
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDJARMAGIC;
@@ -1771,6 +1779,55 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		
 		return 0;
 	}
+	
+	/* Okay! */
+	return 1;
+}
+
+/** Destroys the virtual machine instance. */
+sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error)
+{
+	sjme_cpu* cpu;
+	sjme_cpu* oldcpu;
+	sjme_jint i;
+	
+	/* Missing this? */
+	if (jvm == NULL)
+	{
+		if (error != NULL)
+			*error = SJME_ERROR_INVALIDARG;
+		
+		return 0;
+	}
+	
+	/* Reset error. */
+	if (error != NULL)
+		*error = SJME_ERROR_NONE;
+	
+	/* Go through and cleanup CPUs. */
+	for (i = 0; i < SJME_THREAD_MAX; i++)
+	{
+		/* Get CPU here. */
+		cpu = &jvm->threads[i];
+		
+		/* Recursively clear CPU stacks. */
+		while (cpu->parent != NULL)
+		{
+			/* Keep for later free. */
+			oldcpu = cpu->parent;
+			
+			/* Copy down. */
+			*cpu = *oldcpu;
+			
+			/* Free CPU state. */
+			sjme_free(oldcpu);
+		}
+	}
+	
+	/* Delete major JVM data areas. */
+	sjme_free(jvm->ram);
+	if (jvm->presetrom == NULL)
+		sjme_free(jvm->rom);
 }
 
 /** Creates a new instance of the JVM. */
@@ -1822,6 +1879,9 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	rv->ramsize = options->ramsize;
 	rv->nativefuncs = nativefuncs;
 	
+	/* Needed by destruction later. */
+	rv->presetrom = options->presetrom;
+	
 	/* Load the ROM? */
 	rom = options->presetrom;
 	if (rom == NULL)
@@ -1846,6 +1906,11 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	{
 		sjme_free(rv);
 		sjme_free(ram);
+		
+		/* If a pre-set ROM is not being used, make sure it gets cleared. */
+		if (options->presetrom)
+			sjme_free(rom);
+		
 		return NULL;
 	}
 	

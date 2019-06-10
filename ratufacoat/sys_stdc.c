@@ -190,6 +190,10 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 {
 	size_t rv;
 	
+	/* Too many bytes to read? */
+	if (len > (sjme_jint)SIZE_MAX)
+		len = (sjme_jint)SIZE_MAX;
+	
 	/* Invalid argument? */
 	if (file == NULL || dest == NULL || len < 0)
 	{
@@ -297,7 +301,7 @@ int main(int argc, char** argv)
 	stdcfuncs.stderr_write = sjme_stdc_stderr_write;
 	
 	/* Create VM. */
-	error = 0;
+	error = SJME_ERROR_NONE;
 	jvm = sjme_jvmnew(&options, &stdcfuncs, &error);
 	if (jvm == NULL)
 	{
@@ -307,20 +311,34 @@ int main(int argc, char** argv)
 	}
 	
 	/* Execute until termination. */
-	error = 0;
+	error = SJME_ERROR_NONE;
 	while (sjme_jvmexec(jvm, &error, SJME_JINT_MAX_VALUE) != 0)
 	{
 		/* The JVM hit some kind of error? */
 		if (error != SJME_ERROR_NONE)
 		{
+			/* Message on it! */
 			fprintf(stderr, "JVM execution fault! (Error %d/0x%X)\n",
 				(int)error, (unsigned int)error);
+			
+			/* Destroy the JVM to free resources. */
+			sjme_jvmdestroy(jvm, &error);
+			if (error != SJME_ERROR_NONE)
+				fprintf(stderr, "JVM destruction error! (Error %d/0x%X)\n",
+					(int)error, (unsigned int)error);
+			
 			return EXIT_FAILURE;
 		}
 		
 		/* Keep going! */
 		continue;
 	}
+	
+	/* Destroy the VM so it uses no memory. */
+	sjme_jvmdestroy(jvm, &error);
+	if (error != SJME_ERROR_NONE)
+		fprintf(stderr, "JVM destruction error! (Error %d/0x%X)\n",
+			(int)error, (unsigned int)error);
 	
 	return EXIT_SUCCESS;
 }
