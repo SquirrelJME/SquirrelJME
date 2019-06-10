@@ -52,6 +52,13 @@
 	#include <sys/mman.h>
 #endif
 
+/** DOS? */
+#if defined(MSDOS) || defined(_MSDOS) || defined(__MSDOS__) || defined(__DOS__)
+	#define SJME_IS_DOS 1
+	
+	#include <malloc.h>
+#endif
+
 /** C99 includes. */
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || \
 	(defined(__WATCOMC__) && __WATCOMC__ >= 1270)

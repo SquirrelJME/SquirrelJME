@@ -491,6 +491,14 @@ void* sjme_malloc(sjme_jint size)
 		MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
 	if (rv == MAP_FAILED)
 		return NULL;
+#elif defined(__WATCOMC__) && defined(SJME_IS_DOS)
+	/* Watcom C has huge memory allocation. Since normal malloc is limited */
+	/* to 65K we need to actually claim more than this! So halloc(n, s) */
+	/* allocates n*s bytes (where s is size_t). Note that the result will */
+	/* be aligned to the second argument. */
+	rv = halloc((((long)size) / 4L), (size_t)4);
+	if (rv == NULL)
+		return NULL;
 #else
 	/* Exceeds maximum permitted allocation size? */
 	if (sizeof(sjme_jint) > sizeof(size_t) && size > (sjme_jint)SIZE_MAX)
@@ -535,6 +543,10 @@ void sjme_free(void* p)
 #if defined(SJME_IS_LINUX) && SJME_BITS > 32
 	/* Remove the memory mapping. */
 	munmap(basep, size);
+	
+#elif defined(__WATCOMC__) && defined(SJME_IS_DOS)
+	/* Watcom Huge Free. */
+	hfree(basep);
 	
 #else
 	/* Use Standard C free. */
@@ -1845,6 +1857,9 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error)
 	sjme_free(jvm->ram);
 	if (jvm->presetrom == NULL)
 		sjme_free(jvm->rom);
+	
+	/* Destroyed okay. */
+	return 1;
 }
 
 /** Creates a new instance of the JVM. */
