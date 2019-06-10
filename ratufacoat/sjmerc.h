@@ -64,7 +64,8 @@
 
 /** C99 includes. */
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || \
-	(defined(__WATCOMC__) && __WATCOMC__ >= 1270)
+	(defined(__WATCOMC__) && __WATCOMC__ >= 1270) || \
+	(defined(_MSC_VER) && _MSC_VER >= 1600)
 	#include <stdint.h>
 
 /** Guessed otherwise. */
