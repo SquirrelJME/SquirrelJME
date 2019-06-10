@@ -15,7 +15,11 @@
 #include "sjmerc.h"
 
 /** Default RAM size. */
-#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
+#if defined(SJME_IS_DOS)
+	#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(65536)
+#else
+	#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
+#endif
 
 /** Magic number for ROMs. */
 #define SJME_ROM_MAGIC_NUMBER SJME_JINT_C(0x58455223)
@@ -499,8 +503,13 @@ void* sjme_malloc(sjme_jint size)
 	/* Watcom C has huge memory allocation. Since normal malloc is limited */
 	/* to 65K we need to actually claim more than this! So halloc(n, s) */
 	/* allocates n*s bytes (where s is size_t). Note that the result will */
-	/* be aligned to the second argument. */
-	rv = halloc((((long)size) / 4L), (size_t)4);
+	/* be aligned to the second argument. The second argument must be a */
+	/* power of two. */
+	d = 4;
+	c = size / d;
+	if (c <= 0)
+		c = 1;
+	rv = halloc(c, d);
 	if (rv == NULL)
 		return NULL;
 	
