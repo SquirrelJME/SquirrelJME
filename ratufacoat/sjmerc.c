@@ -1572,7 +1572,20 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* error)
 				{
 					/* End of file reached? */
 					if (xerror == SJME_ERROR_ENDOFFILE)
+					{
+						/* Reached early EOF?? */
+						if (readat < romsize)
+						{
+							if (error != NULL)
+								*error = SJME_ERROR_EARLYEOF;
+							
+							/* Failed */
+							sjme_free(rv);
+							return NULL;
+						}
+						
 						break;
+					}
 					
 					/* Otherwise fail */
 					else

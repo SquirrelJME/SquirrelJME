@@ -193,6 +193,9 @@ typedef int32_t sjme_jint;
 /** Read error. */
 #define SJME_ERROR_READERROR SJME_JINT_C(-14)
 
+/** Early end of file reached. */
+#define SJME_ERROR_EARLYEOF SJME_JINT_C(-15)
+
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
 
