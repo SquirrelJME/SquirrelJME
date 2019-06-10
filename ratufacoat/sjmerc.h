@@ -23,6 +23,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/** Version string. */
+#define SQUIRRELJME_VERSION_STRING "0.3.0"
+
 /** Is this a 64-bit system? */
 #if !defined(SJME_BITS)
 	#if defined(_LP64) || defined(__LP64__) || defined(__x86_64__) || \
