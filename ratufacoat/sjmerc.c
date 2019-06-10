@@ -492,6 +492,10 @@ void* sjme_malloc(sjme_jint size)
 	if (rv == MAP_FAILED)
 		return NULL;
 #else
+	/* Exceeds maximum permitted allocation size? */
+	if (sizeof(sjme_jint) > sizeof(size_t) && size > (sjme_jint)SIZE_MAX)
+		return NULL;
+	
 	/* Use standard C function otherwise. */
 	rv = calloc(1, size);
 #endif
