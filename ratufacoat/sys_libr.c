@@ -161,11 +161,6 @@ void retro_set_environment(retro_environment_t cb)
 	/* Try to get a logger. */
 	environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
 	log_cb = (logging.log != NULL ? logging.log : fallback_log);
-		
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_set_environment(%p)\n",
-			cb);
 	
 	/* The core can launch without a game. */
 	bflag = true;
@@ -188,33 +183,18 @@ void retro_set_environment(retro_environment_t cb)
 /** Set input polling. */
 void retro_set_input_poll(retro_input_poll_t cb)
 {	
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_set_input_poll(%p)\n",
-			cb);
-	
 	input_poll_cb = cb;
 }
 
 /** Set input state. */
 void retro_set_input_state(retro_input_state_t cb)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_set_input_state(%p)\n",
-			cb);
-	
 	input_state_cb = cb;
 }
 
 /** Set video refresh callback. */
 void retro_set_video_refresh(retro_video_refresh_t cb)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_set_video_refresh(%p)\n",
-			cb);
-	
 	video_cb = cb;
 }
 
@@ -222,10 +202,6 @@ void retro_set_video_refresh(retro_video_refresh_t cb)
 void retro_init(void)
 {
 	enum retro_pixel_format format;
-	
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_init()\n");
 	
 	/* Use ARGB 32-bit. */
 	format = RETRO_PIXEL_FORMAT_XRGB8888;
@@ -238,104 +214,61 @@ void retro_init(void)
 /** Destroy. */
 void retro_deinit(void)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_deinit()\n");
 }
 
 /** Resets the system. */
 void retro_reset(void)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_reset()\n");
 }
 
 /** Runs single frame. */
 void retro_run(void)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_run()\n");
 }
 
 /** Serialize size? */
 size_t retro_serialize_size(void)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_serialize_size()\n");
-	
 	return 0;
 }
 
 /** Serialize? */
 bool retro_serialize(void* data, size_t size)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_serialize(%p, %zd)\n",
-			data, size);
-	
 	return false;
 }
 
 /** Unserialize? */
 bool retro_unserialize(const void* data, size_t size)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_unserialize(%p, %zd)\n",
-			data, size);
-	
 	return false;
 }
 
 /** Get memory data? */
 void* retro_get_memory_data(unsigned id)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_get_memory_data(%d)\n",
-			id);
-	
 	return NULL;
 }
 
 /** Set memory data? */
 size_t retro_get_memory_size(unsigned id)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_get_memory_size(%d)\n",
-			id);
-	
 	return 0;
 }
 
 /** Reset cheat. */
 void retro_cheat_reset(void)
 {
-	/* Debug */
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_cheat_reset()\n");
 }
 
 /** Set cheat. */
 void retro_cheat_set(unsigned index, bool enabled, const char* code)
 {
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_cheat_set(%d, %d, %s)\n",
-			index, enabled, code);
 }
 
 /** Load a game? */
 bool retro_load_game(const struct retro_game_info* info)
 {
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_load_game(%p)\n",
-			info);
-	
 	return true;
 }
 
@@ -343,16 +276,10 @@ bool retro_load_game(const struct retro_game_info* info)
 bool retro_load_game_special(unsigned type, const struct retro_game_info* info,
 	size_t num)
 {
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_load_game_special(%d, %p, %zd)\n",
-			type, info, num);
-	
 	return false;
 }
 
 /** Unload a game? */
 void retro_unload_game(void)
 {
-	if (log_cb != NULL)
-		log_cb(RETRO_LOG_DEBUG, "retro_unload_game()\n");
 }
