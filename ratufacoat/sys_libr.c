@@ -229,6 +229,10 @@ void retro_run(void)
 	static uint32_t seed = 1234567;
 	uint32_t i;
 	
+	/* Poll for input because otherwise it prevents RetroArch from accessing */
+	/* the menu. */
+	input_poll_cb();
+	
 	for (i = 0; i < VIDEO_RAM_SIZE; i++)
 	{
 		videoram[i] = i + (seed * 65536) + seed;
