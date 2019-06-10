@@ -99,7 +99,7 @@ void retro_set_environment(retro_environment_t cb)
 			{0, RETRO_DEVICE_JOYPAD, 0,
 				RETRO_DEVICE_ID_JOYPAD_SELECT, "Soft 1 (Left Shoulder)"},
 			
-			/* SOFT LEFT. */
+			/* SOFT RIGHT. */
 			{0, RETRO_DEVICE_JOYPAD, 0,
 				RETRO_DEVICE_ID_JOYPAD_START, "Soft 2 (Right Shoulder)"},
 			
