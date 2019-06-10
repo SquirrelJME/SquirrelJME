@@ -1,0 +1,7 @@
+# 2019/06/09
+
+## 10:04
+
+So I can play Game Boy games on SquirrelJME which is cool using MeBoy! Also
+there is in this the graphics cutting off on the bottom and not sure what
+actually causes it.
