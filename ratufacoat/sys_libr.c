@@ -17,13 +17,13 @@
 #include "sjmerc.h"
 
 /* Callbacks. */
-static retro_log_printf_t         log_cb = NULL;
-static retro_video_refresh_t      video_cb = NULL;
 static retro_audio_sample_batch_t audio_cb = NULL;
-static retro_set_led_state_t      led_cb = NULL;
-static retro_environment_t        environ_cb = NULL;
-static retro_input_poll_t         input_poll_cb = NULL;
-static retro_input_state_t        input_state_cb = NULL;
+static retro_audio_sample_t audio_samble_cb = NULL;
+static retro_environment_t environ_cb = NULL;
+static retro_input_poll_t input_poll_cb = NULL;
+static retro_input_state_t input_state_cb = NULL;
+static retro_log_printf_t log_cb = NULL;
+static retro_video_refresh_t video_cb = NULL;
 
 /** Fallback logging, does nothing. */
 static void fallback_log(enum retro_log_level level, const char* fmt, ...)
@@ -34,6 +34,12 @@ static void fallback_log(enum retro_log_level level, const char* fmt, ...)
 unsigned retro_api_version(void)
 {
 	return RETRO_API_VERSION;
+}
+
+/** Region. */
+unsigned retro_get_region(void)
+{
+	return RETRO_REGION_NTSC;
 }
 
 /** Sets system information on RetroArch. */
@@ -50,6 +56,36 @@ void retro_get_system_info(struct retro_system_info* info)
 	
 	/* SquirrelJME works with JAR files, which are ZIP files. */
 	info->block_extract = true;
+}
+
+/** Get audio/video information. */
+void retro_get_system_av_info(struct retro_system_av_info* info)
+{
+	info->timing.fps = 60;
+	info->timing.sample_rate = 48000;
+
+	info->geometry.base_width   = 240;
+	info->geometry.base_height  = 320;
+	info->geometry.max_width    = 240;
+	info->geometry.max_height   = 320;
+	info->geometry.aspect_ratio = 0.75;
+}
+
+/** Set audio sample callback. */
+void retro_set_audio_sample(retro_audio_sample_t cb)
+{
+	audio_samble_cb = cb;
+}
+
+/** Set audio sample batching. */
+void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb)
+{
+	audio_cb = cb;
+}
+
+/** Sets controller port device. */
+void retro_set_controller_port_device(unsigned port, unsigned device)
+{
 }
 
 /** Initializes the RetroArch environment. */
@@ -144,6 +180,24 @@ void retro_set_environment(retro_environment_t cb)
 	environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, input_desc);
 }
 
+/** Set input polling. */
+void retro_set_input_poll(retro_input_poll_t cb)
+{
+	input_poll_cb = cb;
+}
+
+/** Set input state. */
+void retro_set_input_state(retro_input_state_t cb)
+{
+	input_state_cb = cb;
+}
+
+/** Set video refresh callback. */
+void retro_set_video_refresh(retro_video_refresh_t cb)
+{
+	video_cb = cb;
+}
+
 /** RetroArch initialization. */
 void retro_init(void)
 {
@@ -159,5 +213,73 @@ void retro_init(void)
 
 /** Destroy. */
 void retro_deinit(void)
+{
+}
+
+/** Resets the system. */
+void retro_reset(void)
+{ 
+}
+
+/** Runs single frame. */
+void retro_run(void)
+{
+}
+
+/** Serialize size? */
+size_t retro_serialize_size(void)
+{
+	return 0;
+}
+
+/** Serialize? */
+bool retro_serialize(void* data, size_t size)
+{
+	return false;
+}
+
+/** Unserialize? */
+bool retro_unserialize(const void* data, size_t size)
+{
+	return false;
+}
+
+/** Get memory data? */
+void* retro_get_memory_data(unsigned id)
+{
+	return NULL;
+}
+
+/** Set memory data? */
+size_t retro_get_memory_size(unsigned id)
+{
+	return 0;
+}
+
+/** Reset cheat. */
+void retro_cheat_reset(void)
+{
+}
+
+/** Set cheat. */
+void retro_cheat_set(unsigned index, bool enabled, const char* code)
+{
+}
+
+/** Load a game? */
+bool retro_load_game(const struct retro_game_info *info)
+{
+	return true;
+}
+
+/** Load game special? */
+bool retro_load_game_special(unsigned type, const struct retro_game_info* info,
+	size_t num)
+{
+	return false;
+}
+
+/** Unload a game? */
+void retro_unload_game(void)
 {
 }
