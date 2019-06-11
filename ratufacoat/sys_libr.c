@@ -26,7 +26,7 @@ static void fallback_log(enum retro_log_level level, const char* fmt, ...)
 {
 }
 
-/* Callbacks. */
+/** Callbacks. */
 static retro_audio_sample_batch_t audio_cb = NULL;
 static retro_audio_sample_t audio_samble_cb = NULL;
 static retro_environment_t environ_cb = NULL;
@@ -36,14 +36,18 @@ static retro_log_printf_t log_cb = fallback_log;
 static struct retro_vfs_interface* vfs_cb = NULL;
 static retro_video_refresh_t video_cb = NULL;
 
-/* Basically loaded ROM file. */
+/** Basically loaded ROM file. */
 static void* sjme_retroarch_basicrom = NULL;
 
-/* Loaded JVM instance. */
+/** Loaded JVM instance. */
 static sjme_jvm* sjme_retroarch_jvm = NULL;
 
-/* Native functions. */
+/** Native functions. */
 static sjme_nativefuncs sjme_retroarch_nativefuncs;
+
+/** Error state. */
+static sjme_jint sjme_retroarch_error =
+	SJME_ERROR_NONE;
 
 /** Returns the supported RetroArch version. */
 unsigned retro_api_version(void)
@@ -247,7 +251,7 @@ void retro_init(void)
 	char* rompath;
 	struct retro_vfs_file_handle* romfile;
 	int strlens;
-	sjme_jint romsize, readat, readcount, error;
+	sjme_jint romsize, readat, readcount;
 	sjme_jvmoptions options;
 	
 	/* Use ARGB 32-bit. */
@@ -330,13 +334,13 @@ void retro_init(void)
 	sjme_retroarch_nativefuncs.stderr_write = sjme_retroarch_stderr_write;
 	
 	/* Initialize the JVM. */
-	error = SJME_ERROR_NONE;
 	sjme_retroarch_jvm = sjme_jvmnew(&options, &sjme_retroarch_nativefuncs,
-		&error);
+		&sjme_retroarch_error);
 	
 	/* Note it. */
-	log_cb((error == SJME_ERROR_NONE ? RETRO_LOG_INFO : RETRO_LOG_ERROR),
-		"SquirrelJME Init: %d/%x\n", (int)error, (unsigned)error);
+	log_cb((sjme_retroarch_error == SJME_ERROR_NONE ?
+		RETRO_LOG_INFO : RETRO_LOG_ERROR), "SquirrelJME Init: %d/%x\n",
+		(int)sjme_retroarch_error, (unsigned)sjme_retroarch_error);
 }
 
 /** Destroy. */
@@ -368,18 +372,32 @@ void retro_run(void)
 	
 	static int died;
 	struct retro_log_callback logging;
-	sjme_jint cycles, error;
+	sjme_jint cycles;
 	
 	/* Poll for input because otherwise it prevents RetroArch from accessing */
 	/* the menu. */
 	input_poll_cb();
 	
-	/* Clear error state. */
-	error = SJME_ERROR_NONE;
-	
 	/* If the VM died, just display a screen. */
-	if (died)
+	if (sjme_retroarch_error != SJME_ERROR_NONE)
 	{
+		/* Print failure message only once! */
+		if (died == 0)
+		{
+			/* Only do this once! */
+			died = 1;
+			
+			/* Try to get the logger again because for some reason RetroArch */
+			/* nukes our callback and then it never works again? */
+			environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
+			log_cb = (logging.log != NULL ? logging.log : fallback_log);
+			
+			/* Print error. */
+			log_cb(RETRO_LOG_ERROR, "SquirrelJME JVM Exec Error: %d/%x\n",
+				(int)sjme_retroarch_error, (unsigned)sjme_retroarch_error);
+			log_cb(RETRO_LOG_ERROR, "Execution now unpredictable!\n");
+		}
+		
 		/* Fill with red. */
 		for (i = 0; i < VIDEO_RAM_SIZE; i++)
 			videoram[i] = 0x00FF0000;
@@ -394,24 +412,7 @@ void retro_run(void)
 	
 	/* Execute the JVM. */
 	cycles = 1048576;
-	cycles = sjme_jvmexec(sjme_retroarch_jvm, &error, cycles);
-	
-	/* Did the JVM mess up? (Only print message once, so it is not spammed) */
-	if (error != SJME_ERROR_NONE && died == 0)
-	{
-		/* Only do this once! */
-		died = 1;
-		
-		/* Try to get the logger again because for some reason RetroArch */
-		/* nukes our callback and then it never works again? */
-		environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
-		log_cb = (logging.log != NULL ? logging.log : fallback_log);
-		
-		/* Print error. */
-		log_cb(RETRO_LOG_ERROR, "SquirrelJME JVM Exec Error: %d/%x\n",
-			(int)error, (unsigned)error);
-		log_cb(RETRO_LOG_ERROR, "Execution now unpredictable!\n");
-	}
+	cycles = sjme_jvmexec(sjme_retroarch_jvm, &sjme_retroarch_error, cycles);
 	
 	/* Random video noise. */
 	for (i = 0; i < VIDEO_RAM_SIZE; i++)
