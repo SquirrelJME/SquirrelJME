@@ -174,7 +174,7 @@ void retro_set_environment(retro_environment_t cb)
 				RETRO_DEVICE_ID_JOYPAD_R, "Pound (Space)"},
 			
 			/* End. */
-			{0}
+			{0, 0, 0, 0, NULL}
 		};
 	struct retro_variable vars[] =
 		{
@@ -182,7 +182,7 @@ void retro_set_environment(retro_environment_t cb)
 				"Enable Debug Notes; disabled|enabled"},
 			
 			/* End. */
-			{0}
+			{NULL, NULL}
 		};
    struct retro_vfs_interface_info vfs_getter = {1, NULL};
 	
