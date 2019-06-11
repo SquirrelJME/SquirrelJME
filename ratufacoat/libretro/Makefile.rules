@@ -1,4 +1,4 @@
-TARGET_NAME ?= mu
+TARGET_NAME ?= squirreljme
 
 ifeq ($(STATIC_LINKING), 1)
   TARGET = $(TARGET_NAME)_libretro_$(platform).a
