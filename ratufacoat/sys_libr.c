@@ -320,6 +320,7 @@ void retro_init(void)
 #endif
 	
 	/* Set native functions. */
+	memset(&sjme_retroarch_nativefuncs, 0, sizeof(sjme_retroarch_nativefuncs));
 	sjme_retroarch_nativefuncs.stderr_write = sjme_retroarch_stderr_write;
 	
 	/* Initialize the JVM. */
