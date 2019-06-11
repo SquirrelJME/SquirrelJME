@@ -13,6 +13,7 @@
  */
 
 #include <libretro.h>
+#include <streams/file_stream.h>
 
 #include "sjmerc.h"
 
@@ -28,7 +29,17 @@ static retro_environment_t environ_cb = NULL;
 static retro_input_poll_t input_poll_cb = NULL;
 static retro_input_state_t input_state_cb = NULL;
 static retro_log_printf_t log_cb = fallback_log;
+static struct retro_vfs_interface* vfs_cb = NULL;
 static retro_video_refresh_t video_cb = NULL;
+
+/* Basically loaded ROM file. */
+static void* sjme_retroarch_basicrom = NULL;
+
+/* Loaded JVM instance. */
+static sjme_jvm* sjme_retroarch_jvm = NULL;
+
+/* Native functions. */
+static sjme_nativefuncs sjme_retroarch_nativefuncs;
 
 /** Returns the supported RetroArch version. */
 unsigned retro_api_version(void)
@@ -164,6 +175,7 @@ void retro_set_environment(retro_environment_t cb)
 			/* End. */
 			{0}
 		};
+   struct retro_vfs_interface_info vfs_getter = {1, NULL};
 	
 	/* Use this environment callback. */
 	environ_cb = cb;
@@ -191,6 +203,11 @@ void retro_set_environment(retro_environment_t cb)
 	
 	/* Set variables. */
 	environ_cb(RETRO_ENVIRONMENT_SET_VARIABLES, vars);
+	
+	/* Initialize VFS. */
+	if (environ_cb(RETRO_ENVIRONMENT_GET_VFS_INTERFACE, &vfs_getter))
+		if (vfs_getter.iface != NULL)
+			vfs_cb = vfs_getter.iface;
 }
 
 /** Set input polling. */
@@ -211,10 +228,21 @@ void retro_set_video_refresh(retro_video_refresh_t cb)
 	video_cb = cb;
 }
 
+/** Writes byte to standard error. */
+sjme_jint sjme_retroarch_stderr_write(sjme_jint b)
+{
+}
+
 /** RetroArch initialization. */
 void retro_init(void)
 {
 	enum retro_pixel_format format;
+	const char* sysdir;
+	char* rompath;
+	struct retro_vfs_file_handle* romfile;
+	int strlens;
+	sjme_jint romsize, readat, readcount, error;
+	sjme_jvmoptions options;
 	
 	/* Use ARGB 32-bit. */
 	format = RETRO_PIXEL_FORMAT_XRGB8888;
@@ -222,11 +250,100 @@ void retro_init(void)
 	/* Try setting it, ignore otherwise? */
 	if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &format))
 		log_cb(RETRO_LOG_INFO, "Using XRGB8888?\n");
+	
+	/* Load the SummerCoat ROM using RetroArch VFS rather than letting */
+	/* RatufaCoat itself load the ROM since there might be very specific */
+	/* file stuff we can initially skip. */
+	romsize = 0;
+	if (vfs_cb != NULL &&
+		environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &sysdir))
+	{
+		/* Determine length of strings. */
+		strlens = sizeof(char) * (strlen(sysdir) +
+			strlen("/squirreljme.sqc") + 2);
+		
+		/* Determine path of the ROM file. */
+		rompath = calloc(1, strlens);
+		if (rompath != NULL)
+		{
+			/* Cat it in. */
+			strcat(rompath, sysdir);
+			strcat(rompath, "/squirreljme.sqc");
+			
+			/* Open ROM for reading. */
+			romfile = vfs_cb->open(rompath, RETRO_VFS_FILE_ACCESS_READ,
+				RETRO_VFS_FILE_ACCESS_HINT_NONE);
+			if (romfile != NULL)
+			{
+				/* Get size of ROM. */
+				romsize = (sjme_jint)vfs_cb->size(romfile);
+				
+				/* Allocate ROM memory chunk. */
+				sjme_retroarch_basicrom = malloc(romsize);
+				if (sjme_retroarch_basicrom != NULL)
+				{
+					/* Copy chunks of ROM. */
+					for (readat = 0; readat < romsize;)
+					{
+						/* Read in chunk. */
+						readcount = vfs_cb->read(romfile, (void*)
+							(((uintptr_t)sjme_retroarch_basicrom) + readat),
+							romsize - readat);
+						
+						/* Error reading? */
+						if (readcount < 0)
+							break;
+						
+						/* Read this. */
+						readat += readcount;
+					}
+				}
+				
+				/* Close it. */
+				vfs_cb->close(romfile);
+			}
+			
+			/* Free up. */
+			free(rompath);
+		}
+	}
+	
+	/* Setup options. */
+	memset(&options, 0, sizeof(options));
+	options.ramsize = 0;
+	options.presetrom = sjme_retroarch_basicrom;
+	options.romsize = romsize;
+	
+	/* Copy the ROM on 64-bit, so the address is in SquirrelJME range. */
+#if defined(SJME_BITS) && SJME_BITS > 32
+	options.copyrom = 1;
+#endif
+	
+	/* Set native functions. */
+	sjme_retroarch_nativefuncs.stderr_write = sjme_retroarch_stderr_write;
+	
+	/* Initialize the JVM. */
+	error = SJME_ERROR_NONE;
+	sjme_retroarch_jvm = sjme_jvmnew(&options, &sjme_retroarch_nativefuncs,
+		&error);
+	
+	/* Note it. */
+	log_cb((error == SJME_ERROR_NONE ? RETRO_LOG_INFO : RETRO_LOG_ERROR),
+		"SquirrelJME Init: %d/%x\n", (int)error, (unsigned)error);
 }
 
 /** Destroy. */
 void retro_deinit(void)
 {
+	/* Be sure to wipe the ROM from existence. */
+	if (sjme_retroarch_basicrom != NULL)
+		free(sjme_retroarch_basicrom);
+	sjme_retroarch_basicrom = NULL;
+	
+	/* Destroy the JVM as well. */
+	if (sjme_retroarch_jvm != NULL)
+		sjme_jvmdestroy(sjme_retroarch_jvm, NULL);
+	sjme_retroarch_jvm = NULL;
 }
 
 /** Resets the system. */
@@ -241,11 +358,27 @@ void retro_run(void)
 	static uint32_t videoram[VIDEO_RAM_SIZE];
 	static uint32_t seed = 1234567;
 	uint32_t i;
+	sjme_jint cycles, error;
 	
 	/* Poll for input because otherwise it prevents RetroArch from accessing */
 	/* the menu. */
 	input_poll_cb();
 	
+	/* Clear error state. */
+	error = SJME_ERROR_NONE;
+	
+	/* Execute the JVM. */
+	cycles = 1048576;
+	cycles = sjme_jvmexec(sjme_retroarch_jvm, &error, cycles);
+	
+	/* Did the JVM mess up? */
+	if (error != SJME_ERROR_NONE)
+		log_cb(RETRO_LOG_ERROR, "SquirrelJME JVM Exec Error: %d/%x\n",
+			(int)error, (unsigned)error);
+	
+	log_cb(RETRO_LOG_INFO, "Cycles: %d\n", (int)cycles);
+	
+	/* Random video noise. */
 	for (i = 0; i < VIDEO_RAM_SIZE; i++)
 	{
 		videoram[i] = i + (seed * 65536) + seed;
@@ -298,6 +431,12 @@ void retro_cheat_set(unsigned index, bool enabled, const char* code)
 /** Load a game? */
 bool retro_load_game(const struct retro_game_info* info)
 {
+	/* With need_fullpath=false, info->data and info->size will be valid */
+	/* and can be used to boot the JAR up. */
+	
+	/*fprintf(stderr, "load game? path=%s data=%p size=%d\n",
+		info->path, info->data, (int)info->size);*/
+	
 	return true;
 }
 
@@ -305,6 +444,10 @@ bool retro_load_game(const struct retro_game_info* info)
 bool retro_load_game_special(unsigned type, const struct retro_game_info* info,
 	size_t num)
 {
+	/*
+	fprintf(stderr, "load game special? typ=%d path=%s data=%p size=%d n=%d\n",
+		type, info->path, info->data, (int)info->size, (int)num);
+	*/
 	return false;
 }
 

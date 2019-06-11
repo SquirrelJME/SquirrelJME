@@ -248,6 +248,12 @@ typedef struct sjme_jvmoptions
 	/** Preset ROM pointer, does not need loading? */
 	void* presetrom;
 	
+	/** Preset ROM size. */
+	sjme_jint romsize;
+	
+	/** If non-zero then the ROM needs to be copied (address unsafe). */
+	sjme_jbyte copyrom;
+	
 	/** Command line arguments sent to the VM. */
 	sjme_jvmargs args;
 } sjme_jvmoptions;
