@@ -404,7 +404,7 @@ void retro_run(void)
 		
 		/* Fill with red. */
 		for (i = 0; i < VIDEO_RAM_SIZE; i++)
-			videoram[i] = 0x00FF0000;
+			videoram[i] = 0x007F0000;
 		
 		/* Place on screen. */
 		video_cb(videoram, SJME_RETROARCH_WIDTH, SJME_RETROARCH_HEIGHT,
