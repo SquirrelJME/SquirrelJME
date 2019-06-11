@@ -53,6 +53,11 @@
 	#if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
 		#define SJME_LITTLE_ENDIAN
 	#endif
+	
+	/** If both are defined, just set big endian. */
+	#if defined(SJME_BIG_ENDIAN) && defined(SJME_LITTLE_ENDIAN)
+		#undef SJME_LITTLE_ENDIAN
+	#endif
 #endif
 
 /** Linux. */
