@@ -52,7 +52,9 @@ void retro_get_system_info(struct retro_system_info* info)
 	info->library_name = "squirreljme";
 	info->library_version = SQUIRRELJME_VERSION_STRING;
 	info->valid_extensions = "jar";
-	info->need_fullpath = true;
+	
+	/* Full path is not needed, but game data may be specified!. */
+	info->need_fullpath = false;
 	
 	/* SquirrelJME works with JAR files, which are ZIP files. */
 	info->block_extract = true;
