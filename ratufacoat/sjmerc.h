@@ -238,6 +238,9 @@ typedef int32_t sjme_jint;
 /** Early end of file reached. */
 #define SJME_ERROR_EARLYEOF SJME_JINT_C(-15)
 
+/** Virtual machine not ready. */
+#define SJME_ERROR_JVMNOTREADY SJME_JINT_C(-16)
+
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
 

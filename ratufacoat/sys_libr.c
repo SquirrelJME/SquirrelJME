@@ -13,7 +13,6 @@
  */
 
 #include <libretro.h>
-#include <streams/file_stream.h>
 
 #include "sjmerc.h"
 
