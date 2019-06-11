@@ -1508,7 +1508,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 /** Executes code running within the JVM. */
 sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
 {
-	sjme_jint threadid, parkid;
+	sjme_jint threadid;
 	sjme_cpu* cpu;
 	sjme_jint xerror;
 	
