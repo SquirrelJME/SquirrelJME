@@ -448,7 +448,7 @@ struct sjme_cpu
 };
 
 /** Virtual machine state. */
-typedef struct sjme_jvm
+struct sjme_jvm
 {
 	/** RAM. */
 	void* ram;
@@ -470,7 +470,7 @@ typedef struct sjme_jvm
 	
 	/** Threads. */
 	sjme_cpu threads[SJME_THREAD_MAX];
-} sjme_jvm;
+};
 
 /**
  * Allocates the given number of bytes.
