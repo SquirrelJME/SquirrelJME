@@ -533,6 +533,13 @@ void* sjme_malloc(sjme_jint size)
 	
 	/* Use standard C function otherwise. */
 	rv = calloc(1, size);
+	
+	/* Address out of range? */
+	if (rv != NULL && ((uintptr_t)rv) > (uintptr_t)UINT32_C(0xFFFFFFFF))
+	{
+		free(rv);
+		return NULL;
+	}
 #endif
 
 	/* Did not allocate? */
