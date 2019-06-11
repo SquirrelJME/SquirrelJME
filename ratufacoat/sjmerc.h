@@ -41,6 +41,13 @@
 
 /** Possibly detect endianess. */
 #if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
+	/** Defined by the system? */
+	#if !defined(SJME_BIG_ENDIAN)
+		#if defined(MSB_FIRST) || \
+			(defined(WORDS_BIGENDIAN) && WORDS_BIGENDIAN != 0)
+			#define SJME_BIG_ENDIAN
+		#endif
+	#endif
 	
 	/** Just set little endian if no endianess was defined */
 	#if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
