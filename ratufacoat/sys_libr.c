@@ -17,6 +17,10 @@
 
 #include "sjmerc.h"
 
+/** Screen size. */
+#define SJME_RETROARCH_WIDTH 240
+#define SJME_RETROARCH_HEIGHT 320
+
 /** Fallback logging, does nothing. */
 static void fallback_log(enum retro_log_level level, const char* fmt, ...)
 {
@@ -77,11 +81,12 @@ void retro_get_system_av_info(struct retro_system_av_info* info)
 	info->timing.fps = 60;
 	info->timing.sample_rate = 48000;
 
-	info->geometry.base_width   = 240;
-	info->geometry.base_height  = 320;
-	info->geometry.max_width    = 240;
-	info->geometry.max_height   = 320;
-	info->geometry.aspect_ratio = 0.75;
+	info->geometry.base_width   = SJME_RETROARCH_WIDTH;
+	info->geometry.base_height  = SJME_RETROARCH_HEIGHT;
+	info->geometry.max_width    = SJME_RETROARCH_WIDTH;
+	info->geometry.max_height   = SJME_RETROARCH_HEIGHT;
+	info->geometry.aspect_ratio =
+		(double)SJME_RETROARCH_WIDTH / (double)SJME_RETROARCH_HEIGHT;
 }
 
 /** Set audio sample callback. */
@@ -231,6 +236,7 @@ void retro_set_video_refresh(retro_video_refresh_t cb)
 /** Writes byte to standard error. */
 sjme_jint sjme_retroarch_stderr_write(sjme_jint b)
 {
+	return 1;
 }
 
 /** RetroArch initialization. */
@@ -355,10 +361,13 @@ void retro_reset(void)
 /** Runs single frame. */
 void retro_run(void)
 {
-#define VIDEO_RAM_SIZE (320 * 240)
+#define VIDEO_RAM_SIZE (SJME_RETROARCH_WIDTH * SJME_RETROARCH_HEIGHT)
 	static uint32_t videoram[VIDEO_RAM_SIZE];
 	static uint32_t seed = 1234567;
 	uint32_t i;
+	
+	static int died;
+	struct retro_log_callback logging;
 	sjme_jint cycles, error;
 	
 	/* Poll for input because otherwise it prevents RetroArch from accessing */
@@ -368,16 +377,41 @@ void retro_run(void)
 	/* Clear error state. */
 	error = SJME_ERROR_NONE;
 	
+	/* If the VM died, just display a screen. */
+	if (died)
+	{
+		/* Fill with red. */
+		for (i = 0; i < VIDEO_RAM_SIZE; i++)
+			videoram[i] = 0x00FF0000;
+		
+		/* Place on screen. */
+		video_cb(videoram, SJME_RETROARCH_WIDTH, SJME_RETROARCH_HEIGHT,
+			SJME_RETROARCH_WIDTH * sizeof(uint32_t));
+		
+		/* Do nothing. */
+		return;
+	}
+	
 	/* Execute the JVM. */
 	cycles = 1048576;
 	cycles = sjme_jvmexec(sjme_retroarch_jvm, &error, cycles);
 	
-	/* Did the JVM mess up? */
-	if (error != SJME_ERROR_NONE)
+	/* Did the JVM mess up? (Only print message once, so it is not spammed) */
+	if (error != SJME_ERROR_NONE && died == 0)
+	{
+		/* Only do this once! */
+		died = 1;
+		
+		/* Try to get the logger again because for some reason RetroArch */
+		/* nukes our callback and then it never works again? */
+		environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
+		log_cb = (logging.log != NULL ? logging.log : fallback_log);
+		
+		/* Print error. */
 		log_cb(RETRO_LOG_ERROR, "SquirrelJME JVM Exec Error: %d/%x\n",
 			(int)error, (unsigned)error);
-	
-	log_cb(RETRO_LOG_INFO, "Cycles: %d\n", (int)cycles);
+		log_cb(RETRO_LOG_ERROR, "Execution now unpredictable!\n");
+	}
 	
 	/* Random video noise. */
 	for (i = 0; i < VIDEO_RAM_SIZE; i++)
@@ -386,7 +420,8 @@ void retro_run(void)
 		seed = (seed * 7) + i;
 	}
 	
-	video_cb(videoram, 240, 320, 240 * sizeof(uint32_t));
+	video_cb(videoram, SJME_RETROARCH_WIDTH, SJME_RETROARCH_HEIGHT,
+		SJME_RETROARCH_WIDTH * sizeof(uint32_t));
 }
 
 /** Serialize size? */
