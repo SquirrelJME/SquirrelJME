@@ -599,8 +599,6 @@ void sjme_free(void* p)
  */
 sjme_jint sjme_memread(sjme_jint size, void* ptr, sjme_jint off)
 {
-	sjme_jint rv;
-	
 	/* Get the true pointer. */
 	ptr = SJME_POINTER_OFFSET(ptr, off);
 	
@@ -633,8 +631,6 @@ sjme_jint sjme_memread(sjme_jint size, void* ptr, sjme_jint off)
  */
 void sjme_memwrite(sjme_jint size, void* ptr, sjme_jint off, sjme_jint value)
 {
-	sjme_jint rv;
-	
 	/* Get the true pointer. */
 	ptr = SJME_POINTER_OFFSET(ptr, off);
 	
