@@ -187,7 +187,7 @@ void retro_set_environment(retro_environment_t cb)
 			/* End. */
 			{NULL, NULL}
 		};
-   struct retro_vfs_interface_info vfs_getter = {1, NULL};
+	struct retro_vfs_interface_info vfs_getter = {1, NULL};
 	
 	/* Use this environment callback. */
 	environ_cb = cb;
