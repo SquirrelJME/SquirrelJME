@@ -1897,6 +1897,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	void* ram;
 	void* rom;
 	sjme_jvm* rv;
+	sjme_jint i, l;
 	
 	/* We need native functions. */
 	if (nativefuncs == NULL)
@@ -1955,6 +1956,42 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 			sjme_free(ram);
 			return NULL;
 		}
+	}
+	
+	/* If we are copying from the preset ROM, duplicate it. */
+	if (options->presetrom != NULL && options->copyrom != 0)
+	{
+		/* Allocate space to fit ROM. */
+		rom = sjme_malloc(options->romsize);
+		if (rom == NULL)
+		{
+			if (error != NULL)
+				*error = SJME_ERROR_NOMEMORY;
+			
+			sjme_free(ram);
+			return NULL;
+		}
+		
+		/* Copy large chunks at a time. */
+		for (i = 0; i < options->romsize;)
+		{
+			/* Byte left to move? */
+			l = options->romsize - i;
+			
+			/* Function uses a size_t which may be limited on this platform. */
+			if (sizeof(sjme_jint) > sizeof(size_t) && l > (sjme_jint)SIZE_MAX)
+				l = (sjme_jint)SIZE_MAX;
+			
+			/* Copy the data. */
+			memmove(SJME_POINTER_OFFSET(rom, i),
+				SJME_POINTER_OFFSET(options->presetrom, i), l);
+			
+			/* Offset up. */
+			i += l;
+		}
+		
+		/* We copied it, so never make a preset ROM. */
+		rv->presetrom = NULL;
 	}
 	
 	/* Set JVM rom space. */
