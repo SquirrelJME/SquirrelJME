@@ -5,7 +5,7 @@
 # SquirrelJME is under the GNU General Public License v3, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Makefile specifically for SquirrelJME RutufaCoat on RetroArch.
+# DESCRIPTION: Makefile specifically for SquirrelJME RatufaCoat on RetroArch.
 
 DEBUG = 0
 GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
