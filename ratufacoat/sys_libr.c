@@ -243,7 +243,43 @@ void retro_set_video_refresh(retro_video_refresh_t cb)
 /** Writes byte to standard error. */
 sjme_jint sjme_retroarch_stderr_write(sjme_jint b)
 {
+#define SJME_RETROARCH_STDERR_MAX_BUFFER 256
+	static char buffer[SJME_RETROARCH_STDERR_MAX_BUFFER + 1];
+	static int at;
+	struct retro_log_callback logging;
+	int i;
+	
+	/* Dump buffer contents? */
+	if (b == '\n')
+	{
+		/* Try to get the logger again because for some reason RetroArch */
+		/* nukes our callback and then it never works again? */
+		environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
+		log_cb = (logging.log != NULL ? logging.log : fallback_log);
+		
+		/* Dump it. */
+		log_cb(RETRO_LOG_INFO, "%s\n", buffer);
+		
+		/* Reset for next run. */
+		at = 0;
+		memset(buffer, 0, sizeof(buffer));
+	}
+	
+	/* Add to buffer. */
+	else
+	{
+		/* Place into buffer. */
+		i = at;
+		if (i < SJME_RETROARCH_STDERR_MAX_BUFFER)
+			buffer[i] = (char)b;
+		
+		/* Next position. */
+		at = i + 1;
+	}
+	
+	/* Just say it always works. */
 	return 1;
+#undef SJME_RETROARCH_STDERR_MAX_BUFFER
 }
 
 /** RetroArch initialization. */
