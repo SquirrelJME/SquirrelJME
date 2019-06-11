@@ -1517,7 +1517,8 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
 		error = &xerror;
 	
 	/* Clear error always. */
-	*error = SJME_ERROR_NONE;
+	if (error != NULL)
+		*error = SJME_ERROR_NONE;
 	
 	/* Do nothing. */
 	if (jvm == NULL)
@@ -1550,8 +1551,11 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
 		cycles = sjme_cpuexec(jvm, cpu, error, cycles);
 		
 		/* CPU fault, stop! */
-		if (*error != SJME_ERROR_NONE)
-			break;
+		if (error != NULL)
+		{
+			if (*error != SJME_ERROR_NONE)
+				break;
+		}
 	}
 	
 	/* Start next run on the CPU that was last executing. */
