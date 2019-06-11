@@ -1,0 +1,1 @@
+I compile best with android-ndk-r16b!
