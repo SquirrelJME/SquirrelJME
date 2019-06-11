@@ -180,6 +180,9 @@ void retro_set_environment(retro_environment_t cb)
 		{
 			{"squirreljme_debug_notes",
 				"Enable Debug Notes; disabled|enabled"},
+			{"squirreljme_cycles_per_frame",
+				"Cycles Per Frame; "
+				"1048576|2097152|4194304|32768|65536|131072|262144|524288"},
 			
 			/* End. */
 			{NULL, NULL}
@@ -372,6 +375,7 @@ void retro_run(void)
 	
 	static int died;
 	struct retro_log_callback logging;
+	struct retro_variable var;
 	sjme_jint cycles;
 	
 	/* Poll for input because otherwise it prevents RetroArch from accessing */
@@ -410,8 +414,15 @@ void retro_run(void)
 		return;
 	}
 	
-	/* Execute the JVM. */
+	/* Read the cycle count. */
+	memset(&var, 0, sizeof(var));
 	cycles = 1048576;
+	var.key = "squirreljme_cycles_per_frame";
+	if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+		if (var.value != NULL)
+			cycles = (sjme_jint)strtol(var.value, NULL, 10);
+	
+	/* Execute the JVM. */
 	cycles = sjme_jvmexec(sjme_retroarch_jvm, &sjme_retroarch_error, cycles);
 	
 	/* Random video noise. */
