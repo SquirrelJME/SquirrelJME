@@ -840,13 +840,15 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			{
 					/* Standard output. */
 				case SJME_PIPE_FD_STDOUT:
-					if (jvm->nativefuncs->stdout_write != NULL)
+					if (jvm->nativefuncs != NULL &&
+						jvm->nativefuncs->stdout_write != NULL)
 						ia = jvm->nativefuncs->stdout_write(args[1]);
 					break;
 				
 					/* Standard error. */
 				case SJME_PIPE_FD_STDERR:
-					if (jvm->nativefuncs->stderr_write != NULL)
+					if (jvm->nativefuncs != NULL &&
+						jvm->nativefuncs->stderr_write != NULL)
 						ia = jvm->nativefuncs->stderr_write(args[1]);
 					break;
 					
