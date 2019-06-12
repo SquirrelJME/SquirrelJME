@@ -803,7 +803,8 @@ public final class NativeCPU
 				(encoding == NativeInstructionType.
 					ATOMIC_INT_DECREMENT_AND_GET && i == 2) ||
 				(encoding == NativeInstructionType.MEMORY_OFF_ICONST &&
-					i == 2))
+					i == 2) ||
+				(encoding == NativeInstructionType.LOAD_POOL && i == 0))
 				canspec = false;
 			
 			// Is this a special register?

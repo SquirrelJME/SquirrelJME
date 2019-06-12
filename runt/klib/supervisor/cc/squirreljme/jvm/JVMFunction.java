@@ -190,7 +190,7 @@ public final class JVMFunction
 		ClassInfo mine = Assembly.pointerToClassInfo(pcl);
 		for (ClassInfo seek = mine; seek != null; seek = seek.superclass)
 		{
-			Assembly.breakpoint();
+			//Assembly.breakpoint();
 			
 			// Get self pointer
 			int selfptr = seek.selfptr;
