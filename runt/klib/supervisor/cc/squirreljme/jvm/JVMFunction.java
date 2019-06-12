@@ -37,11 +37,29 @@ public final class JVMFunction
 	public static final int jvmCanArrayStore(int __p, int __v)
 	{
 		// Access of invalid object?
-		if (__p == Constants.BAD_MAGIC)
+		if (__p == Constants.BAD_MAGIC || __v == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Can always store null values
+		if (__v == 0)
+			return 1;
+		
+		// Load the component for this array
+		ClassInfo pci = Assembly.pointerToClassInfo(
+			Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET)).
+			componentclass;
+		
+		// Load value class type
+		int vcl = Assembly.memReadInt(__v, Constants.OBJECT_CLASS_OFFSET);
+		
+		// Quick exact class match?
+		int pcisp = pci.selfptr;
+		if (pcisp == vcl)
+			return 1;
+		
+		// Check if the value we are putting in is an instance of the given
+		// class component type
+		return JVMFunction.jvmIsInstance(vcl, pcisp);
 	}
 	
 	/**
@@ -190,8 +208,6 @@ public final class JVMFunction
 		ClassInfo mine = Assembly.pointerToClassInfo(pcl);
 		for (ClassInfo seek = mine; seek != null; seek = seek.superclass)
 		{
-			//Assembly.breakpoint();
-			
 			// Get self pointer
 			int selfptr = seek.selfptr;
 			
