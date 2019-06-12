@@ -291,7 +291,7 @@ public final class JarMinimizer
 	 *
 	 * @param __init The initializer.
 	 * @param __cl The class to get the ID of.
-	 * @return The ID of the class.
+	 * @return The pointer of the ClassInfo instance.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
@@ -373,6 +373,12 @@ public final class JarMinimizer
 							wp, ClassInfo.MAGIC_NUMBER);
 						break;
 						
+						// Self pointer
+					case "selfptr:I":
+						__init.memWriteInt(Modifier.RAM_OFFSET,
+							wp, rv);
+						break;
+						
 						// Class info flags
 					case "flags:I":
 						{
@@ -406,8 +412,62 @@ public final class JarMinimizer
 						
 						// Super class info
 					case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
-						__init.memWriteInt(Modifier.RAM_OFFSET,
-							wp, this.__classId(__init, atsuper));
+						{
+							ClassName sn = bi._class.superName();
+							if (sn == null)
+								__init.memWriteInt(wp, 0);
+							else
+								__init.memWriteInt(Modifier.RAM_OFFSET,
+									wp, this.__classId(__init, sn));
+						}
+						break;
+						
+						// Interface class information
+					case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
+						{
+							// Get interfaces
+							ClassNames ints = bi._class.interfaceNames();
+							int numints = ints.size();
+							
+							// Allocate and set field array pointer
+							int cip = __init.allocate(
+								Constants.ARRAY_BASE_SIZE + (numints * 4));
+							__init.memWriteInt(Modifier.RAM_OFFSET,
+								wp, cip);
+							
+							// Write array details
+							__init.memWriteInt(Modifier.RAM_OFFSET,
+								cip + Constants.OBJECT_CLASS_OFFSET,
+								this.__classId(__init, new ClassName(
+									"[Lcc/squirreljme/jvm/ClassInfo;")));
+							__init.memWriteInt(
+								cip + Constants.OBJECT_COUNT_OFFSET,
+								999999);
+							__init.memWriteInt(
+								cip + Constants.ARRAY_LENGTH_OFFSET,
+								numints);
+							
+							// Write interface IDs
+							for (int j = 0; j < numints; j++)
+								__init.memWriteInt(Modifier.RAM_OFFSET,
+									cip + Constants.ARRAY_BASE_SIZE + (j * 4),
+									this.__classId(__init, ints.get(j)));
+						}
+						break;
+						
+						// Component class
+					case "componentclass:Lcc/squirreljme/jvm/ClassInfo;":
+						{
+							// Write class ID of component type
+							if (__cl.isArray())
+								__init.memWriteInt(Modifier.RAM_OFFSET,
+									wp, this.__classId(__init,
+										__cl.componentType()));
+							
+							// Write null pointer
+							else
+								__init.memWriteInt(wp, 0);
+						}
 						break;
 						
 						// VTable for virtual calls

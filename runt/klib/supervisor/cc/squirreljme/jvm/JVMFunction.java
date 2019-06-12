@@ -186,8 +186,28 @@ public final class JVMFunction
 		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Scan through
+		ClassInfo mine = Assembly.pointerToClassInfo(pcl);
+		for (ClassInfo seek = mine; seek != null; seek = seek.superclass)
+		{
+			Assembly.breakpoint();
+			
+			// Get self pointer
+			int selfptr = seek.selfptr;
+			
+			// Make sure we are not reading bad memory
+			if (selfptr == Constants.BAD_MAGIC)
+				throw new VirtualMachineError();
+			
+			// Same as this one?
+			if (selfptr == __cldx)
+				return 1;
+			
+			// Check interfaces, if any
+		}
+		
+		// Not a match
+		return 0;
 	}
 	
 	/**
