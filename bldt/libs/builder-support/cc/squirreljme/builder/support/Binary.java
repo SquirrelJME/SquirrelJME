@@ -17,15 +17,15 @@ import cc.squirreljme.runtime.swm.SuiteInfo;
 import cc.squirreljme.runtime.swm.SuiteName;
 import cc.squirreljme.runtime.swm.SuiteVendor;
 import cc.squirreljme.runtime.swm.SuiteVersion;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.nio.file.attribute.FileTime;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +36,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.javac.CompilerException;
+import net.multiphasicapps.javac.CompilerPathSet;
+import net.multiphasicapps.javac.ZipPathSet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -217,6 +220,29 @@ public final class Binary
 	public final Path path()
 	{
 		return this.path;
+	}
+	
+	/**
+	 * Returns the path set which represents the binary.
+	 *
+	 * @return The path set for this binary
+	 * @since 2019/06/12
+	 */
+	public final CompilerPathSet pathSet()
+		throws IOException, NullPointerException
+	{
+		// Just wrap the ZIP
+		try
+		{
+			return new ZipPathSet(this.zipBlock());
+		}
+		
+		// {@squirreljme.error AU2f Could not get the path set for this
+		// binary.}
+		catch (IOException e)
+		{
+			throw new CompilerException("AU2f", e);
+		}
 	}
 	
 	/**
