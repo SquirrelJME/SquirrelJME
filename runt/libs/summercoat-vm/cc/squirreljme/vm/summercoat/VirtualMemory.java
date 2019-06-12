@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.Constants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -75,8 +76,17 @@ public final class VirtualMemory
 				return ((ReadableMemory)c).memReadByte(vaddr);
 		}
 		
+		switch (__addr & 0x3)
+		{
+			case 0:		return (Constants.BAD_MAGIC >> 24) & 0xFF;
+			case 1:		return (Constants.BAD_MAGIC >> 16) & 0xFF;
+			case 2:		return (Constants.BAD_MAGIC >> 8) & 0xFF;
+			default:
+			case 3:		return (Constants.BAD_MAGIC) & 0xFF;
+		}
+		
 		// Missed Read
-		return 0xF0 | (__addr & 0x0F);
+		/*return 0xF0 | (__addr & 0x0F);*/
 	}
 	
 	/**
