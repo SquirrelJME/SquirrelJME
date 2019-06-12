@@ -51,6 +51,7 @@ public final class Bootstrap
 		
 		// Debug
 		todo.DEBUG.note("Hello adorable and cute squirrels!");
+		todo.DEBUG.note("Basic formatting too: %s!", "Neat!");
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();

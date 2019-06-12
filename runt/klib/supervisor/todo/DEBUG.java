@@ -44,33 +44,79 @@ public final class DEBUG
 		if (SystemCallError.getError(SystemCallIndex.PD_OF_STDERR) != 0)
 			return;
 		
+		// Argument pointer
+		int argp = 0;
+		
 		// Print char by char to the console
+		boolean percent = false;
 		for (int i = 0, n = __fmt.length(); i < n; i++)
 		{
 			// Read character here
 			char c = __fmt.charAt(i);
 			
-			// Single byte sequence
-			if (c <= 0x7F)
+			// Handle percent
+			if (percent)
 			{
-				// Forward
-				Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
-					fd, c & 0xFF);
+				// Plain percent
+				if (c == '%')
+					DEBUG.__pipe(fd, '%');
+				
+				// Newline
+				else if (c == 'n')
+					DEBUG.__pipe(fd, '\n');
+				
+				// Just treat as string
+				else if (argp < __args.length)
+				{
+					// Get string form of it
+					Object av = __args[argp++];
+					String sv = (av == null ? "null" : av.toString());
+					
+					// Pipe through all string characters
+					for (int j = 0, q = sv.length(); j < q; j++)
+						DEBUG.__pipe(fd, sv.charAt(j));
+				}
 			}
 			
-			// Double byte sequence
+			// Flag percent
+			else if (c == '%')
+				percent = true;
+			
+			// Plain character
 			else
-			{
-				// Forward
-				Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
-					fd, (c >>> 6) | 0b1100_0000);
-				Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
-					fd, (c & 0b111111));
-			}
+				DEBUG.__pipe(fd, c);
 		}
 		
 		// End with newline sequence
-		Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE, fd, '\n');
+		DEBUG.__pipe(fd, '\n');
+	}
+	
+	/**
+	 * Pipes out the given character.
+	 *
+	 * @param __fd The pipe descriptor.
+	 * @param __c The character to pipe.
+	 * @since 2019/06/11
+	 */
+	private static final void __pipe(int __fd, char __c)
+	{
+		// Single byte sequence
+		if (__c <= 0x7F)
+		{
+			// Forward
+			Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
+				__fd, __c & 0xFF);
+		}
+		
+		// Double byte sequence
+		else
+		{
+			// Forward
+			Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
+				__fd, (__c >>> 6) | 0b1100_0000);
+			Assembly.sysCall(SystemCallIndex.PD_WRITE_BYTE,
+				__fd, (__c & 0b111111));
+		}
 	}
 }
 
