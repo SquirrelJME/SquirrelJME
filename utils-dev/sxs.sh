@@ -14,6 +14,9 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Calculate hosted launch script location
+__hosted="$("$__exedir/absolute.sh" "$__exedir/hostedlaunch.sh")"
+
 # Go to temp dir
 __tempdir="/tmp/sx"
 if [ ! -d "$__tempdir" ]
@@ -23,4 +26,4 @@ fi
 cd "$__tempdir"
 
 # Execute handler
-"$__exedir/hostedlaunch.sh" sxs "$@"
+"$__hosted" sxs "$@"
