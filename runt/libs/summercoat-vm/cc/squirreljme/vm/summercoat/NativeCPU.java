@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.vm.VMException;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
@@ -340,6 +341,14 @@ public final class NativeCPU
 			// Handle the operation
 			switch (encoding)
 			{
+					// CPU Breakpoint
+				case NativeInstructionType.BREAKPOINT:
+					this.__cpuDebugPrint(nowframe, op, af, args, largs,
+						reglist);
+					
+					// {@squirreljme.error AE04 CPU breakpoint hit.}
+					throw new VMException("AE04");
+				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
 					this.__debugEntry(nowframe, args[0], args[1], args[2]);
