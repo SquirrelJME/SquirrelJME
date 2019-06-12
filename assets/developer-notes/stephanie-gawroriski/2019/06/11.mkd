@@ -1,0 +1,13 @@
+# 2019/06/11
+
+## 07:32
+
+Is very cool that I got RetroArch working! Just have been messing with that.
+Of course I can continue on doing other things like launching the actual VM
+from within its own code and such.
+
+## 15:23
+
+RetroArch support has been improving! Currently going to make it so the basic
+ROM can be loaded after the core has been initialized, if it had a missing
+chance for example. That way it can still load properly.
