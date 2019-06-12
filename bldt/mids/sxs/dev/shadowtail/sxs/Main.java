@@ -25,7 +25,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Method;
@@ -57,6 +59,9 @@ public class Main
 		
 		// Note what is being dumped
 		__ps.printf("****** %s ******%n", __m.nameAndType());
+		
+		// Line population count, to track how many times it changed to them
+		Map<Integer, Integer> lnpopcount = new HashMap<>();
 		
 		// Get byte code and native code
 		ByteCode bc = __m.byteCode();
@@ -90,13 +95,20 @@ public class Main
 			// Change of source line?
 			if (nijln != lljln)
 			{
+				// Get population of this line
+				Integer popcount = lnpopcount.get(nijln);
+				if (popcount == null)
+					popcount = Integer.valueOf(1);
+				lnpopcount.put(nijln, popcount + 1);
+				
 				// Get the line, turn tabs to spaces to save room
 				String ln = (nijln > 0 && nijln <= __srclines.size() ?
 					__srclines.get(nijln - 1) : "<INVALID LINE?>").
 					replace('\t', ' ');
 				
 				// Print the line text
-				__ps.printf("    L%03d: %s%n", nijln, ln);
+				__ps.printf("    L%4d%3s: %s%n", nijln, (popcount > 1 ?
+					String.format("+%-2d", popcount) : "   "), ln);
 				
 				// Set new last line
 				lljln = nijln;
