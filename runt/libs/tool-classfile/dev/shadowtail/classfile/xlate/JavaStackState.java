@@ -266,6 +266,51 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * This handles logic used by check cast.
+	 *
+	 * @param __t The type to cast to.
+	 * @return The result of the cast.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/12
+	 */
+	public final JavaStackResult doCheckCast(JavaType __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+			
+		// This is nearly the same
+		Info[] newstack = this._stack.clone();
+		int stacktop = this.stacktop;
+		
+		// Get item on the 
+		Info topitem = newstack[stacktop - 1];
+		
+		// Same as the top item, but with a new type instead
+		newstack[stacktop - 1] = new Info(
+			topitem.register,
+			__t,
+			topitem.value,
+			topitem.readonly,
+			topitem.nocounting);
+		
+		// If the top-most item is counting, then enqueue it in the event
+		// exceptions happen
+		JavaStackEnqueueList enq;
+		if (topitem.nocounting)
+			enq = new JavaStackEnqueueList(0);
+		else
+			enq = new JavaStackEnqueueList(0, topitem.register);
+		
+		// Create the result
+		return new JavaStackResult(this,
+			new JavaStackState(this._locals, newstack, stacktop),
+			enq,
+			new StateOperations(),
+			JavaStackResult.makeInput(topitem));
+	}
+	
+	/**
 	 * Destroys all local variables and stack variables returning the process
 	 * that is needed to clear out the entire state.
 	 *

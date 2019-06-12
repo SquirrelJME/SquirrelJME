@@ -648,14 +648,9 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
-		// Peek of the state to determine if this class item was counted
-		// counted or not so that it is retained
-		ByteCodeState state = this.state;
-		JavaStackResult flunked = state.stack.doStack(1);
-		
 		// [object] -> [object]
-		JavaStackResult result = state.stack.doStack(1,
-			flunked.in(0).nocounting, new JavaType(__cn));
+		JavaStackResult result = this.state.stack.doCheckCast(
+			new JavaType(__cn));
 		this.__update(result);
 		
 		// Stop pre-processing here
