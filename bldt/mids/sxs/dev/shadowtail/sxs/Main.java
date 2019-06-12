@@ -173,7 +173,7 @@ public class Main
 				__ps.print(sb);
 				
 				// Print splitter
-				__ps.print(" | ");
+				__ps.print((i == 0 ? "<|>" : " | "));
 				
 				// Print Java fragment
 				sb.setLength(0);
