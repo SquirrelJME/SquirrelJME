@@ -126,8 +126,9 @@ public class Main
 			}
 			
 			// Change of Java instruction? Get its string form
-			String jis = "...";
-			if (nijpc != lljpc)
+			String jis = "";
+			boolean chjpc;
+			if ((chjpc = (nijpc != lljpc)))
 			{
 				// Get form
 				jis = String.format("J@%3d: %s",
@@ -172,8 +173,14 @@ public class Main
 					sb.append(' ');
 				__ps.print(sb);
 				
-				// Print splitter
-				__ps.print((i == 0 ? "<|>" : " | "));
+				// Print left splitter
+				__ps.print((i == 0 ? '<' : ' '));
+				
+				// Splitter if a start match
+				__ps.print((i == 0 && chjpc ? '=' : '|'));
+				
+				// Print right splitter?
+				__ps.print((chjpc ? '>' : ' '));
 				
 				// Print Java fragment
 				sb.setLength(0);
@@ -183,7 +190,7 @@ public class Main
 				__ps.print(sb);
 				
 				// New line or continuation?
-				__ps.print((i == 0 ? '<' : ' '));
+				__ps.print((chjpc ? '<' : ' '));
 				
 				// End line
 				__ps.println();
