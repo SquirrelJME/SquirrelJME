@@ -696,7 +696,8 @@ public final class NearNativeByteCodeHandler
 			int ireg = __in[0].register;
 			this.__basicCheckNPE(ireg);
 			
-			if (__in[0].isCompatible(__r.handle().outerClass()))
+			// Check types if this is not compatible
+			if (!__in[0].isCompatible(__r.handle().outerClass()))
 				this.__basicCheckCCE(ireg, __r.handle().outerClass());
 			
 			// Invoking interface method

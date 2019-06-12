@@ -96,11 +96,17 @@ public final class NativeCPU
 	 */
 	public final Frame enterFrame(int __pc, int... __args)
 	{
+		// Old frame, to source globals from
+		LinkedList<Frame> frames = this._frames;
+		Frame lastframe = frames.peekLast();
+		
 		// Debug
 		if (ENABLE_DEBUG)
 		{
 			System.err.printf(">>>> %08x >>>>>>>>>>>>>>>>>>>>>>%n", __pc);
-			System.err.printf(" > %s%n", new IntegerList(__args));
+			System.err.printf(" > ARG %s%n", new IntegerList(__args));
+			System.err.printf(" > WAS %s%n", (lastframe == null ? null :
+				this.trace(lastframe)));
 		}
 		
 		// Setup new frame
@@ -108,10 +114,6 @@ public final class NativeCPU
 		rv._pc = __pc;
 		rv._entrypc = __pc;
 		rv._lastpc = __pc;
-		
-		// Old frame, to source globals from
-		LinkedList<Frame> frames = this._frames;
-		Frame lastframe = frames.peekLast();
 		
 		// Add to frame list
 		frames.addLast(rv);
@@ -352,6 +354,11 @@ public final class NativeCPU
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
 					this.__debugEntry(nowframe, args[0], args[1], args[2]);
+					
+					// Trace it!
+					if (ENABLE_DEBUG)
+						this.__cpuDebugPrint(nowframe, op, af, args, largs,
+							reglist);
 					break;
 					
 					// Debug exit of method
