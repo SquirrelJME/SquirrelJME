@@ -204,7 +204,7 @@ public final class JVMFunction
 		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
 		
-		// Scan through
+		// Scan through super classes and check
 		ClassInfo mine = Assembly.pointerToClassInfo(pcl);
 		for (ClassInfo seek = mine; seek != null; seek = seek.superclass)
 		{
@@ -219,7 +219,20 @@ public final class JVMFunction
 			if (selfptr == __cldx)
 				return 1;
 			
-			// Check interfaces, if any
+			// See if our class or any of our super class implemented
+			// interfaces matches the target class
+			for (ClassInfo xface : mine.interfaceclasses)
+			{
+				int ifaceptr = xface.selfptr;
+				
+				// Make sure we are not reading bad memory
+				if (ifaceptr == Constants.BAD_MAGIC)
+					throw new VirtualMachineError();
+				
+				// Is a match?
+				if (ifaceptr == __cldx)
+					return 1;
+			}
 		}
 		
 		// Not a match
