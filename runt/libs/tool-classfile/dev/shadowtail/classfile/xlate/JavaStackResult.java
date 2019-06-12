@@ -417,6 +417,17 @@ public final class JavaStackResult
 		}
 		
 		/**
+		 * Is this an object?
+		 *
+		 * @return If this is an object.
+		 * @since 2019/06/12
+		 */
+		public final boolean isObject()
+		{
+			return this.type.isObject();
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2019/03/31
 		 */

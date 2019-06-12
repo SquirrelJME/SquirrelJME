@@ -597,12 +597,9 @@ public final class JavaStackState
 		for (StateOperation sop : stacksto.operations())
 			lsops.add(sop);
 		
-		// If the stack entry is not counting then we need to count it
-		// when it stored in the local because all locals are not cachable
-		// Make sure it is counted before the copy just in case there are
-		// any kludge operation
+		// If we are storing an object, make sure it is counted
 		JavaStackResult.Output out = stacksto.out(0);
-		if (popped.nocounting && !out.nocounting)
+		if (popped.isObject() && popped.nocounting)
 			lsops.add(0, StateOperation.count(popped.register));
 		
 		// The two states are nearly combined but most of the result comes
