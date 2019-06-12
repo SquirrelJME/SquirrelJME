@@ -26,8 +26,10 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Method;
@@ -41,6 +43,10 @@ import net.multiphasicapps.javac.NoSuchInputException;
  */
 public class Main
 {
+	/** The maximum column size. */
+	public static final int COLUMN_SIZE =
+		44;
+	
 	/**
 	 * Dumps the given method.
 	 *
@@ -58,7 +64,8 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		// Note what is being dumped
-		__ps.printf("****** %s ******%n", __m.nameAndType());
+		__ps.printf("****** %s ******", __m.nameAndType());
+		__ps.println();
 		
 		// Line population count, to track how many times it changed to them
 		Map<Integer, Integer> lnpopcount = new HashMap<>();
@@ -76,6 +83,9 @@ public class Main
 		int lljln = nijln,
 			lljop = nijop,
 			lljpc = nijpc;
+		
+		// Fragment part builder
+		StringBuilder sb = new StringBuilder();
 		
 		// Major order is the native code
 		for (int nidx = 0, numni = nc.length(); nidx < numni; nidx++)
@@ -107,14 +117,77 @@ public class Main
 					replace('\t', ' ');
 				
 				// Print the line text
-				__ps.printf("    L%4d%3s: %s%n", nijln, (popcount > 1 ?
+				__ps.printf("    L%4d%3s: %s", nijln, (popcount > 1 ?
 					String.format("+%-2d", popcount) : "   "), ln);
+				__ps.println();
 				
 				// Set new last line
 				lljln = nijln;
 			}
 			
-			//__ps.println(ni);
+			// Change of Java instruction? Get its string form
+			String jis = "...";
+			if (nijpc != lljpc)
+			{
+				// Get form
+				jis = String.format("J@%3d: %s",
+					nijpc, bc.getByAddress(nijpc));
+				
+				// Set new last address
+				lljpc = nijpc;
+			}
+			
+			// Get native instruction form
+			String nis = String.format("N@%3d: %s",
+				nidx, ni);
+			
+			// Get string lengths
+			int nisl = nis.length(),
+				jisl = jis.length();
+			
+			// Determine row count
+			int nirl = Math.max(1, (nisl + COLUMN_SIZE) / COLUMN_SIZE),
+				jirl = Math.max(1, (jisl + COLUMN_SIZE) / COLUMN_SIZE),
+				mxrl = Math.max(nirl, jirl);
+			
+			// Print all rows
+			for (int i = 0; i < mxrl; i++)
+			{
+				// Print indent space
+				__ps.print("    ");
+				
+				// New line or continuation?
+				__ps.print((i == 0 ? '>' : ' '));
+				
+				// Determine fragment start and ends
+				int nfs = Math.min(nisl, COLUMN_SIZE * i),
+					nfe = Math.min(nisl, nfs + COLUMN_SIZE),
+					jfs = Math.min(jisl, COLUMN_SIZE * i),
+					jfe = Math.min(jisl, jfs + COLUMN_SIZE);
+				
+				// Print native fragment
+				sb.setLength(0);
+				sb.append(nis.substring(nfs, nfe));
+				while (sb.length() < COLUMN_SIZE)
+					sb.append(' ');
+				__ps.print(sb);
+				
+				// Print splitter
+				__ps.print(" | ");
+				
+				// Print Java fragment
+				sb.setLength(0);
+				sb.append(jis.substring(jfs, jfe));
+				while (sb.length() < COLUMN_SIZE)
+					sb.append(' ');
+				__ps.print(sb);
+				
+				// New line or continuation?
+				__ps.print((i == 0 ? '<' : ' '));
+				
+				// End line
+				__ps.println();
+			}
 		}
 		
 		// Spacing
