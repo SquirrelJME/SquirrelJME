@@ -142,6 +142,9 @@ public final class JVMFunction
 				for (int i = 0, px = 0; i < rnobj; i++, px += 4)
 					Assembly.refUncount(Assembly.memReadInt(rbase, px));
 			}
+			
+			Assembly.breakpoint();
+			throw new todo.TODO();
 		}
 		
 		// Free this memory
