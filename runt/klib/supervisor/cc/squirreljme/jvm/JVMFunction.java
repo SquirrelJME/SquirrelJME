@@ -300,7 +300,13 @@ public final class JVMFunction
 			bytes[i] = (byte)Assembly.memReadByte(base, i);
 		
 		// Initialize and intern string
-		return new String(bytes).intern();
+		String rv = new String(bytes).intern();
+		
+		// Debug
+		todo.DEBUG.code('L', 's', Assembly.objectToPointer(rv));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -410,6 +416,9 @@ public final class JVMFunction
 		Assembly.memWriteInt(rv, Constants.OBJECT_COUNT_OFFSET,
 			1);
 		
+		// Debug
+		todo.DEBUG.code('N', 'E', rv);
+		
 		// Use this pointer
 		return rv;
 	}
@@ -460,6 +469,9 @@ public final class JVMFunction
 		// Write length of array
 		Assembly.memWriteInt(rv, Constants.ARRAY_LENGTH_OFFSET,
 			__len);
+			
+		// Debug
+		todo.DEBUG.code('N', 'A', rv);
 		
 		// Use this pointer
 		return rv;
