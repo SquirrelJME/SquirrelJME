@@ -300,13 +300,7 @@ public final class JVMFunction
 			bytes[i] = (byte)Assembly.memReadByte(base, i);
 		
 		// Initialize and intern string
-		String rv = new String(bytes).intern();
-		
-		// Debug
-		todo.DEBUG.code('L', 's', Assembly.objectToPointer(rv));
-		
-		// Return it
-		return rv;
+		return new String(bytes).intern();
 	}
 	
 	/**
