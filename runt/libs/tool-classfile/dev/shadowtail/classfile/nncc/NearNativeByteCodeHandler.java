@@ -566,7 +566,7 @@ public final class NearNativeByteCodeHandler
 		if (isobject)
 		{
 			// Uncount
-			this.__refCount(voltemp);
+			this.__refUncount(voltemp);
 			
 			// Not needed
 			volatiles.remove(voltemp);
