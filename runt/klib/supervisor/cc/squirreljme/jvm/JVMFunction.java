@@ -113,6 +113,7 @@ public final class JVMFunction
 		ClassInfo pinfo = Assembly.pointerToClassInfo(pcl);
 		
 		// If this is an array, elements have to be uncounted
+		// Instance fields can be skipped for non-object arrays
 		if ((pinfo.flags & Constants.CIF_IS_ARRAY) != 0)
 		{
 			// This only needs to be done for objects
@@ -130,8 +131,17 @@ public final class JVMFunction
 		// Otherwise uncount the instance field information
 		else
 		{
-			Assembly.breakpoint();
-			throw new todo.TODO();
+			// Go through all classes in the class chain
+			for (ClassInfo ro = pinfo; ro != null; ro = ro.superclass)
+			{
+				// Actual base position for the objects in the instances
+				int rbase = __p + ro.base;
+				
+				// Clear all offsets in the object
+				int rnobj = ro.numobjects;
+				for (int i = 0, px = 0; i < rnobj; i++, px += 4)
+					Assembly.refUncount(Assembly.memReadInt(rbase, px));
+			}
 		}
 		
 		// Free this memory
