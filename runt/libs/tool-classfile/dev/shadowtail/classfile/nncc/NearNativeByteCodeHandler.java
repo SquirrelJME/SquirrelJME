@@ -82,6 +82,12 @@ public final class NearNativeByteCodeHandler
 	/** Is this an instance method? */
 	protected final boolean isinstance;
 	
+	/** Returning value? */
+	protected final boolean isreturn;
+	
+	/** Returning wide value? */
+	protected final boolean isreturnwide;
+	
 	/** Monitor target register used. */
 	protected final int monitortarget;
 	
@@ -138,6 +144,10 @@ public final class NearNativeByteCodeHandler
 			__bc.maxLocals() + __bc.maxStack();
 		this.monitortarget = volbase;
 		this.volatiles = new VolatileRegisterStack(volbase + 1);
+		
+		// Returning values?
+		this.isreturn = (__bc.type().returnValue() != null);
+		this.isreturnwide = (isreturn && __bc.type().returnValue().isWide());
 	}
 	
 	/**
@@ -1091,7 +1101,18 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Returning a value? Copy it to the return register
+		// If we are returning an object, we need to reference count it up
+		// so it does not get garbage collected as a return is happening
+		if (__in != null && __in.isObject())
+			this.__refCount(__in.register);
+		
+		// Uncount all references that need to be cleared out as we return
+		for (int q : this.state.result.enqueue())
+			this.__refUncount(q);
+		
+		// Copy the returning value at the end to increase it's lifetime
+		// as much as possible. Otherwise if we copy too early to the return
+		// register then future uncounts can completely trash the value
 		if (__in != null)
 		{
 			int a = __in.register,
@@ -1105,15 +1126,7 @@ public final class NearNativeByteCodeHandler
 			}
 			else
 				codebuilder.addCopy(a, b);
-			
-			// If we are returning an object, we need to reference count it
-			if (__in.isObject())
-				this.__refCount(NativeCode.RETURN_REGISTER);
 		}
-		
-		// Uncount anything which was enqueued
-		for (int q : this.state.result.enqueue())
-			this.__refUncount(q);
 		
 		// Do the return
 		this.__generateReturn();
@@ -1784,6 +1797,11 @@ public final class NearNativeByteCodeHandler
 		if (__eq == null)
 			throw new NullPointerException("NARG");
 		
+		// Will be used to generate safe spots
+		VolatileRegisterStack volatiles = this.volatiles;
+		int ssh = -1,
+			ssl = -1;
+		
 		// Find unique return point
 		boolean freshdx;
 		List<JavaStackEnqueueList> returns = this._returns;
@@ -1806,8 +1824,37 @@ public final class NearNativeByteCodeHandler
 			// If this is synchronized, we need to exit the monitor
 			if (this.issynchronized)
 			{
+				// Protect return value, if there is one
+				if (isreturn)
+				{
+					ssh = volatiles.get();
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER, ssh);
+				}
+				
+				// And wide value, if any
+				if (isreturnwide)
+				{
+					ssl = volatiles.get();
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, ssl);
+				}
+				
+				// Uncount and clear out
 				this.__monitor(false, this.monitortarget);
 				this.__refUncount(this.monitortarget);
+				
+				// Recover value, if any
+				if (isreturn)
+				{
+					codebuilder.addCopy(ssh, NativeCode.RETURN_REGISTER);
+					volatiles.remove(ssh);
+				}
+				
+				// Recover wide, if any
+				if (isreturnwide)
+				{
+					codebuilder.addCopy(ssl, NativeCode.RETURN_REGISTER + 1);
+					volatiles.remove(ssl);
+				}
 			}
 			
 			// Debug exit
@@ -1829,10 +1876,38 @@ public final class NearNativeByteCodeHandler
 			return lb;
 		}
 		
+		// Protect return value, if there is one
+		if (isreturn)
+		{
+			ssh = volatiles.get();
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER, ssh);
+		}
+		
+		// And wide value, if any
+		if (isreturnwide)
+		{
+			ssl = volatiles.get();
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, ssl);
+		}
+		
 		// Since the enqueue list is not empty, we can just trim a register
 		// from the top and recursively go down
 		// So uncount the top
 		this.__refUncount(__eq.top());
+		
+		// Recover value, if any
+		if (isreturn)
+		{
+			codebuilder.addCopy(ssh, NativeCode.RETURN_REGISTER);
+			volatiles.remove(ssh);
+		}
+		
+		// Recover wide, if any
+		if (isreturnwide)
+		{
+			codebuilder.addCopy(ssl, NativeCode.RETURN_REGISTER + 1);
+			volatiles.remove(ssl);
+		}
 		
 		// Recursively go down since the enqueues may possibly be shared, if
 		// any of these enqueues were previously made then the recursive
