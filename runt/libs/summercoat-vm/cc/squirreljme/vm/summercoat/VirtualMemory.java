@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.vm.VMException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -125,9 +126,18 @@ public final class VirtualMemory
 				vaddr = __addr - cbase;
 			
 			if (vaddr >= 0 && vaddr < csize)
+			{
 				if (c instanceof WritableMemory)
+				{
 					((WritableMemory)c).memWriteByte(vaddr, __v);
+					return;
+				}
+			}
 		}
+		
+		// {@squirreljme.error AE08 Invalid write to unmapped or non-writable
+		// memory! (The address; The value to write)}
+		throw new VMException(String.format("AE08 %08x %d", __addr, __v));
 	}
 }
 

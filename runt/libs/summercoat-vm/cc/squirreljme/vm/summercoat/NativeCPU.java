@@ -158,9 +158,39 @@ public final class NativeCPU
 	 * Runs anything after this frame.
 	 *
 	 * @param __fl The frame limit.
-	 * @since 2019/04/21
+	 * @since 2019/06/13
 	 */
 	public final void run(int __fl)
+	{
+		try
+		{
+			this.runWithoutCatch(0);
+		}
+		
+		// Failed
+		catch (VMException e)
+		{
+			// Print the call trace
+			CallTraceElement[] calltrace = this.trace();
+			System.err.println("Call trace:");
+			for (CallTraceElement l : calltrace)
+				System.err.printf("    %s%n", l);
+			System.err.println();
+			
+			// {@squirreljme.error AE09 Virtual machine exception. (The failing
+			// instruction)}
+			throw new VMException(
+				String.format("AE09 %s", this.traceTop()), e);
+		}
+	}
+	
+	/**
+	 * Runs anything after this frame, no catching is performed.
+	 *
+	 * @param __fl The frame limit.
+	 * @since 2019/04/21
+	 */
+	public final void runWithoutCatch(int __fl)
 	{
 		// Read the CPU stuff
 		final WritableMemory memory = this.memory;
@@ -686,7 +716,17 @@ public final class NativeCPU
 	 */
 	public final CallTraceElement[] trace()
 	{
-		throw new todo.TODO();
+		LinkedList<Frame> frames = this._frames;
+		
+		// Need to store all the frames
+		int numframes = frames.size();
+		CallTraceElement[] rv = new CallTraceElement[numframes];
+		
+		// Make the newest frame first!
+		for (int i = numframes - 1, o = 0; i >= 0; i--, o++)
+			rv[o] = this.trace(frames.get(i));
+		
+		return rv;
 	}
 	
 	/**
@@ -712,6 +752,23 @@ public final class NativeCPU
 			__f._inline,
 			__f._injop,
 			__f._injpc);
+	}
+	
+	/**
+	 * Traces the top most frame.
+	 *
+	 * @return The top most frame.
+	 * @since 2019/06/13
+	 */
+	public final CallTraceElement traceTop()
+	{
+		LinkedList<Frame> frames = this._frames;
+		
+		// Only look at the top most frame
+		Frame top = frames.peekLast();
+		if (top == null)
+			return new CallTraceElement();
+		return this.trace(top);
 	}
 	
 	/**
