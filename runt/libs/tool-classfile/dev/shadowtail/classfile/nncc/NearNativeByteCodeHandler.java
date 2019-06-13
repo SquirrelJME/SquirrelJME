@@ -111,9 +111,6 @@ public final class NearNativeByteCodeHandler
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
 	
-	/** Reference queue base, register wise. */
-	private int _refqbase;
-	
 	/** Next reference count/uncount ID number for jump. */
 	private int _refclunk;
 	
@@ -2764,13 +2761,20 @@ public final class NearNativeByteCodeHandler
 		// No need to clear anymore
 		this._lastenqueue = null;
 		
-		// Position where all the enqueued values were stored
-		int refqbase = this._refqbase;
-		
 		// Un-count all of them accordingly
+		VolatileRegisterStack volatiles = this.volatiles;
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		for (int i = 0, n = lastenqueue.size(); i < n; i++)
-			this.__refUncount(refqbase + i);
+		{
+			// Get the volatile to clear
+			int v = lastenqueue.get(i);
+			
+			// Uncount this one
+			this.__refUncount(v);
+			
+			// Free it for later usage
+			volatiles.remove(v);
+		}
 	}
 	
 	/**
@@ -2831,17 +2835,31 @@ public final class NearNativeByteCodeHandler
 			return false;
 		}
 		
-		// Register base to use for the reference queue
-		int refqbase = this.state.stack.usedregisters + 4;
-		this._refqbase = refqbase;
-		
-		// Copy all references to the temporary spots
+		// Place anything that is referenced into volatile registers
+		VolatileRegisterStack volatiles = this.volatiles;
 		NativeCodeBuilder codebuilder = this.codebuilder;
-		for (int i = 0, n = __r.size(); i < n; i++)
-			codebuilder.addCopy(__r.get(i), refqbase + i);
 		
-		// These will be uncounted accordingly
-		this._lastenqueue = __r;
+		// Get a volatile register and copy into it, store the volatile
+		int n = __r.size();
+		int[] use = new int[n];
+		for (int i = 0; i < n; i++)
+		{
+			// Get the volatile register to copy into
+			int v = volatiles.get();
+			
+			// Copy to the volatile
+			codebuilder.addCopy(__r.get(i), v);
+			
+			// Use this volatile register
+			use[i] = v;
+		}
+		
+		// We completely lose our original registers and instead use our new
+		// set of volatiles for later clearing and removing
+		// Note that we keep the same stack offset because it will match
+		// exactly as the input (needed for exception handlers), even though
+		// the registers might be all over the place.
+		this._lastenqueue = new JavaStackEnqueueList(__r.stackstart, use);
 		
 		// Did enqueue something
 		return true;
