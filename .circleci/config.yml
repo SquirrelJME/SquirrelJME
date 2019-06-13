@@ -26,22 +26,22 @@ commands:
           command: mkdir -p ~/squirreljme-build
       - run:
           name: Install build-essential
-          command: sudo apt-get install --no-install-recommends -y build-essential
+          command: sudo apt-get install --no-install-recommends -y build-essential || true
       - run:
           name: Install crossbuild-essential-powerpc
-          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-powerpc
+          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-powerpc || true
       - run:
           name: Install crossbuild-essential-mips
-          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-mips
+          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-mips || true
       - run:
           name: Install crossbuild-essential-mipsel
-          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-mipsel
+          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-mipsel || true
       - run:
           name: Install qemu-user
-          command: sudo apt-get install --no-install-recommends -y qemu-user
+          command: sudo apt-get install --no-install-recommends -y qemu-user || true
       - run:
           name: Install unzip
-          command: sudo apt-get install --no-install-recommends -y unzip
+          command: sudo apt-get install --no-install-recommends -y unzip || true
 
 jobs:
   build_javase:
