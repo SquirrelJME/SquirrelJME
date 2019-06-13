@@ -597,13 +597,14 @@ void sjme_free(void* p)
 /**
  * Reads a value from memory.
  *
+ * @param jvm JVM pointer.
  * @param size The size of the value to read.
  * @param ptr The pointer to read from.
  * @param off The offset.
  * @return The read value.
  * @since 2019/06/08
  */
-sjme_jint sjme_memread(sjme_jint size, void* ptr, sjme_jint off)
+sjme_jint sjme_memread(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off)
 {
 	/* Get the true pointer. */
 	ptr = SJME_POINTER_OFFSET(ptr, off);
@@ -629,16 +630,27 @@ sjme_jint sjme_memread(sjme_jint size, void* ptr, sjme_jint off)
 /**
  * Writes a value to memory.
  *
+ * @param jvm JVM pointer.
  * @param size The size of the value to write.
  * @param ptr The pointer to read to.
  * @param off The offset.
  * @param value The value to write.
  * @since 2019/06/08
  */
-void sjme_memwrite(sjme_jint size, void* ptr, sjme_jint off, sjme_jint value)
+void sjme_memwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
+	sjme_jint value)
 {
 	/* Get the true pointer. */
 	ptr = SJME_POINTER_OFFSET(ptr, off);
+	
+	/* Check against JVM areas. */
+	if (jvm != NULL)
+	{
+		// Write to within ROM?
+		if (ptr >= jvm->rom &&
+			ptr < SJME_POINTER_OFFSET(jvm->rom, jvm->romsize))
+			abort();
+	}
 	
 	/* Write value to memory. */
 	switch (size)
@@ -664,13 +676,15 @@ void sjme_memwrite(sjme_jint size, void* ptr, sjme_jint off, sjme_jint value)
 /**
  * Reads a big endian Java value from memory.
  * 
+ * @param jvm JVM pointer.
  * @param size The size of the value to read.
  * @param ptr The pointer to read from.
  * @param off The offset.
  * @return The read value.
  * @since 2019/06/08
  */
-sjme_jint sjme_memjread(sjme_jint size, void* ptr, sjme_jint off)
+sjme_jint sjme_memjread(sjme_jvm* jvm, sjme_jint size, void* ptr,
+	sjme_jint off)
 {
 	sjme_jint rv;
 	
@@ -716,12 +730,12 @@ sjme_jint sjme_memjread(sjme_jint size, void* ptr, sjme_jint off)
  * @return The resulting value.
  * @since 2019/06/08
  */
-sjme_jint sjme_memjreadp(sjme_jint size, void** ptr)
+sjme_jint sjme_memjreadp(sjme_jvm* jvm, sjme_jint size, void** ptr)
 {
 	sjme_jint rv;
 	
 	/* Read pointer value. */
-	rv = sjme_memjread(size, *ptr, 0);
+	rv = sjme_memjread(jvm, size, *ptr, 0);
 	
 	/* Increment pointer. */
 	*ptr = SJME_POINTER_OFFSET(*ptr, size);
@@ -737,18 +751,18 @@ sjme_jint sjme_memjreadp(sjme_jint size, void** ptr)
  * @return The resulting decoded value.
  * @since 2019/06/09
  */
-sjme_jint sjme_opdecodeui(void** ptr)
+sjme_jint sjme_opdecodeui(sjme_jvm* jvm, void** ptr)
 {
 	sjme_jint rv;
 	
 	/* Read single byte value from pointer. */
-	rv = (sjme_memjreadp(1, ptr) & SJME_JINT_C(0xFF));
+	rv = (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
 	
 	/* Encoded as a 15-bit value? */
 	if ((rv & SJME_JINT_C(0x80)) != 0)
 	{
 		rv = (rv & SJME_JINT_C(0x7F)) << SJME_JINT_C(8);
-		rv |= (sjme_memjreadp(1, ptr) & SJME_JINT_C(0xFF));
+		rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
 	}
 
 #if 0
@@ -762,16 +776,17 @@ sjme_jint sjme_opdecodeui(void** ptr)
 /**
  * Decodes a relative jump offset.
  *
+ * @param jvm JVM pointer.
  * @param ptr The pointer to read from.
  * @return The resulting relative jump.
  * @since 2019/06/13
  */
-sjme_jint sjme_opdecodejmp(void** ptr)
+sjme_jint sjme_opdecodejmp(sjme_jvm* jvm, void** ptr)
 {
 	sjme_jint rv;
 	
 	/* Decode value. */
-	rv = sjme_opdecodeui(ptr);
+	rv = sjme_opdecodeui(jvm, ptr);
 	
 	/* Negative branch? */
 	if ((rv & SJME_JINT_C(0x00004000)) != 0)
@@ -956,7 +971,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		nextpc = cpu->pc;
 		
 		/* Read operation and determine encoding. */
-		op = (sjme_memjreadp(1, &nextpc) & SJME_JINT_C(0xFF));
+		op = (sjme_memjreadp(jvm, 1, &nextpc) & SJME_JINT_C(0xFF));
 		enc = ((op >= SJME_ENC_SPECIAL_A) ? op : (op & SJME_ENC_MASK));
 		
 		/* Temporary debug. */
@@ -984,11 +999,11 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_ENC_IF_ICMP:
 				{
 					/* Values to compare. */
-					ia = r[sjme_opdecodeui(&nextpc)];
-					ib = r[sjme_opdecodeui(&nextpc)];
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ib = r[sjme_opdecodeui(jvm, &nextpc)];
 					
 					/* Target PC address. */
-					ic = sjme_opdecodejmp(&nextpc);
+					ic = sjme_opdecodejmp(jvm, &nextpc);
 					tempp = SJME_POINTER_OFFSET(cpu->pc, ic);
 					
 					/* Check depends. */
@@ -1045,13 +1060,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_ENC_MATH_CONST_INT:
 				{
 					/* A Value. */
-					ia = r[sjme_opdecodeui(&nextpc)];
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
 					
 					/* B value. */
 					if (enc == SJME_ENC_MATH_CONST_INT)
-						ib = sjme_memjreadp(4, &nextpc);
+						ib = sjme_memjreadp(jvm, 4, &nextpc);
 					else
-						ib = r[sjme_opdecodeui(&nextpc)];
+						ib = r[sjme_opdecodeui(jvm, &nextpc)];
 					
 					/* Perform the math. */
 					switch (op & SJME_ENC_MATH_MASK)
@@ -1148,7 +1163,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					}
 					
 					/* Store result. */
-					r[sjme_opdecodeui(&nextpc)] = ic;
+					r[sjme_opdecodeui(jvm, &nextpc)] = ic;
 				}
 				break;
 				
@@ -1157,14 +1172,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_ENC_MEMORY_OFF_ICONST:
 				{
 					/* Destination/source register. */
-					ic = sjme_opdecodeui(&nextpc);
+					ic = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* The address and offset to access. */
-					ia = r[sjme_opdecodeui(&nextpc)];
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
 					if (enc == SJME_ENC_MEMORY_OFF_ICONST)
-						ib = sjme_memjreadp(4, &nextpc);
+						ib = sjme_memjreadp(jvm, 4, &nextpc);
 					else
-						ib = r[sjme_opdecodeui(&nextpc)];
+						ib = r[sjme_opdecodeui(jvm, &nextpc)];
 					tempp = SJME_JINT_TO_POINTER(ia);
 					
 					/* Load value */
@@ -1173,23 +1188,23 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						switch (op & SJME_MEM_DATATYPE_MASK)
 						{
 							case SJME_DATATYPE_BYTE:
-								r[ic] = sjme_memread(1, tempp, ib);
+								r[ic] = sjme_memread(jvm, 1, tempp, ib);
 								break;
 								
 							case SJME_DATATYPE_CHARACTER:
-								r[ic] = (sjme_memread(2, tempp, ib) &
+								r[ic] = (sjme_memread(jvm, 2, tempp, ib) &
 									SJME_JINT_C(0xFFFF));
 								break;
 								
 							case SJME_DATATYPE_SHORT:
-								r[ic] = sjme_memread(2, tempp, ib);
+								r[ic] = sjme_memread(jvm, 2, tempp, ib);
 								break;
 								
 							case SJME_DATATYPE_OBJECT:
 							case SJME_DATATYPE_INTEGER:
 							case SJME_DATATYPE_FLOAT:
 							default:
-								r[ic] = sjme_memread(4, tempp, ib);
+								r[ic] = sjme_memread(jvm, 4, tempp, ib);
 								break;
 						}
 					}
@@ -1200,19 +1215,19 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						switch (op & SJME_MEM_DATATYPE_MASK)
 						{	
 							case SJME_DATATYPE_BYTE:
-								sjme_memwrite(1, tempp, ib, r[ic]);
+								sjme_memwrite(jvm, 1, tempp, ib, r[ic]);
 								break;
 								
 							case SJME_DATATYPE_CHARACTER:
 							case SJME_DATATYPE_SHORT:
-								sjme_memwrite(2, tempp, ib, r[ic]);
+								sjme_memwrite(jvm, 2, tempp, ib, r[ic]);
 								break;
 								
 							case SJME_DATATYPE_OBJECT:
 							case SJME_DATATYPE_INTEGER:
 							case SJME_DATATYPE_FLOAT:
 							default:
-								sjme_memwrite(4, tempp, ib, r[ic]);
+								sjme_memwrite(jvm, 4, tempp, ib, r[ic]);
 								break;
 						}
 					}
@@ -1224,14 +1239,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_ENC_MEMORY_OFF_ICONST_JAVA:
 				{
 					/* Destination/source register. */
-					ic = sjme_opdecodeui(&nextpc);
+					ic = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* The address to access. */
-					ia = r[sjme_opdecodeui(&nextpc)];
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
 					if (enc == SJME_ENC_MEMORY_OFF_ICONST_JAVA)
-						ib = sjme_memjreadp(4, &nextpc);
+						ib = sjme_memjreadp(jvm, 4, &nextpc);
 					else
-						ib = r[sjme_opdecodeui(&nextpc)];
+						ib = r[sjme_opdecodeui(jvm, &nextpc)];
 					tempp = SJME_JINT_TO_POINTER(ia);
 					
 					/* Load value */
@@ -1240,23 +1255,23 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						switch (op & SJME_MEM_DATATYPE_MASK)
 						{
 							case SJME_DATATYPE_BYTE:
-								r[ic] = sjme_memjread(1, tempp, ib);
+								r[ic] = sjme_memjread(jvm, 1, tempp, ib);
 								break;
 								
 							case SJME_DATATYPE_CHARACTER:
-								r[ic] = (sjme_memjread(2, tempp, ib) &
+								r[ic] = (sjme_memjread(jvm, 2, tempp, ib) &
 									SJME_JINT_C(0xFFFF));
 								break;
 								
 							case SJME_DATATYPE_SHORT:
-								r[ic] = sjme_memjread(2, tempp, ib);
+								r[ic] = sjme_memjread(jvm, 2, tempp, ib);
 								break;
 								
 							case SJME_DATATYPE_OBJECT:
 							case SJME_DATATYPE_INTEGER:
 							case SJME_DATATYPE_FLOAT:
 							default:
-								r[ic] = sjme_memjread(4, tempp, ib);
+								r[ic] = sjme_memjread(jvm, 4, tempp, ib);
 								break;
 						}
 					}
@@ -1276,20 +1291,20 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_OP_ATOMIC_INT_DECREMENT_AND_GET:
 				{
 					/* Target register. */
-					id = sjme_opdecodeui(&nextpc);
+					id = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Load address and offset. */
-					ia = r[sjme_opdecodeui(&nextpc)];
-					ib = sjme_opdecodeui(&nextpc);
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ib = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Read value here. */
-					ic = sjme_memread(4, SJME_JINT_TO_POINTER(ia), ib);
+					ic = sjme_memread(jvm, 4, SJME_JINT_TO_POINTER(ia), ib);
 					
 					/* Decrement value. */
 					ic = ic - 1;
 					
 					/* Store value. */
-					sjme_memwrite(4, SJME_JINT_TO_POINTER(ia), ib, ic);
+					sjme_memwrite(jvm, 4, SJME_JINT_TO_POINTER(ia), ib, ic);
 					
 					/* Set destination value. */
 					r[id] = ic;
@@ -1300,14 +1315,15 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_OP_ATOMIC_INT_INCREMENT:
 				{
 					/* Load address and offset. */
-					ia = r[sjme_opdecodeui(&nextpc)];
-					ib = sjme_opdecodeui(&nextpc);
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ib = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Read value here. */
-					ic = sjme_memread(4, SJME_JINT_TO_POINTER(ia), ib);
+					ic = sjme_memread(jvm, 4, SJME_JINT_TO_POINTER(ia), ib);
 					
 					/* And write incremented value. */
-					sjme_memwrite(4, SJME_JINT_TO_POINTER(ia), ib, ic + 1);
+					sjme_memwrite(jvm, 4, SJME_JINT_TO_POINTER(ia), ib,
+						ic + 1);
 				}
 				break;
 				
@@ -1321,8 +1337,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				/* Copy value. */
 			case SJME_OP_COPY:
 				{
-					ia = sjme_opdecodeui(&nextpc);
-					ib = sjme_opdecodeui(&nextpc);
+					ia = sjme_opdecodeui(jvm, &nextpc);
+					ib = sjme_opdecodeui(jvm, &nextpc);
 					
 					r[ib] = r[ia];
 				}
@@ -1334,11 +1350,11 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					tempp = SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]);
 					
 					cpu->debugclassname = SJME_JINT_TO_POINTER(
-						((sjme_jint*)tempp)[sjme_opdecodeui(&nextpc)]);
+						((sjme_jint*)tempp)[sjme_opdecodeui(jvm, &nextpc)]);
 					cpu->debugmethodname = SJME_JINT_TO_POINTER(
-						((sjme_jint*)tempp)[sjme_opdecodeui(&nextpc)]);
+						((sjme_jint*)tempp)[sjme_opdecodeui(jvm, &nextpc)]);
 					cpu->debugmethodtype = SJME_JINT_TO_POINTER(
-						((sjme_jint*)tempp)[sjme_opdecodeui(&nextpc)]);
+						((sjme_jint*)tempp)[sjme_opdecodeui(jvm, &nextpc)]);
 				}
 				break;
 				
@@ -1349,10 +1365,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				/* Debug point. */
 			case SJME_OP_DEBUG_POINT:
 				{
-					cpu->debugline = sjme_opdecodeui(&nextpc);
-					cpu->debugjop = (sjme_opdecodeui(&nextpc) &
+					cpu->debugline = sjme_opdecodeui(jvm, &nextpc);
+					cpu->debugjop = (sjme_opdecodeui(jvm, &nextpc) &
 						SJME_JINT_C(0xFF));
-					cpu->debugjpc = sjme_opdecodeui(&nextpc);
+					cpu->debugjpc = sjme_opdecodeui(jvm, &nextpc);
 				}
 				break;
 				
@@ -1360,13 +1376,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_OP_IFEQ_CONST:
 				{
 					/* A value. */
-					ia = r[sjme_opdecodeui(&nextpc)];
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
 					
 					/* B value. */
-					ib = sjme_memjreadp(4, &nextpc);
+					ib = sjme_memjreadp(jvm, 4, &nextpc);
 					
 					/* Target PC address. */
-					ic = sjme_opdecodejmp(&nextpc);
+					ic = sjme_opdecodejmp(jvm, &nextpc);
 					tempp = SJME_POINTER_OFFSET(cpu->pc, ic);
 					
 					/* Jump on equals? */
@@ -1401,21 +1417,22 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					r[SJME_NEXT_POOL_REGISTER] = 0;
 					
 					/* The address to execute. */
-					ia = oldcpu->r[sjme_opdecodeui(&nextpc)];
+					ia = oldcpu->r[sjme_opdecodeui(jvm, &nextpc)];
 					
 					/* Load in register list (wide). */
-					ib = sjme_memjreadp(1, &nextpc);
+					ib = sjme_memjreadp(jvm, 1, &nextpc);
 					if ((ib & SJME_JINT_C(0x80)) != 0)
 					{
 						/* Read lower values. */
 						ib &= SJME_JINT_C(0x7F);
 						ib <<= 8;
-						ib |= (sjme_memjreadp(1, &nextpc) & SJME_JINT_C(0xFF));
+						ib |= (sjme_memjreadp(jvm, 1, &nextpc) &
+							SJME_JINT_C(0xFF));
 						
 						/* Read values. */
 						for (ic = 0; ic < ib; ic++)
 							r[SJME_ARGBASE_REGISTER + ic] =
-								oldcpu->r[sjme_memjreadp(2, &nextpc)];
+								oldcpu->r[sjme_memjreadp(jvm, 2, &nextpc)];
 					}
 					
 					/* Narrow format list. */
@@ -1424,7 +1441,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						/* Read values. */
 						for (ic = 0; ic < ib; ic++)
 							r[SJME_ARGBASE_REGISTER + ic] =
-								oldcpu->r[sjme_memjreadp(1, &nextpc)];
+								oldcpu->r[sjme_memjreadp(jvm, 1, &nextpc)];
 					}
 					
 #if 0
@@ -1447,14 +1464,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_OP_LOAD_FROM_INTARRAY:
 				{
 					/* Destination register. */
-					ic = sjme_opdecodeui(&nextpc);
+					ic = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Address and index */
-					ia = r[sjme_opdecodeui(&nextpc)];
-					ib = r[sjme_opdecodeui(&nextpc)];
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ib = r[sjme_opdecodeui(jvm, &nextpc)];
 					
 					/* Load from array. */
-					r[ic] = sjme_memread(4, SJME_JINT_TO_POINTER(ia),
+					r[ic] = sjme_memread(jvm, 4, SJME_JINT_TO_POINTER(ia),
 						SJME_ARRAY_BASE_SIZE + (ib * SJME_JINT_C(4)));
 				}
 				break;
@@ -1463,10 +1480,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_OP_LOAD_POOL:
 				{
 					/* The index to read from. */
-					ia = sjme_opdecodeui(&nextpc);
+					ia = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Write into destination register. */
-					r[sjme_opdecodeui(&nextpc)] = ((sjme_jint*)
+					r[sjme_opdecodeui(jvm, &nextpc)] = ((sjme_jint*)
 						SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]))[ia];
 				}
 				break;
@@ -1504,14 +1521,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						cpu->syscallargs[ia] = 0;
 					
 					/* Load call type. */
-					ia = r[sjme_opdecodeui(&nextpc)];
+					ia = r[sjme_opdecodeui(jvm, &nextpc)];
 					
 					/* Load call arguments. */
-					ic = sjme_opdecodeui(&nextpc);
+					ic = sjme_opdecodeui(jvm, &nextpc);
 					for (ib = 0; ib < ic; ib++)
 					{
 						/* Get value. */
-						id = r[sjme_opdecodeui(&nextpc)];
+						id = r[sjme_opdecodeui(jvm, &nextpc)];
 						
 						/* Set but never exceed the system call limit. */
 						if (ib < SJME_MAX_SYSCALLARGS)
@@ -1762,7 +1779,7 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	rp = rom;
 	
 	/* Check ROM magic number. */
-	if (sjme_memjreadp(4, &rp) != SJME_ROM_MAGIC_NUMBER)
+	if (sjme_memjreadp(jvm, 4, &rp) != SJME_ROM_MAGIC_NUMBER)
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDROMMAGIC;
@@ -1771,14 +1788,14 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	}
 	
 	/* Ignore JAR count and BootJAR index. */
-	sjme_memjreadp(4, &rp);
-	sjme_memjreadp(4, &rp);
+	sjme_memjreadp(jvm, 4, &rp);
+	sjme_memjreadp(jvm, 4, &rp);
 	
 	/* Read and calculate BootJAR position. */
-	rp = bootjar = SJME_POINTER_OFFSET(rom, sjme_memjreadp(4, &rp));
+	rp = bootjar = SJME_POINTER_OFFSET(rom, sjme_memjreadp(jvm, 4, &rp));
 	
 	/* Check JAR magic number. */
-	if (sjme_memjreadp(4, &rp) != SJME_JAR_MAGIC_NUMBER)
+	if (sjme_memjreadp(jvm, 4, &rp) != SJME_JAR_MAGIC_NUMBER)
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDJARMAGIC;
@@ -1787,23 +1804,23 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	}
 	
 	/* Ignore numrc, tocoffset, manifestoff, manifestlen. */
-	sjme_memjreadp(4, &rp);
-	sjme_memjreadp(4, &rp);
-	sjme_memjreadp(4, &rp);
-	sjme_memjreadp(4, &rp);
+	sjme_memjreadp(jvm, 4, &rp);
+	sjme_memjreadp(jvm, 4, &rp);
+	sjme_memjreadp(jvm, 4, &rp);
+	sjme_memjreadp(jvm, 4, &rp);
 	
 	/* Read boot offset for later. */
-	bootoff = sjme_memjreadp(4, &rp);
+	bootoff = sjme_memjreadp(jvm, 4, &rp);
 	
 	/* Ignore bootsize. */
-	sjme_memjreadp(4, &rp);
+	sjme_memjreadp(jvm, 4, &rp);
 	
 	/* Seed initial CPU state. */
 	cpu->r[SJME_POOL_REGISTER] = SJME_POINTER_TO_JINT(
-		SJME_POINTER_OFFSET(ram, sjme_memjreadp(4, &rp)));
+		SJME_POINTER_OFFSET(ram, sjme_memjreadp(jvm, 4, &rp)));
 	cpu->r[SJME_STATIC_FIELD_REGISTER] = SJME_POINTER_TO_JINT(
-		SJME_POINTER_OFFSET(ram, sjme_memjreadp(4, &rp)));
-	cpu->pc = SJME_POINTER_OFFSET(bootjar, sjme_memjreadp(4, &rp));
+		SJME_POINTER_OFFSET(ram, sjme_memjreadp(jvm, 4, &rp)));
+	cpu->pc = SJME_POINTER_OFFSET(bootjar, sjme_memjreadp(jvm, 4, &rp));
 	
 	/* Bootstrap entry arguments. */
 	/* (int __rambase, int __ramsize, int __bootsize, byte[][] __classpath, */
@@ -1825,30 +1842,30 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	
 	/* Copy initial base memory bytes, which is pure big endian. */
 	byteram = (sjme_jbyte*)ram;
-	n = sjme_memjreadp(4, &rp);
+	n = sjme_memjreadp(jvm, 4, &rp);
 	for (i = 0; i < n; i++)
-		byteram[i] = sjme_memjreadp(1, &rp);
+		byteram[i] = sjme_memjreadp(jvm, 1, &rp);
 	
 	/* Load all seeds, which restores natural byte order. */
-	n = sjme_memjreadp(4, &rp);
+	n = sjme_memjreadp(jvm, 4, &rp);
 	for (i = 0; i < n; i++)
 	{
 		/* Read seed information. */
-		seedop = sjme_memjreadp(1, &rp);
+		seedop = sjme_memjreadp(jvm, 1, &rp);
 		seedsize = (seedop >> SJME_JINT_C(4)) & SJME_JINT_C(0xF);
 		seedop = (seedop & SJME_JINT_C(0xF));
-		seedaddr = sjme_memjreadp(4, &rp);
+		seedaddr = sjme_memjreadp(jvm, 4, &rp);
 		
 		/* Wide value. */
 		if (seedsize == 8)
 		{
-			seedvalh = sjme_memjreadp(4, &rp);
-			seedvall = sjme_memjreadp(4, &rp);
+			seedvalh = sjme_memjreadp(jvm, 4, &rp);
+			seedvall = sjme_memjreadp(jvm, 4, &rp);
 		}
 		
 		/* Narrow value. */
 		else
-			seedvalh = sjme_memjreadp(seedsize, &rp);
+			seedvalh = sjme_memjreadp(jvm, seedsize, &rp);
 		
 		/* Make sure the seed types are correct. */
 		if ((seedsize != 1 && seedsize != 2 &&
@@ -1872,21 +1889,21 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		if (seedsize == 8)
 		{
 #if defined(SJME_BIG_ENDIAN)
-			sjme_memwrite(4, ram, seedaddr, seedvalh);
-			sjme_memwrite(4, ram, seedaddr + SJME_JINT_C(4), seedvall);
+			sjme_memwrite(jvm, 4, ram, seedaddr, seedvalh);
+			sjme_memwrite(jvm, 4, ram, seedaddr + SJME_JINT_C(4), seedvall);
 #else
-			sjme_memwrite(4, ram, seedaddr, seedvall);
-			sjme_memwrite(4, ram, seedaddr + SJME_JINT_C(4), seedvalh);
+			sjme_memwrite(jvm, 4, ram, seedaddr, seedvall);
+			sjme_memwrite(jvm, 4, ram, seedaddr + SJME_JINT_C(4), seedvalh);
 #endif
 		}
 		
 		/* Write narrow value. */
 		else
-			sjme_memwrite(seedsize, ram, seedaddr, seedvalh);
+			sjme_memwrite(jvm, seedsize, ram, seedaddr, seedvalh);
 	}
 	
 	/* Check end value. */
-	if (sjme_memjreadp(4, &rp) != SJME_BOOTRAM_CHECK_MAGIC)
+	if (sjme_memjreadp(jvm, 4, &rp) != SJME_BOOTRAM_CHECK_MAGIC)
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDBOOTRAMEND;
