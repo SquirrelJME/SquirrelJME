@@ -109,6 +109,9 @@ public final class JVMFunction
 		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
 		
+		// Debug
+		todo.DEBUG.code('G', 'C', __p);
+		
 		// Get class info for this type
 		ClassInfo pinfo = Assembly.pointerToClassInfo(pcl);
 		

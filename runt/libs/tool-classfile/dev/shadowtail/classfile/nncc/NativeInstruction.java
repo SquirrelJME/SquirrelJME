@@ -279,11 +279,11 @@ public final class NativeInstruction
 	 *
 	 * @param __op The operation to get the argument count of.
 	 * @return The number of used arguments.
-	 * @throws IllegalArgumentException If the encoding is not known.
+	 * @throws InvalidInstructionException If the encoding is not known.
 	 * @since 2019/03/27
 	 */
 	public static final int argumentCount(int __op)
-		throws IllegalArgumentException
+		throws InvalidInstructionException
 	{
 		// Depends on the encoding
 		switch (NativeInstruction.encoding(__op))
@@ -317,7 +317,7 @@ public final class NativeInstruction
 				// {@squirreljme.error JC2r Unknown instruction argument
 				// count.}
 			default:
-				throw new IllegalArgumentException("JC2r " + __op);
+				throw new InvalidInstructionException("JC2r " + __op);
 		}
 	}
 	
@@ -431,7 +431,7 @@ public final class NativeInstruction
 		}
 		
 		// {@squirreljme.error JC3t Invalid operation. (The operation)}
-		throw new IllegalArgumentException("JC3t " +
+		throw new InvalidInstructionException("JC3t " +
 			NativeInstruction.mnemonic(__op));
 	}
 	
