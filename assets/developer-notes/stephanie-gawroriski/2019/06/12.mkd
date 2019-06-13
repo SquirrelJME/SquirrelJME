@@ -1,0 +1,84 @@
+# 2019/06/12
+
+## 09:50
+
+Trying to debug this issue, but it seems this value of 1 is being passed as an
+argument call value, which is causing bad memory to be read.
+
+## 10:11
+
+So load pool is loading index 30, which seems to be at bad memory. So maybe the
+constant pool register was trashed? or was not valid?
+
+`***** @4f103158 LOAD_POOL          /INVOKEVIRT | L135 /J26`.
+`  A:[        30,         22] | V:[        +0,   +1060460]`.
+
+## 12:11
+
+Oh, so there is a load pool which reads a value of 28.
+
+## 12:51
+
+So after `jvmIsInstance()` I see register 15 is `1` and it tries to do an
+atomic increment and such on it. `INSTANCEOF` before that call after the
+instance stuff copies 1 into register 15. So I wonder if that is wrong
+because the 1 is from the return value. The check is doing if r9 is an
+instance of r21 which is true. So I think the instanceof check is off.
+
+## 13:02
+
+I think it might be a transition issue from a branch?
+
+## 13:19
+
+Okay the instructions do not seem to add up? At `String.equals()`
+`IFNE | L131 /J11` if they are not equals they jump to another address and
+I have a thought right now about it. In the byte code it says to jump to
+J16 but in the code set it ends up being J17. J16 is `aload_1` which means
+that the original value is not being read because it ends up getting
+cached by the stack cacher when it should be invalid.
+
+## 13:28
+
+Okay so whatever is on the stack, is cached from register 9 (local 1). So
+that is fine. Checkcast has a cached input (virtual 15 as register 9), then
+it drops that value.
+
+## 13:32
+
+Okay so, instanceof drops its value into register 15. Then IFNE is done on
+that r15, which sould then invalidate its value on the stack. Then check cast
+would be done on the virtual 14 which is local 2 (9). So that value is
+completely eaten. Then astore_2 of r15 is done (into r10).
+
+## 13:35
+
+So I am pretty sure my stack transitioning code is wrong because this value in
+r15 should be null?
+
+## 14:08
+
+Okay before I go more into debugging, I am going to write an actual utility
+which through the build engine can print the byte code and native code side by
+side with actual source lines too!
+
+## 14:55
+
+So now I have source printing, but I should add a line population count so I
+can sort of tell the difference between them.
+
+## 15:56
+
+Now that I have this utility perhaps debugging this will be easier.
+
+## 17:25
+
+Okay so, I think CHECKCAST is having troubles. Pretty sure it is in this
+instruction. Because CHECKCAST reads a value in, then writes a value out that
+is the same result. But my code smartly does not do this copy of a value. So
+maybe the caching is incorrect?
+
+## 17:49
+
+Okay, so I corrected CHECKCAST by adding a new stack type, hopefully it does
+something.
