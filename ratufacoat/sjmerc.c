@@ -741,12 +741,35 @@ sjme_jint sjme_opdecodeui(void** ptr)
 	/* Encoded as a 15-bit value? */
 	if ((rv & SJME_JINT_C(0x80)) != 0)
 	{
-		rv &= SJME_JINT_C(0x7F);
-		rv <<= SJME_JINT_C(8);
+		rv = (rv & SJME_JINT_C(0x7F)) << SJME_JINT_C(8);
 		rv |= (sjme_memjreadp(1, ptr) & SJME_JINT_C(0xFF));
 	}
+
+#if 0
+	fprintf(stderr, "Decode: %d 0x%X\n", (int)rv, (unsigned)rv);
+#endif
 	
 	/* Use read value. */
+	return rv;
+}
+
+/**
+ * Decodes a relative jump offset.
+ *
+ * @param ptr The pointer to read from.
+ * @return The resulting relative jump.
+ * @since 2019/06/13
+ */
+sjme_jint sjme_opdecodejmp(void** ptr)
+{
+	sjme_jint rv;
+	
+	/* Decode value. */
+	rv = sjme_opdecodeui(ptr);
+	
+	/* Negative branch? */
+	if ((rv & SJME_JINT_C(0x00004000)) != 0)
+		return rv | SJME_JINT_C(0xFFFF8000);
 	return rv;
 }
 
@@ -954,9 +977,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ib = r[sjme_opdecodeui(&nextpc)];
 					
 					/* Target PC address. */
-					ic = sjme_opdecodeui(&nextpc);
-					if ((ic & SJME_JINT_C(0x00004000)) != 0)
-						ic |= SJME_JINT_C(0xFFFF8000);
+					ic = sjme_opdecodejmp(&nextpc);
 					tempp = SJME_POINTER_OFFSET(cpu->pc, ic);
 					
 					/* Check depends. */
@@ -1016,9 +1037,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ia = r[sjme_opdecodeui(&nextpc)];
 					
 					/* B value. */
-					ib = (enc == SJME_ENC_MATH_CONST_INT ?
-						sjme_memjreadp(4, &nextpc) :
-						r[sjme_opdecodeui(&nextpc)]);
+					if (enc == SJME_ENC_MATH_CONST_INT)
+						ib = sjme_memjreadp(4, &nextpc);
+					else
+						ib = r[sjme_opdecodeui(&nextpc)];
 					
 					/* Perform the math. */
 					switch (op & SJME_ENC_MATH_MASK)
@@ -1126,11 +1148,12 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Destination/source register. */
 					ic = sjme_opdecodeui(&nextpc);
 					
-					/* The address to access. */
+					/* The address and offset to access. */
 					ia = r[sjme_opdecodeui(&nextpc)];
-					ib = (enc >= SJME_ENC_MEMORY_OFF_ICONST ?
-						sjme_memjreadp(4, &nextpc) :
-						r[sjme_opdecodeui(&nextpc)]);
+					if (enc == SJME_ENC_MEMORY_OFF_ICONST)
+						ib = sjme_memjreadp(4, &nextpc);
+					else
+						ib = r[sjme_opdecodeui(&nextpc)];
 					tempp = SJME_JINT_TO_POINTER(ia);
 					
 					/* Load value */
@@ -1194,9 +1217,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					
 					/* The address to access. */
 					ia = r[sjme_opdecodeui(&nextpc)];
-					ib = (enc >= SJME_ENC_MEMORY_OFF_ICONST ?
-						sjme_memjreadp(4, &nextpc) :
-						r[sjme_opdecodeui(&nextpc)]);
+					if (enc == SJME_ENC_MEMORY_OFF_ICONST_JAVA)
+						ib = sjme_memjreadp(4, &nextpc);
+					else
+						ib = r[sjme_opdecodeui(&nextpc)];
 					tempp = SJME_JINT_TO_POINTER(ia);
 					
 					/* Load value */
@@ -1315,7 +1339,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_OP_DEBUG_POINT:
 				{
 					cpu->debugline = sjme_opdecodeui(&nextpc);
-					cpu->debugjop = sjme_opdecodeui(&nextpc);
+					cpu->debugjop = (sjme_opdecodeui(&nextpc) &
+						SJME_JINT_C(0xFF));
 					cpu->debugjpc = sjme_opdecodeui(&nextpc);
 				}
 				break;
@@ -1330,9 +1355,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ib = sjme_memjreadp(4, &nextpc);
 					
 					/* Target PC address. */
-					ic = sjme_opdecodeui(&nextpc);
-					if ((ic & SJME_JINT_C(0x00004000)) != 0)
-						ic |= SJME_JINT_C(0xFFFF8000);
+					ic = sjme_opdecodejmp(&nextpc);
 					tempp = SJME_POINTER_OFFSET(cpu->pc, ic);
 					
 					/* Jump on equals? */
@@ -1359,10 +1382,12 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					cpu->parent = oldcpu;
 					
 					/* Setup CPU state for invoke run, move pool up. */
-					for (ia = SJME_ARGBASE_REGISTER;
+					for (ia = SJME_LOCAL_REGISTER_BASE;
 						ia < SJME_MAX_REGISTERS; ia++)
 						r[ia] = 0;
-					r[SJME_POOL_REGISTER] = r[SJME_NEXT_POOL_REGISTER];
+					r[SJME_POOL_REGISTER] =
+						oldcpu->r[SJME_NEXT_POOL_REGISTER];
+					r[SJME_NEXT_POOL_REGISTER] = 0;
 					
 					/* The address to execute. */
 					ia = oldcpu->r[sjme_opdecodeui(&nextpc)];
@@ -1390,6 +1415,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 							r[SJME_ARGBASE_REGISTER + ic] =
 								oldcpu->r[sjme_memjreadp(1, &nextpc)];
 					}
+					
+#if 0
+					fprintf(stderr, "Invoke: %08lx\n", (long)ia);
+					for (ic = 0; ic < ib; ic++)
+						fprintf(stderr, "A%d: %d\n",
+							(int)ic, (int)r[SJME_ARGBASE_REGISTER + ic]);
+#endif
 					
 					/* Old PC address resumes where this read ended. */
 					oldcpu->pc = nextpc;

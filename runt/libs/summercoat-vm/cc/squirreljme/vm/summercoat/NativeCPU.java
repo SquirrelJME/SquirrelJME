@@ -174,7 +174,6 @@ public final class NativeCPU
 		
 		// Per operation handling
 		final int[] args = new int[6];
-		final long[] largs = new long[6];
 		
 		// Method cache to reduce tons of method reads
 		final byte[] icache = new byte[METHOD_CACHE];
@@ -236,10 +235,7 @@ public final class NativeCPU
 			
 			// Reset all input arguments
 			for (int i = 0, n = args.length; i < n; i++)
-			{
 				args[i] = 0;
-				largs[i] = 0;
-			}
 			
 			// Register list, just one is used everywhere
 			int[] reglist = null;
@@ -311,19 +307,6 @@ public final class NativeCPU
 							((icache[rargp++] & 0xFF));
 						break;
 					
-					// 64-bit long/double
-					case INT64:
-					case FLOAT64:
-						largs[i] = ((icache[rargp++] & 0xFFL) << 56L) |
-							((icache[rargp++] & 0xFFL) << 48L) |
-							((icache[rargp++] & 0xFFL) << 40L) |
-							((icache[rargp++] & 0xFFL) << 32L) |
-							((icache[rargp++] & 0xFFL) << 24L) |
-							((icache[rargp++] & 0xFFL) << 16L) |
-							((icache[rargp++] & 0xFFL) << 8L) |
-							((icache[rargp++] & 0xFFL));
-						break;
-					
 					default:
 						throw new todo.OOPS(af[i].name());
 				}
@@ -334,7 +317,7 @@ public final class NativeCPU
 				encoding != NativeInstructionType.DEBUG_ENTRY &&
 				encoding != NativeInstructionType.DEBUG_EXIT &&
 				encoding != NativeInstructionType.DEBUG_POINT)
-				this.__cpuDebugPrint(nowframe, op, af, args, largs, reglist);
+				this.__cpuDebugPrint(nowframe, op, af, args, reglist);
 			
 			// By default the next instruction is the address after all
 			// arguments have been read
@@ -345,8 +328,7 @@ public final class NativeCPU
 			{
 					// CPU Breakpoint
 				case NativeInstructionType.BREAKPOINT:
-					this.__cpuDebugPrint(nowframe, op, af, args, largs,
-						reglist);
+					this.__cpuDebugPrint(nowframe, op, af, args, reglist);
 					
 					// {@squirreljme.error AE04 CPU breakpoint hit.}
 					throw new VMException("AE04");
@@ -357,8 +339,7 @@ public final class NativeCPU
 					
 					// Trace it!
 					if (ENABLE_DEBUG)
-						this.__cpuDebugPrint(nowframe, op, af, args, largs,
-							reglist);
+						this.__cpuDebugPrint(nowframe, op, af, args, reglist);
 					break;
 					
 					// Debug exit of method
@@ -740,12 +721,11 @@ public final class NativeCPU
 	 * @param __op The operation.
 	 * @param __af The argument format.
 	 * @param __args Argument values.
-	 * @param __largs Long argument values.
 	 * @param __reglist The register list.
 	 * @since 2019/04/23
 	 */
 	private final void __cpuDebugPrint(Frame __nf, int __op,
-		ArgumentFormat[] __af, int[] __args, long[] __largs, int[] __reglist)
+		ArgumentFormat[] __af, int[] __args, int[] __reglist)
 	{
 		PrintStream out = System.err;
 		
