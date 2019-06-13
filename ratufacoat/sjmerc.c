@@ -470,6 +470,9 @@ struct sjme_jvm
 	
 	/** Threads. */
 	sjme_cpu threads[SJME_THREAD_MAX];
+	
+	/* Total instruction count. */
+	sjme_jint totalinstructions;
 };
 
 /**
@@ -940,6 +943,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				break;
 		}
 		
+		/* Increase total instruction count. */
+		jvm->totalinstructions++;
+		
 		/* The zero register always must be zero. */
 		r[0] = 0;
 		
@@ -952,7 +958,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		
 		/* Temporary debug. */
 #if 0
-		fprintf(stderr, "pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
+		fprintf(stderr,
+			"ti=%d pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
+			jvm->totalinstructions,
 			cpu->pc,
 			(unsigned int)op,
 			(cpu->debugclassname == NULL ? NULL :
