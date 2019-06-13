@@ -1448,9 +1448,6 @@ public final class NearNativeByteCodeHandler
 		List<JavaStackEnqueueList> returns = this._returns;
 		VolatileRegisterStack volatiles = this.volatiles;
 		
-		// Temporary register base
-		int tempreg = state.stack.usedregisters;
-		
 		// Was an exception handler generated?
 		boolean didehfall = false;
 		
