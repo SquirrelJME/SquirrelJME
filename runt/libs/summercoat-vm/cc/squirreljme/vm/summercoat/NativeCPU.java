@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.VMException;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
+import dev.shadowtail.classfile.nncc.InvalidInstructionException;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
@@ -168,7 +169,7 @@ public final class NativeCPU
 		}
 		
 		// Failed
-		catch (VMException e)
+		catch (VMException|InvalidInstructionException e)
 		{
 			// Print the call trace
 			CallTraceElement[] calltrace = this.trace();

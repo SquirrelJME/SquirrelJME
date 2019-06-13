@@ -30,6 +30,40 @@ public final class DEBUG
 	}
 	
 	/**
+	 * Prints a very basic debug code.
+	 *
+	 * @param __a First character.
+	 * @param __b Second character.
+	 * @param __v Value.
+	 * @since 2019/06/13
+	 */
+	public static final void code(char __a, char __b, int __v)
+	{
+		// Get the pipe descriptor for standard error, ignore if it fails
+		int fd = Assembly.sysCallV(SystemCallIndex.PD_OF_STDERR);
+		if (SystemCallError.getError(SystemCallIndex.PD_OF_STDERR) != 0)
+			return;
+		
+		// Pipe characters
+		DEBUG.__pipe(fd, __a);
+		DEBUG.__pipe(fd, __b);
+		DEBUG.__pipe(fd, ' ');
+		
+		// Print digit as hex, this should print all 8 digits
+		for (int i = 28; i >= 0; i -= 4)
+		{
+			// Get upper most hex
+			int h = ((__v >>> i) & 0xF);
+			
+			// Print letter or number?
+			DEBUG.__pipe(fd, (char)(h >= 10 ? 'a' + (h - 10) : '0' + h));
+		}
+		
+		// Ending newline
+		DEBUG.__pipe(fd, '\n');
+	}
+	
+	/**
 	 * Prints a debug note.
 	 *
 	 * @param __fmt The string format, compatible with Java except that it
