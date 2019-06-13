@@ -646,10 +646,10 @@ void sjme_memwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
 	/* Check against JVM areas. */
 	if (jvm != NULL)
 	{
-		// Write to within ROM?
+		/* Ignore writes to ROM. */
 		if (ptr >= jvm->rom &&
 			ptr < SJME_POINTER_OFFSET(jvm->rom, jvm->romsize))
-			abort();
+			return;
 	}
 	
 	/* Write value to memory. */
