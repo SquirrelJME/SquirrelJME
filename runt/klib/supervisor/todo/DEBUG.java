@@ -78,6 +78,10 @@ public final class DEBUG
 		if (SystemCallError.getError(SystemCallIndex.PD_OF_STDERR) != 0)
 			return;
 		
+		// Debug
+		DEBUG.code('N', 'f', Assembly.objectToPointer(__fmt));
+		DEBUG.code('N', 'a', Assembly.objectToPointer(__args));
+		
 		// Argument pointer
 		int argp = 0;
 		
