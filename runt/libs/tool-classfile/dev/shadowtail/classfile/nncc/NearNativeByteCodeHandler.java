@@ -1097,6 +1097,7 @@ public final class NearNativeByteCodeHandler
 			int a = __in.register,
 				b = NativeCode.RETURN_REGISTER;
 			
+			// Copy value to return register
 			if (__in.type.isWide())
 			{
 				codebuilder.addCopy(a, b);
@@ -1104,6 +1105,10 @@ public final class NearNativeByteCodeHandler
 			}
 			else
 				codebuilder.addCopy(a, b);
+			
+			// If we are returning an object, we need to reference count it
+			if (__in.isObject())
+				this.__refCount(__in.register);
 		}
 		
 		// Uncount anything which was enqueued
