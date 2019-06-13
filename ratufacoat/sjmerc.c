@@ -459,6 +459,9 @@ struct sjme_jvm
 	/** ROM. */
 	void* rom;
 	
+	/** The size of ROM. */
+	sjme_jint romsize;
+	
 	/** Preset ROM. */
 	void* presetrom;
 	
@@ -1605,11 +1608,13 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
  * Attempts to load a built-in ROM file.
  *
  * @param nativefuncs Native functions.
+ * @param outromsize Output ROM size.
  * @param error Error flag.
  * @return The loaded ROM data or {@code NULL} if no ROM was loaded.
  * @since 2019/06/07
  */
-void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* error)
+void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
+	sjme_jint* error)
 {
 	void* rv;
 	sjme_nativefilename* fn;
@@ -1716,6 +1721,10 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* error)
 	/* Free file name when done. */
 	if (nativefuncs->freefilename != NULL)
 		nativefuncs->freefilename(fn);
+	
+	/* Output ROM size? */
+	if (outromsize != NULL)
+		*outromsize = romsize;
 	
 	/* Whatever value was used, if possible */
 	return rv;
@@ -1946,7 +1955,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	void* ram;
 	void* rom;
 	sjme_jvm* rv;
-	sjme_jint i, l;
+	sjme_jint i, l, romsize;
 	
 	/* We need native functions. */
 	if (nativefuncs == NULL)
@@ -1996,7 +2005,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	if (rom == NULL)
 	{
 		/* Call sub-routine which can load the ROM. */
-		rom = sjme_loadrom(nativefuncs, error);
+		rom = sjme_loadrom(nativefuncs, &romsize, error);
 		
 		/* Could not load the ROM? */
 		if (rom == NULL)
@@ -2010,6 +2019,9 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	/* If we are copying from the preset ROM, duplicate it. */
 	if (options->presetrom != NULL && options->copyrom != 0)
 	{
+		/* Use this ROM size. */
+		romsize = options->romsize;
+		
 		/* Allocate space to fit ROM. */
 		rom = sjme_malloc(options->romsize);
 		if (rom == NULL)
@@ -2045,6 +2057,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	
 	/* Set JVM rom space. */
 	rv->rom = rom;
+	rv->romsize = romsize;
 	
 	/* Initialize the BootRAM and boot the CPU. */
 	if (sjme_initboot(rom, ram, options->ramsize, rv, error) == 0)
