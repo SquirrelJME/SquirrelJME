@@ -31,6 +31,12 @@ commands:
           name: Install crossbuild-essential-powerpc
           command: sudo apt-get install --no-install-recommends -y crossbuild-essential-powerpc
       - run:
+          name: Install crossbuild-essential-mips
+          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-mips
+      - run:
+          name: Install crossbuild-essential-mipsel
+          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-mipsel
+      - run:
           name: Install qemu-user
           command: sudo apt-get install --no-install-recommends -y qemu-user
       - run:
@@ -206,6 +212,60 @@ jobs:
           command: qemu-ppc ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rpjut/ratufacoatppc/results.xml
       - store_test_results:
           path: rpjut
+  tests_ratufacoat_mips:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Clear old test results and snapshot
+          command: rm -f rmjut/ratufacoatmips/results.xml
+      - run:
+          name: Create test directory
+          command: mkdir -p rmjut/ratufacoatmips
+      - run:
+          name: Build SummerCoat ROM with tests
+          command: ~/squirreljme/build.sh dist summercoatrom-test
+      - run:
+          name: Extract distribution
+          command: unzip -o squirreljme-summercoatrom-test.zip
+      - run:
+          name: Cleaning RatufaCoat VM (MIPS EB)
+          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
+      - run:
+          name: Building RatufaCoat VM (MIPS EB)
+          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc CC=mips-linux-gnu-gcc CFLAGS='-static -DSJME_BIG_ENDIAN'
+      - run:
+          name: Running RatufaCoat VM (MIPS EB)
+          command: qemu-mips ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rmjut/ratufacoatmips/results.xml
+      - store_test_results:
+          path: rmjut
+  tests_ratufacoat_mipsel:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Clear old test results and snapshot
+          command: rm -f rnjut/ratufacoatmipsel/results.xml
+      - run:
+          name: Create test directory
+          command: mkdir -p rnjut/ratufacoatmipsel
+      - run:
+          name: Build SummerCoat ROM with tests
+          command: ~/squirreljme/build.sh dist summercoatrom-test
+      - run:
+          name: Extract distribution
+          command: unzip -o squirreljme-summercoatrom-test.zip
+      - run:
+          name: Cleaning RatufaCoat VM (MIPS EL)
+          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
+      - run:
+          name: Building RatufaCoat VM (MIPS EL)
+          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc CC=mipsel-linux-gnu-gcc CFLAGS='-static -DSJME_LITTLE_ENDIAN'
+      - run:
+          name: Running RatufaCoat VM (MIPS EL)
+          command: qemu-mipsel ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rnjut/ratufacoatmipsel/results.xml
+      - store_test_results:
+          path: rnjut
 
 workflows:
   version: 2
@@ -229,6 +289,12 @@ workflows:
           requires:
             - build_summercoatrom
       - tests_ratufacoat_ppc:
+          requires:
+            - build_summercoatrom
+      - tests_ratufacoat_mips:
+          requires:
+            - build_summercoatrom
+      - tests_ratufacoat_mipsel:
           requires:
             - build_summercoatrom
 
