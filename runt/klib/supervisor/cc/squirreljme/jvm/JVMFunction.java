@@ -119,9 +119,13 @@ public final class JVMFunction
 		// Instance fields can be skipped for non-object arrays
 		if ((pinfo.flags & Constants.CIF_IS_ARRAY) != 0)
 		{
+			todo.DEBUG.code('G', 'a', 1);
+			
 			// This only needs to be done for objects
 			if ((pinfo.flags & Constants.CIF_IS_ARRAY_OF_OBJECTS) != 0)
 			{
+				todo.DEBUG.code('G', 'o', 1);
+				
 				// Go through all elements and uncount them
 				for (int i = 0, n = Assembly.memReadInt(__p,
 					Constants.ARRAY_LENGTH_OFFSET),
@@ -134,6 +138,8 @@ public final class JVMFunction
 		// Otherwise uncount the instance field information
 		else
 		{
+			todo.DEBUG.code('G', 'o', 1);
+			
 			// Go through all classes in the class chain
 			for (ClassInfo ro = pinfo; ro != null; ro = ro.superclass)
 			{
