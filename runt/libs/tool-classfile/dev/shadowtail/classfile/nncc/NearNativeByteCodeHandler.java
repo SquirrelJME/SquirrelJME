@@ -1108,7 +1108,7 @@ public final class NearNativeByteCodeHandler
 			
 			// If we are returning an object, we need to reference count it
 			if (__in.isObject())
-				this.__refCount(__in.register);
+				this.__refCount(NativeCode.RETURN_REGISTER);
 		}
 		
 		// Uncount anything which was enqueued
