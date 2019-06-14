@@ -297,6 +297,13 @@ public final class NativeCPU
 									((base & 0x4000) << 1));
 							else
 								args[i] = base;
+							
+							// {@squirreljme.error AE0a Reference to register
+							// which is out of range of maximum number of
+							// registers. (The register index)}
+							if (af[i] == ArgumentFormat.VUREG &&
+								(base < 0 || base >= NativeCode.MAX_REGISTERS))
+								throw new VMException("AE0a " + base);
 						}
 						break;
 					
