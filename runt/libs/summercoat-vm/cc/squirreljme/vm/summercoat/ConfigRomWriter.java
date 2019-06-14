@@ -59,6 +59,34 @@ public final class ConfigRomWriter
 	}
 	
 	/**
+	 * Writes the specified integer.
+	 *
+	 * @param __dos The output stream.
+	 * @param __opt The option to write.
+	 * @param __v The value to write.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/14
+	 */
+	public static final void writeInteger(DataOutputStream __dos, int __opt,
+		int __v)
+		throws IOException, NullPointerException
+	{
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		// Write data area
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream xdos = new DataOutputStream(baos))
+		{
+			xdos.writeInt(__v);
+			
+			// Write in
+			ConfigRomWriter.writeData(__dos, __opt, baos.toByteArray());
+		}
+	}
+	
+	/**
 	 * Writes key/value.
 	 *
 	 * @param __dos The output stream.
@@ -82,34 +110,6 @@ public final class ConfigRomWriter
 		{
 			xdos.writeUTF(__k);
 			xdos.writeUTF(__v);
-			
-			// Write in
-			ConfigRomWriter.writeData(__dos, __opt, baos.toByteArray());
-		}
-	}
-	
-	/**
-	 * Writes the specified integer.
-	 *
-	 * @param __dos The output stream.
-	 * @param __opt The option to write.
-	 * @param __v The value to write.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/06/14
-	 */
-	public static final void writeInteger(DataOutputStream __dos, int __opt,
-		int __v)
-		throws IOException, NullPointerException
-	{
-		if (__dos == null)
-			throw new NullPointerException("NARG");
-		
-		// Write data area
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			DataOutputStream xdos = new DataOutputStream(baos))
-		{
-			xdos.writeInt(__v);
 			
 			// Write in
 			ConfigRomWriter.writeData(__dos, __opt, baos.toByteArray());

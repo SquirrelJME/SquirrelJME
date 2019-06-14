@@ -218,6 +218,9 @@ public class SummerCoatFactory
 			// Class path
 			ConfigRomWriter.writeStrings(dos, ConfigRomType.CLASS_PATH,
 				SummerCoatFactory.classPathToStringArray(__cp));
+			
+			// End
+			dos.writeShort(ConfigRomType.END);
 		}
 		
 		// {@squirreljme.error AE0d Could not write to configuration ROM.}

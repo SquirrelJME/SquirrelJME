@@ -21,6 +21,9 @@
 	#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
 #endif
 
+/** Default size of configuration ROM. */
+#define SJME_DEFAULT_CONF_SIZE SJME_JINT_C(65536)
+
 /** Magic number for ROMs. */
 #define SJME_ROM_MAGIC_NUMBER SJME_JINT_C(0x58455223)
 
@@ -29,6 +32,45 @@
 
 /** Check magic for BootRAM. */
 #define SJME_BOOTRAM_CHECK_MAGIC SJME_JINT_C(0xFFFFFFFF)
+
+/** End of configuration. */
+#define SJME_CONFIG_END SJME_JINT_C(0)
+
+/** Java VM Version. */
+#define SJME_CONFIG_JAVA_VM_VERSION SJME_JINT_C(1)
+
+/** Java VM Name. */
+#define SJME_CONFIG_JAVA_VM_NAME SJME_JINT_C(2)
+
+/** Java VM Vendor. */
+#define SJME_CONFIG_JAVA_VM_VENDOR SJME_JINT_C(3)
+
+/** Java VM E-Mail. */
+#define SJME_CONFIG_JAVA_VM_EMAIL SJME_JINT_C(4)
+
+/** Java VM URL. */
+#define SJME_CONFIG_JAVA_VM_URL SJME_JINT_C(5)
+
+/** The guest depth. */
+#define SJME_CONFIG_GUEST_DEPTH SJME_JINT_C(6)
+
+/** Main class. */
+#define SJME_CONFIG_MAIN_CLASS SJME_JINT_C(7)
+
+/** Main program arguments. */
+#define SJME_CONFIG_MAIN_ARGUMENTS SJME_JINT_C(8)
+
+/** Is this a MIDlet? */
+#define SJME_CONFIG_IS_MIDLET SJME_JINT_C(9)
+
+/** Define system propertly. */
+#define SJME_CONFIG_DEFINE_PROPERTY SJME_JINT_C(10)
+
+/** Classpath to use. */
+#define SJME_CONFIG_CLASS_PATH SJME_JINT_C(11)
+
+/** Number of available options. */
+#define SJME_CONFIG_NUM_OPTIONS SJME_JINT_C(12)
 
 /** Maximum CPU registers. */
 #define SJME_MAX_REGISTERS SJME_JINT_C(64)
@@ -462,6 +504,12 @@ struct sjme_jvm
 	/** The size of ROM. */
 	sjme_jint romsize;
 	
+	/** Configuration ROM. */
+	void* config;
+	
+	/** Size of of the configuration ROM. */
+	sjme_jint configsize;
+	
 	/** Preset ROM. */
 	void* presetrom;
 	
@@ -723,8 +771,66 @@ sjme_jint sjme_memjread(sjme_jvm* jvm, sjme_jint size, void* ptr,
 }
 
 /**
+ * Writes a Java value to memory.
+ *
+ * @param jvm JVM pointer.
+ * @param size The size of the value to write.
+ * @param ptr The pointer to read to.
+ * @param off The offset.
+ * @param value The value to write.
+ * @since 2019/06/14
+ */
+void sjme_memjwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
+	sjme_jint value)
+{
+	/* Get the true pointer. */
+	ptr = SJME_POINTER_OFFSET(ptr, off);
+	
+	/* Check against JVM areas. */
+	if (jvm != NULL)
+	{
+		/* Ignore writes to ROM. */
+		if (ptr >= jvm->rom &&
+			ptr < SJME_POINTER_OFFSET(jvm->rom, jvm->romsize))
+			return;
+	}
+	
+	/* Write value to memory. */
+	switch (size)
+	{
+			/* Byte */
+		case 1:
+			*((sjme_jbyte*)ptr) = (sjme_jbyte)value;
+			break;
+		
+			/* Short */
+		case 2:
+#if defined(SJME_LITTLE_ENDIAN)
+			value = (value & SJME_JINT_C(0xFFFF0000)) |
+				(((value << SJME_JINT_C(8)) & SJME_JINT_C(0xFF00)) |
+				((value >> SJME_JINT_C(8)) & SJME_JINT_C(0x00FF)));
+#endif
+			*((sjme_jshort*)ptr) = (sjme_jshort)value;
+			break;
+			
+			/* Integer */
+		case 4:
+		default:
+#if defined(SJME_LITTLE_ENDIAN)
+			value = (((value >> SJME_JINT_C(24)) & SJME_JINT_C(0x000000FF)) |
+				((value >> SJME_JINT_C(8)) & SJME_JINT_C(0x0000FF00)) |
+				((value << SJME_JINT_C(8)) & SJME_JINT_C(0x00FF0000)) |
+				((value << SJME_JINT_C(24)) & SJME_JINT_C(0xFF000000)));
+#endif
+			*((sjme_jint*)ptr) = value;
+			break;
+	}
+}
+
+/**
  * Read Java value from memory and increment pointer.
  *
+ * @param jvm The JVM.
  * @param size The size of value to read.
  * @param ptr The pointer to read from.
  * @return The resulting value.
@@ -742,6 +848,25 @@ sjme_jint sjme_memjreadp(sjme_jvm* jvm, sjme_jint size, void** ptr)
 	
 	/* Return result. */
 	return rv;
+}
+
+/**
+ * Write Java value to memory and increment pointer.
+ *
+ * @param jvm The JVM.
+ * @param size The size of value to write.
+ * @param ptr The pointer to read from.
+ * @param value The value to write.
+ * @since 2019/06/14
+ */
+void sjme_memjwritep(sjme_jvm* jvm, sjme_jint size, void** ptr,
+	sjme_jint value)
+{
+	/* Write pointer value. */
+	sjme_memjwrite(jvm, size, *ptr, 0, value);
+	
+	/* Increment pointer. */
+	*ptr = SJME_POINTER_OFFSET(*ptr, size);
 }
 
 /**
@@ -1279,10 +1404,24 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Store value */
 					else
 					{
-						if (error != NULL)
-							*error = SJME_ERROR_NOJAVAWRITE;
-						
-						return cycles;
+						switch (op & SJME_MEM_DATATYPE_MASK)
+						{	
+							case SJME_DATATYPE_BYTE:
+								sjme_memjwrite(jvm, 1, tempp, ib, r[ic]);
+								break;
+								
+							case SJME_DATATYPE_CHARACTER:
+							case SJME_DATATYPE_SHORT:
+								sjme_memjwrite(jvm, 2, tempp, ib, r[ic]);
+								break;
+								
+							case SJME_DATATYPE_OBJECT:
+							case SJME_DATATYPE_INTEGER:
+							case SJME_DATATYPE_FLOAT:
+							default:
+								sjme_memjwrite(jvm, 4, tempp, ib, r[ic]);
+								break;
+						}
 					}
 				}
 				break;
@@ -1829,9 +1968,8 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	cpu->r[SJME_ARGBASE_REGISTER + 1] = ramsize;
 	cpu->r[SJME_ARGBASE_REGISTER + 2] = SJME_POINTER_TO_JINT(rom);
 	cpu->r[SJME_ARGBASE_REGISTER + 3] = jvm->romsize;
-	cpu->r[SJME_ARGBASE_REGISTER + 4] = 0;
-	cpu->r[SJME_ARGBASE_REGISTER + 5] = 0;
-	
+	cpu->r[SJME_ARGBASE_REGISTER + 4] = SJME_POINTER_TO_JINT(jvm->config);
+	cpu->r[SJME_ARGBASE_REGISTER + 5] = jvm->configsize;
 	
 	/* Address where the BootRAM is read from. */
 	rp = SJME_POINTER_OFFSET(bootjar, bootoff);
@@ -1953,11 +2091,161 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error)
 	
 	/* Delete major JVM data areas. */
 	sjme_free(jvm->ram);
+	sjme_free(jvm->config);
 	if (jvm->presetrom == NULL)
 		sjme_free(jvm->rom);
 	
 	/* Destroyed okay. */
 	return 1;
+}
+
+/** Initializes the configuration space. */
+void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
+	sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs, sjme_jint* error)
+{
+#define SJME_CONFIG_FORMAT_INTEGER SJME_JINT_C(1)
+#define SJME_CONFIG_FORMAT_KEYVALUE SJME_JINT_C(2)
+#define SJME_CONFIG_FORMAT_STRING SJME_JINT_C(3)
+#define SJME_CONFIG_FORMAT_STRINGS SJME_JINT_C(4)
+	void* wp;
+	void* basep;
+	void* sizep;
+	sjme_jint opt, format, iv, it;
+	char* sa;
+	char* sb;
+	
+	/* Write pointer starts at the base area. */
+	wp = conf;
+	
+	/* Go through all possible options to make a value. */
+	for (opt = SJME_JINT_C(1); opt < SJME_CONFIG_NUM_OPTIONS; opt++)
+	{
+		/* Used to specify the format. */
+		format = 0;
+		
+		/* Reset. */
+		sa = NULL;
+		sb = NULL;
+		iv = 0;
+		
+		/* Depends on the option. */
+		switch (opt)
+		{
+			/* Java VM Version. */
+			case SJME_CONFIG_JAVA_VM_VERSION:
+				format = SJME_CONFIG_FORMAT_STRING;
+				sa = "0.3.0";
+				break;
+			
+			/* Java VM Name. */
+			case SJME_CONFIG_JAVA_VM_NAME:
+				format = SJME_CONFIG_FORMAT_STRING;
+				sa = "SquirrelJME RatufaCoat";
+				break;
+			
+			/* Java VM Vendor. */
+			case SJME_CONFIG_JAVA_VM_VENDOR:
+				format = SJME_CONFIG_FORMAT_STRING;
+				sa = "Stephanie Gawroriski";
+				break;
+			
+			/* Java VM E-Mail. */
+			case SJME_CONFIG_JAVA_VM_EMAIL:
+				format = SJME_CONFIG_FORMAT_STRING;
+				sa = "xerthesquirrel@gmail.com";
+				break;
+			
+			/* Java VM URL. */
+			case SJME_CONFIG_JAVA_VM_URL:
+				format = SJME_CONFIG_FORMAT_STRING;
+				sa = "https://squirreljme.cc/";
+				break;
+			
+			/* The guest depth. */
+			case SJME_CONFIG_GUEST_DEPTH:
+				break;
+			
+			/* Main class. */
+			case SJME_CONFIG_MAIN_CLASS:
+				break;
+			
+			/* Main program arguments. */
+			case SJME_CONFIG_MAIN_ARGUMENTS:
+				break;
+			
+			/* Is this a MIDlet? */
+			case SJME_CONFIG_IS_MIDLET:
+				break;
+			
+			/* Define system propertly. */
+			case SJME_CONFIG_DEFINE_PROPERTY:
+				break;
+			
+			/* Classpath to use. */
+			case SJME_CONFIG_CLASS_PATH:
+				break;
+			
+				/* Unknown, ignore. */
+			default:
+				continue;
+		}
+		
+		/* No known way to write this? */
+		if (format == 0)
+			continue;
+		
+		/* Write option key. */
+		sjme_memjwritep(jvm, 2, &wp, opt);
+		
+		/* Store size location for later write. */
+		sizep = wp;
+		sjme_memjwritep(jvm, 2, &wp, 0);
+		
+		/* Base write pointer. */
+		basep = wp;
+		
+		/* Depends on the format. */
+		switch (format)
+		{
+				/* Integer. */
+			case SJME_CONFIG_FORMAT_INTEGER:
+				sjme_memjwritep(jvm, 4, &wp, iv);
+				break;
+			
+				/* Key/value pair. */
+			case SJME_CONFIG_FORMAT_KEYVALUE:
+				break;
+			
+				/* String value. */
+			case SJME_CONFIG_FORMAT_STRING:
+				{
+					// Record string length
+					int iv = strlen(sa);
+					sjme_memjwritep(jvm, 2, &wp, iv);
+					
+					// Record characters
+					for (it = 0; it < iv; it++)
+						sjme_memjwritep(jvm, 1, &wp, (sjme_jint)sa[it]);
+				}
+				break;
+			
+				/* Multiple strings. */
+			case SJME_CONFIG_FORMAT_STRINGS:
+				break;
+		}
+		
+		/* Write to the actual size! */
+		sjme_memjwrite(jvm, 2, sizep, 0,
+			SJME_POINTER_TO_JINT(wp) - SJME_POINTER_TO_JINT(basep));
+	}
+	
+	/* Write end of config. */
+	sjme_memjwritep(jvm, 2, &wp, SJME_CONFIG_END);
+	
+#undef SJME_CONFIG_FORMAT_INTEGER
+#undef SJME_CONFIG_FORMAT_KEYVALUE
+#undef SJME_CONFIG_FORMAT_STRING
+#undef SJME_CONFIG_FORMAT_STRINGS
 }
 
 /** Creates a new instance of the JVM. */
@@ -1967,6 +2255,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	sjme_jvmoptions nulloptions;
 	void* ram;
 	void* rom;
+	void* conf;
 	sjme_jvm* rv;
 	sjme_jint i, l, romsize;
 	
@@ -1976,10 +2265,14 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	
 	/* Allocate VM state. */
 	rv = sjme_malloc(sizeof(*rv));
-	if (rv == NULL)
+	conf = sjme_malloc(SJME_DEFAULT_CONF_SIZE);
+	if (rv == NULL || conf == NULL)
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_NOMEMORY;
+		
+		sjme_free(rv);
+		sjme_free(conf);
 		
 		return NULL;
 	}
@@ -2001,6 +2294,9 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_NOMEMORY;
+			
+		sjme_free(rv);
+		sjme_free(conf);
 		
 		return NULL;
 	}
@@ -2025,6 +2321,8 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		{
 			sjme_free(rv);
 			sjme_free(ram);
+			sjme_free(conf);
+			
 			return NULL;
 		}
 	}
@@ -2043,6 +2341,8 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 				*error = SJME_ERROR_NOMEMORY;
 			
 			sjme_free(ram);
+			sjme_free(conf);
+			
 			return NULL;
 		}
 		
@@ -2077,6 +2377,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	{
 		sjme_free(rv);
 		sjme_free(ram);
+		sjme_free(conf);
 		
 		/* If a pre-set ROM is not being used, make sure it gets cleared. */
 		if (options->presetrom)
@@ -2084,6 +2385,12 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		
 		return NULL;
 	}
+	
+	/* Initialize configuration space. */
+	rv->config = conf;
+	rv->configsize = SJME_DEFAULT_CONF_SIZE;
+	sjme_configinit(conf, SJME_DEFAULT_CONF_SIZE, rv, options, nativefuncs,
+		error);
 	
 	/* The JVM is ready to use. */
 	return rv;
