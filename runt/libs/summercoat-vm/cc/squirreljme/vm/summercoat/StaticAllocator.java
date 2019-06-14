@@ -14,6 +14,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/04/24
  */
+@Deprecated
 public final class StaticAllocator
 {
 	/** Start address. */
