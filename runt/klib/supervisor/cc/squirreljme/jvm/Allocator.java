@@ -57,9 +57,6 @@ public final class Allocator
 		// The number of desired bytes
 		int want = CHUNK_LENGTH + (__sz <= 4 ? 4 : ((__sz + 3) & (~3)));
 		
-		// Debug
-		todo.DEBUG.code('A', 'l', __sz);
-		
 		// Go through the memory chunks to locate a free chunk
 		int seeker = Allocator._rambase;
 		while (seeker != 0)
@@ -108,9 +105,6 @@ public final class Allocator
 				for (int i = CHUNK_LENGTH; i < want; i += 4)
 					Assembly.memWriteInt(seeker, i, 0);
 				
-				// Debug
-				todo.DEBUG.code('A', 'p', rv);
-				
 				// Use this chunk
 				return rv;
 			}
@@ -133,9 +127,6 @@ public final class Allocator
 	{
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
-		
-		// Debug
-		todo.DEBUG.code('A', 'f', __p);
 		
 		// Determine the seeker position for this chunk
 		int seeker = __p - CHUNK_LENGTH;
