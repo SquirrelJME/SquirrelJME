@@ -1823,19 +1823,15 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	cpu->pc = SJME_POINTER_OFFSET(bootjar, sjme_memjreadp(jvm, 4, &rp));
 	
 	/* Bootstrap entry arguments. */
-	/* (int __rambase, int __ramsize, int __bootsize, byte[][] __classpath, */
-	/* byte[][] __sysprops, byte[] __mainclass, byte[][] __mainargs, */
-	/* boolean __ismidlet, int __gd, int __rombase) */
+	/* (int __rambase, int __ramsize, int __rombase, int __romsize, */
+	/* int __confbase, int __confsize) */
 	cpu->r[SJME_ARGBASE_REGISTER + 0] = SJME_POINTER_TO_JINT(ram);
 	cpu->r[SJME_ARGBASE_REGISTER + 1] = ramsize;
-	cpu->r[SJME_ARGBASE_REGISTER + 2] = 0;
-	cpu->r[SJME_ARGBASE_REGISTER + 3] = 0;
+	cpu->r[SJME_ARGBASE_REGISTER + 2] = SJME_POINTER_TO_JINT(rom);
+	cpu->r[SJME_ARGBASE_REGISTER + 3] = jvm->romsize;
 	cpu->r[SJME_ARGBASE_REGISTER + 4] = 0;
 	cpu->r[SJME_ARGBASE_REGISTER + 5] = 0;
-	cpu->r[SJME_ARGBASE_REGISTER + 6] = 0;
-	cpu->r[SJME_ARGBASE_REGISTER + 7] = 0;
-	cpu->r[SJME_ARGBASE_REGISTER + 8] = 0;
-	cpu->r[SJME_ARGBASE_REGISTER + 9] = SJME_POINTER_TO_JINT(rom);
+	
 	
 	/* Address where the BootRAM is read from. */
 	rp = SJME_POINTER_OFFSET(bootjar, bootoff);

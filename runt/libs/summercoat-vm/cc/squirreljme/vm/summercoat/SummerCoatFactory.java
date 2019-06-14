@@ -55,6 +55,10 @@ public class SummerCoatFactory
 	public static final int CONFIG_BASE_ADDR =
 		0x30000000;
 	
+	/** Size of the configuration area. */
+	public static final int CONFIG_SIZE =
+		65536;
+	
 	/** The starting address for RAM. */
 	public static final int RAM_START_ADDRESS =
 		1048576;
@@ -84,7 +88,8 @@ public class SummerCoatFactory
 		VirtualMemory vmem = new VirtualMemory();
 		
 		// The ROM always starts here
-		int rombase = SUITE_BASE_ADDR;
+		int rombase = SUITE_BASE_ADDR,
+			romsize = 0;
 		
 		// Try to load a specific ROM file instead of the dynamically
 		// generate one?
@@ -127,6 +132,9 @@ public class SummerCoatFactory
 				ReadableMemory sm = new ByteArrayMemory(rombase,
 					baos.toByteArray());
 				vmem.mapRegion(sm);
+				
+				// Record size of RAM
+				romsize = baos.size();
 			}
 			
 			// {@squirreljme.error AE05 Could not load SummerCoat ROM. (File)}
@@ -145,6 +153,9 @@ public class SummerCoatFactory
 			
 			// Initialize suite memory explicitly since we need it!
 			sm.__init();
+			
+			// Rom size is derived from the chunk size
+			romsize = sm.size;
 		}
 		
 		// Initialize RAM
@@ -153,7 +164,7 @@ public class SummerCoatFactory
 		vmem.mapRegion(new RawMemory(ramstart, ramsize));
 		
 		// Initialize configuration memory
-		WritableMemory cmem = new RawMemory(CONFIG_BASE_ADDR, 8192);
+		WritableMemory cmem = new RawMemory(CONFIG_BASE_ADDR, CONFIG_SIZE);
 		vmem.mapRegion(cmem);
 		
 		// Read the boot JAR offset of this packfile
@@ -288,8 +299,7 @@ public class SummerCoatFactory
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(vmem);
 		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh.bootstart,
-			ramstart, ramsize, lram, xxclasspth, xxsysprops, xxmainclss,
-			xxmainargs, (__ismid ? 1 : 0), __gd, rombase);
+			ramstart, ramsize, rombase, CONFIG_BASE_ADDR, CONFIG_SIZE);
 		
 		// Seed initial frame registers
 		iframe._registers[NativeCode.POOL_REGISTER] =
