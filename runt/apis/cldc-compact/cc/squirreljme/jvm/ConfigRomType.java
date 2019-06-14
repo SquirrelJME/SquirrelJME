@@ -63,5 +63,9 @@ public interface ConfigRomType
 	/** Classpath to use. */
 	public static final short CLASS_PATH =
 		11;
+	
+	/** Number of available options. */
+	public static final short NUM_OPTIONS =
+		12;
 }
 
