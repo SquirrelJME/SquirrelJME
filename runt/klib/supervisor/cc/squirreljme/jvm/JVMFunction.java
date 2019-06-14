@@ -284,7 +284,9 @@ public final class JVMFunction
 	 */
 	public static final String jvmLoadString(int __p)
 	{
-		return JVMFunction.jvmLoadStringNoIntern(__p).intern();
+		String base = JVMFunction.jvmLoadStringNoIntern(__p);
+		todo.DEBUG.code('J', 's', Assembly.objectToPointer(base));
+		return base.intern();
 	}
 	
 	/**
@@ -296,6 +298,9 @@ public final class JVMFunction
 	 */
 	public static final String jvmLoadStringNoIntern(int __p)
 	{
+		// Note
+		todo.DEBUG.code('J', 'S', __p);
+		
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
 			throw new VirtualMachineError();
