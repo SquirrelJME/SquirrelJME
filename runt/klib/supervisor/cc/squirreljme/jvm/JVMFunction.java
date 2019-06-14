@@ -279,9 +279,22 @@ public final class JVMFunction
 	 * Loads a string from memory and returns an `intern()` string value.
 	 *
 	 * @param __p The pointer to load the string bytes from.
+	 * @return The resulting and interned string.
 	 * @since 2019/05/26
 	 */
 	public static final String jvmLoadString(int __p)
+	{
+		return JVMFunction.jvmLoadStringNoIntern(__p).intern();
+	}
+	
+	/**
+	 * Loads a string from memory and returns it.
+	 *
+	 * @param __p The pointer to load the string bytes from.
+	 * @return The loaded string.
+	 * @since 2019/06/14
+	 */
+	public static final String jvmLoadStringNoIntern(int __p)
 	{
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
@@ -300,7 +313,7 @@ public final class JVMFunction
 			bytes[i] = (byte)Assembly.memReadByte(base, i);
 		
 		// Initialize and intern string
-		return new String(bytes).intern();
+		return new String(bytes);
 	}
 	
 	/**
