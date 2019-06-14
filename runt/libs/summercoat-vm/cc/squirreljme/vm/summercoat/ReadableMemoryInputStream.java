@@ -38,6 +38,7 @@ public final class ReadableMemoryInputStream
 	 * @param __ad The start address.
 	 * @param __ln The length.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/21
 	 */
 	public ReadableMemoryInputStream(ReadableMemory __mem, int __ad, int __ln)
 		throws NullPointerException
