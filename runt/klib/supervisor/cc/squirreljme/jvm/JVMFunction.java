@@ -412,6 +412,7 @@ public final class JVMFunction
 		
 		// Debug
 		todo.DEBUG.code('N', 'E', rv);
+		todo.DEBUG.code('N', 'c', __cl);
 		
 		// Use this pointer
 		return rv;
