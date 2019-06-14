@@ -19,6 +19,20 @@ import cc.squirreljme.jvm.Assembly;
 public final class Integer
 	extends Number
 {
+	/** The value of this integer. */
+	private transient int _value;
+	
+	/**
+	 * Initializes this integer.
+	 *
+	 * @param __v The value used.
+	 * @since 2019/06/14
+	 */
+	public Integer(int __v)
+	{
+		this._value = __v;
+	}
+	
 	/**
 	 * Returns a boxed value.
 	 *
@@ -28,8 +42,7 @@ public final class Integer
 	 */
 	public static final Integer valueOf(int __v)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		return new Integer(__v);
 	}
 }
 
