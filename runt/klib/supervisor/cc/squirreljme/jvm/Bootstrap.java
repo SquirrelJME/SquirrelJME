@@ -44,13 +44,6 @@ public final class Bootstrap
 		// the RAM is actually useable.
 		Allocator.__initRamLinks(__rambase, __ramsize);
 		
-		// Test
-		todo.DEBUG.code('S', 'T', Assembly.objectToPointer("Hello?"));
-		
-		// Debug
-		todo.DEBUG.note("Hello adorable and cute squirrels!");
-		todo.DEBUG.note("Basic formatting too: %s!", "Neat!");
-		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
