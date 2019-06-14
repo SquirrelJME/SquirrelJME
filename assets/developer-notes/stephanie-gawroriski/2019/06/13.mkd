@@ -1,0 +1,109 @@
+# 2019/06/13
+
+## 08:15
+
+Okay so SummerCoat runs this code, but RatufaCoat crashes. On x86 it runs
+okay until it tries to intern a string and on PowerPC is breaks after
+garbage collection on a return.
+
+## 08:32
+
+Okay PowerPC runs fine, so this means it is a byte swapping issue
+somewhere.
+
+## 08:37
+
+Crashes on 32-bit and 64-bit x86 so definitely an endianess issue.
+
+## 09:38
+
+I wonder if I write a UTF somewhere.
+
+## 14:23
+
+Okay so there is an actual write to ROM, I wonder if it happens on big endian
+as well?
+
+## 14:24
+
+Okay it does, just does not lead to a crash.
+
+## 14:44
+
+Okay so what is being written to ROM ends up being the vtable. So what happens
+is that our vtable entry is read in. Then we do a ref count on it when we are
+done using it??
+
+## 14:48
+
+Okay so this is an issue with `INVOKEVIRTUAL`, it seems that is is uncounting
+volatile registers. And looking at reference pushing I exactly see why. I am
+using a fixed base for values instead of the volatile get.
+
+## 18:03
+
+I am going to add a very basic debug print which just takes two characters and
+a number.
+
+## 18:36
+
+I believe returned values need to be ref-counted. Why? Because even if we pass
+an object to a method that is `this`, if it returns `this` then we will drop a
+count. And that is basically what the initial case for `jvmLoadString()`.
+
+## 19:14
+
+So a garbage collection is happening. I do know the `byte[]` gets GCed but it
+seems the string is being GCed too?
+
+## 19:21
+
+Okay so it seems that `jvmLoadString()` is returning `1`.
+
+## 19:25
+
+I see no issue from the caller side, so it has to be from `jvmLoadString()`.
+
+## 19:29
+
+Maybe the copy from return is incorrect?
+
+## 19:31
+
+Okay this sequence tells me that we do have an interned string returned but it
+ends up returning the value 1 instead of the value we want to return. Which is
+a bit strange. I know previously I used return registers as temporary values,
+so is such a thing still happening?
+
+	NA 00104974
+	NE 0010499c
+	NA 001049c4
+	Ls 0010499c
+	GC 00104974
+	Ga 00000001
+	ST 00000001
+	NA 001049f0
+	NE 00104974
+	NA 00104a34
+	Ls 00104974
+	GC 001049f0
+	Ga 00000001
+	NA 00104974
+	Nf 00000001
+	Na 00104974
+
+## 19:39
+
+I believe I have an idea of what is happening. I am copying the value to the
+return register, but before I actually return from the method the code
+generator generates code which can run the garbage collector. And the return
+register is not valid after and invoke, it must immedietly return. So I do
+know that the GC is being called to cleanup the `byte[]` object and then some
+kind of code in there causes `1` to be set to the return register. So I need
+to copy the value much later and after all the cleanup has happened.
+
+## 20:13
+
+So now I have another issue where it seems that the values passed to the
+object array are exactly the same index or similar. Or the access of the
+array is wrong? But the wrong access is unlikely maybe?
