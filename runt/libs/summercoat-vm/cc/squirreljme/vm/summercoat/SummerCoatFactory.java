@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.ConfigRomType;
 import cc.squirreljme.jvm.Constants;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
@@ -30,6 +31,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -167,6 +169,63 @@ public class SummerCoatFactory
 		WritableMemory cmem = new RawMemory(CONFIG_BASE_ADDR, CONFIG_SIZE);
 		vmem.mapRegion(cmem);
 		
+		// Write configuration information
+		try (DataOutputStream dos = new DataOutputStream(
+			new WritableMemoryOutputStream(cmem, 0, CONFIG_SIZE)))
+		{
+			// Version
+			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_VERSION,
+				"0.3.0");
+			
+			// Name
+			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_NAME,
+				"SquirrelJME SummerCoat");
+			
+			// Vendor
+			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_VENDOR,
+				"Stephanie Gawroriski");
+			
+			// E-Mail
+			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_EMAIL,
+				"xerthesquirrel@gmail.com");
+			
+			// URL
+			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_URL,
+				"https://squirreljme.cc/");
+			
+			// Guest depth
+			ConfigRomWriter.writeInteger(dos, ConfigRomType.GUEST_DEPTH,
+				__gd);
+			
+			// Main class
+			if (__maincl != null)
+				ConfigRomWriter.writeString(dos, ConfigRomType.MAIN_CLASS,
+					__maincl);
+			
+			// Is midlet?
+			ConfigRomWriter.writeInteger(dos, ConfigRomType.IS_MIDLET,
+				(__ismid ? 1 : 0));
+			
+			// System properties
+			if (__sprops != null)
+				for (Map.Entry<String, String> e : __sprops.entrySet())
+				{
+					ConfigRomWriter.writeKeyValue(dos,
+						ConfigRomType.DEFINE_PROPERTY,
+						e.getKey(), e.getValue());
+				}
+			
+			// Class path
+			ConfigRomWriter.writeStrings(dos, ConfigRomType.CLASS_PATH,
+				SummerCoatFactory.classPathToStringArray(__cp));
+		}
+		
+		// {@squirreljme.error AE0d Could not write to configuration ROM.}
+		catch (IOException e)
+		{
+			throw new VMException("AE0d", e);
+		}
+		
 		// Read the boot JAR offset of this packfile
 		int bootjaroff = rombase + vmem.memReadInt(rombase +
 				MinimizedPackHeader.OFFSET_OF_BOOTJAROFFSET),
@@ -190,17 +249,6 @@ public class SummerCoatFactory
 		// Load the bootstrap JAR header
 		int bra = bootjaroff + bjh.bootoffset,
 			lram;
-		
-		// Allocate and initialize configuration data
-		StaticAllocator confalloc = new StaticAllocator(CONFIG_BASE_ADDR);
-		int xxclasspth = this.__memStrings(bjh, ramstart, vmem, confalloc,
-				SummerCoatFactory.classPathToStringArray(__cp)),
-			xxsysprops = this.__memStrings(bjh, ramstart, vmem, confalloc,
-				SummerCoatFactory.stringMapToStrings(__sprops)),
-			xxmainclss = this.__memString(bjh, ramstart, vmem, confalloc,
-				__maincl),
-			xxmainargs = this.__memStrings(bjh, ramstart, vmem, confalloc,
-				__args);
 		
 		// Load the boot RAM
 		try (DataInputStream dis = new DataInputStream(
@@ -310,430 +358,7 @@ public class SummerCoatFactory
 		// Execute the CPU to boot the machine
 		cpu.run();
 		
-		if (true)
-			throw new todo.TODO();
-		
 		throw new todo.TODO();
-		/*
-		// Size of RAM
-		int ramsize = DefaultConfiguration.DEFAULT_RAM_SIZE,
-			sfspace = DefaultConfiguration.DEFAULT_STATIC_FIELD_SIZE;
-		
-		// Initialize and map virtual memory
-		VirtualMemory vmem = new VirtualMemory();
-		vmem.mapRegion(sm);
-		vmem.mapRegion(new RawMemory(RAM_START_ADDRESS, ramsize));
-		
-		// Initialize the suite space and load the boot address
-		sm.__init();
-		int kernaddr = sm._bootjaroff,
-			bootaddr = -1;
-		
-		// Static memory allocation
-		StaticAllocator statalloc = new StaticAllocator(RAM_START_ADDRESS);
-		
-		// Write raw strings into memory which describe the various VM
-		// arguments and such. This mostly refers to the class to start once
-		// the VM has initialized itself
-		int xxclasspth = this.__memStrings(vmem, statalloc,
-				SummerCoatFactory.classPathToStringArray(__cp)),
-			xxsysprops = this.__memStrings(vmem, statalloc,
-				SummerCoatFactory.stringMapToStrings(__sprops)),
-			xxmainclss = this.__memString(vmem, statalloc, __maincl),
-			xxmainargs = this.__memStrings(vmem, statalloc, __args);
-		
-		// The base address of the kernel object
-		int kobjbase;
-		
-		// Read the information on the boot class into memory, we need to
-		// initialize and setup a bunch of fields for it
-		int spoolbase;
-		try (InputStream kin = new ReadableMemoryInputStream(vmem,
-			kernaddr, 1048576))
-		{
-			// Decode the class file so we can perform some primitive
-			// pre-initialization of the kernel. This is needed because the
-			// bootstrap needs access to fields and other methods in the
-			// bootstrap class.
-			MinimizedClassFile minikern = MinimizedClassFile.decode(kin);
-			
-			// Allocate the kernel object
-			kobjbase = statalloc.allocate(Kernel.OBJECT_BASE_SIZE +
-				minikern.header.ifbytes);
-			
-			// Write fixed class ID into object base and an initial reference
-			// count of 1
-			vmem.memWriteInt(kobjbase + Kernel.OBJECT_CLASS_OFFSET,
-				FixedClassIDs.KERNEL);
-			vmem.memWriteInt(kobjbase + Kernel.OBJECT_COUNT_OFFSET,
-				1);
-			
-			// The base address of the static pool along with its size
-			int poolcount = minikern.header.poolcount,
-				spoolsize = poolcount * 4;
-			spoolbase = statalloc.allocate(spoolsize);
-			
-			// Offset to the code area in this minimized method
-			int scodebase = kernaddr + minikern.header.smoff,
-				icodebase = kernaddr + minikern.header.imoff;
-			
-			// Initialize the static pool
-			MinimizedPool pool = minikern.pool;
-			for (int i = 1; i < poolcount; i++)
-			{
-				// The resulting converted value
-				int cv;
-				
-				// Handle the type and value
-				Object pv = pool.get(i);
-				switch (pool.type(i))
-				{
-						// Just map strings to null
-					case STRING:
-						cv = 0;
-						break;
-						
-						// Read of another field, will be the field offset
-					case ACCESSED_FIELD:
-						AccessedField af = (AccessedField)pv;
-						
-						// The kernel class
-						if (af.field().className().equals(minikern.thisName()))
-							if (af.type().isStatic())
-								cv = Kernel.OBJECT_BASE_SIZE + minikern.field(
-									true, af.field().memberNameAndType()).
-									offset;
-							else
-								cv = Kernel.OBJECT_BASE_SIZE + minikern.field(
-									false, af.field().memberNameAndType()).
-									offset;
-						
-						// Some other class
-						else
-							cv = _BAD_POOL_VALUE;
-						break;
-						
-						// Try to map a class index to a pre-existing ID
-					case CLASS_NAME:
-						cv = FixedClassIDs.of(pv.toString());
-						if (cv < 0)
-							cv = _BAD_POOL_VALUE;
-						break;
-						
-						// The pointer to the run-time pool for the given
-						// class
-					case CLASS_POOL:
-						if (((ClassPool)pv).name.toString().equals(
-							"cc/squirreljme/runtime/cldc/vki/Kernel"))
-							cv = spoolbase;
-						else
-							cv = _BAD_POOL_VALUE;
-						break;
-						
-						// Invoked method
-					case INVOKED_METHOD:
-						InvokedMethod iv = (InvokedMethod)pv;
-						
-						// The kernel class
-						if (iv.handle().outerClass().equals(
-							minikern.thisName()))
-							if (iv.type().isStatic())
-								cv = scodebase + minikern.method(true, iv.
-									handle().nameAndType()).codeoffset;
-							else
-								cv = icodebase + minikern.method(false, iv.
-									handle().nameAndType()).codeoffset;
-						
-						// Some other class
-						else
-							cv = _BAD_POOL_VALUE;
-						break;
-						
-						// Integer
-					case INTEGER:
-						cv = (Integer)pv;
-						break;
-						
-						// Float
-					case FLOAT:
-						cv = Float.floatToRawIntBits((Float)pv);
-						break;
-						
-						// Long
-					case LONG:
-						throw new todo.TODO();
-						
-						// Double
-					case DOUBLE:
-						throw new todo.TODO();
-						
-						// Where is this information
-					case WHERE_IS_THIS:
-						{
-							// Get method index part
-							int id = pool.part(i, 0);
-							
-							// Instance method? And get the index
-							boolean isinstance = ((id &
-								WhereIsThis.INSTANCE_BIT) != 0);
-							int mdx = (id & (~WhereIsThis.INSTANCE_BIT));
-							
-							// Set this to the where offset
-							cv = (isinstance ? icodebase : scodebase) +
-								minikern.methods(!isinstance)[mdx].whereoffset;
-						}
-						break;
-						
-						// These are just informational, ignore for now
-					case METHOD_DESCRIPTOR:
-					case CLASS_NAMES:
-						cv = _BAD_POOL_VALUE;
-						break;
-						
-					default:
-						throw new todo.OOPS(pool.type(i).name());
-				}
-				
-				// Store into pool area
-				int sld;
-				vmem.memWriteInt((sld = spoolbase + (4 * i)), cv);
-			}
-			
-			// Find pointers to methods within the kernel
-			for (MinimizedMethod mm : minikern.methods(false))
-			{
-				// Where this method is located
-				int codeoff = (mm.flags().isStatic() ? scodebase : icodebase) +
-					mm.codeoffset;
-				
-				// Depends on the name
-				switch (mm.name.toString())
-				{
-						// The starting point of the kernel (boot)
-					case "__start":
-						bootaddr = codeoff;
-						break;
-					
-						// Ignore
-					default:
-						continue;
-				}
-			}
-			
-			// Go through instance fields and set their data fields
-			for (MinimizedField mf : minikern.fields(false))
-			{
-				// Memory field offer
-				int kfo = kobjbase + Kernel.OBJECT_BASE_SIZE + mf.offset;
-				
-				// Value depends on the field
-				switch (mf.name.toString())
-				{
-						// ROM address
-					case "romaddr":
-						vmem.memWriteInt(kfo, SUITE_BASE_ADDR);
-						break;
-						
-						// Kernel class definition (miniform)
-					case "kernaddr":
-						vmem.memWriteInt(kfo, kernaddr);
-						
-						// Kernel object base
-					case "kobjbase":
-						vmem.memWriteInt(kfo, kobjbase);
-						break;
-						
-						// Static memory size
-					case "staticmemsize":
-						vmem.memWriteInt(kfo, statalloc.size());
-						break;
-						
-						// Starting memory address
-					case "memaddr":
-						vmem.memWriteInt(kfo, RAM_START_ADDRESS);
-						break;
-					
-						// Size of memory
-					case "memsize":
-						vmem.memWriteInt(kfo, ramsize);
-						break;
-						
-						// Is this a MIDlet?
-					case "ismidlet":
-						vmem.memWriteInt(kfo, (__ismid ? 1 : 0));
-						break;
-						
-						// The guest depth
-					case "guestdepth":
-						vmem.memWriteInt(kfo, __gd);
-						break;
-						
-						// The classpath
-					case "classpath":
-						vmem.memWriteInt(kfo, xxclasspth);
-						break;
-						
-						// System properties
-					case "sysprops":
-						vmem.memWriteInt(kfo, xxsysprops);
-						break;
-						
-						// Main class
-					case "mainclass":
-						vmem.memWriteInt(kfo, xxmainclss);
-						break;
-						
-						// Main arguments
-					case "mainargs":
-						vmem.memWriteInt(kfo, xxmainargs);
-						break;
-						
-						// Static field space
-					case "sfspace":
-						vmem.memWriteInt(kfo, sfspace);
-						break;
-					
-						// Ignore
-					default:
-						continue;
-				}
-			}
-		}
-		
-		// {@squirreljme.error AE0y Could not read the kernel class for
-		// initialization}.
-		catch (IOException e)
-		{
-			throw new RuntimeException("AE0y", e);
-		}
-		
-		// Setup virtual CPU to execute
-		NativeCPU cpu = new NativeCPU(vmem);
-		NativeCPU.Frame iframe = cpu.enterFrame(bootaddr, kobjbase);
-		
-		// Seed initial frame registers
-		iframe._registers[NativeCode.POOL_REGISTER] = spoolbase;
-		
-		// Execute the CPU to boot the machine
-		cpu.run();
-		
-		if (true)
-			throw new todo.TODO();
-		
-		// Setup root machine which has our base suite manager
-		RootMachine rm = new RootMachine(__sm, __ps, __gd);
-		
-		// Need to map to cached VMs
-		CachingSuiteManager suites = rm.suites;
-		int n = __cp.length;
-		CachingClassLibrary[] libs = new CachingClassLibrary[n];
-		for (int i = 0; i < n; i++)
-			libs[i] = suites.loadLibrary(__cp[i]);
-		
-		// Now create the starting main task
-		return new ExitAwaiter(rm.statuses, rm.createTask(libs, __maincl,
-			__ismid, __sprops, __args).status, __ps);
-		*/
-	}
-	
-	/**
-	 * This writes a string to memory somewhere.
-	 *
-	 * @param __mjh Minimized JAR header.
-	 * @param __rams RAM start address.
-	 * @param __wm Memory that can be written to.
-	 * @param __sa Static allocator.
-	 * @param __s The string to encode.
-	 * @return The address the string was stored at.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/21
-	 */
-	private int __memString(MinimizedJarHeader __mjh, int __rams,
-		WritableMemory __wm, StaticAllocator __sa, String __s)
-		throws NullPointerException
-	{
-		if (__wm == null || __sa == null || __s == null)
-			throw new NullPointerException("NARG");
-		
-		// Encode bytes
-		byte[] encode;
-		try
-		{
-			encode = __s.getBytes("utf-8");
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			encode = __s.getBytes();
-		}
-		
-		// Allocate data
-		int rv = __sa.allocate(Constants.ARRAY_BASE_SIZE + encode.length);
-		
-		// Write class ID, initial refcount, and length
-		__wm.memWriteInt(rv + Constants.OBJECT_CLASS_OFFSET,
-			__rams + __mjh.bootclassidba);
-		__wm.memWriteInt(rv + Constants.OBJECT_COUNT_OFFSET,
-			1);
-		__wm.memWriteInt(rv + Constants.ARRAY_LENGTH_OFFSET,
-			encode.length);
-		
-		// Write byte data
-		int vbase = rv + Constants.ARRAY_BASE_SIZE;
-		for (int i = 0, n = encode.length; i < n; i++, vbase++)
-			__wm.memWriteByte(vbase, encode[i]);
-		
-		// Return pointer
-		return rv;
-	}
-	
-	/**
-	 * Creates an array which is an array of bytes containing all of the
-	 * various strings.
-	 *
-	 * @param __mjh Minimized JAR header.
-	 * @param __rams RAM start address.
-	 * @param __wm The memory to write to.
-	 * @param __sa The allocator used.
-	 * @param __ss The strings to convert.
-	 * @return The memory address of the {@code byte[][]} array.
-	 * @since 2019/04/27
-	 */
-	private int __memStrings(MinimizedJarHeader __mjh, int __rams,
-		WritableMemory __wm, StaticAllocator __sa, String... __ss)
-		throws NullPointerException
-	{
-		if (__sa == null)
-			throw new NullPointerException("NARG");
-		
-		// Force to exist
-		if (__ss == null)
-			__ss = new String[0];
-		
-		// The number of elements to store
-		int n = __ss.length;
-		
-		// Allocate data
-		int rv = __sa.allocate(Constants.ARRAY_BASE_SIZE + (n * 4));
-		
-		// Write class ID, initial refcount, and length
-		__wm.memWriteInt(rv + Constants.OBJECT_CLASS_OFFSET,
-			__rams + __mjh.bootclassidbaa);
-		__wm.memWriteInt(rv + Constants.OBJECT_COUNT_OFFSET,
-			1);
-		__wm.memWriteInt(rv + Constants.ARRAY_LENGTH_OFFSET,
-			n);
-		
-		// Write byte data
-		int vbase = rv + Constants.ARRAY_BASE_SIZE;
-		for (int i = 0; i < n; i++, vbase += 4)
-		{
-			String s = __ss[i];
-			__wm.memWriteInt(vbase, (s == null ? 0 :
-				this.__memString(__mjh, __rams, __wm, __sa, s)));
-		}
-		
-		// Return pointer
-		return rv;
 	}
 	
 	/**
@@ -755,36 +380,6 @@ public class SummerCoatFactory
 		for (int i = 0; i < n; i++)
 			rv[i] = __cp[i].name();
 		
-		return rv;
-	}
-	
-	/**
-	 * Converts a string array to a string array.
-	 *
-	 * @param __s The strings to convert.
-	 * @return The resulting string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/21
-	 */
-	public static final String[] stringMapToStrings(Map<String, String> __s)
-		throws NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		// Setup
-		int n = __s.size() * 2;
-		String[] rv = new String[n];
-		
-		// Map in keys and values
-		int i = 0;
-		for (Map.Entry<String, String> s : __s.entrySet())
-		{
-			rv[i++] = s.getKey();
-			rv[i++] = s.getValue();
-		}
-		
-		// Done
 		return rv;
 	}
 }
