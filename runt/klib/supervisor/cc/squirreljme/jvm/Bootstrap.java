@@ -30,19 +30,14 @@ public final class Bootstrap
 	 *
 	 * @param __rambase The base RAM address.
 	 * @param __ramsize The size of RAM.
-	 * @param __bootsize Boot memory size.
-	 * @param __classpath The class path.
-	 * @param __sysprops System properties.
-	 * @param __mainclass Main class.
-	 * @param __mainargs Main arguments.
-	 * @param __ismidlet Is this a MIDlet?
-	 * @param __gd The current guest depth.
 	 * @param __rombase Base address of the ROM (for offset calculation).
+	 * @param __romsize The size of ROM.
+	 * @param __confbase The configuration memory base.
+	 * @param __confsize The configuration memory size.
 	 * @since 2019/05/25
 	 */
-	static final void __start(int __rambase, int __ramsize, int __bootsize,
-		byte[][] __classpath, byte[][] __sysprops, byte[] __mainclass,
-		byte[][] __mainargs, boolean __ismidlet, int __gd, int __rombase)
+	static final void __start(int __rambase, int __ramsize,
+		int __rombase, int __romsize, int __confbase, int __confsize)
 	{
 		// Initialize the RAM links to setup dirty bits and initialize the
 		// last block of memory with anything that remains. This makes it so
