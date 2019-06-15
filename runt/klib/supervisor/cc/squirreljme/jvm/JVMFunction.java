@@ -284,7 +284,8 @@ public final class JVMFunction
 	 */
 	public static final String jvmLoadString(int __p)
 	{
-		return JVMFunction.jvmLoadStringNoIntern(__p).intern();
+		String rv = JVMFunction.jvmLoadStringNoIntern(__p);
+		return rv.intern();
 	}
 	
 	/**
