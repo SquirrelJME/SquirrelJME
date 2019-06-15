@@ -102,8 +102,7 @@ public final class Allocator
 				
 				// Clear out memory since Java expects the data to be
 				// initialized to zero always
-				for (int i = CHUNK_LENGTH; i < want; i += 4)
-					Assembly.memWriteInt(seeker, i, 0);
+				Assembly.sysCallP(SystemCallIndex.MEM_SET, rv, 0, __sz);
 				
 				// Use this chunk
 				return rv;

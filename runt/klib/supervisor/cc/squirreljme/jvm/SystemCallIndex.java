@@ -84,9 +84,17 @@ public final class SystemCallIndex
 	public static final short PD_WRITE_BYTE =
 		16;
 	
+	/** Set memory. */
+	public static final short MEM_SET =
+		17;
+	
+	/** Mark memory as invalid. */
+	public static final short MEM_MARK_INVALID =
+		18;
+	
 	/** System call count. */
 	public static final short NUM_SYSCALLS =
-		17;
+		19;
 	
 	/**
 	 * Not used.
