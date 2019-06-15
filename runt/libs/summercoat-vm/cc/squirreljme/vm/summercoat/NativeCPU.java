@@ -1066,6 +1066,7 @@ public final class NativeCPU
 						case SystemCallIndex.PD_OF_STDOUT:
 						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_WRITE_BYTE:
+						case SystemCallIndex.MEM_SET:
 							rv = 1;
 							break;
 						
@@ -1232,6 +1233,27 @@ public final class NativeCPU
 						rv = -1;
 						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
 					}
+				}
+				break;
+				
+				// Sets memory to byte value
+			case SystemCallIndex.MEM_SET:
+				{
+					// Set memory
+					WritableMemory memory = this.memory;
+					
+					// Get parameters
+					int addr = __args[0],
+						valu = __args[1],
+						lens = __args[2];
+					
+					// Wipe
+					for (int i = 0; i < lens; i++)
+						memory.memWriteByte(addr + i, valu);
+					
+					// Is okay
+					rv = 0;
+					err = 0;
 				}
 				break;
 				
