@@ -1,0 +1,90 @@
+# 2019/06/14
+
+## 09:11
+
+Okay so instead of passing stuff like classpath and otherwise, I am going to
+have a configuration ROM where all the settings and initial stuff set by the
+VM are stored. This will allow it to grow in size and support other options in
+the future so that SummerCoat/RatufaCoat do not need to be completely changed
+to support new configuration items. But this will definitely help and make it
+nice and cool to work with. It will also probably be easier to generate as
+well.
+
+## 11:39
+
+Okay so now I have this much better looking config ROM, so this will be nice!
+The good thing in this case is I will be able to write to a rather expanding
+format of things, without needing to hardcode various parameters in the method
+call. This very much future proofs the VM and such.
+
+## 11:40
+
+So the next thing to figure out is, what causes the arguments to mess up and
+such.
+
+## 11:43
+
+So I might have an idea, maybe it is related to the volatiles? It did work
+before the return values were fixed by using temporary volatiles. So not too
+sure then.
+
+## 11:45
+
+It might be code being called in the boot strap, but I am pretty sure I want
+to be sure it is not code being done in the actual note code itself. I mean
+calling other methods are fine.
+
+## 11:48
+
+Okay so, in note 8 and 9 are being used correctly when being passed to the
+note method. Additionally 8 is being used as the object to do length on.
+
+## 11:51
+
+Unless the RAM links are like too short at the start? I should check that out.
+
+## 11:53
+
+Okay the RAM links are fine. So it seems like it has trouble getting the
+vtable of what was pushed in. But the big thing is that they end up being the
+same exact arguments.
+
+## 11:57
+
+So I think note is fine?
+
+## 13:28
+
+Okay so this is the call to the notes. The registers 14 and 15 seem to be fine
+so these are okay. However they are the same value.
+
+	***** @4f1155e4 INVOKE             /INVOKESTAT | L51  /J23  reljme/jvm/
+	Bootstrap::__start:(IIIIII)V
+	A:[        23,         14,         15] | V:[+1326452060,   +1067384,
+	+1067384]
+	>>>> 4f100d5c >>>>>>>>>>>>>>>>>>>>>>
+	> ARG [1067384, 1067384]
+	> WAS cc/squirreljme/jvm/Bootstrap.__start:(IIIIII)V @4F1155E4h (:51
+	J184@23)
+
+## 13:31
+
+Okay so, 14 is the result of `jvmLoadString()` and 15 is the result of
+`jvmNewArray`. Maybe with all of the return changes I made, I accidently saved
+or trashed the value of the return with what was previously in it. So no idea.
+
+## 13:34
+
+So I should look in `jvmNewArray` just to see.
+
+## 13:43
+
+Okay, so removing the code test debug makes things work. Like the act of
+calling `Assembly.objectToPointer("Hello?")` messes up. Storing the string and
+never using it again, messes up? Okay so, if a string is referred to but is
+never used to where it would become GC electable, it just fails to work
+properly?
+
+## 15:20
+
+More issues with `jvmLoadString()`. So will need to solve that actually.
