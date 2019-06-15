@@ -488,8 +488,25 @@ public final class NativeCPU
 					
 					// Load value from int array
 				case NativeInstructionType.LOAD_FROM_INTARRAY:
-					lr[args[0]] = memory.memReadInt(lr[args[1]] +
-						Constants.ARRAY_BASE_SIZE + (lr[args[2]] * 4));
+					{
+						// Get arguments
+						int addr = lr[args[1]],
+							indx = lr[args[2]],
+							rout = args[0];
+						
+						// Calculate array index offset
+						int ioff = Constants.ARRAY_BASE_SIZE + (indx * 4);
+						
+						// Read value
+						lr[rout] = memory.memReadInt(addr + ioff);
+						
+						// Debug
+						if (ENABLE_DEBUG)
+							todo.DEBUG.note(
+								"(int)%08x[%d] (%08x) -> %d (%08x)",
+								addr, indx, addr + ioff,
+								lr[rout], lr[rout]);
+					}
 					break;
 					
 					// Load from constant pool
@@ -552,12 +569,19 @@ public final class NativeCPU
 				case NativeInstructionType.MEMORY_OFF_ICONST:
 				case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 					{
+						// Is this Java?
+						boolean isjava = (encoding == NativeInstructionType.
+							MEMORY_OFF_REG_JAVA || encoding ==
+							NativeInstructionType.MEMORY_OFF_ICONST_JAVA);
+						
 						// Is this a load operation?
 						boolean load = ((op & 0b1000) != 0);
 						
 						// The address to load from/store to
-						int addr = lr[args[1]] +
-							(((op & 0x80) != 0) ? args[2] : lr[args[2]]);
+						int base = lr[args[1]],
+							offs = (((op & 0x80) != 0) ? args[2] :
+								lr[args[2]]),
+							addr = base + offs;
 						
 						// Loads
 						DataType dt = DataType.of(op & 0b0111);
@@ -595,8 +619,10 @@ public final class NativeCPU
 							
 							// Debug
 							if (ENABLE_DEBUG)
-								todo.DEBUG.note("%08x -> %d (%08x)",
-									addr, v, v);
+								todo.DEBUG.note(
+									"%c %08x+%d (%08x) -> %d (%08x)",
+									(isjava ? 'J' : 'N'),
+									base, offs, addr, v, v);
 						}
 						
 						// Stores
@@ -633,8 +659,10 @@ public final class NativeCPU
 							
 							// Debug
 							if (ENABLE_DEBUG)
-								todo.DEBUG.note("%08x <- %d (%08x)",
-									addr, v, v);
+								todo.DEBUG.note(
+									"%c %08x+%d (%08x) <- %d (%08x)",
+									(isjava ? 'J' : 'N'),
+									base, offs, addr, v, v);
 						}
 					}
 					break;
