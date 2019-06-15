@@ -126,7 +126,10 @@ public final class Allocator
 	static final void free(int __p)
 	{
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Determine the seeker position for this chunk
 		int seeker = __p - CHUNK_LENGTH;

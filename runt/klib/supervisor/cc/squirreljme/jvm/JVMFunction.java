@@ -38,7 +38,10 @@ public final class JVMFunction
 	{
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC || __v == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Can always store null values
 		if (__v == 0)
@@ -74,7 +77,10 @@ public final class JVMFunction
 	{
 		// Access of invalid class?
 		if (__clid == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -102,12 +108,18 @@ public final class JVMFunction
 	{
 		// Access of invalid object?
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Attempt to garbage collect object with no class or is invalid
 		int pcl = Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET);
 		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Debug
 		todo.DEBUG.code('G', 'C', __p);
@@ -172,7 +184,10 @@ public final class JVMFunction
 	{
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -189,7 +204,10 @@ public final class JVMFunction
 	{
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -208,7 +226,10 @@ public final class JVMFunction
 	{
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Not instance of null class
 		if (__p == 0)
@@ -221,7 +242,10 @@ public final class JVMFunction
 		
 		// Corrupted object?
 		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Scan through super classes and check
 		ClassInfo mine = Assembly.pointerToClassInfo(pcl);
@@ -232,7 +256,10 @@ public final class JVMFunction
 			
 			// Make sure we are not reading bad memory
 			if (selfptr == Constants.BAD_MAGIC)
+			{
+				Assembly.breakpoint();
 				throw new VirtualMachineError();
+			}
 			
 			// Same as this one?
 			if (selfptr == __cldx)
@@ -246,7 +273,10 @@ public final class JVMFunction
 				
 				// Make sure we are not reading bad memory
 				if (ifaceptr == Constants.BAD_MAGIC)
+				{
+					Assembly.breakpoint();
 					throw new VirtualMachineError();
+				}
 				
 				// Is a match?
 				if (ifaceptr == __cldx)
@@ -269,7 +299,10 @@ public final class JVMFunction
 	{
 		// Access of invalid class?
 		if (__cldx == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -302,11 +335,17 @@ public final class JVMFunction
 		
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Cannot load from a null string
 		if (__p == 0)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Read length of the raw bytes
 		int rawlen = Assembly.memReadJavaShort(__p, 0) & 0xFFFF;
@@ -374,7 +413,10 @@ public final class JVMFunction
 	{
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -390,7 +432,10 @@ public final class JVMFunction
 	{
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -407,11 +452,17 @@ public final class JVMFunction
 	{
 		// Access of invalid class?
 		if (__cl == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Cannot allocate a null class
 		if (__cl == 0)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Get the class information for the object to allocate
 		ClassInfo info = Assembly.pointerToClassInfo(__cl);
@@ -447,11 +498,17 @@ public final class JVMFunction
 	{
 		// Access of invalid class?
 		if (__at == Constants.BAD_MAGIC)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Do not initialize null class
 		if (__at == 0)
+		{
+			Assembly.breakpoint();
 			throw new VirtualMachineError();
+		}
 		
 		// Cannot allocate negative length
 		if (__len < 0)
