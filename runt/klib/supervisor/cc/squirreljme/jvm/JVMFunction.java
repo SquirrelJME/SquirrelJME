@@ -284,9 +284,7 @@ public final class JVMFunction
 	 */
 	public static final String jvmLoadString(int __p)
 	{
-		String base = JVMFunction.jvmLoadStringNoIntern(__p);
-		todo.DEBUG.code('J', 's', Assembly.objectToPointer(base));
-		return base.intern();
+		return JVMFunction.jvmLoadStringNoIntern(__p).intern();
 	}
 	
 	/**
