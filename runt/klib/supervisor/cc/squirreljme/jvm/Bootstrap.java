@@ -44,6 +44,12 @@ public final class Bootstrap
 		// the RAM is actually useable.
 		Allocator.__initRamLinks(__rambase, __ramsize);
 		
+		String qx = "Hello?";
+		String qy = "Love you!";
+		String qz = "Is this working?";
+		todo.DEBUG.note("%s %s %s", qx, qy, qz);
+		Assembly.breakpoint();
+		
 		// Load boot libraries that are available
 		BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
 		
