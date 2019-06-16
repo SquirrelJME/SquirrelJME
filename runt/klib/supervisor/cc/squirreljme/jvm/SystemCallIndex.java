@@ -92,9 +92,17 @@ public final class SystemCallIndex
 	public static final short MEM_SET_INT =
 		18;
 	
+	/** Get the height of the call stack. */
+	public static final short CALL_STACK_HEIGHT =
+		19;
+	
+	/** Gets the specified call stack item. */
+	public static final short CALL_STACK_ITEM =
+		20;
+	
 	/** System call count. */
 	public static final short NUM_SYSCALLS =
-		19;
+		21;
 	
 	/**
 	 * Not used.
