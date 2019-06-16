@@ -103,6 +103,14 @@ public final class Allocator
 				// Clear out memory since Java expects the data to be
 				// initialized to zero always
 				Assembly.sysCallP(SystemCallIndex.MEM_SET, rv, 0, __sz);
+				if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
+					SystemCallIndex.MEM_SET) != SystemCallError.NO_ERROR)
+				{
+					// Fast memset() is not supported, so manually wipe
+					// all the bytes!
+					for (int i = CHUNK_LENGTH; i < want; i += 4)
+						Assembly.memWriteInt(seeker, i, 0);
+				}
 				
 				// Use this chunk
 				return rv;
@@ -143,25 +151,25 @@ public final class Allocator
 			csz | MEMPART_FREE_BIT);
 		
 		// Parameters used for memory corruption
-		int i = CHUNK_LENGTH,
-			bm = Constants.BAD_MAGIC,
-			rci = CHUNK_LENGTH + Constants.OBJECT_COUNT_OFFSET;
+		int bm = Constants.BAD_MAGIC;
 		
-		// Corrupt anything up to the reference count index
-		for (; i < rci; i+= 4)
-			Assembly.memWriteInt(seeker, i, bm);
+		// Clear out memory with invalid data, that is BAD_MAGIC
+		Assembly.sysCallP(SystemCallIndex.MEM_SET_INT, __p, bm,
+			csz - CHUNK_LENGTH);
+		if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
+			SystemCallIndex.MEM_SET_INT) != SystemCallError.NO_ERROR)
+		{
+			// Fast memsetint() is not supported, so manually wipe
+			// all the bytes!
+			for (int i = CHUNK_LENGTH; i < csz; i += 4)
+				Assembly.memWriteInt(seeker, i, bm);
+		}
 		
 		// Make sure the reference count index is zero, to detect uncount
 		// after free
-		if (i < csz)
-		{
-			Assembly.memWriteInt(seeker, i, 0);
-			i += 4;
-		}
-		
-		// Then just wipe the remaining memory
-		for (; i < csz; i+= 4)
-			Assembly.memWriteInt(seeker, i, bm);
+		int rci = CHUNK_LENGTH + Constants.OBJECT_COUNT_OFFSET;
+		if (rci + 4 <= csz)
+			Assembly.memWriteInt(seeker, rci, 0);
 	}
 	
 	/**

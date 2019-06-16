@@ -88,8 +88,8 @@ public final class SystemCallIndex
 	public static final short MEM_SET =
 		17;
 	
-	/** Mark memory as invalid. */
-	public static final short MEM_MARK_INVALID =
+	/** Set memory but in 4-byte pattern. */
+	public static final short MEM_SET_INT =
 		18;
 	
 	/** System call count. */
