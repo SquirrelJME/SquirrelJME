@@ -497,10 +497,12 @@ public class Text
 	{
 		TextStorage storage = this._storage;
 		
-		// Exceeds storage size?
+		// {@squirreljme.error EB3g Text outside of bounds. (The starting
+		// index; The ending index; The size of the text)}
 		int size = storage.size;
-		if (__l < 0 || __i >= size || (__i + __l) > size)
-			throw new IndexOutOfBoundsException("IOOB");
+		if (__i < 0 || __l < 0 || (__i + __l) > size)
+			throw new IndexOutOfBoundsException(
+				String.format("EB3g %d %d %d", __i, __l, size));
 		
 		// Create string from it
 		return new String(storage.chars, __i, __l);
