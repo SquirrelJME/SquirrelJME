@@ -44,21 +44,31 @@ public final class Bootstrap
 		// the RAM is actually useable.
 		Allocator.__initRamLinks(__rambase, __ramsize);
 		
-		// Basic SquirrelJME Banner
-		todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
-		
-		// Load boot libraries that are available
+		// Could crash!
 		try
 		{
+			// Basic SquirrelJME Banner
+			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
+			
+			// Load boot libraries that are available
 			BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
-		}
-		catch (Throwable t)
-		{
-			todo.DEBUG.note("Threw a throwable!");
+			
+			Assembly.breakpoint();
+			throw new todo.TODO();
 		}
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// It crashes
+		catch (Throwable t)
+		{
+			todo.DEBUG.note("Uncaught exception: %s", t.getMessage());
+			
+			// Try to exit the VM
+			Assembly.sysCallP(SystemCallIndex.EXIT, 1);
+			
+			// If that did not work, just break and return!
+			Assembly.breakpoint();
+			return;
+		}
 	}
 }
 

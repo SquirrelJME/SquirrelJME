@@ -69,5 +69,16 @@ public class Throwable
 		this._message = null;
 		this._cause = __t;
 	}
+	
+	/**
+	 * Returns the message.
+	 *
+	 * @return The message used.
+	 * @since 2019/06/16
+	 */
+	public String getMessage()
+	{
+		return this._message;
+	}
 }
 
