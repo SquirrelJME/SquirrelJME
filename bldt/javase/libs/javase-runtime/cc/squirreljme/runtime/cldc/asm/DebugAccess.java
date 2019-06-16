@@ -23,6 +23,7 @@ import java.util.Objects;
  *
  * @since 2018/09/29
  */
+@Deprecated
 public final class DebugAccess
 {
 	/** The elements per trace. */
@@ -63,6 +64,7 @@ public final class DebugAccess
 	 * @param __rct The raw trace code.
 	 * @since 2018/09/19
 	 */
+	@Deprecated
 	public static final void fatalTodoReport(int[] __rct)
 	{
 		new Error(Arrays.toString(__rct)).printStackTrace(System.err);
@@ -86,6 +88,7 @@ public final class DebugAccess
 	 * @return The raw call trace in pointer and value format.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public static final int[] rawCallTrace()
 	{
 		// Get origin trace
@@ -148,6 +151,7 @@ public final class DebugAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public static final CallTraceElement[] resolveRawCallTrace(int[] __v)
 		throws NullPointerException
 	{
@@ -180,6 +184,7 @@ public final class DebugAccess
 	 * resolution.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	public static final String resolveString(long __p)
 	{
 		if (__p == -1L)
@@ -198,6 +203,7 @@ public final class DebugAccess
 	 * @return The pointer to the string, or {@code -1} if it is not valid.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	public static final long unresolveString(String __s)
 	{
 		return DebugAccess.__unresolveString(__s);
@@ -211,6 +217,7 @@ public final class DebugAccess
 	 * @return The resulting long.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	static final long __intToLong(int __dx, int[] __v)
 		throws NullPointerException
 	{
@@ -229,6 +236,7 @@ public final class DebugAccess
 	 * @param __l The input long.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	static final void __longToInt(int __dx, int[] __v, long __l)
 	{
 		__v[__dx] = (int)(__l >>> 32);
@@ -242,6 +250,7 @@ public final class DebugAccess
 	 * @return The normalized string.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	static final String __normalize(String __s)
 	{
 		if (__s == null)
@@ -258,6 +267,7 @@ public final class DebugAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/15
 	 */
+	@Deprecated
 	static StackTraceElement __stackDebugToJava(CallTraceElement __e)
 		throws NullPointerException
 	{
@@ -280,6 +290,7 @@ public final class DebugAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/15
 	 */
+	@Deprecated
 	static CallTraceElement __stackJavaToDebug(StackTraceElement __e)
 		throws NullPointerException
 	{
@@ -301,6 +312,7 @@ public final class DebugAccess
 	 * @return The pointer to the string.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	static long __unresolveString(String __s)
 	{
 		if (__s == null)

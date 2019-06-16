@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/09/16
  */
+@Deprecated
 public final class DebugAccess
 {
 	/** The elements per trace. */
@@ -46,6 +47,7 @@ public final class DebugAccess
 	 * @since 2018/09/19
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native void fatalTodoReport(int[] __rct);
 	
 	/**
@@ -66,6 +68,7 @@ public final class DebugAccess
 	 * @since 2018/09/16
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int[] rawCallTrace();
 	
 	/**
@@ -77,6 +80,7 @@ public final class DebugAccess
 	 * @since 2018/09/29
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native String resolveString(long __p);
 	
 	/**
@@ -87,6 +91,7 @@ public final class DebugAccess
 	 * @since 2018/09/29
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native long unresolveString(String __s);
 	
 	/**
@@ -97,6 +102,7 @@ public final class DebugAccess
 	 * @return The resulting long.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	public static final long intToLong(int __dx, int[] __v)
 		throws NullPointerException
 	{
@@ -116,6 +122,7 @@ public final class DebugAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public static final CallTraceElement[] resolveRawCallTrace(int[] __v)
 		throws NullPointerException
 	{
