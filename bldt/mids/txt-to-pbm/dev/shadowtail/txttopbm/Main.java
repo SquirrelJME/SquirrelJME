@@ -94,6 +94,9 @@ public class Main
 			Image image = Image.createImage(iw, fh);
 			Graphics g = image.getGraphics();
 			
+			// Use the monospace font!
+			g.setFont(font);
+			
 			// RGB pixel output for lines
 			int[] rgb = new int[sa];
 			
