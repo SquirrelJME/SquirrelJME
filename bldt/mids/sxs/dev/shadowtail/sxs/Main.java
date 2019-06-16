@@ -223,14 +223,16 @@ public class Main
 		BinaryManager bm = pm.binaryManager(TimeSpaceType.BUILD);
 		
 		// Get project to look in
-		SourceName projectname = new SourceName(__args[0]);
+		SourceName projectname = new SourceName(
+			(__args.length > 0 ? __args[0] : "cldc-compact"));
 		
 		// Get both the source and the binary for this project
 		Source psrc = sm.get(projectname);
 		Binary pbin = bm.get(projectname);
 		
 		// Get the class we want to look at, make sure dots are slashes!
-		String wantclass = __args[1].replace('.', '/');
+		String wantclass = (__args.length > 1 ? __args[1] :
+			"java/lang/Object").replace('.', '/');
 		
 		// Load the class file itself
 		ClassFile classfile;
@@ -280,11 +282,20 @@ public class Main
 				// Ignore
 			}
 		
-		// Process each method
+		// Want a specific method by name?
+		String onemethod = (__args.length > 2 ? __args[2] : "");
+		if (onemethod.isEmpty())
+			onemethod = null;
+		
+		// Scan through methods
 		for (Method m : classfile.methods())
 		{
 			// Ignore abstracts/native
 			if (m.flags().isAbstract() || m.flags().isNative())
+				continue;
+			
+			// Wanted just one method and it did not match?
+			if (onemethod != null && !m.name().toString().equals(onemethod))
 				continue;
 			
 			// Dump it
