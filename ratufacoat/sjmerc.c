@@ -1100,7 +1100,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		enc = ((op >= SJME_ENC_SPECIAL_A) ? op : (op & SJME_ENC_MASK));
 		
 		/* Temporary debug. */
-#if 0
+#if 1
 		fprintf(stderr,
 			"ti=%d pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
 			jvm->totalinstructions,
