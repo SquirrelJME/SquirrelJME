@@ -746,6 +746,16 @@ public final class NearNativeByteCodeHandler
 			}
 		}
 		
+		// Check if exception occurred
+		if (state.canexception)
+		{
+			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
+				this.__labelException());
+			
+			// We did the exception handling, so do not handle later
+			state.canexception = false;
+		}
+		
 		// Read in return value, it is just a copy
 		if (__out != null)
 		{
