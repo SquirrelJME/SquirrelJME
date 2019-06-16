@@ -615,7 +615,27 @@ public final class CallTraceElement
 			SystemCallIndex.CALL_STACK_HEIGHT) != SystemCallError.NO_ERROR)
 			return new int[0];
 		
-		throw new todo.TODO();
+		// Get the call parameters
+		int[] rv = new int[callheight * CallStackItem.NUM_ITEMS];
+		for (int z = 0, base = 0; z < callheight; z++,
+			base += CallStackItem.NUM_ITEMS)
+			for (int i = 0; i < CallStackItem.NUM_ITEMS; i++)
+			{
+				// Get parameter
+				int vx = Assembly.sysCallPV(SystemCallIndex.CALL_STACK_ITEM,
+					z, i);
+				
+				// Nullify unknown or invalid parameters
+				if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET) !=
+					SystemCallError.NO_ERROR)
+					vx = 0;
+				
+				// Fill in
+				rv[base + i] = vx;
+			}
+		
+		// Return the raw parameters
+		return rv;
 	}
 	
 	/**
@@ -631,6 +651,9 @@ public final class CallTraceElement
 	{
 		if (__trace == null)
 			throw new NullPointerException("NARG");
+		
+		// Get the call height
+		int callheight = __trace.length / CallStackItem.NUM_ITEMS;
 		
 		throw new todo.TODO();
 	}
