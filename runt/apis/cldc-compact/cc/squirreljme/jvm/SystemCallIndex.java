@@ -100,9 +100,13 @@ public final class SystemCallIndex
 	public static final short CALL_STACK_ITEM =
 		20;
 	
+	/** Returns the string of the given pointer. */
+	public static final short LOAD_STRING =
+		21;
+	
 	/** System call count. */
 	public static final short NUM_SYSCALLS =
-		21;
+		22;
 	
 	/**
 	 * Not used.
