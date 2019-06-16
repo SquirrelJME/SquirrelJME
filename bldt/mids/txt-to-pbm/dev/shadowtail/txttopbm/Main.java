@@ -86,8 +86,8 @@ public class Main
 				ih = numlines * fh,
 				sa = iw * fh;
 			
-			// Write PBM header
-			ps.printf("P1\n");
+			// Write PBM header, use P4 format
+			ps.printf("P4\n");
 			ps.printf("%d %d\n", iw, ih);
 			
 			// Create image to contain a buffer for a single line, it is not
@@ -123,10 +123,9 @@ public class Main
 				// Go through pixels and export
 				for (int i = 0; i < sa; i++)
 				{
-					// Print either off or on, note that the values are as
-					// if they were truncated hex values!
+					// Just black or white
 					int v = rgb[i];
-					ps.print(((v & 0xFFFFFF) == 0) ? '0' : '1');
+					ps.print(((v & 0xFFFFFF) == 0) ? '1' : '0');
 					
 					// End column?
 					if ((col++) == PBM_COLUMNS)
