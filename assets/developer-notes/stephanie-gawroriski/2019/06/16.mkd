@@ -1,0 +1,14 @@
+# 2019/06/16
+
+## 00:20
+
+Did fix a LCDUI bug in text, where things were empty! But other than that I
+want to debug my compiler but I am having an issue where I want to convert a
+text file to an image so I can draw all over it with my pen. This way I can
+have kind of a notepad and drawing into it to help me figure things out.
+This is easier than having a separate part of it.
+
+## 00:36
+
+Oh the bits are packed and the format is hybrid binary and text, so that
+makes sense why the image looks weird.

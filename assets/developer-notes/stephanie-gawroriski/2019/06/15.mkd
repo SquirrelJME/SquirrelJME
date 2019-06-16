@@ -1,0 +1,128 @@
+# 2019/06/15
+
+## 09:10
+
+So it seems I can do `jvmLoadString()` as many times as I want but when I
+try to use the string it does not work and tries to execute an invalid
+class object or similar?
+
+## 10:25
+
+I have a null pointer being read, as seen here:
+
+ * `(int)000fffff[11] (0010003b) -> 1241518086 (4a001006)`
+ * `(int)00100664[11] (001006a0) -> 0 (00000000)`
+
+I know the first one is the method address because it cannot be a pool
+address. But the second zero value is used instead. So maybe the instance
+invoke is swapping things incorrectly or maybe there is memory corruption?
+
+## 10:29
+
+But looking at another `jvmLoadString()`, I see above it is this:
+
+ * `(int)00102b38[11] (00102b74) -> 1051808 (00100ca0)`
+ * `(int)00102ae8[11] (00102b24) -> 1326464050 (4f103c32)`
+
+So like this make smore sense. I wonder what the class value is. So all
+the reads are:
+
+ * Class: `00104c48 -> 1051720 (00100c48)`
+ * VTable?: `00100c68 -> 1059560 (00102ae8)`
+
+## 10:39
+
+I changed the debug text to make it easier to read.
+
+## 11:09
+
+I noticed this oddity, intern() is being called with two arguments? and
+they appear to be the same value? This would completely trash the locals
+which need to be set to zero since otherwise it would very much mess up.
+
+	.DBUG0 csvs.NativeCPU::runWithoutCatch (:520) -- Read pool: 3
+	.2
+	.***** @4f103d0a MEM_LOAD_INTEGER_RE/INVOKEVIRT | L201 /J22  
+	.    java/lang/String::intern:()Ljava/lang/String;
+	.  A:[        17,         16,         17] | V:[       +32,   
+	.+1051720,        +32]
+	.DBUG0 csvs.NativeCPU::runWithoutCatch (:622) -- N 00100c48+3
+	.2 (00100c68) -> 1059560 (00102ae8)
+	.***** @4f103d0e LOAD_POOL          /INVOKEVIRT | L201 /J22  
+	.    java/lang/String::intern:()Ljava/lang/String;
+	.  A:[        32,         19] | V:[        +0,         +0]
+	.DBUG0 csvs.NativeCPU::runWithoutCatch (:520) -- Read pool: 2
+	.8
+	.***** @4f103d11 MEM_LOAD_INTEGER_RE/INVOKEVIRT | L201 /J22  
+	.    java/lang/String::intern:()Ljava/lang/String;
+	.  A:[        19,         16,         19] | V:[       +28,   
+	.+1051720,        +28]
+	.DBUG0 csvs.NativeCPU::runWithoutCatch (:622) -- N 00100c48+2
+	.8 (00100c64) -> 1059640 (00102b38)
+	.***** @4f103d15 LOAD_POOL          /INVOKEVIRT | L201 /J22  
+	.    java/lang/String::intern:()Ljava/lang/String;
+	.  A:[        91,         18] | V:[----------,         +0]
+	.DBUG0 csvs.NativeCPU::runWithoutCatch (:520) -- Read pool: 9
+	.***** @4f103d18 LOAD_FROM_INTARRAY /INVOKEVIRT | L201 /J22  
+	.    java/lang/String::intern:()Ljava/lang/String;
+	.  A:[  nextpool,         19,         18] | V:[        +0,   
+	.+1059640,         +9]
+	.DBUG0 csvs.NativeCPU::runWithoutCatch (:505) -- (int)00102b3
+	.8[9] (00102b6c) -> 1051808 (00100ca0)
+	.***** @4f103d1c LOAD_FROM_INTARRAY /INVOKEVIRT | L201 /J22  
+	.    java/lang/String::intern:()Ljava/lang/String;
+	.  A:[        18,         17,         18] | V:[        +9,   
+	.+1059560,         +9]
+	.DBUG0 csvs.NativeCPU::runWithoutCatch (:505) -- (int)00102ae
+	.8[9] (00102b1c) -> 1326461834 (4f10338a)
+	.***** @4f103d20 INVOKE             /INVOKEVIRT | L201 /J22  
+	.    java/lang/String::intern:()Ljava/lang/String;
+	.  A:[        18,    a0/this,         10] | V:[+1326461834,  
+	. +1068104,   +1068104]
+	.>>>> 4f10338a >>>>>>>>>>>>>>>>>>>>>>
+	. > ARG [1068104, 1068104]
+	. > WAS java/lang/String.intern:()Ljava/lang/String; @4F103D2
+	.0h (:201 J182@22)
+	.***** @4f10338a DEBUG_ENTRY        /       NOP | L0   /J0   
+	.    java/lang/String::equals:(Ljava/lang/Object;)Z
+	.  A:[         1,         76,         77] | V:[  +1068104, --
+	.--------, ----------]
+	.***** @4f10339e IF_ICMP_NOT_EQUALS / IF_ACMPNE | L128 /J2   
+	.    java/lang/String::equals:(Ljava/lang/Object;)Z
+	.  :[   a0/this,          9,         33] | V:[  +1068104,   
+	.+1068104,         +0]
+
+## 11:11
+
+It is very possible this is the reason that some invocations mess up
+according to the case. So I will have to investigate the instance
+invoke.
+
+## 11:37
+
+Actually nevermind that is equals being called.
+
+## 15:06
+
+I have to do two things: For RatufaCoat on 64-bit I need to do it so that it
+uses virtual pointers, because I am finding out that on every OS I cannot
+exactly always allocate a 32-bit pure pointer. So I am going to have to do
+some mapping to get things working properly!
+
+## 15:07
+
+Also I am going to add a self-test to the bootstrap which makes sure things
+are okay, and possibly detecting if things are wrong. At least this way I can
+have a mini-test that is off and ensures things are okay.
+
+## 16:31
+
+The allocates take up too many screen instructions with the memory wiping so
+I am just going to do a memset.
+
+## 23:00
+
+I want a tool where I can convert a text file to a PNG so I can draw on it
+and have notes. However there is no pre-existing utility that works well
+for my use case. It either has limitations or does not support what I want
+to do. Thus I need to write this utility myself.
