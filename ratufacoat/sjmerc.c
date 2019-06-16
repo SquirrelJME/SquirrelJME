@@ -21,6 +21,15 @@
 	#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
 #endif
 
+/** Virtual memory stuff. */
+#if defined(SJME_VIRTUAL_MEM)
+	/** Base of virtual memory. */
+	#define SJME_VIRTUAL_MEM_BASE SJME_JINT_C(1048576)
+	
+	/** Rounding of virtual memory. */
+	#define SJME_VIRTUAL_MEM_MASK SJME_JINT_C(1023)
+#endif
+
 /** Default size of configuration ROM. */
 #define SJME_DEFAULT_CONF_SIZE SJME_JINT_C(65536)
 
@@ -524,6 +533,17 @@ struct sjme_jvm
 	
 	/* Total instruction count. */
 	sjme_jint totalinstructions;
+	
+#if defined(SJME_VIRTUAL_MEM)
+	/** Base address for Configuration ROM. */
+	sjme_jint configbase;
+	
+	/** Base address for RAM. */
+	sjme_jint rambase;
+	
+	/** Base address for ROM. */
+	sjme_jint rombase;
+#endif
 };
 
 /**
@@ -534,10 +554,6 @@ struct sjme_jvm
  */
 void* sjme_malloc(sjme_jint size)
 {
-#if defined(__WATCOMC__) && defined(SJME_IS_DOS)
-	sjme_jint c, d;
-	void* vp;
-#endif
 	void* rv;
 	
 	/* These will never allocate. */
@@ -547,40 +563,6 @@ void* sjme_malloc(sjme_jint size)
 	/* Round size and include extra 4-bytes for size storage. */
 	size = ((size + SJME_JINT_C(3)) & (~SJME_JINT_C(3))) + SJME_JINT_C(4);
 	
-#if defined(SJME_IS_LINUX) && SJME_BITS > 32
-	/* Use memory map on Linux so it is forced to a 32-bit pointer. */
-	rv = mmap(NULL, size, PROT_READ | PROT_WRITE,
-		MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
-	if (rv == MAP_FAILED)
-		return NULL;
-#elif defined(__WATCOMC__) && defined(SJME_IS_DOS)
-	/* Watcom C has huge memory allocation. Since normal malloc is limited */
-	/* to 65K we need to actually claim more than this! So halloc(n, s) */
-	/* allocates n*s bytes (where s is size_t). Note that the result will */
-	/* be aligned to the second argument. The second argument must be a */
-	/* power of two. */
-	d = 4;
-	c = size / d;
-	if (c <= 0)
-		c = 1;
-	rv = halloc(c, d);
-	if (rv == NULL)
-		return NULL;
-	
-	/* Wipe it. */
-	vp = rv;
-	for (c = size; c > 0; c -= SJME_JINT_C(65535))
-	{
-		/* Bytes to clear at a time. */
-		d = (c > SJME_JINT_C(65535) ? SJME_JINT_C(65535) : c);
-		
-		/* Clear these bytes. */
-		memset(vp, 0, d);
-		
-		/* Move up. */
-		vp = SJME_POINTER_OFFSET(vp, d);
-	}
-#else
 	/* Exceeds maximum permitted allocation size? */
 	if (sizeof(sjme_jint) > sizeof(size_t) && size > (sjme_jint)SIZE_MAX)
 		return NULL;
@@ -588,7 +570,8 @@ void* sjme_malloc(sjme_jint size)
 	/* Use standard C function otherwise. */
 	rv = calloc(1, size);
 	
-	/* Address out of range? */
+	/* Address out of range? Only when virtual pointers are not used! */
+#if !defined(SJME_VIRTUAL_MEM)
 	if (rv != NULL && ((uintptr_t)rv) > (uintptr_t)UINT32_C(0xFFFFFFFF))
 	{
 		free(rv);
@@ -604,7 +587,7 @@ void* sjme_malloc(sjme_jint size)
 	*((sjme_jint*)rv) = size;
 	
 	/* Return the adjusted pointer. */
-	return SJME_POINTER_OFFSET(rv, 4);
+	return SJME_POINTER_OFFSET_LONG(rv, 4);
 }
 
 /**
@@ -623,24 +606,51 @@ void sjme_free(void* p)
 		return;
 	
 	/* Base pointer which is size shifted. */
-	basep = SJME_POINTER_OFFSET(p, -4);
+	basep = SJME_POINTER_OFFSET_LONG(p, -4);
 	
 	/* Read size. */
 	size = *((sjme_jint*)basep);
-
-#if defined(SJME_IS_LINUX) && SJME_BITS > 32
-	/* Remove the memory mapping. */
-	munmap(basep, size);
 	
-#elif defined(__WATCOMC__) && defined(SJME_IS_DOS)
-	/* Watcom Huge Free. */
-	hfree(basep);
-	
-#else
 	/* Use Standard C free. */
 	free(basep);
-#endif
 }
+
+#if defined(SJME_VIRTUAL_MEM)
+/** Returns the real pointer for the given virtual pointer. */
+void* sjme_realptr(sjme_jvm* jvm, void* ptr)
+{
+	void* oldptr;
+	sjme_jint vptr;
+	
+	/* Pass through memory if no JVM specified. */
+	if (jvm == NULL)
+		return ptr;
+	
+	/* Map pointer to pure integer. */
+	oldptr = ptr;
+	vptr = SJME_POINTER_TO_JINT(oldptr);
+	
+	/* Within Configuration ROM region? */
+	if (vptr >= jvm->configbase && vptr < jvm->configbase + jvm->configsize)
+		ptr = SJME_POINTER_OFFSET_LONG(jvm->config, (vptr - jvm->configbase));
+	
+	/* Within RAM region? */
+	else if (vptr >= jvm->rambase && vptr < jvm->rambase + jvm->ramsize)
+		ptr = SJME_POINTER_OFFSET_LONG(jvm->ram, (vptr - jvm->rambase));
+	
+	/* Within ROM region? */
+	else if (vptr >= jvm->rombase && vptr < jvm->rombase + jvm->romsize)
+		ptr = SJME_POINTER_OFFSET_LONG(jvm->rom, (vptr - jvm->rombase));
+	
+	/* No mapping found, pass through. */
+	else
+		ptr = oldptr;
+	
+	fprintf(stderr, "VPtr %p -> %p\n", oldptr, ptr);
+	
+	return ptr;
+}
+#endif
 
 /**
  * Reads a value from memory.
@@ -655,7 +665,11 @@ void sjme_free(void* p)
 sjme_jint sjme_memread(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off)
 {
 	/* Get the true pointer. */
+#if defined(SJME_VIRTUAL_MEM)
+	ptr = SJME_POINTER_OFFSET_LONG(sjme_realptr(jvm, ptr), off);
+#else
 	ptr = SJME_POINTER_OFFSET(ptr, off);
+#endif
 	
 	/* Read value from memory. */
 	switch (size)
@@ -689,14 +703,18 @@ void sjme_memwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
 	sjme_jint value)
 {
 	/* Get the true pointer. */
+#if defined(SJME_VIRTUAL_MEM)
+	ptr = SJME_POINTER_OFFSET_LONG(sjme_realptr(jvm, ptr), off);
+#else
 	ptr = SJME_POINTER_OFFSET(ptr, off);
+#endif
 	
 	/* Check against JVM areas. */
 	if (jvm != NULL)
 	{
 		/* Ignore writes to ROM. */
 		if (ptr >= jvm->rom &&
-			ptr < SJME_POINTER_OFFSET(jvm->rom, jvm->romsize))
+			ptr < SJME_POINTER_OFFSET_LONG(jvm->rom, jvm->romsize))
 			return;
 	}
 	
@@ -734,40 +752,45 @@ void sjme_memwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
 sjme_jint sjme_memjread(sjme_jvm* jvm, sjme_jint size, void* ptr,
 	sjme_jint off)
 {
+#if !defined(SJME_BIG_ENDIAN)
 	sjme_jint rv;
+#endif
 	
-	/* Get the true pointer. */
-	ptr = SJME_POINTER_OFFSET(ptr, off);
+#if defined(SJME_BIG_ENDIAN)
+	/* No swapping needed. */
+	return sjme_memread(jvm, size, ptr, off);
+
+#else
+	/* Read data. */
+	rv = sjme_memread(jvm, size, ptr, off);
 	
-	/* Read value from memory. */
+	/* Perform byte swapping. */
 	switch (size)
 	{
-			/* Byte */
+			/* Ignore byte. */
 		case 1:
-			return *((sjme_jbyte*)ptr);
-		
+			break;
+			
 			/* Short */
 		case 2:
-			rv = *((sjme_jshort*)ptr);
-#if defined(SJME_LITTLE_ENDIAN)
 			rv = (rv & SJME_JINT_C(0xFFFF0000)) |
 				(((rv << SJME_JINT_C(8)) & SJME_JINT_C(0xFF00)) |
 				((rv >> SJME_JINT_C(8)) & SJME_JINT_C(0x00FF)));
-#endif
-			return rv;
+			break;
 			
 			/* Integer */
 		case 4:
 		default:
-			rv = *((sjme_jint*)ptr);
-#if defined(SJME_LITTLE_ENDIAN)
 			rv = (((rv >> SJME_JINT_C(24)) & SJME_JINT_C(0x000000FF)) |
 				((rv >> SJME_JINT_C(8)) & SJME_JINT_C(0x0000FF00)) |
 				((rv << SJME_JINT_C(8)) & SJME_JINT_C(0x00FF0000)) |
 				((rv << SJME_JINT_C(24)) & SJME_JINT_C(0xFF000000)));
-#endif
-			return rv;
+			break;
 	}
+	
+	/* Use value. */
+	return rv;
+#endif
 }
 
 /**
@@ -783,48 +806,34 @@ sjme_jint sjme_memjread(sjme_jvm* jvm, sjme_jint size, void* ptr,
 void sjme_memjwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
 	sjme_jint value)
 {
-	/* Get the true pointer. */
-	ptr = SJME_POINTER_OFFSET(ptr, off);
-	
-	/* Check against JVM areas. */
-	if (jvm != NULL)
-	{
-		/* Ignore writes to ROM. */
-		if (ptr >= jvm->rom &&
-			ptr < SJME_POINTER_OFFSET(jvm->rom, jvm->romsize))
-			return;
-	}
-	
-	/* Write value to memory. */
+#if defined(SJME_LITTLE_ENDIAN)
+	/* Perform byte swapping? */
 	switch (size)
 	{
 			/* Byte */
 		case 1:
-			*((sjme_jbyte*)ptr) = (sjme_jbyte)value;
 			break;
 		
 			/* Short */
 		case 2:
-#if defined(SJME_LITTLE_ENDIAN)
 			value = (value & SJME_JINT_C(0xFFFF0000)) |
 				(((value << SJME_JINT_C(8)) & SJME_JINT_C(0xFF00)) |
 				((value >> SJME_JINT_C(8)) & SJME_JINT_C(0x00FF)));
-#endif
-			*((sjme_jshort*)ptr) = (sjme_jshort)value;
 			break;
 			
 			/* Integer */
 		case 4:
 		default:
-#if defined(SJME_LITTLE_ENDIAN)
 			value = (((value >> SJME_JINT_C(24)) & SJME_JINT_C(0x000000FF)) |
 				((value >> SJME_JINT_C(8)) & SJME_JINT_C(0x0000FF00)) |
 				((value << SJME_JINT_C(8)) & SJME_JINT_C(0x00FF0000)) |
 				((value << SJME_JINT_C(24)) & SJME_JINT_C(0xFF000000)));
-#endif
-			*((sjme_jint*)ptr) = value;
 			break;
 	}
+#endif
+
+	/* Write to memory. */
+	sjme_memwrite(jvm, size, ptr, off, value);
 }
 
 /**
@@ -844,7 +853,7 @@ sjme_jint sjme_memjreadp(sjme_jvm* jvm, sjme_jint size, void** ptr)
 	rv = sjme_memjread(jvm, size, *ptr, 0);
 	
 	/* Increment pointer. */
-	*ptr = SJME_POINTER_OFFSET(*ptr, size);
+	*ptr = SJME_POINTER_OFFSET_LONG(*ptr, size);
 	
 	/* Return result. */
 	return rv;
@@ -866,7 +875,7 @@ void sjme_memjwritep(sjme_jvm* jvm, sjme_jint size, void** ptr,
 	sjme_memjwrite(jvm, size, *ptr, 0, value);
 	
 	/* Increment pointer. */
-	*ptr = SJME_POINTER_OFFSET(*ptr, size);
+	*ptr = SJME_POINTER_OFFSET_LONG(*ptr, size);
 }
 
 /**
@@ -1107,11 +1116,11 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			cpu->pc,
 			(unsigned int)op,
 			(cpu->debugclassname == NULL ? NULL :
-				SJME_POINTER_OFFSET(cpu->debugclassname, 2)),
+				SJME_POINTER_OFFSET_LONG(cpu->debugclassname, 2)),
 			(cpu->debugmethodname == NULL ? NULL :
-				SJME_POINTER_OFFSET(cpu->debugmethodname, 2)),
+				SJME_POINTER_OFFSET_LONG(cpu->debugmethodname, 2)),
 			(cpu->debugmethodtype == NULL ? NULL :
-				SJME_POINTER_OFFSET(cpu->debugmethodtype, 2)),
+				SJME_POINTER_OFFSET_LONG(cpu->debugmethodtype, 2)),
 			(int)cpu->debugline,
 			(unsigned int)cpu->debugjop,
 			(int)cpu->debugjpc);
@@ -1488,12 +1497,30 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				{
 					tempp = SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]);
 					
-					cpu->debugclassname = SJME_JINT_TO_POINTER(
-						((sjme_jint*)tempp)[sjme_opdecodeui(jvm, &nextpc)]);
-					cpu->debugmethodname = SJME_JINT_TO_POINTER(
-						((sjme_jint*)tempp)[sjme_opdecodeui(jvm, &nextpc)]);
-					cpu->debugmethodtype = SJME_JINT_TO_POINTER(
-						((sjme_jint*)tempp)[sjme_opdecodeui(jvm, &nextpc)]);
+					/* Get pointers to the real values. */
+					ia = sjme_memread(jvm, 4, tempp,
+						sjme_opdecodeui(jvm, &nextpc) * SJME_JINT_C(4));
+					ib = sjme_memread(jvm, 4, tempp,
+						sjme_opdecodeui(jvm, &nextpc) * SJME_JINT_C(4));
+					ic = sjme_memread(jvm, 4, tempp,
+						sjme_opdecodeui(jvm, &nextpc) * SJME_JINT_C(4));
+
+					fprintf(stderr, "pool=%08x\n", r[SJME_POOL_REGISTER]);
+					fprintf(stderr, "%08x %08x %08x\n", ia, ib, ic); 
+#if defined(SJME_VIRTUAL_MEM)
+					/* Map to real memory addresses. */
+					cpu->debugclassname = sjme_realptr(jvm,
+						SJME_JINT_TO_POINTER(ia));
+					cpu->debugmethodname = sjme_realptr(jvm,
+						SJME_JINT_TO_POINTER(ib));
+					cpu->debugmethodtype = sjme_realptr(jvm,
+						SJME_JINT_TO_POINTER(ic));
+#else
+					/* Just forward the values. */
+					cpu->debugclassname = SJME_JINT_TO_POINTER(ia);
+					cpu->debugmethodname = SJME_JINT_TO_POINTER(ib);
+					cpu->debugmethodtype = SJME_JINT_TO_POINTER(ic);
+#endif
 				}
 				break;
 				
@@ -1622,8 +1649,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ia = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Write into destination register. */
-					r[sjme_opdecodeui(jvm, &nextpc)] = ((sjme_jint*)
-						SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]))[ia];
+					r[sjme_opdecodeui(jvm, &nextpc)] = 
+						sjme_memread(jvm, 4,
+							SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]),
+							ia * SJME_JINT_C(4));
 				}
 				break;
 				
@@ -1817,7 +1846,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 			{
 				/* Read into raw memory. */
 				readcount = nativefuncs->fileread(file,
-					SJME_POINTER_OFFSET(rv, readat), romsize - readat,
+					SJME_POINTER_OFFSET_LONG(rv, readat), romsize - readat,
 					&xerror);
 				
 				/* EOF or error? */
@@ -1902,13 +1931,25 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 {
 	void* rp;
 	void* bootjar;
-	sjme_jbyte* byteram;
+	void* byteram;
 	sjme_jint bootoff, i, n, seedop, seedaddr, seedvalh, seedvall, seedsize;
+	sjme_jint bootjaroff, vbootjarbase, vrambase, vrombase, vconfigbase;
 	sjme_cpu* cpu;
 	
 	/* Invalid arguments. */
 	if (rom == NULL || ram == NULL || ramsize <= 0 || jvm == NULL)
 		return 0;
+	
+	/* Determine the address the VM sees for some memory types. */
+#if defined(SJME_VIRTUAL_MEM)
+	vrambase = jvm->rambase;
+	vrombase = jvm->rombase;
+	vconfigbase = jvm->configbase;
+#else
+	vrambase = SJME_POINTER_TO_JINT(jvm->ram);
+	vrombase = SJME_POINTER_TO_JINT(jvm->rom);
+	vconfigbase = SJME_POINTER_TO_JINT(jvm->config);
+#endif
 	
 	/* Set initial CPU (the first). */
 	cpu = &jvm->threads[0];
@@ -1931,7 +1972,9 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	sjme_memjreadp(jvm, 4, &rp);
 	
 	/* Read and calculate BootJAR position. */
-	rp = bootjar = SJME_POINTER_OFFSET(rom, sjme_memjreadp(jvm, 4, &rp));
+	bootjaroff = sjme_memjreadp(jvm, 4, &rp);
+	vbootjarbase = vrombase + bootjaroff;
+	rp = bootjar = SJME_POINTER_OFFSET_LONG(rom, bootjaroff);
 	
 	/* Check JAR magic number. */
 	if (sjme_memjreadp(jvm, 4, &rp) != SJME_JAR_MAGIC_NUMBER)
@@ -1955,30 +1998,30 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	sjme_memjreadp(jvm, 4, &rp);
 	
 	/* Seed initial CPU state. */
-	cpu->r[SJME_POOL_REGISTER] = SJME_POINTER_TO_JINT(
-		SJME_POINTER_OFFSET(ram, sjme_memjreadp(jvm, 4, &rp)));
-	cpu->r[SJME_STATIC_FIELD_REGISTER] = SJME_POINTER_TO_JINT(
-		SJME_POINTER_OFFSET(ram, sjme_memjreadp(jvm, 4, &rp)));
-	cpu->pc = SJME_POINTER_OFFSET(bootjar, sjme_memjreadp(jvm, 4, &rp));
+	cpu->r[SJME_POOL_REGISTER] =
+		vrambase + sjme_memjreadp(jvm, 4, &rp);
+	cpu->r[SJME_STATIC_FIELD_REGISTER] =
+		vrambase + sjme_memjreadp(jvm, 4, &rp);
+	cpu->pc = SJME_JINT_TO_POINTER(vbootjarbase + sjme_memjreadp(jvm, 4, &rp));
 	
 	/* Bootstrap entry arguments. */
 	/* (int __rambase, int __ramsize, int __rombase, int __romsize, */
 	/* int __confbase, int __confsize) */
-	cpu->r[SJME_ARGBASE_REGISTER + 0] = SJME_POINTER_TO_JINT(ram);
+	cpu->r[SJME_ARGBASE_REGISTER + 0] = vrambase;
 	cpu->r[SJME_ARGBASE_REGISTER + 1] = ramsize;
-	cpu->r[SJME_ARGBASE_REGISTER + 2] = SJME_POINTER_TO_JINT(rom);
+	cpu->r[SJME_ARGBASE_REGISTER + 2] = vrombase;
 	cpu->r[SJME_ARGBASE_REGISTER + 3] = jvm->romsize;
-	cpu->r[SJME_ARGBASE_REGISTER + 4] = SJME_POINTER_TO_JINT(jvm->config);
+	cpu->r[SJME_ARGBASE_REGISTER + 4] = vconfigbase;
 	cpu->r[SJME_ARGBASE_REGISTER + 5] = jvm->configsize;
 	
 	/* Address where the BootRAM is read from. */
-	rp = SJME_POINTER_OFFSET(bootjar, bootoff);
+	rp = SJME_POINTER_OFFSET_LONG(bootjar, bootoff);
 	
 	/* Copy initial base memory bytes, which is pure big endian. */
-	byteram = (sjme_jbyte*)ram;
+	byteram = SJME_JINT_TO_POINTER(vrambase);
 	n = sjme_memjreadp(jvm, 4, &rp);
 	for (i = 0; i < n; i++)
-		byteram[i] = sjme_memjreadp(jvm, 1, &rp);
+		sjme_memjwritep(jvm, 1, &byteram, sjme_memjreadp(jvm, 1, &rp));
 	
 	/* Load all seeds, which restores natural byte order. */
 	n = sjme_memjreadp(jvm, 4, &rp);
@@ -2015,9 +2058,9 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		
 		/* Offset value if it is in RAM or JAR ROM. */
 		if (seedop == 1)
-			seedvalh += SJME_POINTER_TO_JINT(ram);
+			seedvalh += vrambase;
 		else if (seedop == 2)
-			seedvalh += SJME_POINTER_TO_JINT(bootjar);
+			seedvalh += vbootjarbase;
 		
 		/* Write long value. */
 		if (seedsize == 8)
@@ -2258,6 +2301,9 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	void* conf;
 	sjme_jvm* rv;
 	sjme_jint i, l, romsize;
+#if defined(SJME_VIRTUAL_MEM)
+	sjme_jint vmem = SJME_VIRTUAL_MEM_BASE;
+#endif
 	
 	/* We need native functions. */
 	if (nativefuncs == NULL)
@@ -2276,6 +2322,13 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		
 		return NULL;
 	}
+
+#if defined(SJME_VIRTUAL_MEM)
+	/* Virtual map config. */
+	rv->configbase = vmem;
+	vmem = (vmem + SJME_DEFAULT_CONF_SIZE + SJME_VIRTUAL_MEM_MASK) &
+		(~SJME_VIRTUAL_MEM_MASK);
+#endif
 	
 	/* If there were no options specified, just use a null set. */
 	if (options == NULL)
@@ -2300,6 +2353,13 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		
 		return NULL;
 	}
+	
+#if defined(SJME_VIRTUAL_MEM)
+	/* Virtual map RAM. */
+	rv->rambase = vmem;
+	vmem = (vmem + options->ramsize + SJME_VIRTUAL_MEM_MASK) &
+		(~SJME_VIRTUAL_MEM_MASK);
+#endif
 	
 	/* Needed by the VM. */
 	rv->ram = ram;
@@ -2368,9 +2428,22 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		rv->presetrom = NULL;
 	}
 	
+#if defined(SJME_VIRTUAL_MEM)
+	/* Virtual map ROM. */
+	rv->rombase = vmem;
+	vmem = (vmem + romsize + SJME_VIRTUAL_MEM_MASK) &
+		(~SJME_VIRTUAL_MEM_MASK);
+#endif
+	
 	/* Set JVM rom space. */
 	rv->rom = rom;
 	rv->romsize = romsize;
+	
+	/* Initialize configuration space. */
+	rv->config = conf;
+	rv->configsize = SJME_DEFAULT_CONF_SIZE;
+	sjme_configinit(conf, SJME_DEFAULT_CONF_SIZE, rv, options, nativefuncs,
+		error);
 	
 	/* Initialize the BootRAM and boot the CPU. */
 	if (sjme_initboot(rom, ram, options->ramsize, rv, error) == 0)
@@ -2385,12 +2458,6 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		
 		return NULL;
 	}
-	
-	/* Initialize configuration space. */
-	rv->config = conf;
-	rv->configsize = SJME_DEFAULT_CONF_SIZE;
-	sjme_configinit(conf, SJME_DEFAULT_CONF_SIZE, rv, options, nativefuncs,
-		error);
 	
 	/* The JVM is ready to use. */
 	return rv;

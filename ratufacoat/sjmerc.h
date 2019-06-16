@@ -39,6 +39,13 @@
 	#endif
 #endif
 
+/** Use virtualized memory? */
+#if !defined(SJME_VIRTUAL_MEM)
+	#if defined(SJME_BITS) && SJME_BITS == 64
+		#define SJME_VIRTUAL_MEM
+	#endif
+#endif
+
 /** Possibly detect endianess. */
 #if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
 	/** Defined by the system? */
@@ -174,9 +181,16 @@ typedef int32_t sjme_jint;
 #define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
 #define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)((sjme_jint)(x))))
 
-/** Pointer path. */
+#define SJME_POINTER_TO_JMEM(x) (((uintptr_t)(x)))
+#define SJME_JMEM_TO_POINTER(x) ((void*)((uintptr_t)((x))))
+
+/** Pointer math. */
 #define SJME_POINTER_OFFSET(p, o) SJME_JINT_TO_POINTER( \
 	SJME_POINTER_TO_JINT(p) + ((sjme_jint)(o)))
+
+/** Pointer math, no precision loss. */
+#define SJME_POINTER_OFFSET_LONG(p, o) SJME_JMEM_TO_POINTER( \
+	SJME_POINTER_TO_JMEM(p) + ((uintptr_t)(o)))
 
 /** Standard C format for arguments. */
 #define SJME_JVMARG_FORMAT_STDC SJME_JINT_C(1)
