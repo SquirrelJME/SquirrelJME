@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.NoSuchInputException;
@@ -98,7 +99,7 @@ public class Main
 			if (niop == NativeInstructionType.DEBUG_POINT)
 			{
 				nijln = ni.intArgument(0);
-				nijop = (ni.intArgument(1) & 0xFF);
+				nijop = ni.intArgument(1);
 				nijpc = ni.intArgument(2);
 			}
 			
@@ -130,9 +131,13 @@ public class Main
 			boolean chjpc;
 			if ((chjpc = (nijpc != lljpc)))
 			{
+				// Which string to put here?
+				Object jstr = (bc.isValidAddress(nijpc) ?
+					bc.getByAddress(nijpc) :
+					InstructionMnemonics.toString(nijop));
+				
 				// Get form
-				jis = String.format("J@%3d: %s",
-					nijpc, bc.getByAddress(nijpc));
+				jis = String.format("J@%3d: %s", nijpc, jstr);
 				
 				// Set new last address
 				lljpc = nijpc;
