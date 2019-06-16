@@ -10,7 +10,8 @@
 
 package todo;
 
-import cc.squirreljme.runtime.cldc.asm.DebugAccess;
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import java.io.PrintStream;
 
@@ -69,7 +70,7 @@ public class OOPS
 		// Detect OOPSes/TODOs tripping multiple times and fail
 		boolean doubletripped = TODO._DOUBLE_TRIP;
 		if (doubletripped)
-			DebugAccess.fatalTodoReport(DebugAccess.rawCallTrace());
+			Assembly.sysCallP(SystemCallIndex.FATAL_TODO);
 		TODO._DOUBLE_TRIP = true;
 		
 		// Print a starting banner, but only if the error stream exists
@@ -102,7 +103,7 @@ public class OOPS
 		// condition to actually do printing to the console so this will end
 		// here
 		else
-			DebugAccess.fatalTodoReport(DebugAccess.rawCallTrace());
+			Assembly.sysCallP(SystemCallIndex.FATAL_TODO);
 		
 		// {@squirreljme.property
 		// cc.squirreljme.nooopsexit=(boolean)
