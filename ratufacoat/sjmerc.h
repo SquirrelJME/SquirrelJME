@@ -70,8 +70,6 @@
 /** Linux. */
 #if defined(__linux__) || defined(__gnu_linux__)
 	#define SJME_IS_LINUX 1
-	
-	#include <sys/mman.h>
 #endif
 
 /** DOS? */
