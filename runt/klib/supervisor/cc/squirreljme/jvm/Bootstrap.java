@@ -48,7 +48,14 @@ public final class Bootstrap
 		todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
 		
 		// Load boot libraries that are available
-		BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
+		try
+		{
+			BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
+		}
+		catch (Throwable t)
+		{
+			todo.DEBUG.note("Threw a throwable!");
+		}
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();

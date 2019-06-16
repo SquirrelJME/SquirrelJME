@@ -44,6 +44,9 @@ public final class BootLibrary
 		todo.DEBUG.code('t', 'O', tocoff);
 		todo.DEBUG.note("NumJars: %d, TocOff: %d", numjars, tocoff);
 		
+		if (true)
+			throw new RuntimeException();
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
