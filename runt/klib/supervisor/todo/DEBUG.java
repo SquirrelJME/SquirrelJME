@@ -95,6 +95,9 @@ public final class DEBUG
 			// Handle percent
 			if (percent)
 			{
+				// Clear flag
+				percent = false;
+				
 				// Plain percent
 				if (c == '%')
 					DEBUG.__pipe(fd, '%');
@@ -114,6 +117,10 @@ public final class DEBUG
 					for (int j = 0, q = sv.length(); j < q; j++)
 						DEBUG.__pipe(fd, sv.charAt(j));
 				}
+				
+				// Unknown sequence?
+				else
+					DEBUG.__pipe(fd, '?');
 			}
 			
 			// Flag percent

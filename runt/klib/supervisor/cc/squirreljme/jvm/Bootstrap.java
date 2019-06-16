@@ -45,6 +45,10 @@ public final class Bootstrap
 		// Could throw any kind of exception
 		try
 		{
+			// Static field pointer
+			todo.DEBUG.code('S', 'P',
+				Assembly.specialGetStaticFieldRegister());
+			
 			// I have had a bunch of issues with subsequent jvmLoadString()s
 			// failing with calling bad pointers and such. So this is a basic
 			// test to ensure that things are working.
