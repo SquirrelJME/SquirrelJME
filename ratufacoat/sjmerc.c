@@ -645,8 +645,10 @@ void* sjme_realptr(sjme_jvm* jvm, void* ptr)
 	/* No mapping found, pass through. */
 	else
 		ptr = oldptr;
-	
+
+#if 0
 	fprintf(stderr, "VPtr %p -> %p\n", oldptr, ptr);
+#endif
 	
 	return ptr;
 }
@@ -1109,7 +1111,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		enc = ((op >= SJME_ENC_SPECIAL_A) ? op : (op & SJME_ENC_MASK));
 		
 		/* Temporary debug. */
-#if 1
+#if 0
 		fprintf(stderr,
 			"ti=%d pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
 			jvm->totalinstructions,
@@ -1504,9 +1506,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						sjme_opdecodeui(jvm, &nextpc) * SJME_JINT_C(4));
 					ic = sjme_memread(jvm, 4, tempp,
 						sjme_opdecodeui(jvm, &nextpc) * SJME_JINT_C(4));
-
-					fprintf(stderr, "pool=%08x\n", r[SJME_POOL_REGISTER]);
-					fprintf(stderr, "%08x %08x %08x\n", ia, ib, ic); 
+					
 #if defined(SJME_VIRTUAL_MEM)
 					/* Map to real memory addresses. */
 					cpu->debugclassname = sjme_realptr(jvm,
