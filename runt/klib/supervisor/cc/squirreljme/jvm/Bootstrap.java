@@ -26,45 +26,6 @@ public final class Bootstrap
 	}
 	
 	/**
-	 * Performs a self test of the virtual machine to make sure things are
-	 * operating correctly!
-	 *
-	 * @param __rambase The base RAM address.
-	 * @param __ramsize The size of RAM.
-	 * @param __rombase Base address of the ROM (for offset calculation).
-	 * @param __romsize The size of ROM.
-	 * @param __confbase The configuration memory base.
-	 * @param __confsize The configuration memory size.
-	 */
-	public static final void selfTest(int __rambase, int __ramsize,
-		int __rombase, int __romsize, int __confbase, int __confsize)
-	{
-		// Banner for self test
-		todo.DEBUG.note("SquirrelJME 0.3.0 Self-Test");
-		
-		// Could throw any kind of exception
-		try
-		{
-			// Static field pointer
-			todo.DEBUG.code('S', 'P',
-				Assembly.specialGetStaticFieldRegister());
-			
-			// I have had a bunch of issues with subsequent jvmLoadString()s
-			// failing with calling bad pointers and such. So this is a basic
-			// test to ensure that things are working.
-			todo.DEBUG.note("%s %s?", "Triple jvmLoadString()?", "Okay!");
-		}
-		
-		// Exception was caught??
-		catch (Throwable t)
-		{
-			todo.DEBUG.code('X', 'X', Assembly.memReadInt(
-				Assembly.objectToPointer(t), Constants.OBJECT_CLASS_OFFSET));
-			Assembly.breakpoint();
-		}
-	}
-	
-	/**
 	 * Entry point for the bootstrap.
 	 *
 	 * @param __rambase The base RAM address.
@@ -83,16 +44,8 @@ public final class Bootstrap
 		// the RAM is actually useable.
 		Allocator.__initRamLinks(__rambase, __ramsize);
 		
-		// Perform a self-test of the JVM environment to make sure things
-		// are working
-		Bootstrap.selfTest(__rambase, __ramsize, __rombase, __romsize,
-			__confbase, __confsize);
-		
-		String qx = "Hello?";
-		String qy = "Love you!";
-		String qz = "Is this working?";
-		todo.DEBUG.note("%s %s %s", qx, qy, qz);
-		Assembly.breakpoint();
+		// Basic SquirrelJME Banner
+		todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
 		
 		// Load boot libraries that are available
 		BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
