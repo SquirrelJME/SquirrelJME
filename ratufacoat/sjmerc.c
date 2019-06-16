@@ -881,8 +881,53 @@ void sjme_memjwritep(sjme_jvm* jvm, sjme_jint size, void** ptr,
 }
 
 /**
+ * Decodes an integer value from operations which could be unaligned.
+ *
+ * @param jvm The JVM.
+ * @param ptr The pointer to read from.
+ * @return The resulting read value.
+ * @since 2019/06/16
+ */
+sjme_jint sjme_opdecodejint(sjme_jvm* jvm, void** ptr)
+{
+	sjme_jint rv;
+	
+	/* Read all values. */
+	rv = (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF)) << 24;
+	rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF)) << 16;
+	rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF)) << 8;
+	rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
+	
+	return rv;
+}
+
+/**
+ * Decodes a short value from operations which could be unaligned.
+ *
+ * @param jvm The JVM.
+ * @param ptr The pointer to read from.
+ * @return The resulting read value.
+ * @since 2019/06/16
+ */
+sjme_jint sjme_opdecodejshort(sjme_jvm* jvm, void** ptr)
+{
+	sjme_jint rv;
+	
+	/* Read all values. */
+	rv = (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF)) << 8;
+	rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
+	
+	/* Sign extend? */
+	if (rv & SJME_JINT_C(0x8000))
+		rv |= SJME_JINT_C(0xFFFF0000);
+	
+	return rv;
+}
+
+/**
  * Decodes a variable unsigned int operation argument.
  *
+ * @param jvm The JVM.
  * @param ptr The pointer to read from.
  * @return The resulting decoded value.
  * @since 2019/06/09
@@ -1200,7 +1245,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					
 					/* B value. */
 					if (enc == SJME_ENC_MATH_CONST_INT)
-						ib = sjme_memjreadp(jvm, 4, &nextpc);
+						ib = sjme_opdecodejint(jvm, &nextpc);
 					else
 						ib = r[sjme_opdecodeui(jvm, &nextpc)];
 					
@@ -1313,7 +1358,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* The address and offset to access. */
 					ia = r[sjme_opdecodeui(jvm, &nextpc)];
 					if (enc == SJME_ENC_MEMORY_OFF_ICONST)
-						ib = sjme_memjreadp(jvm, 4, &nextpc);
+						ib = sjme_opdecodejint(jvm, &nextpc);
 					else
 						ib = r[sjme_opdecodeui(jvm, &nextpc)];
 					tempp = SJME_JINT_TO_POINTER(ia);
@@ -1380,7 +1425,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* The address to access. */
 					ia = r[sjme_opdecodeui(jvm, &nextpc)];
 					if (enc == SJME_ENC_MEMORY_OFF_ICONST_JAVA)
-						ib = sjme_memjreadp(jvm, 4, &nextpc);
+						ib = sjme_opdecodejint(jvm, &nextpc);
 					else
 						ib = r[sjme_opdecodeui(jvm, &nextpc)];
 					tempp = SJME_JINT_TO_POINTER(ia);
@@ -1545,7 +1590,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ia = r[sjme_opdecodeui(jvm, &nextpc)];
 					
 					/* B value. */
-					ib = sjme_memjreadp(jvm, 4, &nextpc);
+					ib = sjme_opdecodejint(jvm, &nextpc);
 					
 					/* Target PC address. */
 					ic = sjme_opdecodejmp(jvm, &nextpc);
@@ -1598,7 +1643,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						/* Read values. */
 						for (ic = 0; ic < ib; ic++)
 							r[SJME_ARGBASE_REGISTER + ic] =
-								oldcpu->r[sjme_memjreadp(jvm, 2, &nextpc)];
+								oldcpu->r[sjme_opdecodejshort(jvm, &nextpc)];
 					}
 					
 					/* Narrow format list. */
