@@ -77,10 +77,12 @@ public class Main
 			int fw = (font.charWidth('a') + font.charWidth('w')) >> 1,
 				fh = font.getHeight();
 				
-			// Calculate size of image
-			int iw = maxstrlen * fw,
+			// Calculate size of image, width is rounded to 8 because of
+			// the pixel packing!
+			int iw = ((maxstrlen * fw) + 7) & (~7),
 				ih = numlines * fh,
-				sa = iw * fh;
+				sa = iw * fh,
+				ua = sa / 8;
 			
 			// Write PBM header, use P4 format
 			ps.printf("P4\n");
@@ -96,7 +98,7 @@ public class Main
 			int[] rgb = new int[sa];
 			
 			// Bulk byte data, for the fastest possible writing
-			byte[] bulk = new byte[sa];
+			byte[] bulk = new byte[ua];
 			
 			// Used to keep track of the current column since PBM cannot exceed
 			// 72 characters
@@ -120,12 +122,15 @@ public class Main
 				image.getRGB(rgb, 0, iw, 0, 0, iw, fh);
 				
 				// Go through pixels and export to bulk format
-				for (int i = 0; i < sa; i++)
-				{
-					// Format bulk data
-					int v = (rgb[i] & 0xFFFFFF);
-					bulk[i] = (byte)('0' + (v & 1));
-				}
+				for (int i = 0, o = 0; i < sa; i += 8, o++)
+					bulk[o] = (byte)(((rgb[i + 0] & 1) << 7) |
+						((rgb[i + 1] & 1) << 6) |
+						((rgb[i + 2] & 1) << 5) |
+						((rgb[i + 3] & 1) << 4) |
+						((rgb[i + 4] & 1) << 3) |
+						((rgb[i + 5] & 1) << 2) |
+						((rgb[i + 6] & 1) << 1) |
+						((rgb[i + 7] & 1)));
 				
 				// Write all bytes at once
 				ps.write(bulk);
