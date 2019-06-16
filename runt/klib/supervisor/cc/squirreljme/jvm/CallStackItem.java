@@ -21,7 +21,7 @@ public interface CallStackItem
 		0;
 	
 	/** The method name. */
-	public static final short METHOD_NAME
+	public static final short METHOD_NAME =
 		1;
 	
 	/** The method type. */

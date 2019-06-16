@@ -10,7 +10,6 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -32,10 +31,6 @@ import java.util.List;
  */
 public class Throwable
 {
-	/** String ID for the throwable. */
-	private static final int _THROWABLE_ID_HI,
-		_THROWABLE_ID_LO;
-	
 	/** Exception message. */
 	private static final int _TYPE_EXCEPTION =
 		0;
@@ -67,18 +62,6 @@ public class Throwable
 	
 	/** The stack trace for this throwable (in raw form). */
 	private volatile int[] _stack;
-	
-	/**
-	 * Initializes the throwable ID.
-	 *
-	 * @since 2018/09/29
-	 */
-	static
-	{
-		long id = DebugAccess.unresolveString("java/lang/Throwable");
-		_THROWABLE_ID_HI = (int)(id >>> 32);
-		_THROWABLE_ID_LO = (int)id;
-	}
 	
 	/**
 	 * Initializes a throwable with no cause or message.
@@ -362,84 +345,10 @@ public class Throwable
 			throw new IllegalArgumentException("ZZ1h");
 		
 		// Get the raw trace here
-		int[] rawstack = DebugAccess.rawCallTrace();
+		int[] rawstack = CallTraceElement.traceRaw();
 		
-		// Determine the new length of the raw data
-		int len = rawstack.length,
-			skippy = DebugAccess.TRACE_COUNT * (__clip + 1),
-			newlen = len - skippy;
-		if (newlen < 0)
-			newlen = 0;
-		
-		// If this is initializer clipping, clip out any references that lead
-		// up to this Throwable class so that they do not appear on the stack
-		// at all
-		int thi = Throwable._THROWABLE_ID_HI,
-			tlo = Throwable._THROWABLE_ID_LO;
-		if (__initclip && __this != null && thi != -1 && tlo != -1)
-		{
-			// Resolve the name for this class, because it will be at the
-			// bottom of the constructor stack
-			long lid = DebugAccess.unresolveString(
-				__this.getClass()._data.binaryName());
-			
-			// Split off IDs
-			int lhi = (int)(lid >>> 32),
-				llo = (int)lid;
-			
-			// Go down the trace and find the first instance
-			int scan = 0;
-			boolean seek = true,
-				hit = false;
-			for (; scan < len; scan += DebugAccess.TRACE_COUNT)
-			{
-				// Read scan here
-				int xhi = rawstack[scan],
-					xlo = rawstack[scan + 1];
-				
-				// Missing trace information, we do not want to lose this
-				// information at all so just ignore!
-				if (xhi == -1 && xlo == -1)
-					break;
-				
-				// Seek to the current class for this current object
-				if (seek)
-				{
-					// We found our class, switch out of seek mode
-					if (lhi == xhi && llo == xlo)
-					{
-						seek = false;
-						break;
-					}
-				}
-				else
-				{
-					// Stop on the first entry which is not in this class
-					if (lhi != xhi || llo != xlo)
-					{
-						hit = true;
-						break;
-					}
-				}
-			}
-			
-			// Use the new scan instead, only if it was found
-			if (hit)
-			{
-				skippy = scan;
-				newlen = len - skippy;
-				
-				if (newlen < 0)
-					newlen = 0;
-			}
-		}
-		
-		// Copy the trace data into this one
-		int[] rv = new int[newlen];
-		for (int i = skippy, o = 0; o < newlen; i++, o++)
-			rv[o] = rawstack[i];
-		
-		return rv;
+		// Just use the raw stack
+		return rawstack;
 	}
 	
 	/**
@@ -498,7 +407,7 @@ public class Throwable
 		}
 		
 		// Resolve the stack trace so it is easier to work with
-		CallTraceElement[] stack = DebugAccess.resolveRawCallTrace(rawstack);
+		CallTraceElement[] stack = CallTraceElement.traceResolve(rawstack);
 		
 		// Indent and print exception type
 		Throwable.__printStackIndent(__ps, __indent);

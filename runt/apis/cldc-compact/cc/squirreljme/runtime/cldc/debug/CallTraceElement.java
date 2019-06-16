@@ -10,13 +10,17 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.CallStackItem;
+import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 /**
  * This represents a single entry within the call stack. This is used for
- * debugging purporses to determine where code has thrown an exception.
+ * debugging purposes to determine where code has thrown an exception.
  *
  * @since 2018/02/21
  */
@@ -551,6 +555,7 @@ public final class CallTraceElement
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/14
 	 */
+	@Deprecated
 	public static final CallTraceElement[] decode(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
@@ -570,6 +575,7 @@ public final class CallTraceElement
 	 * @return The byte array containing encoded call trace information.
 	 * @since 2018/03/14
 	 */
+	@Deprecated
 	public static final byte[] encode(CallTraceElement... __el)
 	{
 		// Decode each sequence.
@@ -580,6 +586,51 @@ public final class CallTraceElement
 			
 			throw new todo.TODO();
 		}
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains the current call trace.
+	 *
+	 * @return The current call trace.
+	 * @since 2019/06/16
+	 */
+	public static final CallTraceElement[] trace()
+	{
+		return CallTraceElement.traceResolve(CallTraceElement.traceRaw());
+	}
+	
+	/**
+	 * Obtains the current raw call trace which has not been resolved.
+	 *
+	 * @return The raw call trace.
+	 * @since 2019/06/16
+	 */
+	public static final int[] traceRaw()
+	{
+		// Get the call height, ignore if not supported!
+		int callheight = Assembly.sysCallPV(SystemCallIndex.CALL_STACK_HEIGHT);
+		if (callheight <= 0 || Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
+			SystemCallIndex.CALL_STACK_HEIGHT) != SystemCallError.NO_ERROR)
+			return new int[0];
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Resolves the specified call trace into call trace elements.
+	 *
+	 * @param __trace The trace to resolve.
+	 * @return The resolved trace.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/16
+	 */
+	public static final CallTraceElement[] traceResolve(int[] __trace)
+		throws NullPointerException
+	{
+		if (__trace == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}

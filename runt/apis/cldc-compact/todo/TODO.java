@@ -92,7 +92,7 @@ public class TODO
 		// Detect TODOs tripping multiple times and fail
 		boolean doubletripped = TODO._DOUBLE_TRIP;
 		if (doubletripped)
-			DebugAccess.fatalTodoReport(DebugAccess.rawCallTrace());
+			DebugAccess.fatalTodoReport(CallTraceElement.traceRaw());
 		TODO._DOUBLE_TRIP = true;
 		
 		// Print a starting banner, but only if the error stream exists
@@ -124,7 +124,7 @@ public class TODO
 		// condition to actually do printing to the console so this will end
 		// here
 		else
-			DebugAccess.fatalTodoReport(DebugAccess.rawCallTrace());
+			DebugAccess.fatalTodoReport(CallTraceElement.traceRaw());
 		
 		// {@squirreljme.property
 		// cc.squirreljme.notodoexit=(boolean)
@@ -437,8 +437,7 @@ public class TODO
 	{
 		// For the SquirrelJME runtime, use the debug stuff to get the
 		// current call trace
-		CallTraceElement[] stack = DebugAccess.resolveRawCallTrace(
-			DebugAccess.rawCallTrace());
+		CallTraceElement[] stack = CallTraceElement.trace();
 		
 		// Get the first one which is not in this class
 		for (CallTraceElement e : stack)
