@@ -79,8 +79,8 @@ public final class DEBUG
 			return;
 		
 		// Debug
-		DEBUG.code('N', 'f', Assembly.objectToPointer(__fmt));
-		DEBUG.code('N', 'a', Assembly.objectToPointer(__args));
+		/*DEBUG.code('N', 'f', Assembly.objectToPointer(__fmt));
+		DEBUG.code('N', 'a', Assembly.objectToPointer(__args));*/
 		
 		// Argument pointer
 		int argp = 0;
