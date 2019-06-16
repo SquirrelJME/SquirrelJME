@@ -48,6 +48,10 @@ then
 	then
 		if which pnmtopng > /dev/null
 		then
+			# Scale it
+			pnmscale 2 "/tmp/$$.pbm" > "/tmp/$$.pbm.2"
+			mv -f "/tmp/$$.pbm.2" "/tmp/$$.pbm"
+			
 			# Convert
 			pnmtopng "/tmp/$$.pbm" > "$__out"
 			
