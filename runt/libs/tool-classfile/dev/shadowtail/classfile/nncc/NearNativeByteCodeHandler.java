@@ -1482,6 +1482,7 @@ public final class NearNativeByteCodeHandler
 			
 			// Set label target for this one
 			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
+			this.__useEDataDebugPoint(e.getValue());
 			
 			// Clear references
 			JavaStackEnqueueList enq = eql.enqueue;
@@ -1500,6 +1501,7 @@ public final class NearNativeByteCodeHandler
 			
 			// Set label target for this one
 			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
+			this.__useEDataDebugPoint(e.getValue());
 			
 			// Allocate class object
 			this.__invokeNew(csl.classname, NativeCode.EXCEPTION_REGISTER);
@@ -1524,6 +1526,7 @@ public final class NearNativeByteCodeHandler
 			
 			// Label used for the jump target
 			NativeCodeLabel lab = this.__useEDataAndGetLabel(e.getValue());
+			this.__useEDataDebugPoint(e.getValue());
 			
 			// If the table is empty, just return
 			if (ehtable.isEmpty())
@@ -1589,6 +1592,7 @@ public final class NearNativeByteCodeHandler
 			
 			// Set label target for this one
 			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
+			this.__useEDataDebugPoint(e.getValue());
 			
 			// Generate operations
 			this.doStateOperations(ops);
@@ -3011,6 +3015,25 @@ public final class NearNativeByteCodeHandler
 		
 		// And return the label
 		return __ed.label;
+	}
+	
+	/**
+	 * Sets debug point information for edata.
+	 *
+	 * @param __ed The EData used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/16
+	 */
+	private final void __useEDataDebugPoint(__EData__ __ed)
+		throws NullPointerException
+	{
+		if (__ed == null)
+			throw new NullPointerException("NARG");
+		
+		// Add debug point (operation becomes debug point 1)
+		codebuilder.add(NativeInstructionType.DEBUG_POINT,
+			__ed.line & 0x7FFF, 0xFE,
+			__ed.jpc & 0x7FFF);
 	}
 }
 
