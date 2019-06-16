@@ -104,9 +104,13 @@ public final class SystemCallIndex
 	public static final short LOAD_STRING =
 		21;
 	
+	/** Fatal ToDo hit. */
+	public static final short FATAL_TODO =
+		22;
+	
 	/** System call count. */
 	public static final short NUM_SYSCALLS =
-		22;
+		23;
 	
 	/**
 	 * Not used.
