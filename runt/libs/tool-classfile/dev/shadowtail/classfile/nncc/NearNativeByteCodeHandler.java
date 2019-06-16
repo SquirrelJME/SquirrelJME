@@ -2609,6 +2609,12 @@ public final class NearNativeByteCodeHandler
 		newsop.add(StateOperation.copy(false,
 			NativeCode.EXCEPTION_REGISTER, handled.out(0).register));
 		
+		// Clear the exception register when it is handled, otherwise it
+		// will just cause an exception fall off when the register is next
+		// checked
+		newsop.add(StateOperation.copy(false, NativeCode.ZERO_REGISTER,
+			NativeCode.EXCEPTION_REGISTER));
+		
 		// Setup key
 		ExceptionHandlerTransition key = new ExceptionHandlerTransition(
 			new StateOperations(newsop), nothandled.enqueue(),
