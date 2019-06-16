@@ -29,10 +29,19 @@ cd "$__tempdir"
 # Arguments
 __pkg="$1"
 __cls="$2"
-__out="$3"
+
+# All methods or a single one?
+if [ "$#" -eq "3" ]
+then
+	__mth=""
+	__out="$3"
+else
+	__mth="$3"
+	__out="$4"
+fi
 
 # Execute handler, export file first
-if "$__hosted" sxs "$__pkg" "$__cls" > "/tmp/$$"
+if "$__hosted" sxs "$__pkg" "$__cls" "$__mth" > "/tmp/$$"
 then
 	# Then convert it to a PBM
 	if "$__hosted" txt-to-pbm "/tmp/$$" > "/tmp/$$.pbm"
@@ -47,6 +56,9 @@ then
 		else
 			mv -f "/tmp/$$.pbm" "$__out"
 		fi
+	else
+		# Cleanup
+		rm -f "/tmp/$$.pbm"
 	fi
 fi
 
