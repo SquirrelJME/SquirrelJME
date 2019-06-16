@@ -32,10 +32,6 @@ import javax.microedition.lcdui.Graphics;
  */
 public class Main
 {
-	/** Output column limit for PBM. */
-	public static final int PBM_COLUMNS =
-		72;
-	
 	/**
 	 * Main entry point.
 	 *
@@ -99,6 +95,9 @@ public class Main
 			// RGB pixel output for lines
 			int[] rgb = new int[sa];
 			
+			// Bulk byte data, for the fastest possible writing
+			byte[] bulk = new byte[sa];
+			
 			// Used to keep track of the current column since PBM cannot exceed
 			// 72 characters
 			int col = 1;
@@ -120,20 +119,16 @@ public class Main
 				// Get RGB pixel data
 				image.getRGB(rgb, 0, iw, 0, 0, iw, fh);
 				
-				// Go through pixels and export
+				// Go through pixels and export to bulk format
 				for (int i = 0; i < sa; i++)
 				{
-					// Just black or white
-					int v = rgb[i];
-					ps.print(((v & 0xFFFFFF) == 0) ? '1' : '0');
-					
-					// End column?
-					if ((col++) == PBM_COLUMNS)
-					{
-						ps.print('\n');
-						col = 1;
-					}
+					// Format bulk data
+					int v = (rgb[i] & 0xFFFFFF);
+					bulk[i] = (byte)('0' + (v & 1));
 				}
+				
+				// Write all bytes at once
+				ps.write(bulk);
 			}
 		}
 	}
