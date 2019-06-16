@@ -28,24 +28,28 @@ public interface CallStackItem
 	public static final short METHOD_TYPE =
 		2;
 	
+	/** The current file. */
+	public static final short SOURCE_FILE =
+		3;
+	
 	/** Source line. */
 	public static final short SOURCE_LINE =
-		3;
+		4;
 	
 	/** The PC address. */
 	public static final short PC_ADDRESS =
-		4;
+		5;
 	
 	/** Java operation. */
 	public static final short JAVA_OPERATION =
-		5;
+		6;
 	
 	/** Java PC address. */
 	public static final short JAVA_PC_ADDRESS =
-		6;
+		7;
 	
 	/** The number of supported items. */
 	public static final short NUM_ITEMS =
-		7;
+		8;
 }
 
