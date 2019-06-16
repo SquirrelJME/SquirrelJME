@@ -91,14 +91,14 @@ public final class Allocator
 					Assembly.memWriteInt(nextseek, CHUNK_NEXT_OFFSET,
 						cnx);
 					
-					// The size of our current chunk is the wanted size
-					Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-						want);
-					
 					// The next chunk of the current chunk is the new chunk
 					Assembly.memWriteInt(seeker, CHUNK_NEXT_OFFSET,
 						nextseek);
 				}
+				
+				// The size of our current chunk is the wanted size
+				Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
+					want);
 				
 				// Clear out memory since Java expects the data to be
 				// initialized to zero always
@@ -125,10 +125,7 @@ public final class Allocator
 	static final void free(int __p)
 	{
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
-		{
 			Assembly.breakpoint();
-			throw new VirtualMachineError();
-		}
 		
 		// Determine the seeker position for this chunk
 		int seeker = __p - CHUNK_LENGTH;
@@ -136,6 +133,14 @@ public final class Allocator
 		// Read chunk properties
 		int csz = Assembly.memReadInt(seeker, CHUNK_SIZE_OFFSET),
 			cnx = Assembly.memReadInt(seeker, CHUNK_NEXT_OFFSET);
+		
+		// Bad size?
+		if (csz <= 0)
+			Assembly.breakpoint();
+		
+		// Set as free
+		Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
+			csz | MEMPART_FREE_BIT);
 		
 		// Parameters used for memory corruption
 		int i = CHUNK_LENGTH,
@@ -157,10 +162,6 @@ public final class Allocator
 		// Then just wipe the remaining memory
 		for (; i < csz; i+= 4)
 			Assembly.memWriteInt(seeker, i, bm);
-		
-		// Set as free
-		Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-			csz | MEMPART_FREE_BIT);
 	}
 	
 	/**
