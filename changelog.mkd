@@ -98,6 +98,7 @@ More detailed changes:
        allows all of the graphics drawing functions to be forwarded when
        graphics acceleration is used, previously only a subset of methods were
        implemented.
+     * Fixed crash in text drawing when an empty string is drawn.
      * Fully drawn default fonts.
      * Made all the graphics operations not throw a `TODO`, instead they will
        just draw a placeholder graphic.

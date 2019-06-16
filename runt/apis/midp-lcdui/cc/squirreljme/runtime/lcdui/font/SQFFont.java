@@ -144,6 +144,20 @@ public final class SQFFont
 	}
 	
 	/**
+	 * Is the specified character valid?
+	 *
+	 * @param __c The character to check.
+	 * @return If the character is valid.
+	 * @since 2019/06/16
+	 */
+	public final boolean isValid(char __c)
+	{
+		if (__c > 256)
+			return false;
+		return this._isvalidchar[__c];
+	}
+	
+	/**
 	 * Loads the bitmap
 	 *
 	 * @param __c The character to get.
