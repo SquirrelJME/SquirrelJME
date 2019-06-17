@@ -1015,8 +1015,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			{
 				case SJME_SYSCALL_ERROR_GET:
 				case SJME_SYSCALL_ERROR_SET:
-				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_OF_STDERR:
+				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_WRITE_BYTE:
 					return SJME_JINT_C(1);
 			}
@@ -1044,15 +1044,15 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			cpu->syscallerr[ia] = args[1];
 			return ib;
 			
-			/* Pipe descriptor of standard output. */
-		case SJME_SYSCALL_PD_OF_STDOUT:
-			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return SJME_JINT_C(SJME_PIPE_FD_STDOUT);
-			
 			/* Pipe descriptor of standard error. */
 		case SJME_SYSCALL_PD_OF_STDERR:
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			return SJME_JINT_C(SJME_PIPE_FD_STDERR);
+			
+			/* Pipe descriptor of standard output. */
+		case SJME_SYSCALL_PD_OF_STDOUT:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return SJME_JINT_C(SJME_PIPE_FD_STDOUT);
 			
 			/* Write single byte to a stream. */
 		case SJME_SYSCALL_PD_WRITE_BYTE:
