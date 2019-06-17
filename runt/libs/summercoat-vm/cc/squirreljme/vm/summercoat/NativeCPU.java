@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -200,8 +201,7 @@ public final class NativeCPU
 		// Frame specific info
 		Frame nowframe = null;
 		int[] lr = null;
-		int pc = -1,
-			rp = -1;
+		int pc = -1;
 		
 		// Per operation handling
 		final int[] args = new int[6];
@@ -220,10 +220,7 @@ public final class NativeCPU
 			{
 				// Before dumping this frame, store old info
 				if (nowframe != null)
-				{
 					nowframe._pc = pc;
-					nowframe._rp = rp;
-				}
 				
 				// Get current frame, stop execution if there is nothing
 				// left to execute
@@ -234,7 +231,6 @@ public final class NativeCPU
 				// Load stuff needed for execution
 				lr = nowframe._registers;
 				pc = nowframe._pc;
-				rp = nowframe._rp;
 				
 				// Used to auto-detect frame change
 				lastframe = frameat;
@@ -969,14 +965,20 @@ public final class NativeCPU
 		// Get the pool address
 		int pooladdr = __f._registers[NativeCode.POOL_REGISTER];
 		
+		int icl = memory.memReadInt(pooladdr + (__pcl * 4)),
+			imn = memory.memReadInt(pooladdr + (__pmn * 4)),
+			imt = memory.memReadInt(pooladdr + (__pmt * 4));
+		
+		// Store in state
+		__f._inclassp = icl;
+		__f._inmethodnamep = imn;
+		__f._inmethodtypep = imt;
+		
 		// Load strings
 		WritableMemory memory = this.memory;
-		__f._inclass = this.__loadUtfString(
-			memory.memReadInt(pooladdr + (__pcl * 4)));
-		__f._inmethodname = this.__loadUtfString(
-			memory.memReadInt(pooladdr + (__pmn * 4)));
-		__f._inmethodtype = this.__loadUtfString(
-			memory.memReadInt(pooladdr + (__pmt * 4)));
+		__f._inclass = this.__loadUtfString(icl);
+		__f._inmethodname = this.__loadUtfString(imn);
+		__f._inmethodtype = this.__loadUtfString(imt);
 	}
 	
 	/**
@@ -1056,6 +1058,7 @@ public final class NativeCPU
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.CALL_STACK_HEIGHT:
+						case SystemCallIndex.CALL_STACK_ITEM:
 						case SystemCallIndex.MEM_SET:
 						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_OF_STDIN:
@@ -1083,6 +1086,64 @@ public final class NativeCPU
 				{
 					rv = this._frames.size();
 					err = 0;
+				}
+				break;
+				
+				// Get item on the call stack
+			case SystemCallIndex.CALL_STACK_ITEM:
+				{
+					// Locate frame
+					int fr = __args[0];
+					LinkedList<Frame> frames = this._frames;
+					int numframes = frames.size();
+					Frame frame = ((fr < 0 || fr >= numframes) ? null :
+						frames.get((numframes - 1) - fr));
+					
+					// Depends on the ID
+					int dx = (frame == null ? -1 : __args[1]);
+					switch (dx)
+					{
+						case CallStackItem.CLASS_NAME:
+							err = 0;
+							rv = frame._inclassp;
+							break;
+							
+						case CallStackItem.METHOD_NAME:
+							err = 0;
+							rv = frame._inmethodnamep;
+							break;
+							
+						case CallStackItem.METHOD_TYPE:
+							err = 0;
+							rv = frame._inmethodtypep;
+							break;
+							
+						case CallStackItem.SOURCE_LINE:
+							err = 0;
+							rv = frame._inline;
+							break;
+							
+						case CallStackItem.PC_ADDRESS:
+							err = 0;
+							rv = frame._lastpc;
+							break;
+							
+						case CallStackItem.JAVA_OPERATION:
+							err = 0;
+							rv = frame._injop;
+							break;
+							
+						case CallStackItem.JAVA_PC_ADDRESS:
+							err = 0;
+							rv = frame._injpc;
+							break;
+						
+							// Not valid
+						default:
+							rv = 0;
+							err = SystemCallError.VALUE_OUT_OF_RANGE;
+							break;
+					}
 				}
 				break;
 				
@@ -1304,20 +1365,26 @@ public final class NativeCPU
 		/** The PC address for this frame. */
 		volatile int _pc;
 		
-		/** The reference queue positoin. */
-		volatile int _rp;
-		
 		/** Last executed address. */
 		int _lastpc;
 		
 		/** The executing class. */
 		String _inclass;
 		
+		/** Executing class name pointer. */
+		int _inclassp;
+		
 		/** The executing method name. */
 		String _inmethodname;
 		
+		/** Executing method name pointer. */
+		int _inmethodnamep;
+		
 		/** The executing method type. */
 		String _inmethodtype;
+		
+		/** Executing method type pointer. */
+		int _inmethodtypep;
 		
 		/** The current line. */
 		int _inline;
