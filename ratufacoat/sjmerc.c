@@ -395,11 +395,41 @@
 /** Write error when writing to the pipe. */
 #define SJME_SYSCALL_ERROR_PIPE_DESCRIPTOR_BAD_WRITE SJME_JINT_C(-3)
 
+/** Value out of range. */
+#define SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE SJME_JINT_C(-4)
+
 /** Pipe descriptor for standard output. */
 #define SJME_PIPE_FD_STDOUT SJME_JINT_C(1)
 
 /** Pipe descriptor for standard error. */
 #define SJME_PIPE_FD_STDERR SJME_JINT_C(2)
+
+/** The class name. */
+#define SJME_CALLSTACKITEM_CLASS_NAME SJME_JINT_C(0)
+
+/** The method name. */
+#define SJME_CALLSTACKITEM_METHOD_NAME SJME_JINT_C(1)
+
+/** The method type. */
+#define SJME_CALLSTACKITEM_METHOD_TYPE SJME_JINT_C(2)
+
+/** The current file. */
+#define SJME_CALLSTACKITEM_SOURCE_FILE SJME_JINT_C(3)
+
+/** Source line. */
+#define SJME_CALLSTACKITEM_SOURCE_LINE SJME_JINT_C(4)
+
+/** The PC address. */
+#define SJME_CALLSTACKITEM_PC_ADDRESS SJME_JINT_C(5)
+
+/** Java operation. */
+#define SJME_CALLSTACKITEM_JAVA_OPERATION SJME_JINT_C(6)
+
+/** Java PC address. */
+#define SJME_CALLSTACKITEM_JAVA_PC_ADDRESS SJME_JINT_C(7)
+
+/** The number of supported items. */
+#define SJME_CALLSTACKITEM_NUM_ITEMS SJME_JINT_C(8)
 
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[32] =
@@ -634,6 +664,48 @@ void sjme_free(void* p)
 }
 
 #if defined(SJME_VIRTUAL_MEM)
+/** Returns the fake pointer for the given real pointer. */
+void* sjme_fakeptr(sjme_jvm* jvm, void* ptr)
+{
+	void* oldptr;
+	uintptr_t vptr;
+	
+	/* Pass through memory if no JVM specified. */
+	if (jvm == NULL)
+		return ptr;
+	
+	/* Map pointer to pure integer. */
+	oldptr = ptr;
+	vptr = SJME_POINTER_TO_JMEM(oldptr);
+	
+	/* Within Configuration ROM region? */
+	if (vptr >= SJME_POINTER_TO_JMEM(jvm->config) &&
+		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->config,
+			jvm->configsize)))
+		ptr = SJME_JINT_TO_POINTER(jvm->configbase) +
+			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->config));
+	
+	/* Within RAM region? */
+	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->ram) &&
+		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->ram,
+			jvm->ramsize)))
+		ptr = SJME_JINT_TO_POINTER(jvm->rambase) +
+			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->ram));
+	
+	/* Within ROM region? */
+	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->rom) &&
+		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->rom,
+			jvm->romsize)))
+		ptr = SJME_JINT_TO_POINTER(jvm->rombase) +
+			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->rom));
+	
+	/* No mapping found, pass through. */
+	else
+		ptr = oldptr;
+	
+	return ptr;
+}
+
 /** Returns the real pointer for the given virtual pointer. */
 void* sjme_realptr(sjme_jvm* jvm, void* ptr)
 {
@@ -663,10 +735,6 @@ void* sjme_realptr(sjme_jvm* jvm, void* ptr)
 	/* No mapping found, pass through. */
 	else
 		ptr = oldptr;
-
-#if 0
-	fprintf(stderr, "VPtr %p -> %p\n", oldptr, ptr);
-#endif
 	
 	return ptr;
 }
@@ -1032,6 +1100,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			switch (args[0])
 			{
 				case SJME_SYSCALL_CALL_STACK_HEIGHT:
+				case SJME_SYSCALL_CALL_STACK_ITEM:
 				case SJME_SYSCALL_ERROR_GET:
 				case SJME_SYSCALL_ERROR_SET:
 				case SJME_SYSCALL_PD_OF_STDERR:
@@ -1057,6 +1126,88 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			/* Does not generate errors. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			return ia;
+			
+			/* Item within the call stack. */
+		case SJME_SYSCALL_CALL_STACK_ITEM:
+			/* Find the CPU frame to use. */
+			ia = args[0];
+			while (ia > 0)
+			{
+				/* End of CPU? */
+				if (cpu == NULL)
+				{
+					*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
+					return 0;
+				}
+				
+				/* Drop down. */
+				cpu = cpu->parent;
+				ia--;
+			}
+			
+			/* Depends on the requested item.*/
+			switch (args[1])
+			{
+					/* The class name. */
+				case SJME_CALLSTACKITEM_CLASS_NAME:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+#if defined(SJME_VIRTUAL_MEM)
+					return SJME_POINTER_TO_JINT(
+						sjme_fakeptr(jvm, cpu->debugclassname));
+#else
+					return SJME_POINTER_TO_JINT(cpu->debugclassname);
+#endif
+					
+					/* The method name. */
+				case SJME_CALLSTACKITEM_METHOD_NAME:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+#if defined(SJME_VIRTUAL_MEM)
+					return SJME_POINTER_TO_JINT(
+						sjme_fakeptr(jvm, cpu->debugmethodname));
+#else
+					return SJME_POINTER_TO_JINT(cpu->debugmethodname);
+#endif
+					
+					/* The method type. */
+				case SJME_CALLSTACKITEM_METHOD_TYPE:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+#if defined(SJME_VIRTUAL_MEM)
+					return SJME_POINTER_TO_JINT(
+						sjme_fakeptr(jvm, cpu->debugmethodtype));
+#else
+					return SJME_POINTER_TO_JINT(cpu->debugmethodtype);
+#endif
+					
+					/* Source line. */
+				case SJME_CALLSTACKITEM_SOURCE_LINE:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return cpu->debugline;
+					
+					/* The PC address. */
+				case SJME_CALLSTACKITEM_PC_ADDRESS:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+#if defined(SJME_VIRTUAL_MEM)
+					return SJME_POINTER_TO_JINT(sjme_fakeptr(jvm, cpu->pc));
+#else
+					return SJME_POINTER_TO_JINT(cpu->pc);
+#endif
+					
+					/* Java operation. */
+				case SJME_CALLSTACKITEM_JAVA_OPERATION:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return cpu->debugjop;
+					
+					/* Java PC address. */
+				case SJME_CALLSTACKITEM_JAVA_PC_ADDRESS:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return cpu->debugjpc;
+					
+					/* Unknown. */
+				default:
+					*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
+					return 0;
+			}
+			return 0;
 			
 			/* Get error state. */
 		case SJME_SYSCALL_ERROR_GET:
