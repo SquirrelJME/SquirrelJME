@@ -362,8 +362,26 @@
 /** Pipe descriptor: Write single byte. */
 #define SJME_SYSCALL_PD_WRITE_BYTE SJME_JINT_C(16)
 
+/** Set memory. */
+#define SJME_SYSCALL_MEM_SET SJME_JINT_C(17)
+
+/** Set memory but in 4-byte pattern. */
+#define SJME_SYSCALL_MEM_SET_INT SJME_JINT_C(18)
+
+/** Get the height of the call stack. */
+#define SJME_SYSCALL_CALL_STACK_HEIGHT SJME_JINT_C(19)
+
+/** Gets the specified call stack item. */
+#define SJME_SYSCALL_CALL_STACK_ITEM SJME_JINT_C(20)
+
+/** Returns the string of the given pointer. */
+#define SJME_SYSCALL_LOAD_STRING SJME_JINT_C(21)
+
+/** Fatal ToDo hit. */
+#define SJME_SYSCALL_FATAL_TODO SJME_JINT_C(22)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(17)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(23)
 
 /** No error, or success. */
 #define SJME_SYSCALL_ERROR_NO_ERROR SJME_JINT_C(0)
@@ -1013,6 +1031,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			switch (args[0])
 			{
+				case SJME_SYSCALL_CALL_STACK_HEIGHT:
 				case SJME_SYSCALL_ERROR_GET:
 				case SJME_SYSCALL_ERROR_SET:
 				case SJME_SYSCALL_PD_OF_STDERR:
@@ -1021,6 +1040,23 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					return SJME_JINT_C(1);
 			}
 			return SJME_JINT_C(0);
+			
+			/* Height of the call stack. */
+		case SJME_SYSCALL_CALL_STACK_HEIGHT:
+			/* Count trace depth. */
+			ia = 0;
+			while (cpu != NULL)
+			{
+				/* Increase the count. */
+				ia++;
+				
+				/* Go to deeper depth. */
+				cpu = cpu->parent;
+			}
+			
+			/* Does not generate errors. */
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return ia;
 			
 			/* Get error state. */
 		case SJME_SYSCALL_ERROR_GET:
