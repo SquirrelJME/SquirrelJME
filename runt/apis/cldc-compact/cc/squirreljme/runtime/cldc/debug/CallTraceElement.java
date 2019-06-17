@@ -544,53 +544,6 @@ public final class CallTraceElement
 	}
 	
 	/**
-	 * Decodes the given byte sequence to call trace elements.
-	 *
-	 * @param __b The array to decode.
-	 * @param __o The offset into the array.
-	 * @param __l The length of the input data.
-	 * @return The resulting call trace element.
-	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
-	 * negative or exceed the array bounds.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/14
-	 */
-	@Deprecated
-	public static final CallTraceElement[] decode(byte[] __b, int __o, int __l)
-		throws ArrayIndexOutOfBoundsException, NullPointerException
-	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new ArrayIndexOutOfBoundsException("IOOB");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Encodes all of the specified call trace elements to a byte array and
-	 * returns it.
-	 *
-	 * @param __e The elements to encode
-	 * @return The byte array containing encoded call trace information.
-	 * @since 2018/03/14
-	 */
-	@Deprecated
-	public static final byte[] encode(CallTraceElement... __el)
-	{
-		// Decode each sequence.
-		__el = (__el == null ? new CallTraceElement[0] : __el.clone());
-		for (int i = 0, n = __el.length; i < n; i++)
-		{
-			CallTraceElement e = __el[i];
-			
-			throw new todo.TODO();
-		}
-		
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Obtains the current raw call trace which has not been resolved.
 	 *
 	 * @return The raw call trace.

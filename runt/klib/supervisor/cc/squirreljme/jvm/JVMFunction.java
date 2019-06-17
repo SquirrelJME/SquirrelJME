@@ -508,15 +508,36 @@ public final class JVMFunction
 		// Override the behavior of system calls?
 		switch (__si)
 		{
+				// Query index, this allows system calls to be replaced
+				// and implemented if the native system lacks it or there is
+				// a deprecation/enhancement or otherwise
+			case SystemCallIndex.QUERY_INDEX:
+				switch (__a)
+				{
+					case SystemCallIndex.GARBAGE_COLLECT:
+					case SystemCallIndex.LOAD_STRING:
+						return 1;
+					
+						// Otherwise, check if the native system supports
+					default:
+						return Assembly.sysCallPV(__si, __a);
+				}
+			
 				// Perform garbage collection
 			case SystemCallIndex.GARBAGE_COLLECT:
 				JVMFunction.jvmGarbageCollect();
 				return 0;
+				
+				// Load string
+			case SystemCallIndex.LOAD_STRING:
+				return Assembly.objectToPointer(
+					JVMFunction.jvmLoadString(__a));
+				
+				// Use native handler
+			default:
+				return Assembly.sysCallPV(__si, __a, __b, __c, __d, __e, __f,
+					__g, __h);
 		}
-		
-		// Call pure form
-		return Assembly.sysCallPV(__si, __a, __b, __c, __d, __e, __f, __g,
-			__h);
 	}
 }
 
