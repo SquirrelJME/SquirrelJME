@@ -1055,18 +1055,18 @@ public final class NativeCPU
 					{
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
-						case SystemCallIndex.TIME_LO_MILLI_WALL:
-						case SystemCallIndex.TIME_HI_MILLI_WALL:
-						case SystemCallIndex.TIME_LO_NANO_MONO:
-						case SystemCallIndex.TIME_HI_NANO_MONO:
-						case SystemCallIndex.VMI_MEM_FREE:
-						case SystemCallIndex.VMI_MEM_USED:
-						case SystemCallIndex.VMI_MEM_MAX:
+						case SystemCallIndex.MEM_SET:
+						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_OF_STDIN:
 						case SystemCallIndex.PD_OF_STDOUT:
-						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_WRITE_BYTE:
-						case SystemCallIndex.MEM_SET:
+						case SystemCallIndex.TIME_HI_MILLI_WALL:
+						case SystemCallIndex.TIME_HI_NANO_MONO:
+						case SystemCallIndex.TIME_LO_MILLI_WALL:
+						case SystemCallIndex.TIME_LO_NANO_MONO:
+						case SystemCallIndex.VMI_MEM_FREE:
+						case SystemCallIndex.VMI_MEM_MAX:
+						case SystemCallIndex.VMI_MEM_USED:
 							rv = 1;
 							break;
 						
@@ -1115,62 +1115,32 @@ public final class NativeCPU
 					err = 0;
 				}
 				break;
-			
-				// Current wall clock milliseconds (low).
-			case SystemCallIndex.TIME_LO_MILLI_WALL:
+				
+				// Sets memory to byte value
+			case SystemCallIndex.MEM_SET:
 				{
-					rv = (int)(System.currentTimeMillis());
+					// Set memory
+					WritableMemory memory = this.memory;
+					
+					// Get parameters
+					int addr = __args[0],
+						valu = __args[1],
+						lens = __args[2];
+					
+					// Wipe
+					for (int i = 0; i < lens; i++)
+						memory.memWriteByte(addr + i, valu);
+					
+					// Is okay
+					rv = 0;
 					err = 0;
 				}
 				break;
-
-				// Current wall clock milliseconds (high).
-			case SystemCallIndex.TIME_HI_MILLI_WALL:
+				
+				// Pipe descriptor of standard error
+			case SystemCallIndex.PD_OF_STDERR:
 				{
-					rv = (int)(System.currentTimeMillis() >>> 32);
-					err = 0;
-				}
-				break;
-
-				// Current monotonic clock nanoseconds (low).
-			case SystemCallIndex.TIME_LO_NANO_MONO:
-				{
-					rv = (int)(System.nanoTime());
-					err = 0;
-				}
-				break;
-
-				// Current monotonic clock nanoseconds (high).
-			case SystemCallIndex.TIME_HI_NANO_MONO:
-				{
-					rv = (int)(System.nanoTime() >>> 32);
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory free bytes
-			case SystemCallIndex.VMI_MEM_FREE:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().freeMemory());
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory used bytes
-			case SystemCallIndex.VMI_MEM_USED:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().totalMemory());
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory max bytes
-			case SystemCallIndex.VMI_MEM_MAX:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().maxMemory());
+					rv = 2;
 					err = 0;
 				}
 				break;
@@ -1187,14 +1157,6 @@ public final class NativeCPU
 			case SystemCallIndex.PD_OF_STDOUT:
 				{
 					rv = 1;
-					err = 0;
-				}
-				break;
-				
-				// Pipe descriptor of standard error
-			case SystemCallIndex.PD_OF_STDERR:
-				{
-					rv = 2;
 					err = 0;
 				}
 				break;
@@ -1235,24 +1197,62 @@ public final class NativeCPU
 					}
 				}
 				break;
-				
-				// Sets memory to byte value
-			case SystemCallIndex.MEM_SET:
+
+				// Current wall clock milliseconds (high).
+			case SystemCallIndex.TIME_HI_MILLI_WALL:
 				{
-					// Set memory
-					WritableMemory memory = this.memory;
-					
-					// Get parameters
-					int addr = __args[0],
-						valu = __args[1],
-						lens = __args[2];
-					
-					// Wipe
-					for (int i = 0; i < lens; i++)
-						memory.memWriteByte(addr + i, valu);
-					
-					// Is okay
-					rv = 0;
+					rv = (int)(System.currentTimeMillis() >>> 32);
+					err = 0;
+				}
+				break;
+
+				// Current monotonic clock nanoseconds (high).
+			case SystemCallIndex.TIME_HI_NANO_MONO:
+				{
+					rv = (int)(System.nanoTime() >>> 32);
+					err = 0;
+				}
+				break;
+			
+				// Current wall clock milliseconds (low).
+			case SystemCallIndex.TIME_LO_MILLI_WALL:
+				{
+					rv = (int)(System.currentTimeMillis());
+					err = 0;
+				}
+				break;
+
+				// Current monotonic clock nanoseconds (low).
+			case SystemCallIndex.TIME_LO_NANO_MONO:
+				{
+					rv = (int)(System.nanoTime());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory free bytes
+			case SystemCallIndex.VMI_MEM_FREE:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().freeMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory used bytes
+			case SystemCallIndex.VMI_MEM_USED:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().totalMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory max bytes
+			case SystemCallIndex.VMI_MEM_MAX:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().maxMemory());
 					err = 0;
 				}
 				break;
