@@ -60,7 +60,8 @@ public final class Bootstrap
 		// It crashes
 		catch (Throwable t)
 		{
-			todo.DEBUG.note("Uncaught exception: %s", t.getMessage());
+			// Print stack trace for this class
+			t.printStackTrace();
 			
 			// Try to exit the VM
 			Assembly.sysCallP(SystemCallIndex.EXIT, 1);
