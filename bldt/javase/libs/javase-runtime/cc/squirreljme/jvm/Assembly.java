@@ -1386,22 +1386,22 @@ public final class Assembly
 					err = 0;
 					switch (__args[0])
 					{
+						case SystemCallIndex.API_LEVEL:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
-						case SystemCallIndex.TIME_LO_MILLI_WALL:
-						case SystemCallIndex.TIME_HI_MILLI_WALL:
-						case SystemCallIndex.TIME_LO_NANO_MONO:
-						case SystemCallIndex.TIME_HI_NANO_MONO:
-						case SystemCallIndex.VMI_MEM_FREE:
-						case SystemCallIndex.VMI_MEM_USED:
-						case SystemCallIndex.VMI_MEM_MAX:
-						case SystemCallIndex.GARBAGE_COLLECT:
 						case SystemCallIndex.EXIT:
-						case SystemCallIndex.API_LEVEL:
+						case SystemCallIndex.GARBAGE_COLLECT:
+						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_OF_STDIN:
 						case SystemCallIndex.PD_OF_STDOUT:
-						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_WRITE_BYTE:
+						case SystemCallIndex.TIME_HI_MILLI_WALL:
+						case SystemCallIndex.TIME_HI_NANO_MONO:
+						case SystemCallIndex.TIME_LO_MILLI_WALL:
+						case SystemCallIndex.TIME_LO_NANO_MONO:
+						case SystemCallIndex.VMI_MEM_FREE:
+						case SystemCallIndex.VMI_MEM_MAX:
+						case SystemCallIndex.VMI_MEM_USED:
 							rv = 1;
 							break;
 						
@@ -1409,6 +1409,14 @@ public final class Assembly
 							rv = 0;
 							break;
 					}
+				}
+				break;
+				
+				// API level
+			case SystemCallIndex.API_LEVEL:
+				{
+					rv = ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV;
+					err = 0;
 				}
 				break;
 				
@@ -1450,75 +1458,6 @@ public final class Assembly
 					err = 0;
 				}
 				break;
-			
-				// Current wall clock milliseconds (low).
-			case SystemCallIndex.TIME_LO_MILLI_WALL:
-				{
-					rv = (int)(System.currentTimeMillis());
-					err = 0;
-				}
-				break;
-
-				// Current wall clock milliseconds (high).
-			case SystemCallIndex.TIME_HI_MILLI_WALL:
-				{
-					rv = (int)(System.currentTimeMillis() >>> 32);
-					err = 0;
-				}
-				break;
-
-				// Current monotonic clock nanoseconds (low).
-			case SystemCallIndex.TIME_LO_NANO_MONO:
-				{
-					rv = (int)(System.nanoTime());
-					err = 0;
-				}
-				break;
-
-				// Current monotonic clock nanoseconds (high).
-			case SystemCallIndex.TIME_HI_NANO_MONO:
-				{
-					rv = (int)(System.nanoTime() >>> 32);
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory free bytes
-			case SystemCallIndex.VMI_MEM_FREE:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().freeMemory());
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory used bytes
-			case SystemCallIndex.VMI_MEM_USED:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().totalMemory());
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory max bytes
-			case SystemCallIndex.VMI_MEM_MAX:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().maxMemory());
-					err = 0;
-				}
-				break;
-				
-				// Invoke the garbage collector
-			case SystemCallIndex.GARBAGE_COLLECT:
-				{
-					Runtime.getRuntime().gc();
-					
-					rv = 0;
-					err = 0;
-				}
-				break;
 				
 				// Exit the VM
 			case SystemCallIndex.EXIT:
@@ -1530,10 +1469,12 @@ public final class Assembly
 				}
 				break;
 				
-				// API level
-			case SystemCallIndex.API_LEVEL:
+				// Invoke the garbage collector
+			case SystemCallIndex.GARBAGE_COLLECT:
 				{
-					rv = ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV;
+					Runtime.getRuntime().gc();
+					
+					rv = 0;
 					err = 0;
 				}
 				break;
@@ -1596,6 +1537,65 @@ public final class Assembly
 						rv = -1;
 						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
 					}
+				}
+				break;
+			
+				// Current wall clock milliseconds (low).
+			case SystemCallIndex.TIME_LO_MILLI_WALL:
+				{
+					rv = (int)(System.currentTimeMillis());
+					err = 0;
+				}
+				break;
+
+				// Current wall clock milliseconds (high).
+			case SystemCallIndex.TIME_HI_MILLI_WALL:
+				{
+					rv = (int)(System.currentTimeMillis() >>> 32);
+					err = 0;
+				}
+				break;
+
+				// Current monotonic clock nanoseconds (low).
+			case SystemCallIndex.TIME_LO_NANO_MONO:
+				{
+					rv = (int)(System.nanoTime());
+					err = 0;
+				}
+				break;
+
+				// Current monotonic clock nanoseconds (high).
+			case SystemCallIndex.TIME_HI_NANO_MONO:
+				{
+					rv = (int)(System.nanoTime() >>> 32);
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory free bytes
+			case SystemCallIndex.VMI_MEM_FREE:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().freeMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory used bytes
+			case SystemCallIndex.VMI_MEM_USED:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().totalMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory max bytes
+			case SystemCallIndex.VMI_MEM_MAX:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().maxMemory());
+					err = 0;
 				}
 				break;
 			
