@@ -12,3 +12,79 @@ This is easier than having a separate part of it.
 
 Oh the bits are packed and the format is hybrid binary and text, so that
 makes sense why the image looks weird.
+
+## 09:57
+
+Checked `jvmLoadString()` it is perfectly fine and I see nothing wrong with
+it. Now I suppose I shall do `String.intern()`.
+
+## 09:59
+
+I could do a quick check, if `intern()` just returns `this` then I know that
+is wrong.
+
+## 10:01
+
+Okay, intern is fine as just returning has no effect. So maybe it is the
+constructor for string?
+
+## 10:02
+
+Okay so even blocking out the constructor still makes it happen.
+
+## 10:05
+
+You know it seems to fail after instance fields are used, so maybe that is
+incorrect? Like maybe memory corruption?
+
+## 10:05
+
+Actually completely disabling garbage collection, things work again so I think
+the garbage collector is destroying things?
+
+## 10:08
+
+Okay, completely removing the free operation fixes things, so I think free is
+causing some issues. Very possible it has a bug in it.
+
+## 10:17
+
+Okay I noticed that in my allocator, I am not clearing the free bit in the
+blocks. So the same memory is being used all the time.
+
+## 10:19
+
+Yay I figured it out. I was not marking free blocks which were claimed as
+taken, so all allocations would literally use the same block assuming it
+would fit then possibly partition things. Like it would only mark it as
+used if the block was smaller than the desired size.
+
+## 11:41
+
+Okay, so I am going to have virtual pointers for 64-bit on RatufaCoat because
+I am finding out that there are no real ways to allocate the lowest 32-bits on
+many operating systems. It will be slower but it should work across various
+things!
+
+## 16:01
+
+I think the exception chain being odd is happening because I think the
+exception register is not cleared? So like the exception flag always gets hit?
+
+## 16:16
+
+Before I continue, I will very much need to have stack traces. Because that
+would probably save me lots of headache in the future.
+
+## 18:33
+
+Figured out how to make the stack traces nice without complicating how they
+are encoded for example. So what I mean by this is I have two system calls,
+one to get the height of the call stack (how deep the methods are) and another
+to get elements from it. Since having memory access to the system call and
+whatnot would be complicated, the first parameter is going to be the depth
+from the top of the call stack and then the second will be another parameter
+of it. This way new elements can be added without having to worry about how
+many need to be stored. Since I really want the VM to be future proofed and
+there might be different ways to obtain the information that does not make
+sense in an array.
