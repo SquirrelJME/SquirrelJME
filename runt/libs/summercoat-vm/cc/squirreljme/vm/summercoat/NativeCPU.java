@@ -1055,6 +1055,7 @@ public final class NativeCPU
 					{
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
+						case SystemCallIndex.CALL_STACK_HEIGHT:
 						case SystemCallIndex.MEM_SET:
 						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_OF_STDIN:
@@ -1074,6 +1075,14 @@ public final class NativeCPU
 							rv = 0;
 							break;
 					}
+				}
+				break;
+			
+				// Get the height of the call stack
+			case SystemCallIndex.CALL_STACK_HEIGHT:
+				{
+					rv = this._frames.size();
+					err = 0;
 				}
 				break;
 				

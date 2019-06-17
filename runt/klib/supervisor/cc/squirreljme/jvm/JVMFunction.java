@@ -16,6 +16,9 @@ package cc.squirreljme.jvm;
  */
 public final class JVMFunction
 {
+	/** Last error state. */
+	static volatile int _LAST_ERROR;
+	
 	/**
 	 * Not used.
 	 *
@@ -290,12 +293,12 @@ public final class JVMFunction
 	 */
 	public static final String jvmLoadString(int __p)
 	{
+		// If a null pointer was just requested, then treat as null
+		if (__p == 0)
+			return null;
+		
 		// Access of invalid object?
 		if (__p == Constants.BAD_MAGIC)
-			Assembly.breakpoint();
-		
-		// Cannot load from a null string
-		if (__p == 0)
 			Assembly.breakpoint();
 		
 		// Read length of the raw bytes
@@ -522,6 +525,19 @@ public final class JVMFunction
 					default:
 						return Assembly.sysCallPV(__si, __a);
 				}
+				
+				// Built-in system calls may set an error state
+			case SystemCallIndex.ERROR_GET:
+				switch (__a)
+				{
+						// Use last error state
+					case SystemCallIndex.LOAD_STRING:
+						return JVMFunction._LAST_ERROR;
+					
+						// Forward otherwise
+					default:
+						return Assembly.sysCallPV(__si, __a);
+				}
 			
 				// Perform garbage collection
 			case SystemCallIndex.GARBAGE_COLLECT:
@@ -530,6 +546,7 @@ public final class JVMFunction
 				
 				// Load string
 			case SystemCallIndex.LOAD_STRING:
+				JVMFunction._LAST_ERROR = 0;
 				return Assembly.objectToPointer(
 					JVMFunction.jvmLoadString(__a));
 				
