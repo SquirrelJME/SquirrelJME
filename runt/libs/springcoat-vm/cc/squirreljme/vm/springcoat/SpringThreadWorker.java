@@ -10,10 +10,10 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
-import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
@@ -1150,6 +1150,18 @@ public final class SpringThreadWorker
 				"longBitsToDouble:(J)D":
 				return Double.longBitsToDouble((Long)__args[0]);
 				
+				// Object to pointer
+			case "cc/squirreljme/jvm/Assembly::" +
+				"objectToPointer:(Ljava/lang/Object;)I":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"objectToPointerRefQueue:(Ljava/lang/Object;)I":
+				return this.uniqueObjectToPointer((SpringObject)__args[0]);
+				
+				// Pointer to object
+			case "cc/squirreljme/jvm/Assembly::" +
+				"pointerToObject:(I)Ljava/lang/Object;":
+				return this.uniquePointerToObject((Integer)__args[0]);
+				
 				// System calls (no return value)
 			case "cc/squirreljme/jvm/Assembly::" +
 				"sysCall:(S)V":
@@ -1317,108 +1329,6 @@ public final class SpringThreadWorker
 					else
 						return ConsoleOutput.ERROR_INVALIDFD;
 				}
-				
-				// Fatal report of a raw call trace in early TODO code
-			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
-				"fatalTodoReport:([I)V":
-				{
-					// Format text to the output
-					StringBuilder sb = new StringBuilder("[");
-					
-					// Print hex codes
-					SpringArrayObject hex = (SpringArrayObject)__args[0];
-					for (int i = 0, n = hex.length(); i < n; i++)
-					{
-						if (i > 0)
-							sb.append(", ");
-						sb.append(String.format("%08x",
-							hex.<Integer>get(Integer.class, i)));
-					}
-					
-					// End
-					sb.append("]");
-					
-					// {@squirreljme.error BK1h Virtual machine code executed
-					// a fatal TODOs report indicating unimplemented code,
-					// failing. (The hex codes for the TODOs trace)}
-					throw new SpringVirtualMachineException(
-						String.format("BK1h %s", sb));
-				}
-			
-				// Return the call trace
-			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
-				"rawCallTrace:()[I":
-				{
-					// Need to get all the stack frames first
-					SpringThread.Frame[] frames = this.thread.frames();
-					int numframes = frames.length;
-					
-					// Setup return value which stores all the frame data
-					SpringMachine machine = this.machine;
-					int[] rv = new int[DebugAccess.TRACE_COUNT * numframes];
-					for (int i = numframes - 1, o = 0; i >= 0; i--,
-						o += DebugAccess.TRACE_COUNT)
-					{
-						SpringThread.Frame frame = frames[i];
-						
-						SpringMethod inmethod = frame.method();
-						int pc = frame.lastExecutedPc();
-						
-						// Only if the method is valid
-						if (inmethod != null)
-						{
-							// Class hilo
-							SpringMachine.longToInt(o + 0, rv,
-								machine.debugUnresolveString(
-									inmethod.inClass().toString()));
-							
-							// Method hilo
-							SpringMachine.longToInt(o + 2, rv,
-								machine.debugUnresolveString(
-									inmethod.nameAndType().name().toString()));
-							
-							// Descriptor hilo
-							SpringMachine.longToInt(o + 4, rv,
-								machine.debugUnresolveString(
-									inmethod.nameAndType().type().toString()));
-							
-							// File string
-							SpringMachine.longToInt(o + 8, rv,
-								machine.debugUnresolveString(
-									inmethod.inFile()));
-						}
-						
-						// Not valid
-						else
-						{
-							SpringMachine.longToInt(o + 0, rv, -1);
-							SpringMachine.longToInt(o + 2, rv, -1);
-							SpringMachine.longToInt(o + 4, rv, -1);
-							SpringMachine.longToInt(o + 8, rv, -1);
-						}
-						
-						// Program counter hilo
-						rv[o + 6] = 0;
-						rv[o + 7] = frame.lastExecutedPc();
-						
-						// Line of code being executed
-						rv[o + 10] = frame.lastExecutedPcSourceLine();
-					}
-					
-					return rv;
-				}
-				
-				// Resolve string pointer
-			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
-				"resolveString:(J)Ljava/lang/String;":
-				return this.asVMObject(
-					this.machine.debugResolveString((Long)__args[0]));
-					
-				// Unresolve string pointer
-			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
-				"unresolveString:(Ljava/lang/String;)J":
-				return this.machine.debugUnresolveString(
-					this.<String>asNativeObject(String.class, __args[0]));
 				
 				// Accelerated graphics
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
@@ -4155,28 +4065,122 @@ public final class SpringThreadWorker
 					err = 0;
 					switch (__args[0])
 					{
+						case SystemCallIndex.API_LEVEL:
+						case SystemCallIndex.CALL_STACK_HEIGHT:
+						case SystemCallIndex.CALL_STACK_ITEM:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
-						case SystemCallIndex.TIME_LO_MILLI_WALL:
-						case SystemCallIndex.TIME_HI_MILLI_WALL:
-						case SystemCallIndex.TIME_LO_NANO_MONO:
-						case SystemCallIndex.TIME_HI_NANO_MONO:
-						case SystemCallIndex.VMI_MEM_FREE:
-						case SystemCallIndex.VMI_MEM_USED:
-						case SystemCallIndex.VMI_MEM_MAX:
-						case SystemCallIndex.GARBAGE_COLLECT:
 						case SystemCallIndex.EXIT:
-						case SystemCallIndex.API_LEVEL:
+						case SystemCallIndex.FATAL_TODO:
+						case SystemCallIndex.GARBAGE_COLLECT:
+						case SystemCallIndex.LOAD_STRING:
+						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_OF_STDIN:
 						case SystemCallIndex.PD_OF_STDOUT:
-						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_WRITE_BYTE:
+						case SystemCallIndex.TIME_HI_MILLI_WALL:
+						case SystemCallIndex.TIME_HI_NANO_MONO:
+						case SystemCallIndex.TIME_LO_MILLI_WALL:
+						case SystemCallIndex.TIME_LO_NANO_MONO:
+						case SystemCallIndex.VMI_MEM_FREE:
+						case SystemCallIndex.VMI_MEM_MAX:
+						case SystemCallIndex.VMI_MEM_USED:
 							rv = 1;
 							break;
 						
 						default:
 							rv = 0;
 							break;
+					}
+				}
+				break;
+				
+				// Returns the height of the call stack
+			case SystemCallIndex.CALL_STACK_HEIGHT:
+				{
+					rv = this.thread.frames().length;
+					err = 0;
+				}
+				break;
+				
+				// Returns the given call stack item
+			case SystemCallIndex.CALL_STACK_ITEM:
+				{
+					// Need to get all the stack frames first
+					SpringThread.Frame[] frames = this.thread.frames();
+					int numframes = frames.length;
+					int curf = (numframes - 1) - __args[0];
+					
+					// Out of range item
+					if (curf < 0 || curf >= numframes)
+					{
+						rv = -1;
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					}
+					
+					// Depends on the item
+					else
+					{
+						// Reset
+						rv = err = 0;
+						
+						// Get method we are in
+						SpringMethod inmethod = frames[curf].method();
+						
+						// Depends on the item
+						switch (__args[1])
+						{
+								// Class name
+							case CallStackItem.CLASS_NAME:
+								if (inmethod == null)
+									err = SystemCallError.VALUE_OUT_OF_RANGE;
+								else
+									rv = this.uniqueStringId(
+										inmethod.inClass().toString());
+								break;
+
+								// The method name.
+							case CallStackItem.METHOD_NAME:
+								if (inmethod == null)
+									err = SystemCallError.VALUE_OUT_OF_RANGE;
+								else
+									rv = this.uniqueStringId(inmethod.
+										nameAndType().name().toString());
+								break;
+
+								// The method type.
+							case CallStackItem.METHOD_TYPE:
+								if (inmethod == null)
+									err = SystemCallError.VALUE_OUT_OF_RANGE;
+								else
+									rv = this.uniqueStringId(inmethod.
+										nameAndType().type().toString());
+								break;
+
+								// The current file.
+							case CallStackItem.SOURCE_FILE:
+								if (inmethod == null)
+									err = SystemCallError.VALUE_OUT_OF_RANGE;
+								else
+									rv = this.uniqueStringId(
+										inmethod.inFile());
+								break;
+
+								// Source line.
+							case CallStackItem.SOURCE_LINE:
+								rv = frames[curf].lastExecutedPcSourceLine();
+								break;
+
+								// The PC address.
+							case CallStackItem.PC_ADDRESS:
+							case CallStackItem.JAVA_PC_ADDRESS:
+								rv = frames[curf].lastExecutedPc();
+								break;
+
+							default:
+								err = SystemCallError.VALUE_OUT_OF_RANGE;
+								break;
+						}
 					}
 				}
 				break;
@@ -4219,8 +4223,46 @@ public final class SpringThreadWorker
 					err = 0;
 				}
 				break;
+				
+				// Exit the VM
+			case SystemCallIndex.EXIT:
+				{
+					// Tell everything to cleanup and exit
+					this.thread.profiler.exitAll(System.nanoTime());
+					this.machine.exit((Integer)__args[0]);
+					
+					rv = 0;
+					err = 0;
+				}
+				break;
+				
+				// Fatal ToDo
+			case SystemCallIndex.FATAL_TODO:
+				// {@squirreljme.error BK1h Virtual machine code executed
+				// a fatal Todo.}
+				rv = err = 0;
+				throw new SpringVirtualMachineException("BK1h");
+				
+				// Invoke the garbage collector
+			case SystemCallIndex.GARBAGE_COLLECT:
+				{
+					Runtime.getRuntime().gc();
+					
+					rv = 0;
+					err = 0;
+				}
+				break;
+				
+				// Loads a string
+			case SystemCallIndex.LOAD_STRING:
+				{
+					rv = this.uniqueObjectToPointer((SpringObject)
+						this.asVMObject(this.uniqueString(__args[0])));
+					err = 0;
+				}
+				break;
 			
-			// Current wall clock milliseconds (low).
+				// Current wall clock milliseconds (low).
 			case SystemCallIndex.TIME_LO_MILLI_WALL:
 				{
 					rv = (int)(System.currentTimeMillis());
@@ -4228,7 +4270,7 @@ public final class SpringThreadWorker
 				}
 				break;
 
-			// Current wall clock milliseconds (high).
+				// Current wall clock milliseconds (high).
 			case SystemCallIndex.TIME_HI_MILLI_WALL:
 				{
 					rv = (int)(System.currentTimeMillis() >>> 32);
@@ -4236,7 +4278,7 @@ public final class SpringThreadWorker
 				}
 				break;
 
-			// Current monotonic clock nanoseconds (low).
+				// Current monotonic clock nanoseconds (low).
 			case SystemCallIndex.TIME_LO_NANO_MONO:
 				{
 					rv = (int)(System.nanoTime());
@@ -4244,7 +4286,7 @@ public final class SpringThreadWorker
 				}
 				break;
 
-			// Current monotonic clock nanoseconds (high).
+				// Current monotonic clock nanoseconds (high).
 			case SystemCallIndex.TIME_HI_NANO_MONO:
 				{
 					rv = (int)(System.nanoTime() >>> 32);
@@ -4275,28 +4317,6 @@ public final class SpringThreadWorker
 				{
 					rv = (int)Math.min(Integer.MAX_VALUE,
 						Runtime.getRuntime().maxMemory());
-					err = 0;
-				}
-				break;
-				
-				// Invoke the garbage collector
-			case SystemCallIndex.GARBAGE_COLLECT:
-				{
-					Runtime.getRuntime().gc();
-					
-					rv = 0;
-					err = 0;
-				}
-				break;
-				
-				// Exit the VM
-			case SystemCallIndex.EXIT:
-				{
-					// Tell everything to cleanup and exit
-					this.thread.profiler.exitAll(System.nanoTime());
-					this.machine.exit((Integer)__args[0]);
-					
-					rv = 0;
 					err = 0;
 				}
 				break;
@@ -4389,6 +4409,87 @@ public final class SpringThreadWorker
 		
 		// Use returning value
 		return rv;
+	}
+	
+	/**
+	 * Converts an object to a unique pointer.
+	 *
+	 * @param __p The object to convert.
+	 * @return The resulting pointer.
+	 * @since 2019/06/16
+	 */
+	public final int uniqueObjectToPointer(SpringObject __p)
+	{
+		// Null reference?
+		if (__p == SpringNullObject.NULL)
+			return 0;
+		
+		// Lock
+		Map<Integer, SpringObject> ubi = this.machine._uniquebyint;
+		synchronized (ubi)
+		{
+			// See if it already has been mapped?
+			for (Map.Entry<Integer, SpringObject> e : ubi.entrySet())
+				if (e.getValue() == __p)
+					return e.getKey();
+			
+			// Otherwise add it
+			int rv = ubi.size();
+			ubi.put(rv, __p);
+			return rv;
+		}
+	}
+	
+	/**
+	 * Converts an object to a unique pointer.
+	 *
+	 * @param __p The object to convert.
+	 * @return The resulting pointer.
+	 * @since 2019/06/16
+	 */
+	public final SpringObject uniquePointerToObject(int __p)
+	{
+		// Null reference?
+		if (__p == 0)
+			return SpringNullObject.NULL;
+		
+		// Find mapped object already
+		Map<Integer, SpringObject> ubi = this.machine._uniquebyint;
+		synchronized (ubi)
+		{
+			SpringObject rv = ubi.get(__p);
+			if (rv == null)
+				return SpringNullObject.NULL;
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the string of the given ID.
+	 *
+	 * @param __id The ID to get.
+	 * @return The resulting string.
+	 * @since 2019/06/16
+	 */
+	public final String uniqueString(int __id)
+	{
+		return this.machine.debugResolveString((int)__id);
+	}
+	
+	/**
+	 * Returns a unique ID for the given string.
+	 *
+	 * @param __s The String to get the ID od.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/16
+	 */
+	public final int uniqueStringId(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return (int)this.machine.debugUnresolveString(__s);
 	}
 	
 	/**

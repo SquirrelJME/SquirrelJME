@@ -438,7 +438,8 @@ public class TODO
 	{
 		// For the SquirrelJME runtime, use the debug stuff to get the
 		// current call trace
-		CallTraceElement[] stack = CallTraceElement.trace();
+		CallTraceElement[] stack = CallTraceElement.traceResolve(
+			CallTraceElement.traceRaw());
 		
 		// Get the first one which is not in this class
 		for (CallTraceElement e : stack)
