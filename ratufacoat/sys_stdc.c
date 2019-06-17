@@ -312,7 +312,7 @@ int main(int argc, char** argv)
 	
 	/* Execute until termination. */
 	error = SJME_ERROR_NONE;
-	while (sjme_jvmexec(jvm, &error, SJME_JINT_MAX_VALUE) != 0)
+	while (sjme_jvmexec(jvm, &error, SJME_JINT_C(1048576)) != 0)
 	{
 		/* The JVM hit some kind of error? */
 		if (error != SJME_ERROR_NONE)
