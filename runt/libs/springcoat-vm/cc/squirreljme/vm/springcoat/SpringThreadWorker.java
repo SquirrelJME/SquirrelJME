@@ -4109,7 +4109,7 @@ public final class SpringThreadWorker
 					// Need to get all the stack frames first
 					SpringThread.Frame[] frames = this.thread.frames();
 					int numframes = frames.length;
-					int curf = (numframes - 1) - __args[0];
+					int curf = (numframes - __args[0]) - 1;
 					
 					// Out of range item
 					if (curf < 0 || curf >= numframes)

@@ -604,7 +604,7 @@ public final class CallTraceElement
 			SystemCallIndex.CALL_STACK_HEIGHT) != SystemCallError.NO_ERROR)
 			return new int[0];
 		
-		// Cut call height down to remove this method's frame
+		// Remove the top-most frame because it will be this method
 		callheight--;
 		
 		// Get the call parameters
@@ -655,7 +655,7 @@ public final class CallTraceElement
 		{
 			// Load class name
 			int xcl = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[CallStackItem.CLASS_NAME]);
+				__trace[base + CallStackItem.CLASS_NAME]);
 			String scl = ((xcl == 0 || Assembly.sysCallV(
 				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
 				SystemCallError.NO_ERROR) ?
@@ -663,7 +663,7 @@ public final class CallTraceElement
 				
 			// Load method name
 			int xmn = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[CallStackItem.METHOD_NAME]);
+				__trace[base + CallStackItem.METHOD_NAME]);
 			String smn = ((xmn == 0 || Assembly.sysCallV(
 				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
 				SystemCallError.NO_ERROR) ?
@@ -671,7 +671,7 @@ public final class CallTraceElement
 			
 			// Load method type
 			int xmt = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[CallStackItem.METHOD_NAME]);
+				__trace[base + CallStackItem.METHOD_NAME]);
 			String smt = ((xmt == 0 || Assembly.sysCallV(
 				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
 				SystemCallError.NO_ERROR) ?
@@ -679,14 +679,14 @@ public final class CallTraceElement
 			
 			// Load source file
 			int xsf = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[CallStackItem.SOURCE_FILE]);
+				__trace[base + CallStackItem.SOURCE_FILE]);
 			String ssf = ((xsf == 0 || Assembly.sysCallV(
 				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
 				SystemCallError.NO_ERROR) ?
 				(String)null : (String)Assembly.pointerToObject(xsf));
 			
 			// The PC address
-			int pcaddr = __trace[CallStackItem.PC_ADDRESS];
+			int pcaddr = __trace[base + CallStackItem.PC_ADDRESS];
 			
 			// Build elements
 			rv[z] = new CallTraceElement(
@@ -695,9 +695,9 @@ public final class CallTraceElement
 				smt,
 				(pcaddr == 0 ? -1 : pcaddr),
 				ssf,
-				__trace[CallStackItem.SOURCE_LINE],
-				__trace[CallStackItem.JAVA_OPERATION],
-				__trace[CallStackItem.JAVA_PC_ADDRESS]);
+				__trace[base + CallStackItem.SOURCE_LINE],
+				__trace[base + CallStackItem.JAVA_OPERATION],
+				__trace[base + CallStackItem.JAVA_PC_ADDRESS]);
 		}
 		
 		// Use the resolved form
