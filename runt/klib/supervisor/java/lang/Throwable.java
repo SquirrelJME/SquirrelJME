@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.CallStackItem;
+import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -123,47 +124,29 @@ public class Throwable
 			// Print all the items in it
 			StringBuilder sb = new StringBuilder();
 			for (int base = 0; base < rawn; base += CallStackItem.NUM_ITEMS)
-			{
-				// Load class name
-				int xcl = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-					rawtrace[base + CallStackItem.CLASS_NAME]);
-				String scl = ((xcl == 0 || Assembly.sysCallV(
-					SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-					SystemCallError.NO_ERROR) ?
-					(String)null : (String)Assembly.pointerToObject(xcl));
-					
-				// Load method name
-				int xmn = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-					rawtrace[base + CallStackItem.METHOD_NAME]);
-				String smn = ((xmn == 0 || Assembly.sysCallV(
-					SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-					SystemCallError.NO_ERROR) ?
-					(String)null : (String)Assembly.pointerToObject(xmn));
+				try
+				{
+					// Print it out
+					todo.DEBUG.note("    %s::%s:%s (%s:%d) A@%d J@%d/%d",
+						JVMFunction.jvmLoadString(
+							rawtrace[base + CallStackItem.CLASS_NAME]),
+						JVMFunction.jvmLoadString(
+							rawtrace[base + CallStackItem.METHOD_NAME]),
+						JVMFunction.jvmLoadString(
+							rawtrace[base + CallStackItem.METHOD_TYPE]),
+						JVMFunction.jvmLoadString(
+							rawtrace[base + CallStackItem.SOURCE_FILE]),
+						rawtrace[base + CallStackItem.SOURCE_LINE],
+						rawtrace[base + CallStackItem.PC_ADDRESS],
+						rawtrace[base + CallStackItem.JAVA_PC_ADDRESS],
+						rawtrace[base + CallStackItem.JAVA_OPERATION]);
+				}
 				
-				// Load method type
-				int xmt = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-					rawtrace[base + CallStackItem.METHOD_NAME]);
-				String smt = ((xmt == 0 || Assembly.sysCallV(
-					SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-					SystemCallError.NO_ERROR) ?
-					(String)null : (String)Assembly.pointerToObject(xmt));
-				
-				// Load source file
-				int xsf = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-					rawtrace[base + CallStackItem.SOURCE_FILE]);
-				String ssf = ((xsf == 0 || Assembly.sysCallV(
-					SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-					SystemCallError.NO_ERROR) ?
-					(String)null : (String)Assembly.pointerToObject(xsf));
-				
-				// Print it out
-				todo.DEBUG.note("    %s::%s:%s (%s:%d) A@%d J@%d/%d",
-					scl, smn, smt,
-					ssf, rawtrace[base + CallStackItem.SOURCE_LINE],
-					rawtrace[base + CallStackItem.PC_ADDRESS],
-					rawtrace[base + CallStackItem.JAVA_PC_ADDRESS],
-					rawtrace[base + CallStackItem.JAVA_OPERATION]);
-			}
+				// Error getting stack trace element
+				catch (Throwable t)
+				{
+					todo.DEBUG.code('X', 'T', base);
+				}
 		}
 	}
 	
