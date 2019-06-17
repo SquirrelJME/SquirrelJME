@@ -591,17 +591,6 @@ public final class CallTraceElement
 	}
 	
 	/**
-	 * Obtains the current call trace.
-	 *
-	 * @return The current call trace.
-	 * @since 2019/06/16
-	 */
-	public static final CallTraceElement[] trace()
-	{
-		return CallTraceElement.traceResolve(CallTraceElement.traceRaw());
-	}
-	
-	/**
 	 * Obtains the current raw call trace which has not been resolved.
 	 *
 	 * @return The raw call trace.
@@ -615,6 +604,9 @@ public final class CallTraceElement
 			SystemCallIndex.CALL_STACK_HEIGHT) != SystemCallError.NO_ERROR)
 			return new int[0];
 		
+		// Cut call height down to remove this method's frame
+		callheight--;
+		
 		// Get the call parameters
 		int[] rv = new int[callheight * CallStackItem.NUM_ITEMS];
 		for (int z = 0, base = 0; z < callheight; z++,
@@ -623,10 +615,11 @@ public final class CallTraceElement
 			{
 				// Get parameter
 				int vx = Assembly.sysCallPV(SystemCallIndex.CALL_STACK_ITEM,
-					z, i);
+					1 + z, i);
 				
 				// Nullify unknown or invalid parameters
-				if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET) !=
+				if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
+					SystemCallIndex.CALL_STACK_ITEM) !=
 					SystemCallError.NO_ERROR)
 					vx = 0;
 				
@@ -692,12 +685,15 @@ public final class CallTraceElement
 				SystemCallError.NO_ERROR) ?
 				(String)null : (String)Assembly.pointerToObject(xsf));
 			
+			// The PC address
+			int pcaddr = __trace[CallStackItem.PC_ADDRESS];
+			
 			// Build elements
 			rv[z] = new CallTraceElement(
 				scl,
 				smn,
 				smt,
-				__trace[CallStackItem.PC_ADDRESS],
+				(pcaddr == 0 ? -1 : pcaddr),
 				ssf,
 				__trace[CallStackItem.SOURCE_LINE],
 				__trace[CallStackItem.JAVA_OPERATION],

@@ -32,6 +32,10 @@ public final class SystemCallError
 	public static final short PIPE_DESCRIPTOR_BAD_WRITE =
 		-3;
 	
+	/** Value out of range. */
+	public static final short VALUE_OUT_OF_RANGE =
+		-4;
+	
 	/**
 	 * Not used.
 	 *
