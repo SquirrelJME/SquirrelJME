@@ -23,6 +23,7 @@ import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Formatter;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
@@ -4049,6 +4050,12 @@ public final class SpringThreadWorker
 	 */
 	public final int systemCall(short __si, int... __args)
 	{
+		// Make at least 8!
+		if (__args == null)
+			__args = new int[8];
+		if (__args.length < 8)
+			__args = Arrays.copyOf(__args, 8);
+		
 		// Error state for the last call of this type
 		int[] errors = this.thread._syscallerrors;
 		
@@ -4434,7 +4441,7 @@ public final class SpringThreadWorker
 					return e.getKey();
 			
 			// Otherwise add it
-			int rv = ubi.size();
+			int rv = ubi.size() + 1;
 			ubi.put(rv, __p);
 			return rv;
 		}

@@ -13,6 +13,10 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * This class is used special by the compiler to transform all the various
@@ -30,6 +34,14 @@ public final class Assembly
 	/** Errors used in system calls. */
 	private static final int[] _ERRORS =
 		new int[SystemCallIndex.NUM_SYSCALLS];
+	
+	/** Unique string map. */
+	private static final Map<String, Integer> _STRINGS =
+		new HashMap<>();
+	
+	/** Unique objects. */
+	private static final Map<Object, Integer> _OBJECTS =
+		new IdentityHashMap<>();
 	
 	/**
 	 * Not used.
@@ -549,7 +561,7 @@ public final class Assembly
 	 */
 	public static final int objectToPointer(Object __o)
 	{
-		throw new todo.TODO();
+		return Assembly.__uniqueObjectId(__o);
 	}
 	
 	/**
@@ -563,7 +575,7 @@ public final class Assembly
 	 */
 	public static final int objectToPointerRefQueue(Object __o)
 	{
-		throw new todo.TODO();
+		return Assembly.__uniqueObjectId(__o);
 	}
 	
 	/**
@@ -575,7 +587,7 @@ public final class Assembly
 	 */
 	public static final Object pointerToObject(int __p)
 	{
-		throw new todo.TODO();
+		return Assembly.__uniqueObject(__p);
 	}
 	
 	/**
@@ -1370,6 +1382,12 @@ public final class Assembly
 	 */
 	private static final int __sysCall(short __si, int... __args)
 	{
+		// Make at least 8!
+		if (__args == null)
+			__args = new int[8];
+		if (__args.length < 8)
+			__args = Arrays.copyOf(__args, 8);
+		
 		// Error state for the last call of this type
 		int[] errors = _ERRORS;
 		
@@ -1387,10 +1405,13 @@ public final class Assembly
 					switch (__args[0])
 					{
 						case SystemCallIndex.API_LEVEL:
+						case SystemCallIndex.CALL_STACK_HEIGHT:
+						case SystemCallIndex.CALL_STACK_ITEM:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXIT:
 						case SystemCallIndex.GARBAGE_COLLECT:
+						case SystemCallIndex.LOAD_STRING:
 						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_OF_STDIN:
 						case SystemCallIndex.PD_OF_STDOUT:
@@ -1417,6 +1438,76 @@ public final class Assembly
 				{
 					rv = ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV;
 					err = 0;
+				}
+				break;
+				
+				// Call trace height
+			case SystemCallIndex.CALL_STACK_HEIGHT:
+				{
+					// Remove traces for sysCall() and this method
+					rv = new Throwable().getStackTrace().length - 2;
+					err = 0;
+				}
+				break;
+				
+				// Call trace item
+			case SystemCallIndex.CALL_STACK_ITEM:
+				{
+					// Get the current stack
+					StackTraceElement[] stk = new Throwable().getStackTrace();
+					
+					// Get element trace here
+					// Remove traces for sysCall() and this method
+					int depth = 2 + __args[0];
+					StackTraceElement ele = (depth < 0 || depth >= stk.length ?
+						null : stk[depth]);
+					
+					// Fail?
+					if (ele == null)
+					{
+						rv = 0;
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					}
+					
+					// Handle normally
+					else
+					{
+						// Depends
+						switch (__args[1])
+						{
+								// Class name
+							case CallStackItem.CLASS_NAME:
+								rv = Assembly.__uniqueStringId(
+									ele.getClassName().replace('.', '/'));
+								err = 0;
+								break;
+
+								// The method name.
+							case CallStackItem.METHOD_NAME:
+								rv = Assembly.__uniqueStringId(
+									ele.getMethodName());
+								err = 0;
+								break;
+
+								// The current file.
+							case CallStackItem.SOURCE_FILE:
+								rv = Assembly.__uniqueStringId(
+									ele.getFileName());
+								err = 0;
+								break;
+
+								// Source line.
+							case CallStackItem.SOURCE_LINE:
+								rv = ele.getLineNumber();
+								err = 0;
+								break;
+
+							default:
+								rv = 0;
+								err = SystemCallError.VALUE_OUT_OF_RANGE;
+								break;
+						}
+					}
 				}
 				break;
 				
@@ -1475,6 +1566,15 @@ public final class Assembly
 					Runtime.getRuntime().gc();
 					
 					rv = 0;
+					err = 0;
+				}
+				break;
+				
+				// Loads a string
+			case SystemCallIndex.LOAD_STRING:
+				{
+					rv = Assembly.__uniqueObjectId(
+						Assembly.__uniqueString(__args[0]));
 					err = 0;
 				}
 				break;
@@ -1618,6 +1718,96 @@ public final class Assembly
 		
 		// Use returning value
 		return rv;
+	}
+	
+	/**
+	 * Returns the unique object for the given ID.
+	 *
+	 * @param __id The ID to get the object of.
+	 * @return The object for the given ID.
+	 * @since 2019/06/17
+	 */
+	private static Object __uniqueObject(int __id)
+	{
+		if (__id == 0)
+			return null;
+			
+		Map<Object, Integer> objects = Assembly._OBJECTS;
+		synchronized (objects)
+		{
+			for (Map.Entry<Object, Integer> e : objects.entrySet())
+				if (__id == e.getValue().intValue())
+					return e.getKey();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns the unique ID of the given object.
+	 *
+	 * @param __o The object to get.
+	 * @return The ID of the given object.
+	 * @since 2019/06/17
+	 */
+	private static int __uniqueObjectId(Object __o)
+	{
+		if (__o == null)
+			return 0;
+		
+		Map<Object, Integer> objects = Assembly._OBJECTS;
+		synchronized (objects)
+		{
+			Integer rv = objects.get(__o);
+			if (rv == null)
+				objects.put(__o, (rv = 1 + objects.size()));
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the unique string for the given ID.
+	 *
+	 * @param __id The ID to get.
+	 * @return The resulting string.
+	 * @since 2019/06/17
+	 */
+	private static String __uniqueString(int __id)
+	{
+		if (__id == 0)
+			return null;
+		
+		Map<String, Integer> strings = Assembly._STRINGS;
+		synchronized (strings)
+		{
+			for (Map.Entry<String, Integer> e : strings.entrySet())
+				if (__id == e.getValue().intValue())
+					return e.getKey();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns an ID for the given unique string.
+	 *
+	 * @param __s The string to get the ID of.
+	 * @return The unique string ID.
+	 * @since 2019/06/17
+	 */
+	private static int __uniqueStringId(String __s)
+	{
+		if (__s == null)
+			return 0;
+		
+		Map<String, Integer> strings = Assembly._STRINGS;
+		synchronized (strings)
+		{
+			Integer rv = strings.get(__s);
+			if (rv == null)
+				strings.put(__s, (rv = 1 + strings.size()));
+			return rv;
+		}
 	}
 }
 
