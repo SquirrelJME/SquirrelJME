@@ -146,8 +146,9 @@ public final class Allocator
 		int csz = Assembly.memReadInt(seeker, CHUNK_SIZE_OFFSET),
 			cnx = Assembly.memReadInt(seeker, CHUNK_NEXT_OFFSET);
 		
-		// Bad size?
-		if (csz <= 0)
+		// Bad size? Bad chain link?
+		if (csz <= 0 ||
+			(cnx + Integer.MAX_VALUE) < (seeker + Integer.MAX_VALUE))
 			Assembly.breakpoint();
 		
 		// Set as free
