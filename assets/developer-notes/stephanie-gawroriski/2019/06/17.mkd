@@ -1,0 +1,7 @@
+# 2019/06/17
+
+## 08:23
+
+So the thing to do now would be to get call traces working so that way I can
+do exceptions and such. Having exceptions with printable traces would be very
+useful so that working with the supervisor bootstrap is not a mystery!
