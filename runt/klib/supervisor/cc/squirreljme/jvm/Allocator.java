@@ -65,6 +65,10 @@ public final class Allocator
 			int csz = Assembly.memReadInt(seeker, CHUNK_SIZE_OFFSET),
 				cnx = Assembly.memReadInt(seeker, CHUNK_NEXT_OFFSET);
 			
+			// This should not happen
+			if ((cnx + Integer.MAX_VALUE) < (seeker + Integer.MAX_VALUE))
+				Assembly.breakpoint();
+			
 			// Is this chunk free?
 			boolean isfree = ((csz & MEMPART_FREE_BIT) != 0);
 			csz &= (~MEMPART_FREE_BIT);
