@@ -311,6 +311,7 @@
 
 /** Base size of arrays. */
 #define SJME_ARRAY_BASE_SIZE SJME_JINT_C(16)
+
 /** Checks if the system call is supported. */
 #define SJME_SYSCALL_QUERY_INDEX SJME_JINT_C(0)
 
