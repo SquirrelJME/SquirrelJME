@@ -337,6 +337,11 @@ public final class Minimizer
 			sorted.add(2, new Field(new FieldFlags(0x10c0),
 				new FieldName("_monitor"),
 				FieldDescriptor.INTEGER, null, null));
+			
+			// (monitor enter count) Synthetic + Transient + Volatile
+			sorted.add(3, new Field(new FieldFlags(0x10c0),
+				new FieldName("_moncount"),
+				FieldDescriptor.INTEGER, null, null));
 		}
 		
 		// If an array, add the length of the array

@@ -548,6 +548,12 @@ public final class JarMinimizer
 							wp, 0);
 						break;
 					
+						// Monitor count
+					case "_moncount:I":
+						__init.memWriteInt(
+							wp, 0);
+						break;
+					
 					default:
 						throw new todo.OOPS(key);
 				}
