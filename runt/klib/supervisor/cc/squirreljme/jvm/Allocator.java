@@ -32,6 +32,10 @@ public final class Allocator
 	public static final int CHUNK_LENGTH =
 		8;
 	
+	/** Extra size to add that must be hit before a chunk is split. */
+	public static final int SPLIT_REQUIREMENT =
+		16;
+	
 	/** The base RAM address. */
 	private static volatile int _rambase;
 	
@@ -80,8 +84,10 @@ public final class Allocator
 				int rv = seeker + CHUNK_LENGTH;
 				
 				// There is more space left in this chunk than what we need
-				// so it will be split
-				if (want < csz)
+				// so it will be split. Add a requirement in splitting that it
+				// will only be done if there is still space following. This
+				// way zero length chunks are not created!
+				if (want + SPLIT_REQUIREMENT < csz)
 				{
 					// The position of the new chunk
 					int nextseek = seeker + want;
@@ -94,15 +100,20 @@ public final class Allocator
 					// The next chunk is the next the chunk we claimed
 					Assembly.memWriteInt(nextseek, CHUNK_NEXT_OFFSET,
 						cnx);
+						
+					// The size of our current chunk is the wanted size
+					Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
+						want);
 					
 					// The next chunk of the current chunk is the new chunk
 					Assembly.memWriteInt(seeker, CHUNK_NEXT_OFFSET,
 						nextseek);
 				}
 				
-				// The size of our current chunk is the wanted size
-				Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-					want);
+				// Otherwise just use the same size and remove the free
+				// bit (which was already masked away before)
+				else
+					Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET, csz);
 				
 				// Clear out memory since Java expects the data to be
 				// initialized to zero always
