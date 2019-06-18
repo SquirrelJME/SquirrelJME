@@ -130,10 +130,10 @@ public final class JVMFunction
 				/*todo.DEBUG.code('G', 'o', 1);*/
 				
 				// Go through all elements and uncount them
-				for (int i = 0, n = Assembly.memReadInt(__p,
-					Constants.ARRAY_LENGTH_OFFSET),
-					bp = __p + Constants.ARRAY_BASE_SIZE,
-					xp = 0; i < n; i++, xp += 4)
+				int n = Assembly.memReadInt(__p,
+					Constants.ARRAY_LENGTH_OFFSET);
+				for (int i = 0, bp = __p + Constants.ARRAY_BASE_SIZE, xp = 0;
+					i < n; i++, xp += 4)
 					Assembly.refUncount(Assembly.memReadInt(bp, xp));
 			}
 		}
