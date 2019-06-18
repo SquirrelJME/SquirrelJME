@@ -134,7 +134,7 @@ public final class JVMFunction
 					Constants.ARRAY_LENGTH_OFFSET),
 					bp = __p + Constants.ARRAY_BASE_SIZE,
 					xp = 0; i < n; i++, xp += 4)
-					Assembly.refUncount(Assembly.memReadInt(bp, 0));
+					Assembly.refUncount(Assembly.memReadInt(bp, xp));
 			}
 		}
 		
