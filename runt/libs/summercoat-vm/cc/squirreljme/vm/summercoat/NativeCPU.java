@@ -390,15 +390,29 @@ public final class NativeCPU
 					synchronized (memory)
 					{
 						// The address to load from/store to
-						int addr = lr[args[1]] + args[2];
+						int addr = lr[args[1]],
+							off = args[2];
 						
 						// Read, increment, and store
 						int newval;
-						memory.memWriteInt(addr,
-							(newval = memory.memReadInt(addr) - 1));
+						memory.memWriteInt(addr + off,
+							(newval = memory.memReadInt(addr + off) - 1));
 						
 						// Store the value after the decrement
 						lr[args[0]] = newval;
+						
+						// {@squirreljme.error AE0g Atomic decremented to
+						// negative value! (The address and offset; The
+						// old value; The new value)}
+						if (newval < 0)
+							throw new VMException(String.format(
+								"AE0g %08x+%d %d %d", addr, off, newval + 1,
+								newval));
+						
+						// Debug
+						if (ENABLE_DEBUG)
+							todo.DEBUG.note("%08x(%d) -= %d - 1 = %d",
+								addr, off, newval + 1, newval);
 					}
 					break;
 					
@@ -407,10 +421,18 @@ public final class NativeCPU
 					synchronized (memory)
 					{
 						// The address to load from/store to
-						int addr = lr[args[0]] + args[1];
+						int addr = lr[args[0]],
+							off = args[1];
 						
 						// Read, increment, and store
-						memory.memWriteInt(addr, memory.memReadInt(addr) + 1);
+						int oldv;
+						memory.memWriteInt(addr + off,
+							(oldv = memory.memReadInt(addr + off)) + 1);
+						
+						// Debug
+						if (ENABLE_DEBUG)
+							todo.DEBUG.note("%08x(%d) += %d + 1 = %d",
+								addr, off, oldv, oldv + 1);
 					}
 					break;
 				
