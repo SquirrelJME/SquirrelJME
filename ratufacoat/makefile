@@ -7,11 +7,11 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Makefile for building SquirrelJME RatufaCoat.
 
-CFLAGS=-g3 -O0
+CFLAGS=-g3 -O0 -Wall -Wextra
 FILES=sjmerc.c sys_stdc.c
 
 squirreljme-stdc:	$(FILES)
-					$(CC) -o $@ $^ -DSQUIRRELJME_PORT_STDC $(CFLAGS) $(LIBS)
+			$(CC) -o $@ $^ -DSQUIRRELJME_PORT_STDC $(CFLAGS) $(LIBS)
 
 clean:				
-					rm -f squirreljme-stdc sjmerc.o sys_stdc.o
+			rm -f squirreljme-stdc sjmerc.o sys_stdc.o
