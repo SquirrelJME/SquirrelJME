@@ -682,22 +682,22 @@ void* sjme_fakeptr(sjme_jvm* jvm, void* ptr)
 	if (vptr >= SJME_POINTER_TO_JMEM(jvm->config) &&
 		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->config,
 			jvm->configsize)))
-		ptr = SJME_JINT_TO_POINTER(jvm->configbase) +
-			(sjme_jint)(vptr - SJME_JMEM_TO_POINTER(jvm->config));
+		ptr = SJME_JINT_TO_POINTER(jvm->configbase +
+			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->config)));
 	
 	/* Within RAM region? */
 	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->ram) &&
 		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->ram,
 			jvm->ramsize)))
-		ptr = SJME_JINT_TO_POINTER(jvm->rambase) +
-			(sjme_jint)(vptr - SJME_JMEM_TO_POINTER(jvm->ram));
+		ptr = SJME_JINT_TO_POINTER(jvm->rambase +
+			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->ram)));
 	
 	/* Within ROM region? */
 	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->rom) &&
 		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->rom,
 			jvm->romsize)))
-		ptr = SJME_JINT_TO_POINTER(jvm->rombase) +
-			(sjme_jint)(vptr - SJME_JMEM_TO_POINTER(jvm->rom));
+		ptr = SJME_JINT_TO_POINTER(jvm->rombase +
+			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->rom)));
 	
 	/* No mapping found, pass through. */
 	else
