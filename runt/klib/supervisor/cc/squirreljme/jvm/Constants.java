@@ -28,17 +28,21 @@ public interface Constants
 	public static final int OBJECT_MONITOR_OFFSET =
 		8;
 	
+	/** Object monitor count offset. */
+	public static final int OBJECT_MONITOR_COUNT_OFFSET =
+		12;
+	
 	/** Base size for object types. */
 	public static final int OBJECT_BASE_SIZE =
-		12;
+		16;
 	
 	/** The offset for array length. */
 	public static final int ARRAY_LENGTH_OFFSET =
-		12;
+		16;
 	
 	/** The base size for arrays. */
 	public static final int ARRAY_BASE_SIZE =
-		16;
+		20;
 	
 	/** Bad magic number. */
 	public static final int BAD_MAGIC =
