@@ -2312,7 +2312,7 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	}
 	
 	/* Check end value. */
-	if (sjme_memjreadp(jvm, 4, &rp) != SJME_BOOTRAM_CHECK_MAGIC)
+	if (sjme_memjreadp(jvm, 4, &rp) != (~SJME_JINT_C(0)))
 	{
 		if (error != NULL)
 			*error = SJME_ERROR_INVALIDBOOTRAMEND;
