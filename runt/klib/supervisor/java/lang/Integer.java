@@ -19,6 +19,10 @@ import cc.squirreljme.jvm.Assembly;
 public final class Integer
 	extends Number
 {
+	/** Maximum value. */
+	public static final int MAX_VALUE =
+		0x7FFFFFFF;
+	
 	/** The value of this integer. */
 	private transient int _value;
 	
