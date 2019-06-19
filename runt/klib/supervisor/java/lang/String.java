@@ -41,6 +41,35 @@ public final class String
 	}
 	
 	/**
+	 * Initializes a string which uses characters which are a copy of the given
+	 * character array, using the offset and length.
+	 *
+	 * @param __c The characters to copy.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/22
+	 */
+	public String(char[] __c, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Copy characters
+		char[] copy = new char[__l];
+		for (int i = __o, o = 0; o < __l; i++, o++)
+			copy[o] = __c[i];
+		
+		// Just use the copied buffer
+		this._chars = copy;
+	}
+	
+	/**
 	 * Initializes string decoded from the given UTF-8 byte.
 	 *
 	 * @param __b The UTF-8 bytes to decode.
