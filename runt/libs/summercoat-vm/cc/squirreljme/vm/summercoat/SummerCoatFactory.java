@@ -19,7 +19,6 @@ import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.packfile.MinimizedPackHeader;
-import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
@@ -49,6 +48,10 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
 public class SummerCoatFactory
 	extends VMFactory
 {
+	/** Default size of RAM. */
+	public static final int DEFAULT_RAM_SIZE =
+		16777216;
+	
 	/** The base address for suites. */
 	public static final int SUITE_BASE_ADDR =
 		0x40000000;
@@ -161,7 +164,7 @@ public class SummerCoatFactory
 		}
 		
 		// Initialize RAM
-		int ramsize = DefaultConfiguration.DEFAULT_RAM_SIZE,
+		int ramsize = SummerCoatFactory.DEFAULT_RAM_SIZE,
 			ramstart = RAM_START_ADDRESS;
 		vmem.mapRegion(new RawMemory(ramstart, ramsize));
 		

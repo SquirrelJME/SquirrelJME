@@ -11,7 +11,6 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.ClassInfo;
 import cc.squirreljme.jvm.Constants;
-import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
@@ -61,6 +60,10 @@ public final class JarMinimizer
 	 */
 	static final boolean _ENABLE_DEBUG =
 		Boolean.getBoolean("dev.shadowtail.jarfile.debug");
+	
+	/** The size of the static field area. */
+	public static final int STATIC_FIELD_SIZE =
+		8192;
 	
 	/** Is this a boot JAR? */
 	protected final boolean boot;
@@ -205,7 +208,7 @@ public final class JarMinimizer
 		int sfieldarea = this._sfieldarea;
 		if (sfieldarea == 0)
 			this._sfieldarea = (sfieldarea = __init.allocate(
-				DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE));
+				JarMinimizer.STATIC_FIELD_SIZE));
 		
 		// Get the class for the field
 		__BootInfo__ bi = this._boots.get(__cl);
@@ -220,7 +223,7 @@ public final class JarMinimizer
 			
 			// {@squirreljme.error BC03 Ran out of static field space.}
 			int snext = sfieldnext + bi._class.header.sfsize;
-			if (snext >= DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE)
+			if (snext >= JarMinimizer.STATIC_FIELD_SIZE)
 				throw new RuntimeException("BC03");
 			
 			// Set next pointer area
