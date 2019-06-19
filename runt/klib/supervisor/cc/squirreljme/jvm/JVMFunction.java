@@ -309,8 +309,10 @@ public final class JVMFunction
 		for (int i = 0, base = __p + 2; i < rawlen; i++)
 			bytes[i] = (byte)Assembly.memReadByte(base, i);
 		
-		// Initialize and intern string
-		return new String(bytes).intern();
+		// Initialize, but do not intern the string even though that is the
+		// expected result of the JVM. It just keeps the strings sticking
+		// around in the supervisor when they could be freed.
+		return new String(bytes);
 	}
 	
 	/**
