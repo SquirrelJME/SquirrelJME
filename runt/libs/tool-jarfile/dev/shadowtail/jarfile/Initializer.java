@@ -9,7 +9,6 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.runtime.cldc.vki.Allocator;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
