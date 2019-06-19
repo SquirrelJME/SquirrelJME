@@ -26,6 +26,43 @@ public final class Bootstrap
 	}
 	
 	/**
+	 * Searches the configuration space for the given key and returns it's
+	 * value.
+	 *
+	 * @param __confbase The configuration base.
+	 * @param __key The key to search for.
+	 * @return The pointer to the configuration value or {@code 0} if it was
+	 * not found.
+	 * @since 2019/06/19
+	 */
+	public static final int configSearch(int __confbase, int __key)
+	{
+		// Seek through items
+		for (int seeker = __confbase;;)
+		{
+			// Read key and size
+			int key = Assembly.memReadJavaShort(seeker,
+					Constants.CONFIG_KEY_OFFSET),
+				len = Assembly.memReadJavaShort(seeker,
+					Constants.CONFIG_SIZE_OFFSET) & 0xFFFF;
+			
+			// Stop?
+			if (key == ConfigRomType.END)
+				break;
+			
+			// Found here?
+			if (key == __key)
+				return seeker + Constants.CONFIG_HEADER_SIZE;
+			
+			// Skip otherwise
+			seeker += Constants.CONFIG_HEADER_SIZE + len;
+		}
+		
+		// Not found
+		return 0;
+	}
+	
+	/**
 	 * Entry point for the bootstrap.
 	 *
 	 * @param __rambase The base RAM address.
@@ -49,6 +86,14 @@ public final class Bootstrap
 		{
 			// Basic SquirrelJME Banner
 			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
+			todo.DEBUG.note("VM: %s %s", JVMFunction.jvmLoadString(
+				Bootstrap.configSearch(__confbase,
+				ConfigRomType.JAVA_VM_NAME)), JVMFunction.jvmLoadString(
+				Bootstrap.configSearch(__confbase,
+				ConfigRomType.JAVA_VM_VERSION)));
+			todo.DEBUG.note("(C) %s", JVMFunction.jvmLoadString(
+				Bootstrap.configSearch(__confbase,
+				ConfigRomType.JAVA_VM_VENDOR)));
 			
 			// Load boot libraries that are available
 			BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);

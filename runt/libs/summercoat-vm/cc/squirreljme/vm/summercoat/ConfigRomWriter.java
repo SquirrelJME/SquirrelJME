@@ -52,10 +52,17 @@ public final class ConfigRomWriter
 		if (len >= 65536)
 			throw new IOException("AE0e " + len);
 		
+		// Round to make data aligned
+		int rlen = (len + 3) & (~3);
+		
 		// Key, value, and the data
 		__dos.writeShort(__opt);
-		__dos.writeShort(len);
+		__dos.writeShort(rlen);
 		__dos.write(__b, 0, len);
+		
+		// Align?
+		for (int i = len; i < rlen; i++)
+			__dos.write(0);
 	}
 	
 	/**

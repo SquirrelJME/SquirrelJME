@@ -17,31 +17,31 @@ package cc.squirreljme.jvm;
 public interface Constants
 {
 	/** The offset for the object's class type. */
-	public static final int OBJECT_CLASS_OFFSET =
+	public static final byte OBJECT_CLASS_OFFSET =
 		0;
 	
 	/** The offset for the object's reference count. */
-	public static final int OBJECT_COUNT_OFFSET =
+	public static final byte OBJECT_COUNT_OFFSET =
 		4;
 	
 	/** Object monitor owner offset. */
-	public static final int OBJECT_MONITOR_OFFSET =
+	public static final byte OBJECT_MONITOR_OFFSET =
 		8;
 	
 	/** Object monitor count offset. */
-	public static final int OBJECT_MONITOR_COUNT_OFFSET =
+	public static final byte OBJECT_MONITOR_COUNT_OFFSET =
 		12;
 	
 	/** Base size for object types. */
-	public static final int OBJECT_BASE_SIZE =
+	public static final byte OBJECT_BASE_SIZE =
 		16;
 	
 	/** The offset for array length. */
-	public static final int ARRAY_LENGTH_OFFSET =
+	public static final byte ARRAY_LENGTH_OFFSET =
 		16;
 	
 	/** The base size for arrays. */
-	public static final int ARRAY_BASE_SIZE =
+	public static final byte ARRAY_BASE_SIZE =
 		20;
 	
 	/** Bad magic number. */
@@ -49,15 +49,27 @@ public interface Constants
 		0xE7E5E7E4;
 	
 	/** Class info flag: Is array type? */
-	public static final int CIF_IS_ARRAY =
-		0x00000001;
+	public static final short CIF_IS_ARRAY =
+		0x0001;
 	
 	/** Class info flag: Is array of objects? */
-	public static final int CIF_IS_ARRAY_OF_OBJECTS =
-		0x00000002;
+	public static final short CIF_IS_ARRAY_OF_OBJECTS =
+		0x0002;
 	
 	/** Is this a primitive type? */
-	public static final int CIF_IS_PRIMITIVE =
-		0x00000004;
+	public static final short CIF_IS_PRIMITIVE =
+		0x0004;
+	
+	/** Offset for the configuration key. */
+	public static final byte CONFIG_KEY_OFFSET =
+		0;
+	
+	/** Offset for the configuration size. */
+	public static final byte CONFIG_SIZE_OFFSET =
+		2;
+	
+	/** Size of the header for configuration items. */
+	public static final byte CONFIG_HEADER_SIZE =
+		4;
 }
 

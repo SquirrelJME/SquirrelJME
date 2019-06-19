@@ -2386,7 +2386,7 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 	void* wp;
 	void* basep;
 	void* sizep;
-	sjme_jint opt, format, iv, it;
+	sjme_jint opt, format, iv, it, wlen;
 	char* sa;
 	char* sb;
 	
@@ -2510,9 +2510,17 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 				break;
 		}
 		
+		/* Determine length and round it to 4 bytes. */
+		wlen = SJME_POINTER_TO_JINT(wp) - SJME_POINTER_TO_JINT(basep);
+		while ((wlen & SJME_JINT_C(3)) != 0)
+		{
+			/* Write padding. */
+			sjme_memjwritep(jvm, 1, &wp, 0);
+			wlen++;
+		}
+		
 		/* Write to the actual size! */
-		sjme_memjwrite(jvm, 2, sizep, 0,
-			SJME_POINTER_TO_JINT(wp) - SJME_POINTER_TO_JINT(basep));
+		sjme_memjwrite(jvm, 2, sizep, 0, wlen);
 	}
 	
 	/* Write end of config. */
