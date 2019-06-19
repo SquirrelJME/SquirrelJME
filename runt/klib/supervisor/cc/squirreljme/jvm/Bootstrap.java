@@ -98,6 +98,13 @@ public final class Bootstrap
 			// Load boot libraries that are available
 			BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
 			
+			for (BootLibrary bl : bootlibs)
+			{
+				todo.DEBUG.note("n=%s a=%d l=%d ma=%d ml=%d",
+					bl.name, bl.address, bl.length, bl.manifestaddress,
+					bl.manifestlength);
+			}
+			
 			Assembly.breakpoint();
 			throw new todo.TODO();
 		}
