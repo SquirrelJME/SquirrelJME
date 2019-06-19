@@ -137,7 +137,8 @@ public class Throwable
 						JVMFunction.jvmLoadString(
 							rawtrace[base + CallStackItem.SOURCE_FILE]),
 						rawtrace[base + CallStackItem.SOURCE_LINE],
-						rawtrace[base + CallStackItem.PC_ADDRESS],
+						Integer.toString(
+							rawtrace[base + CallStackItem.PC_ADDRESS], 16),
 						rawtrace[base + CallStackItem.JAVA_PC_ADDRESS],
 						rawtrace[base + CallStackItem.JAVA_OPERATION]);
 				}
