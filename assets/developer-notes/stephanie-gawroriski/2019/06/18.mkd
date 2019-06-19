@@ -1,0 +1,53 @@
+# 2019/06/18
+
+## 16:33
+
+Okay, so I definitely have a reference counting issue.
+
+## 16:43
+
+Okay so I added a hit to detect negative uncounts and it definitely looks like
+there is a big in `jvmGarbageCollect()`. This is in the garbage collection of
+array elements. Very much appears that for larger arrays I am just uncounting
+the first.
+
+## 16:53
+
+Actually I just realized I need a monitor count.
+
+## 16:55
+
+Actually no, I can just hide that in the monitor code since it is JVM handled.
+I think what I can do is make a temporary structure of sorts which stores the
+information. Just that when something is locked it WILL have thread and count
+information in it. However problem with this is that it requires two atomic
+accesses that could differ. It has to have just one.
+
+## 18:13
+
+I need like SquirrelGrind to detect memory corruption within the VM or
+similar. I know I have memory corruption, just not sure where.
+
+## 18:14
+
+It does not happen if GC does nothing. And it does not happen if free is
+ever called. So it has to be in the free area.
+
+## 19:19
+
+Okay so the setting the memory block stuff causing free to fail, if free
+does nothing then it passes. So I think it is corruption after free?
+
+## 19:29
+
+Okay so, garbage collection works, but free is messed up.
+
+## 19:30
+
+Okay, so hypothetically I can get very tiny blocks during splits so those
+have to not be possible.
+
+## 19:33
+
+Actually there is memory loss, because the chunk wanted size drops and such
+so this definitely needs a different case!
