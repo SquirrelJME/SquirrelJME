@@ -1331,6 +1331,37 @@ sjme_jint sjme_opdecodejmp(sjme_jvm* jvm, void** ptr)
 	return rv;
 }
 
+/** Writes to the console screen and to the native method as well. */
+sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
+	sjme_jint (*writefunc)(sjme_jint b), sjme_jbyte* buf, sjme_jint off,
+	sjme_jint len)
+{
+	sjme_jbyte b;
+	sjme_jint i, code;
+	
+	/* There must be a JVM! */
+	if (jvm == NULL)
+		return -1;
+	
+	/* Write all the bytes to the output. */
+	for (i = 0; i < len; i++, off++)
+	{
+		/* Read byte. */
+		b = buf[off];
+		
+		/* Forward to pipe? */
+		if (writefunc != NULL)
+		{
+			code = writefunc(b);
+			if (code < 0)
+				return (i == 0 ? code : i);
+		}
+	}
+	
+	/* Return written bytes. */
+	return len;
+}
+
 /**
  * Handles system calls.
  *
@@ -1347,6 +1378,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 {
 	sjme_jint* syserr;
 	sjme_jint ia, ib, ic;
+	sjme_jbyte ba;
 	void* pa;
 	
 	/* Called wrong? */
@@ -1597,20 +1629,27 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			/* Write single byte to a stream. */
 		case SJME_SYSCALL_PD_WRITE_BYTE:
 			ia = -1;
+			
+			/* The byte to write. */
+			ba = (sjme_jbyte)args[1];
+			
+			/* Depends on the pipe target. */
 			switch (args[0])
 			{
 					/* Standard output. */
 				case SJME_PIPE_FD_STDOUT:
-					if (jvm->nativefuncs != NULL &&
-						jvm->nativefuncs->stdout_write != NULL)
-						ia = jvm->nativefuncs->stdout_write(args[1]);
+					ia = sjme_console_pipewrite(jvm,
+						(jvm->nativefuncs != NULL &&
+						jvm->nativefuncs->stdout_write != NULL ?
+						jvm->nativefuncs->stdout_write : NULL), &ba, 0, 1);
 					break;
 				
 					/* Standard error. */
 				case SJME_PIPE_FD_STDERR:
-					if (jvm->nativefuncs != NULL &&
-						jvm->nativefuncs->stderr_write != NULL)
-						ia = jvm->nativefuncs->stderr_write(args[1]);
+					ia = sjme_console_pipewrite(jvm,
+						(jvm->nativefuncs != NULL &&
+						jvm->nativefuncs->stdout_write != NULL ?
+						jvm->nativefuncs->stderr_write : NULL), &ba, 0, 1);
 					break;
 					
 					/* Unknown descriptor. */
