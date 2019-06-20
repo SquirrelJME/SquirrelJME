@@ -932,6 +932,24 @@ void sjme_memjwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
 }
 
 /**
+ * Write value to memory and increment pointer.
+ *
+ * @param jvm The JVM.
+ * @param size The size of value to write.
+ * @param ptr The pointer to read from.
+ * @param value The value to write.
+ * @since 2019/06/19
+ */
+void sjme_memwritep(sjme_jvm* jvm, sjme_jint size, void** ptr, sjme_jint value)
+{
+	/* Write pointer value. */
+	sjme_memwrite(jvm, size, *ptr, 0, value);
+	
+	/* Increment pointer. */
+	*ptr = SJME_POINTER_OFFSET_LONG(*ptr, size);
+}
+
+/**
  * Read Java value from memory and increment pointer.
  *
  * @param jvm The JVM.
@@ -1083,7 +1101,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 	sjme_jshort callid, sjme_jint* args)
 {
 	sjme_jint* syserr;
-	sjme_jint ia, ib;
+	sjme_jint ia, ib, ic;
+	void* pa;
 	
 	/* Called wrong? */
 	if (jvm == NULL || cpu == NULL || args == NULL)
@@ -1110,6 +1129,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				case SJME_SYSCALL_CALL_STACK_ITEM:
 				case SJME_SYSCALL_ERROR_GET:
 				case SJME_SYSCALL_ERROR_SET:
+				case SJME_SYSCALL_MEM_SET:
+				case SJME_SYSCALL_MEM_SET_INT:
 				case SJME_SYSCALL_PD_OF_STDERR:
 				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_WRITE_BYTE:
@@ -1238,6 +1259,40 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			ib = cpu->syscallerr[ia];
 			cpu->syscallerr[ia] = args[1];
 			return ib;
+			
+			/* Set memory to byte value. */
+		case SJME_SYSCALL_MEM_SET:
+			/* Get address to wipe. */
+			pa = SJME_JINT_TO_POINTER(args[0]);
+			
+			/* The value to store. */
+			ic = args[1] & SJME_JINT_C(0xFF);
+			
+			/* Wipe these values! */
+			ib = args[2];
+			for (ia = 0; ia < ib; ia++)
+				sjme_memwritep(jvm, 1, &pa, ic);
+			
+			/* Is okay. */
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return 0;
+		
+			/* Set memory in integer values. */
+		case SJME_SYSCALL_MEM_SET_INT:
+			/* Get address to wipe. */
+			pa = SJME_JINT_TO_POINTER(args[0]);
+			
+			/* The value to store, is full integer. */
+			ic = args[1];
+			
+			/* Wipe these values! */
+			ib = args[2];
+			for (ia = 0; ia < ib; ia += 4)
+				sjme_memwritep(jvm, 4, &pa, ic);
+			
+			/* Is okay. */
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return 0;
 			
 			/* Pipe descriptor of standard error. */
 		case SJME_SYSCALL_PD_OF_STDERR:
