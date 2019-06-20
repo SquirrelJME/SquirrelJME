@@ -105,6 +105,25 @@ public final class BootLibrary
 		// Load all libraries
 		BootLibrary[] bootlibs = bootLibraries(__rombase);
 		
+		// Use the passed class-path if one was specified.
+		int cp = Bootstrap.configSearch(__confbase, ConfigRomType.CLASS_PATH);
+		if (cp != 0)
+		{
+			// Debug
+			todo.DEBUG.note("Using user class path!");
+			
+			Assembly.breakpoint();
+		}
+		
+		// Use class-path built into the ROM
+		else
+		{
+			// Debug
+			todo.DEBUG.note("Using firmware class path!");
+			
+			Assembly.breakpoint();
+		}
+		
 		return bootlibs;
 	}
 	
