@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 759dec0c-46ab-4918-930e-ff39c386d41b
+X-SquirrelJME-Error: BO
+X-SquirrelJME-Name: SQF to C
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.3.0
+X-SquirrelJME-Description: Converts a SQF to a C file, so that RatufaCoat 
+ can use it to draw a basic console screen and such.
+X-SquirrelJME-Depends: midp-lcdui
+Main-Class: dev.shadowtail.sqftoc.Main
+Microedition-Configuration: CLDC-1.8-Compact
+
