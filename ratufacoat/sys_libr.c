@@ -439,10 +439,10 @@ void retro_run(void)
 		/* Border with red. */
 		for (y = 0, i = 0; y < SJME_RETROARCH_HEIGHT; y++)
 			for (x = 0; x < SJME_RETROARCH_WIDTH; x++, i++)
-				if (x < 5 ||
-					y < 5 ||
-					x >= (SJME_RETROARCH_WIDTH - 5) ||
-					y >= (SJME_RETROARCH_HEIGHT - 5))
+				if (x < 2 ||
+					y < 2 ||
+					x >= (SJME_RETROARCH_WIDTH - 2) ||
+					y >= (SJME_RETROARCH_HEIGHT - 2))
 					sjme_ratufacoat_videoram[i] = 0x007F0000;
 	}
 	
