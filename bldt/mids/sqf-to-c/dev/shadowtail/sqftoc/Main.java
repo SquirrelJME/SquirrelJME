@@ -75,7 +75,7 @@ public class Main
 			
 			// Output structure for the font
 			ps.println("/** SQF Defined Font. */");
-			ps.println("static sjme_sqf sjme_font");
+			ps.println("static sjme_sqf sjme_font =");
 			ps.println("{");
 			
 			// All four fields in the header
@@ -108,7 +108,7 @@ public class Main
 		if (__ps == null || __name == null || __b == null)
 			throw new NullPointerException("NARG");
 		
-		__ps.printf("static const sjme_jbyte %s[] =%n", __name);
+		__ps.printf("static sjme_jbyte %s[] =%n", __name);
 		__ps.println("{");
 		
 		// Used to fill up lines at a time
