@@ -1,0 +1,18 @@
+# 2019/06/19
+
+## 16:51
+
+I had lots of dataloss and lost my spot in SquirrelJME. Was quite the mess
+but I switched to Hyper-V with a nested VM instead of using WSL, and I can
+feel that it is quite much faster.
+
+## 19:48
+
+There is no point in interning strings in the bootstrap, it just takes
+forever and it slows down over time.
+
+## 20:40
+
+No wonder RatufaCoat just halts on standard, because it waits until the cycles
+runs out then it stops. It was meant to be something else... But this made me
+add the supervisor boot okay flag.
