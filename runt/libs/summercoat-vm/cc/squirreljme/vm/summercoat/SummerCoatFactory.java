@@ -350,8 +350,11 @@ public class SummerCoatFactory
 			throw new VMException("AE01", e);
 		}
 		
+		// Setup non-cpu VM state
+		MachineState ms = new MachineState();
+		
 		// Setup virtual execution CPU
-		NativeCPU cpu = new NativeCPU(vmem);
+		NativeCPU cpu = new NativeCPU(ms, vmem);
 		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh.bootstart,
 			ramstart, ramsize, rombase, romsize,
 			CONFIG_BASE_ADDR, CONFIG_SIZE);

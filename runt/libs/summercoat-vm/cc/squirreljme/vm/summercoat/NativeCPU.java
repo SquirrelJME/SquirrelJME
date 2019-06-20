@@ -61,6 +61,9 @@ public final class NativeCPU
 	public static final int METHOD_CACHE_SPILL =
 		1024;
 	
+	/** The machine state. */
+	protected final MachineState state;
+	
 	/** The memory to read/write from. */
 	protected final WritableMemory memory;
 	
@@ -75,16 +78,18 @@ public final class NativeCPU
 	/**
 	 * Initializes the native CPU.
 	 *
+	 * @param __ms The machine state.
 	 * @param __mem The memory space.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public NativeCPU(WritableMemory __mem)
+	public NativeCPU(MachineState __ms, WritableMemory __mem)
 		throws NullPointerException
 	{
-		if (__mem == null)
+		if (__ms == null || __mem == null)
 			throw new NullPointerException("NARG");
 		
+		this.state = __ms;
 		this.memory = __mem;
 	}
 	
@@ -1086,6 +1091,7 @@ public final class NativeCPU
 						case SystemCallIndex.PD_OF_STDIN:
 						case SystemCallIndex.PD_OF_STDOUT:
 						case SystemCallIndex.PD_WRITE_BYTE:
+						case SystemCallIndex.SUPERVISOR_BOOT_OKAY:
 						case SystemCallIndex.TIME_HI_MILLI_WALL:
 						case SystemCallIndex.TIME_HI_NANO_MONO:
 						case SystemCallIndex.TIME_LO_MILLI_WALL:
@@ -1288,6 +1294,16 @@ public final class NativeCPU
 						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
 					}
 				}
+				break;
+				
+				// Supervisor booted okay!
+			case SystemCallIndex.SUPERVISOR_BOOT_OKAY:
+				// Flag that this happened!
+				this.state.flagSupervisorOkay();
+				
+				// Is fine
+				rv = 0;
+				err = 0;
 				break;
 
 				// Current wall clock milliseconds (high).

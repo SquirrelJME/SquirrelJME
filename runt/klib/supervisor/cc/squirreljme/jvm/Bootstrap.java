@@ -105,6 +105,12 @@ public final class Bootstrap
 					bl.manifestlength);
 			}
 			
+			// Something later on
+			Assembly.breakpoint();
+			
+			// Set the kernel as booted okay!
+			Assembly.sysCall(SystemCallIndex.SUPERVISOR_BOOT_OKAY);
+			
 			Assembly.breakpoint();
 			throw new todo.TODO();
 		}

@@ -14,7 +14,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/05/23
  */
-public final class SystemCallIndex
+public interface SystemCallIndex
 {
 	/** Checks if the system call is supported. */
 	public static final short QUERY_INDEX =
@@ -108,17 +108,12 @@ public final class SystemCallIndex
 	public static final short FATAL_TODO =
 		22;
 	
-	/** System call count. */
-	public static final short NUM_SYSCALLS =
+	/** Supervisor booted okay. */
+	public static final short SUPERVISOR_BOOT_OKAY =
 		23;
 	
-	/**
-	 * Not used.
-	 *
-	 * @since 2019/05/23
-	 */
-	private SystemCallIndex()
-	{
-	}
+	/** System call count. */
+	public static final short NUM_SYSCALLS =
+		24;
 }
 

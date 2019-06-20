@@ -381,8 +381,11 @@
 /** Fatal ToDo hit. */
 #define SJME_SYSCALL_FATAL_TODO SJME_JINT_C(22)
 
+/** The supervisor booted okay! */
+#define SJME_SYSCALL_SUPERVISOR_BOOT_OKAY SJME_JINT_C(23)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(23)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(24)
 
 /** No error, or success. */
 #define SJME_SYSCALL_ERROR_NO_ERROR SJME_JINT_C(0)
@@ -582,6 +585,9 @@ struct sjme_jvm
 	
 	/* Total instruction count. */
 	sjme_jint totalinstructions;
+	
+	/* Did the supervisor boot okay? */
+	sjme_jint supervisorokay;
 	
 #if defined(SJME_VIRTUAL_MEM)
 	/** Base address for Configuration ROM. */
@@ -1107,6 +1113,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				case SJME_SYSCALL_PD_OF_STDERR:
 				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_WRITE_BYTE:
+				case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
 					return SJME_JINT_C(1);
 			}
 			return SJME_JINT_C(0);
@@ -1277,6 +1284,12 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			/* Success. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			return SJME_JINT_C(1);
+			
+			/* The supervisor booted okay! */
+		case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
+			jvm->supervisorokay = 1;
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return 0;
 		
 			/* Unknown or unsupported system call. */
 		default:

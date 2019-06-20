@@ -253,6 +253,12 @@ typedef int32_t sjme_jint;
 /** Virtual machine not ready. */
 #define SJME_ERROR_JVMNOTREADY SJME_JINT_C(-16)
 
+/** The virtual machine has exited, supervisor boot okay. */
+#define SJME_ERROR_JVMEXIT_SUV_OKAY SJME_JINT_C(-17)
+
+/** The virtual machine has exited, the supervisor did not flag! */
+#define SJME_ERROR_JVMEXIT_SUV_FAIL SJME_JINT_C(-18)
+
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
 
