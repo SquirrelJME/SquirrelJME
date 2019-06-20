@@ -19,6 +19,10 @@
 /** Screen size. */
 #define SJME_RETROARCH_WIDTH 240
 #define SJME_RETROARCH_HEIGHT 320
+#define SJME_RETROARCH_VIDEORAMSIZE 76800
+
+/** RatufaCoat's RAM memory. */
+static uint32_t sjme_ratufacoat_videoram[SJME_RETROARCH_VIDEORAMSIZE];
 
 /** Fallback logging, does nothing. */
 static void fallback_log(enum retro_log_level level, const char* fmt, ...)
@@ -403,15 +407,10 @@ void retro_reset(void)
 /** Runs single frame. */
 void retro_run(void)
 {
-#define VIDEO_RAM_SIZE (SJME_RETROARCH_WIDTH * SJME_RETROARCH_HEIGHT)
-	static uint32_t videoram[VIDEO_RAM_SIZE];
-	static uint32_t seed = 1234567;
-	uint32_t i;
-	
 	static int died;
 	struct retro_log_callback logging;
 	struct retro_variable var;
-	sjme_jint cycles;
+	sjme_jint cycles, i, x, y;
 	
 	/* Poll for input because otherwise it prevents RetroArch from accessing */
 	/* the menu. */
@@ -437,37 +436,35 @@ void retro_run(void)
 			log_cb(RETRO_LOG_ERROR, "Execution now unpredictable!\n");
 		}
 		
-		/* Fill with red. */
-		for (i = 0; i < VIDEO_RAM_SIZE; i++)
-			videoram[i] = 0x007F0000;
-		
-		/* Place on screen. */
-		video_cb(videoram, SJME_RETROARCH_WIDTH, SJME_RETROARCH_HEIGHT,
-			SJME_RETROARCH_WIDTH * sizeof(uint32_t));
-		
-		/* Do nothing. */
-		return;
+		/* Border with red. */
+		for (y = 0, i = 0; y < SJME_RETROARCH_HEIGHT; y++)
+			for (x = 0; x < SJME_RETROARCH_WIDTH; x++, i++)
+				if (x < 5 ||
+					y < 5 ||
+					x >= (SJME_RETROARCH_WIDTH - 5) ||
+					y >= (SJME_RETROARCH_HEIGHT - 5))
+					sjme_ratufacoat_videoram[i] = 0x007F0000;
 	}
 	
-	/* Read the cycle count. */
-	memset(&var, 0, sizeof(var));
-	cycles = 1048576;
-	var.key = "squirreljme_cycles_per_frame";
-	if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-		if (var.value != NULL)
-			cycles = (sjme_jint)strtol(var.value, NULL, 10);
-	
-	/* Execute the JVM. */
-	cycles = sjme_jvmexec(sjme_retroarch_jvm, &sjme_retroarch_error, cycles);
-	
-	/* Random video noise. */
-	for (i = 0; i < VIDEO_RAM_SIZE; i++)
+	/* Execute the JVM otherwise. */
+	else
 	{
-		videoram[i] = i + (seed * 65536) + seed;
-		seed = (seed * 7) + i;
+		/* Read the cycle count. */
+		memset(&var, 0, sizeof(var));
+		cycles = 1048576;
+		var.key = "squirreljme_cycles_per_frame";
+		if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+			if (var.value != NULL)
+				cycles = (sjme_jint)strtol(var.value, NULL, 10);
+		
+		/* Execute the JVM. */
+		cycles = sjme_jvmexec(sjme_retroarch_jvm, &sjme_retroarch_error,
+			cycles);
 	}
 	
-	video_cb(videoram, SJME_RETROARCH_WIDTH, SJME_RETROARCH_HEIGHT,
+	/* Draw video onto the display. */
+	video_cb(sjme_ratufacoat_videoram,
+		SJME_RETROARCH_WIDTH, SJME_RETROARCH_HEIGHT,
 		SJME_RETROARCH_WIDTH * sizeof(uint32_t));
 }
 
