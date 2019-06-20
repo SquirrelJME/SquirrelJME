@@ -817,6 +817,18 @@ struct sjme_jvm
 	/* Did the supervisor boot okay? */
 	sjme_jint supervisorokay;
 	
+	/* Console X position. */
+	sjme_jint conx;
+	
+	/* Console Y position. */
+	sjme_jint cony;
+	
+	/* Console width. */
+	sjme_jint conw;
+	
+	/* Console height. */
+	sjme_jint conh;
+	
 #if defined(SJME_VIRTUAL_MEM)
 	/** Base address for Configuration ROM. */
 	sjme_jint configbase;
@@ -3092,7 +3104,16 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	/* Initialize framebuffer. */
 	rv->fbinfo = fbinfo;
 	if (fbinfo != NULL)
+	{
+		/* Framebuffer size, needed by vptrs. */
 		rv->fbsize = fbinfo->numpixels * SJME_JINT_C(4);
+		
+		/* Console positions and size. */
+		rv->conx = 0;
+		rv->cony = 0;
+		rv->conw = fbinfo->width / sjme_font.charwidths[0];
+		rv->conh = fbinfo->height / sjme_font.pixelheight;
+	}
 	
 #if defined(SJME_VIRTUAL_MEM)
 	/* Virtual map framebuffer, if available. */
