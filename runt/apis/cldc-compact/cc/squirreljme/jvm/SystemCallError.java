@@ -17,24 +17,28 @@ package cc.squirreljme.jvm;
 public final class SystemCallError
 {
 	/** No error, or success. */
-	public static final short NO_ERROR =
+	public static final byte NO_ERROR =
 		0;
 	
 	/** The system call is not supported. */
-	public static final short UNSUPPORTED_SYSTEM_CALL =
+	public static final byte UNSUPPORTED_SYSTEM_CALL =
 		-1;
 	
 	/** The pipe descriptor is not valid. */
-	public static final short PIPE_DESCRIPTOR_INVALID =
+	public static final byte PIPE_DESCRIPTOR_INVALID =
 		-2;
 	
 	/** Write error when writing to the pipe. */
-	public static final short PIPE_DESCRIPTOR_BAD_WRITE =
+	public static final byte PIPE_DESCRIPTOR_BAD_WRITE =
 		-3;
 	
 	/** Value out of range. */
-	public static final short VALUE_OUT_OF_RANGE =
+	public static final byte VALUE_OUT_OF_RANGE =
 		-4;
+	
+	/** No frame buffer exists. */
+	public static final byte NO_FRAMEBUFFER =
+		-5;
 	
 	/**
 	 * Not used.
