@@ -1428,8 +1428,8 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 		/* Read byte. */
 		b = buf[off];
 		
-		/* Draw character onto the console? */
-		if (jvm->fbinfo != NULL)
+		/* Draw to the console in supervisor boot mode. */
+		if (jvm->supervisorokay == 0 && jvm->fbinfo != NULL)
 		{
 			/* Carriage return? */
 			donewline = 0;
