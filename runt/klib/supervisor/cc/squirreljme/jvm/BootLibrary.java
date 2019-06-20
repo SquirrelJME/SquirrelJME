@@ -16,6 +16,9 @@ package cc.squirreljme.jvm;
  */
 public final class BootLibrary
 {
+	/** Boot libraries which have been loaded. */
+	public static volatile BootLibrary[] BOOT_LIBRARIES;
+	
 	/** The offset to the jar count. */
 	public static final byte ROM_NUMJARS_OFFSET =
 		4;
@@ -97,6 +100,11 @@ public final class BootLibrary
 	 */
 	public static final BootLibrary[] bootLibraries(int __rombase)
 	{
+		// Already exists?
+		BootLibrary[] bootlibs = BOOT_LIBRARIES;
+		if (bootlibs != null)
+			return bootlibs;
+		
 		// Number of JARs in the ROM
 		int numjars = Assembly.memReadJavaInt(__rombase, ROM_NUMJARS_OFFSET);
 		
@@ -110,7 +118,7 @@ public final class BootLibrary
 		int seeker = __rombase + tocoff;
 		
 		// Load all the JAR informations
-		BootLibrary[] bootlibs = new BootLibrary[numjars];
+		bootlibs = new BootLibrary[numjars];
 		for (int i = 0; i < numjars; i++)
 		{
 			// Manifest address is optional
@@ -131,6 +139,9 @@ public final class BootLibrary
 			// Go to the next entry
 			seeker += TOC_ENTRY_SIZE;
 		}
+		
+		// Store for later usage
+		BOOT_LIBRARIES = bootlibs;
 		
 		// Return the libraries
 		return bootlibs;
