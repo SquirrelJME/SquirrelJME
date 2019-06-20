@@ -311,12 +311,19 @@ int main(int argc, char** argv)
 	}
 	
 	/* Execute until termination. */
-	error = SJME_ERROR_NONE;
-	while (sjme_jvmexec(jvm, &error, SJME_JINT_C(1048576)) != 0)
+	for (;;)
 	{
+		/* Just execute the VM and disregard nay cycles that remain. */
+		error = SJME_ERROR_NONE;
+		sjme_jvmexec(jvm, &error, SJME_JINT_C(1048576));
+		
 		/* The JVM hit some kind of error? */
 		if (error != SJME_ERROR_NONE)
 		{
+			/* Normal JVM exit, not considered a true error. */
+			if (error == SJME_ERROR_JVMEXIT_SUV_OKAY)
+				break;
+			
 			/* Message on it! */
 			fprintf(stderr, "JVM execution fault! (Error %d/0x%X)\n",
 				(int)error, (unsigned int)error);
