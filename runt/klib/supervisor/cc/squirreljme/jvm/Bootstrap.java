@@ -84,6 +84,19 @@ public final class Bootstrap
 		// Could crash!
 		try
 		{
+			// Test the framebuffer
+			int fbptr = Assembly.sysCallV(SystemCallIndex.
+					FRAMEBUFFER_PROPERTY, FramebufferProperty.ADDRESS),
+				fbw = Assembly.sysCallV(SystemCallIndex.
+					FRAMEBUFFER_PROPERTY, FramebufferProperty.WIDTH),
+				fbh = Assembly.sysCallV(SystemCallIndex.
+					FRAMEBUFFER_PROPERTY, FramebufferProperty.HEIGHT);
+			if (fbptr != 0)
+			{
+				for (int i = 0, n = fbw * fbh * 4; i < n; i += 4)
+					Assembly.memWriteInt(fbptr, i, i);
+			}
+			
 			// Basic SquirrelJME Banner
 			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
 			todo.DEBUG.note("VM: %s %s", JVMFunction.jvmLoadString(
