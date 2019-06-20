@@ -24,6 +24,14 @@
 
 #include "sjmerc.h"
 
+/** Screen size. */
+#define SJME_STDC_WIDTH 240
+#define SJME_STDC_HEIGHT 320
+#define SJME_STDC_VIDEORAMSIZE 76800
+
+/** RatufaCoat's Video RAM memory. */
+static sjme_jint sjme_ratufacoat_videoram[SJME_STDC_VIDEORAMSIZE];
+
 /** File name structure. */
 typedef struct sjme_nativefilename
 {
@@ -270,6 +278,26 @@ sjme_jint sjme_stdc_stderr_write(sjme_jint b)
 	return SJME_JINT_C(1);
 }
 
+/** Returns a framebuffer structure. */
+sjme_framebuffer* sjme_stdc_framebuffer(void)
+{
+	sjme_framebuffer* rv;
+	
+	/* Allocate one. */
+	rv = calloc(1, sizeof(*rv));
+	if (rv == NULL)
+		return NULL;
+	
+	/* Fill information out. */
+	rv->pixels = sjme_ratufacoat_videoram;
+	rv->width = SJME_STDC_WIDTH;
+	rv->height = SJME_STDC_HEIGHT;
+	rv->scanlen = SJME_STDC_WIDTH;
+	rv->numpixels = SJME_STDC_VIDEORAMSIZE;
+	
+	return rv;
+}
+
 /**
  * Main entry point.
  *
@@ -299,6 +327,7 @@ int main(int argc, char** argv)
 	stdcfuncs.fileread = sjme_stdc_fileread;
 	stdcfuncs.stdout_write = sjme_stdc_stdout_write;
 	stdcfuncs.stderr_write = sjme_stdc_stderr_write;
+	stdcfuncs.framebuffer = sjme_stdc_framebuffer;
 	
 	/* Create VM. */
 	error = SJME_ERROR_NONE;

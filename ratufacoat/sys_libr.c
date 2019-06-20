@@ -21,7 +21,7 @@
 #define SJME_RETROARCH_HEIGHT 320
 #define SJME_RETROARCH_VIDEORAMSIZE 76800
 
-/** RatufaCoat's RAM memory. */
+/** RatufaCoat's Video RAM memory. */
 static sjme_jint sjme_ratufacoat_videoram[SJME_RETROARCH_VIDEORAMSIZE];
 
 /** Fallback logging, does nothing. */
