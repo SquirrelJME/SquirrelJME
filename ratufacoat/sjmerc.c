@@ -527,6 +527,19 @@ static sjme_jint sjme_sh_lmask[32] =
 	SJME_JINT_C(0x00000001)
 };
 
+/** Bit mask for font drawing. */
+static sjme_jint sjme_drawcharbitmask[] =
+{
+	SJME_JINT_C(0x80),
+	SJME_JINT_C(0x40),
+	SJME_JINT_C(0x20),
+	SJME_JINT_C(0x10),
+	SJME_JINT_C(0x08),
+	SJME_JINT_C(0x04),
+	SJME_JINT_C(0x02),
+	SJME_JINT_C(0x01),
+};
+
 /** SQF Character Widths. */
 static sjme_jbyte sjme_fontcharwidths[] =
 {
@@ -1343,12 +1356,66 @@ sjme_jint sjme_opdecodejmp(sjme_jvm* jvm, void** ptr)
 	return rv;
 }
 
+/** Draws single character onto the console. */
+void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
+	sjme_jbyte ch)
+{
+	sjme_jint r, c, cv, i, fontw, fonth;
+	void* sp;
+	sjme_jbyte* mp;
+	sjme_jbyte bits;
+	
+	/* Check. */
+	if (jvm == NULL)
+		return;
+	
+	/* Ignore if out of bounds. */
+	if (x < 0 || y < 0 || x >= jvm->conw || y >= jvm->conh)
+		return;
+	
+	/* Font dimensions. */
+	fontw = sjme_font.charwidths[0];
+	fonth = sjme_font.pixelheight;
+	
+	/* Normalize to screen space. */
+	x = x * fontw;
+	y = y * fonth;
+	
+	/* Character data to draw. */
+	if (sjme_font.isvalidchar[ch] == 0)
+		ch = 0;
+	mp = &sjme_font.charbmp[((sjme_jint)ch) * fonth * sjme_font.bytesperscan];
+	
+	/* Draw rows. */
+	for (r = 0; r < fonth; r++)
+	{
+		/* Determine screen position. */
+		sp = SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
+			(x * SJME_JINT_C(4)) +
+			((y + r) * (jvm->fbinfo->scanlen * SJME_JINT_C(4))));
+		
+		/* Draw all pixel scans. */
+		c = 0;
+		for (cv = 0; cv < sjme_font.bytesperscan; cv++, mp++)
+		{
+			/* Get character bits */
+			bits = *mp;
+			
+			/* Draw all of them. */
+			for (i = 0; i < 8 && c < fontw; i++, c++)
+				sjme_memwritep(jvm, 4, &sp,
+					(((bits & sjme_drawcharbitmask[i]) != 0) ?
+					SJME_JINT_C(0xFFFFFF) : 0));
+		}
+	}
+}
+
 /** Writes to the console screen and to the native method as well. */
 sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 	sjme_jint (*writefunc)(sjme_jint b), sjme_jbyte* buf, sjme_jint off,
 	sjme_jint len)
 {
-	sjme_jbyte b;
+	sjme_jbyte b, donewline;
 	sjme_jint i, code;
 	
 	/* There must be a JVM! */
@@ -1360,6 +1427,66 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 	{
 		/* Read byte. */
 		b = buf[off];
+		
+		/* Draw character onto the console? */
+		if (jvm->fbinfo != NULL)
+		{
+			/* Carriage return? */
+			donewline = 0;
+			if (b == '\r')
+				jvm->conx = 0;
+			
+			/* Newline? */
+			else if (b == '\n')
+				donewline = 1;
+			
+			/* Draw character? */
+			else
+			{
+				/* Draw it. */
+				sjme_console_drawplate(jvm, jvm->conx, jvm->cony, b);
+				
+				/* Move cursor up. */
+				jvm->conx++;
+				
+				/* New line to print on? */
+				if (jvm->conx >= jvm->conw)
+					donewline = 1;
+			}
+			
+			/* Doing a new line? */
+			if (donewline != 0)
+			{
+				/* Move the cursor to the start of the next line. */
+				jvm->conx = 0;
+				jvm->cony++;
+				
+				/* Too much text on the screen? Move it up! */
+				if (jvm->cony >= jvm->conh)
+				{
+					/* Move framebuffer up. */
+					memmove(
+						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels, 0),
+						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
+							sjme_font.pixelheight *
+							(jvm->fbinfo->scanlen * SJME_JINT_C(4))),
+						(jvm->fbinfo->height - sjme_font.pixelheight) *
+							(jvm->fbinfo->scanlen * SJME_JINT_C(4)));
+					
+					/* Wipe bytes at the bottom. */
+					memset(
+						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
+							(jvm->fbinfo->height - sjme_font.pixelheight) *
+								(jvm->fbinfo->scanlen * SJME_JINT_C(4))),
+						0,
+						sjme_font.pixelheight * (jvm->fbinfo->scanlen *
+							SJME_JINT_C(4)));
+					
+					/* Move the cursor up one line. */
+					jvm->cony--;
+				}
+			}
+		}
 		
 		/* Forward to pipe? */
 		if (writefunc != NULL)
