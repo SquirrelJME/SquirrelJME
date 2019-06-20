@@ -400,6 +400,26 @@ typedef struct sjme_sqf
 } sjme_sqf;
 
 /**
+ * Represents the framebuffer for SquirrelJME.
+ *
+ * @since 2019/06/20
+ */
+typedef struct sjme_framebuffer
+{
+	/** Video pixels. */
+	sjme_jint* pixel;
+	
+	/** Screen width. */
+	sjme_jint width;
+	
+	/** Screen height. */
+	sjme_jint height;
+	
+	/** Scanline length. */
+	sjme_jint scanlen;
+} sjme_framebuffer;
+
+/**
  * Executes code running within the JVM.
  *
  * @param jvm The JVM to execute.
