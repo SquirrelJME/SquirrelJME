@@ -778,7 +778,13 @@ struct sjme_jvm
 	/** Preset ROM. */
 	void* presetrom;
 	
-	/* Native functions. */
+	/** Framebuffer info. */
+	sjme_framebuffer* fbinfo;
+	
+	/** Size of the framebuffer in bytes. */
+	sjme_jint fbsize;
+	
+	/** Native functions. */
 	sjme_nativefuncs* nativefuncs;
 	
 	/** Linearly fair CPU execution engine. */
@@ -802,6 +808,9 @@ struct sjme_jvm
 	
 	/** Base address for ROM. */
 	sjme_jint rombase;
+	
+	/** Base address for the framebuffer. */
+	sjme_jint fbbase;
 #endif
 };
 
@@ -910,6 +919,14 @@ void* sjme_fakeptr(sjme_jvm* jvm, void* ptr)
 		ptr = SJME_JINT_TO_POINTER(jvm->rombase +
 			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->rom)));
 	
+	/* Within Framebuffer region? */
+	else if (jvm->fbinfo != NULL && vptr >= SJME_POINTER_TO_JMEM(
+		jvm->fbinfo->pixels) && vptr < SJME_POINTER_TO_JMEM(
+		SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
+			jvm->fbsize)))
+		ptr = SJME_JINT_TO_POINTER(jvm->fbbase +
+			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->fbinfo->pixels)));
+	
 	/* No mapping found, pass through. */
 	else
 		ptr = oldptr;
@@ -942,6 +959,12 @@ void* sjme_realptr(sjme_jvm* jvm, void* ptr)
 	/* Within ROM region? */
 	else if (vptr >= jvm->rombase && vptr < jvm->rombase + jvm->romsize)
 		ptr = SJME_POINTER_OFFSET_LONG(jvm->rom, (vptr - jvm->rombase));
+	
+	/* Within the framebuffer? */
+	else if (jvm->fbinfo != NULL && vptr >= jvm->fbbase &&
+		vptr < jvm->fbbase + jvm->fbsize)
+		ptr = SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
+			(vptr - jvm->fbbase));
 	
 	/* No mapping found, pass through. */
 	else
@@ -2814,6 +2837,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	void* conf;
 	sjme_jvm* rv;
 	sjme_jint i, l, romsize;
+	sjme_framebuffer* fbinfo;
 #if defined(SJME_VIRTUAL_MEM)
 	sjme_jint vmem = SJME_VIRTUAL_MEM_BASE;
 #endif
@@ -2957,6 +2981,26 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	rv->configsize = SJME_DEFAULT_CONF_SIZE;
 	sjme_configinit(conf, SJME_DEFAULT_CONF_SIZE, rv, options, nativefuncs,
 		error);
+	
+	/* Initialize the framebuffer info, if available. */
+	fbinfo = NULL;
+	if (nativefuncs->framebuffer != NULL)
+		fbinfo = nativefuncs->framebuffer();
+	
+	/* Initialize framebuffer. */
+	rv->fbinfo = fbinfo;
+	if (fbinfo != NULL)
+		rv->fbsize = fbinfo->numpixels * SJME_JINT_C(4);
+	
+#if defined(SJME_VIRTUAL_MEM)
+	/* Virtual map framebuffer, if available. */
+	if (fbinfo != NULL)
+	{
+		rv->fbbase = vmem;
+		vmem = (vmem + rv->fbsize + SJME_VIRTUAL_MEM_MASK) &
+			(~SJME_VIRTUAL_MEM_MASK);
+	}
+#endif
 	
 	/* Initialize the BootRAM and boot the CPU. */
 	if (sjme_initboot(rom, ram, options->ramsize, rv, error) == 0)
