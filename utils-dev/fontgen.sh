@@ -16,9 +16,9 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # These two are important!
-if ! which bdftopcf || ! which fontforge
+if ! which bdftopcf || ! which fontforge || ! which uuencode
 then
-	echo "Need both bdftopcf and fontforge!"
+	echo "Need both bdftopcf, fontforge, and uuencode!"
 	exit 7
 fi
 
