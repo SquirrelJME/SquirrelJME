@@ -1639,7 +1639,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			/* Unknown or unsupported system call. */
 		default:
 			*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-			return SJME_JINT_C(-1);
+			return SJME_JINT_C(0);
 	}
 }
 
