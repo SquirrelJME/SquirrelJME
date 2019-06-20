@@ -530,14 +530,14 @@ static sjme_jint sjme_sh_lmask[32] =
 /** Bit mask for font drawing. */
 static sjme_jint sjme_drawcharbitmask[] =
 {
-	SJME_JINT_C(0x80),
-	SJME_JINT_C(0x40),
-	SJME_JINT_C(0x20),
-	SJME_JINT_C(0x10),
-	SJME_JINT_C(0x08),
-	SJME_JINT_C(0x04),
-	SJME_JINT_C(0x02),
 	SJME_JINT_C(0x01),
+	SJME_JINT_C(0x02),
+	SJME_JINT_C(0x04),
+	SJME_JINT_C(0x08),
+	SJME_JINT_C(0x10),
+	SJME_JINT_C(0x20),
+	SJME_JINT_C(0x40),
+	SJME_JINT_C(0x80),
 };
 
 /** SQF Character Widths. */
