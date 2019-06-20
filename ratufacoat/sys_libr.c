@@ -443,7 +443,7 @@ void retro_run(void)
 					y < 2 ||
 					x >= (SJME_RETROARCH_WIDTH - 2) ||
 					y >= (SJME_RETROARCH_HEIGHT - 2))
-					sjme_ratufacoat_videoram[i] = 0x007F0000;
+					sjme_ratufacoat_videoram[i] = 0x00FF0000;
 	}
 	
 	/* Execute the JVM otherwise. */
