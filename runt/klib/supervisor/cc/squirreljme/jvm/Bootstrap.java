@@ -96,7 +96,8 @@ public final class Bootstrap
 				ConfigRomType.JAVA_VM_VENDOR)));
 			
 			// Load boot libraries that are available
-			BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
+			BootLibrary[] bootlibs = BootLibrary.initialClasspath(__rombase,
+				__confbase);
 			
 			for (BootLibrary bl : bootlibs)
 			{

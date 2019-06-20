@@ -92,6 +92,23 @@ public final class BootLibrary
 	}
 	
 	/**
+	 * Returns the boot libraries which make up the initial classpath.
+	 *
+	 * @param __rombase The ROM base.
+	 * @param __confbase The configuration ROM base.
+	 * @return The libraries to set for the initial classpath.
+	 * @since 2019/06/20
+	 */
+	public static final BootLibrary[] initialClasspath(int __rombase,
+		int __confbase)
+	{
+		// Load all libraries
+		BootLibrary[] bootlibs = bootLibraries(__rombase);
+		
+		return bootlibs;
+	}
+	
+	/**
 	 * Returns all of the libraries which are available to the bootstrap.
 	 *
 	 * @param __rombase The ROM base.
