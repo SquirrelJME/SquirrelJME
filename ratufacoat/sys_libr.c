@@ -22,7 +22,7 @@
 #define SJME_RETROARCH_VIDEORAMSIZE 76800
 
 /** RatufaCoat's RAM memory. */
-static uint32_t sjme_ratufacoat_videoram[SJME_RETROARCH_VIDEORAMSIZE];
+static sjme_jint sjme_ratufacoat_videoram[SJME_RETROARCH_VIDEORAMSIZE];
 
 /** Fallback logging, does nothing. */
 static void fallback_log(enum retro_log_level level, const char* fmt, ...)
@@ -285,6 +285,26 @@ sjme_jint sjme_retroarch_stderr_write(sjme_jint b)
 #undef SJME_RETROARCH_STDERR_MAX_BUFFER
 }
 
+/** Returns a framebuffer structure. */
+sjme_framebuffer* sjme_retroarch_framebuffer(void)
+{
+	sjme_framebuffer* rv;
+	
+	/* Allocate one. */
+	rv = calloc(1, sizeof(*rv));
+	if (rv == NULL)
+		return NULL;
+	
+	/* Fill information out. */
+	rv->pixels = sjme_ratufacoat_videoram;
+	rv->width = SJME_RETROARCH_WIDTH;
+	rv->height = SJME_RETROARCH_HEIGHT;
+	rv->scanlen = SJME_RETROARCH_WIDTH;
+	rv->numpixels = SJME_RETROARCH_VIDEORAMSIZE;
+	
+	return rv;
+}
+
 /** RetroArch initialization. */
 void retro_init(void)
 {
@@ -374,6 +394,7 @@ void retro_init(void)
 	/* Set native functions. */
 	memset(&sjme_retroarch_nativefuncs, 0, sizeof(sjme_retroarch_nativefuncs));
 	sjme_retroarch_nativefuncs.stderr_write = sjme_retroarch_stderr_write;
+	sjme_retroarch_nativefuncs.framebuffer = sjme_retroarch_framebuffer;
 	
 	/* Initialize the JVM. */
 	sjme_retroarch_jvm = sjme_jvmnew(&options, &sjme_retroarch_nativefuncs,

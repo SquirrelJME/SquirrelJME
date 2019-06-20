@@ -311,6 +311,58 @@ typedef struct sjme_jvmoptions
 } sjme_jvmoptions;
 
 /**
+ * SQF Font information.
+ *
+ * @since 2019/06/20
+ */
+typedef struct sjme_sqf
+{
+	/** The pixel height of the font. */
+	sjme_jint pixelheight;
+	
+	/** The ascent of the font. */
+	sjme_jint ascent;
+	
+	/** The descent of the font. */
+	sjme_jint descent;
+	
+	/** The bytes per scanline. */
+	sjme_jint bytesperscan;
+	
+	/** Widths for each character. */
+	sjme_jbyte* charwidths;
+	
+	/** Which characters are valid? */
+	sjme_jbyte* isvalidchar;
+	
+	/** Which characters make up the bitmap? */
+	sjme_jbyte* charbmp;
+} sjme_sqf;
+
+/**
+ * Represents the framebuffer for SquirrelJME.
+ *
+ * @since 2019/06/20
+ */
+typedef struct sjme_framebuffer
+{
+	/** Video pixels. */
+	sjme_jint* pixels;
+	
+	/** Screen width. */
+	sjme_jint width;
+	
+	/** Screen height. */
+	sjme_jint height;
+	
+	/** Scanline length. */
+	sjme_jint scanlen;
+	
+	/** The number of available pixels. */
+	sjme_jint numpixels;
+} sjme_framebuffer;
+
+/**
  * This represents the name of a file in native form, system dependent.
  *
  * @since 2019/06/08
@@ -368,56 +420,10 @@ typedef struct sjme_nativefuncs
 	
 	/** Writes single byte to standard error. */
 	sjme_jint (*stderr_write)(sjme_jint b);
+	
+	/** Obtains the framebuffer. */
+	sjme_framebuffer* (*framebuffer)(void);
 } sjme_nativefuncs;
-
-/**
- * SQF Font information.
- *
- * @since 2019/06/20
- */
-typedef struct sjme_sqf
-{
-	/** The pixel height of the font. */
-	sjme_jint pixelheight;
-	
-	/** The ascent of the font. */
-	sjme_jint ascent;
-	
-	/** The descent of the font. */
-	sjme_jint descent;
-	
-	/** The bytes per scanline. */
-	sjme_jint bytesperscan;
-	
-	/** Widths for each character. */
-	sjme_jbyte* charwidths;
-	
-	/** Which characters are valid? */
-	sjme_jbyte* isvalidchar;
-	
-	/** Which characters make up the bitmap? */
-	sjme_jbyte* charbmp;
-} sjme_sqf;
-
-/**
- * Represents the framebuffer for SquirrelJME.
- *
- * @since 2019/06/20
- */
-typedef struct sjme_framebuffer
-{
-	/** Video pixels. */
-	sjme_jint* pixel;
-	
-	/** Screen width. */
-	sjme_jint width;
-	
-	/** Screen height. */
-	sjme_jint height;
-	
-	/** Scanline length. */
-	sjme_jint scanlen;
-} sjme_framebuffer;
 
 /**
  * Executes code running within the JVM.
