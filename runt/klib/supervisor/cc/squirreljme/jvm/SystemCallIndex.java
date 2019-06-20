@@ -112,8 +112,12 @@ public interface SystemCallIndex
 	public static final short SUPERVISOR_BOOT_OKAY =
 		23;
 	
+	/** Get property of the framebuffer. */
+	public static final short FRAMEBUFFER_PROPERTY =
+		24;
+	
 	/** System call count. */
 	public static final short NUM_SYSCALLS =
-		24;
+		25;
 }
 

@@ -384,8 +384,11 @@
 /** The supervisor booted okay! */
 #define SJME_SYSCALL_SUPERVISOR_BOOT_OKAY SJME_JINT_C(23)
 
+/** Get property of the framebuffer. */
+#define SJME_SYSCALL_FRAMEBUFFER_PROPERTY SJME_JINT_C(24)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(24)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(25)
 
 /** No error, or success. */
 #define SJME_SYSCALL_ERROR_NO_ERROR SJME_JINT_C(0)
@@ -401,6 +404,9 @@
 
 /** Value out of range. */
 #define SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE SJME_JINT_C(-4)
+
+/** There is no framebuffer. */
+#define SJME_SYSCALL_ERROR_NO_FRAMEBUFFER SJME_JINT_C(-5)
 
 /** Pipe descriptor for standard output. */
 #define SJME_PIPE_FD_STDOUT SJME_JINT_C(1)
@@ -434,6 +440,18 @@
 
 /** The number of supported items. */
 #define SJME_CALLSTACKITEM_NUM_ITEMS SJME_JINT_C(8)
+
+/** Returns the address of the framebuffer. */
+#define SJME_FRAMEBUFFER_PROPERTY_ADDRESS SJME_JINT_C(1)
+
+/** Returns the width of the framebuffer. */
+#define SJME_FRAMEBUFFER_PROPERTY_WIDTH SJME_JINT_C(2)
+
+/** Returns the height of the framebuffer. */
+#define SJME_FRAMEBUFFER_PROPERTY_HEIGHT SJME_JINT_C(3)
+
+/** Returns the scanline length. */
+#define SJME_FRAMEBUFFER_PROPERTY_SCANLEN SJME_JINT_C(4)
 
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[32] =
@@ -1356,6 +1374,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				case SJME_SYSCALL_CALL_STACK_ITEM:
 				case SJME_SYSCALL_ERROR_GET:
 				case SJME_SYSCALL_ERROR_SET:
+				case SJME_SYSCALL_FRAMEBUFFER_PROPERTY:
 				case SJME_SYSCALL_MEM_SET:
 				case SJME_SYSCALL_MEM_SET_INT:
 				case SJME_SYSCALL_PD_OF_STDERR:
@@ -1486,6 +1505,50 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			ib = cpu->syscallerr[ia];
 			cpu->syscallerr[ia] = args[1];
 			return ib;
+			
+			/* Gets/sets property of the framebuffer. */
+		case SJME_SYSCALL_FRAMEBUFFER_PROPERTY:
+			/* No framebuffer is defined? */
+			if (jvm->fbinfo == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_FRAMEBUFFER;
+				return 0;
+			}
+			
+			/* Depends on the property. */
+			switch (args[0])
+			{
+					/* Framebuffer address. */
+				case SJME_FRAMEBUFFER_PROPERTY_ADDRESS:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+#if defined(SJME_VIRTUAL_MEM)
+					return SJME_POINTER_TO_JINT(
+						sjme_fakeptr(jvm, jvm->fbinfo->pixels));
+#else
+					return SJME_POINTER_TO_JINT(jvm->fbinfo->pixels);
+#endif
+					
+					/* Width of the framebuffer. */
+				case SJME_FRAMEBUFFER_PROPERTY_WIDTH:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return jvm->fbinfo->width;
+					
+					/* Height of the framebuffer. */
+				case SJME_FRAMEBUFFER_PROPERTY_HEIGHT:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return jvm->fbinfo->height;
+					
+					/* Scanline length of the framebuffer. */
+				case SJME_FRAMEBUFFER_PROPERTY_SCANLEN:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return jvm->fbinfo->scanlen;
+				
+					/* Unknown property, but there is a framebuffer. */
+				default:
+					*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
+					return 0;
+			}
+			return 0;
 			
 			/* Set memory to byte value. */
 		case SJME_SYSCALL_MEM_SET:
