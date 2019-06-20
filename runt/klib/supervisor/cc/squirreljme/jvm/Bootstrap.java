@@ -109,6 +109,7 @@ public final class Bootstrap
 				ConfigRomType.JAVA_VM_VENDOR)));
 			
 			// Load boot libraries that are available
+			todo.DEBUG.note("Scanning libraries and loading classpath...");
 			BootLibrary[] bootlibs = BootLibrary.initialClasspath(__rombase,
 				__confbase);
 			
