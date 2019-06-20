@@ -1367,7 +1367,7 @@ public final class NativeCPU
 				
 			default:
 				// Returns no value but sets an error
-				rv = -1;
+				rv = 0;
 				err = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
 				
 				// If the ID is valid then a bad array access will be used
