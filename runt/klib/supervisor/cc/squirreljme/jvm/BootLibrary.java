@@ -22,6 +22,26 @@ public final class BootLibrary
 	/** The offset to the jar count. */
 	public static final byte ROM_NUMJARS_OFFSET =
 		4;
+		
+	/** The index of the JAR which should be the boot point. */
+	public static final byte ROM_BOOTJARINDEX_OFFSET =
+		8;
+	
+	/** The offset into the packfile where the boot entry is. */
+	public static final byte ROM_BOOTJAROFFSET_OFFSET =
+		12;
+	
+	/** The size of the boot jar. */
+	public static final byte ROM_BOOTJARSIZE_OFFSET =
+		16;
+	
+	/** Initial class path library indexes. */
+	public static final byte ROM_BOOTICPOFFSET_OFFSET =
+		20;
+	
+	/** Initial clsas path library index count. */
+	public static final byte ROM_BOOTICPSIZE_OFFSET =
+		24;
 	
 	/** Offset to the table of contents offset. */
 	public static final byte ROM_TOCOFFSET_OFFSET =
@@ -105,8 +125,8 @@ public final class BootLibrary
 		// Load all libraries
 		BootLibrary[] bootlibs = bootLibraries(__rombase);
 		
-		// Will be set to the classpath to initialize with
-		String[] usecp;
+		// The initial class path to use
+		BootLibrary[] usecp;
 		
 		// Use the passed class-path if one was specified.
 		int cp = Bootstrap.configSearch(__confbase, ConfigRomType.CLASS_PATH);
@@ -120,14 +140,27 @@ public final class BootLibrary
 			cp += 2;
 			
 			// Build resulting array
-			usecp = new String[numcp];
+			usecp = new BootLibrary[numcp];
 			for (int i = 0; i < numcp; i++)
 			{
 				// Need to read the string length for skipping
 				int strlen = Assembly.memReadJavaShort(cp, 0) & 0xFFFF;
 				
-				// Decode and store string
-				usecp[i] = JVMFunction.jvmLoadString(cp);
+				// Decode name of library
+				String libname = JVMFunction.jvmLoadString(cp);
+				
+				// Find library for it
+				for (int j = 0, jn = bootlibs.length; j < jn; j++)
+				{
+					BootLibrary bl = bootlibs[jn];
+					
+					// Is this library?
+					if (libname.equals(bl.name))
+					{
+						usecp[i] = bl;
+						break;
+					}
+				}
 				
 				// Skip
 				cp += strlen + 2;
@@ -140,14 +173,21 @@ public final class BootLibrary
 			// Debug
 			todo.DEBUG.note("Using firmware class path!");
 			
-			Assembly.breakpoint();
-			throw new todo.TODO();
+			// Get offset to the table and its length
+			int icpoff = __rombase + Assembly.memReadJavaInt(__rombase,
+					ROM_BOOTICPOFFSET_OFFSET),
+				icpsize = Assembly.memReadJavaInt(__rombase,
+					ROM_BOOTICPOFFSET_OFFSET);
+			
+			// Read all of them
+			usecp = new BootLibrary[icpsize];
+			for (int i = 0; i < icpsize; i++)
+				usecp[i] = bootlibs[Assembly.memReadJavaInt(icpoff,
+					i * 4)];
 		}
 		
-		for (String s : usecp)
-			todo.DEBUG.note("Want: %s", s);
-		
-		return bootlibs;
+		// Use them!
+		return usecp;
 	}
 	
 	/**
