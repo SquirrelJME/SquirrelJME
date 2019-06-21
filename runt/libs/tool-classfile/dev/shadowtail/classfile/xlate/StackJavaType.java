@@ -54,6 +54,25 @@ public enum StackJavaType
 	}
 	
 	/**
+	 * Returns the signature of this type.
+	 *
+	 * @return The type signature.
+	 * @since 2019/06/21
+	 */
+	public final String signature()
+	{
+		switch (this)
+		{
+			case INTEGER:	return "I";
+			case LONG:		return "J";
+			case FLOAT:		return "F";
+			case DOUBLE:	return "D";
+		}
+		
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * Is this a wide type?
 	 *
 	 * @return If this is wide.

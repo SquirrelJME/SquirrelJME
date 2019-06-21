@@ -32,7 +32,7 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void add(int __a, int __b)
+	public static float add(int __a, int __b)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -45,7 +45,7 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void cmpl(int __a, int __b)
+	public static int cmpl(int __a, int __b)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -58,7 +58,7 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void cmpg(int __a, int __b)
+	public static int cmpg(int __a, int __b)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -71,7 +71,7 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void div(int __a, int __b)
+	public static float div(int __a, int __b)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -84,7 +84,7 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void mul(int __a, int __b)
+	public static float mul(int __a, int __b)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -96,7 +96,7 @@ public class SoftFloat
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void neg(int __a)
+	public static float neg(int __a)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -109,9 +109,9 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void or(int __a, int __b)
+	public static float or(int __a, int __b)
 	{
-		Assembly.returnFrame(__a | __b);
+		return Assembly.intBitsToFloat(__a | __b);
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void rem(int __a, int __b)
+	public static float rem(int __a, int __b)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -134,7 +134,7 @@ public class SoftFloat
 	 * @param __b B.
 	 * @since 2019/05/24
 	 */
-	public static void sub(int __a, int __b)
+	public static float sub(int __a, int __b)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -146,7 +146,7 @@ public class SoftFloat
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void toDouble(int __a)
+	public static double toDouble(int __a)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -158,7 +158,7 @@ public class SoftFloat
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void toInteger(int __a)
+	public static int toInteger(int __a)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -170,7 +170,7 @@ public class SoftFloat
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void toLong(int __a)
+	public static long toLong(int __a)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();

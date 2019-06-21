@@ -48,6 +48,16 @@ public final class Assembly
 	public static native void breakpoint();
 	
 	/**
+	 * Packs the given two integers to a double value.
+	 *
+	 * @param __hi The high value.
+	 * @param __lo The low value.
+	 * @return The double value.
+	 * @since 2019/06/21
+	 */
+	public static native double doublePack(int __hi, int __lo);
+	
+	/**
 	 * Double to raw long bits.
 	 *
 	 * @param __d The input double.

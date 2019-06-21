@@ -34,7 +34,7 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void add(int __ah, int __al, int __bh, int __bl)
+	public static long add(int __ah, int __al, int __bh, int __bl)
 	{
 		// Add the higher/lower parts
 		int ch = __ah + __bh,
@@ -46,7 +46,7 @@ public final class SoftLong
 			ch++;
 		
 		// Return result
-		Assembly.returnFrame(ch, cl);
+		return Assembly.longPack(ch, cl);
 	}
 	
 	/**
@@ -58,9 +58,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void and(int __ah, int __al, int __bh, int __bl)
+	public static long and(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.returnFrame(__ah & __bh, __al & __bl);
+		return Assembly.longPack(__ah & __bh, __al & __bl);
 	}
 	
 	/**
@@ -72,23 +72,23 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void cmp(int __ah, int __al, int __bh, int __bl)
+	public static int cmp(int __ah, int __al, int __bh, int __bl)
 	{
 		// Compare high values firsts
 		if (__ah < __bh)
-			Assembly.returnFrame(-1);
+			return -1;
 		else if (__ah > __bh)
-			Assembly.returnFrame(1);
+			return 1;
 		
 		// Compare low values unsigned comparison
 		__al += Integer.MAX_VALUE;
 		__bl += Integer.MAX_VALUE;
 		if (__al < __bl)
-			Assembly.returnFrame(-1);
+			return -1;
 		else if (__al > __bl)
-			Assembly.returnFrame(1);
+			return 1;
 		else
-			Assembly.returnFrame(0);
+			return 0;
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void div(int __ah, int __al, int __bh, int __bl)
+	public static long div(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -115,7 +115,7 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void mul(int __ah, int __al, int __bh, int __bl)
+	public static long mul(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -128,7 +128,7 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void neg(int __ah, int __al)
+	public static long neg(int __ah, int __al)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -143,9 +143,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void or(int __ah, int __al, int __bh, int __bl)
+	public static long or(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.returnFrame(__ah | __bh, __al | __bl);
+		return Assembly.longPack(__ah | __bh, __al | __bl);
 	}
 	
 	/**
@@ -157,7 +157,7 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void rem(int __ah, int __al, int __bh, int __bl)
+	public static long rem(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -171,22 +171,22 @@ public final class SoftLong
 	 * @param __s Shift amount.
 	 * @since 2019/05/24
 	 */
-	public static void shl(int __ah, int __al, int __s)
+	public static long shl(int __ah, int __al, int __s)
 	{
 		// Mask the shift amount
 		__s &= 0x3F;
 		
 		// Doing nothing?
 		if (__s == 0)
-			Assembly.returnFrame(__ah, __al);
+			return Assembly.longPack(__ah, __al);
 		
 		// Shifting all the low bits to the high bits
 		else if (__s >= 32)
-			Assembly.returnFrame(__al << (__s - 32), 0);
+			return Assembly.longPack(__al << (__s - 32), 0);
 		
 		// Merge of bits (shift in range of 1-31)
 		else
-			Assembly.returnFrame((__ah << __s) | (__al >>> (32 - __s)),
+			return Assembly.longPack((__ah << __s) | (__al >>> (32 - __s)),
 				(__al << __s));
 	}
 	
@@ -198,7 +198,7 @@ public final class SoftLong
 	 * @param __s Shift amount.
 	 * @since 2019/05/24
 	 */
-	public static void shr(int __ah, int __al, int __s)
+	public static long shr(int __ah, int __al, int __s)
 	{
 		// Mask the shift amount
 		__s &= 0x3F;
@@ -216,7 +216,7 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void sub(int __ah, int __al, int __bh, int __bl)
+	public static long sub(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -228,7 +228,7 @@ public final class SoftLong
 	 * @param __a A.
 	 * @since 2019/05/24
 	 */
-	public static void toDouble(int __ah, int __al)
+	public static double toDouble(int __ah, int __al)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -241,7 +241,7 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void toFloat(int __ah, int __al)
+	public static float toFloat(int __ah, int __al)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -254,10 +254,10 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void toInteger(int __ah, int __al)
+	public static int toInteger(int __ah, int __al)
 	{
 		// Just return the low order bits
-		Assembly.returnFrame(__al);
+		return __al;
 	}
 	
 	/**
@@ -268,7 +268,7 @@ public final class SoftLong
 	 * @param __s Shift amount.
 	 * @since 2019/05/24
 	 */
-	public static void ushr(int __ah, int __al, int __s)
+	public static long ushr(int __ah, int __al, int __s)
 	{
 		// Mask the shift amount
 		__s &= 0x3F;
@@ -286,9 +286,9 @@ public final class SoftLong
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void xor(int __ah, int __al, int __bh, int __bl)
+	public static long xor(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.returnFrame(__ah ^ __bh, __al ^ __bl);
+		return Assembly.longPack(__ah ^ __bh, __al ^ __bl);
 	}
 }
 

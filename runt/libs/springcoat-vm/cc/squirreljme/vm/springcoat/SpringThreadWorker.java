@@ -1131,6 +1131,13 @@ public final class SpringThreadWorker
 				"arrayLength:(Ljava/lang/Object;)I":
 				return ((SpringArrayObject)__args[0]).length();
 				
+				// Pack double together
+			case "cc/squirreljme/jvm/Assembly::" +
+				"doublePack:(II)D":
+				return Double.longBitsToDouble(
+					((((Integer)__args[0]).longValue() << 32L) |
+					((((Integer)__args[1]).longValue()) & 0xFFFFFFFFL)));
+				
 				// Gets the raw bits for the given double value
 			case "cc/squirreljme/jvm/Assembly::" +
 				"doubleToRawLongBits:(D)J":

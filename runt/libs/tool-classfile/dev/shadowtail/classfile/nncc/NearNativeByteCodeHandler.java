@@ -391,11 +391,11 @@ public final class NearNativeByteCodeHandler
 			// Invoke converter method (which might be wide)
 			if (__as.isWide())
 				this.__invokeStatic(InvokeType.STATIC, smc,
-					"to" + __bs.boxedType(), "(II)V",
+					"to" + __bs.boxedType(), "(II)" + __bs.signature(),
 					__a.register, __a.register + 1);
 			else
 				this.__invokeStatic(InvokeType.STATIC, smc,
-					"to" + __bs.boxedType(), "(I)V",
+					"to" + __bs.boxedType(), "(I)" + __bs.signature(),
 					__a.register);
 			
 			// Read out return value
@@ -844,7 +844,7 @@ public final class NearNativeByteCodeHandler
 				cl = (ch == 0 ? 0 : ch + 1);
 			
 			// Determine the call signature
-			String type;
+			String type = __mt.signature(__dt);
 			RegisterList args;
 			switch (__mt)
 			{
@@ -852,43 +852,25 @@ public final class NearNativeByteCodeHandler
 				case SIGNX8:
 				case SIGNX16:
 					if (iswide)
-					{
-						type = "(II)V";
 						args = new RegisterList(ah, al);
-					}
 					else
-					{
-						type = "(I)V";
 						args = new RegisterList(ah);
-					}
 					break;
 				
 				case SHL:
 				case SHR:
 				case USHR:
 					if (iswide)
-					{
-						type = "(III)V";
 						args = new RegisterList(ah, al, bh);
-					}
 					else
-					{
-						type = "(II)V";
 						args = new RegisterList(ah, bh);
-					}
 					break;
 				
 				default:
 					if (iswide)
-					{
-						type = "(IIII)V";
 						args = new RegisterList(ah, al, bh, bl);
-					}
 					else
-					{
-						type = "(II)V";
 						args = new RegisterList(ah, bh);
-					}
 					break;
 			}
 			
@@ -2047,10 +2029,11 @@ public final class NearNativeByteCodeHandler
 				}
 				break;
 				
-				// Long pack
+				// Double/Long pack
+			case "doublePack":
 			case "longPack":
 				codebuilder.addCopy(__in[0].register, __out.register);
-				codebuilder.addCopy(__in[1].register, __out.register);
+				codebuilder.addCopy(__in[1].register, __out.register + 1);
 				break;
 			
 				// Long unpack high
