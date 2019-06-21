@@ -34,7 +34,7 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void add(int __ah, int __al, int __bh, int __bl)
+	public static double add(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -49,7 +49,7 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void cmpl(int __ah, int __al, int __bh, int __bl)
+	public static int cmpl(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -64,7 +64,7 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void cmpg(int __ah, int __al, int __bh, int __bl)
+	public static int cmpg(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -79,7 +79,7 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void div(int __ah, int __al, int __bh, int __bl)
+	public static double div(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -94,7 +94,7 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void mul(int __ah, int __al, int __bh, int __bl)
+	public static double mul(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -107,7 +107,7 @@ public class SoftDouble
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void neg(int __ah, int __al)
+	public static double neg(int __ah, int __al)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -122,9 +122,9 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/27
 	 */
-	public static void or(int __ah, int __al, int __bh, int __bl)
+	public static double or(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.returnFrame(__ah | __bh, __al | __bl);
+		return Assembly.doublePack(__ah | __bh, __al | __bl);
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void rem(int __ah, int __al, int __bh, int __bl)
+	public static double rem(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -151,7 +151,7 @@ public class SoftDouble
 	 * @param __bl B low.
 	 * @since 2019/05/24
 	 */
-	public static void sub(int __ah, int __al, int __bh, int __bl)
+	public static double sub(int __ah, int __al, int __bh, int __bl)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -164,7 +164,7 @@ public class SoftDouble
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void toFloat(int __ah, int __al)
+	public static float toFloat(int __ah, int __al)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -177,7 +177,7 @@ public class SoftDouble
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void toInteger(int __ah, int __al)
+	public static int toInteger(int __ah, int __al)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -190,7 +190,7 @@ public class SoftDouble
 	 * @param __al A low.
 	 * @since 2019/05/24
 	 */
-	public static void toLong(int __ah, int __al)
+	public static long toLong(int __ah, int __al)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();

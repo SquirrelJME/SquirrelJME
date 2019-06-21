@@ -70,6 +70,68 @@ public enum MathType
 	;
 	
 	/**
+	 * Returns the signature for the given math operation and type.
+	 *
+	 * @param __jt The type to use.
+	 * @return The resulting signature.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/21
+	 */
+	public final String signature(StackJavaType __jt)
+		throws NullPointerException
+	{
+		switch (this)
+		{
+			case CMPL:
+			case CMPG:
+				switch (__jt)
+				{
+					case INTEGER:	return "(II)I";
+					case LONG:		return "(IIII)I";
+					case FLOAT:		return "(II)I";
+					case DOUBLE:	return "(IIII)I";
+				}
+				break;
+			
+			case NEG:
+			case SIGNX8:
+			case SIGNX16:
+				switch (__jt)
+				{
+					case INTEGER:	return "(I)I";
+					case LONG:		return "(II)J";
+					case FLOAT:		return "(I)F";
+					case DOUBLE:	return "(II)D";
+				}
+				break;
+			
+			case SHL:
+			case SHR:
+			case USHR:
+				switch (__jt)
+				{
+					case INTEGER:	return "(II)I";
+					case LONG:		return "(III)J";
+					case FLOAT:		return "(II)F";
+					case DOUBLE:	return "(III)D";
+				}
+				break;
+			
+			default:
+				switch (__jt)
+				{
+					case INTEGER:	return "(II)I";
+					case LONG:		return "(IIII)J";
+					case FLOAT:		return "(II)F";
+					case DOUBLE:	return "(IIII)D";
+				}
+				break;
+		}
+		
+		throw new todo.OOPS(this + " " + __jt);
+	}
+	
+	/**
 	 * Returns the math type for the given index.
 	 *
 	 * @param __i The index.
