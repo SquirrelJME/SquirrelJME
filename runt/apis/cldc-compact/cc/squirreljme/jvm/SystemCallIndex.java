@@ -116,8 +116,12 @@ public interface SystemCallIndex
 	public static final short FRAMEBUFFER_PROPERTY =
 		24;
 	
+	/** The current byte order. */
+	public static final short BYTE_ORDER_LITTLE =
+		25;
+	
 	/** System call count. */
 	public static final short NUM_SYSCALLS =
-		25;
+		26;
 }
 

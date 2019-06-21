@@ -1082,6 +1082,7 @@ public final class NativeCPU
 					err = 0;
 					switch (__args[0])
 					{
+						case SystemCallIndex.BYTE_ORDER_LITTLE:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.CALL_STACK_HEIGHT:
@@ -1107,6 +1108,12 @@ public final class NativeCPU
 							break;
 					}
 				}
+				break;
+				
+				// Is this little endian?
+			case SystemCallIndex.BYTE_ORDER_LITTLE:
+				rv = 0;
+				err = 0;
 				break;
 			
 				// Get the height of the call stack

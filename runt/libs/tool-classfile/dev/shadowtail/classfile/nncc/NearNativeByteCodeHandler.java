@@ -826,6 +826,10 @@ public final class NearNativeByteCodeHandler
 			// The function to call is just the lowercased enum
 			String func = __mt.name().toLowerCase();
 			
+			// Remove the L/G from compare as that is only for float/double
+			if (__dt == StackJavaType.LONG && func.startsWith("cmp"))
+				func = "cmp";
+			
 			// Handling wide math?
 			boolean iswide = __dt.isWide();
 			
