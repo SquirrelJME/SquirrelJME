@@ -1,0 +1,16 @@
+# 2019/06/20
+
+## 08:46
+
+Oh whoops, my monospace font is not monospace because on character is too
+wide!
+
+## 19:52
+
+So now I have to figure bit shifts for long values, being done completely
+with 32-bit values. So this will be interesting.
+
+## 21:01
+
+Time for me to go deep into some old code and find a div function since I
+need it for SquirrelJME to operate properly on C!
