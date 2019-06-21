@@ -334,6 +334,34 @@ public final class Assembly
 	public static native double longBitsToDouble(long __b);
 	
 	/**
+	 * Packs the given two integers to a long value.
+	 *
+	 * @param __hi The high value.
+	 * @param __lo The low value.
+	 * @return The long value.
+	 * @since 2019/06/21
+	 */
+	public static native long longPack(int __hi, int __lo);
+	
+	/**
+	 * Unpack high value from long.
+	 *
+	 * @param __v The long value.
+	 * @return The unpacked fragment.
+	 * @since 2019/06/21
+	 */
+	public static native int longUnpackHigh(long __v);
+	
+	/**
+	 * Unpack low value from long.
+	 *
+	 * @param __v The long value.
+	 * @return The unpacked fragment.
+	 * @since 2019/06/21
+	 */
+	public static native int longUnpackLow(long __v);
+	
+	/**
 	 * Reads byte from address.
 	 *
 	 * @param __p The pointer.

@@ -1151,6 +1151,22 @@ public final class SpringThreadWorker
 				"longBitsToDouble:(J)D":
 				return Double.longBitsToDouble((Long)__args[0]);
 				
+				// Pack long together
+			case "cc/squirreljme/jvm/Assembly::" +
+				"longPack:(II)L":
+				return ((((Integer)__args[0]).longValue() << 32L) |
+					((((Integer)__args[1]).longValue()) & 0xFFFFFFFFL));
+				
+				// Unpack high long
+			case "cc/squirreljme/jvm/Assembly::" +
+				"longUnpackHigh:(L)I":
+				return (int)((((Long)__args[0]).longValue()) >>> 32L);
+				
+				// Unpack low long
+			case "cc/squirreljme/jvm/Assembly::" +
+				"longUnpackLow:(L)I":
+				return (int)(((Long)__args[0]).longValue());
+				
 				// Object to pointer
 			case "cc/squirreljme/jvm/Assembly::" +
 				"objectToPointer:(Ljava/lang/Object;)I":

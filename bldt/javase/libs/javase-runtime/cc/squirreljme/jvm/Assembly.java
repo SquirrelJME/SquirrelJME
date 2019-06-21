@@ -423,6 +423,43 @@ public final class Assembly
 	}
 	
 	/**
+	 * Packs the given two integers to a long value.
+	 *
+	 * @param __hi The high value.
+	 * @param __lo The low value.
+	 * @return The long value.
+	 * @since 2019/06/21
+	 */
+	public static final long longPack(int __hi, int __lo)
+	{
+		return ((((long)__hi) << 32L) | (((long)__lo) & 0xFFFFFFFFL));
+	}
+	
+	/**
+	 * Unpack high value from long.
+	 *
+	 * @param __v The long value.
+	 * @return The unpacked fragment.
+	 * @since 2019/06/21
+	 */
+	public static final int longUnpackHigh(long __v)
+	{
+		return (int)(__v >>> 32);
+	}
+	
+	/**
+	 * Unpack low value from long.
+	 *
+	 * @param __v The long value.
+	 * @return The unpacked fragment.
+	 * @since 2019/06/21
+	 */
+	public static final int longUnpackLow(long __v)
+	{
+		return (int)__v;
+	}
+	
+	/**
 	 * Reads byte from address.
 	 *
 	 * @param __p The pointer.

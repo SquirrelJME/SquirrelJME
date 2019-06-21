@@ -2047,6 +2047,22 @@ public final class NearNativeByteCodeHandler
 				}
 				break;
 				
+				// Long pack
+			case "longPack":
+				codebuilder.addCopy(__in[0].register, __out.register);
+				codebuilder.addCopy(__in[1].register, __out.register);
+				break;
+			
+				// Long unpack high
+			case "longUnpackHigh":
+				codebuilder.addCopy(__in[0].register, __out.register);
+				break;
+				
+				// Long unpack low
+			case "longUnpackLow":
+				codebuilder.addCopy(__in[0].register + 1, __out.register);
+				break;
+				
 				// Read byte memory
 			case "memReadByte":
 				codebuilder.addMemoryOffReg(DataType.BYTE,
