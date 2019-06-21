@@ -136,8 +136,14 @@ public final class SoftLong
 	 */
 	public static long neg(int __ah, int __al)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Negate and check for overflow
+		int nh = (~__ah),
+			nl = (~__al + 1);
+		if (nl == 0)
+			nh++;
+		
+		// Return result
+		return Assembly.longPack(nh, nl);
 	}
 	
 	/**
@@ -229,8 +235,23 @@ public final class SoftLong
 	 */
 	public static long sub(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Negate and check for overflow
+		int nh = (~__bh),
+			nl = (~__bl + 1);
+		if (nl == 0)
+			nh++;
+		
+		// Add the higher/lower parts, with a negation
+		int ch = __ah + nh,
+			cl = __al + nl;
+		
+		// If the low addition carried a bit over, then set that bit in the
+		// high part
+		if ((cl + 0x80000000) < (__al + 0x80000000))
+			ch++;
+		
+		// Return result
+		return Assembly.longPack(ch, cl);
 	}
 	
 	/**
@@ -288,8 +309,18 @@ public final class SoftLong
 		// Mask the shift amount
 		__s &= 0x3F;
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Doing nothing?
+		if (__s == 0)
+			return Assembly.longPack(__ah, __al);
+		
+		// Shifting all the high bits low
+		else if (__s >= 32)
+			return Assembly.longPack(0, __ah >>> (__s - 32));
+		
+		// Merge of bits (shift in range of 1-31)
+		else
+			return Assembly.longPack((__ah >>> __s),
+				(__ah << (32 - __s)) | (__al >>> __s));
 	}
 	
 	/**
