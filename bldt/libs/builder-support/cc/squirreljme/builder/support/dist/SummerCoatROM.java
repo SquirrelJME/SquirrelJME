@@ -99,7 +99,7 @@ public class SummerCoatROM
 		for (int i = 0; i < numlbins; i++)
 		{
 			// Get source name
-			String name = lbins[0].name().toString();
+			String name = lbins[i].name().toString();
 			
 			// Find the library for it
 			for (int j = 0; j < n; j++)

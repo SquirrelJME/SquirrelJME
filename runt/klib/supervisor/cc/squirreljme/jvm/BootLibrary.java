@@ -132,7 +132,7 @@ public final class BootLibrary
 		
 		// Use the passed class-path if one was specified.
 		int cp = Bootstrap.configSearch(__confbase, ConfigRomType.CLASS_PATH);
-		if (false && cp != 0)
+		if (cp != 0)
 		{
 			// Debug
 			todo.DEBUG.note("Using user class path!");
@@ -179,7 +179,7 @@ public final class BootLibrary
 			int icpoff = __rombase + Assembly.memReadJavaInt(__rombase,
 					ROM_BOOTICPOFFSET_OFFSET),
 				icpsize = Assembly.memReadJavaInt(__rombase,
-					ROM_BOOTICPOFFSET_OFFSET);
+					ROM_BOOTICPSIZE_OFFSET);
 			
 			// Read all of them
 			usecp = new BootLibrary[icpsize];
