@@ -61,6 +61,7 @@ More detailed changes:
        current suite will always be searched first to maintain the correct
        behavior.
      * Implemented `java.io.InputStream`.
+     * Implemented `java.io.PrintStream`.
      * Implemented `java.util.EventObject`.
      * Implemented `java.util.Hashtable`.
      * Implemented `java.util.LinkedHashMap`.
