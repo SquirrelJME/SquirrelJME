@@ -140,6 +140,8 @@ More detailed changes:
        properties, and alternative console redirection (to capture output).
      * Correct cases where `NullPointerException` is thrown when a `Display`
        was initialized but was not yet claimed by any program.
+     * If a JAR is not valid, the launcher will no longer fail to start since
+       the invalid JAR is just ignored.
    * SpringCoat
      * Add limit to stack frame depth.
      * Add support for system properties being based to virtual machine
