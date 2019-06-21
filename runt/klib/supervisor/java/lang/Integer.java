@@ -19,6 +19,10 @@ import cc.squirreljme.jvm.Assembly;
 public final class Integer
 	extends Number
 {
+	/** Minimum value. */
+	public static final int MIN_VALUE =
+		0x80000000;
+	
 	/** Maximum value. */
 	public static final int MAX_VALUE =
 		0x7FFFFFFF;

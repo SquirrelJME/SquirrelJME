@@ -159,7 +159,7 @@ public final class Allocator
 		
 		// Bad size? Bad chain link?
 		if (csz <= 0 ||
-			(cnx + Integer.MAX_VALUE) < (seeker + Integer.MAX_VALUE))
+			(cnx + Integer.MIN_VALUE) < (seeker + Integer.MIN_VALUE))
 			Assembly.breakpoint();
 		
 		// Set as free

@@ -83,15 +83,14 @@ public final class SoftLong
 		else if (__ah > __bh)
 			return 1;
 		
-		// Compare low values unsigned comparison
-		__al += Integer.MAX_VALUE;
-		__bl += Integer.MAX_VALUE;
+		// Compare low values with unsigned comparison
+		__al += Integer.MIN_VALUE;
+		__bl += Integer.MIN_VALUE;
 		if (__al < __bl)
 			return -1;
 		else if (__al > __bl)
 			return 1;
-		else
-			return 0;
+		return 0;
 	}
 	
 	/**
@@ -246,23 +245,10 @@ public final class SoftLong
 	 */
 	public static long sub(int __ah, int __al, int __bh, int __bl)
 	{
-		// Negate and check for overflow
-		int nh = (~__bh),
-			nl = (~__bl + 1);
-		if (nl == 0)
-			nh++;
-		
-		// Add the higher/lower parts, with a negation
-		int ch = __ah + nh,
-			cl = __al + nl;
-		
-		// If the low addition carried a bit over, then set that bit in the
-		// high part
-		if ((cl + 0x80000000) < (__al + 0x80000000))
-			ch++;
-		
-		// Return result
-		return Assembly.longPack(ch, cl);
+		// The same as add, but the second operand is negated
+		long nb = SoftLong.neg(__bh, __bl);
+		return SoftLong.add(__ah, __al,
+			Assembly.longUnpackHigh(nb), Assembly.longUnpackLow(nb));
 	}
 	
 	/**
@@ -395,7 +381,7 @@ public final class SoftLong
 			inrem |= ((__num >>> i) & 1L);
 			
 			// Unsigned comparison
-			if ((inrem + Long.MAX_VALUE) >= (__den + Long.MAX_VALUE))
+			if ((inrem + Long.MIN_VALUE) >= (__den + Long.MIN_VALUE))
 			{
 				inrem -= __den;
 				inquot |= (1L << i);
