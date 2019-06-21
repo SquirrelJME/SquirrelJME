@@ -105,6 +105,9 @@ public final class BootLibrary
 		// Load all libraries
 		BootLibrary[] bootlibs = bootLibraries(__rombase);
 		
+		// Will be set to the classpath to initialize with
+		String[] usecp;
+		
 		// Use the passed class-path if one was specified.
 		int cp = Bootstrap.configSearch(__confbase, ConfigRomType.CLASS_PATH);
 		if (cp != 0)
@@ -112,7 +115,23 @@ public final class BootLibrary
 			// Debug
 			todo.DEBUG.note("Using user class path!");
 			
-			Assembly.breakpoint();
+			// Read string count
+			int numcp = Assembly.memReadJavaShort(cp, 0) & 0xFFFF;
+			cp += 2;
+			
+			// Build resulting array
+			usecp = new String[numcp];
+			for (int i = 0; i < numcp; i++)
+			{
+				// Need to read the string length for skipping
+				int strlen = Assembly.memReadJavaShort(cp, 0) & 0xFFFF;
+				
+				// Decode and store string
+				usecp[i] = JVMFunction.jvmLoadString(cp);
+				
+				// Skip
+				cp += strlen + 2;
+			}
 		}
 		
 		// Use class-path built into the ROM
@@ -122,7 +141,11 @@ public final class BootLibrary
 			todo.DEBUG.note("Using firmware class path!");
 			
 			Assembly.breakpoint();
+			throw new todo.TODO();
 		}
+		
+		for (String s : usecp)
+			todo.DEBUG.note("Want: %s", s);
 		
 		return bootlibs;
 	}
