@@ -1160,7 +1160,7 @@ public final class SpringThreadWorker
 				
 				// Pack long together
 			case "cc/squirreljme/jvm/Assembly::" +
-				"longPack:(II)L":
+				"longPack:(II)J":
 				return ((((Integer)__args[0]).longValue() << 32L) |
 					((((Integer)__args[1]).longValue()) & 0xFFFFFFFFL));
 				
