@@ -30,6 +30,7 @@ public class SoftFloat
 	 *
 	 * @param __a A.
 	 * @param __b B.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float add(int __a, int __b)
@@ -43,6 +44,7 @@ public class SoftFloat
 	 *
 	 * @param __a A.
 	 * @param __b B.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static int cmpl(int __a, int __b)
@@ -56,6 +58,7 @@ public class SoftFloat
 	 *
 	 * @param __a A.
 	 * @param __b B.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static int cmpg(int __a, int __b)
@@ -69,6 +72,7 @@ public class SoftFloat
 	 *
 	 * @param __a A.
 	 * @param __b B.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float div(int __a, int __b)
@@ -82,6 +86,7 @@ public class SoftFloat
 	 *
 	 * @param __a A.
 	 * @param __b B.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float mul(int __a, int __b)
@@ -94,6 +99,7 @@ public class SoftFloat
 	 * Negates a value.
 	 *
 	 * @param __a A.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float neg(int __a)
@@ -107,6 +113,7 @@ public class SoftFloat
 	 *
 	 * @param __a A.
 	 * @param __b B.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float or(int __a, int __b)
@@ -119,6 +126,7 @@ public class SoftFloat
 	 *
 	 * @param __a A.
 	 * @param __b B.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float rem(int __a, int __b)
@@ -132,6 +140,7 @@ public class SoftFloat
 	 *
 	 * @param __a A.
 	 * @param __b B.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float sub(int __a, int __b)
@@ -144,6 +153,7 @@ public class SoftFloat
 	 * Converts to double.
 	 *
 	 * @param __a A.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static double toDouble(int __a)
@@ -156,6 +166,7 @@ public class SoftFloat
 	 * Converts to integer.
 	 *
 	 * @param __a A.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static int toInteger(int __a)
@@ -168,6 +179,7 @@ public class SoftFloat
 	 * Converts to long.
 	 *
 	 * @param __a A.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long toLong(int __a)
