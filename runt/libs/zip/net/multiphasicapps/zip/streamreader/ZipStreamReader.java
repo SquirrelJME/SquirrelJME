@@ -146,7 +146,17 @@ public class ZipStreamReader
 		for (; !this._eof;)
 		{
 			// Peek the magic number
-			int rhcount = input.peek(0, localheader, 0, 4);
+			int rhcount;
+			try
+			{
+				rhcount = input.peek(0, localheader, 0, 4);
+			}
+			
+			// {@squirreljme.error BF1j Could not peek the magic number.}
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new ZipException("BF1j", e);
+			}
 		
 			// Could not fit the magic number, treat as EOF
 			if (rhcount < 4)
