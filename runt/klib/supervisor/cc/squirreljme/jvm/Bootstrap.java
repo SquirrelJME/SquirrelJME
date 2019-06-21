@@ -113,13 +113,6 @@ public final class Bootstrap
 			BootLibrary[] bootlibs = BootLibrary.initialClasspath(__rombase,
 				__confbase);
 			
-			for (BootLibrary bl : bootlibs)
-			{
-				todo.DEBUG.note("n=%s a=%d l=%d ma=%d ml=%d",
-					bl.name, bl.address, bl.length, bl.manifestaddress,
-					bl.manifestlength);
-			}
-			
 			// Something later on
 			Assembly.breakpoint();
 			
