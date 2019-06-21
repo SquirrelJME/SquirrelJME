@@ -219,8 +219,19 @@ public final class SoftLong
 		// Mask the shift amount
 		__s &= 0x3F;
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Doing nothing?
+		if (__s == 0)
+			return Assembly.longPack(__ah, __al);
+		
+		// Shifting all the high bits low
+		else if (__s >= 32)
+			return Assembly.longPack((__ah & 0x80000000) >> 31,
+				__ah >> (__s - 32));
+		
+		// Merge of bits (shift in range of 1-31)
+		else
+			return Assembly.longPack((__ah >> __s),
+				(__ah << (32 - __s)) | (__al >>> __s));
 	}
 	
 	/**
