@@ -171,7 +171,8 @@ public final class NearNativeByteCodeHandler
 			this.__basicCheckIsArray(__in.register);
 		
 		// Read length
-		codebuilder.addMemoryOffConst(DataType.INTEGER, true, __len.register,
+		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
+			__len.register,
 			__in.register, Constants.ARRAY_LENGTH_OFFSET);
 		
 		// Clear references
