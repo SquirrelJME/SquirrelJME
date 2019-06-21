@@ -19,7 +19,10 @@ import java.util.Formatter;
  * This class is used to print translated and formatted text.
  *
  * No {@link IOException} is ever thrown by any of these methods, they are
- * handled and provided as an error flag which can be obtained.
+ * handled and provided as an error flag which can be obtained. If
+ * {@link InterruptedIOException} is thrown then the error state is not set,
+ * any operations which cause this to occur will instead call
+ * {@code Thread.currentThread().interrupt()}.
  *
  * Print streams may optionally have automatic flushing which will call
  * {@link #flush()} whenever a byte array is written or when it is detected
@@ -61,6 +64,10 @@ public class PrintStream
 	
 	/** The encoder used to encode chars to bytes. */
 	private final Encoder _encoder;
+	
+	/** Mini-byte buffer for encoded characters. */
+	private final byte[] _minienc =
+		new byte[8];
 	
 	/** The internal buffer. */
 	private final byte[] _buf =
@@ -160,35 +167,92 @@ public class PrintStream
 		this._encoder = __enc;
 	}
 	
-	public PrintStream append(CharSequence __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/21
+	 */
+	@Override
+	public PrintStream append(CharSequence __c)
 	{
-		throw new todo.TODO();
+		this.print((__c == null ? "null" : __c.toString()));
+		return this;
 	}
 	
-	public PrintStream append(CharSequence __a, int __b, int __c)
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/21
+	 */
+	@Override
+	public PrintStream append(CharSequence __c, int __s, int __e)
 	{
-		throw new todo.TODO();
+		this.print((__c == null ? "null" :
+			__c.subSequence(__s, __e).toString()));
+		return this;
 	}
 	
-	public PrintStream append(char __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/21
+	 */
+	@Override
+	public PrintStream append(char __c)
 	{
-		throw new todo.TODO();
+		this.print(__c);
+		return this;
 	}
 	
+	/**
+	 * Flushes the stream and checks the error state.
+	 *
+	 * @return The current error state.
+	 * @since 2019/06/21
+	 */
 	public boolean checkError()
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__flush();
+			return this._inerror;
+		}
 	}
 	
+	/**
+	 * Clears the error state.
+	 *
+	 * @since 2019/06/21
+	 */
 	protected void clearError()
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this._inerror = false;
+		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/21
+	 */
 	@Override
 	public void close()
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			// Flush output
+			this.__flush();
+			
+			// Close the stream
+			try
+			{
+				this._out.close();
+			}
+			
+			// Set error state?
+			catch (IOException e)
+			{
+				this._inerror = true;
+			}
+		}
 	}
 	
 	/**
@@ -221,22 +285,31 @@ public class PrintStream
 		return this.__printf(__fmt, __args);
 	}
 	
-	public void print(boolean __a)
+	/**
+	 * Prints the given value.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void print(boolean __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print((__v ? "true" : "false"));
+		}
 	}
 	
 	/**
 	 * Prints the specified character to the stream.
 	 *
-	 * @param __c The character to print.
+	 * @param __v The character to print.
 	 * @since 2018/09/23
 	 */
-	public void print(char __c)
+	public void print(char __v)
 	{
 		synchronized (this)
 		{
-			this.__writeChar(__c);
+			this.__writeChar(__v);
 		}
 	}
 	
@@ -254,44 +327,95 @@ public class PrintStream
 		}
 	}
 	
-	public void print(long __a)
+	/**
+	 * Prints the given value.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void print(long __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print(Long.toString(__v));
+		}
 	}
 	
-	public void print(float __a)
+	/**
+	 * Prints the given value.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void print(float __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print(Float.toString(__v));
+		}
 	}
 	
-	public void print(double __a)
+	/**
+	 * Prints the given value.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void print(double __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print(Double.toString(__v));
+		}
 	}
 	
-	public void print(char[] __a)
+	/**
+	 * Prints the given value.
+	 *
+	 * @param __v The value to print.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/21
+	 */
+	public void print(char[] __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			for (int i = 0, n = __v.length; i < n; i++)
+				this.__writeChar(__v[i]);
+		}
 	}
 	
 	/**
 	 * Prints the specified string.
 	 *
-	 * @param __s The string to print, if {@code null} then {@code "null"} is
+	 * @param __v The string to print, if {@code null} then {@code "null"} is
 	 * printed.
 	 * @since 2018/09/20
 	 */
-	public void print(String __s)
+	public void print(String __v)
 	{
 		synchronized (this)
 		{
-			this.__print(__s);
+			this.__print(__v);
 		}
 	}
 	
-	public void print(Object __a)
+	/**
+	 * Prints the given value.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void print(Object __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print((__v == null ? "null" : __v.toString()));
+		}
 	}
 	
 	/**
@@ -324,39 +448,115 @@ public class PrintStream
 		}
 	}
 	
-	public void println(boolean __a)
+	/**
+	 * Prints the given value and ends the line.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void println(boolean __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print((__v ? "true" : "false"));
+			this.__println();
+		}
 	}
 	
-	public void println(char __a)
+	/**
+	 * Prints the given value and ends the line.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void println(char __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__writeChar(__v);
+			this.__println();
+		}
 	}
 	
-	public void println(int __a)
+	/**
+	 * Prints the given value and ends the line.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void println(int __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print(Integer.toString(__v));
+			this.__println();
+		}
 	}
 	
-	public void println(long __a)
+	/**
+	 * Prints the given value and ends the line.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void println(long __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print(Long.toString(__v));
+			this.__println();
+		}
 	}
 	
-	public void println(float __a)
+	/**
+	 * Prints the given value and ends the line.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void println(float __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print(Float.toString(__v));
+			this.__println();
+		}
 	}
 	
-	public void println(double __a)
+	/**
+	 * Prints the given value and ends the line.
+	 *
+	 * @param __v The value to print.
+	 * @since 2019/06/21
+	 */
+	public void println(double __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print(Double.toString(__v));
+			this.__println();
+		}
 	}
 	
-	public void println(char[] __a)
+	/**
+	 * Prints the given value and ends the line.
+	 *
+	 * @param __v The value to print.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/21
+	 */
+	public void println(char[] __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			for (int i = 0, n = __v.length; i < n; i++)
+				this.__writeChar(__v[i]);
+			this.__println();
+		}
 	}
 	
 	/**
@@ -389,23 +589,70 @@ public class PrintStream
 		}
 	}
 	
+	/**
+	 * Sets the error state to on.
+	 *
+	 * @since 2019/06/21
+	 */
 	protected void setError()
 	{
-		throw new todo.TODO();
+		this._inerror = true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/21
+	 */
 	@Override
 	@ImplementationNote("If newline is written, this will flush.")
-	public void write(int __a)
+	public void write(int __c)
 	{
-		throw new todo.TODO();
+		// Is always in array form
+		byte[] b = new byte[]{(byte)__c};
+		
+		// Forward
+		synchronized (this)
+		{
+			this.__writeBytes(b, 0, 1);
+		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/21
+	 */
 	@Override
 	@ImplementationNote("If auto-flushing, this calls flush after writing.")
-	public void write(byte[] __a, int __b, int __c)
+	public void write(byte[] __b)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this.__writeBytes(__b, 0, __b.length);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/21
+	 */
+	@Override
+	@ImplementationNote("If auto-flushing, this calls flush after writing.")
+	public void write(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		synchronized (this)
+		{
+			this.__writeBytes(__b, __o, __l);
+		}
 	}
 	
 	/**
@@ -429,6 +676,12 @@ public class PrintStream
 			try
 			{
 				out.write(buf[bop]);
+			}
+			catch (InterruptedIOException e)
+			{
+				// Just stop handling here and interrupt the thread
+				Thread.currentThread().interrupt();
+				break;
 			}
 			catch (IOException e)
 			{
@@ -536,6 +789,64 @@ public class PrintStream
 	}
 	
 	/**
+	 * Writes multiple bytes to the output.
+	 *
+	 * @param __b The bytes to write.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/21
+	 */
+	private final void __writeBytes(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Our current buffer state
+		byte[] buf = this._buf;
+		int bat = this._bat;
+		
+		// Auto-flush on any newlines?
+		boolean autoflush = this._autoflush;
+		
+		// Copy bytes into the buffer
+		boolean flush = false;
+		for (int i = 0; i < __l; i++)
+		{
+			byte b = __b[i];
+			
+			// Fill into buffer
+			buf[bat++] = b;
+			
+			// Auto-flushing on newline?
+			if (autoflush && b == '\n')
+				flush = true;
+			
+			// Force a flush?
+			if (bat >= _THRESHOLD)
+			{
+				// Send flush
+				this.__flush();
+				
+				// Needs to be re-read since flush changes this
+				bat = this._bat;
+			}
+		}
+		
+		// Store changes
+		this._bat = bat;
+		
+		// Perform a flush?
+		if (flush || bat >= _THRESHOLD)
+			this.__flush();
+	}
+	
+	/**
 	 * Writes a single character to the output, encoding it as required.
 	 *
 	 * @param __c The character to write.
@@ -543,34 +854,17 @@ public class PrintStream
 	 */
 	private final void __writeChar(char __c)
 	{
-		byte[] buf = this._buf;
-		int bat = this._bat;
-		
-		// Encode the character into empty space
-		int wc = this._encoder.encode(__c, buf, bat, _BUFFER_SIZE - bat);
+		// Encode bytes into the array
+		byte[] minienc = this._minienc;
+		int wc = this._encoder.encode(__c, minienc, 0, minienc.length);
 		
 		// {@squirreljme.error ZZ0k Did not expect the buffer to be out of
 		// room.}
 		if (wc < 0)
 			throw new Error("ZZ0k");
 		
-		// Should we flush bytes?
-		boolean flush = (__c == '\n' && this._autoflush);
-		if (!flush && this._autoflush)
-		{
-			for (int skim = bat + wc; bat < skim; bat++)
-				if (buf[bat] == '\n')
-					flush = true;
-		}
-		else
-			bat += wc;
-		
-		// Store changes
-		this._bat = bat;
-		
-		// Flush?
-		if (flush || bat >= _THRESHOLD)
-			this.__flush();
+		// Write them into the buffer
+		this.__writeBytes(minienc, 0, wc);
 	}
 }
 
