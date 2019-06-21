@@ -136,6 +136,7 @@
 		typedef unsigned long uint32_t;
 		
 		#define INT32_C(x) x##L
+		#define UINT32_C(x) x##UL
 	#endif
 #endif
 
@@ -163,11 +164,15 @@ typedef uint16_t sjme_jchar;
 /** {@code int} type. */
 typedef int32_t sjme_jint;
 
+/** Unsigned {@code int} type. */
+typedef uint32_t sjme_juint;
+
 /** Constant value macros. */
 #define SJME_JBYTE_C(x) INT8_C(x)
 #define SJME_JSHORT_C(x) INT16_C(x)
 #define SJME_JCHAR_C(x) UINT16_C(x)
 #define SJME_JINT_C(x) INT32_C(x)
+#define SJME_JUINT_C(x) UINT32_C(x)
 
 /** Maximum values. */
 #define SJME_JINT_MAX_VALUE INT32_C(0x7FFFFFFF)

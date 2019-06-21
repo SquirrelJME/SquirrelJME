@@ -74,8 +74,21 @@ public final class SoftLong
 	 */
 	public static void cmp(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Compare high values firsts
+		if (__ah < __bh)
+			Assembly.returnFrame(-1);
+		else if (__ah > __bh)
+			Assembly.returnFrame(1);
+		
+		// Compare low values unsigned comparison
+		__al += Integer.MAX_VALUE;
+		__bl += Integer.MAX_VALUE;
+		if (__al < __bl)
+			Assembly.returnFrame(-1);
+		else if (__al > __bl)
+			Assembly.returnFrame(1);
+		else
+			Assembly.returnFrame(0);
 	}
 	
 	/**
