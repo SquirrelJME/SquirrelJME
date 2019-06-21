@@ -360,19 +360,19 @@ public final class SoftLong
 	 */
 	private static long __div(boolean __dorem, long __num, long __den)
 	{
-		/* Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29) */
-		/* if D == 0 then throw DivisionByZeroException end*/
-		/* Q := 0 # initialize quotient and remainder to zero  */
-		/* R := 0                                              */
-		/* for i = n-1...0 do  # " where n is no of bits "     */
-		/*   R := R << 1       # left-shift R by 1 bit         */
-		/*   R(0) := N(i)      # set the least-significant bit */
-		/*              # of R equal to bit i of the numerator */
-		/*   if R >= D then                                    */
-		/*     R = R - D                                       */
-		/*     Q(i) := 1                                       */
-		/*   end                                               */
-		/* end                                                 */
+		// Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29)
+		// if D == 0 then throw DivisionByZeroException end
+		// Q := 0 # initialize quotient and remainder to zero
+		// R := 0
+		// for i = n-1...0 do  # " where n is no of bits "
+		//   R := R << 1       # left-shift R by 1 bit
+		//   R(0) := N(i)      # set the least-significant bit
+		//              # of R equal to bit i of the numerator
+		//   if R >= D then
+		//     R = R - D
+		//     Q(i) := 1
+		//   end
+		// end
 		long rvquot = 0, rvrem = 0,
 			inquot = 0, inrem = 0,
 			i;
