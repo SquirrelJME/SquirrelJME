@@ -387,8 +387,11 @@
 /** Get property of the framebuffer. */
 #define SJME_SYSCALL_FRAMEBUFFER_PROPERTY SJME_JINT_C(24)
 
+/** Is the byte order little endian? */
+#define SJME_SYSCALL_BYTE_ORDER_LITTLE SJME_JINT_C(25)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(25)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(26)
 
 /** No error, or success. */
 #define SJME_SYSCALL_ERROR_NO_ERROR SJME_JINT_C(0)
@@ -1541,11 +1544,16 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			switch (args[0])
 			{
+				case SJME_SYSCALL_BYTE_ORDER_LITTLE:
 				case SJME_SYSCALL_CALL_STACK_HEIGHT:
 				case SJME_SYSCALL_CALL_STACK_ITEM:
 				case SJME_SYSCALL_ERROR_GET:
 				case SJME_SYSCALL_ERROR_SET:
 				case SJME_SYSCALL_FRAMEBUFFER_PROPERTY:
+				case SJME_SYSCALL_TIME_HI_MILLI_WALL:
+				case SJME_SYSCALL_TIME_HI_NANO_MONO:
+				case SJME_SYSCALL_TIME_LO_MILLI_WALL:
+				case SJME_SYSCALL_TIME_LO_NANO_MONO:
 				case SJME_SYSCALL_MEM_SET:
 				case SJME_SYSCALL_MEM_SET_INT:
 				case SJME_SYSCALL_PD_OF_STDERR:
@@ -1555,6 +1563,15 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					return SJME_JINT_C(1);
 			}
 			return SJME_JINT_C(0);
+			
+			/* Is the byte order little endian? */
+		case SJME_SYSCALL_BYTE_ORDER_LITTLE:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+#if defined(SJME_LITTLE_ENDIAN)
+			return 1;
+#else
+			return 0;
+#endif
 			
 			/* Height of the call stack. */
 		case SJME_SYSCALL_CALL_STACK_HEIGHT:
@@ -1721,6 +1738,64 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			}
 			return 0;
 			
+			/* Returns the high millisecond wall clock. */
+		case SJME_SYSCALL_TIME_HI_MILLI_WALL:
+			if (jvm->nativefuncs == NULL ||
+				jvm->nativefuncs->millitime == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				jvm->nativefuncs->millitime(&ia);
+				return ia;
+			}
+			
+			/* Returns the low nanosecond wall clock. */
+		case SJME_SYSCALL_TIME_HI_NANO_MONO:
+			if (jvm->nativefuncs == NULL ||
+				jvm->nativefuncs->nanotime == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				jvm->nativefuncs->nanotime(&ia);
+				return ia;
+			}
+			
+			/* Returns the low millisecond wall clock. */
+		case SJME_SYSCALL_TIME_LO_MILLI_WALL:
+			if (jvm->nativefuncs == NULL ||
+				jvm->nativefuncs->millitime == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				return jvm->nativefuncs->millitime(&ia);
+			}
+		
+			/* Returns the low nanosecond monotonic clock. */
+		case SJME_SYSCALL_TIME_LO_NANO_MONO:
+			if (jvm->nativefuncs == NULL ||
+				jvm->nativefuncs->nanotime == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				return jvm->nativefuncs->nanotime(&ia);
+			}
+			
 			/* Set memory to byte value. */
 		case SJME_SYSCALL_MEM_SET:
 			/* Get address to wipe. */
@@ -1753,7 +1828,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return 0;
+			return SJME_JINT_C(0);
 			
 			/* Pipe descriptor of standard error. */
 		case SJME_SYSCALL_PD_OF_STDERR:
@@ -1767,7 +1842,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			
 			/* Write single byte to a stream. */
 		case SJME_SYSCALL_PD_WRITE_BYTE:
-			ia = -1;
+			ia = SJME_JINT_C(-1);
 			
 			/* The byte to write. */
 			ba = (sjme_jbyte)args[1];
@@ -1812,7 +1887,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 		case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
 			jvm->supervisorokay = 1;
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return 0;
+			return SJME_JINT_C(0);
 		
 			/* Unknown or unsupported system call. */
 		default:

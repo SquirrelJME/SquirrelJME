@@ -160,8 +160,21 @@ public final class SoftLong
 	 */
 	public static void shl(int __ah, int __al, int __s)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Mask the shift amount
+		__s &= 0x3F;
+		
+		// Doing nothing?
+		if (__s == 0)
+			Assembly.returnFrame(__ah, __al);
+		
+		// Shifting all the low bits to the high bits
+		else if (__s >= 32)
+			Assembly.returnFrame(__al << (__s - 32), 0);
+		
+		// Merge of bits (shift in range of 1-31)
+		else
+			Assembly.returnFrame((__ah << __s) | (__al >>> (32 - __s)),
+				(__al << __s));
 	}
 	
 	/**
@@ -174,6 +187,9 @@ public final class SoftLong
 	 */
 	public static void shr(int __ah, int __al, int __s)
 	{
+		// Mask the shift amount
+		__s &= 0x3F;
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
@@ -241,6 +257,9 @@ public final class SoftLong
 	 */
 	public static void ushr(int __ah, int __al, int __s)
 	{
+		// Mask the shift amount
+		__s &= 0x3F;
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}

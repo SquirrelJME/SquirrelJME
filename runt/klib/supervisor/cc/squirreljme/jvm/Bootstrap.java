@@ -107,18 +107,20 @@ public final class Bootstrap
 			todo.DEBUG.note("(C) %s", JVMFunction.jvmLoadString(
 				Bootstrap.configSearch(__confbase,
 				ConfigRomType.JAVA_VM_VENDOR)));
+			todo.DEBUG.note("Time: %d", System.currentTimeMillis());
+			todo.DEBUG.note("Nano: %d", System.nanoTime());
 			
 			// Load boot libraries that are available
 			todo.DEBUG.note("Scanning libraries and loading classpath...");
 			BootLibrary[] bootlibs = BootLibrary.initialClasspath(__rombase,
 				__confbase);
 			
-			for (BootLibrary bl : bootlibs)
+			/*for (BootLibrary bl : bootlibs)
 			{
 				todo.DEBUG.note("n=%s a=%d l=%d ma=%d ml=%d",
 					bl.name, bl.address, bl.length, bl.manifestaddress,
 					bl.manifestlength);
-			}
+			}*/
 			
 			// Something later on
 			Assembly.breakpoint();
