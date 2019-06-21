@@ -141,10 +141,13 @@ public final class PathSuiteManager
 				return null;
 			}
 			
-			// {@squirreljme.error AK08 
+			// Exists but it is not valid, verbosely fail
 			catch (IOException e)
 			{
-				throw new VMException("AK08", e);
+				e.printStackTrace();
+				
+				cache.put(__s, null);
+				return null;
 			}
 		}
 	}
