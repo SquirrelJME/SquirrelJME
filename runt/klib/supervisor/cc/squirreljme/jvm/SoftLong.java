@@ -373,9 +373,7 @@ public final class SoftLong
 		//     Q(i) := 1
 		//   end
 		// end
-		long rvquot = 0, rvrem = 0,
-			inquot = 0, inrem = 0,
-			i;
+		long inquot = 0, inrem = 0;
 		boolean isneg;
 		
 		// Disallow division by zero
@@ -383,18 +381,16 @@ public final class SoftLong
 			return 0;
 		
 		// Negative?
-		isneg = false;
-		if ((__num < 0 && __den >= 0) || (__num >= 0 && __den < 0))
-			isneg |= true;
+		isneg = ((__num < 0 && __den >= 0) || (__num >= 0 && __den < 0));
 		
 		// Force Positive
 		__num = (__num < 0 ? -__num : __num);
 		__den = (__den < 0 ? -__den : __den);
 		
 		// Perform Math
-		for (i = 63;; i--)
+		for (int i = 63; i >= 0; i--)
 		{
-			inrem <<= 1L;
+			inrem <<= 1;
 			inrem &= 0xFFFFFFFFFFFFFFFEL;
 			inrem |= ((__num >>> i) & 1L);
 			
@@ -404,22 +400,14 @@ public final class SoftLong
 				inrem -= __den;
 				inquot |= (1L << i);
 			}
-			
-			// Stop?
-			if (i == 0)
-				break;
 		}
-		
-		// Restore Integers
-		rvquot = inquot;
-		rvrem = inrem;
 		
 		// Make Negative
 		if (isneg)
-			rvquot = -rvquot;
+			inquot = -inquot;
 		
 		// Return
-		return (__dorem ? rvquot : rvrem);
+		return (__dorem ? inrem : inquot);
 	}
 }
 

@@ -354,7 +354,7 @@ public final class JavaStackState
 		{
 			// Pop top item
 			popped = stack[--newstacktop];
-			if (popped.type.isWide())
+			if (popped.type.isTop())
 				popped = stack[--newstacktop];
 			
 			// Add to input
