@@ -123,14 +123,16 @@ public final class BootLibrary
 		int __confbase)
 	{
 		// Load all libraries
-		BootLibrary[] bootlibs = bootLibraries(__rombase);
+		BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
+		if (bootlibs == null)
+			Assembly.breakpoint();
 		
 		// The initial class path to use
 		BootLibrary[] usecp;
 		
 		// Use the passed class-path if one was specified.
 		int cp = Bootstrap.configSearch(__confbase, ConfigRomType.CLASS_PATH);
-		if (cp != 0)
+		if (false && cp != 0)
 		{
 			// Debug
 			todo.DEBUG.note("Using user class path!");
@@ -152,7 +154,7 @@ public final class BootLibrary
 				// Find library for it
 				for (int j = 0, jn = bootlibs.length; j < jn; j++)
 				{
-					BootLibrary bl = bootlibs[jn];
+					BootLibrary bl = bootlibs[j];
 					
 					// Is this library?
 					if (libname.equals(bl.name))

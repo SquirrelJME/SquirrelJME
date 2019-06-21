@@ -231,8 +231,11 @@ public class Main
 		SourceName projectname = new SourceName(
 			(__args.length > 0 ? __args[0] : "cldc-compact"));
 		
-		// Get both the source and the binary for this project
+		// Get the source code for line lookup
 		Source psrc = sm.get(projectname);
+		
+		// Get up to date binary
+		bm.compile(bm.get(projectname));
 		Binary pbin = bm.get(projectname);
 		
 		// Get the class we want to look at, make sure dots are slashes!
@@ -264,7 +267,7 @@ public class Main
 						cps.input(wantclass + ".java").open())))
 				{
 					// Debug
-					todo.DEBUG.note("Reading lines...");
+					System.err.println("Reading lines...");
 					
 					// Note
 					for (;;)
@@ -279,7 +282,7 @@ public class Main
 					}
 					
 					// Debug
-					todo.DEBUG.note("Read %d lines!", lines.size());
+					System.err.printf("Read %d lines!%n", lines.size());
 				}
 			}
 			catch (NoSuchInputException e)

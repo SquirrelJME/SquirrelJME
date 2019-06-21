@@ -166,8 +166,32 @@ public final class Allocator
 		Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
 			csz | MEMPART_FREE_BIT);
 		
-		// Parameters used for memory corruption
+		// Value used for memory corruption
 		int bm = Constants.BAD_MAGIC;
+		
+		// Possibly merge with the following chunk
+		if (cnx != 0)
+		{
+			// Get chunk properties
+			int nsz = Assembly.memReadInt(cnx, CHUNK_SIZE_OFFSET),
+				nnx = Assembly.memReadInt(cnx, CHUNK_NEXT_OFFSET);
+			
+			// Only merge if free
+			if ((nsz & MEMPART_FREE_BIT) != 0)
+			{
+				// Combine both chunks
+				Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
+					(csz + (nsz & (~MEMPART_FREE_BIT))) | MEMPART_FREE_BIT);
+				
+				// Our next chunk becomes the right side's next
+				Assembly.memWriteInt(seeker, CHUNK_NEXT_OFFSET,
+					nnx);
+				
+				// Invalid chunk data in the next chunk
+				Assembly.memWriteInt(cnx, CHUNK_SIZE_OFFSET, bm);
+				Assembly.memWriteInt(cnx, CHUNK_NEXT_OFFSET, bm);
+			}
+		}
 		
 		// Clear out memory with invalid data, that is BAD_MAGIC
 		Assembly.sysCallP(SystemCallIndex.MEM_SET_INT, __p, bm,

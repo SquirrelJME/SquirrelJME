@@ -4503,6 +4503,8 @@ public final class SpringThreadWorker
 	 */
 	public final String uniqueString(int __id)
 	{
+		if (__id == 0)
+			return null;
 		return this.machine.debugResolveString((int)__id);
 	}
 	
@@ -4517,7 +4519,7 @@ public final class SpringThreadWorker
 		throws NullPointerException
 	{
 		if (__s == null)
-			throw new NullPointerException("NARG");
+			return 0;
 		
 		return (int)this.machine.debugUnresolveString(__s);
 	}
