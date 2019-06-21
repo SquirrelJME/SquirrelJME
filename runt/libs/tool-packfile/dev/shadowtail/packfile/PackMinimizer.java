@@ -85,8 +85,20 @@ public class PackMinimizer
 		// Defensive copy and check for nulls
 		__initcp = (__initcp == null ? new String[0] : __initcp.clone());
 		for (int i = 0, n = __initcp.length; i < n; i++)
-			if (__initcp[i] == null)
+		{
+			String vx = __initcp[i];
+			
+			if (vx == null)
 				throw new NullPointerException("NARG");
+			
+			// Append JAR always
+			if (!vx.endsWith(".jar"))
+				__initcp[i] = vx + ".jar";
+		}
+		
+		// Make sure it ends in JAR
+		if (!__boot.endsWith(".jar"))
+			__boot = __boot + ".jar";
 		
 		// Formatted data is used
 		DataOutputStream dos = new DataOutputStream(__os);
@@ -118,6 +130,10 @@ public class PackMinimizer
 		{
 			VMClassLibrary lib = __libs[i];
 			String name = lib.name();
+			
+			// Normalize extension
+			if (!name.endsWith(".jar"))
+				name = name + ".jar";
 			
 			// Find library used in the initial classpath
 			for (int j = 0; j < numinitcp; j++)

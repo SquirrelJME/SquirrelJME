@@ -388,7 +388,10 @@ public class SummerCoatFactory
 		int n = __cp.length;
 		String[] rv = new String[n];
 		for (int i = 0; i < n; i++)
-			rv[i] = __cp[i].name();
+		{
+			String name = __cp[i].name();
+			rv[i] = (name.endsWith(".jar") ? name : name + ".jar");
+		}
 		
 		return rv;
 	}
