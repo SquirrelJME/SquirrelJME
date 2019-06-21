@@ -32,6 +32,7 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long add(int __ah, int __al, int __bh, int __bl)
@@ -56,6 +57,7 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long and(int __ah, int __al, int __bh, int __bl)
@@ -70,6 +72,7 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static int cmp(int __ah, int __al, int __bh, int __bl)
@@ -98,12 +101,13 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long div(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		return SoftLong.__div(false, Assembly.longPack(__ah, __al),
+			Assembly.longPack(__bh, __bl));
 	}
 	
 	/**
@@ -113,6 +117,7 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long mul(int __ah, int __al, int __bh, int __bl)
@@ -126,6 +131,7 @@ public final class SoftLong
 	 *
 	 * @param __ah A high.
 	 * @param __al A low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long neg(int __ah, int __al)
@@ -141,6 +147,7 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long or(int __ah, int __al, int __bh, int __bl)
@@ -155,12 +162,13 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long rem(int __ah, int __al, int __bh, int __bl)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		return SoftLong.__div(true, Assembly.longPack(__ah, __al),
+			Assembly.longPack(__bh, __bl));
 	}
 	
 	/**
@@ -169,6 +177,7 @@ public final class SoftLong
 	 * @param __ah A high.
 	 * @param __al A low.
 	 * @param __s Shift amount.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long shl(int __ah, int __al, int __s)
@@ -196,6 +205,7 @@ public final class SoftLong
 	 * @param __ah A high.
 	 * @param __al A low.
 	 * @param __s Shift amount.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long shr(int __ah, int __al, int __s)
@@ -214,6 +224,7 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long sub(int __ah, int __al, int __bh, int __bl)
@@ -226,6 +237,7 @@ public final class SoftLong
 	 * Converts to double.
 	 *
 	 * @param __a A.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static double toDouble(int __ah, int __al)
@@ -239,6 +251,7 @@ public final class SoftLong
 	 *
 	 * @param __ah A high.
 	 * @param __al A low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float toFloat(int __ah, int __al)
@@ -252,6 +265,7 @@ public final class SoftLong
 	 *
 	 * @param __ah A high.
 	 * @param __al A low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static int toInteger(int __ah, int __al)
@@ -266,6 +280,7 @@ public final class SoftLong
 	 * @param __ah A high.
 	 * @param __al A low.
 	 * @param __s Shift amount.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long ushr(int __ah, int __al, int __s)
@@ -284,11 +299,85 @@ public final class SoftLong
 	 * @param __al A low.
 	 * @param __bh B high.
 	 * @param __bl B low.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long xor(int __ah, int __al, int __bh, int __bl)
 	{
 		return Assembly.longPack(__ah ^ __bh, __al ^ __bl);
+	}
+	
+	/**
+	 * Divides and remainders two values.
+	 *
+	 * @param __dorem Return the remainder?
+	 * @param __num The numerator.
+	 * @param __den The denominator.
+	 * @return The result.
+	 * @since 2019/05/24
+	 */
+	private static long __div(boolean __dorem, long __num, long __den)
+	{
+		/* Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29) */
+		/* if D == 0 then throw DivisionByZeroException end*/
+		/* Q := 0 # initialize quotient and remainder to zero  */
+		/* R := 0                                              */
+		/* for i = n-1...0 do  # " where n is no of bits "     */
+		/*   R := R << 1       # left-shift R by 1 bit         */
+		/*   R(0) := N(i)      # set the least-significant bit */
+		/*              # of R equal to bit i of the numerator */
+		/*   if R >= D then                                    */
+		/*     R = R - D                                       */
+		/*     Q(i) := 1                                       */
+		/*   end                                               */
+		/* end                                                 */
+		long rvquot = 0, rvrem = 0,
+			inquot = 0, inrem = 0,
+			i;
+		boolean isneg;
+		
+		// Disallow division by zero
+		if (__den == 0)
+			return 0;
+		
+		// Negative?
+		isneg = false;
+		if ((__num < 0 && __den >= 0) || (__num >= 0 && __den < 0))
+			isneg |= true;
+		
+		// Force Positive
+		__num = (__num < 0 ? -__num : __num);
+		__den = (__den < 0 ? -__den : __den);
+		
+		// Perform Math
+		for (i = 63;; i--)
+		{
+			inrem <<= 1L;
+			inrem &= 0xFFFFFFFFFFFFFFFEL;
+			inrem |= ((__num >>> i) & 1L);
+			
+			// Unsigned comparison
+			if ((inrem + Long.MAX_VALUE) >= (__den + Long.MAX_VALUE))
+			{
+				inrem -= __den;
+				inquot |= (1L << i);
+			}
+			
+			// Stop?
+			if (i == 0)
+				break;
+		}
+		
+		// Restore Integers
+		rvquot = inquot;
+		rvrem = inrem;
+		
+		// Make Negative
+		if (isneg)
+			rvquot = -rvquot;
+		
+		// Return
+		return (__dorem ? rvquot : rvrem);
 	}
 }
 

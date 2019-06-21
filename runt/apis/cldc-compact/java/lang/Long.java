@@ -19,12 +19,15 @@ public final class Long
 	extends Number
 	implements Comparable<Long>
 {
+	/** The maximum value. */
 	public static final long MAX_VALUE =
 		9223372036854775807L;
 	
+	/** The minimum value. */
 	public static final long MIN_VALUE =
 		-9223372036854775808L;
 	
+	/** The size of the type in bits. */
 	public static final int SIZE =
 		64;
 	

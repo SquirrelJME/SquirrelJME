@@ -29,6 +29,7 @@ public class SoftInteger
 	 * Converts to double.
 	 *
 	 * @param __a A.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static double toDouble(int __a)
@@ -41,6 +42,7 @@ public class SoftInteger
 	 * Converts to float.
 	 *
 	 * @param __a A.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static float toFloat(int __a)
@@ -53,6 +55,7 @@ public class SoftInteger
 	 * Converts to long.
 	 *
 	 * @param __a A.
+	 * @return The result.
 	 * @since 2019/05/24
 	 */
 	public static long toLong(int __a)
