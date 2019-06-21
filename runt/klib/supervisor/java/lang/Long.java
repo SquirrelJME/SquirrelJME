@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
+
 /**
  * This represents a boxed long value.
  *
@@ -41,6 +43,17 @@ public final class Long
 	public Long(long __v)
 	{
 		this._value = __v;
+	}
+	
+	/**
+	 * Returns the long value.
+	 *
+	 * @return The long value.
+	 * @since 2019/06/21
+	 */
+	public long longValue()
+	{
+		return this._value;
 	}
 	
 	/**

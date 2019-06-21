@@ -325,25 +325,17 @@ public final class JVMFunction
 	 */
 	public static final long jvmMemReadLong(int __addr, int __off)
 	{
-		// Each part
-		int hv, lv;
-		
 		// Big endian!
 		if (Assembly.sysCallPV(SystemCallIndex.BYTE_ORDER_LITTLE) == 0)
-		{
-			hv = Assembly.memReadInt(__addr, __off);
-			lv = Assembly.memReadInt(__addr + 4, __off);
-		}
+			return Assembly.longPack(
+				Assembly.memReadInt(__addr, __off),
+				Assembly.memReadInt(__addr + 4, __off));
 		
 		// Little endian!
 		else
-		{
-			lv = Assembly.memReadInt(__addr, __off);
-			hv = Assembly.memReadInt(__addr + 4, __off);
-		}
-		
-		// Build
-		return ((((long)hv) << 32L) | (((long)lv) & 0xFFFFFFFFL));
+			return Assembly.longPack(
+				Assembly.memReadInt(__addr + 4, __off),
+				Assembly.memReadInt(__addr, __off));
 	}
 	
 	/**
@@ -368,8 +360,8 @@ public final class JVMFunction
 		// Little endian!
 		else
 		{
-			Assembly.memWriteInt(__addr, __off, __lv);
 			Assembly.memWriteInt(__addr + 4, __off, __hv);
+			Assembly.memWriteInt(__addr, __off, __lv);
 		}
 	}
 	
@@ -384,7 +376,7 @@ public final class JVMFunction
 	public static final void jvmMemWriteLong(int __addr, int __off, long __v)
 	{
 		JVMFunction.jvmMemWriteLong(__addr, __off,
-			(int)(__v >>> 32), (int)__v);
+			Assembly.longUnpackHigh(__v), Assembly.longUnpackLow(__v));
 	}
 	
 	/**
