@@ -115,44 +115,38 @@ public final class BootLibrary
 	 * Returns the boot libraries which make up the initial classpath.
 	 *
 	 * @param __rombase The ROM base.
-	 * @param __confbase The configuration ROM base.
+	 * @param __config The configuration system to use.
 	 * @return The libraries to set for the initial classpath.
 	 * @since 2019/06/20
 	 */
 	public static final BootLibrary[] initialClasspath(int __rombase,
-		int __confbase)
+		ConfigReader __config)
 	{
 		// Load all libraries
 		BootLibrary[] bootlibs = BootLibrary.bootLibraries(__rombase);
 		if (bootlibs == null)
 			Assembly.breakpoint();
+		int numboot = bootlibs.length;
 		
 		// The initial class path to use
 		BootLibrary[] usecp;
 		
 		// Use the passed class-path if one was specified.
-		int cp = Bootstrap.configSearch(__confbase, ConfigRomType.CLASS_PATH);
-		if (cp != 0)
+		String[] usercp = __config.loadStrings(ConfigRomType.CLASS_PATH);
+		if (usercp != null)
 		{
 			// Debug
 			todo.DEBUG.note("Using user class path!");
 			
-			// Read string count
-			int numcp = Assembly.memReadJavaShort(cp, 0) & 0xFFFF;
-			cp += 2;
-			
-			// Build resulting array
-			usecp = new BootLibrary[numcp];
-			for (int i = 0; i < numcp; i++)
+			// Scan for libraries
+			int n = usercp.length;
+			usecp = new BootLibrary[n];
+			for (int i = 0; i < n; i++)
 			{
-				// Need to read the string length for skipping
-				int strlen = Assembly.memReadJavaShort(cp, 0) & 0xFFFF;
+				String libname = usercp[i];
 				
-				// Decode name of library
-				String libname = JVMFunction.jvmLoadString(cp);
-				
-				// Find library for it
-				for (int j = 0, jn = bootlibs.length; j < jn; j++)
+				// Find library
+				for (int j = 0; j < numboot; j++)
 				{
 					BootLibrary bl = bootlibs[j];
 					
@@ -163,9 +157,6 @@ public final class BootLibrary
 						break;
 					}
 				}
-				
-				// Skip
-				cp += strlen + 2;
 			}
 		}
 		

@@ -26,84 +26,6 @@ public final class Bootstrap
 	}
 	
 	/**
-	 * Searches the configuration space for the given key and returns it's
-	 * value.
-	 *
-	 * @param __confbase The configuration base.
-	 * @param __key The key to search for.
-	 * @return The pointer to the configuration value or {@code 0} if it was
-	 * not found.
-	 * @since 2019/06/19
-	 */
-	public static final int configSearch(int __confbase, int __key)
-	{
-		// Seek through items
-		for (int seeker = __confbase;;)
-		{
-			// Read key and size
-			int key = Assembly.memReadJavaShort(seeker,
-					Constants.CONFIG_KEY_OFFSET),
-				len = Assembly.memReadJavaShort(seeker,
-					Constants.CONFIG_SIZE_OFFSET) & 0xFFFF;
-			
-			// Stop?
-			if (key == ConfigRomType.END)
-				break;
-			
-			// Found here?
-			if (key == __key)
-				return seeker + Constants.CONFIG_HEADER_SIZE;
-			
-			// Skip otherwise
-			seeker += Constants.CONFIG_HEADER_SIZE + len;
-		}
-		
-		// Not found
-		return 0;
-	}
-	
-	/**
-	 * Loads the main arguments which are passed to the program being
-	 * bootstrapped.
-	 *
-	 * @param __confbase The configuration base.
-	 * @return The main arguments.
-	 * @since 2019/06/22
-	 */
-	public static final String[] loadMainArgs(int __confbase)
-	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Loads the main class.
-	 *
-	 * @param __confbase The configuration base.
-	 * @return The main class.
-	 * @since 2019/06/22
-	 */
-	public static final String loadMainClass(int __confbase)
-	{
-		// Load the string pointer
-		return JVMFunction.jvmLoadString(Bootstrap.configSearch(__confbase,
-			ConfigRomType.MAIN_CLASS));
-	}
-	
-	/**
-	 * Loads the passed system properties.
-	 *
-	 * @param __confbase The configuration base.
-	 * @return The system properties in key/value pairs.
-	 * @since 2019/06/22
-	 */
-	public static final String[] loadSystemProperties(int __confbase)
-	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Entry point for the bootstrap.
 	 *
 	 * @param __rambase The base RAM address.
@@ -125,25 +47,17 @@ public final class Bootstrap
 		// Could crash!
 		try
 		{
+			// Initialize config reader
+			ConfigReader config = new ConfigReader(__confbase);
+			
 			// Basic SquirrelJME Banner
 			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
-			todo.DEBUG.note("VM: %s %s", JVMFunction.jvmLoadString(
-				Bootstrap.configSearch(__confbase,
-				ConfigRomType.JAVA_VM_NAME)), JVMFunction.jvmLoadString(
-				Bootstrap.configSearch(__confbase,
-				ConfigRomType.JAVA_VM_VERSION)));
-			todo.DEBUG.note("(C) %s", JVMFunction.jvmLoadString(
-				Bootstrap.configSearch(__confbase,
-				ConfigRomType.JAVA_VM_VENDOR)));
+			todo.DEBUG.note("VM: %s %s",
+				config.loadString(ConfigRomType.JAVA_VM_NAME),
+				config.loadString(ConfigRomType.JAVA_VM_VERSION));
+			todo.DEBUG.note("(C) %s",
+				config.loadString(ConfigRomType.JAVA_VM_VENDOR));
 			todo.DEBUG.note("RAM/ROM (bytes): %d/%d", __ramsize, __romsize);
-			
-			// Spacer
-			todo.DEBUG.note("");
-			
-			// Load boot libraries that are available
-			todo.DEBUG.note("Scanning libraries and loading classpath...");
-			BootLibrary[] bootlibs = BootLibrary.initialClasspath(__rombase, __confbase);
-			todo.DEBUG.note("Selecting %d libraries!", bootlibs.length);
 			
 			// Spacer
 			todo.DEBUG.note("");
@@ -159,10 +73,10 @@ public final class Bootstrap
 			// Start the initial task
 			todo.DEBUG.note("Creating initial task...");
 			ClientTask boot = ctm.newTask(
-				BootLibrary.initialClasspath(__rombase, __confbase),
-				Bootstrap.loadMainClass(__confbase),
-				Bootstrap.loadMainArgs(__confbase),
-				Bootstrap.loadSystemProperties(__confbase));
+				BootLibrary.initialClasspath(__rombase, config),
+				config.loadString(ConfigRomType.MAIN_CLASS),
+				config.loadStrings(ConfigRomType.MAIN_ARGUMENTS),
+				config.loadKeyValueMap(ConfigRomType.DEFINE_PROPERTY));
 			todo.DEBUG.note("Okay.");
 			
 			// Something later on
