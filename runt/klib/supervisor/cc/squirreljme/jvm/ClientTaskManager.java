@@ -54,7 +54,7 @@ public final class ClientTaskManager
 		String[] __args, String[] __sp)
 		throws NullPointerException
 	{
-		if (__cp == null || __mcl == null || __args == null || __sp == null)
+		if (__cp == null)
 			throw new NullPointerException("NARG");
 		
 		Assembly.breakpoint();
