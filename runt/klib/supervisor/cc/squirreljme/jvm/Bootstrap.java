@@ -118,6 +118,17 @@ public final class Bootstrap
 				__confbase);
 			todo.DEBUG.note("Selecting %d libraries!", bootlibs.length);
 			
+			// Spacer
+			todo.DEBUG.note("");
+			
+			// Initialize the client task manager
+			todo.DEBUG.note("Initializing task manager...");
+			ClientTaskManager ctm = new ClientTaskManager();
+			todo.DEBUG.note("Okay.");
+			
+			// Spacer
+			todo.DEBUG.note("");
+			
 			// Something later on
 			Assembly.breakpoint();
 			
