@@ -85,8 +85,9 @@ public final class Bootstrap
 	 */
 	public static final String loadMainClass(int __confbase)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Load the string pointer
+		return JVMFunction.jvmLoadString(Bootstrap.configSearch(__confbase,
+			ConfigRomType.MAIN_CLASS));
 	}
 	
 	/**
