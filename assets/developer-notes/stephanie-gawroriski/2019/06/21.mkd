@@ -1,0 +1,32 @@
+# 2019/06/21
+
+## 08:37
+
+I should have assembly methods for long building and unbuilding since it could
+be sped up by the compiler. It would also be simpler to merge two values
+together as well.
+
+## 08:48
+
+And on top of that, I am going to make it so that all the math operations
+return their correct type so I do not have to use the return value hacking.
+I think this will be much better. It could also mean software math is usable
+for Java SE and SpringCoat.
+
+## 11:11
+
+Okay so it seems invoking long values is wrong?
+
+## 11:21
+
+Okay so the memory read/write instructions are okay.
+
+## 11:41
+
+Okay so `LRETURN` is not returning two values, it is just returning one and
+the debug point says what was popped from the stack is not a long...
+
+## 11:42
+
+Oh yeah because I just pop the one and I check if it is wide, it should be
+top.
