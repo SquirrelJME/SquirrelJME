@@ -30,3 +30,24 @@ the debug point says what was popped from the stack is not a long...
 
 Oh yeah because I just pop the one and I check if it is wide, it should be
 top.
+
+## 16:23
+
+After bug fixes and working on things, will be heading to getting the launcher
+or at least the hello demo working properly. Will be interesting to see how
+this goes!
+
+## 18:55
+
+Okay so I think all memory needs to be tagged or similar. I could use the
+upper 8-bits of the size for the tag information. I think this will be very
+important. I can have some extra bits, like if something is an object or
+otherwise. It would limit allocations to 16MiB but this is a mobile embedded
+system so that is not too bad. I think that would be the best, just so I can
+determine say which task owns a block (so when it is closed, everything can
+be quickly cleaned out) but also to know if things are objects or otherwise.
+
+## 20:57
+
+Okay, so I have tagging now which should help with initializing classes and
+such for other tasks when they are booted.
