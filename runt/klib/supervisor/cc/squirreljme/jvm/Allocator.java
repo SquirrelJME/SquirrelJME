@@ -148,73 +148,41 @@ public final class Allocator
 		if (rci + 4 <= csz)
 			Assembly.memWriteInt(seeker, rci, 0);
 		
-		// Set block as free now
-		Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-			csz | CHUNK_TAG_FREE);
-		/*
-		// 
+		// See if we can merge this with the following chunk
 		if (cnx != 0)
 		{
-			// Get chunk properties
+			// Get properties of the next chunk
 			int nsz = Assembly.memReadInt(cnx, CHUNK_SIZE_OFFSET),
 				nnx = Assembly.memReadInt(cnx, CHUNK_NEXT_OFFSET);
 			
-		}
-		
-		
-		// Bad size? Bad chain link?
-		if (csz <= 0 ||
-			(cnx + Integer.MIN_VALUE) < (seeker + Integer.MIN_VALUE))
-			Assembly.breakpoint();
-		
-		// Set as free
-		Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-			csz | MEMPART_FREE_BIT);
-		
-		// Value used for memory corruption
-		int bm = Constants.BAD_MAGIC;
-		
-		// Possibly merge with the following chunk
-		if (cnx != 0)
-		{
-			// Get chunk properties
-			int nsz = Assembly.memReadInt(cnx, CHUNK_SIZE_OFFSET),
-				nnx = Assembly.memReadInt(cnx, CHUNK_NEXT_OFFSET);
-			
-			// Only merge if free
-			if ((nsz & MEMPART_FREE_BIT) != 0)
+			// Free space? Merge into it!
+			if ((nsz & CHUNK_TAG_MASK) == CHUNK_TAG_FREE)
 			{
-				// Combine both chunks
-				Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-					(csz + (nsz & (~MEMPART_FREE_BIT))) | MEMPART_FREE_BIT);
+				// Calculate the would be new size
+				int newsize = usedspace + (nsz & CHUNK_SIZE_MASK);
 				
-				// Our next chunk becomes the right side's next
-				Assembly.memWriteInt(seeker, CHUNK_NEXT_OFFSET,
-					nnx);
-				
-				// Invalid chunk data in the next chunk
-				Assembly.memWriteInt(cnx, CHUNK_SIZE_OFFSET, bm);
-				Assembly.memWriteInt(cnx, CHUNK_NEXT_OFFSET, bm);
+				// Only merge chunks which are within the size limit, otherwise
+				// a large portion of memory will not able to be reclaimed
+				// because it would logically have a small size
+				if (newsize <= CHUNK_SIZE_LIMIT)
+				{
+					// New size of our current chunk
+					Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
+						newsize | CHUNK_TAG_FREE);
+					
+					// Our chunk's next becomes the right side's next
+					Assembly.memWriteInt(seeker, CHUNK_NEXT_OFFSET,
+						nnx);
+					
+					// Do not use normal free set
+					return;
+				}
 			}
 		}
 		
-		// Clear out memory with invalid data, that is BAD_MAGIC
-		Assembly.sysCallP(SystemCallIndex.MEM_SET_INT, __p, bm,
-			csz - CHUNK_LENGTH);
-		if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
-			SystemCallIndex.MEM_SET_INT) != SystemCallError.NO_ERROR)
-		{
-			// Fast memsetint() is not supported, so manually wipe
-			// all the bytes!
-			for (int i = CHUNK_LENGTH; i < csz; i += 4)
-				Assembly.memWriteInt(seeker, i, bm);
-		}
-		
-		// Make sure the reference count index is zero, to detect uncount
-		// after free
-		int rci = CHUNK_LENGTH + Constants.OBJECT_COUNT_OFFSET;
-		if (rci + 4 <= csz)
-			Assembly.memWriteInt(seeker, rci, 0);*/
+		// Set chunk as free now, keep the original size
+		Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
+			csz | CHUNK_TAG_FREE);
 	}
 	
 	/**
