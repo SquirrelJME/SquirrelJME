@@ -45,7 +45,8 @@ public final class NativeCPU
 {
 	/**
 	 * {@squirreljme.properly cc.squirreljme.summercoat.debug=boolean
-	 * Should SummerCoat print lots of debugging information?}*/
+	 * Should SummerCoat print lots of debugging information?}
+	 */
 	public static final boolean ENABLE_DEBUG =
 		Boolean.getBoolean("cc.squirreljme.summercoat.debug");
 	
