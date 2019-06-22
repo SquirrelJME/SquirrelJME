@@ -107,11 +107,16 @@ public final class Bootstrap
 			todo.DEBUG.note("(C) %s", JVMFunction.jvmLoadString(
 				Bootstrap.configSearch(__confbase,
 				ConfigRomType.JAVA_VM_VENDOR)));
+			todo.DEBUG.note("RAM/ROM (bytes): %d/%d", __ramsize, __romsize);
+			
+			// Spacer
+			todo.DEBUG.note("");
 			
 			// Load boot libraries that are available
 			todo.DEBUG.note("Scanning libraries and loading classpath...");
 			BootLibrary[] bootlibs = BootLibrary.initialClasspath(__rombase,
 				__confbase);
+			todo.DEBUG.note("Selecting %d libraries!", bootlibs.length);
 			
 			// Something later on
 			Assembly.breakpoint();
