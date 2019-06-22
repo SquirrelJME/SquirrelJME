@@ -38,5 +38,27 @@ public final class ClientTaskManager
 		// Setup a system task
 		this.tasks[0] = new ClientTask(0, 0);
 	}
+	
+	/**
+	 * Creates a new task.
+	 *
+	 * @param __cp The class path to use.
+	 * @param __mcl The main class.
+	 * @param __args The arguments to the task.
+	 * @param __sp System properties.
+	 * @return The resulting task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/22
+	 */
+	public ClientTask newTask(BootLibrary[] __cp, String __mcl,
+		String[] __args, String[] __sp)
+		throws NullPointerException
+	{
+		if (__cp == null || __mcl == null || __args == null || __sp == null)
+			throw new NullPointerException("NARG");
+		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
 }
 

@@ -213,7 +213,7 @@ public final class BootLibrary
 		int tocoff = Assembly.memReadJavaInt(__rombase, ROM_TOCOFFSET_OFFSET);
 		
 		// Debug
-		todo.DEBUG.note("NumJars: %d, TocOff: %d", numjars, tocoff);
+		todo.DEBUG.note("Scanning %d libraries...", numjars);
 		
 		// Seeker for the table of contents
 		int seeker = __rombase + tocoff;
@@ -243,6 +243,9 @@ public final class BootLibrary
 		
 		// Store for later usage
 		BOOT_LIBRARIES = bootlibs;
+		
+		// Debug
+		todo.DEBUG.note("Okay.");
 		
 		// Return the libraries
 		return bootlibs;

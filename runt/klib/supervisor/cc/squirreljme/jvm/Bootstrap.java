@@ -63,6 +63,46 @@ public final class Bootstrap
 	}
 	
 	/**
+	 * Loads the main arguments which are passed to the program being
+	 * bootstrapped.
+	 *
+	 * @param __confbase The configuration base.
+	 * @return The main arguments.
+	 * @since 2019/06/22
+	 */
+	public static final String[] loadMainArgs(int __confbase)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Loads the main class.
+	 *
+	 * @param __confbase The configuration base.
+	 * @return The main class.
+	 * @since 2019/06/22
+	 */
+	public static final String loadMainClass(int __confbase)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Loads the passed system properties.
+	 *
+	 * @param __confbase The configuration base.
+	 * @return The system properties in key/value pairs.
+	 * @since 2019/06/22
+	 */
+	public static final String[] loadSystemProperties(int __confbase)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Entry point for the bootstrap.
 	 *
 	 * @param __rambase The base RAM address.
@@ -114,8 +154,7 @@ public final class Bootstrap
 			
 			// Load boot libraries that are available
 			todo.DEBUG.note("Scanning libraries and loading classpath...");
-			BootLibrary[] bootlibs = BootLibrary.initialClasspath(__rombase,
-				__confbase);
+			BootLibrary[] bootlibs = BootLibrary.initialClasspath(__rombase, __confbase);
 			todo.DEBUG.note("Selecting %d libraries!", bootlibs.length);
 			
 			// Spacer
@@ -128,6 +167,15 @@ public final class Bootstrap
 			
 			// Spacer
 			todo.DEBUG.note("");
+			
+			// Start the initial task
+			todo.DEBUG.note("Creating initial task...");
+			ClientTask boot = ctm.newTask(
+				BootLibrary.initialClasspath(__rombase, __confbase),
+				Bootstrap.loadMainClass(__confbase),
+				Bootstrap.loadMainArgs(__confbase),
+				Bootstrap.loadSystemProperties(__confbase));
+			todo.DEBUG.note("Okay.");
 			
 			// Something later on
 			Assembly.breakpoint();
