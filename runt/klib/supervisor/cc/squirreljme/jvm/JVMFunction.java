@@ -16,6 +16,10 @@ package cc.squirreljme.jvm;
  */
 public final class JVMFunction
 {
+	/** The task ID. */
+	static final byte _TASK_ID =
+		0;
+	
 	/** Last error state. */
 	static volatile int _LAST_ERROR;
 	
@@ -432,7 +436,8 @@ public final class JVMFunction
 		ClassInfo info = Assembly.pointerToClassInfo(__cl);
 		
 		// Allocate the memory
-		int rv = Allocator.allocate(info.size);
+		int rv = Allocator.allocate(
+			_TASK_ID | Allocator.CHUNK_IS_OBJECT, info.size);
 		if (rv == 0)
 			throw new OutOfMemoryError();
 		
@@ -479,7 +484,8 @@ public final class JVMFunction
 		int allocsize = info.size + (info.cellsize * __len);
 		
 		// Allocate the memory
-		int rv = Allocator.allocate(allocsize);
+		int rv = Allocator.allocate(
+			_TASK_ID | Allocator.CHUNK_IS_OBJECT, allocsize);
 		if (rv == 0)
 			throw new OutOfMemoryError();
 		
