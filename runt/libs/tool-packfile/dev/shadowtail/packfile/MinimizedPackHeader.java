@@ -23,7 +23,7 @@ public final class MinimizedPackHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		28;
+		32;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -31,11 +31,11 @@ public final class MinimizedPackHeader
 	
 	/** The offset to the BootJAR offset (which has BootRAM), with magic. */
 	public static final int OFFSET_OF_BOOTJAROFFSET =
-		12;
+		16;
 	
 	/** The offset to the BootJAR size, with magic. */
 	public static final int OFFSET_OF_BOOTJARSIZE =
-		16;
+		20;
 	
 	/** Size of individual table of contents entry. */
 	public static final int TOC_ENTRY_SIZE =
@@ -43,6 +43,9 @@ public final class MinimizedPackHeader
 	
 	/** The number of jars in this packfile. */
 	public final int numjars;
+	
+	/** The offset to the table of contents. */
+	public final int tocoffset;
 	
 	/** The index of the JAR which should be the boot point. */
 	public final int bootjarindex;
@@ -56,11 +59,11 @@ public final class MinimizedPackHeader
 	/** Initial class path library indexes. */
 	public final int booticpoffset;
 	
-	/** Initial clsas path library index count. */
+	/** Initial class path library index count. */
 	public final int booticpsize;
 	
-	/** The offset to the table of contents. */
-	public final int tocoffset;
+	/** Initial main class to boot. */
+	public final int bootmainclass;
 	
 	/**
 	 * Initializes the pack header.
@@ -77,8 +80,9 @@ public final class MinimizedPackHeader
 		
 		int at = 0;
 		
-		// Number of JAR files
+		// Jar and table of contents
 		this.numjars = __fs[at++];
+		this.tocoffset = __fs[at++];
 		
 		// Boot JAR that may be specified
 		this.bootjarindex = __fs[at++];
@@ -86,9 +90,7 @@ public final class MinimizedPackHeader
 		this.bootjarsize = __fs[at++];
 		this.booticpoffset = __fs[at++];
 		this.booticpsize = __fs[at++];
-		
-		// Table of contents offset (names and offsets of the JARs)
-		this.tocoffset = __fs[at++];
+		this.bootmainclass = __fs[at++];
 	}
 }
 

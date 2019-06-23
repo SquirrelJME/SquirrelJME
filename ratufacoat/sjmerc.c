@@ -2921,7 +2921,8 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		return 0;
 	}
 	
-	/* Ignore JAR count and BootJAR index. */
+	/* Ignore numjars, tocoffset, bootjarindex. */
+	sjme_memjreadp(jvm, 4, &rp);
 	sjme_memjreadp(jvm, 4, &rp);
 	sjme_memjreadp(jvm, 4, &rp);
 	

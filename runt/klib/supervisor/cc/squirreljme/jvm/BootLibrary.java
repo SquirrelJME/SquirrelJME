@@ -22,29 +22,33 @@ public final class BootLibrary
 	/** The offset to the jar count. */
 	public static final byte ROM_NUMJARS_OFFSET =
 		4;
-		
-	/** The index of the JAR which should be the boot point. */
-	public static final byte ROM_BOOTJARINDEX_OFFSET =
-		8;
-	
-	/** The offset into the packfile where the boot entry is. */
-	public static final byte ROM_BOOTJAROFFSET_OFFSET =
-		12;
-	
-	/** The size of the boot jar. */
-	public static final byte ROM_BOOTJARSIZE_OFFSET =
-		16;
-	
-	/** Initial class path library indexes. */
-	public static final byte ROM_BOOTICPOFFSET_OFFSET =
-		20;
-	
-	/** Initial clsas path library index count. */
-	public static final byte ROM_BOOTICPSIZE_OFFSET =
-		24;
 	
 	/** Offset to the table of contents offset. */
 	public static final byte ROM_TOCOFFSET_OFFSET =
+		8;
+		
+	/** The index of the JAR which should be the boot point. */
+	public static final byte ROM_BOOTJARINDEX_OFFSET =
+		12;
+	
+	/** The offset into the packfile where the boot entry is. */
+	public static final byte ROM_BOOTJAROFFSET_OFFSET =
+		16;
+	
+	/** The size of the boot jar. */
+	public static final byte ROM_BOOTJARSIZE_OFFSET =
+		20;
+	
+	/** Initial class path library indexes. */
+	public static final byte ROM_BOOTICPOFFSET_OFFSET =
+		24;
+	
+	/** Initial class path library index count. */
+	public static final byte ROM_BOOTICPSIZE_OFFSET =
+		28;
+	
+	/** Initial main class. */
+	public static final byte ROM_BOOTMAINCLASS_OFFSET =
 		28;
 	
 	/** Table of contents size. */

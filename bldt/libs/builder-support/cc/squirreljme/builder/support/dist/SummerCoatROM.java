@@ -13,12 +13,16 @@ import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.builder.support.vm.BuildClassLibrary;
+import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.packfile.PackMinimizer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.javac.ZipCompilerOutput;
 
 /**
@@ -117,11 +121,15 @@ public class SummerCoatROM
 			}
 		}
 		
+		// Get the main class of the launcher
+		String mainbc = new EntryPoints(lbins[numlbins - 1].manifest()).get(0).
+			entryPoint();
+		
 		// Write SummerCoat ROM file
 		try (OutputStream out = __zip.output("squirreljme.sqc"))
 		{
 			// Minimize
-			PackMinimizer.minimize(out, boot, lstrs, libs);
+			PackMinimizer.minimize(out, boot, lstrs, mainbc, libs);
 		}
 	}
 }
