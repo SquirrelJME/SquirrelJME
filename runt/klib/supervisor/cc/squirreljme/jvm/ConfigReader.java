@@ -41,8 +41,41 @@ public final class ConfigReader
 	 */
 	public final String[] loadKeyValueMap(int __key)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Configuration scanner
+		int scanner = 0;
+		
+		// Count the number of key/values used
+		int n = 0;
+		while ((scanner = this.scan(__key, scanner)) != 0)
+			n++;
+		
+		// Setup resulting array to store twice the values!
+		n *= 2;
+		String[] rv = new String[n];
+		
+		// Load in all values
+		scanner = 0;
+		for (int i = 0; i < n; i += 2)
+		{
+			// Scan for next item
+			scanner = this.scan(__key, scanner);
+			
+			// Copy data pointer
+			int dp = scanner;
+			
+			// Load the key
+			int kl = Assembly.memReadJavaShort(dp, 0) & 0xFFFF;
+			rv[i] = JVMFunction.jvmLoadString(dp);
+			
+			// Skip
+			dp += kl + 2;
+			
+			// Load the value
+			rv[i + 1] = JVMFunction.jvmLoadString(dp);
+		}
+		
+		// Done!
+		return rv;
 	}
 	
 	/**
@@ -105,8 +138,47 @@ public final class ConfigReader
 	 */
 	public final int scan(int __key, int __at)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Where do we start the search from? From the start?
+		int seeker;
+		if (__at == 0)
+			seeker = this.configbase;
+		
+		// Otherwise, since we parked on a currently found item, we have to
+		// go back and skip over it
+		else
+		{
+			// Place the seeker at the config slot base
+			seeker = __at - Constants.CONFIG_HEADER_SIZE;
+			
+			// If we just happened to be planted at the end, just stop
+			if (Assembly.memReadJavaShort(seeker,
+				Constants.CONFIG_KEY_OFFSET) == ConfigRomType.END)
+				return 0;
+			
+			// Otherwise, skip to the next entry start
+			seeker += Constants.CONFIG_HEADER_SIZE + Assembly.memReadJavaShort(
+				seeker, Constants.CONFIG_SIZE_OFFSET);
+		}
+		
+		// Constant scanning loop for the next item
+		for (;;)
+		{
+			// Read the key
+			int key = Assembly.memReadJavaShort(seeker,
+				Constants.CONFIG_KEY_OFFSET);
+			
+			// Stop at the end
+			if (key == ConfigRomType.END)
+				return 0;
+			
+			// If the key matches then return the value
+			if (key == __key)
+				return seeker + Constants.CONFIG_HEADER_SIZE;
+			
+			// Otherwise skip to the next entry
+			seeker += Constants.CONFIG_HEADER_SIZE + Assembly.memReadJavaShort(
+				seeker, Constants.CONFIG_SIZE_OFFSET);
+		}
 	}
 	
 	/**
