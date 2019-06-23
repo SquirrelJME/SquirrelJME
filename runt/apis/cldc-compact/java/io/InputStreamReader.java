@@ -114,10 +114,10 @@ public class InputStreamReader
 		// Read characters
 		for (;;)
 		{
-			// {@squirreljme.error ZZ2z Read of input byte sequence exceeded
+			// {@squirreljme.error ZZ0o Read of input byte sequence exceeded
 			// the maximum specified sequence length. (The store length)}
 			if (storelen >= declimit)
-				throw new IOException("ZZ2z " + storelen);
+				throw new IOException("ZZ0o " + storelen);
 			
 			// Read byte from input stream
 			int brc = in.read(store, storelen, 1);
@@ -173,10 +173,10 @@ public class InputStreamReader
 			baseo = __o;
 		for (int o = __o; rv < __l;)
 		{
-			// {@squirreljme.error ZZ2y Read of input byte sequence exceeded
+			// {@squirreljme.error ZZ0p Read of input byte sequence exceeded
 			// the maximum specified sequence length. (The store length)}
 			if (storelen >= declimit)
-				throw new IOException("ZZ2y " + storelen);
+				throw new IOException("ZZ0p " + storelen);
 			
 			// Read byte from input stream
 			int brc = in.read(store, storelen, 1);

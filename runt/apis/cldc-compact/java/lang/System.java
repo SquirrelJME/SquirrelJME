@@ -73,14 +73,14 @@ public final class System
 		if (__src == null || __dest == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ18 Negative offsets and/or length cannot be
+		// {@squirreljme.error ZZ1w Negative offsets and/or length cannot be
 		// specified. (The source offset; The destination offset; The copy
 		// length)}
 		if (__srcoff < 0 || __destoff < 0 || __copylen < 0)
-			throw new IndexOutOfBoundsException(String.format("ZZ18 %d %d %d",
+			throw new IndexOutOfBoundsException(String.format("ZZ1w %d %d %d",
 				__srcoff, __destoff, __copylen));
 		
-		// {@squirreljme.error ZZ19 Copy operation would exceed the bounds of
+		// {@squirreljme.error ZZ1x Copy operation would exceed the bounds of
 		// the array. (Source offset; Source length; Destination offset;
 		// Destination length; The copy length)}
 		int srclen = Assembly.arrayLength(__src),
@@ -88,14 +88,14 @@ public final class System
 		if (__srcoff + __copylen > srclen ||
 			__destoff + __copylen > destlen)
 			throw new IndexOutOfBoundsException(String.format(
-				"ZZ19 %d %d %d %d %d", __srcoff, srclen, __destoff, destlen,
+				"ZZ1x %d %d %d %d %d", __srcoff, srclen, __destoff, destlen,
 				__copylen));
 		
-		// {@squirreljme.error ZZ1a The source array type is not compatible
+		// {@squirreljme.error ZZ1y The source array type is not compatible
 		// with destination array. (The source array; The destination array)}
 		if (!__dest.getClass().isAssignableFrom(__src.getClass()))
 			throw new ArrayStoreException(String.format(
-				"ZZ1a %s %s", __src, __dest));
+				"ZZ1y %s %s", __src, __dest));
 		
 		// These offsets for the loops are the same
 		int i = __srcoff,
@@ -268,10 +268,10 @@ public final class System
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ1b Cannot request a system property which has
+		// {@squirreljme.error ZZ1z Cannot request a system property which has
 		// a blank key.}
 		if (__k.equals(""))
-			throw new IllegalArgumentException("ZZ1b");
+			throw new IllegalArgumentException("ZZ1z");
 		
 		// Short circuit for run-time detection
 		if (__k.equals("cc.squirreljme.isruntime"))

@@ -128,10 +128,10 @@ public class AssertionError
 			// Debug it
 			t.printStackTrace();
 			
-			// {@squirreljme.error ZZ34 Assertion string conversion failed
+			// {@squirreljme.error ZZ0s Assertion string conversion failed
 			// with no message.}
 			String m = t.getMessage();
-			return (m == null ? "ZZ34" : m);
+			return (m == null ? "ZZ0s" : m);
 		}
 	}
 }

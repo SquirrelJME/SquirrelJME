@@ -47,11 +47,11 @@ public final class ResourceInputStream
 	public final int available()
 		throws IOException
 	{
-		// {@squirreljme.error ZZ36 Could not obtain the available
+		// {@squirreljme.error ZZ09 Could not obtain the available
 		// number of bytes left. (The error value)}
 		int rv = ResourceAccess.available(this.fd);
 		if (rv < 0)
-			throw new IOException("ZZ36 " + rv);
+			throw new IOException("ZZ09 " + rv);
 		return rv;
 	}
 	
@@ -69,11 +69,11 @@ public final class ResourceInputStream
 		{
 			this._closed = true;
 			
-			// {@squirreljme.error ZZ05 Closing of resource resulted in an
+			// {@squirreljme.error ZZ0a Closing of resource resulted in an
 			// IOException.}
 			int rv;
 			if ((rv = ResourceAccess.close(this.fd)) < 0)
-				throw new IOException("ZZ05 " + rv);
+				throw new IOException("ZZ0a " + rv);
 		}
 	}
 	
@@ -144,10 +144,10 @@ public final class ResourceInputStream
 		// a free resource that has no implications if they are never closed.
 		if (rv < 0)
 		{
-			// {@squirreljme.error ZZ06 Read of resource resulted in an
+			// {@squirreljme.error ZZ0b Read of resource resulted in an
 			// IOException.}
 			IOException toss = (rv != ResourceAccess.READ_STATUS_EOF ?
-				new IOException("ZZ06 " + rv) : null);
+				new IOException("ZZ0b " + rv) : null);
 			
 			// Close it to not claim resources
 			try

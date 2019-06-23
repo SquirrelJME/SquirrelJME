@@ -45,9 +45,9 @@ public final class RuntimePermission
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0v Runtime permission name cannot be empty.}
+		// {@squirreljme.error ZZ1i Runtime permission name cannot be empty.}
 		if (__name.isEmpty())
-			throw new IllegalArgumentException("ZZ0v");
+			throw new IllegalArgumentException("ZZ1i");
 	}
 	
 	/**

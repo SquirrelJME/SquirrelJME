@@ -121,10 +121,10 @@ public class SecurityManager
 		if (__key == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0w Request to check access to system property
+		// {@squirreljme.error ZZ1j Request to check access to system property
 		// with an empty key.}
 		if (__key.isEmpty())
-			throw new IllegalArgumentException("ZZ0w");
+			throw new IllegalArgumentException("ZZ1j");
 		
 		// Forward
 		this.checkPermission(new PropertyPermission(__key, "read"));

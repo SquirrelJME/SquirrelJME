@@ -187,8 +187,8 @@ public abstract class InputStream
 	public void reset()
 		throws IOException
 	{
-		// {@squirreljme.error ZZ3t Reset is not supported.}
-		throw new IOException("ZZ3t");
+		// {@squirreljme.error ZZ0n Reset is not supported.}
+		throw new IOException("ZZ0n");
 	}
 	
 	/**

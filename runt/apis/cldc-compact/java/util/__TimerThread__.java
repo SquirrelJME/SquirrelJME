@@ -217,10 +217,10 @@ final class __TimerThread__
 			nowtime = System.currentTimeMillis(),
 			diff = datemilli - nowtime;
 		
-		// {@squirreljme.error ZZ3n Cannot use a date which is far into the
+		// {@squirreljme.error ZZ3m Cannot use a date which is far into the
 		// past.}
 		if (datemilli < 0)
-			throw new IllegalArgumentException("ZZ3n");
+			throw new IllegalArgumentException("ZZ3m");
 		
 		// Schedule immedietly?
 		if (diff < 0)
@@ -253,13 +253,13 @@ final class __TimerThread__
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3o The delay cannot be negative.}
+		// {@squirreljme.error ZZ3n The delay cannot be negative.}
 		if (__delay < 0)
-			throw new IllegalArgumentException("ZZ3o");
+			throw new IllegalArgumentException("ZZ3n");
 		
-		// {@squirreljme.error ZZ3p The period cannot be zero or negative.}
+		// {@squirreljme.error ZZ3o The period cannot be zero or negative.}
 		if (__rep && __period <= 0)
-			throw new IllegalArgumentException("ZZ3p");
+			throw new IllegalArgumentException("ZZ3o");
 		
 		// When is the time to be scheduled?
 		long now = System.currentTimeMillis(),
@@ -269,10 +269,10 @@ final class __TimerThread__
 		List<TimerTask> tasks = this._tasks;
 		synchronized (this)
 		{
-			// {@squirreljme.error ZZ3q Cannot add a task to a timer which
+			// {@squirreljme.error ZZ3p Cannot add a task to a timer which
 			// was cancelled or a task which was cancelled.}
 			if (this._cancel || __task._cancel)
-				throw new IllegalStateException("ZZ3q");
+				throw new IllegalStateException("ZZ3p");
 			
 			// Set task properties
 			__task._schedtime = sched;

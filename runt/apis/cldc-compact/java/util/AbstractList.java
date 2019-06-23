@@ -499,11 +499,11 @@ public abstract class AbstractList<E>
 			// Check modification
 			this.__checkConcurrent();
 			
-			// {@squirreljme.error ZZ1k No previously returned element was
+			// {@squirreljme.error ZZ2c No previously returned element was
 			// iterated, it was already removed, or an element was added.}
 			int rmdx = this._rmdx;
 			if (rmdx < 0)
-				throw new IllegalStateException("ZZ1k");
+				throw new IllegalStateException("ZZ2c");
 			
 			// Remove this index
 			this._rmdx = -1;
@@ -540,9 +540,9 @@ public abstract class AbstractList<E>
 		private final void __checkConcurrent()
 			throws ConcurrentModificationException
 		{
-			// {@squirreljme.error ZZ1l List has been concurrently modified.}
+			// {@squirreljme.error ZZ2d List has been concurrently modified.}
 			if (this._atmod != AbstractList.this.modCount)
-				throw new ConcurrentModificationException("ZZ1l");
+				throw new ConcurrentModificationException("ZZ2d");
 		}
 	}
 }

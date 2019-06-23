@@ -66,9 +66,9 @@ public class ReferenceQueue<T>
 	public Reference<? extends T> remove(long __ms)
 		throws IllegalArgumentException, InterruptedException
 	{
-		// {@squirreljme.error ZZ1i A negative timeout was specified.}
+		// {@squirreljme.error ZZ2a A negative timeout was specified.}
 		if (__ms < 0)
-			throw new IllegalArgumentException("ZZ1i");
+			throw new IllegalArgumentException("ZZ2a");
 		
 		// A timeout of zero means to wait forever
 		if (__ms == 0)

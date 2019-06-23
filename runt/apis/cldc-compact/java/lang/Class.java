@@ -88,11 +88,11 @@ public final class Class<T>
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3k The specifed class is not a sub-class
+		// {@squirreljme.error ZZ0v The specifed class is not a sub-class
 		// of this class. (The class being checked; The current class)}
 		if (!this.isAssignableFrom(__cl))
 			throw new ClassCastException(
-				String.format("ZZ3k %s %s", __cl, this));
+				String.format("ZZ0v %s %s", __cl, this));
 		
 		return (Class<? extends U>)this;
 	}
@@ -113,11 +113,11 @@ public final class Class<T>
 		if (__o == null)
 			return null;
 		
-		// {@squirreljme.error ZZ0l The other class cannot be casted to this
+		// {@squirreljme.error ZZ0w The other class cannot be casted to this
 		// class. (This class; The other class)}
 		Class<?> other = __o.getClass();
 		if (!this.isAssignableFrom(other))
-			throw new ClassCastException("ZZ0l " + this.getName() + " " +
+			throw new ClassCastException("ZZ0w " + this.getName() + " " +
 				other.getName());
 		
 		return (T)__o;
@@ -466,18 +466,18 @@ public final class Class<T>
 		ClassData data = this._data;
 		String binaryname = data.binaryName();
 		
-		// {@squirreljme.error ZZ35 Cannot construct new instance of class
+		// {@squirreljme.error ZZ0x Cannot construct new instance of class
 		// because it has no default constructor.}
 		StaticMethod sm = data.defaultConstructorMethod();
 		if (sm == null)
-			throw new InstantiationException("ZZ35 " + binaryname);
+			throw new InstantiationException("ZZ0x " + binaryname);
 		
 		// Allocate class instance
 		Object rv = ObjectAccess.allocateObject(binaryname);
 		
-		// {@squirreljme.error ZZ3b Could not allocate new instance.}
+		// {@squirreljme.error ZZ0y Could not allocate new instance.}
 		if (rv == null)
-			throw new OutOfMemoryError("ZZ3b");
+			throw new OutOfMemoryError("ZZ0y");
 		
 		// Call default constructor
 		ObjectAccess.invokeStatic(sm, rv);
@@ -530,10 +530,10 @@ public final class Class<T>
 		// what is internally used
 		Class<?> rv = ObjectAccess.classByName(__n.replace('.', '/'));
 		
-		// {@squirreljme.error ZZ0m Could not find the specified class. (The
+		// {@squirreljme.error ZZ0z Could not find the specified class. (The
 		// name of the class)}
 		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ0m %s", __n));
+			throw new ClassNotFoundException(String.format("ZZ0z %s", __n));
 		return rv;
 	}
 }

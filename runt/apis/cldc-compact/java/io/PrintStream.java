@@ -858,10 +858,10 @@ public class PrintStream
 		byte[] minienc = this._minienc;
 		int wc = this._encoder.encode(__c, minienc, 0, minienc.length);
 		
-		// {@squirreljme.error ZZ0k Did not expect the buffer to be out of
+		// {@squirreljme.error ZZ0q Did not expect the buffer to be out of
 		// room.}
 		if (wc < 0)
-			throw new Error("ZZ0k");
+			throw new Error("ZZ0q");
 		
 		// Write them into the buffer
 		this.__writeBytes(minienc, 0, wc);

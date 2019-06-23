@@ -63,10 +63,10 @@ public class BufferedReader
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ2x Cannot have a zero or negative buffer
+		// {@squirreljme.error ZZ0g Cannot have a zero or negative buffer
 		// size.}
 		if (__bs <= 0)
-			throw new IllegalArgumentException("ZZ2x");
+			throw new IllegalArgumentException("ZZ0g");
 		
 		this._in = __r;
 		this._buf = new char[__bs];

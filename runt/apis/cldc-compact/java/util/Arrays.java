@@ -22,8 +22,8 @@ import cc.squirreljme.runtime.cldc.util.ShortIntegerArray;
 /**
  * This class contains utility methods which operate on arrays.
  *
- * {@squirreljme.error ZZ1n The sort range exceeds the array bounds.}
- * {@squirreljme.error ZZ1o The from index exceeds the to index.}
+ * {@squirreljme.error ZZ2f The sort range exceeds the array bounds.}
+ * {@squirreljme.error ZZ2g The from index exceeds the to index.}
  *
  * @since 2016/09/30
  */
@@ -936,7 +936,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ1o");
+			throw new IllegalArgumentException("ZZ2g");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -1087,7 +1087,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ1o");
+			throw new IllegalArgumentException("ZZ2g");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -1124,7 +1124,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ1o");
+			throw new IllegalArgumentException("ZZ2g");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -1222,13 +1222,13 @@ public class Arrays
 			ShellSort.<T>sort(Arrays.<T>asList(__a), __from, __to, __comp);
 		}
 		
-		// {@squirreljme.error ZZ47 Out of bounds access when sorting array.}
+		// {@squirreljme.error ZZ2h Out of bounds access when sorting array.}
 		catch (IndexOutOfBoundsException e)
 		{
 			if (e instanceof ArrayIndexOutOfBoundsException)
 				throw e;
 			
-			RuntimeException t = new ArrayIndexOutOfBoundsException("ZZ47");
+			RuntimeException t = new ArrayIndexOutOfBoundsException("ZZ2h");
 			t.initCause(e);
 			throw t;
 		}

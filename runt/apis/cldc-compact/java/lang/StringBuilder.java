@@ -57,11 +57,11 @@ public final class StringBuilder
 	public StringBuilder(int __c)
 		throws NegativeArraySizeException
 	{
-		// {@squirreljme.error ZZ10 The initial capacity cannot be negative.
+		// {@squirreljme.error ZZ1n The initial capacity cannot be negative.
 		// (The initial capacity)}
 		if (__c < 0)
 			throw new NegativeArraySizeException(
-				String.format("ZZ10 %d", __c));
+				String.format("ZZ1n %d", __c));
 		
 		// Initialize buffer
 		this._buffer = new char[__c];
@@ -352,9 +352,9 @@ public final class StringBuilder
 	public char charAt(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ11 Out of bound access. (The index)}
+		// {@squirreljme.error ZZ1o Out of bound access. (The index)}
 		if (__dx < 0 || __dx >= this._at)
-			throw new IndexOutOfBoundsException("ZZ11 " + __dx);
+			throw new IndexOutOfBoundsException("ZZ1o " + __dx);
 		
 		return this._buffer[__dx];
 	}
@@ -461,10 +461,10 @@ public final class StringBuilder
 	public StringBuilder insert(int __dx, CharSequence __v, int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ12 Cannot insert sequence at a negative
+		// {@squirreljme.error ZZ1p Cannot insert sequence at a negative
 		// index.}
 		if (__dx < 0)
-			throw new IndexOutOfBoundsException("ZZ12");
+			throw new IndexOutOfBoundsException("ZZ1p");
 		
 		// Check bounds
 		int vn = __v.length();
@@ -479,11 +479,11 @@ public final class StringBuilder
 			at = this._at;
 		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
-		// {@squirreljme.error ZZ13 The index of insertion exceeds the
+		// {@squirreljme.error ZZ1q The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
 		// length)}
 		if (__dx > at)
-			throw new IndexOutOfBoundsException(String.format("ZZ13 %d %d",
+			throw new IndexOutOfBoundsException(String.format("ZZ1q %d %d",
 				__dx, at));
 		
 		// First move all characters on the right to the end so that this can
@@ -518,21 +518,21 @@ public final class StringBuilder
 	public StringBuilder insert(int __dx, char __v)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ14 Cannot insert sequence at a negative
+		// {@squirreljme.error ZZ1r Cannot insert sequence at a negative
 		// index.}
 		if (__dx < 0)
-			throw new IndexOutOfBoundsException("ZZ14");
+			throw new IndexOutOfBoundsException("ZZ1r");
 		
 		// Before we go deeper check if the buffer needs to grow
 		int limit = this._limit,
 			at = this._at;
 		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
 		
-		// {@squirreljme.error ZZ15 The index of insertion exceeds the
+		// {@squirreljme.error ZZ1s The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
 		// length)}
 		if (__dx > at)
-			throw new IndexOutOfBoundsException(String.format("ZZ15 %d %d",
+			throw new IndexOutOfBoundsException(String.format("ZZ1s %d %d",
 				__dx, at));
 		
 		// First move all characters on the right to the end so that this can
@@ -656,10 +656,10 @@ public final class StringBuilder
 	public void setLength(int __nl)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ16 Attempt to use a length of a negative
+		// {@squirreljme.error ZZ1t Attempt to use a length of a negative
 		// size.}
 		if (__nl < 0)
-			throw new IndexOutOfBoundsException("ZZ16");
+			throw new IndexOutOfBoundsException("ZZ1t");
 		
 		// We only need to do something if we are going up, staying the same
 		// or going down just sets a variable
@@ -718,10 +718,10 @@ public final class StringBuilder
 	public String substring(int __s, int __e)
 		throws StringIndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ48 String index out of bounds.}
+		// {@squirreljme.error ZZ1u String index out of bounds.}
 		int len = this._at;
 		if (__s < 0 || __e < 0 || __s > __e || __s > len || __e > len)
-			throw new StringIndexOutOfBoundsException("ZZ48");
+			throw new StringIndexOutOfBoundsException("ZZ1u");
 		
 		// Would be an empty string
 		if (__s == __e)
