@@ -174,12 +174,12 @@ public final class JarMinimizer
 		// Get the boot information
 		__BootInfo__ bi = this._boots.get(__cl);
 		
-		// {@squirreljme.error BC04 Could not locate instance field. (Class;
+		// {@squirreljme.error BC02 Could not locate instance field. (Class;
 		// Field Name; Field Type)}
 		MinimizedField mf = bi._class.field(false, __fn, __ft);
 		if (mf == null)
 			throw new InvalidClassFormatException(
-				String.format("BC04 %s %s %s", __cl, __fn, __ft));
+				String.format("BC02 %s %s %s", __cl, __fn, __ft));
 		
 		// Determine offset to field
 		this.__classAllocSize(__cl);
@@ -278,12 +278,12 @@ public final class JarMinimizer
 			}
 		}
 		
-		// {@squirreljme.error BC05 Could not locate static field. (Class;
+		// {@squirreljme.error BC04 Could not locate static field. (Class;
 		// Field Name; Field Type)}
 		MinimizedField mf = bi._class.field(true, __fn, __ft);
 		if (mf == null)
 			throw new InvalidClassFormatException(
-				String.format("BC05 %s %s %s", __cl, __fn, __ft));
+				String.format("BC04 %s %s %s", __cl, __fn, __ft));
 		
 		// Return offset to it
 		return smemoff + mf.offset;
@@ -314,10 +314,10 @@ public final class JarMinimizer
 				Minimizer.minimizeAndDecode(
 					ClassFile.special(__cl.field())), 0)));
 		
-		// {@squirreljme.error BC07 Could not locate class. (The class)}
+		// {@squirreljme.error BC05 Could not locate class. (The class)}
 		else if (bi == null)
 			throw new InvalidClassFormatException(
-				String.format("BC07 %s", __cl));
+				String.format("BC05 %s", __cl));
 		
 		// If it has already been initialized use it
 		int rv = bi._classdata;
@@ -328,10 +328,10 @@ public final class JarMinimizer
 		ClassName cdcln = new ClassName(
 			"cc/squirreljme/jvm/ClassInfo");
 		
-		// {@squirreljme.error BC09 No ClassInfo exists.}
+		// {@squirreljme.error BC06 No ClassInfo exists.}
 		__BootInfo__ cdi = boots.get(cdcln);
 		if (cdi == null)
-			throw new InvalidClassFormatException("BC09");
+			throw new InvalidClassFormatException("BC06");
 		
 		// Allocate pointer to the class data, then get the base pointer
 		bi._classdata = (rv = __init.allocate(this.__classAllocSize(cdcln)));
@@ -685,12 +685,12 @@ public final class JarMinimizer
 			return bi._classoffset + mcf.header.smoff + mm.codeoffset;
 		
 		// Otherwise fallback to instance methods
-		// {@squirreljme.error BC0b Could not locate the given method.
+		// {@squirreljme.error BC07 Could not locate the given method.
 		// (The class; The name; The type)}
 		mm = mcf.method(false, __mn, __mt);
 		if (mm == null)
 			throw new InvalidClassFormatException(
-				String.format("BC0b %s %s %s", __cl, __mn, __mt));
+				String.format("BC07 %s %s %s", __cl, __mn, __mt));
 		return bi._classoffset + mcf.header.imoff + mm.codeoffset;
 	}
 	
@@ -716,13 +716,13 @@ public final class JarMinimizer
 			return this.__classMethodIndex(new ClassName("java/lang/Object"),
 				__mn, __mt);
 		
-		// {@squirreljme.error BC0a Could not locate the method. (The class;
+		// {@squirreljme.error BC08 Could not locate the method. (The class;
 		// Method name; Method type)}
 		MinimizedMethod mm = this._boots.get(__cl)._class.method(false, __mn,
 			__mt);
 		if (mm == null)
 			throw new InvalidClassFormatException(
-				String.format("BC0a %s %s %s", __cl, __mn, __mt));
+				String.format("BC08 %s %s %s", __cl, __mn, __mt));
 		
 		// Return the base along with the actual index
 		return this.__classMethodBase(__cl) + mm.index;
@@ -998,10 +998,10 @@ public final class JarMinimizer
 		if (__cl.isPrimitive() || __cl.isArray())
 			return -1;
 			
-		// {@squirreljme.error BC08 No such class exists. (The class)}
+		// {@squirreljme.error BC09 No such class exists. (The class)}
 		__BootInfo__ bi = this._boots.get(__cl);
 		if (bi == null)
-			throw new InvalidClassFormatException("BC08 " + __cl);
+			throw new InvalidClassFormatException("BC09 " + __cl);
 		
 		// Only calculate it once
 		int rv = bi._pooloffset;
