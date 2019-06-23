@@ -172,10 +172,10 @@ public final class MinimizedField
 			}
 		}
 		
-		// {@squirreljme.error JC40 Could not read field data.}
+		// {@squirreljme.error JC05 Could not read field data.}
 		catch (ClassCastException|IOException|IndexOutOfBoundsException e)
 		{
-			throw new InvalidClassFormatException("JC40");
+			throw new InvalidClassFormatException("JC05");
 		}
 		
 		return rv;

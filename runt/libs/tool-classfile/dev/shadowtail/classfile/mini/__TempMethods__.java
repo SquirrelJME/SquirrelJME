@@ -134,11 +134,11 @@ final class __TempMethods__
 			return dbytes.toByteArray();
 		}
 		
-		// {@squirreljme.error JC4g Could not process the method. (The method
+		// {@squirreljme.error JC0p Could not process the method. (The method
 		// this stopped at)}
 		catch (InvalidClassFormatException|IOException e)
 		{
-			throw new InvalidClassFormatException("JC4g " + lastm, e);
+			throw new InvalidClassFormatException("JC0p " + lastm, e);
 		}
 	}
 }

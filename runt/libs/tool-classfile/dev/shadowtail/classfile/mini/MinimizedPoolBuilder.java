@@ -219,10 +219,10 @@ public final class MinimizedPoolBuilder
 			return this.__add(__v,
 				this.add(__v.toString()));
 		
-		// {@squirreljme.error JC3p Cannot add the specified entry to the
+		// {@squirreljme.error JC0d Cannot add the specified entry to the
 		// constant pool. (The class type)}
 		else
-			throw new IllegalArgumentException("JC3p " + __v.getClass());
+			throw new IllegalArgumentException("JC0d " + __v.getClass());
 	}
 	
 	/**

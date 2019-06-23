@@ -229,10 +229,10 @@ public final class MinimizedMethod
 			}
 		}
 		
-		// {@squirreljme.error JC41 Could not read method data.}
+		// {@squirreljme.error JC06 Could not read method data.}
 		catch (ClassCastException|IOException|IndexOutOfBoundsException e)
 		{
-			throw new InvalidClassFormatException("JC41");
+			throw new InvalidClassFormatException("JC06");
 		}
 		
 		return rv;

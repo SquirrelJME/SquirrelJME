@@ -121,13 +121,13 @@ public final class ByteCodeProcessor
 			this.__aaaProcess();
 		}
 		
-		// {@squirreljme.error JC48 Failed to process the byte code, this may
+		// {@squirreljme.error JC17 Failed to process the byte code, this may
 		// be due to an invalid class or an internal compiler error. (The
 		// last processed instruction)}
 		catch (InvalidClassFormatException|IllegalArgumentException|
 			 IllegalStateException|IndexOutOfBoundsException e)
 		{
-			throw new InvalidClassFormatException("JC48 " + this.state, e);
+			throw new InvalidClassFormatException("JC17 " + this.state, e);
 		}
 	}
 	
@@ -201,11 +201,11 @@ public final class ByteCodeProcessor
 				state.reversejumptargets = (rijt != null ? rijt :
 					new InstructionJumpTargets());
 				
-				// {@squirreljme.error JC37 No recorded stack state for this
+				// {@squirreljme.error JC18 No recorded stack state for this
 				// position. (The address to check)}
 				JavaStackState stack = stacks.get(addr);
 				if (stack == null)
-					throw new IllegalArgumentException("JC37 " + addr);
+					throw new IllegalArgumentException("JC18 " + addr);
 				
 				// Load stack
 				state.stack = stack;
@@ -787,9 +787,9 @@ public final class ByteCodeProcessor
 		if (__type == null || __ct == null || __ijt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC3d Cannot compare float or double.}
+		// {@squirreljme.error JC19 Cannot compare float or double.}
 		if (__type == DataType.FLOAT || __type == DataType.DOUBLE)
-			throw new IllegalArgumentException("JC3d");
+			throw new IllegalArgumentException("JC19");
 		
 		// [val] ->
 		JavaStackResult result = this.state.stack.doStack(1);
@@ -820,9 +820,9 @@ public final class ByteCodeProcessor
 		if (__type == null || __ct == null || __ijt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC3e Cannot compare float or double.}
+		// {@squirreljme.error JC1a Cannot compare float or double.}
 		if (__type == DataType.FLOAT || __type == DataType.DOUBLE)
-			throw new IllegalArgumentException("JC3e");
+			throw new IllegalArgumentException("JC1a");
 		
 		// [a, b] ->
 		JavaStackResult result = this.state.stack.doStack(2);

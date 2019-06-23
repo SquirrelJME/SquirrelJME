@@ -90,8 +90,8 @@ public enum MinimizedPoolEntryType
 			case 13:	return METHOD_INDEX;
 		}
 		
-		// {@squirreljme.error JC3s Unknown pool type. (The type)}
-		throw new IllegalArgumentException("JC3s " + __i);
+		// {@squirreljme.error JC0e Unknown pool type. (The type)}
+		throw new IllegalArgumentException("JC0e " + __i);
 	}
 	
 	/**
@@ -142,9 +142,9 @@ public enum MinimizedPoolEntryType
 				return METHOD_INDEX;
 		}
 		
-		// {@squirreljme.error JC2o Class does not map to a pool entry
+		// {@squirreljme.error JC0f Class does not map to a pool entry
 		// type. (The class)}
-		throw new IllegalArgumentException("JC2o " + __cl);
+		throw new IllegalArgumentException("JC0f " + __cl);
 	}
 }
 

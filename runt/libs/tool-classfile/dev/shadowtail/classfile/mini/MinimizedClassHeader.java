@@ -225,9 +225,9 @@ public final class MinimizedClassHeader
 		
 		DataInputStream dis = new DataInputStream(__is);
 		
-		// {@squirreljme.error JC2l Invalid minimized class magic number.}
+		// {@squirreljme.error JC04 Invalid minimized class magic number.}
 		if (MAGIC_NUMBER != dis.readInt())
-			throw new InvalidClassFormatException("JC2l");
+			throw new InvalidClassFormatException("JC04");
 		
 		// Read in all the data
 		return new MinimizedClassHeader(

@@ -164,10 +164,10 @@ public abstract class Flags<F extends Flag>
 			}
 		}
 		
-		// {@squirreljme.error JC14 An undefined flag has been specified.
+		// {@squirreljme.error JC2w An undefined flag has been specified.
 		// (The extra bitfield flags)}
 		if (__i != 0)
-			throw new InvalidClassFormatException(String.format("JC14 %02x", __i));
+			throw new InvalidClassFormatException(String.format("JC2w %02x", __i));
 		
 		return fl;
 	}

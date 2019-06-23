@@ -53,12 +53,12 @@ public final class StackMapTableState
 		if (__l == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC24 The depth of the stack is not within the
+		// {@squirreljme.error JC3x The depth of the stack is not within the
 		// bounds of the stack. (The stack depth; The stack size)}
 		int ns = __s.length;
 		if (__d < 0 || __d > ns)
 			throw new InvalidClassFormatException(
-				String.format("JC24 %d %d", __d, ns));
+				String.format("JC3x %d %d", __d, ns));
 		
 		// Duplicate
 		__l = __l.clone();
@@ -100,12 +100,12 @@ public final class StackMapTableState
 	public StackMapTableEntry getLocal(int __i)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC25 The specified local variable is out of
+		// {@squirreljme.error JC3y The specified local variable is out of
 		// range. (The index)}
 		StackMapTableEntry[] locals = this._locals;
 		if (__i < 0 || __i >= locals.length)
 			throw new InvalidClassFormatException(
-				String.format("JC25 %d", __i));
+				String.format("JC3y %d", __i));
 		return locals[__i];
 	}
 	
@@ -120,11 +120,11 @@ public final class StackMapTableState
 	public StackMapTableEntry getStack(int __i)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC26 The specified stack variable is out of
+		// {@squirreljme.error JC3z The specified stack variable is out of
 		// range. (The index)}
 		if (__i < 0 || __i >= this.depth)
 			throw new InvalidClassFormatException(
-				String.format("JC26 %d", __i));
+				String.format("JC3z %d", __i));
 		return this._stack[__i];
 	}
 	
@@ -235,13 +235,13 @@ public final class StackMapTableState
 			// A wide type was pushed
 			if (w != null)
 			{
-				// {@squirreljme.error JC27 The type at the read index does
+				// {@squirreljme.error JC40 The type at the read index does
 				// not match the expected type following a wide type. (The wide
 				// type; The expected type; The actual type; The input map)}
 				JavaType t = w.topType();
 				if (!t.equals(a))
 					throw new InvalidClassFormatException(
-						String.format("JC27 %s %s %s %s", w, t, a,
+						String.format("JC40 %s %s %s %s", w, t, a,
 						Arrays.asList(__t)));
 				
 				// Clear
@@ -256,10 +256,10 @@ public final class StackMapTableState
 			}
 		}
 		
-		// {@squirreljme.error JC28 Long or double appears at the end of the
+		// {@squirreljme.error JC41 Long or double appears at the end of the
 		// type array and does not have a top associated with it.}
 		if (w != null)
-			throw new InvalidClassFormatException("JC28");
+			throw new InvalidClassFormatException("JC41");
 	}
 }
 

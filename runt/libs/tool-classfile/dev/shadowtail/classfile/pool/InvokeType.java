@@ -73,8 +73,8 @@ public enum InvokeType
 			case 3: return INTERFACE;
 		}
 		
-		// {@squirreljme.error JC3w Unknown invocation type. (The index)}
-		throw new IllegalArgumentException("JC3w " + __i);
+		// {@squirreljme.error JC16 Unknown invocation type. (The index)}
+		throw new IllegalArgumentException("JC16 " + __i);
 	}
 }
 

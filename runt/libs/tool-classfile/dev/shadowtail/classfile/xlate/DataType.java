@@ -149,8 +149,8 @@ public enum DataType
 			case 7:		return DOUBLE;
 		}
 		
-		// {@squirreljme.error JC3b Invalid data type.}
-		throw new IllegalArgumentException("JC3b");
+		// {@squirreljme.error JC1c Invalid data type.}
+		throw new IllegalArgumentException("JC1c");
 	}
 	
 	/**

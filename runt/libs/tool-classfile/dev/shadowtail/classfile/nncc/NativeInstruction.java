@@ -314,10 +314,10 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 				return 3;
 				
-				// {@squirreljme.error JC2r Unknown instruction argument
+				// {@squirreljme.error JC10 Unknown instruction argument
 				// count.}
 			default:
-				throw new InvalidInstructionException("JC2r " + __op);
+				throw new InvalidInstructionException("JC10 " + __op);
 		}
 	}
 	
@@ -430,8 +430,8 @@ public final class NativeInstruction
 					ArgumentFormat.REGLIST);
 		}
 		
-		// {@squirreljme.error JC3t Invalid operation. (The operation)}
-		throw new InvalidInstructionException("JC3t " +
+		// {@squirreljme.error JC11 Invalid operation. (The operation)}
+		throw new InvalidInstructionException("JC11 " +
 			NativeInstruction.mnemonic(__op));
 	}
 	
