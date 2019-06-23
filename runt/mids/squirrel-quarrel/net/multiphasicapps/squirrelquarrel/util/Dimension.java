@@ -57,19 +57,19 @@ public final class Dimension
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE0n Dimension must start and end with square
+		// {@squirreljme.error BE0d Dimension must start and end with square
 		// brackets. (The input string)}
 		if (!__s.startsWith("[") || !__s.endsWith("]"))
-			throw new IllegalArgumentException("BE0n " + __s);
+			throw new IllegalArgumentException("BE0d " + __s);
 		
 		// Trim those out
 		__s = __s.substring(1, __s.length() - 1);
 		
-		// {@squirreljme.error BE0o Dimension must have a comma between the
+		// {@squirreljme.error BE0e Dimension must have a comma between the
 		// units. (The input string)}
 		int com = __s.indexOf(',');
 		if (com < 0)
-			throw new IllegalArgumentException("BE0o " + __s);
+			throw new IllegalArgumentException("BE0e " + __s);
 		
 		this.width = Integer.parseInt(__s.substring(0, com).trim(), 10);
 		this.height = Integer.parseInt(__s.substring(com + 1).trim(), 10);

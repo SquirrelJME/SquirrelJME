@@ -49,19 +49,19 @@ public enum UnitType
 				"/net/multiphasicapps/squirrelquarrel/data/units/" +
 				this.name().toLowerCase() + "/info"))
 			{
-				// {@squirreljme.error BE0m Unit information for the given
+				// {@squirreljme.error BE0b Unit information for the given
 				// unit does not exist. (The unit)}
 				if (in == null)
-					throw new RuntimeException("BE0m " + this);
+					throw new RuntimeException("BE0b " + this);
 				
 				this._info = (rv = new BaseUnitInfo(this.ordinal(),
 					new JavaManifest(in)));
 			}
 			
-			// {@squirreljme.error BE0l Could not load unit information.}
+			// {@squirreljme.error BE0c Could not load unit information.}
 			catch (IOException e)
 			{
-				throw new RuntimeException("BE0l", e);
+				throw new RuntimeException("BE0c", e);
 			}
 		
 		return rv;
