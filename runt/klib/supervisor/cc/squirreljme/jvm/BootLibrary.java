@@ -49,7 +49,7 @@ public final class BootLibrary
 	
 	/** Initial main class. */
 	public static final byte ROM_BOOTMAINCLASS_OFFSET =
-		28;
+		32;
 	
 	/** Table of contents size. */
 	public static final byte TOC_ENTRY_SIZE =
@@ -185,6 +185,27 @@ public final class BootLibrary
 		
 		// Use them!
 		return usecp;
+	}
+	
+	/**
+	 * Returns the initial main class.
+	 *
+	 * @param __rombase The base of the ROM.
+	 * @param __config The configuration to use.
+	 * @return The initial main class.
+	 * @since 2019/06/23
+	 */
+	public static final String initialMain(int __rombase,
+		ConfigReader __config)
+	{
+		// Use main user class
+		String usermain = __config.loadString(ConfigRomType.MAIN_CLASS);
+		if (usermain != null)
+			return usermain;
+		
+		// Otherwise read it from the boot ROM
+		return JVMFunction.jvmLoadString(Assembly.memReadJavaInt(__rombase,
+			ROM_BOOTMAINCLASS_OFFSET));
 	}
 	
 	/**
