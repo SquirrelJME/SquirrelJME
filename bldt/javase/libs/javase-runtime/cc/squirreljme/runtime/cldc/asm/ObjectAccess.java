@@ -105,8 +105,8 @@ public final class ObjectAccess
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final ClassData classData(Class<?> __cl)
 	{
-		// {@squirreljme.error AF0c Cannot obtain class data.}
-		throw new Error("AF0c");
+		// {@squirreljme.error AF01 Cannot obtain class data.}
+		throw new Error("AF01");
 	}
 	
 	/**
@@ -139,9 +139,9 @@ public final class ObjectAccess
 		if (__ntid == Thread.currentThread().getId())
 			Thread.holdsLock(__o);
 		
-		// {@squirreljme.error AF0d Cannot check if another thread holds
+		// {@squirreljme.error AF02 Cannot check if another thread holds
 		// a lock for an object.}
-		throw new Error("AF0d");
+		throw new Error("AF02");
 	}
 	
 	/**
@@ -169,8 +169,8 @@ public final class ObjectAccess
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final Object invokeStatic(StaticMethod __m, Object... __args)
 	{
-		// {@squirreljme.error AF0e Cannot invoke static method.}
-		throw new Error("AF0e");
+		// {@squirreljme.error AF03 Cannot invoke static method.}
+		throw new Error("AF03");
 	}
 	
 	/**

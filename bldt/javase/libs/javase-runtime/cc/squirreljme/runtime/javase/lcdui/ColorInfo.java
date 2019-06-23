@@ -119,12 +119,12 @@ public final class ColorInfo
 				icm = null;
 				break;
 			
-				// {@squirreljme.error AF09 Cannot use the specified pixel
+				// {@squirreljme.error AF0a Cannot use the specified pixel
 				// format. (The pixel format to use)}
 			case BYTE_RGB332:
 			case SHORT_INDEXED16:
 			case SHORT_ARGB4444:
-				throw new RuntimeException(String.format("AF09 %s", pf));
+				throw new RuntimeException(String.format("AF0a %s", pf));
 			
 			default:
 				throw new todo.OOPS();
@@ -199,10 +199,10 @@ public final class ColorInfo
 			case INTEGER_RGB888:
 				return ((DataBufferInt)db).getData();
 			
-				// {@squirreljme.error AF0a Unsupported pixel format.
+				// {@squirreljme.error AF0b Unsupported pixel format.
 				// (The pixel format to use)}
 			default:
-				throw new RuntimeException(String.format("AF0a %s", pf));
+				throw new RuntimeException(String.format("AF0b %s", pf));
 		}
 	}
 	
@@ -241,10 +241,10 @@ public final class ColorInfo
 			case INTEGER_RGB888:
 				return null;
 			
-				// {@squirreljme.error AF0b Unsupported pixel format.
+				// {@squirreljme.error AF0c Unsupported pixel format.
 				// (The pixel format to use)}
 			default:
-				throw new RuntimeException(String.format("AF0b %s", pf));
+				throw new RuntimeException(String.format("AF0c %s", pf));
 		}
 	}
 }

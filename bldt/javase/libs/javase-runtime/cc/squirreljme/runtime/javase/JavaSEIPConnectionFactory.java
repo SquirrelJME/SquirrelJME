@@ -48,10 +48,10 @@ public class JavaSEIPConnectionFactory
 				getHostAddress(), __addr.port);
 		}
 		
-		// {@squirreljme.error AF0g Unknown host.}
+		// {@squirreljme.error AF05 Unknown host.}
 		catch (UnknownHostException e)
 		{
-			IOException t = new ConnectionNotFoundException("AF0g");
+			IOException t = new ConnectionNotFoundException("AF05");
 			t.initCause(e);
 			throw t;
 		}
