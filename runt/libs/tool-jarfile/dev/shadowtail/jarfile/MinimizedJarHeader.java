@@ -33,6 +33,10 @@ public final class MinimizedJarHeader
 	public static final int HEADER_SIZE_WITH_MAGIC =
 		HEADER_SIZE_WITHOUT_MAGIC + 4;
 	
+	/** Size of table of contents entries. */
+	public static final int TOC_ENTRY_SIZE =
+		16;
+	
 	/** Number of resources. */
 	public final int numrc;
 	
