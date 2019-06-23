@@ -17,8 +17,12 @@ package cc.squirreljme.jvm;
 public final class Allocator
 {
 	/** Chunk is an object. */
-	public static final byte CHUNK_IS_OBJECT =
+	public static final byte CHUNK_BIT_IS_OBJECT =
 		0x01;
+	
+	/** Tag value bits mask. */
+	public static final int CHUNK_BITS_VALUE_MASK =
+		0x0F;
 	
 	/** Shift for the chunk tag. */
 	public static final byte CHUNK_TAG_SHIFT =
@@ -71,7 +75,7 @@ public final class Allocator
 	/**
 	 * Allocates the given number of bytes.
 	 *
-	 * @param __tag The tag to use, only 8-bits are used.
+	 * @param __tag The tag to use, only the lowest 8-bits are used.
 	 * @param __sz The number of bytes to allocate.
 	 * @return The address of the allocated data or {@code 0} if there is
 	 * not enough memory remaining.

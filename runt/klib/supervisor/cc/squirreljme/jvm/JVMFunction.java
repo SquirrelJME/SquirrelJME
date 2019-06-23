@@ -437,7 +437,7 @@ public final class JVMFunction
 		
 		// Allocate the memory
 		int rv = Allocator.allocate(
-			_TASK_ID | Allocator.CHUNK_IS_OBJECT, info.size);
+			_TASK_ID | Allocator.CHUNK_BIT_IS_OBJECT, info.size);
 		if (rv == 0)
 			throw new OutOfMemoryError();
 		
@@ -485,7 +485,7 @@ public final class JVMFunction
 		
 		// Allocate the memory
 		int rv = Allocator.allocate(
-			_TASK_ID | Allocator.CHUNK_IS_OBJECT, allocsize);
+			_TASK_ID | Allocator.CHUNK_BIT_IS_OBJECT, allocsize);
 		if (rv == 0)
 			throw new OutOfMemoryError();
 		
