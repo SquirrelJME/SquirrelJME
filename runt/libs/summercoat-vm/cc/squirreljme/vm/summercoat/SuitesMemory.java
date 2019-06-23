@@ -198,13 +198,18 @@ public final class SuitesMemory
 			
 			// Write pack header
 			dos.writeInt(MinimizedPackHeader.MAGIC_NUMBER);
+			
+			// Count and table of contents position
 			dos.writeInt(numsuites);
+			dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
+			
+			// Boot properties
 			dos.writeInt(Arrays.asList(suitemem).indexOf(superv));
 			dos.writeInt(superv.offset);
 			dos.writeInt(SUITE_CHUNK_SIZE);
 			dos.writeInt(0);
 			dos.writeInt(0);
-			dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
+			dos.writeInt(0);
 			
 			// Name table output
 			ByteArrayOutputStream nbaos = new ByteArrayOutputStream(4096);
