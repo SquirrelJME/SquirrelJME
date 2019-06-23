@@ -84,12 +84,12 @@ public final class SpringArrayObjectDouble
 			return (C)Double.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK30 Out of bounds access to array. (The index;
+		// {@squirreljme.error BK0b Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK30 %d %d", __dx, length), e);
+				String.format("BK0b %d %d", __dx, length), e);
 		}
 	}
 	
@@ -107,19 +107,19 @@ public final class SpringArrayObjectDouble
 			this._elements[__dx] = ((Double)__v).doubleValue();
 		}
 		
-		// {@squirreljme.error BK31 Could not set the index in the double
+		// {@squirreljme.error BK0c Could not set the index in the double
 		// array.}
 		catch (ClassCastException e)
 		{
-			throw new SpringArrayStoreException("BK31", e);
+			throw new SpringArrayStoreException("BK0c", e);
 		}
 		
-		// {@squirreljme.error BK32 Out of bounds access to array. (The index;
+		// {@squirreljme.error BK0d Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK32 %d %d", __dx, this.length), e);
+				String.format("BK0d %d %d", __dx, this.length), e);
 		}
 	}
 }

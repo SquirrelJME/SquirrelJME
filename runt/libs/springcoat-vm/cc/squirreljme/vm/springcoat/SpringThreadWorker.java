@@ -95,10 +95,10 @@ public final class SpringThreadWorker
 		if (__t._worker == null)
 			__t._worker = this;
 		
-		// {@squirreljme.error BK39 Thread already has a worker associated
+		// {@squirreljme.error BK1x Thread already has a worker associated
 		// with it.}
 		else
-			throw new SpringVirtualMachineException("BK39");
+			throw new SpringVirtualMachineException("BK1x");
 	}
 	
 	/**
@@ -238,12 +238,12 @@ public final class SpringThreadWorker
 						return rv;
 					}
 				
-					// {@squirreljme.error BK1c Do not know how to convert the
+					// {@squirreljme.error BK1y Do not know how to convert the
 					// given virtual machine array to a native machine array.
 					// (The input class)}
 				default:
 					throw new RuntimeException(
-						String.format("BK1c %s", type));
+						String.format("BK1y %s", type));
 			}
 		}
 		
@@ -269,20 +269,20 @@ public final class SpringThreadWorker
 							new MethodNameAndType("toCharArray", "()[C"),
 							sso)));
 				
-					// {@squirreljme.error BK1d Do not know how to convert the
+					// {@squirreljme.error BK1z Do not know how to convert the
 					// given virtual machine class to a native machine object.
 					// (The input class)}
 				default:
 					throw new RuntimeException(
-						String.format("BK1d %s", type));
+						String.format("BK1z %s", type));
 			}
 		}
 		
-		// {@squirreljme.error BK1e Do not know how to convert the given class
+		// {@squirreljme.error BK20 Do not know how to convert the given class
 		// to a native machine object. (The input class)}
 		else
 			throw new SpringFatalException(
-				String.format("BK1e %s", __in.getClass()));
+				String.format("BK20 %s", __in.getClass()));
 	}
 	
 	/**
@@ -604,11 +604,11 @@ public final class SpringThreadWorker
 			}
 		}
 		
-		// {@squirreljme.error BK1f Do not know how to convert the given class
+		// {@squirreljme.error BK21 Do not know how to convert the given class
 		// to a virtual machine object. (The input class)}
 		else
 			throw new RuntimeException(
-				String.format("BK1f %s", __in.getClass()));
+				String.format("BK21 %s", __in.getClass()));
 	}
 	
 	/**
@@ -746,10 +746,10 @@ public final class SpringThreadWorker
 				this.loadClass(new ClassName("double")),
 				(double[])__a);
 		
-		// {@squirreljme.error BK33 Cannot wrap this as a native array.
+		// {@squirreljme.error BK22 Cannot wrap this as a native array.
 		// (The input class type)}
 		else
-			throw new RuntimeException("BK33 " + __a.getClass());
+			throw new RuntimeException("BK22 " + __a.getClass());
 	}
 	
 	/**
@@ -970,8 +970,8 @@ public final class SpringThreadWorker
 			if (thread._signaledexit)
 				throw new SpringMachineExitException(this.machine._exitcode);
 			
-			// {@squirreljme.error BK1g Current frame is not our blank frame.}
-			throw new SpringVirtualMachineException("BK1g");
+			// {@squirreljme.error BK23 Current frame is not our blank frame.}
+			throw new SpringVirtualMachineException("BK23");
 		}
 		
 		// Read return value from the blank frame
@@ -1467,11 +1467,11 @@ public final class SpringThreadWorker
 						__classObjectToNameMap();
 					synchronized (machine.classLoader().classLoadingLock())
 					{
-						// {@squirreljme.error BK1i Could not reverse class
+						// {@squirreljme.error BK24 Could not reverse class
 						// object to class name.}
 						ClassName cn = ocm.get((SpringObject)__args[0]);
 						if (cn == null)
-							throw new SpringVirtualMachineException("BK1i");
+							throw new SpringVirtualMachineException("BK24");
 						
 						// Lookup class for the component type, we need it
 						SpringClass cl = this.loadClass(cn.componentType());
@@ -1820,11 +1820,11 @@ public final class SpringThreadWorker
 				return this.machine.taskManager().taskStatus(
 					(Integer)__args[0]);
 				
-				// {@squirreljme.error BK1j Unknown native function. (The
+				// {@squirreljme.error BK25 Unknown native function. (The
 				// native function)}
 			default:
 				throw new SpringVirtualMachineException(
-					String.format("BK1j %s", __func));
+					String.format("BK25 %s", __func));
 		}
 	}
 	
@@ -1913,11 +1913,11 @@ public final class SpringThreadWorker
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BK1k Could not access the specified class.
+		// {@squirreljme.error BK26 Could not access the specified class.
 		// (The class to access; The context class)}
 		SpringClass rv = this.loadClass(__cl);
 		if (!this.checkAccess(rv))
-			throw new SpringIllegalAccessException(String.format("BK1k %s %s",
+			throw new SpringIllegalAccessException(String.format("BK26 %s %s",
 				__cl, this.contextClass()));
 		
 		return rv;
@@ -1950,10 +1950,10 @@ public final class SpringThreadWorker
 		SpringThread thread = this.thread;
 		try
 		{
-			// {@squirreljme.error BK1l Cannot have a negative frame limit.
+			// {@squirreljme.error BK27 Cannot have a negative frame limit.
 			// (The frame limit)}
 			if (__framelimit < 0)
-				throw new IllegalArgumentException(String.format("BK1l %d",
+				throw new IllegalArgumentException(String.format("BK27 %d",
 					__framelimit));
 			
 			// The thread is alive as long as there are still frames of
@@ -2167,20 +2167,20 @@ public final class SpringThreadWorker
 		if (__f == null)
 			throw new NullPointerException("NARG");
 			
-		// {@squirreljme.error BK1m Could not access the target class for
+		// {@squirreljme.error BK28 Could not access the target class for
 		// instance field access. (The field reference)}
 		SpringClass inclass = this.loadClass(__f.className());
 		if (!this.checkAccess(inclass))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK1m %s", __f));
+				String.format("BK28 %s", __f));
 		
-		// {@squirreljme.error BK1n Could not access the target field for
+		// {@squirreljme.error BK29 Could not access the target field for
 		// instance field access. (The field reference; The field flags)}
 		SpringField field = inclass.lookupField(false,
 			__f.memberNameAndType());
 		if (!this.checkAccess(field))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK1n %s %s", __f, field.flags()));
+				String.format("BK29 %s %s", __f, field.flags()));
 		
 		return field;
 	}
@@ -2203,19 +2203,19 @@ public final class SpringThreadWorker
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BK1o Could not access the target class for
+		// {@squirreljme.error BK2a Could not access the target class for
 		// static field access. (The field reference)}
 		SpringClass inclass = this.loadClass(__f.className());
 		if (!this.checkAccess(inclass))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK1o %s", __f));
+				String.format("BK2a %s", __f));
 		
-		// {@squirreljme.error BK1p Could not access the target field for
+		// {@squirreljme.error BK2b Could not access the target field for
 		// static field access. (The field reference)}
 		SpringField field = inclass.lookupField(true, __f.memberNameAndType());
 		if (!this.checkAccess(field))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK1p %s", __f));
+				String.format("BK2b %s", __f));
 		
 		// Lookup the global static field
 		return this.machine.lookupStaticField(field);
@@ -2264,9 +2264,9 @@ public final class SpringThreadWorker
 		int iec = frame.incrementExecCount();
 		if (iec > 0 && (iec % _EXECUTION_THRESHOLD) == 0)
 		{
-			// {@squirreljme.error BK1q Execution seems to be stuck in this
+			// {@squirreljme.error BK2c Execution seems to be stuck in this
 			// method.}
-			System.err.println("BK1q");
+			System.err.println("BK2c");
 			this.thread.printStackTrace(System.err);
 		}
 		
@@ -2420,13 +2420,13 @@ public final class SpringThreadWorker
 						SpringObject pop = frame.<SpringObject>popFromStack(
 							SpringObject.class);
 						
-						// {@squirreljme.error BK1r Cannot cast object to the
+						// {@squirreljme.error BK2d Cannot cast object to the
 						// target type. (The type to cast to; The type of the
 						// object)}
 						if (pop != SpringNullObject.NULL &&
 							!as.isAssignableFrom(pop.type()))
 							throw new SpringClassCastException(String.format(
-								"BK1r %s %s", as, pop.type()));
+								"BK2d %s %s", as, pop.type()));
 						
 						// Return the popped value
 						else
@@ -2588,10 +2588,10 @@ public final class SpringThreadWorker
 					{
 						Object copy = frame.popFromStack();
 						
-						// {@squirreljme.error BK1s Cannot duplicate category
+						// {@squirreljme.error BK2e Cannot duplicate category
 						// two type.}
 						if (copy instanceof Long || copy instanceof Double)
-							throw new SpringVirtualMachineException("BK1s");
+							throw new SpringVirtualMachineException("BK2e");
 						
 						// Push twice!
 						frame.pushToStack(copy);
@@ -2605,11 +2605,11 @@ public final class SpringThreadWorker
 						Object a = frame.popFromStack(),
 							b = frame.popFromStack();
 						
-						// {@squirreljme.error BK1t Cannot duplicate and place
+						// {@squirreljme.error BK2f Cannot duplicate and place
 						// down below with two type.}
 						if (a instanceof Long || a instanceof Double ||
 							b instanceof Long || b instanceof Double)
-							throw new SpringVirtualMachineException("BK1t");
+							throw new SpringVirtualMachineException("BK2f");
 						
 						frame.pushToStack(a);
 						frame.pushToStack(b);
@@ -2623,10 +2623,10 @@ public final class SpringThreadWorker
 						Object a = frame.popFromStack(),
 							b = frame.popFromStack();
 						
-						// {@squirreljme.error BK1u Cannot duplicate cat2
+						// {@squirreljme.error BK2g Cannot duplicate cat2
 						// type.}
 						if (a instanceof Long || a instanceof Double)
-							throw new SpringVirtualMachineException("BK1u");
+							throw new SpringVirtualMachineException("BK2g");
 						
 						// Insert A below C
 						if (b instanceof Long || b instanceof Double)
@@ -2641,12 +2641,12 @@ public final class SpringThreadWorker
 						{
 							Object c = frame.popFromStack();
 							
-							// {@squirreljme.error BK1v Cannot duplicate top
+							// {@squirreljme.error BK2h Cannot duplicate top
 							// most entry and place two down because a cat2
 							// type is in the way.}
 							if (c instanceof Long || c instanceof Double)
 								throw new SpringVirtualMachineException(
-									"BK1v");
+									"BK2h");
 									
 							frame.pushToStack(a);
 							frame.pushToStack(c);
@@ -2673,11 +2673,11 @@ public final class SpringThreadWorker
 						{
 							Object b = frame.popFromStack();
 							
-							// {@squirreljme.error BK1w Cannot duplicate top
+							// {@squirreljme.error BK2i Cannot duplicate top
 							// two values.}
 							if (b instanceof Long || b instanceof Double)
 								throw new SpringVirtualMachineException(
-									"BK1w");
+									"BK2i");
 							
 							frame.pushToStack(b);
 							frame.pushToStack(a);
@@ -2694,11 +2694,11 @@ public final class SpringThreadWorker
 						Object a = frame.popFromStack(),
 							b = frame.popFromStack();
 						
-						// {@squirreljme.error BK1x Expected category one
+						// {@squirreljme.error BK2j Expected category one
 						// type.}
 						if (b instanceof Long || b instanceof Double)
 							throw new SpringVirtualMachineException(
-								"BK1x");
+								"BK2j");
 						
 						// Insert this below b
 						if (a instanceof Long || a instanceof Double)
@@ -2713,11 +2713,11 @@ public final class SpringThreadWorker
 						{
 							Object c = frame.popFromStack();
 							
-							// {@squirreljme.error BK1y Cannot duplicate value
+							// {@squirreljme.error BK2k Cannot duplicate value
 							// below category two type.}
 							if (c instanceof Long || c instanceof Double)
 								throw new SpringVirtualMachineException(
-									"BK1y");
+									"BK2k");
 							
 							frame.pushToStack(b);
 							frame.pushToStack(a);
@@ -2751,11 +2751,11 @@ public final class SpringThreadWorker
 							{
 								Object c = frame.popFromStack();
 								
-								// {@squirreljme.error BK1z Cannot pop cat2
+								// {@squirreljme.error BK2l Cannot pop cat2
 								// type for dup.}
 								if (c instanceof Long || c instanceof Double)
 									throw new SpringVirtualMachineException(
-										"BK1z");
+										"BK2l");
 								
 								frame.pushToStack(a);
 								frame.pushToStack(c);
@@ -2767,11 +2767,11 @@ public final class SpringThreadWorker
 						// Category one is on top
 						else
 						{
-							// {@squirreljme.error BK20 Category two type
+							// {@squirreljme.error BK2m Category two type
 							// cannot be on the bottom.}
 							if (b instanceof Long || b instanceof Double)
 								throw new SpringVirtualMachineException(
-									"BK20");
+									"BK2m");
 							
 							Object c = frame.popFromStack();
 							
@@ -2790,11 +2790,11 @@ public final class SpringThreadWorker
 							{
 								Object d = frame.popFromStack();
 								
-								// {@squirreljme.error BK21 Bottommost entry
+								// {@squirreljme.error BK2n Bottommost entry
 								// cannot be cat2 type.}
 								if (d instanceof Long || d instanceof Double)
 									throw new SpringVirtualMachineException(
-										"BK21");
+										"BK2n");
 								
 								frame.pushToStack(b);
 								frame.pushToStack(a);
@@ -2969,16 +2969,16 @@ public final class SpringThreadWorker
 						SpringObject ref = frame.<SpringObject>popFromStack(
 							SpringObject.class);
 						
-						// {@squirreljme.error BK22 Cannot read value from
+						// {@squirreljme.error BK2o Cannot read value from
 						// null reference.}
 						if (ref == SpringNullObject.NULL)
-							throw new SpringNullPointerException("BK22");
+							throw new SpringNullPointerException("BK2o");
 						
-						// {@squirreljme.error BK23 Cannot read value from
+						// {@squirreljme.error BK2p Cannot read value from
 						// this instance because it not a simple object.}
 						if (!(ref instanceof SpringSimpleObject))
 							throw new SpringIncompatibleClassChangeException(
-								"BK23");
+								"BK2p");
 						SpringSimpleObject sso = (SpringSimpleObject)ref;
 						
 						// Read and push to the stack
@@ -3823,11 +3823,11 @@ public final class SpringThreadWorker
 					// Pop category 1 value
 				case InstructionIndex.POP:
 					{
-						// {@squirreljme.error BK24 Cannot pop category two
+						// {@squirreljme.error BK2q Cannot pop category two
 						// value from stack.}
 						Object val = frame.popFromStack();
 						if (val instanceof Long || val instanceof Double)
-							throw new SpringVirtualMachineException("BK24");
+							throw new SpringVirtualMachineException("BK2q");
 					}
 					break;
 					
@@ -3839,12 +3839,12 @@ public final class SpringThreadWorker
 						Object val = frame.popFromStack();
 						if (!(val instanceof Long || val instanceof Double))
 						{
-							// {@squirreljme.error BK25 Cannot pop a category
+							// {@squirreljme.error BK2r Cannot pop a category
 							// one then category two type.}
 							val = frame.popFromStack();
 							if (val instanceof Long || val instanceof Double)
 								throw new SpringVirtualMachineException(
-									"BK25");
+									"BK2r");
 						}
 					}
 					break;
@@ -3862,23 +3862,23 @@ public final class SpringThreadWorker
 						SpringObject ref = frame.<SpringObject>popFromStack(
 							SpringObject.class);
 						
-						// {@squirreljme.error BK26 Cannot store value into
+						// {@squirreljme.error BK2s Cannot store value into
 						// null reference.}
 						if (ref == SpringNullObject.NULL)
-							throw new SpringNullPointerException("BK26");
+							throw new SpringNullPointerException("BK2s");
 						
-						// {@squirreljme.error BK27 Cannot store value into
+						// {@squirreljme.error BK2t Cannot store value into
 						// this instance because it not a simple object.}
 						if (!(ref instanceof SpringSimpleObject))
 							throw new SpringIncompatibleClassChangeException(
-								"BK27");
+								"BK2t");
 						SpringSimpleObject sso = (SpringSimpleObject)ref;
 						
-						// {@squirreljme.error BK28 Cannot store value into
+						// {@squirreljme.error BK2u Cannot store value into
 						// a field which belongs to another class.}
 						if (!this.loadClass(ssf.inClass()).isAssignableFrom(
 							sso.type()))
-							throw new SpringClassCastException("BK28");
+							throw new SpringClassCastException("BK2u");
 						
 						// Set
 						sso.fieldByIndex(ssf.index()).set(value,
@@ -3906,30 +3906,30 @@ public final class SpringThreadWorker
 						Object v1 = frame.popFromStack(),
 							v2 = frame.popFromStack();
 						
-						// {@squirreljme.error BK29 Cannot swap category
+						// {@squirreljme.error BK2v Cannot swap category
 						// two types.}
 						if (v1 instanceof Long || v1 instanceof Double ||
 							v2 instanceof Long || v2 instanceof Double)
-							throw new SpringClassCastException("BK29");
+							throw new SpringClassCastException("BK2v");
 						
 						frame.pushToStack(v1);
 						frame.pushToStack(v2);
 					}
 					break;
 				
-					// {@squirreljme.error BK2a Reserved instruction. (The
+					// {@squirreljme.error BK2w Reserved instruction. (The
 					// instruction)}
 				case InstructionIndex.BREAKPOINT:
 				case InstructionIndex.IMPDEP1:
 				case InstructionIndex.IMPDEP2:
 					throw new SpringVirtualMachineException(String.format(
-						"BK2a %s", inst));
+						"BK2w %s", inst));
 					
-					// {@squirreljme.error BK2b Unimplemented operation.
+					// {@squirreljme.error BK2x Unimplemented operation.
 					// (The instruction)}
 				default:
 					throw new SpringVirtualMachineException(String.format(
-						"BK2b %s", inst));
+						"BK2x %s", inst));
 			}
 		}
 		
@@ -3988,17 +3988,17 @@ public final class SpringThreadWorker
 				String onfile = inclass.file().sourceFile();
 				int online = code.lineOfAddress(pc);
 				
-				// {@squirreljme.error BK2c An exception was thrown in the
+				// {@squirreljme.error BK2y An exception was thrown in the
 				// virtual machine while executing the specified location.
 				// (The class; The method; The program counter; The file in
 				// source code, null means it is unknown; The line in source
 				// code, negative values are unknown; The instruction)}
 				e.addSuppressed(new SpringVirtualMachineException(
-					String.format("BK2c %s %s %d %s %d %s", inclassname,
+					String.format("BK2y %s %s %d %s %d %s", inclassname,
 					inmethod.nameAndType(), pc, onfile, online, inst)));
 				
-				// {@squirreljme.error BK2d Fatal VM exception.}
-				throw new SpringFatalException("BK2d", e);
+				// {@squirreljme.error BK2z Fatal VM exception.}
+				throw new SpringFatalException("BK2z", e);
 			}
 		}
 		
@@ -4032,11 +4032,11 @@ public final class SpringThreadWorker
 		SpringMethod refmethod = refclass.lookupMethod(false,
 			ref.memberNameAndType());
 		
-		// {@squirreljme.error BK2e Could not access the target
+		// {@squirreljme.error BK30 Could not access the target
 		// method for interface invoke. (The target method)}
 		if (!this.checkAccess(refmethod))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2e %s", ref));
+				String.format("BK30 %s", ref));
 		
 		// Load arguments, includes the instance it acts on
 		int nargs = refmethod.nameAndType().type().argumentCount() + 1;
@@ -4044,19 +4044,19 @@ public final class SpringThreadWorker
 		for (int i = nargs - 1; i >= 0; i--)
 			args[i] = __f.popFromStack();
 			
-		// {@squirreljme.error BK3c Instance object for interface invoke is
+		// {@squirreljme.error BK31 Instance object for interface invoke is
 		// null.}
 		SpringObject onthis = (SpringObject)args[0];
 		if (onthis == null || onthis == SpringNullObject.NULL)
-			throw new SpringNullPointerException("BK3c");
+			throw new SpringNullPointerException("BK31");
 			
-		// {@squirreljme.error BK2f Cannot invoke the method in the object
+		// {@squirreljme.error BK32 Cannot invoke the method in the object
 		// because it is of the wrong type. (The reference class; The class
 		// of the target object; The first argument)}
 		SpringClass objclass = onthis.type();
 		if (objclass == null || !refclass.isAssignableFrom(objclass))
 			throw new SpringClassCastException(
-				String.format("BK2f %s %s %s", refclass, objclass, args[0]));
+				String.format("BK32 %s %s %s", refclass, objclass, args[0]));
 		
 		// Relookup the method since we need to the right one! Then invoke it
 		__t.enterFrame(objclass.lookupMethod(false, ref.memberNameAndType()),
@@ -4268,10 +4268,10 @@ public final class SpringThreadWorker
 				
 				// Fatal ToDo
 			case SystemCallIndex.FATAL_TODO:
-				// {@squirreljme.error BK1h Virtual machine code executed
+				// {@squirreljme.error BK33 Virtual machine code executed
 				// a fatal Todo.}
 				rv = err = 0;
-				throw new SpringVirtualMachineException("BK1h");
+				throw new SpringVirtualMachineException("BK33");
 				
 				// Invoke the garbage collector
 			case SystemCallIndex.GARBAGE_COLLECT:
@@ -4548,11 +4548,11 @@ public final class SpringThreadWorker
 		SpringMethod refmethod = refclass.lookupMethod(false,
 			ref.memberNameAndType());
 		
-		// {@squirreljme.error BK2g Could not access the target
+		// {@squirreljme.error BK34 Could not access the target
 		// method for special invoke. (The target method)}
 		if (!this.checkAccess(refmethod))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2g %s", ref));
+				String.format("BK34 %s", ref));
 		
 		// Load arguments
 		int nargs = refmethod.nameAndType().type().
@@ -4566,11 +4566,11 @@ public final class SpringThreadWorker
 		SpringClass currentclass = this.loadClass(
 			this.thread.currentFrame().method().inClass());
 		
-		// {@squirreljme.error BK2h Instance object for special invoke is
+		// {@squirreljme.error BK35 Instance object for special invoke is
 		// null.}
 		SpringObject onthis = (SpringObject)args[0];
 		if (onthis == null || onthis == SpringNullObject.NULL)
-			throw new SpringNullPointerException("BK2h");
+			throw new SpringNullPointerException("BK35");
 		
 		// These modify the action to be performed
 		boolean insame = (currentclass == refclass),
@@ -4578,11 +4578,11 @@ public final class SpringThreadWorker
 			isinit = refmethod.name().isInstanceInitializer(),
 			isprivate = refmethod.flags().isPrivate();
 		
-		// {@squirreljme.error BK2i Cannot call private method that is not
+		// {@squirreljme.error BK36 Cannot call private method that is not
 		// in the same class. (The method reference)}
 		if (isprivate && !insame)
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2i %s", ref));
+				String.format("BK36 %s", ref));
 		
 		// Call superclass method instead?
 		else if (!isprivate && insuper && !isinit)
@@ -4617,11 +4617,11 @@ public final class SpringThreadWorker
 		SpringMethod refmethod = refclass.lookupMethod(true,
 			ref.memberNameAndType());
 		
-		// {@squirreljme.error BK2j Could not access the target
+		// {@squirreljme.error BK37 Could not access the target
 		// method for static invoke. (The target method)}
 		if (!this.checkAccess(refmethod))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2j %s", ref));
+				String.format("BK37 %s", ref));
 		
 		// Load arguments
 		int nargs = refmethod.nameAndType().type().
@@ -4672,11 +4672,11 @@ public final class SpringThreadWorker
 		SpringMethod refmethod = refclass.lookupMethod(false,
 			ref.memberNameAndType());
 		
-		// {@squirreljme.error BK2k Could not access the target
+		// {@squirreljme.error BK38 Could not access the target
 		// method for virtual invoke. (The target method)}
 		if (!this.checkAccess(refmethod))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2k %s", ref));
+				String.format("BK38 %s", ref));
 		
 		// Load arguments, includes the instance it acts on
 		int nargs = refmethod.nameAndType().type().argumentCount() + 1;
@@ -4684,11 +4684,11 @@ public final class SpringThreadWorker
 		for (int i = nargs - 1; i >= 0; i--)
 			args[i] = __f.popFromStack();
 		
-		// {@squirreljme.error BK2l Instance object for virtual invoke is
+		// {@squirreljme.error BK39 Instance object for virtual invoke is
 		// null.}
 		SpringObject onthis = (SpringObject)args[0];
 		if (onthis == null || onthis == SpringNullObject.NULL)
-			throw new SpringNullPointerException("BK2l");
+			throw new SpringNullPointerException("BK39");
 		
 		// Re-resolve method for this object's class
 		refmethod = onthis.type().lookupMethod(false,
@@ -4718,11 +4718,11 @@ public final class SpringThreadWorker
 		SpringClass toalloc = this.loadClass((allocname =
 			__i.<ClassName>argument(0, ClassName.class)));
 		
-		// {@squirreljme.error BK2m Cannot allocate an instance of the given
+		// {@squirreljme.error BK3a Cannot allocate an instance of the given
 		// class because it cannot be accessed. (The class to allocate)}
 		if (!this.checkAccess(toalloc))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2m %s", allocname));
+				String.format("BK3a %s", allocname));
 		
 		// Push a new allocation to the stack
 		__f.pushToStack(this.allocateObject(toalloc));

@@ -44,8 +44,8 @@ public final class SpringVMStaticMethod
 	@Override
 	public final SpringMonitor monitor()
 	{
-		// {@squirreljme.error BK34 StaticMethod does not have a monitor.}
-		throw new SpringFatalException("BK34");
+		// {@squirreljme.error BK3b StaticMethod does not have a monitor.}
+		throw new SpringFatalException("BK3b");
 	}
 	
 	/**
@@ -55,8 +55,8 @@ public final class SpringVMStaticMethod
 	@Override
 	public final SpringClass type()
 	{
-		// {@squirreljme.error BK35 StaticMethod does not have a type.}
-		throw new SpringFatalException("BK35");
+		// {@squirreljme.error BK3c StaticMethod does not have a type.}
+		throw new SpringFatalException("BK3c");
 	}
 }
 

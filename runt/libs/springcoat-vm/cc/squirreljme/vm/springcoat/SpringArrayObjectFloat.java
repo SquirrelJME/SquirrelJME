@@ -84,12 +84,12 @@ public final class SpringArrayObjectFloat
 			return (C)Float.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK2w Out of bounds access to array. (The index;
+		// {@squirreljme.error BK0e Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK2w %d %d", __dx, length), e);
+				String.format("BK0e %d %d", __dx, length), e);
 		}
 	}
 	
@@ -107,19 +107,19 @@ public final class SpringArrayObjectFloat
 			this._elements[__dx] = ((Float)__v).floatValue();
 		}
 		
-		// {@squirreljme.error BK2x Could not set the index in the float
+		// {@squirreljme.error BK0f Could not set the index in the float
 		// array.}
 		catch (ClassCastException e)
 		{
-			throw new SpringArrayStoreException("BK2x", e);
+			throw new SpringArrayStoreException("BK0f", e);
 		}
 		
-		// {@squirreljme.error BK2y Out of bounds access to array. (The index;
+		// {@squirreljme.error BK0g Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK2y %d %d", __dx, this.length), e);
+				String.format("BK0g %d %d", __dx, this.length), e);
 		}
 	}
 }

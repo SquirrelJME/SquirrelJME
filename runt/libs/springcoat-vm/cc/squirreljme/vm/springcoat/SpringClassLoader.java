@@ -155,10 +155,10 @@ public final class SpringClassLoader
 			}
 			catch (InvalidClassFormatException e)
 			{
-				// {@squirreljme.error BK0n Could not load class. (The class
+				// {@squirreljme.error BK12 Could not load class. (The class
 				// to load)}
 				throw new InvalidClassFormatException(
-					String.format("BK0n %s", __cn), e);
+					String.format("BK12 %s", __cn), e);
 			}
 			
 			// Load the super class
@@ -257,17 +257,17 @@ public final class SpringClassLoader
 			}
 			catch (IOException e)
 			{
-				// {@squirreljme.error BK0o Failed to read from the class
+				// {@squirreljme.error BK13 Failed to read from the class
 				// path.}
-				throw new SpringException("BK0o", e);
+				throw new SpringException("BK13", e);
 			}
 		
-		// {@squirreljme.error BK0p Could not locate the specified class.
+		// {@squirreljme.error BK14 Could not locate the specified class.
 		// (The class which was not found; The class file which was
 		// attempted to be located)}
 		if (data == null)
 			throw new SpringClassNotFoundException(__cn, String.format(
-				"BK0p %s %s", __cn, fileform));
+				"BK14 %s %s", __cn, fileform));
 		
 		// Decode class file
 		ClassFile cf;
@@ -277,17 +277,17 @@ public final class SpringClassLoader
 		}
 		catch (IOException e)
 		{
-			// {@squirreljme.error BK0q Could not read from the source
+			// {@squirreljme.error BK15 Could not read from the source
 			// class file. (The class being read)}
 			throw new SpringVirtualMachineException(String.format(
-				"BK0q %s", __cn), e);
+				"BK15 %s", __cn), e);
 		}
 		catch (InvalidClassFormatException e)
 		{
-			// {@squirreljme.error BK0r The class is not formatted
+			// {@squirreljme.error BK16 The class is not formatted
 			// correctly. (The class being read)}
 			throw new SpringClassFormatException(__cn, String.format(
-				"BK0r %s", __cn), e);
+				"BK16 %s", __cn), e);
 		}
 	}
 }

@@ -38,9 +38,9 @@ public final class SpringNullObject
 	@Override
 	public final SpringMonitor monitor()
 	{
-		// {@squirreljme.error BK0z Cannot obtain the monitor of an object
+		// {@squirreljme.error BK1e Cannot obtain the monitor of an object
 		// that is null.}
-		throw new SpringNullPointerException("BK0z");
+		throw new SpringNullPointerException("BK1e");
 	}
 	
 	/**

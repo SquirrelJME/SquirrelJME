@@ -131,10 +131,10 @@ public final class SpringClass
 			if (null != methods.put(m.nameAndType(),
 				(sm = new SpringMethod(name, m, filename))))
 			{
-				// {@squirreljme.error BK0e Duplicated method in class. (The
+				// {@squirreljme.error BK0t Duplicated method in class. (The
 				// method)}
 				throw new SpringClassFormatException(name, String.format(
-					"BK0e %s", m.nameAndType()));
+					"BK0t %s", m.nameAndType()));
 			}
 			
 			// Store only instance methods which are not static
@@ -156,13 +156,13 @@ public final class SpringClass
 		{
 			boolean isinstance = f.flags().isInstance();
 			
-			// {@squirreljme.error BK0f Duplicated field in class. (The field)}
+			// {@squirreljme.error BK0u Duplicated field in class. (The field)}
 			SpringField sf;
 			if (null != fields.put(f.nameAndType(),
 				(sf = new SpringField(name, f,
 					(isinstance ? instancefieldcount++ : -1)))))
 				throw new SpringClassFormatException(name, String.format(
-					"BK0f %s", f.nameAndType()));
+					"BK0u %s", f.nameAndType()));
 			
 			// Used to build our part of the field table
 			if (isinstance)
@@ -584,18 +584,18 @@ public final class SpringClass
 					return sc.lookupField(__static, __nat);
 			}
 			
-			// {@squirreljme.error BK0g The specified field does not exist.
+			// {@squirreljme.error BK0v The specified field does not exist.
 			// (The class which was looked in; The name and type of the field)}
-			throw new SpringNoSuchFieldException(String.format("BK0g %s %s",
+			throw new SpringNoSuchFieldException(String.format("BK0v %s %s",
 				this.name, __nat));
 		}
 		
-		// {@squirreljme.error BK0h The specified field exists in the class
+		// {@squirreljme.error BK0w The specified field exists in the class
 		// however it does not match being static. (The class the field is in;
 		// The name and type of the method; If a static field was requested)}
 		if (rv.isStatic() != __static)
 			throw new SpringIncompatibleClassChangeException(String.format(
-				"BK0h %s %s", this.name, __nat, __static));
+				"BK0w %s %s", this.name, __nat, __static));
 		
 		return rv;
 	}
@@ -651,19 +651,19 @@ public final class SpringClass
 		/*todo.DEBUG.note("Looking up method %s::%s (static=%b)", this.name,
 			__nat, __static);*/
 		
-		// {@squirreljme.error BK0i The specified method does not exist.
+		// {@squirreljme.error BK0x The specified method does not exist.
 		// (The class which was looked in; The name and type of the method)} 
 		SpringMethod rv = this._methods.get(__nat);
 		if (rv == null)
-			throw new SpringNoSuchMethodException(String.format("BK0i %s %s",
+			throw new SpringNoSuchMethodException(String.format("BK0x %s %s",
 				this.name, __nat));
 		
-		// {@squirreljme.error BK0j The specified method exists in the class
+		// {@squirreljme.error BK0y The specified method exists in the class
 		// however it does not match being static. (The class the method is in;
 		// The name and type of the method; If a static method was requested)}
 		if (rv.isStatic() != __static)
 			throw new SpringIncompatibleClassChangeException(String.format(
-				"BK0j %s %s %b", this.name, __nat, __static));
+				"BK0y %s %s %b", this.name, __nat, __static));
 		
 		return rv;
 	}
@@ -690,19 +690,19 @@ public final class SpringClass
 		/*todo.DEBUG.note("Looking up non-virtual method %s::%s.", this.name,
 			__nat);*/
 		
-		// {@squirreljme.error BK0k The specified method does not exist, when
+		// {@squirreljme.error BK0z The specified method does not exist, when
 		// non-virtual lookup is used. (The class which was looked in; The
 		// name and type of the method)} 
 		SpringMethod rv = this._nonvirtmethods.get(__nat);
 		if (rv == null)
-			throw new SpringNoSuchMethodException(String.format("BK0k %s %s",
+			throw new SpringNoSuchMethodException(String.format("BK0z %s %s",
 				this.name, __nat));
 		
-		// {@squirreljme.error BK0l Non-virtual method lookup found a static
+		// {@squirreljme.error BK10 Non-virtual method lookup found a static
 		// method. (The class being looked in; The name and type requested)}
 		if (rv.flags().isStatic())
 			throw new SpringIncompatibleClassChangeException(String.format(
-				"BK0l %s %s", this.name, __nat));
+				"BK10 %s %s", this.name, __nat));
 		
 		return rv;
 	}
@@ -728,11 +728,11 @@ public final class SpringClass
 	public final void setInitialized()
 		throws SpringVirtualMachineException
 	{
-		// {@squirreljme.error BK0m Class attempted to be initialized twice.
+		// {@squirreljme.error BK11 Class attempted to be initialized twice.
 		// (This class)}
 		if (this._initialized)
 			throw new SpringVirtualMachineException(String.format(
-				"BK0m %s", this.name));
+				"BK11 %s", this.name));
 		
 		this._initialized = true;
 	}
