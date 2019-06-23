@@ -70,10 +70,10 @@ public final class ProjectManager
 		if (__sr == null || __brs == null || __dts == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AU0j Binary paths array count does not match
+		// {@squirreljme.error AU0s Binary paths array count does not match
 		// the number of time spaces available.}
 		if (__brs.length != TimeSpaceType.values().length)
-			throw new IllegalArgumentException("AU0j");
+			throw new IllegalArgumentException("AU0s");
 		
 		// These cannot be null, that would be bad
 		for (Path p : (__brs = __brs.clone()))
@@ -158,10 +158,10 @@ public final class ProjectManager
 			bm = this.binaryManager(__t);
 		}
 		
-		// {@squirreljme.error AU0k Could not obtain the binary manager.}
+		// {@squirreljme.error AU0t Could not obtain the binary manager.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AU0k", e);
+			throw new RuntimeException("AU0t", e);
 		}
 		
 		// Get binaries
@@ -246,10 +246,10 @@ public final class ProjectManager
 			bm = this.binaryManager(__t);
 		}
 		
-		// {@squirreljme.error AU9g Could not obtain the binary manager.}
+		// {@squirreljme.error AU0u Could not obtain the binary manager.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AU9g", e);
+			throw new RuntimeException("AU0u", e);
 		}
 		
 		// Get binaries
@@ -459,7 +459,7 @@ public final class ProjectManager
 					deftimespace = TimeSpaceType.BUILD;
 					break;
 				
-					// {@squirreljme.error AU0l Unknown project argument.
+					// {@squirreljme.error AU0v Unknown project argument.
 					// Usage: [-s path] [-o path] [-r path] [-j path]
 					// [-b path];
 					// -s: The project source path;
@@ -475,7 +475,7 @@ public final class ProjectManager
 				case "?":
 				default:
 					throw new IllegalArgumentException(
-						String.format("AU0l %s", parse[0]));
+						String.format("AU0v %s", parse[0]));
 			}
 		
 		// Fill with defaults if missing

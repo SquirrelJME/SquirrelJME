@@ -71,10 +71,10 @@ public class BuilderFactory
 		ProjectManager projectmanager = ProjectManager.fromArguments(args);
 		this.projectmanager = projectmanager;
 		
-		// {@squirreljme.error AU0e No command given.}
+		// {@squirreljme.error AU0f No command given.}
 		String command = args.pollFirst();
 		if (command == null)
-			throw new IllegalArgumentException("AU0e");
+			throw new IllegalArgumentException("AU0f");
 		this.command = command;
 		
 		// Use remaining arguments as input
@@ -167,11 +167,11 @@ public class BuilderFactory
 					StandardCopyOption.REPLACE_EXISTING);
 			}
 			
-			// {@squirreljme.error AU19 Could not build the distribution.
+			// {@squirreljme.error AU0g Could not build the distribution.
 			// (The failed distribution)}
 			catch (IOException e)
 			{
-				throw new RuntimeException("AU19 " + d, e);
+				throw new RuntimeException("AU0g " + d, e);
 			}
 			
 			// Cleanup temp file
@@ -191,10 +191,10 @@ public class BuilderFactory
 			builtone = true;
 		}
 		
-		// {@squirreljme.error AU1a No distributions were specified for
+		// {@squirreljme.error AU0h No distributions were specified for
 		// building.}
 		if (!builtone)
-			throw new IllegalArgumentException("AU1a");
+			throw new IllegalArgumentException("AU0h");
 	}
 	
 	/**
@@ -205,8 +205,8 @@ public class BuilderFactory
 	 */
 	public void distAll(String... __args)
 	{
-		// {@squirreljme.error AU18 Could not build at least one distribution.}
-		RuntimeException fail = new RuntimeException("AU18");
+		// {@squirreljme.error AU0i Could not build at least one distribution.}
+		RuntimeException fail = new RuntimeException("AU0i");
 		boolean failed = false;
 		
 		// Build them one at a time so all of them are made regardless if they
@@ -301,7 +301,7 @@ public class BuilderFactory
 						sprops.put(spl, "");
 					break;
 				
-					// {@squirreljme.error AU1e Unknown argument.
+					// {@squirreljme.error AU0j Unknown argument.
 					// Usage: vmshade [-v vmname] [-n NPS path] [-Dkey=value]
 					// (program);
 					// -v: The name of the virtual machine to use, this may
@@ -312,14 +312,14 @@ public class BuilderFactory
 				case "?":
 				default:
 					throw new IllegalArgumentException(
-						String.format("AU1e %s", parse[0]));
+						String.format("AU0j %s", parse[0]));
 			}
 		
-		// {@squirreljme.error AU14 Launch of program using a SquirrelJME
+		// {@squirreljme.error AU0k Launch of program using a SquirrelJME
 		// VM requires a program to be launched.}
 		String program = args.pollFirst();
 		if (program == null)
-			throw new IllegalArgumentException("AU14");
+			throw new IllegalArgumentException("AU0k");
 		
 		// Run the VM
 		VMMain.main(vmname, npspath, sprops, this.projectmanager, program,
@@ -372,7 +372,7 @@ public class BuilderFactory
 								space = TimeSpaceType.BUILD;
 								break;
 							
-								// {@squirreljme.error AU0f Unknown argument.
+								// {@squirreljme.error AU0l Unknown argument.
 								// Usage: build [-R] [-J] [-T] [-B]
 								// (projects...);
 								// -R: Build for run-time;
@@ -382,7 +382,7 @@ public class BuilderFactory
 								// (The switch)}
 							default:
 								throw new IllegalArgumentException(
-									String.format("AU0f %s", parse[0]));
+									String.format("AU0l %s", parse[0]));
 						}
 					
 					// Run the builder
@@ -422,7 +422,7 @@ public class BuilderFactory
 								space = TimeSpaceType.BUILD;
 								break;
 							
-								// {@squirreljme.error AU9f Unknown argument.
+								// {@squirreljme.error AU0m Unknown argument.
 								// Usage: build [-R] [-J] [-T] [-B]
 								// (projects...);
 								// -R: Build for run-time;
@@ -432,7 +432,7 @@ public class BuilderFactory
 								// (The switch)}
 							default:
 								throw new IllegalArgumentException(
-									String.format("AU9f %s", parse[0]));
+									String.format("AU0m %s", parse[0]));
 						}
 					
 					// Run the builder
@@ -491,13 +491,13 @@ public class BuilderFactory
 				this.vmShade(args.<String>toArray(new String[args.size()]));
 				break;
 				
-				// {@squirreljme.error AU0g Unknown command specified.
+				// {@squirreljme.error AU0n Unknown command specified.
 				// Usage: command (command arguments...);
 				// Valid commands are:
 				// build, javadoc, launch, sdk, suite, task, vmshade
 				// .(The switch)}
 			default:
-				throw new IllegalArgumentException(String.format("AU0g %s",
+				throw new IllegalArgumentException(String.format("AU0n %s",
 					command));
 		}
 	}
@@ -531,10 +531,10 @@ public class BuilderFactory
 				run();
 		}
 		
-		// {@squirreljme.error AU0h Could not initialize the SDK factory.}
+		// {@squirreljme.error AU0o Could not initialize the SDK factory.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AU0h", e);
+			throw new RuntimeException("AU0o", e);
 		}
 	}
 	
@@ -620,7 +620,7 @@ public class BuilderFactory
 					pmts = TimeSpaceType.BUILD;
 					break;
 				
-					// {@squirreljme.error AU15 Unknown argument.
+					// {@squirreljme.error AU0p Unknown argument.
 					// Usage: vmshade [-b JAR] [output];
 					// -p: Bootstrap JAR Path, defaults to
 					// {@code bootsjme/javase-runtime.jar};
@@ -633,7 +633,7 @@ public class BuilderFactory
 				case "?":
 				default:
 					throw new IllegalArgumentException(
-						String.format("AU15 %s", parse[0]));
+						String.format("AU0p %s", parse[0]));
 			}
 		
 		// Output file name, which is optional
@@ -663,8 +663,8 @@ public class BuilderFactory
 		}
 		catch (IOException e)
 		{
-			// {@squirreljme.error AU16 Could not build the shaded JAR.}
-			throw new RuntimeException("AU16", e);
+			// {@squirreljme.error AU0q Could not build the shaded JAR.}
+			throw new RuntimeException("AU0q", e);
 		}
 		finally
 		{
@@ -750,12 +750,12 @@ public class BuilderFactory
 				// in the following switch
 				if (i == n - 1)
 				{
-					// {@squirreljme.error AU0i The specified option argument
+					// {@squirreljme.error AU0r The specified option argument
 					// requires a value set to it. (The option argument)}
 					String next = __q.peek();
 					if (next == null)
 						throw new IllegalArgumentException(
-							String.format("AU0i %c", c));
+							String.format("AU0r %c", c));
 					
 					return new String[]{rva, __q.remove()};
 				}

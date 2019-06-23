@@ -237,11 +237,11 @@ public final class Binary
 			return new ZipPathSet(this.zipBlock());
 		}
 		
-		// {@squirreljme.error AU2f Could not get the path set for this
+		// {@squirreljme.error AU03 Could not get the path set for this
 		// binary.}
 		catch (IOException e)
 		{
-			throw new CompilerException("AU2f", e);
+			throw new CompilerException("AU03", e);
 		}
 	}
 	
@@ -277,11 +277,11 @@ public final class Binary
 			return rv;
 		}
 		
-		// {@squirreljme.error AU03 Cannot get suite information for the
+		// {@squirreljme.error AU04 Cannot get suite information for the
 		// binary because there is no source code.}
 		Source source = this.source;
 		if (source == null)
-			throw new InvalidBinaryException("AU03");
+			throw new InvalidBinaryException("AU04");
 		return this.source.suiteInfo();
 	}
 	
@@ -327,11 +327,11 @@ public final class Binary
 	public final ZipBlockReader zipBlock()
 		throws IOException
 	{
-		// {@squirreljme.error AU04 Cannot get the ZIP for this binary because
+		// {@squirreljme.error AU05 Cannot get the ZIP for this binary because
 		// it is out of date. (The name of this binary)}
 		if (isSourceNewer())
 			throw new OutOfDateBinaryException(
-				String.format("AU04 %s", this.name));
+				String.format("AU05 %s", this.name));
 		
 		// Open it
 		return new ZipBlockReader(new FileChannelBlockAccessor(this.path));
@@ -347,11 +347,11 @@ public final class Binary
 	public final ZipStreamReader zipStream()
 		throws IOException
 	{
-		// {@squirreljme.error AU05 Cannot get the ZIP for this binary because
+		// {@squirreljme.error AU06 Cannot get the ZIP for this binary because
 		// it is out of date. (The name of this binary)}
 		if (isSourceNewer())
 			throw new OutOfDateBinaryException(
-				String.format("AU05 %s", this.name));
+				String.format("AU06 %s", this.name));
 		
 		return new ZipStreamReader(Files.newInputStream(this.path,
 			StandardOpenOption.READ));

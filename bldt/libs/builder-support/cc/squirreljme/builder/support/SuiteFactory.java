@@ -69,10 +69,10 @@ public class SuiteFactory
 		// no permissions to do so
 		this.manager = ManagerFactory.getSuiteManager();
 		
-		// {@squirreljme.error AU0s Expected command for suite operation.}
+		// {@squirreljme.error AU12 Expected command for suite operation.}
 		String command = args.pollFirst();
 		if (command == null)
-			throw new IllegalArgumentException("AU0s");
+			throw new IllegalArgumentException("AU12");
 		this.command = command;
 		
 		// Use remaining arguments as input
@@ -176,31 +176,31 @@ public class SuiteFactory
 			case "install":
 				try
 				{
-					// {@squirreljme.error AU0t The "suite install" command
+					// {@squirreljme.error AU13 The "suite install" command
 					// requires a path to a JAR file to install.}
 					String path = args.pollFirst();
 					if (path == null)
-						throw new IllegalArgumentException("AU0t");
+						throw new IllegalArgumentException("AU13");
 					
 					// Install and print suite information
 					printSuite(System.out, installSuite(Paths.get(path)));
 				}
 				
-				// {@squirreljme.error AU0u Read/write error installing suite.}
+				// {@squirreljme.error AU14 Read/write error installing suite.}
 				catch (IOException e)
 				{
-					throw new RuntimeException("AU0u", e);
+					throw new RuntimeException("AU14", e);
 				}
 				break;
 				
-				// {@squirreljme.error AU0v The specified suite command is not
+				// {@squirreljme.error AU15 The specified suite command is not
 				// valid. Valid commands are:
 				// ls, list;
 				// install (path);
 				// . (The command)}
 			case "help":
 			default:
-				throw new IllegalArgumentException(String.format("AU0v %s",
+				throw new IllegalArgumentException(String.format("AU15 %s",
 					command));
 		}
 	}

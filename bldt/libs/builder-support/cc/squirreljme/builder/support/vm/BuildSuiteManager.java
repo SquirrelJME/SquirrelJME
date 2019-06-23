@@ -80,10 +80,10 @@ public final class BuildSuiteManager
 				rv.add(b.name().toString() + ".jar");
 		}
 		
-		// {@squirreljme.error AU1c Could not list suites available.}
+		// {@squirreljme.error AU1g Could not list suites available.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AU1c", e);
+			throw new RuntimeException("AU1g", e);
 		}
 		
 		return rv.<String>toArray(new String[rv.size()]);
@@ -133,10 +133,10 @@ public final class BuildSuiteManager
 						get(__s));
 				}
 				
-				// {@squirreljme.error AU9h Could not load the binary manager.}
+				// {@squirreljme.error AU1h Could not load the binary manager.}
 				catch (IOException x)
 				{
-					RuntimeException t = new RuntimeException("AU9h", x);
+					RuntimeException t = new RuntimeException("AU1h", x);
 					t.addSuppressed(e);
 					throw t;
 				}
@@ -149,9 +149,9 @@ public final class BuildSuiteManager
 				return rv;
 			}
 			
-			// {@squirreljme.error AU1b No such library exists. (The requested
+			// {@squirreljme.error AU1i No such library exists. (The requested
 			// library)}
-			throw new RuntimeException(String.format("AU1b %s", __s));
+			throw new RuntimeException(String.format("AU1i %s", __s));
 		}
 	}
 }
