@@ -327,9 +327,9 @@ public final class TestResult
 		if (__ts == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BU0e Not a throwable.}
+		// {@squirreljme.error BU07 Not a throwable.}
 		if (!__ts.startsWith("throwable:"))
-			throw new IllegalArgumentException("BU0e");
+			throw new IllegalArgumentException("BU07");
 		__ts = __ts.substring(10);
 		
 		// Snip off the optional debug message

@@ -40,9 +40,9 @@ public abstract class TestFunction<A, R>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU04 Test takes one parameter.}
+		// {@squirreljme.error BU06 Test takes one parameter.}
 		if (__args.length != 1)
-			throw new InvalidTestParameterException("BU04");
+			throw new InvalidTestParameterException("BU06");
 		
 		// Run the test
 		return this.test((A)__args[0]);

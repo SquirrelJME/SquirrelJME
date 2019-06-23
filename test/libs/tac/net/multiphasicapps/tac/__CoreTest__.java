@@ -144,9 +144,9 @@ abstract class __CoreTest__
 		// Cannot be tested
 		catch (UntestableException e)
 		{
-			// {@squirreljme.error BU0d Test could not be ran.
+			// {@squirreljme.error BU0c Test could not be ran.
 			// (The given test)}
-			System.err.printf("BU0d %s%n", classname);
+			System.err.printf("BU0c %s%n", classname);
 			e.printStackTrace(System.err);
 			
 			// Cannot be tested so it shall fail
@@ -163,9 +163,9 @@ abstract class __CoreTest__
 				// Exception was thrown
 				this._status = TestStatus.TEST_EXCEPTION;
 				
-				// {@squirreljme.error BU08 The test failed to run properly.
+				// {@squirreljme.error BU0d The test failed to run properly.
 				// (The given test)}
-				System.err.printf("BU08 %s%n", classname);
+				System.err.printf("BU0d %s%n", classname);
 				t.printStackTrace(System.err);
 				return;
 			}

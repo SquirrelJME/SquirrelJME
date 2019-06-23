@@ -38,9 +38,9 @@ public abstract class TestConsumer<A>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU03 Test takes one parameter.}
+		// {@squirreljme.error BU05 Test takes one parameter.}
 		if (__args.length != 1)
-			throw new InvalidTestParameterException("BU03");
+			throw new InvalidTestParameterException("BU05");
 		
 		// Run the test
 		this.test((A)__args[0]);
