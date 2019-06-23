@@ -302,10 +302,10 @@ public final class Initializer
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error BC02 Could not export boot area.}
+		// {@squirreljme.error BC01 Could not export boot area.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("BC02", e);
+			throw new RuntimeException("BC01", e);
 		}
 	}
 }
