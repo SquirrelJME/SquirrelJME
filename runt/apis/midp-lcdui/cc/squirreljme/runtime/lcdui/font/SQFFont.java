@@ -304,11 +304,11 @@ public final class SQFFont
 			try (InputStream in = SQFFont.class.getResourceAsStream(
 				spec.toFileName()))
 			{
-				// {@squirreljme.error EB2l The font does not exist.
+				// {@squirreljme.error EB08 The font does not exist.
 				// (The name; The pixel size)}
 				if (in == null)
 					throw new IllegalArgumentException(
-						String.format("EB2l %s %d", __n, __pxs));
+						String.format("EB08 %s %d", __n, __pxs));
 				
 				// Read font data
 				rv = SQFFont.read(in);
@@ -317,12 +317,12 @@ public final class SQFFont
 				cache.put(spec, rv);
 			}
 			
-			// {@squirreljme.error EB2m Could not load the font data.
+			// {@squirreljme.error EB09 Could not load the font data.
 			// (The name; The pixel size)}
 			catch (IOException e)
 			{
 				throw new IllegalArgumentException(
-					String.format("EB2m %s %d", __n, __pxs), e);
+					String.format("EB09 %s %d", __n, __pxs), e);
 			}
 			
 			// Use it!

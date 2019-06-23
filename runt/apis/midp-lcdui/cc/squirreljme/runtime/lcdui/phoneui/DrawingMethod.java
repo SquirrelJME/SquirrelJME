@@ -265,9 +265,9 @@ public enum DrawingMethod
 		else if (TextBox.class.isAssignableFrom(__cl))
 			return TEXT_BOX;
 		
-		// {@squirreljme.error EB3d Could not get the drawing method of the
+		// {@squirreljme.error EB18 Could not get the drawing method of the
 		// given class. (The class)}
-		throw new IllegalArgumentException("EB3d " + __cl);
+		throw new IllegalArgumentException("EB18 " + __cl);
 	}
 }
 

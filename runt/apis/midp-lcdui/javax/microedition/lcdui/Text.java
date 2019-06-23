@@ -162,10 +162,10 @@ public class Text
 		if (__o < 0 || __l < 0 || (__o + __l) > __c.length())
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error EB2n The width and height cannot be negative
+		// {@squirreljme.error EB2p The width and height cannot be negative
 		// for text.}
 		if (__w < 0 || __h < 0)
-			throw new IllegalArgumentException("EB2n");
+			throw new IllegalArgumentException("EB2p");
 		
 		// Set sizes first
 		this._width = __w;
@@ -497,12 +497,12 @@ public class Text
 	{
 		TextStorage storage = this._storage;
 		
-		// {@squirreljme.error EB3g Text outside of bounds. (The starting
+		// {@squirreljme.error EB2r Text outside of bounds. (The starting
 		// index; The ending index; The size of the text)}
 		int size = storage.size;
 		if (__i < 0 || __l < 0 || (__i + __l) > size)
 			throw new IndexOutOfBoundsException(
-				String.format("EB3g %d %d %d", __i, __l, size));
+				String.format("EB2r %d %d %d", __i, __l, size));
 		
 		// Create string from it
 		return new String(storage.chars, __i, __l);
@@ -595,10 +595,10 @@ public class Text
 	public void setAlignment(int __a)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2t Invalid alignment. (The alignment)}
+		// {@squirreljme.error EB2s Invalid alignment. (The alignment)}
 		if (__a != ALIGN_LEFT && __a != ALIGN_CENTER && __a != ALIGN_RIGHT &&
 			__a != ALIGN_JUSTIFY && __a != ALIGN_DEFAULT)
-			throw new IllegalArgumentException("EB2t " + __a);
+			throw new IllegalArgumentException("EB2s " + __a);
 		
 		this._alignment = __a;
 	}
@@ -736,10 +736,10 @@ public class Text
 	public void setHeight(int __h)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2r The height of a font cannot be
+		// {@squirreljme.error EB2t The height of a font cannot be
 		// negative.}
 		if (__h < 0)
-			throw new IllegalArgumentException("EB2r");
+			throw new IllegalArgumentException("EB2t");
 		
 		// Just set the height, we do not need to clear the dirty bit because
 		// as long as the requiredheight is still within the height the text
@@ -841,9 +841,9 @@ public class Text
 	public void setWidth(int __w)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2o Cannot set the width to a negative value.}
+		// {@squirreljme.error EB2v Cannot set the width to a negative value.}
 		if (__w < 0)
-			throw new IllegalArgumentException("EB2o");
+			throw new IllegalArgumentException("EB2v");
 		
 		// Ignore on no changes
 		int oldwidth = this._width;

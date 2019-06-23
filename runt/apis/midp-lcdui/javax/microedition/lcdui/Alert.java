@@ -201,10 +201,10 @@ public class Alert
 	public void setTimeout(int __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB15 The specified number of milliseconds is
+		// {@squirreljme.error EB19 The specified number of milliseconds is
 		// negative. (The number of milliseconds specified)}
 		if (__ms < 0 && __ms != FOREVER)
-			throw new IllegalArgumentException(String.format("EB15 %d", __ms));
+			throw new IllegalArgumentException(String.format("EB19 %d", __ms));
 		
 		// Set
 		this._timeout = __ms;

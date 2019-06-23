@@ -318,9 +318,9 @@ public enum ActionMethod
 		else if (TextBox.class.isAssignableFrom(__cl))
 			return TEXT_BOX;
 		
-		// {@squirreljme.error EB3e Could not get the action method of the
+		// {@squirreljme.error EB17 Could not get the action method of the
 		// given class. (The class)}
-		throw new IllegalArgumentException("EB3e " + __cl);
+		throw new IllegalArgumentException("EB17 " + __cl);
 	}
 }
 

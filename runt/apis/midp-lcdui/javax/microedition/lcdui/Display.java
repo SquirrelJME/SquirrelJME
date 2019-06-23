@@ -399,10 +399,10 @@ public class Display
 				rv = CommonColors.HIGHLIGHTED_FOREGROUND;
 				break;
 		
-				// {@squirreljme.error EB2p Unknown color specifier. (The
+				// {@squirreljme.error EB1h Unknown color specifier. (The
 				// color specifier)}
 			default:
-				throw new IllegalArgumentException("EB2p " + __c);
+				throw new IllegalArgumentException("EB1h " + __c);
 		}
 		
 		// Clip the alpha away
@@ -639,9 +639,9 @@ public class Display
 		else if (__m == MODE_NORMAL)
 			throw new todo.TODO();
 	
-		// {@squirreljme.error EB1c Unknown activity mode specified.}
+		// {@squirreljme.error EB1i Unknown activity mode specified.}
 		else
-			throw new IllegalArgumentException("EB1c");
+			throw new IllegalArgumentException("EB1i");
 	}
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
@@ -670,19 +670,19 @@ public class Display
 		throws DisplayCapabilityException, IllegalStateException,
 			NullPointerException
 	{
-		// {@squirreljme.error EB1d Cannot show another alert when the alert
+		// {@squirreljme.error EB1j Cannot show another alert when the alert
 		// to show is cleared.}
 		if (__exit instanceof Alert)
-			throw new IllegalStateException("EB1d");
+			throw new IllegalStateException("EB1j");
 		
 		// Check
 		if (__show == null || __exit == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1e The displayable to show on exit after
+		// {@squirreljme.error EB1k The displayable to show on exit after
 		// showing an alert cannot be an alert.}
 		if (__exit instanceof Alert)
-			throw new IllegalStateException("EB1e");
+			throw new IllegalStateException("EB1k");
 		
 		// Debug
 		todo.DEBUG.note("Showing alert \"%s\"", __show._message);
@@ -706,11 +706,11 @@ public class Display
 			this._heldexit = __exit;
 		}
 		
-		// {@squirreljme.error EB1f Could not set the alert and its exit
+		// {@squirreljme.error EB1l Could not set the alert and its exit
 		// displayable because it is already set on a display.}
 		catch (LcdWidgetOwnedException e)
 		{
-			throw new IllegalStateException("EB1f", e);
+			throw new IllegalStateException("EB1l", e);
 		}*/
 	}
 	
@@ -764,10 +764,10 @@ public class Display
 			return;
 		}
 		
-		// {@squirreljme.error EB28 The displayable to be displayed is already
+		// {@squirreljme.error EB1m The displayable to be displayed is already
 		// being displayed.}
 		if (__show._display != null)
-			throw new IllegalStateException("EB28");
+			throw new IllegalStateException("EB1m");
 		
 		// Clear current's parent
 		if (current != null)
@@ -826,9 +826,9 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1h Cannot vibrate for a negative duration.}
+		// {@squirreljme.error EB1n Cannot vibrate for a negative duration.}
 		if (__d < 0)
-			throw new IllegalArgumentException("EB1h");
+			throw new IllegalArgumentException("EB1n");
 		
 		// Send vibration
 		this._phoneui.vibrate(__d);
@@ -885,10 +885,10 @@ public class Display
 				p = DisplayProperty.BEST_IMAGE_SIZE_MENU;
 				break;
 				
-				// {@squirreljme.error EB1i Cannot get the best image size of
+				// {@squirreljme.error EB1o Cannot get the best image size of
 				// the specified element. (The element specifier)}
 			default:
-				throw new IllegalArgumentException(String.format("EB1i %d",
+				throw new IllegalArgumentException(String.format("EB1o %d",
 					__e));
 		}
 		
@@ -1272,9 +1272,9 @@ public class Display
 		if (disp.length > 0)
 			return disp[0];
 		
-		// {@squirreljme.error EB1j Could not get the display for the specified
+		// {@squirreljme.error EB1p Could not get the display for the specified
 		// MIDlet because no displays are available.}
-		throw new IllegalStateException("EB1j");
+		throw new IllegalStateException("EB1p");
 	}
 	
 	/**
@@ -1318,9 +1318,9 @@ public class Display
 					it.remove();
 			}
 			
-			// {@squirreljme.error EB1k No displays are available.}
+			// {@squirreljme.error EB1q No displays are available.}
 			if (rv.size() <= 0)
-				throw new IllegalStateException("EB1k");
+				throw new IllegalStateException("EB1q");
 		}
 		
 		return rv.<Display>toArray(new Display[rv.size()]);
@@ -1352,10 +1352,10 @@ public class Display
 					didremove = true;
 				}
 			
-			// {@squirreljme.error EB1l The listener was never added to the
+			// {@squirreljme.error EB1r The listener was never added to the
 			// listener set.}
 			if (!didremove)
-				throw new IllegalStateException("EB1l");
+				throw new IllegalStateException("EB1r");
 		}
 	}
 	

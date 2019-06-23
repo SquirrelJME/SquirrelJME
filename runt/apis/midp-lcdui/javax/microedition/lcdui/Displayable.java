@@ -99,11 +99,11 @@ public abstract class Displayable
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB27 The display does not support commands.}
+		// {@squirreljme.error EB1s The display does not support commands.}
 		Display cd = this.getCurrentDisplay();
 		if (cd != null)
 			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
-				throw new DisplayCapabilityException("EB27");
+				throw new DisplayCapabilityException("EB1s");
 		
 		// Add the command
 		this._actions.addUniqueObjRef(__c);

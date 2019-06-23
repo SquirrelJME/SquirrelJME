@@ -46,10 +46,10 @@ public class StringItem
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB36 The appearance mode is not valid.
+		// {@squirreljme.error EB2o The appearance mode is not valid.
 		// (The appearance mode)}
 		if (__am != PLAIN && __am != BUTTON && __am != HYPERLINK)
-			throw new IllegalArgumentException("EB36 " + __am);
+			throw new IllegalArgumentException("EB2o " + __am);
 		
 		this._text = __t;
 		this._amode = __am;

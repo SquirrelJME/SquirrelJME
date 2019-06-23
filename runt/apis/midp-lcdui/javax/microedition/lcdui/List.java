@@ -70,15 +70,15 @@ public class List
 		if (__strs == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB25 String and image elements differ in
+		// {@squirreljme.error EB2j String and image elements differ in
 		// size.}
 		if (__imgs != null && __strs.length != __imgs.length)
-			throw new IllegalArgumentException("EB25");
+			throw new IllegalArgumentException("EB2j");
 		
-		// {@squirreljme.error EB26 Invalid list type. (The list type)}
+		// {@squirreljme.error EB2k Invalid list type. (The list type)}
 		if (__type != Choice.IMPLICIT && __type != Choice.EXCLUSIVE &&
 			__type != Choice.MULTIPLE)
-			throw new IllegalArgumentException("EB26 " + __type);
+			throw new IllegalArgumentException("EB2k " + __type);
 		
 		// Set
 		this._title = __title;

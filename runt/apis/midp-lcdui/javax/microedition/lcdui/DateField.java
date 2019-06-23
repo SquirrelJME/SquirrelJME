@@ -57,9 +57,9 @@ public class DateField
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB35 Invalid date field mode. (The mode)}
+		// {@squirreljme.error EB1g Invalid date field mode. (The mode)}
 		if (__m != DATE && __m != DATE_TIME && __m != TIME)
-			throw new IllegalArgumentException("EB35 " + __m);
+			throw new IllegalArgumentException("EB1g " + __m);
 		
 		this._zone = __z;
 	}

@@ -179,10 +179,10 @@ public enum GraphicsFunction
 			case 34:	return SET_BLENDING_MODE;
 			case 35:	return DRAW_REGION;
 			
-				// {@squirreljme.error EB2d Invalid graphics function.
+				// {@squirreljme.error EB0j Invalid graphics function.
 				// (The function ID)}
 			default:
-				throw new IllegalArgumentException("EB2d " + __id);
+				throw new IllegalArgumentException("EB0j " + __id);
 		}
 	}
 }

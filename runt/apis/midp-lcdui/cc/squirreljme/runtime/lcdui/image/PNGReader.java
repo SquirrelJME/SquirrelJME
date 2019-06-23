@@ -231,18 +231,18 @@ public class PNGReader
 					palette[i] |= 0xFF_000000;
 		}
 		
-		// {@squirreljme.error EB32 Unsupported bit-depth. (The bitdepth)}
+		// {@squirreljme.error EB0w Unsupported bit-depth. (The bitdepth)}
 		int bitdepth = this._bitdepth;
 		if (Integer.bitCount(bitdepth) != 1 || bitdepth > 8)
-			throw new IOException("EB32 " + bitdepth);
+			throw new IOException("EB0w " + bitdepth);
 		
-		// {@squirreljme.error EB33 Adam7 interlacing not supported.}
+		// {@squirreljme.error EB0x Adam7 interlacing not supported.}
 		if (this._adamseven)
-			throw new IOException("EB33");
+			throw new IOException("EB0x");
 		
-		// {@squirreljme.error EB13 Paletted PNG image has no palette.}
+		// {@squirreljme.error EB0y Paletted PNG image has no palette.}
 		if (this._colortype == 3 && this._palette == null)
-			throw new IOException("EB13");
+			throw new IOException("EB0y");
 		
 		// Process the image chunk now that the other information was read
 		// Note that the chunk needs to be unfiltered first
@@ -353,18 +353,18 @@ public class PNGReader
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0w Image has zero or negative width.
+		// {@squirreljme.error EB0z Image has zero or negative width.
 		// (The width)}
 		int width = __in.readInt();
 		if (width <= 0)
-			throw new IOException(String.format("EB0w %d", width));
+			throw new IOException(String.format("EB0z %d", width));
 		this._width = width;
 		
-		// {@squirreljme.error EB0x Image has zero or negative height. (The
+		// {@squirreljme.error EB10 Image has zero or negative height. (The
 		// height)}
 		int height = __in.readInt();
 		if (height <= 0)
-			throw new IOException(String.format("EB0x %d", height));
+			throw new IOException(String.format("EB10 %d", height));
 		this._height = height;
 		
 		// Debug
@@ -374,16 +374,16 @@ public class PNGReader
 		int bitdepth = __in.readUnsignedByte(),
 			colortype = __in.readUnsignedByte();
 		
-		// {@squirreljme.error EB0y Invalid PNG bit depth.
+		// {@squirreljme.error EB11 Invalid PNG bit depth.
 		// (The bit depth)}
 		if (Integer.bitCount(bitdepth) != 1 || bitdepth < 0 || bitdepth > 16)
-			throw new IOException(String.format("EB0y %d", bitdepth));
+			throw new IOException(String.format("EB11 %d", bitdepth));
 		
-		// {@squirreljme.error EB0z Invalid PNG bit depth and color type
+		// {@squirreljme.error EB12 Invalid PNG bit depth and color type
 		// combination. (The color type; The bit depth)}
 		if ((bitdepth < 8 && (colortype != 0 && colortype != 3)) ||
 			(bitdepth > 8 && colortype != 3))
-			throw new IOException(String.format("EB0z %d %d", colortype,
+			throw new IOException(String.format("EB12 %d %d", colortype,
 				bitdepth));
 			
 		// Set
@@ -405,23 +405,23 @@ public class PNGReader
 		// is any
 		this._scanlen = ((width * channels * bitdepth) + 7) / 8;
 		
-		// {@squirreljme.error EB10 Only deflate compressed PNG images are
+		// {@squirreljme.error EB13 Only deflate compressed PNG images are
 		// supported. (The compression method)}
 		int compressionmethod = __in.readUnsignedByte();
 		if (compressionmethod != 0)
-			throw new IOException(String.format("EB10 %d", compressionmethod));
+			throw new IOException(String.format("EB13 %d", compressionmethod));
 		
-		// {@squirreljme.error EB11 Only adapative filtered PNGs are supported.
+		// {@squirreljme.error EB14 Only adapative filtered PNGs are supported.
 		// (The filter type)}
 		int filter = __in.readUnsignedByte();
 		if (filter != 0)
-			throw new IOException(String.format("EB11 %d", filter));
+			throw new IOException(String.format("EB14 %d", filter));
 		
-		// {@squirreljme.error EB12 Unsupported PNG interlace method. (The
+		// {@squirreljme.error EB15 Unsupported PNG interlace method. (The
 		// interlace type)}
 		int interlace = __in.readUnsignedByte();
 		if (interlace != 0 && interlace != 1)
-			throw new IOException(String.format("EB12 %d", interlace));
+			throw new IOException(String.format("EB15 %d", interlace));
 		this._adamseven = (interlace == 1);
 		
 		// Allocate image buffer
@@ -640,12 +640,12 @@ public class PNGReader
 			
 			// At the start of every scanline is the filter type, which
 			// describes how the data should be treated
-			// {@squirreljme.error EB34 Unknown filter type. (The type; The
+			// {@squirreljme.error EB16 Unknown filter type. (The type; The
 			// scanline base coordinate; The scan line length; Image size)}
 			int type = __in.read();
 			if (type < 0 || type > 4)
 				throw new IOException(String.format(
-					"EB34 %d (%d, %d) %d [%d, %d]",
+					"EB16 %d (%d, %d) %d [%d, %d]",
 					type, 0, dy, scanlen, this._width, height));
 			
 			// Go through each byte in the scanline
