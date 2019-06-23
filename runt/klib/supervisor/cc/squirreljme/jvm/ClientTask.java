@@ -23,17 +23,27 @@ public final class ClientTask
 	/** The logical task ID. */
 	public final int lid;
 	
+	/** The classpath. */
+	public final BootLibrary[] classpath;
+	
 	/**
 	 * Initializes the client task.
 	 *
 	 * @param __pid The PID.
 	 * @param __lid The LID.
+	 * @param __cp The classpath used.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/22
 	 */
-	public ClientTask(int __pid, int __lid)
+	public ClientTask(int __pid, int __lid, BootLibrary[] __cp)
+		throws NullPointerException
 	{
+		if (__cp == null)
+			throw new NullPointerException("NARG");
+		
 		this.pid = __pid;
 		this.lid = __lid;
+		this.classpath = __cp;
 	}
 }
 

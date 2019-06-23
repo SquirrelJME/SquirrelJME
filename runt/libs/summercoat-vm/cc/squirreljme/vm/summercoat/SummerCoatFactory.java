@@ -138,7 +138,7 @@ public class SummerCoatFactory
 					baos.toByteArray());
 				vmem.mapRegion(sm);
 				
-				// Record size of RAM
+				// Record size of ROM
 				romsize = baos.size();
 			}
 			
