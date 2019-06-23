@@ -249,19 +249,19 @@ public final class DataDeserialization
 		else if (__s.startsWith("long:"))
 			return Long.valueOf(__s.substring(5));
 		
-		// {@squirreljme.error BU09 The specified string cannot be converted
+		// {@squirreljme.error BU01 The specified string cannot be converted
 		// to an object because it an unknown representation, the conversion
 		// is only one way. (The encoded data)}
 		else if (__s.startsWith("other:"))
 			throw new InvalidTestParameterException(
-				String.format("BU09 %s", __s));
+				String.format("BU01 %s", __s));
 		
-		// {@squirreljme.error BU0a The specified object cannot be
+		// {@squirreljme.error BU02 The specified object cannot be
 		// decoded because it is not known or does not support decoding.
 		// (The encoded data)}
 		else
 			throw new InvalidTestParameterException(
-				String.format("BU0a %s", __s));
+				String.format("BU02 %s", __s));
 	}
 }
 
