@@ -123,9 +123,9 @@ public class Main
 				}
 			}
 			
-			// {@squirreljme.error AF01 No entry points were found.}
+			// {@squirreljme.error AF06 No entry points were found.}
 			if (entries == null)
-				throw new IllegalArgumentException("AF01");
+				throw new IllegalArgumentException("AF06");
 			
 			// Print them out for debug
 			System.err.println("Entry points:");
@@ -165,11 +165,11 @@ public class Main
 			// Try initializing with a main method
 			try
 			{
-				// {@squirreljme.error AF02 The main method is not static.}
+				// {@squirreljme.error AF07 The main method is not static.}
 				Method mainmethod = mainclass.getMethod("main",
 					String[].class);
 				if ((mainmethod.getModifiers() & Modifier.STATIC) == 0)
-					throw new RuntimeException("AF02");
+					throw new RuntimeException("AF07");
 				
 				// Call it
 				mainmethod.invoke(null, new Object[]{__args});
@@ -239,15 +239,15 @@ public class Main
 		try (InputStream is = Main.class.getResourceAsStream(
 			"/SQUIRRELJME-BOOTSTRAP.MF"))
 		{
-			// {@squirreljme.error AF03 No manifest is available?}
+			// {@squirreljme.error AF08 No manifest is available?}
 			if (is == null)
-				throw new RuntimeException("AF03");
+				throw new RuntimeException("AF08");
 		
-			// {@squirreljme.error AF04 No main class is available?}
+			// {@squirreljme.error AF09 No main class is available?}
 			String mainclassname = new Manifest(is).getMainAttributes().
 				getValue("Main-Class");
 			if (mainclassname == null || mainclassname.isEmpty())
-				throw new RuntimeException("AF04");
+				throw new RuntimeException("AF09");
 			return mainclassname;
 		}
 	}
