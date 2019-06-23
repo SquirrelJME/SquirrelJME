@@ -152,9 +152,9 @@ public final class SpringFieldStorage
 		/*todo.DEBUG.note("%s::%s = %s", this.inclass, this.nameandtype,
 			__v);*/
 		
-		// {@squirreljme.error BK0t Attempt to write to final field.}
+		// {@squirreljme.error BK18 Attempt to write to final field.}
 		if (this.isfinal && !__writetofinal)
-			throw new SpringIllegalAccessException("BK0t");
+			throw new SpringIllegalAccessException("BK18");
 		
 		// Volatile field, use volatile field instead
 		if (this.isvolatile)

@@ -351,10 +351,10 @@ public final class SpringMachine
 		{
 			SpringFieldStorage rv = sfm.get(__f);
 			
-			// {@squirreljme.error BK0u Could not locate the static field
+			// {@squirreljme.error BK19 Could not locate the static field
 			// storage?}
 			if (rv == null)
-				throw new SpringVirtualMachineException("BK0u");
+				throw new SpringVirtualMachineException("BK19");
 			
 			return rv;
 		}
@@ -411,19 +411,19 @@ public final class SpringMachine
 			try (InputStream in = bootbin.resourceAsStream(
 				"META-INF/MANIFEST.MF"))
 			{
-				// {@squirreljme.error BK0v Entry point JAR has no manifest.
+				// {@squirreljme.error BK1a Entry point JAR has no manifest.
 				// (The name of the boot binary)}
 				if (in == null)
-					throw new SpringVirtualMachineException("BK0v " +
+					throw new SpringVirtualMachineException("BK1a " +
 						bootbin.name());
 				
 				entries = new EntryPoints(new JavaManifest(in));
 			}
 			
-			// {@squirreljme.error BK0w Failed to read the manifest.}
+			// {@squirreljme.error BK1b Failed to read the manifest.}
 			catch (IOException e)
 			{
-				throw new SpringVirtualMachineException("BK0w", e);
+				throw new SpringVirtualMachineException("BK1b", e);
 			}
 			
 			int n = entries.size();

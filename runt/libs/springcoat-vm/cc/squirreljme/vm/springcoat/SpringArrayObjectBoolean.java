@@ -83,12 +83,12 @@ public final class SpringArrayObjectBoolean
 			return (C)Integer.valueOf((this._elements[__dx] ? 1 : 0));
 		}
 		
-		// {@squirreljme.error BK2p Out of bounds access to array. (The index;
+		// {@squirreljme.error BK02 Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK2p %d %d", __dx, length), e);
+				String.format("BK02 %d %d", __dx, length), e);
 		}
 	}
 	
@@ -108,19 +108,19 @@ public final class SpringArrayObjectBoolean
 				((((((Integer)__v).intValue()) & 0x1) != 0) ? true : false);
 		}
 		
-		// {@squirreljme.error BK2n Could not set the index in the boolean
+		// {@squirreljme.error BK03 Could not set the index in the boolean
 		// array.}
 		catch (ClassCastException e)
 		{
-			throw new SpringArrayStoreException("BK2n", e);
+			throw new SpringArrayStoreException("BK03", e);
 		}
 		
-		// {@squirreljme.error BK2o Out of bounds access to array. (The index;
+		// {@squirreljme.error BK04 Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK2o %d %d", __dx, this.length), e);
+				String.format("BK04 %d %d", __dx, this.length), e);
 		}
 	}
 }
