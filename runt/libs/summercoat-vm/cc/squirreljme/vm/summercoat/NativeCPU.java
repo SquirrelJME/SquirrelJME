@@ -185,10 +185,10 @@ public final class NativeCPU
 				System.err.printf("    %s%n", l);
 			System.err.println();
 			
-			// {@squirreljme.error AE09 Virtual machine exception. (The failing
+			// {@squirreljme.error AE02 Virtual machine exception. (The failing
 			// instruction)}
 			throw new VMException(
-				String.format("AE09 %s", this.traceTop()), e);
+				String.format("AE02 %s", this.traceTop()), e);
 		}
 	}
 	
@@ -300,12 +300,12 @@ public final class NativeCPU
 							else
 								args[i] = base;
 							
-							// {@squirreljme.error AE0a Reference to register
+							// {@squirreljme.error AE03 Reference to register
 							// which is out of range of maximum number of
 							// registers. (The register index)}
 							if (af[i] == ArgumentFormat.VUREG &&
 								(base < 0 || base >= NativeCode.MAX_REGISTERS))
-								throw new VMException("AE0a " + base);
+								throw new VMException("AE03 " + base);
 						}
 						break;
 					
@@ -407,12 +407,12 @@ public final class NativeCPU
 						// Store the value after the decrement
 						lr[args[0]] = newval;
 						
-						// {@squirreljme.error AE0g Atomic decremented to
+						// {@squirreljme.error AE05 Atomic decremented to
 						// negative value! (The address and offset; The
 						// old value; The new value)}
 						if (newval < 0)
 							throw new VMException(String.format(
-								"AE0g %08x+%d %d %d", addr, off, newval + 1,
+								"AE05 %08x+%d %d %d", addr, off, newval + 1,
 								newval));
 						
 						// Debug

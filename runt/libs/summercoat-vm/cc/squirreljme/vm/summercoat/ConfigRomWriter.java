@@ -46,11 +46,11 @@ public final class ConfigRomWriter
 		if (__dos == null || __b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AE0e Attempt to write very large configuration
+		// {@squirreljme.error AE01 Attempt to write very large configuration
 		// item. (The length)}
 		int len = __b.length;
 		if (len >= 65536)
-			throw new IOException("AE0e " + len);
+			throw new IOException("AE01 " + len);
 		
 		// Round to make data aligned
 		int rlen = (len + 3) & (~3);
