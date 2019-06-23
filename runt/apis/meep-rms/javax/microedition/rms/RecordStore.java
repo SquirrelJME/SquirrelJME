@@ -156,9 +156,9 @@ public class RecordStore
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error DC04 Cannot write record to read-only store.}
+		// {@squirreljme.error DC01 Cannot write record to read-only store.}
 		if (!this._write)
-			throw new RecordStoreException("DC04");
+			throw new RecordStoreException("DC01");
 		
 		// Used for later
 		int rv;
@@ -394,9 +394,9 @@ public class RecordStore
 				if (e instanceof RecordStoreNotOpenException)
 					throw (RecordStoreNotOpenException)e;
 				
-				// {@squirreljme.error DC0i Could not get the record store
+				// {@squirreljme.error DC02 Could not get the record store
 				// time.}
-				throw new RuntimeException("DC0i", e);
+				throw new RuntimeException("DC02", e);
 			}
 			
 			return time[0];
@@ -482,10 +482,10 @@ public class RecordStore
 				}
 				catch (RecordStoreException e)
 				{
-					// {@squirreljme.error DC0b Error getting list of
+					// {@squirreljme.error DC03 Error getting list of
 					// records.}
 					RecordStoreNotOpenException t =
-						new RecordStoreNotOpenException("DC0b");
+						new RecordStoreNotOpenException("DC03");
 					t.initCause(e);
 					throw t;
 				}
@@ -577,10 +577,10 @@ public class RecordStore
 			int size = vinyl.pageSize(vid, __id);
 			RecordStore.__checkError(size);
 			
-			// {@squirreljme.error DC0h The record does not fit into the
+			// {@squirreljme.error DC04 The record does not fit into the
 			// output.}
 			if (size < 0 || (__o + size) > __b.length)
-				throw new ArrayIndexOutOfBoundsException("DC0h");
+				throw new ArrayIndexOutOfBoundsException("DC04");
 			
 			// Read data
 			int read = vinyl.pageRead(vid, __id, __b, __o, size);
@@ -729,9 +729,9 @@ public class RecordStore
 				if (e instanceof RecordStoreNotOpenException)
 					throw (RecordStoreNotOpenException)e;
 				
-				// {@squirreljme.error DC0e Could not get the record store
+				// {@squirreljme.error DC05 Could not get the record store
 				// version.}
-				throw new RuntimeException("DC0e", e);
+				throw new RuntimeException("DC05", e);
 			}
 			
 			return rv;
@@ -827,9 +827,9 @@ public class RecordStore
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error DC0g Cannot write record to read-only store.}
+		// {@squirreljme.error DC06 Cannot write record to read-only store.}
 		if (!this._write)
-			throw new RecordStoreException("DC0g");
+			throw new RecordStoreException("DC06");
 		
 		// Used for later
 		RecordListener[] listeners = this.__listeners();
@@ -883,9 +883,9 @@ public class RecordStore
 	private final void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
-		// {@squirreljme.error DC05 This record store is not open.
+		// {@squirreljme.error DC07 This record store is not open.
 		if (this._opens <= 0)
-			throw new RecordStoreNotOpenException("DC05");
+			throw new RecordStoreNotOpenException("DC07");
 	}
 	
 	/**
@@ -966,10 +966,10 @@ public class RecordStore
 				}
 			}
 			
-			// {@squirreljme.error DC0a Cannot delete the specified record
+			// {@squirreljme.error DC08 Cannot delete the specified record
 			// store because it does not exist. (The name of the store)}
 			if (got == -1)
-				throw new RecordStoreNotFoundException("DC0a " + __n);
+				throw new RecordStoreNotFoundException("DC08 " + __n);
 			
 			throw new todo.TODO();
 		}
@@ -1180,21 +1180,21 @@ public class RecordStore
 		// Error was detected
 		if (__id < 0)
 		{
-			// {@squirreljme.error DC06 Could not add the record, there might
+			// {@squirreljme.error DC09 Could not add the record, there might
 			// not be enough free space available.}
 			if (__id == VinylRecord.ERROR_NO_MEMORY)
-				throw new RecordStoreFullException("DC06");
+				throw new RecordStoreFullException("DC09");
 			
-			// {@squirreljme.error DC07 No such record store exists.}
+			// {@squirreljme.error DC0a No such record store exists.}
 			if (__id == VinylRecord.ERROR_NO_VOLUME)
-				throw new RecordStoreNotFoundException("DC07");
+				throw new RecordStoreNotFoundException("DC0a");
 			
-			// {@squirreljme.error DC08 No such record exists.}
+			// {@squirreljme.error DC0b No such record exists.}
 			if (__id == VinylRecord.ERROR_NO_PAGE)
-				throw new InvalidRecordIDException("DC08");
+				throw new InvalidRecordIDException("DC0b");
 			
-			// {@squirreljme.error DC09 Unknown record store error. (Error)}
-			throw new RecordStoreException("DC09 " + __id);
+			// {@squirreljme.error DC0c Unknown record store error. (Error)}
+			throw new RecordStoreException("DC0c " + __id);
 		}
 	}
 	
@@ -1245,10 +1245,10 @@ public class RecordStore
 		if (__name == null || __vend == null || __suite == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DC01 The name is not valid.}
+		// {@squirreljme.error DC0d The name is not valid.}
 		int namelen = __name.length();
 		if (namelen < 1 || namelen > 32)
-			throw new IllegalArgumentException("DC01 " + __name);
+			throw new IllegalArgumentException("DC0d " + __name);
 		
 		// Get identifier, used to find the record
 		long sid = SuiteIdentifier.identifier(__vend, __suite),
@@ -1289,17 +1289,17 @@ public class RecordStore
 				return rs;
 			}
 			
-			// {@squirreljme.error DC02 Could not find the specified record
+			// {@squirreljme.error DC0e Could not find the specified record
 			// store. (The name; The vendor; The suite)}
 			if (!__create)
 				throw new RecordStoreNotFoundException(
-					String.format("DC02 %s %s %s", __name, __vend, __suite));
+					String.format("DC0e %s %s %s", __name, __vend, __suite));
 			
-			// {@squirreljme.error DC03 Could not create the record, it is
+			// {@squirreljme.error DC0f Could not create the record, it is
 			// likely that there is not enough space remaining.}
 			rv = vinyl.volumeCreate(sid, __name, __write);
 			if (rv < 0)
-				throw new RecordStoreFullException("DC03");
+				throw new RecordStoreFullException("DC0f");
 			
 			// Since we created it, we can just return the info
 			return new RecordStore(rv, __name, sid == mysid || __write);
