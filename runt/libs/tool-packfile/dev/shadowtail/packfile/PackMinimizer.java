@@ -220,13 +220,20 @@ public class PackMinimizer
 		for (int i = 0; i < numinitcp; i++)
 			jdos.writeInt(cpdx[i]);
 		
-		// Round for main class
-		while (((reloff + jdos.size()) & 3) != 0)
-			jdos.write(0);
-		
-		// Write main class
-		int mainclassp = reloff + jdos.size();
-		jdos.writeUTF(__mainbc);
+		// Main entry point
+		int mainclassp;
+		if (__mainbc == null)
+			mainclassp = 0;
+		else
+		{	
+			// Round for main class
+			while (((reloff + jdos.size()) & 3) != 0)
+				jdos.write(0);
+			
+			// Write main class
+			mainclassp = reloff + jdos.size();
+			jdos.writeUTF(__mainbc.replace('.', '/'));
+		}
 		
 		// Write pack header
 		dos.writeInt(MinimizedPackHeader.MAGIC_NUMBER);

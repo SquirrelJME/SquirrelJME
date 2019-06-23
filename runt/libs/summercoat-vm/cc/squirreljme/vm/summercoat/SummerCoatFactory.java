@@ -203,7 +203,7 @@ public class SummerCoatFactory
 			// Main class
 			if (__maincl != null)
 				ConfigRomWriter.writeString(dos, ConfigRomType.MAIN_CLASS,
-					__maincl);
+					__maincl.replace('.', '/'));
 			
 			// Is midlet?
 			ConfigRomWriter.writeInteger(dos, ConfigRomType.IS_MIDLET,
