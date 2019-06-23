@@ -36,8 +36,8 @@ public class StringIndexOutOfBoundsException
 	 */
 	public StringIndexOutOfBoundsException(int __dx)
 	{
-		// {@squirreljme.error ZZ17 String index out of bounds. (The index)}
-		super("ZZ17 " + __dx);
+		// {@squirreljme.error ZZ1v String index out of bounds. (The index)}
+		super("ZZ1v " + __dx);
 	}
 	
 	/**

@@ -44,9 +44,9 @@ public final class ConsoleOutputStream
 	public void flush()
 		throws IOException
 	{
-		// {@squirreljme.error ZZ3m Could not flush the console.}
+		// {@squirreljme.error ZZ05 Could not flush the console.}
 		if (ConsoleOutput.flush(this.fd) < 0)
-			throw new IOException("ZZ3m");
+			throw new IOException("ZZ05");
 	}
 	
 	/**
@@ -57,9 +57,9 @@ public final class ConsoleOutputStream
 	public void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error ZZ08 Error writing to console.}
+		// {@squirreljme.error ZZ06 Error writing to console.}
 		if (ConsoleOutput.write(this.fd, __b) != 0)
-			throw new IOException("ZZ08");
+			throw new IOException("ZZ06");
 	}
 	
 	/**
@@ -73,9 +73,9 @@ public final class ConsoleOutputStream
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3a Error writing to console.}
+		// {@squirreljme.error ZZ07 Error writing to console.}
 		if (ConsoleOutput.write(this.fd, __b, 0, __b.length) < 0)
-			throw new IOException("ZZ3a");
+			throw new IOException("ZZ07");
 	}
 	
 	/**
@@ -91,9 +91,9 @@ public final class ConsoleOutputStream
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error ZZ38 Error writing to console.}
+		// {@squirreljme.error ZZ08 Error writing to console.}
 		if (ConsoleOutput.write(this.fd, __b, __o, __l) < 0)
-			throw new IOException("ZZ38");
+			throw new IOException("ZZ08");
 	}
 }
 

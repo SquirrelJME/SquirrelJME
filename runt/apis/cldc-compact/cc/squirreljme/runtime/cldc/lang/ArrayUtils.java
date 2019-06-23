@@ -144,9 +144,9 @@ public final class ArrayUtils
 				((Object[])__a)[__dx] = __v;
 				break;
 			
-				// {@squirreljme.error ZZ3r Invalid array type.}
+				// {@squirreljme.error ZZ0c Invalid array type.}
 			default:
-				throw new IllegalArgumentException("ZZ3r");
+				throw new IllegalArgumentException("ZZ0c");
 		}
 	}
 	
@@ -183,8 +183,8 @@ public final class ArrayUtils
 		else if (__a instanceof double[])
 			return ARRAY_DOUBLE;
 		
-		// {@squirreljme.error ZZ3s Invalid array type.}
-		throw new IllegalArgumentException("ZZ3s");
+		// {@squirreljme.error ZZ0d Invalid array type.}
+		throw new IllegalArgumentException("ZZ0d");
 	}
 	
 	/**
@@ -471,11 +471,11 @@ public final class ArrayUtils
 		while (typename.charAt(typedims) == '[')
 			typedims++;
 		
-		// {@squirreljme.error ZZ09 Negative number of dimensions available
+		// {@squirreljme.error ZZ0e Negative number of dimensions available
 		// or input type is not correct for the array type.}
 		int dims = __dims.length - __skip;
 		if (__skip < 0 || dims <= 0 || typedims < dims)
-			throw new IllegalArgumentException("ZZ09");
+			throw new IllegalArgumentException("ZZ0e");
 		
 		// Allocate array of this type
 		int numelem = __dims[__skip];
@@ -496,11 +496,11 @@ public final class ArrayUtils
 				subtype = Class.forName(typename.substring(1));
 			}
 			
-			// {@squirreljme.error ZZ0a Could not find the sub-type for
+			// {@squirreljme.error ZZ0f Could not find the sub-type for
 			// multi-dimensional array.}
 			catch (ClassNotFoundException e)
 			{
-				throw new Error("ZZ0a", e);
+				throw new Error("ZZ0f", e);
 			}
 			
 			// Skipping ahead by one

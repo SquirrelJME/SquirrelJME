@@ -489,10 +489,10 @@ public class DataInputStream
 			// Single byte
 			if ((a & 0b1000_0000) == 0b0000_0000)
 			{
-				// {@squirreljme.error ZZ31 The zero byte cannot be represented
+				// {@squirreljme.error ZZ0j The zero byte cannot be represented
 				// with a zero value.}
 				if (a == 0)
-					throw new UTFDataFormatException("ZZ31");
+					throw new UTFDataFormatException("ZZ0j");
 				
 				buf[i] = (char)a;
 			}
@@ -503,11 +503,11 @@ public class DataInputStream
 				int b = (queueat < len ? (queue[queueat++] & 0xFF) :
 					__in.readUnsignedByte());
 				
-				// {@squirreljme.error ZZ32 Invalid double byte character.
+				// {@squirreljme.error ZZ0k Invalid double byte character.
 				// (The byte sequence)}
 				if ((b & 0b1100_0000) != 0b1000_0000)
 					throw new UTFDataFormatException(String.format(
-						"ZZ32 %02x%02x", a, b));
+						"ZZ0k %02x%02x", a, b));
 				
 				// Decode
 				buf[i] = (char)(((a & 0x1F) << 6) | (b & 0x3F));
@@ -532,21 +532,21 @@ public class DataInputStream
 					c = __in.readUnsignedByte();
 				}
 				
-				// {@squirreljme.error ZZ32 Invalid double byte character.
+				// {@squirreljme.error ZZ0l Invalid double byte character.
 				// (The byte sequence)}
 				if (((b & 0b1100_0000) != 0b1000_0000) ||
 					((c & 0b1100_0000) != 0b1000_0000))
 					throw new UTFDataFormatException(String.format(
-						"ZZ32 %02x%02x%02x", a, b, c));
+						"ZZ0l %02x%02x%02x", a, b, c));
 				
 				// Decode
 				buf[i] = (char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) |
 					(c & 0x3F));
 			}
 			
-			// {@squirreljme.error ZZ30 Invalid byte sequence. (The byte)}
+			// {@squirreljme.error ZZ0m Invalid byte sequence. (The byte)}
 			else
-				throw new UTFDataFormatException(String.format("ZZ30 %02x",
+				throw new UTFDataFormatException(String.format("ZZ0m %02x",
 					a));
 		}
 		

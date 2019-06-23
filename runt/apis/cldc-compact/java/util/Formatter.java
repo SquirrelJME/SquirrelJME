@@ -177,9 +177,9 @@ public final class Formatter
 	public void flush()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ1p The formatter has been closed.}
+		// {@squirreljme.error ZZ2i The formatter has been closed.}
 		if (this._closed)
-			throw new IllegalStateException("ZZ1p");
+			throw new IllegalStateException("ZZ2i");
 		
 		// Java ME has no Flushable interface so only certain classes have
 		// the flush method
@@ -192,10 +192,10 @@ public final class Formatter
 				((Writer)out).flush();
 		}
 		
-		// {@squirreljme.error ZZ3l Could not flush the formatter.}
+		// {@squirreljme.error ZZ2j Could not flush the formatter.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("ZZ3l", e);
+			throw new RuntimeException("ZZ2j", e);
 		}
 	}
 	
@@ -218,9 +218,9 @@ public final class Formatter
 		if (__fmt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ1q This formatter has been closed.}
+		// {@squirreljme.error ZZ2k This formatter has been closed.}
 		if (this._closed)
-			throw new IllegalStateException("ZZ1q");
+			throw new IllegalStateException("ZZ2k");
 		
 		// Force this to exist
 		if (__args == null)
@@ -289,9 +289,9 @@ public final class Formatter
 	public Appendable out()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ1r The formatter has been closed.}
+		// {@squirreljme.error ZZ2l The formatter has been closed.}
 		if (this._closed)
-			throw new IllegalStateException("ZZ1r");
+			throw new IllegalStateException("ZZ2l");
 		
 		return this._out;
 	}
@@ -308,9 +308,9 @@ public final class Formatter
 	public String toString()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ1s The formatter has been closed.}
+		// {@squirreljme.error ZZ2m The formatter has been closed.}
 		if (this._closed)
-			throw new IllegalStateException("ZZ1s");
+			throw new IllegalStateException("ZZ2m");
 		
 		return this._out.toString();
 	}
@@ -433,10 +433,10 @@ public final class Formatter
 					toString();
 				break;
 			
-				// {@squirreljme.error ZZ1t Unimplemented conversion.
+				// {@squirreljme.error ZZ2n Unimplemented conversion.
 				// (The conversion)}
 			default:
-				throw new todo.TODO("ZZ1t " + conv);
+				throw new todo.TODO("ZZ2n " + conv);
 		}
 		
 		// Convert to uppercase
@@ -583,11 +583,11 @@ public final class Formatter
 			at++;
 		}
 		
-		// {@squirreljme.error ZZ1u Could not parse the format specifier
+		// {@squirreljme.error ZZ2o Could not parse the format specifier
 		// properly. (The string with the specifier sequence)}
 		catch (IndexOutOfBoundsException|NumberFormatException e)
 		{
-			throw new IllegalArgumentException("ZZ1u " +
+			throw new IllegalArgumentException("ZZ2o " +
 				__fmt.substring(__base, Math.min(at, __fmt.length())), e);
 		}
 		

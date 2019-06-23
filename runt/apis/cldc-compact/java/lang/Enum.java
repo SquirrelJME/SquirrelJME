@@ -41,13 +41,13 @@ public abstract class Enum<E extends Enum<E>>
 	protected Enum(String __s, int __o)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// {@squirreljme.error ZZ0n Enum has no string.}
+		// {@squirreljme.error ZZ10 Enum has no string.}
 		if (__s == null)
-			throw new NullPointerException("ZZ0n");
+			throw new NullPointerException("ZZ10");
 		
-		// {@squirreljme.error ZZ0o Enum has negative ordinal.}
+		// {@squirreljme.error ZZ11 Enum has negative ordinal.}
 		if (__o < 0)
-			throw new IllegalArgumentException("ZZ0o");
+			throw new IllegalArgumentException("ZZ11");
 		
 		this._name = __s;
 		this._ordinal = __o;
@@ -61,8 +61,8 @@ public abstract class Enum<E extends Enum<E>>
 	protected final Object clone()
 		throws CloneNotSupportedException
 	{
-		// {@squirreljme.error ZZ0p Enums cannot be cloned.}
-		throw new CloneNotSupportedException("ZZ0p");
+		// {@squirreljme.error ZZ12 Enums cannot be cloned.}
+		throw new CloneNotSupportedException("ZZ12");
 	}
 	
 	/**
@@ -76,10 +76,10 @@ public abstract class Enum<E extends Enum<E>>
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3h Cannot compare enums of a different
+		// {@squirreljme.error ZZ13 Cannot compare enums of a different
 		// type.}
 		if (this.getDeclaringClass() != __o.getDeclaringClass())
-			throw new ClassCastException("ZZ3h");
+			throw new ClassCastException("ZZ13");
 		
 		// Just ordinal subtraction
 		return this.ordinal() - __o.ordinal();
@@ -178,19 +178,19 @@ public abstract class Enum<E extends Enum<E>>
 		// in here somewhere
 		ClassData data = ObjectAccess.classData(__cl);
 		
-		// {@squirreljme.error ZZ3i Cannot get the value of a non-enumeration
+		// {@squirreljme.error ZZ14 Cannot get the value of a non-enumeration
 		// type or it has no implicit {@code values()} method.}
 		StaticMethod getvalues = data.enumValues();
 		if (getvalues == null)
-			throw new ClassCastException("ZZ3i");
+			throw new ClassCastException("ZZ14");
 		
 		// Go through and check all the names
 		for (Enum e : (Enum[])ObjectAccess.invokeStatic(getvalues))
 			if (__s.equals(e.name()))
 				return __cl.cast(e);
 		
-		// {@squirreljme.error ZZ3j Not an enumeration value. (The value)}
-		throw new IllegalArgumentException(String.format("ZZ3j %s", __s));
+		// {@squirreljme.error ZZ15 Not an enumeration value. (The value)}
+		throw new IllegalArgumentException(String.format("ZZ15 %s", __s));
 	}
 }
 

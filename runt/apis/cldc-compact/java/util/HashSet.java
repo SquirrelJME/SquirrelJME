@@ -136,8 +136,8 @@ public class HashSet<E>
 		// Oops
 		catch (IllegalAccessException|InstantiationException e)
 		{
-			// {@squirreljme.error ZZ1w Could not clone the map.}
-			throw new RuntimeException("ZZ1w", e);
+			// {@squirreljme.error ZZ2q Could not clone the map.}
+			throw new RuntimeException("ZZ2q", e);
 		}
 	}
 	

@@ -439,9 +439,9 @@ public class Thread
 	public final void setPriority(int __p)
 		throws IllegalArgumentException, SecurityException
 	{
-		// {@squirreljme.error ZZ3g Invalid priority.}
+		// {@squirreljme.error ZZ20 Invalid priority.}
 		if (__p < MIN_PRIORITY || __p > MAX_PRIORITY)
-			throw new IllegalArgumentException("ZZ3g");
+			throw new IllegalArgumentException("ZZ20");
 		
 		// Check access
 		this.checkAccess();
@@ -466,18 +466,18 @@ public class Thread
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error ZZ2r A thread may only be started once.}
+			// {@squirreljme.error ZZ21 A thread may only be started once.}
 			if (this._started)
-				throw new IllegalThreadStateException("ZZ2r");
+				throw new IllegalThreadStateException("ZZ21");
 			this._started = true;
 			
 			// Start the thread
 			int realid = TaskAccess.startThread(this, this._name);
 			this._realid = realid;
 			
-			// {@squirreljme.error ZZ2s Could not start the thread.}
+			// {@squirreljme.error ZZ22 Could not start the thread.}
 			if (realid < 0)
-				throw new RuntimeException("ZZ2s");
+				throw new RuntimeException("ZZ22");
 			
 			// Set the initial priority of the thread
 			TaskAccess.setThreadPriority(realid, this._priority);
@@ -590,15 +590,15 @@ public class Thread
 	public static void sleep(long __ms, int __ns)
 		throws IllegalArgumentException, InterruptedException
 	{
-		// {@squirreljme.error ZZ1c Invalid sleep arguments.}
+		// {@squirreljme.error ZZ23 Invalid sleep arguments.}
 		if (__ms < 0 || __ns < 0 || __ns > 999999)
-			throw new IllegalArgumentException("ZZ1c");
+			throw new IllegalArgumentException("ZZ23");
 		
-		// {@squirreljme.error ZZ1d Sleep was interrupted.}
+		// {@squirreljme.error ZZ24 Sleep was interrupted.}
 		if (TaskAccess.sleep(__ms, __ns))
 		{
 			Thread.currentThread()._interrupted = false;
-			throw new InterruptedException("ZZ1d");
+			throw new InterruptedException("ZZ24");
 		}
 	}
 	
@@ -700,11 +700,11 @@ public class Thread
 		if (!ismain)
 			synchronized (this)
 			{
-				// {@squirreljme.error ZZ2w Real ID has not been set yet while
+				// {@squirreljme.error ZZ25 Real ID has not been set yet while
 				// in the lock, this should not occur unless the virtual
 				// machine is very broken.}
 				if ((realid = this._realid) < 0)
-					throw new Error("ZZ2w");
+					throw new Error("ZZ25");
 			}
 		
 		// Main thread, so set our real ID to the current thread the VM says

@@ -707,11 +707,11 @@ public final class String
 			return this.__getBytes(CodecFactory.encoder(__enc));
 		}
 		
-		// {@squirreljme.error ZZ0x The specified encoding is not supported by
+		// {@squirreljme.error ZZ1k The specified encoding is not supported by
 		// the virtual machine. (The encoding)}
 		catch (UnsupportedEncodingException uee)
 		{
-			throw new AssertionError("ZZ0x " + __enc);
+			throw new AssertionError("ZZ1k " + __enc);
 		}
 	}
 	
@@ -1018,11 +1018,11 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0y Starting index in string is out of
+		// {@squirreljme.error ZZ1l Starting index in string is out of
 		// bounds. (The starting index)}
 		if (__sdx < 0)
 			throw new IndexOutOfBoundsException(
-				String.format("ZZ0y %d", __sdx));
+				String.format("ZZ1l %d", __sdx));
 		
 		// Need to work on both sequences
 		char[] ca = this._chars,
@@ -1114,10 +1114,10 @@ public final class String
 		if (__s == __e)
 			return "";
 		
-		// {@squirreljme.error ZZ0z String substring is outside of bounds.
+		// {@squirreljme.error ZZ1m String substring is outside of bounds.
 		// (The start index; The end index; The length)}
 		if (__s < 0 || __s > __e || __e > n)
-			throw new IndexOutOfBoundsException("ZZ0z " + __s + " " + __e +
+			throw new IndexOutOfBoundsException("ZZ1m " + __s + " " + __e +
 				" " + n);
 		
 		// Derive sub-sequence

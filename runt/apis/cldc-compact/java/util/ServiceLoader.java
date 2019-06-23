@@ -307,12 +307,12 @@ public final class ServiceLoader<S>
 						return true;
 					}
 					
-					// {@squirreljme.error ZZ3c Could not load the service
+					// {@squirreljme.error ZZ30 Could not load the service
 					// class.}
 					catch (ClassCastException|IllegalAccessException|
 						InstantiationException|ClassNotFoundException e)
 					{
-						throw new ServiceConfigurationError("ZZ3c", e);
+						throw new ServiceConfigurationError("ZZ30", e);
 					}
 				}
 				
@@ -381,11 +381,11 @@ public final class ServiceLoader<S>
 							classes.add(ln);
 					}
 					
-					// {@squirreljme.error ZZ3d Could not read the services
+					// {@squirreljme.error ZZ31 Could not read the services
 					// list}
 					catch (IOException e)
 					{
-						throw new ServiceConfigurationError("ZZ3d", e);
+						throw new ServiceConfigurationError("ZZ31", e);
 					}
 				}
 			}

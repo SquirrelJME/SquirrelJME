@@ -44,9 +44,9 @@ public class Vector<E>
 	public Vector(int __cap, int __inc)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ49 Initial capacity cannot be negative.
+		// {@squirreljme.error ZZ32 Initial capacity cannot be negative.
 		if (__cap < 0)
-			throw new IllegalArgumentException("ZZ49");
+			throw new IllegalArgumentException("ZZ32");
 		
 		this.elementData = new Object[__cap];
 		this.capacityIncrement = (__inc < 0 ? 0 : __inc);

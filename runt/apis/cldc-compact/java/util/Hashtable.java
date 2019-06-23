@@ -130,8 +130,8 @@ public class Hashtable<K, V>
 			// Oops
 			catch (IllegalAccessException|InstantiationException e)
 			{
-				// {@squirreljme.error ZZ46 Could not clone the hashtable.}
-				throw new RuntimeException("ZZ46", e);
+				// {@squirreljme.error ZZ2r Could not clone the hashtable.}
+				throw new RuntimeException("ZZ2r", e);
 			}
 		}
 	}

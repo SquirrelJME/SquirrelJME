@@ -68,8 +68,8 @@ public class Object
 			return this;
 		}
 		
-		// {@squirreljme.error ZZ0u This object does not support being clone.}
-		throw new CloneNotSupportedException("ZZ0u");
+		// {@squirreljme.error ZZ1d This object does not support being clone.}
+		throw new CloneNotSupportedException("ZZ1d");
 	}
 	
 	/**
@@ -125,10 +125,10 @@ public class Object
 	public final void notify()
 		throws IllegalMonitorStateException
 	{
-		// {@squirreljme.error ZZ2t This thread does not own the monitor for
+		// {@squirreljme.error ZZ1e This thread does not own the monitor for
 		// this thread.}
 		if (ObjectAccess.monitorNotify(this, false) < 0)
-			throw new IllegalMonitorStateException("ZZ2t");
+			throw new IllegalMonitorStateException("ZZ1e");
 	}
 	
 	/**
@@ -141,10 +141,10 @@ public class Object
 	public final void notifyAll()
 		throws IllegalMonitorStateException
 	{
-		// {@squirreljme.error ZZ2t This thread does not own the monitor for
+		// {@squirreljme.error ZZ1f This thread does not own the monitor for
 		// this thread.}
 		if (ObjectAccess.monitorNotify(this, true) < 0)
-			throw new IllegalMonitorStateException("ZZ2t");
+			throw new IllegalMonitorStateException("ZZ1f");
 	}
 	
 	/**
@@ -225,20 +225,20 @@ public class Object
 		// going on
 		switch (ObjectAccess.monitorWait(this, __ms, __ns))
 		{
-				// {@squirreljme.error ZZ2u Cannot wait on monitor because
+				// {@squirreljme.error ZZ1g Cannot wait on monitor because
 				// this thread does not own the monitor.}
 			case ObjectAccess.MONITOR_NOT_OWNED:
-				throw new IllegalMonitorStateException("ZZ2u");
+				throw new IllegalMonitorStateException("ZZ1g");
 			
 				// Not interrupted
 			case ObjectAccess.MONITOR_NOT_INTERRUPTED:
 				return;
 			
-				// {@squirreljme.error ZZ2v Wait operation has been
+				// {@squirreljme.error ZZ1h Wait operation has been
 				// interrupted.}
 			case ObjectAccess.MONITOR_INTERRUPTED:
 				Thread.currentThread()._interrupted = false;
-				throw new InterruptedException("ZZ2v");
+				throw new InterruptedException("ZZ1h");
 				
 				// Should not happen
 			default:
