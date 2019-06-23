@@ -173,9 +173,9 @@ final class __SystemTaskManager__
 				throw new NullPointerException("NARG");
 		}
 		
-		// {@squirreljme.error DG0w Cannot start a non-application suite.}
+		// {@squirreljme.error DG0v Cannot start a non-application suite.}
 		if (__s.getSuiteType() != SuiteType.APPLICATION)
-			throw new IllegalArgumentException("DG0w");
+			throw new IllegalArgumentException("DG0v");
 		
 		// Get all the suites that are available, since we need to determine
 		// dependencies and such
@@ -227,14 +227,14 @@ final class __SystemTaskManager__
 		// It did not work
 		if (tid < 0)
 		{
-			// {@squirreljme.error DG0x Invalid entry point was specified
+			// {@squirreljme.error DG0w Invalid entry point was specified
 			// when starting task. (The entry point)}
 			if (tid == TaskAccess.ERROR_INVALID_ENTRY)
-				throw new IllegalArgumentException("DG0x " + __cn);
+				throw new IllegalArgumentException("DG0w " + __cn);
 			
-			// {@squirreljme.error DG0y Could not launch the task because of
+			// {@squirreljme.error DG0x Could not launch the task because of
 			// an unspecified error. (The error)}
-			throw new IllegalArgumentException("DG0y " + tid);
+			throw new IllegalArgumentException("DG0x " + tid);
 		}
 		
 		// Debug
