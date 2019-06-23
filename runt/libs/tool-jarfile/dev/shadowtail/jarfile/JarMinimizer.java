@@ -1191,7 +1191,7 @@ public final class JarMinimizer
 		
 		// Relative offset from header and table of contents
 		int reloff = MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC +
-			(numrc * 12);
+			(numrc * MinimizedJarHeader.TOC_ENTRY_SIZE);
 		
 		// Go through and minimize/concat all resources
 		for (int i = 0; i < numrc; i++)
@@ -1237,6 +1237,10 @@ public final class JarMinimizer
 			// Round data stream to 2 bytes (so string length is aligned)
 			while ((jdos.size() & 1) != 0)
 				jdos.write(0);
+			
+			// Write the resource hash code, so that entry searches do not need
+			// string creation in searching
+			tdos.writeInt(rc.hashCode());
 			
 			// Record offset to resource name
 			tdos.writeInt(reloff + jdos.size());
