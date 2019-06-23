@@ -54,7 +54,7 @@ class __WeakRef__
 		{
 			Reference<Object> ref = this._ref;
 			
-			// {@squirreljme.error AJ0f Cannot set weak reference which has
+			// {@squirreljme.error AJ05 Cannot set weak reference which has
 			// already been set.}
 			if (__v == null)
 				if (ref == null)
@@ -67,7 +67,7 @@ class __WeakRef__
 				if (ref == null)
 					this._ref = new WeakReference<>(__v);
 				else
-					throw new Error("AJ0f");
+					throw new Error("AJ05");
 		}
 	}
 }

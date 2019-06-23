@@ -74,9 +74,9 @@ public final class TaskAccess
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final void signalInterrupt(int __tid)
 	{
-		// {@squirreljme.error AJ22 Cannot interrupt threads using this method
+		// {@squirreljme.error AJ04 Cannot interrupt threads using this method
 		// as it is not implemented.}
-		throw new Error("AJ22");
+		throw new Error("AJ04");
 	}
 	
 	/**
