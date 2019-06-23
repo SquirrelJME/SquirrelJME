@@ -27,6 +27,11 @@ import javax.microedition.lcdui.Image;
 public final class SplashScreen
 	extends Canvas
 {
+	/** The copyright string. */
+	public static final String COPYRIGHT =
+		"(C) Stephanie Gawroriski\nhttps://squirreljme.cc/\n" +
+		"Licensed w/ the GPLv3!";
+	
 	/** The splash image width. */
 	public static final int WIDTH =
 		240;
@@ -89,13 +94,16 @@ public final class SplashScreen
 		Graphics g = new AdvancedGraphics(image, false, null, WIDTH, HEIGHT,
 			WIDTH, 0, 0, 0);
 		
-		// Draw a bunch of text
-		g.setColor(0x000000);
+		// Draw version number
 		g.setFont(Font.getFont("sansserif", 0, 16));
-		g.drawString("SquirrelJME " + SquirrelJME.RUNTIME_VERSION + "\n" +
-			"(C) Stephanie Gawroriski\n" +
-			"https://squirreljme.cc/\nLicensed w/ the GPLv3!", 0, 0, 0);
-		g.drawString("SquirrelJME", 1, 0, 0);
+		g.drawString(SquirrelJME.RUNTIME_VERSION, 238, 48,
+			Graphics.RIGHT | Graphics.TOP);
+		
+		// Draw copyright at the bottom
+		g.drawString(COPYRIGHT, 2, 318,
+			Graphics.BOTTOM | Graphics.LEFT);
+		g.drawString(COPYRIGHT, 3, 318,
+			Graphics.BOTTOM | Graphics.LEFT);
 		
 		// Use this image
 		this.image = image;
