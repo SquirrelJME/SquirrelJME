@@ -410,14 +410,14 @@ public class HTTPClientConnection
 	private final HTTPRequestBuilder __request()
 		throws IOException
 	{
-		// {@squirreljme.error EC0k Cannot access the request
+		// {@squirreljme.error EC03 Cannot access the request
 		if (this.tracker._state != HTTPState.SETUP)
 		{
 			// Clear before it is thrown
 			this._request = null;
 			
 			// Toss
-			throw new IOException("EC0k");
+			throw new IOException("EC03");
 		}
 		
 		// Return the request value

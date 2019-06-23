@@ -68,9 +68,9 @@ public final class TrackedOutputStream
 	public final void flush()
 		throws IOException
 	{
-		// {@squirreljme.error EC0s The output has been closed.}
+		// {@squirreljme.error EC0v The output has been closed.}
 		if (this.tracker._outclosed)
-			throw new IOException("EC0s");
+			throw new IOException("EC0v");
 		
 		// Forward
 		this.out.flush();
@@ -84,9 +84,9 @@ public final class TrackedOutputStream
 	public final void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error EC0t The output has been closed.}
+		// {@squirreljme.error EC0w The output has been closed.}
 		if (this.tracker._outclosed)
-			throw new IOException("EC0t");
+			throw new IOException("EC0w");
 		
 		// Forward
 		this.out.write(__b);
@@ -100,9 +100,9 @@ public final class TrackedOutputStream
 	public final void write(byte[] __b)
 		throws IOException, NullPointerException
 	{
-		// {@squirreljme.error EC0u The output has been closed.}
+		// {@squirreljme.error EC0x The output has been closed.}
 		if (this.tracker._outclosed)
-			throw new IOException("EC0u");
+			throw new IOException("EC0x");
 		
 		// Forward
 		this.out.write(__b);
@@ -116,9 +116,9 @@ public final class TrackedOutputStream
 	public final void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		// {@squirreljme.error EC0v The output has been closed.}
+		// {@squirreljme.error EC0y The output has been closed.}
 		if (this.tracker._outclosed)
-			throw new IOException("EC0v");
+			throw new IOException("EC0y");
 		
 		// Forward
 		this.out.write(__b, __o, __l);

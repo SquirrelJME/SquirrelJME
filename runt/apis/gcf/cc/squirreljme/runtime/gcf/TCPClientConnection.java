@@ -143,9 +143,9 @@ public abstract class TCPClientConnection
 		// Exceptions were thrown?
 		if (supin != null || supout != null || supclo != null)
 		{
-			// {@squirreljme.error EC0x The connection could not be closed
+			// {@squirreljme.error EC0k The connection could not be closed
 			// properly.}
-			IOException t = new IOException("EC0x");
+			IOException t = new IOException("EC0k");
 			
 			// Add suppressed exceptions
 			if (supin != null)
@@ -256,10 +256,10 @@ public abstract class TCPClientConnection
 	public final InputStream openInputStream()
 		throws IOException
 	{
-		// {@squirreljme.error EC0y The input has been closed.}
+		// {@squirreljme.error EC0l The input has been closed.}
 		ConnectionStateTracker tracker = this.tracker;
 		if (tracker._inclosed)
-			throw new IOException("EC0y");
+			throw new IOException("EC0l");
 		return new TrackedInputStream(tracker, this.doOpenInputStream());
 	}
 	
@@ -271,10 +271,10 @@ public abstract class TCPClientConnection
 	public final OutputStream openOutputStream()
 		throws IOException
 	{
-		// {@squirreljme.error EC0w The output has been closed.}
+		// {@squirreljme.error EC0m The output has been closed.}
 		ConnectionStateTracker tracker = this.tracker;
 		if (tracker._outclosed)
-			throw new IOException("EC0w");
+			throw new IOException("EC0m");
 		return new TrackedOutputStream(tracker, this.doOpenOutputStream());
 	}
 	
@@ -286,34 +286,34 @@ public abstract class TCPClientConnection
 	public final void setSocketOption(byte __o, int __v)
 		throws IllegalArgumentException, IOException
 	{
-		// {@squirreljme.error EC0f Invalid socket option. (The option)}
+		// {@squirreljme.error EC0n Invalid socket option. (The option)}
 		if (__o != KEEPALIVE || __o != LINGER || __o != SNDBUF ||
 			__o != RCVBUF || __o != DELAY || __o != TIMEOUT)
-			throw new IllegalArgumentException("EC0f " + __o);
+			throw new IllegalArgumentException("EC0n " + __o);
 		
 		// Check options
 		switch (__o)
 		{
 			case LINGER:
-				// {@squirreljme.error EC0g Linger cannot be negative.
+				// {@squirreljme.error EC0o Linger cannot be negative.
 				// (The requested linger)}
 				if (__v < 0)
-					throw new IllegalArgumentException("EC0g " + __v);
+					throw new IllegalArgumentException("EC0o " + __v);
 				break;
 			
 			case RCVBUF:
 			case SNDBUF:
-				// {@squirreljme.error EC0h Send/receive buffer size cannot
+				// {@squirreljme.error EC0p Send/receive buffer size cannot
 				// be negative. (The requested buffer size)}
 				if (__v < 0)
-					throw new IllegalArgumentException("EC0h " + __v);
+					throw new IllegalArgumentException("EC0p " + __v);
 				break;
 			
 			case TIMEOUT:
-				// {@squirreljme.error EC0i Timeout cannot be negative.
+				// {@squirreljme.error EC0q Timeout cannot be negative.
 				// (The requested timeout)}
 				if (__v < 0)
-					throw new IllegalArgumentException("EC0i " + __v);
+					throw new IllegalArgumentException("EC0q " + __v);
 				break;
 		}
 		

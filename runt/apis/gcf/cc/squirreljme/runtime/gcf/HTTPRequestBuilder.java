@@ -99,9 +99,9 @@ public final class HTTPRequestBuilder
 	public final void flush()
 		throws IOException
 	{
-		// {@squirreljme.error EC0o Cannot flush closed HTTP stream.}
+		// {@squirreljme.error EC04 Cannot flush closed HTTP stream.}
 		if (this.tracker._state != HTTPState.SETUP)
-			throw new IOException("EC0o");
+			throw new IOException("EC04");
 		
 		// Note
 		todo.TODO.note("Implement HTTP Flush");
@@ -222,9 +222,9 @@ public final class HTTPRequestBuilder
 	public final void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error EC0m Cannot write more HTTP data.}
+		// {@squirreljme.error EC05 Cannot write more HTTP data.}
 		if (this.tracker._state != HTTPState.SETUP)
-			throw new IOException("EC0m");
+			throw new IOException("EC05");
 		
 		// Write to bytes
 		this._bytes.write(__b);
@@ -255,9 +255,9 @@ public final class HTTPRequestBuilder
 		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error EC0n Cannot write more HTTP data.}
+		// {@squirreljme.error EC06 Cannot write more HTTP data.}
 		if (this.tracker._state != HTTPState.SETUP)
-			throw new IOException("EC0n");
+			throw new IOException("EC06");
 		
 		// Write to bytes
 		this._bytes.write(__a, __o, __l);

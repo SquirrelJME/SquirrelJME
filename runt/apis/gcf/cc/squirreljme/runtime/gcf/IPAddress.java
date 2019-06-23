@@ -45,13 +45,13 @@ public final class IPAddress
 	public IPAddress(String __h, int __p)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EC06 IP port out of range. (The port)}
+		// {@squirreljme.error EC0c IP port out of range. (The port)}
 		if (__p != ASSIGNED_PORT && __p < 0 || __p > 65535)
-			throw new IllegalArgumentException("EC06 " + __p);
+			throw new IllegalArgumentException("EC0c " + __p);
 		
-		// {@squirreljme.error EC07 No IP address was specified.}
+		// {@squirreljme.error EC0d No IP address was specified.}
 		if (__h == null && __p == ASSIGNED_PORT)
-			throw new IllegalArgumentException("EC07");
+			throw new IllegalArgumentException("EC0d");
 		
 		// Validate hostname
 		if (__h != null)
@@ -64,10 +64,10 @@ public final class IPAddress
 			String checkpart;
 			if ((isvsix = __h.startsWith("[")))
 			{
-				// {@squirreljme.error EC09 IPv6 address must end in bracket.
+				// {@squirreljme.error EC0e IPv6 address must end in bracket.
 				// (The hostname)}
 				if (!__h.endsWith("]"))
-					throw new IllegalArgumentException("EC09 " + __h);
+					throw new IllegalArgumentException("EC0e " + __h);
 				
 				// Only check the insides
 				checkpart = __h.substring(1, __h.length() - 1);
@@ -82,11 +82,11 @@ public final class IPAddress
 			{
 				int c = checkpart.charAt(i);
 				
-				// {@squirreljme.error EC0a Hostname has an invalid
+				// {@squirreljme.error EC0f Hostname has an invalid
 				// character. (The hostname)}
 				if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
 					c == '-' || c == '.' || (isvsix && c == ':')))
-					throw new IllegalArgumentException("EC0a " + __h);
+					throw new IllegalArgumentException("EC0f " + __h);
 			}
 		}
 		
@@ -170,10 +170,10 @@ public final class IPAddress
 		if (__part == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EC05 IP Address must start with double
+		// {@squirreljme.error EC0g IP Address must start with double
 		// slash. (The URI part)}
 		if (!__part.startsWith("//"))
-			throw new IllegalArgumentException("EC05 " + __part);
+			throw new IllegalArgumentException("EC0g " + __part);
 		
 		// Parse
 		return IPAddress.of(__part.substring(2));
@@ -218,10 +218,10 @@ public final class IPAddress
 					Integer.parseInt(__s.substring(col + 1), 10));
 		}
 		
-		// {@squirreljme.error EC08 Invalid port number. (The URI part)}
+		// {@squirreljme.error EC0h Invalid port number. (The URI part)}
 		catch (NumberFormatException e)
 		{
-			throw new IllegalArgumentException("EC08 " + __s, e);
+			throw new IllegalArgumentException("EC0h " + __s, e);
 		}
 	}
 }
