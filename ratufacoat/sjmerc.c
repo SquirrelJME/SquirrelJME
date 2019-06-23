@@ -735,6 +735,35 @@ static sjme_jbyte sjme_fontcharbmp[] =
 	16, 15, 0
 };
 
+/** ROM load failure message. */
+static sjme_jbyte sjme_romfailmessage[] =
+{
+	70, 97, 105, 108, 101, 100, 32, 116, 111, 32, 108, 111, 97, 100, 32, 82,
+	79, 77, 33, 32, 73, 102, 32, 105, 116, 32, 105, 115, 32, 99, 111, 114,
+	114, 117, 112, 116, 47, 109, 105, 115, 115, 105, 110, 103, 44, 32, 118,
+	105, 115, 105, 116, 32, 104, 116, 116, 112, 115, 58, 47, 47, 115, 113,
+	117, 105, 114, 114, 101, 108, 106, 109, 101, 46, 99, 99, 47, 117, 118,
+	47, 100, 111, 119, 110, 108, 111, 97, 100, 46, 109, 107, 100, 32, 97,
+	110, 100, 32, 100, 111, 119, 110, 108, 111, 97, 100, 32, 116, 104, 101,
+	32, 90, 73, 80, 32, 116, 105, 116, 108, 101, 100, 32, 39, 83, 117, 109,
+	109, 101, 114, 67, 111, 97, 116, 32, 82, 79, 77, 39, 46, 13, 10
+};
+
+/** BootRAM failed to load. */
+static sjme_jbyte sjme_bootfailmessage[] =
+{
+	70, 97, 105, 108, 101, 100, 32, 116, 111, 32, 105, 110, 105, 116, 105, 97,
+	108, 105, 122, 101, 32, 116, 104, 101, 32, 66, 111, 111, 116, 82, 65, 77,
+	33, 32, 73, 102, 32, 116, 104, 105, 115, 32, 105, 115, 32, 100, 117, 101,
+	32, 116, 111, 32, 97, 32, 99, 111, 114, 114, 117, 112, 116, 32, 82, 79, 77,
+	44, 32, 118, 105, 115, 105, 116, 32, 104, 116, 116, 112, 115, 58, 47, 47,
+	115, 113, 117, 105, 114, 114, 101, 108, 106, 109, 101, 46, 99, 99, 47, 117,
+	118, 47, 100, 111, 119, 110, 108, 111, 97, 100, 46, 109, 107, 100, 32, 97,
+	110, 100, 32, 100, 111, 119, 110, 108, 111, 97, 100, 32, 116, 104, 101, 32,
+	90, 73, 80, 32, 116, 105, 116, 108, 101, 100, 32, 39, 83, 117, 109, 109,
+	101, 114, 67, 111, 97, 116, 32, 82, 79, 77, 39, 46
+};
+
 /** SQF Defined Font. */
 static sjme_sqf sjme_font =
 {
@@ -3300,6 +3329,35 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	rv->ramsize = options->ramsize;
 	rv->nativefuncs = nativefuncs;
 	
+	/* Initialize the framebuffer info, if available. */
+	fbinfo = NULL;
+	if (nativefuncs->framebuffer != NULL)
+		fbinfo = nativefuncs->framebuffer();
+	
+	/* Initialize framebuffer, done a bit early to show errors. */
+	rv->fbinfo = fbinfo;
+	if (fbinfo != NULL)
+	{
+		/* Framebuffer size, needed by vptrs. */
+		rv->fbsize = fbinfo->numpixels * SJME_JINT_C(4);
+		
+		/* Console positions and size. */
+		rv->conx = 0;
+		rv->cony = 0;
+		rv->conw = fbinfo->width / sjme_font.charwidths[0];
+		rv->conh = fbinfo->height / sjme_font.pixelheight;
+	}
+	
+#if defined(SJME_VIRTUAL_MEM)
+	/* Virtual map framebuffer, if available. */
+	if (fbinfo != NULL)
+	{
+		rv->fbbase = vmem;
+		vmem = (vmem + rv->fbsize + SJME_VIRTUAL_MEM_MASK) &
+			(~SJME_VIRTUAL_MEM_MASK);
+	}
+#endif
+	
 	/* Needed by destruction later. */
 	rv->presetrom = options->presetrom;
 	
@@ -3313,10 +3371,17 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		/* Could not load the ROM? */
 		if (rom == NULL)
 		{
+			/* Write the ROM failure message! */
+			sjme_console_pipewrite(rv, (nativefuncs != NULL ?
+				nativefuncs->stderr_write : NULL), sjme_romfailmessage, 0,
+				sizeof(sjme_romfailmessage) / sizeof(sjme_jbyte));
+			
+			/* Clear resources */
 			sjme_free(rv);
 			sjme_free(ram);
 			sjme_free(conf);
 			
+			/* Fail */
 			return NULL;
 		}
 	}
@@ -3379,38 +3444,15 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	sjme_configinit(conf, SJME_DEFAULT_CONF_SIZE, rv, options, nativefuncs,
 		error);
 	
-	/* Initialize the framebuffer info, if available. */
-	fbinfo = NULL;
-	if (nativefuncs->framebuffer != NULL)
-		fbinfo = nativefuncs->framebuffer();
-	
-	/* Initialize framebuffer. */
-	rv->fbinfo = fbinfo;
-	if (fbinfo != NULL)
-	{
-		/* Framebuffer size, needed by vptrs. */
-		rv->fbsize = fbinfo->numpixels * SJME_JINT_C(4);
-		
-		/* Console positions and size. */
-		rv->conx = 0;
-		rv->cony = 0;
-		rv->conw = fbinfo->width / sjme_font.charwidths[0];
-		rv->conh = fbinfo->height / sjme_font.pixelheight;
-	}
-	
-#if defined(SJME_VIRTUAL_MEM)
-	/* Virtual map framebuffer, if available. */
-	if (fbinfo != NULL)
-	{
-		rv->fbbase = vmem;
-		vmem = (vmem + rv->fbsize + SJME_VIRTUAL_MEM_MASK) &
-			(~SJME_VIRTUAL_MEM_MASK);
-	}
-#endif
-	
 	/* Initialize the BootRAM and boot the CPU. */
 	if (sjme_initboot(rom, ram, options->ramsize, rv, error) == 0)
 	{
+		/* Write the Boot failure message! */
+		sjme_console_pipewrite(rv, (nativefuncs != NULL ?
+			nativefuncs->stderr_write : NULL), sjme_bootfailmessage, 0,
+			sizeof(sjme_bootfailmessage) / sizeof(sjme_jbyte));
+		
+		/* Cleanup. */
 		sjme_free(rv);
 		sjme_free(ram);
 		sjme_free(conf);
