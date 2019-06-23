@@ -118,11 +118,11 @@ public final class SourceManager
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AU0p No such source project exists. (The name
+		// {@squirreljme.error AU0z No such source project exists. (The name
 		// of the source project)}
 		Source rv = this._sources.get(__n);
 		if (rv == null)
-			throw new NoSuchSourceException(String.format("AU0p %s", __n));
+			throw new NoSuchSourceException(String.format("AU0z %s", __n));
 		return rv;
 	}
 	
@@ -263,10 +263,10 @@ public final class SourceManager
 				// Ignore
 				catch (InvalidSourceException e)
 				{
-					// {@squirreljme.error AU0q Tried to load a project but
+					// {@squirreljme.error AU10 Tried to load a project but
 					// it was determined to not be a valid project, ignoring.
 					// (The project name; The exception message)}
-					System.err.printf("AU0q %s `%s`%n", triedname,
+					System.err.printf("AU10 %s `%s`%n", triedname,
 						e.getMessage());
 					continue;
 				}

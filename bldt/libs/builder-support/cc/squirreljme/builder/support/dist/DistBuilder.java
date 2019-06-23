@@ -189,9 +189,9 @@ public abstract class DistBuilder
 			if (__n.equals(b.name()))
 				return b;
 		
-		// {@squirreljme.error AU17 No distribution exists under the given
+		// {@squirreljme.error AU1e No distribution exists under the given
 		// name. (The distribution name)}
-		throw new IllegalArgumentException("AU17 " + __n);
+		throw new IllegalArgumentException("AU1e " + __n);
 	}
 	
 	/**
@@ -285,10 +285,10 @@ public abstract class DistBuilder
 		// Source the files from the project root always
 		try (InputStream in = __pm.rootFile(__name))
 		{
-			// {@squirreljme.error AU1d The root file does not exist.
+			// {@squirreljme.error AU1f The root file does not exist.
 			// (The name of the file)}
 			if (in == null)
-				throw new NoSuchFileException("AU1d " + __name);
+				throw new NoSuchFileException("AU1f " + __name);
 			
 			// Copy the input
 			DistBuilder.copyInputStream(__out, __as, in);

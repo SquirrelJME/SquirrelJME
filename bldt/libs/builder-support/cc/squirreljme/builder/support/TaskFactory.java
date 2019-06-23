@@ -58,10 +58,10 @@ public class TaskFactory
 		// no permissions to do so
 		this.manager = ManagerFactory.getTaskManager();
 		
-		// {@squirreljme.error AU0w Expected command for task operation.}
+		// {@squirreljme.error AU16 Expected command for task operation.}
 		String command = args.pollFirst();
 		if (command == null)
-			throw new IllegalArgumentException("AU0w");
+			throw new IllegalArgumentException("AU16");
 		this.command = command;
 		
 		// Use remaining arguments as input
@@ -92,18 +92,18 @@ public class TaskFactory
 						__getopts(":?", args)))
 						switch (parse[0])
 						{
-								// {@squirreljme.error AU0x Unknown argument.
+								// {@squirreljme.error AU17 Unknown argument.
 								// Usage: launch [suite] (class name).
 								// }
 							default:
-								throw new IllegalArgumentException("AU0x");
+								throw new IllegalArgumentException("AU17");
 						}
 					
-					// {@squirreljme.error AU0y Expected name of class to
+					// {@squirreljme.error AU18 Expected name of class to
 					// start as a system task.}
 					String arga = args.pollFirst();
 					if (arga == null)
-						throw new IllegalArgumentException("AU0y");
+						throw new IllegalArgumentException("AU18");
 					
 					// Secondary argument is optional
 					String argb = args.pollFirst();
@@ -137,11 +137,11 @@ public class TaskFactory
 						}
 					}
 					
-					// {@squirreljme.error AU0z The task exited with the
+					// {@squirreljme.error AU19 The task exited with the
 					// given status. (The status)}
 					if (status != TaskStatus.EXITED_REGULAR)
 						throw new RuntimeException(String.format(
-							"AU0z %s%n", status));
+							"AU19 %s%n", status));
 				}
 				break;
 				
@@ -151,13 +151,13 @@ public class TaskFactory
 				listTasks(System.out);
 				break;
 				
-				// {@squirreljme.error AU10 The specified task command is not
+				// {@squirreljme.error AU1a The specified task command is not
 				// valid. Valid commands are:
 				// ls, list, launch
 				// .(The command)}
 			case "help":
 			default:
-				throw new IllegalArgumentException(String.format("AU10 %s",
+				throw new IllegalArgumentException(String.format("AU1a %s",
 					command));
 		}
 	}
@@ -233,11 +233,11 @@ public class TaskFactory
 					break;
 				}
 			
-			// {@squirreljme.error AU11 Could not locate a suite with the
+			// {@squirreljme.error AU1b Could not locate a suite with the
 			// given name. (The input name)}
 			if (suite == null)
 				throw new IllegalArgumentException(
-					String.format("AU11 %s", __su));
+					String.format("AU1b %s", __su));
 		}
 		
 		// Use system suite
