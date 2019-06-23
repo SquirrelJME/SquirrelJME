@@ -155,10 +155,10 @@ public abstract class VMFactory
 			}
 		}
 		
-		// {@squirreljme.error AK06 The specified virtual machine does not
+		// {@squirreljme.error AK03 The specified virtual machine does not
 		// exist. (The virtual machine name)}
 		if (factory == null)
-			throw new VMException("AK06 " + __vm);
+			throw new VMException("AK03 " + __vm);
 		
 		// Automatically determined guest depth? This is always deeper!
 		if (__gd < 0)
@@ -209,10 +209,10 @@ public abstract class VMFactory
 					break;
 				}
 			
-			// {@squirreljme.error AK03 Could not find the specified main
+			// {@squirreljme.error AK06 Could not find the specified main
 			// class in the entry point list. (The main class)}
 			if (__bootid < 0)
-				throw new VMException("AK03 " + __bootcl);
+				throw new VMException("AK06 " + __bootcl);
 		}
 		
 		// Do not use an entry point which is outside of the bounds
@@ -262,11 +262,11 @@ public abstract class VMFactory
 			man = (in == null ? new JavaManifest() : new JavaManifest(in));
 		}
 		
-		// {@squirreljme.error AK09 Could not read the manifest to load the
+		// {@squirreljme.error AK07 Could not read the manifest to load the
 		// launcher's classpath.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AK09", e);
+			throw new RuntimeException("AK07", e);
 		}
 		
 		// These are parameters which will be parsed to handle how to start
@@ -341,11 +341,11 @@ public abstract class VMFactory
 				useprefix);
 		}
 		
-		// {@squirreljme.error AK07 Could not locate the class to use for
+		// {@squirreljme.error AK08 Could not locate the class to use for
 		// resource lookup. (The class which was not found)}
 		catch (ClassNotFoundException e)
 		{
-			throw new VMException("AK07 " + useactiveclass, e);
+			throw new VMException("AK08 " + useactiveclass, e);
 		}
 		
 		// Split the classpath accordingly using ' ', ';', and ':', allow
