@@ -78,6 +78,9 @@ public final class ClientTaskManager
 		// Debug
 		todo.DEBUG.note("Initializing task %d (%d)...", rv.lid, pid);
 		
+		// Load the main class
+		int maincl = rv.loadClassInfo(__mcl);
+		
 		if (true)
 		{
 			Assembly.breakpoint();
