@@ -74,10 +74,10 @@ public class ImageItem
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB3a The appearance mode is not valid.
+		// {@squirreljme.error EB2i The appearance mode is not valid.
 		// (The appearance mode)}
 		if (__am != PLAIN && __am != BUTTON && __am != HYPERLINK)
-			throw new IllegalArgumentException("EB3a " + __am);
+			throw new IllegalArgumentException("EB2i " + __am);
 		
 		this._image = __i;
 		this._alt = __alt;

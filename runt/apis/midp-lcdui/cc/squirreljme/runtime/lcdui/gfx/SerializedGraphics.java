@@ -212,12 +212,12 @@ public abstract class SerializedGraphics
 		int[] data = new int[numpixels];
 		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wsrc, __hsrc);
 		
-		// {@squirreljme.error EB30 Illegal region draw.}
+		// {@squirreljme.error EB0l Illegal region draw.}
 		int rv = (Integer)this.serialize(GraphicsFunction.DRAW_REGION,
 			data, __xsrc, __ysrc, __wsrc, __hsrc, __trans, __xdest, __ydest,
 			__anch, __wdest, __hdest);
 		if (rv < 0)
-			throw new IllegalArgumentException("EB30");
+			throw new IllegalArgumentException("EB0l");
 	}
 	
 	/**
@@ -538,11 +538,11 @@ public abstract class SerializedGraphics
 	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2y Failed to set blending mode.}
+		// {@squirreljme.error EB0m Failed to set blending mode.}
 		int okay = (Integer)this.serialize(GraphicsFunction.SET_BLENDING_MODE,
 			__m);
 		if (okay < 0)
-			throw new IllegalArgumentException("EB2y");
+			throw new IllegalArgumentException("EB0m");
 	}
 	
 	/**
@@ -614,11 +614,11 @@ public abstract class SerializedGraphics
 	public void setStrokeStyle(int __s)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2z Failed to set stroke style.}
+		// {@squirreljme.error EB0n Failed to set stroke style.}
 		int okay = (Integer)this.serialize(GraphicsFunction.SET_STROKE_STYLE,
 			__s);
 		if (okay < 0)
-			throw new IllegalArgumentException("EB2z");
+			throw new IllegalArgumentException("EB0n");
 	}
 	
 	/**
@@ -984,10 +984,10 @@ public abstract class SerializedGraphics
 			return Font.getFont(name, style, pixelsize);
 		}
 		
-		// {@squirreljme.error EB2s Could not serialize the text object.}
+		// {@squirreljme.error EB0o Could not serialize the text object.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("EB2s", e);
+			throw new RuntimeException("EB0o", e);
 		}
 	}
 	
@@ -1041,10 +1041,10 @@ public abstract class SerializedGraphics
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error EB2s Could not serialize the text object.}
+		// {@squirreljme.error EB0p Could not serialize the text object.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("EB2s", e);
+			throw new RuntimeException("EB0p", e);
 		}
 	}
 	
@@ -1127,10 +1127,10 @@ public abstract class SerializedGraphics
 			return rv;
 		}
 		
-		// {@squirreljme.error EB2s Could not serialize the text object.}
+		// {@squirreljme.error EB0q Could not serialize the text object.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("EB2s", e);
+			throw new RuntimeException("EB0q", e);
 		}
 	}
 	
@@ -1199,10 +1199,10 @@ public abstract class SerializedGraphics
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error EB2s Could not serialize the text object.}
+		// {@squirreljme.error EB0r Could not serialize the text object.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("EB2s", e);
+			throw new RuntimeException("EB0r", e);
 		}
 	}
 }

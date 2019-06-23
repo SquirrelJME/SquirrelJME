@@ -63,10 +63,10 @@ public final class AcceleratedGraphics
 	public static final AcceleratedGraphics instance(int __did)
 		throws UnsupportedOperationException
 	{
-		// {@squirreljme.error EB2c Accelerated graphics operations are not
+		// {@squirreljme.error EB0a Accelerated graphics operations are not
 		// supported for this display. (The display ID)}
 		if (!NativeDisplayAccess.accelGfx(__did))
-			throw new UnsupportedOperationException("EB2c " + __did);
+			throw new UnsupportedOperationException("EB0a " + __did);
 		
 		// Effectively has "new" state
 		return new AcceleratedGraphics(__did);

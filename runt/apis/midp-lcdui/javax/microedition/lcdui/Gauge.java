@@ -57,21 +57,21 @@ public class Gauge
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB37 An interactive gauge cannot have a negative
+		// {@squirreljme.error EB24 An interactive gauge cannot have a negative
 		// maximum value.}
 		if (__int && __max < 0)
-			throw new IllegalArgumentException("EB37");
+			throw new IllegalArgumentException("EB24");
 		
-		// {@squirreljme.error EB38 A non-interactive gauge cannot have a
+		// {@squirreljme.error EB25 A non-interactive gauge cannot have a
 		// negative value that is not indefinite.}
 		if (!__int && !(__max >= 0 || __max == INDEFINITE))
-			throw new IllegalArgumentException("EB38");
+			throw new IllegalArgumentException("EB25");
 		
-		// {@squirreljme.error EB39 Invalid symbolism for indefinite range.}
+		// {@squirreljme.error EB26 Invalid symbolism for indefinite range.}
 		if (__max == INDEFINITE && __iv != CONTINUOUS_IDLE &&
 			__iv != CONTINUOUS_RUNNING && __iv != INCREMENTAL_IDLE &&
 			__iv != INCREMENTAL_UPDATING)
-			throw new IllegalArgumentException("EB39");
+			throw new IllegalArgumentException("EB26");
 		
 		this._interactive = __int;
 		this._value = __iv;
@@ -118,10 +118,10 @@ public class Gauge
 	public void setLabel(String __l)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3c Cannot set the label of a gauge associated
+		// {@squirreljme.error EB27 Cannot set the label of a gauge associated
 		// with an alert.}
 		if (this._displayable instanceof Alert)
-			throw new IllegalArgumentException("EB3c");
+			throw new IllegalArgumentException("EB27");
 		
 		// Use super logic
 		super.setLabel(__l);

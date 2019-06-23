@@ -233,19 +233,19 @@ public final class Font
 	public Font deriveFont(int __style, int __pxs)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1p Invalid font style specified. (The style)}
+		// {@squirreljme.error EB1t Invalid font style specified. (The style)}
 		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
-			throw new IllegalArgumentException(String.format("EB1p %d",
+			throw new IllegalArgumentException(String.format("EB1t %d",
 				__style));
 		
 		// Use default font size?
 		if (__pxs == 0)
 			__pxs = FontSizeConversion.logicalSizeToPixelSize(SIZE_MEDIUM);
 		
-		// {@squirreljme.error EB2k The pixel size of a font cannot be
+		// {@squirreljme.error EB1u The pixel size of a font cannot be
 		// negative.}
 		else if (__pxs < 0)
-			throw new IllegalArgumentException("EB2k");
+			throw new IllegalArgumentException("EB1u");
 		
 		// Same exact font?
 		if (this._style == __style && this._pixelsize == __pxs)
@@ -562,9 +562,9 @@ public final class Font
 	public static Font[] getAvailableFonts(int __style)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1q Invalid font style specified. (The style)}
+		// {@squirreljme.error EB1v Invalid font style specified. (The style)}
 		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
-			throw new IllegalArgumentException(String.format("EB1q %d",
+			throw new IllegalArgumentException(String.format("EB1v %d",
 				__style));
 		
 		List<Font> rv = new ArrayList<>();
@@ -592,9 +592,9 @@ public final class Font
 	public static Font[] getAvailableFonts(int __face, int __style, int __pxs)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1r Invalid font style specified. (The style)}
+		// {@squirreljme.error EB1w Invalid font style specified. (The style)}
 		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
-			throw new IllegalArgumentException(String.format("EB1r %d",
+			throw new IllegalArgumentException(String.format("EB1w %d",
 				__style));
 		
 		// Need to filter by face, then derive
@@ -647,10 +647,10 @@ public final class Font
 	public static Font getFont(int __spec)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2i Invalid font specifiers. (The specifiers)}
+		// {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)}
 		if (__spec != FONT_INPUT_TEXT && __spec != FONT_STATIC_TEXT &&
 			__spec != FONT_IDLE_TEXT && __spec != FONT_IDLE_HIGHLIGHTED_TEXT)
-			throw new IllegalArgumentException("EB2i " + __spec);
+			throw new IllegalArgumentException("EB1x " + __spec);
 		
 		// This is always the default font
 		return Font.getDefaultFont();
@@ -671,16 +671,16 @@ public final class Font
 	public static Font getFont(int __face, int __style, int __size)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1n Invalid font face specified. (The face)}
+		// {@squirreljme.error EB1y Invalid font face specified. (The face)}
 		if ((__face & ~(FACE_SYSTEM | FACE_MONOSPACE | FACE_PROPORTIONAL)) != 0
 			|| Integer.bitCount(__face) > 1)
-			throw new IllegalArgumentException(String.format("EB1n %d",
+			throw new IllegalArgumentException(String.format("EB1y %d",
 				__face));
 		
-		// {@squirreljme.error EB1o Invalid font size specified. (The size)}
+		// {@squirreljme.error EB1z Invalid font size specified. (The size)}
 		if ((__size & ~(SIZE_SMALL | SIZE_MEDIUM | SIZE_LARGE)) != 0
 			|| Integer.bitCount(__size) > 1)
-			throw new IllegalArgumentException(String.format("EB1o %d",
+			throw new IllegalArgumentException(String.format("EB1z %d",
 				__size));
 		
 		// Get fonts that might exist
@@ -739,9 +739,9 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.deriveFont(__style, __pxs);
 		
-		// {@squirreljme.error EB2f Could not locate a font by the given
+		// {@squirreljme.error EB20 Could not locate a font by the given
 		// name. (The font name)}
-		throw new IllegalArgumentException("EB2f " + __name);
+		throw new IllegalArgumentException("EB20 " + __name);
 	}
 	
 	/**
@@ -763,9 +763,9 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.getPixelSize();
 		
-		// {@squirreljme.error EB2h No font with the given name exists.
+		// {@squirreljme.error EB21 No font with the given name exists.
 		// (The font name)}
-		throw new IllegalArgumentException("EB2h " + __name);
+		throw new IllegalArgumentException("EB21 " + __name);
 	}
 	
 	/**
@@ -787,7 +787,7 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.getStyle();
 		
-		// {@squirreljme.error EB2j No font with the given name exists.
+		// {@squirreljme.error EB22 No font with the given name exists.
 		// (The font name)}
 		throw new IllegalArgumentException("EB2g " + __name);
 	}

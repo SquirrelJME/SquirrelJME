@@ -263,9 +263,9 @@ public enum PixelFormat
 			case 8:		return INTEGER_ARGB8888;
 			case 9:		return INTEGER_RGB888;
 			
-				// {@squirreljme.error EB2b Unknown pixel buffer format.}
+				// {@squirreljme.error EB0k Unknown pixel buffer format.}
 			default:
-				throw new IllegalArgumentException("EB2b " + __id);
+				throw new IllegalArgumentException("EB0k " + __id);
 		}
 	}
 }

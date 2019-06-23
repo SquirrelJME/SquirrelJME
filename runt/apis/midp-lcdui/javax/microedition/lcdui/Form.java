@@ -118,10 +118,10 @@ public class Form
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB3b Cannot append an item which has already
+		// {@squirreljme.error EB23 Cannot append an item which has already
 		// be associated with a form.}
 		if (__i._displayable != null)
-			throw new IllegalStateException("EB3b");
+			throw new IllegalStateException("EB23");
 		__i._displayable = this;
 		
 		// Append item

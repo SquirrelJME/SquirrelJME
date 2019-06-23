@@ -225,10 +225,10 @@ public abstract class Canvas
 	public int getKeyCode(int __gc)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB31 The specified game action is not valid.}
+		// {@squirreljme.error EB1a The specified game action is not valid.}
 		int rv = EventTranslate.gameActionToKeyCode(__gc);
 		if (rv == 0)
-			throw new IllegalArgumentException("EB31 " + __gc);
+			throw new IllegalArgumentException("EB1a " + __gc);
 		return rv;
 	}
 	

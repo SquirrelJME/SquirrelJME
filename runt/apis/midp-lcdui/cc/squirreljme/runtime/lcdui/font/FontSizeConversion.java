@@ -51,9 +51,9 @@ public final class FontSizeConversion
 			case Font.SIZE_LARGE:
 				return 16;
 			
-				// {@squirreljme.error EB2e Invalid logical font size.}
+				// {@squirreljme.error EB07 Invalid logical font size.}
 			default:
-				throw new IllegalArgumentException("EB2e");
+				throw new IllegalArgumentException("EB07");
 		}
 	}
 	
