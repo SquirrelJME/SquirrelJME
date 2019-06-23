@@ -137,11 +137,11 @@ public final class ProfiledThread
 	public ProfiledFrame exitFrame(long __ns)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH03 No frame is in the stack to exit in.}
+		// {@squirreljme.error AH07 No frame is in the stack to exit in.}
 		Deque<ProfiledFrame> stack = this._stack;
 		ProfiledFrame rv = stack.pop();
 		if (rv == null)
-			throw new IllegalStateException("AH03");
+			throw new IllegalStateException("AH07");
 		
 		// Tell that popped frame we left
 		long[] times = rv.exitedFrame(__ns);
