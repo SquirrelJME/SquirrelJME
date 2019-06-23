@@ -145,3 +145,25 @@ commands pertain specifically to the build system itself.
 will not be available for use. It should still run however.
 
  * `build dist javame`
+
+# RatufaCoat
+
+Building the C based virtual machine depends on a C compiler.
+
+Note that you will need to build a separate SummerCoat ROM as above or
+use a pre-existing one. If you are building for a standard C setup with no
+graphical display or otherwise, to build the project you use make:
+
+ * `make`
+
+## RetroArch
+
+Building for RetroArch uses the `makefilelibretro` makefile. As such building
+SquirrelJME for your current system involves using the alternative makefile.
+
+ * `make`
+ * Windows:
+   * `make -f makefilelibretro CC=i686-w64-mingw32-gcc platform=mingw_x86`
+   * `make -f makefilelibretro CC=x86_64-w64-mingw32-gcc platform=mingw_x86_64`
+
+ 
