@@ -67,5 +67,26 @@ public final class ClientTask
 		return Allocator.allocate(
 			this.tagbits | (__tag & Allocator.CHUNK_BITS_VALUE_MASK), __sz);
 	}
+	
+	/**
+	 * Loads the class information for this class.
+	 *
+	 * @param __cl The class to load.
+	 * @return The loaded class information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/2
+	 */
+	public final int loadClassInfo(String __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		todo.DEBUG.note("Loading class %s...", __cl);
+		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
 }
 
