@@ -77,9 +77,9 @@ public final class VirtualMemory
 				return ((ReadableMemory)c).memReadByte(vaddr);
 		}
 		
-		// {@squirreljme.error AE0f Invalid read from unmapped or non-writable
+		// {@squirreljme.error AE0i Invalid read from unmapped or non-writable
 		// memory! (The address)}
-		throw new VMException(String.format("AE0f %08x", __addr));
+		throw new VMException(String.format("AE0i %08x", __addr));
 	}
 	
 	/**
@@ -127,9 +127,9 @@ public final class VirtualMemory
 			}
 		}
 		
-		// {@squirreljme.error AE08 Invalid write to unmapped or non-writable
+		// {@squirreljme.error AE0j Invalid write to unmapped or non-writable
 		// memory! (The address; The value to write)}
-		throw new VMException(String.format("AE08 %08x %d", __addr, __v));
+		throw new VMException(String.format("AE0j %08x %d", __addr, __v));
 	}
 }
 

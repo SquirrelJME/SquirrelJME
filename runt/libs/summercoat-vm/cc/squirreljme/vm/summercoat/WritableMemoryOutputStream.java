@@ -81,10 +81,10 @@ public final class WritableMemoryOutputStream
 	public final void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error AE0b Reached end of memory.}
+		// {@squirreljme.error AE0k Reached end of memory.}
 		int at = this._at;
 		if (at >= this.length)
-			throw new EOFException("AE0b");
+			throw new EOFException("AE0k");
 		
 		// Write
 		this.memory.memWriteByte(this.address + at, __b);
@@ -120,9 +120,9 @@ public final class WritableMemoryOutputStream
 			at = this._at,
 			left = memlen - at;
 		
-		// {@squirreljme.error AE0c Reached end of memory.}
+		// {@squirreljme.error AE0l Reached end of memory.}
 		if (left <= 0)
-			throw new EOFException("AE0c");
+			throw new EOFException("AE0l");
 		
 		// Do not write past the bounds
 		if (__l > left)

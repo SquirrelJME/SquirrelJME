@@ -176,10 +176,10 @@ public final class SuitesMemory
 			superv.__init();
 		}
 		
-		// {@squirreljme.error AE0t Could not initialize the supervisor.}
+		// {@squirreljme.error AE0a Could not initialize the supervisor.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AE0t", e);
+			throw new RuntimeException("AE0a", e);
 		}
 		
 		// Get suites and the number of them for processing
@@ -243,10 +243,10 @@ public final class SuitesMemory
 			this._configtable = configtable;
 		}
 		
-		// {@squirreljme.error AE07 Could not write the virtual packfile.}
+		// {@squirreljme.error AE0b Could not write the virtual packfile.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AE07", e);
+			throw new RuntimeException("AE0b", e);
 		}
 	}
 }

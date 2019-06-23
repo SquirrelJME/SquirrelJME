@@ -142,10 +142,10 @@ public class SummerCoatFactory
 				romsize = baos.size();
 			}
 			
-			// {@squirreljme.error AE05 Could not load SummerCoat ROM. (File)}
+			// {@squirreljme.error AE0c Could not load SummerCoat ROM. (File)}
 			catch (IOException e)
 			{
-				throw new RuntimeException("AE05 " + romfile, e);
+				throw new RuntimeException("AE0c " + romfile, e);
 			}
 		}
 		
@@ -246,10 +246,10 @@ public class SummerCoatFactory
 			bjh = MinimizedJarHeader.decode(bin);
 		}
 		
-		// {@squirreljme.error AE06 Could not read the boot JAR header.}
+		// {@squirreljme.error AE0e Could not read the boot JAR header.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AE06", e);
+			throw new RuntimeException("AE0e", e);
 		}
 		
 		// Load the bootstrap JAR header
@@ -296,10 +296,10 @@ public class SummerCoatFactory
 						off = bootjaroff;
 						break;
 					
-						// {@squirreljme.error AE02 Corrupt Boot RAM with
+						// {@squirreljme.error AE0f Corrupt Boot RAM with
 						// invalid value modifier. (Modifier)}
 					default:
-						throw new VMException("AE02 " + mod);
+						throw new VMException("AE0f " + mod);
 				}
 				
 				// Depends on operation size
@@ -329,10 +329,10 @@ public class SummerCoatFactory
 						}
 						break;
 					
-						// {@squirreljme.error AE03 Corrupt Boot RAM with
+						// {@squirreljme.error AE0g Corrupt Boot RAM with
 						// invalid size. (Size)}
 					default:
-						throw new VMException("AE03 " + siz);
+						throw new VMException("AE0g " + siz);
 				}
 			}
 			
@@ -343,11 +343,11 @@ public class SummerCoatFactory
 				throw new VMException("AE04 " + key);
 		}
 		
-		// {@squirreljme.error AE01 Could not initialize the boot RAM for
+		// {@squirreljme.error AE0h Could not initialize the boot RAM for
 		// the virtual machine.}
 		catch (IOException e)
 		{
-			throw new VMException("AE01", e);
+			throw new VMException("AE0h", e);
 		}
 		
 		// Setup non-cpu VM state
