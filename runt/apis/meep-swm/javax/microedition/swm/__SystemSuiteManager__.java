@@ -250,11 +250,11 @@ final class __SystemSuiteManager__
 				break;
 		}
 		
-		// {@squirreljme.error DG0v Could not locate the suite which
+		// {@squirreljme.error DG0u Could not locate the suite which
 		// statifies the given dependency. (The dependency to look for)}
 		if (rv.isEmpty())
 			throw new RuntimeException(
-				String.format("DG0v %s", __set));
+				String.format("DG0u %s", __set));
 		
 		return rv.<Suite>toArray(new Suite[rv.size()]);
 	}
