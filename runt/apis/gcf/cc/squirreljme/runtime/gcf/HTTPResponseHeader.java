@@ -144,10 +144,10 @@ public final class HTTPResponseHeader
 			String line = sb.toString();
 			if (ln == 0)
 			{
-				// {@squirreljme.error EC0z Invalid status line. (The line)}
+				// {@squirreljme.error EC09 Invalid status line. (The line)}
 				if (!line.startsWith("HTTP/1.0 ") &&
 					!line.startsWith("HTTP/1.1 "))
-					throw new IOException("EC0z " + line);
+					throw new IOException("EC09 " + line);
 				
 				// Clip off
 				line = line.substring(9);
@@ -170,20 +170,20 @@ public final class HTTPResponseHeader
 					}
 				}
 				
-				// {@squirreljme.error EC10 Invalid HTTP status code. (Line)}
+				// {@squirreljme.error EC0a Invalid HTTP status code. (Line)}
 				catch (NumberFormatException e)
 				{
-					throw new IOException("EC10 " + line);
+					throw new IOException("EC0a " + line);
 				}
 			}
 			
 			// A header key/value otherwise
 			else
 			{
-				// {@squirreljme.error EC11 Invalid header pair. (The line)}
+				// {@squirreljme.error EC0b Invalid header pair. (The line)}
 				int lc = line.indexOf(':');
 				if (lc < 0)
-					throw new IOException("EC11 " + line);
+					throw new IOException("EC0b " + line);
 				
 				// Put in header
 				headers.put(line.substring(0, lc),

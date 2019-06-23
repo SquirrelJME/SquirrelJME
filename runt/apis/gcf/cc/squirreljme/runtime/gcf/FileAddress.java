@@ -95,10 +95,10 @@ public final class FileAddress
 				c == '+' || c == ',' || c == ';' || c == '=')
 				sb.append((char)c);
 			
-			// {@squirreljme.error EC0c Path contains invalid character.
+			// {@squirreljme.error EC01 Path contains invalid character.
 			// (The path)}
 			else
-				throw new IllegalArgumentException("EC0c " + __p);
+				throw new IllegalArgumentException("EC01 " + __p);
 		}
 		
 		// Done
