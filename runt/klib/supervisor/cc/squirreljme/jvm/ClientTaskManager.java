@@ -75,6 +75,9 @@ public final class ClientTaskManager
 		ClientTask rv = new ClientTask(pid, this._nextlid++, __cp);
 		tasks[pid] = rv;
 		
+		// Debug
+		todo.DEBUG.note("Initializing task %d (%d)...", rv.lid, pid);
+		
 		if (true)
 		{
 			Assembly.breakpoint();
