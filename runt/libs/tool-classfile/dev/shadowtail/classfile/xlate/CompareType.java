@@ -65,8 +65,8 @@ public enum CompareType
 			case 7:		return FALSE;
 		}
 		
-		// {@squirreljme.error JC3a Invalid compare operation.}
-		throw new IllegalArgumentException("JC3a");
+		// {@squirreljme.error JC1b Invalid compare operation.}
+		throw new IllegalArgumentException("JC1b");
 	}
 }
 

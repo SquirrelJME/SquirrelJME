@@ -271,12 +271,12 @@ public final class Method
 				this._regcode = new WeakReference<>((rv = nnbc.result()));
 			}
 			
-			// {@squirreljme.error JC4e Could not compile the native code for
+			// {@squirreljme.error JC3e Could not compile the native code for
 			// the given method. (The class; Method name; Method type)}
 			catch (InvalidClassFormatException e)
 			{
 				throw new InvalidClassFormatException(
-					String.format("JC4e %s %s %s", this.classname,
+					String.format("JC3e %s %s %s", this.classname,
 						this.methodname, this.methodtype), e);
 			}
 		}
@@ -351,11 +351,11 @@ public final class Method
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
 			
-			// {@squirreljme.error JC1m A duplicate method exists within the
+			// {@squirreljme.error JC3f A duplicate method exists within the
 			// class. (The method name; The method descriptor)}
 			if (!dup.add(new NameAndType(name.toString(), type.toString())))
 				throw new InvalidClassFormatException(String.format(
-					"JC1m %s %s", name, type));
+					"JC3f %s %s", name, type));
 			
 			// Handle attributes
 			AttributeTable attrs = AttributeTable.parse(__pool, __in);
@@ -367,13 +367,13 @@ public final class Method
 			Attribute maybecode = attrs.get("Code");
 			byte[] code = (maybecode == null ? null : maybecode.bytes());
 			
-			// {@squirreljme.error JC1n The specified method does not have
+			// {@squirreljme.error JC3g The specified method does not have
 			// the correct matching for abstract and if code exists or not.
 			// (The current
 			// class; The method name; The method type; The method flags)}
 			if ((code == null) != (flags.isAbstract() | flags.isNative()))
 				throw new InvalidClassFormatException(String.format(
-					"JC1n %s %s %s", __tn, name, type, flags));
+					"JC3g %s %s %s", __tn, name, type, flags));
 			
 			// Create
 			rv[i] = new Method(__ver, __cf, __tn, __pool, flags, name, type,

@@ -146,10 +146,10 @@ public enum JavaStackShuffleType
 			if (__s == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error JC31 Expected colon in function form.}
+			// {@squirreljme.error JC1d Expected colon in function form.}
 			int col = __s.indexOf(':');
 			if (col < 0)
-				throw new IllegalArgumentException("JC31");
+				throw new IllegalArgumentException("JC1d");
 			
 			return new Function(new Slots(__s.substring(0, col)),
 				new Slots(__s.substring(col + 1)));

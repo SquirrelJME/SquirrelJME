@@ -67,11 +67,11 @@ public final class MinimizedPool
 		if (__os == null || __ts == null || __ps == null || __vs == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC3y  Input arrays are of a different length.
+		// {@squirreljme.error JC07  Input arrays are of a different length.
 		// (The expected length)}
 		int n = __ts.length;
 		if (__os.length != n || __ps.length != n || __vs.length != n)
-			throw new IllegalArgumentException("JC3y " + n);
+			throw new IllegalArgumentException("JC07 " + n);
 		
 		// Defensive copy each
 		__os = __os.clone();
@@ -242,18 +242,18 @@ public final class MinimizedPool
 			for (int i = 0; i < __n; i++)
 				types[i] = dis.readByte();
 			
-			// {@squirreljme.error JC47 First pool entry type is not zero.
+			// {@squirreljme.error JC08 First pool entry type is not zero.
 			// (The type that was read)}
 			if (types[0] != 0)
-				throw new InvalidClassFormatException("JC47 " + types[0]);
+				throw new InvalidClassFormatException("JC08 " + types[0]);
 			
-			// {@squirreljme.error JC44 Pool uneven padding byte was not
+			// {@squirreljme.error JC09 Pool uneven padding byte was not
 			// 255. (The value it was; The following byte)}
 			if ((__n & 1) != 0)
 			{
 				int val;
 				if ((val = dis.readUnsignedByte()) != 0xFF)
-					throw new InvalidClassFormatException("JC44 " + val + " " +
+					throw new InvalidClassFormatException("JC09 " + val + " " +
 						dis.read());
 			}
 			
@@ -262,10 +262,10 @@ public final class MinimizedPool
 				offsets[i] = dis.readUnsignedShort();
 		}
 		
-		// {@squirreljme.error JC3z Invalid read of pool data.}
+		// {@squirreljme.error JC0a Invalid read of pool data.}
 		catch (IOException e)
 		{
-			throw new InvalidClassFormatException("JC3z", e);
+			throw new InvalidClassFormatException("JC0a", e);
 		}
 		
 		// Output pool entry types, values, and parts
@@ -307,11 +307,11 @@ public final class MinimizedPool
 				{
 						// Null is nothing, so do not bother
 					case NULL:
-						// {@squirreljme.error JC42 NULL pool entry is only
+						// {@squirreljme.error JC0b NULL pool entry is only
 						// permitted as the first type, the class file is
 						// corrupt.}
 						if (i != 0)
-							throw new InvalidClassFormatException("JC42");
+							throw new InvalidClassFormatException("JC0b");
 						break;
 						
 						// Strings
@@ -466,10 +466,10 @@ public final class MinimizedPool
 				}
 			}
 			
-			// {@squirreljme.error JC3x Invalid read of pool data.}
+			// {@squirreljme.error JC0c Invalid read of pool data.}
 			catch (IllegalArgumentException|IOException e)
 			{
-				throw new InvalidClassFormatException("JC3x", e);
+				throw new InvalidClassFormatException("JC0c", e);
 			}
 			
 			// Set data

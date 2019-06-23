@@ -98,12 +98,12 @@ public final class Minimizer
 			
 		ClassFile input = this.input;
 		
-		// {@squirreljme.error JC4b Class name string was not the first entry
+		// {@squirreljme.error JC0g Class name string was not the first entry
 		// in the pool.}
 		int pidx;
 		MinimizedPoolBuilder pool = this.pool;
 		if (1 != (pidx = pool.add(input.thisName().toString())))
-			throw new IllegalArgumentException("JC4b " + pidx);
+			throw new IllegalArgumentException("JC0g " + pidx);
 		
 		// Add sort of fixed entries but it gets messed up due to there
 		// being array elements stored
@@ -120,17 +120,17 @@ public final class Minimizer
 		// Add fixed entries
 		else
 		{
-			// {@squirreljme.error JC4c Class name as class was not the second
+			// {@squirreljme.error JC0h Class name as class was not the second
 			// entry in the pool.}
 			if (2 != (pidx = pool.add(input.thisName())))
-				throw new IllegalArgumentException("JC4c " + pidx);
+				throw new IllegalArgumentException("JC0h " + pidx);
 			
 			// For the first entry in the pool, always have it be a reference
 			// to the current class pool
-			// {@squirreljme.error JC4d Reference to the current class pool was
+			// {@squirreljme.error JC0i Reference to the current class pool was
 			// not the third entry of the pool.}
 			if (3 != (pidx = pool.add(new ClassPool(input.thisName()))))
-				throw new IllegalArgumentException("JC4d " + pidx);
+				throw new IllegalArgumentException("JC0i " + pidx);
 		}
 		
 		// Write magic number to specify this format
@@ -443,7 +443,7 @@ public final class Minimizer
 					transcode = this.__translateCode(rc);
 				}
 				
-				// {@squirreljme.error JC4r Error during translation of the
+				// {@squirreljme.error JC0j Error during translation of the
 				// specified method. (The current class; The method)}
 				catch (InvalidClassFormatException e)
 				{
@@ -451,10 +451,10 @@ public final class Minimizer
 						input.thisName() + " " + m.nameAndType(), e);
 				}
 				
-				// {@squirreljme.error JC4r IOException translating code.}
+				// {@squirreljme.error JC0k IOException translating code.}
 				catch (IOException e)
 				{
-					throw new RuntimeException("JC4r", e);
+					throw new RuntimeException("JC0k", e);
 				}
 			}
 			
@@ -571,12 +571,12 @@ public final class Minimizer
 							dos.write(vm & 0xFF);
 						}
 						
-						// {@squirreljme.error JC3r 15-bit integer out of
+						// {@squirreljme.error JC0l 15-bit integer out of
 						// range. (The value; The instruction index; The
 						// invalid instruction)}
 						else
 							throw new InvalidClassFormatException(
-								"JC3r " + vm + " " + cdx + " " + i);
+								"JC0l " + vm + " " + cdx + " " + i);
 						break;
 						
 						// Register List
@@ -770,11 +770,11 @@ public final class Minimizer
 			return MinimizedClassFile.decode(Minimizer.minimize(__cf));
 		}
 		
-		// {@squirreljme.error JC2k Could not minimize class due to a read
+		// {@squirreljme.error JC0m Could not minimize class due to a read
 		// or write error.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("JC2k", e);
+			throw new RuntimeException("JC0m", e);
 		}
 	}
 	
@@ -805,10 +805,10 @@ public final class Minimizer
 			__dos.writeByte(__v & 0xFF);
 		}
 		
-		// {@squirreljme.error JC3q Variable unsigned short out of range.
+		// {@squirreljme.error JC0n Variable unsigned short out of range.
 		// (The value)}
 		else
-			throw new InvalidClassFormatException("JC3q " + __v);
+			throw new InvalidClassFormatException("JC0n " + __v);
 	}
 	
 	/**
@@ -822,9 +822,9 @@ public final class Minimizer
 	static final int __checkUShort(int __v)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC3n Unsigned short out of range. (The value)}
+		// {@squirreljme.error JC0o Unsigned short out of range. (The value)}
 		if (__v < 0 || __v > 65535)
-			throw new InvalidClassFormatException("JC3n " + __v);
+			throw new InvalidClassFormatException("JC0o " + __v);
 		return __v;
 	}
 	

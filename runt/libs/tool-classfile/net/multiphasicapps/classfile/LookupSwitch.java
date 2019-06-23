@@ -55,10 +55,10 @@ public final class LookupSwitch
 		if (__def == null || __keys == null || __jumps == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC1k Key and jump table for lookup switch
+		// {@squirreljme.error JC3c Key and jump table for lookup switch
 		// table is of different lengths.}
 		if (__keys.length != __jumps.length)
-			throw new IllegalArgumentException("JC1k");
+			throw new IllegalArgumentException("JC3c");
 		
 		// Defensive copy
 		__keys = __keys.clone();
@@ -68,12 +68,12 @@ public final class LookupSwitch
 		long last = ((long)Integer.MIN_VALUE) - 1;
 		for (int i = 0, n = __keys.length; i < n; i++)
 		{
-			// {@squirreljme.error JC1l Lookup switch key is not in sorted
+			// {@squirreljme.error JC3d Lookup switch key is not in sorted
 			// order. (The index; The current key; The last key)}
 			int k = __keys[i];
 			if (k < last)
 				throw new InvalidClassFormatException(
-					String.format("JC1l %d %d %d", i, k, last));
+					String.format("JC3d %d %d %d", i, k, last));
 			last = k;
 			
 			if (__jumps[i] == null)

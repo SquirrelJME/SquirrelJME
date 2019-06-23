@@ -142,8 +142,8 @@ public enum StackJavaType
 			case 3:		return DOUBLE;
 		}
 		
-		// {@squirreljme.error JC3c Invalid stack Java type.}
-		throw new IllegalArgumentException("JC3c");
+		// {@squirreljme.error JC1s Invalid stack Java type.}
+		throw new IllegalArgumentException("JC1s");
 	}
 }
 

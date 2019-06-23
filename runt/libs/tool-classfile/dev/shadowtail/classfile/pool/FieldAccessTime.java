@@ -47,8 +47,8 @@ public enum FieldAccessTime
 			case 2: return READ;
 		}
 		
-		// {@squirreljme.error JC3u Unknown access time. (The index)}
-		throw new IllegalArgumentException("JC3u " + __i);
+		// {@squirreljme.error JC14 Unknown access time. (The index)}
+		throw new IllegalArgumentException("JC14 " + __i);
 	}
 }
 

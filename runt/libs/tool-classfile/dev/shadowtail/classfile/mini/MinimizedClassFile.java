@@ -368,14 +368,14 @@ public final class MinimizedClassFile
 			MinimizedClassHeader header = MinimizedClassHeader.decode(
 				new ByteArrayInputStream(__is));
 			
-			// {@squirreljme.error JC45 Length of class file does not match
+			// {@squirreljme.error JC01 Length of class file does not match
 			// length of array. (The file length; The array length)}
 			int fsz = header.filesize;
 			if (fsz != __is.length)
-				throw new InvalidClassFormatException("JC45 " + fsz +
+				throw new InvalidClassFormatException("JC01 " + fsz +
 					" " + __is.length);
 			
-			// {@squirreljme.error JC46 End of file magic number is invalid.
+			// {@squirreljme.error JC02 End of file magic number is invalid.
 			// (The read magic number)}
 			int endmagic;
 			if (MinimizedClassHeader.END_MAGIC_NUMBER !=
@@ -384,7 +384,7 @@ public final class MinimizedClassFile
 				((__is[fsz - 2] & 0xFF) << 8) |
 				(__is[fsz - 1] & 0xFF))))
 				throw new InvalidClassFormatException(
-					String.format("JC46 %08x", endmagic));
+					String.format("JC02 %08x", endmagic));
 			
 			// Read constant pool
 			MinimizedPool pool = MinimizedPool.decode(header.poolcount,
@@ -407,11 +407,11 @@ public final class MinimizedClassFile
 				sfields, ifields, smethods, imethods);
 		}
 		
-		// {@squirreljme.error JC4a End of file reached before parsing the
+		// {@squirreljme.error JC03 End of file reached before parsing the
 		// file.}
 		catch (EOFException e)
 		{
-			throw new InvalidClassFormatException("JC4a", e); 
+			throw new InvalidClassFormatException("JC03", e); 
 		}
 	}
 }

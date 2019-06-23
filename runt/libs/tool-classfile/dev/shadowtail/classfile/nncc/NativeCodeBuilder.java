@@ -82,10 +82,10 @@ public final class NativeCodeBuilder
 		// Build instruction
 		NativeInstruction rv = new NativeInstruction(__op, __args);
 		
-		// {@squirreljme.error JC2q Operation has an incorrect number of
+		// {@squirreljme.error JC0q Operation has an incorrect number of
 		// arguments. (The instruction)}
 		if (fnar != __args.length)
-			throw new IllegalArgumentException("JC2q " + rv);
+			throw new IllegalArgumentException("JC0q " + rv);
 		
 		// Check format
 		for (int i = 0; i < fnar; i++)
@@ -101,19 +101,19 @@ public final class NativeCodeBuilder
 			// Make sure values are good
 			switch (afmt[i])
 			{
-					// {@squirreljme.error JC4j Use of register which is out
+					// {@squirreljme.error JC0r Use of register which is out
 					// of range of the maximum register count.
 					// (The instruction)}
 				case VUREG:
 					if (oi < 0 || oi >= NativeCode.MAX_REGISTERS)
-						throw new IllegalArgumentException("JC4j " + rv);
+						throw new IllegalArgumentException("JC0r " + rv);
 					break;
 				
-					// {@squirreljme.error JC4i Cannot jump to a non-label.
+					// {@squirreljme.error JC0s Cannot jump to a non-label.
 					// (The instruction)}
 				case VJUMP:
 					if (!(o instanceof NativeCodeLabel))
-						throw new IllegalArgumentException("JC4i " + rv);
+						throw new IllegalArgumentException("JC0s " + rv);
 					break;
 			}
 		}
@@ -250,11 +250,11 @@ public final class NativeCodeBuilder
 				op = NativeInstructionType.MATH_CONST_INT;
 				break;
 				
-				// {@squirreljme.error JC4h May only do math on integer.}
+				// {@squirreljme.error JC0t May only do math on integer.}
 			case LONG:
 			case FLOAT:
 			case DOUBLE:
-				throw new RuntimeException("JC4h");
+				throw new RuntimeException("JC0t");
 			
 			default:
 				throw new todo.OOPS(__jt.name());
@@ -291,11 +291,11 @@ public final class NativeCodeBuilder
 				op = NativeInstructionType.MATH_REG_INT;
 				break;
 				
-				// {@squirreljme.error JC4h May only do math on integer.}
+				// {@squirreljme.error JC0u May only do math on integer.}
 			case LONG:
 			case FLOAT:
 			case DOUBLE:
-				throw new RuntimeException("JC4h");
+				throw new RuntimeException("JC0u");
 			
 			default:
 				throw new todo.OOPS(__jt.name());
@@ -325,9 +325,9 @@ public final class NativeCodeBuilder
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC4k Cannot access wide memory.}
+		// {@squirreljme.error JC0v Cannot access wide memory.}
 		if (__dt.isWide())
-			throw new IllegalArgumentException("JC4k");
+			throw new IllegalArgumentException("JC0v");
 		
 		return this.add(NativeInstructionType.MEMORY_OFF_ICONST |
 			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
@@ -352,9 +352,9 @@ public final class NativeCodeBuilder
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC4n Cannot access wide memory.}
+		// {@squirreljme.error JC0w Cannot access wide memory.}
 		if (__dt.isWide())
-			throw new IllegalArgumentException("JC4n");
+			throw new IllegalArgumentException("JC0w");
 		
 		return this.add(NativeInstructionType.MEMORY_OFF_ICONST_JAVA |
 			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
@@ -379,9 +379,9 @@ public final class NativeCodeBuilder
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC4l Cannot access wide memory.}
+		// {@squirreljme.error JC0x Cannot access wide memory.}
 		if (__dt.isWide())
-			throw new IllegalArgumentException("JC4l");
+			throw new IllegalArgumentException("JC0x");
 		
 		// Generate
 		return this.add(NativeInstructionType.MEMORY_OFF_REG |
@@ -407,9 +407,9 @@ public final class NativeCodeBuilder
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC4m Cannot access wide memory.}
+		// {@squirreljme.error JC0y Cannot access wide memory.}
 		if (__dt.isWide())
-			throw new IllegalArgumentException("JC4m");
+			throw new IllegalArgumentException("JC0y");
 		
 		// Generate
 		return this.add(NativeInstructionType.MEMORY_OFF_REG_JAVA |
@@ -500,11 +500,11 @@ public final class NativeCodeBuilder
 				// Map any labels to indexes
 				if ((didchange |= (a instanceof NativeCodeLabel)))
 				{
-					// {@squirreljme.error JC35 The specified label was
+					// {@squirreljme.error JC0z The specified label was
 					// never defined. (The label)}
 					Integer rlp = labels.get((NativeCodeLabel)a);
 					if (rlp == null)
-						throw new IllegalArgumentException("JC35 " + a);
+						throw new IllegalArgumentException("JC0z " + a);
 					
 					args[j] = new InstructionJumpTarget(rlp);
 				}

@@ -54,8 +54,8 @@ public enum FieldAccessType
 			case 1: return INSTANCE;
 		}
 		
-		// {@squirreljme.error JC3v Unknown access type. (The index)}
-		throw new IllegalArgumentException("JC3v " + __i);
+		// {@squirreljme.error JC15 Unknown access type. (The index)}
+		throw new IllegalArgumentException("JC15 " + __i);
 	}
 }
 

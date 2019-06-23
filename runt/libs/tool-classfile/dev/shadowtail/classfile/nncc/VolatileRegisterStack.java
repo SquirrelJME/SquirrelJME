@@ -78,10 +78,10 @@ public final class VolatileRegisterStack
 	public final void remove(int __r)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error JC4f Register to remove was never previously
+		// {@squirreljme.error JC13 Register to remove was never previously
 		// returned or was removed multiple times. (The register)}
 		if (!this._used.remove(__r))
-			throw new IllegalStateException("JC4f " + __r);
+			throw new IllegalStateException("JC13 " + __r);
 	}
 }
 

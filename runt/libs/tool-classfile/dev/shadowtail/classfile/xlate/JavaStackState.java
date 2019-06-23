@@ -87,10 +87,10 @@ public final class JavaStackState
 			// Checks if there is something here
 			if (!x.type.isNothing())
 			{
-				// {@squirreljme.error JC2z Local variables cannot be an alias
+				// {@squirreljme.error JC1e Local variables cannot be an alias
 				// of another variable. (The local)}
 				if (x.value != x.register)
-					throw new InvalidClassFormatException("JC2z " + x);
+					throw new InvalidClassFormatException("JC1e " + x);
 			}
 		}
 		
@@ -105,10 +105,10 @@ public final class JavaStackState
 			// Checks if there is something here
 			if (!x.type.isNothing())
 			{
-				// {@squirreljme.error JC30 Stack variables cannot alias
+				// {@squirreljme.error JC1f Stack variables cannot alias
 				// variables at higher indexes. (The stack variable)}
 				if (x.value > x.register)
-					throw new InvalidClassFormatException("JC30 " + x);
+					throw new InvalidClassFormatException("JC1f " + x);
 			}
 		}
 		
@@ -156,13 +156,13 @@ public final class JavaStackState
 		if (this.equals(__ts))
 			return new JavaStackEnqueueList(0);
 			
-		// {@squirreljme.error JC3k A collision cannot be made where the
+		// {@squirreljme.error JC1g A collision cannot be made where the
 		// length of the stack differs. (The length of the source stack; The
 		// length of the target stack)}
 		int atop = this.stacktop,
 			btop = __ts.stacktop;
 		if (atop != btop)
-			throw new InvalidClassFormatException("JC3k " + atop + " " + btop);
+			throw new InvalidClassFormatException("JC1g " + atop + " " + btop);
 		
 		// Registers which collide
 		List<Integer> collides = new ArrayList<>();
@@ -473,21 +473,21 @@ public final class JavaStackState
 	public final JavaStackResult doLocalLoad(int __i)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC2t Load of local with no value. (The index)}
+		// {@squirreljme.error JC1h Load of local with no value. (The index)}
 		Info from = this._locals[__i];
 		if (from.type.isNothing())
-			throw new InvalidClassFormatException("JC2t " + __i);
+			throw new InvalidClassFormatException("JC1h " + __i);
 		
 		// Space needed to be used on the stack
 		JavaType type = from.type;
 		boolean iswide = type.isWide();
 		int space = (iswide ? 2 : 1);
 		
-		// {@squirreljme.error JC2u Stack would overflow loading local value.}
+		// {@squirreljme.error JC1i Stack would overflow loading local value.}
 		Info[] stack = this._stack;
 		int stacktop = this.stacktop;
 		if (stacktop + space > stack.length)
-			throw new InvalidClassFormatException("JC2u");
+			throw new InvalidClassFormatException("JC1i");
 		
 		// Setup new stack
 		Info[] newstack = stack.clone();
@@ -525,11 +525,11 @@ public final class JavaStackState
 			
 		Info[] locals = this._locals;
 		
-		// {@squirreljme.error JC38 Cannot write over a local variable which
+		// {@squirreljme.error JC1j Cannot write over a local variable which
 		// is read-only. (The local)}
 		Info olddest = locals[__l];
 		if (olddest.readonly)
-			throw new InvalidClassFormatException("JC38 " + olddest);
+			throw new InvalidClassFormatException("JC1j " + olddest);
 		
 		// If the target local is an object it could be enqueued and it has
 		// to be uncounted
@@ -542,11 +542,11 @@ public final class JavaStackState
 		// the other as well
 		if (__jt.isWide())
 		{
-			// {@squirreljme.error JC34 Cannot write over a local variable
+			// {@squirreljme.error JC1k Cannot write over a local variable
 			// which is read-only. (The local)}
 			Info wolddest = locals[__l + 1];
 			if (wolddest.readonly)
-				throw new InvalidClassFormatException("JC34 " + wolddest);
+				throw new InvalidClassFormatException("JC1k " + wolddest);
 			
 			// If the target local is an object it could be enqueued
 			if (wolddest.canEnqueue())
@@ -705,9 +705,9 @@ public final class JavaStackState
 		JavaType... __pts)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// {@squirreljme.error JC2v Cannot pop a negative number of entries.}
+		// {@squirreljme.error JC1l Cannot pop a negative number of entries.}
 		if (__n < 0)
-			throw new IllegalArgumentException("JC2v");
+			throw new IllegalArgumentException("JC1l");
 		
 		// Force blank types for pushing
 		__pts = (__pts == null ? new JavaType[0] : __pts.clone());
@@ -715,9 +715,9 @@ public final class JavaStackState
 			if (pt == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error JC2x Cannot push nothing or top type.}
+			// {@squirreljme.error JC1m Cannot push nothing or top type.}
 			else if (pt.isNothing() || pt.isTop())
-				throw new IllegalArgumentException("JC2x");
+				throw new IllegalArgumentException("JC1m");
 		
 		// Only the stack is operated on!
 		Info[] stack = this._stack;
@@ -732,9 +732,9 @@ public final class JavaStackState
 		List<Info> popped = new ArrayList<>();
 		for (int i = 0; i < __n; i++)
 		{
-			// {@squirreljme.error JC2w Stack underflow.}
+			// {@squirreljme.error JC1n Stack underflow.}
 			if (stacktop <= 0)
-				throw new IllegalArgumentException("JC2w");
+				throw new IllegalArgumentException("JC1n");
 			
 			// Read top most entry, handle tops accordingly
 			Info inf = stack[--stacktop];
@@ -757,9 +757,9 @@ public final class JavaStackState
 		List<Info> pushed = new ArrayList<>();
 		for (JavaType pt : __pts)
 		{
-			// {@squirreljme.error JC2y Stack overflow. (Top; Limit)}
+			// {@squirreljme.error JC1o Stack overflow. (Top; Limit)}
 			if (stacktop >= stacklimit)
-				throw new IllegalArgumentException("JC2y " + stacktop + " " +
+				throw new IllegalArgumentException("JC1o " + stacktop + " " +
 					stacklimit);
 			
 			// Setup entry
@@ -969,13 +969,13 @@ public final class JavaStackState
 			todo.DEBUG.note("To  : %s", __ts);
 		}
 		
-		// {@squirreljme.error JC3f A transition cannot be made where the
+		// {@squirreljme.error JC1p A transition cannot be made where the
 		// length of the stack differs. (The length of the source stack; The
 		// length of the target stack)}
 		int atop = this.stacktop,
 			btop = __ts.stacktop;
 		if (atop != btop)
-			throw new InvalidClassFormatException("JC3f " + atop + " " + btop);
+			throw new InvalidClassFormatException("JC1p " + atop + " " + btop);
 		
 		// Used to store operations and enqueues
 		List<Integer> stackenq = new ArrayList<>(),
@@ -1249,9 +1249,9 @@ public final class JavaStackState
 				return tryf;
 		}
 		
-		// {@squirreljme.error JC32 Could not find a match for performing
+		// {@squirreljme.error JC1q Could not find a match for performing
 		// shuffled stack operations.}
-		throw new InvalidClassFormatException("JC32");
+		throw new InvalidClassFormatException("JC1q");
 	}
 	
 	/**

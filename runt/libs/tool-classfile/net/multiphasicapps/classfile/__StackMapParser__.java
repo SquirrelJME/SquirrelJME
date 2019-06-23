@@ -101,7 +101,7 @@ final class __StackMapParser__
 		this._nextlocals = (nextlocals = new StackMapTableEntry[maxlocals]);
 		
 		// Setup initial state
-		// {@squirreljme.error JC2a The arguments that are required for the
+		// {@squirreljme.error JC43 The arguments that are required for the
 		// given method exceeds the maximum number of permitted local
 		// variables. (The method in question; The required number of local
 		// variables; The maximum number of local variables)}
@@ -111,7 +111,7 @@ final class __StackMapParser__
 		int jn = jis.length;
 		if (jn > maxlocals)
 			throw new InvalidClassFormatException(
-				String.format("JC2a %s %d %d", handle, jn, maxlocals));
+				String.format("JC43 %s %d %d", handle, jn, maxlocals));
 		
 		// Setup entries
 		// If this is an instance initializer method then only the first
@@ -191,11 +191,11 @@ final class __StackMapParser__
 					else if (type >= 252 && type <= 254)
 						addr = __appendFrame(type - 251);
 				
-					// {@squirreljme.error JC2b Unknown StackMapTable
+					// {@squirreljme.error JC44 Unknown StackMapTable
 					// verification type. (The verification type)}
 					else
 						throw new InvalidClassFormatException(
-							String.format("JC2b %d", type));
+							String.format("JC44 %d", type));
 					
 					// Setup next
 					__next(addr, false, type, i);
@@ -203,10 +203,10 @@ final class __StackMapParser__
 			}
 		}
 		
-		// {@squirreljme.error JC2c Failed to parse the stack map table.}
+		// {@squirreljme.error JC45 Failed to parse the stack map table.}
 		catch (IOException e)
 		{
-			throw new InvalidClassFormatException("JC2c", e);
+			throw new InvalidClassFormatException("JC45", e);
 		}
 	}
 	
@@ -262,11 +262,11 @@ final class __StackMapParser__
 		}
 		
 		// Error if added stuff remains
-		// {@squirreljme.error JC2d Appending local variables to the frame
+		// {@squirreljme.error JC46 Appending local variables to the frame
 		// however there is no room to place them. (The remaining local count)}
 		if (__addlocs != 0)
 			throw new InvalidClassFormatException(
-				String.format("JC2d %d", __addlocs));
+				String.format("JC46 %d", __addlocs));
 		
 		return rv;
 	}
@@ -311,12 +311,12 @@ final class __StackMapParser__
 		}
 		
 		// Still chops left?
-		// {@squirreljme.error JC2e Could not chop off all local variables
+		// {@squirreljme.error JC47 Could not chop off all local variables
 		// because there are no variables remaining to be chopped. (The
 		// remaining variables to remove)}
 		if (__chops != 0)
 			throw new InvalidClassFormatException(
-				String.format("JC2e %d", __chops));
+				String.format("JC47 %d", __chops));
 		
 		return rv;
 	}
@@ -338,7 +338,7 @@ final class __StackMapParser__
 		// Read in local variables
 		int nl = in.readUnsignedShort();
 		
-		// {@squirreljme.error JC2f The number of specified local variables in
+		// {@squirreljme.error JC48 The number of specified local variables in
 		// the full frame exceeds the maximum permitted local variable
 		// count. (The read local variable count; The number of locals the
 		// method uses)}
@@ -346,7 +346,7 @@ final class __StackMapParser__
 			maxstack = this.maxstack;
 		if (nl > maxlocals)
 			throw new InvalidClassFormatException(
-				String.format("JC2f %d %d", nl, maxlocals));
+				String.format("JC48 %d %d", nl, maxlocals));
 		int i, o;
 		StackMapTableEntry[] nextlocals = this._nextlocals;
 		for (i = 0, o = 0; i < nl; i++)
@@ -441,10 +441,10 @@ final class __StackMapParser__
 				
 				// Unknown
 			default:
-				// {@squirreljme.error JC2g The verification tag in the
+				// {@squirreljme.error JC49 The verification tag in the
 				// StackMap/StackMapTable attribute is not valid. (The tag)}
 				throw new InvalidClassFormatException(
-					String.format("JC2g %d", tag));
+					String.format("JC49 %d", tag));
 		}
 	}
 	
@@ -473,12 +473,12 @@ final class __StackMapParser__
 		}
 		catch (InvalidClassFormatException e)
 		{
-			// {@squirreljme.error JC2h Invalid stack map table at the
+			// {@squirreljme.error JC4a Invalid stack map table at the
 			// specified address. (The address offset; Is the address offset
 			// absolute?; The placement address; The type of entry which
 			// was just handled, -1 means it was old-style or initial state.)}
 			throw new InvalidClassFormatException(String.format(
-				"JC2h %d %b %d %d", __au, __abs, naddr, __type), e);
+				"JC4a %d %b %d %d", __au, __abs, naddr, __type), e);
 		}
 		
 		// Set new placement address, the first is always absolute
@@ -486,7 +486,7 @@ final class __StackMapParser__
 			naddr + (__au + (__ne == 0 ? 0 : 1)));
 		this._placeaddr = pp;
 	
-		// {@squirreljme.error JC2i A duplicate stack map information for the
+		// {@squirreljme.error JC4b A duplicate stack map information for the
 		// specified address has already been loaded. (The address; The
 		// already existing information; The information to be placed there;
 		// Absolute address?; Current address of parse; The address offset;
@@ -497,7 +497,7 @@ final class __StackMapParser__
 		Map<Integer, StackMapTableState> targets = this._targets;
 		if (pp != 0 && targets.containsKey(pp))
 			throw new IllegalStateException(String.format(
-				"JC2i %d %s %s %b %d %d %d",
+				"JC4b %d %s %s %b %d %d %d",
 				pp, targets.get(pp), rv, __abs, naddr, __au, __type));
 		targets.put(pp, rv);
 		

@@ -1340,10 +1340,10 @@ public final class NearNativeByteCodeHandler
 	{
 		ByteCodeState state = this.state;
 		
-		// {@squirreljme.error JC49 Enqueues were not cleared, this is an
+		// {@squirreljme.error JC12 Enqueues were not cleared, this is an
 		// internal compiler error.}
 		if (this._lastenqueue != null)
-			throw new IllegalStateException("JC49");
+			throw new IllegalStateException("JC12");
 		
 		// An exception check was requested, do a check on the exception
 		// register and jump if there is something there

@@ -160,8 +160,8 @@ public enum MathType
 			case 15:	return SIGNX16;
 		}
 		
-		// {@squirreljme.error JC39 Invalid math operation.}
-		throw new IllegalArgumentException("JC39");
+		// {@squirreljme.error JC1r Invalid math operation.}
+		throw new IllegalArgumentException("JC1r");
 	}
 }
 
