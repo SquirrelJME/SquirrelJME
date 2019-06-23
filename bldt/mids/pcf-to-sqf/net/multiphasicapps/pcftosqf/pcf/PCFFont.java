@@ -107,10 +107,10 @@ public class PCFFont
 		// Need to read in the data!
 		DataInputStream dos = new DataInputStream(__in);
 		
-		// {@squirreljme.error AP02 Invalid PCF magic number.}
+		// {@squirreljme.error AP01 Invalid PCF magic number.}
 		int magic;
 		if ((magic = dos.readInt()) != 0x01666370)
-			throw new IOException(String.format("AP02 %08x", magic));
+			throw new IOException(String.format("AP01 %08x", magic));
 		
 		// Read each table entry, since they have offsets into the file they
 		// could be in any random order which would be bad
@@ -143,20 +143,20 @@ public class PCFFont
 		boolean waseofing = false;
 		for (PCFTableEntry te : tables)
 		{
-			// {@squirreljme.error AP04 Expected EOF to occur on the last
+			// {@squirreljme.error AP02 Expected EOF to occur on the last
 			// entry, this likely means the file was truncated more than
 			// what was expected.}
 			if (waseofing)
-				throw new IOException("AP04");
+				throw new IOException("AP02");
 			
 			// Skip bytes needed to reach the destination
 			int skippy = te.offset - readptr;
 			if (skippy > 0)
 				dos.skipBytes(skippy);
 			
-			// {@squirreljme.error AP01 Negative skip distance.}
+			// {@squirreljme.error AP03 Negative skip distance.}
 			else if (skippy < 0)
-				throw new IOException("AP01");
+				throw new IOException("AP03");
 			
 			// Debug
 			todo.DEBUG.note("Read entry %s", te);
@@ -258,9 +258,9 @@ public class PCFFont
 					todo.DEBUG.note("Ignoring BDF Accelerators");
 					break;
 					
-					// {@squirreljme.error AP03 Unknown PCF type. (The type)}
+					// {@squirreljme.error AP04 Unknown PCF type. (The type)}
 				default:
-					throw new IOException("AP03 " + te.type);
+					throw new IOException("AP04 " + te.type);
 			}
 			
 			// Set pointer for next run
