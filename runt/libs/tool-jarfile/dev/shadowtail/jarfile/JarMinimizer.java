@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -1172,6 +1173,9 @@ public final class JarMinimizer
 		// Need list of resources to determine
 		String[] rcnames = input.listResources();
 		int numrc = rcnames.length;
+		
+		// Sort all the resources so that it is faster to find the entries
+		Arrays.sort(rcnames);
 		
 		// Manifest offset and length
 		int manifestoff = 0,
