@@ -152,10 +152,10 @@ public class ZipStreamReader
 				rhcount = input.peek(0, localheader, 0, 4);
 			}
 			
-			// {@squirreljme.error BF1j Could not peek the magic number.}
+			// {@squirreljme.error BF10 Could not peek the magic number.}
 			catch (IndexOutOfBoundsException e)
 			{
-				throw new ZipException("BF1j", e);
+				throw new ZipException("BF10", e);
 			}
 		
 			// Could not fit the magic number, treat as EOF
@@ -210,10 +210,10 @@ public class ZipStreamReader
 			boolean deny = false;
 			deny |= (xver < 0 || xver > _MAX_EXTRACT_VERSION);
 			
-			// {@squirreljme.error BF10 Zip version not suppored. (The
+			// {@squirreljme.error BF11 Zip version not suppored. (The
 			// version)}
 			if (defer == null && deny)
-				defer = new ZipException(String.format("BF10 %d",
+				defer = new ZipException(String.format("BF11 %d",
 					xver));
 			
 			// Read bit flags
@@ -224,19 +224,19 @@ public class ZipStreamReader
 			// Cannot read encrypted entries
 			deny |= (0 != (gpfs & 1));
 			
-			// {@squirreljme.error BF11 Encrypted entries not supported.}
+			// {@squirreljme.error BF12 Encrypted entries not supported.}
 			if (defer == null && deny)
-				defer = new ZipException("BF11");
+				defer = new ZipException("BF12");
 			
 			// Read the compression method
 			ZipCompressionType cmeth = ZipCompressionType.forMethod(
 				__readUnsignedShort(localheader, 8));
 			deny |= (cmeth == null);
 			
-			// {@squirreljme.error BF12 Compression method not supported.
+			// {@squirreljme.error BF13 Compression method not supported.
 			// (The method)}
 			if (defer == null && deny)
-				defer = new ZipException(String.format("BF12 %d", cmeth));
+				defer = new ZipException(String.format("BF13 %d", cmeth));
 			
 			// Read CRC32
 			int crc = __readInt(localheader, 14);
@@ -251,10 +251,10 @@ public class ZipStreamReader
 			if (!undefinedsize)
 				deny |= (usz < 0);
 			
-			// {@squirreljme.error BF13 Entry exceeds 2GiB in size.
+			// {@squirreljme.error BF14 Entry exceeds 2GiB in size.
 			// (The compressed size; The uncompressed size)}
 			if (defer == null && deny)
-				defer = new ZipException(String.format("BF13 %d %d", csz,
+				defer = new ZipException(String.format("BF14 %d %d", csz,
 					usz));
 			
 			// File name length
@@ -325,9 +325,9 @@ public class ZipStreamReader
 		if (__ent == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BF14 Close of an incorrect entry.}
+		// {@squirreljme.error BF15 Close of an incorrect entry.}
 		if (this._entry != __ent)
-			throw new IOException("BF14");
+			throw new IOException("BF15");
 		
 		// Clear it
 		this._entry = null;
