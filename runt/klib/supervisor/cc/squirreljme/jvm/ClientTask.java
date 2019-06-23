@@ -74,7 +74,7 @@ public final class ClientTask
 	 * @param __cl The class to load.
 	 * @return The loaded class information.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/06/2
+	 * @since 2019/06/23
 	 */
 	public final int loadClassInfo(String __cl)
 		throws NullPointerException
