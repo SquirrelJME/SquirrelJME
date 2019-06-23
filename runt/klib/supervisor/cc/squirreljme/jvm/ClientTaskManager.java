@@ -18,7 +18,7 @@ public final class ClientTaskManager
 {
 	/** The maximum number of permitted tasks. */
 	public static final int MAX_TASKS =
-		14;
+		15;
 	
 	/** The tasks which are available. */
 	public final ClientTask[] tasks =
@@ -35,8 +35,8 @@ public final class ClientTaskManager
 	 */
 	public ClientTaskManager()
 	{
-		// Setup a system task
-		this.tasks[0] = new ClientTask(0, 0);
+		// Setup a system task, it has no classpath and is always zero
+		this.tasks[0] = new ClientTask(0, 0, new BootLibrary[0]);
 	}
 	
 	/**
@@ -47,6 +47,7 @@ public final class ClientTaskManager
 	 * @param __args The arguments to the task.
 	 * @param __sp System properties.
 	 * @return The resulting task.
+	 * @throws RuntimeException If the task could not be created.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/22
 	 */
@@ -57,8 +58,31 @@ public final class ClientTaskManager
 		if (__cp == null)
 			throw new NullPointerException("NARG");
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Tasks that are currently active
+		ClientTask[] tasks = this.tasks;
+		
+		// Find a free task spot
+		int pid;
+		for (pid = 1; pid < MAX_TASKS; pid++)
+			if (tasks[pid] == null)
+				break;
+		
+		// {@squirreljme.error SV01 Task limit reached.}
+		if (pid == MAX_TASKS)
+			throw new RuntimeException("SV01");
+		
+		// Setup and store task now
+		ClientTask rv = new ClientTask(pid, this._nextlid++, __cp);
+		tasks[pid] = rv;
+		
+		if (true)
+		{
+			Assembly.breakpoint();
+			throw new todo.TODO();
+		}
+		
+		// Done with the task
+		return rv;
 	}
 }
 
