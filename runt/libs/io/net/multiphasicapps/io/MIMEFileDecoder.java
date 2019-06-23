@@ -333,18 +333,18 @@ public final class MIMEFileDecoder
 		{
 			BufferedReader in = this.in;
 			
-			// {@squirreljme.error BD23 Unexpected end of file while trying
+			// {@squirreljme.error BD1k Unexpected end of file while trying
 			// to read MIME header.}
 			String ln = in.readLine();
 			if (ln == null)
-				throw new IOException("BD23");
+				throw new IOException("BD1k");
 			
 			// The header is in this format:
 			// begin-base64 <unixmode> <filename>
-			// {@squirreljme.error BD24 MIME encoded does not start with
+			// {@squirreljme.error BD1l MIME encoded does not start with
 			// MIME header.}
 			if (!ln.startsWith("begin-base64"))
-				throw new IOException("BD24");
+				throw new IOException("BD1l");
 			
 			// UNIX mode?
 			int fs = ln.indexOf(' ');
@@ -376,11 +376,11 @@ public final class MIMEFileDecoder
 		private final boolean __readNext()
 			throws IOException
 		{
-			// {@squirreljme.error BD25 Unexpected EOF while read the MIME
+			// {@squirreljme.error BD1m Unexpected EOF while read the MIME
 			// file data.}
 			String ln = this.in.readLine();
 			if (ln == null)
-				throw new IOException("BD25");
+				throw new IOException("BD1m");
 			
 			// End of MIME data?
 			if (ln.equals("===="))

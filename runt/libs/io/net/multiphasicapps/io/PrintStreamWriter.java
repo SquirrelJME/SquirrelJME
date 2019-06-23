@@ -158,10 +158,10 @@ public class PrintStreamWriter
 	private void __checkError()
 		throws IOException
 	{
-		// {@squirreljme.error BD1m The underlying stream has entered the
+		// {@squirreljme.error BD1n The underlying stream has entered the
 		// error state.}
 		if (this.output.checkError())
-			throw new IOException("BD1m");
+			throw new IOException("BD1n");
 	}
 }
 
