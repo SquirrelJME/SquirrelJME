@@ -178,19 +178,19 @@ public abstract class Enum<E extends Enum<E>>
 		// in here somewhere
 		ClassData data = ObjectAccess.classData(__cl);
 		
-		// {@squirreljme.error SV03 Cannot get the value of a non-enumeration
+		// {@squirreljme.error SV02 Cannot get the value of a non-enumeration
 		// type or it has no implicit {@code values()} method.}
 		StaticMethod getvalues = data.enumValues();
 		if (getvalues == null)
-			throw new ClassCastException("SV03");
+			throw new ClassCastException("SV02");
 		
 		// Go through and check all the names
 		for (Enum e : (Enum[])ObjectAccess.invokeStatic(getvalues))
 			if (__s.equals(e.name()))
 				return __cl.cast(e);
 		
-		// {@squirreljme.error SV02 Not an enumeration value. (The value)}
-		throw new IllegalArgumentException(String.format("SV02 %s", __s));
+		// {@squirreljme.error SV03 Not an enumeration value. (The value)}
+		throw new IllegalArgumentException(String.format("SV03 %s", __s));
 		*/
 	}
 }
