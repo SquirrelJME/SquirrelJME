@@ -9,6 +9,9 @@
 
 package todo;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCallIndex;
+
 /**
  * This is a class which when constructed indicates that stuff needs to be
  * done.
@@ -25,7 +28,15 @@ public class TODO
 	 */
 	public TODO()
 	{
-		throw new todo.TODO();
+		// Print stack trace
+		todo.DEBUG.note("****** TODO HIT! ******");
+		this.printStackTrace();
+		todo.DEBUG.note("****** TODO HIT! ******");
+		
+		// Stop now
+		Assembly.sysCallPV(SystemCallIndex.FATAL_TODO);
+		Assembly.breakpoint();
+		Assembly.sysCallPV(SystemCallIndex.EXIT, 1);
 	}
 }
 
