@@ -445,11 +445,11 @@ public class Image
 		
 		// Same otherwise
 		else if (!__i._mutable)
-			return this;
+			return __i;
 		
 		// Copy and make this immutable
-		return new Image(this._data.clone(), this._width, this._height,
-			false, this._alpha);
+		return new Image(__i._data.clone(), __i._width, __i._height,
+			false, __i._alpha);
 	}
 	
 	public static Image createImage(Image __i, int __x, int __y,
