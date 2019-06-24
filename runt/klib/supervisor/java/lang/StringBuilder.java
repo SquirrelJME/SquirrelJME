@@ -88,7 +88,26 @@ public final class StringBuilder
 	 */
 	public final StringBuilder append(String __v)
 	{
-		throw new todo.TODO();
+		// Print null?
+		if (__v == null)
+			__v = "null";
+		
+		// Length to append
+		int len = __v.length();
+		
+		// Get buffer properties
+		int limit = this._limit,
+			at = this._at;
+		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
+		
+		// Place input characters at this point
+		for (int i = 0; i < len; i++)
+			buffer[at++] = __v.charAt(i);
+		
+		// Set new size
+		this._at = at;
+		
+		return this;
 	}
 	
 	/**
