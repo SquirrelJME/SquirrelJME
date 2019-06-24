@@ -115,8 +115,11 @@ public class Throwable
 		for (Throwable rover = this; rover != null; rover = rover._cause)
 		{
 			// Is this the main trace or a caused by?
-			todo.DEBUG.note("%s Stack Trace: %s", (rover == this ?
-				"Supervisor" : "Caused By"), rover.toString());
+			todo.DEBUG.note("%s Stack Trace: (%s) %s", (rover == this ?
+				"Supervisor" : "Caused By"), JVMFunction.jvmLoadString(
+					Assembly.pointerToClassInfo( Assembly.memReadInt(
+					Assembly.objectToPointer(this),
+					Constants.OBJECT_CLASS_OFFSET)).namep), rover.toString());
 			
 			// Obtain the raw trace that was captured on construction
 			int[] rawtrace = this._rawtrace;
@@ -159,11 +162,7 @@ public class Throwable
 	@Override
 	public String toString()
 	{
-		int namep = Assembly.pointerToClassInfo(
-			Assembly.memReadInt(Assembly.objectToPointer(this),
-			Constants.OBJECT_CLASS_OFFSET)).namep;
-		todo.DEBUG.code('N', 'P', namep);
-		return JVMFunction.jvmLoadString(namep);// + ": " + this._message;
+		return this._message;
 	}
 	
 	/**
