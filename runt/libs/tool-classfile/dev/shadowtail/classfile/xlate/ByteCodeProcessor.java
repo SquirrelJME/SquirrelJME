@@ -1069,6 +1069,11 @@ public final class ByteCodeProcessor
 		if (__pt == null || __mot == null)
 			throw new NullPointerException("NARG");
 		
+		// We may throw an exception here if we divide by zero!
+		if (__pt == DataType.INTEGER || __pt == DataType.LONG)
+			if (__mot == MathType.DIV || __mot == MathType.REM)
+				this._canexception = true;
+		
 		// [a, b] -> [result]
 		JavaStackResult result = this.state.stack.doStack(2,
 			__pt.toJavaType());

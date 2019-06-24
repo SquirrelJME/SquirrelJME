@@ -170,6 +170,10 @@ public final class NearNativeByteCodeHandler
 		if (!__in.isArray())
 			this.__basicCheckIsArray(__in.register);
 		
+		// We already checked the only valid exceptions, so do not perform
+		// later handling!
+		state.canexception = false;
+		
 		// Read length
 		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
 			__len.register,
@@ -202,6 +206,10 @@ public final class NearNativeByteCodeHandler
 		
 		// Check array bounds
 		this.__basicCheckArrayBound(__in.register, __dx.register);
+		
+		// We already checked the only valid exceptions, so do not perform
+		// later handling!
+		state.canexception = false;
 		
 		// Grab some volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -295,6 +303,10 @@ public final class NearNativeByteCodeHandler
 				voltemp, __in.register, volaip);
 		}
 		
+		// We already checked the only valid exceptions, so do not perform
+		// later handling!
+		state.canexception = false;
+		
 		// Use helper function
 		if (__dt.isWide())
 		{
@@ -338,6 +350,10 @@ public final class NearNativeByteCodeHandler
 		
 		// Add cast check
 		this.__basicCheckCCE(__v.register, __cl);
+		
+		// We already checked the only valid exceptions, so do not perform
+		// later handling!
+		state.canexception = false;
 		
 		// We do not need to uncount whatever was pushed in because it would
 		// be immediately pushed back onto the stack. The counts should only
@@ -463,6 +479,10 @@ public final class NearNativeByteCodeHandler
 		if (!__i.isCompatible(__fr.className()))
 			this.__basicCheckCCE(ireg, __fr.className());
 		
+		// We already checked the only valid exceptions, so do not perform
+		// later handling!
+		state.canexception = false;
+		
 		// Determine volatile registers
 		VolatileRegisterStack volatiles = this.volatiles;
 		int tempreg = volatiles.get();
@@ -528,6 +548,10 @@ public final class NearNativeByteCodeHandler
 		// Must be the given class
 		if (!__i.isCompatible(__fr.className()))
 			this.__basicCheckCCE(ireg, __fr.className());
+			
+		// We already checked the only valid exceptions, so do not perform
+		// later handling!
+		state.canexception = false;
 		
 		// Get volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -747,9 +771,10 @@ public final class NearNativeByteCodeHandler
 			}
 		}
 		
-		// Check if exception occurred
+		// Check if exception occurred, before copying the return value!
 		if (state.canexception)
 		{
+			// Exception check
 			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
 				this.__labelException());
 			
@@ -810,6 +835,21 @@ public final class NearNativeByteCodeHandler
 		// Integer math is supported natively
 		if (__dt == StackJavaType.INTEGER)
 		{
+			// Check for division by zero, only the integer type can have this
+			// done in code because the long can be handled by the software
+			// math library code. Otherwise we would need to add more code to
+			// the generator to handle this.
+			if (__mt == MathType.DIV || __mt == MathType.REM)
+			{
+				// Perform divide by zero check
+				this.__basicCheckDBZ(__b.register);
+				
+				// We already checked the only valid exceptions, so do not
+				// perform later handling!
+				state.canexception = false;
+			}
+			
+			// Add math operation
 			codebuilder.addMathReg(__dt, __mt, __a.register, __b.register,
 				__c.register);
 		}
@@ -895,6 +935,23 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// If we are dividing by zero just throw an exception
+		if ((__dt == StackJavaType.INTEGER || __dt == StackJavaType.LONG) &&
+			(__mt == MathType.DIV || __mt == MathType.REM))
+			if (__b.longValue() == 0)
+			{
+				// Directly jump to the make exception handler
+				codebuilder.addGoto(this.__labelMakeException(
+					"java/lang/ArithmeticException"));
+				
+				// Already handled this
+				state.canexception = false;
+				
+				// Since we are dividing by zero, never actually generate the
+				// division code
+				return;
+			}
 		
 		// Integer math on constants is natively supported
 		if (__dt == StackJavaType.INTEGER)
@@ -1685,6 +1742,19 @@ public final class NearNativeByteCodeHandler
 		
 		// No longer needed
 		volatiles.remove(volwantcldx);
+	}
+	
+	/**
+	 * Checks for divide by zero.
+	 *
+	 * @param __br The B register.
+	 * @since 2019/06/24
+	 */
+	private final void __basicCheckDBZ(int __br)
+	{
+		// If the B register is zero, then we throw the exception
+		codebuilder.addIfZero(__br, this.__labelMakeException(
+			"java/lang/ArithmeticException"));
 	}
 	
 	/**
