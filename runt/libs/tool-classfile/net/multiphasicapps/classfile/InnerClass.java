@@ -63,16 +63,11 @@ public final class InnerClass
 	 * that exists only in a method), or is a member of an anonymous class.
 	 * @param __i The identifier used to name the class.
 	 * @param __f The class flags.
-	 * @throws NullPointerException On null arguments, except for {@code __o}.
 	 * @since 2018/05/21
 	 */
 	public InnerClass(ClassName __n, ClassName __o, ClassIdentifier __i,
 		InnerClassFlags __f)
-		throws NullPointerException
 	{
-		if (__n == null || __i == null || __f == null)
-			throw new NullPointerException("NARG");
-		
 		this.name = __n;
 		this.outerclass = __o;
 		this.simplename = __i;
