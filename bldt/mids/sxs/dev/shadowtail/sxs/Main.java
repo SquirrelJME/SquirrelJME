@@ -244,7 +244,8 @@ public class Main
 		}
 		
 		// Get up to date binary
-		bm.compile(bm.get(projectname));
+		if (psrc != null)
+			bm.compile(bm.get(projectname));
 		Binary pbin = bm.get(projectname);
 		
 		// Get the class we want to look at, make sure dots are slashes!
