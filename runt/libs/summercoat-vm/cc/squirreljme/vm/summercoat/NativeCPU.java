@@ -698,7 +698,7 @@ public final class NativeCPU
 						Frame was = frames.removeLast(),
 							now = frames.peekLast();
 						
-						// {@squirreljme.AE0m Return from the main frame
+						// {@squirreljme.error AE0m Return from the main frame
 						// without using a system call to exit.}
 						if (now == null)
 							throw new VMException("AE0m");
@@ -760,9 +760,10 @@ public final class NativeCPU
 					}
 					break;
 					
-				
+					// {@squirreljme.error AE0n Invalid instruction.}
 				default:
-					throw new todo.OOPS(NativeInstruction.mnemonic(op));
+					throw new VMException("AE0n " +
+						NativeInstruction.mnemonic(op));
 			}
 			
 			// Set next PC address
