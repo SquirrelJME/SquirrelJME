@@ -11,6 +11,7 @@ package dev.shadowtail.sxs;
 
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.BinaryManager;
+import cc.squirreljme.builder.support.NoSuchSourceException;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.Source;
 import cc.squirreljme.builder.support.SourceManager;
@@ -232,7 +233,15 @@ public class Main
 			(__args.length > 0 ? __args[0] : "cldc-compact"));
 		
 		// Get the source code for line lookup
-		Source psrc = sm.get(projectname);
+		Source psrc;
+		try
+		{
+			psrc = sm.get(projectname);
+		}
+		catch (NoSuchSourceException e)
+		{
+			psrc = null;
+		}
 		
 		// Get up to date binary
 		bm.compile(bm.get(projectname));
@@ -258,7 +267,7 @@ public class Main
 		
 		// If a source file is set, read all of it!
 		String sfn = classfile.sourceFile();
-		if (sfn != null)
+		if (psrc != null && sfn != null)
 			try (CompilerPathSet cps = psrc.pathSet(SourcePathSetType.SOURCE))
 			{
 				// Read
