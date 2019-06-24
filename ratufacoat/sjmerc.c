@@ -2616,6 +2616,15 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Get parent CPU state. */
 					oldcpu = cpu->parent;
 					
+					/* Exit must be done through an exit system call! */
+					if (oldcpu == NULL)
+					{
+						if (error != NULL)
+							*error = SJME_ERROR_THREADRETURN;
+						
+						return cycles;
+					}
+					
 					/* Copy global values back. */
 					for (ia = 0; ia < SJME_LOCAL_REGISTER_BASE; ia++)
 						oldcpu->r[ia] = cpu->r[ia];

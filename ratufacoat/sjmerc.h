@@ -264,6 +264,9 @@ typedef uint32_t sjme_juint;
 /** The virtual machine has exited, the supervisor did not flag! */
 #define SJME_ERROR_JVMEXIT_SUV_FAIL SJME_JINT_C(-18)
 
+/** Thread returned at the top-most frame and not through a system call. */
+#define SJME_ERROR_THREADRETURN SJME_JINT_C(-19)
+
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
 
