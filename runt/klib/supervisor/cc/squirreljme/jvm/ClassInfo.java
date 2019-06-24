@@ -33,6 +33,9 @@ public final class ClassInfo
 	/** The pointer to the minimized class file. */
 	public final int miniptr;
 	
+	/** The pointer to the class name. */
+	public final int namep;
+	
 	/** The allocation size of this class. */
 	public final int size;
 	
@@ -72,6 +75,7 @@ public final class ClassInfo
 	 * @param __sp Self pointer.
 	 * @param __fl Class information flags.
 	 * @param __minip Pointer to the hardware class data in ROM.
+	 * @param __namep The name pointer.
 	 * @param __sz The size of this class.
 	 * @param __bz The base offset for fields.
 	 * @param __no The number of objects in the field instance.
@@ -85,9 +89,10 @@ public final class ClassInfo
 	 * @param __vtp Virtual invoke VTable pool addresses.
 	 * @since 2019/04/26
 	 */
-	public ClassInfo(int __sp, int __fl, int __minip, int __sz, int __bz,
-		int __no, int __dim, int __csz, ClassInfo __scl, ClassInfo[] __icl,
-		ClassInfo __ccl, Class<?> __cop, int[] __vtv, int[] __vtp)
+	public ClassInfo(int __sp, int __fl, int __minip, int __namep, int __sz,
+		int __bz, int __no, int __dim, int __csz, ClassInfo __scl,
+		ClassInfo[] __icl, ClassInfo __ccl, Class<?> __cop, int[] __vtv,
+		int[] __vtp)
 	{
 		// Always implicitly set magic
 		this.magic = MAGIC_NUMBER;
@@ -96,6 +101,7 @@ public final class ClassInfo
 		this.selfptr = __sp;
 		this.flags = __fl;
 		this.miniptr = __minip;
+		this.namep = __namep;
 		this.size = __sz;
 		this.base = __bz;
 		this.numobjects = __no;

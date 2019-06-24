@@ -414,6 +414,14 @@ public final class JarMinimizer
 							wp, bi._classoffset);
 						break;
 						
+						// Pointer to the class name
+					case "namep:I":
+						__init.memWriteInt(Modifier.JAR_OFFSET,
+							wp, bi._classoffset + bi._class.header.pooloff +
+								bi._class.pool.offset(bi._class.pool.part(
+								bi._class.header.classname, 0)) + 4);
+						break;
+						
 						// Super class info
 					case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
 						{
