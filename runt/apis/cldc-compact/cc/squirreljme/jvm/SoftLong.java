@@ -105,6 +105,10 @@ public final class SoftLong
 	 */
 	public static long div(int __ah, int __al, int __bh, int __bl)
 	{
+		// Dividing by zero?
+		if (__bh == 0 && __bl == 0)
+			throw new ArithmeticException();
+		
 		return SoftLong.__div(false, Assembly.longPack(__ah, __al),
 			Assembly.longPack(__bh, __bl));
 	}
@@ -172,6 +176,10 @@ public final class SoftLong
 	 */
 	public static long rem(int __ah, int __al, int __bh, int __bl)
 	{
+		// Dividing by zero?
+		if (__bh == 0 && __bl == 0)
+			throw new ArithmeticException();
+		
 		return SoftLong.__div(true, Assembly.longPack(__ah, __al),
 			Assembly.longPack(__bh, __bl));
 	}
