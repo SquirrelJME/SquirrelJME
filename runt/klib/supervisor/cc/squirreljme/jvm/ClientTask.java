@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import java.util.HashMap;
+
 /**
  * This represents a single task which has information on what it is running
  * along with its ID and such.
@@ -28,6 +30,10 @@ public final class ClientTask
 	
 	/** The classpath. */
 	public final BootLibrary[] classpath;
+	
+	/** Classes which have been loaded. */
+	public final HashMap<String, ClientClassInfo> classinfos =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the client task.
@@ -72,7 +78,7 @@ public final class ClientTask
 	 * Loads the class information for this class.
 	 *
 	 * @param __cl The class to load.
-	 * @return The loaded class information.
+	 * @return The loaded class information or {@code 0} if it is not found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/23
 	 */
@@ -82,8 +88,14 @@ public final class ClientTask
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		// See if it was loaded already
+		HashMap<String, ClientClassInfo> classinfos = this.classinfos;
+		ClientClassInfo rv = classinfos.get(__cl);
+		if (classinfos.containsKey(__cl))
+			return (rv != null ? rv.classinfopointer : 0);
+		
 		// Debug
-		todo.DEBUG.note("Loading class %s...", __cl);
+		todo.DEBUG.note("Finding class %s...", __cl);
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
