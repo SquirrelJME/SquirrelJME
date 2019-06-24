@@ -345,11 +345,22 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doCheckCast(ClassName __cl, JavaStackResult.Input __v)
 	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
 		// Push reference
 		this.__refPush();
 		
+		// If the value to be checked is null then we do not thrown an
+		// exception, we just skip
+		NativeCodeLabel nullskip = new NativeCodeLabel("checkcastnull",
+			this._refclunk++);
+		codebuilder.addIfZero(__v.register, nullskip);
+		
 		// Add cast check
 		this.__basicCheckCCE(__v.register, __cl);
+		
+		// Null jump goes here
+		codebuilder.label(nullskip);
 		
 		// We already checked the only valid exceptions, so do not perform
 		// later handling!
