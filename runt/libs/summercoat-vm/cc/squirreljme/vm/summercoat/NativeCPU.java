@@ -64,7 +64,7 @@ public final class NativeCPU
 	
 	/** Threshhold for too many debug points */
 	private static final int _POINT_THRESHOLD =
-		8192;
+		16384;
 	
 	/** The machine state. */
 	protected final MachineState state;
