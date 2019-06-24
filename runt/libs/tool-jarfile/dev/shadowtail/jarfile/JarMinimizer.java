@@ -725,16 +725,30 @@ public final class JarMinimizer
 			return this.__classMethodIndex(new ClassName("java/lang/Object"),
 				__mn, __mt);
 		
+		// Seeker class
+		ClassName seeker = __cl;
+		
+		// Recursively scan for the method in all classes
+		Map<ClassName, __BootInfo__> boots = this._boots;
+		while (seeker != null)
+		{
+			// Get boot information
+			__BootInfo__ bi = boots.get(seeker);
+			MinimizedClassFile mcf = bi._class;
+			
+			// Is class found in this method?
+			MinimizedMethod mm = mcf.method(false, __mn, __mt);
+			if (mm != null)
+				return this.__classMethodBase(seeker) + mm.index;
+			
+			// Go above
+			seeker = mcf.superName();
+		}
+		
 		// {@squirreljme.error BC08 Could not locate the method. (The class;
 		// Method name; Method type)}
-		MinimizedMethod mm = this._boots.get(__cl)._class.method(false, __mn,
-			__mt);
-		if (mm == null)
-			throw new InvalidClassFormatException(
-				String.format("BC08 %s %s %s", __cl, __mn, __mt));
-		
-		// Return the base along with the actual index
-		return this.__classMethodBase(__cl) + mm.index;
+		throw new InvalidClassFormatException(
+			String.format("BC08 %s %s %s", __cl, __mn, __mt));
 	}
 	
 	/**

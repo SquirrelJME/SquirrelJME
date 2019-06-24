@@ -97,6 +97,41 @@ public final class ClientTask
 		// Debug
 		todo.DEBUG.note("Finding class %s...", __cl);
 		
+		// The library it is in and the resource index
+		BootLibrary inlib = null;
+		int dx = -1;
+		
+		// Go through the class path and find this class
+		BootLibrary[] classpath = this.classpath;
+		{
+			// Find this class
+			String filename = __cl + ".class";
+			
+			// Scan through all the class path
+			for (int i = 0, n = classpath.length; i < n; i++)
+			{
+				BootLibrary bl = classpath[i];
+				
+				// Search for the class fiole
+				dx = bl.indexOf(filename);
+				if (dx >= 0)
+				{
+					inlib = bl;
+					break;
+				}
+			}
+			
+			// If it was not found, remember this and then stop
+			if (dx < 0)
+			{
+				// Cache for later
+				classinfos.put(__cl, null);
+				
+				// Not found
+				return 0;
+			}
+		}
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
