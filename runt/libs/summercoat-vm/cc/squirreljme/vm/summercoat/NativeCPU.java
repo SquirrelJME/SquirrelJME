@@ -62,6 +62,10 @@ public final class NativeCPU
 	public static final int METHOD_CACHE_SPILL =
 		1024;
 	
+	/** Threshhold for too many debug points */
+	private static final int _POINT_THRESHOLD =
+		8192;
+	
 	/** The machine state. */
 	protected final MachineState state;
 	
@@ -216,6 +220,12 @@ public final class NativeCPU
 		final byte[] icache = new byte[METHOD_CACHE];
 		int lasticache = -(METHOD_CACHE_SPILL + 1);
 		
+		// First debug point?
+		boolean firstpoint = false;
+		
+		// Debug point counter
+		int pointcounter = 0;
+		
 		// Execution is effectively an infinite loop
 		LinkedList<Frame> frames = this._frames;
 		for (int frameat = frames.size(), lastframe = -1; frameat >= __fl;
@@ -351,13 +361,39 @@ public final class NativeCPU
 						throw new todo.OOPS(af[i].name());
 				}
 			
-			// Print CPU debug info
+			// Determine the encoding
 			int encoding = NativeInstruction.encoding(op);
-			if (ENABLE_DEBUG &&
-				encoding != NativeInstructionType.DEBUG_ENTRY &&
-				encoding != NativeInstructionType.DEBUG_EXIT &&
-				encoding != NativeInstructionType.DEBUG_POINT)
+			
+			// Set first point flag
+			if (encoding == NativeInstructionType.DEBUG_ENTRY)
+				firstpoint = true;
+			
+			// Print CPU debug info
+			if (ENABLE_DEBUG)
 				this.__cpuDebugPrint(nowframe, op, af, args, reglist);
+			
+			// Debug point checking
+			if (encoding == NativeInstructionType.DEBUG_POINT)
+			{
+				// First point printing?
+				boolean doprint = false;
+				if (firstpoint && ENABLE_DEBUG)
+				{
+					doprint = true;
+					firstpoint = false;
+				}
+				
+				// Seems to be stuck?
+				if (pointcounter++ >= _POINT_THRESHOLD)
+				{
+					doprint = true;
+					pointcounter = 0;
+				}
+				
+				// Print the point?
+				if (doprint)
+					this.__cpuDebugPrint(nowframe, op, af, args, reglist);
+			}
 			
 			// By default the next instruction is the address after all
 			// arguments have been read
@@ -507,6 +543,9 @@ public final class NativeCPU
 						
 						// Entering some other frame
 						reload = true;
+						
+						// Clear point counter
+						pointcounter = 0;
 					}
 					break;
 					
@@ -733,6 +772,9 @@ public final class NativeCPU
 						
 						// A reload is done as the frame has changed
 						reload = true;
+						
+						// Clear point counter
+						pointcounter = 0;
 						
 						// Debug
 						if (ENABLE_DEBUG)

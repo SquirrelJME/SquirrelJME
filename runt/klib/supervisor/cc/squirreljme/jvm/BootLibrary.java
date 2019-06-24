@@ -16,6 +16,34 @@ package cc.squirreljme.jvm;
  */
 public final class BootLibrary
 {
+	/** Offset of the resource count. */
+	public static final int NUMRC_OFFSET =
+		4;
+		
+	/** Offset of the table of contents. */
+	public static final int TOC_OFFSET_OFFSET =
+		8;
+	
+	/** TOC hashcode offset. */
+	public static final int TOC_HASHCODE_OFFSET =
+		0;
+	
+	/** TOC name offset. */
+	public static final int TOC_NAME_OFFSET =
+		4;
+	
+	/** TOC Data offset. */
+	public static final int TOC_DATA_OFFSET =
+		8;
+	
+	/** TOC Size offset. */
+	public static final int TOC_SIZE_OFFSET =
+		12;
+	
+	/** Size of table of contents entries. */
+	public static final int TOC_ENTRY_SIZE =
+		16;
+	
 	/** The name of this library. */
 	protected final String name;
 	
@@ -62,8 +90,9 @@ public final class BootLibrary
 		this.manifestlength = __mlen;
 		
 		// Read table of contents info
-		this.tocaddress = 0;
-		this.entrycount = 0;
+		this.tocaddress = __addr +
+			Assembly.memReadJavaInt(__addr, TOC_OFFSET_OFFSET);
+		this.entrycount = Assembly.memReadJavaInt(__addr, NUMRC_OFFSET);
 	}
 	
 	/**
@@ -79,8 +108,31 @@ public final class BootLibrary
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Hash code for this string
+		int hash = __name.hashCode();
+		
+		// Scan through the table of contents
+		int bp = this.address,
+			sp = this.tocaddress;
+		for (int i = 0, n = this.entrycount; i < n; i++, sp += TOC_ENTRY_SIZE)
+		{
+			todo.DEBUG.note("%d: %s",
+				Assembly.memReadJavaInt(sp, TOC_HASHCODE_OFFSET),
+				JVMFunction.jvmLoadString(
+					bp + Assembly.memReadJavaInt(sp, TOC_NAME_OFFSET)));
+			
+			// Hash code does not match
+			if (hash != Assembly.memReadJavaInt(sp, TOC_HASHCODE_OFFSET))
+				continue;
+			
+			// Is at this index
+			if (__name.equals(JVMFunction.jvmLoadString(
+				bp + Assembly.memReadJavaInt(sp, TOC_NAME_OFFSET))))
+				return i;
+		}
+		
+		// Not found
+		return -1;
 	}
 }
 
