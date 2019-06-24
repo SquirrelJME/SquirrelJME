@@ -698,35 +698,37 @@ public final class NativeCPU
 						Frame was = frames.removeLast(),
 							now = frames.peekLast();
 						
-						// If we are going back onto a frame then copy all
+						// {@squirreljme.AE0m Return from the main frame
+						// without using a system call to exit.}
+						if (now == null)
+							throw new VMException("AE0m");
+						
+						// We are going back onto a frame so copy all
 						// the globals which were set since they are meant to
 						// be global!
-						if (now != null)
+						int[] wr = was._registers,
+							nr = now._registers;
+						
+						// Copy globals
+						for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE;
+							i++)
 						{
-							int[] wr = was._registers,
-								nr = now._registers;
+							// Ignore the pool register because if it is
+							// replaced then it will just explode and
+							// cause issues for the parent method
+							if (i == NativeCode.POOL_REGISTER)
+								continue;
 							
-							// Copy globals
-							for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE;
-								i++)
+							// Reset the next pool register
+							else if (i == NativeCode.NEXT_POOL_REGISTER)
 							{
-								// Ignore the pool register because if it is
-								// replaced then it will just explode and
-								// cause issues for the parent method
-								if (i == NativeCode.POOL_REGISTER)
-									continue;
-								
-								// Reset the next pool register
-								else if (i == NativeCode.NEXT_POOL_REGISTER)
-								{
-									nr[i] = 0;
-									break;
-								}
-								
-								// Copy otherwise
-								else
-									nr[i] = wr[i];
+								nr[i] = 0;
+								break;
 							}
+							
+							// Copy otherwise
+							else
+								nr[i] = wr[i];
 						}
 						
 						// A reload is done as the frame has changed
