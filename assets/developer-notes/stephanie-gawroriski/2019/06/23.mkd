@@ -1,0 +1,20 @@
+# 2019/06/23
+
+## 12:49
+
+I need to specify the main class for the launcher as well!
+
+## 13:22
+
+So now pretty much what will be happening to booting the first program and
+doing similar stuff to the `BootJAR` although a bit more complicated. To
+make it easy and not messy in the CLDC code, I am just going to have all
+the loading stuff in the supervisor itself. It can manage all of that no
+problem and not too worried about it.
+
+## 19:43
+
+Okay so, I sorted entries in the JAR and also am putting in the hashcode
+for each table of contents for resources, will be far better to scan
+through them!
+
