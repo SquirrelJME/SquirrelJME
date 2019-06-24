@@ -73,8 +73,8 @@ public final class Bootstrap
 			// Start the initial task
 			todo.DEBUG.note("Creating initial task...");
 			ClientTask boot = ctm.newTask(
-				BootLibrary.initialClasspath(__rombase, config),
-				BootLibrary.initialMain(__rombase, config),
+				BootRom.initialClasspath(__rombase, config),
+				BootRom.initialMain(__rombase, config),
 				config.loadStrings(ConfigRomType.MAIN_ARGUMENTS),
 				config.loadKeyValueMap(ConfigRomType.DEFINE_PROPERTY));
 			todo.DEBUG.note("Okay.");
