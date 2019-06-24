@@ -1539,13 +1539,23 @@ public final class NearNativeByteCodeHandler
 			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
 			this.__useEDataDebugPoint(e.getValue(), 257);
 			
-			// Allocate class object
-			this.__invokeNew(csl.classname, NativeCode.EXCEPTION_REGISTER);
+			// Allocate class object, make sure it is not done in the exception
+			// register because the method we call may end up just clearing it
+			// and stopping if a make exception is done (because there is an
+			// exception here).
+			int exinst = volatiles.get();
+			this.__invokeNew(csl.classname, exinst);
 			
 			// Initialize the exception
 			this.__invokeInstance(InvokeType.SPECIAL, csl.classname, "<init>",
-				"()V", new RegisterList(NativeCode.EXCEPTION_REGISTER));
-				
+				"()V", new RegisterList(exinst));
+			
+			// Copy result into the exception register
+			codebuilder.addCopy(exinst, NativeCode.EXCEPTION_REGISTER);
+			
+			// Done with this
+			volatiles.remove(exinst);
+			
 			// Generate jump to exception handler
 			codebuilder.addGoto(csl.label);
 		}
