@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -115,7 +116,7 @@ public class Throwable
 		{
 			// Is this the main trace or a caused by?
 			todo.DEBUG.note("%s Stack Trace: %s", (rover == this ?
-				"Supervisor" : "Caused By"), rover._message);
+				"Supervisor" : "Caused By"), rover.toString());
 			
 			// Obtain the raw trace that was captured on construction
 			int[] rawtrace = this._rawtrace;
@@ -149,6 +150,20 @@ public class Throwable
 					todo.DEBUG.code('X', 'T', base);
 				}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/24
+	 */
+	@Override
+	public String toString()
+	{
+		int namep = Assembly.pointerToClassInfo(
+			Assembly.memReadInt(Assembly.objectToPointer(this),
+			Constants.OBJECT_CLASS_OFFSET)).namep;
+		todo.DEBUG.code('N', 'P', namep);
+		return JVMFunction.jvmLoadString(namep);// + ": " + this._message;
 	}
 	
 	/**
