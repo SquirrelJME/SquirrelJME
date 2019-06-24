@@ -441,6 +441,7 @@ public class Image
 		
 		// Needs to be rendered
 		if (__i instanceof ScalableImage)
+			throw new todo.TODO();
 		
 		// Same otherwise
 		else if (!__i._mutable)
