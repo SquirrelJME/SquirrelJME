@@ -422,15 +422,39 @@ public class Image
 		}
 	}
 	
-	public static Image createImage(Image __a)
+	/**
+	 * Creates an immutable image which is an exact copy of the other image. If
+	 * the other image is scalable it will be rasterized with whatever
+	 * dimensions the other image has. If the specified image is immutable then
+	 * it will be returned.
+	 *
+	 * @param __i The image to copy.
+	 * @return The resulting copy.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/24
+	 */
+	public static Image createImage(Image __i)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Needs to be rendered
+		if (__i instanceof ScalableImage)
+		
+		// Same otherwise
+		else if (!__i._mutable)
+			return this;
+		
+		// Copy and make this immutable
+		return new Image(this._data.clone(), this._width, this._height,
+			false, this._alpha);
 	}
 	
-	public static Image createImage(Image __a, int __b, int __c, int __d, int
-		__e, int __f)
+	public static Image createImage(Image __i, int __x, int __y,
+		int __w, int __h, int __trans)
 	{
-		throw new todo.TODO();
+		return Image.createImage(__i, __x, __y, __w, __h, __trans);
 	}
 	
 	public static Image createImage(Image __i, int __x, int __y, int __w,
