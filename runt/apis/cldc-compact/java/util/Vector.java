@@ -220,11 +220,34 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * Copies this vector to the given array.
+	 *
+	 * @param __a The target array.
+	 * @throws ArrayStoreException If the array cannot store the vector
+	 * values.
+	 * @throws IndexOutOfBoundsException If the array is too small.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/24
+	 */
 	public void copyInto(Object[] __a)
+		throws ArrayStoreException, IndexOutOfBoundsException,
+			NullPointerException
 	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// {@squirreljme.error ZZ3q The destination array is too small.}
+			int n = this.elementCount;
+			if (n > __a.length)
+				throw new IndexOutOfBoundsException("ZZ3q");
+			
+			// Copy into
+			Object[] elements = this.elementData;
+			for (int i = 0; i < n; i++)
+				__a[i] = elements[i];
 		}
 	}
 	
