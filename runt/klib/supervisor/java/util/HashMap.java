@@ -39,8 +39,21 @@ public class HashMap<K, V>
 	 */
 	public boolean containsKey(Object __k)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Calculate hash code
+		int hash = __k.hashCode();
+		
+		// Find existing bucket
+		__Bucket__ bucket = this._buckets[hash & _BUCKET_MASK];
+		if (bucket == null)
+			return false;
+		
+		// Go through items
+		for (__Item__ i : bucket._items)
+			if (i._hash == hash && HashMap.__equals(__k, i._key))
+				return true;
+		
+		// Not found
+		return false;
 	}
 	
 	/**
