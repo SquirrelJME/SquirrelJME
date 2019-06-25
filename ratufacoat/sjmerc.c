@@ -2871,7 +2871,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	vmem = sjme_vmmnew(error);
 	if (vmem == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_VMMNEWFAIL, 0);
+		sjme_seterror(error, SJME_ERROR_VMMNEWFAIL, error->code);
 		
 		return NULL;
 	}
