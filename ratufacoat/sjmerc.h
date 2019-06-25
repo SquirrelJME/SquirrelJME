@@ -306,9 +306,7 @@ typedef struct sjme_error
  *
  * @since 2019/06/25
  */
-typedef struct sjme_vmem
-{
-} sjme_vmem;
+typedef struct sjme_vmem sjme_vmem;
 
 /**
  * Virtual memory pointer.

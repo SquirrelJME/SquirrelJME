@@ -14,6 +14,13 @@
 
 #include "sjmerc.h"
 
+/** Virtual memory information. */
+struct sjme_vmem
+{
+	/** The number of mappings. */
+	sjme_jint count;
+};
+
 /** Creates a new virtual memory manager. */
 sjme_vmem* sjme_vmmnew(sjme_error* error)
 {
@@ -27,8 +34,6 @@ sjme_vmem* sjme_vmmnew(sjme_error* error)
 		
 		return NULL;
 	}
-	
-	abort();
 	
 	return rv;
 }
