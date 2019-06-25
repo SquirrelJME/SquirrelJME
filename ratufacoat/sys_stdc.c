@@ -72,15 +72,14 @@ sjme_nativefilename* sjme_stdc_nativeromfile(void)
 
 /** Opens the specified file. */
 sjme_nativefile* sjme_stdc_fileopen(sjme_nativefilename* filename,
-	sjme_jint mode, sjme_jint* error)
+	sjme_jint mode, sjme_error* error)
 {
 	sjme_nativefile* rv;
 	int err;
 	
 	if (filename == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDARG;
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return NULL;
 	}
@@ -101,9 +100,9 @@ sjme_nativefile* sjme_stdc_fileopen(sjme_nativefilename* filename,
 		{
 			err = errno;
 			if (err == ENOENT)
-				*error = SJME_ERROR_NOSUCHFILE;
+				sjme_seterror(error, SJME_ERROR_NOSUCHFILE, 0);
 			else
-				*error = SJME_ERROR_UNKNOWN;
+				sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
 		}
 		
 		// Clear out
@@ -116,15 +115,14 @@ sjme_nativefile* sjme_stdc_fileopen(sjme_nativefilename* filename,
 }
 
 /** Closes the specified file. */
-void sjme_stdc_fileclose(sjme_nativefile* file, sjme_jint* error)
+void sjme_stdc_fileclose(sjme_nativefile* file, sjme_error* error)
 {
 	int rv;
 	
 	/* Not closing a file? */
 	if (file == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDARG;
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return;
 	}
@@ -135,22 +133,22 @@ void sjme_stdc_fileclose(sjme_nativefile* file, sjme_jint* error)
 	
 	/* Set error state? */
 	if (error != NULL)
-		*error = (rv == 0 ? SJME_ERROR_NONE : SJME_ERROR_UNKNOWN);
+		sjme_seterror(error, (rv == 0 ? SJME_ERROR_NONE : SJME_ERROR_UNKNOWN),
+			0);
 	
 	/* Free resources. */
 	free(file);
 }
 
 /** Returns the size of the file. */
-sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_jint* error)
+sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_error* error)
 {
 	long now, size;
 	
 	/* Not valid? */
 	if (file == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDARG;
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -161,8 +159,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_jint* error)
 	/* Seek to end. */
 	if (fseek(file->file, 0, SEEK_END) != 0)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_UNKNOWN;
+		sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -171,8 +168,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_jint* error)
 	size = ftell(file->file);
 	if (size < 0)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_UNKNOWN;
+		sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -180,8 +176,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_jint* error)
 	/* Seek back. */
 	if (fseek(file->file, now, SEEK_SET) != 0)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_UNKNOWN;
+		sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -194,7 +189,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_jint* error)
 
 /** Reads from a file. */
 sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
-	sjme_jint* error)
+	sjme_error* error)
 {
 	size_t rv;
 	
@@ -205,8 +200,7 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 	/* Invalid argument? */
 	if (file == NULL || dest == NULL || len < 0)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDARG;
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -217,17 +211,11 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 	{
 		/* End of file? */
 		if (feof(file->file) != 0)
-		{
-			if (error != NULL)
-				*error = SJME_ERROR_ENDOFFILE;
-		}
+			sjme_seterror(error, SJME_ERROR_ENDOFFILE, 0);
 		
 		/* Another error. */
 		else
-		{
-			if (error != NULL)
-				*error = SJME_ERROR_UNKNOWN;
-		}
+			sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -309,9 +297,12 @@ int main(int argc, char** argv)
 {
 	sjme_jvmoptions options;
 	sjme_jvm* jvm;
-	sjme_jint error;
+	sjme_error error;
 	
-	/** Wipe options because it will get set and such. */
+	/* Clear error. */
+	memset(&error, 0, sizeof(error));
+	
+	/* Wipe options because it will get set and such. */
 	memset(&options, 0, sizeof(options));
 	
 	/* Setup arguments. */
@@ -330,12 +321,11 @@ int main(int argc, char** argv)
 	stdcfuncs.framebuffer = sjme_stdc_framebuffer;
 	
 	/* Create VM. */
-	error = SJME_ERROR_NONE;
 	jvm = sjme_jvmnew(&options, &stdcfuncs, &error);
 	if (jvm == NULL)
 	{
 		fprintf(stderr, "Failed to create the JVM! (Error %d/0x%X)\n",
-			(int)error, (unsigned int)error);
+			(int)error.code, (unsigned int)error.code);
 		return EXIT_FAILURE;
 	}
 	
@@ -343,25 +333,24 @@ int main(int argc, char** argv)
 	for (;;)
 	{
 		/* Just execute the VM and disregard nay cycles that remain. */
-		error = SJME_ERROR_NONE;
 		sjme_jvmexec(jvm, &error, SJME_JINT_C(1048576));
 		
 		/* The JVM hit some kind of error? */
-		if (error != SJME_ERROR_NONE)
+		if (error.code != SJME_ERROR_NONE)
 		{
 			/* Normal JVM exit, not considered a true error. */
-			if (error == SJME_ERROR_JVMEXIT_SUV_OKAY)
+			if (error.code == SJME_ERROR_JVMEXIT_SUV_OKAY)
 				break;
 			
 			/* Message on it! */
 			fprintf(stderr, "JVM execution fault! (Error %d/0x%X)\n",
-				(int)error, (unsigned int)error);
+				(int)error.code, (unsigned int)error.code);
 			
 			/* Destroy the JVM to free resources. */
 			sjme_jvmdestroy(jvm, &error);
-			if (error != SJME_ERROR_NONE)
+			if (error.code != SJME_ERROR_NONE)
 				fprintf(stderr, "JVM destruction error! (Error %d/0x%X)\n",
-					(int)error, (unsigned int)error);
+					(int)error.code, (unsigned int)error.code);
 			
 			return EXIT_FAILURE;
 		}
@@ -372,9 +361,9 @@ int main(int argc, char** argv)
 	
 	/* Destroy the VM so it uses no memory. */
 	sjme_jvmdestroy(jvm, &error);
-	if (error != SJME_ERROR_NONE)
+	if (error.code != SJME_ERROR_NONE)
 		fprintf(stderr, "JVM destruction error! (Error %d/0x%X)\n",
-			(int)error, (unsigned int)error);
+			(int)error.code, (unsigned int)error.code);
 	
 	return EXIT_SUCCESS;
 }

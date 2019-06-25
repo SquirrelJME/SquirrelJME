@@ -49,8 +49,8 @@ static sjme_jvm* sjme_retroarch_jvm = NULL;
 static sjme_nativefuncs sjme_retroarch_nativefuncs;
 
 /** Error state. */
-static sjme_jint sjme_retroarch_error =
-	SJME_ERROR_NONE;
+static sjme_error sjme_retroarch_error =
+	{SJME_ERROR_NONE, 0};
 
 /** Returns the supported RetroArch version. */
 unsigned retro_api_version(void)
@@ -401,9 +401,10 @@ void retro_init(void)
 		&sjme_retroarch_error);
 	
 	/* Note it. */
-	log_cb((sjme_retroarch_error == SJME_ERROR_NONE ?
+	log_cb((sjme_retroarch_error.code == SJME_ERROR_NONE ?
 		RETRO_LOG_INFO : RETRO_LOG_ERROR), "SquirrelJME Init: %d/%x\n",
-		(int)sjme_retroarch_error, (unsigned)sjme_retroarch_error);
+		(int)sjme_retroarch_error.code,
+		(unsigned)sjme_retroarch_error.code);
 }
 
 /** Destroy. */
@@ -438,7 +439,7 @@ void retro_run(void)
 	input_poll_cb();
 	
 	/* If the VM died, just display a screen. */
-	if (sjme_retroarch_error != SJME_ERROR_NONE)
+	if (sjme_retroarch_error.code != SJME_ERROR_NONE)
 	{
 		/* Print failure message only once! */
 		if (died == 0)
@@ -453,7 +454,8 @@ void retro_run(void)
 			
 			/* Print error. */
 			log_cb(RETRO_LOG_ERROR, "SquirrelJME JVM Exec Error: %d/%x\n",
-				(int)sjme_retroarch_error, (unsigned)sjme_retroarch_error);
+				(int)sjme_retroarch_error.code,
+				(unsigned)sjme_retroarch_error.code);
 			log_cb(RETRO_LOG_ERROR, "Execution now unpredictable!\n");
 		}
 		
