@@ -267,6 +267,9 @@ typedef uint32_t sjme_juint;
 /** Thread returned at the top-most frame and not through a system call. */
 #define SJME_ERROR_THREADRETURN SJME_JINT_C(-19)
 
+/** Bad memory access. */
+#define SJME_ERROR_BADADDRESS SJME_JINT_C(-20)
+
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
 
