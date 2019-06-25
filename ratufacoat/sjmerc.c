@@ -1070,6 +1070,51 @@ void* sjme_realptr(sjme_jvm* jvm, void* ptr)
 }
 #endif
 
+/** Checks that the given address is valid. */
+sjme_jint sjme_checkaddress(sjme_jvm* jvm, void* ptr, sjme_jint off)
+{
+	uintptr_t vptr;
+	
+	/* Get the true pointer. */
+#if defined(SJME_VIRTUAL_MEM)
+	ptr = SJME_POINTER_OFFSET_LONG(sjme_realptr(jvm, ptr), off);
+#else
+	ptr = SJME_POINTER_OFFSET(ptr, off);
+#endif
+
+	/* Map pointer to pure integer. */
+	vptr = SJME_POINTER_TO_JMEM(ptr);
+	
+	/* Within Configuration ROM region? */
+	if (vptr >= SJME_POINTER_TO_JMEM(jvm->config) &&
+		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->config,
+			jvm->configsize)))
+		return 1;
+	
+	/* Within RAM region? */
+	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->ram) &&
+		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->ram,
+			jvm->ramsize)))
+		return 1;
+	
+	/* Within ROM region? */
+	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->rom) &&
+		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->rom,
+			jvm->romsize)))
+		return 1;
+	
+	/* Within Framebuffer region? */
+	else if (jvm->fbinfo != NULL && vptr >= SJME_POINTER_TO_JMEM(
+		jvm->fbinfo->pixels) && vptr < SJME_POINTER_TO_JMEM(
+		SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
+			jvm->fbsize)))
+		return 1;
+	
+	/* Not valid. */
+	return 0;
+}
+
+
 /**
  * Reads a value from memory.
  *
@@ -1379,12 +1424,29 @@ sjme_jint sjme_opdecodeui(sjme_jvm* jvm, void** ptr)
 		rv = (rv & SJME_JINT_C(0x7F)) << SJME_JINT_C(8);
 		rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
 	}
-
-#if 0
-	fprintf(stderr, "Decode: %d 0x%X\n", (int)rv, (unsigned)rv);
-#endif
 	
 	/* Use read value. */
+	return rv;
+}
+
+/**
+ * Decodes register from the virtual machine.
+ *
+ * @param jvm The JVM to read from.
+ * @param ptr The pointer to read from.
+ * @return The resulting register value.
+ * @since 2019/06/25
+ */
+sjme_jint sjme_opdecodereg(sjme_jvm* jvm, void** ptr)
+{
+	sjme_jint rv;
+	
+	/* Decode register. */
+	rv = sjme_opdecodeui(jvm, ptr);
+	
+	/* Keep within register bound. */
+	if (rv < 0 || rv >= SJME_MAX_REGISTERS)
+		return 0;
 	return rv;
 }
 
@@ -2096,8 +2158,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_ENC_IF_ICMP:
 				{
 					/* Values to compare. */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
-					ib = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
+					ib = r[sjme_opdecodereg(jvm, &nextpc)];
 					
 					/* Target PC address. */
 					ic = sjme_opdecodejmp(jvm, &nextpc);
@@ -2157,13 +2219,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_ENC_MATH_CONST_INT:
 				{
 					/* A Value. */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
 					
 					/* B value. */
 					if (enc == SJME_ENC_MATH_CONST_INT)
 						ib = sjme_opdecodejint(jvm, &nextpc);
 					else
-						ib = r[sjme_opdecodeui(jvm, &nextpc)];
+						ib = r[sjme_opdecodereg(jvm, &nextpc)];
 					
 					/* Perform the math. */
 					switch (op & SJME_ENC_MATH_MASK)
@@ -2260,7 +2322,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					}
 					
 					/* Store result. */
-					r[sjme_opdecodeui(jvm, &nextpc)] = ic;
+					r[sjme_opdecodereg(jvm, &nextpc)] = ic;
 				}
 				break;
 				
@@ -2272,12 +2334,21 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ic = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* The address and offset to access. */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
 					if (enc == SJME_ENC_MEMORY_OFF_ICONST)
 						ib = sjme_opdecodejint(jvm, &nextpc);
 					else
-						ib = r[sjme_opdecodeui(jvm, &nextpc)];
+						ib = r[sjme_opdecodereg(jvm, &nextpc)];
 					tempp = SJME_JINT_TO_POINTER(ia);
+					
+					/* Check the address. */
+					if (sjme_checkaddress(jvm, tempp, ib) == 0)
+					{
+						if (error != NULL)
+							*error = SJME_ERROR_BADADDRESS;
+						
+						return cycles;
+					}
 					
 					/* Load value */
 					if ((op & SJME_MEM_LOAD_MASK) != 0)
@@ -2339,12 +2410,21 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ic = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* The address to access. */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
 					if (enc == SJME_ENC_MEMORY_OFF_ICONST_JAVA)
 						ib = sjme_opdecodejint(jvm, &nextpc);
 					else
-						ib = r[sjme_opdecodeui(jvm, &nextpc)];
+						ib = r[sjme_opdecodereg(jvm, &nextpc)];
 					tempp = SJME_JINT_TO_POINTER(ia);
+					
+					/* Check the address. */
+					if (sjme_checkaddress(jvm, tempp, ib) == 0)
+					{
+						if (error != NULL)
+							*error = SJME_ERROR_BADADDRESS;
+						
+						return cycles;
+					}
 					
 					/* Load value */
 					if ((op & SJME_MEM_LOAD_MASK) != 0)
@@ -2405,7 +2485,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					id = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Load address and offset. */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
 					ib = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Read value here. */
@@ -2426,7 +2506,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_OP_ATOMIC_INT_INCREMENT:
 				{
 					/* Load address and offset. */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
 					ib = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Read value here. */
@@ -2503,7 +2583,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 			case SJME_OP_IFEQ_CONST:
 				{
 					/* A value. */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
 					
 					/* B value. */
 					ib = sjme_opdecodejint(jvm, &nextpc);
@@ -2544,7 +2624,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					r[SJME_NEXT_POOL_REGISTER] = 0;
 					
 					/* The address to execute. */
-					ia = oldcpu->r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = oldcpu->r[sjme_opdecodereg(jvm, &nextpc)];
 					
 					/* Load in register list (wide). */
 					ib = sjme_memjreadp(jvm, 1, &nextpc);
@@ -2594,8 +2674,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ic = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Address and index */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
-					ib = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
+					ib = r[sjme_opdecodereg(jvm, &nextpc)];
 					
 					/* Load from array. */
 					r[ic] = sjme_memread(jvm, 4, SJME_JINT_TO_POINTER(ia),
@@ -2610,7 +2690,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					ia = sjme_opdecodeui(jvm, &nextpc);
 					
 					/* Write into destination register. */
-					r[sjme_opdecodeui(jvm, &nextpc)] = 
+					r[sjme_opdecodereg(jvm, &nextpc)] = 
 						sjme_memread(jvm, 4,
 							SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]),
 							ia * SJME_JINT_C(4));
@@ -2659,14 +2739,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						cpu->syscallargs[ia] = 0;
 					
 					/* Load call type. */
-					ia = r[sjme_opdecodeui(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm, &nextpc)];
 					
 					/* Load call arguments. */
 					ic = sjme_opdecodeui(jvm, &nextpc);
 					for (ib = 0; ib < ic; ib++)
 					{
 						/* Get value. */
-						id = r[sjme_opdecodeui(jvm, &nextpc)];
+						id = r[sjme_opdecodereg(jvm, &nextpc)];
 						
 						/* Set but never exceed the system call limit. */
 						if (ib < SJME_MAX_SYSCALLARGS)
