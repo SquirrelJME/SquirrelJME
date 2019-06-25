@@ -1,0 +1,45 @@
+# 2019/06/24
+
+## 08:27
+
+So I need a hashmap now, I think I will just have a single class and
+implement it very simply right now.
+
+## 09:07
+
+Okay so throwing a `ClassCastException` but then it stops, so this
+gives me the idea that the exception register is not being cleared on
+handling like how it happened previously.
+
+## 09:41
+
+Did some exception optimizations, no checking done if all the exception
+cases were handled already. Also finally did divide by zero check, so
+that should work out well. Still have the make exception issue but I
+am pretty sure I know what is going on.
+
+## 09:43
+
+Oh, I should not use the exception register directly when doing make
+exceptions because then the call to the constructor might end up checking
+that in which case bad things will happen.
+
+## 09:49
+
+So that fixed the issue, now I have the CCE. So I am guessing that the CCE is
+made by the instance checker but since null is not an instance of something it
+fails. So I need a new JVMFunction for this.
+
+## 09:53
+
+Actually no new method is needed, just a null skip.
+
+## 16:53
+
+So if the ROM is okay and SummerCoat fails, then something is wrong in the
+suite information stuff somewhere.
+
+## 17:08
+
+Seems the problem went away? I guess it was due to a stale buile. But
+RatufaCoat does not print the string name properly while SummerCoat does.
