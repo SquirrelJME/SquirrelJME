@@ -18,3 +18,9 @@ Okay so, I sorted entries in the JAR and also am putting in the hashcode
 for each table of contents for resources, will be far better to scan
 through them!
 
+## 20:32
+
+Tomorrow I should get resource loading done and such, so that way things
+work and such. I will also be loading resources and such, so it should
+be similar to the class library stuff in the BootJAR code hopefully. But
+with everything in the supervisor.
