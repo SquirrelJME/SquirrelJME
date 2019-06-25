@@ -271,7 +271,7 @@ typedef uint32_t sjme_juint;
 #define SJME_ERROR_BADADDRESS SJME_JINT_C(-20)
 
 /** Invalid CPU operation. */
-#define SJME_ERROR_INVALIDOP SJME_JINT_C(-512)
+#define SJME_ERROR_INVALIDOP SJME_JINT_C(-21)
 
 /**
  * Java virtual machine arguments.
@@ -373,6 +373,16 @@ typedef struct sjme_framebuffer
 	sjme_jint numpixels;
 } sjme_framebuffer;
 
+/** This represents an error. */
+typedef struct sjme_error
+{
+	/** Error code. */
+	sjme_jint code;
+	
+	/** The value of it. */
+	sjme_jint value;
+} sjme_error;
+
 /**
  * This represents the name of a file in native form, system dependent.
  *
@@ -414,17 +424,17 @@ typedef struct sjme_nativefuncs
 	
 	/** Opens the specified file. */
 	sjme_nativefile* (*fileopen)(sjme_nativefilename* filename,
-		sjme_jint mode, sjme_jint* error);
+		sjme_jint mode, sjme_error* error);
 	
 	/** Closes the specified file. */
-	void (*fileclose)(sjme_nativefile* file, sjme_jint* error);
+	void (*fileclose)(sjme_nativefile* file, sjme_error* error);
 	
 	/** Returns the size of the file. */
-	sjme_jint (*filesize)(sjme_nativefile* file, sjme_jint* error);
+	sjme_jint (*filesize)(sjme_nativefile* file, sjme_error* error);
 	
 	/** Reads part of a file. */
 	sjme_jint (*fileread)(sjme_nativefile* file, void* dest, sjme_jint len,
-		sjme_jint* error);
+		sjme_error* error);
 	
 	/** Writes single byte to standard output. */
 	sjme_jint (*stdout_write)(sjme_jint b);
@@ -437,6 +447,16 @@ typedef struct sjme_nativefuncs
 } sjme_nativefuncs;
 
 /**
+ * Sets the error code.
+ *
+ * @param error The error to set.
+ * @param code The error code.
+ * @param value The error value.
+ * @since 2019/06/25
+ */
+void sjme_seterror(sjme_error* error, sjme_jint code, sjme_jint value);
+
+/**
  * Executes code running within the JVM.
  *
  * @param jvm The JVM to execute.
@@ -445,7 +465,7 @@ typedef struct sjme_nativefuncs
  * @return Non-zero if the JVM is resuming, otherwise zero on its exit.
  * @since 2019/06/05
  */
-sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles);
+sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles);
 
 /**
  * Destroys the virtual machine instance.
@@ -455,7 +475,7 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles);
  * @return Non-zero if successful.
  * @since 2019/06/09
  */
-sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error);
+sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error);
 
 /**
  * Creates a new instance of a SquirrelJME JVM.
@@ -468,7 +488,7 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error);
  * @since 2019/06/03
  */
 sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
-	sjme_jint* error);
+	sjme_error* error);
 
 /****************************************************************************/
 

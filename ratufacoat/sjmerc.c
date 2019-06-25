@@ -910,6 +910,16 @@ struct sjme_jvm
 #endif
 };
 
+/** Sets the error code. */
+void sjme_seterror(sjme_error* error, sjme_jint code, sjme_jint value)
+{
+	if (error != NULL)
+	{
+		error->code = code;
+		error->value = value;
+	}
+}
+
 /**
  * Allocates the given number of bytes.
  *
@@ -1627,7 +1637,7 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
  * @return The result of the call.
  * @since 2019/06/09
  */
-sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
+sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jshort callid, sjme_jint* args)
 {
 	sjme_jint* syserr;
@@ -1638,8 +1648,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 	/* Called wrong? */
 	if (jvm == NULL || cpu == NULL || args == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDARG;
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return 0;
 	}
@@ -2086,7 +2095,7 @@ sjme_jint_div sjme_div(sjme_jint anum, sjme_jint aden)
  * @return The number of remaining cycles.
  * @since 2019/06/08
  */
-sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
+sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jint cycles)
 {
 	sjme_jint op, enc;
@@ -2099,8 +2108,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDARG;
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return cycles;
 	}
@@ -2344,8 +2352,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Check the address. */
 					if (sjme_checkaddress(jvm, tempp, ib) == 0)
 					{
-						if (error != NULL)
-							*error = SJME_ERROR_BADADDRESS;
+						sjme_seterror(error, SJME_ERROR_BADADDRESS,
+							SJME_POINTER_TO_JINT(
+								SJME_POINTER_OFFSET(tempp, ib)));
 						
 						return cycles;
 					}
@@ -2420,8 +2429,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Check the address. */
 					if (sjme_checkaddress(jvm, tempp, ib) == 0)
 					{
-						if (error != NULL)
-							*error = SJME_ERROR_BADADDRESS;
+						sjme_seterror(error, SJME_ERROR_BADADDRESS,
+							SJME_POINTER_TO_JINT(
+								SJME_POINTER_OFFSET(tempp, ib)));
 						
 						return cycles;
 					}
@@ -2520,8 +2530,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				
 				/* Breakpoint. */
 			case SJME_OP_BREAKPOINT:
-				if (error != NULL)
-					*error = SJME_ERROR_CPUBREAKPOINT;
+				sjme_seterror(error, SJME_ERROR_CPUBREAKPOINT,
+					jvm->totalinstructions);
 				
 				return cycles;
 			
@@ -2605,8 +2615,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					oldcpu = sjme_malloc(sizeof(*oldcpu));
 					if (oldcpu == NULL)
 					{
-						if (error != NULL)
-							*error = SJME_ERROR_NOMEMORY;
+						sjme_seterror(error, SJME_ERROR_NOMEMORY,
+							sizeof(*oldcpu));
 						
 						return cycles;
 					}
@@ -2706,8 +2716,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 					/* Exit must be done through an exit system call! */
 					if (oldcpu == NULL)
 					{
-						if (error != NULL)
-							*error = SJME_ERROR_THREADRETURN;
+						sjme_seterror(error, SJME_ERROR_THREADRETURN,
+							jvm->totalinstructions);
 						
 						return cycles;
 					}
@@ -2758,15 +2768,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 						ia, cpu->syscallargs);
 					
 					/* Stop if an error was set. */
-					if (error != NULL && *error != SJME_ERROR_NONE)
+					if (error->code != SJME_ERROR_NONE)
 						return cycles;
 				}
 				break;
 			
 				/* Invalid operation. */
 			default:
-				if (error != NULL)
-					*error = (SJME_ERROR_INVALIDOP + op);
+				sjme_seterror(error, SJME_ERROR_INVALIDOP, op);
 				
 				return cycles;
 		}
@@ -2779,10 +2788,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 	return cycles;
 }
 
-void sjme_printerror(sjme_jvm* jvm, sjme_jint* error)
+void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 {
-	sjme_jint i;
-	sjme_jint ec, mask;
+	sjme_jint i, z;
+	sjme_jint ec;
 	sjme_jbyte b;
 	sjme_jbyte hex[8];
 	sjme_jint (*po)(sjme_jint b);
@@ -2794,16 +2803,28 @@ void sjme_printerror(sjme_jvm* jvm, sjme_jint* error)
 	sjme_console_pipewrite(jvm, po, sjme_execfailmessage, 0,
 		sizeof(sjme_execfailmessage) / sizeof(sjme_jbyte));
 	
-	/* Read in hex bytes. */
-	ec = *error;
-	for (i = 0; i < 8; i++)
+	/* Read in hex bytes, for both forms. */
+	for (z = 0; z < 2; z++)
 	{
-		b = (ec >> (4 * i)) & SJME_JINT_C(0xF);
-		hex[7 - i] = (b < 10 ? 48 : (b - 10) + 97);
+		/* Form hex value. */
+		ec = (z == 0 ? error->code : error->value);
+		for (i = 0; i < 8; i++)
+		{
+			b = (ec >> (4 * i)) & SJME_JINT_C(0xF);
+			hex[7 - i] = (b < 10 ? 48 : (b - 10) + 97);
+		}
+		
+		/* Print hex. */
+		sjme_console_pipewrite(jvm, po,
+			hex, 0, sizeof(hex) / sizeof(sjme_jbyte));
+		
+		/* Extra space? */
+		if (z == 0)
+		{
+			b = 32;
+			sjme_console_pipewrite(jvm, po, &b, 0, 1);
+		}
 	}
-	
-	/* Print hex. */
-	sjme_console_pipewrite(jvm, po, hex, 0, sizeof(hex) / sizeof(sjme_jbyte));
 	
 	/* End newline. */
 	b = 13;
@@ -2813,25 +2834,23 @@ void sjme_printerror(sjme_jvm* jvm, sjme_jint* error)
 }
 
 /** Executes code running within the JVM. */
-sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
+sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 {
 	sjme_jint threadid;
 	sjme_cpu* cpu;
-	sjme_jint xerror;
+	sjme_error xerror;
 	
 	/* Fallback error state. */
 	if (error == NULL)
 		error = &xerror;
 	
 	/* Clear error always. */
-	if (error != NULL)
-		*error = SJME_ERROR_NONE;
+	sjme_seterror(error, SJME_ERROR_NONE, 0);
 	
 	/* Do nothing. */
 	if (jvm == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDARG;
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return 0;
 	}
@@ -2858,20 +2877,16 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
 		cycles = sjme_cpuexec(jvm, cpu, error, cycles);
 		
 		/* CPU fault, stop! */
-		if (error != NULL)
-		{
-			if (*error != SJME_ERROR_NONE)
-				break;
-		}
+		if (error->code != SJME_ERROR_NONE)
+			break;
 	}
 	
 	/* Start next run on the CPU that was last executing. */
 	jvm->fairthreadid = (threadid & SJME_THREAD_MASK);
 	
 	/* Print error state to console? */
-	if (error != NULL)
-		if (*error != SJME_ERROR_NONE)
-			sjme_printerror(jvm, error);
+	if (error->code != SJME_ERROR_NONE)
+		sjme_printerror(jvm, error);
 	
 	/* Returning remaining number of cycles. */
 	return cycles;
@@ -2887,20 +2902,27 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
  * @since 2019/06/07
  */
 void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
-	sjme_jint* error)
+	sjme_error* error)
 {
 	void* rv;
 	sjme_nativefilename* fn;
 	sjme_nativefile* file;
-	sjme_jint romsize, xerror, readat, readcount;
+	sjme_jint romsize, readat, readcount;
+	sjme_error xerror;
+	
+	/* Set error if missing. */
+	if (error == NULL)
+		error = &xerror;
+	
+	/* Clear error. */
+	sjme_seterror(error, SJME_ERROR_NONE, 0);
 	
 	/* Need native functions. */
 	if (nativefuncs == NULL || nativefuncs->nativeromfile == NULL ||
 		nativefuncs->fileopen == NULL || nativefuncs->filesize == NULL ||
 		nativefuncs->fileread == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_NOFILES;
+		sjme_seterror(error, SJME_ERROR_NOFILES, 0);
 		
 		return NULL;
 	}
@@ -2909,8 +2931,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 	fn = nativefuncs->nativeromfile();
 	if (fn == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_NONATIVEROM;
+		sjme_seterror(error, SJME_ERROR_NONATIVEROM, 0);
 		
 		return NULL;
 	}
@@ -2935,24 +2956,27 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 				/* Read into raw memory. */
 				readcount = nativefuncs->fileread(file,
 					SJME_POINTER_OFFSET_LONG(rv, readat), romsize - readat,
-					&xerror);
+					error);
 				
 				/* EOF or error? */
 				if (readcount < 0)
 				{
 					/* End of file reached? */
-					if (xerror == SJME_ERROR_ENDOFFILE)
+					if (error->code == SJME_ERROR_ENDOFFILE)
 					{
 						/* Reached early EOF?? */
 						if (readat < romsize)
 						{
-							if (error != NULL)
-								*error = SJME_ERROR_EARLYEOF;
+							sjme_seterror(error, SJME_ERROR_EARLYEOF, 0);
 							
 							/* Failed */
 							sjme_free(rv);
 							return NULL;
 						}
+						
+						/* Otherwise clear. */
+						else
+							sjme_seterror(error, SJME_ERROR_NONE, 0);
 						
 						break;
 					}
@@ -2961,11 +2985,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 					else
 					{
 						/* Force error to be set. */
-						if (xerror == SJME_ERROR_NONE)
-							xerror = SJME_ERROR_READERROR;
-						
-						/* Copy error over. */
-						*error = xerror;
+						sjme_seterror(error, SJME_ERROR_READERROR, 0);
 						
 						/* Free resources. */
 						sjme_free(rv);
@@ -2981,10 +3001,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 		
 		/* Just set error. */
 		else
-		{
-			if (error != NULL)
-				*error = SJME_ERROR_NOMEMORY;
-		}
+			sjme_seterror(error, SJME_ERROR_NOMEMORY, romsize);
 		
 		/* Close when done. */
 		if (nativefuncs->fileclose != NULL)
@@ -3015,13 +3032,13 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
  * @since 2019/06/07
  */
 sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
-	sjme_jint* error)
+	sjme_error* error)
 {
 	void* rp;
 	void* bootjar;
 	void* byteram;
 	sjme_jint bootoff, i, n, seedop, seedaddr, seedvalh, seedvall, seedsize;
-	sjme_jint bootjaroff, vbootjarbase, vrambase, vrombase, vconfigbase;
+	sjme_jint bootjaroff, vbootjarbase, vrambase, vrombase, vconfigbase, qq;
 	sjme_cpu* cpu;
 	
 	/* Invalid arguments. */
@@ -3047,10 +3064,9 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	rp = rom;
 	
 	/* Check ROM magic number. */
-	if (sjme_memjreadp(jvm, 4, &rp) != SJME_ROM_MAGIC_NUMBER)
+	if ((qq = sjme_memjreadp(jvm, 4, &rp)) != SJME_ROM_MAGIC_NUMBER)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDROMMAGIC;
+		sjme_seterror(error, SJME_ERROR_INVALIDROMMAGIC, qq);
 		
 		return 0;
 	}
@@ -3066,10 +3082,9 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	rp = bootjar = SJME_POINTER_OFFSET_LONG(rom, bootjaroff);
 	
 	/* Check JAR magic number. */
-	if (sjme_memjreadp(jvm, 4, &rp) != SJME_JAR_MAGIC_NUMBER)
+	if ((qq = sjme_memjreadp(jvm, 4, &rp)) != SJME_JAR_MAGIC_NUMBER)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDJARMAGIC;
+		sjme_seterror(error, SJME_ERROR_INVALIDROMMAGIC, qq);
 		
 		return 0;
 	}
@@ -3139,8 +3154,8 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 			(seedop != 0 && seedop != 1 && seedop != 2) ||
 			(seedsize == 8 && seedop != 0))
 		{
-			if (error != NULL)
-				*error = SJME_ERROR_INVALIDBOOTRAMSEED;
+			sjme_seterror(error, SJME_ERROR_INVALIDBOOTRAMSEED,
+				seedop | (seedsize << SJME_JINT_C(4)));
 			
 			return 0;
 		}
@@ -3169,10 +3184,9 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	}
 	
 	/* Check end value. */
-	if (sjme_memjreadp(jvm, 4, &rp) != (~SJME_JINT_C(0)))
+	if ((qq = sjme_memjreadp(jvm, 4, &rp)) != (~SJME_JINT_C(0)))
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDBOOTRAMEND;
+		sjme_seterror(error, SJME_ERROR_INVALIDBOOTRAMEND, qq);
 		
 		return 0;
 	}
@@ -3182,7 +3196,7 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 }
 
 /** Destroys the virtual machine instance. */
-sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error)
+sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error)
 {
 	sjme_cpu* cpu;
 	sjme_cpu* oldcpu;
@@ -3191,15 +3205,13 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error)
 	/* Missing this? */
 	if (jvm == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_INVALIDARG;
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return 0;
 	}
 	
 	/* Reset error. */
-	if (error != NULL)
-		*error = SJME_ERROR_NONE;
+	sjme_seterror(error, SJME_ERROR_NONE, 0);
 	
 	/* Go through and cleanup CPUs. */
 	for (i = 0; i < SJME_THREAD_MAX; i++)
@@ -3233,7 +3245,7 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_jint* error)
 
 /** Initializes the configuration space. */
 void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
-	sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs, sjme_jint* error)
+	sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs, sjme_error* error)
 {
 #define SJME_CONFIG_FORMAT_INTEGER SJME_JINT_C(1)
 #define SJME_CONFIG_FORMAT_KEYVALUE SJME_JINT_C(2)
@@ -3390,7 +3402,7 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 
 /** Creates a new instance of the JVM. */
 sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
-	sjme_jint* error)
+	sjme_error* error)
 {
 	sjme_jvmoptions nulloptions;
 	void* ram;
@@ -3412,8 +3424,8 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	conf = sjme_malloc(SJME_DEFAULT_CONF_SIZE);
 	if (rv == NULL || conf == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_NOMEMORY;
+		sjme_seterror(error, SJME_ERROR_NOMEMORY,
+			sizeof(*rv) + SJME_DEFAULT_CONF_SIZE);
 		
 		sjme_free(rv);
 		sjme_free(conf);
@@ -3443,8 +3455,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	ram = sjme_malloc(options->ramsize);
 	if (ram == NULL)
 	{
-		if (error != NULL)
-			*error = SJME_ERROR_NOMEMORY;
+		sjme_seterror(error, SJME_ERROR_NOMEMORY, options->ramsize);
 			
 		sjme_free(rv);
 		sjme_free(conf);
@@ -3531,8 +3542,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		rom = sjme_malloc(options->romsize);
 		if (rom == NULL)
 		{
-			if (error != NULL)
-				*error = SJME_ERROR_NOMEMORY;
+			sjme_seterror(error, SJME_ERROR_NOMEMORY, options->romsize);
 			
 			sjme_free(ram);
 			sjme_free(conf);
