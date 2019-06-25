@@ -749,6 +749,13 @@ static sjme_jbyte sjme_romfailmessage[] =
 	109, 101, 114, 67, 111, 97, 116, 32, 82, 79, 77, 39, 46, 13, 10
 };
 
+/** Execution failure message. */
+static sjme_jbyte sjme_execfailmessage[] =
+{
+	74, 86, 77, 32, 101, 120, 101, 99, 117, 116, 105, 111, 110, 32, 102, 97,
+	105, 108, 117, 114, 101, 58, 32
+};
+
 /** BootRAM failed to load. */
 static sjme_jbyte sjme_bootfailmessage[] =
 {
@@ -1905,7 +1912,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 				case SJME_PIPE_FD_STDERR:
 					ia = sjme_console_pipewrite(jvm,
 						(jvm->nativefuncs != NULL &&
-						jvm->nativefuncs->stdout_write != NULL ?
+						jvm->nativefuncs->stderr_write != NULL ?
 						jvm->nativefuncs->stderr_write : NULL), &ba, 0, 1);
 					break;
 					
@@ -2692,6 +2699,39 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_jint* error,
 	return cycles;
 }
 
+void sjme_printerror(sjme_jvm* jvm, sjme_jint* error)
+{
+	sjme_jint i;
+	sjme_jint ec, mask;
+	sjme_jbyte b;
+	sjme_jbyte hex[8];
+	sjme_jint (*po)(sjme_jint b);
+	
+	/* Get output console. */
+	po = (jvm->nativefuncs != NULL ? jvm->nativefuncs->stderr_write : NULL);
+	
+	/* Write the failure message. */
+	sjme_console_pipewrite(jvm, po, sjme_execfailmessage, 0,
+		sizeof(sjme_execfailmessage) / sizeof(sjme_jbyte));
+	
+	/* Read in hex bytes. */
+	ec = *error;
+	for (i = 0; i < 8; i++)
+	{
+		b = (ec >> (4 * i)) & SJME_JINT_C(0xF);
+		hex[7 - i] = (b < 10 ? 48 : (b - 10) + 97);
+	}
+	
+	/* Print hex. */
+	sjme_console_pipewrite(jvm, po, hex, 0, sizeof(hex) / sizeof(sjme_jbyte));
+	
+	/* End newline. */
+	b = 13;
+	sjme_console_pipewrite(jvm, po, &b, 0, 1);
+	b = 10;
+	sjme_console_pipewrite(jvm, po, &b, 0, 1);
+}
+
 /** Executes code running within the JVM. */
 sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
 {
@@ -2747,6 +2787,11 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_jint* error, sjme_jint cycles)
 	
 	/* Start next run on the CPU that was last executing. */
 	jvm->fairthreadid = (threadid & SJME_THREAD_MASK);
+	
+	/* Print error state to console? */
+	if (error != NULL)
+		if (*error != SJME_ERROR_NONE)
+			sjme_printerror(jvm, error);
 	
 	/* Returning remaining number of cycles. */
 	return cycles;
