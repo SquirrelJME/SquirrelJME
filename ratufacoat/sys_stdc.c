@@ -228,7 +228,6 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 sjme_jint sjme_stdc_stdout_write(sjme_jint b)
 {
 	sjme_jbyte v;
-	size_t check;
 	
 	/* Write. */
 	v = (sjme_jbyte)b;
@@ -249,7 +248,6 @@ sjme_jint sjme_stdc_stdout_write(sjme_jint b)
 sjme_jint sjme_stdc_stderr_write(sjme_jint b)
 {
 	sjme_jbyte v;
-	size_t check;
 	
 	/* Write. */
 	v = (sjme_jbyte)b;

@@ -973,7 +973,6 @@ void* sjme_malloc(sjme_jint size)
 void sjme_free(void* p)
 {
 	void* basep;
-	sjme_jint size;
 	
 	/* Ignore null pointers. */
 	if (p == NULL)
@@ -981,9 +980,6 @@ void sjme_free(void* p)
 	
 	/* Base pointer which is size shifted. */
 	basep = SJME_POINTER_OFFSET_LONG(p, -4);
-	
-	/* Read size. */
-	size = *((sjme_jint*)basep);
 	
 	/* Use Standard C free. */
 	free(basep);
@@ -2886,7 +2882,13 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 	
 	/* Print error state to console? */
 	if (error->code != SJME_ERROR_NONE)
+	{
+		/* Force the error to show on screen. */
+		jvm->supervisorokay = 0;
+		
+		/* Print the error. */
 		sjme_printerror(jvm, error);
+	}
 	
 	/* Returning remaining number of cycles. */
 	return cycles;
@@ -3256,7 +3258,6 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 	void* sizep;
 	sjme_jint opt, format, iv, it, wlen;
 	char* sa;
-	char* sb;
 	
 	/* Write pointer starts at the base area. */
 	wp = conf;
@@ -3269,7 +3270,6 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 		
 		/* Reset. */
 		sa = NULL;
-		sb = NULL;
 		iv = 0;
 		
 		/* Depends on the option. */
