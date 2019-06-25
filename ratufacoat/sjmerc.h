@@ -273,6 +273,67 @@ typedef uint32_t sjme_juint;
 /** Invalid CPU operation. */
 #define SJME_ERROR_INVALIDOP SJME_JINT_C(-21)
 
+/** Could not initialize the VMM. */
+#define SJME_ERROR_VMMNEWFAIL SJME_JINT_C(-22)
+
+/** VMM Type: Byte. */
+#define SJME_VMMTYPE_BYTE SJME_JINT_C(-1)
+
+/** VMM Type: Short. */
+#define SJME_VMMTYPE_SHORT SJME_JINT_C(-2)
+
+/** VMM Type: Integer. */
+#define SJME_VMMTYPE_INTEGER SJME_JINT_C(-3)
+
+/** VMM Type: Java Short. */
+#define SJME_VMMTYPE_JAVASHORT SJME_JINT_C(-4)
+
+/** VMM Type: Java Integer. */
+#define SJME_VMMTYPE_JAVAINTEGER SJME_JINT_C(-5)
+
+/** This represents an error. */
+typedef struct sjme_error
+{
+	/** Error code. */
+	sjme_jint code;
+	
+	/** The value of it. */
+	sjme_jint value;
+} sjme_error;
+
+/**
+ * Virtual memory information.
+ *
+ * @since 2019/06/25
+ */
+typedef struct sjme_vmem
+{
+} sjme_vmem;
+
+/**
+ * Virtual memory pointer.
+ *
+ * @since 2019/06/25
+ */
+typedef sjme_jint sjme_vmemptr;
+
+/**
+ * Virtual memory mapping.
+ *
+ * @since 2019/06/25
+ */
+typedef struct sjme_vmemmap
+{
+	/** The real memory pointer. */
+	uintptr_t realptr;
+	
+	/** The fake memory pointer. */
+	sjme_jint fakeptr;
+	
+	/** The memory region size. */
+	sjme_jint size;
+} sjme_vmemmap;
+
 /**
  * Java virtual machine arguments.
  *
@@ -373,16 +434,6 @@ typedef struct sjme_framebuffer
 	sjme_jint numpixels;
 } sjme_framebuffer;
 
-/** This represents an error. */
-typedef struct sjme_error
-{
-	/** Error code. */
-	sjme_jint code;
-	
-	/** The value of it. */
-	sjme_jint value;
-} sjme_error;
-
 /**
  * This represents the name of a file in native form, system dependent.
  *
@@ -397,7 +448,11 @@ typedef struct sjme_nativefilename sjme_nativefilename;
  */
 typedef struct sjme_nativefile sjme_nativefile;
 
-/** Instance of the JVM. */
+/**
+ * Instance of the JVM.
+ *
+ * @since 2019/06/03
+ */
 typedef struct sjme_jvm sjme_jvm;
 
 /**
@@ -505,6 +560,117 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error);
  */
 sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	sjme_error* error);
+
+/**
+ * Creates a new virtual memory manager.
+ *
+ * @param error The error state.
+ * @return The virtual memory manager.
+ * @since 2019/06/25
+ */
+sjme_vmem* sjme_vmmnew(sjme_error* error);
+
+/**
+ * Virtually maps the given region of memory.
+ *
+ * @param vmem The virtual memory to map to.
+ * @param ptr The region to map.
+ * @param size The number of bytes to map.
+ * @param error The error state.
+ * @return The memory mapping information, returns {@code NULL} on error.
+ * @since 2019/06/25
+ */
+sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, void* ptr, sjme_jint size,
+	sjme_error* error);
+
+/**
+ * Convert size to Java type.
+ *
+ * @param type The input size.
+ * @param error The error state.
+ * @return The resulting type.
+ * @since 2019/06/25
+ */
+sjme_jint sjme_vmmsizetojavatype(sjme_jint size, sjme_error* error);
+
+/**
+ * Convert size to type.
+ *
+ * @param type The input size.
+ * @param error The error state.
+ * @return The resulting type.
+ * @since 2019/06/25
+ */
+sjme_jint sjme_vmmsizetotype(sjme_jint size, sjme_error* error);
+
+/**
+ * Reads from virtual memory.
+ *
+ * @param vmem Virtual memory.
+ * @param type The type to utilize.
+ * @param ptr The pointer address.
+ * @param off The offset.
+ * @param error The error state.
+ * @return The read value.
+ * @since 2019/06/25
+ */
+sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
+	sjme_jint off, sjme_error* error);
+
+/**
+ * Reads from virtual memory.
+ *
+ * @param vmem Virtual memory.
+ * @param type The type to utilize.
+ * @param ptr The pointer address, is incremented accordingly.
+ * @param error The error state.
+ * @return The read value.
+ * @since 2019/06/25
+ */
+sjme_jint sjme_vmmreadp(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
+	sjme_error* error);
+
+/**
+ * Write to virtual memory.
+ *
+ * @param vmem Virtual memory.
+ * @param type The type to utilize.
+ * @param ptr The pointer address.
+ * @param off The offset.
+ * @param val The value to write.
+ * @param error The error state.
+ * @since 2019/06/25
+ */
+void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
+	sjme_jint off, sjme_jint val, sjme_error* error);
+
+/**
+ * Write to virtual memory.
+ *
+ * @param vmem Virtual memory.
+ * @param type The type to utilize.
+ * @param ptr The pointer address, is incremented accordingly.
+ * @param val The value to write.
+ * @param error The error state.
+ * @since 2019/06/25
+ */
+void sjme_vmmwritep(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
+	sjme_jint val, sjme_error* error);
+
+/**
+ * Atomically increments and integer and then gets its value.
+ *
+ * @param vmem Virtual memory.
+ * @param type The type to utilize.
+ * @param ptr The pointer address.
+ * @param off The offset.
+ * @param add The value to add.
+ * @param error The error state.
+ * @return The value after the addition.
+ * @since 2019/06/25
+ */
+sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
+	sjme_vmemptr ptr, sjme_jint off, sjme_jint add, sjme_error* error);
 
 /****************************************************************************/
 

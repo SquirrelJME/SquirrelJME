@@ -8,5 +8,5 @@
 # DESCRIPTION: OpenWatcom C++ Makefile for DOS
 # $ wmake -f makefile.dos
 
-sjme_dos.exe:	sjmerc.c sjmercnm.c sys_stdc.c
+sjme_dos.exe:	sjmerc.c sjmercnm.c sjmercvm.c sys_stdc.c
 		wcl -fe=$@ -l=dos -mh -dSQUIRRELJME_PORT_STDC -d__DOS__ sjmerc.c sys_stdc.c
