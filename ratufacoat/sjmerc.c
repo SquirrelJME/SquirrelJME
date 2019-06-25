@@ -805,7 +805,7 @@ struct sjme_cpu
 	sjme_jint state;
 	
 	/** PC. */
-	void* pc;
+	sjme_vmemptr pc;
 	
 	/** Registers. */
 	sjme_jint r[SJME_MAX_REGISTERS];
@@ -817,13 +817,13 @@ struct sjme_cpu
 	sjme_jint syscallerr[SJME_SYSCALL_NUM_SYSCALLS];
 	
 	/** Debug: Class name. */
-	void* debugclassname;
+	sjme_vmemptr debugclassname;
 	
 	/** Debug: Method name. */
-	void* debugmethodname;
+	sjme_vmemptr debugmethodname;
 	
 	/** Debug: Method type. */
-	void* debugmethodtype;
+	sjme_vmemptr debugmethodtype;
 	
 	/** Debug: Current line. */
 	sjme_jint debugline;
@@ -841,32 +841,26 @@ struct sjme_cpu
 /** Virtual machine state. */
 struct sjme_jvm
 {
-	/** RAM. */
-	void* ram;
+	/** Virtual memory information. */
+	sjme_vmem* vmem;
 	
-	/** The size of RAM. */
-	sjme_jint ramsize;
+	/** RAM. */
+	sjme_vmemmap* ram;
 	
 	/** ROM. */
-	void* rom;
+	sjme_vmemmap* rom;
 	
-	/** The size of ROM. */
-	sjme_jint romsize;
+	/** Configuration space. */
+	sjme_vmemmap* config;
 	
-	/** Configuration ROM. */
-	void* config;
-	
-	/** Size of of the configuration ROM. */
-	sjme_jint configsize;
+	/** Framebuffer. */
+	sjme_vmemmap* framebuffer;
 	
 	/** Preset ROM. */
 	void* presetrom;
 	
 	/** Framebuffer info. */
 	sjme_framebuffer* fbinfo;
-	
-	/** Size of the framebuffer in bytes. */
-	sjme_jint fbsize;
 	
 	/** Native functions. */
 	sjme_nativefuncs* nativefuncs;
@@ -894,20 +888,6 @@ struct sjme_jvm
 	
 	/* Console height. */
 	sjme_jint conh;
-	
-#if defined(SJME_VIRTUAL_MEM)
-	/** Base address for Configuration ROM. */
-	sjme_jint configbase;
-	
-	/** Base address for RAM. */
-	sjme_jint rambase;
-	
-	/** Base address for ROM. */
-	sjme_jint rombase;
-	
-	/** Base address for the framebuffer. */
-	sjme_jint fbbase;
-#endif
 };
 
 /** Sets the error code. */
@@ -920,403 +900,29 @@ void sjme_seterror(sjme_error* error, sjme_jint code, sjme_jint value)
 	}
 }
 
-#if defined(SJME_VIRTUAL_MEM)
-/** Returns the fake pointer for the given real pointer. */
-void* sjme_fakeptr(sjme_jvm* jvm, void* ptr)
-{
-	void* oldptr;
-	uintptr_t vptr;
-	
-	/* Pass through memory if no JVM specified. */
-	if (jvm == NULL)
-		return ptr;
-	
-	/* Map pointer to pure integer. */
-	oldptr = ptr;
-	vptr = SJME_POINTER_TO_JMEM(oldptr);
-	
-	/* Within Configuration ROM region? */
-	if (vptr >= SJME_POINTER_TO_JMEM(jvm->config) &&
-		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->config,
-			jvm->configsize)))
-		ptr = SJME_JINT_TO_POINTER(jvm->configbase +
-			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->config)));
-	
-	/* Within RAM region? */
-	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->ram) &&
-		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->ram,
-			jvm->ramsize)))
-		ptr = SJME_JINT_TO_POINTER(jvm->rambase +
-			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->ram)));
-	
-	/* Within ROM region? */
-	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->rom) &&
-		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->rom,
-			jvm->romsize)))
-		ptr = SJME_JINT_TO_POINTER(jvm->rombase +
-			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->rom)));
-	
-	/* Within Framebuffer region? */
-	else if (jvm->fbinfo != NULL && vptr >= SJME_POINTER_TO_JMEM(
-		jvm->fbinfo->pixels) && vptr < SJME_POINTER_TO_JMEM(
-		SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
-			jvm->fbsize)))
-		ptr = SJME_JINT_TO_POINTER(jvm->fbbase +
-			(sjme_jint)(vptr - SJME_POINTER_TO_JMEM(jvm->fbinfo->pixels)));
-	
-	/* No mapping found, pass through. */
-	else
-		ptr = oldptr;
-	
-	return ptr;
-}
-
-/** Returns the real pointer for the given virtual pointer. */
-void* sjme_realptr(sjme_jvm* jvm, void* ptr)
-{
-	void* oldptr;
-	sjme_jint vptr;
-	
-	/* Pass through memory if no JVM specified. */
-	if (jvm == NULL)
-		return ptr;
-	
-	/* Map pointer to pure integer. */
-	oldptr = ptr;
-	vptr = SJME_POINTER_TO_JINT(oldptr);
-	
-	/* Within Configuration ROM region? */
-	if (vptr >= jvm->configbase && vptr < jvm->configbase + jvm->configsize)
-		ptr = SJME_POINTER_OFFSET_LONG(jvm->config, (vptr - jvm->configbase));
-	
-	/* Within RAM region? */
-	else if (vptr >= jvm->rambase && vptr < jvm->rambase + jvm->ramsize)
-		ptr = SJME_POINTER_OFFSET_LONG(jvm->ram, (vptr - jvm->rambase));
-	
-	/* Within ROM region? */
-	else if (vptr >= jvm->rombase && vptr < jvm->rombase + jvm->romsize)
-		ptr = SJME_POINTER_OFFSET_LONG(jvm->rom, (vptr - jvm->rombase));
-	
-	/* Within the framebuffer? */
-	else if (jvm->fbinfo != NULL && vptr >= jvm->fbbase &&
-		vptr < jvm->fbbase + jvm->fbsize)
-		ptr = SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
-			(vptr - jvm->fbbase));
-	
-	/* No mapping found, pass through. */
-	else
-		ptr = oldptr;
-	
-	return ptr;
-}
-#endif
-
-/** Checks that the given address is valid. */
-sjme_jint sjme_checkaddress(sjme_jvm* jvm, void* ptr, sjme_jint off)
-{
-	uintptr_t vptr;
-	
-	/* Get the true pointer. */
-#if defined(SJME_VIRTUAL_MEM)
-	ptr = SJME_POINTER_OFFSET_LONG(sjme_realptr(jvm, ptr), off);
-#else
-	ptr = SJME_POINTER_OFFSET(ptr, off);
-#endif
-
-	/* Map pointer to pure integer. */
-	vptr = SJME_POINTER_TO_JMEM(ptr);
-	
-	/* Within Configuration ROM region? */
-	if (vptr >= SJME_POINTER_TO_JMEM(jvm->config) &&
-		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->config,
-			jvm->configsize)))
-		return 1;
-	
-	/* Within RAM region? */
-	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->ram) &&
-		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->ram,
-			jvm->ramsize)))
-		return 1;
-	
-	/* Within ROM region? */
-	else if (vptr >= SJME_POINTER_TO_JMEM(jvm->rom) &&
-		vptr < SJME_POINTER_TO_JMEM(SJME_POINTER_OFFSET_LONG(jvm->rom,
-			jvm->romsize)))
-		return 1;
-	
-	/* Within Framebuffer region? */
-	else if (jvm->fbinfo != NULL && vptr >= SJME_POINTER_TO_JMEM(
-		jvm->fbinfo->pixels) && vptr < SJME_POINTER_TO_JMEM(
-		SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
-			jvm->fbsize)))
-		return 1;
-	
-	/* Not valid. */
-	return 0;
-}
-
-
-/**
- * Reads a value from memory.
- *
- * @param jvm JVM pointer.
- * @param size The size of the value to read.
- * @param ptr The pointer to read from.
- * @param off The offset.
- * @return The read value.
- * @since 2019/06/08
- */
-sjme_jint sjme_memread(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off)
-{
-	/* Get the true pointer. */
-#if defined(SJME_VIRTUAL_MEM)
-	ptr = SJME_POINTER_OFFSET_LONG(sjme_realptr(jvm, ptr), off);
-#else
-	ptr = SJME_POINTER_OFFSET(ptr, off);
-#endif
-	
-	/* Read value from memory. */
-	switch (size)
-	{
-			/* Byte */
-		case 1:
-			return *((sjme_jbyte*)ptr);
-		
-			/* Short */
-		case 2:
-			return *((sjme_jshort*)ptr);
-			
-			/* Integer */
-		case 4:
-		default:
-			return *((sjme_jint*)ptr);
-	}
-}
-
-/**
- * Writes a value to memory.
- *
- * @param jvm JVM pointer.
- * @param size The size of the value to write.
- * @param ptr The pointer to read to.
- * @param off The offset.
- * @param value The value to write.
- * @since 2019/06/08
- */
-void sjme_memwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
-	sjme_jint value)
-{
-	/* Get the true pointer. */
-#if defined(SJME_VIRTUAL_MEM)
-	ptr = SJME_POINTER_OFFSET_LONG(sjme_realptr(jvm, ptr), off);
-#else
-	ptr = SJME_POINTER_OFFSET(ptr, off);
-#endif
-	
-	/* Check against JVM areas. */
-	if (jvm != NULL)
-	{
-		/* Ignore writes to ROM. */
-		if (ptr >= jvm->rom &&
-			ptr < SJME_POINTER_OFFSET_LONG(jvm->rom, jvm->romsize))
-			return;
-	}
-	
-	/* Write value to memory. */
-	switch (size)
-	{
-			/* Byte */
-		case 1:
-			*((sjme_jbyte*)ptr) = (sjme_jbyte)value;
-			break;
-		
-			/* Short */
-		case 2:
-			*((sjme_jshort*)ptr) = (sjme_jshort)value;
-			break;
-			
-			/* Integer */
-		case 4:
-		default:
-			*((sjme_jint*)ptr) = value;
-			break;
-	}
-}
-
-/**
- * Reads a big endian Java value from memory.
- * 
- * @param jvm JVM pointer.
- * @param size The size of the value to read.
- * @param ptr The pointer to read from.
- * @param off The offset.
- * @return The read value.
- * @since 2019/06/08
- */
-sjme_jint sjme_memjread(sjme_jvm* jvm, sjme_jint size, void* ptr,
-	sjme_jint off)
-{
-#if !defined(SJME_BIG_ENDIAN)
-	sjme_jint rv;
-#endif
-	
-#if defined(SJME_BIG_ENDIAN)
-	/* No swapping needed. */
-	return sjme_memread(jvm, size, ptr, off);
-
-#else
-	/* Read data. */
-	rv = sjme_memread(jvm, size, ptr, off);
-	
-	/* Perform byte swapping. */
-	switch (size)
-	{
-			/* Ignore byte. */
-		case 1:
-			break;
-			
-			/* Short */
-		case 2:
-			rv = (rv & SJME_JINT_C(0xFFFF0000)) |
-				(((rv << SJME_JINT_C(8)) & SJME_JINT_C(0xFF00)) |
-				((rv >> SJME_JINT_C(8)) & SJME_JINT_C(0x00FF)));
-			break;
-			
-			/* Integer */
-		case 4:
-		default:
-			rv = (((rv >> SJME_JINT_C(24)) & SJME_JINT_C(0x000000FF)) |
-				((rv >> SJME_JINT_C(8)) & SJME_JINT_C(0x0000FF00)) |
-				((rv << SJME_JINT_C(8)) & SJME_JINT_C(0x00FF0000)) |
-				((rv << SJME_JINT_C(24)) & SJME_JINT_C(0xFF000000)));
-			break;
-	}
-	
-	/* Use value. */
-	return rv;
-#endif
-}
-
-/**
- * Writes a Java value to memory.
- *
- * @param jvm JVM pointer.
- * @param size The size of the value to write.
- * @param ptr The pointer to read to.
- * @param off The offset.
- * @param value The value to write.
- * @since 2019/06/14
- */
-void sjme_memjwrite(sjme_jvm* jvm, sjme_jint size, void* ptr, sjme_jint off,
-	sjme_jint value)
-{
-#if defined(SJME_LITTLE_ENDIAN)
-	/* Perform byte swapping? */
-	switch (size)
-	{
-			/* Byte */
-		case 1:
-			break;
-		
-			/* Short */
-		case 2:
-			value = (value & SJME_JINT_C(0xFFFF0000)) |
-				(((value << SJME_JINT_C(8)) & SJME_JINT_C(0xFF00)) |
-				((value >> SJME_JINT_C(8)) & SJME_JINT_C(0x00FF)));
-			break;
-			
-			/* Integer */
-		case 4:
-		default:
-			value = (((value >> SJME_JINT_C(24)) & SJME_JINT_C(0x000000FF)) |
-				((value >> SJME_JINT_C(8)) & SJME_JINT_C(0x0000FF00)) |
-				((value << SJME_JINT_C(8)) & SJME_JINT_C(0x00FF0000)) |
-				((value << SJME_JINT_C(24)) & SJME_JINT_C(0xFF000000)));
-			break;
-	}
-#endif
-
-	/* Write to memory. */
-	sjme_memwrite(jvm, size, ptr, off, value);
-}
-
-/**
- * Write value to memory and increment pointer.
- *
- * @param jvm The JVM.
- * @param size The size of value to write.
- * @param ptr The pointer to read from.
- * @param value The value to write.
- * @since 2019/06/19
- */
-void sjme_memwritep(sjme_jvm* jvm, sjme_jint size, void** ptr, sjme_jint value)
-{
-	/* Write pointer value. */
-	sjme_memwrite(jvm, size, *ptr, 0, value);
-	
-	/* Increment pointer. */
-	*ptr = SJME_POINTER_OFFSET_LONG(*ptr, size);
-}
-
-/**
- * Read Java value from memory and increment pointer.
- *
- * @param jvm The JVM.
- * @param size The size of value to read.
- * @param ptr The pointer to read from.
- * @return The resulting value.
- * @since 2019/06/08
- */
-sjme_jint sjme_memjreadp(sjme_jvm* jvm, sjme_jint size, void** ptr)
-{
-	sjme_jint rv;
-	
-	/* Read pointer value. */
-	rv = sjme_memjread(jvm, size, *ptr, 0);
-	
-	/* Increment pointer. */
-	*ptr = SJME_POINTER_OFFSET_LONG(*ptr, size);
-	
-	/* Return result. */
-	return rv;
-}
-
-/**
- * Write Java value to memory and increment pointer.
- *
- * @param jvm The JVM.
- * @param size The size of value to write.
- * @param ptr The pointer to read from.
- * @param value The value to write.
- * @since 2019/06/14
- */
-void sjme_memjwritep(sjme_jvm* jvm, sjme_jint size, void** ptr,
-	sjme_jint value)
-{
-	/* Write pointer value. */
-	sjme_memjwrite(jvm, size, *ptr, 0, value);
-	
-	/* Increment pointer. */
-	*ptr = SJME_POINTER_OFFSET_LONG(*ptr, size);
-}
-
 /**
  * Decodes an integer value from operations which could be unaligned.
  *
- * @param jvm The JVM.
+ * @param vmem Virtual memory.
  * @param ptr The pointer to read from.
+ * @param error Error flag.
  * @return The resulting read value.
  * @since 2019/06/16
  */
-sjme_jint sjme_opdecodejint(sjme_jvm* jvm, void** ptr)
+sjme_jint sjme_opdecodejint(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error)
 {
 	sjme_jint rv;
 	
 	/* Read all values. */
-	rv = (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF)) << 24;
-	rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF)) << 16;
-	rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF)) << 8;
-	rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
+	rv = (sjme_vmmreadp(vmem, SJME_VMMTYPE_BYTE, ptr, error) &
+		SJME_JINT_C(0xFF)) << 24;
+	rv |= (sjme_vmmreadp(vmem, SJME_VMMTYPE_BYTE, ptr, error) &
+		SJME_JINT_C(0xFF)) << 16;
+	rv |= (sjme_vmmreadp(vmem, SJME_VMMTYPE_BYTE, ptr, error) &
+		SJME_JINT_C(0xFF)) << 8;
+	rv |= (sjme_vmmreadp(vmem, SJME_VMMTYPE_BYTE, ptr, error) &
+		SJME_JINT_C(0xFF));
 	
 	return rv;
 }
@@ -1324,18 +930,22 @@ sjme_jint sjme_opdecodejint(sjme_jvm* jvm, void** ptr)
 /**
  * Decodes a short value from operations which could be unaligned.
  *
- * @param jvm The JVM.
+ * @param vmem Virtual memory.
  * @param ptr The pointer to read from.
+ * @param error Error flag.
  * @return The resulting read value.
  * @since 2019/06/16
  */
-sjme_jint sjme_opdecodejshort(sjme_jvm* jvm, void** ptr)
+sjme_jint sjme_opdecodejshort(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error)
 {
 	sjme_jint rv;
 	
 	/* Read all values. */
-	rv = (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF)) << 8;
-	rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
+	rv = (sjme_vmmreadp(vmem, SJME_VMMTYPE_BYTE, ptr, error) &
+		SJME_JINT_C(0xFF)) << 8;
+	rv |= (sjme_vmmreadp(vmem, SJME_VMMTYPE_BYTE, ptr, error) &
+		SJME_JINT_C(0xFF));
 	
 	/* Sign extend? */
 	if (rv & SJME_JINT_C(0x8000))
@@ -1347,23 +957,27 @@ sjme_jint sjme_opdecodejshort(sjme_jvm* jvm, void** ptr)
 /**
  * Decodes a variable unsigned int operation argument.
  *
- * @param jvm The JVM.
+ * @param vmem Virtual memory.
  * @param ptr The pointer to read from.
+ * @param error Error flag.
  * @return The resulting decoded value.
  * @since 2019/06/09
  */
-sjme_jint sjme_opdecodeui(sjme_jvm* jvm, void** ptr)
+sjme_jint sjme_opdecodeui(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error)
 {
 	sjme_jint rv;
 	
 	/* Read single byte value from pointer. */
-	rv = (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
+	rv = (sjme_vmmreadp(vmem, SJME_VMMTYPE_BYTE, ptr, error) &
+		SJME_JINT_C(0xFF));
 	
 	/* Encoded as a 15-bit value? */
 	if ((rv & SJME_JINT_C(0x80)) != 0)
 	{
 		rv = (rv & SJME_JINT_C(0x7F)) << SJME_JINT_C(8);
-		rv |= (sjme_memjreadp(jvm, 1, ptr) & SJME_JINT_C(0xFF));
+		rv |= (sjme_vmmreadp(vmem, SJME_VMMTYPE_BYTE, ptr, error) &
+			SJME_JINT_C(0xFF));
 	}
 	
 	/* Use read value. */
@@ -1373,17 +987,19 @@ sjme_jint sjme_opdecodeui(sjme_jvm* jvm, void** ptr)
 /**
  * Decodes register from the virtual machine.
  *
- * @param jvm The JVM to read from.
+ * @param vmem Virtual memory.
  * @param ptr The pointer to read from.
+ * @param error Error flag.
  * @return The resulting register value.
  * @since 2019/06/25
  */
-sjme_jint sjme_opdecodereg(sjme_jvm* jvm, void** ptr)
+sjme_jint sjme_opdecodereg(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error)
 {
 	sjme_jint rv;
 	
 	/* Decode register. */
-	rv = sjme_opdecodeui(jvm, ptr);
+	rv = sjme_opdecodeui(vmem, ptr, error);
 	
 	/* Keep within register bound. */
 	if (rv < 0 || rv >= SJME_MAX_REGISTERS)
@@ -1394,17 +1010,19 @@ sjme_jint sjme_opdecodereg(sjme_jvm* jvm, void** ptr)
 /**
  * Decodes a relative jump offset.
  *
- * @param jvm JVM pointer.
+ * @param vmem Virtual memory.
  * @param ptr The pointer to read from.
+ * @param error Error flag.
  * @return The resulting relative jump.
  * @since 2019/06/13
  */
-sjme_jint sjme_opdecodejmp(sjme_jvm* jvm, void** ptr)
+sjme_jint sjme_opdecodejmp(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error)
 {
 	sjme_jint rv;
 	
 	/* Decode value. */
-	rv = sjme_opdecodeui(jvm, ptr);
+	rv = sjme_opdecodeui(vmem, ptr, error);
 	
 	/* Negative branch? */
 	if ((rv & SJME_JINT_C(0x00004000)) != 0)
@@ -1414,10 +1032,10 @@ sjme_jint sjme_opdecodejmp(sjme_jvm* jvm, void** ptr)
 
 /** Draws single character onto the console. */
 void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
-	sjme_jbyte ch)
+	sjme_jbyte ch, sjme_error* error)
 {
 	sjme_jint r, c, cv, i, fontw, fonth;
-	void* sp;
+	sjme_vmemptr sp;
 	sjme_jbyte* mp;
 	sjme_jbyte bits;
 	
@@ -1446,9 +1064,8 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	for (r = 0; r < fonth; r++)
 	{
 		/* Determine screen position. */
-		sp = SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
-			(x * SJME_JINT_C(4)) +
-			((y + r) * (jvm->fbinfo->scanlen * SJME_JINT_C(4))));
+		sp = jvm->framebuffer->fakeptr + (x * SJME_JINT_C(4)) +
+			((y + r) * (jvm->fbinfo->scanlen * SJME_JINT_C(4)));
 		
 		/* Draw all pixel scans. */
 		c = 0;
@@ -1459,9 +1076,9 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 			
 			/* Draw all of them. */
 			for (i = 0; i < 8 && c < fontw; i++, c++)
-				sjme_memwritep(jvm, 4, &sp,
+				sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_INTEGER, &sp,
 					(((bits & sjme_drawcharbitmask[i]) != 0) ?
-					SJME_JINT_C(0xFFFFFF) : 0));
+					SJME_JINT_C(0xFFFFFF) : 0), error);
 		}
 	}
 }
@@ -1469,7 +1086,7 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 /** Writes to the console screen and to the native method as well. */
 sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 	sjme_jint (*writefunc)(sjme_jint b), sjme_jbyte* buf, sjme_jint off,
-	sjme_jint len)
+	sjme_jint len, sjme_error* error)
 {
 	sjme_jbyte b, donewline;
 	sjme_jint i, code;
@@ -1500,7 +1117,7 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 			else
 			{
 				/* Draw it. */
-				sjme_console_drawplate(jvm, jvm->conx, jvm->cony, b);
+				sjme_console_drawplate(jvm, jvm->conx, jvm->cony, b, error);
 				
 				/* Move cursor up. */
 				jvm->conx++;
@@ -1574,7 +1191,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jint* syserr;
 	sjme_jint ia, ib, ic;
 	sjme_jbyte ba;
-	void* pa;
+	sjme_vmemptr pa;
 	
 	/* Called wrong? */
 	if (jvm == NULL || cpu == NULL || args == NULL)
@@ -1666,32 +1283,17 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* The class name. */
 				case SJME_CALLSTACKITEM_CLASS_NAME:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-#if defined(SJME_VIRTUAL_MEM)
-					return SJME_POINTER_TO_JINT(
-						sjme_fakeptr(jvm, cpu->debugclassname));
-#else
-					return SJME_POINTER_TO_JINT(cpu->debugclassname);
-#endif
+					return cpu->debugclassname;
 					
 					/* The method name. */
 				case SJME_CALLSTACKITEM_METHOD_NAME:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-#if defined(SJME_VIRTUAL_MEM)
-					return SJME_POINTER_TO_JINT(
-						sjme_fakeptr(jvm, cpu->debugmethodname));
-#else
-					return SJME_POINTER_TO_JINT(cpu->debugmethodname);
-#endif
+					return cpu->debugmethodname;
 					
 					/* The method type. */
 				case SJME_CALLSTACKITEM_METHOD_TYPE:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-#if defined(SJME_VIRTUAL_MEM)
-					return SJME_POINTER_TO_JINT(
-						sjme_fakeptr(jvm, cpu->debugmethodtype));
-#else
-					return SJME_POINTER_TO_JINT(cpu->debugmethodtype);
-#endif
+					return cpu->debugmethodtype;
 					
 					/* Source line. */
 				case SJME_CALLSTACKITEM_SOURCE_LINE:
@@ -1701,11 +1303,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* The PC address. */
 				case SJME_CALLSTACKITEM_PC_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-#if defined(SJME_VIRTUAL_MEM)
-					return SJME_POINTER_TO_JINT(sjme_fakeptr(jvm, cpu->pc));
-#else
-					return SJME_POINTER_TO_JINT(cpu->pc);
-#endif
+					return cpu->pc;
 					
 					/* Java operation. */
 				case SJME_CALLSTACKITEM_JAVA_OPERATION:
@@ -1761,12 +1359,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* Framebuffer address. */
 				case SJME_FRAMEBUFFER_PROPERTY_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-#if defined(SJME_VIRTUAL_MEM)
-					return SJME_POINTER_TO_JINT(
-						sjme_fakeptr(jvm, jvm->fbinfo->pixels));
-#else
-					return SJME_POINTER_TO_JINT(jvm->fbinfo->pixels);
-#endif
+					return jvm->framebuffer->fakeptr;
 					
 					/* Width of the framebuffer. */
 				case SJME_FRAMEBUFFER_PROPERTY_WIDTH:
@@ -1851,7 +1444,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Set memory to byte value. */
 		case SJME_SYSCALL_MEM_SET:
 			/* Get address to wipe. */
-			pa = SJME_JINT_TO_POINTER(args[0]);
+			pa = args[0];
 			
 			/* The value to store. */
 			ic = args[1] & SJME_JINT_C(0xFF);
@@ -1859,7 +1452,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Wipe these values! */
 			ib = args[2];
 			for (ia = 0; ia < ib; ia++)
-				sjme_memwritep(jvm, 1, &pa, ic);
+				sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_BYTE, &pa, ic, error);
 			
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
@@ -1868,7 +1461,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Set memory in integer values. */
 		case SJME_SYSCALL_MEM_SET_INT:
 			/* Get address to wipe. */
-			pa = SJME_JINT_TO_POINTER(args[0]);
+			pa = args[0];
 			
 			/* The value to store, is full integer. */
 			ic = args[1];
@@ -1876,7 +1469,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Wipe these values! */
 			ib = args[2];
 			for (ia = 0; ia < ib; ia += 4)
-				sjme_memwritep(jvm, 4, &pa, ic);
+				sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_INTEGER, &pa, ic,
+					error);
 			
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
@@ -1907,7 +1501,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					ia = sjme_console_pipewrite(jvm,
 						(jvm->nativefuncs != NULL &&
 						jvm->nativefuncs->stdout_write != NULL ?
-						jvm->nativefuncs->stdout_write : NULL), &ba, 0, 1);
+						jvm->nativefuncs->stdout_write : NULL), &ba, 0, 1,
+						error);
 					break;
 				
 					/* Standard error. */
@@ -1915,7 +1510,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					ia = sjme_console_pipewrite(jvm,
 						(jvm->nativefuncs != NULL &&
 						jvm->nativefuncs->stderr_write != NULL ?
-						jvm->nativefuncs->stderr_write : NULL), &ba, 0, 1);
+						jvm->nativefuncs->stderr_write : NULL), &ba, 0, 1,
+						error);
 					break;
 					
 					/* Unknown descriptor. */
@@ -2030,8 +1626,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jint cycles)
 {
 	sjme_jint op, enc;
-	void* nextpc;
-	void* tempp;
+	sjme_vmemptr nextpc;
+	sjme_vmemptr tempp;
 	sjme_jint* r;
 	sjme_jint ia, ib, ic, id;
 	sjme_cpu* oldcpu;
@@ -2069,7 +1665,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 		nextpc = cpu->pc;
 		
 		/* Read operation and determine encoding. */
-		op = (sjme_memjreadp(jvm, 1, &nextpc) & SJME_JINT_C(0xFF));
+		op = (sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_BYTE, &nextpc, error) &
+			SJME_JINT_C(0xFF));
 		enc = ((op >= SJME_ENC_SPECIAL_A) ? op : (op & SJME_ENC_MASK));
 		
 		/* Temporary debug. */
@@ -2097,12 +1694,12 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_ENC_IF_ICMP:
 				{
 					/* Values to compare. */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
-					ib = r[sjme_opdecodereg(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					ib = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 					
 					/* Target PC address. */
-					ic = sjme_opdecodejmp(jvm, &nextpc);
-					tempp = SJME_POINTER_OFFSET(cpu->pc, ic);
+					ic = sjme_opdecodejmp(jvm->vmem, &nextpc, error);
+					tempp = cpu->pc + ic;
 					
 					/* Check depends. */
 					ic = 0;
@@ -2158,13 +1755,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_ENC_MATH_CONST_INT:
 				{
 					/* A Value. */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 					
 					/* B value. */
 					if (enc == SJME_ENC_MATH_CONST_INT)
-						ib = sjme_opdecodejint(jvm, &nextpc);
+						ib = sjme_opdecodejint(jvm->vmem, &nextpc, error);
 					else
-						ib = r[sjme_opdecodereg(jvm, &nextpc)];
+						ib = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 					
 					/* Perform the math. */
 					switch (op & SJME_ENC_MATH_MASK)
@@ -2261,161 +1858,84 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					}
 					
 					/* Store result. */
-					r[sjme_opdecodereg(jvm, &nextpc)] = ic;
+					r[sjme_opdecodereg(jvm->vmem, &nextpc, error)] = ic;
 				}
 				break;
 				
 				/* Memory (native byte order). */
 			case SJME_ENC_MEMORY_OFF_REG:
 			case SJME_ENC_MEMORY_OFF_ICONST:
-				{
-					/* Destination/source register. */
-					ic = sjme_opdecodeui(jvm, &nextpc);
-					
-					/* The address and offset to access. */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
-					if (enc == SJME_ENC_MEMORY_OFF_ICONST)
-						ib = sjme_opdecodejint(jvm, &nextpc);
-					else
-						ib = r[sjme_opdecodereg(jvm, &nextpc)];
-					tempp = SJME_JINT_TO_POINTER(ia);
-					
-					/* Check the address. */
-					if (sjme_checkaddress(jvm, tempp, ib) == 0)
-					{
-						sjme_seterror(error, SJME_ERROR_BADADDRESS,
-							SJME_POINTER_TO_JINT(
-								SJME_POINTER_OFFSET(tempp, ib)));
-						
-						return cycles;
-					}
-					
-					/* Load value */
-					if ((op & SJME_MEM_LOAD_MASK) != 0)
-					{
-						switch (op & SJME_MEM_DATATYPE_MASK)
-						{
-							case SJME_DATATYPE_BYTE:
-								r[ic] = sjme_memread(jvm, 1, tempp, ib);
-								break;
-								
-							case SJME_DATATYPE_CHARACTER:
-								r[ic] = (sjme_memread(jvm, 2, tempp, ib) &
-									SJME_JINT_C(0xFFFF));
-								break;
-								
-							case SJME_DATATYPE_SHORT:
-								r[ic] = sjme_memread(jvm, 2, tempp, ib);
-								break;
-								
-							case SJME_DATATYPE_OBJECT:
-							case SJME_DATATYPE_INTEGER:
-							case SJME_DATATYPE_FLOAT:
-							default:
-								r[ic] = sjme_memread(jvm, 4, tempp, ib);
-								break;
-						}
-					}
-					
-					/* Store value */
-					else
-					{
-						switch (op & SJME_MEM_DATATYPE_MASK)
-						{	
-							case SJME_DATATYPE_BYTE:
-								sjme_memwrite(jvm, 1, tempp, ib, r[ic]);
-								break;
-								
-							case SJME_DATATYPE_CHARACTER:
-							case SJME_DATATYPE_SHORT:
-								sjme_memwrite(jvm, 2, tempp, ib, r[ic]);
-								break;
-								
-							case SJME_DATATYPE_OBJECT:
-							case SJME_DATATYPE_INTEGER:
-							case SJME_DATATYPE_FLOAT:
-							default:
-								sjme_memwrite(jvm, 4, tempp, ib, r[ic]);
-								break;
-						}
-					}
-				}
-				break;
-				
-				/* Memory (Java byte order). */
 			case SJME_ENC_MEMORY_OFF_REG_JAVA:
 			case SJME_ENC_MEMORY_OFF_ICONST_JAVA:
 				{
 					/* Destination/source register. */
-					ic = sjme_opdecodeui(jvm, &nextpc);
+					ic = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
-					/* The address to access. */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
-					if (enc == SJME_ENC_MEMORY_OFF_ICONST_JAVA)
-						ib = sjme_opdecodejint(jvm, &nextpc);
+					/* The address and offset to access. */
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					if (enc == SJME_ENC_MEMORY_OFF_ICONST)
+						ib = sjme_opdecodejint(jvm->vmem, &nextpc, error);
 					else
-						ib = r[sjme_opdecodereg(jvm, &nextpc)];
-					tempp = SJME_JINT_TO_POINTER(ia);
+						ib = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					tempp = ia;
 					
-					/* Check the address. */
-					if (sjme_checkaddress(jvm, tempp, ib) == 0)
-					{
-						sjme_seterror(error, SJME_ERROR_BADADDRESS,
-							SJME_POINTER_TO_JINT(
-								SJME_POINTER_OFFSET(tempp, ib)));
-						
-						return cycles;
-					}
-					
-					/* Load value */
-					if ((op & SJME_MEM_LOAD_MASK) != 0)
-					{
+					/* Java types? */
+					id = 0;
+					if (enc == SJME_ENC_MEMORY_OFF_REG_JAVA ||
+						enc == SJME_ENC_MEMORY_OFF_ICONST_JAVA)
 						switch (op & SJME_MEM_DATATYPE_MASK)
 						{
 							case SJME_DATATYPE_BYTE:
-								r[ic] = sjme_memjread(jvm, 1, tempp, ib);
+								id = SJME_VMMTYPE_BYTE;
 								break;
-								
+							
 							case SJME_DATATYPE_CHARACTER:
-								r[ic] = (sjme_memjread(jvm, 2, tempp, ib) &
-									SJME_JINT_C(0xFFFF));
-								break;
-								
 							case SJME_DATATYPE_SHORT:
-								r[ic] = sjme_memjread(jvm, 2, tempp, ib);
+								id = SJME_VMMTYPE_JAVASHORT;
 								break;
-								
+							
 							case SJME_DATATYPE_OBJECT:
 							case SJME_DATATYPE_INTEGER:
 							case SJME_DATATYPE_FLOAT:
-							default:
-								r[ic] = sjme_memjread(jvm, 4, tempp, ib);
+								id = SJME_VMMTYPE_JAVAINTEGER;
 								break;
 						}
+					
+					/* Native types? */
+					else
+						switch (op & SJME_MEM_DATATYPE_MASK)
+						{
+							case SJME_DATATYPE_BYTE:
+								id = SJME_VMMTYPE_BYTE;
+								break;
+							
+							case SJME_DATATYPE_CHARACTER:
+							case SJME_DATATYPE_SHORT:
+								id = SJME_VMMTYPE_SHORT;
+								break;
+							
+							case SJME_DATATYPE_OBJECT:
+							case SJME_DATATYPE_INTEGER:
+							case SJME_DATATYPE_FLOAT:
+								id = SJME_VMMTYPE_INTEGER;
+								break;
+						}
+						
+					/* Load value */
+					if ((op & SJME_MEM_LOAD_MASK) != 0)
+					{
+						/* Read. */
+						sjme_vmmread(jvm->vmem, id, tempp, ib, error);
+						
+						/* Mask character? */
+						if ((op & SJME_MEM_DATATYPE_MASK) ==
+							SJME_DATATYPE_CHARACTER)
+							r[ic] = r[ic] & SJME_JINT_C(0xFFFF);
 					}
 					
 					/* Store value */
 					else
-					{
-						switch (op & SJME_MEM_DATATYPE_MASK)
-						{	
-							case SJME_DATATYPE_BYTE:
-								sjme_memjwrite(jvm, 1, tempp, ib, r[ic]);
-								break;
-								
-							case SJME_DATATYPE_CHARACTER:
-							case SJME_DATATYPE_SHORT:
-								sjme_memjwrite(jvm, 2, tempp, ib, r[ic]);
-								break;
-								
-							case SJME_DATATYPE_OBJECT:
-							case SJME_DATATYPE_INTEGER:
-							case SJME_DATATYPE_FLOAT:
-							default:
-								sjme_memjwrite(jvm, 4, tempp, ib, r[ic]);
-								break;
-						}
-					}
+						sjme_vmmwrite(jvm->vmem, id, tempp, ib, r[ic], error);
 				}
 				break;
 				
@@ -2423,23 +1943,15 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_ATOMIC_INT_DECREMENT_AND_GET:
 				{
 					/* Target register. */
-					id = sjme_opdecodeui(jvm, &nextpc);
+					id = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
 					/* Load address and offset. */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
-					ib = sjme_opdecodeui(jvm, &nextpc);
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					ib = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
-					/* Read value here. */
-					ic = sjme_memread(jvm, 4, SJME_JINT_TO_POINTER(ia), ib);
-					
-					/* Decrement value. */
-					ic = ic - 1;
-					
-					/* Store value. */
-					sjme_memwrite(jvm, 4, SJME_JINT_TO_POINTER(ia), ib, ic);
-					
-					/* Set destination value. */
-					r[id] = ic;
+					/* Modify the value accordingly. */
+					r[id] = sjme_vmmatomicintaddandget(jvm->vmem, ia, ib,
+						SJME_JINT_C(-1), error);
 				}
 				break;
 				
@@ -2447,15 +1959,12 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_ATOMIC_INT_INCREMENT:
 				{
 					/* Load address and offset. */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
-					ib = sjme_opdecodeui(jvm, &nextpc);
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					ib = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
-					/* Read value here. */
-					ic = sjme_memread(jvm, 4, SJME_JINT_TO_POINTER(ia), ib);
-					
-					/* And write incremented value. */
-					sjme_memwrite(jvm, 4, SJME_JINT_TO_POINTER(ia), ib,
-						ic + 1);
+					/* Modify the value accordingly. */
+					sjme_vmmatomicintaddandget(jvm->vmem, ia, ib,
+						SJME_JINT_C(1), error);
 				}
 				break;
 				
@@ -2469,8 +1978,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				/* Copy value. */
 			case SJME_OP_COPY:
 				{
-					ia = sjme_opdecodeui(jvm, &nextpc);
-					ib = sjme_opdecodeui(jvm, &nextpc);
+					ia = sjme_opdecodeui(jvm->vmem, &nextpc, error);
+					ib = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
 					r[ib] = r[ia];
 				}
@@ -2479,30 +1988,18 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				/* Debug entry. */
 			case SJME_OP_DEBUG_ENTRY:
 				{
-					tempp = SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]);
+					tempp = r[SJME_POOL_REGISTER];
 					
 					/* Get pointers to the real values. */
-					ia = sjme_memread(jvm, 4, tempp,
-						sjme_opdecodeui(jvm, &nextpc) * SJME_JINT_C(4));
-					ib = sjme_memread(jvm, 4, tempp,
-						sjme_opdecodeui(jvm, &nextpc) * SJME_JINT_C(4));
-					ic = sjme_memread(jvm, 4, tempp,
-						sjme_opdecodeui(jvm, &nextpc) * SJME_JINT_C(4));
-					
-#if defined(SJME_VIRTUAL_MEM)
-					/* Map to real memory addresses. */
-					cpu->debugclassname = sjme_realptr(jvm,
-						SJME_JINT_TO_POINTER(ia));
-					cpu->debugmethodname = sjme_realptr(jvm,
-						SJME_JINT_TO_POINTER(ib));
-					cpu->debugmethodtype = sjme_realptr(jvm,
-						SJME_JINT_TO_POINTER(ic));
-#else
-					/* Just forward the values. */
-					cpu->debugclassname = SJME_JINT_TO_POINTER(ia);
-					cpu->debugmethodname = SJME_JINT_TO_POINTER(ib);
-					cpu->debugmethodtype = SJME_JINT_TO_POINTER(ic);
-#endif
+					cpu->debugclassname = sjme_vmmread(jvm->vmem,
+						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
+						&nextpc, error) * SJME_JINT_C(4), error);
+					cpu->debugmethodname = sjme_vmmread(jvm->vmem,
+						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
+						&nextpc, error) * SJME_JINT_C(4), error);
+					cpu->debugmethodtype = sjme_vmmread(jvm->vmem,
+						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
+						&nextpc, error) * SJME_JINT_C(4), error);
 				}
 				break;
 				
@@ -2513,10 +2010,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				/* Debug point. */
 			case SJME_OP_DEBUG_POINT:
 				{
-					cpu->debugline = sjme_opdecodeui(jvm, &nextpc);
-					cpu->debugjop = (sjme_opdecodeui(jvm, &nextpc) &
+					cpu->debugline =
+						sjme_opdecodeui(jvm->vmem, &nextpc, error);
+					cpu->debugjop =
+						(sjme_opdecodeui(jvm->vmem, &nextpc, error) &
 						SJME_JINT_C(0xFF));
-					cpu->debugjpc = sjme_opdecodeui(jvm, &nextpc);
+					cpu->debugjpc =
+						sjme_opdecodeui(jvm->vmem, &nextpc, error);
 				}
 				break;
 				
@@ -2524,14 +2024,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_IFEQ_CONST:
 				{
 					/* A value. */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 					
 					/* B value. */
-					ib = sjme_opdecodejint(jvm, &nextpc);
+					ib = sjme_opdecodejint(jvm->vmem, &nextpc, error);
 					
 					/* Target PC address. */
-					ic = sjme_opdecodejmp(jvm, &nextpc);
-					tempp = SJME_POINTER_OFFSET(cpu->pc, ic);
+					ic = sjme_opdecodejmp(jvm->vmem, &nextpc, error);
+					tempp = cpu->pc + ic;
 					
 					/* Jump on equals? */
 					if (ia == ib)
@@ -2560,27 +2060,27 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					for (ia = SJME_LOCAL_REGISTER_BASE;
 						ia < SJME_MAX_REGISTERS; ia++)
 						r[ia] = 0;
-					r[SJME_POOL_REGISTER] =
-						oldcpu->r[SJME_NEXT_POOL_REGISTER];
+					r[SJME_POOL_REGISTER] = oldcpu->r[SJME_NEXT_POOL_REGISTER];
 					r[SJME_NEXT_POOL_REGISTER] = 0;
 					
 					/* The address to execute. */
-					ia = oldcpu->r[sjme_opdecodereg(jvm, &nextpc)];
+					ia = oldcpu->r[
+						sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 					
 					/* Load in register list (wide). */
-					ib = sjme_memjreadp(jvm, 1, &nextpc);
+					ib = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_BYTE, &nextpc,
+						error);
 					if ((ib & SJME_JINT_C(0x80)) != 0)
 					{
-						/* Read lower values. */
-						ib &= SJME_JINT_C(0x7F);
-						ib <<= 8;
-						ib |= (sjme_memjreadp(jvm, 1, &nextpc) &
-							SJME_JINT_C(0xFF));
+						/* Skip back and read lower value. */
+						nextpc--;
+						ib = sjme_opdecodejshort(jvm->vmem, &nextpc, error);
 						
 						/* Read values. */
 						for (ic = 0; ic < ib; ic++)
-							r[SJME_ARGBASE_REGISTER + ic] =
-								oldcpu->r[sjme_opdecodejshort(jvm, &nextpc)];
+							r[SJME_ARGBASE_REGISTER + ic] = oldcpu->r[
+								sjme_opdecodejshort(jvm->vmem, &nextpc,
+									error)];
 					}
 					
 					/* Narrow format list. */
@@ -2589,21 +2089,15 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						/* Read values. */
 						for (ic = 0; ic < ib; ic++)
 							r[SJME_ARGBASE_REGISTER + ic] =
-								oldcpu->r[sjme_memjreadp(jvm, 1, &nextpc)];
+								oldcpu->r[sjme_vmmreadp(jvm->vmem,
+									SJME_VMMTYPE_BYTE, &nextpc, error)];
 					}
-					
-#if 0
-					fprintf(stderr, "Invoke: %08lx\n", (long)ia);
-					for (ic = 0; ic < ib; ic++)
-						fprintf(stderr, "A%d: %d\n",
-							(int)ic, (int)r[SJME_ARGBASE_REGISTER + ic]);
-#endif
 					
 					/* Old PC address resumes where this read ended. */
 					oldcpu->pc = nextpc;
 					
 					/* Our next PC becomes the target address. */
-					nextpc = SJME_JINT_TO_POINTER(ia);
+					nextpc = ia;
 					cpu->pc = nextpc;
 				}
 				break;
@@ -2612,15 +2106,16 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_LOAD_FROM_INTARRAY:
 				{
 					/* Destination register. */
-					ic = sjme_opdecodeui(jvm, &nextpc);
+					ic = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
 					/* Address and index */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
-					ib = r[sjme_opdecodereg(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					ib = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 					
 					/* Load from array. */
-					r[ic] = sjme_memread(jvm, 4, SJME_JINT_TO_POINTER(ia),
-						SJME_ARRAY_BASE_SIZE + (ib * SJME_JINT_C(4)));
+					r[ic] = sjme_vmmread(jvm->vmem, SJME_VMMTYPE_INTEGER,
+						ia, SJME_ARRAY_BASE_SIZE + (ib * SJME_JINT_C(4)),
+						error);
 				}
 				break;
 				
@@ -2628,13 +2123,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_LOAD_POOL:
 				{
 					/* The index to read from. */
-					ia = sjme_opdecodeui(jvm, &nextpc);
+					ia = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
 					/* Write into destination register. */
-					r[sjme_opdecodereg(jvm, &nextpc)] = 
-						sjme_memread(jvm, 4,
-							SJME_JINT_TO_POINTER(r[SJME_POOL_REGISTER]),
-							ia * SJME_JINT_C(4));
+					r[sjme_opdecodereg(jvm->vmem, &nextpc, error)] = 
+						sjme_vmmread(jvm->vmem, SJME_VMMTYPE_INTEGER,
+							r[SJME_POOL_REGISTER], (ia * SJME_JINT_C(4)),
+							error);
 				}
 				break;
 				
@@ -2680,14 +2175,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						cpu->syscallargs[ia] = 0;
 					
 					/* Load call type. */
-					ia = r[sjme_opdecodereg(jvm, &nextpc)];
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 					
 					/* Load call arguments. */
-					ic = sjme_opdecodeui(jvm, &nextpc);
+					ic = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					for (ib = 0; ib < ic; ib++)
 					{
 						/* Get value. */
-						id = r[sjme_opdecodereg(jvm, &nextpc)];
+						id = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 						
 						/* Set but never exceed the system call limit. */
 						if (ib < SJME_MAX_SYSCALLARGS)
@@ -2711,6 +2206,11 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				return cycles;
 		}
 		
+		/* Check for error. */
+		if (error != NULL)
+			if (error->code != SJME_ERROR_NONE)
+				return cycles;
+		
 		/* Set next PC address. */
 		cpu->pc = nextpc;
 	}
@@ -2732,7 +2232,7 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 	
 	/* Write the failure message. */
 	sjme_console_pipewrite(jvm, po, sjme_execfailmessage, 0,
-		sizeof(sjme_execfailmessage) / sizeof(sjme_jbyte));
+		sizeof(sjme_execfailmessage) / sizeof(sjme_jbyte), error);
 	
 	/* Read in hex bytes, for both forms. */
 	for (z = 0; z < 2; z++)
@@ -2747,21 +2247,21 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 		
 		/* Print hex. */
 		sjme_console_pipewrite(jvm, po,
-			hex, 0, sizeof(hex) / sizeof(sjme_jbyte));
+			hex, 0, sizeof(hex) / sizeof(sjme_jbyte), error);
 		
 		/* Extra space? */
 		if (z == 0)
 		{
 			b = 32;
-			sjme_console_pipewrite(jvm, po, &b, 0, 1);
+			sjme_console_pipewrite(jvm, po, &b, 0, 1, error);
 		}
 	}
 	
 	/* End newline. */
 	b = 13;
-	sjme_console_pipewrite(jvm, po, &b, 0, 1);
+	sjme_console_pipewrite(jvm, po, &b, 0, 1, error);
 	b = 10;
-	sjme_console_pipewrite(jvm, po, &b, 0, 1);
+	sjme_console_pipewrite(jvm, po, &b, 0, 1, error);
 }
 
 /** Executes code running within the JVM. */
@@ -2960,48 +2460,42 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 /**
  * Initializes the BootRAM, loading it from ROM.
  *
- * @param rom The ROM.
- * @param ram The RAM.
- * @param ramsize The size of RAM.
  * @param jvm The Java VM to initialize.
  * @param error Error flag.
  * @return Non-zero on success.
  * @since 2019/06/07
  */
-sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
-	sjme_error* error)
+sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 {
-	void* rp;
-	void* bootjar;
-	void* byteram;
+	sjme_vmemptr rp;
+	sjme_vmemptr bootjar;
+	sjme_vmemptr byteram;
 	sjme_jint bootoff, i, n, seedop, seedaddr, seedvalh, seedvall, seedsize;
-	sjme_jint bootjaroff, vbootjarbase, vrambase, vrombase, vconfigbase, qq;
+	sjme_jint bootjaroff, vbootjarbase, vrambase, vrombase, qq;
 	sjme_cpu* cpu;
 	
 	/* Invalid arguments. */
-	if (rom == NULL || ram == NULL || ramsize <= 0 || jvm == NULL)
+	if (jvm == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		
 		return 0;
+	}
 	
 	/* Determine the address the VM sees for some memory types. */
-#if defined(SJME_VIRTUAL_MEM)
-	vrambase = jvm->rambase;
-	vrombase = jvm->rombase;
-	vconfigbase = jvm->configbase;
-#else
-	vrambase = SJME_POINTER_TO_JINT(jvm->ram);
-	vrombase = SJME_POINTER_TO_JINT(jvm->rom);
-	vconfigbase = SJME_POINTER_TO_JINT(jvm->config);
-#endif
+	vrambase = jvm->ram->fakeptr;
+	vrombase = jvm->rom->fakeptr;
 	
 	/* Set initial CPU (the first). */
 	cpu = &jvm->threads[0];
 	cpu->state = SJME_THREAD_STATE_RUNNING;
 	
 	/* Set boot pointer to start of ROM. */
-	rp = rom;
+	rp = jvm->rom->fakeptr;
 	
 	/* Check ROM magic number. */
-	if ((qq = sjme_memjreadp(jvm, 4, &rp)) != SJME_ROM_MAGIC_NUMBER)
+	if ((qq = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error))
+		!= SJME_ROM_MAGIC_NUMBER)
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDROMMAGIC, qq);
 		
@@ -3009,17 +2503,19 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	}
 	
 	/* Ignore numjars, tocoffset, bootjarindex. */
-	sjme_memjreadp(jvm, 4, &rp);
-	sjme_memjreadp(jvm, 4, &rp);
-	sjme_memjreadp(jvm, 4, &rp);
+	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Read and calculate BootJAR position. */
-	bootjaroff = sjme_memjreadp(jvm, 4, &rp);
+	bootjaroff = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
+		error);
 	vbootjarbase = vrombase + bootjaroff;
-	rp = bootjar = SJME_POINTER_OFFSET_LONG(rom, bootjaroff);
+	rp = bootjar = vrombase + bootjaroff;
 	
 	/* Check JAR magic number. */
-	if ((qq = sjme_memjreadp(jvm, 4, &rp)) != SJME_JAR_MAGIC_NUMBER)
+	if ((qq = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error))
+		!= SJME_JAR_MAGIC_NUMBER)
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDROMMAGIC, qq);
 		
@@ -3027,63 +2523,69 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 	}
 	
 	/* Ignore numrc, tocoffset, manifestoff, manifestlen. */
-	sjme_memjreadp(jvm, 4, &rp);
-	sjme_memjreadp(jvm, 4, &rp);
-	sjme_memjreadp(jvm, 4, &rp);
-	sjme_memjreadp(jvm, 4, &rp);
+	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Read boot offset for later. */
-	bootoff = sjme_memjreadp(jvm, 4, &rp);
+	bootoff = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Ignore bootsize. */
-	sjme_memjreadp(jvm, 4, &rp);
+	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Seed initial CPU state. */
-	cpu->r[SJME_POOL_REGISTER] =
-		vrambase + sjme_memjreadp(jvm, 4, &rp);
-	cpu->r[SJME_STATIC_FIELD_REGISTER] =
-		vrambase + sjme_memjreadp(jvm, 4, &rp);
-	cpu->pc = SJME_JINT_TO_POINTER(vbootjarbase + sjme_memjreadp(jvm, 4, &rp));
+	cpu->r[SJME_POOL_REGISTER] = vrambase + sjme_vmmreadp(jvm->vmem,
+		SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	cpu->r[SJME_STATIC_FIELD_REGISTER] = vrambase + sjme_vmmreadp(jvm->vmem,
+		SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	cpu->pc = (vbootjarbase + sjme_vmmreadp(jvm->vmem,
+		SJME_VMMTYPE_JAVAINTEGER, &rp, error));
 	
 	/* Bootstrap entry arguments. */
 	/* (int __rambase, int __ramsize, int __rombase, int __romsize, */
 	/* int __confbase, int __confsize) */
-	cpu->r[SJME_ARGBASE_REGISTER + 0] = vrambase;
-	cpu->r[SJME_ARGBASE_REGISTER + 1] = ramsize;
-	cpu->r[SJME_ARGBASE_REGISTER + 2] = vrombase;
-	cpu->r[SJME_ARGBASE_REGISTER + 3] = jvm->romsize;
-	cpu->r[SJME_ARGBASE_REGISTER + 4] = vconfigbase;
-	cpu->r[SJME_ARGBASE_REGISTER + 5] = jvm->configsize;
+	cpu->r[SJME_ARGBASE_REGISTER + 0] = jvm->ram->fakeptr;
+	cpu->r[SJME_ARGBASE_REGISTER + 1] = jvm->ram->size;
+	cpu->r[SJME_ARGBASE_REGISTER + 2] = jvm->rom->fakeptr;
+	cpu->r[SJME_ARGBASE_REGISTER + 3] = jvm->rom->size;
+	cpu->r[SJME_ARGBASE_REGISTER + 4] = jvm->config->fakeptr;
+	cpu->r[SJME_ARGBASE_REGISTER + 5] = jvm->config->size;
 	
 	/* Address where the BootRAM is read from. */
-	rp = SJME_POINTER_OFFSET_LONG(bootjar, bootoff);
+	rp = bootjar + bootoff;
 	
 	/* Copy initial base memory bytes, which is pure big endian. */
-	byteram = SJME_JINT_TO_POINTER(vrambase);
-	n = sjme_memjreadp(jvm, 4, &rp);
+	byteram = vrambase;
+	n = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	for (i = 0; i < n; i++)
-		sjme_memjwritep(jvm, 1, &byteram, sjme_memjreadp(jvm, 1, &rp));
+		sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_BYTE, &byteram,
+			sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_BYTE, &rp, error), error);
 	
 	/* Load all seeds, which restores natural byte order. */
-	n = sjme_memjreadp(jvm, 4, &rp);
+	n = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	for (i = 0; i < n; i++)
 	{
 		/* Read seed information. */
-		seedop = sjme_memjreadp(jvm, 1, &rp);
+		seedop = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_BYTE, &rp, error);
 		seedsize = (seedop >> SJME_JINT_C(4)) & SJME_JINT_C(0xF);
 		seedop = (seedop & SJME_JINT_C(0xF));
-		seedaddr = sjme_memjreadp(jvm, 4, &rp);
+		seedaddr = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
+			error);
 		
 		/* Wide value. */
 		if (seedsize == 8)
 		{
-			seedvalh = sjme_memjreadp(jvm, 4, &rp);
-			seedvall = sjme_memjreadp(jvm, 4, &rp);
+			seedvalh = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
+				error);
+			seedvall = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
+				error);
 		}
 		
 		/* Narrow value. */
 		else
-			seedvalh = sjme_memjreadp(jvm, seedsize, &rp);
+			seedvalh = sjme_vmmreadp(jvm->vmem, sjme_vmmsizetojavatype(
+				seedsize, error), &rp, error);
 		
 		/* Make sure the seed types are correct. */
 		if ((seedsize != 1 && seedsize != 2 &&
@@ -3107,21 +2609,27 @@ sjme_jint sjme_initboot(void* rom, void* ram, sjme_jint ramsize, sjme_jvm* jvm,
 		if (seedsize == 8)
 		{
 #if defined(SJME_BIG_ENDIAN)
-			sjme_memwrite(jvm, 4, ram, seedaddr, seedvalh);
-			sjme_memwrite(jvm, 4, ram, seedaddr + SJME_JINT_C(4), seedvall);
+			sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+				vrambase, seedaddr, seedvalh, error);
+			sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+				vrambase + 4, seedaddr, seedvall, error);
 #else
-			sjme_memwrite(jvm, 4, ram, seedaddr, seedvall);
-			sjme_memwrite(jvm, 4, ram, seedaddr + SJME_JINT_C(4), seedvalh);
+			sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+				vrambase, seedaddr, seedvall, error);
+			sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+				vrambase + 4, seedaddr, seedvalh, error);
 #endif
 		}
 		
 		/* Write narrow value. */
 		else
-			sjme_memwrite(jvm, seedsize, ram, seedaddr, seedvalh);
+			sjme_vmmwrite(jvm->vmem, sjme_vmmsizetotype(seedsize, error),
+				vrambase, seedaddr, seedvalh, error);
 	}
 	
 	/* Check end value. */
-	if ((qq = sjme_memjreadp(jvm, 4, &rp)) != (~SJME_JINT_C(0)))
+	if ((qq = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error))
+		!= (~SJME_JINT_C(0)))
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDBOOTRAMEND, qq);
 		
@@ -3181,21 +2689,24 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error)
 }
 
 /** Initializes the configuration space. */
-void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
-	sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs, sjme_error* error)
+void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
+	sjme_nativefuncs* nativefuncs, sjme_error* error)
 {
 #define SJME_CONFIG_FORMAT_INTEGER SJME_JINT_C(1)
 #define SJME_CONFIG_FORMAT_KEYVALUE SJME_JINT_C(2)
 #define SJME_CONFIG_FORMAT_STRING SJME_JINT_C(3)
 #define SJME_CONFIG_FORMAT_STRINGS SJME_JINT_C(4)
-	void* wp;
-	void* basep;
-	void* sizep;
+	sjme_vmemptr wp;
+	sjme_vmemptr basep;
+	sjme_vmemptr sizep;
 	sjme_jint opt, format, iv, it, wlen;
 	char* sa;
 	
+	(void)options;
+	(void)nativefuncs;
+	
 	/* Write pointer starts at the base area. */
-	wp = conf;
+	wp = jvm->config->fakeptr;
 	
 	/* Go through all possible options to make a value. */
 	for (opt = SJME_JINT_C(1); opt < SJME_CONFIG_NUM_OPTIONS; opt++)
@@ -3274,11 +2785,11 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 			continue;
 		
 		/* Write option key. */
-		sjme_memjwritep(jvm, 2, &wp, opt);
+		sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_JAVASHORT, &wp, opt, error);
 		
 		/* Store size location for later write. */
 		sizep = wp;
-		sjme_memjwritep(jvm, 2, &wp, 0);
+		sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_JAVASHORT, &wp, 0, error);
 		
 		/* Base write pointer. */
 		basep = wp;
@@ -3288,7 +2799,8 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 		{
 				/* Integer. */
 			case SJME_CONFIG_FORMAT_INTEGER:
-				sjme_memjwritep(jvm, 4, &wp, iv);
+				sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &wp, iv,
+					error);
 				break;
 			
 				/* Key/value pair. */
@@ -3300,11 +2812,13 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 				{
 					// Record string length
 					int iv = strlen(sa);
-					sjme_memjwritep(jvm, 2, &wp, iv);
+					sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_JAVASHORT, &wp, iv,
+						error);
 					
 					// Record characters
 					for (it = 0; it < iv; it++)
-						sjme_memjwritep(jvm, 1, &wp, (sjme_jint)sa[it]);
+						sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_BYTE, &wp,
+							(sjme_jint)sa[it], error);
 				}
 				break;
 			
@@ -3314,20 +2828,21 @@ void sjme_configinit(void* conf, sjme_jint confsize, sjme_jvm* jvm,
 		}
 		
 		/* Determine length and round it to 4 bytes. */
-		wlen = SJME_POINTER_TO_JINT(wp) - SJME_POINTER_TO_JINT(basep);
+		wlen = wp - basep;
 		while ((wlen & SJME_JINT_C(3)) != 0)
 		{
 			/* Write padding. */
-			sjme_memjwritep(jvm, 1, &wp, 0);
+			sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_BYTE, &wp, 0, error);
 			wlen++;
 		}
 		
 		/* Write to the actual size! */
-		sjme_memjwrite(jvm, 2, sizep, 0, wlen);
+		sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVASHORT, sizep, 0, wlen,
+			error);
 	}
 	
 	/* Write end of config. */
-	sjme_memjwritep(jvm, 2, &wp, SJME_CONFIG_END);
+	sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_BYTE, &wp, SJME_CONFIG_END, error);
 	
 #undef SJME_CONFIG_FORMAT_INTEGER
 #undef SJME_CONFIG_FORMAT_KEYVALUE
@@ -3346,13 +2861,20 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	sjme_jvm* rv;
 	sjme_jint i, l, romsize;
 	sjme_framebuffer* fbinfo;
-#if defined(SJME_VIRTUAL_MEM)
-	sjme_jint vmem = SJME_VIRTUAL_MEM_BASE;
-#endif
+	sjme_vmem* vmem;
 	
 	/* We need native functions. */
 	if (nativefuncs == NULL)
 		return NULL;
+	
+	/* Allocate virtual memory manager. */
+	vmem = sjme_vmmnew(error);
+	if (vmem == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_VMMNEWFAIL, 0);
+		
+		return NULL;
+	}
 	
 	/* Allocate VM state. */
 	rv = sjme_malloc(sizeof(*rv));
@@ -3367,13 +2889,11 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		
 		return NULL;
 	}
-
-#if defined(SJME_VIRTUAL_MEM)
+	
 	/* Virtual map config. */
-	rv->configbase = vmem;
-	vmem = (vmem + SJME_DEFAULT_CONF_SIZE + SJME_VIRTUAL_MEM_MASK) &
-		(~SJME_VIRTUAL_MEM_MASK);
-#endif
+	rv->config = sjme_vmmmap(vmem, conf, SJME_DEFAULT_CONF_SIZE, error);
+	if (rv->config == NULL)
+		return NULL;
 	
 	/* If there were no options specified, just use a null set. */
 	if (options == NULL)
@@ -3398,16 +2918,12 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		return NULL;
 	}
 	
-#if defined(SJME_VIRTUAL_MEM)
 	/* Virtual map RAM. */
-	rv->rambase = vmem;
-	vmem = (vmem + options->ramsize + SJME_VIRTUAL_MEM_MASK) &
-		(~SJME_VIRTUAL_MEM_MASK);
-#endif
+	rv->ram = sjme_vmmmap(vmem, ram, options->ramsize, error);
+	if (rv->ram == NULL)
+		return NULL;
 	
-	/* Needed by the VM. */
-	rv->ram = ram;
-	rv->ramsize = options->ramsize;
+	/* Set native functions. */
 	rv->nativefuncs = nativefuncs;
 	
 	/* Initialize the framebuffer info, if available. */
@@ -3419,9 +2935,6 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	rv->fbinfo = fbinfo;
 	if (fbinfo != NULL)
 	{
-		/* Framebuffer size, needed by vptrs. */
-		rv->fbsize = fbinfo->numpixels * SJME_JINT_C(4);
-		
 		/* Console positions and size. */
 		rv->conx = 0;
 		rv->cony = 0;
@@ -3429,15 +2942,14 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		rv->conh = fbinfo->height / sjme_font.pixelheight;
 	}
 	
-#if defined(SJME_VIRTUAL_MEM)
 	/* Virtual map framebuffer, if available. */
 	if (fbinfo != NULL)
 	{
-		rv->fbbase = vmem;
-		vmem = (vmem + rv->fbsize + SJME_VIRTUAL_MEM_MASK) &
-			(~SJME_VIRTUAL_MEM_MASK);
+		rv->framebuffer = sjme_vmmmap(vmem, fbinfo->pixels,
+			fbinfo->numpixels * SJME_JINT_C(4), error);
+		if (rv->framebuffer == NULL)
+			return NULL;
 	}
-#endif
 	
 	/* Needed by destruction later. */
 	rv->presetrom = options->presetrom;
@@ -3455,7 +2967,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 			/* Write the ROM failure message! */
 			sjme_console_pipewrite(rv, (nativefuncs != NULL ?
 				nativefuncs->stderr_write : NULL), sjme_romfailmessage, 0,
-				sizeof(sjme_romfailmessage) / sizeof(sjme_jbyte));
+				sizeof(sjme_romfailmessage) / sizeof(sjme_jbyte), error);
 			
 			/* Clear resources */
 			sjme_free(rv);
@@ -3507,30 +3019,21 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		rv->presetrom = NULL;
 	}
 	
-#if defined(SJME_VIRTUAL_MEM)
 	/* Virtual map ROM. */
-	rv->rombase = vmem;
-	vmem = (vmem + romsize + SJME_VIRTUAL_MEM_MASK) &
-		(~SJME_VIRTUAL_MEM_MASK);
-#endif
-	
-	/* Set JVM rom space. */
-	rv->rom = rom;
-	rv->romsize = romsize;
+	rv->rom = sjme_vmmmap(vmem, rom, romsize, error);
+	if (rv->rom == NULL)
+		return NULL;
 	
 	/* Initialize configuration space. */
-	rv->config = conf;
-	rv->configsize = SJME_DEFAULT_CONF_SIZE;
-	sjme_configinit(conf, SJME_DEFAULT_CONF_SIZE, rv, options, nativefuncs,
-		error);
+	sjme_configinit(rv, options, nativefuncs, error);
 	
 	/* Initialize the BootRAM and boot the CPU. */
-	if (sjme_initboot(rom, ram, options->ramsize, rv, error) == 0)
+	if (sjme_initboot(rv, error) == 0)
 	{
 		/* Write the Boot failure message! */
 		sjme_console_pipewrite(rv, (nativefuncs != NULL ?
 			nativefuncs->stderr_write : NULL), sjme_bootfailmessage, 0,
-			sizeof(sjme_bootfailmessage) / sizeof(sjme_jbyte));
+			sizeof(sjme_bootfailmessage) / sizeof(sjme_jbyte), error);
 		
 		/* Cleanup. */
 		sjme_free(rv);

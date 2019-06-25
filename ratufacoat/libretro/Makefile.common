@@ -20,6 +20,7 @@ COREDEFINES += $(EMU_DEFINES)
 
 SOURCES_C := $(CORE_DIR)/sjmerc.c \
 	$(CORE_DIR)/sjmercnm.c \
+	$(CORE_DIR)/sjmercvm.c \
 	$(CORE_DIR)/sys_libr.c \
 	$(EMU_SOURCES_C)
 SOURCES_CXX := $(EMU_SOURCES_CXX)
