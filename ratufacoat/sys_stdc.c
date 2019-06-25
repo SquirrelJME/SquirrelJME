@@ -231,7 +231,7 @@ sjme_jint sjme_stdc_stdout_write(sjme_jint b)
 	
 	/* Write. */
 	v = (sjme_jbyte)b;
-	check = fwrite(&v, 1, 1, stdout);
+	fwrite(&v, 1, 1, stdout);
 	
 	/* EOF? */
 	if (feof(stdout))
@@ -251,7 +251,7 @@ sjme_jint sjme_stdc_stderr_write(sjme_jint b)
 	
 	/* Write. */
 	v = (sjme_jbyte)b;
-	check = fwrite(&v, 1, 1, stderr);
+	fwrite(&v, 1, 1, stderr);
 	
 	/* EOF? */
 	if (feof(stderr))
