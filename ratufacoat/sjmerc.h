@@ -447,6 +447,22 @@ typedef struct sjme_nativefuncs
 } sjme_nativefuncs;
 
 /**
+ * Allocates the given number of bytes.
+ *
+ * @param size The number of bytes to allocate.
+ * @since 2019/06/07
+ */
+void* sjme_malloc(sjme_jint size);
+
+/**
+ * Frees the given pointer.
+ *
+ * @param p The pointer to free.
+ * @since 2019/06/07
+ */
+void sjme_free(void* p);
+
+/**
  * Sets the error code.
  *
  * @param error The error to set.
