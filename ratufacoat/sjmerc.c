@@ -21,15 +21,6 @@
 	#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
 #endif
 
-/** Virtual memory stuff. */
-#if defined(SJME_VIRTUAL_MEM)
-	/** Base of virtual memory. */
-	#define SJME_VIRTUAL_MEM_BASE SJME_JINT_C(1048576)
-	
-	/** Rounding of virtual memory. */
-	#define SJME_VIRTUAL_MEM_MASK SJME_JINT_C(1023)
-#endif
-
 /** Default size of configuration ROM. */
 #define SJME_DEFAULT_CONF_SIZE SJME_JINT_C(65536)
 
@@ -2889,6 +2880,9 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		
 		return NULL;
 	}
+	
+	/* Store virtual memory area. */
+	rv->vmem = vmem;
 	
 	/* Virtual map config. */
 	rv->config = sjme_vmmmap(vmem, conf, SJME_DEFAULT_CONF_SIZE, error);

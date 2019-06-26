@@ -14,11 +14,23 @@
 
 #include "sjmerc.h"
 
+/** Base of virtual memory. */
+#define SJME_VIRTUAL_MEM_BASE SJME_JINT_C(1048576)
+
+/** Rounding of virtual memory. */
+#define SJME_VIRTUAL_MEM_MASK SJME_JINT_C(1023)
+
 /** Virtual memory information. */
 struct sjme_vmem
 {
 	/** The number of mappings. */
 	sjme_jint count;
+	
+	/** The next address for allocations. */
+	sjme_jint nextaddr;
+	
+	/** Mappings. */
+	sjme_vmemmap** maps;
 };
 
 /** Creates a new virtual memory manager. */
@@ -35,6 +47,9 @@ sjme_vmem* sjme_vmmnew(sjme_error* error)
 		return NULL;
 	}
 	
+	/* Initialize. */
+	rv->nextaddr = SJME_VIRTUAL_MEM_BASE;
+	
 	return rv;
 }
 
@@ -42,6 +57,10 @@ sjme_vmem* sjme_vmmnew(sjme_error* error)
 sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, void* ptr, sjme_jint size,
 	sjme_error* error)
 {
+	sjme_vmemmap* rv;
+	sjme_vmemmap** newmaps;
+	sjme_jint i;
+	
 	/* Invalid argument. */
 	if (vmem == NULL || ptr == NULL || size <= 0)
 	{
@@ -50,7 +69,37 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, void* ptr, sjme_jint size,
 		return NULL;
 	}
 	
-	abort();
+	/* Allocate return value. */
+	rv = sjme_malloc(sizeof(*rv));
+	newmaps = sjme_malloc(sizeof(*newmaps) * (vmem->count + 1));
+	if (rv == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_NOMEMORY, sizeof(*rv));
+		
+		sjme_free(rv);
+		sjme_free(newmaps);
+		
+		return NULL;
+	}
+	
+	/* Copy and set new mappings. */
+	for (i = 0; i < vmem->count; i++)
+		newmaps[i] = vmem->maps[i];
+	newmaps[vmem->count] = rv;
+	
+	/* Setup mapping. */
+	rv->realptr = (uintptr_t)ptr;
+	rv->fakeptr = vmem->nextaddr;
+	rv->size = size;
+	
+	/* Store the mappings (remember to free the old ones!). */
+	vmem->nextaddr = (vmem->nextaddr + size + SJME_VIRTUAL_MEM_MASK) &
+		(~SJME_VIRTUAL_MEM_MASK);
+	vmem->count = vmem->count + 1;
+	sjme_free(vmem->maps);
+	vmem->maps = newmaps;
+	
+	return rv;
 }
 
 /** Convert size to Java type. */
