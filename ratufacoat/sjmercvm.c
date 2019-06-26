@@ -148,6 +148,14 @@ sjme_jint sjme_vmmsizetotype(sjme_jint size, sjme_error* error)
 sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	sjme_jint off, sjme_error* error)
 {
+	/* Invalid argument? */
+	if (vmem == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		
+		return 0;
+	}
+	
 	abort();
 }
 
@@ -186,6 +194,14 @@ sjme_jint sjme_vmmreadp(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	sjme_jint off, sjme_jint val, sjme_error* error)
 {
+	/* Invalid argument? */
+	if (vmem == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		
+		return 0;
+	}
+	
 	abort();
 }
 
