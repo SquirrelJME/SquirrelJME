@@ -105,13 +105,43 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, void* ptr, sjme_jint size,
 /** Convert size to Java type. */
 sjme_jint sjme_vmmsizetojavatype(sjme_jint size, sjme_error* error)
 {
-	abort();
+	/* Convert. */
+	switch (size)
+	{
+		case 1:
+			return SJME_VMMTYPE_BYTE;
+			
+		case 2:
+			return SJME_VMMTYPE_JAVASHORT;
+			
+		case 4:
+			return SJME_VMMTYPE_JAVAINTEGER;
+	}
+	
+	/* Not valid. */
+	sjme_seterror(error, SJME_ERROR_INVALIDSIZE, size);
+	return 0;
 }
 
 /** Convert size to type. */
 sjme_jint sjme_vmmsizetotype(sjme_jint size, sjme_error* error)
 {
-	abort();
+	/* Convert. */
+	switch (size)
+	{
+		case 1:
+			return SJME_VMMTYPE_BYTE;
+			
+		case 2:
+			return SJME_VMMTYPE_SHORT;
+			
+		case 4:
+			return SJME_VMMTYPE_INTEGER;
+	}
+	
+	/* Not valid. */
+	sjme_seterror(error, SJME_ERROR_INVALIDSIZE, size);
+	return 0;
 }
 
 /** Reads from virtual memory. */
@@ -125,7 +155,31 @@ sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 sjme_jint sjme_vmmreadp(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 	sjme_error* error)
 {
-	abort();
+	sjme_jint rv;
+	
+	/* Read value. */
+	rv = sjme_vmmread(vmem, type, *ptr, 0, error);
+	
+	/* Increment pointer. */
+	switch (type)
+	{
+		case SJME_VMMTYPE_BYTE:
+			*ptr = *ptr + 1;
+			break;
+			
+		case SJME_VMMTYPE_SHORT:
+		case SJME_VMMTYPE_JAVASHORT:
+			*ptr = *ptr + 2;
+			break;
+			
+		case SJME_VMMTYPE_INTEGER:
+		case SJME_VMMTYPE_JAVAINTEGER:
+			*ptr = *ptr + 4;
+			break;
+	}
+	
+	/* Return value. */
+	return rv;
 }
 
 /** Write to virtual memory. */
@@ -139,12 +193,45 @@ void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 void sjme_vmmwritep(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 	sjme_jint val, sjme_error* error)
 {
-	abort();
+	sjme_jint rv;
+	
+	/* Write value. */
+	sjme_vmmwrite(vmem, type, *ptr, 0, val, error);
+	
+	/* Increment pointer. */
+	switch (type)
+	{
+		case SJME_VMMTYPE_BYTE:
+			*ptr = *ptr + 1;
+			break;
+			
+		case SJME_VMMTYPE_SHORT:
+		case SJME_VMMTYPE_JAVASHORT:
+			*ptr = *ptr + 2;
+			break;
+			
+		case SJME_VMMTYPE_INTEGER:
+		case SJME_VMMTYPE_JAVAINTEGER:
+			*ptr = *ptr + 4;
+			break;
+	}
 }
 
 /** Atomically increments and integer and then gets its value. */
 sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
 	sjme_vmemptr ptr, sjme_jint off, sjme_jint add, sjme_error* error)
 {
-	abort();
+	sjme_jint rv;
+	
+	/* Read current value. */
+	rv = sjme_vmmread(vmem, SJME_VMMTYPE_INTEGER, ptr, off, error);
+	
+	/* Add value. */
+	rv += add;
+	
+	/* Store new value. */
+	sjme_vmmwrite(vmem, SJME_VMMTYPE_INTEGER, ptr, off, rv, error);
+	
+	/* Return new value. */
+	return rv;
 }

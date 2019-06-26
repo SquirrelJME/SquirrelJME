@@ -276,6 +276,9 @@ typedef uint32_t sjme_juint;
 /** Could not initialize the VMM. */
 #define SJME_ERROR_VMMNEWFAIL SJME_JINT_C(-22)
 
+/** Invalid size. */
+#define SJME_ERROR_INVALIDSIZE SJME_JINT_C(-23)
+
 /** VMM Type: Byte. */
 #define SJME_VMMTYPE_BYTE SJME_JINT_C(-1)
 
