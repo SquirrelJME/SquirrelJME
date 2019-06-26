@@ -43,3 +43,7 @@ suite information stuff somewhere.
 
 Seems the problem went away? I guess it was due to a stale buile. But
 RatufaCoat does not print the string name properly while SummerCoat does.
+
+## 17:14
+
+Now it does not work???

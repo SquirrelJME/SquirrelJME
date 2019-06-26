@@ -1,0 +1,58 @@
+# 2019/06/25
+
+## 12:15
+
+Okay so doing a fresh build of SummerCoat works but then if I relaunch it
+it seems to not want to work and gets stuck scanning classes.
+
+## 12:30
+
+Okay, it still continues and parses all the libraries (they are initialized)
+so I guess there is some kind of slowness? 
+
+## 12:33
+
+Oh I see, it is actually compiling a huge chunk of the libraries which is
+where that pause is coming from. So it might be reading some bad memory?
+
+## 12:36
+
+But then it fails in JVM load string with a read way off memory. So this is
+very likely the crash point. I think I definitely need to make RatufaCoat
+safer when it comes to memory and having protected regions and such. This
+way the VM will just stop on invalid accesses instead of just randomly
+crashing.
+
+## 12:44
+
+Definitely need something better. So would say I could do the same thing
+with virtual memory but making it a thing everywhere. It could possibly
+even allow things to run on DOS with like swapping and such potentially.
+
+## 13:18
+
+I believe I need a more complex error state, since I would like to store
+an error code and a second value as a kind of meaning.
+
+## 13:52
+
+Okay, RatufaCoat could use a bit of a refactor. Everything is in a single
+source file which was fine at first, but it needs to be a bit cleaner and
+easier to navigate.
+
+## 14:01
+
+Also instead of the manual memory maps, I am going to add a virtual
+memory manager and such to handle read/writes of all of it.
+
+## 15:55
+
+I need an actual atomic compare and set instruction otherwise doing
+monitors and such will be complicated.
+
+## 16:39
+
+Switching all the code to use the virtual memory stuff was complicated,
+but hopefully I did not mess up anywhere. Will find out if I did.
+Hopefully it is more stable and does not crash randomly since I do know
+bad memory is being accessed.
