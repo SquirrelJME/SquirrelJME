@@ -2264,7 +2264,10 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 	
 	/* Fallback error state. */
 	if (error == NULL)
+	{
+		memset(&xerror, 0, sizeof(xerror));
 		error = &xerror;
+	}
 	
 	/* Clear error always. */
 	sjme_seterror(error, SJME_ERROR_NONE, 0);
@@ -2340,7 +2343,10 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 	
 	/* Set error if missing. */
 	if (error == NULL)
+	{
+		memset(&xerror, 0, sizeof(xerror));
 		error = &xerror;
+	}
 	
 	/* Clear error. */
 	sjme_seterror(error, SJME_ERROR_NONE, 0);
