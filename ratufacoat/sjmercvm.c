@@ -102,6 +102,41 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, void* ptr, sjme_jint size,
 	return rv;
 }
 
+/** Resolves the given true memory address. */
+void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
+	sjme_error* error)
+{
+	sjme_jint i, n;
+	sjme_vmemmap* map;
+	sjme_vmemptr optr;
+	
+	/* Invalid argument. */
+	if (vmem == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		
+		return NULL;
+	}
+	
+	/* Get true pointer position. */
+	optr = ptr + off;
+	
+	/* Search for the mapping. */
+	for (i = 0, n = vmem->count; i < n; i++)
+	{
+		/* Get mapping. */
+		map = vmem->maps;
+		
+		/* Is in range? */
+		if (optr >= map->fakeptr && optr < map->fakeptr + map->size)
+			return (void*)(map->realptr + (optr - map->fakeptr));
+	}
+	
+	/* Address is not valid. */
+	sjme_seterror(error, SJME_ERROR_BADADDRESS, optr);
+	return NULL;
+}
+
 /** Convert size to Java type. */
 sjme_jint sjme_vmmsizetojavatype(sjme_jint size, sjme_error* error)
 {
@@ -148,6 +183,9 @@ sjme_jint sjme_vmmsizetotype(sjme_jint size, sjme_error* error)
 sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	sjme_jint off, sjme_error* error)
 {
+	void* realptr;
+	sjme_error xerror;
+	
 	/* Invalid argument? */
 	if (vmem == NULL)
 	{
@@ -156,7 +194,66 @@ sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 		return 0;
 	}
 	
-	abort();
+	/* Need error. */
+	if (error == NULL)
+	{
+		memset(&xerror, 0, sizeof(xerror));
+		error = &xerror;
+	}
+	
+	/* Resolve address. */
+	realptr = sjme_vmmresolve(vmem, ptr, off, error);
+	if (realptr == NULL)
+	{
+		if (error->code == SJME_ERROR_NONE)
+			sjme_seterror(error, SJME_ERROR_ADDRRESFAIL, ptr + off);
+		
+		return 0;
+	}
+	
+	/* Depends on the type. */
+	switch (type)
+	{
+		case SJME_VMMTYPE_BYTE:
+			return *((sjme_jbyte*)realptr);
+
+#if defined(SJME_BIG_ENDIAN)
+		case SJME_VMMTYPE_SHORT:
+		case SJME_VMMTYPE_JAVASHORT:
+			return *((sjme_jshort*)realptr);
+#else
+		case SJME_VMMTYPE_SHORT:
+			return *((sjme_jshort*)realptr);
+			
+		case SJME_VMMTYPE_JAVASHORT:
+			type = *((sjme_jshort*)realptr);
+			type = (type & SJME_JINT_C(0xFFFF0000)) |
+				(((type << SJME_JINT_C(8)) & SJME_JINT_C(0xFF00)) |
+				((type >> SJME_JINT_C(8)) & SJME_JINT_C(0x00FF)));
+			return type;
+#endif
+
+#if defined(SJME_BIG_ENDIAN)
+		case SJME_VMMTYPE_INTEGER:
+		case SJME_VMMTYPE_JAVAINTEGER:
+			return *((sjme_jint*)realptr);
+#else
+		case SJME_VMMTYPE_INTEGER:
+			return *((sjme_jint*)realptr);
+		
+		case SJME_VMMTYPE_JAVAINTEGER:
+			type = *((sjme_jint*)realptr);
+			type = (((type >> SJME_JINT_C(24)) & SJME_JINT_C(0x000000FF)) |
+				((type >> SJME_JINT_C(8)) & SJME_JINT_C(0x0000FF00)) |
+				((type << SJME_JINT_C(8)) & SJME_JINT_C(0x00FF0000)) |
+				((type << SJME_JINT_C(24)) & SJME_JINT_C(0xFF000000)));
+			return type;
+#endif
+			
+		default:
+			sjme_seterror(error, SJME_ERROR_INVALIDMEMTYPE, type);
+			return 0;
+	}
 }
 
 /** Reads from virtual memory. */
@@ -194,15 +291,66 @@ sjme_jint sjme_vmmreadp(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	sjme_jint off, sjme_jint val, sjme_error* error)
 {
+	void* realptr;
+	sjme_error xerror;
+	
 	/* Invalid argument? */
 	if (vmem == NULL)
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
-		return 0;
+		return;
 	}
 	
-	abort();
+	/* Need error. */
+	if (error == NULL)
+	{
+		memset(&xerror, 0, sizeof(xerror));
+		error = &xerror;
+	}
+	
+	/* Resolve address. */
+	realptr = sjme_vmmresolve(vmem, ptr, off, error);
+	if (realptr == NULL)
+	{
+		if (error->code == SJME_ERROR_NONE)
+			sjme_seterror(error, SJME_ERROR_ADDRRESFAIL, ptr + off);
+		
+		return;
+	}
+	
+	/* Depends on the type. */
+	switch (type)
+	{
+		case SJME_VMMTYPE_BYTE:
+			*((sjme_jbyte*)realptr) = (sjme_jbyte)val;
+			return;
+		
+		case SJME_VMMTYPE_JAVASHORT:
+#if defined(SJME_LITTLE_ENDIAN)
+			val = (val & SJME_JINT_C(0xFFFF0000)) |
+				(((val << SJME_JINT_C(8)) & SJME_JINT_C(0xFF00)) |
+				((val >> SJME_JINT_C(8)) & SJME_JINT_C(0x00FF)));
+#endif
+		case SJME_VMMTYPE_SHORT:
+			*((sjme_jshort*)realptr) = (sjme_jshort)val;
+			return;
+		
+		case SJME_VMMTYPE_JAVAINTEGER:
+#if defined(SJME_LITTLE_ENDIAN)
+			val = (((val >> SJME_JINT_C(24)) & SJME_JINT_C(0x000000FF)) |
+				((val >> SJME_JINT_C(8)) & SJME_JINT_C(0x0000FF00)) |
+				((val << SJME_JINT_C(8)) & SJME_JINT_C(0x00FF0000)) |
+				((val << SJME_JINT_C(24)) & SJME_JINT_C(0xFF000000)));
+#endif
+		case SJME_VMMTYPE_INTEGER:
+			*((sjme_jint*)realptr) = (sjme_jint)val;
+			return;
+			
+		default:
+			sjme_seterror(error, SJME_ERROR_INVALIDMEMTYPE, type);
+			return;
+	}
 }
 
 /** Write to virtual memory. */

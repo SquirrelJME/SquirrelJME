@@ -279,6 +279,12 @@ typedef uint32_t sjme_juint;
 /** Invalid size. */
 #define SJME_ERROR_INVALIDSIZE SJME_JINT_C(-23)
 
+/** Address resolution error. */
+#define SJME_ERROR_ADDRRESFAIL SJME_JINT_C(-24)
+
+/** Invalid memory type. */
+#define SJME_ERROR_INVALIDMEMTYPE SJME_JINT_C(-25)
+
 /** VMM Type: Byte. */
 #define SJME_VMMTYPE_BYTE SJME_JINT_C(-1)
 
