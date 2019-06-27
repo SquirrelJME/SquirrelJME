@@ -2463,7 +2463,7 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 	sjme_vmemptr rp;
 	sjme_vmemptr bootjar;
 	sjme_jint bootoff, i, n, seedop, seedaddr, seedvalh, seedvall, seedsize;
-	sjme_jint bootjaroff, vbootjarbase, vrambase, vrombase, qq;
+	sjme_jint bootjaroff, vrambase, vrombase, qq;
 	sjme_cpu* cpu;
 	sjme_error xerror;
 	
@@ -2510,7 +2510,6 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 	/* Read and calculate BootJAR position. */
 	bootjaroff = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
 		error);
-	vbootjarbase = vrombase + bootjaroff;
 	rp = bootjar = vrombase + bootjaroff;
 	
 	/* Check JAR magic number. */
@@ -2539,7 +2538,7 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	cpu->r[SJME_STATIC_FIELD_REGISTER] = vrambase + sjme_vmmreadp(jvm->vmem,
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	cpu->pc = (vbootjarbase + sjme_vmmreadp(jvm->vmem,
+	cpu->pc = (bootjar + sjme_vmmreadp(jvm->vmem,
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error));
 	
 	/* Bootstrap entry arguments. */
@@ -2602,7 +2601,7 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 		if (seedop == 1)
 			seedvalh += vrambase;
 		else if (seedop == 2)
-			seedvalh += vbootjarbase;
+			seedvalh += bootjar;
 		
 		/* Write long value. */
 		if (seedsize == 8)
