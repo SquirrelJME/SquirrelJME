@@ -2623,6 +2623,10 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 		else
 			sjme_vmmwrite(jvm->vmem, sjme_vmmsizetotype(seedsize, error),
 				vrambase, seedaddr, seedvalh, error);
+		
+		/* Error was reached? */
+		if (error->code != SJME_ERROR_NONE)
+			return 0;
 	}
 	
 	/* Check end value. */
