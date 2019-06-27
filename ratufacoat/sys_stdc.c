@@ -322,8 +322,9 @@ int main(int argc, char** argv)
 	jvm = sjme_jvmnew(&options, &stdcfuncs, &error);
 	if (jvm == NULL)
 	{
-		fprintf(stderr, "Failed to create the JVM! (Error %d/0x%X)\n",
-			(int)error.code, (unsigned int)error.code);
+		fprintf(stderr, "Failed to create the JVM! (Error %d/0x%X %d/0x%X)\n",
+			(int)error.code, (unsigned int)error.code,
+			(int)error.value, (unsigned int)error.value);
 		return EXIT_FAILURE;
 	}
 	
@@ -341,14 +342,17 @@ int main(int argc, char** argv)
 				break;
 			
 			/* Message on it! */
-			fprintf(stderr, "JVM execution fault! (Error %d/0x%X)\n",
-				(int)error.code, (unsigned int)error.code);
+			fprintf(stderr, "JVM execution fault! (Error %d/0x%X %d/0x%X)\n",
+				(int)error.code, (unsigned int)error.code,
+				(int)error.value, (unsigned int)error.value);
 			
 			/* Destroy the JVM to free resources. */
 			sjme_jvmdestroy(jvm, &error);
 			if (error.code != SJME_ERROR_NONE)
-				fprintf(stderr, "JVM destruction error! (Error %d/0x%X)\n",
-					(int)error.code, (unsigned int)error.code);
+				fprintf(stderr,
+					"JVM destruction error! (Error %d/0x%X %d/0x%X)\n",
+					(int)error.code, (unsigned int)error.code,
+					(int)error.value, (unsigned int)error.value);
 			
 			return EXIT_FAILURE;
 		}
@@ -360,8 +364,9 @@ int main(int argc, char** argv)
 	/* Destroy the VM so it uses no memory. */
 	sjme_jvmdestroy(jvm, &error);
 	if (error.code != SJME_ERROR_NONE)
-		fprintf(stderr, "JVM destruction error! (Error %d/0x%X)\n",
-			(int)error.code, (unsigned int)error.code);
+		fprintf(stderr, "JVM destruction error! (Error %d/0x%X %d/0x%X)\n",
+			(int)error.code, (unsigned int)error.code,
+			(int)error.value, (unsigned int)error.value);
 	
 	return EXIT_SUCCESS;
 }
