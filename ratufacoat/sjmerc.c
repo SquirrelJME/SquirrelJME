@@ -994,7 +994,13 @@ sjme_jint sjme_opdecodereg(sjme_vmem* vmem, sjme_vmemptr* ptr,
 	
 	/* Keep within register bound. */
 	if (rv < 0 || rv >= SJME_MAX_REGISTERS)
+	{
+		sjme_seterror(error, SJME_ERROR_REGISTEROVERFLOW, rv);
+		
 		return 0;
+	}
+	
+	/* Return it. */
 	return rv;
 }
 

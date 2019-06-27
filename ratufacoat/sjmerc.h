@@ -285,6 +285,9 @@ typedef uint32_t sjme_juint;
 /** Invalid memory type. */
 #define SJME_ERROR_INVALIDMEMTYPE SJME_JINT_C(-25)
 
+/** Register value overflowed. */
+#define SJME_ERROR_REGISTEROVERFLOW SJME_JINT_C(-26)
+
 /** VMM Type: Byte. */
 #define SJME_VMMTYPE_BYTE SJME_JINT_C(-1)
 
