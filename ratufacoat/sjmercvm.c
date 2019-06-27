@@ -125,7 +125,7 @@ void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
 	for (i = 0, n = vmem->count; i < n; i++)
 	{
 		/* Get mapping. */
-		map = vmem->maps;
+		map = vmem->maps[i];
 		
 		/* Is in range? */
 		if (optr >= map->fakeptr && optr < map->fakeptr + map->size)
