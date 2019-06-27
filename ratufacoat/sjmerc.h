@@ -591,6 +591,18 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, void* ptr, sjme_jint size,
 	sjme_error* error);
 
 /**
+ * Resolves the given memory pointer.
+ *
+ * @param vmem The virtual memory.
+ * @param ptr The pointer to resolve.
+ * @param off The offset.
+ * @param error The error.
+ * @since 2019/06/27
+ */
+void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
+	sjme_error* error);
+
+/**
  * Convert size to Java type.
  *
  * @param type The input size.
