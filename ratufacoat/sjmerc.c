@@ -2274,9 +2274,6 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 		error = &xerror;
 	}
 	
-	/* Clear error always. */
-	sjme_seterror(error, SJME_ERROR_NONE, 0);
-	
 	/* Do nothing. */
 	if (jvm == NULL)
 	{
@@ -2350,9 +2347,6 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 		memset(&xerror, 0, sizeof(xerror));
 		error = &xerror;
 	}
-	
-	/* Clear error. */
-	sjme_seterror(error, SJME_ERROR_NONE, 0);
 	
 	/* Need native functions. */
 	if (nativefuncs == NULL || nativefuncs->nativeromfile == NULL ||
