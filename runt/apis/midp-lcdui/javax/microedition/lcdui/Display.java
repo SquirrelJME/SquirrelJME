@@ -576,9 +576,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		throw new todo.TODO();
-		/*
-		return this._head.isColor();*/
+		return this._backend.pixelFormat().numColors() > 2;
 	}
 	
 	/**
