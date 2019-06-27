@@ -1867,7 +1867,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					
 					/* The address and offset to access. */
 					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
-					if (enc == SJME_ENC_MEMORY_OFF_ICONST)
+					if (enc == SJME_ENC_MEMORY_OFF_ICONST ||
+						enc == SJME_ENC_MEMORY_OFF_ICONST_JAVA)
 						ib = sjme_opdecodejint(jvm->vmem, &nextpc, error);
 					else
 						ib = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
