@@ -759,7 +759,7 @@ static sjme_jbyte sjme_bootfailmessage[] =
 	118, 47, 100, 111, 119, 110, 108, 111, 97, 100, 46, 109, 107, 100, 32, 97,
 	110, 100, 32, 100, 111, 119, 110, 108, 111, 97, 100, 32, 116, 104, 101, 32,
 	90, 73, 80, 32, 116, 105, 116, 108, 101, 100, 32, 39, 83, 117, 109, 109,
-	101, 114, 67, 111, 97, 116, 32, 82, 79, 77, 39, 46
+	101, 114, 67, 111, 97, 116, 32, 82, 79, 77, 39, 46, 13, 10
 };
 
 /** SQF Defined Font. */
@@ -2210,6 +2210,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	return cycles;
 }
 
+/** Prints the error to the console output. */
 void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 {
 	sjme_jint i, z;
@@ -2312,10 +2313,8 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 	/* Print error state to console? */
 	if (error->code != SJME_ERROR_NONE)
 	{
-		/* Force the error to show on screen. */
+		/* Force error to be on-screen. */
 		jvm->supervisorokay = 0;
-		
-		/* Print the error. */
 		sjme_printerror(jvm, error);
 	}
 	
@@ -2470,6 +2469,7 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 	sjme_jint bootoff, i, n, seedop, seedaddr, seedvalh, seedvall, seedsize;
 	sjme_jint bootjaroff, vbootjarbase, vrambase, vrombase, qq;
 	sjme_cpu* cpu;
+	sjme_error xerror;
 	
 	/* Invalid arguments. */
 	if (jvm == NULL)
@@ -2477,6 +2477,13 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return 0;
+	}
+	
+	/* Force error to be set. */
+	if (error == NULL)
+	{
+		memset(&xerror, 0, sizeof(xerror));
+		error = &xerror;
 	}
 	
 	/* Determine the address the VM sees for some memory types. */
@@ -2632,6 +2639,10 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 		
 		return 0;
 	}
+	
+	/* Force failure to happen! */
+	if (error->code != SJME_ERROR_NONE)
+		return 0;
 	
 	/* Okay! */
 	return 1;
@@ -3034,6 +3045,10 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		sjme_console_pipewrite(rv, (nativefuncs != NULL ?
 			nativefuncs->stderr_write : NULL), sjme_bootfailmessage, 0,
 			sizeof(sjme_bootfailmessage) / sizeof(sjme_jbyte), error);
+		
+		/* Force error to be on-screen. */
+		rv->supervisorokay = 0;
+		sjme_printerror(rv, error);
 		
 		/* Cleanup. */
 		sjme_free(rv);
