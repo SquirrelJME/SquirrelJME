@@ -1667,12 +1667,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			jvm->totalinstructions,
 			cpu->pc,
 			(unsigned int)op,
-			(cpu->debugclassname == NULL ? NULL :
-				SJME_POINTER_OFFSET_LONG(cpu->debugclassname, 2)),
-			(cpu->debugmethodname == NULL ? NULL :
-				SJME_POINTER_OFFSET_LONG(cpu->debugmethodname, 2)),
-			(cpu->debugmethodtype == NULL ? NULL :
-				SJME_POINTER_OFFSET_LONG(cpu->debugmethodtype, 2)),
+			sjme_vmmresolve(jvm->vmem, cpu->debugclassname, 2, NULL),
+			sjme_vmmresolve(jvm->vmem, cpu->debugmethodname, 2, NULL),
+			sjme_vmmresolve(jvm->vmem, cpu->debugmethodtype, 2, NULL),
 			(int)cpu->debugline,
 			(unsigned int)cpu->debugjop,
 			(int)cpu->debugjpc);
@@ -2465,7 +2462,6 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 {
 	sjme_vmemptr rp;
 	sjme_vmemptr bootjar;
-	sjme_vmemptr byteram;
 	sjme_jint bootoff, i, n, seedop, seedaddr, seedvalh, seedvall, seedsize;
 	sjme_jint bootjaroff, vbootjarbase, vrambase, vrombase, qq;
 	sjme_cpu* cpu;
@@ -2560,10 +2556,9 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 	rp = bootjar + bootoff;
 	
 	/* Copy initial base memory bytes, which is pure big endian. */
-	byteram = vrambase;
 	n = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	for (i = 0; i < n; i++)
-		sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_BYTE, &byteram,
+		sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_BYTE, vrambase, i,
 			sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_BYTE, &rp, error), error);
 	
 	/* Load all seeds, which restores natural byte order. */
