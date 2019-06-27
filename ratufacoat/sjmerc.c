@@ -1465,7 +1465,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Wipe these values! */
 			ib = args[2];
 			for (ia = 0; ia < ib; ia++)
-				sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_BYTE, &pa, ic, error);
+				sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_BYTE, pa, ia, ic, error);
 			
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
@@ -1482,7 +1482,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Wipe these values! */
 			ib = args[2];
 			for (ia = 0; ia < ib; ia += 4)
-				sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_INTEGER, &pa, ic,
+				sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER, pa, ia, ic,
 					error);
 			
 			/* Is okay. */
