@@ -402,9 +402,12 @@ void retro_init(void)
 	
 	/* Note it. */
 	log_cb((sjme_retroarch_error.code == SJME_ERROR_NONE ?
-		RETRO_LOG_INFO : RETRO_LOG_ERROR), "SquirrelJME Init: %d/%x\n",
+		RETRO_LOG_INFO : RETRO_LOG_ERROR),
+		"SquirrelJME Init: %d/%08x %d/%08x\n",
 		(int)sjme_retroarch_error.code,
-		(unsigned)sjme_retroarch_error.code);
+		(unsigned)sjme_retroarch_error.code,
+		(int)sjme_retroarch_error.value,
+		(unsigned)sjme_retroarch_error.value);
 }
 
 /** Destroy. */
@@ -453,9 +456,12 @@ void retro_run(void)
 			log_cb = (logging.log != NULL ? logging.log : fallback_log);
 			
 			/* Print error. */
-			log_cb(RETRO_LOG_ERROR, "SquirrelJME JVM Exec Error: %d/%x\n",
+			log_cb(RETRO_LOG_ERROR,
+				"SquirrelJME JVM Exec Error: %d/%08x %d/%08x\n",
 				(int)sjme_retroarch_error.code,
-				(unsigned)sjme_retroarch_error.code);
+				(unsigned)sjme_retroarch_error.code,
+				(int)sjme_retroarch_error.value,
+				(unsigned)sjme_retroarch_error.value);
 			log_cb(RETRO_LOG_ERROR, "Execution now unpredictable!\n");
 		}
 		
