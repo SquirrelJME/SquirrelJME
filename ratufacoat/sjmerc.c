@@ -788,24 +788,19 @@ typedef struct sjme_jint_div
 	sjme_jint rem;
 } sjme_jint_div;
 
-/** Virtual CPU. */
-typedef struct sjme_cpu sjme_cpu;
-struct sjme_cpu
+/**
+ * Virtual CPU state.
+ *
+ * @since 2019/06/27
+ */
+typedef struct sjme_cpustate sjme_cpustate;
+struct sjme_cpustate
 {
-	/** The state of this thread. */
-	sjme_jint state;
-	
 	/** PC. */
 	sjme_vmemptr pc;
 	
 	/** Registers. */
 	sjme_jint r[SJME_MAX_REGISTERS];
-	
-	/* System call arguments. */
-	sjme_jint syscallargs[SJME_MAX_SYSCALLARGS];
-	
-	/* System call error numbers. */
-	sjme_jint syscallerr[SJME_SYSCALL_NUM_SYSCALLS];
 	
 	/** Debug: Class name. */
 	sjme_vmemptr debugclassname;
@@ -826,7 +821,24 @@ struct sjme_cpu
 	sjme_jint debugjpc;
 	
 	/** The parent CPU state. */
-	sjme_cpu* parent;
+	sjme_cpustate* parent;
+};
+
+/** Virtual CPU. */
+typedef struct sjme_cpu sjme_cpu;
+struct sjme_cpu
+{
+	/** The state of this thread. */
+	sjme_jint threadstate;
+	
+	/* System call arguments. */
+	sjme_jint syscallargs[SJME_MAX_SYSCALLARGS];
+	
+	/* System call error numbers. */
+	sjme_jint syscallerr[SJME_SYSCALL_NUM_SYSCALLS];
+	
+	/* Current CPU state. */
+	sjme_cpustate state;
 };
 
 /** Virtual machine state. */
@@ -1189,6 +1201,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jint ia, ib, ic;
 	sjme_jbyte ba;
 	sjme_vmemptr pa;
+	sjme_cpustate* cpustate;
 	
 	/* Called wrong? */
 	if (jvm == NULL || cpu == NULL || args == NULL)
@@ -1197,6 +1210,9 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 		
 		return 0;
 	}
+	
+	/* Start here. */
+	cpustate = &cpu->state;
 	
 	/* Calculate index to set for system call errors. */
 	syserr = ((callid < 0 || callid >= SJME_SYSCALL_NUM_SYSCALLS) ?
@@ -1249,7 +1265,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				ia++;
 				
 				/* Go to deeper depth. */
-				cpu = cpu->parent;
+				cpustate = cpustate->parent;
 			}
 			
 			/* Does not generate errors. */
@@ -1263,14 +1279,14 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			while (ia > 0)
 			{
 				/* End of CPU? */
-				if (cpu == NULL)
+				if (cpustate == NULL)
 				{
 					*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
 					return 0;
 				}
 				
 				/* Drop down. */
-				cpu = cpu->parent;
+				cpustate = cpustate->parent;
 				ia--;
 			}
 			
@@ -1280,37 +1296,37 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* The class name. */
 				case SJME_CALLSTACKITEM_CLASS_NAME:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpu->debugclassname;
+					return cpustate->debugclassname;
 					
 					/* The method name. */
 				case SJME_CALLSTACKITEM_METHOD_NAME:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpu->debugmethodname;
+					return cpustate->debugmethodname;
 					
 					/* The method type. */
 				case SJME_CALLSTACKITEM_METHOD_TYPE:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpu->debugmethodtype;
+					return cpustate->debugmethodtype;
 					
 					/* Source line. */
 				case SJME_CALLSTACKITEM_SOURCE_LINE:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpu->debugline;
+					return cpustate->debugline;
 					
 					/* The PC address. */
 				case SJME_CALLSTACKITEM_PC_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpu->pc;
+					return cpustate->pc;
 					
 					/* Java operation. */
 				case SJME_CALLSTACKITEM_JAVA_OPERATION:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpu->debugjop;
+					return cpustate->debugjop;
 					
 					/* Java PC address. */
 				case SJME_CALLSTACKITEM_JAVA_PC_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpu->debugjpc;
+					return cpustate->debugjpc;
 					
 					/* Unknown. */
 				default:
@@ -1627,7 +1643,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_vmemptr tempp;
 	sjme_jint* r;
 	sjme_jint ia, ib, ic, id;
-	sjme_cpu* oldcpu;
+	sjme_cpustate* oldcpu;
 	
 	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)
@@ -1638,7 +1654,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	}
 	
 	/* Quick register access. */
-	r = cpu->r;
+	r = cpu->state.r;
 	
 	/* Near-Infinite execution loop. */
 	for (;;)
@@ -1659,7 +1675,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 		r[0] = 0;
 		
 		/* Seed next PC address. */
-		nextpc = cpu->pc;
+		nextpc = cpu->state.pc;
 		
 		/* Read operation and determine encoding. */
 		op = (sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_BYTE, &nextpc, error) &
@@ -1671,14 +1687,14 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 		fprintf(stderr,
 			"ti=%d pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
 			jvm->totalinstructions,
-			cpu->pc,
+			cpu->state.pc,
 			(unsigned int)op,
-			sjme_vmmresolve(jvm->vmem, cpu->debugclassname, 2, NULL),
-			sjme_vmmresolve(jvm->vmem, cpu->debugmethodname, 2, NULL),
-			sjme_vmmresolve(jvm->vmem, cpu->debugmethodtype, 2, NULL),
-			(int)cpu->debugline,
-			(unsigned int)cpu->debugjop,
-			(int)cpu->debugjpc);
+			sjme_vmmresolve(jvm->vmem, cpu->state.debugclassname, 2, NULL),
+			sjme_vmmresolve(jvm->vmem, cpu->state.debugmethodname, 2, NULL),
+			sjme_vmmresolve(jvm->vmem, cpu->state.debugmethodtype, 2, NULL),
+			(int)cpu->state.debugline,
+			(unsigned int)cpu->state.debugjop,
+			(int)cpu->state.debugjpc);
 #endif
 		
 		/* Depends on the operation. */
@@ -1693,7 +1709,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					
 					/* Target PC address. */
 					ic = sjme_opdecodejmp(jvm->vmem, &nextpc, error);
-					tempp = cpu->pc + ic;
+					tempp = cpu->state.pc + ic;
 					
 					/* Check depends. */
 					ic = 0;
@@ -1986,13 +2002,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					tempp = r[SJME_POOL_REGISTER];
 					
 					/* Get pointers to the real values. */
-					cpu->debugclassname = sjme_vmmread(jvm->vmem,
+					cpu->state.debugclassname = sjme_vmmread(jvm->vmem,
 						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
 						&nextpc, error) * SJME_JINT_C(4), error);
-					cpu->debugmethodname = sjme_vmmread(jvm->vmem,
+					cpu->state.debugmethodname = sjme_vmmread(jvm->vmem,
 						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
 						&nextpc, error) * SJME_JINT_C(4), error);
-					cpu->debugmethodtype = sjme_vmmread(jvm->vmem,
+					cpu->state.debugmethodtype = sjme_vmmread(jvm->vmem,
 						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
 						&nextpc, error) * SJME_JINT_C(4), error);
 				}
@@ -2005,12 +2021,12 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				/* Debug point. */
 			case SJME_OP_DEBUG_POINT:
 				{
-					cpu->debugline =
+					cpu->state.debugline =
 						sjme_opdecodeui(jvm->vmem, &nextpc, error);
-					cpu->debugjop =
+					cpu->state.debugjop =
 						(sjme_opdecodeui(jvm->vmem, &nextpc, error) &
 						SJME_JINT_C(0xFF));
-					cpu->debugjpc =
+					cpu->state.debugjpc =
 						sjme_opdecodeui(jvm->vmem, &nextpc, error);
 				}
 				break;
@@ -2026,7 +2042,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					
 					/* Target PC address. */
 					ic = sjme_opdecodejmp(jvm->vmem, &nextpc, error);
-					tempp = cpu->pc + ic;
+					tempp = cpu->state.pc + ic;
 					
 					/* Jump on equals? */
 					if (ia == ib)
@@ -2048,8 +2064,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					}
 					
 					/* Copy and store state. */
-					*oldcpu = *cpu;
-					cpu->parent = oldcpu;
+					*oldcpu = cpu->state;
+					cpu->state.parent = oldcpu;
 					
 					/* Setup CPU state for invoke run, move pool up. */
 					for (ia = SJME_LOCAL_REGISTER_BASE;
@@ -2093,7 +2109,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					
 					/* Our next PC becomes the target address. */
 					nextpc = ia;
-					cpu->pc = nextpc;
+					cpu->state.pc = nextpc;
 				}
 				break;
 				
@@ -2132,7 +2148,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_RETURN:
 				{
 					/* Get parent CPU state. */
-					oldcpu = cpu->parent;
+					oldcpu = cpu->state.parent;
 					
 					/* Exit must be done through an exit system call! */
 					if (oldcpu == NULL)
@@ -2145,17 +2161,13 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					
 					/* Copy global values back. */
 					for (ia = 0; ia < SJME_LOCAL_REGISTER_BASE; ia++)
-						oldcpu->r[ia] = cpu->r[ia];
-					
-					/* Copy system call errors back. */
-					for (ia = 0; ia < SJME_SYSCALL_NUM_SYSCALLS; ia++)
-						oldcpu->syscallerr[ia] = cpu->syscallerr[ia];
+						oldcpu->r[ia] = cpu->state.r[ia];
 					
 					/* Completely restore the old state. */
-					*cpu = *oldcpu;
+					cpu->state = *oldcpu;
 					
 					/* Restore continuing PC address. */
-					nextpc = cpu->pc;
+					nextpc = cpu->state.pc;
 					
 					/* Free the parent as it is not needed. */
 					sjme_free(oldcpu);
@@ -2207,7 +2219,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				return cycles;
 		
 		/* Set next PC address. */
-		cpu->pc = nextpc;
+		cpu->state.pc = nextpc;
 	}
 	
 	/* Return remaining cycles. */
@@ -2297,7 +2309,7 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 		
 		/* Ignore CPUs which are not turned on. */
 		cpu = &jvm->threads[threadid];
-		if (cpu->state == SJME_THREAD_STATE_NONE)
+		if (cpu->threadstate == SJME_THREAD_STATE_NONE)
 			continue;
 		
 		/* Execute CPU engine. */
@@ -2489,7 +2501,7 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 	
 	/* Set initial CPU (the first). */
 	cpu = &jvm->threads[0];
-	cpu->state = SJME_THREAD_STATE_RUNNING;
+	cpu->threadstate = SJME_THREAD_STATE_RUNNING;
 	
 	/* Set boot pointer to start of ROM. */
 	rp = jvm->rom->fakeptr;
@@ -2535,22 +2547,22 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Seed initial CPU state. */
-	cpu->r[SJME_POOL_REGISTER] = vrambase + sjme_vmmreadp(jvm->vmem,
+	cpu->state.r[SJME_POOL_REGISTER] = vrambase + sjme_vmmreadp(jvm->vmem,
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	cpu->r[SJME_STATIC_FIELD_REGISTER] = vrambase + sjme_vmmreadp(jvm->vmem,
-		SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	cpu->pc = (bootjar + sjme_vmmreadp(jvm->vmem,
+	cpu->state.r[SJME_STATIC_FIELD_REGISTER] = vrambase +
+		sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	cpu->state.pc = (bootjar + sjme_vmmreadp(jvm->vmem,
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error));
 	
 	/* Bootstrap entry arguments. */
 	/* (int __rambase, int __ramsize, int __rombase, int __romsize, */
 	/* int __confbase, int __confsize) */
-	cpu->r[SJME_ARGBASE_REGISTER + 0] = jvm->ram->fakeptr;
-	cpu->r[SJME_ARGBASE_REGISTER + 1] = jvm->ram->size;
-	cpu->r[SJME_ARGBASE_REGISTER + 2] = jvm->rom->fakeptr;
-	cpu->r[SJME_ARGBASE_REGISTER + 3] = jvm->rom->size;
-	cpu->r[SJME_ARGBASE_REGISTER + 4] = jvm->config->fakeptr;
-	cpu->r[SJME_ARGBASE_REGISTER + 5] = jvm->config->size;
+	cpu->state.r[SJME_ARGBASE_REGISTER + 0] = jvm->ram->fakeptr;
+	cpu->state.r[SJME_ARGBASE_REGISTER + 1] = jvm->ram->size;
+	cpu->state.r[SJME_ARGBASE_REGISTER + 2] = jvm->rom->fakeptr;
+	cpu->state.r[SJME_ARGBASE_REGISTER + 3] = jvm->rom->size;
+	cpu->state.r[SJME_ARGBASE_REGISTER + 4] = jvm->config->fakeptr;
+	cpu->state.r[SJME_ARGBASE_REGISTER + 5] = jvm->config->size;
 	
 	/* Address where the BootRAM is read from. */
 	rp = bootjar + bootoff;
@@ -2650,8 +2662,8 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 /** Destroys the virtual machine instance. */
 sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error)
 {
-	sjme_cpu* cpu;
-	sjme_cpu* oldcpu;
+	sjme_cpustate* cpu;
+	sjme_cpustate* oldcpu;
 	sjme_jint i;
 	
 	/* Missing this? */
@@ -2669,7 +2681,7 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error)
 	for (i = 0; i < SJME_THREAD_MAX; i++)
 	{
 		/* Get CPU here. */
-		cpu = &jvm->threads[i];
+		cpu = &jvm->threads[i].state;
 		
 		/* Recursively clear CPU stacks. */
 		while (cpu->parent != NULL)
@@ -2681,7 +2693,8 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error)
 			*cpu = *oldcpu;
 			
 			/* Free CPU state. */
-			sjme_free(oldcpu);
+			if (oldcpu != &jvm->threads[i].state)
+				sjme_free(oldcpu);
 		}
 	}
 	
