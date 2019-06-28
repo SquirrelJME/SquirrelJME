@@ -1365,12 +1365,11 @@ public final class JarMinimizer
 		// No boot data
 		else
 		{
-			// Boot memory offset and size
+			// Boot memory offset, size
 			__dos.writeInt(0);
 			__dos.writeInt(0);
 			
-			// Boot offset, pool, sfa, code, classidba, classidbaa
-			__dos.writeInt(0);
+			// Pool, sfa, code, classidba, classidbaa
 			__dos.writeInt(0);
 			__dos.writeInt(0);
 			__dos.writeInt(0);
