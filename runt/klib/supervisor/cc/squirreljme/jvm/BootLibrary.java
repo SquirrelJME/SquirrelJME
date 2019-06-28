@@ -116,11 +116,6 @@ public final class BootLibrary
 			sp = this.tocaddress;
 		for (int i = 0, n = this.entrycount; i < n; i++, sp += TOC_ENTRY_SIZE)
 		{
-			todo.DEBUG.note("%d: %s",
-				Assembly.memReadJavaInt(sp, TOC_HASHCODE_OFFSET),
-				JVMFunction.jvmLoadString(
-					bp + Assembly.memReadJavaInt(sp, TOC_NAME_OFFSET)));
-			
 			// Hash code does not match
 			if (hash != Assembly.memReadJavaInt(sp, TOC_HASHCODE_OFFSET))
 				continue;
