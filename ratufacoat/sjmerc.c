@@ -2914,7 +2914,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	rv->vmem = vmem;
 	
 	/* Virtual map config. */
-	rv->config = sjme_vmmmap(vmem, conf, SJME_DEFAULT_CONF_SIZE, error);
+	rv->config = sjme_vmmmap(vmem, 0, conf, SJME_DEFAULT_CONF_SIZE, error);
 	if (rv->config == NULL)
 		return NULL;
 	
@@ -2942,7 +2942,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	}
 	
 	/* Virtual map RAM. */
-	rv->ram = sjme_vmmmap(vmem, ram, options->ramsize, error);
+	rv->ram = sjme_vmmmap(vmem, 0, ram, options->ramsize, error);
 	if (rv->ram == NULL)
 		return NULL;
 	
@@ -2968,7 +2968,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	/* Virtual map framebuffer, if available. */
 	if (fbinfo != NULL)
 	{
-		rv->framebuffer = sjme_vmmmap(vmem, fbinfo->pixels,
+		rv->framebuffer = sjme_vmmmap(vmem, 0, fbinfo->pixels,
 			fbinfo->numpixels * SJME_JINT_C(4), error);
 		if (rv->framebuffer == NULL)
 			return NULL;
@@ -3043,7 +3043,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	}
 	
 	/* Virtual map ROM. */
-	rv->rom = sjme_vmmmap(vmem, rom, romsize, error);
+	rv->rom = sjme_vmmmap(vmem, 0, rom, romsize, error);
 	if (rv->rom == NULL)
 		return NULL;
 	
