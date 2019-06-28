@@ -580,7 +580,8 @@ public final class NativeCPU
 						
 						// Debug
 						if (ENABLE_DEBUG)
-							todo.DEBUG.note("Read pool: %d", lr[args[1]]);
+							todo.DEBUG.note("Read pool: %d -> %d", args[0],
+								lr[args[1]]);
 					}
 					break;
 					

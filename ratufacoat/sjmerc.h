@@ -39,13 +39,6 @@
 	#endif
 #endif
 
-/** Use virtualized memory? */
-#if !defined(SJME_VIRTUAL_MEM)
-	#if defined(SJME_BITS) && SJME_BITS == 64
-		#define SJME_VIRTUAL_MEM
-	#endif
-#endif
-
 /** Possibly detect endianess. */
 #if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
 	/** Defined by the system? */
