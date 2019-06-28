@@ -41,28 +41,28 @@ public final class MinimizedPackHeader
 	public static final int TOC_ENTRY_SIZE =
 		20;
 	
-	/** The number of jars in this packfile. */
+	/** The number of jars in this packfile. (4) */
 	public final int numjars;
 	
-	/** The offset to the table of contents. */
+	/** The offset to the table of contents. (8) */
 	public final int tocoffset;
 	
-	/** The index of the JAR which should be the boot point. */
+	/** The index of the JAR which should be the boot point. (12) */
 	public final int bootjarindex;
 	
-	/** The offset into the packfile where the boot entry is. */
+	/** The offset into the packfile where the boot entry is. (16) */
 	public final int bootjaroffset;
 	
-	/** The size of the boot jar. */
+	/** The size of the boot jar. (20) */
 	public final int bootjarsize;
 	
-	/** Initial class path library indexes. */
+	/** Initial class path library indexes. (24) */
 	public final int booticpoffset;
 	
-	/** Initial class path library index count. */
+	/** Initial class path library index count. (28) */
 	public final int booticpsize;
 	
-	/** Initial main class to boot. */
+	/** Initial main class to boot. (32) */
 	public final int bootmainclass;
 	
 	/**

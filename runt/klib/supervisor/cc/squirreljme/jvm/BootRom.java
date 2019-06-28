@@ -165,8 +165,8 @@ public final class BootRom
 			return usermain;
 		
 		// Otherwise read it from the boot ROM
-		return JVMFunction.jvmLoadString(Assembly.memReadJavaInt(__rombase,
-			ROM_BOOTMAINCLASS_OFFSET));
+		return JVMFunction.jvmLoadString(__rombase +
+			Assembly.memReadJavaInt(__rombase, ROM_BOOTMAINCLASS_OFFSET));
 	}
 	
 	/**
