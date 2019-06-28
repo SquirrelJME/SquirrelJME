@@ -1944,7 +1944,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 							r[ic] = r[ic] & SJME_JINT_C(0xFFFF);
 							
 #if defined(SJME_DEBUG)
-						fprintf(stderr, "r[%d] = *(%d + %d) = %d/%08x\n",
+						fprintf(stderr, "r[%d] = *(%08x + %d) = %d/%08x\n",
 							(int)ic, (int)tempp, (int)ib,
 							(int)r[ic], (int)r[ic]);
 #endif
@@ -1956,7 +1956,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						sjme_vmmwrite(jvm->vmem, id, tempp, ib, r[ic], error);
 						
 #if defined(SJME_DEBUG)
-						fprintf(stderr, "*(%d + %d) = r[%d] = %d/%08x\n",
+						fprintf(stderr, "*(%08x + %d) = r[%d] = %d/%08x\n",
 							(int)tempp, (int)ib, (int)ic,
 							(int)r[ic], (int)r[ic]);
 #endif
@@ -2601,6 +2601,13 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 	cpu->state.r[SJME_ARGBASE_REGISTER + 3] = jvm->rom->size;
 	cpu->state.r[SJME_ARGBASE_REGISTER + 4] = jvm->config->fakeptr;
 	cpu->state.r[SJME_ARGBASE_REGISTER + 5] = jvm->config->size;
+	
+#if defined(SJME_DEBUG)
+	fprintf(stderr, "RAM=%08x+%d ROM=%08x+%d CFG=%08x+%d\n",
+		(int)jvm->ram->fakeptr, (int)jvm->ram->size,
+		(int)jvm->rom->fakeptr, (int)jvm->rom->size,
+		(int)jvm->config->fakeptr, (int)jvm->config->size);
+#endif
 	
 	/* Address where the BootRAM is read from. */
 	rp = bootjar + bootoff;
