@@ -1083,7 +1083,26 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doNew(ClassName __cn, JavaStackResult.Output __out)
 	{
-		this.__invokeNew(__cn, __out.register);
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Need result register
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volresult = volatiles.get();
+		
+		// Perform new invocation
+		this.__invokeNew(__cn, volresult);
+		
+		// Check for out of memory
+		this.__basicCheckOOM(volresult);
+		
+		// All the exceptions were checked
+		this.state.canexception = false;
+		
+		// Copy to result
+		codebuilder.addCopy(volresult, __out.register);
+		
+		// Not needed
+		volatiles.remove(volresult);
 	}
 	
 	/**
@@ -1096,24 +1115,38 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
+		// Check for negative array size
+		this.__basicCheckNAS(__len.register);
+		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volclassdx = volatiles.get();
+		int volclassdx = volatiles.get(),
+			volresult = volatiles.get();
 		
 		// Load the class data for the array type
 		// If not a fixed class index, then rely on the value in the pool
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			__at, volclassdx);
 		
-		// Call internal handler
+		// Call internal handler, place into temporary for OOM check
 		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmNewArray",
 			"(II)I", volclassdx, __len.register);
-		
-		// Copy result
-		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
+		codebuilder.addCopy(NativeCode.RETURN_REGISTER, volresult);
 		
 		// No longer needed
 		volatiles.remove(volclassdx);
+		
+		// Check for out of memory
+		this.__basicCheckOOM(volresult);
+		
+		// All the exceptions were checked
+		this.state.canexception = false;
+		
+		// Place result in true location
+		codebuilder.addCopy(volresult, __out.register);
+		
+		// Not needed
+		volatiles.remove(volresult);
 	}
 	
 	/**
@@ -1797,6 +1830,23 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Checks if the requested array allocation is negative.
+	 *
+	 * @param __lr The length register.
+	 * @since 2019/06/28
+	 */
+	private final void __basicCheckNAS(int __lr)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Check against less than zero
+		codebuilder.addIfICmp(CompareType.LESS_THAN,
+			__lr, NativeCode.ZERO_REGISTER, this.__labelRefClearJump(
+			this.__labelMakeException(
+				"java/lang/NegativeArraySizeException")));
+	}
+	
+	/**
 	 * Basic check if the instance is null.
 	 *
 	 * @param __ir The register to check.
@@ -1809,6 +1859,21 @@ public final class NearNativeByteCodeHandler
 		// Just a plain zero check
 		codebuilder.addIfZero(__ir, this.__labelRefClearJump(
 			this.__labelMakeException("java/lang/NullPointerException")));
+	}
+	
+	/**
+	 * Checks if the given allocation ran out of memory.
+	 *
+	 * @param __ir The register to check.
+	 * @since 2019/06/28
+	 */
+	private final void __basicCheckOOM(int __ir)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Just a plain zero check
+		codebuilder.addIfZero(__ir, this.__labelRefClearJump(
+			this.__labelMakeException("java/lang/OutOfMemoryError")));
 	}
 	
 	/**
@@ -2513,15 +2578,13 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			__cl, volwantcl);
 		
-		// Call allocator
+		// Call allocator, copy to result
 		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmNew",
 			"(I)I", volwantcl);
+		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out);
 		
 		// Not needed
 		volatiles.remove(volwantcl);
-		
-		// Copy result
-		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out);
 	}
 	
 	/**

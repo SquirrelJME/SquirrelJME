@@ -439,7 +439,7 @@ public final class JVMFunction
 		int rv = Allocator.allocate(
 			_TASK_ID | Allocator.CHUNK_BIT_IS_OBJECT, info.size);
 		if (rv == 0)
-			throw new OutOfMemoryError();
+			return 0;
 		
 		// Write class information with an initial count of one
 		Assembly.memWriteInt(rv, Constants.OBJECT_CLASS_OFFSET,
@@ -475,7 +475,7 @@ public final class JVMFunction
 		
 		// Cannot allocate negative length
 		if (__len < 0)
-			throw new NegativeArraySizeException();
+			return 0;
 		
 		// Get the class information for the array we want to allocate
 		ClassInfo info = Assembly.pointerToClassInfo(__at);
@@ -487,7 +487,7 @@ public final class JVMFunction
 		int rv = Allocator.allocate(
 			_TASK_ID | Allocator.CHUNK_BIT_IS_OBJECT, allocsize);
 		if (rv == 0)
-			throw new OutOfMemoryError();
+			return 0;
 		
 		// Write class information with an initial count of one
 		Assembly.memWriteInt(rv, Constants.OBJECT_CLASS_OFFSET,
