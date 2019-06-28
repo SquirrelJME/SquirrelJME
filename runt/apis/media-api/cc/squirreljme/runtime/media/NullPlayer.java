@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.media;
 
+import java.util.LinkedList;
+import java.util.List;
 import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
@@ -26,6 +28,10 @@ public final class NullPlayer
 {
 	/** The mime type. */
 	private final String mime;
+	
+	/** Listeners available. */
+	private final List<PlayerListener> _listeners =
+		new LinkedList<>();
 	
 	/** The timebase. */
 	private TimeBase _timebase =
@@ -56,9 +62,23 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	public final void addPlayerListener(PlayerListener __a)
+	public final void addPlayerListener(PlayerListener __l)
 	{
-		throw new todo.TODO();
+		// Ignore?
+		if (__l == null)
+			return;
+		
+		// {@squirreljme.error EA01 Null Player has been closed.}
+		if (this._state == CLOSED)
+			throw new IllegalStateException("EA01");
+		
+		// Add unique listener
+		List<PlayerListener> listeners = this._listeners;
+		synchronized (listeners)
+		{
+			if (!listeners.contains(__l))
+				listeners.add(__l);
+		}
 	}
 	
 	/**
@@ -68,6 +88,13 @@ public final class NullPlayer
 	@Override
 	public final void close()
 	{
+		if (this._state != CLOSED)
+		{
+			this._state = CLOSED;
+			
+			// Send event
+			this.__event(PlayerListener.CLOSED, null);
+		}
 	}
 	
 	/**
@@ -77,8 +104,25 @@ public final class NullPlayer
 	@Override
 	public final void deallocate()
 	{
+		// {@squirreljme.error EA03 Null Player has been closed.}
+		if (this._state == CLOSED)
+			throw new IllegalStateException("EA03");
+		
 		if (this._state == STARTED)
+		{
+			// Implicit stop state
+			try
+			{
+				this.stop();
+			}
+			catch (MediaException e)
+			{
+				e.printStackTrace();
+			}
+			
+			// Become realized
 			this._state = REALIZED;
+		}
 	}
 	
 	/**
@@ -169,6 +213,10 @@ public final class NullPlayer
 	public final void realize()
 		throws MediaException
 	{
+		// {@squirreljme.error EA04 Null Player has been closed.}
+		if (this._state == CLOSED)
+			throw new IllegalStateException("EA04");
+		
 		if (this._state != UNREALIZED)
 			this._state = REALIZED;
 	}
@@ -178,9 +226,22 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	public final void removePlayerListener(PlayerListener __a)
+	public final void removePlayerListener(PlayerListener __l)
 	{
-		throw new todo.TODO();
+		// Ignore?
+		if (__l == null)
+			return;
+		
+		// {@squirreljme.error EA02 Null Player has been closed.}
+		if (this._state == CLOSED)
+			throw new IllegalStateException("EA02");
+		
+		// Remove it
+		List<PlayerListener> listeners = this._listeners;
+		synchronized (listeners)
+		{
+			listeners.remove(__l);
+		}
 	}
 	
 	/**
@@ -222,8 +283,18 @@ public final class NullPlayer
 	public final void start()
 		throws MediaException
 	{
-		if (this._state != STARTED)
+		// {@squirreljme.error EA05 Null Player has been closed.}
+		if (this._state == CLOSED)
+			throw new IllegalStateException("EA05");
+		
+		if (this._state != STARTED || this._state == PREFETCHED)
+		{
 			this._state = STARTED;
+			
+			// Send event
+			this.__event(PlayerListener.STARTED,
+				Long.valueOf(this._timebase.getTime()));
+		}
 	}
 	
 	/**
@@ -234,6 +305,49 @@ public final class NullPlayer
 	public final void stop()
 		throws MediaException
 	{
+		// {@squirreljme.error EA06 Null Player has been closed.}
+		if (this._state == CLOSED)
+			throw new IllegalStateException("EA06");
+		
+		if (this._state != STARTED)
+		{
+			this._state = PREFETCHED;
+			
+			// Send event
+			this.__event(PlayerListener.STOPPED,
+				Long.valueOf(this._timebase.getTime()));
+		}
+	}
+	
+	/**
+	 * Sends an event to all listeners.
+	 *
+	 * @param __key The key used.
+	 * @param __val The value used.
+	 * @since 2019/06/28
+	 */
+	private final void __event(String __key, Object __val)
+	{
+		PlayerListener[] poke;
+		
+		// Get listeners to poke
+		List<PlayerListener> listeners = this._listeners;
+		synchronized (listeners)
+		{
+			poke = listeners.<PlayerListener>toArray(
+				new PlayerListener[listeners.size()]);
+		}
+		
+		// Poke them all
+		for (PlayerListener pl : poke)
+			try
+			{
+				pl.playerUpdate(this, __key, __val);
+			}
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+			}
 	}
 }
 
