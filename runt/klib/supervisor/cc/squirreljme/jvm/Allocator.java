@@ -86,8 +86,8 @@ public final class Allocator
 		// The number of desired bytes
 		int want = CHUNK_LENGTH + (__sz <= 4 ? 4 : ((__sz + 3) & (~3)));
 		
-		// Too big?
-		if (want > CHUNK_SIZE_LIMIT)
+		// Negative size or too big?
+		if (__sz < 0 || want > CHUNK_SIZE_LIMIT)
 			return 0;
 		
 		// Go through the memory chunks to locate a free chunk
