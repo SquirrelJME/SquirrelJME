@@ -3093,6 +3093,10 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		rv->presetrom = NULL;
 	}
 	
+	/* If we are using a preset ROM then just use the size. */
+	if (rv->presetrom != NULL)
+		romsize = options->romsize;
+	
 	/* Virtual map ROM. */
 	rv->rom = sjme_vmmmap(vmem, 0, rom, romsize, error);
 	if (rv->rom == NULL)
