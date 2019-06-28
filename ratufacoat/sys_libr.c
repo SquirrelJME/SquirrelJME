@@ -388,11 +388,6 @@ void retro_init(void)
 	sjme_retroarch_options.presetrom = sjme_retroarch_basicrom;
 	sjme_retroarch_options.romsize = romsize;
 	
-	/* Copy the ROM on 64-bit, so the address is in SquirrelJME range. */
-#if defined(SJME_BITS) && SJME_BITS > 32
-	sjme_retroarch_options.copyrom = 1;
-#endif
-	
 	/* Set native functions. */
 	memset(&sjme_retroarch_nativefuncs, 0, sizeof(sjme_retroarch_nativefuncs));
 	sjme_retroarch_nativefuncs.stderr_write = sjme_retroarch_stderr_write;
@@ -419,6 +414,8 @@ void retro_deinit(void)
 /** Resets the system. */
 void retro_reset(void)
 {
+	struct retro_log_callback logging;
+	
 	/* Destroy the JVM, if it already exists. */
 	if (sjme_retroarch_jvm != NULL)
 		sjme_jvmdestroy(sjme_retroarch_jvm, NULL);
@@ -433,6 +430,11 @@ void retro_reset(void)
 	/* Initialize the JVM. */
 	sjme_retroarch_jvm = sjme_jvmnew(&sjme_retroarch_options,
 		&sjme_retroarch_nativefuncs, &sjme_retroarch_error);
+	
+	/* Try to get the logger again because for some reason RetroArch */
+	/* nukes our callback and then it never works again? */
+	environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
+	log_cb = (logging.log != NULL ? logging.log : fallback_log);
 	
 	/* Note it. */
 	log_cb((sjme_retroarch_error.code == SJME_ERROR_NONE ?
