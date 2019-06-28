@@ -2137,7 +2137,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					ia = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
 					/* Write into destination register. */
-					r[sjme_opdecodereg(jvm->vmem, &nextpc, error)] = 
+					r[(ib = sjme_opdecodereg(jvm->vmem, &nextpc, error))] = 
 						sjme_vmmread(jvm->vmem, SJME_VMMTYPE_INTEGER,
 							r[SJME_POOL_REGISTER], (ia * SJME_JINT_C(4)),
 							error);
