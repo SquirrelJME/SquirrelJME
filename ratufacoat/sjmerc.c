@@ -1683,7 +1683,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 		enc = ((op >= SJME_ENC_SPECIAL_A) ? op : (op & SJME_ENC_MASK));
 		
 		/* Temporary debug. */
-#if 0
+#if defined(SJME_DEBUG)
 		fprintf(stderr,
 			"ti=%d pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
 			jvm->totalinstructions,
@@ -2104,6 +2104,19 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 									SJME_VMMTYPE_BYTE, &nextpc, error)];
 					}
 					
+#if defined(SJME_DEBUG)
+					fprintf(stderr, "Invoke %08x (", (int)ia);
+					for (ic = 0; ic < ib; ic++)
+					{
+						if (ic > 0)
+							fprintf(stderr, ", ");
+						fprintf(stderr, "%d/%08x",
+							(int)r[SJME_ARGBASE_REGISTER + ic],
+							(int)r[SJME_ARGBASE_REGISTER + ic]);
+					}
+					fprintf(stderr, ")\n");
+#endif
+					
 					/* Old PC address resumes where this read ended. */
 					oldcpu->pc = nextpc;
 					
@@ -2171,6 +2184,12 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					
 					/* Free the parent as it is not needed. */
 					sjme_free(oldcpu);
+					
+#if defined(SJME_DEBUG)
+					fprintf(stderr, "Return: %d/%08x\n",
+						(int)r[SJME_RETURN_REGISTER],
+						(int)r[SJME_RETURN_REGISTER]);
+#endif
 				}
 				break;
 				

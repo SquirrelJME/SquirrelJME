@@ -94,6 +94,8 @@ public final class Allocator
 		int seeker = Allocator._rambase;
 		while (seeker != 0)
 		{
+			todo.DEBUG.code('S', 'K', seeker);
+			
 			// Read chunk properties
 			int csz = Assembly.memReadInt(seeker, CHUNK_SIZE_OFFSET),
 				cnx = Assembly.memReadInt(seeker, CHUNK_NEXT_OFFSET);
