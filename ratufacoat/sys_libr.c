@@ -48,6 +48,9 @@ static sjme_jvm* sjme_retroarch_jvm = NULL;
 /** Native functions. */
 static sjme_nativefuncs sjme_retroarch_nativefuncs;
 
+/** Options for RetroArch. */
+static sjme_jvmoptions sjme_retroarch_options;
+
 /** Error state. */
 static sjme_error sjme_retroarch_error =
 	{SJME_ERROR_NONE, 0};
@@ -314,7 +317,6 @@ void retro_init(void)
 	struct retro_vfs_file_handle* romfile;
 	int strlens;
 	sjme_jint romsize, readat, readcount;
-	sjme_jvmoptions options;
 	
 	/* Use ARGB 32-bit. */
 	format = RETRO_PIXEL_FORMAT_XRGB8888;
@@ -381,14 +383,14 @@ void retro_init(void)
 	}
 	
 	/* Setup options. */
-	memset(&options, 0, sizeof(options));
-	options.ramsize = 0;
-	options.presetrom = sjme_retroarch_basicrom;
-	options.romsize = romsize;
+	memset(&sjme_retroarch_options, 0, sizeof(sjme_retroarch_options));
+	sjme_retroarch_options.ramsize = 0;
+	sjme_retroarch_options.presetrom = sjme_retroarch_basicrom;
+	sjme_retroarch_options.romsize = romsize;
 	
 	/* Copy the ROM on 64-bit, so the address is in SquirrelJME range. */
 #if defined(SJME_BITS) && SJME_BITS > 32
-	options.copyrom = 1;
+	sjme_retroarch_options.copyrom = 1;
 #endif
 	
 	/* Set native functions. */
@@ -396,18 +398,8 @@ void retro_init(void)
 	sjme_retroarch_nativefuncs.stderr_write = sjme_retroarch_stderr_write;
 	sjme_retroarch_nativefuncs.framebuffer = sjme_retroarch_framebuffer;
 	
-	/* Initialize the JVM. */
-	sjme_retroarch_jvm = sjme_jvmnew(&options, &sjme_retroarch_nativefuncs,
-		&sjme_retroarch_error);
-	
-	/* Note it. */
-	log_cb((sjme_retroarch_error.code == SJME_ERROR_NONE ?
-		RETRO_LOG_INFO : RETRO_LOG_ERROR),
-		"SquirrelJME Init: %d/%08x %d/%08x\n",
-		(int)sjme_retroarch_error.code,
-		(unsigned)sjme_retroarch_error.code,
-		(int)sjme_retroarch_error.value,
-		(unsigned)sjme_retroarch_error.value);
+	/* Perform machine reset. */
+	retro_reset();
 }
 
 /** Destroy. */
@@ -427,6 +419,29 @@ void retro_deinit(void)
 /** Resets the system. */
 void retro_reset(void)
 {
+	/* Destroy the JVM, if it already exists. */
+	if (sjme_retroarch_jvm != NULL)
+		sjme_jvmdestroy(sjme_retroarch_jvm, NULL);
+	sjme_retroarch_jvm = NULL;
+	
+	/* Reset error code! */
+	memset(&sjme_retroarch_error, 0, sizeof(sjme_retroarch_error));
+	
+	/* Wipe the screen to the initial state, because it gets confusing. */
+	memset(&sjme_ratufacoat_videoram, 0, sizeof(sjme_ratufacoat_videoram));
+	
+	/* Initialize the JVM. */
+	sjme_retroarch_jvm = sjme_jvmnew(&sjme_retroarch_options,
+		&sjme_retroarch_nativefuncs, &sjme_retroarch_error);
+	
+	/* Note it. */
+	log_cb((sjme_retroarch_error.code == SJME_ERROR_NONE ?
+		RETRO_LOG_INFO : RETRO_LOG_ERROR),
+		"SquirrelJME Init: %d/%08x %d/%08x\n",
+		(int)sjme_retroarch_error.code,
+		(unsigned)sjme_retroarch_error.code,
+		(int)sjme_retroarch_error.value,
+		(unsigned)sjme_retroarch_error.value);
 }
 
 /** Runs single frame. */
