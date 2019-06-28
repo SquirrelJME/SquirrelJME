@@ -132,6 +132,8 @@ public final class ClientTask
 			}
 		}
 		
+		todo.DEBUG.note("Initializing class info %s...", __cl);
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
