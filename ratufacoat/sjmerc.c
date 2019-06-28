@@ -2681,6 +2681,12 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 		else
 			sjme_vmmwrite(jvm->vmem, sjme_vmmsizetotype(seedsize, error),
 				vrambase, seedaddr, seedvalh, error);
+			
+#if defined(SJME_DEBUG)
+		fprintf(stderr, "SEED op=%d sz=%d -> @%08x+%08x (R@%08x) = %d/%08x\n",
+			(int)seedop, (int)seedsize, (int)vrambase, (int)seedaddr,
+			(int)(vrambase + seedaddr), (int)seedvalh, (int)seedvalh);
+#endif
 		
 		/* Error was reached? */
 		if (error->code != SJME_ERROR_NONE)
