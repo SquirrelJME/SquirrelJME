@@ -1942,11 +1942,25 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						if ((op & SJME_MEM_DATATYPE_MASK) ==
 							SJME_DATATYPE_CHARACTER)
 							r[ic] = r[ic] & SJME_JINT_C(0xFFFF);
+							
+#if defined(SJME_DEBUG)
+						fprintf(stderr, "r[%d] = *(%d + %d) = %d/%08x\n",
+							(int)ic, (int)tempp, (int)ib,
+							(int)r[ic], (int)r[ic]);
+#endif
 					}
 					
 					/* Store value */
 					else
+					{
 						sjme_vmmwrite(jvm->vmem, id, tempp, ib, r[ic], error);
+						
+#if defined(SJME_DEBUG)
+						fprintf(stderr, "*(%d + %d) = r[%d] = %d/%08x\n",
+							(int)tempp, (int)ib, (int)ic,
+							(int)r[ic], (int)r[ic]);
+#endif
+					}
 				}
 				break;
 				
@@ -2154,6 +2168,11 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						sjme_vmmread(jvm->vmem, SJME_VMMTYPE_INTEGER,
 							r[SJME_POOL_REGISTER], (ia * SJME_JINT_C(4)),
 							error);
+					
+#if defined(SJME_DEBUG)
+					fprintf(stderr, "Load pool %d -> %d/%08x\n",
+						(int)ia, (int)r[ib], (int)r[ib]);
+#endif
 				}
 				break;
 				
