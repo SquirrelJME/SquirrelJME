@@ -54,12 +54,14 @@ sjme_vmem* sjme_vmmnew(sjme_error* error)
 }
 
 /** Virtually maps the given region of memory. */
-sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, void* ptr, sjme_jint size,
-	sjme_error* error)
+sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
+	sjme_jint size, sjme_error* error)
 {
 	sjme_vmemmap* rv;
 	sjme_vmemmap** newmaps;
 	sjme_jint i;
+	
+	(void)at;
 	
 	/* Invalid argument. */
 	if (vmem == NULL || ptr == NULL || size <= 0)
