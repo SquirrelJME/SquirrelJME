@@ -1936,7 +1936,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					if ((op & SJME_MEM_LOAD_MASK) != 0)
 					{
 						/* Read. */
-						sjme_vmmread(jvm->vmem, id, tempp, ib, error);
+						r[ic] = sjme_vmmread(jvm->vmem, id, tempp, ib, error);
 						
 						/* Mask character? */
 						if ((op & SJME_MEM_DATATYPE_MASK) ==
