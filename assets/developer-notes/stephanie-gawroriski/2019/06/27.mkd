@@ -1,0 +1,34 @@
+# 2019/06/27
+
+## 09:26
+
+The new memory stuff is much cleaner which is nice, although I believe
+there is an issue with some initialization of the BootROM or similar.
+PowerPC and x86 crash the same, so at least this one is consistent.
+
+## 09:28
+
+Very likely is an initialization error.
+
+## 14:22
+
+Okay so maybe I am writing to invalid memory? Because the debug stuff
+and everything after the registers is zero.
+
+## 14:30
+
+No, that is just the first set error break I had that was from the
+fprintf code.
+
+## 14:33
+
+Okay so I see 0xe7e5e7e4 in one of the registers so definitely dealing
+with a bad magic. Okay so it seems this is attempting to allocate an
+object which has the bad magic size. This is the initialization of
+config reader. Init ram links is done and then finished. And jvmNew
+
+## 15:22
+
+Just going to guess that it is the bootstrap loader is messed up since
+that is the most complex part of the rewrite. Maybe it is a confusion
+of a RAM or ROM address.
