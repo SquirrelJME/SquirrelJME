@@ -64,7 +64,7 @@ public final class NativeCPU
 	
 	/** Threshhold for too many debug points */
 	private static final int _POINT_THRESHOLD =
-		16384;
+		32768;
 	
 	/** The machine state. */
 	protected final MachineState state;
@@ -366,7 +366,10 @@ public final class NativeCPU
 			
 			// Set first point flag
 			if (encoding == NativeInstructionType.DEBUG_ENTRY)
+			{
 				firstpoint = true;
+				pointcounter = 0;
+			}
 			
 			// Print CPU debug info
 			if (ENABLE_DEBUG)
