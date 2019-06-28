@@ -1879,7 +1879,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_ENC_MEMORY_OFF_ICONST_JAVA:
 				{
 					/* Destination/source register. */
-					ic = sjme_opdecodeui(jvm->vmem, &nextpc, error);
+					ic = sjme_opdecodereg(jvm->vmem, &nextpc, error);
 					
 					/* The address and offset to access. */
 					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
@@ -1954,7 +1954,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_ATOMIC_INT_DECREMENT_AND_GET:
 				{
 					/* Target register. */
-					id = sjme_opdecodeui(jvm->vmem, &nextpc, error);
+					id = sjme_opdecodereg(jvm->vmem, &nextpc, error);
 					
 					/* Load address and offset. */
 					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
@@ -1989,8 +1989,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				/* Copy value. */
 			case SJME_OP_COPY:
 				{
-					ia = sjme_opdecodeui(jvm->vmem, &nextpc, error);
-					ib = sjme_opdecodeui(jvm->vmem, &nextpc, error);
+					ia = sjme_opdecodereg(jvm->vmem, &nextpc, error);
+					ib = sjme_opdecodereg(jvm->vmem, &nextpc, error);
 					
 					r[ib] = r[ia];
 				}
@@ -2117,7 +2117,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_LOAD_FROM_INTARRAY:
 				{
 					/* Destination register. */
-					ic = sjme_opdecodeui(jvm->vmem, &nextpc, error);
+					ic = sjme_opdecodereg(jvm->vmem, &nextpc, error);
 					
 					/* Address and index */
 					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
