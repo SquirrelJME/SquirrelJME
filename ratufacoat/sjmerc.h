@@ -281,6 +281,9 @@ typedef uint32_t sjme_juint;
 /** Register value overflowed. */
 #define SJME_ERROR_REGISTEROVERFLOW SJME_JINT_C(-26)
 
+/** Could not map address. */
+#define SJME_ERROR_VMMMAPFAIL SJME_JINT_C(-27)
+
 /** VMM Type: Byte. */
 #define SJME_VMMTYPE_BYTE SJME_JINT_C(-1)
 
@@ -502,6 +505,9 @@ typedef struct sjme_nativefuncs
 	
 	/** Obtains the framebuffer. */
 	sjme_framebuffer* (*framebuffer)(void);
+	
+	/** Returns information on where to load optional JAR from. */
+	sjme_jint (*optional_jar)(void** ptr, sjme_jint* size);
 } sjme_nativefuncs;
 
 /**

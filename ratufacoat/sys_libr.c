@@ -51,6 +51,16 @@ static sjme_nativefuncs sjme_retroarch_nativefuncs;
 /** Options for RetroArch. */
 static sjme_jvmoptions sjme_retroarch_options;
 
+/** OptionJAR. */
+static struct
+{
+	/** Pointer to the ROM data. */
+	void* ptr;
+	
+	/** Size of the ROM. */
+	sjme_jint size;
+} sjme_retroarch_optionjar;
+
 /** Error state. */
 static sjme_error sjme_retroarch_error =
 	{SJME_ERROR_NONE, 0};
@@ -308,6 +318,20 @@ sjme_framebuffer* sjme_retroarch_framebuffer(void)
 	return rv;
 }
 
+/** OptionJAR access. */
+sjme_jint sjme_retroarch_optional_jar(void** ptr, sjme_jint* size)
+{
+	if (ptr != NULL)
+		*ptr = sjme_retroarch_optionjar.ptr;
+	
+	if (size != NULL)
+		*size = sjme_retroarch_optionjar.size;
+	
+	if (sjme_retroarch_optionjar.ptr == NULL)
+		return 0;
+	return 1;
+}
+
 /** RetroArch initialization. */
 void retro_init(void)
 {
@@ -392,6 +416,7 @@ void retro_init(void)
 	memset(&sjme_retroarch_nativefuncs, 0, sizeof(sjme_retroarch_nativefuncs));
 	sjme_retroarch_nativefuncs.stderr_write = sjme_retroarch_stderr_write;
 	sjme_retroarch_nativefuncs.framebuffer = sjme_retroarch_framebuffer;
+	sjme_retroarch_nativefuncs.optional_jar = sjme_retroarch_optional_jar;
 	
 	/* Perform machine reset. */
 	retro_reset();
@@ -575,6 +600,10 @@ bool retro_load_game(const struct retro_game_info* info)
 	log_cb(RETRO_LOG_INFO, "Implant JAR: path=%s data=%p size=%d\n",
 		info->path, info->data, (int)info->size);
 	
+	/* Set in. */
+	sjme_retroarch_optionjar.ptr = info->data;
+	sjme_retroarch_optionjar.size = info->size;
+	
 	/* Always accept this. */
 	return true;
 }
@@ -593,4 +622,7 @@ bool retro_load_game_special(unsigned type, const struct retro_game_info* info,
 /** Unload a game? */
 void retro_unload_game(void)
 {
+	/* Remove. */
+	sjme_retroarch_optionjar.ptr = NULL;
+	sjme_retroarch_optionjar.size = 0;
 }

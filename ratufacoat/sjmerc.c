@@ -381,8 +381,14 @@
 /** Is the byte order little endian? */
 #define SJME_SYSCALL_BYTE_ORDER_LITTLE SJME_JINT_C(25)
 
+/** Returns the pointer to the option JAR data. */
+#define SJME_SYSCALL_OPTION_JAR_DATA SJME_JINT_C(26)
+
+/** Returns the size of the option JAR data. */
+#define SJME_SYSCALL_OPTION_JAR_SIZE SJME_JINT_C(27)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(26)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(28)
 
 /** No error, or success. */
 #define SJME_SYSCALL_ERROR_NO_ERROR SJME_JINT_C(0)
@@ -859,6 +865,9 @@ struct sjme_jvm
 	/** Framebuffer. */
 	sjme_vmemmap* framebuffer;
 	
+	/** OptionJAR. */
+	sjme_vmemmap* optionjar;
+	
 	/** Preset ROM. */
 	void* presetrom;
 	
@@ -1238,6 +1247,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_SYSCALL_TIME_LO_NANO_MONO:
 				case SJME_SYSCALL_MEM_SET:
 				case SJME_SYSCALL_MEM_SET_INT:
+				case SJME_SYSCALL_OPTION_JAR_DATA:
+				case SJME_SYSCALL_OPTION_JAR_SIZE:
 				case SJME_SYSCALL_PD_OF_STDERR:
 				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_WRITE_BYTE:
@@ -1488,6 +1499,30 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			return SJME_JINT_C(0);
+			
+			/* Return pointer to the OptionJAR. */
+		case SJME_SYSCALL_OPTION_JAR_DATA:
+			if (jvm->optionjar == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
+				return SJME_JINT_C(0);
+			}
+			
+			/* Is available. */
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return jvm->optionjar->fakeptr;
+		
+			/* Return size of the OptionJAR. */
+		case SJME_SYSCALL_OPTION_JAR_SIZE:
+			if (jvm->optionjar == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
+				return SJME_JINT_C(0);
+			}
+			
+			/* Is available. */
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return jvm->optionjar->size;
 			
 			/* Pipe descriptor of standard error. */
 		case SJME_SYSCALL_PD_OF_STDERR:
@@ -2929,6 +2964,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	void* ram;
 	void* rom;
 	void* conf;
+	void* optionjar;
 	sjme_jvm* rv;
 	sjme_jint i, l, romsize;
 	sjme_framebuffer* fbinfo;
@@ -2995,7 +3031,14 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	/* Virtual map RAM. */
 	rv->ram = sjme_vmmmap(vmem, 0, ram, options->ramsize, error);
 	if (rv->ram == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
+		
+		sjme_free(rv);
+		sjme_free(conf);
+		
 		return NULL;
+	}
 	
 	/* Set native functions. */
 	rv->nativefuncs = nativefuncs;
@@ -3022,7 +3065,15 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		rv->framebuffer = sjme_vmmmap(vmem, 0, fbinfo->pixels,
 			fbinfo->numpixels * SJME_JINT_C(4), error);
 		if (rv->framebuffer == NULL)
+		{
+			sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
+			
+			sjme_free(rv);
+			sjme_free(ram);
+			sjme_free(conf);
+			
 			return NULL;
+		}
 	}
 	
 	/* Needed by destruction later. */
@@ -3100,7 +3151,17 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	/* Virtual map ROM. */
 	rv->rom = sjme_vmmmap(vmem, 0, rom, romsize, error);
 	if (rv->rom == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
+		
+		sjme_free(rv);
+		sjme_free(ram);
+		sjme_free(conf);
+		if (rv->presetrom == NULL)
+			sjme_free(rom);
+		
 		return NULL;
+	}
 	
 	/* Initialize configuration space. */
 	sjme_configinit(rv, options, nativefuncs, error);
@@ -3123,11 +3184,30 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		sjme_free(conf);
 		
 		/* If a pre-set ROM is not being used, make sure it gets cleared. */
-		if (options->presetrom)
+		if (rv->presetrom == NULL)
 			sjme_free(rom);
 		
 		return NULL;
 	}
+	
+	/* Memory map the option JAR, if available. */
+	if (nativefuncs->optional_jar != NULL)
+		if (nativefuncs->optional_jar(&optionjar, &i) != 0)
+		{
+			rv->optionjar = sjme_vmmmap(vmem, 0, optionjar, i, error);
+			if (rv->rom == NULL)
+			{
+				sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
+				
+				sjme_free(rv);
+				sjme_free(ram);
+				sjme_free(conf);
+				if (rv->presetrom == NULL)
+					sjme_free(rom);
+				
+				return NULL;
+			}
+		}
 	
 	/* The JVM is ready to use. */
 	return rv;
