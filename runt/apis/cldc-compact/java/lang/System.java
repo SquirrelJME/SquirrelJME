@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import java.io.OutputStream;
@@ -368,6 +369,13 @@ public final class System
 					{
 						return "CLDC-1.8-Compact";
 					}
+				return rv;
+				
+				// The current encoding
+			case "microedition.encoding":
+				rv = SystemProperties.systemProperty("microedition.encoding");
+				if (rv == null)
+					return CodecFactory.FALLBACK_ENCODING;
 				return rv;
 				
 				// The current local, must be set!
