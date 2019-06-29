@@ -557,12 +557,25 @@ void retro_cheat_set(unsigned index, bool enabled, const char* code)
 /** Load a game? */
 bool retro_load_game(const struct retro_game_info* info)
 {
+	struct retro_log_callback logging;
+	
+	/* Ignore if null passed, because this means no content specified! */
+	/* True must always be returned, otherwise false will force RetroArch */
+	/* back into the menu for JAR selection. */
+	if (info == NULL)
+		return true;
+	
+	/* Try to get the logger again because for some reason RetroArch */
+	/* nukes our callback and then it never works again? */
+	environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
+	log_cb = (logging.log != NULL ? logging.log : fallback_log);
+	
 	/* With need_fullpath=false, info->data and info->size will be valid */
 	/* and can be used to boot the JAR up. */
+	log_cb(RETRO_LOG_INFO, "Implant JAR: path=%s data=%p size=%d\n",
+		info->path, info->data, (int)info->size);
 	
-	/*fprintf(stderr, "load game? path=%s data=%p size=%d\n",
-		info->path, info->data, (int)info->size);*/
-	
+	/* Always accept this. */
 	return true;
 }
 
