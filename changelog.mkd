@@ -70,8 +70,8 @@ More detailed changes:
      * Implemented `java.util.LinkedList`.
      * Made the stack trace printed by `Throwable` much cleaner so that it
        takes up less screen space and is formatted a bit better.
-     * Return values for `microedition.encoding`, `microedition.configuration`,
-       and `microedition.locale`.
+     * Return values for `line.separator`, `microedition.encoding`,
+       `microedition.configuration`, and `microedition.locale`.
    * `demo-hello`
      * Made the system properties array `final`.
    * `launcher`
