@@ -54,6 +54,7 @@ More detailed changes:
      * Corrected bug in `__CanSetPrintStream__` where if it were set to itself
        then it could lead to infinite recursion, instead if this kind of
        stream is attempted to be set it will use the target.
+     * Fallback encoding is now UTF-8 and not ISO-8859-1.
      * If the name of the requested resource is blank, ignore it.
      * If a resource was not found, do a traditional search of the classpath
        for the given resource. This technically is not valid, however some
