@@ -120,6 +120,14 @@ public interface SystemCallIndex
 	public static final short BYTE_ORDER_LITTLE =
 		25;
 	
+	/** Returns the pointer to the option JAR data. */
+	public static final short OPTION_JAR_DATA =
+		26;
+	
+	/** Returns the size of the option JAR data. */
+	public static final short OPTION_JAR_SIZE =
+		27;
+	
 	/** System call count. */
 	public static final short NUM_SYSCALLS =
 		26;
