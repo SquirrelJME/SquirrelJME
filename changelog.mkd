@@ -60,6 +60,7 @@ More detailed changes:
        games use the wrong class when looking up resources. Note that the
        current suite will always be searched first to maintain the correct
        behavior.
+     * Implemented `java.io.DataInputStream`.
      * Implemented `java.io.InputStream`.
      * Implemented `java.io.PrintStream`.
      * Implemented `java.util.EventObject`.

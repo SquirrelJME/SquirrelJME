@@ -64,16 +64,24 @@ public class DataInputStream
 		this.in.close();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/29
+	 */
 	@Override
 	public void mark(int __rl)
 	{
-		throw new todo.TODO();
+		this.in.mark(__rl);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/29
+	 */
 	@Override
 	public boolean markSupported()
 	{
-		throw new todo.TODO();
+		return this.in.markSupported();
 	}
 	
 	/**
@@ -414,13 +422,15 @@ public class DataInputStream
 		return DataInputStream.readUTF(this);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/29
+	 */
 	@Override
 	public void reset()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		this.in.reset();
 	}
 	
 	/**
@@ -437,13 +447,22 @@ public class DataInputStream
 		return this.in.skip(__n);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/29
+	 */
 	@Override
-	public final int skipBytes(int __a)
+	public final int skipBytes(int __n)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// Try to read as many bytes as possible
+		InputStream in = this.in;
+		for (int i = 0; i < __n; i++)
+			if (in.read() < 0)
+				return i;
+		
+		// Read all the bytes
+		return __n;
 	}
 	
 	/**
