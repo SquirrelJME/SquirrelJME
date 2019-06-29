@@ -29,8 +29,10 @@ public final class SplashScreen
 {
 	/** The copyright string. */
 	public static final String COPYRIGHT =
-		"(C) Stephanie Gawroriski\nhttps://squirreljme.cc/\n" +
-		"Licensed w/ the GPLv3!";
+		"https://squirreljme.cc/\n" +
+		"(C) 2013-2019 Stephanie Gawroriski\n" +
+		"Licensed under the GPLv3!\nDonate to me on Patreon:\n" +
+		"*** https://www.patreon.com/SquirrelJME! ***";
 	
 	/** The splash image width. */
 	public static final int WIDTH =
@@ -99,10 +101,19 @@ public final class SplashScreen
 		g.drawString(SquirrelJME.RUNTIME_VERSION, 238, 48,
 			Graphics.RIGHT | Graphics.TOP);
 		
-		// Draw copyright at the bottom
-		g.drawString(COPYRIGHT, 2, 318,
+		// Draw copyright at the bottom (drop shadow to make it easier)
+		g.setFont(Font.getFont("sansserif", 0, 12));
+		g.setColor(0x000000);
+		g.drawString(COPYRIGHT, 1, 318,
 			Graphics.BOTTOM | Graphics.LEFT);
 		g.drawString(COPYRIGHT, 3, 318,
+			Graphics.BOTTOM | Graphics.LEFT);
+		g.drawString(COPYRIGHT, 2, 317,
+			Graphics.BOTTOM | Graphics.LEFT);
+		g.drawString(COPYRIGHT, 2, 319,
+			Graphics.BOTTOM | Graphics.LEFT);
+		g.setColor(0xFFFFFF);
+		g.drawString(COPYRIGHT, 2, 318,
 			Graphics.BOTTOM | Graphics.LEFT);
 		
 		// Use this image
