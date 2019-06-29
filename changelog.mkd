@@ -79,6 +79,8 @@ More detailed changes:
        launch a program once the program list is read.
      * When a program is launched, instead of saying just "Loading..." instead
        allow show the program which is being loaded in the title.
+   * `media-api`
+     * Add null media support for: players, and volume control.
    * `meep-midlet`
      * Implement `MIDlet.checkPermission()`.
    * `meep-rms`
