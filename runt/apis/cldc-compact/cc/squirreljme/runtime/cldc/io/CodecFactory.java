@@ -23,7 +23,7 @@ import java.lang.ref.WeakReference;
 public final class CodecFactory
 {
 	/** The encoding to use if it is unknown or not set anywhere. */
-	private static final String _FALLBACK_ENCODING =
+	public static final String FALLBACK_ENCODING =
 		"iso-8859-1"/*"utf-8"*/;
 	
 	/**
@@ -145,12 +145,12 @@ public final class CodecFactory
 		{
 			String rv = System.getProperty("microedition.encoding");
 			if (rv == null)
-				return CodecFactory._FALLBACK_ENCODING;
+				return CodecFactory.FALLBACK_ENCODING;
 			return rv;
 		}
 		catch (SecurityException e)
 		{
-			return CodecFactory._FALLBACK_ENCODING;
+			return CodecFactory.FALLBACK_ENCODING;
 		}
 	}
 	

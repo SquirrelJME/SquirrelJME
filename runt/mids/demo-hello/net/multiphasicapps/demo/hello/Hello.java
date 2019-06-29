@@ -38,6 +38,7 @@ public class Hello
 			"os.name",
 			"os.arch",
 			"os.version",
+			"microedition.encoding",
 			"microedition.configuration",
 			"microedition.locale",
 			"microedition.profiles",
