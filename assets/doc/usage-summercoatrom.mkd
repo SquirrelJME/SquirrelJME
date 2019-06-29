@@ -14,7 +14,7 @@ _System/BIOS_.
 
 It is highly recommended to use the _flip phone_ overlay in SquirrelJME, you
 can set it by going to _Main Menu_ - _Quick Menu_ - _Onscreen Overlay_ -
-_Overlay Preset_. Then choose _gamepads_ / _flip_phone_ / _flip_phone.cfg_.
+_Overlay Preset_. Then choose _gamepads_ / _flip\_phone_ / _flip\_phone.cfg_.
 
 If you do not see the overlay, you will have to update your overlays by
 going to _Main Menu_ - _Online Updater_ and then selecting _Update Overlays_.
