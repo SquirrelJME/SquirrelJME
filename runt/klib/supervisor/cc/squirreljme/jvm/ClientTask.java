@@ -19,6 +19,14 @@ import java.util.HashMap;
  */
 public final class ClientTask
 {
+	/** The shift for index access. */
+	private static final int _INDEX_SHIFT =
+		24;
+	
+	/** The mask for the index. */
+	private static final int _INDEX_MASK =
+		0x00FFFFFF;
+	
 	/** The physical task ID. */
 	public final int pid;
 	
@@ -97,45 +105,58 @@ public final class ClientTask
 		// Debug
 		todo.DEBUG.note("Finding class %s...", __cl);
 		
-		// The library it is in and the resource index
-		BootLibrary inlib = null;
-		int dx = -1;
-		
-		// Go through the class path and find this class
+		// Attempt to locate the class
 		BootLibrary[] classpath = this.classpath;
+		int dx = ClientTask.__findClass(classpath, __cl);
+		
+		// If it was not found, remember this and then stop
+		if (dx < 0)
 		{
-			// Find this class
-			String filename = __cl + ".class";
+			// Cache for later
+			classinfos.put(__cl, null);
 			
-			// Scan through all the class path
-			for (int i = 0, n = classpath.length; i < n; i++)
-			{
-				BootLibrary bl = classpath[i];
-				
-				// Search for the class fiole
-				dx = bl.indexOf(filename);
-				if (dx >= 0)
-				{
-					inlib = bl;
-					break;
-				}
-			}
-			
-			// If it was not found, remember this and then stop
-			if (dx < 0)
-			{
-				// Cache for later
-				classinfos.put(__cl, null);
-				
-				// Not found
-				return 0;
-			}
+			// Not found
+			return 0;
 		}
 		
 		todo.DEBUG.note("Initializing class info %s...", __cl);
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Locates the given class within the classpath.
+	 *
+	 * @param __cp The classpath.
+	 * @param __cl The class to locate.
+	 * @return A negative value if not found, otherwise the classpath index
+	 * shifted up by {@link #_INDEX_SHIFT} and then the resource index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/29
+	 */
+	public static final int __findClass(BootLibrary[] __cp, String __cl)
+		throws NullPointerException
+	{
+		if (__cp == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// The resource the class will be in
+		String filename = __cl + ".class";
+		
+		// Scan the classpath
+		for (int i = 0, n = __cp.length; i < n; i++)
+		{
+			// Locate resource
+			int rv = __cp[i].indexOf(filename);
+			
+			// Was found?
+			if (rv >= 0)
+				return (i << _INDEX_SHIFT) | rv;
+		}
+		
+		// Not found
+		return -1;
 	}
 }
 
