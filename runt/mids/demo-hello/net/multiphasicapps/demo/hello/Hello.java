@@ -38,6 +38,7 @@ public class Hello
 			"os.name",
 			"os.arch",
 			"os.version",
+			"microedition.configuration",
 			"microedition.locale",
 			"microedition.profiles",
 			"cc.squirreljme.vm.execpath",

@@ -281,6 +281,7 @@ public final class System
 		getSecurityManager().checkPropertyAccess(__k);
 		
 		// Depends on the property
+		String rv;
 		switch (__k)
 		{
 				// API level of SquirrelJME
@@ -350,6 +351,31 @@ public final class System
 				// The version of the run-time
 			case "java.runtime.version":
 				return SystemProperties.javaRuntimeVersion();
+				
+				// The current configuration, must be set!
+			case "microedition.configuration":
+				rv = SystemProperties.systemProperty(
+					"microedition.configuration");
+				if (rv == null)
+					try
+					{
+						Class<?> file = Class.forName("java.nio.FileSystem");
+						if (file == null)
+							return "CLDC-1.8-Compact";
+						return "CLDC-1.8";
+					}
+					catch (ClassNotFoundException e)
+					{
+						return "CLDC-1.8-Compact";
+					}
+				return rv;
+				
+				// The current local, must be set!
+			case "microedition.locale":
+				rv = SystemProperties.systemProperty("microedition.locale");
+				if (rv == null)
+					return "en-US";
+				return rv;
 				
 				// Unknown, use system call
 			default:
