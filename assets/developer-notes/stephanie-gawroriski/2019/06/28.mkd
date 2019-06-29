@@ -1,0 +1,81 @@
+# 2019/06/28
+
+## 09:00
+
+Okay so the value being read should be the `seeker` value which is not valid
+at all when RatufaCoat runs.
+
+## 09:10
+
+Okay so load pool is exactly the same as SummerCoat, same values and such.
+
+## 09:25
+
+Okay so, I think I saw something in the JAR minimizer. The BootRAM writes
+7 fields while the non-boot JAR writes 8 fields. So this definitley might be
+why things are messing up. Need to see what is needed. Okay, only 7 fields
+are needed. Hopefully this does something?
+
+## 09:36
+
+I need a way to handle out of memory errors. But fixing the non-boot JAR error
+made RatufaCoat behave a bit different.
+
+## 10:11
+
+Wait a minute, perhaps in SummerCoat the names of the JARs are placed in the
+actual JARs, because it is just a ROM pointer.
+
+## 10:13
+
+Okay just checked and that is not the case. So not sure!
+
+## 14:43
+
+Okay so `__initRamLinks()` is being called with `Invoke 01dc2e54 (`
+`1114112/00110000, 16777216/01000000)`. So this looks right.
+
+## 15:17
+
+Okay so the first init ram links read ended up being zero.
+
+## 15:24
+
+BootRAM is being initialized but it seems no values are being written to
+anywhere.
+
+## 15:33
+
+Okay so it seems the initial value is not being written to BootRAM at the
+given address?
+
+## 15:59
+
+I am stupid, I was not storing the read value in a register.
+
+## 16:42
+
+Okay so the boot library is not valid in either VM, so the value must be
+written wrong.
+
+## 16:49
+
+No, just the wrong offset in the ROM was being read for the main class.
+
+## 16:55
+
+Actually the original value is correct.
+
+## 15:56
+
+I just have to offset the value correctly I believe.
+
+## 19:30
+
+So the RetroArch engine does not need to be updated as much, I am going to
+put in ROM stuff that is built-in like an initial JAR program.
+
+## 19:52
+
+Okay so I do not want to copyrom anymore, but it just gives me invalid
+argument on init. So wonder what causes this.
