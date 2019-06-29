@@ -32,7 +32,7 @@ This is a future release and the specified changes are proposed.
  * Add support for more programs.
  * SpringCoat becomes deprecated.
 
-## 0.4.0 (July 4, 2019)
+## 0.4.0 (August 1, 2019)
 
 This is the second version of SquirrelJME which provides virtual machine
 improvements.
