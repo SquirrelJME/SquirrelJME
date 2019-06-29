@@ -353,6 +353,13 @@ public final class System
 			case "java.runtime.version":
 				return SystemProperties.javaRuntimeVersion();
 				
+				// End of line character
+			case "line.separator":
+				rv = SystemProperties.systemProperty("line.separator");
+				if (rv == null)
+					return "\n";
+				return rv;
+				
 				// The current configuration, must be set!
 			case "microedition.configuration":
 				rv = SystemProperties.systemProperty(
