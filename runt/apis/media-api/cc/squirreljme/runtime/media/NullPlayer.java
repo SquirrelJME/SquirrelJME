@@ -140,9 +140,16 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	public final Control getControl(String __a)
+	public final Control getControl(String __v)
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error AE07 No control specified.}
+		if (__v == null)
+			throw new IllegalArgumentException("AE07");
+		
+		if (__v.equals("VolumeControl") ||
+			__v.equals("javax.microedition.media.control.VolumeControl"))
+			return new NullVolumeControl();
+		return null;
 	}
 	
 	/**
