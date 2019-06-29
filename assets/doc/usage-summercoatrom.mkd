@@ -10,6 +10,15 @@ Place `squirreljme.sqc` into your RetroArch `system` directory. You can
 determine where this directory is by going to _Settings_ - _Directory_ -
 _System/BIOS_.
 
+### Overlay
+
+It is highly recommended to use the _flip phone_ overlay in SquirrelJME, you
+can set it by going to _Main Menu_ - _Quick Menu_ - _Onscreen Overlay_ -
+_Overlay Preset_. Then choose _gamepads_ / _flip_phone_ / _flip_phone.cfg_.
+
+If you do not see the overlay, you will have to update your overlays by
+going to _Main Menu_ - _Online Updater_ and then selecting _Update Overlays_.
+
 ### Controls
 
 A listing of dial-pad buttons to the RetroPad controller:
