@@ -26,6 +26,7 @@ import javax.microedition.lcdui.Image;
  */
 public final class SplashScreen
 	extends Canvas
+	implements Runnable
 {
 	/** The copyright string. */
 	public static final String COPYRIGHT =
@@ -43,7 +44,7 @@ public final class SplashScreen
 		320;
 	
 	/** The image data to draw. */
-	protected final int[] image;
+	volatile int[] _image;
 	
 	/**
 	 * Initializes the splash screen with a precached image.
@@ -53,6 +54,38 @@ public final class SplashScreen
 	 * @since 2019/05/19
 	 */
 	public SplashScreen(int __sw, int __sh)
+	{
+		// Full-screen mode for the entire image
+		this.setFullScreenMode(true);
+		
+		// Load the launcher image in a background thread so the splash screen
+		// can still display the copyright notice
+		new Thread(this, "LauncherImageLoader").start();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/19
+	 */
+	@Override
+	public final void paint(Graphics __g)
+	{
+		// Draw the raw image data, is the fastest
+		int[] image = this._image;
+		if (image != null)
+			__g.drawRGB(image, 0, WIDTH, 0, 0, WIDTH, HEIGHT, false);
+		
+		// The image is not fully loaded yet, so draw the copyright at least
+		else
+			SplashScreen.__copyright(__g, true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/06/29
+	 */
+	@Override
+	public final void run()
 	{
 		// Image is completely operated with using raw data
 		int np = WIDTH * HEIGHT;
@@ -96,43 +129,66 @@ public final class SplashScreen
 		Graphics g = new AdvancedGraphics(image, false, null, WIDTH, HEIGHT,
 			WIDTH, 0, 0, 0);
 		
-		// Draw version number
-		g.setFont(Font.getFont("sansserif", 0, 16));
-		g.drawString(SquirrelJME.RUNTIME_VERSION, 238, 48,
-			Graphics.RIGHT | Graphics.TOP);
-		
-		// Draw copyright at the bottom (drop shadow to make it easier)
-		g.setFont(Font.getFont("sansserif", 0, 12));
-		g.setColor(0x000000);
-		g.drawString(COPYRIGHT, 1, 318,
-			Graphics.BOTTOM | Graphics.LEFT);
-		g.drawString(COPYRIGHT, 3, 318,
-			Graphics.BOTTOM | Graphics.LEFT);
-		g.drawString(COPYRIGHT, 2, 317,
-			Graphics.BOTTOM | Graphics.LEFT);
-		g.drawString(COPYRIGHT, 2, 319,
-			Graphics.BOTTOM | Graphics.LEFT);
-		g.setColor(0xFFFFFF);
-		g.drawString(COPYRIGHT, 2, 318,
-			Graphics.BOTTOM | Graphics.LEFT);
+		// Draw copyright at the bottom
+		SplashScreen.__copyright(g, false);
 		
 		// Use this image
-		this.image = image;
+		this._image = image;
 		
-		// Be full-screen
-		this.setFullScreenMode(true);
+		// Perform a repaint before we return so the better looking splash
+		// screen is used
+		this.repaint();
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/19
+	 * Draws the copyright text onto the given graphics.
+	 *
+	 * @param __g The graphics to draw onto.
+	 * @param __swip Should "SquirrelJME Loading..." be drawn?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/29
 	 */
-	@Override
-	public final void paint(Graphics __g)
+	private static final void __copyright(Graphics __g, boolean __swip)
+		throws NullPointerException
 	{
-		// Draw the raw image data, is the fastest
-		__g.drawRGB(this.image, 0, WIDTH, 0, 0, WIDTH, HEIGHT,
-			false);
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Draw version number
+		__g.setFont(Font.getFont("sansserif", 0, 16));
+		__g.drawString(SquirrelJME.RUNTIME_VERSION, 238, 48,
+			Graphics.RIGHT | Graphics.TOP);
+		
+		// Draw loading and the SquirrelJME string?
+		if (__swip)
+		{
+			// SquirrelJME String
+			__g.drawString("SquirrelJME", 2, 2, Graphics.TOP | Graphics.LEFT);
+			
+			// Loading...
+			__g.drawString("Loading...", 120, 160,
+				Graphics.VCENTER | Graphics.HCENTER);
+		}
+		
+		// Set properties
+		__g.setFont(Font.getFont("sansserif", 0, 12));
+		
+		// Draw a black drop-shadow, this makes the lighter front easier to
+		// see regardless of what is on the background
+		__g.setColor(0x000000);
+		__g.drawString(COPYRIGHT, 1, 318,
+			Graphics.BOTTOM | Graphics.LEFT);
+		__g.drawString(COPYRIGHT, 3, 318,
+			Graphics.BOTTOM | Graphics.LEFT);
+		__g.drawString(COPYRIGHT, 2, 317,
+			Graphics.BOTTOM | Graphics.LEFT);
+		__g.drawString(COPYRIGHT, 2, 319,
+			Graphics.BOTTOM | Graphics.LEFT);
+		
+		// Then draw the frontal white text
+		__g.setColor(0xFFFFFF);
+		__g.drawString(COPYRIGHT, 2, 318,
+			Graphics.BOTTOM | Graphics.LEFT);
 	}
 }
 
