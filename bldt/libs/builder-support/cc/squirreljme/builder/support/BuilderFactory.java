@@ -248,6 +248,9 @@ public class BuilderFactory
 	 */
 	public void javaDoc(String... __args)
 	{
+		// Defensive copy
+		__args = (__args == null ? new String[0] : __args.clone());
+		
 		throw new todo.TODO();
 	}
 	
