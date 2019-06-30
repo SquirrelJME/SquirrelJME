@@ -35,6 +35,8 @@ Badges:
  * [![Liberapay](
   https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
    https://liberapay.com/xershadowtail)
+ * [![Discord](https://img.shields.io/discord/278929900893634560.svg)](
+   https://discord.gg/9PkMMKt)
 
 Information:
 
