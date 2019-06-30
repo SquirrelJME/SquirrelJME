@@ -105,7 +105,7 @@ public class Image
 			throw new IllegalStateException("EB28");
 		
 		// Create
-		return new AdvancedGraphics(this._data, false, null, this._width,
+		return new AdvancedGraphics(this._data, this._alpha, null, this._width,
 			this._height, this._width, 0, 0, 0);
 	}
 	
