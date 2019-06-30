@@ -43,6 +43,9 @@ public final class ClientTask
 	public final HashMap<String, ClientClassInfo> classinfos =
 		new HashMap<>();
 	
+	/** The layout for client class information. */
+	private volatile ClientClassInfoLayout _classinfolayout;
+	
 	/**
 	 * Initializes the client task.
 	 *
@@ -83,7 +86,38 @@ public final class ClientTask
 	}
 	
 	/**
-	 * Loads the class information for this class.
+	 * Returns the layout which describes how the class info structure is
+	 * laid out in memory.
+	 *
+	 * @return The class info layout.
+	 * @since 2019/06/29
+	 */
+	public final ClientClassInfoLayout classInfoLayout()
+	{
+		// Has already been read?
+		ClientClassInfoLayout rv = this._classinfolayout;
+		if (rv != null)
+			return rv;
+		
+		// Debug
+		todo.DEBUG.note("Determining ClassInfo layout...");
+		
+		// Find index for object and 
+		BootLibrary[] classpath = this.classpath;
+		int jodx = ClientTask.__findClassIndex(classpath, "java/lang/Object"),
+			cidx = ClientTask.__findClassIndex(classpath,
+				"cc/squirreljme/jvm/ClassInfo");
+		
+		// This is not good
+		if (jodx < 0 || cidx < 0)
+			return null;
+		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Loads the in-memory class information for the given class.
 	 *
 	 * @param __cl The class to load.
 	 * @return The loaded class information or {@code 0} if it is not found.
@@ -107,7 +141,7 @@ public final class ClientTask
 		
 		// Attempt to locate the class
 		BootLibrary[] classpath = this.classpath;
-		int dx = ClientTask.__findClass(classpath, __cl);
+		int dx = ClientTask.__findClassIndex(classpath, __cl);
 		
 		// If it was not found, remember this and then stop
 		if (dx < 0)
@@ -119,6 +153,10 @@ public final class ClientTask
 			return 0;
 		}
 		
+		// Get the layout for the class information (where fields go)
+		ClientClassInfoLayout ccil = this.classInfoLayout();
+		
+		// Debug
 		todo.DEBUG.note("Initializing class info %s...", __cl);
 		
 		Assembly.breakpoint();
@@ -135,7 +173,7 @@ public final class ClientTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/29
 	 */
-	public static final int __findClass(BootLibrary[] __cp, String __cl)
+	public static final int __findClassIndex(BootLibrary[] __cp, String __cl)
 		throws NullPointerException
 	{
 		if (__cp == null || __cl == null)
@@ -143,6 +181,9 @@ public final class ClientTask
 		
 		// The resource the class will be in
 		String filename = __cl + ".class";
+		
+		// Debug
+		todo.DEBUG.note("Scanning for %s...", filename);
 		
 		// Scan the classpath
 		for (int i = 0, n = __cp.length; i < n; i++)
