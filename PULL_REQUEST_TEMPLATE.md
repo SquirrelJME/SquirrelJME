@@ -26,7 +26,9 @@ Choose one of the following:
  * I decline to accept the contributor agreement and wish to seek an
    alternative agreement.
  * I accept the contributor agreement.
- * This work is in the public domain and the agreement is not applicable.
+ * This agreement is not applicable because this work is in the public
+   domain (or CC0 license) or does not constitute something which can be
+   copyrighted (single word changes, white-space changes, etc.).
 
 Additionally, choose one of the following:
 
