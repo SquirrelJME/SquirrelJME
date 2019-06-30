@@ -27,7 +27,7 @@ Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 Badges:
 
  * [![CircleCI](
-   https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk.png)](
+   https://img.shields.io/circleci/build/github/XerTheSquirrel/SquirrelJME/trunk.svg)](
    https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)
  * [![Patreon](
    https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.herokuapp.com%2FSquirrelJME%2Fpledges&style=flat)](
