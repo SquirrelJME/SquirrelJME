@@ -354,7 +354,7 @@ public class SummerCoatFactory
 		MachineState ms = new MachineState();
 		
 		// Setup virtual execution CPU
-		NativeCPU cpu = new NativeCPU(ms, vmem);
+		NativeCPU cpu = new NativeCPU(ms, vmem, 0, __ps);
 		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh.bootstart,
 			ramstart, ramsize, rombase, romsize,
 			CONFIG_BASE_ADDR, CONFIG_SIZE);

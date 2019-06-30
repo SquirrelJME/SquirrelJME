@@ -64,6 +64,21 @@ public final class ProfiledThread
 	}
 	
 	/**
+	 * Enters the given frame, the enter time is the system time.
+	 *
+	 * @param __cl The name of the class.
+	 * @param __mn The name of the method.
+	 * @param __md The type of the method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/30
+	 */
+	public ProfiledFrame enterFrame(String __cl, String __mn, String __md)
+		throws NullPointerException
+	{
+		return this.enterFrame(__cl, __mn, __md, System.nanoTime());
+	}
+	
+	/**
 	 * Enters the given frame.
 	 *
 	 * @param __cl The name of the class.
@@ -113,6 +128,16 @@ public final class ProfiledThread
 	}
 	
 	/**
+	 * Exits all frames as needed, the current time is used.
+	 *
+	 * @since 2019/06/30
+	 */
+	public void exitAll()
+	{
+		this.exitAll(System.nanoTime());
+	}
+	
+	/**
 	 * Exits all frames as needed.
 	 *
 	 * @param __ns The nanoseconds when exit all has happened.
@@ -124,6 +149,20 @@ public final class ProfiledThread
 		Deque<ProfiledFrame> stack = this._stack;
 		while (!stack.isEmpty())
 			this.exitFrame(__ns);
+	}
+	
+	/**
+	 * Exits the frame which at the top of the stack, the current time is
+	 * used.
+	 *
+	 * @return The exited frame.
+	 * @throws IllegalStateException If there is no frame to exit.
+	 * @since 2018/11/10
+	 */
+	public ProfiledFrame exitFrame()
+		throws IllegalStateException
+	{
+		return this.exitFrame(System.nanoTime());
 	}
 	
 	/**

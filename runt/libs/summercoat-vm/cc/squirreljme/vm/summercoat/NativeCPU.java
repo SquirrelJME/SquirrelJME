@@ -33,6 +33,8 @@ import java.util.List;
 import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.collections.IntegerList;
 import net.multiphasicapps.io.HexDumpOutputStream;
+import net.multiphasicapps.profiler.ProfilerSnapshot;
+import net.multiphasicapps.profiler.ProfiledThread;
 
 /**
  * This represents a native CPU which may run within its own thread to
@@ -72,6 +74,12 @@ public final class NativeCPU
 	/** The memory to read/write from. */
 	protected final WritableMemory memory;
 	
+	/** The profiler to use. */
+	protected final ProfiledThread profiler;
+	
+	/** Virtual CPU id. */
+	protected final int vcpuid;
+	
 	/** Stack frames. */
 	private final LinkedList<Frame> _frames =
 		new LinkedList<>();
@@ -85,10 +93,13 @@ public final class NativeCPU
 	 *
 	 * @param __ms The machine state.
 	 * @param __mem The memory space.
+	 * @param __ps The profiler to use.
+	 * @param __vcid Virtual CPU id.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public NativeCPU(MachineState __ms, WritableMemory __mem)
+	public NativeCPU(MachineState __ms, WritableMemory __mem, int __vcid,
+		ProfilerSnapshot __ps)
 		throws NullPointerException
 	{
 		if (__ms == null || __mem == null)
@@ -96,6 +107,9 @@ public final class NativeCPU
 		
 		this.state = __ms;
 		this.memory = __mem;
+		this.vcpuid = __vcid;
+		this.profiler = (__ps == null ? null :
+			__ps.measureThread("cpu-" + __vcid));
 	}
 	
 	/**
@@ -423,6 +437,7 @@ public final class NativeCPU
 					
 					// Debug exit of method
 				case NativeInstructionType.DEBUG_EXIT:
+					this.__debugExit(nowframe);
 					break;
 					
 					// Debug point in method.
@@ -1051,11 +1066,45 @@ public final class NativeCPU
 		__f._inmethodnamep = imn;
 		__f._inmethodtypep = imt;
 		
+		
 		// Load strings
+		String scl, smn, smt;
 		WritableMemory memory = this.memory;
-		__f._inclass = this.__loadUtfString(icl);
-		__f._inmethodname = this.__loadUtfString(imn);
-		__f._inmethodtype = this.__loadUtfString(imt);
+		__f._inclass = (scl = this.__loadUtfString(icl));
+		__f._inmethodname = (smn = this.__loadUtfString(imn));
+		__f._inmethodtype = (smt = this.__loadUtfString(imt));
+		
+		// Enter it on the profiler
+		ProfiledThread profiler = this.profiler;
+		if (profiler != null)
+			profiler.enterFrame(scl, smn, smt);
+	}
+	
+	/**
+	 * Debugs the exit of a frame.
+	 *
+	 * @param __f The frame to exit.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/06/30
+	 */
+	private final void __debugExit(Frame __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Exit the frame, but if we extra exited then it is very possible
+		// that the state can be messed up so do not absolutely destroy the
+		// VM stuff
+		ProfiledThread profiler = this.profiler;
+		if (profiler != null)
+			try
+			{
+				profiler.exitFrame();
+			}
+			catch (IllegalStateException e)
+			{
+			}
 	}
 	
 	/**
