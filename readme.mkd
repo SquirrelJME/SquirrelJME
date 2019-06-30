@@ -29,6 +29,9 @@ Badges:
  * [![CircleCI](
    https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk.png)](
    https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)
+ * [![Liberapay](
+   http://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
+   https://liberapay.com/xershadowtail)
 
 Information:
 
@@ -143,6 +146,7 @@ purchasing of food items for consumption.
 
  * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
  * [Patreon](https://www.patreon.com/SquirrelJME)
+ * [Liberapay](https://liberapay.com/xershadowtail)
  * BitCoin (**BTC/XBT**):
    `3NEF6Pyt2JfWnb6hn7WFcwH5jpkHYPkTNj`
  * BitCoin Cash (**BCH**):
