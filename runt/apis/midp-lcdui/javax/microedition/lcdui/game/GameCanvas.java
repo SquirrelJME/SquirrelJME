@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui.game;
 
+import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ForwardingGraphics;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
@@ -55,8 +56,11 @@ public abstract class GameCanvas
 	/** Is the buffer preserved after a flush? */
 	private volatile boolean _preservebuffer;
 	
-	/** The image to draw onto as a double buffer. */
-	private volatile Image _image;
+	/** The A buffer. */
+	private volatile __Buffer__ _bufa;
+	
+	/** The B buffer. */
+	private volatile __Buffer__ _bufb;
 	
 	/**
 	 * Initializes the game canvas.
@@ -98,7 +102,12 @@ public abstract class GameCanvas
 	 */
 	public void flushGraphics()
 	{
-		flushGraphics(0, 0, getWidth(), getHeight());
+		// Do nothing if this is not on a display
+		if (this.getCurrentDisplay() == null)
+			return;
+		
+		// Flip!
+		this.__flip();
 	}
 	
 	/**
@@ -118,14 +127,17 @@ public abstract class GameCanvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
+		// Do nothing if this is not on a display
+		if (this.getCurrentDisplay() == null)
+			return;
+		
 		// {@squirreljme.error EB2w Cannot flush the graphics if the buffer
 		// is not preserved.}
 		if (!this._preservebuffer)
 			throw new IllegalStateException("EB2w");
 		
-		// Just tell the canvas to repaint because it is final and our paint
-		// method just draws the backing buffer to the screen
-		super.repaint(__x, __y, __w, __h);
+		// Flip!
+		this.__flip();
 	}
 	
 	/**
@@ -137,21 +149,42 @@ public abstract class GameCanvas
 	 */
 	protected Graphics getGraphics()
 	{
-		ForwardingGraphics forwardgfx = this._forwardgfx;
+		// Draw into the B buffer
+		__Buffer__ buf = this._bufb;
 		
-		// It is possible for the canvas to change size, as such the image in
-		// the background must be recreated for the correct size
-		int dw = Math.max(1, getWidth()),
-			dh = Math.max(1, getHeight());
-		Image image = this._image;
-		if (image == null || dw != image.getWidth() || dh != image.getHeight())
+		// Get device size
+		int dw = this.getWidth(),
+			dh = this.getHeight();
+		
+		// Force device size into bounds
+		if (dw < 1)
+			dw = 1;
+		if (dh < 1)
+			dh = 1;
+		
+		// Get buffer size
+		int bw, bh;
+		if (buf != null)
 		{
-			this._image = (image = Image.createImage(dw, dh));
-			forwardgfx.forwardGraphics(image.getGraphics());
+			bw = buf._width;
+			bh = buf._height;
+		}
+		else
+			bw = bh = 0;
+		
+		// Recreate the buffer?
+		if (buf == null || bw != dw || bh != dh)
+		{
+			// Create buffer
+			buf = new __Buffer__(dw, dh);
+			
+			// Store buffer state
+			this._bufb = buf;
 		}
 		
-		// Always return the forwarded graphics
-		return forwardgfx.forwardPlainGraphics();
+		// Create graphics to wrap it, alpha is not used!
+		return new AdvancedGraphics(buf._pixels, false, null,
+			dw, dh, dw, 0, 0, 0);
 	}
 	
 	public int getKeyStates()
@@ -166,16 +199,81 @@ public abstract class GameCanvas
 	@Override
 	public void paint(Graphics __g)
 	{
-		// The default implementation of this method just takes the offscreen
-		// buffer and renders it to the canvas
-		Image image = this._image;
-		if (image == null)
+		// Whatever is in the A buffer is drawn
+		__Buffer__ buf = this._bufa;
+		if (buf == null)
+			return;
+			
+		// The fastest way to draw onto the screen is to do a direct draw
+		// from the RGB pixel data
+		int pw = buf._width;
+		__g.drawRGB(buf._pixels, 0, pw, 0, 0, pw, buf._height, false);
+	}
+	
+	/**
+	 * Performs the graphics flip.
+	 *
+	 * @return The flipped graphics.
+	 * @since 2019/06/30
+	 */
+	private final void __flip()
+	{
+		// Get both buffers
+		__Buffer__ bufa = this._bufa,
+			bufb = this._bufb;
+		
+		// If never drawn onto, ignore
+		if (bufb == null)
 			return;
 		
-		// Paint the image to the display
-		// Do not worry about using transformations to display it
-		__g.drawImage(image, 0, 0, 0);
+		// Get buffer size
+		int bw = bufb._width,
+			bh = bufb._height;
+		
+		// Create buffer to copy to
+		if (bufa == null || bufa._width != bw && bufa._height != bh)
+		{
+			bufa = new __Buffer__(bw, bh);
+			this._bufa = bufa;
+		}
+		
+		// Copy pixel data (use System since it may be a memory copy)
+		System.arraycopy(bufb._pixels, 0,
+			bufa._pixels, 0, bw * bh);
+		
+		// Signal and wait for refresh
+		super.repaint(0, 0, bw, bh);
+		super.serviceRepaints();
+	}
+	
+	/**
+	 * This represents a single buffer, since this class is double buffered.
+	 *
+	 * @since 2019/06/30
+	 */
+	private static final class __Buffer__
+	{
+		/** The buffer pixels. */
+		final int[] _pixels;
+		
+		/** The width. */
+		final int _width;
+		
+		/** The height. */
+		final int _height;
+		
+		/**
+		 * Initializes the buffer.
+		 *
+		 * @param __w The width.
+		 * @param __h The height.
+		 * @since 2019/06/30
+		 */
+		__Buffer__(int __w, int __h)
+		{
+			this._width = (__w < 1 ? (__w = 1) : __w);
+			this._height = (__h < 1 ? (__h = 1) : __h);
+			this._pixels = new int[__w * __h];
+		}
 	}
 }
-
-

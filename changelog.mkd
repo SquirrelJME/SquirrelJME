@@ -111,6 +111,7 @@ More detailed changes:
        just draw a placeholder graphic.
      * Moved the graphics drawing operations to another class.
      * Removed the 24 strike font, it was too large.
+     * Support double buffered `GameCanvas`.
      * Update the `Display` when a command is added or removed.
      * Use a default title for a `Displayable` if one has not been set, this
        will be in the order of the suite name, the main class, and if those
