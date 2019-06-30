@@ -66,6 +66,16 @@ public final class ProfilerSnapshot
 	}
 	
 	/**
+	 * Exits all threads and all frames using the current time.
+	 *
+	 * @since 2019/06/30
+	 */
+	public final void exitAll()
+	{
+		this.exitAll(System.nanoTime());
+	}
+	
+	/**
 	 * Exits all threads and all frames.
 	 *
 	 * @param __ns The current time.
