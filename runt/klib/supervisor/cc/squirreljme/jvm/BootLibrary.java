@@ -59,12 +59,6 @@ public final class BootLibrary
 	/** Manifest length. */
 	protected final int manifestlength;
 	
-	/** The table of contents address. */
-	protected final int tocaddress;
-	
-	/** The number of entries in the table of contents. */
-	protected final int entrycount;
-	
 	/**
 	 * Initializes the boot library.
 	 *
@@ -88,11 +82,6 @@ public final class BootLibrary
 		this.length = __len;
 		this.manifestaddress = __maddr;
 		this.manifestlength = __mlen;
-		
-		// Read table of contents info
-		this.tocaddress = __addr +
-			Assembly.memReadJavaInt(__addr, TOC_OFFSET_OFFSET);
-		this.entrycount = Assembly.memReadJavaInt(__addr, NUMRC_OFFSET);
 	}
 	
 	/**
@@ -113,8 +102,9 @@ public final class BootLibrary
 		
 		// Scan through the table of contents
 		int bp = this.address,
-			sp = this.tocaddress;
-		for (int i = 0, n = this.entrycount; i < n; i++, sp += TOC_ENTRY_SIZE)
+			sp = bp + Assembly.memReadJavaInt(bp, TOC_OFFSET_OFFSET);
+		for (int i = 0, n = Assembly.memReadJavaInt(bp, NUMRC_OFFSET); i < n;
+			i++, sp += TOC_ENTRY_SIZE)
 		{
 			// Hash code does not match
 			if (hash != Assembly.memReadJavaInt(sp, TOC_HASHCODE_OFFSET))
