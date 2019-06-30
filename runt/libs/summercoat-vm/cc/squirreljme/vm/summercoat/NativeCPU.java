@@ -221,6 +221,7 @@ public final class NativeCPU
 		// Read the CPU stuff
 		final WritableMemory memory = this.memory;
 		boolean reload = true;
+		ProfiledThread profiler = this.profiler;
 		
 		// Frame specific info
 		Frame nowframe = null;
@@ -421,7 +422,17 @@ public final class NativeCPU
 			{
 					// CPU Breakpoint
 				case NativeInstructionType.BREAKPOINT:
+					// Debug print the frame
 					this.__cpuDebugPrint(nowframe, op, af, args, reglist);
+					
+					// If profiling, immediately enter the frame to signal
+					// a break point then exit it
+					if (profiler != null)
+					{
+						profiler.enterFrame("<breakpoint>", "<breakpoint>",
+							"<breakpoint>");
+						profiler.exitFrame();
+					}
 					
 					// {@squirreljme.error AE04 CPU breakpoint hit.}
 					throw new VMException("AE04");
@@ -814,10 +825,29 @@ public final class NativeCPU
 						for (int i = 0; i < nrl; i++)
 							sargs[i] = lr[reglist[i]];
 						
+						// Get the system call ID
+						short syscallid = (short)lr[args[0]];
+							
+						// If profiling, profile the handling of the
+						// system call in a sub-frame
+						if (profiler != null)
+							profiler.enterFrame("<syscall>",
+								Integer.toString(syscallid), "(IIIIIIII)I");
+						
 						// Set the return register to whatever system call
 						// was used
-						lr[NativeCode.RETURN_REGISTER] = this.__sysCall(
-							(short)lr[args[0]], sargs);
+						try
+						{
+							lr[NativeCode.RETURN_REGISTER] = this.__sysCall(
+								syscallid, sargs);
+						}
+						
+						// If profiling, that frame needs to exit always!
+						finally
+						{
+							if (profiler != null)
+								profiler.exitFrame();
+						}
 					}
 					break;
 					

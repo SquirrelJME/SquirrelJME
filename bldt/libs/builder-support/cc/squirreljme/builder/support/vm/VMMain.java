@@ -175,6 +175,11 @@ public class VMMain
 		// Dump the profiler snapshot somewhere
 		finally
 		{
+			// Exit all frames in the profiler so that it is maybe valid
+			// otherwise if the VM crashes mid-frame without a clean exit
+			// the exact times will be hard to tell
+			profiler.exitAll();
+			
 			// Dump to file
 			try
 			{
