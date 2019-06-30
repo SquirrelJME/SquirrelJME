@@ -30,7 +30,7 @@ Badges:
    https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk.png)](
    https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)
  * [![Liberapay](
-   http://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
+  https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
    https://liberapay.com/xershadowtail)
 
 Information:
