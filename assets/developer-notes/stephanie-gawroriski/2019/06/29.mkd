@@ -1,0 +1,15 @@
+# 2019/06/29
+
+## 11:16
+
+I changed the splash and added a white drop shadow, so it seems easier to read
+now.
+
+## 11:22
+
+The copyright screen takes forever to pop up, so I want the copyright to be
+drawn always and the image loaded in the background!
+
+## 13:10
+
+Oh nice, GitHub has a sponsor button, going to add that!
