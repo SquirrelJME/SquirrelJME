@@ -12,6 +12,7 @@ package net.multiphasicapps.javac;
 
 import java.util.ServiceLoader;
 import net.multiphasicapps.javac.cute.CuteCompiler;
+import net.multiphasicapps.javac.cute.CuteCompilerService;
 
 /**
  * This creates an instance of a compiler and should be the class which is
@@ -47,18 +48,26 @@ public final class DefaultCompiler
 	 */
 	public static final Compiler createInstance()
 	{
+		// Create compiler instance
+		return DefaultCompiler.getService().createInstance();
+	}
+	
+	/**
+	 * Returns the default compiler service, if any.
+	 *
+	 * @return The default compiler service.
+	 * @since 2019/06/30
+	 */
+	public static final CompilerService getService()
+	{
 		// Go through services if it is not forced to default
 		if (!Boolean.getBoolean(_FORCE_DEFAULT_PROPERTY))
 			for (CompilerService cs : ServiceLoader.<CompilerService>load(
 				CompilerService.class))
-			{
-				Compiler rv = cs.createInstance();
-				if (rv != null)
-					return rv;
-			}
+			return cs;
 		
 		// No services, use the built-in compiler
-		return new CuteCompiler();
+		return new CuteCompilerService();
 	}
 }
 
