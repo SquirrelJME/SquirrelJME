@@ -365,10 +365,8 @@ public class SummerCoatFactory
 		iframe._registers[NativeCode.STATIC_FIELD_REGISTER] =
 			ramstart + bjh.bootsfieldbase;
 		
-		// Execute the CPU to boot the machine
-		cpu.run();
-		
-		throw new todo.TODO();
+		// Setup virtual machine with initial thread
+		return new SummerCoatVirtualMachine(cpu);
 	}
 	
 	/**
