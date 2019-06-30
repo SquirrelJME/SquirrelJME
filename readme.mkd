@@ -37,6 +37,9 @@ Badges:
    https://liberapay.com/xershadowtail)
  * [![Discord](https://img.shields.io/discord/278929900893634560.svg)](
    https://discord.gg/9PkMMKt)
+ * [![Twitter](
+ https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow)](
+   https://twitter.com/MultiPhasicApps)
 
 Information:
 
