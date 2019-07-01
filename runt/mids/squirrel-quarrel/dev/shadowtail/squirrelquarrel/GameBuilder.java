@@ -11,6 +11,7 @@ package dev.shadowtail.squirrelquarrel;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * This is used to build games which can then be run and such.
@@ -19,6 +20,22 @@ import java.io.IOException;
  */
 public final class GameBuilder
 {
+	/** The game seed. */
+	private volatile long _seed;
+	
+	/**
+	 * Initializes a base game builder.
+	 *
+	 * @since 2019/07/01
+	 */
+	public GameBuilder()
+	{
+		// Instead of using the time directly, derive it from a seed
+		Random initseed = new Random((System.currentTimeMillis() * 37L) +
+			System.nanoTime());
+		this._seed = ((long)initseed.nextInt() << 32) ^ initseed.nextInt();
+	}
+	
 	/**
 	 * Builds the actual game.
 	 *
@@ -27,7 +44,21 @@ public final class GameBuilder
 	 */
 	public final Game build()
 	{
-		throw new todo.TODO();
+		return new Game(
+			this._seed);
+	}
+	
+	/**
+	 * Sets the seed to use for the game.
+	 *
+	 * @param __v The seed to use.
+	 * @return {@code this}.
+	 * @since 2019/07/01
+	 */
+	public final GameBuilder seed(long __v)
+	{
+		this._seed = __v;
+		return this;
 	}
 	
 	/**
