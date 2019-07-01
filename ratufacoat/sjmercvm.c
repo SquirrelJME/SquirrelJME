@@ -394,7 +394,7 @@ sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
-		return;
+		return 0;
 	}
 	
 	/* Read current value. */
@@ -419,7 +419,7 @@ sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
-		return;
+		return 0;
 	}
 	
 	/* Read current value. */

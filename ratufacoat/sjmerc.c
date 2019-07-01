@@ -2021,7 +2021,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					ie = sjme_opdecodeui(jvm->vmem, &nextpc, error);
 					
 					/* Perform the operation. */
-					r[ib] = sjme_jint sjme_vmmatomicintcheckgetandset(
+					r[ib] = sjme_vmmatomicintcheckgetandset(
 						jvm->vmem, ia, ic, id, ie, error);
 				}
 				break;
