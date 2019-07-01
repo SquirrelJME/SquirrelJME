@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 /**
- * DESCRIBE THIS.
+ * This package contains Squirrel Quarrel, the acorn gathering strategy game!
  *
  * @since 2019/07/01
  */
