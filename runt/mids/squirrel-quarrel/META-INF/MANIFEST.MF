@@ -4,11 +4,10 @@ X-SquirrelJME-Error: BE
 X-SquirrelJME-Name: Squirrel Quarrel
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.3.0
-X-SquirrelJME-Description: This provides Squirrel Quarrel through the 
- standard LCD UI interface that is used on MIDP based Java ME systems.
+X-SquirrelJME-Description: A turn based strategy involving squirrels and 
+ lots of acorns! Keep on your claws and horde them all!
 X-SquirrelJME-Depends: tool-manifest-reader midp-lcdui
 Microedition-Configuration: CLDC-1.8-Compact
-MIDlet-1: Squirrel Quarrel (LCDUI), , net.multiphasicapps.squirrelquarr
- el.lcdui.MainMidlet
-X-SquirrelJME-NoLauncher: true
+MIDlet-1: Squirrel Quarrel, icon.xpm, 
+ dev.shadowtail.squirrelquarrel.MainMidlet
 
