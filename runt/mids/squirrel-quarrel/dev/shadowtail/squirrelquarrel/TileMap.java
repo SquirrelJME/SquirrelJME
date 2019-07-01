@@ -16,5 +16,8 @@ package dev.shadowtail.squirrelquarrel;
  */
 public final class TileMap
 {
+	/** Each tile is 16x16 pixels. */
+	public static final int TILE_PIXELS =
+		16;
 }
 

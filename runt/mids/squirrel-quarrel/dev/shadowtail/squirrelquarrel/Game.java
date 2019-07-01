@@ -9,6 +9,8 @@
 
 package dev.shadowtail.squirrelquarrel;
 
+import java.util.Random;
+
 /**
  * This class keeps track of the entire game state, such as active players,
  * artificial intelligence, the tile map, and the units.
@@ -17,5 +19,19 @@ package dev.shadowtail.squirrelquarrel;
  */
 public final class Game
 {
+	/** The random number generator. */
+	public final Random random;
+	
+	/**
+	 * Initializes the game.
+	 *
+	 * @param __seed The seed to use.
+	 * @since 2019/07/01
+	 */
+	public Game(long __seed)
+	{
+		// Initialize RNG
+		this.random = new Random(__seed);
+	}
 }
 
