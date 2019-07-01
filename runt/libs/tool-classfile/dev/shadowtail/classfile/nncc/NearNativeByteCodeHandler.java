@@ -2101,6 +2101,34 @@ public final class NearNativeByteCodeHandler
 				this.doArrayLength(__in[0], __out);
 				break;
 				
+				// Atomic compare, get and set
+			case "atomicCompareGetAndSet":
+				codebuilder.add(
+					NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET,
+						__in[0].register,
+						__out.register,
+						__in[1].register,
+						__in[2].register,
+						0);
+				break;
+				
+				// Atomic decrement and get
+			case "atomicDecrementAndGet":
+				codebuilder.add(
+					NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET,
+						__out.register,
+						__in[0].register,
+						0);
+				break;
+				
+				// Atomic increment
+			case "atomicIncrement":
+				codebuilder.add(
+					NativeInstructionType.ATOMIC_INT_INCREMENT,
+						__in[0].register,
+						0);
+				break;
+				
 				// Breakpoint
 			case "breakpoint":
 				codebuilder.add(NativeInstructionType.BREAKPOINT);

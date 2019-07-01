@@ -313,6 +313,9 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 				return 3;
+			
+			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
+				return 5;
 				
 				// {@squirreljme.error JC10 Unknown instruction argument
 				// count.}
@@ -428,6 +431,15 @@ public final class NativeInstruction
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
+			
+				// [r16 (check), r16 (get), r16 (set), r16 (addr), u16 (off)]
+			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUINT);
 		}
 		
 		// {@squirreljme.error JC11 Invalid operation. (The operation)}

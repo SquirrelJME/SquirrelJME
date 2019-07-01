@@ -680,10 +680,24 @@ void sjme_vmmwritep(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 	sjme_jint val, sjme_error* error);
 
 /**
+ * Atomically reads, checks, and then sets the value.
+ *
+ * @param vmem Virtual memory.
+ * @param check The check value.
+ * @param set The set value.
+ * @param ptr The pointer address.
+ * @param off The offset.
+ * @param error The error state.
+ * @return The value which was read.
+ * @since 2019/07/01
+ */
+sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
+	sjme_jint set, sjme_vmemptr ptr, sjme_jint off, sjme_error* error);
+	
+/**
  * Atomically increments and integer and then gets its value.
  *
  * @param vmem Virtual memory.
- * @param type The type to utilize.
  * @param ptr The pointer address.
  * @param off The offset.
  * @param add The value to add.
