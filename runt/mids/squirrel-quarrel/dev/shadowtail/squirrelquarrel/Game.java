@@ -42,8 +42,6 @@ public final class Game
 		// Initialize random map
 		TileMap tilemap;
 		this.tilemap = (tilemap = new TileMap(random, __mapsize, __numpl));
-		
-		throw new todo.TODO();
 	}
 }
 

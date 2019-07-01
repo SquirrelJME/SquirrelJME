@@ -31,6 +31,9 @@ public final class TileMap
 	/** The height of the map in tiles. */
 	public final int tileheight;
 	
+	/** The internal tile data. */
+	final byte[] _tiles;
+	
 	/**
 	 * Initializes the tile map.
 	 *
@@ -55,12 +58,15 @@ public final class TileMap
 		
 		// Get and store size of the level
 		int tilewidth = __size.width,
-			tileheight = __size.height;
+			tileheight = __size.height,
+			tiledens = tilewidth * tileheight;
 		this.size = __size;
 		this.tilewidth = tilewidth;
 		this.tileheight = tileheight;
 		
-		throw new todo.TODO();
+		// Initialize data areas
+		byte[] tiles = new byte[tiledens];
+		this._tiles = tiles;
 	}
 }
 
