@@ -23,6 +23,12 @@ public final class GameBuilder
 	/** The game seed. */
 	private volatile long _seed;
 	
+	/** The map size. */
+	private volatile MapSize _mapsize;
+	
+	/** The number of players used. */
+	private volatile int _numplayers;
+	
 	/**
 	 * Initializes a base game builder.
 	 *
@@ -34,6 +40,10 @@ public final class GameBuilder
 		Random initseed = new Random((System.currentTimeMillis() * 37L) +
 			System.nanoTime());
 		this._seed = ((long)initseed.nextInt() << 32) ^ initseed.nextInt();
+		
+		// Set default parameters
+		this._mapsize = MapSize.DEFAULT;
+		this._numplayers = 2;
 	}
 	
 	/**
@@ -44,8 +54,34 @@ public final class GameBuilder
 	 */
 	public final Game build()
 	{
-		return new Game(
-			this._seed);
+		synchronized (this)
+		{
+			return new Game(this._seed,
+				this._mapsize,
+				this._numplayers);
+		}
+	}
+	
+	/**
+	 * Sets the number of players in the game.
+	 *
+	 * @param __n The number of players to have.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the player count is out of range.
+	 * @since 2019/07/01
+	 */
+	public final GameBuilder players(int __n)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BE0s Out of range player count. (The count)}
+		if (__n < 1 || __n > Players.MAX_PLAYERS)
+			throw new IllegalArgumentException("BE0s " + __n);
+		
+		synchronized (this)
+		{
+			this._numplayers = __n;
+			return this;
+		}
 	}
 	
 	/**
@@ -57,8 +93,11 @@ public final class GameBuilder
 	 */
 	public final GameBuilder seed(long __v)
 	{
-		this._seed = __v;
-		return this;
+		synchronized (this)
+		{
+			this._seed = __v;
+			return this;
+		}
 	}
 	
 	/**
