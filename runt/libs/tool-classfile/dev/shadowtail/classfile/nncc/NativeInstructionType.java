@@ -126,6 +126,10 @@ public interface NativeInstructionType
 	public static final short SYSTEM_CALL =
 		0xFB;
 	
+	/** Atomic compare and set. */
+	public static final short ATOMIC_COMPARE_GET_AND_SET =
+		0xFC;
+	
 	/**
 	 * Load from pool, note that at code gen time this is aliased.
 	 * {@code iiiixxxx}.

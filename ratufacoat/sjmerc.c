@@ -177,6 +177,9 @@
 /** System call. */
 #define SJME_OP_SYSTEM_CALL UINT8_C(0xFB)
 
+/** Atomically checks, gets, and sets (if matched) the value. */
+#define SJME_OP_ATOMIC_COMPARE_GET_AND_SET UINT8_C(0xFC)
+
 /** Load from pool, note that at code gen time this is aliased. */
 #define SJME_OP_LOAD_POOL UINT8_C(0xFD)
 
@@ -1677,7 +1680,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_vmemptr nextpc;
 	sjme_vmemptr tempp;
 	sjme_jint* r;
-	sjme_jint ia, ib, ic, id;
+	sjme_jint ia, ib, ic, id, ie;
 	sjme_cpustate* oldcpu;
 	
 	/* Invalid argument? */
@@ -1996,6 +1999,30 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 							(int)r[ic], (int)r[ic]);
 #endif
 					}
+				}
+				break;
+				
+				/* Atomic compare, get, and set. */
+			case SJME_OP_ATOMIC_COMPARE_GET_AND_SET:
+				{
+					/* Check. */
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					
+					/* Get. */
+					ib = sjme_opdecodereg(jvm->vmem, &nextpc, error);
+					
+					/* Set. */
+					ic = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					
+					/* Address. */
+					id = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					
+					/* Offset. */
+					ie = sjme_opdecodeui(jvm->vmem, &nextpc, error);
+					
+					/* Perform the operation. */
+					r[ib] = sjme_jint sjme_vmmatomicintcheckgetandset(
+						jvm->vmem, ia, ic, id, ie, error);
 				}
 				break;
 				

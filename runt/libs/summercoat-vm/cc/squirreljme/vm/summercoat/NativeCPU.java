@@ -455,6 +455,33 @@ public final class NativeCPU
 				case NativeInstructionType.DEBUG_POINT:
 					this.__debugPoint(nowframe, args[0], args[1], args[2]);
 					break;
+					
+					// Atomic compare, get, and set
+				case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
+					synchronized (memory)
+					{
+						// Read parameters
+						int check = lr[args[0]],
+							set = lr[args[2]],
+							addr = lr[args[3]],
+							off = args[4];
+						
+						// Read value here
+						int read = memory.memReadInt(addr + off);
+						
+						// Is the value the same?
+						if (read == check)
+							memory.memWriteInt(addr + off, set);
+						
+						// Set the read value before check
+						lr[args[1]] = read;
+						
+						// Debug
+						if (ENABLE_DEBUG)
+							todo.DEBUG.note("%08x(%d) = %d ? %d = %d",
+								addr, off, read, check, set);
+					}
+					break;
 				
 					// Atomic decrement and get
 				case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:

@@ -383,11 +383,44 @@ void sjme_vmmwritep(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 	}
 }
 
+/** Atomically reads, checks, and then sets the value. */
+sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
+	sjme_jint set, sjme_vmemptr ptr, sjme_jint off, sjme_error* error)
+{
+	sjme_jint rv;
+	
+	/* Invalid argument? */
+	if (vmem == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		
+		return;
+	}
+	
+	/* Read current value. */
+	rv = sjme_vmmread(vmem, SJME_VMMTYPE_INTEGER, ptr, off, error);
+	
+	/* If value is the same, set it. */
+	if (rv == check)
+		sjme_vmmwrite(vmem, SJME_VMMTYPE_INTEGER, ptr, off, set, error);
+	
+	/* Return the value. */
+	return rv;
+}
+
 /** Atomically increments and integer and then gets its value. */
 sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
 	sjme_vmemptr ptr, sjme_jint off, sjme_jint add, sjme_error* error)
 {
 	sjme_jint rv;
+	
+	/* Invalid argument? */
+	if (vmem == NULL)
+	{
+		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		
+		return;
+	}
 	
 	/* Read current value. */
 	rv = sjme_vmmread(vmem, SJME_VMMTYPE_INTEGER, ptr, off, error);

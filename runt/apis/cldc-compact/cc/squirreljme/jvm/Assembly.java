@@ -41,6 +41,36 @@ public final class Assembly
 	public static native int arrayLength(Object __o);
 	
 	/**
+	 * Atomic comparison and set.
+	 *
+	 * @param __comp The value to compare and if matches, {@code __set} is
+	 * written.
+	 * @param __set The value to set if matched.
+	 * @param __addr The address to write to.
+	 * @return The value that was read before the set.
+	 * @since 2019/07/01
+	 */
+	public static native int atomicCompareGetAndSet(int __comp, int __set,
+		int __addr);
+	
+	/**
+	 * Atomically decrements a value and returns the result.
+	 *
+	 * @param __addr The address to decrement.
+	 * @return The get value.
+	 * @since 2019/07/01
+	 */
+	public static native int atomicDecrementAndGet(int __addr);
+	
+	/**
+	 * Atomically increments a value.
+	 *
+	 * @param __addr The address to increment.
+	 * @since 2019/07/01
+	 */
+	public static native void atomicIncrement(int __addr);
+	
+	/**
 	 * Trigger breakpoint within the virtual machine.
 	 *
 	 * @since 2019/04/21
