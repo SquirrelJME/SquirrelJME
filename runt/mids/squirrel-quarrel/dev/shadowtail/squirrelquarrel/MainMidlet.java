@@ -9,6 +9,7 @@
 
 package dev.shadowtail.squirrelquarrel;
 
+import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -43,8 +44,7 @@ public class MainMidlet
 		
 		// Setup and show the game interface
 		GameInterface gi = new GameInterface(gb.build());
-		
-		throw new todo.TODO();
+		Display.getDisplay(this).setCurrent(gi);
 	}
 }
 
