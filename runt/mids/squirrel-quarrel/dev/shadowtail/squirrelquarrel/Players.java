@@ -17,5 +17,7 @@ package dev.shadowtail.squirrelquarrel;
  */
 public final class Players
 {
+	/** Maximum number of supported players. */
+	public static final int MAX_PLAYERS =
+		4;
 }
-

@@ -22,16 +22,28 @@ public final class Game
 	/** The random number generator. */
 	public final Random random;
 	
+	/** The world map. */
+	public final TileMap tilemap;
+	
 	/**
 	 * Initializes the game.
 	 *
 	 * @param __seed The seed to use.
+	 * @param __mapsize The size of the map.
+	 * @param __numpl The number of players to use.
 	 * @since 2019/07/01
 	 */
-	public Game(long __seed)
+	public Game(long __seed, MapSize __mapsize, int __numpl)
 	{
 		// Initialize RNG
-		this.random = new Random(__seed);
+		Random random;
+		this.random = (random = new Random(__seed));
+		
+		// Initialize random map
+		TileMap tilemap;
+		this.tilemap = (tilemap = new TileMap(random, __mapsize, __numpl));
+		
+		throw new todo.TODO();
 	}
 }
 
