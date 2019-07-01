@@ -693,7 +693,7 @@ void sjme_vmmwritep(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
  */
 sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
 	sjme_jint set, sjme_vmemptr ptr, sjme_jint off, sjme_error* error);
-	
+
 /**
  * Atomically increments and integer and then gets its value.
  *
