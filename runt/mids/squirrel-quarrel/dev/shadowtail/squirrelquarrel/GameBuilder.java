@@ -43,7 +43,7 @@ public final class GameBuilder
 		throws IOException, NullPointerException
 	{
 		if (__in == null)
-			throws NullPointerException("NARG");
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
