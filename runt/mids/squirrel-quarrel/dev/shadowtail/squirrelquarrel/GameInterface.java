@@ -22,6 +22,29 @@ import javax.microedition.lcdui.Graphics;
 public final class GameInterface
 	extends Canvas
 {
+	/** The game this will be drawing and interacting with. */
+	protected final Game game;
+	
+	/**
+	 * Initializes the game interface.
+	 *
+	 * @param __g The game to interact with.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/01
+	 */
+	public GameInterface(Game __g)
+		throws NullPointerException
+	{
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Initialize variables
+		this.game = __g;
+		
+		// Setup canvas view and such
+		this.setTitle("Squirrel Quarrel");
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/07/01

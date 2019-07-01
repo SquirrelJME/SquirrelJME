@@ -38,6 +38,12 @@ public class MainMidlet
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
+		// Setup base game builder
+		GameBuilder gb = new GameBuilder();
+		
+		// Setup and show the game interface
+		GameInterface gi = new GameInterface(gb.build());
+		
 		throw new todo.TODO();
 	}
 }
