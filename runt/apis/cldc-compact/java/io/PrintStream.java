@@ -830,10 +830,9 @@ public class PrintStream
 			// Force a flush?
 			if (bat >= _THRESHOLD)
 			{
-				// Send flush
+				// Store at location, flush then reload it
+				this._bat = bat;
 				this.__flush();
-				
-				// Needs to be re-read since flush changes this
 				bat = this._bat;
 			}
 		}
