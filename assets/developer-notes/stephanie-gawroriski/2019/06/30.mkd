@@ -1,0 +1,80 @@
+# 2019/06/30
+
+## 07:31
+
+I want a service to wrap around a documentation tool so that way I have
+that and it is not something messy like Sun's JavaDoc stuff.
+
+## 08:18
+
+Definitely have this idea of completely wrapping the ugly documentation
+interface with a much nicer and cleaner one.
+
+## 14:16
+
+Would be useful if SummerCoat had profiling in it.
+
+## 15:12
+
+Pretty sure I want SummerCoat's running stuff to be in the actual VM stuff
+now rather than later.
+
+## 15:49
+
+Tracking how long system calls take is cool.
+
+## 15:50
+
+Oh wow, `BootLibrary.init()` is causing all the libraries to be read and such
+so that definitely is important!
+
+## 18:49
+
+Okay so `GameCanvas` is not actually doing any drawing on screen...
+
+## 18:55
+
+Also `Image.getGraphics()` completely ignores alpha channel.
+
+## 19:46
+
+So the 14th character in the class name is getting chopped off somehow? Can be
+seen in SpringCoat:
+
+ * `("java.util.PopertyPermission" "net.multiphasicapps.util.datadeque.bl`
+ * `java.util.ProertyPermission`
+
+But these should actually be at the same point but they are not. So it is not
+the class stuff it is just the string.
+
+## 20:02
+
+They come from TODO notes.
+
+## 20:03
+
+Actually it probably is `PrintStream` since I did that recently.
+
+## 20:04
+
+There is a threshold of 90 and the cut off on the line is exactly at 90 always
+so this means something in `PrintStream` is chopping something off.
+
+## 20:07
+
+And fixed it, the at position was not being stored in a flush.
+
+## 20:47
+
+Seems a static constructor in DoomRPG is returning `null` which is not a
+thing it should do.
+
+## 20:50
+
+And the code it uses is messing with `microedition.locale` which is not
+set in Java SE. But also probably it is not able to find a resource that
+the game needs as well.
+
+## 20:52
+
+I cannot check it in SpringCoat because it is so slow.
