@@ -9,6 +9,9 @@
 
 package dev.shadowtail.squirrelquarrel;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * This is used to build games which can then be run and such.
  *
@@ -16,5 +19,33 @@ package dev.shadowtail.squirrelquarrel;
  */
 public final class GameBuilder
 {
+	/**
+	 * Builds the actual game.
+	 *
+	 * @return The resulting game.
+	 * @since 2019/07/01
+	 */
+	public final Game build()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Builds and plays back a game from a replay.
+	 *
+	 * @param __in The input stream.
+	 * @return The resulting game.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/01
+	 */
+	public static final Game fromReplay(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throws NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

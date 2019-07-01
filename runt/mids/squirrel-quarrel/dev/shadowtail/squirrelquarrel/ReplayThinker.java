@@ -10,11 +10,11 @@
 package dev.shadowtail.squirrelquarrel;
 
 /**
- * This is a thinker which plays back from a demo.
+ * This is a thinker which plays back from a replay or demo.
  *
  * @since 2019/07/01
  */
-public final class DemoThinker
+public final class ReplayThinker
 	implements Thinker
 {
 }
