@@ -51,6 +51,26 @@ public final class GameInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/07/02
+	 */
+	@Override
+	protected final void keyPressed(int __kc)
+	{
+		this.__inputKey(__kc);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/07/02
+	 */
+	@Override
+	protected final void keyRepeated(int __kc)
+	{
+		this.__inputKey(__kc);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/07/01
 	 */
 	@Override
@@ -147,6 +167,14 @@ public final class GameInterface
 				// Draw background tile
 				__g.drawImage(TileMap.imageBackground(b), lx, ly, 0);
 				
+				// Draw a basic grid to make things a bit easier to see
+				__g.setStrokeStyle(Graphics.DOTTED);
+				__g.setColor(0x000000);
+				__g.drawLine(lx, ly,
+					lx + TileMap.TILE_PIXELS, ly);
+				__g.drawLine(lx, ly,
+					lx, ly + TileMap.TILE_PIXELS);
+				
 				// Draw cursor box?
 				if (cx == x && cy == y)
 				{
@@ -167,6 +195,74 @@ public final class GameInterface
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Handles the specified key.
+	 *
+	 * @param __kc The key code to handle.
+	 * @since 2019/07/02
+	 */
+	private final void __inputKey(int __kc)
+	{
+		// Prefer pure game actions, if those are not available fallback to
+		// the dial pad. Match traditional SquirrelJME game layout.
+		int ga = this.getGameAction(__kc);
+		if (ga == 0)
+			switch (__kc)
+			{
+				case Canvas.KEY_NUM1: ga = Canvas.GAME_A; break;
+				case Canvas.KEY_NUM2: ga = Canvas.UP; break;
+				case Canvas.KEY_NUM3: ga = Canvas.GAME_B; break;
+				
+				case Canvas.KEY_NUM4: ga = Canvas.LEFT; break;
+				case Canvas.KEY_NUM5: ga = Canvas.FIRE; break;
+				case Canvas.KEY_NUM6: ga = Canvas.RIGHT; break;
+				
+				case Canvas.KEY_NUM7: ga = Canvas.GAME_C; break;
+				case Canvas.KEY_NUM8: ga = Canvas.DOWN; break;
+				case Canvas.KEY_NUM9: ga = Canvas.GAME_D; break;
+			}
+		
+		// Ignore invalid actions
+		if (ga == 0)
+			return;
+		
+		// Stuff actions could be performed on
+		MutablePoint cursor = this.cursor;
+		Game game = this.game;
+		TileMap tilemap = game.tilemap;
+		
+		// Perform the actions
+		switch (ga)
+		{
+				// Cursor up
+			case Canvas.UP:
+				if (--cursor.y < 0)
+					cursor.y = 0;
+				break;
+				
+				// Cursor left
+			case Canvas.LEFT:
+				if (--cursor.x < 0)
+					cursor.x = 0;
+				break;
+				
+				// Cursor Right
+			case Canvas.RIGHT:
+				if (++cursor.x >= tilemap.tilewidth)
+					cursor.x = tilemap.tilewidth - 1;
+				break;
+				
+				// Cursor Down
+			case Canvas.DOWN:
+				if (++cursor.y >= tilemap.tileheight)
+					cursor.y = tilemap.tileheight - 1;
+				break;
+		}
+		
+		// Do repaint the view!
+		this.repaint();
 	}
 }
 
