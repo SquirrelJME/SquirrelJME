@@ -1,0 +1,116 @@
+# 2019/07/01
+
+## 08:23
+
+Yay new month! Need atomic check, get, and set for monitors and such so
+that way it works properly!
+
+## 08:25
+
+Also I should add a way to turn default exception handling on and off.
+
+## 08:31
+
+But actually that is done by the explicit exception check.
+
+## 10:10
+
+Okay so I actually have a great idea for Squirrel Quarrel:
+
+ * Have the game be actual squirrels and squirrel like.
+ * Turn based strategy game with AI opponents.
+ * All four seasons varying what happens in the game (snow, leaves, etc.)
+   and have it do special things.
+   * A season could last 14 turns (two weeks)
+ * Gathering of acorns and storing into caches.
+ * Allow acorns to be burried and give them a percent chance to sprout
+   into a tree which then takes a full year to grow. The sprout can be
+   destroyed before it turns into a tree. After an entire year passes
+   the sprout turns into a tree. Prevent walls of trees from being
+   created. Burrying acorns remembers their location, there could be
+   randomly burried acorns or "gifts" in the ground such as weapons
+   or otherwise. Burrying acorns can quickly be used as a stash in the
+   event that no proper stashes are available. Have just three basic
+   building types:
+   * Dreys (Squirrel nests), only in trees -- Spawns new squirrels after
+     a few turns requiring acorns. Acorns can be stashed in dreys but only
+     in smaller amounts. Dreys can also store a few squirrels to heal up
+     as needed.
+   * Stashes, trees/ground -- Allows acorns to be stashed in larger
+     quantities and allows them to be spent.
+   * Armory, ground -- Allows weapons to be constructed.
+ * Very simplisitic game with simple rules and just squirrels as units.
+ * Allow squirrels to be armored and given weapons such as swords and
+   shields to allow their damage to increase.
+ * Add buildings such as dreys which "breed" (really build) squirrels
+   which can take a few turns. Dreys can be only be built in trees.
+ * Start with a single squirrel. Acorn stashes are just used to store
+   acorns long term.
+ * Randomly generated levels, with trees around and basic edges. Keep
+   everything flat so it is very easy to do and make level generators
+   for.
+ * Have team based AIs and such!
+ * Acorns must be stashed in a drey or stash before they can be spent.
+ * Acorns do not drop in the winter and spring, they drop in small amounts
+   in summer and larger amounts in autumn. Although acorns in autumn do
+   not regenerate once dropped. Leaves fall in autumn as well. In winter
+   one must contend with snow conditions.
+ * Squirrels rest heal a small amount by standing still. Faster healing is
+   available when inside of a drey.
+ * Sprouts which are next trees or buildings will never grow into a tree.
+ * Allow movement through trees, although it costs higher movement.
+ * Dreys and stashes can be placed in the center of the tree for building.
+ * Squirrels can hide in leaf piles on the ground in autumn and in snow
+   piles in winter.
+ * Victory can either be destroying all the other enemy squirrels or stashing
+   the most acorns after a given time limit.
+ * Have a "Z" axis, one which involves being on a tree level and the ground
+   level. Tree levels can only be accessed by climbing a trunk of a tree. One
+   can drop on the ground at any point. This can be used to cross rivers for
+   example which will not be crossable unless there are stepping stones.
+   Squirrels in trees can drop down. Squirrels can drop down onto other
+   squirrels for a stronger attack, and the other squirrel will just be pushed
+   aside.
+ * Squirrels in armor increase the protection of the squirrels but reduces
+   movement speed. A squirrel which drops in armor is stunned for a turn
+   unable to move after dropping.
+ * Only a single unit can stand in a tile at a time, all buildings can be
+   walked over.
+ * Squirrels can steal acorns from enemy players in the event they need them.
+ * Squirrels can carry a limited number of acorns before they have to put them
+   in the stash. As usual, they must be stashed in the proper building in
+   order for them to be used.
+ * If a squirrel dies, it drops everything it is carying including weapons and
+   armor. However to prevent the massive proliferation of armor and weapons,
+   after a squirrel dies they will become rusted and only half affective but
+   still with their full debuffs. This is to make players not be afraid of
+   losing armored units and them getting free armor units. Armor and swords
+   do break after awhile.
+ * There is only a single currency: Acorns. Everything uses them and they
+   should never run out in the map.
+
+## 16:37
+
+I want to keep the tileset simple. Keeping everything simplified the tilemap
+will just be bytes, since that is simple.
+
+ * 2-bits: Pile type
+   * None
+   * Acorns
+   * Leaves
+   * Snow
+ * 2-bits: Pile size
+   * None
+   * Small (50 acorns, noisy leaves, snow movement -1)
+   * Medium (100 acorns, stealth+noisy leaves, snow movement -2)
+   * Large (200 acorns, stealth, snow movement -3)
+ * 2-bits: Tile orientation
+   * 0: NW, Tree Trunk
+   * 1: NE, Tree Leaves 1
+   * 2: SW, Tree Leaves 2
+   * 3: SE, Tree Leaves 3
+ * 2-bits: Tile type
+   * 0: Grass
+   * 1: Water/River
+   * 2: Dirt
+   * 3: Tree
