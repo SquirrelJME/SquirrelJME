@@ -25,6 +25,10 @@ public final class GameInterface
 	/** The game this will be drawing and interacting with. */
 	protected final Game game;
 	
+	/** The current cursor tile. */
+	protected final MutablePoint cursor =
+		new MutablePoint();
+	
 	/**
 	 * Initializes the game interface.
 	 *
@@ -52,6 +56,102 @@ public final class GameInterface
 	@Override
 	protected final void paint(Graphics __g)
 	{
+		// Get game details to draw
+		Game game = this.game;
+		
+		// Get the canvas dimensions
+		int cw = this.getWidth(),
+			ch = this.getHeight();
+		
+		// Draw the tile map
+		this.__drawTiles(__g, cw, ch, game.tilemap);
+	}
+	
+	/**
+	 * Draws the underlying tilemap.
+	 *
+	 * @param __g The graphics to draw to.
+	 * @param __cw The canvas width.
+	 * @param __ch The canvas height.
+	 * @param __tilemap The raw tile data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/02
+	 */
+	private final void __drawTiles(Graphics __g, int __cw, int __ch,
+		TileMap __tilemap)
+		throws NullPointerException
+	{
+		if (__g == null || __tilemap == null)
+			throw new NullPointerException("NARG");
+		
+		// Size of the map in tiles
+		int mtw = __tilemap.tilewidth,
+			mth = __tilemap.tileheight;
+		
+		// Size of the view in tiles, an extra tile is given so that they are
+		// not clipped off the right side at all!
+		int vtw = (__cw + TileMap.TILE_PIXELS_MASK) / TileMap.TILE_PIXELS,
+			vth = (__ch + TileMap.TILE_PIXELS_MASK) / TileMap.TILE_PIXELS;
+		
+		// Half of the view, used for centering and capping
+		int vsw = vtw / 2,
+			vsh = vth / 2;
+		
+		// Get the cursor position and determine how that is drawn, the view
+		// is always centered on it for simplicity
+		MutablePoint cursor = this.cursor;
+		int cx = cursor.x,
+			cy = cursor.y,
+			vtx = cx - (vtw / 2),
+			vty = cy - (vth / 2);
+		
+		// Passed bounds on the right side?
+		if (vtx > mtw - vsw)
+			vtx = mtw - vsw;
+		if (vty > mth - vsh)
+			vty = mth - vsh;
+		if (vtx < 0)
+			vtx = 0;
+		if (vty < 0)
+			vty = 0;
+		
+		// End tile positions
+		int etx = vtx + vtw,
+			ety = vty + vth;
+		if (etx > mtw)
+			etx = mtw;
+		if (ety > mth)
+			ety = mth;
+		
+		// Get the background logical tile data
+		byte[] tiles = __tilemap._tiles;
+		
+		// Draw all tiles in the region
+		for (int y = vty; y < ety; y++)
+		{
+			// Logical tile Y on screen
+			int ly = (y - vty) * TileMap.TILE_PIXELS;
+			
+			// Scan in row
+			for (int x = vtx; x < etx; x++)
+			{
+				// Determine logical screen position of file
+				int lx = (x - vtx) * TileMap.TILE_PIXELS;
+				
+				// Draw cursor box?
+				if (cx == x && cy == y)
+				{
+					// Dotted purple box
+					__g.setStrokeStyle(Graphics.DOTTED);
+					__g.setColor(0xFF00FF);
+					__g.drawRect(lx, ly,
+						TileMap.TILE_PIXELS, TileMap.TILE_PIXELS);
+					
+					// Make it solid again
+					__g.setStrokeStyle(Graphics.SOLID);
+				}
+			}
+		}
 	}
 }
 

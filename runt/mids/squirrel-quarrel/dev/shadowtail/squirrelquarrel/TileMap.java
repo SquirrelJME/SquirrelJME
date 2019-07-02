@@ -22,6 +22,10 @@ public final class TileMap
 	public static final int TILE_PIXELS =
 		16;
 	
+	/** Mask for pixels. */
+	public static final int TILE_PIXELS_MASK =
+		15;
+	
 	/** The size of the map. */
 	public final MapSize size;
 	
