@@ -122,14 +122,14 @@ public final class GameInterface
 		MutablePoint cursor = this.cursor;
 		int cx = cursor.x,
 			cy = cursor.y,
-			vtx = cx - (vtw / 2),
-			vty = cy - (vth / 2);
+			vtx = cx - vsw,
+			vty = cy - vsh;
 		
 		// Passed bounds on the right side?
-		if (vtx > mtw - vsw)
-			vtx = mtw - vsw;
-		if (vty > mth - vsh)
-			vty = mth - vsh;
+		if (vtx + vtw > mtw)
+			vtx = mtw - vtw;
+		if (vty + mth > mth)
+			vty = mth - vth;
 		if (vtx < 0)
 			vtx = 0;
 		if (vty < 0)
