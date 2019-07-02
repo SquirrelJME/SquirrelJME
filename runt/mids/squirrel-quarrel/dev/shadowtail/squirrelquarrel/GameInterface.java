@@ -132,20 +132,35 @@ public final class GameInterface
 			// Logical tile Y on screen
 			int ly = (y - vty) * TileMap.TILE_PIXELS;
 			
+			// Base byte position in array
+			int bbase = y * mtw;
+			
 			// Scan in row
 			for (int x = vtx; x < etx; x++)
 			{
 				// Determine logical screen position of file
 				int lx = (x - vtx) * TileMap.TILE_PIXELS;
 				
+				// Get the byte code for this tile
+				byte b = tiles[bbase + x];
+				
+				// Draw background tile
+				__g.drawImage(TileMap.imageBackground(b), lx, ly, 0);
+				
 				// Draw cursor box?
 				if (cx == x && cy == y)
 				{
+					// Draw solid line
+					__g.setStrokeStyle(Graphics.SOLID);
+					__g.setColor(0xFFFF00);
+					__g.drawRect(lx, ly,
+						TileMap.TILE_PIXELS - 2, TileMap.TILE_PIXELS - 2);
+					
 					// Dotted purple box
 					__g.setStrokeStyle(Graphics.DOTTED);
 					__g.setColor(0xFF00FF);
 					__g.drawRect(lx, ly,
-						TileMap.TILE_PIXELS, TileMap.TILE_PIXELS);
+						TileMap.TILE_PIXELS - 2, TileMap.TILE_PIXELS - 2);
 					
 					// Make it solid again
 					__g.setStrokeStyle(Graphics.SOLID);

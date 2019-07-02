@@ -9,7 +9,10 @@
 
 package dev.shadowtail.squirrelquarrel;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Random;
+import javax.microedition.lcdui.Image;
 
 /**
  * This manages the world map which consists of tiles.
@@ -25,6 +28,14 @@ public final class TileMap
 	/** Mask for pixels. */
 	public static final int TILE_PIXELS_MASK =
 		15;
+	
+	/** The tile background mask. */
+	public static final int TILE_BACKGOUND_MASK =
+		0b0000_0011;
+	
+	/** Background tile images. */
+	private static final Image[] _CACHE_BACKGROUND =
+		new Image[4];
 	
 	/** The size of the map. */
 	public final MapSize size;
@@ -71,6 +82,60 @@ public final class TileMap
 		// Initialize data areas
 		byte[] tiles = new byte[tiledens];
 		this._tiles = tiles;
+	}
+	
+	/**
+	 * Looks into the cache and returns the specified image.
+	 *
+	 * @param __cache The cache to look in.
+	 * @param __dx The index to cache.
+	 * @param __prefix The resource prefix.
+	 * @return The resulting image.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/02
+	 */
+	public static Image cacheImage(Image[] __cache, int __dx, String __prefix)
+		throws NullPointerException
+	{
+		if (__cache == null || __prefix == null)
+			throw new NullPointerException("NARG");
+		
+		// If the cache has the image, use it
+		Image rv = __cache[__dx];
+		if (rv != null)
+			return rv;
+		
+		// Otherwise load it!
+		try (InputStream in = TileMap.class.getResourceAsStream(
+			__prefix + __dx + ".xpm"))
+		{
+			rv = Image.createImage(in);
+		}
+		
+		// {@squirreljme.error BE0t Could not cache the image. (The index;
+		// The prefix)}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BE0t " + __dx + " " + __prefix, e);
+		}
+		
+		// Store into the cache then return
+		__cache[__dx] = rv;
+		return rv;
+	}
+	
+	/**
+	 * Gets the image used for the background.
+	 *
+	 * @param __b The tile data.
+	 * @return The image to use.
+	 * @since 2019/07/02
+	 */
+	public static Image imageBackground(byte __b)
+	{
+		// Read cached image
+		return TileMap.cacheImage(_CACHE_BACKGROUND, __b & TILE_BACKGOUND_MASK,
+			"tile");
 	}
 }
 
