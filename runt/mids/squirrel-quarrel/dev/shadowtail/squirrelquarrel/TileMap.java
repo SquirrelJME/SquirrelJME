@@ -82,6 +82,9 @@ public final class TileMap
 		// Initialize data areas
 		byte[] tiles = new byte[tiledens];
 		this._tiles = tiles;
+		
+		for (int i = 0; i < tiledens; i++)
+			tiles[i] = (byte)__rand.nextInt();
 	}
 	
 	/**
