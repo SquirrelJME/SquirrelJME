@@ -1,19 +1,19 @@
 # SquirrelJME
 
-**SquirrelJME** is intended to be a Java ME 8 compatible environment for
-strange and many other devices. That is, you would be able to have a Java
-environment on a wide range of _Internet of Things_ devices, older computers
-(such as the _Amiga_), embedded devices, and mobile devices from old to new.
-It intends to be 99.9% compatible with Java ME 8 and older J2ME standards. It
-should be able to run a wide range of older J2ME software which would enable
-this software to be used for archival purposes. It is written purely in Java
-and requires only a Java compiler and virtual machine for it to be built.
+**SquirrelJME** is a Java ME 8 Virtual Machine for embedded and Internet of
+Things devices. It has the ultimate goal of being 99.9% compatible with the
+Java ME standard.
 
-Note that **SquirrelJME** is not a Java SE virtual machine nor does it intend
-to be one at all. As such, it will not be able to run desktop software unless
-it is ported to Java ME. However some programs may run since Java ME is a
-subset of Java SE, so provided the desktop software does not use what is
-missing or not supported it will run.
+This project is purely written in Java, with a small secondary C project, and 
+is very easy to port to different hardware. For running on native hardware, a
+compiler handles the conversion of Java byte code to machine code (in an
+intermediate format). Any system specific APIs are accessed via standardized
+system calls that handle the logic the compiler cannot provide. An execution
+engine which is written in C is available and it offers a lightweight method
+of code execution.
+
+Additionally, there is a port of SquirrelJME to RetroArch which enables the
+ability to play older J2ME software and games designed for flip-phones.
 
  * Copyright (C) 2013-2019 Stephanie Gawroriski
    <xer@multiphasicapps.net>
