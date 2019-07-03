@@ -1,0 +1,13 @@
+# Short Description
+
+SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things
+devices. It has the ultimate goal of being 99.9% compatible with the Java ME
+standard.
+
+# Long Description
+
+SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things
+devices. It has the ultimate goal of being 99.9% compatible with the Java ME
+standard. It consists of a class library, native code compiler, and an
+optional execution engine in C. It is lightweight and highly portable.
+
