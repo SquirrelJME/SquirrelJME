@@ -170,6 +170,9 @@ purchasing of food items for consumption.
    `MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX`
  * Stellar Lumens (**XLM**):
    `GB4O2MAMTINKS6GM6RH34KO32TJMF4QZKZTFJBE4HIPFMKRBXFQ7IAF6`.
+ * XRP (**XRP**):
+   * Tag: `2912047087`
+   * Address: `rw2ciyaNshpHe7bCHo4bRWq6pqqynnWKQg`
  * ZCash (**ZEC**):
    `t1cBD4dJYNWs5TQk1JKFNy1Qkg3TBx8noXQ`
 
