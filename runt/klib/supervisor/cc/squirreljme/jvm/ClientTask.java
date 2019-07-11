@@ -43,8 +43,8 @@ public final class ClientTask
 	public final HashMap<String, ClientClassInfo> classinfos =
 		new HashMap<>();
 	
-	/** The layout for client class information. */
-	private volatile ClientClassInfoLayout _classinfolayout;
+	/** The accessor for client class information. */
+	private volatile MiniClassAccessor _classinfoaccessor;
 	
 	/**
 	 * Initializes the client task.
@@ -86,34 +86,32 @@ public final class ClientTask
 	}
 	
 	/**
-	 * Returns the layout which describes how the class info structure is
-	 * laid out in memory.
+	 * Returns the mini-class accessor for the {@link ClassInfo} class.
 	 *
-	 * @return The class info layout.
-	 * @since 2019/06/29
+	 * @return The ClassInfo mini-class accessor.
+	 * @since 2019/07/11
 	 */
-	public final ClientClassInfoLayout classInfoLayout()
+	public final MiniClassAccessor classInfoAccessor()
 	{
-		// Has already been read?
-		ClientClassInfoLayout rv = this._classinfolayout;
+		// If it has already been used, only get it once!
+		MiniClassAccessor rv = this._classinfoaccessor;
 		if (rv != null)
 			return rv;
 		
 		// Debug
-		todo.DEBUG.note("Determining ClassInfo layout...");
+		todo.DEBUG.note("Searching for ClassInfo...");
 		
-		// Find index for object and 
-		BootLibrary[] classpath = this.classpath;
-		int jodx = ClientTask.__findClassIndex(classpath, "java/lang/Object"),
-			cidx = ClientTask.__findClassIndex(classpath,
-				"cc/squirreljme/jvm/ClassInfo");
-		
-		// This is not good
-		if (jodx < 0 || cidx < 0)
+		// Locate class resource
+		int dx = this.resourceClassFind("cc/squirreljme/jvm/ClassInfo");
+		if (dx < 0)
 			return null;
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Cache it
+		this._classinfoaccessor = (rv = new MiniClassAccessor(
+			this.resourceData(dx)));
+		
+		// Use it
+		return rv;
 	}
 	
 	/**
@@ -139,11 +137,8 @@ public final class ClientTask
 		// Debug
 		todo.DEBUG.note("Finding class %s...", __cl);
 		
-		// Attempt to locate the class
-		BootLibrary[] classpath = this.classpath;
-		int dx = ClientTask.__findClassIndex(classpath, __cl);
-		
-		// If it was not found, remember this and then stop
+		// Attempt to locate the class, if not found remember this and stop
+		int dx = this.resourceClassFind(__cl);
 		if (dx < 0)
 		{
 			// Cache for later
@@ -154,7 +149,7 @@ public final class ClientTask
 		}
 		
 		// Get the layout for the class information (where fields go)
-		ClientClassInfoLayout ccil = this.classInfoLayout();
+		MiniClassAccessor ccia = this.classInfoAccessor();
 		
 		// Debug
 		todo.DEBUG.note("Initializing class info %s...", __cl);
@@ -164,32 +159,66 @@ public final class ClientTask
 	}
 	
 	/**
-	 * Locates the given class within the classpath.
+	 * Searches for the given class name resource for the given class
 	 *
-	 * @param __cp The classpath.
-	 * @param __cl The class to locate.
-	 * @return A negative value if not found, otherwise the classpath index
-	 * shifted up by {@link #_INDEX_SHIFT} and then the resource index.
+	 * @param __name The name of the class.
+	 * @return A negative value if not found, otherwise the class path index
+	 * will be shifted up by {@link #_INDEX_SHIFT} and the resource index will
+	 * be on the lower mask.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/06/29
+	 * @since 2019/07/11
 	 */
-	public static final int __findClassIndex(BootLibrary[] __cp, String __cl)
+	public final int resourceClassFind(String __name)
 		throws NullPointerException
 	{
-		if (__cp == null || __cl == null)
+		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// The resource the class will be in
-		String filename = __cl + ".class";
+		return this.resourceFind(__name + ".class");
+	}
+	
+	/**
+	 * Returns the data pointer for the given resource.
+	 *
+	 * @param __dx The index to get the data pointer for.
+	 * @return The data pointer of the resource or {@code 0} if it is not
+	 * valid.
+	 * @since 2019/07/11
+	 */
+	public final int resourceData(int __dx)
+	{
+		// Make sure the index is in range
+		int cpdx = __dx >>> _INDEX_SHIFT;
+		BootLibrary[] classpath = this.classpath;
+		if (cpdx < 0 || cpdx >= classpath.length)
+			return 0;
 		
-		// Debug
-		todo.DEBUG.note("Scanning for %s...", filename);
+		// Get resource pointer from this
+		return classpath[cpdx].resourceData(__dx & _INDEX_MASK);
+	}
+	
+	/**
+	 * Searches for the given resource in this client task.
+	 *
+	 * @param __name The name of the resource.
+	 * @return A negative value if not found, otherwise the class path index
+	 * will be shifted up by {@link #_INDEX_SHIFT} and the resource index will
+	 * be on the lower mask.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/11
+	 */
+	public final int resourceFind(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
 		
 		// Scan the classpath
-		for (int i = 0, n = __cp.length; i < n; i++)
+		BootLibrary[] classpath = this.classpath;
+		for (int i = 0, n = classpath.length; i < n; i++)
 		{
 			// Locate resource
-			int rv = __cp[i].indexOf(filename);
+			int rv = classpath[i].indexOf(__name);
 			
 			// Was found?
 			if (rv >= 0)
@@ -198,6 +227,68 @@ public final class ClientTask
 		
 		// Not found
 		return -1;
+	}
+	
+	/**
+	 * Searches for the given resource in this client task in the given
+	 * specified classpath library.
+	 *
+	 * @param __name The name of the resource.
+	 * @param __in The class path library to look in.
+	 * @return A negative value if not found, otherwise the class path index
+	 * will be shifted up by {@link #_INDEX_SHIFT} and the resource index will
+	 * be on the lower mask.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/11
+	 */
+	public final int resourceFindIn(String __name, int __in)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Out of range values are always not found
+		BootLibrary[] classpath = this.classpath;
+		if (__in < 0 || __in >= classpath.length)
+			return -1;
+		
+		// Locate resource
+		int rv = classpath[__in].indexOf(__name);
+		
+		// If it was found shift in
+		if (rv >= 0)
+			return (__in << _INDEX_SHIFT) | rv;
+		
+		// Otherwise does not exist
+		return -1;
+	}
+	
+	/**
+	 * Searches for the given resource in this client task in the given
+	 * specified classpath library, if it is not found in that library then
+	 * all libraries on the classpath are searched.
+	 *
+	 * @param __name The name of the resource.
+	 * @param __in The class path library to look in.
+	 * @return A negative value if not found, otherwise the class path index
+	 * will be shifted up by {@link #_INDEX_SHIFT} and the resource index will
+	 * be on the lower mask.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/11
+	 */
+	public final int resourceFindInOtherwise(String __name, int __in)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Search in this specific library first
+		int rv = this.resourceFindIn(__name, __in);
+		if (rv >= 0)
+			return rv;
+		
+		// Then locate it in any class library
+		return this.resourceFind(__name);
 	}
 }
 

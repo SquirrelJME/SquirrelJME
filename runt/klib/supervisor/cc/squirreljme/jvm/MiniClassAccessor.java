@@ -10,12 +10,27 @@
 package cc.squirreljme.jvm;
 
 /**
- * This class contains the layout for the client's {@link ClassInfo} object
- * such as where all the fields are positioned.
+ * This class is used as a utility to access the data contained within the
+ * mini-class format.
  *
- * @since 2019/06/29
+ * @since 2019/07/11
  */
-public final class ClientClassInfoLayout
+public final class MiniClassAccessor
 {
+	/** The mini-class address. */
+	protected final int address;
+	
+	/**
+	 * Initializes the mini class accessor.
+	 *
+	 * @param __a The address of the mini-class.
+	 * @since 2019/07/11
+	 */
+	public MiniClassAccessor(int __a)
+	{
+		this.address = __a;
+		
+		todo.DEBUG.code('m', 'd', __a);
+	}
 }
 
