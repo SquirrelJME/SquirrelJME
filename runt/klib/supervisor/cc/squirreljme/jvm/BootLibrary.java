@@ -119,5 +119,28 @@ public final class BootLibrary
 		// Not found
 		return -1;
 	}
+	
+	/**
+	 * Returns the data pointer of the given index.
+	 *
+	 * @param __dx The index to get the data for.
+	 * @return The pointer to the index data or {@code 0} if it is not valid.
+	 * @since 2019/07/11
+	 */
+	public final int resourceData(int __dx)
+	{
+		// Get base address of the library
+		int bp = this.address;
+		
+		// If the resource is out of range, then ignore because some invalid
+		// memory will be used which would be bad
+		if (__dx < 0 || __dx >= Assembly.memReadJavaInt(bp, NUMRC_OFFSET))
+			return 0;
+		
+		// Read from the table of contents, the offset to the data.
+		return bp + Assembly.memReadJavaInt(
+			bp + Assembly.memReadJavaInt(bp, TOC_OFFSET_OFFSET),
+			(TOC_ENTRY_SIZE * __dx) + TOC_DATA_OFFSET);
+	}
 }
 
