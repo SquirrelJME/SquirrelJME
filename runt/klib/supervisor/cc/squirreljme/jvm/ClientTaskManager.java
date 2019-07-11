@@ -79,7 +79,7 @@ public final class ClientTaskManager
 		todo.DEBUG.note("Initializing task %d (%d)...", rv.lid, pid);
 		
 		// Load the main class
-		int maincl = rv.loadClassInfo(__mcl);
+		ClientClassInfo maincl = rv.loadClassInfo(__mcl);
 		
 		if (true)
 		{

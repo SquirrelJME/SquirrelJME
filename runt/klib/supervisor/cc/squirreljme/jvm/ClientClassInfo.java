@@ -43,27 +43,14 @@ public final class ClientClassInfo
 	}
 	
 	/**
-	 * Returns the mini-class accessor.
+	 * Returns the mini-class accessor, only accessible after open.
 	 *
 	 * @return The mini-class accessor.
 	 * @since 2019/07/11
 	 */
 	public final MiniClassAccessor accessor()
 	{
-		// Detail details
-		int opencount = this._opencount;
-		MiniClassAccessor rv = this._miniaccessor;
-		
-		// If this is just being opened, then create an accessor for it
-		if (opencount == 0)
-			this._miniaccessor = (rv =
-				new MiniClassAccessor(this.miniclassaddress));
-		
-		// Count up
-		this._opencount = opencount + 1;
-		
-		// Use it
-		return rv;
+		return this._miniaccessor;
 	}
 	
 	/**
@@ -86,6 +73,30 @@ public final class ClientClassInfo
 		// If there are no counts then clear the object so it gets GCed
 		if (opencount == 0)
 			this._miniaccessor = null;
+	}
+	
+	/**
+	 * Opens the class for its accessor to be accessed.
+	 *
+	 * @return {@code this}.
+	 * @since 2019/07/11
+	 */
+	public final ClientClassInfo open()
+	{
+		// Detail details
+		int opencount = this._opencount;
+		MiniClassAccessor rv = this._miniaccessor;
+		
+		// If this is just being opened, then create an accessor for it
+		if (opencount == 0)
+			this._miniaccessor = (rv =
+				new MiniClassAccessor(this.miniclassaddress));
+		
+		// Count up
+		this._opencount = opencount + 1;
+		
+		// Return self
+		return this;
 	}
 }
 

@@ -118,12 +118,13 @@ public final class ClientTask
 	 * Loads the in-memory class information for the given class.
 	 *
 	 * @param __cl The class to load.
-	 * @return The loaded class information or {@code 0} if it is not found.
+	 * @return The loaded class information or {@code null} if it is not found.
+	 * @throws ClientLinkageError If the client class could not be initialized.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/23
 	 */
-	public final int loadClassInfo(String __cl)
-		throws NullPointerException
+	public final ClientClassInfo loadClassInfo(String __cl)
+		throws ClientLinkageError, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
@@ -132,7 +133,7 @@ public final class ClientTask
 		HashMap<String, ClientClassInfo> classinfos = this.classinfos;
 		ClientClassInfo rv = classinfos.get(__cl);
 		if (classinfos.containsKey(__cl))
-			return (rv != null ? rv.classinfopointer : 0);
+			return (rv != null ? rv : null);
 		
 		// Debug
 		todo.DEBUG.note("Finding class %s...", __cl);
@@ -141,21 +142,42 @@ public final class ClientTask
 		int dx = this.resourceClassFind(__cl);
 		if (dx < 0)
 		{
-			// Cache for later
 			classinfos.put(__cl, null);
-			
-			// Not found
-			return 0;
+			return null;
 		}
-		
-		// Get the layout for the class information (where fields go)
-		MiniClassAccessor ccia = this.classInfoAccessor();
 		
 		// Debug
 		todo.DEBUG.note("Initializing class info %s...", __cl);
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Get the layout for the class information (where fields go)
+		MiniClassAccessor ccia = this.classInfoAccessor();
+		
+		// {@squirreljme.error SV04 Could not allocate class information.}
+		int cip = this.allocate(Allocator.CHUNK_BIT_IS_OBJECT,
+			Constants.OBJECT_BASE_SIZE + ccia.baseInstanceSize());
+		if (cip == 0)
+			throw new ClientLinkageError("SV04");
+		
+		// Class initialization involves many recursive calls into the class
+		// loading being called, so as such store the class info pointer and
+		// such before any processing is done so it is done first
+		classinfos.put(__cl,
+			(rv = new ClientClassInfo(cip, this.resourceData(dx))));
+		
+		// Write the class type for the class information
+		Assembly.memWriteInt(cip, Constants.OBJECT_CLASS_OFFSET,
+			this.loadClassInfo("cc/squirreljme/jvm/ClassInfo").
+			classinfopointer);
+		
+		// "Open" the class so that its accessor can be used
+		try (ClientClassInfo xp = rv.open())
+		{
+			// Load the mini-class accessor
+			MiniClassAccessor clma = xp.accessor();
+			
+			Assembly.breakpoint();
+			throw new todo.TODO();
+		}
 	}
 	
 	/**

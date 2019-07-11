@@ -29,8 +29,18 @@ public final class MiniClassAccessor
 	public MiniClassAccessor(int __a)
 	{
 		this.address = __a;
-		
-		todo.DEBUG.code('m', 'd', __a);
+	}
+	
+	/**
+	 * Returns the base size of the class instance.
+	 *
+	 * @return The base class instance size.
+	 * @since 2019/07/11
+	 */
+	public final int baseInstanceSize()
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
 	}
 }
 
