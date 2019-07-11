@@ -33,6 +33,9 @@ public class Throwable
 	/** The call trace. */
 	transient final int[] _rawtrace;
 	
+	/** Suppressed exceptions. */
+	transient volatile Throwable[] _suppressed;
+	
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
@@ -91,6 +94,47 @@ public class Throwable
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
+	}
+	
+	/**
+	 * Adds a suppressed throwable which will be thrown alongside this
+	 * throwable. This is mainly used with try-with-resources although a
+	 * programmer may wish to add related throwables that additionally
+	 * happened.
+	 *
+	 * @param __t The throwable to suppress.
+	 * @throws IllegalArgumentException If the passed throwable is this.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/15
+	 */
+	public final void addSuppressed(Throwable __t)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error SV05 Cannot add a suppressed exception which
+		// is this exception.}
+		if (__t == this)
+			throw new IllegalArgumentException("SV05");
+		
+		// No suppressed exceptions were set, initialize
+		Throwable[] suppressed = this._suppressed;
+		if (suppressed == null)
+			this._suppressed = new Throwable[]{__t};
+		
+		// Otherwise rebuild the array and add it
+		else
+		{
+			int n = suppressed.length;
+			Throwable[] copy = new Throwable[n + 1];
+			for (int i = 0; i < n; i++)
+				copy[i] = suppressed[i];
+			copy[n] = __t;
+			
+			// Use this instead
+			this._suppressed = copy;
+		}
 	}
 	
 	/**
