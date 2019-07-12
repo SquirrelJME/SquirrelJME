@@ -1,0 +1,10 @@
+# 2019/07/11
+
+## 10:35
+
+I think I just need an accessor for the mini-class stuff.
+
+## 18:31
+
+I have new job starting Monday, so just right now passing the time
+working on SquirrelJME a tiny bit.
