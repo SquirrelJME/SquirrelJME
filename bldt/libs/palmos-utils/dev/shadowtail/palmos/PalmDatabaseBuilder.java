@@ -10,10 +10,13 @@
 package dev.shadowtail.palmos;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class is used to build PalmOS databases and resource databases.
@@ -22,8 +25,16 @@ import java.util.List;
  */
 public final class PalmDatabaseBuilder
 {
+	/** The limit to the name length. */
+	private static final int _NAME_LIMIT =
+		32;
+	
 	/** The type of database to create. */
 	protected final PalmDatabaseType dbtype;
+	
+	/** Attributes within the database. */
+	private final Set<PalmDatabaseAttribute> _attributes =
+		new HashSet<>();
 	
 	/** The entries within the database. */
 	private final List<PalmRecord> _records =
@@ -74,6 +85,29 @@ public final class PalmDatabaseBuilder
 		
 		// Create a record writer to write there
 		return new __RecordWriter__(__type, __id, this._records);
+	}
+	
+	/**
+	 * Sets the given attributes.
+	 *
+	 * @param __a The attribute to set.
+	 * @return {@code this}.
+	 * @since 2019/07/13
+	 */
+	public final PalmDatabaseBuilder setAttributes(
+		PalmDatabaseAttribute... __a)
+	{
+		if (__a == null)
+			return this;
+		
+		// Add the attributes
+		Set<PalmDatabaseAttribute> attributes = this._attributes;
+		for (PalmDatabaseAttribute attr : __a)
+			if (attr != null)
+				attributes.add(attr);
+		
+		// Return self
+		return this;
 	}
 	
 	/**
@@ -168,6 +202,34 @@ public final class PalmDatabaseBuilder
 	{
 		if (__out == null)
 			throw new NullPointerException("NARG");
+		
+		// Open data output to write to
+		DataOutputStream dos = new DataOutputStream(__out);
+		
+		// Write the name bytes
+		byte[] namebytes = this._name.getBytes("utf-8");
+		int namelen = namebytes.length;
+		dos.write(namebytes, 0, Math.min(namelen, _NAME_LIMIT));
+		
+		// Pad shorter names
+		for (int i = namelen; i < _NAME_LIMIT; i++)
+			dos.write(0);
+		
+		// Determine attribute bit-field
+		int attrs = 0;
+		for (PalmDatabaseAttribute attr : this._attributes)
+			attrs |= attr.bit;
+		
+		// Make sure the attribute flag is always correct because if it was
+		// specified it would make the database not valid to be handled
+		PalmDatabaseType dbtype = this.dbtype;
+		if (dbtype == PalmDatabaseType.RESOURCE)
+			attrs |= PalmDatabaseAttribute.RESOURCE_DATABASE.bit;
+		else
+			attrs &= ~PalmDatabaseAttribute.RESOURCE_DATABASE.bit;
+		
+		// Write attributes
+		dos.writeShort(attrs);
 		
 		throw new todo.TODO();
 	}
