@@ -372,6 +372,9 @@ public final class PalmDatabaseBuilder
 		// Unique ID
 		dos.writeInt(this._uniqueid);
 		
+		// Next record list (unused in files)
+		dos.writeInt(0);
+		
 		// Need to work with records now
 		List<PalmRecord> records = this._records;
 		int numrecords = records.size();
