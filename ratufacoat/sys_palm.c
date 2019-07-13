@@ -26,5 +26,17 @@
  */
 UInt32 PilotMain(UInt16 cmd, void* cmdpbp, UInt16 launchflags)
 {
+	/* Which Launch Code? */
+	switch (cmd)
+	{
+			/* Normal application launch. */
+		case sysAppLaunchCmdNormalLaunch:
+			break;
+			
+			/* Unknown */
+		default:
+			break;
+	}
+	
 	return 0;
 }

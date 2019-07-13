@@ -363,6 +363,9 @@ typedef struct sjme_vmemmap
 	
 	/** The memory region size. */
 	sjme_jint size;
+	
+	/** Banked access function. */
+	uintptr_t (*bank)(sjme_jint* offset);
 } sjme_vmemmap;
 
 /**
