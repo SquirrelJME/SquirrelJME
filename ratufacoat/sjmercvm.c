@@ -108,9 +108,10 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
 void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
 	sjme_error* error)
 {
-	sjme_jint i, n;
+	sjme_jint i, n, moff;
 	sjme_vmemmap* map;
 	sjme_vmemptr optr;
+	uintptr_t mp;
 	
 	/* Invalid argument. */
 	if (vmem == NULL)
@@ -129,9 +130,25 @@ void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
 		/* Get mapping. */
 		map = vmem->maps[i];
 		
+		/* Calculate the mapping offset. */
+		moff = optr - map->fakeptr;
+		
 		/* Is in range? */
-		if (optr >= map->fakeptr && optr < map->fakeptr + map->size)
-			return (void*)(map->realptr + (optr - map->fakeptr));
+		if (moff >= 0 && moff < map->size)
+		{
+			/* If this mapping is banked, make sure it is mapped. */
+			if (map->bank != NULL)
+			{
+				/* Load the bank into memory. */
+				mp = map->bank(&moff);
+				
+				/* Return from the base mapping using the returned offset. */
+				return (void*)(mp + moff);
+			}
+			
+			/* Otherwise, use direct memory access. */
+			return (void*)(map->realptr + moff);
+		}
 	}
 	
 	/* Address is not valid. */
