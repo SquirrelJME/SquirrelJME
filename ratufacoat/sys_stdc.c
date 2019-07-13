@@ -12,10 +12,6 @@
  * @since 2019/06/02
  */
 
-#if defined(SQUIRRELJME_PORT_STDC)
- 
-/****************************************************************************/
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -370,7 +366,3 @@ int main(int argc, char** argv)
 	
 	return EXIT_SUCCESS;
 }
-
-/****************************************************************************/
-
-#endif /* defined(SQUIRRELJME_PORT_STDC) */
