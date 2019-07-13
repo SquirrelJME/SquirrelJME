@@ -29,6 +29,14 @@ public final class PalmDatabaseBuilder
 	private static final int _NAME_LIMIT =
 		32;
 	
+	/** Difference in the epoch in seconds. */
+	private static final long _EPOCH_DIFF_SECONDS =
+		2082844800L;
+	
+	/** Difference in the epoch in milliseconds. */
+	private static final long _EPOCH_DIFF_MILLISECONDS =
+		2082844800_000L;
+	
 	/** The type of database to create. */
 	protected final PalmDatabaseType dbtype;
 	
