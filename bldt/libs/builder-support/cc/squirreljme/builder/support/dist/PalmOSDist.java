@@ -15,6 +15,7 @@ import dev.shadowtail.palmos.PalmDatabaseType;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
 import net.multiphasicapps.javac.ZipCompilerOutput;
 
 /**
@@ -66,10 +67,16 @@ public class PalmOSDist
 		PalmDatabaseBuilder db = new PalmDatabaseBuilder(
 			PalmDatabaseType.RESOURCE);
 		
+		// Used to set the version number
+		Calendar cal = Calendar.getInstance();
+		
 		// Set information on the database
 		db.setName("SquirrelJME ROM");
 		db.setType("mROM");
 		db.setCreator("SjME");
+		db.setVersion(((((cal.get(Calendar.YEAR) - 2016) * 365) +
+			cal.get(Calendar.DAY_OF_YEAR)) * 24) +
+			cal.get(Calendar.HOUR_OF_DAY));
 		db.setAttributes(PalmDatabaseAttribute.BACKUP,
 			PalmDatabaseAttribute.OK_TO_INSTALL_NEWER,
 			PalmDatabaseAttribute.BUNDLE);
