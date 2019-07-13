@@ -9,6 +9,7 @@
 
 package cc.squirreljme.builder.support.dist;
 
+import dev.shadowtail.palmos.PalmDatabaseAttribute;
 import dev.shadowtail.palmos.PalmDatabaseBuilder;
 import dev.shadowtail.palmos.PalmDatabaseType;
 import java.io.DataOutputStream;
@@ -69,6 +70,9 @@ public class PalmOSDist
 		db.setName("SquirrelJME ROM");
 		db.setType("mROM");
 		db.setCreator("SjME");
+		db.setAttributes(PalmDatabaseAttribute.BACKUP,
+			PalmDatabaseAttribute.OK_TO_INSTALL_NEWER,
+			PalmDatabaseAttribute.BUNDLE);
 		
 		// Write ROM length
 		try (DataOutputStream ent = new DataOutputStream(
@@ -124,7 +128,7 @@ public class PalmOSDist
 		
 		// PalmOS (especially older versions) do not have a concept of a
 		// file system so a ROM has to exist as a database
-		try (OutputStream out = __zip.output("squirreljme-rom.prc"))
+		try (OutputStream out = __zip.output("squirreljme-rom.pdb"))
 		{
 			this.buildRomDatabase(out, __bp);
 		}
