@@ -97,6 +97,31 @@
 	#define UINT16_C(x) x##U
 	#define UINT32_C(x) x##U
 
+/** Palm OS. */
+#elif defined(__palmos__)
+	#include <PalmTypes.h>
+	
+	typedef Int8 int8_t;
+	typedef Int16 int16_t;
+	typedef Int32 int32_t;
+	
+	typedef UInt8 uint8_t;
+	typedef UInt16 uint16_t;
+	typedef UInt32 uint32_t;
+	
+	typedef int32_t intptr_t;
+	typedef uint32_t uintptr_t;
+	
+	#define INT8_C(x) x
+	#define INT16_C(x) x
+	#define INT32_C(x) x##L
+	
+	#define UINT8_C(x) x##U
+	#define UINT16_C(x) x##U
+	#define UINT32_C(x) x##UL
+	
+	#define SIZE_MAX UINT32_C(0xFFFFFFFF)
+
 /** Guessed otherwise. */
 #else
 	#if defined(SCHAR_MAX) && SCHAR_MAX == 127
