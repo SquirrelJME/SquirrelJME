@@ -108,7 +108,7 @@ public class PalmOSDist
 		}
 		
 		// Write the output
-		db.write(__out);
+		db.writeTo(__out);
 	}
 	
 	/**
