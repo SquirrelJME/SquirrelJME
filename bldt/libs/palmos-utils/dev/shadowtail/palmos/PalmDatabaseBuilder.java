@@ -11,6 +11,8 @@ package dev.shadowtail.palmos;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is used to build PalmOS databases and resource databases.
@@ -20,7 +22,23 @@ import java.io.OutputStream;
 public final class PalmDatabaseBuilder
 {
 	/** The type of database to create. */
-	protected final PalmDatabaseType type;
+	protected final PalmDatabaseType dbtype;
+	
+	/** The entries within the database. */
+	private final List<PalmRecord> _records =
+		new ArrayList<>();
+	
+	/** The creator of the database. */
+	private String _creator =
+		"????";
+	
+	/** The type of the database. */
+	private String _type =
+		"????";
+	
+	/** The name of the database. */
+	private String _name =
+		"Untitled";
 	
 	/**
 	 * Initializes the database builder.
@@ -35,7 +53,7 @@ public final class PalmDatabaseBuilder
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		this.type = __type;
+		this.dbtype = __type;
 	}
 	
 	/**
@@ -53,7 +71,8 @@ public final class PalmDatabaseBuilder
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Create a record writer to write there
+		return new __RecordWriter__(__type, __id, this._records);
 	}
 	
 	/**
@@ -70,7 +89,8 @@ public final class PalmDatabaseBuilder
 		if (__creat == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this._creator = __creat;
+		return this;
 	}
 	
 	/**
@@ -87,7 +107,8 @@ public final class PalmDatabaseBuilder
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this._name = __name;
+		return this;
 	}
 	
 	/**
@@ -104,7 +125,8 @@ public final class PalmDatabaseBuilder
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this._type = __type;
+		return this;
 	}
 	
 	/**
