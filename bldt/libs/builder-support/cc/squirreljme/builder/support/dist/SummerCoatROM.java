@@ -47,6 +47,19 @@ public class SummerCoatROM
 	}
 	
 	/**
+	 * Initializes the service with the given name using the default type.
+	 *
+	 * @param __name The name to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/13
+	 */
+	public SummerCoatROM(String __name)
+		throws NullPointerException
+	{
+		this(__name, TimeSpaceType.RUNTIME);
+	}
+	
+	/**
 	 * Initializes the service with the given name and type.
 	 *
 	 * @param __name The name to use.

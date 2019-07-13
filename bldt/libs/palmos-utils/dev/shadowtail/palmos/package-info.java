@@ -7,28 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.builder.support.dist;
-
-import cc.squirreljme.builder.support.TimeSpaceType;
-
 /**
- * This builds the SummerCoat ROM except that it completely uses the test
- * projects and is used to make sure SummerCoat and RatufaCoat work properly
- * with all of the tests.
+ * This package contains the base for the PalmOS utilities.
  *
- * @since 2019/05/29
+ * @since 2019/07/13
  */
-public class SummerCoatROMTest
-	extends SummerCoatROM
-{
-	/**
-	 * Initializes the builder.
-	 *
-	 * @since 2019/05/29
-	 */
-	public SummerCoatROMTest()
-	{
-		super("summercoatrom-test", TimeSpaceType.TEST);
-	}
-}
+
+package dev.shadowtail.palmos;
 

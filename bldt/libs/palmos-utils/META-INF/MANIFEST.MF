@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: dfc85dd5-cd8b-40e4-956d-0fc938eb179e
+X-SquirrelJME-Error: BP
+X-SquirrelJME-Name: PalmOS Utilities
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.3.0
+X-SquirrelJME-Description: This contains utilities for reading and writing 
+ PalmOS PRC and PDB files.
+Microedition-Configuration: CLDC-1.8-Compact
+
