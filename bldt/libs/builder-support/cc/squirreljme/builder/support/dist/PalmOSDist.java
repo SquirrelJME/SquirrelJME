@@ -9,26 +9,40 @@
 
 package cc.squirreljme.builder.support.dist;
 
-import cc.squirreljme.builder.support.TimeSpaceType;
+import java.io.IOException;
+import java.io.OutputStream;
+import net.multiphasicapps.javac.ZipCompilerOutput;
 
 /**
- * This builds the SummerCoat ROM except that it completely uses the test
- * projects and is used to make sure SummerCoat and RatufaCoat work properly
- * with all of the tests.
+ * Palm OS distribution.
  *
- * @since 2019/05/29
+ * @since 2019/07/13
  */
-public class SummerCoatROMTest
+public class PalmOSDist
 	extends SummerCoatROM
 {
 	/**
 	 * Initializes the builder.
 	 *
-	 * @since 2019/05/29
+	 * @since 2019/07/13
 	 */
-	public SummerCoatROMTest()
+	public PalmOSDist()
 	{
-		super("summercoatrom-test", TimeSpaceType.TEST);
+		super("palmos");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/07/13
+	 */
+	@Override
+	protected void generate(ZipCompilerOutput __zip, BuildParameters __bp)
+		throws IOException, NullPointerException
+	{
+		if (__zip == null || __bp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
