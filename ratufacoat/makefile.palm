@@ -1,0 +1,21 @@
+# ---------------------------------------------------------------------------
+# Multi-Phasic Applications: SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3, or later.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: Makefile for building SquirrelJME RatufaCoat with prc-tools.
+
+FILES=sjmerc.c sjmercnm.c sjmercvm.c sys_palm.c
+
+squirreljme.prc:	squirreljme-palm.a
+			rm -vf *.grc
+			m68k-palmos-obj-res squirreljme-palm.a
+			build-prc -o $@ -t appl -c SjME -n "SquirrelJME" *.grc
+
+squirreljme-palm.a:	$(FILES)
+			m68k-palmos-gcc -o $@ $^ $(CFLAGS) $(LIBS)
+
+clean:				
+			rm -f squirreljme-palm.a *.grc squirreljme.prc
