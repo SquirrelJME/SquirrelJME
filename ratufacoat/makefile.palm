@@ -10,12 +10,14 @@
 FILES=sjmerc.c sjmercnm.c sjmercvm.c sys_palm.c
 
 squirreljme.prc:	squirreljme-palm.a
-			rm -vf *.grc
+			rm -vf *.grc *.bin
 			m68k-palmos-obj-res squirreljme-palm.a
-			build-prc -o $@ -t appl -c SjME -n "SquirrelJME" *.grc
+			pilrc palm.rcp
+			build-prc -o $@ -t appl -c SjME -n "SquirrelJME" \
+				*.grc *.bin
 
 squirreljme-palm.a:	$(FILES)
 			m68k-palmos-gcc -o $@ $^ $(CFLAGS) $(LIBS)
 
 clean:				
-			rm -f squirreljme-palm.a *.grc squirreljme.prc
+			rm -f squirreljme-palm.a *.grc *.bin squirreljme.prc
