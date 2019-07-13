@@ -9,6 +9,7 @@
 
 package dev.shadowtail.palmos;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -130,6 +131,31 @@ public final class PalmDatabaseBuilder
 	}
 	
 	/**
+	 * Returns the byte array representing the database.
+	 *
+	 * @return The byte array of the database.
+	 * @since 2019/07/13
+	 */
+	public final byte[] toByteArray()
+	{
+		// Just write to a stream
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// Write the database info
+			this.writeTo(baos);
+			
+			// Return the resulting array
+			return baos.toByteArray();
+		}
+		
+		// {@squirreljme.error BP01 Could not write the database.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BP01", e);
+		}
+	}
+	
+	/**
 	 * Writes the database to the output.
 	 *
 	 * @param __out The output stream.
@@ -137,7 +163,7 @@ public final class PalmDatabaseBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/13
 	 */
-	public final void write(OutputStream __out)
+	public final void writeTo(OutputStream __out)
 		throws IOException, NullPointerException
 	{
 		if (__out == null)
