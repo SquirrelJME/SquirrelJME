@@ -81,10 +81,6 @@ public final class PalmDatabaseBuilder
 	private int _version =
 		0;
 	
-	/** Unique ID seed. */
-	private int _uniqueid =
-		new Random(this._createtime).nextInt();
-	
 	/**
 	 * Initializes the database builder.
 	 *
@@ -250,19 +246,6 @@ public final class PalmDatabaseBuilder
 	}
 	
 	/**
-	 * Sets the unique database ID.
-	 *
-	 * @param __id The database ID.
-	 * @return {@code this}.
-	 * @since 2019/07/13
-	 */
-	public final PalmDatabaseBuilder setUniqueId(int __id)
-	{
-		this._uniqueid = __id;
-		return this;
-	}
-	
-	/**
 	 * Sets the version number.
 	 *
 	 * @param __v The version number.
@@ -370,7 +353,7 @@ public final class PalmDatabaseBuilder
 		dos.writeInt(PalmDatabaseBuilder.__fourToInt(this._creator));
 		
 		// Unique ID
-		dos.writeInt(this._uniqueid);
+		dos.writeInt(0);
 		
 		// Next record list (unused in files)
 		dos.writeInt(0);
@@ -397,7 +380,7 @@ public final class PalmDatabaseBuilder
 				dos.writeInt(PalmDatabaseBuilder.__fourToInt(pr.type));
 				
 				// ID
-				dos.writeInt(pr.id);
+				dos.writeShort(pr.id);
 				
 				// Offset
 				dos.writeInt(offset);
