@@ -126,10 +126,104 @@ public class SummerCoatROM
 			entryPoint();
 		
 		// Write SummerCoat ROM file
+		this.generate(__zip, new BuildParameters(boot, lstrs, mainbc, libs));
+	}
+	
+	/**
+	 * Generates the output files as needed.
+	 *
+	 * @param __zip The ZIP to write to.
+	 * @param __bp The build parameters.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/13
+	 */
+	protected void generate(ZipCompilerOutput __zip, BuildParameters __bp)
+		throws IOException, NullPointerException
+	{
+		if (__zip == null || __bp == null)
+			throw new NullPointerException("NARG");
+		
+		// Write SummerCoat ROM file
 		try (OutputStream out = __zip.output("squirreljme.sqc"))
 		{
-			// Minimize
-			PackMinimizer.minimize(out, boot, lstrs, mainbc, libs);
+			__bp.minimize(out);
+		}
+	}
+	
+	/**
+	 * This contains the build parameters for the minimizer.
+	 *
+	 * @since 2019/07/13
+	 */
+	public static final class BuildParameters
+	{
+		/** The boot library. */
+		public final String bootlib;
+		
+		/** Starting libraries. */
+		public final String[] startlibs;
+		
+		/** Main boot class. */
+		public final String mainbc;
+		
+		/** Libraries to use. */
+		public final VMClassLibrary[] libs;
+		
+		/**
+		 * Initializes the build parameters.
+		 *
+		 * @param __boot The boot library.
+		 * @param __lstrs Starting libraries.
+		 * @param __mainbc Main boot class.
+		 * @param __libs Class Library.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/07/13
+		 */
+		public BuildParameters(String __boot, String[] __lstrs,
+			String __mainbc, VMClassLibrary[] __libs)
+			throws NullPointerException
+		{
+			if (__boot == null || __lstrs == null || __mainbc == null ||
+				__libs == null)
+				throw new NullPointerException("NARG");
+			
+			this.bootlib = __boot;
+			this.startlibs = __lstrs;
+			this.mainbc = __mainbc;
+			this.libs = __libs;
+		}
+		
+		/**
+		 * Minimizes to the given output stream.
+		 *
+		 * @param __out The stream to write to.
+		 * @throws IOException On write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/07/13
+		 */
+		public final void minimize(OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__out == null)
+				throw new NullPointerException("NARG");
+			
+			PackMinimizer.minimize(__out, this.bootlib, this.startlibs,
+				this.mainbc, this.libs);
+		}
+		
+		/**
+		 * Minimizes to a byte array.
+		 *
+		 * @return The byte array of the minimized output.
+		 * @
+		 * @since 2019/07/13
+		 */
+		public final byte[] minimize()
+			throws IOException
+		{
+			return PackMinimizer.minimize(this.bootlib, this.startlibs,
+				this.mainbc, this.libs);
 		}
 	}
 }
