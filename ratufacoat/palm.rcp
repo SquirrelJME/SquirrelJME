@@ -1,0 +1,42 @@
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+// DESCRIPTION: Resource File for PalmOS
+
+// Application properties
+APPLICATION ID 1 "SjME"
+APPLICATIONICONNAME ID 100 "SquirrelJME"
+LAUNCHERCATEGORY "Utilities"
+
+// Update on newer versions of SquirrelJME!
+VERSION ID 1 "0.3.0"
+
+// Icons in the launcher
+ICONFAMILYEX
+BEGIN
+	BITMAP "palml1.ppm" BPP 1
+	BITMAP "palml2.ppm" BPP 2
+	BITMAP "palml2.ppm" BPP 4
+	BITMAP "palml8.ppm" BPP 8 TRANSPARENT 255 0 255
+	BITMAP "palmlh1.ppm" BPP 1 DENSITY 2
+	BITMAP "palmlh2.ppm" BPP 2 DENSITY 2
+	BITMAP "palmlh2.ppm" BPP 4 DENSITY 2
+	BITMAP "palmlh8.ppm" BPP 8 TRANSPARENT 255 0 255 DENSITY 2
+END
+
+SMALLICONFAMILYEX
+BEGIN
+	BITMAP "palms1.ppm" BPP 1
+	BITMAP "palms2.ppm" BPP 2
+	BITMAP "palms2.ppm" BPP 4
+	BITMAP "palms8.ppm" BPP 8 TRANSPARENT 255 0 255
+	BITMAP "palmsh1.ppm" BPP 1 DENSITY 2
+	BITMAP "palmsh2.ppm" BPP 2 DENSITY 2
+	BITMAP "palmsh2.ppm" BPP 4 DENSITY 2
+	BITMAP "palmsh8.ppm" BPP 8 TRANSPARENT 255 0 255 DENSITY 2
+END
+
