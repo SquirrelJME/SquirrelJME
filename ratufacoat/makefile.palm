@@ -14,7 +14,8 @@ squirreljme.prc:	squirreljme-palm.a
 			m68k-palmos-obj-res squirreljme-palm.a
 			pilrc palm.rcp
 			build-prc -o $@ -t appl -c SjME -n "SquirrelJME" \
-				--ok-to-install-newer --bundle *.grc *.bin
+				--ok-to-install-newer --backup --bundle \
+				*.grc *.bin
 
 squirreljme-palm.a:	$(FILES)
 			m68k-palmos-gcc -o $@ $^ $(CFLAGS) $(LIBS)
