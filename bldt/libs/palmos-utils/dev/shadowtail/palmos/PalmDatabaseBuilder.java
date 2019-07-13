@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -59,6 +60,30 @@ public final class PalmDatabaseBuilder
 	/** The name of the database. */
 	private String _name =
 		"Untitled";
+	
+	/** Creation time. */
+	private long _createtime =
+		System.currentTimeMillis();
+	
+	/** Modification time */
+	private long _modtime =
+		this._createtime;
+	
+	/** Backup time. */
+	private long _backuptime =
+		0;
+	
+	/** Modification number. */
+	private int _modcount =
+		0;
+	
+	/** The version. */
+	private int _version =
+		0;
+	
+	/** Unique ID seed. */
+	private int _uniqueid =
+		new Random(this._createtime).nextInt();
 	
 	/**
 	 * Initializes the database builder.
@@ -119,6 +144,32 @@ public final class PalmDatabaseBuilder
 	}
 	
 	/**
+	 * Sets the backup time.
+	 *
+	 * @param __jt Java milliseconds time.
+	 * @return {@code this}.
+	 * @since 2019/07/13
+	 */
+	public final PalmDatabaseBuilder setBackupTime(long __jt)
+	{
+		this._backuptime = __jt;
+		return this;
+	}
+	
+	/**
+	 * Sets the creation time.
+	 *
+	 * @param __jt Java milliseconds time.
+	 * @return {@code this}.
+	 * @since 2019/07/13
+	 */
+	public final PalmDatabaseBuilder setCreateTime(long __jt)
+	{
+		this._createtime = __jt;
+		return this;
+	}
+	
+	/**
 	 * Sets the creator of the database.
 	 *
 	 * @param __creat The creator to use.
@@ -133,6 +184,32 @@ public final class PalmDatabaseBuilder
 			throw new NullPointerException("NARG");
 		
 		this._creator = __creat;
+		return this;
+	}
+	
+	/**
+	 * Sets the modification count.
+	 *
+	 * @param __c The count to use.
+	 * @return {@code this}.
+	 * @since 2019/07/13
+	 */
+	public final PalmDatabaseBuilder setModificationCount(int __c)
+	{
+		this._modcount = __c;
+		return this;
+	}
+	
+	/**
+	 * Sets the modification time.
+	 *
+	 * @param __jt Java milliseconds time.
+	 * @return {@code this}.
+	 * @since 2019/07/13
+	 */
+	public final PalmDatabaseBuilder setModificationTime(long __jt)
+	{
+		this._modtime = __jt;
 		return this;
 	}
 	
@@ -169,6 +246,32 @@ public final class PalmDatabaseBuilder
 			throw new NullPointerException("NARG");
 		
 		this._type = __type;
+		return this;
+	}
+	
+	/**
+	 * Sets the unique database ID.
+	 *
+	 * @param __id The database ID.
+	 * @return {@code this}.
+	 * @since 2019/07/13
+	 */
+	public final PalmDatabaseBuilder setUniqueId(int __id)
+	{
+		this._uniqueid = __id;
+		return this;
+	}
+	
+	/**
+	 * Sets the version number.
+	 *
+	 * @param __v The version number.
+	 * @return {@code this}.
+	 * @since 2019/07/13
+	 */
+	public final PalmDatabaseBuilder setVersion(int __v)
+	{
+		this._version = __v;
 		return this;
 	}
 	
@@ -231,7 +334,8 @@ public final class PalmDatabaseBuilder
 		// Make sure the attribute flag is always correct because if it was
 		// specified it would make the database not valid to be handled
 		PalmDatabaseType dbtype = this.dbtype;
-		if (dbtype == PalmDatabaseType.RESOURCE)
+		boolean isrc;
+		if ((isrc = (dbtype == PalmDatabaseType.RESOURCE)))
 			attrs |= PalmDatabaseAttribute.RESOURCE_DATABASE.bit;
 		else
 			attrs &= ~PalmDatabaseAttribute.RESOURCE_DATABASE.bit;
@@ -239,7 +343,116 @@ public final class PalmDatabaseBuilder
 		// Write attributes
 		dos.writeShort(attrs);
 		
-		throw new todo.TODO();
+		// Write version
+		dos.writeShort(this._version);
+		
+		// Creation/Modification/Backup Time (In Mac OS epoch seconds)
+		dos.writeInt(
+			(int)((this._createtime + _EPOCH_DIFF_MILLISECONDS) / 1000L));
+		dos.writeInt(
+			(int)((this._modtime + _EPOCH_DIFF_MILLISECONDS) / 1000L));
+		dos.writeInt(
+			(int)((this._backuptime + _EPOCH_DIFF_MILLISECONDS) / 1000L));
+		
+		// Modification count
+		dos.writeInt(this._modcount);
+		
+		// Application Info
+		dos.writeInt(0);
+		
+		// Sorting info
+		dos.writeInt(0);
+		
+		// Type
+		dos.writeInt(PalmDatabaseBuilder.__fourToInt(this._type));
+		
+		// Creator
+		dos.writeInt(PalmDatabaseBuilder.__fourToInt(this._creator));
+		
+		// Unique ID
+		dos.writeInt(this._uniqueid);
+		
+		// Need to work with records now
+		List<PalmRecord> records = this._records;
+		int numrecords = records.size();
+		
+		// Write record count
+		dos.writeShort(numrecords);
+		
+		// Determine the base offset for entry data
+		int offset = 78 + ((isrc ? 10 : 8) * numrecords);
+		
+		// Write table data for records
+		for (int i = 0; i < numrecords; i++)
+		{
+			PalmRecord pr = records.get(i);
+			
+			// Resource entry
+			if (isrc)
+			{
+				// Type
+				dos.writeInt(PalmDatabaseBuilder.__fourToInt(pr.type));
+				
+				// ID
+				dos.writeInt(pr.id);
+				
+				// Offset
+				dos.writeInt(offset);
+			}
+			
+			// Database entry
+			else
+			{
+				// Offset
+				dos.writeInt(offset);
+				
+				// No attributes
+				dos.write(0);
+				
+				// Unique ID (padding)
+				dos.write(0);
+				dos.write(0);
+				dos.write(0);
+			}
+			
+			// Offset is increased by length
+			offset += pr.length;
+		}
+		
+		// Write all records
+		for (int i = 0; i < numrecords; i++)
+			dos.write(records.get(i)._data);
+	}
+	
+	/**
+	 * Converts a four string to an integer.
+	 *
+	 * @param __four The string to convert.
+	 * @return The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/13
+	 */
+	private static final int __fourToInt(String __four)
+		throws NullPointerException
+	{
+		if (__four == null)
+			throw new NullPointerException("NARG");
+		
+		// There must be at least four characters
+		String use = __four;
+		if (__four.length() < 4)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append(__four);
+			sb.setLength(4);
+			use = sb.toString();
+		}
+		
+		// Convert
+		return ((__four.charAt(0) & 0xFF) << 24) |
+			((__four.charAt(1) & 0xFF) << 16) |
+			((__four.charAt(2) & 0xFF) << 8) |
+			((__four.charAt(3) & 0xFF));
 	}
 }
 
