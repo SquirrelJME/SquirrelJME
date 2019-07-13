@@ -15,11 +15,10 @@
 #include "sjmerc.h"
 
 /** Default RAM size. */
-#if defined(SJME_IS_DOS)
-	#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(65536)
-#else
-	#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
-#endif
+#define SJME_DEFAULT_RAM_SIZE SJME_JINT_C(16777216)
+
+/** Minimum permitted RAM size. */
+#define SJME_MINIMUM_RAM_SIZE SJME_JINT_C(65536)
 
 /** Default size of configuration ROM. */
 #define SJME_DEFAULT_CONF_SIZE SJME_JINT_C(65536)
@@ -3043,8 +3042,21 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	if (options->ramsize <= 0)
 		options->ramsize = SJME_DEFAULT_RAM_SIZE;
 	
-	/* Allocate RAM. */
-	ram = sjme_malloc(options->ramsize);
+	/* Allocate RAM, or at least keep trying to. */
+	while (options->ramsize >= SJME_MINIMUM_RAM_SIZE)
+	{
+		/* Attempt to allocate the RAM. */
+		ram = sjme_malloc(options->ramsize);
+		
+		/* Ram allocated! So stop. */
+		if (ram != NULL)
+			break;
+		
+		/* Cut RAM allocation size down in half. */
+		options->ramsize /= 2;
+	}
+	
+	/* Failed to allocate the RAM. */
 	if (ram == NULL)
 	{
 		sjme_seterror(error, SJME_ERROR_NOMEMORY, options->ramsize);
