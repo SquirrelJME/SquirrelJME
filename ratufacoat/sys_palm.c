@@ -31,6 +31,9 @@ static UInt32 sjme_palm_hashidens;
 /** Palm OS Native functions. */
 static sjme_nativefuncs sjme_palm_nativefuncs;
 
+/** Frame-buffer information. */
+static sjme_framebuffer sjme_palm_fbinfo;
+
 /**
  * Shows an error on the screen.
  *
@@ -49,6 +52,144 @@ void sjme_palm_error(UInt16 aid, sjme_error err)
 	
 	/* Show alert. */
 	FrmCustomAlert(aid, sa, sb, "");
+}
+
+/** Flushes the frame buffer, if the pixel format is ancient. */
+void sjme_palm_fbinfo_flush(void)
+{
+}
+
+/** Returns a framebuffer structure. */
+sjme_framebuffer* sjme_palm_framebuffer(void)
+{
+	UInt32 val;
+	sjme_jint numpixels, bytedepth;
+	WinHandle drawingwindow;
+	BitmapType* winbmp;
+	
+	/* If pixels were already set, use the same structure. */
+	if (sjme_palm_fbinfo.pixels != NULL)
+		return &sjme_palm_fbinfo;
+	
+	/* Use newer PalmOS windowing code. */
+	if (sjme_palm_romversion >= SJME_PALM_OS35)
+	{
+		/* High-Density Screen Support. */
+		if (sjme_palm_hashidens)
+		{
+			/* Read screen width. */
+			WinScreenGetAttribute(winScreenWidth, &val);
+			sjme_palm_fbinfo.width = val;
+			
+			/* Read screen height. */
+			WinScreenGetAttribute(winScreenHeight, &val);
+			sjme_palm_fbinfo.height = val;
+			
+			/* Read pixel format. */
+			WinScreenGetAttribute(winScreenPixelFormat, &val);
+			switch (val)
+			{
+				case pixelFormat565:
+				case pixelFormat565LE:
+					bytedepth = 1;
+					sjme_palm_fbinfo.format =
+						SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED;
+					break;
+				
+				default:
+				case pixelFormatIndexed:
+				case pixelFormatIndexedLE:
+					bytedepth = 2;
+					sjme_palm_fbinfo.format =
+						SJME_PIXELFORMAT_FORMAT_SHORT_RGB565;
+					break;
+			}
+			
+			/* Scan-line length in bytes. */
+			WinScreenGetAttribute(winScreenRowBytes, &val);
+			sjme_palm_fbinfo.scanlenbytes = val;
+			
+			/* Determine pixel-based scan-line length. */
+			sjme_palm_fbinfo.scanlen =
+				sjme_palm_fbinfo.scanlenbytes / bytedepth;
+			
+			/* Get raw screen pixels. */
+			drawingwindow = WinGetDisplayWindow();
+			winbmp = WinGetBitmap(drawingwindow);
+			sjme_palm_fbinfo.pixels = BmpGetBits(winbmp);
+		}
+		
+		/* Palm OS 3.5 and up. */
+		else
+		{
+			/* Width. */
+			WinScreenMode(winScreenModeGet, &val, NULL, NULL, NULL);
+			sjme_palm_fbinfo.width = val;
+			
+			/* Height. */
+			WinScreenMode(winScreenModeGet, NULL, &val, NULL, NULL);
+			sjme_palm_fbinfo.height = val;
+			
+			/* Set scan line properties, always the same. */
+			sjme_palm_fbinfo.scanlen = sjme_palm_fbinfo.width;
+			
+			/* Depth. */
+			WinScreenMode(winScreenModeGet, NULL, NULL, &val, NULL);
+			switch (val)
+			{
+					/* Needs to be simulated. */
+				case 1:
+				case 2:
+				case 4:
+					sjme_palm_fbinfo.flush = sjme_palm_fbinfo_flush;
+					
+					/* Indexed color. */
+					sjme_palm_fbinfo.format =
+						SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED;
+					
+					/* Scan line bytes. */
+					sjme_palm_fbinfo.scanlenbytes =
+						sjme_palm_fbinfo.width;
+					
+					/* Allocate a virtual frame-buffer instead. */
+					sjme_palm_fbinfo.pixels =
+						MemPtrNew(sjme_palm_fbinfo.height *
+							sjme_palm_fbinfo.scanlenbytes);
+					break;
+				
+					/* Indexed/Real Color Mode. */
+				case 8:
+				case 16:
+					/* Which format? */
+					sjme_palm_fbinfo.format = (val == 8 ?
+						SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED :
+						SJME_PIXELFORMAT_FORMAT_SHORT_RGB565);
+					
+					/* Scan line bytes. */
+					sjme_palm_fbinfo.scanlenbytes =
+						sjme_palm_fbinfo.width * (val / 8);
+					
+					/* Setup drawing window. */
+					drawingwindow = WinGetDrawWindow();
+					winbmp = WinGetBitmap(drawingwindow);
+					sjme_palm_fbinfo.pixels = BmpGetBits(winbmp);
+					break;
+			}
+		}
+	}
+	
+	/* Ancient Palm OS. */
+	else
+	{
+		return NULL;
+	}
+	
+	/* Determine pixel count. */
+	sjme_palm_fbinfo.numpixels =
+		sjme_palm_fbinfo.width * sjme_palm_fbinfo.height;
+	
+	/* Return static framebuffer. */
+	return &sjme_palm_fbinfo;
 }
 
 /**
@@ -85,6 +226,7 @@ UInt32 sjme_palm_pilotmain(UInt16 cmd, void* cmdpbp, UInt16 launchflags)
 	
 	/* Setup native functions. */
 	MemSet(&sjme_palm_nativefuncs, sizeof(sjme_palm_nativefuncs), 0);
+	sjme_palm_nativefuncs.framebuffer = sjme_palm_framebuffer;
 	
 	/* Initialize the virtual machine. */
 	jvm = sjme_jvmnew(&options, &sjme_palm_nativefuncs, &jerr);

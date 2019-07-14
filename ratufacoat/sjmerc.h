@@ -324,6 +324,15 @@ typedef uint32_t sjme_juint;
 /** VMM Type: Java Integer. */
 #define SJME_VMMTYPE_JAVAINTEGER SJME_JINT_C(-5)
 
+/** Pixel format: Integer RGB888. */
+#define SJME_PIXELFORMAT_FORMAT_INTEGER_RGB888 SJME_JINT_C(0)
+
+/** Pixel format: Byte Indexed. */
+#define SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED SJME_JINT_C(1)
+
+/** Pixel format: Short RGB565. */
+#define SJME_PIXELFORMAT_FORMAT_SHORT_RGB565 SJME_JINT_C(2)
+
 /** This represents an error. */
 typedef struct sjme_error
 {
@@ -464,8 +473,17 @@ typedef struct sjme_framebuffer
 	/** Scanline length. */
 	sjme_jint scanlen;
 	
+	/** Scanline length in bytes. */
+	sjme_jint scanlenbytes;
+	
 	/** The number of available pixels. */
 	sjme_jint numpixels;
+	
+	/** The pixel format used. */
+	sjme_jint format;
+	
+	/** Flush the framebuffer. */
+	void (*flush)(void);
 } sjme_framebuffer;
 
 /**
