@@ -452,8 +452,17 @@
 /** Returns the height of the framebuffer. */
 #define SJME_FRAMEBUFFER_PROPERTY_HEIGHT SJME_JINT_C(3)
 
-/** Returns the scanline length. */
+/** Returns the scanline length in pixels. */
 #define SJME_FRAMEBUFFER_PROPERTY_SCANLEN SJME_JINT_C(4)
+
+/** Flushes the framebuffer. */
+#define SJME_FRAMEBUFFER_PROPERTY_FLUSH SJME_JINT_C(5)
+
+/** Pixel format of the screen. */
+#define SJME_FRAMEBUFFER_PROPERTY_FORMAT SJME_JINT_C(6)
+
+/** Returns the scanline length in bytes. */
+#define SJME_FRAMEBUFFER_PROPERTY_SCANLENBYTES SJME_JINT_C(7)
 
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[32] =
@@ -1179,6 +1188,10 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 					jvm->cony--;
 				}
 			}
+			
+			/* Always flush in debug mode to force screen updates. */
+			if (jvm->fbinfo->flush != NULL)
+				jvm->fbinfo->flush();
 		}
 		
 		/* Forward to pipe? */
@@ -1401,6 +1414,23 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_FRAMEBUFFER_PROPERTY_SCANLEN:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					return jvm->fbinfo->scanlen;
+					
+					/* Flush the framebuffer. */
+				case SJME_FRAMEBUFFER_PROPERTY_FLUSH:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					if (jvm->fbinfo->flush != NULL)
+						jvm->fbinfo->flush();
+					return 0;
+					
+					/* Frame-buffer format. */
+				case SJME_FRAMEBUFFER_PROPERTY_FORMAT:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return jvm->fbinfo->format;
+					
+					/* Scanline length in bytes. */
+				case SJME_FRAMEBUFFER_PROPERTY_SCANLENBYTES:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return jvm->fbinfo->scanlenbytes;
 				
 					/* Unknown property, but there is a framebuffer. */
 				default:
@@ -3091,6 +3121,28 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	rv->fbinfo = fbinfo;
 	if (fbinfo != NULL)
 	{
+		/* If scan-line is not specified, default to width. */
+		if (fbinfo->scanlen == 0)
+			fbinfo->scanlen = fbinfo->width;
+		
+		/* If scan-line bytes were not set, set based on the format. */
+		if (fbinfo->scanlenbytes == 0)
+			switch (fbinfo->format)
+			{
+				case SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED:
+					fbinfo->scanlenbytes = fbinfo->scanlen;
+					break;
+				
+				case SJME_PIXELFORMAT_FORMAT_SHORT_RGB565:
+					fbinfo->scanlenbytes = fbinfo->scanlen * 2;
+					break;
+				
+				default:
+				case SJME_PIXELFORMAT_FORMAT_INTEGER_RGB888:
+					fbinfo->scanlenbytes = fbinfo->scanlen * 4;
+					break;
+			}
+		
 		/* Console positions and size. */
 		rv->conx = 0;
 		rv->cony = 0;
