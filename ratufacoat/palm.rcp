@@ -15,6 +15,14 @@ LAUNCHERCATEGORY "Utilities"
 // Update on newer versions of SquirrelJME!
 VERSION ID 1 "0.3.0"
 
+// Failed to initialize the JVM
+ALERT ID 1000 DEFAULTBUTTON 0 ERROR
+BEGIN
+	TITLE "JVM Initialization"
+	MESSAGE "Could not initialize the JVM: ^1 ^2."
+	BUTTONS "Exit"
+END
+
 // Icons in the launcher
 ICONFAMILYEX
 BEGIN
