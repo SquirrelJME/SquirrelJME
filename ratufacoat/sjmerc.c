@@ -1066,7 +1066,7 @@ sjme_jint sjme_opdecodejmp(sjme_vmem* vmem, sjme_vmemptr* ptr,
 void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	sjme_jbyte ch, sjme_error* error)
 {
-	sjme_jint r, c, cv, i, fontw, fonth;
+	sjme_jint r, c, cv, i, fontw, fonth, xform;
 	sjme_vmemptr sp;
 	sjme_jbyte* mp;
 	sjme_jbyte bits;
@@ -1092,6 +1092,23 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 		ch = 0;
 	mp = &sjme_font.charbmp[((sjme_jint)ch) * fonth * sjme_font.bytesperscan];
 	
+	/* Drawing format for the data value? */
+	switch (jvm->fbinfo->bytesperpixel)
+	{
+		case 1:
+			xform = SJME_VMMTYPE_BYTE;
+			break;
+			
+		case 2:
+			xform = SJME_VMMTYPE_SHORT;
+			break;
+		
+		default:
+		case 4:
+			xform = SJME_VMMTYPE_INTEGER;
+			break;
+	}
+	
 	/* Draw rows. */
 	for (r = 0; r < fonth; r++)
 	{
@@ -1108,7 +1125,7 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 			
 			/* Draw all of them. */
 			for (i = 0; i < 8 && c < fontw; i++, c++)
-				sjme_vmmwritep(jvm->vmem, SJME_VMMTYPE_INTEGER, &sp,
+				sjme_vmmwritep(jvm->vmem, xform, &sp,
 					(((bits & sjme_drawcharbitmask[i]) != 0) ?
 					SJME_JINT_C(0xFFFFFF) : 0), error);
 		}
