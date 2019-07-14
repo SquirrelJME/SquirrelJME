@@ -109,8 +109,8 @@ UInt32 sjme_palm_pilotmain(UInt16 cmd, void* cmdpbp, UInt16 launchflags)
 		{
 		}
 		
-		/* Just execute the VM and disregard nay cycles that remain. */
-		sjme_jvmexec(jvm, &jerr, SJME_JINT_C(1048576));
+		/* Just execute the VM and disregard any cycles that remain. */
+		sjme_jvmexec(jvm, &jerr, SJME_JINT_C(65536));
 		
 		/* The JVM hit some kind of error? */
 		if (jerr.code != SJME_ERROR_NONE)
