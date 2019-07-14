@@ -23,6 +23,14 @@ BEGIN
 	BUTTONS "Exit"
 END
 
+// Failed to destroy the JVM
+ALERT ID 1002 DEFAULTBUTTON 0 ERROR
+BEGIN
+	TITLE "JVM Destruction Error"
+	MESSAGE "Could not destroy the JVM: ^1 ^2."
+	BUTTONS "Exit"
+END
+
 // Icons in the launcher
 ICONFAMILYEX
 BEGIN
