@@ -476,6 +476,9 @@ typedef struct sjme_framebuffer
 	/** Scanline length in bytes. */
 	sjme_jint scanlenbytes;
 	
+	/** The number of bytes per pixel. */
+	sjme_jint bytesperpixel;
+	
 	/** The number of available pixels. */
 	sjme_jint numpixels;
 	

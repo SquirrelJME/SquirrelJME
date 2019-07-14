@@ -141,6 +141,7 @@ sjme_framebuffer* sjme_palm_framebuffer(void)
 				case 1:
 				case 2:
 				case 4:
+					/* Simulate 8-bit indexed instead, manual flush. */
 					sjme_palm_fbinfo.flush = sjme_palm_fbinfo_flush;
 					
 					/* Indexed color. */

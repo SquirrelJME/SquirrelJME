@@ -44,6 +44,10 @@ public interface FramebufferProperty
 	public static final byte SCANLEN_BYTES =
 		7;
 	
+	/** Returns the number of bytes per pixel. */
+	public static final byte BYTES_PER_PIXEL =
+		8;
+	
 	/** Screen is RGB 32-bit. */
 	public static final byte FORMAT_INTEGER_RGB888 =
 		0;
