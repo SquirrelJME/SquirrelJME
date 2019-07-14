@@ -18,7 +18,7 @@ squirreljme.prc:	squirreljme-palm.a
 				*.grc *.bin
 
 squirreljme-palm.a:	$(FILES)
-			m68k-palmos-gcc -o $@ $^ $(CFLAGS) $(LIBS)
+			m68k-palmos-gcc -o $@ $^ $(CFLAGS) $(LIBS) -lPalmOSGlue
 
 clean:				
 			rm -f squirreljme-palm.a *.grc *.bin squirreljme.prc
