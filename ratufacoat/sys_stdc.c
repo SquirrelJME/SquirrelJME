@@ -275,6 +275,7 @@ sjme_framebuffer* sjme_stdc_framebuffer(void)
 	rv->width = SJME_STDC_WIDTH;
 	rv->height = SJME_STDC_HEIGHT;
 	rv->scanlen = SJME_STDC_WIDTH;
+	rv->format = SJME_PIXELFORMAT_INTEGER_RGB888;
 	rv->numpixels = SJME_STDC_VIDEORAMSIZE;
 	
 	return rv;

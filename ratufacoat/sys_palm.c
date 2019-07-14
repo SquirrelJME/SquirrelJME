@@ -16,6 +16,7 @@
 #include <SystemMgr.h>
 #include <StringMgr.h>
 #include <Form.h>
+#include <SoundMgr.h>
 
 #include "sjmerc.h"
 
@@ -57,15 +58,105 @@ void sjme_palm_error(UInt16 aid, sjme_error err)
 /** Flushes the frame buffer, if the pixel format is ancient. */
 void sjme_palm_fbinfo_flush(void)
 {
+	WinHandle drawingwindow;
+	BitmapType* winbmp;
+	uint8_t* screen;
+	uint8_t* input;
+	sjme_jint i, numpixels, v;
+	UInt32 depth;
+	sjme_error jerr;
+	
+	/* If there are no pixels, then ignore. */
+	if (sjme_palm_fbinfo.pixels == NULL)
+		return;
+	
+	/* Input pixels. */
+	input = (uint8_t*)sjme_palm_fbinfo.pixels;
+	
+	/* Raw screen pixels on 3.5 and up. */
+	if (sjme_palm_romversion >= SJME_PALM_OS35)
+	{
+		/* Get raw screen pixels. */
+		drawingwindow = WinGetDisplayWindow();
+		winbmp = WinGetBitmap(drawingwindow);
+		screen = (uint8_t*)BmpGetBits(winbmp);
+		
+		/* Read the bit depth. */
+		WinScreenMode(winScreenModeGet, NULL, NULL, &depth, NULL);
+	}
+	
+	/* Old Palm PDAs. */
+	else
+	{
+		return;
+	}
+	
+	/* The number of pixels to copy. */
+	numpixels = sjme_palm_fbinfo.numpixels;
+	
+	/* Depends on the depth. */
+	switch (depth)
+	{
+			/* Monochrome. */
+		case 1:
+			for (i = 0; i < numpixels; i += 8)
+			{
+				v = 0;
+				if (*input++ != 0)
+					v |= 0x01;
+				if (*input++ != 0)
+					v |= 0x02;
+				if (*input++ != 0)
+					v |= 0x04;
+				if (*input++ != 0)
+					v |= 0x08;
+				if (*input++ != 0)
+					v |= 0x10;
+				if (*input++ != 0)
+					v |= 0x20;
+				if (*input++ != 0)
+					v |= 0x40;
+				if (*input++ != 0)
+					v |= 0x80;
+				
+				*screen++ = v;
+			}
+			break;
+		
+			/* Four shades of gray. */
+		case 2:
+			for (i = 0; i < numpixels; i += 4)
+			{
+				v = ((*input++) & 0x03);
+				v |= ((*input++) & 0x03) << 2;
+				v |= ((*input++) & 0x03) << 4;
+				v |= ((*input++) & 0x03) << 6;
+				
+				*screen++ = v;
+			}
+			break;
+		
+			/* Sixteen shades of gray. */
+		case 4:
+			for (i = 0; i < numpixels; i += 2)
+			{
+				v = ((*input++) & 0x0F);
+				v |= ((*input++) & 0x0F) << 4;
+				
+				*screen++ = v;
+			}
+			break;
+	}
 }
 
 /** Returns a framebuffer structure. */
 sjme_framebuffer* sjme_palm_framebuffer(void)
 {
-	UInt32 val;
+	UInt32 val, i;
 	sjme_jint numpixels, bytedepth;
 	WinHandle drawingwindow;
 	BitmapType* winbmp;
+	sjme_error jerr;
 	
 	/* If pixels were already set, use the same structure. */
 	if (sjme_palm_fbinfo.pixels != NULL)
@@ -93,7 +184,7 @@ sjme_framebuffer* sjme_palm_framebuffer(void)
 				case pixelFormatIndexedLE:
 					bytedepth = 1;
 					sjme_palm_fbinfo.format =
-						SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED;
+						SJME_PIXELFORMAT_BYTE_INDEXED;
 					break;
 				
 				default:
@@ -101,7 +192,7 @@ sjme_framebuffer* sjme_palm_framebuffer(void)
 				case pixelFormat565LE:
 					bytedepth = 2;
 					sjme_palm_fbinfo.format =
-						SJME_PIXELFORMAT_FORMAT_SHORT_RGB565;
+						SJME_PIXELFORMAT_SHORT_RGB565;
 					break;
 			}
 			
@@ -133,49 +224,39 @@ sjme_framebuffer* sjme_palm_framebuffer(void)
 			/* Set scan line properties, always the same. */
 			sjme_palm_fbinfo.scanlen = sjme_palm_fbinfo.width;
 			
-			/* Depth. */
+			/* Handle Depth. */
 			WinScreenMode(winScreenModeGet, NULL, NULL, &val, NULL);
 			switch (val)
 			{
-					/* Needs to be simulated. */
 				case 1:
+					sjme_palm_fbinfo.format = SJME_PIXELFORMAT_PACKED_ONE;
+					break;
+					
 				case 2:
+					sjme_palm_fbinfo.format = SJME_PIXELFORMAT_PACKED_TWO;
+					break;
+					
 				case 4:
-					/* Simulate 8-bit indexed instead, manual flush. */
-					sjme_palm_fbinfo.flush = sjme_palm_fbinfo_flush;
-					
-					/* Indexed color. */
-					sjme_palm_fbinfo.format =
-						SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED;
-					
-					/* Scan line bytes. */
-					sjme_palm_fbinfo.scanlenbytes =
-						sjme_palm_fbinfo.width;
-					
-					/* Allocate a virtual frame-buffer instead. */
-					sjme_palm_fbinfo.pixels =
-						MemPtrNew(sjme_palm_fbinfo.height *
-							sjme_palm_fbinfo.scanlenbytes);
+					sjme_palm_fbinfo.format = SJME_PIXELFORMAT_PACKED_FOUR;
 					break;
 				
-					/* Indexed/Real Color Mode. */
 				case 8:
+					sjme_palm_fbinfo.format = SJME_PIXELFORMAT_BYTE_INDEXED;
+					break;
+				
 				case 16:
-					/* Which format? */
-					sjme_palm_fbinfo.format = (val == 8 ?
-						SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED :
-						SJME_PIXELFORMAT_FORMAT_SHORT_RGB565);
-					
-					/* Scan line bytes. */
-					sjme_palm_fbinfo.scanlenbytes =
-						sjme_palm_fbinfo.width * (val / 8);
-					
-					/* Setup drawing window. */
-					drawingwindow = WinGetDrawWindow();
-					winbmp = WinGetBitmap(drawingwindow);
-					sjme_palm_fbinfo.pixels = BmpGetBits(winbmp);
+					sjme_palm_fbinfo.format = SJME_PIXELFORMAT_SHORT_RGB565;
 					break;
 			}
+			
+			/* Scan line bytes. */
+			sjme_palm_fbinfo.scanlenbytes =
+				(sjme_palm_fbinfo.scanlen * val) / 8;
+			
+			/* Setup drawing window. */
+			drawingwindow = WinGetDisplayWindow();
+			winbmp = WinGetBitmap(drawingwindow);
+			sjme_palm_fbinfo.pixels = BmpGetBits(winbmp);
 		}
 	}
 	
@@ -187,7 +268,7 @@ sjme_framebuffer* sjme_palm_framebuffer(void)
 	
 	/* Determine pixel count. */
 	sjme_palm_fbinfo.numpixels =
-		sjme_palm_fbinfo.width * sjme_palm_fbinfo.height;
+		sjme_palm_fbinfo.scanlen * sjme_palm_fbinfo.height;
 	
 	/* Return static framebuffer. */
 	return &sjme_palm_fbinfo;
@@ -224,6 +305,7 @@ UInt32 sjme_palm_pilotmain(UInt16 cmd, void* cmdpbp, UInt16 launchflags)
 		
 	/* Setup options. */
 	MemSet(&options, sizeof(options), 0);
+	options.ramsize = SJME_JINT_C(4194304);
 	
 	/* Setup native functions. */
 	MemSet(&sjme_palm_nativefuncs, sizeof(sjme_palm_nativefuncs), 0);

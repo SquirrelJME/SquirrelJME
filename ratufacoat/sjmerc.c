@@ -467,6 +467,12 @@
 /** Returns the number of bytes per pixel. */
 #define SJME_FRAMEBUFFER_PROPERTY_BYTES_PER_PIXEL SJME_JINT_C(8)
 
+/** Number of pixels in the display. */
+#define SJME_FRAMEBUFFER_PROPERTY_NUM_PIXELS SJME_JINT_C(9)
+
+/** Number of bits per pixel. */
+#define SJME_FRAMEBUFFER_PROPERTY_BITS_PER_PIXEL SJME_JINT_C(10)
+
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[32] =
 {
@@ -1093,27 +1099,30 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	mp = &sjme_font.charbmp[((sjme_jint)ch) * fonth * sjme_font.bytesperscan];
 	
 	/* Drawing format for the data value? */
-	switch (jvm->fbinfo->bytesperpixel)
+	switch (jvm->fbinfo->bitsperpixel)
 	{
-		case 1:
+		case 8:
 			xform = SJME_VMMTYPE_BYTE;
 			break;
 			
-		case 2:
+		case 16:
 			xform = SJME_VMMTYPE_SHORT;
 			break;
 		
-		default:
-		case 4:
+		case 32:
 			xform = SJME_VMMTYPE_INTEGER;
 			break;
+			
+		default:
+			return;
 	}
 	
 	/* Draw rows. */
 	for (r = 0; r < fonth; r++)
 	{
 		/* Determine screen position. */
-		sp = jvm->framebuffer->fakeptr + (x * jvm->fbinfo->bytesperpixel) +
+		sp = jvm->framebuffer->fakeptr +
+			((x * jvm->fbinfo->bitsperpixel) / 8) +
 			((y + r) * (jvm->fbinfo->scanlenbytes));
 		
 		/* Draw all pixel scans. */
@@ -1453,7 +1462,17 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* Bytes per pixel. */
 				case SJME_FRAMEBUFFER_PROPERTY_BYTES_PER_PIXEL:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->bytesperpixel;
+					return jvm->fbinfo->bitsperpixel / 8;
+					
+					/* The number of pixels. */
+				case SJME_FRAMEBUFFER_PROPERTY_NUM_PIXELS:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return jvm->fbinfo->numpixels;
+					
+					/* Bits per pixels. */
+				case SJME_FRAMEBUFFER_PROPERTY_BITS_PER_PIXEL:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return jvm->fbinfo->bitsperpixel;
 				
 					/* Unknown property, but there is a framebuffer. */
 				default:
@@ -2422,6 +2441,10 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 	sjme_console_pipewrite(jvm, po, &b, 0, 1, error);
 	b = 10;
 	sjme_console_pipewrite(jvm, po, &b, 0, 1, error);
+	
+	/* Always flush the screen on error. */
+	if (jvm->fbinfo->flush != NULL)
+		jvm->fbinfo->flush();
 }
 
 /** Executes code running within the JVM. */
@@ -3148,27 +3171,44 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		if (fbinfo->scanlen == 0)
 			fbinfo->scanlen = fbinfo->width;
 		
+		/* Number of available pixels. */
+		if (fbinfo->numpixels == 0)
+			fbinfo->numpixels = fbinfo->scanlen * fbinfo->height;
+		
 		/* Bytes per pixel must be specified. */
-		if (fbinfo->bytesperpixel == 0)
+		if (fbinfo->bitsperpixel == 0)
 			switch (fbinfo->format)
 			{
-				case SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED:
-					fbinfo->bytesperpixel = 1;
+				case SJME_PIXELFORMAT_PACKED_ONE:
+					fbinfo->bitsperpixel = 1;
 					break;
 				
-				case SJME_PIXELFORMAT_FORMAT_SHORT_RGB565:
-					fbinfo->bytesperpixel = 2;
+				case SJME_PIXELFORMAT_PACKED_TWO:
+					fbinfo->bitsperpixel = 2;
+					break;
+				
+				case SJME_PIXELFORMAT_PACKED_FOUR:
+					fbinfo->bitsperpixel = 4;
+					break;
+				
+				case SJME_PIXELFORMAT_BYTE_INDEXED:
+					fbinfo->bitsperpixel = 8;
+					break;
+				
+				case SJME_PIXELFORMAT_SHORT_RGB565:
+					fbinfo->bitsperpixel = 16;
 					break;
 				
 				default:
-				case SJME_PIXELFORMAT_FORMAT_INTEGER_RGB888:
-					fbinfo->bytesperpixel = 4;
+				case SJME_PIXELFORMAT_INTEGER_RGB888:
+					fbinfo->bitsperpixel = 32;
 					break;
 			}
 		
 		/* Scan line in bytes is based on the bytes per pixel. */
 		if (fbinfo->scanlenbytes == 0)
-			fbinfo->scanlenbytes = fbinfo->scanlen * fbinfo->bytesperpixel;
+			fbinfo->scanlenbytes =
+				(fbinfo->scanlen * fbinfo->bitsperpixel) / 8;
 		
 		/* Console positions and size. */
 		rv->conx = 0;
@@ -3181,7 +3221,7 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	if (fbinfo != NULL)
 	{
 		rv->framebuffer = sjme_vmmmap(vmem, 0, fbinfo->pixels,
-			fbinfo->numpixels * SJME_JINT_C(4), error);
+			(fbinfo->numpixels * fbinfo->bitsperpixel) / 8, error);
 		if (rv->framebuffer == NULL)
 		{
 			sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
