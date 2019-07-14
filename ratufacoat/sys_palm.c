@@ -89,16 +89,16 @@ sjme_framebuffer* sjme_palm_framebuffer(void)
 			WinScreenGetAttribute(winScreenPixelFormat, &val);
 			switch (val)
 			{
-				case pixelFormat565:
-				case pixelFormat565LE:
+				case pixelFormatIndexed:
+				case pixelFormatIndexedLE:
 					bytedepth = 1;
 					sjme_palm_fbinfo.format =
 						SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED;
 					break;
 				
 				default:
-				case pixelFormatIndexed:
-				case pixelFormatIndexedLE:
+				case pixelFormat565:
+				case pixelFormat565LE:
 					bytedepth = 2;
 					sjme_palm_fbinfo.format =
 						SJME_PIXELFORMAT_FORMAT_SHORT_RGB565;
