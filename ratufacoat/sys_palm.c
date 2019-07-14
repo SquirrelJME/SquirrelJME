@@ -66,6 +66,7 @@ UInt32 sjme_palm_pilotmain(UInt16 cmd, void* cmdpbp, UInt16 launchflags)
 	Err perr;
 	UInt32 v;
 	sjme_error jerr;
+	EventType event;
 	
 	/* Get the ROM version, if that fails then use zero! */
 	perr = FtrGet(sysFtrCreator, sysFtrNumROMVersion, &sjme_palm_romversion); 
@@ -96,13 +97,46 @@ UInt32 sjme_palm_pilotmain(UInt16 cmd, void* cmdpbp, UInt16 launchflags)
 		return sysErrNotInitialized;
 	}
 	
+	/* Execute until termination. */
+	perr = errNone;
+	for (;;)
+	{
+		/* Poll events, quickly return to not block and burn CPU. */
+		EvtGetEvent(&event, 0);
+		
+		/* Have the system handle events, then handle if it is not handled. */
+		if (!SysHandleEvent(&event))
+		{
+		}
+		
+		/* Just execute the VM and disregard nay cycles that remain. */
+		sjme_jvmexec(jvm, &jerr, SJME_JINT_C(1048576));
+		
+		/* The JVM hit some kind of error? */
+		if (jerr.code != SJME_ERROR_NONE)
+		{
+			/* Normal JVM exit, not considered a true error. */
+			if (jerr.code == SJME_ERROR_JVMEXIT_SUV_OKAY)
+				break;
+			
+			/* Show error. */
+			sjme_palm_error(1001, jerr);
+			
+			/* Stop loop always. */
+			break;
+		}
+		
+		/* Keep going! */
+		continue;
+	}
+	
 	/* Destroy the JVM now. */
 	sjme_jvmdestroy(jvm, &jerr);
 	if (jerr.code != SJME_ERROR_NONE)
 		sjme_palm_error(1002, jerr);
 	
 	/* Is Okay. */
-	return errNone;
+	return perr;
 }
 
 /**

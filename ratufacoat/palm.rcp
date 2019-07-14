@@ -23,6 +23,14 @@ BEGIN
 	BUTTONS "Exit"
 END
 
+// Failed to execute the JVM
+ALERT ID 1001 DEFAULTBUTTON 0 ERROR
+BEGIN
+	TITLE "JVM Execution Error"
+	MESSAGE "Could not execute the JVM: ^1 ^2."
+	BUTTONS "Exit"
+END
+
 // Failed to destroy the JVM
 ALERT ID 1002 DEFAULTBUTTON 0 ERROR
 BEGIN
