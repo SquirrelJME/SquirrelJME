@@ -18,7 +18,7 @@ VERSION ID 1 "0.3.0"
 // Failed to initialize the JVM
 ALERT ID 1000 DEFAULTBUTTON 0 ERROR
 BEGIN
-	TITLE "JVM Initialization"
+	TITLE "JVM Initialization Error"
 	MESSAGE "Could not initialize the JVM: ^1 ^2."
 	BUTTONS "Exit"
 END
