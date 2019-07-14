@@ -462,7 +462,10 @@
 #define SJME_FRAMEBUFFER_PROPERTY_FORMAT SJME_JINT_C(6)
 
 /** Returns the scanline length in bytes. */
-#define SJME_FRAMEBUFFER_PROPERTY_SCANLENBYTES SJME_JINT_C(7)
+#define SJME_FRAMEBUFFER_PROPERTY_SCANLEN_BYTES SJME_JINT_C(7)
+
+/** Returns the number of bytes per pixel. */
+#define SJME_FRAMEBUFFER_PROPERTY_BYTES_PER_PIXEL SJME_JINT_C(8)
 
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[32] =
@@ -1093,8 +1096,8 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	for (r = 0; r < fonth; r++)
 	{
 		/* Determine screen position. */
-		sp = jvm->framebuffer->fakeptr + (x * SJME_JINT_C(4)) +
-			((y + r) * (jvm->fbinfo->scanlen * SJME_JINT_C(4)));
+		sp = jvm->framebuffer->fakeptr + (x * jvm->fbinfo->bytesperpixel) +
+			((y + r) * (jvm->fbinfo->scanlenbytes));
 		
 		/* Draw all pixel scans. */
 		c = 0;
@@ -1171,18 +1174,16 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels, 0),
 						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
 							sjme_font.pixelheight *
-							(jvm->fbinfo->scanlen * SJME_JINT_C(4))),
+							(jvm->fbinfo->scanlenbytes)),
 						(jvm->fbinfo->height - sjme_font.pixelheight) *
-							(jvm->fbinfo->scanlen * SJME_JINT_C(4)));
+							(jvm->fbinfo->scanlenbytes));
 					
 					/* Wipe bytes at the bottom. */
 					memset(
 						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
 							(jvm->fbinfo->height - sjme_font.pixelheight) *
-								(jvm->fbinfo->scanlen * SJME_JINT_C(4))),
-						0,
-						sjme_font.pixelheight * (jvm->fbinfo->scanlen *
-							SJME_JINT_C(4)));
+								(jvm->fbinfo->scanlenbytes)), 0,
+						sjme_font.pixelheight * (jvm->fbinfo->scanlenbytes));
 					
 					/* Move the cursor up one line. */
 					jvm->cony--;
@@ -1428,9 +1429,14 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					return jvm->fbinfo->format;
 					
 					/* Scanline length in bytes. */
-				case SJME_FRAMEBUFFER_PROPERTY_SCANLENBYTES:
+				case SJME_FRAMEBUFFER_PROPERTY_SCANLEN_BYTES:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					return jvm->fbinfo->scanlenbytes;
+					
+					/* Bytes per pixel. */
+				case SJME_FRAMEBUFFER_PROPERTY_BYTES_PER_PIXEL:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return jvm->fbinfo->bytesperpixel;
 				
 					/* Unknown property, but there is a framebuffer. */
 				default:
@@ -3121,27 +3127,31 @@ sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	rv->fbinfo = fbinfo;
 	if (fbinfo != NULL)
 	{
-		/* If scan-line is not specified, default to width. */
+		/* If scan-line is not specified, default to the display width. */
 		if (fbinfo->scanlen == 0)
 			fbinfo->scanlen = fbinfo->width;
 		
-		/* If scan-line bytes were not set, set based on the format. */
-		if (fbinfo->scanlenbytes == 0)
+		/* Bytes per pixel must be specified. */
+		if (fbinfo->bytesperpixel == 0)
 			switch (fbinfo->format)
 			{
 				case SJME_PIXELFORMAT_FORMAT_BYTE_INDEXED:
-					fbinfo->scanlenbytes = fbinfo->scanlen;
+					fbinfo->bytesperpixel = 1;
 					break;
 				
 				case SJME_PIXELFORMAT_FORMAT_SHORT_RGB565:
-					fbinfo->scanlenbytes = fbinfo->scanlen * 2;
+					fbinfo->bytesperpixel = 2;
 					break;
 				
 				default:
 				case SJME_PIXELFORMAT_FORMAT_INTEGER_RGB888:
-					fbinfo->scanlenbytes = fbinfo->scanlen * 4;
+					fbinfo->bytesperpixel = 4;
 					break;
 			}
+		
+		/* Scan line in bytes is based on the bytes per pixel. */
+		if (fbinfo->scanlenbytes == 0)
+			fbinfo->scanlenbytes = fbinfo->scanlen * fbinfo->bytesperpixel;
 		
 		/* Console positions and size. */
 		rv->conx = 0;
