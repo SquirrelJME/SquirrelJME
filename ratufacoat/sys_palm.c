@@ -20,7 +20,7 @@
 #include "sjmerc.h"
 
 /** Palm OS 3.5 marker. */
-#define SJME_PALM_OS35 UINT32_C(0x03503000)
+#define SJME_PALM_OS35 sysMakeROMVersion(3, 5, 0, sysROMStageRelease, 0)
 
 /** The current Palm OS ROM version. */
 static UInt32 sjme_palm_romversion;
