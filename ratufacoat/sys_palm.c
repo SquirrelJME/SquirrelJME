@@ -96,6 +96,12 @@ UInt32 sjme_palm_pilotmain(UInt16 cmd, void* cmdpbp, UInt16 launchflags)
 		return sysErrNotInitialized;
 	}
 	
+	/* Destroy the JVM now. */
+	sjme_jvmdestroy(jvm, &jerr);
+	if (jerr.code != SJME_ERROR_NONE)
+		sjme_palm_error(1002, jerr);
+	
+	/* Is Okay. */
 	return errNone;
 }
 
