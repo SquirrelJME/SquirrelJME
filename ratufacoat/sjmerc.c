@@ -474,7 +474,7 @@
 #define SJME_FRAMEBUFFER_PROPERTY_BITS_PER_PIXEL SJME_JINT_C(10)
 
 /** Upper shift value mask, since shifting off the type is undefined. */
-static sjme_jint sjme_sh_umask[32] =
+static sjme_jint sjme_sh_umask[33] =
 {
 	SJME_JINT_C(0xFFFFFFFF),
 	SJME_JINT_C(0xFFFFFFFE),
@@ -507,11 +507,12 @@ static sjme_jint sjme_sh_umask[32] =
 	SJME_JINT_C(0xF0000000),
 	SJME_JINT_C(0xE0000000),
 	SJME_JINT_C(0xC0000000),
-	SJME_JINT_C(0x80000000)
+	SJME_JINT_C(0x80000000),
+	SJME_JINT_C(0x00000000)
 };
 
 /** Lower shift value mask, since shifting off the type is undefined. */
-static sjme_jint sjme_sh_lmask[32] =
+static sjme_jint sjme_sh_lmask[33] =
 {
 	SJME_JINT_C(0xFFFFFFFF),
 	SJME_JINT_C(0x7FFFFFFF),
@@ -544,7 +545,8 @@ static sjme_jint sjme_sh_lmask[32] =
 	SJME_JINT_C(0x0000000F),
 	SJME_JINT_C(0x00000007),
 	SJME_JINT_C(0x00000003),
-	SJME_JINT_C(0x00000001)
+	SJME_JINT_C(0x00000001),
+	SJME_JINT_C(0x00000000)
 };
 
 /** Bit mask for font drawing. */
@@ -1076,6 +1078,7 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	sjme_vmemptr sp;
 	sjme_jbyte* mp;
 	sjme_jbyte bits;
+	sjme_jint bpp, pq, at, mask;
 	
 	/* Check. */
 	if (jvm == NULL)
@@ -1099,22 +1102,26 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	mp = &sjme_font.charbmp[((sjme_jint)ch) * fonth * sjme_font.bytesperscan];
 	
 	/* Drawing format for the data value? */
-	switch (jvm->fbinfo->bitsperpixel)
+	bpp = jvm->fbinfo->bitsperpixel;
+	switch (bpp)
 	{
+		case 1:
+		case 2:
+		case 4:
 		case 8:
 			xform = SJME_VMMTYPE_BYTE;
+			mask = (SJME_JINT_C(1) << bpp) - 1;
 			break;
 			
 		case 16:
 			xform = SJME_VMMTYPE_SHORT;
+			mask = SJME_JINT_C(0xFFFF);
 			break;
 		
 		case 32:
 			xform = SJME_VMMTYPE_INTEGER;
+			mask = SJME_JINT_C(0xFFFFFFFF);
 			break;
-			
-		default:
-			return;
 	}
 	
 	/* Draw rows. */
@@ -1125,6 +1132,10 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 			((x * jvm->fbinfo->bitsperpixel) / 8) +
 			((y + r) * (jvm->fbinfo->scanlenbytes));
 		
+		/* Clear pixel queue. */
+		pq = 0;
+		at = 0;
+		
 		/* Draw all pixel scans. */
 		c = 0;
 		for (cv = 0; cv < sjme_font.bytesperscan; cv++, mp++)
@@ -1134,10 +1145,33 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 			
 			/* Draw all of them. */
 			for (i = 0; i < 8 && c < fontw; i++, c++)
-				sjme_vmmwritep(jvm->vmem, xform, &sp,
-					(((bits & sjme_drawcharbitmask[i]) != 0) ?
-					SJME_JINT_C(0xFFFFFF) : 0), error);
+			{
+				/* Shift the queue up from the last run. */
+				pq <<= bpp;
+				
+				/* Mask it if the color is set? */
+				if ((bits & sjme_drawcharbitmask[i]) != 0)
+					pq |= mask;
+				
+				/* Queued bits go up. */
+				at += bpp;
+				
+				/* Only write when there is at least 8! */
+				if (at >= 8)
+				{
+					/* Write. */
+					sjme_vmmwritep(jvm->vmem, xform, &sp, pq, error);
+					
+					/* Cut down. */
+					pq = (((pq & sjme_sh_umask[bpp])) >> bpp);
+					at -= bpp;
+				}
+			}
 		}
+		
+		/* Force draw any pixels left over. */
+		if (at >= bpp)
+			sjme_vmmwritep(jvm->vmem, xform, &sp, pq, error);
 	}
 }
 
