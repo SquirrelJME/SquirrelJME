@@ -313,7 +313,7 @@ sjme_framebuffer* sjme_retroarch_framebuffer(void)
 	rv->width = SJME_RETROARCH_WIDTH;
 	rv->height = SJME_RETROARCH_HEIGHT;
 	rv->scanlen = SJME_RETROARCH_WIDTH;
-	rv->format = SJME_PIXELFORMAT_FORMAT_INTEGER_RGB888;
+	rv->format = SJME_PIXELFORMAT_INTEGER_RGB888;
 	rv->numpixels = SJME_RETROARCH_VIDEORAMSIZE;
 	
 	return rv;

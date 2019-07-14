@@ -48,6 +48,14 @@ public interface FramebufferProperty
 	public static final byte BYTES_PER_PIXEL =
 		8;
 	
+	/** Returns the number of available pixels. */
+	public static final byte NUM_PIXELS =
+		9;
+	
+	/** Bits per pixel. */
+	public static final byte BITS_PER_PIXEL =
+		10;
+	
 	/** Screen is RGB 32-bit. */
 	public static final byte FORMAT_INTEGER_RGB888 =
 		0;
@@ -59,5 +67,17 @@ public interface FramebufferProperty
 	/** Screen is 16-bit RGB565. */
 	public static final byte FORMAT_SHORT_RGB565 =
 		2;
+	
+	/** Screen is packed 1 bit values. */
+	public static final byte FORMAT_PACKED_ONE =
+		3;
+	
+	/** Screen is packed 2 bit values. */
+	public static final byte FORMAT_PACKED_TWO =
+		4;
+	
+	/** Screen is packed 4 bit values. */
+	public static final byte FORMAT_PACKED_FOUR =
+		5;
 }
 
