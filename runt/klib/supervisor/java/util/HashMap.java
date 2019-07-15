@@ -49,7 +49,7 @@ public class HashMap<K, V>
 		
 		// Go through items
 		for (__Item__ i : bucket._items)
-			if (i._hash == hash && HashMap.__equals(__k, i._key))
+			if (i != null && i._hash == hash && HashMap.__equals(__k, i._key))
 				return true;
 		
 		// Not found
@@ -76,7 +76,7 @@ public class HashMap<K, V>
 		
 		// Go through items
 		for (__Item__ i : bucket._items)
-			if (i._hash == hash && HashMap.__equals(__k, i._key))
+			if (i != null && i._hash == hash && HashMap.__equals(__k, i._key))
 				return (V)i._value;
 		
 		// Not found
@@ -91,10 +91,52 @@ public class HashMap<K, V>
 	 * @return The old item, if any.
 	 * @since 2019/06/24
 	 */
+	@SuppressWarnings({"unchecked"})
 	public V put(K __k, V __v)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Calculate hash code
+		int hash = __k.hashCode(),
+			bkid = hash & _BUCKET_MASK;
+		
+		// Find existing bucket, create if missing
+		__Bucket__ bucket = this._buckets[bkid];
+		if (bucket == null)
+			this._buckets[bkid] = (bucket = new __Bucket__());
+		
+		// Check if it already exists in the map
+		__Item__[] items = bucket._items;
+		int n = items.length,
+			empty = -1;
+		for (int i = 0; i < n; i++)
+		{
+			__Item__ it = items[i];
+			
+			// Is empty slot, use it
+			if (it == null)
+				empty = i;
+			
+			// Matching key, replace
+			else if (it._hash == hash && HashMap.__equals(__k, it._key))
+			{
+				V rv = (V)it._value;
+				it._value = __v;
+				return rv;
+			}
+		}
+		
+		// Add new item at the end
+		__Item__[] newitems = new __Item__[n + 1];
+		for (int i = 0; i < n; i++)
+			newitems[i] = items[i];
+		__Item__ it = new __Item__(hash, __k);
+		newitems[n] = it;
+		it._value = __v;
+		
+		// Store new items
+		bucket._items = newitems;
+		
+		// There was no previous old value
+		return null;
 	}
 	
 	/**
