@@ -17,6 +17,10 @@ package cc.squirreljme.jvm;
  */
 public final class MiniClassAccessor
 {
+	/** Offset to the interface field byte size. */
+	public static final byte IFBYTES_OFFSET =
+		64;
+	
 	/** The mini-class address. */
 	protected final int address;
 	
@@ -39,8 +43,7 @@ public final class MiniClassAccessor
 	 */
 	public final int baseInstanceSize()
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		return Assembly.memReadJavaInt(this.address, IFBYTES_OFFSET);
 	}
 }
 
