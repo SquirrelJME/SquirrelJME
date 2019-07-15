@@ -1,0 +1,9 @@
+# 2019/07/14
+
+## 09:32
+
+Since I will be using banking for Palm OS, I could actually compress the ROM
+chunks so they take up less space. That might be the best solution. I would
+need to definitley drop the chunks from their massive 32K size into something
+that could potentially compress better. Just major thing is would be to have
+it where it is easily be decompressed by RatufaCoat (quick and simple).
