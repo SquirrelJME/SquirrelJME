@@ -267,6 +267,14 @@ public final class Minimizer
 		__dos.writeInt(reloff + 4);
 		__dos.writeInt((reloff - baserel) + 4);
 		
+		// Static pool offset and size
+		__dos.writeInt(0);
+		__dos.writeInt(0);
+		
+		// Runtime pool offset and size
+		__dos.writeInt(0);
+		__dos.writeInt(0);
+		
 		// Constant pool is rounded
 		Minimizer.__dosRound(__dos);
 		
