@@ -33,7 +33,7 @@ public final class MinimizedClassHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		92;
+		108;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -138,6 +138,18 @@ public final class MinimizedClassHeader
 	/** Size of all the non-header data. */
 	public final int datasize;
 	
+	/** Static constant pool offset. */
+	public final int staticpooloff;
+	
+	/** Static constant pool size. */
+	public final int staticpoolsize;
+	
+	/** Runtime constant pool offset. */
+	public final int runtimepooloff;
+	
+	/** Runtime constant pool size. */
+	public final int runtimepoolsize;
+	
 	/**
 	 * Initializes the class header.
 	 *
@@ -204,6 +216,12 @@ public final class MinimizedClassHeader
 		// File size
 		this.filesize = __vx[at++];
 		this.datasize = __vx[at++];
+		
+		// Static and run-time constant pool
+		this.staticpooloff = __vx[at++];
+		this.staticpoolsize = __vx[at++];
+		this.runtimepooloff = __vx[at++];
+		this.runtimepoolsize = __vx[at++];
 	}
 	
 	/**
@@ -286,7 +304,13 @@ public final class MinimizedClassHeader
 			
 			// File size
 			/* filesize */ dis.readInt(),
-			/* datasize */ dis.readInt());
+			/* datasize */ dis.readInt(),
+			
+			// Static and runtime pool
+			/* staticpooloff */ dis.readInt(),
+			/* staticpoolsize */ dis.readInt(),
+			/* runtimepooloff */ dis.readInt(),
+			/* runtimepoolsize */ dis.readInt());
 	}	
 }
 
