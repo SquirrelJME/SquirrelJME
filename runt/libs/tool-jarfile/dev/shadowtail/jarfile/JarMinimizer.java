@@ -1377,6 +1377,14 @@ public final class JarMinimizer
 			__dos.writeInt(0);
 		}
 		
+		// Static pool offset and size
+		__dos.writeInt(0);
+		__dos.writeInt(0);
+		
+		// Runtime pool offset and size
+		__dos.writeInt(0);
+		__dos.writeInt(0);
+		
 		// Build header
 		this._jheader = new MinimizedJarHeader(hfs);
 		
