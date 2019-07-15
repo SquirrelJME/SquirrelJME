@@ -246,6 +246,14 @@ public class PackMinimizer
 		dos.writeInt(numinitcp);
 		dos.writeInt(mainclassp);
 		
+		// Static pool offset and size
+		dos.writeInt(0);
+		dos.writeInt(0);
+		
+		// Runtime pool offset and size
+		dos.writeInt(0);
+		dos.writeInt(0);
+		
 		// Write TOC and JAR data
 		taos.writeTo(dos);
 		jaos.writeTo(dos);
