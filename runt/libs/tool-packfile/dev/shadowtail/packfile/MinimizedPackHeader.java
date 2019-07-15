@@ -23,7 +23,7 @@ public final class MinimizedPackHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		32;
+		48;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -65,6 +65,18 @@ public final class MinimizedPackHeader
 	/** Initial main class to boot. (32) */
 	public final int bootmainclass;
 	
+	/** Static constant pool offset. */
+	public final int staticpooloff;
+	
+	/** Static constant pool size. */
+	public final int staticpoolsize;
+	
+	/** Runtime constant pool offset. */
+	public final int runtimepooloff;
+	
+	/** Runtime constant pool size. */
+	public final int runtimepoolsize;
+	
 	/**
 	 * Initializes the pack header.
 	 *
@@ -91,6 +103,12 @@ public final class MinimizedPackHeader
 		this.booticpoffset = __fs[at++];
 		this.booticpsize = __fs[at++];
 		this.bootmainclass = __fs[at++];
+		
+		// Static and run-time constant pool
+		this.staticpooloff = __fs[at++];
+		this.staticpoolsize = __fs[at++];
+		this.runtimepooloff = __fs[at++];
+		this.runtimepoolsize = __fs[at++];
 	}
 }
 
