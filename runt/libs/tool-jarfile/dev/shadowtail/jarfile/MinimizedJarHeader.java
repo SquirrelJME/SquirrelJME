@@ -27,7 +27,7 @@ public final class MinimizedJarHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		44;
+		60;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -70,6 +70,18 @@ public final class MinimizedJarHeader
 	/** The ClassDataV2 for {@code byte[][]}. */
 	public final int bootclassidbaa;
 	
+	/** Static constant pool offset. */
+	public final int staticpooloff;
+	
+	/** Static constant pool size. */
+	public final int staticpoolsize;
+	
+	/** Runtime constant pool offset. */
+	public final int runtimepooloff;
+	
+	/** Runtime constant pool size. */
+	public final int runtimepoolsize;
+	
 	/**
 	 * Initializes the Jar header.
 	 *
@@ -101,6 +113,12 @@ public final class MinimizedJarHeader
 		this.bootstart = __fs[at++];
 		this.bootclassidba = __fs[at++];
 		this.bootclassidbaa = __fs[at++];
+		
+		// Static and run-time constant pool
+		this.staticpooloff = __fs[at++];
+		this.staticpoolsize = __fs[at++];
+		this.runtimepooloff = __fs[at++];
+		this.runtimepoolsize = __fs[at++];
 	}
 	
 	/**
@@ -144,7 +162,13 @@ public final class MinimizedJarHeader
 			/* bootsfieldbase */ din.readInt(),
 			/* bootstart */ din.readInt(),
 			/* bootclassidba */ din.readInt(),
-			/* bootclassidbaa */ din.readInt());
+			/* bootclassidbaa */ din.readInt(),
+			
+			// Static and runtime pool
+			/* staticpooloff */ din.readInt(),
+			/* staticpoolsize */ din.readInt(),
+			/* runtimepooloff */ din.readInt(),
+			/* runtimepoolsize */ din.readInt());
 	}
 }
 
