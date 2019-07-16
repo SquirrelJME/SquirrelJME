@@ -1,0 +1,55 @@
+# 2019/07/15
+
+## 07:18
+
+I really want to split the constant pool now before I continue since it will
+get far more involved when I move on more. I also want to take care of a
+single combined and merged constant pool that is shared for every single
+class in a JAR perhaps even a global constant pool shared among everything.
+I do know that it could very heavily reduce the massive number of duplicates
+for every class. Although I am not too sure how much space reduction would
+occur. But I do know that for example there is `Object` which is pretty much
+used everywhere and it is `java/lang/Object` which is 16 bytes just for the
+characters alone. So pretty much if there are 1000 classes then all of those
+will take up 16,000 bytes which is quite a bunch. There are also descriptors
+which are duplicated as well. So I really really want to do a size reduction.
+But while I add the global pool, I will also put in the split constant so I
+do not have to resize the classes again.
+
+## 07:31
+
+Will note that a SQC I have is 14,298,679 bytes. Okay so I think the first
+thing to do is to make the split static and runtime pool. Because then both
+will be used accordingly as needed. I think it would be easier to do the
+global pools following it. Of course I can still have the old constant
+pool in there for compatibility purposes.
+
+## 07:45
+
+Okay so, going to eat first and exercise. I do start new job tomorrow so I
+am excited, hoping I can finish the constant pool merging today as I think
+that might help in reducing the size of the ROM file with less duplicated
+data. But first it will be naturally the splitting. But since I do plan on
+having a global constant pool I can modify the code and put in new classes
+in a way where that is handled properly. Of course this will mean that
+the constant pool builder becomes an interface. Then I can either deposit
+entries into the static pool or the run-time pool. Also the run-time pool
+will be more efficient at load time because less entries will be handled
+and this automatically means less memory used! So this will increase
+the efficiency all around. It probably will not happen but I am hoping
+that at least a single megabyte is cut off. Since when I do the size
+reductions, I tend to overestimate the difference so here I would say just
+a megabyte will be reduced. Since I am not too sure how much duplicated
+data there is.
+
+## 09:17
+
+Okay, I ate and relaxed a bit so now to work on this. Really am hoping this
+reduces the ROM enough to where it can fit on Palm OS and DOS more.
+
+## 09:24
+
+Okay so first step is to split part of `MinimizedPoolBuilder` into a base
+class which just acts like the basic pool with just parts and values. Then
+I can have a split pool implemented on top of that for the class-time and
+run-time pools.
