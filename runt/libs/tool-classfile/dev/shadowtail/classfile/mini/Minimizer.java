@@ -16,6 +16,7 @@ import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.nncc.RegisterList;
 import dev.shadowtail.classfile.pool.ClassPool;
+import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
@@ -69,11 +70,12 @@ public final class Minimizer
 	/**
 	 * Initializes the minimizer.
 	 *
+	 * @param __dp The dual constant pool to use, may be null.
 	 * @param __cf The class to minimize.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	private Minimizer(ClassFile __cf)
+	private Minimizer(DualClassRuntimePoolBuilder __dp, ClassFile __cf)
 		throws NullPointerException
 	{
 		if (__cf == null)
@@ -716,9 +718,27 @@ public final class Minimizer
 	 * @throws InvalidClassFormatException If the class is not formatted
 	 * correctly.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/10
+	 * @since 2019/07/17
 	 */
 	public static final byte[] minimize(ClassFile __cf)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
+		return Minimizer.minimize(null, __cf);
+	}
+	
+	/**
+	 * Minimizes the given class and returns the minimized version of it.
+	 *
+	 * @param __dp Dual constant pool, this may be {@code null}.
+	 * @param __cf The class to minimize.
+	 * @return The resulting minimized class as a byte array.
+	 * @throws InvalidClassFormatException If the class is not formatted
+	 * correctly.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/10
+	 */
+	public static final byte[] minimize(DualClassRuntimePoolBuilder __dp,
+		ClassFile __cf)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__cf == null)
@@ -729,7 +749,7 @@ public final class Minimizer
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1048576))
 		{
 			// Output minimized code to the byte array
-			Minimizer.minimize(__cf, baos);
+			Minimizer.minimize(__dp, __cf, baos);
 			
 			// The class data is in the resulting byte array
 			return baos.toByteArray();
@@ -750,10 +770,29 @@ public final class Minimizer
 	public static final void minimize(ClassFile __cf, OutputStream __os)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
+		Minimizer.minimize(null, __cf, __os);
+	}
+	
+	/**
+	 * Minimizes the class file so that it is in a more compact format as
+	 * needed.
+	 *
+	 * @param __dp Dual constant pool, may be {@code null}.
+	 * @param __cf The class file to minimize.
+	 * @param __os The stream to write the minimized format to.
+	 * @throws InvalidClassFormatException If the class format is not valid.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/10
+	 */
+	public static final void minimize(DualClassRuntimePoolBuilder __dp,
+		ClassFile __cf, OutputStream __os)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
 		if (__cf == null || __os == null)
 			throw new NullPointerException("NARG");
 		
-		new Minimizer(__cf).__run(new DataOutputStream(__os));
+		new Minimizer(__dp, __cf).__run(new DataOutputStream(__os));
 	}
 	
 	/**
