@@ -1414,6 +1414,10 @@ public final class JarMinimizer
 		// in the pack file. It is only local to this JAR.
 		else if (this.owndualpool)
 		{
+			// Round for the pools
+			while (((reloff + jdos.size()) & 3) != 0)
+				jdos.write(0);
+			
 			// Encode the pool
 			DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, jdos);
 			
