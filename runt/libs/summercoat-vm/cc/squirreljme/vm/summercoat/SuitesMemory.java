@@ -211,6 +211,12 @@ public final class SuitesMemory
 			dos.writeInt(0);
 			dos.writeInt(0);
 			
+			// Class and run-time constant pools
+			dos.writeInt(0);
+			dos.writeInt(0);
+			dos.writeInt(0);
+			dos.writeInt(0);
+			
 			// Name table output
 			ByteArrayOutputStream nbaos = new ByteArrayOutputStream(4096);
 			DataOutputStream ndos = new DataOutputStream(nbaos);
