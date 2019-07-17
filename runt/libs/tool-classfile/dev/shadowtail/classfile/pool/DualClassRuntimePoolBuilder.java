@@ -23,5 +23,27 @@ public final class DualClassRuntimePoolBuilder
 	/** The run-time pool. */
 	protected final BasicPoolBuilder runpool =
 		new BasicPoolBuilder();
+	
+	/**
+	 * Returns the static class pool.
+	 *
+	 * @return The pool.
+	 * @since 2019/07/17
+	 */
+	public final BasicPoolBuilder classPool()
+	{
+		return this.classpool;
+	}
+	
+	/**
+	 * Returns the runtime class pool.
+	 *
+	 * @return The pool.
+	 * @since 2019/07/17
+	 */
+	public final BasicPoolBuilder runtimePool()
+	{
+		return this.runpool;
+	}
 }
 
