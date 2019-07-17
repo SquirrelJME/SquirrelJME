@@ -11,6 +11,7 @@ package dev.shadowtail.packfile;
 
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.VMClassLibrary;
+import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import java.io.ByteArrayOutputStream;
@@ -128,6 +129,10 @@ public class PackMinimizer
 		int numinitcp = __initcp.length;
 		int[] cpdx = new int[numinitcp];
 		
+		// Setup dual-pool where all combined values are stored as needed
+		DualClassRuntimePoolBuilder dualpool =
+			new DualClassRuntimePoolBuilder();
+		
 		// Go through each library, minimize and write!
 		for (int i = 0; i < numlibs; i++)
 		{
@@ -176,7 +181,10 @@ public class PackMinimizer
 			MinimizedJarHeader[] mjha = new MinimizedJarHeader[1];
 			try
 			{
-				JarMinimizer.minimize(isboot, lib, jdos, mjha);
+				// The boot JAR is completely stand-alone, so do not use
+				// a global JAR pool for it.
+				JarMinimizer.minimize((isboot ? null : dualpool), isboot, lib,
+					jdos, mjha);
 			}
 			
 			// {@squirreljme.error BI01 Could not minimize the JAR due to
@@ -246,13 +254,20 @@ public class PackMinimizer
 		dos.writeInt(numinitcp);
 		dos.writeInt(mainclassp);
 		
-		// Static pool offset and size
-		dos.writeInt(0);
-		dos.writeInt(0);
-		
-		// Runtime pool offset and size
-		dos.writeInt(0);
-		dos.writeInt(0);
+		// Write the packed dual-pool
+		if (true)
+		{
+			if (true)
+				throw new todo.TODO();
+			
+			// Static pool offset and size
+			dos.writeInt(0);
+			dos.writeInt(0);
+			
+			// Runtime pool offset and size
+			dos.writeInt(0);
+			dos.writeInt(0);
+		}
 		
 		// Write TOC and JAR data
 		taos.writeTo(dos);

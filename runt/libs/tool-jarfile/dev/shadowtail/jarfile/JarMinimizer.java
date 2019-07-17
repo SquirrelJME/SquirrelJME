@@ -20,6 +20,7 @@ import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
+import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.MethodIndex;
@@ -72,6 +73,12 @@ public final class JarMinimizer
 	/** The input JAR. */
 	protected final VMClassLibrary input;
 	
+	/** The dual-combined constant pool. */
+	protected final DualClassRuntimePoolBuilder dualpool;
+	
+	/** Are we using our own dual pool? */
+	protected final boolean owndualpool;
+	
 	/** Boot information for classes. */
 	private final Map<ClassName, __BootInfo__> _boots;
 	
@@ -87,19 +94,28 @@ public final class JarMinimizer
 	/**
 	 * Initializes the minimizer worker.
 	 *
+	 * @param __dp The global dual constant pool, may be {@code null} to not
+	 * use the pack-file global one.
 	 * @param __boot Is this a boot JAR?
 	 * @param __in The input library.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/27
 	 */
-	private JarMinimizer(boolean __boot, VMClassLibrary __in)
+	private JarMinimizer(DualClassRuntimePoolBuilder __dp, boolean __boot,
+		VMClassLibrary __in)
 		throws NullPointerException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
-		
+			
 		this.boot = __boot;
 		this.input = __in;
+		
+		// Use the passed pool if it was passed, but otherwise just use one
+		// in the event one was not passed through (uses our own pool)
+		this.dualpool = (__dp != null ? __dp :
+			(__boot ? null : new DualClassRuntimePoolBuilder()));
+		this.owndualpool = (__dp == null);
 		
 		// Only used if this is a boot JAR
 		if (__boot)
@@ -1211,6 +1227,9 @@ public final class JarMinimizer
 		ByteArrayOutputStream jbaos = new ByteArrayOutputStream(1048576);
 		DataOutputStream jdos = new DataOutputStream(jbaos);
 		
+		// The global dual-constant pool if one is available
+		DualClassRuntimePoolBuilder dualpool = this.dualpool;
+		
 		// Relative offset from header and table of contents
 		int reloff = MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC +
 			(numrc * MinimizedJarHeader.TOC_ENTRY_SIZE);
@@ -1230,7 +1249,7 @@ public final class JarMinimizer
 			{
 				// Minimizing class
 				if ((isclass = rc.endsWith(".class")))
-					bytes = Minimizer.minimize(ClassFile.decode(in));
+					bytes = Minimizer.minimize(dualpool, ClassFile.decode(in));
 				
 				// Plain resource, sent straight through
 				else
@@ -1377,13 +1396,38 @@ public final class JarMinimizer
 			__dos.writeInt(0);
 		}
 		
-		// Static pool offset and size
-		__dos.writeInt(0);
-		__dos.writeInt(0);
+		// No global dual pool used
+		if (dualpool == null)
+		{
+			// Static pool offset and size
+			__dos.writeInt(0);
+			__dos.writeInt(0);
+			
+			// Runtime pool offset and size
+			__dos.writeInt(0);
+			__dos.writeInt(0);
+		}
 		
-		// Runtime pool offset and size
-		__dos.writeInt(0);
-		__dos.writeInt(0);
+		// We are using our own dual pool, so write it out as if it were
+		// in the pack file. It is only local to this JAR.
+		else if (this.owndualpool)
+		{
+			throw new todo.TODO();
+		}
+		
+		// We are using the global pack pool, so set special indicators
+		// that we are doing as such! The minimized class will use special
+		// a special aliased pool for the pack file.
+		else
+		{
+			// Static pool offset and size
+			__dos.writeInt(-1);
+			__dos.writeInt(-1);
+			
+			// Runtime pool offset and size
+			__dos.writeInt(-1);
+			__dos.writeInt(-1);
+		}
 		
 		// Build header
 		this._jheader = new MinimizedJarHeader(hfs);
@@ -1414,7 +1458,7 @@ public final class JarMinimizer
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1048576))
 		{
 			// Perform minimization
-			JarMinimizer.minimize(__boot, __in, baos);
+			JarMinimizer.minimize(null, __boot, __in, baos, null);
 			
 			// Return the generated array
 			return baos.toByteArray();
@@ -1436,7 +1480,7 @@ public final class JarMinimizer
 		OutputStream __out)
 		throws IOException, NullPointerException
 	{
-		JarMinimizer.minimize(__boot, __in, __out, null);
+		JarMinimizer.minimize(null, __boot, __in, __out, null);
 	}
 	
 	/**
@@ -1449,17 +1493,38 @@ public final class JarMinimizer
 	 * @param __mjh The output JAR header.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/29
+	 * @since 2019/07/17
 	 */
 	public static final void minimize(boolean __boot, VMClassLibrary __in,
 		OutputStream __out, MinimizedJarHeader[] __mjh)
+		throws IOException, NullPointerException
+	{
+		JarMinimizer.minimize(null, __boot, __in, __out, __mjh);
+	}
+	
+	/**
+	 * Minimizes the specified Jar file.
+	 *
+	 * @param __dp The dual-pool.
+	 * @param __boot Should pre-created boot memory be created to quickly
+	 * initialize the virtual machine?
+	 * @param __in The input JAR file.
+	 * @param __out The stream where JAR data will be placed.
+	 * @param __mjh The output JAR header.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/29
+	 */
+	public static final void minimize(DualClassRuntimePoolBuilder __dp,
+		boolean __boot, VMClassLibrary __in, OutputStream __out,
+		MinimizedJarHeader[] __mjh)
 		throws IOException, NullPointerException
 	{
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
 		// Use helper class
-		JarMinimizer jm = new JarMinimizer(__boot, __in);
+		JarMinimizer jm = new JarMinimizer(__dp, __boot, __in);
 		jm.__process(new DataOutputStream(__out));
 		
 		// Set header that was generated
