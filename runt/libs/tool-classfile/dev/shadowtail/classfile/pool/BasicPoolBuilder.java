@@ -9,8 +9,11 @@
 
 package dev.shadowtail.classfile.pool;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.collections.UnmodifiableIterator;
 
 /**
  * This class is used to store and contain the basic constant pool which
@@ -21,6 +24,7 @@ import java.util.Map;
  * @since 2019/07/15
  */
 public final class BasicPoolBuilder
+	implements Iterable<BasicPoolEntry>
 {
 	/** Entries which exist in the constant pool. */
 	protected final Map<Object, BasicPoolEntry> entries =
@@ -127,6 +131,26 @@ public final class BasicPoolBuilder
 		{
 			return this.entries.get(__v);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/07/17
+	 */
+	@Override
+	public final Iterator<BasicPoolEntry> iterator()
+	{
+		// Get elements
+		BasicPoolEntry[] elems;
+		synchronized (this)
+		{
+			Map<Object, BasicPoolEntry> entries = this.entries;
+			elems = entries.values().toArray(
+				new BasicPoolEntry[entries.size()]);
+		}
+		
+		// Iterate over
+		return UnmodifiableIterator.<BasicPoolEntry>of(elems);
 	}
 	
 	/**

@@ -9,7 +9,10 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.pool.BasicPoolBuilder;
+import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,6 +24,10 @@ import java.io.OutputStream;
  */
 public final class DualPoolEncoder
 {
+	/** The size of the table entries. */
+	public static final int TABLE_ENTRY_SIZE =
+		8;
+	
 	/**
 	 * Not used.
 	 *
@@ -35,8 +42,7 @@ public final class DualPoolEncoder
 	 * result.
 	 *
 	 * @param __dp The dual-pool to encode.
-	 * @param __out The stream to write to, if this is already a
-	 * {@link DataOutputStream} then it will be used as such.
+	 * @param __out The stream to write to.
 	 * @return The result with size information.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
@@ -49,11 +55,63 @@ public final class DualPoolEncoder
 		if (__dp == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		// Use pre-existing data output or just wrap it?
-		DataOutputStream dos = ((__out instanceof DataOutputStream) ?
-			(DataOutputStream)__out : new DataOutputStream(__out));
+		// Wrap output
+		DataOutputStream tdos = new DataOutputStream(__out);
 		
-		throw new todo.TODO();
+		// Return values
+		int staticpooloff = 0,
+			staticpoolsize = 0,
+			runtimepooloff = 0,
+			runtimepoolsize = 0;
+		
+		// Write both of the pools
+		for (boolean isruntime = false;; isruntime = true)
+		{
+			// Are we encoding the static or run-time pool?
+			BasicPoolBuilder pool = (isruntime ? __dp.runtimePool() :
+				__dp.classPool());
+			
+			// The size of the pool, used for the first entry
+			int poolsize = pool.size();
+			
+			// This is the base offset where the pool is located
+			if (isruntime)
+				runtimepooloff = tdos.size();
+			else
+				staticpooloff = tdos.size();
+			
+			// Determine the relative offset to where the entry data will
+			// exist
+			int reloff = poolsize + TABLE_ENTRY_SIZE;
+			
+			// The value data is appended right after the pool data
+			try (ByteArrayOutputStream vaos = new ByteArrayOutputStream();
+				DataOutputStream vdos = new DataOutputStream(vaos))
+			{
+				// Write individual pool entries
+				for (BasicPoolEntry e : pool)
+				{
+					throw new todo.TODO();
+				}
+				
+				// Merge the value data on top of the base
+				vaos.writeTo(tdos);
+			}
+			
+			// The size of the pool in bytes
+			if (isruntime)
+				runtimepoolsize = tdos.size() - runtimepooloff;
+			else
+				staticpoolsize = tdos.size() - staticpooloff;
+			
+			// Stop processing after the run-time is done
+			if (isruntime)
+				break;
+		}
+		
+		// Return the location of the data
+		return new DualPoolEncodeResult(staticpooloff, staticpoolsize,
+			runtimepooloff, runtimepoolsize);
 	}
 }
 
