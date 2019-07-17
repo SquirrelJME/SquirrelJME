@@ -12,6 +12,8 @@ package dev.shadowtail.jarfile;
 import cc.squirreljme.jvm.ClassInfo;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.VMClassLibrary;
+import dev.shadowtail.classfile.mini.DualPoolEncoder;
+import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
@@ -1412,7 +1414,14 @@ public final class JarMinimizer
 		// in the pack file. It is only local to this JAR.
 		else if (this.owndualpool)
 		{
-			throw new todo.TODO();
+			// Encode the pool
+			DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, jdos);
+			
+			// Write where the pools were written
+			__dos.writeInt(reloff + der.staticpooloff);
+			__dos.writeInt(der.staticpoolsize);
+			__dos.writeInt(reloff + der.runtimepooloff);
+			__dos.writeInt(der.runtimepoolsize);
 		}
 		
 		// We are using the global pack pool, so set special indicators

@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @since 2019/07/15
  */
-public class BasicPoolBuilder
+public final class BasicPoolBuilder
 {
 	/** Entries which exist in the constant pool. */
 	protected final Map<Object, BasicPoolEntry> entries =
@@ -37,7 +37,7 @@ public class BasicPoolBuilder
 	}
 	
 	/**
-	 * Adds an internal entry.
+	 * Adds a basic entry.
 	 *
 	 * @param __v The value.
 	 * @param __parts The parts to use.
@@ -46,7 +46,7 @@ public class BasicPoolBuilder
 	 * the pool.
 	 * @since 2019/07/15
 	 */
-	protected final BasicPoolEntry addInternal(Object __v, int... __parts)
+	public final BasicPoolEntry add(Object __v, int... __parts)
 		throws IllegalStateException
 	{
 		Map<Object, BasicPoolEntry> entries = this.entries;
@@ -77,7 +77,7 @@ public class BasicPoolBuilder
 	 * @return The entry for this value.
 	 * @since 2019/07/15
 	 */
-	protected final BasicPoolEntry addInternalOrGet(Object __v, int... __parts)
+	public final BasicPoolEntry addOrGet(Object __v, int... __parts)
 	{
 		synchronized (this)
 		{
@@ -87,7 +87,7 @@ public class BasicPoolBuilder
 				return rv;
 			
 			// Otherwise add it
-			return this.addInternal(__v, __parts);
+			return this.add(__v, __parts);
 		}
 	}
 	
