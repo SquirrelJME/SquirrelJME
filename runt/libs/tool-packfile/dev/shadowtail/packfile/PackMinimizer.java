@@ -11,6 +11,8 @@ package dev.shadowtail.packfile;
 
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.VMClassLibrary;
+import dev.shadowtail.classfile.mini.DualPoolEncoder;
+import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
@@ -254,20 +256,18 @@ public class PackMinimizer
 		dos.writeInt(numinitcp);
 		dos.writeInt(mainclassp);
 		
-		// Write the packed dual-pool
-		if (true)
-		{
-			if (true)
-				throw new todo.TODO();
-			
-			// Static pool offset and size
-			dos.writeInt(0);
-			dos.writeInt(0);
-			
-			// Runtime pool offset and size
-			dos.writeInt(0);
-			dos.writeInt(0);
-		}
+		// Round for the pools
+		while (((reloff + jdos.size()) & 3) != 0)
+			jdos.write(0);
+		
+		// Encode the pool
+		DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, jdos);
+		
+		// Write where the pools were written
+		dos.writeInt(reloff + der.staticpooloff);
+		dos.writeInt(der.staticpoolsize);
+		dos.writeInt(reloff + der.runtimepooloff);
+		dos.writeInt(der.runtimepoolsize);
 		
 		// Write TOC and JAR data
 		taos.writeTo(dos);
