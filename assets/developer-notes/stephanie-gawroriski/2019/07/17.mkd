@@ -1,0 +1,11 @@
+# 2019/07/17
+
+## 13:04
+
+Today is my last day off before I work, there was just a delay due to
+the holiday. So there will be that, really excited for work! Okay, so I am
+working on the split-pool and the global pool at the same time, since it
+just makes sense to do it that way. Really hoping that there is some kind of
+space saving. I do know that it would be better at run-time since there would
+hopefully be far less than about hundreds of pool entries. Just the important
+stuff is used at run-time!
