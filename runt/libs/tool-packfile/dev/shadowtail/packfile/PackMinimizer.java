@@ -261,12 +261,13 @@ public class PackMinimizer
 			jdos.write(0);
 		
 		// Encode the pool
+		int basep = reloff + jdos.size();
 		DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, jdos);
 		
 		// Write where the pools were written
-		dos.writeInt(reloff + der.staticpooloff);
+		dos.writeInt(basep + der.staticpooloff);
 		dos.writeInt(der.staticpoolsize);
-		dos.writeInt(reloff + der.runtimepooloff);
+		dos.writeInt(basep + der.runtimepooloff);
 		dos.writeInt(der.runtimepoolsize);
 		
 		// Write TOC and JAR data
