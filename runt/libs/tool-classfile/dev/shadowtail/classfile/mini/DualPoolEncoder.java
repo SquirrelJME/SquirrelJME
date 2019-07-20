@@ -91,6 +91,19 @@ public final class DualPoolEncoder
 				// Write individual pool entries
 				for (BasicPoolEntry e : pool)
 				{
+					// Determine the type of entry this is
+					Object ev = e.value;
+					MinimizedPoolEntryType etype =
+						MinimizedPoolEntryType.ofClass(ev.getClass());
+					
+					// {@squirreljme.error JC4d Cannot store the given entry
+					// because it not compatible with the static/run-time
+					// state. (The pool type; The value type; Is the run-time
+					// pool being processed?)}
+					if (isruntime != etype.isRuntime())
+						throw new IllegalStateException("JC4d " +
+							etype + " " + ev + " " + isruntime);
+					
 					throw new todo.TODO();
 				}
 				
