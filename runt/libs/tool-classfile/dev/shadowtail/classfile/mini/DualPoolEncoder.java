@@ -82,7 +82,7 @@ public final class DualPoolEncoder
 			
 			// Determine the relative offset to where the entry data will
 			// exist
-			int reloff = poolsize + TABLE_ENTRY_SIZE;
+			int reloff = poolsize * TABLE_ENTRY_SIZE;
 			
 			// The value data is appended right after the pool data
 			try (ByteArrayOutputStream vaos = new ByteArrayOutputStream();
@@ -91,20 +91,60 @@ public final class DualPoolEncoder
 				// Write individual pool entries
 				for (BasicPoolEntry e : pool)
 				{
-					// Determine the type of entry this is
+					// The first is always null and just contains some pool
+					// information
 					Object ev = e.value;
-					MinimizedPoolEntryType etype =
+					if (e.index == 0)
+					{
+						// No tag, no parts, no size, entry count
+						tdos.write(0);
+						tdos.write(0);
+						tdos.writeShort(0);
+						tdos.writeInt(poolsize);
+						
+						// Skip
+						continue;
+					}
+					
+					// Determine the type of entry this is
+					MinimizedPoolEntryType et =
 						MinimizedPoolEntryType.ofClass(ev.getClass());
 					
 					// {@squirreljme.error JC4d Cannot store the given entry
 					// because it not compatible with the static/run-time
 					// state. (The pool type; The value type; Is the run-time
 					// pool being processed?)}
-					if (isruntime != etype.isRuntime())
+					if (isruntime != et.isRuntime())
 						throw new IllegalStateException("JC4d " +
-							etype + " " + ev + " " + isruntime);
+							et + " " + ev + " " + isruntime);
 					
-					throw new todo.TODO();
+					// Determine if the parts need to be wide
+					int[] ep = e.parts();
+					int epn = ep.length;
+					boolean iswide = false;
+					for (int j = 0; j < epn; j++)
+					{
+						int v = ep[j];
+						if (v < 0 || v > 127)
+							iswide = true;
+					}
+					
+					// Encode the data
+					byte[] ed = DualPoolEncoder.encodeValue(et, ep, iswide,
+						ev);
+					
+					// Write table data
+					tdos.writeByte(et.ordinal());
+					tdos.writeByte((iswide ? -epn : epn));
+					tdos.writeShort(ed.length);
+					
+					// Align the data
+					while (((reloff + vdos.size()) & 3) != 0)
+						vdos.writeByte(0);
+					
+					// Write value data
+					tdos.writeInt(reloff + vdos.size());
+					vdos.write(ed);
 				}
 				
 				// Merge the value data on top of the base
@@ -125,6 +165,91 @@ public final class DualPoolEncoder
 		// Return the location of the data
 		return new DualPoolEncodeResult(staticpooloff, staticpoolsize,
 			runtimepooloff, runtimepoolsize);
+	}
+	
+	/**
+	 * Encodes the pool value.
+	 *
+	 * @param __t The type to encode.
+	 * @param __p The parts.
+	 * @param __wide Are the parts wide?
+	 * @param __v The value.
+	 * @return The encoded value data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/07/20
+	 */
+	public static final byte[] encodeValue(MinimizedPoolEntryType __t,
+		int[] __p, boolean __wide, Object __v)
+		throws IOException, NullPointerException
+	{
+		if (__t == null || __p == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Encode
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos))
+		{
+			// Depends on the type
+			switch (__t)
+			{
+					// Encode strings into the pool
+				case STRING:
+					{
+						// Record hashCode and the String size as simple
+						// fields to read. Note that even though there is
+						// the UTF length, the length of the actual string
+						// could be useful. But only keep the lowest part
+						// as that will be "good enough"
+						dos.writeShort((short)__p[0]);
+						dos.writeShort(Minimizer.__checkUShort(__p[1]));
+						
+						// Write string UTF data
+						dos.writeUTF((String)__v);
+						
+						// Write NUL terminator so it can be directly used
+						// as a UTF-8 C pointer
+						dos.writeByte(0);
+					}
+					break;
+					
+					// Integer
+				case INTEGER:
+					dos.writeInt((Integer)__v);
+					break;
+					
+					// Float
+				case FLOAT:
+					dos.writeInt(Float.floatToRawIntBits((Float)__v));
+					break;
+					
+					// Everything else just consists of parts which are
+					// either values to other indexes or an ordinal
+				case ACCESSED_FIELD:
+				case CLASS_NAME:
+				case CLASS_NAMES:
+				case CLASS_POOL:
+				case DOUBLE:
+				case LONG:
+				case INVOKED_METHOD:
+				case METHOD_DESCRIPTOR:
+				case METHOD_INDEX:
+				case USED_STRING:
+					if (__wide)
+						for (int i = 0, n = __p.length; i < n; i++)
+							dos.writeShort(Minimizer.__checkUShort(__p[i]));
+					else
+						for (int i = 0, n = __p.length; i < n; i++)
+							dos.writeByte(__p[i]);
+					break;
+				
+				default:
+					throw new todo.OOPS(__t.name());
+			}
+			
+			// Return the encoded data
+			return baos.toByteArray();
+		}
 	}
 }
 
