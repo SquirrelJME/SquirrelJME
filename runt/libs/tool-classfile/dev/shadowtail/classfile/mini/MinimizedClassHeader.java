@@ -49,6 +49,7 @@ public final class MinimizedClassHeader
 	public final DataType datatype;
 	
 	/** Number of entries in constant pool. */
+	@Deprecated
 	public final int poolcount;
 	
 	/** Class flags. */
@@ -97,9 +98,11 @@ public final class MinimizedClassHeader
 	public final int imcount;
 	
 	/** Offset to pool data. */
+	@Deprecated
 	public final int pooloff;
 	
 	/** Pool data size. */
+	@Deprecated
 	public final int poolsize;
 	
 	/** Static field data offset. */

@@ -43,6 +43,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  *
  * @since 2019/03/11
  */
+@Deprecated
 public final class MinimizedPoolBuilder
 {
 	/** Constant pool. */

@@ -36,6 +36,7 @@ import net.multiphasicapps.classfile.MethodName;
  *
  * @since 2019/04/16
  */
+@Deprecated
 public final class MinimizedPool
 {
 	/** Pool value offsets. */

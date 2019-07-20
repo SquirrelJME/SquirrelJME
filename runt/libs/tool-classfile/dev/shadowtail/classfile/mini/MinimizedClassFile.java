@@ -42,6 +42,7 @@ public final class MinimizedClassFile
 	public final MinimizedClassHeader header;
 	
 	/** Pool. */
+	@Deprecated
 	public final MinimizedPool pool;
 	
 	/** Static fields. */
@@ -259,6 +260,7 @@ public final class MinimizedClassFile
 	 * @return The minimized constant pool.
 	 * @since 2019/04/17
 	 */
+	@Deprecated
 	public final MinimizedPool pool()
 	{
 		return this.pool;
