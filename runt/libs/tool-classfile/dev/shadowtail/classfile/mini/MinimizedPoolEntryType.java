@@ -62,6 +62,53 @@ public enum MinimizedPoolEntryType
 	;
 	
 	/**
+	 * Can this be in the runtime pool?
+	 *
+	 * @return If this can be in the runtime pool.
+	 * @since 2019/07/20
+	 */
+	public final boolean isRuntime()
+	{
+		switch (this)
+		{
+			case NULL:
+			case CLASS_NAME:
+			case CLASS_POOL:
+			case ACCESSED_FIELD:
+			case INVOKED_METHOD:
+			case USED_STRING:
+			case METHOD_INDEX:
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Can this be in the static pool?
+	 *
+	 * @return If this can be in the static pool.
+	 * @since 2019/07/20
+	 */
+	public final boolean isStatic()
+	{
+		switch (this)
+		{
+			case NULL:
+			case STRING:
+			case CLASS_NAMES:
+			case METHOD_DESCRIPTOR:
+			case INTEGER:
+			case FLOAT:
+			case LONG:
+			case DOUBLE:
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Returns the type for the specified index.
 	 *
 	 * @param __i The index to get.
