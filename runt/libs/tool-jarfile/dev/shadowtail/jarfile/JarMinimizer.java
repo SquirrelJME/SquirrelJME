@@ -1419,12 +1419,13 @@ public final class JarMinimizer
 				jdos.write(0);
 			
 			// Encode the pool
+			int basep = reloff + jdos.size();
 			DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, jdos);
 			
 			// Write where the pools were written
-			__dos.writeInt(reloff + der.staticpooloff);
+			__dos.writeInt(basep + der.staticpooloff);
 			__dos.writeInt(der.staticpoolsize);
-			__dos.writeInt(reloff + der.runtimepooloff);
+			__dos.writeInt(basep + der.runtimepooloff);
 			__dos.writeInt(der.runtimepoolsize);
 		}
 		
