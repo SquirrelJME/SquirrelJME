@@ -1,0 +1,10 @@
+# 2019/07/20
+
+## 11:09
+
+Okay so for the constant pool stuff, it is not actually neede... actually I
+just had a thought that it is needed. I was saying I did not need aliases
+but then that would complicate the pool layout at run-time. The actual
+pool values would be from the run-time space. But luckily due to the way
+the minimizer works, I can have the static and run-time stuff just done
+in a few places as needed.
