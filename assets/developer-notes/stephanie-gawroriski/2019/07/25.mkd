@@ -1,0 +1,11 @@
+# 2019/07/25
+
+## 18:18
+
+Since I have a job and like no spare time really, will have to wait until the
+weekends and such to work on SquirrelJME. Additionally in the future when I
+get the privilidge to work remotely I would be able to work on it before work
+and additionally after work (since I would not need to commute I would be less
+fried from work). But currently going to mark away the release date for this
+one since I do not know what I will be doing in the mean time.
+
