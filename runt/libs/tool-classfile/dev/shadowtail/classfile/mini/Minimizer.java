@@ -63,7 +63,14 @@ public final class Minimizer
 	/** The class file to minimize. */
 	protected final ClassFile input;
 	
+	/** The targetted pool. */
+	protected final TargettedPoolBuilder targetpool;
+	
+	/** The backed dual pool. */
+	protected final DualClassRuntimePoolBuilder dualpool;
+	
 	/** The constant pool builder to use. */
+	@Deprecated
 	protected final MinimizedPoolBuilder pool =
 		new MinimizedPoolBuilder();
 	
@@ -82,6 +89,13 @@ public final class Minimizer
 			throw new NullPointerException("NARG");
 		
 		this.input = __cf;
+		
+		// The target pool is the one where we place entries into
+		boolean aliaspool = (__dp != null);
+		this.targetpool = new TargettedPoolBuilder(aliaspool,
+			(__dp == null ?
+				(__dp = new DualClassRuntimePoolBuilder()) : __dp));
+		this.dualpool = __dp;
 	}
 	
 	/**
