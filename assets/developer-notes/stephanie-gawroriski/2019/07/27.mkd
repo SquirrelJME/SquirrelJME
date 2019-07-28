@@ -1,0 +1,12 @@
+# 2019/07/27
+
+## 07:00
+
+Forgot where I was, I worked all week and have not touched or looked at
+SquirrelJME at all. I thought I was loading classes, but really I was doing
+the dual pooling. Need to see where I am with that.
+
+## 07:02
+
+But I do know that it is only in the minimizer that I have to load the new
+class stuff. I need not worry about the actual minimizer and such.
