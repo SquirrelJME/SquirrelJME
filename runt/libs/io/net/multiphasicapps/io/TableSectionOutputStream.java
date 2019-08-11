@@ -29,7 +29,7 @@ public final class TableSectionOutputStream
 {
 	/** This represents a variable sized section. */
 	public static final int VARIABLE_SIZE =
-		-3219836;
+		Integer.MIN_VALUE;
 	
 	/** The sections which are available in the output. */
 	private final List<Section> _sections =
