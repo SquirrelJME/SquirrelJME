@@ -204,6 +204,10 @@ public final class TableSectionOutputStream
 		/** Is this a variable size section? */
 		protected final boolean isvariable;
 		
+		/** Data rewrites which are possible. */
+		private final List<__Rewrite__> _rewrites =
+			new LinkedList<>();
+		
 		/** The byte buffer data. */
 		private byte[] _data =
 			new byte[_BUFFER_SIZE];
