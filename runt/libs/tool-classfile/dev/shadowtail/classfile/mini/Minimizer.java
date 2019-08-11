@@ -283,6 +283,9 @@ public final class Minimizer
 		__dos.writeInt(reloff + 4);
 		__dos.writeInt((reloff - baserel) + 4);
 		
+		// Round for the pools
+		reloff = Minimizer.__relAdd(reloff, 0);
+		
 		// Static pool offset and size
 		__dos.writeInt(0);
 		__dos.writeInt(0);
@@ -962,11 +965,12 @@ public final class Minimizer
 	 * Pads the output stream.
 	 *
 	 * @param __dos The stream to pad.
+	 * @return The current size of the output stream.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	static final void __dosRound(DataOutputStream __dos)
+	static final int __dosRound(DataOutputStream __dos)
 		throws IOException, NullPointerException
 	{
 		if (__dos == null)
@@ -975,6 +979,7 @@ public final class Minimizer
 		// Add padding
 		while ((__dos.size() & 3) != 0)
 			__dos.write(0);
+		return __dos.size();
 	}
 	
 	/**
