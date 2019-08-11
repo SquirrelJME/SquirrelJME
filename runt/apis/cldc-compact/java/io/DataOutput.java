@@ -12,46 +12,46 @@ package java.io;
 
 public interface DataOutput
 {
-	public abstract void write(int __a)
+	public abstract void write(int __b)
 		throws IOException;
 	
-	public abstract void write(byte[] __a)
+	public abstract void write(byte[] __b)
+		throws IOException, NullPointerException;
+	
+	public abstract void write(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException;
+	
+	public abstract void writeBoolean(boolean __v)
 		throws IOException;
 	
-	public abstract void write(byte[] __a, int __b, int __c)
+	public abstract void writeByte(int __v)
 		throws IOException;
 	
-	public abstract void writeBoolean(boolean __a)
+	public abstract void writeBytes(String __v)
 		throws IOException;
 	
-	public abstract void writeByte(int __a)
+	public abstract void writeChar(int __v)
 		throws IOException;
 	
-	public abstract void writeBytes(String __a)
+	public abstract void writeChars(String __v)
 		throws IOException;
 	
-	public abstract void writeChar(int __a)
+	public abstract void writeDouble(double __v)
 		throws IOException;
 	
-	public abstract void writeChars(String __a)
+	public abstract void writeFloat(float __v)
 		throws IOException;
 	
-	public abstract void writeDouble(double __a)
+	public abstract void writeInt(int __v)
 		throws IOException;
 	
-	public abstract void writeFloat(float __a)
+	public abstract void writeLong(long __v)
 		throws IOException;
 	
-	public abstract void writeInt(int __a)
+	public abstract void writeShort(int __v)
 		throws IOException;
 	
-	public abstract void writeLong(long __a)
-		throws IOException;
-	
-	public abstract void writeShort(int __a)
-		throws IOException;
-	
-	public abstract void writeUTF(String __a)
+	public abstract void writeUTF(String __v)
 		throws IOException;
 }
 
