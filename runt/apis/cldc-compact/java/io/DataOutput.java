@@ -28,13 +28,13 @@ public interface DataOutput
 		throws IOException;
 	
 	public abstract void writeBytes(String __v)
-		throws IOException;
+		throws IOException, NullPointerException;
 	
 	public abstract void writeChar(int __v)
 		throws IOException;
 	
 	public abstract void writeChars(String __v)
-		throws IOException;
+		throws IOException, NullPointerException;
 	
 	public abstract void writeDouble(double __v)
 		throws IOException;
