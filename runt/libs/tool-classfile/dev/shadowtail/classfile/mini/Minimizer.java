@@ -47,6 +47,7 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.PrimitiveType;
+import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
  * This takes an input class file and translates it to the minimized format
@@ -101,18 +102,22 @@ public final class Minimizer
 	/**
 	 * Performs the minimization process.
 	 *
-	 * @param __dos The stream to write the result to.
+	 * @param __os The stream to write the result to.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	private final void __run(DataOutputStream __dos)
+	private final void __run(OutputStream __os)
 		throws IOException, NullPointerException
 	{
-		if (__dos == null)
+		if (__os == null)
 			throw new NullPointerException("NARG");
 			
+		// The input class
 		ClassFile input = this.input;
+		
+		// The output section
+		TableSectionOutputStream output = new TableSectionOutputStream();
 		
 		// {@squirreljme.error JC0g Class name string was not the first entry
 		// in the pool.}
@@ -149,30 +154,25 @@ public final class Minimizer
 				throw new IllegalArgumentException("JC0i " + pidx);
 		}
 		
-		// Write magic number to specify this format
-		__dos.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
-		
-		// Process all fields
-		__TempFields__[] fields = this.__doFields(); 
-		
-		// Process all methods
+		// Process all fields and methods
+		__TempFields__[] fields = this.__doFields();
 		__TempMethods__[] methods = this.__doMethods();
 		
+		// Initialize header section
+		TableSectionOutputStream.Section header =
+			output.addSection(MinimizedClassHeader.HEADER_SIZE_WITH_MAGIC);
+		
+		// Write magic number to specify this format
+		header.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
+		
 		// Unused, may be used later when needed
-		__dos.writeShort(0);
+		header.writeShort(0);
 		
 		// The index of the instance method named __start
-		int startdx = 0;
-		for (MinimizedMethod mm : methods[1]._methods)
-		{
-			if (mm.name.toString().equals("__start"))
-				break;
-			startdx++;
-		}
-		__dos.writeByte(startdx);
+		header.writeByte(methods[1].findMethodIndex("__start"));
 		
 		// Data type of the class
-		__dos.writeByte(DataType.of(input.thisName().field()).ordinal());
+		header.writeByte(DataType.of(input.thisName().field()).ordinal());
 		
 		// This may be null for Object
 		ClassName supernamecn = input.superName();
@@ -184,32 +184,32 @@ public final class Minimizer
 		
 		// The source file name
 		String sfn = input.sourceFile();
-		int snfid = (sfn == null ? 0 : Minimizer.__checkUShort(pool.add(sfn)));
+		int snfid = (sfn == null ? 0 : pool.add(sfn));
 		
 		// Store the pool size
-		__dos.writeShort(Minimizer.__checkUShort(pool.size()));
+		header.writeUnsignedShortChecked(pool.size());
 		
 		// Store class information, such as the flags, name, superclass,
 		// interfaces, class type, and version
-		__dos.writeInt(input.flags().toJavaBits());
-		__dos.writeShort(Minimizer.__checkUShort(thisname));
-		__dos.writeShort(Minimizer.__checkUShort(supername));
-		__dos.writeShort(Minimizer.__checkUShort(inames));
-		__dos.writeByte(input.type().ordinal());
-		__dos.writeByte(input.version().ordinal());
+		header.writeInt(input.flags().toJavaBits());
+		header.writeUnsignedShortChecked(thisname);
+		header.writeUnsignedShortChecked(supername);
+		header.writeUnsignedShortChecked(inames);
+		header.writeByte(input.type().ordinal());
+		header.writeByte(input.version().ordinal());
 		
 		// Needed for debugging to figure out what file the class is in,
 		// will be very useful
-		__dos.writeShort(snfid);
+		header.writeUnsignedShortChecked(snfid);
 		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)
 		{
 			__TempFields__ tf = fields[i];
 			
-			__dos.writeShort(Minimizer.__checkUShort(tf._count));
-			__dos.writeShort(Minimizer.__checkUShort((tf._bytes + 3) & (~3)));
-			__dos.writeShort(Minimizer.__checkUShort(tf._objects));
+			header.writeUnsignedShortChecked(tf._count);
+			header.writeUnsignedShortChecked((tf._bytes + 3) & (~3));
+			header.writeUnsignedShortChecked(tf._objects);
 		}
 		
 		// Write static and instance method counts
@@ -217,106 +217,67 @@ public final class Minimizer
 		{
 			__TempMethods__ tm = methods[i];
 			
-			__dos.writeShort(Minimizer.__checkUShort(tm._count));
+			header.writeUnsignedShortChecked(tm._count);
 		}
 		
-		// Relative offset where all the data will end up being, starts at
-		// the constant pool address.
-		int reloff = MinimizedClassHeader.HEADER_SIZE_WITH_MAGIC,
-			baserel = reloff;
-		
-		// Base round to pool data
-		reloff = Minimizer.__relAdd(reloff, 0);
-		byte[] pooldata = pool.getBytes(methods);
+		// Build section where the constant pool is
+		TableSectionOutputStream.Section poolsection =
+			output.addSection(pool.getBytes(), 4);
 		
 		// Constant pool locator
-		__dos.writeInt(reloff);
-		__dos.writeInt(pooldata.length);
-		
-		// Round
-		reloff = Minimizer.__relAdd(reloff, pooldata.length);
+		header.writeSectionAddressInt(poolsection);
+		header.writeSectionSizeInt(poolsection);
 		
 		// Field locator
-		byte[][] fielddata = new byte[2][];
 		for (int i = 0; i < 2; i++)
 		{
-			__TempFields__ tf = fields[i];
+			// Generate section
+			TableSectionOutputStream.Section subsection =
+				output.addSection(fields[i].getBytes(pool), 4);
 			
-			// Get bytes
-			byte[] data = tf.getBytes(pool);
-			fielddata[i] = data;
-			
-			// Offset and size
-			__dos.writeInt(reloff);
-			__dos.writeInt(data.length);
-			
-			// Round
-			reloff = Minimizer.__relAdd(reloff, data.length);
+			// Write section details
+			header.writeSectionAddressInt(subsection);
+			header.writeSectionSizeInt(subsection);
 		}
 		
 		// Method locator
-		byte[][] methoddata = new byte[2][];
 		for (int i = 0; i < 2; i++)
 		{
-			__TempMethods__ tm = methods[i];
+			// Generate section
+			TableSectionOutputStream.Section subsection =
+				output.addSection(methods[i].getBytes(pool), 4);
 			
-			// Get bytes
-			byte[] data = tm.getBytes(pool);
-			methoddata[i] = data;
-			
-			// Offset and size
-			__dos.writeInt(reloff);
-			__dos.writeInt(data.length);
-			
-			// Round
-			reloff = Minimizer.__relAdd(reloff, data.length);
+			// Write section details
+			header.writeSectionAddressInt(subsection);
+			header.writeSectionSizeInt(subsection);
 		}
 		
 		// Generate a UUID and write it
 		long uuid = Minimizer.generateUUID();
-		__dos.writeInt((int)(uuid >>> 32));
-		__dos.writeInt((int)uuid);
+		header.writeInt((int)(uuid >>> 32));
+		header.writeInt((int)uuid);
 		
 		// Write absolute file size! This saves time in calculating how big
 		// a file we have and we can just read that many bytes for all the
 		// data areas or similar if needed
-		__dos.writeInt(reloff + 4);
-		__dos.writeInt((reloff - baserel) + 4);
+		header.writeFileSizeInt();
 		
-		// Round for the pools
-		reloff = Minimizer.__relAdd(reloff, 0);
+		// Not used anymore
+		header.writeInt(0);
 		
 		// Static pool offset and size
-		__dos.writeInt(0);
-		__dos.writeInt(0);
+		header.writeInt(0);
+		header.writeInt(0);
 		
 		// Runtime pool offset and size
-		__dos.writeInt(0);
-		__dos.writeInt(0);
-		
-		// Constant pool is rounded
-		Minimizer.__dosRound(__dos);
-		
-		// Write constant pool
-		__dos.write(pooldata);
-		Minimizer.__dosRound(__dos);
-		
-		// Write field data
-		for (int i = 0; i < 2; i++)
-		{
-			__dos.write(fielddata[i]);
-			Minimizer.__dosRound(__dos);
-		}
-		
-		// Write method data
-		for (int i = 0; i < 2; i++)
-		{
-			__dos.write(methoddata[i]);
-			Minimizer.__dosRound(__dos);
-		}
+		header.writeInt(0);
+		header.writeInt(0);
 		
 		// Write end magic number
-		__dos.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
+		header.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
+		
+		// Write resulting file
+		output.writeTo(__os);
 	}
 	
 	/**
@@ -809,7 +770,7 @@ public final class Minimizer
 		if (__cf == null || __os == null)
 			throw new NullPointerException("NARG");
 		
-		new Minimizer(__dp, __cf).__run(new DataOutputStream(__os));
+		new Minimizer(__dp, __cf).__run(__os);
 	}
 	
 	/**
@@ -883,6 +844,7 @@ public final class Minimizer
 	 * @throws InvalidClassFormatException If the short is out of range.
 	 * @since 2019/04/14
 	 */
+	@Deprecated
 	static final int __checkUShort(int __v)
 		throws InvalidClassFormatException
 	{
@@ -902,6 +864,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/24
 	 */
+	@Deprecated
 	private static final byte[] __compact(short[] __st, byte[] __bt)
 		throws IOException, NullPointerException
 	{
@@ -970,6 +933,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
+	@Deprecated
 	static final int __dosRound(DataOutputStream __dos)
 		throws IOException, NullPointerException
 	{
@@ -989,6 +953,7 @@ public final class Minimizer
 	 * @param __v The offset to add.
 	 * @since 2019/04/14
 	 */
+	@Deprecated
 	static final int __relAdd(int __rel, int __v)
 	{
 		__rel += __v;

@@ -259,16 +259,11 @@ public final class MinimizedPoolBuilder
 	/**
 	 * Returns the byte representation of the data here.
 	 *
-	 * @param __methods Methods for lookup, used to find the where oart.
 	 * @return The byte data representation.
 	 * @since 2019/04/14
 	 */
-	public final byte[] getBytes(__TempMethods__[] __methods)
-		throws NullPointerException
+	public final byte[] getBytes()
 	{
-		if (__methods == null)
-			throw new NullPointerException("NARG");
-		
 		Map<Object, Integer> pool = this._pool;
 		List<int[]> parts = this._parts;
 		

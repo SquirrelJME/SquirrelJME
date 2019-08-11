@@ -53,6 +53,27 @@ final class __TempMethods__
 	}
 	
 	/**
+	 * Finds the method by the given name.
+	 *
+	 * @param __name The name to locate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/08/11
+	 */
+	public final int findMethodIndex(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		List<MinimizedMethod> methods = this._methods;
+		for (int i = 0, n = methods.size(); i < n; i++)
+			if (__name.equals(methods.get(i).nameAndType().name().toString()))
+				return i;
+		
+		return -1;
+	}
+	
+	/**
 	 * Returns the byte representation of the data here.
 	 *
 	 * @param __pool The constant pool.

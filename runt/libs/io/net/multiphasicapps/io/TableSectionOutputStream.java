@@ -41,9 +41,52 @@ public final class TableSectionOutputStream
 	 * @return The resulting section.
 	 * @since 2019/08/11
 	 */
-	public final Section addSection()
+	public final TableSectionOutputStream.Section addSection()
 	{
 		return this.addSection(VARIABLE_SIZE, 0);
+	}
+	
+	/**
+	 * Adds a section which consists of the given byte array.
+	 *
+	 * @param __bytes The byte array to initialize as.
+	 * @return The resulting section.
+	 * @throws IOException If the section could not be written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/08/11
+	 */
+	public final TableSectionOutputStream.Section addSection(byte[] __bytes)
+		throws IOException, NullPointerException
+	{
+		return this.addSection(__bytes, 0);
+	}
+	
+	/**
+	 * Adds a section which consists of the given byte array using the given
+	 * alignment.
+	 *
+	 * @param __bytes The byte array to initialize as.
+	 * @param __align The alignment to use.
+	 * @return The resulting section.
+	 * @throws IOException If the section could not be written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/08/11
+	 */
+	public final TableSectionOutputStream.Section addSection(byte[] __bytes,
+		int __align)
+		throws IOException, NullPointerException
+	{
+		if (__bytes == null)
+			throw new NullPointerException("NARG");
+		
+		// Add new section
+		Section rv = this.addSection(__bytes.length, __align);
+		
+		// Write all the bytes into it
+		rv.write(__bytes);
+		
+		// Use this section
+		return rv;
 	}
 	
 	/**
@@ -56,7 +99,7 @@ public final class TableSectionOutputStream
 	 * is not the variable size.
 	 * @since 2019/08/11
 	 */
-	public final Section addSection(int __size)
+	public final TableSectionOutputStream.Section addSection(int __size)
 		throws IllegalArgumentException
 	{
 		return this.addSection(__size, 0);
@@ -75,7 +118,8 @@ public final class TableSectionOutputStream
 	 * is not the variable size.
 	 * @since 2019/08/11
 	 */
-	public final Section addSection(int __size, int __align)
+	public final TableSectionOutputStream.Section addSection(int __size,
+		int __align)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error BD3h Zero or negative size section. (The size)}
@@ -249,40 +293,6 @@ public final class TableSectionOutputStream
 		}
 		
 		/**
-		 * Writes the address of the given section as an integer.
-		 *
-		 * @param __s The section to write the address of.
-		 * @throws IOException On write errors.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2019/08/11
-		 */
-		public final void writeAddressInt(Section __s)
-			throws IOException, NullPointerException
-		{
-			if (__s == null)
-				throw new NullPointerException("NARG");
-			
-			throw new todo.TODO();
-		}
-		
-		/**
-		 * Writes the address of the given section as a short.
-		 *
-		 * @param __s The section to write the address of.
-		 * @throws IOException On write errors.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2019/08/11
-		 */
-		public final void writeAddressShort(Section __s)
-			throws IOException, NullPointerException
-		{
-			if (__s == null)
-				throw new NullPointerException("NARG");
-			
-			throw new todo.TODO();
-		}
-		
-		/**
 		 * Writes padding which aligns to a given amount from within the
 		 * data stream as itself.
 		 *
@@ -375,6 +385,30 @@ public final class TableSectionOutputStream
 		}
 		
 		/**
+		 * Writes the size of the file as an integer.
+		 *
+		 * @throws IOException On write errors.
+		 * @since 2019/08/11
+		 */
+		public final void writeFileSizeInt()
+			throws IOException
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Writes the size of the file as a short.
+		 *
+		 * @throws IOException On write errors.
+		 * @since 2019/08/11
+		 */
+		public final void writeFileSizeShort()
+			throws IOException
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2019/08/11
 		 */
@@ -449,6 +483,104 @@ public final class TableSectionOutputStream
 		 */
 		@Override
 		public final void writeShort(int __v)
+			throws IOException
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Writes the address of the given section as an integer.
+		 *
+		 * @param __s The section to write the address of.
+		 * @throws IOException On write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/08/11
+		 */
+		public final void writeSectionAddressInt(Section __s)
+			throws IOException, NullPointerException
+		{
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Writes the address of the given section as a short.
+		 *
+		 * @param __s The section to write the address of.
+		 * @throws IOException On write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/08/11
+		 */
+		public final void writeSectionAddressShort(Section __s)
+			throws IOException, NullPointerException
+		{
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Writes the size of the given section as an integer.
+		 *
+		 * @param __s The section and its size to write.
+		 * @throws IOException On write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/08/11
+		 */
+		public final void writeSectionSizeInt(Section __s)
+			throws IOException, NullPointerException
+		{
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Writes the size of the given section as a short.
+		 *
+		 * @param __s The section and its size to write.
+		 * @throws IOException On write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/08/11
+		 */
+		public final void writeSectionSizeShort(Section __s)
+			throws IOException, NullPointerException
+		{
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Writes the specified short value and checks to make sure it is
+		 * within the range of a short.
+		 *
+		 * @param __v The value to write.
+		 * @throws IOException If the short could not be written or it
+		 * exceeds the range of a short value.
+		 * @since 2019/08/11
+		 */
+		public final void writeShortChecked(int __v)
+			throws IOException
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Writes the specified unsigned short value and checks to make sure it
+		 * is within the range of an unsigned short.
+		 *
+		 * @param __v The value to write.
+		 * @throws IOException If the unsigned short could not be written or it
+		 * exceeds the range of an unsigned short value.
+		 * @since 2019/08/11
+		 */
+		public final void writeUnsignedShortChecked(int __v)
 			throws IOException
 		{
 			throw new todo.TODO();
