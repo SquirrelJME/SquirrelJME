@@ -138,8 +138,8 @@ public final class MinimizedClassHeader
 	/** File size. */
 	public final int filesize;
 	
-	/** Size of all the non-header data. */
-	public final int datasize;
+	/** Unused B. */
+	public final int unusedb;
 	
 	/** Static constant pool offset. */
 	public final int staticpooloff;
@@ -218,7 +218,9 @@ public final class MinimizedClassHeader
 			
 		// File size
 		this.filesize = __vx[at++];
-		this.datasize = __vx[at++];
+		
+		// Not used
+		this.unusedb = __vx[at++];
 		
 		// Static and run-time constant pool
 		this.staticpooloff = __vx[at++];
@@ -307,7 +309,9 @@ public final class MinimizedClassHeader
 			
 			// File size
 			/* filesize */ dis.readInt(),
-			/* datasize */ dis.readInt(),
+			
+			// Unused
+			/* unusedb */ dis.readInt(),
 			
 			// Static and runtime pool
 			/* staticpooloff */ dis.readInt(),
