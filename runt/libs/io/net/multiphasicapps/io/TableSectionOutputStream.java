@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -190,6 +191,10 @@ public final class TableSectionOutputStream
 		extends OutputStream
 		implements DataOutput
 	{
+		/** The size of the bufer. */
+		private static final int _BUFFER_SIZE =
+			512;
+		
 		/** The fixed size of this section. */
 		protected final int fixedsize;
 		
@@ -198,6 +203,13 @@ public final class TableSectionOutputStream
 		
 		/** Is this a variable size section? */
 		protected final boolean isvariable;
+		
+		/** The byte buffer data. */
+		private byte[] _data =
+			new byte[_BUFFER_SIZE];
+		
+		/** The current size of the section. */
+		private int _size;
 		
 		/**
 		 * Initializes the written section.
@@ -248,7 +260,7 @@ public final class TableSectionOutputStream
 		 */
 		public final int size()
 		{
-			throw new todo.TODO();
+			return this._size;
 		}
 		
 		/**
@@ -259,7 +271,24 @@ public final class TableSectionOutputStream
 		public final void write(int __b)
 			throws IOException
 		{
-			throw new todo.TODO();
+			// {@squirreljme.error BD3m Size of section exceeded.}
+			int size = this._size;
+			if (!this.isvariable && size + 1 > this.fixedsize)
+				throw new IOException("BD3m");
+			
+			// Possibly resize the data array
+			byte[] data = this._data;
+			if (size >= data.length)
+			{
+				data = Arrays.copyOf(data, size + _BUFFER_SIZE);
+				this._data = data;
+			}
+			
+			// Write into the data
+			data[size] = (byte)__b;
+			
+			// Size up
+			this._size = size + 1;
 		}
 		
 		/**
@@ -289,7 +318,25 @@ public final class TableSectionOutputStream
 			if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 				throw new IndexOutOfBoundsException("IOOB");
 			
-			throw new todo.TODO();
+			// {@squirreljme.error BD3p Size of section exceeded.}
+			int size = this._size;
+			if (!this.isvariable && size + __l > this.fixedsize)
+				throw new IOException("BD3p");
+			
+			// Possibly resize the data array
+			byte[] data = this._data;
+			if (size + __l >= data.length)
+			{
+				data = Arrays.copyOf(data, size + __l + _BUFFER_SIZE);
+				this._data = data;
+			}
+			
+			// Write into the data
+			for (int i = 0; i < __l; i++)
+				data[size++] = __b[__o++];
+			
+			// Size up
+			this._size = size;
 		}
 		
 		/**
@@ -594,7 +641,13 @@ public final class TableSectionOutputStream
 		public final void writeShortChecked(int __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			// {@squirreljme.error BD3o Signed short value out of range.
+			// (The value)}
+			if (__v < -32768 || __v > 32767)
+				throw new IOException("BD3o " + __v);
+			
+			this.write(__v >> 8);
+			this.write(__v);
 		}
 		
 		/**
@@ -609,7 +662,13 @@ public final class TableSectionOutputStream
 		public final void writeUnsignedShortChecked(int __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			// {@squirreljme.error BD3n Unsigned short value out of range.
+			// (The value)}
+			if (__v < 0 || __v > 65535)
+				throw new IOException("BD3n " + __v);
+			
+			this.write(__v >> 8);
+			this.write(__v);
 		}
 		
 		/**
