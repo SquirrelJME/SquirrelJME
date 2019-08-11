@@ -273,7 +273,7 @@ public final class TableSectionOutputStream
 			if (__b == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			this.write(__b, 0, __b.length);
 		}
 		
 		/**
@@ -337,7 +337,7 @@ public final class TableSectionOutputStream
 		public final void writeByte(int __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			this.write(__v);
 		}
 		
 		/**
@@ -346,9 +346,13 @@ public final class TableSectionOutputStream
 		 */
 		@Override
 		public final void writeBytes(String __v)
-			throws IOException
+			throws IOException, NullPointerException
 		{
-			throw new todo.TODO();
+			if (__v == null)
+				throw new NullPointerException("NARG");
+			
+			for (int i = 0, n = __v.length(); i < n; i++)
+				this.write(__v.charAt(i));
 		}
 		
 		/**
@@ -359,7 +363,7 @@ public final class TableSectionOutputStream
 		public final void writeChar(int __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			this.writeShort(__v);
 		}
 		
 		/**
@@ -368,9 +372,18 @@ public final class TableSectionOutputStream
 		 */
 		@Override
 		public final void writeChars(String __v)
-			throws IOException
+			throws IOException, NullPointerException
 		{
-			throw new todo.TODO();
+			if (__v == null)
+				throw new NullPointerException("NARG");
+			
+			for (int i = 0, n = __v.length(); i < n; i++)
+			{
+				char c = __v.charAt(i);
+				
+				this.write(c >> 8);
+				this.write(c);
+			}
 		}
 		
 		/**
@@ -381,7 +394,7 @@ public final class TableSectionOutputStream
 		public final void writeDouble(double __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			this.writeLong(Double.doubleToLongBits(__v));
 		}
 		
 		/**
@@ -416,7 +429,7 @@ public final class TableSectionOutputStream
 		public final void writeFloat(float __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			this.writeInt(Float.floatToIntBits(__v));
 		}
 		
 		/**
@@ -427,7 +440,10 @@ public final class TableSectionOutputStream
 		public final void writeInt(int __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			this.write(__v >> 24);
+			this.write(__v >> 16);
+			this.write(__v >> 8);
+			this.write(__v);
 		}
 		
 		/**
@@ -438,7 +454,14 @@ public final class TableSectionOutputStream
 		public final void writeLong(long __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			this.write((int)(__v >> 56));
+			this.write((int)(__v >> 48));
+			this.write((int)(__v >> 40));
+			this.write((int)(__v >> 32));
+			this.write((int)(__v >> 24));
+			this.write((int)(__v >> 16));
+			this.write((int)(__v >> 8));
+			this.write((int)(__v));
 		}
 		
 		/**
@@ -474,7 +497,9 @@ public final class TableSectionOutputStream
 			if (__n == 0)
 				return;
 			
-			throw new todo.TODO();
+			// Write the padding
+			for (int i = 0; i < __n; i++)
+				this.write(__v);
 		}
 		
 		/**
@@ -485,7 +510,8 @@ public final class TableSectionOutputStream
 		public final void writeShort(int __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			this.write(__v >> 8);
+			this.write(__v);
 		}
 		
 		/**
