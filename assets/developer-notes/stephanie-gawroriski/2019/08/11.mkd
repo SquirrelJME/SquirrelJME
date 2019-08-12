@@ -1,0 +1,19 @@
+# 2019/08/11
+
+## 09:16
+
+Going to work on SquirrelJME today or at least attempt to do so.
+
+## 09:36
+
+You know I could probably make a class which makes writing regions and such
+easier. I manually manage them along with their offsets and do I really
+need to do that? I really think not, I could have a class which checks
+things and allows for multiple region writing at the same time. I think that
+would make all these multi-sections easier and such. Because looking at the
+code and such the way I do padding manually does not really make for much
+readability.
+
+## 09:49
+
+I definitely do need a refactor of this code.
