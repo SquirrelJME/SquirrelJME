@@ -1,0 +1,11 @@
+# 2019/08/10
+
+## 11:34
+
+I do not really remember what I was working on in SquirrelJME, I do want to
+work on it but I am not sure where I am at. Since it has been awhile.
+
+## 11:39
+
+Okay yes, I was actually working on the constant pool splitting to optimize
+things to make them nicer.
