@@ -273,8 +273,9 @@ public final class Minimizer
 		header.writeInt(0);
 		header.writeInt(0);
 		
-		// Write end magic number
-		header.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
+		// Write end magic number, which is at the end of the file
+		TableSectionOutputStream.Section eofmagic = output.addSection(4);
+		eofmagic.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
 		
 		// Write resulting file
 		output.writeTo(__os);
