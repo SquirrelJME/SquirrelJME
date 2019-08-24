@@ -275,10 +275,11 @@ public final class TableSectionOutputStream
 		public final void write(int __b)
 			throws IOException
 		{
-			// {@squirreljme.error BD3m Size of section exceeded.}
+			// {@squirreljme.error BD3m Size of section exceeded. (The size
+			// of the section)}
 			int size = this._size;
 			if (!this.isvariable && size + 1 > this.fixedsize)
-				throw new IOException("BD3m");
+				throw new IOException("BD3m " + size);
 			
 			// Possibly resize the data array
 			byte[] data = this._data;
@@ -457,7 +458,12 @@ public final class TableSectionOutputStream
 		public final void writeFileSizeInt()
 			throws IOException
 		{
-			throw new todo.TODO();
+			// Record rewrite
+			this._rewrites.add(new __Rewrite__(this._size,
+				__RewriteType__.INTEGER, __RewriteValue__.SIZE, null));
+				
+			// Place padding
+			this.writeInt(0);
 		}
 		
 		/**
@@ -469,7 +475,12 @@ public final class TableSectionOutputStream
 		public final void writeFileSizeShort()
 			throws IOException
 		{
-			throw new todo.TODO();
+			// Record rewrite
+			this._rewrites.add(new __Rewrite__(this._size,
+				__RewriteType__.SHORT, __RewriteValue__.SIZE, null));
+				
+			// Place padding
+			this.writeShort(0);
 		}
 		
 		/**
@@ -579,7 +590,12 @@ public final class TableSectionOutputStream
 			if (__s == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			// Record rewrite
+			this._rewrites.add(new __Rewrite__(this._size,
+				__RewriteType__.INTEGER, __RewriteValue__.ADDRESS, __s));
+				
+			// Place padding
+			this.writeInt(0);
 		}
 		
 		/**
@@ -596,7 +612,12 @@ public final class TableSectionOutputStream
 			if (__s == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			// Record rewrite
+			this._rewrites.add(new __Rewrite__(this._size,
+				__RewriteType__.SHORT, __RewriteValue__.ADDRESS, __s));
+				
+			// Place padding
+			this.writeShort(0);
 		}
 		
 		/**
@@ -613,7 +634,12 @@ public final class TableSectionOutputStream
 			if (__s == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			// Record rewrite
+			this._rewrites.add(new __Rewrite__(this._size,
+				__RewriteType__.INTEGER, __RewriteValue__.SIZE, __s));
+				
+			// Place padding
+			this.writeInt(0);
 		}
 		
 		/**
@@ -630,7 +656,12 @@ public final class TableSectionOutputStream
 			if (__s == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			// Record rewrite
+			this._rewrites.add(new __Rewrite__(this._size,
+				__RewriteType__.SHORT, __RewriteValue__.SIZE, __s));
+				
+			// Place padding
+			this.writeShort(0);
 		}
 		
 		/**
