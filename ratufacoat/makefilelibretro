@@ -453,7 +453,7 @@ else ifeq ($(platform), xbox1_msvc2003)
 else
 	EXT    ?= dll
 	TARGET := $(TARGET_NAME)_libretro.$(EXT)
-	CC = gcc
+	CC ?= gcc
 	SHARED := -shared -static-libgcc -static-libstdc++ -s -Wl,--version-script=$(BUILD_DIR)/link.T
 	CFLAGS += -D__WIN32__ -D__WIN32_LIBRETRO__
 endif
