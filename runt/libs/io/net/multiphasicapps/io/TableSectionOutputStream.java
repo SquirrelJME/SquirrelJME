@@ -10,6 +10,7 @@
 package net.multiphasicapps.io;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.Reference;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -191,7 +192,8 @@ public final class TableSectionOutputStream
 			Section section = sections.get(i);
 			
 			// Perform alignment of this section
-			filesize += section.alignment - (filesize % section.alignment);
+			filesize += (section.alignment - 1) -
+				(filesize % section.alignment);
 			
 			// Section is addressed here
 			section._writeaddress = filesize;
@@ -203,7 +205,84 @@ public final class TableSectionOutputStream
 			section._writesize = writesize;
 		}
 		
-		throw new todo.TODO();
+		// Write each individual section to the output stream
+		int writeptr = 0;
+		for (int i = 0, n = sections.size(); i < n; i++)
+		{
+			Section section = sections.get(i);
+			
+			// Get properties of the section
+			byte[] data = section._data;
+			int cursize = section._size,
+				writeaddress = section._writeaddress,
+				writesize = section._writesize,
+				writeendaddress = writeaddress + writesize,
+				actualwrite = (cursize < writesize ? cursize : writesize);
+			
+			// Write padding until we reach our needed address
+			while (writeptr < writeaddress)
+			{
+				__os.write(0);
+				writeptr++;
+			}
+			
+			// Rewrites must be processed to figure out how to refer to
+			// other section aliases!
+			for (__Rewrite__ rewrite : section._rewrites)
+			{
+				// The target section if any
+				Reference<TableSectionOutputStream.Section> refsection =
+					rewrite._section;
+				
+				// Determine the value that is to be written
+				int value = 0;
+				switch (rewrite._value)
+				{
+						// Address of section
+					case ADDRESS:
+						if (refsection != null)
+							value = refsection.get()._writeaddress;
+						break;
+						
+						// Size of section or file.
+					case SIZE:
+						if (refsection == null)
+							value = filesize;
+						else
+							value = refsection.get()._writesize;
+						break;
+				}
+				
+				// Perform the actual rewrite
+				int paddr = rewrite._address;
+				switch (rewrite._type)
+				{
+					case SHORT:
+						data[paddr] = (byte)(value >>> 8);
+						data[paddr + 1] = (byte)(value);
+						break;
+					
+					case INTEGER:
+						data[paddr] = (byte)(value >>> 24);
+						data[paddr + 1] = (byte)(value >>> 16);
+						data[paddr + 2] = (byte)(value >>> 8);
+						data[paddr + 3] = (byte)(value);
+						break;
+				}
+			}
+			
+			// Write the section data as an entire chunk, note that this
+			// could be a fixed size section with a short buffer!
+			__os.write(data, 0, actualwrite);
+			writeptr += actualwrite;
+			
+			// Write padding until we reach our ending address
+			while (writeptr < writeendaddress)
+			{
+				__os.write(0);
+				writeptr++;
+			}
+		}
 	}
 	
 	/**
