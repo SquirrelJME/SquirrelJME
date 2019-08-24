@@ -51,7 +51,8 @@ final class __Rewrite__
 		this._address = __addr;
 		this._type = __type;
 		this._value = __value;
-		this._section = new WeakReference<>(__section);
+		this._section = (__section == null ? null :
+			new WeakReference<>(__section));
 	}
 }
 

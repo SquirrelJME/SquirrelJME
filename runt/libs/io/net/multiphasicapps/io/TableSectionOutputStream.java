@@ -179,6 +179,25 @@ public final class TableSectionOutputStream
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
+		// Our current file size
+		int filesize = 0;
+		
+		// We must go through all of the sections, perform their required
+		// alignment while additionally calculating their addresses within
+		// the file for section references.
+		List<Section> sections = this._sections;
+		for (int i = 0, n = sections.size(); i < n; i++)
+		{
+			Section section = sections.get(i);
+			
+			throw new todo.TODO();
+		}
+		
+		/*
+		private int _size;
+		private int _address =
+		*/
+		
 		throw new todo.TODO();
 	}
 	
@@ -209,11 +228,14 @@ public final class TableSectionOutputStream
 			new LinkedList<>();
 		
 		/** The byte buffer data. */
-		private byte[] _data =
-			new byte[_BUFFER_SIZE];
+		private byte[] _data;
 		
 		/** The current size of the section. */
 		private int _size;
+		
+		/** The address of this section. */
+		private int _address =
+			-1;
 		
 		/**
 		 * Initializes the written section.
@@ -234,6 +256,13 @@ public final class TableSectionOutputStream
 			this.fixedsize = __size;
 			this.alignment = (__align >= 1 ? __align : 1);
 			this.isvariable = (__size == VARIABLE_SIZE);
+			
+			// If this is a fixed size section, we never have to expand it
+			// so we can allocate all the needed data!
+			if (__size != VARIABLE_SIZE)
+				this._data = new byte[__size];
+			else
+				this._data = new byte[_BUFFER_SIZE];
 		}
 		
 		/**
@@ -281,9 +310,9 @@ public final class TableSectionOutputStream
 			if (!this.isvariable && size + 1 > this.fixedsize)
 				throw new IOException("BD3m " + size);
 			
-			// Possibly resize the data array
+			// Possibly resize the data array, only when variable
 			byte[] data = this._data;
-			if (size >= data.length)
+			if (this.isvariable && size >= data.length)
 			{
 				data = Arrays.copyOf(data, size + _BUFFER_SIZE);
 				this._data = data;
@@ -328,11 +357,12 @@ public final class TableSectionOutputStream
 			if (!this.isvariable && size + __l > this.fixedsize)
 				throw new IOException("BD3p");
 			
-			// Possibly resize the data array
+			// Possibly resize the data array (only when variable)
 			byte[] data = this._data;
-			if (size + __l >= data.length)
+			if (this.isvariable && size + __l >= data.length)
 			{
-				data = Arrays.copyOf(data, size + __l + _BUFFER_SIZE);
+				data = Arrays.copyOf(data,
+					size + (__l < _BUFFER_SIZE ? _BUFFER_SIZE : __l));
 				this._data = data;
 			}
 			
