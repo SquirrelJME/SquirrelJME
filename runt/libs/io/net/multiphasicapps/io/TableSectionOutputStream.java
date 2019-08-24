@@ -190,13 +190,18 @@ public final class TableSectionOutputStream
 		{
 			Section section = sections.get(i);
 			
-			throw new todo.TODO();
+			// Perform alignment of this section
+			filesize += section.alignment - (filesize % section.alignment);
+			
+			// Section is addressed here
+			section._writeaddress = filesize;
+			
+			// Move the current file size up by the section's size
+			int writesize = (section.isvariable ?
+				section._size : section.fixedsize);
+			filesize += writesize;
+			section._writesize = writesize;
 		}
-		
-		/*
-		private int _size;
-		private int _address =
-		*/
 		
 		throw new todo.TODO();
 	}
@@ -233,8 +238,12 @@ public final class TableSectionOutputStream
 		/** The current size of the section. */
 		private int _size;
 		
-		/** The address of this section. */
-		private int _address =
+		/** The write address of this section. */
+		private int _writeaddress =
+			-1;
+		
+		/** The write size of this section. */
+		private int _writesize =
 			-1;
 		
 		/**
