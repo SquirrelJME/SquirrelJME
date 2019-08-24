@@ -9,6 +9,9 @@
 
 package net.multiphasicapps.io;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This stores a single rewrite.
  *
@@ -26,7 +29,7 @@ final class __Rewrite__
 	final __RewriteValue__ _value;
 	
 	/** The target section to use. */
-	final TableSectionOutputStream.Section _section;
+	final Reference<TableSectionOutputStream.Section> _section;
 	
 	/**
 	 * Initializes the rewrite info.
@@ -48,7 +51,7 @@ final class __Rewrite__
 		this._address = __addr;
 		this._type = __type;
 		this._value = __value;
-		this._section = __section;
+		this._section = new WeakReference<>(__section);
 	}
 }
 
