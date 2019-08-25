@@ -253,6 +253,9 @@ public final class TableSectionOutputStream
 						break;
 				}
 				
+				// Add offset of value
+				value += rewrite._offset;
+				
 				// Perform the actual rewrite
 				int paddr = rewrite._address;
 				switch (rewrite._type)
@@ -578,7 +581,7 @@ public final class TableSectionOutputStream
 		{
 			// Record rewrite
 			this._rewrites.add(new __Rewrite__(this._size,
-				__RewriteType__.INTEGER, __RewriteValue__.SIZE, null));
+				__RewriteType__.INTEGER, __RewriteValue__.SIZE, 0, null));
 				
 			// Place padding
 			this.writeInt(0);
@@ -595,7 +598,7 @@ public final class TableSectionOutputStream
 		{
 			// Record rewrite
 			this._rewrites.add(new __Rewrite__(this._size,
-				__RewriteType__.SHORT, __RewriteValue__.SIZE, null));
+				__RewriteType__.SHORT, __RewriteValue__.SIZE, 0, null));
 				
 			// Place padding
 			this.writeShort(0);
@@ -700,9 +703,24 @@ public final class TableSectionOutputStream
 		 * @param __s The section to write the address of.
 		 * @throws IOException On write errors.
 		 * @throws NullPointerException On null arguments.
-		 * @since 2019/08/11
+		 * @since 2019/08/24
 		 */
 		public final void writeSectionAddressInt(Section __s)
+			throws IOException, NullPointerException
+		{
+			this.writeSectionAddressInt(__s, 0);
+		}
+		
+		/**
+		 * Writes the address of the given section as an integer.
+		 *
+		 * @param __s The section to write the address of.
+		 * @param __o The offset to use.
+		 * @throws IOException On write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/08/11
+		 */
+		public final void writeSectionAddressInt(Section __s, int __o)
 			throws IOException, NullPointerException
 		{
 			if (__s == null)
@@ -710,7 +728,7 @@ public final class TableSectionOutputStream
 			
 			// Record rewrite
 			this._rewrites.add(new __Rewrite__(this._size,
-				__RewriteType__.INTEGER, __RewriteValue__.ADDRESS, __s));
+				__RewriteType__.INTEGER, __RewriteValue__.ADDRESS, __o, __s));
 				
 			// Place padding
 			this.writeInt(0);
@@ -722,9 +740,24 @@ public final class TableSectionOutputStream
 		 * @param __s The section to write the address of.
 		 * @throws IOException On write errors.
 		 * @throws NullPointerException On null arguments.
-		 * @since 2019/08/11
+		 * @since 2019/08/24
 		 */
 		public final void writeSectionAddressShort(Section __s)
+			throws IOException, NullPointerException
+		{
+			this.writeSectionAddressShort(__s, 0);
+		}
+		
+		/**
+		 * Writes the address of the given section as a short.
+		 *
+		 * @param __s The section to write the address of.
+		 * @param __o The offset value.
+		 * @throws IOException On write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/08/11
+		 */
+		public final void writeSectionAddressShort(Section __s, int __o)
 			throws IOException, NullPointerException
 		{
 			if (__s == null)
@@ -732,7 +765,7 @@ public final class TableSectionOutputStream
 			
 			// Record rewrite
 			this._rewrites.add(new __Rewrite__(this._size,
-				__RewriteType__.SHORT, __RewriteValue__.ADDRESS, __s));
+				__RewriteType__.SHORT, __RewriteValue__.ADDRESS, __o, __s));
 				
 			// Place padding
 			this.writeShort(0);
@@ -754,7 +787,7 @@ public final class TableSectionOutputStream
 			
 			// Record rewrite
 			this._rewrites.add(new __Rewrite__(this._size,
-				__RewriteType__.INTEGER, __RewriteValue__.SIZE, __s));
+				__RewriteType__.INTEGER, __RewriteValue__.SIZE, 0, __s));
 				
 			// Place padding
 			this.writeInt(0);
@@ -776,7 +809,7 @@ public final class TableSectionOutputStream
 			
 			// Record rewrite
 			this._rewrites.add(new __Rewrite__(this._size,
-				__RewriteType__.SHORT, __RewriteValue__.SIZE, __s));
+				__RewriteType__.SHORT, __RewriteValue__.SIZE, 0, __s));
 				
 			// Place padding
 			this.writeShort(0);
