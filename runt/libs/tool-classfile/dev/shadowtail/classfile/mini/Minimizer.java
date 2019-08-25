@@ -116,41 +116,6 @@ public final class Minimizer
 		DualClassRuntimePoolBuilder localpool =
 			new DualClassRuntimePoolBuilder();
 		
-		// {@squirreljme.error JC0g Class name string was not the first entry
-		// in the pool.}
-		int pidx;
-		MinimizedPoolBuilder pool = this.pool;
-		if (1 != (pidx = pool.add(input.thisName().toString())))
-			throw new IllegalArgumentException("JC0g " + pidx);
-		
-		// Add sort of fixed entries but it gets messed up due to there
-		// being array elements stored
-		boolean isarray = input.thisName().isArray();
-		if (isarray)
-		{
-			// Name of this class
-			pool.add(input.thisName());
-			
-			// Reference to self pool
-			pool.add(new ClassPool(input.thisName()));
-		}
-		
-		// Add fixed entries
-		else
-		{
-			// {@squirreljme.error JC0h Class name as class was not the second
-			// entry in the pool.}
-			if (2 != (pidx = pool.add(input.thisName())))
-				throw new IllegalArgumentException("JC0h " + pidx);
-			
-			// For the first entry in the pool, always have it be a reference
-			// to the current class pool
-			// {@squirreljme.error JC0i Reference to the current class pool was
-			// not the third entry of the pool.}
-			if (3 != (pidx = pool.add(new ClassPool(input.thisName()))))
-				throw new IllegalArgumentException("JC0i " + pidx);
-		}
-		
 		// Process all fields and methods
 		__TempFields__[] fields = this.__doFields();
 		__TempMethods__[] methods = this.__doMethods();
@@ -174,30 +139,26 @@ public final class Minimizer
 		// This may be null for Object
 		ClassName supernamecn = input.superName();
 		
-		// Class names
-		int thisname = pool.add(input.thisName()),
-			supername = (supernamecn == null ? 0 : pool.add(supernamecn)),
-			inames = pool.add(input.interfaceNames());
-		
-		// The source file name
-		String sfn = input.sourceFile();
-		int snfid = (sfn == null ? 0 : pool.add(sfn));
-		
-		// Store the pool size
-		header.writeUnsignedShortChecked(pool.size());
+		// Unused
+		header.writeShort(0);
 		
 		// Store class information, such as the flags, name, superclass,
 		// interfaces, class type, and version
 		header.writeInt(input.flags().toJavaBits());
-		header.writeUnsignedShortChecked(thisname);
-		header.writeUnsignedShortChecked(supername);
-		header.writeUnsignedShortChecked(inames);
+		header.writeUnsignedShortChecked(
+			localpool.add(false, input.thisName().toString()).index);
+		header.writeUnsignedShortChecked((supernamecn == null ? 0 :
+			localpool.add(false, supernamecn.toString()).index));
+		header.writeUnsignedShortChecked(
+			localpool.add(false, input.interfaceNames()).index);
 		header.writeByte(input.type().ordinal());
 		header.writeByte(input.version().ordinal());
 		
 		// Needed for debugging to figure out what file the class is in,
 		// will be very useful
-		header.writeUnsignedShortChecked(snfid);
+		String sfn = input.sourceFile();
+		header.writeUnsignedShortChecked((sfn == null ? 0 :
+			localpool.add(false, sfn).index));
 		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)
