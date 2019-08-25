@@ -25,6 +25,21 @@ public final class DualClassRuntimePoolBuilder
 		new BasicPoolBuilder();
 	
 	/**
+	 * Adds the specified pool entry.
+	 *
+	 * @param __rt Place into the run-time pool?
+	 * @param __v The value to store.
+	 * @return The resulting pool entry.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/08/25
+	 */
+	public final BasicPoolEntry add(boolean __rt, Object __v)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the static class pool.
 	 *
 	 * @return The pool.

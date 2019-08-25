@@ -37,6 +37,13 @@ public final class TableSectionOutputStream
 	private final List<Section> _sections =
 		new LinkedList<>();
 	
+	/** Are the section informations dirty? */
+	private final __Dirty__ _dirty =
+		new __Dirty__();
+	
+	/** The current file size. */
+	private int _filesize;
+	
 	/**
 	 * Adds a section which is of a variable size.
 	 *
@@ -133,13 +140,64 @@ public final class TableSectionOutputStream
 			__align = 1;
 		
 		// Create section
-		Section rv = new Section(__size, __align);
+		Section rv = new Section(__size, __align, this._dirty);
 		
 		// Add to our section list
 		this._sections.add(rv);
 		
+		// Becomes dirty because new section was added
+		this._dirty._dirty = true;
+		
 		// And return this section
 		return rv;
+	}
+	
+	/**
+	 * Returns the current size of the file.
+	 *
+	 * @return The file size.
+	 * @since 2019/08/25
+	 */
+	public final int fileSize()
+	{
+		this.__undirty();
+		return this._filesize;
+	}
+	
+	/**
+	 * Returns the address of the given section.
+	 *
+	 * @param __s The section.
+	 * @return The address of the section.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/08/25
+	 */
+	public final int sectionAddress(Section __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		this.__undirty();
+		return __s._writeaddress;
+	}
+	
+	/**
+	 * Returns the size of the given section.
+	 *
+	 * @param __s The section.
+	 * @return The size of the section.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/08/25
+	 */
+	public final int sectionSize(Section __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		this.__undirty();
+		return __s._writesize;
 	}
 	
 	/**
@@ -180,33 +238,15 @@ public final class TableSectionOutputStream
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		// Our current file size
-		int filesize = 0;
+		// The current write pointer
+		int writeptr = 0;
 		
-		// We must go through all of the sections, perform their required
-		// alignment while additionally calculating their addresses within
-		// the file for section references.
-		List<Section> sections = this._sections;
-		for (int i = 0, n = sections.size(); i < n; i++)
-		{
-			Section section = sections.get(i);
-			
-			// Perform alignment of this section
-			filesize += (section.alignment - 1) -
-				(filesize % section.alignment);
-			
-			// Section is addressed here
-			section._writeaddress = filesize;
-			
-			// Move the current file size up by the section's size
-			int writesize = (section.isvariable ?
-				section._size : section.fixedsize);
-			filesize += writesize;
-			section._writesize = writesize;
-		}
+		// Undirty and get the file size
+		this.__undirty();
+		int filesize = this._filesize;
 		
 		// Write each individual section to the output stream
-		int writeptr = 0;
+		List<Section> sections = this._sections;
 		for (int i = 0, n = sections.size(); i < n; i++)
 		{
 			Section section = sections.get(i);
@@ -289,6 +329,50 @@ public final class TableSectionOutputStream
 	}
 	
 	/**
+	 * Undirties and calculations all the section layout and information.
+	 *
+	 * @since 2019/08/25
+	 */
+	private final void __undirty()
+	{
+		// There is no need to calculate if this is not dirty at all
+		__Dirty__ dirty = this._dirty;
+		if (!dirty._dirty)
+			return;
+		
+		// Our current file size
+		int filesize = 0;
+		
+		// We must go through all of the sections, perform their required
+		// alignment while additionally calculating their addresses within
+		// the file for section references.
+		List<Section> sections = this._sections;
+		for (int i = 0, n = sections.size(); i < n; i++)
+		{
+			Section section = sections.get(i);
+			
+			// Perform alignment of this section
+			filesize += (section.alignment - 1) -
+				(filesize % section.alignment);
+			
+			// Section is addressed here
+			section._writeaddress = filesize;
+			
+			// Move the current file size up by the section's size
+			int writesize = (section.isvariable ?
+				section._size : section.fixedsize);
+			filesize += writesize;
+			section._writesize = writesize;
+		}
+		
+		// Store file size
+		this._filesize = filesize;
+		
+		// Clear dirty flag
+		dirty._dirty = false;
+	}
+	
+	/**
 	 * This represents a single section within the output.
 	 *
 	 * @since 2019/08/11
@@ -314,6 +398,9 @@ public final class TableSectionOutputStream
 		private final List<__Rewrite__> _rewrites =
 			new LinkedList<>();
 		
+		/** The tracker for the dirtiness. */
+		private final __Dirty__ _dirty;
+		
 		/** The byte buffer data. */
 		private byte[] _data;
 		
@@ -333,12 +420,17 @@ public final class TableSectionOutputStream
 		 *
 		 * @param __size The size to use.
 		 * @param __align The alignment to use.
+		 * @param __d The dirty flag.
 		 * @throws IllegalArgumentException If the size is zero or negative.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2019/08/11
 		 */
-		private Section(int __size, int __align)
-			throws IllegalArgumentException
+		private Section(int __size, int __align, __Dirty__ __d)
+			throws IllegalArgumentException, NullPointerException
 		{
+			if (__d == null)
+				throw new NullPointerException("NARG");
+			
 			// {@squirreljme.error BD3l Zero or negative size. (The size)}
 			if (__size != VARIABLE_SIZE && __size <= 0)
 				throw new IllegalArgumentException("BD3l " + __size);
@@ -347,6 +439,9 @@ public final class TableSectionOutputStream
 			this.fixedsize = __size;
 			this.alignment = (__align >= 1 ? __align : 1);
 			this.isvariable = (__size == VARIABLE_SIZE);
+			
+			// Dirty flag storage
+			this._dirty = __d;
 			
 			// If this is a fixed size section, we never have to expand it
 			// so we can allocate all the needed data!
@@ -414,6 +509,9 @@ public final class TableSectionOutputStream
 			
 			// Size up
 			this._size = size + 1;
+			
+			// Becomes dirty
+			this._dirty._dirty = true;
 		}
 		
 		/**
@@ -463,6 +561,9 @@ public final class TableSectionOutputStream
 			
 			// Size up
 			this._size = size;
+			
+			// Becomes dirty
+			this._dirty._dirty = true;
 		}
 		
 		/**
@@ -867,6 +968,17 @@ public final class TableSectionOutputStream
 		{
 			throw new todo.TODO();
 		}
+	}
+	
+	/**
+	 * Are the addresses and sizes considered dirty?
+	 *
+	 * @since 2019/08/25
+	 */
+	static final class __Dirty__
+	{
+		/** Flag used to store the dirty state. */
+		volatile boolean _dirty;
 	}
 }
 

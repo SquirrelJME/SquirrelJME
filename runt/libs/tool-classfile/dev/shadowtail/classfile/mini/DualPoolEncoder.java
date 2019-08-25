@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
  * This contains the encoder for dual pools.
@@ -165,6 +166,61 @@ public final class DualPoolEncoder
 		// Return the location of the data
 		return new DualPoolEncodeResult(staticpooloff, staticpoolsize,
 			runtimepooloff, runtimepoolsize);
+	}
+	
+	/**
+	 * Encodes a layered pool from one class to another.
+	 *
+	 * @param __src The source pool.
+	 * @param __onto The pool to layer on top of.
+	 * @param __out The stream to write to.
+	 * @return The result of the encoded pool data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/08/25
+	 */
+	public static final DualPoolEncodeResult encodeLayered(
+		DualClassRuntimePoolBuilder __src, DualClassRuntimePoolBuilder __onto,
+		OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__src == null || __onto == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		// The resulting table
+		TableSectionOutputStream table = new TableSectionOutputStream();
+		
+		// Process static entries
+		TableSectionOutputStream.Section sl = table.addSection(
+			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		for (BasicPoolEntry e : __src.classPool())
+		{
+			Object v = e.value;
+			if (v == null)
+				sl.writeInt(__src.classPool().size());
+			else
+				sl.writeInt(__onto.add(false, v).index);
+		}
+		
+		// Process runtime entries
+		TableSectionOutputStream.Section rl = table.addSection(
+			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		for (BasicPoolEntry e : __src.runtimePool())
+		{
+			Object v = e.value;
+			if (v == null)
+				sl.writeInt(__src.runtimePool().size());
+			else
+				sl.writeInt(__onto.add(true, v).index);
+		}
+		
+		// Write the encoded pool
+		table.writeTo(__out);
+		
+		// Return the positions of everything
+		return new DualPoolEncodeResult(
+			table.sectionAddress(sl), table.sectionSize(sl),
+			table.sectionAddress(rl), table.sectionSize(rl));
 	}
 	
 	/**

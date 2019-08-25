@@ -17,7 +17,6 @@ import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.nncc.RegisterList;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
-import dev.shadowtail.classfile.pool.PoolLayerResult;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
@@ -263,49 +262,22 @@ public final class Minimizer
 		// Not used anymore
 		header.writeInt(0);
 		
-		// We are backing ourselves off the JAR pool
-		DualClassRuntimePoolBuilder jarpool = this.jarpool;
-		if (jarpool != null)
-		{
-			// Layer the local pool onto the global pool so we can get all
-			// of the references used
-			PoolLayerResult layer = PoolLayerResult.layerPool(localpool,
-				jarpool);
-			
-			// Build static pool data
-			TableSectionOutputStream.Section asp = output.addSection();
-			layer.writeLayer(false, asp);
-			
-			// Static pool offset and size
-			header.writeSectionAddressInt(asp);
-			header.writeSectionSizeInt(asp);
-			
-			// Build runtime pool data
-			TableSectionOutputStream.Section arp = output.addSection();
-			layer.writeLayer(true, arp);
-			
-			// Runtime pool offset and size
-			header.writeSectionAddressInt(arp);
-			header.writeSectionSizeInt(arp);
-		}
+		// Where our pools are going
+		TableSectionOutputStream.Section lpd = output.addSection();
 		
-		// This class is using its own independent pool
-		else
-		{
-			// Where our pools are going
-			TableSectionOutputStream.Section lpd = output.addSection();
-			
-			// Encode the local pool
-			DualPoolEncodeResult der = DualPoolEncoder.encode(localpool, lpd);
-			
-			// Static pool
-			header.writeSectionAddressInt(lpd, der.staticpooloff);
-			header.writeInt(der.staticpoolsize);
-			
-			// Run-time pool
-			header.writeSectionAddressInt(lpd, der.runtimepooloff);
-			header.writeInt(der.runtimepoolsize);
-		}
+		// Encode the local pool or the local pool on top of the JAR pool
+		DualClassRuntimePoolBuilder jarpool = this.jarpool;
+		DualPoolEncodeResult der = (jarpool == null ?
+			DualPoolEncoder.encode(localpool, lpd) :
+			DualPoolEncoder.encodeLayered(localpool, jarpool, lpd));
+		
+		// Static pool
+		header.writeSectionAddressInt(lpd, der.staticpooloff);
+		header.writeInt(der.staticpoolsize);
+		
+		// Run-time pool
+		header.writeSectionAddressInt(lpd, der.runtimepooloff);
+		header.writeInt(der.runtimepoolsize);
 		
 		// Write end magic number, which is at the end of the file
 		TableSectionOutputStream.Section eofmagic = output.addSection(4);
