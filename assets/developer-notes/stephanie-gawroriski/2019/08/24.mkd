@@ -1,0 +1,30 @@
+# 2019/08/24
+
+## 09:59
+
+Okay so the table section links (for address and size) should be weak
+references because otherwise these sections will never get freed. We
+can use references because the table will always have a link to all the
+sections. So when we are using it, we do not have to worry about our
+section references going away. But once the table is GCed it cannot be
+used anyway.
+
+## 11:37
+
+It would be cool to build SquirrelJME on my phone, although the lack of
+the Java compiler tools complicates things a bit. I think I could stub
+around it and still have it work (by calling system commands) although
+it would be a bit of an interesting thing. Maybe I could split the
+bootstrap so that it can use any compiler implementation? Or at least
+SquirrelJME's internal compiler system.
+
+## 11:44
+
+Big problem with this right now is that it distracts me from things. Also
+it would be complicated to rewrite the boot-process again anyway. I think
+it would be best for me to think about this again when I have a working
+Java code compiler. I mean once I have that, then bootstrapping SquirrelJME
+from any environment provided there is a C compiler would be easy.
+Because I can just do a snapshot of the run-time JAR and run it in
+RatufaCoat no problem. Of course I would need filesystem support and
+otherwise.
