@@ -41,6 +41,26 @@ public final class BasicPoolEntry
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/08/25
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/08/25
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the parts used.
 	 *
 	 * @return The used parts.

@@ -73,6 +73,24 @@ public final class BasicPoolBuilder
 	}
 	
 	/**
+	 * Adds an already existing basic entry to this pool.
+	 *
+	 * @param __e The entry to add.
+	 * @return The resulting basic entry which may be {@code __e} or another
+	 * entry.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/08/25
+	 */
+	public final BasicPoolEntry addEntry(BasicPoolEntry __e)
+		throws NullPointerException
+	{
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Adds an internal entry or returns the pre-existing value if it is
 	 * already in the pool.
 	 *
