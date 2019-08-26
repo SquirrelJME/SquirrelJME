@@ -28,3 +28,14 @@ from any environment provided there is a C compiler would be easy.
 Because I can just do a snapshot of the run-time JAR and run it in
 RatufaCoat no problem. Of course I would need filesystem support and
 otherwise.
+
+## 12:41
+
+So when building the pool, the only time the pool is needed is in the
+minimizer and that should be simple really.
+
+## 14:42
+
+Actually I do not need to have the targetted pool, I can just directly use
+the double pool. Then I can do lookup at build time based on indexes, if it
+uses the master pool. So it would always be a sub pool.
