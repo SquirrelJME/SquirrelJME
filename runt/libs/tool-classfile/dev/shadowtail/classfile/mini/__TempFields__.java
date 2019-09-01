@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
  * Stores temporary field data as it is processed.
@@ -52,9 +53,15 @@ final class __TempFields__
 		if (__pool == null)
 			throw new NullPointerException("NARG");
 		
+		// The resulting table
+		TableSectionOutputStream output = new TableSectionOutputStream();
+		
 		// Write
 		try
 		{
+			// Table of contents data
+			TableSectionOutputStream.Section toc = output.addSection();
+			
 			// Actual table data
 			ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
 			DataOutputStream ddos = new DataOutputStream(dbytes);
@@ -63,24 +70,24 @@ final class __TempFields__
 			for (MinimizedField m : this._fields)
 			{
 				// 16-bytes
-				ddos.writeInt(m.flags);
-				ddos.writeShort(Minimizer.__checkUShort(m.offset));
-				ddos.writeShort(Minimizer.__checkUShort(m.size));
-				ddos.writeShort(Minimizer.__checkUShort(
-					__pool.add(false, m.name.toString()).index));
-				ddos.writeShort(Minimizer.__checkUShort(
-					__pool.add(false, m.type.className()).index));
-				ddos.writeShort(Minimizer.__checkUShort(
-					__pool.add(false, m.value).index));
-				ddos.writeByte(m.datatype.ordinal());
-				ddos.writeByte(0);
+				toc.writeInt(m.flags);
+				toc.writeUnsignedShortChecked(m.offset);
+				toc.writeUnsignedShortChecked(m.size);
+				toc.writeUnsignedShortChecked(
+					__pool.add(false, m.name.toString()).index);
+				toc.writeUnsignedShortChecked(
+					__pool.add(false, m.type.className()).index);
+				toc.writeUnsignedShortChecked(
+					__pool.add(false, m.value).index);
+				toc.writeByte(m.datatype.ordinal());
+				toc.writeByte(0);
 			}
 			
 			// Write end of table
-			ddos.writeInt(0xFFFFFFFF);
+			toc.writeInt(0xFFFFFFFF);
 			
-			// Finish
-			return dbytes.toByteArray();
+			// Build output data
+			return output.toByteArray();
 		}
 		
 		// Should not occur

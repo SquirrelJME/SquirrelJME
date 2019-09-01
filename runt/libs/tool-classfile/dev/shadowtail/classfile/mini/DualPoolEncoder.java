@@ -56,18 +56,22 @@ public final class DualPoolEncoder
 		if (__dp == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		// Wrap output
-		DataOutputStream tdos = new DataOutputStream(__out);
+		// Table sections are used for output
+		TableSectionOutputStream output = new TableSectionOutputStream();
 		
-		// Return values
-		int staticpooloff = 0,
-			staticpoolsize = 0,
-			runtimepooloff = 0,
-			runtimepoolsize = 0;
+		// Build sections for output
+		TableSectionOutputStream.Section clssection = output.addSection(
+			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		TableSectionOutputStream.Section runsection = output.addSection(
+			TableSectionOutputStream.VARIABLE_SIZE, 4);
 		
 		// Write both of the pools
 		for (boolean isruntime = false;; isruntime = true)
-		{
+		{			
+			// Section containing the table of contents
+			TableSectionOutputStream.Section toc =
+				(isruntime ? runsection : clssection);
+			
 			// Are we encoding the static or run-time pool?
 			BasicPoolBuilder pool = (isruntime ? __dp.runtimePool() :
 				__dp.classPool());
@@ -75,97 +79,72 @@ public final class DualPoolEncoder
 			// The size of the pool, used for the first entry
 			int poolsize = pool.size();
 			
-			// This is the base offset where the pool is located
-			if (isruntime)
-				runtimepooloff = tdos.size();
-			else
-				staticpooloff = tdos.size();
-			
-			// Determine the relative offset to where the entry data will
-			// exist
-			int reloff = poolsize * TABLE_ENTRY_SIZE;
-			
-			// The value data is appended right after the pool data
-			try (ByteArrayOutputStream vaos = new ByteArrayOutputStream();
-				DataOutputStream vdos = new DataOutputStream(vaos))
+			// Write individual pool entries
+			for (BasicPoolEntry e : pool)
 			{
-				// Write individual pool entries
-				for (BasicPoolEntry e : pool)
+				// The first is always null and just contains some pool
+				// information
+				Object ev = e.value;
+				if (e.index == 0)
 				{
-					// The first is always null and just contains some pool
-					// information
-					Object ev = e.value;
-					if (e.index == 0)
-					{
-						// No tag, no parts, no size, entry count
-						tdos.write(0);
-						tdos.write(0);
-						tdos.writeShort(0);
-						tdos.writeInt(poolsize);
-						
-						// Skip
-						continue;
-					}
+					// No tag, no parts, no size, entry count (offset)
+					toc.write(0);
+					toc.write(0);
+					toc.writeShort(0);
+					toc.writeInt(poolsize);
 					
-					// Determine the type of entry this is
-					MinimizedPoolEntryType et =
-						MinimizedPoolEntryType.ofClass(ev.getClass());
-					
-					// {@squirreljme.error JC4d Cannot store the given entry
-					// because it not compatible with the static/run-time
-					// state. (The pool type; The value type; Is the run-time
-					// pool being processed?)}
-					if (isruntime != et.isRuntime())
-						throw new IllegalStateException("JC4d " +
-							et + " " + ev + " " + isruntime);
-					
-					// Determine if the parts need to be wide
-					int[] ep = e.parts();
-					int epn = ep.length;
-					boolean iswide = false;
-					for (int j = 0; j < epn; j++)
-					{
-						int v = ep[j];
-						if (v < 0 || v > 127)
-							iswide = true;
-					}
-					
-					// Encode the data
-					byte[] ed = DualPoolEncoder.encodeValue(et, ep, iswide,
-						ev);
-					
-					// Write table data
-					tdos.writeByte(et.ordinal());
-					tdos.writeByte((iswide ? -epn : epn));
-					tdos.writeShort(ed.length);
-					
-					// Align the data
-					while (((reloff + vdos.size()) & 3) != 0)
-						vdos.writeByte(0);
-					
-					// Write value data
-					tdos.writeInt(reloff + vdos.size());
-					vdos.write(ed);
+					// Skip
+					continue;
 				}
 				
-				// Merge the value data on top of the base
-				vaos.writeTo(tdos);
+				// Determine the type of entry this is
+				MinimizedPoolEntryType et =
+					MinimizedPoolEntryType.ofClass(ev.getClass());
+				
+				// {@squirreljme.error JC4d Cannot store the given entry
+				// because it not compatible with the static/run-time
+				// state. (The pool type; The value type; Is the run-time
+				// pool being processed?)}
+				if (isruntime != et.isRuntime())
+					throw new IllegalStateException("JC4d " +
+						et + " " + ev + " " + isruntime);
+				
+				// Determine if the parts need to be wide
+				int[] ep = e.parts();
+				int epn = ep.length;
+				boolean iswide = false;
+				for (int j = 0; j < epn; j++)
+				{
+					int v = ep[j];
+					if (v < 0 || v > 127)
+						iswide = true;
+				}
+				
+				// Encode the data into a section somewhere
+				TableSectionOutputStream.Section data = output.addSection(
+					TableSectionOutputStream.VARIABLE_SIZE, 4);
+				data.write(DualPoolEncoder.encodeValue(et, ep, iswide, ev));
+				
+				// Write pool table entry
+				toc.writeByte(et.ordinal());
+				toc.writeByte((iswide ? -epn : epn));
+				toc.writeSectionSizeShort(data);
+				toc.writeSectionAddressInt(data);
 			}
-			
-			// The size of the pool in bytes
-			if (isruntime)
-				runtimepoolsize = tdos.size() - runtimepooloff;
-			else
-				staticpoolsize = tdos.size() - staticpooloff;
 			
 			// Stop processing after the run-time is done
 			if (isruntime)
 				break;
 		}
 		
-		// Return the location of the data
-		return new DualPoolEncodeResult(staticpooloff, staticpoolsize,
-			runtimepooloff, runtimepoolsize);
+		// Write to the target stream
+		output.writeTo(__out);
+		
+		// Return the location of the data, note that the addresses and
+		// sizes would have been realized already
+		return new DualPoolEncodeResult(
+			output.sectionAddress(clssection), output.sectionSize(clssection),
+			output.sectionAddress(runsection), output.sectionSize(runsection));
 	}
 	
 	/**
