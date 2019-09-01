@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -45,7 +46,7 @@ final class __TempFields__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	public final byte[] getBytes(MinimizedPoolBuilder __pool)
+	public final byte[] getBytes(DualClassRuntimePoolBuilder __pool)
 		throws NullPointerException
 	{
 		if (__pool == null)
@@ -66,10 +67,11 @@ final class __TempFields__
 				ddos.writeShort(Minimizer.__checkUShort(m.offset));
 				ddos.writeShort(Minimizer.__checkUShort(m.size));
 				ddos.writeShort(Minimizer.__checkUShort(
-					__pool.get(m.name.toString())));
+					__pool.add(false, m.name.toString()).index));
 				ddos.writeShort(Minimizer.__checkUShort(
-					__pool.get(m.type.className())));
-				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.value)));
+					__pool.add(false, m.type.className()).index));
+				ddos.writeShort(Minimizer.__checkUShort(
+					__pool.add(false, m.value).index));
 				ddos.writeByte(m.datatype.ordinal());
 				ddos.writeByte(0);
 			}

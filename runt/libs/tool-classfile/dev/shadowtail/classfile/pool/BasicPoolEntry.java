@@ -70,5 +70,24 @@ public final class BasicPoolEntry
 	{
 		return this._parts.clone();
 	}
+	
+	/**
+	 * Returns the value of this entry.
+	 *
+	 * @param <T> The type to use.
+	 * @param __cl The class of this type.
+	 * @return The resulting type.
+	 * @throws ClassCastException If the class type is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/01
+	 */
+	public final <T> T value(Class<T> __cl)
+		throws ClassCastException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this.value);
+	}
 }
 

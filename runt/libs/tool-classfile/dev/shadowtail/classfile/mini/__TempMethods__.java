@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
  * Contains temporary method information.
@@ -81,85 +83,79 @@ final class __TempMethods__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	public final byte[] getBytes(MinimizedPoolBuilder __pool)
+	public final byte[] getBytes(DualClassRuntimePoolBuilder __pool)
 		throws NullPointerException
 	{
 		if (__pool == null)
 			throw new NullPointerException("NARG");
 		
+		// Build into sections
+		TableSectionOutputStream output = new TableSectionOutputStream();
+		
 		// Write
-		MinimizedMethod lastm = null;
+		MinimizedMethod current = null;
 		try
 		{
+			// Methods to process
 			List<MinimizedMethod> methods = this._methods;
 			
-			// Actual table data
-			ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
-			DataOutputStream ddos = new DataOutputStream(dbytes);
+			// Table of contents which represents each method
+			TableSectionOutputStream.Section toc = output.addSection();
 			
-			// Needed to filter in lines and code so that they are together
-			int count = this._count;
-			
-			// Merge all the code data
-			int[] offcode = new int[count],
-				lencode = new int[count];
-			ByteArrayOutputStream cbytes = new ByteArrayOutputStream();
-			DataOutputStream cdos = new DataOutputStream(cbytes);
-			for (int i = 0; i < count; i++)
+			// Format every method
+			for (int i = 0, n = methods.size(); i < n; i++)
 			{
-				MinimizedMethod m = methods.get(i);
+				// Get the method to process
+				current = methods.get(i);
 				
-				// Ignore if there is no code
-				byte[] code = m._code;
-				if (code == null)
-					continue;
-				
-				// Offset to this code
-				offcode[i] = cdos.size();
-				lencode[i] = code.length;
-				
-				// Write all the data
-				cdos.write(code);
-				
-				// Pad with the breakpoint operation
-				while ((cdos.size() & 3) != 0)
-					cdos.write(0xFF);
-			}
-			
-			// Offset to code and line regions
-			int codeoff = 4 + (count * MinimizedMethod.ENCODE_ENTRY_SIZE);
-			
-			// Write method information
-			for (int i = 0; i < count; i++)
-			{
-				MinimizedMethod m = methods.get(i);
-				lastm = m;
+				// Write all of the method code into its own section
+				TableSectionOutputStream.Section codesection = null;
+				byte[] rawcode = current._code;
+				if (rawcode != null)
+				{
+					// Add aligned section for this code
+					codesection = output.addSection(
+						TableSectionOutputStream.VARIABLE_SIZE, 4);
+					
+					// Write all of the code here
+					codesection.write(rawcode);
+				}
 				
 				// Flags, name, and type
-				ddos.writeInt(m.flags);
-				ddos.writeShort(Minimizer.__checkUShort(m.index));
-				ddos.writeShort(Minimizer.__checkUShort(
-					__pool.get(m.name.toString())));
-				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.type)));
+				toc.writeInt(current.flags);
+				toc.writeUnsignedShortChecked(current.index);
+				toc.writeUnsignedShortChecked(
+					__pool.add(false, current.name.toString()).index);
+				toc.writeUnsignedShortChecked(
+					__pool.add(false, current.type).index);
 				
-				// Code
-				ddos.writeInt(codeoff + offcode[i]);
-				ddos.writeInt(lencode[i]);
+				// Code section if one exists
+				if (codesection != null)
+				{
+					toc.writeSectionAddressInt(codesection);
+					toc.writeSectionSizeInt(codesection);
+				}
+				
+				// There is no code
+				else
+				{
+					toc.writeInt(0);
+					toc.writeInt(0);
+				}
 			}
 			
 			// Write end of table
-			ddos.writeInt(0xFFFFFFFF);
+			toc.writeInt(0xFFFFFFFF);
 			
-			// Merge in the code and line information
-			cbytes.writeTo(ddos);
-			return dbytes.toByteArray();
+			// Output as a byte array
+			return output.toByteArray();
 		}
 		
 		// {@squirreljme.error JC0p Could not process the method. (The method
 		// this stopped at)}
 		catch (InvalidClassFormatException|IOException e)
 		{
-			throw new InvalidClassFormatException("JC0p " + lastm, e);
+			throw new InvalidClassFormatException("JC0p " + current, e);
 		}
 	}
 }

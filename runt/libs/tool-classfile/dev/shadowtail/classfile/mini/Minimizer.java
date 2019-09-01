@@ -67,10 +67,9 @@ public final class Minimizer
 	/** The Jar or ROM backed pool, is optional. */
 	protected final DualClassRuntimePoolBuilder jarpool;
 	
-	/** The constant pool builder to use. */
-	@Deprecated
-	protected final MinimizedPoolBuilder pool =
-		new MinimizedPoolBuilder();
+	/** The local constant pool. */
+	protected final DualClassRuntimePoolBuilder localpool =
+		new DualClassRuntimePoolBuilder();
 	
 	/**
 	 * Initializes the minimizer.
@@ -113,8 +112,7 @@ public final class Minimizer
 		TableSectionOutputStream output = new TableSectionOutputStream();
 		
 		// This is the relative pool that the class file uses
-		DualClassRuntimePoolBuilder localpool =
-			new DualClassRuntimePoolBuilder();
+		DualClassRuntimePoolBuilder localpool = this.localpool;
 		
 		// Process all fields and methods
 		__TempFields__[] fields = this.__doFields();
@@ -178,20 +176,16 @@ public final class Minimizer
 			header.writeUnsignedShortChecked(tm._count);
 		}
 		
-		// Build section where the constant pool is
-		TableSectionOutputStream.Section poolsection =
-			output.addSection(pool.getBytes(), 4);
-		
-		// Constant pool locator
-		header.writeSectionAddressInt(poolsection);
-		header.writeSectionSizeInt(poolsection);
+		// Unused, the pool was here
+		header.writeInt(0);
+		header.writeInt(0);
 		
 		// Field locator
 		for (int i = 0; i < 2; i++)
 		{
 			// Generate section
 			TableSectionOutputStream.Section subsection =
-				output.addSection(fields[i].getBytes(pool), 4);
+				output.addSection(fields[i].getBytes(localpool), 4);
 			
 			// Write section details
 			header.writeSectionAddressInt(subsection);
@@ -203,7 +197,7 @@ public final class Minimizer
 		{
 			// Generate section
 			TableSectionOutputStream.Section subsection =
-				output.addSection(methods[i].getBytes(pool), 4);
+				output.addSection(methods[i].getBytes(localpool), 4);
 			
 			// Write section details
 			header.writeSectionAddressInt(subsection);
@@ -256,7 +250,7 @@ public final class Minimizer
 	 */
 	private final __TempFields__[] __doFields()
 	{
-		MinimizedPoolBuilder pool = this.pool;
+		DualClassRuntimePoolBuilder localpool = this.localpool;
 		
 		// Static and instance fields are split because they are stored
 		// in different places
@@ -333,16 +327,23 @@ public final class Minimizer
 			// to the pool
 			ConstantValue cval = f.constantValue();
 			
+			// Add field properties
+			localpool.add(false, f.name().toString());
+			localpool.add(false, f.type().className());
+			
+			// Boxed value, if used
+			if (cval != null)
+				localpool.add(false, cval.boxedValue());
+			
 			// Build field information
 			MinimizedField q;
 			temp._fields.add((q = new MinimizedField(
 				f.flags().toJavaBits(),
 				basep,
 				fsz,
-				new FieldName(pool.<String>addSelf(f.name().toString())),
-				pool.<ClassName>addSelf(f.type().className()).field(),
-				(cval == null ? null :
-					pool.<Object>addSelf(cval.boxedValue())))));
+				f.name(),
+				f.type(),
+				cval.boxedValue())));
 			
 			// Handle table sizes
 			temp._bytes = basep + fsz;
@@ -367,7 +368,7 @@ public final class Minimizer
 	 */
 	private final __TempMethods__[] __doMethods()
 	{
-		MinimizedPoolBuilder pool = this.pool;
+		DualClassRuntimePoolBuilder localpool = this.localpool;
 		ClassFile input = this.input;
 		
 		// Split static and instance methods to make them easier to locate
@@ -414,12 +415,16 @@ public final class Minimizer
 				}
 			}
 			
+			// Add name and type to the pool
+			localpool.add(false, m.name().toString());
+			localpool.add(false, m.type());
+			
 			// Add method
 			MinimizedMethod q;
 			temp._methods.add((q = new MinimizedMethod(mf.toJavaBits(),
 				temp._count,
-				new MethodName(pool.<String>addSelf(m.name().toString())),
-				pool.<MethodDescriptor>addSelf(m.type()),
+				m.name(),
+				m.type(),
 				transcode)));
 			
 			// Quick count for used methods
@@ -457,7 +462,7 @@ public final class Minimizer
 		List<__Jump__> jumpreps = new LinkedList<>();
 		
 		// Operations will reference this constant pool
-		MinimizedPoolBuilder pool = this.pool;
+		DualClassRuntimePoolBuilder localpool = this.localpool;
 		
 		// Go through each instruction
 		for (int cdx = 0; cdx < cdn; cdx++)
@@ -496,7 +501,7 @@ public final class Minimizer
 						switch (format[a])
 						{
 							case VPOOL:
-								vm = pool.add(v);
+								vm = localpool.add(true, v).index;
 								break;
 								
 							case VJUMP:
