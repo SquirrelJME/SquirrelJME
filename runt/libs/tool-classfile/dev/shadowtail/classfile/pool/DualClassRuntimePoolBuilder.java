@@ -36,6 +36,47 @@ public final class DualClassRuntimePoolBuilder
 	public final BasicPoolEntry add(boolean __rt, Object __v)
 		throws NullPointerException
 	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		if (__rt)
+			return this.addRuntime(__v);
+		return this.addStatic(__v);
+	}
+	
+	/**
+	 * Adds an entry to the run-time pool.
+	 *
+	 * @param __v The value to add.
+	 * @return The entry which was created.
+	 * @throws IllegalArgumentException If the value cannot be stored into
+	 * the specified pool.
+	 * @since 2019/09/01
+	 */
+	public final BasicPoolEntry addRuntime(Object __v)
+		throws IllegalArgumentException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Adds an entry to the static pool.
+	 *
+	 * @param __v The value to add.
+	 * @return The entry which was created.
+	 * @throws IllegalArgumentException If the value cannot be stored into
+	 * the specified pool.
+	 * @since 2019/09/01
+	 */
+	public final BasicPoolEntry addStatic(Object __v)
+		throws IllegalArgumentException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
