@@ -12,8 +12,9 @@
 # Force C locale
 export LC_ALL=C
 
-# Directory of this script
+# Common directories
 __exedir="$(dirname -- "$0")"
+__tmpdir="$("$__exedir/tmpdir.sh")"
 
 # Current user
 __myname="$($__exedir/myname.sh)"
@@ -33,16 +34,17 @@ if [ "$( (fossil unversion ls; echo "$__fname") | sort | uniq -d | wc -l)" \
 	-eq "0" ]
 then
 	# Create temporary
-	sed "s/YYYYMMDD/$__htmtime/g" < "$__exedir/crtmpl/blog.mkd" > /tmp/$$
+	sed "s/YYYYMMDD/$__htmtime/g" < "$__exedir/crtmpl/blog.mkd" \
+		> "$__tmpdir/$$"
 	
 	# Add to unversioned space
-	fossil unversion add /tmp/$$ --as "$__fname"
+	fossil unversion add "$__tmpdir/$$" --as "$__fname"
 	
 	# Rebuild the blog index
 	"$__exedir/indexblog.sh"
 	
 	# Delete temporary
-	rm -f /tmp/$$
+	rm -f "$__tmpdir/$$"
 fi
 
 # Edit it
