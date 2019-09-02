@@ -14,14 +14,20 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Use the main Java command
+# Use user specified binary
+if [ -n "$JAVA" ] && which "$JAVA" > /dev/null
+then
+	"$JAVA" "$@"
+	exit $?
+fi
+
+# Use main Java binary
 if which java > /dev/null
 then
 	java "$@"
 	exit $?
+fi
 
 # Fail
-else
-	echo "Could not find a Java executable" 1>&2
-	exit 15
-fi
+echo "Could not find a Java executable!" 1>&2
+exit 15
