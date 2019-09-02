@@ -14,22 +14,27 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Use the main Java compiler
+# Use user specified binary
+if [ -n "$JAVAC" ] && which "$JAVAC" > /dev/null
+then
+	"$JAVAC" "$@"
+	exit $?
+fi
+
+# Use main Java compiler
 if which javac > /dev/null
 then
 	javac "$@"
 	exit $?
-
-# Fallback to ECJ otherwise
-else
-	if which ecj > /dev/null
-	then
-		ecj "$@"
-		exit $?
-		
-	# Fail
-	else
-		echo "Could not find a Java compiler." 1>&2
-		exit 17
-	fi
 fi
+
+# Use secondary ECJ compiler
+if which ecj > /dev/null
+then
+	ecj "$@"
+	exit $?
+fi
+
+# Fail
+echo "Could not find a Java compiler!" 1>&2
+exit 17
