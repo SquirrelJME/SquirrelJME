@@ -11,20 +11,46 @@
 # Force C locale
 export LC_ALL=C
 
-# Directory of this script
+# Common directories
 __exedir="$(dirname -- "$0")"
+__tmpdir="$("$__exedir/tmpdir.sh")"
 
-# Use user specified binary
-if [ -n "$JAVA" ] && which "$JAVA" > /dev/null
+# Allow for the forcing of the simulated VM
+if [ -n "$USE_SIMJVM" ] && [ "$USE_SIMJVM" -eq "0" ]
 then
-	"$JAVA" "$@"
-	exit $?
+	# Use user specified binary
+	if [ -n "$JAVA" ] && which "$JAVA" > /dev/null
+	then
+		"$JAVA" "$@"
+		exit $?
+	fi
+
+	# Use main Java binary
+	if which java > /dev/null
+	then
+		java "$@"
+		exit $?
+	fi
 fi
 
-# Use main Java binary
-if which java > /dev/null
+# If there is a C compiler then use the Simulated JVM instead!
+# This is a very primitive and basic JVM just for the building of
+# SquirrelJME so it definitely is as very minimal as possible.
+if which cc > /dev/null
 then
-	java "$@"
+	# JVM does not exist or is out of date?
+	if [ ! -x "$__tmpdir/simjvm" ] || \
+		[ "$__exedir/simjvm.c" -nt "$__tmpdir/simjvm" ]
+	then
+		if ! cc -o "$__tmpdir/simjvm" "$__exedir/simjvm.c" 1>&2
+		then
+			echo "Failed to build the Simulated JVM!" 1>&2
+			exit 19
+		fi
+	fi
+	
+	# Execute it
+	"$__tmpdir/simjvm" "$@"
 	exit $?
 fi
 
