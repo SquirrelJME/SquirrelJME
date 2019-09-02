@@ -1,0 +1,6 @@
+# 2019/09/01
+
+## 10:11
+
+Okay so	this new table section output class is very nice because it is so much
+easier to use than manually managing sections and offsets.
