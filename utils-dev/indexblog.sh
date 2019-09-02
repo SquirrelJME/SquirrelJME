@@ -12,8 +12,9 @@
 # Force C locale
 export LC_ALL=C
 
-# Directory of this script
+# Common directories
 __exedir="$(dirname -- "$0")"
+__tmpdir="$("$__exedir/tmpdir.sh")"
 
 # Counts arguments used
 __count_args()
@@ -275,11 +276,11 @@ __secondary()
 }
 
 # Print both
-if (__primary && __secondary) > /tmp/$$
+if (__primary && __secondary) > "$__tmpdir/$$"
 then
-	fossil unversion add /tmp/$$ --as developer-notes/index.mkd
+	fossil unversion add "$__tmpdir/$$" --as developer-notes/index.mkd
 fi
 
 # Delete temporary file
-rm -f /tmp/$$
+rm -f "$__tmpdir/$$"
 
