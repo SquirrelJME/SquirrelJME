@@ -13,12 +13,13 @@
 # Force C locale
 export LC_ALL=C
 
-# Directory of this script
+# Common directories
 __exedir="$(dirname -- "$0")"
+__tmpdir="$("$__exedir/utils-dev/tmpdir.sh")"
 
 # Default compilers and run-times
-: ${JAVA:=java}
-: ${JAVAC:=javac}
+: ${JAVA:="$__exedir/utils-dev/java.sh"}
+: ${JAVAC:="$__exedir/utils-dev/javac.sh"}
 
 # The class to use for bootstrapping
 : ${BOOTSTRAP_CLASS:=NewBootstrap}
