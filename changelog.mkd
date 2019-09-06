@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.4.0 (TBD)
+# 0.4.0 (December 25, 2019)
 
 Now SquirrelJME has the SummerCoat virtual machine which is much lighter and
 faster than SpringCoat. There should definitely be very noticable performance
