@@ -1,0 +1,26 @@
+# 2019/09/02
+
+## 09:19
+
+I kind of just want to do maintenance or otherwise today. I want to make it
+so I can use all of the scripts just fine, I really need to make all of them
+robust and such. I also want to be able to use them on Termux in Android
+because that would be useful for me to work on things slightly on my phone.
+Maybe also work on JavaDoc or similar because I really want JavaDoc.
+
+## 09:59
+
+Okay so will be taking a break from the compiler stuff. To get this building
+on Android and other systems which might not have a Java VM I am going to
+write a Simulated JVM. It will be written in C and thus have to be compiled
+except that all of the needed classes will be kept internal to the VM. There
+will be no class files and such, everything would be linked internally by the
+program. It will be a pure interpreter so it would be slow. Basically it is to
+be a very minimum simulated environment for the most part. Everything will
+effectively be virtualized within the build environment. Then when
+SquirrelJME's own internal build system starts to run it will run in the
+environment as well. Basically the purpose is to make it so that everything
+can be built without needing an actual VM. There just has to be a compiler but
+that can come at a later time I suppose. But if I can get this building on
+Android then that would be really cool! I can work on it on the way to work
+on the bus, just very minor tweaks and such.
