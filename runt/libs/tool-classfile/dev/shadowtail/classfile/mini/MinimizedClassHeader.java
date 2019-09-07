@@ -48,9 +48,8 @@ public final class MinimizedClassHeader
 	/** The data type of the class. */
 	public final DataType datatype;
 	
-	/** Number of entries in constant pool. */
-	@Deprecated
-	public final int poolcount;
+	/** Not used. */
+	public final int unusedb;
 	
 	/** Class flags. */
 	public final int classflags;
@@ -97,13 +96,11 @@ public final class MinimizedClassHeader
 	/** Instance method count. */
 	public final int imcount;
 	
-	/** Offset to pool data. */
-	@Deprecated
-	public final int pooloff;
+	/** Not used. */
+	public final int unusedc;
 	
-	/** Pool data size. */
-	@Deprecated
-	public final int poolsize;
+	/** Not used. */
+	public final int unusedd;
 	
 	/** Static field data offset. */
 	public final int sfoff;
@@ -138,8 +135,8 @@ public final class MinimizedClassHeader
 	/** File size. */
 	public final int filesize;
 	
-	/** Unused B. */
-	public final int unusedb;
+	/** Not used. */
+	public final int unusede;
 	
 	/** Static constant pool offset. */
 	public final int staticpooloff;
@@ -173,7 +170,7 @@ public final class MinimizedClassHeader
 		this.datatype = DataType.of(__vx[at++]);
 		
 		// Constant pool
-		this.poolcount = __vx[at++];
+		this.unusedb = __vx[at++];
 		
 		// Class information
 		this.classflags = __vx[at++];
@@ -196,9 +193,9 @@ public final class MinimizedClassHeader
 		this.smcount = __vx[at++];
 		this.imcount = __vx[at++];
 
-		// Location and size of constant pool
-		this.pooloff = __vx[at++];
-		this.poolsize = __vx[at++];
+		// Not used
+		this.unusedc = __vx[at++];
+		this.unusedd = __vx[at++];
 		
 		// Static and instance field data
 		this.sfoff = __vx[at++];
@@ -220,7 +217,7 @@ public final class MinimizedClassHeader
 		this.filesize = __vx[at++];
 		
 		// Not used
-		this.unusedb = __vx[at++];
+		this.unusede = __vx[at++];
 		
 		// Static and run-time constant pool
 		this.staticpooloff = __vx[at++];
@@ -266,8 +263,8 @@ public final class MinimizedClassHeader
 			// Data Type
 			/* datatype */ dis.readUnsignedByte(),
 			
-			// Constant pool
-			/* poolcount */ dis.readUnsignedShort(),
+			// Not used
+			/* NOT USED */ dis.readUnsignedShort(),
 			
 			// Class header
 			/* classflags */ dis.readInt(),
@@ -290,9 +287,9 @@ public final class MinimizedClassHeader
 			/* smcount */ dis.readUnsignedShort(),
 			/* imcount */ dis.readUnsignedShort(),
 	
-			// Location and size of constant pool
-			/* pooloff */ dis.readInt(),
-			/* poolbytes */ dis.readInt(),
+			// Not used
+			/* NOT USED */ dis.readInt(),
+			/* NOT USED */ dis.readInt(),
 		
 			// Static and instance field data
 			/* sfoff */ dis.readInt(),
@@ -313,8 +310,8 @@ public final class MinimizedClassHeader
 			// File size
 			/* filesize */ dis.readInt(),
 			
-			// Unused
-			/* unusedb */ dis.readInt(),
+			// Not used
+			/* NOT USED */ dis.readInt(),
 			
 			// Static and runtime pool
 			/* staticpooloff */ dis.readInt(),

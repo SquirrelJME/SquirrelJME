@@ -221,70 +221,69 @@ public final class DualPoolEncoder
 		if (__t == null || __p == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		// Encode
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			DataOutputStream dos = new DataOutputStream(baos))
+		// Output for this data
+		TableSectionOutputStream output = new TableSectionOutputStream();
+		TableSectionOutputStream.Section dos = output.addSection();
+		
+		// Depends on the type
+		switch (__t)
 		{
-			// Depends on the type
-			switch (__t)
-			{
-					// Encode strings into the pool
-				case STRING:
-					{
-						// Record hashCode and the String size as simple
-						// fields to read. Note that even though there is
-						// the UTF length, the length of the actual string
-						// could be useful. But only keep the lowest part
-						// as that will be "good enough"
-						dos.writeShort((short)__p[0]);
-						dos.writeShort(Minimizer.__checkUShort(__p[1]));
-						
-						// Write string UTF data
-						dos.writeUTF((String)__v);
-						
-						// Write NUL terminator so it can be directly used
-						// as a UTF-8 C pointer
-						dos.writeByte(0);
-					}
-					break;
+				// Encode strings into the pool
+			case STRING:
+				{
+					// Record hashCode and the String size as simple
+					// fields to read. Note that even though there is
+					// the UTF length, the length of the actual string
+					// could be useful. But only keep the lowest part
+					// as that will be "good enough"
+					dos.writeShort((short)__p[0]);
+					dos.writeUnsignedShortChecked(__p[1]);
 					
-					// Integer
-				case INTEGER:
-					dos.writeInt((Integer)__v);
-					break;
+					// Write string UTF data
+					dos.writeUTF((String)__v);
 					
-					// Float
-				case FLOAT:
-					dos.writeInt(Float.floatToRawIntBits((Float)__v));
-					break;
-					
-					// Everything else just consists of parts which are
-					// either values to other indexes or an ordinal
-				case ACCESSED_FIELD:
-				case CLASS_NAME:
-				case CLASS_NAMES:
-				case CLASS_POOL:
-				case DOUBLE:
-				case LONG:
-				case INVOKED_METHOD:
-				case METHOD_DESCRIPTOR:
-				case METHOD_INDEX:
-				case USED_STRING:
-					if (__wide)
-						for (int i = 0, n = __p.length; i < n; i++)
-							dos.writeShort(Minimizer.__checkUShort(__p[i]));
-					else
-						for (int i = 0, n = __p.length; i < n; i++)
-							dos.writeByte(__p[i]);
-					break;
+					// Write NUL terminator so it can be directly used
+					// as a UTF-8 C pointer
+					dos.writeByte(0);
+				}
+				break;
 				
-				default:
-					throw new todo.OOPS(__t.name());
-			}
+				// Integer
+			case INTEGER:
+				dos.writeInt((Integer)__v);
+				break;
+				
+				// Float
+			case FLOAT:
+				dos.writeInt(Float.floatToRawIntBits((Float)__v));
+				break;
+				
+				// Everything else just consists of parts which are
+				// either values to other indexes or an ordinal
+			case ACCESSED_FIELD:
+			case CLASS_INFO_POINTER:
+			case CLASS_NAME:
+			case CLASS_NAMES:
+			case CLASS_POOL:
+			case DOUBLE:
+			case LONG:
+			case INVOKED_METHOD:
+			case METHOD_DESCRIPTOR:
+			case METHOD_INDEX:
+			case USED_STRING:
+				if (__wide)
+					for (int i = 0, n = __p.length; i < n; i++)
+						dos.writeUnsignedShortChecked(__p[i]);
+				else
+					for (int i = 0, n = __p.length; i < n; i++)
+						dos.writeByte(__p[i]);
+				break;
 			
-			// Return the encoded data
-			return baos.toByteArray();
+			default:
+				throw new todo.OOPS(__t.name());
 		}
+		
+		return output.toByteArray();
 	}
 }
 

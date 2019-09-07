@@ -144,9 +144,9 @@ public final class Minimizer
 		// interfaces, class type, and version
 		header.writeInt(input.flags().toJavaBits());
 		header.writeUnsignedShortChecked(
-			localpool.add(false, input.thisName().toString()).index);
+			localpool.add(false, input.thisName()).index);
 		header.writeUnsignedShortChecked((supernamecn == null ? 0 :
-			localpool.add(false, supernamecn.toString()).index));
+			localpool.add(false, supernamecn).index));
 		header.writeUnsignedShortChecked(
 			localpool.add(false, input.interfaceNames()).index);
 		header.writeByte(input.type().ordinal());
@@ -259,7 +259,7 @@ public final class Minimizer
 		
 		// Check if this is object or an array, so that special fields are
 		// added
-		boolean isobject = this.input.thisName().toString().
+		boolean isobject = this.input.thisName().
 				equals("java/lang/Object"),
 			isarray = this.input.thisName().isArray();
 		
@@ -343,7 +343,7 @@ public final class Minimizer
 				fsz,
 				f.name(),
 				f.type(),
-				cval.boxedValue())));
+				(cval == null ? null : cval.boxedValue()))));
 			
 			// Handle table sizes
 			temp._bytes = basep + fsz;
@@ -501,7 +501,18 @@ public final class Minimizer
 						switch (format[a])
 						{
 							case VPOOL:
-								vm = localpool.add(true, v).index;
+								try
+								{
+									vm = localpool.add(true, v).index;
+								}
+								catch (IllegalArgumentException e)
+								{
+									// {@squirreljme.error JC4g Could not add
+									// pool entry because it is not valid.
+									// (The current instruction)}
+									throw new InvalidClassFormatException(
+										"JC4g " + i, e);
+								}
 								break;
 								
 							case VJUMP:

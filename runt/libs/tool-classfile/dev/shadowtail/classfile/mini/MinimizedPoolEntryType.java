@@ -58,6 +58,9 @@ public enum MinimizedPoolEntryType
 	/** The index of a method. */
 	METHOD_INDEX,
 	
+	/** Class information. */
+	CLASS_INFO_POINTER,
+	
 	/** End. */
 	;
 	
@@ -72,7 +75,7 @@ public enum MinimizedPoolEntryType
 		switch (this)
 		{
 			case NULL:
-			case CLASS_NAME:
+			case CLASS_INFO_POINTER:
 			case CLASS_POOL:
 			case ACCESSED_FIELD:
 			case INVOKED_METHOD:
@@ -96,6 +99,7 @@ public enum MinimizedPoolEntryType
 		{
 			case NULL:
 			case STRING:
+			case CLASS_NAME:
 			case CLASS_NAMES:
 			case METHOD_DESCRIPTOR:
 			case INTEGER:
@@ -135,6 +139,7 @@ public enum MinimizedPoolEntryType
 			case 11:	return DOUBLE;
 			case 12:	return USED_STRING;
 			case 13:	return METHOD_INDEX;
+			case 14:	return CLASS_INFO_POINTER;
 		}
 		
 		// {@squirreljme.error JC0e Unknown pool type. (The type)}
@@ -187,6 +192,8 @@ public enum MinimizedPoolEntryType
 				return USED_STRING;
 			case "dev.shadowtail.classfile.pool.MethodIndex":
 				return METHOD_INDEX;
+			case "dev.shadowtail.classfile.pool.ClassInfoPointer":
+				return CLASS_INFO_POINTER;
 		}
 		
 		// {@squirreljme.error JC0f Class does not map to a pool entry

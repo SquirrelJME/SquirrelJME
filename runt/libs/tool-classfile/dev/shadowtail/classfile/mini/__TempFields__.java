@@ -77,8 +77,8 @@ final class __TempFields__
 					__pool.add(false, m.name.toString()).index);
 				toc.writeUnsignedShortChecked(
 					__pool.add(false, m.type.className()).index);
-				toc.writeUnsignedShortChecked(
-					__pool.add(false, m.value).index);
+				toc.writeUnsignedShortChecked((m.value == null ? 0 :
+					__pool.add(false, m.value).index));
 				toc.writeByte(m.datatype.ordinal());
 				toc.writeByte(0);
 			}

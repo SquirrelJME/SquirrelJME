@@ -9,6 +9,16 @@
 
 package dev.shadowtail.classfile.pool;
 
+import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
+import java.util.List;
+import java.util.ArrayList;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldReference;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodHandle;
+
 /**
  * This is used as a builder for both class and run-time pools.
  *
@@ -59,7 +69,73 @@ public final class DualClassRuntimePoolBuilder
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// The pool to be added to and the underlying static pool
+		BasicPoolBuilder runpool = this.runpool,
+			classpool = this.classpool;
+		
+		// Already within the pool?
+		BasicPoolEntry rv = runpool.getByValue(__v);
+		if (rv != null)
+			return rv;
+		
+		// Depends on the type to be stored
+		MinimizedPoolEntryType type;
+		switch ((type = MinimizedPoolEntryType.ofClass(__v.getClass())))
+		{
+				// A field which has been accessed
+			case ACCESSED_FIELD:
+				AccessedField af = (AccessedField)__v;
+				FieldReference fr = af.field();
+				return runpool.add(__v,
+					af.time().ordinal(),
+					af.type().ordinal(),
+					this.addStatic(fr.className()).index,
+					this.addStatic(fr.memberName().toString()).index,
+					this.addStatic(fr.memberType().className()).index);
+			
+				// Class information pointer
+			case CLASS_INFO_POINTER:
+				return runpool.add(__v,
+					this.addStatic(((ClassInfoPointer)__v).name).index);
+						
+				// The constant pool of another (or current) class
+			case CLASS_POOL:
+				return runpool.add(__v,
+					this.addStatic(((ClassPool)__v).name).index);
+				
+				// A method which has been invoked
+			case INVOKED_METHOD:
+				InvokedMethod iv = (InvokedMethod)__v;
+				MethodHandle mh = iv.handle();
+				
+				return runpool.add(__v,
+					iv.type().ordinal(),
+					this.addStatic(mh.outerClass()).index,
+					this.addStatic(mh.name().toString()).index,
+					this.addStatic(mh.descriptor()).index);
+				
+				// The index of a method
+			case METHOD_INDEX:
+				MethodIndex v = (MethodIndex)__v;
+				return runpool.add(__v,
+					0x7FFF,
+					this.addStatic(v.inclass).index,
+					this.addStatic(v.name.toString()).index,
+					this.addStatic(v.type).index);
+				
+				// A string that is used
+			case USED_STRING:
+				return runpool.add(__v,
+					this.addStatic(__v.toString()).index);
+			
+				// Unknown
+			default:
+				// {@squirreljme.error JC4f Invalid type in runtime pool.
+				// (The type)}
+				if (!type.isRuntime())
+					throw new IllegalArgumentException("JC4f " + type);
+				throw new todo.OOPS(type.name());
+		}
 	}
 	
 	/**
@@ -77,7 +153,98 @@ public final class DualClassRuntimePoolBuilder
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// The pool to be added to
+		BasicPoolBuilder classpool = this.classpool;
+		
+		// Already within the pool?
+		BasicPoolEntry rv = classpool.getByValue(__v);
+		if (rv != null)
+			return rv;
+		
+		// Depends on the type to be stored
+		MinimizedPoolEntryType type;
+		switch ((type = MinimizedPoolEntryType.ofClass(__v.getClass())))
+		{
+			case INTEGER:
+			case FLOAT:
+				return classpool.add(__v);
+			
+			case LONG:
+				long l = (Long)__v;
+				return classpool.add(__v,
+					((int)(l >>> 48)) & 0xFFFF,
+					((int)(l >>> 32)) & 0xFFFF,
+					((int)(l >>> 16)) & 0xFFFF,
+					((int)l) & 0xFFFF);
+			
+			case DOUBLE:
+				long d = Double.doubleToRawLongBits((Double)__v);
+				return classpool.add(__v,
+					((int)(d >>> 48)) & 0xFFFF,
+					((int)(d >>> 32)) & 0xFFFF,
+					((int)(d >>> 16)) & 0xFFFF,
+					((int)d) & 0xFFFF);
+				
+				// Name of class (used), the component type is recorded if
+				// this is detected to be an array
+			case CLASS_NAME:
+				ClassName cn = (ClassName)__v;
+				return classpool.add(__v,
+					this.addStatic(cn.toString()).index,
+					(!cn.isArray() ? 0 :
+						this.addStatic(cn.componentType()).index));
+				
+				// List of class names (interfaces)
+			case CLASS_NAMES:
+				// Adjust the value to map correctly
+				ClassNames names = (ClassNames)__v;
+				
+				// Fill into indexes
+				int nn = names.size();
+				int[] indexes = new int[nn];
+				for (int i = 0; i < nn; i++)
+					indexes[i] = this.addStatic(names.get(i)).index;
+				
+				// Add it now
+				return classpool.add(names, indexes);
+			
+				// Descriptor of a method
+			case METHOD_DESCRIPTOR:
+				MethodDescriptor md = (MethodDescriptor)__v;
+				
+				// Need arguments to process them
+				FieldDescriptor mrv = md.returnValue();
+				FieldDescriptor[] args = md.arguments();
+				
+				// Argument set
+				int[] isubs = new int[3 + args.length];
+				
+				// String, argument count, and return value
+				isubs[0] = this.addStatic(__v.toString()).index;
+				isubs[1] = args.length;
+				isubs[2] = (mrv == null ? 0 :
+					this.addStatic(mrv.className()).index);
+				
+				// Fill in arguments
+				for (int q = 0, n = args.length; q < n; q++)
+					isubs[3 + q] = this.addStatic(args[q].className()).index;
+				
+				// Put in descriptor with all the pieces
+				return classpool.add(__v, isubs);
+			
+			case STRING:
+				return classpool.add(__v,
+					__v.hashCode() & 0xFFFF,
+					((String)__v).length());
+			
+				// Unknown
+			default:
+				// {@squirreljme.error JC4e Invalid type in static pool.
+				// (The type)}
+				if (!type.isStatic())
+					throw new IllegalArgumentException("JC4e " + type);
+				throw new todo.OOPS(type.name());
+		}
 	}
 	
 	/**

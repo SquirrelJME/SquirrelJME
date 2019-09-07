@@ -221,6 +221,7 @@ public final class MinimizedPool
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/16
 	 */
+	@Deprecated
 	public static final MinimizedPool decode(int __n, byte[] __is, int __o,
 		int __l)
 		throws IndexOutOfBoundsException, InvalidClassFormatException,

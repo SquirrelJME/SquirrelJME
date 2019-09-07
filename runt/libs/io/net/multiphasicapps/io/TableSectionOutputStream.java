@@ -208,7 +208,10 @@ public final class TableSectionOutputStream
 	 */
 	public final byte[] toByteArray()
 	{
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		// Setup output byte array which has a base size for the size of the
+		// file
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+			this.fileSize()))
 		{
 			// Record everything in
 			this.writeTo(baos);

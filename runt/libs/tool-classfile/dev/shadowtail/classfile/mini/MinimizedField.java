@@ -11,6 +11,7 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.xlate.DataType;
+import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -137,7 +138,7 @@ public final class MinimizedField
 	 * @since 2019/04/17
 	 */
 	public static final MinimizedField[] decodeFields(int __n,
-		MinimizedPool __p, byte[] __b, int __o, int __l)
+		DualClassRuntimePool __p, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, InvalidClassFormatException,
 			NullPointerException
 	{
@@ -159,10 +160,11 @@ public final class MinimizedField
 					dis.readInt(),
 					dis.readUnsignedShort(),
 					dis.readUnsignedShort(),
-					new FieldName(
-						(String)__p._values[dis.readUnsignedShort()]),
-					((ClassName)__p._values[dis.readUnsignedShort()]).field(),
-					__p._values[dis.readUnsignedShort()]);
+					new FieldName(__p.getByIndex(false,
+						dis.readUnsignedShort()).<String>value(String.class)),
+					__p.getByIndex(false, dis.readUnsignedShort()).
+						<ClassName>value(ClassName.class).field(),
+					__p.getByIndex(false, dis.readUnsignedShort()).value);
 				
 				// Data type and padding, the data type here is determined by
 				// the field so we do not need to use this pre-calculated
