@@ -791,18 +791,6 @@ public final class TableSectionOutputStream
 		}
 		
 		/**
-		 * {@inheritDoc}
-		 * @since 2019/08/11
-		 */
-		@Override
-		public final void writeShort(int __v)
-			throws IOException
-		{
-			this.write(__v >> 8);
-			this.write(__v);
-		}
-		
-		/**
 		 * Writes the address of the given section as an integer.
 		 *
 		 * @param __s The section to write the address of.
@@ -918,6 +906,18 @@ public final class TableSectionOutputStream
 				
 			// Place padding
 			this.writeShort(0);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/08/11
+		 */
+		@Override
+		public final void writeShort(int __v)
+			throws IOException
+		{
+			this.write(__v >> 8);
+			this.write(__v);
 		}
 		
 		/**
