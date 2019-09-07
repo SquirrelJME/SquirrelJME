@@ -309,9 +309,28 @@ public final class MinimizedClassFile
 	 * correctly.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/10
+	 * @since 2019/09/07
 	 */
 	public static final MinimizedClassFile decode(InputStream __is)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
+		return MinimizedClassFile.decode(__is, null);
+	}
+	
+	/**
+	 * Decodes and returns the minimized representation of the class file.
+	 *
+	 * @param __is The stream to decode from.
+	 * @param __ppool The parent pool, may be {@code null}.
+	 * @return The resulting minimized class.
+	 * @throws InvalidClassFormatException If the class is not formatted
+	 * correctly.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/10
+	 */
+	public static final MinimizedClassFile decode(InputStream __is,
+		DualClassRuntimePool __ppool)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__is == null)
@@ -353,7 +372,7 @@ public final class MinimizedClassFile
 		}
 		
 		// Decode now
-		return MinimizedClassFile.decode(mcdata);
+		return MinimizedClassFile.decode(mcdata, __ppool);
 	}
 	
 	/**
@@ -365,14 +384,34 @@ public final class MinimizedClassFile
 	 * correctly.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/16
+	 * @since 2019/09/07
 	 */
 	public static final MinimizedClassFile decode(byte[] __is)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
+		return MinimizedClassFile.decode(__is, null);
+	}
+	
+	/**
+	 * Decodes and returns the minimized representation of the class file.
+	 *
+	 * @param __is The bytes to decode from.
+	 * @param __ppool The parent pool, may be {@code null}.
+	 * @return The resulting minimized class.
+	 * @throws InvalidClassFormatException If the class is not formatted
+	 * correctly.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/16
+	 */
+	public static final MinimizedClassFile decode(byte[] __is,
+		DualClassRuntimePool __ppool)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
+		// Reading could fail
 		try
 		{
 			// Read class header

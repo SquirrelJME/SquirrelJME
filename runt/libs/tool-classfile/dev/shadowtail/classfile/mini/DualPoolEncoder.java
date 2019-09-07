@@ -19,7 +19,7 @@ import java.io.OutputStream;
 import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
- * This contains the encoder for dual pools.
+ * This contains the encoder and decoder for dual pools.
  *
  * @since 2019/07/17
  */
