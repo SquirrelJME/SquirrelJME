@@ -17,11 +17,11 @@ import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
-import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
+import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.InvokeType;
@@ -434,10 +434,14 @@ public final class JarMinimizer
 						
 						// Pointer to the class name
 					case "namep:I":
+						if (true)
+							throw new todo.TODO();
+						/*
 						__init.memWriteInt(Modifier.JAR_OFFSET,
 							wp, bi._classoffset + bi._class.header.pooloff +
 								bi._class.pool.offset(bi._class.pool.part(
 								bi._class.header.classname, 0)) + 4);
+						*/
 						break;
 						
 						// Super class info
@@ -1051,7 +1055,10 @@ public final class JarMinimizer
 		
 		// Get constant pool
 		MinimizedClassFile mcl = bi._class;
-		MinimizedPool pool = mcl.pool;
+		DualClassRuntimePool pool = mcl.pool;
+		
+		throw new todo.TODO();
+		/*
 		
 		// The JAR offset for the actual pool area
 		int jarpooloff = bi._classoffset + mcl.header.pooloff;
@@ -1187,6 +1194,7 @@ public final class JarMinimizer
 		
 		// Return the pointer where the pool was allocated
 		return rv;
+		*/
 	}
 	
 	/**

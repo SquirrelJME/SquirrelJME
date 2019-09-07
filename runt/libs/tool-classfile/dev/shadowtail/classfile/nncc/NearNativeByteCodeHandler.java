@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.nncc;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
 import dev.shadowtail.classfile.pool.AccessedField;
+import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
@@ -661,7 +662,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Load desired class index type
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, volwantcldx);
+			new ClassInfoPointer(__cl), volwantcldx);
 		
 		// Invoke helper method
 		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
@@ -749,7 +750,8 @@ public final class NearNativeByteCodeHandler
 				// Load the interface we are looking in
 				int voliclass = volatiles.get();
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					__r.handle().outerClass(), voliclass);
+					new ClassInfoPointer(__r.handle().outerClass()),
+					voliclass);
 				
 				// Load the method index of the volatile method in question
 				int volimethdx = volatiles.get();
@@ -1126,7 +1128,7 @@ public final class NearNativeByteCodeHandler
 		// Load the class data for the array type
 		// If not a fixed class index, then rely on the value in the pool
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__at, volclassdx);
+			new ClassInfoPointer(__at), volclassdx);
 		
 		// Call internal handler, place into temporary for OOM check
 		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmNewArray",
@@ -1498,9 +1500,9 @@ public final class NearNativeByteCodeHandler
 		{
 			// Debug entry point
 			codebuilder.add(NativeInstructionType.DEBUG_ENTRY,
-				state.classname.toString(),
-				state.methodname.toString(),
-				state.methodtype.toString());
+				new UsedString(state.classname.toString()),
+				new UsedString(state.methodname.toString()),
+				new UsedString(state.methodtype.toString()));
 			
 			// Setup monitor entry
 			if (this.issynchronized)
@@ -1647,7 +1649,7 @@ public final class NearNativeByteCodeHandler
 				// Load the class type for the exception to check against
 				int volehclassdx = volatiles.get();
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					eh.type(), volehclassdx);
+					new ClassInfoPointer(eh.type()), volehclassdx);
 				
 				// Call instance handler check
 				this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
@@ -1781,7 +1783,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Load desired target class type
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, volwantcldx);
+			new ClassInfoPointer(__cl), volwantcldx);
 		
 		// Call helper class
 		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
@@ -2505,7 +2507,7 @@ public final class NearNativeByteCodeHandler
 			//    being processed (private method)
 			if (wantcons || sameclass)
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					__cl, volclassid);
+					new ClassInfoPointer(__cl), volclassid);
 			
 			// Otherwise, we will be calling a super method so we need to load
 			// the super class of our current class
@@ -2604,7 +2606,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Load class data
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, volwantcl);
+			new ClassInfoPointer(__cl), volwantcl);
 		
 		// Call allocator, copy to result
 		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmNew",
@@ -2998,7 +3000,7 @@ public final class NearNativeByteCodeHandler
 		// Load the class info for the class
 		int volcdvt = volatiles.get();
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, volcdvt);
+			new ClassInfoPointer(__cl), volcdvt);
 		
 		// Call internal class object loader
 		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,

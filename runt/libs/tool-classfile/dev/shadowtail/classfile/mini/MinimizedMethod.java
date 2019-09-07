@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -187,7 +188,7 @@ public final class MinimizedMethod
 	 * @since 2019/04/17
 	 */
 	public static final MinimizedMethod[] decodeMethods(int __n,
-		MinimizedPool __p, byte[] __b, int __o, int __l)
+		DualClassRuntimePool __p, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, InvalidClassFormatException,
 			NullPointerException
 	{
@@ -209,9 +210,11 @@ public final class MinimizedMethod
 				int flags = dis.readInt(),
 					offset = dis.readUnsignedShort();
 				MethodName name = new MethodName(
-					(String)__p._values[dis.readUnsignedShort()]);
+					__p.getByIndex(false, dis.readUnsignedShort()).
+						<String>value(String.class));
 				MethodDescriptor type =
-					(MethodDescriptor)__p._values[dis.readUnsignedShort()];
+					__p.getByIndex(false, dis.readUnsignedShort()).
+						<MethodDescriptor>value(MethodDescriptor.class);
 				int offcode = dis.readInt(), 
 					lencode = dis.readInt();
 				

@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -42,8 +43,7 @@ public final class MinimizedClassFile
 	public final MinimizedClassHeader header;
 	
 	/** Pool. */
-	@Deprecated
-	public final MinimizedPool pool;
+	public final DualClassRuntimePool pool;
 	
 	/** Static fields. */
 	private final MinimizedField[] _sfields;
@@ -72,7 +72,8 @@ public final class MinimizedClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public MinimizedClassFile(MinimizedClassHeader __h, MinimizedPool __p,
+	public MinimizedClassFile(MinimizedClassHeader __h,
+		DualClassRuntimePool __p,
 		MinimizedField[] __sf, MinimizedField[] __if,
 		MinimizedMethod[] __sm, MinimizedMethod[] __im)
 		throws NullPointerException
@@ -174,8 +175,11 @@ public final class MinimizedClassFile
 	 */
 	public final ClassNames interfaceNames()
 	{
+		throw new todo.TODO();
+		/*
 		return this.pool.<ClassNames>get(this.header.classints,
 			ClassNames.class);
+		*/
 	}
 	
 	/**
@@ -260,8 +264,7 @@ public final class MinimizedClassFile
 	 * @return The minimized constant pool.
 	 * @since 2019/04/17
 	 */
-	@Deprecated
-	public final MinimizedPool pool()
+	public final DualClassRuntimePool pool()
 	{
 		return this.pool;
 	}
@@ -274,9 +277,12 @@ public final class MinimizedClassFile
 	 */
 	public final ClassName superName()
 	{
+		throw new todo.TODO();
+		/*
 		int id = this.header.classsuper;
 		return (id == 0 ? null :
 			this.pool.<ClassName>get(id, ClassName.class));
+		*/
 	}
 	
 	/**
@@ -287,8 +293,11 @@ public final class MinimizedClassFile
 	 */
 	public final ClassName thisName()
 	{
+		throw new todo.TODO();
+		/*
 		return this.pool.<ClassName>get(
 			this.header.classname, ClassName.class);
+		*/
 	}
 	
 	/**
@@ -389,8 +398,9 @@ public final class MinimizedClassFile
 					String.format("JC02 %08x", endmagic));
 			
 			// Read constant pool
-			MinimizedPool pool = MinimizedPool.decode(header.poolcount,
-				__is, header.pooloff, header.poolsize);
+			DualClassRuntimePool pool = null;
+			if (true)
+				throw new todo.TODO();
 			
 			// Read static and instance fields
 			MinimizedField[] sfields = MinimizedField.decodeFields(
