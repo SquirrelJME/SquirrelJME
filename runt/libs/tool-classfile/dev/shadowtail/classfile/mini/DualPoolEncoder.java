@@ -83,20 +83,23 @@ public final class DualPoolEncoder
 				new ByteArrayInputStream(__b, __co, __cl)));
 			
 			// Read the entry count (first null entry), ignore padding
-			dis.read();
-			dis.read();
+			dis.readByte();
+			dis.readByte();
 			dis.readShort();
 			int poolsize = dis.readInt();
 			
 			// Target entries
 			List<BasicPoolEntry> entries = new ArrayList<>(poolsize);
 			
+			// Initialize null entry
+			entries.add(new BasicPoolEntry(0, null));
+			
 			// Read in every entry
 			for (int i = 1; i < poolsize; i++)
 			{
 				// Read entry properties
-				int tag = dis.read() & 0xFF,
-					numparts = dis.read() & 0xFF,
+				int tag = dis.readByte() & 0xFF,
+					numparts = dis.readByte(),
 					elen = dis.readUnsignedShort(),
 					eoff = dis.readInt();
 				
@@ -120,16 +123,41 @@ public final class DualPoolEncoder
 						" " + isruntime);
 				
 				// Get reader for the entry data
-				DataInputStream edis = new DataInputStream(
+				DataInputStream xd = new DataInputStream(
 					new ByteArrayInputStream(__b, baseoff + eoff, elen));
+				
+				todo.DEBUG.note("Entry: tag=%s, np=%d, off=%d (%d), len=%d",
+					etype, numparts, eoff, baseoff + eoff, elen);
+				
+				// Is this wide?
+				boolean iswide = (numparts < 0);
+				if (iswide)
+					numparts = -numparts;
+				
+				// Resulting parts and value
+				Object value;
+				int[] parts = new int[numparts];
 				
 				// Depends on the type
 				switch (etype)
 				{
+						// String
+					case STRING:
+						// Read hash code and length
+						parts[0] = xd.readUnsignedShort();
+						parts[1] = xd.readUnsignedShort();
+						
+						// Decode actual string
+						value = xd.readUTF();
+						break;
+						
 						// Unknown
 					default:
 						throw new todo.OOPS(etype.name());
 				}
+				
+				// Record entry
+				entries.add(new BasicPoolEntry(i, value, parts));
 			}
 			
 			// Build pool
@@ -293,7 +321,7 @@ public final class DualPoolEncoder
 				sl.writeInt(__onto.add(false, v).index);
 		}
 		
-		// Process runtime entries
+		// Process run-time entries
 		TableSectionOutputStream.Section rl = table.addSection(
 			TableSectionOutputStream.VARIABLE_SIZE, 4);
 		for (BasicPoolEntry e : __src.runtimePool())
