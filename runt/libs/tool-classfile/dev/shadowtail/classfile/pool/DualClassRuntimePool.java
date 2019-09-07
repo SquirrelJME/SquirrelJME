@@ -18,6 +18,30 @@ package dev.shadowtail.classfile.pool;
  */
 public final class DualClassRuntimePool
 {
+	/** The class pool. */
+	protected final BasicPool classpool;
+	
+	/** The run-time pool. */
+	protected final BasicPool runpool;
+	
+	/**
+	 * Initializes the dual class/run-time pool.
+	 *
+	 * @param __cl The class pool.
+	 * @param __rt The run-time pool.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/07
+	 */
+	public DualClassRuntimePool(BasicPool __cl, BasicPool __rt)
+		throws NullPointerException
+	{
+		if (__cl == null || __rt == null)
+			throw new NullPointerException("NARG");
+		
+		this.classpool = __cl;
+		this.runpool = __rt;
+	}
+	
 	/**
 	 * Loads a value from the pool by its index.
 	 *

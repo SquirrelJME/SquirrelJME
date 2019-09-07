@@ -450,11 +450,9 @@ public final class MinimizedClassFile
 			// Decode physical pool within the class
 			else
 			{
-				pool = DualPoolEncoder.decode(
-					new ByteArrayInputStream(__is, header.staticpooloff,
-						header.staticpoolsize),
-					new ByteArrayInputStream(__is, header.runtimepooloff,
-						header.runtimepoolsize));
+				pool = DualPoolEncoder.decode(__is,
+					header.staticpooloff, header.staticpoolsize,
+					header.runtimepooloff, header.runtimepoolsize);
 			}
 			
 			// Read static and instance fields

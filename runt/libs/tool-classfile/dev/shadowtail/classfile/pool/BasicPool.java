@@ -9,6 +9,11 @@
 
 package dev.shadowtail.classfile.pool;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This represents a basic constant pool.
  *
@@ -16,5 +21,26 @@ package dev.shadowtail.classfile.pool;
  */
 public final class BasicPool
 {
+	/** Entries which exist in the constant pool. */
+	private final Map<Object, BasicPoolEntry> _entries;
+	
+	/** Linear entries within the pool. */
+	private final List<BasicPoolEntry> _linear;
+	
+	/**
+	 * Input for the basic pool.
+	 *
+	 * @param __it The input entries.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/07
+	 */
+	public BasicPool(Iterable<BasicPoolEntry> __it)
+		throws NullPointerException
+	{
+		if (__it == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

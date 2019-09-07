@@ -14,11 +14,16 @@ import dev.shadowtail.classfile.pool.BasicPoolBuilder;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
@@ -44,21 +49,105 @@ public final class DualPoolEncoder
 	/**
 	 * Decodes the specified pool.
 	 *
-	 * @param __cl The input stream for the class pool.
-	 * @param __rt The input stream for the run-time pool.
+	 * @param __b The input byte array.
+	 * @param __co The class pool offset.
+	 * @param __cl The class pool length.
+	 * @param __ro The run-time pool offset.
+	 * @param __rl The run-time pool length.
 	 * @return The resulting dual pool.
+	 * @throws InvalidClassFormatException If the pool is not valid.
 	 * @throws IOException If the pool could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/07
 	 */
-	public static final DualClassRuntimePool decode(InputStream __cl,
-		InputStream __rt)
-		throws IOException, NullPointerException
+	public static final DualClassRuntimePool decode(byte[] __b,
+		int __co, int __cl, int __ro, int __rl)
+		throws InvalidClassFormatException, IOException, NullPointerException
 	{
-		if (__cl == null || __rt == null)
+		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// The resulting pool
+		BasicPool classpool = null,
+			runpool = null;
+			
+		// Read of both pools
+		for (boolean isruntime = false;; isruntime = true)
+		{
+			// The base offset and length used, used to read entry data
+			int baseoff = (isruntime ? __ro : __co);
+			
+			// Which stream to read main entries from?
+			DataInputStream dis = new DataInputStream(
+				(isruntime ? new ByteArrayInputStream(__b, __ro, __rl) :
+				new ByteArrayInputStream(__b, __co, __cl)));
+			
+			// Read the entry count (first null entry), ignore padding
+			dis.read();
+			dis.read();
+			dis.readShort();
+			int poolsize = dis.readInt();
+			
+			// Target entries
+			List<BasicPoolEntry> entries = new ArrayList<>(poolsize);
+			
+			// Read in every entry
+			for (int i = 1; i < poolsize; i++)
+			{
+				// Read entry properties
+				int tag = dis.read() & 0xFF,
+					numparts = dis.read() & 0xFF,
+					elen = dis.readUnsignedShort(),
+					eoff = dis.readInt();
+				
+				// Read type information
+				MinimizedPoolEntryType etype;
+				try
+				{
+					etype = MinimizedPoolEntryType.of(tag);
+				}
+				catch (IllegalArgumentException e)
+				{
+					// {@squirreljme.error JC4i Invalid constant pool entry.}
+					throw new InvalidClassFormatException("JC4i", e);
+				}
+				
+				// {@squirreljme.error JC4j The specified type cannot be within
+				// the current pool section. (The type; If this is the run-time
+				// pool)}
+				if (etype.isRuntime() != isruntime)
+					throw new InvalidClassFormatException("JC4j " + etype +
+						" " + isruntime);
+				
+				// Get reader for the entry data
+				DataInputStream edis = new DataInputStream(
+					new ByteArrayInputStream(__b, baseoff + eoff, elen));
+				
+				// Depends on the type
+				switch (etype)
+				{
+						// Unknown
+					default:
+						throw new todo.OOPS(etype.name());
+				}
+			}
+			
+			// Build pool
+			BasicPool result = new BasicPool(entries);
+			
+			// Store pool in the right spot
+			if (isruntime)
+				runpool = result;
+			else
+				classpool = result;
+			
+			// Stop processing after the run-time is done
+			if (isruntime)
+				break;
+		}
+		
+		// Finalize pool
+		return new DualClassRuntimePool(classpool, runpool);
 	}
 	
 	/**
