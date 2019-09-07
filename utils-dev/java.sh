@@ -16,7 +16,7 @@ __exedir="$(dirname -- "$0")"
 __tmpdir="$("$__exedir/tmpdir.sh")"
 
 # Allow for the forcing of the simulated VM
-if [ -n "$USE_SIMJVM" ] && [ "$USE_SIMJVM" -eq "0" ]
+if [ -z "$USE_SIMJVM" ] || [ "$USE_SIMJVM" -eq "0" ]
 then
 	# Use user specified binary
 	if [ -n "$JAVA" ] && which "$JAVA" > /dev/null
