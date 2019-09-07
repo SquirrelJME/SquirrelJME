@@ -9,11 +9,14 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolBuilder;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
+import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.io.TableSectionOutputStream;
@@ -36,6 +39,26 @@ public final class DualPoolEncoder
 	 */
 	private DualPoolEncoder()
 	{
+	}
+	
+	/**
+	 * Decodes the specified pool.
+	 *
+	 * @param __cl The input stream for the class pool.
+	 * @param __rt The input stream for the run-time pool.
+	 * @return The resulting dual pool.
+	 * @throws IOException If the pool could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/07
+	 */
+	public static final DualClassRuntimePool decode(InputStream __cl,
+		InputStream __rt)
+		throws IOException, NullPointerException
+	{
+		if (__cl == null || __rt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -198,8 +221,8 @@ public final class DualPoolEncoder
 		
 		// Return the positions of everything
 		return new DualPoolEncodeResult(
-			table.sectionAddress(sl), table.sectionSize(sl),
-			table.sectionAddress(rl), table.sectionSize(rl));
+			table.sectionAddress(sl), -table.sectionSize(sl),
+			table.sectionAddress(rl), -table.sectionSize(rl));
 	}
 	
 	/**

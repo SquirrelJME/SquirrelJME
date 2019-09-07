@@ -436,10 +436,26 @@ public final class MinimizedClassFile
 				throw new InvalidClassFormatException(
 					String.format("JC02 %08x", endmagic));
 			
-			// Read constant pool
-			DualClassRuntimePool pool = null;
-			if (true)
+			// Virtual constant pool which relies on a parent one
+			DualClassRuntimePool pool;
+			if (header.staticpoolsize < 0 || header.runtimepoolsize < 0)
+			{
+				// {@squirreljme.error JC4h No parent pool was specified.}
+				if (__ppool == null)
+					throw new NullPointerException("JC4h");
+				
 				throw new todo.TODO();
+			}
+			
+			// Decode physical pool within the class
+			else
+			{
+				pool = DualPoolEncoder.decode(
+					new ByteArrayInputStream(__is, header.staticpooloff,
+						header.staticpoolsize),
+					new ByteArrayInputStream(__is, header.runtimepooloff,
+						header.runtimepoolsize));
+			}
 			
 			// Read static and instance fields
 			MinimizedField[] sfields = MinimizedField.decodeFields(
