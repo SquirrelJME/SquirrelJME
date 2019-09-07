@@ -10,6 +10,7 @@
 package net.multiphasicapps.io;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.lang.ref.Reference;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -967,9 +968,22 @@ public final class TableSectionOutputStream
 		 */
 		@Override
 		public final void writeUTF(String __v)
-			throws IOException
+			throws IOException, NullPointerException
 		{
-			throw new todo.TODO();
+			if (__v == null)
+				throw new NullPointerException("NARG");
+			
+			// Write into a buffer
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+				2 + (__v.length() * 2));
+				DataOutputStream dos = new DataOutputStream(baos))
+			{
+				// Write data
+				dos.writeUTF(__v);
+				
+				// Dump to this internally
+				baos.writeTo(this);
+			}
 		}
 	}
 	
