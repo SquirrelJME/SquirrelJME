@@ -248,6 +248,17 @@ public final class DualClassRuntimePoolBuilder
 	}
 	
 	/**
+	 * Builds this dual pool.
+	 *
+	 * @return The resulting dual pool.
+	 * @since 2019/09/07
+	 */
+	public final DualClassRuntimePool build()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the static class pool.
 	 *
 	 * @return The pool.
