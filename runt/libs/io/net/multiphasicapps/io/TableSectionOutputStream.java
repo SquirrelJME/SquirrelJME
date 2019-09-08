@@ -53,7 +53,7 @@ public final class TableSectionOutputStream
 	 */
 	public final TableSectionOutputStream.Section addSection()
 	{
-		return this.addSection(VARIABLE_SIZE, 0);
+		return this.addSection(VARIABLE_SIZE, 1);
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public final class TableSectionOutputStream
 	public final TableSectionOutputStream.Section addSection(byte[] __bytes)
 		throws IOException, NullPointerException
 	{
-		return this.addSection(__bytes, 0);
+		return this.addSection(__bytes, 1);
 	}
 	
 	/**
@@ -78,13 +78,15 @@ public final class TableSectionOutputStream
 	 * @param __bytes The byte array to initialize as.
 	 * @param __align The alignment to use.
 	 * @return The resulting section.
+	 * @throws IllegalArgumentException If the size is zero or negative and
+	 * is not the variable size, or the alignment is below one.
 	 * @throws IOException If the section could not be written.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/11
 	 */
 	public final TableSectionOutputStream.Section addSection(byte[] __bytes,
 		int __align)
-		throws IOException, NullPointerException
+		throws IllegalArgumentException, IOException, NullPointerException
 	{
 		if (__bytes == null)
 			throw new NullPointerException("NARG");
@@ -106,13 +108,13 @@ public final class TableSectionOutputStream
 	 * then the section will have a variable size.
 	 * @return The section which was created for writing.
 	 * @throws IllegalArgumentException If the size is zero or negative and
-	 * is not the variable size.
+	 * is not the variable size, or the alignment is below one.
 	 * @since 2019/08/11
 	 */
 	public final TableSectionOutputStream.Section addSection(int __size)
 		throws IllegalArgumentException
 	{
-		return this.addSection(__size, 0);
+		return this.addSection(__size, 1);
 	}
 	
 	/**
@@ -125,7 +127,7 @@ public final class TableSectionOutputStream
 	 * {@code 1} it will be set to {@code 1}.
 	 * @return The section which was created for writing.
 	 * @throws IllegalArgumentException If the size is zero or negative and
-	 * is not the variable size.
+	 * is not the variable size, or the alignment is below one.
 	 * @since 2019/08/11
 	 */
 	public final TableSectionOutputStream.Section addSection(int __size,
@@ -136,9 +138,10 @@ public final class TableSectionOutputStream
 		if (__size != VARIABLE_SIZE && __size <= 0)
 			throw new IllegalArgumentException("BD3h " + __size);
 		
-		// It does not make sense to align under a byte
+		// {@squirreljme.error BD3q Zero or negative alignment.
+		// (The alignment)}
 		if (__align < 1)
-			__align = 1;
+			throw new IllegalArgumentException("BD3q " + __align);
 		
 		// Create section
 		Section rv = new Section(__size, __align, this._dirty);
