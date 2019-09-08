@@ -1,0 +1,24 @@
+# 2019/09/07
+
+## 11:51
+
+Forgot what I opened this up for, but working on SquirrelJME today.
+
+## 11:55
+
+Oh interesting, `DEBUG_ENTRY` is not using used string so that needs
+fixing a bit.
+
+## 11:58
+
+I can actually add a JNI interface to RatufaCoat for usage with
+Android and such.
+
+## 12:34
+
+I should have `CLASS_NAME` and then `CLASS_INFO_OBJECT` for pool usage so
+that way I can describe classes better.
+
+## 13:31
+
+Oh, the modified UTF-8 is incorrect! This needs fixing!
