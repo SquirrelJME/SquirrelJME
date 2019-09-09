@@ -1,0 +1,7 @@
+# 2019/09/08
+
+## 08:51
+
+Okay so, there definitely might be alignment issues for pool entries and such
+with `Entry: tag=STRING, np=-2, off=731 (4039), len=28`. The offset should
+be divisible by 4.
