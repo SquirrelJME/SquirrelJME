@@ -151,6 +151,41 @@ public final class DualPoolEncoder
 						value = xd.readUTF();
 						break;
 						
+						// Everything else just consists of parts which are
+						// either values to other indexes or an ordinal
+					case ACCESSED_FIELD:
+					case CLASS_INFO_POINTER:
+					case CLASS_NAME:
+					case CLASS_NAMES:
+					case CLASS_POOL:
+					case DOUBLE:
+					case LONG:
+					case INVOKED_METHOD:
+					case METHOD_DESCRIPTOR:
+					case METHOD_INDEX:
+					case USED_STRING:
+						// Read parts
+						if (iswide)
+							for (int p = 0; p < numparts; p++)
+								parts[p] = xd.readUnsignedShort();
+						else
+							for (int p = 0; p < numparts; p++)
+								parts[p] = xd.readByte() & 0xFF;
+						
+						// Build value depending on the parts used
+						switch (etype)
+						{
+							case CLASS_NAME:
+								if (true)
+									throw new todo.TODO();
+								break;
+							
+								// Unknown
+							default:
+								throw new todo.OOPS(etype.name());
+						}
+						break;
+						
 						// Unknown
 					default:
 						throw new todo.OOPS(etype.name());
