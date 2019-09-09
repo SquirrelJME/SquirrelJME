@@ -359,8 +359,8 @@ public final class TableSectionOutputStream
 			Section section = sections.get(i);
 			
 			// Perform alignment of this section
-			filesize += (section.alignment - 1) -
-				(filesize % section.alignment);
+			if ((filesize % section.alignment) != 0)
+				filesize += section.alignment - (filesize % section.alignment);
 			
 			// Section is addressed here
 			section._writeaddress = filesize;
