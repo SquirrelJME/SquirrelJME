@@ -138,6 +138,10 @@ public final class DualPoolEncoder
 				Object value;
 				int[] parts = new int[numparts];
 				
+				// Debug
+				todo.DEBUG.note("Entry: ty=%s, np=%d, of=%d(%d), ln=%d",
+					etype, numparts, eoff, baseoff + eoff, elen);
+				
 				// Depends on the type
 				switch (etype)
 				{
