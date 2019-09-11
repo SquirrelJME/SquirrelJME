@@ -19,6 +19,7 @@ import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
@@ -1500,9 +1501,9 @@ public final class NearNativeByteCodeHandler
 		{
 			// Debug entry point
 			codebuilder.add(NativeInstructionType.DEBUG_ENTRY,
-				new UsedString(state.classname.toString()),
-				new UsedString(state.methodname.toString()),
-				new UsedString(state.methodtype.toString()));
+				new NotedString(state.classname.toString()),
+				new NotedString(state.methodname.toString()),
+				new NotedString(state.methodtype.toString()));
 			
 			// Setup monitor entry
 			if (this.issynchronized)

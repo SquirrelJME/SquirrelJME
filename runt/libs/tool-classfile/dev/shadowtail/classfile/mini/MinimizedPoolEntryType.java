@@ -61,6 +61,9 @@ public enum MinimizedPoolEntryType
 	/** Class information. */
 	CLASS_INFO_POINTER,
 	
+	/** A string which has been noted for debug purposes. */
+	NOTED_STRING,
+	
 	/** End. */
 	;
 	
@@ -81,6 +84,7 @@ public enum MinimizedPoolEntryType
 			case INVOKED_METHOD:
 			case USED_STRING:
 			case METHOD_INDEX:
+			case NOTED_STRING:
 				return true;
 		}
 		
@@ -140,6 +144,7 @@ public enum MinimizedPoolEntryType
 			case 12:	return USED_STRING;
 			case 13:	return METHOD_INDEX;
 			case 14:	return CLASS_INFO_POINTER;
+			case 15:	return NOTED_STRING;
 		}
 		
 		// {@squirreljme.error JC0e Unknown pool type. (The type)}
@@ -194,6 +199,8 @@ public enum MinimizedPoolEntryType
 				return METHOD_INDEX;
 			case "dev.shadowtail.classfile.pool.ClassInfoPointer":
 				return CLASS_INFO_POINTER;
+			case "dev.shadowtail.classfile.pool.NotedString":
+				return NOTED_STRING;
 		}
 		
 		// {@squirreljme.error JC0f Class does not map to a pool entry
