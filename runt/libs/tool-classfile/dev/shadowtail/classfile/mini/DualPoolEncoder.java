@@ -21,6 +21,7 @@ import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayInputStream;
@@ -284,6 +285,17 @@ public final class DualPoolEncoder
 										ClassName.class, parts[1]),
 									classpool.<String>byIndex(String.class,
 										parts[2]),
+									classpool.<MethodDescriptor>byIndex(
+										MethodDescriptor.class, parts[3]));
+								break;
+								
+								// Method index in vtable
+							case METHOD_INDEX:
+								value = new MethodIndex(
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[1]),
+									classpool.<String>byIndex(
+										String.class, parts[2]),
 									classpool.<MethodDescriptor>byIndex(
 										MethodDescriptor.class, parts[3]));
 								break;
