@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.io.TableSectionOutputStream;
@@ -128,9 +129,6 @@ public final class DualPoolEncoder
 				DataInputStream xd = new DataInputStream(
 					new ByteArrayInputStream(__b, baseoff + eoff, elen));
 				
-				todo.DEBUG.note("Entry: tag=%s, np=%d, off=%d (%d), len=%d",
-					etype, numparts, eoff, baseoff + eoff, elen);
-				
 				// Is this wide?
 				boolean iswide = (numparts < 0);
 				if (iswide)
@@ -183,6 +181,17 @@ public final class DualPoolEncoder
 							case CLASS_NAME:
 								value = new ClassName(entries.get(parts[0]).
 									<String>value(String.class));
+								break;
+							
+								// A list of class names
+							case CLASS_NAMES:
+								ClassName[] cnn = new ClassName[numparts];
+								
+								for (int j = 0; j < numparts; j++)
+									cnn[j] = entries.get(parts[j]).
+										<ClassName>value(ClassName.class);
+								
+								value = new ClassNames(cnn);
 								break;
 								
 								// Raw integer value
@@ -237,6 +246,10 @@ public final class DualPoolEncoder
 				
 				// Record entry
 				entries.add(new BasicPoolEntry(i, value, parts));
+				
+				// Debug
+				todo.DEBUG.note("Entry: ty=%s, np=%d, of=%d(%d), ln=%d --> %s",
+					etype, numparts, eoff, baseoff + eoff, elen, value);
 			}
 			
 			// Build pool
