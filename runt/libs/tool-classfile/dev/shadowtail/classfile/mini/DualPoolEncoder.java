@@ -82,8 +82,8 @@ public final class DualPoolEncoder
 			
 			// Which stream to read main entries from?
 			DataInputStream dis = new DataInputStream(
-				(isruntime ? new ByteArrayInputStream(__b, __ro, __rl) :
-				new ByteArrayInputStream(__b, __co, __cl)));
+				new ByteArrayInputStream(__b, baseoff,
+					(isruntime ? __rl : __cl)));
 			
 			// Read the entry count (first null entry), ignore padding
 			dis.readByte();
@@ -303,10 +303,13 @@ public final class DualPoolEncoder
 		
 		// Write both of the pools
 		for (boolean isruntime = false;; isruntime = true)
-		{			
+		{
+			// Sub output which writes to the section
+			TableSectionOutputStream sub = new TableSectionOutputStream();
+			
 			// Section containing the table of contents
-			TableSectionOutputStream.Section toc =
-				(isruntime ? runsection : clssection);
+			TableSectionOutputStream.Section toc = sub.addSection(
+				TableSectionOutputStream.VARIABLE_SIZE, 4);
 			
 			// Are we encoding the static or run-time pool?
 			BasicPoolBuilder pool = (isruntime ? __dp.runtimePool() :
@@ -356,8 +359,9 @@ public final class DualPoolEncoder
 						iswide = true;
 				}
 				
-				// Encode the data into a section somewhere
-				TableSectionOutputStream.Section data = output.addSection(
+				// Encode the data into a section somewhere in this
+				// sub-section
+				TableSectionOutputStream.Section data = sub.addSection(
 					TableSectionOutputStream.VARIABLE_SIZE, 4);
 				data.write(DualPoolEncoder.encodeValue(et, ep, iswide, ev));
 				
@@ -367,6 +371,9 @@ public final class DualPoolEncoder
 				toc.writeSectionSizeShort(data);
 				toc.writeSectionAddressInt(data);
 			}
+			
+			// Write entire sub-section data to the target
+			sub.writeTo((isruntime ? runsection : clssection));
 			
 			// Stop processing after the run-time is done
 			if (isruntime)
