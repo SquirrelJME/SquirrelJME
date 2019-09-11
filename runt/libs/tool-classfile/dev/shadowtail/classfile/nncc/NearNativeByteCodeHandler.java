@@ -1170,7 +1170,7 @@ public final class NearNativeByteCodeHandler
 			// Load the string pointer into a temporary
 			int volstrptr = volatiles.get();
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				__v, volstrptr);
+				new UsedString((String)__v), volstrptr);
 			
 			// Call internal string loader
 			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
