@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
@@ -178,10 +179,7 @@ public final class DualPoolEncoder
 						// Build value depending on the parts used
 						switch (etype)
 						{
-								// Name of class, the actual class name is
-								// the first and secondary ones just indicate
-								// and array and its component (not needed
-								// to load the information)
+								// Name of class, has extra meta-data
 							case CLASS_NAME:
 								value = new ClassName(entries.get(parts[0]).
 									<String>value(String.class));
@@ -217,6 +215,13 @@ public final class DualPoolEncoder
 										0xFFFFFFFFL) << 32L) |
 									((long)(((parts[2] & 0xFFFF) << 16) |
 									((parts[3] & 0xFFFF))) & 0xFFFFFFFFL));
+								break;
+								
+								// Method descriptor, has extra meta-data
+							case METHOD_DESCRIPTOR:
+								value = new MethodDescriptor(
+									entries.get(parts[0]).
+									<String>value(String.class));
 								break;
 								
 								// Unknown
