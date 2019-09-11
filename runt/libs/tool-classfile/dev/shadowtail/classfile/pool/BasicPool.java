@@ -42,5 +42,19 @@ public final class BasicPool
 		
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Gets the pool entry by index.
+	 *
+	 * @param __i The index to get.
+	 * @return The index of the given entry.
+	 * @throws IndexOutOfBoundsException If the entry is not within bounds.
+	 * @since 2019/09/11
+	 */
+	public final BasicPoolEntry byIndex(int __i)
+		throws IndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
 }
 
