@@ -17,6 +17,7 @@ import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -175,6 +176,7 @@ public final class DualPoolEncoder
 					case INVOKED_METHOD:
 					case METHOD_DESCRIPTOR:
 					case METHOD_INDEX:
+					case NOTED_STRING:
 					case USED_STRING:
 						// Read parts
 						if (iswide)
@@ -260,6 +262,13 @@ public final class DualPoolEncoder
 										parts[2]),
 									classpool.<MethodDescriptor>byIndex(
 										MethodDescriptor.class, parts[3]));
+								break;
+								
+								// Noted string
+							case NOTED_STRING:
+								value = new NotedString(
+									classpool.byIndex(parts[0]).
+									<String>value(String.class));
 								break;
 								
 								// Used string
@@ -540,6 +549,7 @@ public final class DualPoolEncoder
 			case INVOKED_METHOD:
 			case METHOD_DESCRIPTOR:
 			case METHOD_INDEX:
+			case NOTED_STRING:
 			case USED_STRING:
 				if (__wide)
 					for (int i = 0, n = __p.length; i < n; i++)
