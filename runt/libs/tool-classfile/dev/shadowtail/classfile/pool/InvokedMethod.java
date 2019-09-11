@@ -54,6 +54,59 @@ public final class InvokedMethod
 	 * Initializes the invoked method.
 	 *
 	 * @param __t The type of method to invoke.
+	 * @param __cl The class.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/11
+	 */
+	public InvokedMethod(InvokeType __t, ClassName __cl,
+		String __mn, String __mt)
+		throws NullPointerException
+	{
+		this(__t, new MethodHandle(__cl,
+			new MethodName(__mn), new MethodDescriptor(__mt)));
+	}
+	
+	/**
+	 * Initializes the invoked method.
+	 *
+	 * @param __t The type of method to invoke.
+	 * @param __cl The class.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/11
+	 */
+	public InvokedMethod(InvokeType __t, ClassName __cl,
+		String __mn, MethodDescriptor __mt)
+		throws NullPointerException
+	{
+		this(__t, new MethodHandle(__cl,
+			new MethodName(__mn), __mt));
+	}
+	
+	/**
+	 * Initializes the invoked method.
+	 *
+	 * @param __t The type of method to invoke.
+	 * @param __cl The class.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/11
+	 */
+	public InvokedMethod(InvokeType __t, ClassName __cl, MethodName __mn,
+		MethodDescriptor __mt)
+		throws NullPointerException
+	{
+		this(__t, new MethodHandle(__cl, __mn, __mt));
+	}
+	
+	/**
+	 * Initializes the invoked method.
+	 *
+	 * @param __t The type of method to invoke.
 	 * @param __h The handle of the method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/21

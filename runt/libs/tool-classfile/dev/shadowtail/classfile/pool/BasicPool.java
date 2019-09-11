@@ -98,6 +98,27 @@ public final class BasicPool
 	}
 	
 	/**
+	 * Gets the pool value by index.
+	 *
+	 * @param <T> The class type.
+	 * @param __cl The class type.
+	 * @param __i The index to get.
+	 * @return The index of the given entry.
+	 * @throws IndexOutOfBoundsException If the entry is not within bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/11
+	 */
+	public final <T> T byIndex(Class<T> __cl, int __i)
+		throws ClassCastException, IndexOutOfBoundsException,
+			NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return this.byIndex(__i).<T>value(__cl);
+	}
+	
+	/**
 	 * Gets the pool entry by value.
 	 *
 	 * @param __v The value to get.

@@ -12,14 +12,18 @@ package dev.shadowtail.classfile.mini;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolBuilder;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
+import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
+import dev.shadowtail.classfile.pool.InvokeType;
+import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,8 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodHandle;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
@@ -237,6 +243,32 @@ public final class DualPoolEncoder
 									<String>value(String.class));
 								break;
 								
+								// Class information point
+							case CLASS_INFO_POINTER:
+								value = new ClassInfoPointer(
+									classpool.byIndex(parts[0]).
+									<ClassName>value(ClassName.class));
+								break;
+								
+								// A method which has been invoked
+							case INVOKED_METHOD:
+								value = new InvokedMethod(
+									InvokeType.of(parts[0]),
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[1]),
+									classpool.<String>byIndex(String.class,
+										parts[2]),
+									classpool.<MethodDescriptor>byIndex(
+										MethodDescriptor.class, parts[3]));
+								break;
+								
+								// Used string
+							case USED_STRING:
+								value = new UsedString(
+									classpool.byIndex(parts[0]).
+									<String>value(String.class));
+								break;
+								
 								// Unknown
 							default:
 								throw new todo.OOPS(etype.name());
@@ -255,6 +287,9 @@ public final class DualPoolEncoder
 				todo.DEBUG.note("Entry: ty=%s, np=%d, of=%d(%d), ln=%d --> %s",
 					etype, numparts, eoff, baseoff + eoff, elen, value);
 			}
+			
+			// Debug
+			todo.DEBUG.note("Entry Count: %d", entries.size());
 			
 			// Build pool
 			BasicPool result = new BasicPool(entries);
