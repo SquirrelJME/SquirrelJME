@@ -13,6 +13,7 @@ import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolBuilder;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.classfile.pool.InvokeType;
@@ -248,6 +249,13 @@ public final class DualPoolEncoder
 								// Class information point
 							case CLASS_INFO_POINTER:
 								value = new ClassInfoPointer(
+									classpool.byIndex(parts[0]).
+									<ClassName>value(ClassName.class));
+								break;
+								
+								// Class run-time pool reference
+							case CLASS_POOL:
+								value = new ClassPool(
 									classpool.byIndex(parts[0]).
 									<ClassName>value(ClassName.class));
 								break;
