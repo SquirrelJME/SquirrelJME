@@ -324,7 +324,7 @@ public final class DualPoolEncoder
 						et + " " + ev + " " + isruntime);
 				
 				// Determine if the parts need to be wide
-				int[] ep = e.parts();
+				short[] ep = e.parts();
 				int epn = ep.length;
 				boolean iswide = false;
 				for (int j = 0; j < epn; j++)
@@ -429,7 +429,7 @@ public final class DualPoolEncoder
 	 * @since 2019/07/20
 	 */
 	public static final byte[] encodeValue(MinimizedPoolEntryType __t,
-		int[] __p, boolean __wide, Object __v)
+		short[] __p, boolean __wide, Object __v)
 		throws IOException, NullPointerException
 	{
 		if (__t == null || __p == null || __v == null)
@@ -479,7 +479,7 @@ public final class DualPoolEncoder
 			case USED_STRING:
 				if (__wide)
 					for (int i = 0, n = __p.length; i < n; i++)
-						dos.writeUnsignedShortChecked(__p[i]);
+						dos.writeShortChecked(__p[i]);
 				else
 					for (int i = 0, n = __p.length; i < n; i++)
 						dos.writeByte(__p[i]);

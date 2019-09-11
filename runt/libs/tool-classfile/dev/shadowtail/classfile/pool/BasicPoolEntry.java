@@ -23,7 +23,22 @@ public final class BasicPoolEntry
 	public final Object value;
 	
 	/** The parts. */
-	private final int[] _parts;
+	private final short[] _parts;
+	
+	/**
+	 * Initializes a new entry.
+	 *
+	 * @param __dx The entry index.
+	 * @param __v The value.
+	 * @param __parts The parts.
+	 * @since 2019/09/11
+	 */
+	public BasicPoolEntry(int __dx, Object __v, short... __parts)
+	{
+		this.index = __dx;
+		this.value = __v;
+		this._parts = (__parts == null ? new short[0] : __parts.clone());
+	}
 	
 	/**
 	 * Initializes a new entry.
@@ -37,7 +52,13 @@ public final class BasicPoolEntry
 	{
 		this.index = __dx;
 		this.value = __v;
-		this._parts = (__parts == null ? new int[0] : __parts.clone());
+		
+		// Reduce parts to shorts
+		int n = (__parts == null ? 0 : __parts.length);
+		short[] parts = new short[n];
+		for (int i = 0; i < n; i++)
+			parts[i] = (short)__parts[i];
+		this._parts = parts;
 	}
 	
 	/**
@@ -66,7 +87,7 @@ public final class BasicPoolEntry
 	 * @return The used parts.
 	 * @since 2019/07/15
 	 */
-	public final int[] parts()
+	public final short[] parts()
 	{
 		return this._parts.clone();
 	}
