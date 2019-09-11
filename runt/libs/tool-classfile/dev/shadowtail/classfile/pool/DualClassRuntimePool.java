@@ -48,11 +48,14 @@ public final class DualClassRuntimePool
 	 * @param __rt Read from the run-time pool?
 	 * @param __dx The index to read.
 	 * @return The entry for the given index.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * pool bounds.
 	 * @since 2019/09/07
 	 */
 	public final BasicPoolEntry getByIndex(boolean __rt, int __dx)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return (__rt ? this.runpool : this.classpool).byIndex(__dx);
 	}
 }
 
