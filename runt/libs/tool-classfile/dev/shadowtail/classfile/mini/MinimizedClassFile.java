@@ -293,11 +293,8 @@ public final class MinimizedClassFile
 	 */
 	public final ClassName thisName()
 	{
-		throw new todo.TODO();
-		/*
-		return this.pool.<ClassName>get(
-			this.header.classname, ClassName.class);
-		*/
+		return this.pool.getByIndex(false, this.header.classname).
+			<ClassName>value(ClassName.class);
 	}
 	
 	/**
