@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolBuilder;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
@@ -16,6 +17,8 @@ import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
+import dev.shadowtail.classfile.pool.FieldAccessTime;
+import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
@@ -246,6 +249,19 @@ public final class DualPoolEncoder
 									<String>value(String.class));
 								break;
 								
+								// A field which has been accessed
+							case ACCESSED_FIELD:
+								value = new AccessedField(
+									FieldAccessTime.of(parts[0]),
+									FieldAccessType.of(parts[1]),
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[2]),
+									classpool.<String>byIndex(
+										String.class, parts[3]),
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[4]).field());
+								break;
+							
 								// Class information point
 							case CLASS_INFO_POINTER:
 								value = new ClassInfoPointer(

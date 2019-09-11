@@ -12,6 +12,9 @@ package dev.shadowtail.classfile.pool;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldReference;
 
 /**
@@ -32,6 +35,24 @@ public final class AccessedField
 	
 	/** String representation. */
 	private Reference<String> _string;
+	
+	/**
+	 * Initializes the accessed field.
+	 *
+	 * @param __ti The access time.
+	 * @param __ty The access type.
+	 * @param __cn The class name.
+	 * @param __fn The field name.
+	 * @param __fd The field descriptor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/11
+	 */
+	public AccessedField(FieldAccessTime __ti, FieldAccessType __ty,
+		ClassName __cn, String __fn, FieldDescriptor __fd)
+		throws NullPointerException
+	{
+		this(__ti, __ty, new FieldReference(__cn, new FieldName(__fn), __fd));
+	}
 	
 	/**
 	 * Initializes the accessed field.
