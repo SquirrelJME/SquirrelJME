@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.io.TableSectionOutputStream;
 
@@ -158,8 +159,10 @@ public final class DualPoolEncoder
 					case CLASS_NAME:
 					case CLASS_NAMES:
 					case CLASS_POOL:
-					case DOUBLE:
+					case INTEGER:
+					case FLOAT:
 					case LONG:
+					case DOUBLE:
 					case INVOKED_METHOD:
 					case METHOD_DESCRIPTOR:
 					case METHOD_INDEX:
@@ -175,11 +178,47 @@ public final class DualPoolEncoder
 						// Build value depending on the parts used
 						switch (etype)
 						{
+								// Name of class, the actual class name is
+								// the first and secondary ones just indicate
+								// and array and its component (not needed
+								// to load the information)
 							case CLASS_NAME:
-								if (true)
-									throw new todo.TODO();
+								value = new ClassName(entries.get(parts[0]).
+									<String>value(String.class));
 								break;
-							
+								
+								// Raw integer value
+							case INTEGER:
+								value = ((parts[0] & 0xFFFF) << 16) |
+									(parts[1] & 0xFFFF);
+								break;
+								
+								// Raw float value
+							case FLOAT:
+								value = Float.intBitsToFloat(
+									((parts[0] & 0xFFFF) << 16) |
+									(parts[1] & 0xFFFF));
+								break;
+								
+								// Raw long value
+							case LONG:
+								value = (((long)(((parts[0] & 0xFFFF) << 16) |
+									((parts[1] & 0xFFFF))) &
+										0xFFFFFFFFL) << 32L) |
+									((long)(((parts[2] & 0xFFFF) << 16) |
+									((parts[3] & 0xFFFF))) & 0xFFFFFFFFL);
+								break;
+								
+								// Raw double value
+							case DOUBLE:
+								value = Double.longBitsToDouble(
+									(((long)(((parts[0] & 0xFFFF) << 16) |
+									((parts[1] & 0xFFFF))) &
+										0xFFFFFFFFL) << 32L) |
+									((long)(((parts[2] & 0xFFFF) << 16) |
+									((parts[3] & 0xFFFF))) & 0xFFFFFFFFL));
+								break;
+								
 								// Unknown
 							default:
 								throw new todo.OOPS(etype.name());
@@ -423,16 +462,6 @@ public final class DualPoolEncoder
 				}
 				break;
 				
-				// Integer
-			case INTEGER:
-				dos.writeInt((Integer)__v);
-				break;
-				
-				// Float
-			case FLOAT:
-				dos.writeInt(Float.floatToRawIntBits((Float)__v));
-				break;
-				
 				// Everything else just consists of parts which are
 				// either values to other indexes or an ordinal
 			case ACCESSED_FIELD:
@@ -440,6 +469,8 @@ public final class DualPoolEncoder
 			case CLASS_NAME:
 			case CLASS_NAMES:
 			case CLASS_POOL:
+			case INTEGER:
+			case FLOAT:
 			case DOUBLE:
 			case LONG:
 			case INVOKED_METHOD:

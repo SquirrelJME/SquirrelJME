@@ -166,8 +166,16 @@ public final class DualClassRuntimePoolBuilder
 		switch ((type = MinimizedPoolEntryType.ofClass(__v.getClass())))
 		{
 			case INTEGER:
+				int bi = (Integer)__v;
+				return classpool.add(__v,
+					(bi >> 16) & 0xFFFF,
+					(bi) & 0xFFFF);
+				
 			case FLOAT:
-				return classpool.add(__v);
+				int bf = Float.floatToRawIntBits((Float)__v);
+				return classpool.add(__v,
+					(bf >> 16) & 0xFFFF,
+					(bf) & 0xFFFF);
 			
 			case LONG:
 				long l = (Long)__v;
