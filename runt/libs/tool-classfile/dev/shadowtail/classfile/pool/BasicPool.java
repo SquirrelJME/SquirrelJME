@@ -10,6 +10,8 @@
 package dev.shadowtail.classfile.pool;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +34,53 @@ public final class BasicPool
 	 *
 	 * @param __it The input entries.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/11
+	 */
+	public BasicPool(BasicPoolEntry... __it)
+		throws NullPointerException
+	{
+		this(Arrays.<BasicPoolEntry>asList(__it));
+	}
+	
+	/**
+	 * Input for the basic pool.
+	 *
+	 * @param __it The input entries.
+	 * @throws IllegalArgumentException If a pool entry was duplicated.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/07
 	 */
 	public BasicPool(Iterable<BasicPoolEntry> __it)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		if (__it == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Initial guessed size?
+		int igs = ((__it instanceof Collection) ?
+			((Collection)__it).size() : 16);
+			
+		// Where the entries go
+		List<BasicPoolEntry> linear = new ArrayList<>(igs);
+		Map<Object, BasicPoolEntry> entries = new LinkedHashMap<>();
+		
+		// Process entries
+		for (BasicPoolEntry e : __it)
+		{
+			if (e == null)
+				throw new NullPointerException("NARG");
+			
+			// Just add to the end of the list
+			linear.add(e);
+			
+			// {@squirreljme.error JC4k Duplicated pool entry. (The entry)}
+			if (null != entries.put(e.value, e))
+				throw new IllegalArgumentException("JC4k " + e);
+		}
+		
+		// Set
+		this._entries = entries;
+		this._linear = linear;
 	}
 	
 	/**
@@ -54,7 +94,20 @@ public final class BasicPool
 	public final BasicPoolEntry byIndex(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this._linear.get(__i);
+	}
+	
+	/**
+	 * Gets the pool entry by value.
+	 *
+	 * @param __v The value to get.
+	 * @return The entry or {@code null} if it was not found.
+	 * @since 2019/09/11
+	 */
+	public final BasicPoolEntry byValue(Object __v)
+		throws IndexOutOfBoundsException
+	{
+		return this._entries.get(__v);
 	}
 }
 
