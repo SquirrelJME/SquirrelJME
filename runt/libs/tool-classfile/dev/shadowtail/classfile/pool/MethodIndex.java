@@ -37,6 +37,22 @@ public final class MethodIndex
 	/** The string form. */
 	private Reference<String> _string;
 	
+	
+	/**
+	 * Initializes the index holder.
+	 *
+	 * @param __cl The class this is in.
+	 * @param __n The name of the method.
+	 * @param __t The method type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/11
+	 */
+	public MethodIndex(ClassName __cl, String __n, MethodDescriptor __t)
+		throws NullPointerException
+	{
+		this(__cl, new MethodName(__n), __t);
+	}
+	
 	/**
 	 * Initializes the index holder.
 	 *
