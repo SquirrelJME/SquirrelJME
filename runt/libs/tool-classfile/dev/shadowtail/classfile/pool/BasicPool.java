@@ -130,5 +130,16 @@ public final class BasicPool
 	{
 		return this._entries.get(__v);
 	}
+	
+	/**
+	 * Returns the size of the pool.
+	 *
+	 * @return The pool size.
+	 * @since 2019/09/11
+	 */
+	public final int size()
+	{
+		return this._entries.size();
+	}
 }
 

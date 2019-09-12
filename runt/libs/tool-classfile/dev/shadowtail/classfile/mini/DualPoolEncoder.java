@@ -150,10 +150,6 @@ public final class DualPoolEncoder
 				Object value;
 				int[] parts = new int[numparts];
 				
-				// Debug
-				todo.DEBUG.note("Entry: ty=%s, np=%d, of=%d(%d), ln=%d",
-					etype, numparts, eoff, baseoff + eoff, elen);
-				
 				// Depends on the type
 				switch (etype)
 				{
@@ -327,14 +323,7 @@ public final class DualPoolEncoder
 				
 				// Record entry
 				entries.add(new BasicPoolEntry(i, value, parts));
-				
-				// Debug
-				todo.DEBUG.note("Entry: ty=%s, np=%d, of=%d(%d), ln=%d --> %s",
-					etype, numparts, eoff, baseoff + eoff, elen, value);
 			}
-			
-			// Debug
-			todo.DEBUG.note("Entry Count: %d", entries.size());
 			
 			// Build pool
 			BasicPool result = new BasicPool(entries);
