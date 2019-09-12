@@ -1,0 +1,14 @@
+# 2019/09/11
+
+## 10:07
+
+Decided to make integer and float parts, makes it a bit simpler to encode.
+
+## 10:39
+
+There is no need to adjust the int table since it is purely indexes.
+
+## 10:54
+
+I wonder if the debug information stuff should be `USED_STRING`. Because then
+those strings would have to be initialized, this should probably be changed.
