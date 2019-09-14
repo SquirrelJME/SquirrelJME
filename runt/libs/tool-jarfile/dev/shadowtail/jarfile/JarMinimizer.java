@@ -116,332 +116,6 @@ public final class JarMinimizer
 	}
 	
 	/**
-	 * Returns the ID of the class.
-	 *
-	 * @param __init The initializer.
-	 * @param __cl The class to get the ID of.
-	 * @return The pointer of the ClassInfo instance.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/30
-	 */
-	private final int __classId(Initializer __init, ClassName __cl)
-		throws NullPointerException
-	{
-		if (__init == null || __cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Find boot info
-		Map<ClassName, LoadedClassInfo> boots = this._boots;
-		LoadedClassInfo bi = boots.get(__cl);
-		
-		// If it is missing, this likely refers to an array or similar
-		if (bi == null && (__cl.isPrimitive() || __cl.isArray()))
-			boots.put(__cl, (bi = new LoadedClassInfo(
-				Minimizer.minimizeAndDecode(
-					ClassFile.special(__cl.field())), 0)));
-		
-		// {@squirreljme.error BC05 Could not locate class. (The class)}
-		else if (bi == null)
-			throw new InvalidClassFormatException(
-				String.format("BC05 %s", __cl));
-		
-		// If it has already been initialized use it
-		int rv = bi._classdata;
-		if (rv != 0)
-			return rv;
-		
-		// Need the class data object to work with
-		ClassName cdcln = new ClassName(
-			"cc/squirreljme/jvm/ClassInfo");
-		
-		// {@squirreljme.error BC06 No ClassInfo exists.}
-		LoadedClassInfo cdi = boots.get(cdcln);
-		if (cdi == null)
-			throw new InvalidClassFormatException("BC06");
-		
-		// Allocate pointer to the class data, then get the base pointer
-		bi._classdata = (rv = __init.allocate(cdi.allocationSize()));
-		
-		// Debug
-		if (_ENABLE_DEBUG)
-			todo.DEBUG.note("Writing CDV2 for %s (%d, virt %d)", __cl, rv,
-				rv + 1048576);
-		
-		// Initialize all fields for all super classes!
-		for (ClassName at = cdcln, atsuper = null; at != null; at = atsuper)
-		{
-			// Get info for this
-			LoadedClassInfo ai = boots.get(at);
-			
-			// Get super class
-			atsuper = ai._class.superName();
-			
-			// Base offset for this class
-			int base = rv + ai.baseOffset();
-			
-			// Go through and place field values
-			for (MinimizedField mf : ai._class.fields(false))
-			{
-				// Get pointer value to write int
-				int wp = base + mf.offset;
-				
-				// Depends on the type
-				String key = mf.name + ":" + mf.type;
-				switch (key)
-				{
-						// Class<?> pointer, allocated when needed
-					case "classobjptr:Ljava/lang/Class;":
-						__init.memWriteInt(
-							wp, 0);
-						break;
-						
-						// Magic number
-					case "magic:I":
-						__init.memWriteInt(
-							wp, ClassInfo.MAGIC_NUMBER);
-						break;
-						
-						// Self pointer
-					case "selfptr:I":
-						__init.memWriteInt(Modifier.RAM_OFFSET,
-							wp, rv);
-						break;
-						
-						// Class info flags
-					case "flags:I":
-						{
-							int flags = 0;
-							
-							// Is this array?
-							if (__cl.isArray())
-							{
-								// Flag it
-								flags |= Constants.CIF_IS_ARRAY;
-								
-								// Is its component an object as well?
-								if (!__cl.componentType().isPrimitive())
-									flags |= Constants.CIF_IS_ARRAY_OF_OBJECTS;
-							}
-							
-							// Is this primitive?
-							if (__cl.isPrimitive())
-								flags |= Constants.CIF_IS_PRIMITIVE;
-							
-							// Write flags
-							__init.memWriteInt(wp, flags);
-						}
-						break;
-						
-						// Pointer to the class data in ROM
-					case "miniptr:I":
-						__init.memWriteInt(Modifier.JAR_OFFSET,
-							wp, bi._classoffset);
-						break;
-						
-						// Pointer to the class name
-					case "namep:I":
-						if (true)
-							throw new todo.TODO();
-						/*
-						__init.memWriteInt(Modifier.JAR_OFFSET,
-							wp, bi._classoffset + bi._class.header.pooloff +
-								bi._class.pool.offset(bi._class.pool.part(
-								bi._class.header.classname, 0)) + 4);
-						*/
-						break;
-						
-						// Super class info
-					case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
-						{
-							ClassName sn = bi._class.superName();
-							if (sn == null)
-								__init.memWriteInt(wp, 0);
-							else
-								__init.memWriteInt(Modifier.RAM_OFFSET,
-									wp, this.__classId(__init, sn));
-						}
-						break;
-						
-						// Interface class information
-					case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
-						{
-							// Get interfaces
-							ClassNames ints = bi._class.interfaceNames();
-							int numints = ints.size();
-							
-							// Allocate and set field array pointer
-							int cip = __init.allocate(
-								Constants.ARRAY_BASE_SIZE + (numints * 4));
-							__init.memWriteInt(Modifier.RAM_OFFSET,
-								wp, cip);
-							
-							// Write array details
-							__init.memWriteInt(Modifier.RAM_OFFSET,
-								cip + Constants.OBJECT_CLASS_OFFSET,
-								this.__classId(__init, new ClassName(
-									"[Lcc/squirreljme/jvm/ClassInfo;")));
-							__init.memWriteInt(
-								cip + Constants.OBJECT_COUNT_OFFSET,
-								999999);
-							__init.memWriteInt(
-								cip + Constants.ARRAY_LENGTH_OFFSET,
-								numints);
-							
-							// Write interface IDs
-							for (int j = 0; j < numints; j++)
-								__init.memWriteInt(Modifier.RAM_OFFSET,
-									cip + Constants.ARRAY_BASE_SIZE + (j * 4),
-									this.__classId(__init, ints.get(j)));
-						}
-						break;
-						
-						// Component class
-					case "componentclass:Lcc/squirreljme/jvm/ClassInfo;":
-						{
-							// Write class ID of component type
-							if (__cl.isArray())
-								__init.memWriteInt(Modifier.RAM_OFFSET,
-									wp, this.__classId(__init,
-										__cl.componentType()));
-							
-							// Write null pointer
-							else
-								__init.memWriteInt(wp, 0);
-						}
-						break;
-						
-						// VTable for virtual calls
-					case "vtablevirtual:[I":
-						__init.memWriteInt(Modifier.RAM_OFFSET,
-							wp, this.__classVTable(__init, __cl)[0]);
-						break;
-						
-						// VTable for pool setting
-					case "vtablepool:[I":
-						__init.memWriteInt(Modifier.RAM_OFFSET,
-							wp, this.__classVTable(__init, __cl)[1]);
-						break;
-						
-						// Base offset for the class
-					case "base:I":
-						__init.memWriteInt(wp, bi.baseOffset());
-						break;
-						
-						// The number of objects in this class
-					case "numobjects:I":
-						__init.memWriteInt(
-							wp, bi._class.header.ifobjs);
-						break;
-						
-						// Allocation size of the class
-					case "size:I":
-						__init.memWriteInt(wp, bi.allocationSize());
-						break;
-						
-						// Dimensions
-					case "dimensions:I":
-						__init.memWriteInt(
-							wp, __cl.dimensions());
-						break;
-						
-						// Cell size
-					case "cellsize:I":
-						{
-							// Determine the cell size
-							int cellsize;
-							switch (__cl.toString())
-							{
-								case "[Z":
-								case "[B":	cellsize = 1; break;
-								case "[S":
-								case "[C":	cellsize = 2; break;
-								case "[J":
-								case "[D":	cellsize = 8; break;
-								default:	cellsize = 4; break;
-							}
-							
-							// Write
-							__init.memWriteInt(
-								wp, cellsize);
-						}
-						break;
-						
-						// Is class info instance
-					case "_class:I":
-						__init.memWriteInt(Modifier.RAM_OFFSET,
-							wp, this.__classId(__init, cdcln));
-						break;
-						
-						// Reference count for this class data, should never
-						// be freed
-					case "_refcount:I":
-						__init.memWriteInt(
-							wp, 999999);
-						break;
-						
-						// Thread owning the monitor (which there is none)
-					case "_monitor:I":
-						__init.memWriteInt(
-							wp, 0);
-						break;
-					
-						// Monitor count
-					case "_moncount:I":
-						__init.memWriteInt(
-							wp, 0);
-						break;
-					
-					default:
-						throw new todo.OOPS(key);
-				}
-			}
-		}
-		
-		// Return the pointer to the class data
-		return rv;
-	}
-	
-	/**
-	 * This contains a list of class IDs.
-	 *
-	 * @param __init The initializer used.
-	 * @param __cls The class names to write.
-	 * @return The pointer where the class names were written.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/26
-	 */
-	private final int __classIds(Initializer __init, ClassNames __cls)
-		throws NullPointerException
-	{
-		if (__init == null || __cls == null)
-			throw new NullPointerException("NARG");
-		
-		// The IDs are contained within int[] arrays for simplicity
-		int n = __cls.size(),
-			rv = __init.allocate(Constants.ARRAY_BASE_SIZE + (4 * n));
-		
-		// Write object details
-		__init.memWriteInt(Modifier.RAM_OFFSET,
-			rv + Constants.OBJECT_CLASS_OFFSET,
-			this.__classId(__init, new ClassName("[I")));
-		__init.memWriteInt(
-			rv + Constants.OBJECT_COUNT_OFFSET,
-			999999);
-		__init.memWriteInt(
-			rv + Constants.ARRAY_LENGTH_OFFSET,
-			n);
-		
-		// Write ID elements
-		for (int i = 0, wp = rv + Constants.ARRAY_BASE_SIZE;
-			i < n; i++, wp += 4)
-			__init.memWriteInt(Modifier.RAM_OFFSET,
-				wp, this.__classId(__init, __cls.get(i)));
-		
-		// Use this pointer here
-		return rv;
-	}
-	
-	/**
 	 * Returns the method base for the class.
 	 *
 	 * @param __cl The class to get the index base of.
@@ -1002,22 +676,24 @@ public final class JarMinimizer
 	/**
 	 * Processes the input JAR.
 	 *
-	 * @param __dos The output.
+	 * @param __out The output.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/27
 	 */
-	private final void __process(DataOutputStream __dos)
+	private final void __process(OutputStream __sout)
 		throws IOException, NullPointerException
 	{
-		if (__dos == null)
+		if (__sout == null)
 			throw new NullPointerException("NARG");
-		
-		// This is processed for all entries
-		VMClassLibrary input = this.input;
 		
 		// The current state of the bootstrap
 		BootstrapState bootstrap = this.bootstrap;
+		Initializer initializer = (bootstrap == null ? null :
+			bootstrap.initializer);
+		
+		// This is processed for all entries
+		VMClassLibrary input = this.input;
 		
 		// Need list of resources to determine
 		String[] rcnames = input.listResources();
@@ -1029,6 +705,9 @@ public final class JarMinimizer
 		// Manifest offset and length
 		int manifestoff = 0,
 			manifestlen = 0;
+		
+		// Table of the entire JAR for writing
+		TableSectionOutputStream out = new TableSectionOutputStream();
 		
 		// Table of contents
 		ByteArrayOutputStream tbaos = new ByteArrayOutputStream(2048);
@@ -1252,6 +931,9 @@ public final class JarMinimizer
 		// Write table of contents and JAR data
 		tbaos.writeTo(__dos);
 		jbaos.writeTo(__dos);
+		
+		// Write final class information
+		out.writeTo(__sout);
 	}
 	
 	/**
@@ -1342,7 +1024,7 @@ public final class JarMinimizer
 		
 		// Use helper class
 		JarMinimizer jm = new JarMinimizer(__dp, __boot, __in);
-		jm.__process(new DataOutputStream(__out));
+		jm.__process(__out);
 		
 		// Set header that was generated
 		if (__mjh != null && __mjh.length > 0)
