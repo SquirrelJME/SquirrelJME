@@ -16,7 +16,7 @@ import dev.shadowtail.classfile.mini.MinimizedClassFile;
  *
  * @since 2019/04/30
  */
-final class __BootInfo__
+public final class LoadedClassInfo
 {
 	/** The minimized class. */
 	final MinimizedClassFile _class;
@@ -56,7 +56,7 @@ final class __BootInfo__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
-	__BootInfo__(MinimizedClassFile __cl, int __co)
+	LoadedClassInfo(MinimizedClassFile __cl, int __co)
 		throws NullPointerException
 	{
 		if (__cl == null)
