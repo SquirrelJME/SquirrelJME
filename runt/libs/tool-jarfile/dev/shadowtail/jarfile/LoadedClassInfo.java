@@ -12,6 +12,8 @@ package dev.shadowtail.jarfile;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import java.lang.ref.Reference;
+import java.util.Deque;
+import java.util.LinkedList;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.ClassFile;
@@ -255,6 +257,287 @@ public final class LoadedClassInfo
 		
 		// Return offset to it
 		return smemoff + mf.offset;
+	}
+	
+	/**
+	 * Returns the pointer to the class information.
+	 *
+	 * @return The pointer to the class information.
+	 * @since 2019/09/14
+	 */
+	public final int infoPointer()
+	{
+		// If it has already been initialized use it
+		int rv = this._classdata;
+		if (rv != 0)
+			return rv;
+		
+		// Get bootstrap and initializer
+		BootstrapState bootstrap = this.__bootstrap();
+		Initializer initializer = bootstrap.initializer;
+		
+		// Allocate pointer to the class data, then get the base pointer
+		this._classdata = (rv = initializer.allocate(this.allocationSize()));
+		
+		// Load all fields into a queue for useful processing
+		Deque<ClassNameAndMinimizedField> fieldq = new LinkedList<>();
+		for (ClassName at = new ClassName("cc/squirreljme/jvm/ClassInfo"),
+			atsuper = null; at != null; at = atsuper)
+		{
+			// Get class information
+			LoadedClassInfo atlci = bootstrap.findClass(at);
+			
+			// Get super class for next run
+			atsuper = atlci._class.superName();
+			
+			// Push all fields to queue
+			for (MinimizedField mf : atlci._class.fields(false))
+				fieldq.push(new ClassNameAndMinimizedField(at, mf));
+		}
+		
+		// Fill in field data
+		while (!fieldq.isEmpty())
+		{
+			throw new todo.TODO();
+		}
+		
+		// Return pointer to the data now
+		return rv;
+		
+		/*
+		// Initialize all fields within the class information
+		for (ClassName at = cicn, atsuper = null; at != null; at = atsuper)
+		{
+			// Get info for this
+			LoadedClassInfo ai = boots.get(at);
+			
+			// Get super class
+			atsuper = ai._class.superName();
+			
+			// Base offset for this class
+			int base = rv + ai.baseOffset();
+			
+			// Go through and place field values
+			for (MinimizedField mf : ai._class.fields(false))
+			{
+				// Get pointer value to write int
+				int wp = base + mf.offset;
+				
+				// Depends on the type
+				String key = mf.name + ":" + mf.type;
+				switch (key)
+				{
+						// Class<?> pointer, allocated when needed
+					case "classobjptr:Ljava/lang/Class;":
+						initializer.memWriteInt(
+							wp, 0);
+						break;
+						
+						// Magic number
+					case "magic:I":
+						initializer.memWriteInt(
+							wp, ClassInfo.MAGIC_NUMBER);
+						break;
+						
+						// Self pointer
+					case "selfptr:I":
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, rv);
+						break;
+						
+						// Class info flags
+					case "flags:I":
+						{
+							int flags = 0;
+							
+							// Is this array?
+							if (__cl.isArray())
+							{
+								// Flag it
+								flags |= Constants.CIF_IS_ARRAY;
+								
+								// Is its component an object as well?
+								if (!__cl.componentType().isPrimitive())
+									flags |= Constants.CIF_IS_ARRAY_OF_OBJECTS;
+							}
+							
+							// Is this primitive?
+							if (__cl.isPrimitive())
+								flags |= Constants.CIF_IS_PRIMITIVE;
+							
+							// Write flags
+							initializer.memWriteInt(wp, flags);
+						}
+						break;
+						
+						// Pointer to the class data in ROM
+					case "miniptr:I":
+						initializer.memWriteInt(Modifier.JAR_OFFSET,
+							wp, bi._classoffset);
+						break;
+						
+						// Pointer to the class name
+					case "namep:I":
+						if (true)
+							throw new todo.TODO();
+						/*
+						__init.memWriteInt(Modifier.JAR_OFFSET,
+							wp, bi._classoffset + bi._class.header.pooloff +
+								bi._class.pool.offset(bi._class.pool.part(
+								bi._class.header.classname, 0)) + 4);
+						* /
+						break;
+						
+						// Super class info
+					case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
+						{
+							ClassName sn = bi._class.superName();
+							if (sn == null)
+								initializer.memWriteInt(wp, 0);
+							else
+								initializer.memWriteInt(Modifier.RAM_OFFSET,
+									wp, this.__classId(initializer, sn));
+						}
+						break;
+						
+						// Interface class information
+					case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
+						{
+							// Get interfaces
+							ClassNames ints = bi._class.interfaceNames();
+							int numints = ints.size();
+							
+							// Allocate and set field array pointer
+							int cip = initializer.allocate(
+								Constants.ARRAY_BASE_SIZE + (numints * 4));
+							initializer.memWriteInt(Modifier.RAM_OFFSET,
+								wp, cip);
+							
+							// Write array details
+							initializer.memWriteInt(Modifier.RAM_OFFSET,
+								cip + Constants.OBJECT_CLASS_OFFSET,
+								this.__classId(initializer, new ClassName(
+									"[Lcc/squirreljme/jvm/ClassInfo;")));
+							initializer.memWriteInt(
+								cip + Constants.OBJECT_COUNT_OFFSET,
+								999999);
+							initializer.memWriteInt(
+								cip + Constants.ARRAY_LENGTH_OFFSET,
+								numints);
+							
+							// Write interface IDs
+							for (int j = 0; j < numints; j++)
+								initializer.memWriteInt(Modifier.RAM_OFFSET,
+									cip + Constants.ARRAY_BASE_SIZE + (j * 4),
+									this.__classId(initializer, ints.get(j)));
+						}
+						break;
+						
+						// Component class
+					case "componentclass:Lcc/squirreljme/jvm/ClassInfo;":
+						{
+							// Write class ID of component type
+							if (__cl.isArray())
+								initializer.memWriteInt(Modifier.RAM_OFFSET,
+									wp, this.__classId(initializer,
+										initializer.componentType()));
+							
+							// Write null pointer
+							else
+								__init.memWriteInt(wp, 0);
+						}
+						break;
+						
+						// VTable for virtual calls
+					case "vtablevirtual:[I":
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.__classVTable(initializer, __cl)[0]);
+						break;
+						
+						// VTable for pool setting
+					case "vtablepool:[I":
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.__classVTable(initializer, __cl)[1]);
+						break;
+						
+						// Base offset for the class
+					case "base:I":
+						initializer.memWriteInt(wp, bi.baseOffset());
+						break;
+						
+						// The number of objects in this class
+					case "numobjects:I":
+						initializer.memWriteInt(
+							wp, bi._class.header.ifobjs);
+						break;
+						
+						// Allocation size of the class
+					case "size:I":
+						initializer.memWriteInt(wp, bi.allocationSize());
+						break;
+						
+						// Dimensions
+					case "dimensions:I":
+						initializer.memWriteInt(
+							wp, __cl.dimensions());
+						break;
+						
+						// Cell size
+					case "cellsize:I":
+						{
+							// Determine the cell size
+							int cellsize;
+							switch (__cl.toString())
+							{
+								case "[Z":
+								case "[B":	cellsize = 1; break;
+								case "[S":
+								case "[C":	cellsize = 2; break;
+								case "[J":
+								case "[D":	cellsize = 8; break;
+								default:	cellsize = 4; break;
+							}
+							
+							// Write
+							initializer.memWriteInt(
+								wp, cellsize);
+						}
+						break;
+						
+						// Is class info instance
+					case "_class:I":
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.__classId(initializer, cdcln));
+						break;
+						
+						// Reference count for this class data, should never
+						// be freed
+					case "_refcount:I":
+						initializer.memWriteInt(
+							wp, 999999);
+						break;
+						
+						// Thread owning the monitor (which there is none)
+					case "_monitor:I":
+						initializer.memWriteInt(
+							wp, 0);
+						break;
+					
+						// Monitor count
+					case "_moncount:I":
+						initializer.memWriteInt(
+							wp, 0);
+						break;
+					
+					default:
+						throw new todo.OOPS(key);
+				}
+			}
+		}
+		
+		// Return the pointer to the class data
+		return rv;
+		*/
 	}
 	
 	/**

@@ -9,13 +9,17 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.Constants;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.mini.Minimizer;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
@@ -35,7 +39,7 @@ public final class BootstrapState
 		new Initializer();
 	
 	/** Class information which has been loaded. */
-	private final Map<ClassName, LoadedClassInfo> _classinfos=
+	private final Map<ClassName, LoadedClassInfo> _classinfos =
 		new LinkedHashMap<>();
 	
 	/** Reference to self. */
@@ -82,6 +86,48 @@ public final class BootstrapState
 	}
 	
 	/**
+	 * Returns an info pointer for the given class names.
+	 *
+	 * @param __cls The class names to get info pointers for.
+	 * @return The pointer to the class info pointer list.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/14
+	 */
+	public final int classNamesInfoPointer(ClassNames __cls)
+		throws NullPointerException
+	{
+		if (__cls == null)
+			throw new NullPointerException("NARG");
+		
+		// Needed for allocations and writes
+		Initializer initializer = this.initializer;
+		
+		// The IDs are contained within int[] arrays for simplicity
+		int n = __cls.size(),
+			rv = initializer.allocate(Constants.ARRAY_BASE_SIZE + (4 * n));
+		
+		// Write object details
+		initializer.memWriteInt(Modifier.RAM_OFFSET,
+			rv + Constants.OBJECT_CLASS_OFFSET,
+			this.findClass("[I").infoPointer());
+		initializer.memWriteInt(
+			rv + Constants.OBJECT_COUNT_OFFSET,
+			999999);
+		initializer.memWriteInt(
+			rv + Constants.ARRAY_LENGTH_OFFSET,
+			n);
+		
+		// Write ID elements
+		for (int i = 0, wp = rv + Constants.ARRAY_BASE_SIZE;
+			i < n; i++, wp += 4)
+			initializer.memWriteInt(Modifier.RAM_OFFSET,
+				wp, this.findClass(__cls.get(i)).infoPointer());
+		
+		// Use this pointer here
+		return rv;
+	}
+	
+	/**
 	 * Finds the class which uses the given name.
 	 *
 	 * @param __cl The class name to find.
@@ -114,11 +160,22 @@ public final class BootstrapState
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BC0c Could not find the specified class.
-		// (The class name)}
-		LoadedClassInfo rv = this._classinfos.get(__cl);
+		// Locate pre-loaded class
+		Map<ClassName, LoadedClassInfo> classinfos = this._classinfos;
+		LoadedClassInfo rv = classinfos.get(__cl);
 		if (rv == null)
-			throw new InvalidClassFormatException("BC0c " + __cl);
+		{
+			// Load special primitive and array types magically!
+			if (__cl.isPrimitive() || __cl.isArray())
+				classinfos.put(__cl, (rv = new LoadedClassInfo(
+					Minimizer.minimizeAndDecode(
+						ClassFile.special(__cl.field())), 0, this._selfref)));
+			
+			// {@squirreljme.error BC0c Could not find the specified class.
+			// (The class name)}
+			else
+				throw new InvalidClassFormatException("BC0c " + __cl);
+		}
 		
 		return rv;
 	}
