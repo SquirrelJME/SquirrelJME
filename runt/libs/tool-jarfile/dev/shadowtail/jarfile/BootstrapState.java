@@ -26,6 +26,14 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  */
 public final class BootstrapState
 {
+	/** The size of the static field area. */
+	public static final int STATIC_FIELD_SIZE =
+		8192;
+	
+	/** The initializer to use. */
+	protected final Initializer initializer =
+		new Initializer();
+	
 	/** Class information which has been loaded. */
 	private final Map<ClassName, LoadedClassInfo> _classinfos=
 		new LinkedHashMap<>();
@@ -33,6 +41,45 @@ public final class BootstrapState
 	/** Reference to self. */
 	private final Reference<BootstrapState> _selfref =
 		new WeakReference<>(this);
+	
+	/** Static field pointer area. */
+	private int _sfieldarea;
+	
+	/** Static field area next pointer. */
+	private int _sfieldnext;
+	
+	/**
+	 * Allocates static field space.
+	 *
+	 * @return The pointer to the static field area that was allocated.
+	 * @throws IllegalArgumentException If the size is zero or negative.
+	 * @since 2019/09/14
+	 */
+	public final int allocateStaticFieldSpace(int __sz)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BC0e Cannot allocate zero or negative static
+		// field space.}
+		if (__sz <= 0)
+			throw new IllegalArgumentException("BC0e");
+		
+		// Allocate area for static fields, if not done yet
+		int sfieldarea = this.staticFieldAreaAddress();
+		
+		// Determine the space that is needed
+		int sfieldnext = this._sfieldnext;
+		int snext = sfieldnext + __sz;
+		
+		// {@squirreljme.error BC03 Ran out of static field space.}
+		if (snext >= BootstrapState.STATIC_FIELD_SIZE)
+			throw new RuntimeException("BC03");
+			
+		// Set next pointer area
+		this._sfieldnext = snext;
+		
+		// Pointer is here
+		return sfieldnext;
+	}
 	
 	/**
 	 * Finds the class which uses the given name.
@@ -106,6 +153,23 @@ public final class BootstrapState
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the address of the static field area.
+	 *
+	 * @return The static field address area.
+	 * @since 2019/09/14
+	 */
+	public final int staticFieldAreaAddress()
+	{
+		// Allocate area for static fields, if not done yet
+		int sfieldarea = this._sfieldarea;
+		if (sfieldarea <= 0)
+			this._sfieldarea = (sfieldarea = this.initializer.allocate(
+				BootstrapState.STATIC_FIELD_SIZE));
+		
+		return sfieldarea;
 	}
 }
 
