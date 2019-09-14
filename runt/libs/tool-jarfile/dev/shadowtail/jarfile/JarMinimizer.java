@@ -82,7 +82,7 @@ public final class JarMinimizer
 	protected final boolean owndualpool;
 	
 	/** Boot information for classes. */
-	private final Map<ClassName, __BootInfo__> _boots;
+	private final Map<ClassName, LoadedClassInfo> _boots;
 	
 	/** Static field pointer area. */
 	private int _sfieldarea;
@@ -158,7 +158,7 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		// Lookup pre-cached size
-		__BootInfo__ bi = this._boots.get(__cl);
+		LoadedClassInfo bi = this._boots.get(__cl);
 		int rv = bi._allocsize,
 			basep;
 		if (rv != 0)
@@ -191,7 +191,7 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		// Get the boot information
-		__BootInfo__ bi = this._boots.get(__cl);
+		LoadedClassInfo bi = this._boots.get(__cl);
 		
 		// {@squirreljme.error BC02 Could not locate instance field. (Class;
 		// Field Name; Field Type)}
@@ -230,7 +230,7 @@ public final class JarMinimizer
 				JarMinimizer.STATIC_FIELD_SIZE));
 		
 		// Get the class for the field
-		__BootInfo__ bi = this._boots.get(__cl);
+		LoadedClassInfo bi = this._boots.get(__cl);
 		
 		// Need to allocate static field area?
 		int smemoff = bi._smemoff;
@@ -324,12 +324,12 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		// Find boot info
-		Map<ClassName, __BootInfo__> boots = this._boots;
-		__BootInfo__ bi = boots.get(__cl);
+		Map<ClassName, LoadedClassInfo> boots = this._boots;
+		LoadedClassInfo bi = boots.get(__cl);
 		
 		// If it is missing, this likely refers to an array or similar
 		if (bi == null && (__cl.isPrimitive() || __cl.isArray()))
-			boots.put(__cl, (bi = new __BootInfo__(
+			boots.put(__cl, (bi = new LoadedClassInfo(
 				Minimizer.minimizeAndDecode(
 					ClassFile.special(__cl.field())), 0)));
 		
@@ -348,7 +348,7 @@ public final class JarMinimizer
 			"cc/squirreljme/jvm/ClassInfo");
 		
 		// {@squirreljme.error BC06 No ClassInfo exists.}
-		__BootInfo__ cdi = boots.get(cdcln);
+		LoadedClassInfo cdi = boots.get(cdcln);
 		if (cdi == null)
 			throw new InvalidClassFormatException("BC06");
 		
@@ -364,7 +364,7 @@ public final class JarMinimizer
 		for (ClassName at = cdcln, atsuper = null; at != null; at = atsuper)
 		{
 			// Get info for this
-			__BootInfo__ ai = boots.get(at);
+			LoadedClassInfo ai = boots.get(at);
 			
 			// Get super class
 			atsuper = ai._class.superName();
@@ -653,8 +653,8 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		// Get class method might be in
-		Map<ClassName, __BootInfo__> boots = this._boots;
-		__BootInfo__ bi = boots.get(__cl);
+		Map<ClassName, LoadedClassInfo> boots = this._boots;
+		LoadedClassInfo bi = boots.get(__cl);
 		
 		// If this has no super class, then the base is zero
 		ClassName supername = bi._class.superName();
@@ -707,7 +707,7 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		// Get class method might be in
-		__BootInfo__ bi = this._boots.get(__cl);
+		LoadedClassInfo bi = this._boots.get(__cl);
 		MinimizedClassFile mcf = bi._class;
 		
 		// Lookup static first
@@ -751,11 +751,11 @@ public final class JarMinimizer
 		ClassName seeker = __cl;
 		
 		// Recursively scan for the method in all classes
-		Map<ClassName, __BootInfo__> boots = this._boots;
+		Map<ClassName, LoadedClassInfo> boots = this._boots;
 		while (seeker != null)
 		{
 			// Get boot information
-			__BootInfo__ bi = boots.get(seeker);
+			LoadedClassInfo bi = boots.get(seeker);
 			MinimizedClassFile mcf = bi._class;
 			
 			// Is class found in this method?
@@ -788,8 +788,8 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		// Get class method might be in
-		Map<ClassName, __BootInfo__> boots = this._boots;
-		__BootInfo__ bi = boots.get(__cl);
+		Map<ClassName, LoadedClassInfo> boots = this._boots;
+		LoadedClassInfo bi = boots.get(__cl);
 		
 		// If there is no super class it is just the count
 		ClassName supername = bi._class.superName();
@@ -822,22 +822,22 @@ public final class JarMinimizer
 				new ClassName("java/lang/Object"));
 		
 		// We need boot information to get class information!
-		Map<ClassName, __BootInfo__> boots = this._boots;
+		Map<ClassName, LoadedClassInfo> boots = this._boots;
 		
 		// Did we already make the VTable for this? This will happen in the
 		// event arrays or primitives are virtualized
-		__BootInfo__ selfbi = boots.get(__cl);
+		LoadedClassInfo selfbi = boots.get(__cl);
 		int rv = selfbi._vtable;
 		if (rv >= 0)
 			return new int[]{rv, selfbi._vtablepool};
 		
 		// Build array of all the classes that are used in the method and
 		// super class chain
-		List<__BootInfo__> classes = new ArrayList<>();
+		List<LoadedClassInfo> classes = new ArrayList<>();
 		for (ClassName at = __cl, su = null; at != null; at = su)
 		{
 			// Load class info for this
-			__BootInfo__ bi = boots.get(at);
+			LoadedClassInfo bi = boots.get(at);
 			
 			// Add this class to the start of the chain (so super classes
 			// go in at the start)
@@ -870,7 +870,7 @@ public final class JarMinimizer
 		for (int ci = 0, cn = classes.size(); ci < cn; ci++)
 		{
 			// Get the class to scan through
-			__BootInfo__ mbi = classes.get(ci);
+			LoadedClassInfo mbi = classes.get(ci);
 			MinimizedClassFile mcf = mbi._class;
 			
 			// Get the VTable base for this class
@@ -896,7 +896,7 @@ public final class JarMinimizer
 				for (int pi = (ispriv ? ci : cn - 1); pi >= ci; pi--)
 				{
 					// Get the class information for this one
-					__BootInfo__ pbi = classes.get(pi);
+					LoadedClassInfo pbi = classes.get(pi);
 					MinimizedClassFile pcf = pbi._class;
 					ClassName pcfname = pcf.thisName();
 					
@@ -985,7 +985,7 @@ public final class JarMinimizer
 		if (__poolp == null || __ksfa == null)
 			throw new NullPointerException("NARG");
 		
-		Map<ClassName, __BootInfo__> boots = this._boots;
+		Map<ClassName, LoadedClassInfo> boots = this._boots;
 		ClassName kn = new ClassName(
 			"cc/squirreljme/jvm/Bootstrap");
 		
@@ -1044,7 +1044,7 @@ public final class JarMinimizer
 			return -1;
 			
 		// {@squirreljme.error BC09 No such class exists. (The class)}
-		__BootInfo__ bi = this._boots.get(__cl);
+		LoadedClassInfo bi = this._boots.get(__cl);
 		if (bi == null)
 			throw new InvalidClassFormatException("BC09 " + __cl);
 		
@@ -1216,7 +1216,7 @@ public final class JarMinimizer
 		
 		// If this is a boot JAR, this will later be used and pre-initialized
 		// boot memory will be setup accordingly
-		Map<ClassName, __BootInfo__> boots = this._boots;
+		Map<ClassName, LoadedClassInfo> boots = this._boots;
 		
 		// Need list of resources to determine
 		String[] rcnames = input.listResources();
@@ -1321,7 +1321,7 @@ public final class JarMinimizer
 				MinimizedClassFile cf = MinimizedClassFile.decode(bytes);
 				
 				// Store loaded for later boot usage
-				boots.put(cf.thisName(), new __BootInfo__(cf, clpos));
+				boots.put(cf.thisName(), new LoadedClassInfo(cf, clpos));
 			}
 			
 			// Then write the actual data stream
