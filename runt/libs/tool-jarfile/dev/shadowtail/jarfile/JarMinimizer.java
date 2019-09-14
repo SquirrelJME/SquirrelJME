@@ -709,120 +709,112 @@ public final class JarMinimizer
 		// Table of the entire JAR for writing
 		TableSectionOutputStream out = new TableSectionOutputStream();
 		
-		// Table of contents
-		ByteArrayOutputStream tbaos = new ByteArrayOutputStream(2048);
-		DataOutputStream tdos = new DataOutputStream(tbaos);
+		// Start the header, table of content, and manifest
+		TableSectionOutputStream.Section header = out.addSection(
+			MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC, 4);
+		TableSectionOutputStream.Section toc = out.addSection(
+			numrc * 16, 4);
 		
-		// JAR content data
-		ByteArrayOutputStream jbaos = new ByteArrayOutputStream(1048576);
-		DataOutputStream jdos = new DataOutputStream(jbaos);
+		// Write base header and contents information
+		header.writeInt(MinimizedJarHeader.MAGIC_NUMBER);
+		header.writeInt(numrc);
+		header.writeSectionAddressInt(toc);
 		
 		// The global dual-constant pool if one is available
 		DualClassRuntimePoolBuilder dualpool = this.dualpool;
 		
-		// Relative offset from header and table of contents
-		int reloff = MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC +
-			(numrc * MinimizedJarHeader.TOC_ENTRY_SIZE);
+		// Buffer for byte copies
+		byte[] copybuf = new byte[512];
 		
-		// Go through and minimize/concat all resources
+		// Go through and add every resource
 		for (int i = 0; i < numrc; i++)
 		{
+			// Resource to encode/copy
 			String rc = rcnames[i];
-			ClassName ofclass = null;
 			
-			// The resulting byte array containing data
-			byte[] bytes;
+			// Section to contain the data for this resource
+			TableSectionOutputStream.Section rcdata = out.addSection(
+				TableSectionOutputStream.VARIABLE_SIZE, 4);
 			
-			// Open resource
-			boolean isclass = false;
+			// Process the resource
 			try (InputStream in = input.resourceAsStream(rc))
 			{
-				// Minimizing class
-				if ((isclass = rc.endsWith(".class")))
-					bytes = Minimizer.minimize(dualpool, ClassFile.decode(in));
+				// Minimizing class file
+				if (rc.endsWith(".class"))
+				{
+					// Minimize the class
+					byte[] bytes = Minimizer.minimize(dualpool,
+						ClassFile.decode(in));
+					
+					// Load class file if booting
+					if (bootstrap != null)
+						bootstrap.loadClassFile(bytes,
+							out.sectionAddress(rcdata));
+				}
 				
-				// Plain resource, sent straight through
+				// Plain resource copy
 				else
 				{
-					// Copy bytes
-					byte[] buf = new byte[512];
-					try (ByteArrayOutputStream xbaos =
-						new ByteArrayOutputStream(4096))
+					for (;;)
 					{
-						for (;;)
-						{
-							int ll = in.read(buf);
-							
-							if (ll < 0)
-								break;
-							
-							xbaos.write(buf, 0, ll);
-						}
+						int ll = in.read(copybuf);
 						
-						// Use this
-						bytes = xbaos.toByteArray();
+						// EOF?
+						if (ll < 0)
+							break;
+						
+						// Write
+						rcdata.write(copybuf);
 					}
 				}
 			}
 			
-			// Round data stream to 2 bytes (so string length is aligned)
-			while ((jdos.size() & 1) != 0)
-				jdos.write(0);
+			// Write the hash code of the entry name
+			toc.writeInt(rc.hashCode());
 			
-			// Write the resource hash code, so that entry searches do not need
-			// string creation in searching
-			tdos.writeInt(rc.hashCode());
+			// Write name of the resource
+			TableSectionOutputStream.Section rcname = out.addSection(
+				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			rcname.writeUTF(rc);
+			toc.writeSectionAddressInt(rcname);
 			
-			// Record offset to resource name
-			tdos.writeInt(reloff + jdos.size());
-			jdos.writeUTF(rc);
-			
-			// Round data stream to 2 bytes
-			while ((jdos.size() & 1) != 0)
-				jdos.write(0);
-			
-			// Write offset to data stream and size
-			int clpos;
-			tdos.writeInt((clpos = (reloff + jdos.size())));
-			tdos.writeInt(bytes.length);
-			
-			// Is this the manifest?
-			if (rc.equals("META-INF/MANIFEST.MF"))
-			{
-				manifestoff = clpos;
-				manifestlen = bytes.length;
-			}
-			
-			// If boot processing is going to be done, we need to
-			// know about this class file if it is one
-			if (isclass && bootstrap != null)
-				bootstrap.loadClassFile(bytes, clpos);
-			
-			// Then write the actual data stream
-			jdos.write(bytes);
+			// Write position and size of the data
+			toc.writeSectionAddressInt(rcdata);
+			toc.writeSectionSizeInt(rcdata);
 		}
 		
-		// Write header
-		__dos.writeInt(MinimizedJarHeader.MAGIC_NUMBER);
+		// Uncompressed and copied manifest?
+		try (InputStream in = input.resourceAsStream("META-INF/MANIFEST.MF"))
+		{
+			// There is a manifest
+			if (in != null)
+			{
+				TableSectionOutputStream.Section manifest = out.addSection(
+					TableSectionOutputStream.VARIABLE_SIZE, 4);
+				
+				// Copy the manifest
+				if (true)
+					throw new todo.TODO();
+				
+				// Manifest offset and length
+				header.writeSectionAddressInt(manifest);
+				header.writeSectionSizeInt(manifest);
+			}
+			
+			// There is none
+			else
+			{
+				header.writeInt(0);
+				header.writeInt(0);
+			}
+		}
 		
-		// Fields to store the header
-		int[] hfs = new int[MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC / 4];
-		int hat = 0;
-		
-		// Number of resources
-		__dos.writeInt((hfs[hat++] = numrc));
-		
-		// Offset to table of contents
-		__dos.writeInt((hfs[hat++] =
-			MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC));
-		
-		// Manifest offset and its length, if any
-		__dos.writeInt((hfs[hat++] = manifestoff));
-		__dos.writeInt((hfs[hat++] = manifestlen));
-		
-		// Building pre-boot state
+		// Doing bootstrapping?
 		if (bootstrap != null)
 		{
+			throw new todo.TODO();
+			
+			/*
 			// Round data stream to 4 bytes
 			while ((jdos.size() & 3) != 0)
 				jdos.write(0);
@@ -863,52 +855,41 @@ public final class JarMinimizer
 				null));
 			__dos.writeInt((hfs[hat++] = clab));
 			__dos.writeInt((hfs[hat++] = claab));
+			*/
 		}
 		
-		// No boot data
+		// No bootstrapping being done
 		else
 		{
 			// Boot memory offset, size
-			__dos.writeInt(0);
-			__dos.writeInt(0);
+			header.writeInt(0);
+			header.writeInt(0);
 			
 			// Pool, sfa, code, classidba, classidbaa
-			__dos.writeInt(0);
-			__dos.writeInt(0);
-			__dos.writeInt(0);
-			__dos.writeInt(0);
-			__dos.writeInt(0);
-		}
-		
-		// No global dual pool used
-		if (dualpool == null)
-		{
-			// Static pool offset and size
-			__dos.writeInt(0);
-			__dos.writeInt(0);
-			
-			// Runtime pool offset and size
-			__dos.writeInt(0);
-			__dos.writeInt(0);
+			header.writeInt(0);
+			header.writeInt(0);
+			header.writeInt(0);
+			header.writeInt(0);
+			header.writeInt(0);
 		}
 		
 		// We are using our own dual pool, so write it out as if it were
 		// in the pack file. It is only local to this JAR.
-		else if (this.owndualpool)
+		if (this.owndualpool)
 		{
-			// Round for the pools
-			while (((reloff + jdos.size()) & 3) != 0)
-				jdos.write(0);
+			// Where our pools are going
+			TableSectionOutputStream.Section lpd = out.addSection();
 			
-			// Encode the pool
-			int basep = reloff + jdos.size();
-			DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, jdos);
+			// Encode the pools
+			DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, lpd);
 			
-			// Write where the pools were written
-			__dos.writeInt(basep + der.staticpooloff);
-			__dos.writeInt(der.staticpoolsize);
-			__dos.writeInt(basep + der.runtimepooloff);
-			__dos.writeInt(der.runtimepoolsize);
+			// Static pool
+			header.writeSectionAddressInt(lpd, der.staticpooloff);
+			header.writeInt(der.staticpoolsize);
+			
+			// Run-time pool
+			header.writeSectionAddressInt(lpd, der.runtimepooloff);
+			header.writeInt(der.runtimepoolsize);
 		}
 		
 		// We are using the global pack pool, so set special indicators
@@ -917,20 +898,20 @@ public final class JarMinimizer
 		else
 		{
 			// Static pool offset and size
-			__dos.writeInt(-1);
-			__dos.writeInt(-1);
+			header.writeInt(-1);
+			header.writeInt(-1);
 			
 			// Runtime pool offset and size
-			__dos.writeInt(-1);
-			__dos.writeInt(-1);
+			header.writeInt(-1);
+			header.writeInt(-1);
 		}
 		
 		// Build header
+		if (true)
+			throw new todo.TODO();
+		/*
 		this._jheader = new MinimizedJarHeader(hfs);
-		
-		// Write table of contents and JAR data
-		tbaos.writeTo(__dos);
-		jbaos.writeTo(__dos);
+		*/
 		
 		// Write final class information
 		out.writeTo(__sout);
