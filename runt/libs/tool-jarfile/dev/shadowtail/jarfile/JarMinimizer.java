@@ -49,6 +49,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
+import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
  * This class is responsible for creating minimized Jar files which will then
@@ -65,6 +66,9 @@ public final class JarMinimizer
 	static final boolean _ENABLE_DEBUG =
 		Boolean.getBoolean("dev.shadowtail.jarfile.debug");
 	
+	/** The state of the bootstrap. */
+	protected final BootstrapState bootstrap;
+	
 	/** The size of the static field area. */
 	public static final int STATIC_FIELD_SIZE =
 		8192;
@@ -80,9 +84,6 @@ public final class JarMinimizer
 	
 	/** Are we using our own dual pool? */
 	protected final boolean owndualpool;
-	
-	/** Boot information for classes. */
-	private final Map<ClassName, LoadedClassInfo> _boots;
 	
 	/** Static field pointer area. */
 	private int _sfieldarea;
@@ -115,61 +116,13 @@ public final class JarMinimizer
 		
 		// Use the passed pool if it was passed, but otherwise just use one
 		// in the event one was not passed through (uses our own pool)
-		this.dualpool = (__dp != null ? __dp :
-			(__boot ? null : new DualClassRuntimePoolBuilder()));
-		this.owndualpool = (__dp == null);
+		DualClassRuntimePoolBuilder usedp;
+		this.dualpool = (usedp = (__boot ? null :
+			(__dp != null ? __dp : new DualClassRuntimePoolBuilder())));
+		this.owndualpool = (usedp == null);
 		
-		// Only used if this is a boot JAR
-		if (__boot)
-			this._boots = new HashMap<>();
-		else
-			this._boots = null;
-	}
-	
-	/**
-	 * Returns the address of the given class.
-	 *
-	 * @param __cl The class to look for.
-	 * @return The address of the given class.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/28
-	 */
-	public final int __classAddress(String __cl)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		return this._boots.get(new ClassName(__cl))._classoffset;
-	}
-	
-	/**
-	 * Returns the class allocation size.
-	 *
-	 * @param __cl The class to get the allocation size for.
-	 * @return The allocation size.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/25
-	 */
-	public final int __classAllocSize(ClassName __cl)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Lookup pre-cached size
-		LoadedClassInfo bi = this._boots.get(__cl);
-		int rv = bi._allocsize,
-			basep;
-		if (rv != 0)
-			return rv;
-		
-		// Calculate and cache size
-		ClassName supercl = bi._class.superName();
-		bi._baseoff = (basep = (supercl == null ? 0 :
-			this.__classAllocSize(supercl)));
-		bi._allocsize = (rv = basep + bi._class.header.ifbytes);
-		return rv;
+		// Setup bootstrap, but only if booting
+		this.bootstrap = (__boot ? new BootstrapState() : null);
 	}
 	
 	/**
@@ -201,8 +154,7 @@ public final class JarMinimizer
 				String.format("BC02 %s %s %s", __cl, __fn, __ft));
 		
 		// Determine offset to field
-		this.__classAllocSize(__cl);
-		return bi._baseoff + mf.offset;
+		return bi.baseOffset() + mf.offset;
 	}
 	
 	/**
@@ -353,7 +305,7 @@ public final class JarMinimizer
 			throw new InvalidClassFormatException("BC06");
 		
 		// Allocate pointer to the class data, then get the base pointer
-		bi._classdata = (rv = __init.allocate(this.__classAllocSize(cdcln)));
+		bi._classdata = (rv = __init.allocate(cdi.allocationSize()));
 		
 		// Debug
 		if (_ENABLE_DEBUG)
@@ -370,8 +322,7 @@ public final class JarMinimizer
 			atsuper = ai._class.superName();
 			
 			// Base offset for this class
-			this.__classAllocSize(at);
-			int base = rv + ai._baseoff;
+			int base = rv + ai.baseOffset();
 			
 			// Go through and place field values
 			for (MinimizedField mf : ai._class.fields(false))
@@ -518,9 +469,7 @@ public final class JarMinimizer
 						
 						// Base offset for the class
 					case "base:I":
-						this.__classAllocSize(__cl);
-						__init.memWriteInt(
-							wp, bi._baseoff);
+						__init.memWriteInt(wp, bi.baseOffset());
 						break;
 						
 						// The number of objects in this class
@@ -531,8 +480,7 @@ public final class JarMinimizer
 						
 						// Allocation size of the class
 					case "size:I":
-						__init.memWriteInt(
-							wp, this.__classAllocSize(__cl));
+						__init.memWriteInt(wp, bi.allocationSize());
 						break;
 						
 						// Dimensions
@@ -1214,9 +1162,8 @@ public final class JarMinimizer
 		// This is processed for all entries
 		VMClassLibrary input = this.input;
 		
-		// If this is a boot JAR, this will later be used and pre-initialized
-		// boot memory will be setup accordingly
-		Map<ClassName, LoadedClassInfo> boots = this._boots;
+		// The current state of the bootstrap
+		BootstrapState bootstrap = this.bootstrap;
 		
 		// Need list of resources to determine
 		String[] rcnames = input.listResources();
@@ -1315,14 +1262,8 @@ public final class JarMinimizer
 			
 			// If boot processing is going to be done, we need to
 			// know about this class file if it is one
-			if (boots != null && isclass)
-			{
-				// Decode it
-				MinimizedClassFile cf = MinimizedClassFile.decode(bytes);
-				
-				// Store loaded for later boot usage
-				boots.put(cf.thisName(), new LoadedClassInfo(cf, clpos));
-			}
+			if (isclass && bootstrap != null)
+				bootstrap.loadClassFile(bytes, clpos);
 			
 			// Then write the actual data stream
 			jdos.write(bytes);
@@ -1347,7 +1288,7 @@ public final class JarMinimizer
 		__dos.writeInt((hfs[hat++] = manifestlen));
 		
 		// Building pre-boot state
-		if (boots != null)
+		if (bootstrap != null)
 		{
 			// Round data stream to 4 bytes
 			while ((jdos.size() & 3) != 0)
