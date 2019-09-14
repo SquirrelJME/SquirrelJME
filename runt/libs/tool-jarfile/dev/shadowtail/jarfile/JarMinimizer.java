@@ -69,10 +69,6 @@ public final class JarMinimizer
 	/** The state of the bootstrap. */
 	protected final BootstrapState bootstrap;
 	
-	/** The size of the static field area. */
-	public static final int STATIC_FIELD_SIZE =
-		8192;
-	
 	/** Is this a boot JAR? */
 	protected final boolean boot;
 	
@@ -84,12 +80,6 @@ public final class JarMinimizer
 	
 	/** Are we using our own dual pool? */
 	protected final boolean owndualpool;
-	
-	/** Static field pointer area. */
-	private int _sfieldarea;
-	
-	/** Static field area next pointer. */
-	private int _sfieldnext;
 	
 	/** The resulting JAR header. */
 	private MinimizedJarHeader _jheader;
@@ -123,141 +113,6 @@ public final class JarMinimizer
 		
 		// Setup bootstrap, but only if booting
 		this.bootstrap = (__boot ? new BootstrapState() : null);
-	}
-	
-	/**
-	 * Returns the offset of the field.
-	 *
-	 * @param __init The initializer used.
-	 * @param __cl The class name.
-	 * @param __fn The field name.
-	 * @param __ft The field type.
-	 * @return The offset of the field.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/25
-	 */
-	private final int __classFieldInstanceOffset(Initializer __init,
-		ClassName __cl, FieldName __fn, FieldDescriptor __ft)
-		throws NullPointerException
-	{
-		if (__cl == null || __fn == null || __ft == null)
-			throw new NullPointerException("NARG");
-		
-		// Get the boot information
-		LoadedClassInfo bi = this._boots.get(__cl);
-		
-		// {@squirreljme.error BC02 Could not locate instance field. (Class;
-		// Field Name; Field Type)}
-		MinimizedField mf = bi._class.field(false, __fn, __ft);
-		if (mf == null)
-			throw new InvalidClassFormatException(
-				String.format("BC02 %s %s %s", __cl, __fn, __ft));
-		
-		// Determine offset to field
-		return bi.baseOffset() + mf.offset;
-	}
-	
-	/**
-	 * Returns the offset of the field.
-	 *
-	 * @param __init The initializer used.
-	 * @param __cl The class name.
-	 * @param __fn The field name.
-	 * @param __ft The field type.
-	 * @return The offset of the field.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/30
-	 */
-	private final int __classFieldStaticOffset(Initializer __init,
-		ClassName __cl, FieldName __fn, FieldDescriptor __ft)
-		throws NullPointerException
-	{
-		if (__cl == null || __fn == null || __ft == null)
-			throw new NullPointerException("NARG");
-		
-		// Allocate area for static fields
-		int sfieldarea = this._sfieldarea;
-		if (sfieldarea == 0)
-			this._sfieldarea = (sfieldarea = __init.allocate(
-				JarMinimizer.STATIC_FIELD_SIZE));
-		
-		// Get the class for the field
-		LoadedClassInfo bi = this._boots.get(__cl);
-		
-		// Need to allocate static field area?
-		int smemoff = bi._smemoff;
-		if (smemoff < 0)
-		{
-			// Use next pointer area
-			int sfieldnext = this._sfieldnext;
-			bi._smemoff = (smemoff = sfieldnext);
-			
-			// {@squirreljme.error BC03 Ran out of static field space.}
-			int snext = sfieldnext + bi._class.header.sfsize;
-			if (snext >= JarMinimizer.STATIC_FIELD_SIZE)
-				throw new RuntimeException("BC03");
-			
-			// Set next pointer area
-			this._sfieldnext = snext;
-			
-			// Initialize static field values
-			for (MinimizedField mf : bi._class.fields(true))
-			{
-				// No value here?
-				Object val = mf.value;
-				if (val == null)
-					continue;
-				
-				// Write pointer for this field
-				int wp = sfieldarea + smemoff + mf.offset;
-				
-				// Write constant value
-				switch (mf.type.toString())
-				{
-					case "B":
-					case "Z":
-						__init.memWriteByte(wp, ((Number)val).byteValue());
-						break;
-					
-					case "S":
-					case "C":
-						__init.memWriteShort(wp, ((Number)val).shortValue());
-						break;
-					
-					case "I":
-						__init.memWriteInt(wp, ((Number)val).intValue());
-						break;
-					
-					case "J":
-						__init.memWriteLong(wp, ((Number)val).longValue());
-						break;
-					
-					case "F":
-						__init.memWriteInt(wp, Float.floatToRawIntBits(
-							((Number)val).floatValue()));
-						break;
-					
-					case "D":
-						__init.memWriteLong(wp, Double.doubleToRawLongBits(
-							((Number)val).doubleValue()));
-						break;
-					
-					default:
-						todo.TODO.note("Write constant value");
-						break;
-				}
-			}
-		}
-		
-		// {@squirreljme.error BC04 Could not locate static field. (Class;
-		// Field Name; Field Type)}
-		MinimizedField mf = bi._class.field(true, __fn, __ft);
-		if (mf == null)
-			throw new InvalidClassFormatException(
-				String.format("BC04 %s %s %s", __cl, __fn, __ft));
-		
-		// Return offset to it
-		return smemoff + mf.offset;
 	}
 	
 	/**
@@ -1086,20 +941,19 @@ public final class JarMinimizer
 					{
 						// Static field offsets are always known
 						AccessedField af = (AccessedField)pv;
+						LoadedClassInfo afci = bootstrap.findClass(
+							af.field.className());
+						
 						if (af.type().isStatic())
 							__init.memWriteInt(ep,
-								this.__classFieldStaticOffset(
-									__init,
-									af.field.className(),
+								afci.fieldStaticOffset(
 									af.field.memberName(),
 									af.field.memberType()));
 						
 						// Instance fields are not yet known
 						else
 							__init.memWriteInt(ep,
-								this.__classFieldInstanceOffset(
-									__init,
-									af.field.className(),
+								afci.fieldInstanceOffset(
 									af.field.memberName(),
 									af.field.memberType()));
 					}

@@ -10,7 +10,17 @@
 package dev.shadowtail.jarfile;
 
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.mini.MinimizedField;
 import java.lang.ref.Reference;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
+import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * Boot information for a class.
@@ -83,8 +93,8 @@ public final class LoadedClassInfo
 	public final int allocationSize()
 	{
 		// Pre-cached already?
-		int rv = bi._allocsize;
-		if (rv != 0)
+		int rv = this._allocsize;
+		if (rv > 0)
 			return rv;
 		
 		// Allocation size is the super-class size plus our size
@@ -115,6 +125,136 @@ public final class LoadedClassInfo
 			bootstrap.findClass(supercl).allocationSize()));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the instance offset of the field.
+	 *
+	 * @param __fn The field name.
+	 * @param __fd The field descriptor.
+	 * @return The offset of the field.
+	 * @throws InvalidClassFormatException If the field was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/14
+	 */
+	public final int fieldInstanceOffset(FieldName __fn, FieldDescriptor __fd)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__fn == null || __fd == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BC02 Could not locate instance field. (Class;
+		// Field Name; Field Type)}
+		MinimizedField mf = this._class.field(false, __fn, __fd);
+		if (mf == null)
+			throw new InvalidClassFormatException(
+				String.format("BC02 %s %s %s", this._class.thisName(), __fn,
+					__fd));
+		
+		// Determine offset to field
+		return this.baseOffset() + mf.offset;
+	}
+	
+	/**
+	 * Returns the static offset of the field.
+	 *
+	 * @param __fn The field name.
+	 * @param __fd The field descriptor.
+	 * @return The offset of the field.
+	 * @throws InvalidClassFormatException If the field was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/09/14
+	 */
+	public final int fieldStaticOffset(FieldName __fn, FieldDescriptor __fd)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__fn == null || __fd == null)
+			throw new NullPointerException("NARG");
+		
+		// Do we need to allocate static field space for this class?
+		int smemoff = this._smemoff;
+		if (smemoff < 0)
+		{
+			// Need the bootstrap here
+			BootstrapState bootstrap = this.__bootstrap();
+			Initializer initializer = bootstrap.initializer;
+			
+			// Allocate memory
+			smemoff = bootstrap.allocateStaticFieldSpace(
+				this._class.header.sfsize);
+			
+			// Store
+			this._smemoff = smemoff;
+			
+			// Initialize static field values
+			int sfieldarea = bootstrap.staticFieldAreaAddress();
+			for (MinimizedField mf : this._class.fields(true))
+			{
+				// No value here?
+				Object val = mf.value;
+				if (val == null)
+					continue;
+				
+				// Write pointer for this field
+				int wp = sfieldarea + smemoff + mf.offset;
+				
+				// Write constant value
+				switch (mf.type.toString())
+				{
+					case "B":
+					case "Z":
+						initializer.memWriteByte(wp,
+							((Number)val).byteValue());
+						break;
+					
+					case "S":
+					case "C":
+						initializer.memWriteShort(wp,
+							((Number)val).shortValue());
+						break;
+					
+					case "I":
+						initializer.memWriteInt(wp,
+							((Number)val).intValue());
+						break;
+					
+					case "J":
+						initializer.memWriteLong(wp,
+							((Number)val).longValue());
+						break;
+					
+					case "F":
+						initializer.memWriteInt(wp,
+							Float.floatToRawIntBits(
+								((Number)val).floatValue()));
+						break;
+					
+					case "D":
+						initializer.memWriteLong(wp,
+							Double.doubleToRawLongBits(
+								((Number)val).doubleValue()));
+						break;
+					
+					case "Ljava/lang/String;":
+						throw new todo.TODO("Write string");
+					
+						// Unknown
+					default:
+						throw new todo.OOPS(mf.type.toString());
+				}
+			}
+		}
+		
+		// {@squirreljme.error BC04 Could not locate static field. (Class;
+		// Field Name; Field Type)}
+		MinimizedField mf = this._class.field(true, __fn, __fd);
+		if (mf == null)
+			throw new InvalidClassFormatException(
+				String.format("BC04 %s %s %s", this._class.thisName(),
+					__fn, __fd));
+		
+		// Return offset to it
+		return smemoff + mf.offset;
 	}
 	
 	/**
