@@ -234,9 +234,18 @@ public final class JarMinimizer
 				TableSectionOutputStream.Section manifest = out.addSection(
 					TableSectionOutputStream.VARIABLE_SIZE, 4);
 				
-				// Copy the manifest
-				if (true)
-					throw new todo.TODO();
+				// Copy the manifest to an uncompressed section
+				for (;;)
+				{
+					int ll = in.read(copybuf);
+					
+					// EOF?
+					if (ll < 0)
+						break;
+					
+					// Write
+					manifest.write(copybuf);
+				}
 				
 				// Manifest offset and length
 				header.writeSectionAddressInt(manifest);
