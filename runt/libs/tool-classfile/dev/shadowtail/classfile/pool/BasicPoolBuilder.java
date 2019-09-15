@@ -37,7 +37,7 @@ public final class BasicPoolBuilder
 	 */
 	{
 		// The first entry of the constant pool is always null!
-		this.entries.put(null, new BasicPoolEntry(0, null));
+		this.entries.put(null, new BasicPoolEntry(0, null, new int[0]));
 	}
 	
 	/**
