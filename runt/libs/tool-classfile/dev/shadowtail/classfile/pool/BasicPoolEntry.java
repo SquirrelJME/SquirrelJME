@@ -103,6 +103,20 @@ public final class BasicPoolEntry
 	}
 	
 	/**
+	 * Returns a single part value.
+	 *
+	 * @param __i The part index.
+	 * @return The resulting part.
+	 * @throws IndexOutOfBoundsException If the part index is not within
+	 * bounds.
+	 * @since 2019/09/14
+	 */
+	public final int part(int __i)
+	{
+		return this._parts[__i] & 0xFFFF;
+	}
+	
+	/**
 	 * Returns the parts used.
 	 *
 	 * @return The used parts.
