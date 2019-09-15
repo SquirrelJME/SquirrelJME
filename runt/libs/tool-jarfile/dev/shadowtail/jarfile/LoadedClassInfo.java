@@ -322,6 +322,12 @@ public final class LoadedClassInfo
 			String key = mf.name + ":" + mf.type;
 			switch (key)
 			{
+					// The number of objects in this class
+				case "numobjects:I":
+					initializer.memWriteInt(
+						wp, this._class.header.ifobjs);
+					break;
+					
 					// Pointer to our own class info
 				case "selfptr:I":
 					initializer.memWriteInt(Modifier.RAM_OFFSET,
@@ -375,12 +381,6 @@ public final class LoadedClassInfo
 					case "magic:I":
 						initializer.memWriteInt(
 							wp, ClassInfo.MAGIC_NUMBER);
-						break;
-						
-						// Self pointer
-					case "selfptr:I":
-						initializer.memWriteInt(Modifier.RAM_OFFSET,
-							wp, rv);
 						break;
 						
 						// Class info flags
@@ -501,17 +501,6 @@ public final class LoadedClassInfo
 						// Base offset for the class
 					case "base:I":
 						initializer.memWriteInt(wp, bi.baseOffset());
-						break;
-						
-						// The number of objects in this class
-					case "numobjects:I":
-						initializer.memWriteInt(
-							wp, bi._class.header.ifobjs);
-						break;
-						
-						// Allocation size of the class
-					case "size:I":
-						initializer.memWriteInt(wp, bi.allocationSize());
 						break;
 						
 						// Dimensions
