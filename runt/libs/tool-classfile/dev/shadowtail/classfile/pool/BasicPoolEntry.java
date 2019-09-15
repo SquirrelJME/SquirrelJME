@@ -21,6 +21,9 @@ public final class BasicPoolEntry
 	/** The index of this entry. */
 	public final int index;
 	
+	/** Offset of this entry. */
+	public final int offset;
+	
 	/** The value. */
 	public final Object value;
 	
@@ -35,10 +38,11 @@ public final class BasicPoolEntry
 	 * @param __parts The parts.
 	 * @since 2019/09/11
 	 */
-	public BasicPoolEntry(int __dx, Object __v, short... __parts)
+	public BasicPoolEntry(int __dx, Object __v, short[] __parts)
 	{
 		this.index = __dx;
 		this.value = __v;
+		this.offset = -1;
 		this._parts = (__parts == null ? new short[0] : __parts.clone());
 	}
 	
@@ -50,10 +54,25 @@ public final class BasicPoolEntry
 	 * @param __parts The parts.
 	 * @since 2019/07/15
 	 */
-	public BasicPoolEntry(int __dx, Object __v, int... __parts)
+	public BasicPoolEntry(int __dx, Object __v, int[] __parts)
+	{
+		this(__dx, __v, __parts, -1);
+	}
+	
+	/**
+	 * Initializes a new entry.
+	 *
+	 * @param __dx The entry index.
+	 * @param __v The value.
+	 * @param __parts The parts.
+	 * @param __eoff The entry offset.
+	 * @since 2019/09/14
+	 */
+	public BasicPoolEntry(int __dx, Object __v, int[] __parts, int __eoff)
 	{
 		this.index = __dx;
 		this.value = __v;
+		this.offset = __eoff;
 		
 		// Reduce parts to shorts
 		int n = (__parts == null ? 0 : __parts.length);

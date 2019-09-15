@@ -107,7 +107,7 @@ public final class DualPoolEncoder
 			List<BasicPoolEntry> entries = new ArrayList<>(poolsize);
 			
 			// Initialize null entry
-			entries.add(new BasicPoolEntry(0, null));
+			entries.add(new BasicPoolEntry(0, null, new int[0]));
 			
 			// Read in every entry
 			for (int i = 1; i < poolsize; i++)
@@ -322,7 +322,7 @@ public final class DualPoolEncoder
 				}
 				
 				// Record entry
-				entries.add(new BasicPoolEntry(i, value, parts));
+				entries.add(new BasicPoolEntry(i, value, parts, eoff));
 			}
 			
 			// Build pool
