@@ -1,0 +1,17 @@
+# 2019/09/14
+
+## 16:01
+
+I definitely want to optimize and refactor the JarMinimizer since everything
+is in a single class and that is pretty much bad design.
+
+## 16:03
+
+At least then it should be much cleaner and easier to maintain for the most
+part, just will be moving the code out and simplifying things greatly.
+
+## 20:36
+
+Okay, so awesome thing is that this refactored code makes much more sense
+and is far more readable. Also I am very happy with the table section code
+as well!
