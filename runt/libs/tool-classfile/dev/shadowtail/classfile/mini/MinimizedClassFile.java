@@ -277,12 +277,11 @@ public final class MinimizedClassFile
 	 */
 	public final ClassName superName()
 	{
-		throw new todo.TODO();
-		/*
-		int id = this.header.classsuper;
-		return (id == 0 ? null :
-			this.pool.<ClassName>get(id, ClassName.class));
-		*/
+		int sdx = this.header.classsuper;
+		if (sdx == 0)
+			return null;
+		return this.pool.getByIndex(false, sdx).
+			<ClassName>value(ClassName.class);
 	}
 	
 	/**
