@@ -328,6 +328,11 @@ public final class LoadedClassInfo
 			String key = mf.name + ":" + mf.type;
 			switch (key)
 			{
+					// Base offset for the class
+				case "base:I":
+					initializer.memWriteInt(wp, this.baseOffset());
+					break;
+					
 					// Cell size
 				case "cellsize:I":
 					{
@@ -542,11 +547,6 @@ public final class LoadedClassInfo
 					case "vtablepool:[I":
 						initializer.memWriteInt(Modifier.RAM_OFFSET,
 							wp, this.__classVTable(initializer, __cl)[1]);
-						break;
-						
-						// Base offset for the class
-					case "base:I":
-						initializer.memWriteInt(wp, bi.baseOffset());
 						break;
 						
 						// Is class info instance
