@@ -11,6 +11,15 @@ package dev.shadowtail.jarfile;
 
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
+import dev.shadowtail.classfile.pool.AccessedField;
+import dev.shadowtail.classfile.pool.BasicPool;
+import dev.shadowtail.classfile.pool.BasicPoolEntry;
+import dev.shadowtail.classfile.pool.ClassPool;
+import dev.shadowtail.classfile.pool.DualClassRuntimePool;
+import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.pool.InvokeType;
+import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.UsedString;
 import java.lang.ref.Reference;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -41,7 +50,8 @@ public final class LoadedClassInfo
 	private final int _classoffset;
 	
 	/** The offset to the constant pool allocation. */
-	private int _pooloffset;
+	private int _pooloffset =
+		-1;
 	
 	/** Static memory offset. */
 	private int _smemoff =
@@ -682,26 +692,50 @@ public final class LoadedClassInfo
 	 */
 	public final int poolPointer()
 	{
-		throw new todo.TODO();
+		// Need the bootstrap!
+		BootstrapState bootstrap = this.__bootstrap();
 		
-		/*
-		if (__init == null || __cl == null)
-			throw new NullPointerException("NARG");
+		// Name of this class
+		ClassName thisname = this.thisName();
 		
-		// Treat as invalid for these
-		if (__cl.isPrimitive() || __cl.isArray())
-			return -1;
-			
-		// {@squirreljme.error BC09 No such class exists. (The class)}
-		LoadedClassInfo bi = this._boots.get(__cl);
-		if (bi == null)
-			throw new InvalidClassFormatException("BC09 " + __cl);
+		// If this is a primitive type or an array then use the pool pointer
+		// for Object since they are virtually treated as Object!
+		if (thisname.isPrimitive() || thisname.isArray())
+			return bootstrap.findClass("java/lang/Object").poolPointer();
 		
-		// Only calculate it once
-		int rv = bi._pooloffset;
-		if (rv != 0)
+		// Has this already been cached?
+		int rv = this._pooloffset;
+		if (rv >= 0)
 			return rv;
 		
+		// Can use the initializer now
+		Initializer initializer = bootstrap.initializer;
+		
+		// Get the constant pool for this class
+		MinimizedClassFile miniclass = this._class;
+		DualClassRuntimePool pool = miniclass.pool;
+		
+		// Extract both parts of the pool
+		BasicPool clpool = pool.classPool(),
+			rtpool = pool.runtimePool();
+		
+		// We only need space to fit the run-time pool
+		int n = rtpool.size();
+		this._pooloffset = (rv = initializer.allocate(n * 4));
+		
+		// Process entries, zero is always null!
+		for (int i = 1; i < n; i++)
+		{
+			// Get the entry here
+			BasicPoolEntry entry = rtpool.byIndex(i);
+			
+			throw new todo.TODO();
+		}
+		
+		// Return the pointer where the pool was allocated
+		return rv;
+		
+		/*
 		// Get constant pool
 		MinimizedClassFile mcl = bi._class;
 		DualClassRuntimePool pool = mcl.pool;
@@ -839,9 +873,6 @@ public final class LoadedClassInfo
 					throw new todo.OOPS(pt.name());
 			}
 		}
-		
-		// Return the pointer where the pool was allocated
-		return rv;
 		*/
 	}
 	
@@ -854,6 +885,17 @@ public final class LoadedClassInfo
 	public final int romOffset()
 	{
 		return this._classoffset;
+	}
+	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The name of this class.
+	 * @since 2019/09/14
+	 */
+	public final ClassName thisName()
+	{
+		return this._class.thisName();
 	}
 	
 	/**
