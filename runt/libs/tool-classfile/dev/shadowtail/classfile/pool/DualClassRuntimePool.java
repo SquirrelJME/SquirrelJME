@@ -70,6 +70,19 @@ public final class DualClassRuntimePool
 	}
 	
 	/**
+	 * Loads a value from the pool by its value.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __v The value to get.
+	 * @return The entry for the given value or {@code null} if not found.
+	 * @since 2019/09/14
+	 */
+	public final BasicPoolEntry getByValue(boolean __rt, Object __v)
+	{
+		return (__rt ? this.runpool : this.classpool).byValue(__v);
+	}
+	
+	/**
 	 * Returns the runtime class pool.
 	 *
 	 * @return The pool.
