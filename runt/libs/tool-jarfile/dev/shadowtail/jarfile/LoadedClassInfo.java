@@ -15,6 +15,7 @@ import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
+import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.InvokedMethod;
@@ -720,6 +721,11 @@ public final class LoadedClassInfo
 		BasicPool clpool = pool.classPool(),
 			rtpool = pool.runtimePool();
 		
+		// Absolute offsets for each pool (in the ROM)
+		int classoffset = this._classoffset;
+		int clpadd = classoffset + miniclass.header.staticpooloff,
+			rtpadd = classoffset + miniclass.header.runtimepooloff;
+		
 		// We only need space to fit the run-time pool
 		int n = rtpool.size();
 		this._pooloffset = (rv = initializer.allocate(n * 4));
@@ -730,13 +736,36 @@ public final class LoadedClassInfo
 			// Get the entry here
 			BasicPoolEntry entry = rtpool.byIndex(i);
 			
+			// The value to write in the slot
+			Modifier mx;
+			int vx;
+			
 			// Depends on the type of entry we are using
 			MinimizedPoolEntryType type = entry.type();
 			switch (type)
 			{
+					// A pointer to a string in memory
+				case NOTED_STRING:
+					mx = Modifier.JAR_OFFSET;
+					vx = clpadd + clpool.byIndex(entry.part(0)).offset;
+					break;
+					
+					// Pointer to class information
+				case CLASS_INFO_POINTER:
+					mx = Modifier.RAM_OFFSET;
+					vx = bootstrap.findClass(entry.<ClassInfoPointer>value(
+						ClassInfoPointer.class).name).infoPointer();
+					break;
+				
 				default:
 					throw new todo.OOPS(type.name());
 			}
+			
+			// Write value to the in-memory slot
+			initializer.memWriteInt(mx, rv + (4 * i), vx);
+			
+			// Debug
+			todo.DEBUG.note("%s:%d/%xh -> @%08x", mx, vx, vx, rv + (4 * i));
 		}
 		
 		// Return the pointer where the pool was allocated
