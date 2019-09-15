@@ -310,7 +310,19 @@ public final class LoadedClassInfo
 		// Fill in field data
 		while (!fieldq.isEmpty())
 		{
-			throw new todo.TODO();
+			// Get entry
+			ClassNameAndMinimizedField cnmf = fieldq.pop();
+			ClassName cn = cnmf.classname;
+			MinimizedField mf = cnmf.field;
+			
+			// Depends on the key (specified where and its type)
+			String key = mf.name + ":" + mf.type;
+			switch (key)
+			{
+					// Not handled yet!
+				default:
+					throw new todo.OOPS(key);
+			}
 		}
 		
 		// Return pointer to the data now
