@@ -9,6 +9,8 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.ClassInfo;
+import cc.squirreljme.jvm.Constants;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
@@ -322,6 +324,12 @@ public final class LoadedClassInfo
 			String key = mf.name + ":" + mf.type;
 			switch (key)
 			{
+					// Magic number
+				case "magic:I":
+					initializer.memWriteInt(
+						wp, ClassInfo.MAGIC_NUMBER);
+					break;
+					
 					// Pointer to the class data in ROM
 				case "miniptr:I":
 					initializer.memWriteInt(Modifier.JAR_OFFSET,
@@ -388,12 +396,6 @@ public final class LoadedClassInfo
 					case "classobjptr:Ljava/lang/Class;":
 						initializer.memWriteInt(
 							wp, 0);
-						break;
-						
-						// Magic number
-					case "magic:I":
-						initializer.memWriteInt(
-							wp, ClassInfo.MAGIC_NUMBER);
 						break;
 						
 						// Class info flags
