@@ -175,11 +175,11 @@ public final class MinimizedClassFile
 	 */
 	public final ClassNames interfaceNames()
 	{
-		throw new todo.TODO();
-		/*
-		return this.pool.<ClassNames>get(this.header.classints,
-			ClassNames.class);
-		*/
+		int idx = this.header.classints;
+		if (idx == 0)
+			return new ClassNames();
+		return this.pool.getByIndex(false, idx).
+			<ClassNames>value(ClassNames.class);
 	}
 	
 	/**
