@@ -322,6 +322,13 @@ public final class LoadedClassInfo
 			String key = mf.name + ":" + mf.type;
 			switch (key)
 			{
+					// Pointer to the class name
+				case "namep:I":
+					initializer.memWriteInt(Modifier.JAR_OFFSET,
+						wp, this.romOffset() + this.poolEntryOffset(
+						this._class.thisName().toString()) + 4);
+					break;
+					
 					// The number of objects in this class
 				case "numobjects:I":
 					initializer.memWriteInt(
@@ -412,18 +419,6 @@ public final class LoadedClassInfo
 					case "miniptr:I":
 						initializer.memWriteInt(Modifier.JAR_OFFSET,
 							wp, bi._classoffset);
-						break;
-						
-						// Pointer to the class name
-					case "namep:I":
-						if (true)
-							throw new todo.TODO();
-						/*
-						__init.memWriteInt(Modifier.JAR_OFFSET,
-							wp, bi._classoffset + bi._class.header.pooloff +
-								bi._class.pool.offset(bi._class.pool.part(
-								bi._class.header.classname, 0)) + 4);
-						* /
 						break;
 						
 						// Super class info
@@ -699,6 +694,35 @@ public final class LoadedClassInfo
 		// Otherwise include the super class count as well
 		return this.__classMethodSize(supername) + bi._class.header.imcount;
 		*/
+	}
+	
+	/**
+	 * Returns the pointer to the offset of the given pool value.
+	 *
+	 * @param __v The value to get.
+	 * @return The offset of the given value.
+	 * @since 2019/09/14
+	 */
+	public final int poolEntryOffset(Object __v)
+	{
+		// Need pool for this!
+		DualClassRuntimePool pool = this._class.pool;
+		
+		// Flagged if this is in the runtime pool?
+		boolean inruntime;
+		
+		// Try to find the value from some pool
+		BasicPoolEntry entry = pool.getByValue(false, __v);
+		if ((inruntime = (entry == null)))
+			entry = pool.getByValue(true, __v);
+		
+		// {@squirreljme.error BC0f Value not found in any pool. (The value)}
+		if (entry == null)
+			throw new InvalidClassFormatException("BC0f " + __v);
+		
+		// The offset of this entry is based on where it was found!
+		return (inruntime ? this._class.header.runtimepooloff :
+			this._class.header.staticpooloff) + entry.offset;
 	}
 	
 	/**
