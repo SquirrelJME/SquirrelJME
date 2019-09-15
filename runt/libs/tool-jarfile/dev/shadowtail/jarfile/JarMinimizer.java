@@ -265,79 +265,32 @@ public final class JarMinimizer
 		// Doing bootstrapping?
 		if (bootstrap != null)
 		{
-			throw new todo.TODO();
-			
-			/* --- INITIALIZER TO GET THE BOOT POINTER
-			private final Initializer __init(int[] __poolp, int[] __ksfa)
-				throws NullPointerException
-			{
-			if (__poolp == null || __ksfa == null)
-				throw new NullPointerException("NARG");
-			
-			Map<ClassName, LoadedClassInfo> boots = this._boots;
-			ClassName kn = new ClassName(
+			// The class being booted
+			LoadedClassInfo booting = bootstrap.findClass(
 				"cc/squirreljme/jvm/Bootstrap");
 			
-			// Initializer used for memory purposes
-			Initializer rv = new Initializer();
+			// Get all the bootstrap information before it is written!
+			int bootpool = booting.poolPointer();
+			int bootsfbp = bootstrap.staticFieldAreaAddress();
+			int bootmeth = booting.methodCodeAddress(
+				new MethodName("__start"), null);
+			int bootidba = bootstrap.findClass("[B").infoPointer();
+			int bootidbd = bootstrap.findClass("[[B").infoPointer();
 			
-			// Initialize the bootstrap pool, which may recursively initialize
-			// more constant pools in order for other methods to be executed
-			// properly
-			int poolptr = this.__initPool(rv, kn);
-			__poolp[0] = poolptr;
+			// Setup the BootRAM
+			TableSectionOutputStream.Section bootram = out.addSection(
+				bootstrap.initializer.toByteArray(), 4);
 			
-			// Allocate and setup kernel object pointer
-			__ksfa[0] = this._sfieldarea;
+			// Boot memory offset, size
+			header.writeSectionAddressInt(bootram);
+			header.writeSectionSizeInt(bootram);
 			
-			// Done with initialization, the ROM writer will dump the data needed
-			// for the kernel to start properly
-			return rv;
-			}
-			*/
-			
-			/* --- BOOT PROPERTIES WRITER
-			// Round data stream to 4 bytes
-			while ((jdos.size() & 3) != 0)
-				jdos.write(0);
-			
-			// Write address to the boot table
-			int baseaddr,
-				injaraddr;
-			__dos.writeInt((hfs[hat++] = 
-				(injaraddr = (reloff + (baseaddr = jdos.size())))));
-			
-			// Debug
-			if (_ENABLE_DEBUG)
-				todo.DEBUG.note("Boot RAM written at @%08x", injaraddr);
-			
-			// Initialize and write startup memory
-			int[] poolptr = new int[1],
-				ksfa = new int[1];
-			Initializer init = this.__init(poolptr, ksfa);
-			
-			// Load class IDs for the byte array
-			int clab = this.__classId(init, new ClassName("[B")),
-				claab = this.__classId(init, new ClassName("[[B"));
-			
-			// Write boot memory
-			byte[] bootmem = init.toByteArray();
-			jdos.write(bootmem);
-			
-			// Write length of the boot RAM initialize area
-			__dos.writeInt((hfs[hat++] = bootmem.length));
-			
-			// Bootstrap pool, static field pointer offset, and the offset
-			// to the bootstrap's code
-			__dos.writeInt((hfs[hat++] = poolptr[0]));
-			__dos.writeInt((hfs[hat++] = ksfa[0]));
-			__dos.writeInt(this.__classMethodCodeAddress(
-				"cc/squirreljme/jvm/Bootstrap",
-				"__start",
-				null));
-			__dos.writeInt((hfs[hat++] = clab));
-			__dos.writeInt((hfs[hat++] = claab));
-			*/
+			// Pool, sfa, code, classidba, classidbaa
+			header.writeInt(bootpool);
+			header.writeInt(bootsfbp);
+			header.writeInt(bootmeth);
+			header.writeInt(bootidba);
+			header.writeInt(bootidbd);
 		}
 		
 		// No bootstrapping being done
