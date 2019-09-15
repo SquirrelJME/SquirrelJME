@@ -151,7 +151,9 @@ public final class JarMinimizer
 		// Table of the entire JAR for writing
 		TableSectionOutputStream out = new TableSectionOutputStream();
 		
-		// Start the header, table of content, and manifest
+		// Start the header and table of contents
+		// These are fixed size because the bootstrapper needs to know the
+		// true pointer of the minified class file in the JAR
 		TableSectionOutputStream.Section header = out.addSection(
 			MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC, 4);
 		TableSectionOutputStream.Section toc = out.addSection(
