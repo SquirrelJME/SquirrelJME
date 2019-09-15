@@ -322,6 +322,12 @@ public final class LoadedClassInfo
 			String key = mf.name + ":" + mf.type;
 			switch (key)
 			{
+					// Pointer to our own class info
+				case "selfptr:I":
+					initializer.memWriteInt(Modifier.RAM_OFFSET,
+						wp, rv);
+					break;
+				
 					// Allocation size of this class
 				case "size:I":
 					initializer.memWriteInt(wp, this.allocationSize());
