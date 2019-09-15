@@ -9,6 +9,8 @@
 
 package dev.shadowtail.classfile.pool;
 
+import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
+
 /**
  * Represents an entry within the constant pool.
  *
@@ -90,6 +92,20 @@ public final class BasicPoolEntry
 	public final short[] parts()
 	{
 		return this._parts.clone();
+	}
+	
+	/**
+	 * Returns the type of entry that this is.
+	 *
+	 * @return The entry type.
+	 * @since 2019/09/14
+	 */
+	public final MinimizedPoolEntryType type()
+	{
+		Object value = this.value;
+		if (value == null)
+			return MinimizedPoolEntryType.NULL;
+		return MinimizedPoolEntryType.ofClass(value.getClass());
 	}
 	
 	/**

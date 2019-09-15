@@ -11,6 +11,7 @@ package dev.shadowtail.jarfile;
 
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
+import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
@@ -729,7 +730,13 @@ public final class LoadedClassInfo
 			// Get the entry here
 			BasicPoolEntry entry = rtpool.byIndex(i);
 			
-			throw new todo.TODO();
+			// Depends on the type of entry we are using
+			MinimizedPoolEntryType type = entry.type();
+			switch (type)
+			{
+				default:
+					throw new todo.OOPS(type.name());
+			}
 		}
 		
 		// Return the pointer where the pool was allocated
