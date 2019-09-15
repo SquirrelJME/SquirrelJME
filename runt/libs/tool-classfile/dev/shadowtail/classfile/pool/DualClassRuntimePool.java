@@ -43,6 +43,17 @@ public final class DualClassRuntimePool
 	}
 	
 	/**
+	 * Returns the static class pool.
+	 *
+	 * @return The pool.
+	 * @since 2019/09/14
+	 */
+	public final BasicPool classPool()
+	{
+		return this.classpool;
+	}
+	
+	/**
 	 * Loads a value from the pool by its index.
 	 *
 	 * @param __rt Read from the run-time pool?
@@ -56,6 +67,17 @@ public final class DualClassRuntimePool
 		throws IndexOutOfBoundsException
 	{
 		return (__rt ? this.runpool : this.classpool).byIndex(__dx);
+	}
+	
+	/**
+	 * Returns the runtime class pool.
+	 *
+	 * @return The pool.
+	 * @since 2019/09/14
+	 */
+	public final BasicPool runtimePool()
+	{
+		return this.runpool;
 	}
 }
 
