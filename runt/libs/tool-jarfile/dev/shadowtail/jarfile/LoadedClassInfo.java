@@ -327,7 +327,46 @@ public final class LoadedClassInfo
 			// Depends on the key (specified where and its type)
 			String key = mf.name + ":" + mf.type;
 			switch (key)
-			{	
+			{
+					// Cell size
+				case "cellsize:I":
+					{
+						// Determine the cell size
+						int cellsize;
+						switch (thisname.toString())
+						{
+							case "byte":
+							case "boolean":
+							case "[Z":
+							case "[B":
+								cellsize = 1;
+								break;
+							
+							case "short":
+							case "char":
+							case "[S":
+							case "[C":
+								cellsize = 2;
+								break;
+								
+							case "long":
+							case "double":
+							case "[J":
+							case "[D":
+								cellsize = 8;
+								break;
+								
+							default:
+								cellsize = 4;
+								break;
+						}
+						
+						// Write
+						initializer.memWriteInt(
+							wp, cellsize);
+					}
+					break;
+					
 					// Dimensions
 				case "dimensions:I":
 					initializer.memWriteInt(
@@ -508,28 +547,6 @@ public final class LoadedClassInfo
 						// Base offset for the class
 					case "base:I":
 						initializer.memWriteInt(wp, bi.baseOffset());
-						break;
-						
-						// Cell size
-					case "cellsize:I":
-						{
-							// Determine the cell size
-							int cellsize;
-							switch (__cl.toString())
-							{
-								case "[Z":
-								case "[B":	cellsize = 1; break;
-								case "[S":
-								case "[C":	cellsize = 2; break;
-								case "[J":
-								case "[D":	cellsize = 8; break;
-								default:	cellsize = 4; break;
-							}
-							
-							// Write
-							initializer.memWriteInt(
-								wp, cellsize);
-						}
 						break;
 						
 						// Is class info instance
