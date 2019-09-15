@@ -315,10 +315,18 @@ public final class LoadedClassInfo
 			ClassName cn = cnmf.classname;
 			MinimizedField mf = cnmf.field;
 			
+			// The write pointer of this data
+			int wp = bootstrap.findClass(cn).baseOffset() + mf.offset;
+			
 			// Depends on the key (specified where and its type)
 			String key = mf.name + ":" + mf.type;
 			switch (key)
 			{
+					// Allocation size of this class
+				case "size:I":
+					initializer.memWriteInt(wp, this.allocationSize());
+					break;
+					
 					// Not handled yet!
 				default:
 					throw new todo.OOPS(key);
