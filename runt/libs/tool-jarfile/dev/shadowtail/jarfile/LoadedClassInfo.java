@@ -309,6 +309,10 @@ public final class LoadedClassInfo
 				fieldq.push(new ClassNameAndMinimizedField(at, mf));
 		}
 		
+		// This class information
+		MinimizedClassFile mcf = this._class;
+		ClassName thisname = mcf.thisName();
+		
 		// Fill in field data
 		while (!fieldq.isEmpty())
 		{
@@ -323,7 +327,38 @@ public final class LoadedClassInfo
 			// Depends on the key (specified where and its type)
 			String key = mf.name + ":" + mf.type;
 			switch (key)
-			{
+			{	
+					// Dimensions
+				case "dimensions:I":
+					initializer.memWriteInt(
+						wp, thisname.dimensions());
+					break;
+					
+					// Class info flags
+				case "flags:I":
+					{
+						int flags = 0;
+						
+						// Is this array?
+						if (thisname.isArray())
+						{
+							// Flag it
+							flags |= Constants.CIF_IS_ARRAY;
+							
+							// Is its component an object as well?
+							if (!thisname.componentType().isPrimitive())
+								flags |= Constants.CIF_IS_ARRAY_OF_OBJECTS;
+						}
+						
+						// Is this primitive?
+						if (thisname.isPrimitive())
+							flags |= Constants.CIF_IS_PRIMITIVE;
+						
+						// Write flags
+						initializer.memWriteInt(wp, flags);
+					}
+					break;
+					
 					// Magic number
 				case "magic:I":
 					initializer.memWriteInt(
@@ -396,31 +431,6 @@ public final class LoadedClassInfo
 					case "classobjptr:Ljava/lang/Class;":
 						initializer.memWriteInt(
 							wp, 0);
-						break;
-						
-						// Class info flags
-					case "flags:I":
-						{
-							int flags = 0;
-							
-							// Is this array?
-							if (__cl.isArray())
-							{
-								// Flag it
-								flags |= Constants.CIF_IS_ARRAY;
-								
-								// Is its component an object as well?
-								if (!__cl.componentType().isPrimitive())
-									flags |= Constants.CIF_IS_ARRAY_OF_OBJECTS;
-							}
-							
-							// Is this primitive?
-							if (__cl.isPrimitive())
-								flags |= Constants.CIF_IS_PRIMITIVE;
-							
-							// Write flags
-							initializer.memWriteInt(wp, flags);
-						}
 						break;
 						
 						// Super class info
@@ -498,12 +508,6 @@ public final class LoadedClassInfo
 						// Base offset for the class
 					case "base:I":
 						initializer.memWriteInt(wp, bi.baseOffset());
-						break;
-						
-						// Dimensions
-					case "dimensions:I":
-						initializer.memWriteInt(
-							wp, __cl.dimensions());
 						break;
 						
 						// Cell size
