@@ -402,6 +402,29 @@ public final class LoadedClassInfo
 						initializer.memWriteInt(wp, flags);
 					}
 					break;
+						
+						// Interface class information
+					case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
+						{
+							// Get interfaces pointer list
+							int xp = bootstrap.classNamesInfoPointer(
+								mcf.interfaceNames());
+								
+							// Write pointer here
+							initializer.memWriteInt(Modifier.RAM_OFFSET,
+								wp, xp);
+							
+							// The interface names in the bootstrap is the
+							// pointer to the ClassInfo, but as an int array
+							// type instead of an object array type. But we
+							// can just override it.
+							initializer.memWriteInt(Modifier.RAM_OFFSET,
+								xp + Constants.OBJECT_CLASS_OFFSET,
+								bootstrap.findClass(
+								"[Lcc/squirreljme/jvm/ClassInfo;").
+								infoPointer());
+						}
+						break;
 					
 					// Magic number
 				case "magic:I":
@@ -486,39 +509,6 @@ public final class LoadedClassInfo
 							else
 								initializer.memWriteInt(Modifier.RAM_OFFSET,
 									wp, this.__classId(initializer, sn));
-						}
-						break;
-						
-						// Interface class information
-					case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
-						{
-							// Get interfaces
-							ClassNames ints = bi._class.interfaceNames();
-							int numints = ints.size();
-							
-							// Allocate and set field array pointer
-							int cip = initializer.allocate(
-								Constants.ARRAY_BASE_SIZE + (numints * 4));
-							initializer.memWriteInt(Modifier.RAM_OFFSET,
-								wp, cip);
-							
-							// Write array details
-							initializer.memWriteInt(Modifier.RAM_OFFSET,
-								cip + Constants.OBJECT_CLASS_OFFSET,
-								this.__classId(initializer, new ClassName(
-									"[Lcc/squirreljme/jvm/ClassInfo;")));
-							initializer.memWriteInt(
-								cip + Constants.OBJECT_COUNT_OFFSET,
-								999999);
-							initializer.memWriteInt(
-								cip + Constants.ARRAY_LENGTH_OFFSET,
-								numints);
-							
-							// Write interface IDs
-							for (int j = 0; j < numints; j++)
-								initializer.memWriteInt(Modifier.RAM_OFFSET,
-									cip + Constants.ARRAY_BASE_SIZE + (j * 4),
-									this.__classId(initializer, ints.get(j)));
 						}
 						break;
 						
