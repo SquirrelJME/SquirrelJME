@@ -322,6 +322,12 @@ public final class LoadedClassInfo
 			String key = mf.name + ":" + mf.type;
 			switch (key)
 			{
+					// Pointer to the class data in ROM
+				case "miniptr:I":
+					initializer.memWriteInt(Modifier.JAR_OFFSET,
+						wp, this.romOffset());
+					break;
+					
 					// Pointer to the class name
 				case "namep:I":
 					initializer.memWriteInt(Modifier.JAR_OFFSET,
@@ -413,12 +419,6 @@ public final class LoadedClassInfo
 							// Write flags
 							initializer.memWriteInt(wp, flags);
 						}
-						break;
-						
-						// Pointer to the class data in ROM
-					case "miniptr:I":
-						initializer.memWriteInt(Modifier.JAR_OFFSET,
-							wp, bi._classoffset);
 						break;
 						
 						// Super class info
