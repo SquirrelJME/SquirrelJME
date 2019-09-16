@@ -86,6 +86,85 @@ public final class BootstrapState
 	}
 	
 	/**
+	 * Allocates an array of integers and stores values.
+	 *
+	 * @param __m The modifier of the values to use.
+	 * @param __v The values in the array.
+	 * @return The pointer to the integer array.
+	 * @since 2019/09/16
+	 */
+	public final int buildIntArray(Modifier __m, int... __v)
+		throws NullPointerException
+	{
+		return this.buildIntArray(new ClassName("[I"), __m, __v);
+	}
+	
+	/**
+	 * Allocates an array of integers and stores values.
+	 *
+	 * @param __t The type to use.
+	 * @param __m The modifier of the values to use.
+	 * @param __v The values in the array.
+	 * @return The pointer to the integer array.
+	 * @since 2019/09/16
+	 */
+	public final int buildIntArray(String __t, Modifier __m, int... __v)
+		throws NullPointerException
+	{
+		if (__t == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		return this.buildIntArray(new ClassName(__t), __m, __v);
+	}
+	
+	/**
+	 * Allocates an array of integers and stores values.
+	 *
+	 * @param __t The type to use.
+	 * @param __m The modifier of the values to use.
+	 * @param __v The values in the array.
+	 * @return The pointer to the integer array.
+	 * @since 2019/09/16
+	 */
+	public final int buildIntArray(ClassName __t, Modifier __m, int... __v)
+		throws NullPointerException
+	{
+		if (__t == null || __v == null)
+			throw new NullPointerException("NARG");
+			
+		// Needed for allocations and writes
+		Initializer initializer = this.initializer;
+		
+		// Force a default modifier
+		if (__m == null)
+			__m = Modifier.NONE;
+		
+		// The number of elements to store
+		int n = __v.length;
+		
+		// Allocate space needed for the array
+		int rv = initializer.allocate(Constants.ARRAY_BASE_SIZE + (4 * n));
+		
+		// Write details of object
+		initializer.memWriteInt(Modifier.RAM_OFFSET,
+			rv + Constants.OBJECT_CLASS_OFFSET,
+			this.findClass(__t).infoPointer());
+		initializer.memWriteInt(
+			rv + Constants.OBJECT_COUNT_OFFSET,
+			999999);
+		initializer.memWriteInt(
+			rv + Constants.ARRAY_LENGTH_OFFSET,
+			n);
+		
+		// Write values in the array
+		for (int i = 0, wp = rv + Constants.ARRAY_BASE_SIZE;
+			i < n; i++, wp += 4)
+			initializer.memWriteInt(__m, wp, __v[i]);
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns an info pointer for the given class names.
 	 *
 	 * @param __cls The class names to get info pointers for.
@@ -102,29 +181,14 @@ public final class BootstrapState
 		// Needed for allocations and writes
 		Initializer initializer = this.initializer;
 		
-		// The IDs are contained within int[] arrays for simplicity
-		int n = __cls.size(),
-			rv = initializer.allocate(Constants.ARRAY_BASE_SIZE + (4 * n));
+		// Fill in values for pointers
+		int n = __cls.size();
+		int[] values = new int[n];
+		for (int i = 0; i < n; i++)
+			values[i] = this.findClass(__cls.get(i)).infoPointer();
 		
-		// Write object details
-		initializer.memWriteInt(Modifier.RAM_OFFSET,
-			rv + Constants.OBJECT_CLASS_OFFSET,
-			this.findClass("[I").infoPointer());
-		initializer.memWriteInt(
-			rv + Constants.OBJECT_COUNT_OFFSET,
-			999999);
-		initializer.memWriteInt(
-			rv + Constants.ARRAY_LENGTH_OFFSET,
-			n);
-		
-		// Write ID elements
-		for (int i = 0, wp = rv + Constants.ARRAY_BASE_SIZE;
-			i < n; i++, wp += 4)
-			initializer.memWriteInt(Modifier.RAM_OFFSET,
-				wp, this.findClass(__cls.get(i)).infoPointer());
-		
-		// Use this pointer here
-		return rv;
+		// Return array of these pointers
+		return this.buildIntArray("[I", Modifier.RAM_OFFSET, values);
 	}
 	
 	/**

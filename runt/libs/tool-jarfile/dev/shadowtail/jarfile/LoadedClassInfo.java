@@ -461,6 +461,18 @@ public final class LoadedClassInfo
 				case "size:I":
 					initializer.memWriteInt(wp, this.allocationSize());
 					break;
+						
+					// VTable for virtual calls
+				case "vtablevirtual:[I":
+					initializer.memWriteInt(Modifier.RAM_OFFSET,
+						wp, this.vTables()[0]);
+					break;
+					
+					// VTable for pool setting
+				case "vtablepool:[I":
+					initializer.memWriteInt(Modifier.RAM_OFFSET,
+						wp, this.vTables()[1]);
+					break;
 					
 					// Not handled yet!
 				default:
@@ -525,18 +537,6 @@ public final class LoadedClassInfo
 							else
 								__init.memWriteInt(wp, 0);
 						}
-						break;
-						
-						// VTable for virtual calls
-					case "vtablevirtual:[I":
-						initializer.memWriteInt(Modifier.RAM_OFFSET,
-							wp, this.__classVTable(initializer, __cl)[0]);
-						break;
-						
-						// VTable for pool setting
-					case "vtablepool:[I":
-						initializer.memWriteInt(Modifier.RAM_OFFSET,
-							wp, this.__classVTable(initializer, __cl)[1]);
 						break;
 						
 						// Is class info instance
@@ -693,20 +693,22 @@ public final class LoadedClassInfo
 	 */
 	public final int methodSize()
 	{
-		throw new todo.TODO();
-		/*
-		// Get class method might be in
-		Map<ClassName, LoadedClassInfo> boots = this._boots;
-		LoadedClassInfo bi = boots.get(__cl);
+		// Need the bootstrap
+		BootstrapState bootstrap = this.__bootstrap();
+		
+		// We are working on this class
+		MinimizedClassFile cf = this._class;
+		
+		// The base method count
+		int self = cf.header.imcount;
 		
 		// If there is no super class it is just the count
-		ClassName supername = bi._class.superName();
+		ClassName supername = cf.superName();
 		if (supername == null)
-			return bi._class.header.imcount;
+			return self;
 		
 		// Otherwise include the super class count as well
-		return this.__classMethodSize(supername) + bi._class.header.imcount;
-		*/
+		return bootstrap.findClass(supername).methodSize() + self;
 	}
 	
 	/**
@@ -995,28 +997,25 @@ public final class LoadedClassInfo
 	 */
 	public final int[] vTables()
 	{
-		throw new todo.TODO();
-		/*
+		// Need the bootstrap
+		BootstrapState bootstrap = this.__bootstrap();
 		
-		if (__init == null || __cl == null)
-			throw new NullPointerException("NARG");
+		// The current class information
+		ClassName thisname = this._class.thisName();
 		
 		// Primitive types and array types do not exist so they just use the
-		// same vtable as Object
-		if (__cl.isPrimitive() || __cl.isArray())
-			return this.__classVTable(__init,
-				new ClassName("java/lang/Object"));
-		
-		// We need boot information to get class information!
-		Map<ClassName, LoadedClassInfo> boots = this._boots;
+		// same vtables as Object
+		if (thisname.isPrimitive() || thisname.isArray())
+			return bootstrap.findClass("java/lang/Object").vTables();
 		
 		// Did we already make the VTable for this? This will happen in the
 		// event arrays or primitives are virtualized
-		LoadedClassInfo selfbi = boots.get(__cl);
-		int rv = selfbi._vtable;
+		int rv = this._vtable;
 		if (rv >= 0)
-			return new int[]{rv, selfbi._vtablepool};
+			return new int[]{rv, this._vtablepool};
 		
+		throw new todo.TODO();
+		/*
 		// Build array of all the classes that are used in the method and
 		// super class chain
 		List<LoadedClassInfo> classes = new ArrayList<>();
