@@ -131,37 +131,9 @@ public final class BootstrapState
 	{
 		if (__t == null || __v == null)
 			throw new NullPointerException("NARG");
-			
-		// Needed for allocations and writes
-		Initializer initializer = this.initializer;
 		
-		// Force a default modifier
-		if (__m == null)
-			__m = Modifier.NONE;
-		
-		// The number of elements to store
-		int n = __v.length;
-		
-		// Allocate space needed for the array
-		int rv = initializer.allocate(Constants.ARRAY_BASE_SIZE + (4 * n));
-		
-		// Write details of object
-		initializer.memWriteInt(Modifier.RAM_OFFSET,
-			rv + Constants.OBJECT_CLASS_OFFSET,
-			this.findClass(__t).infoPointer());
-		initializer.memWriteInt(
-			rv + Constants.OBJECT_COUNT_OFFSET,
-			999999);
-		initializer.memWriteInt(
-			rv + Constants.ARRAY_LENGTH_OFFSET,
-			n);
-		
-		// Write values in the array
-		for (int i = 0, wp = rv + Constants.ARRAY_BASE_SIZE;
-			i < n; i++, wp += 4)
-			initializer.memWriteInt(__m, wp, __v[i]);
-		
-		return rv;
+		return this.finalizeIntArray(this.reserveIntArray(__v.length),
+			__t, __m, __v);
 	}
 	
 	/**
@@ -189,6 +161,67 @@ public final class BootstrapState
 		
 		// Return array of these pointers
 		return this.buildIntArray("[I", Modifier.RAM_OFFSET, values);
+	}
+	
+	/**
+	 * Finalizes the integer array by writing values over it.
+	 *
+	 * @param __p The array pointer.
+	 * @param __m The modifier of the values to use.
+	 * @param __v The values in the array.
+	 * @return The pointer to the integer array.
+	 * @since 2019/09/16
+	 */
+	public final int finalizeIntArray(int __p, Modifier __m, int... __v)
+		throws NullPointerException
+	{
+		return this.finalizeIntArray(__p, new ClassName("[I"), __m, __v);
+	}
+	
+	/**
+	 * Finalizes the integer array by writing values over it.
+	 *
+	 * @param __p The array pointer.
+	 * @param __t The type to use.
+	 * @param __m The modifier of the values to use.
+	 * @param __v The values in the array.
+	 * @return The pointer to the integer array.
+	 * @since 2019/09/16
+	 */
+	public final int finalizeIntArray(int __p, ClassName __t, Modifier __m,
+		int... __v)
+		throws NullPointerException
+	{
+		if (__t == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Needed for allocations and writes
+		Initializer initializer = this.initializer;
+		
+		// Force a default modifier
+		if (__m == null)
+			__m = Modifier.NONE;
+		
+		// The number of elements to store
+		int n = __v.length;
+		
+		// Write details of object
+		initializer.memWriteInt(Modifier.RAM_OFFSET,
+			__p + Constants.OBJECT_CLASS_OFFSET,
+			this.findClass(__t).infoPointer());
+		initializer.memWriteInt(
+			__p + Constants.OBJECT_COUNT_OFFSET,
+			999999);
+		initializer.memWriteInt(
+			__p + Constants.ARRAY_LENGTH_OFFSET,
+			n);
+		
+		// Write values in the array
+		for (int i = 0, wp = __p + Constants.ARRAY_BASE_SIZE;
+			i < n; i++, wp += 4)
+			initializer.memWriteInt(__m, wp, __v[i]);
+		
+		return __p;
 	}
 	
 	/**
@@ -274,6 +307,20 @@ public final class BootstrapState
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Reserves an integer array that can fit the specified number of entries.
+	 *
+	 * @param __n The number of entries to reserve.
+	 * @return The pointer to the integer array.
+	 * @since 2019/09/16
+	 */
+	public final int reserveIntArray(int __n)
+		throws NullPointerException
+	{
+		return this.initializer.allocate(
+			Constants.ARRAY_BASE_SIZE + (4 * __n));
 	}
 	
 	/**

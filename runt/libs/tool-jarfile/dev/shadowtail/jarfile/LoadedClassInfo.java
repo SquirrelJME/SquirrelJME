@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.ClassInfo;
 import cc.squirreljme.jvm.Constants;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
+import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
@@ -606,24 +607,40 @@ public final class LoadedClassInfo
 	 * @param __mt The method type, if {@code null} then the type is
 	 * disregarded.
 	 * @return The address of the given method.
+	 * @since 2019/09/20
+	 */
+	public final int methodCodeAddress(String __mn, String __mt)
+		throws NullPointerException
+	{
+		if (__mn == null)
+			throw new NullPointerException("NARG");
+		
+		return this.methodCodeAddress(new MethodName(__mn),
+			(__mt == null ? null : new MethodDescriptor(__mt)));
+	}
+	
+	/**
+	 * Returns the address of the given method.
+	 *
+	 * @param __mn The method name.
+	 * @param __mt The method type, if {@code null} then the type is
+	 * disregarded.
+	 * @return The address of the given method.
 	 * @since 2019/04/30
 	 */
 	public final int methodCodeAddress(MethodName __mn, MethodDescriptor __mt)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
-		/*
-		if (__cl == null || __mn == null)
+		if (__mn == null)
 			throw new NullPointerException("NARG");
 		
-		// Get class method might be in
-		LoadedClassInfo bi = this._boots.get(__cl);
-		MinimizedClassFile mcf = bi._class;
+		// Get class information
+		MinimizedClassFile mcf = this._class;
 		
 		// Lookup static first
 		MinimizedMethod mm = mcf.method(true, __mn, __mt);
 		if (mm != null)
-			return bi._classoffset + mcf.header.smoff + mm.codeoffset;
+			return this._classoffset + mcf.header.smoff + mm.codeoffset;
 		
 		// Otherwise fallback to instance methods
 		// {@squirreljme.error BC07 Could not locate the given method.
@@ -631,9 +648,8 @@ public final class LoadedClassInfo
 		mm = mcf.method(false, __mn, __mt);
 		if (mm == null)
 			throw new InvalidClassFormatException(
-				String.format("BC07 %s %s %s", __cl, __mn, __mt));
-		return bi._classoffset + mcf.header.imoff + mm.codeoffset;
-		*/
+				String.format("BC07 %s %s %s", mcf.thisName(), __mn, __mt));
+		return this._classoffset + mcf.header.imoff + mm.codeoffset;
 	}
 	
 	/**
@@ -1017,6 +1033,19 @@ public final class LoadedClassInfo
 		// Total methods to put together
 		int count = this.methodSize();
 		
+		// Reserve and cache
+		int pmptr = bootstrap.reserveIntArray(count),
+			ppool = bootstrap.reserveIntArray(count);
+		this._vtable = pmptr;
+		this._vtablepool = ppool;
+		
+		// Abstract methods which are not bound to anything will instead
+		// be bound to this method which indicates failure.
+		int jpvc = bootstrap.findClass("cc/squirreljme/jvm/JVMFunction").
+				methodCodeAddress("jvmPureVirtualCall", "()V"),
+			jpvp = bootstrap.findClass("cc/squirreljme/jvm/JVMFunction").
+				poolPointer();
+		
 		// Resultant arrays
 		int[] mptr = new int[count];
 		int[] pool = new int[count];
@@ -1025,10 +1054,8 @@ public final class LoadedClassInfo
 			throw new todo.TODO();
 		
 		// Finalize and cache
-		int pmptr = bootstrap.buildIntArray(Modifier.JAR_OFFSET, mptr),
-			ppool = bootstrap.buildIntArray(Modifier.RAM_OFFSET, pool);
-		this._vtable = pmptr;
-		this._vtablepool = ppool;
+		bootstrap.finalizeIntArray(pmptr, Modifier.JAR_OFFSET, mptr);
+		bootstrap.finalizeIntArray(ppool,Modifier.RAM_OFFSET, pool);
 		
 		// Return them
 		return new int[]{pmptr, ppool};
