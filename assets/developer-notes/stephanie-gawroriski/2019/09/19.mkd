@@ -1,0 +1,18 @@
+# 2019/09/19
+
+## 08:57
+
+At work but I figured out interfaces. Basically
+ITABLES for classes will have a key and method 
+pointer for the implimented method. They will always 
+be sorted. For any invocation type that is done on 
+interfaces, it will use an INATID. The class ITABLE 
+will be sorted INATID+METHODPTR pairs. INATID will 
+be a unique ID derived from method name and type, but
+not the class type. Since if two different interfaces 
+implement the same method. They are the same. Hence no 
+classes. The run-time pool index will be the INATID. 
+Then interface calls will refer to that in the JVM
+interface lookup. Sorting will make scanning faster. 
+And not using classes in INATID will make there be 
+less IDs used.
