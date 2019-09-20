@@ -1014,7 +1014,24 @@ public final class LoadedClassInfo
 		if (rv >= 0)
 			return new int[]{rv, this._vtablepool};
 		
-		throw new todo.TODO();
+		// Total methods to put together
+		int count = this.methodSize();
+		
+		// Resultant arrays
+		int[] mptr = new int[count];
+		int[] pool = new int[count];
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Finalize and cache
+		int pmptr = bootstrap.buildIntArray(Modifier.JAR_OFFSET, mptr),
+			ppool = bootstrap.buildIntArray(Modifier.RAM_OFFSET, pool);
+		this._vtable = pmptr;
+		this._vtablepool = ppool;
+		
+		// Return them
+		return new int[]{pmptr, ppool};
 		/*
 		// Build array of all the classes that are used in the method and
 		// super class chain
