@@ -373,6 +373,26 @@ public final class LoadedClassInfo
 					}
 					break;
 					
+					// Class<?> pointer, starts always at zero since it
+					// is generated at run-time
+				case "classobjptr:Ljava/lang/Class;":
+					initializer.memWriteInt(
+						wp, 0);
+					break;
+					
+					// Component class
+				case "componentclass:Lcc/squirreljme/jvm/ClassInfo;":
+					// Write class ID of component type
+					if (thisname.isArray())
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, bootstrap.findClass(
+								thisname.componentType()).infoPointer());
+					
+					// Write null pointer
+					else
+						initializer.memWriteInt(wp, 0);
+					break;
+					
 					// Dimensions
 				case "dimensions:I":
 					initializer.memWriteInt(
@@ -462,6 +482,16 @@ public final class LoadedClassInfo
 				case "size:I":
 					initializer.memWriteInt(wp, this.allocationSize());
 					break;
+					
+					// Super class info
+				case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
+					ClassName sn = mcf.superName();
+					if (sn == null)
+						initializer.memWriteInt(wp, 0);
+					else
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, bootstrap.findClass(sn).infoPointer());
+					break;
 						
 					// VTable for virtual calls
 				case "vtablevirtual:[I":
@@ -507,38 +537,8 @@ public final class LoadedClassInfo
 				String key = mf.name + ":" + mf.type;
 				switch (key)
 				{
-						// Class<?> pointer, allocated when needed
-					case "classobjptr:Ljava/lang/Class;":
-						initializer.memWriteInt(
-							wp, 0);
-						break;
 						
-						// Super class info
-					case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
-						{
-							ClassName sn = bi._class.superName();
-							if (sn == null)
-								initializer.memWriteInt(wp, 0);
-							else
-								initializer.memWriteInt(Modifier.RAM_OFFSET,
-									wp, this.__classId(initializer, sn));
-						}
-						break;
 						
-						// Component class
-					case "componentclass:Lcc/squirreljme/jvm/ClassInfo;":
-						{
-							// Write class ID of component type
-							if (__cl.isArray())
-								initializer.memWriteInt(Modifier.RAM_OFFSET,
-									wp, this.__classId(initializer,
-										initializer.componentType()));
-							
-							// Write null pointer
-							else
-								__init.memWriteInt(wp, 0);
-						}
-						break;
 						
 						// Is class info instance
 					case "_class:I":
