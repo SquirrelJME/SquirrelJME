@@ -584,20 +584,16 @@ public final class LoadedClassInfo
 	 */
 	public final int methodBase()
 	{
-		throw new todo.TODO();
-		/*
-		// Get class method might be in
-		Map<ClassName, LoadedClassInfo> boots = this._boots;
-		LoadedClassInfo bi = boots.get(__cl);
+		// Need the bootstrap
+		BootstrapState bootstrap = this.__bootstrap();
 		
-		// If this has no super class, then the base is zero
-		ClassName supername = bi._class.superName();
+		// If there is no super class then we just start at zero
+		ClassName supername = this._class.superName();
 		if (supername == null)
 			return 0;
 		
-		// Otherwise it is the number of available methods in the super class
-		return this.__classMethodSize(supername);
-		*/
+		// Otherwise it is the size of the super-class where we start from
+		return bootstrap.findClass(supername).methodSize();
 	}
 	
 	/**
@@ -663,42 +659,27 @@ public final class LoadedClassInfo
 	public final int methodIndex(MethodName __mn, MethodDescriptor __mt)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
-		/*
-		if (__cl == null || __mn == null || __mt == null)
+		if (__mn == null || __mt == null)
 			throw new NullPointerException("NARG");
 		
-		// Primitives and array types are not real, so just have everything
-		// about them point to object!
-		if (__cl.isPrimitive() || __cl.isArray())
-			return this.__classMethodIndex(new ClassName("java/lang/Object"),
-				__mn, __mt);
-		
-		// Seeker class
-		ClassName seeker = __cl;
-		
-		// Recursively scan for the method in all classes
-		Map<ClassName, LoadedClassInfo> boots = this._boots;
-		while (seeker != null)
+		// Try to find the method
+		MinimizedClassFile mcf = this._class;
+		MinimizedMethod mm = mcf.method(false, __mn, __mt);
+		if (mm == null)
 		{
-			// Get boot information
-			LoadedClassInfo bi = boots.get(seeker);
-			MinimizedClassFile mcf = bi._class;
+			// {@squirreljme.error BC08 Could not find the specified method.
+			// (The method name; The method type)}
+			ClassName scn = mcf.superName();
+			if (scn == null)
+				throw new InvalidClassFormatException(
+					"BC08 " + __mn + " " + __mt);
 			
-			// Is class found in this method?
-			MinimizedMethod mm = mcf.method(false, __mn, __mt);
-			if (mm != null)
-				return this.__classMethodBase(seeker) + mm.index;
-			
-			// Go above
-			seeker = mcf.superName();
+			// See if the super class has it
+			return this.__bootstrap().findClass(scn).methodIndex(__mn, __mt);
 		}
 		
-		// {@squirreljme.error BC08 Could not locate the method. (The class;
-		// Method name; Method type)}
-		throw new InvalidClassFormatException(
-			String.format("BC08 %s %s %s", __cl, __mn, __mt));
-		*/
+		// Is the index offset from the method base of this class
+		return this.methodBase() + mm.index;
 	}
 	
 	/**
@@ -814,19 +795,73 @@ public final class LoadedClassInfo
 			MinimizedPoolEntryType type = entry.type();
 			switch (type)
 			{
-					// A pointer to a string in memory
-				case NOTED_STRING:
-					mx = Modifier.JAR_OFFSET;
-					vx = clpadd + clpool.byIndex(entry.part(0)).offset;
-					break;
+					// Field which has been accessed
+				case ACCESSED_FIELD:
+					AccessedField af = entry.<AccessedField>value(
+						AccessedField.class);
 					
+					// Static fields are based on the pointer
+					if (af.type().isStatic())
+					{
+						mx = null;
+						vx = bootstrap.findClass(af.field.className()).
+							fieldStaticOffset(af.field.memberName(),
+								af.field.memberType());
+					}
+					
+					// Instance fields are offset from a class
+					else
+					{
+						mx = null;
+						vx = bootstrap.findClass(af.field.className()).
+							fieldInstanceOffset(af.field.memberName(),
+								af.field.memberType());
+					}
+					break;
+				
 					// Pointer to class information
 				case CLASS_INFO_POINTER:
 					mx = Modifier.RAM_OFFSET;
 					vx = bootstrap.findClass(entry.<ClassInfoPointer>value(
 						ClassInfoPointer.class).name).infoPointer();
 					break;
-				
+					
+					// Pointer to class constant pool
+				case CLASS_POOL:
+					ClassPool pl = entry.<ClassPool>value(ClassPool.class);
+					
+					mx = Modifier.RAM_OFFSET;
+					vx = bootstrap.findClass(pl.name).poolPointer();
+					break;
+					
+					// A method to be invoked, these are always direct pointer
+					// references to methods
+				case INVOKED_METHOD:
+					InvokedMethod im = entry.<InvokedMethod>value(
+						InvokedMethod.class);
+					
+					mx = Modifier.JAR_OFFSET;
+					vx = bootstrap.findClass(im.handle.outerClass()).
+						methodCodeAddress(im.handle.name(),
+							im.handle.descriptor());
+					break;
+					
+					// Index of method
+				case METHOD_INDEX:
+					MethodIndex mi = entry.<MethodIndex>value(
+						MethodIndex.class);
+					
+					mx = null;
+					vx = bootstrap.findClass(mi.inclass).methodIndex(
+						mi.name, mi.type);
+					break;
+					
+					// A pointer to a string in memory
+				case NOTED_STRING:
+					mx = Modifier.JAR_OFFSET;
+					vx = clpadd + clpool.byIndex(entry.part(0)).offset;
+					break;
+					
 				default:
 					throw new todo.OOPS(type.name());
 			}
@@ -840,146 +875,6 @@ public final class LoadedClassInfo
 		
 		// Return the pointer where the pool was allocated
 		return rv;
-		
-		/*
-		// Get constant pool
-		MinimizedClassFile mcl = bi._class;
-		DualClassRuntimePool pool = mcl.pool;
-		
-		throw new todo.TODO();
-		/ *
-		
-		// The JAR offset for the actual pool area
-		int jarpooloff = bi._classoffset + mcl.header.pooloff;
-		
-		// Allocate and store space needed for the active pool contents
-		int n = pool.size();
-		bi._pooloffset = (rv = __init.allocate(n * 4));
-		
-		// Debug
-		if (_ENABLE_DEBUG)
-			todo.DEBUG.note("Building %s at %d (virt %d)",
-				__cl, rv, rv + 1048576);
-		
-		// Process the constant pool
-		for (int i = 1; i < n; i++)
-		{
-			// Get pool type and value
-			MinimizedPoolEntryType pt = pool.type(i);
-			Object pv = pool.get(i);
-			int[] pp = pool.parts(i);
-			
-			// The pointer to this entry
-			int ep = rv + (4 * i);
-			
-			// Depends on the part
-			switch (pt)
-			{
-					// These have no effect on runtime
-				case NULL:
-				case METHOD_DESCRIPTOR:
-				case LONG:
-				case DOUBLE:
-					break;
-					
-				case METHOD_INDEX:
-					{
-						MethodIndex mi = (MethodIndex)pv;
-						__init.memWriteInt(
-							ep, this.__classMethodIndex(mi.inclass,
-								mi.name, mi.type));
-					}
-					break;
-					
-					// Write the pointer to the UTF data
-				case STRING:
-					{
-						__init.memWriteInt(Modifier.JAR_OFFSET,
-							ep, jarpooloff + pool.offset(i) + 4);
-					}
-					break;
-					
-					// Integer constant
-				case INTEGER:
-					__init.memWriteInt(ep, ((Number)pv).intValue());
-					break;
-				
-					// Float constant
-				case FLOAT:
-					__init.memWriteInt(ep,
-						Float.floatToRawIntBits(((Number)pv).floatValue()));
-					break;
-					
-					// Write pointer to the string UTF data
-				case USED_STRING:
-					{
-						// Get the string index
-						int sdx = pp[0];
-						
-						// Write offset of that string
-						__init.memWriteInt(Modifier.JAR_OFFSET,
-							ep, jarpooloff + pool.offset(sdx) + 4);
-					}
-					break;
-					
-					// Field being accessed
-				case ACCESSED_FIELD:
-					{
-						// Static field offsets are always known
-						AccessedField af = (AccessedField)pv;
-						LoadedClassInfo afci = bootstrap.findClass(
-							af.field.className());
-						
-						if (af.type().isStatic())
-							__init.memWriteInt(ep,
-								afci.fieldStaticOffset(
-									af.field.memberName(),
-									af.field.memberType()));
-						
-						// Instance fields are not yet known
-						else
-							__init.memWriteInt(ep,
-								afci.fieldInstanceOffset(
-									af.field.memberName(),
-									af.field.memberType()));
-					}
-					break;
-				
-					// Class ID
-				case CLASS_NAME:
-					__init.memWriteInt(Modifier.RAM_OFFSET,
-						ep, this.__classId(__init, (ClassName)pv));
-					break;
-					
-					// List of class IDs
-				case CLASS_NAMES:
-					__init.memWriteInt(Modifier.RAM_OFFSET,
-						ep, this.__classIds(__init, (ClassNames)pv));
-					break;
-					
-					// Class constant pool
-				case CLASS_POOL:
-					__init.memWriteInt(Modifier.RAM_OFFSET,
-						ep, this.__initPool(__init, ((ClassPool)pv).name));
-					break;
-					
-					// A method to be invoked, these are always direct pointer
-					// references to methods
-				case INVOKED_METHOD:
-					{
-						InvokedMethod im = (InvokedMethod)pv;
-						__init.memWriteInt(Modifier.JAR_OFFSET,
-							ep, this.__classMethodCodeAddress(im.handle.
-								outerClass(), im.handle.name(),
-								im.handle.descriptor()));
-					}
-					break;
-				
-				default:
-					throw new todo.OOPS(pt.name());
-			}
-		}
-		*/
 	}
 	
 	/**
@@ -991,6 +886,29 @@ public final class LoadedClassInfo
 	public final int romOffset()
 	{
 		return this._classoffset;
+	}
+	
+	/**
+	 * Returns the super class of this class.
+	 *
+	 * @return The class super-class.
+	 * @since 2019/09/21
+	 */
+	public final LoadedClassInfo superClass()
+	{
+		ClassName sn = this._class.superName();
+		return (sn == null ? null : this.__bootstrap().findClass(sn));
+	}
+	
+	/**
+	 * Returns the name of the super class.
+	 *
+	 * @return The name of the super class.
+	 * @since 2019/09/21
+	 */
+	public final ClassName superName()
+	{
+		return this._class.superName();
 	}
 	
 	/**
@@ -1039,23 +957,83 @@ public final class LoadedClassInfo
 		this._vtable = pmptr;
 		this._vtablepool = ppool;
 		
-		// Abstract methods which are not bound to anything will instead
-		// be bound to this method which indicates failure.
-		int jpvc = bootstrap.findClass("cc/squirreljme/jvm/JVMFunction").
-				methodCodeAddress("jvmPureVirtualCall", "()V"),
-			jpvp = bootstrap.findClass("cc/squirreljme/jvm/JVMFunction").
-				poolPointer();
-		
 		// Resultant arrays
 		int[] mptr = new int[count];
 		int[] pool = new int[count];
 		
-		if (true)
-			throw new todo.TODO();
+		// Initially seed the arrays with pure virtual calls to make them
+		// illegal to be called virtually (they could only be called statically
+		// or otherwise).
+		for (int i = 1,
+			jpvc = bootstrap.findClass("cc/squirreljme/jvm/JVMFunction").
+				methodCodeAddress("jvmPureVirtualCall", "()V"),
+			jpvp = bootstrap.findClass("cc/squirreljme/jvm/JVMFunction").
+				poolPointer(); i < count; i++)
+		{
+			mptr[i] = jpvc;
+			pool[i] = jpvp;
+		}
+		
+		// Put every class and method into a queue for processing
+		Deque<ClassNameAndMinimizedMethod> process = new LinkedList<>();
+		for (LoadedClassInfo at = this; at != null; at = at.superClass())
+		{
+			// Current class name is needed for object push
+			ClassName tn = at.thisName();
+			
+			// Add all methods in there
+			for (MinimizedMethod mm : at._class.methods(false))
+				process.push(new ClassNameAndMinimizedMethod(tn, mm));
+		}
+		
+		// Process every method
+		while (!process.isEmpty())
+		{
+			// Take off class and extract pieces
+			ClassNameAndMinimizedMethod atcnmm = process.pop();
+			ClassName atcn = atcnmm.classname;
+			MinimizedMethod atmm = atcnmm.method;
+			
+			// Skip private methods, they cannot be virtually invoked
+			if (atmm.flags().isPrivate())
+				continue;
+			
+			// Find the loaded class this refers to
+			LoadedClassInfo atci = bootstrap.findClass(atcn);
+			
+			// Find the index of this method in the method table;
+			int mdx = atci.methodIndex(atmm.name, atmm.type);
+			
+			// Debug
+			todo.DEBUG.note("vTable: %d -> %s %s %s", mdx, atcn, atmm.name,
+				atmm.type);
+			
+			// For the appropriate method from the top
+			for (LoadedClassInfo sc = this; sc != null; sc = sc.superClass())
+			{
+				// Location method here, if missing skip because it will be
+				// in a super class
+				MinimizedMethod scmm = sc._class.method(false,
+					atmm.name, atmm.type);
+				if (scmm == null)
+					continue;
+				
+				// Stop processing because private method was hit
+				if (scmm.flags().isPrivate())
+					break;
+				
+				// Link to this method and the pool it is in as well
+				mptr[mdx] = sc.methodCodeAddress(atmm.name, atmm.type);
+				pool[mdx] = sc.poolPointer();
+				
+				// Stop
+				break;
+			}
+		}
 		
 		// Finalize and cache
 		bootstrap.finalizeIntArray(pmptr, Modifier.JAR_OFFSET, mptr);
-		bootstrap.finalizeIntArray(ppool,Modifier.RAM_OFFSET, pool);
+		bootstrap.finalizeIntArray(ppool, Modifier.RAM_OFFSET, pool);
 		
 		// Return them
 		return new int[]{pmptr, ppool};
