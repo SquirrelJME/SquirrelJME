@@ -256,6 +256,10 @@ public class SummerCoatFactory
 		int bra = bootjaroff + bjh.bootoffset,
 			lram;
 		
+		// Debug
+		if (NativeCPU.ENABLE_DEBUG)
+			todo.DEBUG.note("Unpacking BootRAM!");
+		
 		// Load the boot RAM
 		try (DataInputStream dis = new DataInputStream(
 			new ReadableMemoryInputStream(vmem, bra, bjh.bootsize)))
@@ -341,6 +345,11 @@ public class SummerCoatFactory
 			int key;
 			if (-1 != (key = dis.readInt()))
 				throw new VMException("AE04 " + key);
+				
+			// Debug
+			if (NativeCPU.ENABLE_DEBUG)
+				todo.DEBUG.note("BootRAM unpacked at %08x (size %d)!",
+					ramstart, lram);
 		}
 		
 		// {@squirreljme.error AE0h Could not initialize the boot RAM for
