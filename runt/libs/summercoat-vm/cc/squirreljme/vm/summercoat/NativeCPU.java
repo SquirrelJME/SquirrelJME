@@ -617,7 +617,15 @@ public final class NativeCPU
 						int ioff = Constants.ARRAY_BASE_SIZE + (indx * 4);
 						
 						// Read value
-						lr[rout] = memory.memReadInt(addr + ioff);
+						VMException fail = null;
+						try
+						{
+							lr[rout] = memory.memReadInt(addr + ioff);
+						}
+						catch (VMException e)
+						{
+							fail = e;
+						}
 						
 						// Debug
 						if (ENABLE_DEBUG)
@@ -625,6 +633,10 @@ public final class NativeCPU
 								"(int)%08x[%d] (%08x) -> %d (%08x)",
 								addr, indx, addr + ioff,
 								lr[rout], lr[rout]);
+						
+						// Failure happened?
+						if (fail != null)
+							throw fail;
 					}
 					break;
 					
