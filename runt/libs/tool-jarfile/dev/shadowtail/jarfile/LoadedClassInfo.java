@@ -962,9 +962,8 @@ public final class LoadedClassInfo
 			ClassName atcn = atcnmm.classname;
 			MinimizedMethod atmm = atcnmm.method;
 			
-			// Skip private methods, they cannot be virtually invoked
-			if (atmm.flags().isPrivate())
-				continue;
+			// Is this a private method?
+			boolean atmmisprivate = atmm.flags().isPrivate();
 			
 			// Find the loaded class this refers to
 			LoadedClassInfo atci = bootstrap.findClass(atcn);
@@ -982,8 +981,8 @@ public final class LoadedClassInfo
 				if (scmm == null)
 					continue;
 				
-				// Stop processing because private method was hit
-				if (scmm.flags().isPrivate())
+				// If we hit a private method in another class, stop
+				if (scmm.flags().isPrivate() && atci != sc)
 					break;
 				
 				// Link to this method and the pool it is in as well
