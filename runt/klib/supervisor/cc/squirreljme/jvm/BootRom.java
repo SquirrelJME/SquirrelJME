@@ -75,7 +75,6 @@ public final class BootRom
 	public static final byte TOC_MANIFEST_LENGTH_OFFSET =
 		16;
 	
-	
 	/**
 	 * Returns the boot libraries which make up the initial classpath.
 	 *
