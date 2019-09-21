@@ -319,7 +319,7 @@ public final class LoadedClassInfo
 			MinimizedField mf = cnmf.field;
 			
 			// The write pointer of this data
-			int wp = bootstrap.findClass(cn).baseOffset() + mf.offset;
+			int wp = rv + bootstrap.findClass(cn).baseOffset() + mf.offset;
 			
 			// Depends on the key (specified where and its type)
 			String key = mf.name + ":" + mf.type;
@@ -829,6 +829,11 @@ public final class LoadedClassInfo
 			
 			// Write value to the in-memory slot
 			initializer.memWriteInt(mx, rv + (4 * i), vx);
+			
+			// Debug
+			if (JarMinimizer._ENABLE_DEBUG)
+				todo.DEBUG.note("Pool %s -> %08x = %08x", entry.value,
+					rv + (4 * i), vx);
 		}
 		
 		// Return the pointer where the pool was allocated

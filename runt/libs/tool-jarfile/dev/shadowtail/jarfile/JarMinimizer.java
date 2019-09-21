@@ -198,10 +198,6 @@ public final class JarMinimizer
 					if (bootstrap != null)
 						bootstrap.loadClassFile(bytes,
 							out.sectionAddress(rcdata));
-					
-					// Debug
-					todo.DEBUG.note("%s -> %08x",
-						rc, out.sectionAddress(rcdata));
 				}
 				
 				// Plain resource copy

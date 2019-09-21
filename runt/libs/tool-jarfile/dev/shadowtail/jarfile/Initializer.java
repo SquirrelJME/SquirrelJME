@@ -290,6 +290,11 @@ public final class Initializer
 					default:
 						throw new todo.OOPS();
 				}
+				
+				// Debug
+				if (JarMinimizer._ENABLE_DEBUG)
+					todo.DEBUG.note("Op %-5d: %d@0x%08x = %d (%s)",
+						i, op.size, op.addr, op.value, op.mod);
 			}
 			
 			// End mark
