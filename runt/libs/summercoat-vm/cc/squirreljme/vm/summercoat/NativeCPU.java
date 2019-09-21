@@ -1118,11 +1118,13 @@ public final class NativeCPU
 			imn = memory.memReadInt(pooladdr + (__pmn * 4)),
 			imt = memory.memReadInt(pooladdr + (__pmt * 4));
 		
+		todo.DEBUG.note("Poolptr == %08x (%08x, %08x, %08x)",
+			pooladdr, icl, imn, imt);
+		
 		// Store in state
 		__f._inclassp = icl;
 		__f._inmethodnamep = imn;
 		__f._inmethodtypep = imt;
-		
 		
 		// Load strings
 		String scl, smn, smt;
