@@ -310,7 +310,7 @@ public final class JarMinimizer
 		
 		// We are using our own dual pool, so write it out as if it were
 		// in the pack file. It is only local to this JAR.
-		if (this.owndualpool)
+		if (this.owndualpool && dualpool != null)
 		{
 			// Where our pools are going
 			TableSectionOutputStream.Section lpd = out.addSection();
