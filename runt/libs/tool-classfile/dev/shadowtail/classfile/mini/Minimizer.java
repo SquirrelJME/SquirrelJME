@@ -259,7 +259,7 @@ public final class Minimizer
 		
 		// Check if this is object or an array, so that special fields are
 		// added
-		boolean isobject = this.input.thisName().
+		boolean isobject = this.input.thisName().toString().
 				equals("java/lang/Object"),
 			isarray = this.input.thisName().isArray();
 		

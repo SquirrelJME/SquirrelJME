@@ -22,6 +22,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldName;
+import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
@@ -57,6 +58,9 @@ public final class MinimizedField
 	
 	/** Field flags. */
 	private Reference<FieldFlags> _flags;
+	
+	/** Name and type. */
+	private Reference<FieldNameAndType> _nat;
 	
 	/**
 	 * Initializes the minimized field.
@@ -100,6 +104,24 @@ public final class MinimizedField
 		if (ref == null || null == (rv = ref.get()))
 			this._flags = new WeakReference<>((rv =
 				new FieldFlags(this.flags)));
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the name and type for this field.
+	 *
+	 * @return The name and type for this field.
+	 * @since 2019/09/21
+	 */
+	public final FieldNameAndType nameAndType()
+	{
+		Reference<FieldNameAndType> ref = this._nat;
+		FieldNameAndType rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._nat = new WeakReference<>(
+				(rv = new FieldNameAndType(this.name, this.type)));
 		
 		return rv;
 	}

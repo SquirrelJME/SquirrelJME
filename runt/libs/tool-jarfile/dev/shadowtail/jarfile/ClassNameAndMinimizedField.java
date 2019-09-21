@@ -42,5 +42,15 @@ public final class ClassNameAndMinimizedField
 		this.classname = __cn;
 		this.field = __mf;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/09/21
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.classname + ":" + this.field.nameAndType();
+	}
 }
 
