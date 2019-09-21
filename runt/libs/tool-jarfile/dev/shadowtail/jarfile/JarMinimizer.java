@@ -27,6 +27,7 @@ import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.UsedString;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -341,15 +342,15 @@ public final class JarMinimizer
 			header.writeInt(-1);
 		}
 		
-		// Build header
-		if (true)
-			throw new todo.TODO();
-		/*
-		this._jheader = new MinimizedJarHeader(hfs);
-		*/
+		// Since we need the header we need the byte array for the JAR
+		byte[] jardata = out.toByteArray();
 		
-		// Write final class information
-		out.writeTo(__sout);
+		// Get header for returning
+		this._jheader = MinimizedJarHeader.decode(
+			new ByteArrayInputStream(jardata));
+		
+		// Write to output
+		__sout.write(jardata);
 	}
 	
 	/**
