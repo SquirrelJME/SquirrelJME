@@ -63,7 +63,8 @@ public final class LoadedClassInfo
 		-1;
 	
 	/** The class data V2 offset. */
-	private int _classdata;
+	private int _classdata =
+		-1;
 	
 	/** The size of instances for this class. */
 	private int _allocsize;
@@ -284,20 +285,24 @@ public final class LoadedClassInfo
 	{
 		// If it has already been initialized use it
 		int rv = this._classdata;
-		if (rv != 0)
+		if (rv >= 0)
 			return rv;
 		
 		// Get bootstrap and initializer
 		BootstrapState bootstrap = this.__bootstrap();
 		Initializer initializer = bootstrap.initializer;
 		
+		// Get the class info for class info
+		LoadedClassInfo classinfoci =
+			bootstrap.findClass("cc/squirreljme/jvm/ClassInfo");
+		
 		// Allocate pointer to the class data, then get the base pointer
-		this._classdata = (rv = initializer.allocate(this.allocationSize()));
+		this._classdata = (rv = initializer.allocate(
+			classinfoci.allocationSize()));
 		
 		// Load all fields into a queue for useful processing
 		Deque<ClassNameAndMinimizedField> fieldq = new LinkedList<>();
-		for (LoadedClassInfo atcl = bootstrap.findClass(
-			"cc/squirreljme/jvm/ClassInfo"); atcl != null;
+		for (LoadedClassInfo atcl = classinfoci; atcl != null;
 			atcl = atcl.superClass())
 		{
 			// Push all fields to queue
