@@ -297,7 +297,8 @@ public final class JarMinimizer
 			header.writeInt(bootidbd);
 			
 			// Debug
-			todo.DEBUG.note("Boot entry: %d/0x%08x", bootmeth, bootmeth);
+			if (JarMinimizer._ENABLE_DEBUG)
+				todo.DEBUG.note("Boot entry: %d/0x%08x", bootmeth, bootmeth);
 		}
 		
 		// No bootstrapping being done
