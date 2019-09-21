@@ -191,10 +191,17 @@ public final class JarMinimizer
 					byte[] bytes = Minimizer.minimize(dualpool,
 						ClassFile.decode(in));
 					
+					// Write to ROM!
+					rcdata.write(bytes);
+					
 					// Load class file if booting
 					if (bootstrap != null)
 						bootstrap.loadClassFile(bytes,
 							out.sectionAddress(rcdata));
+					
+					// Debug
+					todo.DEBUG.note("%s -> %08x",
+						rc, out.sectionAddress(rcdata));
 				}
 				
 				// Plain resource copy
@@ -292,6 +299,9 @@ public final class JarMinimizer
 			header.writeInt(bootmeth);
 			header.writeInt(bootidba);
 			header.writeInt(bootidbd);
+			
+			// Debug
+			todo.DEBUG.note("Boot entry: %d/0x%08x", bootmeth, bootmeth);
 		}
 		
 		// No bootstrapping being done
