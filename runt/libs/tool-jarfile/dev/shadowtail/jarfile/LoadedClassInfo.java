@@ -820,7 +820,7 @@ public final class LoadedClassInfo
 					// A pointer to a string in memory
 				case NOTED_STRING:
 					mx = Modifier.JAR_OFFSET;
-					vx = clpadd + clpool.byIndex(entry.part(0)).offset;
+					vx = clpadd + clpool.byIndex(entry.part(0)).offset + 4;
 					break;
 					
 				default:
