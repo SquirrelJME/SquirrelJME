@@ -166,4 +166,16 @@ SquirrelJME for your current system involves using the alternative makefile.
    * `make -f makefilelibretro CC=i686-w64-mingw32-gcc platform=mingw_x86`
    * `make -f makefilelibretro CC=x86_64-w64-mingw32-gcc platform=mingw_x86_64`
 
+# Development Virtual Machines
+
+For development purposes you may use the virtual machines provided by the
+SquirrelJME run-time. You can launch a built-in application by calling the
+build system in the following format: `build launch program (...)`, this will
+use the default virtual machine implementation.
+
+The following virtual machines are available, these may be selected by
+using `build launch -v (vmname) program (...)`:
+
+ * SpringCoat (`springcoat`)
+ * SummerCoat (`summercoat`)
  
