@@ -296,18 +296,14 @@ public final class LoadedClassInfo
 		
 		// Load all fields into a queue for useful processing
 		Deque<ClassNameAndMinimizedField> fieldq = new LinkedList<>();
-		for (ClassName at = new ClassName("cc/squirreljme/jvm/ClassInfo"),
-			atsuper = null; at != null; at = atsuper)
+		for (LoadedClassInfo atcl = bootstrap.findClass(
+			"cc/squirreljme/jvm/ClassInfo"); atcl != null;
+			atcl = atcl.superClass())
 		{
-			// Get class information
-			LoadedClassInfo atlci = bootstrap.findClass(at);
-			
-			// Get super class for next run
-			atsuper = atlci._class.superName();
-			
 			// Push all fields to queue
-			for (MinimizedField mf : atlci._class.fields(false))
-				fieldq.push(new ClassNameAndMinimizedField(at, mf));
+			for (MinimizedField mf : atcl._class.fields(false))
+				fieldq.push(new ClassNameAndMinimizedField(
+					atcl.thisName(), mf));
 		}
 		
 		// This class information
@@ -371,6 +367,13 @@ public final class LoadedClassInfo
 						initializer.memWriteInt(
 							wp, cellsize);
 					}
+					break;
+				
+					// Class info reference
+				case "_class:I":
+					initializer.memWriteInt(Modifier.RAM_OFFSET,
+						wp, bootstrap.findClass(
+							"cc/squirreljme/jvm/ClassInfo").infoPointer());
 					break;
 					
 					// Class<?> pointer, starts always at zero since it
@@ -459,6 +462,18 @@ public final class LoadedClassInfo
 						wp, this.romOffset());
 					break;
 					
+					// Monitor count
+				case "_moncount:I":
+					initializer.memWriteInt(
+						wp, 0);
+					break;
+					
+					// Thread owning the monitor (which there is none)
+				case "_monitor:I":
+					initializer.memWriteInt(
+						wp, 0);
+					break;
+					
 					// Pointer to the class name
 				case "namep:I":
 					initializer.memWriteInt(Modifier.JAR_OFFSET,
@@ -470,6 +485,13 @@ public final class LoadedClassInfo
 				case "numobjects:I":
 					initializer.memWriteInt(
 						wp, this._class.header.ifobjs);
+					break;
+					
+					// Reference count for this class data, should never
+					// be freed
+				case "_refcount:I":
+					initializer.memWriteInt(
+						wp, 999999);
 					break;
 					
 					// Pointer to our own class info
@@ -513,67 +535,6 @@ public final class LoadedClassInfo
 		
 		// Return pointer to the data now
 		return rv;
-		
-		/*
-		// Initialize all fields within the class information
-		for (ClassName at = cicn, atsuper = null; at != null; at = atsuper)
-		{
-			// Get info for this
-			LoadedClassInfo ai = boots.get(at);
-			
-			// Get super class
-			atsuper = ai._class.superName();
-			
-			// Base offset for this class
-			int base = rv + ai.baseOffset();
-			
-			// Go through and place field values
-			for (MinimizedField mf : ai._class.fields(false))
-			{
-				// Get pointer value to write int
-				int wp = base + mf.offset;
-				
-				// Depends on the type
-				String key = mf.name + ":" + mf.type;
-				switch (key)
-				{
-						
-						
-						
-						// Is class info instance
-					case "_class:I":
-						initializer.memWriteInt(Modifier.RAM_OFFSET,
-							wp, this.__classId(initializer, cdcln));
-						break;
-						
-						// Reference count for this class data, should never
-						// be freed
-					case "_refcount:I":
-						initializer.memWriteInt(
-							wp, 999999);
-						break;
-						
-						// Thread owning the monitor (which there is none)
-					case "_monitor:I":
-						initializer.memWriteInt(
-							wp, 0);
-						break;
-					
-						// Monitor count
-					case "_moncount:I":
-						initializer.memWriteInt(
-							wp, 0);
-						break;
-					
-					default:
-						throw new todo.OOPS(key);
-				}
-			}
-		}
-		
-		// Return the pointer to the class data
-		return rv;
-		*/
 	}
 	
 	/**
@@ -868,9 +829,6 @@ public final class LoadedClassInfo
 			
 			// Write value to the in-memory slot
 			initializer.memWriteInt(mx, rv + (4 * i), vx);
-			
-			// Debug
-			todo.DEBUG.note("%s:%d/%xh -> @%08x", mx, vx, vx, rv + (4 * i));
 		}
 		
 		// Return the pointer where the pool was allocated
@@ -1004,10 +962,6 @@ public final class LoadedClassInfo
 			// Find the index of this method in the method table;
 			int mdx = atci.methodIndex(atmm.name, atmm.type);
 			
-			// Debug
-			todo.DEBUG.note("vTable: %d -> %s %s %s", mdx, atcn, atmm.name,
-				atmm.type);
-			
 			// For the appropriate method from the top
 			for (LoadedClassInfo sc = this; sc != null; sc = sc.superClass())
 			{
@@ -1037,146 +991,6 @@ public final class LoadedClassInfo
 		
 		// Return them
 		return new int[]{pmptr, ppool};
-		/*
-		// Build array of all the classes that are used in the method and
-		// super class chain
-		List<LoadedClassInfo> classes = new ArrayList<>();
-		for (ClassName at = __cl, su = null; at != null; at = su)
-		{
-			// Load class info for this
-			LoadedClassInfo bi = boots.get(at);
-			
-			// Add this class to the start of the chain (so super classes
-			// go in at the start)
-			classes.add(0, bi);
-			
-			// Set super class for next run
-			su = bi._class.superName();
-		}
-		
-		// Abstract methods which are not bound to anything will instead
-		// be bound to this method which indicates failure.
-		int jpvc = this.__classMethodCodeAddress(
-			"cc/squirreljme/jvm/JVMFunction", "jvmPureVirtualCall", "()V"),
-			jpvp = this.__initPool(__init, "cc/squirreljme/jvm/JVMFunction");
-		
-		// Initialize method table with initial values
-		int numv = this.__classMethodSize(__cl);
-		List<Integer> entries = new ArrayList<>(numv);
-		for (int i = 0; i < numv; i++)
-			entries.add(jpvc);
-		
-		// Also there need to be pointers to the constant pool as well
-		List<Integer> pools = new ArrayList<>(numv);
-		for (int i = 0; i < numv; i++)
-			pools.add(jpvp);
-		
-		// Go through every class and fill the table information
-		// The class index here will be used as a stopping point since methods
-		// at higher points will stop here
-		for (int ci = 0, cn = classes.size(); ci < cn; ci++)
-		{
-			// Get the class to scan through
-			LoadedClassInfo mbi = classes.get(ci);
-			MinimizedClassFile mcf = mbi._class;
-			
-			// Get the VTable base for this class
-			ClassName mcfname = mcf.thisName();
-			int vb = this.__classMethodBase(mcfname);
-			
-			// Process each interface method in this class
-			for (MinimizedMethod mm : mcf.methods(false))
-			{
-				// Determine the actual index of this entry
-				int vat = vb + mm.index;
-				
-				// Private visibility modifies how lookup is done
-				boolean ispriv = mm.flags().isPrivate(),
-					ispkpriv = mm.flags().isPackagePrivate();
-				
-				// Start at the end of the class scan to find the highest
-				// replacing class member
-				// Note that for any methods which are private the lookup
-				// only starts at the base class because those are not visible
-				// to any other method
-				MethodNameAndType mnat = mm.nameAndType();
-				for (int pi = (ispriv ? ci : cn - 1); pi >= ci; pi--)
-				{
-					// Get the class information for this one
-					LoadedClassInfo pbi = classes.get(pi);
-					MinimizedClassFile pcf = pbi._class;
-					ClassName pcfname = pcf.thisName();
-					
-					// If our method is package private and the other class
-					// is not in the same package then we cannot link to that
-					// method because it does not inherit.
-					if (ispkpriv && !mcfname.isInSamePackage(pcfname))
-						continue;
-					
-					// If the class has no such method then stop
-					MinimizedMethod pm = pcf.method(false, mnat);
-					if (pm == null)
-						continue;
-					
-					// Debug
-					if (_ENABLE_DEBUG)
-						todo.DEBUG.note("Link: (%s) %s -> %s : %s",
-							__cl, mcfname, pcfname, mnat);
-						
-					// Use this method
-					entries.set(vat, pbi._classoffset + pcf.header.imoff +
-						pm.codeoffset);
-					pools.set(vat, this.__initPool(__init, pcfname));
-					break;
-				}
-			}
-		}
-		
-		// Allocate array
-		rv = __init.allocate(Constants.ARRAY_BASE_SIZE + (4 * numv));
-		selfbi._vtable = rv;
-		
-		// Write array details
-		__init.memWriteInt(Modifier.RAM_OFFSET,
-			rv + Constants.OBJECT_CLASS_OFFSET,
-			this.__classId(__init, new ClassName("[I")));
-		__init.memWriteInt(
-			rv + Constants.OBJECT_COUNT_OFFSET,
-			999999);
-		__init.memWriteInt(
-			rv + Constants.ARRAY_LENGTH_OFFSET,
-			numv);
-		
-		// Write in entries
-		int wp = rv + Constants.ARRAY_BASE_SIZE;
-		for (int i = 0; i < numv; i++, wp += 4)
-			__init.memWriteInt(Modifier.JAR_OFFSET,
-				wp, entries.get(i));
-		
-		// Also write in the pool values
-		int pv = __init.allocate(Constants.ARRAY_BASE_SIZE + (4 * numv));
-		selfbi._vtablepool = pv;
-		
-		// Write array details
-		__init.memWriteInt(Modifier.RAM_OFFSET,
-			pv + Constants.OBJECT_CLASS_OFFSET,
-			this.__classId(__init, new ClassName("[I")));
-		__init.memWriteInt(
-			pv + Constants.OBJECT_COUNT_OFFSET,
-			999999);
-		__init.memWriteInt(
-			pv + Constants.ARRAY_LENGTH_OFFSET,
-			numv);
-		
-		// Write in pools
-		wp = pv + Constants.ARRAY_BASE_SIZE;
-		for (int i = 0; i < numv; i++, wp += 4)
-			__init.memWriteInt(Modifier.RAM_OFFSET,
-				wp, pools.get(i));
-		
-		// Return it
-		return new int[]{rv, pv};
-		*/
 	}
 	
 	/**
