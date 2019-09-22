@@ -808,9 +808,15 @@ public final class NativeCPU
 							now = frames.peekLast();
 						
 						// {@squirreljme.error AE0m Return from the main frame
-						// without using a system call to exit.}
+						// without using a system call to exit.
+						// (The return value pair; The exception register)}
 						if (now == null)
-							throw new VMException("AE0m");
+							throw new VMException(String.format(
+								"AE0m [%d, %d] @%08x",
+								was._registers[NativeCode.RETURN_REGISTER],
+								was._registers[NativeCode.RETURN_REGISTER + 1],
+								was._registers[
+									NativeCode.EXCEPTION_REGISTER]));
 						
 						// We are going back onto a frame so copy all
 						// the globals which were set since they are meant to
