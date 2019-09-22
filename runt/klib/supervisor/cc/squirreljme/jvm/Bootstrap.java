@@ -11,6 +11,8 @@ package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.lib.BootRom;
 import cc.squirreljme.jvm.lib.BootRomLibrary;
+import cc.squirreljme.jvm.task.ClientTask;
+import cc.squirreljme.jvm.task.ClientTaskManager;
 
 /**
  * This is the bootstrap entry point for the supervisor.
