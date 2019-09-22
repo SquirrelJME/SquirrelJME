@@ -7,7 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm;
+package cc.squirreljme.jvm.lib;
+
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.ConfigReader;
+import cc.squirreljme.jvm.ConfigRomType;
+import cc.squirreljme.jvm.JVMFunction;
 
 /**
  * This contains boot ROM information.
@@ -17,7 +22,7 @@ package cc.squirreljme.jvm;
 public final class BootRom
 {
 	/** Boot libraries which have been loaded. */
-	public static volatile BootLibrary[] BOOT_LIBRARIES;
+	public static volatile BootRomLibrary[] BOOT_LIBRARIES;
 	
 	/** The offset to the jar count. */
 	public static final byte ROM_NUMJARS_OFFSET =
@@ -83,17 +88,17 @@ public final class BootRom
 	 * @return The libraries to set for the initial classpath.
 	 * @since 2019/06/20
 	 */
-	public static final BootLibrary[] initialClasspath(int __rombase,
+	public static final ClassLibrary[] initialClasspath(int __rombase,
 		ConfigReader __config)
 	{
 		// Load all libraries
-		BootLibrary[] bootlibs = BootRom.bootLibraries(__rombase);
+		BootRomLibrary[] bootlibs = BootRom.bootLibraries(__rombase);
 		if (bootlibs == null)
 			Assembly.breakpoint();
 		int numboot = bootlibs.length;
 		
 		// The initial class path to use
-		BootLibrary[] usecp;
+		ClassLibrary[] usecp;
 		
 		// Use the passed class-path if one was specified.
 		String[] usercp = __config.loadStrings(ConfigRomType.CLASS_PATH);
@@ -104,7 +109,7 @@ public final class BootRom
 			
 			// Scan for libraries
 			int n = usercp.length;
-			usecp = new BootLibrary[n];
+			usecp = new ClassLibrary[n];
 			for (int i = 0; i < n; i++)
 			{
 				String libname = usercp[i];
@@ -112,7 +117,7 @@ public final class BootRom
 				// Find library
 				for (int j = 0; j < numboot; j++)
 				{
-					BootLibrary bl = bootlibs[j];
+					BootRomLibrary bl = bootlibs[j];
 					
 					// Is this library?
 					if (libname.equals(bl.name))
@@ -137,7 +142,7 @@ public final class BootRom
 					ROM_BOOTICPSIZE_OFFSET);
 			
 			// Read all of them
-			usecp = new BootLibrary[icpsize];
+			usecp = new ClassLibrary[icpsize];
 			for (int i = 0; i < icpsize; i++)
 				usecp[i] = bootlibs[Assembly.memReadJavaInt(icpoff,
 					i * 4)];
@@ -175,10 +180,10 @@ public final class BootRom
 	 * @return The available bootstrap libraries.
 	 * @since 2019/06/14
 	 */
-	public static final BootLibrary[] bootLibraries(int __rombase)
+	public static final BootRomLibrary[] bootLibraries(int __rombase)
 	{
 		// Already exists?
-		BootLibrary[] bootlibs = BOOT_LIBRARIES;
+		BootRomLibrary[] bootlibs = BOOT_LIBRARIES;
 		if (bootlibs != null)
 			return bootlibs;
 		
@@ -195,7 +200,7 @@ public final class BootRom
 		int seeker = __rombase + tocoff;
 		
 		// Load all the JAR informations
-		bootlibs = new BootLibrary[numjars];
+		bootlibs = new BootRomLibrary[numjars];
 		for (int i = 0; i < numjars; i++)
 		{
 			// Manifest address is optional
@@ -203,7 +208,7 @@ public final class BootRom
 				TOC_MANIFEST_LENGTH_OFFSET);
 			
 			// Load library info
-			BootLibrary bl = new BootLibrary(JVMFunction.jvmLoadString(
+			BootRomLibrary bl = new BootRomLibrary(JVMFunction.jvmLoadString(
 				__rombase + Assembly.memReadJavaInt(seeker, TOC_NAME_OFFSET)),
 				__rombase + Assembly.memReadJavaInt(seeker, TOC_JAR_OFFSET),
 				Assembly.memReadJavaInt(seeker, TOC_JARLEN_OFFSET),

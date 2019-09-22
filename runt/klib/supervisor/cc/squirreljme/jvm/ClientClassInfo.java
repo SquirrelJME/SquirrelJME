@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.io.BinaryBlob;
+
 /**
  * This contains the client class information.
  *
@@ -21,7 +23,7 @@ public final class ClientClassInfo
 	public final int classinfopointer;
 	
 	/** The pointer to the mini-class information. */
-	public final int miniclassaddress;
+	public final BinaryBlob miniclassaddress;
 	
 	/** The mini accessor instance which exists. */
 	private volatile MiniClassAccessor _miniaccessor;
@@ -34,10 +36,15 @@ public final class ClientClassInfo
 	 *
 	 * @param __cip The class info pointer.
 	 * @param __minip The mini class address.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/24
 	 */
-	public ClientClassInfo(int __cip, int __minip)
+	public ClientClassInfo(int __cip, BinaryBlob __minip)
+		throws NullPointerException
 	{
+		if (__minip == null)
+			throw new NullPointerException("NARG");
+		
 		this.classinfopointer = __cip;
 		this.miniclassaddress = __minip;
 	}
