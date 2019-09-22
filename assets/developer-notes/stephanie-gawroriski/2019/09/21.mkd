@@ -1,0 +1,75 @@
+# 2019/09/21
+
+## 07:07
+
+Okay so work continues on vtables and such.
+
+## 10:06
+
+Okay so the bootstrap is up and building, now to figure out the boot crashes.
+Seems I have a pointer which is in the wrong spot.
+
+## 10:14
+
+Noticed that I do not write class data to the ROM.
+
+## 12:10
+
+Notes from Discord: Yay vtables. Hopefully after all this refactoring, things
+run as per the usual. Okay does not run, so hmmmmm. Shall find out why!. Okay
+so. Seems the entry method is in the wrong spot. BootRAM is 21K. Ooooh this
+might be why. Maybe?. Guessing the class address is wrong. It seems classes
+are a bit small. Are classes really this tiny?. Seems like a class is only
+like 24 bytes long?. Ooooooh. I never even bother writing the actual class
+data to the ROM. That might be why. So BOOT_ENTRY is hit which is a good
+thing. But it reads invalid memory. Which reads the pool references are null.
+pool entries 1, 15, and 16. Which means the pool pointer might be wrong. Or
+has no actual values. So not sure if the pool values are being written. But at
+least I got the class and method offsets correct. Noted strings are at
+seemingly valid pointers though. The value read from the pool is zero. So I
+wonder. Is the pool pointer in invalid memory?. Seems to be in good memory.
+First thing allocated. Okay so the boot pool is in the right spot. It is
+probably something dumb to be honest. Okay it seems the stuff is right. Unless
+the pool pointer is incrrect?. But it is at the right address it just has the
+wrong values?. Only reasonable thing is that something is being overwritten?.
+Oooh. something is being overwritten. One operating is completely disregarding
+location in memory. It is not the pool. It is an int table. Okay it has to be
+the class data, since I disregard the write pointer. Well the offset. Okay the
+ClassInfo init was writing the wrong spot. The pool pointer references are in
+the wrong spot now though. Oh. The strings are probably invalid because of the
+initial meta data. So increase speed lookup. Okay cool. So jvmIsInstance()
+works. then it just crashes in config reader. So it tries to read an array at
+address 0x00000001. Okay so it stops in the instance initializer. it is doing
+the super class call. Okay so. The accessed field is reading as 0 and then 1
+for the vtable. (method ptr, and pool ptr). Which means the accessed field
+offset must be wrong. Or the offset is. So very possible it is the accessed
+field position which is wrong. If I had to guess, perhaps the vtables are
+being written wrong. So the initial load into the constructor works then it
+fails. Okay so. The class info was being allocated for the current class size
+instead of the one for class info. So it should have overrwritten in this case
+and it has. I see it now executing system calls.
+
+## 21:19
+
+I do have the callstack, so I can see where the pure virtual call comes from.
+It is StringBuilder.append().
+
+## 13:01
+
+There are pure virtual calls, so maybe since I skip privates those are not
+fully linked?
+
+## 14:05
+
+I am pretty sure I can simplify the bootstrap when it comes to loading class
+info and such. I really am just at this point going to be rebuilding the
+BootRAM initializer but in the bootstrap. So perhaps for this point I should
+make it so that it is pretty much a copy of that code? I think at this point
+I should have a dedicate class loader or something that can work with a given
+class similar to the `LoadedClassInfo` in the BootRAM.
+
+## 16:09
+
+I think the simplest thing to do would be to model this after the BootRAM
+initializer by following it logically. I think that would be easy and simple
+and can handle things accordingly.
