@@ -95,8 +95,19 @@ public final class Bootstrap
 		// It crashes
 		catch (Throwable t)
 		{
-			// Print stack trace for this class
-			t.printStackTrace();
+			// Print the trace
+			try
+			{
+				// Print stack trace for this class
+				t.printStackTrace();
+			}
+			
+			// Double fault?!?!?! SOMETHING IS VERY WRONG!
+			catch (Throwable u)
+			{
+				todo.DEBUG.code('D', 'F',
+					Assembly.specialGetExceptionRegister());
+			}
 			
 			// Try to exit the VM
 			Assembly.sysCallP(SystemCallIndex.EXIT, 1);

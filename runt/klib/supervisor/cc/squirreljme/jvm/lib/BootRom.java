@@ -100,6 +100,8 @@ public final class BootRom
 		// The initial class path to use
 		ClassLibrary[] usecp;
 		
+		//todo.DEBUG.note("Instance? %s", (bootlibs[0] instanceof ClassLibrary));
+		
 		// Use the passed class-path if one was specified.
 		String[] usercp = __config.loadStrings(ConfigRomType.CLASS_PATH);
 		if (usercp != null)
