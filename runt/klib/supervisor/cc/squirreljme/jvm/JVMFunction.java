@@ -52,15 +52,13 @@ public final class JVMFunction
 			return 1;
 		
 		// Load the component for this array
-		ClassInfo pci = Assembly.pointerToClassInfo(
-			Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET)).
-			componentclass;
+		int pcisp = Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET);
+		ClassInfo pci = Assembly.pointerToClassInfo(pcisp).componentclass;
 		
 		// Load value class type
 		int vcl = Assembly.memReadInt(__v, Constants.OBJECT_CLASS_OFFSET);
 		
 		// Quick exact class match?
-		int pcisp = pci.selfptr;
 		if (pcisp == vcl)
 			return 1;
 		
@@ -206,7 +204,7 @@ public final class JVMFunction
 	 * Checks whether the given pointer is an instance of the given class.
 	 *
 	 * @param __p The pointer to check.
-	 * @param __cldx The class index.
+	 * @param __cldx The class type to check.
 	 * @return Either {@code 1} if the class is an instance or {@code 0} if
 	 * it is not.
 	 * @since 2019/04/22
