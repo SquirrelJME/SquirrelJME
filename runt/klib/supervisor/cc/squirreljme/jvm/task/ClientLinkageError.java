@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm;
+package cc.squirreljme.jvm.task;
 
 /**
  * This is thrown when there has been a linkage error when the client is being

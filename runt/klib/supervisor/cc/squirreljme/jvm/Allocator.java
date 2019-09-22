@@ -117,7 +117,7 @@ public final class Allocator
 	 * @param __p The pointer to free.
 	 * @since 2019/05/27
 	 */
-	static final void free(int __p)
+	public static final void free(int __p)
 	{
 		// This should never happen
 		if (__p == 0 || __p == Constants.BAD_MAGIC)

@@ -7,8 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm;
+package cc.squirreljme.jvm.task;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.io.BinaryBlob;
 
 /**
