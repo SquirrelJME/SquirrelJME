@@ -52,8 +52,11 @@ public final class MemoryBlob
 	public int readByte(int __o)
 		throws IndexOutOfBoundsException
 	{
-		Assembly.breakpoint();
-		throw new Error("TODO");
+		// {@squirreljme.error SV09 Out of range region read.}
+		if (__o < 0 || __o >= this.size)
+			throw new IndexOutOfBoundsException("SV09");
+		
+		return (byte)Assembly.memReadByte(this.base, __o);
 	}
 }
 
