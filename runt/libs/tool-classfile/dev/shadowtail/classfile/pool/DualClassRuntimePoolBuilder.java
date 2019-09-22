@@ -82,6 +82,10 @@ public final class DualClassRuntimePoolBuilder
 		MinimizedPoolEntryType type;
 		switch ((type = MinimizedPoolEntryType.ofClass(__v.getClass())))
 		{
+				// Null is always the first entry
+			case NULL:
+				return runpool.getByValue(null);
+			
 				// A field which has been accessed
 			case ACCESSED_FIELD:
 				AccessedField af = (AccessedField)__v;

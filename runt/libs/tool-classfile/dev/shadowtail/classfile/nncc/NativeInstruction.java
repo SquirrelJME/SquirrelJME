@@ -301,7 +301,6 @@ public final class NativeInstruction
 				return 2;
 					
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
-			case NativeInstructionType.DEBUG_ENTRY:
 			case NativeInstructionType.DEBUG_POINT:
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFEQ_CONST:
@@ -313,6 +312,9 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 				return 3;
+				
+			case NativeInstructionType.DEBUG_ENTRY:
+				return 4;
 			
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
 				return 5;
@@ -366,9 +368,10 @@ public final class NativeInstruction
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VUREG);
 					
-				// [p16, p16, p16]
+				// [p16, p16, p16, p16]
 			case NativeInstructionType.DEBUG_ENTRY:
 				return ArgumentFormat.of(
+					ArgumentFormat.VPOOL,
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VPOOL);

@@ -201,6 +201,8 @@ public enum MinimizedPoolEntryType
 				return CLASS_INFO_POINTER;
 			case "dev.shadowtail.classfile.pool.NotedString":
 				return NOTED_STRING;
+			case "dev.shadowtail.classfile.pool.NullPoolEntry":
+				return NULL;
 		}
 		
 		// {@squirreljme.error JC0f Class does not map to a pool entry
