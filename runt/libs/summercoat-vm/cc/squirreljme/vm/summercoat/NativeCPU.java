@@ -439,7 +439,8 @@ public final class NativeCPU
 				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
-					this.__debugEntry(nowframe, args[0], args[1], args[2]);
+					this.__debugEntry(nowframe, args[0], args[1], args[2],
+						args[3]);
 					
 					// Trace it!
 					if (ENABLE_DEBUG)
@@ -941,7 +942,7 @@ public final class NativeCPU
 			__f._inclass,
 			__f._inmethodname,
 			__f._inmethodtype,
-			__f._pc, null,
+			__f._pc, __f._insourcefile,
 			__f._inline,
 			__f._injop,
 			__f._injpc);
@@ -1114,10 +1115,12 @@ public final class NativeCPU
 	 * @param __pcl The class string from the pool.
 	 * @param __pmn The method name from the pool.
 	 * @param __pmt The method type from the pool.
+	 * @param __psf The current source file.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	private final void __debugEntry(Frame __f, int __pcl, int __pmn, int __pmt)
+	private final void __debugEntry(Frame __f, int __pcl, int __pmn, int __pmt,
+		int __psf)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -1128,19 +1131,26 @@ public final class NativeCPU
 		
 		int icl = memory.memReadInt(pooladdr + (__pcl * 4)),
 			imn = memory.memReadInt(pooladdr + (__pmn * 4)),
-			imt = memory.memReadInt(pooladdr + (__pmt * 4));
+			imt = memory.memReadInt(pooladdr + (__pmt * 4)),
+			isf = memory.memReadInt(pooladdr + (__psf * 4));
 		
 		// Store in state
 		__f._inclassp = icl;
 		__f._inmethodnamep = imn;
 		__f._inmethodtypep = imt;
+		__f._insourcefilep = isf;
 		
 		// Load strings
-		String scl, smn, smt;
+		String scl, smn, smt, ssf;
 		WritableMemory memory = this.memory;
-		__f._inclass = (scl = this.__loadUtfString(icl));
-		__f._inmethodname = (smn = this.__loadUtfString(imn));
-		__f._inmethodtype = (smt = this.__loadUtfString(imt));
+		__f._inclass = 
+			(scl = (icl == 0 ? "Unknown" : this.__loadUtfString(icl)));
+		__f._inmethodname = 
+			(smn = (imn == 0 ? "Unknown" :this.__loadUtfString(imn)));
+		__f._inmethodtype = 
+			(smt = (imt == 0 ? "Unknown" :this.__loadUtfString(imt)));
+		__f._insourcefile = 
+			(ssf = (isf == 0 ? "Unknown" :this.__loadUtfString(isf)));
 		
 		// Enter it on the profiler
 		ProfiledThread profiler = this.profiler;
@@ -1318,6 +1328,11 @@ public final class NativeCPU
 						case CallStackItem.METHOD_TYPE:
 							err = 0;
 							rv = frame._inmethodtypep;
+							break;
+						
+						case CallStackItem.SOURCE_FILE:
+							err = 0;
+							rv = frame._insourcefilep;
 							break;
 							
 						case CallStackItem.SOURCE_LINE:
@@ -1597,6 +1612,12 @@ public final class NativeCPU
 		
 		/** Executing method type pointer. */
 		int _inmethodtypep;
+		
+		/** Source file. */
+		String _insourcefile;
+		
+		/** Source file pointer. */
+		int _insourcefilep;
 		
 		/** The current line. */
 		int _inline;

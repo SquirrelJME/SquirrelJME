@@ -839,6 +839,9 @@ struct sjme_cpustate
 	/** Debug: Method type. */
 	sjme_vmemptr debugmethodtype;
 	
+	/** Debug: Source file. */
+	sjme_vmemptr debugsourcefile;
+	
 	/** Debug: Current line. */
 	sjme_jint debugline;
 	
@@ -1394,6 +1397,11 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_CALLSTACKITEM_METHOD_TYPE:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					return cpustate->debugmethodtype;
+					
+					/* Source file. */
+				case SJME_CALLSTACKITEM_SOURCE_FILE:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return cpustate->debugsourcefile;
 					
 					/* Source line. */
 				case SJME_CALLSTACKITEM_SOURCE_LINE:
@@ -2190,6 +2198,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
 						&nextpc, error) * SJME_JINT_C(4), error);
 					cpu->state.debugmethodtype = sjme_vmmread(jvm->vmem,
+						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
+						&nextpc, error) * SJME_JINT_C(4), error);
+					cpu->state.debugsourcefile = sjme_vmmread(jvm->vmem,
 						SJME_VMMTYPE_INTEGER, tempp, sjme_opdecodeui(jvm->vmem,
 						&nextpc, error) * SJME_JINT_C(4), error);
 				}
