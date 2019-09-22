@@ -51,20 +51,13 @@ public final class JVMFunction
 		if (__v == 0)
 			return 1;
 		
-		// Load the component for this array
-		int pcisp = Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET);
-		ClassInfo pci = Assembly.pointerToClassInfo(pcisp).componentclass;
-		
-		// Load value class type
-		int vcl = Assembly.memReadInt(__v, Constants.OBJECT_CLASS_OFFSET);
-		
-		// Quick exact class match?
-		if (pcisp == vcl)
-			return 1;
+		// Get array class info
+		int aip = Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET);
+		ClassInfo aicl = Assembly.pointerToClassInfo(aip);
 		
 		// Check if the value we are putting in is an instance of the given
 		// class component type
-		return JVMFunction.jvmIsInstance(vcl, pcisp);
+		return JVMFunction.jvmIsInstance(__v, aicl.componentclass.selfptr);
 	}
 	
 	/**
