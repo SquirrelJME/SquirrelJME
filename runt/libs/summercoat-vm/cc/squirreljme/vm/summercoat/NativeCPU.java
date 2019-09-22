@@ -1150,13 +1150,13 @@ public final class NativeCPU
 		String scl, smn, smt, ssf;
 		WritableMemory memory = this.memory;
 		__f._inclass = 
-			(scl = (icl == 0 ? "Unknown" : this.__loadUtfString(icl)));
+			(scl = (icl == 0 ? null : this.__loadUtfString(icl)));
 		__f._inmethodname = 
-			(smn = (imn == 0 ? "Unknown" :this.__loadUtfString(imn)));
+			(smn = (imn == 0 ? null : this.__loadUtfString(imn)));
 		__f._inmethodtype = 
-			(smt = (imt == 0 ? "Unknown" :this.__loadUtfString(imt)));
+			(smt = (imt == 0 ? null : this.__loadUtfString(imt)));
 		__f._insourcefile = 
-			(ssf = (isf == 0 ? "Unknown" :this.__loadUtfString(isf)));
+			(ssf = (isf == 0 ? null : this.__loadUtfString(isf)));
 		
 		// Enter it on the profiler
 		ProfiledThread profiler = this.profiler;
