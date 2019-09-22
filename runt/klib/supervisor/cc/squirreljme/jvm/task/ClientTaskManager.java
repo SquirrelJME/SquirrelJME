@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.task;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.lib.ClassLibrary;
+import cc.squirreljme.jvm.lib.ClassPath;
 
 /**
  * This manages multiple tasks.
@@ -40,7 +41,7 @@ public final class ClientTaskManager
 	public ClientTaskManager()
 	{
 		// Setup a system task, it has no classpath and is always zero
-		this.tasks[0] = new ClientTask(0, 0, new ClassLibrary[0]);
+		this.tasks[0] = new ClientTask(0, 0, new ClassPath());
 	}
 	
 	/**
@@ -76,7 +77,8 @@ public final class ClientTaskManager
 			throw new RuntimeException("SV01");
 		
 		// Setup and store task now
-		ClientTask rv = new ClientTask(pid, this._nextlid++, __cp);
+		ClientTask rv = new ClientTask(pid, this._nextlid++,
+			new ClassPath(__cp));
 		tasks[pid] = rv;
 		
 		// Debug
