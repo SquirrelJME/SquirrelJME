@@ -152,9 +152,9 @@ public final class BootRomLibrary
 		
 		// Read from the table of contents, the offset to the data.
 		int tocoffset = bp + Assembly.memReadJavaInt(bp, TOC_OFFSET_OFFSET);
-		return new MemoryBlob(bp + Assembly.memReadJavaInt(bp, tocoffset +
+		return new MemoryBlob(bp + Assembly.memReadJavaInt(tocoffset,
 				(TOC_ENTRY_SIZE * __dx) + TOC_DATA_OFFSET),
-			Assembly.memReadJavaInt(bp, tocoffset +
+			Assembly.memReadJavaInt(tocoffset,
 				(TOC_ENTRY_SIZE * __dx) + TOC_SIZE_OFFSET));
 	}
 }
