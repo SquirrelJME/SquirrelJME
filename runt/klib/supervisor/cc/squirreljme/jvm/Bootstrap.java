@@ -105,8 +105,11 @@ public final class Bootstrap
 			// Double fault?!?!?! SOMETHING IS VERY WRONG!
 			catch (Throwable u)
 			{
+				// Show double fault info
 				todo.DEBUG.code('D', 'F',
 					Assembly.specialGetExceptionRegister());
+				todo.DEBUG.code('x', 'T',
+					Assembly.objectToPointer(t));
 			}
 			
 			// Try to exit the VM

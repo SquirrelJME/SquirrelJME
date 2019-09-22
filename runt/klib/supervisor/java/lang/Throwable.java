@@ -149,45 +149,114 @@ public class Throwable
 	}
 	
 	/**
-	 * Prints the raw stack trace.
+	 * Prints the nicely formatted stack trace.
 	 *
 	 * @since 2019/06/17
 	 */
 	public void printStackTrace()
 	{
+		// This could fail in the event something is very wrong!
+		try
+		{
+			// Print this and any causes!
+			for (Throwable rover = this; rover != null; rover = rover._cause)
+			{
+				// Is this the main trace or a caused by?
+				todo.DEBUG.note("%s Stack Trace: (%s) %s", (rover == this ?
+					"Supervisor" : "Caused By"), JVMFunction.jvmLoadString(
+						Assembly.pointerToClassInfo( Assembly.memReadInt(
+						Assembly.objectToPointer(this),
+						Constants.OBJECT_CLASS_OFFSET)).namep),
+						rover.toString());
+				
+				// Obtain the raw trace that was captured on construction
+				int[] rawtrace = this._rawtrace;
+				int rawn = rawtrace.length;
+				
+				// Print all the items in it
+				StringBuilder sb = new StringBuilder();
+				for (int b = 0; b < rawn; b += CallStackItem.NUM_ITEMS)
+				{
+					// Print it out
+					todo.DEBUG.note("    %s::%s:%s (%s:%d) A@%d J@%d/%d",
+						JVMFunction.jvmLoadString(
+							rawtrace[b + CallStackItem.CLASS_NAME]),
+						JVMFunction.jvmLoadString(
+							rawtrace[b + CallStackItem.METHOD_NAME]),
+						JVMFunction.jvmLoadString(
+							rawtrace[b + CallStackItem.METHOD_TYPE]),
+						JVMFunction.jvmLoadString(
+							rawtrace[b + CallStackItem.SOURCE_FILE]),
+						rawtrace[b + CallStackItem.SOURCE_LINE],
+						Integer.toString(
+							rawtrace[b + CallStackItem.PC_ADDRESS], 16),
+						rawtrace[b + CallStackItem.JAVA_PC_ADDRESS],
+						rawtrace[b + CallStackItem.JAVA_OPERATION]);
+				}
+			}
+		}
+		
+		// If printing out this trace failed then use the backup mechanism!
+		catch (Throwable t)
+		{
+			// Print the original trace
+			this.printStackTraceBackup();
+			
+			// Print the raw backup trace for the trace we tried to print
+			// to figure out what potentially went wrong?
+			todo.DEBUG.codeBarrier('p', 'T');
+			t.printStackTraceBackup();
+			todo.DEBUG.codeBarrier('P', 't');
+		}
+	}
+	
+	/**
+	 * Print a stack trace using only codes so that it may still be used
+	 * accordingly as such.
+	 *
+	 * @since 2019/09/22
+	 */
+	public void printStackTraceBackup()
+	{
 		// Print this and any causes!
 		for (Throwable rover = this; rover != null; rover = rover._cause)
 		{
-			// Is this the main trace or a caused by?
-			todo.DEBUG.note("%s Stack Trace: (%s) %s", (rover == this ?
-				"Supervisor" : "Caused By"), JVMFunction.jvmLoadString(
-					Assembly.pointerToClassInfo( Assembly.memReadInt(
-					Assembly.objectToPointer(this),
-					Constants.OBJECT_CLASS_OFFSET)).namep), rover.toString());
+			// Supervisor or caused by?
+			todo.DEBUG.code('T', (rover == this ? 'S' : 'C'),
+				Assembly.objectToPointer(rover));
+			
+			// The thrown type
+			todo.DEBUG.code('T', 'Y', Assembly.memReadInt(
+				Assembly.objectToPointer(this),
+				Constants.OBJECT_CLASS_OFFSET));
 			
 			// Obtain the raw trace that was captured on construction
 			int[] rawtrace = this._rawtrace;
 			int rawn = rawtrace.length;
 			
 			// Print all the items in it
-			StringBuilder sb = new StringBuilder();
 			for (int base = 0; base < rawn; base += CallStackItem.NUM_ITEMS)
 				try
 				{
-					// Print it out
-					todo.DEBUG.note("    %s::%s:%s (%s:%d) A@%d J@%d/%d",
-						JVMFunction.jvmLoadString(
-							rawtrace[base + CallStackItem.CLASS_NAME]),
-						JVMFunction.jvmLoadString(
-							rawtrace[base + CallStackItem.METHOD_NAME]),
-						JVMFunction.jvmLoadString(
-							rawtrace[base + CallStackItem.METHOD_TYPE]),
-						JVMFunction.jvmLoadString(
-							rawtrace[base + CallStackItem.SOURCE_FILE]),
-						rawtrace[base + CallStackItem.SOURCE_LINE],
-						Integer.toString(
-							rawtrace[base + CallStackItem.PC_ADDRESS], 16),
-						rawtrace[base + CallStackItem.JAVA_PC_ADDRESS],
+					// Indicate start of element
+					todo.DEBUG.code('T', '-');
+					
+					// Print out the raw details
+					todo.DEBUG.codeUtf('T', 'c',
+						rawtrace[base + CallStackItem.CLASS_NAME]);
+					todo.DEBUG.codeUtf('T', 'n',
+						rawtrace[base + CallStackItem.METHOD_NAME]);
+					todo.DEBUG.codeUtf('T', 'y',
+						rawtrace[base + CallStackItem.METHOD_TYPE]);
+					todo.DEBUG.codeUtf('T', 'f',
+						rawtrace[base + CallStackItem.SOURCE_FILE]);
+					todo.DEBUG.code('T', 'l',
+						rawtrace[base + CallStackItem.SOURCE_LINE]);
+					todo.DEBUG.code('T', 'a',
+						rawtrace[base + CallStackItem.PC_ADDRESS]);
+					todo.DEBUG.code('T', 'j',
+						rawtrace[base + CallStackItem.JAVA_PC_ADDRESS]);
+					todo.DEBUG.code('T', 'o',
 						rawtrace[base + CallStackItem.JAVA_OPERATION]);
 				}
 				
@@ -196,7 +265,13 @@ public class Throwable
 				{
 					todo.DEBUG.code('X', 'T', base);
 				}
+			
+			// Indicate end of current set
+			todo.DEBUG.code('T', '<');
 		}
+		
+		// Indicate end of trace log
+		todo.DEBUG.code('T', '_');
 	}
 	
 	/**
