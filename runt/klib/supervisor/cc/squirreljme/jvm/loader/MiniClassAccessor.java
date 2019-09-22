@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.io.BinaryBlob;
  *
  * @since 2019/07/11
  */
+@Deprecated
 public final class MiniClassAccessor
 {
 	/** Offset to the interface field byte size. */

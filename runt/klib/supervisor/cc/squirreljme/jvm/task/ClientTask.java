@@ -45,6 +45,7 @@ public final class ClientTask
 	public final ClassLibrary[] classpath;
 	
 	/** Classes which have been loaded. */
+	@Deprecated
 	public final HashMap<String, ClientClassInfo> classinfos =
 		new HashMap<>();
 	
@@ -96,6 +97,7 @@ public final class ClientTask
 	 * @return The ClassInfo mini-class accessor.
 	 * @since 2019/07/11
 	 */
+	@Deprecated
 	public final MiniClassAccessor classInfoAccessor()
 	{
 		// If it has already been used, only get it once!
@@ -128,6 +130,7 @@ public final class ClientTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/23
 	 */
+	@Deprecated
 	public final ClientClassInfo loadClassInfo(String __cl)
 		throws ClientLinkageError, NullPointerException
 	{
