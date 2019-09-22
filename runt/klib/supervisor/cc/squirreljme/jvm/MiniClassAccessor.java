@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.io.BinaryBlob;
+
 /**
  * This class is used as a utility to access the data contained within the
  * mini-class format.
@@ -21,18 +23,23 @@ public final class MiniClassAccessor
 	public static final byte IFBYTES_OFFSET =
 		64;
 	
-	/** The mini-class address. */
-	protected final int address;
+	/** The blob for data access. */
+	protected final BinaryBlob blob;
 	
 	/**
 	 * Initializes the mini class accessor.
 	 *
-	 * @param __a The address of the mini-class.
+	 * @param __a The binary blob.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/11
 	 */
-	public MiniClassAccessor(int __a)
+	public MiniClassAccessor(BinaryBlob __a)
+		throws NullPointerException
 	{
-		this.address = __a;
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		this.blob = __a;
 	}
 	
 	/**
@@ -43,7 +50,7 @@ public final class MiniClassAccessor
 	 */
 	public final int baseInstanceSize()
 	{
-		return Assembly.memReadJavaInt(this.address, IFBYTES_OFFSET);
+		return this.blob.readJavaInt(IFBYTES_OFFSET);
 	}
 }
 

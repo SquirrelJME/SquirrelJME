@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.io.BinaryBlob;
+import cc.squirreljme.jvm.lib.ClassLibrary;
 import java.util.HashMap;
 
 /**
@@ -37,7 +39,7 @@ public final class ClientTask
 	public final int tagbits;
 	
 	/** The classpath. */
-	public final BootLibrary[] classpath;
+	public final ClassLibrary[] classpath;
 	
 	/** Classes which have been loaded. */
 	public final HashMap<String, ClientClassInfo> classinfos =
@@ -55,7 +57,7 @@ public final class ClientTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/22
 	 */
-	public ClientTask(int __pid, int __lid, BootLibrary[] __cp)
+	public ClientTask(int __pid, int __lid, ClassLibrary[] __cp)
 		throws NullPointerException
 	{
 		if (__cp == null)
@@ -203,17 +205,19 @@ public final class ClientTask
 	 * Returns the data pointer for the given resource.
 	 *
 	 * @param __dx The index to get the data pointer for.
-	 * @return The data pointer of the resource or {@code 0} if it is not
-	 * valid.
+	 * @return The data pointer of the resource.
+	 * @throws IndexOutOfBoundsException If the index is not found in any
+	 * library.
 	 * @since 2019/07/11
 	 */
-	public final int resourceData(int __dx)
+	public final BinaryBlob resourceData(int __dx)
+		throws IndexOutOfBoundsException
 	{
-		// Make sure the index is in range
+		// {@squirreljme.error SV08 Out of range resource.}
 		int cpdx = __dx >>> _INDEX_SHIFT;
-		BootLibrary[] classpath = this.classpath;
+		ClassLibrary[] classpath = this.classpath;
 		if (cpdx < 0 || cpdx >= classpath.length)
-			return 0;
+			throw new IndexOutOfBoundsException("SV08");
 		
 		// Get resource pointer from this
 		return classpath[cpdx].resourceData(__dx & _INDEX_MASK);
@@ -236,7 +240,7 @@ public final class ClientTask
 			throw new NullPointerException("NARG");
 		
 		// Scan the classpath
-		BootLibrary[] classpath = this.classpath;
+		ClassLibrary[] classpath = this.classpath;
 		for (int i = 0, n = classpath.length; i < n; i++)
 		{
 			// Locate resource
@@ -270,7 +274,7 @@ public final class ClientTask
 			throw new NullPointerException("NARG");
 		
 		// Out of range values are always not found
-		BootLibrary[] classpath = this.classpath;
+		ClassLibrary[] classpath = this.classpath;
 		if (__in < 0 || __in >= classpath.length)
 			return -1;
 		

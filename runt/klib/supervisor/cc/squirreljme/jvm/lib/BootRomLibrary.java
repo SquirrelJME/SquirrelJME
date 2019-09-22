@@ -7,14 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm;
+package cc.squirreljme.jvm.lib;
+
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.io.BinaryBlob;
+import cc.squirreljme.jvm.io.MemoryBlob;
+import cc.squirreljme.jvm.JVMFunction;
 
 /**
  * This represents a single boot library.
  *
  * @since 2019/06/14
  */
-public final class BootLibrary
+public final class BootRomLibrary
+	extends ClassLibrary
 {
 	/** Offset of the resource count. */
 	public static final int NUMRC_OFFSET =
@@ -70,7 +76,7 @@ public final class BootLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/19
 	 */
-	public BootLibrary(String __name, int __addr, int __len, int __maddr,
+	public BootRomLibrary(String __name, int __addr, int __len, int __maddr,
 		int __mlen)
 		throws NullPointerException
 	{
@@ -85,12 +91,10 @@ public final class BootLibrary
 	}
 	
 	/**
-	 * Locates the given resource.
-	 *
-	 * @param __name The name of the resource to get.
-	 * @return The index of the resource or {@code -1} if it was not found.
+	 * {@inheritDoc}
 	 * @since 2019/06/23
 	 */
+	@Override
 	public final int indexOf(String __name)
 		throws NullPointerException
 	{
@@ -121,26 +125,37 @@ public final class BootLibrary
 	}
 	
 	/**
-	 * Returns the data pointer of the given index.
-	 *
-	 * @param __dx The index to get the data for.
-	 * @return The pointer to the index data or {@code 0} if it is not valid.
+	 * {@inheritDoc}
+	 * @since 2019/09/22
+	 */
+	@Override
+	public final String libraryName()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/07/11
 	 */
-	public final int resourceData(int __dx)
+	@Override
+	public final BinaryBlob resourceData(int __dx)
+		throws IndexOutOfBoundsException
 	{
 		// Get base address of the library
 		int bp = this.address;
 		
-		// If the resource is out of range, then ignore because some invalid
-		// memory will be used which would be bad
+		// {@squirreljme.error SV07 Attempt to access resource which was not
+		// in range of the boot library.}
 		if (__dx < 0 || __dx >= Assembly.memReadJavaInt(bp, NUMRC_OFFSET))
-			return 0;
+			throw new IndexOutOfBoundsException("SV07");
 		
 		// Read from the table of contents, the offset to the data.
-		return bp + Assembly.memReadJavaInt(
-			bp + Assembly.memReadJavaInt(bp, TOC_OFFSET_OFFSET),
-			(TOC_ENTRY_SIZE * __dx) + TOC_DATA_OFFSET);
+		int tocoffset = bp + Assembly.memReadJavaInt(bp, TOC_OFFSET_OFFSET);
+		return new MemoryBlob(bp + Assembly.memReadJavaInt(bp, tocoffset +
+				(TOC_ENTRY_SIZE * __dx) + TOC_DATA_OFFSET),
+			Assembly.memReadJavaInt(bp, tocoffset +
+				(TOC_ENTRY_SIZE * __dx) + TOC_SIZE_OFFSET));
 	}
 }
 

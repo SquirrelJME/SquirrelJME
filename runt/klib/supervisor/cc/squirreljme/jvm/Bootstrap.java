@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.lib.BootRom;
+import cc.squirreljme.jvm.lib.BootRomLibrary;
+
 /**
  * This is the bootstrap entry point for the supervisor.
  *

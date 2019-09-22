@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.lib.ClassLibrary;
+
 /**
  * This manages multiple tasks.
  *
@@ -36,7 +38,7 @@ public final class ClientTaskManager
 	public ClientTaskManager()
 	{
 		// Setup a system task, it has no classpath and is always zero
-		this.tasks[0] = new ClientTask(0, 0, new BootLibrary[0]);
+		this.tasks[0] = new ClientTask(0, 0, new ClassLibrary[0]);
 	}
 	
 	/**
@@ -51,7 +53,7 @@ public final class ClientTaskManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/22
 	 */
-	public ClientTask newTask(BootLibrary[] __cp, String __mcl,
+	public ClientTask newTask(ClassLibrary[] __cp, String __mcl,
 		String[] __args, String[] __sp)
 		throws NullPointerException
 	{
