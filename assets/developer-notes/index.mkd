@@ -2324,7 +2324,7 @@
 [**`19`**](stephanie-gawroriski/2019/09/19.mkd)
 [**`20`**](stephanie-gawroriski/2019/09/20.mkd)
 [**`21`**](stephanie-gawroriski/2019/09/21.mkd)
- * `22`
+ * [**`22`**](stephanie-gawroriski/2019/09/22.mkd)
 `23`
 `24`
 `25`
