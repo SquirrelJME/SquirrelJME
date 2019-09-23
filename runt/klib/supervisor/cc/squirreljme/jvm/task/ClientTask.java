@@ -31,8 +31,8 @@ public final class ClientTask
 	/** The logical task ID. */
 	public final int lid;
 	
-	/** Allocation tag bit. */
-	public final int tagbits;
+	/** Allocator for this task. */
+	public final ClientAllocator allocator;
 	
 	/** The classpath. */
 	public final ClassPath classpath;
@@ -64,24 +64,8 @@ public final class ClientTask
 		this.lid = __lid;
 		this.classpath = __cp;
 		
-		// The tag bits are just the PID shifted up a bit
-		this.tagbits = __pid << 4;
-	}
-	
-	/**
-	 * Allocates memory for this task context.
-	 *
-	 * @param __tag The tag used.
-	 * @param __sz The number of bytes to allocate.
-	 * @return The allocated bytes.
-	 * @since 2019/06/23
-	 */
-	public final int allocate(int __tag, int __sz)
-	{
-		// Just perform the allocation with our PID as part of the tag and
-		// whatever was passed, masked correctly
-		return Allocator.allocate(
-			this.tagbits | (__tag & Allocator.CHUNK_BITS_VALUE_MASK), __sz);
+		// Initialize allocator for memory grabbing
+		this.allocator = new ClientAllocator(__pid);
 	}
 	
 	/**
@@ -155,7 +139,7 @@ public final class ClientTask
 		MiniClassAccessor ccia = this.classInfoAccessor();
 		
 		// {@squirreljme.error SV04 Could not allocate class information.}
-		int cip = this.allocate(Allocator.CHUNK_BIT_IS_OBJECT,
+		int cip = this.allocator.allocate(Allocator.CHUNK_BIT_IS_OBJECT,
 			Constants.OBJECT_BASE_SIZE + ccia.baseInstanceSize());
 		if (cip == 0)
 			throw new ClientLinkageError("SV04");
