@@ -1,0 +1,28 @@
+# 2019/09/22
+
+## 08:00
+
+I want to sort out the supervisor code I have right now such as the
+libraries and such.
+
+## 08:46
+
+It would be a bit useful if the source class stuff was in was available to
+the JVM and such. Since it is pretty normal that Java has it and such.
+
+## 10:07
+
+My array store check is incorrect.
+
+## 11:08
+
+Seems it is very broke as not even strings work anymore.
+
+## 11:16
+
+Superclasses are assigned correctly.
+
+## 15:39
+
+Okay so, I think I can move and organize the task stuff as well so that is
+cleaner too.
