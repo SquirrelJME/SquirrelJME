@@ -29,7 +29,11 @@ public abstract class FullCanvas
 		
 	/** Virtual soft key 2. */
 	private static final Command _SOFT2 =
-		new Command("Soft2", Command.SCREEN, 0);
+		new Command("Soft2", Command.SCREEN, 1);
+		
+	/** Virtual soft key 3. */
+	private static final Command _SOFT3 =
+		new Command("Soft3", Command.SCREEN, 2);
 	
 	/** Down arrow. */
 	public static final int KEY_DOWN_ARROW =
@@ -82,6 +86,7 @@ public abstract class FullCanvas
 		// add our own commands and such to this.
 		this.addCommand(FullCanvas._SOFT1);
 		this.addCommand(FullCanvas._SOFT2);
+		this.addCommand(FullCanvas._SOFT3);
 		
 		// Then use virtual command listener to forward
 		this.setCommandListener(new __VirtualListener__());
@@ -100,7 +105,8 @@ public abstract class FullCanvas
 	{
 		// Since we are providing this special functionality we need to wrap
 		// but still access these internal commands
-		if (__c == FullCanvas._SOFT1 || __c == FullCanvas._SOFT2)
+		if (__c == FullCanvas._SOFT1 || __c == FullCanvas._SOFT2 ||
+			__c == FullCanvas._SOFT3)
 		{
 			super.addCommand(__c);
 			return;
@@ -157,6 +163,8 @@ public abstract class FullCanvas
 				code = FullCanvas.KEY_SOFTKEY1;
 			else if (__c == FullCanvas._SOFT2)
 				code = FullCanvas.KEY_SOFTKEY2;
+			else if (__c == FullCanvas._SOFT3)
+				code = FullCanvas.KEY_SOFTKEY3;
 			
 			// Unknown?
 			else
