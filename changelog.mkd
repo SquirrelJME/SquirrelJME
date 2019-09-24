@@ -107,6 +107,7 @@ More detailed changes:
        implemented.
      * Fixed crash in text drawing when an empty string is drawn.
      * Fully drawn default fonts.
+     * Implemented `com.nokia.mid.ui.FullCanvas`.
      * Made all the graphics operations not throw a `TODO`, instead they will
        just draw a placeholder graphic.
      * Moved the graphics drawing operations to another class.
