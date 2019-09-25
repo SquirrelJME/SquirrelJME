@@ -350,7 +350,7 @@ public final class CallTraceElement
 			
 			// File, Line, and/or Java instruction/address
 			boolean hasline = (line >= 0),
-				hasjbcinst = (jbcinst != 0xFF),
+				hasjbcinst = (jbcinst > 0xFF && jbcinst < 0xFF),
 				hasjbcaddr = (jbcaddr >= 0);
 			if (hasline || hasjbcinst || hasjbcaddr)
 			{
@@ -494,7 +494,7 @@ public final class CallTraceElement
 			// File, Line, and/or Java instruction/address
 			boolean hasfile = (file != null),
 				hasline = (line >= 0),
-				hasjbcinst = (jbcinst != 0xFF),
+				hasjbcinst = (jbcinst > 0x00 && jbcinst < 0xFF),
 				hasjbcaddr = (jbcaddr >= 0);
 			if (hasfile || hasline || hasjbcinst || hasjbcaddr)
 			{
