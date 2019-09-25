@@ -213,6 +213,9 @@ public abstract class MIDlet
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
+		// Debug
+		todo.DEBUG.note("%s", __url);
+		
 		throw new todo.TODO();
 	}
 	
