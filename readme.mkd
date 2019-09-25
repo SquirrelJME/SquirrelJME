@@ -93,6 +93,9 @@ Also check out SquirrelJME's sister project _Mu_ at:
  * Alternatively via [GitHub](https://github.com/XerTheSquirrel/SquirrelJME):
    * `git clone https://github.com/XerTheSquirrel/SquirrelJME`
    * `cd SquirrelJME`
+ * Alternatively via [repo.or.cz](https://repo.or.cz/SquirrelJME.git):
+   * `git clone https://repo.or.cz/SquirrelJME.git`
+   * `cd SquirrelJME`
  * Trunk Source Snapshot (Main website or `fossil serve` only):
    * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
    * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
