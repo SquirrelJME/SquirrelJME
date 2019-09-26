@@ -155,6 +155,7 @@ More detailed changes:
      * Add limit to stack frame depth.
      * Add support for system properties being based to virtual machine
        instances.
+     * Allow inheritance of static methods in classes.
      * Profiler thread lists are easier to read because the main suite is
        listed instead of the VM identifier.
    * SummerCoat
