@@ -213,6 +213,10 @@ public abstract class MIDlet
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
+		// Games from Konami require this to return true
+		if ("hjoja".equals(__url))
+			return true;
+		
 		// Debug
 		todo.DEBUG.note("%s", __url);
 		
