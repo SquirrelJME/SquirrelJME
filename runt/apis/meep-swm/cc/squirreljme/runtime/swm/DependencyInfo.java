@@ -226,13 +226,31 @@ public final class DependencyInfo
 		// The CLDC library to use
 		value = attr.getValue("microedition-configuration");
 		if (value != null)
-			depends.add(new Configuration(value.trim()));
+		{
+			value = value.trim();
+			
+			// Old software may rely on using 1.0 values when that is illegal
+			if (value.equals("1.0"))
+				depends.add(new Configuration("CLDC-1.0"));
+			
+			// Decode otherwise
+			else
+				depends.add(new Configuration(value.trim()));
+		}
 		
 		// Profiles needed to run
 		value = attr.getValue("microedition-profile");
 		if (value != null)
 			for (String s : StringUtils.basicSplit(" \t", value))
-				depends.add(new Profile(s));
+			{
+				// Old software may rely on using the version directly
+				if (s.equals("2.0"))
+					depends.add(new Profile("MIDP-2.0"));
+				
+				// Decode otherwise
+				else
+					depends.add(new Profile(s));
+			}
 		
 		// Parse entries in sequential order
 		SuiteType type = __info.type();
