@@ -82,6 +82,7 @@ More detailed changes:
    * `media-api`
      * Add null media support for: players, and volume control.
    * `meep-midlet`
+     * Handle Konami's Mobile US games using a special system request.
      * Implement `MIDlet.checkPermission()`.
    * `meep-rms`
      * Added basic support for record stores.
@@ -89,6 +90,7 @@ More detailed changes:
      * Added proprietary `ExtendedTaskManager` interface which can be used
        to specify arguments, system properties, and console output alternatives
        to launched tasks.
+     * Workaround for broken JAR manifests which violate the specification.
    * `midp-lcdui`
      * Added a 12 strike font.
      * Added capability flag for pointer events.
