@@ -213,7 +213,10 @@ public abstract class MIDlet
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
-		// Games from Konami require this to return true
+		// Games from Konami require this to return true even though that means
+		// the application should terminate after this point. This is handled
+		// and does not thrown an exception on bad requests.
+		// Returning false here will cause the games to not work.
 		if ("hjoja".equals(__url))
 			return true;
 		
