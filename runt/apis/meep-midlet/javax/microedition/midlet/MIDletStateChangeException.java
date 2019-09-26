@@ -10,21 +10,37 @@
 
 package javax.microedition.midlet;
 
+/**
+ * This must be thrown if the state change in a MIDlet has failed, however
+ * it is deprecated and no longer should be used.
+ *
+ * @since 2019/09/25
+ */
+@Deprecated
 public class MIDletStateChangeException
 	extends Exception
 {
+	/**
+	 * Initializes the exception with no message,
+	 *
+	 * @since 2019/09/25
+	 */
 	@Deprecated
 	public MIDletStateChangeException()
 	{
 		super();
-		throw new todo.TODO();
 	}
 
+	/**
+	 * Initializes the exception with the given message,
+	 *
+	 * @param __s The message to use.
+	 * @since 2019/09/25
+	 */
 	@Deprecated
 	public MIDletStateChangeException(String __s)
 	{
-		super((String)null);
-		throw new todo.TODO();
+		super(__s);
 	}
 }
 
