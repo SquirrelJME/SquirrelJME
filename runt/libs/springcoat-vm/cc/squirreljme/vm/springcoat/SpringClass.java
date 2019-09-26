@@ -208,8 +208,8 @@ public final class SpringClass
 				MethodNameAndType k = e.getKey();
 				SpringMethod v = e.getValue();
 				
-				// Ignore static, initializer methods, and private methods
-				if (v.flags().isStatic() || v.isInstanceInitializer() ||
+				// Ignore initializer methods, and private methods
+				if (v.isInstanceInitializer() ||
 					v.isStaticInitializer() || v.flags().isPrivate())
 					continue;
 				
