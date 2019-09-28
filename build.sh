@@ -24,6 +24,10 @@ __tmpdir="$("$__exedir/utils-dev/tmpdir.sh")"
 # The class to use for bootstrapping
 : ${BOOTSTRAP_CLASS:=NewBootstrap}
 
+# Bootstrap source file
+__bootdir="$__exedir/utils-dev/boot"
+__bootsrc="$__bootdir/$BOOTSTRAP_CLASS.java"
+
 # If the Java compiler was not detected, try ECJ instead
 if ! which "$JAVAC" > /dev/null
 then
@@ -36,15 +40,15 @@ fi
 
 # The build class is missing or out of date?
 if [ ! -f "$BOOTSTRAP_CLASS.class" ] || \
-	[ "$__exedir/$BOOTSTRAP_CLASS.java" -nt "$BOOTSTRAP_CLASS.class" ]
+	[ "$__bootsrc" -nt "$BOOTSTRAP_CLASS.class" ]
 then
 	# Clear potential old stuff
-	rm -f "$BOOTSTRAP_CLASS.class" "$BOOTSTRAP_CLASS\$$*.class"
+	rm -f "$BOOTSTRAP_CLASS.class" "$BOOTSTRAP_CLASS\$"*".class"
 	
 	# Build it
 	echo "Building the build system..." 1>&2
 	if ! "$JAVAC" -source 1.7 -target 1.7 -d . \
-		"$__exedir/$BOOTSTRAP_CLASS.java"
+		"$__bootdir/"*.java
 	then
 		echo "Failed to build the build system." 1>&2
 		exit 1
