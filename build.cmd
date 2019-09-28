@@ -41,10 +41,10 @@ IF %ERRORLEVEL% NEQ 0 (
 
 REM If the build system class does NOT exist, compile it
 SET __HB_VCLS=%BOOTSTRAP_CLASS%.class
-SET __HB_VSRC=%__EXEDIR%\%BOOTSTRAP_CLASS%.java
+SET __HB_VSRC=%__EXEDIR%\utils-dev\boot\%BOOTSTRAP_CLASS%.java
 IF NOT EXIST %__HB_VCLS% (
 	ECHO Compiling the build system...
-	%JAVAC% -source 1.7 -target 1.7 -d . %__HB_VSRC%
+	%JAVAC% -source 1.7 -target 1.7 -d . %__EXEDIR%\utils-dev\boot\*.java
 	IF %ERRORLEVEL% NEQ 0 (
 		ECHO Failed to compile the build system.
 		EXIT /b 4
