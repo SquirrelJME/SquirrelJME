@@ -496,7 +496,7 @@ public final class JVMFunction
 	
 	/**
 	 * If this is an invoked then it just throws an exception to indicate that
-	 * an illegal abstract method was called.
+	 * an illegal abstract method or unlinked method was called.
 	 *
 	 * @since 2019/05/26
 	 */
