@@ -62,7 +62,13 @@ public final class BuildClassLibrary
 		try (ZipBlockReader zip = this.binary.zipBlock())
 		{
 			for (ZipBlockEntry e : zip)
+			{
+				// Do not consider directories as part of the JAR
+				if (e.isDirectory())
+					continue;
+				
 				rv.add(e.name());
+			}
 		}
 		
 		// Failed read

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
@@ -58,7 +59,25 @@ public final class ZipPathSetIterator
 	@Override
 	public CompilerInput next()
 	{
-		return new ZipInput(this.iterator.next());
+		// Go through entries
+		for (Iterator<ZipBlockEntry> iterator = this.iterator;;)
+		{
+			// Ignore directories
+			ZipBlockEntry ze = iterator.next();
+			try
+			{
+				if (ze.isDirectory())
+					continue;
+			}
+			catch (IOException e)
+			{
+				// {@squirreljme.error AQ3c Could not check if entry was
+				// a directory or not.}
+				throw new CompilerException("AQ3c", e);
+			}
+			
+			return new ZipInput(ze);
+		}
 	}
 	
 	/**
