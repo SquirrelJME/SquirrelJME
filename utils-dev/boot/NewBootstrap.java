@@ -237,6 +237,10 @@ public class NewBootstrap
 					newOutputStream(tempjar,
 					StandardOpenOption.WRITE, StandardOpenOption.CREATE)))
 				{
+					// Set no compression because the Simulated JVM does
+					// not support ZIP compression (compatibility)
+					zos.setLevel(0);
+					
 					// Copy contents from other JARs
 					for (BuildProject dp : mergeorder)
 						__mergeInto(dp, zos, dp == bp, services, shaded);
