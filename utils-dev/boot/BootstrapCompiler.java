@@ -8,7 +8,10 @@
 // ---------------------------------------------------------------------------
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * This class contains the ability to call a compiler from the bootstrap.
@@ -88,6 +92,25 @@ public abstract class BootstrapCompiler
 	public static final class CommandLineCompiler
 		extends BootstrapCompiler
 	{
+		/** The executable where the Java compiler lives. */
+		protected final Path javac;
+		
+		/**
+		 * Initializes the command line compiler.
+		 *
+		 * @param __exec The executable location.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/09/29
+		 */
+		public CommandLineCompiler(Path __exec)
+			throws NullPointerException
+		{
+			if (__exec == null)
+				throw new NullPointerException("NARG");
+			
+			this.javac = __exec;
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2019/09/29
@@ -97,7 +120,78 @@ public abstract class BootstrapCompiler
 			Iterable<Path> __classpath, Iterable<Path> __sources,
 			Iterable<String> __args)
 		{
-			throw new Error("TODO");
+			// Build commands for the process
+			List<String> args = new ArrayList<>();
+			
+			// The Java executable
+			args.add(this.javac.toString());
+			
+			// Arguments to pass as extra
+			if (__args != null)
+				for (String arg : __args)
+					args.add(arg);
+			
+			// Add source path
+			if (__srcpath != null)
+			{
+				args.add("-sourcepath");
+				args.add(__srcpath.toString());
+			}
+			
+			// Output path
+			if (__outpath != null)
+			{
+				args.add("-d");
+				args.add(__outpath.toString());
+			}
+			
+			// Add the class path
+			if (__classpath != null)
+			{
+				StringBuilder cpsb = new StringBuilder();
+				
+				// Go through the path
+				for (Path p : __classpath)
+				{
+					// Prefix with separator?
+					if (cpsb.length() > 0)
+						cpsb.append(File.pathSeparator);
+					
+					// Add otherwise
+					cpsb.append(p.toString());
+				}
+				
+				// Set it
+				args.add("-classpath");
+				args.add(cpsb.toString());
+			}
+			
+			// Add all sources
+			if (__sources != null)
+				for (Path src : __sources)
+					args.add(src.toString());
+			
+			// Start and wait for the compilation to run
+			try
+			{
+				Process fork = new ProcessBuilder(args).start();
+				
+				for (;;)
+					try
+					{
+						return fork.waitFor() == 0;
+					}
+					catch (InterruptedException e)
+					{
+						// Ignore
+					}
+			}
+			catch (IOException e)
+			{
+				// {@squirreljme.error NB27 Failed to invoke the compiler.
+				// (The compiler arguments)}
+				throw new RuntimeException("NB27 " + args, e);
+			}
 		}
 		
 		/**
@@ -110,7 +204,60 @@ public abstract class BootstrapCompiler
 		public static final CommandLineCompiler getInstance()
 			throws UnsupportedOperationException
 		{
-			throw new Error("TODO");
+			// The Java compiler executable
+			Path javac = null;
+			
+			// Check environment for the compiler
+			String env = System.getenv("JAVAC");
+			if (env != null)
+				javac = CommandLineCompiler.findInPath(Paths.get(env));
+			
+			// Standard Java compiler
+			if (javac == null)
+				javac = CommandLineCompiler.findInPath(Paths.get("javac"));
+			
+			// Eclipse Java compiler
+			if (javac == null)
+				javac = CommandLineCompiler.findInPath(Paths.get("ecj"));
+			
+			// {@squirreljme.error NB26 No Java compiler found.}
+			if (javac == null)
+				throw new UnsupportedOperationException("NB26");
+			
+			// Use this
+			return new CommandLineCompiler(javac);
+		}
+		
+		/**
+		 * Locates the given executable in the PATH variable.
+		 *
+		 * @param __v The executable to find.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/09/29
+		 */
+		public static final Path findInPath(Path __v)
+			throws NullPointerException
+		{
+			if (__v == null)
+				throw new NullPointerException("NARG");
+			
+			// Check path variable
+			String pathvar = System.getenv("PATH");
+			if (pathvar != null)
+				for (String pathseg : pathvar.split(
+					Pattern.quote(File.pathSeparator)))
+				{
+					Path p = Paths.get(pathseg).resolve(__v);
+					if (Files.isExecutable(p))
+						return p;
+				}
+			
+			// Check if current path is executable
+			if (Files.isExecutable(__v))
+				return __v;
+			
+			// Otherwise nothing works
+			return null;
 		}
 	}
 	
