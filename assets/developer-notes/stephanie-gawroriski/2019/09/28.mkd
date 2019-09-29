@@ -1,0 +1,29 @@
+# 2019/09/28
+
+## 11:48
+
+If I want dynamically initialized classes, then I probably want class
+initialization barriers in place. Otherwise everything will have to be
+statically initialized. However, statically initializing everything is
+a bit simpler. The only other consideration is dynamically initialized
+classes at reflection time. But I might not want to force the load of
+too many classes especially if not many are used. That will increase
+load time and reduce complexity and code will run faster with less
+checks being done to see if classes got initialized. Let me think about
+`Class.forName()`. So if it is for a class which has already been loaded
+that is fine, if it is for a class that needs initialization then we
+will have to do the initialization step for them. Lots of software might
+do a class check to see if something really exists before it even tries
+to call the stuff. So I do at least have the pure virtual call.
+
+## 11:54
+
+I am probably going to need some kind of check if I want to keep things
+a bit looser when called. So is that like wrapping all field accesses
+into special methods? Would be complex really and would slow things down.
+So not sure the route to take.
+
+## 14:23
+
+I rather want to distract myself for a bit and refactor the bootstrap for
+a bit.
