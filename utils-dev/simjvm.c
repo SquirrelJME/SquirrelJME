@@ -34,10 +34,10 @@ int main(int argc, char** argv)
 	fprintf(stderr, "https://squirreljme.cc/\n");
 	fprintf(stderr, "\n");
 	
-	fprintf(stderr, "This virtual machine is being used to bootstrap the\n");
-	fprintf(stderr, "build of SquirrelJME because a Java run-time has not\n");
-	fprintf(stderr, "detected on the host machine or one which was not\n");
-	fprintf(stderr, "elected to be used. The purpose of this Simulated JVM\n");
+	fprintf(stderr, "This virtual machine is being used to bootstrap the ");
+	fprintf(stderr, "build of SquirrelJME because a Java run-time has not ");
+	fprintf(stderr, "detected on the host machine or one which was not ");
+	fprintf(stderr, "elected to be used. The purpose of this Simulated JVM ");
 	fprintf(stderr, "is to allow for building SquirrelJME on any system.\n");
 	fprintf(stderr, "\n");
 	
