@@ -1,0 +1,11 @@
+# 2019/09/29
+
+## 08:00
+
+I am working on a build system refactor to make it cleaner and a bit better
+and to also allow compiling at least on Android.
+
+## 13:27
+
+Okay so I now have a bootstrap that could technically run on Android at least
+with the compiler aspect of it, I just need a working JVM for it now.
