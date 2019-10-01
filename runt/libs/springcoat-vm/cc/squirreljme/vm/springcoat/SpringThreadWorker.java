@@ -4269,9 +4269,9 @@ public final class SpringThreadWorker
 				// Fatal ToDo
 			case SystemCallIndex.FATAL_TODO:
 				// {@squirreljme.error BK33 Virtual machine code executed
-				// a fatal Todo.}
+				// a fatal Todo. (The To Do code)}
 				rv = err = 0;
-				throw new SpringVirtualMachineException("BK33");
+				throw new SpringVirtualMachineException("BK33 " + __args[1]);
 				
 				// Invoke the garbage collector
 			case SystemCallIndex.GARBAGE_COLLECT:
