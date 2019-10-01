@@ -213,40 +213,111 @@ public interface SystemCallIndex
 	public static final short CALL_STACK_HEIGHT =
 		19;
 	
-	/** Gets the specified call stack item. */
+	/**
+	 * Gets the specified call stack item.
+	 *
+	 * @param 1 The number of frames from the top of the call stack to get the
+	 * items for, zero will be the top-most item.
+	 * @param 2 The item to obtain as specified in {@link CallStackItem}.
+	 * @return The value of the item, if it is undefined or not supported
+	 * then zero will be returned.
+	 */
 	public static final short CALL_STACK_ITEM =
 		20;
 	
-	/** Returns the string of the given pointer. */
+	/**
+	 * Returns the string of the given pointer.
+	 *
+	 * @param 1 The pointer to the modified UTF encoded string.
+	 * @return An instance of {@link String}.
+	 */
 	public static final short LOAD_STRING =
 		21;
 	
-	/** Fatal ToDo hit. */
+	/**
+	 * Fatal ToDo hit.
+	 *
+	 * @param 1 The code to use for the To Do.
+	 * @return This should not return unless it is not supported.
+	 */
 	public static final short FATAL_TODO =
 		22;
 	
-	/** Supervisor booted okay. */
+	/**
+	 * This is used to indicate that the supervisor booted correctly and that
+	 * execution control is normal.
+	 *
+	 * @return Generally zero as no value is intended to be returned.
+	 */
 	public static final short SUPERVISOR_BOOT_OKAY =
 		23;
 	
-	/** Get property of the framebuffer. */
+	/**
+	 * Get, set, or change a property of the framebuffer, the properties which
+	 * are defined are specified in {@link FramebufferProperty}.
+	 *
+	 * @param 1 The frame buffer property to select.
+	 * @param ... Undefined, this depends on the property selected.
+	 * @return Whatever value the frame buffer property will return.
+	 */
 	public static final short FRAMEBUFFER_PROPERTY =
 		24;
 	
-	/** The current byte order. */
+	/**
+	 * Returns the native byte order of the system the virtual machine is
+	 * running on.
+	 *
+	 * @return Non-zero if little endian, otherwise zero will be big endian.
+	 */
 	public static final short BYTE_ORDER_LITTLE =
 		25;
 	
-	/** Returns the pointer to the option JAR data. */
+	/**
+	 * Returns the pointer to the option JAR data.
+	 *
+	 * @param 1 The option JAR slot to request.
+	 * @return A pointer to the data or zero if there is no option JAR defined
+	 * in the requested slot.
+	 */
 	public static final short OPTION_JAR_DATA =
 		26;
 	
-	/** Returns the size of the option JAR data. */
+	/**
+	 * Returns the size of the option JAR data.
+	 *
+	 * @param 1 The option JAR slot to request.
+	 * @return The size of the specified option JAR or zero if there is no
+	 * option JAR defined in the requested slot.
+	 */
 	public static final short OPTION_JAR_SIZE =
 		27;
 	
-	/** The number of system calls that are defined in this run-time. */
+	/**
+	 * Loads the specified class.
+	 *
+	 * @param 1 The Modified UTF specifying the class name.
+	 * @return The pointer to the loaded class info, will be zero on failure.
+	 */
+	public static final short LOAD_CLASS_UTF =
+		28;
+	
+	/**
+	 * Loads the specified class.
+	 *
+	 * @param 1 A byte array containing the modified UTF specifying the class
+	 * name.
+	 * @return The pointer to the loaded class info, will be zero on failure.
+	 */
+	public static final short LOAD_CLASS_BYTES =
+		29;
+	
+	/**
+	 * The number of system calls that are defined in this run-time.
+	 *
+	 * One must NEVER utilize this value in a system call as it will have
+	 * unintended consequences of requesting future API values.
+	 */
 	public static final short NUM_SYSCALLS =
-		26;
+		30;
 }
 
