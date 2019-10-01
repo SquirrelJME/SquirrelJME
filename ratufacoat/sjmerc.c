@@ -1596,7 +1596,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return 0;
+			return ib;
 		
 			/* Set memory in integer values. */
 		case SJME_SYSCALL_MEM_SET_INT:
@@ -1607,14 +1607,14 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			ic = args[1];
 			
 			/* Wipe these values! */
-			ib = args[2];
+			ib = args[2] & ~SJME_JINT_C(3);
 			for (ia = 0; ia < ib; ia += 4)
 				sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER, pa, ia, ic,
 					error);
 			
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return SJME_JINT_C(0);
+			return ib;
 			
 			/* Return pointer to the OptionJAR. */
 		case SJME_SYSCALL_OPTION_JAR_DATA:
