@@ -1,0 +1,19 @@
+# 2019/09/30
+
+## 08:39
+
+Putting down some of my random thoughts that appear out of nowhere during work
+so that they are not lost at all. I need to implement a mechanism to allow
+for dynamic class loading (basically dependency checking if loaded) and
+additionally handling of volatile fields and such (atomic operations). At
+least with dependency checking I can allow for the dynamic loading of things.
+My idea in this case is to just have a memory address which contains a flag
+on whether the class has been loaded and if it has not, then to perform that
+loading and such. Probably will need to involve loading. But actually that
+field I could just go a compare against zero, and it be an actual pointer to
+the class information that is sort of there. I figure for every class I know
+about which is not "loaded", I will have a class info for it regardless.
+Then I will just have a straight list of class pointers that specify where
+is what and otherwise. But, still not sure how I would handle it because I
+can have a pointer to the class info but zero has to mean that it is not
+initialized. So we shall see.
