@@ -1,0 +1,42 @@
+# 2019/10/01
+
+## 16:27
+
+Okay so I have an idea down to how I will be getting
+dynamically loaded classes. Effectively I am going to
+need a cache class entry in the constant pool.
+This entry will contain the class pointer. The code
+generator will check if it is zero, if it is then it
+will perform a class load. If that load is a success
+then it will write the true class pointer over the
+spot in the pool. It will call a JVM function or
+system call to load the class. Probably a system call
+to the supervisor. This code will never be hit for
+the supervisor since all classes are alreafy loaded.
+Load class will not be a true system call, it will
+be purely handled in software. But I feel it is the
+only way to get it actually working.
+
+## 16:40
+
+The system call will take a byte array and also one
+with a UTF pointer (with both the same data) and it
+will copy and use the class name there wheb it does
+the loading. There will also have to be invoking
+of static initializers but that has to wait until
+I can actually call into a task (it would be a
+recursive operation pretty much). Ironically tasks
+will be able to get the stack trace information from
+the kernel so I should actually have a flag to
+indicate the process something came from. So this
+means I will need a "context switch" API call that
+will basically set the context ID and then set a
+bunch of restored state. Effectively a setjmp sort of.
+But it would actually be a context enter as it will
+make a new stack frame with the new info. I think
+this will work out.
+
+## 18:43
+
+Okay, so I am refactoring the system call documentation so that way it is more
+well known how they work rather than just being basic fields.
