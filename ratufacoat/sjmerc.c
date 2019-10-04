@@ -389,8 +389,26 @@
 /** Returns the size of the option JAR data. */
 #define SJME_SYSCALL_OPTION_JAR_SIZE SJME_JINT_C(27)
 
+/** Loads the specific class (Modified UTF Pointer). */
+#define SJME_SYSCALL_LOAD_CLASS_UTF SJME_JINT_C(28)
+
+/** Loads the specified class. */
+#define SJME_SYSCALL_LOAD_CLASS_BYTES SJME_JINT_C(29)
+
+/** Set supervisor register value. */
+#define SJME_SYSCALL_SET_SUPERVISOR_PROPERTY SJME_JINT_C(30)
+
+/** Get supervisor register value. */
+#define SJME_SYSCALL_GET_SUPERVISOR_PROPERTY SJME_JINT_C(31)
+
+/** Set task ID for current frame. */
+#define SJME_SYSCALL_SET_FRAME_TASK_ID SJME_JINT_C(32)
+
+/** Get task ID for current frame. */
+#define SJME_SYSCALL_GET_FRAME_TASK_ID SJME_JINT_C(33)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(28)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(34)
 
 /** No error, or success. */
 #define SJME_SYSCALL_ERROR_NO_ERROR SJME_JINT_C(0)
@@ -440,8 +458,11 @@
 /** Java PC address. */
 #define SJME_CALLSTACKITEM_JAVA_PC_ADDRESS SJME_JINT_C(7)
 
+/** Current Task ID. */
+#define SJME_CALLSTACKITEM_TASK_ID SJME_JINT_C(8)
+
 /** The number of supported items. */
-#define SJME_CALLSTACKITEM_NUM_ITEMS SJME_JINT_C(8)
+#define SJME_CALLSTACKITEM_NUM_ITEMS SJME_JINT_C(9)
 
 /** Returns the address of the framebuffer. */
 #define SJME_FRAMEBUFFER_PROPERTY_ADDRESS SJME_JINT_C(1)

@@ -22,7 +22,7 @@ public interface SystemCallIndex
 	 * @param 1 The system call index to query.
 	 * @return Zero if not supported, otherwise a non-zero value.
 	 */
-	public static final short QUERY_INDEX =
+	public static final byte QUERY_INDEX =
 		0;
 	
 	/**
@@ -37,7 +37,7 @@ public interface SystemCallIndex
 	 * @param 1 The system call index to query.
 	 * @return The last error code, will be zero if the last command succeeded.
 	 */
-	public static final short ERROR_GET =
+	public static final byte ERROR_GET =
 		1;
 	
 	/**
@@ -53,7 +53,7 @@ public interface SystemCallIndex
 	 * @param 2 The value to set error register to.
 	 * @return Zero on success
 	 */
-	public static final short ERROR_SET =
+	public static final byte ERROR_SET =
 		2;
 	
 	/**
@@ -61,7 +61,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The lower 32-bits of the time.
 	 */
-	public static final short TIME_LO_MILLI_WALL =
+	public static final byte TIME_LO_MILLI_WALL =
 		3;
 	
 	/**
@@ -69,7 +69,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The higher 32-bits of the time.
 	 */
-	public static final short TIME_HI_MILLI_WALL =
+	public static final byte TIME_HI_MILLI_WALL =
 		4;
 	
 	/**
@@ -77,7 +77,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The lower 32-bits of the time.
 	 */
-	public static final short TIME_LO_NANO_MONO =
+	public static final byte TIME_LO_NANO_MONO =
 		5;
 	
 	/**
@@ -85,7 +85,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The higher 32-bits of the time.
 	 */
-	public static final short TIME_HI_NANO_MONO =
+	public static final byte TIME_HI_NANO_MONO =
 		6;
 	
 	/**
@@ -93,7 +93,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The free memory amount in bytes.
 	 */
-	public static final short VMI_MEM_FREE =
+	public static final byte VMI_MEM_FREE =
 		7;
 	
 	/**
@@ -101,7 +101,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The used memory amount in bytes.
 	 */
-	public static final short VMI_MEM_USED =
+	public static final byte VMI_MEM_USED =
 		8;
 	
 	/**
@@ -109,7 +109,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The max memory amount in bytes.
 	 */
-	public static final short VMI_MEM_MAX =
+	public static final byte VMI_MEM_MAX =
 		9;
 	
 	/**
@@ -118,7 +118,7 @@ public interface SystemCallIndex
 	 *
 	 * @return Generally zero although any other value could be returned.
 	 */
-	public static final short GARBAGE_COLLECT =
+	public static final byte GARBAGE_COLLECT =
 		10;
 	
 	/**
@@ -128,7 +128,7 @@ public interface SystemCallIndex
 	 * @return This generally does not return, if it does then the error code
 	 * will likely specify why this failed.
 	 */
-	public static final short EXIT =
+	public static final byte EXIT =
 		11;
 	
 	/**
@@ -139,7 +139,7 @@ public interface SystemCallIndex
 	 * @return The API level of the virtual machine.
 	 */
 	@Deprecated
-	public static final short API_LEVEL =
+	public static final byte API_LEVEL =
 		12;
 	
 	/**
@@ -147,7 +147,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The pipe descriptor for standard input.
 	 */
-	public static final short PD_OF_STDIN =
+	public static final byte PD_OF_STDIN =
 		13;
 	
 	/**
@@ -155,7 +155,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The pipe descriptor for standard output.
 	 */
-	public static final short PD_OF_STDOUT =
+	public static final byte PD_OF_STDOUT =
 		14;
 	
 	/**
@@ -163,7 +163,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The pipe descriptor for standard error.
 	 */
-	public static final short PD_OF_STDERR =
+	public static final byte PD_OF_STDERR =
 		15;
 	
 	/**
@@ -174,7 +174,7 @@ public interface SystemCallIndex
 	 * @return The number of bytes written to the output, if this returns
 	 * a value lower than zero then it indicates an error.
 	 */
-	public static final short PD_WRITE_BYTE =
+	public static final byte PD_WRITE_BYTE =
 		16;
 	
 	/**
@@ -187,7 +187,7 @@ public interface SystemCallIndex
 	 * @return The number of bytes actually written, if this is zero then
 	 * it is likely the system call is not supported.
 	 */
-	public static final short MEM_SET =
+	public static final byte MEM_SET =
 		17;
 	
 	/**
@@ -202,7 +202,7 @@ public interface SystemCallIndex
 	 * @return The number of bytes actually written, if this is zero then
 	 * it is likely the system call is not supported.
 	 */
-	public static final short MEM_SET_INT =
+	public static final byte MEM_SET_INT =
 		18;
 	
 	/**
@@ -210,7 +210,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The height of the call stack.
 	 */
-	public static final short CALL_STACK_HEIGHT =
+	public static final byte CALL_STACK_HEIGHT =
 		19;
 	
 	/**
@@ -222,7 +222,7 @@ public interface SystemCallIndex
 	 * @return The value of the item, if it is undefined or not supported
 	 * then zero will be returned.
 	 */
-	public static final short CALL_STACK_ITEM =
+	public static final byte CALL_STACK_ITEM =
 		20;
 	
 	/**
@@ -231,7 +231,7 @@ public interface SystemCallIndex
 	 * @param 1 The pointer to the modified UTF encoded string.
 	 * @return An instance of {@link String}.
 	 */
-	public static final short LOAD_STRING =
+	public static final byte LOAD_STRING =
 		21;
 	
 	/**
@@ -240,7 +240,7 @@ public interface SystemCallIndex
 	 * @param 1 The code to use for the To Do.
 	 * @return This should not return unless it is not supported.
 	 */
-	public static final short FATAL_TODO =
+	public static final byte FATAL_TODO =
 		22;
 	
 	/**
@@ -249,7 +249,7 @@ public interface SystemCallIndex
 	 *
 	 * @return Generally zero as no value is intended to be returned.
 	 */
-	public static final short SUPERVISOR_BOOT_OKAY =
+	public static final byte SUPERVISOR_BOOT_OKAY =
 		23;
 	
 	/**
@@ -260,7 +260,7 @@ public interface SystemCallIndex
 	 * @param ... Undefined, this depends on the property selected.
 	 * @return Whatever value the frame buffer property will return.
 	 */
-	public static final short FRAMEBUFFER_PROPERTY =
+	public static final byte FRAMEBUFFER_PROPERTY =
 		24;
 	
 	/**
@@ -269,7 +269,7 @@ public interface SystemCallIndex
 	 *
 	 * @return Non-zero if little endian, otherwise zero will be big endian.
 	 */
-	public static final short BYTE_ORDER_LITTLE =
+	public static final byte BYTE_ORDER_LITTLE =
 		25;
 	
 	/**
@@ -279,7 +279,7 @@ public interface SystemCallIndex
 	 * @return A pointer to the data or zero if there is no option JAR defined
 	 * in the requested slot.
 	 */
-	public static final short OPTION_JAR_DATA =
+	public static final byte OPTION_JAR_DATA =
 		26;
 	
 	/**
@@ -289,7 +289,7 @@ public interface SystemCallIndex
 	 * @return The size of the specified option JAR or zero if there is no
 	 * option JAR defined in the requested slot.
 	 */
-	public static final short OPTION_JAR_SIZE =
+	public static final byte OPTION_JAR_SIZE =
 		27;
 	
 	/**
@@ -298,18 +298,58 @@ public interface SystemCallIndex
 	 * @param 1 The Modified UTF specifying the class name.
 	 * @return The pointer to the loaded class info, will be zero on failure.
 	 */
-	public static final short LOAD_CLASS_UTF =
+	public static final byte LOAD_CLASS_UTF =
 		28;
 	
 	/**
 	 * Loads the specified class.
 	 *
-	 * @param 1 A byte array containing the modified UTF specifying the class
-	 * name.
+	 * @param 1 A byte array encoded in UTF-8 which contains the class name.
 	 * @return The pointer to the loaded class info, will be zero on failure.
 	 */
-	public static final short LOAD_CLASS_BYTES =
+	public static final byte LOAD_CLASS_BYTES =
 		29;
+	
+	/**
+	 * Sets the value of a supervisor register.
+	 *
+	 * Only the supervisor is allowed to set these properties.
+	 *
+	 * @param 1 The supervisor register to set.
+	 * @param 2 The new value of the register.
+	 * @return A non-zero value if this was successful.
+	 */
+	public static final byte SET_SUPERVISOR_PROPERTY =
+		30;
+	
+	/**
+	 * Gets the value of a supervisor register.
+	 *
+	 * @param 1 The supervisor register to get.
+	 * @return The value of that register, error should be checked to ensure
+	 * that it did not fail.
+	 */
+	public static final byte GET_SUPERVISOR_PROPERTY =
+		31;
+	
+	/**
+	 * Sets the task ID of the current thread frame.
+	 *
+	 * Only the supervisor is allowed to set tihus.
+	 *
+	 * @param 1 The task ID to set.
+	 * @return A non-zero value if this was successful.
+	 */
+	public static final byte SET_FRAME_TASK_ID =
+		32;
+	
+	/**
+	 * Gets the value of a thread register.
+	 *
+	 * @return The value of the task ID.
+	 */
+	public static final byte GET_FRAME_TASK_ID =
+		33;
 	
 	/**
 	 * The number of system calls that are defined in this run-time.
@@ -317,7 +357,7 @@ public interface SystemCallIndex
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
-	public static final short NUM_SYSCALLS =
-		30;
+	public static final byte NUM_SYSCALLS =
+		34;
 }
 
