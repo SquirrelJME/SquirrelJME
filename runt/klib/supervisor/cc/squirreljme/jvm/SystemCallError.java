@@ -40,6 +40,10 @@ public final class SystemCallError
 	public static final byte NO_FRAMEBUFFER =
 		-5;
 	
+	/** Permission denied. */
+	public static final byte PERMISSION_DENIED =
+		-6;
+	
 	/**
 	 * Not used.
 	 *

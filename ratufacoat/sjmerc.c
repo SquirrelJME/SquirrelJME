@@ -428,6 +428,9 @@
 /** There is no framebuffer. */
 #define SJME_SYSCALL_ERROR_NO_FRAMEBUFFER SJME_JINT_C(-5)
 
+/** Permission denied. */
+#define SJME_SYSCALL_ERROR_PERMISSION_DENIED SJME_JINT_C(-6)
+
 /** Pipe descriptor for standard output. */
 #define SJME_PIPE_FD_STDOUT SJME_JINT_C(1)
 
@@ -871,6 +874,9 @@ struct sjme_cpustate
 	
 	/** Debug: Java Address. */
 	sjme_jint debugjpc;
+	
+	/** Debug: The Task ID. */
+	sjme_jint taskid;
 	
 	/** The parent CPU state. */
 	sjme_cpustate* parent;
@@ -1353,6 +1359,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_WRITE_BYTE:
 				case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
+				case SJME_SYSCALL_GET_FRAME_TASK_ID:
+				case SJME_SYSCALL_SET_FRAME_TASK_ID:
 					return SJME_JINT_C(1);
 			}
 			return SJME_JINT_C(0);
@@ -1721,6 +1729,17 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			jvm->supervisorokay = 1;
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			return SJME_JINT_C(0);
+			
+			/* Get Task ID. */
+		case SJME_SYSCALL_GET_FRAME_TASK_ID:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return cpustate->taskid;
+			
+			/* Set Task ID. */
+		case SJME_SYSCALL_SET_FRAME_TASK_ID:
+			cpustate->taskid = args[0];
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return SJME_JINT_C(1);
 		
 			/* Unknown or unsupported system call. */
 		default:
@@ -2286,6 +2305,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						r[ia] = 0;
 					r[SJME_POOL_REGISTER] = oldcpu->r[SJME_NEXT_POOL_REGISTER];
 					r[SJME_NEXT_POOL_REGISTER] = 0;
+					
+					/* Inherit the task ID. */
+					cpu->state.taskid = oldcpu->taskid;
 					
 					/* The address to execute. */
 					ia = oldcpu->r[

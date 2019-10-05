@@ -156,6 +156,9 @@ public final class NativeCPU
 			// Set the pool register to the next pool register value
 			dest[NativeCode.POOL_REGISTER] =
 				src[NativeCode.NEXT_POOL_REGISTER];
+			
+			// Copy task register.
+			rv._taskid = lastframe._taskid;
 		}
 		
 		// Copy the arguments to the argument slots
@@ -1276,6 +1279,8 @@ public final class NativeCPU
 						case SystemCallIndex.PD_OF_STDOUT:
 						case SystemCallIndex.PD_WRITE_BYTE:
 						case SystemCallIndex.SUPERVISOR_BOOT_OKAY:
+						case SystemCallIndex.GET_FRAME_TASK_ID:
+						case SystemCallIndex.SET_FRAME_TASK_ID:
 						case SystemCallIndex.TIME_HI_MILLI_WALL:
 						case SystemCallIndex.TIME_HI_NANO_MONO:
 						case SystemCallIndex.TIME_LO_MILLI_WALL:
@@ -1500,6 +1505,55 @@ public final class NativeCPU
 				rv = 0;
 				err = 0;
 				break;
+				
+				// Gets the frame task ID
+			case SystemCallIndex.GET_FRAME_TASK_ID:
+				{
+					LinkedList<Frame> frames = this._frames;
+					Frame frame = frames.peekLast();
+					
+					// Set ID
+					if (frame != null)
+					{
+						// Is fine
+						rv = frame._taskid;
+						err = 0;
+					}
+					
+					// This should not happen
+					else
+					{
+						rv = 0;
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					}
+				}
+				break;
+				
+				// Sets the frame task ID
+			case SystemCallIndex.SET_FRAME_TASK_ID:
+				{
+					LinkedList<Frame> frames = this._frames;
+					Frame frame = frames.peekLast();
+					
+					// Set ID
+					if (frame != null)
+					{
+						// Set
+						frame._taskid = __args[0];
+						
+						// Is fine
+						rv = 1;
+						err = 0;
+					}
+					
+					// This should not happen
+					else
+					{
+						rv = 0;
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					}
+				}
+				break;
 
 				// Current wall clock milliseconds (high).
 			case SystemCallIndex.TIME_HI_MILLI_WALL:
@@ -1633,6 +1687,9 @@ public final class NativeCPU
 		
 		/** The current Java address. */
 		int _injpc;
+		
+		/** The current task ID. */
+		int _taskid;
 	}
 }
 
