@@ -178,13 +178,14 @@ public class Throwable
 				for (int b = 0; b < rawn; b += CallStackItem.NUM_ITEMS)
 				{
 					// Print it out
-					todo.DEBUG.note("    %s::%s:%s (%s:%d) A@%d J@%d/%d",
+					todo.DEBUG.note("    %s::%s:%s T%d (%s:%d) A@%d J@%d/%d",
 						JVMFunction.jvmLoadString(
 							rawtrace[b + CallStackItem.CLASS_NAME]),
 						JVMFunction.jvmLoadString(
 							rawtrace[b + CallStackItem.METHOD_NAME]),
 						JVMFunction.jvmLoadString(
 							rawtrace[b + CallStackItem.METHOD_TYPE]),
+						rawtrace[b + CallStackItem.TASK_ID],
 						JVMFunction.jvmLoadString(
 							rawtrace[b + CallStackItem.SOURCE_FILE]),
 						rawtrace[b + CallStackItem.SOURCE_LINE],
@@ -248,6 +249,8 @@ public class Throwable
 						rawtrace[base + CallStackItem.METHOD_NAME]);
 					todo.DEBUG.codeUtf('T', 'y',
 						rawtrace[base + CallStackItem.METHOD_TYPE]);
+					todo.DEBUG.codeUtf('T', '#',
+						rawtrace[base + CallStackItem.TASK_ID]);
 					todo.DEBUG.codeUtf('T', 'f',
 						rawtrace[base + CallStackItem.SOURCE_FILE]);
 					todo.DEBUG.code('T', 'l',
