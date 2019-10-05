@@ -364,16 +364,5 @@ public final class NativeUIBackend
 				((ExposedDisplayable)ad._current).sizeChanged(dm[2], dm[3]);
 		}
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/17
-	 */
-	@Override
-	public final boolean vibrate(int __ms)
-	{
-		// Not supported here
-		return false;
-	}
 }
 

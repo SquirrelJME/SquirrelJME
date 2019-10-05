@@ -64,15 +64,5 @@ public interface PhoneDisplayBackend
 	 * @since 2019/05/16
 	 */
 	public abstract void repaint(int __x, int __y, int __w, int __h);
-	
-	/**
-	 * Vibrates the display for the given number of milliseconds.
-	 *
-	 * @param __ms The number of milliseconds to vibrate for.
-	 * @return {@code true} if the vibration was handled here, otherwise
-	 * {@code false} for it not being supported so vibration will be simulated.
-	 * @since 2019/05/17
-	 */
-	public abstract boolean vibrate(int __ms);
 }
 
