@@ -1378,7 +1378,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 		case SJME_SYSCALL_CALL_STACK_HEIGHT:
 			/* Count trace depth. */
 			ia = 0;
-			while (cpu != NULL)
+			while (cpustate != NULL)
 			{
 				/* Increase the count. */
 				ia++;
@@ -1451,6 +1451,11 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_CALLSTACKITEM_JAVA_PC_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					return cpustate->debugjpc;
+					
+					/* Current Task ID. */
+				case SJME_CALLSTACKITEM_TASK_ID:
+					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+					return cpustate->taskid;
 					
 					/* Unknown. */
 				default:

@@ -50,6 +50,9 @@ public final class CallTraceElement
 	/** The Java byte code address. */
 	protected final int jbcaddr;
 	
+	/** The task ID. */
+	protected final int taskid;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
@@ -144,6 +147,26 @@ public final class CallTraceElement
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line, int __jbc, int __jpc)
 	{
+		this(__cl, __mn, __md, __addr, __file, __line, __jbc, __jpc, 0);
+	}
+	
+	/**
+	 * Initializes a call trace element.
+	 *
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __md The method descriptor.
+	 * @param __addr The address the method executes at.
+	 * @param __file The file.
+	 * @param __line The line in the file.
+	 * @param __jbc The Java byte code instruction used.
+	 * @param __jpc The Java PC address.
+	 * @param __tid The task ID.
+	 * @since 2019/10/05
+	 */
+	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
+		String __file, int __line, int __jbc, int __jpc, int __tid)
+	{
 		this.classname = __cl;
 		this.methodname = __mn;
 		this.methoddescriptor = __md;
@@ -152,6 +175,7 @@ public final class CallTraceElement
 		this.line = __line;
 		this.jbcinst = __jbc;
 		this.jbcaddr = __jpc;
+		this.taskid = __tid;
 	}
 	
 	/**
@@ -223,7 +247,8 @@ public final class CallTraceElement
 			this.address == o.address &&
 			this.line == o.line &&
 			this.jbcinst == o.jbcinst &&
-			this.jbcaddr == o.jbcaddr;
+			this.jbcaddr == o.jbcaddr &&
+			this.taskid == o.taskid;
 	}
 	
 	/**
@@ -255,7 +280,8 @@ public final class CallTraceElement
 				(int)((address >>> 32) | address) ^
 				~this.line +
 				~this.jbcinst +
-				~this.jbcaddr);
+				~this.jbcaddr +
+				~this.taskid);
 		}
 		return rv;
 	}
@@ -314,6 +340,7 @@ public final class CallTraceElement
 			int line = this.line;
 			int jbcinst = this.jbcinst & 0xFF;
 			int jbcaddr = this.jbcaddr;
+			int taskid = this.taskid;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -327,6 +354,13 @@ public final class CallTraceElement
 			{
 				sb.append(':');
 				sb.append(methoddescriptor);
+			}
+			
+			// Task ID?
+			if (taskid != 0)
+			{
+				sb.append(" T");
+				sb.append(taskid);
 			}
 			
 			// Execution address
@@ -459,6 +493,7 @@ public final class CallTraceElement
 			int line = this.line;
 			int jbcinst = this.jbcinst & 0xFF;
 			int jbcaddr = this.jbcaddr;
+			int taskid = this.taskid;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -471,6 +506,13 @@ public final class CallTraceElement
 			{
 				sb.append(':');
 				sb.append(methoddescriptor);
+			}
+			
+			// Task ID?
+			if (taskid != 0)
+			{
+				sb.append(" T");
+				sb.append(taskid);
 			}
 			
 			if (address != Long.MIN_VALUE)
@@ -641,6 +683,9 @@ public final class CallTraceElement
 			// The PC address
 			int pcaddr = __trace[base + CallStackItem.PC_ADDRESS];
 			
+			// Task ID
+			int tid = __trace[base + CallStackItem.TASK_ID];
+			
 			// Build elements
 			rv[z] = new CallTraceElement(
 				scl,
@@ -650,7 +695,8 @@ public final class CallTraceElement
 				ssf,
 				__trace[base + CallStackItem.SOURCE_LINE],
 				__trace[base + CallStackItem.JAVA_OPERATION],
-				__trace[base + CallStackItem.JAVA_PC_ADDRESS]);
+				__trace[base + CallStackItem.JAVA_PC_ADDRESS],
+				tid);
 		}
 		
 		// Use the resolved form

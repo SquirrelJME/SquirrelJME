@@ -954,7 +954,8 @@ public final class NativeCPU
 			__f._pc, __f._insourcefile,
 			__f._inline,
 			__f._injop,
-			__f._injpc);
+			__f._injpc,
+			__f._taskid);
 	}
 	
 	/**
@@ -1365,6 +1366,10 @@ public final class NativeCPU
 							err = 0;
 							rv = frame._injpc;
 							break;
+						
+						case CallStackItem.TASK_ID:
+							err = 0;
+							rv = frame._taskid;
 						
 							// Not valid
 						default:
