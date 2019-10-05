@@ -11,6 +11,7 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
@@ -87,6 +88,10 @@ public final class NativeCPU
 	/** System call error states for this CPU. */
 	private final int[] _syscallerrors =
 		new int[SystemCallIndex.NUM_SYSCALLS];
+	
+	/** Super visor properties. */
+	private final int[] _supervisorproperties =
+		new int[SupervisorPropertyIndex.NUM_PROPERTIES];
 	
 	/**
 	 * Initializes the native CPU.
@@ -1282,6 +1287,8 @@ public final class NativeCPU
 						case SystemCallIndex.PD_OF_STDOUT:
 						case SystemCallIndex.PD_WRITE_BYTE:
 						case SystemCallIndex.SUPERVISOR_BOOT_OKAY:
+						case SystemCallIndex.SUPERVISOR_PROPERTY_GET:
+						case SystemCallIndex.SUPERVISOR_PROPERTY_SET:
 						case SystemCallIndex.TIME_HI_MILLI_WALL:
 						case SystemCallIndex.TIME_HI_NANO_MONO:
 						case SystemCallIndex.TIME_LO_MILLI_WALL:
@@ -1423,22 +1430,11 @@ public final class NativeCPU
 			case SystemCallIndex.FRAME_TASK_ID_GET:
 				{
 					LinkedList<Frame> frames = this._frames;
-					Frame frame = frames.peekLast();
+					Frame frame = frames.getLast();
 					
-					// Set ID
-					if (frame != null)
-					{
-						// Is fine
-						rv = frame._taskid;
-						err = 0;
-					}
-					
-					// This should not happen
-					else
-					{
-						rv = 0;
-						err = SystemCallError.VALUE_OUT_OF_RANGE;
-					}
+					// Is fine
+					rv = frame._taskid;
+					err = 0;
 				}
 				break;
 				
@@ -1446,25 +1442,14 @@ public final class NativeCPU
 			case SystemCallIndex.FRAME_TASK_ID_SET:
 				{
 					LinkedList<Frame> frames = this._frames;
-					Frame frame = frames.peekLast();
+					Frame frame = frames.getLast();
 					
-					// Set ID
-					if (frame != null)
-					{
-						// Set
-						frame._taskid = __args[0];
-						
-						// Is fine
-						rv = 1;
-						err = 0;
-					}
+					// Set
+					frame._taskid = __args[0];
 					
-					// This should not happen
-					else
-					{
-						rv = 0;
-						err = SystemCallError.VALUE_OUT_OF_RANGE;
-					}
+					// Is fine
+					rv = 1;
+					err = 0;
 				}
 				break;
 				
@@ -1558,6 +1543,50 @@ public final class NativeCPU
 				// Is fine
 				rv = 0;
 				err = 0;
+				break;
+				
+				// Get supervisor property
+			case SystemCallIndex.SUPERVISOR_PROPERTY_GET:
+				{
+					int dx = __args[0];
+					
+					// Out of range?
+					if (dx < 0 || dx >= SupervisorPropertyIndex.NUM_PROPERTIES)
+					{
+						rv = 0;
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					}
+					
+					// Valid
+					else
+					{
+						rv = this._supervisorproperties[dx];
+						err = SystemCallError.NO_ERROR;
+					}
+				}
+				break;
+				
+				// Set supervisor property
+			case SystemCallIndex.SUPERVISOR_PROPERTY_SET:
+				{
+					int dx = __args[0];
+					
+					// Out of range?
+					if (dx < 0 || dx >= SupervisorPropertyIndex.NUM_PROPERTIES)
+					{
+						rv = 0;
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					}
+					
+					// Valid
+					else
+					{
+						this._supervisorproperties[dx] = __args[1];
+						
+						rv = 0;
+						err = SystemCallError.NO_ERROR;
+					}
+				}
 				break;
 
 				// Current wall clock milliseconds (high).

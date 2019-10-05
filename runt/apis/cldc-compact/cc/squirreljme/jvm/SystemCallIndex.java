@@ -311,22 +311,26 @@ public interface SystemCallIndex
 		29;
 	
 	/**
-	 * Sets the value of a supervisor register.
+	 * Sets the value of a supervisor property.
+	 *
+	 * Supervisor properties are local to a thread.
 	 *
 	 * Only the supervisor is allowed to set these properties.
 	 *
-	 * @param 1 The supervisor register to set.
-	 * @param 2 The new value of the register.
+	 * @param 1 The supervisor property to set.
+	 * @param 2 The new value of the property.
 	 * @return A non-zero value if this was successful.
 	 */
 	public static final byte SUPERVISOR_PROPERTY_SET =
 		30;
 	
 	/**
-	 * Gets the value of a supervisor register.
+	 * Gets the value of a supervisor property.
 	 *
-	 * @param 1 The supervisor register to get.
-	 * @return The value of that register, error should be checked to ensure
+	 * Supervisor properties are local to a thread.
+	 *
+	 * @param 1 The supervisor property to get.
+	 * @return The value of that property, error should be checked to ensure
 	 * that it did not fail.
 	 */
 	public static final byte SUPERVISOR_PROPERTY_GET =
