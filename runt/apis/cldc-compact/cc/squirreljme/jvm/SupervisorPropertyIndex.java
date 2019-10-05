@@ -30,8 +30,8 @@ public interface SupervisorPropertyIndex
 	public static final byte TASK_SYSCALL_METHOD_POOL_POINTER =
 		3;
 	
-	/** The number of available registers. */
-	public static final byte NUM_REGISTERS =
+	/** The number of available properties. */
+	public static final byte NUM_PROPERTIES =
 		4;
 }
 
