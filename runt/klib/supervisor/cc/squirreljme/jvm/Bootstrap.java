@@ -83,7 +83,20 @@ public final class Bootstrap
 			// Initialize config reader
 			ConfigReader config = new ConfigReader(__confbase);
 			
+			// Basic SquirrelJME Banner
+			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
+			todo.DEBUG.note("VM: %s %s",
+				config.loadString(ConfigRomType.JAVA_VM_NAME),
+				config.loadString(ConfigRomType.JAVA_VM_VERSION));
+			todo.DEBUG.note("(C) %s",
+				config.loadString(ConfigRomType.JAVA_VM_VENDOR));
+			todo.DEBUG.note("RAM/ROM (bytes): %d/%d", __ramsize, __romsize);
+			
+			// Spacer
+			todo.DEBUG.note("");
+			
 			// Load system call handler
+			todo.DEBUG.note("Setting task system call handler...");
 			Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
 				SupervisorPropertyIndex.TASK_SYSCALL_STATIC_FIELD_POINTER,
 				config.loadInteger(
@@ -96,18 +109,7 @@ public final class Bootstrap
 				SupervisorPropertyIndex.TASK_SYSCALL_METHOD_POOL_POINTER,
 				config.loadInteger(
 					ConfigRomType.SYSCALL_POOL_POINTER));
-			
-			// Basic SquirrelJME Banner
-			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
-			todo.DEBUG.note("VM: %s %s",
-				config.loadString(ConfigRomType.JAVA_VM_NAME),
-				config.loadString(ConfigRomType.JAVA_VM_VERSION));
-			todo.DEBUG.note("(C) %s",
-				config.loadString(ConfigRomType.JAVA_VM_VENDOR));
-			todo.DEBUG.note("RAM/ROM (bytes): %d/%d", __ramsize, __romsize);
-			
-			// Spacer
-			todo.DEBUG.note("");
+			todo.DEBUG.note("Okay.");
 			
 			// Initialize the client task manager
 			todo.DEBUG.note("Initializing task manager...");
