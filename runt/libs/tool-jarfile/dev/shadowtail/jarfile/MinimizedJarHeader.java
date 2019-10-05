@@ -27,11 +27,11 @@ public final class MinimizedJarHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		60;
+		72;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
-		HEADER_SIZE_WITHOUT_MAGIC + 4;
+		76;
 	
 	/** Size of table of contents entries. */
 	public static final int TOC_ENTRY_SIZE =
@@ -63,6 +63,15 @@ public final class MinimizedJarHeader
 	
 	/** The start method offset. */
 	public final int bootstart;
+	
+	/** System call static field pointer. */
+	public final int syscallsfp;
+	
+	/** System call handler code address .*/
+	public final int syscallhandler;
+	
+	/** System call pool address. */
+	public final int syscallpool;
 	
 	/** The ClassDataV2 for {@code byte[]}. */
 	public final int bootclassidba;
@@ -111,6 +120,9 @@ public final class MinimizedJarHeader
 		this.bootpool = __fs[at++];
 		this.bootsfieldbase = __fs[at++];
 		this.bootstart = __fs[at++];
+		this.syscallsfp = __fs[at++];
+		this.syscallhandler = __fs[at++];
+		this.syscallpool = __fs[at++];
 		this.bootclassidba = __fs[at++];
 		this.bootclassidbaa = __fs[at++];
 		
@@ -161,6 +173,9 @@ public final class MinimizedJarHeader
 			/* bootpool */ din.readInt(),
 			/* bootsfieldbase */ din.readInt(),
 			/* bootstart */ din.readInt(),
+			/* syscallsfp */ din.readInt(),
+			/* syscallhandler */ din.readInt(),
+			/* syscallpool */ din.readInt(),
 			/* bootclassidba */ din.readInt(),
 			/* bootclassidbaa */ din.readInt(),
 			

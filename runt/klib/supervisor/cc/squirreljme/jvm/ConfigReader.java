@@ -79,6 +79,20 @@ public final class ConfigReader
 	}
 	
 	/**
+	 * Loads the given integer.
+	 *
+	 * @param __key The key to load.
+	 * @return The resulting value or {@code 0} if not set.
+	 * @since 2019/10/05
+	 */
+	public final int loadInteger(int __key)
+	{
+		int addr = this.search(__key);
+		todo.DEBUG.code('l', 'I', (addr == 0 ? 0 : Assembly.memReadJavaInt(addr, 0)));
+		return (addr == 0 ? 0 : Assembly.memReadJavaInt(addr, 0));
+	}
+	
+	/**
 	 * Loads the given string for the given key.
 	 *
 	 * @param __key The key to load.
