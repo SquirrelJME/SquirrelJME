@@ -1272,6 +1272,8 @@ public final class NativeCPU
 						case SystemCallIndex.BYTE_ORDER_LITTLE:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
+						case SystemCallIndex.FRAME_TASK_ID_GET:
+						case SystemCallIndex.FRAME_TASK_ID_SET:
 						case SystemCallIndex.CALL_STACK_HEIGHT:
 						case SystemCallIndex.CALL_STACK_ITEM:
 						case SystemCallIndex.MEM_SET:
@@ -1280,8 +1282,6 @@ public final class NativeCPU
 						case SystemCallIndex.PD_OF_STDOUT:
 						case SystemCallIndex.PD_WRITE_BYTE:
 						case SystemCallIndex.SUPERVISOR_BOOT_OKAY:
-						case SystemCallIndex.GET_FRAME_TASK_ID:
-						case SystemCallIndex.SET_FRAME_TASK_ID:
 						case SystemCallIndex.TIME_HI_MILLI_WALL:
 						case SystemCallIndex.TIME_HI_NANO_MONO:
 						case SystemCallIndex.TIME_LO_MILLI_WALL:
@@ -1419,6 +1419,55 @@ public final class NativeCPU
 				}
 				break;
 				
+				// Gets the frame task ID
+			case SystemCallIndex.FRAME_TASK_ID_GET:
+				{
+					LinkedList<Frame> frames = this._frames;
+					Frame frame = frames.peekLast();
+					
+					// Set ID
+					if (frame != null)
+					{
+						// Is fine
+						rv = frame._taskid;
+						err = 0;
+					}
+					
+					// This should not happen
+					else
+					{
+						rv = 0;
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					}
+				}
+				break;
+				
+				// Sets the frame task ID
+			case SystemCallIndex.FRAME_TASK_ID_SET:
+				{
+					LinkedList<Frame> frames = this._frames;
+					Frame frame = frames.peekLast();
+					
+					// Set ID
+					if (frame != null)
+					{
+						// Set
+						frame._taskid = __args[0];
+						
+						// Is fine
+						rv = 1;
+						err = 0;
+					}
+					
+					// This should not happen
+					else
+					{
+						rv = 0;
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					}
+				}
+				break;
+				
 				// Sets memory to byte value
 			case SystemCallIndex.MEM_SET:
 				{
@@ -1509,55 +1558,6 @@ public final class NativeCPU
 				// Is fine
 				rv = 0;
 				err = 0;
-				break;
-				
-				// Gets the frame task ID
-			case SystemCallIndex.GET_FRAME_TASK_ID:
-				{
-					LinkedList<Frame> frames = this._frames;
-					Frame frame = frames.peekLast();
-					
-					// Set ID
-					if (frame != null)
-					{
-						// Is fine
-						rv = frame._taskid;
-						err = 0;
-					}
-					
-					// This should not happen
-					else
-					{
-						rv = 0;
-						err = SystemCallError.VALUE_OUT_OF_RANGE;
-					}
-				}
-				break;
-				
-				// Sets the frame task ID
-			case SystemCallIndex.SET_FRAME_TASK_ID:
-				{
-					LinkedList<Frame> frames = this._frames;
-					Frame frame = frames.peekLast();
-					
-					// Set ID
-					if (frame != null)
-					{
-						// Set
-						frame._taskid = __args[0];
-						
-						// Is fine
-						rv = 1;
-						err = 0;
-					}
-					
-					// This should not happen
-					else
-					{
-						rv = 0;
-						err = SystemCallError.VALUE_OUT_OF_RANGE;
-					}
-				}
 				break;
 
 				// Current wall clock milliseconds (high).

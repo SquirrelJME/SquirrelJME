@@ -396,16 +396,16 @@
 #define SJME_SYSCALL_LOAD_CLASS_BYTES SJME_JINT_C(29)
 
 /** Set supervisor register value. */
-#define SJME_SYSCALL_SET_SUPERVISOR_PROPERTY SJME_JINT_C(30)
+#define SJME_SYSCALL_SUPERVISOR_PROPERTY_SET SJME_JINT_C(30)
 
 /** Get supervisor register value. */
-#define SJME_SYSCALL_GET_SUPERVISOR_PROPERTY SJME_JINT_C(31)
+#define SJME_SYSCALL_SUPERVISOR_PROPERTY_GET SJME_JINT_C(31)
 
 /** Set task ID for current frame. */
-#define SJME_SYSCALL_SET_FRAME_TASK_ID SJME_JINT_C(32)
+#define SJME_SYSCALL_FRAME_TASK_ID_SET SJME_JINT_C(32)
 
 /** Get task ID for current frame. */
-#define SJME_SYSCALL_GET_FRAME_TASK_ID SJME_JINT_C(33)
+#define SJME_SYSCALL_FRAME_TASK_ID_GET SJME_JINT_C(33)
 
 /** System call count. */
 #define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(34)
@@ -1359,8 +1359,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_WRITE_BYTE:
 				case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
-				case SJME_SYSCALL_GET_FRAME_TASK_ID:
-				case SJME_SYSCALL_SET_FRAME_TASK_ID:
+				case SJME_SYSCALL_FRAME_TASK_ID_GET:
+				case SJME_SYSCALL_FRAME_TASK_ID_SET:
 					return SJME_JINT_C(1);
 			}
 			return SJME_JINT_C(0);
@@ -1736,12 +1736,12 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			return SJME_JINT_C(0);
 			
 			/* Get Task ID. */
-		case SJME_SYSCALL_GET_FRAME_TASK_ID:
+		case SJME_SYSCALL_FRAME_TASK_ID_GET:
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			return cpustate->taskid;
 			
 			/* Set Task ID. */
-		case SJME_SYSCALL_SET_FRAME_TASK_ID:
+		case SJME_SYSCALL_FRAME_TASK_ID_SET:
 			cpustate->taskid = args[0];
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			return SJME_JINT_C(1);

@@ -319,7 +319,7 @@ public interface SystemCallIndex
 	 * @param 2 The new value of the register.
 	 * @return A non-zero value if this was successful.
 	 */
-	public static final byte SET_SUPERVISOR_PROPERTY =
+	public static final byte SUPERVISOR_PROPERTY_SET =
 		30;
 	
 	/**
@@ -329,7 +329,7 @@ public interface SystemCallIndex
 	 * @return The value of that register, error should be checked to ensure
 	 * that it did not fail.
 	 */
-	public static final byte GET_SUPERVISOR_PROPERTY =
+	public static final byte SUPERVISOR_PROPERTY_GET =
 		31;
 	
 	/**
@@ -340,7 +340,7 @@ public interface SystemCallIndex
 	 * @param 1 The task ID to set.
 	 * @return A non-zero value if this was successful.
 	 */
-	public static final byte SET_FRAME_TASK_ID =
+	public static final byte FRAME_TASK_ID_SET =
 		32;
 	
 	/**
@@ -348,7 +348,7 @@ public interface SystemCallIndex
 	 *
 	 * @return The value of the task ID.
 	 */
-	public static final byte GET_FRAME_TASK_ID =
+	public static final byte FRAME_TASK_ID_GET =
 		33;
 	
 	/**
