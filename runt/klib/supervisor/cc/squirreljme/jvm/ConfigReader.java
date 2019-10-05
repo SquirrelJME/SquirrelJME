@@ -88,7 +88,6 @@ public final class ConfigReader
 	public final int loadInteger(int __key)
 	{
 		int addr = this.search(__key);
-		todo.DEBUG.code('l', 'I', (addr == 0 ? 0 : Assembly.memReadJavaInt(addr, 0)));
 		return (addr == 0 ? 0 : Assembly.memReadJavaInt(addr, 0));
 	}
 	
