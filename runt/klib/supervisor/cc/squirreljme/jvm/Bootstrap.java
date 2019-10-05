@@ -83,25 +83,19 @@ public final class Bootstrap
 			// Initialize config reader
 			ConfigReader config = new ConfigReader(__confbase);
 			
+			// Load system call handler
 			Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
 				SupervisorPropertyIndex.TASK_SYSCALL_STATIC_FIELD_POINTER,
 				config.loadInteger(
 					ConfigRomType.SYSCALL_STATIC_FIELD_POINTER));
-					
 			Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
 				SupervisorPropertyIndex.TASK_SYSCALL_METHOD_HANDLER,
 				config.loadInteger(
 					ConfigRomType.SYSCALL_CODE_POINTER));
-					
 			Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
 				SupervisorPropertyIndex.TASK_SYSCALL_METHOD_POOL_POINTER,
 				config.loadInteger(
 					ConfigRomType.SYSCALL_POOL_POINTER));
-			
-			Assembly.sysCallP(SystemCallIndex.FRAME_TASK_ID_SET,
-				1234);
-			todo.DEBUG.code('S', 'S', Assembly.sysCallPV(
-				SystemCallIndex.TIME_LO_MILLI_WALL));
 			
 			// Basic SquirrelJME Banner
 			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
