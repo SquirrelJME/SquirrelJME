@@ -10,6 +10,10 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.DeviceFeedbackType;
+import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
@@ -251,9 +255,33 @@ public class Display
 		throw new todo.TODO();
 	}
 	
-	public boolean flashBacklight(int __a)
+	/**
+	 * Flashes the display LED for the given number of milliseconds.
+	 *
+	 * In SquirrelJME this flashes an LED and not the back light, since it is
+	 * not a popular means to notify the user and additionally due to
+	 * medical concerns such as epilepsy.
+	 *
+	 * @param __ms The number of milliseconds to flash for.
+	 * @return {@code true} if the backlight is controlled by the application
+	 * and the display is in the foreground, otherwise {@code false}.
+	 * @since 2019/10/05
+	 */
+	public boolean flashBacklight(int __ms)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB30 Cannot blink for a negative duration.}
+		if (__ms < 0)
+			throw new IllegalArgumentException("EB30");
+		
+		// Blink!
+		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
+			DeviceFeedbackType.BLINK_LED, __ms);
+		
+		// Only return true if no error was generated
+		return (SystemCallError.NO_ERROR ==
+			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
+				SystemCallIndex.DEVICE_FEEDBACK));
 	}
 	
 	/**
@@ -828,14 +856,14 @@ public class Display
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1n");
 		
-		// Send vibration
-		this._phoneui.vibrate(__d);
+		// Clear vibration
+		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
+			DeviceFeedbackType.VIBRATE, __d);
 		
-		// Repaint the display since a vibration is happening
-		this._phoneui.repaint();
-		
-		// Vibrate is always supported
-		return true;
+		// Only return true if no error was generated
+		return (SystemCallError.NO_ERROR ==
+			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
+				SystemCallIndex.DEVICE_FEEDBACK));
 	}
 	
 	/**

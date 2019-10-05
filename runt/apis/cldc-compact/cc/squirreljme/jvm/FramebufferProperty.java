@@ -56,6 +56,22 @@ public interface FramebufferProperty
 	public static final byte BITS_PER_PIXEL =
 		10;
 	
+	/** Get backlight level. */
+	public static final byte BACKLIGHT_LEVEL_GET =
+		11;
+	
+	/** Set backlight level. */
+	public static final byte BACKLIGHT_LEVEL_SET =
+		12;
+	
+	/** Maximum backlight level. */
+	public static final byte BACKLIGHT_LEVEL_MAX =
+		13;
+	
+	/** The number of properties. */
+	public static final byte NUM_PROPERTIES =
+		14;
+	
 	/** Screen is RGB 32-bit. */
 	public static final byte FORMAT_INTEGER_RGB888 =
 		0;

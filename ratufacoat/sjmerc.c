@@ -407,8 +407,11 @@
 /** Get task ID for current frame. */
 #define SJME_SYSCALL_FRAME_TASK_ID_GET SJME_JINT_C(33)
 
+/** Perform device feedback. */
+#define SJME_SYSCALL_DEVICE_FEEDBACK SJME_JINT_C(34)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(34)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(35)
 
 /** No error, or success. */
 #define SJME_SYSCALL_ERROR_NO_ERROR SJME_JINT_C(0)
@@ -496,6 +499,18 @@
 
 /** Number of bits per pixel. */
 #define SJME_FRAMEBUFFER_PROPERTY_BITS_PER_PIXEL SJME_JINT_C(10)
+
+/** Get backlight level. */
+#define SJME_FRAMEBUFFER_PROPERTY_BACKLIGHT_LEVEL_GET SJME_JINT_C(11)
+
+/** Set backlight level. */
+#define SJME_FRAMEBUFFER_PROPERTY_BACKLIGHT_LEVEL_SET SJME_JINT_C(12)
+
+/** Maximum backlight level. */
+#define SJME_FRAMEBUFFER_PROPERTY_BACKLIGHT_LEVEL_MAX SJME_JINT_C(13)
+
+/** Maximum properties. */
+#define SJME_FRAMEBUFFER_PROPERTY_NUM_PROPERTIES SJME_JINT_C(14)
 
 /** The static field register of the task syscall handler. */
 #define SJME_SUPERPROP_TASK_SYSCALL_STATIC_FIELD_POINTER SJME_JINT_C(1)

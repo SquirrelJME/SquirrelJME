@@ -356,12 +356,22 @@ public interface SystemCallIndex
 		33;
 	
 	/**
+	 * Perform a feedback operation.
+	 *
+	 * @param 1 The type of feedback to perform.
+	 * @param 2 The duration of the feedback.
+	 * @return Non-zero on success.
+	 */
+	public static final byte DEVICE_FEEDBACK =
+		34;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	public static final byte NUM_SYSCALLS =
-		34;
+		35;
 }
 
