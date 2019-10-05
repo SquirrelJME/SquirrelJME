@@ -47,15 +47,6 @@ public final class ActiveDisplay
 	/** Current drawing state. */
 	volatile State _state;
 	
-	/** Vibrate the display? */
-	private volatile boolean _invibrate;
-	
-	/** Vibration end time. */
-	private volatile long _vibrateend;
-	
-	/** Vibration cycle. */
-	private volatile boolean _vibratecycle;
-	
 	/** Content X Area. */
 	int _contentx;
 	
@@ -382,28 +373,6 @@ public final class ActiveDisplay
 		__g.setFont(sf);
 		int xa = sf.charWidth('#'),
 			sx = dw - 2;
-		
-		// Currently vibrating the display?
-		if (this._invibrate)
-		{
-			// Stop vibrating?
-			long nowtime = System.nanoTime();
-			if (nowtime >= this._vibrateend)
-				this._invibrate = false;
-			
-			// Visual vibration, just a basic symbol
-			else
-			{
-				// Switch to symbol font
-				__g.setFont(Font.getFont("symbol", 0, 
-					StandardMetrics.TITLE_BAR_HEIGHT));
-				
-				// Draw vibrate symbol
-				__g.setColor(StandardMetrics.VIBRATE_COLOR);
-				__g.drawChar('#', sx, 0, Graphics.RIGHT | Graphics.TOP);
-				sx -= xa;
-			}
-		}
 	}
 	
 	/**
@@ -510,26 +479,6 @@ public final class ActiveDisplay
 		
 		// Has this changed at all?
 		return rv;
-	}
-	
-	/**
-	 * Vibrates the display for the given number of milliseconds.
-	 *
-	 * @param __ms The number of milliseconds to vibrate for.
-	 * @since 2019/05/17
-	 */
-	public final void vibrate(int __ms)
-	{
-		// Stop vibrating
-		if (__ms <= 0)
-			this._invibrate = false;
-		
-		// Otherwise vibrate
-		else
-		{
-			this._invibrate = true;
-			this._vibrateend = System.nanoTime() + (__ms * 1000000L);
-		}
 	}
 }
 
