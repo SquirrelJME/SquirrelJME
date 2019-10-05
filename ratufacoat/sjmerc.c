@@ -497,6 +497,18 @@
 /** Number of bits per pixel. */
 #define SJME_FRAMEBUFFER_PROPERTY_BITS_PER_PIXEL SJME_JINT_C(10)
 
+/** The static field register of the task syscall handler. */
+#define SJME_SUPERPROP_TASK_SYSCALL_STATIC_FIELD_POINTER SJME_JINT_C(1)
+
+/** The method pointer of the task syscall method. */
+#define SJME_SUPERPROP_TASK_SYSCALL_METHOD_HANDLER SJME_JINT_C(2)
+
+/** The pool pointer of the task syscall method. */
+#define SJME_SUPERPROP_TASK_SYSCALL_METHOD_POOL_POINTER SJME_JINT_C(3)
+
+/** The number of available properties. */
+#define SJME_SUPERPROP_NUM_PROPERTIES SJME_JINT_C(4)
+
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[33] =
 {
@@ -894,6 +906,9 @@ struct sjme_cpu
 	
 	/* System call error numbers. */
 	sjme_jint syscallerr[SJME_SYSCALL_NUM_SYSCALLS];
+	
+	/* Supervisor properties. */
+	sjme_jint supervisorprops[SJME_SUPERPROP_NUM_PROPERTIES];
 	
 	/* Current CPU state. */
 	sjme_cpustate state;
@@ -1359,6 +1374,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_WRITE_BYTE:
 				case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
+				case SJME_SYSCALL_SUPERVISOR_PROPERTY_GET:
+				case SJME_SYSCALL_SUPERVISOR_PROPERTY_SET:
 				case SJME_SYSCALL_FRAME_TASK_ID_GET:
 				case SJME_SYSCALL_FRAME_TASK_ID_SET:
 					return SJME_JINT_C(1);
@@ -1557,63 +1574,16 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			}
 			return 0;
 			
-			/* Returns the high millisecond wall clock. */
-		case SJME_SYSCALL_TIME_HI_MILLI_WALL:
-			if (jvm->nativefuncs == NULL ||
-				jvm->nativefuncs->millitime == NULL)
-			{
-				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return SJME_JINT_C(0);
-			}
-			else
-			{
-				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				jvm->nativefuncs->millitime(&ia);
-				return ia;
-			}
+			/* Get Task ID. */
+		case SJME_SYSCALL_FRAME_TASK_ID_GET:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return cpustate->taskid;
 			
-			/* Returns the low nanosecond wall clock. */
-		case SJME_SYSCALL_TIME_HI_NANO_MONO:
-			if (jvm->nativefuncs == NULL ||
-				jvm->nativefuncs->nanotime == NULL)
-			{
-				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return SJME_JINT_C(0);
-			}
-			else
-			{
-				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				jvm->nativefuncs->nanotime(&ia);
-				return ia;
-			}
-			
-			/* Returns the low millisecond wall clock. */
-		case SJME_SYSCALL_TIME_LO_MILLI_WALL:
-			if (jvm->nativefuncs == NULL ||
-				jvm->nativefuncs->millitime == NULL)
-			{
-				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return SJME_JINT_C(0);
-			}
-			else
-			{
-				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				return jvm->nativefuncs->millitime(&ia);
-			}
-		
-			/* Returns the low nanosecond monotonic clock. */
-		case SJME_SYSCALL_TIME_LO_NANO_MONO:
-			if (jvm->nativefuncs == NULL ||
-				jvm->nativefuncs->nanotime == NULL)
-			{
-				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return SJME_JINT_C(0);
-			}
-			else
-			{
-				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				return jvm->nativefuncs->nanotime(&ia);
-			}
+			/* Set Task ID. */
+		case SJME_SYSCALL_FRAME_TASK_ID_SET:
+			cpustate->taskid = args[0];
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			return SJME_JINT_C(1);
 			
 			/* Set memory to byte value. */
 		case SJME_SYSCALL_MEM_SET:
@@ -1735,16 +1705,91 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			return SJME_JINT_C(0);
 			
-			/* Get Task ID. */
-		case SJME_SYSCALL_FRAME_TASK_ID_GET:
-			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return cpustate->taskid;
+			/* Get supervisor property. */
+		case SJME_SYSCALL_SUPERVISOR_PROPERTY_GET:
+			ia = args[0];
+			if (ia < 0 || ia >= SJME_SUPERPROP_NUM_PROPERTIES)
+			{
+				*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				return cpu->supervisorprops[ia];
+			}
 			
-			/* Set Task ID. */
-		case SJME_SYSCALL_FRAME_TASK_ID_SET:
-			cpustate->taskid = args[0];
-			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return SJME_JINT_C(1);
+			/* Set supervisor property. */
+		case SJME_SYSCALL_SUPERVISOR_PROPERTY_SET:
+			ia = args[0];
+			if (ia < 0 || ia >= SJME_SUPERPROP_NUM_PROPERTIES)
+			{
+				*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				return cpu->supervisorprops[ia] = args[1];
+			}
+			
+			/* Returns the high millisecond wall clock. */
+		case SJME_SYSCALL_TIME_HI_MILLI_WALL:
+			if (jvm->nativefuncs == NULL ||
+				jvm->nativefuncs->millitime == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				jvm->nativefuncs->millitime(&ia);
+				return ia;
+			}
+			
+			/* Returns the low nanosecond wall clock. */
+		case SJME_SYSCALL_TIME_HI_NANO_MONO:
+			if (jvm->nativefuncs == NULL ||
+				jvm->nativefuncs->nanotime == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				jvm->nativefuncs->nanotime(&ia);
+				return ia;
+			}
+			
+			/* Returns the low millisecond wall clock. */
+		case SJME_SYSCALL_TIME_LO_MILLI_WALL:
+			if (jvm->nativefuncs == NULL ||
+				jvm->nativefuncs->millitime == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				return jvm->nativefuncs->millitime(&ia);
+			}
+		
+			/* Returns the low nanosecond monotonic clock. */
+		case SJME_SYSCALL_TIME_LO_NANO_MONO:
+			if (jvm->nativefuncs == NULL ||
+				jvm->nativefuncs->nanotime == NULL)
+			{
+				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
+				return SJME_JINT_C(0);
+			}
+			else
+			{
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				return jvm->nativefuncs->nanotime(&ia);
+			}
 		
 			/* Unknown or unsupported system call. */
 		default:
