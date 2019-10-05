@@ -172,6 +172,26 @@ public class SummerCoatFactory
 		WritableMemory cmem = new RawMemory(CONFIG_BASE_ADDR, CONFIG_SIZE);
 		vmem.mapRegion(cmem);
 		
+		// Read the boot JAR offset of this packfile
+		int bootjaroff = rombase + vmem.memReadInt(rombase +
+				MinimizedPackHeader.OFFSET_OF_BOOTJAROFFSET),
+			bootjarsize = vmem.memReadInt(rombase +
+				MinimizedPackHeader.OFFSET_OF_BOOTJARSIZE);
+		
+		// Load the bootstrap JAR header
+		MinimizedJarHeader bjh;
+		try (InputStream bin = new ReadableMemoryInputStream(vmem,
+			bootjaroff, bootjarsize))
+		{
+			bjh = MinimizedJarHeader.decode(bin);
+		}
+		
+		// {@squirreljme.error AE0e Could not read the boot JAR header.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AE0e", e);
+		}
+		
 		// Write configuration information
 		try (DataOutputStream dos = new DataOutputStream(
 			new WritableMemoryOutputStream(cmem, 0, CONFIG_SIZE)))
@@ -222,6 +242,17 @@ public class SummerCoatFactory
 			ConfigRomWriter.writeStrings(dos, ConfigRomType.CLASS_PATH,
 				SummerCoatFactory.classPathToStringArray(__cp));
 			
+			// System call handler
+			ConfigRomWriter.writeInteger(
+				dos, ConfigRomType.SYSCALL_STATIC_FIELD_POINTER,
+				ramstart + bjh.syscallsfp);
+			ConfigRomWriter.writeInteger(
+				dos, ConfigRomType.SYSCALL_CODE_POINTER,
+				bootjaroff + bjh.syscallhandler);
+			ConfigRomWriter.writeInteger(
+				dos, ConfigRomType.SYSCALL_POOL_POINTER,
+				ramstart + bjh.syscallpool);
+			
 			// End
 			dos.writeShort(ConfigRomType.END);
 		}
@@ -230,26 +261,6 @@ public class SummerCoatFactory
 		catch (IOException e)
 		{
 			throw new VMException("AE0d", e);
-		}
-		
-		// Read the boot JAR offset of this packfile
-		int bootjaroff = rombase + vmem.memReadInt(rombase +
-				MinimizedPackHeader.OFFSET_OF_BOOTJAROFFSET),
-			bootjarsize = vmem.memReadInt(rombase +
-				MinimizedPackHeader.OFFSET_OF_BOOTJARSIZE);
-		
-		// Load the bootstrap JAR header
-		MinimizedJarHeader bjh;
-		try (InputStream bin = new ReadableMemoryInputStream(vmem,
-			bootjaroff, bootjarsize))
-		{
-			bjh = MinimizedJarHeader.decode(bin);
-		}
-		
-		// {@squirreljme.error AE0e Could not read the boot JAR header.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("AE0e", e);
 		}
 		
 		// Load the bootstrap JAR header

@@ -31,6 +31,34 @@ public final class Bootstrap
 	}
 	
 	/**
+	 * Handler for task system calls.
+	 *
+	 * @param __tid The task ID.
+	 * @param __oldsfp The old static field pointer.
+	 * @param __si The system call that was made.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @param __h Argument.
+	 * @return The result.
+	 * @since 2019/10/05
+	 */
+	static final int __taskSysCall(int __tid, int __oldsfp, short __si,
+		int __a, int __b, int __c, int __d, int __e, int __f, int __g, int __h)
+	{
+		todo.DEBUG.code('H', 't', __tid);
+		todo.DEBUG.code('H', 's', __oldsfp);
+		todo.DEBUG.code('H', 'd', __si);
+		
+		return Assembly.sysCallPV(__si, __a, __b, __c, __d, __e, __f, __g,
+			__h);
+	}
+	
+	/**
 	 * Entry point for the bootstrap.
 	 *
 	 * @param __rambase The base RAM address.
@@ -54,6 +82,26 @@ public final class Bootstrap
 		{
 			// Initialize config reader
 			ConfigReader config = new ConfigReader(__confbase);
+			
+			Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
+				SupervisorPropertyIndex.TASK_SYSCALL_STATIC_FIELD_POINTER,
+				config.loadInteger(
+					ConfigRomType.SYSCALL_STATIC_FIELD_POINTER));
+					
+			Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
+				SupervisorPropertyIndex.TASK_SYSCALL_METHOD_HANDLER,
+				config.loadInteger(
+					ConfigRomType.SYSCALL_CODE_POINTER));
+					
+			Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
+				SupervisorPropertyIndex.TASK_SYSCALL_METHOD_POOL_POINTER,
+				config.loadInteger(
+					ConfigRomType.SYSCALL_POOL_POINTER));
+			
+			Assembly.sysCallP(SystemCallIndex.FRAME_TASK_ID_SET,
+				1234);
+			todo.DEBUG.code('S', 'S', Assembly.sysCallPV(
+				SystemCallIndex.TIME_LO_MILLI_WALL));
 			
 			// Basic SquirrelJME Banner
 			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");

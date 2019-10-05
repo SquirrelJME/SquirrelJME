@@ -68,8 +68,17 @@
 /** Classpath to use. */
 #define SJME_CONFIG_CLASS_PATH SJME_JINT_C(11)
 
+/** System call static field pointer. */
+#define SJME_CONFIG_SYSCALL_STATIC_FIELD_POINTER SJME_JINT_C(12)
+
+/** System call method pointer. */
+#define SJME_CONFIG_SYSCALL_CODE_POINTER SJME_JINT_C(13)
+
+/** System call pool pointer. */
+#define SJME_CONFIG_SYSCALL_POOL_POINTER SJME_JINT_C(14)
+
 /** Number of available options. */
-#define SJME_CONFIG_NUM_OPTIONS SJME_JINT_C(12)
+#define SJME_CONFIG_NUM_OPTIONS SJME_JINT_C(15)
 
 /** Maximum CPU registers. */
 #define SJME_MAX_REGISTERS SJME_JINT_C(64)
@@ -965,23 +974,32 @@ struct sjme_jvm
 	/** Threads. */
 	sjme_cpu threads[SJME_THREAD_MAX];
 	
-	/* Total instruction count. */
+	/** Total instruction count. */
 	sjme_jint totalinstructions;
 	
-	/* Did the supervisor boot okay? */
+	/** Did the supervisor boot okay? */
 	sjme_jint supervisorokay;
 	
-	/* Console X position. */
+	/** Console X position. */
 	sjme_jint conx;
 	
-	/* Console Y position. */
+	/** Console Y position. */
 	sjme_jint cony;
 	
-	/* Console width. */
+	/** Console width. */
 	sjme_jint conw;
 	
-	/* Console height. */
+	/** Console height. */
 	sjme_jint conh;
+	
+	/** System call static field pointer. */
+	sjme_vmemptr syscallsfp;
+	
+	/** System call code pointer. */
+	sjme_vmemptr syscallcode;
+	
+	/** System call pool pointer. */
+	sjme_vmemptr syscallpool;
 };
 
 /** Sets the error code. */
@@ -1941,8 +1959,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 		/* Temporary debug. */
 #if defined(SJME_DEBUG)
 		fprintf(stderr,
-			"ti=%d pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
+			"ti=%d tk%d pc=%p op=%X cl=%s mn=%s mt=%s ln=%d jo=%x ja=%d\n",
 			jvm->totalinstructions,
+			cpu->state.taskid,
 			cpu->state.pc,
 			(unsigned int)op,
 			sjme_vmmresolve(jvm->vmem, cpu->state.debugclassname, 2, NULL),
@@ -2521,8 +2540,57 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					}
 					
 					/* Call it and place result into the return register. */
-					r[SJME_RETURN_REGISTER] = sjme_syscall(jvm, cpu, error,
-						ia, cpu->syscallargs);
+					if (cpu->state.taskid == 0)
+					{
+						r[SJME_RETURN_REGISTER] = sjme_syscall(jvm, cpu, error,
+							ia, cpu->syscallargs);
+					}
+					
+					/* Otherwise perform supervisor handling of the call. */
+					else
+					{
+						/* Allocate to store old CPU state. */
+						oldcpu = sjme_malloc(sizeof(*oldcpu));
+						if (oldcpu == NULL)
+						{
+							sjme_seterror(error, SJME_ERROR_NOMEMORY,
+								sizeof(*oldcpu));
+							
+							return cycles;
+						}
+						
+						/* Copy and store state. */
+						*oldcpu = cpu->state;
+						cpu->state.parent = oldcpu;
+						
+						/* Old PC address resumes where this ended. */
+						oldcpu->pc = nextpc;
+						
+						/* Go back to the supervisor task. */
+						cpu->state.taskid = 0;
+						
+						/* Setup arguments for this call. */
+						r[SJME_POOL_REGISTER] = cpu->supervisorprops[
+							SJME_SUPERPROP_TASK_SYSCALL_METHOD_POOL_POINTER];
+						r[SJME_STATIC_FIELD_REGISTER] = cpu->supervisorprops[
+							SJME_SUPERPROP_TASK_SYSCALL_STATIC_FIELD_POINTER];
+						r[SJME_ARGBASE_REGISTER + 0] =
+							oldcpu->taskid;
+						r[SJME_ARGBASE_REGISTER + 1] =
+							oldcpu->r[SJME_STATIC_FIELD_REGISTER];
+						r[SJME_ARGBASE_REGISTER + 2] =
+							ia;
+						
+						/* And arguments for it as well. */
+						for (ie = 0; ie < SJME_MAX_SYSCALLARGS; ie++)
+							r[SJME_ARGBASE_REGISTER + 3 + ie] =
+								cpu->syscallargs[ie];
+						
+						/* Our next PC is the handler address. */
+						nextpc = cpu->supervisorprops[
+							SJME_SUPERPROP_TASK_SYSCALL_METHOD_HANDLER];
+						cpu->state.pc = nextpc;
+					}
 					
 					/* Stop if an error was set. */
 					if (error->code != SJME_ERROR_NONE)
@@ -2882,6 +2950,12 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 	cpu->state.pc = (bootjar + sjme_vmmreadp(jvm->vmem,
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error));
 	
+	/* Load system call handler information. */
+	
+	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallsfp, 0, vrambase + sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
+	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallcode, 0, bootjar + sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
+	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallpool, 0, vrambase + sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
+	
 	/* Bootstrap entry arguments. */
 	/* (int __rambase, int __ramsize, int __rombase, int __romsize, */
 	/* int __confbase, int __confsize) */
@@ -3061,6 +3135,7 @@ void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
 	sjme_vmemptr basep;
 	sjme_vmemptr sizep;
 	sjme_jint opt, format, iv, it, wlen;
+	sjme_vmemptr* setpointer;
 	char* sa;
 	
 	(void)options;
@@ -3078,6 +3153,7 @@ void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
 		/* Reset. */
 		sa = NULL;
 		iv = 0;
+		setpointer = NULL;
 		
 		/* Depends on the option. */
 		switch (opt)
@@ -3136,6 +3212,24 @@ void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
 			case SJME_CONFIG_CLASS_PATH:
 				break;
 			
+			/* System Call: Static field pointer. */
+			case SJME_CONFIG_SYSCALL_STATIC_FIELD_POINTER:
+				format = SJME_CONFIG_FORMAT_INTEGER;
+				setpointer = &jvm->syscallsfp;
+				break;
+			
+			/* System Call: Code Pointer. */
+			case SJME_CONFIG_SYSCALL_CODE_POINTER:
+				format = SJME_CONFIG_FORMAT_INTEGER;
+				setpointer = &jvm->syscallcode;
+				break;
+			
+			/* System Call: Pool Pointer. */
+			case SJME_CONFIG_SYSCALL_POOL_POINTER:
+				format = SJME_CONFIG_FORMAT_INTEGER;
+				setpointer = &jvm->syscallpool;
+				break;
+			
 				/* Unknown, ignore. */
 			default:
 				continue;
@@ -3154,6 +3248,10 @@ void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
 		
 		/* Base write pointer. */
 		basep = wp;
+		
+		/* Set pointer as needed. */
+		if (setpointer != NULL)
+			*setpointer = basep;
 		
 		/* Depends on the format. */
 		switch (format)

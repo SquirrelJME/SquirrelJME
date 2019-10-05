@@ -881,26 +881,75 @@ public final class NativeCPU
 						
 						// Get the system call ID
 						short syscallid = (short)lr[args[0]];
-							
-						// If profiling, profile the handling of the
-						// system call in a sub-frame
-						if (profiler != null)
-							profiler.enterFrame("<syscall>",
-								Integer.toString(syscallid), "(IIIIIIII)I");
 						
-						// Set the return register to whatever system call
-						// was used
-						try
+						// Handle system call as is from the supervisor
+						Frame was = frames.getLast();
+						if (was._taskid == 0)
 						{
-							lr[NativeCode.RETURN_REGISTER] = this.__sysCall(
-								syscallid, sargs);
+							// If profiling, profile the handling of the
+							// system call in a sub-frame
+							if (profiler != null)
+								profiler.enterFrame("<syscall>",
+									Integer.toString(syscallid),
+									"(IIIIIIII)I");
+							
+							// Set the return register to whatever system call
+							// was used
+							try
+							{
+								lr[NativeCode.RETURN_REGISTER] =
+									this.__sysCall(syscallid, sargs);
+							}
+							
+							// If profiling, that frame needs to exit always!
+							finally
+							{
+								if (profiler != null)
+									profiler.exitFrame();
+							}
 						}
 						
-						// If profiling, that frame needs to exit always!
-						finally
+						// Otherwise jump into supervisor and handle the
+						// system call on behalf of the task
+						else
 						{
-							if (profiler != null)
-								profiler.exitFrame();
+							// Enter the frame
+							int[] svp = this._supervisorproperties;
+							Frame f = this.enterFrame(
+								svp[SupervisorPropertyIndex.
+									TASK_SYSCALL_METHOD_HANDLER]);
+							
+							// Set frame's task ID to zero
+							f._taskid = 0;
+							
+							// Set required registers
+							f._registers[NativeCode.POOL_REGISTER] =
+								svp[SupervisorPropertyIndex.
+									TASK_SYSCALL_METHOD_POOL_POINTER];
+							f._registers[NativeCode.STATIC_FIELD_REGISTER] =
+								svp[SupervisorPropertyIndex.
+									TASK_SYSCALL_STATIC_FIELD_POINTER];
+							
+							// Setup call: taskid + oldsfp + sysid + 8 syscall
+							f._registers[
+								NativeCode.ARGUMENT_REGISTER_BASE + 0] =
+								was._taskid;
+							f._registers[
+								NativeCode.ARGUMENT_REGISTER_BASE + 1] =
+								was._registers[
+									NativeCode.STATIC_FIELD_REGISTER];
+							f._registers[
+								NativeCode.ARGUMENT_REGISTER_BASE + 2] =
+								syscallid;
+							
+							// Forward system call arguments
+							for (int x = 0, xn = sargs.length; x < xn; x++)
+								f._registers[NativeCode.ARGUMENT_REGISTER_BASE
+									+ 3 + x] = sargs[x];
+							
+							// Setup for frame enter
+							reload = true;
+							pointcounter = 0;
 						}
 					}
 					break;
