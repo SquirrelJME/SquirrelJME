@@ -1335,6 +1335,7 @@ public final class NativeCPU
 						case SystemCallIndex.PD_OF_STDIN:
 						case SystemCallIndex.PD_OF_STDOUT:
 						case SystemCallIndex.PD_WRITE_BYTE:
+						case SystemCallIndex.SLEEP:
 						case SystemCallIndex.SUPERVISOR_BOOT_OKAY:
 						case SystemCallIndex.SUPERVISOR_PROPERTY_GET:
 						case SystemCallIndex.SUPERVISOR_PROPERTY_SET:
@@ -1581,6 +1582,23 @@ public final class NativeCPU
 						rv = -1;
 						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
 					}
+				}
+				break;
+				
+				// Sleep
+			case SystemCallIndex.SLEEP:
+				try
+				{
+					// Sleep
+					Thread.sleep(__args[0], __args[1]);
+					
+					rv = 0;
+					err = SystemCallError.NO_ERROR;
+				}
+				catch (InterruptedException e)
+				{
+					rv = 1;
+					err = SystemCallError.INTERRUPTED;
 				}
 				break;
 				
