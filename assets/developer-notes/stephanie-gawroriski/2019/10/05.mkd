@@ -1,0 +1,6 @@
+# 2019/10/05
+
+## 19:27
+
+Took awhile but I implemented sub-task system call handling, which is nice
+but now I need to cleanup all the debug stuff.
