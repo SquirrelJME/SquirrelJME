@@ -10,6 +10,7 @@
 
 import javax.microedition.lcdui.Display;
 import net.multiphasicapps.tac.InvalidTestException;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * Utilities for the LCDUI tests.
@@ -36,7 +37,7 @@ final class __Utils__
 		// No display possible?
 		catch (Throwable e)
 		{
-			throw new InvalidTestException(e);
+			throw new UntestableException(e);
 		}
 	}
 }
