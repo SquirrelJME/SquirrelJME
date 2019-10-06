@@ -12,7 +12,7 @@ package cc.squirreljme.jvm;
 import cc.squirreljme.jvm.lib.BootRom;
 import cc.squirreljme.jvm.lib.BootRomLibrary;
 import cc.squirreljme.jvm.task.ClientTask;
-import cc.squirreljme.jvm.task.ClientTaskManager;
+import cc.squirreljme.jvm.task.TaskManager;
 import cc.squirreljme.jvm.task.TaskSysCallHandler;
 
 /**
@@ -71,13 +71,8 @@ public final class Bootstrap
 			// Load system call handler
 			TaskSysCallHandler.initTaskHandler(config);
 			
-			// Initialize the client task manager
-			todo.DEBUG.note("Initializing task manager...");
-			ClientTaskManager ctm = new ClientTaskManager();
-			todo.DEBUG.note("Okay.");
-			
-			// Spacer
-			todo.DEBUG.note("");
+			// Get the task manager
+			TaskManager ctm = Globals.getTaskManager();
 			
 			// Start the initial task
 			todo.DEBUG.note("Creating initial task...");

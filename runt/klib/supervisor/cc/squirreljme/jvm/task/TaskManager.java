@@ -19,7 +19,7 @@ import cc.squirreljme.jvm.lib.ClassPath;
  *
  * @since 2019/06/22
  */
-public final class ClientTaskManager
+public final class TaskManager
 {
 	/** The maximum number of permitted tasks. */
 	public static final int MAX_TASKS =
@@ -38,7 +38,7 @@ public final class ClientTaskManager
 	 *
 	 * @since 2019/06/22
 	 */
-	public ClientTaskManager()
+	public TaskManager()
 	{
 		// Setup a system task, it has no classpath and is always zero
 		this.tasks[0] = new ClientTask(0, 0, new ClassPath());
