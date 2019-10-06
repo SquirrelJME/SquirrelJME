@@ -366,6 +366,16 @@ public interface SystemCallIndex
 		34;
 	
 	/**
+	 * Sleep for the given number of nanoseconds.
+	 *
+	 * @param 1 The number of milliseconds to sleep for.
+	 * @param 2 The number of nanoseconds to sleep for.
+	 * @return Returns zero unless sleep was interrupted.
+	 */
+	public static final byte SLEEP =
+		35;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have

@@ -594,10 +594,16 @@ public class Thread
 		if (__ms < 0 || __ns < 0 || __ns > 999999)
 			throw new IllegalArgumentException("ZZ23");
 		
-		// {@squirreljme.error ZZ24 Sleep was interrupted.}
-		if (TaskAccess.sleep(__ms, __ns))
+		// Convert to integer but do not sleep for too long
+		int ims = (__ms > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)__ms);
+		
+		// Perform sleep, if it was interrupted then the return status will
+		// be non-zero!
+		if (Assembly.sysCallV(SystemCallIndex.SLEEP, ims, __ns) != 0)
 		{
 			Thread.currentThread()._interrupted = false;
+			
+			// {@squirreljme.error ZZ24 Sleep was interrupted.}
 			throw new InterruptedException("ZZ24");
 		}
 	}
@@ -611,7 +617,7 @@ public class Thread
 	public static void yield()
 	{
 		// Zero times means to yield
-		TaskAccess.sleep(0, 0);
+		Assembly.sysCallV(SystemCallIndex.SLEEP, 0, 0);
 	}
 	
 	/**

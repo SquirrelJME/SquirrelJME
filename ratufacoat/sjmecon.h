@@ -477,8 +477,11 @@ extern "C"
 /** Perform device feedback. */
 #define SJME_SYSCALL_DEVICE_FEEDBACK SJME_JINT_C(34)
 
+/** Sleeps for the given number of millseconds and nanoseconds. */
+#define SJME_SYSCALL_SLEEP SJME_JINT_C(35)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(35)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(36)
 
 /*****************************************************************************
 ************************** SYSTEM CALL ERROR CODES ***************************
@@ -504,6 +507,9 @@ extern "C"
 
 /** Permission denied. */
 #define SJME_SYSCALL_ERROR_PERMISSION_DENIED SJME_JINT_C(-6)
+
+/** Interrupted. */
+#define SJME_SYSCALL_ERROR_INTERRUPTED SJME_JINT_C(-7)
 
 /*****************************************************************************
 ***************************** PIPE DESCRIPTORS *******************************

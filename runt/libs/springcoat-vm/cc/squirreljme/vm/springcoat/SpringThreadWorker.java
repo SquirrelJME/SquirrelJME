@@ -4108,6 +4108,7 @@ public final class SpringThreadWorker
 						case SystemCallIndex.PD_OF_STDIN:
 						case SystemCallIndex.PD_OF_STDOUT:
 						case SystemCallIndex.PD_WRITE_BYTE:
+						case SystemCallIndex.SLEEP:
 						case SystemCallIndex.TIME_HI_MILLI_WALL:
 						case SystemCallIndex.TIME_HI_NANO_MONO:
 						case SystemCallIndex.TIME_LO_MILLI_WALL:
@@ -4417,6 +4418,22 @@ public final class SpringThreadWorker
 						rv = -1;
 						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
 					}
+				}
+				break;
+				
+				// Sleep
+			case SystemCallIndex.SLEEP:
+				try
+				{
+					Thread.sleep(__args[0], __args[1]);
+					
+					rv = 0;
+					err = SystemCallError.NO_ERROR;
+				}
+				catch (InterruptedException e)
+				{
+					rv = 1;
+					err = SystemCallError.INTERRUPTED;
 				}
 				break;
 			
