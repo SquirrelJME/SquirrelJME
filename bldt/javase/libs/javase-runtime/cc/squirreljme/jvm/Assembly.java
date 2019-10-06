@@ -1799,6 +1799,10 @@ public final class Assembly
 		if (__id == 0)
 			return null;
 			
+		// {@squirreljme.error AF0e Aliased pointer to object. (Value)}
+		if (false)
+			new Throwable(String.format("AF0e %08x", __id)).printStackTrace();
+			
 		Map<Object, Integer> objects = Assembly._OBJECTS;
 		synchronized (objects)
 		{
@@ -1821,6 +1825,11 @@ public final class Assembly
 	{
 		if (__o == null)
 			return 0;
+			
+		// {@squirreljme.error AF0d Aliased object to pointer. (Value)}
+		if (false)
+			new Throwable(String.format("AF0d %s@%x", __o.getClass().
+				getName(), System.identityHashCode(__o))).printStackTrace();
 		
 		Map<Object, Integer> objects = Assembly._OBJECTS;
 		synchronized (objects)

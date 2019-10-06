@@ -4475,6 +4475,11 @@ public final class SpringThreadWorker
 		Map<Integer, SpringObject> ubi = this.machine._uniquebyint;
 		synchronized (ubi)
 		{
+			// {@squirreljme.error BK3d Aliased object to pointer. (Value)}
+			if (false)
+				new Throwable(String.format("BK3d %08x", __p)).
+					printStackTrace();
+			
 			// See if it already has been mapped?
 			for (Map.Entry<Integer, SpringObject> e : ubi.entrySet())
 				if (e.getValue() == __p)
@@ -4504,6 +4509,11 @@ public final class SpringThreadWorker
 		Map<Integer, SpringObject> ubi = this.machine._uniquebyint;
 		synchronized (ubi)
 		{
+			// {@squirreljme.error BK3e Aliased pointer to object. (Value)}
+			if (false)
+				new Throwable(String.format("BK3e %08x", __p)).
+					printStackTrace();
+			
 			SpringObject rv = ubi.get(__p);
 			if (rv == null)
 				return SpringNullObject.NULL;
