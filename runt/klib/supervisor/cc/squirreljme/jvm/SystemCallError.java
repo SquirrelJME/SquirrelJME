@@ -44,6 +44,10 @@ public final class SystemCallError
 	public static final byte PERMISSION_DENIED =
 		-6;
 	
+	/** Interrupted. */
+	public static final byte INTERRUPTED =
+		-7;
+	
 	/**
 	 * Not used.
 	 *
