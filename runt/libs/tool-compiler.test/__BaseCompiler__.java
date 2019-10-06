@@ -17,6 +17,7 @@ import net.multiphasicapps.javac.CompilerService;
 import net.multiphasicapps.javac.ResourcePathSet;
 import net.multiphasicapps.javac.NullCompilerOutput;
 import net.multiphasicapps.tac.TestRunnable;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * This tests the cute compiler.
@@ -57,6 +58,10 @@ abstract class __BaseCompiler__
 	@Override
 	public void test()
 	{
+		// Not yet implemented!
+		if (true)
+			throw new UntestableException("Compiler support not implemented!");
+		
 		// Get service
 		CompilerService service = this.service;
 		
