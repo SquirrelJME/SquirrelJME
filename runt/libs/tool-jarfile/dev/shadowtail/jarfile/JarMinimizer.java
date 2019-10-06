@@ -280,8 +280,13 @@ public final class JarMinimizer
 				new MethodName("__start"), null);
 			int bootidba = bootstrap.findClass("[B").infoPointer();
 			int bootidbd = bootstrap.findClass("[[B").infoPointer();
-			int syscallm = booting.methodCodeAddress(
-				new MethodName("__taskSysCall"), null);
+			
+			// Get the handler for system calls and such
+			LoadedClassInfo tshclass = bootstrap.findClass(
+				"cc/squirreljme/jvm/task/TaskSysCallHandler");
+			int scmeth = tshclass.methodCodeAddress(
+				new MethodName("taskSysCall"), null),
+				scpool = tshclass.poolPointer();
 			
 			// Setup the BootRAM
 			TableSectionOutputStream.Section bootram = out.addSection(
@@ -298,8 +303,8 @@ public final class JarMinimizer
 			
 			// System call SFP, handler, and pool
 			header.writeInt(bootsfbp);
-			header.writeInt(syscallm);
-			header.writeInt(bootpool);
+			header.writeInt(scmeth);
+			header.writeInt(scpool);
 			
 			// classidba, classidbaa
 			header.writeInt(bootidba);
