@@ -2343,7 +2343,7 @@
 `03`
 `04`
 [**`05`**](stephanie-gawroriski/2019/10/05.mkd)
- * `06`
+ * [**`06`**](stephanie-gawroriski/2019/10/06.mkd)
 `07`
 `08`
 `09`

@@ -1,0 +1,21 @@
+# 2019/10/06
+
+## 09:07
+
+Definitely want to get tasks running and such today, since that would be cool
+to have!
+
+## 10:20
+
+Think I want to actually have some system call work done, move things over so
+that when RatufaCoat gets closer something actually could potentially run.
+
+## 10:21
+
+I also want to cleanup the C code and have a constants of sorts, because there
+are a ton!
+
+## 17:45
+
+I want to get rid of the aliasing between pointer and object for any code that
+is for SpringCoat and Java SE since it is pretty nasty to have!
