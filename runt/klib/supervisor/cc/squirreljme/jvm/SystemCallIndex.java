@@ -382,6 +382,6 @@ public interface SystemCallIndex
 	 * unintended consequences of requesting future API values.
 	 */
 	public static final byte NUM_SYSCALLS =
-		35;
+		36;
 }
 
