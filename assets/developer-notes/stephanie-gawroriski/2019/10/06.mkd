@@ -19,3 +19,28 @@ are a ton!
 
 I want to get rid of the aliasing between pointer and object for any code that
 is for SpringCoat and Java SE since it is pretty nasty to have!
+
+## 18:08
+
+Okay, I do want to just re-organize my projects and such. I think the class
+file stuff could go elsewhere as part of a SquirrelJME support library, that
+the compiler stuff be part of the build system. I mean it would be nice to
+have a self hosting SquirrelJME that runs on SquirrelJME but is that really
+realistic? Probably not. And maybe SpringCoat/SummerCoat better belong as part
+of the build system libraries? I mean they are not needed at run-time for
+most users. So I think having them live there would be best. That way the core
+SquirrelJME is much leaner and such.
+
+## 18:13
+
+I do have an idea for SpringCoat's pointer to object and the reverse, just
+kind of having a chain of objects or something? Although that is a bit
+complicated. Also thinking again to get rid of SpringCoat as well. I mean
+it is my one working implementation, I think it would be best if it and the
+other VM lived in the build system the more that I think of it really.
+
+## 18:15
+
+I do have two months left though and I really cannot spend the limited time I
+have doing a major refactor since I would probably miss my release goal. So
+I think this would be best done after 0.4.0 is released.
