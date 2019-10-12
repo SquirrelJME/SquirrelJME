@@ -271,8 +271,8 @@ public final class MinimizedClassHeader
 			/* classname */ dis.readUnsignedShort(),
 			/* classsuper */ dis.readUnsignedShort(),
 			/* classints */ dis.readUnsignedShort(),
-			/* classtype */ dis.readByte(),
-			/* classvers */ dis.readByte(),
+			/* classtype */ dis.readUnsignedByte(),
+			/* classvers */ dis.readUnsignedByte(),
 			/* classsfn */ dis.readUnsignedShort(),
 	
 			// Static and instance fields
