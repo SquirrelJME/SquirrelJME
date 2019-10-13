@@ -28,7 +28,7 @@ public final class ClassPath
 	
 	/** Mask for JAR index. */
 	private static final int _JAR_MASK =
-		0xFF000000;
+		0x7F000000;
 	
 	/** The classpath. */
 	public final ClassLibrary[] classpath;
