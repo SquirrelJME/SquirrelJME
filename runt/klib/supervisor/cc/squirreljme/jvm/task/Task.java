@@ -100,6 +100,46 @@ public final class Task
 	}
 	
 	/**
+	 * Creates a new thread
+	 *
+	 * @return The resulting thread.
+	 * @since 2019/10/13
+	 */
+	public final TaskThread createThread()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Loads an object array with the given values and class type.
+	 *
+	 * @param __cl The class type.
+	 * @param __vs The values to store.
+	 * @return The resulting object array.
+	 * @since 2019/10/13
+	 */
+	public final int loadObjectArray(int __cl, int... __vs)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Loads the given class.
+	 *
+	 * @param __cl The class to load.
+	 * @return The pointer to the class information.
+	 * @since 2019/10/13
+	 */
+	public final int loadClass(String __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Loads the in-memory class information for the given class.
 	 *
 	 * @param __cl The class to load.
@@ -164,6 +204,33 @@ public final class Task
 			Assembly.breakpoint();
 			throw new todo.TODO();
 		}
+	}
+	
+	/**
+	 * Loads a string in the target virtual machine instance.
+	 *
+	 * @param __s The string to load.
+	 * @return The resulting string pointer.
+	 * @since 2019/10/13
+	 */
+	public final int loadString(String __s)
+	{
+		if (__s == null)
+			return 0;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Allocates and initializes a new instance of the given class target.
+	 *
+	 * @param __cl The class to allocate.
+	 * @return The pointer to the instance of the given object.
+	 * @since 2019/10/13
+	 */
+	public final int newInstance(int __cl)
+	{
+		throw new todo.TODO();
 	}
 }
 

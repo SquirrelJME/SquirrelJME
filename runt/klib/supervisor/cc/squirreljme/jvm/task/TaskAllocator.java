@@ -21,6 +21,9 @@ public final class TaskAllocator
 	/** The extra tag bits to use. */
 	protected final int tagbits;
 	
+	/** The static field pointer. */
+	private int _staticfieldptr;
+	
 	/**
 	 * Initializes the tagged allocator.
 	 *
@@ -47,6 +50,22 @@ public final class TaskAllocator
 		// whatever was passed, masked correctly
 		return Allocator.allocate(
 			this.tagbits | (__tag & Allocator.CHUNK_BITS_VALUE_MASK), __sz);
+	}
+	
+	/**
+	 * Returns the static field pointer.
+	 *
+	 * @return The static field pointer.
+	 * @since 2019/10/13
+	 */
+	public final int getStaticFieldPointer()
+	{
+		// If this has already been initialized then use it!
+		int rv = this._staticfieldptr;
+		if (rv != 0)
+			return rv;
+		
+		throw new todo.TODO();
 	}
 }
 
