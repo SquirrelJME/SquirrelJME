@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.lib.BootRomLibrary;
 import cc.squirreljme.jvm.task.Task;
 import cc.squirreljme.jvm.task.TaskManager;
 import cc.squirreljme.jvm.task.TaskSysCallHandler;
+import cc.squirreljme.jvm.task.TaskThread;
 
 /**
  * This is the bootstrap entry point for the supervisor.
@@ -76,21 +77,22 @@ public final class Bootstrap
 			
 			// Start the initial task
 			todo.DEBUG.note("Creating initial task...");
+			TaskThread[] mainthread = new TaskThread[1];
 			Task boot = ctm.newTask(
 				BootRom.initialClasspath(__rombase, config),
 				BootRom.initialMain(__rombase, config),
+				config.loadInteger(ConfigRomType.IS_MIDLET) != 0,
 				config.loadStrings(ConfigRomType.MAIN_ARGUMENTS),
-				config.loadKeyValueMap(ConfigRomType.DEFINE_PROPERTY));
+				config.loadKeyValueMap(ConfigRomType.DEFINE_PROPERTY),
+				mainthread);
 			todo.DEBUG.note("Okay.");
-			
-			// Something later on
-			Assembly.breakpoint();
 			
 			// Set the kernel as booted okay!
 			Assembly.sysCall(SystemCallIndex.SUPERVISOR_BOOT_OKAY);
 			
-			Assembly.breakpoint();
-			throw new todo.TODO();
+			// Enter the main task now, since we can do that!
+			todo.DEBUG.note("Inline execution main task...");
+			mainthread[0].inlineExecute();
 		}
 		
 		// It crashes
