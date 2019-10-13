@@ -180,5 +180,37 @@ public interface ClassFileConstants
 	/** Runtime constant pool size. */
 	public static final byte OFFSET_OF_INT_RUNTIMEPOOLSIZE =
 		108;
+	
+	/** Public class. */
+	public static final short FLAG_PUBLIC =
+		0x0001;
+	
+	/** Final class. */
+	public static final short FLAG_FINAL =
+		0x0010;
+	
+	/** Super class. */
+	public static final short FLAG_SUPER =
+		0x0020;
+	
+	/** Interface class. */
+	public static final short FLAG_INTERFACE =
+		0x0200;
+	
+	/** Abstract. */
+	public static final short FLAG_ABSTRACT =
+		0x0400;
+	
+	/** Synthetic. */
+	public static final short FLAG_SYNTHETIC =
+		0x1000;
+	
+	/** Annotation. */
+	public static final short FLAG_ANNOTATION =
+		0x2000;
+	
+	/** Enum. */
+	public static final short FLAG_ENUM =
+		0x4000;
 }
 
