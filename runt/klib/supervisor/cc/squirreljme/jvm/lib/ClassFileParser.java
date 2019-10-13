@@ -30,5 +30,16 @@ public final class ClassFileParser
 	{
 		this.romaddress = __ra;
 	}
+	
+	/**
+	 * Returns a dual pool parser for this class.
+	 *
+	 * @return The dual pool parser.
+	 * @since 2019/10/13
+	 */
+	public final AbstractDualPoolParser dualPool()
+	{
+		throw new todo.TODO();
+	}
 }
 

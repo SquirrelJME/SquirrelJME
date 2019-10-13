@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.Assembly;
  * @since 2019/10/12
  */
 public final class ClassPoolParser
+	extends AbstractPoolParser
 {
 	/** The address where the constant pool is. */
 	public final int romaddress;

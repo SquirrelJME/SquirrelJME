@@ -17,6 +17,7 @@ package cc.squirreljme.jvm.lib;
  * @since 2019/10/12
  */
 public final class ClassDualPoolParser
+	extends AbstractDualPoolParser
 {
 	/** The class level static pool. */
 	protected final ClassPoolParser classpool;
