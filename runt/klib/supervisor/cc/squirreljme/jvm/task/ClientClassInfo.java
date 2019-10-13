@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.io.BinaryBlob;
  *
  * @since 2019/06/24
  */
+@Deprecated
 public final class ClientClassInfo
 	implements AutoCloseable
 {
