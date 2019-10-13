@@ -26,6 +26,10 @@ public final class ClassPath
 	private static final int _INDEX_MASK =
 		0x00FFFFFF;
 	
+	/** Mask for JAR index. */
+	private static final int _JAR_MASK =
+		0xFF000000;
+	
 	/** The classpath. */
 	public final ClassLibrary[] classpath;
 	
@@ -33,17 +37,23 @@ public final class ClassPath
 	 * Initializes the classpath.
 	 *
 	 * @param __cp The class path to use.
+	 * @throws IllegalArgumentException If the number of class path libraries
+	 * exceeds the absolute limit.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/22
 	 */
 	public ClassPath(ClassLibrary... __cp)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		if (__cp == null)
 			throw new NullPointerException("NARG");
 		
-		// Defensive copy and check
+		// {@squirreljme.error SV0a Too many entries on the class path.}
 		int n = __cp.length;
+		if (n > (_JAR_MASK >>> _INDEX_SHIFT))
+			throw new IllegalArgumentException("SV0a");
+		
+		// Defensive copy and check
 		ClassLibrary[] classpath = new ClassLibrary[n];
 		for (int i = 0; i < n; i++)
 		{
