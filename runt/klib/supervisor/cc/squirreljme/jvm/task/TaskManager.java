@@ -73,7 +73,7 @@ public final class TaskManager
 				break;
 		
 		// {@squirreljme.error SV01 Task limit reached.}
-		if (pid == MAX_TASKS)
+		if (pid >= MAX_TASKS)
 			throw new RuntimeException("SV01");
 		
 		// Setup and store task now
