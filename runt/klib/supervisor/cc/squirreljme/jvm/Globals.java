@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.task.TaskManager;
+import cc.squirreljme.jvm.task.ThreadManager;
 
 /**
  * This class contains all of the globals which are used by the supervisor.
@@ -20,6 +21,9 @@ public final class Globals
 {
 	/** Manager for tasks. */
 	private static TaskManager _TASK_MANAGER;
+	
+	/** The thread manager. */
+	private static ThreadManager _THREAD_MANAGER;
 	
 	/**
 	 * Not used.
@@ -41,6 +45,20 @@ public final class Globals
 		TaskManager rv = Globals._TASK_MANAGER;
 		if (rv == null)
 			Globals._TASK_MANAGER = (rv = new TaskManager());
+		return rv;
+	}
+	
+	/**
+	 * Gets the thread manager.
+	 *
+	 * @return The thread manager.
+	 * @since 2019/10/13
+	 */
+	public static final ThreadManager getThreadManager()
+	{
+		ThreadManager rv = Globals._THREAD_MANAGER;
+		if (rv == null)
+			Globals._THREAD_MANAGER = (rv = new ThreadManager());
 		return rv;
 	}
 }

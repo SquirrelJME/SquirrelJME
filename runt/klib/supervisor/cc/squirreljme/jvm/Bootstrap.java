@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.task.Task;
 import cc.squirreljme.jvm.task.TaskManager;
 import cc.squirreljme.jvm.task.TaskSysCallHandler;
 import cc.squirreljme.jvm.task.TaskThread;
+import cc.squirreljme.jvm.task.ThreadManager;
 
 /**
  * This is the bootstrap entry point for the supervisor.
@@ -68,6 +69,11 @@ public final class Bootstrap
 			
 			// Spacer
 			todo.DEBUG.note("");
+			
+			// Initialize kernel thread
+			ThreadManager thm = Globals.getThreadManager();
+			Assembly.specialSetThreadRegister(Assembly.objectToPointer(
+				thm.createThread(0)));
 			
 			// Load system call handler
 			TaskSysCallHandler.initTaskHandler(config);
