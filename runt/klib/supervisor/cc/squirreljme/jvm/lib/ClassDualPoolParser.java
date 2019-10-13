@@ -17,13 +17,12 @@ package cc.squirreljme.jvm.lib;
  * @since 2019/10/12
  */
 public final class ClassDualPoolParser
-	extends AbstractDualPoolParser
 {
 	/** The class level static pool. */
-	protected final ClassPoolParser classpool;
+	protected final AbstractPoolParser classpool;
 	
 	/** The run-time pool. */
-	protected final ClassPoolParser runtimepool;
+	protected final AbstractPoolParser runtimepool;
 	
 	/**
 	 * Initializes the dual class pool parser.
@@ -33,7 +32,8 @@ public final class ClassDualPoolParser
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/12
 	 */
-	public ClassDualPoolParser(ClassPoolParser __cl, ClassPoolParser __rt)
+	public ClassDualPoolParser(AbstractPoolParser __cl,
+		AbstractPoolParser __rt)
 		throws NullPointerException
 	{
 		if (__cl == null || __rt == null)

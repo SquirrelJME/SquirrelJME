@@ -37,7 +37,7 @@ public final class ClassFileParser
 	 * @return The dual pool parser.
 	 * @since 2019/10/13
 	 */
-	public final AbstractDualPoolParser dualPool()
+	public final ClassDualPoolParser dualPool()
 	{
 		throw new todo.TODO();
 	}
