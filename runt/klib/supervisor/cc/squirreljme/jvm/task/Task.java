@@ -23,7 +23,7 @@ import java.util.HashMap;
  *
  * @since 2019/06/22
  */
-public final class ClientTask
+public final class Task
 {
 	/** The physical task ID. */
 	public final int pid;
@@ -32,7 +32,7 @@ public final class ClientTask
 	public final int lid;
 	
 	/** Allocator for this task. */
-	public final ClientAllocator allocator;
+	public final TaskAllocator allocator;
 	
 	/** The classpath. */
 	public final ClassPath classpath;
@@ -54,7 +54,7 @@ public final class ClientTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/22
 	 */
-	public ClientTask(int __pid, int __lid, ClassPath __cp)
+	public Task(int __pid, int __lid, ClassPath __cp)
 		throws NullPointerException
 	{
 		if (__cp == null)
@@ -65,7 +65,7 @@ public final class ClientTask
 		this.classpath = __cp;
 		
 		// Initialize allocator for memory grabbing
-		this.allocator = new ClientAllocator(__pid);
+		this.allocator = new TaskAllocator(__pid);
 	}
 	
 	/**
