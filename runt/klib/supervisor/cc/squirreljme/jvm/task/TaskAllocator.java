@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.Allocator;
  *
  * @since 2019/09/23
  */
-public final class ClientAllocator
+public final class TaskAllocator
 {
 	/** The extra tag bits to use. */
 	protected final int tagbits;
@@ -27,7 +27,7 @@ public final class ClientAllocator
 	 * @param __pid The PID to allocate for.
 	 * @since 2019/09/23
 	 */
-	public ClientAllocator(int __pid)
+	public TaskAllocator(int __pid)
 	{
 		// The tag bits are just the PID shifted up a bit
 		this.tagbits = __pid << 4;

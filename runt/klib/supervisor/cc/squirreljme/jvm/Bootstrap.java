@@ -11,7 +11,7 @@ package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.lib.BootRom;
 import cc.squirreljme.jvm.lib.BootRomLibrary;
-import cc.squirreljme.jvm.task.ClientTask;
+import cc.squirreljme.jvm.task.Task;
 import cc.squirreljme.jvm.task.TaskManager;
 import cc.squirreljme.jvm.task.TaskSysCallHandler;
 
@@ -76,7 +76,7 @@ public final class Bootstrap
 			
 			// Start the initial task
 			todo.DEBUG.note("Creating initial task...");
-			ClientTask boot = ctm.newTask(
+			Task boot = ctm.newTask(
 				BootRom.initialClasspath(__rombase, config),
 				BootRom.initialMain(__rombase, config),
 				config.loadStrings(ConfigRomType.MAIN_ARGUMENTS),

@@ -26,8 +26,8 @@ public final class TaskManager
 		15;
 	
 	/** The tasks which are available. */
-	public final ClientTask[] tasks =
-		new ClientTask[MAX_TASKS];
+	public final Task[] tasks =
+		new Task[MAX_TASKS];
 	
 	/** The next logical task ID. */
 	private volatile int _nextlid =
@@ -41,7 +41,7 @@ public final class TaskManager
 	public TaskManager()
 	{
 		// Setup a system task, it has no classpath and is always zero
-		this.tasks[0] = new ClientTask(0, 0, new ClassPath());
+		this.tasks[0] = new Task(0, 0, new ClassPath());
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public final class TaskManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/22
 	 */
-	public ClientTask newTask(ClassLibrary[] __cp, String __mcl,
+	public Task newTask(ClassLibrary[] __cp, String __mcl,
 		String[] __args, String[] __sp)
 		throws NullPointerException
 	{
@@ -64,7 +64,7 @@ public final class TaskManager
 			throw new NullPointerException("NARG");
 		
 		// Tasks that are currently active
-		ClientTask[] tasks = this.tasks;
+		Task[] tasks = this.tasks;
 		
 		// Find a free task spot
 		int pid;
@@ -77,7 +77,7 @@ public final class TaskManager
 			throw new RuntimeException("SV01");
 		
 		// Setup and store task now
-		ClientTask rv = new ClientTask(pid, this._nextlid++,
+		Task rv = new Task(pid, this._nextlid++,
 			new ClassPath(__cp));
 		tasks[pid] = rv;
 		
