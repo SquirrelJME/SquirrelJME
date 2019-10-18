@@ -1,0 +1,12 @@
+# 2019/10/13
+
+## 19:19
+
+I think `enterFrame` should execute I suppose. No idea how I want to
+do it for the most part.
+
+## 19:52
+
+So I think I have a good layout for the bootstrap initialization process and
+I have the base stuff put down. So hopefully this gets me at a basic starting
+point to continue on!
