@@ -1,0 +1,15 @@
+# 2019/10/12
+
+## 12:32
+
+Okay so have started working on the format handlers for the class data,
+do hope that this makes things work out well.
+
+## 12:37
+
+Actually we figured out how to handle weak references and such, instead of
+having a dangling pointer there is an actual object reference. It would not
+follow the same semantics of course, but if there is just a single reference
+to said object then it could be garbage collected. However this will result
+in objects not being cleared properly. So still not sure about how to handle
+them, but is an idea.
