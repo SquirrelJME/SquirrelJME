@@ -14,5 +14,6 @@
  * @since 2019/09/21
  */
 
+@Deprecated
 package cc.squirreljme.jvm.loader;
 
