@@ -116,19 +116,6 @@ public final class Task
 	}
 	
 	/**
-	 * Loads an object array with the given values and class type.
-	 *
-	 * @param __cl The class type.
-	 * @param __vs The values to store.
-	 * @return The resulting object array.
-	 * @since 2019/10/13
-	 */
-	public final int loadObjectArray(TaskClass __cl, int... __vs)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Loads the given class.
 	 *
 	 * @param __cl The class to load.
@@ -224,6 +211,19 @@ public final class Task
 			Assembly.breakpoint();
 			throw new todo.TODO();
 		}
+	}
+	
+	/**
+	 * Loads an object array with the given values and class type.
+	 *
+	 * @param __cl The class type.
+	 * @param __vs The values to store.
+	 * @return The resulting object array.
+	 * @since 2019/10/13
+	 */
+	public final int loadObjectArray(TaskClass __cl, int... __vs)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
