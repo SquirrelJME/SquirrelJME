@@ -57,6 +57,17 @@ public final class TaskAllocator
 	}
 	
 	/**
+	 * Frees the given pointer, this is just a helper method.
+	 *
+	 * @param __p The pointer to free.
+	 * @since 2019/10/19
+	 */
+	public final void free(int __p)
+	{
+		Allocator.free(__p);
+	}
+	
+	/**
 	 * Returns the static field pointer.
 	 *
 	 * @return The static field pointer.
