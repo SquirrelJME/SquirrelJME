@@ -24,6 +24,12 @@ public final class TaskThread
 	/** The owning process ID. */
 	protected final int pid;
 	
+	/** The thread ID. */
+	protected final int tid;
+	
+	/** The logical ID. */
+	protected final int lid;
+	
 	/** The static field pointer for this thread. */
 	private int _staticfieldptr;
 	
@@ -31,11 +37,15 @@ public final class TaskThread
 	 * Initializes the thread.
 	 *
 	 * @param __pid The owning process ID.
+	 * @param __tid The task ID.
+	 * @param __lid The logical thread ID.
 	 * @since 2019/10/19
 	 */
-	public TaskThread(int __pid)
+	public TaskThread(int __pid, int __tid, int __lid)
 	{
 		this.pid = __pid;
+		this.tid = __tid;
+		this.lid = __lid;
 	}
 	
 	/**
