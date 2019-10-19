@@ -43,6 +43,10 @@ public final class Task
 	public final HashMap<String, ClientClassInfo> classinfos =
 		new HashMap<>();
 	
+	/** Classes which have been read and initialized. */
+	private final HashMap<String, TaskClass> _classes =
+		new HashMap<>();
+	
 	/** The accessor for client class information. */
 	private volatile MiniClassAccessor _classinfoaccessor;
 	
@@ -119,7 +123,7 @@ public final class Task
 	 * @return The resulting object array.
 	 * @since 2019/10/13
 	 */
-	public final int loadObjectArray(int __cl, int... __vs)
+	public final int loadObjectArray(TaskClass __cl, int... __vs)
 	{
 		throw new todo.TODO();
 	}
@@ -131,11 +135,26 @@ public final class Task
 	 * @return The pointer to the class information.
 	 * @since 2019/10/13
 	 */
-	public final int loadClass(String __cl)
+	public final TaskClass loadClass(String __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+		
+		TaskClass rv;
+		
+		// Try to find already initialized class
+		HashMap<String, TaskClass> classes = this._classes;
+		synchronized (this)
+		{
+			// Already made?
+			rv = classes.get(__cl);
+			if (rv != null)
+				return rv;
+			
+			// Otherwise store and set it
+			classes.put(__cl, (rv = new TaskClass()));
+		}
 		
 		throw new todo.TODO();
 	}
@@ -229,7 +248,7 @@ public final class Task
 	 * @return The pointer to the instance of the given object.
 	 * @since 2019/10/13
 	 */
-	public final int newInstance(int __cl)
+	public final int newInstance(TaskClass __cl)
 	{
 		throw new todo.TODO();
 	}
