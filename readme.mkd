@@ -65,8 +65,8 @@ Information:
    * [Developer Guide](developer-guide.mkd)
    * [Developer Notes](assets/developer-notes/index.mkd)
    * [Design Document](design.mkd)
+   * [Porting SquirrelJME](porting.mkd)
    * [Project Scope](scope.mkd)
-   * [SquirrelJME As A Runtime](asruntime.mkd)
    * [CLDC 1.8 API (docs.oracle.com)](
      https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)
 
