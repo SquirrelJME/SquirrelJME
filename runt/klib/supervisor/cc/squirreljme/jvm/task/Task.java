@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Allocator;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.io.BinaryBlob;
+import cc.squirreljme.jvm.Globals;
 import cc.squirreljme.jvm.lib.ClassLibrary;
 import cc.squirreljme.jvm.lib.ClassPath;
 import java.util.HashMap;
@@ -107,7 +108,7 @@ public final class Task
 	 */
 	public final TaskThread createThread()
 	{
-		throw new todo.TODO();
+		return Globals.getThreadManager().createThread(this.pid);
 	}
 	
 	/**
