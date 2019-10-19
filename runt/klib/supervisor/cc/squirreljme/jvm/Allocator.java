@@ -86,7 +86,7 @@ public final class Allocator
 	 * @param __sz The number of bytes to allocate.
 	 * @return The address of the allocated data or {@code 0} if there is
 	 * not enough memory remaining.
-	 * @since 2019/05/26
+	 * @since 2019/10/19
 	 */
 	public static final int allocate(int __tag, int __sz)
 	{
@@ -98,6 +98,7 @@ public final class Allocator
 		try
 		{
 			// Lock using our special key, which will never be zero!
+			// Spin-lock so this is executed as fast as possible!
 			while (0 != Assembly.atomicCompareGetAndSet(0, key, lp))
 				continue;
 			
@@ -166,9 +167,52 @@ public final class Allocator
 	 * Frees the specified memory pointer, making it available for later use.
 	 *
 	 * @param __p The pointer to free.
-	 * @since 2019/05/27
+	 * @since 2019/10/19
 	 */
 	public static final void free(int __p)
+	{
+		// Determine the special locking key to use, never let this be zero!
+		int key = (_LOCK_MAGIC ^ __p) | 1;
+		
+		// Try locking the pointer
+		int lp = Allocator._lockptr;
+		try
+		{
+			// Lock using our special key, which will never be zero!
+			// Spin-lock so this is executed as fast as possible!
+			while (0 != Assembly.atomicCompareGetAndSet(0, key, lp))
+				continue;
+			
+			// Fall into the free without lock
+			Allocator.freeWithoutLock(__p);
+		}
+		
+		// Clear the lock always
+		finally
+		{
+			// Clear out lock, if not matched then something is wrong!
+			int old;
+			if (key != (old = Assembly.atomicCompareGetAndSet(key, 0, lp)))
+			{
+				// Another free took our lock??
+				todo.DEBUG.code('f', 'l', old);
+				Assembly.breakpoint();
+				
+				// {@squirreljme.error SV0k Another free took the lock
+				// from us?}
+				throw new VirtualMachineError("SV0k");
+			}
+		}
+	}
+	
+	/**
+	 * Frees the specified memory pointer, making it available for later use,
+	 * without using a lock.
+	 *
+	 * @param __p The pointer to free.
+	 * @since 2019/05/27
+	 */
+	public static final void freeWithoutLock(int __p)
 	{
 		// This should never happen
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
