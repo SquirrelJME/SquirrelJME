@@ -2,35 +2,30 @@
 
 # Future
 
-_Please note that this information may change over time._
+_Please note that this information may change over time and is just_
+_speculation based on project planning._
 
-## 1.0.0 (TBD)
+## 0.8.0 (December 25, 2020)
 
- * Add support for more programs.
+ * Virtual Machine: AutumnCoat
+   * Streamlined and simplified code compiler.
+   * Supports generation to native machine code.
 
-## 0.12.0 (TBD)
-
- * Virtual Machine: WinterCoat
-   * Native code generation.
-
-## 0.10.0 (TBD)
-
- * Add support for more programs.
-
-## 0.8.0 (TBD)
-
- * SpringCoat is removed from SquirrelJME
-   * Note that it will not fully be removed, it will only exist within the
-     build system so it cannot be used normally.
-
-## 0.6.0 (TBD - December 2020)
+## 0.6.0 (June 20, 2020)
 
 This is a future release and the specified changes are proposed.
 
- * Add support for more programs.
- * SpringCoat becomes deprecated.
- * Virtual Machine: AutumnCoat
-   * Native code generation.
+ * 3rd-party development SDK
+ * Additional Library Support
+   * Add support for Nokia APIs.
+   * Add support for Motorola APIs.
+   * Add support for Samsung APIs.
+   * Add support for Siemens APIs.
+   * Add support for Spring APIs.
+ * Graphics library overhaul
+ * File-system access support
+
+# Current
 
 ## 0.4.0 (December 25, 2019)
 
