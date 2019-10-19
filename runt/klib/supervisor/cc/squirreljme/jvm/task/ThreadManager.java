@@ -16,6 +16,10 @@ package cc.squirreljme.jvm.task;
  */
 public final class ThreadManager
 {
+	/** This is the bootstrap main thread. */
+	public final TaskThread BOOT_THREAD =
+		new TaskThread(0);
+	
 	/**
 	 * Creates the specified thread owned by the given task.
 	 *

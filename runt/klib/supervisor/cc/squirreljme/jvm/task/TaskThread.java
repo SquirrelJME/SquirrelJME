@@ -21,7 +21,22 @@ package cc.squirreljme.jvm.task;
  */
 public final class TaskThread
 {
+	/** The owning process ID. */
+	protected final int pid;
+	
+	/** The static field pointer for this thread. */
 	private int _staticfieldptr;
+	
+	/**
+	 * Initializes the thread.
+	 *
+	 * @param __pid The owning process ID.
+	 * @since 2019/10/19
+	 */
+	public TaskThread(int __pid)
+	{
+		this.pid = __pid;
+	}
 	
 	/**
 	 * Enters the given frame on the thread. Note that this can only be
