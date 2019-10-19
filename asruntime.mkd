@@ -1,5 +1,7 @@
 # SquirrelJME As A Runtime
 
+***THIS DOCUMENT IS DEPRECATED AND WILL BE REMOVED.***
+
 To use the SquirrelJME library as the main supporting run-time library will
 require that you implement the native methods which are located in the
 `cc.squirreljme.runtime.cldc.asm` package. Implementing these native methods

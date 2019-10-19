@@ -1,0 +1,31 @@
+# Porting SquirrelJME
+
+SquirrelJME is very much designed to be easily ported to other systems as
+all of the code for it is in Java, which means there is a universal method of
+compilation and executing the code.
+
+# Requirements
+
+Although SquirrelJME is a complex project, the layout and design as previously
+mentioned sets down that SquirrelJME be easy to port. Therefor, these are
+the requirements needed for porting:
+
+ * Execution engine
+   * To properly execute SquirrelJME's library
+   * One of:
+     * Executing SummerCoat ROMs
+     * RatufaCoat port to platform
+     * Translation of SummerCoat into native code
+ * Implement the various System Calls
+ * Resource Access
+   * RAM
+   * ROM
+
+# Implementation Reminders
+
+## Thread Starting
+
+All threads including the main thread must have a `Thread` object initialized
+in which `Thread.__start()` is executed for the threads. This method is in
+the virtual machine itself and performs most of the logic needed by the
+library so that porting is simpler.
