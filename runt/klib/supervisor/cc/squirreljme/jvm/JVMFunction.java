@@ -107,6 +107,12 @@ public final class JVMFunction
 		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
 			Assembly.breakpoint();
 		
+		// {@squirreljme.error SV0i Garbage collecting an object which is
+		// currently locked by a thread.}
+		if (0 != Assembly.atomicCompareGetAndSet(0, 0,
+			__p + Constants.OBJECT_MONITOR_OFFSET))
+			throw new VirtualMachineError("SV0i");
+		
 		// Debug
 		/*todo.DEBUG.code('G', 'C', __p);*/
 		
