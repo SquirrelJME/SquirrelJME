@@ -68,19 +68,27 @@ public final class TaskManager
 		// Tasks that are currently active
 		Task[] tasks = this.tasks;
 		
-		// Find a free task spot
+		// The resulting new task and its PID
+		Task rv;
 		int pid;
-		for (pid = 1; pid < MAX_TASKS; pid++)
-			if (tasks[pid] == null)
-				break;
 		
-		// {@squirreljme.error SV01 Task limit reached.}
-		if (pid >= MAX_TASKS)
-			throw new RuntimeException("SV01");
-		
-		// Setup and store task now
-		Task rv = new Task(pid, this._nextlid++, new ClassPath(__cp));
-		tasks[pid] = rv;
+		// One a single process may make tasks at a time, so we need to lock
+		// here to prevent the entire system from collapsing
+		synchronized (this)
+		{
+			// Find a free task spot
+			for (pid = 1; pid < MAX_TASKS; pid++)
+				if (tasks[pid] == null)
+					break;
+			
+			// {@squirreljme.error SV01 Task limit reached.}
+			if (pid >= MAX_TASKS)
+				throw new RuntimeException("SV01");
+			
+			// Setup and store task now
+			rv = new Task(pid, this._nextlid++, new ClassPath(__cp));
+			tasks[pid] = rv;
+		}
 		
 		// Create main thread to initialize
 		TaskThread thread = rv.createThread();

@@ -55,6 +55,12 @@ public final class Bootstrap
 		// Could crash!
 		try
 		{
+			// Initialize kernel thread, since there has to be a thread
+			// reference for classes to work!
+			ThreadManager thm = Globals.getThreadManager();
+			Assembly.specialSetThreadRegister(Assembly.objectToPointer(
+				thm.BOOT_THREAD));
+			
 			// Initialize config reader
 			ConfigReader config = new ConfigReader(__confbase);
 			
@@ -69,11 +75,6 @@ public final class Bootstrap
 			
 			// Spacer
 			todo.DEBUG.note("");
-			
-			// Initialize kernel thread
-			ThreadManager thm = Globals.getThreadManager();
-			Assembly.specialSetThreadRegister(Assembly.objectToPointer(
-				thm.createThread(0)));
 			
 			// Load system call handler
 			TaskSysCallHandler.initTaskHandler(config);
