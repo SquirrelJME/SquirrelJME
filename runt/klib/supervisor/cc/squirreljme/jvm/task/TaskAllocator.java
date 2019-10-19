@@ -18,6 +18,10 @@ import cc.squirreljme.jvm.Allocator;
  */
 public final class TaskAllocator
 {
+	/** The size of the static field area. */
+	public static final short STATIC_FIELD_SIZE =
+		8192;
+	
 	/** The extra tag bits to use. */
 	protected final int tagbits;
 	
@@ -65,7 +69,20 @@ public final class TaskAllocator
 		if (rv != 0)
 			return rv;
 		
-		throw new todo.TODO();
+		// We need to allocate this data region
+		synchronized (this)
+		{
+			// Double-get in case we ran into this twice!
+			rv = this._staticfieldptr;
+			if (rv != 0)
+				return rv;
+			
+			// Allocate and store this space
+			this._staticfieldptr = (rv = this.allocate(0, STATIC_FIELD_SIZE));
+			
+			// And use it
+			return rv;
+		}
 	}
 }
 
