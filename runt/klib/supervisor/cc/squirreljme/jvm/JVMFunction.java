@@ -386,8 +386,33 @@ public final class JVMFunction
 		if (__p == Constants.BAD_MAGIC)
 			Assembly.breakpoint();
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// {@squirreljme.error SV0b Cannot enter the monitor of a null object.}
+		if (__p == 0)
+			throw new NullPointerException("SV0b");
+		
+		// Get our own thread ID
+		int ourtid = Assembly.specialGetThreadRegister();
+		
+		// {@squirreljme.error SV0d Current thread does not have a thread
+		// identifier?}
+		if (ourtid == 0)
+			throw new VirtualMachineError("SV0d");
+		
+		// Wait for the lock to happen, we spin-lock in the supervisor so
+		// that locking actions are a bit more responsive since they should
+		// not be locked for long
+		for (int lockp = __p + Constants.OBJECT_MONITOR_OFFSET;;)
+		{
+			// If we try to set the value and it happens to be 0 (nobody was
+			// locking this object) or our thread ID (we already own it) then
+			// stop and leave the loop
+			int oldv = Assembly.atomicCompareGetAndSet(0, ourtid, lockp);
+			if (oldv == 0 || oldv == ourtid)
+				break;
+		}
+		
+		// Since we own this lock, count the lock count up
+		Assembly.atomicIncrement(__p + Constants.OBJECT_MONITOR_COUNT_OFFSET);
 	}
 	
 	/**
@@ -402,8 +427,47 @@ public final class JVMFunction
 		if (__p == Constants.BAD_MAGIC)
 			Assembly.breakpoint();
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// {@squirreljme.error SV0c Cannot exit the monitor of a null object.}
+		if (__p == 0)
+			throw new NullPointerException("SV0c");
+			
+		// Get our own thread ID
+		int ourtid = Assembly.specialGetThreadRegister();
+		
+		// {@squirreljme.error SV0e Current thread does not have a thread
+		// identifier?}
+		if (ourtid == 0)
+			throw new VirtualMachineError("SV0e");
+		
+		// We can only mess with our counter if we own the lock itself, so
+		// compare against our own thread and only allow this to be done if
+		// it matches our own
+		int lkp = __p + Constants.OBJECT_MONITOR_OFFSET;
+		int oldv = Assembly.atomicCompareGetAndSet(ourtid, ourtid, lkp);
+		
+		// {@squirreljme.error SV0f Current thread does not own the monitor
+		// for this object, so it cannot be unlocked.}
+		if (oldv != ourtid)
+			throw new IllegalMonitorStateException("SV0f");
+		
+		// Pointer to the lock count
+		int countp = __p + Constants.OBJECT_MONITOR_COUNT_OFFSET;
+		
+		// We can read our current count by comparing and setting zero
+		int curcount = Assembly.atomicCompareGetAndSet(0, 0, countp);
+		
+		// {@squirreljme.error SV0g Too many monitor exits on objects.}
+		if (curcount <= 0)
+			throw new IllegalMonitorStateException("SV0g");
+		
+		// Reduce the count accordingly, if we reach zero we clear the lock
+		if (Assembly.atomicDecrementAndGet(countp) == 0)
+			if (ourtid != Assembly.atomicCompareGetAndSet(ourtid, 0, lkp))
+			{
+				// {@squirreljme.error SV0h The owning thread for the object
+				// was changed during unlock?}
+				throw new IllegalMonitorStateException("SV0h");
+			}
 	}
 	
 	/**
