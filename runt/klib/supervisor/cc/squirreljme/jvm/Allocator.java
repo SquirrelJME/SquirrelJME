@@ -59,9 +59,16 @@ public final class Allocator
 	/** Extra size to add that must be hit before a chunk is split. */
 	public static final byte SPLIT_REQUIREMENT =
 		16;
+		
+	/** Locking magic number. */
+	private static final int _LOCK_MAGIC =
+		0x506F4C79;
 	
 	/** The base RAM address. */
 	private static volatile int _rambase;
+	
+	/** The locking pointer address. */
+	private static volatile int _lockptr;
 	
 	/**
 	 * Not used.
@@ -82,6 +89,50 @@ public final class Allocator
 	 * @since 2019/05/26
 	 */
 	public static final int allocate(int __tag, int __sz)
+	{
+		// Determine the special locking key to use, never let this be zero!
+		int key = (_LOCK_MAGIC ^ (__tag + __sz)) | 1;
+		
+		// Try locking the pointer
+		int lp = Allocator._lockptr;
+		try
+		{
+			// Lock using our special key, which will never be zero!
+			while (0 != Assembly.atomicCompareGetAndSet(0, key, lp))
+				continue;
+			
+			// Fall into the allocation without lock
+			return Allocator.allocateWithoutLock(__tag, __sz);
+		}
+		
+		// Clear the lock always
+		finally
+		{
+			// Clear out lock, if not matched then something is wrong!
+			int old;
+			if (key != (old = Assembly.atomicCompareGetAndSet(key, 0, lp)))
+			{
+				// Another allocation took our lock??
+				todo.DEBUG.code('a', 'l', old);
+				Assembly.breakpoint();
+				
+				// {@squirreljme.error SV0j Another allocation took the lock
+				// from us?}
+				throw new VirtualMachineError("SV0j");
+			}
+		}
+	}
+	
+	/**
+	 * Allocates the given number of bytes, no locking is performed at all.
+	 *
+	 * @param __tag The tag to use, only the lowest 8-bits are used.
+	 * @param __sz The number of bytes to allocate.
+	 * @return The address of the allocated data or {@code 0} if there is
+	 * not enough memory remaining.
+	 * @since 2019/05/26
+	 */
+	public static final int allocateWithoutLock(int __tag, int __sz)
 	{
 		// The number of desired bytes
 		int want = CHUNK_LENGTH + (__sz <= 4 ? 4 : ((__sz + 3) & (~3)));
@@ -337,5 +388,8 @@ public final class Allocator
 		
 		// Set memory parameters
 		Allocator._rambase = __rambase;
+		
+		// Set pointer used to control the lock state of memory
+		Allocator._lockptr = Allocator.allocateWithoutLock(0, 4);
 	}
 }
