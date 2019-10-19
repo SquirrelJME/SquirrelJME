@@ -105,7 +105,7 @@ public final class TaskManager
 		if (__im)
 		{
 			// Load instance of main MIDlet class
-			int mainclass = rv.loadClass(__mcl);
+			TaskClass mainclass = rv.loadClass(__mcl);
 			
 			// Create instance of the MIDlet class
 			int midinstance = rv.newInstance(mainclass);
