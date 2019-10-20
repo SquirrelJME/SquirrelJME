@@ -1,0 +1,19 @@
+# 2019/10/19
+
+## 08:07
+
+Did a bunch of SquirrelJME planning for the future, I think the goals I set
+out a reasonable.
+
+## 08:10
+
+Going to change the `asruntime.mkd` document to be a porting one.
+
+## 08:30
+
+I believe I need monitors and such.
+
+## 10:16
+
+I am going to need somewhere to store the number of notifies done on an object
+so that threads can resume from it if they waited on it for example.
