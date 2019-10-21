@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.lib;
 
+import cc.squirreljme.jvm.io.BinaryBlob;
+
 /**
  * This utility exists for the parsing of SquirrelJME's class files and allows
  * the bootstrap and class loaders the ability to read them.
@@ -17,18 +19,23 @@ package cc.squirreljme.jvm.lib;
  */
 public final class ClassFileParser
 {
-	/** The address where the class is. */
-	public final int romaddress;
+	/** The blob of the class. */
+	public final BinaryBlob blob;
 	
 	/**
 	 * Initializes the class file parser.
 	 *
-	 * @param __ra The ROM address.
+	 * @param __blob The ROM blob.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/06
 	 */
-	public ClassFileParser(int __ra)
+	public ClassFileParser(BinaryBlob __blob)
+		throws NullPointerException
 	{
-		this.romaddress = __ra;
+		if (__blob == null)
+			throw new NullPointerException("NARG");
+		
+		this.blob = __blob;
 	}
 	
 	/**

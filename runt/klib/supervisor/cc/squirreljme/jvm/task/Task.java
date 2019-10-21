@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.io.BinaryBlob;
 import cc.squirreljme.jvm.Globals;
+import cc.squirreljme.jvm.lib.ClassFileParser;
 import cc.squirreljme.jvm.lib.ClassLibrary;
 import cc.squirreljme.jvm.lib.ClassPath;
 import java.util.HashMap;
@@ -120,10 +121,13 @@ public final class Task
 	 *
 	 * @param __cl The class to load.
 	 * @return The pointer to the class information.
+	 * @throws NullPointerException On null arguments.
+	 * @throws TaskVirtualMachineError If there is something wrong with the
+	 * task virtual machine.
 	 * @since 2019/10/13
 	 */
 	public final TaskClass loadClass(String __cl)
-		throws NullPointerException
+		throws NullPointerException, TaskVirtualMachineError
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
@@ -142,6 +146,19 @@ public final class Task
 			// Otherwise store and set it
 			classes.put(__cl, (rv = new TaskClass()));
 		}
+		
+		// Needed to search for classes
+		ClassPath classpath = this.classpath;
+		
+		// {@squirreljme.error SV0l Task does has ClassInfo in its
+		// class path.}
+		int cidx = classpath.resourceClassFind("cc/squirreljme/jvm/ClassInfo");
+		if (cidx < 0)
+			throw new TaskVirtualMachineError("SV0l");
+		
+		// Get parser for this class, because we need its info
+		ClassFileParser ciparser = new ClassFileParser(
+			classpath.resourceData(cidx));
 		
 		throw new todo.TODO();
 	}
