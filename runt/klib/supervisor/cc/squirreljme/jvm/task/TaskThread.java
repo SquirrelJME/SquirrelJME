@@ -82,11 +82,11 @@ public final class TaskThread
 	 * {@link #enterFrame(String, String, String, int[])} was never previously
 	 * called; or if {@link #enterFrame(String, String, String, int[])} was
 	 * called without a subsequent {@code inlineExecute()}.
-	 * @throws TaskException If this thread threw an exception.
+	 * @throws TaskThrownException If this thread threw an exception.
 	 * @since 2019/10/13
 	 */
 	public final long inlineExecute()
-		throws IllegalStateException, TaskException
+		throws IllegalStateException, TaskThrownException
 	{
 		throw new todo.TODO();
 	}

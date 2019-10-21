@@ -10,19 +10,20 @@
 package cc.squirreljme.jvm.task;
 
 /**
- * This is the base for any exception thrown when processing tasks.
+ * This is thrown when there is something wrong with the task's virtual
+ * machine.
  *
  * @since 2019/10/21
  */
-public class TaskException
-	extends RuntimeException
+public class TaskVirtualMachineError
+	extends TaskException
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
 	 * @since 2019/10/21
 	 */
-	public TaskException()
+	public TaskVirtualMachineError()
 	{
 	}
 	
@@ -32,7 +33,7 @@ public class TaskException
 	 * @param __m The message.
 	 * @since 2019/10/21
 	 */
-	public TaskException(String __m)
+	public TaskVirtualMachineError(String __m)
 	{
 		super(__m);
 	}
@@ -44,7 +45,7 @@ public class TaskException
 	 * @param __t The cause.
 	 * @since 2019/10/21
 	 */
-	public TaskException(String __m, Throwable __t)
+	public TaskVirtualMachineError(String __m, Throwable __t)
 	{
 		super(__m, __t);
 	}
@@ -55,7 +56,7 @@ public class TaskException
 	 * @param __t The cause.
 	 * @since 2019/10/21
 	 */
-	public TaskException(Throwable __t)
+	public TaskVirtualMachineError(Throwable __t)
 	{
 		super(__t);
 	}
