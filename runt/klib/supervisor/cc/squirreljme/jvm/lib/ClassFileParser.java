@@ -48,5 +48,17 @@ public final class ClassFileParser
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Returns the size of all of the fields.
+	 *
+	 * @param __is Get the size of static fields?
+	 * @return The number of bytes the field requires for consumption.
+	 * @since 2019/10/21
+	 */
+	public final int fieldSize(boolean __is)
+	{
+		throw new todo.TODO();
+	}
 }
 

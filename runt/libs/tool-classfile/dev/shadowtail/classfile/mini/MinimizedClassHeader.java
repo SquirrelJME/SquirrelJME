@@ -108,10 +108,10 @@ public final class MinimizedClassHeader
 	/** Static field data size. */
 	public final int sfsize;
 	
-	/** Interface field data offset. */
+	/** Instance field data offset. */
 	public final int ifoff;
 	
-	/** Interface field data size. */
+	/** Instance field data size. */
 	public final int ifsize;
 	
 	/** Static method data offset. */
