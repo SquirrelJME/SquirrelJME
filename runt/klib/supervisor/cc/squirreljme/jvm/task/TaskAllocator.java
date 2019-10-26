@@ -57,6 +57,18 @@ public final class TaskAllocator
 	}
 	
 	/**
+	 * Allocates an object type.
+	 *
+	 * @param __sz The size of the object.
+	 * @return The allocated bytes.
+	 * @since 2019/10/26
+	 */
+	public final int allocateObject(int __sz)
+	{
+		return this.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
+	}
+	
+	/**
 	 * Frees the given pointer, this is just a helper method.
 	 *
 	 * @param __p The pointer to free.
