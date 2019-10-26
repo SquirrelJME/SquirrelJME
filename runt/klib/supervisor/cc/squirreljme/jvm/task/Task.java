@@ -160,6 +160,14 @@ public final class Task
 		ClassFileParser ciparser = new ClassFileParser(
 			classpath.resourceData(cidx));
 		
+		// Need to allocate class data
+		TaskAllocator allocator = this.allocator;
+		
+		// Allocate the space needed to store the class information
+		int infopointer = allocator.allocateObject(Constants.OBJECT_BASE_SIZE +
+			ciparser.fieldSize(false));
+		rv._infopointer = infopointer;
+		
 		throw new todo.TODO();
 	}
 	

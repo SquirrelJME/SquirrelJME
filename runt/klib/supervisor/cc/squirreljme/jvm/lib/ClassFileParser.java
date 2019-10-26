@@ -50,6 +50,18 @@ public final class ClassFileParser
 	}
 	
 	/**
+	 * Returns the number of fields in the class.
+	 *
+	 * @param __is Get the static field count.
+	 * @return The number of fields in the class.
+	 * @since 2019/10/26
+	 */
+	public final int fieldCount(boolean __is)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the size of all of the fields.
 	 *
 	 * @param __is Get the size of static fields?

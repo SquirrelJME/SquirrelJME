@@ -17,7 +17,7 @@ package cc.squirreljme.jvm.task;
 public final class TaskClass
 {
 	/** The allocated class information. */
-	int _allocatedclass;
+	int _infopointer;
 	
 	/** The run-time constant pool pointer. */
 	int _pool;
