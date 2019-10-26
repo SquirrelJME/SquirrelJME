@@ -492,6 +492,11 @@ public final class LoadedClassInfo
 						wp, this._class.header.ifobjs);
 					break;
 					
+				case "pool:I":
+					initializer.memWriteInt(Modifier.RAM_OFFSET,
+						wp, this.poolPointer());
+					break;
+					
 					// Reference count for this class data, should never
 					// be freed
 				case "_refcount:I":
