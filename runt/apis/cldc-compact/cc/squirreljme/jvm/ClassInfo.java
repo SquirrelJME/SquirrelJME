@@ -69,6 +69,9 @@ public final class ClassInfo
 	/** Virtual invoke VTable pool entries. */
 	public final int[] vtablepool;
 	
+	/** The pointer to the constant pool of this class. */
+	public final int pool;
+	
 	/**
 	 * Class information constructor.
 	 *
@@ -87,12 +90,13 @@ public final class ClassInfo
 	 * @param __cop Pointer to the class object.
 	 * @param __vtv Virtual invoke VTable address.
 	 * @param __vtp Virtual invoke VTable pool addresses.
+	 * @param __pool The pointer to the class constant pool.
 	 * @since 2019/04/26
 	 */
 	public ClassInfo(int __sp, int __fl, int __minip, int __namep, int __sz,
 		int __bz, int __no, int __dim, int __csz, ClassInfo __scl,
 		ClassInfo[] __icl, ClassInfo __ccl, Class<?> __cop, int[] __vtv,
-		int[] __vtp)
+		int[] __vtp, int __pool)
 	{
 		// Always implicitly set magic
 		this.magic = MAGIC_NUMBER;
@@ -113,5 +117,7 @@ public final class ClassInfo
 		this.classobjptr = __cop;
 		this.vtablevirtual = (__vtv == null ? new int[0] : __vtv);
 		this.vtablepool = (__vtp == null ? new int[0] : __vtp);
+		this.pool = __pool;
 	}
 }
+
