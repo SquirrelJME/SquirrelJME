@@ -455,6 +455,12 @@ public final class LoadedClassInfo
 						}
 						break;
 					
+					// The JAR index, always zero for the bootstrap
+				case "jardx:I":
+					initializer.memWriteInt(
+						wp, 0);
+					break;
+					
 					// Magic number
 				case "magic:I":
 					initializer.memWriteInt(
