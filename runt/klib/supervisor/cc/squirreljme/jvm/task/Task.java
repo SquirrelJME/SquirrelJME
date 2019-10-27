@@ -122,17 +122,22 @@ public final class Task
 	 * @param __cl The class to load.
 	 * @return The pointer to the class information.
 	 * @throws NullPointerException On null arguments.
+	 * @throws TaskNoSuchClassException If the task does not have the specified
+	 * class.
 	 * @throws TaskVirtualMachineError If there is something wrong with the
 	 * task virtual machine.
 	 * @since 2019/10/13
 	 */
 	public final TaskClass loadClass(String __cl)
-		throws NullPointerException, TaskVirtualMachineError
+		throws NullPointerException, TaskNoSuchClassException,
+			TaskVirtualMachineError
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		// Needed to search for classes
 		TaskClass rv;
+		ClassPath classpath = this.classpath;
 		
 		// Try to find already initialized class
 		HashMap<String, TaskClass> classes = this._classes;
@@ -143,32 +148,21 @@ public final class Task
 			if (rv != null)
 				return rv;
 			
-			// Otherwise store and set it
-			classes.put(__cl, (rv = new TaskClass()));
+			// {@squirreljme.error SV0m The specified class does not exist.
+			// (The class which does not exist)}
+			int cldx = classpath.resourceClassFind(__cl);
+			if (cldx < 0)
+				throw new TaskNoSuchClassException("SV0m " + __cl);
+			
+			// Setup new one and store it
+			classes.put(__cl, (rv = new TaskClass(cldx)));
+			
+			// Pre-initialize the class
+			rv.initializeClassInfoSetup(this);
 		}
 		
-		// Needed to search for classes
-		ClassPath classpath = this.classpath;
-		
-		// {@squirreljme.error SV0l Task does has ClassInfo in its
-		// class path.}
-		int cidx = classpath.resourceClassFind("cc/squirreljme/jvm/ClassInfo");
-		if (cidx < 0)
-			throw new TaskVirtualMachineError("SV0l");
-		
-		// Get parser for this class, because we need its info
-		ClassFileParser ciparser = new ClassFileParser(
-			classpath.resourceData(cidx));
-		
-		// Need to allocate class data
-		TaskAllocator allocator = this.allocator;
-		
-		// Allocate the space needed to store the class information
-		int infopointer = allocator.allocateObject(Constants.OBJECT_BASE_SIZE +
-			ciparser.fieldSize(false));
-		rv._infopointer = infopointer;
-		
-		throw new todo.TODO();
+		// Perform post initialization as needed
+		return rv.initializeClassInfo(this);
 	}
 	
 	/**

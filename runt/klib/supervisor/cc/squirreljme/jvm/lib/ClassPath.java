@@ -203,5 +203,17 @@ public final class ClassPath
 		// Then locate it in any class library
 		return this.resourceFind(__name);
 	}
+	
+	/** 
+	 * Returns the JAR index of the given resource index.
+	 *
+	 * @param __rcid The resource index.
+	 * @return The JAR index of the given resource.
+	 * @since 2019/10/27
+	 */
+	public static final int resourceIndexToJarIndex(int __rcid)
+	{
+		return (__rcid & _JAR_MASK) >>> _INDEX_SHIFT;
+	}
 }
 
