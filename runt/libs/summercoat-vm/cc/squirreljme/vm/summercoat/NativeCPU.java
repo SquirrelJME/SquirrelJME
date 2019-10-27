@@ -29,6 +29,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.classfile.InstructionMnemonics;
@@ -65,6 +66,10 @@ public final class NativeCPU
 	public static final int METHOD_CACHE_SPILL =
 		1024;
 	
+	/** The number of execution slices to store. */
+	public static final int MAX_EXECUTION_SLICES =
+		128;
+	
 	/** Threshhold for too many debug points */
 	private static final int _POINT_THRESHOLD =
 		65536;
@@ -92,6 +97,10 @@ public final class NativeCPU
 	/** Super visor properties. */
 	private final int[] _supervisorproperties =
 		new int[SupervisorPropertyIndex.NUM_PROPERTIES];
+	
+	/** Execution slices. */
+	private final Deque<ExecutionSlice> _execslices =
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the native CPU.
@@ -204,12 +213,28 @@ public final class NativeCPU
 		// Failed
 		catch (VMException|InvalidInstructionException e)
 		{
+			// Spacer
+			System.err.println("********************************************");
+			
+			// Print all the various execution slices
+			Deque<ExecutionSlice> execslices = this._execslices;
+			System.err.printf("Printing the last %d instructions:%n",
+				execslices.size());
+			while (execslices.isEmpty())
+				execslices.removeFirst().print();
+			
+			// Spacer
+			System.err.println("--------------------------------------------");
+			
 			// Print the call trace
 			CallTraceElement[] calltrace = this.trace();
 			System.err.println("Call trace:");
 			for (CallTraceElement l : calltrace)
 				System.err.printf("    %s%n", l);
 			System.err.println();
+			
+			// Spacer
+			System.err.println("********************************************");
 			
 			// {@squirreljme.error AE02 Virtual machine exception. (The failing
 			// instruction)}
@@ -248,6 +273,9 @@ public final class NativeCPU
 		
 		// Debug point counter
 		int pointcounter = 0;
+		
+		// Execution list debug
+		Deque<ExecutionSlice> execslices = this._execslices;
 		
 		// Execution is effectively an infinite loop
 		LinkedList<Frame> frames = this._frames;
@@ -394,9 +422,17 @@ public final class NativeCPU
 				pointcounter = 0;
 			}
 			
+			// Get slice for this instruction
+			ExecutionSlice el = ExecutionSlice.of(nowframe, op, args, reglist);
+			
+			// Add to previous instructions, do not exceed slice limits
+			if (execslices.size() >= MAX_EXECUTION_SLICES)
+				execslices.removeFirst();
+			execslices.addLast(el);
+			
 			// Print CPU debug info
 			if (ENABLE_DEBUG)
-				this.__cpuDebugPrint(nowframe, op, af, args, reglist);
+				el.print();
 			
 			// Debug point checking
 			if (encoding == NativeInstructionType.DEBUG_POINT)
@@ -418,7 +454,7 @@ public final class NativeCPU
 				
 				// Print the point?
 				if (doprint)
-					this.__cpuDebugPrint(nowframe, op, af, args, reglist);
+					el.print();
 			}
 			
 			// By default the next instruction is the address after all
@@ -430,9 +466,6 @@ public final class NativeCPU
 			{
 					// CPU Breakpoint
 				case NativeInstructionType.BREAKPOINT:
-					// Debug print the frame
-					this.__cpuDebugPrint(nowframe, op, af, args, reglist);
-					
 					// If profiling, immediately enter the frame to signal
 					// a break point then exit it
 					if (profiler != null)
@@ -449,10 +482,6 @@ public final class NativeCPU
 				case NativeInstructionType.DEBUG_ENTRY:
 					this.__debugEntry(nowframe, args[0], args[1], args[2],
 						args[3]);
-					
-					// Trace it!
-					if (ENABLE_DEBUG)
-						this.__cpuDebugPrint(nowframe, op, af, args, reglist);
 					break;
 					
 					// Debug exit of method
@@ -1027,149 +1056,6 @@ public final class NativeCPU
 		if (top == null)
 			return new CallTraceElement();
 		return this.trace(top);
-	}
-	
-	/**
-	 * Performs some nice printing of CPU information.
-	 *
-	 * @param __nf The current frame.
-	 * @param __op The operation.
-	 * @param __af The argument format.
-	 * @param __args Argument values.
-	 * @param __reglist The register list.
-	 * @since 2019/04/23
-	 */
-	private final void __cpuDebugPrint(Frame __nf, int __op,
-		ArgumentFormat[] __af, int[] __args, int[] __reglist)
-	{
-		PrintStream out = System.err;
-		
-		// Limit class name
-		CallTraceElement trace = this.trace(__nf);
-		String cname = "" + trace.className();
-		int nl;
-		if ((nl = cname.length()) > 20)
-			cname = cname.substring(nl - 20, nl);
-		
-		// Print Header (with location info)
-		out.printf("***** @%08x %-19.19s/%10.10s | L%-4d/J%-3d %20.20s::%s %n",
-			__nf._pc,
-			NativeInstruction.mnemonic(__op),
-			InstructionMnemonics.toString(trace.byteCodeInstruction()),
-			trace.line(),
-			trace.byteCodeAddress(),
-			cname,
-			trace.methodName() + ":" + trace.methodDescriptor());
-		
-		// Is this an invoke?
-		boolean isinvoke = (__op == NativeInstructionType.INVOKE ||
-			__op == NativeInstructionType.SYSTEM_CALL);
-		
-		// Arguments to print, invocations get 1 (pc) + register list
-		int naf = (isinvoke ? 1 + __reglist.length:
-			__af.length);
-		
-		// Used to modify some calls
-		int encoding = NativeInstruction.encoding(__op);
-		
-		// Print out arguments to the call
-		out.printf("  A:[");
-		for (int i = 0, n = naf; i < n; i++)
-		{
-			int iv = (isinvoke ? (i == 0 ? __args[i] : __reglist[i - 1]) :
-				__args[i]);
-			
-			// Comma
-			if (i > 0)
-				out.print(", ");
-			
-			// Can be special?
-			boolean canspec = true;
-			if (encoding == NativeInstructionType.DEBUG_ENTRY ||
-				encoding == NativeInstructionType.DEBUG_POINT ||
-				(encoding == NativeInstructionType.IF_ICMP &&
-					i == 2) ||
-				(encoding == NativeInstructionType.MATH_CONST_INT &&
-					i == 1) ||
-				(encoding == NativeInstructionType.IFEQ_CONST &&
-					i == 1) ||
-				(encoding == NativeInstructionType.ATOMIC_INT_INCREMENT &&
-					i == 1) ||
-				(encoding == NativeInstructionType.
-					ATOMIC_INT_DECREMENT_AND_GET && i == 2) ||
-				(encoding == NativeInstructionType.MEMORY_OFF_ICONST &&
-					i == 2) ||
-				(encoding == NativeInstructionType.LOAD_POOL && i == 0))
-				canspec = false;
-			
-			// Is this a special register?
-			String spec = null;
-			if (canspec)
-				switch (iv)
-				{
-					case NativeCode.ZERO_REGISTER:
-						spec = "zero";
-						break;
-					
-					case NativeCode.RETURN_REGISTER:
-						spec = "return1";
-						break;
-					
-					case NativeCode.RETURN_REGISTER + 1:
-						spec = "return2";
-						break;
-					
-					case NativeCode.EXCEPTION_REGISTER:
-						spec = "exception";
-						break;
-					
-					case NativeCode.STATIC_FIELD_REGISTER:
-						spec = "sfieldptr";
-						break;
-					
-					case NativeCode.THREAD_REGISTER:
-						spec = "thread";
-						break;
-					
-					case NativeCode.POOL_REGISTER:
-						spec = "pool";
-						break;
-					
-					case NativeCode.NEXT_POOL_REGISTER:
-						spec = "nextpool";
-						break;
-					
-					case NativeCode.ARGUMENT_REGISTER_BASE:
-						spec = "a0/this";
-						break;
-				}
-			
-			// Print special register
-			if (spec != null)
-				out.printf("%10.10s", spec);
-			else
-				out.printf("%10d", iv);
-		}
-		out.print("] | ");
-		
-		// And register value
-		out.printf("V:[");
-		int[] registers = __nf._registers;
-		for (int i = 0, n = naf; i < n; i++)
-		{
-			int iv = (isinvoke ? (i == 0 ? __args[i] : __reglist[i - 1]) :
-				__args[i]);
-				
-			if (i > 0)
-				out.print(", ");
-			
-			// Load register value
-			if (iv < 0 || iv >= registers.length)
-				out.print("----------");
-			else
-				out.printf("%+10d", registers[iv]);
-		}
-		out.println("]");
 	}
 	
 	/**
