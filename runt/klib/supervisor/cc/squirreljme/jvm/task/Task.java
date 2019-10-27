@@ -98,7 +98,6 @@ public final class Task
 		
 		// Needed to search for classes
 		TaskClass rv;
-		ClassPath classpath = this.classpath;
 		
 		// Try to find already initialized class
 		HashMap<String, TaskClass> classes = this._classes;
@@ -111,7 +110,7 @@ public final class Task
 			
 			// {@squirreljme.error SV0m The specified class does not exist.
 			// (The class which does not exist)}
-			int cldx = classpath.resourceClassFind(__cl);
+			int cldx = this.classpath.resourceClassFind(__cl);
 			if (cldx < 0)
 				throw new TaskNoSuchClassException("SV0m " + __cl);
 			
