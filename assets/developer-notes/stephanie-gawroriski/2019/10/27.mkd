@@ -1,0 +1,25 @@
+# 2019/10/27
+
+## 13:20
+
+I think atomic decrement should probably not be an error, but there also
+should be both increment and decrement. Although another decrement below
+zero check.
+
+## 13:37
+
+I think it is ref uncount is working with registers and it is kinda
+being used with a memory address, so maybe that is a bad thing?
+
+## 13:47
+
+There are too many instructions that happen at this point where printing all
+of them is completely not feasible. So I am going to have to do some kind of
+instruction storing circular queue and dumping. That way whenever there is
+a crash of sorts I can figure out where it is, otherwise just guessing and
+whatnot which would be a bad thing.
+
+## 19:25
+
+Been slowly working on the code but it is late and I am quite tired. Made some
+progress on the instruction gathering, but that is about it.
