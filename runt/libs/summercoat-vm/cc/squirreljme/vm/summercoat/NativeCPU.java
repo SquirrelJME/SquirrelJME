@@ -220,7 +220,7 @@ public final class NativeCPU
 			Deque<ExecutionSlice> execslices = this._execslices;
 			System.err.printf("Printing the last %d instructions:%n",
 				execslices.size());
-			while (execslices.isEmpty())
+			while (!execslices.isEmpty())
 				execslices.removeFirst().print();
 			
 			// Spacer
@@ -423,7 +423,8 @@ public final class NativeCPU
 			}
 			
 			// Get slice for this instruction
-			ExecutionSlice el = ExecutionSlice.of(nowframe, op, args, reglist);
+			ExecutionSlice el = ExecutionSlice.of(this.trace(nowframe),
+				nowframe, op, args, af.length, reglist);
 			
 			// Add to previous instructions, do not exceed slice limits
 			if (execslices.size() >= MAX_EXECUTION_SLICES)
