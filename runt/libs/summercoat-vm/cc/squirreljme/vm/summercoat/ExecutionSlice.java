@@ -108,92 +108,95 @@ public final class ExecutionSlice
 		// Print normal trace info
 		__ps.printf("  - InFrm: %s%n", trace.toString());
 		
+		// Do not print the large number of final registers that are zero
+		int maxregister = cpuregs.length - 1;
+		while (maxregister > 0 && cpuregs[maxregister] == 0)
+			maxregister--;
+		
 		// Print CPU registers
 		__ps.print("  - CPU+g:[");
-		boolean didstar = false;
-		for (int i = 0, n = cpuregs.length, lastval = -1; i < n; i++)
+		int didonline = 0;
+		for (int i = 0; i <= maxregister; i++)
 		{
 			// Put local registers on a new line
 			if (i == NativeCode.LOCAL_REGISTER_BASE)
 			{
 				__ps.printf("]%n  - CPU+l:[");
-				lastval = -1;
+				didonline = 0;
 			}
 			
 			// Start the arguments as well
 			else if (i == NativeCode.ARGUMENT_REGISTER_BASE)
 			{
 				__ps.printf("]%n  - CPU+a:[");
-				lastval = -1;
+				didonline = 0;
 			}
 			
-			// Use comma here
-			else if (i > 0 && !didstar)
-				__ps.print(", ");
+			// Other formatting
+			else if (i > 0)
+			{
+				// Comma these
+				if (didonline < 6)
+					__ps.print(", ");
+					
+				// Reset count
+				else
+				{
+					__ps.printf("%n  -   ...:.");
+					didonline = 0;
+				}
+			}
 			
 			// Known register name?
 			String knownreg = null;
 			switch (i)
 			{
 				case NativeCode.ZERO_REGISTER:
-					knownreg = "zero";
+					knownreg = "zer";
 					break;
 				
 				case NativeCode.RETURN_REGISTER:
-					knownreg = "return1";
+					knownreg = "rv1";
 					break;
 				
 				case NativeCode.RETURN_REGISTER + 1:
-					knownreg = "return2";
+					knownreg = "rv2";
 					break;
 				
 				case NativeCode.EXCEPTION_REGISTER:
-					knownreg = "exception";
+					knownreg = "exc";
 					break;
 				
 				case NativeCode.STATIC_FIELD_REGISTER:
-					knownreg = "sfieldptr";
+					knownreg = "sfp";
 					break;
 				
 				case NativeCode.THREAD_REGISTER:
-					knownreg = "thread";
+					knownreg = "thr";
 					break;
 				
 				case NativeCode.POOL_REGISTER:
-					knownreg = "pool";
+					knownreg = "cpl";
 					break;
 				
 				case NativeCode.NEXT_POOL_REGISTER:
-					knownreg = "nextpool";
+					knownreg = "npl";
 					break;
 				
 				case NativeCode.ARGUMENT_REGISTER_BASE:
-					knownreg = "a0/this";
+					knownreg = "a0t";
 					break;
 			}
 			
 			// Show a value
 			int val = cpuregs[i];
-			if (i == 0 || val != 0 || val != lastval)
-			{
-				// Print out
-				__ps.printf("%s=%xh", (knownreg != null ? knownreg :
-				String.format("r%d", i)), cpuregs[i]);
-				
-				// Never do a star!
-				didstar = false;
-			}
 			
-			// Zero value and last was zero as well
-			else
-			{
-				__ps.print("*");
-				
-				didstar = true;
-			}
+			// Print out
+			__ps.printf("%3s=%8xh", (knownreg != null ? knownreg :
+			String.format("r%02d", i)), cpuregs[i]);
 			
-			// Used to skip blanks
-			lastval = val;
+			// Count line up
+			didonline++;
 		}
 		__ps.println("]");
 		
