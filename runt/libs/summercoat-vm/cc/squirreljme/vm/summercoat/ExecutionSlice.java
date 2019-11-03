@@ -15,6 +15,7 @@ import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import java.io.PrintStream;
+import net.multiphasicapps.classfile.InstructionMnemonics;
 
 /**
  * This represents a single slice of execution.
@@ -92,7 +93,123 @@ public final class ExecutionSlice
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// We need all of these!
+		CallTraceElement trace = this.trace;
+		int op = this.op;
+		int[] opargs = this._opargs,
+			cpuregs = this._cpuregs,
+			callargs = this._callargs;
+		
+		// Print CPU operation state
+		__ps.printf("$$$$$$$$ @%08x (%s/%s)%n", trace.address(),
+			NativeInstruction.mnemonic(op),
+			InstructionMnemonics.toString(trace.byteCodeInstruction()));
+		
+		// Print normal trace info
+		__ps.printf("  - InFrm: %s%n", trace.toString());
+		
+		// Print CPU registers
+		__ps.print("  - CPU+g:[");
+		boolean didstar = false;
+		for (int i = 0, n = cpuregs.length, lastval = -1; i < n; i++)
+		{
+			// Put local registers on a new line
+			if (i == NativeCode.LOCAL_REGISTER_BASE)
+			{
+				__ps.printf("]%n  - CPU+l:[");
+				lastval = -1;
+			}
+			
+			// Start the arguments as well
+			else if (i == NativeCode.ARGUMENT_REGISTER_BASE)
+			{
+				__ps.printf("]%n  - CPU+a:[");
+				lastval = -1;
+			}
+			
+			// Use comma here
+			else if (i > 0 && !didstar)
+				__ps.print(", ");
+			
+			// Known register name?
+			String knownreg = null;
+			switch (i)
+			{
+				case NativeCode.ZERO_REGISTER:
+					knownreg = "zero";
+					break;
+				
+				case NativeCode.RETURN_REGISTER:
+					knownreg = "return1";
+					break;
+				
+				case NativeCode.RETURN_REGISTER + 1:
+					knownreg = "return2";
+					break;
+				
+				case NativeCode.EXCEPTION_REGISTER:
+					knownreg = "exception";
+					break;
+				
+				case NativeCode.STATIC_FIELD_REGISTER:
+					knownreg = "sfieldptr";
+					break;
+				
+				case NativeCode.THREAD_REGISTER:
+					knownreg = "thread";
+					break;
+				
+				case NativeCode.POOL_REGISTER:
+					knownreg = "pool";
+					break;
+				
+				case NativeCode.NEXT_POOL_REGISTER:
+					knownreg = "nextpool";
+					break;
+				
+				case NativeCode.ARGUMENT_REGISTER_BASE:
+					knownreg = "a0/this";
+					break;
+			}
+			
+			// Show a value
+			int val = cpuregs[i];
+			if (i == 0 || val != 0 || val != lastval)
+			{
+				// Print out
+				__ps.printf("%s=%xh", (knownreg != null ? knownreg :
+				String.format("r%d", i)), cpuregs[i]);
+				
+				// Never do a star!
+				didstar = false;
+			}
+			
+			// Zero value and last was zero as well
+			else
+			{
+				__ps.print("*");
+				
+				didstar = true;
+			}
+			
+			// Used to skip blanks
+			lastval = val;
+		}
+		__ps.println("]");
+		
+		// Print call arguments, if any
+		if (callargs != null)
+		{
+			__ps.print("  - CallA: (");
+			for (int i = 0, n = callargs.length; i < n; i++)
+			{
+				if (i > 0)
+					__ps.print(", ");
+				
+				__ps.printf("%xh", callargs[i]);
+			}
+			__ps.println(")");
+		}
 		
 		/*
 		PrintStream out = System.err;

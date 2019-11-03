@@ -32,7 +32,6 @@ import java.io.PrintStream;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.collections.IntegerList;
 import net.multiphasicapps.io.HexDumpOutputStream;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
