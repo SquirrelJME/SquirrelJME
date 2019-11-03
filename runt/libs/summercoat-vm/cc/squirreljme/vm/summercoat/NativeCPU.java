@@ -67,7 +67,7 @@ public final class NativeCPU
 	
 	/** The number of execution slices to store. */
 	public static final int MAX_EXECUTION_SLICES =
-		128;
+		32;
 	
 	/** Threshhold for too many debug points */
 	private static final int _POINT_THRESHOLD =
@@ -96,10 +96,6 @@ public final class NativeCPU
 	/** Super visor properties. */
 	private final int[] _supervisorproperties =
 		new int[SupervisorPropertyIndex.NUM_PROPERTIES];
-	
-	/** Execution slices. */
-	private final Deque<ExecutionSlice> _execslices =
-		new LinkedList<>();
 	
 	/**
 	 * Initializes the native CPU.
@@ -138,15 +134,6 @@ public final class NativeCPU
 		// Old frame, to source globals from
 		LinkedList<Frame> frames = this._frames;
 		Frame lastframe = frames.peekLast();
-		
-		// Debug
-		if (ENABLE_DEBUG)
-		{
-			System.err.printf(">>>> %08x >>>>>>>>>>>>>>>>>>>>>>%n", __pc);
-			System.err.printf(" > ARG %s%n", new IntegerList(__args));
-			System.err.printf(" > WAS %s%n", (lastframe == null ? null :
-				this.trace(lastframe)));
-		}
 		
 		// Setup new frame
 		Frame rv = new Frame();
@@ -215,15 +202,32 @@ public final class NativeCPU
 			// Spacer
 			System.err.println("********************************************");
 			
-			// Print all the various execution slices
-			Deque<ExecutionSlice> execslices = this._execslices;
-			System.err.printf("Printing the last %d instructions:%n",
-				execslices.size());
-			while (!execslices.isEmpty())
-				execslices.removeFirst().print();
-			
-			// Spacer
-			System.err.println("--------------------------------------------");
+			// Only print execution slices if debugging is enabled
+			if (ENABLE_DEBUG)
+			{
+				// Each frame has its own slices
+				for (Frame l : this._frames)
+				{
+					// Traces for this frame
+					System.err.print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+					System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+					System.err.printf(">>>>>>>>>>>> %s%n", this.trace(l));
+					
+					// Print all the various execution slices
+					Deque<ExecutionSlice> execslices = l._execslices;
+					System.err.printf("Printing the last %d instructions:%n",
+						execslices.size());
+					while (!execslices.isEmpty())
+						execslices.removeFirst().print(System.err);
+					
+					// Spacer
+					System.err.println();
+				}
+				
+				// Spacer
+				System.err.println(
+					"--------------------------------------------");
+			}
 			
 			// Print the call trace
 			CallTraceElement[] calltrace = this.trace();
@@ -267,14 +271,8 @@ public final class NativeCPU
 		final byte[] icache = new byte[METHOD_CACHE];
 		int lasticache = -(METHOD_CACHE_SPILL + 1);
 		
-		// First debug point?
-		boolean firstpoint = false;
-		
 		// Debug point counter
 		int pointcounter = 0;
-		
-		// Execution list debug
-		Deque<ExecutionSlice> execslices = this._execslices;
 		
 		// Execution is effectively an infinite loop
 		LinkedList<Frame> frames = this._frames;
@@ -416,45 +414,37 @@ public final class NativeCPU
 			
 			// Set first point flag
 			if (encoding == NativeInstructionType.DEBUG_ENTRY)
-			{
-				firstpoint = true;
 				pointcounter = 0;
-			}
 			
-			// Get slice for this instruction
-			ExecutionSlice el = ExecutionSlice.of(this.trace(nowframe),
-				nowframe, op, args, af.length, reglist);
-			
-			// Add to previous instructions, do not exceed slice limits
-			if (execslices.size() >= MAX_EXECUTION_SLICES)
-				execslices.removeFirst();
-			execslices.addLast(el);
-			
-			// Print CPU debug info
+			// Only track slices if we are debugging
 			if (ENABLE_DEBUG)
-				el.print();
-			
-			// Debug point checking
-			if (encoding == NativeInstructionType.DEBUG_POINT)
 			{
-				// First point printing?
-				boolean doprint = false;
-				if (firstpoint && ENABLE_DEBUG)
-				{
-					doprint = true;
-					firstpoint = false;
-				}
+				// Get slice for this instruction
+				ExecutionSlice el = ExecutionSlice.of(this.trace(nowframe),
+					nowframe, op, args, af.length, reglist);
 				
-				// Seems to be stuck?
-				if (pointcounter++ >= _POINT_THRESHOLD)
+				// Add to previous instructions, do not exceed slice limits
+				Deque<ExecutionSlice> execslices = nowframe._execslices;
+				if (execslices.size() >= MAX_EXECUTION_SLICES)
+					execslices.removeFirst();
+				execslices.addLast(el);
+			
+				// In debug points check to see if the execution seems to
+				// be stuck in here (really long methods)
+				if (encoding == NativeInstructionType.DEBUG_POINT)
 				{
-					doprint = true;
-					pointcounter = 0;
+					// Seems to be stuck?
+					boolean doprint = false;
+					if (pointcounter++ >= _POINT_THRESHOLD)
+					{
+						doprint = true;
+						pointcounter = 0;
+					}
+					
+					// Print the point?
+					if (doprint)
+						el.print();
 				}
-				
-				// Print the point?
-				if (doprint)
-					el.print();
 			}
 			
 			// By default the next instruction is the address after all
@@ -466,17 +456,22 @@ public final class NativeCPU
 			{
 					// CPU Breakpoint
 				case NativeInstructionType.BREAKPOINT:
-					// If profiling, immediately enter the frame to signal
-					// a break point then exit it
-					if (profiler != null)
+					// Breakpoints only function when debugging is enabled
+					if (ENABLE_DEBUG)
 					{
-						profiler.enterFrame("<breakpoint>", "<breakpoint>",
-							"<breakpoint>");
-						profiler.exitFrame();
+						// If profiling, immediately enter the frame to signal
+						// a break point then exit it
+						if (profiler != null)
+						{
+							profiler.enterFrame("<breakpoint>", "<breakpoint>",
+								"<breakpoint>");
+							profiler.exitFrame();
+						}
+						
+						// {@squirreljme.error AE04 CPU breakpoint hit.}
+						throw new VMException("AE04");
 					}
-					
-					// {@squirreljme.error AE04 CPU breakpoint hit.}
-					throw new VMException("AE04");
+					break;
 				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
@@ -515,9 +510,9 @@ public final class NativeCPU
 						lr[args[1]] = read;
 						
 						// Debug
-						if (ENABLE_DEBUG)
+						/*if (ENABLE_DEBUG)
 							todo.DEBUG.note("%08x(%d) = %d ? %d = %d",
-								addr, off, read, check, set);
+								addr, off, read, check, set);*/
 					}
 					break;
 				
@@ -546,9 +541,9 @@ public final class NativeCPU
 								newval));
 						
 						// Debug
-						if (ENABLE_DEBUG)
+						/*if (ENABLE_DEBUG)
 							todo.DEBUG.note("%08x(%d) -= %d - 1 = %d",
-								addr, off, newval + 1, newval);
+								addr, off, newval + 1, newval);*/
 					}
 					break;
 					
@@ -566,9 +561,9 @@ public final class NativeCPU
 							(oldv = memory.memReadInt(addr + off)) + 1);
 						
 						// Debug
-						if (ENABLE_DEBUG)
+						/*if (ENABLE_DEBUG)
 							todo.DEBUG.note("%08x(%d) += %d + 1 = %d",
-								addr, off, oldv, oldv + 1);
+								addr, off, oldv, oldv + 1);*/
 					}
 					break;
 				
@@ -666,11 +661,11 @@ public final class NativeCPU
 						}
 						
 						// Debug
-						if (ENABLE_DEBUG)
+						/*if (ENABLE_DEBUG)
 							todo.DEBUG.note(
 								"(int)%08x[%d] (%08x) -> %d (%08x)",
 								addr, indx, addr + ioff,
-								lr[rout], lr[rout]);
+								lr[rout], lr[rout]);*/
 						
 						// Failure happened?
 						if (fail != null)
@@ -685,9 +680,9 @@ public final class NativeCPU
 							lr[NativeCode.POOL_REGISTER] + (args[0] * 4));
 						
 						// Debug
-						if (ENABLE_DEBUG)
+						/*if (ENABLE_DEBUG)
 							todo.DEBUG.note("Read pool: %d -> %d", args[0],
-								lr[args[1]]);
+								lr[args[1]]);*/
 					}
 					break;
 					
@@ -788,11 +783,11 @@ public final class NativeCPU
 							lr[args[0]] = v;
 							
 							// Debug
-							if (ENABLE_DEBUG)
+							/*if (ENABLE_DEBUG)
 								todo.DEBUG.note(
 									"%c %08x+%d (%08x) -> %d (%08x)",
 									(isjava ? 'J' : 'N'),
-									base, offs, addr, v, v);
+									base, offs, addr, v, v);*/
 						}
 						
 						// Stores
@@ -828,11 +823,11 @@ public final class NativeCPU
 							}
 							
 							// Debug
-							if (ENABLE_DEBUG)
+							/*if (ENABLE_DEBUG)
 								todo.DEBUG.note(
 									"%c %08x+%d (%08x) <- %d (%08x)",
 									(isjava ? 'J' : 'N'),
-									base, offs, addr, v, v);
+									base, offs, addr, v, v);*/
 						}
 					}
 					break;
@@ -890,10 +885,10 @@ public final class NativeCPU
 						pointcounter = 0;
 						
 						// Debug
-						if (ENABLE_DEBUG)
+						/*if (ENABLE_DEBUG)
 							System.err.printf(
 								"<<<< %08x <<<<<<<<<<<<<<<<<<<<<<%n",
-								(now != null ? now._pc : 0));
+								(now != null ? now._pc : 0));*/
 					}
 					break;
 				
@@ -1629,6 +1624,9 @@ public final class NativeCPU
 	 */
 	public static final class Frame
 	{
+		/** Execution slices. */
+		final Deque<ExecutionSlice> _execslices;
+		
 		/** Registers for this frame. */
 		final int[] _registers =
 			new int[MAX_REGISTERS];
@@ -1677,6 +1675,15 @@ public final class NativeCPU
 		
 		/** The current task ID. */
 		int _taskid;
+		
+		/**
+		 * Potential initialization.
+		 */
+		{
+			this._execslices = (ENABLE_DEBUG ?
+				new LinkedList<ExecutionSlice>() :
+				(Deque<ExecutionSlice>)null);
+		}
 	}
 }
 
