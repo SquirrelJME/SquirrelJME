@@ -1,0 +1,14 @@
+# 2019/11/03
+
+## 06:02
+
+Now to continue the execution slice debug. I think I want to disable
+breakpoints when not debugging and such.
+
+## 06:52
+
+So new problem, when debugging I have no idea what these frames are
+like in method calls... So I think on each call I should keep track
+of the last instructions called for each frame... because when I go to
+print the instructions for things, some frames are really long meaning
+that debugging is difficult. So traces will be per frame!
