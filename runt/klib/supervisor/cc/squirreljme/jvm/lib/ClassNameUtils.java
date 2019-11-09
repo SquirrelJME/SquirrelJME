@@ -26,6 +26,24 @@ public final class ClassNameUtils
 	}
 	
 	/**
+	 * Returns the component type of the given array class.
+	 *
+	 * @param __cl The class to check.
+	 * @return The component type of the class.
+	 * @throws IllegalArgumentException If this is not an array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/09
+	 */
+	public static final String componentType(String __cl)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Checks whether the given class name is an array.
 	 *
 	 * @param __cl The class name to check.
