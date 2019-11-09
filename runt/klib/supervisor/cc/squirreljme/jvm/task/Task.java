@@ -109,21 +109,21 @@ public final class Task
 			if (rv != null)
 				return rv;
 			
-			// {@squirreljme.error SV0m The specified class does not exist.
-			// (The class which does not exist)}
+			// {@squirreljme.error SV0m The specified class does not exist
+			// and it is not a special class. (The class which does not exist)}
 			int cldx = this.classpath.resourceClassFind(__cl);
-			if (cldx < 0)
+			if (cldx < 0 && !ClassNameUtils.isSpecial(__cl))
 				throw new TaskNoSuchClassException("SV0m " + __cl);
 			
 			// Setup new one and store it
 			classes.put(__cl, (rv = new TaskClass(cldx)));
 			
 			// Pre-initialize the class
-			rv.initializeClassInfoSetup(this);
+			rv.initializeClassInfoSetup(this, __cl);
 		}
 		
 		// Perform post initialization as needed
-		return rv.initializeClassInfo(this);
+		return rv.initializeClassInfo(this, __cl);
 	}
 	
 	/**
