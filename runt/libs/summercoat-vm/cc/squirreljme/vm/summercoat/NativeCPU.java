@@ -1207,6 +1207,7 @@ public final class NativeCPU
 						case SystemCallIndex.BYTE_ORDER_LITTLE:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
+						case SystemCallIndex.FATAL_TODO:
 						case SystemCallIndex.FRAME_TASK_ID_GET:
 						case SystemCallIndex.FRAME_TASK_ID_SET:
 						case SystemCallIndex.CALL_STACK_HEIGHT:
@@ -1356,6 +1357,11 @@ public final class NativeCPU
 					err = 0;
 				}
 				break;
+				
+				// Fatal exit because of incomplete code
+			case SystemCallIndex.FATAL_TODO:
+				// {@squirreljme.error AE0o Fatal ToDo system call executed.}
+				throw new VMToDoException("AE0o");
 				
 				// Gets the frame task ID
 			case SystemCallIndex.FRAME_TASK_ID_GET:
