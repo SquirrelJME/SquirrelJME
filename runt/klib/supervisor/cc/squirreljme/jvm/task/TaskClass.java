@@ -59,14 +59,15 @@ public final class TaskClass
 	 * Performs the main initialization of this class.
 	 *
 	 * @param __task The creating task.
+	 * @param __cl The class name being initialized.
 	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/27
 	 */
-	public final TaskClass initializeClassInfo(Task __task)
+	public final TaskClass initializeClassInfo(Task __task, String __cl)
 		throws NullPointerException
 	{
-		if (__task == null)
+		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -77,14 +78,15 @@ public final class TaskClass
 	 * class table is not locked.
 	 *
 	 * @param __task The creating task.
+	 * @param __cl The class name being initialized.
 	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/27
 	 */
-	public final TaskClass initializeClassInfoSetup(Task __task)
+	public final TaskClass initializeClassInfoSetup(Task __task, String __cl)
 		throws NullPointerException
 	{
-		if (__task == null)
+		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
