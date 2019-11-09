@@ -24,5 +24,67 @@ public final class ClassNameUtils
 	private ClassNameUtils()
 	{
 	}
+	
+	/**
+	 * Checks whether the given class name is an array.
+	 *
+	 * @param __cl The class name to check.
+	 * @return If it is an array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/09
+	 */
+	public static final boolean isArray(String __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return (__cl.length() >= 1 && __cl.charAt(0) == '[');
+	}
+	
+	/**
+	 * Checks whether the given class name is a primitive type.
+	 *
+	 * @param __cl The class name to check.
+	 * @return If it is a primitive type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/09
+	 */
+	public static final boolean isPrimitiveType(String __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__cl)
+		{
+			case "boolean":
+			case "byte":
+			case "short":
+			case "char":
+			case "int":
+			case "long":
+			case "float":
+			case "double":
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Is this an array or primitive type?
+	 *
+	 * @param __cl The class name to check.
+	 * @return If it is an array or primitive type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/09
+	 */
+	public static final boolean isSpecial(String __cl)
+		throws NullPointerException
+	{
+		return ClassNameUtils.isArray(__cl) ||
+			ClassNameUtils.isPrimitiveType(__cl);
+	}
 }
 

@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.io.BinaryBlob;
 import cc.squirreljme.jvm.Globals;
 import cc.squirreljme.jvm.lib.ClassFileParser;
 import cc.squirreljme.jvm.lib.ClassLibrary;
+import cc.squirreljme.jvm.lib.ClassNameUtils;
 import cc.squirreljme.jvm.lib.ClassPath;
 import java.util.HashMap;
 
