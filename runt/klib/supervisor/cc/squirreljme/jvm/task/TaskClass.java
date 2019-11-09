@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.task;
 
+import cc.squirreljme.jvm.lib.ClassNameUtils;
+
 /**
  * This represents a class of a task.
  *
@@ -74,6 +76,43 @@ public final class TaskClass
 	}
 	
 	/**
+	 * Initializes an array class.
+	 *
+	 * @param __task The creating task.
+	 * @param __cl The class name being initialized.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/09
+	 */
+	public final TaskClass initializeClassInfoArray(Task __task, String __cl)
+		throws NullPointerException
+	{
+		if (__task == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes a primitive type class.
+	 *
+	 * @param __task The creating task.
+	 * @param __cl The class name being initialized.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/09
+	 */
+	public final TaskClass initializeClassInfoPrimitive(Task __task,
+		String __cl)
+		throws NullPointerException
+	{
+		if (__task == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Performs enough setup of the class info to rever to it when the
 	 * class table is not locked.
 	 *
@@ -88,6 +127,13 @@ public final class TaskClass
 	{
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
+		
+		// If these are special classes, we need to handle them unique because
+		// arrays and primitive types do not exist in any form as a class
+		if (ClassNameUtils.isArray(__cl))
+			return this.initializeClassInfoArray(__task, __cl);
+		else if (ClassNameUtils.isPrimitiveType(__cl))
+			return this.initializeClassInfoPrimitive(__task, __cl);
 		
 		throw new todo.TODO();
 		
