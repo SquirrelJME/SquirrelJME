@@ -90,6 +90,10 @@ public final class TaskClass
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
+		// We need to handle the component type
+		TaskClass comptype = __task.loadClass(
+			ClassNameUtils.componentType(__cl));
+		
 		throw new todo.TODO();
 	}
 	
@@ -127,6 +131,9 @@ public final class TaskClass
 	{
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
+		
+		// Debug
+		todo.DEBUG.note("Loading class `%s`...", __cl);
 		
 		// If these are special classes, we need to handle them unique because
 		// arrays and primitive types do not exist in any form as a class

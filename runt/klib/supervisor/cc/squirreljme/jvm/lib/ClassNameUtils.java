@@ -40,7 +40,44 @@ public final class ClassNameUtils
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error SV0o Cannot get component type of empty
+		// class name.}
+		int len = __cl.length();
+		if (len <= 0)
+			throw new IllegalArgumentException("SV0o");
+		
+		// {@squirreljme.error SV0p The class name is not an array.}
+		if (__cl.charAt(0) != '[')
+			throw new IllegalArgumentException("SV0p");
+		
+		switch (__cl.charAt(1))
+		{
+				// Primitive types
+			case 'Z':	return "boolean";
+			case 'B':	return "byte";
+			case 'S':	return "short";
+			case 'C':	return "char";
+			case 'I':	return "int";
+			case 'J':	return "long";
+			case 'F':	return "float";
+			case 'D':	return "double";
+			
+				// Another array
+			case '[':
+				return __cl.substring(1);
+				
+				// Class
+			case 'L':
+				// {@squirreljme.error SV0r Expected class name of array type
+				// to end in semi-colon.}
+				if (__cl.charAt(len - 1) != ';')
+					throw new IllegalArgumentException("SV0r");
+				return __cl.substring(2, len - 1);
+			
+				// {@squirreljme.error SV0q Unknown component type.}
+			default:
+				throw new IllegalArgumentException("SV0q");
+		}
 	}
 	
 	/**

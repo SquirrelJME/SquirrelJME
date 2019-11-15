@@ -254,6 +254,44 @@ public final class String
 	}
 	
 	/**
+	 * Returns a substring of this string starting at the given index.
+	 *
+	 * @param __s The index to start at.
+	 * @return The sub-string for that index.
+	 * @throws IndexOutOfBoundsException If the start is outside of the bounds.
+	 * @since 2019/11/15
+	 */
+	public String substring(int __s)
+		throws IndexOutOfBoundsException
+	{
+		// A substring starting at the zero character is the same
+		if (__s == 0)
+			return this;
+		
+		// Call other
+		return this.substring(__s, this.length());
+	}
+	
+	/**
+	 * Returns a substring of this string.
+	 *
+	 * @param __s The starting index.
+	 * @param __e The ending index.
+	 * @throws IndexOutOfBoundsException If the string region is outside of
+	 * bounds.
+	 * @since 2019/11/15
+	 */
+	public String substring(int __s, int __e)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error SV0s String substring is outside of bounds.}
+		if (__s < 0 || __s > __e || __e > this.length())
+			throw new IndexOutOfBoundsException("SV0s");
+		
+		return new String(this._chars, __s, (__e - __s));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/26
 	 */
