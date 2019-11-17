@@ -98,6 +98,46 @@ public final class TaskClass
 	}
 	
 	/**
+	 * Initializes a standard type class.
+	 *
+	 * @param __task The creating task.
+	 * @param __cl The class name being initialized.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/17
+	 */
+	public final TaskClass initializeClassInfoClass(Task __task, String __cl)
+		throws NullPointerException
+	{
+		if (__task == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		
+		/*
+		// {@squirreljme.error SV0l Task does not have ClassInfo in its
+		// class path.}
+		int cidx = classpath.resourceClassFind("cc/squirreljme/jvm/ClassInfo");
+		if (cidx < 0)
+			throw new TaskVirtualMachineError("SV0l");
+		
+		// Get parser for the class info, because we need its info
+		ClassFileParser ciparser = new ClassFileParser(
+			classpath.resourceData(cidx));
+		
+		// Need to allocate class data
+		TaskAllocator allocator = this.allocator;
+		
+		// Allocate the space needed to store the class information
+		int infopointer = allocator.allocateObject(Constants.OBJECT_BASE_SIZE +
+			ciparser.fieldSize(false));
+		rv._infopointer = infopointer;
+		
+		throw new todo.TODO();
+		*/
+	}
+	
+	/**
 	 * Initializes a primitive type class.
 	 *
 	 * @param __task The creating task.
@@ -142,29 +182,8 @@ public final class TaskClass
 		else if (ClassNameUtils.isPrimitiveType(__cl))
 			return this.initializeClassInfoPrimitive(__task, __cl);
 		
-		throw new todo.TODO();
-		
-		/*
-		// {@squirreljme.error SV0l Task does not have ClassInfo in its
-		// class path.}
-		int cidx = classpath.resourceClassFind("cc/squirreljme/jvm/ClassInfo");
-		if (cidx < 0)
-			throw new TaskVirtualMachineError("SV0l");
-		
-		// Get parser for the class info, because we need its info
-		ClassFileParser ciparser = new ClassFileParser(
-			classpath.resourceData(cidx));
-		
-		// Need to allocate class data
-		TaskAllocator allocator = this.allocator;
-		
-		// Allocate the space needed to store the class information
-		int infopointer = allocator.allocateObject(Constants.OBJECT_BASE_SIZE +
-			ciparser.fieldSize(false));
-		rv._infopointer = infopointer;
-		
-		throw new todo.TODO();
-		*/
+		// Otherwise initialize a standard class
+		return this.initializeClassInfoClass(__task, __cl);
 	}
 }
 
