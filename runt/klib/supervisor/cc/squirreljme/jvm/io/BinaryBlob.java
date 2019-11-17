@@ -12,6 +12,9 @@ package cc.squirreljme.jvm.io;
 /**
  * This is a binary blob which provides memory and I/O access.
  *
+ * Sub-classes only need to implement reading of a single byte, however
+ * implementing the other methods will result in faster code.
+ *
  * @since 2019/09/22
  */
 public abstract class BinaryBlob
@@ -42,6 +45,36 @@ public abstract class BinaryBlob
 			((this.readByte(__o + 2) & 0xFF) << 8) |
 			((this.readByte(__o + 3) & 0xFF));
 	}
+	
+	/**
+	 * Reads a Java short.
+	 *
+	 * @param __o The offset.
+	 * @return The read data.
+	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
+	 * @since 2019/11/17
+	 */
+	public short readJavaShort(int __o)
+		throws IndexOutOfBoundsException
+	{
+		return (short)(((this.readByte(__o + 1) & 0xFF) << 8) |
+			((this.readByte(__o) & 0xFF)));
+	}
+	
+	/**
+	 * Reads an unsigned Java short.
+	 *
+	 * @param __o The offset.
+	 * @return The read data.
+	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
+	 * @since 2019/11/17
+	 */
+	public int readJavaUnsignedShort(int __o)
+		throws IndexOutOfBoundsException
+	{
+		return this.readJavaShort(__o) & 0xFFFF;
+	}
+	
 	/**
 	 * Reads a single unsigned byte.
 	 *

@@ -70,7 +70,9 @@ public final class ClassFileParser
 	 */
 	public final int fieldSize(boolean __is)
 	{
-		throw new todo.TODO();
+		return this.blob.readJavaUnsignedShort(
+			(__is ? ClassFileConstants.OFFSET_OF_USHORT_SFBYTES :
+			ClassFileConstants.OFFSET_OF_USHORT_IFBYTES));
 	}
 }
 

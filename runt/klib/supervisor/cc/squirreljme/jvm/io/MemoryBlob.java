@@ -58,5 +58,38 @@ public final class MemoryBlob
 		
 		return (byte)Assembly.memReadByte(this.base, __o);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/17
+	 */
+	@Override
+	public int readJavaInt(int __o)
+		throws IndexOutOfBoundsException
+	{
+		return Assembly.memReadJavaInt(this.base, __o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/17
+	 */
+	@Override
+	public short readJavaShort(int __o)
+		throws IndexOutOfBoundsException
+	{
+		return (short)Assembly.memReadJavaShort(this.base, __o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/17
+	 */
+	@Override
+	public int readJavaUnsignedShort(int __o)
+		throws IndexOutOfBoundsException
+	{
+		return Assembly.memReadJavaShort(this.base, __o) & 0xFFFF;
+	}
 }
 
