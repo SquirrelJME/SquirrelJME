@@ -100,6 +100,10 @@ public abstract class BinaryBlob
 	/**
 	 * Returns a blob which is a sub-section of the given blob.
 	 *
+	 * It is recommended to replace this class with a more efficient one if
+	 * possible, as otherwise it will use a less-efficient sub-section
+	 * implementation for this blob.
+	 *
 	 * @param __base The base of this blob within this one.
 	 * @param __len The length of the section.
 	 * @return The sub-section.
