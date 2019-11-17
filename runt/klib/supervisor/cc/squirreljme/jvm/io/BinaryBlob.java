@@ -30,6 +30,14 @@ public abstract class BinaryBlob
 	public abstract int readByte(int __o);
 	
 	/**
+	 * Returns the size of this blob.
+	 *
+	 * @return The size of this blob.
+	 * @since 2019/11/17
+	 */
+	public abstract int size();
+	
+	/**
 	 * Reads a Java integer.
 	 *
 	 * @param __o The offset.
@@ -87,6 +95,25 @@ public abstract class BinaryBlob
 		throws IndexOutOfBoundsException
 	{
 		return this.readByte(__o) & 0xFF;
+	}
+	
+	/**
+	 * Returns a blob which is a sub-section of the given blob.
+	 *
+	 * @param __base The base of this blob within this one.
+	 * @param __len The length of the section.
+	 * @return The sub-section.
+	 * @throws IndexOutOfBoundsException If the base or length are negative
+	 * or exceed the bounds of this blob.
+	 * @since 2019/11/17
+	 */
+	public BinaryBlob subSection(int __base, int __len)
+		throws IndexOutOfBoundsException
+	{
+		if (__base < 0 || __len < 0 || (__base + __len) > this.size())
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		throw new todo.TODO();
 	}
 }
 

@@ -91,5 +91,30 @@ public final class MemoryBlob
 	{
 		return Assembly.memReadJavaShort(this.base, __o) & 0xFFFF;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/17
+	 */
+	@Override
+	public int size()
+	{
+		return this.size;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/17
+	 */
+	@Override
+	public BinaryBlob subSection(int __base, int __len)
+		throws IndexOutOfBoundsException
+	{
+		int size = this.size;
+		if (__base < 0 || __len < 0 || (__base + __len) > size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return new MemoryBlob(this.base + __base, __len);
+	}
 }
 

@@ -39,17 +39,6 @@ public final class ClassFileParser
 	}
 	
 	/**
-	 * Returns a dual pool parser for this class.
-	 *
-	 * @return The dual pool parser.
-	 * @since 2019/10/13
-	 */
-	public final ClassDualPoolParser dualPool()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Returns the number of fields in the class.
 	 *
 	 * @param __is Get the static field count.
@@ -64,6 +53,49 @@ public final class ClassFileParser
 	}
 	
 	/**
+	 * Returns the field data offset.
+	 *
+	 * @param __is Get the static field data offset.
+	 * @return The field data offset.
+	 * @since 2019/11/17
+	 */
+	public final int fieldDataOffset(boolean __is)
+	{
+		return this.blob.readJavaInt(
+			(__is ? ClassFileConstants.OFFSET_OF_INT_SFOFF :
+			ClassFileConstants.OFFSET_OF_INT_IFOFF));
+	}
+	
+	/**
+	 * Returns the field data size.
+	 *
+	 * @param __is Get the static field data size.
+	 * @return The field data size.
+	 * @since 2019/11/17
+	 */
+	public final int fieldDataSize(boolean __is)
+	{
+		return this.blob.readJavaInt(
+			(__is ? ClassFileConstants.OFFSET_OF_INT_SFSIZE :
+			ClassFileConstants.OFFSET_OF_INT_IFSIZE));
+	}
+	
+	/**
+	 * Returns a parser for class fields.
+	 *
+	 * @param __is Get static fields?
+	 * @return The parser for fields.
+	 * @since 2019/11/17
+	 */
+	public final ClassFieldsParser fields(boolean __is)
+	{
+		BinaryBlob blob = this.blob;
+		return new ClassFieldsParser(this.pool(),
+			this.blob.subSection(this.fieldDataOffset(__is),
+				this.fieldDataSize(__is)), this.fieldCount(__is));
+	}
+	
+	/**
 	 * Returns the size of all of the fields.
 	 *
 	 * @param __is Get the size of static fields?
@@ -75,6 +107,17 @@ public final class ClassFileParser
 		return this.blob.readJavaUnsignedShort(
 			(__is ? ClassFileConstants.OFFSET_OF_USHORT_SFBYTES :
 			ClassFileConstants.OFFSET_OF_USHORT_IFBYTES));
+	}
+	
+	/**
+	 * Returns a dual pool parser for this class.
+	 *
+	 * @return The dual pool parser.
+	 * @since 2019/10/13
+	 */
+	public final ClassDualPoolParser pool()
+	{
+		throw new todo.TODO();
 	}
 }
 
