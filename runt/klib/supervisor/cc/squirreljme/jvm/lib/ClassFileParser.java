@@ -117,7 +117,57 @@ public final class ClassFileParser
 	 */
 	public final ClassDualPoolParser pool()
 	{
-		throw new todo.TODO();
+		return new ClassDualPoolParser(this.splitPool(false),
+			this.splitPool(true));
+	}
+	
+	/**
+	 * Returns the appropriate pool parser.
+	 *
+	 * @param __rt Obtain the run-time pool?
+	 * @since 2019/11/17
+	 */
+	public final AbstractPoolParser splitPool(boolean __rt)
+	{
+		int off = this.splitPoolOffset(__rt),
+			len = this.splitPoolSize(__rt);
+		
+		// Is a virtually aliased pool and relies on a higher up ROM pool
+		// for this to be decoded
+		if (off < 0 || len < 0)
+			throw new todo.TODO();
+		
+		// Otherwise read the data straight from the class
+		BinaryBlob blob = this.blob;
+		return new ClassPoolParser(blob.subSection(off, len));
+	}
+	
+	/**
+	 * Returns the offset of the split pool.
+	 *
+	 * @param __rt Obtain the run-time pool?
+	 * @return The offset of the pool.
+	 * @since 2019/11/17
+	 */
+	public final int splitPoolOffset(boolean __rt)
+	{
+		return this.blob.readJavaInt(
+			(__rt ? ClassFileConstants.OFFSET_OF_INT_RUNTIMEPOOLOFF :
+			ClassFileConstants.OFFSET_OF_INT_STATICPOOLOFF));
+	}
+	
+	/**
+	 * Returns the size of the split pool.
+	 *
+	 * @param __rt Obtain the run-time pool?
+	 * @return The size of the pool.
+	 * @since 2019/11/17
+	 */
+	public final int splitPoolSize(boolean __rt)
+	{
+		return this.blob.readJavaInt(
+			(__rt ? ClassFileConstants.OFFSET_OF_INT_RUNTIMEPOOLSIZE :
+			ClassFileConstants.OFFSET_OF_INT_STATICPOOLSIZE));
 	}
 }
 

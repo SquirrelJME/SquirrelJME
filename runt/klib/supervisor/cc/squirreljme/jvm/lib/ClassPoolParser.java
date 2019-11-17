@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.lib;
 
-import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.io.BinaryBlob;
 
 /**
  * This class is used to parse individual pool treads.
@@ -20,8 +20,8 @@ import cc.squirreljme.jvm.Assembly;
 public final class ClassPoolParser
 	extends AbstractPoolParser
 {
-	/** The address where the constant pool is. */
-	public final int romaddress;
+	/** The blob for this pool. */
+	protected final BinaryBlob blob;
 	
 	/** The size of this pool. */
 	private int _size =
@@ -30,12 +30,17 @@ public final class ClassPoolParser
 	/**
 	 * Initializes the constant pool parser.
 	 *
-	 * @param __ra The ROM address.
+	 * @param __b The blob data for the pool.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/12
 	 */
-	public ClassPoolParser(int __ra)
+	public ClassPoolParser(BinaryBlob __blob)
+		throws NullPointerException
 	{
-		this.romaddress = __ra;
+		if (__blob == null)
+			throw new NullPointerException("NARG");
+		
+		this.blob = __blob;
 	}
 	
 	/**
@@ -49,7 +54,7 @@ public final class ClassPoolParser
 		// If the size is negative, it has never been read before
 		int rv = this._size;
 		if (rv < 0)
-			this._size = (rv = Assembly.memReadInt(this.romaddress,
+			this._size = (rv = this.blob.readJavaInt(
 				ClassPoolConstants.OFFSET_OF_INT_ENTRY_OFFSET));
 		
 		return rv;
