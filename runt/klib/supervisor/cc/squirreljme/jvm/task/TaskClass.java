@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.task;
 
+import cc.squirreljme.jvm.lib.ClassFileParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
 
 /**
@@ -111,6 +112,15 @@ public final class TaskClass
 	{
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
+		
+		// First we load the base class because it will contain information
+		// about the class that we need
+		ClassFileParser thisparser = new ClassFileParser(
+			__task.classpath.resourceData(this.resourceindex));
+		
+		// Then we also need the ClassInfo class itself because it contains
+		// information on how to initialize this class
+		ClassFileParser ciparser = __task.classInfoParser();
 		
 		throw new todo.TODO();
 		
