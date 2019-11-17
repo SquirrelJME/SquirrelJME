@@ -56,6 +56,22 @@ public final class BootRom
 	public static final byte ROM_BOOTMAINCLASS_OFFSET =
 		32;
 	
+	/** Static constant pool offset. */
+	public static final byte ROM_STATICPOOLOFF_OFFSET =
+		36;
+	
+	/** Static constant pool size. */
+	public static final byte ROM_STATICPOOLSIZE_OFFSET =
+		40;
+	
+	/** Runtime constant pool offset. */
+	public static final byte ROM_RUNTIMEPOOLOFF_OFFSET =
+		44;
+	
+	/** Runtime constant pool size. */
+	public static final byte ROM_RUNTIMEPOOLSIZE_OFFSET =
+		48;
+	
 	/** Table of contents size. */
 	public static final byte TOC_ENTRY_SIZE =
 		20;

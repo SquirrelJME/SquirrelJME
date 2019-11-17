@@ -23,12 +23,76 @@ public final class BootRomLibrary
 	extends ClassLibrary
 {
 	/** Offset of the resource count. */
-	public static final int NUMRC_OFFSET =
+	public static final byte JAR_NUMRC_OFFSET =
 		4;
 		
 	/** Offset of the table of contents. */
-	public static final int TOC_OFFSET_OFFSET =
+	public static final byte JAR_TOC_OFFSET_OFFSET =
 		8;
+		
+	/** Manifest offset. */
+	public static final byte JAR_MANIFESTOFF_OFFSET =
+		12;
+	
+	/** Manifest length. */
+	public static final byte JAR_MANIFESTLEN_OFFSET =
+		16;
+	
+	/** Boot initializer offset. */
+	public static final byte JAR_BOOTOFFSET_OFFSET =
+		20;
+	
+	/** Boot initializer size. */
+	public static final byte JAR_BOOTSIZE_OFFSET =
+		24;
+	
+	/** The boot pool offset. */
+	public static final byte JAR_BOOTPOOL_OFFSET =
+		28;
+	
+	/** Static field basein RAM. */
+	public static final byte JAR_BOOTSFIELDBASE_OFFSET =
+		32;
+	
+	/** The start method offset. */
+	public static final byte JAR_BOOTSTART_OFFSET =
+		36;
+	
+	/** System call static field pointer. */
+	public static final byte JAR_SYSCALLSFP_OFFSET =
+		40;
+	
+	/** System call handler code address .*/
+	public static final byte JAR_SYSCALLHANDLER_OFFSET =
+		44;
+	
+	/** System call pool address. */
+	public static final byte JAR_SYSCALLPOOL_OFFSET =
+		48;
+	
+	/** The ClassDataV2 for {@code byte[]}. */
+	public static final byte JAR_BOOTCLASSIDBA_OFFSET =
+		52;
+	
+	/** The ClassDataV2 for {@code byte[][]}. */
+	public static final byte JAR_BOOTCLASSIDBAA_OFFSET =
+		56;
+	
+	/** Static constant pool offset. */
+	public static final byte JAR_STATICPOOLOFF_OFFSET =
+		60;
+	
+	/** Static constant pool size. */
+	public static final byte JAR_STATICPOOLSIZE_OFFSET =
+		64;
+	
+	/** Runtime constant pool offset. */
+	public static final byte JAR_RUNTIMEPOOLOFF_OFFSET =
+		68;
+	
+	/** Runtime constant pool size. */
+	public static final byte JAR_RUNTIMEPOOLSIZE_OFFSET =
+		72;
 	
 	/** TOC hashcode offset. */
 	public static final int TOC_HASHCODE_OFFSET =
@@ -106,8 +170,8 @@ public final class BootRomLibrary
 		
 		// Scan through the table of contents
 		int bp = this.address,
-			sp = bp + Assembly.memReadJavaInt(bp, TOC_OFFSET_OFFSET);
-		for (int i = 0, n = Assembly.memReadJavaInt(bp, NUMRC_OFFSET); i < n;
+			sp = bp + Assembly.memReadJavaInt(bp, JAR_TOC_OFFSET_OFFSET);
+		for (int i = 0, n = Assembly.memReadJavaInt(bp, JAR_NUMRC_OFFSET); i < n;
 			i++, sp += TOC_ENTRY_SIZE)
 		{
 			// Hash code does not match
@@ -147,11 +211,11 @@ public final class BootRomLibrary
 		
 		// {@squirreljme.error SV07 Attempt to access resource which was not
 		// in range of the boot library.}
-		if (__dx < 0 || __dx >= Assembly.memReadJavaInt(bp, NUMRC_OFFSET))
+		if (__dx < 0 || __dx >= Assembly.memReadJavaInt(bp, JAR_NUMRC_OFFSET))
 			throw new IndexOutOfBoundsException("SV07");
 		
 		// Read from the table of contents, the offset to the data.
-		int tocoffset = bp + Assembly.memReadJavaInt(bp, TOC_OFFSET_OFFSET);
+		int tocoffset = bp + Assembly.memReadJavaInt(bp, JAR_TOC_OFFSET_OFFSET);
 		return new MemoryBlob(bp + Assembly.memReadJavaInt(tocoffset,
 				(TOC_ENTRY_SIZE * __dx) + TOC_DATA_OFFSET),
 			Assembly.memReadJavaInt(tocoffset,
