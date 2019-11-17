@@ -89,7 +89,7 @@ public final class Task
 			this._classinforc = (cidx = classpath.resourceClassFind(
 				"cc/squirreljme/jvm/ClassInfo"));
 		
-		return new ClassFileParser(classpath.resourceData(cidx));
+		return classpath.classParser(cidx);
 	}
 	
 	/**
