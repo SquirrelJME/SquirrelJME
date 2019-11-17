@@ -125,6 +125,12 @@ public final class TaskClass
 		ClassFileParser thisparser = new ClassFileParser(
 			__task.classpath.resourceData(this.resourceindex));
 		
+		// Process every field that is defined within the information structure
+		for (int cif = 0, cifn = __cip.fieldCount(false); cif < cifn; cif++)
+		{
+			throw new todo.TODO();
+		}
+		
 		throw new todo.TODO();
 		
 		/*
