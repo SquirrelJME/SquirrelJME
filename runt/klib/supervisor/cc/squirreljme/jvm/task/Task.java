@@ -44,6 +44,10 @@ public final class Task
 	private final HashMap<String, TaskClass> _classes =
 		new HashMap<>();
 	
+	/** Cached resource index for the {@link ClassInfo} class. */
+	private int _classinforc =
+		-1;
+	
 	/**
 	 * Initializes the client task.
 	 *
@@ -65,6 +69,27 @@ public final class Task
 		
 		// Initialize allocator for memory grabbing
 		this.allocator = new TaskAllocator(__pid);
+	}
+	
+	/**
+	 * Since {@link cc.squirreljme.jvm.ClassInfo} is an important and often
+	 * used part of loading classes within tasks, this is used to quickly
+	 * cache and obtain a class information parser without requiring a search
+	 * be done for it every time.
+	 *
+	 * @return The parser for {@code ClassInfo}.
+	 * @since 2019/11/17
+	 */
+	public final ClassFileParser classInfoParser()
+	{
+		// Find the resource if it has not yet been cached
+		ClassPath classpath = this.classpath;
+		int cidx = this._classinforc;
+		if (cidx < 0)
+			this._classinforc = (cidx = classpath.resourceClassFind(
+				"cc/squirreljme/jvm/ClassInfo"));
+		
+		return new ClassFileParser(classpath.resourceData(cidx));
 	}
 	
 	/**
