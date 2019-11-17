@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.jvm.lib.ClassFieldsParser;
 import cc.squirreljme.jvm.lib.ClassFileParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
 
@@ -126,7 +127,8 @@ public final class TaskClass
 			__task.classpath.resourceData(this.resourceindex));
 		
 		// Process every field that is defined within the information structure
-		for (int cif = 0, cifn = __cip.fieldCount(false); cif < cifn; cif++)
+		ClassFieldsParser cifs = __cip.fields(false);
+		for (int cif = 0, cifn = cifs.count(); cif < cifn; cif++)
 		{
 			throw new todo.TODO();
 		}
