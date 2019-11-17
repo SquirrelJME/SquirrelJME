@@ -27,7 +27,7 @@ public final class MinimizedPackHeader
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
-		HEADER_SIZE_WITHOUT_MAGIC + 4;
+		52;
 	
 	/** The offset to the BootJAR offset (which has BootRAM), with magic. */
 	public static final int OFFSET_OF_BOOTJAROFFSET =
