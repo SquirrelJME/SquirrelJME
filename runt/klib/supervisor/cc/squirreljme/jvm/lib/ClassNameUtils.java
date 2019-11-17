@@ -98,6 +98,23 @@ public final class ClassNameUtils
 	}
 	
 	/**
+	 * Is this the class info class?
+	 *
+	 * @param __cl The class name to check.
+	 * @return If this is for class info.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/17
+	 */
+	public static final boolean isClassInfo(String __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return "cc/squirreljme/jvm/ClassInfo".equals(__cl);
+	}
+	
+	/**
 	 * Checks whether the given class name is a primitive type.
 	 *
 	 * @param __cl The class name to check.
