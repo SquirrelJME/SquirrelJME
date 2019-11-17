@@ -123,8 +123,8 @@ public final class TaskClass
 		
 		// First we load the base class because it will contain information
 		// about the class that we need
-		ClassFileParser thisparser = new ClassFileParser(
-			__task.classpath.resourceData(this.resourceindex));
+		ClassFileParser thisparser = __task.classpath.classParser(
+			this.resourceindex);
 		
 		// Process every field that is defined within the information structure
 		ClassFieldsParser cifs = __cip.fields(false);

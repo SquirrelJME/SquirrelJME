@@ -70,6 +70,39 @@ public final class ClassPath
 	}
 	
 	/**
+	 * Returns the class library of the given index.
+	 *
+	 * @param __rcdx The class library to get the index of.
+	 * @return The class library of the given index.
+	 * @throws IndexOutOfBoundsException If the resource index is outside
+	 * of bounds.
+	 * @since 2019/11/17
+	 */
+	public final ClassLibrary classLibrary(int __rcdx)
+		throws IndexOutOfBoundsException
+	{
+		return this.classpath[ClassPath.resourceIndexToJarIndex(__rcdx)];
+	}
+	
+	/**
+	 * Returns a class file parser for the given index.
+	 *
+	 * @param __rcdx The index to load.
+	 * @return The class file parser.
+	 * @throws IndexOutOfBoundsException If the resource is not valid.
+	 * @since 2019/11/17
+	 */
+	public final ClassFileParser classParser(int __rcdx)
+		throws IndexOutOfBoundsException
+	{
+		// We need to take the pools from the class library, if it has any
+		ClassLibrary clib = this.classLibrary(__rcdx);
+		
+		return new ClassFileParser(this.resourceData(__rcdx),
+			clib.splitPool(false), clib.splitPool(true));
+	}
+	
+	/**
 	 * Searches for the given class name resource for the given class
 	 *
 	 * @param __name The name of the class.

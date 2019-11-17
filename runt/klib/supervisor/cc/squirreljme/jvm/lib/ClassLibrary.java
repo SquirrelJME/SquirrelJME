@@ -48,5 +48,17 @@ public abstract class ClassLibrary
 	 */
 	public abstract BinaryBlob resourceData(int __dx)
 		throws IndexOutOfBoundsException;
+	
+	/**
+	 * Returns the split pool for this library, if one is available.
+	 *
+	 * @param __rt Access the run-time pool?
+	 * @return The split pool or {@code null} if there is none.
+	 * @since 2019/11/17
+	 */
+	public AbstractPoolParser splitPool(boolean __rt)
+	{
+		return null;
+	}
 }
 

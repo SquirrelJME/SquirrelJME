@@ -22,20 +22,44 @@ public final class ClassFileParser
 	/** The blob of the class. */
 	public final BinaryBlob blob;
 	
+	/** Root static split pool, when aliased. */
+	protected final AbstractPoolParser rootstaticpool;
+	
+	/** Root runtime split pool, when aliased. */
+	protected final AbstractPoolParser rootruntimepool;
+	
 	/**
 	 * Initializes the class file parser.
 	 *
 	 * @param __blob The ROM blob.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/10/06
+	 * @since 2019/11/17
 	 */
 	public ClassFileParser(BinaryBlob __blob)
+		throws NullPointerException
+	{
+		this(__blob, null, null);
+	}
+	
+	/**
+	 * Initializes the class file parser.
+	 *
+	 * @param __blob The ROM blob.
+	 * @param __sp Static pool, may be {@code null}.
+	 * @param __rp Run-time pool, may be {@code null}.
+	 * @throws NullPointerException On null arguments, except for the pools.
+	 * @since 2019/10/06
+	 */
+	public ClassFileParser(BinaryBlob __blob, AbstractPoolParser __sp,
+		AbstractPoolParser __rp)
 		throws NullPointerException
 	{
 		if (__blob == null)
 			throw new NullPointerException("NARG");
 		
 		this.blob = __blob;
+		this.rootstaticpool = __sp;
+		this.rootruntimepool = __rp;
 	}
 	
 	/**
@@ -125,20 +149,35 @@ public final class ClassFileParser
 	 * Returns the appropriate pool parser.
 	 *
 	 * @param __rt Obtain the run-time pool?
+	 * @throws InvalidClassFormatException If the pool is virtual and no
+	 * root pool was specified.
 	 * @since 2019/11/17
 	 */
 	public final AbstractPoolParser splitPool(boolean __rt)
+		throws InvalidClassFormatException
 	{
 		int off = this.splitPoolOffset(__rt),
 			len = this.splitPoolSize(__rt);
 		
+		// Blob needed to read any pool type from
+		BinaryBlob blob = this.blob;
+		
 		// Is a virtually aliased pool and relies on a higher up ROM pool
 		// for this to be decoded
 		if (off < 0 || len < 0)
-			throw new todo.TODO();
+		{
+			// {@squirreljme.error SV0t No root pool was specified and the
+			// class pool is purely virtual.}
+			AbstractPoolParser rootp = (__rt ? this.rootruntimepool :
+				this.rootstaticpool);
+			if (rootp == null)
+				throw new InvalidClassFormatException("SV0t");
+			
+			// Initialize aliased pool
+			return new AliasedPoolParser(blob.subSection(off, len), rootp);
+		}
 		
 		// Otherwise read the data straight from the class
-		BinaryBlob blob = this.blob;
 		return new ClassPoolParser(blob.subSection(off, len));
 	}
 	

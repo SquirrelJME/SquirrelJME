@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.lib;
 
+import cc.squirreljme.jvm.io.BinaryBlob;
+
 /**
  * This class is used to provide access to the aliased pool where entries are.
  *
@@ -17,5 +19,28 @@ package cc.squirreljme.jvm.lib;
 public final class AliasedPoolParser
 	extends AbstractPoolParser
 {
+	/** The blob. */
+	protected final BinaryBlob blob;
+	
+	/** The inherited pool data. */
+	protected final AbstractPoolParser inherited;
+	
+	/**
+	 * Initializes the aliased pool parser.
+	 *
+	 * @param __b The blob for aliased data.
+	 * @param __inh The inherited pool to source real data from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/17
+	 */
+	public AliasedPoolParser(BinaryBlob __b, AbstractPoolParser __inh)
+		throws NullPointerException
+	{
+		if (__b == null || __inh == null)
+			throw new NullPointerException("NARG");
+		
+		this.blob = __b;
+		this.inherited = __inh;
+	}
 }
 
