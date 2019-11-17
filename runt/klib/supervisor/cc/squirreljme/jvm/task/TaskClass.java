@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.task;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.lib.ClassFileParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
@@ -195,6 +196,18 @@ public final class TaskClass
 		int infopointer = __task.allocator.allocateObject(
 			Constants.OBJECT_BASE_SIZE + ciparser.fieldSize(false));
 		this._infopointer = infopointer;
+		
+		// This object has the class type of ClassInfo so it must always point
+		// to the ClassInfo instance of ClassInfo, however if we are loading
+		// ClassInfo then we just use our own pointer
+		Assembly.memWriteInt(infopointer, Constants.OBJECT_CLASS_OFFSET,
+			(ClassNameUtils.isClassInfo(__cl) ? infopointer :
+			__task.loadClass("cc/squirreljme/jvm/ClassInfo")._infopointer));
+		
+		// These objects should never be garbage collected because they
+		// contain important class information!
+		Assembly.memWriteInt(infopointer, Constants.OBJECT_COUNT_OFFSET,
+			9999999);
 		
 		// If these are special classes, we need to handle them unique because
 		// arrays and primitive types do not exist in any form as a class

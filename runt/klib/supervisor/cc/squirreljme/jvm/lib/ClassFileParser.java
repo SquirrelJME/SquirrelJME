@@ -58,7 +58,9 @@ public final class ClassFileParser
 	 */
 	public final int fieldCount(boolean __is)
 	{
-		throw new todo.TODO();
+		return this.blob.readJavaUnsignedShort(
+			(__is ? ClassFileConstants.OFFSET_OF_USHORT_SFCOUNT :
+			ClassFileConstants.OFFSET_OF_USHORT_IFCOUNT));
 	}
 	
 	/**
