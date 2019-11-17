@@ -67,6 +67,10 @@ public final class MemoryBlob
 	public int readJavaInt(int __o)
 		throws IndexOutOfBoundsException
 	{
+		// {@squirreljme.error SV09 Out of range region read.}
+		if (__o < 0 || (__o + 3) >= this.size)
+			throw new IndexOutOfBoundsException("SV09");
+		
 		return Assembly.memReadJavaInt(this.base, __o);
 	}
 	
@@ -78,6 +82,10 @@ public final class MemoryBlob
 	public short readJavaShort(int __o)
 		throws IndexOutOfBoundsException
 	{
+		// {@squirreljme.error SV09 Out of range region read.}
+		if (__o < 0 || (__o + 1) >= this.size)
+			throw new IndexOutOfBoundsException("SV09");
+		
 		return (short)Assembly.memReadJavaShort(this.base, __o);
 	}
 	
@@ -89,6 +97,10 @@ public final class MemoryBlob
 	public int readJavaUnsignedShort(int __o)
 		throws IndexOutOfBoundsException
 	{
+		// {@squirreljme.error SV09 Out of range region read.}
+		if (__o < 0 || (__o + 1) >= this.size)
+			throw new IndexOutOfBoundsException("SV09");
+		
 		return Assembly.memReadJavaShort(this.base, __o) & 0xFFFF;
 	}
 	
