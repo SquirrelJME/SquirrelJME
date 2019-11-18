@@ -1,0 +1,6 @@
+# 2019/11/17
+
+## 10:20
+
+I think this is cool, slowly getting the class loading working for the
+bootstrap to work.
