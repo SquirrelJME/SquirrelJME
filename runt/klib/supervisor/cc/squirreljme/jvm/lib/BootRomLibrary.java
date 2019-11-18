@@ -118,9 +118,11 @@ public final class BootRomLibrary
 	protected final String name;
 	
 	/** The absolute address of the JAR. */
+	@Deprecated
 	protected final int address;
 	
 	/** The length of the JAR. */
+	@Deprecated
 	protected final int length;
 	
 	/** Manifest address. */
@@ -128,6 +130,12 @@ public final class BootRomLibrary
 	
 	/** Manifest length. */
 	protected final int manifestlength;
+	
+	/** Boot pool information. */
+	protected final BootRomPoolInfo bootrompool;
+	
+	/** The blob for this JAR. */
+	protected final BinaryBlob blob;
 	
 	/**
 	 * Initializes the boot library.
@@ -137,14 +145,15 @@ public final class BootRomLibrary
 	 * @param __len The JAR length.
 	 * @param __maddr The manifest address.
 	 * @param __mlen The manifest length.
+	 * @param __brpi The boot pool information from the ROM.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/19
 	 */
 	public BootRomLibrary(String __name, int __addr, int __len, int __maddr,
-		int __mlen)
+		int __mlen, BootRomPoolInfo __brpi)
 		throws NullPointerException
 	{
-		if (__name == null)
+		if (__name == null || __brpi == null)
 			throw new NullPointerException("NARG");
 		
 		this.name = __name;
@@ -152,6 +161,10 @@ public final class BootRomLibrary
 		this.length = __len;
 		this.manifestaddress = __maddr;
 		this.manifestlength = __mlen;
+		this.bootrompool = __brpi;
+		
+		// Initializes the blob
+		this.blob = new MemoryBlob(__addr, __len);
 	}
 	
 	/**
@@ -215,11 +228,58 @@ public final class BootRomLibrary
 			throw new IndexOutOfBoundsException("SV07");
 		
 		// Read from the table of contents, the offset to the data.
-		int tocoffset = bp + Assembly.memReadJavaInt(bp, JAR_TOC_OFFSET_OFFSET);
+		int tocoffset = bp + Assembly.memReadJavaInt(bp,
+			JAR_TOC_OFFSET_OFFSET);
 		return new MemoryBlob(bp + Assembly.memReadJavaInt(tocoffset,
 				(TOC_ENTRY_SIZE * __dx) + TOC_DATA_OFFSET),
 			Assembly.memReadJavaInt(tocoffset,
 				(TOC_ENTRY_SIZE * __dx) + TOC_SIZE_OFFSET));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/18
+	 */
+	@Override
+	public AbstractPoolParser splitPool(boolean __rt)
+	{
+		BinaryBlob blob = this.blob;
+		
+		// Static
+		int jpo, jps;
+		if (__rt)
+		{
+			jpo = blob.readJavaInt(JAR_STATICPOOLOFF_OFFSET);
+			jps = blob.readJavaInt(JAR_STATICPOOLSIZE_OFFSET);
+		}
+		
+		// Run-time
+		else
+		{
+			jpo = blob.readJavaInt(JAR_RUNTIMEPOOLOFF_OFFSET);
+			jps = blob.readJavaInt(JAR_RUNTIMEPOOLSIZE_OFFSET);
+		}
+		
+		// This JAR has a pool in it
+		AbstractPoolParser rv;
+		if (jpo >= 0 && jps >= 0)
+			rv = new ClassPoolParser(blob.subSection(jpo, jps));
+		
+		// Possibly using JAR pool
+		else
+		{
+			BootRomPoolInfo bootrompool = this.bootrompool;
+			if (bootrompool.isDefined())
+				rv = new ClassPoolParser(
+					new MemoryBlob(bootrompool.address(__rt),
+						bootrompool.size(__rt)));
+			
+			// Not using any pool
+			else
+				rv = null;
+		}
+		
+		return rv;
 	}
 }
 

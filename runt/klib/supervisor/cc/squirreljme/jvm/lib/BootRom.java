@@ -215,6 +215,16 @@ public final class BootRom
 		// Seeker for the table of contents
 		int seeker = __rombase + tocoff;
 		
+		// This is used to contain the constant pool data offset and size which
+		// is then used when we initialize classes
+		BootRomPoolInfo brpi = new BootRomPoolInfo(
+			__rombase + Assembly.memReadJavaInt(__rombase,
+				ROM_STATICPOOLOFF_OFFSET),
+			Assembly.memReadJavaInt(__rombase, ROM_STATICPOOLSIZE_OFFSET),
+			__rombase + Assembly.memReadJavaInt(__rombase,
+				ROM_RUNTIMEPOOLOFF_OFFSET),
+			Assembly.memReadJavaInt(__rombase, ROM_RUNTIMEPOOLSIZE_OFFSET));
+		
 		// Load all the JAR informations
 		bootlibs = new BootRomLibrary[numjars];
 		for (int i = 0; i < numjars; i++)
@@ -229,7 +239,8 @@ public final class BootRom
 				__rombase + Assembly.memReadJavaInt(seeker, TOC_JAR_OFFSET),
 				Assembly.memReadJavaInt(seeker, TOC_JARLEN_OFFSET),
 				(ma == 0 ? 0 : __rombase + ma),
-				Assembly.memReadJavaInt(seeker, TOC_MANIFEST_LENGTH_OFFSET));
+				Assembly.memReadJavaInt(seeker, TOC_MANIFEST_LENGTH_OFFSET),
+				brpi);
 			
 			// Store it
 			bootlibs[i] = bl;
