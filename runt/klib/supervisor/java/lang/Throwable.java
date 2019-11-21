@@ -48,6 +48,9 @@ public class Throwable
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
+		
+		// Possible debug stuff
+		this.__debug();
 	}
 	
 	/**
@@ -63,6 +66,9 @@ public class Throwable
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
+		
+		// Possible debug stuff
+		this.__debug();
 	}
 	
 	/**
@@ -79,6 +85,9 @@ public class Throwable
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
+		
+		// Possible debug stuff
+		this.__debug();
 	}
 	
 	/**
@@ -94,6 +103,9 @@ public class Throwable
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
+		
+		// Possible debug stuff
+		this.__debug();
 	}
 	
 	/**
@@ -285,6 +297,16 @@ public class Throwable
 	public String toString()
 	{
 		return this._message;
+	}
+	
+	/**
+	 * Prints some debug message.
+	 *
+	 * @since 2019/11/20
+	 */
+	private final void __debug()
+	{
+		todo.DEBUG.note("Tossed: %s", this._message);
 	}
 	
 	/**
