@@ -59,10 +59,6 @@ public final class Allocator
 	/** Extra size to add that must be hit before a chunk is split. */
 	public static final byte SPLIT_REQUIREMENT =
 		16;
-		
-	/** Locking magic number. */
-	private static final int _LOCK_MAGIC =
-		0x506F4C79;
 	
 	/** The base RAM address. */
 	private static volatile int _rambase;
@@ -91,7 +87,7 @@ public final class Allocator
 	public static final int allocate(int __tag, int __sz)
 	{
 		// Determine the special locking key to use, never let this be zero!
-		int key = (_LOCK_MAGIC ^ (__tag + __sz)) | 1;
+		int key = Allocator.__giveLockKey();
 		
 		// Try locking the pointer
 		int lp = Allocator._lockptr;
@@ -172,7 +168,7 @@ public final class Allocator
 	public static final void free(int __p)
 	{
 		// Determine the special locking key to use, never let this be zero!
-		int key = (_LOCK_MAGIC ^ __p) | 1;
+		int key = Allocator.__giveLockKey();
 		
 		// Try locking the pointer
 		int lp = Allocator._lockptr;
@@ -349,6 +345,22 @@ public final class Allocator
 		}
 		
 		// Return the used pointer
+		return rv;
+	}
+	
+	/**
+	 * Returns a locking key.
+	 *
+	 * @return The locking key.
+	 * @since 2019/11/22
+	 */
+	static final int __giveLockKey()
+	{
+		// Use the thread register so we know the thread that is performing
+		// the allocation/free, but never allow it to be zero
+		int rv = Assembly.specialGetThreadRegister();
+		if (rv == 0)
+			return 0x506F4C79;
 		return rv;
 	}
 	
