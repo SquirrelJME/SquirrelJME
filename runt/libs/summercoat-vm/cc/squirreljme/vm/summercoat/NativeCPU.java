@@ -97,6 +97,9 @@ public final class NativeCPU
 	private final int[] _supervisorproperties =
 		new int[SupervisorPropertyIndex.NUM_PROPERTIES];
 	
+	/** Execution slices which came from the popped frame. */
+	private Deque<ExecutionSlice> _sopf;
+	
 	/**
 	 * Initializes the native CPU.
 	 *
@@ -219,11 +222,25 @@ public final class NativeCPU
 						execslices.size());
 					while (!execslices.isEmpty())
 						execslices.removeFirst().print(System.err);
+				}
+				
+				// If there were any execution slices that came from the
+				// method we called, print them out.
+				Deque<ExecutionSlice> sopf = this._sopf;
+				if (sopf != null)
+				{
+					// Spacer
+					System.err.println(
+						"++++++++++++++++++++++++++++++++++++++++++++");
+					
+					// Print out
+					while (!sopf.isEmpty())
+						sopf.removeFirst().print(System.err);
 					
 					// Spacer
 					System.err.println();
 				}
-				
+					
 				// Spacer
 				System.err.println(
 					"--------------------------------------------");
@@ -849,6 +866,9 @@ public final class NativeCPU
 								was._registers[NativeCode.RETURN_REGISTER + 1],
 								was._registers[
 									NativeCode.EXCEPTION_REGISTER]));
+						
+						// Capture the execution slices of this popped frame
+						this._sopf = was._execslices;
 						
 						// We are going back onto a frame so copy all
 						// the globals which were set since they are meant to
