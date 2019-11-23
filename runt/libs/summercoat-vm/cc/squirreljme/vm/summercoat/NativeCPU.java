@@ -224,6 +224,9 @@ public final class NativeCPU
 						execslices.removeFirst().print(System.err);
 				}
 				
+				// Spacer
+				System.err.println();
+				
 				// If there were any execution slices that came from the
 				// method we called, print them out.
 				Deque<ExecutionSlice> sopf = this._sopf;
@@ -232,6 +235,7 @@ public final class NativeCPU
 					// Spacer
 					System.err.println(
 						"++++++++++++++++++++++++++++++++++++++++++++");
+					System.err.println("Slices of the last popped frame:");
 					
 					// Print out
 					while (!sopf.isEmpty())
