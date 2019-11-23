@@ -1,0 +1,7 @@
+# 2019/11/22
+
+## 18:08
+
+I think this double free might be `free` or `jvmGarbageCollect` being called
+within each other. Because free is calling `jvmGarbageCollect`. Going to add
+some debug code.
