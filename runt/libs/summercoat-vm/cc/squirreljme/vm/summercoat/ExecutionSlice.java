@@ -108,6 +108,17 @@ public final class ExecutionSlice
 		// Print normal trace info
 		__ps.printf("  - InFrm: %s%n", trace.toString());
 		
+		// Print instruction arguments
+		__ps.print("  - OpArg: (");
+		for (int i = 0, n = opargs.length; i < n; i++)
+		{
+			if (i > 0)
+				__ps.print(", ");
+			
+			__ps.printf("%d [%xh]", opargs[i], opargs[i]);
+		}
+		__ps.println(")");
+		
 		// Do not print the large number of final registers that are zero
 		int maxregister = cpuregs.length - 1;
 		while (maxregister > 0 && cpuregs[maxregister] == 0)
