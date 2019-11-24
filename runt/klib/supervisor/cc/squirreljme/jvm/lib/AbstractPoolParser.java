@@ -29,5 +29,17 @@ public abstract class AbstractPoolParser
 	 */
 	public abstract BinaryBlob entryData(int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException;
+	
+	/**
+	 * Return the type a pool entry is.
+	 *
+	 * @param __dx The index of the entry to get.
+	 * @return The entry type.
+	 * @throws IndexOutOfBoundsException If it is outside of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/11/24
+	 */
+	public abstract int entryType(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException;
 }
 
