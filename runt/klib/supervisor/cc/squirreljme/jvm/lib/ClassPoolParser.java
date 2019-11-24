@@ -44,6 +44,17 @@ public final class ClassPoolParser
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/24
+	 */
+	@Override
+	public final BinaryBlob entryData(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the size of the constant pool.
 	 *
 	 * @return The pool size.

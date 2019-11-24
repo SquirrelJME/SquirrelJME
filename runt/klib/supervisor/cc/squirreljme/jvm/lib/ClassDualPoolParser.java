@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.lib;
 
+import cc.squirreljme.jvm.io.BinaryBlob;
+
 /**
  * This class manages the parsing of the standard individual constant pools
  * to the combined run-time and static dual-pool setup.
@@ -41,6 +43,38 @@ public final class ClassDualPoolParser
 		
 		this.classpool = __cl;
 		this.runtimepool = __rt;
+	}
+	
+	/**
+	 * Returns the decoded entry as any object.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @return The value.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/11/24
+	 */
+	public final Object entry(boolean __rt, int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the decoded entry as a string.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @return The value.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/11/24
+	 */
+	public final String entryAsString(boolean __rt, int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return (String)this.entry(__rt, __dx);
 	}
 }
 
