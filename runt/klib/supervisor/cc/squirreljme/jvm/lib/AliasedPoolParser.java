@@ -78,7 +78,7 @@ public final class AliasedPoolParser
 	public final BinaryBlob entryData(int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		throw new todo.TODO();
+		return this.inherited.entryData(this.entryAliasedIndex(__dx));
 	}
 	
 	/**

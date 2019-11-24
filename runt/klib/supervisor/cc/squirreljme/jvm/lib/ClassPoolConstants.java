@@ -35,5 +35,9 @@ public interface ClassPoolConstants
 	/** Size of entries. */
 	public static final byte ENTRY_SIZE =
 		8;
+	
+	/** String type. */
+	public static final byte TYPE_STRING =
+		1;
 }
 
