@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
  * This class is used to pack multiple JAR files into a single packed ROM, so
@@ -105,6 +106,167 @@ public class PackMinimizer
 		// Make sure it ends in JAR
 		if (!__boot.endsWith(".jar"))
 			__boot = __boot + ".jar";
+		
+		// Write ROM sections
+		TableSectionOutputStream out = new TableSectionOutputStream();
+		
+		// Number of libraries to process
+		int numlibs = __libs.length;
+		
+		// Initialize classpath indexes
+		int numinitcp = __initcp.length;
+		int[] cpdx = new int[numinitcp];
+		
+		// Header and table of contents sections
+		TableSectionOutputStream.Section header = out.addSection(
+			MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC, 4);
+		TableSectionOutputStream.Section toc = out.addSection(
+			MinimizedPackHeader.TOC_ENTRY_SIZE * numlibs, 4);
+		
+		// Setup dual-pool where all combined values are stored as needed
+		DualClassRuntimePoolBuilder dualpool =
+			new DualClassRuntimePoolBuilder();
+		
+		// Section of the boot JAR
+		int bootjarindex = -1;
+		TableSectionOutputStream.Section bootjarsection = null;
+		
+		// Go through each library, minimize and write!
+		for (int i = 0; i < numlibs; i++)
+		{
+			VMClassLibrary lib = __libs[i];
+			String name = lib.name();
+			
+			// Normalize extension
+			if (!name.endsWith(".jar"))
+				name = name + ".jar";
+			
+			// Find library used in the initial classpath
+			for (int j = 0; j < numinitcp; j++)
+				if (name.equals(__initcp[j]))
+				{
+					cpdx[j] = i;
+					break;
+				}
+			
+			// Write name of JAR
+			TableSectionOutputStream.Section jname = out.addSection(
+				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			jname.writeUTF(name);
+			
+			// Output JAR data
+			TableSectionOutputStream.Section jdata = out.addSection(
+				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			
+			// Is this a boot library?
+			boolean isboot;
+			if ((isboot = name.equals(__boot)))
+			{
+				bootjarindex = i;
+				bootjarsection = jdata;
+			}
+			
+			// Writing could fail however, so this makes it easier to find
+			// the location of that failure
+			MinimizedJarHeader mjh;
+			try
+			{
+				// Used to get the header
+				MinimizedJarHeader[] mjha = new MinimizedJarHeader[1];
+				
+				// The boot JAR is completely stand-alone, so do not use
+				// a global JAR pool for it.
+				JarMinimizer.minimize((isboot ? null : dualpool), isboot, lib,
+					jdata, mjha);
+				
+				// Get the generated header
+				mjh = mjha[0];
+			}
+			
+			// {@squirreljme.error BI01 Could not minimize the JAR due to
+			// an invalid class file. (The name)}
+			catch (InvalidClassFormatException e)
+			{
+				throw new InvalidClassFormatException("BI01 " + name, e);
+			}
+			
+			// Write TOC details
+			toc.writeSectionAddressInt(jname);
+			toc.writeSectionAddressInt(jdata);
+			toc.writeSectionSizeInt(jdata);
+			
+			// Write manifest details if it is valid
+			if (mjh.manifestlen > 0)
+			{
+				toc.writeSectionAddressInt(jdata, mjh.manifestoff);
+				toc.writeInt(mjh.manifestlen);
+			}
+			else
+			{
+				toc.writeInt(0);
+				toc.writeInt(0);
+			}
+		}
+		
+		// Write header details
+		header.writeInt(MinimizedPackHeader.MAGIC_NUMBER);
+		header.writeInt(numlibs);
+		header.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
+		
+		// Optional BootJAR information
+		header.writeInt(bootjarindex);
+		if (bootjarsection != null)
+		{
+			header.writeSectionAddressInt(bootjarsection);
+			header.writeSectionSizeInt(bootjarsection);
+		}
+		else
+		{
+			header.writeInt(0);
+			header.writeInt(0);
+		}
+		
+		// Write initial classpath
+		TableSectionOutputStream.Section icp = out.addSection(
+			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		for (int i = 0; i < numinitcp; i++)
+			icp.writeInt(cpdx[i]);
+		
+		// More boot information
+		header.writeSectionAddressInt(icp);
+		header.writeInt(numinitcp);
+		
+		// Main entry point name
+		if (__mainbc == null)
+			header.writeInt(0);
+		else
+		{
+			TableSectionOutputStream.Section mcl = out.addSection(
+				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			
+			mcl.writeUTF(__mainbc.replace('.', '/'));
+			header.writeSectionAddressInt(mcl);
+		}
+		
+		// Encode the constant pools
+		TableSectionOutputStream.Section lpd = out.addSection(
+			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, lpd);
+		
+		// Static pool
+		header.writeSectionAddressInt(lpd, der.staticpooloff);
+		header.writeInt(der.staticpoolsize);
+		
+		// Run-time pool
+		header.writeSectionAddressInt(lpd, der.runtimepooloff);
+		header.writeInt(der.runtimepoolsize);
+		
+		// Finish off
+		out.writeTo(__os);
+		
+		
+		/*
+		
 		
 		// Formatted data is used
 		DataOutputStream dos = new DataOutputStream(__os);
@@ -273,6 +435,7 @@ public class PackMinimizer
 		// Write TOC and JAR data
 		taos.writeTo(dos);
 		jaos.writeTo(dos);
+		*/
 	}
 }
 
