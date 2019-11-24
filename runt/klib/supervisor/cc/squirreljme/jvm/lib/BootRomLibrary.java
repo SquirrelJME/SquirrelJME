@@ -279,9 +279,6 @@ public final class BootRomLibrary
 				rv = null;
 		}
 		
-		todo.DEBUG.note("rv=%s, brp=%s, jpo=%d, jps=%d", rv, this.bootrompool,
-			jpo, jps);
-		
 		return rv;
 	}
 }
