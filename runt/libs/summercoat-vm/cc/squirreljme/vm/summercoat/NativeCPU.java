@@ -69,6 +69,10 @@ public final class NativeCPU
 	public static final int MAX_EXECUTION_SLICES =
 		32;
 	
+	/** The maximum number of popped slices to store. */
+	public static final int MAX_POPPED_SLICE_STORE =
+		8;
+	
 	/** Threshhold for too many debug points */
 	private static final int _POINT_THRESHOLD =
 		65536;
@@ -98,7 +102,8 @@ public final class NativeCPU
 		new int[SupervisorPropertyIndex.NUM_PROPERTIES];
 	
 	/** Execution slices which came from the popped frame. */
-	private Deque<ExecutionSlice> _sopf;
+	private final Deque<Deque<ExecutionSlice>> _sopf =
+		(ENABLE_DEBUG ? new LinkedList<Deque<ExecutionSlice>>() : null);
 	
 	/**
 	 * Initializes the native CPU.
@@ -222,6 +227,9 @@ public final class NativeCPU
 						execslices.size());
 					while (!execslices.isEmpty())
 						execslices.removeFirst().print(System.err);
+					
+					// Spacer
+					System.err.println();
 				}
 				
 				// Spacer
@@ -229,20 +237,29 @@ public final class NativeCPU
 				
 				// If there were any execution slices that came from the
 				// method we called, print them out.
-				Deque<ExecutionSlice> sopf = this._sopf;
+				Deque<Deque<ExecutionSlice>> sopf = this._sopf;
 				if (sopf != null)
 				{
-					// Spacer
-					System.err.println(
-						"++++++++++++++++++++++++++++++++++++++++++++");
-					System.err.println("Slices of the last popped frame:");
+					// Traces for this frame
+					System.err.print("++++++++++++++++++++++++++++++++++++");
+					System.err.println("++++++++++++++++++++++++++++++++++++");
 					
-					// Print out
+					// Print all of them
 					while (!sopf.isEmpty())
-						sopf.removeFirst().print(System.err);
-					
-					// Spacer
-					System.err.println();
+					{
+						// Spacer
+						System.err.println(
+							"++++++++++++++++++++++++++++++++++++++++++++");
+						System.err.println("Slices of a popped frame:");
+						
+						// Print out
+						Deque<ExecutionSlice> qq = sopf.removeFirst();
+						while (!qq.isEmpty())
+							qq.removeFirst().print(System.err);
+						
+						// Spacer
+						System.err.println();
+					}
 				}
 					
 				// Spacer
@@ -872,7 +889,16 @@ public final class NativeCPU
 									NativeCode.EXCEPTION_REGISTER]));
 						
 						// Capture the execution slices of this popped frame
-						this._sopf = was._execslices;
+						Deque<Deque<ExecutionSlice>> sopf = this._sopf;
+						if (sopf != null)
+						{
+							// Add these slices
+							sopf.addLast(was._execslices);
+							
+							// If there are too many, remove them
+							if (sopf.size() > MAX_POPPED_SLICE_STORE)
+								sopf.removeFirst();
+						}
 						
 						// We are going back onto a frame so copy all
 						// the globals which were set since they are meant to
