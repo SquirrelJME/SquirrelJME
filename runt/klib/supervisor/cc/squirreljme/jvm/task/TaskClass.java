@@ -130,6 +130,14 @@ public final class TaskClass
 		ClassFieldsParser cifs = __cip.fields(false);
 		for (int cif = 0, cifn = cifs.count(); cif < cifn; cif++)
 		{
+			// Read field properties
+			int ffl = cifs.flags(cif),
+				fof = cifs.offset(cif),
+				fsz = cifs.size(cif);
+			
+			todo.DEBUG.note("fl=%sh of=%d sz=%d",
+				Integer.toString(ffl, 16), fof, fsz);
+			
 			// Depends on the field name
 			switch (cifs.name(cif))
 			{

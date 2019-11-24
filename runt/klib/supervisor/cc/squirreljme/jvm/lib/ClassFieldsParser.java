@@ -91,18 +91,67 @@ public final class ClassFieldsParser
 	}
 	
 	/**
+	 * Returns the flags for the field.
+	 *
+	 * @param __dx The index of the field.
+	 * @return The field flags.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @since 2019/11/24
+	 */
+	public final int flags(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.blob.readJavaInt(this.tocOffset(__dx) +
+			FLAGS_INT_OFFSET);
+	}
+	
+	/**
 	 * Returns the name of the field.
 	 *
 	 * @param __dx The index of the field.
 	 * @return The name of the field.
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
 	 * @since 2019/11/24
 	 */
 	public final String name(int __dx)
-		throws IndexOutOfBoundsException
+		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return this.pool.entryAsString(false, this.blob.readJavaUnsignedShort(
 			this.tocOffset(__dx) + NAME_USHORT_OFFSET));
+	}
+	
+	/**
+	 * Returns the offset for the field.
+	 *
+	 * @param __dx The index of the field.
+	 * @return The field offset.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @since 2019/11/24
+	 */
+	public final int offset(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.blob.readJavaUnsignedShort(this.tocOffset(__dx) +
+			OFFSET_USHORT_OFFSET);
+	}
+	
+	/**
+	 * Returns the size for the field.
+	 *
+	 * @param __dx The index of the field.
+	 * @return The size offset.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @since 2019/11/24
+	 */
+	public final int size(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.blob.readJavaUnsignedShort(this.tocOffset(__dx) +
+			SIZE_USHORT_OFFSET);
 	}
 	
 	/**
@@ -111,10 +160,11 @@ public final class ClassFieldsParser
 	 * @param __dx The index.
 	 * @return The table of contents offset.
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
 	 * @since 2019/11/24
 	 */
 	public final int tocOffset(int __dx)
-		throws IndexOutOfBoundsException
+		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		if (__dx < 0 || __dx > this.count)
 			throw new IndexOutOfBoundsException("IOOB");
