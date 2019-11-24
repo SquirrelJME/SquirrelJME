@@ -60,15 +60,14 @@ public final class BootRomPoolInfo
 	/**
 	 * Is this pool valid?
 	 *
+	 * @param __rt The run-time pool.
 	 * @return If it is valid.
 	 * @since 2019/11/18
 	 */
-	public final boolean isDefined()
+	public final boolean isDefined(boolean __rt)
 	{
-		return this.staticpooladdress >= 0 &&
-			this.staticpoolsize > 0 &&
-			this.runtimepooladdress >= 0 &&
-			this.runtimepoolsize > 0;
+		// The address is not considered because it may be negative
+		return (__rt ? this.runtimepoolsize : this.staticpoolsize) > 0;
 	}
 	
 	/**

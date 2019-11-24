@@ -80,6 +80,18 @@ public final class StringBuilder
 	}
 	
 	/**
+	 * Appends an integer into this one.
+	 *
+	 * @param __v The value to append.
+	 * @return {@code this}.
+	 * @since 2019/11/24
+	 */
+	public final StringBuilder append(int __v)
+	{
+		return this.append(Integer.toString(__v, 10));
+	}
+	
+	/**
 	 * Appends a string into this one.
 	 *
 	 * @param __v The value to append.

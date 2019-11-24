@@ -269,7 +269,7 @@ public final class BootRomLibrary
 		else
 		{
 			BootRomPoolInfo bootrompool = this.bootrompool;
-			if (bootrompool.isDefined())
+			if (bootrompool.isDefined(__rt))
 				rv = new ClassPoolParser(
 					new MemoryBlob(bootrompool.address(__rt),
 						bootrompool.size(__rt)));
@@ -278,6 +278,9 @@ public final class BootRomLibrary
 			else
 				rv = null;
 		}
+		
+		todo.DEBUG.note("rv=%s, brp=%s, jpo=%d, jps=%d", rv, this.bootrompool,
+			jpo, jps);
 		
 		return rv;
 	}
