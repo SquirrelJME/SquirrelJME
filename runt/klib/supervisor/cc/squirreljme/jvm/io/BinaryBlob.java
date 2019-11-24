@@ -98,6 +98,20 @@ public abstract class BinaryBlob
 	}
 	
 	/**
+	 * Reads a Modified UTF encoded string.
+	 *
+	 * @param __o The offset.
+	 * @return The read string.
+	 * @throws IndexOutOfBoundsException If the string is outside of bounds.
+	 * @since 2019/09/24
+	 */
+	public final String readUTF(int __o)
+		throws IndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns a blob which is a sub-section of the given blob.
 	 *
 	 * It is recommended to replace this class with a more efficient one if

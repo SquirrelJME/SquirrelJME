@@ -51,7 +51,14 @@ public final class ClassPoolParser
 	public final BinaryBlob entryData(int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		throw new todo.TODO();
+		int tocoff = this.entryTableOffset(__dx);
+		
+		// Return blob to just the data area
+		BinaryBlob blob = this.blob;
+		return blob.subSection(blob.readJavaInt(tocoff +
+			ClassPoolConstants.OFFSET_OF_INT_ENTRY_OFFSET),
+			blob.readJavaUnsignedShort(tocoff +
+				ClassPoolConstants.OFFSET_OF_USHORT_ENTRY_LENGTH));
 	}
 	
 	/**

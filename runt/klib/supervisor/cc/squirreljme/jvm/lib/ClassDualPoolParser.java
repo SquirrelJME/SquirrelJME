@@ -69,10 +69,18 @@ public final class ClassDualPoolParser
 		
 		todo.DEBUG.note("Zero = %d", ap.entryType(0));
 		
+		// Get pool data
+		BinaryBlob blob = ap.entryData(__dx);
+		
 		// Depends on the entry type
 		int etype = ap.entryType(__dx);
 		switch (etype)
 		{
+				// String, skip hash and length copies
+			case ClassPoolConstants.TYPE_STRING:
+				return blob.readUTF(4);
+			
+				// Unknown
 			default:
 				throw new todo.TODO("Pool " + etype);
 		}
