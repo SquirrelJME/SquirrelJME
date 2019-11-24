@@ -10,6 +10,10 @@
 package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.CallStackItem;
+import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.jvm.JVMFunction;
+import cc.squirreljme.jvm.SystemCallIndex;
 
 /**
  * This class defines the base class for every class which exists.
@@ -74,6 +78,9 @@ public class Object
 	 */
 	public String toString()
 	{
-		return "AnObject@" + Integer.toString(this.hashCode(), 16);
+		return JVMFunction.jvmLoadString(Assembly.pointerToClassInfo(
+			Assembly.memReadInt(Assembly.objectToPointer(this),
+			Constants.OBJECT_CLASS_OFFSET)).namep) +
+			"@" + Integer.toString(this.hashCode(), 16);
 	}
 }
