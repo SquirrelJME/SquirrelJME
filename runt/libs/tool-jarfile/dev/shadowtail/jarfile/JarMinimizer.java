@@ -107,10 +107,10 @@ public final class JarMinimizer
 		
 		// Use the passed pool if it was passed, but otherwise just use one
 		// in the event one was not passed through (uses our own pool)
-		DualClassRuntimePoolBuilder usedp;
-		this.dualpool = (usedp = (__boot ? null :
-			(__dp != null ? __dp : new DualClassRuntimePoolBuilder())));
-		this.owndualpool = (usedp == null);
+		boolean owndualpool = (__boot ? false : (__dp == null));
+		this.dualpool = (__boot ? null : (owndualpool ?
+			new DualClassRuntimePoolBuilder() : __dp));
+		this.owndualpool = owndualpool;
 		
 		// Setup bootstrap, but only if booting
 		this.bootstrap = (__boot ? new BootstrapState() : null);
@@ -336,6 +336,11 @@ public final class JarMinimizer
 			header.writeInt(0);
 			header.writeInt(0);
 		}
+		
+		// Debug
+		if (JarMinimizer._ENABLE_DEBUG)
+			todo.DEBUG.note("Own pool=%s, dualpool=%s",
+				this.owndualpool, dualpool);
 		
 		// We are using our own dual pool, so write it out as if it were
 		// in the pack file. It is only local to this JAR.
