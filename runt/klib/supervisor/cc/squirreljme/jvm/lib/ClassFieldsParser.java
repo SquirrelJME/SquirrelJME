@@ -22,6 +22,34 @@ public final class ClassFieldsParser
 	public static final byte ENTRY_SIZE =
 		16;
 	
+	/** Offset to field flags. */
+	public static final byte FLAGS_INT_OFFSET =
+		0;
+		
+	/** Offset to offset within class base. */
+	public static final byte OFFSET_USHORT_OFFSET =
+		4;
+	
+	/** Offset to field size. */
+	public static final byte SIZE_USHORT_OFFSET =
+		6;
+		
+	/** Offset to field name. */
+	public static final byte NAME_USHORT_OFFSET =
+		8;
+	
+	/** Offset to field type. */
+	public static final byte TYPE_USHORT_OFFSET =
+		10;
+		
+	/** Offset to constant value. */
+	public static final byte CVALUE_USHORT_OFFSET =
+		12;
+		
+	/** Offset to the data type. */
+	public static final byte DATATYPE_BYTE_OFFSET =
+		14;
+	
 	/** The constant pool for the class. */
 	protected final ClassDualPoolParser pool;
 	
@@ -73,7 +101,8 @@ public final class ClassFieldsParser
 	public final String name(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this.pool.entryAsString(false, this.blob.readJavaUnsignedShort(
+			this.tocOffset(__dx) + NAME_USHORT_OFFSET));
 	}
 	
 	/**
