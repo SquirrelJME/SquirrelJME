@@ -18,6 +18,10 @@ import cc.squirreljme.jvm.io.BinaryBlob;
  */
 public final class ClassFieldsParser
 {
+	/** The size of entries in the field list. */
+	public static final byte ENTRY_SIZE =
+		16;
+	
 	/** The constant pool for the class. */
 	protected final ClassDualPoolParser pool;
 	
@@ -56,6 +60,23 @@ public final class ClassFieldsParser
 	public final int count()
 	{
 		return this.count;
+	}
+	
+	/**
+	 * Index of the entry in the table of contents.
+	 *
+	 * @param __dx The index.
+	 * @return The table of contents offset.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @since 2019/11/24
+	 */
+	public final int tocOffset(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		if (__dx < 0 || __dx > this.count)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return __dx * ENTRY_SIZE;
 	}
 }
 
