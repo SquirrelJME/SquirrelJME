@@ -66,6 +66,8 @@ public final class BootRomPoolInfo
 	 */
 	public final boolean isDefined(boolean __rt)
 	{
+		todo.DEBUG.note("Size: %d",
+			(__rt ? this.runtimepoolsize : this.staticpoolsize));
 		// The address is not considered because it may be negative
 		return (__rt ? this.runtimepoolsize : this.staticpoolsize) > 0;
 	}
@@ -80,6 +82,19 @@ public final class BootRomPoolInfo
 	public final int size(boolean __rt)
 	{
 		return (__rt ? this.runtimepoolsize : this.staticpoolsize);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/24
+	 */
+	@Override
+	public final String toString()
+	{
+		return "Pools{st=(@" + Integer.toString(this.staticpooladdress, 16) +
+			" len=" + this.staticpoolsize + "), rt=(@" +
+			Integer.toString(this.runtimepooladdress, 16) +
+			" len=" + this.runtimepoolsize + ")}";
 	}
 }
 
