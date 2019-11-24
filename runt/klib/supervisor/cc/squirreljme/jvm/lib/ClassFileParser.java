@@ -164,7 +164,7 @@ public final class ClassFileParser
 		
 		// Is a virtually aliased pool and relies on a higher up ROM pool
 		// for this to be decoded
-		if (off < 0 || len < 0)
+		if (len < 0)
 		{
 			// {@squirreljme.error SV0t No root pool was specified and the
 			// class pool is purely virtual.}
@@ -174,7 +174,7 @@ public final class ClassFileParser
 				throw new InvalidClassFormatException("SV0t");
 			
 			// Initialize aliased pool
-			return new AliasedPoolParser(blob.subSection(off, len), rootp);
+			return new AliasedPoolParser(blob.subSection(off, -len), rootp);
 		}
 		
 		// Otherwise read the data straight from the class
