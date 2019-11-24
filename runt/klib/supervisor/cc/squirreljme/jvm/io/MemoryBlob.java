@@ -61,6 +61,27 @@ public final class MemoryBlob
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/11/24
+	 */
+	@Override
+	public void readBytes(int __i, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__i < 0 || __o < 0 || (__o + __l) > __b.length)
+			throw new NullPointerException("IOOB");
+			
+		// {@squirreljme.error SV0u Out of range region read.}
+		if (__i < 0 || (__i + __l) > this.size)
+			throw new IndexOutOfBoundsException("SV0u");
+		
+		for (int i = 0, bp = this.base + __i; i < __l; i++)
+			__b[__o + i] = (byte)Assembly.memReadByte(bp, i);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/11/17
 	 */
 	@Override
