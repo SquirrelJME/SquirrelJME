@@ -51,7 +51,7 @@ public class Object
 	 */
 	public int hashCode()
 	{
-		return 1234;
+		return Assembly.objectToPointer(this);
 	}
 	
 	/**
@@ -74,6 +74,6 @@ public class Object
 	 */
 	public String toString()
 	{
-		return "AnObject";
+		return "AnObject@" + Integer.toString(this.hashCode(), 16);
 	}
 }
