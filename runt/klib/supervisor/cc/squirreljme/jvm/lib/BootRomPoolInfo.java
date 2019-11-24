@@ -66,8 +66,6 @@ public final class BootRomPoolInfo
 	 */
 	public final boolean isDefined(boolean __rt)
 	{
-		todo.DEBUG.note("Size: %d",
-			(__rt ? this.runtimepoolsize : this.staticpoolsize));
 		// The address is not considered because it may be negative
 		return (__rt ? this.runtimepoolsize : this.staticpoolsize) > 0;
 	}

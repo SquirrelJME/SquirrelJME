@@ -249,15 +249,15 @@ public final class BootRomLibrary
 		int jpo, jps;
 		if (__rt)
 		{
-			jpo = blob.readJavaInt(JAR_STATICPOOLOFF_OFFSET);
-			jps = blob.readJavaInt(JAR_STATICPOOLSIZE_OFFSET);
+			jpo = blob.readJavaInt(JAR_RUNTIMEPOOLOFF_OFFSET);
+			jps = blob.readJavaInt(JAR_RUNTIMEPOOLSIZE_OFFSET);
 		}
 		
 		// Run-time
 		else
 		{
-			jpo = blob.readJavaInt(JAR_RUNTIMEPOOLOFF_OFFSET);
-			jps = blob.readJavaInt(JAR_RUNTIMEPOOLSIZE_OFFSET);
+			jpo = blob.readJavaInt(JAR_STATICPOOLOFF_OFFSET);
+			jps = blob.readJavaInt(JAR_STATICPOOLSIZE_OFFSET);
 		}
 		
 		// This JAR has a pool in it
