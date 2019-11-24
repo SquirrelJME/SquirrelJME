@@ -124,7 +124,8 @@ public final class MemoryBlob
 	{
 		int size = this.size;
 		if (__base < 0 || __len < 0 || (__base + __len) > size)
-			throw new IndexOutOfBoundsException("IOOB");
+			throw new IndexOutOfBoundsException("IOOB " + __base + " "
+				+ __len);
 		
 		return new MemoryBlob(this.base + __base, __len);
 	}
