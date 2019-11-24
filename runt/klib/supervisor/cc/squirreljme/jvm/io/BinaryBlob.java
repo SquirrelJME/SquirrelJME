@@ -38,6 +38,30 @@ public abstract class BinaryBlob
 	public abstract int size();
 	
 	/**
+	 * Reads in multiple bytes.
+	 *
+	 * @param __i The read index.
+	 * @param __b The bytes to read.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds, or
+	 * the offset and/or length are negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/24
+	 */
+	public void readBytes(int __i, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__i < 0 || __o < 0 || (__o + __l) > __b.length)
+			throw new NullPointerException("IOOB");
+		
+		for (int i = 0; i < __l; i++)
+			__b[__o + i] = (byte)this.readByte(__i + i);
+	}
+	
+	/**
 	 * Reads a Java integer.
 	 *
 	 * @param __o The offset.
@@ -108,7 +132,15 @@ public abstract class BinaryBlob
 	public final String readUTF(int __o)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Read length of data first
+		int len = this.readJavaUnsignedShort(__o);
+		
+		// Read in data to byte array
+		byte[] data = new byte[len];
+		this.readBytes(__o + 2, data, 0, len);
+		
+		// Initialize string with it
+		return new String(data);
 	}
 	
 	/**
