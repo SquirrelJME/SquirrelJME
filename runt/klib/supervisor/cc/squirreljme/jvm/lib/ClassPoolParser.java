@@ -55,6 +55,36 @@ public final class ClassPoolParser
 	}
 	
 	/**
+	 * Returns the offset of the pool entry in the table of contents.
+	 *
+	 * @param __dx The index to get.
+	 * @return The offset in the table of contents.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @throws InvalidClassFormatException If the class format is not valid.
+	 * @since 2019/11/24
+	 */
+	public final int entryTableOffset(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		if (__dx < 0 || __dx >= this.size())
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return __dx * ClassPoolConstants.ENTRY_SIZE;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/24
+	 */
+	@Override
+	public final int entryType(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.blob.readUnsignedByte(this.entryTableOffset(__dx) +
+			ClassPoolConstants.OFFSET_OF_BYTE_ENTRY_TAG);
+	}
+	
+	/**
 	 * Returns the size of the constant pool.
 	 *
 	 * @return The pool size.

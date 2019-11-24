@@ -58,7 +58,22 @@ public final class ClassDualPoolParser
 	public final Object entry(boolean __rt, int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		throw new todo.TODO();
+		// The zero index is always null!
+		if (__dx == 0)
+			return null;
+		
+		// Need these pools
+		AbstractPoolParser sp = this.classpool,
+			rp = this.runtimepool,
+			ap = (__rt ? rp : sp);
+		
+		// Depends on the entry type
+		int etype = ap.entryType(__dx);
+		switch (etype)
+		{
+			default:
+				throw new todo.TODO("Pool " + etype);
+		}
 	}
 	
 	/**

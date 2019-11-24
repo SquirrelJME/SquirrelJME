@@ -44,6 +44,29 @@ public final class AliasedPoolParser
 	}
 	
 	/**
+	 * Returns the entry this was aliased to.
+	 *
+	 * @param __dx The index to get.
+	 * @return The index this was aliased to.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws InvalidClassFormatException If the class format is not valid.
+	 * @since 2019/11/24
+	 */
+	public final int entryAliasedIndex(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		BinaryBlob blob = this.blob;
+		
+		// Read size of this pool and check the bounds
+		int count = blob.readJavaInt(0);
+		if (__dx < 0 || __dx >= count || count < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Read the entry index now
+		return blob.readJavaInt(__dx * 4);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/11/24
 	 */
@@ -52,6 +75,17 @@ public final class AliasedPoolParser
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/24
+	 */
+	@Override
+	public final int entryType(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.inherited.entryType(this.entryAliasedIndex(__dx));
 	}
 }
 
