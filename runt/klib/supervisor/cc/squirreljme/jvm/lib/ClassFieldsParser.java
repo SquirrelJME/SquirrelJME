@@ -63,6 +63,20 @@ public final class ClassFieldsParser
 	}
 	
 	/**
+	 * Returns the name of the field.
+	 *
+	 * @param __dx The index of the field.
+	 * @return The name of the field.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @since 2019/11/24
+	 */
+	public final String name(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Index of the entry in the table of contents.
 	 *
 	 * @param __dx The index.

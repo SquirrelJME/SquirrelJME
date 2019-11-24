@@ -28,6 +28,19 @@ public class TODO
 	 */
 	public TODO()
 	{
+		this(null);
+	}
+	
+	/**
+	 * Initializes the ToDo.
+	 *
+	 * @param __m The exception message.
+	 * @since 2019/11/25
+	 */
+	public TODO(String __m)
+	{
+		super(__m);
+		
 		// Print stack trace
 		todo.DEBUG.note("****** TODO HIT! ******");
 		this.printStackTrace();

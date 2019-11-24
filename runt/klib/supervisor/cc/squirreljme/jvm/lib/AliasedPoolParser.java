@@ -42,5 +42,16 @@ public final class AliasedPoolParser
 		this.blob = __b;
 		this.inherited = __inh;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/24
+	 */
+	@Override
+	public final BinaryBlob entryData(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		throw new todo.TODO();
+	}
 }
 

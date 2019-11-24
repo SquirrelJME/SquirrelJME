@@ -130,7 +130,12 @@ public final class TaskClass
 		ClassFieldsParser cifs = __cip.fields(false);
 		for (int cif = 0, cifn = cifs.count(); cif < cifn; cif++)
 		{
-			throw new todo.TODO();
+			// Depends on the field name
+			switch (cifs.name(cif))
+			{
+				default:
+					throw new todo.TODO(cifs.name(cif));
+			}
 		}
 		
 		throw new todo.TODO();

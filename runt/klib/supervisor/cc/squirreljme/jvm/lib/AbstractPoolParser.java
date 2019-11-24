@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.lib;
 
+import cc.squirreljme.jvm.io.BinaryBlob;
+
 /**
  * This is the base class for a pool parser.
  *
@@ -16,5 +18,16 @@ package cc.squirreljme.jvm.lib;
  */
 public abstract class AbstractPoolParser
 {
+	/**
+	 * Returns a blob to the entry's data for parsing.
+	 *
+	 * @param __dx The index of the entry to get.
+	 * @return The blob to the entry data.
+	 * @throws IndexOutOfBoundsException If it is outside of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/11/24
+	 */
+	public abstract BinaryBlob entryData(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException;
 }
 
