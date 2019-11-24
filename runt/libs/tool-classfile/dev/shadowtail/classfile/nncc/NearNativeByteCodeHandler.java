@@ -373,7 +373,7 @@ public final class NearNativeByteCodeHandler
 		// be immediately pushed back onto the stack. The counts should only
 		// be lowered if ClassCastException is to be thrown. Because otherwise
 		// we will just end up collecting things on a normal refclear
-		this._lastenqueue = null;
+		this.__refReset();
 	}
 	
 	/**
@@ -1429,7 +1429,7 @@ public final class NearNativeByteCodeHandler
 		// Clear the reference queue because this results in a net reference
 		// count if this point is reached, however this is still needed for
 		// the NPE check even though null values will never be counted
-		this._lastenqueue = null;
+		this.__refReset();
 		
 		// Do not jump at this point, just return the exception check will be
 		// flagged which will start the exception handling
@@ -3043,7 +3043,7 @@ public final class NearNativeByteCodeHandler
 			return;
 		
 		// No need to clear anymore
-		this._lastenqueue = null;
+		this.__refReset();
 		
 		// Un-count all of them accordingly
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -3115,7 +3115,7 @@ public final class NearNativeByteCodeHandler
 		// Nothing to enqueue?
 		if (__r.isEmpty())
 		{
-			this._lastenqueue = null;
+			this.__refReset();
 			return false;
 		}
 		
@@ -3147,6 +3147,16 @@ public final class NearNativeByteCodeHandler
 		
 		// Did enqueue something
 		return true;
+	}
+	
+	/**
+	 * Resets the reference queue so nothing uses it.
+	 *
+	 * @since 2019/11/24
+	 */
+	private final void __refReset()
+	{
+		this._lastenqueue = null;
 	}
 	
 	/**
