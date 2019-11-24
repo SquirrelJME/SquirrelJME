@@ -66,6 +66,9 @@ public final class ClassDualPoolParser
 		AbstractPoolParser sp = this.classpool,
 			rp = this.runtimepool,
 			ap = (__rt ? rp : sp);
+			
+		
+		todo.DEBUG.note("Zero = %d", ap.entryType(0));
 		
 		// Depends on the entry type
 		int etype = ap.entryType(__dx);

@@ -55,9 +55,13 @@ public final class AliasedPoolParser
 	public final int entryAliasedIndex(int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		BinaryBlob blob = this.blob;
+		// The size is stored in the zero index, so this ensures that
+		// zero always maps to zero!
+		if (__dx == 0)
+			return 0;
 		
 		// Read size of this pool and check the bounds
+		BinaryBlob blob = this.blob;
 		int count = blob.readJavaInt(0);
 		if (__dx < 0 || __dx >= count || count < 0)
 			throw new IndexOutOfBoundsException("IOOB");
