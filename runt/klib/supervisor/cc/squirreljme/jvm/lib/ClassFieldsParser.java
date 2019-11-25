@@ -171,5 +171,22 @@ public final class ClassFieldsParser
 		
 		return __dx * ENTRY_SIZE;
 	}
+	
+	/**
+	 * Returns the type of the field.
+	 *
+	 * @param __dx The index of the field.
+	 * @return The type of the field.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @since 2019/11/25
+	 */
+	public final PoolClassName type(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.pool.entryAsClassName(false,
+			this.blob.readJavaUnsignedShort(this.tocOffset(__dx) +
+				TYPE_USHORT_OFFSET));
+	}
 }
 

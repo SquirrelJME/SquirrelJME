@@ -75,10 +75,23 @@ public final class AliasedPoolParser
 	 * @since 2019/11/24
 	 */
 	@Override
-	public final BinaryBlob entryData(int __dx)
+	public final BinaryBlob entryData(int __dx, boolean __ft)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		return this.inherited.entryData(this.entryAliasedIndex(__dx));
+		return this.inherited.entryData((__ft ? __dx :
+			this.entryAliasedIndex(__dx)));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/25
+	 */
+	@Override
+	public final short[] entryParts(int __dx, boolean __ft)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.inherited.entryParts((__ft ? __dx :
+			this.entryAliasedIndex(__dx)));
 	}
 	
 	/**
@@ -86,10 +99,11 @@ public final class AliasedPoolParser
 	 * @since 2019/11/24
 	 */
 	@Override
-	public final int entryType(int __dx)
+	public final int entryType(int __dx, boolean __ft)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		return this.inherited.entryType(this.entryAliasedIndex(__dx));
+		return this.inherited.entryType((__ft ? __dx :
+			this.entryAliasedIndex(__dx)));
 	}
 }
 

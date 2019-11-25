@@ -126,6 +126,14 @@ public final class TaskClass
 		ClassFileParser thisparser = __task.classpath.classParser(
 			this.resourceindex);
 		
+		// Pointer to self
+		int infopointer = this._infopointer;
+		
+		// Load super class if there is one
+		String superclassname = thisparser.superClassName().toString();
+		TaskClass superclass = (superclassname == null ? null :
+			__task.loadClass(superclassname));
+		
 		// Process every field that is defined within the information structure
 		ClassFieldsParser cifs = __cip.fields(false);
 		for (int cif = 0, cifn = cifs.count(); cif < cifn; cif++)
@@ -135,14 +143,30 @@ public final class TaskClass
 				fof = cifs.offset(cif),
 				fsz = cifs.size(cif);
 			
+			// Determine where we write the data to!
+			int wb = infopointer + Constants.OBJECT_BASE_SIZE;
+			
+			// Debug
 			todo.DEBUG.note("fl=%sh of=%d sz=%d",
 				Integer.toString(ffl, 16), fof, fsz);
 			
-			// Depends on the field name
-			switch (cifs.name(cif))
+			// Depends on the field name and type
+			String nat = cifs.name(cif) + ":" + cifs.type(cif);
+			switch (nat)
 			{
+					// The component of this class
+				case "componentclass:cc/squirreljme/jvm/ClassInfo":
+					Assembly.memWriteInt(wb, fof,
+						(!ClassNameUtils.isArray(__cl) ? 0 :
+						__task.loadClass(ClassNameUtils.componentType(__cl)).
+						_infopointer));
+					break;
+					
+					// Super class of this class
+				case "superclass:cc/squirreljme/jvm/ClassInfo":
+				
 				default:
-					throw new todo.TODO(cifs.name(cif));
+					throw new todo.TODO(nat);
 			}
 		}
 		
