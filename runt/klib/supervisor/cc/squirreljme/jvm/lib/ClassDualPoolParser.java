@@ -53,9 +53,27 @@ public final class ClassDualPoolParser
 	 * @return The value.
 	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
 	 * @throws InvalidClassFormatException If the pool is not valid.
-	 * @since 2019/11/24
+	 * @since 2019/11/25
 	 */
 	public final Object entry(boolean __rt, int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.entry(__rt, __dx, false);
+	}
+	
+	/**
+	 * Returns the decoded entry as any object.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @param __ft Would the entry be forwarded through to the actual
+	 * pool implementation?
+	 * @return The value.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/11/24
+	 */
+	public final Object entry(boolean __rt, int __dx, boolean __ft)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		// The zero index is always null!
@@ -67,23 +85,44 @@ public final class ClassDualPoolParser
 			rp = this.runtimepool,
 			ap = (__rt ? rp : sp);
 		
-		todo.DEBUG.note("Zero = %d", ap.entryType(0));
-		
-		// Get pool data
-		BinaryBlob blob = ap.entryData(__dx);
+		// Get pool entry properties
+		int etype = ap.entryType(__dx, __ft);
+		short[] eparts = ap.entryParts(__dx, __ft);
+		BinaryBlob eblob = ap.entryData(__dx, __ft);
 		
 		// Depends on the entry type
-		int etype = ap.entryType(__dx);
 		switch (etype)
 		{
 				// String, skip hash and length copies
 			case ClassPoolConstants.TYPE_STRING:
-				return blob.readUTF(4);
+				return eblob.readUTF(4);
+				
+				// Name of class
+			case ClassPoolConstants.TYPE_CLASSNAME:
+				return new PoolClassName(
+					(String)this.entry(false, eparts[0] & 0xFFFF, true),
+					(PoolClassName)this.entry(false, eparts[1] & 0xFFFF));
 			
 				// Unknown
 			default:
 				throw new todo.TODO("Pool " + etype);
 		}
+	}
+	
+	/**
+	 * Returns the decoded entry as a class name.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @return The value.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/11/25
+	 */
+	public final PoolClassName entryAsClassName(boolean __rt, int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return (PoolClassName)this.entry(__rt, __dx);
 	}
 	
 	/**

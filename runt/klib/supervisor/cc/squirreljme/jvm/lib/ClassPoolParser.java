@@ -48,7 +48,7 @@ public final class ClassPoolParser
 	 * @since 2019/11/24
 	 */
 	@Override
-	public final BinaryBlob entryData(int __dx)
+	public final BinaryBlob entryData(int __dx, boolean __ft)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		int tocoff = this.entryTableOffset(__dx);
@@ -59,6 +59,51 @@ public final class ClassPoolParser
 			ClassPoolConstants.OFFSET_OF_INT_ENTRY_OFFSET),
 			blob.readJavaUnsignedShort(tocoff +
 				ClassPoolConstants.OFFSET_OF_USHORT_ENTRY_LENGTH));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/25
+	 */
+	@Override
+	public final short[] entryParts(int __dx, boolean __ft)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		int tocoff = this.entryTableOffset(__dx);
+		
+		// We need the part count, since these values may be wide or not
+		BinaryBlob blob = this.blob;
+		int numparts = blob.readByte(tocoff +
+			ClassPoolConstants.OFFSET_OF_BYTE_ENTRY_NUMPARTS);
+		
+		// The parts is actually in the data, so we have to access it!
+		BinaryBlob data = this.entryData(__dx);
+		
+		// Wide
+		short[] rv;
+		if (numparts < 0)
+		{
+			// Setup array
+			rv = new short[-numparts];
+			
+			// Read in parts
+			for (int i = 0, p = 0; i > numparts; i--, p += 2)
+				rv[-i] = data.readJavaShort(p);
+		}
+		
+		// Narrow
+		else
+		{
+			// Setup array
+			rv = new short[numparts];
+			
+			// Read in parts
+			for (int i = 0, p = 0; i < numparts; i++, p++)
+				rv[i] = data.readByte(p);
+		}
+		
+		// Use whatever values were read
+		return rv;
 	}
 	
 	/**
@@ -84,7 +129,7 @@ public final class ClassPoolParser
 	 * @since 2019/11/24
 	 */
 	@Override
-	public final int entryType(int __dx)
+	public final int entryType(int __dx, boolean __ft)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return this.blob.readUnsignedByte(this.entryTableOffset(__dx) +

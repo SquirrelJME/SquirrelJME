@@ -92,6 +92,18 @@ public final class StringBuilder
 	}
 	
 	/**
+	 * Appends an object into this one.
+	 *
+	 * @param __v The value to append.
+	 * @return {@code this}.
+	 * @since 2019/11/25
+	 */
+	public final StringBuilder append(Object __v)
+	{
+		return this.append((__v == null ? "null" : __v.toString()));
+	}
+	
+	/**
 	 * Appends a string into this one.
 	 *
 	 * @param __v The value to append.

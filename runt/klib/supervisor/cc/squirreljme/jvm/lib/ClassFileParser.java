@@ -208,5 +208,18 @@ public final class ClassFileParser
 			(__rt ? ClassFileConstants.OFFSET_OF_INT_RUNTIMEPOOLSIZE :
 			ClassFileConstants.OFFSET_OF_INT_STATICPOOLSIZE));
 	}
+	
+	/**
+	 * Returns the super class of this class.
+	 *
+	 * @return The super-class of this class.
+	 * @since 2019/11/25
+	 */
+	public final PoolClassName superClassName()
+	{
+		return this.pool().entryAsClassName(false,
+			this.blob.readJavaUnsignedShort(
+				ClassFileConstants.OFFSET_OF_USHORT_CLASSSUPER));
+	}
 }
 

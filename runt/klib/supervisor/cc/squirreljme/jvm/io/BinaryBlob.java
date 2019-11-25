@@ -27,7 +27,7 @@ public abstract class BinaryBlob
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2019/09/22
 	 */
-	public abstract int readByte(int __o);
+	public abstract byte readByte(int __o);
 	
 	/**
 	 * Returns the size of this blob.

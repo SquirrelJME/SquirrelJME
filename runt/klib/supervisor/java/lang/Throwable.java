@@ -203,8 +203,8 @@ public class Throwable
 						rawtrace[b + CallStackItem.SOURCE_LINE],
 						Integer.toString(
 							rawtrace[b + CallStackItem.PC_ADDRESS], 16),
-						rawtrace[b + CallStackItem.JAVA_PC_ADDRESS],
-						rawtrace[b + CallStackItem.JAVA_OPERATION]);
+						rawtrace[b + CallStackItem.JAVA_OPERATION],
+						rawtrace[b + CallStackItem.JAVA_PC_ADDRESS]);
 				}
 			}
 		}

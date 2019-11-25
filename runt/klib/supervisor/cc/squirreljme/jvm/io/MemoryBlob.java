@@ -49,7 +49,7 @@ public final class MemoryBlob
 	 * @since 2019/09/22
 	 */
 	@Override
-	public int readByte(int __o)
+	public byte readByte(int __o)
 		throws IndexOutOfBoundsException
 	{
 		// {@squirreljme.error SV09 Out of range region read.}
