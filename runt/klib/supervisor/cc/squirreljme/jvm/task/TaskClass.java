@@ -156,6 +156,12 @@ public final class TaskClass
 			String nat = cifs.name(cif) + ":" + cifs.type(cif);
 			switch (nat)
 			{
+					// Class object pointer, is created dynamically!
+				case "classobjptr:java/lang/Class":
+					Assembly.memWriteInt(wb, fof,
+						0);
+					break;
+				
 					// The component of this class
 				case "componentclass:cc/squirreljme/jvm/ClassInfo":
 					Assembly.memWriteInt(wb, fof,
