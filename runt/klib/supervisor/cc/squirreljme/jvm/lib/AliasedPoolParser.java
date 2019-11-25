@@ -25,6 +25,10 @@ public final class AliasedPoolParser
 	/** The inherited pool data. */
 	protected final AbstractPoolParser inherited;
 	
+	/** The count of this aliased pool. */
+	private int _count =
+		-1;
+	
 	/**
 	 * Initializes the aliased pool parser.
 	 *
@@ -41,6 +45,33 @@ public final class AliasedPoolParser
 		
 		this.blob = __b;
 		this.inherited = __inh;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/11/25
+	 */
+	@Override
+	public final int count(boolean __ft)
+		throws InvalidClassFormatException
+	{
+		// If falling through use the inherited pool count
+		if (__ft)
+			return this.inherited.count();
+		
+		// Already cached the count?
+		int rv = this._count;
+		if (rv >= 0)
+			return rv;
+		
+		// {@squirreljme.error SV0w Aliased pool has a count of zero.}
+		rv = this.blob.readJavaInt(0);
+		if (rv < 0)
+			throw new InvalidClassFormatException("SV0w");
+		
+		// Cache and return
+		this._count = rv;
+		return rv;
 	}
 	
 	/**
@@ -63,7 +94,7 @@ public final class AliasedPoolParser
 		// Read size of this pool and check the bounds
 		BinaryBlob blob = this.blob;
 		int count = blob.readJavaInt(0);
-		if (__dx < 0 || __dx >= count || count < 0)
+		if (__dx < 0 || __dx >= this.count())
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Read the entry index now

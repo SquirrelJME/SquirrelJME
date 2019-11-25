@@ -163,8 +163,9 @@ public final class ClassFileParser
 		BinaryBlob blob = this.blob;
 		
 		// Is a virtually aliased pool and relies on a higher up ROM pool
-		// for this to be decoded
-		if (len < 0)
+		// for this to be decoded. Use the static pool because the run-time
+		// pool can be empty if the class has no methods
+		if (this.splitPoolSize(false) < 0)
 		{
 			// {@squirreljme.error SV0t No root pool was specified and the
 			// class pool is purely virtual.}

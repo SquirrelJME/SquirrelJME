@@ -486,11 +486,10 @@ public final class DualPoolEncoder
 			TableSectionOutputStream.VARIABLE_SIZE, 4);
 		for (BasicPoolEntry e : __src.classPool())
 		{
-			Object v = e.value;
-			if (v == null)
+			if (e.index == 0)
 				sl.writeInt(__src.classPool().size());
 			else
-				sl.writeInt(__onto.add(false, v).index);
+				sl.writeInt(__onto.add(false, e.value).index);
 		}
 		
 		// Process run-time entries
@@ -498,11 +497,10 @@ public final class DualPoolEncoder
 			TableSectionOutputStream.VARIABLE_SIZE, 4);
 		for (BasicPoolEntry e : __src.runtimePool())
 		{
-			Object v = e.value;
-			if (v == null)
-				sl.writeInt(__src.runtimePool().size());
+			if (e.index == 0)
+				rl.writeInt(__src.runtimePool().size());
 			else
-				sl.writeInt(__onto.add(true, v).index);
+				rl.writeInt(__onto.add(true, e.value).index);
 		}
 		
 		// Write the encoded pool
