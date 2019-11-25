@@ -30,7 +30,7 @@ public final class TaskClass
 	private int _infopointer;
 	
 	/** The run-time constant pool pointer. */
-	private int _pool;
+	private int _poolpointer;
 	
 	/**
 	 * Initializes the class container.
@@ -82,6 +82,84 @@ public final class TaskClass
 	}
 	
 	/**
+	 * Performs enough setup of the class info to rever to it when the
+	 * class table is not locked.
+	 *
+	 * @param __task The creating task.
+	 * @param __cl The class name being initialized.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/10/27
+	 */
+	public final TaskClass initializeClassInfoSetup(Task __task, String __cl)
+		throws NullPointerException
+	{
+		if (__task == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		todo.DEBUG.note("Loading class `%s`...", __cl);
+		
+		// We need the parser for class info so that we can initialize the
+		// classes, however every variant of the loader can use this.
+		ClassFileParser ciparser = __task.classInfoParser();
+		
+		// All branches require the info
+		int infopointer = __task.allocator.allocateObject(
+			Constants.OBJECT_BASE_SIZE + ciparser.fieldSize(false));
+		this._infopointer = infopointer;
+		
+		// This object has the class type of ClassInfo so it must always point
+		// to the ClassInfo instance of ClassInfo, however if we are loading
+		// ClassInfo then we just use our own pointer
+		Assembly.memWriteInt(infopointer, Constants.OBJECT_CLASS_OFFSET,
+			(ClassNameUtils.isClassInfo(__cl) ? infopointer :
+			__task.loadClass("cc/squirreljme/jvm/ClassInfo")._infopointer));
+		
+		// These objects should never be garbage collected because they
+		// contain important class information!
+		Assembly.memWriteInt(infopointer, Constants.OBJECT_COUNT_OFFSET,
+			9999999);
+		
+		// If these are special classes, we need to handle them unique because
+		// arrays and primitive types do not exist in any form as a class
+		if (ClassNameUtils.isArray(__cl))
+			return this.__initializeClassInfoArray(__task, __cl, ciparser);
+		else if (ClassNameUtils.isPrimitiveType(__cl))
+			return this.__initializeClassInfoPrimitive(__task, __cl, ciparser);
+		
+		// Otherwise initialize a standard class
+		return this.__initializeClassInfoClass(__task, __cl, ciparser);
+	}
+	
+	/**
+	 * Allocates the constant pool data area.
+	 *
+	 * @param __task The task owning this.
+	 * @param __cfp The class file parser for this class.
+	 * @return The pointer to the pool area.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/25
+	 */
+	private final int __allocatePool(Task __task, ClassFileParser __cfp)
+		throws NullPointerException
+	{
+		if (__task == null || __cfp == null)
+			throw new NullPointerException("NARG");
+		
+		// Was this already allocated? Do not do it again
+		int rv = this._poolpointer;
+		if (rv != 0)
+			return rv;
+		
+		// Allocate memory region
+		rv = __task.allocator.allocatePool(__cfp.splitPool(true).count());
+		this._poolpointer = rv;
+		
+		return rv;
+	}
+	
+	/**
 	 * Initializes an array class.
 	 *
 	 * @param __task The creating task.
@@ -91,8 +169,8 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/09
 	 */
-	public final TaskClass initializeClassInfoArray(Task __task, String __cl,
-		ClassFileParser __cip)
+	private final TaskClass __initializeClassInfoArray(Task __task,
+		String __cl, ClassFileParser __cip)
 		throws NullPointerException
 	{
 		if (__task == null || __cl == null || __cip == null)
@@ -115,8 +193,8 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/17
 	 */
-	public final TaskClass initializeClassInfoClass(Task __task, String __cl,
-		ClassFileParser __cip)
+	private final TaskClass __initializeClassInfoClass(Task __task,
+		String __cl, ClassFileParser __cip)
 		throws NullPointerException
 	{
 		if (__task == null || __cl == null || __cip == null)
@@ -129,6 +207,10 @@ public final class TaskClass
 		
 		// Pointer to self
 		int infopointer = this._infopointer;
+		
+		// The run-time pool is initialized later, but we need to allocate it
+		// now!
+		int poolpointer = this.__allocatePool(__task, thisparser);
 		
 		// Load super class if there is one
 		String superclassname = Objects.toString(thisparser.superClassName(),
@@ -215,7 +297,7 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/09
 	 */
-	public final TaskClass initializeClassInfoPrimitive(Task __task,
+	private final TaskClass __initializeClassInfoPrimitive(Task __task,
 		String __cl, ClassFileParser __cip)
 		throws NullPointerException
 	{
@@ -223,57 +305,6 @@ public final class TaskClass
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Performs enough setup of the class info to rever to it when the
-	 * class table is not locked.
-	 *
-	 * @param __task The creating task.
-	 * @param __cl The class name being initialized.
-	 * @return {@code this}.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/10/27
-	 */
-	public final TaskClass initializeClassInfoSetup(Task __task, String __cl)
-		throws NullPointerException
-	{
-		if (__task == null || __cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Debug
-		todo.DEBUG.note("Loading class `%s`...", __cl);
-		
-		// We need the parser for class info so that we can initialize the
-		// classes, however every variant of the loader can use this.
-		ClassFileParser ciparser = __task.classInfoParser();
-		
-		// All branches require the info
-		int infopointer = __task.allocator.allocateObject(
-			Constants.OBJECT_BASE_SIZE + ciparser.fieldSize(false));
-		this._infopointer = infopointer;
-		
-		// This object has the class type of ClassInfo so it must always point
-		// to the ClassInfo instance of ClassInfo, however if we are loading
-		// ClassInfo then we just use our own pointer
-		Assembly.memWriteInt(infopointer, Constants.OBJECT_CLASS_OFFSET,
-			(ClassNameUtils.isClassInfo(__cl) ? infopointer :
-			__task.loadClass("cc/squirreljme/jvm/ClassInfo")._infopointer));
-		
-		// These objects should never be garbage collected because they
-		// contain important class information!
-		Assembly.memWriteInt(infopointer, Constants.OBJECT_COUNT_OFFSET,
-			9999999);
-		
-		// If these are special classes, we need to handle them unique because
-		// arrays and primitive types do not exist in any form as a class
-		if (ClassNameUtils.isArray(__cl))
-			return this.initializeClassInfoArray(__task, __cl, ciparser);
-		else if (ClassNameUtils.isPrimitiveType(__cl))
-			return this.initializeClassInfoPrimitive(__task, __cl, ciparser);
-		
-		// Otherwise initialize a standard class
-		return this.initializeClassInfoClass(__task, __cl, ciparser);
 	}
 }
 

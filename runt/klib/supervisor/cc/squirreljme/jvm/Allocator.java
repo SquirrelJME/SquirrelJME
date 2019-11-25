@@ -20,6 +20,10 @@ public final class Allocator
 	public static final byte CHUNK_BIT_IS_OBJECT =
 		0x01;
 	
+	/** Constant pool. */
+	public static final byte CHUNK_BIT_IS_POOL =
+		0x02;
+	
 	/** Tag value bits mask. */
 	public static final int CHUNK_BITS_VALUE_MASK =
 		0x0F;

@@ -52,8 +52,14 @@ public final class TaskAllocator
 	{
 		// Just perform the allocation with our PID as part of the tag and
 		// whatever was passed, masked correctly
-		return Allocator.allocate(
+		int rv = Allocator.allocate(
 			this.tagbits | (__tag & Allocator.CHUNK_BITS_VALUE_MASK), __sz);
+		
+		// Ran out of memory?
+		if (rv == 0)
+			throw new TaskOutOfMemoryError();
+		
+		return rv;
 	}
 	
 	/**
@@ -66,6 +72,19 @@ public final class TaskAllocator
 	public final int allocateObject(int __sz)
 	{
 		return this.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
+	}
+	
+	/**
+	 * Allocates a region that can fit a constant pool with the given number
+	 * of entries.
+	 *
+	 * @param __n The number of entries to use.
+	 * @return The pointer to the allocation.
+	 * @since 2019/11/25
+	 */
+	public final int allocatePool(int __n)
+	{
+		return this.allocate(Allocator.CHUNK_BIT_IS_POOL, 4 * __n);
 	}
 	
 	/**
@@ -102,6 +121,10 @@ public final class TaskAllocator
 			
 			// Allocate and store this space
 			this._staticfieldptr = (rv = this.allocate(0, STATIC_FIELD_SIZE));
+			
+			// Could not allocate for this task!
+			if (rv == 0)
+				throw new TaskOutOfMemoryError();
 			
 			// And use it
 			return rv;

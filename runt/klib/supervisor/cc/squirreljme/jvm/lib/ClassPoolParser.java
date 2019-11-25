@@ -45,6 +45,23 @@ public final class ClassPoolParser
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/11/25
+	 */
+	@Override
+	public final int count(boolean __ft)
+		throws InvalidClassFormatException
+	{
+		// If the size is negative, it has never been read before
+		int rv = this._size;
+		if (rv < 0)
+			this._size = (rv = this.blob.readJavaInt(
+				ClassPoolConstants.OFFSET_OF_INT_ENTRY_OFFSET));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/11/24
 	 */
 	@Override
@@ -118,7 +135,7 @@ public final class ClassPoolParser
 	public final int entryTableOffset(int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		if (__dx < 0 || __dx >= this.size())
+		if (__dx < 0 || __dx >= this.count())
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return __dx * ClassPoolConstants.ENTRY_SIZE;
@@ -134,23 +151,6 @@ public final class ClassPoolParser
 	{
 		return this.blob.readUnsignedByte(this.entryTableOffset(__dx) +
 			ClassPoolConstants.OFFSET_OF_BYTE_ENTRY_TAG);
-	}
-	
-	/**
-	 * Returns the size of the constant pool.
-	 *
-	 * @return The pool size.
-	 * @since 2019/10/13
-	 */
-	public final int size()
-	{
-		// If the size is negative, it has never been read before
-		int rv = this._size;
-		if (rv < 0)
-			this._size = (rv = this.blob.readJavaInt(
-				ClassPoolConstants.OFFSET_OF_INT_ENTRY_OFFSET));
-		
-		return rv;
 	}
 }
 

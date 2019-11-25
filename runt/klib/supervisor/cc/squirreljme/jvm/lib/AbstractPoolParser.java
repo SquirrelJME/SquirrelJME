@@ -19,6 +19,16 @@ import cc.squirreljme.jvm.io.BinaryBlob;
 public abstract class AbstractPoolParser
 {
 	/**
+	 * Returns the number of pool entries that exist.
+	 *
+	 * @param __ft Does this fall through to the actually backed pool?
+	 * @return The pool entry count.
+	 * @since 2019/11/25
+	 */
+	public abstract int count(boolean __ft)
+		throws InvalidClassFormatException;
+	
+	/**
 	 * Returns a blob to the entry's data for parsing.
 	 *
 	 * @param __dx The index of the entry to get.
@@ -56,6 +66,18 @@ public abstract class AbstractPoolParser
 	 */
 	public abstract int entryType(int __dx, boolean __ft)
 		throws IndexOutOfBoundsException, InvalidClassFormatException;
+	
+	/**
+	 * Returns the number of pool entries that exist.
+	 *
+	 * @return The pool entry count.
+	 * @since 2019/11/25
+	 */
+	public final int count()
+		throws InvalidClassFormatException
+	{
+		return this.count(false);
+	}
 		
 	/**
 	 * Returns a blob to the entry's data for parsing.
