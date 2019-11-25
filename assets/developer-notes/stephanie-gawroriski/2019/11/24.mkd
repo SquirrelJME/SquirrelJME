@@ -1,0 +1,36 @@
+# 2019/11/24
+
+## 08:13
+
+Okay so when normal values are returned they are not elegible for
+garbage collection, however items which are tossed up to a parent
+method are it seems since it just uses the standard stack pop. So
+this may just be the issue.
+
+## 08:14
+
+But the uncounting of the throwable should not happen if the variable
+is not being used at all. So I wonder what happens if I disable
+clearing out thrown exception counts.
+
+## 08:44
+
+Actually exception handling is wrong because in `doThrow()` I do a ref
+clear which means nothing will get collected away.
+
+## 08:51
+
+Or maybe not, not sure as it has been awhile.
+
+## 10:32
+
+It may be useful to add methods to get the current class, method, and such
+via `Assembly`.
+
+## 11:08
+
+Okay so the ROM pool is this:
+
+ * `brp=Pools{st=(@40000000 len=0), rt=(@40000000 len=0)}`
+
+Which means it seems nothing is being written or the wrong spot is being used.
