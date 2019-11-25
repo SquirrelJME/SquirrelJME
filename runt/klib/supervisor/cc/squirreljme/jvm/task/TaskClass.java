@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.lib.ClassFieldsParser;
 import cc.squirreljme.jvm.lib.ClassFileParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
+import java.util.Objects;
 
 /**
  * This represents a class of a task.
@@ -130,7 +131,8 @@ public final class TaskClass
 		int infopointer = this._infopointer;
 		
 		// Load super class if there is one
-		String superclassname = thisparser.superClassName().toString();
+		String superclassname = Objects.toString(thisparser.superClassName(),
+			null);
 		TaskClass superclass = (superclassname == null ? null :
 			__task.loadClass(superclassname));
 		
@@ -164,6 +166,9 @@ public final class TaskClass
 					
 					// Super class of this class
 				case "superclass:cc/squirreljme/jvm/ClassInfo":
+					Assembly.memWriteInt(wb, fof,
+						(superclass == null ? 0 : superclass._infopointer));
+					break;
 				
 				default:
 					throw new todo.TODO(nat);
