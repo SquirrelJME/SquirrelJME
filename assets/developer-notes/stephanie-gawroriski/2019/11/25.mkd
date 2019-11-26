@@ -1,0 +1,12 @@
+# 2019/11/25
+
+## 17:03
+
+I am guessing the only way to safely handle situations where code uses classes
+that do not exist, would be to always do dynamic loading of such things.
+
+## 17:20
+
+However, I will note that with the way the pools and such are handled that it
+would introduce too much branching logic into the code to check to see if
+the invocation pointers are even valid.
