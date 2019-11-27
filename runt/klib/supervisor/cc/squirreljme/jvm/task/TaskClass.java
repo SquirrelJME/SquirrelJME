@@ -32,6 +32,12 @@ public final class TaskClass
 	/** The run-time constant pool pointer. */
 	private int _poolpointer;
 	
+	/** Method VTables for this class. */
+	private int _vtablemethodpointer;
+	
+	/** Pool VTables for this class. */
+	private int _vtablepoolpointer;
+	
 	/**
 	 * Initializes the class container.
 	 *
@@ -229,7 +235,7 @@ public final class TaskClass
 			
 			// Determine where we write the data to!
 			int wb = infopointer + Constants.OBJECT_BASE_SIZE;
-			
+			vtablepool:[I
 			// Debug
 			todo.DEBUG.note("fl=%sh of=%d sz=%d",
 				Integer.toString(ffl, 16), fof, fsz);
