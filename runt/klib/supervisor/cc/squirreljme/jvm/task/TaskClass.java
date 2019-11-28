@@ -166,6 +166,26 @@ public final class TaskClass
 	}
 	
 	/**
+	 * Builds the VTable for this class.
+	 *
+	 * @param __task The owning task.
+	 * @param __cfp The class file parser for this class.
+	 * @param __rvpool Should the pool be returned?
+	 * @return The method or pool vtable array depending on {@code __rvpool}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/28
+	 */
+	private final int __buildVTable(Task __task, ClassFileParser __cfp,
+		boolean __rvpool)
+		throws NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Initializes an array class.
 	 *
 	 * @param __task The creating task.
@@ -235,7 +255,7 @@ public final class TaskClass
 			
 			// Determine where we write the data to!
 			int wb = infopointer + Constants.OBJECT_BASE_SIZE;
-			vtablepool:[I
+			
 			// Debug
 			todo.DEBUG.note("fl=%sh of=%d sz=%d",
 				Integer.toString(ffl, 16), fof, fsz);
@@ -262,6 +282,18 @@ public final class TaskClass
 				case "superclass:cc/squirreljme/jvm/ClassInfo":
 					Assembly.memWriteInt(wb, fof,
 						(superclass == null ? 0 : superclass._infopointer));
+					break;
+				
+					// VTable for pools
+				case "vtablepool:[I":
+					Assembly.memWriteInt(wb, fof,
+						this.__buildVTable(__task, thisparser, true));
+					break;
+					
+					// VTable for methods
+				case "vtablevirtual:[I":
+					Assembly.memWriteInt(wb, fof,
+						this.__buildVTable(__task, thisparser, false));
 					break;
 				
 				default:
