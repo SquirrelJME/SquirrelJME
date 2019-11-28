@@ -36,3 +36,22 @@ SquirrelJME will try to look in the following locations:
  * A directory called `lib` at the same path in the JAR file.
  * A directory called `lib` in the current working directory.
 
+## Advanced Configuration
+
+If desired, the virtual machine can be configured via system properties:
+
+ * `cc.squirreljme.vm.shadeactiveclass`
+   * The class to load resources from when accessing resources, this is for
+     virtual machines (such as Java ME) or certain `ClassLoader` setups can
+     only perform `Class.resourceAsStream()` within the same JAR.
+ * `cc.squirreljme.vm.shadeprefix`
+   * The prefix to append to all access of resources when looking for classes
+     and JAR resources.
+ * `cc.squirreljme.vm.shadeclasspath`
+   * The initialize class path to use for the initial boot program.
+ * `cc.squirreljme.vm.shademain`
+   * The main class of the starting program.
+ * `cc.squirreljme.vm.shadebootid`
+   * The main class or index of the MIDlet to enter.
+ * `cc.squirreljme.vm.name`
+   * The virtual machine to select, may be `springcoat` or `summercoat`.
