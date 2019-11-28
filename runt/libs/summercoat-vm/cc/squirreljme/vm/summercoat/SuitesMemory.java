@@ -93,6 +93,10 @@ public final class SuitesMemory
 			// Need the suite name for later lookup on init
 			String libname = libnames[i];
 			
+			// Normalize and add JAR
+			if (!libname.endsWith(".jar"))
+				libname = libname + ".jar";
+			
 			// Map suite
 			SuiteMemory sm;
 			suitemem[i] = (sm = new SuiteMemory(off, __sm, libname));
