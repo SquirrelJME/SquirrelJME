@@ -192,7 +192,7 @@ public final class SuiteMemory
 		
 		// Load the class library
 		String libname = this.libname;
-		VMClassLibrary clib = this.suites.loadLibrary(libname);
+		VMClassLibrary clib = this.__loadLibrary(libname);
 		
 		// Debug
 		todo.DEBUG.note("Initialize suite %s @%08d", libname, this.offset);
@@ -214,6 +214,46 @@ public final class SuiteMemory
 		this._jarheader = MinimizedJarHeader.decode(
 			new ReadableMemoryInputStream(rm, 0,
 				MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC));
+	}
+	
+	/**
+	 * Attempts to load the given library.
+	 *
+	 * @param __libname The library to load.
+	 * @return The loaded library.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If it was not found.
+	 * @since 2019/11/28
+	 */
+	private final VMClassLibrary __loadLibrary(String __libname)
+		throws NullPointerException, VMException
+	{
+		if (__libname == null)
+			throw new NullPointerException("NARG");
+			
+		VMSuiteManager suites = this.suites;
+		
+		// Try as it is requested
+		VMClassLibrary rv = suites.loadLibrary(__libname);
+		if (rv != null)
+			return rv;
+		
+		// Try with an extension added
+		rv = suites.loadLibrary(__libname + ".jar");
+		if (rv != null)
+			return rv;
+		
+		// Try to remove the JAR extension
+		if (__libname.endsWith(".jar"))
+		{
+			rv = suites.loadLibrary(__libname.substring(0,
+				__libname.length() - 4));
+			if (rv != null)
+				return rv;
+		}
+		
+		// {@squirreljme.error AE0p Could not find library. (The library)}
+		throw new VMException("AE0p " + __libname);
 	}
 }
 
