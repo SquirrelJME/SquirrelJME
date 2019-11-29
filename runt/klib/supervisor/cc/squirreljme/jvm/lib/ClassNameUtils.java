@@ -115,6 +115,23 @@ public final class ClassNameUtils
 	}
 	
 	/**
+	 * Checks whether the specified class is object.
+	 *
+	 * @param __cl The class name to check.
+	 * @return If this is the object class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/11/29
+	 */
+	public static final boolean isObject(String __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return "java/lang/Object".equals(__cl);
+	}
+	
+	/**
 	 * Checks whether the given class name is a primitive type.
 	 *
 	 * @param __cl The class name to check.

@@ -182,6 +182,12 @@ public final class TaskClass
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
+		// Pre-cached?
+		int vtmp = this._vtablemethodpointer,
+			vtpp = this._vtablepoolpointer;
+		if (vtmp > 0 && vtpp > 0)
+			return (__rvpool ? vtpp : vtmp);
+		
 		throw new todo.TODO();
 	}
 	
@@ -207,6 +213,22 @@ public final class TaskClass
 			ClassNameUtils.componentType(__cl));
 		
 		throw new todo.TODO();
+		
+		/*
+		// If this is an array or primitive type, just use the vtables for
+		// the Object class because these are purely virtual!
+		if (ClassNameUtils.isArray(__cl) || ClassNameUtils.isPrimitive(__cl))
+		{
+			// Load object class
+			TaskClass tc = __task.loadClass("java/lang/Object");
+			
+			// Just use these directly
+			this._vtablepoolpointer = (vtmp = tc._vtablepoolpointer);
+			this._vtablemethodpointer = (vtpp = tc._vtablemethodpointer);
+			
+			// Return whatever was requested
+			return (__rvpool ? vtpp : vtmp);
+		}*/
 	}
 	
 	/**
