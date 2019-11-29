@@ -134,6 +134,63 @@ public final class ClassFileParser
 	}
 	
 	/**
+	 * Returns the number of methods in the class.
+	 *
+	 * @param __is Get the static method count.
+	 * @return The number of methods in the class.
+	 * @since 2019/11/29
+	 */
+	public final int methodCount(boolean __is)
+	{
+		return this.blob.readJavaUnsignedShort(
+			(__is ? ClassFileConstants.OFFSET_OF_USHORT_SMCOUNT :
+			ClassFileConstants.OFFSET_OF_USHORT_IMCOUNT));
+	}
+	
+	/**
+	 * Returns the method data offset.
+	 *
+	 * @param __is Get the static method data offset.
+	 * @return The method data offset.
+	 * @since 2019/11/29
+	 */
+	public final int methodDataOffset(boolean __is)
+	{
+		return this.blob.readJavaInt(
+			(__is ? ClassFileConstants.OFFSET_OF_INT_SMOFF :
+			ClassFileConstants.OFFSET_OF_INT_IMOFF));
+	}
+	
+	/**
+	 * Returns the method data size.
+	 *
+	 * @param __is Get the static method data size.
+	 * @return The method data size.
+	 * @since 2019/11/29
+	 */
+	public final int methodDataSize(boolean __is)
+	{
+		return this.blob.readJavaInt(
+			(__is ? ClassFileConstants.OFFSET_OF_INT_SMSIZE :
+			ClassFileConstants.OFFSET_OF_INT_IMSIZE));
+	}
+	
+	/**
+	 * Returns a parser for class methods.
+	 *
+	 * @param __is Get static methods?
+	 * @return The parser for methods.
+	 * @since 2019/11/29
+	 */
+	public final ClassMethodsParser methods(boolean __is)
+	{
+		BinaryBlob blob = this.blob;
+		return new ClassMethodsParser(this.pool(),
+			this.blob.subSection(this.methodDataOffset(__is),
+				this.methodDataSize(__is)), this.methodCount(__is));
+	}
+	
+	/**
 	 * Returns a dual pool parser for this class.
 	 *
 	 * @return The dual pool parser.

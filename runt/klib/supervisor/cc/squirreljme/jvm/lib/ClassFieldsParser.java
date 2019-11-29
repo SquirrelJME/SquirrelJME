@@ -60,7 +60,7 @@ public final class ClassFieldsParser
 	protected final int count;
 	
 	/**
-	 * Initializes the class file parser.
+	 * Initializes the class fields parser.
 	 *
 	 * @param __cp The dual pool parser.
 	 * @param __b The binary blob.
