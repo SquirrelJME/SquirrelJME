@@ -31,6 +31,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -430,12 +431,18 @@ public class Shader
 			// Will be copying every single entry to the output
 			try (ZipBlockReader zbr = bin.zipBlock())
 			{
+				// List of resources that are available
+				List<String> jarresources = new LinkedList<>();
+				
 				// Copy every single entry to the output
 				for (ZipBlockEntry e : zbr)
 				{
 					// Ignore directories
 					if (e.isDirectory())
 						continue;
+					
+					// Add to resource list
+					jarresources.add(e.name());
 					
 					// Copy the data
 					try (InputStream is = e.open();
@@ -451,6 +458,18 @@ public class Shader
 							os.write(buf, 0, rc);
 						}
 					}
+				}
+				
+				// Write resource list into the JAR
+				try (PrintStream os = new PrintStream(__zsw.nextEntry(base +
+					"META-INF/squirreljme/resources.list"), true, "utf-8"))
+				{
+					// Write to stream
+					for (String rcn : jarresources)
+						os.println(rcn);
+					
+					// Make sure it is there!
+					os.flush();
 				}
 			}
 		}
