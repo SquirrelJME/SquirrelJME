@@ -1,0 +1,5 @@
+# 2019/11/28
+
+## 19:31
+
+Got SummerCoat running in the shaded JAR, which is cool.
