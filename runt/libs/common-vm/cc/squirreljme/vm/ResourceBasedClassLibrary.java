@@ -10,8 +10,14 @@
 
 package cc.squirreljme.vm;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This is a class library resource which is based on class resources.
@@ -29,6 +35,9 @@ public final class ResourceBasedClassLibrary
 	
 	/** The name of this library. */
 	protected final String name;
+	
+	/** Resources in this class. */
+	private String[] _resources;
 	
 	/**
 	 * Initializes the resource based class library.
@@ -58,7 +67,38 @@ public final class ResourceBasedClassLibrary
 	@Override
 	public final String[] listResources()
 	{
-		throw new todo.TODO();
+		// Pre-cached?
+		String[] rv = this._resources;
+		if (rv != null)
+			return rv.clone();
+		
+		// Load in the resource list
+		List<String> list = new LinkedList<>();
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(
+			this.resourceAsStream("META-INF/squirreljme/resources.list"),
+			"utf-8")))
+		{
+			String ln;
+			while ((ln = br.readLine()) != null)
+			{
+				// Blank lines are not resources
+				if (ln.isEmpty())
+					continue;
+				
+				// Add otherwise
+				list.add(ln);
+			}
+		}
+		
+		// {@squirreljme.error AK09 Could not load resource list.}
+		catch (IOException e)
+		{
+			throw new VMException("AK09");
+		}
+		
+		// Cache it and return
+		this._resources = (rv = list.<String>toArray(new String[list.size()]));
+		return rv.clone();
 	}
 	
 	/**
