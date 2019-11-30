@@ -277,12 +277,6 @@ public class ArrayList<E>
 		return this._size;
 	}
 	
-	@Override
-	public List<E> subList(int __a, int __b)
-	{
-		throw new todo.TODO();
-	}
-	
 	public void trimToSize()
 	{
 		throw new todo.TODO();
