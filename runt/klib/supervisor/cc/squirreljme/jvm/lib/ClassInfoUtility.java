@@ -89,52 +89,52 @@ public final class ClassInfoUtility
 			switch (nat)
 			{
 				// Self pointer.
-				case "selfptr:I":
+				case "selfptr:int":
 					pdx = ClassInfoProperty.INT_SELFPTR;
 					break;
 
 				// Magic number used to detect corruption.
-				case "magic:I":
+				case "magic:int":
 					pdx = ClassInfoProperty.INT_MAGIC;
 					break;
 
 				// Class information flags.
-				case "flags:I":
+				case "flags:int":
 					pdx = ClassInfoProperty.INT_FLAGS;
 					break;
 
 				// The pointer to the minimized class file.
-				case "miniptr:I":
+				case "miniptr:int":
 					pdx = ClassInfoProperty.INT_MINIPTR;
 					break;
 
 				// The pointer to the class name.
-				case "namep:I":
+				case "namep:int":
 					pdx = ClassInfoProperty.INT_NAMEP;
 					break;
 
 				// The allocation size of this class.
-				case "size:I":
+				case "size:int":
 					pdx = ClassInfoProperty.INT_SIZE;
 					break;
 
 				// The base offset for fields in this class.
-				case "base:I":
+				case "base:int":
 					pdx = ClassInfoProperty.INT_BASE;
 					break;
 
 				// The number of objects in the instance fields, for GC.
-				case "numobjects:I":
+				case "numobjects:int":
 					pdx = ClassInfoProperty.INT_NUMOBJECTS;
 					break;
 
 				// The dimensions this class uses, if it is an array.
-				case "dimensions:I":
+				case "dimensions:int":
 					pdx = ClassInfoProperty.INT_DIMENSIONS;
 					break;
 
 				// The cell size of components if this is an array.
-				case "cellsize:I":
+				case "cellsize:int":
 					pdx = ClassInfoProperty.INT_CELLSIZE;
 					break;
 
@@ -169,7 +169,7 @@ public final class ClassInfoUtility
 					break;
 
 				// The pointer to the constant pool of this class.
-				case "pool:I":
+				case "pool:int":
 					pdx = ClassInfoProperty.INT_POOL;
 					break;
 				
