@@ -22,15 +22,25 @@ public final class ClassInfoUtility
 	/** The allocation size. */
 	protected final int allocationsize;
 	
+	/** Class info properties. */
+	protected final int[] properties;
+	
 	/**
 	 * Initializes the class info utility.
 	 *
-	 * @param __as The allocation size
+	 * @param __as The allocation size.
+	 * @param __props Class info properties.
 	 * @since 2019/11/30
 	 */
-	public ClassInfoUtility(int __as)
+	public ClassInfoUtility(int __as, int[] __props)
 	{
 		this.allocationsize = __as;
+		
+		int[] properties = new int[ClassInfoProperty.NUM_PROPERTIES];
+		for (int i = 0, lim = Math.min(__props.length,
+			ClassInfoProperty.NUM_PROPERTIES); i < lim; i++)
+			properties[i] = __props[i];
+		this.properties = properties;
 	}
 	
 	/**
@@ -61,8 +71,118 @@ public final class ClassInfoUtility
 		// Allocation size
 		int as = Constants.OBJECT_BASE_SIZE + __cfp.fieldSize(false);
 		
+		// Properties
+		int[] props = new int[ClassInfoProperty.NUM_PROPERTIES];
+		
+		// Extract properties from fields
+		ClassFieldsParser cifs = __cfp.fields(false);
+		for (int cif = 0, cifn = cifs.count(); cif < cifn; cif++)
+		{
+			// Determine actual offset of this property
+			int offset = Constants.OBJECT_BASE_SIZE + cifs.offset(cif);
+			
+			// The property index
+			int pdx;
+			
+			// Depends on the field name and type
+			String nat = cifs.name(cif) + ":" + cifs.type(cif);
+			switch (nat)
+			{
+				// Self pointer.
+				case "selfptr:I":
+					pdx = ClassInfoProperty.INT_SELFPTR;
+					break;
+
+				// Magic number used to detect corruption.
+				case "magic:I":
+					pdx = ClassInfoProperty.INT_MAGIC;
+					break;
+
+				// Class information flags.
+				case "flags:I":
+					pdx = ClassInfoProperty.INT_FLAGS;
+					break;
+
+				// The pointer to the minimized class file.
+				case "miniptr:I":
+					pdx = ClassInfoProperty.INT_MINIPTR;
+					break;
+
+				// The pointer to the class name.
+				case "namep:I":
+					pdx = ClassInfoProperty.INT_NAMEP;
+					break;
+
+				// The allocation size of this class.
+				case "size:I":
+					pdx = ClassInfoProperty.INT_SIZE;
+					break;
+
+				// The base offset for fields in this class.
+				case "base:I":
+					pdx = ClassInfoProperty.INT_BASE;
+					break;
+
+				// The number of objects in the instance fields, for GC.
+				case "numobjects:I":
+					pdx = ClassInfoProperty.INT_NUMOBJECTS;
+					break;
+
+				// The dimensions this class uses, if it is an array.
+				case "dimensions:I":
+					pdx = ClassInfoProperty.INT_DIMENSIONS;
+					break;
+
+				// The cell size of components if this is an array.
+				case "cellsize:I":
+					pdx = ClassInfoProperty.INT_CELLSIZE;
+					break;
+
+				// The super class data.
+				case "superclass:cc/squirreljme/jvm/ClassInfo":
+					pdx = ClassInfoProperty.CLASSINFO_SUPERCLASS;
+					break;
+
+				// Interfaces.
+				case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
+					pdx = ClassInfoProperty.CLASSINFO_ARRAY_INTERFACECLASSES;
+					break;
+
+				// The component class.
+				case "componentclass:cc/squirreljme/jvm/ClassInfo":
+					pdx = ClassInfoProperty.CLASSINFO_COMPONENTCLASS;
+					break;
+
+				// Pointer to the class object.
+				case "classobjptr:java/lang/Class":
+					pdx = ClassInfoProperty.CLASS_CLASSOBJPTR;
+					break;
+
+				// Virtual invoke VTable.
+				case "vtablevirtual:[I":
+					pdx = ClassInfoProperty.INT_ARRAY_VTABLEVIRTUAL;
+					break;
+
+				// Virtual invoke VTable pool entries.
+				case "vtablepool:[I":
+					pdx = ClassInfoProperty.INT_ARRAY_VTABLEPOOL;
+					break;
+
+				// The pointer to the constant pool of this class.
+				case "pool:I":
+					pdx = ClassInfoProperty.INT_POOL;
+					break;
+				
+				default:
+					throw new todo.TODO(nat);
+			}
+			
+			// Store
+			props[pdx] = offset;
+		}
+		
 		// Initialize now
-		return new ClassInfoUtility(as);
+		return new ClassInfoUtility(as, props);
 	}
 }
 

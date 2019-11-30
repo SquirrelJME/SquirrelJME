@@ -273,9 +273,6 @@ public final class TaskClass
 		TaskClass superclass = (superclassname == null ? null :
 			__task.loadClass(superclassname));
 		
-		
-		throw new todo.TODO();
-		
 		/*
 		// Process every field that is defined within the information structure
 		ClassFieldsParser cifs = __cip.fields(false);
@@ -332,9 +329,9 @@ public final class TaskClass
 				default:
 					throw new todo.TODO(nat);
 			}
-		}
+		}*/
 		
-		throw new todo.TODO();*/
+		throw new todo.TODO();
 		
 		/*
 		// {@squirreljme.error SV0l Task does not have ClassInfo in its
