@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.lib;
 
+import cc.squirreljme.jvm.Constants;
+
 /**
  * This is a utility which allows access to the various fields within
  * {@link cc.squirreljme.jvm.ClassInfo}.
@@ -17,6 +19,20 @@ package cc.squirreljme.jvm.lib;
  */
 public final class ClassInfoUtility
 {
+	/** The allocation size. */
+	protected final int allocationsize;
+	
+	/**
+	 * Initializes the class info utility.
+	 *
+	 * @param __as The allocation size
+	 * @since 2019/11/30
+	 */
+	public ClassInfoUtility(int __as)
+	{
+		this.allocationsize = __as;
+	}
+	
 	/**
 	 * Returns the allocation size of instances of this class.
 	 *
@@ -25,8 +41,7 @@ public final class ClassInfoUtility
 	 */
 	public final int allocationSize()
 	{
-		throw new todo.TODO();
-		/*Constants.OBJECT_BASE_SIZE + ciparser.fieldSize(false)*/
+		return this.allocationsize;
 	}
 	
 	/**
@@ -43,7 +58,11 @@ public final class ClassInfoUtility
 		if (__cfp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Allocation size
+		int as = Constants.OBJECT_BASE_SIZE + __cfp.fieldSize(false);
+		
+		// Initialize now
+		return new ClassInfoUtility(as);
 	}
 }
 
