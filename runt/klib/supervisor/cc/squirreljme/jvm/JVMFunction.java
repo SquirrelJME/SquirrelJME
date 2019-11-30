@@ -102,6 +102,21 @@ public final class JVMFunction
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
 			Assembly.breakpoint();
 		
+		// Report this code!
+		int nref = Assembly.memReadInt(__p, Constants.OBJECT_COUNT_OFFSET);
+		if (nref < 0)
+		{
+			// Report to the console this happened
+			todo.DEBUG.code('G', 'C', __p);
+			todo.DEBUG.code('G', '#', nref);
+			
+			// Break here, since this is not good
+			Assembly.breakpoint();
+			
+			// Stop here
+			return;
+		}
+		
 		// Attempt to garbage collect object with no class or is invalid
 		int pcl = Assembly.memReadInt(__p, Constants.OBJECT_CLASS_OFFSET);
 		if (pcl == 0 || pcl == Constants.BAD_MAGIC)
