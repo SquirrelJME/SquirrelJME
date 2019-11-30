@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.lib.ClassFieldsParser;
 import cc.squirreljme.jvm.lib.ClassFileParser;
+import cc.squirreljme.jvm.lib.ClassMethodsParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
 import java.util.Objects;
 
