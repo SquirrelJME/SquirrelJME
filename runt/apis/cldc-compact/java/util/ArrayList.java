@@ -231,6 +231,9 @@ public class ArrayList<E>
 		// Set new size
 		this._size = size - 1;
 		
+		// Structurally modified
+		this.modCount++;
+		
 		// And the old element
 		return rv;
 	}
