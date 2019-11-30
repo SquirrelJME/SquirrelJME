@@ -330,16 +330,7 @@ public abstract class AbstractList<E>
 	public List<E> subList(int __from, int __to)
 		throws IllegalArgumentException, IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ3r End point is before starting point.}
-		if (__from > __to)
-			throw new IllegalArgumentException("ZZ3r");
-		
-		// Check bounds
-		int size = this.size();
-		if (__from < 0 || __to > size)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		throw new todo.TODO();
+		return new __AbstractListSubList__(this, __from, __to);
 	}
 }
 
