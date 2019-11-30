@@ -29,6 +29,9 @@ public enum InvokeType
 	/** Interface. */
 	INTERFACE,
 	
+	/** System invocation type. */
+	SYSTEM,
+	
 	/** End. */
 	;
 	
@@ -40,7 +43,7 @@ public enum InvokeType
 	 */
 	public final boolean hasInstance()
 	{
-		return this != STATIC;
+		return !this.isStatic();
 	}
 	
 	/**
@@ -51,7 +54,7 @@ public enum InvokeType
 	 */
 	public final boolean isStatic()
 	{
-		return this == STATIC;
+		return this == STATIC || this == SYSTEM;
 	}
 	
 	/**
@@ -71,6 +74,7 @@ public enum InvokeType
 			case 1: return SPECIAL;
 			case 2: return VIRTUAL;
 			case 3: return INTERFACE;
+			case 4: return SYSTEM;
 		}
 		
 		// {@squirreljme.error JC16 Unknown invocation type. (The index)}
