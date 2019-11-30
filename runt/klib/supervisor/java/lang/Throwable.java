@@ -43,15 +43,7 @@ public class Throwable
 	 */
 	public Throwable()
 	{
-		// Hit a breakpoint if this is OOM
-		if (this instanceof OutOfMemoryError)
-			Assembly.breakpoint();
-		
-		this._message = null;
-		this._cause = null;
-		
-		// Get the trace
-		this._rawtrace = Throwable.__trace();
+		this(null, null);
 	}
 	
 	/**
@@ -62,15 +54,7 @@ public class Throwable
 	 */
 	public Throwable(String __m)
 	{
-		// Hit a breakpoint if this is OOM
-		if (this instanceof OutOfMemoryError)
-			Assembly.breakpoint();
-		
-		this._message = __m;
-		this._cause = null;
-		
-		// Get the trace
-		this._rawtrace = Throwable.__trace();
+		this(__m, null);
 	}
 	
 	/**
@@ -91,6 +75,9 @@ public class Throwable
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
+		
+		// Print this trace
+		this.printStackTrace();
 	}
 	
 	/**
@@ -101,15 +88,7 @@ public class Throwable
 	 */
 	public Throwable(Throwable __t)
 	{
-		// Hit a breakpoint if this is OOM
-		if (this instanceof OutOfMemoryError)
-			Assembly.breakpoint();
-		
-		this._message = null;
-		this._cause = __t;
-		
-		// Get the trace
-		this._rawtrace = Throwable.__trace();
+		this(null, __t);
 	}
 	
 	/**
