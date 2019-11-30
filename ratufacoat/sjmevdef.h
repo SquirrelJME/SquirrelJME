@@ -166,6 +166,9 @@ struct sjme_jvm
 	
 	/** System call pool pointer. */
 	sjme_vmemptr syscallpool;
+	
+	/** Is debugging enabled? */
+	sjme_jint enabledebug;
 };
 
 /****************************************************************************/

@@ -569,19 +569,6 @@ public final class NativeCPU
 						
 						// Store the value after the decrement
 						lr[args[0]] = newval;
-						
-						// {@squirreljme.error AE05 Atomic decremented to
-						// negative value! (The address and offset; The
-						// old value; The new value)}
-						if (newval < 0)
-							throw new VMException(String.format(
-								"AE05 %08x+%d %d %d", addr, off, newval + 1,
-								newval));
-						
-						// Debug
-						/*if (ENABLE_DEBUG)
-							todo.DEBUG.note("%08x(%d) -= %d - 1 = %d",
-								addr, off, newval + 1, newval);*/
 					}
 					break;
 					

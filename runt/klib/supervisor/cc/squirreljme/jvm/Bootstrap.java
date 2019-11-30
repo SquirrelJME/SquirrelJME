@@ -105,6 +105,9 @@ public final class Bootstrap
 		// It crashes
 		catch (Throwable t)
 		{
+			// Put code in saying this happened
+			todo.DEBUG.code('X', 'X');
+			
 			// Print the trace
 			try
 			{

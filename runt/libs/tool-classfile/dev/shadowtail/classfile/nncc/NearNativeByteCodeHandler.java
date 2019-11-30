@@ -3211,7 +3211,7 @@ public final class NearNativeByteCodeHandler
 			volnowcount, __r, Constants.OBJECT_COUNT_OFFSET);
 		
 		// If the count is still positive, we do not GC
-		codebuilder.addIfNonZero(volnowcount, ncj);
+		codebuilder.addIfPositive(volnowcount, ncj);
 		
 		// Call garbage collect on object via helper
 		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,

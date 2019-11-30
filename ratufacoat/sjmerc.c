@@ -1307,12 +1307,17 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				}
 				break;
 				
-				/* Breakpoint. */
+				/* Breakpoint, only if debugging enabled. */
 			case SJME_OP_BREAKPOINT:
-				sjme_seterror(error, SJME_ERROR_CPUBREAKPOINT,
-					jvm->totalinstructions);
+				if (jvm->enabledebug != 0)
+				{
+					sjme_seterror(error, SJME_ERROR_CPUBREAKPOINT,
+						jvm->totalinstructions);
+					
+					return cycles;
+				}
 				
-				return cycles;
+				break;
 			
 				/* Copy value. */
 			case SJME_OP_COPY:
