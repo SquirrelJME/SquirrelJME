@@ -3217,6 +3217,9 @@ public final class NearNativeByteCodeHandler
 		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 			"jvmGarbageCollectObject", "(I)V", __r);
 		
+		// Reset the variable to zero to prevent it from being used again
+		codebuilder.addCopy(NativeCode.ZERO_REGISTER, __r);
+		
 		// No uncount or not GCed are jumped here
 		codebuilder.label(ncj);
 		
