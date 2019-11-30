@@ -43,14 +43,15 @@ public class Throwable
 	 */
 	public Throwable()
 	{
+		// Hit a breakpoint if this is OOM
+		if (this instanceof OutOfMemoryError)
+			Assembly.breakpoint();
+		
 		this._message = null;
 		this._cause = null;
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
-		
-		// Possible debug stuff
-		this.__debug();
 	}
 	
 	/**
@@ -61,14 +62,15 @@ public class Throwable
 	 */
 	public Throwable(String __m)
 	{
+		// Hit a breakpoint if this is OOM
+		if (this instanceof OutOfMemoryError)
+			Assembly.breakpoint();
+		
 		this._message = __m;
 		this._cause = null;
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
-		
-		// Possible debug stuff
-		this.__debug();
 	}
 	
 	/**
@@ -80,14 +82,15 @@ public class Throwable
 	 */
 	public Throwable(String __m, Throwable __t)
 	{
-		this._message = __m + "hiya";
+		// Hit a breakpoint if this is OOM
+		if (this instanceof OutOfMemoryError)
+			Assembly.breakpoint();
+		
+		this._message = __m;
 		this._cause = __t;
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
-		
-		// Possible debug stuff
-		this.__debug();
 	}
 	
 	/**
@@ -98,14 +101,15 @@ public class Throwable
 	 */
 	public Throwable(Throwable __t)
 	{
+		// Hit a breakpoint if this is OOM
+		if (this instanceof OutOfMemoryError)
+			Assembly.breakpoint();
+		
 		this._message = null;
 		this._cause = __t;
 		
 		// Get the trace
 		this._rawtrace = Throwable.__trace();
-		
-		// Possible debug stuff
-		this.__debug();
 	}
 	
 	/**
@@ -297,16 +301,6 @@ public class Throwable
 	public String toString()
 	{
 		return this._message;
-	}
-	
-	/**
-	 * Prints some debug message.
-	 *
-	 * @since 2019/11/20
-	 */
-	private final void __debug()
-	{
-		todo.DEBUG.note("Tossed: %s", this._message);
 	}
 	
 	/**
