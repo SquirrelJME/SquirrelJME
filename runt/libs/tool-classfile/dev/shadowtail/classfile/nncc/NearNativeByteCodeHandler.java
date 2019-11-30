@@ -228,7 +228,7 @@ public final class NearNativeByteCodeHandler
 		if (__dt.isWide())
 		{
 			// Read memory
-			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmMemReadLong", "(II)J",
 				__in.register, volaip);
 			
@@ -421,11 +421,11 @@ public final class NearNativeByteCodeHandler
 			
 			// Invoke converter method (which might be wide)
 			if (__as.isWide())
-				this.__invokeStatic(InvokeType.STATIC, smc,
+				this.__invokeStatic(InvokeType.SYSTEM, smc,
 					"to" + __bs.boxedType(), "(II)" + __bs.signature(),
 					__a.register, __a.register + 1);
 			else
-				this.__invokeStatic(InvokeType.STATIC, smc,
+				this.__invokeStatic(InvokeType.SYSTEM, smc,
 					"to" + __bs.boxedType(), "(I)" + __bs.signature(),
 					__a.register);
 			
@@ -512,7 +512,7 @@ public final class NearNativeByteCodeHandler
 		if (dt.isWide())
 		{
 			// Read memory
-			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmMemReadLong", "(II)J",
 				ireg, tempreg);
 			
@@ -599,7 +599,7 @@ public final class NearNativeByteCodeHandler
 		if (dt.isWide())
 		{
 			// Write memory
-			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmMemWriteLong", "(IIII)V",
 				ireg, volfioff, __v.register, __v.register + 1);
 		}
@@ -667,7 +667,7 @@ public final class NearNativeByteCodeHandler
 			new ClassInfoPointer(__cl), volwantcldx);
 		
 		// Invoke helper method
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 			"jvmIsInstance", "(II)I", __v.register, volwantcldx);
 		
 		// Use result
@@ -764,7 +764,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Use helper method to find the method pointer to invoke
 				// for this interface
-				this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 					"jvmInterfacePointer", "(III)I",
 					ireg, voliclass, volimethdx);
 				
@@ -927,7 +927,7 @@ public final class NearNativeByteCodeHandler
 			}
 			
 			// Perform the call
-			this.__invokeStatic(InvokeType.STATIC, smc.toString(),
+			this.__invokeStatic(InvokeType.SYSTEM, smc.toString(),
 				func, type, args);
 			
 			// Read out return value
@@ -1068,7 +1068,7 @@ public final class NearNativeByteCodeHandler
 			rl.add(__dims[i].register);
 		
 		// Invoke array utility
-		this.__invokeStatic(InvokeType.STATIC,
+		this.__invokeStatic(InvokeType.SYSTEM,
 			"cc/squirreljme/runtime/cldc/lang/ArrayUtils", "multiANewArray",
 			"(Ljava/lang/Class;I" + sb + ")Ljava/lang/Object;",
 			new RegisterList(rl));
@@ -1133,7 +1133,7 @@ public final class NearNativeByteCodeHandler
 			new ClassInfoPointer(__at), volclassdx);
 		
 		// Call internal handler, place into temporary for OOM check
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmNewArray",
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS, "jvmNewArray",
 			"(II)I", volclassdx, __len.register);
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, volresult);
 		
@@ -1174,7 +1174,7 @@ public final class NearNativeByteCodeHandler
 				new NotedString((String)__v), volstrptr);
 			
 			// Call internal string loader
-			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmLoadString", "(I)Ljava/lang/String;", volstrptr);
 			
 			// Cleanup
@@ -1301,7 +1301,7 @@ public final class NearNativeByteCodeHandler
 		if (dt.isWide())
 		{
 			// Read memory
-			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmMemReadLong", "(II)J",
 				NativeCode.STATIC_FIELD_REGISTER, volsfo);
 			
@@ -1378,7 +1378,7 @@ public final class NearNativeByteCodeHandler
 		if (dt.isWide())
 		{
 			// Write memory
-			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmMemWriteLong", "(IIII)V",
 				NativeCode.STATIC_FIELD_REGISTER, volsfo,
 				__v.register, __v.register + 1);
@@ -1655,7 +1655,7 @@ public final class NearNativeByteCodeHandler
 					new ClassInfoPointer(eh.type()), volehclassdx);
 				
 				// Call instance handler check
-				this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+				this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 					"jvmIsInstance", "(II)I",
 					NativeCode.EXCEPTION_REGISTER, volehclassdx);
 				
@@ -1757,7 +1757,7 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
 		// Call helper class
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 			"jvmCanArrayStore", "(II)I", __ir, __vr);
 		
 		// Was it invalid?
@@ -1789,7 +1789,7 @@ public final class NearNativeByteCodeHandler
 			new ClassInfoPointer(__cl), volwantcldx);
 		
 		// Call helper class
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 			"jvmIsInstance", "(II)I", __ir, volwantcldx);
 		
 		// If the resulting method call returns zero then it is not an instance
@@ -1825,7 +1825,7 @@ public final class NearNativeByteCodeHandler
 	private final void __basicCheckIsArray(int __ir)
 	{
 		// Call internal helper
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmIsArray",
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS, "jvmIsArray",
 			"(I)I", __ir);
 		
 		// If this is not an array, throw a class cast exception
@@ -2612,7 +2612,7 @@ public final class NearNativeByteCodeHandler
 			new ClassInfoPointer(__cl), volwantcl);
 		
 		// Call allocator, copy to result
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS, "jvmNew",
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS, "jvmNew",
 			"(I)I", volwantcl);
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out);
 		
@@ -2704,22 +2704,49 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatile
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volsmp = volatiles.get();
+		int volsmp = volatiles.get(),
+			volexe = volatiles.get();
 		
 		// Load address of the target method
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(__it, new MethodHandle(__cl, __mn, __mt)),
-			volsmp);
+			new InvokedMethod((__it == InvokeType.SYSTEM ? InvokeType.STATIC :
+			__it), new MethodHandle(__cl, __mn, __mt)), volsmp);
 		
 		// Load constant pool of the target class
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new ClassPool(__cl), NativeCode.NEXT_POOL_REGISTER);
 		
+		// Create a backup of the exception register (system mode)
+		if (__it == InvokeType.SYSTEM)
+		{
+			codebuilder.addCopy(NativeCode.EXCEPTION_REGISTER, volexe);
+			codebuilder.addCopy(NativeCode.ZERO_REGISTER,
+				NativeCode.EXCEPTION_REGISTER);
+		}
+		
 		// Invoke the static pointer
 		codebuilder.add(NativeInstructionType.INVOKE,
 			volsmp, __args);
 		
+		// If the system invoke (which could be from special code) threw an
+		// exception just replace our current exception with that one since
+		// it definitely would be worse!
+		if (__it == InvokeType.SYSTEM)
+		{
+			NativeCodeLabel doublefault = new NativeCodeLabel(
+				"doublefault", this._refclunk++);
+			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
+				doublefault);
+			
+			// Restore our old exception register
+			codebuilder.addCopy(volexe, NativeCode.EXCEPTION_REGISTER);
+			
+			// Target point for double fault
+			codebuilder.label(doublefault);
+		}
+		
 		// Not needed
+		volatiles.remove(volexe);
 		volatiles.remove(volsmp);
 	}
 	
@@ -2764,7 +2791,7 @@ public final class NearNativeByteCodeHandler
 				args[i] = __in[i].register;
 			
 			// Perform the unpure call into the JVM helper
-			this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmSystemCall", "(SIIIIIIII)I", args);
 		}
 		
@@ -3006,7 +3033,7 @@ public final class NearNativeByteCodeHandler
 			new ClassInfoPointer(__cl), volcdvt);
 		
 		// Call internal class object loader
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 			"jvmLoadClass", "(I)Ljava/lang/Class;", volcdvt);
 		
 		// Cleanup
@@ -3026,7 +3053,7 @@ public final class NearNativeByteCodeHandler
 	private final void __monitor(boolean __enter, int __r)
 	{
 		// Call helper method
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 			(__enter ? "jvmMonitorEnter" : "jvmMonitorExit"), "(I)V", __r);
 	}
 	
@@ -3187,7 +3214,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addIfNonZero(volnowcount, ncj);
 		
 		// Call garbage collect on object via helper
-		this.__invokeStatic(InvokeType.STATIC, JVMFUNC_CLASS,
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 			"jvmGarbageCollectObject", "(I)V", __r);
 		
 		// No uncount or not GCed are jumped here
