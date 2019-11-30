@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.lib;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.io.BinaryBlob;
 
 /**
@@ -101,7 +102,8 @@ public final class ClassDualPoolParser
 			case ClassPoolConstants.TYPE_CLASSNAME:
 				return new PoolClassName(
 					(String)this.entry(false, eparts[0] & 0xFFFF, true),
-					(PoolClassName)this.entry(false, eparts[1] & 0xFFFF));
+					(PoolClassName)this.entry(false, eparts[1] & 0xFFFF,
+						true));
 			
 				// Unknown
 			default:
