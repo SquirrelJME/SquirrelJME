@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.lib.ClassFieldsParser;
 import cc.squirreljme.jvm.lib.ClassFileParser;
+import cc.squirreljme.jvm.lib.ClassInfoUtility;
 import cc.squirreljme.jvm.lib.ClassMethodsParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
 import java.util.Objects;
@@ -31,12 +32,15 @@ public final class TaskClass
 	private int _infopointer;
 	
 	/** The run-time constant pool pointer. */
+	@Deprecated
 	private int _poolpointer;
 	
 	/** Method VTables for this class. */
+	@Deprecated
 	private int _vtablemethodpointer;
 	
 	/** Pool VTables for this class. */
+	@Deprecated
 	private int _vtablepoolpointer;
 	
 	/**
@@ -109,11 +113,11 @@ public final class TaskClass
 		
 		// We need the parser for class info so that we can initialize the
 		// classes, however every variant of the loader can use this.
-		ClassFileParser ciparser = __task.classInfoParser();
+		ClassInfoUtility ciutil = __task.classInfoUtility();
 		
 		// All branches require the info
 		int infopointer = __task.allocator.allocateObject(
-			Constants.OBJECT_BASE_SIZE + ciparser.fieldSize(false));
+			ciutil.allocationSize());
 		this._infopointer = infopointer;
 		
 		// This object has the class type of ClassInfo so it must always point
@@ -131,12 +135,12 @@ public final class TaskClass
 		// If these are special classes, we need to handle them unique because
 		// arrays and primitive types do not exist in any form as a class
 		if (ClassNameUtils.isArray(__cl))
-			return this.__initializeClassInfoArray(__task, __cl, ciparser);
+			return this.__initializeClassInfoArray(__task, __cl);
 		else if (ClassNameUtils.isPrimitiveType(__cl))
-			return this.__initializeClassInfoPrimitive(__task, __cl, ciparser);
+			return this.__initializeClassInfoPrimitive(__task, __cl);
 		
 		// Otherwise initialize a standard class
-		return this.__initializeClassInfoClass(__task, __cl, ciparser);
+		return this.__initializeClassInfoClass(__task, __cl);
 	}
 	
 	/**
@@ -197,16 +201,15 @@ public final class TaskClass
 	 *
 	 * @param __task The creating task.
 	 * @param __cl The class name being initialized.
-	 * @param __cip The parser for {@code ClassInfo}.
 	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/09
 	 */
 	private final TaskClass __initializeClassInfoArray(Task __task,
-		String __cl, ClassFileParser __cip)
+		String __cl)
 		throws NullPointerException
 	{
-		if (__task == null || __cl == null || __cip == null)
+		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
 		// We need to handle the component type
@@ -237,17 +240,20 @@ public final class TaskClass
 	 *
 	 * @param __task The creating task.
 	 * @param __cl The class name being initialized.
-	 * @param __cip The parser for {@code ClassInfo}.
 	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/17
 	 */
 	private final TaskClass __initializeClassInfoClass(Task __task,
-		String __cl, ClassFileParser __cip)
+		String __cl)
 		throws NullPointerException
 	{
-		if (__task == null || __cl == null || __cip == null)
+		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
+		
+		// We need the parser for class info so that we can initialize the
+		// classes
+		ClassInfoUtility ciutil = __task.classInfoUtility();
 		
 		// First we load the base class because it will contain information
 		// about the class that we need
@@ -267,6 +273,10 @@ public final class TaskClass
 		TaskClass superclass = (superclassname == null ? null :
 			__task.loadClass(superclassname));
 		
+		
+		throw new todo.TODO();
+		
+		/*
 		// Process every field that is defined within the information structure
 		ClassFieldsParser cifs = __cip.fields(false);
 		for (int cif = 0, cifn = cifs.count(); cif < cifn; cif++)
@@ -324,7 +334,7 @@ public final class TaskClass
 			}
 		}
 		
-		throw new todo.TODO();
+		throw new todo.TODO();*/
 		
 		/*
 		// {@squirreljme.error SV0l Task does not have ClassInfo in its
@@ -359,10 +369,10 @@ public final class TaskClass
 	 * @since 2019/11/09
 	 */
 	private final TaskClass __initializeClassInfoPrimitive(Task __task,
-		String __cl, ClassFileParser __cip)
+		String __cl)
 		throws NullPointerException
 	{
-		if (__task == null || __cl == null || __cip == null)
+		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
