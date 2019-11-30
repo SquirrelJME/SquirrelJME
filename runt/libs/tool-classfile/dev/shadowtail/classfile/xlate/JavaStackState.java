@@ -943,6 +943,17 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Throws a variable from the top of the stack and tosses it.
+	 *
+	 * @return The result of the throw.
+	 * @since 2019/11/30
+	 */
+	public final JavaStackResult doThrow()
+	{
+		return this.doStack(1);
+	}
+	
+	/**
 	 * Transitions to the given stack state.
 	 *
 	 * @param __ts The target to transition.
