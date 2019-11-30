@@ -131,7 +131,7 @@ public class LinkedList<E>
 	@Override
 	public Iterator<E> descendingIterator()
 	{
-		return new __DescendingIterator__<E>(new __ListIterator__(this._size));
+		return new __DescendingIteratorViaListIterator__<E>(new __ListIterator__(this._size));
 	}
 	
 	/**
@@ -728,108 +728,6 @@ public class LinkedList<E>
 				// Fail
 				throw new ConcurrentModificationException("ZZ2w");
 			}
-		}
-	}
-	
-	/**
-	 * Descending iterator over the linked list.
-	 *
-	 * @param <E> The class type.
-	 * @since 2019/01/20
-	 */
-	static final class __DescendingIterator__<E>
-		implements Iterator<E>
-	{
-		/** The list iterator to use. */
-		protected final ListIterator<E> it;
-		
-		/**
-		 * Initializes the descending iterator.
-		 *
-		 * @param __it The input iterator.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2019/01/20
-		 */
-		__DescendingIterator__(ListIterator<E> __it)
-			throws NullPointerException
-		{
-			if (__it == null)
-				throw new NullPointerException("NARG");
-			
-			this.it = __it;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2019/01/20
-		 */
-		@Override
-		public final boolean hasNext()
-		{
-			return this.it.hasPrevious();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2019/01/20
-		 */
-		@Override
-		public final E next()
-		{
-			return this.it.previous();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2019/01/20
-		 */
-		@Override
-		public final void remove()
-		{
-			this.it.remove();
-		}
-	}
-	
-	/**
-	 * Represents a single link in the linked list. This is just a basic
-	 * structure like object with public fields for simple access.
-	 *
-	 * @param <E> The type to store.
-	 * @since 2018/10/29
-	 */
-	static final class __Link__<E>
-	{
-		/** The previous link. */
-		__Link__<E> _prev;
-		
-		/** The next link. */
-		__Link__<E> _next;
-		
-		/** The value to store. */
-		E _value;
-		
-		/**
-		 * Initializes the new link and links into the chain.
-		 *
-		 * @param __prev The previous link to link in.
-		 * @param __v The value to use.
-		 * @param __next The next link to link in.
-		 * @since 2018/10/29
-		 */
-		__Link__(__Link__<E> __prev, E __v, __Link__<E> __next)
-		{
-			// Set value first
-			this._value = __v;
-			
-			// Link into previous chain
-			this._prev = __prev;
-			if (__prev != null)
-				__prev._next = this;
-			
-			// Link into next chain
-			this._next = __next;
-			if (__next != null)
-				__next._prev = this;
 		}
 	}
 }

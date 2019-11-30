@@ -330,7 +330,7 @@ public abstract class AbstractList<E>
 	public List<E> subList(int __from, int __to)
 		throws IllegalArgumentException, IndexOutOfBoundsException
 	{
-		return new __AbstractListSubList__(this, __from, __to);
+		return new __AbstractListSubList__<E>(this, __from, __to);
 	}
 }
 

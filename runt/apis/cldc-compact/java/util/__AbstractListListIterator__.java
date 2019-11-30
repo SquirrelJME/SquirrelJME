@@ -33,14 +33,14 @@ final class __AbstractListListIterator__<E>
 		-1;
 	
 	/**
-		* Initializes the list iterator.
-		*
-		* @param __owner The owner of this list.
-		* @param __i The index to use.
-		* @throws IndexOutOfBoundsException If the index is outside the list
-		* bounds.
-		* @since 2018/10/28
-		*/
+	 * Initializes the list iterator.
+	 *
+	 * @param __owner The owner of this list.
+	 * @param __i The index to use.
+	 * @throws IndexOutOfBoundsException If the index is outside the list
+	 * bounds.
+	 * @since 2018/10/28
+	 */
 	__AbstractListListIterator__(AbstractList<E> __owner, int __i)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -56,9 +56,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final void add(E __a)
 	{
@@ -69,9 +69,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final boolean hasNext()
 	{
@@ -83,9 +83,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final boolean hasPrevious()
 	{
@@ -98,9 +98,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final E next()
 		throws NoSuchElementException
@@ -125,9 +125,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final int nextIndex()
 	{
@@ -138,9 +138,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final E previous()
 		throws NoSuchElementException
@@ -166,9 +166,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final int previousIndex()
 	{
@@ -180,9 +180,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final void remove()
 	{
@@ -209,9 +209,9 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* {@inheritDoc}
-		* @since 2018/10/28
-		*/
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public final void set(E __v)
 	{
@@ -222,11 +222,11 @@ final class __AbstractListListIterator__<E>
 	}
 	
 	/**
-		* Checks if the list was concurrently modified.
-		*
-		* @throws ConcurrentModificationException If it was modified.
-		* @since 2018/10/29
-		*/
+	 * Checks if the list was concurrently modified.
+	 *
+	 * @throws ConcurrentModificationException If it was modified.
+	 * @since 2018/10/29
+	 */
 	private final void __checkConcurrent()
 		throws ConcurrentModificationException
 	{
