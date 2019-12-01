@@ -266,6 +266,11 @@ public final class TaskClass
 		if (superclass != null)
 			ciutil.setSuperClass(this, superclass);
 		
+		// Set the class depth
+		int classdepth = (superclass == null ? 0 :
+			ciutil.classDepth(superclass) + 1);
+		ciutil.setClassDepth(this, classdepth);
+		
 		// The base for this class
 		int basesize = (superclass == null ? 0 :
 			ciutil.classAllocationSize(superclass));

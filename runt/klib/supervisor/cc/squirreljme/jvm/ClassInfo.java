@@ -78,6 +78,9 @@ public final class ClassInfo
 	/** The total method count. */
 	public final int nummethods;
 	
+	/** The depth of this class. */
+	public final int classdepth;
+	
 	/**
 	 * Class information constructor.
 	 *
@@ -99,12 +102,13 @@ public final class ClassInfo
 	 * @param __pool The pointer to the class constant pool.
 	 * @param __jardx The JAR Index.
 	 * @param __nm The number of methods that are used.
+	 * @param __cd The class depth.
 	 * @since 2019/04/26
 	 */
 	public ClassInfo(int __sp, int __fl, int __minip, int __namep, int __sz,
 		int __bz, int __no, int __dim, int __csz, ClassInfo __scl,
 		ClassInfo[] __icl, ClassInfo __ccl, Class<?> __cop, int[] __vtv,
-		int[] __vtp, int __pool, int __jardx, int __nm)
+		int[] __vtp, int __pool, int __jardx, int __nm, int __cd)
 	{
 		// Always implicitly set magic
 		this.magic = MAGIC_NUMBER;
@@ -128,6 +132,7 @@ public final class ClassInfo
 		this.pool = __pool;
 		this.jardx = __jardx;
 		this.nummethods = __nm;
+		this.classdepth = __cd;
 	}
 }
 
