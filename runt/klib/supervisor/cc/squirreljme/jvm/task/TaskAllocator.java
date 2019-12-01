@@ -65,6 +65,34 @@ public final class TaskAllocator
 	}
 	
 	/**
+	 * Allocates an integer sized array with the given values, no class type
+	 * is set.
+	 *
+	 * @param __v The values to store.
+	 * @return The pointer to the allocated array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int allocateArrayInt(int... __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Initialize base array
+		int count = __v.length;
+		int rv = this.allocateArrayIntEmpty(count);
+		
+		// Copy pointer values to the array
+		int bp = rv + Constants.ARRAY_BASE_SIZE;
+		for (int i = 0, wp = 0; i < count; i++, wp += 4)
+			Assembly.memWriteInt(bp, wp, __v[i]);
+		
+		// Return the result of it
+		return rv;
+	}
+	
+	/**
 	 * Allocates an integer sized array with the given values.
 	 *
 	 * @param __cl The class to set it as.
@@ -79,16 +107,14 @@ public final class TaskAllocator
 		if (__cl == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		// Initialize base array
-		int count = __v.length;
-		int rv = this.allocateArrayIntEmpty(__cl, count);
+		// Allocate using the base form
+		int rv = this.allocateArrayInt(__v);
 		
-		// Copy pointer values to the array
-		int bp = rv + Constants.ARRAY_BASE_SIZE;
-		for (int i = 0, wp = 0; i < count; i++, wp += 4)
-			Assembly.memWriteInt(bp, wp, __v[i]);
+		// Store object type
+		Assembly.memWriteInt(rv, Constants.OBJECT_CLASS_OFFSET,
+			__cl.infoPointer());
 		
-		// Return the result of it
+		// Use this
 		return rv;
 	}
 	

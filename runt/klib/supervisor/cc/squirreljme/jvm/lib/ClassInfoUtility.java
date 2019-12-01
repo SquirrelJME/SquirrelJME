@@ -163,6 +163,21 @@ public final class ClassInfoUtility
 	}
 	
 	/**
+	 * Sets the interfaces array of the class.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setInterfaces(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl,
+			ClassInfoProperty.CLASSINFO_ARRAY_INTERFACECLASSES, __v);
+	}
+	
+	/**
 	 * Sets the JAR index.
 	 *
 	 * @param __cl The class.
