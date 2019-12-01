@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.lib.ClassInfoProperty;
 import cc.squirreljme.jvm.lib.ClassInfoUtility;
 import cc.squirreljme.jvm.lib.ClassMethodsParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
+import cc.squirreljme.jvm.lib.ClassPath;
 import java.util.Objects;
 
 /**
@@ -226,6 +227,10 @@ public final class TaskClass
 		// Pointer to self
 		int infopointer = this._infopointer;
 		ciutil.setSelfPointer(this, infopointer);
+		
+		// Set the JAR index
+		ciutil.setJarIndex(this, ClassPath.resourceIndexToJarIndex(
+			this.resourceindex));
 		
 		// Set pointer to the mini-class which may or may not be valid at all
 		ciutil.setMiniClassPointer(this, thisparser.baseAddress());
