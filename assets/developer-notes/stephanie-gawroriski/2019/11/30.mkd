@@ -1,0 +1,39 @@
+# 2019/11/30
+
+## 09:41
+
+I had an idea for class loading, I can just do the `ClassInfo` accessing stuff
+in a helper class, then using that I can load more things from this. That way I
+can just not really have to worry too much about loading `ClassInfo`'s accessor
+each time when I just want to know some field information. I could also save
+some variable space for the vtable and pool pointers by just directly accessing
+the class as well. This would definitely be more efficient and easier to
+implement. Also another thing would be to actually implement that dynamic
+loading.
+
+## 13:39
+
+Okay so for the issue, register 14 is copied to 3. Then register 14 is
+decremented for the count. Register 15 also has our exception too.
+
+## 13:43
+
+Okay so on the invoke, `ATHROW` is keeping the exception which seems a bit
+wrong here as it should be cleared otherwise it might end up getting handled.
+Not sure which method is invoked however.
+
+## 13:45
+
+Since the invoke is right after count, I think it is calling garbage collect
+on it.
+
+## 16:02
+
+Okay so I wonder if there is a dup or similar before the throw, that causes it
+to be eligible for garbage collection when the stack is cleaned up.
+
+## 16:05
+
+Wonder what will happen if I disable enqueuing of exception handlers.
+
+Doing this just still causes too many uncounts.
