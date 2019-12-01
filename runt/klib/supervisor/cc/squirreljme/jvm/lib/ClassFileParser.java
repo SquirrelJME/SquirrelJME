@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.lib;
 
 import cc.squirreljme.jvm.io.BinaryBlob;
+import cc.squirreljme.jvm.io.MemoryBlob;
 
 /**
  * This utility exists for the parsing of SquirrelJME's class files and allows
@@ -60,6 +61,20 @@ public final class ClassFileParser
 		this.blob = __blob;
 		this.rootstaticpool = __sp;
 		this.rootruntimepool = __rp;
+	}
+	
+	/**
+	 * Returns the base address of the class if it is known.
+	 *
+	 * @return The base address or {@code 0} if it is not known.
+	 * @since 2019/12/01
+	 */
+	public final int baseAddress()
+	{
+		BinaryBlob blob = this.blob;
+		if (blob instanceof MemoryBlob)
+			return ((MemoryBlob)blob).baseAddress();
+		return 0;
 	}
 	
 	/**
@@ -120,7 +135,7 @@ public final class ClassFileParser
 	}
 	
 	/**
-	 * Returns the size of all of the fields.
+	 * Returns the size of all of the fields in bytes.
 	 *
 	 * @param __is Get the size of static fields?
 	 * @return The number of bytes the field requires for consumption.
@@ -131,6 +146,18 @@ public final class ClassFileParser
 		return this.blob.readJavaUnsignedShort(
 			(__is ? ClassFileConstants.OFFSET_OF_USHORT_SFBYTES :
 			ClassFileConstants.OFFSET_OF_USHORT_IFBYTES));
+	}
+	
+	/**
+	 * Returns the raw class flags.
+	 *
+	 * @return The class flags.
+	 * @since 2019/12/01
+	 */
+	public final int flags()
+	{
+		return this.blob.readJavaInt(
+			ClassFileConstants.OFFSET_OF_INT_CLASSFLAGS);
 	}
 	
 	/**
@@ -188,6 +215,20 @@ public final class ClassFileParser
 		return new ClassMethodsParser(this.pool(),
 			this.blob.subSection(this.methodDataOffset(__is),
 				this.methodDataSize(__is)), this.methodCount(__is));
+	}
+	
+	/**
+	 * Returns the number of objects in the class.
+	 *
+	 * @param __is Get the static object count.
+	 * @return The number of objects in the class.
+	 * @since 2019/11/29
+	 */
+	public final int objectCount(boolean __is)
+	{
+		return this.blob.readJavaUnsignedShort(
+			(__is ? ClassFileConstants.OFFSET_OF_USHORT_SFOBJS :
+			ClassFileConstants.OFFSET_OF_USHORT_IFOBJS));
 	}
 	
 	/**
@@ -278,6 +319,32 @@ public final class ClassFileParser
 		return this.pool().entryAsClassName(false,
 			this.blob.readJavaUnsignedShort(
 				ClassFileConstants.OFFSET_OF_USHORT_CLASSSUPER));
+	}
+	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The name of this class.
+	 * @since 2019/11/25
+	 */
+	public final PoolClassName thisName()
+	{
+		return this.pool().entryAsClassName(false,
+			this.blob.readJavaUnsignedShort(
+				ClassFileConstants.OFFSET_OF_USHORT_CLASSNAME));
+	}
+	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The name of this class.
+	 * @since 2019/11/25
+	 */
+	public final BinaryBlob thisNameAsBinaryBlob()
+	{
+		return this.pool().entryData(false,
+			this.blob.readJavaUnsignedShort(
+				ClassFileConstants.OFFSET_OF_USHORT_CLASSNAME), false);
 	}
 }
 

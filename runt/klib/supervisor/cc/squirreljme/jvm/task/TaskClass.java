@@ -11,8 +11,11 @@ package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.jvm.io.BinaryBlob;
+import cc.squirreljme.jvm.io.MemoryBlob;
 import cc.squirreljme.jvm.lib.ClassFieldsParser;
 import cc.squirreljme.jvm.lib.ClassFileParser;
+import cc.squirreljme.jvm.lib.ClassInfoProperty;
 import cc.squirreljme.jvm.lib.ClassInfoUtility;
 import cc.squirreljme.jvm.lib.ClassMethodsParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
@@ -117,7 +120,7 @@ public final class TaskClass
 		
 		// All branches require the info
 		int infopointer = __task.allocator.allocateObject(
-			ciutil.allocationSize());
+			ciutil.classInfoAllocationSize());
 		this._infopointer = infopointer;
 		
 		// This object has the class type of ClassInfo so it must always point
@@ -219,6 +222,10 @@ public final class TaskClass
 		throw new todo.TODO();
 		
 		/*
+		INT_CELLSIZE
+		CLASSINFO_COMPONENTCLASS
+		INT_DIMENSIONS
+		
 		// If this is an array or primitive type, just use the vtables for
 		// the Object class because these are purely virtual!
 		if (ClassNameUtils.isArray(__cl) || ClassNameUtils.isPrimitive(__cl))
@@ -262,74 +269,57 @@ public final class TaskClass
 		
 		// Pointer to self
 		int infopointer = this._infopointer;
+		ciutil.setSelfPointer(this, infopointer);
+		
+		// Set pointer to the mini-class which may or may not be valid at all
+		ciutil.setMiniClassPointer(this, thisparser.baseAddress());
+		
+		// Set magic number
+		ciutil.setMagicNumber(this);
+		
+		// Set flags
+		ciutil.setFlags(this, thisparser.flags());
+		
+		// Set self name
+		BinaryBlob name = thisparser.thisNameAsBinaryBlob();
+		if (name instanceof MemoryBlob)
+			ciutil.setNamePointer(this, ((MemoryBlob)name).baseAddress() + 4);
+		
+		// Need to store the name elsewhere, since we do not have a direct
+		// pointer to the name
+		else
+			throw new todo.TODO();
 		
 		// The run-time pool is initialized later, but we need to allocate it
 		// now!
 		int poolpointer = this.__allocatePool(__task, thisparser);
+		ciutil.setPoolPointer(this, poolpointer);
 		
 		// Load super class if there is one
 		String superclassname = Objects.toString(thisparser.superClassName(),
 			null);
 		TaskClass superclass = (superclassname == null ? null :
 			__task.loadClass(superclassname));
+		if (superclass != null)
+			ciutil.setSuperClass(this, superclass);
+		
+		// The base for this class
+		int basesize = (superclass == null ? 0 :
+			ciutil.classAllocationSize(superclass));
+		ciutil.setBaseSize(this, basesize);
+		
+		// Allocation size of this class
+		ciutil.setClassAllocationSize(this,
+			basesize + thisparser.fieldSize(false));
+		
+		// Set number of objects this has, for garbage collection
+		ciutil.setObjectCount(this, thisparser.objectCount(false));
 		
 		/*
-		// Process every field that is defined within the information structure
-		ClassFieldsParser cifs = __cip.fields(false);
-		for (int cif = 0, cifn = cifs.count(); cif < cifn; cif++)
-		{
-			// Read field properties
-			int ffl = cifs.flags(cif),
-				fof = cifs.offset(cif),
-				fsz = cifs.size(cif);
-			
-			// Determine where we write the data to!
-			int wb = infopointer + Constants.OBJECT_BASE_SIZE;
-			
-			// Debug
-			todo.DEBUG.note("fl=%sh of=%d sz=%d",
-				Integer.toString(ffl, 16), fof, fsz);
-			
-			// Depends on the field name and type
-			String nat = cifs.name(cif) + ":" + cifs.type(cif);
-			switch (nat)
-			{
-					// Class object pointer, is created dynamically!
-				case "classobjptr:java/lang/Class":
-					Assembly.memWriteInt(wb, fof,
-						0);
-					break;
-				
-					// The component of this class
-				case "componentclass:cc/squirreljme/jvm/ClassInfo":
-					Assembly.memWriteInt(wb, fof,
-						(!ClassNameUtils.isArray(__cl) ? 0 :
-						__task.loadClass(ClassNameUtils.componentType(__cl)).
-						_infopointer));
-					break;
-					
-					// Super class of this class
-				case "superclass:cc/squirreljme/jvm/ClassInfo":
-					Assembly.memWriteInt(wb, fof,
-						(superclass == null ? 0 : superclass._infopointer));
-					break;
-				
-					// VTable for pools
-				case "vtablepool:[I":
-					Assembly.memWriteInt(wb, fof,
-						this.__buildVTable(__task, thisparser, true));
-					break;
-					
-					// VTable for methods
-				case "vtablevirtual:[I":
-					Assembly.memWriteInt(wb, fof,
-						this.__buildVTable(__task, thisparser, false));
-					break;
-				
-				default:
-					throw new todo.TODO(nat);
-			}
-		}*/
+		CLASSINFO_ARRAY_INTERFACECLASSES
+		INT_ARRAY_VTABLEVIRTUAL
+		INT_ARRAY_VTABLEPOOL
+		*/
 		
 		throw new todo.TODO();
 		
