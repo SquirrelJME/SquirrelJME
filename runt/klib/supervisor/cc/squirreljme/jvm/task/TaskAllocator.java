@@ -79,12 +79,9 @@ public final class TaskAllocator
 		if (__cl == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		// Count used to store the array size
+		// Initialize base array
 		int count = __v.length;
-		
-		// Allocate array pointer
-		int rv = this.allocateObject(__cl,
-			Constants.ARRAY_BASE_SIZE + (count * 4));
+		int rv = this.allocateArrayIntEmpty(__cl, count);
 		
 		// Copy pointer values to the array
 		int bp = rv + Constants.ARRAY_BASE_SIZE;
@@ -92,6 +89,54 @@ public final class TaskAllocator
 			Assembly.memWriteInt(bp, wp, __v[i]);
 		
 		// Return the result of it
+		return rv;
+	}
+	
+	/**
+	 * Allocates an integer sized array with the given values, no class type
+	 * is set here.
+	 *
+	 * @param __n The number of elements in the array.
+	 * @return The pointer to the allocated array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int allocateArrayIntEmpty(int __n)
+		throws NullPointerException
+	{
+		// Allocate array pointer
+		int rv = this.allocateObject(Constants.ARRAY_BASE_SIZE + (__n * 4));
+		
+		// Write array size
+		Assembly.memWriteInt(rv, Constants.ARRAY_LENGTH_OFFSET, __n);
+		
+		// Use this
+		return rv;
+	}
+	
+	/**
+	 * Allocates an integer sized array with the given values.
+	 *
+	 * @param __cl The class to set it as.
+	 * @param __n The number of elements in the array.
+	 * @return The pointer to the allocated array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int allocateArrayIntEmpty(TaskClass __cl, int __n)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Allocate array pointer
+		int rv = this.allocateObject(__cl,
+			Constants.ARRAY_BASE_SIZE + (__n * 4));
+		
+		// Write array size
+		Assembly.memWriteInt(rv, Constants.ARRAY_LENGTH_OFFSET, __n);
+		
+		// Use this
 		return rv;
 	}
 	

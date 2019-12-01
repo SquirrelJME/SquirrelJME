@@ -88,8 +88,12 @@ public interface ClassInfoProperty
 	public static final byte INT_JARDX =
 		17;
 	
+	/** The number of methods the class has. */
+	public static final byte INT_NUMMETHODS =
+		18;
+	
 	/** The number of properties available. */
 	public static final byte NUM_PROPERTIES =
-		18;
+		19;
 }
 
