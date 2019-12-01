@@ -92,8 +92,12 @@ public interface ClassInfoProperty
 	public static final byte INT_NUMMETHODS =
 		18;
 	
+	/** The depth of this class. */
+	public static final byte INT_CLASSDEPTH =
+		19;
+	
 	/** The number of properties available. */
 	public static final byte NUM_PROPERTIES =
-		19;
+		20;
 }
 

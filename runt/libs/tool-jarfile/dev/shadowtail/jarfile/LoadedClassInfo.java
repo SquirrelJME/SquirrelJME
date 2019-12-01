@@ -81,6 +81,10 @@ public final class LoadedClassInfo
 	private int _vtablepool =
 		-1;
 	
+	/** The depth of this class. */
+	private int _classdepth =
+		-1;
+	
 	/**
 	 * Initializes the boot info.
 	 *
@@ -141,6 +145,30 @@ public final class LoadedClassInfo
 		ClassName supercl = this._class.superName();
 		this._baseoff = (rv = (supercl == null ? 0 :
 			bootstrap.findClass(supercl).allocationSize()));
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the depth of this class.
+	 *
+	 * @return The depth of this class.
+	 * @since 2019/12/01
+	 */
+	public final int classDepth()
+	{
+		// Was already cached?
+		int rv = this._classdepth;
+		if (rv >= 0)
+			return rv;
+		
+		// Find the bootstrap
+		BootstrapState bootstrap = this.__bootstrap();
+		
+		// The class depth is just one added from the super-class
+		ClassName supercl = this._class.superName();
+		this._classdepth = (rv = (supercl == null ? 0 :
+			bootstrap.findClass(supercl).classDepth() + 1));
 		
 		return rv;
 	}
@@ -379,6 +407,11 @@ public final class LoadedClassInfo
 					initializer.memWriteInt(Modifier.RAM_OFFSET,
 						wp, bootstrap.findClass(
 							"cc/squirreljme/jvm/ClassInfo").infoPointer());
+					break;
+					
+					// The depth of this class
+				case "classdepth:I":
+					initializer.memWriteInt(wp, this.classDepth());
 					break;
 					
 					// Class<?> pointer, starts always at zero since it

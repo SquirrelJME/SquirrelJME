@@ -60,6 +60,20 @@ public final class ClassInfoUtility
 	}
 	
 	/**
+	 * Returns the class depth.
+	 *
+	 * @param __cl The class.
+	 * @return The class depth.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int classDepth(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_CLASSDEPTH);
+	}
+	
+	/**
 	 * Returns the allocation size of instances of this class.
 	 *
 	 * @return The allocation size of this.
@@ -144,6 +158,21 @@ public final class ClassInfoUtility
 		throws NullPointerException
 	{
 		this.setProperty(__cl, ClassInfoProperty.INT_SIZE,
+			__v);
+	}
+	
+	/**
+	 * Sets the class depth, the number of super classes ahead of this.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setClassDepth(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_CLASSDEPTH,
 			__v);
 	}
 	
@@ -491,6 +520,11 @@ public final class ClassInfoUtility
 					// The number of methods in the class
 				case "nummethods:int":
 					pdx = ClassInfoProperty.INT_NUMMETHODS;
+					break;
+					
+					// The class depth
+				case "classdepth:int":
+					pdx = ClassInfoProperty.INT_CLASSDEPTH;
 					break;
 				
 				default:
