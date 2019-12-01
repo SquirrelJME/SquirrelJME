@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Allocator;
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.Constants;
 
 /**
  * This is an allocator which uses a pre-set tag value for any allocations.
@@ -63,6 +65,37 @@ public final class TaskAllocator
 	}
 	
 	/**
+	 * Allocates an integer sized array with the given values.
+	 *
+	 * @param __cl The class to set it as.
+	 * @param __v The values to store.
+	 * @return The pointer to the allocated array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int allocateArrayInt(TaskClass __cl, int... __v)
+		throws NullPointerException
+	{
+		if (__cl == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Count used to store the array size
+		int count = __v.length;
+		
+		// Allocate array pointer
+		int rv = this.allocateObject(__cl,
+			Constants.ARRAY_BASE_SIZE + (count * 4));
+		
+		// Copy pointer values to the array
+		int bp = rv + Constants.ARRAY_BASE_SIZE;
+		for (int i = 0, wp = 0; i < count; i++, wp += 4)
+			Assembly.memWriteInt(bp, wp, __v[i]);
+		
+		// Return the result of it
+		return rv;
+	}
+	
+	/**
 	 * Allocates an object type.
 	 *
 	 * @param __sz The size of the object.
@@ -71,7 +104,32 @@ public final class TaskAllocator
 	 */
 	public final int allocateObject(int __sz)
 	{
-		return this.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
+		int rv = this.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
+		
+		// Set initial count to one, to match new
+		Assembly.memWriteInt(rv, Constants.OBJECT_COUNT_OFFSET,
+			1);
+		
+		return rv;
+	}
+	
+	/**
+	 * Allocates an object type.
+	 *
+	 * @param __cl The class type.
+	 * @param __sz The size of the object.
+	 * @return The allocated bytes.
+	 * @since 2019/12/01
+	 */
+	public final int allocateObject(TaskClass __cl, int __sz)
+	{
+		int rv = this.allocateObject(__sz);
+		
+		// Store class type here
+		Assembly.memWriteInt(rv, Constants.OBJECT_CLASS_OFFSET,
+			__cl.infoPointer());
+		
+		return rv;
 	}
 	
 	/**
