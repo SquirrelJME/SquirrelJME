@@ -9,7 +9,9 @@
 
 package cc.squirreljme.jvm.lib;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.jvm.task.TaskClass;
 
 /**
  * This is a utility which allows access to the various fields within
@@ -44,14 +46,233 @@ public final class ClassInfoUtility
 	}
 	
 	/**
+	 * Returns the class allocation size.
+	 *
+	 * @param __cl The class.
+	 * @return The class allocation size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int classAllocationSize(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_SIZE);
+	}
+	
+	/**
 	 * Returns the allocation size of instances of this class.
 	 *
 	 * @return The allocation size of this.
 	 * @since 2019/11/30
 	 */
-	public final int allocationSize()
+	public final int classInfoAllocationSize()
 	{
 		return this.allocationsize;
+	}
+	
+	/**
+	 * Returns the object count of the class.
+	 *
+	 * @param __cl The class.
+	 * @return The class object count.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int objectCount(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_NUMOBJECTS);
+	}
+	
+	/**
+	 * Returns the specified property.
+	 *
+	 * @param __cl The class.
+	 * @param __prop The property to return.
+	 * @return The property value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int property(TaskClass __cl, int __prop)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return Assembly.memReadInt(__cl.infoPointer(),
+			this.properties[__prop]);
+	}
+	
+	/**
+	 * Sets the the base of the class.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setBaseSize(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_BASE,
+			__v);
+	}
+	
+	/**
+	 * Sets the allocation size.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setClassAllocationSize(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_SIZE,
+			__v);
+	}
+	
+	/**
+	 * Sets the flags.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setFlags(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_FLAGS,
+			__v);
+	}
+	
+	/**
+	 * Sets the class magic number.
+	 *
+	 * @param __cl The class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setMagicNumber(TaskClass __cl)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_MAGIC,
+			ClassFileConstants.MAGIC_NUMBER);
+	}
+	
+	/**
+	 * Sets the mini class pointer.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setMiniClassPointer(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_MINIPTR,
+			__v);
+	}
+	
+	/**
+	 * Sets the name pointer.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setNamePointer(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_NAMEP,
+			__v);
+	}
+	
+	/**
+	 * Sets the object count.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setObjectCount(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_NUMOBJECTS,
+			__v);
+	}
+	
+	/**
+	 * Sets the pool pointer.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setPoolPointer(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_POOL,
+			__v);
+	}
+	
+	/**
+	 * Sets the value of the given property.
+	 *
+	 * @param __cl The class to set.
+	 * @param __prop The property to set.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setProperty(TaskClass __cl, int __prop, int __v)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Write value
+		Assembly.memWriteInt(__cl.infoPointer(),
+			this.properties[__prop], __v);
+	}
+	
+	/**
+	 * Sets the self pointer value.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setSelfPointer(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_SELFPTR,
+			__v);
+	}
+	
+	/**
+	 * Sets the super class.
+	 *
+	 * @param __cl The class.
+	 * @param __su The super class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setSuperClass(TaskClass __cl, TaskClass __su)
+		throws NullPointerException
+	{
+		if (__su == null)
+			throw new NullPointerException("NARG");
+		
+		this.setProperty(__cl, ClassInfoProperty.CLASSINFO_SUPERCLASS,
+			__su.infoPointer());
 	}
 	
 	/**

@@ -142,5 +142,24 @@ public final class ClassDualPoolParser
 	{
 		return (String)this.entry(__rt, __dx);
 	}
+	
+	/**
+	 * Returns the data to the given entry.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @param __ft Would the entry be forwarded through to the actual
+	 * pool implementation?
+	 * @return The data to the entry.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/12/01
+	 */
+	public final BinaryBlob entryData(boolean __rt, int __dx, boolean __ft)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return (__rt ? this.runtimepool : this.classpool).
+			entryData(__dx, __ft);
+	}
 }
 

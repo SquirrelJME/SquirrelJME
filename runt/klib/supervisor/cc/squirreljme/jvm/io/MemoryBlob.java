@@ -45,6 +45,45 @@ public final class MemoryBlob
 	}
 	
 	/**
+	 * Returns the base address of this blob.
+	 *
+	 * @return The base address of this blob.
+	 * @since 2019/12/01
+	 */
+	public final int baseAddress()
+	{
+		return this.base;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/01
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof MemoryBlob))
+			return false;
+		
+		MemoryBlob o = (MemoryBlob)__o;
+		return this.base == o.base &&
+			this.size == o.size;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/01
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.base ^ (-this.size);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/09/22
 	 */
