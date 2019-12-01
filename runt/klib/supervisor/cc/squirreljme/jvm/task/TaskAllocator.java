@@ -109,7 +109,7 @@ public final class TaskAllocator
 	{
 		// {@squirreljme.error SV0x Object allocation is less than the object
 		// base size.}
-		if (__sz < OBJECT_BASE_SIZE)
+		if (__sz < Constants.OBJECT_BASE_SIZE)
 			throw new IllegalArgumentException("SV0x");
 		
 		// Allocate
