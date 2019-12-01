@@ -100,10 +100,19 @@ public final class TaskAllocator
 	 *
 	 * @param __sz The size of the object.
 	 * @return The allocated bytes.
+	 * @throws IllegalArgumentException If the allocation size is smaller
+	 * than the object base size.
 	 * @since 2019/10/26
 	 */
 	public final int allocateObject(int __sz)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error SV0x Object allocation is less than the object
+		// base size.}
+		if (__sz < OBJECT_BASE_SIZE)
+			throw new IllegalArgumentException("SV0x");
+		
+		// Allocate
 		int rv = this.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
 		
 		// Set initial count to one, to match new
