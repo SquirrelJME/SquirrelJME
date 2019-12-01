@@ -71,6 +71,20 @@ public final class ClassInfoUtility
 	}
 	
 	/**
+	 * Returns the method count of the class.
+	 *
+	 * @param __cl The class.
+	 * @return The class method count.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final int methodCount(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_NUMMETHODS);
+	}
+	
+	/**
 	 * Returns the object count of the class.
 	 *
 	 * @param __cl The class.
@@ -175,6 +189,21 @@ public final class ClassInfoUtility
 	{
 		this.setProperty(__cl, ClassInfoProperty.INT_MAGIC,
 			ClassFileConstants.MAGIC_NUMBER);
+	}
+	
+	/**
+	 * Sets the method count.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setMethodCount(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_NUMMETHODS,
+			__v);
 	}
 	
 	/**
@@ -288,6 +317,36 @@ public final class ClassInfoUtility
 		
 		this.setProperty(__cl, ClassInfoProperty.CLASSINFO_SUPERCLASS,
 			__su.infoPointer());
+	}
+	
+	/**
+	 * Sets the VTable pool array.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setVTablePool(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_ARRAY_VTABLEPOOL,
+			__v);
+	}
+	
+	/**
+	 * Sets the VTable method array.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setVTableVirtual(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_ARRAY_VTABLEVIRTUAL,
+			__v);
 	}
 	
 	/**
@@ -412,6 +471,11 @@ public final class ClassInfoUtility
 					// The JAR Index
 				case "jardx:int":
 					pdx = ClassInfoProperty.INT_JARDX;
+					break;
+					
+					// The number of methods in the class
+				case "nummethods:int":
+					pdx = ClassInfoProperty.INT_NUMMETHODS;
 					break;
 				
 				default:

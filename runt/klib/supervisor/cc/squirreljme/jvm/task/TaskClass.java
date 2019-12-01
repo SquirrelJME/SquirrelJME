@@ -191,7 +191,7 @@ public final class TaskClass
 			TaskClass tc = __task.loadClass("java/lang/Object");
 			
 			// Just use these directly
-			this._vtablepoolpointer = (vtmp = tc._vtablepoolpointer);
+			this._vtpoolpointer = (vtmp = tc._vtpoolpointer);
 			this._vtablemethodpointer = (vtpp = tc._vtablemethodpointer);
 			
 			// Return whatever was requested
@@ -265,18 +265,21 @@ public final class TaskClass
 		if (superclass != null)
 			ciutil.setSuperClass(this, superclass);
 		
-		// Pre-allocate the class VTables since we may need to refer to them!
-		if (true)
-		{
-			// INT_ARRAY_VTABLEVIRTUAL
-			// INT_ARRAY_VTABLEPOOL
-			throw new todo.TODO();
-		}
-		
 		// The base for this class
 		int basesize = (superclass == null ? 0 :
 			ciutil.classAllocationSize(superclass));
 		ciutil.setBaseSize(this, basesize);
+		
+		// Number of methods the class has
+		int methodcount = (superclass != null ? ciutil.
+			methodCount(superclass) : 0) + thisparser.methodCount(false);
+		ciutil.setMethodCount(this, methodcount);
+		
+		// Pre-allocate the class VTables since we may need to refer to them!
+		int vtvirtual = __task.allocator.allocateArrayIntEmpty(methodcount),
+			vtpool = __task.allocator.allocateArrayIntEmpty(methodcount);
+		ciutil.setVTableVirtual(this, vtvirtual);
+		ciutil.setVTablePool(this, vtpool);
 		
 		// Allocation size of this class
 		ciutil.setClassAllocationSize(this,
@@ -292,7 +295,7 @@ public final class TaskClass
 			throw new todo.TODO();
 		}
 		
-		// Setup the VTables for the class
+		// Initialize the VTables for the class now
 		if (true)
 		{
 			// INT_ARRAY_VTABLEVIRTUAL
@@ -305,6 +308,14 @@ public final class TaskClass
 		{
 			throw new todo.TODO();
 		}
+		
+		// Set the class type for the vtable array last, since everything
+		// is now setup with it!
+		TaskClass intarrayclass = __task.loadClass("[I");
+		Assembly.memWriteInt(vtvirtual, Constants.OBJECT_CLASS_OFFSET,
+			intarrayclass.infoPointer());
+		Assembly.memWriteInt(vtpool, Constants.OBJECT_CLASS_OFFSET,
+			intarrayclass.infoPointer());
 		
 		// All done! This class should hopefully work!
 		return this;

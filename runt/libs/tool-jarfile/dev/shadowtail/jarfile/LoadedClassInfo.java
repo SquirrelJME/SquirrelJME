@@ -492,6 +492,11 @@ public final class LoadedClassInfo
 						this._class.thisName().toString()) + 4);
 					break;
 					
+					// The number of available methods
+				case "nummethods:I":
+					initializer.memWriteInt(wp, this.methodSize());
+					break;
+					
 					// The number of objects in this class
 				case "numobjects:I":
 					initializer.memWriteInt(
