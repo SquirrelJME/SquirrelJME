@@ -161,6 +161,20 @@ public final class ClassFileParser
 	}
 	
 	/**
+	 * Returns the names of the interfaces that this class implements.
+	 *
+	 * @return The names of the implemented interfaces.
+	 * @since 2019/12/01
+	 */
+	public final PoolClassName[] interfaceNames()
+	{
+		PoolClassName[] rv = this.pool().entryAsClassNames(false, this.blob.
+			readJavaUnsignedShort(
+				ClassFileConstants.OFFSET_OF_USHORT_CLASSINTS));
+		return (rv == null ? new PoolClassName[0] : rv);
+	}
+	
+	/**
 	 * Returns the number of methods in the class.
 	 *
 	 * @param __is Get the static method count.

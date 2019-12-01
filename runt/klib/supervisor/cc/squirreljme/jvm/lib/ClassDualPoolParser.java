@@ -89,6 +89,7 @@ public final class ClassDualPoolParser
 		// Get pool entry properties
 		int etype = ap.entryType(__dx, __ft);
 		short[] eparts = ap.entryParts(__dx, __ft);
+		int enumparts = eparts.length;
 		BinaryBlob eblob = ap.entryData(__dx, __ft);
 		
 		// Depends on the entry type
@@ -107,7 +108,11 @@ public final class ClassDualPoolParser
 					
 				// Names of multiple classes
 			case ClassPoolConstants.TYPE_CLASSNAMES:
-				throw new todo.TODO();
+				PoolClassName[] rvpn = new PoolClassName[enumparts];
+				for (int i = 0; i < enumparts; i++)
+					rvpn[i] = (PoolClassName)this.entry(false,
+						eparts[i] & 0xFFFF, true);
+				return rvpn;
 			
 				// Unknown
 			default:

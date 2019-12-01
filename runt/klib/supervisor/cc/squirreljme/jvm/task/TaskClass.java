@@ -20,6 +20,7 @@ import cc.squirreljme.jvm.lib.ClassInfoUtility;
 import cc.squirreljme.jvm.lib.ClassMethodsParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
 import cc.squirreljme.jvm.lib.ClassPath;
+import cc.squirreljme.jvm.lib.PoolClassName;
 import java.util.Objects;
 
 /**
@@ -289,11 +290,16 @@ public final class TaskClass
 		ciutil.setObjectCount(this, thisparser.objectCount(false));
 		
 		// Initialize interfaces
-		if (true)
-		{
-			// CLASSINFO_ARRAY_INTERFACECLASSES
-			throw new todo.TODO();
-		}
+		PoolClassName[] interfacenames = thisparser.interfaceNames();
+		int numints = interfacenames.length;
+		int[] ifps = new int[numints];
+		for (int i = 0; i < numints; i++)
+			ifps[i] = __task.loadClass(interfacenames[i].toString()).
+				infoPointer();
+		
+		// Allocate and store
+		int ifacespointer = __task.allocator.allocateArrayInt(ifps);
+		ciutil.setInterfaces(this, ifacespointer);
 		
 		// Initialize the VTables for the class now
 		if (true)
@@ -308,6 +314,10 @@ public final class TaskClass
 		{
 			throw new todo.TODO();
 		}
+		
+		// Set interfaces array type
+		Assembly.memWriteInt(ifacespointer, Constants.OBJECT_CLASS_OFFSET,
+			__task.loadClass("[Lcc/squirreljme/jvm/ClassInfo;").infoPointer());
 		
 		// Set the class type for the vtable array last, since everything
 		// is now setup with it!
