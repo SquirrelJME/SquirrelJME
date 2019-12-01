@@ -149,6 +149,21 @@ public final class ClassInfoUtility
 	}
 	
 	/**
+	 * Sets the JAR index.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/01
+	 */
+	public final void setJarIndex(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_JARDX,
+			__v);
+	}
+	
+	/**
 	 * Sets the class magic number.
 	 *
 	 * @param __cl The class.
@@ -309,89 +324,94 @@ public final class ClassInfoUtility
 			String nat = cifs.name(cif) + ":" + cifs.type(cif);
 			switch (nat)
 			{
-				// Self pointer.
+					// Self pointer.
 				case "selfptr:int":
 					pdx = ClassInfoProperty.INT_SELFPTR;
 					break;
 
-				// Magic number used to detect corruption.
+					// Magic number used to detect corruption.
 				case "magic:int":
 					pdx = ClassInfoProperty.INT_MAGIC;
 					break;
 
-				// Class information flags.
+					// Class information flags.
 				case "flags:int":
 					pdx = ClassInfoProperty.INT_FLAGS;
 					break;
 
-				// The pointer to the minimized class file.
+					// The pointer to the minimized class file.
 				case "miniptr:int":
 					pdx = ClassInfoProperty.INT_MINIPTR;
 					break;
 
-				// The pointer to the class name.
+					// The pointer to the class name.
 				case "namep:int":
 					pdx = ClassInfoProperty.INT_NAMEP;
 					break;
 
-				// The allocation size of this class.
+					// The allocation size of this class.
 				case "size:int":
 					pdx = ClassInfoProperty.INT_SIZE;
 					break;
 
-				// The base offset for fields in this class.
+					// The base offset for fields in this class.
 				case "base:int":
 					pdx = ClassInfoProperty.INT_BASE;
 					break;
 
-				// The number of objects in the instance fields, for GC.
+					// The number of objects in the instance fields, for GC.
 				case "numobjects:int":
 					pdx = ClassInfoProperty.INT_NUMOBJECTS;
 					break;
 
-				// The dimensions this class uses, if it is an array.
+					// The dimensions this class uses, if it is an array.
 				case "dimensions:int":
 					pdx = ClassInfoProperty.INT_DIMENSIONS;
 					break;
 
-				// The cell size of components if this is an array.
+					// The cell size of components if this is an array.
 				case "cellsize:int":
 					pdx = ClassInfoProperty.INT_CELLSIZE;
 					break;
 
-				// The super class data.
+					// The super class data.
 				case "superclass:cc/squirreljme/jvm/ClassInfo":
 					pdx = ClassInfoProperty.CLASSINFO_SUPERCLASS;
 					break;
 
-				// Interfaces.
+					// Interfaces.
 				case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
 					pdx = ClassInfoProperty.CLASSINFO_ARRAY_INTERFACECLASSES;
 					break;
 
-				// The component class.
+					// The component class.
 				case "componentclass:cc/squirreljme/jvm/ClassInfo":
 					pdx = ClassInfoProperty.CLASSINFO_COMPONENTCLASS;
 					break;
 
-				// Pointer to the class object.
+					// Pointer to the class object.
 				case "classobjptr:java/lang/Class":
 					pdx = ClassInfoProperty.CLASS_CLASSOBJPTR;
 					break;
 
-				// Virtual invoke VTable.
+					// Virtual invoke VTable.
 				case "vtablevirtual:[I":
 					pdx = ClassInfoProperty.INT_ARRAY_VTABLEVIRTUAL;
 					break;
 
-				// Virtual invoke VTable pool entries.
+					// Virtual invoke VTable pool entries.
 				case "vtablepool:[I":
 					pdx = ClassInfoProperty.INT_ARRAY_VTABLEPOOL;
 					break;
 
-				// The pointer to the constant pool of this class.
+					// The pointer to the constant pool of this class.
 				case "pool:int":
 					pdx = ClassInfoProperty.INT_POOL;
+					break;
+					
+					// The JAR Index
+				case "jardx:int":
+					pdx = ClassInfoProperty.INT_JARDX;
 					break;
 				
 				default:

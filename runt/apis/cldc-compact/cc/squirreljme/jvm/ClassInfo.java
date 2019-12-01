@@ -72,6 +72,9 @@ public final class ClassInfo
 	/** The pointer to the constant pool of this class. */
 	public final int pool;
 	
+	/** The JAR this class is a part of. */
+	public final int jardx;
+	
 	/**
 	 * Class information constructor.
 	 *
@@ -91,12 +94,13 @@ public final class ClassInfo
 	 * @param __vtv Virtual invoke VTable address.
 	 * @param __vtp Virtual invoke VTable pool addresses.
 	 * @param __pool The pointer to the class constant pool.
+	 * @param __jardx The JAR Index.
 	 * @since 2019/04/26
 	 */
 	public ClassInfo(int __sp, int __fl, int __minip, int __namep, int __sz,
 		int __bz, int __no, int __dim, int __csz, ClassInfo __scl,
 		ClassInfo[] __icl, ClassInfo __ccl, Class<?> __cop, int[] __vtv,
-		int[] __vtp, int __pool)
+		int[] __vtp, int __pool, int __jardx)
 	{
 		// Always implicitly set magic
 		this.magic = MAGIC_NUMBER;
@@ -118,6 +122,7 @@ public final class ClassInfo
 		this.vtablevirtual = (__vtv == null ? new int[0] : __vtv);
 		this.vtablepool = (__vtp == null ? new int[0] : __vtp);
 		this.pool = __pool;
+		this.jardx = __jardx;
 	}
 }
 

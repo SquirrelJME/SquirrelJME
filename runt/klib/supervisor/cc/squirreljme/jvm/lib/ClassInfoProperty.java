@@ -84,8 +84,12 @@ public interface ClassInfoProperty
 	public static final byte INT_POOL =
 		16;
 	
+	/** The JAR Index. */
+	public static final byte INT_JARDX =
+		17;
+	
 	/** The number of properties available. */
 	public static final byte NUM_PROPERTIES =
-		17;
+		18;
 }
 
