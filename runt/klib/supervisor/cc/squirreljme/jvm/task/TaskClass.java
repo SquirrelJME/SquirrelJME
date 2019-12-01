@@ -34,18 +34,6 @@ public final class TaskClass
 	/** The allocated class information. */
 	private int _infopointer;
 	
-	/** The run-time constant pool pointer. */
-	@Deprecated
-	private int _poolpointer;
-	
-	/** Method VTables for this class. */
-	@Deprecated
-	private int _vtablemethodpointer;
-	
-	/** Pool VTables for this class. */
-	@Deprecated
-	private int _vtablepoolpointer;
-	
 	/**
 	 * Initializes the class container.
 	 *
@@ -147,33 +135,6 @@ public final class TaskClass
 	}
 	
 	/**
-	 * Allocates the constant pool data area.
-	 *
-	 * @param __task The task owning this.
-	 * @param __cfp The class file parser for this class.
-	 * @return The pointer to the pool area.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/11/25
-	 */
-	private final int __allocatePool(Task __task, ClassFileParser __cfp)
-		throws NullPointerException
-	{
-		if (__task == null || __cfp == null)
-			throw new NullPointerException("NARG");
-		
-		// Was this already allocated? Do not do it again
-		int rv = this._poolpointer;
-		if (rv != 0)
-			return rv;
-		
-		// Allocate memory region
-		rv = __task.allocator.allocatePool(__cfp.splitPool(true).count());
-		this._poolpointer = rv;
-		
-		return rv;
-	}
-	
-	/**
 	 * Builds the VTable for this class.
 	 *
 	 * @param __task The owning task.
@@ -183,18 +144,13 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/28
 	 */
+	@Deprecated
 	private final int __buildVTable(Task __task, ClassFileParser __cfp,
 		boolean __rvpool)
 		throws NullPointerException
 	{
 		if (__task == null)
 			throw new NullPointerException("NARG");
-		
-		// Pre-cached?
-		int vtmp = this._vtablemethodpointer,
-			vtpp = this._vtablepoolpointer;
-		if (vtmp > 0 && vtpp > 0)
-			return (__rvpool ? vtpp : vtmp);
 		
 		throw new todo.TODO();
 	}
@@ -292,7 +248,8 @@ public final class TaskClass
 		
 		// The run-time pool is initialized later, but we need to allocate it
 		// now!
-		int poolpointer = this.__allocatePool(__task, thisparser);
+		int poolpointer = __task.allocator.allocatePool(
+			thisparser.splitPool(true).count());
 		ciutil.setPoolPointer(this, poolpointer);
 		
 		// Load super class if there is one
