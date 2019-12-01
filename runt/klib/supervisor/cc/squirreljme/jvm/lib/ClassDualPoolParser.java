@@ -104,6 +104,10 @@ public final class ClassDualPoolParser
 					(String)this.entry(false, eparts[0] & 0xFFFF, true),
 					(PoolClassName)this.entry(false, eparts[1] & 0xFFFF,
 						true));
+					
+				// Names of multiple classes
+			case ClassPoolConstants.TYPE_CLASSNAMES:
+				throw new todo.TODO();
 			
 				// Unknown
 			default:

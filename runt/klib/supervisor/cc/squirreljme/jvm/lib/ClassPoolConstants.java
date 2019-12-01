@@ -43,5 +43,9 @@ public interface ClassPoolConstants
 	/** Class name. */
 	public static final byte TYPE_CLASSNAME =
 		2;
+	
+	/** Class names. */
+	public static final byte TYPE_CLASSNAMES =
+		3;
 }
 
