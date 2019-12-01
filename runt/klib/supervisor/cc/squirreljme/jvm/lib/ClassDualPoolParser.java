@@ -128,6 +128,22 @@ public final class ClassDualPoolParser
 	}
 	
 	/**
+	 * Returns the decoded entry as class names.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @return The value.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/12/01
+	 */
+	public final PoolClassName[] entryAsClassNames(boolean __rt, int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return (PoolClassName[])this.entry(__rt, __dx);
+	}
+	
+	/**
 	 * Returns the decoded entry as a string.
 	 *
 	 * @param __rt Read from the run-time pool?

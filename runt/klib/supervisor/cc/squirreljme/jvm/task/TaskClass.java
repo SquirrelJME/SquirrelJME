@@ -303,6 +303,14 @@ public final class TaskClass
 		if (superclass != null)
 			ciutil.setSuperClass(this, superclass);
 		
+		// Pre-allocate the class VTables since we may need to refer to them!
+		if (true)
+		{
+			// INT_ARRAY_VTABLEVIRTUAL
+			// INT_ARRAY_VTABLEPOOL
+			throw new todo.TODO();
+		}
+		
 		// The base for this class
 		int basesize = (superclass == null ? 0 :
 			ciutil.classAllocationSize(superclass));
@@ -315,35 +323,29 @@ public final class TaskClass
 		// Set number of objects this has, for garbage collection
 		ciutil.setObjectCount(this, thisparser.objectCount(false));
 		
-		/*
-		CLASSINFO_ARRAY_INTERFACECLASSES
-		INT_ARRAY_VTABLEVIRTUAL
-		INT_ARRAY_VTABLEPOOL
-		*/
+		// Initialize interfaces
+		if (true)
+		{
+			// CLASSINFO_ARRAY_INTERFACECLASSES
+			throw new todo.TODO();
+		}
 		
-		throw new todo.TODO();
+		// Setup the VTables for the class
+		if (true)
+		{
+			// INT_ARRAY_VTABLEVIRTUAL
+			// INT_ARRAY_VTABLEPOOL
+			throw new todo.TODO();
+		}
 		
-		/*
-		// {@squirreljme.error SV0l Task does not have ClassInfo in its
-		// class path.}
-		int cidx = classpath.resourceClassFind("cc/squirreljme/jvm/ClassInfo");
-		if (cidx < 0)
-			throw new TaskVirtualMachineError("SV0l");
+		// Initialize the actual pool constants now
+		if (true)
+		{
+			throw new todo.TODO();
+		}
 		
-		// Get parser for the class info, because we need its info
-		ClassFileParser ciparser = new ClassFileParser(
-			classpath.resourceData(cidx));
-		
-		// Need to allocate class data
-		TaskAllocator allocator = this.allocator;
-		
-		// Allocate the space needed to store the class information
-		int infopointer = allocator.allocateObject(Constants.OBJECT_BASE_SIZE +
-			ciparser.fieldSize(false));
-		rv._infopointer = infopointer;
-		
-		throw new todo.TODO();
-		*/
+		// All done! This class should hopefully work!
+		return this;
 	}
 	
 	/**
