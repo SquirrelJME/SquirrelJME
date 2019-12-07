@@ -958,8 +958,11 @@ public final class NativeCPU
 							// was used
 							try
 							{
-								lr[NativeCode.RETURN_REGISTER] =
-									this.__sysCall(syscallid, sargs);
+								long rv = this.__sysCall(syscallid, sargs);
+								
+								lr[NativeCode.RETURN_REGISTER] = (int)rv;
+								lr[NativeCode.RETURN_REGISTER + 1] =
+									(int)(rv >>> 32);
 							}
 							
 							// If profiling, that frame needs to exit always!
@@ -1223,14 +1226,14 @@ public final class NativeCPU
 	 * @return The result.
 	 * @since 2019/05/23
 	 */
-	private final int __sysCall(short __si, int... __args)
+	private final long __sysCall(short __si, int... __args)
 	{
 		// Error state for the last call of this type
 		int[] errors = this._syscallerrors;
 		
 		// Return value with error value, to set if any
-		int rv,
-			err;
+		long rv;
+		int err;
 		
 		// Depends on the system call type
 		switch (__si)

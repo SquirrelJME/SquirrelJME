@@ -79,14 +79,14 @@ public final class TaskSysCallHandler
 	 * @return The result.
 	 * @since 2019/10/05
 	 */
-	public static final int taskSysCall(int __tid, int __oldsfp, short __si,
+	public static final long taskSysCall(int __tid, int __oldsfp, short __si,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g, int __h)
 	{
 		todo.DEBUG.code('H', 't', __tid);
 		todo.DEBUG.code('H', 's', __oldsfp);
 		todo.DEBUG.code('H', 'd', __si);
 		
-		return Assembly.sysCallPV(__si, __a, __b, __c, __d, __e, __f, __g,
+		return Assembly.sysCallPVL(__si, __a, __b, __c, __d, __e, __f, __g,
 			__h);
 	}
 }
