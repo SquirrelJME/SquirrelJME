@@ -140,18 +140,19 @@ public final class TaskClass
 	 * Builds the VTable for this class.
 	 *
 	 * @param __task The owning task.
+	 * @param __ciu The class info utility.
 	 * @param __cfp The class file parser for this class.
-	 * @param __rvpool Should the pool be returned?
-	 * @return The method or pool vtable array depending on {@code __rvpool}.
+	 * @param __vtvirtual The virtual method pointer table.
+	 * @param __vtpool The pool used for that method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/28
 	 */
 	@Deprecated
-	private final int __buildVTable(Task __task, ClassFileParser __cfp,
-		boolean __rvpool)
+	private final void __buildVTable(Task __task, ClassInfoUtility __ciu,
+		ClassFileParser __cfp, int __vtvirtual, int __vtpool)
 		throws NullPointerException
 	{
-		if (__task == null)
+		if (__task == null || __ciu == null || __cfp == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -306,13 +307,9 @@ public final class TaskClass
 		int ifacespointer = __task.allocator.allocateArrayInt(ifps);
 		ciutil.setInterfaces(this, ifacespointer);
 		
-		// Initialize the VTables for the class now
-		if (true)
-		{
-			// INT_ARRAY_VTABLEVIRTUAL
-			// INT_ARRAY_VTABLEPOOL
-			throw new todo.TODO();
-		}
+		// Initialize the VTables for the class now, it is a bit complicated
+		// so it is in another method
+		this.__buildVTable(__task, ciutil, thisparser, vtvirtual, vtpool);
 		
 		// Initialize the actual pool constants now
 		if (true)
