@@ -25,15 +25,15 @@ A listing of dial-pad buttons to the RetroPad controller:
 
  * `Soft 1` -- `Select`
  * `Soft 2` -- `Start`
- * `1 Voicemail (Game A)` -- `X`
- * `2 ABC (Game Up)` -- `Up`
- * `3 DEF (Game B)` -- `A`
- * `4 GHI (Game Left)` -- `Left`
+ * `1 Voicemail (Game A)` -- `X (Up)`
+ * `2 ABC (Game Up)` -- `D-Pad Up`
+ * `3 DEF (Game B)` -- `A (Right)`
+ * `4 GHI (Game Left)` -- `D-Pad Left`
  * `5 JKL (Game Fire/Select)` -- `L2`
- * `6 MNO (Game Right)` -- `Right`
- * `7 PQRS (Game C)` -- `Y`
- * `8 TUV (Game Down)` -- `Down`
- * `9 WXYZ (Game D)` -- `B`
+ * `6 MNO (Game Right)` -- `D-Pad Right`
+ * `7 PQRS (Game C)` -- `Y (Left)`
+ * `8 TUV (Game Down)` -- `D-Pad Down`
+ * `9 WXYZ (Game D)` -- `B (Down)`
  * `Star (Shift)` -- `L`
  * `0 Operator (Plus)` -- `R2`
  * `Pound (Space)` -- `R`
