@@ -765,7 +765,7 @@ public final class NearNativeByteCodeHandler
 				// Use helper method to find the method pointer to invoke
 				// for this interface (hi=pool, lo=pointer)
 				this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
-					"jvmInterfacePointer", "(III)L",
+					"jvmInterfacePointer", "(III)J",
 					ireg, voliclass, volimethdx);
 				
 				// We need to extract the pool pointer of the class we
