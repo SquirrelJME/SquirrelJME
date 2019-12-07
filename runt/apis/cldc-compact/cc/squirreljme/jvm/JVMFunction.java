@@ -270,11 +270,11 @@ public final class JVMFunction
 	 * @return The result.
 	 * @since 2019/05/27
 	 */
-	public static final int jvmSystemCall(short __si, int __a, int __b,
+	public static final long jvmSystemCall(short __si, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{
 		// Call pure form
-		return Assembly.sysCallPV(__si, __a, __b, __c, __d, __e, __f, __g,
+		return Assembly.sysCallPVL(__si, __a, __b, __c, __d, __e, __f, __g,
 			__h);
 	}
 }

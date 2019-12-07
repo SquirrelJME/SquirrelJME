@@ -369,11 +369,11 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
  * @param error Error state.
  * @param callid The system call type.
  * @param args Arguments to the call.
- * @return The result of the call.
+ * @param rv The return value of the call.
  * @since 2019/06/09
  */
-sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
-	sjme_jshort callid, sjme_jint* args)
+void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
+	sjme_jshort callid, sjme_jint* args, sjme_jlong_combine* rv)
 {
 	sjme_jint* syserr;
 	sjme_jint ia, ib, ic;
@@ -382,11 +382,11 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_cpustate* cpustate;
 	
 	/* Called wrong? */
-	if (jvm == NULL || cpu == NULL || args == NULL)
+	if (jvm == NULL || cpu == NULL || args == NULL || rv == NULL)
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
 		
-		return 0;
+		return;
 	}
 	
 	/* Start here. */
@@ -426,18 +426,22 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_SYSCALL_SUPERVISOR_PROPERTY_SET:
 				case SJME_SYSCALL_FRAME_TASK_ID_GET:
 				case SJME_SYSCALL_FRAME_TASK_ID_SET:
-					return SJME_JINT_C(1);
+					rv->lo = SJME_JINT_C(1);
+					return;
 			}
-			return SJME_JINT_C(0);
+			
+			rv->lo = SJME_JINT_C(0);
+			return;
 			
 			/* Is the byte order little endian? */
 		case SJME_SYSCALL_BYTE_ORDER_LITTLE:
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 #if defined(SJME_LITTLE_ENDIAN)
-			return 1;
+			rv->lo = 1;
 #else
-			return 0;
+			rv->lo = 0;
 #endif
+			break;
 			
 			/* Height of the call stack. */
 		case SJME_SYSCALL_CALL_STACK_HEIGHT:
@@ -454,7 +458,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			
 			/* Does not generate errors. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return ia;
+			rv->lo = ia;
+			return;
 			
 			/* Item within the call stack. */
 		case SJME_SYSCALL_CALL_STACK_ITEM:
@@ -466,7 +471,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				if (cpustate == NULL)
 				{
 					*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
-					return 0;
+					return;
 				}
 				
 				/* Drop down. */
@@ -480,54 +485,63 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* The class name. */
 				case SJME_CALLSTACKITEM_CLASS_NAME:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->debugclassname;
+					rv->lo = cpustate->debugclassname;
+					break;
 					
 					/* The method name. */
 				case SJME_CALLSTACKITEM_METHOD_NAME:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->debugmethodname;
+					rv->lo = cpustate->debugmethodname;
+					break;
 					
 					/* The method type. */
 				case SJME_CALLSTACKITEM_METHOD_TYPE:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->debugmethodtype;
+					rv->lo = cpustate->debugmethodtype;
+					break;
 					
 					/* Source file. */
 				case SJME_CALLSTACKITEM_SOURCE_FILE:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->debugsourcefile;
+					rv->lo = cpustate->debugsourcefile;
+					break;
 					
 					/* Source line. */
 				case SJME_CALLSTACKITEM_SOURCE_LINE:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->debugline;
+					rv->lo = cpustate->debugline;
+					break;
 					
 					/* The PC address. */
 				case SJME_CALLSTACKITEM_PC_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->pc;
+					rv->lo = cpustate->pc;
+					break;
 					
 					/* Java operation. */
 				case SJME_CALLSTACKITEM_JAVA_OPERATION:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->debugjop;
+					rv->lo = cpustate->debugjop;
+					break;
 					
 					/* Java PC address. */
 				case SJME_CALLSTACKITEM_JAVA_PC_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->debugjpc;
+					rv->lo = cpustate->debugjpc;
+					break;
 					
 					/* Current Task ID. */
 				case SJME_CALLSTACKITEM_TASK_ID:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return cpustate->taskid;
+					rv->lo = cpustate->taskid;
+					break;
 					
 					/* Unknown. */
 				default:
 					*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
-					return 0;
+					return;
 			}
-			return 0;
+			return;
 			
 			/* Get error state. */
 		case SJME_SYSCALL_ERROR_GET:
@@ -537,7 +551,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			if (ia < 0 || ia >= SJME_SYSCALL_NUM_SYSCALLS)
 				ia = SJME_SYSCALL_QUERY_INDEX;
 			
-			return cpu->syscallerr[ia];
+			rv->lo = cpu->syscallerr[ia];
+			return;
 			
 			/* Set error state, return old one. */
 		case SJME_SYSCALL_ERROR_SET:
@@ -549,7 +564,9 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			
 			ib = cpu->syscallerr[ia];
 			cpu->syscallerr[ia] = args[1];
-			return ib;
+			
+			rv->lo = ib;
+			return;
 			
 			/* Gets/sets property of the framebuffer. */
 		case SJME_SYSCALL_FRAMEBUFFER_PROPERTY:
@@ -557,7 +574,7 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			if (jvm->fbinfo == NULL)
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_FRAMEBUFFER;
-				return 0;
+				return;
 			}
 			
 			/* Depends on the property. */
@@ -566,72 +583,84 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* Framebuffer address. */
 				case SJME_FRAMEBUFFER_PROPERTY_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->framebuffer->fakeptr;
+					rv->lo = jvm->framebuffer->fakeptr;
+					break;
 					
 					/* Width of the framebuffer. */
 				case SJME_FRAMEBUFFER_PROPERTY_WIDTH:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->width;
+					rv->lo = jvm->fbinfo->width;
+					break;
 					
 					/* Height of the framebuffer. */
 				case SJME_FRAMEBUFFER_PROPERTY_HEIGHT:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->height;
+					rv->lo = jvm->fbinfo->height;
+					break;
 					
 					/* Scanline length of the framebuffer. */
 				case SJME_FRAMEBUFFER_PROPERTY_SCANLEN:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->scanlen;
+					rv->lo = jvm->fbinfo->scanlen;
+					break;
 					
 					/* Flush the framebuffer. */
 				case SJME_FRAMEBUFFER_PROPERTY_FLUSH:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					if (jvm->fbinfo->flush != NULL)
 						jvm->fbinfo->flush();
-					return 0;
+					break;
 					
 					/* Frame-buffer format. */
 				case SJME_FRAMEBUFFER_PROPERTY_FORMAT:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->format;
+					rv->lo = jvm->fbinfo->format;
+					break;
 					
 					/* Scanline length in bytes. */
 				case SJME_FRAMEBUFFER_PROPERTY_SCANLEN_BYTES:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->scanlenbytes;
+					rv->lo = jvm->fbinfo->scanlenbytes;
+					break;
 					
 					/* Bytes per pixel. */
 				case SJME_FRAMEBUFFER_PROPERTY_BYTES_PER_PIXEL:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->bitsperpixel / 8;
+					rv->lo = jvm->fbinfo->bitsperpixel / 8;
+					break;
 					
 					/* The number of pixels. */
 				case SJME_FRAMEBUFFER_PROPERTY_NUM_PIXELS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->numpixels;
+					rv->lo = jvm->fbinfo->numpixels;
+					break;
 					
 					/* Bits per pixels. */
 				case SJME_FRAMEBUFFER_PROPERTY_BITS_PER_PIXEL:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					return jvm->fbinfo->bitsperpixel;
+					rv->lo = jvm->fbinfo->bitsperpixel;
+					break;
 				
 					/* Unknown property, but there is a framebuffer. */
 				default:
 					*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
-					return 0;
+					return;
 			}
-			return 0;
+			
+			return;
 			
 			/* Get Task ID. */
 		case SJME_SYSCALL_FRAME_TASK_ID_GET:
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return cpustate->taskid;
+			rv->lo = cpustate->taskid;
+			return;
 			
 			/* Set Task ID. */
 		case SJME_SYSCALL_FRAME_TASK_ID_SET:
 			cpustate->taskid = args[0];
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return SJME_JINT_C(1);
+			rv->lo = SJME_JINT_C(1);
+			return;
 			
 			/* Set memory to byte value. */
 		case SJME_SYSCALL_MEM_SET:
@@ -648,7 +677,8 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return ib;
+			rv->lo = ib;
+			return;
 		
 			/* Set memory in integer values. */
 		case SJME_SYSCALL_MEM_SET_INT:
@@ -666,41 +696,46 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			
 			/* Is okay. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return ib;
+			rv->lo = ib;
+			return;
 			
 			/* Return pointer to the OptionJAR. */
 		case SJME_SYSCALL_OPTION_JAR_DATA:
 			if (jvm->optionjar == NULL)
 			{
 				*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
-				return SJME_JINT_C(0);
+				return;
 			}
 			
 			/* Is available. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return jvm->optionjar->fakeptr;
+			rv->lo = jvm->optionjar->fakeptr;
+			return;
 		
 			/* Return size of the OptionJAR. */
 		case SJME_SYSCALL_OPTION_JAR_SIZE:
 			if (jvm->optionjar == NULL)
 			{
 				*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
-				return SJME_JINT_C(0);
+				return;
 			}
 			
 			/* Is available. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return jvm->optionjar->size;
+			rv->lo = jvm->optionjar->size;
+			return;
 			
 			/* Pipe descriptor of standard error. */
 		case SJME_SYSCALL_PD_OF_STDERR:
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return SJME_JINT_C(SJME_PIPE_FD_STDERR);
+			rv->lo = SJME_JINT_C(SJME_PIPE_FD_STDERR);
+			return;
 			
 			/* Pipe descriptor of standard output. */
 		case SJME_SYSCALL_PD_OF_STDOUT:
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return SJME_JINT_C(SJME_PIPE_FD_STDOUT);
+			rv->lo = SJME_JINT_C(SJME_PIPE_FD_STDOUT);
+			return;
 			
 			/* Write single byte to a stream. */
 		case SJME_SYSCALL_PD_WRITE_BYTE:
@@ -733,25 +768,29 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* Unknown descriptor. */
 				default:
 					*syserr = SJME_SYSCALL_ERROR_PIPE_DESCRIPTOR_INVALID;
-					return SJME_JINT_C(-1);
+					rv->lo = SJME_JINT_C(-1);
+					return;
 			}
 			
 			/* Write error? */
 			if (ia < 0)
 			{
 				*syserr = SJME_SYSCALL_ERROR_PIPE_DESCRIPTOR_INVALID;
-				return SJME_JINT_C(-1);
+				rv->lo = SJME_JINT_C(-1);
+				return;
 			}
 			
 			/* Success. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return SJME_JINT_C(1);
+			rv->lo = SJME_JINT_C(1);
+			return;
 			
 			/* The supervisor booted okay! */
 		case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
 			jvm->supervisorokay = 1;
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			return SJME_JINT_C(0);
+			rv->lo = SJME_JINT_C(0);
+			return;
 			
 			/* Get supervisor property. */
 		case SJME_SYSCALL_SUPERVISOR_PROPERTY_GET:
@@ -759,12 +798,13 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			if (ia < 0 || ia >= SJME_SUPERPROP_NUM_PROPERTIES)
 			{
 				*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
-				return SJME_JINT_C(0);
+				return;
 			}
 			else
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				return cpu->supervisorprops[ia];
+				rv->lo = cpu->supervisorprops[ia];
+				return;
 			}
 			
 			/* Set supervisor property. */
@@ -773,12 +813,13 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			if (ia < 0 || ia >= SJME_SUPERPROP_NUM_PROPERTIES)
 			{
 				*syserr = SJME_SYSCALL_ERROR_VALUE_OUT_OF_RANGE;
-				return SJME_JINT_C(0);
+				return;
 			}
 			else
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				return cpu->supervisorprops[ia] = args[1];
+				rv->lo = cpu->supervisorprops[ia] = args[1];
+				return;
 			}
 			
 			/* Returns the high millisecond wall clock. */
@@ -787,13 +828,14 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				jvm->nativefuncs->millitime == NULL)
 			{
 				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return SJME_JINT_C(0);
+				return;
 			}
 			else
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 				jvm->nativefuncs->millitime(&ia);
-				return ia;
+				rv->lo = ia;
+				return;
 			}
 			
 			/* Returns the low nanosecond wall clock. */
@@ -802,13 +844,14 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				jvm->nativefuncs->nanotime == NULL)
 			{
 				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return SJME_JINT_C(0);
+				return;
 			}
 			else
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 				jvm->nativefuncs->nanotime(&ia);
-				return ia;
+				rv->lo = ia;
+				return;
 			}
 			
 			/* Returns the low millisecond wall clock. */
@@ -817,12 +860,13 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				jvm->nativefuncs->millitime == NULL)
 			{
 				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return SJME_JINT_C(0);
+				return;
 			}
 			else
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				return jvm->nativefuncs->millitime(&ia);
+				rv->lo = jvm->nativefuncs->millitime(&ia);
+				return;
 			}
 		
 			/* Returns the low nanosecond monotonic clock. */
@@ -831,18 +875,19 @@ sjme_jint sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				jvm->nativefuncs->nanotime == NULL)
 			{
 				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return SJME_JINT_C(0);
+				return;
 			}
 			else
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				return jvm->nativefuncs->nanotime(&ia);
+				rv->lo = jvm->nativefuncs->nanotime(&ia);
+				return;
 			}
 		
 			/* Unknown or unsupported system call. */
 		default:
 			*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-			return SJME_JINT_C(0);
+			return;
 	}
 }
 
@@ -933,6 +978,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jint* r;
 	sjme_jint ia, ib, ic, id, ie;
 	sjme_cpustate* oldcpu;
+	sjme_jlong_combine longcombine;
 	
 	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)
@@ -1562,8 +1608,17 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* Call it and place result into the return register. */
 					if (cpu->state.taskid == 0)
 					{
-						r[SJME_RETURN_REGISTER] = sjme_syscall(jvm, cpu, error,
-							ia, cpu->syscallargs);
+						/* Reset */
+						longcombine.lo = 0;
+						longcombine.hi = 0;
+						
+						/* Perform the system call. */
+						sjme_syscall(jvm, cpu, error, ia, cpu->syscallargs,
+							&longcombine);
+						
+						/* Extract result. */
+						r[SJME_RETURN_REGISTER] = longcombine.lo;
+						r[SJME_RETURN_REGISTER + 1] = longcombine.hi;
 					}
 					
 					/* Otherwise perform supervisor handling of the call. */
@@ -1971,10 +2026,15 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error));
 	
 	/* Load system call handler information. */
-	
-	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallsfp, 0, vrambase + sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
-	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallcode, 0, bootjar + sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
-	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallpool, 0, vrambase + sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
+	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallsfp, 0,
+		vrambase + sjme_vmmreadp(jvm->vmem,
+			SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
+	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallcode, 0,
+		bootjar + sjme_vmmreadp(jvm->vmem,
+			SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
+	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallpool, 0,
+		vrambase + sjme_vmmreadp(jvm->vmem,
+			SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
 	
 	/* Bootstrap entry arguments. */
 	/* (int __rambase, int __ramsize, int __rombase, int __romsize, */

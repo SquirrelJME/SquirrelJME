@@ -2434,13 +2434,23 @@ public final class NearNativeByteCodeHandler
 				// System calls
 			case "sysCall":
 			case "sysCallV":
-				this.__invokeSysCall(false, __out, __in);
+				this.__invokeSysCall(false, false, __out, __in);
+				break;
+				
+				// System calls (long return value)
+			case "sysCallVL":
+				this.__invokeSysCall(false, true, __out, __in);
 				break;
 				
 				// Pure system calls
 			case "sysCallP":
 			case "sysCallPV":
-				this.__invokeSysCall(true, __out, __in);
+				this.__invokeSysCall(true, false, __out, __in);
+				break;
+				
+				// Pure system calls (long return value)
+			case "sysCallPVL":
+				this.__invokeSysCall(true, true, __out, __in);
 				break;
 			
 			default:
@@ -2759,11 +2769,12 @@ public final class NearNativeByteCodeHandler
 	 * Invokes a system call, which can either be pure or unpure.
 	 *
 	 * @param __pure Is the system call pure?
+	 * @param __long Is this a long system call?
 	 * @param __out The return register, may be set.
 	 * @param __in The input system call arguments.
 	 * @since 2109/05/27
 	 */
-	private final void __invokeSysCall(boolean __pure,
+	private final void __invokeSysCall(boolean __pure, boolean __long,
 		JavaStackResult.Output __out, JavaStackResult.Input... __in)
 	{
 		// Invoked methods can thrown an exception, so do
@@ -2797,13 +2808,21 @@ public final class NearNativeByteCodeHandler
 			
 			// Perform the unpure call into the JVM helper
 			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
-				"jvmSystemCall", "(SIIIIIIII)I", args);
+				"jvmSystemCall", "(SIIIIIIII)J", args);
 		}
 		
 		// Copy return value
 		if (__out != null)
+		{
+			// Low value
 			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
 				__out.register);
+			
+			// Possible high value
+			if (__long)
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+					__out.register + 1);
+		}
 	}
 	
 	/**

@@ -1286,7 +1286,58 @@ public final class SpringThreadWorker
 						ta[o] = (Integer)__args[i];
 					
 					// Do system call handler
-					return this.systemCall((short)si, ta);
+					return (int)this.systemCall((short)si, ta);
+				}
+				
+				// System calls (returns long value)
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(S)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(SI)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(SII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(SIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(SIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(SIIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(SIIIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(SIIIIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallVL:(SIIIIIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(S)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(SI)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(SII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(SIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(SIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(SIIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(SIIIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(SIIIIIII)J":
+			case "cc/squirreljme/jvm/Assembly::" +
+				"sysCallPVL:(SIIIIIIII)J":
+				{
+					// System call index and number of arguments used
+					int si = (Integer)__args[0],
+						na = __args.length - 1;
+					
+					// Copy argument values to integers
+					int[] ta = new int[na];
+					for (int i = 1, o = 0; o < na; i++, o++)
+						ta[o] = (Integer)__args[i];
+					
+					// Do system call handler
+					return (long)this.systemCall((short)si, ta);
 				}
 			
 				// Read console buffer
@@ -4071,7 +4122,7 @@ public final class SpringThreadWorker
 	 * @return The result.
 	 * @since 2019/05/23
 	 */
-	public final int systemCall(short __si, int... __args)
+	public final long systemCall(short __si, int... __args)
 	{
 		// Make at least 8!
 		if (__args == null)
@@ -4083,8 +4134,8 @@ public final class SpringThreadWorker
 		int[] errors = this.thread._syscallerrors;
 		
 		// Return value with error value, to set if any
-		int rv,
-			err;
+		long rv;
+		int err;
 		
 		// Depends on the system call type
 		switch (__si)
