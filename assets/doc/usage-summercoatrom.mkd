@@ -58,7 +58,7 @@ SummerCoat uses the following mapping to the dial-pad:
  * `6 MNO (Game Right)` -- `D`
  * `7 PQRS (Game C)` -- `Z`
  * `8 TUV (Game Down)` -- `X`
- * `9 WXYZ (Game D)` -- 'C`
+ * `9 WXYZ (Game D)` -- `C`
  * `Star (Shift)` -- `V`
  * `0 Operator (Plus)` -- `B`
  * `Pound (Space)` -- `N`
