@@ -763,10 +763,15 @@ public final class NearNativeByteCodeHandler
 					volimethdx);
 				
 				// Use helper method to find the method pointer to invoke
-				// for this interface
+				// for this interface (hi=pool, lo=pointer)
 				this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
-					"jvmInterfacePointer", "(III)I",
+					"jvmInterfacePointer", "(III)L",
 					ireg, voliclass, volimethdx);
+				
+				// We need to extract the pool pointer of the class we
+				// are calling in so that nothing is horribly incorrect
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+					NativeCode.NEXT_POOL_REGISTER);
 				
 				// Invoke the pointer that this method returned
 				codebuilder.add(NativeInstructionType.INVOKE,
