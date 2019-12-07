@@ -381,17 +381,17 @@ extern "C"
 /** Sets the last error state. */
 #define SJME_SYSCALL_ERROR_SET SJME_JINT_C(2)
 
-/** Current wall clock milliseconds (low). */
-#define SJME_SYSCALL_TIME_LO_MILLI_WALL SJME_JINT_C(3)
+/** Current wall clock milliseconds. */
+#define SJME_SYSCALL_TIME_MILLI_WALL SJME_JINT_C(3)
 
-/** Current wall clock milliseconds (high). */
-#define SJME_SYSCALL_TIME_HI_MILLI_WALL SJME_JINT_C(4)
+/** Reserved. */
+#define SJME_SYSCALL_RESERVED_FOUR SJME_JINT_C(4)
 
-/** Current monotonic clock nanoseconds (low). */
-#define SJME_SYSCALL_TIME_LO_NANO_MONO SJME_JINT_C(5)
+/** Current monotonic clock nanoseconds. */
+#define SJME_SYSCALL_TIME_NANO_MONO SJME_JINT_C(5)
 
-/** Current monotonic clock nanoseconds (high). */
-#define SJME_SYSCALL_TIME_HI_NANO_MONO SJME_JINT_C(6)
+/** Reserved. */
+#define SJME_SYSCALL_RESERVED_SIX SJME_JINT_C(6)
 
 /** VM Information: Free memory in bytes. */
 #define SJME_SYSCALL_VMI_MEM_FREE SJME_JINT_C(7)

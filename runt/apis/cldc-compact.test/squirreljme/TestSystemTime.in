@@ -1,6 +1,4 @@
 result: NoResult
 thrown: NoExceptionThrown
-secondary-mwh: int:0
-secondary-mwl: int:0
-secondary-nmh: int:0
-secondary-nml: int:0
+secondary-mw: int:0
+secondary-nm: int:0

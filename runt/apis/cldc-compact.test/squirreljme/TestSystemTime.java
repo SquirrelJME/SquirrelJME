@@ -28,21 +28,13 @@ public class TestSystemTime
 	@Override
 	public void test()
 	{
-		Assembly.sysCall(SystemCallIndex.TIME_LO_MILLI_WALL);
-		this.secondary("mwl", Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-			SystemCallIndex.TIME_LO_MILLI_WALL));
+		Assembly.sysCall(SystemCallIndex.TIME_MILLI_WALL);
+		this.secondary("mw", Assembly.sysCallV(SystemCallIndex.ERROR_GET,
+			SystemCallIndex.TIME_MILLI_WALL));
 		
-		Assembly.sysCall(SystemCallIndex.TIME_HI_MILLI_WALL);
-		this.secondary("mwh", Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-			SystemCallIndex.TIME_HI_MILLI_WALL));
-		
-		Assembly.sysCall(SystemCallIndex.TIME_LO_NANO_MONO);
-		this.secondary("nml", Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-			SystemCallIndex.TIME_LO_NANO_MONO));
-		
-		Assembly.sysCall(SystemCallIndex.TIME_HI_NANO_MONO);
-		this.secondary("nmh", Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-			SystemCallIndex.TIME_HI_NANO_MONO));
+		Assembly.sysCall(SystemCallIndex.TIME_NANO_MONO);
+		this.secondary("nm", Assembly.sysCallV(SystemCallIndex.ERROR_GET,
+			SystemCallIndex.TIME_NANO_MONO));
 	}
 }
 

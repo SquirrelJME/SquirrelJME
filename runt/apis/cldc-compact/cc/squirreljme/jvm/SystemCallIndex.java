@@ -57,35 +57,31 @@ public interface SystemCallIndex
 		2;
 	
 	/**
-	 * Current wall clock milliseconds (low).
+	 * Current wall clock milliseconds.
 	 *
-	 * @return The lower 32-bits of the time.
+	 * @return The current milliseconds time.
 	 */
-	public static final byte TIME_LO_MILLI_WALL =
+	public static final byte TIME_MILLI_WALL =
 		3;
 	
 	/**
-	 * Current wall clock milliseconds (high).
-	 *
-	 * @return The higher 32-bits of the time.
+	 * Reserved for future use.
 	 */
-	public static final byte TIME_HI_MILLI_WALL =
+	public static final byte RESERVED_FOUR =
 		4;
 	
 	/**
 	 * Current monotonic clock nanoseconds (low).
 	 *
-	 * @return The lower 32-bits of the time.
+	 * @return The monotonic nanoseconds time.
 	 */
-	public static final byte TIME_LO_NANO_MONO =
+	public static final byte TIME_NANO_MONO =
 		5;
 	
 	/**
-	 * Current monotonic clock nanoseconds (high).
-	 *
-	 * @return The higher 32-bits of the time.
+	 * Reserved for future use.
 	 */
-	public static final byte TIME_HI_NANO_MONO =
+	public static final byte RESERVED_SIX =
 		6;
 	
 	/**

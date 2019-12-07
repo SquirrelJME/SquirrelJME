@@ -1261,10 +1261,8 @@ public final class NativeCPU
 						case SystemCallIndex.SUPERVISOR_BOOT_OKAY:
 						case SystemCallIndex.SUPERVISOR_PROPERTY_GET:
 						case SystemCallIndex.SUPERVISOR_PROPERTY_SET:
-						case SystemCallIndex.TIME_HI_MILLI_WALL:
-						case SystemCallIndex.TIME_HI_NANO_MONO:
-						case SystemCallIndex.TIME_LO_MILLI_WALL:
-						case SystemCallIndex.TIME_LO_NANO_MONO:
+						case SystemCallIndex.TIME_MILLI_WALL:
+						case SystemCallIndex.TIME_NANO_MONO:
 						case SystemCallIndex.VMI_MEM_FREE:
 						case SystemCallIndex.VMI_MEM_MAX:
 						case SystemCallIndex.VMI_MEM_USED:
@@ -1583,38 +1581,22 @@ public final class NativeCPU
 				}
 				break;
 
-				// Current wall clock milliseconds (high).
-			case SystemCallIndex.TIME_HI_MILLI_WALL:
+				// Current wall clock milliseconds.
+			case SystemCallIndex.TIME_MILLI_WALL:
 				{
-					rv = (int)(System.currentTimeMillis() >>> 32);
+					rv = System.currentTimeMillis();
 					err = 0;
 				}
 				break;
 
-				// Current monotonic clock nanoseconds (high).
-			case SystemCallIndex.TIME_HI_NANO_MONO:
+				// Current monotonic clock nanoseconds.
+			case SystemCallIndex.TIME_NANO_MONO:
 				{
-					rv = (int)(System.nanoTime() >>> 32);
+					rv = System.nanoTime();
 					err = 0;
 				}
 				break;
-			
-				// Current wall clock milliseconds (low).
-			case SystemCallIndex.TIME_LO_MILLI_WALL:
-				{
-					rv = (int)(System.currentTimeMillis());
-					err = 0;
-				}
-				break;
-
-				// Current monotonic clock nanoseconds (low).
-			case SystemCallIndex.TIME_LO_NANO_MONO:
-				{
-					rv = (int)(System.nanoTime());
-					err = 0;
-				}
-				break;
-			
+				
 				// VM information: Memory free bytes
 			case SystemCallIndex.VMI_MEM_FREE:
 				{

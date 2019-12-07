@@ -1767,10 +1767,8 @@ public final class Assembly
 						case SystemCallIndex.PD_OF_STDOUT:
 						case SystemCallIndex.PD_WRITE_BYTE:
 						case SystemCallIndex.SLEEP:
-						case SystemCallIndex.TIME_HI_MILLI_WALL:
-						case SystemCallIndex.TIME_HI_NANO_MONO:
-						case SystemCallIndex.TIME_LO_MILLI_WALL:
-						case SystemCallIndex.TIME_LO_NANO_MONO:
+						case SystemCallIndex.TIME_MILLI_WALL:
+						case SystemCallIndex.TIME_NANO_MONO:
 						case SystemCallIndex.VMI_MEM_FREE:
 						case SystemCallIndex.VMI_MEM_MAX:
 						case SystemCallIndex.VMI_MEM_USED:
@@ -2007,34 +2005,18 @@ public final class Assembly
 				}
 				break;
 			
-				// Current wall clock milliseconds (low).
-			case SystemCallIndex.TIME_LO_MILLI_WALL:
+				// Current wall clock milliseconds
+			case SystemCallIndex.TIME_MILLI_WALL:
 				{
-					rv = (int)(System.currentTimeMillis());
+					rv = System.currentTimeMillis();
 					err = 0;
 				}
 				break;
-
-				// Current wall clock milliseconds (high).
-			case SystemCallIndex.TIME_HI_MILLI_WALL:
+				
+				// Current monotonic clock nanoseconds
+			case SystemCallIndex.TIME_NANO_MONO:
 				{
-					rv = (int)(System.currentTimeMillis() >>> 32);
-					err = 0;
-				}
-				break;
-
-				// Current monotonic clock nanoseconds (low).
-			case SystemCallIndex.TIME_LO_NANO_MONO:
-				{
-					rv = (int)(System.nanoTime());
-					err = 0;
-				}
-				break;
-
-				// Current monotonic clock nanoseconds (high).
-			case SystemCallIndex.TIME_HI_NANO_MONO:
-				{
-					rv = (int)(System.nanoTime() >>> 32);
+					rv = System.nanoTime();
 					err = 0;
 				}
 				break;

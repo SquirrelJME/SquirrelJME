@@ -410,10 +410,8 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_SYSCALL_ERROR_GET:
 				case SJME_SYSCALL_ERROR_SET:
 				case SJME_SYSCALL_FRAMEBUFFER_PROPERTY:
-				case SJME_SYSCALL_TIME_HI_MILLI_WALL:
-				case SJME_SYSCALL_TIME_HI_NANO_MONO:
-				case SJME_SYSCALL_TIME_LO_MILLI_WALL:
-				case SJME_SYSCALL_TIME_LO_NANO_MONO:
+				case SJME_SYSCALL_TIME_MILLI_WALL:
+				case SJME_SYSCALL_TIME_NANO_MONO:
 				case SJME_SYSCALL_MEM_SET:
 				case SJME_SYSCALL_MEM_SET_INT:
 				case SJME_SYSCALL_OPTION_JAR_DATA:
@@ -822,8 +820,8 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				return;
 			}
 			
-			/* Returns the high millisecond wall clock. */
-		case SJME_SYSCALL_TIME_HI_MILLI_WALL:
+			/* Returns the millisecond wall clock. */
+		case SJME_SYSCALL_TIME_MILLI_WALL:
 			if (jvm->nativefuncs == NULL ||
 				jvm->nativefuncs->millitime == NULL)
 			{
@@ -833,13 +831,13 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			else
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				jvm->nativefuncs->millitime(&ia);
-				rv->lo = ia;
+				
+				rv->lo = jvm->nativefuncs->millitime(&rv->hi);
 				return;
 			}
 			
-			/* Returns the low nanosecond wall clock. */
-		case SJME_SYSCALL_TIME_HI_NANO_MONO:
+			/* Returns the nanosecond wall clock. */
+		case SJME_SYSCALL_TIME_NANO_MONO:
 			if (jvm->nativefuncs == NULL ||
 				jvm->nativefuncs->nanotime == NULL)
 			{
@@ -849,41 +847,11 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			else
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				jvm->nativefuncs->nanotime(&ia);
-				rv->lo = ia;
+				
+				rv->lo = jvm->nativefuncs->nanotime(&rv->hi);
 				return;
 			}
 			
-			/* Returns the low millisecond wall clock. */
-		case SJME_SYSCALL_TIME_LO_MILLI_WALL:
-			if (jvm->nativefuncs == NULL ||
-				jvm->nativefuncs->millitime == NULL)
-			{
-				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return;
-			}
-			else
-			{
-				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				rv->lo = jvm->nativefuncs->millitime(&ia);
-				return;
-			}
-		
-			/* Returns the low nanosecond monotonic clock. */
-		case SJME_SYSCALL_TIME_LO_NANO_MONO:
-			if (jvm->nativefuncs == NULL ||
-				jvm->nativefuncs->nanotime == NULL)
-			{
-				*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
-				return;
-			}
-			else
-			{
-				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-				rv->lo = jvm->nativefuncs->nanotime(&ia);
-				return;
-			}
-		
 			/* Unknown or unsupported system call. */
 		default:
 			*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
