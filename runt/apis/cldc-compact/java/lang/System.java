@@ -159,9 +159,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return Assembly.longPack(
-			Assembly.sysCallPV(SystemCallIndex.TIME_HI_MILLI_WALL),
-			Assembly.sysCallPV(SystemCallIndex.TIME_LO_MILLI_WALL));
+		return Assembly.sysCallPVL(SystemCallIndex.TIME_MILLI_WALL);
 	}
 	
 	/**
@@ -485,9 +483,7 @@ public final class System
 	public static long nanoTime()
 	{
 		// Returns the current monotonic clock time
-		return Assembly.longPack(
-			Assembly.sysCallPV(SystemCallIndex.TIME_HI_NANO_MONO),
-			Assembly.sysCallPV(SystemCallIndex.TIME_LO_NANO_MONO));
+		return Assembly.sysCallPVL(SystemCallIndex.TIME_NANO_MONO);
 	}
 	
 	/**
