@@ -86,13 +86,15 @@ public final class JVMFunction
 	 * @param __p The object to do a interface lookup on.
 	 * @param __icl The interface class to find.
 	 * @param __mdx The method index to relate to, of the interface class.
-	 * @return The pointer to the code to be invoked.
+	 * @return The pointer to the code to be invoked in the low-word and the
+	 * pool of the target class in the high-word.
 	 * @since 2019/04/30
 	 */
-	public static final int jvmInterfacePointer(int __p, int __icl, int __mdx)
+	public static final long jvmInterfacePointer(int __p, int __icl, int __mdx)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
+		// Assembly.longPack(hi, lo)
 	}
 	
 	/**
