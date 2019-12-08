@@ -400,7 +400,64 @@ public final class TaskClass
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// We just need the utility to access the class info
+		ClassInfoUtility ciutil = __task.classInfoUtility();
+		
+		// Always points to self
+		ciutil.setSelfPointer(this, this._infopointer);
+		
+		// Determine the size of this type
+		int size;
+		switch (__cl)
+		{
+			case "boolean":
+			case "byte":
+				size = 1;
+				break;
+			
+			case "short":
+			case "char":
+				size = 2;
+				break;
+			
+			case "int":
+			case "float":
+				size = 4;
+				break;
+			
+			case "long":
+			case "double":
+				size = 8;
+				break;
+			
+				// {@squirreljme.error SV0z Invalid primitive type.}
+			default:
+				throw new RuntimeException("SV0z");
+		}
+		
+		// Set as primitive
+		ciutil.setFlags(this, Constants.CIF_IS_PRIMITIVE);
+		
+		// Set size of type
+		ciutil.setClassAllocationSize(this, size);
+		ciutil.setCellSize(this, size);
+		
+		// Set name of our class
+		ciutil.setNamePointer(this, this.__makeString(__task, __cl));
+		
+		// Comes from no JAR so is invalid
+		ciutil.setJarIndex(this, -1);
+		
+		// The VTables, pools, and method counts always use Object's, even
+		// if it is not the super-class of object
+		TaskClass object = __task.loadClass("java/lang/Object");
+		ciutil.setVTableVirtual(this, ciutil.vTableVirtual(object));
+		ciutil.setVTablePool(this, ciutil.vTablePool(object));
+		ciutil.setPoolPointer(this, ciutil.poolPointer(object));
+		ciutil.setMethodCount(this, ciutil.methodCount(object));
+		
+		// Done
+		return this;
 	}
 	
 	/**
