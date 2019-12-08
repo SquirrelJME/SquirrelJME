@@ -31,11 +31,13 @@ public final class ClassNameUtils
 	 * @param __cl The class to check.
 	 * @return The component type of the class.
 	 * @throws IllegalArgumentException If this is not an array.
+	 * @throws InvalidClassFormatException If the component type is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/09
 	 */
 	public static final String componentType(String __cl)
-		throws IllegalArgumentException, NullPointerException
+		throws IllegalArgumentException, InvalidClassFormatException,
+			NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
@@ -76,8 +78,36 @@ public final class ClassNameUtils
 			
 				// {@squirreljme.error SV0q Unknown component type.}
 			default:
-				throw new IllegalArgumentException("SV0q");
+				throw new InvalidClassFormatException("SV0q");
 		}
+	}
+	
+	/**
+	 * Returns the number of dimensions the class name has.
+	 *
+	 * @param __cl The class name to check.
+	 * @return The dimension count.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public static final int dimensions(String __cl)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Non-array types have no dimensions ever
+		if (!ClassNameUtils.isArray(__cl))
+			return 0;
+		
+		// Count up to the last one
+		for (int i = 0, n = __cl.length(); i < n; i++)
+			if (__cl.charAt(i) != '[')
+				return i - 1;
+		
+		// {@squirreljme.error SV0y Malformed array class name.}
+		throw new InvalidClassFormatException("SV0y");
 	}
 	
 	/**

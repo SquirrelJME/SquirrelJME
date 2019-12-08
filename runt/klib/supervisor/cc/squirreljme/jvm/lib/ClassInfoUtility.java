@@ -85,6 +85,34 @@ public final class ClassInfoUtility
 	}
 	
 	/**
+	 * Returns the ClassInfo flags.
+	 *
+	 * @param __cl The class to get.
+	 * @return The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final int flags(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_FLAGS);
+	}
+	
+	/**
+	 * Returns the JAR Index.
+	 *
+	 * @param __cl The class to get.
+	 * @return The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final int jarIndex(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_JARDX);
+	}
+	
+	/**
 	 * Returns the method count of the class.
 	 *
 	 * @param __cl The class.
@@ -113,6 +141,20 @@ public final class ClassInfoUtility
 	}
 	
 	/**
+	 * Returns the pool pointer.
+	 *
+	 * @param __cl The class to get.
+	 * @return The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final int poolPointer(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_POOL);
+	}
+	
+	/**
 	 * Returns the specified property.
 	 *
 	 * @param __cl The class.
@@ -132,7 +174,7 @@ public final class ClassInfoUtility
 	}
 	
 	/**
-	 * Sets the the base of the class.
+	 * Sets the base of the class.
 	 *
 	 * @param __cl The class.
 	 * @param __v The value to set.
@@ -143,6 +185,21 @@ public final class ClassInfoUtility
 		throws NullPointerException
 	{
 		this.setProperty(__cl, ClassInfoProperty.INT_BASE,
+			__v);
+	}
+	
+	/**
+	 * Sets the cell size.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final void setCellSize(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_CELLSIZE,
 			__v);
 	}
 	
@@ -173,6 +230,39 @@ public final class ClassInfoUtility
 		throws NullPointerException
 	{
 		this.setProperty(__cl, ClassInfoProperty.INT_CLASSDEPTH,
+			__v);
+	}
+	
+	/**
+	 * Sets the component type class.
+	 *
+	 * @param __cl The class.
+	 * @param __co The component type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final void setComponentType(TaskClass __cl, TaskClass __co)
+		throws NullPointerException
+	{
+		if (__co == null)
+			throw new NullPointerException("NARG");
+		
+		this.setProperty(__cl, ClassInfoProperty.CLASSINFO_COMPONENTCLASS,
+			__co.infoPointer());
+	}
+	
+	/**
+	 * Sets the number of dimensions the class has.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final void setDimensions(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_DIMENSIONS,
 			__v);
 	}
 	
@@ -391,6 +481,34 @@ public final class ClassInfoUtility
 	{
 		this.setProperty(__cl, ClassInfoProperty.INT_ARRAY_VTABLEVIRTUAL,
 			__v);
+	}
+	
+	/**
+	 * Returns the VTable for pools.
+	 *
+	 * @param __cl The class to get.
+	 * @return The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final int vTablePool(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_ARRAY_VTABLEPOOL);
+	}
+	
+	/**
+	 * Returns the VTable for method pointers.
+	 *
+	 * @param __cl The class to get.
+	 * @return The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final int vTableVirtual(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_ARRAY_VTABLEVIRTUAL);
 	}
 	
 	/**

@@ -82,7 +82,8 @@ public final class TaskClass
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Right now nothing needs to actually be done here
+		return this;
 	}
 	
 	/**
@@ -135,6 +136,27 @@ public final class TaskClass
 		// Otherwise initialize a standard class
 		return this.__initializeClassInfoClass(__task, __cl);
 	}
+
+	/**
+	 * Builds the constant pool for the given class.
+	 *
+	 * @param __task The owning task.
+	 * @param __ciu The class info utility.
+	 * @param __cfp The class file parser for this class.
+	 * @param __pool The pool pointer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	private final void __buildPool(Task __task, ClassInfoUtility __ciu,
+		ClassFileParser __cfp, int __pool)
+		throws NullPointerException
+	{
+		if (__task == null || __ciu == null || __cfp == null)
+			throw new NullPointerException("NARG");
+		
+		todo.DEBUG.code('p', 'o');
+		//throw new todo.TODO();
+	}
 	
 	/**
 	 * Builds the VTable for this class.
@@ -147,7 +169,6 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/28
 	 */
-	@Deprecated
 	private final void __buildVTable(Task __task, ClassInfoUtility __ciu,
 		ClassFileParser __cfp, int __vtvirtual, int __vtpool)
 		throws NullPointerException
@@ -155,7 +176,8 @@ public final class TaskClass
 		if (__task == null || __ciu == null || __cfp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		todo.DEBUG.code('v', 't');
+		//throw new todo.TODO();
 	}
 	
 	/**
@@ -174,31 +196,63 @@ public final class TaskClass
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
+		// We just need the utility to access the class info
+		ClassInfoUtility ciutil = __task.classInfoUtility();
+		
+		// Always points to self
+		ciutil.setSelfPointer(this, this._infopointer);
+		
+		// The size is always the base array size
+		ciutil.setClassAllocationSize(this, Constants.ARRAY_BASE_SIZE);
+		
+		// The base of this class is always after object
+		ciutil.setBaseSize(this, Constants.OBJECT_BASE_SIZE);
+		
+		// The number of dimensions this class has
+		ciutil.setDimensions(this, ClassNameUtils.dimensions(__cl));
+		
+		// Set name of our class
+		ciutil.setNamePointer(this, this.__makeString(__task, __cl));
+		
+		// The class depth is always one because this extends object
+		ciutil.setClassDepth(this, 1);
+		
+		// The super-class is always object, so load that and set
+		TaskClass object = __task.loadClass("java/lang/Object");
+		ciutil.setSuperClass(this, object);
+		
+		// The VTables, pools, and method counts always use Object's
+		ciutil.setVTableVirtual(this, ciutil.vTableVirtual(object));
+		ciutil.setVTablePool(this, ciutil.vTablePool(object));
+		ciutil.setPoolPointer(this, ciutil.poolPointer(object));
+		ciutil.setMethodCount(this, ciutil.methodCount(object));
+		
 		// We need to handle the component type
 		TaskClass comptype = __task.loadClass(
 			ClassNameUtils.componentType(__cl));
 		
-		throw new todo.TODO();
+		// Is this component type a primitive?
+		boolean compisprim =
+			(ciutil.flags(comptype) & Constants.CIF_IS_PRIMITIVE) != 0;
 		
-		/*
-		INT_CELLSIZE
-		CLASSINFO_COMPONENTCLASS
-		INT_DIMENSIONS
+		// Set our own flags, note that if our component type is not primitive
+		// it is a bunch of objects which is needed for garbage collection
+		// of object arrays
+		ciutil.setFlags(this, Constants.CIF_IS_ARRAY |
+			(compisprim ? 0 : Constants.CIF_IS_ARRAY_OF_OBJECTS));
 		
-		// If this is an array or primitive type, just use the vtables for
-		// the Object class because these are purely virtual!
-		if (ClassNameUtils.isArray(__cl) || ClassNameUtils.isPrimitive(__cl))
-		{
-			// Load object class
-			TaskClass tc = __task.loadClass("java/lang/Object");
-			
-			// Just use these directly
-			this._vtpoolpointer = (vtmp = tc._vtpoolpointer);
-			this._vtablemethodpointer = (vtpp = tc._vtablemethodpointer);
-			
-			// Return whatever was requested
-			return (__rvpool ? vtpp : vtmp);
-		}*/
+		// The component class is set here
+		ciutil.setComponentType(this, comptype);
+		
+		// The JAR this came from is always the component's JAR
+		ciutil.setJarIndex(this, ciutil.jarIndex(comptype));
+		
+		// The cell size is always 4 unless this is a primitive
+		ciutil.setCellSize(this, (compisprim ?
+			ciutil.classAllocationSize(comptype) : 4));
+		
+		// Done
+		return this;
 	}
 	
 	/**
@@ -240,8 +294,8 @@ public final class TaskClass
 		// Set magic number
 		ciutil.setMagicNumber(this);
 		
-		// Set flags
-		ciutil.setFlags(this, thisparser.flags());
+		// Set flags, note that these are not class flags but VM flags
+		ciutil.setFlags(this, 0);
 		
 		// Set self name
 		BinaryBlob name = thisparser.thisNameAsBinaryBlob();
@@ -251,7 +305,7 @@ public final class TaskClass
 		// Need to store the name elsewhere, since we do not have a direct
 		// pointer to the name
 		else
-			throw new todo.TODO();
+			ciutil.setNamePointer(this, this.__makeString(__task, __cl));
 		
 		// The run-time pool is initialized later, but we need to allocate it
 		// now!
@@ -312,10 +366,7 @@ public final class TaskClass
 		this.__buildVTable(__task, ciutil, thisparser, vtvirtual, vtpool);
 		
 		// Initialize the actual pool constants now
-		if (true)
-		{
-			throw new todo.TODO();
-		}
+		this.__buildPool(__task, ciutil, thisparser, poolpointer);
 		
 		// Set interfaces array type
 		Assembly.memWriteInt(ifacespointer, Constants.OBJECT_CLASS_OFFSET,
@@ -350,6 +401,74 @@ public final class TaskClass
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Makes a UTF-8 string of the given string.
+	 *
+	 * @param __task The task.
+	 * @param __s The string to encode.
+	 * @return The raw string pointer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	private final int __makeString(Task __task, String __s)
+		throws NullPointerException
+	{
+		if (__task == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// Count the number of bytes this will take up
+		int bytes = 2;
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			if (c >= 0x0001 && c <= 0x007F)
+				bytes += 1;
+			else if (c == 0x0000 || (c >= 0x0080 && c <= 0x07FF))
+				bytes += 2;
+			else
+				bytes += 3;
+		}
+		
+		// Allocate and set the length of the string
+		int rv = __task.allocator.allocate(0, bytes);
+		Assembly.memWriteJavaShort(rv, 0, bytes);
+		
+		// Write character data within
+		int base = rv + 2;
+		for (int i = 0, o = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Single byte
+			if (c >= 0x0001 && c <= 0x007F)
+				Assembly.memWriteByte(base, o++, c);
+			
+			// Two byte
+			else if (c == 0x0000 || (c >= 0x0080 && c <= 0x07FF))
+			{
+				Assembly.memWriteByte(base, o++, 0b110_00000 |
+					((c >>> 6) & 0b11111));
+				Assembly.memWriteByte(base, o++, 0b10_000000 |
+					(c & 0b111111));
+			}
+			
+			// Three byte
+			else
+			{
+				Assembly.memWriteByte(base, o++, 0b1110_0000 |
+					(c >>> 12) & 0b1111);
+				Assembly.memWriteByte(base, o++, 0b10_000000 |
+					((c >>> 6) & 0b111111));
+				Assembly.memWriteByte(base, o++, 0b10_000000 |
+					(c & 0b111111));
+			}
+		}
+		
+		// All done!
+		return rv;
 	}
 }
 
