@@ -1,0 +1,5 @@
+# 2019/12/07
+
+## 09:05
+
+I need wide system calls.
