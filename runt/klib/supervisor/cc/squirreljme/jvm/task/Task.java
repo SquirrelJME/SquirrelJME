@@ -163,7 +163,7 @@ public final class Task
 	 */
 	public final int loadObjectArray(TaskClass __cl, int... __vs)
 	{
-		throw new todo.TODO();
+		return this.allocator.allocateArrayInt(__cl, __vs);
 	}
 	
 	/**
