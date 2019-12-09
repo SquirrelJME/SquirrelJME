@@ -92,13 +92,6 @@ public enum DrawingMethod
 			// Number of entries
 			int n = form.size();
 			
-			// Make sure focus is in bounds
-			int focusdx = __s.focusdx;
-			if (focusdx < 0)
-				focusdx = 0;
-			else if (focusdx >= n)
-				focusdx = n - 1;
-			
 			// Working base coordinates for each item
 			int dx = 0,
 				dy = 0;
@@ -110,8 +103,6 @@ public enum DrawingMethod
 			// Draw each entry
 			for (int i = 0; i < n; i++)
 			{
-				todo.DEBUG.note("Draw %d of %d", i + 1, n);
-				
 				// Reset X draw
 				dx = 0;
 				
@@ -148,8 +139,8 @@ public enum DrawingMethod
 					__g, dx, dy, iw, ih, true, false);
 				
 				// Is this item being focused? Set the focus box on it
-				if (focusdx == i)
-					__s.focusbox.set(dx, dy, iw - 2, ih - 2);
+				/*if (item == form.getCurrent())
+					__s.focusbox.set(dx, dy, iw - 2, ih - 2);*/
 				
 				// Move to next item
 				dy += ih;

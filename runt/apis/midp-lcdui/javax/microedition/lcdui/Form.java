@@ -161,6 +161,18 @@ public class Form
 	}
 	
 	/**
+	 * Returns the currently focused item in the form, or {@code null} if there
+	 * is not item being focused.
+	 *
+	 * @return The current focus item.
+	 * @since 2019/12/09
+	 */
+	public Item getCurrent()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */

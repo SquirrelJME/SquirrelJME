@@ -131,6 +131,16 @@ public enum ActionMethod
 	/** Form. */
 	FORM
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/12/09
+		 */
+		@Override
+		public final boolean keyEvent(Displayable __d, State __s, int __ty,
+			int __kc, int __ch, int __time)
+		{
+			return false;
+		}
 	},
 	
 	/** List. */
@@ -158,7 +168,7 @@ public enum ActionMethod
 			if (__kc >= Canvas.KEY_NUM1 && __kc <= Canvas.KEY_NUM9)
 				wantdx = __kc - Canvas.KEY_NUM1;
 			
-			// Focusing a new item?
+			// Handle key
 			switch (EventTranslate.keyCodeToGameAction(__kc))
 			{
 					// Move up, ignore number input
