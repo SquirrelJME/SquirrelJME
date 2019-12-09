@@ -1,0 +1,27 @@
+# 2019/12/08
+
+## 07:50
+
+Having references would be useful in the JVM.
+
+## 07:53
+
+So `Reference` will make things much easier to implement, at least to not
+needlessly create tons of objects when loading classes and I can keep some
+references around. Things will go faster and memory will be reduced which
+is what I want really. It also greatly will simplify things too. Only thing
+to consider is that with reference counting, how do I want to handle these
+things? I think I am going to need a chunk bit on an object which says if
+an allocated object is held by a reference, that way I can do the
+referencing magic stuff. Another thing is that there will need to be some
+kind of reference lock or similar. Actually... what if I had for every
+allocation a special access object or similar, like a chain of sorts? The
+only problem is that then I will need to handle references that get cleaned
+up because their pointers would be stale. But `Reference` would be the one
+that adds itself to the special pointer area, so it would have to remember.
+But it does get complicated still this way and memory does leak.
+
+## 10:11
+
+I am just going to wait until it is needed, then implement it. Also when it
+comes to class loading, I need to get it working first so I have something.
