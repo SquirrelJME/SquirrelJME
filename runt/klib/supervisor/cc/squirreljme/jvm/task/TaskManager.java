@@ -52,14 +52,13 @@ public final class TaskManager
 	 * @param __mcl The main class.
 	 * @param __args The arguments to the task.
 	 * @param __sp System properties.
-	 * @param __main The main thread output.
 	 * @return The resulting task.
 	 * @throws RuntimeException If the task could not be created.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/22
 	 */
-	public Task newTask(ClassLibrary[] __cp, String __mcl, boolean __im,
-		String[] __args, String[] __sp, TaskThread[] __main)
+	public TaskCreateResult newTask(ClassLibrary[] __cp, String __mcl,
+		boolean __im, String[] __args, String[] __sp)
 		throws NullPointerException
 	{
 		if (__cp == null)
@@ -135,15 +134,8 @@ public final class TaskManager
 			callargs = new int[]{argsarray};
 		}
 		
-		// Enter this frame
-		thread.enterFrame(__mcl, mname, mtype, callargs);
-		
-		// Store the thread being executed before we return, all done with it!
-		if (__main != null && __main.length > 0)
-			__main[0] = thread;
-		
-		// Return this task
-		return rv;
+		// Create result
+		return new TaskCreateResult(rv, thread, __mcl, mname, mtype, callargs);
 	}
 }
 

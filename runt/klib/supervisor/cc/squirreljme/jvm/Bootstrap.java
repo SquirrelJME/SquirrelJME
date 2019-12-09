@@ -12,6 +12,7 @@ package cc.squirreljme.jvm;
 import cc.squirreljme.jvm.lib.BootRom;
 import cc.squirreljme.jvm.lib.BootRomLibrary;
 import cc.squirreljme.jvm.task.Task;
+import cc.squirreljme.jvm.task.TaskCreateResult;
 import cc.squirreljme.jvm.task.TaskManager;
 import cc.squirreljme.jvm.task.TaskSysCallHandler;
 import cc.squirreljme.jvm.task.TaskThread;
@@ -84,22 +85,26 @@ public final class Bootstrap
 			
 			// Start the initial task
 			todo.DEBUG.note("Creating initial task...");
-			TaskThread[] mainthread = new TaskThread[1];
-			Task boot = ctm.newTask(
+			TaskCreateResult boot = ctm.newTask(
 				BootRom.initialClasspath(__rombase, config),
 				BootRom.initialMain(__rombase, config),
 				config.loadInteger(ConfigRomType.IS_MIDLET) != 0,
 				config.loadStrings(ConfigRomType.MAIN_ARGUMENTS),
-				config.loadKeyValueMap(ConfigRomType.DEFINE_PROPERTY),
-				mainthread);
+				config.loadKeyValueMap(ConfigRomType.DEFINE_PROPERTY));
 			todo.DEBUG.note("Okay.");
 			
 			// Set the kernel as booted okay!
+			todo.DEBUG.note("Appears things are going well?");
 			Assembly.sysCall(SystemCallIndex.SUPERVISOR_BOOT_OKAY);
 			
 			// Enter the main task now, since we can do that!
-			todo.DEBUG.note("Inline execution main task...");
-			mainthread[0].inlineExecute();
+			todo.DEBUG.note("Entering main method!");
+			boot.thread.execute(boot.mainclass, boot.mainmethodname,
+				boot.mainmethodtype, boot.callargs);
+			
+			// Finished? Just terminate then
+			todo.DEBUG.note("Main program finished execution, terminating!");
+			Assembly.sysCallP(SystemCallIndex.EXIT, 0);
 		}
 		
 		// It crashes

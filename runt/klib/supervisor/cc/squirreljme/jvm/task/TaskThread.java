@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.task;
 
+import cc.squirreljme.jvm.Assembly;
+
 /**
  * This represents a single thread, which is associated with a task.
  *
@@ -50,43 +52,69 @@ public final class TaskThread
 	
 	/**
 	 * Enters the given frame on the thread. Note that this can only be
-	 * done from the current thread, and it will only actually be executed
-	 * if an {@link #inlineExecute()} is performed following this.
+	 * done from the current thread where it will be executed.
+	 *
+	 * This searches for the method and loads any classes as needed.
 	 *
 	 * @param __cl The class to execute.
 	 * @param __mn The method name.
 	 * @param __mt The method type.
 	 * @param __args The arguments to the thread.
+	 * @return The return values of the method call
 	 * @throws IllegalStateException If the current thread is being executed
 	 * and the current controller thread is not the current thread of
 	 * execution.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/13
 	 */
-	public final void enterFrame(String __cl, String __mn, String __mt,
-		int[] __args)
+	public final long execute(String __cl, String __mn, String __mt,
+		int... __args)
 		throws IllegalStateException, NullPointerException
 	{
+		if (__cl == null || __mn == null || __mt == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
 	/**
-	 * Performs inline execution of this thread, entering it and executing it
-	 * on the same thread line as the current thread.
+	 * Enters the given frame on the thread. Note that this can only be
+	 * done from the current thread where it will be executed.
 	 *
-	 * @return The return value from execution, this will be the value of both
-	 * return registers.
-	 * @throws IllegalStateException If the current thread being executed
+	 * @param __methpool The combined method pointer to invoke and the
+	 * constant pool pointer to load, the method pointer is in the low word
+	 * while the pool is in the high word.
+	 * @param __args The arguments to the thread.
+	 * @return The return values of the method call
+	 * @throws IllegalStateException If the current thread is being executed
 	 * and the current controller thread is not the current thread of
-	 * execution; or if the controller thread is itself and
-	 * {@link #enterFrame(String, String, String, int[])} was never previously
-	 * called; or if {@link #enterFrame(String, String, String, int[])} was
-	 * called without a subsequent {@code inlineExecute()}.
-	 * @throws TaskThrownException If this thread threw an exception.
-	 * @since 2019/10/13
+	 * execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
 	 */
-	public final long inlineExecute()
-		throws IllegalStateException, TaskThrownException
+	public final long execute(long __methpool, int... __args)
+		throws IllegalStateException, NullPointerException
+	{
+		return this.execute(Assembly.longUnpackLow(__methpool),
+			Assembly.longUnpackHigh(__methpool), __args);
+	}
+	
+	/**
+	 * Enters the given frame on the thread. Note that this can only be
+	 * done from the current thread where it will be executed.
+	 *
+	 * @param __meth The method pointer to invoke.
+	 * @param __pool The constant pool pointer to load.
+	 * @param __args The arguments to the thread.
+	 * @return The return values of the method call
+	 * @throws IllegalStateException If the current thread is being executed
+	 * and the current controller thread is not the current thread of
+	 * execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/08
+	 */
+	public final long execute(int __meth, int __pool, int... __args)
+		throws IllegalStateException, NullPointerException
 	{
 		throw new todo.TODO();
 	}
