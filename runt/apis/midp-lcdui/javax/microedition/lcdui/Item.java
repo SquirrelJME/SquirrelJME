@@ -75,6 +75,14 @@ public abstract class Item
 	/** The label of this item. */
 	volatile String _label;
 	
+	/** The preferred width. */
+	volatile int _preferredw =
+		-1;
+	
+	/** The preferred height. */
+	volatile int _preferredh =
+		-1;
+	
 	/**
 	 * Initializes the base item.
 	 *
@@ -105,9 +113,15 @@ public abstract class Item
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the label of the item.
+	 *
+	 * @return The label item.
+	 * @since 2019/12/09
+	 */
 	public String getLabel()
 	{
-		throw new todo.TODO();
+		return this._label;
 	}
 	
 	public int getLayout()
@@ -120,24 +134,56 @@ public abstract class Item
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the minimum height of the item.
+	 *
+	 * @return The minimum height.
+	 * @since 2019/12/09
+	 */
 	public int getMinimumHeight()
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB37 Minimum height must be implemented.
+		// (The class name)}
+		throw new RuntimeException("EB37 " + this.getClass().getName());
 	}
 	
+	/**
+	 * Returns the minimum width of the item.
+	 *
+	 * @return The minimum width.
+	 * @since 2019/12/09
+	 */
 	public int getMinimumWidth()
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB38 Minimum width must be implemented.
+		// (The class name)}
+		throw new RuntimeException("EB38 " + this.getClass().getName());
 	}
 	
+	/**
+	 * Returns the preferred height of the item, this may be calculated.
+	 *
+	 * @return The preferred item height.
+	 * @since 2019/12/09
+	 */
 	public int getPreferredHeight()
 	{
-		throw new todo.TODO();
+		int rv = this._preferredh,
+			mn = this.getMinimumHeight();
+		return (mn > rv ? mn : rv);
 	}
 	
+	/**
+	 * Returns the preferred width of the item, this may be calculated.
+	 *
+	 * @return The preferred item width.
+	 * @since 2019/12/09
+	 */
 	public int getPreferredWidth()
 	{
-		throw new todo.TODO();
+		int rv = this._preferredw,
+			mn = this.getMinimumWidth();
+		return (mn > rv ? mn : rv);
 	}
 	
 	public void notifyStateChanged()
@@ -202,9 +248,32 @@ public abstract class Item
 		throw new todo.TODO();
 	}
 	
-	public void setPreferredSize(int __a, int __b)
+	/**
+	 * Sets the preferred size of the item. This sets the size of an item where
+	 * if it is higher than the minimum then it is used, otherwise the minimum
+	 * is used.
+	 *
+	 * @param __w The width, or {@code -1} to use the minimum.
+	 * @param __h The height, or {@code -1} to use the minimum.
+	 * @throws IllegalArgumentException If the width and/or height are lower
+	 * than {@code -1}.
+	 * @throws IllegalStateException If this item is within an alert.
+	 * @since 2019/12/09
+	 */
+	public void setPreferredSize(int __w, int __h)
+		throws IllegalArgumentException, IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB35 Invalid preferred size requested.}
+		if (__w < -1 || __h < -1)
+			throw new IllegalArgumentException("EB35");
+		
+		// {@squirreljme.error EB36 Cannot set preferred size of item within
+		// an alert.}
+		if (this._displayable instanceof Alert)
+			throw new IllegalStateException("EB36");
+		
+		this._preferredw = __w;
+		this._preferredh = __h;
 	}
 }
 

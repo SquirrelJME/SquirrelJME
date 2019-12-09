@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public class StringItem
@@ -20,6 +21,9 @@ public class StringItem
 	
 	/** The item text. */
 	volatile String _text;
+	
+	/** The font to use. */
+	volatile Font _font;
 	
 	/**
 	 * Initializes the string item with the plain style.
@@ -60,14 +64,57 @@ public class StringItem
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the font used to draw the item.
+	 *
+	 * @return The font used to draw the item.
+	 * @since 2019/12/09
+	 */
 	public Font getFont()
 	{
-		throw new todo.TODO();
+		Font rv = this._font;
+		return (rv == null ? StandardMetrics.itemLabelFont() : rv);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/09
+	 */
+	@Override
+	public int getMinimumHeight()
+	{
+		// Empty string needs no space
+		String text = this.getText();
+		if (text == null)
+			return 0;
+		
+		return this.getFont().getHeight();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/09
+	 */
+	@Override
+	public int getMinimumWidth()
+	{
+		// Empty string needs no space
+		String text = this.getText();
+		if (text == null)
+			return 0;
+		
+		return this.getFont().stringWidth(text);
+	}
+	
+	/**
+	 * Returns the text content of this item.
+	 *
+	 * @return The text content.
+	 * @since 2019/12/09
+	 */
 	public String getText()
 	{
-		throw new todo.TODO();
+		return this._text;
 	}
 	
 	public void setFont(Font __a)

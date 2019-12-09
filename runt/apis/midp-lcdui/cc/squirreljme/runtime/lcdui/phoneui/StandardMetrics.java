@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.phoneui;
 
+import javax.microedition.lcdui.Font;
+
 /**
  * This contains standard metrics for screen parts and such.
  *
@@ -17,7 +19,7 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 public final class StandardMetrics
 {
 	/** UI Font size. */
-	public static final int UI_FONT_SIZE =
+	public static final byte UI_FONT_SIZE =
 		16;
 	
 	/** Height of the title bar. */
@@ -30,19 +32,19 @@ public final class StandardMetrics
 	
 	/** The background bar color. */
 	public static final int BACKGROUND_BAR_COLOR =
-		0x000000;
+		0xFF_000000;
 	
 	/** The foreground bar color. */
 	public static final int FOREGROUND_BAR_COLOR =
-		0xFFFFFF;
+		0xFF_FFFFFF;
 	
 	/** Transparent background color. */
 	public static final int TRANSPARENT_COLOR =
-		0xFFFFFF;
+		0xFF_FFFFFF;
 	
 	/** Vibration symbol color. */
 	public static final int VIBRATE_COLOR =
-		0xFF00FF;
+		0xFF_FF00FF;
 	
 	/** Height of the ticker bar. */
 	public static final int TICKER_BAR_HEIGHT =
@@ -50,11 +52,11 @@ public final class StandardMetrics
 	
 	/** Background color of the ticker bar. */
 	public static final int BACKGROUND_TICKER_COLOR =
-		0xA6F6FF;
+		0xFF_A6F6FF;
 	
 	/** Foreground color of the ticker bar. */
 	public static final int FOREGROUND_TICKER_COLOR =
-		0x000000;
+		0xFF_000000;
 	
 	/** The font used for list items. */
 	public static final String LIST_ITEM_FONT =
@@ -66,43 +68,43 @@ public final class StandardMetrics
 	
 	/** Enabled normal foreground. */
 	public static final int ENABLED_NORMAL_FOREGROUND =
-		0x000000;
+		0xFF_000000;
 	
 	/** Enabled normal background. */
 	public static final int ENABLED_NORMAL_BACKGROUND =
-		0xFFFFFF;
+		0xFF_FFFFFF;
 	
 	/** Enabled selected foreground. */
 	public static final int ENABLED_SELECTED_FOREGROUND =
-		0xFFFFFF;
+		0xFF_FFFFFF;
 	
 	/** Enable selected background. */
 	public static final int ENABLED_SELECTED_BACKGROUND =
-		0x000088;
+		0xFF_000088;
 	
 	/** Disabled normal foreground. */
 	public static final int DISABLED_NORMAL_FOREGROUND =
-		0x888888;
+		0xFF_888888;
 	
 	/** Disabled normal background. */
 	public static final int DISABLED_NORMAL_BACKGROUND =
-		0xFFFFFF;
+		0xFF_FFFFFF;
 	
 	/** Disabled selected foreground. */
 	public static final int DISABLED_SELECTED_FOREGROUND =
-		0xAAAAAA;
+		0xFF_AAAAAA;
 	
 	/** Disabled selected background. */
 	public static final int DISABLED_SELECTED_BACKGROUND =
-		0x888888;
+		0xFF_888888;
 	
 	/** The focus box color (A). */
 	public static final int FOCUS_A_COLOR =
-		0xFF0000;
+		0xFF_FF0000;
 	
 	/** The focus box color (B). */
 	public static final int FOCUS_B_COLOR =
-		0xFFFF00;
+		0xFF_FFFF00;
 	
 	/**
 	 * Not used.
@@ -155,6 +157,17 @@ public final class StandardMetrics
 				return DISABLED_SELECTED_FOREGROUND;
 			else
 				return DISABLED_NORMAL_FOREGROUND;
+	}
+	
+	/**
+	 * Returns the item label font.
+	 *
+	 * @return The item label font.
+	 * @since 2019/12/09
+	 */
+	public static final Font itemLabelFont()
+	{
+		return Font.getFont(LIST_ITEM_FONT, 0, LIST_ITEM_HEIGHT);
 	}
 }
 

@@ -1486,6 +1486,14 @@ public class AdvancedGraphics
 		// Blending the text?
 		boolean doblending = this.doblending;
 		
+		// Background color to use
+		int bgcol = __t.getBackgroundColor();
+		boolean hasbg = ((bgcol & 0xFF_000000) != 0);
+		
+		// Pre-made arrays for drawing
+		int[] chint = new int[8];
+		Object[] chobj = new Object[1];
+		
 		// Need to store the properties since drawing of the text will
 		// change how characters are drawn
 		int oldcolor = this.getAlphaColor();
@@ -1503,9 +1511,6 @@ public class AdvancedGraphics
 				char c = chars.charAt(i);
 				if (c == '\r' || c == '\n')
 					continue;
-				
-				// Set color to the foreground color of this character
-				this.setAlphaColor(__t.getForegroundColor(i));
 				
 				// Need to find the SQF for this font again?
 				Font drawfont = __t.getFont(i);
@@ -1572,12 +1577,42 @@ public class AdvancedGraphics
 				if (dey > clipey)
 					linelen -= (dey - clipey);
 				
-				// Draw the bitmap for the character
+				// Load the character bitmap
 				int bps = sqf.loadCharBitmap(mc, bmp);
-				this.funccharbmp.function(this,
-					new int[]{color, dsx, dsy, bps, scanoff, scanlen,
-						lineoff, linelen},
-					new Object[]{bmp});
+				
+				// Draw background?
+				if (hasbg)
+				{
+					// Set needed color
+					this.setAlphaColor(bgcol);
+					
+					// Setup draw parameters
+					chint[0] = dsx;
+					chint[1] = dsy;
+					chint[2] = dsx + (scanlen - scanoff);
+					chint[3] = dsy + (linelen - lineoff);
+					chint[4] = scanlen - scanoff;
+					chint[5] = linelen - lineoff;
+					
+					// Perform draw operation
+					this.funcfillrect.function(this, chint,
+						chobj);
+				}
+				
+				// Set color to the foreground color of this character
+				this.setAlphaColor(__t.getForegroundColor(i));
+				
+				// Setup the draw and do it
+				chint[0] = color;
+				chint[1] = dsx;
+				chint[2] = dsy;
+				chint[3] = bps;
+				chint[4] = scanoff;
+				chint[5] = scanlen;
+				chint[6] = lineoff;
+				chint[7] = linelen;
+				chobj[0] = bmp;
+				this.funccharbmp.function(this, chint, chobj);
 			}
 		}
 		
