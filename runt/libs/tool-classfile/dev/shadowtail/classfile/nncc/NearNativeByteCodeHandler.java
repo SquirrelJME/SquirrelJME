@@ -2172,28 +2172,10 @@ public final class NearNativeByteCodeHandler
 					codebuilder.addCopy(__in[0].register, __out.register);
 				break;
 				
-				// Invoke method, no return value is read
+				// Invoke method (possibly return a value)
 			case "invoke":
-				{
-					// Invoked methods can thrown an exception, so do
-					// checks! Otherwise the behavior we expect might not
-					// happen
-					this.state.canexception = true;
-					
-					// Build the register List
-					List<Integer> args = new ArrayList<>();
-					int n = __in.length;
-					for (int i = 1; i < n; i++)
-						args.add(__in[i].register);
-					
-					// Invoke pointer with arguments
-					codebuilder.add(NativeInstructionType.INVOKE,
-						__in[0].register, new RegisterList(args));
-				}
-				break;
-				
-				// Invoke method, then read return value
 			case "invokeV":
+			case "invokeVL":
 				{
 					// Invoked methods can thrown an exception, so do
 					// checks! Otherwise the behavior we expect might not
@@ -2203,16 +2185,33 @@ public final class NearNativeByteCodeHandler
 					// Build the register List
 					List<Integer> args = new ArrayList<>();
 					int n = __in.length;
-					for (int i = 1; i < n; i++)
+					for (int i = 2; i < n; i++)
 						args.add(__in[i].register);
+					
+					// Before we invoke we need to set the next pool so
+					// execution is correct!
+					codebuilder.addCopy(__in[1].register,
+						NativeCode.NEXT_POOL_REGISTER);
 					
 					// Invoke pointer with arguments
 					codebuilder.add(NativeInstructionType.INVOKE,
 						__in[0].register, new RegisterList(args));
 					
-					// Copy return value
-					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-						__out.register);
+					// Copy return value?
+					switch (asmfunc)
+					{
+						case "invokeV":
+							codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+									__out.register);
+							break;
+							
+						case "invokeVL":
+							codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+									__out.register);
+							codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+								__out.register + 1);
+							break;
+					}
 				}
 				break;
 				

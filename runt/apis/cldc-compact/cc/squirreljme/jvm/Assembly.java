@@ -357,6 +357,131 @@ public final class Assembly
 		int __d, int __e, int __f, int __g, int __h);
 	
 	/**
+	 * Invoke method at pointer.
+	 *
+	 * @param __addr The address to invoke.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool);
+	
+	/**
+	 * Invoke method at pointer, with arguments.
+	 *
+	 * @param __addr The address to invoke.
+	 * @param __a Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool, int __a);
+	
+	/**
+	 * Invoke method at pointer, with arguments.
+	 *
+	 * @param __addr The address to invoke.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool, int __a,
+		int __b);
+	
+	/**
+	 * Invoke method at pointer, with arguments.
+	 *
+	 * @param __addr The address to invoke.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool, int __a,
+		int __b, int __c);
+	
+	/**
+	 * Invoke method at pointer, with arguments.
+	 *
+	 * @param __addr The address to invoke.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool, int __a, 
+		int __b, int __c, int __d);
+	
+	/**
+	 * Invoke method at pointer, with arguments.
+	 *
+	 * @param __addr The address to invoke.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool, int __a, 
+		int __b, int __c, int __d, int __e);
+	
+	/**
+	 * Invoke method at pointer, with arguments.
+	 *
+	 * @param __addr The address to invoke.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool, int __a, 
+		int __b, int __c, int __d, int __e, int __f);
+	
+	/**
+	 * Invoke method at pointer, with arguments.
+	 *
+	 * @param __addr The address to invoke.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool, int __a, 
+		int __b, int __c, int __d, int __e, int __f, int __g);
+	
+	/**
+	 * Invoke method at pointer, with arguments.
+	 *
+	 * @param __addr The address to invoke.
+	 * @param __pool The pool pointer to load.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @param __h Argument.
+	 * @return The result of the invocation.
+	 * @since 2019/12/08
+	 */
+	public static native long invokeVL(int __addr, int __pool, int __a, 
+		int __b, int __c, int __d, int __e, int __f, int __g, int __h);
+	
+	/**
 	 * Loads a value from the constant pool at the given index.
 	 *
 	 * @return The index of the value in the constant pool.
