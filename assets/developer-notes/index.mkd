@@ -2414,7 +2414,7 @@
 `05`
 `06`
 [**`07`**](stephanie-gawroriski/2019/12/07.mkd)
- * `08`
+ * [**`08`**](stephanie-gawroriski/2019/12/08.mkd)
 `09`
 `10`
 `11`
