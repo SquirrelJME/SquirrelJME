@@ -6,7 +6,8 @@ X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This defines the MEEP profile and is a 
  virtual project depends on others.
-X-SquirrelJME-DefinedProfiles: MIDP-1.0 MIDP-2.0 MIDP-3.1 MEEP-8
+X-SquirrelJME-DefinedProfiles: MIDP-1.0 MIDP-2.0 MIDP-2.1 MIDP-3.0 
+ MIDP-3.1 MEEP-8
 X-SquirrelJME-Depends: gcf media-api meep-cellular meep-concurrency 
  meep-event meep-key meep-liblets meep-lui meep-midlet meep-power 
  meep-provisioning meep-rms meep-securityframework meep-swm 
