@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
@@ -389,6 +390,10 @@ public final class System
 				if (rv == null)
 					return "en-US";
 				return rv;
+				
+				// The current platform
+			case "microedition.platform":
+				return "SquirrelJME/" + SquirrelJME.RUNTIME_VERSION;
 				
 				// Unknown, use system call
 			default:
