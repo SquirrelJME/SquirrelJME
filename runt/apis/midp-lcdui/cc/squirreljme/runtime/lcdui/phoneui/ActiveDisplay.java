@@ -19,6 +19,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Text;
 import javax.microedition.lcdui.Ticker;
 import java.util.Arrays;
 
@@ -342,7 +343,43 @@ public final class ActiveDisplay
 			
 			// Paint
 			State state = this._state;
-			this._drawing.paint((Displayable)current, state, ug, uw, uh);
+			try
+			{
+				this._drawing.paint((Displayable)current, state, ug, uw, uh);
+			}
+			
+			// Completely messed up!
+			catch (RuntimeException e)
+			{
+				try
+				{
+					// Draw text message
+					Text message = new Text(String.format("%s: %s",
+						e.getClass().getName(), e.getMessage()), uw, uh);
+					
+					// Set properties
+					message.setBackgroundColor(
+						StandardMetrics.itemBackgroundColor(true, true));
+					message.setForegroundColor(
+						StandardMetrics.itemForegroundColor(true, true));
+					
+					// Draw it now
+					ug.drawText(message, 0, 0);
+				}
+				
+				// Failed to draw the error?
+				catch (RuntimeException f)
+				{
+					// Suppress it
+					e.addSuppressed(f);
+					
+					// And print
+					e.printStackTrace();
+				}
+				
+				// Re-toss original exception
+				throw e;
+			}
 			
 			// Draw the focus box
 			State.Box focusbox = state.focusbox;

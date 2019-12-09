@@ -92,16 +92,67 @@ public enum DrawingMethod
 			// Number of entries
 			int n = form.size();
 			
+			// Make sure focus is in bounds
+			int focusdx = __s.focusdx;
+			if (focusdx < 0)
+				focusdx = 0;
+			else if (focusdx >= n)
+				focusdx = n - 1;
+			
 			// Working base coordinates for each item
 			int dx = 0,
 				dy = 0;
 			
+			// Font and height for labels
+			Font labelfont = StandardMetrics.itemLabelFont();
+			int labelh = labelfont.getHeight();
+			
 			// Draw each entry
 			for (int i = 0; i < n; i++)
 			{
+				todo.DEBUG.note("Draw %d of %d", i + 1, n);
+				
+				// Reset X draw
+				dx = 0;
+				
 				// Get item here
 				Item item = form.get(i);
 				
+				// Get item properties
+				String il = item.getLabel();
+				int iw = Math.min(__w, item.getPreferredWidth());
+				int ih = item.getPreferredHeight();
+				boolean ie = true;
+				boolean is = false;
+				
+				// Fill background in
+				__g.setAlphaColor(StandardMetrics.itemBackgroundColor(ie, is));
+				__g.fillRect(dx, dy, iw, ih);
+				
+				// Set used color
+				__g.setAlphaColor(StandardMetrics.itemForegroundColor(ie, is));
+				
+				// Draw label if one is used
+				if (il != null)
+				{
+					// Draw label
+					__g.setFont(labelfont);
+					__g.drawString(il, dx, dy, Graphics.TOP);
+					
+					// Move to item area now
+					dy += labelh;
+				}
+				
+				// Draw the item
+				DrawingItemMethod.of(item.getClass()).paint(__d, item, __s,
+					__g, dx, dy, iw, ih, true, false);
+				
+				// Is this item being focused? Set the focus box on it
+				if (focusdx == i)
+					__s.focusbox.set(dx, dy, iw - 2, ih - 2);
+				
+				// Move to next item
+				dy += ih;
 			}
 		}
 	},
@@ -185,7 +236,7 @@ public enum DrawingMethod
 				
 				// Is this item being focused?
 				if (focusdx == i)
-					__s.focusbox.set(0, dy, __w - 2, ih - 2);
+					__s.focusbox.set(dx, dy, __w - 2, ih - 2);
 				
 				// Move to next item
 				dy += ih;
