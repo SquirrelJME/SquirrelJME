@@ -96,8 +96,12 @@ public interface ClassInfoProperty
 	public static final byte INT_CLASSDEPTH =
 		19;
 	
+	/** Static field offset. */
+	public static final byte INT_SFOFFSET =
+		20;
+	
 	/** The number of properties available. */
 	public static final byte NUM_PROPERTIES =
-		20;
+		21;
 }
 

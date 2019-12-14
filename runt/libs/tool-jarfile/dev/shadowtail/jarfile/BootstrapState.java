@@ -62,9 +62,9 @@ public final class BootstrapState
 	public final int allocateStaticFieldSpace(int __sz)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BC0e Cannot allocate zero or negative static
+		// {@squirreljme.error BC0e Cannot allocate negative static
 		// field space.}
-		if (__sz <= 0)
+		if (__sz < 0)
 			throw new IllegalArgumentException("BC0e");
 		
 		// Allocate area for static fields, if not done yet

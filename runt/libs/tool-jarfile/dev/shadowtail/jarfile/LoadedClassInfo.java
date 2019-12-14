@@ -217,79 +217,8 @@ public final class LoadedClassInfo
 		if (__fn == null || __fd == null)
 			throw new NullPointerException("NARG");
 		
-		// Do we need to allocate static field space for this class?
-		int smemoff = this._smemoff;
-		if (smemoff < 0)
-		{
-			// Need the bootstrap here
-			BootstrapState bootstrap = this.__bootstrap();
-			Initializer initializer = bootstrap.initializer;
-			
-			// Allocate memory
-			smemoff = bootstrap.allocateStaticFieldSpace(
-				this._class.header.sfsize);
-			
-			// Store
-			this._smemoff = smemoff;
-			
-			// Initialize static field values
-			int sfieldarea = bootstrap.staticFieldAreaAddress();
-			for (MinimizedField mf : this._class.fields(true))
-			{
-				// No value here?
-				Object val = mf.value;
-				if (val == null)
-					continue;
-				
-				// Write pointer for this field
-				int wp = sfieldarea + smemoff + mf.offset;
-				
-				// Write constant value
-				switch (mf.type.toString())
-				{
-					case "B":
-					case "Z":
-						initializer.memWriteByte(wp,
-							((Number)val).byteValue());
-						break;
-					
-					case "S":
-					case "C":
-						initializer.memWriteShort(wp,
-							((Number)val).shortValue());
-						break;
-					
-					case "I":
-						initializer.memWriteInt(wp,
-							((Number)val).intValue());
-						break;
-					
-					case "J":
-						initializer.memWriteLong(wp,
-							((Number)val).longValue());
-						break;
-					
-					case "F":
-						initializer.memWriteInt(wp,
-							Float.floatToRawIntBits(
-								((Number)val).floatValue()));
-						break;
-					
-					case "D":
-						initializer.memWriteLong(wp,
-							Double.doubleToRawLongBits(
-								((Number)val).doubleValue()));
-						break;
-					
-					case "Ljava/lang/String;":
-						throw new todo.TODO("Write string");
-					
-						// Unknown
-					default:
-						throw new todo.OOPS(mf.type.toString());
-				}
-			}
-		}
+		// Need the static field offset
+		int smemoff = this.staticFieldOffset();
 		
 		// {@squirreljme.error BC04 Could not locate static field. (Class;
 		// Field Name; Field Type)}
@@ -552,6 +481,12 @@ public final class LoadedClassInfo
 				case "selfptr:I":
 					initializer.memWriteInt(Modifier.RAM_OFFSET,
 						wp, rv);
+					break;
+					
+					// Static field offset
+				case "sfoffset:I":
+					initializer.memWriteInt(
+						wp, this.staticFieldOffset());
 					break;
 				
 					// Allocation size of this class
@@ -903,6 +838,91 @@ public final class LoadedClassInfo
 	public final int romOffset()
 	{
 		return this._classoffset;
+	}
+	
+	/**
+	 * Returns the offset of the static field area.
+	 *
+	 * @return The pointer of this class static field area.
+	 * @since 2019/12/14
+	 */
+	public final int staticFieldOffset()
+	{
+		// Do we need to allocate static field space for this class?
+		int smemoff = this._smemoff;
+		if (smemoff < 0)
+		{
+			// Need the bootstrap here
+			BootstrapState bootstrap = this.__bootstrap();
+			Initializer initializer = bootstrap.initializer;
+			
+			// Allocate memory
+			smemoff = bootstrap.allocateStaticFieldSpace(
+				this._class.header.sfsize);
+			
+			// Store
+			this._smemoff = smemoff;
+			
+			// Initialize static field values
+			int sfieldarea = bootstrap.staticFieldAreaAddress();
+			for (MinimizedField mf : this._class.fields(true))
+			{
+				// No value here?
+				Object val = mf.value;
+				if (val == null)
+					continue;
+				
+				// Write pointer for this field
+				int wp = sfieldarea + smemoff + mf.offset;
+				
+				// Write constant value
+				switch (mf.type.toString())
+				{
+					case "B":
+					case "Z":
+						initializer.memWriteByte(wp,
+							((Number)val).byteValue());
+						break;
+					
+					case "S":
+					case "C":
+						initializer.memWriteShort(wp,
+							((Number)val).shortValue());
+						break;
+					
+					case "I":
+						initializer.memWriteInt(wp,
+							((Number)val).intValue());
+						break;
+					
+					case "J":
+						initializer.memWriteLong(wp,
+							((Number)val).longValue());
+						break;
+					
+					case "F":
+						initializer.memWriteInt(wp,
+							Float.floatToRawIntBits(
+								((Number)val).floatValue()));
+						break;
+					
+					case "D":
+						initializer.memWriteLong(wp,
+							Double.doubleToRawLongBits(
+								((Number)val).doubleValue()));
+						break;
+					
+					case "Ljava/lang/String;":
+						throw new todo.TODO("Write string");
+					
+						// Unknown
+					default:
+						throw new todo.OOPS(mf.type.toString());
+				}
+			}
+		}
+		
+		return smemoff;
 	}
 	
 	/**

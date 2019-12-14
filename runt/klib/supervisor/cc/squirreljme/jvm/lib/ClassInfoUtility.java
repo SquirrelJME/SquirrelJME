@@ -644,6 +644,11 @@ public final class ClassInfoUtility
 				case "classdepth:int":
 					pdx = ClassInfoProperty.INT_CLASSDEPTH;
 					break;
+					
+					// The static field offset
+				case "sfoffset:int":
+					pdx = ClassInfoProperty.INT_SFOFFSET;
+					break;
 				
 				default:
 					throw new todo.TODO(nat);
