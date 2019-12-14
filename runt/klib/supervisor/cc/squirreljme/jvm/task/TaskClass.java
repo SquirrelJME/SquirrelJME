@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.io.BinaryBlob;
 import cc.squirreljme.jvm.io.MemoryBlob;
+import cc.squirreljme.jvm.lib.ClassDualPoolParser;
 import cc.squirreljme.jvm.lib.ClassFieldsParser;
 import cc.squirreljme.jvm.lib.ClassFileParser;
 import cc.squirreljme.jvm.lib.ClassInfoProperty;
@@ -143,19 +144,29 @@ public final class TaskClass
 	 * @param __task The owning task.
 	 * @param __ciu The class info utility.
 	 * @param __cfp The class file parser for this class.
-	 * @param __pool The pool pointer.
+	 * @param __poolp The pool pointer.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/08
 	 */
 	private final void __buildPool(Task __task, ClassInfoUtility __ciu,
-		ClassFileParser __cfp, int __pool)
+		ClassFileParser __cfp, int __poolp)
 		throws NullPointerException
 	{
 		if (__task == null || __ciu == null || __cfp == null)
 			throw new NullPointerException("NARG");
 		
-		todo.DEBUG.note("TODO -- Build pool.");
-		//throw new todo.TODO();
+		// Initialize individual entries
+		ClassDualPoolParser pool = __cfp.pool();
+		for (int i = 1, n = pool.count(true); i < n; i++)
+		{
+			// Depends on the type
+			int type = pool.entryType(true, i);
+			switch (type)
+			{
+				default:
+					throw new todo.TODO("Pool Type? " + type);
+			}
+		}
 	}
 	
 	/**
