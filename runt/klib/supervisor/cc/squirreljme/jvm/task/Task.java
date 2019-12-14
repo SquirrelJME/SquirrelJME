@@ -95,6 +95,21 @@ public final class Task
 	}
 	
 	/**
+	 * Returns the current context thread of execution.
+	 *
+	 * @return The current context thread.
+	 * @since 2019/12/14
+	 */
+	public final TaskThread contextThread()
+	{
+		todo.DEBUG.note("TODO -- Implement better contextThread().");
+		
+		// Could not determine the context thread, use fallback by calling
+		// any thread and hoping it works
+		return Globals.getThreadManager().anyThreadOwnedByTask(this.lid);
+	}
+	
+	/**
 	 * Creates a new thread
 	 *
 	 * @return The resulting thread.
@@ -186,16 +201,33 @@ public final class Task
 	 *
 	 * @param __cl The class to allocate.
 	 * @return The pointer to the instance of the given object.
+	 * @throws NoSuchMethodTaskException If there is no default constructor.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/13
 	 */
 	public final int newInstance(TaskClass __cl)
-		throws NullPointerException
+		throws NoSuchMethodTaskException, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Need this to load from the class info
+		ClassInfoUtility ciutil = this.classInfoUtility();
+		
+		// {@squirreljme.error SV13 Class has no default constructor.}
+		int defnew = ciutil.defaultNew(__cl);
+		if (defnew == 0)
+			throw new NoSuchMethodTaskException("SV13");
+		
+		// Allocate memory here
+		int rv = this.allocator.allocateObject(__cl,
+			ciutil.classAllocationSize(__cl));
+		
+		// Invoke the default constructor
+		this.contextThread().execute(defnew, ciutil.poolPointer(__cl), rv);
+		
+		// Return the allocated pointer
+		return rv;
 	}
 }
 
