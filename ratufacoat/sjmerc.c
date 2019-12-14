@@ -785,9 +785,12 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			
 			/* The supervisor booted okay! */
 		case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
-			jvm->supervisorokay = 1;
-			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-			rv->lo = SJME_JINT_C(0);
+			if (jvm->supervisorokay == 0)
+			{
+				jvm->supervisorokay = 1;
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				rv->lo = SJME_JINT_C(0);
+			}
 			return;
 			
 			/* Get supervisor property. */
