@@ -81,6 +81,9 @@ public final class ClassInfo
 	/** The depth of this class. */
 	public final int classdepth;
 	
+	/** The static field pointer offset for the class. */
+	public final int sfoffset;
+	
 	/**
 	 * Class information constructor.
 	 *
@@ -103,12 +106,13 @@ public final class ClassInfo
 	 * @param __jardx The JAR Index.
 	 * @param __nm The number of methods that are used.
 	 * @param __cd The class depth.
+	 * @param __sfp The static field offset.
 	 * @since 2019/04/26
 	 */
 	public ClassInfo(int __sp, int __fl, int __minip, int __namep, int __sz,
 		int __bz, int __no, int __dim, int __csz, ClassInfo __scl,
 		ClassInfo[] __icl, ClassInfo __ccl, Class<?> __cop, int[] __vtv,
-		int[] __vtp, int __pool, int __jardx, int __nm, int __cd)
+		int[] __vtp, int __pool, int __jardx, int __nm, int __cd, int __sfp)
 	{
 		// Always implicitly set magic
 		this.magic = MAGIC_NUMBER;
@@ -133,6 +137,7 @@ public final class ClassInfo
 		this.jardx = __jardx;
 		this.nummethods = __nm;
 		this.classdepth = __cd;
+		this.sfoffset = __sfp;
 	}
 }
 

@@ -154,7 +154,7 @@ public final class TaskClass
 		if (__task == null || __ciu == null || __cfp == null)
 			throw new NullPointerException("NARG");
 		
-		todo.DEBUG.code('p', 'o');
+		todo.DEBUG.note("TODO -- Build pool.");
 		//throw new todo.TODO();
 	}
 	
@@ -176,7 +176,7 @@ public final class TaskClass
 		if (__task == null || __ciu == null || __cfp == null)
 			throw new NullPointerException("NARG");
 		
-		todo.DEBUG.code('v', 't');
+		todo.DEBUG.note("TODO -- Build VTables.");
 		//throw new todo.TODO();
 	}
 	
@@ -313,6 +313,9 @@ public final class TaskClass
 			thisparser.splitPool(true).count());
 		ciutil.setPoolPointer(this, poolpointer);
 		
+		// Allocate static field space
+		todo.DEBUG.note("TODO -- Allocate static field space.");
+		
 		// Load super class if there is one
 		String superclassname = Objects.toString(thisparser.superClassName(),
 			null);
@@ -367,6 +370,9 @@ public final class TaskClass
 		
 		// Initialize the actual pool constants now
 		this.__buildPool(__task, ciutil, thisparser, poolpointer);
+		
+		// Load static field constant values
+		todo.DEBUG.note("TODO -- Load static field constant values.");
 		
 		// Set interfaces array type
 		Assembly.memWriteInt(ifacespointer, Constants.OBJECT_CLASS_OFFSET,
