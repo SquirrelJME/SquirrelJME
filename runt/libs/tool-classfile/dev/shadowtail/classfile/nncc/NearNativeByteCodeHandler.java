@@ -1922,9 +1922,6 @@ public final class NearNativeByteCodeHandler
 		if (__at == null || __fr == null)
 			throw new NullPointerException("NARG");
 		
-		if ("pid".equals(__fr.memberName().toString()))
-			todo.DEBUG.note("%s -> %s", state.classname, __fr);
-		
 		// Accessing final fields of another class will always be treated as
 		// normal despite being in the constructor of a class
 		if (!state.classname.equals(__fr.className()))

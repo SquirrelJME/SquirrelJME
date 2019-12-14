@@ -785,10 +785,6 @@ public final class LoadedClassInfo
 							fieldInstanceOffset(af.field.memberName(),
 								af.field.memberType());
 					}
-					
-					if ("pid".equals(af.field.memberName().toString()))
-						todo.DEBUG.note("%s.pid = %s (%s)",
-							af.field.className(), vx, this._class.thisName());
 					break;
 				
 					// Pointer to class information
