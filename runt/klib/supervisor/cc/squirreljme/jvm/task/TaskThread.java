@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.Globals;
 
 /**
  * This represents a single thread, which is associated with a task.
@@ -74,6 +75,9 @@ public final class TaskThread
 		if (__cl == null || __mn == null || __mt == null)
 			throw new NullPointerException("NARG");
 		
+		// Get the owning task
+		Task task = Globals.getTaskManager().getTask(this.pid);
+		
 		throw new todo.TODO();
 	}
 	
@@ -116,6 +120,9 @@ public final class TaskThread
 	public final long execute(int __meth, int __pool, int... __args)
 		throws IllegalStateException, NullPointerException
 	{
+		// Get the owning task
+		Task task = Globals.getTaskManager().getTask(this.lid);
+		
 		throw new todo.TODO();
 	}
 	
