@@ -186,10 +186,15 @@ public final class Task
 	 *
 	 * @param __cl The class to allocate.
 	 * @return The pointer to the instance of the given object.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/13
 	 */
 	public final int newInstance(TaskClass __cl)
+		throws NullPointerException
 	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }

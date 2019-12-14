@@ -363,6 +363,18 @@ public final class LoadedClassInfo
 						initializer.memWriteInt(wp, 0);
 					break;
 					
+					// Default new constructor
+				case "defaultnew:I":
+					try
+					{
+						initializer.memWriteInt(Modifier.JAR_OFFSET,
+							wp, this.methodCodeAddress("<init>", "()V"));
+					}
+					catch (InvalidClassFormatException e)
+					{
+					}
+					break;
+					
 					// Dimensions
 				case "dimensions:I":
 					initializer.memWriteInt(

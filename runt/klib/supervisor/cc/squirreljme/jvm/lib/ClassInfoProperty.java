@@ -100,8 +100,12 @@ public interface ClassInfoProperty
 	public static final byte INT_SFOFFSET =
 		20;
 	
+	/** New instance method. */
+	public static final byte INT_DEFAULTNEW =
+		21;
+	
 	/** The number of properties available. */
 	public static final byte NUM_PROPERTIES =
-		21;
+		22;
 }
 
