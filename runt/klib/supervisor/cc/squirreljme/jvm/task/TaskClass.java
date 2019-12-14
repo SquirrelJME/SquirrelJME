@@ -316,6 +316,11 @@ public final class TaskClass
 		// Allocate static field space
 		todo.DEBUG.note("TODO -- Allocate static field space.");
 		
+		// Set default constructor
+		BinaryBlob defnew = thisparser.methodCodeBytes("<init>", "()V");
+		if (defnew != null)
+			ciutil.setDefaultNew(this, ((MemoryBlob)defnew).baseAddress());
+		
 		// Load super class if there is one
 		String superclassname = Objects.toString(thisparser.superClassName(),
 			null);
@@ -364,11 +369,6 @@ public final class TaskClass
 		int ifacespointer = __task.allocator.allocateArrayInt(ifps);
 		ciutil.setInterfaces(this, ifacespointer);
 		
-		// Set default constructor
-		BinaryBlob defnew = thisparser.methodCodeBytes("<init>", "()V");
-		if (defnew != null)
-			ciutil.setDefaultNew(this, ((MemoryBlob)defnew).baseAddress());
-		
 		// Initialize the VTables for the class now, it is a bit complicated
 		// so it is in another method
 		this.__buildVTable(__task, ciutil, thisparser, vtvirtual, vtpool);
@@ -392,7 +392,10 @@ public final class TaskClass
 			intarrayclass.infoPointer());
 		
 		// Call static initializer for class, if one exists
-		todo.DEBUG.note("TODO -- Call static initializer for class.");
+		BinaryBlob clinit = thisparser.methodCodeBytes("<clinit>", "()V");
+		if (clinit != null)
+			__task.contextThread().execute(((MemoryBlob)clinit).baseAddress(),
+				poolpointer);
 		
 		// All done! This class should hopefully work!
 		return this;
