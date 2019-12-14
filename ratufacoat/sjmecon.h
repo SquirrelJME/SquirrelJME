@@ -480,8 +480,11 @@ extern "C"
 /** Sleeps for the given number of millseconds and nanoseconds. */
 #define SJME_SYSCALL_SLEEP SJME_JINT_C(35)
 
+/** Squelch the framebuffer console and tell it to not print on-screen. */
+#define SJME_SYSCALL_SQUELCH_FB_CONSOLE SJME_JINT_C(36)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(36)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(37)
 
 /*****************************************************************************
 ************************** SYSTEM CALL ERROR CODES ***************************
