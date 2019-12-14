@@ -214,6 +214,7 @@ public final class SuitesMemory
 			dos.writeInt(0);
 			dos.writeInt(0);
 			dos.writeInt(0);
+			dos.writeInt(0);
 			
 			// Class and run-time constant pools
 			dos.writeInt(0);

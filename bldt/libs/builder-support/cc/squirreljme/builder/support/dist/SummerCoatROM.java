@@ -13,6 +13,7 @@ import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.builder.support.vm.BuildClassLibrary;
+import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.packfile.PackMinimizer;
@@ -134,12 +135,11 @@ public class SummerCoatROM
 			}
 		}
 		
-		// Get the main class of the launcher
-		String mainbc = new EntryPoints(lbins[numlbins - 1].manifest()).get(0).
-			entryPoint();
-		
 		// Write SummerCoat ROM file
-		this.generate(__zip, new BuildParameters(boot, lstrs, mainbc, libs));
+		EntryPoint entrypoint = new EntryPoints(lbins[numlbins - 1].
+			manifest()).get(0);
+		this.generate(__zip, new BuildParameters(boot, lstrs,
+			entrypoint.entryPoint(), entrypoint.isMidlet(), libs));
 	}
 	
 	/**
@@ -180,6 +180,9 @@ public class SummerCoatROM
 		/** Main boot class. */
 		public final String mainbc;
 		
+		/** Is this a MIDlet? */
+		public final boolean ismidlet;
+		
 		/** Libraries to use. */
 		public final VMClassLibrary[] libs;
 		
@@ -189,12 +192,13 @@ public class SummerCoatROM
 		 * @param __boot The boot library.
 		 * @param __lstrs Starting libraries.
 		 * @param __mainbc Main boot class.
+		 * @param __ismid Is this a MIDlet?
 		 * @param __libs Class Library.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/07/13
 		 */
 		public BuildParameters(String __boot, String[] __lstrs,
-			String __mainbc, VMClassLibrary[] __libs)
+			String __mainbc, boolean __ismid, VMClassLibrary[] __libs)
 			throws NullPointerException
 		{
 			if (__boot == null || __lstrs == null || __mainbc == null ||
@@ -204,6 +208,7 @@ public class SummerCoatROM
 			this.bootlib = __boot;
 			this.startlibs = __lstrs;
 			this.mainbc = __mainbc;
+			this.ismidlet = __ismid;
 			this.libs = __libs;
 		}
 		
@@ -222,21 +227,20 @@ public class SummerCoatROM
 				throw new NullPointerException("NARG");
 			
 			PackMinimizer.minimize(__out, this.bootlib, this.startlibs,
-				this.mainbc, this.libs);
+				this.mainbc, this.ismidlet, this.libs);
 		}
 		
 		/**
 		 * Minimizes to a byte array.
 		 *
 		 * @return The byte array of the minimized output.
-		 * @
 		 * @since 2019/07/13
 		 */
 		public final byte[] minimize()
 			throws IOException
 		{
 			return PackMinimizer.minimize(this.bootlib, this.startlibs,
-				this.mainbc, this.libs);
+				this.mainbc, this.ismidlet, this.libs);
 		}
 	}
 }

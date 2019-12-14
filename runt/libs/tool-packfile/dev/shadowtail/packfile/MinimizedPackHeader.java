@@ -23,11 +23,11 @@ public final class MinimizedPackHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		48;
+		52;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
-		52;
+		56;
 	
 	/** The offset to the BootJAR offset (which has BootRAM), with magic. */
 	public static final int OFFSET_OF_BOOTJAROFFSET =
@@ -64,6 +64,9 @@ public final class MinimizedPackHeader
 	
 	/** Initial main class to boot. (32) */
 	public final int bootmainclass;
+	
+	/** Initial main entry type. (36) */
+	public final int bootmaintype;
 	
 	/** Static constant pool offset. */
 	public final int staticpooloff;
@@ -103,6 +106,7 @@ public final class MinimizedPackHeader
 		this.booticpoffset = __fs[at++];
 		this.booticpsize = __fs[at++];
 		this.bootmainclass = __fs[at++];
+		this.bootmaintype = __fs[at++];
 		
 		// Static and run-time constant pool
 		this.staticpooloff = __fs[at++];

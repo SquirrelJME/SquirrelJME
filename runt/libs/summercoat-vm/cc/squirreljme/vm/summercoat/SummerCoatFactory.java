@@ -227,7 +227,7 @@ public class SummerCoatFactory
 			
 			// Is midlet?
 			ConfigRomWriter.writeInteger(dos, ConfigRomType.IS_MIDLET,
-				(__ismid ? 1 : 0));
+				(__ismid ? 1 : -1));
 			
 			// System properties
 			if (__sprops != null)

@@ -88,7 +88,7 @@ public final class Bootstrap
 			TaskCreateResult boot = ctm.newTask(
 				BootRom.initialClasspath(__rombase, config),
 				BootRom.initialMain(__rombase, config),
-				config.loadInteger(ConfigRomType.IS_MIDLET) != 0,
+				BootRom.initialIsMidlet(__rombase, config),
 				config.loadStrings(ConfigRomType.MAIN_ARGUMENTS),
 				config.loadKeyValueMap(ConfigRomType.DEFINE_PROPERTY));
 			todo.DEBUG.note("Okay.");

@@ -52,7 +52,8 @@ public class PackMinimizer
 	 * @since 2019/05/29
 	 */
 	public static final byte[] minimize(String __boot,
-		String[] __initcp, String __mainbc, VMClassLibrary... __libs)
+		String[] __initcp, String __mainbc, boolean __ismid,
+		VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
 		if (__libs == null)
@@ -62,7 +63,8 @@ public class PackMinimizer
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1048576))
 		{
 			// Minimize
-			PackMinimizer.minimize(baos, __boot, __initcp, __mainbc, __libs);
+			PackMinimizer.minimize(baos, __boot, __initcp, __mainbc, __ismid,
+				__libs);
 			
 			// Return result
 			return baos.toByteArray();
@@ -76,13 +78,15 @@ public class PackMinimizer
 	 * @param __boot The boot class used for the entry point.
 	 * @param __initcp Initial classpath.
 	 * @param __mainbc Main boot class.
+	 * @param __ismid Is this a MIDlet?
 	 * @param __libs The libraries to minimize.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/29
 	 */
 	public static final void minimize(OutputStream __os, String __boot,
-		String[] __initcp, String __mainbc, VMClassLibrary... __libs)
+		String[] __initcp, String __mainbc, boolean __ismid,
+		VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
 		if (__os == null || __libs == null ||
@@ -238,14 +242,21 @@ public class PackMinimizer
 		
 		// Main entry point name
 		if (__mainbc == null)
+		{
 			header.writeInt(0);
+			header.writeInt(0);
+		}
 		else
 		{
 			TableSectionOutputStream.Section mcl = out.addSection(
 				TableSectionOutputStream.VARIABLE_SIZE, 4);
 			
+			// Main class
 			mcl.writeUTF(__mainbc.replace('.', '/'));
 			header.writeSectionAddressInt(mcl);
+			
+			// Is this a MIDlet?
+			header.writeInt((__ismid ? 1 : -1));
 		}
 		
 		// Encode the constant pools
