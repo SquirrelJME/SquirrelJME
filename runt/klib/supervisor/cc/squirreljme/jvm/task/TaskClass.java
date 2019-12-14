@@ -386,6 +386,9 @@ public final class TaskClass
 		Assembly.memWriteInt(vtpool, Constants.OBJECT_CLASS_OFFSET,
 			intarrayclass.infoPointer());
 		
+		// Call static initializer for class, if one exists
+		todo.DEBUG.note("TODO -- Call static initializer for class.");
+		
 		// All done! This class should hopefully work!
 		return this;
 	}
