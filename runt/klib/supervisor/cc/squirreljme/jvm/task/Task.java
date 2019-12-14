@@ -102,7 +102,8 @@ public final class Task
 	 */
 	public final TaskThread contextThread()
 	{
-		todo.DEBUG.note("TODO -- Implement better contextThread().");
+		todo.DEBUG.note("TODO -- Implement better contextThread(), lid=%d.",
+			this.lid);
 		
 		// Could not determine the context thread, use fallback by calling
 		// any thread and hoping it works
@@ -228,6 +229,17 @@ public final class Task
 		
 		// Return the allocated pointer
 		return rv;
+	}
+	
+	/**
+	 * Returns the physical ID of the task.
+	 *
+	 * @return The task physical ID.
+	 * @since 2019/12/14
+	 */
+	public final int physicalProcessId()
+	{
+		return this.pid;
 	}
 }
 

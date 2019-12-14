@@ -70,7 +70,8 @@ public final class FieldReference
 			return false;
 		
 		FieldReference o = (FieldReference)__o;
-		return this.name.equals(o.name) &&
+		return this.classname.equals(o.classname) &&
+			this.name.equals(o.name) &&
 			this.type.equals(o.type);
 	}
 	
@@ -81,7 +82,8 @@ public final class FieldReference
 	@Override
 	public int hashCode()
 	{
-		return this.name.hashCode() ^
+		return this.classname.hashCode() ^
+			this.name.hashCode() ^
 			this.type.hashCode();
 	}
 	

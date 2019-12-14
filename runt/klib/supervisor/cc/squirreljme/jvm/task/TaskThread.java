@@ -162,7 +162,22 @@ public final class TaskThread
 		Task task = Globals.getTaskManager().getTask(this.pid);
 		
 		// Set the task and enter user mode now
-		Assembly.sysCallP(SystemCallIndex.FRAME_TASK_ID_SET, task.pid);
+		todo.DEBUG.code('P', 'i', task.pid);
+		todo.DEBUG.note("ours=%d ? p=%d task=%d/%d/%d cl=%d cn=%d mn=%d mc=%d",
+			this.pid,
+			Assembly.objectToPointer(task),
+			task.pid,
+			task.physicalProcessId(),
+			task.lid,
+			Assembly.memReadInt(Assembly.objectToPointer(task), 0),
+			Assembly.memReadInt(Assembly.objectToPointer(task), 4),
+			Assembly.memReadInt(Assembly.objectToPointer(task), 8),
+			Assembly.memReadInt(Assembly.objectToPointer(task), 12));
+		for (int i = 0; i <= 36; i += 4)
+			todo.DEBUG.note("@%d = %d", i,
+				Assembly.memReadInt(Assembly.objectToPointer(task), i));
+		
+		Assembly.sysCallP(SystemCallIndex.FRAME_TASK_ID_SET, task.lid);
 		
 		// Set new static field register
 		int oldsfp = Assembly.specialGetStaticFieldRegister();

@@ -295,7 +295,7 @@ public final class Minimizer
 		}
 		
 		// If an array, add the length of the array
-		if (isarray)
+		else if (isarray)
 		{
 			// Synthetic + Transient + Final
 			sorted.add(0, new Field(new FieldFlags(0x1090),
@@ -350,11 +350,10 @@ public final class Minimizer
 			temp._count++;
 		}
 		
-		// Always align the field area to 8 bytes so that way if there are
-		// any long/double in the fields for an object following this, it will
-		// properly be aligned
+		// Align fields sizes to 4-bytes always so that the next class on
+		// top of this has aligned field data
 		for (__TempFields__ temp : rv)
-			temp._bytes = (temp._bytes + 7) & ~7;
+			temp._bytes = (temp._bytes + 3) & ~3;
 		
 		// Return static and instance fields
 		return rv;

@@ -143,7 +143,7 @@ public final class NearNativeByteCodeHandler
 		this.isinstance = __bc.isInstance();
 		
 		// Determine monitor target register and the volatile base
-		int volbase = NativeCode.ARGUMENT_REGISTER_BASE + 2 +
+		int volbase = NativeCode.ARGUMENT_REGISTER_BASE + 3 +
 			__bc.maxLocals() + __bc.maxStack();
 		this.monitortarget = volbase;
 		this.volatiles = new VolatileRegisterStack(volbase + 1);
@@ -1921,6 +1921,9 @@ public final class NearNativeByteCodeHandler
 	{
 		if (__at == null || __fr == null)
 			throw new NullPointerException("NARG");
+		
+		if ("pid".equals(__fr.memberName().toString()))
+			todo.DEBUG.note("%s -> %s", state.classname, __fr);
 		
 		// Accessing final fields of another class will always be treated as
 		// normal despite being in the constructor of a class

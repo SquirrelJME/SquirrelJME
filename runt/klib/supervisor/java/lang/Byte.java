@@ -17,5 +17,40 @@ package java.lang;
 public final class Byte
 	extends Number
 {
+	/** The value of this byte. */
+	private final byte _value;
+	
+	/**
+	 * Initializes the byte.
+	 *
+	 * @param __v The value.
+	 * @since 2019/12/14
+	 */
+	public Byte(byte __v)
+	{
+		this._value = __v;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/14
+	 */
+	@Override
+	public String toString()
+	{
+		return Integer.toString(this._value, 10);
+	}
+	
+	/**
+	 * Wraps the given byte value.
+	 *
+	 * @param __v The value to wrap.
+	 * @return The wrapped byte.
+	 * @since 2019/12/14
+	 */
+	public static final Byte valueOf(byte __v)
+	{
+		return new Byte(__v);
+	}
 }
 

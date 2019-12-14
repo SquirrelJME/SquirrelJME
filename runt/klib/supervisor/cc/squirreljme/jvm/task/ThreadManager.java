@@ -65,7 +65,7 @@ public final class ThreadManager
 			{
 				TaskThread thread = threads[i];
 				
-				if (thread == null || thread.processId() == __pid)
+				if (thread == null || thread.processId() != __pid)
 					continue;
 				
 				return thread;
