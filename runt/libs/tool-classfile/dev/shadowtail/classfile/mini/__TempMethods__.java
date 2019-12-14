@@ -142,6 +142,9 @@ final class __TempMethods__
 					toc.writeInt(0);
 					toc.writeInt(0);
 				}
+				
+				// Padding to align flags to int
+				toc.writeShort(0);
 			}
 			
 			// Write end of table

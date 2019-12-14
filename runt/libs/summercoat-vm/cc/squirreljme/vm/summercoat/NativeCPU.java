@@ -1140,7 +1140,10 @@ public final class NativeCPU
 		// Enter it on the profiler
 		ProfiledThread profiler = this.profiler;
 		if (profiler != null)
-			profiler.enterFrame(scl, smn, smt);
+			profiler.enterFrame(
+				(scl == null ? "<AClass>" : scl),
+				(smn == null ? "<AMethod>" : smn),
+				(smt == null ? "<AType>" : smt));
 	}
 	
 	/**

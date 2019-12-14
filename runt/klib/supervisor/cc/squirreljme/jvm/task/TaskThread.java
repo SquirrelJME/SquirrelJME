@@ -11,6 +11,11 @@ package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Globals;
+import cc.squirreljme.jvm.io.BinaryBlob;
+import cc.squirreljme.jvm.io.MemoryBlob;
+import cc.squirreljme.jvm.lib.ClassFileParser;
+import cc.squirreljme.jvm.lib.ClassInfoUtility;
+import cc.squirreljme.jvm.lib.ClassNameUtils;
 import cc.squirreljme.jvm.SystemCallIndex;
 
 /**
@@ -66,7 +71,9 @@ public final class TaskThread
 	 * @param __mn The method name.
 	 * @param __mt The method type.
 	 * @param __args The arguments to the thread.
-	 * @return The return values of the method call
+	 * @return The return values of the method call.
+	 * @throws IllegalArgumentException If the argument count is too high or
+	 * the requested class is an array or primitive type.
 	 * @throws IllegalStateException If the current thread is being executed
 	 * and the current controller thread is not the current thread of
 	 * execution.
@@ -76,20 +83,27 @@ public final class TaskThread
 	 */
 	public final long execute(String __cl, String __mn, String __mt,
 		int... __args)
-		throws IllegalStateException, NullPointerException, TaskThrownException
+		throws IllegalArgumentException, IllegalStateException,
+			NullPointerException, TaskThrownException
 	{
 		if (__cl == null || __mn == null || __mt == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error SV12 Cannot execute into a special class type
+		// such as an array or primitive type.}
+		if (ClassNameUtils.isSpecial(__cl))
+			throw new IllegalArgumentException("SV12");
+		
 		// Get the owning task
 		Task task = Globals.getTaskManager().getTask(this.pid);
 		
-		todo.DEBUG.note("Implement lookup.");
-		/*if (true)
-			throw new todo.TODO();*/
+		// Load our class
+		TaskClass eclass = task.loadClass(__cl);
 		
-		// Execute the resultant method
-		return this.execute(-1, -1, __args);
+		// Execute the resultant method (use the pool of the target class)
+		return this.execute(((MemoryBlob)task.classpath.classParser(eclass.
+				resourceindex).methodCodeBytes(__mn, __mt)).baseAddress(),
+			task.classInfoUtility().poolPointer(eclass), __args);
 	}
 	
 	/**

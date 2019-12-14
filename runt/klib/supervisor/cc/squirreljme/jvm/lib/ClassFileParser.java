@@ -175,6 +175,42 @@ public final class ClassFileParser
 	}
 	
 	/**
+	 * Gets the code bytes which represent the given method.
+	 *
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @return The blob for the method, or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/14
+	 */
+	public final BinaryBlob methodCodeBytes(String __mn, String __mt)
+		throws NullPointerException
+	{
+		if (__mn == null || __mt == null)
+			throw new NullPointerException("NARG");
+		
+		// Search static methods first
+		for (boolean dostatic = true;; dostatic = false)
+		{
+			// Get methods parser
+			ClassMethodsParser methods = this.methods(dostatic);
+			
+			// See if method is a match
+			for (int i = 0, n = methods.count; i < n; i++)
+				if (__mn.equals(methods.name(i)) &&
+					__mt.equals(methods.type(i).toString()))
+					return methods.code(i);
+			
+			// End?
+			if (!dostatic)
+				break;
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Returns the number of methods in the class.
 	 *
 	 * @param __is Get the static method count.
