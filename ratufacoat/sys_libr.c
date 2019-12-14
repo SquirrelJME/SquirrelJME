@@ -15,6 +15,7 @@
 #include <libretro.h>
 
 #include "sjmerc.h"
+#include "sjmecon.h"
 
 /** Screen size. */
 #define SJME_RETROARCH_WIDTH 240
