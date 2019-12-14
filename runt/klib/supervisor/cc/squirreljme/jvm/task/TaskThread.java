@@ -243,6 +243,17 @@ public final class TaskThread
 	}
 	
 	/**
+	 * Returns the process ID of this task.
+	 *
+	 * @return The process ID.
+	 * @since 2019/12/14
+	 */
+	public final int processId()
+	{
+		return this.pid;
+	}
+	
+	/**
 	 * Sets the static field pointer for this thread.
 	 *
 	 * @param __d The static field pointer.

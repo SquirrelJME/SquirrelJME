@@ -45,6 +45,38 @@ public final class ThreadManager
 	}
 	
 	/**
+	 * Returns any thread that is owned by the given task.
+	 *
+	 * @param __pid The process ID.
+	 * @return The thread owned by the given task or {@code null}.
+	 * @since 2019/12/14
+	 */
+	public final TaskThread anyThreadOwnedByTask(int __pid)
+	{
+		// Lock self to inspect threads
+		TaskThread[] threads = this._threads;
+		synchronized (this)
+		{
+			// The array may be dynamically resized
+			int n = threads.length;
+			
+			// Search for a thread
+			for (int i = 0; i < n; i++)
+			{
+				TaskThread thread = threads[i];
+				
+				if (thread == null || thread.processId() == __pid)
+					continue;
+				
+				return thread;
+			}
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Creates the specified thread owned by the given task.
 	 *
 	 * @param __pid The owning PID.
