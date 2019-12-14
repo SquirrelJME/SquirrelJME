@@ -47,6 +47,31 @@ public final class ClassDualPoolParser
 	}
 	
 	/**
+	 * Returns the given pool count.
+	 *
+	 * @param __rt Use the run-time pool?
+	 * @return The given pool count.
+	 * @since 2019/12/14
+	 */
+	public final int count(boolean __rt)
+	{
+		return this.count(__rt, false);
+	}
+	
+	/**
+	 * Returns the given pool count.
+	 *
+	 * @param __rt Use the run-time pool?
+	 * @param __ft Forward?
+	 * @return The given pool count.
+	 * @since 2019/12/14
+	 */
+	public final int count(boolean __rt, boolean __ft)
+	{
+		return this.pool(__rt).count(__ft);
+	}
+	
+	/**
 	 * Returns the decoded entry as any object.
 	 *
 	 * @param __rt Read from the run-time pool?
@@ -211,8 +236,53 @@ public final class ClassDualPoolParser
 	public final BinaryBlob entryData(boolean __rt, int __dx, boolean __ft)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		return (__rt ? this.runtimepool : this.classpool).
-			entryData(__dx, __ft);
+		return this.pool(__rt).entryData(__dx, __ft);
+	}
+	
+	/**
+	 * Returns the type of the given entry.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @return The type of the entry
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/12/14
+	 */
+	public final int entryType(boolean __rt, int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.entryType(__rt, __dx, false);
+	}
+	
+	/**
+	 * Returns the type of the given entry.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @param __ft Would the entry be forwarded through to the actual
+	 * pool implementation?
+	 * @return The type of the entry
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/12/01
+	 */
+	public final int entryType(boolean __rt, int __dx, boolean __ft)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.pool(__rt).entryType(__dx, __ft);
+	}
+	
+	/**
+	 * Returns the given pool.
+	 *
+	 * @param __rt Use the run-time pool?
+	 * @return The given pool.
+	 * @since 2019/12/14
+	 */
+	public final AbstractPoolParser pool(boolean __rt)
+	{
+		return (__rt ? this.runtimepool : this.classpool); 
 	}
 }
 
