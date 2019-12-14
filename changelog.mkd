@@ -130,6 +130,10 @@ More detailed changes:
      * Generate JUnit output which can be used in test environments.
      * Performed some refactoring on the deserialization/serialization code.
    * `tool-classfile`
+     * Corrected comparison behavior of `FieldReference`, it did not check the
+       class name, so if a class referred to a field of the same name when
+       using SummerCoat it will result in the wrong class field being read
+       from whatever class just happened to be set first.
      * Corrected parsing of the stack map table.
      * Removed `net.multiphasicapps.classfile.ExecutableCode`, it was not used.
    * `tool-profiler`

@@ -119,9 +119,15 @@ public final class LoadedClassInfo
 		if (rv > 0)
 			return rv;
 		
-		// Allocation size is the super-class size plus our size
-		this._allocsize = (rv = this.baseOffset() +
+		// Find the bootstrap
+		BootstrapState bootstrap = this.__bootstrap();
+		
+		// This class is the size of the super class and our size
+		ClassName supercl = this._class.superName();
+		this._allocsize = (rv = (supercl == null ? 0 :
+			bootstrap.findClass(supercl).allocationSize()) +
 			this._class.header.ifbytes);
+		
 		return rv;
 	}
 	
@@ -779,6 +785,10 @@ public final class LoadedClassInfo
 							fieldInstanceOffset(af.field.memberName(),
 								af.field.memberType());
 					}
+					
+					if ("pid".equals(af.field.memberName().toString()))
+						todo.DEBUG.note("%s.pid = %s (%s)",
+							af.field.className(), vx, this._class.thisName());
 					break;
 				
 					// Pointer to class information

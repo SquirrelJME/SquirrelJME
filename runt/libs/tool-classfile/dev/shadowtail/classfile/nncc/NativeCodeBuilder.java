@@ -383,7 +383,7 @@ public final class NativeCodeBuilder
 	 *
 	 * @param __dt The data type used.
 	 * @param __load Is this a load operation?
-	 * @param __v The value to store.
+	 * @param __v The value to load/store.
 	 * @param __p The pointer.
 	 * @param __o The offset.
 	 * @return The generated instruction.
