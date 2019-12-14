@@ -22,8 +22,16 @@ import cc.squirreljme.jvm.lib.ClassPath;
 public final class TaskManager
 {
 	/** The maximum number of permitted tasks. */
-	public static final int MAX_TASKS =
+	public static final byte MAX_TASKS =
 		15;
+	
+	/** The shift for tasks. */
+	private static final byte _TASK_SHIFT =
+		4;
+	
+	/** The low mask for tasks. */
+	private static final byte _TASK_MASK =
+		0xF;
 	
 	/** The tasks which are available. */
 	public final Task[] tasks =
@@ -45,6 +53,29 @@ public final class TaskManager
 	}
 	
 	/**
+	 * Returns the task by the given logical ID.
+	 *
+	 * @param __lid The logical ID of the task.
+	 * @return The given task.
+	 * @throws NoSuchTaskException If the given task does not exist.
+	 * @since 2019/12/14
+	 */
+	public final Task getTask(int __lid)
+		throws NoSuchTaskException
+	{
+		synchronized (this)
+		{
+			// The lower bits are used to quickly obtain the PID slot
+			Task rv = this.tasks[__lid & _TASK_MASK];
+			if (rv != null && rv.lid == __lid)
+				return rv;
+		}
+		
+		// {@squirreljme.error SV10 No such task exists.}
+		throw new NoSuchTaskException("SV10");
+	}
+	
+	/**
 	 * Creates a new task.
 	 *
 	 * @param __cp The class path to use.
@@ -53,13 +84,13 @@ public final class TaskManager
 	 * @param __args The arguments to the task.
 	 * @param __sp System properties.
 	 * @return The resulting task.
-	 * @throws RuntimeException If the task could not be created.
 	 * @throws NullPointerException On null arguments.
+	 * @throws TooManyTasksException If the task could not be created.
 	 * @since 2019/06/22
 	 */
 	public TaskCreateResult newTask(ClassLibrary[] __cp, String __mcl,
 		boolean __im, String[] __args, String[] __sp)
-		throws NullPointerException
+		throws NullPointerException, TooManyTasksException
 	{
 		if (__cp == null)
 			throw new NullPointerException("NARG");
@@ -82,10 +113,11 @@ public final class TaskManager
 			
 			// {@squirreljme.error SV01 Task limit reached.}
 			if (pid >= MAX_TASKS)
-				throw new RuntimeException("SV01");
+				throw new TooManyTasksException("SV01");
 			
 			// Setup and store task now
-			rv = new Task(pid, this._nextlid++, new ClassPath(__cp));
+			rv = new Task(pid, ((this._nextlid++) << _TASK_SHIFT) | pid,
+				new ClassPath(__cp));
 			tasks[pid] = rv;
 		}
 		

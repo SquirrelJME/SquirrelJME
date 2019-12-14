@@ -102,7 +102,7 @@ public final class Task
 	 */
 	public final TaskThread createThread()
 	{
-		return Globals.getThreadManager().createThread(this.pid);
+		return Globals.getThreadManager().createThread(this.lid);
 	}
 	
 	/**
