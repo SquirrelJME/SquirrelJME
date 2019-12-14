@@ -85,6 +85,20 @@ public final class ClassInfoUtility
 	}
 	
 	/**
+	 * Returns the default constructor pointer.
+	 *
+	 * @param __cl The class to get.
+	 * @return The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/14
+	 */
+	public final int defaultNew(TaskClass __cl)
+		throws NullPointerException
+	{
+		return this.property(__cl, ClassInfoProperty.INT_DEFAULTNEW);
+	}
+	
+	/**
 	 * Returns the ClassInfo flags.
 	 *
 	 * @param __cl The class to get.
@@ -249,6 +263,21 @@ public final class ClassInfoUtility
 		
 		this.setProperty(__cl, ClassInfoProperty.CLASSINFO_COMPONENTCLASS,
 			__co.infoPointer());
+	}
+	
+	/**
+	 * Sets the default constructor to use.
+	 *
+	 * @param __cl The class.
+	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/14
+	 */
+	public final void setDefaultNew(TaskClass __cl, int __v)
+		throws NullPointerException
+	{
+		this.setProperty(__cl, ClassInfoProperty.INT_DEFAULTNEW,
+			__v);
 	}
 	
 	/**
@@ -648,6 +677,11 @@ public final class ClassInfoUtility
 					// The static field offset
 				case "sfoffset:int":
 					pdx = ClassInfoProperty.INT_SFOFFSET;
+					break;
+					
+					// Default new constructor
+				case "defaultnew:int":
+					pdx = ClassInfoProperty.INT_DEFAULTNEW;
 					break;
 				
 				default:

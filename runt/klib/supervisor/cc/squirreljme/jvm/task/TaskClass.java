@@ -364,6 +364,11 @@ public final class TaskClass
 		int ifacespointer = __task.allocator.allocateArrayInt(ifps);
 		ciutil.setInterfaces(this, ifacespointer);
 		
+		// Set default constructor
+		BinaryBlob defnew = thisparser.methodCodeBytes("<init>", "()V");
+		if (defnew != null)
+			ciutil.setDefaultNew(this, ((MemoryBlob)defnew).baseAddress());
+		
 		// Initialize the VTables for the class now, it is a bit complicated
 		// so it is in another method
 		this.__buildVTable(__task, ciutil, thisparser, vtvirtual, vtpool);
