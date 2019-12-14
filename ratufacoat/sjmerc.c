@@ -286,8 +286,10 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 		/* Read byte. */
 		b = buf[off];
 		
-		/* Draw to the console in supervisor boot mode. */
-		if (jvm->supervisorokay == 0 && jvm->fbinfo != NULL)
+		/* Draw to the console in supervisor boot mode or if it was not */
+		/* yet squelched. */
+		if ((jvm->supervisorokay == 0 || jvm->squelchfbconsole == 0) &&
+			jvm->fbinfo != NULL)
 		{
 			/* Carriage return? */
 			donewline = 0;
@@ -419,6 +421,7 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_SYSCALL_PD_OF_STDERR:
 				case SJME_SYSCALL_PD_OF_STDOUT:
 				case SJME_SYSCALL_PD_WRITE_BYTE:
+				case SJME_SYSCALL_SQUELCH_FB_CONSOLE:
 				case SJME_SYSCALL_SUPERVISOR_BOOT_OKAY:
 				case SJME_SYSCALL_SUPERVISOR_PROPERTY_GET:
 				case SJME_SYSCALL_SUPERVISOR_PROPERTY_SET:
@@ -781,6 +784,16 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Success. */
 			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 			rv->lo = SJME_JINT_C(1);
+			return;
+			
+			/* Squelch the framebuffer console. */
+		case SJME_SYSCALL_SQUELCH_FB_CONSOLE:
+			if (jvm->squelchfbconsole == 0)
+			{
+				jvm->squelchfbconsole = 1;
+				*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+				rv->lo = SJME_JINT_C(0);
+			}
 			return;
 			
 			/* The supervisor booted okay! */

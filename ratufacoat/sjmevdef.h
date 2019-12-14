@@ -183,6 +183,9 @@ struct sjme_jvm
 	
 	/** Is debugging enabled? */
 	sjme_jint enabledebug;
+	
+	/** Squelch the framebuffer console? */
+	sjme_jint squelchfbconsole;
 };
 
 /****************************************************************************/

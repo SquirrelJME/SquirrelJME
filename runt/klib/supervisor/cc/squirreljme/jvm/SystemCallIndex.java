@@ -372,12 +372,20 @@ public interface SystemCallIndex
 		35;
 	
 	/**
+	 * If the framebuffer is shared with the console, this tells the console
+	 * printer to not send messages to the screen as it will corrupt the
+	 * display on the screen.
+	 */
+	public static final byte SQUELCH_FB_CONSOLE =
+		36;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	public static final byte NUM_SYSCALLS =
-		36;
+		37;
 }
 
