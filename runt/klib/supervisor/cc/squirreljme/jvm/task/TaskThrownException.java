@@ -16,7 +16,7 @@ package cc.squirreljme.jvm.task;
  * @since 2019/10/13
  */
 public class TaskThrownException
-	extends Exception
+	extends TaskException
 {
 	/** The thrown exception value. */
 	protected final int pointer;

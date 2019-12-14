@@ -18,6 +18,34 @@ import cc.squirreljme.jvm.io.BinaryBlob;
  */
 public final class ClassMethodsParser
 {
+	/** The size of entries in the field list. */
+	public static final byte ENTRY_SIZE =
+		20;
+	
+	/** Flags offset. */
+	public static final byte FLAGS_INT_OFFSET =
+		0;
+	
+	/** Index of method. */
+	public static final byte INDEX_USHORT_OFFSET =
+		4;
+	
+	/** Name of method. */
+	public static final byte NAME_USHORT_OFFSET =
+		6;
+	
+	/** Type of method. */
+	public static final byte TYPE_USHORT_OFFSET =
+		8;
+	
+	/** Address of the code. */
+	public static final byte CODE_ADDRESS_INT_OFFSET =
+		10;
+	
+	/** Size of the code. */
+	public static final byte CODE_SIZE_INT_OFFSET =
+		14;
+	
 	/** The constant pool for the class. */
 	protected final ClassDualPoolParser pool;
 	
@@ -46,6 +74,77 @@ public final class ClassMethodsParser
 		this.pool = __cp;
 		this.blob = __b;
 		this.count = __n;
+	}
+	
+	/**
+	 * Returns the blob to the method code.
+	 *
+	 * @param __dx The index of the method.
+	 * @return The blob for the method.
+	 * @throws IndexOutOfBoundsException If the method is out of bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @since 2019/12/14
+	 */
+	public final BinaryBlob code(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		BinaryBlob blob = this.blob;
+		int offset = this.tocOffset(__dx);
+		
+		return blob.subSection(
+			blob.readJavaInt(offset + CODE_ADDRESS_INT_OFFSET),
+			blob.readJavaInt(offset + CODE_SIZE_INT_OFFSET));
+	}
+	
+	/**
+	 * Returns the name of the method.
+	 *
+	 * @param __dx The index of the method.
+	 * @return The method name.
+	 * @throws IndexOutOfBoundsException If the method is out of bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @since 2019/12/14
+	 */
+	public final String name(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.pool.entryAsString(false, this.blob.readJavaUnsignedShort(
+			this.tocOffset(__dx) + NAME_USHORT_OFFSET));
+	}
+	
+	/**
+	 * Index of the entry in the table of contents.
+	 *
+	 * @param __dx The index.
+	 * @return The table of contents offset.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @since 2019/12/14
+	 */
+	public final int tocOffset(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		if (__dx < 0 || __dx > this.count)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return __dx * ENTRY_SIZE;
+	}
+	
+	/**
+	 * Returns the tyoe of the method.
+	 *
+	 * @param __dx The index of the method.
+	 * @return The method type.
+	 * @throws IndexOutOfBoundsException If the method is out of bounds.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @since 2019/12/14
+	 */
+	public final PoolMethodDescriptor type(int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return this.pool.entryAsMethodDescriptor(false,
+			this.blob.readJavaUnsignedShort(this.tocOffset(__dx) +
+				TYPE_USHORT_OFFSET));
 	}
 }
 

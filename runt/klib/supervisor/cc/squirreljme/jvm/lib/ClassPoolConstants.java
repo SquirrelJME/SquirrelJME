@@ -47,5 +47,9 @@ public interface ClassPoolConstants
 	/** Class names. */
 	public static final byte TYPE_CLASSNAMES =
 		3;
+	
+	/** Method descriptor. */
+	public static final byte TYPE_METHOD_DESCRIPTOR =
+		7;
 }
 

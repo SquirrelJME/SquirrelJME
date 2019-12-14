@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.lib;
 
+import java.util.Objects;
+
 /**
  * This represents a class name within the constant pool.
  *
@@ -38,6 +40,32 @@ public final class PoolClassName
 		
 		this.name = __n;
 		this.componenttype = __cp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/14
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (!(__o instanceof PoolClassName))
+			return false;
+		
+		PoolClassName o = (PoolClassName)__o;
+		return this.name.equals(o.name) &&
+			Objects.equals(this.componenttype, o.componenttype);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/14
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.name.hashCode() ^
+			Objects.hashCode(this.componenttype);
 	}
 	
 	/**

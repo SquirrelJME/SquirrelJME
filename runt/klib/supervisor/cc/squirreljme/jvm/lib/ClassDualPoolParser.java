@@ -113,6 +113,17 @@ public final class ClassDualPoolParser
 					rvpn[i] = (PoolClassName)this.entry(false,
 						eparts[i] & 0xFFFF, true);
 				return rvpn;
+				
+				// Method descriptor
+			case ClassPoolConstants.TYPE_METHOD_DESCRIPTOR:
+				PoolClassName[] mdargs = new PoolClassName[enumparts - 3];
+				for (int i = 0, n = enumparts - 3; i < n; i++)
+					mdargs[i] = (PoolClassName)this.entry(false,
+						eparts[i + 3] & 0xFFFF, true);
+				return new PoolMethodDescriptor(
+					(String)this.entry(false, eparts[0] & 0xFFFF, true),
+					(PoolClassName)this.entry(false, eparts[2] & 0xFFFF, true),
+					mdargs);
 			
 				// Unknown
 			default:
@@ -150,6 +161,23 @@ public final class ClassDualPoolParser
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return (PoolClassName[])this.entry(__rt, __dx);
+	}
+	
+	/**
+	 * Returns the decoded entry as a method descriptor.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @return The value.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/12/14
+	 */
+	public final PoolMethodDescriptor entryAsMethodDescriptor(boolean __rt,
+		int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return (PoolMethodDescriptor)this.entry(__rt, __dx);
 	}
 	
 	/**
