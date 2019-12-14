@@ -51,5 +51,9 @@ public interface ClassPoolConstants
 	/** Method descriptor. */
 	public static final byte TYPE_METHOD_DESCRIPTOR =
 		7;
+	
+	/** Noted string. */
+	public static final byte TYPE_NOTED_STRING =
+		15;
 }
 

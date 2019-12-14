@@ -44,6 +44,10 @@ public interface Constants
 	public static final byte ARRAY_BASE_SIZE =
 		20;
 	
+	/** Constant pool cell size. */
+	public static final byte POOL_CELL_SIZE =
+		4;
+	
 	/** Bad magic number. */
 	public static final int BAD_MAGIC =
 		0xE7E5E7E4;

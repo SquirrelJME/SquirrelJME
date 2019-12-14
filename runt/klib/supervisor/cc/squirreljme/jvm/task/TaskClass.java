@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.lib.ClassInfoUtility;
 import cc.squirreljme.jvm.lib.ClassMethodsParser;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
 import cc.squirreljme.jvm.lib.ClassPath;
+import cc.squirreljme.jvm.lib.ClassPoolConstants;
 import cc.squirreljme.jvm.lib.PoolClassName;
 import java.util.Objects;
 
@@ -159,13 +160,26 @@ public final class TaskClass
 		ClassDualPoolParser pool = __cfp.pool();
 		for (int i = 1, n = pool.count(true); i < n; i++)
 		{
+			// The value to write into the slot
+			int slotv;
+			
 			// Depends on the type
 			int type = pool.entryType(true, i);
 			switch (type)
 			{
+					// A string which as been noted, not interned
+				case ClassPoolConstants.TYPE_NOTED_STRING:
+					slotv = ((MemoryBlob)pool.entryAsNotedString(true, i).
+						blob()).baseAddress() + 4;
+					break;
+				
 				default:
-					throw new todo.TODO("Pool Type? " + type);
+					todo.DEBUG.note("TODO -- Load of pool type %d?", type);
+					continue;
 			}
+			
+			// Store slot value
+			Assembly.memWriteInt(__poolp, i * Constants.POOL_CELL_SIZE, slotv);
 		}
 	}
 	

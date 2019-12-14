@@ -149,6 +149,11 @@ public final class ClassDualPoolParser
 					(String)this.entry(false, eparts[0] & 0xFFFF, true),
 					(PoolClassName)this.entry(false, eparts[2] & 0xFFFF, true),
 					mdargs);
+				
+				// Noted string
+			case ClassPoolConstants.TYPE_NOTED_STRING:
+				return new PoolNotedString(
+					this.entryData(false, eparts[0] & 0xFFFF, true));
 			
 				// Unknown
 			default:
@@ -203,6 +208,22 @@ public final class ClassDualPoolParser
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return (PoolMethodDescriptor)this.entry(__rt, __dx);
+	}
+	
+	/**
+	 * Returns the decoded entry as a noted string.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @return The value.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/12/14
+	 */
+	public final PoolNotedString entryAsNotedString(boolean __rt, int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return (PoolNotedString)this.entry(__rt, __dx);
 	}
 	
 	/**
