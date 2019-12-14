@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Globals;
+import cc.squirreljme.jvm.SystemCallIndex;
 
 /**
  * This represents a single thread, which is associated with a task.
@@ -24,13 +25,17 @@ import cc.squirreljme.jvm.Globals;
  */
 public final class TaskThread
 {
+	/** Maximum number of arguments to methods. */
+	public static final byte MAX_CALL_ARGUMENTS =
+		8;
+	
 	/** The owning process ID. */
 	protected final int pid;
 	
 	/** The thread ID. */
 	protected final int tid;
 	
-	/** The logical ID. */
+	/** The logical ID of this thread. */
 	protected final int lid;
 	
 	/** The static field pointer for this thread. */
@@ -66,11 +71,12 @@ public final class TaskThread
 	 * and the current controller thread is not the current thread of
 	 * execution.
 	 * @throws NullPointerException On null arguments.
+	 * @throws TaskThrownException If the task threw an exception.
 	 * @since 2019/10/13
 	 */
 	public final long execute(String __cl, String __mn, String __mt,
 		int... __args)
-		throws IllegalStateException, NullPointerException
+		throws IllegalStateException, NullPointerException, TaskThrownException
 	{
 		if (__cl == null || __mn == null || __mt == null)
 			throw new NullPointerException("NARG");
@@ -78,7 +84,12 @@ public final class TaskThread
 		// Get the owning task
 		Task task = Globals.getTaskManager().getTask(this.pid);
 		
-		throw new todo.TODO();
+		todo.DEBUG.note("Implement lookup.");
+		/*if (true)
+			throw new todo.TODO();*/
+		
+		// Execute the resultant method
+		return this.execute(-1, -1, __args);
 	}
 	
 	/**
@@ -94,10 +105,11 @@ public final class TaskThread
 	 * and the current controller thread is not the current thread of
 	 * execution.
 	 * @throws NullPointerException On null arguments.
+	 * @throws TaskThrownException If the task threw an exception.
 	 * @since 2019/12/08
 	 */
 	public final long execute(long __methpool, int... __args)
-		throws IllegalStateException, NullPointerException
+		throws IllegalStateException, NullPointerException, TaskThrownException
 	{
 		return this.execute(Assembly.longUnpackLow(__methpool),
 			Assembly.longUnpackHigh(__methpool), __args);
@@ -111,19 +123,109 @@ public final class TaskThread
 	 * @param __pool The constant pool pointer to load.
 	 * @param __args The arguments to the thread.
 	 * @return The return values of the method call
+	 * @throws IllegalArgumentException If too many method arguments were
+	 * passed.
 	 * @throws IllegalStateException If the current thread is being executed
 	 * and the current controller thread is not the current thread of
 	 * execution.
 	 * @throws NullPointerException On null arguments.
+	 * @throws TaskThrownException If the task threw an exception.
 	 * @since 2019/12/08
 	 */
 	public final long execute(int __meth, int __pool, int... __args)
-		throws IllegalStateException, NullPointerException
+		throws IllegalArgumentException, IllegalStateException,
+			NullPointerException, TaskThrownException
 	{
-		// Get the owning task
-		Task task = Globals.getTaskManager().getTask(this.lid);
+		if (__args == null)
+			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error SV11 Cannot execute method with the given
+		// number of arguments.}
+		if (__args.length > MAX_CALL_ARGUMENTS)
+			throw new IllegalArgumentException("SV11");
+		
+		// Get the owning task
+		Task task = Globals.getTaskManager().getTask(this.pid);
+		
+		// Set the task and enter user mode now
+		Assembly.sysCallP(SystemCallIndex.FRAME_TASK_ID_SET, task.pid);
+		
+		// Set new static field register
+		int oldsfp = Assembly.specialGetStaticFieldRegister();
+		Assembly.specialSetStaticFieldRegister(this._staticfieldptr);
+		
+		// The number of pass arguments varies!
+		int exception = 0;
+		long rv = 0;
+		try
+		{
+			switch (__args.length)
+			{
+				case 0:
+				default:
+					rv = Assembly.invokeVL(__meth, __pool);
+					break;
+				
+				case 1:
+					rv = Assembly.invokeVL(__meth, __pool, __args[0]);
+					break;
+				
+				case 2:
+					rv = Assembly.invokeVL(__meth, __pool, __args[0],
+						__args[1]);
+					break;
+				
+				case 3:
+					rv = Assembly.invokeVL(__meth, __pool, __args[0],
+						__args[1], __args[2]);
+					break;
+				
+				case 4:
+					rv = Assembly.invokeVL(__meth, __pool, __args[0],
+						__args[1], __args[2], __args[3]);
+					break;
+				
+				case 5:
+					rv = Assembly.invokeVL(__meth, __pool, __args[0],
+						__args[1], __args[2], __args[3], __args[4]);
+					break;
+				
+				case 6:
+					rv = Assembly.invokeVL(__meth, __pool, __args[0],
+						__args[1], __args[2], __args[3], __args[4], __args[5]);
+					break;
+				
+				case 7:
+					rv = Assembly.invokeVL(__meth, __pool, __args[0],
+						__args[1], __args[2], __args[3], __args[4], __args[5],
+						__args[6]);
+					break;
+				
+				case 8:
+					rv = Assembly.invokeVL(__meth, __pool, __args[0],
+						__args[1], __args[2], __args[3], __args[4], __args[5],
+						__args[6], __args[7]);
+					break;
+			}
+		}
+		
+		// Wrap the exception value
+		catch (Throwable t)
+		{
+			exception = Assembly.objectToPointer(t);
+		}
+		
+		// Restore some of our state
+		finally
+		{
+			// The static field register space
+			Assembly.specialSetStaticFieldRegister(oldsfp);
+		}
+		
+		// Return the result or throw exception
+		if (exception != 0)
+			throw new TaskThrownException(exception);
+		return rv;
 	}
 	
 	/**

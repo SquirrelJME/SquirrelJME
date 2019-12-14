@@ -71,8 +71,8 @@ public final class TaskManager
 				return rv;
 		}
 		
-		// {@squirreljme.error SV10 No such task exists.}
-		throw new NoSuchTaskException("SV10");
+		// {@squirreljme.error SV10 No such task exists. (The task)}
+		throw new NoSuchTaskException("SV10 " + __lid);
 	}
 	
 	/**
