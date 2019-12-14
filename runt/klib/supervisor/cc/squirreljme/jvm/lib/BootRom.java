@@ -56,21 +56,25 @@ public final class BootRom
 	public static final byte ROM_BOOTMAINCLASS_OFFSET =
 		32;
 	
+	/** Is the boot class a MIDlet? */
+	public static final byte ROM_BOOTMAINMIDLET_OFFSET =
+		36;
+	
 	/** Static constant pool offset. */
 	public static final byte ROM_STATICPOOLOFF_OFFSET =
-		36;
+		40;
 	
 	/** Static constant pool size. */
 	public static final byte ROM_STATICPOOLSIZE_OFFSET =
-		40;
+		44;
 	
 	/** Runtime constant pool offset. */
 	public static final byte ROM_RUNTIMEPOOLOFF_OFFSET =
-		44;
+		48;
 	
 	/** Runtime constant pool size. */
 	public static final byte ROM_RUNTIMEPOOLSIZE_OFFSET =
-		48;
+		52;
 	
 	/** Table of contents size. */
 	public static final byte TOC_ENTRY_SIZE =
@@ -166,6 +170,26 @@ public final class BootRom
 		
 		// Use them!
 		return usecp;
+	}
+	
+	/**
+	 * Returns if the initial class is a MIDlet.
+	 *
+	 * @param __rombase The base of the ROM.
+	 * @param __config The configuration to use.
+	 * @return Is this initial program a MIDlet?
+	 * @since 2019/12/14
+	 */
+	public static final boolean initialIsMidlet(int __rombase,
+		ConfigReader __config)
+	{
+		// Get from configuration first
+		int rv = __config.loadInteger(ConfigRomType.IS_MIDLET);
+		if (rv != 0)
+			return (rv > 0);
+		
+		return Assembly.memReadJavaInt(
+			__rombase, ROM_BOOTMAINMIDLET_OFFSET) > 0;
 	}
 	
 	/**
