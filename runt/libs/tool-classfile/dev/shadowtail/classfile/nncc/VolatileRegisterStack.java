@@ -65,9 +65,10 @@ public final class VolatileRegisterStack
 		while (used.contains(at))
 			at++;
 		
-		// {@squirreljme.error JC4l Exceeded maximum permitted registers.}
+		// {@squirreljme.error JC4l Exceeded maximum permitted registers.
+		// (The base register)}
 		if (at >= NativeCode.MAX_REGISTERS)
-			throw new IllegalStateException("JC4l");
+			throw new IllegalStateException("JC4l " + this.base);
 		
 		// Record it
 		used.add(at);
