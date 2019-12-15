@@ -1598,7 +1598,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					ib = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
 					
 					/* Store to array. */
-					sjme_vmmread(jvm->vmem, SJME_VMMTYPE_INTEGER,
+					sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
 						ia, SJME_ARRAY_BASE_SIZE + (ib * SJME_JINT_C(4)),
 						r[ic], error);
 				}
