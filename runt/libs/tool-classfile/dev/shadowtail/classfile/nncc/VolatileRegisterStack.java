@@ -52,9 +52,11 @@ public final class VolatileRegisterStack
 	 * Returns the next volatile register.
 	 *
 	 * @return The next volatile register.
+	 * @throws IllegalStateException If no registers are available.
 	 * @since 2019/05/24
 	 */
 	public final int get()
+		throws IllegalStateException
 	{
 		// Find next register to use from the base, use any register which
 		// was not previously recorded
@@ -62,6 +64,10 @@ public final class VolatileRegisterStack
 		Collection<Integer> used = this._used;
 		while (used.contains(at))
 			at++;
+		
+		// {@squirreljme.error JC4l Exceeded maximum permitted registers.}
+		if (at >= NativeCode.MAX_REGISTERS)
+			throw new IllegalStateException("JC4l");
 		
 		// Record it
 		used.add(at);
