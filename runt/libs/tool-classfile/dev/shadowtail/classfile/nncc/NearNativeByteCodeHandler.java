@@ -663,8 +663,7 @@ public final class NearNativeByteCodeHandler
 		int volwantcldx = volatiles.get();
 		
 		// Load desired class index type
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassInfoPointer(__cl), volwantcldx);
+		this.__loadClassInfo(__cl, volwantcldx);
 		
 		// Invoke helper method
 		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
@@ -751,9 +750,7 @@ public final class NearNativeByteCodeHandler
 			{
 				// Load the interface we are looking in
 				int voliclass = volatiles.get();
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new ClassInfoPointer(__r.handle().outerClass()),
-					voliclass);
+				this.__loadClassInfo(__r.handle().outerClass(), voliclass);
 				
 				// Load the method index of the volatile method in question
 				int volimethdx = volatiles.get();
@@ -1134,8 +1131,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Load the class data for the array type
 		// If not a fixed class index, then rely on the value in the pool
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassInfoPointer(__at), volclassdx);
+		this.__loadClassInfo(__at, volclassdx);
 		
 		// Call internal handler, place into temporary for OOM check
 		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS, "jvmNewArray",
@@ -1656,8 +1652,7 @@ public final class NearNativeByteCodeHandler
 			{
 				// Load the class type for the exception to check against
 				int volehclassdx = volatiles.get();
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new ClassInfoPointer(eh.type()), volehclassdx);
+				this.__loadClassInfo(eh.type(), volehclassdx);
 				
 				// Call instance handler check
 				this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
@@ -1790,8 +1785,7 @@ public final class NearNativeByteCodeHandler
 		int volwantcldx = volatiles.get();
 		
 		// Load desired target class type
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassInfoPointer(__cl), volwantcldx);
+		this.__loadClassInfo(__cl, volwantcldx);
 		
 		// Call helper class
 		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
@@ -2523,8 +2517,7 @@ public final class NearNativeByteCodeHandler
 			//  * The target class is the same class of the current class
 			//    being processed (private method)
 			if (wantcons || sameclass)
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new ClassInfoPointer(__cl), volclassid);
+				this.__loadClassInfo(__cl, volclassid);
 			
 			// Otherwise, we will be calling a super method so we need to load
 			// the super class of our current class
@@ -2622,8 +2615,7 @@ public final class NearNativeByteCodeHandler
 		int volwantcl = volatiles.get();
 		
 		// Load class data
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassInfoPointer(__cl), volwantcl);
+		this.__loadClassInfo(__cl, volwantcl);
 		
 		// Call allocator, copy to result
 		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS, "jvmNew",
@@ -3040,6 +3032,58 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Loads the class information for a class.
+	 *
+	 * @param __cl The class to load.
+	 * @param __r The output register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/15
+	 */
+	private final void __loadClassInfo(ClassName __cl, int __r)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Used for loading code
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Attempt load to the target register
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassInfoPointer(__cl), __r);
+		
+		// If the class is already loaded do not try loading
+		NativeCodeLabel isloaded = new NativeCodeLabel("ciisloaded",
+			this._refclunk++);
+		codebuilder.addIfNonZero(__r, isloaded);
+		
+		// Need register to load the 
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volnoted = volatiles.get();
+		
+		// Load the noted class name
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new NotedString(__cl.toString()), volnoted);
+		
+		// Initialize the class
+		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
+			"jvmInitClass", "(I)Lcc/squirreljme/jvm/ClassInfo;", volnoted);
+		
+		// Store the result of the init into the pool
+		codebuilder.add(NativeInstructionType.STORE_POOL,
+			new ClassInfoPointer(__cl), NativeCode.RETURN_REGISTER);
+		
+		// Use the value of it
+		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
+		
+		// Cleanup
+		volatiles.remove(volnoted);
+		
+		// End point is here
+		codebuilder.label(isloaded);
+	}
+	
+	/**
 	 * Loads the Class object for the given class into the given register.
 	 *
 	 * @param __cl The class to load.
@@ -3052,8 +3096,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Load the class info for the class
 		int volcdvt = volatiles.get();
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassInfoPointer(__cl), volcdvt);
+		this.__loadClassInfo(__cl, volcdvt);
 		
 		// Call internal class object loader
 		this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
@@ -3063,7 +3106,7 @@ public final class NearNativeByteCodeHandler
 		volatiles.remove(volcdvt);
 		
 		// Copy return value to the output register
-		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
+		this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
 	}
 	
 	/**

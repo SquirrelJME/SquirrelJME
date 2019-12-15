@@ -297,6 +297,7 @@ public final class NativeInstruction
 			case NativeInstructionType.COPY:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
+			case NativeInstructionType.STORE_POOL:
 			case NativeInstructionType.SYSTEM_CALL:
 				return 2;
 					
@@ -311,6 +312,7 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
+			case NativeInstructionType.STORE_TO_INTARRAY:
 				return 3;
 				
 			case NativeInstructionType.DEBUG_ENTRY:
@@ -364,6 +366,7 @@ public final class NativeInstruction
 				
 				// [p16, r16]
 			case NativeInstructionType.LOAD_POOL:
+			case NativeInstructionType.STORE_POOL:
 				return ArgumentFormat.of(
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VUREG);
@@ -395,6 +398,7 @@ public final class NativeInstruction
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
+			case NativeInstructionType.STORE_TO_INTARRAY:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
@@ -535,6 +539,9 @@ public final class NativeInstruction
 			case NativeInstructionType.LOAD_FROM_INTARRAY:
 				return "LOAD_FROM_INTARRAY";
 			case NativeInstructionType.RETURN:			return "RETURN";
+			case NativeInstructionType.STORE_POOL:		return "STORE_POOL";
+			case NativeInstructionType.STORE_TO_INTARRAY:
+				return "STORE_TO_INTARRAY";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
 			
 			default:

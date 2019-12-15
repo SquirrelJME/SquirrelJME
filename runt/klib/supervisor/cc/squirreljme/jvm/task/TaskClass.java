@@ -169,8 +169,13 @@ public final class TaskClass
 			{
 					// A class information pointer
 				case ClassPoolConstants.TYPE_CLASS_INFO_POINTER:
-					slotv = __task.loadClass(pool.entryAsClassInfoPointer(true,
-						i).toString())._infopointer;
+					String cip = pool.entryAsClassInfoPointer(true, i).
+						toString();
+					
+					// The given class may be deferred loaded in which case
+					// we do not really care about it right now
+					slotv = (ClassNameUtils.isDeferredLoad(cip) ? 0 :
+						__task.loadClass(cip)._infopointer);
 					break;
 					
 					// A string which as been noted, not interned

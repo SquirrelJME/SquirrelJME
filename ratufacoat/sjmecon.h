@@ -204,6 +204,12 @@ extern "C"
 /** Return. */
 #define SJME_OP_RETURN UINT8_C(0xF3)
 
+/** Store to pool, note that at code gen time this is aliased. */
+#define SJME_OP_STORE_POOL UINT8_C(0xF4)
+
+/** Store to integer array. */
+#define SJME_OP_STORE_TO_INTARRAY UINT8_C(0xF5)
+
 /** Invoke. */
 #define SJME_OP_INVOKE UINT8_C(0xF7)
 

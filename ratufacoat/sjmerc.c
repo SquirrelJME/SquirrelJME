@@ -1567,6 +1567,43 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				}
 				break;
 				
+				/* Store to constant pool. */
+			case SJME_OP_STORE_POOL:
+				{
+					/* The index to read from. */
+					ia = sjme_opdecodeui(jvm->vmem, &nextpc, error);
+					
+					/* Read from destination register. */
+					sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+							r[SJME_POOL_REGISTER], (ia * SJME_JINT_C(4)),
+							r[(ib = sjme_opdecodereg(jvm->vmem,
+								&nextpc, error))],
+							error);
+					
+#if defined(SJME_DEBUG)
+					fprintf(stderr, "Store pool %d <- %d/%08x\n",
+						(int)ia, (int)r[ib], (int)r[ib]);
+#endif
+				}
+				break;
+				
+				/* Store value to integer array. */
+			case SJME_OP_STORE_TO_INTARRAY:
+				{
+					/* Source register. */
+					ic = sjme_opdecodereg(jvm->vmem, &nextpc, error);
+					
+					/* Address and index */
+					ia = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					ib = r[sjme_opdecodereg(jvm->vmem, &nextpc, error)];
+					
+					/* Store to array. */
+					sjme_vmmread(jvm->vmem, SJME_VMMTYPE_INTEGER,
+						ia, SJME_ARRAY_BASE_SIZE + (ib * SJME_JINT_C(4)),
+						r[ic], error);
+				}
+				break;
+				
 				/* System call. */
 			case SJME_OP_SYSTEM_CALL:
 				{
