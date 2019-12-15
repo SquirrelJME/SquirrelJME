@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.io.BinaryBlob;
 import cc.squirreljme.jvm.io.MemoryBlob;
@@ -174,8 +175,19 @@ public final class TaskClass
 					
 					// The given class may be deferred loaded in which case
 					// we do not really care about it right now
-					slotv = (ClassNameUtils.isDeferredLoad(cip) ? 0 :
+					slotv = (ClassLoadingAdjustments.isDeferredLoad(cip) ? 0 :
 						__task.loadClass(cip)._infopointer);
+					break;
+					
+					// A class pool pointer
+				case ClassPoolConstants.TYPE_CLASS_POOL_POINTER:
+					String pip = pool.entryAsClassPoolPointer(true, i).
+						toString();
+					
+					// The pool may be deferred
+					slotv = (ClassLoadingAdjustments.isDeferredLoad(pip) ? 0 :
+						__task.classInfoUtility().
+							poolPointer(__task.loadClass(pip)));
 					break;
 					
 					// A string which as been noted, not interned

@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
 import dev.shadowtail.classfile.pool.AccessedField;
@@ -2719,8 +2720,7 @@ public final class NearNativeByteCodeHandler
 			__it), new MethodHandle(__cl, __mn, __mt)), volsmp);
 		
 		// Load constant pool of the target class
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(__cl), NativeCode.NEXT_POOL_REGISTER);
+		this.__loadClassPool(__cl, NativeCode.NEXT_POOL_REGISTER);
 		
 		// Create a backup of the exception register (system mode)
 		if (__it == InvokeType.SYSTEM)
@@ -3052,6 +3052,10 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new ClassInfoPointer(__cl), __r);
 		
+		// Detect classes which are dynamically initialized
+		if (!ClassLoadingAdjustments.isDeferredLoad(__cl.toString()))
+			return;
+		
 		// If the class is already loaded do not try loading
 		NativeCodeLabel isloaded = new NativeCodeLabel("ciisloaded",
 			this._refclunk++);
@@ -3107,6 +3111,69 @@ public final class NearNativeByteCodeHandler
 		
 		// Copy return value to the output register
 		this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
+	}
+	
+	/**
+	 * Loads the constant pool for the given class.
+	 *
+	 * @param __cl The class pool to load.
+	 * @param __r The output register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/15
+	 */
+	private final void __loadClassPool(ClassName __cl, int __r)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Used for loading code
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Load class pool which may already be loaded
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(__cl), __r);
+		
+		// Detect classes which are dynamically initialized
+		if (!ClassLoadingAdjustments.isDeferredLoad(__cl.toString()))
+			return;
+		
+		// Jump if the pool is already loaded
+		NativeCodeLabel isloaded = new NativeCodeLabel("piisloaded",
+			this._refclunk++);
+		codebuilder.addIfNonZero(__r, isloaded);
+		
+		// Need volatile to get the class info
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volcinfo = volatiles.get(),
+			volpoolv = volatiles.get(),
+			volscfo = volatiles.get();
+		
+		// Load the ClassInfo for the class we want
+		this.__loadClassInfo(__cl, volcinfo);
+		
+		// Load pool pointer from this ClassInfo
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new AccessedField(FieldAccessTime.NORMAL,
+				FieldAccessType.INSTANCE,
+			new FieldReference(
+				new ClassName("cc/squirreljme/jvm/ClassInfo"),
+				new FieldName("pool"),
+				new FieldDescriptor("I"))), volscfo);
+		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+			volpoolv, volcinfo, volscfo);
+		
+		// Store it
+		codebuilder.add(NativeInstructionType.STORE_POOL,
+			new ClassPool(__cl), volpoolv);
+		
+		// Cleanup
+		volatiles.remove(volcinfo);
+		volatiles.remove(volpoolv);
+		volatiles.remove(volscfo);
+		
+		// End point is here
+		codebuilder.label(isloaded);
 	}
 	
 	/**
