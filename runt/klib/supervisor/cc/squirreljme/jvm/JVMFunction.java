@@ -168,6 +168,19 @@ public final class JVMFunction
 	}
 	
 	/**
+	 * Initializes the given class.
+	 *
+	 * @param __ns The noted string.
+	 * @return The loaded class info.
+	 * @since 2019/12/15
+	 */
+	public static final ClassInfo jvmInitClass(int __ns)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Searches the interface vtables for the class of object {@code __p}
 	 * and searches for an interface implementation of class {@code __icl} and
 	 * if one is found then the pointer for index {@code __mdx} is returned.

@@ -675,40 +675,14 @@ public final class NativeCPU
 						int ioff = Constants.ARRAY_BASE_SIZE + (indx * 4);
 						
 						// Read value
-						VMException fail = null;
-						try
-						{
-							lr[rout] = memory.memReadInt(addr + ioff);
-						}
-						catch (VMException e)
-						{
-							fail = e;
-						}
-						
-						// Debug
-						/*if (ENABLE_DEBUG)
-							todo.DEBUG.note(
-								"(int)%08x[%d] (%08x) -> %d (%08x)",
-								addr, indx, addr + ioff,
-								lr[rout], lr[rout]);*/
-						
-						// Failure happened?
-						if (fail != null)
-							throw fail;
+						lr[rout] = memory.memReadInt(addr + ioff);
 					}
 					break;
 					
 					// Load from constant pool
 				case NativeInstructionType.LOAD_POOL:
-					{
-						lr[args[1]] = memory.memReadInt(
-							lr[NativeCode.POOL_REGISTER] + (args[0] * 4));
-						
-						// Debug
-						/*if (ENABLE_DEBUG)
-							todo.DEBUG.note("Read pool: %d -> %d", args[0],
-								lr[args[1]]);*/
-					}
+					lr[args[1]] = memory.memReadInt(
+						lr[NativeCode.POOL_REGISTER] + (args[0] * 4));
 					break;
 					
 					// Integer math
@@ -926,6 +900,28 @@ public final class NativeCPU
 							System.err.printf(
 								"<<<< %08x <<<<<<<<<<<<<<<<<<<<<<%n",
 								(now != null ? now._pc : 0));*/
+					}
+					break;
+					
+					// Store to constant pool
+				case NativeInstructionType.STORE_POOL:
+					memory.memWriteInt(lr[NativeCode.POOL_REGISTER] +
+						(args[0] * 4), lr[args[1]]);
+					break;
+					
+					// Store value into integer array
+				case NativeInstructionType.STORE_TO_INTARRAY:
+					{
+						// Get arguments
+						int addr = lr[args[1]],
+							indx = lr[args[2]],
+							rinn = args[0];
+						
+						// Calculate array index offset
+						int ioff = Constants.ARRAY_BASE_SIZE + (indx * 4);
+						
+						// Read value
+						memory.memWriteInt(addr + ioff, lr[rinn]);
 					}
 					break;
 				

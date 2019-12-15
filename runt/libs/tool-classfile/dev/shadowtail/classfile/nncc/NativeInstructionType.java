@@ -104,6 +104,17 @@ public interface NativeInstructionType
 		0xF3;
 	
 	/**
+	 * Store to pool, note that at code gen time this is aliased.
+	 * {@code iiiixxxx}.
+	 */
+	public static final short STORE_POOL =
+		0xF4;
+	
+	/** Store to integer array. */
+	public static final short STORE_TO_INTARRAY =
+		0xF5;
+	
+	/**
 	 * Invoke. 
 	 * {@code iiiixxxx}.
 	 */
