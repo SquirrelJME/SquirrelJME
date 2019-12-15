@@ -56,6 +56,10 @@ public interface ClassPoolConstants
 	public static final byte TYPE_METHOD_DESCRIPTOR =
 		7;
 	
+	/** A string that is used as a constant (cached). */
+	public static final byte TYPE_USED_STRING =
+		12;
+	
 	/** Class information pointer. */
 	public static final byte TYPE_CLASS_INFO_POINTER =
 		14;

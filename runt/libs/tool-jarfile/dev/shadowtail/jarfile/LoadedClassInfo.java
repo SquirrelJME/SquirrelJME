@@ -830,6 +830,13 @@ public final class LoadedClassInfo
 					vx = clpadd + clpool.byIndex(entry.part(0)).offset + 4;
 					break;
 					
+					// A string that is used, this is loaded at run-time
+				case USED_STRING:
+					mx = Modifier.RAM_OFFSET;
+					vx = bootstrap.internString(entry.<UsedString>value(
+						UsedString.class).toString());
+					break;
+					
 				default:
 					throw new todo.OOPS(type.name());
 			}
