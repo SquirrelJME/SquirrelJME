@@ -1437,17 +1437,20 @@ public class AdvancedGraphics
 		__x += this.transx;
 		__y += this.transy;
 		
+		// Setup text state
+		__TextState__ ts = new __TextState__();
+		
 		// Anchoring
-		int textw = __t.getWidth(),
-			texth = __t.getHeight();
+		ts.textw = __t.getWidth();
+		ts.texth = __t.getHeight();
 		if ((__anchor & Graphics.RIGHT) != 0)
-			__x -= textw;
+			__x -= ts.textw;
 		else if ((__anchor & Graphics.HCENTER) != 0)
-			__x -= (textw >> 1);
+			__x -= (ts.textw >> 1);
 		if ((__anchor & Graphics.BOTTOM) != 0)
-			__y -= texth;
+			__y -= ts.texth;
 		else if ((__anchor & Graphics.VCENTER) != 0)
-			__y -= (texth >> 1);
+			__y -= (ts.texth >> 1);
 		
 		// Get clipping region
 		int clipsx = this.clipsx,
@@ -1460,21 +1463,21 @@ public class AdvancedGraphics
 			return;
 		
 		// Trying to draw the text completely out of the clip as well?
-		int tex = __x + textw,
-			tey = __y + texth;
-		if (tex < clipsx || tey < clipsy)
+		ts.tex = __x + ts.textw;
+		ts.tey = __y + ts.texth;
+		if (ts.tex < clipsx || ts.tey < clipsy)
 			return;
 		
 		// The text box acts as an extra clip, so force everything to clip
 		// in there
 		if (__x > clipsx)
 			clipsx = __x;
-		if (tex < clipex)
-			clipex = tex;
+		if (ts.tex < clipex)
+			clipex = ts.tex;
 		if (__y > clipsy)
 			clipsy = __y;
-		if (tey < clipey)
-			clipey = tey;
+		if (ts.tey < clipey)
+			clipey = ts.tey;
 		
 		// Cache the default font in the event it is never changed ever
 		Font lastfont = __t.getFont();
@@ -1483,20 +1486,13 @@ public class AdvancedGraphics
 		int pixelheight = sqf.pixelheight,
 			bitsperscan = sqf.bitsperscan;
 		
-		// Blending the text?
-		boolean doblending = this.doblending;
-		
 		// Background color to use
 		int bgcol = __t.getBackgroundColor();
 		boolean hasbg = ((bgcol & 0xFF_000000) != 0);
 		
-		// Pre-made arrays for drawing
-		int[] chint = new int[8];
-		Object[] chobj = new Object[1];
-		
 		// Need to store the properties since drawing of the text will
 		// change how characters are drawn
-		int oldcolor = this.getAlphaColor();
+		ts.oldcolor = this.getAlphaColor();
 		try
 		{
 			// Read in all the text characters
@@ -1504,7 +1500,6 @@ public class AdvancedGraphics
 			String chars = __t.getText(0, n);
 			
 			// Draw each character according to their metrics
-			int[] metrics = new int[4];
 			for (int i = 0; i < n; i++)
 			{
 				// Ignore certain characters
@@ -1524,13 +1519,13 @@ public class AdvancedGraphics
 				}
 				
 				// Get the metrics for the character
-				__t.getCharExtent(i, metrics);
+				__t.getCharExtent(i, ts.metrics);
 				
 				// Calculate the draw position of the character
-				int dsx = __x + metrics[0],
-					dsy = __y + metrics[1],
-					dex = dsx + metrics[2],
-					dey = dsy + metrics[3];
+				int dsx = __x + ts.metrics[0];
+				int dsy = __y + ts.metrics[1];
+				int dex = dsx + ts.metrics[2];
+				int dey = dsy + ts.metrics[3];
 				
 				// Completely out of bounds, ignore because we cannot draw it
 				// anyway
@@ -1586,40 +1581,26 @@ public class AdvancedGraphics
 					// Set needed color
 					this.setAlphaColor(bgcol);
 					
-					// Setup draw parameters
-					chint[0] = dsx;
-					chint[1] = dsy;
-					chint[2] = dsx + (scanlen - scanoff);
-					chint[3] = dsy + (linelen - lineoff);
-					chint[4] = scanlen - scanoff;
-					chint[5] = linelen - lineoff;
-					
 					// Perform draw operation
-					this.funcfillrect.function(this, chint,
-						chobj);
+					this.funcfillrect.function(this, ts.loadIntArgs(dsx, dsy,
+						dsx + (scanlen - scanoff), dsy + (linelen - lineoff),
+						scanlen - scanoff, linelen - lineoff), ts.chobj);
 				}
 				
 				// Set color to the foreground color of this character
 				this.setAlphaColor(__t.getForegroundColor(i));
 				
 				// Setup the draw and do it
-				chint[0] = color;
-				chint[1] = dsx;
-				chint[2] = dsy;
-				chint[3] = bps;
-				chint[4] = scanoff;
-				chint[5] = scanlen;
-				chint[6] = lineoff;
-				chint[7] = linelen;
-				chobj[0] = bmp;
-				this.funccharbmp.function(this, chint, chobj);
+				this.funccharbmp.function(this, ts.loadIntArgs(color, dsx, dsy,
+					bps, scanoff, scanlen, lineoff, linelen),
+					ts.loadObject(bmp));
 			}
 		}
 		
 		// Just in case revert properties
 		finally
 		{
-			this.setAlphaColor(oldcolor);
+			this.setAlphaColor(ts.oldcolor);
 		}
 	}
 	

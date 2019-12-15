@@ -144,7 +144,7 @@ public final class NearNativeByteCodeHandler
 		this.isinstance = __bc.isInstance();
 		
 		// Determine monitor target register and the volatile base
-		int volbase = NativeCode.ARGUMENT_REGISTER_BASE + 3 +
+		int volbase = NativeCode.ARGUMENT_REGISTER_BASE + 2 +
 			__bc.maxLocals() + __bc.maxStack();
 		this.monitortarget = volbase;
 		this.volatiles = new VolatileRegisterStack(volbase + 1);
