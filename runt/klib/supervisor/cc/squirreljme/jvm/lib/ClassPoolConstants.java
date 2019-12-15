@@ -48,6 +48,10 @@ public interface ClassPoolConstants
 	public static final byte TYPE_CLASSNAMES =
 		3;
 	
+	/** Class pool pointer. */
+	public static final byte TYPE_CLASS_POOL_POINTER =
+		4;
+	
 	/** Method descriptor. */
 	public static final byte TYPE_METHOD_DESCRIPTOR =
 		7;

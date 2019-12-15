@@ -155,6 +155,12 @@ public final class ClassDualPoolParser
 				return new PoolClassInfoPointer(
 					((PoolClassName)this.entry(false, eparts[0] & 0xFFFF,
 						true)).toString());
+					
+				// Class pool pointer
+			case ClassPoolConstants.TYPE_CLASS_POOL_POINTER:
+				return new PoolClassPoolPointer(
+					((PoolClassName)this.entry(false, eparts[0] & 0xFFFF,
+						true)).toString());
 				
 				// Noted string
 			case ClassPoolConstants.TYPE_NOTED_STRING:
@@ -247,6 +253,23 @@ public final class ClassDualPoolParser
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return (PoolClassInfoPointer)this.entry(__rt, __dx);
+	}
+	
+	/**
+	 * Returns the decoded entry as a class pool pointer.
+	 *
+	 * @param __rt Read from the run-time pool?
+	 * @param __dx The index to read.
+	 * @return The value.
+	 * @throws IndexOutOfBoundsException If the given entry is out of bounds.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @since 2019/12/15
+	 */
+	public final PoolClassPoolPointer entryAsClassPoolPointer(boolean __rt,
+		int __dx)
+		throws IndexOutOfBoundsException, InvalidClassFormatException
+	{
+		return (PoolClassPoolPointer)this.entry(__rt, __dx);
 	}
 	
 	/**
