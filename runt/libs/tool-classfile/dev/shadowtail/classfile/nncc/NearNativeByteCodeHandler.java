@@ -1170,11 +1170,20 @@ public final class NearNativeByteCodeHandler
 			// Need volatiles
 			VolatileRegisterStack volatiles = this.volatiles;
 			
-			// Load the string pointer into a temporary
+			// Load the potentially cached string pointer
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				new UsedString((String)__v), __out.register);
+			
+			// Label to jump to if this string is already loaded
+			NativeCodeLabel ispresent = new NativeCodeLabel("strloaded",
+				this._refclunk++);
+			codebuilder.addIfNonZero(__out.register, ispresent);
+			
+			// Load the noted string
 			int volstrptr = volatiles.get();
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
 				new NotedString((String)__v), volstrptr);
-			
+				
 			// Call internal string loader
 			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmLoadString", "(I)Ljava/lang/String;", volstrptr);
@@ -1182,8 +1191,13 @@ public final class NearNativeByteCodeHandler
 			// Cleanup
 			volatiles.remove(volstrptr);
 			
-			// Copy return value to the output register
+			// Store into the pull and copy the result as well
+			codebuilder.add(NativeInstructionType.STORE_POOL,
+				new UsedString((String)__v), NativeCode.RETURN_REGISTER);
 			codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
+			
+			// String is loaded
+			codebuilder.label(ispresent);
 		}
 		
 		// Some other value

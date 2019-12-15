@@ -195,6 +195,12 @@ public final class TaskClass
 					slotv = ((MemoryBlob)pool.entryAsNotedString(true, i).
 						blob()).baseAddress() + 4;
 					break;
+					
+					// Cached string, these are loaded at run-time so there
+					// value here is always null!
+				case ClassPoolConstants.TYPE_USED_STRING:
+					slotv = 0;
+					break;
 				
 				default:
 					todo.DEBUG.note("TODO -- Load of pool type %d?", type);

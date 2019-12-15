@@ -15,11 +15,14 @@ import dev.shadowtail.classfile.mini.Minimizer;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
@@ -45,6 +48,10 @@ public final class BootstrapState
 	/** Reference to self. */
 	private final Reference<BootstrapState> _selfref =
 		new WeakReference<>(this);
+	
+	/** Intern strings. */
+	private final Map<String, Integer> _interns =
+		new HashMap<>();
 	
 	/** Static field pointer area. */
 	private int _sfieldarea;
@@ -83,6 +90,48 @@ public final class BootstrapState
 		
 		// Pointer is here
 		return sfieldnext;
+	}
+	
+	/**
+	 * Builds a character array.
+	 *
+	 * @param __v The characters to build.
+	 * @return The pointer to the char array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/15
+	 */
+	public final int buildCharArray(char... __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+			
+		// Needed for allocations and writes
+		Initializer initializer = this.initializer;
+		
+		// The number of elements to store
+		int n = __v.length;
+		
+		// Return pointer
+		int rv = this.reserveCharArray(n);
+		
+		// Write details of object
+		initializer.memWriteInt(Modifier.RAM_OFFSET,
+			rv + Constants.OBJECT_CLASS_OFFSET,
+			this.findClass("[C").infoPointer());
+		initializer.memWriteInt(
+			rv + Constants.OBJECT_COUNT_OFFSET,
+			999999);
+		initializer.memWriteInt(
+			rv + Constants.ARRAY_LENGTH_OFFSET,
+			n);
+		
+		// Write values in the array
+		for (int i = 0, wp = rv + Constants.ARRAY_BASE_SIZE;
+			i < n; i++, wp += 2)
+			initializer.memWriteShort(null, wp, (short)__v[i]);
+		
+		return rv;
 	}
 	
 	/**
@@ -278,6 +327,53 @@ public final class BootstrapState
 	}
 	
 	/**
+	 * Interns the given string.
+	 *
+	 * @param __s The string to intern.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/15
+	 */
+	public final int internString(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// If it was loaded already, ignore
+		Map<String, Integer> interns = this._interns;
+		if (interns.containsKey(__s))
+			return interns.get(__s);
+		
+		// Debug
+		todo.DEBUG.note("internString(%s)", __s);
+		
+		// Allocate string object
+		LoadedClassInfo strci = this.findClass("java/lang/String");
+		int strp = initializer.allocate(strci.allocationSize());
+		
+		// Cache it
+		interns.put(__s, strp);
+		
+		// Setup class information
+		initializer.memWriteInt(Modifier.RAM_OFFSET,
+			strp + Constants.OBJECT_CLASS_OFFSET,
+			strci.infoPointer());
+		initializer.memWriteInt(
+			strp + Constants.OBJECT_COUNT_OFFSET,
+			999999);
+		
+		// Write pointer to character array data
+		initializer.memWriteInt(Modifier.RAM_OFFSET,
+			strp + strci.fieldInstanceOffset(
+				new FieldName("_chars"),
+				new FieldDescriptor("[C")),
+			this.buildCharArray(__s.toCharArray()));
+		
+		// Use the string pointer
+		return strp;
+	}
+	
+	/**
 	 * Loads the class file information.
 	 *
 	 * @param __b The class file data.
@@ -310,6 +406,19 @@ public final class BootstrapState
 	}
 	
 	/**
+	 * Reserves a char array that can fit the specified number of characters.
+	 *
+	 * @param __n The length of the array.
+	 * @return The pointer to the array.
+	 * @since 2019/12/15
+	 */
+	public final int reserveCharArray(int __n)
+	{
+		return this.initializer.allocate(
+			Constants.ARRAY_BASE_SIZE + (2 * __n));
+	}
+	
+	/**
 	 * Reserves an integer array that can fit the specified number of entries.
 	 *
 	 * @param __n The number of entries to reserve.
@@ -317,7 +426,6 @@ public final class BootstrapState
 	 * @since 2019/09/16
 	 */
 	public final int reserveIntArray(int __n)
-		throws NullPointerException
 	{
 		return this.initializer.allocate(
 			Constants.ARRAY_BASE_SIZE + (4 * __n));
