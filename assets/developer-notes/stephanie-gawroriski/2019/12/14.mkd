@@ -1,0 +1,26 @@
+# 2019/12/14
+
+## 10:40
+
+Got execution of a random pointer in nowhere working, which is nice. I put in
+some basic exception handler stuff but no idea if that will even work. Of
+course for the main thread logic to work I need to enter at `Thread.__start()`
+but I think that is going to need a refactor of sorts to make it cleaner and
+otherwise something that will actually work out well. Will be interesting to
+get the thread logic working and such.
+
+## 15:06
+
+The class loading aspect is very complicated.
+
+## 16:24
+
+The initial task is T1093564, so I wonder if the shifting or fields is wrong
+for anything that is not integer.
+
+## 16:55
+
+Seems `task.pid` gets trashed somehow:
+
+ * `ours=17 ? task=1111928/17 cl=1069828 cn=6 mn=1091572 mc=2`
+
