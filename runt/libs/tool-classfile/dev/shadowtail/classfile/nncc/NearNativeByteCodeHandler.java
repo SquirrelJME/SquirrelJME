@@ -3066,8 +3066,9 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new ClassInfoPointer(__cl), __r);
 		
-		// Detect classes which are dynamically initialized
-		if (!ClassLoadingAdjustments.isDeferredLoad(__cl.toString()))
+		// Detect classes which are dynamically initialized or self
+		if (__cl.equals(state.classname.toString()) ||
+			!ClassLoadingAdjustments.isDeferredLoad(__cl.toString()))
 			return;
 		
 		// If the class is already loaded do not try loading
@@ -3149,7 +3150,8 @@ public final class NearNativeByteCodeHandler
 			new ClassPool(__cl), __r);
 		
 		// Detect classes which are dynamically initialized
-		if (!ClassLoadingAdjustments.isDeferredLoad(__cl.toString()))
+		if (__cl.equals(state.classname.toString()) ||
+			!ClassLoadingAdjustments.isDeferredLoad(__cl.toString()))
 			return;
 		
 		// Jump if the pool is already loaded

@@ -157,6 +157,9 @@ public final class TaskClass
 		if (__task == null || __ciu == null || __cfp == null)
 			throw new NullPointerException("NARG");
 		
+		// The name of this class
+		String self = __cfp.thisName().toString();
+		
 		// Initialize individual entries
 		ClassDualPoolParser pool = __cfp.pool();
 		for (int i = 1, n = pool.count(true); i < n; i++)
@@ -175,7 +178,8 @@ public final class TaskClass
 					
 					// The given class may be deferred loaded in which case
 					// we do not really care about it right now
-					slotv = (ClassLoadingAdjustments.isDeferredLoad(cip) ? 0 :
+					slotv = (self.equals(cip) ||
+						ClassLoadingAdjustments.isDeferredLoad(cip) ? 0 :
 						__task.loadClass(cip)._infopointer);
 					break;
 					
@@ -185,7 +189,8 @@ public final class TaskClass
 						toString();
 					
 					// The pool may be deferred
-					slotv = (ClassLoadingAdjustments.isDeferredLoad(pip) ? 0 :
+					slotv = (self.equals(pip) ||
+						ClassLoadingAdjustments.isDeferredLoad(pip) ? 0 :
 						__task.classInfoUtility().
 							poolPointer(__task.loadClass(pip)));
 					break;
