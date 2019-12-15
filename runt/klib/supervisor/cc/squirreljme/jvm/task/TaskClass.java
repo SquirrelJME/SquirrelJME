@@ -167,6 +167,12 @@ public final class TaskClass
 			int type = pool.entryType(true, i);
 			switch (type)
 			{
+					// A class information pointer
+				case ClassPoolConstants.TYPE_CLASS_INFO_POINTER:
+					slotv = __task.loadClass(pool.entryAsClassInfoPointer(true,
+						i).toString())._infopointer;
+					break;
+					
 					// A string which as been noted, not interned
 				case ClassPoolConstants.TYPE_NOTED_STRING:
 					slotv = ((MemoryBlob)pool.entryAsNotedString(true, i).
