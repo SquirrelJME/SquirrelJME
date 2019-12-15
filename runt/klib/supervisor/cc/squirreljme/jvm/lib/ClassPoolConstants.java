@@ -52,6 +52,10 @@ public interface ClassPoolConstants
 	public static final byte TYPE_METHOD_DESCRIPTOR =
 		7;
 	
+	/** Class information pointer. */
+	public static final byte TYPE_CLASS_INFO_POINTER =
+		14;
+	
 	/** Noted string. */
 	public static final byte TYPE_NOTED_STRING =
 		15;
