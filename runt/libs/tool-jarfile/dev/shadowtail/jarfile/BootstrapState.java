@@ -344,9 +344,6 @@ public final class BootstrapState
 		if (interns.containsKey(__s))
 			return interns.get(__s);
 		
-		// Debug
-		todo.DEBUG.note("internString(%s)", __s);
-		
 		// Allocate string object
 		LoadedClassInfo strci = this.findClass("java/lang/String");
 		int strp = initializer.allocate(strci.allocationSize());
