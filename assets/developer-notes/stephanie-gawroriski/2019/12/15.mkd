@@ -1,0 +1,21 @@
+# 2019/12/15
+
+## 08:54
+
+The current class loading scheme is very slow because lots of classes are used
+within code and it just ends up having to load tons of classes. So if I want
+any kind of speed I really need conditional loading.
+
+## 13:45
+
+So the only thing now are the pool types ACCESSED_FIELD, INVOKED_METHOD, and
+METHOD_INDEX. Not too sure how I want to handle them.
+
+## 13:52
+
+I could do dynamic loading of these as well since I do need to know if these
+load or otherwise. Dynamically loading pools and such is easy but I guess if
+I want deferred loading, if these calls are there then they would just end
+up making the calls and loading all the classes anyway. I guess it just really
+depends on how I want to go about it. Maybe I just need to do a late-link for
+any methods that are not part of the "built-in" always around classes.
