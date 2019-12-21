@@ -175,7 +175,7 @@ public final class SpringThreadWorker
 		
 		// The called constructor will allocate the space needed to store
 		// this object
-		return new SpringSimpleObject(__cl);
+		return new SpringSimpleObject(__cl, this.machine.pointers);
 	}
 	
 	/**

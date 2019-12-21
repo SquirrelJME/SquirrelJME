@@ -80,6 +80,10 @@ public final class SpringMachine
 	/** Access to the native display. */
 	protected final VMNativeDisplayAccess nativedisplay;
 	
+	/** Pointer manager. */
+	protected final SpringPointerManager pointers =
+		new SpringPointerManager();
+	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
 		new ArrayList<>();
@@ -115,6 +119,7 @@ public final class SpringMachine
 	final Map<String, String> _sysproperties;
 	
 	/** Unique objects by integer. */
+	@Deprecated
 	final Map<Integer, SpringObject> _uniquebyint =
 		new HashMap<>();
 	

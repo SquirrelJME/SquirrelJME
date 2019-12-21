@@ -15,6 +15,7 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2018/11/20
  */
+@Deprecated
 public final class SpringVMStaticMethod
 	implements SpringObject
 {
@@ -46,6 +47,16 @@ public final class SpringVMStaticMethod
 	{
 		// {@squirreljme.error BK3b StaticMethod does not have a monitor.}
 		throw new SpringFatalException("BK3b");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/21
+	 */
+	@Override
+	public final SpringPointerArea pointerArea()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

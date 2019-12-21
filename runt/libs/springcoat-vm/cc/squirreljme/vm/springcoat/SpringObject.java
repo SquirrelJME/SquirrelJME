@@ -28,6 +28,14 @@ public interface SpringObject
 	public abstract SpringMonitor monitor();
 	
 	/**
+	 * Returns the pointer area for this object.
+	 *
+	 * @return The pointer area for this object.
+	 * @since 2019/12/21
+	 */
+	public abstract SpringPointerArea pointerArea();
+	
+	/**
 	 * Returns the object type.
 	 *
 	 * @return The object type.
