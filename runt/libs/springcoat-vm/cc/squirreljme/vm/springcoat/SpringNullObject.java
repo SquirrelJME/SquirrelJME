@@ -45,6 +45,16 @@ public final class SpringNullObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/12/21
+	 */
+	@Override
+	public final SpringPointerArea pointerArea()
+	{
+		return SpringPointerArea.NULL;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/09
 	 */
 	@Override

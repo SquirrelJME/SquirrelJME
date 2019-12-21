@@ -38,13 +38,14 @@ public final class SpringSimpleObject
 	 * Initializes the object.
 	 *
 	 * @param __cl The class of the object.
+	 * @param __spm The manager for pointers.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/08
 	 */
-	public SpringSimpleObject(SpringClass __cl)
+	public SpringSimpleObject(SpringClass __cl, SpringPointerManager __spm)
 		throws NullPointerException
 	{
-		if (__cl == null)
+		if (__cl == null || __spm == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __cl;
@@ -98,6 +99,16 @@ public final class SpringSimpleObject
 	public final SpringMonitor monitor()
 	{
 		return this.monitor;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/21
+	 */
+	@Override
+	public final SpringPointerArea pointerArea()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

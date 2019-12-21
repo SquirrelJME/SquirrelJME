@@ -127,6 +127,16 @@ public abstract class SpringArrayObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/12/21
+	 */
+	@Override
+	public final SpringPointerArea pointerArea()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/15
 	 */
 	@Override

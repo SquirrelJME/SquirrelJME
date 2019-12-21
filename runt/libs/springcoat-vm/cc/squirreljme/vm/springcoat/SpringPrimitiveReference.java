@@ -48,6 +48,16 @@ public abstract class SpringPrimitiveReference
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/12/21
+	 */
+	@Override
+	public final SpringPointerArea pointerArea()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/23
 	 */
 	@Override
