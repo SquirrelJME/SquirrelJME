@@ -13,6 +13,8 @@ package cc.squirreljme.builder.support;
 import cc.squirreljme.builder.support.dist.DistBuilder;
 import cc.squirreljme.builder.support.vm.VMMain;
 import cc.squirreljme.builder.support.vmshader.Shader;
+import cc.squirreljme.runtime.swm.EntryPoint;
+import cc.squirreljme.runtime.swm.EntryPoints;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -275,12 +277,15 @@ public class BuilderFactory
 		// Alternative NPS location
 		String npspath = null;
 		
+		// Listing entry points?
+		boolean listentry = false;
+		
 		// Extra system properties
 		Map<String, String> sprops = new HashMap<>();
 		
 		// Determine how shading is to be handled
 		String[] parse;
-		while (null != (parse = __getopts(":?v:n:D:", args)))
+		while (null != (parse = __getopts(":?v:n:D:e", args)))
 			switch (parse[0])
 			{
 					// Use build timespace
@@ -303,14 +308,20 @@ public class BuilderFactory
 					else
 						sprops.put(spl, "");
 					break;
+					
+					// List entry points of program
+				case "e":
+					listentry = true;
+					break;
 				
 					// {@squirreljme.error AU0j Unknown argument.
 					// Usage: vmshade [-v vmname] [-n NPS path] [-Dkey=value]
-					// (program);
+					// [-e] (program[:launchid]);
 					// -v: The name of the virtual machine to use, this may
 					// be springcoat or summercoat.
 					// -n: Path to write NPS files to.
 					// -D: System property key/value pair.
+					// -e: List entry points but do not run program.
 					// (The switch)}
 				case "?":
 				default:
@@ -324,8 +335,42 @@ public class BuilderFactory
 		if (program == null)
 			throw new IllegalArgumentException("AU0k");
 		
+		// List entry points?
+		ProjectManager pm = this.projectmanager;
+		if (listentry)
+		{
+			// A launch ID might accidentally be specified, ignore it
+			int col = program.indexOf(':');
+			String check = (col >= 0 ? program.substring(0, col) : program);
+			
+			// Get the binaries to be ran
+			Binary[] vclasspath;
+			try
+			{
+				vclasspath = pm.build(check);
+			}
+			
+			// If there is no source for this, just use the classpath then
+			catch (NoSourceAvailableException e)
+			{
+				vclasspath = pm.classPath(check);
+			}
+			
+			// Load entry points
+			EntryPoints eps = new EntryPoints(
+				vclasspath[vclasspath.length - 1].manifest());
+			
+			// List them
+			System.err.println("Entry points:");
+			for (int i = 0, n = eps.size(); i < n; i++)
+				System.err.printf("    %d: %s%n", i, eps.get(i));
+			
+			// Do not continue
+			return;
+		}
+		
 		// Run the VM
-		VMMain.main(vmname, npspath, sprops, this.projectmanager, program,
+		VMMain.main(vmname, npspath, sprops, pm, program,
 			args.<String>toArray(new String[args.size()]));
 	}
 	
