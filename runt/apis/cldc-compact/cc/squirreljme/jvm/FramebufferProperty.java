@@ -16,61 +16,120 @@ package cc.squirreljme.jvm;
  */
 public interface FramebufferProperty
 {
-	/** Returns the address of the framebuffer. */
+	/**
+	 * Returns the address of the framebuffer.
+	 *
+	 * @return The framebuffer address.
+	 */
 	public static final byte ADDRESS =
 		1;
 	
-	/** Returns the width of the framebuffer. */
+	/**
+	 * Returns the width of the framebuffer.
+	 *
+	 * @return The framebuffer width.
+	 */
 	public static final byte WIDTH =
 		2;
 	
-	/** Returns the height of the framebuffer. */
+	/**
+	 * Returns the height of the framebuffer.
+	 *
+	 * @return The framebuffer height.
+	 */
 	public static final byte HEIGHT =
 		3;
 	
-	/** Returns the scanline length. */
+	/**
+	 * Returns the scanline length.
+	 *
+	 * @return The framebuffer scanline length.
+	 */
 	public static final byte SCANLEN =
 		4;
 	
-	/** Flush the display because it has been drawn. */
+	/**
+	 * Flush the display because it has been drawn.
+	 */
 	public static final byte FLUSH =
 		5;
 	
-	/** Returns the pixel format of the screen. */
+	/**
+	 * Returns the pixel format of the screen.
+	 *
+	 * @return The pixel format of the screen.
+	 */
 	public static final byte FORMAT =
 		6;
 	
-	/** Returns the scanline length in bytes. */
+	/**
+	 * Returns the scanline length in bytes.
+	 *
+	 * @return The scanline length in bytes.
+	 */
 	public static final byte SCANLEN_BYTES =
 		7;
 	
-	/** Returns the number of bytes per pixel. */
+	/**
+	 * Returns the number of bytes per pixel.
+	 *
+	 * @return The bytes per pixel.
+	 */
 	public static final byte BYTES_PER_PIXEL =
 		8;
 	
-	/** Returns the number of available pixels. */
+	/**
+	 * Returns the number of available pixels.
+	 *
+	 * @return The number of pixels.
+	 */
 	public static final byte NUM_PIXELS =
 		9;
 	
-	/** Bits per pixel. */
+	/**
+	 * Bits per pixel.
+	 *
+	 * @return The bits per pixel.
+	 */
 	public static final byte BITS_PER_PIXEL =
 		10;
 	
-	/** Get backlight level. */
+	/**
+	 * Get backlight level.
+	 *
+	 * @return The current backlight level.
+	 */
 	public static final byte BACKLIGHT_LEVEL_GET =
 		11;
 	
-	/** Set backlight level. */
+	/**
+	 * Set backlight level.
+	 *
+	 * @param 1 The level to set.
+	 */
 	public static final byte BACKLIGHT_LEVEL_SET =
 		12;
 	
-	/** Maximum backlight level. */
+	/**
+	 * Maximum backlight level.
+	 *
+	 * @return The maximum backlight level.
+	 */
 	public static final byte BACKLIGHT_LEVEL_MAX =
 		13;
 	
-	/** The number of properties. */
-	public static final byte NUM_PROPERTIES =
+	/**
+	 * Uploads an integer array of pixel data to the framebuffer.
+	 *
+	 * @param 1 The address of the array to upload.
+	 * @since 2019/12/21
+	 */
+	public static final byte UPLOAD_ARRAY_INT =
 		14;
+	
+	/** The number of framebuffer properties. */
+	public static final byte NUM_PROPERTIES =
+		15;
 	
 	/** Screen is RGB 32-bit. */
 	public static final byte FORMAT_INTEGER_RGB888 =
