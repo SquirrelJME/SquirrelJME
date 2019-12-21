@@ -239,10 +239,10 @@ public class VMMain
 		// Setup project manager
 		ProjectManager pm = ProjectManager.fromArguments(args);
 		
-		// {@squirreljme.error BA03 No project to launch was specified. The
+		// {@squirreljme.error AU1j No project to launch was specified. The
 		// format is project-name or project-name:entry-point-id.}
 		if (args.isEmpty())
-			throw new IllegalArgumentException("BA03");
+			throw new IllegalArgumentException("AU1j");
 		
 		// Forward
 		VMMain.main(pm, args.remove(),
