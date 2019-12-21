@@ -607,8 +607,11 @@ extern "C"
 /** Maximum backlight level. */
 #define SJME_FRAMEBUFFER_PROPERTY_BACKLIGHT_LEVEL_MAX SJME_JINT_C(13)
 
+/** Upload integer array. */
+#define SJME_FRAMEBUFFER_PROPERTY_UPLOAD_ARRAY_INT SJME_JINT_C(14)
+
 /** Maximum properties. */
-#define SJME_FRAMEBUFFER_PROPERTY_NUM_PROPERTIES SJME_JINT_C(14)
+#define SJME_FRAMEBUFFER_PROPERTY_NUM_PROPERTIES SJME_JINT_C(15)
 
 /*****************************************************************************
 *************************** SUPERVISOR PROPERTIES ****************************
