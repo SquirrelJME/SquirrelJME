@@ -38,9 +38,6 @@ enum __PrintFFlag__
 	/** Negative numbers in parenthesis. */
 	NEGATIVE_PARENTHESIS,
 	
-	/** Printed string is uppercase. */
-	UPPERCASE,
-	
 	/** End. */
 	;
 	

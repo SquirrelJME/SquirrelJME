@@ -334,6 +334,11 @@ public final class Formatter
 		if (__n == null)
 			return null;
 		
+		// {@squirreljme.error ZZ3s Decimal integers cannot have an
+		// alternative form.}
+		if (__pf.__hasFlag(__PrintFFlag__.ALTERNATIVE_FORM))
+			throw new IllegalArgumentException("ZZ3s");
+		
 		// Generate base number
 		long value = __n.longValue();
 		boolean neg = (value < 0);
