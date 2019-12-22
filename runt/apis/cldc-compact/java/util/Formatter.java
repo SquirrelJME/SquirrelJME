@@ -382,6 +382,24 @@ public final class Formatter
 	}
 	
 	/**
+	 * Formats other unsigned value.
+	 *
+	 * @param __pf Printing state.
+	 * @param __n The number to print.
+	 * @param __base The number's base.
+	 * @throws 
+	 */
+	private static String __formatOtherUnsignedInt(__PrintFState__ __pf,
+		Number __n, int __base)
+		throws NullPointerException
+	{
+		if (__pf == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Outputs to the state to the appendable.
 	 *
 	 * @param __out The output appendable.
@@ -425,6 +443,12 @@ public final class Formatter
 			case DECIMAL_INTEGER:
 				append = Formatter.__formatDecimalInt(__pf,
 					__pf.<Number>__argument(Number.class));
+				break;
+				
+				// Hexadecimal Integer
+			case HEXADECIMAL_INTEGER:
+				append = Formatter.__formatOtherUnsignedInt(__pf,
+					__pf.<Number>__argument(Number.class), 16);
 				break;
 			
 				// Simple string conversion
