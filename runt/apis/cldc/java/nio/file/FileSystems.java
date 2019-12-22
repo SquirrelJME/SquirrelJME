@@ -10,6 +10,8 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.full.NullFileSystem;
+
 /**
  * This contains a static method which is used to obtain the default filesystem
  * which is used by SquirrelJME's native filesystem interface.
@@ -36,7 +38,8 @@ public final class FileSystems
 	 */
 	public static FileSystem getDefault()
 	{
-		throw new todo.TODO();
+		todo.DEBUG.note("Implement FileSystem support!");
+		return NullFileSystem.INSTANCE;
 	}
 }
 

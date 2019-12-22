@@ -10,40 +10,108 @@
 
 package java.nio.file;
 
+/**
+ * This indicates that the given path is not valid.
+ *
+ * @since 2019/12/22
+ */
 public class InvalidPathException
 	extends IllegalArgumentException
 {
-	public InvalidPathException(String __a, String __b, int __c)
+	/** The input. */
+	private transient final String _input;
+	
+	/** The reason. */
+	private transient final String _reason;
+	
+	/** The index. */
+	private transient final int _index;
+	
+	/**
+	 * Initializes the exception.
+	 *
+	 * @param __in The input string.
+	 * @param __reason The reason for the failure.
+	 * @param __index The index of the failure, {@code -1} if not known.
+	 * @throws IllegalArgumentException If the index is less than {@code -1}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/22
+	 */
+	public InvalidPathException(String __in, String __reason, int __index)
+		throws IllegalArgumentException, NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		if (__in == null || __reason == null)
+			throw new NullPointerException("NARG");
+		
+		// @{squirreljme.error ZY04 Invalid path index specified for
+		// exception. (Index)}
+		if (__index < -1)
+			throw new IllegalArgumentException("ZY04 " + __index);
+		
+		this._input = __in;
+		this._reason = __reason;
+		this._index = __index;
 	}
 	
-	public InvalidPathException(String __a, String __b)
+	/**
+	 * Initializes the exception.
+	 *
+	 * @param __in The input string.
+	 * @param __reason The reason for the failure.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/22
+	 */
+	public InvalidPathException(String __in, String __reason)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		this(__in, __reason, -1);
 	}
 	
+	/**
+	 * Returns the index where the error occurred.
+	 *
+	 * @return The index where the error occurred, or {@code -1} if it is not
+	 * known.
+	 * @since 2019/12/22
+	 */
 	public int getIndex()
 	{
-		throw new todo.TODO();
+		return this._index;
 	}
 	
+	/**
+	 * Returns the input path.
+	 *
+	 * @return The input path.
+	 * @since 2019/12/22
+	 */
 	public String getInput()
 	{
-		throw new todo.TODO();
+		return this._input;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/12/22
+	 */
 	@Override
 	public String getMessage()
 	{
-		throw new todo.TODO();
+		// This is specifically specified by the documentation
+		int index = this._index;
+		return this._reason + ": " + this._input +
+			(index > -1 ? " at index " + index : "");
 	}
 	
+	/**
+	 * Returns the reason the path is not valid.
+	 *
+	 * @return The reason the path is not valid.
+	 * @since 2019/12/22
+	 */
 	public String getReason()
 	{
-		throw new todo.TODO();
+		return this._reason;
 	}
 }
 
