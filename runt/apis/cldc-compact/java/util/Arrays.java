@@ -819,7 +819,7 @@ public class Arrays
 			return false;
 		
 		for (int i = 0; i < na; i++)
-			if (Objects.equals(__a[i], __b[i]))
+			if (!Objects.equals(__a[i], __b[i]))
 				return false;
 		
 		// No mismatches
