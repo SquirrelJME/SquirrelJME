@@ -75,19 +75,15 @@ public final class Objects
 	 */
 	public static boolean equals(Object __a, Object __b)
 	{
-		// Which sides are null
-		boolean na = (__a == null);
-		boolean nb = (__b == null);
-		
-		// One side is null, but the other is not
-		if (na != nb)
-			return false;
-		
-		// Both sides are null (just need to check one)
-		else if (na)
+		// Same instance or both are null
+		if (__a == __b)
 			return true;
 		
-		// Standard equals
+		// Left side is null and right is not, so not the same
+		else if (__a == null)
+			return false;
+		
+		// Use standard comparison
 		return __a.equals(__b);
 	}
 	
