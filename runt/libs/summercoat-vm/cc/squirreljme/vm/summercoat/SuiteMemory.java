@@ -202,9 +202,11 @@ public final class SuiteMemory
 			libname.equals("supervisor.jar")), clib);
 		
 		// {@squirreljme.error AE09 Suite chunk size limit was exceeded.
-		// (The chunk size)}
+		// (The required chunk size; The limit; More space that is needed)}
 		if (jf.length > SuitesMemory.SUITE_CHUNK_SIZE)
-			throw new RuntimeException("AE09 " + jf.length);
+			throw new RuntimeException("AE09 " + jf.length + " " +
+				SuitesMemory.SUITE_CHUNK_SIZE + " " +
+				(jf.length - SuitesMemory.SUITE_CHUNK_SIZE));
 		
 		// Set memory using this byte array
 		ReadableMemory rm;
