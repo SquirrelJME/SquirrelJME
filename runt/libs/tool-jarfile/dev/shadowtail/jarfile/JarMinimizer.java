@@ -184,8 +184,9 @@ public final class JarMinimizer
 			// Process the resource
 			try (InputStream in = input.resourceAsStream(rc))
 			{
-				// Minimizing class file
-				if (rc.endsWith(".class"))
+				// Minimizing class file if it is a valid class
+				if (rc.endsWith(".class") && ClassName.isValidClassName(
+					rc.substring(0, rc.length() - 6)))
 				{
 					// Minimize the class
 					byte[] bytes = Minimizer.minimize(dualpool,

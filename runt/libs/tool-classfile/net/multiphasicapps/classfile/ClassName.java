@@ -363,5 +363,30 @@ public class ClassName
 				throw new todo.OOPS();
 		}
 	}
+	
+	/**
+	 * Checks if this class name is valid or not.
+	 *
+	 * @param __cn The class-name to check.
+	 * @return If it is valid or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/22
+	 */
+	public static final boolean isValidClassName(String __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			ClassName cn = new ClassName(__cn);
+			return true;
+		}
+		catch (InvalidClassFormatException e)
+		{
+			return false;
+		}
+	}
 }
 
