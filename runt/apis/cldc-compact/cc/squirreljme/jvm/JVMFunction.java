@@ -155,10 +155,15 @@ public final class JVMFunction
 	 * Loads a string from memory and returns an `intern()` string value.
 	 *
 	 * @param __p The pointer to load the string bytes from.
+	 * @return The resulting string.
 	 * @since 2019/05/26
 	 */
 	public static final String jvmLoadString(int __p)
 	{
+		// Zero will be the null pointer
+		if (__p == 0)
+			return null;
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
