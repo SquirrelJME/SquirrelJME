@@ -38,7 +38,7 @@ public final class SuitesMemory
 	
 	/** The suite chunk size. */
 	public static final int SUITE_CHUNK_SIZE =
-		4194304;
+		25_165_824;
 	
 	/** The suite manage to base from. */
 	protected final VMSuiteManager suites;
@@ -104,6 +104,12 @@ public final class SuitesMemory
 			// Also use map for quick access
 			suitemap.put(libname, sm);
 		}
+		
+		// {@squirreljme.error AE0q Suite space has exceeded size limit of
+		// 2GiB. (The current size; The amount of bytes over)}
+		if (off < 0)
+			throw new VMException("AE0q " + (((long)off) & 0xFFFFFFFFL) + " " +
+				(off - 0x7FFFFFFF));
 		
 		// Store all the various suite memories
 		this._suitemem = suitemem;

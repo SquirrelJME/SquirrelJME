@@ -48,25 +48,25 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
 public class SummerCoatFactory
 	extends VMFactory
 {
+	/** The starting address for RAM. */
+	public static final int RAM_START_ADDRESS =
+		0x0010_0000;
+	
 	/** Default size of RAM. */
 	public static final int DEFAULT_RAM_SIZE =
-		16777216;
-	
-	/** The base address for suites. */
-	public static final int SUITE_BASE_ADDR =
-		0x40000000;
+		33554432;
 	
 	/** Base address for configuration data. */
 	public static final int CONFIG_BASE_ADDR =
-		0x30000000;
+		0x1000_0000;
+	
+	/** The base address for suites. */
+	public static final int SUITE_BASE_ADDR =
+		0x2000_0000;
 	
 	/** Size of the configuration area. */
 	public static final int CONFIG_SIZE =
 		65536;
-	
-	/** The starting address for RAM. */
-	public static final int RAM_START_ADDRESS =
-		1048576;
 	
 	/**
 	 * Initializes the factory.
