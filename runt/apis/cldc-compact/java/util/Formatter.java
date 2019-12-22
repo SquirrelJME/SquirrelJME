@@ -401,7 +401,103 @@ public final class Formatter
 		if (__pf == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ3t Invalid flag specified for unsigned
+		// formatted value.}
+		if (__pf.__hasFlag(__PrintFFlag__.LOCALE_GROUPING) ||
+			__pf.__hasFlag(__PrintFFlag__.NEGATIVE_PARENTHESIS) ||
+			__pf.__hasFlag(__PrintFFlag__.ALWAYS_SIGNED) ||
+			__pf.__hasFlag(__PrintFFlag__.SPACE_FOR_POSITIVE))
+			throw new IllegalArgumentException("ZZ3t");
+		
+		// Get the long value of the given value, because it is limited to
+		// the precision (byte:-2 becomes 0xFE)
+		long input;
+		if (__n instanceof Byte)
+			input = __n.byteValue() & 0xFF;
+		else if (__n instanceof Short)
+			input = __n.shortValue() & 0xFFFF;
+		else if (__n instanceof Integer)
+			input = __n.intValue() & 0xFFFFFFFF;
+		else
+			input = __n.longValue();
+		
+		// Bit shift and mask used for the value
+		int shift, mask;
+		switch (__pf._conv)
+		{
+			case OCTAL_INTEGER:
+				mask = 0x7;
+				shift = 3;
+				break;
+			
+			default:
+			case HEXADECIMAL_INTEGER:
+				mask = 0xF;
+				shift = 4;
+				break;
+		}
+		
+		// Build the output number, constantly shift it until it is zero
+		StringBuilder out = new StringBuilder();
+		for (long rest = input; rest != 0; rest >>>= shift)
+		{
+			// Mask out the value
+			int val = (int)(rest & mask);
+			
+			// Add the character for this digit
+			out.append(Character.forDigit(val, __base));
+		}
+		
+		// Pad the remaining space with zero
+		if (__pf.__hasFlag(__PrintFFlag__.ZERO_PADDED))
+			for (int i = out.length(), n = __pf.__width(); i < n; i++)
+				out.append('0');
+		
+		// Place in the alternative form somewhere
+		if (__pf.__hasFlag(__PrintFFlag__.ALTERNATIVE_FORM))
+		{
+			// The length of the string
+			int len = out.length();
+			
+			// Hex
+			if (__base == 16)
+			{
+				// If the last two characters are zero, set the one before
+				// last to X
+				if (len >= 2 && out.charAt(len - 1) == '0' &&
+					out.charAt(len - 2) == '0')
+					out.setCharAt(len - 2, 'x');
+				
+				// If the last character is zero, then make it x and append
+				// zero
+				else if (len >= 1 && out.charAt(len - 1) == '0')
+				{
+					out.setCharAt(len - 1, 'x');
+					out.append('0');
+				}
+				
+				// Otherwise append 0x (reversed)
+				else
+				{
+					out.append('x');
+					out.append('0');
+				}
+			}
+			
+			// Octal
+			else if (__base == 8)
+			{
+				// If the last character is not zero, then add zero to the end
+				if (len < 1 && out.charAt(len - 1) != '0')
+					out.append('0');
+			}
+		}
+		
+		// Reverse string because it is in the other order
+		out.reverse();
+		
+		// Use it
+		return out.toString();
 	}
 	
 	/**
@@ -442,6 +538,12 @@ public final class Formatter
 			case CHARACTER:
 				Character cha = __pf.<Character>__argument(Character.class);
 				append = (cha == null ? "null" : cha.toString());
+				break;
+				
+				// Octal 
+			case OCTAL_INTEGER:
+				append = Formatter.__formatOtherUnsignedInt(__pf,
+					__pf.<Number>__argument(Number.class), 8);
 				break;
 			
 				// Decimal Integer
