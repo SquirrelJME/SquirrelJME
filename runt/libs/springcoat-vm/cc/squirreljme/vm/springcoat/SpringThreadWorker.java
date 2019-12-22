@@ -4336,8 +4336,10 @@ public final class SpringThreadWorker
 				// Loads a string
 			case SystemCallIndex.LOAD_STRING:
 				{
-					rv = this.uniqueObjectToPointer((SpringObject)
-						this.asVMObject(this.uniqueString(__args[0])));
+					rv = (__args[0] == 0 ? 0 :
+						this.uniqueObjectToPointer((SpringObject)
+						this.asVMObject(new ConstantValueString(
+						this.uniqueString(__args[0])))));
 					err = 0;
 				}
 				break;
