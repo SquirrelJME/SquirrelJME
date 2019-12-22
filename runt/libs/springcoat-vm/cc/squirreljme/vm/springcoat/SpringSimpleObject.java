@@ -28,6 +28,9 @@ public final class SpringSimpleObject
 	protected final SpringMonitor monitor =
 		new SpringMonitor();
 	
+	/** The pointer for this object. */
+	protected final SpringPointerArea pointer;
+	
 	/** Field storage in the class. */
 	private final SpringFieldStorage[] _fields;
 	
@@ -60,6 +63,9 @@ public final class SpringSimpleObject
 		int i = 0;
 		for (SpringField f : __cl.fieldTable())
 			fields[i++] = new SpringFieldStorage(f);
+		
+		// Allocate pointer
+		this.pointer = __spm.allocateAndBind(__cl.instancesize, this);
 	}
 	
 	/**
@@ -108,7 +114,7 @@ public final class SpringSimpleObject
 	@Override
 	public final SpringPointerArea pointerArea()
 	{
-		throw new todo.TODO();
+		return this.pointer;
 	}
 	
 	/**

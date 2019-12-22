@@ -4504,25 +4504,8 @@ public final class SpringThreadWorker
 		if (__p == SpringNullObject.NULL)
 			return 0;
 		
-		// Lock
-		Map<Integer, SpringObject> ubi = this.machine._uniquebyint;
-		synchronized (ubi)
-		{
-			// {@squirreljme.error BK3d Aliased object to pointer. (Value)}
-			if (false)
-				new Throwable(String.format("BK3d %08x", __p)).
-					printStackTrace();
-			
-			// See if it already has been mapped?
-			for (Map.Entry<Integer, SpringObject> e : ubi.entrySet())
-				if (e.getValue() == __p)
-					return e.getKey();
-			
-			// Otherwise add it
-			int rv = ubi.size() + 1;
-			ubi.put(rv, __p);
-			return rv;
-		}
+		// Return the base of the pointer area
+		return __p.pointerArea().base;
 	}
 	
 	/**
@@ -4538,20 +4521,7 @@ public final class SpringThreadWorker
 		if (__p == 0)
 			return SpringNullObject.NULL;
 		
-		// Find mapped object already
-		Map<Integer, SpringObject> ubi = this.machine._uniquebyint;
-		synchronized (ubi)
-		{
-			// {@squirreljme.error BK3e Aliased pointer to object. (Value)}
-			if (false)
-				new Throwable(String.format("BK3e %08x", __p)).
-					printStackTrace();
-			
-			SpringObject rv = ubi.get(__p);
-			if (rv == null)
-				return SpringNullObject.NULL;
-			return rv;
-		}
+		return this.machine.pointers.findObject(__p);
 	}
 	
 	/**

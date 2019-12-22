@@ -118,11 +118,6 @@ public final class SpringMachine
 	/** System properties. */
 	final Map<String, String> _sysproperties;
 	
-	/** Unique objects by integer. */
-	@Deprecated
-	final Map<Integer, SpringObject> _uniquebyint =
-		new HashMap<>();
-	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
 	
