@@ -17,9 +17,13 @@ import java.util.Set;
 public abstract class FileSystem
 	implements Closeable
 {
+	/**
+	 * Base constructor.
+	 *
+	 * @since 2019/12/22
+	 */
 	protected FileSystem()
 	{
-		throw new todo.TODO();
 	}
 	
 	public abstract void close()
