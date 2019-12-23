@@ -73,7 +73,7 @@ public abstract class Flags<F extends Flag>
 		for (F f : __fl)
 		{
 			// Get ordinal
-			int o = __cl.cast(f).ordinal();
+			int o = f.ordinal();
 			
 			// Set it
 			bits |= (1 << o);
@@ -94,6 +94,9 @@ public abstract class Flags<F extends Flag>
 	@Override
 	public final boolean contains(Object __o)
 	{
+		if (!(__o instanceof Flag))
+			return false;
+		
 		// Quick bit check?
 		if (cast.isInstance(__o))
 			return 0 != (this.setbits & (1 << (((Flag)__o).ordinal())));
@@ -167,7 +170,8 @@ public abstract class Flags<F extends Flag>
 		// {@squirreljme.error JC2w An undefined flag has been specified.
 		// (The extra bitfield flags)}
 		if (__i != 0)
-			throw new InvalidClassFormatException(String.format("JC2w %02x", __i));
+			throw new InvalidClassFormatException(
+				String.format("JC2w %02x", __i));
 		
 		return fl;
 	}
