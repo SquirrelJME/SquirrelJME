@@ -1,0 +1,10 @@
+# 2019/12/22
+
+## 19:08
+
+Trying to get SummerCoat or SpringCoat running and I am hitting the class file
+issues. There was an error in `Arrays.equals()` which I fixed, that allowed me
+to progress further. Now Allocator fails to load because the initial `ALOAD`
+has nothing on the stack which is rather wrong. So it is likely a parser error
+and such. I do know that `DataInputStream` is used, so maybe that has an
+error in it?

@@ -1,0 +1,24 @@
+# 2019/12/21
+
+## 08:55
+
+I think today I will skip the bootstrap and do other things in the code
+rather so it is something fresh for a bit.
+
+## 08:58
+
+I wonder how SpringCoat is going to handle stuff like raw memory or
+otherwise. Like the framebuffer is very raw and just uses an integer
+array. I think what I could actually use is a screen upload from an
+integer array to the framebuffer. I think this is the only way to make
+SpringCoat a bit happier. It would involve extra memory though but it
+would still work with images and such.
+
+## 09:06
+
+Actually, SpringCoat has trouble when it comes to objects and pointers
+and otherwise. Right now I have a map of stuff that gets assigned a
+pointer but what I really need is an ID associated with each object
+so to speak. This would kinda just fake SummerCoat and such but it
+should work? I think that would be better than a special object map
+and it would allow stuff to get garbage collected.
