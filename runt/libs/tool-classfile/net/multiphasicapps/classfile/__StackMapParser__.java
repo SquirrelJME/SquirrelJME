@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,7 +214,7 @@ final class __StackMapParser__
 	/**
 	 * Returns the stack map table.
 	 *
-	 * @return The parse stack map table.
+	 * @return The parsed stack map table.
 	 * @since 2017/10/16
 	 */
 	public StackMapTable get()

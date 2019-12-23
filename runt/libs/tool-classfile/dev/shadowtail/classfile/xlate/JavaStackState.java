@@ -473,10 +473,11 @@ public final class JavaStackState
 	public final JavaStackResult doLocalLoad(int __i)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC1h Load of local with no value. (The index)}
+		// {@squirreljme.error JC1h Load of local with no value.
+		// (The index; The information about the source)}
 		Info from = this._locals[__i];
 		if (from.type.isNothing())
-			throw new InvalidClassFormatException("JC1h " + __i);
+			throw new InvalidClassFormatException("JC1h " + __i + " " + from);
 		
 		// Space needed to be used on the stack
 		JavaType type = from.type;
