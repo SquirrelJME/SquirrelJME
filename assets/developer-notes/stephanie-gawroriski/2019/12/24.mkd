@@ -1,0 +1,11 @@
+# 2019/12/24
+
+## 20:58
+
+Adding tests for raw byte code instructions, right now the DUP ones since I
+believe they are correct.
+
+## 21:30
+
+Added all for DUP, there are 8 different varieties for DUP2 so quite a bunch
+to do but I am rather tired.
