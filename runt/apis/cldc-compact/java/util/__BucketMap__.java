@@ -211,9 +211,6 @@ final class __BucketMap__<K, V>
 		// references for iteration.
 		if (nextsize >= this._loadthreshold)
 		{
-			// Indicate re-balance
-			todo.DEBUG.note("Rebalancing bucket map");
-			
 			// Increase rehash count
 			this._numrehash++;
 			
@@ -265,7 +262,7 @@ final class __BucketMap__<K, V>
 					// Store entry in the last spot
 					newchain[newchain.length - 1] = e;
 					
-					// New chan was created so update it naturally
+					// New chain was created so update it naturally
 					newbuckets[div] = newchain;
 				}
 			}
