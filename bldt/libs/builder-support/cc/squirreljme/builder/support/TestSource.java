@@ -157,13 +157,14 @@ public final class TestSource
 		// a given file syntax
 		for (CompilerInput ci : this.pathSet(SourcePathSetType.SOURCE))
 		{
-			// Only consider Java source files
+			// Only consider Java source and class files
 			String name = ci.fileName();
-			if (!name.endsWith(".java"))
+			if (!name.endsWith(".java") && !name.endsWith(".class") &&
+				!name.endsWith(".class.__mime"))
 				continue;
 			
 			// Remove the extension
-			name = name.substring(0, name.length() - 5);
+			name = name.substring(0, name.indexOf('.'));
 			
 			// Get the basename, because the test could be organized into
 			// packages which might mess with parsing. Although generally
