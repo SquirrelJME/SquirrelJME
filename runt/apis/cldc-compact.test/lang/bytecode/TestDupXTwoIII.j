@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class lang/bytecode/TestDupXOne
+.class lang/bytecode/TestDupXTwoIII
 .super net/multiphasicapps/tac/TestInteger
 
 .method public <init>()V
@@ -17,16 +17,18 @@
 .end method
 
 .method public test()I
-.limit stack 3
+.limit stack 4
 	
-	sipush 1234	; b
-	sipush 3000	; a
+	sipush 1234	; c
+	sipush 3000	; b
+	sipush 7777 ; a
 	
-	; b, a -> a, b, a
-	dup_x1
+	; c, b, a -> a, c, b, a
+	dup_x2
 	
-	iadd		; b + a -> x [a, x]
-	iadd		; a + x -> y [y]
+	iadd		; b + a -> x [a, c, x]
+	iadd		; c + x -> y [a, y]
+	iadd		; a + y -> z [z]
 	
 	ireturn
 .end method
