@@ -65,10 +65,10 @@ public class Object
 			System.arraycopy(this, 0, dest, 0, len);
 			
 			// This array was cloned
-			return this;
+			return dest;
 		}
 		
-		// {@squirreljme.error ZZ1d This object does not support being clone.}
+		// {@squirreljme.error ZZ1d This object does not support being cloned.}
 		throw new CloneNotSupportedException("ZZ1d");
 	}
 	
