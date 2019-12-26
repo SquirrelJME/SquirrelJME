@@ -73,10 +73,10 @@ public final class MinimizedJarHeader
 	/** System call pool address. */
 	public final int syscallpool;
 	
-	/** The ClassDataV2 for {@code byte[]}. */
+	/** The ClassInfo for {@code byte[]}. */
 	public final int bootclassidba;
 	
-	/** The ClassDataV2 for {@code byte[][]}. */
+	/** The ClassInfo for {@code byte[][]}. */
 	public final int bootclassidbaa;
 	
 	/** Static constant pool offset. */

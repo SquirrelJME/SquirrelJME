@@ -70,11 +70,11 @@ public final class BootRomLibrary
 	public static final byte JAR_SYSCALLPOOL_OFFSET =
 		48;
 	
-	/** The ClassDataV2 for {@code byte[]}. */
+	/** The ClassInfo for {@code byte[]}. */
 	public static final byte JAR_BOOTCLASSIDBA_OFFSET =
 		52;
 	
-	/** The ClassDataV2 for {@code byte[][]}. */
+	/** The ClassInfo for {@code byte[][]}. */
 	public static final byte JAR_BOOTCLASSIDBAA_OFFSET =
 		56;
 	

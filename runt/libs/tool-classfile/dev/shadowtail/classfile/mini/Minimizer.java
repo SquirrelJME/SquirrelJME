@@ -273,7 +273,7 @@ public final class Minimizer
 		// order.
 		if (isobject)
 		{
-			// (ClassDataV2) Synthetic + Transient + Final
+			// (ClassInfo) Synthetic + Transient + Final
 			sorted.add(0, new Field(new FieldFlags(0x1090),
 				new FieldName("_class"),
 				FieldDescriptor.INTEGER, null, null));
