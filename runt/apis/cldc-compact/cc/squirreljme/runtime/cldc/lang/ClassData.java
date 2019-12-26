@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
  *
  * @since 2018/12/04
  */
+@Deprecated
 public abstract class ClassData
 {
 	/** The version of the class data. */
