@@ -82,7 +82,7 @@ public class Date
 		if (this == __o)
 			return true;
 		
-		if (!(this instanceof __o))
+		if (!(this instanceof Date))
 			return false;
 		
 		return this._javatime == ((Date)__o)._javatime;

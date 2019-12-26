@@ -213,12 +213,26 @@ public final class String
 		this(__b, 0, __b.length, CodecFactory.defaultDecoder());
 	}
 	
+	/**
+	 * Initializes string from the given buffer.
+	 *
+	 * @param __a The input buffer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/25
+	 */
 	public String(StringBuffer __a)
 		throws NullPointerException
 	{
 		this(__a.toString());
 	}
 	
+	/**
+	 * Initializes string from the given builder.
+	 *
+	 * @param __a The input builder.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/25
+	 */
 	public String(StringBuilder __a)
 		throws NullPointerException
 	{
@@ -936,13 +950,27 @@ public final class String
 		return -1;
 	}
 	
-	public int lastIndexOf(String __a)
+	/**
+	 * Returns the last occurance of the given string.
+	 *
+	 * @param __c The string to find.
+	 * @return The last occurance of the string or {@code -1} if it was
+	 * not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/25
+	 */
+	public int lastIndexOf(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		return this.lastIndexOf(__s, Integer.MAX_VALUE);
 	}
 	
-	public int lastIndexOf(String __a, int __b)
+	public int lastIndexOf(String __s, int __dx)
+		throws NullPointerException
 	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
@@ -1479,43 +1507,104 @@ __outer:
 		return __a.toString();
 	}
 	
+	/**
+	 * Returns a string representation of the given character array.
+	 *
+	 * @param __a The array.
+	 * @return The resulting string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/25
+	 */
 	public static String valueOf(char[] __a)
 		throws NullPointerException
 	{
-		return valueOf(__a, 0, (__a != null ? __a.length : 0));
+		return String.valueOf(__a, 0, (__a != null ? __a.length : 0));
 	}
 	
+	/**
+	 * Returns a string representation of the given character array.
+	 *
+	 * @param __c The input array.
+	 * @param __o The offset.
+	 * @param __l The number of characters to set.
+	 * @throws IndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/25
+	 */
 	public static String valueOf(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		return new String(__c, __o, __l);
 	}
 	
+	/**
+	 * Returns a string representation of the given value.
+	 *
+	 * @param __a The value.
+	 * @return The resulting string.
+	 * @since 2019/12/25
+	 */
 	public static String valueOf(boolean __a)
 	{
 		return Boolean.valueOf(__a).toString();
 	}
 	
+	/**
+	 * Returns a string representation of the given value.
+	 *
+	 * @param __a The value.
+	 * @return The resulting string.
+	 * @since 2019/12/25
+	 */
 	public static String valueOf(char __a)
 	{
 		return Character.valueOf(__a).toString();
 	}
 	
+	/**
+	 * Returns a string representation of the given value.
+	 *
+	 * @param __a The value.
+	 * @return The resulting string.
+	 * @since 2019/12/25
+	 */
 	public static String valueOf(int __a)
 	{
 		return Integer.valueOf(__a).toString();
 	}
 	
+	/**
+	 * Returns a string representation of the given value.
+	 *
+	 * @param __a The value.
+	 * @return The resulting string.
+	 * @since 2019/12/25
+	 */
 	public static String valueOf(long __a)
 	{
 		return Long.valueOf(__a).toString();
 	}
 	
+	/**
+	 * Returns a string representation of the given value.
+	 *
+	 * @param __a The value.
+	 * @return The resulting string.
+	 * @since 2019/12/25
+	 */
 	public static String valueOf(float __a)
 	{
 		return Float.valueOf(__a).toString();
 	}
 	
+	/**
+	 * Returns a string representation of the given value.
+	 *
+	 * @param __a The value.
+	 * @return The resulting string.
+	 * @since 2019/12/25
+	 */
 	public static String valueOf(double __a)
 	{
 		return Double.valueOf(__a).toString();
