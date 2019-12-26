@@ -239,19 +239,40 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
-	public static String toBinaryString(long __a)
+	/**
+	 * Returns a string of the given value in binary.
+	 *
+	 * @param __v The value.
+	 * @return The representing string.
+	 * @since 2019/12/25
+	 */
+	public static String toBinaryString(long __v)
 	{
-		throw new todo.TODO();
+		return Long.__unsignedString(__v, 2);
 	}
 	
-	public static String toHexString(long __a)
+	/**
+	 * Returns a string of the given value in hexadecimal.
+	 *
+	 * @param __v The value.
+	 * @return The representing string.
+	 * @since 2019/12/25
+	 */
+	public static String toHexString(long __v)
 	{
-		throw new todo.TODO();
+		return Long.__unsignedString(__v, 16);
 	}
 	
-	public static String toOctalString(long __a)
+	/**
+	 * Returns a string of the given value in octal.
+	 *
+	 * @param __v The value.
+	 * @return The representing string.
+	 * @since 2019/12/25
+	 */
+	public static String toOctalString(long __v)
 	{
-		throw new todo.TODO();
+		return Long.__unsignedString(__v, 8);
 	}
 	
 	/**
@@ -349,6 +370,19 @@ public final class Long
 	public static Long valueOf(long __v)
 	{
 		return new Long(__v);
+	}
+	
+	/**
+	 * Returns an unsigned string of the given number and base.
+	 *
+	 * @param __v The value to translate.
+	 * @param __b The number base.
+	 * @return The resulting string.
+	 * @since 2019/12/25
+	 */
+	private static final String __unsignedString(long __v, int __b)
+	{
+		throw new todo.TODO();
 	}
 }
 
