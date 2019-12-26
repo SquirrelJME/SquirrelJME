@@ -9,6 +9,10 @@
 
 package dev.shadowtail.squirrelquarrel;
 
+import java.util.NoSuchElementException;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Image;
+
 /**
  * The represents the color of a player.
  *
@@ -52,6 +56,22 @@ public enum PlayerIndex
 	public static final int NUM_COLORS =
 		6;
 	
+	/** Player 1. */
+	public static final PlayerIndex P1 =
+		PlayerIndex.RED;
+	
+	/** Player 2. */
+	public static final PlayerIndex P2 =
+		PlayerIndex.PURPLE;
+	
+	/** Player 3. */
+	public static final PlayerIndex P3 =
+		PlayerIndex.GREEN;
+	
+	/** Player 4. */
+	public static final PlayerIndex P4 =
+		PlayerIndex.BLUE;
+	
 	/** Creeps that just annoy you. */
 	public static final PlayerIndex CREEPS =
 		PlayerIndex.YELLOW;
@@ -61,13 +81,16 @@ public enum PlayerIndex
 		PlayerIndex.GRAY;
 	
 	/** The ARGB color code. */
-	protected final int argb;
+	public final int argb;
 	
 	/** The RGB color code. */
-	protected final int rgb;
+	public final int rgb;
 	
 	/** The color name. */
-	protected final String name;
+	public final String name;
+	
+	/** The colorbox. */
+	private Image _colorbox;
 	
 	/**
 	 * Initializes the color code.
@@ -88,6 +111,52 @@ public enum PlayerIndex
 		this.name = __name;
 		this.argb = __rgb | 0xFF000000;
 		this.rgb = __rgb & 0xFFFFFF;
+	}
+	
+	/**
+	 * Returns the color box for this player.
+	 *
+	 * @return The color box.
+	 * @since 2019/12/26
+	 */
+	public final Image colorBox()
+	{
+		// Pre-made already?
+		Image rv = this._colorbox;
+		if (rv != null)
+			return rv;
+		
+		Display d = Display.getDisplay(MainMidlet.INSTANCE);
+		this._colorbox = (rv = Image.createImage(
+			d.getBestImageWidth(Display.LIST_ELEMENT),
+			d.getBestImageHeight(Display.LIST_ELEMENT), false, this.argb));
+		return rv;
+	}
+	
+	/**
+	 * Returns the player index of the given index.
+	 *
+	 * @param __i The index.
+	 * @return The player index.
+	 * @throws NoSuchElementException If it was not found.
+	 * @since 2019/12/26
+	 */
+	public static final PlayerIndex of(int __i)
+		throws NoSuchElementException
+	{
+		switch (__i)
+		{
+			case 0:	return RED;
+			case 1:	return PURPLE;
+			case 2:	return GREEN;
+			case 3:	return BLUE;
+			case 4:	return YELLOW;
+			case 5:	return GRAY;
+			
+				// {@squirreljme.error BE0u Invalid player index.}
+			default:
+				throw new NoSuchElementException("BE0u");
+		}
 	}
 }
 

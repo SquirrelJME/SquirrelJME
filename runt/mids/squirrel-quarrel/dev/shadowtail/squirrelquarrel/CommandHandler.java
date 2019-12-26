@@ -86,11 +86,11 @@ public final class CommandHandler
 		List items = new List("Status", Choice.IMPLICIT);
 		
 		// For now add some dummy items
-		items.append("P1 Acorns: 9999", null);
-		items.append("P2 Acorns: 9999", null);
-		items.append("P3 Acorns: 9999", null);
-		items.append("P4 Acorns: 9999", null);
-		items.append("Season: Spring", null);
+		items.append("P1: 9999 Acorns", PlayerIndex.of(0).colorBox());
+		items.append("P2: 9999 Acorns", PlayerIndex.of(1).colorBox());
+		items.append("P3: 9999 Acorns", PlayerIndex.of(2).colorBox());
+		items.append("P4: 9999 Acorns", PlayerIndex.of(3).colorBox());
+		items.append("Season: Spring Day 1", null);
 		
 		// Set commands for this list
 		items.addCommand(new ReturnToGameCommand(__gi));
