@@ -10,6 +10,7 @@
 package dev.shadowtail.squirrelquarrel;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -22,6 +23,10 @@ import javax.microedition.lcdui.Graphics;
 public final class GameInterface
 	extends Canvas
 {
+	/** The menu command. */
+	public static final Command STATUS_COMMAND =
+		new Command("Status", Command.SCREEN, 0);
+	
 	/** The game this will be drawing and interacting with. */
 	protected final Game game;
 	
@@ -47,6 +52,10 @@ public final class GameInterface
 		
 		// Setup canvas view and such
 		this.setTitle("Squirrel Quarrel");
+		
+		// Add menu command to access the in-game menu
+		this.addCommand(STATUS_COMMAND);
+		this.setCommandListener(new CommandHandler(__g));
 	}
 	
 	/**
