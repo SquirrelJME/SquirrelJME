@@ -25,6 +25,7 @@ import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.phoneui.NativeUIBackend;
 import cc.squirreljme.runtime.lcdui.phoneui.PhoneDisplayBackend;
 import cc.squirreljme.runtime.lcdui.phoneui.PhoneUI;
+import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -317,7 +318,7 @@ public class Display
 	public int getBestImageHeight(int __a)
 		throws IllegalArgumentException
 	{
-		return __bestImageSize(__a) & 0xFFFF;
+		return __bestImageSize(__a, true);
 	}
 	
 	/**
@@ -341,7 +342,7 @@ public class Display
 	public int getBestImageWidth(int __a)
 		throws IllegalArgumentException
 	{
-		return __bestImageSize(__a) >>> 16;
+		return __bestImageSize(__a, false);
 	}
 	
 	public int getBorderStyle(boolean __a)
@@ -870,46 +871,37 @@ public class Display
 	 * This wraps getting the best image size.
 	 *
 	 * @param __e The element to get it for.
+	 * @param __h Return the height?
 	 * @return The best image size.
 	 * @throws IllegalArgumentException If the element type is not valid.
 	 * @since 2016/10/14
 	 */
-	private int __bestImageSize(int __e)
+	private int __bestImageSize(int __e, boolean __h)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
-		/*
 		// Depends
-		DisplayProperty p;
 		switch (__e)
 		{
 			case LIST_ELEMENT:
-				p = DisplayProperty.BEST_IMAGE_SIZE_LIST_ELEMENT;
-				break;
+				return StandardMetrics.LIST_ITEM_HEIGHT;
 				
 			case CHOICE_GROUP_ELEMENT:
-				p = DisplayProperty.BEST_IMAGE_SIZE_CHOICE_GROUP_ELEMENT;
-				break;
+				throw new todo.TODO();
 				
 			case ALERT:
-				p = DisplayProperty.BEST_IMAGE_SIZE_ALERT;
-				break;
+				throw new todo.TODO();
 				
 			case TAB:
-				p = DisplayProperty.BEST_IMAGE_SIZE_TAB;
-				break;
+				throw new todo.TODO();
 				
 			case COMMAND:
-				p = DisplayProperty.BEST_IMAGE_SIZE_COMMAND;
-				break;
+				return StandardMetrics.COMMAND_BAR_HEIGHT;
 				
 			case NOTIFICATION:
-				p = DisplayProperty.BEST_IMAGE_SIZE_NOTIFICATION;
-				break;
+				throw new todo.TODO();
 				
 			case MENU:
-				p = DisplayProperty.BEST_IMAGE_SIZE_MENU;
-				break;
+				return StandardMetrics.COMMAND_BAR_HEIGHT;
 				
 				// {@squirreljme.error EB1o Cannot get the best image size of
 				// the specified element. (The element specifier)}
@@ -917,10 +909,6 @@ public class Display
 				throw new IllegalArgumentException(String.format("EB1o %d",
 					__e));
 		}
-		
-		// Get
-		return this._properties[p.ordinal()];
-		*/
 	}
 	
 	/**

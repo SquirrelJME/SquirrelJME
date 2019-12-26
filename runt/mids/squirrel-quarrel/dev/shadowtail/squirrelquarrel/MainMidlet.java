@@ -21,6 +21,9 @@ import javax.microedition.midlet.MIDletStateChangeException;
 public class MainMidlet
 	extends MIDlet
 {
+	/** The instance of this MIDlet. */
+	public static MIDlet INSTANCE;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/07/01
@@ -39,6 +42,9 @@ public class MainMidlet
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
+		// Set instance
+		MainMidlet.INSTANCE = this;
+		
 		// Setup base game builder
 		GameBuilder gb = new GameBuilder();
 		
