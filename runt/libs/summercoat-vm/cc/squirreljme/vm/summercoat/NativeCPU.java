@@ -105,6 +105,9 @@ public final class NativeCPU
 	private final Deque<Deque<ExecutionSlice>> _sopf =
 		(ENABLE_DEBUG ? new LinkedList<Deque<ExecutionSlice>>() : null);
 	
+	/** IPC Exception register. */
+	private int _ipcexception;
+	
 	/**
 	 * Initializes the native CPU.
 	 *
@@ -941,10 +944,12 @@ public final class NativeCPU
 						
 						// Handle system call as is from the supervisor
 						// IPC Exception load/store is not included
+						// IPC Calls are always virtualized even in supervisor.
 						Frame was = frames.getLast();
-						if (was._taskid == 0 ||
+						if ((was._taskid == 0 ||
 							syscallid == SystemCallIndex.EXCEPTION_LOAD ||
-							syscallid == SystemCallIndex.EXCEPTION_STORE)
+							syscallid == SystemCallIndex.EXCEPTION_STORE) &&
+							syscallid != SystemCallIndex.IPC_CALL)
 						{
 							// If profiling, profile the handling of the
 							// system call in a sub-frame
@@ -1249,6 +1254,8 @@ public final class NativeCPU
 						case SystemCallIndex.BYTE_ORDER_LITTLE:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
+						case SystemCallIndex.EXCEPTION_LOAD:
+						case SystemCallIndex.EXCEPTION_STORE:
 						case SystemCallIndex.FATAL_TODO:
 						case SystemCallIndex.FRAME_TASK_ID_GET:
 						case SystemCallIndex.FRAME_TASK_ID_SET:
@@ -1396,6 +1403,19 @@ public final class NativeCPU
 					// Always succeeds
 					err = 0;
 				}
+				break;
+				
+				// IPC Exception load
+			case SystemCallIndex.EXCEPTION_LOAD:
+				rv = this._ipcexception;
+				err = 0;
+				break;
+				
+				// IPC Exception store
+			case SystemCallIndex.EXCEPTION_STORE:
+				rv = this._ipcexception;
+				this._ipcexception = __args[0];
+				err = 0;
 				break;
 				
 				// Fatal exit because of incomplete code

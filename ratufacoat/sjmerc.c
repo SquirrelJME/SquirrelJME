@@ -1643,9 +1643,11 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					
 					/* Call it and place result into the return register. */
 					/* IPC Exceptions are not forwarded to supervisor. */
-					if (cpu->state.taskid == 0 ||
+					/* IPC Calls are always virtualized even in supervisor. */
+					if ((cpu->state.taskid == 0 ||
 						ia == SJME_SYSCALL_EXCEPTION_LOAD ||
-						ia == SJME_SYSCALL_EXCEPTION_STORE)
+						ia == SJME_SYSCALL_EXCEPTION_STORE) &&
+						ia != SJME_SYSCALL_IPC_CALL)
 					{
 						/* Reset */
 						longcombine.lo = 0;
