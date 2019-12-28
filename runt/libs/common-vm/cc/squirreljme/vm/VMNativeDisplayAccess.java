@@ -30,6 +30,7 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2018/11/17
  */
+@Deprecated
 public class VMNativeDisplayAccess
 {
 	/** The pixel format to use for the framebuffer. */
@@ -443,6 +444,7 @@ public class VMNativeDisplayAccess
 	 *
 	 * @since 2018/11/18
 	 */
+	@Deprecated
 	public final class VMCanvas
 		extends Canvas
 	{
