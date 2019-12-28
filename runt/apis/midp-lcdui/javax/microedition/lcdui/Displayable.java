@@ -10,7 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
