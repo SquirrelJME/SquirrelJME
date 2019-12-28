@@ -380,12 +380,24 @@ public interface SystemCallIndex
 		36;
 	
 	/**
+	 * Perform IPC call.
+	 *
+	 * @param 1 The task to call, {@code 0} is the supervisor.
+	 * @param 2 The IPC identifier which specifies which service this was
+	 * associated with.
+	 * @param ... Any arguments to the call.
+	 * @return The value returned from the remote call.
+	 */
+	public static final byte IPC_CALL =
+		37;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	public static final byte NUM_SYSCALLS =
-		37;
+		38;
 }
 
