@@ -52,11 +52,92 @@ public final class VirtualFramebuffer
 	 *
 	 * @param __args The call arguments.
 	 * @return The result of the property.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
 	public final long framebufferProperty(int... __args)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the length
+		switch (__args.length)
+		{
+				// Nothing to do?
+			case 0:
+				return 0;
+			
+			case 1:
+				return this.framebufferProperty(
+					__args[0],
+					0, 0, 0, 0, 0, 0, 0, 0);
+			
+			case 2:
+				return this.framebufferProperty(
+					__args[0],
+					__args[1],
+					0, 0, 0, 0, 0, 0, 0);
+			
+			case 3:
+				return this.framebufferProperty(
+					__args[0],
+					__args[1],
+					__args[2],
+					0, 0, 0, 0, 0, 0);
+			
+			case 4:
+				return this.framebufferProperty(
+					__args[0],
+					__args[1],
+					__args[2],
+					__args[3],
+					0, 0, 0, 0);
+			
+			case 5:
+				return this.framebufferProperty(
+					__args[0],
+					__args[1],
+					__args[2],
+					__args[3],
+					__args[4],
+					0, 0, 0);
+			
+			case 6:
+				return this.framebufferProperty(
+					__args[0],
+					__args[1],
+					__args[2],
+					__args[3],
+					__args[4],
+					__args[5],
+					0, 0);
+			
+			case 7:
+				return this.framebufferProperty(
+					__args[0],
+					__args[1],
+					__args[2],
+					__args[3],
+					__args[4],
+					__args[5],
+					__args[6],
+					0);
+			
+			case 8:
+				return this.framebufferProperty(
+					__args[0],
+					__args[1],
+					__args[2],
+					__args[3],
+					__args[4],
+					__args[5],
+					__args[6],
+					__args[7]);
+			
+			default:
+				return 0;
+		}
 	}
 	
 	/**
@@ -67,7 +148,8 @@ public final class VirtualFramebuffer
 	 * @return The result of the property.
 	 * @since 2019/12/28
 	 */
-	public final long framebufferProperty(int __pid, int... __args)
+	public final long framebufferProperty(int __pid, int __a, int __b, int __c,
+		int __d, int __e, int __g, int __h)
 	{
 		throw new todo.TODO();
 	}
