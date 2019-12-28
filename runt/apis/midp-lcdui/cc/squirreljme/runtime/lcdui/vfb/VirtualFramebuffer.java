@@ -10,8 +10,6 @@
 package cc.squirreljme.runtime.lcdui.vfb;
 
 import cc.squirreljme.jvm.IPCCallback;
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Graphics;
 
 /**
  * This is a virtual framebuffer which may be used by non-SquirrelJME JVMs and
@@ -20,8 +18,15 @@ import javax.microedition.lcdui.Graphics;
  * @since 2019/12/28
  */
 public final class VirtualFramebuffer
-	extends Canvas
 {
+	/** The default width. */
+	public static final int DEFAULT_WIDTH =
+		320;
+	
+	/** The default height. */
+	public static final int DEFAULT_HEIGHT =
+		200;
+	
 	/** The callback to invoke with screen actions. */
 	protected final IPCCallback ipc;
 	
@@ -38,95 +43,31 @@ public final class VirtualFramebuffer
 		if (__ipc == null)
 			throw new NullPointerException("NARG");
 		
+		// Set IPC to use
 		this.ipc = __ipc;
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
+	 * Executes the framebuffer property system call.
+	 *
+	 * @param __args The call arguments.
+	 * @return The result of the property.
+	 * @since 2019/12/28
 	 */
-	@Override
-	public final void keyPressed(int __kc)
+	public final long framebufferProperty(int... __args)
 	{
 		throw new todo.TODO();
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
+	 * Executes the framebuffer property system call.
+	 *
+	 * @param __pid The property ID.
+	 * @param __args The call arguments.
+	 * @return The result of the property.
+	 * @since 2019/12/28
 	 */
-	@Override
-	public final void keyReleased(int __kc)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
-	 */
-	@Override
-	public final void keyRepeated(int __kc)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
-	 */
-	@Override
-	public final void paint(Graphics __g)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
-	 */
-	@Override
-	public final void pointerDragged(int __x, int __y)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
-	 */
-	@Override
-	public final void pointerPressed(int __x, int __y)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
-	 */
-	@Override
-	public final void pointerReleased(int __x, int __y)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
-	 */
-	@Override
-	public final void showNotify()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/28
-	 */
-	@Override
-	public final void sizeChanged(int __w, int __h)
+	public final long framebufferProperty(int __pid, int... __args)
 	{
 		throw new todo.TODO();
 	}

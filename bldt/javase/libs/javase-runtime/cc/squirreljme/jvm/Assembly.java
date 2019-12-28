@@ -1760,6 +1760,8 @@ public final class Assembly
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXIT:
+						case SystemCallIndex.FRAMEBUFFER_PROPERTY:
+						case SystemCallIndex.IPC_CALL:
 						case SystemCallIndex.GARBAGE_COLLECT:
 						case SystemCallIndex.LOAD_STRING:
 						case SystemCallIndex.PD_OF_STDERR:
@@ -1909,6 +1911,25 @@ public final class Assembly
 				}
 				break;
 				
+				// Property of the framebuffer
+			case SystemCallIndex.FRAMEBUFFER_PROPERTY:
+				try
+				{
+					rv = SwingFramebuffer.instance().vfb.framebufferProperty(
+						__args);
+					err = 0;
+				}
+				catch (Throwable t)
+				{
+					// Print the exception
+					t.printStackTrace();
+					
+					// Drop
+					rv = 0;
+					err = SystemCallError.NO_FRAMEBUFFER;
+				}
+				break;
+				
 				// Invoke the garbage collector
 			case SystemCallIndex.GARBAGE_COLLECT:
 				{
@@ -1918,6 +1939,10 @@ public final class Assembly
 					err = 0;
 				}
 				break;
+			
+				// IPC Call
+			case SystemCallIndex.IPC_CALL:
+				throw new todo.TODO();
 				
 				// Loads a string
 			case SystemCallIndex.LOAD_STRING:
