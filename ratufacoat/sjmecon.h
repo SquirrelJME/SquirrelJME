@@ -639,8 +639,8 @@ extern "C"
 ************************************ OTHER ***********************************
 *****************************************************************************/
 
-/** The Task ID for out of bounds IPC events. */
-#define SJME_OOB_IPC_TASK SJME_JINT_C(0xFFFFFFFF)
+/** The Thread ID for out of bounds IPC events. */
+#define SJME_OOB_IPC_THREAD SJME_JINT_C(0xFFFFFFFF)
 
 /****************************************************************************/
 
