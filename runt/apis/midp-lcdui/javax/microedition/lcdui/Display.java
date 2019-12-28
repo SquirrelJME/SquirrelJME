@@ -12,10 +12,9 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.DeviceFeedbackType;
+import cc.squirreljme.jvm.FramebufferProperty;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
-import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
@@ -1311,8 +1310,12 @@ public class Display
 		Map<Integer, Display> displays = Display._DISPLAYS;
 		synchronized (displays)
 		{
-			// Map all displays
-			int numdisplays = NativeDisplayAccess.numDisplays();
+			// Try to obtain the address of the framebuffer
+			int fbaddr = Assembly.sysCallV(SystemCallIndex.
+				FRAMEBUFFER_PROPERTY, FramebufferProperty.ADDRESS);
+			
+			// There is only a single display if a framebuffer is supported
+			int numdisplays = (fbaddr != 0 ? 1 : 0);
 			for (int i = 0; i < numdisplays; i++)
 				rv.add(Display.__mapDisplay(i));
 		}

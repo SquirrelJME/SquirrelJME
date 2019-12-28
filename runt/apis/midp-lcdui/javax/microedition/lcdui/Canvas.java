@@ -11,8 +11,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
-import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
@@ -615,6 +613,8 @@ public abstract class Canvas
 			return;
 		
 		// Depends on the action
+		throw new todo.TODO();
+		/*
 		switch (__type)
 		{
 			case NativeDisplayEventCallback.KEY_PRESSED:
@@ -631,7 +631,7 @@ public abstract class Canvas
 			
 			default:
 				break;
-		}
+		}*/
 	}
 	
 	/**
