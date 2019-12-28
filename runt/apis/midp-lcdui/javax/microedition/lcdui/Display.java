@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.DeviceFeedbackType;
 import cc.squirreljme.jvm.FramebufferProperty;
+import cc.squirreljme.jvm.IPCManager;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
@@ -1425,12 +1426,19 @@ public class Display
 			// Create mapping for this display?
 			if (rv == null)
 			{
+				// Store it
 				displays.put(k, (rv = new Display(
 					new NativeUIBackend(__did))));
 				
 				// Cache display zero?
 				if (__did == 0)
+				{
 					_DISPLAY_ZERO = rv;
+				
+					// Register callback handler for IPC events
+					IPCManager.register(FramebufferProperty.IPC_ID,
+						__GfxIPCDispatch__.__instance());
+				}
 			}
 			
 			return rv;
