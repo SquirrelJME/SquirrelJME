@@ -75,5 +75,9 @@ public interface Constants
 	/** Size of the header for configuration items. */
 	public static final byte CONFIG_HEADER_SIZE =
 		4;
+	
+	/** The task ID for out-of-bound IPC events. */
+	public static final int OOB_IPC_TASK =
+		0xFFFFFFFF;
 }
 
