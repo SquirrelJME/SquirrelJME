@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import net.multiphasicapps.profiler.ProfilerSnapshot;
+
 /**
  * This contains the machine state.
  *
@@ -16,8 +18,32 @@ package cc.squirreljme.vm.summercoat;
  */
 public final class MachineState
 {
+	/** The virtual machine memory. */
+	protected final WritableMemory memory;
+	
+	/** The profiler snapshot to write to. */
+	protected final ProfilerSnapshot profiler;
+	
 	/** Was the supervisor okay? */
 	private volatile boolean _supervisorokay;
+	
+	/**
+	 * Initializes the machine state.
+	 *
+	 * @param __mem The memory state.
+	 * @param __pf The profiler, this is optional.
+	 * @throws NullPointerException If no memory was specified.
+	 * @since 2019/12/28
+	 */
+	public MachineState(WritableMemory __mem, ProfilerSnapshot __pf)
+		throws NullPointerException
+	{
+		if (__mem == null)
+			throw new NullPointerException("NARG");
+		
+		this.memory = __mem;
+		this.profiler = __pf;
+	}
 	
 	/**
 	 * Flags that the supervisor booted okay.
