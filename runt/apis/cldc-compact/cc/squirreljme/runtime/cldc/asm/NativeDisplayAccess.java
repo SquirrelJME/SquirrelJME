@@ -21,41 +21,51 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/11/09
  */
+@Deprecated
 public final class NativeDisplayAccess
 {
 	/** The number of parameters available. */
+	@Deprecated
 	public static final int NUM_PARAMETERS =
 		8;
 	
 	/** The pixel format. */
+	@Deprecated
 	public static final int PARAMETER_PIXELFORMAT =
 		0;
 	
 	/** The buffer width. */
+	@Deprecated
 	public static final int PARAMETER_BUFFERWIDTH =
 		1;
 	
 	/** The buffer height. */
+	@Deprecated
 	public static final int PARAMETER_BUFFERHEIGHT =
 		2;
 	
 	/** Alpha channel is used? */
+	@Deprecated
 	public static final int PARAMETER_ALPHA =
 		3;
 	
 	/** Buffer pitch. */
+	@Deprecated
 	public static final int PARAMETER_PITCH =
 		4;
 	
 	/** Buffer offset. */
+	@Deprecated
 	public static final int PARAMETER_OFFSET =
 		5;
 	
 	/** Virtual X offset. */
+	@Deprecated
 	public static final int PARAMETER_VIRTXOFF =
 		6;
 	
 	/** Virtual Y offset. */
+	@Deprecated
 	public static final int PARAMETER_VIRTYOFF =
 		7;
 	
@@ -64,6 +74,7 @@ public final class NativeDisplayAccess
 	 *
 	 * @since 2018/11/09
 	 */
+	@Deprecated
 	private NativeDisplayAccess()
 	{
 	}
@@ -76,6 +87,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/19
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native boolean accelGfx(int __id);
 	
 	/**
@@ -88,6 +100,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/19
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native Object accelGfxFunc(int __id, int __func,
 		Object... __args);
 	
@@ -99,6 +112,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/17
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int capabilities(int __id);
 	
 	/**
@@ -112,6 +126,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/12/03
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native void displayRepaint(int __id,
 		int __x, int __y, int __w, int __h);
 	
@@ -123,6 +138,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/18
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native Object framebufferObject(int __id);
 	
 	/**
@@ -133,6 +149,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/18
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int[] framebufferPalette(int __id);
 	
 	/**
@@ -143,6 +160,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/18
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int[] framebufferParameters(int __id);
 	
 	/**
@@ -155,6 +173,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/12/02
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int framebufferStateCount(int __id);
 	
 	/**
@@ -165,6 +184,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/17
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native boolean isUpsideDown(int __id);
 	
 	/**
@@ -175,6 +195,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/16
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int numDisplays();
 	
 	/**
@@ -185,6 +206,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/12/03
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native void registerEventCallback(
 		NativeDisplayEventCallback __cb);
 	
@@ -196,6 +218,7 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/18
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native void setDisplayTitle(int __id, String __t);
 }
 
