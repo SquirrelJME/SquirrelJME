@@ -489,8 +489,11 @@ extern "C"
 /** Squelch the framebuffer console and tell it to not print on-screen. */
 #define SJME_SYSCALL_SQUELCH_FB_CONSOLE SJME_JINT_C(36)
 
+/** Inter-Process Call. */
+#define SJME_SYSCALL_IPC_CALL SJME_JINT_C(37)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(37)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(38)
 
 /*****************************************************************************
 ************************** SYSTEM CALL ERROR CODES ***************************
