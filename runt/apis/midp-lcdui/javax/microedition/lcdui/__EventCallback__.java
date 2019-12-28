@@ -35,6 +35,7 @@ final class __EventCallback__
 	 * @since 2018/12/03
 	 */
 	@Override
+	@Deprecated
 	public final void command(int __d, int __c)
 	{
 		try
@@ -52,6 +53,7 @@ final class __EventCallback__
 	 * @since 2018/12/03
 	 */
 	@Override
+	@Deprecated
 	public final void exitRequest(int __d)
 	{
 		try
@@ -69,6 +71,7 @@ final class __EventCallback__
 	 * @since 2018/12/03
 	 */
 	@Override
+	@Deprecated
 	public final void keyEvent(int __d, int __ty, int __kc, int __ch,
 		int __time)
 	{
@@ -88,6 +91,7 @@ final class __EventCallback__
 	 * @since 2018/12/10
 	 */
 	@Override
+	@Deprecated
 	public final void lostCallback()
 	{
 		todo.DEBUG.note("Lost callback.");
@@ -102,6 +106,7 @@ final class __EventCallback__
 	 * @since 2018/12/03
 	 */
 	@Override
+	@Deprecated
 	public final void paintDisplay(int __d, int __x, int __y,
 		int __w, int __h)
 	{
@@ -120,6 +125,7 @@ final class __EventCallback__
 	 * @since 2018/12/03
 	 */
 	@Override
+	@Deprecated
 	public final void pointerEvent(int __d, int __ty, int __x, int __y,
 		int __time)
 	{
@@ -139,6 +145,7 @@ final class __EventCallback__
 	 * @since 2018/12/03
 	 */
 	@Override
+	@Deprecated
 	public final void shown(int __d, int __shown)
 	{
 		try
@@ -156,6 +163,7 @@ final class __EventCallback__
 	 * @since 2018/12/03
 	 */
 	@Override
+	@Deprecated
 	public final void sizeChanged(int __d, int __w, int __h)
 	{
 		try
@@ -173,6 +181,7 @@ final class __EventCallback__
 	 *
 	 * @since 2018/12/10
 	 */
+	@Deprecated
 	final void __register()
 	{
 		// Do not allow the variable to go crazy
