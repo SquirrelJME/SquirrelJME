@@ -116,6 +116,9 @@ struct sjme_cpu
 	
 	/* Current CPU state. */
 	sjme_cpustate state;
+	
+	/** Stored IPC Exception. */
+	sjme_jint ipcexception;
 };
 
 /** Virtual machine state. */

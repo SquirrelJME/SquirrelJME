@@ -940,8 +940,11 @@ public final class NativeCPU
 						short syscallid = (short)lr[args[0]];
 						
 						// Handle system call as is from the supervisor
+						// IPC Exception load/store is not included
 						Frame was = frames.getLast();
-						if (was._taskid == 0)
+						if (was._taskid == 0 ||
+							syscallid == SystemCallIndex.EXCEPTION_LOAD ||
+							syscallid == SystemCallIndex.EXCEPTION_STORE)
 						{
 							// If profiling, profile the handling of the
 							// system call in a sub-frame

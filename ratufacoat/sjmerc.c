@@ -411,6 +411,8 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				case SJME_SYSCALL_CALL_STACK_ITEM:
 				case SJME_SYSCALL_ERROR_GET:
 				case SJME_SYSCALL_ERROR_SET:
+				case SJME_SYSCALL_EXCEPTION_LOAD:
+				case SJME_SYSCALL_EXCEPTION_STORE:
 				case SJME_SYSCALL_FRAMEBUFFER_PROPERTY:
 				case SJME_SYSCALL_TIME_MILLI_WALL:
 				case SJME_SYSCALL_TIME_NANO_MONO:
@@ -567,6 +569,19 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			cpu->syscallerr[ia] = args[1];
 			
 			rv->lo = ib;
+			return;
+			
+			/* Load IPC Exception. */
+		case SJME_SYSCALL_EXCEPTION_LOAD:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			rv->lo = cpu->ipcexception;
+			return;
+		
+			/* Store IPC Exception */
+		case SJME_SYSCALL_EXCEPTION_STORE:
+			*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
+			rv->lo = cpu->ipcexception;
+			cpu->ipcexception = args[0];
 			return;
 			
 			/* Gets/sets property of the framebuffer. */
@@ -1627,7 +1642,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					}
 					
 					/* Call it and place result into the return register. */
-					if (cpu->state.taskid == 0)
+					/* IPC Exceptions are not forwarded to supervisor. */
+					if (cpu->state.taskid == 0 ||
+						ia == SJME_SYSCALL_EXCEPTION_LOAD ||
+						ia == SJME_SYSCALL_EXCEPTION_STORE)
 					{
 						/* Reset */
 						longcombine.lo = 0;
