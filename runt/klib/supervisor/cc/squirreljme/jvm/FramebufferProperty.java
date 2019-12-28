@@ -127,9 +127,18 @@ public interface FramebufferProperty
 	public static final byte UPLOAD_ARRAY_INT =
 		14;
 	
+	/**
+	 * The array which backs the framebuffer, if there is one.
+	 *
+	 * @return The backing array object, if there is one.
+	 * @since 2019/12/28
+	 */
+	public static final byte BACKING_ARRAY_OBJECT =
+		15;
+	
 	/** The number of framebuffer properties. */
 	public static final byte NUM_PROPERTIES =
-		15;
+		16;
 	
 	/** Screen is RGB 32-bit. */
 	public static final byte FORMAT_INTEGER_RGB888 =

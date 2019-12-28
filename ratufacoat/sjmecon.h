@@ -616,8 +616,11 @@ extern "C"
 /** Upload integer array. */
 #define SJME_FRAMEBUFFER_PROPERTY_UPLOAD_ARRAY_INT SJME_JINT_C(14)
 
+/** The backing object for the framebuffer, if there is one. */
+#define SJME_FRAMEBUFFER_PROPERTY_BACKING_ARRAY_OBJECT SJME_JINT_C(15)
+
 /** Maximum properties. */
-#define SJME_FRAMEBUFFER_PROPERTY_NUM_PROPERTIES SJME_JINT_C(15)
+#define SJME_FRAMEBUFFER_PROPERTY_NUM_PROPERTIES SJME_JINT_C(16)
 
 /*****************************************************************************
 *************************** SUPERVISOR PROPERTIES ****************************

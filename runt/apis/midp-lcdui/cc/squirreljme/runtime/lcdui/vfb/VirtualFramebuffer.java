@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.vfb;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.FramebufferProperty;
 import cc.squirreljme.jvm.IPCCallback;
 
 /**
@@ -30,6 +32,15 @@ public final class VirtualFramebuffer
 	/** The callback to invoke with screen actions. */
 	protected final IPCCallback ipc;
 	
+	/** The width. */
+	protected final int width;
+	
+	/** The height. */
+	protected final int height;
+	
+	/** The raw pixel data. */
+	protected final int[] pixels;
+	
 	/**
 	 * Initializes the virtual framebuffer.
 	 *
@@ -40,11 +51,32 @@ public final class VirtualFramebuffer
 	public VirtualFramebuffer(IPCCallback __ipc)
 		throws NullPointerException
 	{
+		this(__ipc, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	}
+	
+	/**
+	 * Initializes the virtual framebuffer.
+	 *
+	 * @param __ipc The callback to forward events to.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/28
+	 */
+	public VirtualFramebuffer(IPCCallback __ipc, int __w, int __h)
+	{
 		if (__ipc == null)
 			throw new NullPointerException("NARG");
 		
 		// Set IPC to use
 		this.ipc = __ipc;
+		
+		// Set size
+		this.width = __w;
+		this.height = __h;
+		
+		// Initialize raw pixel data
+		this.pixels = new int[__w * __h];
 	}
 	
 	/**
@@ -151,7 +183,64 @@ public final class VirtualFramebuffer
 	public final long framebufferProperty(int __pid, int __a, int __b, int __c,
 		int __d, int __e, int __g, int __h)
 	{
-		throw new todo.TODO();
+		// Depends on the property
+		switch (__pid)
+		{
+				// Raw address (since it is simulated, this is not set)
+			case FramebufferProperty.ADDRESS:
+				return 0;
+				
+				// Width and scanline length
+			case FramebufferProperty.WIDTH:
+			case FramebufferProperty.SCANLEN:
+				return this.width;
+				
+				// Height
+			case FramebufferProperty.HEIGHT:
+				return this.height;
+			
+				// Flushes the display
+			case FramebufferProperty.FLUSH:
+				throw new todo.TODO();
+				
+				// Pixel format is always integer
+			case FramebufferProperty.FORMAT:
+				return FramebufferProperty.FORMAT_INTEGER_RGB888;
+				
+				// Scan line length in bytes
+			case FramebufferProperty.SCANLEN_BYTES:
+				return this.width * 4;
+				
+				// The number of bytes per pixel
+			case FramebufferProperty.BYTES_PER_PIXEL:
+				return 4;
+				
+				// Bits per pixel
+			case FramebufferProperty.BITS_PER_PIXEL:
+				return 32;
+				
+				// The number of pixels
+			case FramebufferProperty.NUM_PIXELS:
+				return this.width * this.height;
+				
+				// Backlight not supported
+			case FramebufferProperty.BACKLIGHT_LEVEL_GET:
+			case FramebufferProperty.BACKLIGHT_LEVEL_SET:
+			case FramebufferProperty.BACKLIGHT_LEVEL_MAX:
+				return 0;
+				
+				// Upload integer array
+			case FramebufferProperty.UPLOAD_ARRAY_INT:
+				throw new todo.TODO();
+				
+				// The backing array object
+			case FramebufferProperty.BACKING_ARRAY_OBJECT:
+				return Assembly.objectToPointer(this.pixels);
+				
+				// Unknown
+			default:
+				return 0;
+		}
 	}
 }
 

@@ -269,7 +269,7 @@ public interface SystemCallIndex
 	 * @param ... Undefined, this depends on the property selected.
 	 * @return Whatever value the frame buffer property will return.
 	 */
-	public static final byte FRAMEBUFFER_PROPERTY =
+	public static final byte FRAMEBUFFER =
 		24;
 	
 	/**

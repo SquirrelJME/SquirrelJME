@@ -1760,7 +1760,7 @@ public final class Assembly
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXIT:
-						case SystemCallIndex.FRAMEBUFFER_PROPERTY:
+						case SystemCallIndex.FRAMEBUFFER:
 						case SystemCallIndex.IPC_CALL:
 						case SystemCallIndex.GARBAGE_COLLECT:
 						case SystemCallIndex.LOAD_STRING:
@@ -1912,7 +1912,7 @@ public final class Assembly
 				break;
 				
 				// Property of the framebuffer
-			case SystemCallIndex.FRAMEBUFFER_PROPERTY:
+			case SystemCallIndex.FRAMEBUFFER:
 				try
 				{
 					rv = SwingFramebuffer.instance().vfb.framebufferProperty(

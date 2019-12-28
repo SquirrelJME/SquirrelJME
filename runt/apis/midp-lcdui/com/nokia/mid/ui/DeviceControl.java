@@ -67,14 +67,14 @@ public class DeviceControl
 		// Get maximum backlight level, stop if it is zero which means the
 		// property is not supported or there is no backlight that can be
 		// controlled
-		int max = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER_PROPERTY,
+		int max = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
 			FramebufferProperty.BACKLIGHT_LEVEL_MAX);
 		if (max == 0)
 			return;
 		
 		// Set the desired level as a percentage of the max
 		int val = (max * __lvl) / 100;
-		Assembly.sysCall(SystemCallIndex.FRAMEBUFFER_PROPERTY,
+		Assembly.sysCall(SystemCallIndex.FRAMEBUFFER,
 			FramebufferProperty.BACKLIGHT_LEVEL_SET,
 			(val < 0 ? 0 : (val > max ? max : val)));
 	}
