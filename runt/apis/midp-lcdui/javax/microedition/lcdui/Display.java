@@ -1311,11 +1311,14 @@ public class Display
 		synchronized (displays)
 		{
 			// Try to obtain the address of the framebuffer
-			int fbaddr = Assembly.sysCallV(SystemCallIndex.
-				FRAMEBUFFER_PROPERTY, FramebufferProperty.ADDRESS);
+			int fbaddr = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
+				FramebufferProperty.ADDRESS);
+			int fbaobj = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
+				FramebufferProperty.BACKING_ARRAY_OBJECT);
 			
 			// There is only a single display if a framebuffer is supported
-			int numdisplays = (fbaddr != 0 ? 1 : 0);
+			// It could be mapped to an object or otherwise raw memory
+			int numdisplays = (fbaddr != 0 || fbaobj != 0 ? 1 : 0);
 			for (int i = 0; i < numdisplays; i++)
 				rv.add(Display.__mapDisplay(i));
 		}
