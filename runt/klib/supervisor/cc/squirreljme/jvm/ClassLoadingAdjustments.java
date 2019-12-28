@@ -114,6 +114,7 @@ public final class ClassLoadingAdjustments
 			case "cc/squirreljme/jvm/Assembly":
 			case "cc/squirreljme/jvm/ClassInfo":
 			case "cc/squirreljme/jvm/Constants":
+			case "cc/squirreljme/jvm/IPCException":
 			case "cc/squirreljme/jvm/JVMFunction":
 			case "cc/squirreljme/jvm/SoftDouble":
 			case "cc/squirreljme/jvm/SoftFloat":
