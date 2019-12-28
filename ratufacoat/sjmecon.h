@@ -571,6 +571,9 @@ extern "C"
 *************************** FRAMEBUFFER PROPERTIES ***************************
 *****************************************************************************/
 
+/** The ID used for IPC calls for graphics. */
+#define SJME_FRAMEBUFFER_IPC_ID SJME_JINT_C(0x47665821)
+
 /** Returns the address of the framebuffer. */
 #define SJME_FRAMEBUFFER_PROPERTY_ADDRESS SJME_JINT_C(1)
 

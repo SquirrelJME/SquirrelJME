@@ -154,5 +154,9 @@ public interface FramebufferProperty
 	/** Screen is packed 4 bit values. */
 	public static final byte FORMAT_PACKED_FOUR =
 		5;
+	
+	/** The IPC ID for the graphics callbacks. */
+	public static final int IPC_ID =
+		0x47665821;
 }
 
