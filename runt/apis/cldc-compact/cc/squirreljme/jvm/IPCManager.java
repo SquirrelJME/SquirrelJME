@@ -47,5 +47,22 @@ public final class IPCManager
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Registers the given ID with the specified callback.
+	 *
+	 * @param __ipcid The IPC ID to listen on.
+	 * @param __cb The callback for the IPC.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/28
+	 */
+	public static final void register(int __ipcod, IPCCallback __cb)
+		throws NullPointerException
+	{
+		if (__cb == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
