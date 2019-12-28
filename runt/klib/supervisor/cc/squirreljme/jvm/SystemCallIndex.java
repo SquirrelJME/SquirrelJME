@@ -65,9 +65,15 @@ public interface SystemCallIndex
 		3;
 	
 	/**
-	 * Reserved for future use.
+	 * Returns the cross-IPC exception class which has been stored.
+	 *
+	 * This system call should have the same effect regardless of whether it
+	 * is a supervisor thread or user thread, it does not get forwarded
+	 * to the task system call handler.
+	 *
+	 * @return The exception which has been stored.
 	 */
-	public static final byte RESERVED_FOUR =
+	public static final byte EXCEPTION_LOAD =
 		4;
 	
 	/**
@@ -79,9 +85,16 @@ public interface SystemCallIndex
 		5;
 	
 	/**
-	 * Reserved for future use.
+	 * Stores the cross-IPC exception class for system call errors.
+	 *
+	 * This system call should have the same effect regardless of whether it
+	 * is a supervisor thread or user thread, it does not get forwarded
+	 * to the task system call handler.
+	 *
+	 * @param 1 The exception to store.
+	 * @return The old value that was stored in the register.
 	 */
-	public static final byte RESERVED_SIX =
+	public static final byte EXCEPTION_STORE =
 		6;
 	
 	/**

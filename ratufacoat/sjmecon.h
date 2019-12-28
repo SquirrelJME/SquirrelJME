@@ -390,14 +390,14 @@ extern "C"
 /** Current wall clock milliseconds. */
 #define SJME_SYSCALL_TIME_MILLI_WALL SJME_JINT_C(3)
 
-/** Reserved. */
-#define SJME_SYSCALL_RESERVED_FOUR SJME_JINT_C(4)
+/** Load cross-IPC exception. */
+#define SJME_SYSCALL_EXCEPTION_LOAD SJME_JINT_C(4)
 
 /** Current monotonic clock nanoseconds. */
 #define SJME_SYSCALL_TIME_NANO_MONO SJME_JINT_C(5)
 
-/** Reserved. */
-#define SJME_SYSCALL_RESERVED_SIX SJME_JINT_C(6)
+/** Store cross-IPC exception. */
+#define SJME_SYSCALL_EXCEPTION_STORE SJME_JINT_C(6)
 
 /** VM Information: Free memory in bytes. */
 #define SJME_SYSCALL_VMI_MEM_FREE SJME_JINT_C(7)
