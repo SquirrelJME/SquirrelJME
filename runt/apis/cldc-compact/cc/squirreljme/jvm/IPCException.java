@@ -21,6 +21,16 @@ public class IPCException
 	protected final int classnotepointer;
 	
 	/**
+	 * Initializes the exception with an unknown type.
+	 *
+	 * @since 2019/12/28
+	 */
+	public IPCException()
+	{
+		this.classnotepointer = 0;
+	}
+	
+	/**
 	 * Initializes the IPC Exception.
 	 *
 	 * @param __cnp The class note pointer which was used.

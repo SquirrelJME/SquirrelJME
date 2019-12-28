@@ -2799,9 +2799,60 @@ public final class NearNativeByteCodeHandler
 			// Perform the pure call
 			codebuilder.add(NativeInstructionType.SYSTEM_CALL,
 				__in[0].register, new RegisterList(args));
+			
+			// Need to store the return value of this call
+			VolatileRegisterStack volatiles = this.volatiles;
+			int rvlo = volatiles.get(),
+				rvhi = volatiles.get();
+			
+			// Defensive copy of return value
+			if (__out != null)
+			{
+				// Low
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER, rvlo);
+				
+				// High
+				if (__long)
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, rvhi);
+			}
+			
+			// Load the system call index for IPC exception store
+			int ipcesid = volatiles.get();
+			codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
+				NativeCode.ZERO_REGISTER, SystemCallIndex.EXCEPTION_STORE,
+				ipcesid);
+			
+			// Perform system call to clear and read exception
+			codebuilder.add(NativeInstructionType.SYSTEM_CALL,
+				ipcesid, new RegisterList(NativeCode.ZERO_REGISTER));
+			
+			// Quickly copy out exception value
+			int eval = volatiles.get();
+			codebuilder.addCopy(NativeCode.RETURN_REGISTER, eval);
+			
+			// If this value is set, then we fail
+			codebuilder.addIfNonZero(eval,
+				this.__labelMakeException("cc/squirreljme/jvm/IPCException"));
+			
+			// Copy out the moved out return values
+			if (__out != null)
+			{
+				// Low value
+				codebuilder.addCopy(rvlo, __out.register);
+				
+				// Possible high value
+				if (__long)
+					codebuilder.addCopy(rvhi, __out.register + 1);
+			}
+			
+			// No longer needed
+			volatiles.remove(eval);
+			volatiles.remove(ipcesid);
+			volatiles.remove(rvhi);
+			volatiles.remove(rvlo);
 		}
 		
-		// Unpure system call (may be adapted)
+		// Unpure system call (possibly adapted by our own handler)
 		else
 		{
 			// Since this is a standard invocation, we just pass all the
@@ -2814,19 +2865,19 @@ public final class NearNativeByteCodeHandler
 			// Perform the unpure call into the JVM helper
 			this.__invokeStatic(InvokeType.SYSTEM, JVMFUNC_CLASS,
 				"jvmSystemCall", "(SIIIIIIII)J", args);
-		}
-		
-		// Copy return value
-		if (__out != null)
-		{
-			// Low value
-			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-				__out.register);
-			
-			// Possible high value
-			if (__long)
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
-					__out.register + 1);
+				
+			// Copy return value
+			if (__out != null)
+			{
+				// Low value
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+					__out.register);
+				
+				// Possible high value
+				if (__long)
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+						__out.register + 1);
+			}
 		}
 	}
 	
@@ -3076,7 +3127,7 @@ public final class NearNativeByteCodeHandler
 			this._refclunk++);
 		codebuilder.addIfNonZero(__r, isloaded);
 		
-		// Need register to load the 
+		// Need register to load the class info
 		VolatileRegisterStack volatiles = this.volatiles;
 		int volnoted = volatiles.get();
 		
