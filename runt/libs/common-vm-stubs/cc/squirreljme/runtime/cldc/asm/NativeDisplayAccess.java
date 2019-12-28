@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/11/09
  */
+@Deprecated
 public final class NativeDisplayAccess
 {
 	/** The number of parameters available. */

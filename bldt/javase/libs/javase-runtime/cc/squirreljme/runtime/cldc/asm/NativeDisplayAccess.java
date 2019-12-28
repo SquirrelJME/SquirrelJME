@@ -54,6 +54,7 @@ import net.multiphasicapps.io.MIMEFileDecoder;
  *
  * @since 2018/11/16
  */
+@Deprecated
 public final class NativeDisplayAccess
 {
 	/** The number of parameters available. */

@@ -19,29 +19,36 @@ package cc.squirreljme.runtime.cldc.asm;
  *
  * @since 2018/12/03
  */
+@Deprecated
 public interface NativeDisplayEventCallback
 {
 	/** Key pressed. */
+	@Deprecated
 	public static final int KEY_PRESSED =
 		1;
 	
 	/** Key repeated. */
+	@Deprecated
 	public static final int KEY_REPEATED =
 		2;
 	
 	/** Key released. */
+	@Deprecated
 	public static final int KEY_RELEASED =
 		3;
 	
 	/** Pointer pressed. */
+	@Deprecated
 	public static final int POINTER_PRESSED =
 		4;
 	
 	/** Pointer dragged. */
+	@Deprecated
 	public static final int POINTER_DRAGGED =
 		5;
 	
 	/** Pointer released. */
+	@Deprecated
 	public static final int POINTER_RELEASED =
 		6;
 	
@@ -64,6 +71,7 @@ public interface NativeDisplayEventCallback
 	 * @param __d The display which the close was performed on.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	public abstract void exitRequest(int __d);
 	
 	/**
@@ -76,6 +84,7 @@ public interface NativeDisplayEventCallback
 	 * @param __time Timecode.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	public abstract void keyEvent(int __d, int __ty, int __kc, int __ch,
 		int __time);
 	
@@ -86,6 +95,7 @@ public interface NativeDisplayEventCallback
 	 *
 	 * @since 2018/12/10
 	 */
+	@Deprecated
 	public abstract void lostCallback();
 	
 	/**
@@ -98,6 +108,7 @@ public interface NativeDisplayEventCallback
 	 * @param __h The height.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	public abstract void paintDisplay(int __d, int __x, int __y,
 		int __w, int __h);
 	
@@ -111,6 +122,7 @@ public interface NativeDisplayEventCallback
 	 * @param __time Timecode.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	public abstract void pointerEvent(int __d, int __ty, int __x, int __y,
 		int __time);
 	
@@ -121,6 +133,7 @@ public interface NativeDisplayEventCallback
 	 * @param __shown If this is non-zero the display is shown.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	public abstract void shown(int __d, int __shown);
 	
 	/**
@@ -131,6 +144,7 @@ public interface NativeDisplayEventCallback
 	 * @param __h The height of the display.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	public abstract void sizeChanged(int __d, int __w, int __h);
 }
 
