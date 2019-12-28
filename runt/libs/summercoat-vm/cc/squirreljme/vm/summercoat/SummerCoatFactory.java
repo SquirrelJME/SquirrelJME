@@ -371,7 +371,7 @@ public class SummerCoatFactory
 		}
 		
 		// Setup non-cpu VM state
-		MachineState ms = new MachineState();
+		MachineState ms = new MachineState(vmem, __ps);
 		
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(ms, vmem, 0, __ps);
