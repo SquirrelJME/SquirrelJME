@@ -56,6 +56,10 @@ public final class SystemCallError
 	public static final byte END_OF_FILE =
 		-9;
 	
+	/** Error with IPC Call. */
+	public static final byte IPC_ERROR =
+		-10;
+	
 	/**
 	 * Not used.
 	 *
