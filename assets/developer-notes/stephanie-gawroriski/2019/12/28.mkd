@@ -1,0 +1,39 @@
+# 2019/12/28
+
+## 09:51
+
+I am going to need an IPC interface so I can call between processes and
+such. It is going to be needed for inter-MIDlet communication, it will also
+be used for graphics. It will match the system call stuff and will be in
+a way where it allows for being used directly by system calls. It will be
+a useful interface. Also for input events it will determine how things are
+handled and such. But the thing is there will be a global system for handling
+the IPC and it could get messages from outside even the graphics interfaces.
+So I take it that it will operate in two forms: interrupt and polling. I think
+it would be best if both can be mixed accordingly as such.
+
+## 10:00
+
+The task system call layer will handle IPCs since they all go straight into
+the kernel and such. The kernel will handle where the IPCs go accordingly.
+
+## 10:03
+
+Now the big thing is that when system calls are done, I use the normal
+exception register. This is going to break when real system calls are done
+since there could be a system call that is made. It will pretty much just
+break when exceptions are thrown since they could originate from a different
+thread.
+
+## 10:07
+
+I do have an advantage since system call errors are thread local, so I can
+make a new virtual system call that just sets the exception code for a thread
+and such, or at least allows it to be obtained. Of course this one cannot
+have an error if it is not valid, so it must always pass somehow. But since
+I cannot really handle objects, I think all I can do is store the name of the
+class that the exception is and that is pretty much it.
+
+## 10:49
+
+Actually I cannot even check that so, I guess there is that.
