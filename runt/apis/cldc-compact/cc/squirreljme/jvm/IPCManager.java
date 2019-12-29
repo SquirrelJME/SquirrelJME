@@ -71,6 +71,65 @@ public final class IPCManager
 	}
 	
 	/**
+	 * This is the handler for IPC messages, which performs unfolding
+	 * accordingly.
+	 *
+	 * @param __tid The origin task ID.
+	 * @param __v Input values.
+	 * @return The result of the IPC call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/28
+	 */
+	public static final long ipcCall(int __tid, int... __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		int n = __v.length;
+		return IPCManager.ipcCall(__tid,
+			(0 < n ? __v[0] : 0),
+			(1 < n ? __v[1] : 0),
+			(2 < n ? __v[2] : 0),
+			(3 < n ? __v[3] : 0),
+			(4 < n ? __v[4] : 0),
+			(5 < n ? __v[5] : 0),
+			(6 < n ? __v[6] : 0),
+			(7 < n ? __v[7] : 0),
+			(8 < n ? __v[8] : 0));
+	}
+	
+	/**
+	 * This is the handler for IPC messages, which performs unfolding
+	 * accordingly.
+	 *
+	 * @param __tid The origin task ID.
+	 * @param __ipcid The ID number of the IPC interface.
+	 * @param __v Input values.
+	 * @return The result of the IPC call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/28
+	 */
+	public static final long ipcCall(int __tid, int __ipcid, int... __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		int n = __v.length;
+		return IPCManager.ipcCall(__tid,
+			__ipcid,
+			(0 < n ? __v[0] : 0),
+			(1 < n ? __v[1] : 0),
+			(2 < n ? __v[2] : 0),
+			(3 < n ? __v[3] : 0),
+			(4 < n ? __v[4] : 0),
+			(5 < n ? __v[5] : 0),
+			(6 < n ? __v[6] : 0),
+			(7 < n ? __v[7] : 0));
+	}
+	
+	/**
 	 * Registers the given ID with the specified callback.
 	 *
 	 * @param __ipcid The IPC ID to listen on.

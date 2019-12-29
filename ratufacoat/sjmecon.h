@@ -529,6 +529,9 @@ extern "C"
 /** End of file. */
 #define SJME_SYSCALL_ERROR_END_OF_FILE SJME_JINT_C(-9)
 
+/** IPC Error. */
+#define SJME_SYSCALL_ERROR_IPC_ERROR SJME_JINT_C(-10)
+
 /*****************************************************************************
 ***************************** PIPE DESCRIPTORS *******************************
 *****************************************************************************/

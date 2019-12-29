@@ -1958,7 +1958,23 @@ public final class Assembly
 			
 				// IPC Call
 			case SystemCallIndex.IPC_CALL:
-				throw new todo.TODO();
+				try
+				{
+					return IPCManager.ipcCall(0, __args);
+				}
+				catch (RuntimeException e)
+				{
+					// Debug this
+					e.printStackTrace();
+					
+					// Store class name caught
+					__data.exception = Assembly.__uniqueStringId(
+						e.getClass().getName().replace('.', '/'));
+					
+					// Fail
+					throw new SystemCallException(
+						SystemCallError.IPC_ERROR);
+				}
 				
 				// Loads a string
 			case SystemCallIndex.LOAD_STRING:
