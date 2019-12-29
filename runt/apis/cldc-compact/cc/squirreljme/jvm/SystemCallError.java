@@ -48,6 +48,14 @@ public final class SystemCallError
 	public static final byte INTERRUPTED =
 		-7;
 	
+	/** Unknown error. */
+	public static final byte UNKNOWN =
+		-8;
+	
+	/** End of file reached. */
+	public static final byte END_OF_FILE =
+		-9;
+	
 	/**
 	 * Not used.
 	 *
