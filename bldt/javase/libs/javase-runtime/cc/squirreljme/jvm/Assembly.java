@@ -31,9 +31,13 @@ import java.util.Map;
  */
 public final class Assembly
 {
-	/** Errors used in system calls. */
-	private static final int[] _ERRORS =
-		new int[SystemCallIndex.NUM_SYSCALLS];
+	/** Extra call stack depth. */
+	private static final int _EXTRA_STACK_DEPTH =
+		3;
+	
+	/** Local thread data. */
+	private static final ThreadLocal<ThreadData> _THREAD_DATA =
+		new ThreadLocal<>();
 	
 	/** Unique string map. */
 	private static final Map<String, Integer> _STRINGS =
@@ -1735,71 +1739,108 @@ public final class Assembly
 		// Make at least 8!
 		if (__args == null)
 			__args = new int[8];
-		if (__args.length < 8)
+		else if (__args.length < 8)
 			__args = Arrays.copyOf(__args, 8);
 		
+		// Get thread data
+		ThreadData data = _THREAD_DATA.get();
+		if (data == null)
+			_THREAD_DATA.set((data = new ThreadData()));
+			
+		// The error ID
+		int eid = ((__si < 0 || __si >= SystemCallIndex.NUM_SYSCALLS) ?
+			SystemCallIndex.QUERY_INDEX : __si);
+		
 		// Error state for the last call of this type
-		int[] errors = _ERRORS;
+		int[] errors = data.errors;
 		
-		// Return value with error value, to set if any
-		long rv;
-		int err;
+		// Try executing it
+		try
+		{
+			// Execute call
+			long rv = Assembly.__sysCallInternal(data, __si, __args);
+			
+			// No error
+			errors[eid] = 0;
+			
+			// Return the result
+			return rv;
+		}
 		
+		// Exception was caught
+		catch (RuntimeException e)
+		{
+			// Use thrown error code?
+			if (e instanceof SystemCallException)
+				errors[eid] = ((SystemCallException)e).code;
+			
+			// Otherwise set as unknown
+			else
+				errors[eid] = SystemCallError.UNKNOWN;
+			
+			// Fail
+			return 0;
+		}
+	}
+	
+	/**
+	 * Internal system call handling.
+	 *
+	 * @param __data The thread data.
+	 * @param __si System call index.
+	 * @param __args Arguments.
+	 * @return The result.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/29
+	 */
+	private static final long __sysCallInternal(ThreadData __data,
+		short __si, int... __args)
+		throws NullPointerException
+	{
 		// Depends on the system call type
 		switch (__si)
 		{
 				// Check if system call is supported
 			case SystemCallIndex.QUERY_INDEX:
+				switch (__args[0])
 				{
-					err = 0;
-					switch (__args[0])
-					{
-						case SystemCallIndex.API_LEVEL:
-						case SystemCallIndex.CALL_STACK_HEIGHT:
-						case SystemCallIndex.CALL_STACK_ITEM:
-						case SystemCallIndex.ERROR_GET:
-						case SystemCallIndex.ERROR_SET:
-						case SystemCallIndex.EXIT:
-						case SystemCallIndex.FRAMEBUFFER:
-						case SystemCallIndex.IPC_CALL:
-						case SystemCallIndex.GARBAGE_COLLECT:
-						case SystemCallIndex.LOAD_STRING:
-						case SystemCallIndex.PD_OF_STDERR:
-						case SystemCallIndex.PD_OF_STDIN:
-						case SystemCallIndex.PD_OF_STDOUT:
-						case SystemCallIndex.PD_WRITE_BYTE:
-						case SystemCallIndex.SLEEP:
-						case SystemCallIndex.TIME_MILLI_WALL:
-						case SystemCallIndex.TIME_NANO_MONO:
-						case SystemCallIndex.VMI_MEM_FREE:
-						case SystemCallIndex.VMI_MEM_MAX:
-						case SystemCallIndex.VMI_MEM_USED:
-							rv = 1;
-							break;
-						
-						default:
-							rv = 0;
-							break;
-					}
+					case SystemCallIndex.API_LEVEL:
+					case SystemCallIndex.CALL_STACK_HEIGHT:
+					case SystemCallIndex.CALL_STACK_ITEM:
+					case SystemCallIndex.ERROR_GET:
+					case SystemCallIndex.ERROR_SET:
+					case SystemCallIndex.EXCEPTION_LOAD:
+					case SystemCallIndex.EXCEPTION_STORE:
+					case SystemCallIndex.EXIT:
+					case SystemCallIndex.FRAMEBUFFER:
+					case SystemCallIndex.IPC_CALL:
+					case SystemCallIndex.GARBAGE_COLLECT:
+					case SystemCallIndex.LOAD_STRING:
+					case SystemCallIndex.PD_OF_STDERR:
+					case SystemCallIndex.PD_OF_STDIN:
+					case SystemCallIndex.PD_OF_STDOUT:
+					case SystemCallIndex.PD_WRITE_BYTE:
+					case SystemCallIndex.SLEEP:
+					case SystemCallIndex.TIME_MILLI_WALL:
+					case SystemCallIndex.TIME_NANO_MONO:
+					case SystemCallIndex.VMI_MEM_FREE:
+					case SystemCallIndex.VMI_MEM_MAX:
+					case SystemCallIndex.VMI_MEM_USED:
+						return 1;
+					
+					default:
+						return 0;
 				}
-				break;
 				
 				// API level
 			case SystemCallIndex.API_LEVEL:
-				{
-					rv = ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV;
-					err = 0;
-				}
-				break;
+				return ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV;
 				
 				// Call trace height
 			case SystemCallIndex.CALL_STACK_HEIGHT:
-				{
-					// Remove traces for sysCall() and this method
-					rv = new Throwable().getStackTrace().length - 2;
-					err = 0;
-				}
-				break;
+				// Remove traces for sysCall() and this method
+				return new Throwable().getStackTrace().length -
+					_EXTRA_STACK_DEPTH;
 				
 				// Call trace item
 			case SystemCallIndex.CALL_STACK_ITEM:
@@ -1809,16 +1850,14 @@ public final class Assembly
 					
 					// Get element trace here
 					// Remove traces for sysCall() and this method
-					int depth = 2 + __args[0];
+					int depth = _EXTRA_STACK_DEPTH + __args[0];
 					StackTraceElement ele = (depth < 0 || depth >= stk.length ?
 						null : stk[depth]);
 					
 					// Fail?
 					if (ele == null)
-					{
-						rv = 0;
-						err = SystemCallError.VALUE_OUT_OF_RANGE;
-					}
+						throw new SystemCallException(
+							SystemCallError.VALUE_OUT_OF_RANGE);
 					
 					// Handle normally
 					else
@@ -1828,39 +1867,29 @@ public final class Assembly
 						{
 								// Class name
 							case CallStackItem.CLASS_NAME:
-								rv = Assembly.__uniqueStringId(
+								return Assembly.__uniqueStringId(
 									ele.getClassName().replace('.', '/'));
-								err = 0;
-								break;
 
 								// The method name.
 							case CallStackItem.METHOD_NAME:
-								rv = Assembly.__uniqueStringId(
+								return Assembly.__uniqueStringId(
 									ele.getMethodName());
-								err = 0;
-								break;
 
 								// The current file.
 							case CallStackItem.SOURCE_FILE:
-								rv = Assembly.__uniqueStringId(
+								return Assembly.__uniqueStringId(
 									ele.getFileName());
-								err = 0;
-								break;
 
 								// Source line.
 							case CallStackItem.SOURCE_LINE:
-								rv = ele.getLineNumber();
-								err = 0;
-								break;
+								return ele.getLineNumber();
 
 							default:
-								rv = 0;
-								err = SystemCallError.VALUE_OUT_OF_RANGE;
-								break;
+								throw new SystemCallException(
+									SystemCallError.VALUE_OUT_OF_RANGE);
 						}
 					}
 				}
-				break;
 				
 				// Get error
 			case SystemCallIndex.ERROR_GET:
@@ -1871,15 +1900,8 @@ public final class Assembly
 						dx = SystemCallIndex.QUERY_INDEX;
 					
 					// Return the stored error code
-					synchronized (errors)
-					{
-						rv = errors[dx];
-					}
-					
-					// Always succeeds
-					err = 0;
+					return __data.errors[dx];
 				}
-				break;
 				
 				// Set error
 			case SystemCallIndex.ERROR_SET:
@@ -1890,34 +1912,34 @@ public final class Assembly
 						dx = SystemCallIndex.QUERY_INDEX;
 					
 					// Return last error code, and set new one
-					synchronized (errors)
-					{
-						rv = errors[dx];
-						errors[dx] = __args[0];
-					}
-					
-					// Always succeeds
-					err = 0;
+					long rv = __data.errors[dx];
+					__data.errors[dx] = __args[0];
+					return rv;
 				}
-				break;
+				
+				// Load IPC Exception
+			case SystemCallIndex.EXCEPTION_LOAD:
+				return __data.exception;
+				
+				// Store IPC Exception
+			case SystemCallIndex.EXCEPTION_STORE:
+				{
+					long rv = __data.exception;
+					__data.exception = __args[0];
+					return rv;
+				}
 				
 				// Exit the VM
 			case SystemCallIndex.EXIT:
-				{
-					System.exit(__args[0]);
-					
-					rv = 0;
-					err = 0;
-				}
-				break;
+				System.exit(__args[0]);
+				return 0;
 				
 				// Property of the framebuffer
 			case SystemCallIndex.FRAMEBUFFER:
 				try
 				{
-					rv = SwingFramebuffer.instance().vfb.framebufferProperty(
-						__args);
-					err = 0;
+					return SwingFramebuffer.instance().vfb.
+						framebufferProperty(__args);
 				}
 				catch (Throwable t)
 				{
@@ -1925,20 +1947,14 @@ public final class Assembly
 					t.printStackTrace();
 					
 					// Drop
-					rv = 0;
-					err = SystemCallError.NO_FRAMEBUFFER;
+					throw new SystemCallException(
+						SystemCallError.NO_FRAMEBUFFER);
 				}
-				break;
 				
 				// Invoke the garbage collector
 			case SystemCallIndex.GARBAGE_COLLECT:
-				{
-					Runtime.getRuntime().gc();
-					
-					rv = 0;
-					err = 0;
-				}
-				break;
+				Runtime.getRuntime().gc();
+				return 0;
 			
 				// IPC Call
 			case SystemCallIndex.IPC_CALL:
@@ -1946,36 +1962,20 @@ public final class Assembly
 				
 				// Loads a string
 			case SystemCallIndex.LOAD_STRING:
-				{
-					rv = Assembly.__uniqueObjectId(
-						Assembly.__uniqueString(__args[0]));
-					err = 0;
-				}
-				break;
+				return Assembly.__uniqueObjectId(
+					Assembly.__uniqueString(__args[0]));
 				
 				// Pipe descriptor of standard input
 			case SystemCallIndex.PD_OF_STDIN:
-				{
-					rv = 0;
-					err = 0;
-				}
-				break;
+				return 0;
 				
 				// Pipe descriptor of standard output
 			case SystemCallIndex.PD_OF_STDOUT:
-				{
-					rv = 1;
-					err = 0;
-				}
-				break;
+				return 1;
 				
 				// Pipe descriptor of standard error
 			case SystemCallIndex.PD_OF_STDERR:
-				{
-					rv = 1;
-					err = 0;
-				}
-				break;
+				return 2;
 				
 				// Write single byte to PD
 			case SystemCallIndex.PD_WRITE_BYTE:
@@ -1993,105 +1993,64 @@ public final class Assembly
 							os.write(__args[1]);
 							
 							// Okay
-							rv = 1;
-							err = 0;
+							return 1;
 						}
 						
 						// Failed
 						catch (IOException e)
 						{
-							rv = -1;
-							err = SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE;
+							throw new SystemCallException(
+								SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE);
 						}
 					}
 					
 					// Failed
 					else
 					{
-						rv = -1;
-						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
+						throw new SystemCallException(
+							SystemCallError.PIPE_DESCRIPTOR_INVALID);
 					}
 				}
-				break;
 				
 				// Sleep
 			case SystemCallIndex.SLEEP:
 				try
 				{
 					Thread.sleep(__args[0], __args[1]);
-					
-					rv = 0;
-					err = SystemCallError.NO_ERROR;
+					return 0;
 				}
 				catch (InterruptedException e)
 				{
-					rv = 1;
-					err = SystemCallError.INTERRUPTED;
+					throw new SystemCallException(SystemCallError.INTERRUPTED);
 				}
-				break;
 			
 				// Current wall clock milliseconds
 			case SystemCallIndex.TIME_MILLI_WALL:
-				{
-					rv = System.currentTimeMillis();
-					err = 0;
-				}
-				break;
+				return System.currentTimeMillis();
 				
 				// Current monotonic clock nanoseconds
 			case SystemCallIndex.TIME_NANO_MONO:
-				{
-					rv = System.nanoTime();
-					err = 0;
-				}
-				break;
+				return System.nanoTime();
 			
 				// VM information: Memory free bytes
 			case SystemCallIndex.VMI_MEM_FREE:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().freeMemory());
-					err = 0;
-				}
-				break;
+				return (int)Math.min(Integer.MAX_VALUE,
+					Runtime.getRuntime().freeMemory());
 			
 				// VM information: Memory used bytes
 			case SystemCallIndex.VMI_MEM_USED:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().totalMemory());
-					err = 0;
-				}
-				break;
+				return (int)Math.min(Integer.MAX_VALUE,
+					Runtime.getRuntime().totalMemory());
 			
 				// VM information: Memory max bytes
 			case SystemCallIndex.VMI_MEM_MAX:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().maxMemory());
-					err = 0;
-				}
-				break;
+				return (int)Math.min(Integer.MAX_VALUE,
+					Runtime.getRuntime().maxMemory());
 			
 			default:
-				// Returns no value but sets an error
-				rv = -1;
-				err = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
-				
-				// If the ID is valid then a bad array access will be used
-				if (__si < 0 || __si >= SystemCallIndex.NUM_SYSCALLS)
-					__si = SystemCallIndex.QUERY_INDEX;
-				break;
+				throw new SystemCallException(
+					SystemCallError.UNSUPPORTED_SYSTEM_CALL);
 		}
-		
-		// Set error state as needed
-		synchronized (errors)
-		{
-			errors[__si] = err;
-		}
-		
-		// Use returning value
-		return rv;
 	}
 	
 	/**

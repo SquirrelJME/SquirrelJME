@@ -523,6 +523,12 @@ extern "C"
 /** Interrupted. */
 #define SJME_SYSCALL_ERROR_INTERRUPTED SJME_JINT_C(-7)
 
+/** Unknown error. */
+#define SJME_SYSCALL_ERROR_UNKNOWN SJME_JINT_C(-8)
+
+/** End of file. */
+#define SJME_SYSCALL_ERROR_END_OF_FILE SJME_JINT_C(-9)
+
 /*****************************************************************************
 ***************************** PIPE DESCRIPTORS *******************************
 *****************************************************************************/

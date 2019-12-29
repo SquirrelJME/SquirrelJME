@@ -26,6 +26,7 @@ import java.awt.Transparency;
  *
  * @since 2018/03/24
  */
+@Deprecated
 public final class ColorInfo
 {
 	/**
