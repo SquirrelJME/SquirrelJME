@@ -828,49 +828,166 @@ public class Arrays
 		return true;
 	}
 	
-	public static void fill(long[] __a, long __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(long[] __a, long __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
-	public static void fill(int[] __a, int __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(int[] __a, int __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
-	public static void fill(short[] __a, short __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(short[] __a, short __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
-	public static void fill(char[] __a, char __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(char[] __a, char __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
-	public static void fill(byte[] __a, byte __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(byte[] __a, byte __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
-	public static void fill(boolean[] __a, boolean __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(boolean[] __a, boolean __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
-	public static void fill(double[] __a, double __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(double[] __a, double __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
-	public static void fill(float[] __a, float __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(float[] __a, float __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
-	public static void fill(Object[] __a, Object __b)
+	/**
+	 * Fills the array with the given value.
+	 *
+	 * @param __a The array to fill.
+	 * @param __v The value to store.
+	 * @throws NullPointerException If the array is null.
+	 * @since 2020/01/01
+	 */
+	public static void fill(Object[] __a, Object __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __a.length; i < n; i++)
+			__a[i] = __v;
 	}
 	
 	/**
