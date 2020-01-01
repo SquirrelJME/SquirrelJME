@@ -303,8 +303,7 @@ workflows:
             - build_javame
       - build_summercoatromtest:
           requires:
-            - build_javase
-            - build_javame
+            - build_summercoatrom
       - tests_springcoat:
           requires:
             - build_javase
