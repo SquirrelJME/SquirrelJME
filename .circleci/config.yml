@@ -53,7 +53,7 @@ jobs:
       shell: cmd.exe
     steps:
       - checkout:
-          path: c:\users\circleci\squirrejme
+          path: c:\users\circleci\squirreljme
       - run:
           name: Make build directory
           command: mkdir c:\users\circleci\squirreljme-build
