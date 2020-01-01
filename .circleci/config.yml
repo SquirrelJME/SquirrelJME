@@ -185,7 +185,7 @@ jobs:
     steps:
       - initialize_buildenv
       - attach_workspace:
-          root: /tmp/summercoat-test
+          at: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f rdjut/ratufacoatdef/results.xml
@@ -211,7 +211,7 @@ jobs:
     steps:
       - initialize_buildenv
       - attach_workspace:
-          root: /tmp/summercoat-test
+          at: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f rpjut/ratufacoatppc/results.xml
@@ -237,7 +237,7 @@ jobs:
     steps:
       - initialize_buildenv
       - attach_workspace:
-          root: /tmp/summercoat-test
+          at: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f rmjut/ratufacoatmips/results.xml
@@ -263,7 +263,7 @@ jobs:
     steps:
       - initialize_buildenv
       - attach_workspace:
-          root: /tmp/summercoat-test
+          at: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f rnjut/ratufacoatmipsel/results.xml
