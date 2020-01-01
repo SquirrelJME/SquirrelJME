@@ -13,9 +13,12 @@ package java.util;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
+import cc.squirreljme.runtime.cldc.util.DoubleArrayList;
+import cc.squirreljme.runtime.cldc.util.FloatArrayList;
 import cc.squirreljme.runtime.cldc.util.IntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArrays;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
+import cc.squirreljme.runtime.cldc.util.LongArrayList;
 import cc.squirreljme.runtime.cldc.util.ShellSort;
 import cc.squirreljme.runtime.cldc.util.ShortIntegerArray;
 
@@ -925,6 +928,19 @@ public class Arrays
 		Arrays.sort(__a, 0, __a.length);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2020/01/01
+	 */
 	public static void sort(long[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
@@ -942,7 +958,8 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new todo.TODO();
+		// Non-common sort, use a helper wrapper
+		ShellSort.<Long>sort(new LongArrayList(__a), __from, __to, null);
 	}
 	
 	/**
@@ -1076,6 +1093,19 @@ public class Arrays
 		sort(__a, 0, __a.length);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2020/01/01
+	 */
 	public static void sort(float[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
@@ -1093,7 +1123,8 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new todo.TODO();
+		// Non-common sort, use a helper wrapper
+		ShellSort.<Float>sort(new FloatArrayList(__a), __from, __to, null);
 	}
 	
 	/**
@@ -1113,6 +1144,19 @@ public class Arrays
 		sort(__a, 0, __a.length);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2020/01/01
+	 */
 	public static void sort(double[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
@@ -1130,7 +1174,8 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new todo.TODO();
+		// Non-common sort, use a helper wrapper
+		ShellSort.<Double>sort(new DoubleArrayList(__a), __from, __to, null);
 	}
 	
 	/**
