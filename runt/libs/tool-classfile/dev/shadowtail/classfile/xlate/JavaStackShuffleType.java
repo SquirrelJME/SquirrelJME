@@ -40,7 +40,7 @@ public enum JavaStackShuffleType
 	
 	/** dup2_x2. */
 	DUP2_X2("dcba:badcba",
-		"cbA:Acba",
+		"cbA:AcbA",
 		"Cba:baCba",
 		"BA:ABA"),
 	
