@@ -15,6 +15,9 @@ executors:
       - image: circleci/openjdk:8-jdk
     working_directory: ~/squirreljme-build
 
+orbs:
+  win: circleci/windows@2.2.0
+
 commands:
   initialize_buildenv:
     description: "Initializes the build environment"
@@ -44,6 +47,20 @@ commands:
           command: sudo apt-get install --no-install-recommends -y unzip || true
 
 jobs:
+  build_javase_windows:
+    executor: win/default
+    steps:
+      - checkout:
+          path: %USERPROFILE%\squirrejme
+      - run:
+          name: Make build directory
+          command: mkdir %USERPROFILE%\squirreljme-build
+      - run:
+          name: Go to build directory
+          command: cd %USERPROFILE%\squirreljme-build
+      - run:
+          name: Perform Shaded Java SE Build
+          command: %USERPROFILE%\squirreljme\build.cmd dist javase
   build_javase:
     executor: buildenv
     steps:
@@ -255,6 +272,9 @@ workflows:
     jobs:
       - build_javase
       - build_javame
+      - build_javase_windows:
+          requires:
+            - build_javase
       - tests_baseline:
           requires:
             - build_javase
