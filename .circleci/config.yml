@@ -112,6 +112,7 @@ jobs:
       - run:
           name: Running SpringCoat VM
           command: ~/squirreljme/build.sh launch -v springcoat -n springcoat.nps -Dcc.squirreljme.debug=false tac-runner > spjut/springcoat/results.xml
+          no_output_timeout: 30m
       - store_test_results:
           path: spjut
       - store_artifacts:
