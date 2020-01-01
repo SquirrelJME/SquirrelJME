@@ -48,7 +48,9 @@ commands:
 
 jobs:
   build_javase_windows:
-    executor: win/default
+    executor:
+      name: win/default
+      shell: cmd.exe
     steps:
       - checkout:
           path: c:\users\circleci\squirrejme
