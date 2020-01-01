@@ -162,7 +162,7 @@ jobs:
     steps:
       - initialize_buildenv
       - attach_workspace:
-          root: /tmp/summercoat-test
+          at: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f svjut/summercoatrom/results.xml summercoatrom.nps
