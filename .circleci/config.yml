@@ -84,6 +84,27 @@ jobs:
       - run:
           name: Building SummerCoat ROM
           command: ~/squirreljme/build.sh dist summercoatrom
+      - run:
+          name: UnZip SummerCoat ROM
+          command: unzip -o squirreljme-summercoatrom.zip
+      - persist_to_workspace:
+          root: /tmp/summercoat
+          paths:
+            - squirreljme.sqc
+  build_summercoatromtest:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Building SummerCoat Test ROM
+          command: ~/squirreljme/build.sh dist summercoatrom-test
+      - run:
+          name: UnZip SummerCoat ROM
+          command: unzip -o squirreljme-summercoatrom-test.zip
+      - persist_to_workspace:
+          root: /tmp/summercoat-test
+          paths:
+            - squirreljme.sqc
   tests_baseline:
     executor: buildenv
     steps:
@@ -140,6 +161,8 @@ jobs:
     executor: buildenv
     steps:
       - initialize_buildenv
+      - attach_workspace:
+          root: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f svjut/summercoatrom/results.xml summercoatrom.nps
@@ -147,11 +170,8 @@ jobs:
           name: Create test directory
           command: mkdir -p svjut/summercoatrom
       - run:
-          name: Build SummerCoat ROM with tests
-          command: ~/squirreljme/build.sh dist summercoatrom-test
-      - run:
-          name: Extract distribution
-          command: unzip -o squirreljme-summercoatrom-test.zip
+          name: Take SummerCoat Test ROM
+          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
       - run:
           name: Running SummerCoat VM
           command: ~/squirreljme/build.sh launch -v summercoat -n summercoatrom.nps -Dcc.squirreljme.debug=false -Dcc.squirreljme.romfile=squirreljme.sqc tac-runner > svjut/summercoatrom/results.xml
@@ -164,6 +184,8 @@ jobs:
     executor: buildenv
     steps:
       - initialize_buildenv
+      - attach_workspace:
+          root: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f rdjut/ratufacoatdef/results.xml
@@ -171,11 +193,8 @@ jobs:
           name: Create test directory
           command: mkdir -p rdjut/ratufacoatdef
       - run:
-          name: Build SummerCoat ROM with tests
-          command: ~/squirreljme/build.sh dist summercoatrom-test
-      - run:
-          name: Extract distribution
-          command: unzip -o squirreljme-summercoatrom-test.zip
+          name: Take SummerCoat Test ROM
+          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
       - run:
           name: Cleaning RatufaCoat VM (Default)
           command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
@@ -191,6 +210,8 @@ jobs:
     executor: buildenv
     steps:
       - initialize_buildenv
+      - attach_workspace:
+          root: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f rpjut/ratufacoatppc/results.xml
@@ -198,11 +219,8 @@ jobs:
           name: Create test directory
           command: mkdir -p rpjut/ratufacoatppc
       - run:
-          name: Build SummerCoat ROM with tests
-          command: ~/squirreljme/build.sh dist summercoatrom-test
-      - run:
-          name: Extract distribution
-          command: unzip -o squirreljme-summercoatrom-test.zip
+          name: Take SummerCoat Test ROM
+          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
       - run:
           name: Cleaning RatufaCoat VM (PowerPC)
           command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
@@ -218,6 +236,8 @@ jobs:
     executor: buildenv
     steps:
       - initialize_buildenv
+      - attach_workspace:
+          root: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f rmjut/ratufacoatmips/results.xml
@@ -225,11 +245,8 @@ jobs:
           name: Create test directory
           command: mkdir -p rmjut/ratufacoatmips
       - run:
-          name: Build SummerCoat ROM with tests
-          command: ~/squirreljme/build.sh dist summercoatrom-test
-      - run:
-          name: Extract distribution
-          command: unzip -o squirreljme-summercoatrom-test.zip
+          name: Take SummerCoat Test ROM
+          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
       - run:
           name: Cleaning RatufaCoat VM (MIPS EB)
           command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
@@ -245,6 +262,8 @@ jobs:
     executor: buildenv
     steps:
       - initialize_buildenv
+      - attach_workspace:
+          root: /tmp/summercoat-test
       - run:
           name: Clear old test results and snapshot
           command: rm -f rnjut/ratufacoatmipsel/results.xml
@@ -252,11 +271,8 @@ jobs:
           name: Create test directory
           command: mkdir -p rnjut/ratufacoatmipsel
       - run:
-          name: Build SummerCoat ROM with tests
-          command: ~/squirreljme/build.sh dist summercoatrom-test
-      - run:
-          name: Extract distribution
-          command: unzip -o squirreljme-summercoatrom-test.zip
+          name: Take SummerCoat Test ROM
+          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
       - run:
           name: Cleaning RatufaCoat VM (MIPS EL)
           command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
@@ -285,6 +301,10 @@ workflows:
           requires:
             - build_javase
             - build_javame
+      - build_summercoatromtest:
+          requires:
+            - build_javase
+            - build_javame
       - tests_springcoat:
           requires:
             - build_javase
@@ -293,17 +313,16 @@ workflows:
             - build_javase
       - tests_summercoatrom:
           requires:
-            - build_summercoatrom
+            - build_summercoatromtest
       - tests_ratufacoat_default:
           requires:
-            - build_summercoatrom
+            - build_summercoatromtest
       - tests_ratufacoat_ppc:
           requires:
-            - build_summercoatrom
+            - build_summercoatromtest
       - tests_ratufacoat_mips:
           requires:
-            - build_summercoatrom
+            - build_summercoatromtest
       - tests_ratufacoat_mipsel:
           requires:
-            - build_summercoatrom
-
+            - build_summercoatromtest
