@@ -51,16 +51,16 @@ jobs:
     executor: win/default
     steps:
       - checkout:
-          path: %USERPROFILE%\squirrejme
+          path: c:\users\circleci\squirrejme
       - run:
           name: Make build directory
-          command: mkdir %USERPROFILE%\squirreljme-build
+          command: mkdir c:\users\circleci\squirreljme-build
       - run:
           name: Go to build directory
-          command: cd %USERPROFILE%\squirreljme-build
+          command: cd c:\users\circleci\squirreljme-build
       - run:
           name: Perform Shaded Java SE Build
-          command: %USERPROFILE%\squirreljme\build.cmd dist javase
+          command: c:\users\circleci\squirreljme\build.cmd dist javase
   build_javase:
     executor: buildenv
     steps:
