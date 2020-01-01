@@ -255,8 +255,13 @@ workflows:
     jobs:
       - build_javase
       - build_javame
-      - build_summercoatrom
-      - tests_baseline
+      - tests_baseline:
+          requires:
+            - build_javase
+      - build_summercoatrom:
+          requires:
+            - build_javase
+            - build_javame
       - tests_springcoat:
           requires:
             - build_javase
@@ -265,7 +270,6 @@ workflows:
             - build_javase
       - tests_summercoatrom:
           requires:
-            - build_javase
             - build_summercoatrom
       - tests_ratufacoat_default:
           requires:
