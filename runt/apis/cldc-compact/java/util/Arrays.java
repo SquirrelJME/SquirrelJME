@@ -274,8 +274,7 @@ public class Arrays
 		throw new todo.TODO();
 	}
 	
-	public static int binarySearch(Object[] __a, int __b, int __c, Object __d
-		)
+	public static int binarySearch(Object[] __a, int __b, int __c, Object __d)
 	{
 		throw new todo.TODO();
 	}
