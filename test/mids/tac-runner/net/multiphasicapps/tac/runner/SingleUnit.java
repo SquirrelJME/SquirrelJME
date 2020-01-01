@@ -87,7 +87,7 @@ public final class SingleUnit
 			this.suite, this.midlet);
 		
 		// Run the task task until it terminates
-		for (long mswait = 10;; mswait += Math.min(10, 250))
+		for (long mswait = 100;; mswait = Math.min(mswait + 100, 1000))
 		{
 			// Check status
 			TaskStatus status = task.getStatus();
