@@ -25,8 +25,8 @@ commands:
       - checkout:
           path: ~/squirreljme
       - run:
-          name: Setup directory
-          command: mkdir -p ~/squirreljme-build
+          name: Setup directories
+          command: mkdir -p ~/squirreljme-build /tmp/summercoat /tmp/summercoat-test
       - run:
           name: Install build-essential
           command: sudo apt-get install --no-install-recommends -y build-essential || true
@@ -87,6 +87,9 @@ jobs:
       - run:
           name: UnZip SummerCoat ROM
           command: unzip -o squirreljme-summercoatrom.zip
+      - run:
+          name: Copy ROM file
+          command: cp -v squirreljme.sqc /tmp/summercoat/squirreljme.sqc
       - persist_to_workspace:
           root: /tmp/summercoat
           paths:
@@ -101,6 +104,9 @@ jobs:
       - run:
           name: UnZip SummerCoat ROM
           command: unzip -o squirreljme-summercoatrom-test.zip
+      - run:
+          name: Copy ROM file
+          command: cp -v squirreljme.sqc /tmp/summercoat-test/squirreljme.sqc
       - persist_to_workspace:
           root: /tmp/summercoat-test
           paths:
