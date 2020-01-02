@@ -1,0 +1,136 @@
+# 2020/01/01
+
+## 10:05
+
+Happy new year! It is a new year! So this will be a year in review for this
+project. First thing to get is the number of commits I did in 2019.
+
+There are 2,662 commits that I made in 2019. Which is really nice, I put much
+work into this project. I know March, April, May, and June I had put in alot
+of work because I was laid off at the start of March so this definitely does
+play a part. Wheras in 2018 I was a employed throughout the entire year!
+
+I did not do any releases in 2019, I know there was a plan to release in four
+months after 0.2.0 but that was not going to happen.
+
+I am also glad that I have descriptive commits for everything.
+
+### January
+
+This is the month that was right after 0.2.0 was released. I started the
+initial work on SummerCoat which has taken pretty much the entire year and
+more to develop, it is a really complex system and it really shows. From
+this run I had the initial SCRF compiler which would eventually be thrown
+out and which would result in the current compiler that I wrote. I even
+had a base project setup for RatufaCoat at the middle of January. I also
+performed some refactoring of the compiler stuff as well making it cleaner
+because it did get a bit messy. I did get method processing put in but that
+was later split apart because wow it was complex. Also added a bunch of
+new tests and implemented parts of the class library since they were needed
+for the VM to function. I figured at this time that I should write a compiler
+which is not all that optimized to keep it simpler, although today I do have
+basic optimation in place. For CircleCI I put in JUnit reporting for the
+tests that ran which has been around for awhile now. Also for the tests that
+run within the VM, the profiler snapshots are stored as well so that way
+I can determine how fast stuff has been running accordingly. I defined an API
+level for 0.4.0 but eventually later in the year I determined that the API
+stuff is too complex, so I opted for the much simpler system call stuff.
+I added system properties support for SpringCoat since I needed to enable or
+disable debugging.
+
+### Feburary
+
+More work was done with SCRF. Added the ability to launch tasks with system
+properties and such. SummerCoat VM went through a slight refactor as well.
+Some of the stuff that I worked on this month have somewhat survived to the
+end of the year such as the stack map stuff which worked well. I mostly just
+implemented a ton of methods. Not much here this month.
+
+### March
+
+This month was very rough for me because I had gotten laid off at the start of
+the month and it was devastating to me. I pretty much still worked on this
+project because it helped me get through the rough times and it also acted as
+a resume for me as well. I was in and out of depression so I did not exactly
+work on this every single day as I was job hunting as well.
+
+One big thing I did was remove `tool-scrf` and put it in `tool-classfile` and
+built it up from that. I know in 2020 I will be pretty much splitting that
+back out and writing a far more streamlined compiler which hopefully is faster
+and more efficient as well. This is where the `MinimizedClassFile` started
+from so it has quite been around. It is still around and it has always been
+improving from this point. SummerCoat had this class library kind of thing
+that basically cached single classes and such I believe in memory. I know with
+the compiler refactoring I brought stuff back in from SCRF since it still
+worked just fine. For the class file stuff I implemented more things that were
+missing such as the exception handler. I had all of the narrow and long stuff
+which was a bit confusing, I know later this eventually was removed because it
+was just impossible to handle while keeping things simpler. I know today that
+everything is 32-bit for the most part. I also worked on the graphics stuff
+too, which is interesting. This was even the advanced graphics stuff. This
+graphics stuff needs to be refactored but that will get done eventually.
+I also worked on Squirrel Quarrel when it was a Starcraft clone still, but now
+today it is more of its own original game that I have planned. You could kind
+of play it and command units I think and such. For graphics I added a
+serializer so that it could be done by the host VM, being faster. I may do
+that again for SummerCoat although it would be a bit more difficult. This
+was also when I was more going twords <https://squirreljme.cc/> instead of my
+standard domain that I use. I also am actually glad the complex type handling
+was removed from SummerCoat. Even reference queues and such were their own
+instructions, but now that is different.
+
+### April
+
+At the start of this month I did some fixing of the class parser. I did lots
+more compiler work. More library methods were implemented.
+
+I renamed my Twitter and used my `MultiPhasicApps` handle for SquirrelJME
+stuff, which actually helped me much.
+
+I worked on the graphics stuff. Implemented some base record store stuff which
+was nice. Refactored XPM and PNG image loading. Added a Null Audio system.
+
+Lots of more compiler work.
+
+Later in the month I completely refactored SummerCoat, it pretty much should
+be the same as it is today just more worked on.
+
+Also corrected testing stuff.
+
+At the end of the month I put a bunch of work into the fonts too, I did so
+much with them! I actually still need to finish the symbol fonts a bunch too.
+
+Also kinda glad I do not have class IDs and such today as well.
+
+### May
+
+More font stuff, yay!
+
+This month I added the concept of BootRAM and this has actually simplified
+things making things easier to load and such.
+
+Added some more implementations to methods as well and HTTP support!
+
+Also big refactor of the testing framework, which ended up going rather
+nicely. I also added my first sorting algorithm which was shell sort. But
+I guess now there is just block sort which does nothing? Oh wait no
+there is ShellSort.
+
+## 11:05
+
+Kinda getting back into library development after doing this review, gets me
+excited some.
+
+## 12:14
+
+Actually the ROM does not build for the `TestDupXTwoJI` test, it cannot find
+a shuffle state. So I am assuming that it is wrong.
+
+## 12:20
+
+Oh wow, I forgot the second form of `DUP_X2`, good thing for tests!
+
+## 12:30
+
+Definitely going to need the tests for the other DUP instructions, but I
+have an issue with a key on my keyboard sticking I need to fix.
