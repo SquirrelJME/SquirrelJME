@@ -216,6 +216,9 @@ jobs:
     executor: buildenv
     steps:
       - initialize_buildenv
+      - run:
+          name: Halt if compiler not available
+          command: if ! which powerpc-linux-gnu-gcc; then circleci-agent step halt; fi
       - attach_workspace:
           at: /tmp/summercoat-test
       - run:
@@ -242,6 +245,9 @@ jobs:
     executor: buildenv
     steps:
       - initialize_buildenv
+      - run:
+          name: Halt if compiler not available
+          command: if ! which mips-linux-gnu-gcc; then circleci-agent step halt; fi
       - attach_workspace:
           at: /tmp/summercoat-test
       - run:
@@ -268,6 +274,9 @@ jobs:
     executor: buildenv
     steps:
       - initialize_buildenv
+      - run:
+          name: Halt if compiler not available
+          command: if ! which mipsel-linux-gnu-gcc; then circleci-agent step halt; fi
       - attach_workspace:
           at: /tmp/summercoat-test
       - run:
