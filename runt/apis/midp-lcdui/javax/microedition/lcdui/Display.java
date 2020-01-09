@@ -12,7 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.DeviceFeedbackType;
-import cc.squirreljme.jvm.FramebufferProperty;
+import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.IPCManager;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -1313,9 +1313,9 @@ public class Display
 		{
 			// Try to obtain the address of the framebuffer
 			int fbaddr = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
-				FramebufferProperty.ADDRESS);
+				Framebuffer.CONTROL_ADDRESS);
 			int fbaobj = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
-				FramebufferProperty.BACKING_ARRAY_OBJECT);
+				Framebuffer.CONTROL_BACKING_ARRAY_OBJECT);
 			
 			// There is only a single display if a framebuffer is supported
 			// It could be mapped to an object or otherwise raw memory
@@ -1436,7 +1436,7 @@ public class Display
 					_DISPLAY_ZERO = rv;
 				
 					// Register callback handler for IPC events
-					IPCManager.register(FramebufferProperty.IPC_ID,
+					IPCManager.register(Framebuffer.IPC_ID,
 						__GfxIPCDispatch__.__instance());
 				}
 			}

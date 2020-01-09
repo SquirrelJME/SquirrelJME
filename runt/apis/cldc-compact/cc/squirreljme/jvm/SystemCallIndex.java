@@ -263,7 +263,7 @@ public interface SystemCallIndex
 	
 	/**
 	 * Get, set, or change a property of the framebuffer, the properties which
-	 * are defined are specified in {@link FramebufferProperty}.
+	 * are defined are specified in {@link Framebuffer}.
 	 *
 	 * @param 1 The frame buffer property to select.
 	 * @param ... Undefined, this depends on the property selected.

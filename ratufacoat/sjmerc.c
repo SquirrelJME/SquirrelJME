@@ -597,62 +597,62 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			switch (args[0])
 			{
 					/* Framebuffer address. */
-				case SJME_FRAMEBUFFER_PROPERTY_ADDRESS:
+				case SJME_FB_CONTROL_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->framebuffer->fakeptr;
 					break;
 					
 					/* Width of the framebuffer. */
-				case SJME_FRAMEBUFFER_PROPERTY_WIDTH:
+				case SJME_FB_CONTROL_WIDTH:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->fbinfo->width;
 					break;
 					
 					/* Height of the framebuffer. */
-				case SJME_FRAMEBUFFER_PROPERTY_HEIGHT:
+				case SJME_FB_CONTROL_HEIGHT:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->fbinfo->height;
 					break;
 					
 					/* Scanline length of the framebuffer. */
-				case SJME_FRAMEBUFFER_PROPERTY_SCANLEN:
+				case SJME_FB_CONTROL_SCANLEN:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->fbinfo->scanlen;
 					break;
 					
 					/* Flush the framebuffer. */
-				case SJME_FRAMEBUFFER_PROPERTY_FLUSH:
+				case SJME_FB_CONTROL_FLUSH:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					if (jvm->fbinfo->flush != NULL)
 						jvm->fbinfo->flush();
 					break;
 					
 					/* Frame-buffer format. */
-				case SJME_FRAMEBUFFER_PROPERTY_FORMAT:
+				case SJME_FB_CONTROL_FORMAT:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->fbinfo->format;
 					break;
 					
 					/* Scanline length in bytes. */
-				case SJME_FRAMEBUFFER_PROPERTY_SCANLEN_BYTES:
+				case SJME_FB_CONTROL_SCANLEN_BYTES:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->fbinfo->scanlenbytes;
 					break;
 					
 					/* Bytes per pixel. */
-				case SJME_FRAMEBUFFER_PROPERTY_BYTES_PER_PIXEL:
+				case SJME_FB_CONTROL_BYTES_PER_PIXEL:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->fbinfo->bitsperpixel / 8;
 					break;
 					
 					/* The number of pixels. */
-				case SJME_FRAMEBUFFER_PROPERTY_NUM_PIXELS:
+				case SJME_FB_CONTROL_NUM_PIXELS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->fbinfo->numpixels;
 					break;
 					
 					/* Bits per pixels. */
-				case SJME_FRAMEBUFFER_PROPERTY_BITS_PER_PIXEL:
+				case SJME_FB_CONTROL_BITS_PER_PIXEL:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
 					rv->lo = jvm->fbinfo->bitsperpixel;
 					break;

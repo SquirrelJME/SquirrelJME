@@ -581,55 +581,177 @@ extern "C"
 *****************************************************************************/
 
 /** The ID used for IPC calls for graphics. */
-#define SJME_FRAMEBUFFER_IPC_ID SJME_JINT_C(0x47665821)
+#define SJME_FB_IPC_ID SJME_JINT_C(0x47665821)
 
 /** Returns the address of the framebuffer. */
-#define SJME_FRAMEBUFFER_PROPERTY_ADDRESS SJME_JINT_C(1)
+#define SJME_FB_CONTROL_ADDRESS SJME_JINT_C(1)
 
 /** Returns the width of the framebuffer. */
-#define SJME_FRAMEBUFFER_PROPERTY_WIDTH SJME_JINT_C(2)
+#define SJME_FB_CONTROL_WIDTH SJME_JINT_C(2)
 
 /** Returns the height of the framebuffer. */
-#define SJME_FRAMEBUFFER_PROPERTY_HEIGHT SJME_JINT_C(3)
+#define SJME_FB_CONTROL_HEIGHT SJME_JINT_C(3)
 
 /** Returns the scanline length in pixels. */
-#define SJME_FRAMEBUFFER_PROPERTY_SCANLEN SJME_JINT_C(4)
+#define SJME_FB_CONTROL_SCANLEN SJME_JINT_C(4)
 
 /** Flushes the framebuffer. */
-#define SJME_FRAMEBUFFER_PROPERTY_FLUSH SJME_JINT_C(5)
+#define SJME_FB_CONTROL_FLUSH SJME_JINT_C(5)
 
 /** Pixel format of the screen. */
-#define SJME_FRAMEBUFFER_PROPERTY_FORMAT SJME_JINT_C(6)
+#define SJME_FB_CONTROL_FORMAT SJME_JINT_C(6)
 
 /** Returns the scanline length in bytes. */
-#define SJME_FRAMEBUFFER_PROPERTY_SCANLEN_BYTES SJME_JINT_C(7)
+#define SJME_FB_CONTROL_SCANLEN_BYTES SJME_JINT_C(7)
 
 /** Returns the number of bytes per pixel. */
-#define SJME_FRAMEBUFFER_PROPERTY_BYTES_PER_PIXEL SJME_JINT_C(8)
+#define SJME_FB_CONTROL_BYTES_PER_PIXEL SJME_JINT_C(8)
 
 /** Number of pixels in the display. */
-#define SJME_FRAMEBUFFER_PROPERTY_NUM_PIXELS SJME_JINT_C(9)
+#define SJME_FB_CONTROL_NUM_PIXELS SJME_JINT_C(9)
 
 /** Number of bits per pixel. */
-#define SJME_FRAMEBUFFER_PROPERTY_BITS_PER_PIXEL SJME_JINT_C(10)
+#define SJME_FB_CONTROL_BITS_PER_PIXEL SJME_JINT_C(10)
 
 /** Get backlight level. */
-#define SJME_FRAMEBUFFER_PROPERTY_BACKLIGHT_LEVEL_GET SJME_JINT_C(11)
+#define SJME_FB_CONTROL_BACKLIGHT_LEVEL_GET SJME_JINT_C(11)
 
 /** Set backlight level. */
-#define SJME_FRAMEBUFFER_PROPERTY_BACKLIGHT_LEVEL_SET SJME_JINT_C(12)
+#define SJME_FB_CONTROL_BACKLIGHT_LEVEL_SET SJME_JINT_C(12)
 
 /** Maximum backlight level. */
-#define SJME_FRAMEBUFFER_PROPERTY_BACKLIGHT_LEVEL_MAX SJME_JINT_C(13)
+#define SJME_FB_CONTROL_BACKLIGHT_LEVEL_MAX SJME_JINT_C(13)
 
 /** Upload integer array. */
-#define SJME_FRAMEBUFFER_PROPERTY_UPLOAD_ARRAY_INT SJME_JINT_C(14)
+#define SJME_FB_CONTROL_UPLOAD_ARRAY_INT SJME_JINT_C(14)
 
 /** The backing object for the framebuffer, if there is one. */
-#define SJME_FRAMEBUFFER_PROPERTY_BACKING_ARRAY_OBJECT SJME_JINT_C(15)
+#define SJME_FB_CONTROL_BACKING_ARRAY_OBJECT SJME_JINT_C(15)
+
+/** Gets the capabilities of the display. */
+#define SJME_FB_CONTROL_GET_CAPABILITIES SJME_JINT_C(16)
+
+/** Query acceleration graphics support. */
+#define SJME_FB_CONTROL_ACCEL_FUNC_QUERY SJME_JINT_C(17)
+
+/** Invoke accelerated graphics operation. */
+#define SJME_FB_CONTROL_ACCEL_FUNC_INVOKE SJME_JINT_C(18)
 
 /** Maximum properties. */
-#define SJME_FRAMEBUFFER_PROPERTY_NUM_PROPERTIES SJME_JINT_C(16)
+#define SJME_FB_NUM_CONTROLS SJME_JINT_C(19)
+
+/*****************************************************************************
+************************** FRAMEBUFFER ACCELERATION **************************
+*****************************************************************************/
+
+/** Set color. */
+#define SJME_FB_ACCEL_FUNC_SET_COLOR SJME_JINT_C(0)
+
+/** Draw line. */
+#define SJME_FB_ACCEL_FUNC_DRAW_LINE SJME_JINT_C(1)
+
+/** Get the X clip. */
+#define SJME_FB_ACCEL_FUNC_GET_CLIP_X SJME_JINT_C(2)
+
+/** Get the Y clip. */
+#define SJME_FB_ACCEL_FUNC_GET_CLIP_Y SJME_JINT_C(3)
+
+/** Get the width clip. */
+#define SJME_FB_ACCEL_FUNC_GET_CLIP_WIDTH SJME_JINT_C(4)
+
+/** Get the height clip. */
+#define SJME_FB_ACCEL_FUNC_GET_CLIP_HEIGHT SJME_JINT_C(5)
+
+/** Set the clip. */
+#define SJME_FB_ACCEL_FUNC_SET_CLIP SJME_JINT_C(6)
+
+/** Draw rectangle. */
+#define SJME_FB_ACCEL_FUNC_DRAW_RECT SJME_JINT_C(7)
+
+/** Get the alpha color. */
+#define SJME_FB_ACCEL_FUNC_GET_ALPHA_COLOR SJME_JINT_C(8)
+
+/** Set the alpha color. */
+#define SJME_FB_ACCEL_FUNC_SET_ALPHA_COLOR SJME_JINT_C(9)
+
+/** Fill rectangle. */
+#define SJME_FB_ACCEL_FUNC_FILL_RECT SJME_JINT_C(10)
+
+/** Sets the fonts for the graphics. */
+#define SJME_FB_ACCEL_FUNC_SET_FONT SJME_JINT_C(11)
+
+/** Gets the font to use for drawing. */
+#define SJME_FB_ACCEL_FUNC_GET_FONT SJME_JINT_C(12)
+
+/** Draw sub-characters. */
+#define SJME_FB_ACCEL_FUNC_DRAW_SUB_CHARS SJME_JINT_C(13)
+
+/** Draw text. */
+#define SJME_FB_ACCEL_FUNC_DRAW_TEXT SJME_JINT_C(14)
+
+/** Get stroke style. */
+#define SJME_FB_ACCEL_FUNC_GET_STROKE_STYLE SJME_JINT_C(15)
+
+/** Set stroke style. */
+#define SJME_FB_ACCEL_FUNC_SET_STROKE_STYLE SJME_JINT_C(16)
+
+/** Copy area. */
+#define SJME_FB_ACCEL_FUNC_COPY_AREA SJME_JINT_C(17)
+
+/** Draw arc. */
+#define SJME_FB_ACCEL_FUNC_DRAW_ARC SJME_JINT_C(18)
+
+/** Draw ARGB16. */
+#define SJME_FB_ACCEL_FUNC_DRAW_ARGB16 SJME_JINT_C(19)
+
+/** Draw character. */
+#define SJME_FB_ACCEL_FUNC_DRAW_CHAR SJME_JINT_C(20)
+
+/** Draw characters. */
+#define SJME_FB_ACCEL_FUNC_DRAW_CHARS SJME_JINT_C(21)
+
+/** Draw RGB. */
+#define SJME_FB_ACCEL_FUNC_DRAW_RGB SJME_JINT_C(22)
+
+/** Draw RGB16. */
+#define SJME_FB_ACCEL_FUNC_DRAW_RGB16 SJME_JINT_C(23)
+
+/** Draw round rectangle. */
+#define SJME_FB_ACCEL_FUNC_DRAW_ROUND_RECT SJME_JINT_C(24)
+
+/** Fill arc. */
+#define SJME_FB_ACCEL_FUNC_FILL_ARC SJME_JINT_C(25)
+
+/** Fill round rectangle. */
+#define SJME_FB_ACCEL_FUNC_FILL_ROUND_RECT SJME_JINT_C(26)
+
+/** Fill triangle. */
+#define SJME_FB_ACCEL_FUNC_FILL_TRIANGLE SJME_JINT_C(27)
+
+/** Get blending mode. */
+#define SJME_FB_ACCEL_FUNC_GET_BLENDING_MODE SJME_JINT_C(28)
+
+/** Get display color. */
+#define SJME_FB_ACCEL_FUNC_GET_DISPLAY_COLOR SJME_JINT_C(29)
+
+/** Set blending mode. */
+#define SJME_FB_ACCEL_FUNC_SET_BLENDING_MODE SJME_JINT_C(30)
+
+/** Draw region. */
+#define SJME_FB_ACCEL_FUNC_DRAW_REGION SJME_JINT_C(31)
+
+/** The number of draw functions. */
+#define SJME_FB_NUM_ACCEL_FUNC SJME_JINT_C(32)
+
+/*****************************************************************************
+*************************** FRAMEBUFFER CAPABILITY ***************************
+*****************************************************************************/
+
+/** Has touch. */
+#define SJME_FB_CAPABILITY_TOUCH SJME_JINT_C(0x01)
+
+/** Has keyboard. */
+#define SJME_FB_CAPABILITY_KEYBOARD SJME_JINT_C(0x02)
 
 /*****************************************************************************
 *************************** SUPERVISOR PROPERTIES ****************************
