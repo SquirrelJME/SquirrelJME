@@ -25,11 +25,21 @@ import javax.microedition.lcdui.Text;
  * serializing anything that was sent to it. The serialized graphics can be
  * forwarded somewhere for example for later deserialization.
  *
+ * Translation is performed locally to the graphics and wherever the graphics
+ * target is, it will not have translation forwarded and serialized to simplify
+ * the target.
+ *
  * @since 2018/11/19
  */
 public abstract class SerializedGraphics
 	extends Graphics
 {
+	/** X translation. */
+	protected int transx;
+	
+	/** Y translation. */
+	protected int transy;
+
 	/**
 	 * This method is called for any operation which serializes to graphics.
 	 *
@@ -48,8 +58,29 @@ public abstract class SerializedGraphics
 	@Override
 	public void clipRect(int __x, int __y, int __w, int __h)
 	{
-		this.serialize(GraphicsFunction.CLIP_RECT,
-			__x, __y, __w, __h);
+		int transx = this.transx,
+			transy = this.transy;
+		
+		// Calculate the actual desired clip location
+		int nx = __x + transx,
+			ny = __y + transy,
+			na = nx + __w,
+			nb = ny + __h;
+		
+		// Get the current clip location
+		int cx = this.__getClipX(),
+			cy = this.__getClipY(),
+			ca = cx + this.getClipWidth(),
+			cb = cy + this.getClipHeight();
+		
+		// Use direct set clip but with the correct coordinates
+		int bx = (nx > cx ? nx : cx),
+			by = (ny > cy ? ny : cy);
+		this.serialize(GraphicsFunction.SET_CLIP,
+			bx,
+			by,
+			(na < ca ? na : ca) - bx,
+			(nb < cb ? nb : cb) - by);
 	}
 	
 	/**
@@ -61,8 +92,12 @@ public abstract class SerializedGraphics
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.COPY_AREA,
-			__sx, __sy, __w, __h, __dx, __dy, __anchor);
+			__sx + transx, __sy + transy, __w, __h,
+			__dx + transx, __dy + transy, __anchor);
 	}
 	
 	/**
@@ -73,8 +108,11 @@ public abstract class SerializedGraphics
 	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_ARC,
-			__x, __y, __w, __h, __sa, __aa);
+			__x + transx, __y + transy, __w, __h, __sa, __aa);
 	}
 	
 	/**
@@ -86,8 +124,11 @@ public abstract class SerializedGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_ARGB16,
-			__data, __off, __scanlen, __x, __y, __w, __h);
+			__data, __off, __scanlen, __x + transx, __y + transy, __w, __h);
 	}
 	
 	/**
@@ -97,8 +138,11 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_CHAR,
-			(int)__s, __x, __y, __anchor);
+			(int)__s, __x + transx, __y + transy, __anchor);
 	}
 	
 	/**
@@ -110,8 +154,11 @@ public abstract class SerializedGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_CHARS,
-			__s, __o, __l, __x, __y, __anchor);
+			__s, __o, __l, __x + transx, __y + transy, __anchor);
 	}
 	
 	/**
@@ -136,8 +183,11 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_LINE,
-			__x1, __y1, __x2, __y2);
+			__x1 + transx, __y1 + transy, __x2 + transx, __y2 + transy);
 	}
 	
 	/**
@@ -149,8 +199,12 @@ public abstract class SerializedGraphics
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_RGB,
-			__data, __off, __scanlen, __x, __y, __w, __h, (__alpha ? 1 : 0));
+			__data, __off, __scanlen, __x + transx, __y + transy,
+			__w, __h, (__alpha ? 1 : 0));
 	}
 	
 	/**
@@ -162,8 +216,11 @@ public abstract class SerializedGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_RGB16,
-			__data, __off, __scanlen, __x, __y, __w, __h);
+			__data, __off, __scanlen, __x + transx, __y + transy, __w, __h);
 	}
 	
 	/**
@@ -173,8 +230,11 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawRect(int __x, int __y, int __w, int __h)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_RECT,
-			__x, __y, __w, __h);
+			__x + transx, __y + transy, __w, __h);
 	}
 	
 	/**
@@ -206,6 +266,9 @@ public abstract class SerializedGraphics
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
+			
+		int transx = this.transx,
+			transy = this.transy;
 		
 		// Extract image pixel data before sending over
 		int numpixels = __wsrc * __hsrc;
@@ -214,8 +277,9 @@ public abstract class SerializedGraphics
 		
 		// {@squirreljme.error EB0l Illegal region draw.}
 		int rv = (Integer)this.serialize(GraphicsFunction.DRAW_REGION,
-			data, __xsrc, __ysrc, __wsrc, __hsrc, __trans, __xdest, __ydest,
-			__anch, __wdest, __hdest);
+			data, (__wsrc << 16) | __hsrc, __trans,
+			__xdest + transx, __ydest + transy,
+			__anch, (__wdest << 16) | __hdest);
 		if (rv < 0)
 			throw new IllegalArgumentException("EB0l");
 	}
@@ -228,8 +292,11 @@ public abstract class SerializedGraphics
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_ROUND_RECT,
-			__x, __y, __w, __h, __aw, __ah);
+			__x + transx, __y + transy, __w, __h, __aw, __ah);
 	}
 	
 	/**
@@ -241,6 +308,9 @@ public abstract class SerializedGraphics
 		int __anchor)
 		throws NullPointerException
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		// Just pass the chars of the string since we cannot represent
 		// string at all
 		this.serialize(GraphicsFunction.DRAW_SUB_CHARS,
@@ -256,6 +326,9 @@ public abstract class SerializedGraphics
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		// Just pass the chars of the string since we cannot represent
 		// string at all
 		this.serialize(GraphicsFunction.DRAW_SUB_CHARS,
@@ -269,6 +342,9 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawText(Text __t, int __x, int __y)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.DRAW_TEXT,
 			SerializedGraphics.textSerialize(__t), __x, __y);
 	}
@@ -281,6 +357,9 @@ public abstract class SerializedGraphics
 	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.FILL_ARC,
 			__x, __y, __w, __h, __sa, __aa);
 	}
@@ -292,6 +371,9 @@ public abstract class SerializedGraphics
 	@Override
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.FILL_RECT,
 			__x, __y, __w, __h);
 	}
@@ -304,6 +386,9 @@ public abstract class SerializedGraphics
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.FILL_ROUND_RECT,
 			__x, __y, __w, __h, __aw, __ah);
 	}
@@ -316,6 +401,9 @@ public abstract class SerializedGraphics
 	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.FILL_TRIANGLE,
 			__x1, __y1, __x2, __y2, __x3, __y3);
 	}
@@ -387,7 +475,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getClipX()
 	{
-		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_X);
+		return this.__getClipX() - this.transx;
 	}
 	
 	/**
@@ -397,7 +485,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getClipY()
 	{
-		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_Y);
+		return this.__getClipY() - this.transy;
 	}
 	
 	/**
@@ -480,7 +568,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getTranslateX()
 	{
-		return (Integer)this.serialize(GraphicsFunction.GET_TRANSLATE_X);
+		return this.transx;
 	}
 	
 	/**
@@ -490,7 +578,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getTranslateY()
 	{
-		return (Integer)this.serialize(GraphicsFunction.GET_TRANSLATE_Y);
+		return this.transy;
 	}
 	
 	/**
@@ -552,8 +640,11 @@ public abstract class SerializedGraphics
 	@Override
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
+		int transx = this.transx,
+			transy = this.transy;
+		
 		this.serialize(GraphicsFunction.SET_CLIP,
-			__x, __y, __w, __h);
+			__x + transx, __y + transy, __w, __h);
 	}
 	
 	/**
@@ -628,8 +719,30 @@ public abstract class SerializedGraphics
 	@Override
 	public void translate(int __x, int __y)
 	{
-		this.serialize(GraphicsFunction.TRANSLATE,
-			__x, __y);
+		this.transx += __x;
+		this.transy += __y;
+	}
+	
+	/**
+	 * Returns the raw clipping X of the target.
+	 *
+	 * @return The target clipping.
+	 * @since 2020/01/10
+	 */
+	private final int __getClipX()
+	{
+		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_X);
+	}
+	
+	/**
+	 * Returns the raw clipping Y of the target.
+	 *
+	 * @return The target clipping.
+	 * @since 2020/01/10
+	 */
+	private final int __getClipY()
+	{
+		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_Y);
 	}
 	
 	/**
@@ -653,14 +766,6 @@ public abstract class SerializedGraphics
 		// Depends on the function
 		switch (__func)
 		{
-			case CLIP_RECT:
-				__g.clipRect(
-					(Integer)__args[0],
-					(Integer)__args[1],
-					(Integer)__args[2],
-					(Integer)__args[3]);
-				return null;
-			
 			case SET_COLOR:
 				__g.setColor(
 					(Integer)__args[0]);
@@ -685,18 +790,6 @@ public abstract class SerializedGraphics
 			
 			case GET_CLIP_HEIGHT:
 				return __g.getClipHeight();
-			
-			case GET_TRANSLATE_X:
-				return __g.getTranslateX();
-			
-			case GET_TRANSLATE_Y:
-				return __g.getTranslateY();
-			
-			case TRANSLATE:
-				__g.translate(
-					(Integer)__args[0],
-					(Integer)__args[1]);
-				return null;
 			
 			case SET_CLIP:
 				__g.setClip(
@@ -926,8 +1019,11 @@ public abstract class SerializedGraphics
 			case DRAW_REGION:
 				try
 				{
-					int sw = (Integer)__args[3],
-						sh = (Integer)__args[4];
+					// Extract width/heights since they are combined here
+					int sw = ((Integer)__args[1]) >>> 16,
+						sh = ((Integer)__args[1]) & 0xFFFF,
+						dw = ((Integer)__args[6]) >>> 16,
+						dh = ((Integer)__args[6]) & 0xFFFF;
 					
 					// Note that the passed buffer only contains image data
 					// from the source region, as such the source coordinates
@@ -936,12 +1032,11 @@ public abstract class SerializedGraphics
 							(int[])__args[0], sw, sh, true),
 						0, 0,
 						sw, sh,
+						(Integer)__args[2],
+						(Integer)__args[3],
+						(Integer)__args[4],
 						(Integer)__args[5],
-						(Integer)__args[6],
-						(Integer)__args[7],
-						(Integer)__args[8],
-						(Integer)__args[9],
-						(Integer)__args[10]);
+						dw, dh);
 				}
 				catch (IllegalArgumentException e)
 				{

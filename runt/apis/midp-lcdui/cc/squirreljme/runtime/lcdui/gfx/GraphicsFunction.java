@@ -17,9 +17,6 @@ package cc.squirreljme.runtime.lcdui.gfx;
  */
 public enum GraphicsFunction
 {
-	/** Clip rectangle. */
-	CLIP_RECT,
-	
 	/** Set color. */
 	SET_COLOR,
 	
@@ -37,15 +34,6 @@ public enum GraphicsFunction
 	
 	/** Get the height clip. */
 	GET_CLIP_HEIGHT,
-	
-	/** Get X translation. */
-	GET_TRANSLATE_X,
-	
-	/** Get Y translation. */
-	GET_TRANSLATE_Y,
-	
-	/** Translate. */
-	TRANSLATE,
 	
 	/** Set the clip. */
 	SET_CLIP,
@@ -142,43 +130,39 @@ public enum GraphicsFunction
 		// Depends
 		switch (__id)
 		{
-			case 0:		return CLIP_RECT;
-			case 1:		return SET_COLOR;
-			case 2:		return DRAW_LINE;
-			case 3:		return GET_CLIP_X;
-			case 4:		return GET_CLIP_Y;
-			case 5:		return GET_CLIP_WIDTH;
-			case 6:		return GET_CLIP_HEIGHT;
-			case 7:		return GET_TRANSLATE_X;
-			case 8:		return GET_TRANSLATE_Y;
-			case 9:		return TRANSLATE;
-			case 10:	return SET_CLIP;
-			case 11:	return DRAW_RECT;
-			case 12:	return GET_ALPHA_COLOR;
-			case 13:	return SET_ALPHA_COLOR;
-			case 14:	return FILL_RECT;
-			case 15:	return SET_FONT;
-			case 16:	return GET_FONT;
-			case 17:	return DRAW_SUB_CHARS;
-			case 18:	return DRAW_TEXT;
-			case 19:	return GET_STROKE_STYLE;
-			case 20:	return SET_STROKE_STYLE;
-			case 21:	return COPY_AREA;
-			case 22:	return DRAW_ARC;
-			case 23:	return DRAW_ARGB16;
-			case 24:	return DRAW_CHAR;
-			case 25:	return DRAW_CHARS;
-			case 26:	return DRAW_RGB;
-			case 27:	return DRAW_RGB16;
-			case 28:	return DRAW_ROUND_RECT;
-			case 29:	return FILL_ARC;
-			case 30:	return FILL_ROUND_RECT;
-			case 31:	return FILL_TRIANGLE;
-			case 32:	return GET_BLENDING_MODE;
-			case 33:	return GET_DISPLAY_COLOR;
-			case 34:	return SET_BLENDING_MODE;
-			case 35:	return DRAW_REGION;
-			
+			case 0:		return SET_COLOR;
+			case 1:		return DRAW_LINE;
+			case 2:		return GET_CLIP_X;
+			case 3:		return GET_CLIP_Y;
+			case 4:		return GET_CLIP_WIDTH;
+			case 5:		return GET_CLIP_HEIGHT;
+			case 6:		return SET_CLIP;
+			case 7:		return DRAW_RECT;
+			case 8:		return GET_ALPHA_COLOR;
+			case 9:		return SET_ALPHA_COLOR;
+			case 10:	return FILL_RECT;
+			case 11:	return SET_FONT;
+			case 12:	return GET_FONT;
+			case 13:	return DRAW_SUB_CHARS;
+			case 14:	return DRAW_TEXT;
+			case 15:	return GET_STROKE_STYLE;
+			case 16:	return SET_STROKE_STYLE;
+			case 17:	return COPY_AREA;
+			case 18:	return DRAW_ARC;
+			case 19:	return DRAW_ARGB16;
+			case 20:	return DRAW_CHAR;
+			case 21:	return DRAW_CHARS;
+			case 22:	return DRAW_RGB;
+			case 23:	return DRAW_RGB16;
+			case 24:	return DRAW_ROUND_RECT;
+			case 25:	return FILL_ARC;
+			case 26:	return FILL_ROUND_RECT;
+			case 27:	return FILL_TRIANGLE;
+			case 28:	return GET_BLENDING_MODE;
+			case 29:	return GET_DISPLAY_COLOR;
+			case 30:	return SET_BLENDING_MODE;
+			case 31:	return DRAW_REGION;
+				
 				// {@squirreljme.error EB0j Invalid graphics function.
 				// (The function ID)}
 			default:

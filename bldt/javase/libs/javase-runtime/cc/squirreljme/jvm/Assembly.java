@@ -1939,7 +1939,7 @@ public final class Assembly
 				try
 				{
 					return SwingFramebuffer.instance().vfb.
-						framebufferProperty(__args);
+						framebufferControl(__args);
 				}
 				catch (Throwable t)
 				{

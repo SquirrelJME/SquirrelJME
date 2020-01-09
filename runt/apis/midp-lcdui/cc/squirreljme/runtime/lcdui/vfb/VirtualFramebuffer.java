@@ -10,7 +10,7 @@
 package cc.squirreljme.runtime.lcdui.vfb;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.FramebufferProperty;
+import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.IPCCallback;
 
 /**
@@ -80,14 +80,14 @@ public final class VirtualFramebuffer
 	}
 	
 	/**
-	 * Executes the framebuffer property system call.
+	 * Executes the framebuffer control system call.
 	 *
 	 * @param __args The call arguments.
 	 * @return The result of the property.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
-	public final long framebufferProperty(int... __args)
+	public final long framebufferControl(int... __args)
 		throws NullPointerException
 	{
 		if (__args == null)
@@ -101,25 +101,25 @@ public final class VirtualFramebuffer
 				return 0;
 			
 			case 1:
-				return this.framebufferProperty(
+				return this.framebufferControl(
 					__args[0],
 					0, 0, 0, 0, 0, 0, 0, 0);
 			
 			case 2:
-				return this.framebufferProperty(
+				return this.framebufferControl(
 					__args[0],
 					__args[1],
 					0, 0, 0, 0, 0, 0, 0);
 			
 			case 3:
-				return this.framebufferProperty(
+				return this.framebufferControl(
 					__args[0],
 					__args[1],
 					__args[2],
 					0, 0, 0, 0, 0, 0);
 			
 			case 4:
-				return this.framebufferProperty(
+				return this.framebufferControl(
 					__args[0],
 					__args[1],
 					__args[2],
@@ -127,7 +127,7 @@ public final class VirtualFramebuffer
 					0, 0, 0, 0);
 			
 			case 5:
-				return this.framebufferProperty(
+				return this.framebufferControl(
 					__args[0],
 					__args[1],
 					__args[2],
@@ -136,7 +136,7 @@ public final class VirtualFramebuffer
 					0, 0, 0);
 			
 			case 6:
-				return this.framebufferProperty(
+				return this.framebufferControl(
 					__args[0],
 					__args[1],
 					__args[2],
@@ -146,7 +146,7 @@ public final class VirtualFramebuffer
 					0, 0);
 			
 			case 7:
-				return this.framebufferProperty(
+				return this.framebufferControl(
 					__args[0],
 					__args[1],
 					__args[2],
@@ -157,7 +157,7 @@ public final class VirtualFramebuffer
 					0);
 			
 			case 8:
-				return this.framebufferProperty(
+				return this.framebufferControl(
 					__args[0],
 					__args[1],
 					__args[2],
@@ -173,69 +173,81 @@ public final class VirtualFramebuffer
 	}
 	
 	/**
-	 * Executes the framebuffer property system call.
+	 * Executes the framebuffer control system call.
 	 *
 	 * @param __pid The property ID.
 	 * @param __args The call arguments.
 	 * @return The result of the property.
 	 * @since 2019/12/28
 	 */
-	public final long framebufferProperty(int __pid, int __a, int __b, int __c,
+	public final long framebufferControl(int __pid, int __a, int __b, int __c,
 		int __d, int __e, int __g, int __h)
 	{
 		// Depends on the property
 		switch (__pid)
 		{
 				// Raw address (since it is simulated, this is not set)
-			case FramebufferProperty.ADDRESS:
+			case Framebuffer.CONTROL_ADDRESS:
 				return 0;
 				
 				// Width and scanline length
-			case FramebufferProperty.WIDTH:
-			case FramebufferProperty.SCANLEN:
+			case Framebuffer.CONTROL_WIDTH:
+			case Framebuffer.CONTROL_SCANLEN:
 				return this.width;
 				
 				// Height
-			case FramebufferProperty.HEIGHT:
+			case Framebuffer.CONTROL_HEIGHT:
 				return this.height;
 			
 				// Flushes the display
-			case FramebufferProperty.FLUSH:
+			case Framebuffer.CONTROL_FLUSH:
 				throw new todo.TODO();
 				
 				// Pixel format is always integer
-			case FramebufferProperty.FORMAT:
-				return FramebufferProperty.FORMAT_INTEGER_RGB888;
+			case Framebuffer.CONTROL_FORMAT:
+				return Framebuffer.FORMAT_INTEGER_RGB888;
 				
 				// Scan line length in bytes
-			case FramebufferProperty.SCANLEN_BYTES:
+			case Framebuffer.CONTROL_SCANLEN_BYTES:
 				return this.width * 4;
 				
 				// The number of bytes per pixel
-			case FramebufferProperty.BYTES_PER_PIXEL:
+			case Framebuffer.CONTROL_BYTES_PER_PIXEL:
 				return 4;
 				
 				// Bits per pixel
-			case FramebufferProperty.BITS_PER_PIXEL:
+			case Framebuffer.CONTROL_BITS_PER_PIXEL:
 				return 32;
 				
 				// The number of pixels
-			case FramebufferProperty.NUM_PIXELS:
+			case Framebuffer.CONTROL_NUM_PIXELS:
 				return this.width * this.height;
 				
 				// Backlight not supported
-			case FramebufferProperty.BACKLIGHT_LEVEL_GET:
-			case FramebufferProperty.BACKLIGHT_LEVEL_SET:
-			case FramebufferProperty.BACKLIGHT_LEVEL_MAX:
+			case Framebuffer.CONTROL_BACKLIGHT_LEVEL_GET:
+			case Framebuffer.CONTROL_BACKLIGHT_LEVEL_SET:
+			case Framebuffer.CONTROL_BACKLIGHT_LEVEL_MAX:
 				return 0;
 				
 				// Upload integer array
-			case FramebufferProperty.UPLOAD_ARRAY_INT:
+			case Framebuffer.CONTROL_UPLOAD_ARRAY_INT:
 				throw new todo.TODO();
 				
 				// The backing array object
-			case FramebufferProperty.BACKING_ARRAY_OBJECT:
+			case Framebuffer.CONTROL_BACKING_ARRAY_OBJECT:
 				return Assembly.objectToPointer(this.pixels);
+				
+				// Returns the capabilities of the display.
+			case Framebuffer.CONTROL_GET_CAPABILITIES:
+				throw new todo.TODO();
+			
+				// Query acceleration function.
+			case Framebuffer.CONTROL_ACCEL_FUNC_QUERY:
+				throw new todo.TODO();
+			
+				// Perform acceleration function.
+			case Framebuffer.CONTROL_ACCEL_FUNC_INVOKE:
+				throw new todo.TODO();
 				
 				// Unknown
 			default:

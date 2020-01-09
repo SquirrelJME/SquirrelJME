@@ -168,7 +168,7 @@ public final class NativeUIBackend
 			try
 			{
 				// Try to get it
-				Graphics rv = AcceleratedGraphics.instance(nid);
+				Graphics rv = AcceleratedGraphics.instance();
 				
 				// Set acceleration flag
 				if (__a != null && __a.length > 1)

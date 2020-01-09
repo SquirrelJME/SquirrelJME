@@ -11,7 +11,7 @@ package com.nokia.mid.ui;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.DeviceFeedbackType;
-import cc.squirreljme.jvm.FramebufferProperty;
+import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 
@@ -68,14 +68,14 @@ public class DeviceControl
 		// property is not supported or there is no backlight that can be
 		// controlled
 		int max = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
-			FramebufferProperty.BACKLIGHT_LEVEL_MAX);
+			Framebuffer.CONTROL_BACKLIGHT_LEVEL_MAX);
 		if (max == 0)
 			return;
 		
 		// Set the desired level as a percentage of the max
 		int val = (max * __lvl) / 100;
 		Assembly.sysCall(SystemCallIndex.FRAMEBUFFER,
-			FramebufferProperty.BACKLIGHT_LEVEL_SET,
+			Framebuffer.CONTROL_BACKLIGHT_LEVEL_SET,
 			(val < 0 ? 0 : (val > max ? max : val)));
 	}
 	

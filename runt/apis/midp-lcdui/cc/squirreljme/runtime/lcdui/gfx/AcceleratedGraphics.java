@@ -25,18 +25,13 @@ import javax.microedition.lcdui.Text;
 public final class AcceleratedGraphics
 	extends SerializedGraphics
 {
-	/** The display to use for drawing the graphics. */
-	protected final int display;
-	
 	/**
 	 * Initializes for the given display.
 	 *
-	 * @param __did The display ID.
 	 * @since 2018/11/19
 	 */
-	AcceleratedGraphics(int __did)
+	public AcceleratedGraphics()
 	{
-		this.display = __did;
 	}
 	
 	/**
@@ -47,7 +42,7 @@ public final class AcceleratedGraphics
 	public final Object serialize(GraphicsFunction __func, Object... __args)
 	{
 		// Forward serialized arguments to the destination host
-		return NativeDisplayAccess.accelGfxFunc(this.display,
+		return NativeDisplayAccess.accelGfxFunc(0,
 			__func.ordinal(), __args);
 	}
 	
@@ -60,16 +55,16 @@ public final class AcceleratedGraphics
 	 * supported.
 	 * @since 2018/11/19
 	 */
-	public static final AcceleratedGraphics instance(int __did)
+	public static final AcceleratedGraphics instance()
 		throws UnsupportedOperationException
 	{
 		// {@squirreljme.error EB0a Accelerated graphics operations are not
 		// supported for this display. (The display ID)}
-		if (!NativeDisplayAccess.accelGfx(__did))
-			throw new UnsupportedOperationException("EB0a " + __did);
+		if (!NativeDisplayAccess.accelGfx(0))
+			throw new UnsupportedOperationException("EB0a " + 0);
 		
 		// Effectively has "new" state
-		return new AcceleratedGraphics(__did);
+		return new AcceleratedGraphics();
 	}
 }
 
