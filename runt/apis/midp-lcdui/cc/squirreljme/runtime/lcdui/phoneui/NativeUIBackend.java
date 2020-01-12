@@ -9,6 +9,10 @@
 
 package cc.squirreljme.runtime.lcdui.phoneui;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.Framebuffer;
+import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
@@ -64,12 +68,13 @@ public final class NativeUIBackend
 	{
 		this.nid = __nid;
 		
-		// Get data buffers and properties
-		int[] params = NativeDisplayAccess.framebufferParameters(__nid);
+		// Throw an exception if this has failed
+		int pft = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
+			Framebuffer.CONTROL_FORMAT);
+		SystemCallError.checkError(SystemCallIndex.FRAMEBUFFER);
 		
-		// Set parameters
-		this.pixelformat = PixelFormat.of(
-			params[NativeDisplayAccess.PARAMETER_PIXELFORMAT]);
+		// Set pixel format
+		this.pixelformat = PixelFormat.ofFramebuffer(pft);
 	}
 	
 	/**

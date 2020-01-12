@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.Framebuffer;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -263,9 +264,47 @@ public enum PixelFormat
 			case 8:		return INTEGER_ARGB8888;
 			case 9:		return INTEGER_RGB888;
 			
-				// {@squirreljme.error EB0k Unknown pixel buffer format.}
+				// {@squirreljme.error EB0k Unknown pixel buffer format. (ID)}
 			default:
 				throw new IllegalArgumentException("EB0k " + __id);
+		}
+	}
+	
+	/**
+	 * Returns the pixel format used for the native framebuffer.
+	 *
+	 * @param __id The format ID.
+	 * @return The associated pixel format.
+	 * @throws IllegalArgumentException If the ID is not valid.
+	 * @since 2020/01/12
+	 */
+	public static final PixelFormat ofFramebuffer(int __id)
+		throws IllegalArgumentException
+	{
+		switch (__id)
+		{
+			case Framebuffer.FORMAT_INTEGER_RGB888:
+				return INTEGER_RGB888;
+			
+			case Framebuffer.FORMAT_BYTE_INDEXED:
+				return BYTE_INDEXED8;
+			
+			case Framebuffer.FORMAT_SHORT_RGB565:
+				return SHORT_RGB565;
+			
+			case Framebuffer.FORMAT_PACKED_ONE:
+				return BYTE_INDEXED1;
+				
+			case Framebuffer.FORMAT_PACKED_TWO:
+				return BYTE_INDEXED2;
+				
+			case Framebuffer.FORMAT_PACKED_FOUR:
+				return BYTE_INDEXED4;
+			
+				// {@squirreljme.error EB3a Unknown frame buffer pixel buffer
+				// format. (ID}}
+			default:
+				throw new IllegalArgumentException("EB3a " + __id);
 		}
 	}
 }
