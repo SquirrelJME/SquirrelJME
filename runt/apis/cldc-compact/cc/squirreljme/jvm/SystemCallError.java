@@ -70,6 +70,21 @@ public final class SystemCallError
 	}
 	
 	/**
+	 * Checks if an error was set, if it was an exception is thrown.
+	 *
+	 * @param __si The system call to check.
+	 * @throws SystemCallException If there was an error.
+	 * @since 2020/01/12
+	 */
+	public static final void checkError(short __si)
+		throws SystemCallException
+	{
+		int code = SystemCallError.getError(__si);
+		if (code != NO_ERROR)
+			throw new SystemCallException(__si, code);
+	}
+	
+	/**
 	 * Returns the error state.
 	 *
 	 * @param __si The system call index.
@@ -79,6 +94,35 @@ public final class SystemCallError
 	public static final int getError(short __si)
 	{
 		return Assembly.sysCallV(SystemCallIndex.ERROR_GET, __si);
+	}
+	
+	/**
+	 * Converts the error to a string.
+	 *
+	 * @param __err The input error.
+	 * @return The resulting string.
+	 * @since 2020/01/12
+	 */
+	public static final String toString(int __err)
+	{
+		switch (__err)
+		{
+			case NO_ERROR:					return "NoError";
+			case UNSUPPORTED_SYSTEM_CALL:	return "UnsupportedSystemCall";
+			case PIPE_DESCRIPTOR_INVALID:	return "PDInvalid";
+			case PIPE_DESCRIPTOR_BAD_WRITE:	return "PDBadWrite";
+			case VALUE_OUT_OF_RANGE:		return "ValueOutOfRange";
+			case NO_FRAMEBUFFER:			return "NoFramebuffer";
+			case PERMISSION_DENIED:			return "PermissionDenied";
+			case INTERRUPTED:				return "Interrupted";
+			case UNKNOWN:					return "Unknown";
+			case END_OF_FILE:				return "EndOfFile";
+			case IPC_ERROR:					return "IPCError";
+			
+				// Some Other ID?
+			default:
+				return "ERROR" + __err;
+		}
 	}
 }
 

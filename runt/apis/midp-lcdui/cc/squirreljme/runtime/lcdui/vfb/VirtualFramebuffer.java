@@ -178,10 +178,12 @@ public final class VirtualFramebuffer
 	 * @param __pid The property ID.
 	 * @param __args The call arguments.
 	 * @return The result of the property.
+	 * @throws IllegalArgumentException If the property was not known.
 	 * @since 2019/12/28
 	 */
 	public final long framebufferControl(int __pid, int __a, int __b, int __c,
 		int __d, int __e, int __g, int __h)
+		throws IllegalArgumentException
 	{
 		// Depends on the property
 		switch (__pid)
@@ -249,9 +251,9 @@ public final class VirtualFramebuffer
 			case Framebuffer.CONTROL_ACCEL_FUNC_INVOKE:
 				throw new todo.TODO();
 				
-				// Unknown
+				// {@squirreljme.error EB3b Unknown control property.}
 			default:
-				return 0;
+				throw new IllegalArgumentException("EB3b");
 		}
 	}
 }
