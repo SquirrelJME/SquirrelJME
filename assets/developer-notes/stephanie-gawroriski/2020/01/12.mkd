@@ -1,0 +1,6 @@
+# 2020/01/12
+
+## 09:21
+
+I think for now I will wrap the old graphics framebuffer stuff in a way with
+the new stuff.
