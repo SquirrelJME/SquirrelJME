@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public abstract class Item
@@ -228,7 +229,7 @@ public abstract class Item
 		{
 			Display display = displayable._display;
 			if (display != null)
-				display._phoneui.repaint();
+				UIState.getInstance().repaint();
 		}
 	}
 	

@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.IPCCallback;
  *
  * @since 2019/12/28
  */
+@Deprecated
 class __GfxIPCDispatch__
 	implements IPCCallback
 {

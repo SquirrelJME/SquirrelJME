@@ -16,10 +16,12 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
+import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -91,6 +93,9 @@ public final class NativeUIBackend
 		// Set the active display
 		this._activedisplay = __ad;
 		
+		if (true)
+			throw new todo.TODO();
+		
 		// Register self for event callbacks
 		NativeDisplayAccess.registerEventCallback(this);
 	}
@@ -102,7 +107,19 @@ public final class NativeUIBackend
 	@Override
 	public final int capabilities()
 	{
-		return NativeDisplayAccess.capabilities(this.nid);
+		// Get native capabilities
+		int fbcaps = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
+			Framebuffer.CONTROL_GET_CAPABILITIES);
+		
+		// Translate to LCDUI capabilities
+		int rv = 0;
+		if ((fbcaps & Framebuffer.CAPABILITY_TOUCH) != 0)
+			rv |= ExtendedCapabilities.SUPPORTS_POINTER_EVENTS |
+				Display.SUPPORTS_INPUT_EVENTS;
+		if ((fbcaps & Framebuffer.CAPABILITY_KEYBOARD) != 0)
+			rv |= Display.SUPPORTS_INPUT_EVENTS;
+		
+		return rv;
 	}
 	
 	/**
@@ -112,6 +129,9 @@ public final class NativeUIBackend
 	@Override
 	public final void command(int __d, int __c)
 	{
+		if (true)
+			throw new todo.TODO();
+		
 		// Not our display?
 		if (__d != this.nid)
 			return;
@@ -133,6 +153,9 @@ public final class NativeUIBackend
 	@Override
 	public final void exitRequest(int __d)
 	{
+		if (true)
+			throw new todo.TODO();
+		
 		// Not our display?
 		if (__d != this.nid)
 			return;
@@ -153,6 +176,9 @@ public final class NativeUIBackend
 	{
 		if (__dims == null)
 			throw new NullPointerException("NARG");
+		
+		if (true)
+			throw new todo.TODO();
 		
 		// Read width and height
 		int[] params = NativeDisplayAccess.framebufferParameters(nid);
@@ -208,6 +234,9 @@ public final class NativeUIBackend
 	@Override
 	public final boolean isUpsidedown()
 	{
+		if (true)
+			throw new todo.TODO();
+		
 		return NativeDisplayAccess.isUpsideDown(this.nid);
 	}
 	
@@ -219,6 +248,9 @@ public final class NativeUIBackend
 	public final void keyEvent(int __d, int __ty, int __kc, int __ch,
 		int __time)
 	{
+		if (true)
+			throw new todo.TODO();
+		
 		// Not our display?
 		if (__d != this.nid)
 			return;
@@ -240,6 +272,9 @@ public final class NativeUIBackend
 	@Override
 	public final void lostCallback()
 	{
+		if (true)
+			throw new todo.TODO();
+		
 		todo.TODO.note("Implement");
 	}
 	
@@ -251,6 +286,9 @@ public final class NativeUIBackend
 	public final void paintDisplay(int __d, int __x, int __y,
 		int __w, int __h)
 	{
+		if (true)
+			throw new todo.TODO();
+		
 		// Not our display?
 		if (__d != this.nid)
 			return;
@@ -301,6 +339,9 @@ public final class NativeUIBackend
 	public final void pointerEvent(int __d, int __ty, int __x, int __y,
 		int __time)
 	{
+		if (true)
+			throw new todo.TODO();
+		
 		// Not our display?
 		if (__d != this.nid)
 			return;
@@ -322,6 +363,9 @@ public final class NativeUIBackend
 	 */
 	public final void repaint()
 	{
+		if (true)
+			throw new todo.TODO();
+			
 		NativeDisplayAccess.displayRepaint(this.nid,
 			0, 0, this._width, this._height);
 	}
@@ -333,6 +377,9 @@ public final class NativeUIBackend
 	@Override
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
+		if (true)
+			throw new todo.TODO();
+			
 		NativeDisplayAccess.displayRepaint(this.nid, __x, __y, __w, __h);
 	}
 	
@@ -343,6 +390,9 @@ public final class NativeUIBackend
 	@Override
 	public final void shown(int __d, int __shown)
 	{
+		if (true)
+			throw new todo.TODO();
+			
 		// Not our display?
 		if (__d != this.nid)
 			return;
@@ -357,6 +407,9 @@ public final class NativeUIBackend
 	@Override
 	public final void sizeChanged(int __d, int __w, int __h)
 	{
+		if (true)
+			throw new todo.TODO();
+			
 		// Not our display?
 		if (__d != this.nid)
 			return;

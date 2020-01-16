@@ -753,6 +753,15 @@ extern "C"
 /** Has keyboard. */
 #define SJME_FB_CAPABILITY_KEYBOARD SJME_JINT_C(0x02)
 
+/** The JVM pushes to the IPC handler when events happen. */
+#define SJME_FB_CAPABILITY_IPC_EVENTS SJME_JINT_C(0x04)
+
+/** Screen flipping can be detected. */
+#define SJME_FB_CAPABILITY_SCREEN_FLIP SJME_JINT_C(0x08)
+
+/** Screen has colors other than a single shade. */
+#define SJME_FB_CAPABILITY_COLOR SJME_JINT_C(0x10)
+
 /*****************************************************************************
 *************************** SUPERVISOR PROPERTIES ****************************
 *****************************************************************************/

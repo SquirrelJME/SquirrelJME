@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
+import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.phoneui.NativeUIBackend;
 import cc.squirreljme.runtime.lcdui.phoneui.PhoneDisplayBackend;
 import cc.squirreljme.runtime.lcdui.phoneui.PhoneUI;
@@ -204,27 +205,12 @@ public class Display
 	private static final int _NUM_DOWNKEYS =
 		5;
 	
-	/** The displays which currently exist based on their index. */
-	private static final Map<Integer, Display> _DISPLAYS =
-		new HashMap<>();
-	
 	/** Listeners for the display. */
 	private static final List<DisplayListener> _LISTENERS =
 		new ArrayList<>();
 	
-	/** Quick reference to the 0th display without needing a lock. */
-	private static volatile Display _DISPLAY_ZERO;
-	
-	/** The backend for the phone interface. */
-	final PhoneDisplayBackend _backend;
-	
-	/** The phone user interface for this display. */
-	final PhoneUI _phoneui;
-	
-	/** Set of keys which are down already, used to detect repeats on press. */
-	@Deprecated
-	private final int[] _downkeys =
-		new int[_NUM_DOWNKEYS];
+	/** The current display which was created. */
+	private static Display _DISPLAY;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -235,18 +221,10 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __b The backend for the display.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(PhoneDisplayBackend __b)
-		throws NullPointerException
+	Display()
 	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		
-		this._backend = __b;
-		this._phoneui = new PhoneUI(__b);
 	}
 	
 	public void callSerially(Runnable __a)
@@ -363,14 +341,20 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
+		int caps = UIState.getInstance().capabilities();
+		boolean hastouch = ((caps & Framebuffer.CAPABILITY_TOUCH) != 0);
+		boolean hasinput = hastouch |
+			((caps & Framebuffer.CAPABILITY_KEYBOARD) != 0);
+		
 		// Use the capabilities of the native display, but since SquirrelJME
 		// manages pretty much everything in a framebuffer every display will
 		// always have certain capabilities
-		return (this._backend.capabilities() |
+		return (hasinput ? SUPPORTS_INPUT_EVENTS : 0) |
+			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) |
 			SUPPORTS_COMMANDS | SUPPORTS_FORMS | SUPPORTS_TICKER |
 			SUPPORTS_ALERTS | SUPPORTS_LISTS | SUPPORTS_TEXTBOXES |
 			SUPPORTS_FILESELECTORS | SUPPORTS_TABBEDPANES |
-			SUPPORTS_MENUS);
+			SUPPORTS_MENUS;
 	}
 	
 	/**
@@ -508,7 +492,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this._phoneui.height;
+		return UIState.getInstance().displayHeight();
 	}
 	
 	public IdleItem getIdleItem()
@@ -539,7 +523,7 @@ public class Display
 		
 		// If it is detected that the display is upsidedown, just say that
 		// it was rotated 180 degrees
-		if (this._backend.isUpsidedown())
+		if (UIState.getInstance().displayFlipped())
 			if (landscape)
 				return ORIENTATION_LANDSCAPE_180;
 			else
@@ -559,7 +543,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._phoneui.width;
+		return UIState.getInstance().displayWidth();
 	}
 	
 	/**
@@ -605,7 +589,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return this._backend.pixelFormat().numColors() > 2;
+		return UIState.getInstance().displayIsColor();
 	}
 	
 	/**
@@ -620,10 +604,9 @@ public class Display
 	 */
 	public int numAlphaLevels()
 	{
-		int rv = this._backend.pixelFormat().numAlphaLevels();
-		if (rv <= 2)
-			return 2;
-		return rv;
+		// Always return 2 because SquirrelJME operates on a flat framebuffer
+		// where there is no such thing as transparency
+		return 2;
 	}
 	
 	/**
@@ -638,7 +621,7 @@ public class Display
 	 */
 	public int numColors()
 	{
-		return this._backend.pixelFormat().numColors();
+		return UIState.getInstance().displayUniqueColors();
 	}
 	
 	public void removeCurrent()
@@ -912,305 +895,6 @@ public class Display
 	}
 	
 	/**
-	 * Performs a command event on the target displayable.
-	 *
-	 * @param __i The command index.
-	 * @since 2018/12/02
-	 */
-	@SerializedEvent
-	final void __doCommandAction(int __i)
-	{
-		throw new todo.TODO();
-		/*
-		// No current, do nothing
-		Displayable current = this._current;
-		if (current == null)
-			return;
-		
-		// If there is no command listener then nothing can ever happen
-		CommandListener cmdlistener = current._cmdlistener;
-		if (cmdlistener == null)
-			return;
-		
-		// Check if the command index is in bounds
-		Object[] rawcommands = current._commands.values();
-		if (__i < 0 || __i >=  rawcommands.length)
-			return;
-		
-		// Otherwise execute the command
-		cmdlistener.commandAction((Command)rawcommands[__i], current);
-		*/
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @param __shown Is the display being shown?
-	 * @since 2018/03/24
-	 */
-	@SerializedEvent
-	final void __doDisplayShown(boolean __shown)
-	{
-		throw new todo.TODO();
-		/*
-		// If this is being shown, load the framebuffer
-		if (__shown)
-			this._state.framebuffer();
-		
-		// Internally set the display as shown or not
-		this._isshown = __shown;
-		
-		// Report that visibility has changed
-		int state = (__shown ? Display.STATE_VISIBLE :
-			Display.STATE_BACKGROUND);
-		for (DisplayListener dl : Display.__listeners())
-			dl.displayStateChanged(this, state);
-		
-		// Show the widget
-		Displayable current = this._current;
-		if (current != null)
-			current.__doShown(__shown);
-		*/
-	}
-	
-	/**
-	 * This is called when the display has changed size.
-	 *
-	 * @param __w The display width.
-	 * @param __h The display height.
-	 * @since 2018/03/23
-	 */
-	@SerializedEvent
-	final void __doDisplaySizeChanged(int __w, int __h)
-	{
-		throw new todo.TODO();
-		/*
-		// Update the framebuffer because everything relies on it
-		UIDisplayState state = this._state;
-		state.framebuffer();
-		
-		// Report that the size changed for events
-		for (DisplayListener dl : Display.__listeners())
-			dl.sizeChanged(this, __w, __h);
-		
-		// Tell the current displayable that the size has changed
-		Displayable d = this.getCurrent();
-		if (d != null)
-			d.sizeChanged(__w, __h);
-		
-		// Update the UI stack
-		this.__updateUIStack(this._uipersist, null);
-		*/
-	}
-	
-	/**
-	 * Requests that exit is performed. If there is a command which tagged
-	 * under the exit type, then that will be launched. Otherwise if there is
-	 * no command then it will just do a system exit.
-	 *
-	 * @since 2018/11/18
-	 */
-	@SerializedEvent
-	final void __doExitRequest()
-	{
-		throw new todo.TODO();
-		/*
-		// If an exit command is found, run it
-		Displayable d = this.getCurrent();
-		if (d != null)
-		{
-			// Only if there is an action to be ran, otherwise ignore
-			CommandListener cl = d._cmdlistener;
-			if (cl != null)
-				for (Command c : d._commands)
-					if (c._type == Command.EXIT)
-					{
-						cl.commandAction(c, d);
-						return;
-					}
-		}
-		
-		// Otherwise just exit the VM
-		System.exit(0);
-		*/
-	}
-	
-	/**
-	 * Performs a key action.
-	 *
-	 * @param __kt The event type.
-	 * @param __kc Key code.
-	 * @param __ch Character code.
-	 * @param __time Time code.
-	 * @throws IllegalArgumentException If the key type is not valid.
-	 * @since 2018/12/02
-	 */
-	@SerializedEvent
-	final void __doKeyAction(int __kt, int __kc, char __ch, int __time)
-		throws IllegalArgumentException
-	{
-		throw new todo.TODO();
-		/*
-		// If a function key is pressed, just treat it as a command which
-		// has been executed
-		if (__kc >= NonStandardKey.F1 && __kc <= NonStandardKey.F24)
-		{
-			if (__kt == NativeDisplayEventCallback.KEY_PRESSED)
-				this.__doCommandAction(__kc - NonStandardKey.F1);
-			return;
-		}
-		
-		// This is used to detect repeats from press events
-		int[] downkeys = this._downkeys;
-		
-		// Forward to the displayable
-		Displayable current = this._current;
-		if (current != null)
-		{
-			// If the key code is not invalid, then detect if duplicate
-			// press events should be turned into repeats
-			if (__kc != 0)
-			{
-				// Turn duplicate key press events into repeat events
-				if (__kt == NativeDisplayEventCallback.KEY_PRESSED)
-				{
-					// Check for key repeat
-					boolean isrepeat = false;
-					int lastslot = -1;
-					for (int i = 0; i < _NUM_DOWNKEYS; i++)
-						if (downkeys[i] == 0)
-							lastslot = i;
-						else if (downkeys[i] == __kc)
-						{
-							isrepeat = true;
-							break;
-						}
-					
-					// Change to repeat event
-					if (isrepeat)
-						__kt = NativeDisplayEventCallback.KEY_REPEATED;
-					
-					// Store key which is down for later
-					else if (lastslot >= 0)
-						downkeys[lastslot] = __kc;
-				}
-				
-				// Remove released keys
-				else if (__kt == NativeDisplayEventCallback.KEY_RELEASED)
-				{
-					// Remove from the down key set
-					for (int i = 0; i < _NUM_DOWNKEYS; i++)
-						if (__kc == downkeys[i])
-						{
-							downkeys[i] = 0;
-							break;
-						}
-				}
-			}
-			
-			// Forward
-			current.__doKeyAction(__kt, __kc, __ch, __time);
-		}
-		*/
-	}
-	
-	/**
-	 * Performs a mouse pointer action.
-	 *
-	 * @param __t The event type.
-	 * @param __x X coordinate.
-	 * @param __y Y coordinate.
-	 * @param __time Timecode.
-	 * @throws IllegalArgumentException If the event is not valid.
-	 * @since 2018/12/02
-	 */
-	@SerializedEvent
-	final void __doPointerAction(int __t, int __x, int __y, int __time)
-		throws IllegalArgumentException
-	{
-		throw new todo.TODO();
-		/*
-		// Forward to the displayable
-		Displayable current = this._current;
-		if (current != null)
-			current.__doPointerAction(__t, __x, __y, __time);
-		*/
-	}
-	
-	/**
-	 * Performs a repaint of the frame.
-	 *
-	 * @param __x X clip.
-	 * @param __y Y clip.
-	 * @param __w Width clip.
-	 * @param __h Height clip.
-	 * @since 2018/11/18
-	 */
-	@SerializedEvent
-	final void __doRepaint(int __x, int __y, int __w, int __h)
-	{
-		throw new todo.TODO();
-		/*
-		// Reclaulcate the draw stack?
-		UIPersist uipersist = this._uipersist;
-		if (uipersist.recalc)
-		{
-			// Do not recalculate again
-			uipersist.recalc = false;
-			
-			// Update the UI stack
-			this.__updateUIStack(uipersist, null);
-		}
-		
-		// A repaint is happening now so always clear it
-		uipersist.repaint = false;
-		
-		// Get graphics for this state
-		Graphics g = this._state.graphics();
-		
-		// Set the initial clipping region
-		g.clipRect(__x, __y, __w, __h);
-		
-		// Call internal paint, which draws our stack
-		try
-		{
-			// Clear the old focal item, it gets set on a redraw
-			uipersist.focalstack = null;
-			
-			// Render the draw stack
-			UIStack stack = this._uistack;
-			if (stack != null)
-				stack.render(uipersist, null, g);
-			
-			// Draw the focal item if there is one
-			UIStack focalstack = uipersist.focalstack;
-			if (focalstack != null)
-			{
-				int sx = focalstack.xoffset,
-					sy = focalstack.yoffset,
-					sw = focalstack.drawwidth - 2,
-					sh = focalstack.drawheight - 1;
-				
-				// Draw back line first
-				g.setAlphaColor(CommonColors.FOCUSED_COLOR_TWO);
-				g.setStrokeStyle(Graphics.SOLID);
-				g.drawRect(sx, sy, sw, sh);
-				
-				// Then opposite color line1
-				g.setAlphaColor(CommonColors.FOCUSED_COLOR);
-				g.setStrokeStyle(Graphics.DOTTED);
-				g.drawRect(sx, sy, sw, sh);
-			}
-		}
-		
-		// Catch all of these, but keep drawing!
-		catch (Throwable t)
-		{
-			t.printStackTrace();
-		}
-		*/
-	}
-	
-	/**
 	 * Do current show logic.
 	 *
 	 * @param __show The displayable to show.
@@ -1219,16 +903,17 @@ public class Display
 	 */
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
-	{
+	{	
+		UIState uis = UIState.getInstance();
+		
 		// Always set as shown, easier to work with
 		__show._isshown = true;
 		
 		// Set title of our display to the title of the Displayable
-		PhoneUI phoneui = this._phoneui;
-		phoneui.setTitle(__show._dtitle);
+		uis.setTitle(__show._dtitle);
 		
-		// Set current drawn displayable
-		phoneui.setCurrent(__show);
+		// Set drawn displayable
+		uis.setDisplayable(__show);
 		
 		// Callback when it is made visible
 		__show.showNotify();
@@ -1278,6 +963,11 @@ public class Display
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
+		// First display already made?
+		Display d = Display._DISPLAY;
+		if (d != null)
+			return d;
+		
 		// Use the first display that is available.
 		// In the runtime, each program only ever gets a single MIDlet and
 		// creating new MIDlets is illegal. Thus since getDisplays() has zero
@@ -1303,48 +993,29 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		// Initially filled with all displays, this will be filtered
-		// accordingly
-		List<Display> rv = new ArrayList<>();
-		
-		// Map all display IDs to actual displays
-		Map<Integer, Display> displays = Display._DISPLAYS;
-		synchronized (displays)
-		{
-			// Try to obtain the address of the framebuffer
-			int fbaddr = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
-				Framebuffer.CONTROL_ADDRESS);
-			int fbaobj = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
-				Framebuffer.CONTROL_BACKING_ARRAY_OBJECT);
-			
-			// There is only a single display if a framebuffer is supported
-			// It could be mapped to an object or otherwise raw memory
-			int numdisplays = (fbaddr != 0 || fbaobj != 0 ? 1 : 0);
-			for (int i = 0; i < numdisplays; i++)
-				rv.add(Display.__mapDisplay(i));
-		}
-		
-		// We only need to filter out displays if we specified capabilities
-		// we need
-		if (__caps != 0)
-		{
-			// Filter out all the displays so that only the displays which mat
-			for (Iterator<Display> it = rv.iterator(); it.hasNext();)
+		// Create initial display?
+		Display d = Display._DISPLAY;
+		if (d == null)
+			synchronized (Display.class)
 			{
-				Display d = it.next();
-				
-				// Remove any displays which specifically are lacking the ones
-				// we want
-				if ((d.getCapabilities() & __caps) != __caps)
-					it.remove();
+				d = Display._DISPLAY;
+				if (d == null)
+				{
+					Display._DISPLAY = (d = new Display());
+					
+					// Just signify that the display was added here
+					for (DisplayListener dl : Display.__listeners())
+						dl.displayAdded(d);
+				}
 			}
-			
-			// {@squirreljme.error EB1q No displays are available.}
-			if (rv.size() <= 0)
-				throw new IllegalStateException("EB1q");
-		}
 		
-		return rv.<Display>toArray(new Display[rv.size()]);
+		// Either the capabilities match or we do not care what the display
+		// supports
+		if (__caps == 0 || ((d.getCapabilities() & __caps) == __caps))
+			return new Display[]{d};
+		
+		// {@squirreljme.error EB1q No displays are available.}
+		throw new IllegalStateException("EB1q");
 	}
 	
 	/**
@@ -1393,55 +1064,6 @@ public class Display
 		{
 			return listeners.<DisplayListener>toArray(new DisplayListener[
 				listeners.size()]);
-		}
-	}
-	
-	/**
-	 * Maps the specified display index to a display and creates an object
-	 * which represents and provides access to the display.
-	 *
-	 * @param __did The display index.
-	 * @return The display for the given index.
-	 * @since 2018/03/16
-	 */
-	static Display __mapDisplay(int __did)
-	{
-		// If we are requesting the 0th display, since it is requested so often
-		// allow getting it without needing to lock and load from the map
-		// This in general should improve performance nicely
-		if (__did == 0)
-		{
-			Display rv = _DISPLAY_ZERO;
-			if (rv != null)
-				return rv;
-		}
-		
-		// Lock since multiple threads could be messing with the displays
-		Map<Integer, Display> displays = Display._DISPLAYS;
-		synchronized (displays)
-		{
-			Integer k = Integer.valueOf(__did);
-			Display rv = displays.get(k);
-			
-			// Create mapping for this display?
-			if (rv == null)
-			{
-				// Store it
-				displays.put(k, (rv = new Display(
-					new NativeUIBackend(__did))));
-				
-				// Cache display zero?
-				if (__did == 0)
-				{
-					_DISPLAY_ZERO = rv;
-				
-					// Register callback handler for IPC events
-					IPCManager.register(Framebuffer.IPC_ID,
-						__GfxIPCDispatch__.__instance());
-				}
-			}
-			
-			return rv;
 		}
 	}
 }
