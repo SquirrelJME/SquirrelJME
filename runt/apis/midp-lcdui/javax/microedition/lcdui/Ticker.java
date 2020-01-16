@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
@@ -74,13 +75,17 @@ public class Ticker
 		// Set new
 		this._text = __s;
 		
-		// Repaint for any displays which are using this ticker
+		// Find a displayable which is showing this
+		boolean isshown = false;
 		for (Displayable di : this._displayables)
 		{
 			Display d = di._display;
 			if (d != null)
-				d._phoneui.repaint();
+				isshown = true;
 		}
+		
+		// If this is being shown, then force the view to repaint
+		UIState.getInstance().repaint();
 	}
 }
 

@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -110,7 +111,7 @@ public abstract class Displayable
 		// Repaint display?
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint();
+			UIState.getInstance().repaint();
 	}
 	
 	public Command getCommand(int __p)
@@ -235,7 +236,7 @@ public abstract class Displayable
 		// Repaint display?
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint();
+			UIState.getInstance().repaint();
 	}
 	
 	public void removeCommandOrMenu(int __p)
@@ -310,7 +311,7 @@ public abstract class Displayable
 			// Update display
 			Display d = this._display;
 			if (d != null)
-				d._phoneui.repaint();
+				UIState.getInstance().repaint();
 		}
 	}
 	
@@ -336,7 +337,7 @@ public abstract class Displayable
 		// Set the title of the display
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.setTitle(__t);
+			UIState.getInstance().setTitle(__t);
 	}
 	
 	/**
@@ -410,10 +411,8 @@ public abstract class Displayable
 		if (display == null)
 			return Display.getDisplays(0)[0].getHeight();
 		
-		// Use content area size
-		if (__full)
-			return display._phoneui.height;
-		return display._phoneui.contentHeight();
+		// Use drawer width
+		return UIState.getInstance().drawerState().contentHeight();
 	}
 	
 	/**
@@ -435,10 +434,8 @@ public abstract class Displayable
 		if (display == null)
 			return Display.getDisplays(0)[0].getWidth();
 		
-		// Use content area size
-		if (__full)
-			return display._phoneui.width;
-		return display._phoneui.contentWidth();
+		// Use drawer width
+		return UIState.getInstance().drawerState().contentWidth();
 	}
 }
 

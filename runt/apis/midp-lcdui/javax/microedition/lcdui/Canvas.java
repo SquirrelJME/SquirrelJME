@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
+import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
@@ -473,7 +474,7 @@ public abstract class Canvas
 		
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint(__x, __y, __w, __h);
+			UIState.getInstance().repaint(__x, __y, __w, __h);
 	}
 	
 	/**
@@ -526,7 +527,7 @@ public abstract class Canvas
 		// Repaint the display if we have one so that it actually is used
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint();
+			UIState.getInstance().repaint();
 	}
 	
 	/**
@@ -587,101 +588,6 @@ public abstract class Canvas
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/02
-	 */
-	@Deprecated
-	@SerializedEvent
-	void __doKeyAction(int __type, int __kc, char __ch, int __time)
-	{
-		// Since we really only care about actions, if we happen to detect
-		// that the character is one of these symbols map them to the
-		// appropriate key.
-		// Keycodes for the same characters might not be mapped to the actual
-		// event in the event of natural keyboards.
-		if (__ch == '#')
-			__kc = KEY_POUND;
-		else if (__ch == '*')
-			__kc = KEY_STAR;
-		
-		// Canvases only care about keycodes and not characters, so only
-		// do something if the key code is actually valid!
-		if (__kc == NonStandardKey.UNKNOWN)
-			return;
-		
-		// Depends on the action
-		throw new todo.TODO();
-		/*
-		switch (__type)
-		{
-			case NativeDisplayEventCallback.KEY_PRESSED:
-				this.keyPressed(__kc);
-				break;
-			
-			case NativeDisplayEventCallback.KEY_REPEATED:
-				this.keyRepeated(__kc);
-				break;
-			
-			case NativeDisplayEventCallback.KEY_RELEASED:
-				this.keyReleased(__kc);
-				break;
-			
-			default:
-				break;
-		}*/
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/02
-	 */
-	@Deprecated
-	@SerializedEvent
-	void __doPointerAction(int __type, int __x, int __y, int __time)
-	{
-		throw new todo.TODO();
-		/*
-		switch (__type)
-		{
-			case NativeDisplayEventCallback.POINTER_DRAGGED:
-				this.pointerDragged(__x, __y);
-				break;
-			
-			case NativeDisplayEventCallback.POINTER_PRESSED:
-				this.pointerPressed(__x, __y);
-				break;
-			
-			case NativeDisplayEventCallback.POINTER_RELEASED:
-				this.pointerReleased(__x, __y);
-				break;
-			
-			default:
-				break;
-		}
-		*/
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/01
-	 */
-	@Deprecated
-	@SerializedEvent
-	void __doShown(boolean __shown)
-	{
-		throw new todo.TODO();
-		/*
-		// Needed for isShown()
-		super.__doShown(__shown);	
-		
-		if (__shown)
-			this.showNotify();
-		else
-			this.hideNotify();
-		*/
 	}
 }
 

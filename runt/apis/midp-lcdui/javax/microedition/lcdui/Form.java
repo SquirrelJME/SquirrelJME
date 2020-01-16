@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.fbui.UIState;
+
 public class Form
 	extends Screen
 {
@@ -46,7 +48,7 @@ public class Form
 		// Forms just use the titles the same as Displayables
 		try
 		{
-			setTitle(__t);
+			this.setTitle(__t);
 		}
 		
 		// Ignore this if it occurs so that constructing the form does not
@@ -131,7 +133,7 @@ public class Form
 		// Update display
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint();
+			UIState.getInstance().repaint();
 		
 		return rv;
 	}

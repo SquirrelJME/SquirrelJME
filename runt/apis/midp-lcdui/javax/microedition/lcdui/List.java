@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
+import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public class List
@@ -114,7 +115,7 @@ public class List
 		// Update display
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint();
+			UIState.getInstance().repaint();
 		
 		return rv;
 	}
@@ -305,7 +306,7 @@ public class List
 		// Update display
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint();
+			UIState.getInstance().repaint();
 	}
 	
 	public void setFitPolicy(int __a)
@@ -329,7 +330,7 @@ public class List
 		// Update display
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint();
+			UIState.getInstance().repaint();
 	}
 	
 	public void setSelectCommand(Command __a)
@@ -370,7 +371,7 @@ public class List
 		// Update display
 		Display d = this._display;
 		if (d != null)
-			d._phoneui.repaint();
+			UIState.getInstance().repaint();
 	}
 	
 	/**

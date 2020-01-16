@@ -167,9 +167,23 @@ public interface Framebuffer
 	public static final byte CONTROL_ACCEL_FUNC_INVOKE =
 		18;
 	
+	/**
+	 * Requests that the framebuffer be repainted.
+	 *
+	 * @param 1 The X coordinate.
+	 * @param 2 The Y coordinate.
+	 * @param 3 The width.
+	 * @param 4 The height.
+	 * @return Returns {@code 0} if the repaint was not queued and it must be
+	 * handled by the code running the application, 
+	 * @since 2020/01/15
+	 */
+	public static final byte CONTROL_REPAINT_REQUEST =
+		19;
+	
 	/** The number of framebuffer controls. */
 	public static final byte NUM_CONTROLS =
-		19;
+		20;
 	
 	/** Screen is RGB 32-bit. */
 	public static final byte FORMAT_INTEGER_RGB888 =
@@ -202,6 +216,18 @@ public interface Framebuffer
 	/** Has keyboard. */
 	public static final byte CAPABILITY_KEYBOARD =
 		0x02;
+	
+	/** The JVM pushes to the IPC handler when events happen. */
+	public static final byte CAPABILITY_IPC_EVENTS =
+		0x04;
+	
+	/** Has screen flipping? */
+	public static final byte CAPABILITY_SCREEN_FLIP =
+		0x08;
+	
+	/** Screen has color that is not just a single shade. */
+	public static final byte CAPABILITY_COLOR =
+		0x10;
 	
 	/** Set color. */
 	public static final byte ACCEL_FUNC_SET_COLOR =

@@ -19,6 +19,7 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2019/05/16
  */
+@Deprecated
 public final class PhoneUI
 {
 	/** The width of the phone screen. */
