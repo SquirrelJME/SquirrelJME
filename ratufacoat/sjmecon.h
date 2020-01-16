@@ -637,8 +637,14 @@ extern "C"
 /** Invoke accelerated graphics operation. */
 #define SJME_FB_CONTROL_ACCEL_FUNC_INVOKE SJME_JINT_C(18)
 
+/** Request repaint. */
+#define SJME_FB_CONTROL_REPAINT_REQUEST SJME_JINT_C(19)
+
+/** Set frame-buffer title. */
+#define SJME_FB_CONTROL_SET_TITLE SJME_JINT_C(20)
+
 /** Maximum properties. */
-#define SJME_FB_NUM_CONTROLS SJME_JINT_C(19)
+#define SJME_FB_NUM_CONTROLS SJME_JINT_C(21)
 
 /*****************************************************************************
 ************************** FRAMEBUFFER ACCELERATION **************************

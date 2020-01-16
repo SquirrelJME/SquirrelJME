@@ -181,9 +181,18 @@ public interface Framebuffer
 	public static final byte CONTROL_REPAINT_REQUEST =
 		19;
 	
+	/**
+	 * Sets the title of the framebuffer if applicable.
+	 *
+	 * @param 1 Character array buffer pointer.
+	 * @since 2020/01/15
+	 */
+	public static final byte CONTROL_SET_TITLE =
+		20;
+	
 	/** The number of framebuffer controls. */
 	public static final byte NUM_CONTROLS =
-		20;
+		21;
 	
 	/** Screen is RGB 32-bit. */
 	public static final byte FORMAT_INTEGER_RGB888 =
