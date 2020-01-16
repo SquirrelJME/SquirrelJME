@@ -17,6 +17,8 @@ import cc.squirreljme.jvm.IPCCallback;
  * This is a virtual framebuffer which may be used by non-SquirrelJME JVMs and
  * by higher level JVMs to allow for IPC based graphics to be used.
  *
+ * This assumes that event handling is used.
+ *
  * @since 2019/12/28
  */
 public final class VirtualFramebuffer
@@ -241,8 +243,11 @@ public final class VirtualFramebuffer
 				
 				// Returns the capabilities of the display.
 			case Framebuffer.CONTROL_GET_CAPABILITIES:
-				throw new todo.TODO();
-			
+				return Framebuffer.CAPABILITY_TOUCH |
+					Framebuffer.CAPABILITY_KEYBOARD |
+					Framebuffer.CAPABILITY_IPC_EVENTS |
+					Framebuffer.CAPABILITY_COLOR;
+				
 				// Query acceleration function.
 			case Framebuffer.CONTROL_ACCEL_FUNC_QUERY:
 				throw new todo.TODO();
