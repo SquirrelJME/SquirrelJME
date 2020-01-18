@@ -275,5 +275,16 @@ public final class VirtualFramebuffer
 				throw new IllegalArgumentException("EB3b");
 		}
 	}
+	
+	/**
+	 * Returns the framebuffer pixels.
+	 *
+	 * @return The framebuffer pixels.
+	 * @since 2020/01/18
+	 */
+	public final int[] pixels()
+	{
+		return this.pixels;
+	}
 }
 
