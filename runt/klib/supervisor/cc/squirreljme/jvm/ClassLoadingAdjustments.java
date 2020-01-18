@@ -134,5 +134,33 @@ public final class ClassLoadingAdjustments
 				return true;
 		}
 	}
+	
+	/**
+	 * Is this class deferred loaded in relation to the current class?
+	 *
+	 * @param __self The current class.
+	 * @param __cl The class to check.
+	 * @return If the class is deferred loaded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/12/15
+	 */
+	public static final boolean isDeferredLoad(String __self, String __cl)
+		throws NullPointerException
+	{
+		if (__self == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Same class is never deferred
+		if (__self.equals(__cl))
+			return false;
+		
+		// Is within the same package?
+		int ls = __self.lastIndexOf('/');
+		if (ls >= 0 && __self.regionMatches(0, __cl, 0, ls))
+			return false;
+		
+		// Use default defer logic
+		return ClassLoadingAdjustments.isDeferredLoad(__cl);
+	}
 }
 

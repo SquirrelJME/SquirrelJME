@@ -985,15 +985,71 @@ public final class String
 		return this._chars.length;
 	}
 	
-	public boolean regionMatches(int __a, String __b, int __c, int __d)
+	/**
+	 * Compares the given string regions to see if they match.
+	 *
+	 * @param __toff The offset for this string.
+	 * @param __b The other string to compare against.
+	 * @param __boff The offset of the target string.
+	 * @param __len The number of characters to compare.
+	 * @return If the region matches or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/01/18
+	 */
+	public boolean regionMatches(int __toff, String __b, int __boff, int __len)
 	{
-		throw new todo.TODO();
+		return this.regionMatches(false, __toff, __b, __boff, __len);
 	}
 	
-	public boolean regionMatches(boolean __a, int __b, String __c, int __d,
-		int __e)
+	/**
+	 * Compares the given string regions to see if they match.
+	 *
+	 * @param __igncase Is case to be ignored?
+	 * @param __toff The offset for this string.
+	 * @param __b The other string to compare against.
+	 * @param __boff The offset of the target string.
+	 * @param __len The number of characters to compare, if this is negative
+	 * then this is treated as zero.
+	 * @return If the region matches or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/01/18
+	 */
+	public boolean regionMatches(boolean __igncase, int __toff, String __b,
+		int __boff, int __len)
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Automatically false
+		if (__toff < 0 || __boff < 0 ||
+			__toff + __len > this.length() || __boff + __len > __b.length())
+			return false;
+		
+		// A quirk of the standard is that negative lengths are not an error
+		// but are treated as matches
+		if (__len < 0)
+			return true;
+		
+		// Disregarding case
+		if (__igncase)
+			for (int i = 0; i < __len; i++, __toff++, __boff++)
+			{
+				char a = this.charAt(__toff),
+					b = __b.charAt(__boff);
+				
+				if (Character.toLowerCase(a) != Character.toLowerCase(b) &&
+					Character.toUpperCase(a) != Character.toUpperCase(b))
+					return false;
+			}
+		
+		// Regarding case
+		else
+			for (int i = 0; i < __len; i++, __toff++, __boff++)
+				if (this.charAt(__toff) != __b.charAt(__boff))
+					return false;
+		
+		// Matches
+		return true;
 	}
 	
 	/**

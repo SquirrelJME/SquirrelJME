@@ -178,9 +178,8 @@ public final class TaskClass
 					
 					// The given class may be deferred loaded in which case
 					// we do not really care about it right now
-					slotv = (self.equals(cip) ||
-						ClassLoadingAdjustments.isDeferredLoad(cip) ? 0 :
-						__task.loadClass(cip)._infopointer);
+					slotv = (ClassLoadingAdjustments.isDeferredLoad(self, cip)
+						? 0 : __task.loadClass(cip)._infopointer);
 					break;
 					
 					// A class pool pointer
@@ -189,9 +188,8 @@ public final class TaskClass
 						toString();
 					
 					// The pool may be deferred
-					slotv = (self.equals(pip) ||
-						ClassLoadingAdjustments.isDeferredLoad(pip) ? 0 :
-						__task.classInfoUtility().
+					slotv = (ClassLoadingAdjustments.isDeferredLoad(self, pip)
+						? 0 : __task.classInfoUtility().
 							poolPointer(__task.loadClass(pip)));
 					break;
 					
