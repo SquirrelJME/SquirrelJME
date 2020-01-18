@@ -14,8 +14,10 @@ import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.IPCCallback;
 import cc.squirreljme.jvm.IPCManager;
 import cc.squirreljme.jvm.SystemCallIndex;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.List;
 
 /**
  * This class contains the state of the user interface. It may call the native
@@ -236,11 +238,32 @@ public final class UIState
 	 * Sets the displayable to be drawn.
 	 *
 	 * @param __d The displayable to draw.
+	 * @return The new drawing state.
 	 * @since 2020/01/15
 	 */
-	public final void setDisplayable(Displayable __d)
+	public final UIDrawerState setDisplayable(Displayable __d)
 	{
-		throw new todo.TODO();
+		UIDrawerState rv;
+		
+		// Nothing
+		if (__d == null)
+			rv = null;
+			
+		// List
+		else if (__d instanceof List)
+			rv = new DrawingList((List)__d);
+		
+		// Canvas
+		else if (__d instanceof Canvas)
+			rv = new DrawingCanvas((Canvas)__d);
+		
+		// Unknown
+		else
+			throw new todo.OOPS(__d.getClass().getName());
+		
+		// Set state and return
+		this.drawerstate = rv;
+		return rv;
 	}
 	
 	/**
@@ -251,7 +274,15 @@ public final class UIState
 	 */
 	public final void setTitle(String __s)
 	{
-		throw new todo.TODO();
+		char[] chars = (__s == null ? "SquirrelJME" : __s).toCharArray();
+		
+		// Tell the framebuffer to set the title as needed
+		Assembly.sysCall(SystemCallIndex.FRAMEBUFFER,
+			Framebuffer.CONTROL_SET_TITLE, Assembly.objectToPointer(chars));
+		
+		// Touch
+		if (chars.length > 0)
+			chars[0] = chars[0];
 	}
 	
 	/**
