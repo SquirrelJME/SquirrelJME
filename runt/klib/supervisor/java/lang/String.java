@@ -243,6 +243,51 @@ public final class String
 	}
 	
 	/**
+	 * Returns the last occurance of the given character.
+	 *
+	 * @param __c The character to find.
+	 * @return The last occurance of the character or {@code -1} if it was
+	 * not found.
+	 * @since 2018/09/29
+	 */
+	public int lastIndexOf(int __c)
+	{
+		return this.lastIndexOf(__c, Integer.MAX_VALUE);
+	}
+	
+	/**
+	 * Returns the last occurance of the given character going backwards from
+	 * the given index.
+	 *
+	 * @param __c The character to find.
+	 * @param __dx The index to start at, this is clipped to within the
+	 * string bounds accordingly although if it is negative no searching is
+	 * done.
+	 * @return The last occurance of the character or {@code -1} if it was
+	 * not found.
+	 * @since 2018/09/29
+	 */
+	public int lastIndexOf(int __c, int __dx)
+	{
+		// Never going to find anything at all
+		if (__dx < 0)
+			return -1;
+		
+		// Cap index
+		char[] ch = this._chars;
+		int n = ch.length;
+		if (__dx >= n)
+			__dx = n - 1;
+		
+		for (; __dx >= 0; __dx--)
+			if (__c == ch[__dx])
+				return __dx;
+		
+		// Not found
+		return -1;
+	}
+	
+	/**
 	 * Returns the string length.
 	 *
 	 * @return The string length.
@@ -251,6 +296,43 @@ public final class String
 	public final int length()
 	{
 		return this._chars.length;
+	}
+	
+	/**
+	 * Compares the given string regions to see if they match.
+	 *
+	 * @param __toff The offset for this string.
+	 * @param __o The other string to compare against.
+	 * @param __ooff The offset of the target string.
+	 * @param __len The number of characters to compare.
+	 * @return If the region matches or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/01/18
+	 */
+	public boolean regionMatches(int __toff, String __o, int __ooff, int __len)
+	{
+		return this.regionMatches(false, __toff, __o, __ooff, __len);
+	}
+	
+	/**
+	 * Compares the given string regions to see if they match.
+	 *
+	 * @param __igncase Is case to be ignored?
+	 * @param __toff The offset for this string.
+	 * @param __o The other string to compare against.
+	 * @param __ooff The offset of the target string.
+	 * @param __len The number of characters to compare.
+	 * @return If the region matches or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/01/18
+	 */
+	public boolean regionMatches(boolean __igncase, int __toff, String __o,
+		int __ooff, int __len)
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**

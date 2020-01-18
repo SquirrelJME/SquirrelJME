@@ -47,5 +47,35 @@ public final class Character
 			return (char)('0' + __dig);
 		return (char)('a' + (__dig - 10));
 	}
+	
+	/**
+	 * Converts the specified character to lower case without considering
+	 * locale.
+	 *
+	 * @param __c The character to convert.
+	 * @return The converted character.
+	 * @since 2020/01/18
+	 */
+	public static char toLowerCase(char __c)
+	{
+		if (__c >= 'A' && __c <= 'Z')
+			return __c + ('a' + (__c - 'A'));
+		return __c;
+	}
+	
+	/**
+	 * Converts the specified character to lower case without considering
+	 * locale.
+	 *
+	 * @param __c The character to convert.
+	 * @return The converted character.
+	 * @since 2020/01/18
+	 */
+	public static char toUpperCase(char __c)
+	{
+		if (__c >= 'a' && __c <= 'z')
+			return __c + ('A' + (__c - 'a'));
+		return __c;
+	}
 }
 
