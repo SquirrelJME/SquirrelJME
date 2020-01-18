@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.fbui;
 
+import javax.microedition.lcdui.Displayable;
+
 /**
  * This contains the state of a drawer.
  *
@@ -16,6 +18,25 @@ package cc.squirreljme.runtime.lcdui.fbui;
  */
 public abstract class UIDrawerState
 {
+	/** The displayable to be drawn/interacted with. */
+	protected final Displayable displayable;
+	
+	/**
+	 * Initializes the drawer state.
+	 *
+	 * @param __d The displayable to draw.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/01/18
+	 */
+	public UIDrawerState(Displayable __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		this.displayable = __d;
+	}
+	
 	/**
 	 * Returns the content height of this state.
 	 *

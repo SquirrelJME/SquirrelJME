@@ -43,6 +43,9 @@ public final class VirtualFramebuffer
 	/** The raw pixel data. */
 	protected final int[] pixels;
 	
+	/** Title listener. */
+	private FramebufferTitleListener _titlelistener;
+	
 	/**
 	 * Initializes the virtual framebuffer.
 	 *
@@ -255,6 +258,17 @@ public final class VirtualFramebuffer
 				// Perform acceleration function.
 			case Framebuffer.CONTROL_ACCEL_FUNC_INVOKE:
 				throw new todo.TODO();
+				
+				// Set title
+			case Framebuffer.CONTROL_SET_TITLE:
+				if (__a != 0)
+				{
+					FramebufferTitleListener tl = this._titlelistener;
+					if (tl != null)
+						tl.titleUpdated(
+							new String((char[])Assembly.pointerToObject(__a)));
+				}
+				return 0;
 				
 				// {@squirreljme.error EB3b Unknown control property.}
 			default:
