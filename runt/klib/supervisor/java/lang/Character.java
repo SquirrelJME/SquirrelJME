@@ -59,7 +59,7 @@ public final class Character
 	public static char toLowerCase(char __c)
 	{
 		if (__c >= 'A' && __c <= 'Z')
-			return __c + ('a' + (__c - 'A'));
+			return (char)(__c + ('a' + (__c - 'A')));
 		return __c;
 	}
 	
@@ -74,7 +74,7 @@ public final class Character
 	public static char toUpperCase(char __c)
 	{
 		if (__c >= 'a' && __c <= 'z')
-			return __c + ('A' + (__c - 'a'));
+			return (char)(__c + ('A' + (__c - 'a')));
 		return __c;
 	}
 }
