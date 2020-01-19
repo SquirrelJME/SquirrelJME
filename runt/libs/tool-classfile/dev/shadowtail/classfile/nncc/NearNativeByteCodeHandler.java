@@ -2153,6 +2153,46 @@ public final class NearNativeByteCodeHandler
 				codebuilder.add(NativeInstructionType.BREAKPOINT);
 				break;
 				
+				// Load boolean class
+			case "classInfoOfBoolean":
+				this.__loadClassInfo("boolean", __out.register);
+				break;
+				
+				// Load byte class
+			case "classInfoOfByte":
+				this.__loadClassInfo("byte", __out.register);
+				break;
+				
+				// Load short class
+			case "classInfoOfShort":
+				this.__loadClassInfo("short", __out.register);
+				break;
+				
+				// Load character class
+			case "classInfoOfCharacter":
+				this.__loadClassInfo("char", __out.register);
+				break;
+				
+				// Load int class
+			case "classInfoOfInteger":
+				this.__loadClassInfo("int", __out.register);
+				break;
+				
+				// Load float class
+			case "classInfoOfFloat":
+				this.__loadClassInfo("float", __out.register);
+				break;
+				
+				// Load long class
+			case "classInfoOfLong":
+				this.__loadClassInfo("long", __out.register);
+				break;
+				
+				// Load double class
+			case "classInfoOfDouble":
+				this.__loadClassInfo("double", __out.register);
+				break;
+				
 				// Long/Double bits
 			case "doubleToRawLongBits":
 			case "longBitsToDouble":
@@ -3094,6 +3134,20 @@ public final class NearNativeByteCodeHandler
 		
 		// Use the created label
 		return rv.label;
+	}
+	
+	/**
+	 * Loads the class information for a class.
+	 *
+	 * @param __cl The class to load.
+	 * @param __r The output register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/01/19
+	 */
+	private final void __loadClassInfo(String __cl, int __r)
+		throws NullPointerException
+	{
+		this.__loadClassInfo(new ClassName(__cl), __r);
 	}
 	
 	/**

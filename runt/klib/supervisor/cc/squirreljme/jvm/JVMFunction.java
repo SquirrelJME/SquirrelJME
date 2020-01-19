@@ -293,10 +293,12 @@ public final class JVMFunction
 	 * Returns the {@link Class} instance for the given class info pointer,
 	 * if none has been created yet then it will be created as needed.
 	 *
+	 * @param <T> The class type.
 	 * @param __cldx The class index pointer.
+	 * @return The resulting class.
 	 * @since 2019/05/26
 	 */
-	public static final Class<?> jvmLoadClass(int __cldx)
+	public static final <T> Class<T> jvmLoadClass(int __cldx)
 	{
 		// Access of invalid class?
 		if (__cldx == Constants.BAD_MAGIC)
