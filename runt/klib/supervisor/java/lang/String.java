@@ -319,20 +319,49 @@ public final class String
 	 *
 	 * @param __igncase Is case to be ignored?
 	 * @param __toff The offset for this string.
-	 * @param __o The other string to compare against.
-	 * @param __ooff The offset of the target string.
+	 * @param __b The other string to compare against.
+	 * @param __boff The offset of the target string.
 	 * @param __len The number of characters to compare.
 	 * @return If the region matches or not.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/18
 	 */
-	public boolean regionMatches(boolean __igncase, int __toff, String __o,
-		int __ooff, int __len)
+	public boolean regionMatches(boolean __igncase, int __toff, String __b,
+		int __boff, int __len)
 	{
-		if (__o == null)
+		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Automatically false
+		if (__toff < 0 || __boff < 0 ||
+			__toff + __len > this.length() || __boff + __len > __b.length())
+			return false;
+		
+		// A quirk of the standard is that negative lengths are not an error
+		// but are treated as matches
+		if (__len < 0)
+			return true;
+		
+		// Disregarding case
+		if (__igncase)
+			for (int i = 0; i < __len; i++, __toff++, __boff++)
+			{
+				char a = this.charAt(__toff),
+					b = __b.charAt(__boff);
+				
+				if (Character.toLowerCase(a) != Character.toLowerCase(b) &&
+					Character.toUpperCase(a) != Character.toUpperCase(b))
+					return false;
+			}
+		
+		// Regarding case
+		else
+			for (int i = 0; i < __len; i++, __toff++, __boff++)
+				if (this.charAt(__toff) != __b.charAt(__boff))
+					return false;
+		
+		// Matches
+		return true;
 	}
 	
 	/**
