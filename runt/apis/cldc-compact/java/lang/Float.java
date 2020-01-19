@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
@@ -52,7 +53,7 @@ public final class Float
 	
 	/** The class representing the primitive type. */
 	public static final Class<Float> TYPE =
-		ObjectAccess.<Float>classByNameType("float");
+		JVMFunction.<Float>jvmLoadClass(Assembly.classInfoOfFloat());
 	
 	/** The stored value. */
 	private final float _value;

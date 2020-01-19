@@ -78,6 +78,70 @@ public final class Assembly
 	public static native void breakpoint();
 	
 	/**
+	 * Returns the class info pointer of {@code boolean}.
+	 *
+	 * @return The class info pointer.
+	 * @since 2020/01/19
+	 */
+	public static native int classInfoOfBoolean();
+	
+	/**
+	 * Returns the class info pointer of {@code byte}.
+	 *
+	 * @return The class info pointer.
+	 * @since 2020/01/19
+	 */
+	public static native int classInfoOfByte();
+	
+	/**
+	 * Returns the class info pointer of {@code char}.
+	 *
+	 * @return The class info pointer.
+	 * @since 2020/01/19
+	 */
+	public static native int classInfoOfCharacter();
+	
+	/**
+	 * Returns the class info pointer of {@code double}.
+	 *
+	 * @return The class info pointer.
+	 * @since 2020/01/19
+	 */
+	public static native int classInfoOfDouble();
+	
+	/**
+	 * Returns the class info pointer of {@code float}.
+	 *
+	 * @return The class info pointer.
+	 * @since 2020/01/19
+	 */
+	public static native int classInfoOfFloat();
+	
+	/**
+	 * Returns the class info pointer of {@code int}.
+	 *
+	 * @return The class info pointer.
+	 * @since 2020/01/19
+	 */
+	public static native int classInfoOfInteger();
+	
+	/**
+	 * Returns the class info pointer of {@code long}.
+	 *
+	 * @return The class info pointer.
+	 * @since 2020/01/19
+	 */
+	public static native int classInfoOfLong();
+	
+	/**
+	 * Returns the class info pointer of {@code short}.
+	 *
+	 * @return The class info pointer.
+	 * @since 2020/01/19
+	 */
+	public static native int classInfoOfShort();
+	
+	/**
 	 * Packs the given two integers to a double value.
 	 *
 	 * @param __hi The high value.
