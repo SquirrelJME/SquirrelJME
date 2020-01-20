@@ -1,0 +1,8 @@
+# 2020/01/19
+
+## 11:37
+
+Okay so I think currently doing deferred loading which will be faster when
+loading and such, but I think that it is a bit complicated at first so I think
+I just want to quickly bind everything together at once. Perhaps later on I
+can figure out a good solution for it.
