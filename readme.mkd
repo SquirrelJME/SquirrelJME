@@ -24,6 +24,8 @@ ability to play older J2ME software and games designed for flip-phones.
 
 Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
+Dedicated to Emily (1998-2020), the developer of [Mu](https://github.com/meepingsnesroms/Mu), you will not be forgotten. Rest in peace.
+
 Badges:
 
  * ![Commit Activity](
@@ -42,7 +44,6 @@ https://img.shields.io/github/commit-activity/w/XerTheSquirrel/SquirrelJME.svg)
  * [![Twitter](
  https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow)](
    https://twitter.com/MultiPhasicApps)
-   
 
 Information:
 
@@ -69,10 +70,6 @@ Information:
    * [Project Scope](scope.mkd)
    * [CLDC 1.8 API (docs.oracle.com)](
      https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)
-
-Also check out SquirrelJME's sister project _Mu_ at:
-
- * <https://github.com/meepingsnesroms/Mu>
 
 ## Repository
 
