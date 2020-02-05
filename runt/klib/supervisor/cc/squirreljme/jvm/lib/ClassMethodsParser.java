@@ -97,6 +97,39 @@ public final class ClassMethodsParser
 	}
 	
 	/**
+	 * Finds the given method and returns the index of it.
+	 *
+	 * @param __name The method name.
+	 * @param __type The method type, may be {@code null} if not needed.
+	 * @return The found index or {@code -1} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/01/27
+	 */
+	public final int findMethod(String __name, String __type)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Locate
+		for (int i = 0, n = this.count; i < n; i++)
+		{
+			// Name does not match
+			if (!__name.equals(this.name(i)))
+				continue;
+			
+			// Type does not match
+			if (__type != null && __type.equals(this.type(i)))
+				continue;
+			
+			return i;
+		}
+		
+		// Not found
+		return -1;
+	}
+	
+	/**
 	 * Returns the name of the method.
 	 *
 	 * @param __dx The index of the method.
