@@ -1,6 +1,9 @@
 # Changelog
 
-# 0.4.0 (February 7, 2020)
+# 0.4.0 (June 11, 2020)
+
+This release is dedicated to Emily, the developer of Mu, she was a close and
+dear friend of mine. Rest in piece, you will not be forgotten.
 
 Now SquirrelJME has the SummerCoat virtual machine which is much lighter and
 faster than SpringCoat. There should definitely be very noticable performance

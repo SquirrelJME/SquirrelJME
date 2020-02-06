@@ -5,16 +5,30 @@
 _Please note that this information may change over time and is just_
 _speculation based on project planning._
 
-## 0.8.0 (December 25, 2020)
+## 1.0.0/0.12.0 (TBD)
 
+ * _To Be Determined_
+ * At or exceeding 85% implementation.
+
+## 0.10.0 (TBD)
+
+ * _To Be Determined_
+
+## 0.8.0 (TBD)
+
+ * _To Be Determined_
  * Virtual Machine: AutumnCoat
    * Streamlined and simplified code compiler.
    * Supports generation to native machine code.
+     * x86
+     * x86_64
+     * SummerCoat
 
-## 0.6.0 (June 20, 2020)
+## 0.6.0 (January 17, 2021)
 
 This is a future release and the specified changes are proposed.
 
+ * _To Be Determined_
  * 3rd-party development SDK
  * Additional Library Support
    * Add support for Nokia APIs.
@@ -27,7 +41,7 @@ This is a future release and the specified changes are proposed.
 
 # Current
 
-## 0.4.0 (February 7, 2020)
+## 0.4.0 (June 11, 2020)
 
 This is the second version of SquirrelJME which provides virtual machine
 improvements.
