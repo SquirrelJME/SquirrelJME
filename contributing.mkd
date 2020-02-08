@@ -19,7 +19,7 @@ developed targeting Unix compatible systems, this means the following:
 
 SquirrelJME uses the [Fossil](https://fossil-scm.org/) source control
 system and as such it generally is expected that it is to be used. There also
-are [GitHub Pull Requests](https://github.com/XerTheSquirrel/SquirrelJME/pulls)
+are [GitHub Pull Requests](https://github.com/SquirrelJME/SquirrelJME/pulls)
 however since the Git is a mirror, when these are merged there will not be
 an indication that they were merged because any writes to the Git repository
 will be destroyed.
