@@ -24,12 +24,14 @@ ability to play older J2ME software and games designed for flip-phones.
 
 Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
-Dedicated to Emily (1998-2020), the developer of [Mu](https://github.com/meepingsnesroms/Mu), you will not be forgotten. Rest in peace.
+Dedicated to Emily (1998-2020), the developer of
+[Mu](https://github.com/meepingsnesroms/Mu), you will not be forgotten.
+Rest in peace.
 
 Badges:
 
  * ![Commit Activity](
-https://img.shields.io/github/commit-activity/w/XerTheSquirrel/SquirrelJME.svg)
+https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
  * [![Patreon](
    https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.herokuapp.com%2FSquirrelJME%2Fpledges&style=flat)](
    https://www.patreon.com/SquirrelJME)
@@ -37,8 +39,8 @@ https://img.shields.io/github/commit-activity/w/XerTheSquirrel/SquirrelJME.svg)
   https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
    https://liberapay.com/xershadowtail)
  * [![CircleCI](
-   https://img.shields.io/circleci/build/github/XerTheSquirrel/SquirrelJME/trunk.svg)](
-   https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)
+   https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg)](
+   https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
  * [![Discord](https://img.shields.io/discord/278929900893634560.svg)](
    https://discord.gg/9PkMMKt)
  * [![Twitter](
@@ -87,8 +89,8 @@ Information:
    * `mkdir squirreljme`
    * `cd squirreljme`
    * `fossil open ../squirreljme.fossil`
- * Alternatively via [GitHub](https://github.com/XerTheSquirrel/SquirrelJME):
-   * `git clone https://github.com/XerTheSquirrel/SquirrelJME`
+ * Alternatively via [GitHub](https://github.com/SquirrelJME/SquirrelJME):
+   * `git clone https://github.com/SquirrelJME/SquirrelJME`
    * `cd SquirrelJME`
  * Alternatively via [repo.or.cz](https://repo.or.cz/SquirrelJME.git):
    * `git clone https://repo.or.cz/SquirrelJME.git`
