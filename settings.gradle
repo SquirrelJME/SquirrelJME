@@ -1,5 +1,5 @@
 // Base module directory
-include 'modules'
+include "modules"
 
 // Recursively include all projects
 file(rootProject.projectDir.toPath().resolve("modules"))

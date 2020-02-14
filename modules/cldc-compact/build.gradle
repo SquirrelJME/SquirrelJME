@@ -1,0 +1,29 @@
+// Setup plugins
+plugins
+{
+	id "java"
+}
+
+// Versioning
+description = "This is the standard JavaME 8 Connection " +
+	"Limited  Device Configuration which contains the core classes used " +
+	"by Java ME."
+
+java
+{
+	compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
+	compileJava.targetCompatibility = JavaVersion.VERSION_1_7
+
+	// All files are always in UTF-8 format
+	compileJava.options.encoding = "utf-8"
+
+	// Verbose output
+	compileJava.options.verbose = true
+
+	// Use our own sources for the project
+	compileJava.options.bootstrapClasspath = project.files()
+}
+
+dependencies
+{
+}

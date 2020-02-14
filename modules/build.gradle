@@ -1,17 +1,47 @@
 // Setup plugins
 plugins
 {
-	id 'java'
+	id "java"
 }
 
 // Versioning
-group = 'cc.squirreljme.modules'
-description = 'Modules which are a part of SquirrelJME.'
+group = "cc.squirreljme.modules"
+description = "Modules which are a part of SquirrelJME."
 
-// Properties for every sub-project
-subprojects
+// Properties for every sub-project, except for cldc-compact since that is special
+configure(subprojects - project(":modules:cldc-compact"))
 {
+    apply plugin: 'java'
+
 	// Java ME 8 is effectively Java 7
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
+    java
+    {
+        compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
+		compileJava.targetCompatibility = JavaVersion.VERSION_1_7
+
+		// All files are always in UTF-8 format
+		compileJava.options.encoding = "utf-8"
+
+		// Verbose output
+		compileJava.options.verbose = false
+
+		// Only use SquirrelJME's boot classes, not the system SDK
+		Project cldcCompactProject = project(":modules:cldc-compact")
+		compileJava.options.bootstrapClasspath = project.objects.fileCollection().from(
+			cldcCompactProject.buildDir.toPath().resolve("classes").resolve("java").resolve("main"))
+
+		// Copy options
+		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
+		compileTestJava.targetCompatibility = compileJava.targetCompatibility
+		compileTestJava.options.encoding = compileJava.options.encoding
+		compileTestJava.options.verbose = compileJava.options.verbose
+		compileTestJava.options.bootstrapClasspath = compileJava.options.bootstrapClasspath
+    }
+
+	dependencies
+	{
+		// All projects depend on the Compact CLDC Library
+		compile project(":modules:cldc-compact")
+		testCompile project(":modules:cldc-compact")
+	}
 }
