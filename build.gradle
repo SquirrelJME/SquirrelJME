@@ -1,3 +1,32 @@
+// Used for building
+plugins
+{
+	id 'java'
+}
 
-// SquirrelJME Build System Modernization Plugin
-apply from: 'utils-dev/squirreljme.gradle'
+// Versioning
+group = 'cc.squirreljme'
+description = 'SquirrelJME is a Java ME 8 Virtual Machine for embedded ' +
+	'and Internet of Things devices. It has the ultimate goal of being ' +
+	'99.9% compatible with the Java ME standard.'
+version = '0.3.0'
+
+// Properties for every project
+allprojects
+{
+	// SquirrelJME Specific Tasks
+	apply from: rootProject.projectDir.toPath()
+		.resolve("utils-dev")
+		.resolve("squirreljme.gradle")
+}
+
+// Properties for every sub-project
+subprojects
+{
+	// Use these plugins for sub-projects
+	apply plugin: 'java'
+	
+	// Java ME 8 is effectively Java 7
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+}
