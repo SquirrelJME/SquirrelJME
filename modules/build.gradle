@@ -1,0 +1,17 @@
+// Setup plugins
+plugins
+{
+	id 'java'
+}
+
+// Versioning
+group = 'cc.squirreljme.modules'
+description = 'Modules which are a part of SquirrelJME.'
+
+// Properties for every sub-project
+subprojects
+{
+	// Java ME 8 is effectively Java 7
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+}
