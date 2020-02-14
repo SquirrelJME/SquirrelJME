@@ -1,0 +1,3 @@
+
+// SquirrelJME Build System Modernization Plugin
+apply from: 'utils-dev/squirreljme.gradle'
