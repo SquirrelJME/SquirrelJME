@@ -1,6 +1,9 @@
-// Recursively 
+// Base module directory
+include 'modules'
+
+// Recursively include all projects
 file(rootProject.projectDir.toPath().resolve("modules"))
 	.eachDir(
 	{ subdir ->
-		include subdir.name
+		include "modules:" + subdir.name
 	});
