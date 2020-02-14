@@ -1,0 +1,6 @@
+// Recursively 
+file(rootProject.projectDir.toPath().resolve("modules"))
+	.eachDir(
+	{ subdir ->
+		include subdir.name
+	});
