@@ -1,0 +1,16 @@
+// Versioning
+description = "This is a SpringCoat virtual machine which " +
+	"is an unoptimized pure interpreter aimed for the purpose of being an " +
+	"educational stepping stone to other future virtual machines."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:tool-classfile")
+	compile project(":modules:tool-manifest-reader")
+	compile project(":modules:meep-swm")
+	compile project(":modules:tool-profiler")
+	compile project(":modules:meep-midlet")
+	compile project(":modules:common-vm")
+}

@@ -1,0 +1,10 @@
+// Versioning
+description = "This contains support for reading class files."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:collections")
+	compile project(":modules:io")
+}
