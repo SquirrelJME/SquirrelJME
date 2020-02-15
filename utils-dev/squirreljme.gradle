@@ -1,20 +1,49 @@
+List<Project> squirreljmeProjects = new LinkedList<>()
+
 rootProject.subprojects.each
 	{ Project __project ->
-		System.err.println("* Project " + __project.name)
-		try
+		File projectRoot = __project.projectDir
+		File manifestPath = projectRoot.toPath().resolve("src").
+			resolve("main").resolve("resources").resolve("META-INF").
+			resolve("SQUIRRELJME.MF").toFile()
+
+		if (manifestPath.exists())
 		{
-			System.err.println(__project.ext.squirreljme_definesConfigurations)
-		}
-		catch (MissingPropertyException e)
-		{
-			System.err.println("No property found!")
+			// Preserve project for faster scanning later
+			squirreljmeProjects.add(__project)
+
+			// Store the manifest path
+			__project.ext.squirreljmeManifest = manifestPath
+
+			// Load attributes
+			java.util.jar.Attributes mainAttributes =
+				new java.util.jar.Manifest(manifestPath.newInputStream()).
+					getMainAttributes()
+			__project.ext.squirreljmeManifestAttributes = mainAttributes
+
+			// Defined configurations
+			__project.ext.squirreljmeDefinedConfigurations =
+				new ArrayList<>();
+
+			// Are
+			String manifestDefinedConfigurations =
+				mainAttributes.getValue("X-SquirrelJME-DefinedConfigurations")
+			if (manifestDefinedConfigurations != null)
+				for (String splice : manifestDefinedConfigurations.split(" "))
+					__project.ext.squirreljmeDefinedConfigurations.add(
+						splice.toLowerCase())
 		}
 	}
 
 ext.javaMeConfigurationDependency =
 	{ String __config ->
 		System.err.println("Is this being called???");
-		System.err.println(rootProject.name);
-		return null
+		for (Project project : squirreljmeProjects)
+			if (project.ext.squirreljmeDefinedConfigurations.
+				contains(__config.toLowerCase()))
+				return project;
+
+		throw new ResolveException("Could not configuration ${__config}",
+			new Throwable())
 	}
 
