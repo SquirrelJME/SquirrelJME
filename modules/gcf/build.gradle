@@ -1,7 +1,13 @@
-
 description = "This projects contains the Generic " +
 	"connection framework which is used to create connections to other " +
 	"resources."
+
+squirreljme
+{
+	javaDocErrorCode = "EC"
+	swmName = "Generic Connection Framework"
+	swmVendor = "Stephanie Gawroriski"
+}
 
 dependencies
 {

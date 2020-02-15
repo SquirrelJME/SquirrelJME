@@ -1,0 +1,14 @@
+description = "This project contains the implementation of " +
+	"the MIDP 3.0 Media API which is also specified in JSR 135."
+
+squirreljme
+{
+	javaDocErrorCode = "EA"
+	swmName = "Media API"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	compile project(":modules:cldc-compact")
+}
