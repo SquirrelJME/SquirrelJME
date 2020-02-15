@@ -1,4 +1,4 @@
-// Versioning
+
 description = "This project contains basic string utilities " +
 	"which are useful when parsing strings."
 

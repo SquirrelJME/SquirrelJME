@@ -1,4 +1,4 @@
-// Versioning
+
 group = "cc.squirreljme"
 description = "SquirrelJME is a Java ME 8 Virtual Machine for embedded " +
 	"and Internet of Things devices. It has the ultimate goal of being " +

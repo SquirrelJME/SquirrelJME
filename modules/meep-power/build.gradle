@@ -1,7 +1,16 @@
-// Versioning
+import cc.squirreljme.plugin.JavaMEStandard
+
 description = "This provides support for quering the current " +
 	"electrical state of the device along with the setting of potential new " +
 	"power modes."
+
+squirreljme
+{
+	javaDocErrorCode = "DJ"
+	swmName = "MEEP Power Management"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.power;;")
+}
 
 dependencies
 {

@@ -1,4 +1,4 @@
-// Versioning
+
 description = "This project allows for creating standard " +
 	"Java manifest files using a mutable class."
 
