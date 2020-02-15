@@ -8,7 +8,16 @@ plugins
 group = "cc.squirreljme.modules"
 description = "Modules which are a part of SquirrelJME."
 
-// Properties for every sub-project, except for cldc-compact since that is special
+// Every sub-project needs SquirrelJME specific pieces
+subprojects
+{
+	// SquirrelJME Tasks
+	apply from: rootProject.rootDir.toPath()
+		.resolve("utils-dev")
+		.resolve("squirreljme.gradle")
+}
+
+// Properties for every sub-project, except for cldc-compact as it is special
 configure(subprojects - project(":modules:cldc-compact"))
 {
     apply plugin: 'java'
@@ -27,15 +36,17 @@ configure(subprojects - project(":modules:cldc-compact"))
 
 		// Only use SquirrelJME's boot classes, not the system SDK
 		Project cldcCompactProject = project(":modules:cldc-compact")
-		compileJava.options.bootstrapClasspath = project.objects.fileCollection().from(
-			cldcCompactProject.buildDir.toPath().resolve("classes").resolve("java").resolve("main"))
+		compileJava.options.bootstrapClasspath = project.objects.
+			fileCollection().from(cldcCompactProject.buildDir.toPath().
+			resolve("classes").resolve("java").resolve("main"))
 
 		// Copy options
 		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
 		compileTestJava.targetCompatibility = compileJava.targetCompatibility
 		compileTestJava.options.encoding = compileJava.options.encoding
 		compileTestJava.options.verbose = compileJava.options.verbose
-		compileTestJava.options.bootstrapClasspath = compileJava.options.bootstrapClasspath
+		compileTestJava.options.bootstrapClasspath =
+			compileJava.options.bootstrapClasspath
     }
 
 	dependencies

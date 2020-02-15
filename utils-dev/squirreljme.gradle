@@ -1,0 +1,20 @@
+rootProject.subprojects.each
+	{ Project __project ->
+		System.err.println("* Project " + __project.name)
+		try
+		{
+			System.err.println(__project.ext.squirreljme_definesConfigurations)
+		}
+		catch (MissingPropertyException e)
+		{
+			System.err.println("No property found!")
+		}
+	}
+
+ext.javaMeConfigurationDependency =
+	{ String __config ->
+		System.err.println("Is this being called???");
+		System.err.println(rootProject.name);
+		return null
+	}
+

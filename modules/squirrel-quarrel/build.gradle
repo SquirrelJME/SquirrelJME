@@ -1,0 +1,8 @@
+// Versioning
+description = "A turn based strategy involving squirrels and " +
+ "lots of acorns! Keep on your claws and horde them all!"
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+}

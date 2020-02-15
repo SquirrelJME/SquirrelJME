@@ -1,4 +1,5 @@
-// Base module directory
+// Modules and available platforms
+include "platforms"
 include "modules"
 
 // Recursively include all projects
