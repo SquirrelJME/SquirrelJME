@@ -38,6 +38,9 @@ public class SquirrelJMEPluginConfiguration
 	/** The vendor of the MIDlet or LIBlet. */
 	public String swmVendor;
 	
+	/** Ignore in the launcher? */
+	public boolean ignoreInLauncher;
+	
 	/** The configurations this defines. */
 	public List<JavaMEConfiguration> definedConfigurations =
 		new ArrayList<>();
