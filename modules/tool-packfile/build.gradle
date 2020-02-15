@@ -1,0 +1,10 @@
+// Versioning
+description = "This project is used to build the packed ROM " +
+	"files needed by SummerCoat and RatufaCoat to function."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:tool-jarfile")
+}

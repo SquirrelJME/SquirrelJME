@@ -2,10 +2,5 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: JavaME 8 Device I/O (SPI)
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.3.0
-X-SquirrelJME-Description: This provides access to the SPI bus.
-X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CU
 X-SquirrelJME-DefinedStandards: dio.spibus;;1.0.1
-X-SquirrelJME-UUID: a1890b74-ba77-4661-8e2a-020d36bfba34
-Microedition-Configuration: CLDC-1.8

@@ -1,0 +1,10 @@
+// Versioning
+description = "This provides access to hardware counters."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:dio")
+	compile project(":modules:dio-gpio")
+}

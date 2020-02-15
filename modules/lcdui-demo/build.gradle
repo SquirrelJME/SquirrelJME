@@ -1,0 +1,10 @@
+// Versioning
+description = "This is a demo which is used to demonstrate " +
+	"how the graphic operations operate."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:midp-lcdui")
+}

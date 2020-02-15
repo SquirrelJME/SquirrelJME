@@ -1,12 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-UUID: 7734bfb5-c8e0-678e-2be9-dd49a60664fd
 X-SquirrelJME-Error: BC
 X-SquirrelJME-Name: Jar File Tools
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.3.0
-X-SquirrelJME-Description: This project takes input Jar files and 
- compiles/converts them into a format that is more easily used by 
- SummerCoat and RatufaCoat.
-X-SquirrelJME-Depends: tool-classfile common-vm
-Microedition-Configuration: CLDC-1.8-Compact
 

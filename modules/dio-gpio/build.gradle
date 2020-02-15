@@ -1,0 +1,9 @@
+// Versioning
+description = "This provides access to GPIO pins."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:dio")
+}
