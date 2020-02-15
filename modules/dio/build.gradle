@@ -8,7 +8,7 @@ squirreljme
 	javaDocErrorCode = "CR"
 	swmName = "JavaME 8 Device I/O"
 	swmVendor = "Stephanie Gawroriski"
-	definedStandards += new JavaMEStandard("dio;;1.0.1")
+	definedStandards += new JavaMEStandard("dio", null, "1.0.1")
 }
 
 dependencies

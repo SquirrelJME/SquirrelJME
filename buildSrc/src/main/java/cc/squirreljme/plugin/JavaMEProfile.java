@@ -16,6 +16,9 @@ package cc.squirreljme.plugin;
  */
 public final class JavaMEProfile
 {
+	/** The profile string. */
+	protected final String string;
+	
 	/**
 	 * Defines full profile.
 	 *
@@ -29,7 +32,43 @@ public final class JavaMEProfile
 		if (__full == null)
 			throw new NullPointerException("No profile specified");
 		
-		throw new Error("TODO");
+		this.string = __full;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/02/15
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof JavaMEProfile))
+			return false;
+		
+		return this.string.equals(((JavaMEProfile)__o).string);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/02/15
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.string.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/02/15
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.string;
 	}
 }
 

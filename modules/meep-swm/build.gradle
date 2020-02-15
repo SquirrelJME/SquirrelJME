@@ -7,7 +7,7 @@ description = "This contains the application management " +
 
 squirreljme
 {
-	javaMeErrorCode = "DG"
+	javaDocErrorCode = "DG"
 	swmName = "MEEP Application Management System"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.swm;;")

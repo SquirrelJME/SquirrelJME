@@ -14,6 +14,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.jvm.tasks.Jar;
 
 /**
  * Plugin for all SquirrelJME operations that are needed in Gradle in order
@@ -38,5 +39,7 @@ public class SquirrelJMEPlugin
 		
 		// Testing to see how tasks work
 		Task task = __project.task("exampleTask");
+		
+		Jar jar = (Jar)__project.getTasks().getByName("jar");
 	}
 }

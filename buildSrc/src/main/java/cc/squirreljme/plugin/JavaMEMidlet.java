@@ -16,6 +16,15 @@ package cc.squirreljme.plugin;
  */
 public final class JavaMEMidlet
 {
+	/** The title. */
+	protected final String title;
+	
+	/** The icon. */
+	protected final String icon;
+	
+	/** The main class. */
+	protected final String mainClass;
+	
 	/**
 	 * Initializes the MIDlet information.
 	 *
@@ -31,7 +40,51 @@ public final class JavaMEMidlet
 		if (__title == null || __main == null)
 			throw new NullPointerException("No title or main specified.");
 		
-		throw new Error("TODO");
+		this.title = __title;
+		this.icon = (__icon == null ? "" : __icon);
+		this.mainClass = __main;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/02/15
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof JavaMEMidlet))
+			return false;
+		
+		JavaMEMidlet o = (JavaMEMidlet)__o;
+		return this.title.equals(o.title) &&
+			this.icon.equals(o.icon) &&
+			this.mainClass.equals(o.mainClass);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/02/15
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.title.hashCode() ^
+			this.icon.hashCode() ^
+			this.mainClass.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/02/15
+	 */
+	@Override
+	public final String toString()
+	{
+		return String.format("%s, %s, %s",
+			this.title, this.icon, this.mainClass);
 	}
 }
 
