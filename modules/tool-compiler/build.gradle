@@ -1,0 +1,13 @@
+// Versioning
+description = "Contains the Java compiler and documentation tool."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:collections")
+	compile project(":modules:zip")
+	compile project(":modules:io")
+	compile project(":modules:tool-classfile")
+	compile project(":modules:collections")
+}

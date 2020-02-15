@@ -12,7 +12,9 @@ subprojects
 }
 
 // Properties for every sub-project, except for cldc-compact as it is special
-configure(subprojects - project(":modules:cldc-compact"))
+configure(subprojects
+	- project(":modules:cldc-compact")
+	- project(":modules:supervisor"))
 {
     apply plugin: 'java'
 

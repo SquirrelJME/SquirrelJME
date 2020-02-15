@@ -1,0 +1,10 @@
+// Versioning
+description = "This project allows for creating standard " +
+	"Java manifest files using a mutable class."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:tool-manifest-reader")
+}

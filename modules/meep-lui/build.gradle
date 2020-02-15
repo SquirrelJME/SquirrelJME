@@ -1,0 +1,12 @@
+// Versioning
+description = "This contains the base support for the line " +
+	"based interface."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:meep-key")
+	compile project(":modules:collections")
+	compile project(":modules:gcf")
+}

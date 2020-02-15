@@ -18,9 +18,6 @@ java
 	// All files are always in UTF-8 format
 	compileJava.options.encoding = "utf-8"
 
-	// Verbose output
-	compileJava.options.verbose = true
-
 	// Use our own sources for the project
 	compileJava.options.bootstrapClasspath = project.files()
 }

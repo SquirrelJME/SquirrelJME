@@ -1,0 +1,13 @@
+// Versioning
+description = "This contains the implementation of the " +
+	"record management system which is used to manage records whichmay be " +
+	"used instead of the filesystem (if a filesystem is notsupported)."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:meep-midlet")
+	compile project(":modules:tool-manifest-writer")
+	compile project(":modules:meep-swm")
+}

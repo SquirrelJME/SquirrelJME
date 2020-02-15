@@ -1,0 +1,8 @@
+// Versioning
+description = "This is used to control and potentially grant " +
+	"or deny access to specific features that applicationsmay use."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+}

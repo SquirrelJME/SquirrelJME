@@ -1,0 +1,23 @@
+// Versioning
+description = "This defines the MEEP profile and is a virtual project."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:gcf")
+	compile project(":modules:media-api")
+	compile project(":modules:meep-cellular")
+	compile project(":modules:meep-concurrency")
+	compile project(":modules:meep-event")
+	compile project(":modules:meep-key")
+	compile project(":modules:meep-liblets")
+	compile project(":modules:meep-lui")
+	compile project(":modules:meep-midlet")
+	compile project(":modules:meep-power")
+	compile project(":modules:meep-provisioning")
+	compile project(":modules:meep-rms")
+	compile project(":modules:meep-securityframework")
+	compile project(":modules:meep-swm")
+	compile project(":modules:midp-lcdui")
+}
