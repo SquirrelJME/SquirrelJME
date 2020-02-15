@@ -4,5 +4,5 @@ description = "This is used to control and potentially grant " +
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 }

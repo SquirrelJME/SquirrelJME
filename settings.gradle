@@ -6,5 +6,8 @@ include "modules"
 file(rootProject.projectDir.toPath().resolve("modules"))
 	.eachDir(
 	{ subdir ->
-		include "modules:" + subdir.name
+		if (subdir.toPath().resolve("build.gradle").toFile().exists())
+		{
+			include "modules:" + subdir.name
+		}
 	});

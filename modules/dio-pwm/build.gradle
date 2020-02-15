@@ -3,7 +3,7 @@ description = "This provides access to PWM devices."
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:dio")
 	compile project(":modules:dio-gpio")

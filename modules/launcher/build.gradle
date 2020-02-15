@@ -5,7 +5,7 @@ description = "This project contains the graphical launcher " +
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:midp-lcdui")
 	compile project(":modules:meep-midlet")

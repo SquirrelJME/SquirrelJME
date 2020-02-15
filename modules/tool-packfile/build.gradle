@@ -2,9 +2,16 @@
 description = "This project is used to build the packed ROM " +
 	"files needed by SummerCoat and RatufaCoat to function."
 
+squirreljme
+{
+	javaDocErrorCode = "BI"
+	swmName = "Compiled JAR Packfile Support"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:tool-jarfile")
 }

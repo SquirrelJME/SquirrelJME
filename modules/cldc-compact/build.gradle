@@ -10,6 +10,14 @@ description = "This is the standard JavaME 8 Connection " +
 	"Limited  Device Configuration which contains the core classes used " +
 	"by Java ME."
 
+squirreljme
+{
+	javaDocErrorCode = "ZZ"
+	swmName = "Connection Limited Device Configuration (Compact)"
+	swmVendor = "Stephanie Gawroriski"
+	definedConfigurations = ["CLDC-1.8-Compact", "CLDC-1.1", "CLDC-1.0"]
+}
+
 java
 {
 	compileJava.sourceCompatibility = JavaVersion.VERSION_1_7

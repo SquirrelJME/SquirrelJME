@@ -7,12 +7,3 @@ version = "0.3.0"
 
 // Virtual machine version ID
 ext.squirreljmeVMVersion = "20163"
-
-// Properties for every project
-allprojects
-{
-	// SquirrelJME Specific Tasks
-	apply from: rootProject.projectDir.toPath()
-		.resolve("utils-dev")
-		.resolve("squirreljme.gradle")
-}

@@ -3,9 +3,16 @@ description = "This is the SummerCoat VM which is a more " +
 	"optimized register based virtual machine which should result in faster" +
 	"code execution."
 
+squirreljme
+{
+	javaDocErrorCode = "AE"
+	swmName = "SummerCoat Virtual Machine"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8")
+	compile project(":modules:cldc")
 
 	compile project(":modules:tool-classfile")
 	compile project(":modules:tool-manifest-reader")

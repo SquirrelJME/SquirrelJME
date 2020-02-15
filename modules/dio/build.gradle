@@ -1,8 +1,18 @@
+import cc.squirreljme.plugin.JavaMEStandard
+
 // Versioning
 description = "This provides the base support for devices " +
 	"that may be provided by an implementation."
 
+squirreljme
+{
+	javaDocErrorCode = "CR"
+	swmName = "JavaME 8 Device I/O"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio;;1.0.1")
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8")
+	compile project(":modules:cldc")
 }

@@ -22,6 +22,13 @@ java
 	compileJava.options.bootstrapClasspath = project.files()
 }
 
+squirreljme
+{
+	javaDocErrorCode = "SV"
+	swmName = "SquirrelJME Supervisor"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
 }

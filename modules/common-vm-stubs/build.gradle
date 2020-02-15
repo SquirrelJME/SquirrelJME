@@ -1,0 +1,16 @@
+// Versioning
+description = "This project contains the stubs which are " +
+	"needed by non-SquirrelJME Java ME systems, since internal SquirrelJME " +
+	"APIs are used in some classes."
+
+squirreljme
+{
+	javaDocErrorCode = "AJ"
+	swmName = "SpringCoat VM Java ME Stubs"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	compile project(":modules:cldc-compact")
+}

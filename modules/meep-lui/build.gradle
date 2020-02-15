@@ -4,7 +4,7 @@ description = "This contains the base support for the line " +
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:meep-key")
 	compile project(":modules:collections")

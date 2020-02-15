@@ -3,7 +3,7 @@ description = "This provides access to digital to analog converters."
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8")
+	compile project(":modules:cldc")
 
 	compile project(":modules:dio")
 }

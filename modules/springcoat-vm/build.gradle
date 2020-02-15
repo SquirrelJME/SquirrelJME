@@ -3,9 +3,16 @@ description = "This is a SpringCoat virtual machine which " +
 	"is an unoptimized pure interpreter aimed for the purpose of being an " +
 	"educational stepping stone to other future virtual machines."
 
+squirreljme
+{
+	javaDocErrorCode = "BK"
+	swmName = "SpringCoat Virtual Machine"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8")
+	compile project(":modules:cldc")
 
 	compile project(":modules:tool-classfile")
 	compile project(":modules:tool-manifest-reader")

@@ -2,9 +2,16 @@
 description = "This project allows for creating standard " +
 	"Java manifest files using a mutable class."
 
+squirreljme
+{
+	javaDocErrorCode = "AB"
+	swmName = "Mutable Java Manifest"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:tool-manifest-reader")
 }

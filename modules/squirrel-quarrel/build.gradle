@@ -1,10 +1,21 @@
+import cc.squirreljme.plugin.JavaMEMidlet
+
 // Versioning
 description = "A turn based strategy involving squirrels and " +
  "lots of acorns! Keep on your claws and horde them all!"
 
+squirreljme
+{
+	javaDocErrorCode = "BE"
+	swmName = "Squirrel Quarrel"
+	swmVendor = "Stephanie Gawroriski"
+	midlets += new JavaMEMidlet("Squirrel Quarrel", "icon.xpm",
+		"dev.shadowtail.squirrelquarrel.MainMidlet")
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:tool-manifest-reader")
 	compile project(":modules:midp-lcdui")
