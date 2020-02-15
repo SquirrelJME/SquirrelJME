@@ -5,7 +5,7 @@ description = "This projects contains the Generic " +
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:meep-midlet")
 }

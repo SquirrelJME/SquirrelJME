@@ -5,7 +5,7 @@ description = "This contains an implementation of the J2ME "
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:opengles")
 }

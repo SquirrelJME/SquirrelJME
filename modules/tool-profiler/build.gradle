@@ -1,9 +1,16 @@
 // Versioning
 description = "VisualVM Profiling Tool"
 
+squirreljme
+{
+	javaDocErrorCode = "AH"
+	swmName = "VisualVM Profiler Dump Library"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:io")
 }

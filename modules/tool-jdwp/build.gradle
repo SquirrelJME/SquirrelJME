@@ -1,0 +1,18 @@
+// Versioning
+description = "This contains the implementation of the JDWP " +
+	"which enables JDWP-complaint debuggers to connect with SquirrelJME to " +
+	"enable its debugging."
+
+squirreljme
+{
+	javaDocErrorCode = "BH"
+	swmName = "Java Debug Wire Protocol"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	compile project(":modules:cldc-compact")
+
+	compile project(":modules:gcf")
+}

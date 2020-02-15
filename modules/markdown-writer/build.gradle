@@ -5,5 +5,5 @@ description = "This project contains a formatted markdown " +
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 }

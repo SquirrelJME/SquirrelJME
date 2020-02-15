@@ -4,7 +4,7 @@ description = "This provides access to devices which use the " +
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8")
+	compile project(":modules:cldc")
 
 	compile project(":modules:dio")
 	compile project(":modules:dio-modem")

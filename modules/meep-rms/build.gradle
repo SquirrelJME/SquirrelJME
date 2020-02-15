@@ -5,7 +5,7 @@ description = "This contains the implementation of the " +
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8")
+	compile project(":modules:cldc")
 
 	compile project(":modules:meep-midlet")
 	compile project(":modules:tool-manifest-writer")

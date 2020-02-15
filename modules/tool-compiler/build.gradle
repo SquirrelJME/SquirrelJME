@@ -1,9 +1,16 @@
 // Versioning
 description = "Contains the Java compiler and documentation tool."
 
+squirreljme
+{
+	javaDocErrorCode = "AQ"
+	swmName = "Java Compiler"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8")
+	compile project(":modules:cldc")
 
 	compile project(":modules:collections")
 	compile project(":modules:zip")

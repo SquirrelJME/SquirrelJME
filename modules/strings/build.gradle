@@ -2,9 +2,16 @@
 description = "This project contains basic string utilities " +
 	"which are useful when parsing strings."
 
+squirreljme
+{
+	javaDocErrorCode = "AM"
+	swmName = "Basic String Utilities"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:collections")
 }

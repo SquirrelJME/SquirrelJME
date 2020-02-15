@@ -4,7 +4,15 @@ description = "This is the standard Java ME 8 Connection " +
 	"Limited Device Configuration which contains the full set of classes " +
 	"used by JavaME."
 
+squirreljme
+{
+	javaDocErrorCode = "ZY"
+	swmName = "Connection Limited Device Configuration"
+	swmVendor = "Stephanie Gawroriski"
+	definedConfigurations = ["CLDC-1.8"]
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 }

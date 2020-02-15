@@ -4,7 +4,7 @@ description = "This contains the MIDlet interface which " +
 
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:tool-manifest-reader")
 	compile project(":modules:strings")

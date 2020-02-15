@@ -1,0 +1,16 @@
+// Versioning
+description = "This is a basic demo which prints a hello " +
+	"message and prints some details about the virtual machine."
+
+squirreljme
+{
+	javaDocErrorCode = "BT"
+	swmName = "Hello (Demo)"
+	swmVendor = "Stephanie Gawroriski"
+	mainClass = "net.multiphasicapps.demo.hello.Hello"
+}
+
+dependencies
+{
+	project(":modules:cldc-compact")
+}

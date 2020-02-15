@@ -2,9 +2,16 @@
 description = "This is a virtual package which depends on " +
 	"all the virtual machines which are available."
 
+squirreljme
+{
+	javaDocErrorCode = "AL"
+	swmName = "All Virtual Machines"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:springcoat-vm")
 	compile project(":modules:summercoat-vm")

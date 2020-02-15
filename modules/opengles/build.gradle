@@ -2,9 +2,16 @@
 description = "This project contains the base support needed " +
 	"for OpenGL ES 1.1 functionality defined by JSR 239."
 
+squirreljme
+{
+	javaDocErrorCode = "EJ"
+	swmName = "OpenGL ES"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8")
+	compile project(":modules:cldc")
 
 	compile project(":modules:midp-lcdui")
 }

@@ -1,9 +1,24 @@
+import cc.squirreljme.plugin.JavaMEProfile
+
 // Versioning
 description = "This defines the MEEP profile and is a virtual project."
 
+squirreljme
+{
+	javaDocErrorCode = "AR"
+	swmName = "MEEP 8.0 Profile"
+	swmVendor = "Stephanie Gawroriski"
+	definedProfiles += new JavaMEProfile("MIDP-1.0")
+	definedProfiles += new JavaMEProfile("MIDP-2.0")
+	definedProfiles += new JavaMEProfile("MIDP-2.1")
+	definedProfiles += new JavaMEProfile("MIDP-3.0")
+	definedProfiles += new JavaMEProfile("MIDP-3.1")
+	definedProfiles += new JavaMEProfile("MEEP-8")
+}
+
 dependencies
 {
-	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+	compile project(":modules:cldc-compact")
 
 	compile project(":modules:gcf")
 	compile project(":modules:media-api")
