@@ -1,6 +1,15 @@
-// Versioning
+import cc.squirreljme.plugin.JavaMEStandard
+
 description = "This contains the MIDlet interface which " +
 	"acts as the main entry point for all MIDlets."
+
+squirreljme
+{
+	javaDocErrorCode = "AD"
+	swmName = "MEEP MIDlet Interface"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.midlet;;")
+}
 
 dependencies
 {

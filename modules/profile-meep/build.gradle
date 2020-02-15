@@ -1,6 +1,5 @@
 import cc.squirreljme.plugin.JavaMEProfile
 
-// Versioning
 description = "This defines the MEEP profile and is a virtual project."
 
 squirreljme

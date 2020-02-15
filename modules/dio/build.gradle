@@ -1,6 +1,5 @@
 import cc.squirreljme.plugin.JavaMEStandard
 
-// Versioning
 description = "This provides the base support for devices " +
 	"that may be provided by an implementation."
 

@@ -1,4 +1,4 @@
-// Versioning
+
 description = "This contains classes which are common across " +
  "the various SquirrelJME VMs, and these only need to be written once " +
  "as such."

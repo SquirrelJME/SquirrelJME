@@ -4,7 +4,6 @@ plugins
 	id "java"
 }
 
-// Versioning
 version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
 description = "This is the standard JavaME 8 Connection " +
 	"Limited  Device Configuration which contains the core classes used " +

@@ -1,4 +1,4 @@
-// Versioning
+
 description = "This is a virtual package which depends on " +
 	"all the virtual machines which are available."
 

@@ -1,0 +1,18 @@
+import cc.squirreljme.plugin.JavaMEStandard
+
+description = "This provides an interface which allows an " +
+	"application to receive events from the system along withsending events " +
+	"to other running applications."
+
+squirreljme
+{
+	javaDocErrorCode = "DI"
+	swmName = "MEEP Event Management"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.event;;")
+}
+
+dependencies
+{
+	compile project(":modules:cldc-compact")
+}

@@ -1,9 +1,18 @@
-// Versioning
+import cc.squirreljme.plugin.JavaMEStandard
+
 description = "This provides support for provisioning new " +
 	"MIDlets and LIBlets which may exist on the network and can beseen in a " +
 	"way as a remote application downloader and installerexcept by a more " +
 	"concrete means. It is possible for applicationsto automatically be " +
 	"updated."
+
+squirreljme
+{
+	javaDocErrorCode = "DM"
+	swmName = "MEEP Provisioning"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.provisioning;;")
+}
 
 dependencies
 {

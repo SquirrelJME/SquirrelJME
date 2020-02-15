@@ -1,4 +1,4 @@
-// Versioning
+
 description = "This project is used to build the packed ROM " +
 	"files needed by SummerCoat and RatufaCoat to function."
 

@@ -1,4 +1,4 @@
-// Versioning
+
 description = "This provides a decoder for standardJava " +
 	"manifest files."
 

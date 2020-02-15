@@ -1,4 +1,4 @@
-// Versioning
+
 description = "This is the SummerCoat VM which is a more " +
 	"optimized register based virtual machine which should result in faster" +
 	"code execution."
