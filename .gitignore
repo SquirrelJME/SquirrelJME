@@ -64,6 +64,7 @@ ratufacoat/sjme_dos.exe
 # Gradle building
 modules/*/build
 modules/*/build
+buildSrc/build
 
 # Files which should be mime encoded
 *.png
