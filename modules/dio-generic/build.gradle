@@ -1,5 +1,14 @@
+import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to generic devices."
+
+squirreljme
+{
+	javaDocErrorCode = "DS"
+	swmName = "JavaME 8 Device I/O (Generic)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.generic;;1.0.1")
+}
 
 dependencies
 {

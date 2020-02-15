@@ -1,3 +1,5 @@
+import cc.squirreljme.plugin.JavaMEConfiguration
+
 // Setup plugins
 plugins
 {
@@ -14,7 +16,9 @@ squirreljme
 	javaDocErrorCode = "ZZ"
 	swmName = "Connection Limited Device Configuration (Compact)"
 	swmVendor = "Stephanie Gawroriski"
-	definedConfigurations = ["CLDC-1.8-Compact", "CLDC-1.1", "CLDC-1.0"]
+	definedConfigurations += new JavaMEConfiguration("CLDC-1.8-Compact")
+	definedConfigurations += new JavaMEConfiguration("CLDC-1.1")
+	definedConfigurations += new JavaMEConfiguration("CLDC-1.0")
 }
 
 java

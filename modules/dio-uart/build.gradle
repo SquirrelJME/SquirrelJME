@@ -1,5 +1,14 @@
+import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to serial UARTs."
+
+squirreljme
+{
+	javaDocErrorCode = "CX"
+	swmName = "JavaME 8 Device I/O (UART)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.uart;;1.0.1")
+}
 
 dependencies
 {
