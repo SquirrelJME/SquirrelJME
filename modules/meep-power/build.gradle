@@ -1,0 +1,9 @@
+// Versioning
+description = "This provides support for quering the current " +
+	"electrical state of the device along with the setting of potential new " +
+	"power modes."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+}

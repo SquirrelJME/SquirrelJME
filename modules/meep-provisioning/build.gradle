@@ -1,0 +1,11 @@
+// Versioning
+description = "This provides support for provisioning new " +
+	"MIDlets and LIBlets which may exist on the network and can beseen in a " +
+	"way as a remote application downloader and installerexcept by a more " +
+	"concrete means. It is possible for applicationsto automatically be " +
+	"updated."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+}

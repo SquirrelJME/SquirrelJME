@@ -1,0 +1,27 @@
+// Setup plugins
+plugins
+{
+	id "java"
+}
+
+version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
+description = "This package contains the SquirrelJME " +
+	"supervisor which is a very small and standalone implementation of " +
+	"the basic libraries to be as small and as minimal as possible. It " +
+	"is responsible for the internal JVM operations."
+
+java
+{
+	compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
+	compileJava.targetCompatibility = JavaVersion.VERSION_1_7
+
+	// All files are always in UTF-8 format
+	compileJava.options.encoding = "utf-8"
+
+	// Use our own sources for the project
+	compileJava.options.bootstrapClasspath = project.files()
+}
+
+dependencies
+{
+}
