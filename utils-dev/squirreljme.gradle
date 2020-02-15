@@ -12,6 +12,9 @@ rootProject.subprojects.each
 			// Preserve project for faster scanning later
 			squirreljmeProjects.add(__project)
 
+			// Flag project as being a SquirrelJME one, used later
+			__project.ext.squirreljmeProject = true
+
 			// Store the manifest path
 			__project.ext.squirreljmeManifest = manifestPath
 
@@ -37,7 +40,6 @@ rootProject.subprojects.each
 
 ext.javaMeConfigurationDependency =
 	{ String __config ->
-		System.err.println("Is this being called???");
 		for (Project project : squirreljmeProjects)
 			if (project.ext.squirreljmeDefinedConfigurations.
 				contains(__config.toLowerCase()))

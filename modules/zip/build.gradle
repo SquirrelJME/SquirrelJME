@@ -1,0 +1,10 @@
+// Versioning
+description = "The library contains the support for ZIP " +
+	"files and any data interfaces needed for ZIP files."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:io")
+}

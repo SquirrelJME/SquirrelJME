@@ -1,0 +1,12 @@
+// Versioning
+description = "This contains the MIDlet interface which " +
+	"acts as the main entry point for all MIDlets."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:tool-manifest-reader")
+	compile project(":modules:strings")
+	compile project(":modules:collections")
+}

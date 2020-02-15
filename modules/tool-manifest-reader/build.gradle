@@ -1,0 +1,10 @@
+// Versioning
+description = "This provides a decoder for standardJava " +
+	"manifest files."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:collections")
+}
