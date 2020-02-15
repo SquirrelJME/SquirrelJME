@@ -6,9 +6,12 @@ description = "Modules which are a part of SquirrelJME."
 subprojects
 {
 	// SquirrelJME Tasks
-	apply from: rootProject.rootDir.toPath()
+	/*apply from: rootProject.rootDir.toPath()
 		.resolve("utils-dev")
-		.resolve("squirreljme.gradle")
+		.resolve("squirreljme.gradle")*/
+
+	apply plugin: "java"
+	apply plugin: "cc.squirreljme.plugin"
 }
 
 // Properties for every sub-project, except for cldc-compact as it is special
@@ -16,7 +19,8 @@ configure(subprojects
 	- project(":modules:cldc-compact")
 	- project(":modules:supervisor"))
 {
-    apply plugin: 'java'
+    apply plugin: "java"
+	apply plugin: "cc.squirreljme.plugin"
 
 	// Java ME 8 is effectively Java 7
     java
