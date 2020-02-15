@@ -1,0 +1,8 @@
+# 2020/02/13
+
+## 18:35
+
+Working on modernizing the build system to use Gradle so that IntelliJ and
+such can be used. I figured out how to dynamically create tasks with lots of
+custom parameters although what I really need to do is declare projects and
+such.
