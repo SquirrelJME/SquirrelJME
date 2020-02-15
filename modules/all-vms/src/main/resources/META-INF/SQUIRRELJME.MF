@@ -1,11 +1,6 @@
 Manifest-Version: 1.0
-X-SquirrelJME-UUID: b1e1bc61-6e1f-43be-ac98-cdcb66dbeb02
 X-SquirrelJME-Error: AL
 X-SquirrelJME-Name: All Virtual Machines
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.3.0
-X-SquirrelJME-Description: This is a virtual package which depends on 
- all the virtual machines which are available.
-X-SquirrelJME-Depends: springcoat-vm summercoat-vm
 Microedition-Configuration: CLDC-1.8-Compact
 

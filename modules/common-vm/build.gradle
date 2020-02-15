@@ -1,0 +1,16 @@
+// Versioning
+description = "This contains classes which are common across " +
+ "the various SquirrelJME VMs, and these only need to be written once " +
+ "as such."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:midp-lcdui")
+	compile project(":modules:meep-swm")
+	compile project(":modules:meep-midlet")
+	compile project(":modules:tool-profiler")
+	compile project(":modules:tool-manifest-reader")
+	compile project(":modules:zip")
+}

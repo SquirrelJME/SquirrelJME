@@ -1,0 +1,15 @@
+// Versioning
+description = "This contains the standard MIDP LCD User " +
+ "Interface which uses graphical text, widgets, and images to interact " +
+ "with the user. Unlike the MEEP Line User Interface, this requires a " +
+ "much more capable graphical system."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:meep-midlet")
+	compile project(":modules:gcf")
+	compile project(":modules:io")
+	compile project(":modules:collections")
+}

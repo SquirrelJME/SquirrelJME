@@ -11,6 +11,9 @@ description = "SquirrelJME is a Java ME 8 Virtual Machine for embedded " +
 	"99.9% compatible with the Java ME standard."
 version = "0.3.0"
 
+// Virtual machine version ID
+ext.squirreljmeVMVersion = "20163"
+
 // Properties for every project
 allprojects
 {

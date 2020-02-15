@@ -1,0 +1,11 @@
+// Versioning
+description = "This projects contains the Generic " +
+	"connection framework which is used to create connections to other " +
+	"resources."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:meep-midlet")
+}
