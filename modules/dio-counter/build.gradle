@@ -1,5 +1,14 @@
+import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to hardware counters."
+
+squirreljme
+{
+	javaDocErrorCode = "DQ"
+	swmName = "JavaME 8 Device I/O (Counters)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.counter;;1.0.1")
+}
 
 dependencies
 {

@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEConfiguration
 
 version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
 description = "This is the standard Java ME 8 Connection " +
@@ -9,7 +10,7 @@ squirreljme
 	javaDocErrorCode = "ZY"
 	swmName = "Connection Limited Device Configuration"
 	swmVendor = "Stephanie Gawroriski"
-	definedConfigurations = ["CLDC-1.8"]
+	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
 }
 
 dependencies

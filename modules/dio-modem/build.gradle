@@ -1,5 +1,14 @@
+import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to dial-up modems."
+
+squirreljme
+{
+	javaDocErrorCode = "CY"
+	swmName = "JavaME 8 Device I/O (Modems)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.modem;;1.0.1")
+}
 
 dependencies
 {

@@ -1,5 +1,14 @@
+import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to memory mapped I/O devices."
+
+squirreljme
+{
+	javaDocErrorCode = "DT"
+	swmName = "JavaME 8 Device I/O (MMIO)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.mmio;;1.0.1")
+}
 
 dependencies
 {
