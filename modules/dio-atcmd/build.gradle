@@ -1,0 +1,11 @@
+// Versioning
+description = "This provides access to devices which use the " +
+	"standard AT command set."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:dio")
+	compile project(":modules:dio-modem")
+}

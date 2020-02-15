@@ -1,0 +1,18 @@
+// Versioning
+description = "This is the SummerCoat VM which is a more " +
+	"optimized register based virtual machine which should result in faster" +
+	"code execution."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:tool-classfile")
+	compile project(":modules:tool-manifest-reader")
+	compile project(":modules:meep-swm")
+	compile project(":modules:tool-profiler")
+	compile project(":modules:meep-midlet")
+	compile project(":modules:common-vm")
+	compile project(":modules:tool-jarfile")
+	compile project(":modules:tool-packfile")
+}

@@ -1,0 +1,8 @@
+// Versioning
+description = "This provides the base support for devices " +
+	"that may be provided by an implementation."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+}

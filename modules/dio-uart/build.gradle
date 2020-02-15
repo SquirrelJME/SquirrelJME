@@ -1,0 +1,9 @@
+// Versioning
+description = "This provides access to serial UARTs."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8-Compact")
+
+	compile project(":modules:dio-modem")
+}

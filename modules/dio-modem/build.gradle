@@ -1,0 +1,9 @@
+// Versioning
+description = "This provides access to dial-up modems."
+
+dependencies
+{
+	compile javaMeConfigurationDependency("CLDC-1.8")
+
+	compile project(":modules:dio")
+}
