@@ -25,12 +25,6 @@ squirreljme
 
 java
 {
-	compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
-	compileJava.targetCompatibility = JavaVersion.VERSION_1_7
-
-	// All files are always in UTF-8 format
-	compileJava.options.encoding = "utf-8"
-
 	// Use our own sources for the project
 	compileJava.options.bootstrapClasspath = project.files()
 }
