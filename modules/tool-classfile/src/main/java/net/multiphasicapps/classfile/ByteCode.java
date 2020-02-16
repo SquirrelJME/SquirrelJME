@@ -283,7 +283,7 @@ public final class ByteCode
 	 * @param __a The following address.
 	 * @return The instruction address following the instruction at the
 	 * specified address.
-	 * @throws JITExcepInvalidClassFormatExceptiontion If the specified address
+	 * @throws InvalidClassFormatException If the specified address
 	 * is not valid.
 	 * @since 2017/05/20
 	 */

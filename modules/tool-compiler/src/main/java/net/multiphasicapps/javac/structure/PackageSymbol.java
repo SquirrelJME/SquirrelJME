@@ -29,7 +29,7 @@ public final class PackageSymbol
 	/**
 	 * Initializes the symbol.
 	 *
-	 * @param __bn The binary name used.
+	 * @param __n The binary name used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/07
 	 */

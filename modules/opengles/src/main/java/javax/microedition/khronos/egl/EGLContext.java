@@ -23,7 +23,7 @@ import javax.microedition.khronos.opengles.GL;
  * EGLContext, int[])} method.
  *
  * To destroy a context use {@link EGL10#eglDestroyContext(EGLDisplay,
- * EGLContext}.
+ * EGLContext)}.
  *
  * For compatibility with the standard API this class should not be extended,
  * unless the class extending is internal to SquirrelJME.

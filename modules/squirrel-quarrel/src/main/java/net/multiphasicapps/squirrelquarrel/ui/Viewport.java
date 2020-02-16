@@ -89,7 +89,7 @@ public final class Viewport
 	/**
 	 * Converts a map Y coordinate to a screen Y coordinate.
 	 *
-	 * @param __x The input Y coordinate.
+	 * @param __y The input Y coordinate.
 	 * @return The output y coordinate.
 	 * @since 2017/02/12
 	 */
@@ -167,7 +167,7 @@ public final class Viewport
 	/**
 	 * Converts a screen Y coordinate to a map Y coordinate.
 	 *
-	 * @param __x The input Y coordinate.
+	 * @param __y The input Y coordinate.
 	 * @return The output y coordinate.
 	 * @since 2017/02/12
 	 */

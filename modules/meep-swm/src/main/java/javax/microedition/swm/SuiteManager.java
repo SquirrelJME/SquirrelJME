@@ -80,6 +80,7 @@ public interface SuiteManager
 	 * @param __ignuplock If {@code true} then the components of the suite
 	 * will be updated without regards to synchronization, this is not
 	 * recommended and {@code false} should always be used.
+	 * @return The suite installer.
 	 * @throws IllegalArgumentException If the URL is not valid or it could
 	 * not be obtained.
 	 * @throws SecurityException If the current application is not permitted

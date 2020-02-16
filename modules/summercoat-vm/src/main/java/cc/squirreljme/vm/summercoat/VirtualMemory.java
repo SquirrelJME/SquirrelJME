@@ -36,8 +36,6 @@ public final class VirtualMemory
 	 * Maps the given region of memory.
 	 *
 	 * @param __mem The region to map.
-	 * @param __off The region offset.
-	 * @param __len Th
 	 * @since 2019/04/21
 	 */
 	public final void mapRegion(Memory __mem)

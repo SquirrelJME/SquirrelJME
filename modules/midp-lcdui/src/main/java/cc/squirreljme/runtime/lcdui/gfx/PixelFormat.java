@@ -59,6 +59,7 @@ public enum PixelFormat
 	 *
 	 * @param __p The buffer pitch.
 	 * @param __h The buffer height.
+	 * @return The created buffer.
 	 * @since 2018/03/28
 	 */
 	public final Object createBuffer(int __p, int __h)

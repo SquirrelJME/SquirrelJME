@@ -169,6 +169,7 @@ public final class NativeUIBackend
 	 *
 	 * @param __a Output boolean if this is accelerated.
 	 * @param __dims Screen dimensions.
+	 * @return The graphics for this backend.
 	 * @since 2019/05/16
 	 */
 	public final Graphics graphics(boolean[] __a, int[] __dims)

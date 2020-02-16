@@ -77,6 +77,7 @@ public class DirectUtils
 	 * pixel data access to it.
 	 *
 	 * @param __g The graphics object to wrap.
+	 * @return The direct graphics.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/07
 	 */

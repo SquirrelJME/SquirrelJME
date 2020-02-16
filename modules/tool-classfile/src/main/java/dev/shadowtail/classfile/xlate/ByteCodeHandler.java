@@ -209,7 +209,7 @@ public interface ByteCodeHandler
 	 * Allocates multi-dimensional array.
 	 *
 	 * @param __cl The class name.
-	 * @param __numdim The number of dimensions.
+	 * @param __numdims The number of dimensions.
 	 * @param __o The output value.
 	 * @param __dims The input dimensions.
 	 * @since 2019/05/04
@@ -249,7 +249,7 @@ public interface ByteCodeHandler
 	/**
 	 * Return of value.
 	 *
-	 * @param __rv The return value, {@code null} means no value was returned.
+	 * @param __in The return value, {@code null} means no value was returned.
 	 * @since 2019/04/11
 	 */
 	public abstract void doReturn(JavaStackResult.Input __in);

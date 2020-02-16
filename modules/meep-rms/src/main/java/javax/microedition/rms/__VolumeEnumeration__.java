@@ -200,6 +200,16 @@ final class __VolumeEnumeration__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/02/16
+	 */
+	@Override
+	public final int numRecords()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/05/13
 	 */
 	@Override

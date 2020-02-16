@@ -47,7 +47,7 @@ public final class NativeCPU
 	implements Runnable
 {
 	/**
-	 * {@squirreljme.properly cc.squirreljme.summercoat.debug=boolean
+	 * {@squirreljme.property cc.squirreljme.summercoat.debug=boolean
 	 * Should SummerCoat print lots of debugging information?}
 	 */
 	public static final boolean ENABLE_DEBUG =

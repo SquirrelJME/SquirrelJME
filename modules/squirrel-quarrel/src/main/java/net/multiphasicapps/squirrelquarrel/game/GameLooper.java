@@ -179,6 +179,7 @@ public final class GameLooper
 	 * @param __out The output for replay data.
 	 * @param __rm How will the game be resumed?
 	 * @param __in The input stream for replay/save data.
+	 * @return The loop.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/19
 	 */

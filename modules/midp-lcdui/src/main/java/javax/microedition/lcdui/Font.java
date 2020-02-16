@@ -586,6 +586,7 @@ public final class Font
 	 * @param __face The face type of the font.
 	 * @param __style The style of the font.
 	 * @param __pxs The pixel size of the font.
+	 * @return The available fonts.
 	 * @throws IllegalArgumentException If the parameters are not correct.
 	 * @since 2018/11/24
 	 */

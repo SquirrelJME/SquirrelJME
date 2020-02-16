@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.Map;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.Task;
+import javax.microedition.swm.TaskStatus;
 
 /**
  * This interface is used for providing the ability to launch tasks.

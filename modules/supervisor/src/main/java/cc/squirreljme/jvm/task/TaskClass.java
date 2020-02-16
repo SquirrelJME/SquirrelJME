@@ -74,7 +74,6 @@ public final class TaskClass
 	 *
 	 * @param __task The creating task.
 	 * @param __cl The class name being initialized.
-	 * @param __cip The parser for {@code ClassInfo}.
 	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/27

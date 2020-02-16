@@ -94,7 +94,7 @@ public final class SuiteInstaller
 	 * failed.
 	 *
 	 * If there is not enough permission to install the given suite then
-	 * {@link InstallErrorCodes.UNAUTHORIZED_INSTALL} is set.
+	 * {@link InstallErrorCodes#UNAUTHORIZED_INSTALL} is set.
 	 *
 	 * @return The tracker for the given suite.
 	 * @since 2016/06/24

@@ -51,7 +51,7 @@ public final class FormalParameters
 	/**
 	 * Initializes the formal parameters.
 	 *
-	 * @param __tp The input formal parameters.
+	 * @param __fp The input formal parameters.
 	 * @throws NullPointerException On null arguments.
 	 * @throws StructureException If the formal parameters are not valid.
 	 * @since 2018/05/10

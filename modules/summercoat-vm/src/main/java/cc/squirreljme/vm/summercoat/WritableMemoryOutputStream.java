@@ -54,7 +54,7 @@ public final class WritableMemoryOutputStream
 	}
 	
 	/**
-	 * {@inheritDoc)
+	 * {@inheritDoc}
 	 * @since 2019/06/14
 	 */
 	@Override
@@ -64,7 +64,7 @@ public final class WritableMemoryOutputStream
 	}
 	
 	/**
-	 * {@inheritDoc)
+	 * {@inheritDoc}
 	 * @since 2019/06/14
 	 */
 	@Override
@@ -74,7 +74,7 @@ public final class WritableMemoryOutputStream
 	}
 	
 	/**
-	 * {@inheritDoc)
+	 * {@inheritDoc}
 	 * @since 2019/06/14
 	 */
 	@Override
@@ -92,7 +92,7 @@ public final class WritableMemoryOutputStream
 	}
 	
 	/**
-	 * {@inheritDoc)
+	 * {@inheritDoc}
 	 * @since 2019/06/14
 	 */
 	@Override
@@ -103,7 +103,7 @@ public final class WritableMemoryOutputStream
 	}
 	
 	/**
-	 * {@inheritDoc)
+	 * {@inheritDoc}
 	 * @since 2019/06/14
 	 */
 	@Override

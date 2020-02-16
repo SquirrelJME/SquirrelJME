@@ -536,6 +536,7 @@ public final class SpringThread
 		/**
 		 * Increments the execution counter for this frame.
 		 *
+		 * @return The original execution count.
 		 * @since 2018/10/12
 		 */
 		public final int incrementExecCount()

@@ -125,8 +125,8 @@ public final class StateOperation
 	 * Creates a copy operation.
 	 *
 	 * @param __w Is this wide?
-	 * @param __s The source.
-	 * @param __d The destination.
+	 * @param __a The source.
+	 * @param __b The destination.
 	 * @return The operation.
 	 * @since 2019/04/13
 	 */

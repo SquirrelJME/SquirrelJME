@@ -538,7 +538,7 @@ public class Display
 	/**
 	 * Returns the maximum width of the display.
 	 *
-	 * @retrn The maximum display width.
+	 * @return The maximum display width.
 	 * @since 2016/10/14
 	 */
 	public int getWidth()

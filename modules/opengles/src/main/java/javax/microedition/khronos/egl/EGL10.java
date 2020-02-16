@@ -20,9 +20,9 @@ import javax.microedition.khronos.opengles.GL;
  * {@link javax.microedition.lcdui.Display}.
  *
  * OpenGL ES is utilized by calling
- * {@link #eglCreateWindowSurface(EGLDisplay, EGLConfig, Object, int[]). The
- * {@link Object} parameter in this call represents a native surface to draw
- * onto. In this case, it is an instance of
+ * {@link EGL10#eglCreateWindowSurface(EGLDisplay, EGLConfig, Object, int[])}.
+ * The {@link Object} parameter in this call represents a native surface to
+ * draw onto. In this case, it is an instance of
  * {@link javax.microedition.lcdui.Graphics}.
  */
 public interface EGL10
@@ -427,7 +427,7 @@ public interface EGL10
 	 * {@link #EGL_TRANSPARENT_GREEN_VALUE},
 	 * {@link #EGL_TRANSPARENT_BLUE_VALUE},
 	 * {@link EGL11#EGL_BIND_TO_TEXTURE_RGB},
-	 * {@link EGL11#EGL_BING_TO_TEXTURE_RGBA},
+	 * {@link EGL11#EGL_BIND_TO_TEXTURE_RGBA},
 	 * {@link EGL11#EGL_MAX_SWAP_INTERVAL},
 	 * {@link EGL11#EGL_MIN_SWAP_INTERVAL}
 	 *

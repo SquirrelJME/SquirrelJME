@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import javax.microedition.lcdui.game.Sprite;
+
 /**
  * The class describes the interface that is used for drawing operations.
  *
@@ -102,7 +104,7 @@ public abstract class Graphics
 	 * This reduces the clipping area of the drawing so that 
 	 *
 	 * This is only used to reduce the clipping area, to make it larger use
-	 * {@link #setClip(int, int, int int)}.
+	 * {@link Graphics#setClip(int, int, int, int)}.
 	 *
 	 * @param __x The X coordinate of the clipping rectangle,
 	 * will be translated.
@@ -338,7 +340,7 @@ public abstract class Graphics
 	/**
 	 * Returns the color along with the alpha color. 
 	 *
-	 * @return The color in the form of {@link @0xAARRGGBB}.
+	 * @return The color in the form of {@code @0xAARRGGBB}.
 	 * @since 2017/02/10
 	 */
 	public abstract int getAlphaColor();
@@ -483,7 +485,7 @@ public abstract class Graphics
 	/**
 	 * Sets the alpha color to draw with along with the color to use.
 	 *
-	 * @param __argb The color in the form of {@link 0xAARRGGBB}.
+	 * @param __argb The color in the form of {@code 0xAARRGGBB}.
 	 * @since 2017/02/10
 	 */
 	public abstract void setAlphaColor(int __argb);
