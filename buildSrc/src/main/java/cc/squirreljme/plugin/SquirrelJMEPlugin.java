@@ -53,6 +53,8 @@ public class SquirrelJMEPlugin
 		launchSpring.setGroup("application");
 		launchSpring.setDescription("Runs via SquirrelJME SpringCoat.");
 		launchSpring.dependsOn(jarTask);
+		launchSpring.onlyIf((Task __task) ->
+			__isApplication(__project));
 		launchSpring.doLast((Task __task) ->
 			new __RunSpringCoatApplication__(__project).run());
 		
@@ -71,6 +73,8 @@ public class SquirrelJMEPlugin
 		launchSummer.setGroup("application");
 		launchSummer.setDescription("Runs via SquirrelJME SummerCoat.");
 		launchSummer.dependsOn(buildROM);
+		launchSpring.onlyIf((Task __task) ->
+			__isApplication(__project));
 		launchSummer.doLast((Task __task) ->
 			new __RunSummerCoatApplication__(__project).run());
 	}
@@ -180,5 +184,27 @@ public class SquirrelJMEPlugin
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * Is this a SquirrelJME application?
+	 *
+	 * @param __project The project to check.
+	 * @return If it is an application.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/16
+	 */
+	private static boolean __isApplication(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("No project specified.");
+			
+		// Find our config
+		SquirrelJMEPluginConfiguration config = __project.getExtensions()
+			.<SquirrelJMEPluginConfiguration>getByType(
+				SquirrelJMEPluginConfiguration.class);
+		
+		return config.swmType == JavaMEMidletType.APPLICATION;
 	}
 }
