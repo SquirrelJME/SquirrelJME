@@ -273,7 +273,7 @@ public final class Class<T>
 	
 	/**
 	 * Checks if the given class can be assigned to this one, the check is
-	 * in the same order as {@link #instanceOf(Object)} that is
+	 * in the same order as {code instanceOf Object} that is
 	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}.
 	 *
 	 * @param __cl The other class type.
@@ -347,6 +347,7 @@ public final class Class<T>
 	 * accessed by the calling method.
 	 * @throws IllegalAccessException If the class or constructor could not
 	 * be accessed.
+	 * @return The newly created instance.
 	 * @since 2018/12/04
 	 */
 	@SuppressWarnings({"unchecked"})

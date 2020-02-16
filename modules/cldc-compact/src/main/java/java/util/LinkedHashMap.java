@@ -127,7 +127,8 @@ public class LinkedHashMap<K, V>
 	 * If the implementation of this method modifies the map then this should
 	 * always return {@code null}.
 	 *
-	 * @param __e The entry being 
+	 * @param __e The entry being
+	 * @return If the map was modified.
 	 * @since 2019/05/09
 	 */
 	protected boolean removeEldestEntry(Map.Entry<K, V> __e)

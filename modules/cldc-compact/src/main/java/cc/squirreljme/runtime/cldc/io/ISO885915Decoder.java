@@ -62,7 +62,7 @@ public class ISO885915Decoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2019/04/29
 	 */
 	@Override
@@ -72,7 +72,7 @@ public class ISO885915Decoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2019/04/29
 	 */
 	@Override

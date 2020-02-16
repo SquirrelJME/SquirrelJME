@@ -27,7 +27,7 @@ public class LinkedHashSet<E>
 	/**
 	 * Initializes the set with the given capacity and load factor.
 	 *
-	 * @param __cap The capacity used.
+	 * @param __initcap The capacity used.
 	 * @param __load The load factor used.
 	 * @throws IllegalArgumentException If the capacity is negative or the
 	 * load factor is not positive.
@@ -42,7 +42,7 @@ public class LinkedHashSet<E>
 	/**
 	 * Initializes the set with the given capacity and the default load factor.
 	 *
-	 * @param __cap The capacity used.
+	 * @param __initcap The capacity used.
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2018/11/01
 	 */

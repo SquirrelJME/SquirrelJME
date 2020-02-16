@@ -24,6 +24,7 @@ public interface Appendable
 	 * Appends a character sequence to the output.
 	 *
 	 * @param __c The sequence to append.
+	 * @return {@code this}.
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */
@@ -36,6 +37,7 @@ public interface Appendable
 	 * @param __c The sequence to append.
 	 * @param __s The start index.
 	 * @param __e The end index.
+	 * @return {@code this}.
 	 * @throws IndexOutOfBoundsException If the start or end is outside of
 	 * the bounds of the sequence, or the start exceeds the end.
 	 * @throws IOException On write errors.
@@ -48,6 +50,7 @@ public interface Appendable
 	 * Appends a single character to the output.
 	 *
 	 * @param __c The character to append.
+	 * @return {@code this}.
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */

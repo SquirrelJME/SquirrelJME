@@ -30,6 +30,7 @@ public class NoClassDefFoundError
 	/**
 	 * Initializes the exception with the given message and no cause.
 	 *
+	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
 	public NoClassDefFoundError(String __m)

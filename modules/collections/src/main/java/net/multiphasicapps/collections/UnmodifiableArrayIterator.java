@@ -101,6 +101,7 @@ public final class UnmodifiableArrayIterator<T>
 	/**
 	 * Wraps the given array.
 	 *
+	 * @param <T> The iterator type.
 	 * @param __a The array to wrap.
 	 * @return The iterator for the array.
 	 * @throws NullPointerException On null arguments.
@@ -119,6 +120,7 @@ public final class UnmodifiableArrayIterator<T>
 	/**
 	 * Wraps the given array.
 	 *
+	 * @param <T> The iterator type.
 	 * @param __a The input array.
 	 * @param __o The offset into the array.
 	 * @param __l The number of elements to read.

@@ -181,7 +181,7 @@ public class Hashtable<K, V>
 	 * Returns an enumeration over the elements.
 	 *
 	 * @return The enumerator over the elements.
-	 * @sine 2019/05/05
+	 * @since 2019/05/05
 	 */
 	public Enumeration<V> elements()
 	{

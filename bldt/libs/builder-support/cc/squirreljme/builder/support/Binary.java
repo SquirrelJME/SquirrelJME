@@ -189,7 +189,7 @@ public final class Binary
 	 * @param __d The input dependencies to check.
 	 * @return The result of the match.
 	 * @throws NullPointerException On null arguments.
-	 * @sine 2017/11/30
+	 * @since 2017/11/30
 	 */
 	public final MatchResult matchedDependencies(DependencyInfo __d)
 		throws NullPointerException

@@ -46,6 +46,7 @@ public class Object
 	 * @throws CloneNotSupportedException If cloning is not supported by the
 	 * current class, the default implementation always throws this if the
 	 * {@link Cloneable} interface does not exist.
+	 * @return The cloned object.
 	 * @since 2016/02/08
 	 */
 	protected Object clone()
@@ -81,6 +82,7 @@ public class Object
 	 *
 	 * If this method is overriden, then also override {@code hashCode()}.
 	 *
+	 * @param __o The object to check equality against.
 	 * @return {@code true} if the two objects are equal.
 	 * @since 2016/02/08
 	 */

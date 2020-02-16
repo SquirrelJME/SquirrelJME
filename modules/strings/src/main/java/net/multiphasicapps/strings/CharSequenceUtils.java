@@ -160,7 +160,7 @@ public final class CharSequenceUtils
 	 * Returns an array containing all of the indexes that the specified
 	 * character appears in the given sequence.
 	 *
-	 * @parma __c The character to get the indexes for.
+	 * @param __c The character to get the indexes for.
 	 * @param __s The sequence to check in.
 	 * @return An array containing the array indexes for the given character,
 	 * if there are none then the array will be empty.

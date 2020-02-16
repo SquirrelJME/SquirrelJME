@@ -27,7 +27,6 @@ public class AccessControlException
 	 * cause.
 	 *
 	 * @param __s The message.
-	 * @param __p The permission.
 	 * @since 2018/09/18
 	 */
 	public AccessControlException(String __s)

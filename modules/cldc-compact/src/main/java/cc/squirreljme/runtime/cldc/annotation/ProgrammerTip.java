@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 	ElementType.PARAMETER, ElementType.TYPE})
 public @interface ProgrammerTip
 {
-	/** The note to be stored. */
+	/** @return The note to be stored. */
 	String value() default "";
 }
 

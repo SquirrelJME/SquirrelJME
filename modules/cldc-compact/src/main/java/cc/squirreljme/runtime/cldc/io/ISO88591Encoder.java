@@ -60,7 +60,7 @@ public final class ISO88591Encoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
 	@Override

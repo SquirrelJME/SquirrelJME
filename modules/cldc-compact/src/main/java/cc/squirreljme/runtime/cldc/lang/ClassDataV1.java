@@ -61,6 +61,7 @@ public class ClassDataV1
 	 * @param __bn The binary name of this class.
 	 * @param __sc Super classes.
 	 * @param __ic Interface classes.
+	 * @param __ct The class type.
 	 * @param __ij The JAR this class is in.
 	 * @param __flags Class flags.
 	 * @param __dcf Default constructor flag.

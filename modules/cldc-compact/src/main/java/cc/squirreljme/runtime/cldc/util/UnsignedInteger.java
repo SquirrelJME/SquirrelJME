@@ -125,7 +125,7 @@ public final class UnsignedInteger
 	 * Compares a signed and unsigned value.
 	 *
 	 * @param __a The first value.
-	 * @param __b The second value.
+	 * @param __ub The second value.
 	 * @return The resulting comparison.
 	 * @since 2018/11/03
 	 */

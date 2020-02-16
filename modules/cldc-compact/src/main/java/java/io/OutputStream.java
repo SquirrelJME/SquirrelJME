@@ -59,6 +59,7 @@ public abstract class OutputStream
 	 *
 	 * If this method is not overridden by a sub-class then this does nothing.
 	 *
+	 * @throws IOException If flushing failed.
 	 * @since 2016/04/16
 	 */
 	public void flush()

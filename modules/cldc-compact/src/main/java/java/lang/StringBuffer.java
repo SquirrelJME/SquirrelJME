@@ -363,7 +363,6 @@ public final class StringBuffer
 	 * @param __b Same as linked documentation.
 	 * @param __c Same as linked documentation.
 	 * @param __d Same as linked documentation.
-	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
 	public void getChars(int __a, int __b, char[] __c, int __d)
@@ -785,7 +784,6 @@ public final class StringBuffer
 	/**
 	 * See {@link StringBuffer#trimToSize()}.
 	 *
-	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
 	public void trimToSize()

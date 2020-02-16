@@ -308,8 +308,8 @@ public class Throwable
 	/**
 	 * Returns a string representation of this throwable.
 	 *
-	 * If there is a localized message, the form is `<class>: <message>`.
-	 * If there is no message, the form is `<class>`. 
+	 * If there is a localized message, the form is {@code <class>: <message>}.
+	 * If there is no message, the form is {@code <class>}.
 	 *
 	 * @return A string representing this throwable.
 	 * @since 2018/09/15

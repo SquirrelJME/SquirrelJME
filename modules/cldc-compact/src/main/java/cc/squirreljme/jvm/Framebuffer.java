@@ -19,7 +19,7 @@ public interface Framebuffer
 	/**
 	 * Returns the address of the framebuffer.
 	 *
-	 * @return The framebuffer address.
+	 * @squirreljme.syscallreturn The framebuffer address.
 	 */
 	public static final byte CONTROL_ADDRESS =
 		1;
@@ -27,7 +27,7 @@ public interface Framebuffer
 	/**
 	 * Returns the width of the framebuffer.
 	 *
-	 * @return The framebuffer width.
+	 * @squirreljme.syscallreturn The framebuffer width.
 	 */
 	public static final byte CONTROL_WIDTH =
 		2;
@@ -35,7 +35,7 @@ public interface Framebuffer
 	/**
 	 * Returns the height of the framebuffer.
 	 *
-	 * @return The framebuffer height.
+	 * @squirreljme.syscallreturn The framebuffer height.
 	 */
 	public static final byte CONTROL_HEIGHT =
 		3;
@@ -43,7 +43,7 @@ public interface Framebuffer
 	/**
 	 * Returns the scanline length.
 	 *
-	 * @return The framebuffer scanline length.
+	 * @squirreljme.syscallreturn The framebuffer scanline length.
 	 */
 	public static final byte CONTROL_SCANLEN =
 		4;
@@ -57,7 +57,7 @@ public interface Framebuffer
 	/**
 	 * Returns the pixel format of the screen.
 	 *
-	 * @return The pixel format of the screen.
+	 * @squirreljme.syscallreturn The pixel format of the screen.
 	 */
 	public static final byte CONTROL_FORMAT =
 		6;
@@ -65,7 +65,7 @@ public interface Framebuffer
 	/**
 	 * Returns the scanline length in bytes.
 	 *
-	 * @return The scanline length in bytes.
+	 * @squirreljme.syscallreturn The scanline length in bytes.
 	 */
 	public static final byte CONTROL_SCANLEN_BYTES =
 		7;
@@ -73,7 +73,7 @@ public interface Framebuffer
 	/**
 	 * Returns the number of bytes per pixel.
 	 *
-	 * @return The bytes per pixel.
+	 * @squirreljme.syscallreturn The bytes per pixel.
 	 */
 	public static final byte CONTROL_BYTES_PER_PIXEL =
 		8;
@@ -81,7 +81,7 @@ public interface Framebuffer
 	/**
 	 * Returns the number of available pixels.
 	 *
-	 * @return The number of pixels.
+	 * @squirreljme.syscallreturn The number of pixels.
 	 */
 	public static final byte CONTROL_NUM_PIXELS =
 		9;
@@ -89,7 +89,7 @@ public interface Framebuffer
 	/**
 	 * Bits per pixel.
 	 *
-	 * @return The bits per pixel.
+	 * @squirreljme.syscallreturn The bits per pixel.
 	 */
 	public static final byte CONTROL_BITS_PER_PIXEL =
 		10;
@@ -97,7 +97,7 @@ public interface Framebuffer
 	/**
 	 * Get backlight level.
 	 *
-	 * @return The current backlight level.
+	 * @squirreljme.syscallreturn The current backlight level.
 	 */
 	public static final byte CONTROL_BACKLIGHT_LEVEL_GET =
 		11;
@@ -105,7 +105,7 @@ public interface Framebuffer
 	/**
 	 * Set backlight level.
 	 *
-	 * @param 1 The level to set.
+	 * @squirreljme.syscallparam 1 The level to set.
 	 */
 	public static final byte CONTROL_BACKLIGHT_LEVEL_SET =
 		12;
@@ -113,7 +113,7 @@ public interface Framebuffer
 	/**
 	 * Maximum backlight level.
 	 *
-	 * @return The maximum backlight level.
+	 * @squirreljme.syscallreturn The maximum backlight level.
 	 */
 	public static final byte CONTROL_BACKLIGHT_LEVEL_MAX =
 		13;
@@ -121,7 +121,7 @@ public interface Framebuffer
 	/**
 	 * Uploads an integer array of pixel data to the framebuffer.
 	 *
-	 * @param 1 The address of the array to upload.
+	 * @squirreljme.syscallparam 1 The address of the array to upload.
 	 * @since 2019/12/21
 	 */
 	public static final byte CONTROL_UPLOAD_ARRAY_INT =
@@ -130,7 +130,7 @@ public interface Framebuffer
 	/**
 	 * The array which backs the framebuffer, if there is one.
 	 *
-	 * @return The backing array object, if there is one.
+	 * @squirreljme.syscallreturn The backing array object, if there is one.
 	 * @since 2019/12/28
 	 */
 	public static final byte CONTROL_BACKING_ARRAY_OBJECT =
@@ -139,7 +139,7 @@ public interface Framebuffer
 	/**
 	 * Returns the capabilities of the display.
 	 *
-	 * @return The display capabilities.
+	 * @squirreljme.syscallreturn The display capabilities.
 	 * @since 2020/01/10
 	 */
 	public static final byte CONTROL_GET_CAPABILITIES =
@@ -148,8 +148,8 @@ public interface Framebuffer
 	/**
 	 * Query acceleration function.
 	 *
-	 * @param 1 The graphics function.
-	 * @return A non-zero value if this is supported.
+	 * @squirreljme.syscallparam 1 The graphics function.
+	 * @squirreljme.syscallreturn A non-zero value if this is supported.
 	 * @since 2020/01/10
 	 */
 	public static final byte CONTROL_ACCEL_FUNC_QUERY =
@@ -158,9 +158,9 @@ public interface Framebuffer
 	/**
 	 * Perform acceleration function.
 	 *
-	 * @param 1 The graphics function.
-	 * @param ... Parameters to the function.
-	 * @return A value that is according to the invoked function, if it is
+	 * @squirreljme.syscallparam 1 The graphics function.
+	 * @squirreljme.syscallparam ... Parameters to the function.
+	 * @squirreljme.syscallreturn A value that is according to the invoked function, if it is
 	 * supported or possible.
 	 * @since 2020/01/10
 	 */
@@ -170,11 +170,11 @@ public interface Framebuffer
 	/**
 	 * Requests that the framebuffer be repainted.
 	 *
-	 * @param 1 The X coordinate.
-	 * @param 2 The Y coordinate.
-	 * @param 3 The width.
-	 * @param 4 The height.
-	 * @return Returns {@code 0} if the repaint was not queued and it must be
+	 * @squirreljme.syscallparam 1 The X coordinate.
+	 * @squirreljme.syscallparam 2 The Y coordinate.
+	 * @squirreljme.syscallparam 3 The width.
+	 * @squirreljme.syscallparam 4 The height.
+	 * @squirreljme.syscallreturn Returns {@code 0} if the repaint was not queued and it must be
 	 * handled by the code running the application, 
 	 * @since 2020/01/15
 	 */
@@ -184,7 +184,7 @@ public interface Framebuffer
 	/**
 	 * Sets the title of the framebuffer if applicable.
 	 *
-	 * @param 1 Character array buffer pointer.
+	 * @squirreljme.syscallparam 1 Character array buffer pointer.
 	 * @since 2020/01/15
 	 */
 	public static final byte CONTROL_SET_TITLE =

@@ -51,7 +51,7 @@ public interface KeyListener
 	 *
 	 * @param __kc The key code.
 	 * @param __km The modifiers to the key.
-	 * @sicne 2017/02/12
+	 * @since 2017/02/12
 	 */
 	public abstract void keyPressed(int __kc, int __km);
 	
@@ -60,7 +60,7 @@ public interface KeyListener
 	 *
 	 * @param __kc The key code.
 	 * @param __km The modifiers to the key.
-	 * @sicne 2017/02/12
+	 * @since 2017/02/12
 	 */
 	public abstract void keyReleased(int __kc, int __km);
 	
@@ -69,7 +69,7 @@ public interface KeyListener
 	 *
 	 * @param __kc The key code.
 	 * @param __km The modifiers to the key.
-	 * @sicne 2017/02/12
+	 * @since 2017/02/12
 	 */
 	public abstract void keyRepeated(int __kc, int __km);
 }

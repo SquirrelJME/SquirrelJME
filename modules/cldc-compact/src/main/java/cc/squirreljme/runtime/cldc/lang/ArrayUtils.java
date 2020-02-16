@@ -154,6 +154,7 @@ public final class ArrayUtils
 	 * Returns the type of array the object is.
 	 *
 	 * @param __a The array type.
+	 * @return The type of array this is.
 	 * @throws IllegalArgumentException If not an array.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13

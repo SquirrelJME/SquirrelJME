@@ -353,6 +353,7 @@ public class Arrays
 	 *
 	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
+	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
@@ -377,6 +378,7 @@ public class Arrays
 	 *
 	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
+	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
@@ -401,6 +403,7 @@ public class Arrays
 	 *
 	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
+	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
@@ -425,6 +428,7 @@ public class Arrays
 	 *
 	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
+	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
@@ -449,6 +453,7 @@ public class Arrays
 	 *
 	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
+	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
@@ -473,6 +478,7 @@ public class Arrays
 	 *
 	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
+	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
@@ -497,6 +503,7 @@ public class Arrays
 	 *
 	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
+	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
@@ -521,6 +528,7 @@ public class Arrays
 	 *
 	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
+	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
@@ -1334,9 +1342,8 @@ public class Arrays
 	/**
 	 * Sorts the specified array.
 	 *
+	 * @param <T> The type to sort.
 	 * @param __a The array to sort.
-	 * @param __from The from index.
-	 * @param __to The to index.
 	 * @param __comp The comparator to use.
 	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
 	 * outside of bounds.
@@ -1358,6 +1365,7 @@ public class Arrays
 	/**
 	 * Sorts the specified array.
 	 *
+	 * @param <T> The type to sort.
 	 * @param __a The array to sort.
 	 * @param __from The from index.
 	 * @param __to The to index.

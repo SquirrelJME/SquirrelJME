@@ -89,7 +89,7 @@ public final class UTF8Decoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
 	@Override
@@ -99,7 +99,7 @@ public final class UTF8Decoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
 	@Override

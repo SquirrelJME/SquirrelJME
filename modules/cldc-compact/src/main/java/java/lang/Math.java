@@ -41,6 +41,7 @@ public strictfp final class Math
 	/**
 	 * Returns the absolute value.
 	 *
+	 * @param __v The input value.
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
@@ -52,6 +53,7 @@ public strictfp final class Math
 	/**
 	 * Returns the absolute value.
 	 *
+	 * @param __v The input value.
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
@@ -63,6 +65,7 @@ public strictfp final class Math
 	/**
 	 * Returns the absolute value.
 	 *
+	 * @param __v The input value.
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
@@ -74,6 +77,7 @@ public strictfp final class Math
 	/**
 	 * Returns the absolute value.
 	 *
+	 * @param __v The input value.
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
@@ -277,7 +281,8 @@ public strictfp final class Math
 	/**
 	 * Returns the square root of the given number.
 	 *
-	 * @return __v The value to get the square root for.
+	 * @param __v The input value.
+	 * @return The square root.
 	 * @since 2018/11/03
 	 */
 	public static double sqrt(double __v)

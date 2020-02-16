@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 	ElementType.PARAMETER, ElementType.TYPE})
 public @interface ImplementationNote
 {
-	/** The note to be stored. */
+	/** @return The note to be stored. */
 	String value() default "";
 }
 

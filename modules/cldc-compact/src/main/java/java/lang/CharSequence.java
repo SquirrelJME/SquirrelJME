@@ -21,6 +21,7 @@ public interface CharSequence
 	 * Returns the character at the given index.
 	 *
 	 * @param __i The index to get.
+	 * @return The character at the given index.
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/12/07
 	 */
@@ -40,6 +41,7 @@ public interface CharSequence
 	 *
 	 * @param __s The start index.
 	 * @param __e The end index.
+	 * @return The sub sequence of this one.
 	 * @throws IndexOutOfBoundsException If the start or end exceed the
 	 * sequence bounds or start is greater than end.
 	 * @since 2018/12/07

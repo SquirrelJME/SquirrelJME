@@ -16,7 +16,7 @@ package java.util;
  * This class is not thread safe, for a thread safe version see {@link Vector}.
  *
  * If a modification is detected in the iterator then
- * {@link #ConcurrentModificationException} is thrown as soon as possible.
+ * {@link ConcurrentModificationException} is thrown as soon as possible.
  *
  * @param <E> The element type.
  * @see Vector

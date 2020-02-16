@@ -53,7 +53,6 @@ public class Error
 	/**
 	 * Initializes the error with no message and the given cause.
 	 *
-	 * @param __m The message to use.
 	 * @param __t The cause of this error.
 	 * @since 2018/09/16
 	 */

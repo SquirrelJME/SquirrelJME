@@ -75,7 +75,7 @@ public class MarkdownWriter
 	
 	/**
 	 * {@inheritDoc}
-	 * @sicne 2016/09/13
+	 * @since 2016/09/13
 	 */
 	@Override
 	public MarkdownWriter append(char __c)
@@ -87,7 +87,7 @@ public class MarkdownWriter
 	
 	/**
 	 * {@inheritDoc}
-	 * @sicne 2016/09/13
+	 * @since 2016/09/13
 	 */
 	@Override
 	public MarkdownWriter append(CharSequence __cs)
@@ -98,7 +98,7 @@ public class MarkdownWriter
 	
 	/**
 	 * {@inheritDoc}
-	 * @sicne 2016/09/13
+	 * @since 2016/09/13
 	 */
 	@Override
 	public MarkdownWriter append(CharSequence __cs, int __s, int __e)
@@ -111,7 +111,7 @@ public class MarkdownWriter
 	
 	/**
 	 * {@inheritDoc}
-	 * @sicne 2016/09/13
+	 * @since 2016/09/13
 	 */
 	@Override
 	public void close()

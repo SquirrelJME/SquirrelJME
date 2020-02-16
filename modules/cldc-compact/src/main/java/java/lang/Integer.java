@@ -415,6 +415,7 @@ public final class Integer
 	 *
 	 * @param __v The String to decode.
 	 * @param __r The radix to use.
+	 * @return The resulting integer.
 	 * @throws NumberFormatException If the string is not valid or the radix
 	 * is outside of the valid bounds.
 	 * @since 2018/10/12
@@ -474,6 +475,7 @@ public final class Integer
 	 * Returns the value of the specified string.
 	 *
 	 * @param __v The String to decode.
+	 * @return The parsed integer.
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2018/10/12
 	 */
@@ -608,7 +610,7 @@ public final class Integer
 	}
 	
 	/**
-	 * Calls {@link Integer#toStirng(long, int)} with a radix of 10.
+	 * Calls {@link Integer#toString(int, int)} with a radix of 10.
 	 *
 	 * @param __v The input value.
 	 * @return The resulting string.
@@ -624,6 +626,7 @@ public final class Integer
 	 *
 	 * @param __v The String to decode.
 	 * @param __r The radix to use.
+	 * @return The boxed value.
 	 * @throws NumberFormatException If the string is not valid or the radix
 	 * is outside of the valid bounds.
 	 * @since 2018/10/12
@@ -638,6 +641,7 @@ public final class Integer
 	 * Returns the value of the specified string.
 	 *
 	 * @param __v The String to decode.
+	 * @return The boxed value.
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2018/10/12
 	 */

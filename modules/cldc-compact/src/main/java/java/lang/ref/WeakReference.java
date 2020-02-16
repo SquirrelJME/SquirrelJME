@@ -40,7 +40,7 @@ public class WeakReference<T>
 	 *
 	 * @param __v The object to point to, may be {@code null}.
 	 * @param __q When the given object is garbage collected the specified
-	 * queue will be given this reference (not {@link __v} itself}, may be
+	 * queue will be given this reference (not {@code __v} itself}, may be
 	 * {@code null}
 	 * @since 2018/09/23
 	 */

@@ -83,7 +83,7 @@ public final class IBM037Encoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
 	@Override
