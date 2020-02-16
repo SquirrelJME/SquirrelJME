@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
  * {@squirreljme.error BD12 The huffman tree was modified in the middle of
  * iteration.}
  *
- * @param <int> The type of values to store in the tree.
  * @since 2016/03/10
  */
 public class HuffmanTreeInt
@@ -237,7 +236,7 @@ public class HuffmanTreeInt
 	 *
 	 * @param __bs The source for bits.
 	 * @return The value.
-	 * @thorws IOException On read errors.
+	 * @throws IOException On read errors.
 	 * @throws NoSuchElementException If no value was found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/16

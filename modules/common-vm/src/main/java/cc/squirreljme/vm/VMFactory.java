@@ -101,6 +101,7 @@ public abstract class VMFactory
 	 * is automatically determined.
 	 * @param __sprops System properties to pass to the target VM.
 	 * @param __args Arguments to the program which is running.
+	 * @return The created virtual machine.
 	 * @throws IllegalArgumentException If neither a boot class or boot ID
 	 * were specified.
 	 * @throws NullPointerException On null arguments.

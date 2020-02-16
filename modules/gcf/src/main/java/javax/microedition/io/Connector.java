@@ -208,6 +208,7 @@ public class Connector
 	 * acceptable for {@link InterruptedIOException}s to be generated. This
 	 * is not required to be followed.
 	 * @param __opts Options which modify the properties of a stream.
+	 * @return The opened connection.
 	 * @throws ConnectionNotFoundException Either the protocol is not supported
 	 * or the target to connect to could not be located.
 	 * @throws IllegalArgumentException If a parameter is not valid.

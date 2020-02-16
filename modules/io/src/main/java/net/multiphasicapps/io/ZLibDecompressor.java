@@ -17,8 +17,7 @@ import java.io.IOException;
 /**
  * This class supports decompressing ZLib streams.
  *
- * Associated standards:
- * {@link https://www.ietf.org/rfc/rfc1950.txt}.
+ * Associated standards: https://www.ietf.org/rfc/rfc1950.txt .
  *
  * This class is not thread safe.
  *

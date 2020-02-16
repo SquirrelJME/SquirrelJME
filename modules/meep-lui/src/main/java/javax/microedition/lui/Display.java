@@ -242,6 +242,7 @@ public class Display
 	 * returned here is meaningless.
 	 *
 	 * @param __l The line to get the scrolling interval of.
+	 * @return The scrolling interval.
 	 * @throws ArrayIndexOutOfBoundsException If the specified line is not
 	 * within the bounds of the display.
 	 * @since 2016/08/30
@@ -625,7 +626,7 @@ public class Display
 	 * If {@code null} is specified then the light is turned off, otherwise
 	 * it is switched on.
 	 *
-	 * @param __c The color to use for the light.
+	 * @param __l The color to use for the light.
 	 * @return The actually used color.
 	 * @since 2016/08/30
 	 */
