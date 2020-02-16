@@ -46,6 +46,7 @@ configure(subprojects
 			compileJava.options.bootstrapClasspath
 
 		// Copy to JavaDoc
+		javadoc.options.source = "1.7"
 		javadoc.options.bootClasspath = compileJava.options.bootstrapClasspath
 			.collect();
     }
