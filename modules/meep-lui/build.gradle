@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This contains the base support for the line " +
@@ -6,6 +7,7 @@ description = "This contains the base support for the line " +
 squirreljme
 {
 	javaDocErrorCode = "DA"
+	swmType = JavaMEMidletType.API
 	swmName = "MEEP Line Based Interface"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.lui;;")

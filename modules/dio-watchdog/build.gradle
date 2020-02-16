@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to the watchdog."
@@ -5,6 +6,7 @@ description = "This provides access to the watchdog."
 squirreljme
 {
 	javaDocErrorCode = "DP"
+	swmType = JavaMEMidletType.API
 	swmName = "JavaME 8 Device I/O (Watchdog)"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("dio.watchdog;;1.0.1")

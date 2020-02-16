@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project takes input Jar files and " +
 	"compiles/converts them into a format that is more easily used by " +
@@ -6,6 +7,7 @@ description = "This project takes input Jar files and " +
 squirreljme
 {
 	javaDocErrorCode = "BC"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Jar File Tools"
 	swmVendor = "Stephanie Gawroriski"
 }

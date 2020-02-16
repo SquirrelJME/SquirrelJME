@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This contains the implementation of the JDWP " +
 	"which enables JDWP-complaint debuggers to connect with SquirrelJME to " +
@@ -6,6 +7,7 @@ description = "This contains the implementation of the JDWP " +
 squirreljme
 {
 	javaDocErrorCode = "BH"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Java Debug Wire Protocol"
 	swmVendor = "Stephanie Gawroriski"
 }

@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides support for quering the current " +
@@ -7,6 +8,7 @@ description = "This provides support for quering the current " +
 squirreljme
 {
 	javaDocErrorCode = "DJ"
+	swmType = JavaMEMidletType.API
 	swmName = "MEEP Power Management"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.power;;")

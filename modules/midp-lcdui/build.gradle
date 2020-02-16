@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This contains the standard MIDP LCD User " +
@@ -8,6 +9,7 @@ description = "This contains the standard MIDP LCD User " +
 squirreljme
 {
 	javaDocErrorCode = "EB"
+	swmType = JavaMEMidletType.API
 	swmName = "LCD UI"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.lcdui;;")

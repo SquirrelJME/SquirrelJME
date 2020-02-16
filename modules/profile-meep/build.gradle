@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEProfile
 
 description = "This defines the MEEP profile and is a virtual project."
@@ -5,6 +6,7 @@ description = "This defines the MEEP profile and is a virtual project."
 squirreljme
 {
 	javaDocErrorCode = "AR"
+	swmType = JavaMEMidletType.API
 	swmName = "MEEP 8.0 Profile"
 	swmVendor = "Stephanie Gawroriski"
 	definedProfiles += new JavaMEProfile("MIDP-1.0")

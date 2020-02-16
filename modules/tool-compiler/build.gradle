@@ -1,9 +1,11 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "Contains the Java compiler and documentation tool."
 
 squirreljme
 {
 	javaDocErrorCode = "AQ"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Java Compiler"
 	swmVendor = "Stephanie Gawroriski"
 }

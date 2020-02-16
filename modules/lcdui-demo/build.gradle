@@ -1,4 +1,5 @@
 import cc.squirreljme.plugin.JavaMEMidlet
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This is a demo which is used to demonstrate " +
 	"how the graphic operations operate."
@@ -6,6 +7,7 @@ description = "This is a demo which is used to demonstrate " +
 squirreljme
 {
 	javaDocErrorCode = "AW"
+	swmType = JavaMEMidletType.APPLICATION
 	swmName = "LCDUI Graphics Demo"
 	swmVendor = "Stephanie Gawroriski"
 	midlets += new JavaMEMidlet("Font Demo", "fonts.xpm",

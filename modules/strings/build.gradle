@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project contains basic string utilities " +
 	"which are useful when parsing strings."
@@ -5,6 +6,7 @@ description = "This project contains basic string utilities " +
 squirreljme
 {
 	javaDocErrorCode = "AM"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Basic String Utilities"
 	swmVendor = "Stephanie Gawroriski"
 }

@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project allows for creating standard " +
 	"Java manifest files using a mutable class."
@@ -5,6 +6,7 @@ description = "This project allows for creating standard " +
 squirreljme
 {
 	javaDocErrorCode = "AB"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Mutable Java Manifest"
 	swmVendor = "Stephanie Gawroriski"
 }

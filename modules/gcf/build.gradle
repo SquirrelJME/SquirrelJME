@@ -1,3 +1,5 @@
+import cc.squirreljme.plugin.JavaMEMidletType
+
 description = "This projects contains the Generic " +
 	"connection framework which is used to create connections to other " +
 	"resources."
@@ -5,6 +7,7 @@ description = "This projects contains the Generic " +
 squirreljme
 {
 	javaDocErrorCode = "EC"
+	swmType = JavaMEMidletType.API
 	swmName = "Generic Connection Framework"
 	swmVendor = "Stephanie Gawroriski"
 }

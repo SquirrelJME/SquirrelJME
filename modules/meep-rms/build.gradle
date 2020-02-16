@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This contains the implementation of the " +
@@ -7,7 +8,9 @@ description = "This contains the implementation of the " +
 squirreljme
 {
 	javaDocErrorCode = "DC"
+	swmType = JavaMEMidletType.API
 	swmName = "MEEP Record Management System"
+	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.rms;;")
 }
 

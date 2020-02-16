@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides an interface which allows an " +
@@ -7,6 +8,7 @@ description = "This provides an interface which allows an " +
 squirreljme
 {
 	javaDocErrorCode = "DI"
+	swmType = JavaMEMidletType.API
 	swmName = "MEEP Event Management"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.event;;")

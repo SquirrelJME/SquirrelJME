@@ -1,3 +1,5 @@
+import cc.squirreljme.plugin.JavaMEMidletType
+
 // Setup plugins
 plugins
 {
@@ -10,6 +12,14 @@ description = "This package contains the SquirrelJME " +
 	"the basic libraries to be as small and as minimal as possible. It " +
 	"is responsible for the internal JVM operations."
 
+squirreljme
+{
+	javaDocErrorCode = "SV"
+	swmType = JavaMEMidletType.API
+	swmName = "SquirrelJME Supervisor"
+	swmVendor = "Stephanie Gawroriski"
+}
+
 java
 {
 	compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
@@ -20,13 +30,6 @@ java
 
 	// Use our own sources for the project
 	compileJava.options.bootstrapClasspath = project.files()
-}
-
-squirreljme
-{
-	javaDocErrorCode = "SV"
-	swmName = "SquirrelJME Supervisor"
-	swmVendor = "Stephanie Gawroriski"
 }
 
 dependencies

@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to analog to digital converters."
@@ -5,6 +6,7 @@ description = "This provides access to analog to digital converters."
 squirreljme
 {
 	javaDocErrorCode = "CV"
+	swmType = JavaMEMidletType.API
 	swmName = "JavaME 8 Device I/O (ADC)"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("dio.adc;;1.0.1")

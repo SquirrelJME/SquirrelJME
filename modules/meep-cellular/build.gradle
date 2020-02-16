@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides an implementation which is used " +
@@ -6,6 +7,7 @@ description = "This provides an implementation which is used " +
 squirreljme
 {
 	javaDocErrorCode = "DH"
+	swmType = JavaMEMidletType.API
 	swmName = "MEEP Cellular Networking"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.cellular;;")

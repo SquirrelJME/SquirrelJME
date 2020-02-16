@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project contains the stubs which are " +
 	"needed by non-SquirrelJME Java ME systems, since internal SquirrelJME " +
@@ -6,6 +7,7 @@ description = "This project contains the stubs which are " +
 squirreljme
 {
 	javaDocErrorCode = "AJ"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "SpringCoat VM Java ME Stubs"
 	swmVendor = "Stephanie Gawroriski"
 }

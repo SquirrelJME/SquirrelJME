@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This provides a decoder for standardJava " +
 	"manifest files."
@@ -5,6 +6,7 @@ description = "This provides a decoder for standardJava " +
 squirreljme
 {
 	javaDocErrorCode = "BB"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Manifest File Decoder"
 	swmVendor = "Stephanie Gawroriski"
 }

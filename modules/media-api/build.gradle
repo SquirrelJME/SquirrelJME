@@ -1,9 +1,12 @@
+import cc.squirreljme.plugin.JavaMEMidletType
+
 description = "This project contains the implementation of " +
 	"the MIDP 3.0 Media API which is also specified in JSR 135."
 
 squirreljme
 {
 	javaDocErrorCode = "EA"
+	swmType = JavaMEMidletType.API
 	swmName = "Media API"
 	swmVendor = "Stephanie Gawroriski"
 }

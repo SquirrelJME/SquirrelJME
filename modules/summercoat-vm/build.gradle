@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This is the SummerCoat VM which is a more " +
 	"optimized register based virtual machine which should result in faster" +
@@ -6,6 +7,7 @@ description = "This is the SummerCoat VM which is a more " +
 squirreljme
 {
 	javaDocErrorCode = "AE"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "SummerCoat Virtual Machine"
 	swmVendor = "Stephanie Gawroriski"
 }

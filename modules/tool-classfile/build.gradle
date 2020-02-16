@@ -1,9 +1,11 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This contains support for reading class files."
 
 squirreljme
 {
 	javaDocErrorCode = "JC"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Class File Reader"
 	swmVendor = "Stephanie Gawroriski"
 }

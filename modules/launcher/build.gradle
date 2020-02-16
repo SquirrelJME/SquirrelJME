@@ -1,4 +1,5 @@
 import cc.squirreljme.plugin.JavaMEMidlet
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project contains the graphical launcher " +
 	"that SquirrelJME uses to act as a front end interface to running user" +
@@ -7,6 +8,7 @@ description = "This project contains the graphical launcher " +
 squirreljme
 {
 	javaDocErrorCode = "EP"
+	swmType = JavaMEMidletType.APPLICATION
 	swmName = "SquirrelJME Launcher (Graphical)"
 	swmVendor = "Stephanie Gawroriski"
 	ignoreInLauncher = true
