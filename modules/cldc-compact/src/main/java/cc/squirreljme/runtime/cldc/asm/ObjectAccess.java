@@ -21,17 +21,21 @@ import cc.squirreljme.runtime.cldc.ref.PrimitiveWeakReference;
  *
  * @since 2018/09/22
  */
+@Deprecated
 public final class ObjectAccess
 {
 	/** Monitor is not owned by this thread. */
+	@Deprecated
 	public static final int MONITOR_NOT_OWNED =
 		-1;
 	
 	/** Monitor did not interrupt. */
+	@Deprecated
 	public static final int MONITOR_NOT_INTERRUPTED =
 		0;
 	
 	/** Monitor did interrupt. */
+	@Deprecated
 	public static final int MONITOR_INTERRUPTED =
 		1;
 	
@@ -52,6 +56,7 @@ public final class ObjectAccess
 	 * constructor. Returns {@code null} if no more memory is available.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object allocateObject(String __cl);
 	
@@ -64,6 +69,7 @@ public final class ObjectAccess
 	 * @return An array allocated to the given length.
 	 * @since 2018/09/25
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object arrayNew(Class<?> __t, int __l);
 	
@@ -75,6 +81,7 @@ public final class ObjectAccess
 	 * does not exist.
 	 * @since 2018/09/23 
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Class<?> classByName(String __s);
 	
@@ -85,6 +92,7 @@ public final class ObjectAccess
 	 * @return The resulting class data.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native ClassData classData(Class<?> __cl);
 	
@@ -96,6 +104,7 @@ public final class ObjectAccess
 	 * class.
 	 * @since 2018/09/22
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Class<?> classOf(Object __v);
 	
@@ -107,15 +116,18 @@ public final class ObjectAccess
 	 * @return If the lock is held.
 	 * @since 2018/11/21
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native boolean holdsLock(int __ntid, Object __o);
 	
 	/**
 	 * Returns the identity hashcode of the object.
 	 *
+	 * @param __o The object to get the hashCode for.
 	 * @return The identity hashcode.
 	 * @since 2018/10/14
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int identityHashCode(Object __o);
 	
@@ -129,6 +141,7 @@ public final class ObjectAccess
 	 * {@code null}.
 	 * @since 2018/11/20
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object invokeStatic(StaticMethod __m,
 		Object... __args);
@@ -141,6 +154,7 @@ public final class ObjectAccess
 	 * @return If the monitor was a success or not.
 	 * @since 2018/11/20
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int monitorNotify(Object __o, boolean __all);
 	
@@ -153,6 +167,7 @@ public final class ObjectAccess
 	 * @return The wait status.
 	 * @since 2018/11/21
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int monitorWait(Object __o, long __ms,
 		int __ns);
@@ -165,6 +180,7 @@ public final class ObjectAccess
 	 * @return The primitive weak reference.
 	 * @since 2018/09/23
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native PrimitiveReference newWeakReference();
 	
@@ -176,6 +192,7 @@ public final class ObjectAccess
 	 * is not valid, it was garbage collected, or it was never set.
 	 * @since 2018/09/23
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object referenceGet(PrimitiveReference __r);
 	
@@ -186,6 +203,7 @@ public final class ObjectAccess
 	 * @param __v The value to set.
 	 * @since 2018/09/23
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void referenceSet(PrimitiveReference __r,
 		Object __v);
@@ -200,6 +218,7 @@ public final class ObjectAccess
 	 * @since 2018/09/23 
 	 */
 	@SuppressWarnings({"unchecked"})
+	@Deprecated
 	public static final <C> Class<C> classByNameType(String __s)
 	{
 		return (Class<C>)((Object)ObjectAccess.classByName(__s));

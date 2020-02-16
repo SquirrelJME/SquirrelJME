@@ -568,7 +568,7 @@ public class Suite
 	 * @param __d The input dependencies to check.
 	 * @return The result of the match.
 	 * @throws NullPointerException On null arguments.
-	 * @sine 2018/11/02
+	 * @since 2018/11/02
 	 */
 	final MatchResult __matchedDependencies(DependencyInfo __d)
 		throws NullPointerException

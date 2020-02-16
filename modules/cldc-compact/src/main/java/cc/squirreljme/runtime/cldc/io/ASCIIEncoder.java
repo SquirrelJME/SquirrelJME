@@ -60,7 +60,7 @@ public final class ASCIIEncoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/12/23
 	 */
 	@Override

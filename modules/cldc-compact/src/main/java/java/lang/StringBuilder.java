@@ -88,7 +88,7 @@ public final class StringBuilder
 	 * the internal buffer is the default capacity plus the input string
 	 * length.
 	 *
-	 * @param __s The characters to copy.
+	 * @param __cs The characters to copy.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */

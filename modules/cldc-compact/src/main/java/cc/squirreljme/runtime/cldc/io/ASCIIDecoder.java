@@ -53,7 +53,7 @@ public final class ASCIIDecoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/12/23
 	 */
 	@Override
@@ -63,7 +63,7 @@ public final class ASCIIDecoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/12/23
 	 */
 	@Override

@@ -29,6 +29,7 @@ public class ShellSort
 	/**
 	 * Sorts the specified collection.
 	 *
+	 * @param <T> The type to sort.
 	 * @param __a The collection to sort.
 	 * @param __from The from index.
 	 * @param __to The to index.

@@ -587,7 +587,7 @@ public class Vector<E>
 	
 	/**
 	 * Sets the element at the given index, note that compared to
-	 * {@link #set(int, E)} the parameters are reversed.
+	 * {@link #set(int, Object)} the parameters are reversed.
 	 *
 	 * @param __v The value to set.
 	 * @param __i The index to set.

@@ -29,7 +29,8 @@ public final class Paths
 	
 	/**
 	 * This creates a representation of a native filesystem path. It has the
-	 * same function and rules as {@link FileSystem#getPath(String, String)}.
+	 * same function and rules
+	 * as {@link FileSystem#getPath(String, String...)}.
 	 *
 	 * @param __a The first path fragment.
 	 * @param __b The optional remaining path fragments.

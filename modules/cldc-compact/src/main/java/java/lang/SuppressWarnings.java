@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 @Retention(value=RetentionPolicy.SOURCE)
 public @interface SuppressWarnings
 {
-	/** The warnings that should be suppressed. */
+	/** @return The warnings that should be suppressed. */
 	String[] value();
 }
 

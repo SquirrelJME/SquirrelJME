@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 	ElementType.PARAMETER, ElementType.TYPE})
 public @interface Api
 {
-	/** The API level. */
+	/** @return The API level. */
 	int value();
 }
 

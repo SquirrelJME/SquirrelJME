@@ -332,7 +332,7 @@ public final class Long
 	}
 	
 	/**
-	 * Calls {@link Long#toStirng(long, int)} with a radix of 10.
+	 * Calls {@link Long#toString(long, int)} with a radix of 10.
 	 *
 	 * @param __v The input value.
 	 * @return The resulting string.

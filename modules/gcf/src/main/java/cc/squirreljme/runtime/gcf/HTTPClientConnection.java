@@ -461,6 +461,7 @@ public class HTTPClientConnection
 	 * Connects to the given address using the given stream.
 	 *
 	 * @param __addr The address.
+	 * @return The open connection.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */

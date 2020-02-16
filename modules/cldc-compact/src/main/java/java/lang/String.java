@@ -190,7 +190,6 @@ public final class String
 	 * @throws IndexOutOfBoundsException If offset and/or length are negative
 	 * or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
-	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/11/06
 	 */
 	public String(byte[] __b, int __o, int __l)
@@ -203,7 +202,6 @@ public final class String
 	 * Decodes the given bytes to a string using the specified encoding.
 	 *
 	 * @param __b The input bytes to decode.
-	 * @param __e The encoding to use when decoding the bytes.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
@@ -706,7 +704,8 @@ public final class String
 	 * @return A byte array with the characters of this string converted to
 	 * bytes.
 	 * @throws NullPointerException If no encoding was specified.
-	 * @throws UnsupportedEncodingException 
+	 * @throws UnsupportedEncodingException If the encoding is unknown.
+	 * @since 2018/12/08
 	 */
 	public byte[] getBytes(String __enc)
 		throws NullPointerException, UnsupportedEncodingException
@@ -953,7 +952,7 @@ public final class String
 	/**
 	 * Returns the last occurance of the given string.
 	 *
-	 * @param __c The string to find.
+	 * @param __s The string to find.
 	 * @return The last occurance of the string or {@code -1} if it was
 	 * not found.
 	 * @throws NullPointerException On null arguments.
@@ -1058,6 +1057,7 @@ public final class String
 	 *
 	 * @param __a The starting character.
 	 * @param __b The replacement character.
+	 * @return The resulting string.
 	 * @since 2018/09/22
 	 */
 	public String replace(char __a, char __b)
@@ -1092,7 +1092,7 @@ public final class String
 	 * @param __s The string to check for a starting match.
 	 * @param __sdx The starting index to start checking at.
 	 * @return If this string starts with the given string.
-	 * @throws IndexOutOfBoundsException
+	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
@@ -1181,6 +1181,7 @@ public final class String
 	 *
 	 * @param __s The starting index.
 	 * @param __e The ending index.
+	 * @return The resulting string.
 	 * @throws IndexOutOfBoundsException If the string region is outside of
 	 * bounds.
 	 * @since 2018/09/29
@@ -1529,6 +1530,7 @@ __outer:
 	 *
 	 * @param __fmt The format specifiers.
 	 * @param __args The arguments to the formatter.
+	 * @return The formatted string.
 	 * @throws IllegalArgumentException If the format is not correct.
 	 * @throws NullPointerException On null arguments.
 	 * @see java.util.Formatter
@@ -1583,6 +1585,7 @@ __outer:
 	 * @param __c The input array.
 	 * @param __o The offset.
 	 * @param __l The number of characters to set.
+	 * @return The resulting string.
 	 * @throws IndexOutOfBoundsException If the offset and/or length
 	 * are negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.

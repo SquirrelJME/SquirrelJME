@@ -83,7 +83,7 @@ public final class ISO885915Encoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2019/04/29
 	 */
 	@Override

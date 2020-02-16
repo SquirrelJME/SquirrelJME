@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm;
 
 /**
- * Exception that may be thrown by {@link SystemCallError.checkError(int)}.
+ * Exception that may be thrown by {@link SystemCallError#checkError(short)}.
  *
  * @since 2020/01/12
  */
@@ -26,6 +26,8 @@ public class SystemCallException
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
+	 * @param __sid The call ID.
+	 * @param __ec The error code.
 	 * @since 2019/10/21
 	 */
 	public SystemCallException(int __sid, int __ec)
@@ -37,6 +39,8 @@ public class SystemCallException
 	/**
 	 * Initializes the exception with the given message and no cause.
 	 *
+	 * @param __sid The call ID.
+	 * @param __ec The error code.
 	 * @param __m The message.
 	 * @since 2019/10/21
 	 */
@@ -51,6 +55,8 @@ public class SystemCallException
 	/**
 	 * Initializes the exception with the given message and cause.
 	 *
+	 * @param __sid The call ID.
+	 * @param __ec The error code.
 	 * @param __m The message.
 	 * @param __t The cause.
 	 * @since 2019/10/21
@@ -66,6 +72,8 @@ public class SystemCallException
 	/**
 	 * Initializes the exception with the given cause and no message.
 	 *
+	 * @param __sid The call ID.
+	 * @param __ec The error code.
 	 * @param __t The cause.
 	 * @since 2019/10/21
 	 */

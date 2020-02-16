@@ -65,7 +65,7 @@ final class __CRC32Table__
 	/**
 	 * Obtains the CRC table.
 	 *
-	 * @parma __poly The polynomial.
+	 * @param __poly The polynomial.
 	 * @return The CRC table.
 	 * @since 2016/07/16
 	 */

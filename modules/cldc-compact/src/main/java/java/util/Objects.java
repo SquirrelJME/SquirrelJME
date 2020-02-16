@@ -128,15 +128,16 @@ public final class Objects
 	 *
 	 * @param <T> The type of value to return.
 	 * @param __a The value to return.
+	 * @param __m The exception message.
 	 * @return {@code __a}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
-	public static <T> T requireNonNull(T __a, String __b)
+	public static <T> T requireNonNull(T __a, String __m)
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException((__b != null ? __b : "NARG"));
+			throw new NullPointerException((__m != null ? __m : "NARG"));
 		return __a;
 	}
 	

@@ -170,7 +170,7 @@ public final class Assembly
 	/**
 	 * Float to raw int bits.
 	 *
-	 * @param __d The input float.
+	 * @param __f The input float.
 	 * @return The raw int bits.
 	 * @since 2018/11/04
 	 */
@@ -424,6 +424,7 @@ public final class Assembly
 	 * Invoke method at pointer.
 	 *
 	 * @param __addr The address to invoke.
+	 * @param __pool The pool address to load.
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
@@ -433,6 +434,7 @@ public final class Assembly
 	 * Invoke method at pointer, with arguments.
 	 *
 	 * @param __addr The address to invoke.
+	 * @param __pool The pool address to load.
 	 * @param __a Argument.
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
@@ -443,6 +445,7 @@ public final class Assembly
 	 * Invoke method at pointer, with arguments.
 	 *
 	 * @param __addr The address to invoke.
+	 * @param __pool The pool address to load.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @return The result of the invocation.
@@ -455,6 +458,7 @@ public final class Assembly
 	 * Invoke method at pointer, with arguments.
 	 *
 	 * @param __addr The address to invoke.
+	 * @param __pool The pool address to load.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -468,6 +472,7 @@ public final class Assembly
 	 * Invoke method at pointer, with arguments.
 	 *
 	 * @param __addr The address to invoke.
+	 * @param __pool The pool address to load.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -482,6 +487,7 @@ public final class Assembly
 	 * Invoke method at pointer, with arguments.
 	 *
 	 * @param __addr The address to invoke.
+	 * @param __pool The pool address to load.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -497,6 +503,7 @@ public final class Assembly
 	 * Invoke method at pointer, with arguments.
 	 *
 	 * @param __addr The address to invoke.
+	 * @param __pool The pool address to load.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -513,6 +520,7 @@ public final class Assembly
 	 * Invoke method at pointer, with arguments.
 	 *
 	 * @param __addr The address to invoke.
+	 * @param __pool The pool address to load.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -548,6 +556,7 @@ public final class Assembly
 	/**
 	 * Loads a value from the constant pool at the given index.
 	 *
+	 * @param __i The index to load.
 	 * @return The index of the value in the constant pool.
 	 * @since 2019/04/28
 	 */
@@ -860,7 +869,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si The address to invoke.
 	 * @since 2019/05/23
 	 */
 	public static native void sysCall(short __si);
@@ -973,7 +982,7 @@ public final class Assembly
 	/**
 	 * Invoke pure system call at the given index.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si The address to invoke.
 	 * @since 2019/05/27
 	 */
 	public static native void sysCallP(short __si);

@@ -408,6 +408,7 @@ public final class System
 	 * @param __k The system property to get.
 	 * @param __d If the system property is not set (returns {@code null}
 	 * then this value will be returned instead.
+	 * @return The system property.
 	 * @throws IllegalArgumentException If the requested system property is
 	 * not valid (it is blank).
 	 * @throws NullPointerException If no key was specified.

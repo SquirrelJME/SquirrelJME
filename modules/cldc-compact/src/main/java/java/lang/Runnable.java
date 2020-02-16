@@ -12,7 +12,7 @@ package java.lang;
 
 /**
  * This interface should be used by any class which is intended and capable
- * of being run in its own thread (via {@link Thread(Runnable)}.
+ * of being run in its own thread (via {@link Thread#Thread(Runnable)}.
  *
  * When used with {@link Thread}, the method {@link #run()} will be executed
  * when the thread is started.

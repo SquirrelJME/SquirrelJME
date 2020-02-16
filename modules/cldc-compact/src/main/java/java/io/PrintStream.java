@@ -437,7 +437,6 @@ public class PrintStream
 	/**
 	 * Prints the end of line sequence that is used for the current platform.
 	 *
-	 * @return The end of line sequence.
 	 * @since 2018/09/21
 	 */
 	public void println()

@@ -180,7 +180,7 @@ public class Timer
 	 * each execution rather than the end.
 	 *
 	 * @param __task The task to run.
-	 * @param __time The time when the task should run.
+	 * @param __first The time when the task should run.
 	 * @param __period The duration of time between each invocation.
 	 * @throws IllegalArgumentException If the date is negative or the period
 	 * is zero or negative.
@@ -194,7 +194,8 @@ public class Timer
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __first, true, true, __period);
+		this._thread.__schedule(__task, __first, true, true,
+			__period);
 	}
 	
 	/**

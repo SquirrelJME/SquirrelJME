@@ -65,6 +65,7 @@ public class Random
 	 * to be changed if the internal algorithm is to be changed.
 	 *
 	 * @param __bits The number of bits to return.
+	 * @return The produced value.
 	 * @since 2018/11/02
 	 */
 	protected int next(int __bits)

@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.gcf.TCPClientConnection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -271,6 +272,7 @@ public class Connector
 	 * This opens a connection, obtains the input stream, then closes the
 	 * connection.
 	 *
+	 * @param __uri The URI to open.
 	 * @return An input stream for the given connection.
 	 * @throws IllegalArgumentException If the connection is not an
 	 * {@link InputConnection}.
@@ -298,6 +300,7 @@ public class Connector
 	 * This opens a connection, obtains the output stream, then closes the
 	 * connection.
 	 *
+	 * @param __uri The URI to open.
 	 * @return An output stream for the given connection.
 	 * @throws IllegalArgumentException If the connection is not an
 	 * {@link OutputConnection}.

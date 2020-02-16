@@ -117,6 +117,7 @@ public class Runtime
 	 *
 	 * Only a single runtime is valid and there will only be one.
 	 *
+	 * @return The current run-time.
 	 * @since 2018/03/01
 	 */
 	public static Runtime getRuntime()

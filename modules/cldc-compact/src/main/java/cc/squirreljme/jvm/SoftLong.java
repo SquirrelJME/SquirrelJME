@@ -262,7 +262,8 @@ public final class SoftLong
 	/**
 	 * Converts to double.
 	 *
-	 * @param __a A.
+	 * @param __ah High value.
+	 * @param __al Low value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */

@@ -121,7 +121,7 @@ public final class StandardPaths
 	 * @param __data The data directory.
 	 * @param __cache The cache directory.
 	 * @throws NullPointerException On null arguments.
-	 * @sicne 2018/01/13
+	 * @since 2018/01/13
 	 */
 	public StandardPaths(Path __conf, Path __data, Path __cache)
 		throws NullPointerException

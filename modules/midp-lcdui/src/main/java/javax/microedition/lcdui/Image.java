@@ -44,7 +44,7 @@ public class Image
 	/**
 	 * Initializes the image with the given settings.
 	 *
-	 * @parma __data The image data, this is used directly.
+	 * @param __data The image data, this is used directly.
 	 * @param __w The image width.
 	 * @param __h The image height.
 	 * @param __mut If this image is mutable

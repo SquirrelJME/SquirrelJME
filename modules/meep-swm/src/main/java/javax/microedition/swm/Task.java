@@ -60,7 +60,7 @@ public final class Task
 	 *
 	 * @param __o The other object.
 	 * @return {@code true} if this is the same task.
-	 * @sicne 2016/06/24
+	 * @since 2016/06/24
 	 */
 	@Override
 	public boolean equals(Object __o)

@@ -49,7 +49,7 @@ public final class ISO88591Decoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/11/11
 	 */
 	@Override
@@ -59,7 +59,7 @@ public final class ISO88591Decoder
 	}
 	
 	/**
-	 * {@inheritDc}
+	 * {@inheritDoc}
 	 * @since 2018/11/11
 	 */
 	@Override

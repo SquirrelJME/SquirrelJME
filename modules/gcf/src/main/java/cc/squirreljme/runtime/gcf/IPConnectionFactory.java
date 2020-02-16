@@ -31,6 +31,7 @@ public abstract class IPConnectionFactory
 	 * Resolves the specified IP address.
 	 *
 	 * @param __addr The IP address.
+	 * @return The resolved address.
 	 * @throws ConnectionNotFoundException If the host was not found.
 	 * @throws IOException If the address could not resolved.
 	 * @throws NullPointerException On null arguments.

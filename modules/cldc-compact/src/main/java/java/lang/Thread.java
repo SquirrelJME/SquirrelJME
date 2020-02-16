@@ -29,7 +29,7 @@ import java.util.Map;
  * SquirrelJME may be running with multiple threads executing at once or it
  * may also be executing cooperatively (only a single thread at a time). If
  * SquirrelJME is running cooperatively then only locking,
- * {@link Thread.sleep(long, int)}, or {@link Thread.yield()} will allow
+ * {@link Thread#sleep(long, int)}, or {@link Thread#yield()} will allow
  * another thread to run.
  *
  * @since 2018/12/07
@@ -458,7 +458,8 @@ public class Thread
 	/**
 	 * Starts the specified thread.
 	 *
-	 * @throws IllegalThreadStateException 
+	 * @throws IllegalThreadStateException If the thread was already started
+	 * or failed to start.
 	 * @since 2018/11/17
 	 */
 	public void start()

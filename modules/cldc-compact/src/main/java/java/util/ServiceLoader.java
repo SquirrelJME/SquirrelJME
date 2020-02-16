@@ -104,6 +104,7 @@ public final class ServiceLoader<S>
 	/**
 	 * Create a service loader for the given class.
 	 *
+	 * @param <S> The class to handle services for.
 	 * @param __cl The class to load a service for.
 	 * @return The service loader for this class.
 	 * @throws NullPointerException On null arguments.

@@ -389,7 +389,7 @@ public class NewBootstrap
 	 * If the flaw needs to have a work-around then a JAR will be printed
 	 * to standard output.
 	 *
-	 * @sine 2018/01/13
+	 * @since 2018/01/13
 	 */
 	private static final void __detectToolsFlaw()
 	{
