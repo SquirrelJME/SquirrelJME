@@ -27,10 +27,10 @@ import net.multiphasicapps.io.ZLibDecompressor;
  * This class parses PNG images.
  *
  * PNG specifications:
- * {@link http://www.libpng.org/pub/png/pngdocs.html}
- * {@link http://www.libpng.org/pub/png/spec/iso/index-object.html}
- * {@link https://www.w3.org/TR/PNG/}
- * {@link https://tools.ietf.org/html/rfc2083}
+ *  * http://www.libpng.org/pub/png/pngdocs.html
+ *  * http://www.libpng.org/pub/png/spec/iso/index-object.html
+ *  * https://www.w3.org/TR/PNG/
+ *  * https://tools.ietf.org/html/rfc2083
  *
  * @since 2017/02/28
  */
@@ -100,6 +100,7 @@ public class PNGReader
 	 * Parses the PNG image data.
 	 *
 	 * @return The read image.
+	 * @throws IOException On read errors.
 	 * @since 2017/02/28
 	 */
 	public Image parse()

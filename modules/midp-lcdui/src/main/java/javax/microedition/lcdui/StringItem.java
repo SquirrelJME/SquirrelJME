@@ -42,6 +42,7 @@ public class StringItem
 	 *
 	 * @param __l The label.
 	 * @param __t The text.
+	 * @param __am The appearance mode.
 	 * @throws IllegalArgumentException If the appearance mode is not valid.
 	 * @since 2019/05/17
 	 */

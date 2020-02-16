@@ -172,7 +172,7 @@ public abstract class CustomItem
 	 * (which is unspecified).
 	 *
 	 * If opaque mode (which is the default) is enabled then it will be
-	 * assumed that {@link #repaint(Graphics)} will cover every pixel and as
+	 * assumed that {@link CustomItem#repaint()} will cover every pixel and as
 	 * such it will not be required for the background to be cleared or
 	 * initialized.
 	 *

@@ -411,10 +411,10 @@ public final class TemporaryVinylRecord
 		/**
 		 * Sets the page data.
 		 *
-		 * @param __pid The page ID.
-		 * @param __b The data.
+		 * @param __b The byte data.
 		 * @param __o Offset into data.
 		 * @param __l The length of data.
+		 * @param __tag The tag for the page.
 		 * @return The page ID or a negative value if an error.
 		 * @throws IndexOutOfBoundsException If the offset and/or length
 		 * exceed the array bounds.
@@ -493,7 +493,7 @@ public final class TemporaryVinylRecord
 		/**
 		 * Initializes the volume.
 		 *
-		 * @param __rid The volume ID.
+		 * @param __vid The volume ID.
 		 * @param __sid The suite identifier.
 		 * @param __name The name of the record.
 		 * @param __wo Allow write by others?

@@ -926,7 +926,8 @@ public class RecordStore
 	 *
 	 * Suites may only delete their own record store.
 	 *
-	 * This will not call {@link RecordListener#recordDelete(RecordStore, int)}
+	 * This will not call
+	 * {@link RecordListener#recordDeleted(RecordStore, int)}
 	 * listeners associated with the given record store.
 	 *
 	 * @param __n The name of the record store to delete.
@@ -1029,6 +1030,7 @@ public class RecordStore
 	 * @param __write If {@code true} then the record store may be written to
 	 * by other suites. If the record already exists then this argument will be
 	 * ignored.
+	 * @param __pass The password.
 	 * @return The newly opened or created record store, if the record store
 	 * is already open then it will return the already open one.
 	 * @throws IllegalArgumentException If the name is not valid or the
@@ -1086,8 +1088,6 @@ public class RecordStore
 	 *
 	 * @param __n As forwarded.
 	 * @param __create As forwarded.
-	 * @param __auth As forwarded.
-	 * @param __write As forwarded.
 	 * @return As forwarded.
 	 * @throws IllegalArgumentException As forwarded.
 	 * @throws RecordStoreException As forwarded.
@@ -1120,7 +1120,8 @@ public class RecordStore
 	 * @param __n The name of the record store, must consist of 1 to 32
 	 * Unicode characters.
 	 * @param __vend The vendor of the other suite.
-	 * @param __name The name of the other suite.
+	 * @param __suite The suite.
+	 * @param __pass The password to the record store.
 	 * @return The opened record store.
 	 * @throws IllegalArgumentException If the name, vendor, or suite names
 	 * are not valid.
@@ -1149,7 +1150,7 @@ public class RecordStore
 	 *
 	 * @param __n As forwarded.
 	 * @param __vend As forwarded.
-	 * @param __name As forwarded.
+	 * @param __suite As forwarded.
 	 * @return As forwarded.
 	 * @throws IllegalArgumentException As forwarded.
 	 * @throws RecordStoreException As forwarded.

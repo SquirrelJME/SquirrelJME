@@ -62,7 +62,7 @@ public final class Configuration
 	/**
 	 * Initializes the configuration by parsing the given string.
 	 *
-	 * @param __s The string to parse.
+	 * @param __n The string to parse.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */

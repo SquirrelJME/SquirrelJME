@@ -451,8 +451,8 @@ public abstract class Canvas
 	/**
 	 * Requests that the specified region of the canvas be repainted.
 	 *
-	 * The clipping region when {@link #paint()} is called will have its clip
-	 * set to the region to be redrawn.
+	 * The clipping region when {@link #paint(Graphics)} is called will have
+	 * its clip set to the region to be redrawn.
 	 *
 	 * It is unspecified whether the drawing operation will happen immedietely,
 	 * be enqueued, or not happen at all (for example if the canvas is
@@ -552,8 +552,8 @@ public abstract class Canvas
 	 * (which is unspecified).
 	 *
 	 * If opaque mode (which is the default) is enabled then it will be
-	 * assumed that {@link #repaint(Graphics)} will cover every pixel and as
-	 * such it will not be required for the background to be cleared or
+	 * assumed that {@link #repaint()} will cover every pixel and
+	 * as such it will not be required for the background to be cleared or
 	 * initialized.
 	 *
 	 * @param __opaque If {@code true} then opaque mode is enabled.

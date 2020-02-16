@@ -38,7 +38,7 @@ public final class SuiteIdentifier
 	 * Initializes the suite identifier.
 	 *
 	 * @param __name The name of the suite.
-	 * @param __vendor The vendor of the suite.
+	 * @param __ven The vendor of the suite.
 	 * @param __ver The version of the suite.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
@@ -53,7 +53,7 @@ public final class SuiteIdentifier
 	/**
 	 * Initializes the suite identifier.
 	 *
-	 * @param __vendor The vendor of the suite.
+	 * @param __ven The vendor of the suite.
 	 * @param __name The name of the suite.
 	 * @param __ver The version of the suite.
 	 * @throws NullPointerException On null arguments.

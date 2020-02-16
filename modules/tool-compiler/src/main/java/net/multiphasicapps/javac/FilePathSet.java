@@ -37,8 +37,7 @@ public final class FilePathSet
 	/**
 	 * Initializes the path set over the given directory.
 	 *
-	 * @return __root The root directory
-	 * @throws IOException On read errors.
+	 * @param __root The file-system root.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */

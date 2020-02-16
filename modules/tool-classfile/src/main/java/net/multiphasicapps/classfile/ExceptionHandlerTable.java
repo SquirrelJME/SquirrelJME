@@ -303,7 +303,7 @@ public final class ExceptionHandlerTable
 	/**
 	 * Parses the exception handler table.
 	 *
-	 * @param __in The input stream to read exceptions from.
+	 * @param __is The input stream to read exceptions from.
 	 * @param __pool The constant pool for class names.
 	 * @param __len The length of the method in byte codes.
 	 * @throws InvalidClassFormatException If the exception table is not valid.

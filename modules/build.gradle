@@ -30,8 +30,6 @@ subprojects
 			"squirreljme.error",
 			"squirreljme.syscallparam",
 			"squirreljme.syscallreturn" ]
-
-		javadoc.destinationDir = new File("V:\\sjme\\" + name)
 	}
 }
 

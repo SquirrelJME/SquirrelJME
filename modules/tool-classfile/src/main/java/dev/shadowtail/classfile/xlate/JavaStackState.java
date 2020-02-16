@@ -398,7 +398,6 @@ public final class JavaStackState
 	 * stack entry for the exception will never be cached to the exception
 	 * register.
 	 *
-	 * @param __t The type to push.
 	 * @since 2019/04/13
 	 */
 	public final JavaStackResult doExceptionHandler()

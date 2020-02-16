@@ -34,7 +34,7 @@ public final class MethodFlags
 	 * Initializes the method flags.
 	 *
 	 * @param __oc The outer class.
-	 * @param __nm The name of the method.
+	 * @param __mn The name of the method.
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
@@ -49,7 +49,7 @@ public final class MethodFlags
 	 * Initializes the method flags.
 	 *
 	 * @param __oc The outer class.
-	 * @param __nm The name of the method.
+	 * @param __mn The name of the method.
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
@@ -65,7 +65,7 @@ public final class MethodFlags
 	 * Decodes method flags from the bit field.
 	 *
 	 * @param __oc The outer class flags.
-	 * @param __nm The name of the method.
+	 * @param __mn The name of the method.
 	 * @param __i The bitfield to decode.
 	 * @since 2017/07/07
 	 */

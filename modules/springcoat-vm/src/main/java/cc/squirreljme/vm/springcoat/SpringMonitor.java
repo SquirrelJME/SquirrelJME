@@ -139,7 +139,7 @@ public final class SpringMonitor
 	 * @param __by The thread that is doing the notify.
 	 * @param __all Notify all threads?
 	 * @return The notification status.
-	 * @throws NullPointerException
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/20
 	 */
 	public final int monitorNotify(SpringThread __by, boolean __all)

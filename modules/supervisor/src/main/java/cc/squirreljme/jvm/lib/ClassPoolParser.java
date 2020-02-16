@@ -30,7 +30,7 @@ public final class ClassPoolParser
 	/**
 	 * Initializes the constant pool parser.
 	 *
-	 * @param __b The blob data for the pool.
+	 * @param __blob The blob data for the pool.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/12
 	 */

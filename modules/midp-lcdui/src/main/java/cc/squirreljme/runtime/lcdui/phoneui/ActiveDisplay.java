@@ -181,7 +181,6 @@ public final class ActiveDisplay
 	/**
 	 * Key action has been performed.
 	 *
-	 * @param __d The display ID.
 	 * @param __ty The type of key event.
 	 * @param __kc The key code.
 	 * @param __ch The key character, {@code -1} is not valid.

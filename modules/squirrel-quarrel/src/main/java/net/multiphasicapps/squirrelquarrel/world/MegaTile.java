@@ -79,8 +79,9 @@ public class MegaTile
 	/**
 	 * Initializes a basic megatile.
 	 *
-	 * @param __x Megatile X position.
-	 * @param __y Megatile Y position.
+	 * @param __mx Megatile X position.
+	 * @param __my Megatile Y position.
+	 * @param __mi The index.
 	 * @since 2017/02/10
 	 */
 	public MegaTile(int __mx, int __my, int __mi)

@@ -37,6 +37,7 @@ public class XPMReader
 	/**
 	 * Initializes the XPM image reader.
 	 *
+	 * @param __is The input stream.
 	 * @since 2016/05/08
 	 */
 	public XPMReader(InputStream __is)
@@ -51,7 +52,6 @@ public class XPMReader
 	/**
 	 * Reads the XPM image data from the specified input stream.
 	 *
-	 * @param __is The stream to read XPM data from.
 	 * @return The read image data.
 	 * @throws IOException If the XPM is not valid.
 	 * @since 2017/02/10

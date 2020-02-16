@@ -28,9 +28,9 @@ import java.util.Set;
  *
  * This class must be thread safe.
  *
- * This class is mutable, when {@link #compile()} is called all the options
- * will be passed to the compiler instance and any instance of this class may
- * be used again or modified as such.
+ * This class is mutable, when {@link Compiler#compile(CompilerOutput)} is
+ * called all the options will be passed to the compiler instance and any
+ * instance of this class may be used again or modified as such.
  *
  * There should be a default set of options specified for the compiler.
  *

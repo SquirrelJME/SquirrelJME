@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.phoneui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Graphics;
@@ -132,7 +133,7 @@ public abstract class ExposedDisplayable
 	 * drag is when there is movement 
 	 *
 	 * This requires that motion events are supported which can be known by
-	 * calling {@link #hasPointerMotionEvents()}.
+	 * calling {@link Canvas#hasPointerMotionEvents()}.
 	 *
 	 * @param __x The X coordinate of the pointer, on the canvas origin.
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
@@ -148,7 +149,7 @@ public abstract class ExposedDisplayable
 	 * This is called when the pointer has been pressed on the canvas.
 	 *
 	 * This requires that pointer events are supported which can be known by
-	 * calling {@link #hasPointerEvents()}.
+	 * calling {@link Canvas#hasPointerEvents()}.
 	 *
 	 * @param __x The X coordinate of the pointer, on the canvas origin.
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
@@ -164,7 +165,7 @@ public abstract class ExposedDisplayable
 	 * This is called when the pointer has been released on the canvas.
 	 *
 	 * This requires that pointer events are supported which can be known by
-	 * calling {@link #hasPointerEvents()}.
+	 * calling {@link Canvas#hasPointerEvents()}.
 	 *
 	 * @param __x The X coordinate of the pointer, on the canvas origin.
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.

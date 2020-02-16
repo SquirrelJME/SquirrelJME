@@ -107,6 +107,7 @@ public final class SpringThreadWorker
 	 *
 	 * @param __cl The component type.
 	 * @param __l The length of the array.
+	 * @return The allocated array.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
@@ -314,7 +315,7 @@ public final class SpringThreadWorker
 	 * @param __cl The class type.
 	 * @param __in The input object.
 	 * @return The resulting native object.
-	 * @throw NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/20
 	 */
 	public final <C> C asNativeObject(Class<C> __cl, Object __in)
@@ -4543,7 +4544,8 @@ public final class SpringThreadWorker
 	/**
 	 * Returns a unique ID for the given string.
 	 *
-	 * @param __s The String to get the ID od.
+	 * @param __s The String to get the ID of.
+	 * @return The unique string ID.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/16
 	 */

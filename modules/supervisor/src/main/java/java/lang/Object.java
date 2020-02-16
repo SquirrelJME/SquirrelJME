@@ -26,6 +26,7 @@ public class Object
 	 * Clones this object.
 	 *
 	 * @return The clone of this object.
+	 * @throws CloneNotSupportedException If cloning is not supported.
 	 * @since 2019/05/26
 	 */
 	protected Object clone()

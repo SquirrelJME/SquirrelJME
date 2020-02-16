@@ -59,7 +59,7 @@ public final class Renderer
 	/**
 	 * Paints the game to the given graphics.
 	 *
-	 * @param __src The screen to draw for.
+	 * @param __scr The screen to draw for.
 	 * @param __g The graphics to draw on.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/08

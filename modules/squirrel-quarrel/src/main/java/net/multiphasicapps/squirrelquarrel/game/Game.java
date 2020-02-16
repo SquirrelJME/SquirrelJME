@@ -139,6 +139,7 @@ public class Game
 	/**
 	 * Returns the world.
 	 *
+	 * @return The world.
 	 * @since 2017/02/10
 	 */
 	public World world()

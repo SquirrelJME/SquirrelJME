@@ -568,7 +568,6 @@ public final class NativeCodeBuilder
 	 * Adds a label at the current position.
 	 *
 	 * @param __l The label to add.
-	 * @param __pc The address to target.
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */

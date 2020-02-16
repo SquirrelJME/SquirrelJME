@@ -32,7 +32,7 @@ public final class ZipPathSet
 	/**
 	 * Initializes the path set over ZIP files.
 	 *
-	 * @return __zip The ZIP file to wrap and treat as a path set.
+	 * @param __zip The ZIP file to wrap and treat as a path set.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28

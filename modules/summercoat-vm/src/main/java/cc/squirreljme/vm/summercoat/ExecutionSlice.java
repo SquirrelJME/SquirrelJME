@@ -48,7 +48,6 @@ public final class ExecutionSlice
 	 * @param __args The arguments.
 	 * @param __argslen Number of arguments available.
 	 * @param __reglist The register list for method calls.
-	 * @return The execution slice.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/03
 	 */

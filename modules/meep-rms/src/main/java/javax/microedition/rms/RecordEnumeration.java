@@ -46,6 +46,7 @@ public interface RecordEnumeration
 	 * keep the enumeraton up to date, otherwise it is implementation defined.
 	 *
 	 * @param __i The index to get.
+	 * @return The record ID.
 	 * @throws IllegalArgumentException If the index is negative or is at
 	 * least {@link #numRecords()}.
 	 * @since 2017/02/26
@@ -115,6 +116,14 @@ public interface RecordEnumeration
 	 */
 	public abstract int nextRecordId()
 		throws InvalidRecordIDException;
+	
+	/**
+	 * Returns the number of records.
+	 *
+	 * @return The record count.
+	 * @since 2020/02/16
+	 */
+	public abstract int numRecords();
 	
 	/**
 	 * Returns a copy of the data contained in the previous record. Changes to

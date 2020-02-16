@@ -44,7 +44,6 @@ public final class JPEGReader
 	 * Parses the JPEG.
 	 *
 	 * @return The resulting image.
-	 * @throws IOException On read errors.
 	 * @since 2019/05/06
 	 */
 	public Image parse()

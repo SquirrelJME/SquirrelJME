@@ -39,7 +39,6 @@ package java.lang;
  * 
  * }
  *
- * @see Closeable
  * @since 2015/03/23
  */
 public interface AutoCloseable

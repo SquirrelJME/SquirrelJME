@@ -145,6 +145,8 @@ public class Text
 	 * Initializes the text with the given width and height.
 	 *
 	 * @param __c The text to use.
+	 * @param __o The offset.
+	 * @param __l The length.
 	 * @param __w The width.
 	 * @param __h The height.
 	 * @throws IllegalArgumentException If the width or height are negative.

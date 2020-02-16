@@ -353,6 +353,7 @@ public class Image
 	 * Loads the image from the specified input stream.
 	 *
 	 * @param __is The stream to read image data from.
+	 * @return The parsed image.
 	 * @throws IOException If the image could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
@@ -397,6 +398,7 @@ public class Image
 	 * This loads the specified resource as an image.
 	 *
 	 * @param __s The string to load the resource for.
+	 * @return The created image.
 	 * @throws IOException If the resource does not exist or the image data
 	 * could not be decoded.
 	 * @throws NullPointerException On null arguments.
@@ -472,6 +474,10 @@ public class Image
 	 * @param __h The height of the image.
 	 * @param __alpha If {@code true} then the alpha is processed, otherwise
 	 * all pixels are treated as fully opaque.
+	 * @return The created image.
+	 * @throws IllegalArgumentException If the width or height is negative.
+	 * @throws IndexOutOfBoundsException If the input array is too small.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
 	public static Image createRGBImage(int[] __rgb, int __w, int __h, boolean 

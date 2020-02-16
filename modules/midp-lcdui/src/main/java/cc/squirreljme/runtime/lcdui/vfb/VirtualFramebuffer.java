@@ -181,13 +181,19 @@ public final class VirtualFramebuffer
 	 * Executes the framebuffer control system call.
 	 *
 	 * @param __pid The property ID.
-	 * @param __args The call arguments.
+	 * @param __a The call arguments.
+	 * @param __b The call arguments.
+	 * @param __c The call arguments.
+	 * @param __d The call arguments.
+	 * @param __e The call arguments.
+	 * @param __f The call arguments.
+	 * @param __g The call arguments.
 	 * @return The result of the property.
 	 * @throws IllegalArgumentException If the property was not known.
 	 * @since 2019/12/28
 	 */
 	public final long framebufferControl(int __pid, int __a, int __b, int __c,
-		int __d, int __e, int __g, int __h)
+		int __d, int __e, int __f, int __g)
 		throws IllegalArgumentException
 	{
 		// Depends on the property

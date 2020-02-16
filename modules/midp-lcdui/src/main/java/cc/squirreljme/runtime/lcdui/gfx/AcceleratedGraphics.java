@@ -49,7 +49,6 @@ public final class AcceleratedGraphics
 	/**
 	 * Returns the instance for the given display ID.
 	 *
-	 * @param __did The display ID.
 	 * @return The accelerated graphics instance.
 	 * @throws UnsupportedOperationException If accelerated graphics are not
 	 * supported.
