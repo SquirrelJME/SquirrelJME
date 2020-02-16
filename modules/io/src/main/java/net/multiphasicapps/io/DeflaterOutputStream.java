@@ -16,8 +16,7 @@ import java.io.OutputStream;
 /**
  * This is used to compress to standard deflate streams.
  *
- * Associated standards:
- * {@link https://www.ietf.org/rfc/rfc1951.txt}.
+ * Associated standards: https://www.ietf.org/rfc/rfc1951.txt.
  *
  * This class is not thread safe.
  *

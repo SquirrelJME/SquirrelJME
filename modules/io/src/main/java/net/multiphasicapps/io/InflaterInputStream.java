@@ -19,8 +19,7 @@ import java.util.NoSuchElementException;
 /**
  * This is used to decompress standard deflate compressed stream.
  *
- * Associated standards:
- * {@link https://www.ietf.org/rfc/rfc1951.txt}.
+ * Associated standards: https://www.ietf.org/rfc/rfc1951.txt.
  *
  * This class is not thread safe.
  *
@@ -172,7 +171,7 @@ public class InflaterInputStream
 	 * checksum calculator may be specified also.
 	 *
 	 * @param __in The stream to inflate.
-	 * @param __cs
+	 * @param __cs The checksum.
 	 * @throws NullPointerException On null arguments, except for {@code __cs}.
 	 * @since 2017/02/24
 	 */

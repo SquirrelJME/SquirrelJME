@@ -760,6 +760,7 @@ public final class TableSectionOutputStream
 		 * value is zero.
 		 *
 		 * @param __n The number of bytes to pad with.
+		 * @throws IOException On write errors.
 		 * @since 2019/08/11
 		 */
 		public final void writePadding(int __n)

@@ -39,6 +39,7 @@ public interface DisplayListener
 	/**
 	 * This is called when the state of a display changes in hardware.
 	 *
+	 * @param __d The display that changed state.
 	 * @param __ns If {@code true} then the display was reassigned on the
 	 * underlying hardware, if {@code false} then the display was unassigned.
 	 * @since 2016/08/30

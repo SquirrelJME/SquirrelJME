@@ -38,7 +38,7 @@ class __BlockAccessorRegionInputStream__
 	 * @param __len The number of bytes to read.
 	 * @throws IllegalArgumentException If the start and/or length are
 	 * negative.
-	 * @thorws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/03
 	 */
 	__BlockAccessorRegionInputStream__(BlockAccessor __ba, long __start,

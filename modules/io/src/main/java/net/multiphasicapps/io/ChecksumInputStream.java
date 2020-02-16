@@ -31,7 +31,7 @@ public class ChecksumInputStream
 	/**
 	 * Initializes the calculator.
 	 *
-	 * @param __checksum The checksum calculator to write to.
+	 * @param __calc The checksum calculator to write to.
 	 * @param __in The stream to read from.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
