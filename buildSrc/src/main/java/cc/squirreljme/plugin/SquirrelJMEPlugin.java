@@ -43,8 +43,36 @@ public class SquirrelJMEPlugin
 		injectManTask.doLast((Task __task) ->
 			this.__configureManifest(__project));
 		
-		// The manifest must be done before the JAR is build
-		__project.getTasks().getByName("jar").dependsOn(injectManTask);
+		// The manifest must be done before the JAR is built
+		Task jarTask = __project.getTasks().getByName("jar");
+		jarTask.dependsOn(injectManTask);
+		
+		// Launch application in the SpringCoat VM!
+		Task launchSpring = __project.getTasks()
+			.create("runSquirrelJMESpringCoat");
+		launchSpring.setGroup("application");
+		launchSpring.setDescription("Runs via SquirrelJME SpringCoat.");
+		launchSpring.dependsOn(jarTask);
+		launchSpring.doLast((Task __task) ->
+			new __RunSpringCoatApplication__(__project).run());
+		
+		// Building of SummerCoat ROM
+		Task buildROM = __project.getTasks().
+			create("jarSquirrelJMESummerCoatROM");
+		buildROM.setGroup("build");
+		buildROM.setDescription("Builds SquirrelJME SummerCoat ROM.");
+		buildROM.dependsOn(jarTask);
+		buildROM.doLast((Task __task) ->
+			{throw new Error("TODO");});
+		
+		// Launch application in the SummerCoat VM!
+		Task launchSummer = __project.getTasks()
+			.create("runSquirrelJMESummerCoat");
+		launchSummer.setGroup("application");
+		launchSummer.setDescription("Runs via SquirrelJME SummerCoat.");
+		launchSummer.dependsOn(buildROM);
+		launchSummer.doLast((Task __task) ->
+			new __RunSummerCoatApplication__(__project).run());
 	}
 	
 	/**
