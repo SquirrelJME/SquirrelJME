@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This is a basic demo which prints a hello " +
 	"message and prints some details about the virtual machine."
@@ -5,6 +6,7 @@ description = "This is a basic demo which prints a hello " +
 squirreljme
 {
 	javaDocErrorCode = "BT"
+	swmType = JavaMEMidletType.APPLICATION
 	swmName = "Hello (Demo)"
 	swmVendor = "Stephanie Gawroriski"
 	mainClass = "net.multiphasicapps.demo.hello.Hello"

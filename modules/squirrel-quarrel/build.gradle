@@ -1,4 +1,5 @@
 import cc.squirreljme.plugin.JavaMEMidlet
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "A turn based strategy involving squirrels and " +
  "lots of acorns! Keep on your claws and horde them all!"
@@ -6,6 +7,7 @@ description = "A turn based strategy involving squirrels and " +
 squirreljme
 {
 	javaDocErrorCode = "BE"
+	swmType = JavaMEMidletType.APPLICATION
 	swmName = "Squirrel Quarrel"
 	swmVendor = "Stephanie Gawroriski"
 	midlets += new JavaMEMidlet("Squirrel Quarrel", "icon.xpm",

@@ -1,9 +1,11 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "VisualVM Profiling Tool"
 
 squirreljme
 {
 	javaDocErrorCode = "AH"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "VisualVM Profiler Dump Library"
 	swmVendor = "Stephanie Gawroriski"
 }

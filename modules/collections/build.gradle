@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This class contains various collections " +
 	"which can be used to store objects."
@@ -5,6 +6,7 @@ description = "This class contains various collections " +
 squirreljme
 {
 	javaDocErrorCode = "AC"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Collections"
 	swmVendor = "Stephanie Gawroriski"
 }

@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to the SPI bus."
@@ -5,6 +6,7 @@ description = "This provides access to the SPI bus."
 squirreljme
 {
 	javaDocErrorCode = "CU"
+	swmType = JavaMEMidletType.API
 	swmName = "JavaME 8 Device I/O (SPI)"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("dio.spibus;;1.0.1")

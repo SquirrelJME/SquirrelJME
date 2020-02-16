@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides support for application suites and LIBlets."
@@ -5,6 +6,7 @@ description = "This provides support for application suites and LIBlets."
 squirreljme
 {
 	javaDocErrorCode = "DL"
+	swmType = JavaMEMidletType.API
 	swmName = "MEEP Application Suites and LIBlets"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.liblets;;")

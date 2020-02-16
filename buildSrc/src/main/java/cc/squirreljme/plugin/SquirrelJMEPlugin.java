@@ -13,9 +13,7 @@ package cc.squirreljme.plugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.java.archives.Attributes;
-import org.gradle.api.java.archives.Manifest;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -70,33 +68,60 @@ public class SquirrelJMEPlugin
 		attributes.put("X-SquirrelJME-InternalProjectName",
 			__project.getName());
 		
-		// Configurations defined?
-		if (!config.definedConfigurations.isEmpty())
-			attributes.put("X-SquirrelJME-DefinedConfigurations",
-				__iterableToString(config.definedConfigurations, ' '));
+		// Standard Application
+		if (config.swmType == JavaMEMidletType.APPLICATION)
+		{
+			attributes.put("MIDlet-Name", config.swmName);
+			attributes.put("MIDlet-Vendor", config.swmVendor);
+			attributes.put("MIDlet-Version",
+				__project.getVersion().toString());
+			
+			// Main class of entry?
+			if (config.mainClass != null)
+				attributes.put("Main-Class", config.mainClass);
+			
+			// Add any defined MIDlets
+			int midletId = 1;
+			for (JavaMEMidlet midlet : config.midlets)
+				attributes.put("MIDlet-" + (midletId++), midlet.toString());
+			
+			// Ignored in the launcher?
+			if (config.ignoreInLauncher)
+				attributes.put("X-SquirrelJME-NoLauncher", true);
+		}
 		
-		// Profiles defined?
-		if (!config.definedProfiles.isEmpty())
-			attributes.put("X-SquirrelJME-DefinedProfiles",
-				__iterableToString(config.definedProfiles, ' '));
+		// Library defining classes
+		if (config.swmType == JavaMEMidletType.LIBRARY)
+		{
+			attributes.put("LIBlet-Name", config.swmName);
+			attributes.put("LIBlet-Vendor", config.swmVendor);
+			attributes.put("LIBlet-Version",
+				__project.getVersion().toString());
+		}
 		
-		// Standards defined?
-		if (!config.definedStandards.isEmpty())
-			attributes.put("X-SquirrelJME-DefinedStandards",
-				__iterableToString(config.definedStandards, ' '));
-		
-		// Ignored in the launcher?
-		if (config.ignoreInLauncher)
-			attributes.put("X-SquirrelJME-NoLauncher", true);
-		
-		// Main class of entry?
-		if (config.mainClass != null)
-			attributes.put("Main-Class", config.mainClass);
-		
-		// Add any defined MIDlets
-		int midletId = 1;
-		for (JavaMEMidlet midlet : config.midlets)
-			attributes.put("MIDlet-" + (midletId++), midlet.toString());
+		// SquirrelJME defined APIs
+		if (config.swmType == JavaMEMidletType.API)
+		{
+			attributes.put("X-SquirrelJME-API-Name", config.swmName);
+			attributes.put("X-SquirrelJME-API-Vendor", config.swmVendor);
+			attributes.put("X-SquirrelJME-API-Version",
+				__project.getVersion().toString());
+			
+			// Configurations defined?
+			if (!config.definedConfigurations.isEmpty())
+				attributes.put("X-SquirrelJME-DefinedConfigurations",
+					__delimate(config.definedConfigurations, ' '));
+			
+			// Profiles defined?
+			if (!config.definedProfiles.isEmpty())
+				attributes.put("X-SquirrelJME-DefinedProfiles",
+					__delimate(config.definedProfiles, ' '));
+			
+			// Standards defined?
+			if (!config.definedStandards.isEmpty())
+				attributes.put("X-SquirrelJME-DefinedStandards",
+					__delimate(config.definedStandards, ' '));
+		}
 	}
 	
 	/**
@@ -108,8 +133,7 @@ public class SquirrelJMEPlugin
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/02/15
 	 */
-	private static String __iterableToString(Iterable<?> __it,
-		char __delim)
+	private static String __delimate(Iterable<?> __it, char __delim)
 		throws NullPointerException
 	{
 		if (__it == null)

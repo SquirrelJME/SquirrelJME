@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This contains classes which are common across " +
  "the various SquirrelJME VMs, and these only need to be written once " +
@@ -6,6 +7,7 @@ description = "This contains classes which are common across " +
 squirreljme
 {
 	javaDocErrorCode = "AK"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Common Virtual Machine Classes"
 	swmVendor = "Stephanie Gawroriski"
 }

@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project is used to build the packed ROM " +
 	"files needed by SummerCoat and RatufaCoat to function."
@@ -5,6 +6,7 @@ description = "This project is used to build the packed ROM " +
 squirreljme
 {
 	javaDocErrorCode = "BI"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Compiled JAR Packfile Support"
 	swmVendor = "Stephanie Gawroriski"
 }

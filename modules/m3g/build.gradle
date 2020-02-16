@@ -1,3 +1,5 @@
+import cc.squirreljme.plugin.JavaMEMidletType
+
 description = "This contains an implementation of the J2ME "
 	"Mobile 3D Graphics API. In SquirrelJME it utilizes OpenGL ES to " +
 	"perform the rendering as required."
@@ -5,6 +7,7 @@ description = "This contains an implementation of the J2ME "
 squirreljme
 {
 	javaDocErrorCode = "EK"
+	swmType = JavaMEMidletType.API
 	swmName = "Mobile 3D Graphics API"
 	swmVendor = "Stephanie Gawroriski"
 }

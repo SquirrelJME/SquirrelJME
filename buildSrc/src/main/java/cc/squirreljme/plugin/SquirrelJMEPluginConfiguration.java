@@ -32,6 +32,10 @@ public class SquirrelJMEPluginConfiguration
 	/** The JavaDoc Error Code. */
 	public String javaDocErrorCode;
 	
+	/** The type of program this is. */
+	public JavaMEMidletType swmType =
+		JavaMEMidletType.APPLICATION;
+	
 	/** The name of the MIDlet or LIBlet. */
 	public String swmName;
 	

@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This is a SpringCoat virtual machine which " +
 	"is an unoptimized pure interpreter aimed for the purpose of being an " +
@@ -6,6 +7,7 @@ description = "This is a SpringCoat virtual machine which " +
 squirreljme
 {
 	javaDocErrorCode = "BK"
+	swmType = JavaMEMidletType.LIBRARY
 	swmName = "SpringCoat Virtual Machine"
 	swmVendor = "Stephanie Gawroriski"
 }

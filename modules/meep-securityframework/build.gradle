@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This is used to control and potentially grant " +
@@ -6,6 +7,7 @@ description = "This is used to control and potentially grant " +
 squirreljme
 {
 	javaDocErrorCode = "DO"
+	swmType = JavaMEMidletType.API
 	swmName = "MEEP Security Framework"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.securityframework;;")
