@@ -25,25 +25,31 @@ import cc.squirreljme.jvm.SystemCallIndex;
  *
  * @since 2018/12/05
  */
+@Deprecated
 public final class ApiLevel
 {
 	/** The current API level. */
+	@Deprecated
 	public static final int CURRENT_LEVEL =
 		Assembly.sysCallV(SystemCallIndex.API_LEVEL);
 	
 	/** Undefined. */
+	@Deprecated
 	public static final int UNDEFINED =
 		0x7FFFFFFF;
 	
 	/** SquirrelJME 0.2.0 (December 25, 2018). */
+	@Deprecated
 	public static final int LEVEL_SQUIRRELJME_0_2_0_20181225 =
 		2_0_18359;
 	
 	/** SquirrelJME 0.3.0 (Development). */
+	@Deprecated
 	public static final int LEVEL_SQUIRRELJME_0_3_0_DEV =
 		3_0_19001;
 	
 	/** SquirrelJME 0.4.0 (July 4, 2019). */
+	@Deprecated
 	public static final int LEVEL_SQUIRRELJME_0_4_0_20190704 =
 		4_0_19185;
 	
@@ -52,6 +58,7 @@ public final class ApiLevel
 	 *
 	 * @since 2018/12/05
 	 */
+	@Deprecated
 	private ApiLevel()
 	{
 	}
@@ -63,6 +70,7 @@ public final class ApiLevel
 	 * @return The string.
 	 * @since 2018/12/05
 	 */
+	@Deprecated
 	public static String levelToString(int __l)
 	{
 		return String.format("%d.%d.%d (Day %d of %d)",
@@ -80,6 +88,7 @@ public final class ApiLevel
 	 * @return If the minimum level is met.
 	 * @since 2019/02/02
 	 */
+	@Deprecated
 	public static boolean minimumLevel(int __l)
 	{
 		return (CURRENT_LEVEL >= __l);
