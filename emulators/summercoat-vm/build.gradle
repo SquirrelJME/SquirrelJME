@@ -1,20 +1,15 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+plugins
+{
+	id "java"
+}
 
 description = "This is the SummerCoat VM which is a more " +
 	"optimized register based virtual machine which should result in faster" +
 	"code execution."
 
-squirreljme
-{
-	javaDocErrorCode = "AE"
-	swmType = JavaMEMidletType.LIBRARY
-	swmName = "SummerCoat Virtual Machine"
-	swmVendor = "Stephanie Gawroriski"
-}
-
 dependencies
 {
-	compile project(":modules:cldc")
+	implementation project(":emulators:emulator-base")
 
 	compile project(":modules:tool-classfile")
 	compile project(":modules:tool-manifest-reader")

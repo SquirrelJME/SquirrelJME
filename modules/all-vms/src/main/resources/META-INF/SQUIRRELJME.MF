@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: AL
-X-SquirrelJME-Name: All Virtual Machines
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-Microedition-Configuration: CLDC-1.8-Compact
-
