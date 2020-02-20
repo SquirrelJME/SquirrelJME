@@ -11,3 +11,9 @@ application
 {
 	mainClassName = "cc.squirreljme.squirreljme.emulator.runner.Main"
 }
+
+dependencies
+{
+	implementation project(":emulators:springcoat-vm")
+	implementation project(":emulators:summercoat-vm")
+}
