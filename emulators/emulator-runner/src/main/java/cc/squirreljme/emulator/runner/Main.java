@@ -24,7 +24,7 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		throw new todo.TODO();
+		throw new Error("TODO");
 	}
 }
 
