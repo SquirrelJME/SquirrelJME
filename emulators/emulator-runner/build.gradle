@@ -1,0 +1,13 @@
+plugins
+{
+	id "java"
+	id "application"
+}
+
+description "Command line interface which is used to run the emulators as " +
+	"required."
+
+application
+{
+	mainClassName = "cc.squirreljme.squirreljme.emulator.runner.Main"
+}
