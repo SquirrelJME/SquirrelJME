@@ -22,8 +22,8 @@ squirreljme
 
 java
 {
-	// Use our own sources for the project
-	compileJava.options.bootstrapClasspath = project.files()
+	// No classes are available for this project
+	compileJava.options.bootstrapClasspath = project.objects.fileCollection();
 }
 
 dependencies
