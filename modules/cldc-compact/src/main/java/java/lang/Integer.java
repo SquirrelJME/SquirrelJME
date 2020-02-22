@@ -93,8 +93,8 @@ public final class Integer
 	public int compareTo(Integer __b)
 	{
 		int a = this._value,
-			b = __b._value;
-			
+			b = __b;
+		
 		if (a == b)
 			return 0;
 		else if (a < b)
