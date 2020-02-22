@@ -2,3 +2,10 @@ plugins
 {
 	id "java"
 }
+
+description = "Base backend for the emulators, this interfaces with Java SE."
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+}
