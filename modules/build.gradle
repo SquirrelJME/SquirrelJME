@@ -53,7 +53,7 @@ configure(subprojects
 		Project cldcCompactProject = project(":modules:cldc-compact")
 		compileJava.options.bootstrapClasspath = project.objects.
 			fileCollection().from(cldcCompactProject.buildDir.toPath().
-			resolve("classes").resolve("java").resolve("main"))
+			resolve("classes").resolve("java").resolve("main")).getAsFileTree()
 
 		// Copy to tests
 		compileTestJava.options.bootstrapClasspath =
