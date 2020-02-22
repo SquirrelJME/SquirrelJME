@@ -1,0 +1,18 @@
+import cc.squirreljme.plugin.JavaMEMidletType
+
+description = "Proprietary JBlend API"
+
+squirreljme
+{
+	javaDocErrorCode = "LB"
+	swmType = JavaMEMidletType.API
+	swmName = "JBlend API"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	compile project(":modules:cldc-compact")
+
+	compile project(":modules:midp-lcdui")
+}
