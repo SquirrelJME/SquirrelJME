@@ -15,9 +15,9 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc-compact")
+	implementation project(":modules:cldc-compact")
 
-	compile project(":modules:meep-key")
-	compile project(":modules:collections")
-	compile project(":modules:gcf")
+	implementation project(":modules:meep-key")
+	implementation project(":modules:collections")
+	implementation project(":modules:gcf")
 }

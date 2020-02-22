@@ -16,9 +16,10 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc")
+	implementation project(":modules:cldc")
 
-	compile project(":modules:meep-midlet")
-	compile project(":modules:tool-manifest-writer")
-	compile project(":modules:meep-swm")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:tool-manifest-writer")
+	implementation project(":modules:meep-swm")
+	implementation project(":modules:collections")
 }

@@ -13,7 +13,7 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc")
+	implementation project(":modules:cldc")
 
-	compile project(":modules:io")
+	implementation project(":modules:io")
 }

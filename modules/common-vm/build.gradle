@@ -14,12 +14,12 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc")
+	implementation project(":modules:cldc")
 
-	compile project(":modules:midp-lcdui")
-	compile project(":modules:meep-swm")
-	compile project(":modules:meep-midlet")
-	compile project(":modules:tool-profiler")
-	compile project(":modules:tool-manifest-reader")
-	compile project(":modules:zip")
+	implementation project(":modules:midp-lcdui")
+	implementation project(":modules:meep-swm")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:tool-profiler")
+	implementation project(":modules:tool-manifest-reader")
+	implementation project(":modules:zip")
 }

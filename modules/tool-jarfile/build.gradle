@@ -14,8 +14,9 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc-compact")
+	implementation project(":modules:cldc-compact")
 
-	compile project(":modules:tool-classfile")
-	compile project(":modules:common-vm")
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:common-vm")
+	implementation project(":modules:io")
 }

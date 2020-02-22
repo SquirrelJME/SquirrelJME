@@ -18,9 +18,9 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc-compact")
+	implementation project(":modules:cldc-compact")
 
-	compile project(":modules:midp-lcdui")
-	compile project(":modules:meep-midlet")
-	compile project(":modules:meep-swm")
+	implementation project(":modules:midp-lcdui")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:meep-swm")
 }
