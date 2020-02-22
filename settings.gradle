@@ -1,5 +1,4 @@
 // Modules and available platforms
-include "platforms"
 include "modules"
 include "emulators"
 
