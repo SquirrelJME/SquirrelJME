@@ -39,7 +39,8 @@ public class SquirrelJMEPlugin
 		
 		// Inject manifest properties
 		Task injectManTask = __project.getTasks().
-			create("squirreljmeInjectManifest");
+			create("__injectManifest");
+		injectManTask.setGroup("squirreljme");
 		injectManTask.doLast((Task __task) ->
 			this.__configureManifest(__project));
 		
@@ -49,8 +50,8 @@ public class SquirrelJMEPlugin
 		
 		// Launch application in the SpringCoat VM!
 		Task launchSpring = __project.getTasks()
-			.create("runSquirrelJMESpringCoat");
-		launchSpring.setGroup("application");
+			.create("runSpringCoat");
+		launchSpring.setGroup("squirreljme");
 		launchSpring.setDescription("Runs via SquirrelJME SpringCoat.");
 		launchSpring.dependsOn(jarTask);
 		launchSpring.onlyIf((Task __task) ->
@@ -60,8 +61,8 @@ public class SquirrelJMEPlugin
 		
 		// Building of SummerCoat ROM
 		Task buildROM = __project.getTasks().
-			create("jarSquirrelJMESummerCoatROM");
-		buildROM.setGroup("build");
+			create("jarSummerCoatROM");
+		buildROM.setGroup("squirreljme");
 		buildROM.setDescription("Builds SquirrelJME SummerCoat ROM.");
 		buildROM.dependsOn(jarTask);
 		buildROM.doLast((Task __task) ->
@@ -69,14 +70,32 @@ public class SquirrelJMEPlugin
 		
 		// Launch application in the SummerCoat VM!
 		Task launchSummer = __project.getTasks()
-			.create("runSquirrelJMESummerCoat");
-		launchSummer.setGroup("application");
+			.create("runSummerCoat");
+		launchSummer.setGroup("squirreljme");
 		launchSummer.setDescription("Runs via SquirrelJME SummerCoat.");
 		launchSummer.dependsOn(buildROM);
 		launchSpring.onlyIf((Task __task) ->
 			__isApplication(__project));
 		launchSummer.doLast((Task __task) ->
 			new __RunSummerCoatApplication__(__project).run());
+		
+		// List error codes used by projects
+		Task listErrorCodes = __project.getTasks()
+			.create("listErrorCodes");
+		listErrorCodes.setGroup("squirreljme");
+		listErrorCodes.setDescription("Lists error code prefixes.");
+		listErrorCodes.doLast((Task __task) ->
+			new ErrorListManager(__project.getRootProject())
+				.printCodes(System.out));
+		
+		// Determine the next error code that is available
+		Task nextErrorCode = __project.getTasks()
+			.create("nextErrorCode");
+		nextErrorCode.setGroup("squirreljme");
+		nextErrorCode.setDescription("Returns the next free error code.");
+		nextErrorCode.doLast((Task __task) ->
+			System.out.println(new ErrorListManager(__project.getRootProject())
+				.nextErrorCode()));
 	}
 	
 	/**
