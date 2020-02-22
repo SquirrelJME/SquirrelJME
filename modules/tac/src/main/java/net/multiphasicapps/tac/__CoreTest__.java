@@ -37,7 +37,7 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 abstract class __CoreTest__
 	extends MIDlet
 {
-	/** {@squirreljme.error test.dump=bool Dump test result manifests?} */
+	/** {@squirreljme.property test.dump=bool Dump test result manifests?} */
 	public static final String DUMP_ACTUAL =
 		"test.dump";
 	
