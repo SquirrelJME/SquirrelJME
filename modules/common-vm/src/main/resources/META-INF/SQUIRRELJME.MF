@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: AK
-X-SquirrelJME-Name: Common Virtual Machine Classes
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-

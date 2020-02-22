@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: JavaME 8 Device I/O (AT Device)
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: CZ
-X-SquirrelJME-DefinedStandards: dio.atcmd;;1.0.1

@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: AH
-X-SquirrelJME-Name: VisualVM Profiler Dump Library
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-

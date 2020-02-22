@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: JavaME 8 Device I/O (Modems)
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: CY
-X-SquirrelJME-DefinedStandards: dio.modem;;1.0.1

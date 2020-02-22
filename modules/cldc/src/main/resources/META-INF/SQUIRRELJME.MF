@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: ZY
-X-SquirrelJME-Name: Connection Limited Device Configuration
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-DefinedConfigurations: CLDC-1.8
-

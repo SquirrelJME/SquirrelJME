@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: BE
-X-SquirrelJME-Name: Squirrel Quarrel
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.3.0
-Microedition-Configuration: CLDC-1.8-Compact
-MIDlet-1: Squirrel Quarrel, icon.xpm, 
- dev.shadowtail.squirrelquarrel.MainMidlet
-

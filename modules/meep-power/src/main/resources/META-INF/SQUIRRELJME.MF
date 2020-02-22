@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: MEEP Power Management
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: DJ
-X-SquirrelJME-DefinedStandards: microedition.power;;

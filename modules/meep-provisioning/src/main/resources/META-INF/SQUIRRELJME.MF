@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: MEEP Provisioning
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: DM
-X-SquirrelJME-DefinedStandards: microedition.provisioning;;

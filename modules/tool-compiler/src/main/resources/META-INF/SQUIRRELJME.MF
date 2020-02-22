@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: AQ
-X-SquirrelJME-Name: Java Compiler
-X-SquirrelJME-Vendor: Stephanie Gawroriski

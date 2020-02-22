@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: BK
-X-SquirrelJME-Name: SpringCoat Virtual Machine
-X-SquirrelJME-Vendor: Stephanie Gawroriski

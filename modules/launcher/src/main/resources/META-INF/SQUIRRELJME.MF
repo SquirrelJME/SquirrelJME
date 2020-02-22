@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: SquirrelJME Launcher (Graphical)
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: EP
-MIDlet-1: SquirrelJME Launcher (Graphical), ,
- cc.squirreljme.runtime.launcher.ui.MidletMain
-X-SquirrelJME-NoLauncher: true
