@@ -197,8 +197,9 @@ public final class ErrorListManager
 						if (!projectErrorCode.equals(sourceError.projectCode))
 							throw new IllegalArgumentException(String.format(
 								"Project %s (in %s) has wrong project code " +
-								"in %s.",
-								project.getName(), source, sourceError));
+								"in %s (should be %s).",
+								project.getName(), source, sourceError,
+								projectErrorCode));
 						
 						// Make sure all codes are unique!
 						SourceError dup;

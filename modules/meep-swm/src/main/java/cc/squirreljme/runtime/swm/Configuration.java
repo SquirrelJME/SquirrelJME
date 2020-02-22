@@ -72,7 +72,7 @@ public final class Configuration
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AR02 Expected two or three fields for the
+		// {@squirreljme.error DG02 Expected two or three fields for the
 		// configuration. (The input string)}
 		String[] fields = StringUtils.fieldSplit('-', __n);
 		int fn = fields.length;

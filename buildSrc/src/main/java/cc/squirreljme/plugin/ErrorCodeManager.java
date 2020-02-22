@@ -152,7 +152,12 @@ public final class ErrorCodeManager
 					throw new IllegalStateException(String.format(
 						"Project %s has no error code.", sub.getName()));
 				
-				codeMap.put(code.toUpperCase(), sub);
+				Project dup = codeMap.put(code.toUpperCase(), sub);
+				if (dup != null)
+					throw new IllegalStateException(String.format(
+						"Project %s shares error code %s with %s.",
+						sub.getName(), code, dup.getName()));
+				
 				unclaimed.remove(code.toUpperCase());
 			}
 		}

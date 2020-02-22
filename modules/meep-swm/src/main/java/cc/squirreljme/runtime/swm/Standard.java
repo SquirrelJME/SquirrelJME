@@ -69,17 +69,17 @@ public final class Standard
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AR04 Expected input standard string to
+		// {@squirreljme.error DG04 Expected input standard string to
 		// contain three fields separated by semi-colon. (The input string)}
 		String[] splice = StringUtils.fieldSplitAndTrim(';', __s);
 		if (splice.length != 3)
-			throw new InvalidSuiteException(String.format("AR04 %s", __s));
+			throw new InvalidSuiteException(String.format("DG04 %s", __s));
 		
-		// {@squirreljme.error AR05 Name in standard string is empty. (The
+		// {@squirreljme.error DG05 Name in standard string is empty. (The
 		// input string)}
 		String name = splice[0];
 		if (name.isEmpty())
-			throw new InvalidSuiteException(String.format("AR05 %s", __s));
+			throw new InvalidSuiteException(String.format("DG05 %s", __s));
 		this.name = new SuiteName(name);
 		
 		String vendor = splice[1];

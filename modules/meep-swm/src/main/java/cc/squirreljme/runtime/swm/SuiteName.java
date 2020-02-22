@@ -38,7 +38,7 @@ public final class SuiteName
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AR0e An illegal character was
+		// {@squirreljme.error DG0e An illegal character was
 		// specified in the midlet suite name. (The midlet suite
 		// name)}
 		if (StringUtils.firstIndex("\0\r\n:;", __v) >= 0)
