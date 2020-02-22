@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.JavaMEMidletType
+
+description = "This project contains the testing, acceptance, "+
+	"and comparison framework which is used to test and compare differring " +
+	"executions of the virtual machine."
+
+squirreljme
+{
+	javaDocErrorCode = "BU"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Testing Framework"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:io")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:tool-manifest-reader")
+	implementation project(":modules:tool-manifest-writer")
+	implementation project(":modules:collections")
+}
