@@ -1,0 +1,17 @@
+import cc.squirreljme.plugin.JavaMEMidletType
+
+description = "Proprietary Vodafone API"
+
+squirreljme
+{
+	javaDocErrorCode = "LA"
+	swmType = JavaMEMidletType.API
+	swmName = "Vodafone API"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	compile project(":modules:cldc-compact")
+	compile project(":modules:midp-lcdui")
+}
