@@ -12,11 +12,11 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc")
+	implementation project(":modules:cldc")
 
-	compile project(":modules:collections")
-	compile project(":modules:zip")
-	compile project(":modules:io")
-	compile project(":modules:tool-classfile")
-	compile project(":modules:collections")
+	implementation project(":modules:collections")
+	implementation project(":modules:zip")
+	implementation project(":modules:io")
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:collections")
 }

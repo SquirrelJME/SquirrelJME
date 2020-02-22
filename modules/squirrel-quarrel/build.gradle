@@ -16,8 +16,9 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc-compact")
+	implementation project(":modules:cldc-compact")
 
-	compile project(":modules:tool-manifest-reader")
-	compile project(":modules:midp-lcdui")
+	implementation project(":modules:tool-manifest-reader")
+	implementation project(":modules:midp-lcdui")
+	implementation project(":modules:meep-midlet")
 }

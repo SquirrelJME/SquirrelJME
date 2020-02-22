@@ -15,5 +15,5 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc")
+	implementation project(":modules:cldc")
 }

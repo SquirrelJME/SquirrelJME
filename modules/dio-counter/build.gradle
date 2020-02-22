@@ -14,8 +14,9 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc-compact")
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:cldc")
 
-	compile project(":modules:dio")
-	compile project(":modules:dio-gpio")
+	implementation project(":modules:dio")
+	implementation project(":modules:dio-gpio")
 }

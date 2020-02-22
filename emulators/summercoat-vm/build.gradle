@@ -11,12 +11,15 @@ dependencies
 {
 	implementation project(":emulators:emulator-base")
 
-	compile project(":modules:tool-classfile")
-	compile project(":modules:tool-manifest-reader")
-	compile project(":modules:meep-swm")
-	compile project(":modules:tool-profiler")
-	compile project(":modules:meep-midlet")
-	compile project(":modules:common-vm")
-	compile project(":modules:tool-jarfile")
-	compile project(":modules:tool-packfile")
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:collections")
+	implementation project(":modules:common-vm")
+	implementation project(":modules:io")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:meep-swm")
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:tool-jarfile")
+	implementation project(":modules:tool-manifest-reader")
+	implementation project(":modules:tool-packfile")
+	implementation project(":modules:tool-profiler")
 }

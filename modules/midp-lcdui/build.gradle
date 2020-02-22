@@ -17,10 +17,10 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc-compact")
+	implementation project(":modules:cldc-compact")
 
-	compile project(":modules:meep-midlet")
-	compile project(":modules:gcf")
-	compile project(":modules:io")
-	compile project(":modules:collections")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:gcf")
+	implementation project(":modules:io")
+	implementation project(":modules:collections")
 }

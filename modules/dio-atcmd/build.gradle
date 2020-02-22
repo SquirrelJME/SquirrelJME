@@ -15,8 +15,8 @@ squirreljme
 
 dependencies
 {
-	compile project(":modules:cldc")
+	implementation project(":modules:cldc")
 
-	compile project(":modules:dio")
-	compile project(":modules:dio-modem")
+	implementation project(":modules:dio")
+	implementation project(":modules:dio-modem")
 }
