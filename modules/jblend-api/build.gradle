@@ -1,12 +1,12 @@
 import cc.squirreljme.plugin.JavaMEMidletType
 
-description = "Proprietary JBlend API"
+description = "Proprietary Aplix JBlend API"
 
 squirreljme
 {
 	javaDocErrorCode = "LB"
 	swmType = JavaMEMidletType.API
-	swmName = "JBlend API"
+	swmName = "Aplix JBlend API"
 	swmVendor = "Stephanie Gawroriski"
 }
 
