@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: AC
-X-SquirrelJME-Name: Collections
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-

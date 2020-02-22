@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: Generic Connection Framework
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: EC

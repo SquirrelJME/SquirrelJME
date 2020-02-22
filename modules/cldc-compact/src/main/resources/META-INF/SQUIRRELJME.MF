@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: ZZ
-X-SquirrelJME-NoDependsConfiguration: true
-X-SquirrelJME-DefinedConfigurations: CLDC-1.8-Compact CLDC-1.1 
- CLDC-1.0
-

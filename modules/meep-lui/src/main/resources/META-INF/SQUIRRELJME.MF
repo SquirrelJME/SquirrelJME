@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: MEEP Line Based Interface
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: DA
-X-SquirrelJME-DefinedStandards: microedition.lui;;

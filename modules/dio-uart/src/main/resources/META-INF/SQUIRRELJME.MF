@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: JavaME 8 Device I/O (UART)
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: CX
-X-SquirrelJME-DefinedStandards: dio.uart;;1.0.1

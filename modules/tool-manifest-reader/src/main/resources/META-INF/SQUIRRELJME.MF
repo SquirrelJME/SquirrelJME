@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Name: Manifest File Decoder
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: BB

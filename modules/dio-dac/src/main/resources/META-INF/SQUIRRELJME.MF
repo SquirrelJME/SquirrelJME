@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: JavaME 8 Device I/O (DAC)
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: CW
-X-SquirrelJME-DefinedStandards: dio.dac;;1.0.1

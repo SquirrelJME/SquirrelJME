@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: JC
-X-SquirrelJME-Name: Class File Reader
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-

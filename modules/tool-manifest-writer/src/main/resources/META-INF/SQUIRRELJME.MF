@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: AB
-X-SquirrelJME-Name: Mutable Java Manifest
-X-SquirrelJME-Vendor: Stephanie Gawroriski

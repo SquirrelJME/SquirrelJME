@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: JavaME 8 Device I/O (MMIO)
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Error: DT
-X-SquirrelJME-DefinedStandards: dio.mmio;;1.0.1

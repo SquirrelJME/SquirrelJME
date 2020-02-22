@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Error: BC
-X-SquirrelJME-Name: Jar File Tools
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-
