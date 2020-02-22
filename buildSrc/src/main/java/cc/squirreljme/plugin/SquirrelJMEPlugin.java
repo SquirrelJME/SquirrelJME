@@ -112,6 +112,12 @@ public class SquirrelJMEPlugin
 		nextError.setDescription("Returns the next free error code.");
 		nextError.doLast((Task __task) ->
 			System.out.println(new ErrorListManager(__project).next()));
+		
+		// All SquirrelJME tests depend on TAC to exist!
+		__project.getDependencies().add("testImplementation",
+			__project.getRootProject().findProject(":modules:tac"));
+		__project.getDependencies().add("testImplementation",
+			__project.getRootProject().findProject(":modules:meep-midlet"));
 	}
 	
 	/**
