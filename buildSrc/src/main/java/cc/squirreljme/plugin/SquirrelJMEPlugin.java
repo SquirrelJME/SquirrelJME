@@ -53,7 +53,7 @@ public class SquirrelJMEPlugin
 			.create("runSpringCoat");
 		launchSpring.setGroup("squirreljme");
 		launchSpring.setDescription("Runs via SquirrelJME SpringCoat.");
-		launchSpring.dependsOn(jarTask);
+		launchSpring.dependsOn(jarTask, ":emulators:springcoat-vm:jar");
 		launchSpring.onlyIf((Task __task) ->
 			__isApplication(__project));
 		launchSpring.doLast((Task __task) ->
@@ -73,7 +73,7 @@ public class SquirrelJMEPlugin
 			.create("runSummerCoat");
 		launchSummer.setGroup("squirreljme");
 		launchSummer.setDescription("Runs via SquirrelJME SummerCoat.");
-		launchSummer.dependsOn(buildROM);
+		launchSummer.dependsOn(buildROM, ":emulators:summercoat-vm:jar");
 		launchSpring.onlyIf((Task __task) ->
 			__isApplication(__project));
 		launchSummer.doLast((Task __task) ->
