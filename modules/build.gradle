@@ -1,9 +1,15 @@
+plugins
+{
+	id "de.set.ecj" version "1.4.1" apply false
+}
+
 group = "cc.squirreljme.modules"
 description = "Modules which are a part of SquirrelJME."
 
 // Every sub-project needs SquirrelJME specific pieces
 subprojects
 {
+	//apply plugin: "de.set.ecj"
 	apply plugin: "java"
 	apply plugin: "cc.squirreljme.plugin"
 
