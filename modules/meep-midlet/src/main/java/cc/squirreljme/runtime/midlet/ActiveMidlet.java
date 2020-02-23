@@ -86,13 +86,14 @@ public final class ActiveMidlet
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		// Prevent multiple MIDlet launches
+		// Prevent multiple MIDlet instantiations
 		synchronized (_ACTIVE_LOCK)
 		{
 			// {@squirreljme.error AD02 Only a single MIDlet may be active at
 			// a time.}
 			MIDlet active = _ACTIVE_MIDLET;
-			if (active != null)
+			if (active != null &&
+				!(__m instanceof OverrideActiveMidletRestriction))
 				throw new IllegalStateException("AD02");
 			
 			// Set active midlet

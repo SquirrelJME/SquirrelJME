@@ -66,6 +66,7 @@ More detailed changes:
    * `media-api`
      * Add null media support for: players, and volume control.
    * `meep-midlet`
+     * Allow a multi-threaded
      * Handle Konami's Mobile US games using a special system request.
      * Implement `MIDlet.checkPermission()`.
    * `meep-rms`
