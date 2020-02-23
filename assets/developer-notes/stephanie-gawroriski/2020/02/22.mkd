@@ -1,0 +1,6 @@
+# 2020/02/22
+
+## 17:26
+
+I would say that this is going well, can have more strict control of the
+error codes and making sure that they are all valid!
