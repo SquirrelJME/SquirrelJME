@@ -7,5 +7,7 @@ description = "Base backend for the emulators, this interfaces with Java SE."
 
 dependencies
 {
+	// This is only needed to gain access to the assembly definitions and
+	// such
 	implementation project(":modules:cldc-compact")
 }

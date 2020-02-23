@@ -1,0 +1,19 @@
+// Our tests must be properly configured before they will work
+test
+{
+	// SquirrelJME uses a different test framework, so we cannot rely on
+	// Gradle to correctly pick it up
+	scanForTestClasses = false
+	includes = ["**/*Test.class", "**/Test*.class"]
+
+	// Use TestNG but make sure our custom factory is always picked up
+	// so that tests work properly
+	useTestNG(
+		{ TestNGOptions options ->
+			// Need to specify the suite which contains the factory so that
+			// it will detect all of the tests and run them accordingly
+			options.suiteXmlFiles = [project(":emulators:testng-sim").
+				projectDir.toPath().resolve("src").resolve("main").
+				resolve("resources").resolve("squirreljme.xml").toFile()]
+		})
+}

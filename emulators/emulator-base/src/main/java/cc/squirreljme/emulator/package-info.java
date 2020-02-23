@@ -14,5 +14,5 @@
  * @since 2020/02/17
  */
 
-package cc.squirreljme.squirreljme.emulator;
+package cc.squirreljme.emulator;
 
