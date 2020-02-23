@@ -55,6 +55,10 @@ public class SquirrelJMETest
 			throw new RuntimeException("Failed to run test.", e);
 		}
 		
+		// Print name of test as debug
+		System.err.printf("Running test %s...%n",
+			instance.getClass().getName());
+		
 		// Run the test with no parameters passed
 		TestExecution execution = instance.runExecution();
 		
@@ -62,9 +66,12 @@ public class SquirrelJMETest
 		switch (execution.status)
 		{
 			case SUCCESS:
+				System.err.println(execution.result);
 				break;
 				
 			case FAILED:
+				execution.expected.printComparison(System.err,
+					execution.result);
 				Assert.fail(execution.result.toString());
 				break;
 				
