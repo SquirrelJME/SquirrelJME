@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.JavaMEMidletType
+
+description = "This is a system which interacts with " +
+	"SquirrelJME and is able to launch and execute various tests within " +
+	"the environment automatically."
+
+squirreljme
+{
+	javaDocErrorCode = "AI"
+	swmType = JavaMEMidletType.API
+	swmName = "TAC Runner"
+	swmVendor = "Stephanie Gawroriski"
+	mainClass = "net.multiphasicapps.tac.runner.Main"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:meep-swm")
+}
