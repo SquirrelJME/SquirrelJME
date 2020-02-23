@@ -25,7 +25,7 @@ do
 	for __group in main test
 	do
 		__srcdir="$__projectdir/src/$__group/java"
-		__resdir="$__projectdir/src/$__group/resource"
+		__resdir="$__projectdir/src/$__group/resources"
 
 		# Might not be a directory
 		if [ ! -d "$__srcdir" ]
