@@ -10,11 +10,32 @@
 
 package cc.squirreljme.plugin;
 
+import groovy.lang.Closure;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.FileSystemLocation;
+import org.gradle.api.file.FileTree;
 import org.gradle.api.java.archives.Attributes;
+import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.provider.Provider;
+import org.gradle.api.specs.Spec;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.api.tasks.TaskDependency;
 import org.gradle.jvm.tasks.Jar;
+import org.gradle.language.jvm.tasks.ProcessResources;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Plugin for all SquirrelJME operations that are needed in Gradle in order
@@ -112,6 +133,19 @@ public class SquirrelJMEPlugin
 		nextError.setDescription("Returns the next free error code.");
 		nextError.doLast((Task __task) ->
 			System.out.println(new ErrorListManager(__project).next()));
+		
+		// Generate test resources
+		Task genTestMeta = __project.getTasks()
+			.create("generateTestMetadata");
+		genTestMeta.setGroup("squirreljme");
+		genTestMeta.setDescription("Generates extra test resources.");
+		genTestMeta.doLast((Task __task) ->
+			this.__generateTestMetadata(__project));
+		
+		// Resource processing task
+		Task processTestResources = __project.getTasks().
+			getByName("processTestResources");
+		processTestResources.dependsOn(genTestMeta);
 	}
 	
 	/**
@@ -188,6 +222,79 @@ public class SquirrelJMEPlugin
 			if (!config.definedStandards.isEmpty())
 				attributes.put("X-SquirrelJME-DefinedStandards",
 					__delimate(config.definedStandards, ' '));
+		}
+	}
+	
+	/**
+	 * Generates needed test metadata.
+	 *
+	 * @param __project The project to run.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/23
+	 */
+	private void __generateTestMetadata(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("No project specified.");
+		
+		// Where our resources go
+		Path genResourceRoot = __project.getBuildDir().toPath()
+			.resolve("generated-resources");
+		
+		// Process source files
+		try
+		{
+			// Make sure the directory exists
+			Files.createDirectories(genResourceRoot);
+			
+			// Discovered test
+			List<String> tests = new LinkedList<>();
+			
+			// Walk the file
+			Path srcRoot = __project.getProjectDir().toPath()
+				.resolve("src").resolve("test").resolve("java");
+			Files.walk(srcRoot).forEach(
+				(Path __visit) ->
+				{
+					// Ignore directories
+					if (Files.isDirectory(__visit))
+						return;
+					
+					// Only consider Java source files
+					if (!__visit.toString().endsWith(".java"))
+						return;
+					
+					// Only consider tests of a certain name
+					String fileName = __visit.getFileName().toString();
+					if (!fileName.startsWith("Test") &&
+						!fileName.startsWith("Do"))
+						return;
+					
+					// Store the class name
+					String baseName = srcRoot.relativize(__visit).toString();
+					tests.add(baseName.substring(
+						0, baseName.length() - ".java".length())
+						.replace('\\', '.')
+						.replace('/', '.'));
+				});
+				
+			// Make services directory
+			Path servicesPath = genResourceRoot.resolve("META-INF")
+				.resolve("services");
+			Files.createDirectories(servicesPath);
+			
+			// Write test file
+			Files.write(
+				servicesPath.resolve("net.multiphasicapps.tac.TestInterface"),
+				tests, StandardOpenOption.WRITE, StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(String.format(
+				"Failed to generate metadata for %s.",
+				__project.getName()), e);
 		}
 	}
 	

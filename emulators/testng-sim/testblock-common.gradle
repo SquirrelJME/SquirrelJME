@@ -1,3 +1,14 @@
+sourceSets
+{
+	test
+	{
+		resources
+		{
+			srcDir buildDir.toPath().resolve("generated-resources").toFile()
+		}
+	}
+}
+
 // Our tests must be properly configured before they will work
 test
 {
