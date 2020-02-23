@@ -11,20 +11,14 @@
 package net.multiphasicapps.tac;
 
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import javax.microedition.midlet.MIDlet;
-import net.multiphasicapps.collections.SortedTreeMap;
-import net.multiphasicapps.collections.SortedTreeSet;
+import cc.squirreljme.runtime.midlet.OverrideActiveMidletRestriction;
 import net.multiphasicapps.tool.manifest.JavaManifest;
-import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
 /**
@@ -36,7 +30,7 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
  */
 abstract class __CoreTest__
 	extends MIDlet
-	implements TestInterface
+	implements OverrideActiveMidletRestriction, TestInterface
 {
 	/** {@squirreljme.property test.dump=bool Dump test result manifests?} */
 	public static final String DUMP_ACTUAL =
