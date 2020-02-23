@@ -1,6 +1,7 @@
 // Modules and available platforms
 include "modules"
 include "emulators"
+include "utilities"
 
 // Recursively include all modules
 file(rootProject.projectDir.toPath().resolve("modules"))
@@ -19,5 +20,15 @@ file(rootProject.projectDir.toPath().resolve("emulators"))
 		if (subdir.toPath().resolve("build.gradle").toFile().exists())
 		{
 			include "emulators:" + subdir.name
+		}
+	});
+
+// Recursively include all utilities
+file(rootProject.projectDir.toPath().resolve("utilities"))
+	.eachDir(
+	{ subdir ->
+		if (subdir.toPath().resolve("build.gradle").toFile().exists())
+		{
+			include "utilities:" + subdir.name
 		}
 	});
