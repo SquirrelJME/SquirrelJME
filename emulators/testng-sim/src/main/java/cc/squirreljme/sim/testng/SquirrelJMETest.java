@@ -1,8 +1,8 @@
 package cc.squirreljme.sim.testng;
 
+import net.multiphasicapps.tac.TestExecution;
 import net.multiphasicapps.tac.TestInterface;
-import org.testng.ITestClass;
-import org.testng.ITestNGMethod;
+import org.testng.*;
 import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.ConstructorOrMethod;
@@ -17,7 +17,7 @@ import org.testng.xml.XmlTest;
 public class SquirrelJMETest
 {
 	/** The test class to execute. */
-	protected final Class<? extends TestInterface> testClass;
+	protected final Class<?> testClass;
 	
 	/**
 	 * Initializes the test information.
@@ -26,7 +26,7 @@ public class SquirrelJMETest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/02/23
 	 */
-	public SquirrelJMETest(Class<? extends TestInterface> __test)
+	public SquirrelJMETest(Class<?> __test)
 		throws NullPointerException
 	{
 		if (__test == null)
@@ -43,6 +43,40 @@ public class SquirrelJMETest
 	@Test
 	public void test()
 	{
-		throw new Error("TODO");
+		// Create instance of test
+		TestInterface instance;
+		try
+		{
+			instance = (TestInterface)this.testClass.newInstance();
+		}
+		catch (ClassCastException|InstantiationException|
+			IllegalAccessException e)
+		{
+			throw new RuntimeException("Failed to run test.", e);
+		}
+		
+		// Run the test with no parameters passed
+		TestExecution execution = instance.runExecution();
+		
+		// Depends on the result
+		switch (execution.status)
+		{
+			case SUCCESS:
+				break;
+				
+			case FAILED:
+				Assert.fail(execution.result.toString());
+				break;
+				
+			case TEST_EXCEPTION:
+				throw new TestException("Error in test.",
+					((execution.tossed instanceof Throwable) ?
+						(Throwable)execution.tossed : (Throwable)null));
+			
+			case UNTESTABLE:
+				throw new SkipException("Skipping test.",
+					((execution.tossed instanceof Throwable) ?
+						(Throwable)execution.tossed : (Throwable)null));
+		}
 	}
 }
