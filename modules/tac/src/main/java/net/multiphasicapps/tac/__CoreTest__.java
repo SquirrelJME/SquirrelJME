@@ -36,12 +36,13 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
  */
 abstract class __CoreTest__
 	extends MIDlet
+	implements TestInterface
 {
 	/** {@squirreljme.property test.dump=bool Dump test result manifests?} */
 	public static final String DUMP_ACTUAL =
 		"test.dump";
 	
-	/** Final result of the test. */
+	/** Final result of the test, used during the test. */
 	final TestResultBuilder _runresult =
 		new TestResultBuilder();
 	
@@ -68,6 +69,7 @@ abstract class __CoreTest__
 	 * @throws InvalidTestException If the API level is not met.
 	 * @since 2019/03/14
 	 */
+	@Deprecated
 	public final void checkApiLevel(int __lv)
 		throws InvalidTestException
 	{
@@ -88,7 +90,83 @@ abstract class __CoreTest__
 	}
 	
 	/**
-	 * Runs the specified test using the given main arguments, if any.
+	 * {@inheritDoc}
+	 * @since 2020/02/23
+	 */
+	@Override
+	public final TestExecution runExecution(String... __mainargs)
+	{
+		// Use to name this test
+		Class<?> self = this.getClass();
+		String classname = self.getName();
+		
+		// Decode the expected result
+		TestResult expected = TestResult.loadForClass(self);
+		
+		// Read the inputs for the test
+		Object[] args = this.__parseInput(self, __mainargs);
+		
+		// This is the result of the test
+		TestResultBuilder runresult = this._runresult;
+		
+		// Our test result
+		TestStatus status = null;
+		
+		// Run the test, catch any exception to report it
+		Object thrown = null;
+		try
+		{
+			// Run the test
+			runresult.setReturnValue(this.__runTest(args));
+			runresult.setThrownValue((thrown = new __NoExceptionThrown__()));
+		}
+		
+		// Cannot be tested
+		catch (UntestableException e)
+		{
+			// Cannot be tested so it shall fail
+			status = TestStatus.UNTESTABLE;
+			thrown = e;
+		}
+		
+		// Test failure
+		catch (Throwable t)
+		{
+			// The test parameter is not valid, so whoops!
+			if (t instanceof InvalidTestException)
+			{
+				// Exception was thrown
+				status = TestStatus.TEST_EXCEPTION;
+				thrown = t;
+			}
+			
+			// Normal test which threw a possibly valid exception
+			else
+			{
+				runresult.setReturnValue(new __ExceptionThrown__());
+				runresult.setThrownValue((thrown = t));
+			}
+		}
+		
+		// If the status is not yet known, do a comparison with the results to
+		// see if there is a match
+		TestResult result = runresult.build();
+		if (status == null)
+			status = (expected.equals(result) ? TestStatus.SUCCESS :
+				TestStatus.FAILED);
+		
+		// Store the status of the test that just ran
+		this._status = status;
+		
+		// Return the result
+		return new TestExecution(status, self, expected, result, thrown);
+	}
+	
+	/**
+	 * Runs the specified test using the given main arguments as if it
+	 * were a program to be run, if any.
+	 *
+	 * This method will handle dead-locks and otherwise.
 	 *
 	 * @param __mainargs The main arguments to the test which allow parameters
 	 * to be used accordingly.
@@ -103,27 +181,14 @@ abstract class __CoreTest__
 		DeadlockTimeout dtimeout = new DeadlockTimeout();
 		dtimeout.start();
 		
-		// Use to name this test
-		Class<?> self = this.getClass();
-		String classname = self.getName();
-		
-		// Decode the expected result
-		TestResult expected = TestResult.loadForClass(self);
-		
-		// Read the inputs for the test
-		Object[] args = this.__parseInput(self, __mainargs);
-		
 		// Remember the old output stream because it will be replaced with
 		// stderr, this way when tests run they do not inadvertently output
 		// to standard output. Standard output being printed to will mess up
 		// the test results generated at the end of tac-runner
 		PrintStream oldout = System.out;
 		
-		// This is the result of the test
-		TestResultBuilder runresult = this._runresult;
-		
-		// Run the test, catch any exception to report it
-		Object thrown;
+		// Replace standard output from the test!
+		TestExecution execution;
 		try
 		{
 			// Set the output stream to standard error as noted above
@@ -136,43 +201,8 @@ abstract class __CoreTest__
 				// Ignore, oh well
 			}
 			
-			// Run the test
-			runresult.setReturnValue(this.__runTest(args));
-			runresult.setThrownValue((thrown = new __NoExceptionThrown__()));
-		}
-		
-		// Cannot be tested
-		catch (UntestableException e)
-		{
-			// {@squirreljme.error BU0c Test could not be ran.
-			// (The given test)}
-			System.err.printf("BU0c %s%n", classname);
-			e.printStackTrace(System.err);
-			
-			// Cannot be tested so it shall fail
-			this._status = TestStatus.UNTESTABLE;
-			return;
-		}
-		
-		// Test failure
-		catch (Throwable t)
-		{
-			// The test parameter is not valid, so whoops!
-			if (t instanceof InvalidTestException)
-			{
-				// Exception was thrown
-				this._status = TestStatus.TEST_EXCEPTION;
-				
-				// {@squirreljme.error BU0d The test failed to run properly.
-				// (The given test)}
-				System.err.printf("BU0d %s%n", classname);
-				t.printStackTrace(System.err);
-				return;
-			}
-			
-			// Indicate an exception was thrown
-			runresult.setReturnValue(new __ExceptionThrown__());
-			runresult.setThrownValue((thrown = t));
+			// Execute the test
+			execution = this.runExecution(__mainargs);
 		}
 		finally
 		{
@@ -187,43 +217,54 @@ abstract class __CoreTest__
 			}
 		}
 		
-		// Return actual result
-		TestResult actual = runresult.build();
-		
-		// The test result is exactly the same!
-		boolean passed = expected.equals(actual);
-		if (passed)
-			oldout.printf("%s: PASS %s%n",
-				classname, actual);
-		
-		// Otherwise print information on what has differed within the test
-		// so that bugs may potentially be found
-		else
-		{
-			// Failure notice
-			oldout.printf("%s: FAIL %s%n",
-				classname, actual);
-			
-			// Print comparison on another stream so it is not used in output
-			expected.printComparison(System.err, actual);
-		
-			// Print the throwable stack since this was not expected
-			if (thrown instanceof Throwable)
-				((Throwable)thrown).printStackTrace();
-		}
-		
-		// Set test status
-		this._status = (passed ? TestStatus.SUCCESS : TestStatus.FAILED);
-		
 		// Dump test result
 		try
 		{
 			if (Boolean.getBoolean(DUMP_ACTUAL))
-				actual.writeAsManifest(System.err);
+				execution.result.writeAsManifest(System.err);
 		}
 		catch (IOException|SecurityException e)
 		{
+			// Ignore, could not dump it?
 		}
+		
+		// Set output according to the status
+		switch (execution.status)
+		{
+				// Test passed
+			case SUCCESS:
+				oldout.printf("%s: PASS %s%n",
+					execution.testClass, execution.result);
+				break;
+			
+				// Failed test, print results
+			case FAILED:
+				// Failure notice
+				oldout.printf("%s: FAIL %s%n",
+					execution.testClass, execution.result);
+				
+				// Print comparison to show what failed
+				execution.expected.printComparison(System.err,
+					execution.result);
+				break;
+			
+			case TEST_EXCEPTION:
+				// {@squirreljme.error BU0d The test failed to run properly.
+				// (The given test)}
+				System.err.printf("BU0d %s%n", execution.testClass);
+				break;
+			
+			case UNTESTABLE:
+				// {@squirreljme.error BU0c Test could not be ran
+				// potentially because a condition was not met. (Test class)}
+				System.err.printf("BU0c %s%n", execution.testClass);
+				break;
+		}
+		
+		// Print traces of unexpected exceptions
+		if (execution.status != TestStatus.FAILED &&
+			execution.tossed instanceof Throwable)
+			((Throwable)execution.tossed).printStackTrace();
 		
 		// Stop the watchdog so we do not exit
 		dtimeout.expire();

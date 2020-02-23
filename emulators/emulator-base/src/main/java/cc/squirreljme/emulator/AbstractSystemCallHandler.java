@@ -1,4 +1,4 @@
-package cc.squirreljme.squirreljme.emulator;
+package cc.squirreljme.emulator;
 
 /**
  * This class handles system calls.

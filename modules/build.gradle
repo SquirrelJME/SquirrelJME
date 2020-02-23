@@ -11,6 +11,7 @@ subprojects
 {
 	//apply plugin: "de.set.ecj"
 	apply plugin: "java"
+	apply plugin: "java-test-fixtures"
 	apply plugin: "cc.squirreljme.plugin"
 
 	// Configure the compiler
@@ -37,6 +38,10 @@ subprojects
 			"squirreljme.syscallparam",
 			"squirreljme.syscallreturn" ]
 	}
+
+	// Enable SquirrelJME Tests
+	apply from: project.rootProject.findProject(":emulators:testng-sim").
+		projectDir.toPath().resolve("testblock.gradle").toFile()
 }
 
 // Properties for every sub-project, except for cldc-compact as it is special
@@ -54,10 +59,6 @@ configure(subprojects
 		compileJava.options.bootstrapClasspath = project.objects.
 			fileCollection().from(cldcCompactProject.buildDir.toPath().
 			resolve("classes").resolve("java").resolve("main")).getAsFileTree()
-
-		// Copy to tests
-		compileTestJava.options.bootstrapClasspath =
-			compileJava.options.bootstrapClasspath
 
 		// Copy to JavaDoc
 		javadoc.options.bootClasspath = compileJava.options.bootstrapClasspath
