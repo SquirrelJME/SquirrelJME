@@ -132,6 +132,10 @@ abstract class __CoreTest__
 		// Test failure
 		catch (Throwable t)
 		{
+			// Errors are bad, stop testing and just fail here
+			if (t instanceof Error)
+				throw (Error)t;
+			
 			// The test parameter is not valid, so whoops!
 			if (t instanceof InvalidTestException)
 			{
