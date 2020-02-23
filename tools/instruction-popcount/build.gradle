@@ -1,1 +1,13 @@
+plugins
+{
+	id "java"
+	id "application"
+}
 
+description = "This goes through every library within " +
+	"SquirrelJME and counts all of the instructions which are used."
+mainClassName = "dev.shadowtail.javapopcount.Main"
+
+dependencies
+{
+}

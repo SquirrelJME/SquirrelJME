@@ -1,1 +1,13 @@
+plugins
+{
+	id "java"
+	id "application"
+}
 
+description = "Text to PBM"
+mainClassName = "dev.shadowtail.txttopbm.Main"
+
+dependencies
+{
+	implementation project(":modules:midp-lcdui")
+}
