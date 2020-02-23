@@ -34,6 +34,10 @@ public class SquirrelJMETestFactory
 	public Object[] createInstance(ITestContext __context)
 		throws Exception
 	{
+		// Collect and drop bindings
+		JNANativeBind.bind();
+		
+		// Collect tests
 		Collection<Object> tests = new LinkedList<>();
 		
 		// The list of tests hides in the services file

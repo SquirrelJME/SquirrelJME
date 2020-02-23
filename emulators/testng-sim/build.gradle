@@ -14,7 +14,10 @@ description = "Simulator for SquirrelJME so that it may run tests with TestNG."
 dependencies
 {
 	implementation "org.testng:testng:7.1.0"
+	implementation "net.java.dev.jna:jna:5.5.0"
+	implementation "net.java.dev.jna:jna-platform:5.5.0"
 
+	implementation project(":modules:cldc-compact")
 	implementation project(":modules:tac")
 	implementation project(":modules:meep-midlet")
 }

@@ -1,0 +1,118 @@
+package cc.squirreljme.sim.testng;
+
+import cc.squirreljme.jvm.Assembly;
+import com.sun.jna.*;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Binds native methods.
+ *
+ * @since 2020/02/23
+ */
+public class JNANativeBind
+{
+	/** Has this been bound yet? */
+	private static volatile boolean _BOUND;
+	
+	/**
+	 * Forces binding on initialization.
+	 *
+	 * @since 2020/02/23
+	 */
+	static
+	{
+		bind();
+	}
+	
+	/**
+	 * Binds native methods.
+	 *
+	 * @since 2020/02/23
+	 */
+	public static void bind()
+	{
+		if (_BOUND)
+			return;
+		
+		// Setup options accordingly
+		Map<String, Object> options = new HashMap<>();
+		options.put(Library.OPTION_ALLOW_OBJECTS,
+			true);
+		options.put(Library.OPTION_INVOCATION_MAPPER,
+			new __InvocationMapper__());
+		options.put(Library.OPTION_FUNCTION_MAPPER,
+			new __FunctionMapper__());
+		
+		// Just load the C library with our mapper
+		NativeLibrary lib = NativeLibrary.getInstance(
+			(Platform.isWindows() ? "msvcrt" : "c"), options);
+		
+		// Register native assembly support
+		Native.register(Assembly.class, lib);
+		
+		// Now is bound
+		_BOUND = true;
+	}
+	
+	/**
+	 * Proxy handler.
+	 *
+	 * @param __proxy The proxy to access.
+	 * @param __target The target method.
+	 * @param __args The arguments to call.
+	 * @since 2020/02/23
+	 */
+	private static Object __proxy(Object __proxy, Method __target,
+		Object... __args)
+	{
+		System.err.printf("Proxied %s%n", __target);
+		return null;
+	}
+	
+	/**
+	 * Maps functions.
+	 *
+	 * @since 2020/02/23
+	 */
+	private static final class __FunctionMapper__
+		implements FunctionMapper
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/02/23
+		 */
+		@Override
+		public String getFunctionName(NativeLibrary library, Method method)
+		{
+			// Map to some function which hopefully will never be called
+			return "putchar";
+		}
+	}
+	
+	/**
+	 * Invocation mapper.
+	 *
+	 * @since 2020/02/23
+	 */
+	private static final class __InvocationMapper__
+		implements InvocationMapper
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/02/23
+		 */
+		@Override
+		public InvocationHandler getInvocationHandler(
+			NativeLibrary __lib, Method __method)
+		{
+			System.err.printf(">>> Mapped %s -> %s%n", __lib.getName(),
+				__method);
+			
+			return JNANativeBind::__proxy;
+		}
+	}
+}
