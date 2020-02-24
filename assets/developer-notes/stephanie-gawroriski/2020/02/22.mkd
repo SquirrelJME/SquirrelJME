@@ -4,3 +4,10 @@
 
 I would say that this is going well, can have more strict control of the
 error codes and making sure that they are all valid!
+
+## 18:27
+
+Probably to get testing working with my custom test framework, I am going
+to need to some kind of source-code regeneration or otherwise. Not too
+sure how to support running tests from IntelliJ and then SpringCoat and
+SummerCoat.

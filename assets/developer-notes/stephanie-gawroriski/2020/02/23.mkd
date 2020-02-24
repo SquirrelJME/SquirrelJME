@@ -1,0 +1,18 @@
+# 2020/02/23
+
+## 06:04
+
+Need to figure out how to get JUnit testing working and such, maybe I can use
+an annotation processor or otherwise some kind of rewrite?
+
+## 09:49
+
+Cannot seem to figure out how to replace the class names for testing so I am
+just going to dynamically create and inject the classes at run-time just so
+I can have more sane test names and such? Or maybe just modify a test
+accordingly.
+
+## 15:37
+
+I believe that the non-source files are not being detected because they are in
+the sources and not resources.
