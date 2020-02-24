@@ -1,0 +1,6 @@
+plugins
+{
+	id "cpp-library"
+}
+
+description = "Native C++ library for SquirrelJME's TestNG Simulation"

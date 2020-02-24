@@ -16,6 +16,9 @@ test
 	// Gradle to correctly pick it up
 	scanForTestClasses = false
 	includes = ["**/*Test.class", "**/Test*.class"]
+	
+	// Make the standard streams always show
+	testLogging.showStandardStreams = true
 
 	// Use TestNG but make sure our custom factory is always picked up
 	// so that tests work properly

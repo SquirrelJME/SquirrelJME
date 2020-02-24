@@ -44,12 +44,12 @@ public class JNANativeBind
 			true);
 		options.put(Library.OPTION_INVOCATION_MAPPER,
 			new __InvocationMapper__());
-		options.put(Library.OPTION_FUNCTION_MAPPER,
-			new __FunctionMapper__());
+		/*options.put(Library.OPTION_FUNCTION_MAPPER,
+			new __FunctionMapper__());*/
 		
 		// Just load the C library with our mapper
-		NativeLibrary lib = NativeLibrary.getInstance(
-			(Platform.isWindows() ? "msvcrt" : "c"), options);
+		String libname = (Platform.isWindows() ? "msvcrt" : "c");
+		NativeLibrary lib = NativeLibrary.getProcess(options);
 		
 		// Register native assembly support
 		Native.register(Assembly.class, lib);
@@ -69,8 +69,12 @@ public class JNANativeBind
 	private static Object __proxy(Object __proxy, Method __target,
 		Object... __args)
 	{
-		System.err.printf("Proxied %s%n", __target);
-		return null;
+		switch (__target.getName())
+		{
+			default:
+				throw new IllegalArgumentException(
+					String.format("No proxy defined for %s.", __target));
+		}
 	}
 	
 	/**
