@@ -37,9 +37,37 @@ public final class Assembly
 	 * @param __o The object to get the length of.
 	 * @return The length of the array, will return a negative value if not
 	 * an array.
+	 * @since 2020/02/23
+	 */
+	public static native int arrayLength(int __o);
+	
+	/**
+	 * Returns the array length of the given object.
+	 *
+	 * @param __o The object to get the length of.
+	 * @return The length of the array, will return a negative value if not
+	 * an array.
 	 * @since 2019/05/24
 	 */
 	public static native int arrayLength(Object __o);
+	
+	/**
+	 * Sets the array length of an array.
+	 *
+	 * @param __o The object to set.
+	 * @param __l The length to set.
+	 * @since 2020/02/23
+	 */
+	public static native void arrayLengthSet(int __o, int __l);
+	
+	/**
+	 * Sets the array length of an array.
+	 *
+	 * @param __o The object to set.
+	 * @param __l The length to set.
+	 * @since 2020/02/23
+	 */
+	public static native void arrayLengthSet(Object __o, int __l);
 	
 	/**
 	 * Atomic comparison and set.
@@ -699,6 +727,78 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native void memWriteShort(int __p, int __o, int __v);
+	
+	/**
+	 * Gets the ClassInfo of an object.
+	 *
+	 * @param __o The object to read from.
+	 * @return The resulting class info.
+	 * @since 2020/02/23
+	 */
+	public static native int objectGetClass(int __o);
+	
+	/**
+	 * Gets the ClassInfo of an object.
+	 *
+	 * @param __o The object to read from.
+	 * @return The resulting class info.
+	 * @since 2020/02/23
+	 */
+	public static native int objectGetClass(Object __o);
+	
+	/**
+	 * Gets the ClassInfo of an object.
+	 *
+	 * @param __o The object to read from.
+	 * @return The resulting class info.
+	 * @since 2020/02/23
+	 */
+	public static native ClassInfo objectGetClassInfo(int __o);
+	
+	/**
+	 * Gets the ClassInfo of an object.
+	 *
+	 * @param __o The object to read from.
+	 * @return The resulting class info.
+	 * @since 2020/02/23
+	 */
+	public static native ClassInfo objectGetClassInfo(Object __o);
+	
+	/**
+	 * Sets the ClassInfo of an object.
+	 *
+	 * @param __o The object to set the class of.
+	 * @param __v The class info to set.
+	 * @since 2020/02/23
+	 */
+	public static native void objectSetClass(int __o, int __v);
+	
+	/**
+	 * Sets the ClassInfo of an object.
+	 *
+	 * @param __o The object to set the class of.
+	 * @param __v The class info to set.
+	 * @since 2020/02/23
+	 */
+	public static native void objectSetClass(Object __o, int __v);
+	
+	/**
+	 * Sets the ClassInfo of an object.
+	 *
+	 * @param __o The object to set the class of.
+	 * @param __v The class info to set.
+	 * @since 2020/02/23
+	 */
+	public static native void objectSetClass(int __o, ClassInfo __v);
+	
+	/**
+	 * Sets the ClassInfo of an object.
+	 *
+	 * @param __o The object to set the class of.
+	 * @param __v The class info to set.
+	 * @since 2020/02/23
+	 */
+	public static native void objectSetClass(Object __o, ClassInfo __v);
 	
 	/**
 	 * Used to convert an object to a pointer.
