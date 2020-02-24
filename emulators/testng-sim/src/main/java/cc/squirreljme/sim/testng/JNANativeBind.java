@@ -38,18 +38,16 @@ public class JNANativeBind
 		if (_BOUND)
 			return;
 		
-		// Setup options accordingly
+		// Make sure objects can be used because lots of the helper methods
+		// use these!
 		Map<String, Object> options = new HashMap<>();
 		options.put(Library.OPTION_ALLOW_OBJECTS,
 			true);
-		options.put(Library.OPTION_INVOCATION_MAPPER,
-			new __InvocationMapper__());
-		/*options.put(Library.OPTION_FUNCTION_MAPPER,
-			new __FunctionMapper__());*/
 		
-		// Just load the C library with our mapper
-		String libname = (Platform.isWindows() ? "msvcrt" : "c");
-		NativeLibrary lib = NativeLibrary.getProcess(options);
+		// Load our library
+		NativeLibrary lib = NativeLibrary.getInstance(
+			"/testng-sim-native.nl",
+			options);
 		
 		// Register native assembly support
 		Native.register(Assembly.class, lib);
