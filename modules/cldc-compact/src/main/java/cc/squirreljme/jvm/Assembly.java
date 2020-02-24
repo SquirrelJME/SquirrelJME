@@ -35,7 +35,8 @@ public final class Assembly
 	 * Returns the array length of the given object.
 	 *
 	 * @param __o The object to get the length of.
-	 * @return The length of the array.
+	 * @return The length of the array, will return a negative value if not
+	 * an array.
 	 * @since 2019/05/24
 	 */
 	public static native int arrayLength(Object __o);

@@ -13,8 +13,7 @@ description = "Simulator for SquirrelJME so that it may run tests with TestNG."
 
 dependencies
 {
-	// We need the native library for JNI
-	compileOnly project(":emulators:testng-sim-native")
+	runtimeOnly project(":emulators:testng-sim-native")
 
 	implementation "org.testng:testng:7.1.0"
 	implementation "net.java.dev.jna:jna:5.5.0"

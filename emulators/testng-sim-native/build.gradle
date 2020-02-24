@@ -1,6 +1,17 @@
 plugins
 {
 	id "cpp-library"
+	id "java-library"
 }
 
 description = "Native C++ library for SquirrelJME's TestNG Simulation"
+
+jar {
+	dependsOn "assembleRelease"
+
+	includes = ["*.dll", "*.so", "*.dylib"]
+
+	rename "^.*\$", "testng-sim-native.nl"
+	from buildDir.toPath().resolve("lib").resolve("main").
+		resolve("release").toFile()
+}
