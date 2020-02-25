@@ -18,19 +18,8 @@ extern "C"
 /*****************************************************************************/
 /*****************************************************************************/
 
-static jint CAST_OBJECT_TO_INT(jobject object)
-{
-	fprintf(stderr, "Operation CAST_OBJECT_TO_INT is DANGEROUS!");
-
-	return (jint)((uintptr_t)object);
-}
-
-static jobject CAST_INT_TO_OBJECT(jint object)
-{
-	fprintf(stderr, "Operation CAST_INT_TO_OBJECT is DANGEROUS!");
-
-	return (jobject)((uintptr_t)object);
-}
+#define CAST_OBJECT_TO_LONG(v) NOT YET
+#define CAST_LONG_TO_OBJECT(v) NOT YET
 
 static jint javaIsInstance(JNIEnv* env, jobject object, const char* name)
 {
@@ -56,11 +45,11 @@ JNIEXPORT jint JNICALL JNI_OnLoad
 	return JNI_VERSION_1_6;
 }
 
-JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLength__I
-	(JNIEnv* env, jclass classy, jint object)
+JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLength__J
+	(JNIEnv* env, jclass classy, jlong object)
 {
 	return Java_cc_squirreljme_jvm_Assembly_arrayLength__Ljava_lang_Object_2(env,
-		classy, CAST_INT_TO_OBJECT(object));
+		classy, CAST_LONG_TO_OBJECT(object));
 }
 
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLength__Ljava_lang_Object_2
