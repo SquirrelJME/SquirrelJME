@@ -277,8 +277,10 @@ public final class UIState
 		char[] chars = (__s == null ? "SquirrelJME" : __s).toCharArray();
 		
 		// Tell the framebuffer to set the title as needed
+		long pointer = Assembly.objectToPointer(chars);
 		Assembly.sysCall(SystemCallIndex.FRAMEBUFFER,
-			Framebuffer.CONTROL_SET_TITLE, Assembly.objectToPointer(chars));
+			Framebuffer.CONTROL_SET_TITLE,
+			Assembly.longUnpackHigh(pointer), Assembly.longUnpackLow(pointer));
 		
 		// Touch
 		if (chars.length > 0)

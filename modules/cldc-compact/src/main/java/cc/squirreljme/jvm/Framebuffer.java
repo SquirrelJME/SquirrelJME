@@ -160,8 +160,8 @@ public interface Framebuffer
 	 *
 	 * @squirreljme.syscallparam 1 The graphics function.
 	 * @squirreljme.syscallparam ... Parameters to the function.
-	 * @squirreljme.syscallreturn A value that is according to the invoked function, if it is
-	 * supported or possible.
+	 * @squirreljme.syscallreturn A value that is according to the invoked
+	 * function, if it is supported or possible.
 	 * @since 2020/01/10
 	 */
 	public static final byte CONTROL_ACCEL_FUNC_INVOKE =
@@ -174,8 +174,8 @@ public interface Framebuffer
 	 * @squirreljme.syscallparam 2 The Y coordinate.
 	 * @squirreljme.syscallparam 3 The width.
 	 * @squirreljme.syscallparam 4 The height.
-	 * @squirreljme.syscallreturn Returns {@code 0} if the repaint was not queued and it must be
-	 * handled by the code running the application, 
+	 * @squirreljme.syscallreturn Returns {@code 0} if the repaint was not
+	 * queued and it must be handled by the code running the application,
 	 * @since 2020/01/15
 	 */
 	public static final byte CONTROL_REPAINT_REQUEST =
@@ -184,7 +184,8 @@ public interface Framebuffer
 	/**
 	 * Sets the title of the framebuffer if applicable.
 	 *
-	 * @squirreljme.syscallparam 1 Character array buffer pointer.
+	 * @squirreljme.syscallparam 1 Char buffer pointer (high).
+	 * @squirreljme.syscallparam 2 Char buffer pointer (low).
 	 * @since 2020/01/15
 	 */
 	public static final byte CONTROL_SET_TITLE =
