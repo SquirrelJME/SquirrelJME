@@ -26,7 +26,7 @@ test
 		{ TestNGOptions options ->
 			// Need to specify the suite which contains the factory so that
 			// it will detect all of the tests and run them accordingly
-			options.suiteXmlFiles = [project(":emulators:testng-sim").
+			options.suiteXmlFiles = [project(":emulators:emulator-base").
 				projectDir.toPath().resolve("src").resolve("main").
 				resolve("resources").resolve("squirreljme.xml").toFile()]
 		})

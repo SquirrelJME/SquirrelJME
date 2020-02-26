@@ -1,6 +1,6 @@
 plugins
 {
-	id "java"
+	id "java-library"
 }
 
 description = "This is a SpringCoat virtual machine which " +
@@ -9,7 +9,7 @@ description = "This is a SpringCoat virtual machine which " +
 
 dependencies
 {
-	implementation project(":emulators:emulator-base")
+	api project(":emulators:emulator-base")
 
 	implementation project(":modules:cldc-compact")
 	implementation project(":modules:tool-classfile")
