@@ -18,8 +18,8 @@ extern "C"
 /*****************************************************************************/
 /*****************************************************************************/
 
-#define CAST_OBJECT_TO_LONG(v) NOT YET
-#define CAST_LONG_TO_OBJECT(v) NOT YET
+#define CAST_OBJECT_TO_LONG(v) ((jlong)((uintptr_t)(v)))
+#define CAST_LONG_TO_OBJECT(v) ((jobject)(uintptr_t)(v))
 
 static jint javaIsInstance(JNIEnv* env, jobject object, const char* name)
 {

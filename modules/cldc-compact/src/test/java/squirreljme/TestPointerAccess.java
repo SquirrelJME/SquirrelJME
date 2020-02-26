@@ -31,7 +31,7 @@ public class TestPointerAccess
 		Object object = new Object();
 		
 		// This object cannot be null
-		int pointer = Assembly.objectToPointer(object);
+		long pointer = Assembly.objectToPointer(object);
 		this.secondary("otpnotnull", pointer != 0); 
 		
 		// Reversing this operation should return the original object
@@ -43,8 +43,8 @@ public class TestPointerAccess
 		this.secondary("zeroisnull", ozero == null);
 		
 		// The null object must be zero
-		int pnull = Assembly.objectToPointer(null);
-		this.secondary("nulliszero", pnull == 0);
+		long pnull = Assembly.objectToPointer(null);
+		this.secondary("nulliszero", pnull == 0L);
 	}
 }
 
