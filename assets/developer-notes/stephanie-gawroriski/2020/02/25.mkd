@@ -1,0 +1,14 @@
+# 2020/02/25
+
+## 19:06
+
+What I really want to do is merge the simnative stuff into a single module
+so that it is not in two places, although `cpp-library` does not seem to
+be compatible with `java`. Also I will need to use JavaExec to get the
+right name for the simulator library.
+
+## 22:55
+
+I think I get why this is not working with JNI, because this is using a purely
+native setup with straight through arguments and such. What I think I need to
+do is not have this like it is JNI.
