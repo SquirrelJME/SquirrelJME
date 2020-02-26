@@ -3,6 +3,7 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.Assembly;
 import com.sun.jna.*;
 import com.sun.jna.win32.StdCallFunctionMapper;
+import com.sun.jna.win32.StdCallLibrary;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -47,6 +48,11 @@ public class JNANativeBind
 			true);
 		options.put(Library.OPTION_FUNCTION_MAPPER,
 			new JNIFunctionMapper());
+		
+		// If we are on Windows our library is using STDCALL
+		if (false && Platform.isWindows())
+			options.put(Library.OPTION_CALLING_CONVENTION,
+				StdCallLibrary.STDCALL_CONVENTION);
 		
 		// Search in the nowhere and root paths so we have a better chance of
 		// finding our library
