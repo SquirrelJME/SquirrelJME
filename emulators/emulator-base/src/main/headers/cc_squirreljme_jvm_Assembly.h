@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLength__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -21,7 +21,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLength__J
  * Signature: (Ljava/lang/Object;)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLength__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -29,7 +29,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLength__Ljava_lang_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLengthSet__JI
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLengthSet__JI
  * Signature: (Ljava/lang/Object;I)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLengthSet__Ljava_lang_Object_2I
-  (JNIEnv *, jclass, jobject, jint);
+	(JNIEnv* env, jclass classy, jobject, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -45,7 +45,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLengthSet__Ljava_la
  * Signature: (IIJ)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_atomicCompareGetAndSet
-  (JNIEnv *, jclass, jint, jint, jlong);
+	(JNIEnv* env, jclass classy, jint, jint, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -53,7 +53,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_atomicCompareGetAndSet
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_atomicDecrementAndGet
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -61,7 +61,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_atomicDecrementAndGet
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_atomicIncrement
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -69,7 +69,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_atomicIncrement
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_breakpoint
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -77,7 +77,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_breakpoint
  * Signature: ()Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfBoolean
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -85,7 +85,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfBoolean
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfBooleanPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -93,7 +93,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfBooleanPoint
  * Signature: ()Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfByte
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -101,7 +101,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfByte
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfBytePointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -109,7 +109,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfBytePointer
  * Signature: ()Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfCharacter
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -117,7 +117,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfCharacter
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfCharacterPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -125,7 +125,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfCharacterPoi
  * Signature: ()Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfDouble
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -133,7 +133,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfDouble
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfDoublePointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -141,7 +141,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfDoublePointe
  * Signature: ()Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfFloat
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -149,7 +149,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfFloat
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfFloatPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -157,7 +157,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfFloatPointer
  * Signature: ()Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfInteger
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -165,7 +165,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfInteger
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfIntegerPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -173,7 +173,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfIntegerPoint
  * Signature: ()Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfLong
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -181,7 +181,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfLong
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfLongPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -189,7 +189,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfLongPointer
  * Signature: ()Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfShort
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -197,7 +197,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfShort
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfShortPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -205,7 +205,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_classInfoOfShortPointer
  * Signature: (II)D
  */
 JNIEXPORT jdouble JNICALL Java_cc_squirreljme_jvm_Assembly_doublePack
-  (JNIEnv *, jclass, jint, jint);
+	(JNIEnv* env, jclass classy, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -213,7 +213,7 @@ JNIEXPORT jdouble JNICALL Java_cc_squirreljme_jvm_Assembly_doublePack
  * Signature: (D)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_doubleToRawLongBits
-  (JNIEnv *, jclass, jdouble);
+	(JNIEnv* env, jclass classy, jdouble);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -221,7 +221,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_doubleToRawLongBits
  * Signature: (D)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_doubleUnpackHigh
-  (JNIEnv *, jclass, jdouble);
+	(JNIEnv* env, jclass classy, jdouble);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -229,7 +229,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_doubleUnpackHigh
  * Signature: (D)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_doubleUnpackLow
-  (JNIEnv *, jclass, jdouble);
+	(JNIEnv* env, jclass classy, jdouble);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -237,7 +237,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_doubleUnpackLow
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_exceptionHandle
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -245,7 +245,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_exceptionHandle
  * Signature: (F)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_floatToRawIntBits
-  (JNIEnv *, jclass, jfloat);
+	(JNIEnv* env, jclass classy, jfloat);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -253,7 +253,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_floatToRawIntBits
  * Signature: (I)F
  */
 JNIEXPORT jfloat JNICALL Java_cc_squirreljme_jvm_Assembly_intBitsToFloat
-  (JNIEnv *, jclass, jint);
+	(JNIEnv* env, jclass classy, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -261,7 +261,7 @@ JNIEXPORT jfloat JNICALL Java_cc_squirreljme_jvm_Assembly_intBitsToFloat
  * Signature: (JJ)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJ
-  (JNIEnv *, jclass, jlong, jlong);
+	(JNIEnv* env, jclass classy, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -269,7 +269,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJ
  * Signature: (JJI)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJI
-  (JNIEnv *, jclass, jlong, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -277,7 +277,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJI
  * Signature: (JJII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -285,7 +285,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJII
  * Signature: (JJIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -293,7 +293,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIII
  * Signature: (JJIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -301,7 +301,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIII
  * Signature: (JJIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -309,7 +309,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIIII
  * Signature: (JJIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -317,7 +317,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIIIII
  * Signature: (JJIIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -325,7 +325,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIIIIII
  * Signature: (JJIIIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -333,7 +333,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_invoke__JJIIIIIIII
  * Signature: (JJ)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJ
-  (JNIEnv *, jclass, jlong, jlong);
+	(JNIEnv* env, jclass classy, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -341,7 +341,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJ
  * Signature: (JJI)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJI
-  (JNIEnv *, jclass, jlong, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -349,7 +349,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJI
  * Signature: (JJII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -357,7 +357,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJII
  * Signature: (JJIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -365,7 +365,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIII
  * Signature: (JJIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -373,7 +373,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIII
  * Signature: (JJIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -381,7 +381,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIIII
  * Signature: (JJIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -389,7 +389,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIIIII
  * Signature: (JJIIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -397,7 +397,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIIIIII
  * Signature: (JJIIIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -405,7 +405,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_invokeV__JJIIIIIIII
  * Signature: (JJ)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJ
-  (JNIEnv *, jclass, jlong, jlong);
+	(JNIEnv* env, jclass classy, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -413,7 +413,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJ
  * Signature: (JJI)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJI
-  (JNIEnv *, jclass, jlong, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -421,7 +421,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJI
  * Signature: (JJII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -429,7 +429,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJII
  * Signature: (JJIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -437,7 +437,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIII
  * Signature: (JJIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -445,7 +445,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIII
  * Signature: (JJIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -453,7 +453,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIIII
  * Signature: (JJIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -461,7 +461,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIIIII
  * Signature: (JJIIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -469,7 +469,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIIIIII
  * Signature: (JJIIIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIIIIIII
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jlong, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -477,7 +477,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_invokeVL__JJIIIIIIII
  * Signature: (J)D
  */
 JNIEXPORT jdouble JNICALL Java_cc_squirreljme_jvm_Assembly_longBitsToDouble
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -485,7 +485,7 @@ JNIEXPORT jdouble JNICALL Java_cc_squirreljme_jvm_Assembly_longBitsToDouble
  * Signature: (II)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_longPack
-  (JNIEnv *, jclass, jint, jint);
+	(JNIEnv* env, jclass classy, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -493,7 +493,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_longPack
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_longUnpackHigh
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -501,7 +501,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_longUnpackHigh
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_longUnpackLow
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -509,7 +509,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_longUnpackLow
  * Signature: (JI)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadByte
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -517,7 +517,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadByte
  * Signature: (JI)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadInt
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -525,7 +525,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadInt
  * Signature: (JI)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadJavaInt
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -533,7 +533,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadJavaInt
  * Signature: (JI)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_memReadJavaLong
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -541,7 +541,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_memReadJavaLong
  * Signature: (JI)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadJavaShort
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -549,7 +549,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadJavaShort
  * Signature: (JI)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_memReadPointer
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -557,7 +557,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_memReadPointer
  * Signature: (JI)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadShort
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -565,7 +565,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_memReadShort
  * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteByte
-  (JNIEnv *, jclass, jlong, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -573,7 +573,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteByte
  * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteInt
-  (JNIEnv *, jclass, jlong, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -581,7 +581,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteInt
  * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteJavaInt
-  (JNIEnv *, jclass, jlong, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -589,7 +589,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteJavaInt
  * Signature: (JIJ)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteJavaLong
-  (JNIEnv *, jclass, jlong, jint, jlong);
+	(JNIEnv* env, jclass classy, jlong, jint, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -597,7 +597,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteJavaLong
  * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteJavaShort
-  (JNIEnv *, jclass, jlong, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -605,7 +605,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteJavaShort
  * Signature: (JIJ)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWritePointer
-  (JNIEnv *, jclass, jlong, jint, jlong);
+	(JNIEnv* env, jclass classy, jlong, jint, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -613,7 +613,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWritePointer
  * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteShort
-  (JNIEnv *, jclass, jlong, jint, jint);
+	(JNIEnv* env, jclass classy, jlong, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -621,7 +621,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_memWriteShort
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountDecrementAndGetAtomic__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -629,7 +629,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountDecrementAnd
  * Signature: (Ljava/lang/Object;)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountDecrementAndGetAtomic__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -637,7 +637,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountDecrementAnd
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountIncrementAndGetAtomic__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -645,7 +645,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountIncrementAnd
  * Signature: (Ljava/lang/Object;)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountIncrementAndGetAtomic__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -653,7 +653,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountIncrementAnd
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountGetAtomic__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -661,7 +661,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountGetAtomic__J
  * Signature: (Ljava/lang/Object;)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountGetAtomic__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -669,7 +669,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountGetAtomic__L
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountSetAtomic__JI
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -677,7 +677,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountSetAtomic__J
  * Signature: (Ljava/lang/Object;I)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountSetAtomic__Ljava_lang_Object_2I
-  (JNIEnv *, jclass, jobject, jint);
+	(JNIEnv* env, jclass classy, jobject, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -685,7 +685,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorCountSetAtomic__L
  * Signature: (JJJ)Ljava/lang/Thread;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetAndSetAtomic__JJJ
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+	(JNIEnv* env, jclass classy, jlong, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -693,7 +693,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGe
  * Signature: (Ljava/lang/Object;JJ)Ljava/lang/Thread;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetAndSetAtomic__Ljava_lang_Object_2JJ
-  (JNIEnv *, jclass, jobject, jlong, jlong);
+	(JNIEnv* env, jclass classy, jobject, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -701,7 +701,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGe
  * Signature: (JLjava/lang/Thread;Ljava/lang/Thread;)Ljava/lang/Thread;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetAndSetAtomic__JLjava_lang_Thread_2Ljava_lang_Thread_2
-  (JNIEnv *, jclass, jlong, jobject, jobject);
+	(JNIEnv* env, jclass classy, jlong, jobject, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -709,7 +709,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGe
  * Signature: (Ljava/lang/Object;Ljava/lang/Thread;Ljava/lang/Thread;)Ljava/lang/Thread;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetAndSetAtomic__Ljava_lang_Object_2Ljava_lang_Thread_2Ljava_lang_Thread_2
-  (JNIEnv *, jclass, jobject, jobject, jobject);
+	(JNIEnv* env, jclass classy, jobject, jobject, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -717,7 +717,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGe
  * Signature: (JJJ)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetAndSetAtomicPointer__JJJ
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+	(JNIEnv* env, jclass classy, jlong, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -725,7 +725,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetA
  * Signature: (Ljava/lang/Object;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetAndSetAtomicPointer__Ljava_lang_Object_2JJ
-  (JNIEnv *, jclass, jobject, jlong, jlong);
+	(JNIEnv* env, jclass classy, jobject, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -733,7 +733,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetA
  * Signature: (JLjava/lang/Thread;Ljava/lang/Thread;)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetAndSetAtomicPointer__JLjava_lang_Thread_2Ljava_lang_Thread_2
-  (JNIEnv *, jclass, jlong, jobject, jobject);
+	(JNIEnv* env, jclass classy, jlong, jobject, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -741,7 +741,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetA
  * Signature: (Ljava/lang/Object;Ljava/lang/Thread;Ljava/lang/Thread;)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetAndSetAtomicPointer__Ljava_lang_Object_2Ljava_lang_Thread_2Ljava_lang_Thread_2
-  (JNIEnv *, jclass, jobject, jobject, jobject);
+	(JNIEnv* env, jclass classy, jobject, jobject, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -749,7 +749,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerCompareGetA
  * Signature: (J)Ljava/lang/Thread;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerGetAtomic__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -757,7 +757,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerGetAtomic
  * Signature: (Ljava/lang/Object;)Ljava/lang/Thread;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerGetAtomic__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -765,7 +765,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerGetAtomic
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerGetPointerAtomic__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -773,7 +773,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerGetPointerA
  * Signature: (Ljava/lang/Object;)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerGetPointerAtomic__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -781,7 +781,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerGetPointerA
  * Signature: (JJ)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerSetAtomic__JJ
-  (JNIEnv *, jclass, jlong, jlong);
+	(JNIEnv* env, jclass classy, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -789,7 +789,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerSetAtomic__J
  * Signature: (JLjava/lang/Thread;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerSetAtomic__JLjava_lang_Thread_2
-  (JNIEnv *, jclass, jlong, jobject);
+	(JNIEnv* env, jclass classy, jlong, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -797,7 +797,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerSetAtomic__J
  * Signature: (Ljava/lang/Object;J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerSetAtomic__Ljava_lang_Object_2J
-  (JNIEnv *, jclass, jobject, jlong);
+	(JNIEnv* env, jclass classy, jobject, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -805,7 +805,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerSetAtomic__L
  * Signature: (Ljava/lang/Object;Ljava/lang/Thread;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerSetAtomic__Ljava_lang_Object_2Ljava_lang_Thread_2
-  (JNIEnv *, jclass, jobject, jobject);
+	(JNIEnv* env, jclass classy, jobject, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -813,7 +813,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_monitorOwnerSetAtomic__L
  * Signature: (J)Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_objectGetClassInfo__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -821,7 +821,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_objectGetClassInfo__J
  * Signature: (Ljava/lang/Object;)Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_objectGetClassInfo__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -829,7 +829,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_objectGetClassInfo__L
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectGetClassInfoPointer__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -837,7 +837,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectGetClassInfoPoint
  * Signature: (Ljava/lang/Object;)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectGetClassInfoPointer__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -845,7 +845,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectGetClassInfoPoint
  * Signature: (JJ)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_objectSetClassInfo__JJ
-  (JNIEnv *, jclass, jlong, jlong);
+	(JNIEnv* env, jclass classy, jlong, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -853,7 +853,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_objectSetClassInfo__JJ
  * Signature: (Ljava/lang/Object;J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_objectSetClassInfo__Ljava_lang_Object_2J
-  (JNIEnv *, jclass, jobject, jlong);
+	(JNIEnv* env, jclass classy, jobject, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -861,7 +861,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_objectSetClassInfo__Ljav
  * Signature: (JLcc/squirreljme/jvm/ClassInfo;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_objectSetClassInfo__JLcc_squirreljme_jvm_ClassInfo_2
-  (JNIEnv *, jclass, jlong, jobject);
+	(JNIEnv* env, jclass classy, jlong, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -869,7 +869,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_objectSetClassInfo__JLcc
  * Signature: (Ljava/lang/Object;Lcc/squirreljme/jvm/ClassInfo;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_objectSetClassInfo__Ljava_lang_Object_2Lcc_squirreljme_jvm_ClassInfo_2
-  (JNIEnv *, jclass, jobject, jobject);
+	(JNIEnv* env, jclass classy, jobject, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -877,7 +877,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_objectSetClassInfo__Ljav
  * Signature: (Ljava/lang/Object;)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectToPointer
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -885,7 +885,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectToPointer
  * Signature: (Ljava/lang/Object;)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectToPointerRefQueue
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -893,7 +893,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectToPointerRefQueue
  * Signature: (J)Ljava/lang/Object;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_pointerToObject
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -901,7 +901,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_pointerToObject
  * Signature: (J)Lcc/squirreljme/jvm/ClassInfo;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_pointerToClassInfo
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -909,7 +909,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_pointerToClassInfo
  * Signature: (JI)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_poolLoad__JI
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -917,7 +917,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_poolLoad__JI
  * Signature: (Ljava/lang/Object;I)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_poolLoad__Ljava_lang_Object_2I
-  (JNIEnv *, jclass, jobject, jint);
+	(JNIEnv* env, jclass classy, jobject, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -925,7 +925,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_poolLoad__Ljava_lang_Ob
  * Signature: (JIJ)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_poolStore__JIJ
-  (JNIEnv *, jclass, jlong, jint, jlong);
+	(JNIEnv* env, jclass classy, jlong, jint, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -933,7 +933,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_poolStore__JIJ
  * Signature: (Ljava/lang/Object;IJ)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_poolStore__Ljava_lang_Object_2IJ
-  (JNIEnv *, jclass, jobject, jint, jlong);
+	(JNIEnv* env, jclass classy, jobject, jint, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -941,7 +941,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_poolStore__Ljava_lang_Ob
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refCount__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -949,7 +949,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refCount__J
  * Signature: (Ljava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refCount__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -957,7 +957,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refCount__Ljava_lang_Obj
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_refGetCount__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -965,7 +965,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_refGetCount__J
  * Signature: (Ljava/lang/Object;)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_refGetCount__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -973,7 +973,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_refGetCount__Ljava_lang_
  * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refSetCount__JI
-  (JNIEnv *, jclass, jlong, jint);
+	(JNIEnv* env, jclass classy, jlong, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -981,7 +981,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refSetCount__JI
  * Signature: (Ljava/lang/Object;I)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refSetCount__Ljava_lang_Object_2I
-  (JNIEnv *, jclass, jobject, jint);
+	(JNIEnv* env, jclass classy, jobject, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -989,7 +989,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refSetCount__Ljava_lang_
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refUncount__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -997,7 +997,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refUncount__J
  * Signature: (Ljava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refUncount__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1005,7 +1005,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_refUncount__Ljava_lang_O
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_returnFrame__
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1013,7 +1013,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_returnFrame__
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_returnFrame__I
-  (JNIEnv *, jclass, jint);
+	(JNIEnv* env, jclass classy, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1021,7 +1021,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_returnFrame__I
  * Signature: (II)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_returnFrame__II
-  (JNIEnv *, jclass, jint, jint);
+	(JNIEnv* env, jclass classy, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1029,7 +1029,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_returnFrame__II
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_returnFrameLong
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1037,7 +1037,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_returnFrameLong
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sizeOfBaseArray
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1045,7 +1045,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sizeOfBaseArray
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sizeOfBaseObject
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1053,7 +1053,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sizeOfBaseObject
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sizeOfPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1061,7 +1061,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sizeOfPointer
  * Signature: ()Ljava/lang/Object;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetExceptionRegister
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1069,7 +1069,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetExceptionRe
  * Signature: ()Ljava/lang/Throwable;
  */
 JNIEXPORT jthrowable JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetExceptionRegisterThrowable
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1077,7 +1077,7 @@ JNIEXPORT jthrowable JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetExceptio
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetExceptionRegisterPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1085,7 +1085,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetExceptionRegi
  * Signature: ()Ljava/lang/Object;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetPoolRegister
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1093,7 +1093,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetPoolRegiste
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetPoolRegisterPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1101,7 +1101,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetPoolRegisterP
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetReturnRegister
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1109,7 +1109,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetReturnRegister
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetReturnRegisterLong
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1117,7 +1117,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetReturnRegiste
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetStaticFieldRegister
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1125,7 +1125,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetStaticFieldRe
  * Signature: ()Ljava/lang/Thread;
  */
 JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetThreadRegister
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1133,7 +1133,7 @@ JNIEXPORT jobject JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetThreadRegis
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetThreadRegisterPointer
-  (JNIEnv *, jclass);
+	(JNIEnv* env, jclass classy);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1141,7 +1141,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_specialGetThreadRegiste
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetExceptionRegister__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1149,7 +1149,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetExceptionRegis
  * Signature: (Ljava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetExceptionRegister__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1157,7 +1157,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetExceptionRegis
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetPoolRegister__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1165,7 +1165,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetPoolRegister__
  * Signature: (Ljava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetPoolRegister__Ljava_lang_Object_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1173,7 +1173,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetPoolRegister__
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetStaticFieldRegister
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1181,7 +1181,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetStaticFieldReg
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetThreadRegister__J
-  (JNIEnv *, jclass, jlong);
+	(JNIEnv* env, jclass classy, jlong);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1189,7 +1189,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetThreadRegister
  * Signature: (Ljava/lang/Thread;)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetThreadRegister__Ljava_lang_Thread_2
-  (JNIEnv *, jclass, jobject);
+	(JNIEnv* env, jclass classy, jobject);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1197,7 +1197,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_specialSetThreadRegister
  * Signature: (S)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__S
-  (JNIEnv *, jclass, jshort);
+	(JNIEnv* env, jclass classy, jshort);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1205,7 +1205,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__S
  * Signature: (SI)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SI
-  (JNIEnv *, jclass, jshort, jint);
+	(JNIEnv* env, jclass classy, jshort, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1213,7 +1213,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SI
  * Signature: (SII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SII
-  (JNIEnv *, jclass, jshort, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1221,7 +1221,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SII
  * Signature: (SIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1229,7 +1229,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIII
  * Signature: (SIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1237,7 +1237,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIII
  * Signature: (SIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1245,7 +1245,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIIII
  * Signature: (SIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1253,7 +1253,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIIIII
  * Signature: (SIIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1261,7 +1261,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIIIIII
  * Signature: (SIIIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1269,7 +1269,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCall__SIIIIIIII
  * Signature: (S)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__S
-  (JNIEnv *, jclass, jshort);
+	(JNIEnv* env, jclass classy, jshort);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1277,7 +1277,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__S
  * Signature: (SI)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SI
-  (JNIEnv *, jclass, jshort, jint);
+	(JNIEnv* env, jclass classy, jshort, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1285,7 +1285,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SI
  * Signature: (SII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SII
-  (JNIEnv *, jclass, jshort, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1293,7 +1293,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SII
  * Signature: (SIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1301,7 +1301,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIII
  * Signature: (SIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1309,7 +1309,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIII
  * Signature: (SIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1317,7 +1317,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIIII
  * Signature: (SIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1325,7 +1325,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIIIII
  * Signature: (SIIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1333,7 +1333,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIIIIII
  * Signature: (SIIIIIIII)V
  */
 JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1341,7 +1341,7 @@ JNIEXPORT void JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallP__SIIIIIIII
  * Signature: (S)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__S
-  (JNIEnv *, jclass, jshort);
+	(JNIEnv* env, jclass classy, jshort);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1349,7 +1349,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__S
  * Signature: (SI)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SI
-  (JNIEnv *, jclass, jshort, jint);
+	(JNIEnv* env, jclass classy, jshort, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1357,7 +1357,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SI
  * Signature: (SII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SII
-  (JNIEnv *, jclass, jshort, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1365,7 +1365,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SII
  * Signature: (SIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1373,7 +1373,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIII
  * Signature: (SIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1381,7 +1381,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIII
  * Signature: (SIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1389,7 +1389,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIIII
  * Signature: (SIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1397,7 +1397,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIIIII
  * Signature: (SIIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1405,7 +1405,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIIIIII
  * Signature: (SIIIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1413,7 +1413,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPV__SIIIIIIII
  * Signature: (S)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__S
-  (JNIEnv *, jclass, jshort);
+	(JNIEnv* env, jclass classy, jshort);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1421,7 +1421,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__S
  * Signature: (SI)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SI
-  (JNIEnv *, jclass, jshort, jint);
+	(JNIEnv* env, jclass classy, jshort, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1429,7 +1429,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SI
  * Signature: (SII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SII
-  (JNIEnv *, jclass, jshort, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1437,7 +1437,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SII
  * Signature: (SIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1445,7 +1445,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIII
  * Signature: (SIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1453,7 +1453,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIII
  * Signature: (SIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1461,7 +1461,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIIII
  * Signature: (SIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1469,7 +1469,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIIIII
  * Signature: (SIIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1477,7 +1477,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIIIIII
  * Signature: (SIIIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1485,7 +1485,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallPVL__SIIIIIIII
  * Signature: (S)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__S
-  (JNIEnv *, jclass, jshort);
+	(JNIEnv* env, jclass classy, jshort);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1493,7 +1493,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__S
  * Signature: (SI)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SI
-  (JNIEnv *, jclass, jshort, jint);
+	(JNIEnv* env, jclass classy, jshort, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1501,7 +1501,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SI
  * Signature: (SII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SII
-  (JNIEnv *, jclass, jshort, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1509,7 +1509,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SII
  * Signature: (SIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1517,7 +1517,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIII
  * Signature: (SIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1525,7 +1525,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIII
  * Signature: (SIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1533,7 +1533,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIIII
  * Signature: (SIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1541,7 +1541,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIIIII
  * Signature: (SIIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1549,7 +1549,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIIIIII
  * Signature: (SIIIIIIII)I
  */
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1557,7 +1557,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallV__SIIIIIIII
  * Signature: (S)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__S
-  (JNIEnv *, jclass, jshort);
+	(JNIEnv* env, jclass classy, jshort);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1565,7 +1565,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__S
  * Signature: (SI)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SI
-  (JNIEnv *, jclass, jshort, jint);
+	(JNIEnv* env, jclass classy, jshort, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1573,7 +1573,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SI
  * Signature: (SII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SII
-  (JNIEnv *, jclass, jshort, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1581,7 +1581,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SII
  * Signature: (SIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1589,7 +1589,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIII
  * Signature: (SIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1597,7 +1597,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIII
  * Signature: (SIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1605,7 +1605,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIIII
  * Signature: (SIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1613,7 +1613,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIIIII
  * Signature: (SIIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     cc_squirreljme_jvm_Assembly
@@ -1621,7 +1621,7 @@ JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIIIIII
  * Signature: (SIIIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_sysCallVL__SIIIIIIII
-  (JNIEnv *, jclass, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
+	(JNIEnv* env, jclass classy, jshort, jint, jint, jint, jint, jint, jint, jint, jint);
 
 #ifdef __cplusplus
 }
