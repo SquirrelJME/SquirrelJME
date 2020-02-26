@@ -3,7 +3,7 @@
 <suite name="squirreljme" verbose="1">
     <test name="squirreljme-test-factory">
         <classes>
-            <class name="cc.squirreljme.sim.testng.SquirrelJMETestFactory" />
+            <class name="cc.squirreljme.emulator.SquirrelJMETestFactory" />
         </classes>
     </test>
 </suite>

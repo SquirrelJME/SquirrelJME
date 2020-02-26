@@ -1,17 +1,13 @@
-package cc.squirreljme.sim.testng;
+package cc.squirreljme.emulator;
 
-import net.multiphasicapps.tac.TestInteger;
-import net.multiphasicapps.tac.TestInterface;
 import org.testng.ITestContext;
 import org.testng.annotations.Factory;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.ServiceLoader;
 
 /**
  * The factory for SquirrelJME Tests.

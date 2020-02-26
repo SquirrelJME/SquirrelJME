@@ -1,13 +1,9 @@
-package cc.squirreljme.sim.testng;
+package cc.squirreljme.emulator;
 
 import net.multiphasicapps.tac.TestExecution;
 import net.multiphasicapps.tac.TestInterface;
 import org.testng.*;
 import org.testng.annotations.Test;
-import org.testng.internal.BaseTestMethod;
-import org.testng.internal.ConstructorOrMethod;
-import org.testng.xml.XmlClass;
-import org.testng.xml.XmlTest;
 
 /**
  * Used to wrap SquirrelJME tests.

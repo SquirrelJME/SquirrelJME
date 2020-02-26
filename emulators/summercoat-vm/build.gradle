@@ -1,6 +1,6 @@
 plugins
 {
-	id "java"
+	id "java-library"
 }
 
 description = "This is the SummerCoat VM which is a more " +
@@ -9,7 +9,7 @@ description = "This is the SummerCoat VM which is a more " +
 
 dependencies
 {
-	implementation project(":emulators:emulator-base")
+	api project(":emulators:emulator-base")
 
 	implementation project(":modules:cldc-compact")
 	implementation project(":modules:collections")
