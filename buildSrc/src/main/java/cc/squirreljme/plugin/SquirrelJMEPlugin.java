@@ -251,9 +251,13 @@ public class SquirrelJMEPlugin
 			// Discovered test
 			List<String> tests = new LinkedList<>();
 			
-			// Walk the file
+			// If there are no tests, then do not bother with this step
 			Path srcRoot = __project.getProjectDir().toPath()
 				.resolve("src").resolve("test").resolve("java");
+			if (!Files.exists(srcRoot))
+				return;
+			
+			// Walk the file
 			Files.walk(srcRoot).forEach(
 				(Path __visit) ->
 				{
