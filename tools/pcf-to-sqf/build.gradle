@@ -11,6 +11,8 @@ mainClassName = "net.multiphasicapps.pcftosqf.Main"
 
 dependencies
 {
+	implementation project(":modules:cldc-compact")
 	implementation project(":modules:midp-lcdui")
 	implementation project(":modules:io")
+	implementation project(":modules:collections")
 }
