@@ -147,7 +147,7 @@ public final class JVMFunction
 	 * @return The resulting class.
 	 * @since 2019/05/26
 	 */
-	public static final <T> Class<T> jvmLoadClass(int __cldx)
+	public static final <T> Class<T> jvmLoadClass(ClassInfo __cldx)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
