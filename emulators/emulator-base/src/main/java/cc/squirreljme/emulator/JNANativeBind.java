@@ -2,6 +2,7 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.Assembly;
 import com.sun.jna.*;
+import com.sun.jna.win32.StdCallFunctionMapper;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -44,6 +45,8 @@ public class JNANativeBind
 		Map<String, Object> options = new HashMap<>();
 		options.put(Library.OPTION_ALLOW_OBJECTS,
 			true);
+		options.put(Library.OPTION_FUNCTION_MAPPER,
+			new JNIFunctionMapper());
 		
 		// Search in the nowhere and root paths so we have a better chance of
 		// finding our library
