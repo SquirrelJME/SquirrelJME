@@ -53,6 +53,29 @@ public final class EmulatorAssembly
 		// Depends on the system call
 		switch (__si)
 		{
+				// System calls that are supported?
+			case SystemCallIndex.QUERY_INDEX:
+				{
+					// Always succeeds
+					context.setError(__si, 0);
+					
+					// Depends on the system call requested
+					switch (__a)
+					{
+							// Implemented here
+						case SystemCallIndex.ERROR_GET:
+						case SystemCallIndex.ERROR_SET:
+						case SystemCallIndex.QUERY_INDEX:
+						case SystemCallIndex.TIME_MILLI_WALL:
+						case SystemCallIndex.TIME_NANO_MONO:
+							return 1;
+						
+							// Not-implemented
+						default:
+							return 0;
+					}
+				}
+			
 				// Get error
 			case SystemCallIndex.ERROR_GET:
 				{
@@ -69,6 +92,22 @@ public final class EmulatorAssembly
 					int oldError = context.getError((short)__a);
 					context.setError((short)__a, __b);
 					return oldError;
+				}
+				
+				// Current wall clock
+			case SystemCallIndex.TIME_MILLI_WALL:
+				{
+					context.setError(__si, 0);
+					
+					return System.currentTimeMillis();
+				}
+			
+				// Current monotonic clock
+			case SystemCallIndex.TIME_NANO_MONO:
+				{
+					context.setError(__si, 0);
+					
+					return System.nanoTime();
 				}
 			
 				// Un-handled, set as not supported and return a default value
