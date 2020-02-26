@@ -16,6 +16,6 @@ squirreljme
 dependencies
 {
 	implementation project(":modules:cldc-compact")
-
+	implementation project(":modules:collections")
 	implementation project(":modules:meep-swm")
 }

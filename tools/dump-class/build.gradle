@@ -12,4 +12,5 @@ dependencies
 {
 	implementation project(":modules:tool-classfile")
 	implementation project(":modules:zip")
+	implementation project(":modules:io")
 }
