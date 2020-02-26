@@ -20,6 +20,6 @@ public final class JNIFunctionMapper
 	@Override
 	public String getFunctionName(NativeLibrary library, Method method)
 	{
-		return "Java_cc_squirreljme_jvm_Assembly_classInfoOfByte";
+		return "notImplemented";
 	}
 }
