@@ -15,7 +15,8 @@ test
 	// SquirrelJME uses a different test framework, so we cannot rely on
 	// Gradle to correctly pick it up
 	scanForTestClasses = false
-	includes = ["**/*Test.class", "**/Test*.class"]
+	includes = ['**/*Test', '**/Test*', '**/Do*',
+		'*Test', 'Test*', 'Do*']
 	
 	// Make the standard streams always show
 	testLogging.showStandardStreams = true

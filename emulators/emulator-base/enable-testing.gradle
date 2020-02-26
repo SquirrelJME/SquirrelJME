@@ -11,9 +11,6 @@ dependencies
 	
 	// Need TestNG to run our tests
 	testImplementation "org.testng:testng:7.1.0"
-
-	// Need JNA to run our native code
-	testImplementation "net.java.dev.jna:jna:5.5.0"
 }
 
 test

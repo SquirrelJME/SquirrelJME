@@ -53,7 +53,8 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallparam 1 The system call index to query.
 	 * @squirreljme.syscallparam 2 The value to set error register to.
-	 * @squirreljme.syscallreturn Zero on success
+	 * @squirreljme.syscallreturn The value which was previously in the
+	 * register.
 	 */
 	public static final byte ERROR_SET =
 		2;

@@ -25,10 +25,6 @@ dependencies
 	// on the target device). Due to the flexibility it allows easier switching
 	// from Java SE, SpringCoat, and SummerCoat
 	compileClasspath "org.testng:testng:7.1.0"
-	
-	// This is needed to inject the native support library into the run-time
-	// so that SquirrelJME specific assembly methods function properly
-	compileClasspath "net.java.dev.jna:jna:5.5.0"
 }
 
 // We need the native library in the JAR before we can properly use it

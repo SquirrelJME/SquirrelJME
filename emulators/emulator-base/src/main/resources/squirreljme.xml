@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="squirreljme" verbose="1">
-    <test name="squirreljme-test-factory">
+<suite name="squirreljme">
+    <listeners>
+        <listener
+            class-name="cc.squirreljme.emulator.SquirrelJMEAlterSuiteListener"
+            />
+    </listeners>
+    <test name="tests">
         <classes>
-            <class name="cc.squirreljme.emulator.SquirrelJMETestFactory" />
+            <class name="cc.squirreljme.emulator.SquirrelJMETestFactory"/>
         </classes>
     </test>
 </suite>

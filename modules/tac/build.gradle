@@ -21,3 +21,8 @@ dependencies
 	implementation project(":modules:tool-manifest-writer")
 	implementation project(":modules:collections")
 }
+
+jar
+{
+	exclude("org/testng/annotations/Test.class")
+}

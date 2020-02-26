@@ -20,6 +20,7 @@ import javax.microedition.midlet.MIDlet;
 import cc.squirreljme.runtime.midlet.OverrideActiveMidletRestriction;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import org.testng.annotations.Test;
 
 /**
  * This is the core test framework which handles reading test information and
@@ -81,6 +82,57 @@ abstract class __CoreTest__
 	protected final void destroyApp(boolean __u)
 	{
 		// Not used
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/02/23
+	 */
+	@Override
+	@Test
+	public final void run()
+	{
+		// Run our execution with the default arguments!
+		TestExecution execution = this.runExecution();
+		
+		// Always print the result
+		execution.print(System.err);
+		
+		// If the test did not pass, throw an exception
+		if (execution.status != TestStatus.SUCCESS)
+		{
+			// If skippable, try throwing a TestNG skip exception if it exists
+			if (execution.status == TestStatus.UNTESTABLE)
+				try
+				{
+					Class<?> skippy = Class.forName(
+						"org.testng.SkipException");
+					
+					// Create instance
+					Object instance = skippy.newInstance();
+					
+					// If it is throwable, we throw it!
+					if (instance instanceof RuntimeException)
+					{
+						RuntimeException re = (RuntimeException)instance;
+						
+						// So this way our information is not completely gone
+						re.initCause(new ThrownTestExecution(
+							execution, null));
+						
+						throw re;
+					}
+				}
+				catch (ClassNotFoundException|InstantiationException|
+					IllegalAccessException e)
+				{
+					// Ignore, treat as failure
+				}
+			
+			Object tossed = execution.tossed;
+			throw new ThrownTestExecution(execution,
+				((tossed instanceof Throwable) ? (Throwable)tossed : null));
+		}
 	}
 	
 	/**
@@ -227,42 +279,7 @@ abstract class __CoreTest__
 		}
 		
 		// Set output according to the status
-		switch (execution.status)
-		{
-				// Test passed
-			case SUCCESS:
-				oldout.printf("%s: PASS %s%n",
-					execution.testClass, execution.result);
-				break;
-			
-				// Failed test, print results
-			case FAILED:
-				// Failure notice
-				oldout.printf("%s: FAIL %s%n",
-					execution.testClass, execution.result);
-				
-				// Print comparison to show what failed
-				execution.expected.printComparison(System.err,
-					execution.result);
-				break;
-			
-			case TEST_EXCEPTION:
-				// {@squirreljme.error BU0d The test failed to run properly.
-				// (The given test)}
-				System.err.printf("BU0d %s%n", execution.testClass);
-				break;
-			
-			case UNTESTABLE:
-				// {@squirreljme.error BU0c Test could not be ran
-				// potentially because a condition was not met. (Test class)}
-				System.err.printf("BU0c %s%n", execution.testClass);
-				break;
-		}
-		
-		// Print traces of unexpected exceptions
-		if (execution.status != TestStatus.FAILED &&
-			execution.tossed instanceof Throwable)
-			((Throwable)execution.tossed).printStackTrace();
+		execution.print(System.err);
 		
 		// Stop the watchdog so we do not exit
 		dtimeout.expire();
