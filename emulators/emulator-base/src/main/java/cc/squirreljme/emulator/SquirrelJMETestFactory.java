@@ -1,6 +1,7 @@
 package cc.squirreljme.emulator;
 
 import org.testng.ITestContext;
+import org.testng.ITestNGMethod;
 import org.testng.annotations.Factory;
 
 import java.io.BufferedReader;
@@ -30,45 +31,20 @@ public class SquirrelJMETestFactory
 	public Object[] createInstance(ITestContext __context)
 		throws Exception
 	{
-		// Collect and drop bindings
-		JNANativeBind.bind();
+		// Poke the native bindings class so it gets initializes and setup
+		new NativeBinding();
 		
 		// Collect tests
 		Collection<Object> tests = new LinkedList<>();
-		
-		// The list of tests hides in the services file
-		try (InputStream in = this.getClass().getClassLoader().
-				getResourceAsStream(SERVICE_NAME))
-		{
-			// No tests available
-			if (in == null)
-				return new Object[0];
-			
-			// Read all tests that exist
-			try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(in, "utf-8")))
+		for (String testName : SquirrelJMEAlterSuiteListener.findTestClasses())
+			try
 			{
-				for (;;)
-					try
-					{
-						String ln = br.readLine();
-						
-						// EOF?
-						if (ln == null)
-							break;
-						
-						// Ignore blank lines
-						if (ln.isEmpty())
-							continue;
-						
-						tests.add(new SquirrelJMETest(Class.forName(ln)));
-					}
-					catch (ClassNotFoundException e)
-					{
-						e.printStackTrace();
-					}
+				tests.add(Class.forName(testName));
 			}
-		}
+			catch (ClassNotFoundException e)
+			{
+				// Ignore
+			}
 		
 		return tests.<Object>toArray(new Object[tests.size()]);
 	}
