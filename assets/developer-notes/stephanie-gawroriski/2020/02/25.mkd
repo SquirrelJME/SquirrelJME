@@ -12,3 +12,14 @@ right name for the simulator library.
 I think I get why this is not working with JNI, because this is using a purely
 native setup with straight through arguments and such. What I think I need to
 do is not have this like it is JNI.
+
+## 23:15
+
+Okay so I would need to use two libraries for this. One from `JNANativeBridge`
+which uses JNI, then it can initialize stuff in SquirrelJME using JNA which
+is a bit more raw (and has no JVM environment stuff).
+
+## 23:17
+
+Actually, I definitley do not even need to use JNA at all, just plain JNI.
+There is something called register natives.
