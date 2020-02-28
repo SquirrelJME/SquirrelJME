@@ -10,32 +10,18 @@
 
 package cc.squirreljme.plugin;
 
-import groovy.lang.Closure;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.FileSystemLocation;
-import org.gradle.api.file.FileTree;
-import org.gradle.api.java.archives.Attributes;
-import org.gradle.api.plugins.JavaPluginConvention;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.specs.Spec;
-import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
-import org.gradle.api.tasks.TaskDependency;
-import org.gradle.jvm.tasks.Jar;
-import org.gradle.language.jvm.tasks.ProcessResources;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Plugin for all SquirrelJME operations that are needed in Gradle in order
@@ -62,8 +48,7 @@ public class SquirrelJMEPlugin
 		Task injectManTask = __project.getTasks().
 			create("__injectManifest");
 		injectManTask.setGroup("squirreljme");
-		injectManTask.doLast((Task __task) ->
-			this.__configureManifest(__project));
+		injectManTask.doLast(new InjectManifestTask(__project));
 		
 		// The manifest must be done before the JAR is built
 		Task jarTask = __project.getTasks().getByName("jar");
@@ -76,7 +61,7 @@ public class SquirrelJMEPlugin
 		launchSpring.setDescription("Runs via SquirrelJME SpringCoat.");
 		launchSpring.dependsOn(jarTask, ":emulators:springcoat-vm:jar");
 		launchSpring.onlyIf((Task __task) ->
-			__isApplication(__project));
+			SquirrelJMEPluginConfiguration.isApplication(__project));
 		launchSpring.doLast((Task __task) ->
 			new __RunSpringCoatApplication__(__project).run());
 		
@@ -96,7 +81,7 @@ public class SquirrelJMEPlugin
 		launchSummer.setDescription("Runs via SquirrelJME SummerCoat.");
 		launchSummer.dependsOn(buildROM, ":emulators:summercoat-vm:jar");
 		launchSpring.onlyIf((Task __task) ->
-			__isApplication(__project));
+			SquirrelJMEPluginConfiguration.isApplication(__project));
 		launchSummer.doLast((Task __task) ->
 			new __RunSummerCoatApplication__(__project).run());
 		
@@ -134,95 +119,40 @@ public class SquirrelJMEPlugin
 		nextError.doLast((Task __task) ->
 			System.out.println(new ErrorListManager(__project).next()));
 		
+		// Un-MIME the resource files (main code)
+		Task unMimeResources = __project.getTasks()
+			.create("unMimeResources");
+		unMimeResources.setGroup("squirreljme");
+		unMimeResources.setDescription("MIME decodes resources.");
+		unMimeResources.doLast(
+			new UnMimeResourcesTask(__project, "main"));
+			
+		// Resource processing task
+		Task processResources = __project.getTasks().
+			getByName("processResources");
+		processResources.dependsOn(unMimeResources);
+		
+		// Un-MIME the resource files (main code)
+		Task unMimeTestResources = __project.getTasks()
+			.create("unMimeTestResources");
+		unMimeTestResources.setGroup("squirreljme");
+		unMimeTestResources.setDescription("MIME decodes test resources.");
+		unMimeTestResources.doLast(
+			new UnMimeResourcesTask(__project, "test"));
+		
 		// Generate test resources
 		Task genTestMeta = __project.getTasks()
 			.create("generateTestMetadata");
 		genTestMeta.setGroup("squirreljme");
 		genTestMeta.setDescription("Generates extra test resources.");
+		genTestMeta.dependsOn(unMimeTestResources);
 		genTestMeta.doLast((Task __task) ->
 			this.__generateTestMetadata(__project));
 		
-		// Resource processing task
+		// Test resource processing task
 		Task processTestResources = __project.getTasks().
 			getByName("processTestResources");
 		processTestResources.dependsOn(genTestMeta);
-	}
-	
-	/**
-	 * Performs manifest configuration.
-	 *
-	 * @param __project The project being adjusted.
-	 * @since 2020/02/15
-	 */
-	private void __configureManifest(Project __project)
-	{
-		// Find our config
-		SquirrelJMEPluginConfiguration config = __project.getExtensions()
-			.<SquirrelJMEPluginConfiguration>getByType(
-				SquirrelJMEPluginConfiguration.class);
-		
-		// Obtain the manifest to modify
-		Jar jar = (Jar)__project.getTasks().getByName("jar");
-		Attributes attributes = jar.getManifest().getAttributes();
-		
-		// Project name is used internally for dependency lookup
-		attributes.put("X-SquirrelJME-InternalProjectName",
-			__project.getName());
-		
-		// Standard Application
-		if (config.swmType == JavaMEMidletType.APPLICATION)
-		{
-			attributes.put("MIDlet-Name", config.swmName);
-			attributes.put("MIDlet-Vendor", config.swmVendor);
-			attributes.put("MIDlet-Version",
-				__project.getVersion().toString());
-			
-			// Main class of entry?
-			if (config.mainClass != null)
-				attributes.put("Main-Class", config.mainClass);
-			
-			// Add any defined MIDlets
-			int midletId = 1;
-			for (JavaMEMidlet midlet : config.midlets)
-				attributes.put("MIDlet-" + (midletId++), midlet.toString());
-			
-			// Ignored in the launcher?
-			if (config.ignoreInLauncher)
-				attributes.put("X-SquirrelJME-NoLauncher", true);
-		}
-		
-		// Library defining classes
-		if (config.swmType == JavaMEMidletType.LIBRARY)
-		{
-			attributes.put("LIBlet-Name", config.swmName);
-			attributes.put("LIBlet-Vendor", config.swmVendor);
-			attributes.put("LIBlet-Version",
-				__project.getVersion().toString());
-		}
-		
-		// SquirrelJME defined APIs
-		if (config.swmType == JavaMEMidletType.API)
-		{
-			attributes.put("X-SquirrelJME-API-Name", config.swmName);
-			attributes.put("X-SquirrelJME-API-Vendor", config.swmVendor);
-			attributes.put("X-SquirrelJME-API-Version",
-				__project.getVersion().toString());
-			
-			// Configurations defined?
-			if (!config.definedConfigurations.isEmpty())
-				attributes.put("X-SquirrelJME-DefinedConfigurations",
-					__delimate(config.definedConfigurations, ' '));
-			
-			// Profiles defined?
-			if (!config.definedProfiles.isEmpty())
-				attributes.put("X-SquirrelJME-DefinedProfiles",
-					__delimate(config.definedProfiles, ' '));
-			
-			// Standards defined?
-			if (!config.definedStandards.isEmpty())
-				attributes.put("X-SquirrelJME-DefinedStandards",
-					__delimate(config.definedStandards, ' '));
-		}
 	}
 	
 	/**
@@ -240,7 +170,7 @@ public class SquirrelJMEPlugin
 		
 		// Where our resources go
 		Path genResourceRoot = __project.getBuildDir().toPath()
-			.resolve("generated-resources");
+			.resolve("generated-test-resources");
 		
 		// Process source files
 		try
@@ -300,57 +230,5 @@ public class SquirrelJMEPlugin
 				"Failed to generate metadata for %s.",
 				__project.getName()), e);
 		}
-	}
-	
-	/**
-	 * Turns an iterable into a string with the given delimeter.
-	 *
-	 * @param __it The iteration to convert.
-	 * @param __delim The delimiter.
-	 * @return The converted string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/15
-	 */
-	private static String __delimate(Iterable<?> __it, char __delim)
-		throws NullPointerException
-	{
-		if (__it == null)
-			throw new NullPointerException("NARG");
-		
-		// Build output string
-		StringBuilder sb = new StringBuilder();
-		for (Object o : __it)
-		{
-			// Add delimeter?
-			if (sb.length() > 0)
-				sb.append(__delim);
-			
-			// Add object
-			sb.append(o);
-		}
-		
-		return sb.toString();
-	}
-	
-	/**
-	 * Is this a SquirrelJME application?
-	 *
-	 * @param __project The project to check.
-	 * @return If it is an application.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/16
-	 */
-	private static boolean __isApplication(Project __project)
-		throws NullPointerException
-	{
-		if (__project == null)
-			throw new NullPointerException("No project specified.");
-			
-		// Find our config
-		SquirrelJMEPluginConfiguration config = __project.getExtensions()
-			.<SquirrelJMEPluginConfiguration>getByType(
-				SquirrelJMEPluginConfiguration.class);
-		
-		return config.swmType == JavaMEMidletType.APPLICATION;
 	}
 }

@@ -13,6 +13,19 @@ subprojects
 	apply plugin: "java"
 	apply plugin: "cc.squirreljme.plugin"
 
+	// Use for extra MIMEed resources
+	sourceSets
+	{
+		main
+		{
+			resources
+			{
+				srcDir buildDir.toPath().
+					resolve("generated-main-resources").toFile()
+			}
+		}
+	}
+
 	// Configure the compiler
 	java
 	{
