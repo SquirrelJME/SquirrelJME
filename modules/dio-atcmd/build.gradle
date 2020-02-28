@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to devices which use the " +
 	"standard AT command set."
+version = rootProject.version
 
 squirreljme
 {

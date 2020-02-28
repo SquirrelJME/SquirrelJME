@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This is a demo which is used to demonstrate " +
 	"how the graphic operations operate."
+version = rootProject.version
 
 squirreljme
 {

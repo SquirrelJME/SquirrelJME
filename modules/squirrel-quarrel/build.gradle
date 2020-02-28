@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "A turn based strategy involving squirrels and " +
  "lots of acorns! Keep on your claws and horde them all!"
+version = rootProject.version
 
 squirreljme
 {

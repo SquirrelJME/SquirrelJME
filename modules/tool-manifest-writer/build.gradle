@@ -2,6 +2,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project allows for creating standard " +
 	"Java manifest files using a mutable class."
+version = rootProject.version
 
 squirreljme
 {

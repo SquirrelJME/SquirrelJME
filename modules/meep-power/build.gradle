@@ -4,6 +4,7 @@ import cc.squirreljme.plugin.JavaMEStandard
 description = "This provides support for quering the current " +
 	"electrical state of the device along with the setting of potential new " +
 	"power modes."
+version = rootProject.version
 
 squirreljme
 {

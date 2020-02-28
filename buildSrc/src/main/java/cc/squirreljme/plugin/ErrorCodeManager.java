@@ -1,9 +1,14 @@
 package cc.squirreljme.plugin;
 
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import org.gradle.api.Project;
 
 import java.io.PrintStream;
-import java.util.*;
 
 /**
  * This is used to manage the list of errors and otherwise.

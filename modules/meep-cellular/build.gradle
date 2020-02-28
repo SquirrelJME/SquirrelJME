@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides an implementation which is used " +
 	"to access cellular networks."
+version = rootProject.version
 
 squirreljme
 {

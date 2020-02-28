@@ -11,29 +11,8 @@ subprojects
 {
 	//apply plugin: "de.set.ecj"
 	apply plugin: "java"
+	apply plugin: "checkstyle"
 	apply plugin: "cc.squirreljme.plugin"
-
-	// Use for extra MIMEed resources
-	sourceSets
-	{
-		main
-		{
-			resources
-			{
-				srcDir buildDir.toPath().
-					resolve("generated-main-resources").toFile()
-				exclude '*.__mime'
-			}
-		}
-
-		test
-		{
-			resources
-			{
-				exclude '*.__mime'
-			}
-		}
-	}
 
 	// Configure the compiler
 	java

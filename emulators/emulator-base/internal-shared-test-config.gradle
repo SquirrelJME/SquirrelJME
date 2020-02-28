@@ -1,15 +1,3 @@
-sourceSets
-{
-	test
-	{
-		resources
-		{
-			srcDir buildDir.toPath().
-				resolve("generated-test-resources").toFile()
-		}
-	}
-}
-
 // Our tests must be properly configured before they will work
 test
 {

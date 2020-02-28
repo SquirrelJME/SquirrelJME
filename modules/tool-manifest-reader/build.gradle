@@ -2,6 +2,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This provides a decoder for standardJava " +
 	"manifest files."
+version = rootProject.version
 
 squirreljme
 {

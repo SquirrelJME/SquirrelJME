@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm;
+package cc.squirreljme.plugin.swm;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -45,14 +45,14 @@ public final class SuiteVersion
 	 * Initializes the version.
 	 *
 	 * @param __v The value to parse.
-	 * @throws InvalidSuiteException If there are too many or too little
+	 * @throws IllegalArgumentException If there are too many or too little
 	 * version fields, they contain illegal charactes, or have an out of range
 	 * value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	public SuiteVersion(String __v)
-		throws InvalidSuiteException, NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		this(__decodeVersion(__v));
 	}
@@ -63,13 +63,13 @@ public final class SuiteVersion
 	 *
 	 * @param __v The version triplet, up to the first three elements are
 	 * used by the version number.
-	 * @throws InvalidSuiteException If the version number has an out of
+	 * @throws IllegalArgumentException If the version number has an out of
 	 * range value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	public SuiteVersion(int[] __v)
-		throws InvalidSuiteException, NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		this((__v.length > 0 ? __v[0] : 0),
 			(__v.length > 1 ? __v[1] : 0),
@@ -84,12 +84,12 @@ public final class SuiteVersion
 	 * the hash code returned by this class.
 	 * @param __maj If {@code __hash} is {@code true} then this is the hash
 	 * code of a SuiteVersion, otherwise it is the major version number.
-	 * @throws InvalidSuiteException If the version number has an out of
+	 * @throws IllegalArgumentException If the version number has an out of
 	 * range value.
 	 * @since 2016/10/13
 	 */
 	public SuiteVersion(boolean __hash, int __maj)
-		throws InvalidSuiteException
+		throws IllegalArgumentException
 	{
 		this((__hash ? __maj / 10000 : __maj),
 			(__hash ? (__maj / 100) % 100 : 0),
@@ -127,19 +127,18 @@ public final class SuiteVersion
 	 * @param __maj The major version.
 	 * @param __min The minor version.
 	 * @param __rel The release version.
-	 * @throws InvalidSuiteException If any value is out of range.
+	 * @throws IllegalArgumentException If any value is out of range.
 	 * @since 2016/10/12
 	 */
 	public SuiteVersion(int __maj, int __min, int __rel)
-		throws InvalidSuiteException
+		throws IllegalArgumentException
 	{
-		// {@squirreljme.error DG0i Input version number is out of range, only
-		// 0 through 99 are valid. (The major version; The minor version; The
-		// release version)}
+		// Check version ranges
 		if (__maj < 0 || __maj > 99 || __min < 0 || __min > 99 ||
 			__rel < 0 || __rel > 99)
-			throw new InvalidSuiteException(String.format("AR0i %d %d %d",
-				__maj, __min, __rel));
+			throw new IllegalArgumentException(String.format(
+				"Input version number is out of range, only 0 through " +
+				"99 are valid: (%d, %d, %d)", __maj, __min, __rel));
 		
 		// Set
 		this.major = __maj;
@@ -282,12 +281,12 @@ public final class SuiteVersion
 	 *
 	 * @param __v The input string.
 	 * @return The version tuplet.
-	 * @throws InvalidSuiteException If the input is not valid.
+	 * @throws IllegalArgumentException If the input is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	private static final int[] __decodeVersion(String __v)
-		throws InvalidSuiteException, NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__v == null)
@@ -311,10 +310,10 @@ public final class SuiteVersion
 			{
 				rv[at++] = Integer.parseInt(sb.toString(), 10);
 				
-				// {@squirreljme.error DG0j Too many version fields in the
-				// specified string. (The input string)}
+				// Too many fields
 				if (c != -1 && at >= 4)
-					throw new InvalidSuiteException(String.format("AR0j %s",
+					throw new IllegalArgumentException(String.format(
+						"Too many version fields in the specified string: %s",
 						__v));
 				
 				// Clear
@@ -325,10 +324,10 @@ public final class SuiteVersion
 			else if (c >= '0' && c <= '9')
 				sb.append((char)c);
 			
-			// {@squirreljme.error DG0k An illegal character is in the
-			// version string. (The input string; The illegal character)}
+			// Invalid format
 			else
-				throw new InvalidSuiteException(String.format("AR0k %s %04x",
+				throw new IllegalArgumentException(String.format(
+					"An illegal character is in the version string: %s %c",
 					__v, c));
 		}
 		

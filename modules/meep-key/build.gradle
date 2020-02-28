@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This contains classes for handling key and other " +
 	"user input events."
+version = rootProject.version
 
 squirreljme
 {

@@ -27,5 +27,69 @@ public enum JavaMEMidletType
 	
 	/* End. */
 	;
+	
+	/**
+	 * Returns the dependency key.
+	 *
+	 * @param __i The dependency index.
+	 * @return The dependency key.
+	 * @since 2020/02/28
+	 */
+	public final String dependencyKey(int __i)
+	{
+		return this.prefixKey() + "-Dependency-" + __i;
+	}
+	
+	/**
+	 * Returns the name key.
+	 *
+	 * @return The name key.
+	 * @since 2020/02/28
+	 */
+	public final String nameKey()
+	{
+		return this.prefixKey() + "-Name";
+	}
+	
+	/**
+	 * Returns the prefix key.
+	 *
+	 * @return The prefix key.
+	 * @since 2020/02/28
+	 */
+	public final String prefixKey()
+	{
+		switch (this)
+		{
+			case API:			return "X-SquirrelJME-API";
+			case LIBRARY:		return "LIBlet";
+			case APPLICATION:	return "MIDlet";
+			
+			default:
+				throw new RuntimeException("Unknown project type.");
+		}
+	}
+	
+	/**
+	 * Returns the vendor key.
+	 *
+	 * @return The vendor key.
+	 * @since 2020/02/28
+	 */
+	public final String vendorKey()
+	{
+		return this.prefixKey() + "-Vendor";
+	}
+	
+	/**
+	 * Returns the version key.
+	 *
+	 * @return The version key.
+	 * @since 2020/02/28
+	 */
+	public final String versionKey()
+	{
+		return this.prefixKey() + "-Version";
+	}
 }
 

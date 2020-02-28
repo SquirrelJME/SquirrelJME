@@ -4,6 +4,7 @@ import cc.squirreljme.plugin.JavaMEStandard
 description = "This provides an interface which allows an " +
 	"application to receive events from the system along withsending events " +
 	"to other running applications."
+version = rootProject.version
 
 squirreljme
 {

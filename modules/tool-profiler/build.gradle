@@ -1,6 +1,7 @@
 import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "VisualVM Profiling Tool"
+version = rootProject.version
 
 squirreljme
 {
