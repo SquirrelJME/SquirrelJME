@@ -13,6 +13,8 @@ package cc.squirreljme.plugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.SourceSet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -124,6 +126,7 @@ public class SquirrelJMEPlugin
 			.create("unMimeResources");
 		unMimeResources.setGroup("squirreljme");
 		unMimeResources.setDescription("MIME decodes resources.");
+		inputAllResourceFiles(unMimeResources, __project, "main");
 		unMimeResources.doLast(
 			new UnMimeResourcesTask(__project, "main"));
 			
@@ -137,6 +140,7 @@ public class SquirrelJMEPlugin
 			.create("unMimeTestResources");
 		unMimeTestResources.setGroup("squirreljme");
 		unMimeTestResources.setDescription("MIME decodes test resources.");
+		inputAllResourceFiles(unMimeTestResources, __project, "test");
 		unMimeTestResources.doLast(
 			new UnMimeResourcesTask(__project, "test"));
 		
@@ -146,6 +150,7 @@ public class SquirrelJMEPlugin
 		genTestMeta.setGroup("squirreljme");
 		genTestMeta.setDescription("Generates extra test resources.");
 		genTestMeta.dependsOn(unMimeTestResources);
+		inputAllSourceFiles(genTestMeta, __project, "test");
 		genTestMeta.doLast((Task __task) ->
 			this.__generateTestMetadata(__project));
 		
@@ -230,5 +235,47 @@ public class SquirrelJMEPlugin
 				"Failed to generate metadata for %s.",
 				__project.getName()), e);
 		}
+	}
+	
+	/**
+	 * Sets the input of a task to be all the source files.
+	 *
+	 * @param __task The task to define.
+	 * @param __project The project.
+	 * @param __group Which group are we concerned with?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/27
+	 */
+	public static void inputAllSourceFiles(Task __task, Project __project,
+		String __group)
+		throws NullPointerException
+	{
+		if (__task == null || __project == null || __group == null)
+			throw new NullPointerException("No task or project specified.");
+		
+		__task.getInputs().files(__project.getConvention().getPlugin(
+			JavaPluginConvention.class).getSourceSets().
+			getByName(__group).getAllJava());
+	}
+	
+	/**
+	 * Sets the input of a task to be all the resource files.
+	 *
+	 * @param __task The task to define.
+	 * @param __project The project.
+	 * @param __group Which group are we concerned with?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/27
+	 */
+	public static void inputAllResourceFiles(Task __task, Project __project,
+		String __group)
+		throws NullPointerException
+	{
+		if (__task == null || __project == null || __group == null)
+			throw new NullPointerException("No task or project specified.");
+		
+		__task.getInputs().files(__project.getConvention().getPlugin(
+			JavaPluginConvention.class).getSourceSets().
+			getByName(__group).getResources());
 	}
 }
