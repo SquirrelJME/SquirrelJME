@@ -4,7 +4,8 @@ sourceSets
 	{
 		resources
 		{
-			srcDir buildDir.toPath().resolve("generated-resources").toFile()
+			srcDir buildDir.toPath().
+				resolve("generated-test-resources").toFile()
 		}
 	}
 }
