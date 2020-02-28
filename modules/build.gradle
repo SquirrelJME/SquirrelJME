@@ -22,6 +22,15 @@ subprojects
 			{
 				srcDir buildDir.toPath().
 					resolve("generated-main-resources").toFile()
+				exclude '*.__mime'
+			}
+		}
+
+		test
+		{
+			resources
+			{
+				exclude '*.__mime'
 			}
 		}
 	}
