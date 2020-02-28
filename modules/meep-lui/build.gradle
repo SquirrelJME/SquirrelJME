@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This contains the base support for the line " +
 	"based interface."
+version = rootProject.version
 
 squirreljme
 {

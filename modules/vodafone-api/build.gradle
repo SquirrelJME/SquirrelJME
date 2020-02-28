@@ -1,6 +1,7 @@
 import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "Proprietary Vodafone API"
+version = rootProject.version
 
 squirreljme
 {

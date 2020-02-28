@@ -10,6 +10,9 @@
 
 package cc.squirreljme.plugin;
 
+import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
+import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
+import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -24,6 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.List;
+import org.gradle.jvm.tasks.Jar;
+import org.gradle.language.jvm.tasks.ProcessResources;
 
 /**
  * Plugin for all SquirrelJME operations that are needed in Gradle in order
@@ -46,46 +51,32 @@ public class SquirrelJMEPlugin
 			"squirreljme", SquirrelJMEPluginConfiguration.class,
 			this, __project);
 		
-		// Inject manifest properties
-		Task injectManTask = __project.getTasks().
-			create("__injectManifest");
-		injectManTask.setGroup("squirreljme");
-		injectManTask.doLast(new InjectManifestTask(__project));
+		// Resource processing tasks
+		Task processResources = __project.getTasks().
+			getByName("processResources");
+		Task processTestResources = __project.getTasks().
+			getByName("processTestResources");
 		
-		// The manifest must be done before the JAR is built
+		// JAR Tasks
 		Task jarTask = __project.getTasks().getByName("jar");
-		jarTask.dependsOn(injectManTask);
 		
-		// Launch application in the SpringCoat VM!
-		Task launchSpring = __project.getTasks()
-			.create("runSpringCoat");
-		launchSpring.setGroup("squirreljme");
-		launchSpring.setDescription("Runs via SquirrelJME SpringCoat.");
-		launchSpring.dependsOn(jarTask, ":emulators:springcoat-vm:jar");
-		launchSpring.onlyIf((Task __task) ->
-			SquirrelJMEPluginConfiguration.isApplication(__project));
-		launchSpring.doLast((Task __task) ->
-			new __RunSpringCoatApplication__(__project).run());
+		// Mime Decode Resources
+		Task mmr = __project.getTasks().create("mimeDecodeResources",
+			MimeDecodeResourcesTask.class, SourceSet.MAIN_SOURCE_SET_NAME,
+			(ProcessResources)processResources);
+		Task tmr = __project.getTasks().create("mimeDecodeTestResources",
+			MimeDecodeResourcesTask.class, SourceSet.TEST_SOURCE_SET_NAME,
+			(ProcessResources)processTestResources);
 		
-		// Building of SummerCoat ROM
-		Task buildROM = __project.getTasks().
-			create("jarSummerCoatROM");
-		buildROM.setGroup("squirreljme");
-		buildROM.setDescription("Builds SquirrelJME SummerCoat ROM.");
-		buildROM.dependsOn(jarTask);
-		buildROM.doLast((Task __task) ->
-			{throw new Error("TODO");});
+		// Generate the list of tests that are available
+		Task gtl = __project.getTasks().create("generateTestsList",
+			GenerateTestsListTask.class,
+			(ProcessResources)processTestResources);
 		
-		// Launch application in the SummerCoat VM!
-		Task launchSummer = __project.getTasks()
-			.create("runSummerCoat");
-		launchSummer.setGroup("squirreljme");
-		launchSummer.setDescription("Runs via SquirrelJME SummerCoat.");
-		launchSummer.dependsOn(buildROM, ":emulators:summercoat-vm:jar");
-		launchSpring.onlyIf((Task __task) ->
-			SquirrelJMEPluginConfiguration.isApplication(__project));
-		launchSummer.doLast((Task __task) ->
-			new __RunSummerCoatApplication__(__project).run());
+		// Add SquirrelJME properties to the manifest
+		Task sjp = __project.getTasks().create("additionalJarProperties",
+			AdditionalManifestPropertiesTask.class,
+			(Jar)jarTask, (ProcessResources)processResources);
 		
 		// List error codes used by projects
 		Task listErrorCodes = __project.getTasks()
@@ -120,162 +111,5 @@ public class SquirrelJMEPlugin
 		nextError.setDescription("Returns the next free error code.");
 		nextError.doLast((Task __task) ->
 			System.out.println(new ErrorListManager(__project).next()));
-		
-		// Un-MIME the resource files (main code)
-		Task unMimeResources = __project.getTasks()
-			.create("unMimeResources");
-		unMimeResources.setGroup("squirreljme");
-		unMimeResources.setDescription("MIME decodes resources.");
-		inputAllResourceFiles(unMimeResources, __project, "main");
-		unMimeResources.doLast(
-			new UnMimeResourcesTask(__project, "main"));
-			
-		// Resource processing task
-		Task processResources = __project.getTasks().
-			getByName("processResources");
-		processResources.dependsOn(unMimeResources);
-		
-		// Un-MIME the resource files (main code)
-		Task unMimeTestResources = __project.getTasks()
-			.create("unMimeTestResources");
-		unMimeTestResources.setGroup("squirreljme");
-		unMimeTestResources.setDescription("MIME decodes test resources.");
-		inputAllResourceFiles(unMimeTestResources, __project, "test");
-		unMimeTestResources.doLast(
-			new UnMimeResourcesTask(__project, "test"));
-		
-		// Generate test resources
-		Task genTestMeta = __project.getTasks()
-			.create("generateTestMetadata");
-		genTestMeta.setGroup("squirreljme");
-		genTestMeta.setDescription("Generates extra test resources.");
-		genTestMeta.dependsOn(unMimeTestResources);
-		inputAllSourceFiles(genTestMeta, __project, "test");
-		genTestMeta.doLast((Task __task) ->
-			this.__generateTestMetadata(__project));
-		
-		// Test resource processing task
-		Task processTestResources = __project.getTasks().
-			getByName("processTestResources");
-		processTestResources.dependsOn(genTestMeta);
-	}
-	
-	/**
-	 * Generates needed test metadata.
-	 *
-	 * @param __project The project to run.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/23
-	 */
-	private void __generateTestMetadata(Project __project)
-		throws NullPointerException
-	{
-		if (__project == null)
-			throw new NullPointerException("No project specified.");
-		
-		// Where our resources go
-		Path genResourceRoot = __project.getBuildDir().toPath()
-			.resolve("generated-test-resources");
-		
-		// Process source files
-		try
-		{
-			// Make sure the directory exists
-			Files.createDirectories(genResourceRoot);
-			
-			// Discovered test
-			List<String> tests = new LinkedList<>();
-			
-			// If there are no tests, then do not bother with this step
-			Path srcRoot = __project.getProjectDir().toPath()
-				.resolve("src").resolve("test").resolve("java");
-			if (!Files.exists(srcRoot))
-				return;
-			
-			// Walk the file
-			Files.walk(srcRoot).forEach(
-				(Path __visit) ->
-				{
-					// Ignore directories
-					if (Files.isDirectory(__visit))
-						return;
-					
-					// Only consider Java source files
-					if (!__visit.toString().endsWith(".java"))
-						return;
-					
-					// Only consider tests of a certain name
-					String fileName = __visit.getFileName().toString();
-					if (!fileName.startsWith("Test") &&
-						!fileName.startsWith("Do"))
-						return;
-					
-					// Store the class name
-					String baseName = srcRoot.relativize(__visit).toString();
-					tests.add(baseName.substring(
-						0, baseName.length() - ".java".length())
-						.replace('\\', '.')
-						.replace('/', '.'));
-				});
-				
-			// Make services directory
-			Path servicesPath = genResourceRoot.resolve("META-INF")
-				.resolve("services");
-			Files.createDirectories(servicesPath);
-			
-			// Write test file
-			Files.write(
-				servicesPath.resolve("net.multiphasicapps.tac.TestInterface"),
-				tests, StandardOpenOption.WRITE, StandardOpenOption.CREATE,
-				StandardOpenOption.TRUNCATE_EXISTING);
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(String.format(
-				"Failed to generate metadata for %s.",
-				__project.getName()), e);
-		}
-	}
-	
-	/**
-	 * Sets the input of a task to be all the source files.
-	 *
-	 * @param __task The task to define.
-	 * @param __project The project.
-	 * @param __group Which group are we concerned with?
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/27
-	 */
-	public static void inputAllSourceFiles(Task __task, Project __project,
-		String __group)
-		throws NullPointerException
-	{
-		if (__task == null || __project == null || __group == null)
-			throw new NullPointerException("No task or project specified.");
-		
-		__task.getInputs().files(__project.getConvention().getPlugin(
-			JavaPluginConvention.class).getSourceSets().
-			getByName(__group).getAllJava());
-	}
-	
-	/**
-	 * Sets the input of a task to be all the resource files.
-	 *
-	 * @param __task The task to define.
-	 * @param __project The project.
-	 * @param __group Which group are we concerned with?
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/27
-	 */
-	public static void inputAllResourceFiles(Task __task, Project __project,
-		String __group)
-		throws NullPointerException
-	{
-		if (__task == null || __project == null || __group == null)
-			throw new NullPointerException("No task or project specified.");
-		
-		__task.getInputs().files(__project.getConvention().getPlugin(
-			JavaPluginConvention.class).getSourceSets().
-			getByName(__group).getResources());
 	}
 }

@@ -6,6 +6,7 @@ description = "This provides support for provisioning new " +
 	"way as a remote application downloader and installerexcept by a more " +
 	"concrete means. It is possible for applicationsto automatically be " +
 	"updated."
+version = rootProject.version
 
 squirreljme
 {

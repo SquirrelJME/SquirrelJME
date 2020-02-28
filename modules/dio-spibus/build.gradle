@@ -2,6 +2,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides access to the SPI bus."
+version = rootProject.version
 
 squirreljme
 {

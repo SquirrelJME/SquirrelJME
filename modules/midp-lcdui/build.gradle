@@ -5,6 +5,7 @@ description = "This contains the standard MIDP LCD User " +
  "Interface which uses graphical text, widgets, and images to interact " +
  "with the user. Unlike the MEEP Line User Interface, this requires a " +
  "much more capable graphical system."
+version = rootProject.version
 
 squirreljme
 {

@@ -84,6 +84,26 @@ public class SquirrelJMEPluginConfiguration
 	}
 	
 	/**
+	 * Gets the configuration from the given project.
+	 *
+	 * @param __proj The project to get the config from.
+	 * @return The resulting configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/28
+	 */
+	public static SquirrelJMEPluginConfiguration configuration(Project __proj)
+		throws NullPointerException
+	{
+		if (__proj == null)
+			throw new NullPointerException("No project specified.");
+			
+		// Find our config
+		return __proj.getExtensions()
+			.<SquirrelJMEPluginConfiguration>getByType(
+				SquirrelJMEPluginConfiguration.class);
+	}
+	
+	/**
 	 * Is this a SquirrelJME application?
 	 *
 	 * @param __project The project to check.
@@ -94,14 +114,7 @@ public class SquirrelJMEPluginConfiguration
 	public static boolean isApplication(Project __project)
 		throws NullPointerException
 	{
-		if (__project == null)
-			throw new NullPointerException("No project specified.");
-			
-		// Find our config
-		SquirrelJMEPluginConfiguration config = __project.getExtensions()
-			.<SquirrelJMEPluginConfiguration>getByType(
-				SquirrelJMEPluginConfiguration.class);
-		
-		return config.swmType == JavaMEMidletType.APPLICATION;
+		return configuration(__project).swmType ==
+			JavaMEMidletType.APPLICATION;
 	}
 }

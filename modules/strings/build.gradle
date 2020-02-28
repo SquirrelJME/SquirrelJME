@@ -2,6 +2,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project contains basic string utilities " +
 	"which are useful when parsing strings."
+version = rootProject.version
 
 squirreljme
 {

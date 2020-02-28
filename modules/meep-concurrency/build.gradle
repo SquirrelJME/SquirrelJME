@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEStandard
 
 description = "The concurrency APIs allows multiple applications to run " +
 	"at the same time."
+version = rootProject.version
 
 squirreljme
 {

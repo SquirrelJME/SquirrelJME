@@ -1,13 +1,17 @@
 package cc.squirreljme.emulator;
 
-import org.testng.IAlterSuiteListener;
-import org.testng.xml.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import org.testng.IAlterSuiteListener;
+import org.testng.xml.XmlClass;
+import org.testng.xml.XmlSuite;
+import org.testng.xml.XmlTest;
 
 /**
  * Alters suite names.

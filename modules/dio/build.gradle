@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEStandard
 
 description = "This provides the base support for devices " +
 	"that may be provided by an implementation."
+version = rootProject.version
 
 squirreljme
 {

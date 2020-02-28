@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 description = "This project contains a formatted markdown " +
 	"writer which allows documents to be written to a standard stream yet " +
 	"have state on which properties to apply to the output."
+version = rootProject.version
 
 squirreljme
 {

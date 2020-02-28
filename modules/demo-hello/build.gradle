@@ -2,6 +2,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This is a basic demo which prints a hello " +
 	"message and prints some details about the virtual machine."
+version = rootProject.version
 
 squirreljme
 {

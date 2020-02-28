@@ -2,6 +2,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 
 description = "This project contains the base support needed " +
 	"for OpenGL ES 1.1 functionality defined by JSR 239."
+version = rootProject.version
 
 squirreljme
 {

@@ -10,7 +10,12 @@
 
 package cc.squirreljme.plugin;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 
 /**
  * This class is used to decode input streams which have been encoded in the

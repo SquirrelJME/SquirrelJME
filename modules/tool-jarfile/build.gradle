@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.JavaMEMidletType
 description = "This project takes input Jar files and " +
 	"compiles/converts them into a format that is more easily used by " +
 	"SummerCoat and RatufaCoat."
+version = rootProject.version
 
 squirreljme
 {

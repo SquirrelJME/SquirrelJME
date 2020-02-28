@@ -2,7 +2,9 @@ package cc.squirreljme.emulator;
 
 import net.multiphasicapps.tac.TestExecution;
 import net.multiphasicapps.tac.TestInterface;
-import org.testng.*;
+import org.testng.Assert;
+import org.testng.SkipException;
+import org.testng.TestException;
 import org.testng.annotations.Test;
 
 /**
