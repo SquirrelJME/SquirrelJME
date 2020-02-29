@@ -1,20 +1,34 @@
 package cc.squirreljme.plugin.tasks;
 
-import cc.squirreljme.plugin.JavaMEMidlet;
-import cc.squirreljme.plugin.JavaMEMidletType;
+import cc.squirreljme.plugin.swm.JavaMEConfiguration;
+import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import cc.squirreljme.plugin.swm.JavaMEMidletType;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.swm.JavaMEStandard;
+import cc.squirreljme.plugin.swm.SuiteDependency;
+import cc.squirreljme.plugin.swm.SuiteDependencyLevel;
+import cc.squirreljme.plugin.swm.SuiteDependencyType;
+import cc.squirreljme.plugin.swm.SuiteName;
+import cc.squirreljme.plugin.swm.SuiteVendor;
 import cc.squirreljme.plugin.swm.SuiteVersion;
+import cc.squirreljme.plugin.swm.SuiteVersionRange;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.TreeMap;
 import java.util.jar.Attributes;
 import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ModuleDependency;
 import org.gradle.api.file.FileCollection;
@@ -160,28 +174,114 @@ public class AdditionalManifestPropertiesTask
 					__delimate(config.definedStandards, ' '));
 		}
 		
-		// Put implementation dependencies into the project
-		for (Dependency dependency : project.getConfigurations().
-			getByName("runtimeClasspath").getDependencies())
+		// Find all module dependencies
+		Map<String, ModuleDependency> dependencies = new TreeMap<>();
+		for (String configurationName : Arrays.<String>asList(
+				"api", "implementation"))
 		{
-			// Only use module dependencies
-			if (!(dependency instanceof ModuleDependency))
+			// The configuration might not even exist
+			Configuration buildConfig = project.getConfigurations()
+				.findByName(configurationName);
+			if (buildConfig == null)
 				continue;
 			
-			ModuleDependency onModule = (ModuleDependency)dependency;
-			
+			// Add all module based dependencies
+			for (Dependency dependency : buildConfig.getDependencies())
+				if (dependency instanceof ModuleDependency)
+				{
+					ModuleDependency mod = (ModuleDependency)dependency;
+					
+					dependencies.put(mod.getName(), mod);
+				}
+		}
+		
+		// Put in as many dependencies as possible
+		int normalDep = 1;
+		for (ModuleDependency dependency : dependencies.values())
+		{
 			// Find the associated project
-			Project subProject = project.findProject(onModule.getName());
+			Project subProject = project.findProject(dependency.getName());
 			if (subProject == null)
-				throw new RuntimeException(String.format(
-					"Module %s does not exist?", onModule));
+			{
+				// Does it exist in the parent?
+				Project parent = project.getParent();
+				if (parent != null)
+					subProject = parent.findProject(dependency.getName());
+				
+				// Really does not exist
+				if (subProject == null)
+					throw new RuntimeException(String.format(
+						"Module %s (%s %s) does not exist?", dependency,
+						dependency.getName()));
+			}
 			
 			// Get the project config
 			SquirrelJMEPluginConfiguration subConfig =
 				SquirrelJMEPluginConfiguration.configuration(subProject);
 			
-			System.err.printf("%s -> %s%n", project.getName(),
-				subProject.getName());
+			// The dependency being constructed (which might be added)
+			SuiteDependency suiteDependency = null;
+			boolean didDepend = false;
+			
+			// Nothing can depend on a MIDlet!
+			if (subConfig.swmType == JavaMEMidletType.APPLICATION)
+				throw new RuntimeException(String.format(
+					"Project %s cannot depend on application %s.",
+						project.getName(), subProject.getName()));
+			
+			// This is another library
+			else if (subConfig.swmType == JavaMEMidletType.LIBRARY)
+				suiteDependency = new SuiteDependency(
+					SuiteDependencyType.LIBLET,
+					SuiteDependencyLevel.REQUIRED,
+					new SuiteName(subConfig.swmName),
+					new SuiteVendor(subConfig.swmVendor),
+					SuiteVersionRange.exactly(new SuiteVersion(
+						subProject.getVersion().toString())));
+			
+			// Is otherwise an API
+			else
+			{
+				// Configuration specified?
+				try
+				{
+					attributes.putValue("Microedition-Configuration",
+						Collections.max(subConfig.definedConfigurations)
+							.toString());
+					didDepend = true;
+				}
+				catch (NoSuchElementException e)
+				{
+					// Ignore
+				}
+				
+				// Profile specified?
+				try
+				{
+					attributes.putValue("Microedition-Profile",
+						Collections.max(subConfig.definedProfiles).toString());
+					didDepend = true;
+				}
+				catch (NoSuchElementException e)
+				{
+					// Ignore
+				}
+			}
+			
+			// Unknown, do a generic project dependency
+			if (!didDepend && suiteDependency == null)
+				suiteDependency = new SuiteDependency(
+					SuiteDependencyType.PROPRIETARY,
+					SuiteDependencyLevel.REQUIRED,
+					new SuiteName("squirreljme.project@" +
+						subProject.getName()),
+					null,
+					null);
+			
+			// Write out the dependency if one was requested
+			if (suiteDependency != null)
+				attributes.putValue(type.dependencyKey(normalDep++),
+					suiteDependency.toString());
 		}
 		
 		// Write the manifest output

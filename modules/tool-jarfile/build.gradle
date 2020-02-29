@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This project takes input Jar files and " +
 	"compiles/converts them into a format that is more easily used by " +

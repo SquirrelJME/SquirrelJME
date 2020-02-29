@@ -1,5 +1,6 @@
 package cc.squirreljme.plugin;
 
+import cc.squirreljme.plugin.util.CommentReader;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceTask;
 

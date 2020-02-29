@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin;
+package cc.squirreljme.plugin.swm;
 
 /**
  * Represents the type of MIDlet a program is.

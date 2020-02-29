@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This project contains the base support needed " +
 	"for OpenGL ES 1.1 functionality defined by JSR 239."

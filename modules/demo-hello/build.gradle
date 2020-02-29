@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This is a basic demo which prints a hello " +
 	"message and prints some details about the virtual machine."

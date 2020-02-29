@@ -70,11 +70,12 @@ public enum SuiteDependencyLevel
 	 *
 	 * @param __s The input string to parse.
 	 * @return The dependency level for the given string.
+	 * @throws IllegalArgumentException If the level is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
 	public static SuiteDependencyLevel of(String __s)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -86,9 +87,10 @@ public enum SuiteDependencyLevel
 			case "required":	return REQUIRED;
 			case "optional":	return OPTIONAL;
 			
-				// Should not happen
+				// {@squirreljme.error DG82 Invalid dependency level. (Level)}
 			default:
-				throw new todo.OOPS();
+				throw new IllegalArgumentException(String.format(
+					"DG82 %s", __s));
 		}
 	}
 }

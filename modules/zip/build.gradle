@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "The library contains the support for ZIP " +
 	"files and any data interfaces needed for ZIP files."

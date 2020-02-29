@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This project contains the testing, acceptance, "+
 	"and comparison framework which is used to test and compare differring " +

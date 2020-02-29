@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This project contains the implementation of " +
 	"the MIDP 3.0 Media API which is also specified in JSR 135."
