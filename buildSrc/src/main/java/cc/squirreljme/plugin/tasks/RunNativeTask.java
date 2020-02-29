@@ -144,8 +144,10 @@ public class RunNativeTask
 					
 					// Set the classpath needed
 					__spec.classpath(
-						((Jar)project.getTasks().getByName("jar")).
-							getOutputs().getFiles(),
+						((Jar)project.getTasks().getByName("jar"))
+							.getOutputs().getFiles(),
+						((Jar)emuBase.getTasks().getByName("jar"))
+							.getOutputs().getFiles(),
 						RunNativeTask.__projectClassPath(project),
 						RunNativeTask.__projectClassPath(emuBase));
 				});

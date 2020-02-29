@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
+import cc.squirreljme.runtime.cldc.Poking;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
@@ -969,6 +970,9 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
+		// Poke the VM to initialize things potentially
+		Poking.poke();
+		
 		// Create initial display?
 		Display d = Display._DISPLAY;
 		if (d == null)

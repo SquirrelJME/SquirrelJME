@@ -9,6 +9,8 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.Poking;
+
 /**
  * This class
  *
@@ -30,6 +32,9 @@ final class __MainHandler__
 		if (__args == null || __args.length < 1 || __args[0] == null)
 			throw new IllegalArgumentException("AD02");
 		
+		// We might be on the emulator
+		Poking.poke();
+		
 		// Locate the main class before we initialize it
 		Class<?> classType;
 		try
@@ -39,7 +44,8 @@ final class __MainHandler__
 		catch (ClassNotFoundException e)
 		{
 			// {@squirreljme.error AD03 Could not find main MIDlet. (Class)}
-			throw new RuntimeException(String.format("AD03 %s", __args[0]), e);
+			throw new RuntimeException(String.format(
+				"AD03 %s", __args[0]), e);
 		}
 		
 		// Create instance of the MIDlet
