@@ -64,7 +64,7 @@ public enum PalmDatabaseAttribute
 	/**
 	 * Initializes the attribute.
 	 *
-	 * @param __b The bit used.
+	 * @param __bit The bit used.
 	 * @since 2019/07/13
 	 */
 	private PalmDatabaseAttribute(int __bit)
