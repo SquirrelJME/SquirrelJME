@@ -443,7 +443,7 @@ public interface EGL10
 	 * 5. Smaller {@link #EGL_DEPTH_SIZE}.
 	 * 6. Smaller {@link #EGL_STENCIL_SIZE}.
 	 * 7. Platform dependent {@link #EGL_NATIVE_VISUAL_TYPE}.
-	 * 8. Smaller {@link EGL_CONFIG_ID}.
+	 * 8. Smaller {@link #EGL_CONFIG_ID}.
 	 * 9. Other attributes are not considered.
 	 *
 	 * The following errors are set:

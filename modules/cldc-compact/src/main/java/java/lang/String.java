@@ -361,6 +361,7 @@ public final class String
 			throw new NullPointerException("NARG");
 		
 		// Refers to the same exact string?
+		//noinspection StringEquality
 		if (this == __o)
 			return 0;
 		
@@ -407,6 +408,7 @@ public final class String
 			throw new NullPointerException("NARG");
 		
 		// Refers to the same exact string?
+		//noinspection StringEquality
 		if (this == __o)
 			return 0;
 		

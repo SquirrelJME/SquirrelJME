@@ -14,5 +14,5 @@
  * @since 2016/10/12
  */
 
-package cc.squirreljme.gcf;
+package cc.squirreljme.runtime.gcf;
 
