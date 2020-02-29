@@ -16,9 +16,9 @@ import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMNativeDisplayAccess;
-import cc.squirreljme.vm.VMResourceAccess;
-import cc.squirreljme.vm.VMSuiteManager;
-import cc.squirreljme.vm.VirtualMachine;
+import cc.squirreljme.emulator.vm.VMResourceAccess;
+import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.emulator.vm.VirtualMachine;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -30,7 +30,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
-import net.multiphasicapps.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**

@@ -8,12 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm;
+package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.InvalidPathException;
@@ -23,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import net.multiphasicapps.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 

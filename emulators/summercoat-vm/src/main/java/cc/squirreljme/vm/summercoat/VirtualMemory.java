@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.vm.VMException;
+import cc.squirreljme.emulator.vm.VMException;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -10,7 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.vm.VMException;
+import cc.squirreljme.emulator.vm.VMException;
 
 /**
  * This is an exception in SummerCoat which is translated to an exception

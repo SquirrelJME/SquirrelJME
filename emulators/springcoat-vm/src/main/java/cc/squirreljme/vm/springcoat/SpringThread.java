@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
-import net.multiphasicapps.profiler.ProfiledThread;
+import cc.squirreljme.emulator.profiler.ProfiledThread;
 
 /**
  * This class contains information about a thread within the virtual machine.

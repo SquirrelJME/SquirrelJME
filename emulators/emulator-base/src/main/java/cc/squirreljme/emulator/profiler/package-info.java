@@ -8,24 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm;
-
 /**
- * This interface represents the virtual machine which may be executed
- * accordingly.
+ * This package contains the profiler or rather the code which supports the
+ * generation of profiling snapshots which can be used to measure performance
+ * and such.
  *
- * @since 2018/11/17
+ * @since 2018/11/10
  */
-public interface VirtualMachine
-{
-	/**
-	 * Runs the virtual machine.
-	 *
-	 * @return The exit code of the virtual machine.
-	 * @throws VMException If the VM threw an exception.
-	 * @since 2018/11/17
-	 */
-	int runVm()
-		throws VMException;
-}
+
+package cc.squirreljme.emulator.profiler;
 

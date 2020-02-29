@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.profiler;
+package cc.squirreljme.emulator.profiler;
 
 import java.util.Deque;
 import java.util.LinkedHashMap;
