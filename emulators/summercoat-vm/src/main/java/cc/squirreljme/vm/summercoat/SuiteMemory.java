@@ -10,8 +10,8 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.vm.VMClassLibrary;
-import cc.squirreljme.vm.VMException;
-import cc.squirreljme.vm.VMSuiteManager;
+import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.emulator.vm.VMSuiteManager;
 import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import java.io.IOException;

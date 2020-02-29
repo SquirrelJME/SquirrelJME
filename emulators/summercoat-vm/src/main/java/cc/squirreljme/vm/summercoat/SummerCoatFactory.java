@@ -12,10 +12,10 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.ConfigRomType;
 import cc.squirreljme.vm.VMClassLibrary;
-import cc.squirreljme.vm.VMException;
-import cc.squirreljme.vm.VMFactory;
-import cc.squirreljme.vm.VMSuiteManager;
-import cc.squirreljme.vm.VirtualMachine;
+import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.emulator.vm.VMFactory;
+import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.emulator.vm.VirtualMachine;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
-import net.multiphasicapps.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 
 /**
  * This is the factory which is capable of creating instances of the

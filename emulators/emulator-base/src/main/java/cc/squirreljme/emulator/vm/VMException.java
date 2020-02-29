@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm;
+package cc.squirreljme.emulator.vm;
 
 /**
  * Base class for exceptions in the virtual machine.

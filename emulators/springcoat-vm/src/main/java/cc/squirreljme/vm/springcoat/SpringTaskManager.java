@@ -14,13 +14,13 @@ import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMNativeDisplayAccess;
-import cc.squirreljme.vm.VMSuiteManager;
+import cc.squirreljme.emulator.vm.VMSuiteManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.swm.TaskStatus;
-import net.multiphasicapps.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**

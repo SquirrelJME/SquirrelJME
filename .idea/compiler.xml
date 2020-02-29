@@ -71,6 +71,8 @@
       <module name="squirreljme.modules.tool-manifest-reader.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-writer.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-packfile.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.tool-profiler.main" target="1.7" />
+      <module name="squirreljme.modules.tool-profiler.test" target="1.7" />
       <module name="squirreljme.modules.tool-profiler.testFixtures" target="1.7" />
       <module name="squirreljme.modules.vodafone-api.testFixtures" target="1.7" />
       <module name="squirreljme.modules.zip.testFixtures" target="1.7" />

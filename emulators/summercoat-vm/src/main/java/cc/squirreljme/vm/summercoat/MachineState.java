@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import net.multiphasicapps.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 
 /**
  * This contains the machine state.

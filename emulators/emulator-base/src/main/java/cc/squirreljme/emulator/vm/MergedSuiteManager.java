@@ -8,8 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm;
+package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.vm.VMClassLibrary;
 import java.util.LinkedHashSet;
 import java.util.Set;
 

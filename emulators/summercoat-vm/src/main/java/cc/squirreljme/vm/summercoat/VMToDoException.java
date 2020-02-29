@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.vm.VMException;
+import cc.squirreljme.emulator.vm.VMException;
 
 /**
  * This is thrown when incomplete code has been reached.

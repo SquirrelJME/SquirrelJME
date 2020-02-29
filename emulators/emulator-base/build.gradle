@@ -18,9 +18,23 @@ dependencies
 {
 	// We need these two modules to obtain the SquirrelJME specific classes
 	compileClasspath project(":modules:cldc-compact")
+	compileClasspath project(":modules:cldc")
+	compileClasspath project(":modules:common-vm")
+	compileClasspath project(":modules:io")
+	compileClasspath project(":modules:meep-swm")
 	compileClasspath project(":modules:tac")
+	compileClasspath project(":modules:tool-manifest-reader")
+	compileClasspath project(":modules:zip")
+
+	// And for run-time to be able to be ran
 	runtimeClasspath project(":modules:cldc-compact")
+	runtimeClasspath project(":modules:cldc")
+	runtimeClasspath project(":modules:common-vm")
+	runtimeClasspath project(":modules:io")
+	runtimeClasspath project(":modules:meep-swm")
 	runtimeClasspath project(":modules:tac")
+	runtimeClasspath project(":modules:tool-manifest-reader")
+	runtimeClasspath project(":modules:zip")
 	
 	// SquirrelJME just uses TestNG here since it is flexible enough to
 	// support how SquirrelJME needs to be (testing more as if it were running

@@ -11,12 +11,12 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.vm.VMClassLibrary;
-import cc.squirreljme.vm.VMException;
-import cc.squirreljme.vm.VMFactory;
-import cc.squirreljme.vm.VMSuiteManager;
-import cc.squirreljme.vm.VirtualMachine;
+import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.emulator.vm.VMFactory;
+import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.emulator.vm.VirtualMachine;
 import java.util.Map;
-import net.multiphasicapps.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 
 /**
  * Factory which creates instances of the SpringCoat virtual machine.
