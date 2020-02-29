@@ -2,8 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="squirreljme.emulators.emulator-base.main" target="8" />
-      <module name="squirreljme.emulators.emulator-base.test" target="8" />
       <module name="squirreljme.emulators.emulator-runner.main" target="8" />
       <module name="squirreljme.emulators.emulator-runner.test" target="8" />
       <module name="squirreljme.main" target="1.7" />
