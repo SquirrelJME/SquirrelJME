@@ -10,6 +10,8 @@
 
 package todo;
 
+import cc.squirreljme.runtime.cldc.Poking;
+
 /**
  * This class contains static methods for debug printing messages as needed.
  *
@@ -17,6 +19,12 @@ package todo;
  */
 public final class DEBUG
 {
+	static
+	{
+		// Poke native VM stuff to make sure it exists before we try to use it
+		Poking.poke();
+	}
+	
 	/**
 	 * Not used.
 	 *
