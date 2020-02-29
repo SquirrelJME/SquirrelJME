@@ -9,10 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.VMException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

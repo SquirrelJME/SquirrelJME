@@ -9,7 +9,6 @@
 
 package dev.shadowtail.packfile;
 
-import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
@@ -17,17 +16,8 @@ import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.io.TableSectionOutputStream;
 

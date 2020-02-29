@@ -1,10 +1,8 @@
 package cc.squirreljme.plugin.tasks;
 
-import cc.squirreljme.plugin.swm.JavaMEConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
-import cc.squirreljme.plugin.swm.JavaMEStandard;
 import cc.squirreljme.plugin.swm.SuiteDependency;
 import cc.squirreljme.plugin.swm.SuiteDependencyLevel;
 import cc.squirreljme.plugin.swm.SuiteDependencyType;
@@ -211,7 +209,7 @@ public class AdditionalManifestPropertiesTask
 				// Really does not exist
 				if (subProject == null)
 					throw new RuntimeException(String.format(
-						"Module %s (%s %s) does not exist?", dependency,
+						"Module %s (%s) does not exist?", dependency,
 						dependency.getName()));
 			}
 			

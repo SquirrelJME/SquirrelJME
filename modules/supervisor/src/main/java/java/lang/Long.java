@@ -9,8 +9,6 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-
 /**
  * This represents a boxed long value.
  *

@@ -10,7 +10,6 @@
 
 package cc.squirreljme.runtime.cldc.annotation;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

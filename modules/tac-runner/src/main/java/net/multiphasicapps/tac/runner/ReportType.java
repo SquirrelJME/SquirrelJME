@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.tac.runner;
 
-import java.io.PrintStream;
-
 /**
  * Represents the type of report to make.
  *

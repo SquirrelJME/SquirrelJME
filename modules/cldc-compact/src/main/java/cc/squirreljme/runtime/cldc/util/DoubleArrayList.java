@@ -90,7 +90,7 @@ public class DoubleArrayList
 	public double set(int __i, double __v)
 		throws IndexOutOfBoundsException
 	{
-		return this.set(__i, __v);
+		return this.set(__i, Double.valueOf(__v));
 	}
 	
 	/**

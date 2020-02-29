@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.cldc.asm;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 
 /**

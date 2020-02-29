@@ -12,14 +12,8 @@ package net.multiphasicapps.javac.syntax;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.FieldName;
-import net.multiphasicapps.javac.token.BufferedTokenSource;
-import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
-import net.multiphasicapps.javac.token.TokenType;
 
 /**
  * This represents a single formal parameter which may be a part of a class.

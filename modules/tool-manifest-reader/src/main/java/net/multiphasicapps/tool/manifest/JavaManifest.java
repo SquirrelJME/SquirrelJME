@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.AbstractMap;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

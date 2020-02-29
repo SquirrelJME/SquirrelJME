@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.javac.structure;
 
-import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
 import net.multiphasicapps.javac.syntax.TypeSyntax;
 

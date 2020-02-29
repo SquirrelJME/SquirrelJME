@@ -11,8 +11,6 @@
 package cc.squirreljme.runtime.cldc.io;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * This contains the code used to obtain the default encoding as well as

@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.cldc.full;
 
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
-import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;

@@ -10,9 +10,6 @@
 
 package dev.shadowtail.classfile.nncc;
 
-import dev.shadowtail.classfile.nncc.NearNativeByteCodeHandler;
-import dev.shadowtail.classfile.xlate.ByteCodeProcessor;
-import java.util.Collection;
 import java.util.Iterator;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.collections.UnmodifiableIterator;

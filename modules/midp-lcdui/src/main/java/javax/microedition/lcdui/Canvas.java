@@ -11,12 +11,9 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
-import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
-import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**

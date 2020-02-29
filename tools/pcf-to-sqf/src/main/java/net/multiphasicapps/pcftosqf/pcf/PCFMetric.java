@@ -14,7 +14,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 
 /**
  * This contains a single metric within a PCF file.

@@ -12,8 +12,6 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class is the base class for all types which are thrown, itself being a

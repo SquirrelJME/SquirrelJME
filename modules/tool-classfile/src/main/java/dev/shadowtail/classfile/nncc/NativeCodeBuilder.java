@@ -12,7 +12,6 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
-import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 
 /**

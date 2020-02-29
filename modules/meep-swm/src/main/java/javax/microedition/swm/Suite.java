@@ -12,30 +12,19 @@ package javax.microedition.swm;
 
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import cc.squirreljme.runtime.swm.DependencyInfo;
-import cc.squirreljme.runtime.swm.EntryPoint;
-import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.runtime.swm.MatchResult;
-import cc.squirreljme.runtime.swm.ProvidedInfo;
 import cc.squirreljme.runtime.swm.SuiteInfo;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
-import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
-import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
  * This represents an application suite.

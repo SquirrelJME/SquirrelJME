@@ -13,9 +13,7 @@ package net.multiphasicapps.classfile;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Deque;
 
 /**
  * This class decodes the constant pool and provides generic access to the

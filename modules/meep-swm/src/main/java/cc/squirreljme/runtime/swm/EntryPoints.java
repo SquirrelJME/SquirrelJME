@@ -12,8 +12,6 @@ package cc.squirreljme.runtime.swm;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;

@@ -14,7 +14,6 @@ import java.io.Closeable;
 import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.DynamicHistoryInputStream;
 import net.multiphasicapps.io.ExtendedDataInputStream;
@@ -236,7 +235,7 @@ public class ZipStreamReader
 			// {@squirreljme.error BF13 Compression method not supported.
 			// (The method)}
 			if (defer == null && deny)
-				defer = new ZipException(String.format("BF13 %d", cmeth));
+				defer = new ZipException(String.format("BF13 %s", cmeth));
 			
 			// Read CRC32
 			int crc = __readInt(localheader, 14);

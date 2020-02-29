@@ -10,15 +10,12 @@
 
 package java.util;
 
-import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.Set;
-import java.util.LinkedHashSet;
 
 /**
  * The service loader is used to lookup services which may be defined in the

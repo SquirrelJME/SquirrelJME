@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
-
 /**
  * This is the base class for all user interactable displays.
  *

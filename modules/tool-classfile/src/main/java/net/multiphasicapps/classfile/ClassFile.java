@@ -15,10 +15,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.io.SizeLimitedInputStream;
 
@@ -107,7 +104,8 @@ public final class ClassFile
 		ClassName objectcn = new ClassName("java/lang/Object");
 		if ((__tn.isPrimitive() ||
 			__tn.equals(objectcn)) != (__sn == null))
-			throw new InvalidClassFormatException(String.format("JC29 %s %s",
+			throw new InvalidClassFormatException(String.format(
+				"JC29 %s %s %s %s",
 				__tn, __sn, objectcn, __tn.isPrimitive()));
 		
 		// Set

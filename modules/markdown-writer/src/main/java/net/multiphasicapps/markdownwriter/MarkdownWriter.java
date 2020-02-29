@@ -13,10 +13,7 @@ package net.multiphasicapps.markdownwriter;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.Writer;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Formatter;
 import java.util.Objects;
 

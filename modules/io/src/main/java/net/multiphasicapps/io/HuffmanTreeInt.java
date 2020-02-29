@@ -11,8 +11,6 @@
 package net.multiphasicapps.io;
 
 import java.io.IOException;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**

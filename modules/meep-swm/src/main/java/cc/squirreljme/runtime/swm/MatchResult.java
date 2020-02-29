@@ -10,11 +10,6 @@
 
 package cc.squirreljme.runtime.swm;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
-import net.multiphasicapps.collections.EmptySet;
-
 /**
  * This class contains the results of a dependency match.
  *

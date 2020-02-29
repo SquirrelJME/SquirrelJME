@@ -11,7 +11,6 @@
 package net.multiphasicapps.squirrelquarrel.ui;
 
 import net.multiphasicapps.squirrelquarrel.world.MegaTile;
-import net.multiphasicapps.squirrelquarrel.world.Tile;
 
 /**
  * This represents a viewport into the level, it does not contain any

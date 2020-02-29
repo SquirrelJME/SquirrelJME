@@ -12,7 +12,6 @@ package todo;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import java.io.PrintStream;
 
 /**

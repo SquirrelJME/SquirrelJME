@@ -13,7 +13,6 @@ package java.lang;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
 public final class Float
 	extends Number

@@ -24,12 +24,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * A {@link String} represents a sequence of characters which make up a group

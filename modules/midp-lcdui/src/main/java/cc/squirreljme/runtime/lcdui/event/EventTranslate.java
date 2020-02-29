@@ -10,7 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.event;
 
-import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import javax.microedition.lcdui.Canvas;
 
 /**

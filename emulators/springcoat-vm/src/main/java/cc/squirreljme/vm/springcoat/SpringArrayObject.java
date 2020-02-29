@@ -12,7 +12,6 @@ package cc.squirreljme.vm.springcoat;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
  * This is an object which acts as an array, which stores some kind of data.

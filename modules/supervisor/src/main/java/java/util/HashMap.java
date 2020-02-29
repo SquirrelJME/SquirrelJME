@@ -9,8 +9,6 @@
 
 package java.util;
 
-import cc.squirreljme.jvm.Assembly;
-
 /**
  * This represents a standard hash map.
  *

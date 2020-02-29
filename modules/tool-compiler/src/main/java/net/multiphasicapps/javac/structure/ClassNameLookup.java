@@ -12,7 +12,6 @@ package net.multiphasicapps.javac.structure;
 
 import net.multiphasicapps.javac.syntax.ClassSyntax;
 import net.multiphasicapps.javac.syntax.TypeParameterSyntax;
-import net.multiphasicapps.javac.syntax.TypeParametersSyntax;
 import net.multiphasicapps.javac.syntax.TypeSyntax;
 
 /**

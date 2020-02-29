@@ -10,7 +10,6 @@
 package net.multiphasicapps.javac;
 
 import java.io.InputStream;
-import java.io.IOException;
 
 /**
  * This is a resource input which uses a class name.

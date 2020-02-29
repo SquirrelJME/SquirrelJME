@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.javac.syntax.AnnotationSyntax;
 import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
-import net.multiphasicapps.javac.syntax.ModifiersSyntax;
 import net.multiphasicapps.javac.syntax.ModifierSyntax;
 
 /**

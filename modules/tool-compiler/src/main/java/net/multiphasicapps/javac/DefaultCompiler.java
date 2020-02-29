@@ -11,7 +11,6 @@
 package net.multiphasicapps.javac;
 
 import java.util.ServiceLoader;
-import net.multiphasicapps.javac.cute.CuteCompiler;
 import net.multiphasicapps.javac.cute.CuteCompilerService;
 
 /**

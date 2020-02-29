@@ -9,7 +9,6 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.jvm.Constants;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

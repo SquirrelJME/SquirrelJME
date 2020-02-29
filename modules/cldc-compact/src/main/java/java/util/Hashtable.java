@@ -12,9 +12,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
-import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySet;
 import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySetNotNull;
-import cc.squirreljme.runtime.cldc.util.SynchronizedSet;
 
 /**
  * This is similar to {@link HashMap} except that it is thread safe and does

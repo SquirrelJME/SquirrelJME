@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.lib;
 
-import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.io.BinaryBlob;
 
 /**

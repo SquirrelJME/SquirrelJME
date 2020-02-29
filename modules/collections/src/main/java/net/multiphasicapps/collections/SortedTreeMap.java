@@ -13,7 +13,6 @@ package net.multiphasicapps.collections;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;

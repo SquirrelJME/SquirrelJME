@@ -3,10 +3,41 @@
     <words>
       <w>bootram</w>
       <w>cldc</w>
+      <w>endianess</w>
+      <w>fprintf</w>
       <w>gawroriski</w>
+      <w>ioob</w>
+      <w>jarray</w>
+      <w>jboolean</w>
+      <w>jbyte</w>
+      <w>jchar</w>
+      <w>jclass</w>
+      <w>jdouble</w>
+      <w>jfield</w>
+      <w>jfloat</w>
+      <w>jint</w>
+      <w>jlong</w>
+      <w>jme's</w>
+      <w>jmethod</w>
+      <w>jnicall</w>
+      <w>jniexport</w>
+      <w>jobject</w>
+      <w>jshort</w>
+      <w>jstring</w>
+      <w>jthrowable</w>
+      <w>jvalue</w>
+      <w>jweak</w>
       <w>multiphasicapps</w>
+      <w>narg</w>
       <w>phasic</w>
+      <w>siii</w>
+      <w>siiii</w>
+      <w>siiiii</w>
+      <w>siiiiii</w>
+      <w>siiiiiii</w>
+      <w>siiiiiiii</w>
       <w>squirreljme</w>
+      <w>stdint</w>
       <w>targetting</w>
       <w>vtable</w>
     </words>

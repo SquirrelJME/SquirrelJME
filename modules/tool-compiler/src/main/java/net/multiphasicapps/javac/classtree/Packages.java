@@ -14,7 +14,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.javac.CompilerException;

@@ -11,7 +11,6 @@
 package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 
 /**

@@ -12,7 +12,6 @@ package java.io;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
-import java.util.Arrays;
 
 /**
  * This is a reader which is backed by a buffer which should increase the

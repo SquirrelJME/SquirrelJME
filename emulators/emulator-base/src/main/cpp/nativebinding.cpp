@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "jni.h"
 #include "cc_squirreljme_emulator_NativeBinding.h"

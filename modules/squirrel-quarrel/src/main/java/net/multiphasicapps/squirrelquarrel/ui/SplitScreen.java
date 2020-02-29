@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.squirrelquarrel.ui;
 
-import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;

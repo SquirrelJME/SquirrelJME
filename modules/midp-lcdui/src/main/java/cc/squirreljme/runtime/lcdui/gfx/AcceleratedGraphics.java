@@ -11,10 +11,6 @@
 package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.Text;
 
 /**
  * This class forwards graphics operations to the host native display API

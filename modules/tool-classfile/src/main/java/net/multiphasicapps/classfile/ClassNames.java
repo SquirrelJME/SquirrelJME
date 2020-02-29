@@ -13,7 +13,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.RandomAccess;
-import net.multiphasicapps.collections.UnmodifiableIterator;
 
 /**
  * Represents multiple class names.

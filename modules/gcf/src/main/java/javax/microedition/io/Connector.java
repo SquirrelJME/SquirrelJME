@@ -14,7 +14,6 @@ import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPClientConnection;
 import cc.squirreljme.runtime.gcf.IPAddress;
 import cc.squirreljme.runtime.gcf.IPConnectionFactory;
-import cc.squirreljme.runtime.gcf.TCPClientConnection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;

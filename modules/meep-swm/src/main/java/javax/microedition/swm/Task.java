@@ -11,8 +11,6 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 /**

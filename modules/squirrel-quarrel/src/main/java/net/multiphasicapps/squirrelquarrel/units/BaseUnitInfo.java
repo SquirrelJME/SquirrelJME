@@ -10,15 +10,9 @@
 
 package net.multiphasicapps.squirrelquarrel.units;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Objects;
 import net.multiphasicapps.squirrelquarrel.util.ConstantFixedPoint;
 import net.multiphasicapps.squirrelquarrel.util.Dimension;
-import net.multiphasicapps.squirrelquarrel.util.FixedPoint;
 import net.multiphasicapps.squirrelquarrel.util.Point;
-import net.multiphasicapps.squirrelquarrel.util.Rectangle;
-import net.multiphasicapps.squirrelquarrel.world.MegaTile;
 import net.multiphasicapps.squirrelquarrel.world.Tile;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;

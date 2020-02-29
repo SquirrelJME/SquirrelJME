@@ -182,7 +182,8 @@ public final class ByteCode
 				// length; The code length; The last operation pointer)}
 				if ((i += oplen) > codelen)
 					throw new InvalidClassFormatException(
-						String.format("JC1z %d %d %d", i, oplen, codelen, li));
+						String.format("JC1z %d %d %d %d",
+							i, oplen, codelen, li));
 			}
 			
 			// The stack map table is used for verification
@@ -801,6 +802,12 @@ public final class ByteCode
 			{
 				case InstructionIndex.ASTORE:
 				case InstructionIndex.WIDE_ASTORE:
+				case InstructionIndex.FSTORE:
+				case InstructionIndex.WIDE_FSTORE:
+				case InstructionIndex.IINC:
+				case InstructionIndex.WIDE_IINC:
+				case InstructionIndex.ISTORE:
+				case InstructionIndex.WIDE_ISTORE:
 					hit = inst.intArgument(0);
 					break;
 				
@@ -813,6 +820,8 @@ public final class ByteCode
 				
 				case InstructionIndex.DSTORE:
 				case InstructionIndex.WIDE_DSTORE:
+				case InstructionIndex.LSTORE:
+				case InstructionIndex.WIDE_LSTORE:
 					hit = inst.intArgument(0);
 					wide = true;
 					break;
@@ -825,11 +834,6 @@ public final class ByteCode
 					wide = true;
 					break;
 				
-				case InstructionIndex.FSTORE:
-				case InstructionIndex.WIDE_FSTORE:
-					hit = inst.intArgument(0);
-					break;
-				
 				case InstructionIndex.FSTORE_0:
 				case InstructionIndex.FSTORE_1:
 				case InstructionIndex.FSTORE_2:
@@ -837,27 +841,11 @@ public final class ByteCode
 					hit = op - InstructionIndex.FSTORE_0;
 					break;
 				
-				case InstructionIndex.IINC:
-				case InstructionIndex.WIDE_IINC:
-					hit = inst.intArgument(0);
-					break;
-				
-				case InstructionIndex.ISTORE:
-				case InstructionIndex.WIDE_ISTORE:
-					hit = inst.intArgument(0);
-					break;
-				
 				case InstructionIndex.ISTORE_0:
 				case InstructionIndex.ISTORE_1:
 				case InstructionIndex.ISTORE_2:
 				case InstructionIndex.ISTORE_3:
 					hit = op - InstructionIndex.ISTORE_0;
-					break;
-				
-				case InstructionIndex.LSTORE:
-				case InstructionIndex.WIDE_LSTORE:
-					hit = inst.intArgument(0);
-					wide = true;
 					break;
 				
 				case InstructionIndex.LSTORE_0:

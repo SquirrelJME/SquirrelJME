@@ -9,8 +9,6 @@
 
 package dev.shadowtail.classfile.xlate;
 
-import net.multiphasicapps.classfile.PrimitiveType;
-
 /**
  * This represents a math operation to be performed.
  *

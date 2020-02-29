@@ -11,7 +11,6 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
 import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;

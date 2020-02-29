@@ -10,10 +10,8 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
-import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import java.io.PrintStream;
 import net.multiphasicapps.classfile.InstructionMnemonics;
 

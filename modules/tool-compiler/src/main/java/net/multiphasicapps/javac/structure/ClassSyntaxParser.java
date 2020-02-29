@@ -16,8 +16,6 @@ import net.multiphasicapps.javac.syntax.ClassConstructorSyntax;
 import net.multiphasicapps.javac.syntax.ClassSyntax;
 import net.multiphasicapps.javac.syntax.MemberSyntax;
 import net.multiphasicapps.javac.syntax.QualifiedIdentifierSyntax;
-import net.multiphasicapps.javac.syntax.TypeParametersSyntax;
-import net.multiphasicapps.javac.syntax.TypeParameterSyntax;
 import net.multiphasicapps.javac.syntax.TypeSyntax;
 
 /**

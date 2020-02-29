@@ -9,8 +9,6 @@
 
 package javax.microedition.rms;
 
-import cc.squirreljme.runtime.rms.VinylLock;
-import cc.squirreljme.runtime.rms.VinylRecord;
 import java.util.ArrayList;
 import java.util.List;
 

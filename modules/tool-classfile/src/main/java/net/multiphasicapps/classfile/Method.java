@@ -18,10 +18,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.collections.UnmodifiableArrayList;
 
 /**
  * This represents a method which is used to execute byte code.
@@ -373,7 +370,7 @@ public final class Method
 			// class; The method name; The method type; The method flags)}
 			if ((code == null) != (flags.isAbstract() | flags.isNative()))
 				throw new InvalidClassFormatException(String.format(
-					"JC3g %s %s %s", __tn, name, type, flags));
+					"JC3g %s %s %s %s", __tn, name, type, flags));
 			
 			// Create
 			rv[i] = new Method(__ver, __cf, __tn, __pool, flags, name, type,

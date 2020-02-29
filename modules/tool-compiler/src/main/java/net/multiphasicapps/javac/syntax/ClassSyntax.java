@@ -14,18 +14,14 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassIdentifier;
-import net.multiphasicapps.classfile.FieldName;
-import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**

@@ -24,16 +24,11 @@ import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
-import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
-import net.multiphasicapps.collections.IntegerList;
-import net.multiphasicapps.io.HexDumpOutputStream;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 import net.multiphasicapps.profiler.ProfiledThread;
 

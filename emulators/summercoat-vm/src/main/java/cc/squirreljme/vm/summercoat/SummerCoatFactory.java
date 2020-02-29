@@ -11,11 +11,6 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.ConfigRomType;
-import cc.squirreljme.jvm.Constants;
-import dev.shadowtail.classfile.mini.MinimizedClassFile;
-import dev.shadowtail.classfile.mini.MinimizedField;
-import dev.shadowtail.classfile.mini.MinimizedMethod;
-import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -33,10 +28,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.io.HexDumpOutputStream;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 
 /**

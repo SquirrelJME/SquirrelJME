@@ -10,9 +10,6 @@
 
 package net.multiphasicapps.squirrelquarrel.world;
 
-import java.io.DataInputStream;
-import java.io.InputStream;
-import java.io.IOException;
 import net.multiphasicapps.squirrelquarrel.game.InitialSettings;
 
 /**

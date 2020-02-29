@@ -12,14 +12,12 @@ package net.multiphasicapps.javac;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
-import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This is used to wrap output to a ZIP file.

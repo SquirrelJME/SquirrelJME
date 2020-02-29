@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Deque;
@@ -87,7 +86,7 @@ __outer:
 				default:
 					if (peek.startsWith("-"))
 						throw new IllegalArgumentException(String.format(
-							"AZ01 %d", peek));
+							"AZ01 %s", peek));
 					break __outer;
 			}
 		}

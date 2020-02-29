@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**

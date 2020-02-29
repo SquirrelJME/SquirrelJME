@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.List;
-
 /**
  * This represents any element which has been annotated.
  *

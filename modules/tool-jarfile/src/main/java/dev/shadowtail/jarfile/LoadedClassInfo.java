@@ -22,7 +22,6 @@ import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.lang.ref.Reference;
@@ -30,13 +29,10 @@ import java.util.Deque;
 import java.util.LinkedList;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;
-import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
-import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * Boot information for a class.

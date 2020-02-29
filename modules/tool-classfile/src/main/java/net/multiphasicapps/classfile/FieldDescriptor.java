@@ -10,9 +10,6 @@
 
 package net.multiphasicapps.classfile;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-
 /**
  * This represents the type descriptor of a field.
  *

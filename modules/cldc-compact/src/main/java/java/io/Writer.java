@@ -10,8 +10,6 @@
 
 package java.io;
 
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-
 public abstract class Writer
 	implements Appendable, Closeable
 {

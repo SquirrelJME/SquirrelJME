@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.javac.structure;
 
-import net.multiphasicapps.classfile.Identifier;
-
 /**
  * This is a symbol which represents the type name of the type parameter.
  *

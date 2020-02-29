@@ -10,9 +10,6 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This represents the flags which a class may be.
  *

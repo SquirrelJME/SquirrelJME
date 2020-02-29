@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.JVMFunction;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 

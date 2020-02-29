@@ -15,7 +15,6 @@ import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
 import cc.squirreljme.runtime.cldc.util.DoubleArrayList;
 import cc.squirreljme.runtime.cldc.util.FloatArrayList;
-import cc.squirreljme.runtime.cldc.util.IntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArrays;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 import cc.squirreljme.runtime.cldc.util.LongArrayList;

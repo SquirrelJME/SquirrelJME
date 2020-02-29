@@ -20,6 +20,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/04/20
  */
+@SuppressWarnings("NewMethodNamingConvention")
 public final class Assembly
 {
 	/**

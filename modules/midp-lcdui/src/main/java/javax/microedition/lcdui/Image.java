@@ -15,7 +15,6 @@ import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -457,7 +456,8 @@ public class Image
 	public static Image createImage(Image __i, int __x, int __y,
 		int __w, int __h, int __trans)
 	{
-		return Image.createImage(__i, __x, __y, __w, __h, __trans);
+		return Image.createImage(__i, __x, __y, __w, __h, __trans,
+			__i.getWidth(), __i.getHeight());
 	}
 	
 	public static Image createImage(Image __i, int __x, int __y, int __w,

@@ -710,11 +710,10 @@ public final class CharacterTest
 			__c == 'x' || __c == 'X' ||
 			__c == '+' || __c == '-' ||
 			__c == 'p' || __c == 'P' ||
-			__c == 'e' || __c == 'E' ||
 			__c == '.' || __c == '_' ||
 			(__c >= '0' && __c <= '9') ||
-			(__c >= 'a' && __c <= 'f') ||	// includes bdf
-			(__c >= 'A' && __c <= 'F');		// includes BDF
+			(__c >= 'a' && __c <= 'f') ||	// includes bdef
+			(__c >= 'A' && __c <= 'F');		// includes BDEF
 	}
 	
 	/**

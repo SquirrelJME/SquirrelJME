@@ -14,8 +14,6 @@ import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;

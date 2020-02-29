@@ -14,7 +14,6 @@ import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ForwardingGraphics;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 public abstract class GameCanvas
 	extends Canvas

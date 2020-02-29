@@ -10,12 +10,9 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.lib.BootRom;
-import cc.squirreljme.jvm.lib.BootRomLibrary;
-import cc.squirreljme.jvm.task.Task;
 import cc.squirreljme.jvm.task.TaskCreateResult;
 import cc.squirreljme.jvm.task.TaskManager;
 import cc.squirreljme.jvm.task.TaskSysCallHandler;
-import cc.squirreljme.jvm.task.TaskThread;
 import cc.squirreljme.jvm.task.ThreadManager;
 
 /**

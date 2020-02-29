@@ -12,23 +12,13 @@ package javax.microedition.swm;
 
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-import cc.squirreljme.runtime.swm.DependencyInfo;
 import cc.squirreljme.runtime.swm.ExtendedTaskManager;
-import cc.squirreljme.runtime.swm.MatchResult;
-import cc.squirreljme.runtime.swm.ProvidedInfo;
 import java.io.OutputStream;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * This is the task manager which interfaces with the CLDC system support

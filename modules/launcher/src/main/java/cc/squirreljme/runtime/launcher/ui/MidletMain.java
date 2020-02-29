@@ -12,24 +12,17 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import java.util.ArrayList;
 import java.util.Timer;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
-import javax.microedition.swm.SuiteManager;
 import javax.microedition.swm.SuiteType;
-import javax.microedition.swm.Task;
-import javax.microedition.swm.TaskManager;
-import javax.microedition.swm.TaskStatus;
 
 /**
  * This is the main midlet for the LCDUI based launcher interface.

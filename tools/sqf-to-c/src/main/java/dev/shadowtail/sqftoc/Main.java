@@ -9,7 +9,6 @@
 
 package dev.shadowtail.sqftoc;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.PrintStream;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;

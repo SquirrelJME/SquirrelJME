@@ -13,7 +13,6 @@ package net.multiphasicapps.collections;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * This is a set which allows enumeration values to be stored in it efficiently

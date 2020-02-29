@@ -13,7 +13,6 @@ package cc.squirreljme.runtime.swm;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.strings.StringUtils;
 
 /**
  * This represents a profile that may be implemented, such as MIDP.

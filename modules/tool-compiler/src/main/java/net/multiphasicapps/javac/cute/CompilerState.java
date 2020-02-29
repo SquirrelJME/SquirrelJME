@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.javac.cute;
 
-import java.io.PrintStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -21,8 +20,6 @@ import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerLogger;
 import net.multiphasicapps.javac.CompilerPathSet;
-import net.multiphasicapps.javac.FileNameLineAndColumn;
-import net.multiphasicapps.javac.LineAndColumn;
 import net.multiphasicapps.javac.NoSuchInputException;
 
 /**
