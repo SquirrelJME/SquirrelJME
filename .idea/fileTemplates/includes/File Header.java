@@ -6,13 +6,3 @@
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
-
-package cc.squirreljme.emulator;
-
-/**
- * This class handles system calls.
- *
- * @since 2020/02/22
- */
-public class AbstractSystemCallHandler {
-}

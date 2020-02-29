@@ -7,12 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator;
+package cc.squirreljme.emulator.fb;
 
 /**
- * This class handles system calls.
+ * Contains the support for the framebuffer.
  *
- * @since 2020/02/22
+ * @since 2020/02/29
  */
-public class AbstractSystemCallHandler {
+public class Framebuffer
+{
 }

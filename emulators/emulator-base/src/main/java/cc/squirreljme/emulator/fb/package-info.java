@@ -7,12 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator;
-
-/**
- * This class handles system calls.
- *
- * @since 2020/02/22
- */
-public class AbstractSystemCallHandler {
-}
+package cc.squirreljme.emulator.fb;
