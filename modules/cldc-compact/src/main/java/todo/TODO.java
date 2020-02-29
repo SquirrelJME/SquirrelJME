@@ -12,6 +12,7 @@ package todo;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import java.io.PrintStream;
@@ -49,6 +50,10 @@ public class TODO
 	 */
 	static
 	{
+		// Poke native VM stuff to make sure it exists before we try to use it
+		Poking.poke();
+		
+		// Debugging?
 		boolean debug;
 		try
 		{
