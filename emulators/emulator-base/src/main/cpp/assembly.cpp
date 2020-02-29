@@ -7,6 +7,7 @@
 // --------------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include "jni.h"
 #include "cc_squirreljme_jvm_Assembly.h"
@@ -47,6 +48,25 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_arrayLength__Ljava_lang_
 
 	// Not an array
 	return -1;
+}
+
+JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_longPack
+	(JNIEnv* env, jclass classy, jint hi, jint lo)
+{
+	return ((((jlong)hi) & INT64_C(0xFFFFFFFF)) << INT64_C(32)) |
+		((((jlong)lo)) & INT64_C(0xFFFFFFFF));
+}
+
+JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_longUnpackHigh
+	(JNIEnv* env, jclass classy, jlong value)
+{
+	return (jint)(value >> INT64_C(32));
+}
+
+JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_Assembly_longUnpackLow
+	(JNIEnv* env, jclass classy, jlong value)
+{
+	return (jint)(value & INT64_C(0xFFFFFFFF));
 }
 
 JNIEXPORT jlong JNICALL Java_cc_squirreljme_jvm_Assembly_objectToPointer

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.emulator.fb.NativeFramebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 
@@ -51,10 +52,6 @@ public final class EmulatorAssembly
 	public static long systemCall(short __si, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{
-		// Debug
-		System.err.printf("System call: %d(%d, %d, %d, %d, %d, %d, %d, %d)%n",
-			__si, __a, __b, __c, __d, __e, __f, __g, __h);
-	
 		// We need the context for thread based info
 		EmulatorThreadContext context = EmulatorAssembly.threadContext();
 		
@@ -73,6 +70,7 @@ public final class EmulatorAssembly
 							// Implemented here
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
+						case SystemCallIndex.FRAMEBUFFER:
 						case SystemCallIndex.QUERY_INDEX:
 						case SystemCallIndex.TIME_MILLI_WALL:
 						case SystemCallIndex.TIME_NANO_MONO:
@@ -101,6 +99,11 @@ public final class EmulatorAssembly
 					context.setError((short)__a, __b);
 					return oldError;
 				}
+			
+				// Access the framebuffer
+			case SystemCallIndex.FRAMEBUFFER:
+				return NativeFramebuffer.getInstance().systemCall(context,
+					__a, __b, __c, __d, __e, __f, __g, __h);
 				
 				// Current wall clock
 			case SystemCallIndex.TIME_MILLI_WALL:
@@ -120,6 +123,12 @@ public final class EmulatorAssembly
 			
 				// Un-handled, set as not supported and return a default value
 			default:
+				// Debug
+				System.err.printf(
+					"SysCall?: %d(%d, %d, %d, %d, %d, %d, %d, %d)%n",
+					__si, __a, __b, __c, __d, __e, __f, __g, __h);
+				
+				// Set error
 				context.setError(__si,
 					SystemCallError.UNSUPPORTED_SYSTEM_CALL);
 				return 0;
