@@ -12,49 +12,49 @@ package java.util;
 
 public interface Map<K, V>
 {
-	public abstract void clear();
+	void clear();
 	
-	public abstract boolean containsKey(Object __a);
+	boolean containsKey(Object __a);
 	
-	public abstract boolean containsValue(Object __a);
+	boolean containsValue(Object __a);
 	
-	public abstract Set<Map.Entry<K, V>> entrySet();
-	
-	@Override
-	public abstract boolean equals(Object __a);
-	
-	public abstract V get(Object __a);
+	Set<Map.Entry<K, V>> entrySet();
 	
 	@Override
-	public abstract int hashCode();
+	boolean equals(Object __a);
 	
-	public abstract boolean isEmpty();
+	V get(Object __a);
 	
-	public abstract Set<K> keySet();
+	@Override
+	int hashCode();
 	
-	public abstract V put(K __a, V __b);
+	boolean isEmpty();
 	
-	public abstract void putAll(Map<? extends K, ? extends V> __a);
+	Set<K> keySet();
 	
-	public abstract V remove(Object __a);
+	V put(K __a, V __b);
 	
-	public abstract int size();
+	void putAll(Map<? extends K, ? extends V> __a);
 	
-	public abstract Collection<V> values();
+	V remove(Object __a);
 	
-	public static interface Entry<K, V>
+	int size();
+	
+	Collection<V> values();
+	
+	interface Entry<K, V>
 	{
 		@Override
-		public abstract boolean equals(Object __a);
+		boolean equals(Object __a);
 		
-		public abstract K getKey();
+		K getKey();
 		
-		public abstract V getValue();
+		V getValue();
 		
 		@Override
-		public abstract int hashCode();
+		int hashCode();
 		
-		public abstract V setValue(V __a);
+		V setValue(V __a);
 	}
 }
 

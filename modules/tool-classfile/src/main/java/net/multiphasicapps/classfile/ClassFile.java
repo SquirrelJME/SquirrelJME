@@ -374,9 +374,9 @@ public final class ClassFile
 		// valid. (The read magic number; The expected magic number)}
 		DataInputStream in = new DataInputStream(__is);
 		int magic = in.readInt();
-		if (magic != _MAGIC_NUMBER)
+		if (magic != ClassFile._MAGIC_NUMBER)
 			throw new InvalidClassFormatException(String.format(
-				"JC2b %08x %08x", magic, _MAGIC_NUMBER));
+				"JC2b %08x %08x", magic, ClassFile._MAGIC_NUMBER));
 		
 		// {@squirreljme.error JC2c The version number of the input class
 		// file is not valid. (The version number)}

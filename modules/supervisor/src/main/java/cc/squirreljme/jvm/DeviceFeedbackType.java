@@ -17,15 +17,15 @@ package cc.squirreljme.jvm;
 public interface DeviceFeedbackType
 {
 	/** Vibrate. */
-	public static final byte VIBRATE =
+	byte VIBRATE =
 		1;
 	
 	/** Blink/Pulse LED, be aware of conditions such as epilepsy. */
-	public static final byte BLINK_LED =
+	byte BLINK_LED =
 		2;
 	
 	/** The number of feedback types. */
-	public static final byte NUM_FEEDBACK_TYPES =
+	byte NUM_FEEDBACK_TYPES =
 		3;
 }
 

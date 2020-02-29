@@ -107,7 +107,7 @@ public abstract class MemberFlags<F extends MemberFlag>
 	@Override
 	public final boolean isPackagePrivate()
 	{
-		return !isPublic() && !isProtected() && !isPrivate();
+		return !this.isPublic() && !this.isProtected() && !this.isPrivate();
 	}
 }
 

@@ -16,9 +16,9 @@ import java.io.IOException;
 public interface Channel
 	extends Closeable
 {
-	public abstract void close()
+	void close()
 		throws IOException;
 	
-	public abstract boolean isOpen();
+	boolean isOpen();
 }
 

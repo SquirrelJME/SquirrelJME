@@ -16,7 +16,7 @@ public interface InputRoundListener<P extends Device<? super P>, B extends
 	Buffer>
 	extends DeviceEventListener, AsyncErrorHandler<P>
 {
-	public abstract void inputRoundCompleted(RoundCompletionEvent<P, B> __a);
+	void inputRoundCompleted(RoundCompletionEvent<P, B> __a);
 }
 
 

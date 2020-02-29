@@ -71,7 +71,8 @@ public final class SplashScreen
 		// Draw the raw image data, is the fastest
 		int[] image = this._image;
 		if (image != null)
-			__g.drawRGB(image, 0, WIDTH, 0, 0, WIDTH, HEIGHT, false);
+			__g.drawRGB(image, 0, SplashScreen.WIDTH, 0, 0, SplashScreen.WIDTH,
+				SplashScreen.HEIGHT, false);
 		
 		// The image is not fully loaded yet, so draw the copyright at least
 		else
@@ -86,7 +87,7 @@ public final class SplashScreen
 	public final void run()
 	{
 		// Image is completely operated with using raw data
-		int np = WIDTH * HEIGHT;
+		int np = SplashScreen.WIDTH * SplashScreen.HEIGHT;
 		int[] image = new int[np];
 		
 		// Load splash image onto the data
@@ -97,7 +98,7 @@ public final class SplashScreen
 			if (in != null)
 			{
 				// Input raw pixels
-				int nr = WIDTH * HEIGHT * 3;
+				int nr = SplashScreen.WIDTH * SplashScreen.HEIGHT * 3;
 				byte[] raw = new byte[nr];
 				
 				// Read in raw data
@@ -124,8 +125,8 @@ public final class SplashScreen
 		
 		// Text will be drawn using the advanced graphics since it can
 		// operate on integer buffers directly
-		Graphics g = new AdvancedGraphics(image, false, null, WIDTH, HEIGHT,
-			WIDTH, 0, 0, 0);
+		Graphics g = new AdvancedGraphics(image, false, null,
+			SplashScreen.WIDTH, SplashScreen.HEIGHT, SplashScreen.WIDTH, 0, 0, 0);
 		
 		// Draw copyright at the bottom
 		SplashScreen.__copyright(g, false);
@@ -174,18 +175,18 @@ public final class SplashScreen
 		// Draw a black drop-shadow, this makes the lighter front easier to
 		// see regardless of what is on the background
 		__g.setColor(0x000000);
-		__g.drawString(COPYRIGHT, 1, 318,
+		__g.drawString(SplashScreen.COPYRIGHT, 1, 318,
 			Graphics.BOTTOM | Graphics.LEFT);
-		__g.drawString(COPYRIGHT, 3, 318,
+		__g.drawString(SplashScreen.COPYRIGHT, 3, 318,
 			Graphics.BOTTOM | Graphics.LEFT);
-		__g.drawString(COPYRIGHT, 2, 317,
+		__g.drawString(SplashScreen.COPYRIGHT, 2, 317,
 			Graphics.BOTTOM | Graphics.LEFT);
-		__g.drawString(COPYRIGHT, 2, 319,
+		__g.drawString(SplashScreen.COPYRIGHT, 2, 319,
 			Graphics.BOTTOM | Graphics.LEFT);
 		
 		// Then draw the frontal white text
 		__g.setColor(0xFFFFFF);
-		__g.drawString(COPYRIGHT, 2, 318,
+		__g.drawString(SplashScreen.COPYRIGHT, 2, 318,
 			Graphics.BOTTOM | Graphics.LEFT);
 	}
 }

@@ -16,13 +16,11 @@ public class InvalidInputSamplingRateException
 {
 	public InvalidInputSamplingRateException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public InvalidInputSamplingRateException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

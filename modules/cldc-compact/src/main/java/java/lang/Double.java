@@ -58,14 +58,12 @@ public final class Double
 	
 	public Double(double __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Double(String __a)
 		throws NumberFormatException
 	{
-		super();
 		if (false)
 			throw new NumberFormatException();
 		throw new todo.TODO();
@@ -163,8 +161,8 @@ public final class Double
 		long raw = Double.doubleToRawLongBits(__v);
 		
 		// Collapse all NaN values to a single form
-		if ((raw & _NAN_MASK) == (_NAN_MASK))
-			return _NAN_MASK;
+		if ((raw & Double._NAN_MASK) == (Double._NAN_MASK))
+			return Double._NAN_MASK;
 		
 		return raw;
 	}

@@ -23,6 +23,6 @@ public interface VinylLock
 	 * @since 2018/12/14
 	 */
 	@Override
-	public abstract void close();
+	void close();
 }
 

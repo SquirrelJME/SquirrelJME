@@ -17,35 +17,35 @@ package cc.squirreljme.jvm.lib;
 public interface DataType
 {
 	/** Object. */
-	public static final byte OBJECT =
+	byte OBJECT =
 		0;
 	
 	/** Byte. */
-	public static final byte BYTE =
+	byte BYTE =
 		1;
 	
 	/** Short. */
-	public static final byte SHORT =
+	byte SHORT =
 		2;
 	
 	/** Character. */
-	public static final byte CHARACTER =
+	byte CHARACTER =
 		3;
 	
 	/** Integer. */
-	public static final byte INTEGER =
+	byte INTEGER =
 		4;
 	
 	/** Float. */
-	public static final byte FLOAT =
+	byte FLOAT =
 		5;
 	
 	/** Long. */
-	public static final byte LONG =
+	byte LONG =
 		6;
 	
 	/** Double. */
-	public static final byte DOUBLE =
+	byte DOUBLE =
 		7;
 }
 

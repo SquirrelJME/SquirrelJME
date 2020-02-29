@@ -13,37 +13,37 @@ package java.util;
 public interface Collection<E>
 	extends Iterable<E>
 {
-	public abstract boolean add(E __a);
+	boolean add(E __a);
 	
-	public abstract boolean addAll(Collection<? extends E> __a);
+	boolean addAll(Collection<? extends E> __a);
 	
-	public abstract void clear();
+	void clear();
 	
-	public abstract boolean contains(Object __a);
+	boolean contains(Object __a);
 	
-	public abstract boolean containsAll(Collection<?> __a);
-	
-	@Override
-	public abstract boolean equals(Object __a);
+	boolean containsAll(Collection<?> __a);
 	
 	@Override
-	public abstract int hashCode();
+	boolean equals(Object __a);
 	
-	public abstract boolean isEmpty();
+	@Override
+	int hashCode();
 	
-	public abstract Iterator<E> iterator();
+	boolean isEmpty();
 	
-	public abstract boolean remove(Object __a);
+	Iterator<E> iterator();
 	
-	public abstract boolean removeAll(Collection<?> __a);
+	boolean remove(Object __a);
 	
-	public abstract boolean retainAll(Collection<?> __a);
+	boolean removeAll(Collection<?> __a);
 	
-	public abstract int size();
+	boolean retainAll(Collection<?> __a);
 	
-	public abstract Object[] toArray();
+	int size();
 	
-	public abstract <T> T[] toArray(T[] __v)
+	Object[] toArray();
+	
+	<T> T[] toArray(T[] __v)
 		throws NullPointerException;
 }
 

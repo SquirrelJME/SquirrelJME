@@ -34,7 +34,7 @@ public final class DeadlockTimeout
 	 */
 	public DeadlockTimeout()
 	{
-		this(DEFAULT_TIMEOUT);
+		this(DeadlockTimeout.DEFAULT_TIMEOUT);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public final class DeadlockTimeout
 	{
 		super("TestDeadlockTimeout");
 		
-		__ms = (__ms <= 0 ? DEFAULT_TIMEOUT : __ms);
+		__ms = (__ms <= 0 ? DeadlockTimeout.DEFAULT_TIMEOUT : __ms);
 		
 		this.timeoutnano = System.nanoTime() + (__ms * 1000000L);
 	}

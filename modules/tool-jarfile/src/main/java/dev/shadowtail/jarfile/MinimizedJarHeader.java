@@ -154,9 +154,9 @@ public final class MinimizedJarHeader
 		// {@squirreljme.error BC0a Invalid minimized Jar magic number.
 		// (The read magic number; The expected magic number)}
 		int wasmagic;
-		if (MAGIC_NUMBER != (wasmagic = din.readInt()))
+		if (MinimizedJarHeader.MAGIC_NUMBER != (wasmagic = din.readInt()))
 			throw new InvalidClassFormatException(String.format(
-				"BC0a %08x %08x", wasmagic, MAGIC_NUMBER));
+				"BC0a %08x %08x", wasmagic, MinimizedJarHeader.MAGIC_NUMBER));
 		
 		// Build
 		return new MinimizedJarHeader(

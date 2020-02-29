@@ -108,12 +108,12 @@ public class SizeLimitedInputStream
 		throws IOException
 	{
 		// Get the count for the wrapped stream
-		long wav = wrapped.available();
+		long wav = this.wrapped.available();
 	
 		// Either limited to the max integer size, the number of available
 		// bytes, or the remaining stream count.
 		return (int)Math.min(Integer.MAX_VALUE,
-			Math.min(wav, (limit - _current)));
+			Math.min(wav, (this.limit - this._current)));
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class SizeLimitedInputStream
 				long limit = this.limit;
 				long at;
 				while ((at = this._current) < limit)
-					if (read() < 0)
+					if (this.read() < 0)
 						throw new IOException(String.format("BD1p %d %d",
 							at, limit));
 			}
@@ -147,7 +147,7 @@ public class SizeLimitedInputStream
 		
 		// Close the underlying stream, but only if propogating
 		if (this.propogate)
-			wrapped.close();
+			this.wrapped.close();
 	}
 	
 	/**
@@ -167,7 +167,7 @@ public class SizeLimitedInputStream
 			return -1;
 		
 		// Read next byte
-		int next = wrapped.read();
+		int next = this.wrapped.read();
 		
 		// EOF?
 		if (next < 0)
@@ -175,7 +175,7 @@ public class SizeLimitedInputStream
 			// {@squirreljme.error BD1q Required an exact number of bytes
 			// however the limit was not yet reached, the input stream is too
 			// short. (The limit; The current position)}
-			if (exact && cur != limit)
+			if (this.exact && cur != limit)
 				throw new IOException(String.format("BD1q %d %d",
 					limit, cur));
 			
@@ -212,7 +212,7 @@ public class SizeLimitedInputStream
 			// {@squirreljme.error BD1r Required an exact number of bytes
 			// however the limit was not yet reached, the file is too short.
 			// (The limit; The current position)}
-			if (exact && current != limit)
+			if (this.exact && current != limit)
 				throw new IOException(String.format("BD1r %d %d",
 					limit, current));
 			
@@ -232,7 +232,7 @@ public class SizeLimitedInputStream
 			// {@squirreljme.error BD1s Required an exact number of bytes
 			// however the limit was not yet reached. (The limit; The
 			// current position)}
-			if (exact && current != limit)
+			if (this.exact && current != limit)
 				throw new IOException(String.format("BD1s %d %d",
 					limit, current));
 			

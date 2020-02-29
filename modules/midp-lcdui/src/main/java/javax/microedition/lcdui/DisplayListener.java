@@ -15,18 +15,18 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 public interface DisplayListener
 {
 	@SerializedEvent
-	public abstract void displayAdded(Display __d);
+	void displayAdded(Display __d);
 	
 	@SerializedEvent
-	public abstract void displayStateChanged(Display __d, int __ns);
+	void displayStateChanged(Display __d, int __ns);
 	
 	@SerializedEvent
-	public abstract void hardwareStateChanged(Display __d, int __ns);
+	void hardwareStateChanged(Display __d, int __ns);
 	
 	@SerializedEvent
-	public abstract void orientationChanged(Display __d, int __no);
+	void orientationChanged(Display __d, int __no);
 	
 	@SerializedEvent
-	public abstract void sizeChanged(Display __d, int __w, int __h);
+	void sizeChanged(Display __d, int __w, int __h);
 }
 

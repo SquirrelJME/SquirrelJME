@@ -119,12 +119,12 @@ public class EmptyMap
 	public static <K, V> Map<K, V> empty()
 	{
 		// Get reference
-		Reference<Map> ref = _EMPTY_MAP;
+		Reference<Map> ref = EmptyMap._EMPTY_MAP;
 		Map rv;
 		
 		// Needs creation?
 		if (ref == null || null == (rv = ref.get()))
-			_EMPTY_MAP = new WeakReference<>((rv = new EmptyMap()));
+			EmptyMap._EMPTY_MAP = new WeakReference<>((rv = new EmptyMap()));
 		
 		// Return it
 		return (Map<K, V>)rv;

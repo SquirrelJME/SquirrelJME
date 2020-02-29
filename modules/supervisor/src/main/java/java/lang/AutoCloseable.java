@@ -61,7 +61,7 @@ public interface AutoCloseable
 	 * @throws Exception If there was an error closing the specified object.
 	 * @since 2015/03/23
 	 */
-	public abstract void close()
+	void close()
 		throws Exception;
 }
 

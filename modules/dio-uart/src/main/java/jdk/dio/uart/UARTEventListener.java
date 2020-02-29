@@ -15,7 +15,7 @@ import jdk.dio.DeviceEventListener;
 public interface UARTEventListener
 	extends DeviceEventListener
 {
-	public abstract void eventDispatched(UARTEvent __a);
+	void eventDispatched(UARTEvent __a);
 }
 
 

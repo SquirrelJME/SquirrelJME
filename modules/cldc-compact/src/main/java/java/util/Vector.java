@@ -77,7 +77,6 @@ public class Vector<E>
 	
 	public Vector(Collection<? extends E> __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

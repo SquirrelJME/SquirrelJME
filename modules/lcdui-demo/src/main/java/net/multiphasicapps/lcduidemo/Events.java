@@ -89,7 +89,7 @@ public class Events
 	 *
 	 * @since 2018/12/01
 	 */
-	static public final class DemoCanvas
+	public static final class DemoCanvas
 		extends Canvas
 	{
 		/** The number of times this was shown. */
@@ -298,7 +298,7 @@ public class Events
 	 *
 	 * @since 2018/12/01
 	 */
-	static public enum KeyboardType
+	public static enum KeyboardType
 	{
 		/** Pressed. */
 		PRESSED,
@@ -318,7 +318,7 @@ public class Events
 	 *
 	 * @since 2018/12/01
 	 */
-	static public enum PointerType
+	public static enum PointerType
 	{
 		/** Pressed. */
 		PRESSED,

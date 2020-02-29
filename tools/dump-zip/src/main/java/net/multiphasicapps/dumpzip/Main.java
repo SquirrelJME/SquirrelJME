@@ -88,7 +88,7 @@ public class Main
 							if (e == null)
 								break;
 							
-							__dump(filter, (lastentry = e.name()), e);
+							Main.__dump(filter, (lastentry = e.name()), e);
 						}
 				}
 			
@@ -101,7 +101,7 @@ public class Main
 					for (ZipBlockEntry entry : zsr)
 						try (InputStream in = entry.open())
 						{
-							__dump(filter, (lastentry = entry.name()), in);
+							Main.__dump(filter, (lastentry = entry.name()), in);
 						}
 				}
 		}

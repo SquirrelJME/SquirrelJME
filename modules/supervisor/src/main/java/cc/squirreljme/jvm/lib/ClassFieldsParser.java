@@ -102,8 +102,7 @@ public final class ClassFieldsParser
 	public final int flags(int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		return this.blob.readJavaInt(this.tocOffset(__dx) +
-			FLAGS_INT_OFFSET);
+		return this.blob.readJavaInt(this.tocOffset(__dx) + ClassFieldsParser.FLAGS_INT_OFFSET);
 	}
 	
 	/**
@@ -119,7 +118,7 @@ public final class ClassFieldsParser
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return this.pool.entryAsString(false, this.blob.readJavaUnsignedShort(
-			this.tocOffset(__dx) + NAME_USHORT_OFFSET));
+			this.tocOffset(__dx) + ClassFieldsParser.NAME_USHORT_OFFSET));
 	}
 	
 	/**
@@ -134,8 +133,7 @@ public final class ClassFieldsParser
 	public final int offset(int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		return this.blob.readJavaUnsignedShort(this.tocOffset(__dx) +
-			OFFSET_USHORT_OFFSET);
+		return this.blob.readJavaUnsignedShort(this.tocOffset(__dx) + ClassFieldsParser.OFFSET_USHORT_OFFSET);
 	}
 	
 	/**
@@ -150,8 +148,7 @@ public final class ClassFieldsParser
 	public final int size(int __dx)
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
-		return this.blob.readJavaUnsignedShort(this.tocOffset(__dx) +
-			SIZE_USHORT_OFFSET);
+		return this.blob.readJavaUnsignedShort(this.tocOffset(__dx) + ClassFieldsParser.SIZE_USHORT_OFFSET);
 	}
 	
 	/**
@@ -169,7 +166,7 @@ public final class ClassFieldsParser
 		if (__dx < 0 || __dx > this.count)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		return __dx * ENTRY_SIZE;
+		return __dx * ClassFieldsParser.ENTRY_SIZE;
 	}
 	
 	/**
@@ -185,8 +182,7 @@ public final class ClassFieldsParser
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return this.pool.entryAsClassName(false,
-			this.blob.readJavaUnsignedShort(this.tocOffset(__dx) +
-				TYPE_USHORT_OFFSET));
+			this.blob.readJavaUnsignedShort(this.tocOffset(__dx) + ClassFieldsParser.TYPE_USHORT_OFFSET));
 	}
 }
 

@@ -65,7 +65,7 @@ public abstract class Flags<F extends Flag>
 			throw new NullPointerException("NARG");
 		
 		// Set
-		cast = __cl;
+		this.cast = __cl;
 		
 		// Go through all input flags
 		Set<F> to = new HashSet<>();
@@ -98,7 +98,7 @@ public abstract class Flags<F extends Flag>
 			return false;
 		
 		// Quick bit check?
-		if (cast.isInstance(__o))
+		if (this.cast.isInstance(__o))
 			return 0 != (this.setbits & (1 << (((Flag)__o).ordinal())));
 		
 		// Fallback

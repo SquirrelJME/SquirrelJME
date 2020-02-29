@@ -22,7 +22,6 @@ public class Fog
 	
 	public Fog()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

@@ -88,7 +88,7 @@ public final class SpringArrayObjectBoolean
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK02 %d %d", __dx, length), e);
+				String.format("BK02 %d %d", __dx, this.length), e);
 		}
 	}
 	

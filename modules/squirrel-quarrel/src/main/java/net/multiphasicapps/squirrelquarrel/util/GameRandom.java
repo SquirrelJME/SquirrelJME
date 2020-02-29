@@ -34,7 +34,7 @@ public class GameRandom
 	 */
 	public GameRandom(long __s)
 	{
-		setSeed(__s);
+		this.setSeed(__s);
 	}
 	
 	/**

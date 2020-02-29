@@ -40,12 +40,11 @@ public class ByteDeque
 			"net.multiphasicapps.util.datadeque.blocksize", 128));
 	
 	/** The block size mask. */
-	private static final int _BLOCK_MASK =
-		_BLOCK_SIZE - 1;
+	private static final int _BLOCK_MASK = ByteDeque._BLOCK_SIZE - 1;
 	
 	/** The shift to convert block based values. */
 	private static final int _BLOCK_SHIFT =
-		Integer.numberOfTrailingZeros(_BLOCK_SIZE);
+		Integer.numberOfTrailingZeros(ByteDeque._BLOCK_SIZE);
 	
 	/** The maximum permitted capacity. */
 	protected final int capacity;
@@ -76,8 +75,9 @@ public class ByteDeque
 	{
 		// {@squirreljme.error BD21 The block size of the data deque is not
 		// a power of two. (The specified block size)}
-		if (Integer.bitCount(_BLOCK_SIZE) != 1)
-			throw new RuntimeException(String.format("BD21 %d", _BLOCK_SIZE));
+		if (Integer.bitCount(ByteDeque._BLOCK_SIZE) != 1)
+			throw new RuntimeException(String.format("BD21 %d",
+				ByteDeque._BLOCK_SIZE));
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class ByteDeque
 			throw new IllegalArgumentException("BD22");
 		
 		// Set
-		capacity = __cap;
+		this.capacity = __cap;
 	}
 	
 	/**
@@ -119,9 +119,9 @@ public class ByteDeque
 	public final void addFirst(byte __b)
 		throws IllegalStateException
 	{
-		byte[] solo = _solo;
+		byte[] solo = this._solo;
 		solo[0] = __b;
-		addFirst(solo, 0, 1);
+		this.addFirst(solo, 0, 1);
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public class ByteDeque
 	public final void addFirst(byte[] __b)
 		throws IllegalStateException, NullPointerException
 	{
-		addFirst(__b, 0, __b.length);
+		this.addFirst(__b, 0, __b.length);
 	}
 	
 	/**
@@ -192,9 +192,9 @@ public class ByteDeque
 	public final void addLast(byte __b)
 		throws IllegalStateException
 	{
-		byte[] solo = _solo;
+		byte[] solo = this._solo;
 		solo[0] = __b;
-		addLast(solo, 0, 1);
+		this.addLast(solo, 0, 1);
 	}
 	
 	/**
@@ -209,7 +209,7 @@ public class ByteDeque
 	public final void addLast(byte[] __b)
 		throws IllegalStateException, NullPointerException
 	{
-		addLast(__b, 0, __b.length);
+		this.addLast(__b, 0, __b.length);
 	}
 	
 	/**
@@ -252,8 +252,8 @@ public class ByteDeque
 		int head = this._head, tail = this._tail;
 		
 		// Keep adding in data
-		int bs = _BLOCK_SIZE;
-		int bm = _BLOCK_MASK;
+		int bs = ByteDeque._BLOCK_SIZE;
+		int bm = ByteDeque._BLOCK_MASK;
 		int left = __l;
 		int at = __o;
 		while (left > 0)
@@ -358,8 +358,8 @@ public class ByteDeque
 		
 		// Write bytes into the target
 		int left = limit;
-		int bs = _BLOCK_SIZE;
-		int bm = _BLOCK_MASK;
+		int bs = ByteDeque._BLOCK_SIZE;
+		int bm = ByteDeque._BLOCK_MASK;
 		while (left > 0)
 		{
 			// Get the first block
@@ -424,7 +424,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BD26");
 		
 		byte[] solo = this._solo;
-		int rv = get(__a, solo, 0, 1);
+		int rv = this.get(__a, solo, 0, 1);
 		if (rv == 1)
 			return solo[0];
 		
@@ -493,7 +493,7 @@ public class ByteDeque
 		
 		// If the address is within the starting half then seek from the
 		// start, otherwise start from the trailing end
-		return __getOrSetVia((__a < (total >> 1)), __a, __b, __o, __l, false);
+		return this.__getOrSetVia((__a < (total >> 1)), __a, __b, __o, __l, false);
 	}
 	
 	/**
@@ -507,7 +507,7 @@ public class ByteDeque
 		throws NoSuchElementException
 	{
 		byte[] solo = this._solo;
-		int rv = getFirst(solo, 0, 1);
+		int rv = this.getFirst(solo, 0, 1);
 		if (rv == 1)
 			return solo[0];
 		
@@ -527,7 +527,7 @@ public class ByteDeque
 	public final int getFirst(byte[] __b)
 		throws NullPointerException
 	{
-		return getFirst(__b, 0, __b.length);
+		return this.getFirst(__b, 0, __b.length);
 	}
 	
 	/**
@@ -561,7 +561,7 @@ public class ByteDeque
 		throws NoSuchElementException
 	{
 		byte[] solo = this._solo;
-		int rv = getLast(solo, 0, 1);
+		int rv = this.getLast(solo, 0, 1);
 		if (rv == 0)
 			return solo[0];
 		
@@ -581,7 +581,7 @@ public class ByteDeque
 	public final int getLast(byte[] __b)
 		throws NullPointerException
 	{
-		return getLast(__b, 0, __b.length);
+		return this.getLast(__b, 0, __b.length);
 	}
 	
 	/**
@@ -617,7 +617,7 @@ public class ByteDeque
 	 */
 	public final boolean isEmpty()
 	{
-		return available() == 0;
+		return this.available() == 0;
 	}
 	
 	/**
@@ -634,7 +634,7 @@ public class ByteDeque
 		// May violate the capacity
 		try
 		{
-			addFirst(__b);
+			this.addFirst(__b);
 			return true;
 		}
 		
@@ -658,7 +658,7 @@ public class ByteDeque
 	public final boolean offerFirst(byte[] __b)
 		throws NullPointerException
 	{
-		return offerFirst(__b, 0, __b.length);
+		return this.offerFirst(__b, 0, __b.length);
 	}
 	
 	/**
@@ -680,7 +680,7 @@ public class ByteDeque
 		// May violate the capacity
 		try
 		{
-			addFirst(__b, __o, __l);
+			this.addFirst(__b, __o, __l);
 			return true;
 		}
 		
@@ -705,7 +705,7 @@ public class ByteDeque
 		// May violate the capacity
 		try
 		{
-			addLast(__b);
+			this.addLast(__b);
 			return true;
 		}
 		
@@ -729,7 +729,7 @@ public class ByteDeque
 	public final boolean offerLast(byte[] __b)
 		throws NullPointerException
 	{
-		return offerLast(__b, 0, __b.length);
+		return this.offerLast(__b, 0, __b.length);
 	}
 	
 	/**
@@ -751,7 +751,7 @@ public class ByteDeque
 		// May violate the capacity
 		try
 		{
-			addLast(__b, __o, __l);
+			this.addLast(__b, __o, __l);
 			return true;
 		}
 		
@@ -776,7 +776,7 @@ public class ByteDeque
 		// The deque could be empty
 		try
 		{
-			return ((int)getFirst()) & 0xFF;
+			return ((int)this.getFirst()) & 0xFF;
 		}
 		
 		// Does not exist.
@@ -800,7 +800,7 @@ public class ByteDeque
 		// The deque could be empty
 		try
 		{
-			return ((int)getLast()) & 0xFF;
+			return ((int)this.getLast()) & 0xFF;
 		}
 		
 		// Does not exist.
@@ -821,7 +821,7 @@ public class ByteDeque
 		throws NoSuchElementException
 	{
 		byte[] solo = this._solo;
-		int rv = removeFirst(solo, 0, 1);
+		int rv = this.removeFirst(solo, 0, 1);
 		if (rv == 1)
 			return solo[0];
 		
@@ -841,7 +841,7 @@ public class ByteDeque
 	public final int removeFirst(byte[] __b)
 		throws NullPointerException
 	{
-		return removeFirst(__b, 0, __b.length);
+		return this.removeFirst(__b, 0, __b.length);
 	}
 	
 	/**
@@ -875,8 +875,8 @@ public class ByteDeque
 			return 0;
 		
 		// A remove is a get followed by a delete
-		int rva = get(0, __b, __o, __l);
-		int rvb = deleteFirst(__l);
+		int rva = this.get(0, __b, __o, __l);
+		int rvb = this.deleteFirst(__l);
 		
 		// If this occurs then the number of bytes deleted was not the
 		// same as the number of bytes which were read.
@@ -897,8 +897,8 @@ public class ByteDeque
 	public final byte removeLast()
 		throws NoSuchElementException
 	{
-		byte[] solo = _solo;
-		int rv = removeLast(solo, 0, 1);
+		byte[] solo = this._solo;
+		int rv = this.removeLast(solo, 0, 1);
 		if (rv == 1)
 			return solo[0];
 		
@@ -918,7 +918,7 @@ public class ByteDeque
 	public final int removeLast(byte[] __b)
 		throws NullPointerException
 	{
-		return removeLast(__b, 0, __b.length);
+		return this.removeLast(__b, 0, __b.length);
 	}
 	
 	/**
@@ -962,7 +962,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BD2e");
 		
 		byte[] solo = this._solo;
-		int rv = set(__a, solo, 0, 1);
+		int rv = this.set(__a, solo, 0, 1);
 		if (rv == 1)
 			return solo[0];
 		
@@ -1031,7 +1031,7 @@ public class ByteDeque
 		
 		// If the address is within the starting half then seek to the
 		// start, otherwise start to the trailing end
-		return __getOrSetVia((__a < (total >> 1)), __a, __b, __o, __l, true);
+		return this.__getOrSetVia((__a < (total >> 1)), __a, __b, __o, __l, true);
 	}
 	
 	/**
@@ -1053,9 +1053,9 @@ public class ByteDeque
 	 */
 	public final byte[] toByteArray()
 	{
-		int sz = available();
+		int sz = this.available();
 		byte[] rv = new byte[sz];
-		get(0, rv, 0, sz);
+		this.get(0, rv, 0, sz);
 		return rv;
 	}
 	
@@ -1099,8 +1099,8 @@ public class ByteDeque
 		LinkedList<byte[]> blocks = this._blocks;
 		int nb = blocks.size();
 		int head = this._head, tail = this._tail;
-		int bs = _BLOCK_SIZE;
-		int bm = _BLOCK_MASK;
+		int bs = ByteDeque._BLOCK_SIZE;
+		int bm = ByteDeque._BLOCK_MASK;
 		
 		// The number of bytes to read
 		int limit = total - __a;
@@ -1110,7 +1110,7 @@ public class ByteDeque
 		// Skip through the starting set of blocks since they are not
 		// needed at all
 		Iterator<byte[]> it;
-		int blskip = (head + __a) >> _BLOCK_SHIFT;
+		int blskip = (head + __a) >> ByteDeque._BLOCK_SHIFT;
 		if (__last && nb > 1)
 		{
 			// Start from the back and then go to the index where we are

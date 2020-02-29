@@ -16,9 +16,9 @@ import jdk.dio.DeviceEventListener;
 public interface CountingListener
 	extends DeviceEventListener, AsyncErrorHandler<PulseCounter>
 {
-	public abstract void countValueAvailable(CountingEvent __a);
+	void countValueAvailable(CountingEvent __a);
 	
-	public abstract void failed(Throwable __a, PulseCounter __b);
+	void failed(Throwable __a, PulseCounter __b);
 }
 
 

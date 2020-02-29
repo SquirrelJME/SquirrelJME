@@ -17,13 +17,11 @@ public class DeviceException
 {
 	public DeviceException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public DeviceException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

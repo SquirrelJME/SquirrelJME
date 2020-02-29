@@ -24,17 +24,6 @@ import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 	"generated for them, so as such Object effectively has no fields.")
 public class Object
 {
-	/**
-	 * Initializes the base object.
-	 *
-	 * @since 2018/09/09
-	 */
-	@ImplementationNote("The Java compiler does not allow final fields " +
-		"in Object to be set, they are already treated as already being " +
-		"set.")
-	public Object()
-	{
-	}
 	
 	/**
 	 * Clones the current copy creating a shallow copy of it if

@@ -15,35 +15,35 @@ import javax.microedition.media.MediaException;
 public interface VideoControl
 	extends GUIControl
 {
-	public static final int USE_DIRECT_VIDEO =
+	int USE_DIRECT_VIDEO =
 		1;
 	
-	public abstract int getDisplayHeight();
+	int getDisplayHeight();
 	
-	public abstract int getDisplayWidth();
+	int getDisplayWidth();
 	
-	public abstract int getDisplayX();
+	int getDisplayX();
 	
-	public abstract int getDisplayY();
+	int getDisplayY();
 	
-	public abstract byte[] getSnapshot(String __a)
+	byte[] getSnapshot(String __a)
 		throws MediaException;
 	
-	public abstract int getSourceHeight();
+	int getSourceHeight();
 	
-	public abstract int getSourceWidth();
+	int getSourceWidth();
 	
-	public abstract Object initDisplayMode(int __a, Object __b);
+	Object initDisplayMode(int __a, Object __b);
 	
-	public abstract void setDisplayFullScreen(boolean __a)
+	void setDisplayFullScreen(boolean __a)
 		throws MediaException;
 	
-	public abstract void setDisplayLocation(int __a, int __b);
+	void setDisplayLocation(int __a, int __b);
 	
-	public abstract void setDisplaySize(int __a, int __b)
+	void setDisplaySize(int __a, int __b)
 		throws MediaException;
 	
-	public abstract void setVisible(boolean __a);
+	void setVisible(boolean __a);
 }
 
 

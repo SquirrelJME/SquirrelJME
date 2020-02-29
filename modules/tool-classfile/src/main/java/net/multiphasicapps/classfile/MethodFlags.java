@@ -42,7 +42,7 @@ public final class MethodFlags
 	{
 		super(MethodFlag.class, __fl);
 		
-		__checkFlags(__oc, __mn);
+		this.__checkFlags(__oc, __mn);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public final class MethodFlags
 	{
 		super(MethodFlag.class, __fl);
 		
-		__checkFlags(__oc, __mn);
+		this.__checkFlags(__oc, __mn);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public final class MethodFlags
 	 */
 	public boolean isAbstract()
 	{
-		return contains(MethodFlag.ABSTRACT);
+		return this.contains(MethodFlag.ABSTRACT);
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public final class MethodFlags
 	 */
 	public boolean isBridge()
 	{
-		return contains(MethodFlag.BRIDGE);
+		return this.contains(MethodFlag.BRIDGE);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public final class MethodFlags
 	@Override
 	public boolean isFinal()
 	{
-		return contains(MethodFlag.FINAL);
+		return this.contains(MethodFlag.FINAL);
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public final class MethodFlags
 	 */
 	public boolean isNative()
 	{
-		return contains(MethodFlag.NATIVE);
+		return this.contains(MethodFlag.NATIVE);
 	}
 	
 	/**
@@ -124,7 +124,7 @@ public final class MethodFlags
 	@Override
 	public boolean isPrivate()
 	{
-		return contains(MethodFlag.PRIVATE);
+		return this.contains(MethodFlag.PRIVATE);
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public final class MethodFlags
 	@Override
 	public boolean isProtected()
 	{
-		return contains(MethodFlag.PROTECTED);
+		return this.contains(MethodFlag.PROTECTED);
 	}
 	
 	/**
@@ -144,7 +144,7 @@ public final class MethodFlags
 	@Override
 	public boolean isPublic()
 	{
-		return contains(MethodFlag.PUBLIC);
+		return this.contains(MethodFlag.PUBLIC);
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public final class MethodFlags
 	@Override
 	public boolean isStatic()
 	{
-		return contains(MethodFlag.STATIC);
+		return this.contains(MethodFlag.STATIC);
 	}
 	
 	/**
@@ -165,7 +165,7 @@ public final class MethodFlags
 	 */
 	public boolean isStrict()
 	{
-		return contains(MethodFlag.STRICT);
+		return this.contains(MethodFlag.STRICT);
 	}
 	
 	/**
@@ -176,7 +176,7 @@ public final class MethodFlags
 	 */
 	public boolean isSynchronized()
 	{
-		return contains(MethodFlag.SYNCHRONIZED);
+		return this.contains(MethodFlag.SYNCHRONIZED);
 	}
 	
 	/**
@@ -186,7 +186,7 @@ public final class MethodFlags
 	@Override
 	public boolean isSynthetic()
 	{
-		return contains(MethodFlag.SYNTHETIC);
+		return this.contains(MethodFlag.SYNTHETIC);
 	}
 	
 	/**
@@ -197,7 +197,7 @@ public final class MethodFlags
 	 */
 	public boolean isVarArgs()
 	{
-		return contains(MethodFlag.VARARGS);
+		return this.contains(MethodFlag.VARARGS);
 	}
 	
 	/**
@@ -220,9 +220,9 @@ public final class MethodFlags
 		// {@code private}, {@code static}, {@code final},
 		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
 		// method flags)}
-		if (isAbstract())
-			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
-				isNative() || isStrict())
+		if (this.isAbstract())
+			if (this.isPrivate() || this.isStatic() || this.isFinal() || this
+				.isSynchronized() || this.isNative() || this.isStrict())
 				throw new InvalidClassFormatException(
 					String.format("JC3l %s", this));
 		
@@ -242,7 +242,7 @@ public final class MethodFlags
 					f == MethodFlag.VARARGS || f == MethodFlag.BRIDGE);
 				
 				// Is it set?
-				boolean has = contains(f);
+				boolean has = this.contains(f);
 				
 				// {@squirreljme.error JC3m Flags for interface method has an
 				// incorrect set of flags. (The method flags)}

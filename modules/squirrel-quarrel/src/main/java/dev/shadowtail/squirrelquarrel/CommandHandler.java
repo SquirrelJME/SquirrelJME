@@ -55,7 +55,7 @@ public final class CommandHandler
 	public void commandAction(Command __c, Displayable __d)
 	{
 		// Exit the game?
-		if (__c == EXIT_COMMAND)
+		if (__c == CommandHandler.EXIT_COMMAND)
 			System.exit(0);
 		
 		// The in-game menu was requested
@@ -94,7 +94,7 @@ public final class CommandHandler
 		
 		// Set commands for this list
 		items.addCommand(new ReturnToGameCommand(__gi));
-		items.addCommand(EXIT_COMMAND);
+		items.addCommand(CommandHandler.EXIT_COMMAND);
 		
 		// Use self as the command listener
 		items.setCommandListener(this);

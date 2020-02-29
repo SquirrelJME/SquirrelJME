@@ -21,14 +21,6 @@ import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 public final class AcceleratedGraphics
 	extends SerializedGraphics
 {
-	/**
-	 * Initializes for the given display.
-	 *
-	 * @since 2018/11/19
-	 */
-	public AcceleratedGraphics()
-	{
-	}
 	
 	/**
 	 * {@inheritDoc}

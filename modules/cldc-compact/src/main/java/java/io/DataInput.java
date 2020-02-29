@@ -12,46 +12,46 @@ package java.io;
 
 public interface DataInput
 {
-	public abstract boolean readBoolean()
+	boolean readBoolean()
 		throws IOException;
 	
-	public abstract byte readByte()
+	byte readByte()
 		throws IOException;
 	
-	public abstract char readChar()
+	char readChar()
 		throws IOException;
 	
-	public abstract double readDouble()
+	double readDouble()
 		throws IOException;
 	
-	public abstract float readFloat()
+	float readFloat()
 		throws IOException;
 	
-	public abstract void readFully(byte[] __a)
+	void readFully(byte[] __a)
 		throws IOException;
 	
-	public abstract void readFully(byte[] __a, int __b, int __c)
+	void readFully(byte[] __a, int __b, int __c)
 		throws IOException;
 	
-	public abstract int readInt()
+	int readInt()
 		throws IOException;
 	
-	public abstract long readLong()
+	long readLong()
 		throws IOException;
 	
-	public abstract short readShort()
+	short readShort()
 		throws IOException;
 	
-	public abstract String readUTF()
+	String readUTF()
 		throws IOException;
 	
-	public abstract int readUnsignedByte()
+	int readUnsignedByte()
 		throws IOException;
 	
-	public abstract int readUnsignedShort()
+	int readUnsignedShort()
 		throws IOException;
 	
-	public abstract int skipBytes(int __a)
+	int skipBytes(int __a)
 		throws IOException;
 }
 

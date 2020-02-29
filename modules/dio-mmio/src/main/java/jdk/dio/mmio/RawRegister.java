@@ -17,36 +17,36 @@ import jdk.dio.UnavailableDeviceException;
 public interface RawRegister<T extends Number>
 	extends RawMemory
 {
-	public abstract void and(T __v)
+	void and(T __v)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract void clearBit(int __dx)
+	void clearBit(int __dx)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract void clearBits(T __mask)
+	void clearBits(T __mask)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract T get()
+	T get()
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract Class<T> getType();
+	Class<T> getType();
 	
-	public abstract boolean isBitSet(int __dx)
+	boolean isBitSet(int __dx)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract void or(T __v)
+	void or(T __v)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract void set(T __v)
+	void set(T __v)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract void setBit(int __dx)
+	void setBit(int __dx)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract void setBits(T __mask)
+	void setBits(T __mask)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract void xor(T __v)
+	void xor(T __v)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 }
 

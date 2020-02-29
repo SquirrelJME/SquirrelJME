@@ -76,7 +76,6 @@ public final class UARTConfig
 	public UARTConfig(int __a, int __b, int __c, int __d, int __e, int __f, 
 		int __g)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -84,7 +83,6 @@ public final class UARTConfig
 	public UARTConfig(int __a, int __b, int __c, int __d, int __e, int __f, 
 		int __g, int __h, int __i)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -92,7 +90,6 @@ public final class UARTConfig
 	public UARTConfig(String __a, int __b, int __c, int __d, int __e, int __f
 		, int __g)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -100,7 +97,6 @@ public final class UARTConfig
 	public UARTConfig(String __a, int __b, int __c, int __d, int __e, int __f
 		, int __g, int __h, int __i)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -184,7 +180,6 @@ public final class UARTConfig
 	{
 		public Builder()
 		{
-			super();
 			throw new todo.TODO();
 		}
 		

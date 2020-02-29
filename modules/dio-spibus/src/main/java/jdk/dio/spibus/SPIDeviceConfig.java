@@ -31,7 +31,6 @@ public final class SPIDeviceConfig
 	public SPIDeviceConfig(int __a, int __b, int __c, int __d, int __e, int 
 		__f)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -39,7 +38,6 @@ public final class SPIDeviceConfig
 	public SPIDeviceConfig(int __a, int __b, int __c, int __d, int __e, int 
 		__f, int __g)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -47,7 +45,6 @@ public final class SPIDeviceConfig
 	public SPIDeviceConfig(String __a, int __b, int __c, int __d, int __e, 
 		int __f)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -55,7 +52,6 @@ public final class SPIDeviceConfig
 	public SPIDeviceConfig(String __a, int __b, int __c, int __d, int __e, 
 		int __f, int __g)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -139,7 +135,6 @@ public final class SPIDeviceConfig
 	{
 		public Builder()
 		{
-			super();
 			throw new todo.TODO();
 		}
 		

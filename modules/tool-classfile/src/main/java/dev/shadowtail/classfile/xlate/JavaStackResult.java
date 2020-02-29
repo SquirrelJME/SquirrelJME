@@ -451,7 +451,7 @@ public final class JavaStackResult
 	 *
 	 * @since 2019/03/31
 	 */
-	public static interface InputOutput
+	public interface InputOutput
 	{
 	}
 	

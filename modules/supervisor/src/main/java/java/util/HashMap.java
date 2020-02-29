@@ -26,7 +26,7 @@ public class HashMap<K, V>
 	
 	/** Buckets available. */
 	private final __Bucket__[] _buckets =
-		new __Bucket__[_BUCKET_COUNT];
+		new __Bucket__[HashMap._BUCKET_COUNT];
 	
 	/**
 	 * Checks if the map contains the given key.
@@ -41,7 +41,7 @@ public class HashMap<K, V>
 		int hash = __k.hashCode();
 		
 		// Find existing bucket
-		__Bucket__ bucket = this._buckets[hash & _BUCKET_MASK];
+		__Bucket__ bucket = this._buckets[hash & HashMap._BUCKET_MASK];
 		if (bucket == null)
 			return false;
 		
@@ -68,7 +68,7 @@ public class HashMap<K, V>
 		int hash = __k.hashCode();
 		
 		// Find existing bucket
-		__Bucket__ bucket = this._buckets[hash & _BUCKET_MASK];
+		__Bucket__ bucket = this._buckets[hash & HashMap._BUCKET_MASK];
 		if (bucket == null)
 			return null;
 		
@@ -94,7 +94,7 @@ public class HashMap<K, V>
 	{
 		// Calculate hash code
 		int hash = __k.hashCode(),
-			bkid = hash & _BUCKET_MASK;
+			bkid = hash & HashMap._BUCKET_MASK;
 		
 		// Find existing bucket, create if missing
 		__Bucket__ bucket = this._buckets[bkid];
@@ -164,7 +164,7 @@ public class HashMap<K, V>
 	{
 		/** Items within the bucket. */
 		__Item__[] _items =
-			new __Item__[_BUCKET_COUNT];
+			new __Item__[HashMap._BUCKET_COUNT];
 	}
 	
 	/**

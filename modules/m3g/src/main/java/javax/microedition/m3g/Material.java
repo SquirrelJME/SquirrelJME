@@ -28,7 +28,6 @@ public class Material
 	
 	public Material()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

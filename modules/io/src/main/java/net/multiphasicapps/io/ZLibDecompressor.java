@@ -161,7 +161,7 @@ public class ZLibDecompressor
 		byte[] solo = this._solo;
 		for (;;)
 		{
-			int rv = read(solo, 0, 1);
+			int rv = this.read(solo, 0, 1);
 			
 			// EOF?
 			if (rv < 0)
@@ -278,8 +278,8 @@ public class ZLibDecompressor
 				
 				// {@squirreljme.error BD1x Only deflate compressed ZLib
 				// streams are supported. (The compression method used)}
-				int method = (cmf & _CMF_COMPRESSION_METHOD_MASK);
-				if (_CMF_METHOD_DEFLATE != method)
+				int method = (cmf & ZLibDecompressor._CMF_COMPRESSION_METHOD_MASK);
+				if (ZLibDecompressor._CMF_METHOD_DEFLATE != method)
 					throw new IOException(String.format("BD1x %d", method));
 				
 				// {@squirreljme.error BD1y The specified binary logarithm
@@ -287,8 +287,7 @@ public class ZLibDecompressor
 				// logarithm of the sliding window)}
 				// The specification says that higher sliding windows are not
 				// allowed, but skirt that requirement
-				int slwin = ((cmf & _CMF_COMPRESSION_INFO_MASK) >>>
-					_CMF_COMPRESSION_INFO_SHIFT) + 8;
+				int slwin = ((cmf & ZLibDecompressor._CMF_COMPRESSION_INFO_MASK) >>> ZLibDecompressor._CMF_COMPRESSION_INFO_SHIFT) + 8;
 				if (slwin < 0 || slwin > 30)
 					throw new IOException(String.format("BD1y %d", slwin));
 				
@@ -312,7 +311,7 @@ public class ZLibDecompressor
 				
 				// {@squirreljme.error BD20 Preset dictionaries in ZLib
 				// streams are not supported.}
-				if ((mf & _FLAG_PRESET_DICTIONARY) != 0)
+				if ((mf & ZLibDecompressor._FLAG_PRESET_DICTIONARY) != 0)
 					throw new IOException("BD20");
 				
 				// Setup inflate stream

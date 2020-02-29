@@ -26,7 +26,7 @@ public interface Connection
 	 * @since 2019/05/06
 	 */
 	@Override
-	public abstract void close()
+	void close()
 		throws IOException;
 }
 

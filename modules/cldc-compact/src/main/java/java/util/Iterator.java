@@ -31,7 +31,7 @@ public interface Iterator<E>
 	 * {@code false}.
 	 * @since 2016/04/12
 	 */
-	public abstract boolean hasNext();
+	boolean hasNext();
 	
 	/**
 	 * Returns the next element in the iteration or throws an exception if
@@ -41,7 +41,7 @@ public interface Iterator<E>
 	 * @throws NoSuchElementException If no more elements are available.
 	 * @since 2016/04/12
 	 */
-	public abstract E next()
+	E next()
 		throws NoSuchElementException;
 	
 	/**
@@ -55,6 +55,6 @@ public interface Iterator<E>
 	 * supported by this iteration.
 	 * @since 2016/04/12
 	 */
-	public abstract void remove()
+	void remove()
 		throws IllegalStateException, UnsupportedOperationException;
 }

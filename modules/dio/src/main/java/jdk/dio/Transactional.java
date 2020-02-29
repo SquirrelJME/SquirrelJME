@@ -14,10 +14,10 @@ import java.io.IOException;
 
 public interface Transactional
 {
-	public abstract void begin()
+	void begin()
 		throws ClosedDeviceException, IOException;
 	
-	public abstract void end()
+	void end()
 		throws ClosedDeviceException, IOException;
 }
 

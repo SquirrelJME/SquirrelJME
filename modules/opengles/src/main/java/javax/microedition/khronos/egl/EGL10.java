@@ -36,44 +36,44 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_ALPHA_SIZE =
+	int EGL_ALPHA_SIZE =
 		12321;
 	
-	public static final int EGL_BAD_ACCESS =
+	int EGL_BAD_ACCESS =
 		12290;
 	
-	public static final int EGL_BAD_ALLOC =
+	int EGL_BAD_ALLOC =
 		12291;
 	
-	public static final int EGL_BAD_ATTRIBUTE =
+	int EGL_BAD_ATTRIBUTE =
 		12292;
 	
-	public static final int EGL_BAD_CONFIG =
+	int EGL_BAD_CONFIG =
 		12293;
 	
-	public static final int EGL_BAD_CONTEXT =
+	int EGL_BAD_CONTEXT =
 		12294;
 	
-	public static final int EGL_BAD_CURRENT_SURFACE =
+	int EGL_BAD_CURRENT_SURFACE =
 		12295;
 	
 	/** This is an error specifying that the given display is not valid. */
-	public static final int EGL_BAD_DISPLAY =
+	int EGL_BAD_DISPLAY =
 		12296;
 	
-	public static final int EGL_BAD_MATCH =
+	int EGL_BAD_MATCH =
 		12297;
 	
-	public static final int EGL_BAD_NATIVE_PIXMAP =
+	int EGL_BAD_NATIVE_PIXMAP =
 		12298;
 	
-	public static final int EGL_BAD_NATIVE_WINDOW =
+	int EGL_BAD_NATIVE_WINDOW =
 		12299;
 	
-	public static final int EGL_BAD_PARAMETER =
+	int EGL_BAD_PARAMETER =
 		12300;
 	
-	public static final int EGL_BAD_SURFACE =
+	int EGL_BAD_SURFACE =
 		12301;
 	
 	/**
@@ -84,7 +84,7 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_BLUE_SIZE =
+	int EGL_BLUE_SIZE =
 		12322;
 	
 	/**
@@ -92,7 +92,7 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_BUFFER_SIZE =
+	int EGL_BUFFER_SIZE =
 		12320;
 	
 	/**
@@ -105,7 +105,7 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
-	public static final int EGL_CONFIG_CAVEAT =
+	int EGL_CONFIG_CAVEAT =
 		12327;
 	
 	/**
@@ -115,14 +115,14 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
-	public static final int EGL_CONFIG_ID =
+	int EGL_CONFIG_ID =
 		12328;
 	
-	public static final int EGL_CORE_NATIVE_ENGINE =
+	int EGL_CORE_NATIVE_ENGINE =
 		12379;
 	
 	/** This is used to signify that the default display should be used. */
-	public static final Object EGL_DEFAULT_DISPLAY =
+	Object EGL_DEFAULT_DISPLAY =
 		new Object();
 	
 	/**
@@ -132,23 +132,23 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_DEPTH_SIZE =
+	int EGL_DEPTH_SIZE =
 		12325;
 	
-	public static final int EGL_DONT_CARE =
+	int EGL_DONT_CARE =
 		-1;
 	
-	public static final int EGL_DRAW =
+	int EGL_DRAW =
 		12377;
 	
 	/**
 	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
 	 * extensions that are available to this OpenGL ES implementation.
 	 */
-	public static final int EGL_EXTENSIONS =
+	int EGL_EXTENSIONS =
 		12373;
 	
-	public static final int EGL_FALSE =
+	int EGL_FALSE =
 		0;
 	
 	/**
@@ -159,13 +159,13 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_GREEN_SIZE =
+	int EGL_GREEN_SIZE =
 		12323;
 	
-	public static final int EGL_HEIGHT =
+	int EGL_HEIGHT =
 		12374;
 	
-	public static final int EGL_LARGEST_PBUFFER =
+	int EGL_LARGEST_PBUFFER =
 		12376;
 	
 	/**
@@ -175,16 +175,16 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_LEVEL =
+	int EGL_LEVEL =
 		12329;
 	
-	public static final int EGL_MAX_PBUFFER_HEIGHT =
+	int EGL_MAX_PBUFFER_HEIGHT =
 		12330;
 	
-	public static final int EGL_MAX_PBUFFER_PIXELS =
+	int EGL_MAX_PBUFFER_PIXELS =
 		12331;
 	
-	public static final int EGL_MAX_PBUFFER_WIDTH =
+	int EGL_MAX_PBUFFER_WIDTH =
 		12332;
 	
 	/**
@@ -196,10 +196,10 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
-	public static final int EGL_NATIVE_RENDERABLE =
+	int EGL_NATIVE_RENDERABLE =
 		12333;
 	
-	public static final int EGL_NATIVE_VISUAL_ID =
+	int EGL_NATIVE_VISUAL_ID =
 		12334;
 	
 	/**
@@ -207,21 +207,21 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
-	public static final int EGL_NATIVE_VISUAL_TYPE =
+	int EGL_NATIVE_VISUAL_TYPE =
 		12335;
 	
-	public static final int EGL_NONE =
+	int EGL_NONE =
 		12344;
 	
-	public static final int EGL_NON_CONFORMANT_CONFIG =
+	int EGL_NON_CONFORMANT_CONFIG =
 		12369;
 	
 	/** An error specifying that the display has not been initialized. */
-	public static final int EGL_NOT_INITIALIZED =
+	int EGL_NOT_INITIALIZED =
 		12289;
 	
 	/** This represents a null context. */
-	public static final EGLContext EGL_NO_CONTEXT =
+	EGLContext EGL_NO_CONTEXT =
 		new EGLContext()
 		{
 			/**
@@ -238,13 +238,13 @@ public interface EGL10
 		};
 	
 	/** This represents a null display. */
-	public static final EGLDisplay EGL_NO_DISPLAY =
+	EGLDisplay EGL_NO_DISPLAY =
 		new EGLDisplay()
 		{
 		};
 	
 	/** This represents a null surface. */
-	public static final EGLSurface EGL_NO_SURFACE =
+	EGLSurface EGL_NO_SURFACE =
 		new EGLSurface()
 		{
 		};
@@ -253,17 +253,17 @@ public interface EGL10
 	 * Specifies that the surface is capable of creating pixel buffer
 	 * surfaces.
 	 */
-	public static final int EGL_PBUFFER_BIT =
+	int EGL_PBUFFER_BIT =
 		1;
 	
 	/** Specifies that the surface is capable of creating pixmap surfaces. */
-	public static final int EGL_PIXMAP_BIT =
+	int EGL_PIXMAP_BIT =
 		2;
 	
-	public static final int EGL_PRESERVED_RESOURCES =
+	int EGL_PRESERVED_RESOURCES =
 		12336;
 	
-	public static final int EGL_READ =
+	int EGL_READ =
 		12378;
 	
 	/**
@@ -274,7 +274,7 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_RED_SIZE =
+	int EGL_RED_SIZE =
 		12324;
 	
 	/**
@@ -282,7 +282,7 @@ public interface EGL10
 	 *
 	 * Default unspecified.
 	 */
-	public static final int EGL_SAMPLES =
+	int EGL_SAMPLES =
 		12337;
 	
 	/**
@@ -291,10 +291,10 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_SAMPLE_BUFFERS =
+	int EGL_SAMPLE_BUFFERS =
 		12338;
 	
-	public static final int EGL_SLOW_CONFIG =
+	int EGL_SLOW_CONFIG =
 		12368;
 	
 	/**
@@ -304,10 +304,10 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
-	public static final int EGL_STENCIL_SIZE =
+	int EGL_STENCIL_SIZE =
 		12326;
 	
-	public static final int EGL_SUCCESS =
+	int EGL_SUCCESS =
 		12288;
 	
 	/**
@@ -317,7 +317,7 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_WINDOW_BIT}.
 	 */
-	public static final int EGL_SURFACE_TYPE =
+	int EGL_SURFACE_TYPE =
 		12339;
 	
 	/**
@@ -328,7 +328,7 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
-	public static final int EGL_TRANSPARENT_BLUE_VALUE =
+	int EGL_TRANSPARENT_BLUE_VALUE =
 		12341;
 	
 	/**
@@ -339,7 +339,7 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
-	public static final int EGL_TRANSPARENT_GREEN_VALUE =
+	int EGL_TRANSPARENT_GREEN_VALUE =
 		12342;
 	
 	/**
@@ -350,10 +350,10 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
-	public static final int EGL_TRANSPARENT_RED_VALUE =
+	int EGL_TRANSPARENT_RED_VALUE =
 		12343;
 	
-	public static final int EGL_TRANSPARENT_RGB =
+	int EGL_TRANSPARENT_RGB =
 		12370;
 	
 	/**
@@ -367,31 +367,31 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_NONE}.
 	 */
-	public static final int EGL_TRANSPARENT_TYPE =
+	int EGL_TRANSPARENT_TYPE =
 		12340;
 	
-	public static final int EGL_TRUE =
+	int EGL_TRUE =
 		1;
 	
 	/**
 	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
 	 * OpenGL ES vendor.
 	 */
-	public static final int EGL_VENDOR =
+	int EGL_VENDOR =
 		12371;
 	
 	/**
 	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
 	 * OpenGL ES version in the form of {@code major.minor vendor-specific}.
 	 */
-	public static final int EGL_VERSION =
+	int EGL_VERSION =
 		12372;
 	
-	public static final int EGL_WIDTH =
+	int EGL_WIDTH =
 		12375;
 	
 	/** Supports creation of window surfaces. */
-	public static final int EGL_WINDOW_BIT =
+	int EGL_WINDOW_BIT =
 		4;
 	
 	/**
@@ -470,42 +470,39 @@ public interface EGL10
 	 * is zero.
 	 * @since 2016/10/11
 	 */
-	public abstract boolean eglChooseConfig(EGLDisplay __disp, int[] __attrl,
+	boolean eglChooseConfig(EGLDisplay __disp, int[] __attrl,
 		EGLConfig[] __confs, int __confssize, int[] __numconf)
 		throws IllegalArgumentException;
 	
-	public abstract boolean eglCopyBuffers(EGLDisplay __a, EGLSurface __b, 
-		Object __c);
+	boolean eglCopyBuffers(EGLDisplay __a, EGLSurface __b, Object __c);
 	
-	public abstract EGLContext eglCreateContext(EGLDisplay __a, EGLConfig __b
-		, EGLContext __c, int[] __d);
+	EGLContext eglCreateContext(EGLDisplay __a, EGLConfig __b, EGLContext __c,
+		int[] __d);
 	
-	public abstract EGLSurface eglCreatePbufferSurface(EGLDisplay __a, 
-		EGLConfig __b, int[] __c);
+	EGLSurface eglCreatePbufferSurface(EGLDisplay __a, EGLConfig __b,
+		int[] __c);
 	
-	public abstract EGLSurface eglCreatePixmapSurface(EGLDisplay __a, 
-		EGLConfig __b, Object __c, int[] __d);
+	EGLSurface eglCreatePixmapSurface(EGLDisplay __a, EGLConfig __b,
+		Object __c, int[] __d);
 	
-	public abstract EGLSurface eglCreateWindowSurface(EGLDisplay __a, 
-		EGLConfig __b, Object __c, int[] __d);
+	EGLSurface eglCreateWindowSurface(EGLDisplay __a, EGLConfig __b,
+		Object __c, int[] __d);
 	
-	public abstract boolean eglDestroyContext(EGLDisplay __a, EGLContext __b
-		);
+	boolean eglDestroyContext(EGLDisplay __a, EGLContext __b);
 	
-	public abstract boolean eglDestroySurface(EGLDisplay __a, EGLSurface __b
-		);
+	boolean eglDestroySurface(EGLDisplay __a, EGLSurface __b);
 	
-	public abstract boolean eglGetConfigAttrib(EGLDisplay __a, EGLConfig __b,
-		int __c, int[] __d);
+	boolean eglGetConfigAttrib(EGLDisplay __a, EGLConfig __b, int __c,
+		int[] __d);
 	
-	public abstract boolean eglGetConfigs(EGLDisplay __a, EGLConfig[] __b, 
-		int __c, int[] __d);
+	boolean eglGetConfigs(EGLDisplay __a, EGLConfig[] __b, int __c,
+	 int[] __d);
 	
-	public abstract EGLContext eglGetCurrentContext();
+	EGLContext eglGetCurrentContext();
 	
-	public abstract EGLDisplay eglGetCurrentDisplay();
+	EGLDisplay eglGetCurrentDisplay();
 	
-	public abstract EGLSurface eglGetCurrentSurface(int __a);
+	EGLSurface eglGetCurrentSurface(int __a);
 	
 	/**
 	 * This creates a connection to the given native display.
@@ -524,7 +521,7 @@ public interface EGL10
 	 * not compatible with the OpenGL ES backend.
 	 * @since 2016/10/10
 	 */
-	public abstract EGLDisplay eglGetDisplay(Object __nd)
+	EGLDisplay eglGetDisplay(Object __nd)
 		throws IllegalArgumentException;
 	
 	/**
@@ -536,7 +533,7 @@ public interface EGL10
 	 * @return The error code.
 	 * @since 2016/10/11
 	 */
-	public abstract int eglGetError();
+	int eglGetError();
 	
 	/**
 	 * Initializes the OpenGL ES display and optionally returns the version
@@ -564,14 +561,14 @@ public interface EGL10
 	 * {@code __ver} is non-null and has a length lower than two.
 	 * @since 2016/10/11
 	 */
-	public abstract boolean eglInitialize(EGLDisplay __disp, int[] __ver)
+	boolean eglInitialize(EGLDisplay __disp, int[] __ver)
 		throws IllegalArgumentException;
 	
-	public abstract boolean eglMakeCurrent(EGLDisplay __a, EGLSurface __b, 
-		EGLSurface __c, EGLContext __d);
+	boolean eglMakeCurrent(EGLDisplay __a, EGLSurface __b, EGLSurface __c,
+		EGLContext __d);
 	
-	public abstract boolean eglQueryContext(EGLDisplay __a, EGLContext __b, 
-		int __c, int[] __d);
+	boolean eglQueryContext(EGLDisplay __a, EGLContext __b, int __c,
+	 int[] __d);
 	
 	/**
 	 * Queries an implementation specific string from the specified display.
@@ -592,19 +589,19 @@ public interface EGL10
 	 * @throws IllegalArgumentException If {@code __disp} is {@code null}.
 	 * @since 2016/10/11
 	 */
-	public abstract String eglQueryString(EGLDisplay __disp, int __key)
+	String eglQueryString(EGLDisplay __disp, int __key)
 		throws IllegalArgumentException;
 	
-	public abstract boolean eglQuerySurface(EGLDisplay __a, EGLSurface __b, 
-		int __c, int[] __d);
+	boolean eglQuerySurface(EGLDisplay __a, EGLSurface __b, int __c,
+	 int[] __d);
 	
-	public abstract boolean eglSwapBuffers(EGLDisplay __a, EGLSurface __b);
+	boolean eglSwapBuffers(EGLDisplay __a, EGLSurface __b);
 	
-	public abstract boolean eglTerminate(EGLDisplay __a);
+	boolean eglTerminate(EGLDisplay __a);
 	
-	public abstract boolean eglWaitGL();
+	boolean eglWaitGL();
 	
-	public abstract boolean eglWaitNative(int __a, Object __b);
+	boolean eglWaitNative(int __a, Object __b);
 }
 
 

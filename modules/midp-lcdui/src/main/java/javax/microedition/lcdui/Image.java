@@ -61,7 +61,7 @@ public class Image
 		this._data = __data;
 		this._width = __w;
 		this._height = __h;
-		this._mutable = __mut && !isAnimated() && !isScalable();
+		this._mutable = __mut && !this.isAnimated() && !this.isScalable();
 		this._alpha = __alpha;
 		
 		// If no alpha, set upper channel to full opaqueness
@@ -100,7 +100,7 @@ public class Image
 	{
 		// {@squirreljme.error EB28 Cannot get mutable graphic operations for
 		// an immutable image.}
-		if (!isMutable())
+		if (!this.isMutable())
 			throw new IllegalStateException("EB28");
 		
 		// Create
@@ -155,7 +155,7 @@ public class Image
 			return;
 		
 		// Scalable images must be rasterized
-		if (isScalable())
+		if (this.isScalable())
 			throw new todo.TODO();
 			
 		// Check
@@ -253,7 +253,7 @@ public class Image
 	 */
 	public final boolean isMutable()
 	{
-		return this._mutable && !isAnimated() && !isScalable();
+		return this._mutable && !this.isAnimated() && !this.isScalable();
 	}
 	
 	/**
@@ -291,7 +291,7 @@ public class Image
 		// Could fail
 		try
 		{
-			return createImage(new ByteArrayInputStream(__b, __o, __l));
+			return Image.createImage(new ByteArrayInputStream(__b, __o, __l));
 		}
 		
 		// {@squirreljme.error EB2d Could not load the image data.}
@@ -314,7 +314,7 @@ public class Image
 	public static Image createImage(int __w, int __h)
 		throws IllegalArgumentException
 	{
-		return createImage(__w, __h, false, 0x00FFFFFF);
+		return Image.createImage(__w, __h, false, 0x00FFFFFF);
 	}
 	
 	/**
@@ -419,7 +419,7 @@ public class Image
 			if (is == null)
 				throw new IOException(String.format("EB2f %s", __s));
 			
-			return createImage(is);
+			return Image.createImage(is);
 		}
 	}
 	

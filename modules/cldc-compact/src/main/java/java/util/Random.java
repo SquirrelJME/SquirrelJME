@@ -159,8 +159,8 @@ public class Random
 				do
 				{
 					// Between -1.0 and 1.0
-					v1 = 2 * nextDouble() - 1;
-					v2 = 2 * nextDouble() - 1;
+					v1 = 2 * this.nextDouble() - 1;
+					v2 = 2 * this.nextDouble() - 1;
 
 					s = v1 * v1 + v2 * v2;
 				} while (s >= 1 || s == 0);

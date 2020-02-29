@@ -16,13 +16,11 @@ public class UnavailableDeviceException
 {
 	public UnavailableDeviceException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public UnavailableDeviceException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

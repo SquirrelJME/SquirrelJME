@@ -28,7 +28,6 @@ public class Light
 	
 	public Light()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

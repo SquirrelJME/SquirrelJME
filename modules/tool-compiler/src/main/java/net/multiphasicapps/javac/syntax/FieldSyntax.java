@@ -25,6 +25,6 @@ public interface FieldSyntax
 	 * @since 2018/04/29
 	 */
 	@Override
-	public abstract FieldName name();
+	FieldName name();
 }
 

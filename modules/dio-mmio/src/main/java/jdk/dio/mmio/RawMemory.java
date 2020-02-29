@@ -12,6 +12,6 @@ package jdk.dio.mmio;
 
 public interface RawMemory
 {
-	public abstract String getName();
+	String getName();
 }
 

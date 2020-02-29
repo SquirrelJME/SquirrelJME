@@ -13,13 +13,13 @@ package javax.microedition.io.file;
 
 public interface FileSystemListener
 {
-	public static final int ROOT_ADDED =
+	int ROOT_ADDED =
 		0;
 	
-	public static final int ROOT_REMOVED =
+	int ROOT_REMOVED =
 		1;
 	
-	public abstract void rootChanged(int __a, String __b);
+	void rootChanged(int __a, String __b);
 }
 
 

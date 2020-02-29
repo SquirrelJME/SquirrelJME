@@ -31,25 +31,21 @@ public class Image2D
 	
 	public Image2D(int __a, int __b, int __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Image2D(int __a, int __b, int __c, byte[] __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Image2D(int __a, int __b, int __c, byte[] __d, byte[] __e)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Image2D(int __a, Object __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

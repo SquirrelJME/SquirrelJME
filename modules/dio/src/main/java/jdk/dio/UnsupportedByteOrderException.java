@@ -16,13 +16,11 @@ public class UnsupportedByteOrderException
 {
 	public UnsupportedByteOrderException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public UnsupportedByteOrderException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

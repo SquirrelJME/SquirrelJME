@@ -30,7 +30,7 @@ public interface CompilerOutput
 	 * @throws CompilerException If there was an error flushing.
 	 * @since 2017/11/28
 	 */
-	public abstract void flush()
+	void flush()
 		throws CompilerException;
 	
 	/**
@@ -44,7 +44,7 @@ public interface CompilerOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
-	public abstract OutputStream output(String __n)
+	OutputStream output(String __n)
 		throws CompilerException, NullPointerException;
 }
 

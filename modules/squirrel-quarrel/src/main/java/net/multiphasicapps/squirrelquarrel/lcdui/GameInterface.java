@@ -53,7 +53,7 @@ public final class GameInterface
 			throw new NullPointerException("NARG");
 		
 		// Setup details
-		setTitle("Squirrel Quarrel");
+		this.setTitle("Squirrel Quarrel");
 		
 		this.looper = __g;
 		SplitScreen splitscreen;

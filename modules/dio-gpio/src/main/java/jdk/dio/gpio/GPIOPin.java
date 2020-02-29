@@ -18,36 +18,36 @@ import jdk.dio.UnavailableDeviceException;
 public interface GPIOPin
 	extends Device<GPIOPin>
 {
-	public static final int INPUT =
+	int INPUT =
 		0;
 	
-	public static final int OUTPUT =
+	int OUTPUT =
 		1;
 	
-	public abstract int getDirection()
+	int getDirection()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getTrigger()
+	int getTrigger()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract boolean getValue()
+	boolean getValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setDirection(int __a)
+	void setDirection(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setInputListener(PinListener __a)
+	void setInputListener(PinListener __a)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract void setTrigger(int __a)
+	void setTrigger(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setValue(boolean __a)
+	void setValue(boolean __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

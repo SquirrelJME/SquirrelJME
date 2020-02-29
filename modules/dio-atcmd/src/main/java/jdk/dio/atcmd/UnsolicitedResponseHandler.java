@@ -13,7 +13,7 @@ package jdk.dio.atcmd;
 
 public interface UnsolicitedResponseHandler
 {
-	public abstract void processResponse(ATDevice __a, String __b);
+	void processResponse(ATDevice __a, String __b);
 }
 
 

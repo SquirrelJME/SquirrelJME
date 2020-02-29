@@ -39,7 +39,7 @@ public interface Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/13
 	 */
-	public abstract int decode(byte[] __b, int __o, int __l)
+	int decode(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
 }
 

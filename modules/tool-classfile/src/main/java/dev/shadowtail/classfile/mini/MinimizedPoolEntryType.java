@@ -129,22 +129,22 @@ public enum MinimizedPoolEntryType
 	{
 		switch (__i)
 		{
-			case 0:		return NULL;
-			case 1:		return STRING;
-			case 2:		return CLASS_NAME;
-			case 3:		return CLASS_NAMES;
-			case 4:		return CLASS_POOL;
-			case 5:		return ACCESSED_FIELD;
-			case 6:		return INVOKED_METHOD;
-			case 7:		return METHOD_DESCRIPTOR;
-			case 8:		return INTEGER;
-			case 9:		return FLOAT;
-			case 10:	return LONG;
-			case 11:	return DOUBLE;
-			case 12:	return USED_STRING;
-			case 13:	return METHOD_INDEX;
-			case 14:	return CLASS_INFO_POINTER;
-			case 15:	return NOTED_STRING;
+			case 0:		return MinimizedPoolEntryType.NULL;
+			case 1:		return MinimizedPoolEntryType.STRING;
+			case 2:		return MinimizedPoolEntryType.CLASS_NAME;
+			case 3:		return MinimizedPoolEntryType.CLASS_NAMES;
+			case 4:		return MinimizedPoolEntryType.CLASS_POOL;
+			case 5:		return MinimizedPoolEntryType.ACCESSED_FIELD;
+			case 6:		return MinimizedPoolEntryType.INVOKED_METHOD;
+			case 7:		return MinimizedPoolEntryType.METHOD_DESCRIPTOR;
+			case 8:		return MinimizedPoolEntryType.INTEGER;
+			case 9:		return MinimizedPoolEntryType.FLOAT;
+			case 10:	return MinimizedPoolEntryType.LONG;
+			case 11:	return MinimizedPoolEntryType.DOUBLE;
+			case 12:	return MinimizedPoolEntryType.USED_STRING;
+			case 13:	return MinimizedPoolEntryType.METHOD_INDEX;
+			case 14:	return MinimizedPoolEntryType.CLASS_INFO_POINTER;
+			case 15:	return MinimizedPoolEntryType.NOTED_STRING;
 		}
 		
 		// {@squirreljme.error JC0e Unknown pool type. (The type)}
@@ -170,39 +170,39 @@ public enum MinimizedPoolEntryType
 		switch (__cl.getName())
 		{
 			case "java.lang.String":
-				return STRING;
+				return MinimizedPoolEntryType.STRING;
 			case "java.lang.Integer":
-				return INTEGER;
+				return MinimizedPoolEntryType.INTEGER;
 			case "java.lang.Float":
-				return FLOAT;
+				return MinimizedPoolEntryType.FLOAT;
 			case "java.lang.Long":
-				return LONG;
+				return MinimizedPoolEntryType.LONG;
 			case "java.lang.Double":
-				return DOUBLE;
+				return MinimizedPoolEntryType.DOUBLE;
 			case "dev.shadowtail.classfile.pool.AccessedField":
-				return ACCESSED_FIELD;
+				return MinimizedPoolEntryType.ACCESSED_FIELD;
 			case "dev.shadowtail.classfile.pool.ClassPool":
-				return CLASS_POOL;
+				return MinimizedPoolEntryType.CLASS_POOL;
 			case "dev.shadowtail.classfile.pool.InvokedMethod":
-				return INVOKED_METHOD;
+				return MinimizedPoolEntryType.INVOKED_METHOD;
 			case "net.multiphasicapps.classfile.ClassName":
-				return CLASS_NAME;
+				return MinimizedPoolEntryType.CLASS_NAME;
 			case "net.multiphasicapps.classfile.ClassNames":
-				return CLASS_NAMES;
+				return MinimizedPoolEntryType.CLASS_NAMES;
 			case "List net.multiphasicapps.classfile.ClassName":
-				return CLASS_NAMES;
+				return MinimizedPoolEntryType.CLASS_NAMES;
 			case "net.multiphasicapps.classfile.MethodDescriptor":
-				return METHOD_DESCRIPTOR;
+				return MinimizedPoolEntryType.METHOD_DESCRIPTOR;
 			case "dev.shadowtail.classfile.pool.UsedString":
-				return USED_STRING;
+				return MinimizedPoolEntryType.USED_STRING;
 			case "dev.shadowtail.classfile.pool.MethodIndex":
-				return METHOD_INDEX;
+				return MinimizedPoolEntryType.METHOD_INDEX;
 			case "dev.shadowtail.classfile.pool.ClassInfoPointer":
-				return CLASS_INFO_POINTER;
+				return MinimizedPoolEntryType.CLASS_INFO_POINTER;
 			case "dev.shadowtail.classfile.pool.NotedString":
-				return NOTED_STRING;
+				return MinimizedPoolEntryType.NOTED_STRING;
 			case "dev.shadowtail.classfile.pool.NullPoolEntry":
-				return NULL;
+				return MinimizedPoolEntryType.NULL;
 		}
 		
 		// {@squirreljme.error JC0f Class does not map to a pool entry

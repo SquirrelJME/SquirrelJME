@@ -25,7 +25,7 @@ public interface ConsoleCallback
 	 * @return {@code false} if an {@link IOException} occurred.
 	 * @since 2019/02/02
 	 */
-	public abstract boolean close();
+	boolean close();
 	
 	/**
 	 * This is called when the callback is flushed.
@@ -33,7 +33,7 @@ public interface ConsoleCallback
 	 * @return {@code false} if an {@link IOException} occurred.
 	 * @since 2019/02/02
 	 */
-	public abstract boolean flush();
+	boolean flush();
 	
 	/**
 	 * Writes the specified bytes to the output.
@@ -44,5 +44,5 @@ public interface ConsoleCallback
 	 * @return {@code false} if an {@link IOException} occurred.
 	 * @since 2019/02/02
 	 */
-	public abstract boolean write(byte[] __b, int __o, int __l);
+	boolean write(byte[] __b, int __o, int __l);
 }

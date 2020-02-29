@@ -76,7 +76,7 @@ public final class IBM037Encoder
 			__c = '?';
 		
 		// Map
-		__b[__o] = _MAP[__c];
+		__b[__o] = IBM037Encoder._MAP[__c];
 		
 		// Only single characters written
 		return 1;

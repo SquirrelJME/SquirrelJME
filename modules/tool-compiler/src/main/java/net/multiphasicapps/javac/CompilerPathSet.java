@@ -35,7 +35,7 @@ public interface CompilerPathSet
 	 * @since 2017/11/28
 	 */
 	@Override
-	public abstract void close()
+	void close()
 		throws CompilerException;
 	
 	/**
@@ -50,7 +50,7 @@ public interface CompilerPathSet
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract CompilerInput input(String __n)
+	CompilerInput input(String __n)
 		throws CompilerException, NoSuchInputException, NullPointerException;
 }
 

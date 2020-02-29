@@ -132,7 +132,7 @@ public final class ZipStreamEntry
 		this.expectedcrc = __crc;
 		this.expecteduncompsize = __uncomp;
 		this.expectedcompsize = __comp;
-		this._peeking = (__undef ? new byte[_MAX_DESCRIPTOR_SIZE] : null);
+		this._peeking = (__undef ? new byte[ZipStreamEntry._MAX_DESCRIPTOR_SIZE] : null);
 	}
 	
 	/**
@@ -153,7 +153,7 @@ public final class ZipStreamEntry
 			if (!this._eof)
 			{
 				byte[] buf = new byte[512];
-				while (read(buf) >= 0)
+				while (this.read(buf) >= 0)
 					;
 			}
 			
@@ -197,7 +197,7 @@ public final class ZipStreamEntry
 		byte[] solo = this._solo;
 		for (;;)
 		{
-			int rv = read(solo, 0, 1);
+			int rv = this.read(solo, 0, 1);
 			
 			// EOF?
 			if (rv < 0)
@@ -240,17 +240,17 @@ public final class ZipStreamEntry
 			// things occur. Then read the data descriptor to verify that it
 			// actually is correct
 			if (this.detectseof)
-				return __detectedRead(__b, __o, __l);
+				return this.__detectedRead(__b, __o, __l);
 			
 			// Otherwise, the input stream has to be peeked constantly to
 			// detect the data descriptor.
 			else
-				return __probingRead(__b, __o, __l);
+				return this.__probingRead(__b, __o, __l);
 		}
 		
 		// Read of a defined number of bytes
 		else
-			return __definedRead(__b, __o, __l);
+			return this.__definedRead(__b, __o, __l);
 	}
 	
 	/**
@@ -344,12 +344,13 @@ public final class ZipStreamEntry
 		// {@squirreljme.error BF0v Could not find end of entry because the
 		// entry exceeds the bounds of the ZIP file. (The number of read
 		// bytes)}
-		int probed = dhin.peek(0, peeking, 0, _MAX_DESCRIPTOR_SIZE);
-		if (probed < _HEADERLESS_DESCRIPTOR_SIZE)
+		int probed = dhin.peek(0, peeking, 0,
+			ZipStreamEntry._MAX_DESCRIPTOR_SIZE);
+		if (probed < ZipStreamEntry._HEADERLESS_DESCRIPTOR_SIZE)
 			throw new ZipException(String.format("BF0v %d", probed));
 		
 		// The specification says the descriptor is optional
-		int offset = (_DESCRIPTOR_MAGIC_NUMBER ==
+		int offset = (ZipStreamEntry._DESCRIPTOR_MAGIC_NUMBER ==
 			ZipStreamReader.__readInt(peeking, 0) ? 4 : 0);
 
 		// Read descriptor fields
@@ -406,14 +407,15 @@ public final class ZipStreamEntry
 			// {@squirreljme.error BF0x Could not find end of entry because the
 			// entry exceeds the bounds of the ZIP file. (The number of read
 			// bytes)}
-			int probed = dhin.peek(0, peeking, 0, _MAX_DESCRIPTOR_SIZE);
-			if (probed < _HEADERLESS_DESCRIPTOR_SIZE)
+			int probed = dhin.peek(0, peeking, 0,
+				ZipStreamEntry._MAX_DESCRIPTOR_SIZE);
+			if (probed < ZipStreamEntry._HEADERLESS_DESCRIPTOR_SIZE)
 				throw new ZipException(String.format("BF0x %d", probed));
 		
 			// According to the specification, the magic number is optional and
 			// might not be specified
 			// Regardless if it is or not, potentially skip it
-			int offset = (_DESCRIPTOR_MAGIC_NUMBER ==
+			int offset = (ZipStreamEntry._DESCRIPTOR_MAGIC_NUMBER ==
 				ZipStreamReader.__readInt(peeking, 0) ? 4 : 0);
 		
 			// Read descriptor fields

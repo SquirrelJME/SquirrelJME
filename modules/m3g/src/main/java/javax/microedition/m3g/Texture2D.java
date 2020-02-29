@@ -46,7 +46,6 @@ public class Texture2D
 	
 	public Texture2D(Image2D __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

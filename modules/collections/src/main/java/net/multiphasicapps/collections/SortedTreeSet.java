@@ -102,7 +102,7 @@ public class SortedTreeSet<V>
 		this._map = new SortedTreeMap<>(__comp);
 		
 		// Just call add all from collection
-		addAll(__s);
+		this.addAll(__s);
 	}
 	
 	/**
@@ -112,7 +112,8 @@ public class SortedTreeSet<V>
 	@Override
 	public boolean add(V __v)
 	{
-		return (_HAS_VALUE != this._map.put(__v, _HAS_VALUE));
+		return (SortedTreeSet._HAS_VALUE != this._map.put(__v,
+			SortedTreeSet._HAS_VALUE));
 	}
 	
 	/**
@@ -153,7 +154,7 @@ public class SortedTreeSet<V>
 	public boolean remove(Object __o)
 	{
 		Object q = this._map.remove(__o);
-		return (q == _HAS_VALUE);
+		return (q == SortedTreeSet._HAS_VALUE);
 	}
 	
 	/**

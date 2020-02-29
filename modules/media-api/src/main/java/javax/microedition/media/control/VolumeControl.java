@@ -15,13 +15,13 @@ import javax.microedition.media.Control;
 public interface VolumeControl
 	extends Control
 {
-	public abstract int getLevel();
+	int getLevel();
 	
-	public abstract boolean isMuted();
+	boolean isMuted();
 	
-	public abstract int setLevel(int __a);
+	int setLevel(int __a);
 	
-	public abstract void setMute(boolean __a);
+	void setMute(boolean __a);
 }
 
 

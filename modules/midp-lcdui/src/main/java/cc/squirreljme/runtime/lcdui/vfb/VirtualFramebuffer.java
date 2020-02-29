@@ -56,7 +56,8 @@ public final class VirtualFramebuffer
 	public VirtualFramebuffer(IPCCallback __ipc)
 		throws NullPointerException
 	{
-		this(__ipc, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		this(__ipc, VirtualFramebuffer.DEFAULT_WIDTH,
+			VirtualFramebuffer.DEFAULT_HEIGHT);
 	}
 	
 	/**

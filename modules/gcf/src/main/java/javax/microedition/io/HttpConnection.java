@@ -31,194 +31,194 @@ import java.io.IOException;
 public interface HttpConnection
 	extends ContentConnection
 {
-	public static final String CONNECT =
+	String CONNECT =
 		"CONNECT";
 	
-	public static final String DELETE =
+	String DELETE =
 		"DELETE";
 	
-	public static final String GET =
+	String GET =
 		"GET";
 	
-	public static final String HEAD =
+	String HEAD =
 		"HEAD";
 	
-	public static final int HTTP_ACCEPTED =
+	int HTTP_ACCEPTED =
 		202;
 	
-	public static final int HTTP_BAD_GATEWAY =
+	int HTTP_BAD_GATEWAY =
 		502;
 	
-	public static final int HTTP_BAD_METHOD =
+	int HTTP_BAD_METHOD =
 		405;
 	
-	public static final int HTTP_BAD_REQUEST =
+	int HTTP_BAD_REQUEST =
 		400;
 	
-	public static final int HTTP_CLIENT_TIMEOUT =
+	int HTTP_CLIENT_TIMEOUT =
 		408;
 	
-	public static final int HTTP_CONFLICT =
+	int HTTP_CONFLICT =
 		409;
 	
-	public static final int HTTP_CREATED =
+	int HTTP_CREATED =
 		201;
 	
-	public static final int HTTP_ENTITY_TOO_LARGE =
+	int HTTP_ENTITY_TOO_LARGE =
 		413;
 	
-	public static final int HTTP_EXPECT_FAILED =
+	int HTTP_EXPECT_FAILED =
 		417;
 	
-	public static final int HTTP_FORBIDDEN =
+	int HTTP_FORBIDDEN =
 		403;
 	
-	public static final int HTTP_GATEWAY_TIMEOUT =
+	int HTTP_GATEWAY_TIMEOUT =
 		504;
 	
-	public static final int HTTP_GONE =
+	int HTTP_GONE =
 		410;
 	
-	public static final int HTTP_INTERNAL_ERROR =
+	int HTTP_INTERNAL_ERROR =
 		500;
 	
-	public static final int HTTP_LENGTH_REQUIRED =
+	int HTTP_LENGTH_REQUIRED =
 		411;
 	
-	public static final int HTTP_MOVED_PERM =
+	int HTTP_MOVED_PERM =
 		301;
 	
-	public static final int HTTP_MOVED_TEMP =
+	int HTTP_MOVED_TEMP =
 		302;
 	
-	public static final int HTTP_MULT_CHOICE =
+	int HTTP_MULT_CHOICE =
 		300;
 	
-	public static final int HTTP_NOT_ACCEPTABLE =
+	int HTTP_NOT_ACCEPTABLE =
 		406;
 	
-	public static final int HTTP_NOT_AUTHORITATIVE =
+	int HTTP_NOT_AUTHORITATIVE =
 		203;
 	
-	public static final int HTTP_NOT_FOUND =
+	int HTTP_NOT_FOUND =
 		404;
 	
-	public static final int HTTP_NOT_IMPLEMENTED =
+	int HTTP_NOT_IMPLEMENTED =
 		501;
 	
-	public static final int HTTP_NOT_MODIFIED =
+	int HTTP_NOT_MODIFIED =
 		304;
 	
-	public static final int HTTP_NO_CONTENT =
+	int HTTP_NO_CONTENT =
 		204;
 	
-	public static final int HTTP_OK =
+	int HTTP_OK =
 		200;
 	
-	public static final int HTTP_PARTIAL =
+	int HTTP_PARTIAL =
 		206;
 	
-	public static final int HTTP_PAYMENT_REQUIRED =
+	int HTTP_PAYMENT_REQUIRED =
 		402;
 	
-	public static final int HTTP_PRECON_FAILED =
+	int HTTP_PRECON_FAILED =
 		412;
 	
-	public static final int HTTP_PROXY_AUTH =
+	int HTTP_PROXY_AUTH =
 		407;
 	
-	public static final int HTTP_REQ_TOO_LONG =
+	int HTTP_REQ_TOO_LONG =
 		414;
 	
-	public static final int HTTP_RESET =
+	int HTTP_RESET =
 		205;
 	
-	public static final int HTTP_SEE_OTHER =
+	int HTTP_SEE_OTHER =
 		303;
 	
-	public static final int HTTP_TEMP_REDIRECT =
+	int HTTP_TEMP_REDIRECT =
 		307;
 	
-	public static final int HTTP_UNAUTHORIZED =
+	int HTTP_UNAUTHORIZED =
 		401;
 	
-	public static final int HTTP_UNAVAILABLE =
+	int HTTP_UNAVAILABLE =
 		503;
 	
-	public static final int HTTP_UNSUPPORTED_RANGE =
+	int HTTP_UNSUPPORTED_RANGE =
 		416;
 	
-	public static final int HTTP_UNSUPPORTED_TYPE =
+	int HTTP_UNSUPPORTED_TYPE =
 		415;
 	
-	public static final int HTTP_USE_PROXY =
+	int HTTP_USE_PROXY =
 		305;
 	
-	public static final int HTTP_VERSION =
+	int HTTP_VERSION =
 		505;
 	
-	public static final String OPTIONS =
+	String OPTIONS =
 		"OPTIONS";
 	
-	public static final String POST =
+	String POST =
 		"POST";
 	
-	public static final String PUT =
+	String PUT =
 		"PUT";
 	
-	public static final String TRACE =
+	String TRACE =
 		"TRACE";
 	
-	public abstract AccessPoint getAccessPoint()
+	AccessPoint getAccessPoint()
 		throws IOException;
 	
-	public abstract long getDate()
+	long getDate()
 		throws IOException;
 	
-	public abstract long getExpiration()
+	long getExpiration()
 		throws IOException;
 	
-	public abstract String getFile();
+	String getFile();
 	
-	public abstract String getHeaderField(String __a)
+	String getHeaderField(String __a)
 		throws IOException;
 	
-	public abstract String getHeaderField(int __a)
+	String getHeaderField(int __a)
 		throws IOException;
 	
-	public abstract long getHeaderFieldDate(String __a, long __b)
+	long getHeaderFieldDate(String __a, long __b)
 		throws IOException;
 	
-	public abstract int getHeaderFieldInt(String __a, int __b)
+	int getHeaderFieldInt(String __a, int __b)
 		throws IOException;
 	
-	public abstract String getHeaderFieldKey(int __a)
+	String getHeaderFieldKey(int __a)
 		throws IOException;
 	
-	public abstract String getHost();
+	String getHost();
 	
-	public abstract long getLastModified()
+	long getLastModified()
 		throws IOException;
 	
-	public abstract int getPort();
+	int getPort();
 	
-	public abstract String getProtocol();
+	String getProtocol();
 	
-	public abstract String getQuery();
+	String getQuery();
 	
-	public abstract String getRef();
+	String getRef();
 	
-	public abstract String getRequestMethod();
+	String getRequestMethod();
 	
-	public abstract String getRequestProperty(String __a);
+	String getRequestProperty(String __a);
 	
-	public abstract int getResponseCode()
+	int getResponseCode()
 		throws IOException;
 	
-	public abstract String getResponseMessage()
+	String getResponseMessage()
 		throws IOException;
 	
-	public abstract String getURL();
+	String getURL();
 	
 	/**
 	 * Sets the request method to use.
@@ -228,7 +228,7 @@ public interface HttpConnection
 	 * @throws NullPointerException If no method was specified.
 	 * @since 2019/05/12
 	 */
-	public abstract void setRequestMethod(String __m)
+	void setRequestMethod(String __m)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -242,7 +242,7 @@ public interface HttpConnection
 	 * @throws NullPointerException If the key was null.
 	 * @since 2019/05/12
 	 */
-	public abstract void setRequestProperty(String __k, String __v)
+	void setRequestProperty(String __k, String __v)
 		throws IOException;
 }
 

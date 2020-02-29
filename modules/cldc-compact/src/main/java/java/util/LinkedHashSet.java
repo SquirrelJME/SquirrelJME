@@ -59,7 +59,6 @@ public class LinkedHashSet<E>
 	 */
 	public LinkedHashSet()
 	{
-		super();
 	}
 	
 	/**

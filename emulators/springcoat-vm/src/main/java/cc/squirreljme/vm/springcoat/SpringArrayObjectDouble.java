@@ -89,7 +89,7 @@ public final class SpringArrayObjectDouble
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK0b %d %d", __dx, length), e);
+				String.format("BK0b %d %d", __dx, this.length), e);
 		}
 	}
 	

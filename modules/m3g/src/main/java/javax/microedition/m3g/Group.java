@@ -16,7 +16,6 @@ public class Group
 {
 	public Group()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

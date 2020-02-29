@@ -15,7 +15,6 @@ public class RayIntersection
 {
 	public RayIntersection()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

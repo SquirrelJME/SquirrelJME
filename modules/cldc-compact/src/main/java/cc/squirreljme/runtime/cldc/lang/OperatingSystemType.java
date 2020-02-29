@@ -20,51 +20,51 @@ package cc.squirreljme.runtime.cldc.lang;
 public interface OperatingSystemType
 {
 	/** Unknown. */
-	public static final int UNKNOWN =
+	int UNKNOWN =
 		0;
 	
 	/** Amiga. */
-	public static final int AMIGA =
+	int AMIGA =
 		1;
 	
 	/** Linux. */
-	public static final int LINUX =
+	int LINUX =
 		2;
 	
 	/** Class Mac OS. */
-	public static final int MAC_OS_CLASSIC =
+	int MAC_OS_CLASSIC =
 		3;
 	
 	/** Mac OS X. */
-	public static final int MAC_OS_X =
+	int MAC_OS_X =
 		4;
 	
 	/** MS-DOS and compatibles. */
-	public static final int MS_DOS =
+	int MS_DOS =
 		5;
 	
 	/** Palm OS. */
-	public static final int PALM_OS =
+	int PALM_OS =
 		6;
 		
 	/** Solaris. */
-	public static final int SOLARIS =
+	int SOLARIS =
 		7;
 	
 	/** Windows 16-bit. */
-	public static final int WINDOWS_WIN16 =
+	int WINDOWS_WIN16 =
 		8;
 	
 	/** Windows CE. */
-	public static final int WINDOWS_CE =
+	int WINDOWS_CE =
 		9;
 	
 	/** Windows 9x. */
-	public static final int WINDOWS_9X =
+	int WINDOWS_9X =
 		10;
 	
 	/** Windows NT. */
-	public static final int WINDOWS_NT =
+	int WINDOWS_NT =
 		11;
 }
 

@@ -37,7 +37,7 @@ public final class ConstantFixedPoint
 	 */
 	public ConstantFixedPoint(int __whole)
 	{
-		this._value = __whole << SHIFT;
+		this._value = __whole << ConstantFixedPoint.SHIFT;
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public final class ConstantFixedPoint
 	 */
 	public ConstantFixedPoint(int __whole, int __frac)
 	{
-		this._value = (__whole << SHIFT) | (__frac & MASK);
+		this._value = (__whole << ConstantFixedPoint.SHIFT) | (__frac & ConstantFixedPoint.MASK);
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public final class ConstantFixedPoint
 		// Is a whole number
 		int dot = __s.indexOf('.');
 		if (dot < 0)
-			value = Integer.parseInt(__s, 10) << SHIFT;
+			value = Integer.parseInt(__s, 10) << ConstantFixedPoint.SHIFT;
 		
 		// Is fractional value
 		else

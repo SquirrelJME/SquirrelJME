@@ -466,7 +466,7 @@ public enum TokenType
 	 */
 	public final boolean isIdentifier()
 	{
-		return this == IDENTIFIER;
+		return this == TokenType.IDENTIFIER;
 	}
 	
 	/**
@@ -632,7 +632,7 @@ public enum TokenType
 	 */
 	public final boolean isWord()
 	{
-		return this == IDENTIFIER ||
+		return this == TokenType.IDENTIFIER ||
 			this.isKeyword();
 	}
 }

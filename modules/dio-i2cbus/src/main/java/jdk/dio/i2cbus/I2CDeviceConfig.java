@@ -27,14 +27,12 @@ public final class I2CDeviceConfig
 	@Deprecated
 	public I2CDeviceConfig(int __a, int __b, int __c, int __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public I2CDeviceConfig(String __a, int __b, int __c, int __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -103,7 +101,6 @@ public final class I2CDeviceConfig
 	{
 		public Builder()
 		{
-			super();
 			throw new todo.TODO();
 		}
 		

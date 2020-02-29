@@ -92,8 +92,8 @@ public final class ClassMethodsParser
 		int offset = this.tocOffset(__dx);
 		
 		return blob.subSection(
-			blob.readJavaInt(offset + CODE_ADDRESS_INT_OFFSET),
-			blob.readJavaInt(offset + CODE_SIZE_INT_OFFSET));
+			blob.readJavaInt(offset + ClassMethodsParser.CODE_ADDRESS_INT_OFFSET),
+			blob.readJavaInt(offset + ClassMethodsParser.CODE_SIZE_INT_OFFSET));
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public final class ClassMethodsParser
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return this.pool.entryAsString(false, this.blob.readJavaUnsignedShort(
-			this.tocOffset(__dx) + NAME_USHORT_OFFSET));
+			this.tocOffset(__dx) + ClassMethodsParser.NAME_USHORT_OFFSET));
 	}
 	
 	/**
@@ -160,7 +160,7 @@ public final class ClassMethodsParser
 		if (__dx < 0 || __dx > this.count)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		return __dx * ENTRY_SIZE;
+		return __dx * ClassMethodsParser.ENTRY_SIZE;
 	}
 	
 	/**
@@ -176,8 +176,7 @@ public final class ClassMethodsParser
 		throws IndexOutOfBoundsException, InvalidClassFormatException
 	{
 		return this.pool.entryAsMethodDescriptor(false,
-			this.blob.readJavaUnsignedShort(this.tocOffset(__dx) +
-				TYPE_USHORT_OFFSET));
+			this.blob.readJavaUnsignedShort(this.tocOffset(__dx) + ClassMethodsParser.TYPE_USHORT_OFFSET));
 	}
 }
 

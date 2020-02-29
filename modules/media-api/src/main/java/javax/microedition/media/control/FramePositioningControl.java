@@ -15,13 +15,13 @@ import javax.microedition.media.Control;
 public interface FramePositioningControl
 	extends Control
 {
-	public abstract long mapFrameToTime(int __a);
+	long mapFrameToTime(int __a);
 	
-	public abstract int mapTimeToFrame(long __a);
+	int mapTimeToFrame(long __a);
 	
-	public abstract int seek(int __a);
+	int seek(int __a);
 	
-	public abstract int skip(int __a);
+	int skip(int __a);
 }
 
 

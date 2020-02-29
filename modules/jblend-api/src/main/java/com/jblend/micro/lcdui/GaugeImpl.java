@@ -12,10 +12,8 @@ package com.jblend.micro.lcdui;
 import javax.microedition.lcdui.Graphics;
 
 public class GaugeImpl implements GaugeInterface {
-    public GaugeImpl() {
-    }
-
-    public void init(boolean var1, int var2, int var3, int var4)
+	
+	public void init(boolean var1, int var2, int var3, int var4)
 	{
 		throw new todo.TODO();
 	}

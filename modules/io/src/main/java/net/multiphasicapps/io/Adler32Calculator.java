@@ -54,7 +54,7 @@ public class Adler32Calculator
 	{
 		byte[] solo = this._solo;
 		solo[0] = __b;
-		offer(solo, 0, 1);
+		this.offer(solo, 0, 1);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class Adler32Calculator
 	public final void offer(byte[] __b)
 		throws NullPointerException
 	{
-		offer(__b, 0, __b.length);
+		this.offer(__b, 0, __b.length);
 	}
 	
 	/**
@@ -89,8 +89,8 @@ public class Adler32Calculator
 		// Calculate
 		for (int p = __o, e = __o + __l; p < e; p++)
 		{
-			a = (a + (__b[p] & 0xFF)) % _ADLER_MODULO;
-			b = (b + a) % _ADLER_MODULO;
+			a = (a + (__b[p] & 0xFF)) % Adler32Calculator._ADLER_MODULO;
+			b = (b + a) % Adler32Calculator._ADLER_MODULO;
 		}
 		
 		// Set parameters

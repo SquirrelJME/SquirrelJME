@@ -18,15 +18,15 @@ import jdk.dio.UnavailableDeviceException;
 public interface GenericDevice
 	extends Device<GenericDevice>
 {
-	public abstract <T> T getControl(GenericDeviceControl<T> __a)
+	<T> T getControl(GenericDeviceControl<T> __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract <T> void setControl(GenericDeviceControl<T> __a, T __b)
+	<T> void setControl(GenericDeviceControl<T> __a, T __b)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setEventListener(int __a, GenericEventListener __b)
+	void setEventListener(int __a, GenericEventListener __b)
 		throws IOException, ClosedDeviceException;
 }
 

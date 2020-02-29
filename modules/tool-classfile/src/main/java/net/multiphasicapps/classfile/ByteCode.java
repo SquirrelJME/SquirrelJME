@@ -142,7 +142,7 @@ public final class ByteCode
 			// {@squirreljme.error JC1y The specified code length is not valid.
 			// (The code length)}
 			int codelen = in.readInt();
-			if (codelen <= 0 || codelen > _MAX_CODE_LENGTH)
+			if (codelen <= 0 || codelen > ByteCode._MAX_CODE_LENGTH)
 				throw new InvalidClassFormatException(
 					String.format("JC1y %d", codelen));
 		
@@ -175,7 +175,7 @@ public final class ByteCode
 			
 				// Store length
 				int oplen;
-				lengths[i] = (oplen = __opLength(__ca, i, ollastop));
+				lengths[i] = (oplen = ByteCode.__opLength(__ca, i, ollastop));
 			
 				// {@squirreljme.error JC1z The operation exceeds the bounds of
 				// the method byte code. (The operation pointer; The operation
@@ -261,7 +261,7 @@ public final class ByteCode
 			this._smtdata = smt;
 			this._newsmtdata = smtnew;
 			this._lengths = lengths;
-			this._icache = __newCache(codelen);
+			this._icache = ByteCode.__newCache(codelen);
 			this._linenumbertable = lnt;
 			
 			// Store addresses for all the indexes
@@ -293,7 +293,7 @@ public final class ByteCode
 	{
 		// {@squirreljme.error JC21 The instruction at the specified address is
 		// not valid. (The address)}
-		if (!isValidAddress(__a))
+		if (!this.isValidAddress(__a))
 			throw new InvalidClassFormatException(
 				String.format("JC21 %d", __a));
 		
@@ -347,7 +347,7 @@ public final class ByteCode
 	{
 		// {@squirreljme.error JC22 The instruction at the specified address is
 		// not valid. (The address)}
-		if (!isValidAddress(__a))
+		if (!this.isValidAddress(__a))
 			throw new InvalidClassFormatException(
 				String.format("JC22 %d", __a));
 		
@@ -358,7 +358,7 @@ public final class ByteCode
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new WeakReference<>((rv = new Instruction(
 				this._rawattributedata, this.pool, __a, this.exceptions,
-				stackMapTable(), this.addressFollowing(__a))));
+				this.stackMapTable(), this.addressFollowing(__a))));
 		
 		return rv;
 	}
@@ -381,7 +381,7 @@ public final class ByteCode
 		if (__i < 0 || __i >= index.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		return getByAddress(index[__i]);
+		return this.getByAddress(index[__i]);
 	}
 	
 	/**
@@ -718,7 +718,7 @@ public final class ByteCode
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._smt = new WeakReference<>(rv = new __StackMapParser__(
-				this.pool, __method(), this._newsmtdata, this._smtdata,
+				this.pool, this.__method(), this._newsmtdata, this._smtdata,
 				this, new JavaType(this.thistype)).get());
 		
 		return rv;
@@ -751,8 +751,8 @@ public final class ByteCode
 			
 			// Fill in instructions
 			boolean comma = false;
-			for (Iterator<Instruction> it = instructionIterator();
-				it.hasNext();)
+			for (Iterator<Instruction> it = this.instructionIterator();
+				 it.hasNext();)
 			{
 				if (comma)
 					sb.append(", ");
@@ -924,7 +924,7 @@ public final class ByteCode
 		int rv = 1;
 		
 		// Real offset, since the code attribute is offset
-		int aa = __a + _CODE_OFFSET;
+		int aa = __a + ByteCode._CODE_OFFSET;
 		
 		// Read operation
 		int op = (__code[aa] & 0xFF);
@@ -1271,7 +1271,7 @@ public final class ByteCode
 			throws NoSuchElementException
 		{
 			// No more?
-			if (!hasNext())
+			if (!this.hasNext())
 				throw new NoSuchElementException("NSEE");
 			
 			// Instruction at current pointer

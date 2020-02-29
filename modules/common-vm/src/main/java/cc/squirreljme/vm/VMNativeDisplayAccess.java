@@ -87,7 +87,7 @@ public class VMNativeDisplayAccess
 		
 		// Setup instance
 		int fbw = this._fbw;
-		this._accelgfx = FRAMEBUFFER_PIXELFORMAT.createGraphics(
+		this._accelgfx = VMNativeDisplayAccess.FRAMEBUFFER_PIXELFORMAT.createGraphics(
 			this._fbrgb, null, fbw, this._fbh, false, fbw, 0, 0, 0);
 		return true;
 	}
@@ -220,7 +220,7 @@ public class VMNativeDisplayAccess
 		
 		// Build parameters
 		rv[NativeDisplayAccess.PARAMETER_PIXELFORMAT] =
-			FRAMEBUFFER_PIXELFORMAT.ordinal();
+			VMNativeDisplayAccess.FRAMEBUFFER_PIXELFORMAT.ordinal();
 		rv[NativeDisplayAccess.PARAMETER_BUFFERWIDTH] = fbw;
 		rv[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT] = fbh;
 		rv[NativeDisplayAccess.PARAMETER_ALPHA] = 0;

@@ -198,7 +198,7 @@ public class MutableJavaManifestAttributes
 			throw new NullPointerException("NARG");
 		
 		// Forward
-		return put(new JavaManifestKey(__k), __v);
+		return this.put(new JavaManifestKey(__k), __v);
 	}
 	
 	/**

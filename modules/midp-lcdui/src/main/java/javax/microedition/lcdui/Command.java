@@ -48,12 +48,10 @@ public class Command
 		6;
 	
 	/** The first command type. */
-	private static final int _FIRST_TYPE =
-		SCREEN;
+	private static final int _FIRST_TYPE = Command.SCREEN;
 	
 	/** The last command type. */
-	private static final int _LAST_TYPE =
-		ITEM;
+	private static final int _LAST_TYPE = Command.ITEM;
 	
 	/** The command type. */
 	final int _type;

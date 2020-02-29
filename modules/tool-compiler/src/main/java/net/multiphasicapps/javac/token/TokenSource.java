@@ -28,7 +28,7 @@ public interface TokenSource
 	 * @throws TokenizerException If the read input token is not valid.
 	 * @since 2018/04/18
 	 */
-	public abstract Token next()
+	Token next()
 		throws TokenizerException;
 }
 

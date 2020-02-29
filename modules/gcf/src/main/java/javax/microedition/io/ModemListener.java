@@ -15,8 +15,7 @@ import java.util.EventListener;
 public interface ModemListener
 	extends EventListener
 {
-	public abstract void signalChanged(ModemConnection __a, int __b, boolean 
-		__c);
+	void signalChanged(ModemConnection __a, int __b, boolean __c);
 }
 
 

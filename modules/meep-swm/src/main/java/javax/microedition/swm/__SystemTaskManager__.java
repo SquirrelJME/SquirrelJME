@@ -262,7 +262,7 @@ final class __SystemTaskManager__
 			throw new NullPointerException("NARG");
 		
 		// Lock on the tasks
-		Map<Integer, Task> tasks = _TASKS;
+		Map<Integer, Task> tasks = __SystemTaskManager__._TASKS;
 		synchronized (tasks)
 		{
 			// There should not be duplicates

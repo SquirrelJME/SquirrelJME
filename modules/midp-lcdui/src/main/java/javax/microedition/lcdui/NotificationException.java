@@ -15,7 +15,6 @@ public class NotificationException
 {
 	public NotificationException()
 	{
-		super();
 	}
 	
 	public NotificationException(String __s)

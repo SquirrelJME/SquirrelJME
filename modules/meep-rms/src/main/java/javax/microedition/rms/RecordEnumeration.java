@@ -38,7 +38,7 @@ public interface RecordEnumeration
 	 *
 	 * @since 2017/02/26
 	 */
-	public abstract void destroy();
+	void destroy();
 	
 	/**
 	 * This is used to quickly obtain the record at the specified index within
@@ -51,7 +51,7 @@ public interface RecordEnumeration
 	 * least {@link #numRecords()}.
 	 * @since 2017/02/26
 	 */
-	public abstract int getRecordId(int __i)
+	int getRecordId(int __i)
 		throws IllegalArgumentException;
 	
 	/**
@@ -60,7 +60,7 @@ public interface RecordEnumeration
 	 * @return {@code true} if there is a next element.
 	 * @since 2017/02/26
 	 */
-	public abstract boolean hasNextElement();
+	boolean hasNextElement();
 	
 	/**
 	 * Returns {@code true} if there is a previous element.
@@ -68,7 +68,7 @@ public interface RecordEnumeration
 	 * @return {@code true} if there is a previous element.
 	 * @since 2017/02/26
 	 */
-	public abstract boolean hasPreviousElement();
+	boolean hasPreviousElement();
 	
 	/**
 	 * Returns {@code true} if the enumeration is kept up to date with changes.
@@ -76,7 +76,7 @@ public interface RecordEnumeration
 	 * @return {@code true} if the enumeration is kept up to date with changes.
 	 * @since 2017/02/26
 	 */
-	public abstract boolean isKeptUpdated();
+	boolean isKeptUpdated();
 	
 	/**
 	 * This is used by the enumeration to specify that it should be kept up
@@ -90,7 +90,7 @@ public interface RecordEnumeration
 	 * @param __u If {@code true} then the enumeration is kept updated.
 	 * @since 2017/02/26
 	 */
-	public abstract void keepUpdated(boolean __u);
+	void keepUpdated(boolean __u);
 	
 	/**
 	 * Returns a copy of the data contained in the next record. Changes to the
@@ -103,7 +103,7 @@ public interface RecordEnumeration
 	 * is no longer open.
 	 * @since 2017/02/26
 	 */
-	public abstract byte[] nextRecord()
+	byte[] nextRecord()
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException;
 	
@@ -114,7 +114,7 @@ public interface RecordEnumeration
 	 * @throws InvalidRecordIDException If there is no next record.
 	 * @since 2017/02/26
 	 */
-	public abstract int nextRecordId()
+	int nextRecordId()
 		throws InvalidRecordIDException;
 	
 	/**
@@ -123,7 +123,7 @@ public interface RecordEnumeration
 	 * @return The record count.
 	 * @since 2020/02/16
 	 */
-	public abstract int numRecords();
+	int numRecords();
 	
 	/**
 	 * Returns a copy of the data contained in the previous record. Changes to
@@ -136,7 +136,7 @@ public interface RecordEnumeration
 	 * is no longer open.
 	 * @since 2017/02/26
 	 */
-	public abstract byte[] previousRecord()
+	byte[] previousRecord()
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException;
 	
@@ -147,7 +147,7 @@ public interface RecordEnumeration
 	 * @throws InvalidRecordIDException If there is no next record.
 	 * @since 2017/02/26
 	 */
-	public abstract int previousRecordId()
+	int previousRecordId()
 		throws InvalidRecordIDException;
 	
 	/**
@@ -158,7 +158,7 @@ public interface RecordEnumeration
 	 * @see #keepUpdated(boolean)
 	 * @since 2017/02/26
 	 */
-	public abstract void rebuild()
+	void rebuild()
 		throws IllegalStateException;
 	
 	/**
@@ -168,6 +168,6 @@ public interface RecordEnumeration
 	 *
 	 * @since 2017/02/26
 	 */
-	public abstract void reset();
+	void reset();
 }
 

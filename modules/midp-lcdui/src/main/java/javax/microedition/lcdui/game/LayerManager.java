@@ -16,7 +16,6 @@ public class LayerManager
 {
 	public LayerManager()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

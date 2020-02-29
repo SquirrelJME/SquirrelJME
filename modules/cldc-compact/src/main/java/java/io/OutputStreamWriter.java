@@ -16,7 +16,6 @@ public class OutputStreamWriter
 	public OutputStreamWriter(OutputStream __a, String __b)
 		throws UnsupportedEncodingException
 	{
-		super();
 		if (false)
 			throw new UnsupportedEncodingException();
 		throw new todo.TODO();
@@ -24,7 +23,6 @@ public class OutputStreamWriter
 	
 	public OutputStreamWriter(OutputStream __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

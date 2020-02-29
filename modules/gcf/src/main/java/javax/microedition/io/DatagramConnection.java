@@ -15,31 +15,31 @@ import java.io.IOException;
 public interface DatagramConnection
 	extends Connection
 {
-	public abstract AccessPoint[] getAccessPoints()
+	AccessPoint[] getAccessPoints()
 		throws IOException;
 	
-	public abstract int getMaximumLength()
+	int getMaximumLength()
 		throws IOException;
 	
-	public abstract int getNominalLength()
+	int getNominalLength()
 		throws IOException;
 	
-	public abstract Datagram newDatagram(int __a)
+	Datagram newDatagram(int __a)
 		throws IOException;
 	
-	public abstract Datagram newDatagram(int __a, String __b)
+	Datagram newDatagram(int __a, String __b)
 		throws IOException;
 	
-	public abstract Datagram newDatagram(byte[] __a, int __b)
+	Datagram newDatagram(byte[] __a, int __b)
 		throws IOException;
 	
-	public abstract Datagram newDatagram(byte[] __a, int __b, String __c)
+	Datagram newDatagram(byte[] __a, int __b, String __c)
 		throws IOException;
 	
-	public abstract void receive(Datagram __a)
+	void receive(Datagram __a)
 		throws IOException;
 	
-	public abstract void send(Datagram __a)
+	void send(Datagram __a)
 		throws IOException;
 }
 

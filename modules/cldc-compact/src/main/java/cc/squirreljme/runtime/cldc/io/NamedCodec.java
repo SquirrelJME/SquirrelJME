@@ -24,7 +24,7 @@ public interface NamedCodec
 	 * @return The average sequence length.
 	 * @since 2018/11/06
 	 */
-	public abstract double averageSequenceLength();
+	double averageSequenceLength();
 	
 	/**
 	 * Returns the name of the encoding.
@@ -32,7 +32,7 @@ public interface NamedCodec
 	 * @return The encoding name.
 	 * @since 2018/10/13
 	 */
-	public abstract String encodingName();
+	String encodingName();
 	
 	/**
 	 * Returns a hint which specifies the maximum length of a byte sequence
@@ -41,6 +41,6 @@ public interface NamedCodec
 	 * @return The maximum sequence length for decoding.
 	 * @since 2018/10/13
 	 */
-	public abstract int maximumSequenceLength();
+	int maximumSequenceLength();
 }
 

@@ -14,11 +14,11 @@ package javax.microedition.io;
 public interface ContentConnection
 	extends StreamConnection
 {
-	public abstract String getEncoding();
+	String getEncoding();
 	
-	public abstract long getLength();
+	long getLength();
 	
-	public abstract String getType();
+	String getType();
 }
 
 

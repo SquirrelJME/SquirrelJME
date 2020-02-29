@@ -104,7 +104,7 @@ enum __PrintFCategory__
 	 */
 	final boolean __hasWidth()
 	{
-		return this != LINE_SEPARATOR;
+		return this != __PrintFCategory__.LINE_SEPARATOR;
 	}
 }
 

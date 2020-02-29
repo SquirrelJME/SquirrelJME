@@ -14,9 +14,9 @@ package javax.microedition.io;
 public interface IMCServerConnection
 	extends StreamConnectionNotifier
 {
-	public abstract String getName();
+	String getName();
 	
-	public abstract String getVersion();
+	String getVersion();
 }
 
 

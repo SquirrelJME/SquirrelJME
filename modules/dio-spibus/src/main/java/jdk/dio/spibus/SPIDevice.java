@@ -22,41 +22,41 @@ import jdk.dio.UnsupportedByteOrderException;
 public interface SPIDevice
 	extends Device<SPIDevice>, ByteChannel, BufferAccess<ByteBuffer>
 {
-	public abstract SPICompositeMessage createCompositeMessage();
+	SPICompositeMessage createCompositeMessage();
 	
-	public abstract int getWordLength()
+	int getWordLength()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int read()
+	int read()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int read(ByteBuffer __a)
+	int read(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int read(int __a, ByteBuffer __b)
+	int read(int __a, ByteBuffer __b)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int write(ByteBuffer __a)
+	int write(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract void write(int __a)
+	void write(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int writeAndRead(ByteBuffer __a, ByteBuffer __b)
+	int writeAndRead(ByteBuffer __a, ByteBuffer __b)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int writeAndRead(ByteBuffer __a, int __b, ByteBuffer __c)
+	int writeAndRead(ByteBuffer __a, int __b, ByteBuffer __c)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int writeAndRead(int __a)
+	int writeAndRead(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

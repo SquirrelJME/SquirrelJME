@@ -22,60 +22,58 @@ import jdk.dio.UnsupportedByteOrderException;
 public interface PWMChannel
 	extends Device<PWMChannel>, BufferAccess<IntBuffer>
 {
-	public abstract void generate(int __a, int __b)
+	void generate(int __a, int __b)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void generate(IntBuffer __a)
+	void generate(IntBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int getMaxPulsePeriod()
+	int getMaxPulsePeriod()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMinPulsePeriod()
+	int getMinPulsePeriod()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract GPIOPin getOutput();
+	GPIOPin getOutput();
 	
-	public abstract int getPulsePeriod()
+	int getPulsePeriod()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract double getScaleFactor()
+	double getScaleFactor()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setPulsePeriod(int __a)
+	void setPulsePeriod(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setScaleFactor(double __a)
+	void setScaleFactor(double __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startGeneration(int __a)
+	void startGeneration(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startGeneration(int __a, int __b, GenerationListener
-		__c)
+	void startGeneration(int __a, int __b, GenerationListener __c)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startGeneration(IntBuffer __a, 
-		GenerationRoundListener __b)
+	void startGeneration(IntBuffer __a, GenerationRoundListener __b)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract void startGeneration(IntBuffer __a, IntBuffer __b, 
+	void startGeneration(IntBuffer __a, IntBuffer __b,
 		GenerationRoundListener __c)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract void stopGeneration()
+	void stopGeneration()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

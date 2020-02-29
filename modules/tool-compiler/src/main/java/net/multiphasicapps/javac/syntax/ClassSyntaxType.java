@@ -40,9 +40,9 @@ public enum ClassSyntaxType
 	 */
 	public final InheritenceTypeSyntax extendsType()
 	{
-		if (this == CLASS)
+		if (this == ClassSyntaxType.CLASS)
 			return InheritenceTypeSyntax.SINGLE;
-		else if (this == INTERFACE)
+		else if (this == ClassSyntaxType.INTERFACE)
 			return InheritenceTypeSyntax.MULTIPLE;
 		return InheritenceTypeSyntax.NONE;
 	}
@@ -55,7 +55,7 @@ public enum ClassSyntaxType
 	 */
 	public final boolean hasTypeParameters()
 	{
-		return this == CLASS || this == INTERFACE;
+		return this == ClassSyntaxType.CLASS || this == ClassSyntaxType.INTERFACE;
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public enum ClassSyntaxType
 	 */
 	public final InheritenceTypeSyntax implementsType()
 	{
-		if (this == CLASS || this == ENUM)
+		if (this == ClassSyntaxType.CLASS || this == ClassSyntaxType.ENUM)
 			return InheritenceTypeSyntax.MULTIPLE;
 		return InheritenceTypeSyntax.NONE;
 	}

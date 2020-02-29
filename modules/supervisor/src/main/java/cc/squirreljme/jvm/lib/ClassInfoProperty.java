@@ -17,95 +17,95 @@ package cc.squirreljme.jvm.lib;
 public interface ClassInfoProperty
 {
 	/** Self pointer. */
-	public static final byte INT_SELFPTR =
+	byte INT_SELFPTR =
 		0;
 	
 	/** Magic number used to detect corruption. */
-	public static final byte INT_MAGIC =
+	byte INT_MAGIC =
 		1;
 	
 	/** Class information flags. */
-	public static final byte INT_FLAGS =
+	byte INT_FLAGS =
 		2;
 	
 	/** The pointer to the minimized class file. */
-	public static final byte INT_MINIPTR =
+	byte INT_MINIPTR =
 		3;
 	
 	/** The pointer to the class name. */
-	public static final byte INT_NAMEP =
+	byte INT_NAMEP =
 		4;
 	
 	/** The allocation size of this class. */
-	public static final byte INT_SIZE =
+	byte INT_SIZE =
 		5;
 	
 	/** The base offset for fields in this class. */
-	public static final byte INT_BASE =
+	byte INT_BASE =
 		6;
 	
 	/** The number of objects in the instance fields, for GC. */
-	public static final byte INT_NUMOBJECTS =
+	byte INT_NUMOBJECTS =
 		7;
 	
 	/** The dimensions this class uses, if it is an array. */
-	public static final byte INT_DIMENSIONS =
+	byte INT_DIMENSIONS =
 		8;
 	
 	/** The cell size of components if this is an array. */
-	public static final byte INT_CELLSIZE =
+	byte INT_CELLSIZE =
 		9;
 	
 	/** The super class data. */
-	public static final byte CLASSINFO_SUPERCLASS =
+	byte CLASSINFO_SUPERCLASS =
 		10;
 	
 	/** Interfaces. */
-	public static final byte CLASSINFO_ARRAY_INTERFACECLASSES =
+	byte CLASSINFO_ARRAY_INTERFACECLASSES =
 		11;
 	
 	/** The component class. */
-	public static final byte CLASSINFO_COMPONENTCLASS =
+	byte CLASSINFO_COMPONENTCLASS =
 		12;
 	
 	/** Pointer to the class object. */
-	public static final byte CLASS_CLASSOBJPTR =
+	byte CLASS_CLASSOBJPTR =
 		13;
 	
 	/** Virtual invoke VTable. */
-	public static final byte INT_ARRAY_VTABLEVIRTUAL =
+	byte INT_ARRAY_VTABLEVIRTUAL =
 		14;
 	
 	/** Virtual invoke VTable pool entries. */
-	public static final byte INT_ARRAY_VTABLEPOOL =
+	byte INT_ARRAY_VTABLEPOOL =
 		15;
 	
 	/** The pointer to the constant pool of this class. */
-	public static final byte INT_POOL =
+	byte INT_POOL =
 		16;
 	
 	/** The JAR Index. */
-	public static final byte INT_JARDX =
+	byte INT_JARDX =
 		17;
 	
 	/** The number of methods the class has. */
-	public static final byte INT_NUMMETHODS =
+	byte INT_NUMMETHODS =
 		18;
 	
 	/** The depth of this class. */
-	public static final byte INT_CLASSDEPTH =
+	byte INT_CLASSDEPTH =
 		19;
 	
 	/** Static field offset. */
-	public static final byte INT_SFOFFSET =
+	byte INT_SFOFFSET =
 		20;
 	
 	/** New instance method. */
-	public static final byte INT_DEFAULTNEW =
+	byte INT_DEFAULTNEW =
 		21;
 	
 	/** The number of properties available. */
-	public static final byte NUM_PROPERTIES =
+	byte NUM_PROPERTIES =
 		22;
 }
 

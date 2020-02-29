@@ -26,7 +26,7 @@ public interface BitSource
 	 * @throws IOException On read errors.
 	 * @since 2016/08/16
 	 */
-	public abstract boolean nextBit()
+	boolean nextBit()
 		throws IOException;
 }
 

@@ -142,7 +142,7 @@ public class Tokenizer
 	public Tokenizer(String __fn, InputStream __is)
 		throws NullPointerException, RuntimeException
 	{
-		this(__fn, __wrap(__is));
+		this(__fn, Tokenizer.__wrap(__is));
 	}
 	
 	/**
@@ -393,7 +393,7 @@ public class Tokenizer
 			if (c < 0)
 			{
 				// Just keep sending EOF tokens forever
-				return __token(TokenType.END_OF_FILE, "");
+				return this.__token(TokenType.END_OF_FILE, "");
 			}
 			
 			// Skip whitespace
@@ -406,11 +406,11 @@ public class Tokenizer
 			
 			// Forward slash: comments, /, or /=.
 			if (c == '/')
-				return __determineForwardSlash();
+				return this.__determineForwardSlash();
 			
 			// Equal sign
 			else if (c == '=')
-				return __determineEquals();
+				return this.__determineEquals();
 			
 			// Dot
 			else if (c == '.')
@@ -457,11 +457,11 @@ public class Tokenizer
 			
 			// Identifiers
 			else if (CharacterTest.isIdentifierStart((char)c))
-				return __getIdentifier((char)c);
+				return this.__getIdentifier((char)c);
 			
 			// Integer/float literals
 			else if (c >= '0' && c <= '9')
-				return __getNumberLiteral((char)c);
+				return this.__getNumberLiteral((char)c);
 			
 			// String
 			else if (c == '\"')
@@ -490,16 +490,16 @@ public class Tokenizer
 		throws TokenizerException
 	{
 		// Checking for equality?
-		int d = __peekChar();
+		int d = this.__peekChar();
 		if (d == '=')
 		{
-			__nextChar();
-			return __token(TokenType.COMPARE_EQUALS, "==");
+			this.__nextChar();
+			return this.__token(TokenType.COMPARE_EQUALS, "==");
 		}
 		
 		// Just an assignment
 		else
-			return __token(TokenType.OPERATOR_ASSIGN, "=");
+			return this.__token(TokenType.OPERATOR_ASSIGN, "=");
 	}
 	
 	/**
@@ -512,31 +512,31 @@ public class Tokenizer
 	private Token __determineForwardSlash()
 		throws TokenizerException
 	{
-		int c = __peekChar();
+		int c = this.__peekChar();
 		
 		// Not-divide
 		if (c == '*' || c == '/' || c == '=')
 		{
 			// Eat character
-			__nextChar();
+			this.__nextChar();
 			
 			// Multi-line comment
 			if (c == '*')
-				return __getMultiLineComment();
+				return this.__getMultiLineComment();
 		
 			// Single line comment
 			else if (c == '/')
-				return __getSingleLineComment();
+				return this.__getSingleLineComment();
 		
 			// Divide and assign
 			else
-				return __token(TokenType.OPERATOR_DIVIDE_ASSIGN,
+				return this.__token(TokenType.OPERATOR_DIVIDE_ASSIGN,
 					"/=");
 		}
 		
 		// Divide otherwise
 		else
-			return __token(TokenType.OPERATOR_DIVIDE, "/");
+			return this.__token(TokenType.OPERATOR_DIVIDE, "/");
 	}
 	
 	/**
@@ -690,7 +690,7 @@ public class Tokenizer
 		for (;;)
 		{
 			// Only consider identifier parts
-			int c = __peekChar();
+			int c = this.__peekChar();
 			if (c < 0 || !CharacterTest.isIdentifierPart((char)c))
 			{
 				String s = sb.toString();
@@ -702,7 +702,7 @@ public class Tokenizer
 					case "const":
 					case "goto":
 						throw new TokenizerException(this, String.format(
-							"AQ30 %s", __token(TokenType.IDENTIFIER, s)));
+							"AQ30 %s", this.__token(TokenType.IDENTIFIER, s)));
 					
 					case "abstract":	t = TokenType.KEYWORD_ABSTRACT; break;
 					case "assert":		t = TokenType.KEYWORD_ASSERT; break;
@@ -766,11 +766,11 @@ public class Tokenizer
 					default:			t = TokenType.IDENTIFIER; break;
 				}
 				
-				return __token(t, s); 
+				return this.__token(t, s);
 			}
 			
 			// Consume it
-			sb.append((char)__nextChar());
+			sb.append((char)this.__nextChar());
 		}
 	}
 	
@@ -789,7 +789,7 @@ public class Tokenizer
 		{
 			// {@squirreljme.error AQ31 End of file reached while reading a
 			// multi-line comment.}
-			int c = __peekChar();
+			int c = this.__peekChar();
 			if (c < 0)
 				throw new TokenizerException(this, "AQ31");
 			
@@ -797,16 +797,16 @@ public class Tokenizer
 			if (c == '*')
 			{
 				// Need to potentially detect the slash
-				c = __nextChar();
-				int d = __peekChar();
+				c = this.__nextChar();
+				int d = this.__peekChar();
 				
 				// Finish it, do not include the */
 				if (d == '/')
 				{
 					// Eat the slash otherwise divide operators will always
 					// follow multi-line comments
-					__nextChar();
-					return __token(TokenType.COMMENT, sb);
+					this.__nextChar();
+					return this.__token(TokenType.COMMENT, sb);
 				}
 				
 				// Just some asterisk
@@ -816,7 +816,7 @@ public class Tokenizer
 			
 			// Normal
 			else
-				sb.append((char)__nextChar());
+				sb.append((char)this.__nextChar());
 		}
 	}
 	
@@ -966,7 +966,7 @@ public class Tokenizer
 				String.format("AQ35 %s", sb.toString()));
 		
 		// Use that!
-		return __token(type, sb.toString());
+		return this.__token(type, sb.toString());
 	}
 	
 	/**
@@ -983,12 +983,12 @@ public class Tokenizer
 		for (;;)
 		{
 			// Stop if it is consider the end of line
-			int c = __peekChar();
+			int c = this.__peekChar();
 			if (c < 0 || CharacterTest.isNewline(c))
-				return __token(TokenType.COMMENT, sb);
+				return this.__token(TokenType.COMMENT, sb);
 			
 			// Otherwise consume it
-			sb.append((char)__nextChar());
+			sb.append((char)this.__nextChar());
 		}
 	}
 	
@@ -1006,13 +1006,13 @@ public class Tokenizer
 		boolean escaped = false;
 		for (;;)
 		{
-			int c = __nextChar();
+			int c = this.__nextChar();
 			if (c == '\\')
 				escaped = true;
 			else if (!escaped && c == '\"')
 			{
 				sb.append((char)c);
-				return __token(TokenType.LITERAL_STRING, sb);
+				return this.__token(TokenType.LITERAL_STRING, sb);
 			}
 			
 			// Consume it
@@ -1031,7 +1031,7 @@ public class Tokenizer
 		throws TokenizerException
 	{
 		// Peek character so it is in the buffer
-		__peekChar();
+		this.__peekChar();
 		
 		// Position needed for finding errors
 		this._curline = this._nxline;

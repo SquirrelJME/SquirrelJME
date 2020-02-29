@@ -16,13 +16,11 @@ public class TriangleStripArray
 {
 	public TriangleStripArray(int[] __a, int[] __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public TriangleStripArray(int __a, int[] __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

@@ -58,7 +58,7 @@ public enum GameSpeed
 	 * @param __msbf Milliseconds between frames.
 	 * @since 2017/02/10
 	 */
-	private GameSpeed(int __msbf)
+	GameSpeed(int __msbf)
 	{
 		this.msbetweenframes = __msbf;
 		this.nsbetweenframes = __msbf * 1_000_000;
@@ -75,12 +75,12 @@ public enum GameSpeed
 		// Depends
 		switch (this)
 		{
-			case SLOWEST:	return SLOWER;
-			case SLOWER:	return SLOW;
-			case SLOW:		return NORMAL;
-			case NORMAL:	return FAST;
-			case FAST:		return FASTER;
-			case FASTER:	return FASTEST;
+			case SLOWEST:	return GameSpeed.SLOWER;
+			case SLOWER:	return GameSpeed.SLOW;
+			case SLOW:		return GameSpeed.NORMAL;
+			case NORMAL:	return GameSpeed.FAST;
+			case FAST:		return GameSpeed.FASTER;
+			case FASTER:	return GameSpeed.FASTEST;
 			default:
 				return this;
 		}
@@ -105,7 +105,7 @@ public enum GameSpeed
 	 */
 	public double ratio()
 	{
-		return (double)this.msbetweenframes / _NORMAL_SPEED;
+		return (double)this.msbetweenframes / GameSpeed._NORMAL_SPEED;
 	}
 	
 	/**
@@ -119,12 +119,12 @@ public enum GameSpeed
 		// Depends
 		switch (this)
 		{
-			case SLOWER:	return SLOWEST;
-			case SLOW:		return SLOWER;
-			case NORMAL:	return SLOW;
-			case FAST:		return NORMAL;
-			case FASTER:	return FAST;
-			case FASTEST:	return FASTER;
+			case SLOWER:	return GameSpeed.SLOWEST;
+			case SLOW:		return GameSpeed.SLOWER;
+			case NORMAL:	return GameSpeed.SLOW;
+			case FAST:		return GameSpeed.NORMAL;
+			case FASTER:	return GameSpeed.FAST;
+			case FASTEST:	return GameSpeed.FASTER;
 			default:
 				return this;
 		}

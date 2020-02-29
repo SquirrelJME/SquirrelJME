@@ -37,11 +37,11 @@ public class ZipBlockReader
 	
 	/** The offset to the extra data length. */
 	private static final int _CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET =
-		_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET + 2;
+		ZipBlockReader._CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET + 2;
 	
 	/** The offset to the comment length. */
 	private static final int _CENTRAL_DIRECTORY_COMMENT_LENGTH_OFFSET =
-		_CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET + 2;
+		ZipBlockReader._CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET + 2;
 	
 	/** The minimum length of the central directory entry. */
 	private static final int _CENTRAL_DIRECTORY_MIN_LENGTH =
@@ -57,11 +57,11 @@ public class ZipBlockReader
 	
 	/** The offset to the size of the central directory. */
 	private static final int _END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET =
-		_END_DIRECTORY_DISK_ENTRIES_OFFSET + 4;
+		ZipBlockReader._END_DIRECTORY_DISK_ENTRIES_OFFSET + 4;
 	
 	/** The offset to the offset of the central directory. */
 	private static final int _END_DIRECTORY_CENTRAL_DIR_OFFSET_OFFSET =
-		_END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET + 4;
+		ZipBlockReader._END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET + 4;
 	
 	/** The minimum length of the end central directory record. */
 	private static final int _END_DIRECTORY_MIN_LENGTH =
@@ -69,7 +69,7 @@ public class ZipBlockReader
 	
 	/** The maximum length of the end central directory record. */
 	private static final int _END_DIRECTORY_MAX_LENGTH =
-		_END_DIRECTORY_MIN_LENGTH + 65535;
+		ZipBlockReader._END_DIRECTORY_MIN_LENGTH + 65535;
 	
 	/** The accessor to use for ZIP files. */
 	protected final BlockAccessor accessor;
@@ -146,20 +146,20 @@ public class ZipBlockReader
 		this._accessor = __b;
 		
 		// Locate the end of the central directory
-		byte[] dirbytes = new byte[_END_DIRECTORY_MIN_LENGTH];
-		long endat = __locateCentralDirEnd(__b, dirbytes);
+		byte[] dirbytes = new byte[ZipBlockReader._END_DIRECTORY_MIN_LENGTH];
+		long endat = ZipBlockReader.__locateCentralDirEnd(__b, dirbytes);
 		
 		// Get the number of entries which are in this disk and not in the
 		// archive as a whole, since multi-archive ZIP files are not supported
 		int numentries = __ArrayData__.readUnsignedShort(
-			_END_DIRECTORY_DISK_ENTRIES_OFFSET, dirbytes);
+			ZipBlockReader._END_DIRECTORY_DISK_ENTRIES_OFFSET, dirbytes);
 		this.numentries = numentries;
 		
 		// Need the size of the central directory to determine where it
 		// actually starts
 		long csz = __b.size();
 		long cdirsize = __ArrayData__.readUnsignedInt(
-			_END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET, dirbytes);
+			ZipBlockReader._END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET, dirbytes);
 		
 		// This is the position of the start of the central directory
 		long cdirbase = endat - cdirsize;
@@ -174,7 +174,7 @@ public class ZipBlockReader
 		// Determine the base address of the ZIP file since all entries
 		// are relative from the start point
 		long zipbaseaddr = csz - (__ArrayData__.readUnsignedInt(
-			_END_DIRECTORY_CENTRAL_DIR_OFFSET_OFFSET, dirbytes) + cdirsize +
+			ZipBlockReader._END_DIRECTORY_CENTRAL_DIR_OFFSET_OFFSET, dirbytes) + cdirsize +
 			(csz - endat));
 		this._zipbaseaddr = zipbaseaddr;
 		
@@ -186,10 +186,10 @@ public class ZipBlockReader
 				csz));
 		
 		// Setup entry list
-		this._entries = __newEntryReferenceList(numentries);
+		this._entries = ZipBlockReader.__newEntryReferenceList(numentries);
 		
 		// Initialize entry offsets
-		this._offsets = __readOffsets();
+		this._offsets = this.__readOffsets();
 	}
 	
 	/**
@@ -217,7 +217,7 @@ public class ZipBlockReader
 	{
 		try
 		{
-			return get(__s) != null;
+			return this.get(__s) != null;
 		}
 		
 		// Does not exist
@@ -280,7 +280,7 @@ public class ZipBlockReader
 	{
 		// {@squirreljme.error BF0m The specified entry does not exist
 		// within the ZIP file. (The entry name)}
-		ZipBlockEntry ent = get(__s);
+		ZipBlockEntry ent = this.get(__s);
 		if (ent == null)
 			throw new ZipEntryNotFoundException(String.format("BF0m %s", __s));
 		
@@ -316,7 +316,7 @@ public class ZipBlockReader
 		// Read in every entry within the ZIP
 		BlockAccessor accessor = this.accessor;
 		long at = this.cdirbase;
-		byte[] cdirent = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
+		byte[] cdirent = new byte[ZipBlockReader._CENTRAL_DIRECTORY_MIN_LENGTH];
 		for (int i = 0; i < numentries; i++)
 		{
 			// Entry is placed at this position
@@ -325,27 +325,26 @@ public class ZipBlockReader
 			// {@squirreljme.error BF0n Central directory extends past the end
 			// of the file. (The current entry; The current read position; The
 			// size of the file)}
-			if (accessor.read(at, cdirent, 0, _CENTRAL_DIRECTORY_MIN_LENGTH) !=
-				_CENTRAL_DIRECTORY_MIN_LENGTH)
+			if (accessor.read(at, cdirent, 0,
+				ZipBlockReader._CENTRAL_DIRECTORY_MIN_LENGTH) != ZipBlockReader._CENTRAL_DIRECTORY_MIN_LENGTH)
 				throw new ZipException(String.format("BF0n %d %d %d", i, at,
 					accessor.size()));
 			
 			// {@squirreljme.error BF0o The entry does not have a valid
 			// magic number. (The entry index)}
-			if (__ArrayData__.readSignedInt(0, cdirent) !=
-				_CENTRAL_DIRECTORY_MAGIC_NUMBER)
+			if (__ArrayData__.readSignedInt(0, cdirent) != ZipBlockReader._CENTRAL_DIRECTORY_MAGIC_NUMBER)
 				throw new ZipException(String.format("BF0o %d", i));
 			
 			// Read lengths for file name, comment, and extra data
 			int fnl = __ArrayData__.readUnsignedShort(
-					_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, cdirent),
+				ZipBlockReader._CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, cdirent),
 				cml = __ArrayData__.readUnsignedShort(
-					_CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET, cdirent),
+					ZipBlockReader._CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET, cdirent),
 				edl = __ArrayData__.readUnsignedShort(
-					_CENTRAL_DIRECTORY_COMMENT_LENGTH_OFFSET, cdirent);
+					ZipBlockReader._CENTRAL_DIRECTORY_COMMENT_LENGTH_OFFSET, cdirent);
 			
 			// Next entry is just after this point
-			at += fnl + cml + edl + _CENTRAL_DIRECTORY_MIN_LENGTH;
+			at += fnl + cml + edl + ZipBlockReader._CENTRAL_DIRECTORY_MIN_LENGTH;
 		}
 		
 		// Done
@@ -374,12 +373,12 @@ public class ZipBlockReader
 		// {@squirreljme.error BF0p The file is too small to be a ZIP file.
 		// (The size of file)}
 		long size = __b.size();
-		if (size < _END_DIRECTORY_MIN_LENGTH)
+		if (size < ZipBlockReader._END_DIRECTORY_MIN_LENGTH)
 			throw new ZipException(String.format("BF0p %d", size));
 		
 		// Constantly search for the end of the central directory
-		for (long at = size - _END_DIRECTORY_MIN_LENGTH, end =
-			Math.max(0, size - _END_DIRECTORY_MAX_LENGTH); at >= end; at--)
+		for (long at = size - ZipBlockReader._END_DIRECTORY_MIN_LENGTH, end =
+			 Math.max(0, size - ZipBlockReader._END_DIRECTORY_MAX_LENGTH); at >= end; at--)
 		{
 			// Read single byte to determine if it might start a header
 			byte b = __b.read(at);
@@ -387,16 +386,16 @@ public class ZipBlockReader
 				continue;
 			
 			// Read entire buffer (but not the comment in)
-			__b.read(at, __db, 0, _END_DIRECTORY_MIN_LENGTH);
+			__b.read(at, __db, 0, ZipBlockReader._END_DIRECTORY_MIN_LENGTH);
 			
 			// Need to check the magic number
-			if (__ArrayData__.readSignedInt(0, __db) !=
-				_END_DIRECTORY_MAGIC_NUMBER)
+			if (__ArrayData__.readSignedInt(0, __db) != ZipBlockReader._END_DIRECTORY_MAGIC_NUMBER)
 				continue;
 			
 			// Length must match the end also
-			if (__ArrayData__.readUnsignedShort(_END_DIRECTORY_MIN_LENGTH - 2,
-				__db) != (size - (at + _END_DIRECTORY_MIN_LENGTH)))
+			if (__ArrayData__.readUnsignedShort(
+				ZipBlockReader._END_DIRECTORY_MIN_LENGTH - 2,
+				__db) != (size - (at + ZipBlockReader._END_DIRECTORY_MIN_LENGTH)))
 				continue;
 			
 			// Central directory is here

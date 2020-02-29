@@ -25,6 +25,6 @@ public interface HasMemberFlags
 	 * @since 2018/09/09
 	 */
 	@Override
-	public abstract MemberFlags flags();
+	MemberFlags flags();
 }
 

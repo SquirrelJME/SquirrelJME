@@ -304,7 +304,7 @@ public final class JavaManifest
 	 */
 	private static boolean __isKeyChar(char __c)
 	{
-		return __isAlphaNum(__c) || __c == '_' || __c == '-';
+		return JavaManifest.__isAlphaNum(__c) || __c == '_' || __c == '-';
 	}
 	
 	/**

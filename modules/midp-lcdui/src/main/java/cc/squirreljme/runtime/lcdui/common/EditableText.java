@@ -77,14 +77,14 @@ public final class EditableText
 		{
 			// Size and constraints are set first to make sure the string is
 			// valid
-			int n = setMaxSize(__ms);
-			setConstraints(__c);
+			int n = this.setMaxSize(__ms);
+			this.setConstraints(__c);
 		
 			// Set the string which validates the input
 			// However if the constraints are smaller for the implementation
 			// then no exception is thrown (just give the truncated string)
 			if (__t != null)
-				setString((n < __c ? __t.substring(0, n) : __t));
+				this.setString((n < __c ? __t.substring(0, n) : __t));
 		}
 	}
 	
@@ -104,12 +104,12 @@ public final class EditableText
 		// {@squirreljme.error EB01 The specified constraint type is not
 		// valid. (The type)}
 		int type = (__c & TextField.CONSTRAINT_MASK);
-		if (type < 0 || type > _MAX_CONSTRAINT)
+		if (type < 0 || type > EditableText._MAX_CONSTRAINT)
 			throw new IllegalArgumentException(String.format("EB01 %d", type));
 		
 		// {@squirreljme.error EB02 The specified constraint flags are not
 		// valid. (The constraint flags)}
-		if (((__c ^ type) & ~_VALID_CONSTRAINT_FLAG_BITS) != 0)
+		if (((__c ^ type) & ~EditableText._VALID_CONSTRAINT_FLAG_BITS) != 0)
 			throw new IllegalArgumentException(String.format("EB02 %04x",
 				__c >>> 16));
 		
@@ -119,7 +119,7 @@ public final class EditableText
 			// If the new constraints are not valid then any previous text
 			// is cleared
 			StringBuilder value = this._value;
-			if (!__check(value, this._maxlength, __c))
+			if (!EditableText.__check(value, this._maxlength, __c))
 			{
 				value.setLength(0);
 				return;
@@ -155,7 +155,7 @@ public final class EditableText
 		{
 			// {@squirreljme.error EB04 Cannot set the maximum size because the
 			// input text field would have an invalid value.}
-			if (!__check(this._value, __ms, this._constraints))
+			if (!EditableText.__check(this._value, __ms, this._constraints))
 				throw new IllegalArgumentException("EB04");
 		
 			// Set, SquirrelJME does not have a fixed limit on the size of text
@@ -186,7 +186,7 @@ public final class EditableText
 		{
 			// {@squirreljme.error EB05 Cannot set the specified string
 			// because it is not valid within the constraints.}
-			if (!__check(__s, this._maxlength, this._constraints))
+			if (!EditableText.__check(__s, this._maxlength, this._constraints))
 				throw new IllegalArgumentException("EB05");
 			
 			// Set value

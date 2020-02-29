@@ -28,7 +28,6 @@ public class MIDletStateChangeException
 	@Deprecated
 	public MIDletStateChangeException()
 	{
-		super();
 	}
 
 	/**

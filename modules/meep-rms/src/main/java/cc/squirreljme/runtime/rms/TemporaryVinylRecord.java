@@ -62,7 +62,7 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		// Create new page
 		int pid = vol._nextpid++;
@@ -87,12 +87,12 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		// Locate the page
 		Page page = vol._pages.get(__pid);
 		if (page == null)
-			return ERROR_NO_PAGE;
+			return VinylRecord.ERROR_NO_PAGE;
 		
 		// Just remove it
 		vol._pages.remove(__pid);
@@ -111,7 +111,7 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return new int[]{ERROR_NO_VOLUME};
+			return new int[]{VinylRecord.ERROR_NO_VOLUME};
 		
 		// Get page IDs
 		Set<Integer> keys = vol._pages.keySet();
@@ -134,7 +134,7 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		// Return guessed next ID
 		return vol._nextpid;
@@ -157,12 +157,12 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		// Locate the page
 		Page page = vol._pages.get(__pid);
 		if (page == null)
-			return ERROR_NO_PAGE;
+			return VinylRecord.ERROR_NO_PAGE;
 		
 		// Determine read limit
 		byte[] data = page._data;
@@ -195,12 +195,12 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		// Locate the page
 		Page page = vol._pages.get(__pid);
 		if (page == null)
-			return ERROR_NO_PAGE;
+			return VinylRecord.ERROR_NO_PAGE;
 			
 		// Volume modified
 		vol._modcount++;
@@ -220,12 +220,12 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		// Locate the page
 		Page page = vol._pages.get(__pid);
 		if (page == null)
-			return ERROR_NO_PAGE;
+			return VinylRecord.ERROR_NO_PAGE;
 		
 		// Return data length
 		return page._data.length;
@@ -241,12 +241,12 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		// Locate the page
 		Page page = vol._pages.get(__pid);
 		if (page == null)
-			return ERROR_NO_PAGE;
+			return VinylRecord.ERROR_NO_PAGE;
 		
 		// Return page tag
 		return page._tag;
@@ -315,7 +315,7 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		return vol._modcount;
 	}
@@ -334,7 +334,7 @@ public final class TemporaryVinylRecord
 		// Locate the volume
 		Volume vol = this._volumes.get(__vid);
 		if (vol == null)
-			return ERROR_NO_VOLUME;
+			return VinylRecord.ERROR_NO_VOLUME;
 		
 		if (__time.length > 0)
 			__time[0] = vol._modtime;
@@ -444,7 +444,7 @@ public final class TemporaryVinylRecord
 			// No memory to store this data?
 			catch (OutOfMemoryError e)
 			{
-				return ERROR_NO_MEMORY;
+				return VinylRecord.ERROR_NO_MEMORY;
 			}
 			
 			// Set tag

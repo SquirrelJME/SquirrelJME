@@ -54,7 +54,7 @@ public final class SuiteVersion
 	public SuiteVersion(String __v)
 		throws InvalidSuiteException, NullPointerException
 	{
-		this(__decodeVersion(__v));
+		this(SuiteVersion.__decodeVersion(__v));
 	}
 	
 	/**
@@ -162,7 +162,7 @@ public final class SuiteVersion
 			throw new NullPointerException("NARG");
 		
 		// Can compare the hashcodes
-		return hashCode() >= __v.hashCode();
+		return this.hashCode() >= __v.hashCode();
 	}
 	
 	/**

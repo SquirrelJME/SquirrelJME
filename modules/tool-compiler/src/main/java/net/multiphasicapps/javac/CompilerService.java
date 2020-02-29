@@ -30,6 +30,6 @@ public interface CompilerService
 	 * a compiler cannot be provided.
 	 * @since 2017/11/28
 	 */
-	public abstract Compiler createInstance();
+	Compiler createInstance();
 }
 

@@ -16,9 +16,9 @@ import jdk.dio.DeviceEventListener;
 public interface MonitoringListener
 	extends DeviceEventListener, AsyncErrorHandler<ADCChannel>
 {
-	public abstract void failed(Throwable __a, ADCChannel __b);
+	void failed(Throwable __a, ADCChannel __b);
 	
-	public abstract void thresholdReached(MonitoringEvent __a);
+	void thresholdReached(MonitoringEvent __a);
 }
 
 

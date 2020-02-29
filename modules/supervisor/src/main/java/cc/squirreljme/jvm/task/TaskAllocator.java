@@ -258,7 +258,8 @@ public final class TaskAllocator
 				return rv;
 			
 			// Allocate and store this space
-			this._staticfieldptr = (rv = this.allocate(0, STATIC_FIELD_SIZE));
+			this._staticfieldptr = (rv = this.allocate(0,
+				TaskAllocator.STATIC_FIELD_SIZE));
 			
 			// Could not allocate for this task!
 			if (rv == 0)

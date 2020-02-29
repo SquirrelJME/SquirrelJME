@@ -34,7 +34,7 @@ public enum FieldAccessType
 	 */
 	public final boolean isStatic()
 	{
-		return this == STATIC;
+		return this == FieldAccessType.STATIC;
 	}
 	
 	/**
@@ -50,8 +50,8 @@ public enum FieldAccessType
 	{
 		switch (__i)
 		{
-			case 0:	return STATIC;
-			case 1: return INSTANCE;
+			case 0:	return FieldAccessType.STATIC;
+			case 1: return FieldAccessType.INSTANCE;
 		}
 		
 		// {@squirreljme.error JC15 Unknown access type. (The index)}

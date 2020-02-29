@@ -22,7 +22,7 @@ public interface Memory
 	 * @return The starting region of this memory.
 	 * @since 2019/04/21
 	 */
-	public abstract int memRegionOffset();
+	int memRegionOffset();
 	
 	/**
 	 * The length of this memory region.
@@ -30,6 +30,6 @@ public interface Memory
 	 * @return The memory region length.
 	 * @since 2019/04/21
 	 */
-	public abstract int memRegionSize();
+	int memRegionSize();
 }
 

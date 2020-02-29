@@ -67,10 +67,10 @@ public class ForwardingGraphics
 	@Override
 	public void clipRect(int __x, int __y, int __w, int __h)
 	{
-		setClip(Math.max(__x, getClipX()),
-			Math.max(__y, getClipY()),
-			Math.min(__w, getClipWidth()),
-			Math.min(__h, getClipHeight()));
+		this.setClip(Math.max(__x, this.getClipX()),
+			Math.max(__y, this.getClipY()),
+			Math.min(__w, this.getClipWidth()),
+			Math.min(__h, this.getClipHeight()));
 	}
 	
 	/**
@@ -551,9 +551,9 @@ public class ForwardingGraphics
 	public int getGrayScale()
 	{
 		// Average all channels
-		return ((getRedComponent() & 0xFF) +
-			(getGreenComponent() & 0xFF) +
-			(getBlueComponent() & 0xFF)) / 3;
+		return ((this.getRedComponent() & 0xFF) +
+			(this.getGreenComponent() & 0xFF) +
+			(this.getBlueComponent() & 0xFF)) / 3;
 	}
 	
 	/**
@@ -638,8 +638,8 @@ public class ForwardingGraphics
 	@Override
 	public void setAlpha(int __a)
 	{
-		setAlphaColor(__a, getRedComponent(), getGreenComponent(),
-			getBlueComponent());
+		this.setAlphaColor(__a, this.getRedComponent(), this.getGreenComponent(),
+			this.getBlueComponent());
 	}
 	
 	/**
@@ -664,7 +664,7 @@ public class ForwardingGraphics
 	@Override
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 	{
-		setAlphaColor(((__a & 0xFF) << 24) |
+		this.setAlphaColor(((__a & 0xFF) << 24) |
 			((__r & 0xFF) << 16) |
 			((__g & 0xFF) << 8) |
 			(__b & 0xFF));
@@ -710,7 +710,7 @@ public class ForwardingGraphics
 	@Override
 	public void setColor(int __a)
 	{
-		setAlphaColor((__a & 0xFFFFFF) | ((getAlpha() & 0xFF) << 24));
+		this.setAlphaColor((__a & 0xFFFFFF) | ((this.getAlpha() & 0xFF) << 24));
 	}
 	
 	/**
@@ -720,7 +720,7 @@ public class ForwardingGraphics
 	@Override
 	public void setColor(int __a, int __b, int __c)
 	{
-		setAlphaColor(getAlpha(), __a, __b, __c);
+		this.setAlphaColor(this.getAlpha(), __a, __b, __c);
 	}
 	
 	/**
@@ -745,7 +745,7 @@ public class ForwardingGraphics
 	@Override
 	public void setGrayScale(int __a)
 	{
-		setColor(__a, __a, __a);
+		this.setColor(__a, __a, __a);
 	}
 	
 	/**
@@ -775,8 +775,8 @@ public class ForwardingGraphics
 			graphics.translate(__a, __b);
 		
 		// Store
-		this._translatex = getTranslateX();
-		this._translatey = getTranslateY();
+		this._translatex = this.getTranslateX();
+		this._translatey = this.getTranslateY();
 	}
 }
 

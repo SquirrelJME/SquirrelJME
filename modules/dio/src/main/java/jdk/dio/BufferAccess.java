@@ -16,13 +16,13 @@ import java.nio.ByteBuffer;
 
 public interface BufferAccess<B extends Buffer>
 {
-	public abstract B getInputBuffer()
+	B getInputBuffer()
 		throws ClosedDeviceException, IOException;
 	
-	public abstract B getOutputBuffer()
+	B getOutputBuffer()
 		throws ClosedDeviceException, IOException;
 	
-	public abstract B prepareBuffer(ByteBuffer __a, int __b)
+	B prepareBuffer(ByteBuffer __a, int __b)
 		throws IOException, ClosedDeviceException;
 }
 

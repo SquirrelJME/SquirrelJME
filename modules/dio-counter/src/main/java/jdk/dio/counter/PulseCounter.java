@@ -19,34 +19,33 @@ import jdk.dio.UnavailableDeviceException;
 public interface PulseCounter
 	extends Device<PulseCounter>
 {
-	public abstract int getCount()
+	int getCount()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract GPIOPin getSource();
+	GPIOPin getSource();
 	
-	public abstract void resetCounting()
+	void resetCounting()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void resumeCounting()
+	void resumeCounting()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startCounting()
+	void startCounting()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startCounting(int __a, long __b, CountingListener 
-		__c)
+	void startCounting(int __a, long __b, CountingListener __c)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void stopCounting()
+	void stopCounting()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void suspendCounting()
+	void suspendCounting()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

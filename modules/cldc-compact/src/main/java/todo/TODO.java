@@ -57,13 +57,13 @@ public class TODO
 			// messages should be printed to the console.}
 			debug = Boolean.valueOf(
 				System.getProperty("cc.squirreljme.debug",
-				Boolean.valueOf(_DEFAULT_DEBUG).toString()));
+				Boolean.valueOf(TODO._DEFAULT_DEBUG).toString()));
 		}
 		
 		// Cannot access properties so use the default
 		catch (SecurityException e)
 		{
-			debug = _DEFAULT_DEBUG;
+			debug = TODO._DEFAULT_DEBUG;
 		}
 		
 		// Squelch based on reverse debug
@@ -369,7 +369,7 @@ public class TODO
 	static final void __note(String __pfx, String __fmt, Object... __args)
 	{
 		// If messages are squelched, ignore anything output
-		if (_SQUELCH)
+		if (TODO._SQUELCH)
 			return;
 		
 		// Only print if the stream is valid

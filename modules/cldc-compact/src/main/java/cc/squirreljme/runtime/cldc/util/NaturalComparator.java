@@ -67,12 +67,12 @@ public final class NaturalComparator<V>
 	@SuppressWarnings({"unchecked"})
 	public static final <V> NaturalComparator<V> instance()
 	{
-		Reference<NaturalComparator> ref = _REF;
+		Reference<NaturalComparator> ref = NaturalComparator._REF;
 		NaturalComparator rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			_REF = new WeakReference<>((rv = new NaturalComparator()));
+			NaturalComparator._REF = new WeakReference<>((rv = new NaturalComparator()));
 		
 		// Return it
 		return (NaturalComparator<V>)rv;

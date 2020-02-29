@@ -21,17 +21,17 @@ import jdk.dio.UnsupportedAccessModeException;
 
 public interface DeviceProvider<P extends Device<? super P>>
 {
-	public abstract DeviceConfig<? super P> deserialize(InputStream __a)
+	DeviceConfig<? super P> deserialize(InputStream __a)
 		throws IOException;
 	
-	public abstract Class<? extends DeviceConfig<? super P>> getConfigType();
+	Class<? extends DeviceConfig<? super P>> getConfigType();
 	
-	public abstract Class<P> getType();
+	Class<P> getType();
 	
-	public abstract boolean matches(String[] __a);
+	boolean matches(String[] __a);
 	
-	public abstract AbstractDevice<? super P> open(DeviceConfig<? super P> 
-		__a, String[] __b, int __c)
+	AbstractDevice<? super P> open(DeviceConfig<? super P> __a, String[] __b,
+		int __c)
 		throws DeviceNotFoundException, UnavailableDeviceException, 
 			InvalidDeviceConfigException, UnsupportedAccessModeException, 
 			IOException;

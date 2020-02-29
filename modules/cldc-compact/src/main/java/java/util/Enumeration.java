@@ -31,7 +31,7 @@ public interface Enumeration<E>
 	 * @return {@code true} if there are more elements available.
 	 * @since 2016/04/12
 	 */
-	public abstract boolean hasMoreElements();
+	boolean hasMoreElements();
 	
 	/**
 	 * Returns the next element in the enumeration.
@@ -40,7 +40,7 @@ public interface Enumeration<E>
 	 * @throws NoSuchElementException If no more elements remain.
 	 * @since 2016/04/12
 	 */
-	public abstract E nextElement()
+	E nextElement()
 		throws NoSuchElementException;
 }
 

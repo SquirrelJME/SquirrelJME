@@ -70,14 +70,12 @@ public final class Float
 	
 	public Float(double __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Float(String __a)
 		throws NumberFormatException
 	{
-		super();
 		if (false)
 			throw new NumberFormatException();
 		throw new todo.TODO();
@@ -210,8 +208,8 @@ public final class Float
 		int raw = Float.floatToRawIntBits(__v);
 		
 		// Collapse all NaN values to a single form
-		if ((raw & _NAN_MASK) == (_NAN_MASK))
-			return _NAN_MASK;
+		if ((raw & Float._NAN_MASK) == (Float._NAN_MASK))
+			return Float._NAN_MASK;
 		
 		return raw;
 	}
@@ -258,7 +256,7 @@ public final class Float
 	 */
 	public static boolean isNaN(float __v)
 	{
-		return (Float.floatToRawIntBits(__v) & _NAN_MASK) == _NAN_MASK;
+		return (Float.floatToRawIntBits(__v) & Float._NAN_MASK) == Float._NAN_MASK;
 	}
 	
 	public static float parseFloat(String __a)

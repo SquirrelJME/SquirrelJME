@@ -177,7 +177,7 @@ public final class NativeUIBackend
 			throw new todo.TODO();
 		
 		// Read width and height
-		int[] params = NativeDisplayAccess.framebufferParameters(nid);
+		int[] params = NativeDisplayAccess.framebufferParameters(this.nid);
 		int width = params[NativeDisplayAccess.PARAMETER_BUFFERWIDTH];
 		int height = params[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT];
 		
@@ -191,7 +191,7 @@ public final class NativeUIBackend
 		
 		// If acceleration is enabled, try to get accelerated graphics
 		int nid = this.nid;
-		if (USE_ACCELERATION)
+		if (NativeUIBackend.USE_ACCELERATION)
 			try
 			{
 				// Try to get it

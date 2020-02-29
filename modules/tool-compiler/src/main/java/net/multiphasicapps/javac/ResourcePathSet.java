@@ -70,7 +70,7 @@ public class ResourcePathSet
 	public final Iterator<CompilerInput> iterator()
 	{
 		// Try to read the list file
-		try (InputStream in = pivot.getResourceAsStream(this.prefix + "list"))
+		try (InputStream in = this.pivot.getResourceAsStream(this.prefix + "list"))
 		{
 			// If there is none, then just return no files
 			if (in == null)

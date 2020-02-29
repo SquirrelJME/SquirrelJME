@@ -45,16 +45,6 @@ public class MultiSetDeque<V>
 		new HashSet<>();
 	
 	/**
-	 * Initializes the multi set deque with the specified number of internal
-	 * queues.
-	 *
-	 * @since 2016/09/03
-	 */
-	public MultiSetDeque()
-	{
-	}
-	
-	/**
 	 * Clears the multi-set deque and every sub-deque so that all are empty.
 	 *
 	 * @since 2017/03/25
@@ -145,7 +135,7 @@ public class MultiSetDeque<V>
 	 */
 	public final Deque<V> subDeque()
 	{
-		return subDeque(Integer.MAX_VALUE);
+		return this.subDeque(Integer.MAX_VALUE);
 	}
 	
 	/**
@@ -165,7 +155,7 @@ public class MultiSetDeque<V>
 			throw new NullPointerException("NARG");
 		
 		// Create
-		Deque<V> rv = subDeque();
+		Deque<V> rv = this.subDeque();
 		rv.addAll(__c);
 		return rv;
 	}

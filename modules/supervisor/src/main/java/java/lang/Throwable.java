@@ -24,13 +24,13 @@ import cc.squirreljme.jvm.SystemCallIndex;
 public class Throwable
 {
 	/** The message to use. */
-	transient final String _message;
+	final transient String _message;
 	
 	/** The cause of this exception. */
-	transient final Throwable _cause;
+	final transient Throwable _cause;
 	
 	/** The call trace. */
-	transient final int[] _rawtrace;
+	final transient int[] _rawtrace;
 	
 	/** Suppressed exceptions. */
 	transient volatile Throwable[] _suppressed;

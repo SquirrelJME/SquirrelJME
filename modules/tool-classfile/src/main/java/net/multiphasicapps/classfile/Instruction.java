@@ -700,7 +700,7 @@ public final class Instruction
 	 */
 	public int operation()
 	{
-		return op;
+		return this.op;
 	}
 	
 	/**

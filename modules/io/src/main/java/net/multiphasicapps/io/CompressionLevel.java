@@ -40,12 +40,10 @@ public enum CompressionLevel
 	;
 	
 	/** The default compression level. */
-	public static final CompressionLevel DEFAULT =
-		SLOW;
+	public static final CompressionLevel DEFAULT = CompressionLevel.SLOW;
 	
 	/** The best compression level. */
-	public static final CompressionLevel BEST =
-		SLOWEST;
+	public static final CompressionLevel BEST = CompressionLevel.SLOWEST;
 	
 	/**
 	 * The number of symbols to look at as a single unit with a given
@@ -84,25 +82,26 @@ public enum CompressionLevel
 	{
 		switch (__i)
 		{
-			case 1:		return FASTEST;
+			case 1:		return CompressionLevel.FASTEST;
 			
 			case 2:
-			case 3:		return FASTER;
+			case 3:		return CompressionLevel.FASTER;
 			
 			case 4:
-			case 5:		return FAST;
+			case 5:		return CompressionLevel.FAST;
 			
 			case 6:
-			case 7:		return SLOW;
+			case 7:		return CompressionLevel.SLOW;
 			
 			case 8:
-			case 9:		return SLOWER;
+			case 9:		return CompressionLevel.SLOWER;
 			
-			case 10:	return SLOWEST;
+			case 10:	return CompressionLevel.SLOWEST;
 			
 				// Out of range, so just treat as capped
 			default:
-				return (__i <= 0 ? FASTEST : SLOWEST);
+				return (__i <= 0 ? CompressionLevel.FASTEST :
+					CompressionLevel.SLOWEST);
 		}
 	}
 }

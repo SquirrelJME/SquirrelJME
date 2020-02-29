@@ -15,7 +15,6 @@ public class ContentDescriptor
 {
 	public ContentDescriptor(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

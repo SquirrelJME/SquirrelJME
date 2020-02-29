@@ -270,7 +270,7 @@ abstract class __CoreTest__
 		// Dump test result
 		try
 		{
-			if (Boolean.getBoolean(DUMP_ACTUAL))
+			if (Boolean.getBoolean(__CoreTest__.DUMP_ACTUAL))
 				execution.result.writeAsManifest(System.err);
 		}
 		catch (IOException|SecurityException e)

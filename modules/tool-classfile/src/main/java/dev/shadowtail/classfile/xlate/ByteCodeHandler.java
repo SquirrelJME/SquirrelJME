@@ -31,7 +31,7 @@ public interface ByteCodeHandler
 	 * @param __len The output length.
 	 * @since 2019/04/12
 	 */
-	public abstract void doArrayLength(JavaStackResult.Input __in,
+	void doArrayLength(JavaStackResult.Input __in,
 		JavaStackResult.Output __len);
 	
 	/**
@@ -43,9 +43,8 @@ public interface ByteCodeHandler
 	 * @param __v The value.
 	 * @since 2019/04/12
 	 */
-	public abstract void doArrayLoad(DataType __dt,
-		JavaStackResult.Input __in, JavaStackResult.Input __dx,
-		JavaStackResult.Output __v);
+	void doArrayLoad(DataType __dt, JavaStackResult.Input __in,
+		JavaStackResult.Input __dx, JavaStackResult.Output __v);
 	
 	/**
 	 * Store into array.
@@ -56,9 +55,8 @@ public interface ByteCodeHandler
 	 * @param __v The value.
 	 * @since 2019/04/12
 	 */
-	public abstract void doArrayStore(DataType __dt,
-		JavaStackResult.Input __in, JavaStackResult.Input __dx,
-		JavaStackResult.Input __v);
+	void doArrayStore(DataType __dt, JavaStackResult.Input __in,
+		JavaStackResult.Input __dx, JavaStackResult.Input __v);
 	
 	/**
 	 * Check that an object is of a given type or thrown exception.
@@ -67,8 +65,7 @@ public interface ByteCodeHandler
 	 * @param __v The object to check.
 	 * @since 2019/04/12
 	 */
-	public abstract void doCheckCast(ClassName __cl,
-		JavaStackResult.Input __v);
+	void doCheckCast(ClassName __cl, JavaStackResult.Input __v);
 	
 	/**
 	 * Loads the class object of a class.
@@ -77,8 +74,7 @@ public interface ByteCodeHandler
 	 * @param __out The output register.
 	 * @since 2019/04/26
 	 */
-	public abstract void doClassObjectLoad(ClassName __cl,
-		JavaStackResult.Output __out);
+	void doClassObjectLoad(ClassName __cl, JavaStackResult.Output __out);
 	
 	/**
 	 * Performs convert of value.
@@ -89,9 +85,8 @@ public interface ByteCodeHandler
 	 * @param __b The output.
 	 * @since 2019/04/16
 	 */
-	public abstract void doConvert(StackJavaType __as,
-		JavaStackResult.Input __a, StackJavaType __bs,
-		JavaStackResult.Output __b);
+	void doConvert(StackJavaType __as, JavaStackResult.Input __a,
+		StackJavaType __bs, JavaStackResult.Output __b);
 	
 	/**
 	 * Performs a copy operation.
@@ -100,8 +95,7 @@ public interface ByteCodeHandler
 	 * @param __out The output.
 	 * @since 2019/04/07
 	 */
-	public abstract void doCopy(JavaStackResult.Input __in,
-		JavaStackResult.Output __out);
+	void doCopy(JavaStackResult.Input __in, JavaStackResult.Output __out);
 	
 	/**
 	 * Reads a field.
@@ -111,8 +105,8 @@ public interface ByteCodeHandler
 	 * @param __v The output value.
 	 * @since 2019/04/12
 	 */
-	public abstract void doFieldGet(FieldReference __fr,
-		JavaStackResult.Input __i, JavaStackResult.Output __v);
+	void doFieldGet(FieldReference __fr, JavaStackResult.Input __i,
+		JavaStackResult.Output __v);
 	
 	/**
 	 * Puts a field.
@@ -122,8 +116,8 @@ public interface ByteCodeHandler
 	 * @param __v The value.
 	 * @since 2019/04/12
 	 */
-	public abstract void doFieldPut(FieldReference __fr,
-		JavaStackResult.Input __i, JavaStackResult.Input __v);
+	void doFieldPut(FieldReference __fr, JavaStackResult.Input __i,
+		JavaStackResult.Input __v);
 	
 	/**
 	 * Compares two values and then possibly jumps.
@@ -133,7 +127,7 @@ public interface ByteCodeHandler
 	 * @param __ijt The jump target.
 	 * @since 2019/04/12
 	 */
-	public abstract void doIfICmp(CompareType __ct, JavaStackResult.Input __a,
+	void doIfICmp(CompareType __ct, JavaStackResult.Input __a,
 		JavaStackResult.Input __b, InstructionJumpTarget __ijt);
 	
 	/**
@@ -145,7 +139,7 @@ public interface ByteCodeHandler
 	 * @param __in The arguments to the method.
 	 * @since 2019/04/10
 	 */
-	public abstract void doInvoke(InvokeType __t, MethodReference __r,
+	void doInvoke(InvokeType __t, MethodReference __r,
 		JavaStackResult.Output __out, JavaStackResult.Input... __in);
 	
 	/**
@@ -156,8 +150,8 @@ public interface ByteCodeHandler
 	 * @param __o The output.
 	 * @since 2019/04/16
 	 */
-	public abstract void doInstanceOf(ClassName __cl,
-		JavaStackResult.Input __v, JavaStackResult.Output __o);
+	void doInstanceOf(ClassName __cl, JavaStackResult.Input __v,
+		JavaStackResult.Output __o);
 	
 	/**
 	 * Generates a lookup on a lookup table then jumps to a target.
@@ -166,8 +160,7 @@ public interface ByteCodeHandler
 	 * @param __ls The lookup switch.
 	 * @since 2019/04/16
 	 */
-	public abstract void doLookupSwitch(JavaStackResult.Input __key,
-		LookupSwitch __ls);
+	void doLookupSwitch(JavaStackResult.Input __key, LookupSwitch __ls);
 	
 	/**
 	 * Performs math operation.
@@ -179,9 +172,8 @@ public interface ByteCodeHandler
 	 * @param __c Output.
 	 * @since 2019/04/07
 	 */
-	public abstract void doMath(StackJavaType __dt, MathType __mt,
-		JavaStackResult.Input __a, JavaStackResult.Input __b,
-		JavaStackResult.Output __c);
+	void doMath(StackJavaType __dt, MathType __mt, JavaStackResult.Input __a,
+		JavaStackResult.Input __b, JavaStackResult.Output __c);
 	
 	/**
 	 * Performs math operation.
@@ -193,8 +185,8 @@ public interface ByteCodeHandler
 	 * @param __c Output.
 	 * @since 2019/04/07
 	 */
-	public abstract void doMath(StackJavaType __dt, MathType __mt,
-		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c);
+	void doMath(StackJavaType __dt, MathType __mt, JavaStackResult.Input __a,
+		Number __b, JavaStackResult.Output __c);
 	
 	/**
 	 * Enter or exit the monitor.
@@ -203,7 +195,7 @@ public interface ByteCodeHandler
 	 * @param __o The object to enter or exit.
 	 * @since 2019/04/16
 	 */
-	public abstract void doMonitor(boolean __enter, JavaStackResult.Input __o);
+	void doMonitor(boolean __enter, JavaStackResult.Input __o);
 	
 	/**
 	 * Allocates multi-dimensional array.
@@ -214,7 +206,7 @@ public interface ByteCodeHandler
 	 * @param __dims The input dimensions.
 	 * @since 2019/05/04
 	 */
-	public abstract void doMultiANewArray(ClassName __cl, int __numdims,
+	void doMultiANewArray(ClassName __cl, int __numdims,
 		JavaStackResult.Output __o, JavaStackResult.Input... __dims);
 	
 	/**
@@ -224,7 +216,7 @@ public interface ByteCodeHandler
 	 * @param __out The output.
 	 * @since 2019/04/11
 	 */
-	public abstract void doNew(ClassName __cn, JavaStackResult.Output __out);
+	void doNew(ClassName __cn, JavaStackResult.Output __out);
 	
 	/**
 	 * Allocates a new array.
@@ -234,8 +226,8 @@ public interface ByteCodeHandler
 	 * @param __out Where the array is to be stored.
 	 * @since 2019/04/12
 	 */
-	public abstract void doNewArray(ClassName __at,
-		JavaStackResult.Input __len, JavaStackResult.Output __out);
+	void doNewArray(ClassName __at, JavaStackResult.Input __len,
+		JavaStackResult.Output __out);
 	
 	/**
 	 * Loads pool value.
@@ -244,7 +236,7 @@ public interface ByteCodeHandler
 	 * @param __out The output.
 	 * @since 2019/04/12
 	 */
-	public abstract void doPoolLoad(Object __v, JavaStackResult.Output __out);
+	void doPoolLoad(Object __v, JavaStackResult.Output __out);
 	
 	/**
 	 * Return of value.
@@ -252,7 +244,7 @@ public interface ByteCodeHandler
 	 * @param __in The return value, {@code null} means no value was returned.
 	 * @since 2019/04/11
 	 */
-	public abstract void doReturn(JavaStackResult.Input __in);
+	void doReturn(JavaStackResult.Input __in);
 	
 	/**
 	 * Generates code for state operations.
@@ -260,7 +252,7 @@ public interface ByteCodeHandler
 	 * @param __ops The operations to perform.
 	 * @since 2019/04/11
 	 */
-	public abstract void doStateOperations(StateOperations __ops);
+	void doStateOperations(StateOperations __ops);
 	
 	/**
 	 * Reads a static field.
@@ -269,8 +261,7 @@ public interface ByteCodeHandler
 	 * @param __v The output register.
 	 * @since 2019/04/12
 	 */
-	public abstract void doStaticGet(FieldReference __fr,
-		JavaStackResult.Output __v);
+	void doStaticGet(FieldReference __fr, JavaStackResult.Output __v);
 	
 	/**
 	 * Writes a static field.
@@ -279,8 +270,7 @@ public interface ByteCodeHandler
 	 * @param __v The input register.
 	 * @since 2019/04/13
 	 */
-	public abstract void doStaticPut(FieldReference __fr,
-		JavaStackResult.Input __v);
+	void doStaticPut(FieldReference __fr, JavaStackResult.Input __v);
 	
 	/**
 	 * Throws the given object.
@@ -288,21 +278,21 @@ public interface ByteCodeHandler
 	 * @param __in The object to throw.
 	 * @since 2019/04/12
 	 */
-	public abstract void doThrow(JavaStackResult.Input __in);
+	void doThrow(JavaStackResult.Input __in);
 	
 	/**
 	 * Finishes handling the instruction operation.
 	 *
 	 * @since 2019/04/07
 	 */
-	public abstract void instructionFinish();
+	void instructionFinish();
 	
 	/**
 	 * Sets up before processing the instruction.
 	 *
 	 * @since 2019/04/07
 	 */
-	public abstract void instructionSetup();
+	void instructionSetup();
 	
 	/**
 	 * Returns the state of the byte code, this must always return the
@@ -311,6 +301,6 @@ public interface ByteCodeHandler
 	 * @return The byte code state.
 	 * @since 2019/04/06
 	 */
-	public abstract ByteCodeState state();
+	ByteCodeState state();
 }
 

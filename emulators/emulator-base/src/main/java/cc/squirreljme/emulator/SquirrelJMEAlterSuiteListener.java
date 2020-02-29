@@ -72,7 +72,8 @@ public class SquirrelJMEAlterSuiteListener
 			
 			// Add tests for every test class (each class has just one)
 			List<XmlClass> classies = new LinkedList<>();
-			for (String testClass : findTestClasses())
+			for (String testClass : SquirrelJMEAlterSuiteListener
+				.findTestClasses())
 				try
 				{
 					XmlClass classy = new XmlClass();
@@ -143,7 +144,8 @@ public class SquirrelJMEAlterSuiteListener
 		{
 			// Get all resource files
 			Enumeration<URL> urls = SquirrelJMEAlterSuiteListener.class.
-				getClassLoader().getResources(SERVICE_RESOURCE);
+				getClassLoader().getResources(
+				SquirrelJMEAlterSuiteListener.SERVICE_RESOURCE);
 			
 			// Process them all
 			while (urls.hasMoreElements())

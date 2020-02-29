@@ -16,7 +16,6 @@ public class VertexArray
 {
 	public VertexArray(int __a, int __b, int __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

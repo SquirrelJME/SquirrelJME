@@ -80,7 +80,7 @@ public final class SystemCallError
 		throws SystemCallException
 	{
 		int code = SystemCallError.getError(__si);
-		if (code != NO_ERROR)
+		if (code != SystemCallError.NO_ERROR)
 			throw new SystemCallException(__si, code);
 	}
 	
@@ -107,17 +107,17 @@ public final class SystemCallError
 	{
 		switch (__err)
 		{
-			case NO_ERROR:					return "NoError";
-			case UNSUPPORTED_SYSTEM_CALL:	return "UnsupportedSystemCall";
-			case PIPE_DESCRIPTOR_INVALID:	return "PDInvalid";
-			case PIPE_DESCRIPTOR_BAD_WRITE:	return "PDBadWrite";
-			case VALUE_OUT_OF_RANGE:		return "ValueOutOfRange";
-			case NO_FRAMEBUFFER:			return "NoFramebuffer";
-			case PERMISSION_DENIED:			return "PermissionDenied";
-			case INTERRUPTED:				return "Interrupted";
-			case UNKNOWN:					return "Unknown";
-			case END_OF_FILE:				return "EndOfFile";
-			case IPC_ERROR:					return "IPCError";
+			case SystemCallError.NO_ERROR:					return "NoError";
+			case SystemCallError.UNSUPPORTED_SYSTEM_CALL:	return "UnsupportedSystemCall";
+			case SystemCallError.PIPE_DESCRIPTOR_INVALID:	return "PDInvalid";
+			case SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE:	return "PDBadWrite";
+			case SystemCallError.VALUE_OUT_OF_RANGE:		return "ValueOutOfRange";
+			case SystemCallError.NO_FRAMEBUFFER:			return "NoFramebuffer";
+			case SystemCallError.PERMISSION_DENIED:			return "PermissionDenied";
+			case SystemCallError.INTERRUPTED:				return "Interrupted";
+			case SystemCallError.UNKNOWN:					return "Unknown";
+			case SystemCallError.END_OF_FILE:				return "EndOfFile";
+			case SystemCallError.IPC_ERROR:					return "IPCError";
 			
 				// Some Other ID?
 			default:

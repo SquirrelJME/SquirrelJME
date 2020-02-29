@@ -163,18 +163,18 @@ public final class Report
 			__out.printf("<testsuites failures=\"%d\" " +
 				"tests=\"%d\" time=\"%s\">%n",
 				numfail, numpass,
-				Report.doubleToString(totalns / NANOS_PER_SECOND));
+				Report.doubleToString(totalns / Report.NANOS_PER_SECOND));
 			
 			// There is just a single test suite
 			__out.printf("<testsuite name=\"SquirrelJME\" " +
 				"tests=\"%d\" failures=\"%d\" id=\"0\" time=\"%s\">%n",
 				numtests, numfail,
-				Report.doubleToString(totalns / NANOS_PER_SECOND));
+				Report.doubleToString(totalns / Report.NANOS_PER_SECOND));
 			
 			// Dump environment showing the details of the VM, this is taken
 			// from the hello demo. Just used to identify the VM and such.
 			__out.println("<properties>");
-			for (String p : _PROPERTIES)
+			for (String p : Report._PROPERTIES)
 				try
 				{
 					String v = System.getProperty(p);
@@ -193,7 +193,7 @@ public final class Report
 				__out.printf("<testcase name=\"%s\" " +
 					"classname=\"%s\" status=\"%s\" time=\"%s\">%n",
 					i.name, i.name, (i.passed ? "pass" : "fail"),
-					Report.doubleToString(i.duration / NANOS_PER_SECOND));
+					Report.doubleToString(i.duration / Report.NANOS_PER_SECOND));
 				
 				// Failure gets a note attached
 				if (!i.passed)

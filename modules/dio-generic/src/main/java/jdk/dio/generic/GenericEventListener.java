@@ -15,7 +15,7 @@ import jdk.dio.DeviceEventListener;
 public interface GenericEventListener
 	extends DeviceEventListener
 {
-	public abstract void eventDispatched(GenericEvent __a);
+	void eventDispatched(GenericEvent __a);
 }
 
 

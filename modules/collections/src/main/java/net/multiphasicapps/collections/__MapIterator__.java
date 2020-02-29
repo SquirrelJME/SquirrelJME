@@ -60,7 +60,7 @@ class __MapIterator__<K, V>
 		__Data__<K, V> at = this._at;
 		if (at == null)
 			return false;
-		return (__detect(at) != null);
+		return (this.__detect(at) != null);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ class __MapIterator__<K, V>
 			throw new NoSuchElementException("AC06");
 		
 		// Make sure the value was not removed
-		rv = __detect(rv);
+		rv = this.__detect(rv);
 		
 		// Store last node (for removal) and iterate to the next node value
 		this._last = rv;

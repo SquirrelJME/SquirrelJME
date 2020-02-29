@@ -62,13 +62,13 @@ public class Gauge
 		
 		// {@squirreljme.error EB25 A non-interactive gauge cannot have a
 		// negative value that is not indefinite.}
-		if (!__int && !(__max >= 0 || __max == INDEFINITE))
+		if (!__int && !(__max >= 0 || __max == Gauge.INDEFINITE))
 			throw new IllegalArgumentException("EB25");
 		
 		// {@squirreljme.error EB26 Invalid symbolism for indefinite range.}
-		if (__max == INDEFINITE && __iv != CONTINUOUS_IDLE &&
-			__iv != CONTINUOUS_RUNNING && __iv != INCREMENTAL_IDLE &&
-			__iv != INCREMENTAL_UPDATING)
+		if (__max == Gauge.INDEFINITE && __iv != Gauge.CONTINUOUS_IDLE &&
+			__iv != Gauge.CONTINUOUS_RUNNING && __iv != Gauge.INCREMENTAL_IDLE &&
+			__iv != Gauge.INCREMENTAL_UPDATING)
 			throw new IllegalArgumentException("EB26");
 		
 		this._interactive = __int;

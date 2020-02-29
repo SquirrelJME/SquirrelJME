@@ -24,6 +24,6 @@ public interface TaskListener
 	 * @param __status The new status of the task.
 	 * @since 2016/06/24
 	 */
-	public abstract void notifyStatusUpdate(Task __t, TaskStatus __status);
+	void notifyStatusUpdate(Task __t, TaskStatus __status);
 }
 

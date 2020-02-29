@@ -55,14 +55,14 @@ public enum CompareType
 	{
 		switch (__i)
 		{
-			case 0:		return EQUALS;
-			case 1:		return NOT_EQUALS;
-			case 2:		return LESS_THAN;
-			case 3:		return LESS_THAN_OR_EQUALS;
-			case 4:		return GREATER_THAN;
-			case 5:		return GREATER_THAN_OR_EQUALS;
-			case 6:		return TRUE;
-			case 7:		return FALSE;
+			case 0:		return CompareType.EQUALS;
+			case 1:		return CompareType.NOT_EQUALS;
+			case 2:		return CompareType.LESS_THAN;
+			case 3:		return CompareType.LESS_THAN_OR_EQUALS;
+			case 4:		return CompareType.GREATER_THAN;
+			case 5:		return CompareType.GREATER_THAN_OR_EQUALS;
+			case 6:		return CompareType.TRUE;
+			case 7:		return CompareType.FALSE;
 		}
 		
 		// {@squirreljme.error JC1b Invalid compare operation.}

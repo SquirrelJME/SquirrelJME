@@ -60,7 +60,7 @@ public final class StringUtils
 			int c = (i == n ? -1 : __s.charAt(i));
 			
 			// Is this a delimeter
-			if (c == lastdelim || c == -1 || __indexOf(__delim, (char)c) >= 0)
+			if (c == lastdelim || c == -1 || StringUtils.__indexOf(__delim, (char)c) >= 0)
 			{
 				// Remember last delimeter for potential speed
 				lastdelim = c;
@@ -116,7 +116,7 @@ public final class StringUtils
 		if (__delim == null || __s == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		return basicSplit(__delim.toCharArray(), __s, __out);
+		return StringUtils.basicSplit(__delim.toCharArray(), __s, __out);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public final class StringUtils
 		if (__delim == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		Collection<String> rv = basicSplit(__delim, __s,
+		Collection<String> rv = StringUtils.basicSplit(__delim, __s,
 			new ArrayList<String>());
 		return rv.<String>toArray(new String[rv.size()]);
 	}
@@ -168,7 +168,7 @@ public final class StringUtils
 		if (__delim == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		return basicSplit(__delim.toCharArray(), __s);
+		return StringUtils.basicSplit(__delim.toCharArray(), __s);
 	}
 	
 	/**

@@ -15,16 +15,16 @@ import java.util.EventListener;
 public interface AccessPointListener
 	extends EventListener
 {
-	public static final int EVENT_TYPE_CONNECTED =
+	int EVENT_TYPE_CONNECTED =
 		0;
 	
-	public static final int EVENT_TYPE_DISCONNECTED =
+	int EVENT_TYPE_DISCONNECTED =
 		1;
 	
-	public static final int EVENT_TYPE_REMOVED =
+	int EVENT_TYPE_REMOVED =
 		2;
 	
-	public abstract void notifyEvent(AccessPoint __a, int __b);
+	void notifyEvent(AccessPoint __a, int __b);
 }
 
 

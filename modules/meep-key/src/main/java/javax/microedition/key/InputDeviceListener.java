@@ -17,10 +17,10 @@ package javax.microedition.key;
  */
 public interface InputDeviceListener
 {
-	public abstract void hardwareStateChanged(InputDevice __dev, boolean __hw);
+	void hardwareStateChanged(InputDevice __dev, boolean __hw);
 
-	public abstract void inputDeviceAdded(InputDevice __dev);
+	void inputDeviceAdded(InputDevice __dev);
 
-	public abstract void inputDeviceRemoved(InputDevice __dev);
+	void inputDeviceRemoved(InputDevice __dev);
 }
 

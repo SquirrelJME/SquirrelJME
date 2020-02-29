@@ -30,7 +30,6 @@ public final class SecureByteArrayOutputStream
 	 */
 	public SecureByteArrayOutputStream()
 	{
-		super();
 	}
 	
 	/**

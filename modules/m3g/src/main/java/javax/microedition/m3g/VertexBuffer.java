@@ -16,7 +16,6 @@ public class VertexBuffer
 {
 	public VertexBuffer()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

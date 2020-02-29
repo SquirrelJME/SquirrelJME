@@ -16,7 +16,6 @@ public class Collections
 {
 	private Collections()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

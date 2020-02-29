@@ -25,7 +25,7 @@ public interface MemberSyntax
 	 * @return The member modifiers.
 	 * @since 2018/04/29
 	 */
-	public abstract ModifiersSyntax modifiers();
+	ModifiersSyntax modifiers();
 	
 	/**
 	 * Returns the name of the member.
@@ -33,6 +33,6 @@ public interface MemberSyntax
 	 * @return The name of the member.
 	 * @since 2018/04/29
 	 */
-	public abstract Identifier name();
+	Identifier name();
 }
 

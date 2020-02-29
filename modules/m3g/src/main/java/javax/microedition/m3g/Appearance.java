@@ -16,7 +16,6 @@ public class Appearance
 {
 	public Appearance()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

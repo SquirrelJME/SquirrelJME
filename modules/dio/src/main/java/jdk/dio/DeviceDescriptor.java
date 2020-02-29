@@ -13,18 +13,18 @@ package jdk.dio;
 
 public interface DeviceDescriptor<P extends Device<? super P>>
 {
-	public static final int UNDEFINED_ID =
+	int UNDEFINED_ID =
 		-1;
 	
-	public abstract <C extends DeviceConfig<? super P>> C getConfiguration();
+	<C extends DeviceConfig<? super P>> C getConfiguration();
 	
-	public abstract int getID();
+	int getID();
 	
-	public abstract Class<P> getInterface();
+	Class<P> getInterface();
 	
-	public abstract String getName();
+	String getName();
 	
-	public abstract String[] getProperties();
+	String[] getProperties();
 }
 
 

@@ -23,14 +23,12 @@ public class CountingEvent
 	
 	public CountingEvent(PulseCounter __a, int __b, int __c, long __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public CountingEvent(PulseCounter __a, int __b, int __c, long __d, long 
 		__e, int __f)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

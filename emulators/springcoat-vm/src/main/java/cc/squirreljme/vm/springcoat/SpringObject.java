@@ -25,7 +25,7 @@ public interface SpringObject
 	 * @return This object's monitor.
 	 * @since 2018/09/15
 	 */
-	public abstract SpringMonitor monitor();
+	SpringMonitor monitor();
 	
 	/**
 	 * Returns the pointer area for this object.
@@ -33,7 +33,7 @@ public interface SpringObject
 	 * @return The pointer area for this object.
 	 * @since 2019/12/21
 	 */
-	public abstract SpringPointerArea pointerArea();
+	SpringPointerArea pointerArea();
 	
 	/**
 	 * Returns the object type.
@@ -41,6 +41,6 @@ public interface SpringObject
 	 * @return The object type.
 	 * @since 2018/09/09
 	 */
-	public abstract SpringClass type();
+	SpringClass type();
 }
 

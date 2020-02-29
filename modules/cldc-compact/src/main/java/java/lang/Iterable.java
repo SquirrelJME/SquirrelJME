@@ -27,6 +27,6 @@ public interface Iterable<T>
 	 * @return The object iterator.
 	 * @since 2018/12/08
 	 */
-	public abstract Iterator<T> iterator();
+	Iterator<T> iterator();
 }
 

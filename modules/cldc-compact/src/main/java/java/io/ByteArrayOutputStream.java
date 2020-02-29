@@ -37,7 +37,7 @@ public class ByteArrayOutputStream
 	 */
 	public ByteArrayOutputStream()
 	{
-		this(_CAPACITY);
+		this(ByteArrayOutputStream._CAPACITY);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public class ByteArrayOutputStream
 		{
 			// Not enough room? Increase buffer size
 			if (count == buf.length)
-				this.buf = (buf = Arrays.copyOf(buf, count + _CAPACITY));
+				this.buf = (buf = Arrays.copyOf(buf, count + ByteArrayOutputStream._CAPACITY));
 			
 			// Write byte at end position
 			buf[count] = (byte)__b;
@@ -167,7 +167,7 @@ public class ByteArrayOutputStream
 			// Reallocate buffer if it cannot be store data
 			int endcount = count + __l;
 			if (endcount > buf.length)
-				this.buf = (buf = Arrays.copyOf(buf, endcount + _CAPACITY));
+				this.buf = (buf = Arrays.copyOf(buf, endcount + ByteArrayOutputStream._CAPACITY));
 			
 			// Write bytes
 			for (int i = 0; i < __l; i++)

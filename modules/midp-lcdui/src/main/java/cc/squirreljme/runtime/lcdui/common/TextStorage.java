@@ -117,7 +117,7 @@ public final class TextStorage
 		if (newsize > limit)
 		{
 			// Calculate a new limit with some extra room
-			int newlimit = newsize + GROWTH;
+			int newlimit = newsize + TextStorage.GROWTH;
 			
 			// Resize all the arrays
 			this.chars = (chars = Arrays.copyOf(chars, newlimit));

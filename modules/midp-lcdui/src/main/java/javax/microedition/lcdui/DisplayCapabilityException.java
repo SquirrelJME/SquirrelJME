@@ -26,7 +26,6 @@ public class DisplayCapabilityException
 	 */
 	public DisplayCapabilityException()
 	{
-		super();
 	}
 	
 	/**

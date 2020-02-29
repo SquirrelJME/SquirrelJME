@@ -26,7 +26,7 @@ public interface CompressionStream
 	 * @return The number of compressed bytes which were read.
 	 * @since 2017/08/22
 	 */
-	public abstract long compressedBytes();
+	long compressedBytes();
 	
 	/**
 	 * Returns the number of uncompressed bytes which have been read.
@@ -34,6 +34,6 @@ public interface CompressionStream
 	 * @return The number of read uncompressed bytes.
 	 * @since 2017/08/22
 	 */
-	public abstract long uncompressedBytes();
+	long uncompressedBytes();
 }
 

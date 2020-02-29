@@ -15,7 +15,7 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 public interface CommandListener
 {
 	@SerializedEvent
-	public abstract void commandAction(Command __a, Displayable __b);
+	void commandAction(Command __a, Displayable __b);
 }
 
 

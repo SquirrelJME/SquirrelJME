@@ -17,31 +17,31 @@ import java.nio.channels.Channel;
 public interface Device<P extends Device<? super P>>
 	extends Channel
 {
-	public static final int BIG_ENDIAN =
+	int BIG_ENDIAN =
 		1;
 	
-	public static final int LITTLE_ENDIAN =
+	int LITTLE_ENDIAN =
 		0;
 	
-	public static final int MIXED_ENDIAN =
+	int MIXED_ENDIAN =
 		2;
 	
-	public abstract void close()
+	void close()
 		throws IOException;
 	
-	public abstract ByteOrder getByteOrder()
+	ByteOrder getByteOrder()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract <U extends P> DeviceDescriptor<U> getDescriptor();
+	<U extends P> DeviceDescriptor<U> getDescriptor();
 	
-	public abstract boolean isOpen();
+	boolean isOpen();
 	
-	public abstract void tryLock(int __a)
+	void tryLock(int __a)
 		throws UnavailableDeviceException, ClosedDeviceException, 
 			IOException;
 	
-	public abstract void unlock()
+	void unlock()
 		throws IOException;
 }
 

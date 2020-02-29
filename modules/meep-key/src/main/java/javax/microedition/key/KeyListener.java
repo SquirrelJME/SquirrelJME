@@ -12,109 +12,109 @@ package javax.microedition.key;
 
 public interface KeyListener
 {
-	public static final int DOWN =
+	int DOWN =
 		6;
 		
-	public static final int KEY_BACKSPACE =
+	int KEY_BACKSPACE =
 		8;
 		
-	public static final int KEY_DELETE =
+	int KEY_DELETE =
 		127;
 		
-	public static final int KEY_DOWN =
+	int KEY_DOWN =
 		-2;
 		
-	public static final int KEY_ENTER =
+	int KEY_ENTER =
 		10;
 		
-	public static final int KEY_ESCAPE =
+	int KEY_ESCAPE =
 		27;
 		
-	public static final int KEY_LEFT =
+	int KEY_LEFT =
 		-3;
 		
-	public static final int KEY_NUM0 =
+	int KEY_NUM0 =
 		48;
 		
-	public static final int KEY_NUM1 =
+	int KEY_NUM1 =
 		49;
 		
-	public static final int KEY_NUM2 =
+	int KEY_NUM2 =
 		50;
 		
-	public static final int KEY_NUM3 =
+	int KEY_NUM3 =
 		51;
 		
-	public static final int KEY_NUM4 =
+	int KEY_NUM4 =
 		52;
 		
-	public static final int KEY_NUM5 =
+	int KEY_NUM5 =
 		53;
 		
-	public static final int KEY_NUM6 =
+	int KEY_NUM6 =
 		54;
 		
-	public static final int KEY_NUM7 =
+	int KEY_NUM7 =
 		55;
 		
-	public static final int KEY_NUM8 =
+	int KEY_NUM8 =
 		56;
 		
-	public static final int KEY_NUM9 =
+	int KEY_NUM9 =
 		57;
 		
-	public static final int KEY_POUND =
+	int KEY_POUND =
 		35;
 		
-	public static final int KEY_RIGHT =
+	int KEY_RIGHT =
 		-4;
 		
-	public static final int KEY_SELECT =
+	int KEY_SELECT =
 		-5;
 		
-	public static final int KEY_SPACE =
+	int KEY_SPACE =
 		32;
 		
-	public static final int KEY_STAR =
+	int KEY_STAR =
 		42;
 		
-	public static final int KEY_TAB =
+	int KEY_TAB =
 		9;
 		
-	public static final int KEY_UP =
+	int KEY_UP =
 		-1;
 		
-	public static final int LEFT =
+	int LEFT =
 		2;
 		
-	public static final int MODIFIER_ALT =
+	int MODIFIER_ALT =
 		65536;
 		
-	public static final int MODIFIER_CHR =
+	int MODIFIER_CHR =
 		8388608;
 		
-	public static final int MODIFIER_COMMAND =
+	int MODIFIER_COMMAND =
 		4194304;
 		
-	public static final int MODIFIER_CTRL =
+	int MODIFIER_CTRL =
 		262144;
 		
-	public static final int MODIFIER_MASK =
+	int MODIFIER_MASK =
 		13041664;
 		
-	public static final int MODIFIER_SHIFT =
+	int MODIFIER_SHIFT =
 		131072;
 		
-	public static final int RIGHT =
+	int RIGHT =
 		5;
 		
-	public static final int UP =
+	int UP =
 		1;
 
-	public abstract void keyPressed(InputDevice __dev, int __code, int __mod);
+	void keyPressed(InputDevice __dev, int __code, int __mod);
 
-	public abstract void keyReleased(InputDevice __dev, int __code, int __mod);
+	void keyReleased(InputDevice __dev, int __code, int __mod);
 
-	public abstract void keyRepeated(InputDevice __dev, int __code, int __mod);
+	void keyRepeated(InputDevice __dev, int __code, int __mod);
 }
 

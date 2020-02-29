@@ -51,7 +51,6 @@ public final class Short
 	public Short(String __a)
 		throws NumberFormatException
 	{
-		super();
 		if (false)
 			throw new NumberFormatException();
 		throw new todo.TODO();
@@ -203,7 +202,7 @@ public final class Short
 	 */
 	private static Class<Short> __getType()
 	{
-		return TYPE;
+		return Short.TYPE;
 	}
 }
 

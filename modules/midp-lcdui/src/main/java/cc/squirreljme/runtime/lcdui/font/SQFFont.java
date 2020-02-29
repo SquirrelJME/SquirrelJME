@@ -292,7 +292,7 @@ public final class SQFFont
 		// Build specifier
 		SQFFontSpecifier spec = new SQFFontSpecifier(__n, __pxs);
 		
-		Map<SQFFontSpecifier, SQFFont> cache = _FONT_CACHE;
+		Map<SQFFontSpecifier, SQFFont> cache = SQFFont._FONT_CACHE;
 		synchronized (cache)
 		{
 			// Already cached?

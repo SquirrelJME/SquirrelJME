@@ -38,8 +38,7 @@ public enum MapSize
 	;
 	
 	/** The default map size to use. */
-	public static final MapSize DEFAULT =
-		TINY;
+	public static final MapSize DEFAULT = MapSize.TINY;
 	
 	/** The map width. */
 	public final int width;
@@ -54,7 +53,7 @@ public enum MapSize
 	 * @param __h The height.
 	 * @since 2019/07/01
 	 */
-	private MapSize(int __w, int __h)
+	MapSize(int __w, int __h)
 	{
 		this.width = __w;
 		this.height = __h;

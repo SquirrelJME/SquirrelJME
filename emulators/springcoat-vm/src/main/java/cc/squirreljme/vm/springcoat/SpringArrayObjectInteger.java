@@ -89,7 +89,7 @@ public final class SpringArrayObjectInteger
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK0k %d %d", __dx, length), e);
+				String.format("BK0k %d %d", __dx, this.length), e);
 		}
 	}
 	

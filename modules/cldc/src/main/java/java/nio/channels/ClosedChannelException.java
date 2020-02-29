@@ -17,7 +17,6 @@ public class ClosedChannelException
 {
 	public ClosedChannelException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

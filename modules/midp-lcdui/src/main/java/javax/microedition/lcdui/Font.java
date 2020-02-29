@@ -137,7 +137,7 @@ public final class Font
 		for (char c = 0; c < 128; c++)
 			totalwidth += sqf.charWidth(c);
 		this._face = ((totalwidth / 128) == sqf.charWidth('\0') ?
-			FACE_MONOSPACE : FACE_PROPORTIONAL);
+			Font.FACE_MONOSPACE : Font.FACE_PROPORTIONAL);
 	}
 	
 	/**
@@ -232,13 +232,13 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1t Invalid font style specified. (The style)}
-		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1t %d",
 				__style));
 		
 		// Use default font size?
 		if (__pxs == 0)
-			__pxs = FontSizeConversion.logicalSizeToPixelSize(SIZE_MEDIUM);
+			__pxs = FontSizeConversion.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
 		
 		// {@squirreljme.error EB1u The pixel size of a font cannot be
 		// negative.}
@@ -533,17 +533,17 @@ public final class Font
 	public static Font[] getAvailableFonts()
 	{
 		// Already read these fonts?
-		Font[] rv = _BUILTIN_FONTS;
+		Font[] rv = Font._BUILTIN_FONTS;
 		if (rv != null)
 			return rv.clone();
 		
 		// There are currently just three built-in fonts
-		_BUILTIN_FONTS = (rv = new Font[]
+		Font._BUILTIN_FONTS = (rv = new Font[]
 			{
-				new Font("sansserif", 0, _DEFAULT_FONT_SIZE),
-				new Font("serif", 0, _DEFAULT_FONT_SIZE),
-				new Font("monospace", 0, _DEFAULT_FONT_SIZE),
-				new Font("symbol", 0, _DEFAULT_FONT_SIZE),
+				new Font("sansserif", 0, Font._DEFAULT_FONT_SIZE),
+				new Font("serif", 0, Font._DEFAULT_FONT_SIZE),
+				new Font("monospace", 0, Font._DEFAULT_FONT_SIZE),
+				new Font("symbol", 0, Font._DEFAULT_FONT_SIZE),
 			});
 		return rv.clone();
 	}
@@ -561,7 +561,7 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1v Invalid font style specified. (The style)}
-		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1v %d",
 				__style));
 		
@@ -592,7 +592,7 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1w Invalid font style specified. (The style)}
-		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1w %d",
 				__style));
 		
@@ -626,12 +626,12 @@ public final class Font
 	public static Font getDefaultFont()
 	{
 		// 
-		Font rv = _DEFAULT_FONT;
+		Font rv = Font._DEFAULT_FONT;
 		if (rv != null)
 			return rv;
 		
 		// Use the first found font as the default
-		_DEFAULT_FONT = (rv = Font.getAvailableFonts()[0]);
+		Font._DEFAULT_FONT = (rv = Font.getAvailableFonts()[0]);
 		return rv;
 	}
 	
@@ -647,8 +647,8 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)}
-		if (__spec != FONT_INPUT_TEXT && __spec != FONT_STATIC_TEXT &&
-			__spec != FONT_IDLE_TEXT && __spec != FONT_IDLE_HIGHLIGHTED_TEXT)
+		if (__spec != Font.FONT_INPUT_TEXT && __spec != Font.FONT_STATIC_TEXT &&
+			__spec != Font.FONT_IDLE_TEXT && __spec != Font.FONT_IDLE_HIGHLIGHTED_TEXT)
 			throw new IllegalArgumentException("EB1x " + __spec);
 		
 		// This is always the default font
@@ -671,13 +671,13 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1y Invalid font face specified. (The face)}
-		if ((__face & ~(FACE_SYSTEM | FACE_MONOSPACE | FACE_PROPORTIONAL)) != 0
+		if ((__face & ~(Font.FACE_SYSTEM | Font.FACE_MONOSPACE | Font.FACE_PROPORTIONAL)) != 0
 			|| Integer.bitCount(__face) > 1)
 			throw new IllegalArgumentException(String.format("EB1y %d",
 				__face));
 		
 		// {@squirreljme.error EB1z Invalid font size specified. (The size)}
-		if ((__size & ~(SIZE_SMALL | SIZE_MEDIUM | SIZE_LARGE)) != 0
+		if ((__size & ~(Font.SIZE_SMALL | Font.SIZE_MEDIUM | Font.SIZE_LARGE)) != 0
 			|| Integer.bitCount(__size) > 1)
 			throw new IllegalArgumentException(String.format("EB1z %d",
 				__size));

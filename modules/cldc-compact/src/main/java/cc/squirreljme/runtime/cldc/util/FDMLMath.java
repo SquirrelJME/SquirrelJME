@@ -115,8 +115,8 @@ public final strictfp class FDMLMath
 		int uulx;
 
 		// high and low word of __v
-		hx = __hi(__v);
-		uulx = __lo(__v);
+		hx = FDMLMath.__hi(__v);
+		uulx = FDMLMath.__lo(__v);
 
 		k = 0;
 		
@@ -125,18 +125,18 @@ public final strictfp class FDMLMath
 		{
 			// log(+-0)=-inf
 			if (((hx & 0x7FFFFFFF) | uulx) == 0) 
-				return -_TWO54 / _ZERO;
+				return -FDMLMath._TWO54 / FDMLMath._ZERO;
 			
 			// log(-#) = NaN
 			if (hx < 0)
-				return (__v - __v) / _ZERO;
+				return (__v - __v) / FDMLMath._ZERO;
 			
 			// subnormal number, scale up __v
 			k -= 54;
-			__v *= _TWO54;
+			__v *= FDMLMath._TWO54;
 			
 			// high word of __v
-			hx = __hi(__v);
+			hx = FDMLMath.__hi(__v);
 		} 
 		
 		if (hx >= 0x7FF00000)
@@ -148,20 +148,20 @@ public final strictfp class FDMLMath
 		
 		// normalize x or x/2
 		// __HI(__v) = hx | (i^0x3FF00000);
-		__v = __compose(hx | (i ^ 0x3FF00000), __lo(__v));
+		__v = FDMLMath.__compose(hx | (i ^ 0x3FF00000), FDMLMath.__lo(__v));
 		k += (i >> 20);
 		f = __v - 1.0;
 		
 		// |f| < 2**-20
 		if ((0x000FFFFF & (2 + hx)) < 3)
 		{
-			if (f == _ZERO)
+			if (f == FDMLMath._ZERO)
 				if (k == 0)
-					return _ZERO;
+					return FDMLMath._ZERO;
 				else
 				{
 					dk = (double)k;
-					return dk * _LN2_HI + dk * _LN2_LO;
+					return dk * FDMLMath._LN2_HI + dk * FDMLMath._LN2_LO;
 				}
 			
 			r = f * f * (0.5 - 0.33333333333333333 * f);
@@ -170,7 +170,7 @@ public final strictfp class FDMLMath
 			else
 			{
 				dk = (double)k;
-				return dk * _LN2_HI - ((r - dk * _LN2_LO) - f);
+				return dk * FDMLMath._LN2_HI - ((r - dk * FDMLMath._LN2_LO) - f);
 			}
 		}
 		
@@ -180,8 +180,8 @@ public final strictfp class FDMLMath
 		i = hx - 0x6147A;
 		w = z * z;
 		j = 0x6B851 - hx;
-		t1 = w * (_LG2 + w * (_LG4 + w * _LG6)); 
-		t2 = z * (_LG1 + w * (_LG3 + w * (_LG5 + w * _LG7))); 
+		t1 = w * (FDMLMath._LG2 + w * (FDMLMath._LG4 + w * FDMLMath._LG6));
+		t2 = z * (FDMLMath._LG1 + w * (FDMLMath._LG3 + w * (FDMLMath._LG5 + w * FDMLMath._LG7)));
 		i |= j;
 		r = t2 + t1;
 		
@@ -191,15 +191,15 @@ public final strictfp class FDMLMath
 			if (k == 0)
 				return f - (hfsq - s * (hfsq + r));
 			else
-				return dk * _LN2_HI -
-					((hfsq - (s * (hfsq + r) + dk * _LN2_LO)) - f);
+				return dk * FDMLMath._LN2_HI -
+					((hfsq - (s * (hfsq + r) + dk * FDMLMath._LN2_LO)) - f);
 		}
 		else
 		{
 			if (k == 0)
 				return f - s * (f - r);
 			else
-				return dk * _LN2_HI - (( s * (f - r) - dk * _LN2_LO) - f);
+				return dk * FDMLMath._LN2_HI - (( s * (f - r) - dk * FDMLMath._LN2_LO) - f);
 		}
 	}
 
@@ -218,8 +218,8 @@ public final strictfp class FDMLMath
 		int ix0, s0, q, m, t, i;
 
 		// high and low word of __v
-		ix0 = __hi(__v);
-		uuix1 = __lo(__v);
+		ix0 = FDMLMath.__hi(__v);
+		uuix1 = FDMLMath.__lo(__v);
 
 		// Take care of Inf and NaN
 		if ((ix0 & 0x7FF00000) == 0x7FF00000)
@@ -233,7 +233,7 @@ public final strictfp class FDMLMath
 		if (ix0 <= 0)
 		{
 			// sqrt(+-0) = +-0
-			if (((ix0 & (~_SIGN)) | uuix1) == 0)
+			if (((ix0 & (~FDMLMath._SIGN)) | uuix1) == 0)
 				return __v;
 			
 			// sqrt(-ve) = sNaN
@@ -269,7 +269,7 @@ public final strictfp class FDMLMath
 		// odd m, double __v to make it even
 		if ((m & 1) != 0)
 		{
-			ix0 += ix0 + ((uuix1 & _SIGN) >>> 31);
+			ix0 += ix0 + ((uuix1 & FDMLMath._SIGN) >>> 31);
 			uuix1 += uuix1;
 		}
 		
@@ -277,7 +277,7 @@ public final strictfp class FDMLMath
 		m >>= 1;
 
 		// generate sqrt(__v) bit by bit
-		ix0 += ix0 + ((uuix1 & _SIGN) >>> 31);
+		ix0 += ix0 + ((uuix1 & FDMLMath._SIGN) >>> 31);
 		uuix1 += uuix1;
 		
 		// [q,q1] = sqrt(__v)
@@ -294,12 +294,12 @@ public final strictfp class FDMLMath
 				ix0 -= t;
 				q += uur;
 			}
-			ix0 += ix0 + ((uuix1 & _SIGN) >>> 31);
+			ix0 += ix0 + ((uuix1 & FDMLMath._SIGN) >>> 31);
 			uuix1 += uuix1;
 			uur >>>= 1;
 		}
 
-		uur = _SIGN;
+		uur = FDMLMath._SIGN;
 		while (uur != 0)
 		{
 			uut1 = uus1 + uur;
@@ -310,7 +310,7 @@ public final strictfp class FDMLMath
 			{
 				uus1 = uut1 + uur;
 				
-				if (((uut1 & _SIGN) == _SIGN) && (uus1 & _SIGN) == 0)
+				if (((uut1 & FDMLMath._SIGN) == FDMLMath._SIGN) && (uus1 & FDMLMath._SIGN) == 0)
 					s0 += 1;
 				
 				ix0 -= t;
@@ -322,7 +322,7 @@ public final strictfp class FDMLMath
 				uuq1 += uur;
 			}
 			
-			ix0 += ix0 + ((uuix1 & _SIGN) >>> 31);
+			ix0 += ix0 + ((uuix1 & FDMLMath._SIGN) >>> 31);
 			uuix1 += uuix1;
 			uur >>>= 1;
 		}
@@ -331,17 +331,17 @@ public final strictfp class FDMLMath
 		if ((ix0 | uuix1) != 0)
 		{
 			// trigger inexact flag
-			z = _ONE - _TINY;
+			z = FDMLMath._ONE - FDMLMath._TINY;
 			
-			if (z >= _ONE)
+			if (z >= FDMLMath._ONE)
 			{
-				z = _ONE + _TINY;
+				z = FDMLMath._ONE + FDMLMath._TINY;
 				if (uuq1 == 0xFFFFFFFF)
 				{
 					uuq1 = 0;
 					q += 1;
 				}
-				else if (z > _ONE)
+				else if (z > FDMLMath._ONE)
 				{
 					if (uuq1 == 0xFFFFFFFE)
 						q += 1;
@@ -356,11 +356,11 @@ public final strictfp class FDMLMath
 		uuix1 = uuq1 >>> 1;
 		
 		if ((q & 1) == 1)
-			uuix1 |= _SIGN;
+			uuix1 |= FDMLMath._SIGN;
 		
 		ix0 += (m << 20);
 		
-		return __compose(ix0, uuix1);
+		return FDMLMath.__compose(ix0, uuix1);
 	}
 	
 	/**

@@ -17,13 +17,11 @@ public abstract class Writer
 	
 	protected Writer()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	protected Writer(Object __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

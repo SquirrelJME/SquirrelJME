@@ -16,7 +16,6 @@ public abstract class Transformable
 {
 	Transformable()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

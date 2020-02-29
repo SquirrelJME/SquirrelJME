@@ -180,7 +180,7 @@ public class LogicalReader
 			else if (c == '\t')
 			{
 				int column = this._column;
-				column = column + (_TAB_SIZE - (column % _TAB_SIZE));
+				column = column + (LogicalReader._TAB_SIZE - (column % LogicalReader._TAB_SIZE));
 				this._column = column;
 			}
 			

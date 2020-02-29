@@ -90,7 +90,7 @@ public final class ApiLevel
 	@Deprecated
 	public static boolean minimumLevel(int __l)
 	{
-		return (CURRENT_LEVEL >= __l);
+		return (ApiLevel.CURRENT_LEVEL >= __l);
 	}
 }
 

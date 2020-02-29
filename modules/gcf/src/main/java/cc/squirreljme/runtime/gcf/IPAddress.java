@@ -46,11 +46,11 @@ public final class IPAddress
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EC0c IP port out of range. (The port)}
-		if (__p != ASSIGNED_PORT && __p < 0 || __p > 65535)
+		if (__p != IPAddress.ASSIGNED_PORT && __p < 0 || __p > 65535)
 			throw new IllegalArgumentException("EC0c " + __p);
 		
 		// {@squirreljme.error EC0d No IP address was specified.}
-		if (__h == null && __p == ASSIGNED_PORT)
+		if (__h == null && __p == IPAddress.ASSIGNED_PORT)
 			throw new IllegalArgumentException("EC0d");
 		
 		// Validate hostname
@@ -144,7 +144,7 @@ public final class IPAddress
 			// Include the port or not?
 			if (hostname == null)
 				rv = ":" + port;
-			else if (port == ASSIGNED_PORT)
+			else if (port == IPAddress.ASSIGNED_PORT)
 				rv = hostname;
 			else
 				rv = hostname + ":" + port;
@@ -205,7 +205,7 @@ public final class IPAddress
 			
 			// Just has a hostname?
 			if (col < 0)
-				return new IPAddress(__s, ASSIGNED_PORT);
+				return new IPAddress(__s, IPAddress.ASSIGNED_PORT);
 			
 			// Just has the port
 			else if (col == 0)

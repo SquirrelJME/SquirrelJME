@@ -274,7 +274,7 @@ public final class System
 			return "true";
 		
 		// Not allowed to do this?
-		getSecurityManager().checkPropertyAccess(__k);
+		System.getSecurityManager().checkPropertyAccess(__k);
 		
 		// Depends on the property
 		String rv;
@@ -417,7 +417,7 @@ public final class System
 			SecurityException
 	{
 		// Get it
-		String rv = getProperty(__k);
+		String rv = System.getProperty(__k);
 		
 		// If not set, return the default, otherwise the read value
 		if (rv == null)
@@ -508,10 +508,10 @@ public final class System
 			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
-		getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		System.getSecurityManager().checkPermission(new RuntimePermission("setIO"));
 		
 		// Use a wrapped class to prevent final abuse.
-		((__CanSetPrintStream__)err).__set(__a);
+		((__CanSetPrintStream__)System.err).__set(__a);
 	}
 	
 	/**
@@ -534,10 +534,10 @@ public final class System
 			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
-		getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		System.getSecurityManager().checkPermission(new RuntimePermission("setIO"));
 		
 		// Use a wrapped class to prevent final abuse.
-		((__CanSetPrintStream__)out).__set(__a);
+		((__CanSetPrintStream__)System.out).__set(__a);
 	}
 }
 

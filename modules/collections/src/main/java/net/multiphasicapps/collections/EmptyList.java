@@ -131,12 +131,12 @@ public final class EmptyList
 	public static <V> List<V> empty()
 	{
 		// Get reference
-		Reference<List> ref = _EMPTY_LIST;
+		Reference<List> ref = EmptyList._EMPTY_LIST;
 		List rv;
 		
 		// Needs creation?
 		if (ref == null || null == (rv = ref.get()))
-			_EMPTY_LIST = new WeakReference<>(
+			EmptyList._EMPTY_LIST = new WeakReference<>(
 				(rv = new EmptyList()));
 		
 		// Return it

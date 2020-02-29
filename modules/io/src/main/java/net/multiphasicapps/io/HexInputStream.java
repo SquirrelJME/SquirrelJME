@@ -45,7 +45,7 @@ public class HexInputStream
 			throw new NullPointerException("NARG");
 		
 		// Set
-		source = __s;
+		this.source = __s;
 	}
 	
 	/**
@@ -85,10 +85,10 @@ public class HexInputStream
 		throws IOException
 	{
 		// Always set EOF
-		_eof = true;
+		this._eof = true;
 		
 		// Close it
-		source.close();
+		this.source.close();
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class HexInputStream
 		throws IOException
 	{
 		// EOF?
-		if (_eof)
+		if (this._eof)
 			return -1;
 		
 		// Read the high value
@@ -108,7 +108,7 @@ public class HexInputStream
 		while (hi < 0)
 		{
 			// Read 
-			int c = source.read();
+			int c = this.source.read();
 			
 			// EOF?
 			if (c < 0)
@@ -123,7 +123,7 @@ public class HexInputStream
 		while (lo < 0)
 		{
 			// Read 
-			int c = source.read();
+			int c = this.source.read();
 			
 			// EOF?
 			if (c < 0)

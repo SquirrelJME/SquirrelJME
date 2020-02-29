@@ -276,7 +276,7 @@ public class Display
 	public int getBestImageHeight(int __a)
 		throws IllegalArgumentException
 	{
-		return __bestImageSize(__a, true);
+		return this.__bestImageSize(__a, true);
 	}
 	
 	/**
@@ -300,7 +300,7 @@ public class Display
 	public int getBestImageWidth(int __a)
 		throws IllegalArgumentException
 	{
-		return __bestImageSize(__a, false);
+		return this.__bestImageSize(__a, false);
 	}
 	
 	public int getBorderStyle(boolean __a)
@@ -329,12 +329,8 @@ public class Display
 		// Use the capabilities of the native display, but since SquirrelJME
 		// manages pretty much everything in a framebuffer every display will
 		// always have certain capabilities
-		return (hasinput ? SUPPORTS_INPUT_EVENTS : 0) |
-			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) |
-			SUPPORTS_COMMANDS | SUPPORTS_FORMS | SUPPORTS_TICKER |
-			SUPPORTS_ALERTS | SUPPORTS_LISTS | SUPPORTS_TEXTBOXES |
-			SUPPORTS_FILESELECTORS | SUPPORTS_TABBEDPANES |
-			SUPPORTS_MENUS;
+		return (hasinput ? Display.SUPPORTS_INPUT_EVENTS : 0) |
+			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) | Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS | Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS | Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES | Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES | Display.SUPPORTS_MENUS;
 	}
 	
 	/**
@@ -364,31 +360,31 @@ public class Display
 		int rv;
 		switch (__c)
 		{
-			case COLOR_BORDER:
+			case Display.COLOR_BORDER:
 				rv = CommonColors.BORDER;
 				break;
 			
-			case COLOR_BACKGROUND:
-			case COLOR_IDLE_BACKGROUND:
+			case Display.COLOR_BACKGROUND:
+			case Display.COLOR_IDLE_BACKGROUND:
 				rv = CommonColors.BACKGROUND;
 				break;
 			
-			case COLOR_FOREGROUND:
-			case COLOR_IDLE_FOREGROUND:
+			case Display.COLOR_FOREGROUND:
+			case Display.COLOR_IDLE_FOREGROUND:
 				rv = CommonColors.FOREGROUND;
 				break;
 			
-			case COLOR_HIGHLIGHTED_BORDER:
+			case Display.COLOR_HIGHLIGHTED_BORDER:
 				rv = CommonColors.HIGHLIGHTED_BORDER;
 				break;
 				
-			case COLOR_HIGHLIGHTED_BACKGROUND:
-			case COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
+			case Display.COLOR_HIGHLIGHTED_BACKGROUND:
+			case Display.COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
 				rv = CommonColors.HIGHLIGHTED_BACKGROUND;
 				break;
 			
-			case COLOR_HIGHLIGHTED_FOREGROUND:
-			case COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
+			case Display.COLOR_HIGHLIGHTED_FOREGROUND:
+			case Display.COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
 				rv = CommonColors.HIGHLIGHTED_FOREGROUND;
 				break;
 		
@@ -505,14 +501,14 @@ public class Display
 		// it was rotated 180 degrees
 		if (UIState.getInstance().displayFlipped())
 			if (landscape)
-				return ORIENTATION_LANDSCAPE_180;
+				return Display.ORIENTATION_LANDSCAPE_180;
 			else
-				return ORIENTATION_PORTRAIT_180;
+				return Display.ORIENTATION_PORTRAIT_180;
 		else
 			if (landscape)
-				return ORIENTATION_LANDSCAPE;
+				return Display.ORIENTATION_LANDSCAPE;
 			else
-				return ORIENTATION_PORTRAIT;
+				return Display.ORIENTATION_PORTRAIT;
 	}
 	
 	/**
@@ -622,11 +618,11 @@ public class Display
 		throws IllegalArgumentException
 	{
 		// Active?
-		if (__m == MODE_ACTIVE)
+		if (__m == Display.MODE_ACTIVE)
 			throw new todo.TODO();
 	
 		// Normal
-		else if (__m == MODE_NORMAL)
+		else if (__m == Display.MODE_NORMAL)
 			throw new todo.TODO();
 	
 		// {@squirreljme.error EB1i Unknown activity mode specified.}
@@ -845,25 +841,25 @@ public class Display
 		// Depends
 		switch (__e)
 		{
-			case LIST_ELEMENT:
+			case Display.LIST_ELEMENT:
 				return StandardMetrics.LIST_ITEM_HEIGHT;
 				
-			case CHOICE_GROUP_ELEMENT:
+			case Display.CHOICE_GROUP_ELEMENT:
 				throw new todo.TODO();
 				
-			case ALERT:
+			case Display.ALERT:
 				throw new todo.TODO();
 				
-			case TAB:
+			case Display.TAB:
 				throw new todo.TODO();
 				
-			case COMMAND:
+			case Display.COMMAND:
 				return StandardMetrics.COMMAND_BAR_HEIGHT;
 				
-			case NOTIFICATION:
+			case Display.NOTIFICATION:
 				throw new todo.TODO();
 				
-			case MENU:
+			case Display.MENU:
 				return StandardMetrics.COMMAND_BAR_HEIGHT;
 				
 				// {@squirreljme.error EB1o Cannot get the best image size of
@@ -952,7 +948,7 @@ public class Display
 		// In the runtime, each program only ever gets a single MIDlet and
 		// creating new MIDlets is illegal. Thus since getDisplays() has zero
 		// be the return value for this method, that is used here.
-		Display[] disp = getDisplays(0);
+		Display[] disp = Display.getDisplays(0);
 		if (disp.length > 0)
 			return disp[0];
 		

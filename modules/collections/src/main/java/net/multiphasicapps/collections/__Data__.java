@@ -151,7 +151,7 @@ class __Data__<K, V>
 	 */
 	final int __compare(__Data__<K, V> __d)
 	{
-		return __compare(__d._key);
+		return this.__compare(__d._key);
 	}
 	
 	/**
@@ -163,7 +163,7 @@ class __Data__<K, V>
 	 */
 	final int __compare(__Node__<K, V> __n)
 	{
-		return __compare(__n._data);
+		return this.__compare(__n._data);
 	}
 }
 

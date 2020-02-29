@@ -16,7 +16,6 @@ public class AnimationController
 {
 	public AnimationController()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

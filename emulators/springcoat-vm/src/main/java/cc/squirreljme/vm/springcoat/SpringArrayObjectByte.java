@@ -89,7 +89,7 @@ public final class SpringArrayObjectByte
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK05 %d %d", __dx, length), e);
+				String.format("BK05 %d %d", __dx, this.length), e);
 		}
 	}
 	

@@ -28,7 +28,7 @@ public interface SpringMember
 	 * @return The class which owns the method.
 	 * @since 2018/09/09
 	 */
-	public abstract ClassName inClass();
+	ClassName inClass();
 	
 	/**
 	 * Returns the name and type of the member.
@@ -36,6 +36,6 @@ public interface SpringMember
 	 * @return The member name and type.
 	 * @since 2018/09/09
 	 */
-	public abstract MemberNameAndType nameAndType();
+	MemberNameAndType nameAndType();
 }
 

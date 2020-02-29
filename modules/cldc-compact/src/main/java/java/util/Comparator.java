@@ -12,7 +12,7 @@ package java.util;
 
 public interface Comparator<T>
 {
-	public abstract int compare(T __a, T __b);
+	int compare(T __a, T __b);
 	
 	/**
 	 * Generally this should return {@code true} if a given comparison results
@@ -22,6 +22,6 @@ public interface Comparator<T>
 	 * @since 2016/04/12
 	 */
 	@Override
-	public abstract boolean equals(Object __a);
+	boolean equals(Object __a);
 }
 

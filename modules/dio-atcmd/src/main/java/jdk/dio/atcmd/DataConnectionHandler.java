@@ -13,11 +13,9 @@ package jdk.dio.atcmd;
 
 public interface DataConnectionHandler
 {
-	public abstract void handleClosedDataConnection(ATDevice __a, 
-		DataConnection __b);
+	void handleClosedDataConnection(ATDevice __a, DataConnection __b);
 	
-	public abstract void handleOpenedDataConnection(ATDevice __a, 
-		DataConnection __b);
+	void handleOpenedDataConnection(ATDevice __a, DataConnection __b);
 }
 
 

@@ -286,29 +286,29 @@ public abstract class TCPClientConnection
 		throws IllegalArgumentException, IOException
 	{
 		// {@squirreljme.error EC0n Invalid socket option. (The option)}
-		if (__o != KEEPALIVE || __o != LINGER || __o != SNDBUF ||
-			__o != RCVBUF || __o != DELAY || __o != TIMEOUT)
+		if (__o != SocketConnection.KEEPALIVE || __o != SocketConnection.LINGER || __o != SocketConnection.SNDBUF ||
+			__o != SocketConnection.RCVBUF || __o != SocketConnection.DELAY || __o != SocketConnection.TIMEOUT)
 			throw new IllegalArgumentException("EC0n " + __o);
 		
 		// Check options
 		switch (__o)
 		{
-			case LINGER:
+			case SocketConnection.LINGER:
 				// {@squirreljme.error EC0o Linger cannot be negative.
 				// (The requested linger)}
 				if (__v < 0)
 					throw new IllegalArgumentException("EC0o " + __v);
 				break;
 			
-			case RCVBUF:
-			case SNDBUF:
+			case SocketConnection.RCVBUF:
+			case SocketConnection.SNDBUF:
 				// {@squirreljme.error EC0p Send/receive buffer size cannot
 				// be negative. (The requested buffer size)}
 				if (__v < 0)
 					throw new IllegalArgumentException("EC0p " + __v);
 				break;
 			
-			case TIMEOUT:
+			case SocketConnection.TIMEOUT:
 				// {@squirreljme.error EC0q Timeout cannot be negative.
 				// (The requested timeout)}
 				if (__v < 0)

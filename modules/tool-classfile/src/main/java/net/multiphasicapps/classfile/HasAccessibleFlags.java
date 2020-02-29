@@ -23,6 +23,6 @@ public interface HasAccessibleFlags
 	 * @return The accessible flags.
 	 * @since 2018/09/09
 	 */
-	public abstract AccessibleFlags flags();
+	AccessibleFlags flags();
 }
 

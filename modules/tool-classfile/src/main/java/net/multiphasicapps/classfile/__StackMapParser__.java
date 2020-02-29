@@ -132,7 +132,7 @@ final class __StackMapParser__
 		this._targets = targets;
 		
 		// Record state
-		__next(0, true, -1, -1);
+		this.__next(0, true, -1, -1);
 		
 		// Parse the stack map table
 		try (DataInputStream in = xin)
@@ -145,7 +145,7 @@ final class __StackMapParser__
 			
 				// All entries in the table are full frames
 				for (int i = 0; i < ne; i++)
-					__next(__oldStyle(), true, -1, i);
+					this.__next(this.__oldStyle(), true, -1, i);
 			}
 		
 			// The modern stack map table
@@ -163,31 +163,31 @@ final class __StackMapParser__
 				
 					// Full frame?
 					if (type == 255)
-						addr = __fullFrame();
+						addr = this.__fullFrame();
 				
 					// Same frame?
 					else if (type >= 0 && type <= 63)
-						addr = __sameFrame(type);
+						addr = this.__sameFrame(type);
 				
 					// Same locals but a single stack item
 					else if (type >= 64 && type <= 127)
-						addr = __sameLocalsSingleStack(type - 64);
+						addr = this.__sameLocalsSingleStack(type - 64);
 				
 					// Same locals, single stack item, explicit delta
 					else if (type == 247)
-						addr = __sameLocalsSingleStackExplicit();
+						addr = this.__sameLocalsSingleStackExplicit();
 				
 					// Chopped frame
 					else if (type >= 248 && type <= 250)
-						addr = __choppedFrame(251 - type);
+						addr = this.__choppedFrame(251 - type);
 				
 					// Same frame but with a supplied delta
 					else if (type == 251)
-						addr = __sameFrameDelta();
+						addr = this.__sameFrameDelta();
 				
 					// Appended frame
 					else if (type >= 252 && type <= 254)
-						addr = __appendFrame(type - 251);
+						addr = this.__appendFrame(type - 251);
 				
 					// {@squirreljme.error JC44 Unknown StackMapTable
 					// verification type. (The verification type)}
@@ -196,7 +196,7 @@ final class __StackMapParser__
 							String.format("JC44 %d", type));
 					
 					// Setup next
-					__next(addr, false, type, i);
+					this.__next(addr, false, type, i);
 				}
 			}
 		}
@@ -251,7 +251,7 @@ final class __StackMapParser__
 			
 			// Set it
 			StackMapTableEntry aa;
-			nextlocals[i] = (aa = __loadInfo());
+			nextlocals[i] = (aa = this.__loadInfo());
 			__addlocs--;
 			
 			// If a wide element was added, then the next one becomes TOP
@@ -350,7 +350,7 @@ final class __StackMapParser__
 		for (i = 0, o = 0; i < nl; i++)
 		{
 			StackMapTableEntry e;
-			nextlocals[o++] = (e = __loadInfo());
+			nextlocals[o++] = (e = this.__loadInfo());
 			
 			// Add top?
 			if (e.isWide())
@@ -365,7 +365,7 @@ final class __StackMapParser__
 		for (i = 0, o = 0; i < ns; i++)
 		{
 			StackMapTableEntry e;
-			nextstack[o++] = (e = __loadInfo());
+			nextstack[o++] = (e = this.__loadInfo());
 			
 			// Add top?
 			if (e.isWide())
@@ -618,7 +618,7 @@ final class __StackMapParser__
 	{
 		// Load single entry
 		StackMapTableEntry ent;
-		this._nextstack[0] = (ent = __loadInfo());
+		this._nextstack[0] = (ent = this.__loadInfo());
 		
 		// If the entry is wide then the top type will not be specified as it
 		// will be implicit, so we need to set the according type
@@ -646,7 +646,7 @@ final class __StackMapParser__
 	private int __sameLocalsSingleStackExplicit()
 		throws IOException
 	{
-		return __sameLocalsSingleStack(this.in.readUnsignedShort());
+		return this.__sameLocalsSingleStack(this.in.readUnsignedShort());
 	}
 }
 

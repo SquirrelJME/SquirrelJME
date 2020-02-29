@@ -252,13 +252,13 @@ public final class MethodDescriptor
 	public JavaType[] javaStack()
 	{
 		// Handle all arguments now
-		int n = argumentCount();
+		int n = this.argumentCount();
 		List<JavaType> rv = new ArrayList<>(n * 2);
 		for (int i = 0; i < n; i++)
 		{
 			FieldDescriptor a;
 			JavaType j;
-			rv.add(j = new JavaType(a = argument(i)));
+			rv.add(j = new JavaType(a = this.argument(i)));
 			
 			// Add top of long/double but with unique distinct types
 			if (j.isWide())

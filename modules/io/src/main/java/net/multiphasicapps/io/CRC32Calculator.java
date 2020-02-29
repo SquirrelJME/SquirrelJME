@@ -48,7 +48,7 @@ public class CRC32Calculator
 	
 	/** The work buffer. */
 	private final byte[] _work =
-		new byte[_WORK_BUFFER];
+		new byte[CRC32Calculator._WORK_BUFFER];
 	
 	/** The current CRC value (remainder). */
 	private volatile int _remainder;
@@ -100,7 +100,7 @@ public class CRC32Calculator
 	{
 		byte[] solo = this._solo;
 		solo[0] = __b;
-		offer(solo, 0, 1);
+		this.offer(solo, 0, 1);
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class CRC32Calculator
 	public final void offer(byte[] __b)
 		throws NullPointerException
 	{
-		offer(__b, 0, __b.length);
+		this.offer(__b, 0, __b.length);
 	}
 	
 	/**

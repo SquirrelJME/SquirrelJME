@@ -26,7 +26,7 @@ public interface IntMatchingJumpTable
 	 * found.
 	 * @since 2018/09/20
 	 */
-	public abstract InstructionJumpTarget match(int __k);
+	InstructionJumpTarget match(int __k);
 	
 	/**
 	 * Returns all of the used jump targets.
@@ -34,6 +34,6 @@ public interface IntMatchingJumpTable
 	 * @return The used jump targets.
 	 * @since 2019/03/31
 	 */
-	public abstract InstructionJumpTarget[] targets();
+	InstructionJumpTarget[] targets();
 }
 

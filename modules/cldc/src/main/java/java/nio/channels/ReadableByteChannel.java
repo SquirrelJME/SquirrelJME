@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 public interface ReadableByteChannel
 	extends Channel
 {
-	public abstract int read(ByteBuffer __a)
+	int read(ByteBuffer __a)
 		throws IOException;
 }
 

@@ -89,7 +89,7 @@ public final class SpringArrayObjectChar
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK08 %d %d", __dx, length), e);
+				String.format("BK08 %d %d", __dx, this.length), e);
 		}
 	}
 	

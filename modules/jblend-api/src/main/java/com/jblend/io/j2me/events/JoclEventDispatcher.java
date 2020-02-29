@@ -12,10 +12,8 @@ package com.jblend.io.j2me.events;
 public class JoclEventDispatcher
 	implements EventDispatcherInterface
 {
-    public JoclEventDispatcher() {
-    }
-
-    public void dispatch(int var1, int var2, int var3, int var4)
+	
+	public void dispatch(int var1, int var2, int var3, int var4)
 	{
 		throw new todo.TODO();
 	}

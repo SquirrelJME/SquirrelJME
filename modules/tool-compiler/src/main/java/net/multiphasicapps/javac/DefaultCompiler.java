@@ -60,7 +60,7 @@ public final class DefaultCompiler
 	public static final CompilerService getService()
 	{
 		// Go through services if it is not forced to default
-		if (!Boolean.getBoolean(_FORCE_DEFAULT_PROPERTY))
+		if (!Boolean.getBoolean(DefaultCompiler._FORCE_DEFAULT_PROPERTY))
 			for (CompilerService cs : ServiceLoader.<CompilerService>load(
 				CompilerService.class))
 			return cs;

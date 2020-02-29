@@ -212,7 +212,7 @@ public final class JavaType
 	 */
 	public boolean isNothing()
 	{
-		return equals(NOTHING);
+		return this.equals(JavaType.NOTHING);
 	}
 	
 	/**
@@ -223,7 +223,9 @@ public final class JavaType
 	 */
 	public boolean isTop()
 	{
-		return equals(TOP_LONG) || equals(TOP_DOUBLE) || equals(TOP_UNDEFINED);
+		return this.equals(JavaType.TOP_LONG) || this.equals(JavaType.TOP_DOUBLE) || this
+			.equals(
+			JavaType.TOP_UNDEFINED);
 	}
 	
 	/**
@@ -256,8 +258,8 @@ public final class JavaType
 		
 		switch (pt)
 		{
-			case LONG:		return TOP_LONG;
-			case DOUBLE:	return TOP_DOUBLE;
+			case LONG:		return JavaType.TOP_LONG;
+			case DOUBLE:	return JavaType.TOP_DOUBLE;
 			default:
 				return null;
 		}
@@ -278,13 +280,13 @@ public final class JavaType
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Fixed type
-			if (this.equals(TOP_LONG))
+			if (this.equals(JavaType.TOP_LONG))
 				rv = "top-long";
-			else if (this.equals(TOP_DOUBLE))
+			else if (this.equals(JavaType.TOP_DOUBLE))
 				rv = "top-double";
-			else if (this.equals(TOP_UNDEFINED))
+			else if (this.equals(JavaType.TOP_UNDEFINED))
 				rv = "top-undefined";
-			else if (this.equals(NOTHING))
+			else if (this.equals(JavaType.NOTHING))
 				rv = "nothing";
 			
 			// Other
@@ -317,6 +319,6 @@ public final class JavaType
 	 */
 	public int width()
 	{
-		return (isWide() ? 2 : 1);
+		return (this.isWide() ? 2 : 1);
 	}
 }

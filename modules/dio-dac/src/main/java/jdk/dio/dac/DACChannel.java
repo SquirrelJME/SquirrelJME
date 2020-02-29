@@ -21,61 +21,60 @@ import jdk.dio.UnsupportedByteOrderException;
 public interface DACChannel
 	extends Device<DACChannel>, BufferAccess<IntBuffer>
 {
-	public abstract void generate(int __a)
+	void generate(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void generate(IntBuffer __a)
+	void generate(IntBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int getMaxSamplingInterval()
+	int getMaxSamplingInterval()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMaxValue()
+	int getMaxValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMinSamplingInterval()
+	int getMinSamplingInterval()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMinValue()
+	int getMinValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getSamplingInterval()
+	int getSamplingInterval()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract double getScaleFactor()
+	double getScaleFactor()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract double getVRefValue()
+	double getVRefValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setSamplingInterval(int __a)
+	void setSamplingInterval(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setScaleFactor(double __a)
+	void setScaleFactor(double __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startGeneration(IntBuffer __a, 
-		GenerationRoundListener __b)
+	void startGeneration(IntBuffer __a, GenerationRoundListener __b)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract void startGeneration(IntBuffer __a, IntBuffer __b, 
+	void startGeneration(IntBuffer __a, IntBuffer __b,
 		GenerationRoundListener __c)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract void stopGeneration()
+	void stopGeneration()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

@@ -12,10 +12,8 @@ package com.jblend.micro.lcdui;
 import javax.microedition.lcdui.Graphics;
 
 public class CalendarImpl implements CalendarInterface {
-    public CalendarImpl() {
-    }
-
-    public void initCalendarValues(int var1, int var2)
+	
+	public void initCalendarValues(int var1, int var2)
 	{
 		throw new todo.TODO();
 	}

@@ -69,8 +69,7 @@ public abstract class Item
 	volatile Displayable _displayable;
 	
 	/** The current layout of the item. */
-	volatile int _layout =
-		LAYOUT_DEFAULT;
+	volatile int _layout = Item.LAYOUT_DEFAULT;
 	
 	/** The label of this item. */
 	volatile String _label;

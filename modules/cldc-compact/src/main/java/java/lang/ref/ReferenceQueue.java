@@ -27,15 +27,6 @@ public class ReferenceQueue<T>
 		new LinkedList<>();
 	
 	/**
-	 * Initializes the queue.
-	 *
-	 * @since 2018/09/23
-	 */
-	public ReferenceQueue()
-	{
-	}
-	
-	/**
 	 * Checks the queue and returns a reference immedietely if one is
 	 * available.
 	 *

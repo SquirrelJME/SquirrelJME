@@ -651,7 +651,7 @@ public final class Minimizer
 	{
 		// Hopefully this seed is good enough?
 		Random rand = new Random(System.nanoTime() +
-			(System.currentTimeMillis() << 24) + (++_UUID_COUNTER));
+			(System.currentTimeMillis() << 24) + (++Minimizer._UUID_COUNTER));
 		
 		// Skip a random amount of values to run it for a bit
 		for (int i = 0, n = rand.nextInt(32 + rand.nextInt(32)); i < n; i++)

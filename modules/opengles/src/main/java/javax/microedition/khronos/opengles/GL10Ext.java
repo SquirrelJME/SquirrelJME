@@ -14,8 +14,7 @@ package javax.microedition.khronos.opengles;
 public interface GL10Ext
 	extends GL
 {
-	public abstract int glQueryMatrixxOES(int[] __a, int __b, int[] __c, int 
-		__d);
+	int glQueryMatrixxOES(int[] __a, int __b, int[] __c, int __d);
 }
 
 

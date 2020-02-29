@@ -134,8 +134,7 @@ public final class PCFMetric
 		PCFMetric[] rv;
 		
 		// Are these compressed metrics
-		if (((Integer.reverseBytes(__dis.readInt())) &
-			_PCF_COMPRESSED_METRICS) != 0)
+		if (((Integer.reverseBytes(__dis.readInt())) & PCFMetric._PCF_COMPRESSED_METRICS) != 0)
 		{
 			// Read length
 			int n = __dis.readUnsignedShort();

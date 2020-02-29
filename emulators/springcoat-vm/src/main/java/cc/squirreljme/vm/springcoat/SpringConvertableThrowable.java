@@ -23,7 +23,7 @@ public interface SpringConvertableThrowable
 	 * @return The message.
 	 * @since 2018/12/04
 	 */
-	public abstract String getMessage();
+	String getMessage();
 	
 	/**
 	 * Returns the class this throwable converts to.
@@ -31,6 +31,6 @@ public interface SpringConvertableThrowable
 	 * @return The target class this converts to.
 	 * @since 2018/12/04
 	 */
-	public abstract String targetClass();
+	String targetClass();
 }
 

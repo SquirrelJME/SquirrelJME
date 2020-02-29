@@ -75,7 +75,7 @@ public enum PrimitiveType
 	 */
 	public final boolean isWide()
 	{
-		return this == LONG || this == DOUBLE;
+		return this == PrimitiveType.LONG || this == PrimitiveType.DOUBLE;
 	}
 	
 	/**

@@ -193,7 +193,7 @@ public class ExtendedDataInputStream
 		throws IOException
 	{
 		// Read value
-		int rv = read();
+		int rv = this.read();
 		
 		// {@squirreljme.error BD0t End of file reached.}
 		if (rv < 0)
@@ -211,7 +211,7 @@ public class ExtendedDataInputStream
 	public char readChar()
 		throws IOException
 	{
-		return (char)readShort();
+		return (char)this.readShort();
 	}
 	
 	/**
@@ -222,7 +222,7 @@ public class ExtendedDataInputStream
 	public double readDouble()
 		throws IOException
 	{
-		return Double.longBitsToDouble(readLong());
+		return Double.longBitsToDouble(this.readLong());
 	}
 	
 	/**
@@ -233,7 +233,7 @@ public class ExtendedDataInputStream
 	public float readFloat()
 		throws IOException
 	{
-		return Float.intBitsToFloat(readInt());
+		return Float.intBitsToFloat(this.readInt());
 	}
 	
 	/**
@@ -244,7 +244,7 @@ public class ExtendedDataInputStream
 	public void readFully(byte[] __b)
 		throws IOException
 	{
-		readFully(__b, 0, __b.length);
+		this.readFully(__b, 0, __b.length);
 	}
 	
 	/**
@@ -365,7 +365,7 @@ public class ExtendedDataInputStream
 	public int readUnsignedByte()
 		throws IOException
 	{
-		return readByte() & 0xFF;
+		return this.readByte() & 0xFF;
 	}
 	
 	/**
@@ -376,7 +376,7 @@ public class ExtendedDataInputStream
 	public int readUnsignedShort()
 		throws IOException
 	{
-		return readShort() & 0xFFFF;
+		return this.readShort() & 0xFFFF;
 	}
 	
 	/**

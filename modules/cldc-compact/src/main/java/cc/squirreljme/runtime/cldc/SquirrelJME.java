@@ -18,7 +18,7 @@ package cc.squirreljme.runtime.cldc;
 public interface SquirrelJME
 {
 	/** The version of this SquirrelJME runtime. */
-	public static final String RUNTIME_VERSION =
+	String RUNTIME_VERSION =
 		"0.3.0";
 }
 

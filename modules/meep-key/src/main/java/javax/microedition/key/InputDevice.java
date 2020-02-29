@@ -12,12 +12,12 @@ package javax.microedition.key;
 
 public interface InputDevice
 {
-	public abstract void setKeyListener(KeyListener __l);
+	void setKeyListener(KeyListener __l);
 
-	public abstract String getId();
+	String getId();
 
-	public abstract boolean isHardwareAssigned();
+	boolean isHardwareAssigned();
 
-	public abstract void setHardwareAssigned(boolean __h);
+	void setHardwareAssigned(boolean __h);
 }
 

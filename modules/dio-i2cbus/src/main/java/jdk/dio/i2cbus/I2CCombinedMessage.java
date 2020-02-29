@@ -17,19 +17,16 @@ import jdk.dio.UnavailableDeviceException;
 
 public interface I2CCombinedMessage
 {
-	public abstract I2CCombinedMessage appendRead(I2CDevice __a, ByteBuffer 
-		__b)
+	I2CCombinedMessage appendRead(I2CDevice __a, ByteBuffer __b)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract I2CCombinedMessage appendRead(I2CDevice __a, int __b, 
-		ByteBuffer __c)
+	I2CCombinedMessage appendRead(I2CDevice __a, int __b, ByteBuffer __c)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract I2CCombinedMessage appendWrite(I2CDevice __a, ByteBuffer 
-		__b)
+	I2CCombinedMessage appendWrite(I2CDevice __a, ByteBuffer __b)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract int[] transfer()
+	int[] transfer()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

@@ -31,7 +31,7 @@ public interface RandomAccessData
 	 * the array bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract void read(int __p, byte[] __b, int __o, int __l)
+	void read(int __p, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -42,7 +42,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract int readByte(int __p)
+	int readByte(int __p)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -53,7 +53,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract double readDouble(int __p)
+	double readDouble(int __p)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -64,7 +64,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract double readFloat(int __p)
+	double readFloat(int __p)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -75,7 +75,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract int readInt(int __p)
+	int readInt(int __p)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -86,7 +86,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract long readLong(int __p)
+	long readLong(int __p)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -97,7 +97,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract int readShort(int __p)
+	int readShort(int __p)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -108,7 +108,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract int readUnsignedByte(int __p)
+	int readUnsignedByte(int __p)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -119,7 +119,7 @@ public interface RandomAccessData
 	 * @throws IndexOutOfBoundsException If the position is not within bounds.
 	 * @since 2016/08/11
 	 */
-	public abstract int readUnsignedShort(int __p)
+	int readUnsignedShort(int __p)
 		throws IndexOutOfBoundsException;
 }
 

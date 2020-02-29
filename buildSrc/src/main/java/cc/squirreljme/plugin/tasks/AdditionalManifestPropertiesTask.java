@@ -157,19 +157,22 @@ public class AdditionalManifestPropertiesTask
 			if (!config.definedConfigurations.isEmpty())
 				attributes.putValue(
 					"X-SquirrelJME-DefinedConfigurations",
-					__delimate(config.definedConfigurations, ' '));
+					AdditionalManifestPropertiesTask
+						.__delimate(config.definedConfigurations, ' '));
 			
 			// Profiles defined?
 			if (!config.definedProfiles.isEmpty())
 				attributes.putValue(
 					"X-SquirrelJME-DefinedProfiles",
-					__delimate(config.definedProfiles, ' '));
+					AdditionalManifestPropertiesTask
+						.__delimate(config.definedProfiles, ' '));
 			
 			// Standards defined?
 			if (!config.definedStandards.isEmpty())
 				attributes.putValue(
 					"X-SquirrelJME-DefinedStandards",
-					__delimate(config.definedStandards, ' '));
+					AdditionalManifestPropertiesTask
+						.__delimate(config.definedStandards, ' '));
 		}
 		
 		// Find all module dependencies

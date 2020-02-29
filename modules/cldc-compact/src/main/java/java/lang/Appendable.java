@@ -28,7 +28,7 @@ public interface Appendable
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */
-	public abstract Appendable append(CharSequence __c)
+	Appendable append(CharSequence __c)
 		throws IOException;
 	
 	/**
@@ -43,7 +43,7 @@ public interface Appendable
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */
-	public abstract Appendable append(CharSequence __c, int __s, int __e)
+	Appendable append(CharSequence __c, int __s, int __e)
 		throws IndexOutOfBoundsException, IOException;
 	
 	/**
@@ -54,7 +54,7 @@ public interface Appendable
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */
-	public abstract Appendable append(char __c)
+	Appendable append(char __c)
 		throws IOException;
 }
 

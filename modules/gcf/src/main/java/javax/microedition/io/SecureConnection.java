@@ -15,7 +15,7 @@ import java.io.IOException;
 public interface SecureConnection
 	extends SocketConnection
 {
-	public abstract SecurityInfo getSecurityInfo()
+	SecurityInfo getSecurityInfo()
 		throws IOException;
 }
 

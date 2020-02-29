@@ -85,11 +85,11 @@ public class ChoiceGroup
 		
 		// {@squirreljme.error EB1c Invalid choice type specified for a
 		// choice group. (The choice type)}
-		if (__ct < _MIN_TYPE || __ct > _MAX_TYPE || __ct == IMPLICIT)
+		if (__ct < ChoiceGroup._MIN_TYPE || __ct > ChoiceGroup._MAX_TYPE || __ct == Choice.IMPLICIT)
 			throw new IllegalArgumentException(String.format("EB1c %d", __ct));
 		
 		// Set
-		setLabel(__l);
+		this.setLabel(__l);
 		this._type = __ct;
 		
 		// Append all elements
@@ -102,7 +102,7 @@ public class ChoiceGroup
 				throw new NullPointerException("EB1d");
 			
 			// Add it
-			append(s, (__ie != null ? __ie[i] : null));
+			this.append(s, (__ie != null ? __ie[i] : null));
 		}
 	}
 	
@@ -123,7 +123,7 @@ public class ChoiceGroup
 		
 		// Just insert at the end
 		int rv;
-		this.insert((rv = size()), __s, __i);
+		this.insert((rv = this.size()), __s, __i);
 		return rv;
 	}
 	

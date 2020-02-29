@@ -17,7 +17,7 @@ package cc.squirreljme.runtime.lcdui;
 public interface ExtendedCapabilities
 {
 	/** Does this support pointer events? */
-	public static final int SUPPORTS_POINTER_EVENTS =
+	int SUPPORTS_POINTER_EVENTS =
 		0x4000_0000;
 }
 

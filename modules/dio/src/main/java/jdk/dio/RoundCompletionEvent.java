@@ -18,26 +18,22 @@ public class RoundCompletionEvent<P extends Device<? super P>, B extends
 {
 	public RoundCompletionEvent(P __a, B __b, int __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public RoundCompletionEvent(P __a, B __b, int __c, long __d, int __e)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public RoundCompletionEvent(P __a, B __b, int __c, boolean __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public RoundCompletionEvent(P __a, B __b, int __c, boolean __d, long __e,
 		int __f)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

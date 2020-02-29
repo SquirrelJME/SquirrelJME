@@ -24,7 +24,7 @@ public interface FixedPoint
 	 * @return The fraction part.
 	 * @since 2018/03/18
 	 */
-	public abstract int fraction();
+	int fraction();
 	
 	/**
 	 * Returns the whole number part.
@@ -32,6 +32,6 @@ public interface FixedPoint
 	 * @return The whole number part.
 	 * @since 2018/03/18
 	 */
-	public abstract int whole();
+	int whole();
 }
 

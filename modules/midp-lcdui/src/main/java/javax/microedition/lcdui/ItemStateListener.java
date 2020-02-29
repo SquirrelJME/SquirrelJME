@@ -15,7 +15,7 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 public interface ItemStateListener
 {
 	@SerializedEvent
-	public abstract void itemStateChanged(Item __a);
+	void itemStateChanged(Item __a);
 }
 
 

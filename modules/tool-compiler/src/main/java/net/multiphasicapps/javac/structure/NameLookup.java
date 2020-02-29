@@ -30,7 +30,7 @@ public interface NameLookup
 	 * @throws StructureException If no such symbol exists.
 	 * @since 2018/05/10
 	 */
-	public abstract TypeSymbol lookupType(TypeSyntax __ts)
+	TypeSymbol lookupType(TypeSyntax __ts)
 		throws NullPointerException, StructureException;
 }
 

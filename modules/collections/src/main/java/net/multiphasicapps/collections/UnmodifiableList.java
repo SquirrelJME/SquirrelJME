@@ -43,7 +43,7 @@ public abstract class UnmodifiableList<V>
 			throw new NullPointerException("NARG");
 		
 		// Set
-		wrapped = __l;
+		this.wrapped = __l;
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public abstract class UnmodifiableList<V>
 	@Override
 	public boolean contains(Object __o)
 	{
-		return wrapped.contains(__o);
+		return this.wrapped.contains(__o);
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public abstract class UnmodifiableList<V>
 	@Override
 	public final V get(int __i)
 	{
-		return wrapped.get(__i);
+		return this.wrapped.get(__i);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public abstract class UnmodifiableList<V>
 	@Override
 	public int indexOf(Object __o)
 	{
-		return wrapped.indexOf(__o);
+		return this.wrapped.indexOf(__o);
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public abstract class UnmodifiableList<V>
 	@Override
 	public boolean isEmpty()
 	{
-		return wrapped.isEmpty();
+		return this.wrapped.isEmpty();
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public abstract class UnmodifiableList<V>
 	@Override
 	public int lastIndexOf(Object __o)
 	{
-		return wrapped.lastIndexOf(__o);
+		return this.wrapped.lastIndexOf(__o);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public abstract class UnmodifiableList<V>
 	@Override
 	public final int size()
 	{
-		return wrapped.size();
+		return this.wrapped.size();
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public abstract class UnmodifiableList<V>
 				throw new NullPointerException("NARG");
 			
 			// Set
-			li = __li;
+			this.li = __li;
 		}
 		
 		/**
@@ -174,7 +174,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public boolean hasNext()
 		{
-			return li.hasNext();
+			return this.li.hasNext();
 		}
 		
 		/**
@@ -184,7 +184,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public boolean hasPrevious()
 		{
-			return li.hasPrevious();
+			return this.li.hasPrevious();
 		}
 		
 		/**
@@ -194,7 +194,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public V next()
 		{
-			return li.next();
+			return this.li.next();
 		}
 		
 		/**
@@ -204,7 +204,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public int nextIndex()
 		{
-			return li.nextIndex();
+			return this.li.nextIndex();
 		}
 		
 		/**
@@ -214,7 +214,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public V previous()
 		{
-			return li.previous();
+			return this.li.previous();
 		}
 		
 		/**
@@ -224,7 +224,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public int previousIndex()
 		{
-			return li.previousIndex();
+			return this.li.previousIndex();
 		}
 		
 		/**
@@ -301,7 +301,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public Iterator<V> iterator()
 		{
-			return listIterator();
+			return this.listIterator();
 		}
 		
 		/**
@@ -311,7 +311,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public ListIterator<V> listIterator()
 		{
-			return listIterator(0);
+			return this.listIterator(0);
 		}
 		
 		/**
@@ -321,7 +321,7 @@ public abstract class UnmodifiableList<V>
 		@Override
 		public ListIterator<V> listIterator(int __i)
 		{
-			return new __ListIterator__<V>(wrapped.listIterator(__i));
+			return new __ListIterator__<V>(this.wrapped.listIterator(__i));
 		}
 	}
 }

@@ -154,9 +154,9 @@ public final class IntegerList
 		// Need a larger array?
 		if ((realloced = (size + 1 > nvalues)))
 			if (values == null)
-				values = new int[_GROW_SIZE];
+				values = new int[IntegerList._GROW_SIZE];
 			else
-				values = Arrays.copyOf(values, nvalues + _GROW_SIZE);
+				values = Arrays.copyOf(values, nvalues + IntegerList._GROW_SIZE);
 		
 		// Move all values up
 		for (int o = size; o > __i; o++)

@@ -16,7 +16,6 @@ public class Loader
 {
 	private Loader()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

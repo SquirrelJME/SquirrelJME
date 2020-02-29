@@ -15,7 +15,6 @@ public class Spacer
 {
 	public Spacer(int __a, int __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

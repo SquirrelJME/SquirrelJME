@@ -520,8 +520,7 @@ public final class JVMFunction
 		ClassInfo info = Assembly.pointerToClassInfo(__cl);
 		
 		// Allocate the memory
-		int rv = Allocator.allocate(
-			_TASK_ID | Allocator.CHUNK_BIT_IS_OBJECT, info.size);
+		int rv = Allocator.allocate(JVMFunction._TASK_ID | Allocator.CHUNK_BIT_IS_OBJECT, info.size);
 		if (rv == 0)
 			return 0;
 		
@@ -568,8 +567,7 @@ public final class JVMFunction
 		int allocsize = info.size + (info.cellsize * __len);
 		
 		// Allocate the memory
-		int rv = Allocator.allocate(
-			_TASK_ID | Allocator.CHUNK_BIT_IS_OBJECT, allocsize);
+		int rv = Allocator.allocate(JVMFunction._TASK_ID | Allocator.CHUNK_BIT_IS_OBJECT, allocsize);
 		if (rv == 0)
 			return 0;
 		

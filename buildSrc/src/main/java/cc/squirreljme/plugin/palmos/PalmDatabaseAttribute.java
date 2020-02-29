@@ -67,7 +67,7 @@ public enum PalmDatabaseAttribute
 	 * @param __bit The bit used.
 	 * @since 2019/07/13
 	 */
-	private PalmDatabaseAttribute(int __bit)
+	PalmDatabaseAttribute(int __bit)
 	{
 		this.bit = __bit;
 	}

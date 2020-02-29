@@ -66,7 +66,7 @@ public class XPMReader
 			"utf-8"));
 		
 		// Read the XPM header
-		int[] header = __readHeader(cs);
+		int[] header = this.__readHeader(cs);
 		
 		// Get dimensional data
 		int width = Math.max(header[0], 1);
@@ -87,7 +87,7 @@ public class XPMReader
 		int[] data = new int[area];
 		
 		// Read pixels
-		__readPixels(cs, width, height, data, pxchars, codes, palette);
+		this.__readPixels(cs, width, height, data, pxchars, codes, palette);
 		
 		// Create image
 		return Image.createRGBImage(data, width, height, alpha);
@@ -205,7 +205,7 @@ public class XPMReader
 		{
 			// Read new input string
 			sb.setLength(0);
-			__readLine(__cs, sb);
+			this.__readLine(__cs, sb);
 			
 			// Ignore really short lines
 			int n = sb.length();
@@ -236,7 +236,7 @@ public class XPMReader
 			}
 			
 			// Decode color, detect if there is a transparent pixel
-			int col = __decodeColor(sb.subSequence(s + 1, e + 1));
+			int col = this.__decodeColor(sb.subSequence(s + 1, e + 1));
 			if ((col & 0xFF_000000) != 0xFF_000000)
 				hasalpha = true;
 			
@@ -275,7 +275,7 @@ public class XPMReader
 		// Read XPM header
 		int[] header = new int[7];
 		for (int i = 0;; i++)
-			if (__readInt(__r, header, Math.min(6, i)))
+			if (this.__readInt(__r, header, Math.min(6, i)))
 				break;
 		
 		// Return it
@@ -426,7 +426,7 @@ __outer:
 				// Find the code used
 				else
 				{
-					lastpall = __locateCode((lastcode = code), __codes,
+					lastpall = this.__locateCode((lastcode = code), __codes,
 						__palette);
 					__data[z++] = lastpall;
 				}

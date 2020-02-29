@@ -20,7 +20,7 @@ public final class String
 	private static volatile String _FIRST_INTERN;
 	
 	/** The backing array. */
-	transient final char[] _chars;
+	final transient char[] _chars;
 	
 	/** The hashcode for this string. */
 	transient int _hashcode;
@@ -213,10 +213,10 @@ public final class String
 	public final String intern()
 	{
 		// If no strings have ever been interned before, make this intern
-		String first = _FIRST_INTERN;
+		String first = String._FIRST_INTERN;
 		if (first == null)
 		{
-			_FIRST_INTERN = this;
+			String._FIRST_INTERN = this;
 			return this;
 		}
 		
@@ -234,7 +234,7 @@ public final class String
 		
 		// Next intern is the first and the first becomes this one
 		this._nextintern = first;
-		_FIRST_INTERN = this;
+		String._FIRST_INTERN = this;
 		
 		// Return our string since it was not in the chain
 		return this;

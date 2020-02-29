@@ -85,7 +85,7 @@ abstract class __SectionList__
 				writer.__put(' ', true);
 			
 			// Add list characters
-			__listCharacters();
+			this.__listCharacters();
 			
 			// Add sapce
 			writer.__put(' ', true);

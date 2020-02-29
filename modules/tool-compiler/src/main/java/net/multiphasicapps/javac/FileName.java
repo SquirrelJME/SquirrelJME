@@ -24,6 +24,6 @@ public interface FileName
 	 * @return The file being process or {@code null} if it is not known.
 	 * @since 2018/03/12
 	 */
-	public abstract String fileName();
+	String fileName();
 }
 

@@ -16,13 +16,11 @@ public class IllegalModeException
 {
 	public IllegalModeException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public IllegalModeException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

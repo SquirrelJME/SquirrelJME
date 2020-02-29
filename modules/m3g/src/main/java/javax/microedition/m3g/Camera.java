@@ -25,7 +25,6 @@ public class Camera
 	
 	public Camera()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

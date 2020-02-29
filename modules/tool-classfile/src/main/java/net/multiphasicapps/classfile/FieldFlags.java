@@ -42,7 +42,7 @@ public final class FieldFlags
 	{
 		super(FieldFlag.class, __fl);
 		
-		__checkFlags(__oc);
+		this.__checkFlags(__oc);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public final class FieldFlags
 	{
 		super(FieldFlag.class, __fl);
 		
-		__checkFlags(__oc);
+		this.__checkFlags(__oc);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public final class FieldFlags
 	 */
 	public boolean isEnum()
 	{
-		return contains(FieldFlag.ENUM);
+		return this.contains(FieldFlag.ENUM);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public final class FieldFlags
 	@Override
 	public boolean isFinal()
 	{
-		return contains(FieldFlag.FINAL);
+		return this.contains(FieldFlag.FINAL);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public final class FieldFlags
 	@Override
 	public boolean isPrivate()
 	{
-		return contains(FieldFlag.PRIVATE);
+		return this.contains(FieldFlag.PRIVATE);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public final class FieldFlags
 	@Override
 	public boolean isProtected()
 	{
-		return contains(FieldFlag.PROTECTED);
+		return this.contains(FieldFlag.PROTECTED);
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public final class FieldFlags
 	@Override
 	public boolean isPublic()
 	{
-		return contains(FieldFlag.PUBLIC);
+		return this.contains(FieldFlag.PUBLIC);
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public final class FieldFlags
 	@Override
 	public boolean isStatic()
 	{
-		return contains(FieldFlag.STATIC);
+		return this.contains(FieldFlag.STATIC);
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public final class FieldFlags
 	@Override
 	public boolean isSynthetic()
 	{
-		return contains(FieldFlag.SYNTHETIC);
+		return this.contains(FieldFlag.SYNTHETIC);
 	}
 	
 	/**
@@ -150,7 +150,7 @@ public final class FieldFlags
 	 */
 	public boolean isTransient()
 	{
-		return contains(FieldFlag.TRANSIENT);
+		return this.contains(FieldFlag.TRANSIENT);
 	}
 	
 	/**
@@ -161,7 +161,7 @@ public final class FieldFlags
 	 */
 	public boolean isVolatile()
 	{
-		return contains(FieldFlag.VOLATILE);
+		return this.contains(FieldFlag.VOLATILE);
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public final class FieldFlags
 		
 		// {@squirreljme.error JC2u A field cannot be both {@code final} and
 		// {@code volatile}. (The field flags)}
-		if (isFinal() && isVolatile())
+		if (this.isFinal() && this.isVolatile())
 			throw new InvalidClassFormatException(
 				String.format("JC2u %s", this));
 		
@@ -197,7 +197,7 @@ public final class FieldFlags
 				boolean maybe = (f == FieldFlag.SYNTHETIC);
 				
 				// Is it set?
-				boolean has = contains(f);
+				boolean has = this.contains(f);
 				
 				// {@squirreljme.error JC2v Flags for interface field has an
 				// incorrect set of flags. (The field flags)}

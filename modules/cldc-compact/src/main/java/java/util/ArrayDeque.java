@@ -16,19 +16,16 @@ public class ArrayDeque<E>
 {
 	public ArrayDeque()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public ArrayDeque(int __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public ArrayDeque(Collection<? extends E> __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

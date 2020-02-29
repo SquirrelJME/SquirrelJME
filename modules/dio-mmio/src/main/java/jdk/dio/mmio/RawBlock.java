@@ -18,7 +18,7 @@ import jdk.dio.UnavailableDeviceException;
 public interface RawBlock
 	extends RawMemory
 {
-	public abstract ByteBuffer asDirectBuffer()
+	ByteBuffer asDirectBuffer()
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 }
 

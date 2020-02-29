@@ -29,8 +29,7 @@ public enum TerrainType
 	;
 	
 	/** Cache of terrain types. */
-	private static final TerrainType[] _VALUES =
-		values();
+	private static final TerrainType[] _VALUES = TerrainType.values();
 	
 	/** The terrain color. */
 	protected final int color;
@@ -41,7 +40,7 @@ public enum TerrainType
 	 * @param __color The color used for this terrain.
 	 * @since 2017/09/13
 	 */
-	private TerrainType(int __color)
+	TerrainType(int __color)
 	{
 		// Set
 		this.color = __color;
@@ -71,7 +70,7 @@ public enum TerrainType
 		// {@squirreljme.error BE0p Could not get the tile image for the
 		// given terrain. (The terrain type)}
 		InputStream rv = TerrainType.class.getResourceAsStream(
-			"images/terrain/" + __lower(name()) + ".xpm");
+			"images/terrain/" + TerrainType.__lower(this.name()) + ".xpm");
 		if (rv == null)
 			throw new RuntimeException(String.format("BE0p %s", this));
 		return rv;
@@ -86,7 +85,7 @@ public enum TerrainType
 	 */
 	public static TerrainType of(int __i)
 	{
-		return _VALUES[__i];
+		return TerrainType._VALUES[__i];
 	}
 	
 	/**

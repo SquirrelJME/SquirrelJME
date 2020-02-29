@@ -30,7 +30,7 @@ public interface TabListener
 	 * @since 2018/03/29
 	 */
 	@SerializedEvent
-	public abstract void tabAddedEvent(int __i, Screen __tab);
+	void tabAddedEvent(int __i, Screen __tab);
 	
 	/**
 	 * This indicates when a new tab has been focused and will indicate the
@@ -40,7 +40,7 @@ public interface TabListener
 	 * @since 2018/03/29
 	 */
 	@SerializedEvent
-	public abstract void tabChangeEvent(Screen __tab);
+	void tabChangeEvent(Screen __tab);
 	
 	/**
 	 * This is called after a tab has been removed and only specifies the
@@ -50,6 +50,6 @@ public interface TabListener
 	 * @since 2018/03/29
 	 */
 	@SerializedEvent
-	public abstract void tabRemoveEvent(int __i);
+	void tabRemoveEvent(int __i);
 }
 

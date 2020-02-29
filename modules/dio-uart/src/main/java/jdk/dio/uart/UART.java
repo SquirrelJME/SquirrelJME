@@ -23,102 +23,102 @@ import jdk.dio.UnavailableDeviceException;
 public interface UART
 	extends Device<UART>, ByteChannel, BufferAccess<ByteBuffer>
 {
-	public abstract void generateBreak(int __a)
+	void generateBreak(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getBaudRate()
+	int getBaudRate()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getDataBits()
+	int getDataBits()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getFlowControlMode()
+	int getFlowControlMode()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getParity()
+	int getParity()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getReceiveTimeout()
+	int getReceiveTimeout()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getReceiveTriggerLevel()
+	int getReceiveTriggerLevel()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getStopBits()
+	int getStopBits()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int read(ByteBuffer __a)
+	int read(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setBaudRate(int __a)
+	void setBaudRate(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setDataBits(int __a)
+	void setDataBits(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setEventListener(int __a, UARTEventListener __b)
+	void setEventListener(int __a, UARTEventListener __b)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract void setFlowControlMode(int __a)
+	void setFlowControlMode(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setParity(int __a)
+	void setParity(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setReceiveTimeout(int __a)
+	void setReceiveTimeout(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setReceiveTriggerLevel(int __a)
+	void setReceiveTriggerLevel(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setStopBits(int __a)
+	void setStopBits(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startReading(ByteBuffer __a, InputRoundListener<UART
-		, ByteBuffer> __b)
+	void startReading(ByteBuffer __a,
+	 InputRoundListener<UART, ByteBuffer> __b)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startReading(ByteBuffer __a, ByteBuffer __b, 
+	void startReading(ByteBuffer __a, ByteBuffer __b,
 		InputRoundListener<UART, ByteBuffer> __c)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startWriting(ByteBuffer __a, OutputRoundListener<
-		UART, ByteBuffer> __b)
+	void startWriting(ByteBuffer __a,
+		OutputRoundListener<UART, ByteBuffer> __b)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startWriting(ByteBuffer __a, ByteBuffer __b, 
+	void startWriting(ByteBuffer __a, ByteBuffer __b,
 		OutputRoundListener<UART, ByteBuffer> __c)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void stopReading()
+	void stopReading()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void stopWriting()
+	void stopWriting()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int write(ByteBuffer __a)
+	int write(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

@@ -140,22 +140,22 @@ public enum MathType
 	{
 		switch (__i)
 		{
-			case 0:		return ADD;
-			case 1:		return SUB;
-			case 2:		return MUL;
-			case 3:		return DIV;
-			case 4:		return REM;
-			case 5:		return NEG;
-			case 6:		return SHL;
-			case 7:		return SHR;
-			case 8:		return USHR;
-			case 9:		return AND;
-			case 10:	return OR;
-			case 11:	return XOR;
-			case 12:	return CMPL;
-			case 13:	return CMPG;
-			case 14:	return SIGNX8;
-			case 15:	return SIGNX16;
+			case 0:		return MathType.ADD;
+			case 1:		return MathType.SUB;
+			case 2:		return MathType.MUL;
+			case 3:		return MathType.DIV;
+			case 4:		return MathType.REM;
+			case 5:		return MathType.NEG;
+			case 6:		return MathType.SHL;
+			case 7:		return MathType.SHR;
+			case 8:		return MathType.USHR;
+			case 9:		return MathType.AND;
+			case 10:	return MathType.OR;
+			case 11:	return MathType.XOR;
+			case 12:	return MathType.CMPL;
+			case 13:	return MathType.CMPG;
+			case 14:	return MathType.SIGNX8;
+			case 15:	return MathType.SIGNX16;
 		}
 		
 		// {@squirreljme.error JC1r Invalid math operation.}

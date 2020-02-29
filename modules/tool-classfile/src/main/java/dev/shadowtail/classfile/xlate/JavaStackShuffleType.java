@@ -73,7 +73,7 @@ public enum JavaStackShuffleType
 	 * @param __fs The forms.
 	 * @since 2019/04/01
 	 */
-	private JavaStackShuffleType(String... __fs)
+	JavaStackShuffleType(String... __fs)
 	{
 		int n = __fs.length;
 		Function[] functions = new Function[n];

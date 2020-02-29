@@ -32,7 +32,6 @@ public final class GPIOPortConfig
 	
 	public GPIOPortConfig(int __a, int __b, GPIOPinConfig... __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

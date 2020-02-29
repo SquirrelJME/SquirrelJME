@@ -84,8 +84,7 @@ public final class StandardPaths
 		"SQUIRRELJME_CACHE_PATH";
 	
 	/** Determines the default paths to use. */
-	public static final StandardPaths DEFAULT =
-		__defaultPaths();
+	public static final StandardPaths DEFAULT = StandardPaths.__defaultPaths();
 	
 	/** The configuration path. */
 	protected final Path config;
@@ -162,15 +161,16 @@ public final class StandardPaths
 		Path[] rv = null;
 		
 		// Using a basic home path
-		String basichome = Objects.toString(System.getProperty(HOME_PROPERTY),
-			SystemAccess.getEnv(HOME_ENV));
+		String basichome = Objects.toString(System.getProperty(
+			StandardPaths.HOME_PROPERTY),
+			SystemAccess.getEnv(StandardPaths.HOME_ENV));
 		if (basichome != null)
 			rv = new Path[]{Paths.get(basichome)};
 		
 		// If no basic path was used, detect more paths
 		if (rv == null)
 		{
-			rv = __defaultPathsOs();
+			rv = StandardPaths.__defaultPathsOs();
 			
 			// Still could not be used?
 			if (rv == null)
@@ -192,13 +192,15 @@ public final class StandardPaths
 		}
 		
 		// Setup paths
-		return new StandardPaths(
-			__triple(rv[0], System.getProperty(CONFIG_PATH_PROPERTY),
-				SystemAccess.getEnv(CONFIG_PATH_ENV)),
-			__triple(rv[1], System.getProperty(DATA_PATH_PROPERTY),
-				SystemAccess.getEnv(DATA_PATH_ENV)),
-			__triple(rv[2], System.getProperty(CACHE_PATH_PROPERTY),
-				SystemAccess.getEnv(CACHE_PATH_ENV)));
+		return new StandardPaths(StandardPaths.__triple(rv[0], System.getProperty(
+			StandardPaths.CONFIG_PATH_PROPERTY),
+				SystemAccess.getEnv(StandardPaths.CONFIG_PATH_ENV)),
+			StandardPaths.__triple(rv[1], System.getProperty(
+				StandardPaths.DATA_PATH_PROPERTY),
+				SystemAccess.getEnv(StandardPaths.DATA_PATH_ENV)),
+			StandardPaths.__triple(rv[2], System.getProperty(
+				StandardPaths.CACHE_PATH_PROPERTY),
+				SystemAccess.getEnv(StandardPaths.CACHE_PATH_ENV)));
 	}
 	
 	/**

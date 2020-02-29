@@ -12,21 +12,21 @@ package java.nio.file.attribute;
 
 public interface BasicFileAttributes
 {
-	public abstract FileTime creationTime();
+	FileTime creationTime();
 	
-	public abstract boolean isDirectory();
+	boolean isDirectory();
 	
-	public abstract boolean isOther();
+	boolean isOther();
 	
-	public abstract boolean isRegularFile();
+	boolean isRegularFile();
 	
-	public abstract boolean isSymbolicLink();
+	boolean isSymbolicLink();
 	
-	public abstract FileTime lastAccessTime();
+	FileTime lastAccessTime();
 	
-	public abstract FileTime lastModifiedTime();
+	FileTime lastModifiedTime();
 	
-	public abstract long size();
+	long size();
 }
 
 

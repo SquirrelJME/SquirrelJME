@@ -2310,7 +2310,7 @@ public final class SpringThreadWorker
 		
 		// Frame is execution
 		int iec = frame.incrementExecCount();
-		if (iec > 0 && (iec % _EXECUTION_THRESHOLD) == 0)
+		if (iec > 0 && (iec % SpringThreadWorker._EXECUTION_THRESHOLD) == 0)
 		{
 			// {@squirreljme.error BK2c Execution seems to be stuck in this
 			// method.}

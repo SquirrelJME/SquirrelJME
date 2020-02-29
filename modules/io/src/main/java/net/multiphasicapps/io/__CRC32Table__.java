@@ -72,7 +72,8 @@ final class __CRC32Table__
 	static final __CRC32Table__ __table(int __poly)
 	{
 		// Lock
-		Map<Integer, Reference<__CRC32Table__>> tables = _TABLES;
+		Map<Integer, Reference<__CRC32Table__>> tables =
+			__CRC32Table__._TABLES;
 		synchronized (tables)
 		{
 			// Get

@@ -183,17 +183,21 @@ public final class BootRomLibrary
 		
 		// Scan through the table of contents
 		int bp = this.address,
-			sp = bp + Assembly.memReadJavaInt(bp, JAR_TOC_OFFSET_OFFSET);
-		for (int i = 0, n = Assembly.memReadJavaInt(bp, JAR_NUMRC_OFFSET); i < n;
-			i++, sp += TOC_ENTRY_SIZE)
+			sp = bp + Assembly.memReadJavaInt(bp,
+				BootRomLibrary.JAR_TOC_OFFSET_OFFSET);
+		for (int i = 0, n = Assembly.memReadJavaInt(bp,
+			BootRomLibrary.JAR_NUMRC_OFFSET); i < n;
+			 i++, sp += BootRomLibrary.TOC_ENTRY_SIZE)
 		{
 			// Hash code does not match
-			if (hash != Assembly.memReadJavaInt(sp, TOC_HASHCODE_OFFSET))
+			if (hash != Assembly.memReadJavaInt(sp,
+				BootRomLibrary.TOC_HASHCODE_OFFSET))
 				continue;
 			
 			// Is at this index
 			if (__name.equals(JVMFunction.jvmLoadString(
-				bp + Assembly.memReadJavaInt(sp, TOC_NAME_OFFSET))))
+				bp + Assembly.memReadJavaInt(sp,
+					BootRomLibrary.TOC_NAME_OFFSET))))
 				return i;
 		}
 		
@@ -224,16 +228,17 @@ public final class BootRomLibrary
 		
 		// {@squirreljme.error SV07 Attempt to access resource which was not
 		// in range of the boot library.}
-		if (__dx < 0 || __dx >= Assembly.memReadJavaInt(bp, JAR_NUMRC_OFFSET))
+		if (__dx < 0 || __dx >= Assembly.memReadJavaInt(bp,
+			BootRomLibrary.JAR_NUMRC_OFFSET))
 			throw new IndexOutOfBoundsException("SV07");
 		
 		// Read from the table of contents, the offset to the data.
 		int tocoffset = bp + Assembly.memReadJavaInt(bp,
-			JAR_TOC_OFFSET_OFFSET);
+			BootRomLibrary.JAR_TOC_OFFSET_OFFSET);
 		return new MemoryBlob(bp + Assembly.memReadJavaInt(tocoffset,
-				(TOC_ENTRY_SIZE * __dx) + TOC_DATA_OFFSET),
+				(BootRomLibrary.TOC_ENTRY_SIZE * __dx) + BootRomLibrary.TOC_DATA_OFFSET),
 			Assembly.memReadJavaInt(tocoffset,
-				(TOC_ENTRY_SIZE * __dx) + TOC_SIZE_OFFSET));
+				(BootRomLibrary.TOC_ENTRY_SIZE * __dx) + BootRomLibrary.TOC_SIZE_OFFSET));
 	}
 	
 	/**
@@ -249,15 +254,15 @@ public final class BootRomLibrary
 		int jpo, jps;
 		if (__rt)
 		{
-			jpo = blob.readJavaInt(JAR_RUNTIMEPOOLOFF_OFFSET);
-			jps = blob.readJavaInt(JAR_RUNTIMEPOOLSIZE_OFFSET);
+			jpo = blob.readJavaInt(BootRomLibrary.JAR_RUNTIMEPOOLOFF_OFFSET);
+			jps = blob.readJavaInt(BootRomLibrary.JAR_RUNTIMEPOOLSIZE_OFFSET);
 		}
 		
 		// Run-time
 		else
 		{
-			jpo = blob.readJavaInt(JAR_STATICPOOLOFF_OFFSET);
-			jps = blob.readJavaInt(JAR_STATICPOOLSIZE_OFFSET);
+			jpo = blob.readJavaInt(BootRomLibrary.JAR_STATICPOOLOFF_OFFSET);
+			jps = blob.readJavaInt(BootRomLibrary.JAR_STATICPOOLSIZE_OFFSET);
 		}
 		
 		// This JAR has a pool in it

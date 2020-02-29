@@ -346,21 +346,21 @@ public final class BootstrapState
 		
 		// Allocate string object
 		LoadedClassInfo strci = this.findClass("java/lang/String");
-		int strp = initializer.allocate(strci.allocationSize());
+		int strp = this.initializer.allocate(strci.allocationSize());
 		
 		// Cache it
 		interns.put(__s, strp);
 		
 		// Setup class information
-		initializer.memWriteInt(Modifier.RAM_OFFSET,
+		this.initializer.memWriteInt(Modifier.RAM_OFFSET,
 			strp + Constants.OBJECT_CLASS_OFFSET,
 			strci.infoPointer());
-		initializer.memWriteInt(
+		this.initializer.memWriteInt(
 			strp + Constants.OBJECT_COUNT_OFFSET,
 			999999);
 		
 		// Write pointer to character array data
-		initializer.memWriteInt(Modifier.RAM_OFFSET,
+		this.initializer.memWriteInt(Modifier.RAM_OFFSET,
 			strp + strci.fieldInstanceOffset(
 				new FieldName("_chars"),
 				new FieldDescriptor("[C")),

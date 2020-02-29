@@ -36,7 +36,7 @@ public final class MinimizedClassHeader
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
-		HEADER_SIZE_WITHOUT_MAGIC + 4;
+		MinimizedClassHeader.HEADER_SIZE_WITHOUT_MAGIC + 4;
 	
 	/** Unused A. */
 	public final int unuseda;
@@ -247,7 +247,7 @@ public final class MinimizedClassHeader
 		// {@squirreljme.error JC04 Invalid minimized class magic number.
 		// (The magic number)}
 		int readmagic;
-		if (MAGIC_NUMBER != (readmagic = dis.readInt()))
+		if (MinimizedClassHeader.MAGIC_NUMBER != (readmagic = dis.readInt()))
 			throw new InvalidClassFormatException(String.format("JC04 %08x",
 				readmagic));
 		

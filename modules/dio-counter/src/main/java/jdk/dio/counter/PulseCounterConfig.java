@@ -35,21 +35,18 @@ public final class PulseCounterConfig
 	@Deprecated
 	public PulseCounterConfig(int __a, int __b, int __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public PulseCounterConfig(int __a, int __b, int __c, GPIOPinConfig __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public PulseCounterConfig(String __a, int __b, int __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -57,7 +54,6 @@ public final class PulseCounterConfig
 	public PulseCounterConfig(String __a, int __b, int __c, GPIOPinConfig __d
 		)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -122,7 +118,6 @@ public final class PulseCounterConfig
 	{
 		public Builder()
 		{
-			super();
 			throw new todo.TODO();
 		}
 		

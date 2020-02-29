@@ -119,7 +119,7 @@ public class SortedTreeMap<K, V>
 		this._compare = (Comparator<K>)__comp;
 		
 		// Put everything
-		putAll(__m);
+		this.putAll(__m);
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class SortedTreeMap<K, V>
 	@Override
 	public boolean containsKey(Object __o)
 	{
-		return (null != __findNode(__o));
+		return (null != this.__findNode(__o));
 	}
 	
 	/**
@@ -171,7 +171,7 @@ public class SortedTreeMap<K, V>
 	@Override
 	public V get(Object __k)
 	{
-		__Node__<K, V> node = __findNode(__k);
+		__Node__<K, V> node = this.__findNode(__k);
 		if (node == null)
 			return null;
 		return node._data._value;
@@ -187,7 +187,7 @@ public class SortedTreeMap<K, V>
 	{
 		// Insert node
 		__Found__ found = new __Found__();
-		__Node__<K, V> now = __insert(null, this._root, found, __k, __v);
+		__Node__<K, V> now = this.__insert(null, this._root, found, __k, __v);
 		
 		// The root of the tree always becomes black
 		now.__makeBlack();
@@ -207,7 +207,7 @@ public class SortedTreeMap<K, V>
 	{
 		// Delete node
 		__Found__ found = new __Found__();
-		__Node__<K, V> newroot = __remove(this._root, found, (K)__k);
+		__Node__<K, V> newroot = this.__remove(this._root, found, (K)__k);
 		
 		// The root of the tree is always black
 		this._root = newroot;
@@ -244,17 +244,17 @@ public class SortedTreeMap<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Rotate right side value to the left
-		if (__isRed(__at._right))
-			__at = __rotate(__at, _LEFT);
+		if (this.__isRed(__at._right))
+			__at = this.__rotate(__at, SortedTreeMap._LEFT);
 		
 		// If there are a bunch of dangling red nodes on the left balance
 		// them
-		if (__isRed(__at._left) && __isRed(__at._left._left))
-			__at = __rotate(__at, _RIGHT);
+		if (this.__isRed(__at._left) && this.__isRed(__at._left._left))
+			__at = this.__rotate(__at, SortedTreeMap._RIGHT);
 		
 		// If both side nodes are red then flip the color of this node
-		if (__isRed(__at._left) && __isRed(__at._right))
-			__flipColor(__at);
+		if (this.__isRed(__at._left) && this.__isRed(__at._right))
+			this.__flipColor(__at);
 		
 		// Return current node
 		return __at;
@@ -275,7 +275,7 @@ public class SortedTreeMap<K, V>
 		if (rover == null)
 			return null;
 		
-		return __findNode(rover, __o);
+		return this.__findNode(rover, __o);
 	}
 	
 	/**
@@ -427,14 +427,14 @@ public class SortedTreeMap<K, V>
 		
 		// Less than
 		else if (comp < 0)
-			__at._left = __insert(__at, __at._left, __found, __k, __v);
+			__at._left = this.__insert(__at, __at._left, __found, __k, __v);
 		
 		// Greater
 		else
-			__at._right = __insert(__at, __at._right, __found, __k, __v);
+			__at._right = this.__insert(__at, __at._right, __found, __k, __v);
 		
 		// Correct nodes going back up
-		return __correctNodes(__at);
+		return this.__correctNodes(__at);
 	}
 	
 	/**
@@ -474,28 +474,28 @@ public class SortedTreeMap<K, V>
 	private final __Node__<K, V> __moveRed(__Node__<K, V> __at, boolean __r)
 	{
 		// Flip the node color
-		__flipColor(__at);
+		this.__flipColor(__at);
 		
 		// Move to the right
 		if (__r)
 		{
-			if (__isRed(__at._left._left))
+			if (this.__isRed(__at._left._left))
 			{
-				__at = __rotate(__at, _RIGHT);
-			
-				__flipColor(__at);
+				__at = this.__rotate(__at, SortedTreeMap._RIGHT);
+				
+				this.__flipColor(__at);
 			}
 		}
 		
 		// Move to the left
 		else
 		{
-			if (__isRed(__at._right._left))
+			if (this.__isRed(__at._right._left))
 			{
-				__at._right = __rotate(__at._right, _RIGHT);
-				__at = __rotate(__at, _LEFT);
+				__at._right = this.__rotate(__at._right, SortedTreeMap._RIGHT);
+				__at = this.__rotate(__at, SortedTreeMap._LEFT);
 				
-				__flipColor(__at);
+				this.__flipColor(__at);
 			}
 		}
 		
@@ -521,20 +521,20 @@ public class SortedTreeMap<K, V>
 		if (comp < 0)
 		{
 			// Move red node to the left
-			if (!__isRed(__at._left) && !__isRed(__at._left._left))
-				__at = __moveRed(__at, _LEFT);
+			if (!this.__isRed(__at._left) && !this.__isRed(__at._left._left))
+				__at = this.__moveRed(__at, SortedTreeMap._LEFT);
 			
 			// Delete left side
-			__at._left = __remove(__at._left, __found, __k);
+			__at._left = this.__remove(__at._left, __found, __k);
 		}
 		
 		// Equal or higher
 		else
 		{
 			// If the left is red then rotate it to the right
-			if (__isRed(__at._left))
+			if (this.__isRed(__at._left))
 			{
-				__at = __rotate(__at, _RIGHT);
+				__at = this.__rotate(__at, SortedTreeMap._RIGHT);
 				
 				// Compare value is trashed, recompute
 				comp = compare.compare(__k, __at._data._key);
@@ -544,7 +544,7 @@ public class SortedTreeMap<K, V>
 			// to be shifted in
 			if (comp == 0 && __at._right == null)
 			{
-				__unlink(__at, __found);
+				this.__unlink(__at, __found);
 				
 				// Return no key
 				return null;
@@ -552,9 +552,9 @@ public class SortedTreeMap<K, V>
 			
 			// If the red side contains a black chain move red nodes to the
 			// right
-			if (!__isRed(__at._right) && !__isRed(__at._right._left))
+			if (!this.__isRed(__at._right) && !this.__isRed(__at._right._left))
 			{
-				__at = __moveRed(__at, _RIGHT);
+				__at = this.__moveRed(__at, SortedTreeMap._RIGHT);
 				
 				// Comparison is trashed
 				comp = compare.compare(__k, __at._data._key);
@@ -565,26 +565,26 @@ public class SortedTreeMap<K, V>
 			{
 				// Get the node with the minimum value on the right side
 				__Node__<K, V> right = __at._right;
-				__Node__<K, V> minright = __min(right);
+				__Node__<K, V> minright = this.__min(right);
 				
 				// Unlink the current data because that is getting destroyed
-				__unlink(__at, __found);
+				this.__unlink(__at, __found);
 				
 				// The current node gets the data for that key
 				__at._data = minright._data;
 				
 				// Remove the minimum without unlinking (because it gets
 				// re-associated)
-				__removeMin(right, null, false);
+				this.__removeMin(right, null, false);
 			}
 			
 			// Delete right side of the tree
 			else
-				__at._right = __remove(__at._right, __found, __k);
+				__at._right = this.__remove(__at._right, __found, __k);
 		}
 		
 		// Correct tree on the way up
-		return __correctNodes(__at);
+		return this.__correctNodes(__at);
 	}
 	
 	/**
@@ -604,21 +604,21 @@ public class SortedTreeMap<K, V>
 		{
 			// Unlink our node
 			if (__unlink)
-				__unlink(__at, __found);
+				this.__unlink(__at, __found);
 			
 			// No left node
 			return null;
 		}
 		
 		// If the left side is black move red to the left
-		if (!__isRed(__at._left) && !__isRed(__at._left._left))
-			__at = __moveRed(__at, _LEFT);
+		if (!this.__isRed(__at._left) && !this.__isRed(__at._left._left))
+			__at = this.__moveRed(__at, SortedTreeMap._LEFT);
 		
 		// Continue deleting the minimum
-		__at._left = __removeMin(__at, __found, __unlink);
+		__at._left = this.__removeMin(__at, __found, __unlink);
 		
 		// Correct nodes back up the tree
-		return __correctNodes(__at);
+		return this.__correctNodes(__at);
 	}
 	
 	/**

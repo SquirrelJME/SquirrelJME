@@ -21,70 +21,68 @@ import jdk.dio.UnsupportedByteOrderException;
 public interface ADCChannel
 	extends Device<ADCChannel>, BufferAccess<IntBuffer>
 {
-	public abstract int acquire()
+	int acquire()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void acquire(IntBuffer __a)
+	void acquire(IntBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int getMaxSamplingInterval()
+	int getMaxSamplingInterval()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMaxValue()
+	int getMaxValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMinSamplingInterval()
+	int getMinSamplingInterval()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMinValue()
+	int getMinValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getSamplingInterval()
+	int getSamplingInterval()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract double getScaleFactor()
+	double getScaleFactor()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract double getVRefValue()
+	double getVRefValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setSamplingInterval(int __a)
+	void setSamplingInterval(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setScaleFactor(double __a)
+	void setScaleFactor(double __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void startAcquisition(IntBuffer __a, 
-		AcquisitionRoundListener __b)
+	void startAcquisition(IntBuffer __a, AcquisitionRoundListener __b)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract void startAcquisition(IntBuffer __a, IntBuffer __b, 
+	void startAcquisition(IntBuffer __a, IntBuffer __b,
 		AcquisitionRoundListener __c)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract void startMonitoring(int __a, int __b, MonitoringListener
-		__c)
+	void startMonitoring(int __a, int __b, MonitoringListener __c)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void stopAcquisition()
+	void stopAcquisition()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void stopMonitoring()
+	void stopMonitoring()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

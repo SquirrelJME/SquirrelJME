@@ -17,10 +17,10 @@ import java.io.OutputStream;
 public interface OutputConnection
 	extends Connection
 {
-	public abstract DataOutputStream openDataOutputStream()
+	DataOutputStream openDataOutputStream()
 		throws IOException;
 	
-	public abstract OutputStream openOutputStream()
+	OutputStream openOutputStream()
 		throws IOException;
 }
 

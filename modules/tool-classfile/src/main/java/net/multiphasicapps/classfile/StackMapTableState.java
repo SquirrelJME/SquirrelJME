@@ -69,8 +69,8 @@ public final class StackMapTableState
 			__s[i] = null;
 		
 		// Verify each state
-		__verify(__l);
-		__verify(__s);
+		StackMapTableState.__verify(__l);
+		StackMapTableState.__verify(__s);
 		
 		// Set
 		this._locals = __l;
@@ -164,11 +164,11 @@ public final class StackMapTableState
 		if (ref == null || null == (rv = ref.get()))
 		{
 			StringBuilder sb = new StringBuilder("{locals=");
-			__stringize(this._locals, sb);
+			StackMapTableState.__stringize(this._locals, sb);
 			sb.append(", stack(");
 			sb.append(this.depth);
 			sb.append(")=");
-			__stringize(this._stack, sb);
+			StackMapTableState.__stringize(this._stack, sb);
 			sb.append("}");
 			
 			this._string = new WeakReference<>((rv = sb.toString()));

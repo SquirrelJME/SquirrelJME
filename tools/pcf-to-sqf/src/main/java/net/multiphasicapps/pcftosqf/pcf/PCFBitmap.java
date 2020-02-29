@@ -97,7 +97,7 @@ public final class PCFBitmap
 		
 		// Go through all the offsets and determine all of the bounds
 		Set<__Index__> index = new SortedTreeSet<>();
-		for (int i = 0; i < numglyphs; i++)
+		for (int i = 0; i < this.numglyphs; i++)
 			index.add(new __Index__(__offsets[i], i));
 		
 		// Need to determine the bounds for every glyph to extract the data

@@ -24,7 +24,7 @@ public interface RecordListener
 	 * @param __id The ID of the added record.
 	 * @since 2017/02/26
 	 */
-	public abstract void recordAdded(RecordStore __rs, int __id);
+	void recordAdded(RecordStore __rs, int __id);
 	
 	/**
 	 * This is called when a record was changed in a store.
@@ -33,7 +33,7 @@ public interface RecordListener
 	 * @param __id The ID of the changed record.
 	 * @since 2017/02/26
 	 */
-	public abstract void recordChanged(RecordStore __rs, int __id);
+	void recordChanged(RecordStore __rs, int __id);
 	
 	/**
 	 * This is called when a record was deleted from a store.
@@ -44,6 +44,6 @@ public interface RecordListener
 	 * {@link InvalidRecordIDException}.
 	 * @since 2017/02/26
 	 */
-	public abstract void recordDeleted(RecordStore __rs, int __id);
+	void recordDeleted(RecordStore __rs, int __id);
 }
 

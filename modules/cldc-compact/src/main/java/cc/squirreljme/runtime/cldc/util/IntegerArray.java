@@ -25,7 +25,7 @@ public interface IntegerArray
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2018/10/28
 	 */
-	public abstract int get(int __i);
+	int get(int __i);
 	
 	/**
 	 * Sets the value at the given index.
@@ -35,7 +35,7 @@ public interface IntegerArray
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2018/10/28
 	 */
-	public abstract void set(int __i, int __v);
+	void set(int __i, int __v);
 	
 	/**
 	 * Returns the size of the array.
@@ -43,6 +43,6 @@ public interface IntegerArray
 	 * @return The array size.
 	 * @since 2018/10/28
 	 */
-	public abstract int size();
+	int size();
 }
 

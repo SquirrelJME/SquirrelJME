@@ -23,6 +23,6 @@ public interface FramebufferTitleListener
 	 * @param __s The title to set.
 	 * @since 2020/01/17
 	 */
-	public abstract void titleUpdated(String __s);
+	void titleUpdated(String __s);
 }
 

@@ -79,7 +79,7 @@ public class MidletMain
 		String al = null;
 		try
 		{
-			al = System.getProperty(AUTOLAUNCH_PROPERTY);
+			al = System.getProperty(MidletMain.AUTOLAUNCH_PROPERTY);
 		}
 		catch (SecurityException e)
 		{
@@ -125,8 +125,8 @@ public class MidletMain
 			programlist.append("The SPACEBAR key is the FIRE key", null);
 			
 			// Re-flip on this display
-			if (_MAIN_DISPLAY.getCurrent() == programlist)
-				_MAIN_DISPLAY.setCurrent(programlist);
+			if (MidletMain._MAIN_DISPLAY.getCurrent() == programlist)
+				MidletMain._MAIN_DISPLAY.setCurrent(programlist);
 		}
 		
 		// Go through all of the available application suites and build the
@@ -202,9 +202,9 @@ public class MidletMain
 		programlist.setTitle("SquirrelJME Launcher");
 		
 		// Make sure the program list is showing
-		Displayable current = _MAIN_DISPLAY.getCurrent();
+		Displayable current = MidletMain._MAIN_DISPLAY.getCurrent();
 		if (current == null || (current instanceof SplashScreen))
-			_MAIN_DISPLAY.setCurrent(programlist);
+			MidletMain._MAIN_DISPLAY.setCurrent(programlist);
 		
 		// Automatically launch a program?
 		String autolaunch = this._autolaunch;
@@ -229,12 +229,12 @@ public class MidletMain
 		// We will need to access our own display to build the list of
 		// MIDlets that could actually be ran
 		Display disp = Display.getDisplay(this);
-		_MAIN_DISPLAY = disp;
+		MidletMain._MAIN_DISPLAY = disp;
 		
 		// Add commands to the list so things can be done with them
 		List programlist = this.programlist;
-		programlist.addCommand(EXIT_COMMAND);
-		programlist.addCommand(ABOUT_COMMAND);
+		programlist.addCommand(MidletMain.EXIT_COMMAND);
+		programlist.addCommand(MidletMain.ABOUT_COMMAND);
 		
 		// Need to handle commands and such
 		__CommandHandler__ ch = new __CommandHandler__();
@@ -387,7 +387,7 @@ public class MidletMain
 			}
 			
 			// Exiting the VM?
-			else if (__c == EXIT_COMMAND)
+			else if (__c == MidletMain.EXIT_COMMAND)
 			{
 				// Indication that something is happening
 				MidletMain.this.programlist.setTitle("Exiting...");
@@ -396,7 +396,7 @@ public class MidletMain
 			}
 			
 			// About SquirrelJME
-			else if (__c == ABOUT_COMMAND)
+			else if (__c == MidletMain.ABOUT_COMMAND)
 			{
 			}
 		}

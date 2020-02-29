@@ -12,7 +12,7 @@ package jdk.dio;
 
 public interface AsyncErrorHandler<P extends Device<? super P>>
 {
-	public abstract void failed(Throwable __a, P __b);
+	void failed(Throwable __a, P __b);
 }
 
 

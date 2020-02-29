@@ -13,58 +13,58 @@ package java.util;
 public interface Deque<E>
 	extends Queue<E>
 {
-	public abstract boolean add(E __a);
+	boolean add(E __a);
 	
-	public abstract void addFirst(E __a);
+	void addFirst(E __a);
 	
-	public abstract void addLast(E __a);
+	void addLast(E __a);
 	
-	public abstract boolean contains(Object __a);
+	boolean contains(Object __a);
 	
-	public abstract Iterator<E> descendingIterator();
+	Iterator<E> descendingIterator();
 	
-	public abstract E element();
+	E element();
 	
-	public abstract E getFirst();
+	E getFirst();
 	
-	public abstract E getLast();
+	E getLast();
 	
-	public abstract Iterator<E> iterator();
+	Iterator<E> iterator();
 	
-	public abstract boolean offer(E __a);
+	boolean offer(E __a);
 	
-	public abstract boolean offerFirst(E __a);
+	boolean offerFirst(E __a);
 	
-	public abstract boolean offerLast(E __a);
+	boolean offerLast(E __a);
 	
-	public abstract E peek();
+	E peek();
 	
-	public abstract E peekFirst();
+	E peekFirst();
 	
-	public abstract E peekLast();
+	E peekLast();
 	
-	public abstract E poll();
+	E poll();
 	
-	public abstract E pollFirst();
+	E pollFirst();
 	
-	public abstract E pollLast();
+	E pollLast();
 	
-	public abstract E pop();
+	E pop();
 	
-	public abstract void push(E __a);
+	void push(E __a);
 	
-	public abstract E remove();
+	E remove();
 	
-	public abstract boolean remove(Object __a);
+	boolean remove(Object __a);
 	
-	public abstract E removeFirst();
+	E removeFirst();
 	
-	public abstract boolean removeFirstOccurrence(Object __a);
+	boolean removeFirstOccurrence(Object __a);
 	
-	public abstract E removeLast();
+	E removeLast();
 	
-	public abstract boolean removeLastOccurrence(Object __a);
+	boolean removeLastOccurrence(Object __a);
 	
-	public abstract int size();
+	int size();
 }
 

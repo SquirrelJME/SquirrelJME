@@ -23,7 +23,7 @@ public interface VMSuiteManager
 	 * @return The list of available libraries.
 	 * @since 2018/10/26
 	 */
-	public abstract String[] listLibraryNames();
+	String[] listLibraryNames();
 	
 	/**
 	 * Loads the specified library by the given string.
@@ -35,7 +35,7 @@ public interface VMSuiteManager
 	 * @return The loaded library, or {@code null} if it does not exist.
 	 * @since 2018/10/16
 	 */
-	public abstract VMClassLibrary loadLibrary(String __s)
+	VMClassLibrary loadLibrary(String __s)
 		throws NullPointerException;
 }
 

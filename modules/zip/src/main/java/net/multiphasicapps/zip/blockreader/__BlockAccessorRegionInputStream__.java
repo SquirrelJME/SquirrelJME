@@ -84,7 +84,7 @@ class __BlockAccessorRegionInputStream__
 		byte[] b = new byte[1];
 		for (;;)
 		{
-			int rv = read(b, 0, 1);
+			int rv = this.read(b, 0, 1);
 			
 			// EOF?
 			if (rv < 0)

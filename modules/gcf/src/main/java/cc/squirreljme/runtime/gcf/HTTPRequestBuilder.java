@@ -139,8 +139,9 @@ public final class HTTPRequestBuilder
 				
 				// If the user agent was specified, add to it or set one
 				String ua = rqp.get("user-agent");
-				rqp.put("user-agent", (ua == null ? USER_AGENT :
-					ua + USER_AGENT));
+				rqp.put("user-agent", (ua == null ?
+					HTTPRequestBuilder.USER_AGENT :
+					ua + HTTPRequestBuilder.USER_AGENT));
 				
 				// Is content being specified?
 				if (bytes != null)

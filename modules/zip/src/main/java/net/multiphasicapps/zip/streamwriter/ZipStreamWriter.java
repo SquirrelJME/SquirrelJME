@@ -143,11 +143,11 @@ public class ZipStreamWriter
 			// The entry position
 			long epos = output.size();
 			
-			if (epos > _MAX_FILE_SIZE)
+			if (epos > ZipStreamWriter._MAX_FILE_SIZE)
 				throw new IOException();
 			
 			// Write directory header
-			output.writeInt(_CENTRAL_DIRECTORY_MAGIC_NUMBER);
+			output.writeInt(ZipStreamWriter._CENTRAL_DIRECTORY_MAGIC_NUMBER);
 			
 			// The created by version (use the highest version)
 			output.writeShort(bestversion);
@@ -157,7 +157,7 @@ public class ZipStreamWriter
 			output.writeShort(ecomp.extractVersion());
 			
 			// General purpose flags
-			output.writeShort(_GENERAL_PURPOSE_FLAGS);
+			output.writeShort(ZipStreamWriter._GENERAL_PURPOSE_FLAGS);
 			
 			// Compression method
 			output.writeShort(ecomp.method());
@@ -199,7 +199,7 @@ public class ZipStreamWriter
 		long cdend = output.size();
 		
 		// Write magic number
-		output.writeInt(_END_DIRECTORY_MAGIC_NUMBER);
+		output.writeInt(ZipStreamWriter._END_DIRECTORY_MAGIC_NUMBER);
 		
 		// Only a single disk is written
 		output.writeShort(0);
@@ -245,7 +245,7 @@ public class ZipStreamWriter
 	public OutputStream nextEntry(String __name)
 		throws IOException, NullPointerException
 	{
-		return nextEntry(__name, ZipCompressionType.DEFAULT_COMPRESSION);
+		return this.nextEntry(__name, ZipCompressionType.DEFAULT_COMPRESSION);
 	}
 	
 	/**
@@ -298,13 +298,13 @@ public class ZipStreamWriter
 		
 		// Write ZIP header data
 		ExtendedDataOutputStream output = this.output;
-		output.writeInt(_LOCAL_FILE_MAGIC_NUMBER);
+		output.writeInt(ZipStreamWriter._LOCAL_FILE_MAGIC_NUMBER);
 		
 		// Extract version
 		output.writeShort(__comp.extractVersion());
 		
 		// General purpose flag
-		output.writeShort(_GENERAL_PURPOSE_FLAGS);
+		output.writeShort(ZipStreamWriter._GENERAL_PURPOSE_FLAGS);
 		
 		// Method
 		output.writeShort(__comp.method());
@@ -378,7 +378,7 @@ public class ZipStreamWriter
 		// {@squirreljme.error BF1c Either one or both of the compressed
 		// or uncompressed file sizes exceeds 4GiB. (The uncompressed size;
 		// The compressed size)}
-		if (uncomp >= _MAX_FILE_SIZE || comp >= _MAX_FILE_SIZE)
+		if (uncomp >= ZipStreamWriter._MAX_FILE_SIZE || comp >= ZipStreamWriter._MAX_FILE_SIZE)
 			throw new IOException(String.format("BF1c %d %d", uncomp,
 				comp));
 		
@@ -394,7 +394,7 @@ public class ZipStreamWriter
 		// it helps prevent some abiguity when the input data stream is
 		// not compressed and contains a ZIP file.
 		ExtendedDataOutputStream output = this.output;
-		output.writeInt(_DATA_DESCRIPTOR_MAGIC_NUMBER);
+		output.writeInt(ZipStreamWriter._DATA_DESCRIPTOR_MAGIC_NUMBER);
 		
 		// Write CRC and sizes
 		output.writeInt((int)crc);

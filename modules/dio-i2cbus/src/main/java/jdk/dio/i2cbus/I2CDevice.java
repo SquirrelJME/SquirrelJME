@@ -21,44 +21,44 @@ import jdk.dio.UnavailableDeviceException;
 public interface I2CDevice
 	extends Device<I2CDevice>, ByteChannel, BufferAccess<ByteBuffer>
 {
-	public abstract I2CDevice.Bus getBus()
+	I2CDevice.Bus getBus()
 		throws IOException;
 	
-	public abstract int read()
+	int read()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int read(ByteBuffer __a)
+	int read(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int read(int __a, ByteBuffer __b)
+	int read(int __a, ByteBuffer __b)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int read(int __a, int __b, ByteBuffer __c)
+	int read(int __a, int __b, ByteBuffer __c)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int read(int __a, int __b, int __c, ByteBuffer __d)
+	int read(int __a, int __b, int __c, ByteBuffer __d)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int write(ByteBuffer __a)
+	int write(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void write(int __a)
+	void write(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int write(int __a, int __b, ByteBuffer __c)
+	int write(int __a, int __b, ByteBuffer __c)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public static interface Bus
+	interface Bus
 	{
-		public abstract I2CCombinedMessage createCombinedMessage();
+		I2CCombinedMessage createCombinedMessage();
 	}
 }
 

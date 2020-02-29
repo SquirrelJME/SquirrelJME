@@ -27,7 +27,7 @@ public interface Annotation
 	 * @return The annotation type.
 	 * @since 2014/10/13
 	 */
-	public abstract Class<? extends Annotation> annotationType();
+	Class<? extends Annotation> annotationType();
 	
 	/**
 	 * Checks the logical equality to another annotation type, they are both
@@ -50,7 +50,7 @@ public interface Annotation
 	 * @return {@code true} if they are logically equivalent.
 	 * @since 2014/10/13
 	 */
-	public abstract boolean equals(Object __o);
+	boolean equals(Object __o);
 	
 	/**
 	 * Calculates the hash code which is a sum of the hash codes of its members
@@ -67,7 +67,7 @@ public interface Annotation
 	 * @return The hash code for this annotation.
 	 * @since 2014/10/13
 	 */
-	public abstract int hashCode();
+	int hashCode();
 	
 	/**
 	 * Returns an implementation dependent string which represents the
@@ -76,6 +76,6 @@ public interface Annotation
 	 * @return The string representation of this annotation.
 	 * @since 2014/10/13
 	 */
-	public abstract String toString();
+	String toString();
 }
 

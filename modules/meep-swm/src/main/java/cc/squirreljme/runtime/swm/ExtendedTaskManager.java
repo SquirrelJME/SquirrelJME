@@ -54,9 +54,8 @@ public interface ExtendedTaskManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/02
 	 */
-	public abstract Task startTask(Suite __s, String __cn,
-		Map<String, String> __sprops, String[] __args, OutputStream __stdout,
-		OutputStream __stderr)
+	Task startTask(Suite __s, String __cn, Map<String, String> __sprops,
+		String[] __args, OutputStream __stdout, OutputStream __stderr)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException;
 }

@@ -32,14 +32,14 @@ public interface CompilerInput
 	 * @since 2017/11/28
 	 */
 	@Override
-	public abstract boolean equals(Object __o);
+	boolean equals(Object __o);
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/11/28
 	 */
 	@Override
-	public abstract int hashCode();
+	int hashCode();
 	
 	/**
 	 * Returns the last modified date of the input file in UTC milliseconds
@@ -49,7 +49,7 @@ public interface CompilerInput
 	 * @throws CompilerException If it could not be determined.
 	 * @since 2018/03/06
 	 */
-	public abstract long lastModifiedTime()
+	long lastModifiedTime()
 		throws CompilerException;
 
 	/**
@@ -60,7 +60,7 @@ public interface CompilerInput
 	 * @since 2017/11/28
 	 */
 	@Override
-	public abstract String fileName()
+	String fileName()
 		throws CompilerException;
 	
 	/**
@@ -72,7 +72,7 @@ public interface CompilerInput
 	 * @throws NoSuchInputException If the input does not exist.
 	 * @since 2017/11/28
 	 */
-	public abstract InputStream open()
+	InputStream open()
 		throws CompilerException, NoSuchInputException;
 }
 

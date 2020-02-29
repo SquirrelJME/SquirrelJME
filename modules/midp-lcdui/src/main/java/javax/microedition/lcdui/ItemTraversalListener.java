@@ -15,9 +15,9 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 public interface ItemTraversalListener
 {
 	@SerializedEvent
-	public abstract void itemTraversedIn(Item __i);
+	void itemTraversedIn(Item __i);
 	
 	@SerializedEvent
-	public abstract void itemTraversedOut(Item __i);
+	void itemTraversedOut(Item __i);
 }
 

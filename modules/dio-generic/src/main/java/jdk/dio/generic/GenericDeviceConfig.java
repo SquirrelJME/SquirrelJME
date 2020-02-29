@@ -21,14 +21,12 @@ public final class GenericDeviceConfig
 	@Deprecated
 	public GenericDeviceConfig(int __a, int __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public GenericDeviceConfig(String __a, int __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -87,7 +85,6 @@ public final class GenericDeviceConfig
 	{
 		public Builder()
 		{
-			super();
 			throw new todo.TODO();
 		}
 		

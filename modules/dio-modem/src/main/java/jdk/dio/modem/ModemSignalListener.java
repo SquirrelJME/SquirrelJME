@@ -16,7 +16,7 @@ import jdk.dio.DeviceEventListener;
 public interface ModemSignalListener<P extends Device<? super P>>
 	extends DeviceEventListener
 {
-	public abstract void signalStateChanged(ModemSignalEvent<P> __a);
+	void signalStateChanged(ModemSignalEvent<P> __a);
 }
 
 

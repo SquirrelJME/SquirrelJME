@@ -1483,17 +1483,17 @@ public final class SimplifiedJavaInstruction
 	{
 		switch (__op)
 		{
-			case STORE:			return "STORE";
-			case LOAD:			return "LOAD";
-			case VRETURN:		return "VRETURN";
-			case MATH:			return "MATH";
-			case IF:			return "IF";
-			case IF_CMP:		return "IF_CMP";
-			case PASTORE:		return "PASTORE";
-			case PALOAD:		return "PALOAD";
-			case STACKSHUFFLE:	return "STACKSHUFFLE";
-			case CONVERT:		return "CONVERT";
-			case MATH_CONST:	return "MATH_CONST";
+			case SimplifiedJavaInstruction.STORE:			return "STORE";
+			case SimplifiedJavaInstruction.LOAD:			return "LOAD";
+			case SimplifiedJavaInstruction.VRETURN:		return "VRETURN";
+			case SimplifiedJavaInstruction.MATH:			return "MATH";
+			case SimplifiedJavaInstruction.IF:			return "IF";
+			case SimplifiedJavaInstruction.IF_CMP:		return "IF_CMP";
+			case SimplifiedJavaInstruction.PASTORE:		return "PASTORE";
+			case SimplifiedJavaInstruction.PALOAD:		return "PALOAD";
+			case SimplifiedJavaInstruction.STACKSHUFFLE:	return "STACKSHUFFLE";
+			case SimplifiedJavaInstruction.CONVERT:		return "CONVERT";
+			case SimplifiedJavaInstruction.MATH_CONST:	return "MATH_CONST";
 			
 				// Fallback to standard stuff
 			default:

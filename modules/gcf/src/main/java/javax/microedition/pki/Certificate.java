@@ -13,21 +13,21 @@ package javax.microedition.pki;
 
 public interface Certificate
 {
-	public abstract String getIssuer();
+	String getIssuer();
 	
-	public abstract long getNotAfter();
+	long getNotAfter();
 	
-	public abstract long getNotBefore();
+	long getNotBefore();
 	
-	public abstract String getSerialNumber();
+	String getSerialNumber();
 	
-	public abstract String getSigAlgName();
+	String getSigAlgName();
 	
-	public abstract String getSubject();
+	String getSubject();
 	
-	public abstract String getType();
+	String getType();
 	
-	public abstract String getVersion();
+	String getVersion();
 }
 
 

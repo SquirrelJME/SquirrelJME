@@ -24,32 +24,32 @@ public interface NativeDisplayEventCallback
 {
 	/** Key pressed. */
 	@Deprecated
-	public static final int KEY_PRESSED =
+	int KEY_PRESSED =
 		1;
 	
 	/** Key repeated. */
 	@Deprecated
-	public static final int KEY_REPEATED =
+	int KEY_REPEATED =
 		2;
 	
 	/** Key released. */
 	@Deprecated
-	public static final int KEY_RELEASED =
+	int KEY_RELEASED =
 		3;
 	
 	/** Pointer pressed. */
 	@Deprecated
-	public static final int POINTER_PRESSED =
+	int POINTER_PRESSED =
 		4;
 	
 	/** Pointer dragged. */
 	@Deprecated
-	public static final int POINTER_DRAGGED =
+	int POINTER_DRAGGED =
 		5;
 	
 	/** Pointer released. */
 	@Deprecated
-	public static final int POINTER_RELEASED =
+	int POINTER_RELEASED =
 		6;
 	
 	/**
@@ -59,7 +59,7 @@ public interface NativeDisplayEventCallback
 	 * @param __c The command to execute.
 	 * @since 2018/12/03
 	 */
-	public abstract void command(int __d, int __c);
+	void command(int __d, int __c);
 	
 	/**
 	 * Exit request generated for a display, this likely means the close
@@ -72,7 +72,7 @@ public interface NativeDisplayEventCallback
 	 * @since 2018/12/03
 	 */
 	@Deprecated
-	public abstract void exitRequest(int __d);
+	void exitRequest(int __d);
 	
 	/**
 	 * Key action has been performed.
@@ -85,8 +85,7 @@ public interface NativeDisplayEventCallback
 	 * @since 2018/12/03
 	 */
 	@Deprecated
-	public abstract void keyEvent(int __d, int __ty, int __kc, int __ch,
-		int __time);
+	void keyEvent(int __d, int __ty, int __kc, int __ch, int __time);
 	
 	/**
 	 * This is called when the callback has been lost, another task has claimed
@@ -96,7 +95,7 @@ public interface NativeDisplayEventCallback
 	 * @since 2018/12/10
 	 */
 	@Deprecated
-	public abstract void lostCallback();
+	void lostCallback();
 	
 	/**
 	 * Paints the display.
@@ -109,8 +108,7 @@ public interface NativeDisplayEventCallback
 	 * @since 2018/12/03
 	 */
 	@Deprecated
-	public abstract void paintDisplay(int __d, int __x, int __y,
-		int __w, int __h);
+	void paintDisplay(int __d, int __x, int __y, int __w, int __h);
 	
 	/**
 	 * Pointer event has occured.
@@ -123,8 +121,7 @@ public interface NativeDisplayEventCallback
 	 * @since 2018/12/03
 	 */
 	@Deprecated
-	public abstract void pointerEvent(int __d, int __ty, int __x, int __y,
-		int __time);
+	void pointerEvent(int __d, int __ty, int __x, int __y, int __time);
 	
 	/**
 	 * Display has been shown or hidden.
@@ -134,7 +131,7 @@ public interface NativeDisplayEventCallback
 	 * @since 2018/12/03
 	 */
 	@Deprecated
-	public abstract void shown(int __d, int __shown);
+	void shown(int __d, int __shown);
 	
 	/**
 	 * Display size has changed.
@@ -145,6 +142,6 @@ public interface NativeDisplayEventCallback
 	 * @since 2018/12/03
 	 */
 	@Deprecated
-	public abstract void sizeChanged(int __d, int __w, int __h);
+	void sizeChanged(int __d, int __w, int __h);
 }
 

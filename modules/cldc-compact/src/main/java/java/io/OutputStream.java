@@ -18,14 +18,6 @@ package java.io;
 public abstract class OutputStream
 	implements Closeable
 {
-	/**
-	 * Initializes the base output stream.
-	 *
-	 * @since 2016/04/16
-	 */
-	public OutputStream()
-	{
-	}
 	
 	/**
 	 * Writes a single byte to the output stream, the byte is in the range of
