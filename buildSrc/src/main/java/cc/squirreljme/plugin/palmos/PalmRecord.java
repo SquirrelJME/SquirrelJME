@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.palmos;
+package cc.squirreljme.plugin.palmos;
 
 /**
  * This represents a single record within a database.

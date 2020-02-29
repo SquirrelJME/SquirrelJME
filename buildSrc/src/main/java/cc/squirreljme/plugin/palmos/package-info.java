@@ -13,5 +13,5 @@
  * @since 2019/07/13
  */
 
-package dev.shadowtail.palmos;
+package cc.squirreljme.plugin.palmos;
 

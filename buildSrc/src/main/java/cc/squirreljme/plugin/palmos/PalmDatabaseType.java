@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.palmos;
+package cc.squirreljme.plugin.palmos;
 
 /**
  * This represents the database type to use when creating databases.

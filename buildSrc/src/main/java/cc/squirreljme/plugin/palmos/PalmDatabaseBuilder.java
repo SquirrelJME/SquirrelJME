@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.palmos;
+package cc.squirreljme.plugin.palmos;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
