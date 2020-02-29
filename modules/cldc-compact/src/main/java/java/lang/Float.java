@@ -34,13 +34,13 @@ public final class Float
 		+0x1.0p-149F;
 	
 	public static final float NEGATIVE_INFINITY =
-		-1.0F / 0.0F;
+		Float.intBitsToFloat(-8388608);
 	
 	public static final float NaN =
-		0.0F / 0.0F;
+		Float.intBitsToFloat(2143289344);
 	
 	public static final float POSITIVE_INFINITY =
-		1.0F / 0.0F;
+		Float.intBitsToFloat(2139095040);
 	
 	/** The number of bits float requires for storage. */
 	public static final int SIZE =
