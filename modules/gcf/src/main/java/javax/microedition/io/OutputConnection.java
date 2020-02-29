@@ -14,6 +14,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface OutputConnection
 	extends Connection
 {

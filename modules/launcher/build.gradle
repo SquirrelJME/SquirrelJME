@@ -14,7 +14,7 @@ squirreljme
 	swmVendor = "Stephanie Gawroriski"
 	ignoreInLauncher = true
 	midlets += new JavaMEMidlet("SquirrelJME Launcher (Graphical)", null,
-		"cc.squirreljme.runtime.launcher.ui.MidletMain");
+		"cc.squirreljme.runtime.launcher.ui.MidletMain")
 }
 
 dependencies

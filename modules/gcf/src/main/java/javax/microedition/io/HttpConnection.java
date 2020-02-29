@@ -20,8 +20,8 @@ import java.io.IOException;
  *  - CONNECTED where the connection has been made.
  *  - CLOSED where the connection has been completed and closed.
  *
- * The {@link openOutputStream} and {@link openDataOutputStream} may only be
- * called when in the SETUP state, when either of these streams are closed
+ * The {@link #openOutputStream()} and {@link #openDataOutputStream()} may only
+ * be called when in the SETUP state, when either of these streams are closed
  * the connection will transition to the connected state. Additionally if
  * the state transitions to the CONNECTED state for any reason then the stream
  * will be implicitly closed and its data will be used.

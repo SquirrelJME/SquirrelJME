@@ -62,7 +62,7 @@ configure(subprojects
 
 		// Copy to JavaDoc
 		javadoc.options.bootClasspath = compileJava.options.bootstrapClasspath
-			.collect();
+			.collect()
     }
 
 	dependencies
