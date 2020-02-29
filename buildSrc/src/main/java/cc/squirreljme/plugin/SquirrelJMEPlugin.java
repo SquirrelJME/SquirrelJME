@@ -13,6 +13,7 @@ package cc.squirreljme.plugin;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
+import cc.squirreljme.plugin.tasks.RunNativeTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -51,23 +52,25 @@ public class SquirrelJMEPlugin
 		// JAR Tasks
 		Task jarTask = __project.getTasks().getByName("jar");
 		
+		// Run native application
+		Task rna = __project.getTasks().create("runNative",
+			RunNativeTask.class, jarTask);
+		
 		// Mime Decode Resources
 		Task mmr = __project.getTasks().create("mimeDecodeResources",
 			MimeDecodeResourcesTask.class, SourceSet.MAIN_SOURCE_SET_NAME,
-			(ProcessResources)processResources);
+			processResources);
 		Task tmr = __project.getTasks().create("mimeDecodeTestResources",
 			MimeDecodeResourcesTask.class, SourceSet.TEST_SOURCE_SET_NAME,
-			(ProcessResources)processTestResources);
+			processTestResources);
 		
 		// Generate the list of tests that are available
 		Task gtl = __project.getTasks().create("generateTestsList",
-			GenerateTestsListTask.class,
-			(ProcessResources)processTestResources);
+			GenerateTestsListTask.class, processTestResources);
 		
 		// Add SquirrelJME properties to the manifest
 		Task sjp = __project.getTasks().create("additionalJarProperties",
-			AdditionalManifestPropertiesTask.class,
-			(Jar)jarTask, (ProcessResources)processResources);
+			AdditionalManifestPropertiesTask.class, jarTask, processResources);
 		
 		// List error codes used by projects
 		Task listErrorCodes = __project.getTasks()

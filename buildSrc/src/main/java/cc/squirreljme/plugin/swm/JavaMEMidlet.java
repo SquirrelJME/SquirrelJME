@@ -17,13 +17,13 @@ package cc.squirreljme.plugin.swm;
 public final class JavaMEMidlet
 {
 	/** The title. */
-	protected final String title;
+	public final String title;
 	
 	/** The icon. */
-	protected final String icon;
+	public final String icon;
 	
 	/** The main class. */
-	protected final String mainClass;
+	public final String mainClass;
 	
 	/**
 	 * Initializes the MIDlet information.

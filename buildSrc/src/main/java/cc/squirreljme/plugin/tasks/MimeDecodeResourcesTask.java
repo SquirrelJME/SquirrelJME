@@ -1,3 +1,12 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
 package cc.squirreljme.plugin.tasks;
 
 import cc.squirreljme.plugin.util.MIMEFileDecoder;
@@ -58,13 +67,7 @@ public class MimeDecodeResourcesTask
 		this.onlyIf(this::__onlyIf);
 		
 		// The action to do
-		this.doLast(new Action<Task>() {
-				@Override
-				public void execute(Task __task)
-				{
-					MimeDecodeResourcesTask.this.__doLast(__task);
-				}
-			});
+		this.doLast(new __ActionTask__());
 		
 		// The process task depends on this task
 		__processTask.dependsOn(this);
@@ -74,7 +77,8 @@ public class MimeDecodeResourcesTask
 		__processTask.eachFile((FileCopyDetails __fcd) ->
 			{
 				// Exclude all MIME files from this task
-				if (MimeDecodeResourcesTask.__isMimeFile(__fcd.getFile().toPath()))
+				if (MimeDecodeResourcesTask.
+					__isMimeFile(__fcd.getFile().toPath()))
 					__fcd.exclude();
 			});
 	}
@@ -87,9 +91,6 @@ public class MimeDecodeResourcesTask
 	 */
 	private void __doLast(Task __task)
 	{
-		Project project = this.getProject();
-		Path outDir = this.__outputPath();
-		
 		// Anything here can fail for IO operations
 		try
 		{
@@ -166,18 +167,6 @@ public class MimeDecodeResourcesTask
 	}
 	
 	/**
-	 * Filter for task processing.
-	 *
-	 * @param __file The file to filter.
-	 * @return If the file is to be
-	 * @since 2020/02/28
-	 */
-	private boolean __processTaskFilter(File __file)
-	{
-		return MimeDecodeResourcesTask.__isMimeFile(__file.toPath());
-	}
-	
-	/**
 	 * Gets the inputs for the task as fully informed files.
 	 *
 	 * @return The task inputs.
@@ -234,8 +223,6 @@ public class MimeDecodeResourcesTask
 	 */
 	private Iterable<__Output__> __taskOutputs()
 	{
-		Project project = this.getProject();
-		
 		// The output path to process
 		Path outDir = this.__outputPath();
 		
@@ -243,7 +230,8 @@ public class MimeDecodeResourcesTask
 		Collection<__Output__> result = new LinkedList<>();
 		for (__Input__ input : this.__taskInputs())
 			result.add(new __Output__(input, outDir.resolve(
-				MimeDecodeResourcesTask.__removeMimeExtension(input.relative))));
+				MimeDecodeResourcesTask.
+					__removeMimeExtension(input.relative))));
 		
 		return result;
 	}
@@ -303,8 +291,26 @@ public class MimeDecodeResourcesTask
 			throw new IllegalArgumentException("File does not end in MIME.");
 		
 		// The output will be a sibling of the path
-		return __fn.resolveSibling(
-			fileName.substring(0, fileName.length() - MimeDecodeResourcesTask.EXTENSION
-				.length()));
+		return __fn.resolveSibling(fileName.substring(0,
+			fileName.length() - MimeDecodeResourcesTask.EXTENSION.length()));
+	}
+	
+	/**
+	 * The action to perform.
+	 *
+	 * @since 2020/02/29
+	 */
+	private class __ActionTask__
+		implements Action<Task>
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/02/29
+		 */
+		@Override
+		public void execute(Task __task)
+		{
+			MimeDecodeResourcesTask.this.__doLast(__task);
+		}
 	}
 }

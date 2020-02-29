@@ -307,6 +307,7 @@ abstract class __CoreTest__
 	 *
 	 * @since 2018/10/06
 	 */
+	@Override
 	protected final void startApp()
 	{
 		// Just forward to run, no main arguments are used at all
