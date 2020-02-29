@@ -15,6 +15,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+@SuppressWarnings({"FieldNamingConvention", "NewMethodNamingConvention"})
 public interface GL11Ext
 	extends GL
 {

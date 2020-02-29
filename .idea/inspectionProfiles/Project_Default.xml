@@ -65,7 +65,7 @@
         <option name="m_maxLength" value="32" />
       </extension>
       <extension name="ConstantWithMutableFieldTypeNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[a-zA-Z][A-Z_\d]*" />
+        <option name="m_regex" value="_?[a-z][a-zA-z_]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
@@ -160,7 +160,7 @@
       <option name="m_minLength" value="1" />
       <option name="m_maxLength" value="20" />
     </inspection_tool>
-    <inspection_tool class="MagicNumber" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MagicNumber" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodCallInLoopCondition" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodRefCanBeReplacedWithLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="MissingPackageInfo" enabled="true" level="WARNING" enabled_by_default="true" />

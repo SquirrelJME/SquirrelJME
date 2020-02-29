@@ -9,6 +9,7 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+@SuppressWarnings("FieldNamingConvention")
 public class AffineTrans
 {
     public int m00;

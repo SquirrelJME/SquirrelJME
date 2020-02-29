@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.util.FDMLMath;
  *
  * @since 2018/12/08
  */
+@SuppressWarnings("FieldNamingConvention")
 @ImplementationNote("This class uses strict floating point.")
 public final strictfp class Math
 {
