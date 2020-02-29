@@ -14,6 +14,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/05/26
  */
+@SuppressWarnings("FeatureEnvy")
 public final class Allocator
 {
 	/** Chunk is an object. */

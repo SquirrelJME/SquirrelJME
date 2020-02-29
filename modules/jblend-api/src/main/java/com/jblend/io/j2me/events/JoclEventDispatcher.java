@@ -9,6 +9,7 @@
 
 package com.jblend.io.j2me.events;
 
+@SuppressWarnings("NewMethodNamingConvention")
 public class JoclEventDispatcher
 	implements EventDispatcherInterface
 {

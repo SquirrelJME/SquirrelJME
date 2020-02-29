@@ -14,6 +14,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/05/25
  */
+@SuppressWarnings("FeatureEnvy")
 public final class JVMFunction
 {
 	/** The task ID. */

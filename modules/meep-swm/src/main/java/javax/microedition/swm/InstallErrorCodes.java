@@ -16,6 +16,7 @@ package javax.microedition.swm;
  *
  * @since 2016/06/24
  */
+@SuppressWarnings("FieldNamingConvention")
 public enum InstallErrorCodes
 {
 	/** The applicaton is already installed. */

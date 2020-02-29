@@ -14,6 +14,7 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+@SuppressWarnings("FieldNamingConvention")
 public interface GL10
 	extends GL
 {

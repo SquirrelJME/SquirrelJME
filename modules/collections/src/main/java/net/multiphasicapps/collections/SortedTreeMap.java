@@ -707,6 +707,10 @@ public class SortedTreeMap<K, V>
 	private final class __Found__
 	{
 		V _oldvalue;
+		
+		__Found__()
+		{
+		}
 	}
 }
 
