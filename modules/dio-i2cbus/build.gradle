@@ -10,7 +10,7 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "JavaME 8 Device I/O (I2C)"
 	swmVendor = "Stephanie Gawroriski"
-	definedStandards += new JavaMEStandard("dio.i2cbus;;1.0.1");
+	definedStandards += new JavaMEStandard("dio.i2cbus;;1.0.1")
 }
 
 dependencies

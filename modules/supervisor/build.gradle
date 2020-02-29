@@ -23,7 +23,7 @@ squirreljme
 java
 {
 	// No classes are available for this project
-	compileJava.options.bootstrapClasspath = project.objects.fileCollection();
+	compileJava.options.bootstrapClasspath = project.objects.fileCollection()
 }
 
 dependencies

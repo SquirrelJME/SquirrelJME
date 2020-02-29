@@ -11,7 +11,7 @@ file(rootProject.projectDir.toPath().resolve("modules"))
 		{
 			include "modules:" + subdir.name
 		}
-	});
+	})
 
 // Recursively include all emulators
 file(rootProject.projectDir.toPath().resolve("emulators"))
@@ -21,7 +21,7 @@ file(rootProject.projectDir.toPath().resolve("emulators"))
 		{
 			include "emulators:" + subdir.name
 		}
-	});
+	})
 
 // Recursively include all tools
 file(rootProject.projectDir.toPath().resolve("tools"))
@@ -31,4 +31,4 @@ file(rootProject.projectDir.toPath().resolve("tools"))
 		{
 			include "tools:" + subdir.name
 		}
-	});
+	})

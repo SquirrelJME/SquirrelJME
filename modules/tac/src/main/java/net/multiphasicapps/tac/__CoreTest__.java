@@ -139,6 +139,7 @@ abstract class __CoreTest__
 	 * {@inheritDoc}
 	 * @since 2020/02/23
 	 */
+	@SuppressWarnings("FeatureEnvy")
 	@Override
 	public final TestExecution runExecution(String... __mainargs)
 	{

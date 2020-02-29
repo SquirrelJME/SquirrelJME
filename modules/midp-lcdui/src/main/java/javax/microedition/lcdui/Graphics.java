@@ -190,7 +190,7 @@ public abstract class Graphics
 	 * Draws the specified image.
 	 *
 	 * If this graphics object draws onto the source image then the result is
-	 * undefined, {@link copyArea(int, int, int, int, int, int, int)} should
+	 * undefined, {@link #copyArea(int, int, int, int, int, int, int)} should
 	 * be used instead.
 	 *
 	 * @param __i The source image.
@@ -315,7 +315,7 @@ public abstract class Graphics
 	 * @param __sa The starting angle in degrees, 
 	 * @param __aa The offset from the starting angle, negative values indicate
 	 * clockwise direction while positive values are counter clockwise.
-	 * @see drawArc(int, int, int, int, int, int)
+	 * @see #drawArc(int, int, int, int, int, int)
 	 * @since 2017/02/10
 	 */
 	public abstract void fillArc(int __x, int __y, int __w, int __h, int __sa,

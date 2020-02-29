@@ -9,7 +9,6 @@
 
 package cc.squirreljme.emulator.fb;
 
-import cc.squirreljme.emulator.EmulatorAssembly;
 import cc.squirreljme.emulator.EmulatorThreadContext;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Framebuffer;
