@@ -160,7 +160,7 @@ public class RecordStore
 		RecordListener[] listeners = this.__listeners();
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -216,7 +216,7 @@ public class RecordStore
 			return;
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// No effect if closed
@@ -260,7 +260,7 @@ public class RecordStore
 	{
 		// Lock the record, so that only a single thread is messing with the
 		// open counts and such
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -290,7 +290,7 @@ public class RecordStore
 		RecordListener[] listeners = this.__listeners();
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -371,7 +371,7 @@ public class RecordStore
 		this.__checkOpen();
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -431,7 +431,7 @@ public class RecordStore
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -459,7 +459,7 @@ public class RecordStore
 		this.__checkOpen();
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Get record list
@@ -513,7 +513,7 @@ public class RecordStore
 		int vid = this._vid;
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Need to know the size of the record
@@ -562,7 +562,7 @@ public class RecordStore
 		int vid = this._vid;
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -602,7 +602,7 @@ public class RecordStore
 			RecordStoreNotOpenException
 	{
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -646,7 +646,7 @@ public class RecordStore
 		throws RecordStoreNotOpenException
 	{
 		return (int)Math.min(Integer.MAX_VALUE,
-			getRecordStoreInfo().getSize());
+			this.getRecordStoreInfo().getSize());
 	}
 	
 	/**
@@ -662,7 +662,7 @@ public class RecordStore
 		throws RecordStoreNotOpenException
 	{
 		return (int)Math.min(Integer.MAX_VALUE,
-			getRecordStoreInfo().getSizeAvailable());
+			this.getRecordStoreInfo().getSizeAvailable());
 	}
 	
 	/**
@@ -681,7 +681,7 @@ public class RecordStore
 			RecordStoreNotOpenException
 	{
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -707,7 +707,7 @@ public class RecordStore
 		throws RecordStoreNotOpenException
 	{
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -747,7 +747,7 @@ public class RecordStore
 			return;
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// No effect if closed
@@ -786,7 +786,7 @@ public class RecordStore
 			RecordStoreException, SecurityException
 	{
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			throw new todo.TODO();
@@ -830,7 +830,7 @@ public class RecordStore
 		RecordListener[] listeners = this.__listeners();
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -893,7 +893,7 @@ public class RecordStore
 		throws RecordStoreNotOpenException
 	{
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Check open
@@ -943,7 +943,7 @@ public class RecordStore
 		long mysid = SuiteIdentifier.currentIdentifier();
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Try to locate our record
@@ -986,7 +986,7 @@ public class RecordStore
 		long mysid = SuiteIdentifier.currentIdentifier();
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			List<String> rv = new ArrayList<>();
@@ -1097,7 +1097,8 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotFoundException,
 			SecureRecordStoreException, SecurityException
 	{
-		return RecordStore.openRecordStore(__n, __create, AUTHMODE_PRIVATE,
+		return RecordStore.openRecordStore(__n, __create,
+			RecordStore.AUTHMODE_PRIVATE,
 			true, "");
 	}
 	
@@ -1137,7 +1138,7 @@ public class RecordStore
 			SecurityException
 	{
 		return RecordStore.__openRecordStore(__n, __vend, __suite, false,
-			AUTHMODE_ANY, false, __pass);
+			RecordStore.AUTHMODE_ANY, false, __pass);
 	}
 	
 	/**
@@ -1251,7 +1252,7 @@ public class RecordStore
 			mysid = SuiteIdentifier.currentIdentifier();
 		
 		// Lock
-		VinylRecord vinyl = _VINYL;
+		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Go through all records and try to find a pre-existing one
@@ -1274,7 +1275,7 @@ public class RecordStore
 			if (rv >= 0)
 			{
 				// Use a pre-cached store
-				Map<Integer, RecordStore> cache = _STORE_CACHE;
+				Map<Integer, RecordStore> cache = RecordStore._STORE_CACHE;
 				RecordStore rs = cache.get(rv);
 				if (rs == null)
 					cache.put(rv, (rs = new RecordStore(rv, __name,

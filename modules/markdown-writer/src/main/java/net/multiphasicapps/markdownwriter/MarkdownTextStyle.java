@@ -44,7 +44,7 @@ public enum MarkdownTextStyle
 	 * @param __n Is this style considered for non-code text.
 	 * @since 2016/09/13
 	 */
-	private MarkdownTextStyle(boolean __n)
+	MarkdownTextStyle(boolean __n)
 	{
 		this.normal = __n;
 	}

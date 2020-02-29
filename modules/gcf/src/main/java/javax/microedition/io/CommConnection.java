@@ -14,9 +14,9 @@ package javax.microedition.io;
 public interface CommConnection
 	extends StreamConnection
 {
-	public abstract int getBaudRate();
+	int getBaudRate();
 	
-	public abstract int setBaudRate(int __a);
+	int setBaudRate(int __a);
 }
 
 

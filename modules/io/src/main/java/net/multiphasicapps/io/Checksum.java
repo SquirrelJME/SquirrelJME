@@ -24,7 +24,7 @@ public interface Checksum
 	 * @return The current checksum value.
 	 * @since 2017/03/05
 	 */
-	public abstract int checksum();
+	int checksum();
 	
 	/**
 	 * Offers a single byte for checksum calcualtion.
@@ -32,7 +32,7 @@ public interface Checksum
 	 * @param __b The byte to offer.
 	 * @since 2017/03/05
 	 */
-	public abstract void offer(byte __b);
+	void offer(byte __b);
 	
 	/**
 	 * Offers multiple byte for checksum calculation.
@@ -41,7 +41,7 @@ public interface Checksum
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/05
 	 */
-	public abstract void offer(byte[] __b)
+	void offer(byte[] __b)
 		throws NullPointerException;
 	
 	/**
@@ -55,7 +55,7 @@ public interface Checksum
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/05
 	 */
-	public abstract void offer(byte[] __b, int __o, int __l)
+	void offer(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 	
 	/**
@@ -63,6 +63,6 @@ public interface Checksum
 	 *
 	 * @since 2017/03/05
 	 */
-	public abstract void reset();
+	void reset();
 }
 

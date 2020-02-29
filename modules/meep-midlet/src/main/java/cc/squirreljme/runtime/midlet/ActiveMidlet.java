@@ -65,9 +65,9 @@ public final class ActiveMidlet
 		throws IllegalStateException
 	{
 		// Lock
-		synchronized (_ACTIVE_LOCK)
+		synchronized (ActiveMidlet._ACTIVE_LOCK)
 		{
-			return _ACTIVE_MIDLET;
+			return ActiveMidlet._ACTIVE_MIDLET;
 		}
 	}
 	
@@ -87,17 +87,17 @@ public final class ActiveMidlet
 			throw new NullPointerException("NARG");
 		
 		// Prevent multiple MIDlet instantiations
-		synchronized (_ACTIVE_LOCK)
+		synchronized (ActiveMidlet._ACTIVE_LOCK)
 		{
 			// {@squirreljme.error AD02 Only a single MIDlet may be active at
 			// a time.}
-			MIDlet active = _ACTIVE_MIDLET;
+			MIDlet active = ActiveMidlet._ACTIVE_MIDLET;
 			if (active != null &&
 				!(__m instanceof OverrideActiveMidletRestriction))
 				throw new IllegalStateException("AD02");
 			
 			// Set active midlet
-			_ACTIVE_MIDLET = __m;
+			ActiveMidlet._ACTIVE_MIDLET = __m;
 		}
 	}
 }

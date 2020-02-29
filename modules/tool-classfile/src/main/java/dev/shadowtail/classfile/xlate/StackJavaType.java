@@ -80,7 +80,7 @@ public enum StackJavaType
 	 */
 	public final boolean isWide()
 	{
-		return (this == LONG || this == DOUBLE);
+		return (this == StackJavaType.LONG || this == StackJavaType.DOUBLE);
 	}
 	
 	/**
@@ -136,10 +136,10 @@ public enum StackJavaType
 	{
 		switch (__i)
 		{
-			case 0:		return INTEGER;
-			case 1:		return LONG;
-			case 2:		return FLOAT;
-			case 3:		return DOUBLE;
+			case 0:		return StackJavaType.INTEGER;
+			case 1:		return StackJavaType.LONG;
+			case 2:		return StackJavaType.FLOAT;
+			case 3:		return StackJavaType.DOUBLE;
 		}
 		
 		// {@squirreljme.error JC1s Invalid stack Java type.}

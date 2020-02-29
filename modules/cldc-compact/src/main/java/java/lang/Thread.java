@@ -110,8 +110,7 @@ public class Thread
 	private volatile boolean _isalive;
 	
 	/** The priority of the thread. */
-	private volatile int _priority =
-		NORM_PRIORITY;
+	private volatile int _priority = Thread.NORM_PRIORITY;
 	
 	/** Is this thread interrupted? */
 	volatile boolean _interrupted;
@@ -124,7 +123,7 @@ public class Thread
 	 */
 	public Thread()
 	{
-		this(null, _USE_FAKE_NAME);
+		this(null, Thread._USE_FAKE_NAME);
 	}
 	
 	/**
@@ -136,7 +135,7 @@ public class Thread
 	 */
 	public Thread(Runnable __r)
 	{
-		this(__r, _USE_FAKE_NAME);
+		this(__r, Thread._USE_FAKE_NAME);
 	}
 	
 	/**
@@ -165,7 +164,8 @@ public class Thread
 	public Thread(Runnable __r, String __n)
 		throws NullPointerException
 	{
-		this(__n, (__r == null ? _START_SELF_RUNNABLE : _START_GIVEN_RUNNABLE),
+		this(__n, (__r == null ? Thread._START_SELF_RUNNABLE :
+				Thread._START_GIVEN_RUNNABLE),
 			null, __r);
 	}
 	
@@ -197,7 +197,7 @@ public class Thread
 		int virtid;
 		synchronized (Thread.class)
 		{
-			this._virtid = (virtid = _NEXT_VIRTUAL_ID++);
+			this._virtid = (virtid = Thread._NEXT_VIRTUAL_ID++);
 		}
 		
 		// Now register this thread in the main objects
@@ -224,17 +224,17 @@ public class Thread
 		int virtid;
 		synchronized (Thread.class)
 		{
-			this._virtid = (virtid = _NEXT_VIRTUAL_ID++);
+			this._virtid = (virtid = Thread._NEXT_VIRTUAL_ID++);
 		}
 		
 		// Set
-		this._name = (__n == _USE_FAKE_NAME ? "Thread-" + virtid : __n);
+		this._name = (__n == Thread._USE_FAKE_NAME ? "Thread-" + virtid : __n);
 		this._startkind = __rk;
 		this._runmethod = __mm;
 		this._runargument = __ma;
 		
 		// The main thread is implicitly started
-		boolean implicitstart = (__rk == _START_MAIN || __rk == _START_MIDLET);
+		boolean implicitstart = (__rk == Thread._START_MAIN || __rk == Thread._START_MIDLET);
 		this._started = implicitstart;
 	}
 	
@@ -438,7 +438,7 @@ public class Thread
 		throws IllegalArgumentException, SecurityException
 	{
 		// {@squirreljme.error ZZ20 Invalid priority.}
-		if (__p < MIN_PRIORITY || __p > MAX_PRIORITY)
+		if (__p < Thread.MIN_PRIORITY || __p > Thread.MAX_PRIORITY)
 			throw new IllegalArgumentException("ZZ20");
 		
 		// Check access
@@ -518,7 +518,7 @@ public class Thread
 		int rid = TaskAccess.currentThread();
 		
 		// If the map is not initialized yet, ignore
-		Map<Integer, Thread> byrealid = _BY_REALID;
+		Map<Integer, Thread> byrealid = Thread._BY_REALID;
 		if (byrealid == null)
 			return null;
 		
@@ -674,7 +674,7 @@ public class Thread
 		// Signal anything waiting on the class itself, to indicate that
 		// a thread has finished
 		int startkind = this._startkind;
-		if (startkind != _START_MAIN && startkind != _START_MIDLET)
+		if (startkind != Thread._START_MAIN && startkind != Thread._START_MIDLET)
 			synchronized (Thread.class)
 			{
 				Thread.class.notifyAll();
@@ -695,8 +695,8 @@ public class Thread
 	{
 		// Get the kind and determine if this is a main entry point
 		int startkind = this._startkind;
-		boolean ismain = (startkind == _START_MAIN ||
-			startkind == _START_MIDLET);
+		boolean ismain = (startkind == Thread._START_MAIN ||
+			startkind == Thread._START_MIDLET);
 		
 		// We need to lock because the real ID might just not get assigned
 		// yet here.
@@ -741,24 +741,24 @@ public class Thread
 			switch (this._startkind)
 			{
 					// Start Runnable in this instance (extended from)
-				case _START_SELF_RUNNABLE:
+				case Thread._START_SELF_RUNNABLE:
 					this.run();
 					break;
 					
 					// Start the given runnable
-				case _START_GIVEN_RUNNABLE:
+				case Thread._START_GIVEN_RUNNABLE:
 					((Runnable)runargument).run();
 					break;
 					
 					// Start MIDlet, construct then startApp()
-				case _START_MIDLET:
+				case Thread._START_MIDLET:
 					ObjectAccess.invokeStatic(runmethod,
 						ObjectAccess.classByName((String)runargument).
 						__newInstance());
 					break;
 					
 					// Start main(String[]) method
-				case _START_MAIN:
+				case Thread._START_MAIN:
 					ObjectAccess.invokeStatic(runmethod, runargument);
 					break;
 					

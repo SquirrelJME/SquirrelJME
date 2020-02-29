@@ -16,7 +16,6 @@ public class NetworkInterface
 {
 	public NetworkInterface()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

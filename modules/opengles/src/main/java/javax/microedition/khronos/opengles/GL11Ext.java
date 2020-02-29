@@ -18,104 +18,95 @@ import java.nio.ShortBuffer;
 public interface GL11Ext
 	extends GL
 {
-	public static final int GL_MATRIX_INDEX_ARRAY_BUFFER_BINDING_OES =
+	int GL_MATRIX_INDEX_ARRAY_BUFFER_BINDING_OES =
 		35742;
 	
-	public static final int GL_MATRIX_INDEX_ARRAY_OES =
+	int GL_MATRIX_INDEX_ARRAY_OES =
 		34884;
 	
-	public static final int GL_MATRIX_INDEX_ARRAY_POINTER_OES =
+	int GL_MATRIX_INDEX_ARRAY_POINTER_OES =
 		34889;
 	
-	public static final int GL_MATRIX_INDEX_ARRAY_SIZE_OES =
+	int GL_MATRIX_INDEX_ARRAY_SIZE_OES =
 		34886;
 	
-	public static final int GL_MATRIX_INDEX_ARRAY_STRIDE_OES =
+	int GL_MATRIX_INDEX_ARRAY_STRIDE_OES =
 		34888;
 	
-	public static final int GL_MATRIX_INDEX_ARRAY_TYPE_OES =
+	int GL_MATRIX_INDEX_ARRAY_TYPE_OES =
 		34887;
 	
-	public static final int GL_MATRIX_PALETTE_OES =
+	int GL_MATRIX_PALETTE_OES =
 		34880;
 	
-	public static final int GL_MAX_PALETTE_MATRICES_OES =
+	int GL_MAX_PALETTE_MATRICES_OES =
 		34882;
 	
-	public static final int GL_MAX_VERTEX_UNITS_OES =
+	int GL_MAX_VERTEX_UNITS_OES =
 		34468;
 	
-	public static final int GL_TEXTURE_CROP_RECT_OES =
+	int GL_TEXTURE_CROP_RECT_OES =
 		35741;
 	
-	public static final int GL_WEIGHT_ARRAY_BUFFER_BINDING_OES =
+	int GL_WEIGHT_ARRAY_BUFFER_BINDING_OES =
 		34974;
 	
-	public static final int GL_WEIGHT_ARRAY_OES =
+	int GL_WEIGHT_ARRAY_OES =
 		34477;
 	
-	public static final int GL_WEIGHT_ARRAY_POINTER_OES =
+	int GL_WEIGHT_ARRAY_POINTER_OES =
 		34476;
 	
-	public static final int GL_WEIGHT_ARRAY_SIZE_OES =
+	int GL_WEIGHT_ARRAY_SIZE_OES =
 		34475;
 	
-	public static final int GL_WEIGHT_ARRAY_STRIDE_OES =
+	int GL_WEIGHT_ARRAY_STRIDE_OES =
 		34474;
 	
-	public static final int GL_WEIGHT_ARRAY_TYPE_OES =
+	int GL_WEIGHT_ARRAY_TYPE_OES =
 		34473;
 	
-	public abstract void glCurrentPaletteMatrixOES(int __a);
+	void glCurrentPaletteMatrixOES(int __a);
 	
-	public abstract void glDrawTexfOES(float __a, float __b, float __c, float
-		__d, float __e);
+	void glDrawTexfOES(float __a, float __b, float __c, float __d, float __e);
 	
-	public abstract void glDrawTexfvOES(float[] __a, int __b);
+	void glDrawTexfvOES(float[] __a, int __b);
 	
-	public abstract void glDrawTexfvOES(FloatBuffer __a);
+	void glDrawTexfvOES(FloatBuffer __a);
 	
-	public abstract void glDrawTexiOES(int __a, int __b, int __c, int __d, 
-		int __e);
+	void glDrawTexiOES(int __a, int __b, int __c, int __d, int __e);
 	
-	public abstract void glDrawTexivOES(int[] __a, int __b);
+	void glDrawTexivOES(int[] __a, int __b);
 	
-	public abstract void glDrawTexivOES(IntBuffer __a);
+	void glDrawTexivOES(IntBuffer __a);
 	
-	public abstract void glDrawTexsOES(short __a, short __b, short __c, short
-		__d, short __e);
+	void glDrawTexsOES(short __a, short __b, short __c, short __d, short __e);
 	
-	public abstract void glDrawTexsvOES(short[] __a, int __b);
+	void glDrawTexsvOES(short[] __a, int __b);
 	
-	public abstract void glDrawTexsvOES(ShortBuffer __a);
+	void glDrawTexsvOES(ShortBuffer __a);
 	
-	public abstract void glDrawTexxOES(int __a, int __b, int __c, int __d, 
-		int __e);
+	void glDrawTexxOES(int __a, int __b, int __c, int __d, int __e);
 	
-	public abstract void glDrawTexxvOES(int[] __a, int __b);
+	void glDrawTexxvOES(int[] __a, int __b);
 	
-	public abstract void glDrawTexxvOES(IntBuffer __a);
+	void glDrawTexxvOES(IntBuffer __a);
 	
-	public abstract void glEnable(int __a);
+	void glEnable(int __a);
 	
-	public abstract void glEnableClientState(int __a);
+	void glEnableClientState(int __a);
 	
-	public abstract void glLoadPaletteFromModelViewMatrixOES();
+	void glLoadPaletteFromModelViewMatrixOES();
 	
-	public abstract void glMatrixIndexPointerOES(int __a, int __b, int __c, 
-		int __d);
+	void glMatrixIndexPointerOES(int __a, int __b, int __c, int __d);
 	
-	public abstract void glMatrixIndexPointerOES(int __a, int __b, int __c, 
-		Buffer __d);
+	void glMatrixIndexPointerOES(int __a, int __b, int __c, Buffer __d);
 	
-	public abstract void glTexParameterfv(int __a, int __b, float[] __c, int 
-		__d);
+	void glTexParameterfv(int __a, int __b, float[] __c, int __d);
 	
-	public abstract void glWeightPointerOES(int __a, int __b, int __c, int 
-		__d);
+	void glWeightPointerOES(int __a, int __b, int __c, int __d);
 	
-	public abstract void glWeightPointerOES(int __a, int __b, int __c, Buffer
-		__d);
+	void glWeightPointerOES(int __a, int __b, int __c, Buffer __d);
 }
 
 

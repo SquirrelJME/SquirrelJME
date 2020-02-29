@@ -21,85 +21,85 @@ import javax.microedition.io.StreamConnection;
 public interface FileConnection
 	extends StreamConnection
 {
-	public abstract long availableSize();
+	long availableSize();
 	
-	public abstract boolean canRead();
+	boolean canRead();
 	
-	public abstract boolean canWrite();
+	boolean canWrite();
 	
-	public abstract void create()
+	void create()
 		throws IOException;
 	
-	public abstract void delete()
+	void delete()
 		throws IOException;
 	
-	public abstract long directorySize(boolean __a)
+	long directorySize(boolean __a)
 		throws IOException;
 	
-	public abstract boolean exists();
+	boolean exists();
 	
-	public abstract long fileSize()
+	long fileSize()
 		throws IOException;
 	
-	public abstract String getName();
+	String getName();
 	
-	public abstract String getPath();
+	String getPath();
 	
-	public abstract String getURL();
+	String getURL();
 	
-	public abstract boolean isDirectory();
+	boolean isDirectory();
 	
-	public abstract boolean isHidden();
+	boolean isHidden();
 	
-	public abstract boolean isOpen();
+	boolean isOpen();
 	
-	public abstract long lastModified();
+	long lastModified();
 	
-	public abstract Enumeration list()
+	Enumeration list()
 		throws IOException;
 	
-	public abstract Enumeration list(String __a, boolean __b)
+	Enumeration list(String __a, boolean __b)
 		throws IOException;
 	
-	public abstract void mkdir()
+	void mkdir()
 		throws IOException;
 	
-	public abstract DataInputStream openDataInputStream()
+	DataInputStream openDataInputStream()
 		throws IOException;
 	
-	public abstract DataOutputStream openDataOutputStream()
+	DataOutputStream openDataOutputStream()
 		throws IOException;
 	
-	public abstract InputStream openInputStream()
+	InputStream openInputStream()
 		throws IOException;
 	
-	public abstract OutputStream openOutputStream()
+	OutputStream openOutputStream()
 		throws IOException;
 	
-	public abstract OutputStream openOutputStream(long __a)
+	OutputStream openOutputStream(long __a)
 		throws IOException;
 	
-	public abstract void rename(String __a)
+	void rename(String __a)
 		throws IOException;
 	
-	public abstract void setFileConnection(String __a)
+	void setFileConnection(String __a)
 		throws IOException;
 	
-	public abstract void setHidden(boolean __a)
+	void setHidden(boolean __a)
 		throws IOException;
 	
-	public abstract void setReadable(boolean __a)
+	void setReadable(boolean __a)
 		throws IOException;
 	
-	public abstract void setWritable(boolean __a)
+	void setWritable(boolean __a)
 		throws IOException;
 	
-	public abstract long totalSize();
+	long totalSize();
 	
-	public abstract void truncate(long __a)
+	void truncate(long __a)
 		throws IOException;
 	
-	public abstract long usedSize();
+	long usedSize();
 }
 
 

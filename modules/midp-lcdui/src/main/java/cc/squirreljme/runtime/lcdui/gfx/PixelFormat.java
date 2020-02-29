@@ -254,16 +254,16 @@ public enum PixelFormat
 	{
 		switch (__id)
 		{
-			case 0:		return BYTE_INDEXED1;
-			case 1:		return BYTE_INDEXED2;
-			case 2:		return BYTE_INDEXED4;
-			case 3:		return BYTE_INDEXED8;
-			case 4:		return BYTE_RGB332;
-			case 5:		return SHORT_INDEXED16;
-			case 6:		return SHORT_ARGB4444;
-			case 7:		return SHORT_RGB565;
-			case 8:		return INTEGER_ARGB8888;
-			case 9:		return INTEGER_RGB888;
+			case 0:		return PixelFormat.BYTE_INDEXED1;
+			case 1:		return PixelFormat.BYTE_INDEXED2;
+			case 2:		return PixelFormat.BYTE_INDEXED4;
+			case 3:		return PixelFormat.BYTE_INDEXED8;
+			case 4:		return PixelFormat.BYTE_RGB332;
+			case 5:		return PixelFormat.SHORT_INDEXED16;
+			case 6:		return PixelFormat.SHORT_ARGB4444;
+			case 7:		return PixelFormat.SHORT_RGB565;
+			case 8:		return PixelFormat.INTEGER_ARGB8888;
+			case 9:		return PixelFormat.INTEGER_RGB888;
 			
 				// {@squirreljme.error EB0k Unknown pixel buffer format. (ID)}
 			default:
@@ -285,22 +285,22 @@ public enum PixelFormat
 		switch (__id)
 		{
 			case Framebuffer.FORMAT_INTEGER_RGB888:
-				return INTEGER_RGB888;
+				return PixelFormat.INTEGER_RGB888;
 			
 			case Framebuffer.FORMAT_BYTE_INDEXED:
-				return BYTE_INDEXED8;
+				return PixelFormat.BYTE_INDEXED8;
 			
 			case Framebuffer.FORMAT_SHORT_RGB565:
-				return SHORT_RGB565;
+				return PixelFormat.SHORT_RGB565;
 			
 			case Framebuffer.FORMAT_PACKED_ONE:
-				return BYTE_INDEXED1;
+				return PixelFormat.BYTE_INDEXED1;
 				
 			case Framebuffer.FORMAT_PACKED_TWO:
-				return BYTE_INDEXED2;
+				return PixelFormat.BYTE_INDEXED2;
 				
 			case Framebuffer.FORMAT_PACKED_FOUR:
-				return BYTE_INDEXED4;
+				return PixelFormat.BYTE_INDEXED4;
 			
 				// {@squirreljme.error EB3a Unknown frame buffer pixel buffer
 				// format. (ID}}

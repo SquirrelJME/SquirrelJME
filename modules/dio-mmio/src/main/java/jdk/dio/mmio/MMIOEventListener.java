@@ -15,6 +15,6 @@ import jdk.dio.DeviceEventListener;
 public interface MMIOEventListener
 	extends DeviceEventListener
 {
-	public abstract void eventDispatched(MMIOEvent __e);
+	void eventDispatched(MMIOEvent __e);
 }
 

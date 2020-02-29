@@ -354,7 +354,7 @@ public class List
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// If deselecting or using this on multiple lists, just direct set
-		if (!__e || this._type == MULTIPLE)
+		if (!__e || this._type == Choice.MULTIPLE)
 			items.get(__i)._selected = __e;
 		
 		// Otherwise only select the item that matches the index

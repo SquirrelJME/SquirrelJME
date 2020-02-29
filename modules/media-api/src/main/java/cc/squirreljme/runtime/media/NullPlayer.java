@@ -38,8 +38,7 @@ public final class NullPlayer
 		Manager.getSystemTimeBase();
 	
 	/** The state of the player. */
-	private volatile int _state =
-		UNREALIZED;
+	private volatile int _state = Player.UNREALIZED;
 	
 	/**
 	 * Initializes the player.
@@ -69,7 +68,7 @@ public final class NullPlayer
 			return;
 		
 		// {@squirreljme.error EA01 Null Player has been closed.}
-		if (this._state == CLOSED)
+		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA01");
 		
 		// Add unique listener
@@ -88,9 +87,9 @@ public final class NullPlayer
 	@Override
 	public final void close()
 	{
-		if (this._state != CLOSED)
+		if (this._state != Player.CLOSED)
 		{
-			this._state = CLOSED;
+			this._state = Player.CLOSED;
 			
 			// Send event
 			this.__event(PlayerListener.CLOSED, null);
@@ -105,10 +104,10 @@ public final class NullPlayer
 	public final void deallocate()
 	{
 		// {@squirreljme.error EA03 Null Player has been closed.}
-		if (this._state == CLOSED)
+		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA03");
 		
-		if (this._state == STARTED)
+		if (this._state == Player.STARTED)
 		{
 			// Implicit stop state
 			try
@@ -121,7 +120,7 @@ public final class NullPlayer
 			}
 			
 			// Become realized
-			this._state = REALIZED;
+			this._state = Player.REALIZED;
 		}
 	}
 	
@@ -221,11 +220,11 @@ public final class NullPlayer
 		throws MediaException
 	{
 		// {@squirreljme.error EA04 Null Player has been closed.}
-		if (this._state == CLOSED)
+		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA04");
 		
-		if (this._state != UNREALIZED)
-			this._state = REALIZED;
+		if (this._state != Player.UNREALIZED)
+			this._state = Player.REALIZED;
 	}
 	
 	/**
@@ -240,7 +239,7 @@ public final class NullPlayer
 			return;
 		
 		// {@squirreljme.error EA02 Null Player has been closed.}
-		if (this._state == CLOSED)
+		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA02");
 		
 		// Remove it
@@ -291,12 +290,12 @@ public final class NullPlayer
 		throws MediaException
 	{
 		// {@squirreljme.error EA05 Null Player has been closed.}
-		if (this._state == CLOSED)
+		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA05");
 		
-		if (this._state != STARTED || this._state == PREFETCHED)
+		if (this._state != Player.STARTED || this._state == Player.PREFETCHED)
 		{
-			this._state = STARTED;
+			this._state = Player.STARTED;
 			
 			// Send event
 			this.__event(PlayerListener.STARTED,
@@ -313,12 +312,12 @@ public final class NullPlayer
 		throws MediaException
 	{
 		// {@squirreljme.error EA06 Null Player has been closed.}
-		if (this._state == CLOSED)
+		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA06");
 		
-		if (this._state != STARTED)
+		if (this._state != Player.STARTED)
 		{
-			this._state = PREFETCHED;
+			this._state = Player.PREFETCHED;
 			
 			// Send event
 			this.__event(PlayerListener.STOPPED,

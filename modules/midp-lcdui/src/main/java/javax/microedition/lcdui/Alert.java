@@ -34,8 +34,7 @@ public class Alert
 	volatile AlertType _type;
 	
 	/** The duration the alert should last in milliseconds. */
-	volatile int _timeout =
-		FOREVER;
+	volatile int _timeout = Alert.FOREVER;
 	
 	/**
 	 * Initializes the alert with just a title.
@@ -203,7 +202,7 @@ public class Alert
 	{
 		// {@squirreljme.error EB19 The specified number of milliseconds is
 		// negative. (The number of milliseconds specified)}
-		if (__ms < 0 && __ms != FOREVER)
+		if (__ms < 0 && __ms != Alert.FOREVER)
 			throw new IllegalArgumentException(String.format("EB19 %d", __ms));
 		
 		// Set

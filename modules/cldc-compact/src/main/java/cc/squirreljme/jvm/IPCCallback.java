@@ -33,7 +33,7 @@ public interface IPCCallback
 	 * @return The result of the IPC call.
 	 * @since 2019/12/28
 	 */
-	public abstract long ipcCall(int __tid, int __ipcid, int __a, int __b,
-		int __c, int __d, int __e, int __f, int __g, int __h);
+	long ipcCall(int __tid, int __ipcid, int __a, int __b, int __c, int __d,
+		int __e, int __f, int __g, int __h);
 }
 

@@ -199,7 +199,7 @@ final class __SuiteTracker__
 				t.printStackTrace();
 				
 				// And use some other error code to indicate failure 
-				__done(InstallErrorCodes.OTHER_ERROR);
+				this.__done(InstallErrorCodes.OTHER_ERROR);
 			}
 		}
 		

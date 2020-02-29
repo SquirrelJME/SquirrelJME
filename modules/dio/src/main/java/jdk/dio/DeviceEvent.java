@@ -27,7 +27,6 @@ public abstract class DeviceEvent<P extends Device<? super P>>
 	
 	public DeviceEvent()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

@@ -85,7 +85,7 @@ public class SummerCoatFactory
 		VirtualMemory vmem = new VirtualMemory();
 		
 		// The ROM always starts here
-		int rombase = SUITE_BASE_ADDR,
+		int rombase = SummerCoatFactory.SUITE_BASE_ADDR,
 			romsize = 0;
 		
 		// Try to load a specific ROM file instead of the dynamically
@@ -157,11 +157,12 @@ public class SummerCoatFactory
 		
 		// Initialize RAM
 		int ramsize = SummerCoatFactory.DEFAULT_RAM_SIZE,
-			ramstart = RAM_START_ADDRESS;
+			ramstart = SummerCoatFactory.RAM_START_ADDRESS;
 		vmem.mapRegion(new RawMemory(ramstart, ramsize));
 		
 		// Initialize configuration memory
-		WritableMemory cmem = new RawMemory(CONFIG_BASE_ADDR, CONFIG_SIZE);
+		WritableMemory cmem = new RawMemory(SummerCoatFactory.CONFIG_BASE_ADDR,
+			SummerCoatFactory.CONFIG_SIZE);
 		vmem.mapRegion(cmem);
 		
 		// Read the boot JAR offset of this packfile
@@ -186,7 +187,8 @@ public class SummerCoatFactory
 		
 		// Write configuration information
 		try (DataOutputStream dos = new DataOutputStream(
-			new WritableMemoryOutputStream(cmem, 0, CONFIG_SIZE)))
+			new WritableMemoryOutputStream(cmem, 0,
+				SummerCoatFactory.CONFIG_SIZE)))
 		{
 			// Version
 			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_VERSION,
@@ -369,7 +371,7 @@ public class SummerCoatFactory
 		NativeCPU cpu = new NativeCPU(ms, vmem, 0, __ps);
 		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh.bootstart,
 			ramstart, ramsize, rombase, romsize,
-			CONFIG_BASE_ADDR, CONFIG_SIZE);
+			SummerCoatFactory.CONFIG_BASE_ADDR, SummerCoatFactory.CONFIG_SIZE);
 		
 		// Seed initial frame registers
 		iframe._registers[NativeCode.POOL_REGISTER] =

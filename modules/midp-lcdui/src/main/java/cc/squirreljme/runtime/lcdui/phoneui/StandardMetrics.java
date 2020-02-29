@@ -23,12 +23,10 @@ public final class StandardMetrics
 		16;
 	
 	/** Height of the title bar. */
-	public static final int TITLE_BAR_HEIGHT =
-		UI_FONT_SIZE;
+	public static final int TITLE_BAR_HEIGHT = StandardMetrics.UI_FONT_SIZE;
 	
 	/** Height of the command bar. */
-	public static final int COMMAND_BAR_HEIGHT =
-		UI_FONT_SIZE;
+	public static final int COMMAND_BAR_HEIGHT = StandardMetrics.UI_FONT_SIZE;
 	
 	/** The background bar color. */
 	public static final int BACKGROUND_BAR_COLOR =
@@ -47,8 +45,7 @@ public final class StandardMetrics
 		0xFF_FF00FF;
 	
 	/** Height of the ticker bar. */
-	public static final int TICKER_BAR_HEIGHT =
-		UI_FONT_SIZE;
+	public static final int TICKER_BAR_HEIGHT = StandardMetrics.UI_FONT_SIZE;
 	
 	/** Background color of the ticker bar. */
 	public static final int BACKGROUND_TICKER_COLOR =
@@ -63,8 +60,7 @@ public final class StandardMetrics
 		"sansserif";
 	
 	/** The height of list items. */
-	public static final int LIST_ITEM_HEIGHT =
-		UI_FONT_SIZE;
+	public static final int LIST_ITEM_HEIGHT = StandardMetrics.UI_FONT_SIZE;
 	
 	/** Enabled normal foreground. */
 	public static final int ENABLED_NORMAL_FOREGROUND =
@@ -127,14 +123,14 @@ public final class StandardMetrics
 	{
 		if (__en)
 			if (__sl)
-				return ENABLED_SELECTED_BACKGROUND;
+				return StandardMetrics.ENABLED_SELECTED_BACKGROUND;
 			else
-				return ENABLED_NORMAL_BACKGROUND;
+				return StandardMetrics.ENABLED_NORMAL_BACKGROUND;
 		else
 			if (__sl)
-				return DISABLED_SELECTED_BACKGROUND;
+				return StandardMetrics.DISABLED_SELECTED_BACKGROUND;
 			else
-				return DISABLED_NORMAL_BACKGROUND;
+				return StandardMetrics.DISABLED_NORMAL_BACKGROUND;
 	}
 	
 	/**
@@ -149,14 +145,14 @@ public final class StandardMetrics
 	{
 		if (__en)
 			if (__sl)
-				return ENABLED_SELECTED_FOREGROUND;
+				return StandardMetrics.ENABLED_SELECTED_FOREGROUND;
 			else
-				return ENABLED_NORMAL_FOREGROUND;
+				return StandardMetrics.ENABLED_NORMAL_FOREGROUND;
 		else
 			if (__sl)
-				return DISABLED_SELECTED_FOREGROUND;
+				return StandardMetrics.DISABLED_SELECTED_FOREGROUND;
 			else
-				return DISABLED_NORMAL_FOREGROUND;
+				return StandardMetrics.DISABLED_NORMAL_FOREGROUND;
 	}
 	
 	/**
@@ -167,7 +163,8 @@ public final class StandardMetrics
 	 */
 	public static final Font itemLabelFont()
 	{
-		return Font.getFont(LIST_ITEM_FONT, 0, LIST_ITEM_HEIGHT);
+		return Font.getFont(StandardMetrics.LIST_ITEM_FONT, 0,
+			StandardMetrics.LIST_ITEM_HEIGHT);
 	}
 }
 

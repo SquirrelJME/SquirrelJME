@@ -13,64 +13,64 @@ package javax.microedition.lcdui;
 
 public interface Choice
 {
-	public static final int EXCLUSIVE =
+	int EXCLUSIVE =
 		1;
 	
-	public static final int IMPLICIT =
+	int IMPLICIT =
 		3;
 	
-	public static final int MULTIPLE =
+	int MULTIPLE =
 		2;
 	
-	public static final int POPUP =
+	int POPUP =
 		4;
 	
-	public static final int TEXT_WRAP_DEFAULT =
+	int TEXT_WRAP_DEFAULT =
 		0;
 	
-	public static final int TEXT_WRAP_OFF =
+	int TEXT_WRAP_OFF =
 		2;
 	
-	public static final int TEXT_WRAP_ON =
+	int TEXT_WRAP_ON =
 		1;
 	
-	public abstract int append(String __a, Image __b);
+	int append(String __a, Image __b);
 	
-	public abstract void delete(int __a);
+	void delete(int __a);
 	
-	public abstract void deleteAll();
+	void deleteAll();
 	
-	public abstract int getFitPolicy();
+	int getFitPolicy();
 	
-	public abstract Font getFont(int __a);
+	Font getFont(int __a);
 	
-	public abstract Image getImage(int __a);
+	Image getImage(int __a);
 	
-	public abstract int getSelectedFlags(boolean[] __a);
+	int getSelectedFlags(boolean[] __a);
 	
-	public abstract int getSelectedIndex();
+	int getSelectedIndex();
 	
-	public abstract String getString(int __a);
+	String getString(int __a);
 	
-	public abstract void insert(int __a, String __b, Image __c);
+	void insert(int __a, String __b, Image __c);
 	
-	public abstract boolean isEnabled(int __i);
+	boolean isEnabled(int __i);
 	
-	public abstract boolean isSelected(int __a);
+	boolean isSelected(int __a);
 	
-	public abstract void set(int __a, String __b, Image __c);
+	void set(int __a, String __b, Image __c);
 	
-	public abstract void setEnabled(int __i, boolean __e);
+	void setEnabled(int __i, boolean __e);
 	
-	public abstract void setFitPolicy(int __a);
+	void setFitPolicy(int __a);
 	
-	public abstract void setFont(int __a, Font __b);
+	void setFont(int __a, Font __b);
 	
-	public abstract void setSelectedFlags(boolean[] __a);
+	void setSelectedFlags(boolean[] __a);
 	
-	public abstract void setSelectedIndex(int __a, boolean __b);
+	void setSelectedIndex(int __a, boolean __b);
 	
-	public abstract int size();
+	int size();
 }
 
 

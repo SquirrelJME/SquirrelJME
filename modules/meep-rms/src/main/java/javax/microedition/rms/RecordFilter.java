@@ -29,6 +29,6 @@ public interface RecordFilter
 	 * @return {@code true} if the specified record is a match.
 	 * @since 2017/02/26
 	 */
-	public abstract boolean matches(byte[] __b);
+	boolean matches(byte[] __b);
 }
 

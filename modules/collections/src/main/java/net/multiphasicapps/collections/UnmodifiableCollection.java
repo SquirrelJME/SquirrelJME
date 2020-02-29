@@ -42,7 +42,7 @@ public final class UnmodifiableCollection<T>
 			throw new NullPointerException("NARG");
 		
 		// Wrap it
-		wrapped = __w;
+		this.wrapped = __w;
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public final class UnmodifiableCollection<T>
 	@Override
 	public boolean contains(Object __o)
 	{
-		return wrapped.contains(__o);
+		return this.wrapped.contains(__o);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public final class UnmodifiableCollection<T>
 	@Override
 	public boolean isEmpty()
 	{
-		return wrapped.isEmpty();
+		return this.wrapped.isEmpty();
 	}
 	
 	/**
@@ -75,8 +75,7 @@ public final class UnmodifiableCollection<T>
 		return new Iterator<T>()
 			{
 				/** The base iterator. */
-				final Iterator<T> _base =
-					wrapped.iterator();
+				final Iterator<T> _base = UnmodifiableCollection.this.wrapped.iterator();
 				
 				/**
 				 * {@inheritDoc}
@@ -85,7 +84,7 @@ public final class UnmodifiableCollection<T>
 				@Override
 				public boolean hasNext()
 				{
-					return _base.hasNext();
+					return this._base.hasNext();
 				}
 				
 				/**
@@ -95,7 +94,7 @@ public final class UnmodifiableCollection<T>
 				@Override
 				public T next()
 				{
-					return _base.next();
+					return this._base.next();
 				}
 				
 				/**
@@ -117,7 +116,7 @@ public final class UnmodifiableCollection<T>
 	@Override
 	public int size()
 	{
-		return wrapped.size();
+		return this.wrapped.size();
 	}
 	
 	/**

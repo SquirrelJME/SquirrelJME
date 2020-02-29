@@ -16,7 +16,6 @@ public abstract class Layer
 {
 	Layer()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

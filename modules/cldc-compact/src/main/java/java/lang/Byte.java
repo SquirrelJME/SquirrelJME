@@ -204,7 +204,7 @@ public final class Byte
 		
 		// {@squirreljme.error ZZ0t Byte value out of bounds.}
 		int val = Integer.decode(__s);
-		if (val < MIN_VALUE || val > MAX_VALUE)
+		if (val < Byte.MIN_VALUE || val > Byte.MAX_VALUE)
 			throw new NumberFormatException("ZZ0t");
 		
 		return Byte.valueOf((byte)val);
@@ -228,7 +228,7 @@ public final class Byte
 		
 		// {@squirreljme.error ZZ0u Byte value out of range.}
 		int val = Integer.parseInt(__s, __r);
-		if (val < MIN_VALUE || val > MAX_VALUE)
+		if (val < Byte.MIN_VALUE || val > Byte.MAX_VALUE)
 			throw new NumberFormatException("ZZ0u");
 		
 		return (byte)val;

@@ -19,22 +19,20 @@ import jdk.dio.UnavailableDeviceException;
 public interface MMIODevice
 	extends Device<MMIODevice>
 {
-	public abstract RawBlock getAsRawBlock()
+	RawBlock getAsRawBlock()
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract RawBlock getBlock(String __n)
+	RawBlock getBlock(String __n)
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
-	public abstract void setMMIOEventListener(int __evid, int __cdx,
-		ByteBuffer __cbuf, MMIOEventListener __el)
-		throws ClosedDeviceException, IOException;
-	
-	public abstract void setMMIOEventListener(int __evid,
+	void setMMIOEventListener(int __evid, int __cdx, ByteBuffer __cbuf,
 		MMIOEventListener __el)
 		throws ClosedDeviceException, IOException;
 	
-	public abstract void setMMIOEventListener(int __evid, String __cn,
-		MMIOEventListener __el)
+	void setMMIOEventListener(int __evid, MMIOEventListener __el)
+		throws ClosedDeviceException, IOException;
+	
+	void setMMIOEventListener(int __evid, String __cn, MMIOEventListener __el)
 		throws ClosedDeviceException, IOException;
 }
 

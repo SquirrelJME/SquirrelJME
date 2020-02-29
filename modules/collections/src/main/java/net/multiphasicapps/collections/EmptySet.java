@@ -98,12 +98,12 @@ public final class EmptySet
 	public static <V> Set<V> empty()
 	{
 		// Get reference
-		Reference<Set> ref = _EMPTY_SET;
+		Reference<Set> ref = EmptySet._EMPTY_SET;
 		Set rv;
 		
 		// Needs creation?
 		if (ref == null || null == (rv = ref.get()))
-			_EMPTY_SET = new WeakReference<>((rv = new EmptySet()));
+			EmptySet._EMPTY_SET = new WeakReference<>((rv = new EmptySet()));
 		
 		// Return it
 		return (Set<V>)rv;

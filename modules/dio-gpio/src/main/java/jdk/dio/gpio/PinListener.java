@@ -15,7 +15,7 @@ import jdk.dio.DeviceEventListener;
 public interface PinListener
 	extends DeviceEventListener
 {
-	public abstract void valueChanged(PinEvent __a);
+	void valueChanged(PinEvent __a);
 }
 
 

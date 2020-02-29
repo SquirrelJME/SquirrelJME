@@ -137,7 +137,7 @@ public class GenerateTestsListTask
 	{
 		// We might need to set an output potentially
 		Project project = this.getProject();
-		SourceSetOutput outSet = getProject().getConvention().
+		SourceSetOutput outSet = this.getProject().getConvention().
 			getPlugin(JavaPluginConvention.class).
 			getSourceSets().getByName(SourceSet.TEST_SOURCE_SET_NAME).
 			getOutput();
@@ -174,7 +174,7 @@ public class GenerateTestsListTask
 			{
 				Path path = file.toPath();
 				
-				if (__isTest(path))
+				if (GenerateTestsListTask.__isTest(path))
 					result.add(new __Input__(path, baseDir.relativize(path)));
 			}
 		}
@@ -205,7 +205,8 @@ public class GenerateTestsListTask
 	 */
 	private Path __taskOutput()
 	{
-		return this.__outputPath().resolve(SERVICE_LIST_PATH);
+		return this.__outputPath().resolve(
+			GenerateTestsListTask.SERVICE_LIST_PATH);
 	}
 	
 	/**
@@ -217,7 +218,7 @@ public class GenerateTestsListTask
 	private FileCollection __taskOutputsAsFileCollection()
 	{
 		// There is just a single output file
-		return this.getProject().files(__taskOutput().toFile());
+		return this.getProject().files(this.__taskOutput().toFile());
 	}
 	
 	/**

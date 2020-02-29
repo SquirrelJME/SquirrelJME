@@ -16,13 +16,13 @@ import jdk.dio.ClosedDeviceException;
 public interface WindowedWatchdogTimer
 	extends WatchdogTimer
 {
-	public abstract long getClosedWindowTimeout()
+	long getClosedWindowTimeout()
 		throws IOException, ClosedDeviceException;
 	
-	public abstract void start(long __a)
+	void start(long __a)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract void start(long __a, long __b)
+	void start(long __a, long __b)
 		throws IOException, ClosedDeviceException;
 }
 

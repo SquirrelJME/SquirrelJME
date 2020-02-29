@@ -21,7 +21,6 @@ public abstract class TimeZone
 	
 	public TimeZone()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

@@ -50,7 +50,7 @@ public final class ClassPath
 		
 		// {@squirreljme.error SV0a Too many entries on the class path.}
 		int n = __cp.length;
-		if (n > (_JAR_MASK >>> _INDEX_SHIFT))
+		if (n > (ClassPath._JAR_MASK >>> ClassPath._INDEX_SHIFT))
 			throw new IllegalArgumentException("SV0a");
 		
 		// Defensive copy and check
@@ -134,13 +134,13 @@ public final class ClassPath
 		throws IndexOutOfBoundsException
 	{
 		// {@squirreljme.error SV08 Out of range resource.}
-		int cpdx = __dx >>> _INDEX_SHIFT;
+		int cpdx = __dx >>> ClassPath._INDEX_SHIFT;
 		ClassLibrary[] classpath = this.classpath;
 		if (cpdx < 0 || cpdx >= classpath.length)
 			throw new IndexOutOfBoundsException("SV08");
 		
 		// Get resource pointer from this
-		return classpath[cpdx].resourceData(__dx & _INDEX_MASK);
+		return classpath[cpdx].resourceData(__dx & ClassPath._INDEX_MASK);
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public final class ClassPath
 			
 			// Was found?
 			if (rv >= 0)
-				return (i << _INDEX_SHIFT) | rv;
+				return (i << ClassPath._INDEX_SHIFT) | rv;
 		}
 		
 		// Not found
@@ -203,7 +203,7 @@ public final class ClassPath
 		
 		// If it was found shift in
 		if (rv >= 0)
-			return (__in << _INDEX_SHIFT) | rv;
+			return (__in << ClassPath._INDEX_SHIFT) | rv;
 		
 		// Otherwise does not exist
 		return -1;
@@ -246,7 +246,7 @@ public final class ClassPath
 	 */
 	public static final int resourceIndexToJarIndex(int __rcid)
 	{
-		return (__rcid & _JAR_MASK) >>> _INDEX_SHIFT;
+		return (__rcid & ClassPath._JAR_MASK) >>> ClassPath._INDEX_SHIFT;
 	}
 }
 

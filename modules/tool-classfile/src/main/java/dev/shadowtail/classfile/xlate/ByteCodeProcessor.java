@@ -546,7 +546,7 @@ public final class ByteCodeProcessor
 	private final void __doAConstNull()
 	{
 		// -> [ref]
-		JavaStackResult result = state.stack.doStack(0, JavaType.OBJECT);
+		JavaStackResult result = this.state.stack.doStack(0, JavaType.OBJECT);
 		this.__update(result);
 		
 		// Stop pre-processing here
@@ -568,7 +568,7 @@ public final class ByteCodeProcessor
 		this._canexception = true;
 		
 		// [array] -> [len]
-		JavaStackResult result = state.stack.doStack(1, JavaType.INTEGER);
+		JavaStackResult result = this.state.stack.doStack(1, JavaType.INTEGER);
 		this.__update(result);
 		
 		// Stop pre-processing here
@@ -601,7 +601,7 @@ public final class ByteCodeProcessor
 		else
 		{
 			// Pop two
-			JavaStackResult wouldbe = state.stack.doStack(2);
+			JavaStackResult wouldbe = this.state.stack.doStack(2);
 			
 			// Get the base type
 			ClassName maybecl = wouldbe.in(0).type.type().className();
@@ -614,7 +614,7 @@ public final class ByteCodeProcessor
 		}
 		
 		// [array, index] -> [value]
-		JavaStackResult result = state.stack.doStack(2, faketype);
+		JavaStackResult result = this.state.stack.doStack(2, faketype);
 		this.__update(result);
 		
 		// Stop pre-processing here
@@ -639,7 +639,7 @@ public final class ByteCodeProcessor
 		this._canexception = true;
 		
 		// [array, index, value]
-		JavaStackResult result = state.stack.doStack(3);
+		JavaStackResult result = this.state.stack.doStack(3);
 		this.__update(result);
 		
 		// Stop pre-processing here
@@ -692,7 +692,7 @@ public final class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// [from] -> [to]
-		JavaStackResult result = state.stack.doStack(1, __to.toJavaType());
+		JavaStackResult result = this.state.stack.doStack(1, __to.toJavaType());
 		this.__update(result);
 		
 		// Stop pre-processing here
@@ -1043,7 +1043,7 @@ public final class ByteCodeProcessor
 		// Only perform the copy if the value is different, because otherwise
 		// it would have just been cached
 		if (result.in(0).register != result.out(0).register)
-			handler.doCopy(result.in(0), result.out(0));
+			this.handler.doCopy(result.in(0), result.out(0));
 	}
 	
 	/**

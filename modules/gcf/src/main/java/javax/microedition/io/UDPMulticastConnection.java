@@ -15,30 +15,30 @@ import java.io.IOException;
 public interface UDPMulticastConnection
 	extends UDPDatagramConnection
 {
-	public abstract int getTimeToLive()
+	int getTimeToLive()
 		throws IOException;
 	
-	public abstract boolean isDisableLoopback()
+	boolean isDisableLoopback()
 		throws IOException;
 	
-	public abstract boolean isJoinSupported();
+	boolean isJoinSupported();
 	
-	public abstract void join(String __a)
+	void join(String __a)
 		throws IOException;
 	
-	public abstract void leave(String __a)
+	void leave(String __a)
 		throws IOException;
 	
-	public abstract void receive(Datagram __a)
+	void receive(Datagram __a)
 		throws IOException;
 	
-	public abstract void send(Datagram __a)
+	void send(Datagram __a)
 		throws IOException;
 	
-	public abstract void setDisableLoopback(boolean __a)
+	void setDisableLoopback(boolean __a)
 		throws IOException;
 	
-	public abstract void setTimeToLive(int __a)
+	void setTimeToLive(int __a)
 		throws IOException;
 }
 

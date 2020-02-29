@@ -24,7 +24,7 @@ public interface WritableMemory
 	 * @param __v The value to write.
 	 * @since 2019/04/21
 	 */
-	public abstract void memWriteByte(int __addr, int __v);
+	void memWriteByte(int __addr, int __v);
 	
 	/**
 	 * Writes multiple bytes to memory
@@ -38,7 +38,7 @@ public interface WritableMemory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public abstract void memWriteBytes(int __a, byte[] __b, int __o, int __l);
+	void memWriteBytes(int __a, byte[] __b, int __o, int __l);
 	
 	/**
 	 * Writes a value to memory.
@@ -47,7 +47,7 @@ public interface WritableMemory
 	 * @param __v The value to write.
 	 * @since 2019/04/21
 	 */
-	public abstract void memWriteInt(int __addr, int __v);
+	void memWriteInt(int __addr, int __v);
 	
 	/**
 	 * Writes a value to memory.
@@ -56,6 +56,6 @@ public interface WritableMemory
 	 * @param __v The value to write.
 	 * @since 2019/04/21
 	 */
-	public abstract void memWriteShort(int __addr, int __v);
+	void memWriteShort(int __addr, int __v);
 }
 

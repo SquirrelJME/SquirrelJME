@@ -40,7 +40,7 @@ public class ClassFlags
 	{
 		super(ClassFlag.class, __fl);
 		
-		__checkFlags();
+		this.__checkFlags();
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class ClassFlags
 	{
 		super(ClassFlag.class, __fl);
 		
-		__checkFlags();
+		this.__checkFlags();
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class ClassFlags
 	 */
 	public final boolean isAbstract()
 	{
-		return contains(ClassFlag.ABSTRACT);
+		return this.contains(ClassFlag.ABSTRACT);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class ClassFlags
 	 */
 	public final boolean isAnnotation()
 	{
-		return contains(ClassFlag.ANNOTATION);
+		return this.contains(ClassFlag.ANNOTATION);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class ClassFlags
 	 */
 	public final boolean isEnum()
 	{
-		return contains(ClassFlag.ENUM);
+		return this.contains(ClassFlag.ENUM);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class ClassFlags
 	 */
 	public final boolean isFinal()
 	{
-		return contains(ClassFlag.FINAL);
+		return this.contains(ClassFlag.FINAL);
 	}
 	
 	/**
@@ -108,7 +108,7 @@ public class ClassFlags
 	 */
 	public final boolean isInterface()
 	{
-		return contains(ClassFlag.INTERFACE);
+		return this.contains(ClassFlag.INTERFACE);
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public class ClassFlags
 	@Override
 	public final boolean isPackagePrivate()
 	{
-		return !isPublic();
+		return !this.isPublic();
 	}
 	
 	/**
@@ -150,7 +150,7 @@ public class ClassFlags
 	@Override
 	public final boolean isPublic()
 	{
-		return contains(ClassFlag.PUBLIC);
+		return this.contains(ClassFlag.PUBLIC);
 	}
 	
 	/**
@@ -161,7 +161,7 @@ public class ClassFlags
 	 */
 	public final boolean isSpecialInvokeSpecial()
 	{
-		return contains(ClassFlag.SUPER);
+		return this.contains(ClassFlag.SUPER);
 	}
 	
 	/**
@@ -174,18 +174,18 @@ public class ClassFlags
 		throws InvalidClassFormatException
 	{
 		// Interface?
-		if (isInterface())
+		if (this.isInterface())
 		{
 			// {@squirreljme.error JC2f An interface must also be abstract.
 			// (The class flags)}
-			if (!isAbstract())
+			if (!this.isAbstract())
 				throw new InvalidClassFormatException(
 					String.format("JC2f %s", this));
 			
 			// {@squirreljme.error JC2g An interface cannot be {@code final} or
 			// {@code enum} and it must not have the special flag set. (The
 			// class flags)}
-			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
+			if (this.isFinal() || this.isSpecialInvokeSpecial() || this.isEnum())
 				throw new InvalidClassFormatException(
 					String.format("JC2g %s", this));
 		}
@@ -195,13 +195,13 @@ public class ClassFlags
 		{
 			// {@squirreljme.error JC2h Annotations must be interfaces. (The
 			// class flags)}
-			if (isAnnotation())
+			if (this.isAnnotation())
 				throw new InvalidClassFormatException(
 					String.format("JC2h %s", this));
 				
 			// {@squirreljme.error JC2i A class cannot be both {@code abstract}
 			// and {@code final}. (The class flags)}
-			if (isAbstract() && isFinal())
+			if (this.isAbstract() && this.isFinal())
 				throw new InvalidClassFormatException(
 					String.format("JC2i %s", this));
 		}

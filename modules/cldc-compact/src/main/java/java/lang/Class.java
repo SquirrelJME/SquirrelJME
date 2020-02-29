@@ -143,7 +143,7 @@ public final class Class<T>
 			return this._useassert;
 		
 		// Otherwise check it
-		return __checkAssertionStatus();
+		return this.__checkAssertionStatus();
 	}
 	
 	/**

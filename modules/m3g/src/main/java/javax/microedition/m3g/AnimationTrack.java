@@ -79,7 +79,6 @@ public class AnimationTrack
 	
 	public AnimationTrack(KeyframeSequence __a, int __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

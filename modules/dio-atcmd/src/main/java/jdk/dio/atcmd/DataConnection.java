@@ -15,7 +15,7 @@ import java.nio.channels.ByteChannel;
 public interface DataConnection
 	extends ByteChannel
 {
-	public abstract ATDevice getDevice();
+	ATDevice getDevice();
 }
 
 

@@ -286,8 +286,8 @@ public class AdvancedGraphics
 			this.clipey = (oldclipey = ey);
 		
 		// Set width/height
-		this.clipw = clipex - oldclipsx;
-		this.cliph = clipey - oldclipsy;
+		this.clipw = this.clipex - oldclipsx;
+		this.cliph = this.clipey - oldclipsy;
 	}
 	
 	/**
@@ -470,28 +470,28 @@ public class AdvancedGraphics
 					dy = __y2 - __y1;
 				
 				// Clips above the box
-				if ((outa & _CLIP_ABOVE) != 0)
+				if ((outa & AdvancedGraphics._CLIP_ABOVE) != 0)
 				{
 					__x1 += dx * (clipey - __y1) / dy;
 					__y1 = clipey - 1;
 				}
 			
 				// Clips below
-				else if ((outa & _CLIP_BELOW) != 0)
+				else if ((outa & AdvancedGraphics._CLIP_BELOW) != 0)
 				{
 					__x1 += dx * (clipsy - __y1) / dy;
 					__y1 = clipsy;
 				}
 			
 				// Clips the right side
-				else if ((outa & _CLIP_RIGHT) != 0)
+				else if ((outa & AdvancedGraphics._CLIP_RIGHT) != 0)
 				{
 					__y1 += dy * (clipex - __x1) / dx;
 					__x1 = clipex - 1;
 				}
 			
 				// Clips the left side
-				else if ((outa & _CLIP_LEFT) != 0)
+				else if ((outa & AdvancedGraphics._CLIP_LEFT) != 0)
 				{
 					__y1 += dy * (clipsx - __x1) / dx;
 					__x1 = clipsx;
@@ -956,8 +956,8 @@ public class AdvancedGraphics
 	@Override
 	public int getGrayScale()
 	{
-		return (getRedComponent() + getGreenComponent() +
-			getBlueComponent()) / 3;
+		return (this.getRedComponent() + this.getGreenComponent() + this
+			.getBlueComponent()) / 3;
 	}
 	
 	/**
@@ -1038,8 +1038,8 @@ public class AdvancedGraphics
 		
 		// Always reset these
 		this.setAlphaColor(0xFF000000);
-		this.setBlendingMode(SRC_OVER);
-		this.setStrokeStyle(SOLID);
+		this.setBlendingMode(Graphics.SRC_OVER);
+		this.setStrokeStyle(Graphics.SOLID);
 		this.setFont(null);
 	}
 	
@@ -1051,8 +1051,8 @@ public class AdvancedGraphics
 	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		this.setAlphaColor(__a, getRedComponent(), getGreenComponent(),
-			getBlueComponent());
+		this.setAlphaColor(__a, this.getRedComponent(), this.getGreenComponent(),
+			this.getBlueComponent());
 	}
 	
 	/**
@@ -1115,7 +1115,7 @@ public class AdvancedGraphics
 			oldcandoblending = this.candoblending;
 		
 		// Just use source pixels
-		if (__m == SRC)
+		if (__m == Graphics.SRC)
 		{
 			// {@squirreljme.error EB0g Cannot set the overlay blending mode
 			// because this graphics context does not have the alpha channel.}
@@ -1126,7 +1126,7 @@ public class AdvancedGraphics
 		}
 		
 		// Perform blending since this is the default mode
-		else if (__m == SRC_OVER)
+		else if (__m == Graphics.SRC_OVER)
 		{
 			candoblending = true;
 		}
@@ -1225,7 +1225,7 @@ public class AdvancedGraphics
 	public void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		this.setAlphaColor(getAlpha(), __r, __g, __b);
+		this.setAlphaColor(this.getAlpha(), __r, __g, __b);
 	}
 	
 	/**
@@ -1246,7 +1246,7 @@ public class AdvancedGraphics
 	@Override
 	public void setGrayScale(int __v)
 	{
-		this.setAlphaColor(getAlpha(), __v, __v, __v);
+		this.setAlphaColor(this.getAlpha(), __v, __v, __v);
 	}
 	
 	/**
@@ -1258,12 +1258,12 @@ public class AdvancedGraphics
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB0i Illegal stroke style.}
-		if (__a != SOLID && __a != DOTTED)
+		if (__a != Graphics.SOLID && __a != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB0i");
 		
 		// Set
 		this.strokestyle = __a;
-		this.dotstroke = (__a == DOTTED);
+		this.dotstroke = (__a == Graphics.DOTTED);
 		
 		// Update functions
 		this.__updateFunctions();
@@ -1361,19 +1361,19 @@ public class AdvancedGraphics
 		__hdest = transdim[3];
 		
 		// Anchor horizontally?
-		if ((__anch & HCENTER) == HCENTER)
+		if ((__anch & Graphics.HCENTER) == Graphics.HCENTER)
 			__xdest -= __wdest >> 1;
 		
 		// Anchor right?
-		else if ((__anch & RIGHT) == RIGHT)
+		else if ((__anch & Graphics.RIGHT) == Graphics.RIGHT)
 			__xdest -= __wdest;
 		
 		// Anchor middle?
-		if ((__anch & VCENTER) == VCENTER)
+		if ((__anch & Graphics.VCENTER) == Graphics.VCENTER)
 			__ydest -= __hdest >> 1;
 		
 		// Anchor bottom?
-		else if ((__anch & BOTTOM) == BOTTOM)
+		else if ((__anch & Graphics.BOTTOM) == Graphics.BOTTOM)
 			__ydest -= __hdest;
 		
 		// If this is non-stretched we can just use the standard RGB
@@ -1591,7 +1591,7 @@ public class AdvancedGraphics
 				this.setAlphaColor(__t.getForegroundColor(i));
 				
 				// Setup the draw and do it
-				this.funccharbmp.function(this, ts.loadIntArgs(color, dsx, dsy,
+				this.funccharbmp.function(this, ts.loadIntArgs(this.color, dsx, dsy,
 					bps, scanoff, scanlen, lineoff, linelen),
 					ts.loadObject(bmp));
 			}
@@ -1697,15 +1697,15 @@ public class AdvancedGraphics
 		
 		// Clips above or below?
 		if (__y > __cey)
-			rv |= _CLIP_ABOVE;
+			rv |= AdvancedGraphics._CLIP_ABOVE;
 		else if (__y < __csy)
-			rv |= _CLIP_BELOW;
+			rv |= AdvancedGraphics._CLIP_BELOW;
 		
 		// Clips right or left?
 		if (__x > __cex)
-			rv |= _CLIP_RIGHT;
+			rv |= AdvancedGraphics._CLIP_RIGHT;
 		else if (__x < __csx)
-			rv |= _CLIP_LEFT;
+			rv |= AdvancedGraphics._CLIP_LEFT;
 		
 		return rv;
 	}

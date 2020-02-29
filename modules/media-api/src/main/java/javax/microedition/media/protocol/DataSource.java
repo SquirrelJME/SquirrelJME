@@ -19,7 +19,6 @@ public abstract class DataSource
 {
 	public DataSource(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

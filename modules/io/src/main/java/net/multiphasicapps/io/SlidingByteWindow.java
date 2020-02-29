@@ -54,10 +54,10 @@ public class SlidingByteWindow
 				__wsz));
 		
 		// Set
-		windowsize = __wsz;
+		this.windowsize = __wsz;
 		
 		// Setup backing store
-		deque = new ByteDeque(__wsz);
+		this.deque = new ByteDeque(__wsz);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class SlidingByteWindow
 	{
 		byte[] solo = this._solo;
 		solo[0] = __b;
-		append(solo, 0, 1);
+		this.append(solo, 0, 1);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class SlidingByteWindow
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public void append(byte __b[], int __o, int __l)
+	public void append(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -150,7 +150,7 @@ public class SlidingByteWindow
 		throws IndexOutOfBoundsException
 	{
 		byte[] solo = this._solo;
-		get(__ago, solo, 0, 1);
+		this.get(__ago, solo, 0, 1);
 		return solo[0];
 	}
 	

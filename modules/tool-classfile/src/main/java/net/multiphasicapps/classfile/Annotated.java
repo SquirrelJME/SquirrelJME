@@ -23,6 +23,6 @@ public interface Annotated
 	 * @return The annotated elements.
 	 * @since 2018/03/06
 	 */
-	public abstract AnnotationTable annotationTable();
+	AnnotationTable annotationTable();
 }
 

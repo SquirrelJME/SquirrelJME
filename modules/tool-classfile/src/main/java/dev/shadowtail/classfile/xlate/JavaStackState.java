@@ -1450,7 +1450,7 @@ public final class JavaStackState
 			stack = new Info[maxstack];
 		
 		// Register position for the slot
-		int rpos = BASE_REGISTER;
+		int rpos = JavaStackState.BASE_REGISTER;
 		
 		// Initialize locals
 		for (int i = 0; i < maxlocals; i++)

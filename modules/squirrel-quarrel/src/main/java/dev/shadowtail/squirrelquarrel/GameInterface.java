@@ -54,7 +54,7 @@ public final class GameInterface
 		this.setTitle("Squirrel Quarrel");
 		
 		// Add menu command to access the in-game menu
-		this.addCommand(STATUS_COMMAND);
+		this.addCommand(GameInterface.STATUS_COMMAND);
 		this.setCommandListener(new CommandHandler(__g));
 	}
 	

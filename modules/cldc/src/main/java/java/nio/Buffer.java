@@ -14,7 +14,6 @@ public abstract class Buffer
 {
 	Buffer()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

@@ -37,7 +37,6 @@ public class PolygonMode
 	
 	public PolygonMode()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

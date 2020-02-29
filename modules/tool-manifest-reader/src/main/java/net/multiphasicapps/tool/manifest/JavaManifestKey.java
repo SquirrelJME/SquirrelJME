@@ -41,7 +41,7 @@ public final class JavaManifestKey
 		// Lower-case all letters
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0, n = __s.length(); i < n; i++)
-			sb.append(__toLower(__s.charAt(i)));
+			sb.append(JavaManifestKey.__toLower(__s.charAt(i)));
 		this.string = sb.toString();
 		
 		// Remember input string for case purposes
@@ -57,7 +57,7 @@ public final class JavaManifestKey
 	{
 		// Is another key?
 		if (__o instanceof JavaManifestKey)
-			return __equals(((JavaManifestKey)__o).string);
+			return this.__equals(((JavaManifestKey)__o).string);
 		return false;
 	}
 	
@@ -123,7 +123,8 @@ public final class JavaManifestKey
 		
 		// Check characters
 		for (int i = 0; i < na; i++)
-			if (__toLower(a.charAt(i)) != __toLower(__b.charAt(i)))
+			if (JavaManifestKey.__toLower(a.charAt(i)) != JavaManifestKey
+				.__toLower(__b.charAt(i)))
 				return false;
 		
 		// Matches

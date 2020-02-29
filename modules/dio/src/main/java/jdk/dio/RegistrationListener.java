@@ -15,9 +15,9 @@ import java.util.EventListener;
 public interface RegistrationListener<P extends Device<? super P>>
 	extends EventListener
 {
-	public abstract void deviceRegistered(RegistrationEvent<P> __a);
+	void deviceRegistered(RegistrationEvent<P> __a);
 	
-	public abstract void deviceUnregistered(RegistrationEvent<P> __a);
+	void deviceUnregistered(RegistrationEvent<P> __a);
 }
 
 

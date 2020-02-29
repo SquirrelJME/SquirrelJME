@@ -54,7 +54,7 @@ public enum InvokeType
 	 */
 	public final boolean isStatic()
 	{
-		return this == STATIC || this == SYSTEM;
+		return this == InvokeType.STATIC || this == InvokeType.SYSTEM;
 	}
 	
 	/**
@@ -70,11 +70,11 @@ public enum InvokeType
 	{
 		switch (__i)
 		{
-			case 0:	return STATIC;
-			case 1: return SPECIAL;
-			case 2: return VIRTUAL;
-			case 3: return INTERFACE;
-			case 4: return SYSTEM;
+			case 0:	return InvokeType.STATIC;
+			case 1: return InvokeType.SPECIAL;
+			case 2: return InvokeType.VIRTUAL;
+			case 3: return InvokeType.INTERFACE;
+			case 4: return InvokeType.SYSTEM;
 		}
 		
 		// {@squirreljme.error JC16 Unknown invocation type. (The index)}

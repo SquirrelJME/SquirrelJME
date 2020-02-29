@@ -18,7 +18,6 @@ public class TiledLayer
 {
 	public TiledLayer(int __a, int __b, Image __c, int __d, int __e)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

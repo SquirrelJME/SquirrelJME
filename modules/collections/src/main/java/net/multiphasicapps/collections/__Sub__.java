@@ -76,7 +76,7 @@ final class __Sub__<V>
 		int was = deque.size();
 		
 		// Add it
-		addLast(__a);
+		this.addLast(__a);
 		
 		// If the size changed then it was added
 		return deque.size() != was;
@@ -97,7 +97,7 @@ final class __Sub__<V>
 		// Add everything
 		boolean rv = false;
 		for (V v : __a)
-			rv |= add(v);
+			rv |= this.add(v);
 		
 		// Has this changed?
 		return rv;
@@ -187,7 +187,7 @@ final class __Sub__<V>
 	@Override
 	public V element()
 	{
-		return getFirst();
+		return this.getFirst();
 	}
 	
 	/**
@@ -264,7 +264,7 @@ final class __Sub__<V>
 	@Override
 	public boolean offer(V __a)
 	{
-		return offerLast(__a);
+		return this.offerLast(__a);
 	}
 
 	/**
@@ -276,7 +276,7 @@ final class __Sub__<V>
 	{
 		try
 		{
-			addFirst(__a);
+			this.addFirst(__a);
 			return true;
 		}
 		
@@ -296,7 +296,7 @@ final class __Sub__<V>
 	{
 		try
 		{
-			addLast(__a);
+			this.addLast(__a);
 			return true;
 		}
 		
@@ -314,7 +314,7 @@ final class __Sub__<V>
 	@Override
 	public V peek()
 	{
-		return peekFirst();
+		return this.peekFirst();
 	}
 
 	/**
@@ -326,7 +326,7 @@ final class __Sub__<V>
 	{
 		try
 		{
-			return getFirst();
+			return this.getFirst();
 		}
 		
 		// Empty
@@ -345,7 +345,7 @@ final class __Sub__<V>
 	{
 		try
 		{
-			return getLast();
+			return this.getLast();
 		}
 		
 		// Empty
@@ -362,7 +362,7 @@ final class __Sub__<V>
 	@Override
 	public V poll()
 	{
-		return pollFirst();
+		return this.pollFirst();
 	}
 
 	/**
@@ -374,7 +374,7 @@ final class __Sub__<V>
 	{
 		try
 		{
-			return removeFirst();
+			return this.removeFirst();
 		}
 		
 		// Empty
@@ -393,7 +393,7 @@ final class __Sub__<V>
 	{
 		try
 		{
-			return removeLast();
+			return this.removeLast();
 		}
 		
 		// Empty
@@ -410,7 +410,7 @@ final class __Sub__<V>
 	@Override
 	public V pop()
 	{
-		return removeFirst();
+		return this.removeFirst();
 	}
 
 	/**
@@ -420,7 +420,7 @@ final class __Sub__<V>
 	@Override
 	public void push(V __a)
 	{
-		addFirst(__a);
+		this.addFirst(__a);
 	}
 
 	/**
@@ -440,7 +440,7 @@ final class __Sub__<V>
 	@Override
 	public V remove()
 	{
-		return removeFirst();
+		return this.removeFirst();
 	}
 
 	/**

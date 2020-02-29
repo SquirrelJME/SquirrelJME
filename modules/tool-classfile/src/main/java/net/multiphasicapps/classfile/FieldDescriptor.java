@@ -260,7 +260,7 @@ public final class FieldDescriptor
 	 */
 	public boolean isObject()
 	{
-		return !isPrimitive();
+		return !this.isPrimitive();
 	}
 	
 	/**
@@ -297,7 +297,7 @@ public final class FieldDescriptor
 			return null;
 		
 		// Depends on the string
-		switch (toString())
+		switch (this.toString())
 		{
 			case "B": return PrimitiveType.BYTE;
 			case "C": return PrimitiveType.CHARACTER;

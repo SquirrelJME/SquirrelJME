@@ -30,15 +30,15 @@ package javax.microedition.rms;
 public interface RecordComparator
 {
 	/** This represents two equal records. */
-	public static final int EQUIVALENT =
+	int EQUIVALENT =
 		0;
 	
 	/** This represents a record that follows another. */
-	public static final int FOLLOWS =
+	int FOLLOWS =
 		1;
 	
 	/** This represents a record that precedes another. */
-	public static final int PRECEDES =
+	int PRECEDES =
 		-1;
 	
 	/**
@@ -52,6 +52,6 @@ public interface RecordComparator
 	 * {@link #FOLLOWS}, or {@link #PRECEDES}.
 	 * @since 2017/02/26
 	 */
-	public abstract int compare(byte[] __a, byte[] __b);
+	int compare(byte[] __a, byte[] __b);
 }
 

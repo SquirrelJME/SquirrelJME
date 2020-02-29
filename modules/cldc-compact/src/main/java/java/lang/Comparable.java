@@ -41,7 +41,7 @@ public interface Comparable<T>
 	 * mean {@code this > __b}.
 	 * @since 2018/09/19
 	 */
-	public abstract int compareTo(T __b);
+	int compareTo(T __b);
 }
 
 

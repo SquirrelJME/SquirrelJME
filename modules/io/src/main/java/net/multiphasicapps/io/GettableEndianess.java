@@ -23,6 +23,6 @@ public interface GettableEndianess
 	 * @return The current endianess.
 	 * @since 2016/07/10
 	 */
-	public abstract DataEndianess getEndianess();
+	DataEndianess getEndianess();
 }
 

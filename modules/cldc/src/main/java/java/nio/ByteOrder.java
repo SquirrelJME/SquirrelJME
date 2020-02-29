@@ -43,7 +43,7 @@ public final class ByteOrder
 			throw new NullPointerException();
 		
 		// Set
-		_string = __str;
+		this._string = __str;
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public final class ByteOrder
 	@Override
 	public String toString()
 	{
-		return _string;
+		return this._string;
 	}
 	
 	public static ByteOrder nativeOrder()

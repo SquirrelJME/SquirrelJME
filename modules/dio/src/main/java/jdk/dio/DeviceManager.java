@@ -26,7 +26,6 @@ public class DeviceManager
 	
 	private DeviceManager()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

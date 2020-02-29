@@ -190,7 +190,8 @@ public final class SpringDisplayEventCallback
 			// Only allow a single call to be performed at a time
 			synchronized (this)
 			{
-				rv = worker.invokeMethod(false, _CALLBACK_CLASS,
+				rv = worker.invokeMethod(false,
+					SpringDisplayEventCallback._CALLBACK_CLASS,
 					new MethodNameAndType(__func, __desc), args);
 			}
 		}

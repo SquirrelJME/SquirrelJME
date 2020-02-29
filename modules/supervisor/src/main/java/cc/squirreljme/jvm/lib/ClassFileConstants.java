@@ -18,199 +18,199 @@ package cc.squirreljme.jvm.lib;
 public interface ClassFileConstants
 {
 	/** The magic number for the header. */
-	public static final int MAGIC_NUMBER =
+	int MAGIC_NUMBER =
 		0x00586572;
 	
 	/** Magic number for the end of file. */
-	public static final int END_MAGIC_NUMBER =
+	int END_MAGIC_NUMBER =
 		0x42796521;
 	
 	/** The size of the header without the magic number. */
-	public static final byte HEADER_SIZE_WITHOUT_MAGIC =
+	byte HEADER_SIZE_WITHOUT_MAGIC =
 		108;
 	
 	/** The size of the header with the magic number. */
-	public static final byte HEADER_SIZE_WITH_MAGIC =
+	byte HEADER_SIZE_WITH_MAGIC =
 		112;
 		
 	/** Unused A. */
-	public static final byte OFFSET_OF_USHORT_UNUSEDA =
+	byte OFFSET_OF_USHORT_UNUSEDA =
 		4;
 	
 	/** The index of the method which is __start. */
-	public static final byte OFFSET_OF_UBYTE_STARTMETHODINDEX =
+	byte OFFSET_OF_UBYTE_STARTMETHODINDEX =
 		6;
 	
 	/** The data type of the class. */
-	public static final byte OFFSET_OF_UBYTE_DATATYPE =
+	byte OFFSET_OF_UBYTE_DATATYPE =
 		7;
 	
 	/** Not used. */
-	public static final byte OFFSET_OF_USHORT_UNUSEDB =
+	byte OFFSET_OF_USHORT_UNUSEDB =
 		8;
 	
 	/** Class flags. */
-	public static final byte OFFSET_OF_INT_CLASSFLAGS =
+	byte OFFSET_OF_INT_CLASSFLAGS =
 		10;
 	
 	/** Name of class. */
-	public static final byte OFFSET_OF_USHORT_CLASSNAME =
+	byte OFFSET_OF_USHORT_CLASSNAME =
 		14;
 	
 	/** Super class name. */
-	public static final byte OFFSET_OF_USHORT_CLASSSUPER =
+	byte OFFSET_OF_USHORT_CLASSSUPER =
 		16;
 	
 	/** Interfaces in class. */
-	public static final byte OFFSET_OF_USHORT_CLASSINTS =
+	byte OFFSET_OF_USHORT_CLASSINTS =
 		18;
 	
 	/** Class type. */
-	public static final byte OFFSET_OF_UBYTE_CLASSTYPE =
+	byte OFFSET_OF_UBYTE_CLASSTYPE =
 		20;
 	
 	/** Class version. */
-	public static final byte OFFSET_OF_UBYTE_CLASSVERS =
+	byte OFFSET_OF_UBYTE_CLASSVERS =
 		21;
 	
 	/** Class source filename. */
-	public static final byte OFFSET_OF_USHORT_CLASSSFN =
+	byte OFFSET_OF_USHORT_CLASSSFN =
 		22;
 	
 	/** Static field count. */
-	public static final byte OFFSET_OF_USHORT_SFCOUNT =
+	byte OFFSET_OF_USHORT_SFCOUNT =
 		24;
 	
 	/** Static field bytes. */
-	public static final byte OFFSET_OF_USHORT_SFBYTES =
+	byte OFFSET_OF_USHORT_SFBYTES =
 		26;
 	
 	/** Static field objects. */
-	public static final byte OFFSET_OF_USHORT_SFOBJS =
+	byte OFFSET_OF_USHORT_SFOBJS =
 		28;
 	
 	/** Instance field count. */
-	public static final byte OFFSET_OF_USHORT_IFCOUNT =
+	byte OFFSET_OF_USHORT_IFCOUNT =
 		30;
 	
 	/** Instance field bytes. */
-	public static final byte OFFSET_OF_USHORT_IFBYTES =
+	byte OFFSET_OF_USHORT_IFBYTES =
 		32;
 	
 	/** Instance field objects. */
-	public static final byte OFFSET_OF_USHORT_IFOBJS =
+	byte OFFSET_OF_USHORT_IFOBJS =
 		34;
 	
 	/** Static method count. */
-	public static final byte OFFSET_OF_USHORT_SMCOUNT =
+	byte OFFSET_OF_USHORT_SMCOUNT =
 		36;
 	
 	/** Instance method count. */
-	public static final byte OFFSET_OF_USHORT_IMCOUNT =
+	byte OFFSET_OF_USHORT_IMCOUNT =
 		38;
 	
 	/** Not used. */
-	public static final byte OFFSET_OF_INT_UNUSEDC =
+	byte OFFSET_OF_INT_UNUSEDC =
 		40;
 	
 	/** Not used. */
-	public static final byte OFFSET_OF_INT_UNUSEDD =
+	byte OFFSET_OF_INT_UNUSEDD =
 		44;
 	
 	/** Static field data offset. */
-	public static final byte OFFSET_OF_INT_SFOFF =
+	byte OFFSET_OF_INT_SFOFF =
 		48;
 	
 	/** Static field data size. */
-	public static final byte OFFSET_OF_INT_SFSIZE =
+	byte OFFSET_OF_INT_SFSIZE =
 		52;
 	
 	/** Interface field data offset. */
-	public static final byte OFFSET_OF_INT_IFOFF =
+	byte OFFSET_OF_INT_IFOFF =
 		56;
 	
 	/** Interface field data size. */
-	public static final byte OFFSET_OF_INT_IFSIZE =
+	byte OFFSET_OF_INT_IFSIZE =
 		60;
 	
 	/** Static method data offset. */
-	public static final byte OFFSET_OF_INT_SMOFF =
+	byte OFFSET_OF_INT_SMOFF =
 		64;
 	
 	/** Static method data size. */
-	public static final byte OFFSET_OF_INT_SMSIZE =
+	byte OFFSET_OF_INT_SMSIZE =
 		68;
 	
 	/** Instance method data offset. */
-	public static final byte OFFSET_OF_INT_IMOFF =
+	byte OFFSET_OF_INT_IMOFF =
 		72;
 	
 	/** Instance method data size. */
-	public static final byte OFFSET_OF_INT_IMSIZE =
+	byte OFFSET_OF_INT_IMSIZE =
 		76;
 	
 	/** High bits for UUID. */
-	public static final byte OFFSET_OF_INT_UUIDHI =
+	byte OFFSET_OF_INT_UUIDHI =
 		80;
 	
 	/** Low bits for UUID. */
-	public static final byte OFFSET_OF_INT_UUIDLO =
+	byte OFFSET_OF_INT_UUIDLO =
 		84;
 	
 	/** File size. */
-	public static final byte OFFSET_OF_INT_FILESIZE =
+	byte OFFSET_OF_INT_FILESIZE =
 		88;
 	
 	/** Not used. */
-	public static final byte OFFSET_OF_INT_UNUSEDE =
+	byte OFFSET_OF_INT_UNUSEDE =
 		92;
 	
 	/** Static constant pool offset. */
-	public static final byte OFFSET_OF_INT_STATICPOOLOFF =
+	byte OFFSET_OF_INT_STATICPOOLOFF =
 		96;
 	
 	/** Static constant pool size. */
-	public static final byte OFFSET_OF_INT_STATICPOOLSIZE =
+	byte OFFSET_OF_INT_STATICPOOLSIZE =
 		100;
 	
 	/** Runtime constant pool offset. */
-	public static final byte OFFSET_OF_INT_RUNTIMEPOOLOFF =
+	byte OFFSET_OF_INT_RUNTIMEPOOLOFF =
 		104;
 	
 	/** Runtime constant pool size. */
-	public static final byte OFFSET_OF_INT_RUNTIMEPOOLSIZE =
+	byte OFFSET_OF_INT_RUNTIMEPOOLSIZE =
 		108;
 	
 	/** Public class. */
-	public static final short FLAG_PUBLIC =
+	short FLAG_PUBLIC =
 		0x0001;
 	
 	/** Final class. */
-	public static final short FLAG_FINAL =
+	short FLAG_FINAL =
 		0x0010;
 	
 	/** Super class. */
-	public static final short FLAG_SUPER =
+	short FLAG_SUPER =
 		0x0020;
 	
 	/** Interface class. */
-	public static final short FLAG_INTERFACE =
+	short FLAG_INTERFACE =
 		0x0200;
 	
 	/** Abstract. */
-	public static final short FLAG_ABSTRACT =
+	short FLAG_ABSTRACT =
 		0x0400;
 	
 	/** Synthetic. */
-	public static final short FLAG_SYNTHETIC =
+	short FLAG_SYNTHETIC =
 		0x1000;
 	
 	/** Annotation. */
-	public static final short FLAG_ANNOTATION =
+	short FLAG_ANNOTATION =
 		0x2000;
 	
 	/** Enum. */
-	public static final short FLAG_ENUM =
+	short FLAG_ENUM =
 		0x4000;
 }
 

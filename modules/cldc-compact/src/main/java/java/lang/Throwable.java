@@ -284,7 +284,8 @@ public class Throwable
 	 */
 	public void printStackTrace()
 	{
-		Throwable.__printStackTrace(this, System.err, 0, _TYPE_EXCEPTION);
+		Throwable.__printStackTrace(this, System.err, 0,
+			Throwable._TYPE_EXCEPTION);
 	}
 	
 	/**
@@ -300,7 +301,7 @@ public class Throwable
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		Throwable.__printStackTrace(this, __ps, 0, _TYPE_EXCEPTION);
+		Throwable.__printStackTrace(this, __ps, 0, Throwable._TYPE_EXCEPTION);
 	}
 	
 	/**
@@ -411,15 +412,15 @@ public class Throwable
 		Throwable.__printStackIndent(__ps, __indent);
 		switch (__type)
 		{
-			case _TYPE_CAUSED_BY:
+			case Throwable._TYPE_CAUSED_BY:
 				__ps.print("> CAUSED BY ");
 				break;
 			
-			case _TYPE_SUPPRESSED:
+			case Throwable._TYPE_SUPPRESSED:
 				__ps.print("> SUPPRESSED ");
 				break;
 			
-			case _TYPE_EXCEPTION:
+			case Throwable._TYPE_EXCEPTION:
 			default:
 				__ps.print("EXCEPTION ");
 				break;
@@ -469,12 +470,12 @@ public class Throwable
 		Throwable cause = __t.getCause();
 		if (cause != null)
 			Throwable.__printStackTrace(cause, __ps, __indent,
-				_TYPE_CAUSED_BY);
+				Throwable._TYPE_CAUSED_BY);
 		
 		// Print suppressed exceptions
 		for (Throwable sup : __t.getSuppressed())
 			Throwable.__printStackTrace(sup, __ps, __indent,
-				_TYPE_SUPPRESSED);
+				Throwable._TYPE_SUPPRESSED);
 	}
 }
 

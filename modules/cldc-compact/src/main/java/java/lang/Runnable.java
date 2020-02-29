@@ -26,6 +26,6 @@ public interface Runnable
 	 *
 	 * @since 2018/09/19
 	 */
-	public abstract void run();
+	void run();
 }
 

@@ -16,13 +16,11 @@ public class DeviceNotFoundException
 {
 	public DeviceNotFoundException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public DeviceNotFoundException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

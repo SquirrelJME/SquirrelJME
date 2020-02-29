@@ -17,34 +17,33 @@ import jdk.dio.UnavailableDeviceException;
 
 public interface ModemSignalsControl<P extends Device<? super P>>
 {
-	public static final int CTS_SIGNAL =
+	int CTS_SIGNAL =
 		32;
 	
-	public static final int DCD_SIGNAL =
+	int DCD_SIGNAL =
 		2;
 	
-	public static final int DSR_SIGNAL =
+	int DSR_SIGNAL =
 		4;
 	
-	public static final int DTR_SIGNAL =
+	int DTR_SIGNAL =
 		1;
 	
-	public static final int RI_SIGNAL =
+	int RI_SIGNAL =
 		8;
 	
-	public static final int RTS_SIGNAL =
+	int RTS_SIGNAL =
 		16;
 	
-	public abstract boolean getSignalState(int __a)
+	boolean getSignalState(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setSignalChangeListener(ModemSignalListener<P> __a, 
-		int __b)
+	void setSignalChangeListener(ModemSignalListener<P> __a, int __b)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setSignalState(int __a, boolean __b)
+	void setSignalState(int __a, boolean __b)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

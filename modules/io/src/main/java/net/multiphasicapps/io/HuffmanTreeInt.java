@@ -49,7 +49,7 @@ public class HuffmanTreeInt
 	{
 		// Initially add table space so that it is always initially valid but
 		// points to nothing.
-		__addTableSpace();
+		this.__addTableSpace();
 	}
 	
 	/**
@@ -85,11 +85,11 @@ public class HuffmanTreeInt
 				__sym, __mask));
 		
 		// Get the table
-		int[] table = _table;
+		int[] table = this._table;
 		int n = table.length;
 		
 		// Increase max bit count
-		_maxbits = Math.max(_maxbits, ibm);
+		this._maxbits = Math.max(this._maxbits, ibm);
 		
 		// Find the spot to add it based on the bit depth
 		int at = 0;
@@ -122,16 +122,16 @@ public class HuffmanTreeInt
 				if (last)
 				{
 					// Add space for a new variable
-					int vat = __addValueSpace();
+					int vat = this.__addValueSpace();
 					
 					// Place value there
-					_values[vat] = __v;
+					this._values[vat] = __v;
 					
 					// Set table index to point there
 					table[at + q] = -(vat + 1);
 					
 					// Modified
-					_modcount++;
+					this._modcount++;
 					
 					// No old value exists
 					return 0;
@@ -142,10 +142,10 @@ public class HuffmanTreeInt
 				else
 				{
 					// Add new location info
-					int jat = __addTableSpace();
+					int jat = this.__addTableSpace();
 				
 					// Correct vars
-					table = _table;
+					table = this._table;
 					n = table.length;
 				
 					// Set jump to that position
@@ -161,14 +161,14 @@ public class HuffmanTreeInt
 				int vat = (-jump) - 1;
 				
 				// Get old value
-				int[] vals = _values;
+				int[] vals = this._values;
 				int old = vals[vat];
 				
 				// Set new value
 				vals[vat] = __v;
 				
 				// Modified
-				_modcount++;
+				this._modcount++;
 				
 				// Return the old value
 				return old;
@@ -197,7 +197,7 @@ public class HuffmanTreeInt
 		this._maxbits = 0;
 		
 		// Setup initial tree
-		__addTableSpace();
+		this.__addTableSpace();
 	}
 	
 	/**
@@ -223,7 +223,7 @@ public class HuffmanTreeInt
 		int n = vals.length;
 		for (int i = 0; i < n; i++)
 			if (vals[i] == __i)
-				return __recursiveMatch(0, 0, 0, -(i + 1));
+				return this.__recursiveMatch(0, 0, 0, -(i + 1));
 		
 		// Not found
 		throw new NoSuchElementException("NSEE");
@@ -275,7 +275,7 @@ public class HuffmanTreeInt
 	 */
 	public final int maximumBits()
 	{
-		return _maxbits;
+		return this._maxbits;
 	}
 	
 	/**
@@ -289,7 +289,7 @@ public class HuffmanTreeInt
 		StringBuilder sb = new StringBuilder("[");
 		
 		// Add elements in no particular order
-		int[] vals = _values;
+		int[] vals = this._values;
 		if (vals != null)
 		{
 			int n = vals.length;
@@ -345,7 +345,7 @@ public class HuffmanTreeInt
 	private int __addTableSpace()
 	{
 		// The returned value is the end of the table
-		int[] table = _table;
+		int[] table = this._table;
 		int rv = (table == null ? 0 : table.length);
 		
 		// Allocate some extra space
@@ -360,7 +360,7 @@ public class HuffmanTreeInt
 		becomes[rv + 1] = Integer.MAX_VALUE;
 		
 		// Set new table
-		_table = becomes;
+		this._table = becomes;
 		
 		// Return it
 		return rv;
@@ -375,7 +375,7 @@ public class HuffmanTreeInt
 	private int __addValueSpace()
 	{
 		// The returned value is the end of the table
-		int[] values = _values;
+		int[] values = this._values;
 		int rv = (values == null ? 0 : values.length);
 		
 		// Allocate some extra space
@@ -386,7 +386,7 @@ public class HuffmanTreeInt
 			becomes[i] = values[i];
 		
 		// Set new table
-		_values = becomes;
+		this._values = becomes;
 		
 		// Return it
 		return rv;
@@ -406,7 +406,7 @@ public class HuffmanTreeInt
 	private long __recursiveMatch(int __at, int __huf, int __mask, int __match)
 	{
 		// Get tree
-		int[] table = _table;
+		int[] table = this._table;
 		
 		// Get the left and right side jump values
 		int jl = table[__at];
@@ -422,7 +422,7 @@ public class HuffmanTreeInt
 		long rv;
 		if (jl >= 0 && jl != Integer.MAX_VALUE)
 		{
-			rv = __recursiveMatch(jl, __huf << 1, (__mask << 1) | 1,
+			rv = this.__recursiveMatch(jl, __huf << 1, (__mask << 1) | 1,
 				__match);
 			if (rv != -1L)
 				return rv;
@@ -431,7 +431,7 @@ public class HuffmanTreeInt
 		// Traverse right side
 		if (jr >= 0 && jr != Integer.MAX_VALUE)
 		{
-			rv = __recursiveMatch(jr, (__huf << 1) | 1, (__mask << 1) | 1,
+			rv = this.__recursiveMatch(jr, (__huf << 1) | 1, (__mask << 1) | 1,
 				__match);
 			if (rv != 1L)
 				return rv;

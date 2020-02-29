@@ -136,10 +136,10 @@ public final class Allocator
 	public static final int allocateWithoutLock(int __tag, int __sz)
 	{
 		// The number of desired bytes
-		int want = CHUNK_LENGTH + (__sz <= 4 ? 4 : ((__sz + 3) & (~3)));
+		int want = Allocator.CHUNK_LENGTH + (__sz <= 4 ? 4 : ((__sz + 3) & (~3)));
 		
 		// Negative size or too big?
-		if (__sz < 0 || want > CHUNK_SIZE_LIMIT)
+		if (__sz < 0 || want > Allocator.CHUNK_SIZE_LIMIT)
 			return 0;
 		
 		// Go through the memory chunks to locate a free chunk
@@ -147,12 +147,12 @@ public final class Allocator
 		while (seeker != 0)
 		{
 			// Read chunk properties
-			int csz = Assembly.memReadInt(seeker, CHUNK_SIZE_OFFSET),
-				cnx = Assembly.memReadInt(seeker, CHUNK_NEXT_OFFSET);
+			int csz = Assembly.memReadInt(seeker, Allocator.CHUNK_SIZE_OFFSET),
+				cnx = Assembly.memReadInt(seeker, Allocator.CHUNK_NEXT_OFFSET);
 			
 			// Is this a free block? And can we fit in it?
-			if ((csz & CHUNK_TAG_MASK) == CHUNK_TAG_FREE &&
-				want <= (csz & CHUNK_SIZE_MASK))
+			if ((csz & Allocator.CHUNK_TAG_MASK) == Allocator.CHUNK_TAG_FREE &&
+				want <= (csz & Allocator.CHUNK_SIZE_MASK))
 				return Allocator.__claim(__tag, want, seeker, csz, cnx);
 			
 			// Go to the next chunk
@@ -219,31 +219,31 @@ public final class Allocator
 			Assembly.breakpoint();
 		
 		// Determine the seeker position for this chunk
-		int seeker = __p - CHUNK_LENGTH;
+		int seeker = __p - Allocator.CHUNK_LENGTH;
 		
 		// Read chunk properties
-		int csz = Assembly.memReadInt(seeker, CHUNK_SIZE_OFFSET),
-			cnx = Assembly.memReadInt(seeker, CHUNK_NEXT_OFFSET);
+		int csz = Assembly.memReadInt(seeker, Allocator.CHUNK_SIZE_OFFSET),
+			cnx = Assembly.memReadInt(seeker, Allocator.CHUNK_NEXT_OFFSET);
 		
 		// Actual logically used space
-		int usedspace = (csz & CHUNK_SIZE_MASK);
+		int usedspace = (csz & Allocator.CHUNK_SIZE_MASK);
 		
 		// Clear out memory with invalid data, that is BAD_MAGIC
 		int bm = Constants.BAD_MAGIC;
 		Assembly.sysCallP(SystemCallIndex.MEM_SET_INT,
-			__p, bm, usedspace - CHUNK_LENGTH);
+			__p, bm, usedspace - Allocator.CHUNK_LENGTH);
 		if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
 			SystemCallIndex.MEM_SET_INT) != SystemCallError.NO_ERROR)
 		{
 			// Fast memsetint() is not supported, so manually wipe
 			// all the bytes!
-			for (int i = CHUNK_LENGTH; i < usedspace; i += 4)
+			for (int i = Allocator.CHUNK_LENGTH; i < usedspace; i += 4)
 				Assembly.memWriteInt(seeker, i, bm);
 		}
 		
 		// Make sure the reference count index is zero, to detect uncount
 		// after free
-		int rci = CHUNK_LENGTH + Constants.OBJECT_COUNT_OFFSET;
+		int rci = Allocator.CHUNK_LENGTH + Constants.OBJECT_COUNT_OFFSET;
 		if (rci + 4 <= csz)
 			Assembly.memWriteInt(seeker, rci, 0);
 		
@@ -251,26 +251,26 @@ public final class Allocator
 		if (cnx != 0)
 		{
 			// Get properties of the next chunk
-			int nsz = Assembly.memReadInt(cnx, CHUNK_SIZE_OFFSET),
-				nnx = Assembly.memReadInt(cnx, CHUNK_NEXT_OFFSET);
+			int nsz = Assembly.memReadInt(cnx, Allocator.CHUNK_SIZE_OFFSET),
+				nnx = Assembly.memReadInt(cnx, Allocator.CHUNK_NEXT_OFFSET);
 			
 			// Free space? Merge into it!
-			if ((nsz & CHUNK_TAG_MASK) == CHUNK_TAG_FREE)
+			if ((nsz & Allocator.CHUNK_TAG_MASK) == Allocator.CHUNK_TAG_FREE)
 			{
 				// Calculate the would be new size
-				int newsize = usedspace + (nsz & CHUNK_SIZE_MASK);
+				int newsize = usedspace + (nsz & Allocator.CHUNK_SIZE_MASK);
 				
 				// Only merge chunks which are within the size limit, otherwise
 				// a large portion of memory will not able to be reclaimed
 				// because it would logically have a small size
-				if (newsize <= CHUNK_SIZE_LIMIT)
+				if (newsize <= Allocator.CHUNK_SIZE_LIMIT)
 				{
 					// New size of our current chunk
-					Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-						newsize | CHUNK_TAG_FREE);
+					Assembly.memWriteInt(seeker, Allocator.CHUNK_SIZE_OFFSET,
+						newsize | Allocator.CHUNK_TAG_FREE);
 					
 					// Our chunk's next becomes the right side's next
-					Assembly.memWriteInt(seeker, CHUNK_NEXT_OFFSET,
+					Assembly.memWriteInt(seeker, Allocator.CHUNK_NEXT_OFFSET,
 						nnx);
 					
 					// Do not use normal free set
@@ -280,8 +280,8 @@ public final class Allocator
 		}
 		
 		// Set chunk as free now, keep the original size
-		Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-			csz | CHUNK_TAG_FREE);
+		Assembly.memWriteInt(seeker, Allocator.CHUNK_SIZE_OFFSET,
+			csz | Allocator.CHUNK_TAG_FREE);
 	}
 	
 	/**
@@ -299,10 +299,10 @@ public final class Allocator
 		int __csz, int __cnx)
 	{
 		// Calculate free space in this chunk
-		int freespace = (__csz & CHUNK_SIZE_MASK);
+		int freespace = (__csz & Allocator.CHUNK_SIZE_MASK);
 		
 		// This chunk will be split into a used and free chunk
-		if (__want + SPLIT_REQUIREMENT <= freespace)
+		if (__want + Allocator.SPLIT_REQUIREMENT <= freespace)
 		{
 			// The size of the right side chunk is cut by our wanted
 			// size
@@ -312,15 +312,15 @@ public final class Allocator
 			int nextpos = __seeker + __want;
 			
 			// Setup new chunk
-			Assembly.memWriteInt(__seeker, CHUNK_SIZE_OFFSET,
-				(__want & CHUNK_SIZE_MASK) | (__tag << CHUNK_TAG_SHIFT));
-			Assembly.memWriteInt(__seeker, CHUNK_NEXT_OFFSET,
+			Assembly.memWriteInt(__seeker, Allocator.CHUNK_SIZE_OFFSET,
+				(__want & Allocator.CHUNK_SIZE_MASK) | (__tag << Allocator.CHUNK_TAG_SHIFT));
+			Assembly.memWriteInt(__seeker, Allocator.CHUNK_NEXT_OFFSET,
 				nextpos);
 			
 			// Setup the split chunk, points to the original next
-			Assembly.memWriteInt(nextpos, CHUNK_SIZE_OFFSET,
-				(nextsize & CHUNK_SIZE_MASK) | CHUNK_TAG_FREE);
-			Assembly.memWriteInt(nextpos, CHUNK_NEXT_OFFSET,
+			Assembly.memWriteInt(nextpos, Allocator.CHUNK_SIZE_OFFSET,
+				(nextsize & Allocator.CHUNK_SIZE_MASK) | Allocator.CHUNK_TAG_FREE);
+			Assembly.memWriteInt(nextpos, Allocator.CHUNK_NEXT_OFFSET,
 				__cnx);
 		}
 		
@@ -328,23 +328,23 @@ public final class Allocator
 		else
 		{
 			// Keep the originally passed size, but set the tag
-			Assembly.memWriteInt(__seeker, CHUNK_SIZE_OFFSET,
-				freespace | (__tag << CHUNK_TAG_SHIFT));
+			Assembly.memWriteInt(__seeker, Allocator.CHUNK_SIZE_OFFSET,
+				freespace | (__tag << Allocator.CHUNK_TAG_SHIFT));
 		}
 		
 		// The returning pointer
-		int rv = __seeker + CHUNK_LENGTH;
+		int rv = __seeker + Allocator.CHUNK_LENGTH;
 		
 		// Clear out memory since Java expects the data to be
 		// initialized to zero always
 		Assembly.sysCallP(SystemCallIndex.MEM_SET,
-			rv, 0, __want - CHUNK_LENGTH);
+			rv, 0, __want - Allocator.CHUNK_LENGTH);
 		if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
 			SystemCallIndex.MEM_SET) != SystemCallError.NO_ERROR)
 		{
 			// Fast memset() is not supported, so manually wipe
 			// all the bytes!
-			for (int i = CHUNK_LENGTH; i < __want; i += 4)
+			for (int i = Allocator.CHUNK_LENGTH; i < __want; i += 4)
 				Assembly.memWriteInt(__seeker, i, 0);
 		}
 		
@@ -381,8 +381,8 @@ public final class Allocator
 		for (int seeker = __rambase;;)
 		{
 			// Read current and next offset
-			int csz = Assembly.memReadInt(seeker, CHUNK_SIZE_OFFSET),
-				cnx = Assembly.memReadInt(seeker, CHUNK_NEXT_OFFSET);
+			int csz = Assembly.memReadInt(seeker, Allocator.CHUNK_SIZE_OFFSET),
+				cnx = Assembly.memReadInt(seeker, Allocator.CHUNK_NEXT_OFFSET);
 			
 			// Reached the terminator which has been initialized to zero by
 			// the BootROM, so this block and whatever is left becomes free
@@ -401,24 +401,25 @@ public final class Allocator
 				while (sizeleft > 0)
 				{
 					// Determine how big this chunk becomes
-					int usesize = (sizeleft > CHUNK_SIZE_LIMIT ?
-						CHUNK_SIZE_LIMIT : sizeleft);
+					int usesize = (sizeleft > Allocator.CHUNK_SIZE_LIMIT ?
+						Allocator.CHUNK_SIZE_LIMIT : sizeleft);
 					
 					// Reduce used size
 					sizeleft -= usesize;
 					
 					// Create free block here
-					Assembly.memWriteInt(seeker, CHUNK_SIZE_OFFSET,
-						usesize | CHUNK_TAG_FREE);
+					Assembly.memWriteInt(seeker, Allocator.CHUNK_SIZE_OFFSET,
+						usesize | Allocator.CHUNK_TAG_FREE);
 					
 					// Set pointer and seeker to the next block
-					if (sizeleft > SPLIT_REQUIREMENT)
+					if (sizeleft > Allocator.SPLIT_REQUIREMENT)
 					{
 						// Where is this located?
 						int nextp = seeker + usesize;
 						
 						// Write next block position
-						Assembly.memWriteInt(seeker, CHUNK_NEXT_OFFSET,
+						Assembly.memWriteInt(seeker,
+							Allocator.CHUNK_NEXT_OFFSET,
 							nextp);
 						
 						// Go here next
@@ -430,7 +431,8 @@ public final class Allocator
 					else
 					{
 						// Always ensure the next block is zero!
-						Assembly.memWriteInt(seeker, CHUNK_NEXT_OFFSET,
+						Assembly.memWriteInt(seeker,
+							Allocator.CHUNK_NEXT_OFFSET,
 							0);
 						
 						// Stop

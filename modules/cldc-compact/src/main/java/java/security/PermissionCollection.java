@@ -16,7 +16,6 @@ public abstract class PermissionCollection
 {
 	public PermissionCollection()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

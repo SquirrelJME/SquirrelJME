@@ -15,11 +15,11 @@ import javax.microedition.midlet.MIDletIdentity;
 public interface IMCConnection
 	extends StreamConnection
 {
-	public abstract MIDletIdentity getRemoteIdentity();
+	MIDletIdentity getRemoteIdentity();
 	
-	public abstract String getRequestedServerVersion();
+	String getRequestedServerVersion();
 	
-	public abstract String getServerName();
+	String getServerName();
 }
 
 

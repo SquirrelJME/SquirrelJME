@@ -16,7 +16,6 @@ public abstract class ByteBuffer
 {
 	ByteBuffer()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

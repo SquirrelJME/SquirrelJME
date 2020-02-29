@@ -15,7 +15,6 @@ public final class FileTime
 {
 	private FileTime()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

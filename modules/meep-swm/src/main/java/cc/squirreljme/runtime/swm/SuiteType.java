@@ -57,7 +57,7 @@ public enum SuiteType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/04
 	 */
-	private SuiteType(String __p)
+	SuiteType(String __p)
 		throws NullPointerException
 	{
 		if (__p == null)

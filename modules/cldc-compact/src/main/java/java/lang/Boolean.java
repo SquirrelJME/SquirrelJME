@@ -179,8 +179,8 @@ public final class Boolean
 	public static Boolean valueOf(boolean __a)
 	{
 		if (__a)
-			return TRUE;
-		return FALSE;
+			return Boolean.TRUE;
+		return Boolean.FALSE;
 	}
 	
 	/**
@@ -193,8 +193,8 @@ public final class Boolean
 	public static Boolean valueOf(String __v)
 	{
 		if (__v != null && __v.equalsIgnoreCase("true"))
-			return TRUE;
-		return FALSE;
+			return Boolean.TRUE;
+		return Boolean.FALSE;
 	}
 }
 

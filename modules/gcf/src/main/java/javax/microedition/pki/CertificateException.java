@@ -59,13 +59,11 @@ public class CertificateException
 	
 	public CertificateException(Certificate __a, byte __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public CertificateException(String __a, Certificate __b, byte __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

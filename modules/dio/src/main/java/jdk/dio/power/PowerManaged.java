@@ -15,46 +15,45 @@ import jdk.dio.ClosedDeviceException;
 
 public interface PowerManaged
 {
-	public static final int LOWEST_POWER =
+	int LOWEST_POWER =
 		4;
 	
-	public static final int LOW_POWER =
+	int LOW_POWER =
 		2;
 	
-	public static final int POWER_OFF =
+	int POWER_OFF =
 		8;
 	
-	public static final int POWER_ON =
+	int POWER_ON =
 		1;
 	
-	public static final long UNLIMITED_DURATION =
+	long UNLIMITED_DURATION =
 		-1L;
 	
-	public abstract void disablePowerSaving()
+	void disablePowerSaving()
 		throws IOException, ClosedDeviceException;
 	
-	public abstract void enablePowerSaving(int __a)
+	void enablePowerSaving(int __a)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract void enablePowerSaving(int __a, PowerSavingHandler __b)
+	void enablePowerSaving(int __a, PowerSavingHandler __b)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract PowerManaged.Group getGroup()
+	PowerManaged.Group getGroup()
 		throws IOException, ClosedDeviceException;
 	
-	public abstract int getPowerState()
+	int getPowerState()
 		throws IOException, ClosedDeviceException;
 	
-	public abstract long requestPowerStateChange(int __a, long __b)
+	long requestPowerStateChange(int __a, long __b)
 		throws IOException, ClosedDeviceException;
 	
-	public static interface Group
+	interface Group
 	{
-		public abstract boolean contains(PowerManaged __a)
+		boolean contains(PowerManaged __a)
 			throws IOException, ClosedDeviceException;
 		
-		public abstract void setPowerSavingHandler(PowerSavingHandler __a
-			)
+		void setPowerSavingHandler(PowerSavingHandler __a)
 			throws IOException, ClosedDeviceException;
 	}
 }

@@ -78,8 +78,8 @@ public class ExtendedDataOutputStream
 			throw new IndexOutOfBoundsException("BD0x");
 		
 		// Pad
-		while ((size() % __n) != 0)
-			write(0);
+		while ((this.size() % __n) != 0)
+			this.write(0);
 	}
 	
 	/**
@@ -200,7 +200,7 @@ public class ExtendedDataOutputStream
 	public final void writeBoolean(boolean __v)
 		throws IOException
 	{
-		writeByte((__v ? 1 : 0));
+		this.writeByte((__v ? 1 : 0));
 	}
 	
 	/**
@@ -230,7 +230,7 @@ public class ExtendedDataOutputStream
 		if (__v < -128 || __v > 127)
 			throw new IOException("BD0y");
 		
-		writeByte(__v);
+		this.writeByte(__v);
 	}
 	
 	/**
@@ -252,7 +252,7 @@ public class ExtendedDataOutputStream
 	public final void writeChar(int __v)
 		throws IOException
 	{
-		writeShort(__v);
+		this.writeShort(__v);
 	}
 	
 	/**
@@ -270,7 +270,7 @@ public class ExtendedDataOutputStream
 		// Write all characters
 		int n = __s.length();
 		for (int i = 0; i < n; i++)
-			writeShort(__s.charAt(i));
+			this.writeShort(__s.charAt(i));
 	}
 	
 	/**
@@ -281,7 +281,7 @@ public class ExtendedDataOutputStream
 	public final void writeDouble(double __v)
 		throws IOException
 	{
-		writeLong(Double.doubleToRawLongBits(__v));
+		this.writeLong(Double.doubleToRawLongBits(__v));
 	}
 	
 	/**
@@ -292,7 +292,7 @@ public class ExtendedDataOutputStream
 	public final void writeFloat(float __v)
 		throws IOException
 	{
-		writeInt(Float.floatToRawIntBits(__v));
+		this.writeInt(Float.floatToRawIntBits(__v));
 	}
 	
 	/**
@@ -406,7 +406,7 @@ public class ExtendedDataOutputStream
 		if (__v < -32768 || __v > 32767)
 			throw new IOException("BD0z");
 		
-		writeShort(__v);
+		this.writeShort(__v);
 	}
 	
 	/**
@@ -424,7 +424,7 @@ public class ExtendedDataOutputStream
 		if (__v < 0 || __v > 255)
 			throw new IOException("BD10");
 		
-		writeByte(__v);
+		this.writeByte(__v);
 	}
 	
 	/**
@@ -442,7 +442,7 @@ public class ExtendedDataOutputStream
 		if (__v < 0 || __v > 65535)
 			throw new IOException("BD11");
 		
-		writeShort(__v);
+		this.writeShort(__v);
 	}
 	
 	/**

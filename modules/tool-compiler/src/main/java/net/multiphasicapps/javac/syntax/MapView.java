@@ -26,6 +26,6 @@ public interface MapView
 	 * @return The map representing of this syntax.
 	 * @since 2019/01/17
 	 */
-	public abstract Map<String, Object> asMap();
+	Map<String, Object> asMap();
 }
 

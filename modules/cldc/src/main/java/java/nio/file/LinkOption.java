@@ -18,7 +18,7 @@ public enum LinkOption
 	/** End. */
 	;
 	
-	private LinkOption()
+	LinkOption()
 	{
 		throw new todo.TODO();
 	}

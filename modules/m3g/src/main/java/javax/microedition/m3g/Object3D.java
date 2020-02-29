@@ -15,7 +15,6 @@ public abstract class Object3D
 {
 	Object3D()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

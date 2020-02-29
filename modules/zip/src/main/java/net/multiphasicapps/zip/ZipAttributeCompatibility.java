@@ -90,7 +90,7 @@ public enum ZipAttributeCompatibility
 	 * @param __id The identifier used.
 	 * @since 2016/08/07
 	 */
-	private ZipAttributeCompatibility(int __id)
+	ZipAttributeCompatibility(int __id)
 	{
 		this.id = __id;
 	}

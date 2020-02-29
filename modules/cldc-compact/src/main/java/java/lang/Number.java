@@ -22,14 +22,6 @@ package java.lang;
  */
 public abstract class Number
 {
-	/**
-	 * Initializes the base number.
-	 *
-	 * @since 2018/09/23
-	 */
-	public Number()
-	{
-	}
 	
 	/**
 	 * Returns the value of this number converted as a double.

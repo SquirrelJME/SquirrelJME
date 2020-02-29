@@ -16,7 +16,6 @@ public abstract class IndexBuffer
 {
 	IndexBuffer()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

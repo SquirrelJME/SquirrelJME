@@ -71,7 +71,7 @@ public class PrintStream
 	
 	/** The internal buffer. */
 	private final byte[] _buf =
-		new byte[_BUFFER_SIZE];
+		new byte[PrintStream._BUFFER_SIZE];
 	
 	/** The position the buffer is at. */
 	private int _bat;
@@ -827,7 +827,7 @@ public class PrintStream
 				flush = true;
 			
 			// Force a flush?
-			if (bat >= _THRESHOLD)
+			if (bat >= PrintStream._THRESHOLD)
 			{
 				// Store at location, flush then reload it
 				this._bat = bat;
@@ -840,7 +840,7 @@ public class PrintStream
 		this._bat = bat;
 		
 		// Perform a flush?
-		if (flush || bat >= _THRESHOLD)
+		if (flush || bat >= PrintStream._THRESHOLD)
 			this.__flush();
 	}
 	

@@ -96,8 +96,7 @@ public class Text
 	private int _indentation;
 	
 	/** The direction of the text. */
-	private int _direction =
-		DIRECTION_NEUTRAL;
+	private int _direction = Text.DIRECTION_NEUTRAL;
 	
 	/** Scrolling offset (scrolled up by n pixels). */
 	private int _scrolloffset;
@@ -596,8 +595,8 @@ public class Text
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB2s Invalid alignment. (The alignment)}
-		if (__a != ALIGN_LEFT && __a != ALIGN_CENTER && __a != ALIGN_RIGHT &&
-			__a != ALIGN_JUSTIFY && __a != ALIGN_DEFAULT)
+		if (__a != Text.ALIGN_LEFT && __a != Text.ALIGN_CENTER && __a != Text.ALIGN_RIGHT &&
+			__a != Text.ALIGN_JUSTIFY && __a != Text.ALIGN_DEFAULT)
 			throw new IllegalArgumentException("EB2s " + __a);
 		
 		this._alignment = __a;
@@ -791,8 +790,8 @@ public class Text
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB2u The direction to use. (The direction)}
-		if (__dir != DIRECTION_LTR && __dir != DIRECTION_RTL &&
-			__dir != DIRECTION_NEUTRAL)
+		if (__dir != Text.DIRECTION_LTR && __dir != Text.DIRECTION_RTL &&
+			__dir != Text.DIRECTION_NEUTRAL)
 			throw new IllegalArgumentException("EB2u " + __dir);
 		
 		this._direction = __dir;
@@ -897,11 +896,11 @@ public class Text
 		
 		// If the direction is neutral, this just becomes the locale default
 		// For now just treat it as LTR
-		if (direction == DIRECTION_NEUTRAL)
-			direction = DIRECTION_LTR;
+		if (direction == Text.DIRECTION_NEUTRAL)
+			direction = Text.DIRECTION_LTR;
 		
 		// Are we going right to left?
-		boolean dortl = (direction == DIRECTION_RTL);
+		boolean dortl = (direction == Text.DIRECTION_RTL);
 		
 		// Will use this storage stuff
 		TextStorage storage = this._storage;
@@ -1089,8 +1088,8 @@ public class Text
 				}
 				
 				// Handle non-default alignments
-				if ((dortl && align != ALIGN_RIGHT) ||
-					(!dortl && align != ALIGN_LEFT))
+				if ((dortl && align != Text.ALIGN_RIGHT) ||
+					(!dortl && align != Text.ALIGN_LEFT))
 				{
 					throw new todo.TODO();
 				}

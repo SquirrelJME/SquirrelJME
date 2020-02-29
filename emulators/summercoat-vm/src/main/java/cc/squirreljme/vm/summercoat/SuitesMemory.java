@@ -84,8 +84,8 @@ public final class SuitesMemory
 		Map<String, SuiteMemory> suitemap = new LinkedHashMap<>();
 		
 		// Setup memory regions for the various suites
-		int off = CONFIG_TABLE_SIZE;
-		for (int i = 0; i < n; i++, off += SUITE_CHUNK_SIZE)
+		int off = SuitesMemory.CONFIG_TABLE_SIZE;
+		for (int i = 0; i < n; i++, off += SuitesMemory.SUITE_CHUNK_SIZE)
 		{
 			// Need the suite name for later lookup on init
 			String libname = libnames[i];
@@ -129,11 +129,11 @@ public final class SuitesMemory
 			this.__init();
 		
 		// Reading from the config table?
-		if (__addr < CONFIG_TABLE_SIZE)
+		if (__addr < SuitesMemory.CONFIG_TABLE_SIZE)
 			return this._configtable.memReadByte(__addr);
 		
 		// Determine the suite index we are wanting to look in memory
-		int si = (__addr - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE;
+		int si = (__addr - SuitesMemory.CONFIG_TABLE_SIZE) / SuitesMemory.SUITE_CHUNK_SIZE;
 		
 		// Instead of failing, return some invalid values
 		SuiteMemory[] suitemem = this._suitemem;
@@ -213,7 +213,7 @@ public final class SuitesMemory
 			// Boot properties
 			dos.writeInt(Arrays.asList(suitemem).indexOf(superv));
 			dos.writeInt(superv.offset);
-			dos.writeInt(SUITE_CHUNK_SIZE);
+			dos.writeInt(SuitesMemory.SUITE_CHUNK_SIZE);
 			dos.writeInt(0);
 			dos.writeInt(0);
 			dos.writeInt(0);
@@ -246,7 +246,7 @@ public final class SuitesMemory
 				
 				// Offset and size of the chunk
 				dos.writeInt(suite.offset);
-				dos.writeInt(SUITE_CHUNK_SIZE);
+				dos.writeInt(SuitesMemory.SUITE_CHUNK_SIZE);
 				
 				// The manifest is not known, must be searched
 				dos.writeInt(0);

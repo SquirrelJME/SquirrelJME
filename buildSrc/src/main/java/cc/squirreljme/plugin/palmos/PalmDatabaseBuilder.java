@@ -302,10 +302,11 @@ public final class PalmDatabaseBuilder
 		// Write the name bytes
 		byte[] namebytes = this._name.getBytes("utf-8");
 		int namelen = namebytes.length;
-		dos.write(namebytes, 0, Math.min(namelen, _NAME_LIMIT));
+		dos.write(namebytes, 0, Math.min(namelen,
+			PalmDatabaseBuilder._NAME_LIMIT));
 		
 		// Pad shorter names
-		for (int i = namelen; i < _NAME_LIMIT; i++)
+		for (int i = namelen; i < PalmDatabaseBuilder._NAME_LIMIT; i++)
 			dos.write(0);
 		
 		// Determine attribute bit-field
@@ -330,11 +331,11 @@ public final class PalmDatabaseBuilder
 		
 		// Creation/Modification/Backup Time (In Mac OS epoch seconds)
 		dos.writeInt(
-			(int)((this._createtime + _EPOCH_DIFF_MILLISECONDS) / 1000L));
+			(int)((this._createtime + PalmDatabaseBuilder._EPOCH_DIFF_MILLISECONDS) / 1000L));
 		dos.writeInt(
-			(int)((this._modtime + _EPOCH_DIFF_MILLISECONDS) / 1000L));
+			(int)((this._modtime + PalmDatabaseBuilder._EPOCH_DIFF_MILLISECONDS) / 1000L));
 		dos.writeInt(
-			(int)((this._backuptime + _EPOCH_DIFF_MILLISECONDS) / 1000L));
+			(int)((this._backuptime + PalmDatabaseBuilder._EPOCH_DIFF_MILLISECONDS) / 1000L));
 		
 		// Modification count
 		dos.writeInt(this._modcount);

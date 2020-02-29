@@ -14,10 +14,10 @@ import jdk.dio.Device;
 
 public interface PowerSavingHandler
 {
-	public abstract <P extends Device<? super P>> void handlePowerStateChange
-		(P __a, PowerManaged.Group __b, int __c, int __d, long __e);
+	<P extends Device<? super P>> void handlePowerStateChange(P __a,
+		PowerManaged.Group __b, int __c, int __d, long __e);
 	
-	public abstract <P extends Device<? super P>> long 
+	<P extends Device<? super P>> long
 		handlePowerStateChangeRequest(P __a, PowerManaged.Group __b, int __c,
 		int __d, long __e);
 }

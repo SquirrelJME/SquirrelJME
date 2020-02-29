@@ -30,12 +30,10 @@ public enum ClassVersion
 	;
 	
 	/** The minimum supported version. */
-	public static final ClassVersion MIN_VERSION =
-		CLDC_1;
+	public static final ClassVersion MIN_VERSION = ClassVersion.CLDC_1;
 	
 	/** The maximum supported version. */
-	public static final ClassVersion MAX_VERSION =
-		CLDC_8;
+	public static final ClassVersion MAX_VERSION = ClassVersion.CLDC_8;
 	
 	/** The version ID. */
 	protected final int version;
@@ -63,15 +61,15 @@ public enum ClassVersion
 	 * @param __usesmt Should the StackMapTable attribute be used?
 	 * @since 2016/03/13
 	 */
-	private ClassVersion(int __vid, int __vmx,
-		boolean __float, boolean __hasid, boolean __usesmt)
+	ClassVersion(int __vid, int __vmx, boolean __float, boolean __hasid,
+		boolean __usesmt)
 	{
 		// Set
-		version = __vid;
-		maxversion = __vmx;
-		hasfloat = __float;
-		hasinvokedynamic = __hasid;
-		usestackmaptable = __usesmt;
+		this.version = __vid;
+		this.maxversion = __vmx;
+		this.hasfloat = __float;
+		this.hasinvokedynamic = __hasid;
+		this.usestackmaptable = __usesmt;
 	}
 	
 	/**
@@ -83,7 +81,7 @@ public enum ClassVersion
 	 */
 	public boolean hasFloatingPoint()
 	{
-		return hasfloat;
+		return this.hasfloat;
 	}
 	
 	/**
@@ -95,7 +93,7 @@ public enum ClassVersion
 	 */
 	public boolean hasInvokeDynamic()
 	{
-		return hasinvokedynamic;
+		return this.hasinvokedynamic;
 	}
 	
 	/**
@@ -108,7 +106,7 @@ public enum ClassVersion
 	 */
 	public boolean useStackMapTable()
 	{
-		return usestackmaptable;
+		return this.usestackmaptable;
 	}
 	
 	/**
@@ -122,7 +120,7 @@ public enum ClassVersion
 	{
 		// Go through all versions, find the best
 		ClassVersion best = null;
-		for (ClassVersion v : values())
+		for (ClassVersion v : ClassVersion.values())
 			if (__vid >= v.version && __vid <= v.maxversion)
 				if (best == null || v.version > best.version)
 					best = v;

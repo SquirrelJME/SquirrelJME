@@ -101,7 +101,7 @@ public final class NativeBinding
 		System.load(libFile.toString());
 		
 		// Bind methods
-		if (__bindMethods() != 0)
+		if (NativeBinding.__bindMethods() != 0)
 			throw new RuntimeException("Could not bind methods!");
 	}
 	

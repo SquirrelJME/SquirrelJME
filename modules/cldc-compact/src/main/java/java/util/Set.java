@@ -14,49 +14,49 @@ public interface Set<E>
 	extends Collection<E>
 {
 	@Override
-	public abstract boolean add(E __a);
+	boolean add(E __a);
 	
 	@Override
-	public abstract boolean addAll(Collection<? extends E> __a);
+	boolean addAll(Collection<? extends E> __a);
 	
 	@Override
-	public abstract void clear();
+	void clear();
 	
 	@Override
-	public abstract boolean contains(Object __a);
+	boolean contains(Object __a);
 	
 	@Override
-	public abstract boolean containsAll(Collection<?> __a);
+	boolean containsAll(Collection<?> __a);
 	
 	@Override
-	public abstract boolean equals(Object __a);
+	boolean equals(Object __a);
 	
 	@Override
-	public abstract int hashCode();
+	int hashCode();
 	
 	@Override
-	public abstract boolean isEmpty();
+	boolean isEmpty();
 	
 	@Override
-	public abstract Iterator<E> iterator();
+	Iterator<E> iterator();
 	
 	@Override
-	public abstract boolean remove(Object __a);
+	boolean remove(Object __a);
 	
 	@Override
-	public abstract boolean removeAll(Collection<?> __a);
+	boolean removeAll(Collection<?> __a);
 	
 	@Override
-	public abstract boolean retainAll(Collection<?> __a);
+	boolean retainAll(Collection<?> __a);
 	
 	@Override
-	public abstract int size();
+	int size();
 	
 	@Override
-	public abstract Object[] toArray();
+	Object[] toArray();
 	
 	@Override
-	public abstract <T> T[] toArray(T[] __a);
+	<T> T[] toArray(T[] __a);
 }
 
 

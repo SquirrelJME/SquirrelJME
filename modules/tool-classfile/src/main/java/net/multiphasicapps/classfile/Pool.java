@@ -201,7 +201,7 @@ public final class Pool
 					// UTF-8 constants to be directly used by the byte code so
 					// this prevents their usage from occuring by causing a
 					// class cast exception
-				case TAG_UTF8:
+				case Pool.TAG_UTF8:
 					try
 					{
 						data = new UTFConstantEntry(__in.readUTF());
@@ -216,40 +216,40 @@ public final class Pool
 					break;
 					
 					// Reference to two entries
-				case TAG_FIELDREF:
-				case TAG_METHODREF:
-				case TAG_INTERFACEMETHODREF:
-				case TAG_NAMEANDTYPE:
+				case Pool.TAG_FIELDREF:
+				case Pool.TAG_METHODREF:
+				case Pool.TAG_INTERFACEMETHODREF:
+				case Pool.TAG_NAMEANDTYPE:
 					data = new int[]{__in.readUnsignedShort(),
 						__in.readUnsignedShort()};
 					break;
 					
 					// References to single entry
-				case TAG_CLASS:
-				case TAG_STRING:
+				case Pool.TAG_CLASS:
+				case Pool.TAG_STRING:
 					data = new int[]{__in.readUnsignedShort()};
 					break;
 					
 					// Integer
-				case TAG_INTEGER:
+				case Pool.TAG_INTEGER:
 					data = new ConstantValueInteger(
 						Integer.valueOf(__in.readInt()));
 					break;
 					
 					// Long
-				case TAG_LONG:
+				case Pool.TAG_LONG:
 					data = new ConstantValueLong(
 						Long.valueOf(__in.readLong()));
 					break;
 					
 					// Float
-				case TAG_FLOAT:
+				case Pool.TAG_FLOAT:
 					data = new ConstantValueFloat(
 						Float.valueOf(__in.readFloat()));
 					break;
 					
 					// Double
-				case TAG_DOUBLE:
+				case Pool.TAG_DOUBLE:
 					data = new ConstantValueDouble(
 						Double.valueOf(__in.readDouble()));
 					break;
@@ -257,9 +257,9 @@ public final class Pool
 					// {@squirreljme.error JC3s Java ME does not support
 					// dynamic invocation (such as method handles or lambda
 					// expressions).}
-				case TAG_METHODHANDLE:
-				case TAG_METHODTYPE:
-				case TAG_INVOKEDYNAMIC:
+				case Pool.TAG_METHODHANDLE:
+				case Pool.TAG_METHODTYPE:
+				case Pool.TAG_INVOKEDYNAMIC:
 					throw new InvalidClassFormatException("JC3s");
 				
 					// {@squirreljme.error JC3t Unknown tag type in the
@@ -271,10 +271,10 @@ public final class Pool
 			rawdata[i] = data;
 			
 			// Skip long/double?
-			if (tag == TAG_LONG || tag == TAG_DOUBLE)
+			if (tag == Pool.TAG_LONG || tag == Pool.TAG_DOUBLE)
 			{
 				rawdata[++i] = new WideConstantTopEntry();
-				tags[i] = TAG_WIDETOP;
+				tags[i] = Pool.TAG_WIDETOP;
 			}
 		}
 		
@@ -283,7 +283,7 @@ public final class Pool
 		Object[] entries = new Object[count];
 		try
 		{
-			__initializeEntries(entries, tags, rawdata);
+			Pool.__initializeEntries(entries, tags, rawdata);
 		}
 		
 		// {@squirreljme.error JC3u The constant pool is not valid.}
@@ -331,27 +331,27 @@ public final class Pool
 			switch (tag)
 			{
 				case 0:
-				case TAG_UTF8:
-				case TAG_INTEGER:
-				case TAG_FLOAT:
-				case TAG_LONG:
-				case TAG_DOUBLE:
-				case TAG_WIDETOP:
+				case Pool.TAG_UTF8:
+				case Pool.TAG_INTEGER:
+				case Pool.TAG_FLOAT:
+				case Pool.TAG_LONG:
+				case Pool.TAG_DOUBLE:
+				case Pool.TAG_WIDETOP:
 					sequence = 0;
 					break;
 				
-				case TAG_CLASS:
-				case TAG_STRING:
+				case Pool.TAG_CLASS:
+				case Pool.TAG_STRING:
 					sequence = 1;
 					break;
 				
-				case TAG_NAMEANDTYPE:
+				case Pool.TAG_NAMEANDTYPE:
 					sequence = 2;
 					break;
 				
-				case TAG_FIELDREF:
-				case TAG_METHODREF:
-				case TAG_INTERFACEMETHODREF:
+				case Pool.TAG_FIELDREF:
+				case Pool.TAG_METHODREF:
+				case Pool.TAG_INTERFACEMETHODREF:
 					sequence = 3;
 					break;
 					
@@ -378,30 +378,30 @@ public final class Pool
 			{
 					// These are copied directly
 				case 0:
-				case TAG_UTF8:
-				case TAG_INTEGER:
-				case TAG_FLOAT:
-				case TAG_LONG:
-				case TAG_DOUBLE:
-				case TAG_WIDETOP:
+				case Pool.TAG_UTF8:
+				case Pool.TAG_INTEGER:
+				case Pool.TAG_FLOAT:
+				case Pool.TAG_LONG:
+				case Pool.TAG_DOUBLE:
+				case Pool.TAG_WIDETOP:
 					out = in;
 					break;
 					
 					// Name of a class
-				case TAG_CLASS:
+				case Pool.TAG_CLASS:
 					out = new ClassName(((UTFConstantEntry)
 						__entries[((int[])in)[0]]).toString());
 					break;
 					
 					// String constant
-				case TAG_STRING:
+				case Pool.TAG_STRING:
 					out = new ConstantValueString(
 						((UTFConstantEntry)__entries[((int[])in)[0]]).
 							toString());
 					break;
 					
 					// Name and type information
-				case TAG_NAMEANDTYPE:
+				case Pool.TAG_NAMEANDTYPE:
 					{
 						int[] ina = (int[])in;
 						out = new NameAndType(
@@ -411,15 +411,15 @@ public final class Pool
 					break;
 					
 					// Field and method references
-				case TAG_FIELDREF:
-				case TAG_METHODREF:
-				case TAG_INTERFACEMETHODREF:
+				case Pool.TAG_FIELDREF:
+				case Pool.TAG_METHODREF:
+				case Pool.TAG_INTERFACEMETHODREF:
 					{
 						int[] ina = (int[])in;
 						ClassName cn = (ClassName)__entries[ina[0]];
 						NameAndType nat = (NameAndType)__entries[ina[1]];
 						
-						if (tag == TAG_FIELDREF)
+						if (tag == Pool.TAG_FIELDREF)
 							out = new FieldReference(cn,
 								new FieldName(nat.name()),
 								new FieldDescriptor(nat.type()));
@@ -427,7 +427,7 @@ public final class Pool
 							out = new MethodReference(cn,
 								new MethodName(nat.name()),
 								new MethodDescriptor(nat.type()),
-								tag == TAG_INTERFACEMETHODREF);
+								tag == Pool.TAG_INTERFACEMETHODREF);
 					}
 					break;
 				

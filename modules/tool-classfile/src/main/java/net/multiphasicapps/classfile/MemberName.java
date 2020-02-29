@@ -23,6 +23,6 @@ public interface MemberName
 	 * @return The identifier.
 	 * @since 2018/09/09
 	 */
-	public abstract String identifier();
+	String identifier();
 }
 

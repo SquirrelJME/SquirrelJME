@@ -148,7 +148,6 @@ public abstract class Calendar
 	
 	protected Calendar()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

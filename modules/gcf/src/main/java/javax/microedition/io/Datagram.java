@@ -17,24 +17,24 @@ import java.io.IOException;
 public interface Datagram
 	extends DataInput, DataOutput
 {
-	public abstract String getAddress();
+	String getAddress();
 	
-	public abstract byte[] getData();
+	byte[] getData();
 	
-	public abstract int getLength();
+	int getLength();
 	
-	public abstract int getOffset();
+	int getOffset();
 	
-	public abstract void reset();
+	void reset();
 	
-	public abstract void setAddress(String __a)
+	void setAddress(String __a)
 		throws IOException;
 	
-	public abstract void setAddress(Datagram __a);
+	void setAddress(Datagram __a);
 	
-	public abstract void setData(byte[] __a, int __b, int __c);
+	void setData(byte[] __a, int __b, int __c);
 	
-	public abstract void setLength(int __a);
+	void setLength(int __a);
 }
 
 

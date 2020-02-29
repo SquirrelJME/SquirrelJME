@@ -16,7 +16,6 @@ public class AccessPoint
 {
 	public AccessPoint()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

@@ -23,7 +23,7 @@ public interface Flag
 	 * @return The bit mask of the given flag.
 	 * @since 2017/07/07
 	 */
-	public abstract int javaBitMask();
+	int javaBitMask();
 	
 	/**
 	 * Returns the flag ordinal.
@@ -31,6 +31,6 @@ public interface Flag
 	 * @return The ordinal of the flag.
 	 * @since 2016/04/23
 	 */
-	public abstract int ordinal();
+	int ordinal();
 }
 

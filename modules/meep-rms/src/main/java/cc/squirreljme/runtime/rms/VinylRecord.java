@@ -20,15 +20,15 @@ package cc.squirreljme.runtime.rms;
 public interface VinylRecord
 {
 	/** No memory is available. */
-	public static final int ERROR_NO_MEMORY =
+	int ERROR_NO_MEMORY =
 		-1;
 	
 	/** No such volume. */
-	public static final int ERROR_NO_VOLUME =
+	int ERROR_NO_VOLUME =
 		-2;
 	
 	/** No such page. */
-	public static final int ERROR_NO_PAGE =
+	int ERROR_NO_PAGE =
 		-3;
 	
 	/**
@@ -39,7 +39,7 @@ public interface VinylRecord
 	 * try-with-resources.
 	 * @since 2018/12/14
 	 */
-	public abstract VinylLock lock();
+	VinylLock lock();
 	
 	/**
 	 * Adds a page to the given volume.
@@ -55,8 +55,7 @@ public interface VinylRecord
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	public abstract int pageAdd(int __vid, byte[] __b, int __o, int __l,
-		int __tag)
+	int pageAdd(int __vid, byte[] __b, int __o, int __l, int __tag)
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
@@ -67,7 +66,7 @@ public interface VinylRecord
 	 * @return The page that was deleted or an error.
 	 * @since 2019/06/09
 	 */
-	public abstract int pageDelete(int __vid, int __pid);
+	int pageDelete(int __vid, int __pid);
 	
 	/**
 	 * Returns the list of pages in the volume.
@@ -77,7 +76,7 @@ public interface VinylRecord
 	 * the first entry will be the error code.
 	 * @since 2019/04/15
 	 */
-	public abstract int[] pageList(int __vid);
+	int[] pageList(int __vid);
 	
 	/**
 	 * Returns the ID of the next page ID that might be used.
@@ -86,7 +85,7 @@ public interface VinylRecord
 	 * @return The next page ID or an error.
 	 * @since 2019/06/09
 	 */
-	public abstract int pageNextId(int __vid);
+	int pageNextId(int __vid);
 	
 	/**
 	 * Returns the data of the given page.
@@ -102,8 +101,7 @@ public interface VinylRecord
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
-	public abstract int pageRead(int __vid, int __pid, byte[] __b, int __o,
-		int __l)
+	int pageRead(int __vid, int __pid, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
@@ -121,8 +119,7 @@ public interface VinylRecord
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/09
 	 */
-	public abstract int pageSet(int __vid, int __pid, byte[] __b, int __o,
-		int __l, int __tag)
+	int pageSet(int __vid, int __pid, byte[] __b, int __o, int __l, int __tag)
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
@@ -133,7 +130,7 @@ public interface VinylRecord
 	 * @return The size of the page or an error otherwise.
 	 * @since 2019/05/01
 	 */
-	public abstract int pageSize(int __vid, int __pid);
+	int pageSize(int __vid, int __pid);
 	
 	/**
 	 * Returns the tag of the page.
@@ -143,7 +140,7 @@ public interface VinylRecord
 	 * @return The tag identifier.
 	 * @since 2019/05/13
 	 */
-	public abstract int pageTag(int __vid, int __pid);
+	int pageTag(int __vid, int __pid);
 	
 	/**
 	 * Returns the amount of space available for this record.
@@ -151,7 +148,7 @@ public interface VinylRecord
 	 * @return The available space count.
 	 * @since 2019/05/13
 	 */
-	public abstract int vinylSizeAvailable();
+	int vinylSizeAvailable();
 	
 	/**
 	 * Creates a new record.
@@ -162,7 +159,7 @@ public interface VinylRecord
 	 * @return The identifier of the suite.
 	 * @since 2019/04/14
 	 */
-	public abstract int volumeCreate(long __sid, String __n, boolean __wo);
+	int volumeCreate(long __sid, String __n, boolean __wo);
 	
 	/**
 	 * Returns the list of all available stores.
@@ -170,7 +167,7 @@ public interface VinylRecord
 	 * @return The list of available stores.
 	 * @since 2019/04/14
 	 */
-	public abstract int[] volumeList();
+	int[] volumeList();
 	
 	/**
 	 * Returns the modification count of the volume.
@@ -179,7 +176,7 @@ public interface VinylRecord
 	 * @return The modification count or an error.
 	 * @since 2019/05/13
 	 */
-	public abstract int volumeModCount(int __vid);
+	int volumeModCount(int __vid);
 	
 	/**
 	 * Returns the modification time of the volume.
@@ -190,7 +187,7 @@ public interface VinylRecord
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
-	public abstract int volumeModTime(int __vid, long[] __time)
+	int volumeModTime(int __vid, long[] __time)
 		throws NullPointerException;
 	
 	/**
@@ -200,7 +197,7 @@ public interface VinylRecord
 	 * @return The name of the record or {@code null} if there is no name.
 	 * @since 2019/04/14
 	 */
-	public abstract String volumeName(int __vid);
+	String volumeName(int __vid);
 	
 	/**
 	 * Returns the suite identifier for the given record.
@@ -209,7 +206,7 @@ public interface VinylRecord
 	 * @return The suite identifier or {@code 0} if it is not valid.
 	 * @since 2019/04/14
 	 */
-	public abstract long volumeSuiteIdentifier(int __vid);
+	long volumeSuiteIdentifier(int __vid);
 	
 	/**
 	 * Returns if this volume is other writable.
@@ -218,6 +215,6 @@ public interface VinylRecord
 	 * @return If it is writable by others.
 	 * @since 2019/04/15
 	 */
-	public abstract boolean volumeOtherWritable(int __vid);
+	boolean volumeOtherWritable(int __vid);
 }
 

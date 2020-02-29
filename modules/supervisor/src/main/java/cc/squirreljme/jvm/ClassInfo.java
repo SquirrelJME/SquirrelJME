@@ -120,7 +120,7 @@ public final class ClassInfo
 		int __dn)
 	{
 		// Always implicitly set magic
-		this.magic = MAGIC_NUMBER;
+		this.magic = ClassInfo.MAGIC_NUMBER;
 		
 		// Set
 		this.selfptr = __sp;

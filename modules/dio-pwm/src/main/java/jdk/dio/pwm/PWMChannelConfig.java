@@ -38,7 +38,6 @@ public final class PWMChannelConfig
 	@Deprecated
 	public PWMChannelConfig(int __a, int __b, int __c, int __d, int __e)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -46,14 +45,12 @@ public final class PWMChannelConfig
 	public PWMChannelConfig(int __a, int __b, int __c, int __d, int __e, 
 		GPIOPinConfig __f)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public PWMChannelConfig(String __a, int __b, int __c, int __d, int __e)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -61,7 +58,6 @@ public final class PWMChannelConfig
 	public PWMChannelConfig(String __a, int __b, int __c, int __d, int __e, 
 		GPIOPinConfig __f)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -146,7 +142,6 @@ public final class PWMChannelConfig
 	{
 		public Builder()
 		{
-			super();
 			throw new todo.TODO();
 		}
 		

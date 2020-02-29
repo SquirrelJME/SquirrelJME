@@ -38,7 +38,7 @@ public interface Closeable
 	 * @since 2016/04/12
 	 */
 	@Override
-	public abstract void close()
+	void close()
 		throws IOException;
 }
 

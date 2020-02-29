@@ -17,7 +17,6 @@ public final class Channels
 {
 	private Channels()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

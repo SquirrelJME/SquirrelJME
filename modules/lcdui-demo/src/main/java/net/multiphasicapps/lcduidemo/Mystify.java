@@ -51,8 +51,7 @@ public class Mystify
 		250;
 	
 	/** Delay time in nanoseconds. */
-	public static final long DELAY_TIME_NS =
-		DELAY_TIME * 1_000_000L;
+	public static final long DELAY_TIME_NS = Mystify.DELAY_TIME * 1_000_000L;
 	
 	/**
 	 * {@inheritDoc}
@@ -83,7 +82,7 @@ public class Mystify
 		Display.getDisplay(this).setCurrent(cv);
 		
 		// Setup thread to force repaints on canvas
-		new RepaintTimer(cv, DELAY_TIME).start();
+		new RepaintTimer(cv, Mystify.DELAY_TIME).start();
 	}
 	
 	/**
@@ -91,7 +90,7 @@ public class Mystify
 	 *
 	 * @since 2018/11/22
 	 */
-	static public final class DemoCanvas
+	public static final class DemoCanvas
 		extends Canvas
 	{
 		/** Random number generator for bounces and such. */
@@ -100,15 +99,15 @@ public class Mystify
 		
 		/** Points and their shadows. */
 		protected final Point[][] points =
-			new Point[NUM_SHADOWS][NUM_POINTS];
+			new Point[Mystify.NUM_SHADOWS][Mystify.NUM_POINTS];
 		
 		/** Colors. */
 		protected final int[] colors =
-			new int[NUM_SHADOWS];
+			new int[Mystify.NUM_SHADOWS];
 		
 		/** The direction of the points. */
 		protected final Point[] direction =
-			new Point[NUM_POINTS];
+			new Point[Mystify.NUM_POINTS];
 		
 		/** Update lock to prevent multiple threads updating at once. */
 		private volatile boolean _lockflag;
@@ -135,22 +134,22 @@ public class Mystify
 			// Generate random start points
 			Random random = this.random;
 			Point[] start = points[0];
-			for (int i = 0; i < NUM_POINTS; i++)
+			for (int i = 0; i < Mystify.NUM_POINTS; i++)
 				start[i] = new Point(random.nextInt(), random.nextInt());
 			
 			// Copy all the points to the shadow
-			for (int i = 1; i < NUM_SHADOWS; i++)
-				for (int j = 0; j < NUM_POINTS; j++)
+			for (int i = 1; i < Mystify.NUM_SHADOWS; i++)
+				for (int j = 0; j < Mystify.NUM_POINTS; j++)
 					points[i][j] = new Point(start[j]);
 			
 			// Initialize the color cycle
 			int[] colors = this.colors;
-			for (int i = 0; i < NUM_SHADOWS; i++)
+			for (int i = 0; i < Mystify.NUM_SHADOWS; i++)
 				colors[i] = random.nextInt();
 			
 			// Determine new directions for all the points
 			Point[] direction = this.direction;
-			for (int i = 0; i < NUM_POINTS; i++)
+			for (int i = 0; i < Mystify.NUM_POINTS; i++)
 				direction[i] = this.__newDirection(new Point(),
 					random.nextBoolean(), random.nextBoolean());
 		}
@@ -179,7 +178,7 @@ public class Mystify
 				nextnano = this._nextnano;
 			
 			// Draw every point, from older shadows to the newer shape
-			for (int i = NUM_SHADOWS - 1; i >= 0; i--)
+			for (int i = Mystify.NUM_SHADOWS - 1; i >= 0; i--)
 			{
 				Point[] draw = points[i];
 				
@@ -211,7 +210,7 @@ public class Mystify
 							this._lockflag = false;
 							
 							// Update some other time in the future
-							this._nextnano = System.nanoTime() + DELAY_TIME_NS;
+							this._nextnano = System.nanoTime() + Mystify.DELAY_TIME_NS;
 						}
 				}
 				
@@ -219,11 +218,11 @@ public class Mystify
 				__g.setColor(colors[i]);
 				
 				// Draw all the points
-				for (int j = 0; j < NUM_POINTS; j++)
+				for (int j = 0; j < Mystify.NUM_POINTS; j++)
 				{
 					// Get A and B points
 					Point a = draw[j],
-						b = draw[(j + 1) % NUM_POINTS];
+						b = draw[(j + 1) % Mystify.NUM_POINTS];
 					
 					// Draw line
 					__g.drawLine(a.x, a.y, b.x, b.y);
@@ -249,8 +248,8 @@ public class Mystify
 			
 			// Generate new speeds
 			Random random = this.random;
-			int x = random.nextInt(MAX_SPEED) + 1,
-				y = random.nextInt(MAX_SPEED) + 1;
+			int x = random.nextInt(Mystify.MAX_SPEED) + 1,
+				y = random.nextInt(Mystify.MAX_SPEED) + 1;
 			
 			// Flip signs?
 			if (!__px)
@@ -279,7 +278,7 @@ public class Mystify
 			Random random = this.random;
 			
 			// Base points to modify
-			Point[] draw = points[0];
+			Point[] draw = this.points[0];
 			
 			// Needed for drawing
 			Point[][] points = this.points;
@@ -287,15 +286,15 @@ public class Mystify
 			int[] colors = this.colors;
 			
 			// Move all the old points and colors down
-			for (int j = NUM_SHADOWS - 2; j >= 0; j--)
+			for (int j = Mystify.NUM_SHADOWS - 2; j >= 0; j--)
 			{
 				points[j + 1] = points[j];
 				colors[j + 1] = colors[j];
 			}
 			
 			// Allocate a new set of points offset in the directions
-			Point[] place = new Point[NUM_POINTS];
-			for (int j = 0; j < NUM_POINTS; j++)
+			Point[] place = new Point[Mystify.NUM_POINTS];
+			for (int j = 0; j < Mystify.NUM_POINTS; j++)
 			{
 				// Get base coordinates
 				int newx = draw[j].x,
@@ -306,7 +305,7 @@ public class Mystify
 				// screen instead
 				if (newx < 0 || newx >= __w)
 				{
-					if (newx < -WAY_OFF || newy > __w + WAY_OFF)
+					if (newx < -Mystify.WAY_OFF || newy > __w + Mystify.WAY_OFF)
 						newx = random.nextInt((__w > 0 ? __w : 1));
 					else
 					{
@@ -319,7 +318,7 @@ public class Mystify
 				
 				if (newy < 0 || newy >= __h)
 				{
-					if (newy < -WAY_OFF || newy > __h + WAY_OFF)
+					if (newy < -Mystify.WAY_OFF || newy > __h + Mystify.WAY_OFF)
 						newy = random.nextInt((__h > 0 ? __h : 1));
 					else
 					{
@@ -365,9 +364,9 @@ public class Mystify
 					b = (byte)((color & 0x0000FF));
 				
 				// Cycle the colors depending on the direction of travel
-				r += (ppx ^ ppy ? +COLOR_SHIFT : -COLOR_SHIFT);
-				g += (ppy | ppy ? -COLOR_SHIFT : +COLOR_SHIFT);
-				b += (ppx ^ ppy ? -COLOR_SHIFT : +COLOR_SHIFT);
+				r += (ppx ^ ppy ? +Mystify.COLOR_SHIFT : -Mystify.COLOR_SHIFT);
+				g += (ppy | ppy ? -Mystify.COLOR_SHIFT : +Mystify.COLOR_SHIFT);
+				b += (ppx ^ ppy ? -Mystify.COLOR_SHIFT : +Mystify.COLOR_SHIFT);
 				
 				// Recombine the color
 				colors[j] = ((r & 0xFF) << 16) |
@@ -388,7 +387,7 @@ public class Mystify
 	 *
 	 * @since 2018/11/22
 	 */
-	static public final class Point
+	public static final class Point
 	{
 		/** X position. */
 		public int x;

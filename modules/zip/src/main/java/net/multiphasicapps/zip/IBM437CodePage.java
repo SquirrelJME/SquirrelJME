@@ -36,7 +36,7 @@ public final class IBM437CodePage
 	 */
 	public static char byteToChar(byte __b)
 	{
-		return byteToChar(((int)__b) & 0xFF);
+		return IBM437CodePage.byteToChar(((int)__b) & 0xFF);
 	}
 	
 	/**
@@ -220,11 +220,11 @@ public final class IBM437CodePage
 			throw new IllegalArgumentException("BAOB");
 		
 		// Result is of the same size
-		char rv[] = new char[__len];
+		char[] rv = new char[__len];
 		
 		// Go through it
 		for (int i = 0; i < __len; i++)
-			rv[i] = byteToChar(__arr[__off + i]);
+			rv[i] = IBM437CodePage.byteToChar(__arr[__off + i]);
 		
 		// Build it
 		return new String(rv);

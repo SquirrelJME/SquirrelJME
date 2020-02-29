@@ -89,7 +89,7 @@ public final class SpringArrayObjectFloat
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK0e %d %d", __dx, length), e);
+				String.format("BK0e %d %d", __dx, this.length), e);
 		}
 	}
 	

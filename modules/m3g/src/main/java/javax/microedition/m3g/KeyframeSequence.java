@@ -37,7 +37,6 @@ public class KeyframeSequence
 	
 	public KeyframeSequence(int __a, int __b, int __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

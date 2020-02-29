@@ -15,9 +15,9 @@ import java.io.IOException;
 public interface HttpsConnection
 	extends HttpConnection
 {
-	public abstract int getPort();
+	int getPort();
 	
-	public abstract SecurityInfo getSecurityInfo()
+	SecurityInfo getSecurityInfo()
 		throws IOException;
 }
 

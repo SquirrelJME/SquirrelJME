@@ -16,7 +16,6 @@ public class World
 {
 	public World()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

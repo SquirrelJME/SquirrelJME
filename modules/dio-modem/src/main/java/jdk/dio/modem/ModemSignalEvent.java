@@ -22,13 +22,11 @@ public class ModemSignalEvent<P extends Device<? super P>>
 	
 	public ModemSignalEvent(P __a, int __b, boolean __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public ModemSignalEvent(P __a, int __b, boolean __c, long __d, int __e)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

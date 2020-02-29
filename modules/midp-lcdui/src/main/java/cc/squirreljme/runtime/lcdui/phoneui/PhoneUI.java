@@ -60,7 +60,7 @@ public final class PhoneUI
 	public PhoneUI(PhoneDisplayBackend __b)
 		throws NullPointerException
 	{
-		this(__b, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
+		this(__b, PhoneUI.DEFAULT_SCREEN_WIDTH, PhoneUI.DEFAULT_SCREEN_HEIGHT);
 	}
 	
 	/**
@@ -79,8 +79,8 @@ public final class PhoneUI
 			throw new NullPointerException("NARG");
 		
 		this.backend = __b;
-		this.width = (__sw = (__sw <= 0 ? DEFAULT_SCREEN_WIDTH : __sw));
-		this.height = (__sh = (__sh <= 0 ? DEFAULT_SCREEN_HEIGHT : __sh));
+		this.width = (__sw = (__sw <= 0 ? PhoneUI.DEFAULT_SCREEN_WIDTH : __sw));
+		this.height = (__sh = (__sh <= 0 ? PhoneUI.DEFAULT_SCREEN_HEIGHT : __sh));
 		
 		// Set active display
 		ActiveDisplay activedisplay = new ActiveDisplay(__sw, __sh);

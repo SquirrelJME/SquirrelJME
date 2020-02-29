@@ -17,13 +17,11 @@ public class FileSystemException
 {
 	public FileSystemException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public FileSystemException(String __a, String __b, String __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

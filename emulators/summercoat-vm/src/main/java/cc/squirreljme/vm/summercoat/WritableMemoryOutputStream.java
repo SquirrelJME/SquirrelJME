@@ -129,7 +129,7 @@ public final class WritableMemoryOutputStream
 			__l = left;
 		
 		// Write to memory
-		this.memory.memWriteBytes(address + at, __b, __o, __l);
+		this.memory.memWriteBytes(this.address + at, __b, __o, __l);
 		
 		// Increase pointer
 		this._at = at + __l;

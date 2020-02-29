@@ -55,7 +55,6 @@ public final class Long
 	public Long(String __a)
 		throws NumberFormatException
 	{
-		super();
 		if (false)
 			throw new NumberFormatException();
 		throw new todo.TODO();

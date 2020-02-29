@@ -30,7 +30,7 @@ public final class ThreadManager
 	
 	/** Threads that currently exist. */
 	private TaskThread[] _threads =
-		new TaskThread[_DEFAULT_THREAD_COUNT];
+		new TaskThread[ThreadManager._DEFAULT_THREAD_COUNT];
 	
 	/** The next logical thread id. */
 	private int _nextlid;
@@ -41,7 +41,7 @@ public final class ThreadManager
 	 * @since 2019/10/19
 	 */
 	{
-		this._threads[0] = BOOT_THREAD;
+		this._threads[0] = this.BOOT_THREAD;
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public final class ThreadManager
 			if (freespot < 0)
 			{
 				// Setup and copy source
-				TaskThread[] newthreads = new TaskThread[n + _GROW_SIZE];
+				TaskThread[] newthreads = new TaskThread[n + ThreadManager._GROW_SIZE];
 				for (int i = 0; i < n; i++)
 					newthreads[i] = threads[i];
 				

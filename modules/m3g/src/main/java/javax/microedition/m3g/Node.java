@@ -31,7 +31,6 @@ public abstract class Node
 	
 	Node()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

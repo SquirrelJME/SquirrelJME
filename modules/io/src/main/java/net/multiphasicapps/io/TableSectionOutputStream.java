@@ -53,7 +53,7 @@ public final class TableSectionOutputStream
 	 */
 	public final TableSectionOutputStream.Section addSection()
 	{
-		return this.addSection(VARIABLE_SIZE, 1);
+		return this.addSection(TableSectionOutputStream.VARIABLE_SIZE, 1);
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public final class TableSectionOutputStream
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error BD3h Zero or negative size section. (The size)}
-		if (__size != VARIABLE_SIZE && __size <= 0)
+		if (__size != TableSectionOutputStream.VARIABLE_SIZE && __size <= 0)
 			throw new IllegalArgumentException("BD3h " + __size);
 		
 		// {@squirreljme.error BD3q Zero or negative alignment.
@@ -439,23 +439,23 @@ public final class TableSectionOutputStream
 				throw new NullPointerException("NARG");
 			
 			// {@squirreljme.error BD3l Zero or negative size. (The size)}
-			if (__size != VARIABLE_SIZE && __size <= 0)
+			if (__size != TableSectionOutputStream.VARIABLE_SIZE && __size <= 0)
 				throw new IllegalArgumentException("BD3l " + __size);
 			
 			// Set
 			this.fixedsize = __size;
 			this.alignment = (__align >= 1 ? __align : 1);
-			this.isvariable = (__size == VARIABLE_SIZE);
+			this.isvariable = (__size == TableSectionOutputStream.VARIABLE_SIZE);
 			
 			// Dirty flag storage
 			this._dirty = __d;
 			
 			// If this is a fixed size section, we never have to expand it
 			// so we can allocate all the needed data!
-			if (__size != VARIABLE_SIZE)
+			if (__size != TableSectionOutputStream.VARIABLE_SIZE)
 				this._data = new byte[__size];
 			else
-				this._data = new byte[_BUFFER_SIZE];
+				this._data = new byte[Section._BUFFER_SIZE];
 		}
 		
 		/**
@@ -507,7 +507,7 @@ public final class TableSectionOutputStream
 			byte[] data = this._data;
 			if (this.isvariable && size >= data.length)
 			{
-				data = Arrays.copyOf(data, size + _BUFFER_SIZE);
+				data = Arrays.copyOf(data, size + Section._BUFFER_SIZE);
 				this._data = data;
 			}
 			
@@ -558,7 +558,7 @@ public final class TableSectionOutputStream
 			if (this.isvariable && size + __l >= data.length)
 			{
 				data = Arrays.copyOf(data,
-					size + (__l < _BUFFER_SIZE ? _BUFFER_SIZE : __l));
+					size + (__l < Section._BUFFER_SIZE ? Section._BUFFER_SIZE : __l));
 				this._data = data;
 			}
 			

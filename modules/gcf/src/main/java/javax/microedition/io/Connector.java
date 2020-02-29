@@ -39,8 +39,7 @@ public class Connector
 		2;
 	
 	/** Access mode to allow for read and writing from/to the stream. */
-	public static final int READ_WRITE =
-		READ | WRITE;
+	public static final int READ_WRITE = Connector.READ | Connector.WRITE;
 	
 	/**
 	 * Not used.
@@ -127,7 +126,7 @@ public class Connector
 	public static Connection open(String __uri)
 		throws IOException
 	{
-		return open(__uri, READ_WRITE, false, (ConnectionOption<?>[])null);
+		return Connector.open(__uri, Connector.READ_WRITE, false, (ConnectionOption<?>[])null);
 	}
 	
 	/**
@@ -143,7 +142,7 @@ public class Connector
 	public static Connection open(String __uri, ConnectionOption<?>... __opts)
 		throws IOException
 	{
-		return open(__uri, READ_WRITE, false, __opts);
+		return Connector.open(__uri, Connector.READ_WRITE, false, __opts);
 	}
 	
 	/**
@@ -159,7 +158,7 @@ public class Connector
 	public static Connection open(String __uri, int __mode)
 		throws IOException
 	{
-		return open(__uri, __mode, false, (ConnectionOption<?>[])null);
+		return Connector.open(__uri, __mode, false, (ConnectionOption<?>[])null);
 	}
 	
 	/**
@@ -177,7 +176,7 @@ public class Connector
 		ConnectionOption<?>... __opts)
 		throws IOException
 	{
-		return open(__uri, __mode, false, __opts);
+		return Connector.open(__uri, __mode, false, __opts);
 	}
 	
 	/**
@@ -194,7 +193,7 @@ public class Connector
 	public static Connection open(String __uri, int __mode, boolean __timeouts)
 		throws IOException
 	{
-		return open(__uri, __mode, __timeouts, (ConnectionOption<?>[])null);
+		return Connector.open(__uri, __mode, __timeouts, (ConnectionOption<?>[])null);
 	}
 	
 	/**
@@ -251,7 +250,7 @@ public class Connector
 	public static DataInputStream openDataInputStream(String __uri)
 		throws IOException
 	{
-		return new DataInputStream(openInputStream(__uri));
+		return new DataInputStream(Connector.openInputStream(__uri));
 	}
 	
 	/**
@@ -265,7 +264,7 @@ public class Connector
 	public static DataOutputStream openDataOutputStream(String __uri)
 		throws IOException
 	{
-		return new DataOutputStream(openOutputStream(__uri));
+		return new DataOutputStream(Connector.openOutputStream(__uri));
 	}
 	
 	/**
@@ -283,7 +282,7 @@ public class Connector
 		throws IllegalArgumentException, IOException
 	{
 		// Open it, then close it
-		try (Connection c = open(__uri))
+		try (Connection c = Connector.open(__uri))
 		{
 			// {@squirreljme.error EC0z The specified URI is not an input
 			// connection. (The URI)}
@@ -311,7 +310,7 @@ public class Connector
 		throws IllegalArgumentException, IOException
 	{
 		// Open it, then close it
-		try (Connection c = open(__uri))
+		try (Connection c = Connector.open(__uri))
 		{
 			// {@squirreljme.error EC10 The specified URI is not an output
 			// connection. (The URI)}

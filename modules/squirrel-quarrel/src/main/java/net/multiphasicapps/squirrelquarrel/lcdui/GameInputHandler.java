@@ -32,22 +32,13 @@ public class GameInputHandler
 	
 	/** The game keys which are held down. */
 	protected final boolean[] gamekeys =
-		new boolean[GAME_ACTION_COUNT];
+		new boolean[GameInputHandler.GAME_ACTION_COUNT];
 	
 	/** Is on the automap dragging? */
 	private volatile boolean _ondragmap;
 	
 	/** Disable automap drag. */
 	private volatile boolean _nomapdrag;
-	
-	/**
-	 * Initializes the input handler for the game.
-	 *
-	 * @since 2017/02/12
-	 */
-	public GameInputHandler()
-	{
-	}
 	
 	/**
 	 * {@inheritDoc}

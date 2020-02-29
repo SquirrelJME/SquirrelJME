@@ -14,9 +14,9 @@ package javax.microedition.media.control;
 public interface TempoControl
 	extends RateControl
 {
-	public abstract int getTempo();
+	int getTempo();
 	
-	public abstract int setTempo(int __a);
+	int setTempo(int __a);
 }
 
 

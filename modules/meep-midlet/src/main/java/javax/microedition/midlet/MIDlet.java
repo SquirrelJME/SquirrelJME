@@ -118,7 +118,7 @@ public abstract class MIDlet
 		
 		// Overridden property?
 		JavaManifestKey key = new JavaManifestKey(__p);
-		String val = System.getProperty(_APP_PROPERTY_OVERRIDE + key);
+		String val = System.getProperty(MIDlet._APP_PROPERTY_OVERRIDE + key);
 		if (val != null)
 			return val.trim();
 		

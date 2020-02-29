@@ -13,16 +13,16 @@ package java.util;
 public interface Queue<E>
 	extends Collection<E>
 {
-	public abstract boolean add(E __a);
+	boolean add(E __a);
 	
-	public abstract E element();
+	E element();
 	
-	public abstract boolean offer(E __a);
+	boolean offer(E __a);
 	
-	public abstract E peek();
+	E peek();
 	
-	public abstract E poll();
+	E poll();
 	
-	public abstract E remove();
+	E remove();
 }
 

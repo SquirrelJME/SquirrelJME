@@ -17,11 +17,11 @@ import java.util.Iterator;
 public interface DirectoryStream<T>
 	extends Closeable, Iterable<T>
 {
-	public abstract Iterator<T> iterator();
+	Iterator<T> iterator();
 	
-	public static interface Filter<T>
+	interface Filter<T>
 	{
-		public abstract boolean accept(T __a)
+		boolean accept(T __a)
 			throws IOException;
 	}
 }

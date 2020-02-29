@@ -28,7 +28,7 @@ public interface TaskManager
 	 * @param __tl The listener for events.
 	 * @since 2016/06/24
 	 */
-	public abstract void addTaskListener(TaskListener __tl);
+	void addTaskListener(TaskListener __tl);
 	
 	/**
 	 * Returns the task which belongs to the caller of this method.
@@ -36,7 +36,7 @@ public interface TaskManager
 	 * @return The task of the current caller.
 	 * @since 2016/06/24
 	 */
-	public abstract Task getCurrentTask();
+	Task getCurrentTask();
 	
 	/**
 	 * This returns the list of all running tasks on the system.
@@ -47,7 +47,7 @@ public interface TaskManager
 	 * machine.
 	 * @since 2016/06/24
 	 */
-	public abstract List<Task> getTaskList(boolean __incsys);
+	List<Task> getTaskList(boolean __incsys);
 	
 	/**
 	 * Removes the given task listener so that it is no longer notified when
@@ -56,7 +56,7 @@ public interface TaskManager
 	 * @param __tl The task listener to remove.
 	 * @since 2016/06/24
 	 */
-	public abstract void removeTaskListener(TaskListener __tl);
+	void removeTaskListener(TaskListener __tl);
 	
 	/**
 	 * Sets the given task so that it appears at the foreground task which
@@ -71,7 +71,7 @@ public interface TaskManager
 	 * @throws IllegalArgumentException If the task is a system task.
 	 * @since 2016/06/24
 	 */
-	public abstract boolean setForeground(Task __t)
+	boolean setForeground(Task __t)
 		throws IllegalArgumentException;
 	
 	/**
@@ -86,7 +86,7 @@ public interface TaskManager
 	 * @throws IllegalArgumentException if the task is a system task.
 	 * @since 2016/06/24
 	 */
-	public abstract boolean setPriority(Task __t, TaskPriority __p)
+	boolean setPriority(Task __t, TaskPriority __p)
 		throws IllegalArgumentException;
 	
 	/**
@@ -112,7 +112,7 @@ public interface TaskManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	public abstract Task startTask(Suite __s, String __cn)
+	Task startTask(Suite __s, String __cn)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException;
 	
@@ -127,7 +127,7 @@ public interface TaskManager
 	 * @throws IllegalStateException If the task is a system task.
 	 * @since 2016/06/24
 	 */
-	public abstract boolean stopTask(Task __t)
+	boolean stopTask(Task __t)
 		throws IllegalArgumentException, IllegalStateException;
 }
 

@@ -15,12 +15,12 @@ import javax.microedition.media.Control;
 public interface StopTimeControl
 	extends Control
 {
-	public static final long RESET =
+	long RESET =
 		9223372036854775807L;
 	
-	public abstract long getStopTime();
+	long getStopTime();
 	
-	public abstract void setStopTime(long __a);
+	void setStopTime(long __a);
 }
 
 

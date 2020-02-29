@@ -15,10 +15,10 @@ import java.io.IOException;
 public interface UDPDatagramConnection
 	extends DatagramConnection
 {
-	public abstract String getLocalAddress()
+	String getLocalAddress()
 		throws IOException;
 	
-	public abstract int getLocalPort()
+	int getLocalPort()
 		throws IOException;
 }
 

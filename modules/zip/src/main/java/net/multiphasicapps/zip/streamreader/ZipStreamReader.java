@@ -55,7 +55,7 @@ public class ZipStreamReader
 	
 	/** This can hold the local header except for the comment and filename. */
 	private final byte[] _localheader =
-		new byte[_MINIMUM_HEADER_SIZE];
+		new byte[ZipStreamReader._MINIMUM_HEADER_SIZE];
 	
 	/** The current entry being read, cannot next entry if this is the case. */
 	private volatile ZipStreamEntry _entry;
@@ -165,7 +165,7 @@ public class ZipStreamReader
 			}
 		
 			// Does not match the magic number for local headers
-			int lhskip = __skipLocalHeader(localheader);
+			int lhskip = ZipStreamReader.__skipLocalHeader(localheader);
 			
 			// Not one
 			if (lhskip > 0)
@@ -192,7 +192,7 @@ public class ZipStreamReader
 			// EOF reached (cannot fit a local header in this many bytes)
 			// Ignore the somewhat malformed ZIP since it could be part of
 			// another file structure due to polyglots
-			if (rhcount < _MINIMUM_HEADER_SIZE)
+			if (rhcount < ZipStreamReader._MINIMUM_HEADER_SIZE)
 			{
 				this._eof = true;
 				return null;
@@ -205,9 +205,9 @@ public class ZipStreamReader
 			// Note that some ZIP writing software sets the upper byte when it
 			// should not. Since the made by version is not stored in the
 			// local file header, the byte will just be stripped.
-			int xver = __readUnsignedShort(localheader, 4) & 0xFF;
+			int xver = ZipStreamReader.__readUnsignedShort(localheader, 4) & 0xFF;
 			boolean deny = false;
-			deny |= (xver < 0 || xver > _MAX_EXTRACT_VERSION);
+			deny |= (xver < 0 || xver > ZipStreamReader._MAX_EXTRACT_VERSION);
 			
 			// {@squirreljme.error BF11 Zip version not suppored. (The
 			// version)}
@@ -216,7 +216,7 @@ public class ZipStreamReader
 					xver));
 			
 			// Read bit flags
-			int gpfs = __readUnsignedShort(localheader, 6);
+			int gpfs = ZipStreamReader.__readUnsignedShort(localheader, 6);
 			boolean utf = (0 != (gpfs & (1 << 11)));
 			boolean undefinedsize = (0 != (gpfs & (1 << 3)));
 			
@@ -229,7 +229,7 @@ public class ZipStreamReader
 			
 			// Read the compression method
 			ZipCompressionType cmeth = ZipCompressionType.forMethod(
-				__readUnsignedShort(localheader, 8));
+				ZipStreamReader.__readUnsignedShort(localheader, 8));
 			deny |= (cmeth == null);
 			
 			// {@squirreljme.error BF13 Compression method not supported.
@@ -238,15 +238,15 @@ public class ZipStreamReader
 				defer = new ZipException(String.format("BF13 %s", cmeth));
 			
 			// Read CRC32
-			int crc = __readInt(localheader, 14);
+			int crc = ZipStreamReader.__readInt(localheader, 14);
 			
 			// Read Compressed size
-			int csz = __readInt(localheader, 18);
+			int csz = ZipStreamReader.__readInt(localheader, 18);
 			if (!undefinedsize)
 				deny |= (csz < 0);
 			
 			// Uncompressed size
-			int usz = __readInt(localheader, 22);
+			int usz = ZipStreamReader.__readInt(localheader, 22);
 			if (!undefinedsize)
 				deny |= (usz < 0);
 			
@@ -257,10 +257,10 @@ public class ZipStreamReader
 					usz));
 			
 			// File name length
-			int fnl = __readUnsignedShort(localheader, 26);
+			int fnl = ZipStreamReader.__readUnsignedShort(localheader, 26);
 			
 			// Comment length
-			int cml = __readUnsignedShort(localheader, 28);
+			int cml = ZipStreamReader.__readUnsignedShort(localheader, 28);
 			
 			// If denying, read a single byte and try again, this could
 			// just be very ZIP-like data or the local header number could
@@ -295,7 +295,7 @@ public class ZipStreamReader
 			
 			// Skip the comment
 			data.readFully(localheader, 0, Math.min(cml,
-				_MINIMUM_HEADER_SIZE));
+				ZipStreamReader._MINIMUM_HEADER_SIZE));
 			
 			// Create entry so the data can actually be used
 			ZipStreamEntry rv = new ZipStreamEntry(this, filename,

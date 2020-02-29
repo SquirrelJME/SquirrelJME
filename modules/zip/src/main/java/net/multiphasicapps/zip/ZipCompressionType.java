@@ -38,7 +38,7 @@ public enum ZipCompressionType
 	
 	/** The default compression algorithm to use. */
 	public static final ZipCompressionType DEFAULT_COMPRESSION =
-		DEFLATE;
+		ZipCompressionType.DEFLATE;
 	
 	/** The version needed to extract. */
 	protected final int extractversion;
@@ -53,7 +53,7 @@ public enum ZipCompressionType
 	 * @param __m The compression method identifier.
 	 * @since 2016/07/15
 	 */
-	private ZipCompressionType(int __xv, int __m)
+	ZipCompressionType(int __xv, int __m)
 	{
 		this.extractversion = __xv;
 		this.method = __m;
@@ -84,7 +84,7 @@ public enum ZipCompressionType
 	public final DecompressionInputStream inputStream(InputStream __is)
 		throws IOException, NullPointerException
 	{
-		return inputStream(__is, null);
+		return this.inputStream(__is, null);
 	}
 	
 	/**

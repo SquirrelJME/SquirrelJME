@@ -152,7 +152,7 @@ public final class TaskThread
 		
 		// {@squirreljme.error SV11 Cannot execute method with the given
 		// number of arguments.}
-		if (__args.length > MAX_CALL_ARGUMENTS)
+		if (__args.length > TaskThread.MAX_CALL_ARGUMENTS)
 			throw new IllegalArgumentException("SV11");
 		
 		// Get the owning task

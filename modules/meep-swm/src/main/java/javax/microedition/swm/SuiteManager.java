@@ -28,7 +28,7 @@ public interface SuiteManager
 	 * @param __sl The listener to be added.
 	 * @since 2016/06/24
 	 */
-	public abstract void addSuiteListener(SuiteListener __sl);
+	void addSuiteListener(SuiteListener __sl);
 	
 	/**
 	 * Attempts to return an installed suite created by a specific vendor and
@@ -40,7 +40,7 @@ public interface SuiteManager
 	 * found.
 	 * @since 2016/06/24
 	 */
-	public abstract Suite getSuite(String __vendor, String __name);
+	Suite getSuite(String __vendor, String __name);
 	
 	/**
 	 * Obtains an installer that would be used to install the given JAR file
@@ -63,8 +63,8 @@ public interface SuiteManager
 	 * to install new suites.
 	 * @since 2016/06/24
 	 */
-	public abstract SuiteInstaller getSuiteInstaller(byte[] __b, int __o,
-		int __l, boolean __ignuplock)
+	SuiteInstaller getSuiteInstaller(byte[] __b, int __o, int __l,
+		boolean __ignuplock)
 		throws IllegalArgumentException, SecurityException;
 	
 	/**
@@ -87,8 +87,7 @@ public interface SuiteManager
 	 * to install new suites.
 	 * @since 2016/06/24
 	 */
-	public abstract SuiteInstaller getSuiteInstaller(String __url,
-		boolean __ignuplock)
+	SuiteInstaller getSuiteInstaller(String __url, boolean __ignuplock)
 		throws IllegalArgumentException, SecurityException;
 	
 	/**
@@ -103,7 +102,7 @@ public interface SuiteManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	public abstract List<Suite> getSuites(SuiteType __t)
+	List<Suite> getSuites(SuiteType __t)
 		throws IllegalArgumentException, NullPointerException;
 	
 	/**
@@ -130,7 +129,7 @@ public interface SuiteManager
 	 * parameter.
 	 * @since 2016/06/24
 	 */
-	public abstract void removeSuite(Suite __s, boolean __ignuplock)
+	void removeSuite(Suite __s, boolean __ignuplock)
 		throws IllegalArgumentException, SuiteLockedException;
 	
 	/**
@@ -140,6 +139,6 @@ public interface SuiteManager
 	 * @param __sl The listener to remove.
 	 * @since 2016/06/24
 	 */
-	public abstract void removeSuiteListener(SuiteListener __sl);
+	void removeSuiteListener(SuiteListener __sl);
 }
 

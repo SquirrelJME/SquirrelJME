@@ -17,10 +17,9 @@ import jdk.dio.RoundCompletionEvent;
 public interface GenerationRoundListener
 	extends OutputRoundListener<PWMChannel, IntBuffer>
 {
-	public abstract void failed(Throwable __a, PWMChannel __b);
+	void failed(Throwable __a, PWMChannel __b);
 	
-	public abstract void outputRoundCompleted(RoundCompletionEvent<PWMChannel
-		, IntBuffer> __a);
+	void outputRoundCompleted(RoundCompletionEvent<PWMChannel, IntBuffer> __a);
 }
 
 

@@ -16,51 +16,51 @@ public interface SocketConnection
 	extends StreamConnection
 {
 	/** Use the nagle algorithm? Zero disables, non-zero enables. */
-	public static final byte DELAY =
+	byte DELAY =
 		0;
 	
 	/** Keep connections alive? Zero disables, non-zero enables. */
-	public static final byte KEEPALIVE =
+	byte KEEPALIVE =
 		2;
 	
 	/**
 	 * Time to wait in seconds before closing connections. Zero disables and
 	 * only positive values are used.
 	 */
-	public static final byte LINGER =
+	byte LINGER =
 		1;
 	
 	/** Receive buffer size? Zero is default, only positive is permitted. */
-	public static final byte RCVBUF =
+	byte RCVBUF =
 		3;
 	
 	/** Send buffer size? Zero is default, only positive is permitted. */
-	public static final byte SNDBUF =
+	byte SNDBUF =
 		4;
 	
 	/**
 	 * Sets the timeout on blocking read/write. Zero is default, otherwise a
 	 * positive value in milliseconds.
 	 */
-	public static final byte TIMEOUT =
+	byte TIMEOUT =
 		5;
 	
-	public abstract AccessPoint getAccessPoint()
+	AccessPoint getAccessPoint()
 		throws IOException;
 	
-	public abstract String getAddress()
+	String getAddress()
 		throws IOException;
 	
-	public abstract String getLocalAddress()
+	String getLocalAddress()
 		throws IOException;
 	
-	public abstract int getLocalPort()
+	int getLocalPort()
 		throws IOException;
 	
-	public abstract int getPort()
+	int getPort()
 		throws IOException;
 	
-	public abstract int getSocketOption(byte __o)
+	int getSocketOption(byte __o)
 		throws IllegalArgumentException, IOException;
 	
 	/**
@@ -72,7 +72,7 @@ public interface SocketConnection
 	 * @throws IOException If it could not be set.
 	 * @since 2019/05/12
 	 */
-	public abstract void setSocketOption(byte __o, int __v)
+	void setSocketOption(byte __o, int __v)
 		throws IllegalArgumentException, IOException;
 }
 

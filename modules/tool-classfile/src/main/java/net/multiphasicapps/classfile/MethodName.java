@@ -75,7 +75,7 @@ public final class MethodName
 	 */
 	public boolean isAnyInitializer()
 	{
-		return isInstanceInitializer() || isStaticInitializer();
+		return this.isInstanceInitializer() || this.isStaticInitializer();
 	}
 	
 	/**

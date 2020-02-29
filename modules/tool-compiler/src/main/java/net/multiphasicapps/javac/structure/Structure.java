@@ -24,6 +24,6 @@ public interface Structure
 	 * @return The structure symbol.
 	 * @since 2018/05/07
 	 */
-	public abstract StructureSymbol symbol();
+	StructureSymbol symbol();
 }
 

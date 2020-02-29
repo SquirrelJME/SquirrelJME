@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.util.FDMLMath;
  * @since 2018/12/08
  */
 @ImplementationNote("This class uses strict floating point.")
-public strictfp final class Math
+public final strictfp class Math
 {
 	/** E. */
 	public static final double E =

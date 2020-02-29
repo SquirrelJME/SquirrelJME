@@ -25,7 +25,6 @@ public class IndexOutOfBoundsException
 	 */
 	public IndexOutOfBoundsException()
 	{
-		super();
 	}
 	
 	/**

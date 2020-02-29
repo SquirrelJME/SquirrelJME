@@ -93,7 +93,7 @@ public final class SuiteDependency
 			new SuiteVersionRange(inversion)));
 		
 		// Check
-		__check(type, level, name, vendor, version);
+		SuiteDependency.__check(type, this.level, name, vendor, version);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public final class SuiteDependency
 		this.version = (version = (inversion.isEmpty() ? null :
 			new SuiteVersionRange(inversion)));
 		
-		__check(__type, __level, name, vendor, version);
+		SuiteDependency.__check(__type, __level, name, vendor, version);
 		
 		// Set
 		this.type = __type;
@@ -169,7 +169,7 @@ public final class SuiteDependency
 		if (__type == null || __level == null)
 			throw new NullPointerException("NARG");
 		
-		__check(__type, __level, __name, __vendor, __version);
+		SuiteDependency.__check(__type, __level, __name, __vendor, __version);
 		
 		// Set
 		this.type = __type;
@@ -421,7 +421,7 @@ public final class SuiteDependency
 	 */
 	public SuiteDependency toRequired()
 	{
-		if (isRequired())
+		if (this.isRequired())
 			return this;
 		return new SuiteDependency(this.type, SuiteDependencyLevel.REQUIRED,
 			this.name, this.vendor, this.version);
@@ -436,7 +436,7 @@ public final class SuiteDependency
 	 */
 	public SuiteDependency toOptional()
 	{
-		if (isOptional())
+		if (this.isOptional())
 			return this;
 		return new SuiteDependency(this.type, SuiteDependencyLevel.OPTIONAL,
 			this.name, this.vendor, this.version);

@@ -13,37 +13,37 @@ package java.util;
 public interface ListIterator<E>
 	extends Iterator<E>
 {
-	public abstract void add(E __v);
+	void add(E __v);
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/28
 	 */
 	@Override
-	public abstract boolean hasNext();
+	boolean hasNext();
 	
-	public abstract boolean hasPrevious();
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/10/28
-	 */
-	@Override
-	public abstract E next();
-	
-	public abstract int nextIndex();
-	
-	public abstract E previous();
-	
-	public abstract int previousIndex();
+	boolean hasPrevious();
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/28
 	 */
 	@Override
-	public abstract void remove();
+	E next();
 	
-	public abstract void set(E __v);
+	int nextIndex();
+	
+	E previous();
+	
+	int previousIndex();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
+	@Override
+	void remove();
+	
+	void set(E __v);
 }
 

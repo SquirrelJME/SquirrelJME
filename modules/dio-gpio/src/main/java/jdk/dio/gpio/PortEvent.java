@@ -17,13 +17,11 @@ public class PortEvent
 {
 	public PortEvent(GPIOPort __a, int __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public PortEvent(GPIOPort __a, int __b, long __c, int __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

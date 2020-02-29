@@ -33,7 +33,7 @@ public final class TaskManager
 	
 	/** The tasks which are available. */
 	public final Task[] tasks =
-		new Task[MAX_TASKS];
+		new Task[TaskManager.MAX_TASKS];
 	
 	/** The next logical task ID. */
 	private volatile int _nextlid =
@@ -64,7 +64,7 @@ public final class TaskManager
 		synchronized (this)
 		{
 			// The lower bits are used to quickly obtain the PID slot
-			Task rv = this.tasks[__lid & _TASK_MASK];
+			Task rv = this.tasks[__lid & TaskManager._TASK_MASK];
 			if (rv != null && rv.lid == __lid)
 				return rv;
 		}
@@ -105,16 +105,16 @@ public final class TaskManager
 		synchronized (this)
 		{
 			// Find a free task spot
-			for (pid = 1; pid < MAX_TASKS; pid++)
+			for (pid = 1; pid < TaskManager.MAX_TASKS; pid++)
 				if (tasks[pid] == null)
 					break;
 			
 			// {@squirreljme.error SV01 Task limit reached.}
-			if (pid >= MAX_TASKS)
+			if (pid >= TaskManager.MAX_TASKS)
 				throw new TooManyTasksException("SV01");
 			
 			// Setup and store task now
-			rv = new Task(pid, ((this._nextlid++) << _TASK_SHIFT) | pid,
+			rv = new Task(pid, ((this._nextlid++) << TaskManager._TASK_SHIFT) | pid,
 				new ClassPath(__cp));
 			tasks[pid] = rv;
 		}

@@ -28,7 +28,7 @@ public interface JarStreamSupplier
 	 * @throws IOException If it could not be obtained.
 	 * @since 2017/12/28
 	 */
-	public abstract InputStream get()
+	InputStream get()
 		throws IOException;
 }
 

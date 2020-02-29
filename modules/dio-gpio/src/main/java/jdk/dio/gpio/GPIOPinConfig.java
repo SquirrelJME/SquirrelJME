@@ -67,7 +67,6 @@ public final class GPIOPinConfig
 	public GPIOPinConfig(int __a, int __b, int __c, int __d, int __e, boolean
 		__f)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -75,7 +74,6 @@ public final class GPIOPinConfig
 	public GPIOPinConfig(String __a, int __b, int __c, int __d, int __e, 
 		boolean __f)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -144,7 +142,6 @@ public final class GPIOPinConfig
 	{
 		public Builder()
 		{
-			super();
 			throw new todo.TODO();
 		}
 		

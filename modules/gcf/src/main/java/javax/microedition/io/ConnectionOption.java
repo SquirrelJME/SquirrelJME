@@ -15,7 +15,6 @@ public class ConnectionOption<T>
 {
 	public ConnectionOption(String __a, T __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

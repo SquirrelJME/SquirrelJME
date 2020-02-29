@@ -15,19 +15,16 @@ public class StringTokenizer
 {
 	public StringTokenizer(String __a, String __b, boolean __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public StringTokenizer(String __a, String __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public StringTokenizer(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

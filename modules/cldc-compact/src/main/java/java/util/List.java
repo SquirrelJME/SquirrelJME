@@ -13,22 +13,22 @@ package java.util;
 public interface List<E>
 	extends Collection<E>
 {
-	public abstract boolean add(E __a);
+	boolean add(E __a);
 	
-	public abstract void add(int __a, E __b);
+	void add(int __a, E __b);
 	
-	public abstract boolean addAll(Collection<? extends E> __a);
+	boolean addAll(Collection<? extends E> __a);
 	
-	public abstract boolean addAll(int __a, Collection<? extends E> __b);
+	boolean addAll(int __a, Collection<? extends E> __b);
 	
-	public abstract void clear();
+	void clear();
 	
-	public abstract boolean contains(Object __a);
+	boolean contains(Object __a);
 	
-	public abstract boolean containsAll(Collection<?> __a);
+	boolean containsAll(Collection<?> __a);
 	
 	@Override
-	public abstract boolean equals(Object __a);
+	boolean equals(Object __a);
 	
 	/**
 	 * Gets the value at the specified index.
@@ -39,40 +39,40 @@ public interface List<E>
 	 * list.
 	 * @since 2018/12/07
 	 */
-	public abstract E get(int __i)
+	E get(int __i)
 		throws IndexOutOfBoundsException;
 	
 	@Override
-	public abstract int hashCode();
+	int hashCode();
 	
-	public abstract int indexOf(Object __a);
+	int indexOf(Object __a);
 	
-	public abstract boolean isEmpty();
+	boolean isEmpty();
 	
-	public abstract Iterator<E> iterator();
+	Iterator<E> iterator();
 	
-	public abstract int lastIndexOf(Object __a);
+	int lastIndexOf(Object __a);
 	
-	public abstract ListIterator<E> listIterator();
+	ListIterator<E> listIterator();
 	
-	public abstract ListIterator<E> listIterator(int __a);
+	ListIterator<E> listIterator(int __a);
 	
-	public abstract boolean remove(Object __a);
+	boolean remove(Object __a);
 	
-	public abstract E remove(int __a);
+	E remove(int __a);
 	
-	public abstract boolean removeAll(Collection<?> __a);
+	boolean removeAll(Collection<?> __a);
 	
-	public abstract boolean retainAll(Collection<?> __a);
+	boolean retainAll(Collection<?> __a);
 	
-	public abstract E set(int __a, E __b);
+	E set(int __a, E __b);
 	
-	public abstract int size();
+	int size();
 	
-	public abstract List<E> subList(int __a, int __b);
+	List<E> subList(int __a, int __b);
 	
-	public abstract Object[] toArray();
+	Object[] toArray();
 	
-	public abstract <T> T[] toArray(T[] __a);
+	<T> T[] toArray(T[] __a);
 }
 

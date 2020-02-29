@@ -37,7 +37,7 @@ public enum DisplayHardwareState
 	 */
 	public final boolean forceDisabled()
 	{
-		return this == DISABLED || this == ABSENT;
+		return this == DisplayHardwareState.DISABLED || this == DisplayHardwareState.ABSENT;
 	}
 }
 

@@ -72,10 +72,10 @@ public enum SuiteDependencyType
 		// Depends
 		switch (__s.trim())
 		{
-			case "liblet":		return LIBLET;
-			case "standard":	return STANDARD;
-			case "service":		return SERVICE;
-			case "proprietary":	return PROPRIETARY;
+			case "liblet":		return SuiteDependencyType.LIBLET;
+			case "standard":	return SuiteDependencyType.STANDARD;
+			case "service":		return SuiteDependencyType.SERVICE;
+			case "proprietary":	return SuiteDependencyType.PROPRIETARY;
 			
 				// {@squirreljme.error DG0a The specified string is not a valid
 				// dependency type. (The input string)}

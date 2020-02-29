@@ -27,7 +27,7 @@ public interface VMClassLibrary
 	 * @return The resource names.
 	 * @since 2019/04/21
 	 */
-	public abstract String[] listResources();
+	String[] listResources();
 	
 	/**
 	 * Returns the name of this library.
@@ -35,7 +35,7 @@ public interface VMClassLibrary
 	 * @return The library name.
 	 * @since 2018/09/13
 	 */
-	public abstract String name();
+	String name();
 	
 	/**
 	 * Opens the specified resource as a stream.
@@ -47,7 +47,7 @@ public interface VMClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/13
 	 */
-	public abstract InputStream resourceAsStream(String __rc)
+	InputStream resourceAsStream(String __rc)
 		throws IOException, NullPointerException;
 }
 

@@ -22,7 +22,6 @@ public class Background
 	
 	public Background()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

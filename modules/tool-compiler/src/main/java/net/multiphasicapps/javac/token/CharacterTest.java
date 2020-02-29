@@ -37,7 +37,7 @@ public final class CharacterTest
 	 */
 	public static boolean isIdentifierPart(int __c)
 	{
-		return (isIdentifierStart(__c) ||
+		return (CharacterTest.isIdentifierStart(__c) ||
 			(__c >= 0x0001 && __c < 0x0009) ||
 			(__c >= 0x000E && __c < 0x001C) ||
 			(__c >= 0x0030 && __c < 0x003A) ||

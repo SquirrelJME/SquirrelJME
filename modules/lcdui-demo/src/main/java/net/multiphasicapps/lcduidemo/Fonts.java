@@ -61,7 +61,7 @@ public class Fonts
 	 *
 	 * @since 2018/11/23
 	 */
-	static public final class DemoCanvas
+	public static final class DemoCanvas
 		extends Canvas
 	{
 		/** Fonts to use. */

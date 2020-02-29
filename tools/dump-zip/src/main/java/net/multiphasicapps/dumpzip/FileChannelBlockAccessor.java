@@ -71,7 +71,7 @@ public class FileChannelBlockAccessor
 		
 		// Just forward to the array variant
 		byte[] val = new byte[1];
-		int rv = read(__addr, val, 0, 1);
+		int rv = this.read(__addr, val, 0, 1);
 		
 		// {@squirreljme.error AX02 Read past end of file.}
 		if (rv < 0)

@@ -124,7 +124,7 @@ public class Main
 				sb.append(", ");
 			
 			// Dump if column limit was reached
-			if (sb.length() >= COLUMNS)
+			if (sb.length() >= Main.COLUMNS)
 			{
 				// If it ends with a space, remove it (is annoying to have)
 				if (sb.charAt(sb.length() - 1) == ' ')

@@ -17,29 +17,28 @@ import jdk.dio.UnavailableDeviceException;
 
 public interface SPICompositeMessage
 {
-	public abstract SPICompositeMessage appendDelay(int __a)
+	SPICompositeMessage appendDelay(int __a)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract SPICompositeMessage appendRead(ByteBuffer __a)
+	SPICompositeMessage appendRead(ByteBuffer __a)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract SPICompositeMessage appendRead(int __a, ByteBuffer __b)
+	SPICompositeMessage appendRead(int __a, ByteBuffer __b)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract SPICompositeMessage appendWrite(ByteBuffer __a)
+	SPICompositeMessage appendWrite(ByteBuffer __a)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract SPICompositeMessage appendWriteAndRead(ByteBuffer __a, 
-		ByteBuffer __b)
+	SPICompositeMessage appendWriteAndRead(ByteBuffer __a, ByteBuffer __b)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract SPICompositeMessage appendWriteAndRead(ByteBuffer __a, 
-		int __b, ByteBuffer __c)
+	SPICompositeMessage appendWriteAndRead(ByteBuffer __a, int __b,
+		ByteBuffer __c)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract SPIDevice getTargetedDevice();
+	SPIDevice getTargetedDevice();
 	
-	public abstract int[] transfer()
+	int[] transfer()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

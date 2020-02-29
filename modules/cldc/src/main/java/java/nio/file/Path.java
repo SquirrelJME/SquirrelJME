@@ -16,58 +16,58 @@ import java.util.Iterator;
 public interface Path
 	extends Comparable<Path>, Iterable<Path>
 {
-	public abstract int compareTo(Path __a);
+	int compareTo(Path __a);
 	
-	public abstract boolean endsWith(Path __a);
+	boolean endsWith(Path __a);
 	
-	public abstract boolean endsWith(String __a);
-	
-	@Override
-	public abstract boolean equals(Object __a);
-	
-	public abstract Path getFileName();
-	
-	public abstract FileSystem getFileSystem();
-	
-	public abstract Path getName(int __a);
-	
-	public abstract int getNameCount();
-	
-	public abstract Path getParent();
-	
-	public abstract Path getRoot();
+	boolean endsWith(String __a);
 	
 	@Override
-	public abstract int hashCode();
+	boolean equals(Object __a);
 	
-	public abstract boolean isAbsolute();
+	Path getFileName();
 	
-	public abstract Iterator<Path> iterator();
+	FileSystem getFileSystem();
 	
-	public abstract Path normalize();
+	Path getName(int __a);
 	
-	public abstract Path relativize(Path __a);
+	int getNameCount();
 	
-	public abstract Path resolve(Path __a);
+	Path getParent();
 	
-	public abstract Path resolve(String __a);
+	Path getRoot();
 	
-	public abstract Path resolveSibling(Path __a);
+	@Override
+	int hashCode();
 	
-	public abstract Path resolveSibling(String __a);
+	boolean isAbsolute();
 	
-	public abstract boolean startsWith(Path __a);
+	Iterator<Path> iterator();
 	
-	public abstract boolean startsWith(String __a);
+	Path normalize();
 	
-	public abstract Path subpath(int __a, int __b);
+	Path relativize(Path __a);
 	
-	public abstract Path toAbsolutePath();
+	Path resolve(Path __a);
 	
-	public abstract Path toRealPath(LinkOption... __a)
+	Path resolve(String __a);
+	
+	Path resolveSibling(Path __a);
+	
+	Path resolveSibling(String __a);
+	
+	boolean startsWith(Path __a);
+	
+	boolean startsWith(String __a);
+	
+	Path subpath(int __a, int __b);
+	
+	Path toAbsolutePath();
+	
+	Path toRealPath(LinkOption... __a)
 		throws IOException;
 	
 	@Override
-	public abstract String toString();
+	String toString();
 }
 

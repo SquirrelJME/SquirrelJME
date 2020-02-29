@@ -26,7 +26,7 @@ public interface PhoneDisplayBackend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
-	public abstract void activate(ActiveDisplay __ad)
+	void activate(ActiveDisplay __ad)
 		throws NullPointerException;
 	
 	/**
@@ -35,7 +35,7 @@ public interface PhoneDisplayBackend
 	 * @return The display capabilities.
 	 * @since 2019/05/17
 	 */
-	public abstract int capabilities();
+	int capabilities();
 	
 	/**
 	 * Returns if the display is upside-down, this is used for orientation
@@ -44,7 +44,7 @@ public interface PhoneDisplayBackend
 	 * @return If the display is upside-down.
 	 * @since 2019/05/16
 	 */
-	public abstract boolean isUpsidedown();
+	boolean isUpsidedown();
 	
 	/**
 	 * Returns the pixel format of the display.
@@ -52,7 +52,7 @@ public interface PhoneDisplayBackend
 	 * @return The display pixel format.
 	 * @since 2019/05/16
 	 */
-	public abstract PixelFormat pixelFormat();
+	PixelFormat pixelFormat();
 	
 	/**
 	 * Specifies that the display should be repainted now.
@@ -63,6 +63,6 @@ public interface PhoneDisplayBackend
 	 * @param __h The height.
 	 * @since 2019/05/16
 	 */
-	public abstract void repaint(int __x, int __y, int __w, int __h);
+	void repaint(int __x, int __y, int __w, int __h);
 }
 

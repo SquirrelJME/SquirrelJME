@@ -123,9 +123,9 @@ public class Game
 		}
 		
 		// Run all the sub-logic
-		world.run(framenum);
-		units.run(framenum);
-		players.run(framenum);
+		this.world.run(framenum);
+		this.units.run(framenum);
+		this.players.run(framenum);
 		
 		// Increase the game frame
 		this._framenum = framenum + 1;

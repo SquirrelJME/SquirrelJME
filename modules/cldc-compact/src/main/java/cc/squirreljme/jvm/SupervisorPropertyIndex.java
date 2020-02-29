@@ -19,19 +19,19 @@ package cc.squirreljme.jvm;
 public interface SupervisorPropertyIndex
 {
 	/** The static field register of the task syscall handler. */
-	public static final byte TASK_SYSCALL_STATIC_FIELD_POINTER =
+	byte TASK_SYSCALL_STATIC_FIELD_POINTER =
 		1;
 	
 	/** The method pointer of the task syscall method. */
-	public static final byte TASK_SYSCALL_METHOD_HANDLER =
+	byte TASK_SYSCALL_METHOD_HANDLER =
 		2;
 	
 	/** The pool pointer of the task syscall method. */
-	public static final byte TASK_SYSCALL_METHOD_POOL_POINTER =
+	byte TASK_SYSCALL_METHOD_POOL_POINTER =
 		3;
 	
 	/** The number of available properties. */
-	public static final byte NUM_PROPERTIES =
+	byte NUM_PROPERTIES =
 		4;
 }
 

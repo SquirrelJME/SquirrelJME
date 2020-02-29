@@ -33,7 +33,7 @@ public interface Encoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/21
 	 */
-	public abstract int encode(char __c, byte[] __b, int __o, int __l)
+	int encode(char __c, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
 }
 

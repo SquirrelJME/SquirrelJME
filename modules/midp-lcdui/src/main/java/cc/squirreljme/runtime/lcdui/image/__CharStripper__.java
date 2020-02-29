@@ -275,7 +275,7 @@ class __CharStripper__
 					{
 						// If in a bracket, return a special code
 						if (this._inbracket)
-							return END_OF_LINE;
+							return __CharStripper__.END_OF_LINE;
 						
 						// Otherwise, ignore it
 						continue;
@@ -311,7 +311,7 @@ class __CharStripper__
 				try
 				{
 					// Read single character
-					int c = read();
+					int c = this.read();
 				
 					// EOF?
 					if (c < 0)

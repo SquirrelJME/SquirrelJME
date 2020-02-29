@@ -154,12 +154,12 @@ public class PNGReader
 				{
 						// Header
 					case 0x49484452:
-						__parseHeader(data);
+						this.__parseHeader(data);
 						break;
 						
 						// Palette
 					case 0x504c5445:
-						__parsePalette(data, len);
+						this.__parsePalette(data, len);
 						break;
 						
 						// Image data

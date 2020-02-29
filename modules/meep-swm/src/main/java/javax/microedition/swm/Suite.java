@@ -106,8 +106,8 @@ public class Suite
 		
 		// Check
 		Suite o = (Suite)__o;
-		return Objects.equals(getName(), o.getName()) &&
-			Objects.equals(getVendor(), o.getVendor());
+		return Objects.equals(this.getName(), o.getName()) &&
+			Objects.equals(this.getVendor(), o.getVendor());
 	}
 	
 	/**

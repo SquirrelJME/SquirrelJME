@@ -16,22 +16,22 @@ import java.nio.ByteBuffer;
 public interface SeekableByteChannel
 	extends ByteChannel
 {
-	public abstract long position()
+	long position()
 		throws IOException;
 	
-	public abstract SeekableByteChannel position(long __a)
+	SeekableByteChannel position(long __a)
 		throws IOException;
 	
-	public abstract int read(ByteBuffer __a)
+	int read(ByteBuffer __a)
 		throws IOException;
 	
-	public abstract long size()
+	long size()
 		throws IOException;
 	
-	public abstract SeekableByteChannel truncate(long __a)
+	SeekableByteChannel truncate(long __a)
 		throws IOException;
 	
-	public abstract int write(ByteBuffer __a)
+	int write(ByteBuffer __a)
 		throws IOException;
 }
 

@@ -165,7 +165,7 @@ public final class StateOperation
 	 *
 	 * @since 2019/04/11
 	 */
-	public static enum Type
+	public enum Type
 	{
 		/** Count. */
 		COUNT,

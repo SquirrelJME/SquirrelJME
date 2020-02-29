@@ -13,7 +13,7 @@ package javax.microedition.media;
 
 public interface TimeBase
 {
-	public abstract long getTime();
+	long getTime();
 }
 
 

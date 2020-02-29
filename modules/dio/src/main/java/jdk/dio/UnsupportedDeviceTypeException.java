@@ -16,13 +16,11 @@ public class UnsupportedDeviceTypeException
 {
 	public UnsupportedDeviceTypeException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public UnsupportedDeviceTypeException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

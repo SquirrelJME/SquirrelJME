@@ -51,12 +51,12 @@ public final class SuiteIdentifier
 	public static long currentIdentifier()
 	{
 		// Already been cached?
-		long rv = _CURRENT_ID;
+		long rv = SuiteIdentifier._CURRENT_ID;
 		if (rv != 0)
 			return rv;
 		
 		// Set, cache, and store
-		_CURRENT_ID = (rv = SuiteIdentifier.identifier(
+		SuiteIdentifier._CURRENT_ID = (rv = SuiteIdentifier.identifier(
 			SuiteIdentifier.currentVendor(), SuiteIdentifier.currentName()));
 		return rv;
 	}
@@ -69,7 +69,7 @@ public final class SuiteIdentifier
 	 */
 	public static String currentName()
 	{
-		String rv = _CURRENT_NAME;
+		String rv = SuiteIdentifier._CURRENT_NAME;
 		if (rv != null)
 			return rv;
 		
@@ -98,7 +98,7 @@ public final class SuiteIdentifier
 			rv = "UndefinedName";
 		
 		// Cache and return
-		_CURRENT_NAME = rv;
+		SuiteIdentifier._CURRENT_NAME = rv;
 		return rv;
 	}
 	
@@ -110,7 +110,7 @@ public final class SuiteIdentifier
 	 */
 	public static String currentVendor()
 	{
-		String rv = _CURRENT_VENDOR;
+		String rv = SuiteIdentifier._CURRENT_VENDOR;
 		if (rv != null)
 			return rv;
 		
@@ -139,7 +139,7 @@ public final class SuiteIdentifier
 			rv = "UndefinedVendor";
 		
 		// Cache and return
-		_CURRENT_VENDOR = rv;
+		SuiteIdentifier._CURRENT_VENDOR = rv;
 		return rv;
 	}
 	

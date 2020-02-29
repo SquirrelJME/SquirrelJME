@@ -264,7 +264,7 @@ public class ClassName
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		return Objects.equals(inPackage(), __b.inPackage());
+		return Objects.equals(this.inPackage(), __b.inPackage());
 	}
 	
 	/**
@@ -315,7 +315,7 @@ public class ClassName
 		BinaryName binary = this.binary;
 		if (binary != null)
 			return binary.toString();
-		return field.toString();
+		return this.field.toString();
 	}
 	
 	/**

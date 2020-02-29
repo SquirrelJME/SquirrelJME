@@ -56,7 +56,7 @@ public enum DataType
 	 */
 	public final boolean isWide()
 	{
-		return (this == LONG || this == DOUBLE);
+		return (this == DataType.LONG || this == DataType.DOUBLE);
 	}
 	
 	/**
@@ -139,14 +139,14 @@ public enum DataType
 	{
 		switch (__i)
 		{
-			case 0:		return OBJECT;
-			case 1:		return BYTE;
-			case 2:		return SHORT;
-			case 3:		return CHARACTER;
-			case 4:		return INTEGER;
-			case 5:		return FLOAT;
-			case 6:		return LONG;
-			case 7:		return DOUBLE;
+			case 0:		return DataType.OBJECT;
+			case 1:		return DataType.BYTE;
+			case 2:		return DataType.SHORT;
+			case 3:		return DataType.CHARACTER;
+			case 4:		return DataType.INTEGER;
+			case 5:		return DataType.FLOAT;
+			case 6:		return DataType.LONG;
+			case 7:		return DataType.DOUBLE;
 		}
 		
 		// {@squirreljme.error JC1c Invalid data type.}
@@ -163,18 +163,18 @@ public enum DataType
 	public static final DataType of(PrimitiveType __t)
 	{
 		if (__t == null)
-			return OBJECT;
+			return DataType.OBJECT;
 		
 		switch (__t)
 		{
 			case BOOLEAN:
-			case BYTE:		return BYTE;
-			case CHARACTER:	return CHARACTER;
-			case SHORT:		return SHORT;
-			case INTEGER:	return INTEGER;
-			case LONG:		return LONG;
-			case FLOAT:		return FLOAT;
-			case DOUBLE:	return DOUBLE;
+			case BYTE:		return DataType.BYTE;
+			case CHARACTER:	return DataType.CHARACTER;
+			case SHORT:		return DataType.SHORT;
+			case INTEGER:	return DataType.INTEGER;
+			case LONG:		return DataType.LONG;
+			case FLOAT:		return DataType.FLOAT;
+			case DOUBLE:	return DataType.DOUBLE;
 			
 			default:
 				throw new todo.OOPS(__t.name());
@@ -231,10 +231,10 @@ public enum DataType
 		
 		switch (__t)
 		{
-			case INTEGER:	return INTEGER;
-			case FLOAT:		return FLOAT;
-			case LONG:		return LONG;
-			case DOUBLE:	return DOUBLE;
+			case INTEGER:	return DataType.INTEGER;
+			case FLOAT:		return DataType.FLOAT;
+			case LONG:		return DataType.LONG;
+			case DOUBLE:	return DataType.DOUBLE;
 		}
 		
 		throw new todo.OOPS();

@@ -76,7 +76,7 @@ public class MutableJavaManifest
 		{
 			// Create new attribute set
 			MutableJavaManifestAttributes attr;
-			put(e.getKey(), (attr = new MutableJavaManifestAttributes()));
+			this.put(e.getKey(), (attr = new MutableJavaManifestAttributes()));
 			
 			// Copy values
 			for (Map.Entry<JavaManifestKey, String> f :
@@ -85,8 +85,8 @@ public class MutableJavaManifest
 		}
 		
 		// If no main attributes were set then make sure they exist
-		if (!containsKey(""))
-			put("", new MutableJavaManifestAttributes());
+		if (!this.containsKey(""))
+			this.put("", new MutableJavaManifestAttributes());
 	}
 	
 	/**
@@ -110,7 +110,7 @@ public class MutableJavaManifest
 		{
 			// Create new attribute set
 			MutableJavaManifestAttributes attr;
-			put(e.getKey(), (attr = new MutableJavaManifestAttributes()));
+			this.put(e.getKey(), (attr = new MutableJavaManifestAttributes()));
 			
 			// Copy values
 			for (Map.Entry<JavaManifestKey, String> f :
@@ -119,8 +119,8 @@ public class MutableJavaManifest
 		}
 		
 		// If no main attributes were set then make sure they exist
-		if (!containsKey(""))
-			put("", new MutableJavaManifestAttributes());
+		if (!this.containsKey(""))
+			this.put("", new MutableJavaManifestAttributes());
 	}
 	
 	/**
@@ -179,7 +179,7 @@ public class MutableJavaManifest
 	 */
 	public final MutableJavaManifestAttributes getMainAttributes()
 	{
-		return get("");
+		return this.get("");
 	}
 	
 	/**
@@ -241,7 +241,7 @@ public class MutableJavaManifest
 			throw new NullPointerException("NARG");
 		
 		// Write main attribute first
-		__write(__os, getMainAttributes());
+		this.__write(__os, this.getMainAttributes());
 		
 		// Write other attributes
 		for (Map.Entry<String, MutableJavaManifestAttributes> e :
@@ -256,10 +256,10 @@ public class MutableJavaManifest
 			__os.append("\r\n");
 			
 			// Write the name
-			__write(__os, "Name", k);
+			this.__write(__os, "Name", k);
 			
 			// Write values
-			__write(__os, e.getValue());
+			this.__write(__os, e.getValue());
 		}
 		
 		// Java ME has no flushable so we only know two classes which are
@@ -290,9 +290,9 @@ public class MutableJavaManifest
 		JavaManifestKey verk = new JavaManifestKey("MANIFEST-VERSION");
 		String ver = __a.get(verk);
 		if (ver != null)
-			__write(__w, "MANIFEST-VERSION", ver);
+			this.__write(__w, "MANIFEST-VERSION", ver);
 		else
-			__write(__w, "MANIFEST-VERSION", "1.0");
+			this.__write(__w, "MANIFEST-VERSION", "1.0");
 		
 		// Write all value
 		for (Map.Entry<JavaManifestKey, String> e : __a.entrySet())
@@ -303,7 +303,7 @@ public class MutableJavaManifest
 				continue;
 			
 			// Write pair
-			__write(__w, k.inputString(), e.getValue());
+			this.__write(__w, k.inputString(), e.getValue());
 		}
 	}
 	
@@ -341,7 +341,7 @@ public class MutableJavaManifest
 				// Would be on a new line?
 				int nextcol = col + 1;
 				boolean newline = false;
-				if (nextcol >= _COLUMN_LIMIT)
+				if (nextcol >= MutableJavaManifest._COLUMN_LIMIT)
 				{
 					// If the current character is a space then it will
 					// be lost on the following line.

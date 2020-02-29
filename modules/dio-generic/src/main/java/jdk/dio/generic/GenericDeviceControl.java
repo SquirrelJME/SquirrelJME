@@ -15,7 +15,6 @@ public class GenericDeviceControl<T>
 {
 	public GenericDeviceControl(int __a, Class<T> __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

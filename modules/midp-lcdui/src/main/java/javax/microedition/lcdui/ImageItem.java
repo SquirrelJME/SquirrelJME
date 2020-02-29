@@ -53,7 +53,7 @@ public class ImageItem
 	public ImageItem(String __l, Image __i, int __lay, String __alt)
 		throws IllegalArgumentException
 	{
-		this(__l, __i, __lay, __alt, PLAIN);
+		this(__l, __i, __lay, __alt, Item.PLAIN);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class ImageItem
 		
 		// {@squirreljme.error EB2i The appearance mode is not valid.
 		// (The appearance mode)}
-		if (__am != PLAIN && __am != BUTTON && __am != HYPERLINK)
+		if (__am != Item.PLAIN && __am != Item.BUTTON && __am != Item.HYPERLINK)
 			throw new IllegalArgumentException("EB2i " + __am);
 		
 		this._image = __i;

@@ -15,13 +15,13 @@ import javax.microedition.media.Control;
 public interface PitchControl
 	extends Control
 {
-	public abstract int getMaxPitch();
+	int getMaxPitch();
 	
-	public abstract int getMinPitch();
+	int getMinPitch();
 	
-	public abstract int getPitch();
+	int getPitch();
 	
-	public abstract int setPitch(int __a);
+	int setPitch(int __a);
 }
 
 

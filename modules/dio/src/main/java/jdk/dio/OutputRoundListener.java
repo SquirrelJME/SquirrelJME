@@ -16,8 +16,7 @@ public interface OutputRoundListener<P extends Device<? super P>, B extends
 	Buffer>
 	extends DeviceEventListener, AsyncErrorHandler<P>
 {
-	public abstract void outputRoundCompleted(RoundCompletionEvent<P, B> __a
-		);
+	void outputRoundCompleted(RoundCompletionEvent<P, B> __a);
 }
 
 

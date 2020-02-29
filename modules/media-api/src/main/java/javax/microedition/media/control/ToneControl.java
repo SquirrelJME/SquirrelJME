@@ -15,37 +15,37 @@ import javax.microedition.media.Control;
 public interface ToneControl
 	extends Control
 {
-	public static final byte BLOCK_END =
+	byte BLOCK_END =
 		-6;
 	
-	public static final byte BLOCK_START =
+	byte BLOCK_START =
 		-5;
 	
-	public static final byte C4 =
+	byte C4 =
 		60;
 	
-	public static final byte PLAY_BLOCK =
+	byte PLAY_BLOCK =
 		-7;
 	
-	public static final byte REPEAT =
+	byte REPEAT =
 		-9;
 	
-	public static final byte RESOLUTION =
+	byte RESOLUTION =
 		-4;
 	
-	public static final byte SET_VOLUME =
+	byte SET_VOLUME =
 		-8;
 	
-	public static final byte SILENCE =
+	byte SILENCE =
 		-1;
 	
-	public static final byte TEMPO =
+	byte TEMPO =
 		-3;
 	
-	public static final byte VERSION =
+	byte VERSION =
 		-2;
 	
-	public abstract void setSequence(byte[] __a);
+	void setSequence(byte[] __a);
 }
 
 

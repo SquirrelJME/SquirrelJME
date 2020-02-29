@@ -12,6 +12,6 @@ package javax.microedition.lcdui;
 
 public interface CommandLayoutPolicy
 {
-	public abstract void onCommandLayout(Displayable __disp);
+	void onCommandLayout(Displayable __disp);
 }
 

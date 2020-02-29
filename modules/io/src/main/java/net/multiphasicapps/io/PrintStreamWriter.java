@@ -82,7 +82,7 @@ public class PrintStreamWriter
 		synchronized (this.lock)
 		{
 			output.close();
-			__checkError();
+			this.__checkError();
 		}
 	}
 	
@@ -99,7 +99,7 @@ public class PrintStreamWriter
 		synchronized (this.lock)
 		{
 			output.flush();
-			__checkError();
+			this.__checkError();
 		}
 	}
 	
@@ -116,7 +116,7 @@ public class PrintStreamWriter
 		synchronized (this.lock)
 		{
 			output.print((char)__c);
-			__checkError();
+			this.__checkError();
 		}
 	}
 	
@@ -145,7 +145,7 @@ public class PrintStreamWriter
 				output.print((char)__c[i]);
 			
 			// Check
-			__checkError();
+			this.__checkError();
 		}
 	}
 	

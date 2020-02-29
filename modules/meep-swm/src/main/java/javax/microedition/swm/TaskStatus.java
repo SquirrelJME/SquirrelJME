@@ -49,15 +49,15 @@ public enum TaskStatus
 	{
 		switch (__i)
 		{
-			case 0: return EXITED_FATAL;
-			case 1: return EXITED_REGULAR;
-			case 2: return EXITED_TERMINATED;
-			case 3: return RUNNING;
-			case 4: return START_FAILED;
-			case 5: return STARTING;
+			case 0: return TaskStatus.EXITED_FATAL;
+			case 1: return TaskStatus.EXITED_REGULAR;
+			case 2: return TaskStatus.EXITED_TERMINATED;
+			case 3: return TaskStatus.RUNNING;
+			case 4: return TaskStatus.START_FAILED;
+			case 5: return TaskStatus.STARTING;
 			
 			default:
-				return EXITED_FATAL;
+				return TaskStatus.EXITED_FATAL;
 		}
 	}
 }

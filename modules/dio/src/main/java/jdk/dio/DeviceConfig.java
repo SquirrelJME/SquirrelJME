@@ -16,20 +16,20 @@ import java.io.OutputStream;
 public interface DeviceConfig<P extends Device<? super P>>
 {
 	@Deprecated
-	public static final int DEFAULT =
+	int DEFAULT =
 		-1;
 	
-	public static final int UNASSIGNED =
+	int UNASSIGNED =
 		-1;
 	
-	public abstract int serialize(OutputStream __a)
+	int serialize(OutputStream __a)
 		throws IOException;
 	
-	public static interface HardwareAddressing
+	interface HardwareAddressing
 	{
-		public abstract String getControllerName();
+		String getControllerName();
 		
-		public abstract int getControllerNumber();
+		int getControllerNumber();
 	}
 }
 

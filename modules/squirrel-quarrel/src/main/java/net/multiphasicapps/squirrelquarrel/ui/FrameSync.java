@@ -25,6 +25,6 @@ public interface FrameSync
 	 * @param __framenum The frame which has just finished.
 	 * @since 2018/03/19
 	 */
-	public abstract void frameRepaintRequest(int __framenum);
+	void frameRepaintRequest(int __framenum);
 }
 

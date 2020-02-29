@@ -25,7 +25,7 @@ public interface DisplayListener
 	 * @param __d The display which was added.
 	 * @since 2016/08/30
 	 */
-	public abstract void displayAdded(Display __d);
+	void displayAdded(Display __d);
 	
 	/**
 	 * This is called when a display has been removed from the device, any
@@ -34,7 +34,7 @@ public interface DisplayListener
 	 * @param __d The display which was removed.
 	 * @since 2016/08/30
 	 */
-	public abstract void displayRemoved(Display __d);
+	void displayRemoved(Display __d);
 	
 	/**
 	 * This is called when the state of a display changes in hardware.
@@ -44,6 +44,6 @@ public interface DisplayListener
 	 * underlying hardware, if {@code false} then the display was unassigned.
 	 * @since 2016/08/30
 	 */
-	public abstract void hardwareStateChanged(Display __d, boolean __ns);
+	void hardwareStateChanged(Display __d, boolean __ns);
 }
 

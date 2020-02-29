@@ -78,7 +78,7 @@ public enum PlayerColor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	private PlayerColor(String __name, int __rgb)
+	PlayerColor(String __name, int __rgb)
 		throws NullPointerException
 	{
 		// Check
@@ -155,12 +155,12 @@ public enum PlayerColor
 		switch (__i)
 		{
 				// Normal colors;
-			case 0: return RED;
-			case 1: return YELLOW;
-			case 2: return GREEN;
-			case 3: return BLUE;
-			case 4: return PURPLE;
-			case 5: return GRAY;
+			case 0: return PlayerColor.RED;
+			case 1: return PlayerColor.YELLOW;
+			case 2: return PlayerColor.GREEN;
+			case 3: return PlayerColor.BLUE;
+			case 4: return PlayerColor.PURPLE;
+			case 5: return PlayerColor.GRAY;
 			
 				// {@squirreljme.error BE04 Player index out of range. (The
 				// player index)}

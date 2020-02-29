@@ -31,7 +31,7 @@ public interface SuiteInstallListener
 	 * was started to be performed.
 	 * @since 2016/06/24
 	 */
-	public abstract void installationDone(InstallErrorCodes __ec,
+	void installationDone(InstallErrorCodes __ec,
 		SuiteManagementTracker __track);
 	
 	/**
@@ -46,7 +46,7 @@ public interface SuiteInstallListener
 	 * should be a value between zero and one hundred.
 	 * @since 2016/06/24
 	 */
-	public abstract void updateStatus(SuiteManagementTracker __track,
+	void updateStatus(SuiteManagementTracker __track,
 		SuiteInstallStage __stage, int __pct);
 }
 

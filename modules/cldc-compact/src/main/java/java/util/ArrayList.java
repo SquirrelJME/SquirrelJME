@@ -110,7 +110,7 @@ public class ArrayList<E>
 		if (nextsize > cap)
 		{
 			// Grow the list by a bit
-			int newcap = nextsize + _GROWTH;
+			int newcap = nextsize + ArrayList._GROWTH;
 			elements = (E[])new Object[newcap];
 			
 			// Copy old stuff over, but only up to the index as needed

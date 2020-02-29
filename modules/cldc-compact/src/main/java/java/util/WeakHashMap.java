@@ -57,7 +57,7 @@ public class WeakHashMap<K, V>
 				__load));
 		
 		// Setup
-		_load = __load;
+		this._load = __load;
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class WeakHashMap<K, V>
 	public WeakHashMap(int __icap)
 		throws IllegalArgumentException
 	{
-		this(__icap, _DEFAULT_LOAD);
+		this(__icap, WeakHashMap._DEFAULT_LOAD);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class WeakHashMap<K, V>
 	 */
 	public WeakHashMap()
 	{
-		this(_DEFAULT_CAPACITY, _DEFAULT_LOAD);
+		this(WeakHashMap._DEFAULT_CAPACITY, WeakHashMap._DEFAULT_LOAD);
 	}
 	
 	/**
@@ -99,11 +99,11 @@ public class WeakHashMap<K, V>
 			throw new NullPointerException("ZZ35");
 		
 		// Setup initial map
-		_load = _DEFAULT_LOAD;
+		this._load = WeakHashMap._DEFAULT_LOAD;
 		
 		// Add all entries to it
 		for (Map.Entry<? extends K, ? extends V> e : __a.entrySet())
-			put(e.getKey(), e.getValue());
+			this.put(e.getKey(), e.getValue());
 	}
 	
 	@Override

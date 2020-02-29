@@ -77,7 +77,7 @@ public final class String
 	public String()
 	{
 		this._chars = new char[0];
-		this._quickflags = _QUICK_ISLOWER | _QUICK_ISUPPER;
+		this._quickflags = String._QUICK_ISLOWER | String._QUICK_ISUPPER;
 		this._hashcode = 0;
 	}
 	
@@ -96,7 +96,7 @@ public final class String
 		
 		// Just copies all the fields since they were pre-calculated already
 		this._chars = __s._chars;
-		this._quickflags = ((short)(__s._quickflags & (~_QUICK_INTERN)));
+		this._quickflags = ((short)(__s._quickflags & (~String._QUICK_INTERN)));
 		this._hashcode = __s._hashcode;
 	}
 	
@@ -551,9 +551,9 @@ public final class String
 		
 		// Synchronize on StringBuffers
 		if (__s instanceof StringBuffer)
-			return contentEquals((StringBuffer)__s);
+			return this.contentEquals((StringBuffer)__s);
 		
-		return __contentEquals(__s);
+		return this.__contentEquals(__s);
 	}
 	
 	/**
@@ -855,11 +855,11 @@ public final class String
 	{
 		// If this string is already interned then use this one instead
 		// of searching through the map
-		if ((this._quickflags & _QUICK_INTERN) != 0)
+		if ((this._quickflags & String._QUICK_INTERN) != 0)
 			return this;
 		
 		// Search for string in the collection
-		Collection<Reference<String>> interns = _INTERNS;
+		Collection<Reference<String>> interns = String._INTERNS;
 		synchronized (interns)
 		{
 			// Same string that was internalized?
@@ -885,7 +885,7 @@ public final class String
 			interns.add(new WeakReference<>(this));
 			
 			// Also flag that this has been interned
-			this._quickflags |= _QUICK_INTERN;
+			this._quickflags |= String._QUICK_INTERN;
 			
 			// This will be the intern string
 			return this;
@@ -1358,12 +1358,12 @@ public final class String
 		
 		// Find starting trim position
 		int s;
-		for (s = 0; s < n && ch[s] <= _MIN_TRIM_CHAR; s++)
+		for (s = 0; s < n && ch[s] <= String._MIN_TRIM_CHAR; s++)
 			;
 		
 		// Find ending trim position
 		int e;
-		for (e = n; e > s && ch[e - 1] <= _MIN_TRIM_CHAR; e--)
+		for (e = n; e > s && ch[e - 1] <= String._MIN_TRIM_CHAR; e--)
 			;
 		
 		// Return trimmed variant of it

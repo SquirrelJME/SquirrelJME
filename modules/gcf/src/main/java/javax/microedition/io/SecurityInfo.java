@@ -14,15 +14,15 @@ import javax.microedition.pki.Certificate;
 
 public interface SecurityInfo
 {
-	public abstract String getCipherSuite();
+	String getCipherSuite();
 	
-	public abstract Certificate getClientCertificate();
+	Certificate getClientCertificate();
 	
-	public abstract String getProtocolName();
+	String getProtocolName();
 	
-	public abstract String getProtocolVersion();
+	String getProtocolVersion();
 	
-	public abstract Certificate getServerCertificate();
+	Certificate getServerCertificate();
 }
 
 

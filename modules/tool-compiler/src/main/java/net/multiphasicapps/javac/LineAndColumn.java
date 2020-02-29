@@ -25,7 +25,7 @@ public interface LineAndColumn
 	 * @return The current column.
 	 * @since 2018/03/06
 	 */
-	public abstract int column();
+	int column();
 	
 	/**
 	 * Returns the current line.
@@ -33,6 +33,6 @@ public interface LineAndColumn
 	 * @return The current line.
 	 * @since 2018/03/06
 	 */
-	public abstract int line();
+	int line();
 }
 

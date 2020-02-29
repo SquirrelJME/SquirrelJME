@@ -16,7 +16,6 @@ public class PushRegistry
 {
 	public PushRegistry()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

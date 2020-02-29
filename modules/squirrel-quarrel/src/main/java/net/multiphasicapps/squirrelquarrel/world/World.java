@@ -58,7 +58,7 @@ public class World
 		// Initialize the tile map
 		int mw = __is.mapWidth(),
 			mh = __is.mapHeight();
-		this._tiles = __initTiles(mw, mh);
+		this._tiles = this.__initTiles(mw, mh);
 		
 		// Store sizes
 		this.tilew = mw;
@@ -146,8 +146,10 @@ public class World
 	 */
 	public TerrainType pixelTerrain(int __x, int __y)
 	{
-		return megaTile(pixelCoordToMegaTile(__x), pixelCoordToMegaTile(__y)).
-			subTileTerrain(pixelCoordToSubTile(__x), pixelCoordToSubTile(__y));
+		return this.megaTile(
+			World.pixelCoordToMegaTile(__x), World.pixelCoordToMegaTile(__y)).
+			subTileTerrain(
+				World.pixelCoordToSubTile(__x), World.pixelCoordToSubTile(__y));
 	}
 	
 	/**

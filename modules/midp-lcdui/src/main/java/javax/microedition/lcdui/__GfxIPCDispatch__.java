@@ -43,9 +43,9 @@ class __GfxIPCDispatch__
 	 */
 	static final __GfxIPCDispatch__ __instance()
 	{
-		__GfxIPCDispatch__ rv = _INSTANCE;
+		__GfxIPCDispatch__ rv = __GfxIPCDispatch__._INSTANCE;
 		if (rv == null)
-			_INSTANCE = (rv = new __GfxIPCDispatch__());
+			__GfxIPCDispatch__._INSTANCE = (rv = new __GfxIPCDispatch__());
 		return rv;
 	}
 }

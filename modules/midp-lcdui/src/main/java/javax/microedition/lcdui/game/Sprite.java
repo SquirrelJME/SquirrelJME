@@ -42,19 +42,16 @@ public class Sprite
 	
 	public Sprite(Image __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Sprite(Image __a, int __b, int __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Sprite(Sprite __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

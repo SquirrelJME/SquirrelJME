@@ -130,38 +130,38 @@ public enum GraphicsFunction
 		// Depends
 		switch (__id)
 		{
-			case 0:		return SET_COLOR;
-			case 1:		return DRAW_LINE;
-			case 2:		return GET_CLIP_X;
-			case 3:		return GET_CLIP_Y;
-			case 4:		return GET_CLIP_WIDTH;
-			case 5:		return GET_CLIP_HEIGHT;
-			case 6:		return SET_CLIP;
-			case 7:		return DRAW_RECT;
-			case 8:		return GET_ALPHA_COLOR;
-			case 9:		return SET_ALPHA_COLOR;
-			case 10:	return FILL_RECT;
-			case 11:	return SET_FONT;
-			case 12:	return GET_FONT;
-			case 13:	return DRAW_SUB_CHARS;
-			case 14:	return DRAW_TEXT;
-			case 15:	return GET_STROKE_STYLE;
-			case 16:	return SET_STROKE_STYLE;
-			case 17:	return COPY_AREA;
-			case 18:	return DRAW_ARC;
-			case 19:	return DRAW_ARGB16;
-			case 20:	return DRAW_CHAR;
-			case 21:	return DRAW_CHARS;
-			case 22:	return DRAW_RGB;
-			case 23:	return DRAW_RGB16;
-			case 24:	return DRAW_ROUND_RECT;
-			case 25:	return FILL_ARC;
-			case 26:	return FILL_ROUND_RECT;
-			case 27:	return FILL_TRIANGLE;
-			case 28:	return GET_BLENDING_MODE;
-			case 29:	return GET_DISPLAY_COLOR;
-			case 30:	return SET_BLENDING_MODE;
-			case 31:	return DRAW_REGION;
+			case 0:		return GraphicsFunction.SET_COLOR;
+			case 1:		return GraphicsFunction.DRAW_LINE;
+			case 2:		return GraphicsFunction.GET_CLIP_X;
+			case 3:		return GraphicsFunction.GET_CLIP_Y;
+			case 4:		return GraphicsFunction.GET_CLIP_WIDTH;
+			case 5:		return GraphicsFunction.GET_CLIP_HEIGHT;
+			case 6:		return GraphicsFunction.SET_CLIP;
+			case 7:		return GraphicsFunction.DRAW_RECT;
+			case 8:		return GraphicsFunction.GET_ALPHA_COLOR;
+			case 9:		return GraphicsFunction.SET_ALPHA_COLOR;
+			case 10:	return GraphicsFunction.FILL_RECT;
+			case 11:	return GraphicsFunction.SET_FONT;
+			case 12:	return GraphicsFunction.GET_FONT;
+			case 13:	return GraphicsFunction.DRAW_SUB_CHARS;
+			case 14:	return GraphicsFunction.DRAW_TEXT;
+			case 15:	return GraphicsFunction.GET_STROKE_STYLE;
+			case 16:	return GraphicsFunction.SET_STROKE_STYLE;
+			case 17:	return GraphicsFunction.COPY_AREA;
+			case 18:	return GraphicsFunction.DRAW_ARC;
+			case 19:	return GraphicsFunction.DRAW_ARGB16;
+			case 20:	return GraphicsFunction.DRAW_CHAR;
+			case 21:	return GraphicsFunction.DRAW_CHARS;
+			case 22:	return GraphicsFunction.DRAW_RGB;
+			case 23:	return GraphicsFunction.DRAW_RGB16;
+			case 24:	return GraphicsFunction.DRAW_ROUND_RECT;
+			case 25:	return GraphicsFunction.FILL_ARC;
+			case 26:	return GraphicsFunction.FILL_ROUND_RECT;
+			case 27:	return GraphicsFunction.FILL_TRIANGLE;
+			case 28:	return GraphicsFunction.GET_BLENDING_MODE;
+			case 29:	return GraphicsFunction.GET_DISPLAY_COLOR;
+			case 30:	return GraphicsFunction.SET_BLENDING_MODE;
+			case 31:	return GraphicsFunction.DRAW_REGION;
 				
 				// {@squirreljme.error EB0j Invalid graphics function.
 				// (The function ID)}

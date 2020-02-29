@@ -78,7 +78,7 @@ public class MarkdownWriter
 	public MarkdownWriter append(char __c)
 		throws IOException
 	{
-		__put(__c, false);
+		this.__put(__c, false);
 		return this;
 	}
 	
@@ -102,7 +102,7 @@ public class MarkdownWriter
 		throws IOException
 	{
 		for (int i = __s; i < __e; i++)
-			__put(__cs.charAt(i), false);
+			this.__put(__cs.charAt(i), false);
 		return this;
 	}
 	
@@ -117,7 +117,7 @@ public class MarkdownWriter
 		// Flush before close
 		try
 		{
-			flush();
+			this.flush();
 		}
 		
 		// Ignore
@@ -173,10 +173,10 @@ public class MarkdownWriter
 		__SectionHeader__ header = new __SectionHeader__(this, __abs, __level);
 		
 		// Print header text
-		append(__s);
+		this.append(__s);
 		
 		// Enter paragraph mode
-		paragraph();
+		this.paragraph();
 	}
 	
 	/**
@@ -250,7 +250,7 @@ public class MarkdownWriter
 	public void print(char __c)
 		throws IOException
 	{
-		append(__c);
+		this.append(__c);
 	}
 	
 	/**
@@ -263,7 +263,7 @@ public class MarkdownWriter
 	public void print(Object __o)
 		throws IOException
 	{
-		append(Objects.toString(__o));
+		this.append(Objects.toString(__o));
 	}
 	
 	/**
@@ -295,7 +295,7 @@ public class MarkdownWriter
 	public void println()
 		throws IOException
 	{
-		append('\n');
+		this.append('\n');
 	}
 	
 	/**
@@ -308,8 +308,8 @@ public class MarkdownWriter
 	public void println(Object __o)
 		throws IOException
 	{
-		print(__o);
-		println();
+		this.print(__o);
+		this.println();
 	}
 	
 	/**
@@ -328,12 +328,12 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Prime
-		__put('\0', false);
+		this.__put('\0', false);
 		
 		// Print it out
-		__put('<', true);
-		append(__uri);
-		__put('>', true);
+		this.__put('<', true);
+		this.append(__uri);
+		this.__put('>', true);
 	}
 	
 	/**
@@ -353,15 +353,15 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Prime
-		__put('\0', false);
+		this.__put('\0', false);
 		
 		// Print it out
-		__put('[', true);
-		append(__text);
-		__put(']', true);
-		__put('(', true);
-		__unescapedURI(__uri);
-		__put(')', true);
+		this.__put('[', true);
+		this.append(__text);
+		this.__put(']', true);
+		this.__put('(', true);
+		this.__unescapedURI(__uri);
+		this.__put(')', true);
 	}
 	
 	/**
@@ -382,19 +382,19 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Prime
-		__put('\0', false);
+		this.__put('\0', false);
 		
 		// Print it out
-		__put('[', true);
-		append(__text);
-		__put(']', true);
-		__put('(', true);
-		__unescapedURI(__uri);
-		__put(' ', true);
-		__put('"', true);
-		append(__title);
-		__put('"', true);
-		__put(')', true);
+		this.__put('[', true);
+		this.append(__text);
+		this.__put(']', true);
+		this.__put('(', true);
+		this.__unescapedURI(__uri);
+		this.__put(' ', true);
+		this.__put('"', true);
+		this.append(__title);
+		this.__put('"', true);
+		this.__put(')', true);
 	}
 	
 	/**
@@ -446,8 +446,8 @@ public class MarkdownWriter
 				this._column = (++column);
 			
 			// If at the end, go to the next line
-			if (column >= RIGHT_COLUMN)
-				__put('\n', true);
+			if (column >= MarkdownWriter.RIGHT_COLUMN)
+				this.__put('\n', true);
 			
 			// Done
 			return;
@@ -459,7 +459,7 @@ public class MarkdownWriter
 			section = new __SectionParagraph__(this);
 		
 		// Character needs escaping?
-		if (__escaped(__c))
+		if (this.__escaped(__c))
 			section.__process('\\');
 		
 		// Place character
@@ -488,27 +488,27 @@ public class MarkdownWriter
 			char c = __s.charAt(i);
 			
 			// Never escape underscore
-			if (__escaped(c) || c == '"' || MarkdownWriter.__isWhitespace(c))
+			if (this.__escaped(c) || c == '"' || MarkdownWriter.__isWhitespace(c))
 				if (c == '_')
-					__put(c, true);
+					this.__put(c, true);
 				
 				// Percent encode anything else
 				else
 				{
 					byte[] b = Character.toString(c).getBytes("utf-8");
 					int q = b.length;
-					__put('%', false);
+					this.__put('%', false);
 					for (int l = 0; l < q; l++)
 					{
 						byte d = b[l];
-						__put(Character.forDigit((d >>> 4) & 0xF, 16), false);
-						__put(Character.forDigit(d & 0xF, 16), false);
+						this.__put(Character.forDigit((d >>> 4) & 0xF, 16), false);
+						this.__put(Character.forDigit(d & 0xF, 16), false);
 					}
 				}
 			
 			// Otherwise normal print
 			else
-				__put(c, false);
+				this.__put(c, false);
 		}
 	}
 	

@@ -98,7 +98,7 @@ public final class NativeCPU
 	
 	/** Execution slices which came from the popped frame. */
 	private final Deque<Deque<ExecutionSlice>> _sopf =
-		(ENABLE_DEBUG ? new LinkedList<Deque<ExecutionSlice>>() : null);
+		(NativeCPU.ENABLE_DEBUG ? new LinkedList<Deque<ExecutionSlice>>() : null);
 	
 	/** IPC Exception register. */
 	private int _ipcexception;
@@ -209,7 +209,7 @@ public final class NativeCPU
 			System.err.println("********************************************");
 			
 			// Only print execution slices if debugging is enabled
-			if (ENABLE_DEBUG)
+			if (NativeCPU.ENABLE_DEBUG)
 			{
 				// Each frame has its own slices
 				for (Frame l : this._frames)
@@ -304,8 +304,8 @@ public final class NativeCPU
 		final int[] args = new int[6];
 		
 		// Method cache to reduce tons of method reads
-		final byte[] icache = new byte[METHOD_CACHE];
-		int lasticache = -(METHOD_CACHE_SPILL + 1);
+		final byte[] icache = new byte[NativeCPU.METHOD_CACHE];
+		int lasticache = -(NativeCPU.METHOD_CACHE_SPILL + 1);
 		
 		// Debug point counter
 		int pointcounter = 0;
@@ -344,9 +344,9 @@ public final class NativeCPU
 			// the method calls to read single bytes of memory is a bit so, so
 			// this should hopefully improve performance slightly.
 			int pcdiff = pc - lasticache;
-			if (pcdiff < 0 || pcdiff >= METHOD_CACHE_SPILL)
+			if (pcdiff < 0 || pcdiff >= NativeCPU.METHOD_CACHE_SPILL)
 			{
-				memory.memReadBytes(pc, icache, 0, METHOD_CACHE);
+				memory.memReadBytes(pc, icache, 0, NativeCPU.METHOD_CACHE);
 				lasticache = pc;
 			}
 			
@@ -453,7 +453,7 @@ public final class NativeCPU
 				pointcounter = 0;
 			
 			// Only track slices if we are debugging
-			if (ENABLE_DEBUG)
+			if (NativeCPU.ENABLE_DEBUG)
 			{
 				// Get slice for this instruction
 				ExecutionSlice el = ExecutionSlice.of(this.trace(nowframe),
@@ -461,7 +461,7 @@ public final class NativeCPU
 				
 				// Add to previous instructions, do not exceed slice limits
 				Deque<ExecutionSlice> execslices = nowframe._execslices;
-				if (execslices.size() >= MAX_EXECUTION_SLICES)
+				if (execslices.size() >= NativeCPU.MAX_EXECUTION_SLICES)
 					execslices.removeFirst();
 				execslices.addLast(el);
 			
@@ -471,7 +471,7 @@ public final class NativeCPU
 				{
 					// Seems to be stuck?
 					boolean doprint = false;
-					if (pointcounter++ >= _POINT_THRESHOLD)
+					if (pointcounter++ >= NativeCPU._POINT_THRESHOLD)
 					{
 						doprint = true;
 						pointcounter = 0;
@@ -493,7 +493,7 @@ public final class NativeCPU
 					// CPU Breakpoint
 				case NativeInstructionType.BREAKPOINT:
 					// Breakpoints only function when debugging is enabled
-					if (ENABLE_DEBUG)
+					if (NativeCPU.ENABLE_DEBUG)
 					{
 						// If profiling, immediately enter the frame to signal
 						// a break point then exit it
@@ -855,7 +855,7 @@ public final class NativeCPU
 							sopf.addLast(was._execslices);
 							
 							// If there are too many, remove them
-							if (sopf.size() > MAX_POPPED_SLICE_STORE)
+							if (sopf.size() > NativeCPU.MAX_POPPED_SLICE_STORE)
 								sopf.removeFirst();
 						}
 						
@@ -1113,10 +1113,10 @@ public final class NativeCPU
 		// Get the pool address
 		int pooladdr = __f._registers[NativeCode.POOL_REGISTER];
 		
-		int icl = memory.memReadInt(pooladdr + (__pcl * 4)),
-			imn = memory.memReadInt(pooladdr + (__pmn * 4)),
-			imt = memory.memReadInt(pooladdr + (__pmt * 4)),
-			isf = memory.memReadInt(pooladdr + (__psf * 4));
+		int icl = this.memory.memReadInt(pooladdr + (__pcl * 4)),
+			imn = this.memory.memReadInt(pooladdr + (__pmn * 4)),
+			imt = this.memory.memReadInt(pooladdr + (__pmt * 4)),
+			isf = this.memory.memReadInt(pooladdr + (__psf * 4));
 		
 		// Store in state
 		__f._inclassp = icl;
@@ -1674,7 +1674,7 @@ public final class NativeCPU
 		
 		/** Registers for this frame. */
 		final int[] _registers =
-			new int[MAX_REGISTERS];
+			new int[NativeCPU.MAX_REGISTERS];
 		
 		/** The entry PC address. */
 		int _entrypc;
@@ -1725,7 +1725,7 @@ public final class NativeCPU
 		 * Potential initialization.
 		 */
 		{
-			this._execslices = (ENABLE_DEBUG ?
+			this._execslices = (NativeCPU.ENABLE_DEBUG ?
 				new LinkedList<ExecutionSlice>() :
 				(Deque<ExecutionSlice>)null);
 		}

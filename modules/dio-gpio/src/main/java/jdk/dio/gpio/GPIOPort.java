@@ -18,34 +18,34 @@ import jdk.dio.UnavailableDeviceException;
 public interface GPIOPort
 	extends Device<GPIOPort>
 {
-	public static final int INPUT =
+	int INPUT =
 		0;
 	
-	public static final int OUTPUT =
+	int OUTPUT =
 		1;
 	
-	public abstract int getDirection()
+	int getDirection()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMaxValue()
+	int getMaxValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract GPIOPin[] getPins();
+	GPIOPin[] getPins();
 	
-	public abstract int getValue()
+	int getValue()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setDirection(int __a)
+	void setDirection(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setInputListener(PortListener __a)
+	void setInputListener(PortListener __a)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract void setValue(int __a)
+	void setValue(int __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

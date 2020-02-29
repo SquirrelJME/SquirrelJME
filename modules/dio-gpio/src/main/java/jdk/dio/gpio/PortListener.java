@@ -13,7 +13,7 @@ package jdk.dio.gpio;
 
 public interface PortListener
 {
-	public abstract void valueChanged(PortEvent __a);
+	void valueChanged(PortEvent __a);
 }
 
 

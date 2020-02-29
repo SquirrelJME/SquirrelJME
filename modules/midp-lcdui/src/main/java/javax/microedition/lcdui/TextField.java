@@ -174,7 +174,7 @@ public class TextField
 		throws IllegalArgumentException
 	{
 		// Standard item properties
-		setLabel(__l);
+		this.setLabel(__l);
 		
 		// Initialize text area
 		this._editabletext.initialize(__t, __ms, __c);

@@ -42,9 +42,9 @@ public enum FieldAccessTime
 	{
 		switch (__i)
 		{
-			case 0:	return INITIALIZER;
-			case 1: return NORMAL;
-			case 2: return READ;
+			case 0:	return FieldAccessTime.INITIALIZER;
+			case 1: return FieldAccessTime.NORMAL;
+			case 2: return FieldAccessTime.READ;
 		}
 		
 		// {@squirreljme.error JC14 Unknown access time. (The index)}

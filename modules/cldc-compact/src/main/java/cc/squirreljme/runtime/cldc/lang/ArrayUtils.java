@@ -108,39 +108,39 @@ public final class ArrayUtils
 		// Depends on the type
 		switch (__type)
 		{
-			case ARRAY_BOOLEAN:
+			case ArrayUtils.ARRAY_BOOLEAN:
 				((boolean[])__a)[__dx] = ((Boolean)__v).booleanValue();
 				break;
 				
-			case ARRAY_BYTE:
+			case ArrayUtils.ARRAY_BYTE:
 				((byte[])__a)[__dx] = ((Byte)__v).byteValue();
 				break;
 				
-			case ARRAY_SHORT:
+			case ArrayUtils.ARRAY_SHORT:
 				((short[])__a)[__dx] = ((Short)__v).shortValue();
 				break;
 				
-			case ARRAY_CHARACTER:
+			case ArrayUtils.ARRAY_CHARACTER:
 				((char[])__a)[__dx] = ((Character)__v).charValue();
 				break;
 				
-			case ARRAY_INTEGER:
+			case ArrayUtils.ARRAY_INTEGER:
 				((int[])__a)[__dx] = ((Integer)__v).intValue();
 				break;
 				
-			case ARRAY_LONG:
+			case ArrayUtils.ARRAY_LONG:
 				((long[])__a)[__dx] = ((Long)__v).longValue();
 				break;
 				
-			case ARRAY_FLOAT:
+			case ArrayUtils.ARRAY_FLOAT:
 				((float[])__a)[__dx] = ((Float)__v).floatValue();
 				break;
 				
-			case ARRAY_DOUBLE:
+			case ArrayUtils.ARRAY_DOUBLE:
 				((double[])__a)[__dx] = ((Double)__v).doubleValue();
 				break;
 				
-			case ARRAY_OBJECT:
+			case ArrayUtils.ARRAY_OBJECT:
 				((Object[])__a)[__dx] = __v;
 				break;
 			
@@ -166,23 +166,23 @@ public final class ArrayUtils
 			throw new NullPointerException("NARG");
 		
 		if (__a instanceof Object[])
-			return ARRAY_OBJECT;
+			return ArrayUtils.ARRAY_OBJECT;
 		else if (__a instanceof boolean[])
-			return ARRAY_BOOLEAN;
+			return ArrayUtils.ARRAY_BOOLEAN;
 		else if (__a instanceof byte[])
-			return ARRAY_BYTE;
+			return ArrayUtils.ARRAY_BYTE;
 		else if (__a instanceof short[])
-			return ARRAY_SHORT;
+			return ArrayUtils.ARRAY_SHORT;
 		else if (__a instanceof char[])
-			return ARRAY_CHARACTER;
+			return ArrayUtils.ARRAY_CHARACTER;
 		else if (__a instanceof int[])
-			return ARRAY_INTEGER;
+			return ArrayUtils.ARRAY_INTEGER;
 		else if (__a instanceof long[])
-			return ARRAY_LONG;
+			return ArrayUtils.ARRAY_LONG;
 		else if (__a instanceof float[])
-			return ARRAY_FLOAT;
+			return ArrayUtils.ARRAY_FLOAT;
 		else if (__a instanceof double[])
-			return ARRAY_DOUBLE;
+			return ArrayUtils.ARRAY_DOUBLE;
 		
 		// {@squirreljme.error ZZ0d Invalid array type.}
 		throw new IllegalArgumentException("ZZ0d");

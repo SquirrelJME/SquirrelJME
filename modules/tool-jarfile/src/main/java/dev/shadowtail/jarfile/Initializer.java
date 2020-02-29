@@ -69,7 +69,7 @@ public final class Initializer
 		
 		// Calculate the next size of the boot area
 		int nowat = this._size,
-			chunksize = __sz + CHUNK_LENGTH,
+			chunksize = __sz + Initializer.CHUNK_LENGTH,
 			nextat = nowat + chunksize;
 		
 		// If the memory space is too small, grow it
@@ -78,13 +78,13 @@ public final class Initializer
 			this._bytes = (bytes = Arrays.copyOf(bytes, nextat + 2048));
 		
 		// The return address is after the chunk length
-		int rv = nowat + CHUNK_LENGTH;
+		int rv = nowat + Initializer.CHUNK_LENGTH;
 		
 		// Record size of chunk and the next chunk position in RAM
 		this.memWriteInt(null,
-			nowat + CHUNK_SIZE_OFFSET, chunksize);
+			nowat + Initializer.CHUNK_SIZE_OFFSET, chunksize);
 		this.memWriteInt(Modifier.RAM_OFFSET,
-			nowat + CHUNK_NEXT_OFFSET, nextat);
+			nowat + Initializer.CHUNK_NEXT_OFFSET, nextat);
 		
 		// Continue at the end
 		this._size = nextat;
@@ -245,7 +245,7 @@ public final class Initializer
 		size = (size + 3) & (~3);
 		
 		// Give extra bytes for the terminator chunk
-		size += CHUNK_LENGTH;
+		size += Initializer.CHUNK_LENGTH;
 		
 		// Write initializer RAM
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);

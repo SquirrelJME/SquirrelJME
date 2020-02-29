@@ -1097,9 +1097,9 @@ public class Arrays
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException("NARG");	
+			throw new NullPointerException("NARG");
 		
-		sort(__a, 0, __a.length);
+		Arrays.sort(__a, 0, __a.length);
 	}
 	
 	/**
@@ -1135,9 +1135,9 @@ public class Arrays
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException("NARG");	
+			throw new NullPointerException("NARG");
 		
-		sort(__a, 0, __a.length);
+		Arrays.sort(__a, 0, __a.length);
 	}
 	
 	/**
@@ -1173,9 +1173,9 @@ public class Arrays
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException("NARG");	
+			throw new NullPointerException("NARG");
 		
-		sort(__a, 0, __a.length);
+		Arrays.sort(__a, 0, __a.length);
 	}
 	
 	/**
@@ -1211,9 +1211,9 @@ public class Arrays
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException("NARG");	
+			throw new NullPointerException("NARG");
 		
-		sort(__a, 0, __a.length);
+		Arrays.sort(__a, 0, __a.length);
 	}
 	
 	/**
@@ -1262,9 +1262,9 @@ public class Arrays
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException("NARG");	
+			throw new NullPointerException("NARG");
 		
-		sort(__a, 0, __a.length);
+		Arrays.sort(__a, 0, __a.length);
 	}
 	
 	/**

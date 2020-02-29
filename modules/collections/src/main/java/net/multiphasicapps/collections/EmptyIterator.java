@@ -79,12 +79,12 @@ public final class EmptyIterator
 	public static <V> Iterator<V> empty()
 	{
 		// Get reference
-		Reference<Iterator> ref = _EMPTY_ITERATOR;
+		Reference<Iterator> ref = EmptyIterator._EMPTY_ITERATOR;
 		Iterator rv;
 		
 		// Needs creation?
 		if (ref == null || null == (rv = ref.get()))
-			_EMPTY_ITERATOR = new WeakReference<>(
+			EmptyIterator._EMPTY_ITERATOR = new WeakReference<>(
 				(rv = new EmptyIterator()));
 		
 		// Return it

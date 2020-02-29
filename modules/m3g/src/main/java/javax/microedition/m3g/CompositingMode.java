@@ -31,7 +31,6 @@ public class CompositingMode
 	
 	public CompositingMode()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

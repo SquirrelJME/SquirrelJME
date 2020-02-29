@@ -197,7 +197,7 @@ public class LinkedList<E>
 	@Override
 	public boolean offer(E __v)
 	{
-		return offerLast(__v);
+		return this.offerLast(__v);
 	}
 	
 	/**
@@ -258,7 +258,7 @@ public class LinkedList<E>
 	{
 		// Return null if the list is empty
 		int sz;
-		if ((sz = _size) == 0)
+		if ((sz = this._size) == 0)
 			return null;
 		
 		// Just one back from the tail
@@ -368,7 +368,7 @@ public class LinkedList<E>
 	public boolean removeFirstOccurrence(Object __a)
 	{
 		// Start at the start of the list and remove the first match
-		Iterator<E> rover = iterator();
+		Iterator<E> rover = this.iterator();
 		while (rover.hasNext())
 		{
 			E v = rover.next();
@@ -411,7 +411,7 @@ public class LinkedList<E>
 	public boolean removeLastOccurrence(Object __a)
 	{
 		// Start at the end of the list and remove the first match
-		ListIterator<E> rover = listIterator(_size);
+		ListIterator<E> rover = this.listIterator(this._size);
 		while (rover.hasPrevious())
 		{
 			E v = rover.previous();

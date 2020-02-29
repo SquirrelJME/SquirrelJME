@@ -39,7 +39,7 @@ public class DataInputStream
 			throw new NullPointerException();
 		
 		// Set
-		in = __in;
+		this.in = __in;
 	}
 	
 	/**

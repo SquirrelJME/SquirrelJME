@@ -26,15 +26,6 @@ public abstract class InputStream
 		256;
 	
 	/**
-	 * Initializes the base input stream.
-	 *
-	 * @since 2018/10/13
-	 */
-	public InputStream()
-	{
-	}
-	
-	/**
 	 * Reads a single byte from the input stream.
 	 *
 	 * @return The read unsigned byte value ({@code 0-255}) or {@code -1} if
@@ -213,12 +204,13 @@ public abstract class InputStream
 			return 0;
 		
 		// Keep reading bytes
-		byte[] buf = new byte[_SKIP_LEN];
+		byte[] buf = new byte[InputStream._SKIP_LEN];
 		long actual = 0;
 		while (__n > 0)
 		{
 			// Only skip the small group
-			int now = (int)(_SKIP_LEN < __n ? _SKIP_LEN : __n);
+			int now = (int)(InputStream._SKIP_LEN < __n ?
+				InputStream._SKIP_LEN : __n);
 			
 			// Try to skip these bytes
 			int rv = this.read(buf, 0, now);

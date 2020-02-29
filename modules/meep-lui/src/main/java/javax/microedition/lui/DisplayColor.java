@@ -59,9 +59,9 @@ public class DisplayColor
 		
 		// Cast and check
 		DisplayColor o = (DisplayColor)__o;
-		return getRedComponent() == o.getRedComponent() &&
-			getGreenComponent() == o.getGreenComponent() &&
-			getBlueComponent() == o.getBlueComponent();
+		return this.getRedComponent() == o.getRedComponent() && this
+			.getGreenComponent() == o.getGreenComponent() && this
+			.getBlueComponent() == o.getBlueComponent();
 	}
 	
 	/**

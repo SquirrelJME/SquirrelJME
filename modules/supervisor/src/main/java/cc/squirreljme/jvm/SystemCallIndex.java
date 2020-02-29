@@ -22,7 +22,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The system call index to query.
 	 * @squirreljme.syscallreturn Zero if not supported, otherwise a non-zero value.
 	 */
-	public static final byte QUERY_INDEX =
+	byte QUERY_INDEX =
 		0;
 	
 	/**
@@ -37,7 +37,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The system call index to query.
 	 * @squirreljme.syscallreturn The last error code, will be zero if the last command succeeded.
 	 */
-	public static final byte ERROR_GET =
+	byte ERROR_GET =
 		1;
 	
 	/**
@@ -53,7 +53,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 2 The value to set error register to.
 	 * @squirreljme.syscallreturn Zero on success
 	 */
-	public static final byte ERROR_SET =
+	byte ERROR_SET =
 		2;
 	
 	/**
@@ -61,7 +61,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The current milliseconds time.
 	 */
-	public static final byte TIME_MILLI_WALL =
+	byte TIME_MILLI_WALL =
 		3;
 	
 	/**
@@ -73,7 +73,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The exception which has been stored.
 	 */
-	public static final byte EXCEPTION_LOAD =
+	byte EXCEPTION_LOAD =
 		4;
 	
 	/**
@@ -81,7 +81,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The monotonic nanoseconds time.
 	 */
-	public static final byte TIME_NANO_MONO =
+	byte TIME_NANO_MONO =
 		5;
 	
 	/**
@@ -94,7 +94,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The exception to store.
 	 * @squirreljme.syscallreturn The old value that was stored in the register.
 	 */
-	public static final byte EXCEPTION_STORE =
+	byte EXCEPTION_STORE =
 		6;
 	
 	/**
@@ -102,7 +102,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The free memory amount in bytes.
 	 */
-	public static final byte VMI_MEM_FREE =
+	byte VMI_MEM_FREE =
 		7;
 	
 	/**
@@ -110,7 +110,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The used memory amount in bytes.
 	 */
-	public static final byte VMI_MEM_USED =
+	byte VMI_MEM_USED =
 		8;
 	
 	/**
@@ -118,7 +118,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The max memory amount in bytes.
 	 */
-	public static final byte VMI_MEM_MAX =
+	byte VMI_MEM_MAX =
 		9;
 	
 	/**
@@ -127,7 +127,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn Generally zero although any other value could be returned.
 	 */
-	public static final byte GARBAGE_COLLECT =
+	byte GARBAGE_COLLECT =
 		10;
 	
 	/**
@@ -137,7 +137,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn This generally does not return, if it does then the error code
 	 * will likely specify why this failed.
 	 */
-	public static final byte EXIT =
+	byte EXIT =
 		11;
 	
 	/**
@@ -148,7 +148,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The API level of the virtual machine.
 	 */
 	@Deprecated
-	public static final byte API_LEVEL =
+	byte API_LEVEL =
 		12;
 	
 	/**
@@ -156,7 +156,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The pipe descriptor for standard input.
 	 */
-	public static final byte PD_OF_STDIN =
+	byte PD_OF_STDIN =
 		13;
 	
 	/**
@@ -164,7 +164,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The pipe descriptor for standard output.
 	 */
-	public static final byte PD_OF_STDOUT =
+	byte PD_OF_STDOUT =
 		14;
 	
 	/**
@@ -172,7 +172,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The pipe descriptor for standard error.
 	 */
-	public static final byte PD_OF_STDERR =
+	byte PD_OF_STDERR =
 		15;
 	
 	/**
@@ -183,7 +183,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The number of bytes written to the output, if this returns
 	 * a value lower than zero then it indicates an error.
 	 */
-	public static final byte PD_WRITE_BYTE =
+	byte PD_WRITE_BYTE =
 		16;
 	
 	/**
@@ -196,7 +196,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The number of bytes actually written, if this is zero then
 	 * it is likely the system call is not supported.
 	 */
-	public static final byte MEM_SET =
+	byte MEM_SET =
 		17;
 	
 	/**
@@ -211,7 +211,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The number of bytes actually written, if this is zero then
 	 * it is likely the system call is not supported.
 	 */
-	public static final byte MEM_SET_INT =
+	byte MEM_SET_INT =
 		18;
 	
 	/**
@@ -219,7 +219,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The height of the call stack.
 	 */
-	public static final byte CALL_STACK_HEIGHT =
+	byte CALL_STACK_HEIGHT =
 		19;
 	
 	/**
@@ -231,7 +231,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The value of the item, if it is undefined or not supported
 	 * then zero will be returned.
 	 */
-	public static final byte CALL_STACK_ITEM =
+	byte CALL_STACK_ITEM =
 		20;
 	
 	/**
@@ -240,7 +240,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The pointer to the modified UTF encoded string.
 	 * @squirreljme.syscallreturn An instance of {@link String}.
 	 */
-	public static final byte LOAD_STRING =
+	byte LOAD_STRING =
 		21;
 	
 	/**
@@ -249,7 +249,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The code to use for the To Do.
 	 * @squirreljme.syscallreturn This should not return unless it is not supported.
 	 */
-	public static final byte FATAL_TODO =
+	byte FATAL_TODO =
 		22;
 	
 	/**
@@ -258,7 +258,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn Generally zero as no value is intended to be returned.
 	 */
-	public static final byte SUPERVISOR_BOOT_OKAY =
+	byte SUPERVISOR_BOOT_OKAY =
 		23;
 	
 	/**
@@ -269,7 +269,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam ... Undefined, this depends on the property selected.
 	 * @squirreljme.syscallreturn Whatever value the frame buffer property will return.
 	 */
-	public static final byte FRAMEBUFFER =
+	byte FRAMEBUFFER =
 		24;
 	
 	/**
@@ -278,7 +278,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn Non-zero if little endian, otherwise zero will be big endian.
 	 */
-	public static final byte BYTE_ORDER_LITTLE =
+	byte BYTE_ORDER_LITTLE =
 		25;
 	
 	/**
@@ -288,7 +288,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn A pointer to the data or zero if there is no option JAR defined
 	 * in the requested slot.
 	 */
-	public static final byte OPTION_JAR_DATA =
+	byte OPTION_JAR_DATA =
 		26;
 	
 	/**
@@ -298,7 +298,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The size of the specified option JAR or zero if there is no
 	 * option JAR defined in the requested slot.
 	 */
-	public static final byte OPTION_JAR_SIZE =
+	byte OPTION_JAR_SIZE =
 		27;
 	
 	/**
@@ -307,7 +307,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The Modified UTF specifying the class name.
 	 * @squirreljme.syscallreturn The pointer to the loaded class info, will be zero on failure.
 	 */
-	public static final byte LOAD_CLASS_UTF =
+	byte LOAD_CLASS_UTF =
 		28;
 	
 	/**
@@ -316,7 +316,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 A byte array encoded in UTF-8 which contains the class name.
 	 * @squirreljme.syscallreturn The pointer to the loaded class info, will be zero on failure.
 	 */
-	public static final byte LOAD_CLASS_BYTES =
+	byte LOAD_CLASS_BYTES =
 		29;
 	
 	/**
@@ -330,7 +330,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 2 The new value of the property.
 	 * @squirreljme.syscallreturn A non-zero value if this was successful.
 	 */
-	public static final byte SUPERVISOR_PROPERTY_SET =
+	byte SUPERVISOR_PROPERTY_SET =
 		30;
 	
 	/**
@@ -342,7 +342,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The value of that property, error should be checked to ensure
 	 * that it did not fail.
 	 */
-	public static final byte SUPERVISOR_PROPERTY_GET =
+	byte SUPERVISOR_PROPERTY_GET =
 		31;
 	
 	/**
@@ -353,7 +353,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The task ID to set.
 	 * @squirreljme.syscallreturn A non-zero value if this was successful.
 	 */
-	public static final byte FRAME_TASK_ID_SET =
+	byte FRAME_TASK_ID_SET =
 		32;
 	
 	/**
@@ -361,7 +361,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The value of the task ID.
 	 */
-	public static final byte FRAME_TASK_ID_GET =
+	byte FRAME_TASK_ID_GET =
 		33;
 	
 	/**
@@ -371,7 +371,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 2 The duration of the feedback.
 	 * @squirreljme.syscallreturn Non-zero on success.
 	 */
-	public static final byte DEVICE_FEEDBACK =
+	byte DEVICE_FEEDBACK =
 		34;
 	
 	/**
@@ -381,7 +381,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 2 The number of nanoseconds to sleep for.
 	 * @squirreljme.syscallreturn Returns zero unless sleep was interrupted.
 	 */
-	public static final byte SLEEP =
+	byte SLEEP =
 		35;
 	
 	/**
@@ -389,7 +389,7 @@ public interface SystemCallIndex
 	 * printer to not send messages to the screen as it will corrupt the
 	 * display on the screen.
 	 */
-	public static final byte SQUELCH_FB_CONSOLE =
+	byte SQUELCH_FB_CONSOLE =
 		36;
 	
 	/**
@@ -401,7 +401,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam ... Any arguments to the call.
 	 * @squirreljme.syscallreturn The value returned from the remote call.
 	 */
-	public static final byte IPC_CALL =
+	byte IPC_CALL =
 		37;
 	
 	/**
@@ -410,7 +410,7 @@ public interface SystemCallIndex
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
-	public static final byte NUM_SYSCALLS =
+	byte NUM_SYSCALLS =
 		38;
 }
 

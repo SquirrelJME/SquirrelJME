@@ -63,11 +63,11 @@ public final class ZipBlockEntry
 	
 	/** The offset to the extra data length. */
 	private static final int _CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET =
-		_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET + 2;
+		ZipBlockEntry._CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET + 2;
 	
 	/** The offset to the comment length. */
 	private static final int _CENTRAL_DIRECTORY_COMMENT_LENGTH_OFFSET =
-		_CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET + 2;
+		ZipBlockEntry._CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET + 2;
 	
 	/** The relative offset to the local header. */
 	private static final int _CENTRAL_DIRECTORY_LOCAL_HEADER_OFFSET =
@@ -143,7 +143,7 @@ public final class ZipBlockEntry
 	public boolean isDirectory()
 		throws IOException, ZipException
 	{
-		return __internalToString().endsWith("/");
+		return this.__internalToString().endsWith("/");
 	}
 	
 	/**
@@ -166,7 +166,7 @@ public final class ZipBlockEntry
 	 */
 	public String name()
 	{
-		return toString();
+		return this.toString();
 	}
 	
 	/**
@@ -183,8 +183,8 @@ public final class ZipBlockEntry
 		// {@squirreljme.error BF0a Cannot open the entry because it is a
 		// directory. (The name of the entry)}
 		String s;
-		if (isDirectory())
-			throw new ZipException(String.format("BF0a %s", toString()));
+		if (this.isDirectory())
+			throw new ZipException(String.format("BF0a %s", this.toString()));
 		
 		ZipBlockReader owner = this.owner;
 		BlockAccessor accessor = this.accessor;
@@ -192,64 +192,64 @@ public final class ZipBlockEntry
 		
 		// {@squirreljme.error BF0b Could not read the central
 		// directory data.}
-		byte[] data = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
-		if (_CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
-			data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
+		byte[] data = new byte[ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH];
+		if (ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
+			data, 0, ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH))
 			throw new ZipException("BF0b");
 		
 		// The version needed to extract should not have the upper byte set
 		// but some archive writing software sets the upper byte to match the
 		// OS with the version in the made by bit.
 		int ver = __ArrayData__.readUnsignedShort(
-			_CENTRAL_DIRECTORY_EXTRACT_VERSION_OFFSET, data),
+			ZipBlockEntry._CENTRAL_DIRECTORY_EXTRACT_VERSION_OFFSET, data),
 			made = __ArrayData__.readUnsignedShort(
-			_CENTRAL_DIRECTORY_MADE_BY_VERSION_OFFSET, data);
+				ZipBlockEntry._CENTRAL_DIRECTORY_MADE_BY_VERSION_OFFSET, data);
 		if ((ver & 0xFF00) != 0 && (made & 0xFF00) == (ver & 0xFF00))
 			ver &= 0xFF;
 		
 		// {@squirreljme.error BF0c Cannot open the entry because it uses
 		// too new of a version. (The version number)}
-		if (_MAX_CENTRAL_DIR_VERSION < ver)
+		if (ZipBlockEntry._MAX_CENTRAL_DIR_VERSION < ver)
 			throw new ZipException(String.format("BF0c %d", ver));
 		
 		// Need these later to determine how much data is available and how it
 		// is stored.
 		int method = __ArrayData__.readUnsignedShort(
-				_CENTRAL_DIRECTORY_METHOD_OFFSET, data);
-		int crc = __ArrayData__.readSignedInt(_CENTRAL_DIRECTORY_CRC_OFFSET,
+			ZipBlockEntry._CENTRAL_DIRECTORY_METHOD_OFFSET, data);
+		int crc = __ArrayData__.readSignedInt(
+			ZipBlockEntry._CENTRAL_DIRECTORY_CRC_OFFSET,
 			data);
 		long uncompressed = __ArrayData__.readUnsignedInt(
-				_CENTRAL_DIRECTORY_UNCOMPRESSED_OFFSET, data),
+			ZipBlockEntry._CENTRAL_DIRECTORY_UNCOMPRESSED_OFFSET, data),
 			compressed = __ArrayData__.readUnsignedInt(
-				_CENTRAL_DIRECTORY_COMPRESSED_OFFSET, data);
+				ZipBlockEntry._CENTRAL_DIRECTORY_COMPRESSED_OFFSET, data);
 			
 		// Determine the offset to the local header which precedes the data
 		// of the entry
 		long lhoffset = owner._zipbaseaddr + __ArrayData__.readUnsignedInt(
-			_CENTRAL_DIRECTORY_LOCAL_HEADER_OFFSET, data);
+			ZipBlockEntry._CENTRAL_DIRECTORY_LOCAL_HEADER_OFFSET, data);
 		
 		// {@squirreljme.error BF0d Could not read the local file header from
 		// the ZIP file.}
-		byte[] header = new byte[_LOCAL_HEADER_MIN_LENGTH];
-		if (_LOCAL_HEADER_MIN_LENGTH != accessor.read(lhoffset, header, 0,
-			_LOCAL_HEADER_MIN_LENGTH))
+		byte[] header = new byte[ZipBlockEntry._LOCAL_HEADER_MIN_LENGTH];
+		if (ZipBlockEntry._LOCAL_HEADER_MIN_LENGTH != accessor.read(lhoffset, header, 0,
+			ZipBlockEntry._LOCAL_HEADER_MIN_LENGTH))
 			throw new ZipException("BF0d");
 		
 		// {@squirreljme.error BF0e The magic number for the local file header
 		// is not valid.}
-		if (__ArrayData__.readSignedInt(0, header) !=
-			_LOCAL_HEADER_MAGIC_NUMBER)
+		if (__ArrayData__.readSignedInt(0, header) != ZipBlockEntry._LOCAL_HEADER_MAGIC_NUMBER)
 			throw new ZipException("BF0e");
 		
 		// Need to know the file name and comment lengths, since they may
 		// differ in the local header for some reason
 		int lhfnl = __ArrayData__.readUnsignedShort(
-				_LOCAL_HEADER_NAME_LENGTH_OFFSET, header), 
+			ZipBlockEntry._LOCAL_HEADER_NAME_LENGTH_OFFSET, header),
 			lhcml = __ArrayData__.readUnsignedShort(
-				_LOCAL_HEADER_COMMENT_LENGTH_OFFSET, header);
+				ZipBlockEntry._LOCAL_HEADER_COMMENT_LENGTH_OFFSET, header);
 		
 		// The base address of the data is after the local header position
-		long database = lhoffset + _LOCAL_HEADER_MIN_LENGTH + lhfnl + lhcml;
+		long database = lhoffset + ZipBlockEntry._LOCAL_HEADER_MIN_LENGTH + lhfnl + lhcml;
 		
 		// Get base stream before compression
 		InputStream base = new __BlockAccessorRegionInputStream__(accessor,
@@ -277,7 +277,7 @@ public final class ZipBlockEntry
 	{
 		try
 		{
-			return __internalToString();
+			return this.__internalToString();
 		}
 			
 		// {@squirreljme.error BF0g Could not read the name of the
@@ -310,25 +310,24 @@ public final class ZipBlockEntry
 			
 			// {@squirreljme.error BF0h Could not read the central
 			// directory data.}
-			byte[] data = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
-			if (_CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
-				data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
+			byte[] data = new byte[ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH];
+			if (ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
+				data, 0, ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH))
 				throw new ZipException("BF0h");
 			
 			// Read file name length
 			int fnl = __ArrayData__.readUnsignedShort(
-				_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, data);
+				ZipBlockEntry._CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, data);
 			
 			// {@squirreljme.error BF0i Could not read the file name.}
 			byte[] rawname = new byte[fnl];
 			if (fnl != accessor.read(
-				position + _CENTRAL_DIRECTORY_MIN_LENGTH, rawname, 0, fnl))
+				position + ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH, rawname, 0, fnl))
 				throw new ZipException("BF0i");
 			
 			// UTF-8 Encoded?
 			if ((__ArrayData__.readUnsignedShort(
-				_CENTRAL_DIRECTORY_FLAG_OFFSET, data) &
-				GPF_ENCODING_UTF8) != 0)
+				ZipBlockEntry._CENTRAL_DIRECTORY_FLAG_OFFSET, data) & ZipBlockEntry.GPF_ENCODING_UTF8) != 0)
 				rv = new String(rawname, 0, fnl, "utf-8");
 			
 			// DOS codepage

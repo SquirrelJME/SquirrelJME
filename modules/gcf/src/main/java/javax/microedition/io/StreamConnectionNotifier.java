@@ -15,7 +15,7 @@ import java.io.IOException;
 public interface StreamConnectionNotifier
 	extends Connection
 {
-	public abstract StreamConnection acceptAndOpen()
+	StreamConnection acceptAndOpen()
 		throws IOException;
 }
 

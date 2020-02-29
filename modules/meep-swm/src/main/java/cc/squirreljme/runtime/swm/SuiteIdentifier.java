@@ -111,7 +111,7 @@ public final class SuiteIdentifier
 		if (!(__o instanceof SuiteIdentifier))
 			return false;
 		
-		return 0 == (compareTo((SuiteIdentifier)__o));
+		return 0 == (this.compareTo((SuiteIdentifier)__o));
 	}
 	
 	/**

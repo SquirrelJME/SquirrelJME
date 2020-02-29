@@ -17,13 +17,11 @@ public class PinEvent
 {
 	public PinEvent(GPIOPin __a, boolean __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public PinEvent(GPIOPin __a, boolean __b, long __c, int __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

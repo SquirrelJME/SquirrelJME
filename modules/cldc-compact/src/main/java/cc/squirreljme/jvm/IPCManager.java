@@ -55,7 +55,7 @@ public final class IPCManager
 		IPCCallback handler = null;
 		
 		// Find the IPC Callback handler
-		Map<Integer, IPCCallback> ipcmap = _IPC_MAP;
+		Map<Integer, IPCCallback> ipcmap = IPCManager._IPC_MAP;
 		synchronized (ipcmap)
 		{
 			handler = ipcmap.get(__ipcid);
@@ -150,7 +150,7 @@ public final class IPCManager
 			throw new IllegalArgumentException("ZZ3u");
 		
 		// Lock and register
-		Map<Integer, IPCCallback> ipcmap = _IPC_MAP;
+		Map<Integer, IPCCallback> ipcmap = IPCManager._IPC_MAP;
 		synchronized (ipcmap)
 		{
 			ipcmap.put(__ipcid, __cb);

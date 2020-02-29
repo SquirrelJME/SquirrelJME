@@ -18,115 +18,114 @@ package cc.squirreljme.runtime.lcdui.event;
 public interface NonStandardKey
 {
 	/** Unknown, zero is the invalid index so always make it known. */
-	public static final byte UNKNOWN =
+	byte UNKNOWN =
 		0;
 	
 	/** Game Up. */
-	public static final byte VGAME_UP =
+	byte VGAME_UP =
 		-9;
 	
 	/** Game Down. */
-	public static final byte VGAME_DOWN =
+	byte VGAME_DOWN =
 		-10;
 	
 	/** Game Left. */
-	public static final byte VGAME_LEFT =
+	byte VGAME_LEFT =
 		-11;
 	
 	/** Game Right. */
-	public static final byte VGAME_RIGHT =
+	byte VGAME_RIGHT =
 		-12;
 	
 	/** Game fire. */
-	public static final byte VGAME_FIRE =
+	byte VGAME_FIRE =
 		-13;
 	
 	/** Game A. */
-	public static final byte VGAME_A =
+	byte VGAME_A =
 		-14;
 	
 	/** Game B. */
-	public static final byte VGAME_B =
+	byte VGAME_B =
 		-15;
 	
 	/** Game C. */
-	public static final byte VGAME_C =
+	byte VGAME_C =
 		-16;
 	
 	/** Game D. */
-	public static final byte VGAME_D =
+	byte VGAME_D =
 		-17;
 	
 	/** Shift. */
-	public static final byte SHIFT =
+	byte SHIFT =
 		-18;
 	
 	/** Control. */
-	public static final byte CONTROL =
+	byte CONTROL =
 		-19;
 	
 	/** Alt. */
-	public static final byte ALT =
+	byte ALT =
 		-20;
 	
 	/** Logo. */
-	public static final byte LOGO =
+	byte LOGO =
 		-21;
 	
 	/** Caps lock. */
-	public static final byte CAPSLOCK =
+	byte CAPSLOCK =
 		-22;
 	
 	/** Context menu. */
-	public static final byte CONTEXT_MENU =
+	byte CONTEXT_MENU =
 		-23;
 	
 	/** Home. */
-	public static final byte HOME =
+	byte HOME =
 		-24;
 	
 	/** End. */
-	public static final byte END =
+	byte END =
 		-25;
 	
 	/** Page Up. */
-	public static final byte PAGE_UP =
+	byte PAGE_UP =
 		-26;
 	
 	/** Page Down. */
-	public static final byte PAGE_DOWN =
+	byte PAGE_DOWN =
 		-27;
 	
 	/** Meta. */
-	public static final byte META =
+	byte META =
 		-28;
 	
 	/** Numlock. */
-	public static final byte NUMLOCK =
+	byte NUMLOCK =
 		-29;
 	
 	/** Pause. */
-	public static final byte PAUSE =
+	byte PAUSE =
 		-30;
 	
 	/** Print Screen. */
-	public static final byte PRINTSCREEN =
+	byte PRINTSCREEN =
 		-31;
 	
 	/** Scroll lock. */
-	public static final byte SCROLLLOCK =
+	byte SCROLLLOCK =
 		-32;
 	
 	/** Insert. */
-	public static final byte INSERT =
+	byte INSERT =
 		-33;
 	
 	/** F24. */
-	public static final byte F24 =
+	byte F24 =
 		-34;
 	
 	/** F1. */
-	public static final byte F1 =
-		F24 - 24;
+	byte F1 = NonStandardKey.F24 - 24;
 }
 

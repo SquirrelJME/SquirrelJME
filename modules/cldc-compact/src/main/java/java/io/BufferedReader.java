@@ -82,7 +82,7 @@ public class BufferedReader
 	public BufferedReader(Reader __r)
 		throws NullPointerException
 	{
-		this(__r, _DEFAULT_SIZE);
+		this(__r, BufferedReader._DEFAULT_SIZE);
 	}
 	
 	/**

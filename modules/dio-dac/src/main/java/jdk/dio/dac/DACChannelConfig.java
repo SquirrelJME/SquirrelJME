@@ -21,14 +21,12 @@ public final class DACChannelConfig
 	@Deprecated
 	public DACChannelConfig(int __a, int __b, int __c, int __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public DACChannelConfig(String __a, int __b, int __c, int __d)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -97,7 +95,6 @@ public final class DACChannelConfig
 	{
 		public Builder()
 		{
-			super();
 			throw new todo.TODO();
 		}
 		

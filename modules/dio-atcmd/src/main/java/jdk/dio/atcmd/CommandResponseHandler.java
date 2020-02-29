@@ -13,7 +13,7 @@ package jdk.dio.atcmd;
 
 public interface CommandResponseHandler
 {
-	public abstract String processResponse(ATDevice __a, String __b);
+	String processResponse(ATDevice __a, String __b);
 }
 
 

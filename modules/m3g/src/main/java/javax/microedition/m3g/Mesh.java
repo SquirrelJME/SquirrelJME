@@ -16,13 +16,11 @@ public class Mesh
 {
 	public Mesh(VertexBuffer __a, IndexBuffer[] __b, Appearance[] __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Mesh(VertexBuffer __a, IndexBuffer __b, Appearance __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

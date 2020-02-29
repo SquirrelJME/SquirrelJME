@@ -24,7 +24,6 @@ public final class Files
 {
 	private Files()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

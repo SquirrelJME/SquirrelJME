@@ -115,7 +115,7 @@ public final class SpringThread
 		
 		// {@squirreljme.error BK1j Stack overflow.}
 		List<SpringThread.Frame> frames = this._frames;
-		if (frames.size() >= MAX_STACK_DEPTH)
+		if (frames.size() >= SpringThread.MAX_STACK_DEPTH)
 			throw new SpringVirtualMachineException("BK1j");
 		
 		// Lock on frames as a new one is added

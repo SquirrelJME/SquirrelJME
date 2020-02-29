@@ -18,27 +18,27 @@ import jdk.dio.UnavailableDeviceException;
 public interface WatchdogTimer
 	extends Device<WatchdogTimer>
 {
-	public abstract boolean causedLastReboot()
+	boolean causedLastReboot()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract long getMaxTimeout()
+	long getMaxTimeout()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract long getTimeout()
+	long getTimeout()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void refresh()
+	void refresh()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void start(long __a)
+	void start(long __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void stop()
+	void stop()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

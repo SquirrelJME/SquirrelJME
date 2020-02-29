@@ -21,20 +21,20 @@ public interface SocketAddress
 	 * @since 2019/05/06
 	 */
 	@Override
-	public abstract boolean equals(Object __o);
+	boolean equals(Object __o);
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/06
 	 */
 	@Override
-	public abstract int hashCode();
+	int hashCode();
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/06
 	 */
 	@Override
-	public abstract String toString();
+	String toString();
 }
 

@@ -20,13 +20,11 @@ public final class ATDeviceConfig
 {
 	public ATDeviceConfig(String __a, int __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public ATDeviceConfig(int __a, int __b)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

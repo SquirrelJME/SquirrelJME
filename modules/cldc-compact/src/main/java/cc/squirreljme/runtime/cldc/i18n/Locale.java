@@ -24,7 +24,7 @@ public interface Locale
 	 * @return The lowercased character.
 	 * @since 2018/09/20
 	 */
-	public abstract char toLowerCase(char __c);
+	char toLowerCase(char __c);
 	
 	/**
 	 * Converts the specified character to uppercase.
@@ -33,6 +33,6 @@ public interface Locale
 	 * @return The uppercased character.
 	 * @since 2018/09/28
 	 */
-	public abstract char toUpperCase(char __c);
+	char toUpperCase(char __c);
 }
 

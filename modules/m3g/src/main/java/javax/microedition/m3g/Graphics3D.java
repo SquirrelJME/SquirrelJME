@@ -28,7 +28,6 @@ public class Graphics3D
 	
 	private Graphics3D()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

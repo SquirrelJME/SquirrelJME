@@ -144,7 +144,7 @@ public final class EmulatorAssembly
 	public static EmulatorThreadContext threadContext()
 	{
 		// Has this been created already?
-		EmulatorThreadContext rv = _CONTEXT.get();
+		EmulatorThreadContext rv = EmulatorAssembly._CONTEXT.get();
 		if (rv != null)
 			return rv;
 		
@@ -152,11 +152,11 @@ public final class EmulatorAssembly
 		synchronized (EmulatorAssembly.class)
 		{
 			// Check again
-			rv = _CONTEXT.get();
+			rv = EmulatorAssembly._CONTEXT.get();
 			if (rv != null)
 				return rv;
 			
-			_CONTEXT.set((rv = new EmulatorThreadContext()));
+			EmulatorAssembly._CONTEXT.set((rv = new EmulatorThreadContext()));
 			return rv;
 		}
 	}

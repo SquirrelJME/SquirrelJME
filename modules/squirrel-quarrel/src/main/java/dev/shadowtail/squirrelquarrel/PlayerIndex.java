@@ -100,7 +100,7 @@ public enum PlayerIndex
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	private PlayerIndex(String __name, int __rgb)
+	PlayerIndex(String __name, int __rgb)
 		throws NullPointerException
 	{
 		// Check
@@ -146,12 +146,12 @@ public enum PlayerIndex
 	{
 		switch (__i)
 		{
-			case 0:	return RED;
-			case 1:	return PURPLE;
-			case 2:	return GREEN;
-			case 3:	return BLUE;
-			case 4:	return YELLOW;
-			case 5:	return GRAY;
+			case 0:	return PlayerIndex.RED;
+			case 1:	return PlayerIndex.PURPLE;
+			case 2:	return PlayerIndex.GREEN;
+			case 3:	return PlayerIndex.BLUE;
+			case 4:	return PlayerIndex.YELLOW;
+			case 5:	return PlayerIndex.GRAY;
 			
 				// {@squirreljme.error BE0u Invalid player index.}
 			default:

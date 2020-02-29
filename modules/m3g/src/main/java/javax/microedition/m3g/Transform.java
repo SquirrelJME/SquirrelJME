@@ -15,13 +15,11 @@ public class Transform
 {
 	public Transform()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public Transform(Transform __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

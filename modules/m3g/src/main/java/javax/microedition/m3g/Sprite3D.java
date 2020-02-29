@@ -16,7 +16,6 @@ public class Sprite3D
 {
 	public Sprite3D(boolean __a, Image2D __b, Appearance __c)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

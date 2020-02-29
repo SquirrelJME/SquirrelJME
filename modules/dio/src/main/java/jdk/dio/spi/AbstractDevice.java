@@ -21,7 +21,6 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 {
 	public AbstractDevice()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	

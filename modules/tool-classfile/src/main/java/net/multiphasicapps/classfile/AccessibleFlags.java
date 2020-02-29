@@ -24,7 +24,7 @@ public interface AccessibleFlags
 	 * @return {@code true} if package private.
 	 * @since 2016/05/12
 	 */
-	public abstract boolean isPackagePrivate();
+	boolean isPackagePrivate();
 	
 	/**
 	 * Is the current accessible object private?
@@ -32,7 +32,7 @@ public interface AccessibleFlags
 	 * @return {@code true} if private.
 	 * @since 2016/05/12
 	 */
-	public abstract boolean isPrivate();
+	boolean isPrivate();
 	
 	/**
 	 * Is the current accessible object protected?
@@ -40,7 +40,7 @@ public interface AccessibleFlags
 	 * @return {@code true} if protected.
 	 * @since 2016/05/12
 	 */
-	public abstract boolean isProtected();
+	boolean isProtected();
 	
 	/**
 	 * Is the current accessible object public?
@@ -48,6 +48,6 @@ public interface AccessibleFlags
 	 * @return {@code true} if public.
 	 * @since 2016/05/12
 	 */
-	public abstract boolean isPublic();
+	boolean isPublic();
 }
 

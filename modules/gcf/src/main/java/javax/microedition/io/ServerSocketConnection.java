@@ -15,13 +15,13 @@ import java.io.IOException;
 public interface ServerSocketConnection
 	extends StreamConnectionNotifier
 {
-	public abstract AccessPoint[] getAccessPoints()
+	AccessPoint[] getAccessPoints()
 		throws IOException;
 	
-	public abstract String getLocalAddress()
+	String getLocalAddress()
 		throws IOException;
 	
-	public abstract int getLocalPort()
+	int getLocalPort()
 		throws IOException;
 }
 

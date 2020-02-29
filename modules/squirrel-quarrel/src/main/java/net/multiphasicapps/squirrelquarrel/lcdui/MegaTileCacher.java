@@ -70,7 +70,7 @@ public class MegaTileCacher
 	 */
 	public Image cacheMegaTile(int __x, int __y)
 	{
-		return cacheMegaTile(this.world.megaTile(__x, __y));
+		return this.cacheMegaTile(this.world.megaTile(__x, __y));
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class MegaTileCacher
 					if (type != oldtype)
 					{
 						oldtype = type;
-						tilepic = __cacheTile(type);
+						tilepic = MegaTileCacher.__cacheTile(type);
 					}
 					
 					// Draw it
@@ -149,14 +149,14 @@ public class MegaTileCacher
 			throw new NullPointerException("NARG");
 		
 		// Get ref
-		Reference<Image> ref = _TILE_CACHE.get(__t);
+		Reference<Image> ref = MegaTileCacher._TILE_CACHE.get(__t);
 		Image rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			try
 			{
-				_TILE_CACHE.put(__t, new WeakReference<>(
+				MegaTileCacher._TILE_CACHE.put(__t, new WeakReference<>(
 					(rv = new XPMReader(__t.imageStream()).parse())));
 			}
 			

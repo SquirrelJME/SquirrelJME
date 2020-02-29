@@ -49,7 +49,7 @@ public final class UnmodifiableMap<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Set
-		wrapped = __w;
+		this.wrapped = __w;
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public final class UnmodifiableMap<K, V>
 	@Override
 	public boolean containsKey(Object __o)
 	{
-		return wrapped.containsKey(__o);
+		return this.wrapped.containsKey(__o);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public final class UnmodifiableMap<K, V>
 	@Override
 	public boolean containsValue(Object __o)
 	{
-		return wrapped.containsValue(__o);
+		return this.wrapped.containsValue(__o);
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public final class UnmodifiableMap<K, V>
 	public Set<Map.Entry<K, V>> entrySet()
 	{
 		// Get reference to the map
-		Reference<Set<Map.Entry<K, V>>> ref = _escache;
+		Reference<Set<Map.Entry<K, V>>> ref = this._escache;
 		Set<Map.Entry<K, V>> rv = null;
 		
 		// In reference?
@@ -89,7 +89,7 @@ public final class UnmodifiableMap<K, V>
 		
 		// Needs initialization?
 		if (rv == null)
-			_escache = new WeakReference<>((rv = new __SetView__()));
+			this._escache = new WeakReference<>((rv = new __SetView__()));
 		
 		// Return it
 		return rv;
@@ -102,7 +102,7 @@ public final class UnmodifiableMap<K, V>
 	@Override
 	public V get(Object __k)
 	{
-		return wrapped.get(__k);
+		return this.wrapped.get(__k);
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public final class UnmodifiableMap<K, V>
 	@Override
 	public boolean isEmpty()
 	{
-		return wrapped.isEmpty();
+		return this.wrapped.isEmpty();
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public final class UnmodifiableMap<K, V>
 	@Override
 	public int size()
 	{
-		return wrapped.size();
+		return this.wrapped.size();
 	}
 	
 	/**
@@ -154,25 +154,16 @@ public final class UnmodifiableMap<K, V>
 	{
 		/** The base iterator. */
 		protected final Iterator<Map.Entry<K, V>> from =
-			wrapped.entrySet().iterator();
+			UnmodifiableMap.this.wrapped.entrySet().iterator();
 		
 		/**
-		 * Initializes the iterator.
-		 *
-		 * @since 2016/02/29
-		 */
-		private __SetIterator__()
-		{
-		}
-	
-		/**	
 		 * {@inheritDoc}
 		 * @since 2016/02/29
 		 */
 		@Override
 		public boolean hasNext()
 		{
-			return from.hasNext();
+			return this.from.hasNext();
 		}
 	
 		/**	
@@ -183,7 +174,7 @@ public final class UnmodifiableMap<K, V>
 		public Map.Entry<K, V> next()
 		{
 			// Get the next entry
-			Map.Entry<K, V> ent = from.next();
+			Map.Entry<K, V> ent = this.from.next();
 			
 			// If null, this is a bad map but possibly might be valid
 			if (ent == null)
@@ -212,15 +203,7 @@ public final class UnmodifiableMap<K, V>
 	private final class __SetView__
 		extends AbstractSet<Map.Entry<K, V>>
 	{
-		/**
-		 * Initializes the set view.
-		 *
-		 * @since 2016/02/29
-		 */
-		private __SetView__()
-		{
-		}
-	
+		
 		/**	
 		 * {@inheritDoc}
 		 * @since 2016/02/29
@@ -238,7 +221,7 @@ public final class UnmodifiableMap<K, V>
 		@Override
 		public int size()
 		{
-			return wrapped.size();
+			return UnmodifiableMap.this.wrapped.size();
 		}
 	}
 	
@@ -270,7 +253,7 @@ public final class UnmodifiableMap<K, V>
 				throw new NullPointerException("NARG");
 			
 			// Set
-			base = __e;
+			this.base = __e;
 		}
 		
 		/**
@@ -280,7 +263,7 @@ public final class UnmodifiableMap<K, V>
 		@Override
 		public boolean equals(Object __a)
 		{
-			return base.equals(__a);
+			return this.base.equals(__a);
 		}
 		
 		/**
@@ -290,7 +273,7 @@ public final class UnmodifiableMap<K, V>
 		@Override
 		public K getKey()
 		{
-			return base.getKey();
+			return this.base.getKey();
 		}
 		
 		/**
@@ -300,7 +283,7 @@ public final class UnmodifiableMap<K, V>
 		@Override
 		public V getValue()
 		{
-			return base.getValue();
+			return this.base.getValue();
 		}
 		
 		/**
@@ -310,7 +293,7 @@ public final class UnmodifiableMap<K, V>
 		@Override
 		public int hashCode()
 		{
-			return base.hashCode();
+			return this.base.hashCode();
 		}
 		
 		/**

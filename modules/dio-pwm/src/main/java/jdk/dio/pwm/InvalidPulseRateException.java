@@ -16,13 +16,11 @@ public class InvalidPulseRateException
 {
 	public InvalidPulseRateException()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
 	public InvalidPulseRateException(String __a)
 	{
-		super();
 		throw new todo.TODO();
 	}
 }

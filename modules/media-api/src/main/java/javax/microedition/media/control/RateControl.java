@@ -15,13 +15,13 @@ import javax.microedition.media.Control;
 public interface RateControl
 	extends Control
 {
-	public abstract int getMaxRate();
+	int getMaxRate();
 	
-	public abstract int getMinRate();
+	int getMinRate();
 	
-	public abstract int getRate();
+	int getRate();
 	
-	public abstract int setRate(int __a);
+	int setRate(int __a);
 }
 
 

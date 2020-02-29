@@ -79,7 +79,7 @@ public final class ErrorListManager
 		Map<Integer, SourceError> errors = this._errors;
 		synchronized (this)
 		{
-			for (int i = 0; i <=_MAX_ERROR_CODE; i++)
+			for (int i = 0; i <= ErrorListManager._MAX_ERROR_CODE; i++)
 				if (!errors.containsKey(i))
 					return i;
 			
@@ -173,12 +173,12 @@ public final class ErrorListManager
 						
 						// Find error tag, stop if not found or it is after
 						// the closing brace
-						int tndx = buffer.indexOf(_ERROR_TAG, i);
+						int tndx = buffer.indexOf(ErrorListManager._ERROR_TAG, i);
 						if (tndx < 0 || tndx > clbr)
 							break;
 						
 						// Skip to the end of the tag
-						i = tndx + _ERROR_TAG.length();
+						i = tndx + ErrorListManager._ERROR_TAG.length();
 						
 						// Decode the tag contents
 						String content = buffer.substring(i, clbr).trim();
@@ -259,7 +259,7 @@ public final class ErrorListManager
 			Character.MAX_RADIX) +
 			Character.digit(__string.charAt(1), Character.MAX_RADIX);
 		
-		if (rv < 0 || rv > _MAX_ERROR_CODE)
+		if (rv < 0 || rv > ErrorListManager._MAX_ERROR_CODE)
 			throw new IllegalArgumentException("Out of range index.");
 		
 		return rv;

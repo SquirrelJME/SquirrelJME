@@ -163,7 +163,7 @@ public abstract class Compiler
 		}
 		
 		// Setup the compilation thread
-		return newCompilerRunnable(__o, rvwriter, rvoptions, rvpathsets,
+		return this.newCompilerRunnable(__o, rvwriter, rvoptions, rvpathsets,
 			rvinput);
 	}
 	

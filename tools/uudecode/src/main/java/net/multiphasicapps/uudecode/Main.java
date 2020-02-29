@@ -51,7 +51,7 @@ public class Main
 		// No arguments passed?
 		if (args.isEmpty())
 		{
-			__printHelp();
+			Main.__printHelp();
 			System.exit(-1);
 		}
 		
@@ -96,7 +96,7 @@ __outer:
 		while (!args.isEmpty())
 			try (Reader file = new InputStreamReader(Files.newInputStream(
 				Paths.get(args.pollFirst()), StandardOpenOption.READ));
-				InputStream in = __wrap(file, ignorepadding, rawdata))
+				InputStream in = Main.__wrap(file, ignorepadding, rawdata))
 			{
 				byte[] buf = new byte[512];
 				for (;;)

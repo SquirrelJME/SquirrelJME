@@ -17,10 +17,9 @@ import jdk.dio.RoundCompletionEvent;
 public interface GenerationRoundListener
 	extends OutputRoundListener<DACChannel, IntBuffer>
 {
-	public abstract void failed(Throwable __a, DACChannel __b);
+	void failed(Throwable __a, DACChannel __b);
 	
-	public abstract void outputRoundCompleted(RoundCompletionEvent<DACChannel
-		, IntBuffer> __a);
+	void outputRoundCompleted(RoundCompletionEvent<DACChannel, IntBuffer> __a);
 }
 
 

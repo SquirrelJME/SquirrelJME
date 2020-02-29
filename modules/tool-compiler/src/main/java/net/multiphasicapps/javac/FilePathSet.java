@@ -135,7 +135,7 @@ public final class FilePathSet
 					
 					// Add files to input
 					rv.add(new FileInput(p,
-						FilePathSet.__pathToName(root, p)));
+						FilePathSet.__pathToName(this.root, p)));
 				}
 			}
 			

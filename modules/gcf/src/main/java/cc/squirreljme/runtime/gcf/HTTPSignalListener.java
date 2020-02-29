@@ -27,7 +27,7 @@ public interface HTTPSignalListener
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
-	public abstract void requestReady(byte[] __data)
+	void requestReady(byte[] __data)
 		throws IOException, NullPointerException;
 }
 

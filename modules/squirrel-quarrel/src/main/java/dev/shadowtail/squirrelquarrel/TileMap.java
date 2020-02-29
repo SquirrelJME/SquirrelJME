@@ -137,7 +137,8 @@ public final class TileMap
 	public static Image imageBackground(byte __b)
 	{
 		// Read cached image
-		return TileMap.cacheImage(_CACHE_BACKGROUND, __b & TILE_BACKGOUND_MASK,
+		return TileMap.cacheImage(
+			TileMap._CACHE_BACKGROUND, __b & TileMap.TILE_BACKGOUND_MASK,
 			"tile");
 	}
 }

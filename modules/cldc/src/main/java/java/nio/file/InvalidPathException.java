@@ -19,13 +19,13 @@ public class InvalidPathException
 	extends IllegalArgumentException
 {
 	/** The input. */
-	private transient final String _input;
+	private final transient String _input;
 	
 	/** The reason. */
-	private transient final String _reason;
+	private final transient String _reason;
 	
 	/** The index. */
-	private transient final int _index;
+	private final transient int _index;
 	
 	/**
 	 * Initializes the exception.

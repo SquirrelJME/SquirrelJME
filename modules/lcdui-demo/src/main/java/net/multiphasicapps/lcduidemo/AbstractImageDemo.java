@@ -98,7 +98,7 @@ public abstract class AbstractImageDemo
 	 *
 	 * @since 2019/04/15
 	 */
-	static public final class DemoCanvas
+	public static final class DemoCanvas
 		extends Canvas
 	{
 		/** The image to draw. */
@@ -149,14 +149,16 @@ public abstract class AbstractImageDemo
 					sh = h - yoff;
 				
 				// Non-mirrored rotations
-				for (int j = 0; j < _NO_MIRROR.length; j++)
-					__g.drawRegion(image, sx, sy, sw, sh, _NO_MIRROR[j],
+				for (int j = 0; j < AbstractImageDemo._NO_MIRROR.length; j++)
+					__g.drawRegion(image, sx, sy, sw, sh,
+						AbstractImageDemo._NO_MIRROR[j],
 						(w * j), basey, 0);
 				basey += h;
 					
 				// Mirrored rotations
-				for (int j = 0; j < _MIRROR.length; j++)
-					__g.drawRegion(image, sx, sy, sw, sh, _MIRROR[j],
+				for (int j = 0; j < AbstractImageDemo._MIRROR.length; j++)
+					__g.drawRegion(image, sx, sy, sw, sh,
+						AbstractImageDemo._MIRROR[j],
 						(w * j), basey, 0);
 				basey += h;
 			}

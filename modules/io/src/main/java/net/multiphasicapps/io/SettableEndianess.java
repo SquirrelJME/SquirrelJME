@@ -27,7 +27,7 @@ public interface SettableEndianess
 	 * @throws NullPointerException If no endianess was specified.
 	 * @since 2016/07/10
 	 */
-	public abstract DataEndianess setEndianess(DataEndianess __end)
+	DataEndianess setEndianess(DataEndianess __end)
 		throws NullPointerException;
 }
 

@@ -15,7 +15,7 @@ import java.io.IOException;
 public interface SecureDatagramConnection
 	extends UDPDatagramConnection
 {
-	public abstract SecurityInfo getSecurityInfo()
+	SecurityInfo getSecurityInfo()
 		throws IOException;
 }
 

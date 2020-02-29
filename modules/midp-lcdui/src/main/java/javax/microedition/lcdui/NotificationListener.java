@@ -12,10 +12,10 @@ package javax.microedition.lcdui;
 
 public interface NotificationListener
 {
-	public abstract void notificationDismissed(Notification __n);
+	void notificationDismissed(Notification __n);
 	
-	public abstract void notificationSelected(Notification __n);
+	void notificationSelected(Notification __n);
 	
-	public abstract void notificationTimeout(Notification __n);
+	void notificationTimeout(Notification __n);
 }
 

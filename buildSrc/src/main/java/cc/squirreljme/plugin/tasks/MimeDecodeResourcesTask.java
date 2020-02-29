@@ -74,7 +74,7 @@ public class MimeDecodeResourcesTask
 		__processTask.eachFile((FileCopyDetails __fcd) ->
 			{
 				// Exclude all MIME files from this task
-				if (__isMimeFile(__fcd.getFile().toPath()))
+				if (MimeDecodeResourcesTask.__isMimeFile(__fcd.getFile().toPath()))
 					__fcd.exclude();
 			});
 	}
@@ -139,7 +139,7 @@ public class MimeDecodeResourcesTask
 	{
 		// We might need to set an output potentially
 		Project project = this.getProject();
-		SourceSetOutput outSet = getProject().getConvention().
+		SourceSetOutput outSet = this.getProject().getConvention().
 			getPlugin(JavaPluginConvention.class).
 			getSourceSets().getByName(this.sourceSet).getOutput();
 		
@@ -174,7 +174,7 @@ public class MimeDecodeResourcesTask
 	 */
 	private boolean __processTaskFilter(File __file)
 	{
-		return __isMimeFile(__file.toPath());
+		return MimeDecodeResourcesTask.__isMimeFile(__file.toPath());
 	}
 	
 	/**
@@ -201,7 +201,7 @@ public class MimeDecodeResourcesTask
 				Path path = file.toPath();
 				
 				// Only consider MIME files
-				if (!__isMimeFile(path))
+				if (!MimeDecodeResourcesTask.__isMimeFile(path))
 					continue;
 				
 				result.add(new __Input__(path, baseDir.relativize(path)));
@@ -243,7 +243,7 @@ public class MimeDecodeResourcesTask
 		Collection<__Output__> result = new LinkedList<>();
 		for (__Input__ input : this.__taskInputs())
 			result.add(new __Output__(input, outDir.resolve(
-				__removeMimeExtension(input.relative))));
+				MimeDecodeResourcesTask.__removeMimeExtension(input.relative))));
 		
 		return result;
 	}
@@ -277,7 +277,8 @@ public class MimeDecodeResourcesTask
 		if (__path == null)
 			throw new NullPointerException("No path specified.");
 		
-		return __path.getFileName().toString().endsWith(EXTENSION);
+		return __path.getFileName().toString().endsWith(
+			MimeDecodeResourcesTask.EXTENSION);
 	}
 	
 	/**
@@ -298,11 +299,12 @@ public class MimeDecodeResourcesTask
 		
 		// Must be a MIME file
 		String fileName = __fn.getFileName().toString();
-		if (!fileName.endsWith(EXTENSION))
+		if (!fileName.endsWith(MimeDecodeResourcesTask.EXTENSION))
 			throw new IllegalArgumentException("File does not end in MIME.");
 		
 		// The output will be a sibling of the path
 		return __fn.resolveSibling(
-			fileName.substring(0, fileName.length() - EXTENSION.length()));
+			fileName.substring(0, fileName.length() - MimeDecodeResourcesTask.EXTENSION
+				.length()));
 	}
 }

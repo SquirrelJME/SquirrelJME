@@ -193,21 +193,21 @@ public enum DrawingItemMethod
 		throws NullPointerException
 	{
 		if (ChoiceGroup.class.isAssignableFrom(__cl))
-			return CHOICE_GROUP;
+			return DrawingItemMethod.CHOICE_GROUP;
 		else if (CustomItem.class.isAssignableFrom(__cl))
-			return CUSTOM_ITEM;
+			return DrawingItemMethod.CUSTOM_ITEM;
 		else if (DateField.class.isAssignableFrom(__cl))
-			return DATE_FIELD;
+			return DrawingItemMethod.DATE_FIELD;
 		else if (Gauge.class.isAssignableFrom(__cl))
-			return GAUGE;
+			return DrawingItemMethod.GAUGE;
 		else if (ImageItem.class.isAssignableFrom(__cl))
-			return IMAGE_ITEM;
+			return DrawingItemMethod.IMAGE_ITEM;
 		else if (Spacer.class.isAssignableFrom(__cl))
-			return SPACER;
+			return DrawingItemMethod.SPACER;
 		else if (StringItem.class.isAssignableFrom(__cl))
-			return STRING_ITEM;
+			return DrawingItemMethod.STRING_ITEM;
 		else if (TextField.class.isAssignableFrom(__cl))
-			return TEXT_FIELD;
+			return DrawingItemMethod.TEXT_FIELD;
 		
 		// {@squirreljme.error EB39 Could not get the item drawing method of
 		// the given class. (The class)}

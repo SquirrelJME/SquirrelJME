@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.util.Set;
 
 public abstract class FileChannel
-	extends Object
 	implements SeekableByteChannel
 {
 	protected FileChannel()

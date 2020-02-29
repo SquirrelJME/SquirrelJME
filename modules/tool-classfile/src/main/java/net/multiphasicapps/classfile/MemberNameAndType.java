@@ -23,7 +23,7 @@ public interface MemberNameAndType
 	 * @return The member name.
 	 * @since 2018/09/09
 	 */
-	public abstract MemberName name();
+	MemberName name();
 	
 	/**
 	 * Returns the type of the member.
@@ -31,6 +31,6 @@ public interface MemberNameAndType
 	 * @return The member type.
 	 * @since 2018/09/09
 	 */
-	public abstract MemberDescriptor type();
+	MemberDescriptor type();
 }
 

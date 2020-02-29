@@ -23,27 +23,27 @@ package javax.microedition.lcdui;
 public interface KeyListener
 {
 	/** The chr alt modifier. */
-	public static final int MODIFIER_ALT =
+	int MODIFIER_ALT =
 		65536;
 
 	/** The chr key modifier. */
-	public static final int MODIFIER_CHR =
+	int MODIFIER_CHR =
 		8388608;
 
 	/** The command key modifier. */
-	public static final int MODIFIER_COMMAND =
+	int MODIFIER_COMMAND =
 		4194304;
 
 	/** The ctrl key modifier. */
-	public static final int MODIFIER_CTRL =
+	int MODIFIER_CTRL =
 		262144;
 
 	/** The mask for modifiers. */
-	public static final int MODIFIER_MASK =
+	int MODIFIER_MASK =
 		13041664;
 
 	/** The shift key modifier. */
-	public static final int MODIFIER_SHIFT =
+	int MODIFIER_SHIFT =
 		131072;
 	
 	/**
@@ -53,7 +53,7 @@ public interface KeyListener
 	 * @param __km The modifiers to the key.
 	 * @since 2017/02/12
 	 */
-	public abstract void keyPressed(int __kc, int __km);
+	void keyPressed(int __kc, int __km);
 	
 	/**
 	 * Called when a key is released.
@@ -62,7 +62,7 @@ public interface KeyListener
 	 * @param __km The modifiers to the key.
 	 * @since 2017/02/12
 	 */
-	public abstract void keyReleased(int __kc, int __km);
+	void keyReleased(int __kc, int __km);
 	
 	/**
 	 * Called when a key is repeated.
@@ -71,6 +71,6 @@ public interface KeyListener
 	 * @param __km The modifiers to the key.
 	 * @since 2017/02/12
 	 */
-	public abstract void keyRepeated(int __kc, int __km);
+	void keyRepeated(int __kc, int __km);
 }
 

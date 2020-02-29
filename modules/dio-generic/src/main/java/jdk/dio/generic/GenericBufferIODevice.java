@@ -21,15 +21,15 @@ import jdk.dio.UnsupportedByteOrderException;
 public interface GenericBufferIODevice
 	extends GenericDevice, ByteChannel, BufferAccess<ByteBuffer>
 {
-	public abstract int read(ByteBuffer __a)
+	int read(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int read(int __a, ByteBuffer __b)
+	int read(int __a, ByteBuffer __b)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
-	public abstract int write(ByteBuffer __a)
+	int write(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 }

@@ -33,7 +33,7 @@ public class StringItem
 	 */
 	public StringItem(String __l, String __t)
 	{
-		this(__l, __t, PLAIN);
+		this(__l, __t, Item.PLAIN);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class StringItem
 		
 		// {@squirreljme.error EB2o The appearance mode is not valid.
 		// (The appearance mode)}
-		if (__am != PLAIN && __am != BUTTON && __am != HYPERLINK)
+		if (__am != Item.PLAIN && __am != Item.BUTTON && __am != Item.HYPERLINK)
 			throw new IllegalArgumentException("EB2o " + __am);
 		
 		this._text = __t;

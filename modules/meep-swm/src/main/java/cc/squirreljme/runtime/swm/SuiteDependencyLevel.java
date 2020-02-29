@@ -34,7 +34,7 @@ public enum SuiteDependencyLevel
 	 */
 	public boolean isOptional()
 	{
-		return this == OPTIONAL;
+		return this == SuiteDependencyLevel.OPTIONAL;
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public enum SuiteDependencyLevel
 	 */
 	public boolean isRequired()
 	{
-		return this == REQUIRED;
+		return this == SuiteDependencyLevel.REQUIRED;
 	}
 	
 	/**
@@ -84,8 +84,8 @@ public enum SuiteDependencyLevel
 		// Depends
 		switch (__s.trim())
 		{
-			case "required":	return REQUIRED;
-			case "optional":	return OPTIONAL;
+			case "required":	return SuiteDependencyLevel.REQUIRED;
+			case "optional":	return SuiteDependencyLevel.OPTIONAL;
 			
 				// {@squirreljme.error DG82 Invalid dependency level. (Level)}
 			default:

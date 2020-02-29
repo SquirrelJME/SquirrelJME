@@ -37,7 +37,7 @@ public final class ClassIdentifier
 	@Override
 	public int compareTo(ClassIdentifier __o)
 	{
-		return toString().compareTo(__o.toString());
+		return this.toString().compareTo(__o.toString());
 	}
 	
 	/**

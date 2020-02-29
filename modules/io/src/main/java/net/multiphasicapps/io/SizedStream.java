@@ -24,6 +24,6 @@ public interface SizedStream
 	 * @return The number of read or written bytes.
 	 * @since 2016/07/10
 	 */
-	public abstract long size();
+	long size();
 }
 

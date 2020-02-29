@@ -18,35 +18,35 @@ package cc.squirreljme.runtime.cldc.lang;
 public interface ClassFlag
 {
 	/** Public. */
-	public static final int PUBLIC =
+	int PUBLIC =
 		0x0001;
 	
 	/** Final. */
-	public static final int FINAL =
+	int FINAL =
 		0x0010;
 	
 	/** Super. */
-	public static final int SUPER =
+	int SUPER =
 		0x0020;
 	
 	/** Interface. */
-	public static final int INTERFACE =
+	int INTERFACE =
 		0x0200;
 	
 	/** Abstract. */
-	public static final int ABSTRACT =
+	int ABSTRACT =
 		0x0400;
 	
 	/** Synthetic. */
-	public static final int SYNTHETIC =
+	int SYNTHETIC =
 		0x1000;
 	
 	/** Annotation. */
-	public static final int ANNOTATION =
+	int ANNOTATION =
 		0x2000;
 	
 	/** Enum. */
-	public static final int ENUM =
+	int ENUM =
 		0x4000;
 }
 

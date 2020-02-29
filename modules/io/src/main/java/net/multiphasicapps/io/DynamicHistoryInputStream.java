@@ -164,7 +164,7 @@ public class DynamicHistoryInputStream
 			throw new IOException("BD0p");
 		
 		// Grab bytes, stop if none are available
-		int avail = grab(__a + 1);
+		int avail = this.grab(__a + 1);
 		if (avail < __a)
 			return -1;
 		
@@ -231,7 +231,7 @@ public class DynamicHistoryInputStream
 			throw new IOException("BD0r");
 		
 		// Grab bytes, stop if none are available
-		int avail = grab(__a + __l);
+		int avail = this.grab(__a + __l);
 		if (avail < __a)
 			return -1;
 		
@@ -259,7 +259,7 @@ public class DynamicHistoryInputStream
 			throw new IOException("BD0s");
 		
 		// Grab a single byte
-		int gc = grab(1);
+		int gc = this.grab(1);
 		
 		// Nothing left
 		if (gc <= 0)
@@ -293,7 +293,7 @@ public class DynamicHistoryInputStream
 			throw new IOException("BI08");
 		
 		// Grab multiple bytes
-		int gc = grab(__l);
+		int gc = this.grab(__l);
 		
 		// Nothing left?
 		if (gc <= 0)

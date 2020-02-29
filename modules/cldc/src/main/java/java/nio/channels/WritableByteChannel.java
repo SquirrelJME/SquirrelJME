@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 public interface WritableByteChannel
 	extends Channel
 {
-	public abstract int write(ByteBuffer __a)
+	int write(ByteBuffer __a)
 		throws IOException;
 }
 

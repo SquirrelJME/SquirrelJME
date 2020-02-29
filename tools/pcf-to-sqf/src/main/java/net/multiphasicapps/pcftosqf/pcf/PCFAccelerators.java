@@ -213,7 +213,7 @@ public final class PCFAccelerators
 		// These are optional only if the given format is used
 		PCFMetric inkminbounds = null,
 			inkmaxbounds = null;
-		if ((format & _PCF_ACCEL_W_INKBOUNDS) != 0)
+		if ((format & PCFAccelerators._PCF_ACCEL_W_INKBOUNDS) != 0)
 		{
 			inkminbounds = PCFMetric.readUncompressed(__dis);
 			inkmaxbounds = PCFMetric.readUncompressed(__dis);

@@ -157,9 +157,9 @@ public final class BootRom
 			
 			// Get offset to the table and its length
 			int icpoff = __rombase + Assembly.memReadJavaInt(__rombase,
-					ROM_BOOTICPOFFSET_OFFSET),
+				BootRom.ROM_BOOTICPOFFSET_OFFSET),
 				icpsize = Assembly.memReadJavaInt(__rombase,
-					ROM_BOOTICPSIZE_OFFSET);
+					BootRom.ROM_BOOTICPSIZE_OFFSET);
 			
 			// Read all of them
 			usecp = new ClassLibrary[icpsize];
@@ -189,7 +189,7 @@ public final class BootRom
 			return (rv > 0);
 		
 		return Assembly.memReadJavaInt(
-			__rombase, ROM_BOOTMAINMIDLET_OFFSET) > 0;
+			__rombase, BootRom.ROM_BOOTMAINMIDLET_OFFSET) > 0;
 	}
 	
 	/**
@@ -210,7 +210,8 @@ public final class BootRom
 		
 		// Otherwise read it from the boot ROM
 		return JVMFunction.jvmLoadString(__rombase +
-			Assembly.memReadJavaInt(__rombase, ROM_BOOTMAINCLASS_OFFSET));
+			Assembly.memReadJavaInt(__rombase,
+				BootRom.ROM_BOOTMAINCLASS_OFFSET));
 	}
 	
 	/**
@@ -223,15 +224,17 @@ public final class BootRom
 	public static final BootRomLibrary[] bootLibraries(int __rombase)
 	{
 		// Already exists?
-		BootRomLibrary[] bootlibs = BOOT_LIBRARIES;
+		BootRomLibrary[] bootlibs = BootRom.BOOT_LIBRARIES;
 		if (bootlibs != null)
 			return bootlibs;
 		
 		// Number of JARs in the ROM
-		int numjars = Assembly.memReadJavaInt(__rombase, ROM_NUMJARS_OFFSET);
+		int numjars = Assembly.memReadJavaInt(__rombase,
+			BootRom.ROM_NUMJARS_OFFSET);
 		
 		// Offset to table of contents
-		int tocoff = Assembly.memReadJavaInt(__rombase, ROM_TOCOFFSET_OFFSET);
+		int tocoff = Assembly.memReadJavaInt(__rombase,
+			BootRom.ROM_TOCOFFSET_OFFSET);
 		
 		// Debug
 		todo.DEBUG.note("Scanning %d libraries...", numjars);
@@ -243,11 +246,13 @@ public final class BootRom
 		// is then used when we initialize classes
 		BootRomPoolInfo brpi = new BootRomPoolInfo(
 			__rombase + Assembly.memReadJavaInt(__rombase,
-				ROM_STATICPOOLOFF_OFFSET),
-			Assembly.memReadJavaInt(__rombase, ROM_STATICPOOLSIZE_OFFSET),
+				BootRom.ROM_STATICPOOLOFF_OFFSET),
+			Assembly.memReadJavaInt(__rombase,
+				BootRom.ROM_STATICPOOLSIZE_OFFSET),
 			__rombase + Assembly.memReadJavaInt(__rombase,
-				ROM_RUNTIMEPOOLOFF_OFFSET),
-			Assembly.memReadJavaInt(__rombase, ROM_RUNTIMEPOOLSIZE_OFFSET));
+				BootRom.ROM_RUNTIMEPOOLOFF_OFFSET),
+			Assembly.memReadJavaInt(__rombase,
+				BootRom.ROM_RUNTIMEPOOLSIZE_OFFSET));
 		
 		// Load all the JAR informations
 		bootlibs = new BootRomLibrary[numjars];
@@ -255,26 +260,29 @@ public final class BootRom
 		{
 			// Manifest address is optional
 			int ma = Assembly.memReadJavaInt(seeker,
-				TOC_MANIFEST_LENGTH_OFFSET);
+				BootRom.TOC_MANIFEST_LENGTH_OFFSET);
 			
 			// Load library info
 			BootRomLibrary bl = new BootRomLibrary(JVMFunction.jvmLoadString(
-				__rombase + Assembly.memReadJavaInt(seeker, TOC_NAME_OFFSET)),
-				__rombase + Assembly.memReadJavaInt(seeker, TOC_JAR_OFFSET),
-				Assembly.memReadJavaInt(seeker, TOC_JARLEN_OFFSET),
+				__rombase + Assembly.memReadJavaInt(seeker,
+					BootRom.TOC_NAME_OFFSET)),
+				__rombase + Assembly.memReadJavaInt(seeker,
+					BootRom.TOC_JAR_OFFSET),
+				Assembly.memReadJavaInt(seeker, BootRom.TOC_JARLEN_OFFSET),
 				(ma == 0 ? 0 : __rombase + ma),
-				Assembly.memReadJavaInt(seeker, TOC_MANIFEST_LENGTH_OFFSET),
+				Assembly.memReadJavaInt(seeker,
+					BootRom.TOC_MANIFEST_LENGTH_OFFSET),
 				brpi);
 			
 			// Store it
 			bootlibs[i] = bl;
 			
 			// Go to the next entry
-			seeker += TOC_ENTRY_SIZE;
+			seeker += BootRom.TOC_ENTRY_SIZE;
 		}
 		
 		// Store for later usage
-		BOOT_LIBRARIES = bootlibs;
+		BootRom.BOOT_LIBRARIES = bootlibs;
 		
 		// Debug
 		todo.DEBUG.note("Okay.");

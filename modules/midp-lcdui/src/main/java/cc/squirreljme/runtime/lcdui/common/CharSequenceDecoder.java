@@ -70,7 +70,7 @@ public final class CharSequenceDecoder
 	public DecodedCharacter next()
 	{
 		// Peek first always
-		peek();
+		this.peek();
 		
 		// Has been read already?
 		DecodedCharacter rv = this._next;

@@ -19,52 +19,51 @@ public interface ATDevice
 	extends Device<ATDevice>
 {
 	@Deprecated
-	public abstract void abortCommand(String __a)
+	void abortCommand(String __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void close()
+	void close()
 		throws IOException;
 	
 	@Deprecated
-	public abstract void escapeToCommandMode()
+	void escapeToCommandMode()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract int getMaxCommandLength()
+	int getMaxCommandLength()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract boolean isConnected()
+	boolean isConnected()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract boolean isInCommandMode()
+	boolean isInCommandMode()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract DataConnection openDataConnection(String __a, 
-		CommandResponseHandler __b, DataConnectionHandler __c)
+	DataConnection openDataConnection(String __a, CommandResponseHandler __b,
+		DataConnectionHandler __c)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract String sendCommand(String __a)
+	String sendCommand(String __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void sendCommand(String __a, CommandResponseHandler __b)
+	void sendCommand(String __a, CommandResponseHandler __b)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract void setUnsolicitedResponseHandler(
-		UnsolicitedResponseHandler __a)
+	void setUnsolicitedResponseHandler(UnsolicitedResponseHandler __a)
 		throws IOException, ClosedDeviceException;
 	
-	public abstract String tryAbortCommand(String __a)
+	String tryAbortCommand(String __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	public abstract String tryEscapeToCommandMode()
+	String tryEscapeToCommandMode()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 }

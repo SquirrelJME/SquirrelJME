@@ -100,11 +100,11 @@ public class InflaterInputStream
 	
 	/** Used to store bit length counts. */
 	private final int[] _blcount =
-		new int[_MAX_BITS + 1];
+		new int[InflaterInputStream._MAX_BITS + 1];
 	
 	/** Used to store the next code. */
 	private final int[] _nextcode =
-		new int[_MAX_BITS + 1];
+		new int[InflaterInputStream._MAX_BITS + 1];
 	
 	/** The number of compressed bytes. */
 	private long _compressedsize;
@@ -163,7 +163,7 @@ public class InflaterInputStream
 	public InflaterInputStream(InputStream __in)
 		throws NullPointerException
 	{
-		this(__in, _DEFAULT_SLIDING_WINDOW_SIZE);
+		this(__in, InflaterInputStream._DEFAULT_SLIDING_WINDOW_SIZE);
 	}
 	
 	/**
@@ -178,7 +178,7 @@ public class InflaterInputStream
 	public InflaterInputStream(InputStream __in, Checksum __cs)
 		throws NullPointerException
 	{
-		this(__in, _DEFAULT_SLIDING_WINDOW_SIZE, __cs);
+		this(__in, InflaterInputStream._DEFAULT_SLIDING_WINDOW_SIZE, __cs);
 	}
 	
 	/**
@@ -279,7 +279,7 @@ public class InflaterInputStream
 		byte[] solo = this._solo;
 		for (;;)
 		{
-			int rv = read(solo, 0, 1);
+			int rv = this.read(solo, 0, 1);
 			
 			// EOF?
 			if (rv < 0)
@@ -344,7 +344,7 @@ public class InflaterInputStream
 				int base;
 				this._targoff = (base = __o + c);
 				this._targend = base + (__l - c);
-				int rv = __decompress();
+				int rv = this.__decompress();
 			
 				// Ended?
 				if (rv < 0)
@@ -402,29 +402,29 @@ public class InflaterInputStream
 		int enteroff = this._targoff;
 		
 		// Read the final bit which determines if this is the last block
-		int finalhit = __readBits(1, false);
+		int finalhit = this.__readBits(1, false);
 		
 		// Read the window type
-		int type = __readBits(2, false);
+		int type = this.__readBits(2, false);
 		switch (type)
 		{
 				// None
-			case _TYPE_NO_COMPRESSION:
-				__decompressNone();
+			case InflaterInputStream._TYPE_NO_COMPRESSION:
+				this.__decompressNone();
 				break;
 				
 				// Fixed huffman
-			case _TYPE_FIXED_HUFFMAN:
-				__decompressFixed();
+			case InflaterInputStream._TYPE_FIXED_HUFFMAN:
+				this.__decompressFixed();
 				break;
 				
 				// Dynamic huffman
-			case _TYPE_DYNAMIC_HUFFMAN:
-				__decompressDynamic();
+			case InflaterInputStream._TYPE_DYNAMIC_HUFFMAN:
+				this.__decompressDynamic();
 				break;
 			
 				// Error or unknown
-			case _TYPE_ERROR:
+			case InflaterInputStream._TYPE_ERROR:
 			default:
 				// {@squirreljme.error BD17 Unknown type or the error type
 				// was reached. (The type code used in the stream)}
@@ -455,17 +455,17 @@ public class InflaterInputStream
 		throws IOException
 	{
 		// Read the code length parameters
-		int dhlit = __readBits(5, false) + 257;
-		int dhdist = __readBits(5, false) + 1;
-		int dhclen = __readBits(4, false) + 4;
+		int dhlit = this.__readBits(5, false) + 257;
+		int dhdist = this.__readBits(5, false) + 1;
+		int dhclen = this.__readBits(4, false) + 4;
 		
 		// Read the code length tree
-		HuffmanTreeInt codelentree = __decompressDynamicLoadLenTree(dhclen);
+		HuffmanTreeInt codelentree = this.__decompressDynamicLoadLenTree(dhclen);
 		
 		// Read the literal and distance trees
-		HuffmanTreeInt literaltree = __obtainLiteralTree(),
-			distancetree = __obtainDistanceTree();
-		__decompressDynamicLoadLitDistTree(codelentree, dhlit, dhdist,
+		HuffmanTreeInt literaltree = this.__obtainLiteralTree(),
+			distancetree = this.__obtainDistanceTree();
+		this.__decompressDynamicLoadLitDistTree(codelentree, dhlit, dhdist,
 			literaltree, distancetree);
 		
 		// Decode input
@@ -476,7 +476,7 @@ public class InflaterInputStream
 			
 			// Literal byte value
 			if (code >= 0 && code <= 255)
-				__write(code, 8, false);
+				this.__write(code, 8, false);
 		
 			// Stop processing
 			else if (code == 256)
@@ -484,7 +484,7 @@ public class InflaterInputStream
 		
 			// Window based result
 			else if (code >= 257 && code <= 285)
-				__decompressWindow(__handleLength(code),
+				this.__decompressWindow(this.__handleLength(code),
 					distancetree.getValue(this._bitsource));
 			
 			// {@squirreljme.error BD18 Illegal dynamic huffman code. (The
@@ -522,7 +522,7 @@ public class InflaterInputStream
 		try
 		{
 			for (int next = 0; next < total;)
-				next += __readCodeBits(__cltree, rawlitdistlens, next);
+				next += this.__readCodeBits(__cltree, rawlitdistlens, next);
 		}
 
 		// {@squirreljme.error BD19 The compressed stream is
@@ -534,8 +534,8 @@ public class InflaterInputStream
 		}
 		
 		// Initialize both trees
-		__thunkCodeLengthTree(__ltree, rawlitdistlens, 0, __dhlit);
-		__thunkCodeLengthTree(__dtree, rawlitdistlens, __dhlit, __dhdist);
+		this.__thunkCodeLengthTree(__ltree, rawlitdistlens, 0, __dhlit);
+		this.__thunkCodeLengthTree(__dtree, rawlitdistlens, __dhlit, __dhdist);
 	}
 	
 	/**
@@ -549,7 +549,7 @@ public class InflaterInputStream
 		throws IOException
 	{
 		// Target tree
-		HuffmanTreeInt codelentree = __obtainCodeLenTree();
+		HuffmanTreeInt codelentree = this.__obtainCodeLenTree();
 		
 		// {@squirreljme.error BD1a There may only be at most 19 used
 		// code lengths. (The number of code lengths)}
@@ -565,12 +565,12 @@ public class InflaterInputStream
 		
 		// Read lengths, they are just 3 bits but their placement values are
 		// shuffled since some sequences are more common than others
-		int[] hsbits = _SHUFFLE_BITS;
+		int[] hsbits = InflaterInputStream._SHUFFLE_BITS;
 		for (int next = 0; next < __dhclen; next++)
-			rawcodelens[hsbits[next]] = __readBits(3, false);
+			rawcodelens[hsbits[next]] = this.__readBits(3, false);
 		
 		// Thunk the tree and return it
-		return __thunkCodeLengthTree(codelentree, rawcodelens, 0,
+		return this.__thunkCodeLengthTree(codelentree, rawcodelens, 0,
 			rawcodelens.length);
 	}
 	
@@ -588,11 +588,11 @@ public class InflaterInputStream
 		for (;;)
 		{
 			// Read code
-			int code = __readFixedHuffman();
+			int code = this.__readFixedHuffman();
 				
 			// Literal byte value
 			if (code >= 0 && code <= 255)
-				__write(code, 8, false);
+				this.__write(code, 8, false);
 		
 			// Stop processing
 			else if (code == 256)
@@ -600,7 +600,7 @@ public class InflaterInputStream
 		
 			// Window based result
 			else if (code >= 257 && code <= 285)
-				__decompressWindow(__handleLength(code), Integer.MIN_VALUE);
+				this.__decompressWindow(this.__handleLength(code), Integer.MIN_VALUE);
 		
 			// {@squirreljme.error BD1b Illegal fixed huffman code. (The
 			// code.)}
@@ -622,11 +622,11 @@ public class InflaterInputStream
 		// aligned to byte boundaries
 		int minisub = this._minisize & 7;
 		if (minisub > 0)
-			__readBits(minisub, false);
+			this.__readBits(minisub, false);
 		
 		// Read length and the one's complement of it
-		int len = __readBits(16, false);
-		int com = __readBits(16, false);
+		int len = this.__readBits(16, false);
+		int com = this.__readBits(16, false);
 		
 		// The complemented length must be equal to the complement
 		// {@squirreljme.error BD1c Value mismatch reading the number of
@@ -638,7 +638,7 @@ public class InflaterInputStream
 		
 		// Read all bytes
 		for (int i = 0; i < len; i++)
-			__write(__readBits(8, false), 8, false);
+			this.__write(this.__readBits(8, false), 8, false);
 	}
 	
 	/**
@@ -653,7 +653,7 @@ public class InflaterInputStream
 		throws IOException
 	{
 		// Handle distance
-		__dist = __handleDistance(__dist);
+		__dist = this.__handleDistance(__dist);
 	
 		// Get the maximum valid length, so for example if the length
 		// is 5 and the distance is two, then only read two bytes.
@@ -684,7 +684,7 @@ public class InflaterInputStream
 		for (int i = 0, v = 0; i < __len; i++)
 		{
 			// Write byte
-			__write(winb[v], 8, false);
+			this.__write(winb[v], 8, false);
 		
 			// Wrap around
 			if ((++v) >= maxlen)
@@ -705,7 +705,7 @@ public class InflaterInputStream
 	{
 		// Read distance
 		if (__code == Integer.MIN_VALUE)
-			__code = __readBits(5, true);
+			__code = this.__readBits(5, true);
 		
 		// {@squirreljme.error BD1e Illegal fixed distance code. (The distance
 		// code)}
@@ -729,7 +729,7 @@ public class InflaterInputStream
 		// is used as an additional distance value
 		int extrabits = ((__code / 2) - 1);
 		if (extrabits > 0)
-			rv += __readBits(extrabits, false);
+			rv += this.__readBits(extrabits, false);
 		
 		// Return it
 		return rv;
@@ -773,7 +773,7 @@ public class InflaterInputStream
 		// Add extra bits which are used to modify the amount of data read
 		int extrabits = (base / 4) - 1;
 		if (extrabits > 0)
-			rv += (extrabits = __readBits(extrabits, false));
+			rv += (extrabits = this.__readBits(extrabits, false));
 		
 		// Return the length
 		return rv;
@@ -980,7 +980,7 @@ public class InflaterInputStream
 				repval = __out[lastlendx];
 				
 				// Read the repeat count
-				repfor = 3 + __readBits(2, false);
+				repfor = 3 + this.__readBits(2, false);
 			}
 			
 			// Repeat zero for 3-10 times
@@ -990,7 +990,7 @@ public class InflaterInputStream
 				repval = 0;
 				
 				// Read 3 bits
-				repfor = 3 + __readBits(3, false);
+				repfor = 3 + this.__readBits(3, false);
 			}
 			
 			// Repeat zero for 11-138 times
@@ -1000,7 +1000,7 @@ public class InflaterInputStream
 				repval = 0;
 				
 				// Read 7 bits
-				repfor = 11 + __readBits(7, false);
+				repfor = 11 + this.__readBits(7, false);
 			}
 			
 			// {@squirreljme.error BD1i Illegal code. (The code)}
@@ -1043,31 +1043,31 @@ public class InflaterInputStream
 		throws IOException
 	{
 		// The long if statement block
-		if (__readBits(1, true) != 0)
-			if (__readBits(1, true) != 0)
-				if (__readBits(1, true) != 0)
-					return 192 + __readBits(6, true);
+		if (this.__readBits(1, true) != 0)
+			if (this.__readBits(1, true) != 0)
+				if (this.__readBits(1, true) != 0)
+					return 192 + this.__readBits(6, true);
 				else
-					if (__readBits(1, true) != 0)
-						return 160 + __readBits(5, true);
+					if (this.__readBits(1, true) != 0)
+						return 160 + this.__readBits(5, true);
 					else
-						if (__readBits(1, true) != 0)
-							return 144 + __readBits(4, true);
+						if (this.__readBits(1, true) != 0)
+							return 144 + this.__readBits(4, true);
 						else
-							return 280 + __readBits(3, true);
+							return 280 + this.__readBits(3, true);
 			else
-				return 80 + __readBits(6, true);
+				return 80 + this.__readBits(6, true);
 		else
-			if (__readBits(1, true) != 0)
-				return 16 + __readBits(6, true);
+			if (this.__readBits(1, true) != 0)
+				return 16 + this.__readBits(6, true);
 			else
-				if (__readBits(1, true) != 0)
-					if (__readBits(1, true) != 0)
-						return 0 + __readBits(4, true);
+				if (this.__readBits(1, true) != 0)
+					if (this.__readBits(1, true) != 0)
+						return 0 + this.__readBits(4, true);
 					else
-						return 272 + __readBits(3, true);
+						return 272 + this.__readBits(3, true);
 				else
-					return 256 + __readBits(4, true);
+					return 256 + this.__readBits(4, true);
 	}
 	
 	/**
@@ -1108,7 +1108,7 @@ public class InflaterInputStream
 		// Find the numerical value of the smallest code for each code
 		// length.
 		int code = 0;
-		for (int bits = 1; bits <= _MAX_BITS; bits++)
+		for (int bits = 1; bits <= InflaterInputStream._MAX_BITS; bits++)
 		{
 			code = (code + bl_count[bits - 1]) << 1;
 			next_code[bits] = code;

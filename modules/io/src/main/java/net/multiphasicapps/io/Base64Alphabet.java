@@ -44,7 +44,7 @@ public enum Base64Alphabet
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	private Base64Alphabet(char... __alphabet)
+	Base64Alphabet(char... __alphabet)
 		throws NullPointerException
 	{
 		if (__alphabet == null)

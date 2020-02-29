@@ -36,7 +36,7 @@ public enum StandardOpenOption
 	/** End. */
 	;
 	
-	private StandardOpenOption()
+	StandardOpenOption()
 	{
 		throw new todo.TODO();
 	}

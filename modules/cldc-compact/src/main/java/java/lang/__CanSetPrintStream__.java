@@ -50,7 +50,7 @@ final class __CanSetPrintStream__
 			throw new NullPointerException("NARG");
 		
 		// Set
-		_target = __def;
+		this._target = __def;
 	}
 	
 	/**
@@ -61,9 +61,9 @@ final class __CanSetPrintStream__
 	public PrintStream append(CharSequence __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			return _target.append(__a);
+			return this._target.append(__a);
 		}
 	}
 	
@@ -75,9 +75,9 @@ final class __CanSetPrintStream__
 	public PrintStream append(CharSequence __a, int __b, int __c)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			return _target.append(__a, __b, __c);
+			return this._target.append(__a, __b, __c);
 		}
 	}
 	
@@ -89,9 +89,9 @@ final class __CanSetPrintStream__
 	public PrintStream append(char __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			return _target.append(__a);
+			return this._target.append(__a);
 		}
 	}
 	
@@ -103,9 +103,9 @@ final class __CanSetPrintStream__
 	public boolean checkError()
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			return _target.checkError();
+			return this._target.checkError();
 		}
 	}
 	
@@ -117,9 +117,9 @@ final class __CanSetPrintStream__
 	public void close()
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.close();
+			this._target.close();
 		}
 	}
 	
@@ -131,9 +131,9 @@ final class __CanSetPrintStream__
 	public void flush()
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.flush();
+			this._target.flush();
 		}
 	}
 	
@@ -145,9 +145,9 @@ final class __CanSetPrintStream__
 	public PrintStream format(String __a, Object... __b)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			return _target.format(__a, __b);
+			return this._target.format(__a, __b);
 		}
 	}
 	
@@ -159,9 +159,9 @@ final class __CanSetPrintStream__
 	public void print(boolean __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -173,9 +173,9 @@ final class __CanSetPrintStream__
 	public void print(char __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -187,9 +187,9 @@ final class __CanSetPrintStream__
 	public void print(int __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -201,9 +201,9 @@ final class __CanSetPrintStream__
 	public void print(long __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -215,9 +215,9 @@ final class __CanSetPrintStream__
 	public void print(float __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -229,9 +229,9 @@ final class __CanSetPrintStream__
 	public void print(double __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -243,9 +243,9 @@ final class __CanSetPrintStream__
 	public void print(char[] __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -257,9 +257,9 @@ final class __CanSetPrintStream__
 	public void print(String __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -271,9 +271,9 @@ final class __CanSetPrintStream__
 	public void print(Object __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.print(__a);
+			this._target.print(__a);
 		}
 	}
 	
@@ -285,9 +285,9 @@ final class __CanSetPrintStream__
 	public PrintStream printf(String __a, Object... __b)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			return _target.printf(__a, __b);
+			return this._target.printf(__a, __b);
 		}
 	}
 	
@@ -299,9 +299,9 @@ final class __CanSetPrintStream__
 	public void println()
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println();
+			this._target.println();
 		}
 	}
 	
@@ -313,9 +313,9 @@ final class __CanSetPrintStream__
 	public void println(boolean __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -327,9 +327,9 @@ final class __CanSetPrintStream__
 	public void println(char __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -341,9 +341,9 @@ final class __CanSetPrintStream__
 	public void println(int __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -355,9 +355,9 @@ final class __CanSetPrintStream__
 	public void println(long __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -369,9 +369,9 @@ final class __CanSetPrintStream__
 	public void println(float __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -383,9 +383,9 @@ final class __CanSetPrintStream__
 	public void println(double __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -397,9 +397,9 @@ final class __CanSetPrintStream__
 	public void println(char[] __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -411,9 +411,9 @@ final class __CanSetPrintStream__
 	public void println(String __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -425,9 +425,9 @@ final class __CanSetPrintStream__
 	public void println(Object __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.println(__a);
+			this._target.println(__a);
 		}
 	}
 	
@@ -439,9 +439,9 @@ final class __CanSetPrintStream__
 	public void write(int __a)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.write(__a);
+			this._target.write(__a);
 		}
 	}
 	
@@ -453,9 +453,9 @@ final class __CanSetPrintStream__
 	public void write(byte[] __a, int __b, int __c)
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			_target.write(__a, __b, __c);
+			this._target.write(__a, __b, __c);
 		}
 	}
 	
@@ -480,7 +480,7 @@ final class __CanSetPrintStream__
 			__ps = ((__CanSetPrintStream__)__ps)._target;
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			// Flush the current stream so any written bytes are written to
 			// the output, so that they are not lost forever. However some

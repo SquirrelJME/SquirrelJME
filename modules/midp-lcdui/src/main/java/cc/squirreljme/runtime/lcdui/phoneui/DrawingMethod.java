@@ -292,19 +292,19 @@ public enum DrawingMethod
 		throws NullPointerException
 	{
 		if (Alert.class.isAssignableFrom(__cl))
-			return ALERT;
+			return DrawingMethod.ALERT;
 		else if (Canvas.class.isAssignableFrom(__cl))
-			return CANVAS;
+			return DrawingMethod.CANVAS;
 		else if (FileSelector.class.isAssignableFrom(__cl))
-			return FILE_SELECTOR;
+			return DrawingMethod.FILE_SELECTOR;
 		else if (Form.class.isAssignableFrom(__cl))
-			return FORM;
+			return DrawingMethod.FORM;
 		else if (List.class.isAssignableFrom(__cl))
-			return LIST;
+			return DrawingMethod.LIST;
 		else if (TabbedPane.class.isAssignableFrom(__cl))
-			return TABBED_PANE;
+			return DrawingMethod.TABBED_PANE;
 		else if (TextBox.class.isAssignableFrom(__cl))
-			return TEXT_BOX;
+			return DrawingMethod.TEXT_BOX;
 		
 		// {@squirreljme.error EB18 Could not get the drawing method of the
 		// given class. (The class)}

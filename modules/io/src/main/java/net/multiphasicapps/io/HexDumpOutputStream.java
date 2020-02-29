@@ -41,7 +41,7 @@ public class HexDumpOutputStream
 	
 	/** The write queue. */
 	private final byte[] _queue =
-		new byte[_COLUMNS];
+		new byte[HexDumpOutputStream._COLUMNS];
 	
 	/** The current write position. */
 	private volatile int _at;
@@ -126,7 +126,7 @@ public class HexDumpOutputStream
 		throws IOException
 	{
 		// Force printing of bytes
-		__printLine();
+		this.__printLine();
 		
 		// Only close the pipe and not the dump
 		Closeable c = this.pipe;
@@ -158,7 +158,7 @@ public class HexDumpOutputStream
 		throws IOException
 	{
 		// Write a single byte
-		int cols = _COLUMNS;
+		int cols = HexDumpOutputStream._COLUMNS;
 		byte b = (byte)__b;
 		byte[] queue = this._queue;
 		int at = this._at;
@@ -179,7 +179,7 @@ public class HexDumpOutputStream
 		{
 			// Print entire row
 			if (at == cols)
-				__printLine();
+				this.__printLine();
 		}
 	}
 	
@@ -193,7 +193,7 @@ public class HexDumpOutputStream
 		throws IOException
 	{
 		// Might not always work
-		int cols = _COLUMNS;
+		int cols = HexDumpOutputStream._COLUMNS;
 		byte[] queue = this._queue;
 		int at = this._at;
 		try

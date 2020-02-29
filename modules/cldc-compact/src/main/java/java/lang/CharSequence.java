@@ -25,7 +25,7 @@ public interface CharSequence
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/12/07
 	 */
-	public abstract char charAt(int __i)
+	char charAt(int __i)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -34,7 +34,7 @@ public interface CharSequence
 	 * @return The length of the sequence.
 	 * @since 2018/12/07
 	 */
-	public abstract int length();
+	int length();
 	
 	/**
 	 * Returns a sub-sequence of this character sequence.
@@ -46,7 +46,7 @@ public interface CharSequence
 	 * sequence bounds or start is greater than end.
 	 * @since 2018/12/07
 	 */
-	public abstract CharSequence subSequence(int __s, int __e)
+	CharSequence subSequence(int __s, int __e)
 		throws IndexOutOfBoundsException;
 	
 	/**
@@ -54,6 +54,6 @@ public interface CharSequence
 	 * @since 2018/12/07
 	 */
 	@Override
-	public abstract String toString();
+	String toString();
 }
 

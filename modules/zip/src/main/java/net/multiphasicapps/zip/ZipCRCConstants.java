@@ -19,23 +19,23 @@ package net.multiphasicapps.zip;
 public interface ZipCRCConstants
 {
 	/** The polynomial for the CRC algorithm. */
-	public static final int CRC_POLYNOMIAL =
+	int CRC_POLYNOMIAL =
 		0x04C11DB7;
 	
 	/** The initial CRC remainder. */
-	public static final int CRC_REMAINDER =
+	int CRC_REMAINDER =
 		0xFFFFFFFF;
 	
 	/** The final XOR value. */
-	public static final int CRC_FINALXOR =
+	int CRC_FINALXOR =
 		0xFFFFFFFF;
 	
 	/** Reflect the data? */
-	public static final boolean CRC_REFLECT_DATA =
+	boolean CRC_REFLECT_DATA =
 		true;
 	
 	/** Reflect the remainder? */
-	public static final boolean CRC_REFLECT_REMAINDER =
+	boolean CRC_REFLECT_REMAINDER =
 		true;
 }
 

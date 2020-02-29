@@ -309,19 +309,19 @@ public enum ActionMethod
 		throws NullPointerException
 	{
 		if (Alert.class.isAssignableFrom(__cl))
-			return ALERT;
+			return ActionMethod.ALERT;
 		else if (Canvas.class.isAssignableFrom(__cl))
-			return CANVAS;
+			return ActionMethod.CANVAS;
 		else if (FileSelector.class.isAssignableFrom(__cl))
-			return FILE_SELECTOR;
+			return ActionMethod.FILE_SELECTOR;
 		else if (Form.class.isAssignableFrom(__cl))
-			return FORM;
+			return ActionMethod.FORM;
 		else if (List.class.isAssignableFrom(__cl))
-			return LIST;
+			return ActionMethod.LIST;
 		else if (TabbedPane.class.isAssignableFrom(__cl))
-			return TABBED_PANE;
+			return ActionMethod.TABBED_PANE;
 		else if (TextBox.class.isAssignableFrom(__cl))
-			return TEXT_BOX;
+			return ActionMethod.TEXT_BOX;
 		
 		// {@squirreljme.error EB17 Could not get the action method of the
 		// given class. (The class)}

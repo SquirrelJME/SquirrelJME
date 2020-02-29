@@ -36,7 +36,7 @@ public class TextBox
 	{
 		// Set title if there is one
 		if (__title != null)
-			setTitle(__title);
+			this.setTitle(__title);
 		
 		// Initialize editor with the given set of values
 		this._editabletext.initialize(__text, __max, __con);

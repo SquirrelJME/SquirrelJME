@@ -36,11 +36,11 @@ public class DefaultEGL
 	
 	/** The start of the SquirrelJME enumerant. */
 	public static final int SQUIRRELJME_ENUMERANT_START =
-		TEMPORARY_ENUMERANT_START;
+		DefaultEGL.TEMPORARY_ENUMERANT_START;
 	
 	/** The end of the SquirrelJME enumerant. */
 	public static final int SQUIRRELJME_ENUMERANT_END =
-		SQUIRRELJME_ENUMERANT_START + 16;
+		DefaultEGL.SQUIRRELJME_ENUMERANT_START + 16;
 	
 	/** The OpenGL ES error code. */
 	private volatile int _error =

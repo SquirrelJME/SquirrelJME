@@ -235,7 +235,7 @@ public class CommentReader
 	 *
 	 * @since 2020/02/22
 	 */
-	private static enum CommentType
+	private enum CommentType
 	{
 		/** No comment. */
 		NONE,

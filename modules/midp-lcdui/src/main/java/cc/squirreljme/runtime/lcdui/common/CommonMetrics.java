@@ -20,17 +20,17 @@ public interface CommonMetrics
 {
 	/** Width of the scroll bar. */
 	@Deprecated
-	public static final int SCROLLBAR_WIDTH =
+	int SCROLLBAR_WIDTH =
 		8;
 	
 	/** Command bar height. */
 	@Deprecated
-	public static final int COMMANDBAR_HEIGHT =
+	int COMMANDBAR_HEIGHT =
 		18;
 	
 	/** Command bar font size. */
 	@Deprecated
-	public static final int COMMANDBAR_FONT_SIZE =
+	int COMMANDBAR_FONT_SIZE =
 		16;
 }
 
