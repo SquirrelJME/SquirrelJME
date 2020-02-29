@@ -219,7 +219,7 @@ public final class SpringThread
 				// {@squirreljme.error BK1n Cannot enter a monitor of nothing
 				// or a non-object.}
 				Object argzero = __args[0];
-				if (argzero == null || !(argzero instanceof SpringObject))
+				if (!(argzero instanceof cc.squirreljme.vm.springcoat.SpringObject))
 					throw new SpringVirtualMachineException("BK1n");
 				
 				// Use this as the monitor
