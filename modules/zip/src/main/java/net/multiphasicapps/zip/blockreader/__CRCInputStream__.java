@@ -60,7 +60,7 @@ class __CRCInputStream__
 	}
 	
 	/**
-	 * {@inheritDoc]
+	 * {@inheritDoc}
 	 * @since 2017/01/03
 	 */
 	@Override
@@ -72,7 +72,7 @@ class __CRCInputStream__
 	}
 	
 	/**
-	 * {@inheritDoc]
+	 * {@inheritDoc}
 	 * @since 2017/01/03
 	 */
 	@Override
@@ -84,7 +84,7 @@ class __CRCInputStream__
 	}
 	
 	/**
-	 * {@inheritDoc]
+	 * {@inheritDoc}
 	 * @since 2017/01/03
 	 */
 	@Override
@@ -118,7 +118,7 @@ class __CRCInputStream__
 	}
 	
 	/**
-	 * {@inheritDoc]
+	 * {@inheritDoc}
 	 * @since 2017/01/03
 	 */
 	@Override

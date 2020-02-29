@@ -96,7 +96,7 @@ class __BlockAccessorRegionInputStream__
 	}
 	
 	/**
-	 * {@inheritDoc]
+	 * {@inheritDoc}
 	 * @since 2017/01/03
 	 */
 	@Override
