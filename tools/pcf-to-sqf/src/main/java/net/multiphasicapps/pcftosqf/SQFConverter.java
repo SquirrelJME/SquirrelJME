@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.pcftosqf;
 
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.pcftosqf.pcf.PCFFont;

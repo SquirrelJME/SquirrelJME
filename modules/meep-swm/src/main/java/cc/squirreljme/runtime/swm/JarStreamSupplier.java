@@ -10,8 +10,8 @@
 
 package cc.squirreljme.runtime.swm;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This is used to obtain an input stream which contains JAR file data which

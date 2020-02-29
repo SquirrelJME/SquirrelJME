@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.javac.syntax;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.syntax.expr.ExpressionSyntaxParsers;

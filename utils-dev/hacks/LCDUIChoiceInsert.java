@@ -8,9 +8,8 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.midlet.MIDlet;
-
 import javax.microedition.lcdui.ChoiceGroup;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * This tests whether insert for choice allows size() or not.

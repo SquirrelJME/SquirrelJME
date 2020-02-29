@@ -13,12 +13,12 @@ package cc.squirreljme.runtime.lcdui.image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import javax.microedition.lcdui.Image;
-import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.CRC32Calculator;
+import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.SizeLimitedInputStream;
 import net.multiphasicapps.io.ZLibDecompressor;
 

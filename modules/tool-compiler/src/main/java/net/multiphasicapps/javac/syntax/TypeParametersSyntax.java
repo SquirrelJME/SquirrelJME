@@ -12,8 +12,8 @@ package net.multiphasicapps.javac.syntax;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableIterator;

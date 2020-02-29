@@ -11,8 +11,8 @@
 package net.multiphasicapps.javac.token;
 
 import java.io.Closeable;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.Deque;

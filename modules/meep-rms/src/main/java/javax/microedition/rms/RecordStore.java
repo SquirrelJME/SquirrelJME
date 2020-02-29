@@ -11,10 +11,10 @@
 package javax.microedition.rms;
 
 import cc.squirreljme.runtime.cldc.lang.ImplementationClass;
-import cc.squirreljme.runtime.rms.VinylLock;
-import cc.squirreljme.runtime.rms.VinylRecord;
 import cc.squirreljme.runtime.rms.SuiteIdentifier;
 import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
+import cc.squirreljme.runtime.rms.VinylLock;
+import cc.squirreljme.runtime.rms.VinylRecord;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

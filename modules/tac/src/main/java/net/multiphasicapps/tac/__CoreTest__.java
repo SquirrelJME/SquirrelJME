@@ -11,13 +11,13 @@
 package net.multiphasicapps.tac;
 
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-import java.io.InputStream;
+import cc.squirreljme.runtime.midlet.OverrideActiveMidletRestriction;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
-import cc.squirreljme.runtime.midlet.OverrideActiveMidletRestriction;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import org.testng.annotations.Test;

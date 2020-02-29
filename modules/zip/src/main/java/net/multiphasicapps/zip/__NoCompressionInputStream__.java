@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.zip;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import net.multiphasicapps.io.DecompressionInputStream;
 
 /**

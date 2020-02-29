@@ -10,8 +10,6 @@
 
 import net.multiphasicapps.tac.TestRunnable;
 
-import javax.microedition.lcdui.Display;
-
 /**
  * Tests that the display works.
  *

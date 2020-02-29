@@ -18,8 +18,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.Deque;
 import java.util.LinkedList;
 import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 /**
  * This class is used to convert a text file to a PBM.

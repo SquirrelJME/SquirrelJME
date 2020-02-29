@@ -11,8 +11,8 @@
 package net.multiphasicapps.squirrelquarrel.util;
 
 import java.io.DataInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This allows for easier reading from the replay input without requiring that

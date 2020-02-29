@@ -9,10 +9,10 @@
 
 package cc.squirreljme.emulator;
 
-import org.testng.ITestContext;
-import org.testng.annotations.Factory;
 import java.util.Collection;
 import java.util.LinkedList;
+import org.testng.ITestContext;
+import org.testng.annotations.Factory;
 
 /**
  * The factory for SquirrelJME Tests.

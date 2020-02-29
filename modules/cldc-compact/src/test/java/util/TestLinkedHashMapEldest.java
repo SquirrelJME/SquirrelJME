@@ -9,9 +9,9 @@
 
 package util;
 
-import net.multiphasicapps.tac.TestRunnable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
  * Tests to ensure that the eldest entry removal works correctly.

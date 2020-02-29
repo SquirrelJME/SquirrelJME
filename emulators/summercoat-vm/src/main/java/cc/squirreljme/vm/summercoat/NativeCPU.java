@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Deque;
 import java.util.LinkedList;
-import net.multiphasicapps.profiler.ProfilerSnapshot;
 import net.multiphasicapps.profiler.ProfiledThread;
+import net.multiphasicapps.profiler.ProfilerSnapshot;
 
 /**
  * This represents a native CPU which may run within its own thread to

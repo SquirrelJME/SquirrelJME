@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.zip.blockreader;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.zip.IBM437CodePage;

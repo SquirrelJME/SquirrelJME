@@ -11,8 +11,8 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;

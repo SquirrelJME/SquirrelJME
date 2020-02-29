@@ -13,8 +13,8 @@ package net.multiphasicapps.io;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.EOFException;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This is an extended input stream which is better suited for general binary

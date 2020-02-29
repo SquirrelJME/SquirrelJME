@@ -12,12 +12,12 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.Constants;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassFlags;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;

@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.io;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This is an input stream in which the size of the input stream is maximally

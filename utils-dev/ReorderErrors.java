@@ -8,21 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 /**
  * This class goes through all projects and reorders the error codes so that

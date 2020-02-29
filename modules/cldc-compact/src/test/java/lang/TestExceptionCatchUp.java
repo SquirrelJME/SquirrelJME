@@ -10,8 +10,8 @@
 
 package lang;
 
-import net.multiphasicapps.tac.TestSupplier;
 import java.util.NoSuchElementException;
+import net.multiphasicapps.tac.TestSupplier;
 
 /**
  * Tests exceptions being caught in higher stack frames.

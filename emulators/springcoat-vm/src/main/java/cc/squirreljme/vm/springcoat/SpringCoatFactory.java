@@ -10,11 +10,11 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMFactory;
 import cc.squirreljme.vm.VMSuiteManager;
+import cc.squirreljme.vm.VirtualMachine;
 import java.util.Map;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 

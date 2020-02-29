@@ -9,8 +9,8 @@
 
 package net.multiphasicapps.tac;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
@@ -24,8 +24,8 @@ import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
-import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 

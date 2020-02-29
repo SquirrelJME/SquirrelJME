@@ -10,10 +10,10 @@
 
 package net.multiphasicapps.pcftosqf.pcf;
 
-import java.io.ByteArrayInputStream;	
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;

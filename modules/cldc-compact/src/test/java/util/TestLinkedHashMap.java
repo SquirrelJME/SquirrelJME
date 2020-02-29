@@ -9,11 +9,10 @@
 
 package util;
 
-import net.multiphasicapps.tac.TestRunnable;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
  * This is used to test that LinkedHashMap works.

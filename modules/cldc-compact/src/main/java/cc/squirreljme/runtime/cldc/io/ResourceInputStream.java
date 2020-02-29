@@ -10,9 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import java.io.InputStream;
-import java.io.IOException;
 import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This input stream handles reading of resources.

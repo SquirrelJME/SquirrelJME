@@ -8,9 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.Minimizer;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.tac.TestRunnable;

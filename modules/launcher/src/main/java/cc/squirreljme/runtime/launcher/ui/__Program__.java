@@ -11,8 +11,8 @@
 package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Image;

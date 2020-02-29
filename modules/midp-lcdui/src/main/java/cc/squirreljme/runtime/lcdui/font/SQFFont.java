@@ -11,8 +11,8 @@
 package cc.squirreljme.runtime.lcdui.font;
 
 import java.io.DataInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;

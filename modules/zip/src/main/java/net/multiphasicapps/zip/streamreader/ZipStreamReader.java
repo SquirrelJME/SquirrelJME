@@ -12,8 +12,8 @@ package net.multiphasicapps.zip.streamreader;
 
 import java.io.Closeable;
 import java.io.EOFException;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.DynamicHistoryInputStream;
 import net.multiphasicapps.io.ExtendedDataInputStream;

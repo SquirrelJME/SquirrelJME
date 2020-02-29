@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------
 
 import javax.microedition.rms.RecordStore;
-
-import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
 /**

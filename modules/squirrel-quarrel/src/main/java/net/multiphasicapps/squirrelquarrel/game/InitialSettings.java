@@ -11,8 +11,8 @@
 package net.multiphasicapps.squirrelquarrel.game;
 
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
-import net.multiphasicapps.squirrelquarrel.util.ReplayInputStream;
 import net.multiphasicapps.squirrelquarrel.util.ReplayFormatException;
+import net.multiphasicapps.squirrelquarrel.util.ReplayInputStream;
 import net.multiphasicapps.squirrelquarrel.util.ReplayOutputStream;
 
 /**

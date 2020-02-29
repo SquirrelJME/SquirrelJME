@@ -10,8 +10,8 @@
 
 package util;
 
-import net.multiphasicapps.tac.TestSupplier;
 import java.util.HashMap;
+import net.multiphasicapps.tac.TestSupplier;
 
 /**
  * {@link HashMap}s can contain NaN.

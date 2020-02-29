@@ -11,12 +11,12 @@
 package net.multiphasicapps.squirrelquarrel.game;
 
 import net.multiphasicapps.squirrelquarrel.player.Player;
-import net.multiphasicapps.squirrelquarrel.player.Players;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
+import net.multiphasicapps.squirrelquarrel.player.Players;
 import net.multiphasicapps.squirrelquarrel.units.SpawnPlacementType;
 import net.multiphasicapps.squirrelquarrel.units.Unit;
-import net.multiphasicapps.squirrelquarrel.units.Units;
 import net.multiphasicapps.squirrelquarrel.units.UnitType;
+import net.multiphasicapps.squirrelquarrel.units.Units;
 import net.multiphasicapps.squirrelquarrel.util.GameRandom;
 import net.multiphasicapps.squirrelquarrel.world.World;
 

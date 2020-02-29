@@ -10,9 +10,9 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.util.ArrayList;
 import java.util.List;

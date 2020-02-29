@@ -12,8 +12,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import net.multiphasicapps.tac.TestSupplier;
 import net.multiphasicapps.io.MIMEFileDecoder;
+import net.multiphasicapps.tac.TestSupplier;
 
 /**
  * Tests decoding of MIME files.

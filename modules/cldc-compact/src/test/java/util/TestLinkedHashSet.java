@@ -10,10 +10,10 @@
 
 package util;
 
-import net.multiphasicapps.tac.TestSupplier;
 import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
+import net.multiphasicapps.tac.TestSupplier;
 
 /**
  * This tests that linked hash set works properly.

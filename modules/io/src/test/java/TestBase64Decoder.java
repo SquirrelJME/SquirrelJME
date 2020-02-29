@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import net.multiphasicapps.tac.TestBiConsumer;
 import net.multiphasicapps.io.Base64Alphabet;
 import net.multiphasicapps.io.Base64Decoder;
+import net.multiphasicapps.tac.TestBiConsumer;
 
 /**
  * This tests the base 64 decoder.

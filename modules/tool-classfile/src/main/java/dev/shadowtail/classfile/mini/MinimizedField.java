@@ -10,8 +10,8 @@
 
 package dev.shadowtail.classfile.mini;
 
-import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
+import dev.shadowtail.classfile.xlate.DataType;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;

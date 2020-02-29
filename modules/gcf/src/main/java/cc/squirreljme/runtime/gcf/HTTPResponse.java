@@ -11,8 +11,8 @@ package cc.squirreljme.runtime.gcf;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This contains the response of the HTTP request.
