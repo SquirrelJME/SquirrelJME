@@ -41,6 +41,13 @@ public abstract class MIDlet
 		ActiveMidlet.set(this);
 	}
 	
+	/**
+	 * Signals that the MIDlet is in the destruction state.
+	 *
+	 * @param __uc Is is unconditional?
+	 * @throws MIDletStateChangeException If the destruction might stop.
+	 * @since 2020/02/29
+	 */
 	protected abstract void destroyApp(boolean __uc)
 		throws MIDletStateChangeException;
 	
@@ -172,9 +179,9 @@ public abstract class MIDlet
 	}
 	
 	/**
-	 * Used by the application to notify the MIDlet that it is being destroyed
-	 * and resources should be cleaned up and such. When this is called the
-	 * program will be terminated.
+	 * Used by the application to notify the MIDlet that it has entered the
+	 * destroyed state and resources should be cleaned up and such. When this
+	 * is called the program will be terminated.
 	 *
 	 * @since 2019/04/15
 	 */
