@@ -15,16 +15,11 @@ import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
-import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
-import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 /**
  * This is a backend which utilizes the SquirrelJME UI interface for all of

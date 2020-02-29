@@ -11,12 +11,9 @@
 package net.multiphasicapps.collections;
 
 import java.util.AbstractSet;
-import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Set;
 
 /**

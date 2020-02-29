@@ -12,9 +12,7 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.game.EventSource;
-import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
 import net.multiphasicapps.squirrelquarrel.ui.SplitScreen;

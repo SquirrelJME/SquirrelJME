@@ -14,7 +14,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**

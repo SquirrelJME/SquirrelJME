@@ -13,13 +13,10 @@ package net.multiphasicapps.javac.syntax;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import net.multiphasicapps.classfile.MethodName;
-import net.multiphasicapps.javac.syntax.expr.ExpressionSyntax;
 import net.multiphasicapps.javac.syntax.expr.ExpressionSyntaxParsers;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**

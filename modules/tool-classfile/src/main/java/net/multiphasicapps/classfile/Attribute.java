@@ -12,8 +12,6 @@ package net.multiphasicapps.classfile;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * This represents a single attribute which exists within a class.

@@ -11,9 +11,6 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
 import java.util.Set;
 
 /**

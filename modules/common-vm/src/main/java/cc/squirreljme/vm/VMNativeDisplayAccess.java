@@ -12,7 +12,6 @@ package cc.squirreljme.vm;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
-import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.GraphicsFunction;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import cc.squirreljme.runtime.lcdui.gfx.SerializedGraphics;

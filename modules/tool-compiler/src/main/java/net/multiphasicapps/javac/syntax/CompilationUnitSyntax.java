@@ -22,7 +22,6 @@ import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**

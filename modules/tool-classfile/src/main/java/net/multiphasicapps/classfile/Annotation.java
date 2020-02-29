@@ -12,11 +12,8 @@ package net.multiphasicapps.classfile;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**

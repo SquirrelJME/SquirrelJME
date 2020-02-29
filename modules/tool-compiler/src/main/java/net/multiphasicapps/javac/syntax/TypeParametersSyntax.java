@@ -18,9 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableIterator;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
-import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
-import net.multiphasicapps.javac.token.TokenType;
 
 /**
  * This represents multiple type parameters.

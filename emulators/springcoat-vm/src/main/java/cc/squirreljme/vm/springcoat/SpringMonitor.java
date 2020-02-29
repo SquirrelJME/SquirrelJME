@@ -11,8 +11,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * This is a monitor which is associated with an object.

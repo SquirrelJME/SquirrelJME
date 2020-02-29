@@ -11,10 +11,7 @@ package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Globals;
-import cc.squirreljme.jvm.io.BinaryBlob;
 import cc.squirreljme.jvm.io.MemoryBlob;
-import cc.squirreljme.jvm.lib.ClassFileParser;
-import cc.squirreljme.jvm.lib.ClassInfoUtility;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
 import cc.squirreljme.jvm.SystemCallIndex;
 

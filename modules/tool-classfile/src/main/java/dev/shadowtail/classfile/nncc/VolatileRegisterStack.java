@@ -11,7 +11,6 @@ package dev.shadowtail.classfile.nncc;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * This is a stack which is used to manage which volatile registers are used.

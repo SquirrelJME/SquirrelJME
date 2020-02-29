@@ -10,8 +10,6 @@
 package dev.shadowtail.classfile.pool;
 
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
-import java.util.List;
-import java.util.ArrayList;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldDescriptor;

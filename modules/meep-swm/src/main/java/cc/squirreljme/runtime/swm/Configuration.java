@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.swm;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import java.util.Objects;
 import net.multiphasicapps.strings.StringUtils;
 

@@ -10,9 +10,7 @@
 package cc.squirreljme.runtime.gcf;
 
 import java.io.IOException;
-import javax.microedition.io.AccessPoint;
 import javax.microedition.io.ConnectionNotFoundException;
-import javax.microedition.io.SocketConnection;
 
 /**
  * This is a connection factory which does not support any IP based

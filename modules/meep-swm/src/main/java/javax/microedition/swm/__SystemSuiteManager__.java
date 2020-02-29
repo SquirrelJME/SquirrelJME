@@ -14,18 +14,13 @@ import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 import cc.squirreljme.runtime.swm.DependencyInfo;
 import cc.squirreljme.runtime.swm.InvalidSuiteException;
 import cc.squirreljme.runtime.swm.MatchResult;
-import cc.squirreljme.runtime.swm.ProvidedInfo;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 /**
  * This class manages the bridge for the suite manager to the native program

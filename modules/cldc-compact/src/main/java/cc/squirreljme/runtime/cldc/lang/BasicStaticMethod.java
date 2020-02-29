@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
  *
  * @since 2019/04/19
  */
+@Deprecated
 public final class BasicStaticMethod
 	implements StaticMethod
 {

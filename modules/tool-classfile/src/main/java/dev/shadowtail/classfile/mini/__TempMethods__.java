@@ -11,10 +11,7 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;

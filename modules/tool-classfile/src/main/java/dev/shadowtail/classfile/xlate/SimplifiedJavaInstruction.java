@@ -21,8 +21,6 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionMnemonics;
-import net.multiphasicapps.classfile.LookupSwitch;
-import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.classfile.TableSwitch;
 

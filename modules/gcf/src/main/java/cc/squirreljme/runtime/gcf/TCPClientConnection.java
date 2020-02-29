@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.microedition.io.AccessPoint;
-import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.SocketConnection;
 
 /**

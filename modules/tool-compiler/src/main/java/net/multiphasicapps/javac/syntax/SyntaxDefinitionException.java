@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.javac.syntax;
 
-import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.LocationAware;
 
 /**

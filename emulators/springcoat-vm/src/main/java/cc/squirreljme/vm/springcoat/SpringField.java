@@ -10,10 +10,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Field;
-import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldNameAndType;
 

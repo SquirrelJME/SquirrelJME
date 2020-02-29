@@ -12,8 +12,6 @@ package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * This represents a set of flags which are used as modifiers to inner classes.

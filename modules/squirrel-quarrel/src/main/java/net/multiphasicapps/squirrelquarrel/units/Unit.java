@@ -11,9 +11,6 @@
 package net.multiphasicapps.squirrelquarrel.units;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This represents and holds information for a single unit in the game.

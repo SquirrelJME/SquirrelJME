@@ -110,7 +110,7 @@ public final strictfp class FDMLMath
 	@ImplementationNote("Source http://www.netlib.org/fdlibm/e_log.c")
 	public static double log(double __v)
 	{
-		double hfsq, f, s, z, R, w, t1, t2, dk;
+		double hfsq, f, s, z, r, w, t1, t2, dk;
 		int k, hx, i, j;
 		int uulx;
 
@@ -164,13 +164,13 @@ public final strictfp class FDMLMath
 					return dk * _LN2_HI + dk * _LN2_LO;
 				}
 			
-			R = f * f * (0.5 - 0.33333333333333333 * f);
+			r = f * f * (0.5 - 0.33333333333333333 * f);
 			if (k == 0)
-				return f - R;
+				return f - r;
 			else
 			{
 				dk = (double)k;
-				return dk * _LN2_HI - ((R - dk * _LN2_LO) - f);
+				return dk * _LN2_HI - ((r - dk * _LN2_LO) - f);
 			}
 		}
 		
@@ -183,23 +183,23 @@ public final strictfp class FDMLMath
 		t1 = w * (_LG2 + w * (_LG4 + w * _LG6)); 
 		t2 = z * (_LG1 + w * (_LG3 + w * (_LG5 + w * _LG7))); 
 		i |= j;
-		R = t2 + t1;
+		r = t2 + t1;
 		
 		if (i > 0)
 		{
 			hfsq = 0.5 * f * f;
 			if (k == 0)
-				return f - (hfsq - s * (hfsq + R));
+				return f - (hfsq - s * (hfsq + r));
 			else
 				return dk * _LN2_HI -
-					((hfsq - (s * (hfsq + R) + dk * _LN2_LO)) - f);
+					((hfsq - (s * (hfsq + r) + dk * _LN2_LO)) - f);
 		}
 		else
 		{
 			if (k == 0)
-				return f - s * (f - R);
+				return f - s * (f - r);
 			else
-				return dk * _LN2_HI - (( s * (f - R) - dk * _LN2_LO) - f);
+				return dk * _LN2_HI - (( s * (f - r) - dk * _LN2_LO) - f);
 		}
 	}
 

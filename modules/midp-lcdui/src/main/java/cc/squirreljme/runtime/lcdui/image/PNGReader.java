@@ -19,7 +19,6 @@ import java.util.Arrays;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.CRC32Calculator;
-import net.multiphasicapps.io.InflaterInputStream;
 import net.multiphasicapps.io.SizeLimitedInputStream;
 import net.multiphasicapps.io.ZLibDecompressor;
 

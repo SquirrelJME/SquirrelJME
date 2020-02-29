@@ -10,18 +10,12 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
-import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
-import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
 import net.multiphasicapps.squirrelquarrel.ui.GameScreen;
 import net.multiphasicapps.squirrelquarrel.ui.SplitScreen;
-import net.multiphasicapps.squirrelquarrel.units.UnitReference;
 import net.multiphasicapps.squirrelquarrel.world.MegaTile;
 
 /**

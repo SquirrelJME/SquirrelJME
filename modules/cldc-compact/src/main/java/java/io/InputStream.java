@@ -10,7 +10,6 @@
 
 package java.io;
 
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 
 /**

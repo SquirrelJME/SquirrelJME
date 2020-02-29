@@ -14,10 +14,8 @@ import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.pcftosqf.pcf.PCFFont;
 
 /**

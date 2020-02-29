@@ -10,9 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import java.io.PrintStream;
-
 /**
  * This represents a task which can be run.
  *

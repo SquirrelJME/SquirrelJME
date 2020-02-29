@@ -11,8 +11,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.lcdui.common.CommonColors;
-import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
 
 public class Command
 	extends __Action__

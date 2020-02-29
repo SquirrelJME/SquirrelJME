@@ -9,8 +9,6 @@
 
 package dev.shadowtail.classfile.xlate;
 
-import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
-import dev.shadowtail.classfile.xlate.JavaStackState;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 

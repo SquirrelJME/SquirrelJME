@@ -18,7 +18,6 @@ import java.util.Set;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**

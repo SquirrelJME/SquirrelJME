@@ -14,12 +14,10 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
-import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This represents the bitmap from within a PCF file.

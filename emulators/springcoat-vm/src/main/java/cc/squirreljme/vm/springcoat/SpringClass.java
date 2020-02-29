@@ -11,10 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.Constants;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -604,7 +601,7 @@ public final class SpringClass
 		// The name and type of the method; If a static field was requested)}
 		if (rv.isStatic() != __static)
 			throw new SpringIncompatibleClassChangeException(String.format(
-				"BK0w %s %s", this.name, __nat, __static));
+				"BK0w %s %s %s", this.name, __nat, __static));
 		
 		return rv;
 	}

@@ -15,7 +15,6 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
-import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
  * This contains all of the information which is provided by a suite.

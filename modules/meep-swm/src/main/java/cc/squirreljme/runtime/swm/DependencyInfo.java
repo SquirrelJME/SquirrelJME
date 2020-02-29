@@ -17,14 +17,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.multiphasicapps.collections.ArrayUtils;
 import net.multiphasicapps.collections.EmptySet;
-import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.collections.UnmodifiableSet;
 import net.multiphasicapps.strings.StringUtils;
-import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
-import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
  * This contains the information which specifies all of the dependencies which

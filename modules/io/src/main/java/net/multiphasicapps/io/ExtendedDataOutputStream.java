@@ -320,7 +320,7 @@ public class ExtendedDataOutputStream
 			
 				// Unknown
 			default:
-				throw new IOException(String.format("BD04", endian));
+				throw new IOException(String.format("BD04 %s", endian));
 		}
 		
 		// Increase
@@ -352,7 +352,7 @@ public class ExtendedDataOutputStream
 			
 				// Unknown
 			default:
-				throw new IOException(String.format("BD04", endian));
+				throw new IOException(String.format("BD04 %s", endian));
 		}
 		
 		// Increase
@@ -384,7 +384,7 @@ public class ExtendedDataOutputStream
 			
 				// Unknown
 			default:
-				throw new IOException(String.format("BD04", endian));
+				throw new IOException(String.format("BD04 %s", endian));
 		}
 		
 		// Increase

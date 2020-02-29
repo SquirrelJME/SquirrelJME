@@ -10,8 +10,6 @@
 package cc.squirreljme.runtime.lcdui.phoneui;
 
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 /**
  * This class contains the definition and holders for the phone based user

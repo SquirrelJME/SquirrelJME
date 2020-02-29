@@ -12,7 +12,6 @@ package cc.squirreljme.vm.springcoat;
 
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
-import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldNameAndType;
 
 /**

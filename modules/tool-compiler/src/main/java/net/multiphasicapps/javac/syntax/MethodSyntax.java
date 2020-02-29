@@ -11,10 +11,6 @@
 package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.classfile.MethodName;
-import net.multiphasicapps.javac.token.BufferedTokenSource;
-import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
-import net.multiphasicapps.javac.token.TokenType;
 
 /**
  * This represents a method which is a member of a class and may contain Java

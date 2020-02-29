@@ -10,8 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.vm.VMException;
-
 /**
  * This is the base class for all exceptions within the spring machine.
  *

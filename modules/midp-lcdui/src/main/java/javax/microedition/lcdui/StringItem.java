@@ -11,7 +11,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public class StringItem
 	extends Item

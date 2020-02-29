@@ -25,11 +25,8 @@ import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +34,6 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
-import net.multiphasicapps.classfile.MethodHandle;
-import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**

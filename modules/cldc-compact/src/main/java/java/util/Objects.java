@@ -10,8 +10,6 @@
 
 package java.util;
 
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-
 /**
  * This class provides utility methods which are usually able to handle null
  * values.

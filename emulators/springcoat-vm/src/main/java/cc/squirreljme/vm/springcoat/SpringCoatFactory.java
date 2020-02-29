@@ -15,7 +15,6 @@ import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMFactory;
 import cc.squirreljme.vm.VMSuiteManager;
-import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 

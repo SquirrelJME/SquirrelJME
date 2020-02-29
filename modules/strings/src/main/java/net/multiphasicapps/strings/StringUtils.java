@@ -13,7 +13,6 @@ package net.multiphasicapps.strings;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * This class contains static methods which can be used for manipulating

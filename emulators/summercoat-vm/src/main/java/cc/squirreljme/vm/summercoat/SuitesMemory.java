@@ -9,10 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
-import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.packfile.MinimizedPackHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -20,7 +18,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.multiphasicapps.classfile.MethodFlags;
 
 /**
  * This class contains the memory information for every single suite which

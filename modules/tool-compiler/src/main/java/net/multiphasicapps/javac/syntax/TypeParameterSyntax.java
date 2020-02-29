@@ -11,9 +11,6 @@
 package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.javac.token.BufferedTokenSource;
-import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenSource;
-import net.multiphasicapps.javac.token.TokenType;
 
 /**
  * This represents a single type parameter which may be associated with a

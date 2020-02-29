@@ -14,7 +14,6 @@ import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.InvalidClassFormatException;

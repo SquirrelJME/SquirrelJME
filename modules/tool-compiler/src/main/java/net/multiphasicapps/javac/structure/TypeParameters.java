@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.classfile.Identifier;
 import net.multiphasicapps.javac.syntax.TypeParametersSyntax;
 import net.multiphasicapps.javac.syntax.TypeParameterSyntax;
 

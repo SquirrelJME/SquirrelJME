@@ -11,7 +11,6 @@
 package net.multiphasicapps.io;
 
 import java.io.Closeable;
-import java.io.IOException;
 
 /**
  * This interface is used for compressed streams.

@@ -14,7 +14,6 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.ClassData;
 import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
-import cc.squirreljme.runtime.cldc.ref.PrimitiveWeakReference;
 
 /**
  * This contains accessors for object information.

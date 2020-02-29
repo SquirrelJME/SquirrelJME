@@ -11,11 +11,7 @@
 package net.multiphasicapps.javac.syntax.expr;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import net.multiphasicapps.classfile.BinaryName;
-import net.multiphasicapps.javac.syntax.QualifiedIdentifierSyntax;
-import net.multiphasicapps.javac.syntax.SyntaxDefinitionException;
 import net.multiphasicapps.javac.syntax.SyntaxParseException;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;

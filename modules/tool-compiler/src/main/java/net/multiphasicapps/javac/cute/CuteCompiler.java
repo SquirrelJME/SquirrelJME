@@ -14,7 +14,6 @@ import java.io.PrintStream;
 import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
-import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerOptions;
 import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;

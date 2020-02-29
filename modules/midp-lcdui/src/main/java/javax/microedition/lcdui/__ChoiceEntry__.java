@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.common.CommonColors;
-
 /**
  * This is a package public mutable class which represents single choices
  * within anything which uses choices.

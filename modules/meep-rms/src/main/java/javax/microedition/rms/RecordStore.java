@@ -11,20 +11,15 @@
 package javax.microedition.rms;
 
 import cc.squirreljme.runtime.cldc.lang.ImplementationClass;
-import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
-import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.rms.VinylLock;
 import cc.squirreljme.runtime.rms.VinylRecord;
 import cc.squirreljme.runtime.rms.SuiteIdentifier;
 import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
-import cc.squirreljme.runtime.swm.SuiteName;
-import cc.squirreljme.runtime.swm.SuiteVendor;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
 
 /**

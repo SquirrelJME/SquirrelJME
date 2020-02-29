@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
-
 public class Gauge
 	extends Item
 {

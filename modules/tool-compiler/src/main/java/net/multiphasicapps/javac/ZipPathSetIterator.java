@@ -12,7 +12,6 @@ package net.multiphasicapps.javac;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 
 /**

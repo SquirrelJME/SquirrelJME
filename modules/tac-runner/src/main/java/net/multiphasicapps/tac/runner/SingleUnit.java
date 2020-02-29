@@ -13,7 +13,6 @@ package net.multiphasicapps.tac.runner;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Task;
-import javax.microedition.swm.TaskManager;
 import javax.microedition.swm.TaskStatus;
 
 /**

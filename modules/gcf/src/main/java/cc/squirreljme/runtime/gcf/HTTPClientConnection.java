@@ -14,13 +14,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import javax.microedition.io.AccessPoint;
-import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.HttpConnection;
-import javax.microedition.io.SocketConnection;
-import javax.microedition.io.StreamConnection;
 
 /**
  * This is a connection to a remote HTTP server, this runs off an existing

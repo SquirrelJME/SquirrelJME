@@ -11,7 +11,6 @@
 package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
 public final class Double
@@ -34,13 +33,13 @@ public final class Double
 		+0x0.0000000000001p-1022D;
 	
 	public static final double NEGATIVE_INFINITY =
-		-1.0D / 0.0D;
+		Double.longBitsToDouble(-4503599627370496L);
 	
 	public static final double NaN =
-		0.0D / 0.0D;
+		Double.longBitsToDouble(9221120237041090560L);
 	
 	public static final double POSITIVE_INFINITY =
-		1.0D / 0.0D;
+		Double.longBitsToDouble(9218868437227405312L);
 	
 	/** The number of bits double requires for storage. */
 	public static final int SIZE =

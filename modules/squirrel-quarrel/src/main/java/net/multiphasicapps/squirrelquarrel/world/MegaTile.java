@@ -10,16 +10,6 @@
 
 package net.multiphasicapps.squirrelquarrel.world;
 
-import java.io.DataInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * This represents a single mega tile which represents a small region in the
  * level.

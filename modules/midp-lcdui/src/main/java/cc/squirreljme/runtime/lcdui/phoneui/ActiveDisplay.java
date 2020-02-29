@@ -18,10 +18,8 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
 import javax.microedition.lcdui.Ticker;
-import java.util.Arrays;
 
 /**
  * This contains the display display along with the internal image buffer.

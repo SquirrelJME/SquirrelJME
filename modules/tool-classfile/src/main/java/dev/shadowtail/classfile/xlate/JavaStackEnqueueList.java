@@ -10,7 +10,6 @@
 package dev.shadowtail.classfile.xlate;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;

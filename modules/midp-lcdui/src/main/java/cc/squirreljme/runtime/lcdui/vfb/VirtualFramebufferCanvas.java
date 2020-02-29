@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.lcdui.vfb;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 /**
  * This is a virtualized framebuffer that provides a LCDUI canvas.

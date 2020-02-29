@@ -11,7 +11,6 @@
 package net.multiphasicapps.io;
 
 import java.io.InputStream;
-import java.io.IOException;
 
 /**
  * This interface is used to describe a compression stream which is used as

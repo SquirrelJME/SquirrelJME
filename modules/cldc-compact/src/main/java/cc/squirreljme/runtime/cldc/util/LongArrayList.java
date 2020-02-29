@@ -90,7 +90,7 @@ public class LongArrayList
 	public long set(int __i, long __v)
 		throws IndexOutOfBoundsException
 	{
-		return this.set(__i, __v);
+		return this.set(__i, Long.valueOf(__v));
 	}
 	
 	/**

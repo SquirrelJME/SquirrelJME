@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;

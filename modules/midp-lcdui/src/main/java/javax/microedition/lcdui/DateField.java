@@ -10,7 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.util.Date;
 import java.util.TimeZone;
 

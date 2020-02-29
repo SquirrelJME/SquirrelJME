@@ -9,17 +9,12 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
-import net.multiphasicapps.classfile.ClassFile;
 
 /**
  * This represents the single virtual memory space for suite memory.

@@ -11,7 +11,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
  * A ticker contains an infinitely scrolling message.

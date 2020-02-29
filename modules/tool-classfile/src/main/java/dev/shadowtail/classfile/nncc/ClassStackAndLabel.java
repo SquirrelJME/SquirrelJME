@@ -11,7 +11,6 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.JavaStackState;
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassName;
 
 /**

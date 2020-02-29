@@ -11,7 +11,6 @@
 package net.multiphasicapps.markdownwriter;
 
 import java.io.IOException;
-import java.util.Deque;
 
 /**
  * This is the base class for all sections within the markdown writer, this is

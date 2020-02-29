@@ -10,10 +10,6 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
-import cc.squirreljme.runtime.cldc.asm.SystemAccess;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-
 /**
  * This represents the type of operating system SquirrelJME is running on.
  *

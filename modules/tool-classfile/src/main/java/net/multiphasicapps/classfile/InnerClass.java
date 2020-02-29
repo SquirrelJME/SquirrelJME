@@ -10,9 +10,6 @@
 
 package net.multiphasicapps.classfile;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-
 /**
  * This represents an inner class that is contained within an outer class, it
  * is used by the compiler to determine how classes are contained within each

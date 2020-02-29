@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.task;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.lib.ClassLibrary;
 import cc.squirreljme.jvm.lib.ClassPath;
 

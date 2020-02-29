@@ -10,9 +10,7 @@
 
 package java.util;
 
-import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
 
 public class WeakHashMap<K, V>
 	extends AbstractMap<K, V>

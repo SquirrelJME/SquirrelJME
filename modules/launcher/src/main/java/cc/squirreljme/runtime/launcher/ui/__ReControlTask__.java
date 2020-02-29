@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import java.util.TimerTask;
 import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.swm.Task;
 import javax.microedition.swm.TaskStatus;
 

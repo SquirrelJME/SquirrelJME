@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.javac.structure;
 
-import net.multiphasicapps.classfile.Identifier;
-
 /**
  * This represents a single type parameter which is used to describe generic
  * type information.

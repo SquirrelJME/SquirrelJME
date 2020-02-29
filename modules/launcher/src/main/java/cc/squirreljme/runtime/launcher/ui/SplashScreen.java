@@ -11,13 +11,11 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
-import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 /**
  * This is the splash screen for the launcher which always shows.

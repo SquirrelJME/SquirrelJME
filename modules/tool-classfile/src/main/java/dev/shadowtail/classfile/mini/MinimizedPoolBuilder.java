@@ -12,31 +12,22 @@ package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
-import dev.shadowtail.classfile.pool.FieldAccessTime;
-import dev.shadowtail.classfile.pool.FieldAccessType;
-import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldDescriptor;
-import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
-import net.multiphasicapps.classfile.MethodName;
-import net.multiphasicapps.collections.IntegerList;
-import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This class is used to build the constant pool for a minimized class.

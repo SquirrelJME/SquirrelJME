@@ -90,7 +90,7 @@ public class FloatArrayList
 	public float set(int __i, float __v)
 		throws IndexOutOfBoundsException
 	{
-		return this.set(__i, __v);
+		return this.set(__i, Float.valueOf(__v));
 	}
 	
 	/**

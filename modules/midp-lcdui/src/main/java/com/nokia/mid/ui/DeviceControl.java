@@ -12,7 +12,6 @@ package com.nokia.mid.ui;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.DeviceFeedbackType;
 import cc.squirreljme.jvm.Framebuffer;
-import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 
 /**

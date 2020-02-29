@@ -14,8 +14,6 @@ import cc.squirreljme.runtime.lcdui.font.FontSizeConversion;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import java.io.InputStream;
 import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 

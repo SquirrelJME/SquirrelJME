@@ -12,8 +12,6 @@ package net.multiphasicapps.javac.classtree;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 

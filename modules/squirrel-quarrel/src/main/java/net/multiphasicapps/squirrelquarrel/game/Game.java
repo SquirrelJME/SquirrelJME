@@ -10,11 +10,6 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
-import java.io.DataInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.player.Players;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;

@@ -12,8 +12,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.TextStorage;
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import java.util.Arrays;
 
 /**
  * This text class is one which handles all of the text metrics and drawing and

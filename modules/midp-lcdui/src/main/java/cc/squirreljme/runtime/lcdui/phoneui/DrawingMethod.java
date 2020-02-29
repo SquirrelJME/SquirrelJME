@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.FileSelector;
 import javax.microedition.lcdui.Font;

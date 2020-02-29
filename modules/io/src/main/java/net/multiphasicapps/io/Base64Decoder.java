@@ -14,7 +14,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
 
 /**
  * This decodes the base64 character set, ignoring invalid characters, and

@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.collections.UnmodifiableArrayList;
 
 /**
  * This represents a field in a class which is used to store values either as

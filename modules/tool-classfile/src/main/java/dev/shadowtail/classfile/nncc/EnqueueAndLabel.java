@@ -11,7 +11,6 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * This contains an enqueue and a label.

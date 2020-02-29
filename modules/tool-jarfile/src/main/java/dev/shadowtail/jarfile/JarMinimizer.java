@@ -9,47 +9,20 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.jvm.ClassInfo;
-import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
-import dev.shadowtail.classfile.mini.MinimizedClassFile;
-import dev.shadowtail.classfile.mini.MinimizedField;
-import dev.shadowtail.classfile.mini.MinimizedMethod;
-import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.mini.Minimizer;
-import dev.shadowtail.classfile.pool.AccessedField;
-import dev.shadowtail.classfile.pool.ClassPool;
-import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
-import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.InvokeType;
-import dev.shadowtail.classfile.pool.MethodIndex;
-import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import net.multiphasicapps.classfile.FieldDescriptor;
-import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.ClassNames;
-import net.multiphasicapps.classfile.InvalidClassFormatException;
-import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
-import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
