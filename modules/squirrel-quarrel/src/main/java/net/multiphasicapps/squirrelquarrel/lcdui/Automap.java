@@ -12,8 +12,8 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import net.multiphasicapps.squirrelquarrel.world.World;
 import net.multiphasicapps.squirrelquarrel.ui.Viewport;
+import net.multiphasicapps.squirrelquarrel.world.World;
 
 /**
  * This class is used to draw and update the automap which is used to give the

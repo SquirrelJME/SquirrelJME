@@ -12,9 +12,9 @@ package java.nio.channels;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.file.attribute.FileAttribute;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 import java.util.Set;
 
 public abstract class FileChannel

@@ -12,8 +12,8 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.font.FontSizeConversion;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 

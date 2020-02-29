@@ -10,15 +10,15 @@
 
 package net.multiphasicapps.javac;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.nio.file.attribute.FileTime;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileTime;
 
 /**
  * This is input which uses a given file as input.

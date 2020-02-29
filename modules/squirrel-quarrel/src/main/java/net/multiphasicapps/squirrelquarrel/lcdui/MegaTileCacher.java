@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import net.multiphasicapps.squirrelquarrel.world.World;
 import net.multiphasicapps.squirrelquarrel.world.MegaTile;
 import net.multiphasicapps.squirrelquarrel.world.TerrainType;
 import net.multiphasicapps.squirrelquarrel.world.Tile;
+import net.multiphasicapps.squirrelquarrel.world.World;
 
 /**
  * This is used to cache mega tiles as single large images since drawing a

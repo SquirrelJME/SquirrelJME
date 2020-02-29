@@ -11,8 +11,8 @@
 package net.multiphasicapps.collections;
 
 import java.util.AbstractList;
-import java.util.RandomAccess;
 import java.util.List;
+import java.util.RandomAccess;
 
 /**
  * This is a list representation of an array which cannot be modified.

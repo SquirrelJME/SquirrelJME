@@ -9,9 +9,9 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
-import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.SuiteDependency;
 import cc.squirreljme.plugin.swm.SuiteDependencyLevel;
 import cc.squirreljme.plugin.swm.SuiteDependencyType;

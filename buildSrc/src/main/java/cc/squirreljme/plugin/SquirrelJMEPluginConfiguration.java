@@ -15,12 +15,11 @@ import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
 import cc.squirreljme.plugin.swm.JavaMEProfile;
 import cc.squirreljme.plugin.swm.JavaMEStandard;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import org.gradle.api.Project;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Allows SquirrelJME specific parts of modules to be configured.

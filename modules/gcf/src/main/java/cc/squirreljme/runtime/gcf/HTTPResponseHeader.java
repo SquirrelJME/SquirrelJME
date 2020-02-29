@@ -9,8 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

@@ -15,10 +15,10 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import cc.squirreljme.runtime.cldc.lang.ClassData;
+import cc.squirreljme.runtime.cldc.lang.ClassFlag;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import cc.squirreljme.runtime.cldc.lang.ClassFlag;
 
 /**
  * This class is the in-language representation of a Java class, the CLDC

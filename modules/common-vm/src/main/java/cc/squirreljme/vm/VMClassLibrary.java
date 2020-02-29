@@ -10,8 +10,8 @@
 
 package cc.squirreljme.vm;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This class represents a class library which represents a single JAR file

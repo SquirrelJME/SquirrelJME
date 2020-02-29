@@ -19,9 +19,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
 
-import org.gradle.jvm.tasks.Jar;
-import org.gradle.language.jvm.tasks.ProcessResources;
-
 /**
  * Plugin for all SquirrelJME operations that are needed in Gradle in order
  * to provide the correct functionality.

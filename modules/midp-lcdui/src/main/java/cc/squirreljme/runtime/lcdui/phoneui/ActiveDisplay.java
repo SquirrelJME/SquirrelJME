@@ -9,8 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.phoneui;
 
-import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import javax.microedition.lcdui.Command;

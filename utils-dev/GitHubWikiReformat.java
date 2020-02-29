@@ -8,11 +8,6 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-import java.util.regex.*;
-
 /**
  * Reformats a Wiki page for the GitHub Wiki.
  *

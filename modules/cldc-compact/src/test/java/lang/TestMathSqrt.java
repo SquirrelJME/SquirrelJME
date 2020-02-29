@@ -10,8 +10,8 @@
 
 package lang;
 
-import net.multiphasicapps.tac.TestRunnable;
 import java.util.Random;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
  * Tests the square root of a number.

@@ -9,8 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.common;
 
-import javax.microedition.lcdui.Font;
 import java.util.Arrays;
+import javax.microedition.lcdui.Font;
 
 /**
  * Manages the storage for the text in multiple different arrays at once

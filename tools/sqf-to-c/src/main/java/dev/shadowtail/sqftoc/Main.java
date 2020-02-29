@@ -9,9 +9,9 @@
 
 package dev.shadowtail.sqftoc;
 
+import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import java.io.DataInputStream;
 import java.io.PrintStream;
-import cc.squirreljme.runtime.lcdui.font.SQFFont;
 
 /**
  * Converts SQF to C file.

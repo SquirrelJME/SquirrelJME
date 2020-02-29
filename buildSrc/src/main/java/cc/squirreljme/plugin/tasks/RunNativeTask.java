@@ -12,8 +12,6 @@ package cc.squirreljme.plugin.tasks;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
@@ -21,9 +19,7 @@ import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.jvm.tasks.Jar;
-import org.gradle.process.JavaDebugOptions;
 import org.gradle.process.JavaExecSpec;
 
 /**

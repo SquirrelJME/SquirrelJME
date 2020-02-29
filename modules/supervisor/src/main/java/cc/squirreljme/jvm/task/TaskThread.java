@@ -11,9 +11,9 @@ package cc.squirreljme.jvm.task;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Globals;
+import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.io.MemoryBlob;
 import cc.squirreljme.jvm.lib.ClassNameUtils;
-import cc.squirreljme.jvm.SystemCallIndex;
 
 /**
  * This represents a single thread, which is associated with a task.

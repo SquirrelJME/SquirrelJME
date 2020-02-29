@@ -10,11 +10,11 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 import cc.squirreljme.runtime.swm.DependencyInfo;
 import cc.squirreljme.runtime.swm.InvalidSuiteException;
 import cc.squirreljme.runtime.swm.MatchResult;
-import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;

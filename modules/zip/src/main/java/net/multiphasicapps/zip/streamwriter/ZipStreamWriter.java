@@ -17,8 +17,8 @@ import java.util.LinkedList;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.ExtendedDataOutputStream;
-import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipCRCConstants;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This class is used to write to ZIP files in an unknown and stream based

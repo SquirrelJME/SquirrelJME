@@ -10,11 +10,11 @@
 package net.multiphasicapps.io;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.lang.ref.Reference;
 import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;

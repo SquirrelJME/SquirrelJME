@@ -11,23 +11,23 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.ConfigRomType;
-import dev.shadowtail.classfile.nncc.NativeCode;
-import dev.shadowtail.jarfile.MinimizedJarHeader;
-import dev.shadowtail.packfile.MinimizedPackHeader;
-import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMFactory;
 import cc.squirreljme.vm.VMSuiteManager;
+import cc.squirreljme.vm.VirtualMachine;
+import dev.shadowtail.classfile.nncc.NativeCode;
+import dev.shadowtail.jarfile.MinimizedJarHeader;
+import dev.shadowtail.packfile.MinimizedPackHeader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
 import java.util.Map;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 

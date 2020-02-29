@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.zip.blockreader;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This is used to read directly from the block accessor.

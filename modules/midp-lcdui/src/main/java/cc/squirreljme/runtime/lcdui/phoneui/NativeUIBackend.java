@@ -11,8 +11,8 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Framebuffer;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;

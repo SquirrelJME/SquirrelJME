@@ -10,8 +10,8 @@
 
 package util;
 
-import net.multiphasicapps.tac.TestRunnable;
 import java.util.Random;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
  * Tests the random number generator, integer values only.

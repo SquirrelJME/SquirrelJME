@@ -8,13 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import net.multiphasicapps.tac.TestSupplier;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import net.multiphasicapps.io.CompressionLevel;
-import net.multiphasicapps.io.InflaterInputStream;
 import net.multiphasicapps.io.DeflaterOutputStream;
+import net.multiphasicapps.io.InflaterInputStream;
+import net.multiphasicapps.tac.TestSupplier;
 
 /**
  * Tests the deflater and then the inflater, making sure that compressed

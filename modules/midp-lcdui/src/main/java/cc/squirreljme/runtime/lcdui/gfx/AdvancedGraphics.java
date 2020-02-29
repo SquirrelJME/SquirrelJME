@@ -12,10 +12,10 @@ package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
+import javax.microedition.lcdui.game.Sprite;
 
 /**
  * This class contains the advanced graphics functions which uses

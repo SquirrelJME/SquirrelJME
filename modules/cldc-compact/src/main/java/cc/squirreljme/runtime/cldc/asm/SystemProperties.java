@@ -10,9 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-import cc.squirreljme.runtime.cldc.SquirrelJME;
 
 /**
  * Access to system properties.

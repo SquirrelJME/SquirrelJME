@@ -10,9 +10,9 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
 import javax.microedition.lcdui.Image;

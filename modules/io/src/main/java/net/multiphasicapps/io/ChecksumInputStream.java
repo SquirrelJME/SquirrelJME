@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.io;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * The forwards data from an input stream and calculates the checksum for that

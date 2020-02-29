@@ -9,8 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This is an input which tracks if it has been closed, if EOF is read from

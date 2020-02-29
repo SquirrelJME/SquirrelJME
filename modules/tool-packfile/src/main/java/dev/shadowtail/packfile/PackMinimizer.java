@@ -10,8 +10,8 @@
 package dev.shadowtail.packfile;
 
 import cc.squirreljme.vm.VMClassLibrary;
-import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
+import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;

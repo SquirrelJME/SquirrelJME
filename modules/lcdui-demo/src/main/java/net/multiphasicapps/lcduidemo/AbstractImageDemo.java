@@ -9,13 +9,13 @@
 
 package net.multiphasicapps.lcduidemo;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 

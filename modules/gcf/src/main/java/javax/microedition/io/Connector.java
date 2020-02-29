@@ -16,9 +16,9 @@ import cc.squirreljme.runtime.gcf.IPAddress;
 import cc.squirreljme.runtime.gcf.IPConnectionFactory;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**

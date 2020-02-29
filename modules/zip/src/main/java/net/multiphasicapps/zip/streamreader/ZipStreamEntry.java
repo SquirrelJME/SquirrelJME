@@ -10,13 +10,13 @@
 
 package net.multiphasicapps.zip.streamreader;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.DecompressionInputStream;
 import net.multiphasicapps.io.DynamicHistoryInputStream;
-import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipCRCConstants;
+import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipException;
 
 /**

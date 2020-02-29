@@ -10,14 +10,14 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.vm.VMClassLibrary;
-import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
+import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import net.multiphasicapps.classfile.ClassFile;

@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.javac.syntax.AnnotationSyntax;
-import net.multiphasicapps.javac.syntax.FormalParametersSyntax;
 import net.multiphasicapps.javac.syntax.FormalParameterSyntax;
-import net.multiphasicapps.javac.syntax.ModifiersSyntax;
+import net.multiphasicapps.javac.syntax.FormalParametersSyntax;
 import net.multiphasicapps.javac.syntax.ModifierSyntax;
+import net.multiphasicapps.javac.syntax.ModifiersSyntax;
 
 /**
  * This represents a group of formal parameters.

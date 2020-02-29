@@ -9,13 +9,11 @@
 
 import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerException;
-import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerInputLocation;
-import net.multiphasicapps.javac.CompilerOptions;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.CompilerService;
-import net.multiphasicapps.javac.ResourcePathSet;
 import net.multiphasicapps.javac.NullCompilerOutput;
+import net.multiphasicapps.javac.ResourcePathSet;
 import net.multiphasicapps.tac.TestRunnable;
 import net.multiphasicapps.tac.UntestableException;
 

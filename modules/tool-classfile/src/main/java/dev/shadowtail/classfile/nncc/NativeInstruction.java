@@ -14,10 +14,10 @@ import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
-import java.util.Arrays;
-import java.util.Collection;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * This represents a single instruction.

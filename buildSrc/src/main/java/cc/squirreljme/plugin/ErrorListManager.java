@@ -1,9 +1,6 @@
 package cc.squirreljme.plugin;
 
 import cc.squirreljme.plugin.util.CommentReader;
-import org.gradle.api.Project;
-import org.gradle.api.tasks.SourceTask;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.TreeMap;
+import org.gradle.api.Project;
+import org.gradle.api.tasks.SourceTask;
 
 /**
  * This is used to get the error lists from a project.

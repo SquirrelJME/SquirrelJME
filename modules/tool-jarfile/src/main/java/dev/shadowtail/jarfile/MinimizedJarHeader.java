@@ -10,8 +10,8 @@
 package dev.shadowtail.jarfile;
 
 import java.io.DataInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**

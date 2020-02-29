@@ -19,7 +19,6 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.collections.UnmodifiableMap;
-import net.multiphasicapps.javac.classtree.Packages;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerInputLocation;
@@ -29,6 +28,7 @@ import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.LocationAware;
 import net.multiphasicapps.javac.MessageType;
+import net.multiphasicapps.javac.classtree.Packages;
 import net.multiphasicapps.javac.structure.RuntimeInput;
 
 /**

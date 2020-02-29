@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.javac.cute;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;

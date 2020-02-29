@@ -15,8 +15,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.javac.syntax.AnnotationSyntax;
 import net.multiphasicapps.javac.syntax.BasicModifierSyntax;
-import net.multiphasicapps.javac.syntax.ModifiersSyntax;
 import net.multiphasicapps.javac.syntax.ModifierSyntax;
+import net.multiphasicapps.javac.syntax.ModifiersSyntax;
 
 /**
  * Represents modifiers that may be associated with a structure.

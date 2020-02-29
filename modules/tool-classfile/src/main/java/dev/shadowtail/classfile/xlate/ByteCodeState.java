@@ -9,13 +9,13 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * This represents the state of the byte code.

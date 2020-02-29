@@ -10,9 +10,9 @@
 package cc.squirreljme.jvm.lib;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.jvm.io.BinaryBlob;
 import cc.squirreljme.jvm.io.MemoryBlob;
-import cc.squirreljme.jvm.JVMFunction;
 
 /**
  * This represents a single boot library.
