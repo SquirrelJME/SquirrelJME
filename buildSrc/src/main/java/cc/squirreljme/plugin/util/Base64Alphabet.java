@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin;
+package cc.squirreljme.plugin.util;
 
 /**
  * This represents the alphabet that is used for Base64.

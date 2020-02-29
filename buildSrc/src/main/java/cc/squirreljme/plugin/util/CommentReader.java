@@ -1,4 +1,4 @@
-package cc.squirreljme.plugin;
+package cc.squirreljme.plugin.util;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This class contains various collections " +
 	"which can be used to store objects."

@@ -1,5 +1,5 @@
-import cc.squirreljme.plugin.JavaMEMidletType
-import cc.squirreljme.plugin.JavaMEStandard
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
 
 description = "This provides an implementation which is used " +
 	"to access cellular networks."

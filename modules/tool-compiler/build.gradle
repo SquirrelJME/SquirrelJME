@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "Contains the Java compiler and documentation tool."
 version = rootProject.version

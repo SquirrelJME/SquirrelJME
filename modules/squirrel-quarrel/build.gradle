@@ -1,5 +1,5 @@
-import cc.squirreljme.plugin.JavaMEMidlet
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "A turn based strategy involving squirrels and " +
  "lots of acorns! Keep on your claws and horde them all!"

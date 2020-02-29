@@ -1,5 +1,5 @@
-import cc.squirreljme.plugin.JavaMEMidlet
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This project contains the graphical launcher " +
 	"that SquirrelJME uses to act as a front end interface to running user" +

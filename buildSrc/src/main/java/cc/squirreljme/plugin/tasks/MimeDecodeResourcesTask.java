@@ -1,6 +1,6 @@
 package cc.squirreljme.plugin.tasks;
 
-import cc.squirreljme.plugin.MIMEFileDecoder;
+import cc.squirreljme.plugin.util.MIMEFileDecoder;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,5 +1,5 @@
-import cc.squirreljme.plugin.JavaMEMidlet
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This is a demo which is used to demonstrate " +
 	"how the graphic operations operate."

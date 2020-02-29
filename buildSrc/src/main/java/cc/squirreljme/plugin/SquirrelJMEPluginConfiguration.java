@@ -10,8 +10,14 @@
 
 package cc.squirreljme.plugin;
 
+import cc.squirreljme.plugin.swm.JavaMEConfiguration;
+import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import cc.squirreljme.plugin.swm.JavaMEMidletType;
+import cc.squirreljme.plugin.swm.JavaMEProfile;
+import cc.squirreljme.plugin.swm.JavaMEStandard;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.ResolveException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,16 +52,16 @@ public class SquirrelJMEPluginConfiguration
 	public boolean ignoreInLauncher;
 	
 	/** The configurations this defines. */
-	public List<JavaMEConfiguration> definedConfigurations =
-		new ArrayList<>();
+	public Set<JavaMEConfiguration> definedConfigurations =
+		new LinkedHashSet<>();
 	
 	/** The profiles this defines. */
-	public List<JavaMEProfile> definedProfiles =
-		new ArrayList<>();
+	public Set<JavaMEProfile> definedProfiles =
+		new LinkedHashSet<>();
 	
 	/** The standards defined. */
-	public List<JavaMEStandard> definedStandards =
-		new ArrayList<>();
+	public Set<JavaMEStandard> definedStandards =
+		new LinkedHashSet<>();
 	
 	/** The main class entry point (optional). */
 	public String mainClass;

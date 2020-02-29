@@ -1,5 +1,5 @@
-import cc.squirreljme.plugin.JavaMEConfiguration
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEConfiguration
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
 description = "This is the standard Java ME 8 Connection " +

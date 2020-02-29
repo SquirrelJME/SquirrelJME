@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This provides a decoder for standardJava " +
 	"manifest files."

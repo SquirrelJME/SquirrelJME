@@ -1,4 +1,4 @@
-import cc.squirreljme.plugin.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 description = "This contains support for reading class files."
 version = rootProject.version
