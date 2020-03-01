@@ -23,7 +23,8 @@ import org.gradle.jvm.tasks.Jar;
 import org.gradle.process.JavaExecSpec;
 
 /**
- * Not Described
+ * Launches the program using the host system which is backed by the
+ * base emulator.
  *
  * @since 2020/02/29
  */

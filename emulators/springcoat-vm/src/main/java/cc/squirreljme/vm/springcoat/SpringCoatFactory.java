@@ -51,7 +51,7 @@ public class SpringCoatFactory
 		SpringTaskManager tm = new SpringTaskManager(__sm, __ps, __sprops);
 		return new SpringMachine(__sm, new SpringClassLoader(__cp),
 			tm, __maincl, __ismid, -1,
-			__gd, __ps, tm.nativedisplay, __sprops, __args);
+			__gd, __ps, __sprops, __args);
 	}
 }
 

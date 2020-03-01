@@ -15,7 +15,6 @@ import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
-import cc.squirreljme.vm.VMNativeDisplayAccess;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
@@ -72,9 +71,6 @@ public final class SpringMachine
 	
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
-	
-	/** Access to the native display. */
-	protected final VMNativeDisplayAccess nativedisplay;
 	
 	/** Pointer manager. */
 	protected final SpringPointerManager pointers =
@@ -147,11 +143,10 @@ public final class SpringMachine
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
 		SpringTaskManager __tm, String __bootcl, boolean __bootmid,
 		int __bootdx, int __gd, ProfilerSnapshot __profiler,
-		VMNativeDisplayAccess __nda, Map<String, String> __sprops,
-		String... __args)
+		Map<String, String> __sprops, String... __args)
 		throws NullPointerException
 	{
-		if (__cl == null || __sm == null || __nda == null)
+		if (__cl == null || __sm == null)
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
@@ -161,7 +156,6 @@ public final class SpringMachine
 		this.bootmid = __bootmid;
 		this.bootdx = __bootdx;
 		this.guestdepth = __gd;
-		this.nativedisplay = __nda;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
 			new ProfilerSnapshot());
