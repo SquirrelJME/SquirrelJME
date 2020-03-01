@@ -245,7 +245,7 @@ public final class JarMinimizer
 		{
 			// The class being booted
 			LoadedClassInfo booting = bootstrap.findClass(
-				"cc/squirreljme/jvm/Bootstrap");
+				"cc/squirreljme/jvm/boot/Bootstrap");
 			
 			// Get all the bootstrap information before it is written!
 			int bootpool = booting.poolPointer();
@@ -257,7 +257,7 @@ public final class JarMinimizer
 			
 			// Get the handler for system calls and such
 			LoadedClassInfo tshclass = bootstrap.findClass(
-				"cc/squirreljme/jvm/task/TaskSysCallHandler");
+				"cc/squirreljme/jvm/boot/task/TaskSysCallHandler");
 			int scmeth = tshclass.methodCodeAddress(
 				new MethodName("taskSysCall"), null),
 				scpool = tshclass.poolPointer();

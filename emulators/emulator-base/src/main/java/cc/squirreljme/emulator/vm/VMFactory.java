@@ -193,17 +193,20 @@ public abstract class VMFactory
 					StandardOpenOption.READ);
 				ZipStreamReader zip = new ZipStreamReader(in))
 			{
-				System.err.printf("Loading %s...%n", path);
+				String normalName = VMFactory.__normalizeName(
+					path.getFileName().toString());
+				
+				System.err.printf("Loading %s (%s)...%n", normalName, path);
 				suites.add(InMemoryClassLibrary.loadZip(
-					path.getFileName().toString(), zip));
+					normalName, zip));
+				
+				// Use the true name here
+				classpath.add(normalName);
 			}
 			catch (IOException e)
 			{
 				throw new RuntimeException("Could not load library.", e);
 			}
-			
-			// Seed classpath with the one we requested
-			classpath.add(path.getFileName().toString());
 		}
 		
 		// Run the VM, but always make sure we can
@@ -336,7 +339,14 @@ public abstract class VMFactory
 		int numlibs = __cp.length;
 		VMClassLibrary[] classpath = new VMClassLibrary[numlibs];
 		for (int i = 0; i < numlibs; i++)
-			classpath[i] = __sm.loadLibrary(__cp[i]);
+		{
+			VMClassLibrary lib = __sm.loadLibrary(__cp[i]);
+			if (lib == null)
+				throw new IllegalArgumentException(String.format(
+					"Library %s not in classpath!", __cp[i]));
+			
+			classpath[i] = lib;
+		}
 		
 		// Need to load the manifest where the entry points will be
 		VMClassLibrary bl = classpath[numlibs - 1];
@@ -631,6 +641,42 @@ public abstract class VMFactory
 		{
 			return __def;
 		}
+	}
+	
+	/**
+	 * Normalizes the name of the library.
+	 *
+	 * @param __name The name of the JAR.
+	 * @return The normalized name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/01
+	 */
+	private static String __normalizeName(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the base name of the JAR
+		if (__name.endsWith(".jar"))
+			__name = __name.substring(0, __name.length() - ".jar".length());
+		
+		// Chop down potential foo"-0.4.0" from the end
+		for (int n = __name.length(), i = n - 1; i >= 0; i--)
+		{
+			char c = __name.charAt(i);
+			
+			// Still potentially a version bit
+			if (c == '.' || c == '-' || (c >= '0' && c <= '9'))
+				__name = __name.substring(0, i);
+			
+			// Do not need
+			else
+				break;
+		}
+		
+		// Use this name
+		return __name + ".jar";
 	}
 }
 

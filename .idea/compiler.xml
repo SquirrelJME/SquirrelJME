@@ -60,6 +60,8 @@
       <module name="squirreljme.modules.strings.testFixtures" target="1.7" />
       <module name="squirreljme.modules.summercoat-vm.main" target="1.7" />
       <module name="squirreljme.modules.summercoat-vm.test" target="1.7" />
+      <module name="squirreljme.modules.supervisor.main" target="1.7" />
+      <module name="squirreljme.modules.supervisor.test" target="1.7" />
       <module name="squirreljme.modules.supervisor.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tac-runner.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tac.testFixtures" target="1.7" />

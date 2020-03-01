@@ -118,6 +118,41 @@ public final class SuitesMemory
 	}
 	
 	/**
+	 * Finds the specified library.
+	 *
+	 * @param __name The library to locate.
+	 * @return The located library.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/01
+	 */
+	public final SuiteMemory findLibrary(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		Map<String, SuiteMemory> suitemap = this._suitemap;
+		
+		// Direct name match?
+		SuiteMemory rv = suitemap.get(__name);
+		if (rv != null)
+			return rv;
+		
+		// With JAR attached?
+		rv = suitemap.get(__name + ".jar");
+		if (rv != null)
+			return rv;
+		
+		// Try one last time with JAR removed
+		if (__name.endsWith(".jar"))
+			return suitemap.get(__name.substring(
+				0, __name.length() - ".jar".length()));
+		
+		// Not found, give up
+		return null;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */
@@ -133,7 +168,8 @@ public final class SuitesMemory
 			return this._configtable.memReadByte(__addr);
 		
 		// Determine the suite index we are wanting to look in memory
-		int si = (__addr - SuitesMemory.CONFIG_TABLE_SIZE) / SuitesMemory.SUITE_CHUNK_SIZE;
+		int si = (__addr - SuitesMemory.CONFIG_TABLE_SIZE) /
+			SuitesMemory.SUITE_CHUNK_SIZE;
 		
 		// Instead of failing, return some invalid values
 		SuiteMemory[] suitemem = this._suitemem;
@@ -177,7 +213,7 @@ public final class SuitesMemory
 		this._didconfiginit = true;
 		
 		// Initialize the bootstrap
-		SuiteMemory superv = this._suitemap.get("supervisor.jar");
+		SuiteMemory superv = this.findLibrary("cldc-compact");
 		try
 		{
 			superv.__init();
