@@ -104,6 +104,7 @@ public final class InMemoryClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/08
 	 */
+	@SuppressWarnings("resource")
 	public static final InMemoryClassLibrary loadZip(String __n,
 		ZipStreamReader __in)
 		throws IOException, NullPointerException
@@ -114,12 +115,22 @@ public final class InMemoryClassLibrary
 		// Target map
 		Map<String, byte[]> rv = new HashMap<>();
 		
+		// Temporary buffer to reading class data
+		byte[] buf = new byte[4096];
+		
+		// Process all entries
 		ZipStreamEntry zse;
-		while (null != (zse = __in.nextEntry()))
+		while (true)
 		{
-			try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1024))
+			// No more entries?
+			zse = __in.nextEntry();
+			if (zse == null)
+				break;
+			
+			// Copy data over
+			try (ByteArrayOutputStream baos =
+				new ByteArrayOutputStream(8192))
 			{
-				byte[] buf = new byte[512];
 				for (;;)
 				{
 					int rc = zse.read(buf);

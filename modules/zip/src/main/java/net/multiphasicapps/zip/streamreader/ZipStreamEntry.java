@@ -132,7 +132,8 @@ public final class ZipStreamEntry
 		this.expectedcrc = __crc;
 		this.expecteduncompsize = __uncomp;
 		this.expectedcompsize = __comp;
-		this._peeking = (__undef ? new byte[ZipStreamEntry._MAX_DESCRIPTOR_SIZE] : null);
+		this._peeking = (__undef ?
+			new byte[ZipStreamEntry._MAX_DESCRIPTOR_SIZE] : null);
 	}
 	
 	/**
@@ -152,7 +153,7 @@ public final class ZipStreamEntry
 			// reached
 			if (!this._eof)
 			{
-				byte[] buf = new byte[512];
+				byte[] buf = new byte[4096];
 				while (this.read(buf) >= 0)
 					;
 			}
@@ -215,6 +216,17 @@ public final class ZipStreamEntry
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/02/29
+	 */
+	@Override
+	public int read(byte[] __b)
+		throws IOException, NullPointerException
+	{
+		return this.read(__b, 0, __b.length);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/08/22
 	 */
 	@Override
@@ -271,8 +283,15 @@ public final class ZipStreamEntry
 		long cinusz = cin.uncompressedBytes(),
 			cincsz = cin.compressedBytes();
 		
-		// Never read more than the maximum in unsigned bytes
-		int rest = (int)(this.expecteduncompsize - cinusz);
+		// Determine remaining counts
+		int remun = (int)(this.expecteduncompsize - cinusz);
+		int remco = (int)(this.expectedcompsize - cincsz);
+		
+		// Never read more than the maximum in unsigned bytes, however
+		// we want to read as many compressed bytes as possible because streams
+		// which are completely empty with otherwise never read the ending
+		// bytes if the streams are empty.
+		int rest = (remun == 0 ? remco : remun);
 		if (__l > rest)
 			__l = rest;
 		
@@ -307,6 +326,16 @@ public final class ZipStreamEntry
 			return -1;
 		}
 		
+		// {@squirreljme.error BF72 While reading an exact-size entry no
+		// compressed data was read and EOF was not returned, it is possible
+		// that the ZIP is corrupted. (Expected compressed size; Currently
+		// read uncompressed bytes/The expected uncompressed size; Currently
+		// read compressed bytes/The expected compressed size; The file)}
+		else if (rc == 0 && rest == 0)
+			throw new ZipException(String.format("BF72 %d (%d/%d) (%d/%d) %s",
+				this.expecteduncompsize, cinusz, this.expecteduncompsize,
+				cincsz, this.expectedcompsize, this.filename));
+		
 		// Mark as read
 		this._readuncomp += rc;
 		return rc;
@@ -331,7 +360,11 @@ public final class ZipStreamEntry
 		
 		// If EOF was not reached, then just return with the read bytes
 		if (rc >= 0)
+		{
+			if (rc == 0 && this._eof)
+				return -1;
 			return rc;
+		}
 		
 		// EOF was reached from the compressed stream, so the data descriptor
 		// has to immedietly follow
@@ -430,7 +463,7 @@ public final class ZipStreamEntry
 			{
 				// Mark EOF
 				this._eof = true;
-				return (d == 0 ? -1 : d);
+				return (d <= 0 ? -1 : d);
 			}
 			
 			// {@squirreljme.error BF0y Reached end of file before the end
@@ -442,6 +475,8 @@ public final class ZipStreamEntry
 		}
 		
 		// Read count
+		if (d == 0 && this._eof)
+			return -1;
 		return d;
 	}
 }

@@ -13,6 +13,7 @@ package cc.squirreljme.plugin;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
+import cc.squirreljme.plugin.tasks.RunEmulatedTask;
 import cc.squirreljme.plugin.tasks.RunNativeTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -52,6 +53,14 @@ public class SquirrelJMEPlugin
 		// Run native application
 		Task rna = __project.getTasks().create("runNative",
 			RunNativeTask.class, jarTask);
+		
+		// Run emulated program
+		Task esp = __project.getTasks().create("runSpringCoat",
+			RunEmulatedTask.class,
+			jarTask, "springcoat", false);
+		Task esu = __project.getTasks().create("runSummerCoat",
+			RunEmulatedTask.class,
+			jarTask, "summercoat", false);
 		
 		// Mime Decode Resources
 		Task mmr = __project.getTasks().create("mimeDecodeResources",

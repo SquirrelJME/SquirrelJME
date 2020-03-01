@@ -11,22 +11,35 @@
 package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This class is used to initialize virtual machines based on a set of factory
@@ -85,6 +98,156 @@ public abstract class VMFactory
 		throws IllegalArgumentException, NullPointerException, VMException;
 	
 	/**
+	 * Main entry point for general programs.
+	 *
+	 * @param __args Arguments.
+	 * @since 2020/02/29
+	 */
+	public static void main(String... __args)
+	{
+		// Poke the VM to initialize some probably important parts of it
+		Poking.poke();
+		
+		// Default settings
+		String vmName = "springcoat";
+		Path snapshotPath = null;
+		Collection<String> suiteClasspath = new LinkedList<>();
+		
+		// There always is a profiler being run, just differs if we save it
+		ProfilerSnapshot profilerSnapshot = new ProfilerSnapshot();
+		
+		// Command line format is:
+		// -Xemulator:(vm)
+		// -Xsnapshot:(path-to-nps)
+		// -classpath (class:path:...)
+		// Main-class
+		// Arguments...
+		Deque<String> queue = new ArrayDeque<>(Arrays.<String>asList(__args));
+		while (!queue.isEmpty())
+		{
+			// End of our items?
+			String item = queue.peekFirst();
+			if (item == null || item.isEmpty() || item.charAt(0) != '-')
+				break;
+			
+			// Eat it up
+			queue.removeFirst();
+			
+			// Select a VM
+			if (item.startsWith("-Xemulator:"))
+				vmName = item.substring("-Xemulator:".length());
+			
+			// VisualVM Snapshot Dump path
+			else if (item.startsWith("-Xsnapshot:"))
+				snapshotPath = Paths.get(
+					item.substring("-Xsnapshot:".length()));
+			
+			// JARs to load
+			else if (item.equals("-classpath") || item.equals("-cp"))
+			{
+				// Get argument attached to this
+				String strings = queue.pollFirst();
+				if (strings == null)
+					throw new NullPointerException("Classpath missing.");
+				
+				// Extract path elements
+				for (int i = 0, n = strings.length(); i < n; i++)
+				{
+					// Get location of the next colon
+					int dx = strings.indexOf(File.pathSeparatorChar, i);
+					if (dx < 0)
+						dx = n;
+					
+					// Add to path
+					suiteClasspath.add(strings.substring(i, dx));
+					
+					// Go to next colon
+					i = dx;
+				}
+			}
+			
+			// Unknown
+			else
+				throw new IllegalArgumentException(String.format(
+					"Unknown command line switch: %s", item));
+		}
+		
+		// Main class is here
+		String mainClass = Objects.<String>requireNonNull(queue.pollFirst(),
+			"No main class specified.");
+		
+		// Fill in the rest with the main argument calls
+		Collection<String> mainArgs = new LinkedList<>();
+		while (!queue.isEmpty())
+			mainArgs.add(queue.removeFirst());
+		
+		// Collect all the suites together
+		Collection<String> classpath = new LinkedList<>();
+		Collection<VMClassLibrary> suites = new LinkedList<>();
+		for (String classitem : suiteClasspath)
+		{
+			Path path = Paths.get(classitem);
+			
+			// Load it into memory
+			try (InputStream in = Files.newInputStream(path,
+					StandardOpenOption.READ);
+				ZipStreamReader zip = new ZipStreamReader(in))
+			{
+				System.err.printf("Loading %s...%n", path);
+				suites.add(InMemoryClassLibrary.loadZip(
+					path.getFileName().toString(), zip));
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException("Could not load library.", e);
+			}
+			
+			// Seed classpath with the one we requested
+			classpath.add(path.getFileName().toString());
+		}
+		
+		// Run the VM, but always make sure we can
+		int exitCode = -1;
+		try
+		{
+			// Debug
+			System.err.println("Starting virtual machine...");
+			
+			// Run the VM
+			VirtualMachine vm = VMFactory.mainVm(vmName,
+				profilerSnapshot,
+				new ArraySuiteManager(suites),
+				classpath.<String>toArray(new String[classpath.size()]),
+				mainClass,
+				0, 0, null,
+				mainArgs.<String>toArray(new String[mainArgs.size()]));
+			
+			// Run the virtual machine until it exits
+			exitCode = vm.runVm();
+			System.exit(vm.runVm());
+		}
+		
+		// Always write the snapshot file
+		finally
+		{
+			if (snapshotPath != null)
+				try (OutputStream out = Files.newOutputStream(snapshotPath,
+					StandardOpenOption.WRITE, StandardOpenOption.CREATE,
+					StandardOpenOption.TRUNCATE_EXISTING))
+				{
+					profilerSnapshot.writeTo(out);
+				}
+				catch (IOException e)
+				{
+					// Ignore
+				}
+		}
+		
+		// Exit with the exit code the VM gave us back
+		System.exit(exitCode);
+	}
+	
+	/**
 	 * Main entry point for the virtual machine using the given properties.
 	 *
 	 * @param __vm The name of the virtual machine to use, if {@code null}
@@ -107,9 +270,10 @@ public abstract class VMFactory
 	 * @throws VMException If the virtual machine failed to initialize.
 	 * @since 2018/11/17
 	 */
-	public static final VirtualMachine main(String __vm, ProfilerSnapshot __ps,
-		VMSuiteManager __sm, String[] __cp, String __bootcl, int __bootid,
-		int __gd, Map<String, String> __sprops, String... __args)
+	public static final VirtualMachine mainVm(String __vm,
+		ProfilerSnapshot __ps, VMSuiteManager __sm, String[] __cp,
+		String __bootcl, int __bootid, int __gd, Map<String, String> __sprops,
+		String... __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		if (__sm == null || __cp == null)
@@ -233,6 +397,7 @@ public abstract class VMFactory
 	 * @param __args Arguments to the program.
 	 * @since 2018/11/17
 	 */
+	@Deprecated
 	public static final void shadedMain(String... __args)
 	{
 		VMFactory.shadedMain((Map<String, String>)null, __args);
@@ -245,6 +410,7 @@ public abstract class VMFactory
 	 * @param __args Arguments to the program.
 	 * @since 2018/11/17
 	 */
+	@Deprecated
 	public static final void shadedMain(Map<String, String> __sprops,
 		String... __args)
 	{
@@ -405,7 +571,7 @@ public abstract class VMFactory
 				new VMSuiteManager[mergesm.size()]));
 		
 		// Create the VM
-		VirtualMachine vm = VMFactory.main(null, null,
+		VirtualMachine vm = VMFactory.mainVm(null, null,
 			sm, classpath.<String>toArray(new String[classpath.size()]),
 			usemain, bootid, -1, null, __args);
 		

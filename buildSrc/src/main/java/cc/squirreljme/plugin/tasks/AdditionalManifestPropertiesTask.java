@@ -37,7 +37,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.artifacts.ModuleDependency;
+import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.java.archives.Manifest;
 import org.gradle.jvm.tasks.Jar;
@@ -185,7 +185,7 @@ public class AdditionalManifestPropertiesTask
 		}
 		
 		// Find all module dependencies
-		Map<String, ModuleDependency> dependencies = new TreeMap<>();
+		Map<String, ProjectDependency> dependencies = new TreeMap<>();
 		for (String configurationName : Arrays.<String>asList(
 				"api", "implementation"))
 		{
@@ -195,11 +195,11 @@ public class AdditionalManifestPropertiesTask
 			if (buildConfig == null)
 				continue;
 			
-			// Add all module based dependencies
+			// Add all project based dependencies
 			for (Dependency dependency : buildConfig.getDependencies())
-				if (dependency instanceof ModuleDependency)
+				if (dependency instanceof ProjectDependency)
 				{
-					ModuleDependency mod = (ModuleDependency)dependency;
+					ProjectDependency mod = (ProjectDependency)dependency;
 					
 					dependencies.put(mod.getName(), mod);
 				}
@@ -207,23 +207,10 @@ public class AdditionalManifestPropertiesTask
 		
 		// Put in as many dependencies as possible
 		int normalDep = 1;
-		for (ModuleDependency dependency : dependencies.values())
+		for (ProjectDependency dependency : dependencies.values())
 		{
 			// Find the associated project
-			Project subProject = project.findProject(dependency.getName());
-			if (subProject == null)
-			{
-				// Does it exist in the parent?
-				Project parent = project.getParent();
-				if (parent != null)
-					subProject = parent.findProject(dependency.getName());
-				
-				// Really does not exist
-				if (subProject == null)
-					throw new RuntimeException(String.format(
-						"Module %s (%s) does not exist?", dependency,
-						dependency.getName()));
-			}
+			Project subProject = dependency.getDependencyProject();
 			
 			// Get the project config
 			SquirrelJMEPluginConfiguration subConfig =

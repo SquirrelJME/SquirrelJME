@@ -126,6 +126,13 @@ More detailed changes:
        traverse in the event an infinite recursive method was profiled.
    * `vodafone-api`
      * Added API Stubs.
+   * `zip`
+     * Added `read(byte[])` which forwards to the more optimal function
+       rather than the super-class which only performs single byte reads.
+     * When reading entries where the size is fully known, if the uncompressed
+       data size is fulfilled but there is still remaining compressed data
+       (in the case where a zero byte file is compressed to two bytes),
+       continue to read the compressed data to drain it out.
  * Compiler Backend
    * Added a bunch of string representations for class structures.
    * Created a stack-cached register based compiler for Java byte code.

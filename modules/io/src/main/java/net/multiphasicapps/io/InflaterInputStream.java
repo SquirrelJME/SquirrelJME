@@ -448,7 +448,7 @@ public class InflaterInputStream
 	/**
 	 * Decompress dynamic huffman code.
 	 *
-	 * @throws On read or decompression errors.
+	 * @throws IOException On read or decompression errors.
 	 * @since 2017/02/25
 	 */
 	private void __decompressDynamic()
@@ -1075,7 +1075,7 @@ public class InflaterInputStream
 	 * symbols which are used to determine how the dynamic huffman data is to
 	 * be decoded.
 	 *
-	 * @param __rv The tree to output.
+	 * @param __tree The tree to output.
 	 * @param __lens The input code lengths.
 	 * @param __o The starting offset.
 	 * @param __l The number of lengths to decode.
