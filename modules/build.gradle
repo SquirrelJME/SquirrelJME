@@ -46,8 +46,7 @@ subprojects
 
 // Properties for every sub-project, except for cldc-compact as it is special
 configure(subprojects
-	- project(":modules:cldc-compact")
-	- project(":modules:supervisor"))
+	- project(":modules:cldc-compact"))
 {
 	apply plugin: "java"
 
