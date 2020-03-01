@@ -46,6 +46,8 @@
 	#include "jni_linux.h"
 #elif defined(_WIN32)
 	#include "jni_win.h"
+#elif defined(__APPLE__)
+	#include "jni_mac.h"
 #else
 	#include "jni_md.h"
 #endif
