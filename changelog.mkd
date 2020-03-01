@@ -166,6 +166,7 @@ More detailed changes:
      * Fast and slim, written in C.
  * Cleanup
    * Removed the `test.sh` script, it was empty.
+   * Removed unused scripts due to the Gradle refactor.
 
 # 0.2.0 (December 25, 2018)
 
