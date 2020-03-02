@@ -1,5 +1,6 @@
 package cc.squirreljme.plugin.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,15 +16,18 @@ public class CommentReader
 	extends Reader
 {
 	/** The source reader. */
-	protected final Reader source;
+	protected final BufferedReader source;
 	
-	/** The input character buffer. */
-	private final StringBuilder _buffer =
+	/** Extra character queue. */
+	private final StringBuilder _queue =
 		new StringBuilder();
 	
-	/** The type of comment being handled. */
-	private CommentType _commentType =
-		CommentType.NONE;
+	/** Line remainder. */
+	private final StringBuilder _remainder =
+		new StringBuilder();
+	
+	/** Are we in multi-line comment? */
+	private boolean _inMultiLine;
 	
 	/**
 	 * Initializes the comment reader.
@@ -37,7 +41,8 @@ public class CommentReader
 	{
 		try
 		{
-			this.source = new InputStreamReader(__in, "utf-8");
+			this.source = new BufferedReader(
+				new InputStreamReader(__in, "utf-8"));
 		}
 		catch (UnsupportedEncodingException e)
 		{
@@ -66,139 +71,138 @@ public class CommentReader
 	{
 		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException();
-			
-		Reader source = this.source;
-		CommentType commentType = this._commentType;
-		StringBuilder buffer = this._buffer;
-		boolean forceRead = false,
-			forceWrite = false;
 		
-		// Stream processing loop
-		try
+		BufferedReader source = this.source;
+		StringBuilder queue = this._queue;
+		StringBuilder remainder = this._remainder;
+		boolean inMultiLine = this._inMultiLine;
+		
+		// Constantly try to fill the output buffer
+		int putCount = 0;
+		while (putCount < __l)
 		{
-			int putCount = 0;
-			
-			// Still more room in the output array?
-			while (putCount < __l)
+			// If there are characters in the queue, drain from it
+			if (queue.length() > 0)
 			{
-				// If the buffer is empty fill it or if we want more
-				int blen = buffer.length();
-				if (forceRead || blen <= 0)
-				{
-					int rc = source.read();
-					
-					// EOF reached
-					if (rc < 0)
-						return (putCount > 0 ? putCount : -1);
-					
-					buffer.append((char)rc);
-					
-					// Do not want to force a read again
-					forceRead = false;
-				}
+				// Extract the first character
+				char ch = queue.charAt(0);
+				queue.deleteCharAt(0);
 				
-				// Single character in the buffer
-				else if (blen == 1)
-				{
-					char ch = buffer.charAt(0);
-					
-					// End of line reached?
-					if (ch == '\r' || ch == '\n')
-					{
-						// Clear the buffer
-						buffer.delete(0, 1);
-						
-						// End of single line comment?
-						if (commentType == CommentType.SINGLE)
-							commentType = CommentType.NONE;
-					}
-					
-					// We need more context to determine what to do here
-					// * Could be opening double-slash on line?
-					// * Could be closing block comment?
-					else if ((commentType == CommentType.NONE && ch == '/') ||
-						(commentType == CommentType.BLOCK && ch == '*'))
-					{
-						forceRead = true;
-					}
-					
-					// Either pump it out, or drop it
-					else
-					{
-						// Clear the buffer
-						buffer.delete(0, 1);
-						
-						// Write to our output
-						if (commentType != CommentType.NONE)
-							__c[__o + (putCount++)] = ch;
-					}
-				}
+				// Place it in the output
+				__c[__o++] = ch;
+				putCount++;
 				
-				// Other buffer sizes
+				// Try again
+				continue;
+			}
+			
+			// Read the next source line
+			String ln = (remainder.length() > 0 ? remainder.toString() :
+				source.readLine());
+			if (ln == null)
+				return (putCount > 0 ? putCount : -1);
+			
+			// Always trim lines to remove extra clutter
+			ln = ln.trim();
+			
+			// Always clear the remainder, since we might push it again later
+			remainder.setLength(0);
+			
+			// The length of the line
+			int len = ln.length();
+			
+			// Are we in a multi-line comment still?
+			if (inMultiLine)
+			{
+				// This is likely a JavaDoc continuation so drop that
+				if (ln.startsWith("* "))
+					ln = ln.substring(2);
+				
+				// Length may have changed so recalculate it
+				len = ln.length();
+				
+				// Find end of line
+				int eml = ln.indexOf("*/");
+				
+				// There are no ending slashes, use entire line
+				if (eml < 0)
+					queue.append(ln);
+				
+				// Otherwise our multi-line is going to end and we need to
+				// process the remainder of the line
 				else
 				{
-					// Start of single-line comment
-					if (commentType == CommentType.NONE &&
-						buffer.indexOf("//") == 0)
-					{
-						// Delete two characters
-						buffer.delete(0, 2);
-						
-						// Is now single line comment
-						commentType = CommentType.SINGLE;
-					}
+					// Add starting chunk to the queue for output
+					queue.append(ln, 0, eml);
 					
-					// Start of block comment
-					else if (commentType == CommentType.NONE &&
-						buffer.indexOf("/*") == 0)
-					{
-						// Delete two characters
-						buffer.delete(0, 2);
-						
-						// Is now block comment
-						commentType = CommentType.BLOCK;
-					}
+					// Store the remainder of the line since we may still have
+					// another comment on it
+					remainder.append(ln, eml + 2, len);
 					
-					// End of block comment
-					else if (commentType == CommentType.BLOCK &&
-						buffer.indexOf("*/") == 0)
-					{
-						// Delete two characters
-						buffer.delete(0, 2);
-						
-						// Not in a comment
-						commentType = CommentType.NONE;
-					}
-					
-					// Other sequence, just consume the character
-					else
-					{
-						// Consume one character
-						char ch = buffer.charAt(0);
-						buffer.delete(0, 1);
-						
-						// End of single line comment?
-						if (ch == '\r' || ch == '\n')
-						{
-							if (commentType == CommentType.SINGLE)
-								commentType = CommentType.NONE;
-						}
-						
-						// Write to our output
-						else if (commentType != CommentType.NONE)
-							__c[__o + (putCount++)] = ch;
-					}
+					// Stop being in multi-line mode
+					inMultiLine = false;
 				}
 			}
 			
-			return putCount;
+			// Normal line
+			else
+			{
+				// Get potential start positions of lines
+				int sng = ln.indexOf("//");
+				int mul = ln.indexOf("/*");
+				
+				// Detect double star for JavaDoc
+				if (mul >= 0)
+				{
+					int jdoc = ln.indexOf("/**", mul);
+					if (jdoc >= 0)
+						mul = jdoc;
+				}
+				
+				// No comment on this line
+				if (sng < 0 && mul < 0)
+					continue;
+				
+				// Single line comment
+				if (sng >= 0 && (mul < 0 || sng < mul))
+				{
+					// Add fragment to the queue
+					queue.append(ln, sng + 2, len);
+				}
+				
+				// Multi-line comment
+				else
+				{
+					// Does the multi-line end on the same line?
+					int eml = ln.indexOf("*/", mul + 2);
+					if (eml > mul)
+					{
+						// Add the comment area to the queue
+						queue.append(ln, mul + 2, eml);
+						
+						// Add the rest of the line to the remainder for
+						// later processing
+						remainder.append(ln, eml + 2, len);
+					}
+					
+					// Does not, so keep reading
+					else
+					{
+						// Now in a multi-line
+						inMultiLine = true;
+						
+						// Add our comment into the queue
+						queue.append(ln, mul + 2, len);
+					}
+				}
+			}
 		}
 		
-		// Store any changed parameters potentially
-		finally
-		{
-			this._commentType = commentType;
-		}
+		// Store comment type for later runs
+		this._inMultiLine = inMultiLine;
+		
+		// Return the number out placed characters
+		return putCount;
 	}
 	
 	/**

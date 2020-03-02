@@ -122,6 +122,21 @@ public final class TestResult
 	}
 	
 	/**
+	 * Checks if this result is statisfied by the other result, note that this
+	 * is not the same as equality just a result for a test.
+	 *
+	 * @since 2020/03/01
+	 */
+	public final boolean isStatisfiedBy(TestResult __other)
+		throws NullPointerException
+	{
+		if (__other == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Prints the comparison of this result and the other result.
 	 *
 	 * @param __ps The stream to write to.
