@@ -203,7 +203,7 @@ abstract class __CoreTest__
 		// see if there is a match
 		TestResult result = runresult.build();
 		if (status == null)
-			status = (expected.equals(result) ? TestStatus.SUCCESS :
+			status = (expected.isSatisfiedBy(result) ? TestStatus.SUCCESS :
 				TestStatus.FAILED);
 		
 		// Store the status of the test that just ran
