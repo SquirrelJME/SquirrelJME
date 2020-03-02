@@ -25,5 +25,12 @@ dependencies
 
 jar
 {
+	exclude("org/testng/internal/annotations/DisabledRetryAnalyzer.class")
+	exclude("org/testng/annotations/CustomAttribute.class")
 	exclude("org/testng/annotations/Test.class")
+}
+
+test
+{
+
 }

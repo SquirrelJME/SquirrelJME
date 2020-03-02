@@ -26,14 +26,14 @@ jobs:
       - checkout
       - run:
           name: Gradle Build
-          command: gradlew build
+          command: gradlew build --continue --parallel
   build_linux:
     executor: buildenv
     steps:
       - checkout
       - run:
           name: Gradle Build
-          command: ./gradlew build
+          command: ./gradlew build --continue --parallel
 
 workflows:
   version: 2

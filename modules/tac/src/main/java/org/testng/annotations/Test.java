@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.testng.internal.annotations.DisabledRetryAnalyzer;
 
 /**
  * Used to trick TestNG that this is a test to run.
@@ -79,4 +80,7 @@ public @interface Test
 	
 	/** @return Maximum amount of time the test should take. */
 	long timeOut() default 0;
+	
+	/** @return How tests should be ran. */
+	Class<?> retryAnalyzer() default DisabledRetryAnalyzer.class;
 }
