@@ -1,0 +1,25 @@
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "A turn based strategy involving squirrels and " +
+ "lots of acorns! Keep on your claws and horde them all!"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "BE"
+	swmType = JavaMEMidletType.APPLICATION
+	swmName = "Squirrel Quarrel"
+	swmVendor = "Stephanie Gawroriski"
+	midlets += new JavaMEMidlet("Squirrel Quarrel", "icon.xpm",
+		"dev.shadowtail.squirrelquarrel.MainMidlet")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:tool-manifest-reader")
+	implementation project(":modules:midp-lcdui")
+	implementation project(":modules:meep-midlet")
+}

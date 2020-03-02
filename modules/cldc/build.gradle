@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEConfiguration
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
+description = "This is the standard Java ME 8 Connection " +
+	"Limited Device Configuration which contains the full set of classes " +
+	"used by JavaME."
+
+squirreljme
+{
+	javaDocErrorCode = "ZY"
+	swmType = JavaMEMidletType.API
+	swmName = "Connection Limited Device Configuration"
+	swmVendor = "Stephanie Gawroriski"
+	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+}

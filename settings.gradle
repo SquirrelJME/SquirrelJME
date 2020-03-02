@@ -1,0 +1,34 @@
+// Modules and available platforms
+include "modules"
+include "emulators"
+include "tools"
+
+// Recursively include all modules
+file(rootProject.projectDir.toPath().resolve("modules"))
+	.eachDir(
+	{ subdir ->
+		if (subdir.toPath().resolve("build.gradle").toFile().exists())
+		{
+			include "modules:" + subdir.name
+		}
+	})
+
+// Recursively include all emulators
+file(rootProject.projectDir.toPath().resolve("emulators"))
+	.eachDir(
+	{ subdir ->
+		if (subdir.toPath().resolve("build.gradle").toFile().exists())
+		{
+			include "emulators:" + subdir.name
+		}
+	})
+
+// Recursively include all tools
+file(rootProject.projectDir.toPath().resolve("tools"))
+	.eachDir(
+	{ subdir ->
+		if (subdir.toPath().resolve("build.gradle").toFile().exists())
+		{
+			include "tools:" + subdir.name
+		}
+	})

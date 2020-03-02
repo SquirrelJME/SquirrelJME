@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This project is used to build the packed ROM " +
+	"files needed by SummerCoat and RatufaCoat to function."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "BI"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Compiled JAR Packfile Support"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:common-vm")
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:tool-jarfile")
+	implementation project(":modules:io")
+}

@@ -1,0 +1,55 @@
+plugins
+{
+	// C++ needs to be first otherwise the build will break
+	id "cpp-library"
+	id "java-library"
+	id "java-test-fixtures"
+}
+
+description = "This library provides the base support for testing and " +
+	"running SquirrelJME on a Java SE host, which is normally not " +
+	"capable of doing as such."
+
+// Due to the combination of C++ and Java these dependencies have to be very
+// specific in that they only refer to the Java or C++ portion. So
+// "implementation" and "compile" cannot be used because the C++ library will
+// try to use them during compilation.
+dependencies
+{
+	// SquirrelJME just uses TestNG here since it is flexible enough to
+	// support how SquirrelJME needs to be (testing more as if it were running
+	// on the target device). Due to the flexibility it allows easier switching
+	// from Java SE, SpringCoat, and SummerCoat
+	compileClasspath "org.testng:testng:7.1.0"
+	runtimeClasspath "org.testng:testng:7.1.0"
+
+	// We need these two modules to obtain the SquirrelJME specific classes
+	compileClasspath project(":modules:cldc-compact")
+	compileClasspath project(":modules:cldc")
+	compileClasspath project(":modules:common-vm")
+	compileClasspath project(":modules:io")
+	compileClasspath project(":modules:meep-swm")
+	compileClasspath project(":modules:tac")
+	compileClasspath project(":modules:tool-manifest-reader")
+	compileClasspath project(":modules:zip")
+
+	// And for run-time to be able to be ran
+	runtimeClasspath project(":modules:cldc-compact")
+	runtimeClasspath project(":modules:cldc")
+	runtimeClasspath project(":modules:common-vm")
+	runtimeClasspath project(":modules:io")
+	runtimeClasspath project(":modules:meep-swm")
+	runtimeClasspath project(":modules:tac")
+	runtimeClasspath project(":modules:tool-manifest-reader")
+	runtimeClasspath project(":modules:zip")
+}
+
+// We need the native library in the JAR before we can properly use it
+// But we can compile the Java code just fine without it
+jar {
+	dependsOn "assembleRelease"
+
+	from buildDir.toPath().resolve("lib").resolve("main").
+		resolve("release").toFile()
+	into "/"
+}

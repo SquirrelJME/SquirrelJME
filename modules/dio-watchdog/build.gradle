@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides access to the watchdog."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DP"
+	swmType = JavaMEMidletType.API
+	swmName = "JavaME 8 Device I/O (Watchdog)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.watchdog;;1.0.1")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:dio")
+}

@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides access to the SPI bus."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "CU"
+	swmType = JavaMEMidletType.API
+	swmName = "JavaME 8 Device I/O (SPI)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.spibus;;1.0.1")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:dio")
+}

@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides access to digital to analog converters."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "CW"
+	swmType = JavaMEMidletType.API
+	swmName = "JavaME 8 Device I/O (DAC)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.dac;;1.0.1")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:dio")
+}

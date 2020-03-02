@@ -8,17 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.jar.Manifest;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.jar.Manifest;
 
 /**
  * This translates from the old manifest format to the new manifest format.

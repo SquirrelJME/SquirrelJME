@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides access to memory mapped I/O devices."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DT"
+	swmType = JavaMEMidletType.API
+	swmName = "JavaME 8 Device I/O (MMIO)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.mmio;;1.0.1")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:dio")
+}

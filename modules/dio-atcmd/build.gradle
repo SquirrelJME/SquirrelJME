@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides access to devices which use the " +
+	"standard AT command set."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "CZ"
+	swmType = JavaMEMidletType.API
+	swmName = "JavaME 8 Device I/O (AT Device)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.atcmd;;1.0.1")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:dio")
+	implementation project(":modules:dio-modem")
+}

@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This project allows for creating standard " +
+	"Java manifest files using a mutable class."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AB"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Mutable Java Manifest"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:tool-manifest-reader")
+}

@@ -1,0 +1,27 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This contains the application management " +
+	"system, this allows programs (provided they have the correct " +
+	"permissions) to launch other programs and install new applications " +
+	"which may have been sourced from other locations."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DG"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP Application Management System"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.swm;;")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:collections")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:strings")
+	implementation project(":modules:tool-manifest-reader")
+}

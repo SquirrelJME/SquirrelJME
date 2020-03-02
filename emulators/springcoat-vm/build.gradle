@@ -1,0 +1,21 @@
+plugins
+{
+	id "java-library"
+}
+
+description = "This is a SpringCoat virtual machine which " +
+	"is an unoptimized pure interpreter aimed for the purpose of being an " +
+	"educational stepping stone to other future virtual machines."
+
+dependencies
+{
+	api project(":emulators:emulator-base")
+
+	api project(":modules:cldc-compact")
+	api project(":modules:tool-classfile")
+	api project(":modules:tool-manifest-reader")
+	api project(":modules:meep-swm")
+	api project(":modules:meep-midlet")
+	api project(":modules:common-vm")
+	api project(":modules:collections")
+}

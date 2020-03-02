@@ -61,7 +61,6 @@ Information:
    * [Compatibility](compatibility.mkd)
    * [History](history.mkd)
    * [Release Roadmap](route.mkd)
-   * [Usage](usage.mkd)
  * _Developer Resources_
    * [CircleCI Status](
      https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)

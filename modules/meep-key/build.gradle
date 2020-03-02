@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This contains classes for handling key and other " +
+	"user input events."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DB"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP Key Events"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.key;;")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+}

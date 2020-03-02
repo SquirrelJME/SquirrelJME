@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides access to the I2C bus."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "CT"
+	swmType = JavaMEMidletType.API
+	swmName = "JavaME 8 Device I/O (I2C)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.i2cbus;;1.0.1")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:dio")
+}

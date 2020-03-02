@@ -1,0 +1,73 @@
+plugins
+{
+	id "de.set.ecj" version "1.4.1" apply false
+}
+
+group = "cc.squirreljme.modules"
+description = "Modules which are a part of SquirrelJME."
+
+// Every sub-project needs SquirrelJME specific pieces
+subprojects
+{
+	//apply plugin: "de.set.ecj"
+	apply plugin: "java"
+	apply plugin: "checkstyle"
+	apply plugin: "cc.squirreljme.plugin"
+
+	// Configure the compiler
+	java
+	{
+		// Java ME 8 is effectively Java 7
+        compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
+		compileJava.targetCompatibility = JavaVersion.VERSION_1_7
+
+		// All files are always in UTF-8 format
+		compileJava.options.encoding = "utf-8"
+
+		// Copy to tests
+		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
+		compileTestJava.targetCompatibility = compileJava.targetCompatibility
+		compileTestJava.options.encoding = compileJava.options.encoding
+		compileTestJava.options.verbose = compileJava.options.verbose
+
+		// Copy to JavaDoc
+		javadoc.options.source = "1.7"
+		javadoc.options.tags = [ "squirreljme.property",
+			"squirreljme.env",
+			"squirreljme.error",
+			"squirreljme.syscallparam",
+			"squirreljme.syscallreturn" ]
+	}
+
+	// Enable SquirrelJME Tests
+	apply from: project.rootProject.findProject(":emulators:emulator-base").
+		projectDir.toPath().resolve("enable-testing.gradle").toFile()
+}
+
+// Properties for every sub-project, except for cldc-compact as it is special
+configure(subprojects
+	- project(":modules:cldc-compact"))
+{
+	apply plugin: "java"
+
+	// All projects use the base classpath
+    java
+    {
+		// Only use SquirrelJME's boot classes, not the system SDK
+		Project cldcCompactProject = project(":modules:cldc-compact")
+		compileJava.options.bootstrapClasspath = project.objects.
+			fileCollection().from(cldcCompactProject.buildDir.toPath().
+			resolve("classes").resolve("java").resolve("main")).getAsFileTree()
+
+		// Copy to JavaDoc
+		javadoc.options.bootClasspath = compileJava.options.bootstrapClasspath
+			.collect()
+    }
+
+	dependencies
+	{
+		// All projects depend on the Compact CLDC Library
+		implementation project(":modules:cldc-compact")
+		testImplementation project(":modules:cldc-compact")
+	}
+}

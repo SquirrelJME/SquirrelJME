@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This project contains basic string utilities " +
+	"which are useful when parsing strings."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AM"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Basic String Utilities"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:collections")
+}

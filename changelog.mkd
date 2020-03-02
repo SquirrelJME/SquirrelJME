@@ -20,33 +20,8 @@ _SquirrelJME will always be an improvement over the older versions._
 
 More detailed changes:
 
- * Build system
-   * Builder
-     * Allow the build system to launch binaries in a VM even if they have no
-       source code.
-     * Handle cases during compilation if a dependency has no source code.
-     * If an attempt is made to compile a binary with no source code, throw a
-       new exception type indicating this rather than the generic failure
-       exception because this case can be handled.
-     * When shading JARs for distribution, ignore entries in JARs which are
-       directories. Directories do not need to appear in the JAR, however they
-       may still be implicit within ZIPs.
-   * Launching
-     * An alternative VM may be specified.
-     * Correct cases where `NullPointerException` is thrown when a `Display`
-       was initialized but was not yet claimed by any program.
-     * The profiler snapshot can be written to a specific file.
-     * System properties may be defined and passed to the launched program.
-   * Started work on JavaDoc generation.
- * Tests
-   * Adjusted the results in the logarithm test to adjust the ulp to what
-     SquirrelJME generates. The results are still valid as it is valid to
-     be within a 1 ulp range, however the test framework only supports
-     exact values.
-   * Added the missing _mimemessage_ file for the MIME file decoding test.
-   * Allow tests to timeout so that they do not run forever in the event of
-     some kind of deadlock.
-   * Refactored the test framework to be easier to maintain.
+ * Modernized the build system to Gradle!
+   * This will make it much easier to develop and allow for contributions!
  * Programs and Libraries
    * `cldc-compact`
      * Added a rehash indicator for the internal `__BucketMap__` so that
@@ -81,6 +56,8 @@ More detailed changes:
        `microedition.configuration`, and `microedition.locale`.
    * `demo-hello`
      * Made the system properties array `final`.
+   * `jblend-api`
+     * Added API Stubs.
    * `launcher`
      * Added the system property `cc.squirreljme.autolaunch` to automatically
        launch a program once the program list is read.
@@ -89,6 +66,7 @@ More detailed changes:
    * `media-api`
      * Add null media support for: players, and volume control.
    * `meep-midlet`
+     * Allow a multi-threaded
      * Handle Konami's Mobile US games using a special system request.
      * Implement `MIDlet.checkPermission()`.
    * `meep-rms`
@@ -146,6 +124,15 @@ More detailed changes:
    * `tool-profiler`
      * When writing the NPS snapshot, set a limit on how deep the stack can
        traverse in the event an infinite recursive method was profiled.
+   * `vodafone-api`
+     * Added API Stubs.
+   * `zip`
+     * Added `read(byte[])` which forwards to the more optimal function
+       rather than the super-class which only performs single byte reads.
+     * When reading entries where the size is fully known, if the uncompressed
+       data size is fulfilled but there is still remaining compressed data
+       (in the case where a zero byte file is compressed to two bytes),
+       continue to read the compressed data to drain it out.
  * Compiler Backend
    * Added a bunch of string representations for class structures.
    * Created a stack-cached register based compiler for Java byte code.
@@ -179,6 +166,7 @@ More detailed changes:
      * Fast and slim, written in C.
  * Cleanup
    * Removed the `test.sh` script, it was empty.
+   * Removed unused scripts due to the Gradle refactor.
 
 # 0.2.0 (December 25, 2018)
 

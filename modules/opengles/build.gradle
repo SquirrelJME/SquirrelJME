@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This project contains the base support needed " +
+	"for OpenGL ES 1.1 functionality defined by JSR 239."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "EJ"
+	swmType = JavaMEMidletType.API
+	swmName = "OpenGL ES"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:midp-lcdui")
+}
