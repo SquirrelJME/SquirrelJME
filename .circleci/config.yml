@@ -27,6 +27,18 @@ jobs:
       - run:
           name: Gradle Build
           command: gradlew build --continue --parallel
+          shell: cmd.exe
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p /c/users/circleci/test-results
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /c/users/circleci/test-results/junit/ \;
+          when: always
+          shell: bash.exe
+      - store_test_results:
+          path: c:\users\circleci\test-results
+      - store_artifacts:
+          path: c:\users\circleci\test-results
   build_linux:
     executor: buildenv
     steps:
@@ -41,9 +53,9 @@ jobs:
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
           when: always
       - store_test_results:
-         path: ~/test-results
+          path: ~/test-results
       - store_artifacts:
-         path: ~/test-results/junit
+          path: ~/test-results/junit
   build_macosx:
     macos:
       xcode: 11.3.0
@@ -58,6 +70,16 @@ jobs:
       - run:
           name: Gradle Build
           command: ./gradlew build --continue --parallel
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
 
 workflows:
   version: 2
