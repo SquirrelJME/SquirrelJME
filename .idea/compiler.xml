@@ -67,6 +67,8 @@
       <module name="squirreljme.modules.tac.testFixtures" target="1.7" />
       <module name="squirreljme.modules.test" target="1.7" />
       <module name="squirreljme.modules.tool-classfile.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.tool-compiler.main" target="1.7" />
+      <module name="squirreljme.modules.tool-compiler.test" target="1.7" />
       <module name="squirreljme.modules.tool-compiler.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-jarfile.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-jdwp.testFixtures" target="1.7" />

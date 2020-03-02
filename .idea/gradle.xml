@@ -65,7 +65,6 @@
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tac-runner" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />
-            <option value="$PROJECT_DIR$/modules/tool-compiler" />
             <option value="$PROJECT_DIR$/modules/tool-jarfile" />
             <option value="$PROJECT_DIR$/modules/tool-jdwp" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-reader" />
