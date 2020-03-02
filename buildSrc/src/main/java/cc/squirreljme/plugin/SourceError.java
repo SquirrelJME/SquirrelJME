@@ -1,10 +1,11 @@
 package cc.squirreljme.plugin;
 
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * A single error that exists in source code.
@@ -13,6 +14,10 @@ import java.util.regex.Pattern;
  */
 public final class SourceError
 {
+	/** The maximum error code index that can exist. */
+	static final int _MAX_ERROR_CODE =
+		Character.MAX_RADIX * Character.MAX_RADIX;
+	
 	/** The code for the project. */
 	public final String projectCode;
 	
@@ -37,51 +42,92 @@ public final class SourceError
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/02/22
 	 */
-	public SourceError(String __content, Path __where)
+	public SourceError(Iterable<String> __content, Path __where)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__content == null)
 			throw new NullPointerException();
 		
+		// Set file location
 		this.where = __where;
 		
-		// Needs to be a given length!
-		int length = __content.length();
-		if (length < 4)
-			throw new IllegalArgumentException("Content too short.");
+		// Put items into the queue
+		Deque<String> queue = new ArrayDeque<String>();
+		for (String item : __content)
+			queue.add(item);
+		
+		// Read the error code
+		String errorCode = queue.pollFirst();
+		if (errorCode == null)
+			throw new IllegalArgumentException("No error code.");
+		
+		if (errorCode.length() < 4)
+			throw new IllegalArgumentException("Error code too short.");
 		
 		// Project code is the first two characters
-		this.projectCode = __content.substring(0, 2).toUpperCase();
+		this.projectCode = errorCode.substring(0, 2).toUpperCase();
+		this.index = SourceError.stringToIndex(errorCode.substring(2, 4));
 		
-		// The index is the next two characters
-		this.index = ErrorListManager.stringToIndex(__content.substring(2, 4));
-		
-		// The remaining block data
-		String rest = __content.substring(4).trim();
-		
-		// Are parameters being used?
-		int podx = rest.lastIndexOf('('),
-			pcdx = rest.lastIndexOf(')');
-		if (podx > 0 && pcdx > 0 && podx < pcdx)
+		// Fill in content description
+		StringBuilder body = new StringBuilder();
+		while (!queue.isEmpty())
 		{
-			// Body is before the parameters start
-			this.body = rest.substring(0, podx).trim();
+			// Stop when nothing is left, or if there are starting parameters
+			String item = queue.peekFirst();
+			if (item == null || item.equals("("))
+				break;
 			
-			// Parameters is semi-colon delimated
-			String[] split = rest.substring(podx + 1, pcdx).split(
-				Pattern.quote(";"));
-			for (int i = 0, n = split.length; i < n; i++)
-				split[i] = (split[i] == null ? "" : split[i].trim());
-			this.parameters = Collections.<String>unmodifiableList(
-				Arrays.<String>asList(split));
+			// Add formatting space
+			if (body.length() > 0)
+				body.append(' ');
+			
+			// And append whatever we put in
+			body.append(queue.removeFirst());
 		}
 		
-		// No parameters used
-		else
+		// Store body in
+		this.body = body.toString();
+		
+		// Parameter list?
+		List<String> parameters = new ArrayList<String>();
+		if ("(".equals(queue.peekFirst()))
 		{
-			this.body = rest;
-			this.parameters = Collections.<String>emptyList();
+			// Process queue
+			StringBuilder buffer = new StringBuilder();
+			while (!queue.isEmpty())
+			{
+				String item = queue.peekFirst();
+				
+				// End parameter or next?
+				boolean isEnd = (item == null || item.equals(")"));
+				if (isEnd || item.equals(";"))
+				{
+					// Consume it
+					queue.pollFirst();
+					
+					// Store into parameter list?
+					if (buffer.length() > 0)
+					{
+						parameters.add(buffer.toString());
+						buffer.setLength(0);
+					}
+					
+					// End here?
+					if (isEnd)
+						break;
+				}
+				
+				// Add formatting space
+				if (buffer.length() > 0)
+					buffer.append(' ');
+				
+				// And append whatever we put in
+				buffer.append(queue.removeFirst());
+			}
 		}
+		
+		// Store parameters
+		this.parameters = Collections.<String>unmodifiableList(parameters);
 	}
 	
 	/**
@@ -95,7 +141,7 @@ public final class SourceError
 		
 		// Code index
 		sb.append(this.projectCode);
-		sb.append(ErrorListManager.indexToString(this.index));
+		sb.append(SourceError.indexToString(this.index));
 		sb.append(": ");
 		
 		// Content
@@ -127,5 +173,51 @@ public final class SourceError
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * Returns string form of the given index.
+	 *
+	 * @param __index The index to translate.
+	 * @return The translated string to index.
+	 * @since 2020/02/22
+	 */
+	public static String indexToString(int __index)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(Character.toUpperCase(Character.forDigit(
+			__index / Character.MAX_RADIX, Character.MAX_RADIX)));
+		sb.append(Character.toUpperCase(Character.forDigit(
+			__index % Character.MAX_RADIX, Character.MAX_RADIX)));
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Returns the index for the given string.
+	 *
+	 * @return The resulting index.
+	 * @throws IllegalArgumentException If the string is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/22
+	 */
+	public static int stringToIndex(String __string)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__string == null)
+			throw new NullPointerException("No string specified.");
+		
+		if (__string.length() != 2)
+			throw new IllegalArgumentException("Invalid string length.");
+		
+		int rv = (Character.digit(__string.charAt(0), Character.MAX_RADIX) *
+			Character.MAX_RADIX) +
+			Character.digit(__string.charAt(1), Character.MAX_RADIX);
+		
+		if (rv < 0 || rv > SourceError._MAX_ERROR_CODE)
+			throw new IllegalArgumentException("Out of range index.");
+		
+		return rv;
 	}
 }
