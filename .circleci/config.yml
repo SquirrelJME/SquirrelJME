@@ -24,7 +24,6 @@ jobs:
       shell: cmd.exe
     steps:
       - checkout
-          path: c:\users\circleci\squirreljme
       - run:
           name: Gradle Build
           command: gradlew build
