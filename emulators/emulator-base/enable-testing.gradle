@@ -1,0 +1,22 @@
+// This script is included so that the simulator and the other modules that
+// need testing will work properly with the TestNG-based Simulator
+
+dependencies
+{
+	// Need TestNG to run our tests
+	testImplementation "org.testng:testng:7.1.0"
+
+	// Needed to access all of the testing framework details
+	testImplementation project(":modules:cldc-compact")
+	testImplementation project(":modules:tac")
+	testImplementation project(":modules:meep-midlet")
+	testImplementation project(":emulators:emulator-base")
+}
+
+test
+{
+}
+
+// Include Common Testing Configuration
+apply from: project.rootProject.findProject(":emulators:emulator-base").
+	projectDir.toPath().resolve("internal-shared-test-config.gradle").toFile()

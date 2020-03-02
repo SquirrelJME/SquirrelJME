@@ -1,0 +1,40 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEProfile
+
+description = "This defines the MEEP profile and is a virtual project."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AR"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP 8.0 Profile"
+	swmVendor = "Stephanie Gawroriski"
+	definedProfiles += new JavaMEProfile("MIDP-1.0")
+	definedProfiles += new JavaMEProfile("MIDP-2.0")
+	definedProfiles += new JavaMEProfile("MIDP-2.1")
+	definedProfiles += new JavaMEProfile("MIDP-3.0")
+	definedProfiles += new JavaMEProfile("MIDP-3.1")
+	definedProfiles += new JavaMEProfile("MEEP-8")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:gcf")
+	implementation project(":modules:media-api")
+	implementation project(":modules:meep-cellular")
+	implementation project(":modules:meep-concurrency")
+	implementation project(":modules:meep-event")
+	implementation project(":modules:meep-key")
+	implementation project(":modules:meep-liblets")
+	implementation project(":modules:meep-lui")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:meep-power")
+	implementation project(":modules:meep-provisioning")
+	implementation project(":modules:meep-rms")
+	implementation project(":modules:meep-securityframework")
+	implementation project(":modules:meep-swm")
+	implementation project(":modules:midp-lcdui")
+}

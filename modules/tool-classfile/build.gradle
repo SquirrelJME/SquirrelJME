@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This contains support for reading class files."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "JC"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Class File Reader"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:collections")
+	implementation project(":modules:io")
+}

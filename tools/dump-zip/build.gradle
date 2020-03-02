@@ -1,0 +1,14 @@
+plugins
+{
+	id "java"
+	id "application"
+}
+
+description = "This dumps ZIP files."
+mainClassName = "net.multiphasicapps.dumpzip.Main"
+
+dependencies
+{
+	implementation project(":modules:io")
+	implementation project(":modules:zip")
+}

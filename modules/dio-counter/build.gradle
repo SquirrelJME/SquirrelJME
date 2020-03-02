@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides access to hardware counters."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DQ"
+	swmType = JavaMEMidletType.API
+	swmName = "JavaME 8 Device I/O (Counters)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.counter;;1.0.1")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:dio")
+	implementation project(":modules:dio-gpio")
+}

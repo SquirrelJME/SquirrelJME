@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "The library contains the support for ZIP " +
+	"files and any data interfaces needed for ZIP files."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "BF"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "ZIP Support"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:io")
+}

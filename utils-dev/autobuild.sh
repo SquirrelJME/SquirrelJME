@@ -18,6 +18,9 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 __realexedir="$("$__exedir/absolute.sh" "$__exedir")"
 
+echo "This script is deprecated!"
+exit 1
+
 # Current build date, for record keeping
 __date="$(date --utc +%s) $(date --utc)"
 

@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "The concurrency APIs allows multiple applications to run " +
+	"at the same time."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DK"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP Concurrency"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.concurrency;;")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+}

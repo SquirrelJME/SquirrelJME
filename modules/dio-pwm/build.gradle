@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides access to PWM devices."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DR"
+	swmType = JavaMEMidletType.API
+	swmName = "JavaME 8 Device I/O (PWM)"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("dio.pwm;;1.0.1")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:dio")
+	implementation project(":modules:dio-gpio")
+}

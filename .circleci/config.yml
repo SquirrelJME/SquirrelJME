@@ -13,330 +13,78 @@ executors:
   buildenv:
     docker:
       - image: circleci/openjdk:8-jdk
-    working_directory: ~/squirreljme-build
 
 orbs:
   win: circleci/windows@2.2.0
 
-commands:
-  initialize_buildenv:
-    description: "Initializes the build environment"
-    steps:
-      - checkout:
-          path: ~/squirreljme
-      - run:
-          name: Setup directories
-          command: mkdir -p ~/squirreljme-build /tmp/summercoat /tmp/summercoat-test
-      - run:
-          name: Install build-essential
-          command: sudo apt-get install --no-install-recommends -y build-essential || true
-      - run:
-          name: Install crossbuild-essential-powerpc
-          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-powerpc || true
-      - run:
-          name: Install crossbuild-essential-mips
-          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-mips || true
-      - run:
-          name: Install crossbuild-essential-mipsel
-          command: sudo apt-get install --no-install-recommends -y crossbuild-essential-mipsel || true
-      - run:
-          name: Install qemu-user
-          command: sudo apt-get install --no-install-recommends -y qemu-user || true
-      - run:
-          name: Install unzip
-          command: sudo apt-get install --no-install-recommends -y unzip || true
-
 jobs:
-  build_javase_windows:
+  build_windows:
     executor:
       name: win/default
       shell: cmd.exe
     steps:
-      - checkout:
-          path: c:\users\circleci\squirreljme
+      - checkout
       - run:
-          name: Make build directory
-          command: mkdir c:\users\circleci\squirreljme-build
+          name: Gradle Build
+          command: gradlew build --continue --parallel
+          shell: cmd.exe
       - run:
-          name: Go to build directory
-          command: cd c:\users\circleci\squirreljme-build
-      - run:
-          name: Perform Shaded Java SE Build
-          command: c:\users\circleci\squirreljme\build.cmd dist javase
-  build_javase:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Shade JavaSE
-          command: ~/squirreljme/build.sh dist javase
-  build_javame:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Shade JavaME
-          command: ~/squirreljme/build.sh dist javame
-  build_summercoatrom:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Building SummerCoat ROM
-          command: ~/squirreljme/build.sh dist summercoatrom
-      - run:
-          name: UnZip SummerCoat ROM
-          command: unzip -o squirreljme-summercoatrom.zip
-      - run:
-          name: Copy ROM file
-          command: cp -v squirreljme.sqc /tmp/summercoat/squirreljme.sqc
-      - persist_to_workspace:
-          root: /tmp/summercoat
-          paths:
-            - squirreljme.sqc
-  build_summercoatromtest:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Building SummerCoat Test ROM
-          command: ~/squirreljme/build.sh dist summercoatrom-test
-      - run:
-          name: UnZip SummerCoat ROM
-          command: unzip -o squirreljme-summercoatrom-test.zip
-      - run:
-          name: Copy ROM file
-          command: cp -v squirreljme.sqc /tmp/summercoat-test/squirreljme.sqc
-      - persist_to_workspace:
-          root: /tmp/summercoat-test
-          paths:
-            - squirreljme.sqc
-  tests_baseline:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Clear old test results and snapshot
-          command: rm -f bljut/baseline/results.xml baseline.nps
-      - run:
-          name: Create test directory
-          command: mkdir -p bljut/baseline
-      - run:
-          name: Running Baseline Tests
-          command: ~/squirreljme/utils-dev/hostedlaunch.sh tac-runner > bljut/baseline/results.xml
+          name: Save test results
+          command: |
+            mkdir -p /c/users/circleci/test-results/junit
+            /usr/bin/find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
+          when: always
+          shell: bash.exe
       - store_test_results:
-          path: bljut
-  tests_springcoat:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Clear old test results and snapshot
-          command: rm -f spjut/springcoat/results.xml springcoat.nps
-      - run:
-          name: Create test directory
-          command: mkdir -p spjut/springcoat
-      - run:
-          name: Running SpringCoat VM
-          command: ~/squirreljme/build.sh launch -v springcoat -n springcoat.nps -Dcc.squirreljme.debug=false tac-runner > spjut/springcoat/results.xml
-          no_output_timeout: 30m
-      - store_test_results:
-          path: spjut
+          path: c:\users\circleci\test-results
       - store_artifacts:
-          path: springcoat.nps
-          destination: /nps/springcoat.nps
-  tests_summercoat:
+          path: c:\users\circleci\test-results
+  build_linux:
     executor: buildenv
     steps:
-      - initialize_buildenv
+      - checkout
       - run:
-          name: Clear old test results and snapshot
-          command: rm -f sujut/summercoat/results.xml summercoat.nps
+          name: Gradle Build
+          command: ./gradlew build --continue --parallel
       - run:
-          name: Create test directory
-          command: mkdir -p sujut/summercoat
-      - run:
-          name: Running SummerCoat VM
-          command: ~/squirreljme/build.sh launch -v summercoat -n summercoat.nps -Dcc.squirreljme.debug=false tac-runner > sujut/summercoat/results.xml
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+          when: always
       - store_test_results:
-          path: sujut
+          path: ~/test-results
       - store_artifacts:
-          path: summercoat.nps
-          destination: /nps/summercoat.nps
-  tests_summercoatrom:
-    executor: buildenv
+          path: ~/test-results/junit
+  build_macosx:
+    macos:
+      xcode: 11.3.0
     steps:
-      - initialize_buildenv
-      - attach_workspace:
-          at: /tmp/summercoat-test
+      - checkout
       - run:
-          name: Clear old test results and snapshot
-          command: rm -f svjut/summercoatrom/results.xml summercoatrom.nps
+          name: Update Brew
+          command: brew update
       - run:
-          name: Create test directory
-          command: mkdir -p svjut/summercoatrom
+          name: Install Gradle and OpenJDK 11
+          command: brew install gradle openjdk@11
       - run:
-          name: Take SummerCoat Test ROM
-          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
+          name: Gradle Build
+          command: ./gradlew build --continue --parallel
       - run:
-          name: Running SummerCoat VM
-          command: ~/squirreljme/build.sh launch -v summercoat -n summercoatrom.nps -Dcc.squirreljme.debug=false -Dcc.squirreljme.romfile=squirreljme.sqc tac-runner > svjut/summercoatrom/results.xml
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+          when: always
       - store_test_results:
-          path: svjut
+          path: ~/test-results
       - store_artifacts:
-          path: summercoatrom.nps
-          destination: /nps/summercoatrom.nps
-  tests_ratufacoat_default:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - attach_workspace:
-          at: /tmp/summercoat-test
-      - run:
-          name: Clear old test results and snapshot
-          command: rm -f rdjut/ratufacoatdef/results.xml
-      - run:
-          name: Create test directory
-          command: mkdir -p rdjut/ratufacoatdef
-      - run:
-          name: Take SummerCoat Test ROM
-          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
-      - run:
-          name: Cleaning RatufaCoat VM (Default)
-          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
-      - run:
-          name: Building RatufaCoat VM (Default)
-          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc
-      - run:
-          name: Running RatufaCoat VM (Default)
-          command: ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rdjut/ratufacoatdef/results.xml
-      - store_test_results:
-          path: rdjut
-  tests_ratufacoat_ppc:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Halt if compiler not available
-          command: if ! which powerpc-linux-gnu-gcc; then circleci-agent step halt; fi
-      - attach_workspace:
-          at: /tmp/summercoat-test
-      - run:
-          name: Clear old test results and snapshot
-          command: rm -f rpjut/ratufacoatppc/results.xml
-      - run:
-          name: Create test directory
-          command: mkdir -p rpjut/ratufacoatppc
-      - run:
-          name: Take SummerCoat Test ROM
-          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
-      - run:
-          name: Cleaning RatufaCoat VM (PowerPC)
-          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
-      - run:
-          name: Building RatufaCoat VM (PowerPC)
-          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc CC=powerpc-linux-gnu-gcc CFLAGS='-static -DSJME_BIG_ENDIAN'
-      - run:
-          name: Running RatufaCoat VM (PowerPC)
-          command: qemu-ppc ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rpjut/ratufacoatppc/results.xml
-      - store_test_results:
-          path: rpjut
-  tests_ratufacoat_mips:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Halt if compiler not available
-          command: if ! which mips-linux-gnu-gcc; then circleci-agent step halt; fi
-      - attach_workspace:
-          at: /tmp/summercoat-test
-      - run:
-          name: Clear old test results and snapshot
-          command: rm -f rmjut/ratufacoatmips/results.xml
-      - run:
-          name: Create test directory
-          command: mkdir -p rmjut/ratufacoatmips
-      - run:
-          name: Take SummerCoat Test ROM
-          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
-      - run:
-          name: Cleaning RatufaCoat VM (MIPS EB)
-          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
-      - run:
-          name: Building RatufaCoat VM (MIPS EB)
-          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc CC=mips-linux-gnu-gcc CFLAGS='-static -DSJME_BIG_ENDIAN'
-      - run:
-          name: Running RatufaCoat VM (MIPS EB)
-          command: qemu-mips ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rmjut/ratufacoatmips/results.xml
-      - store_test_results:
-          path: rmjut
-  tests_ratufacoat_mipsel:
-    executor: buildenv
-    steps:
-      - initialize_buildenv
-      - run:
-          name: Halt if compiler not available
-          command: if ! which mipsel-linux-gnu-gcc; then circleci-agent step halt; fi
-      - attach_workspace:
-          at: /tmp/summercoat-test
-      - run:
-          name: Clear old test results and snapshot
-          command: rm -f rnjut/ratufacoatmipsel/results.xml
-      - run:
-          name: Create test directory
-          command: mkdir -p rnjut/ratufacoatmipsel
-      - run:
-          name: Take SummerCoat Test ROM
-          command: cp -v /tmp/summercoat-test/squirreljme.sqc .
-      - run:
-          name: Cleaning RatufaCoat VM (MIPS EL)
-          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile clean
-      - run:
-          name: Building RatufaCoat VM (MIPS EL)
-          command: make -C ~/squirreljme/ratufacoat -f ~/squirreljme/ratufacoat/makefile squirreljme-stdc CC=mipsel-linux-gnu-gcc CFLAGS='-static -DSJME_LITTLE_ENDIAN'
-      - run:
-          name: Running RatufaCoat VM (MIPS EL)
-          command: qemu-mipsel ~/squirreljme/ratufacoat/squirreljme-stdc -Dcc.squirreljme.autolaunch=tac-runner > rnjut/ratufacoatmipsel/results.xml
-      - store_test_results:
-          path: rnjut
+          path: ~/test-results/junit
 
 workflows:
   version: 2
   tests:
     jobs:
-      - build_javase
-      - build_javame
-      - build_javase_windows:
-          requires:
-            - build_javase
-      - tests_baseline:
-          requires:
-            - build_javase
-      - build_summercoatrom:
-          requires:
-            - build_javase
-            - build_javame
-      - build_summercoatromtest:
-          requires:
-            - build_summercoatrom
-      - tests_springcoat:
-          requires:
-            - build_javase
-      - tests_summercoat:
-          requires:
-            - build_javase
-      - tests_summercoatrom:
-          requires:
-            - build_summercoatromtest
-      - tests_ratufacoat_default:
-          requires:
-            - build_summercoatromtest
-      - tests_ratufacoat_ppc:
-          requires:
-            - build_summercoatromtest
-      - tests_ratufacoat_mips:
-          requires:
-            - build_summercoatromtest
-      - tests_ratufacoat_mipsel:
-          requires:
-            - build_summercoatromtest
+      - build_windows
+      - build_linux
+      - build_macosx

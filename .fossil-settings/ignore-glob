@@ -61,10 +61,18 @@ ratufacoat/sjme_dos.exe
 *.patch
 *.diff
 
+# Gradle building
+.gradle
+modules/build
+modules/*/build
+emulators/build
+emulators/*/build
+tools/build
+tools/*/build
+buildSrc/build
+
 # Files which should be mime encoded
-*.png
 *.xcf
-*.png
 *.bmp
 *.mid
 *.midi

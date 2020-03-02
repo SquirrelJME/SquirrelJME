@@ -1,0 +1,52 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This project contains the testing, acceptance, "+
+	"and comparison framework which is used to test and compare differring " +
+	"executions of the virtual machine."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "BU"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Testing Framework"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+// We need to compile a class but not write it to:
+// /squirreljme/modules/tac/build/classes/java/main
+sourceSets
+{
+	main
+	{
+		java
+		{
+			exclude "org/testng/internal/annotations/DisabledRetryAnalyzer.java"
+			exclude "org/testng/annotations/CustomAttribute.java"
+			exclude "org/testng/annotations/Test.java"
+		}
+	}
+}
+
+dependencies
+{
+	// We have some annotations we need the source for, but we do not want
+	// these to stay at run-time
+	compileOnly "org.testng:testng:7.1.0"
+
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:io")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:tool-manifest-reader")
+	implementation project(":modules:tool-manifest-writer")
+	implementation project(":modules:collections")
+}
+
+jar
+{
+	// These are excluded because they are not needed by the source and are
+	// part of TestNG
+	exclude("org/testng/internal/annotations/DisabledRetryAnalyzer.class")
+	exclude("org/testng/annotations/CustomAttribute.class")
+	exclude("org/testng/annotations/Test.class")
+}

@@ -1,0 +1,18 @@
+plugins
+{
+	id "java"
+	id "application"
+}
+
+description = "This converts PCF font data into SQF fonts " +
+	"which are smaller, simpler, and faster to read than supporting PCF " +
+	"from within SquirrelJME."
+mainClassName = "net.multiphasicapps.pcftosqf.Main"
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:midp-lcdui")
+	implementation project(":modules:io")
+	implementation project(":modules:collections")
+}

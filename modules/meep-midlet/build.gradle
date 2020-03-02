@@ -1,0 +1,24 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This contains the MIDlet interface which " +
+	"acts as the main entry point for all MIDlets."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AD"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP MIDlet Interface"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.midlet;;")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:tool-manifest-reader")
+	implementation project(":modules:strings")
+	implementation project(":modules:collections")
+}

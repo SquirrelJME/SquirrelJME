@@ -1,0 +1,16 @@
+plugins
+{
+	id "java"
+	id "application"
+}
+
+description = "This dumps information about a class file similar to " +
+	"the javap tool."
+mainClassName = "net.multiphasicapps.dumpclass.Main"
+
+dependencies
+{
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:zip")
+	implementation project(":modules:io")
+}

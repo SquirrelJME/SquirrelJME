@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides an implementation which is used " +
+	"to access cellular networks."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DH"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP Cellular Networking"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.cellular;;")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+}

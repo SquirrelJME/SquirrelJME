@@ -1,0 +1,24 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This contains the base support for the line " +
+	"based interface."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DA"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP Line Based Interface"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.lui;;")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:meep-key")
+	implementation project(":modules:collections")
+	implementation project(":modules:gcf")
+}

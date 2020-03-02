@@ -1,0 +1,26 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This contains the implementation of the " +
+	"record management system which is used to manage records whichmay be " +
+	"used instead of the filesystem (if a filesystem is notsupported)."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DC"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP Record Management System"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.rms;;")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:tool-manifest-writer")
+	implementation project(":modules:meep-swm")
+	implementation project(":modules:collections")
+}

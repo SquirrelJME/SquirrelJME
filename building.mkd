@@ -11,8 +11,12 @@
 
 SquirrelJME requires the following before it can be built:
 
- * Java 7 or newer Virtual Machine
- * Java 7 or newer Compiler
+ * Java 8 or newer Virtual Machine and Compiler
+ * C++ Compiler (Utilized for Testing)
+   * Clang
+   * GCC
+   * Microsoft Visual Studio 2010 or newer
+   * XCode
 
 ## Notes on Running
 
@@ -23,7 +27,8 @@ letter prefix followed by two digits and letters.
 
 ## Installing Java
 
-SquirrelJME requires a Java 7 virtual machine in order to build itself.
+SquirrelJME requires a Java 8 virtual machine in order to build itself. Gradle
+is used however it is available through Gradle Wrapper.
 
 ### Common Linux Distributions
 
@@ -35,24 +40,23 @@ available.
  * Debian, Ubuntu, and derivatives
    * See <https://wiki.debian.org/Java>
    * One of the following depending on package availability
-     * `apt-get install openjdk-7-jdk`
      * `apt-get install openjdk-8-jdk`
      * `apt-get install openjdk-9-jdk`
+     * `apt-get install openjdk-11-jdk`
  * Gentoo
    * See <https://wiki.gentoo.org/wiki/Java>
 
+### AdoptOpenJDK
+
+AdoptOpenJDK is the recommended way to build and setup SquirrelJME as it has
+long-term support and is easy to setup. You will need at least a Java 8
+variant of AdoptOpenJDK.
+
+ * <https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot>
+
 ### Oracle's JDK
 
-Oracle's JDK supports the following (as of this writing):
-
- * Linux
- * Mac OS X
- * ReactOS (as Windows)
- * Solaris
- * Windows
- * Wine (as Windows)
-
-Oracle's Java JDK can be downloaded from:
+Oracle's JDK supports modern systems and can be downloaded from:
 
  * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
  
@@ -63,98 +67,49 @@ variables refers to the JDK's binary directory:
 
  * `C:\Program Files\Java\jdk1.8.0_131\bin\`
 
-# Bootstrap Build Environment
+### IntelliJ IDEA (Optional)
 
-The main interaction with the SquirrelJME build environment is with the build
-bootstrapper which initializes, compiles, and runs the build environment.
+SquirrelJME is developed on IntelliJ Ultimate, however Community Edition may
+still be used. This makes development easier and more integrated along with
+whatever code you write or contribute will match the style that is set in
+SquirrelJME.
 
-## System Specific
+ * <https://www.jetbrains.com/idea/>
 
-Each system has a different interface to the bootstrap environment, beyond this
-the remainder of it is the same regardless of the system used.
+## Installing C++ Compiler
 
-### ReactOS and Windows
+### Common Linux Distributions
 
-Oracle's Java JDK can be downloaded from:
+For the C++ Compiler which is needed for testing:
 
- * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+ * Debian, Ubuntu, and derivatives
+   * `apt-get install build-essential g++`
+   * `apt-get install build-essential clang`
 
-The script used for building is `build.cmd` (referred to as `build` hereafter).
-This requires the command prompt which may be accessed by running `cmd`.
-This may be found in the start menu or may be accessed via **Windows Key + R**,
-typing `cmd`, then hitting enter.
+### Windows
 
-Recommended setup for running the environment, assuming SquirrelJME source
-code is located in the example `c:\users\stephanie\desktop\squirreljme`:
+For Gradle to detect a C++ compiler, it needs either Microsoft Visual Studio
+or a GCC installation via Cygwin.
 
- * `cd c:\users\stephanie\temp`
- * `mkdir squirreljme-build`
- * `cd squirreljme-build`
- * `c:\users\stephanie\desktop\squirreljme\build.cmd`
+More information is located at 
+<https://docs.gradle.org/current/userguide/building_cpp_projects.html#windows>. 
 
-### UNIX-Like: Linux, Mac OS X, Solaris, BSD, etc.
+### Mac OS X
 
-The script used for building is `build.sh` (referred to as `build` hereafter).
+You must install XCode, more information is here:
 
-Recommended setup for running the environment, assuming SquirrelJME source
-code is located in the example `/home/stephanie/squirreljme`:
+ * <https://developer.apple.com/xcode/>
 
- * `cd /tmp`
- * `mkdir squirreljme-build`
- * `cd squirreljme-build`
- * `/home/stephanie/squirreljme/build.sh`
+# Build Enviromment
 
-# Compiled SummerCoat ROM
+The main interaction with the SquirrelJME build environment is with Gradle
+which manages anything related to building and testing. All builds are
+performed through Gradle Wrapper which is used as the following:
 
-This ROM file is required in order to work with SummerCoat or RatufaCoat.
+ * Windows: `gradlew`
+ * Others: `./gradlew`
 
- * `build dist summercoatrom`
-
-This will create a file called `squirreljme-summercoatrom.zip` which will
-contain the needed ROM file `squirreljme.sqc`.
-
-Additionally if all tests need to be built then a test ROM can be included as
-well.
-
- * `build dist summercoatrom-test`
-
-# Shaded JARs for Java SE
-
-Shaded SquirrelJME JARs are standalone JARs which can run on an existing
-Java SE or Java ME system depending on which target it was built for.
-Generally these JARs are just packaged by themselves and include the entire
-set of libraries and applications from within SquirrelJME. These shaded JARs
-are usually intended for demo projects and such. The JARs additionally are
-pure Java code so they require a host Java VM. To contain the SquirrelJME
-environment, an implementation of a virtual machine is used which is capable
-of using and running the class library. This virtual machine has a speed
-penalty because it is running the Java byte code itself however it is a
-compatible environment.
-
-## Building For Java SE
-
- * `build dist javase`  
-
-It is recommended that an out-of-tree build is performed (this means building
-from another directory that is not in the SquirrelJME source tree). All the
-commands pertain specifically to the build system itself.
-
-## Building for Java ME
-
-***NOTE:*** If the shaded JAR is not running on SquirrelJME, some features
-will not be available for use. It should still run however.
-
- * `build dist javame`
-
-# RatufaCoat
-
-Building the C based virtual machine depends on a C compiler.
-
-Note that you will need to build a separate SummerCoat ROM as above or
-use a pre-existing one. If you are building for a standard C setup with no
-graphical display or otherwise, to build the project you use make:
-
- * `make`
+Gradle uses tasks of which multiple may be specified accordingly.
 
 ## RetroArch
 

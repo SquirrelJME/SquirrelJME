@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This project takes input Jar files and " +
+	"compiles/converts them into a format that is more easily used by " +
+	"SummerCoat and RatufaCoat."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "BC"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Jar File Tools"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:common-vm")
+	implementation project(":modules:io")
+}

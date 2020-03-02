@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This provides support for provisioning new " +
+	"MIDlets and LIBlets which may exist on the network and can beseen in a " +
+	"way as a remote application downloader and installerexcept by a more " +
+	"concrete means. It is possible for applicationsto automatically be " +
+	"updated."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DM"
+	swmType = JavaMEMidletType.API
+	swmName = "MEEP Provisioning"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.provisioning;;")
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+}

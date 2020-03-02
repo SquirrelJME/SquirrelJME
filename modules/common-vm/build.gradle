@@ -1,0 +1,25 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This contains classes which are common across " +
+ "the various SquirrelJME VMs, and these only need to be written once " +
+ "as such."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AK"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Common Virtual Machine Classes"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc")
+
+	implementation project(":modules:midp-lcdui")
+	implementation project(":modules:meep-swm")
+	implementation project(":modules:meep-midlet")
+	implementation project(":modules:tool-manifest-reader")
+	implementation project(":modules:zip")
+}

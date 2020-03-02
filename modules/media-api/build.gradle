@@ -1,0 +1,18 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This project contains the implementation of " +
+	"the MIDP 3.0 Media API which is also specified in JSR 135."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "EA"
+	swmType = JavaMEMidletType.API
+	swmName = "Media API"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+}
