@@ -102,9 +102,9 @@ public final class TestResult
 			return false;
 		
 		TestResult o = (TestResult)__o;
-		return TestResult.valueEquals(this.rvalue, o.rvalue) &&
-			TestResult.valueEquals(this.tvalue, o.tvalue) &&
-			TestResult.__equals(this._secondary, o._secondary);
+		return this.rvalue.equals(o.rvalue) &&
+			this.tvalue.equals(o.tvalue) &&
+			this._secondary.equals(o._secondary);
 	}
 	
 	/**
@@ -122,18 +122,24 @@ public final class TestResult
 	}
 	
 	/**
-	 * Checks if this result is statisfied by the other result, note that this
+	 * Checks if this result is satisfied by the other result, note that this
 	 * is not the same as equality just a result for a test.
 	 *
+	 * @param __o The other result.
+	 * @return If it is satisfied by it.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/01
 	 */
-	public final boolean isStatisfiedBy(TestResult __other)
+	public final boolean isSatisfiedBy(TestResult __o)
 		throws NullPointerException
 	{
-		if (__other == null)
+		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Use test comparison (note is expected and actual)
+		return TestResult.valueEquals(__o.rvalue, this.rvalue) &&
+			TestResult.valueEquals(__o.tvalue, this.tvalue) &&
+			TestResult.__equals(__o._secondary, this._secondary);
 	}
 	
 	/**
@@ -394,7 +400,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
-	public static final boolean valueEquals(String __act, String __exp)
+	public static boolean valueEquals(String __act, String __exp)
 		throws InvalidTestParameterException, NullPointerException
 	{
 		if (__act == null || __exp == null)
@@ -412,6 +418,28 @@ public final class TestResult
 			// These are considered equal if they have anything in common
 			la.retainAll(lb);
 			return !la.isEmpty();
+		}
+		
+		// Comparing against fudged long value (which is a plus or minus value)
+		else if (__act.startsWith("long:") && __exp.startsWith("long-fudge:"))
+		{
+			// Parse actual value
+			long act = Long.parseLong(__act.substring("long:".length()));
+			
+			// The expected value has a fudge
+			int xfc = __exp.indexOf(':');
+			int xlc = __exp.lastIndexOf(':');
+			if (xlc == xfc)
+				xlc = -1;
+			
+			// Parse values
+			long exp = Long.parseLong(__exp.substring(xfc + 1,
+				(xlc > 0 ? xlc : __exp.length())));
+			long fudge = Math.abs((xlc > 0 ?
+				Long.parseLong(__exp.substring(xlc + 1)) : 0));
+			
+			// Matches as long as we are within the fudge range
+			return act == exp || (act >= (exp - fudge) && act <= (exp + fudge));
 		}
 		
 		// Use normal string comparison
@@ -479,7 +507,7 @@ public final class TestResult
 		
 		// Not the same?
 		boolean equals;
-		if (__a == null || (__a == null) != (__b == null))
+		if (__a == null || __b == null)
 			equals = Objects.equals(__a, __b);
 		
 		// Compare values otherwise
