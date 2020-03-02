@@ -47,7 +47,7 @@ jobs:
           command: brew install gradle openjdk@11
       - run:
           name: Gradle Build
-            command: ./gradlew build --continue --parallel
+          command: ./gradlew build --continue --parallel
 
 workflows:
   version: 2
