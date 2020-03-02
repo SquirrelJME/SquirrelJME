@@ -34,6 +34,16 @@ jobs:
       - run:
           name: Gradle Build
           command: ./gradlew build --continue --parallel
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+         path: ~/test-results
+      - store_artifacts:
+         path: ~/test-results/junit
   build_macosx:
     macos:
       xcode: 11.3.0
@@ -55,4 +65,4 @@ workflows:
     jobs:
       - build_windows
       - build_linux
-      - build-macosx
+      - build_macosx
