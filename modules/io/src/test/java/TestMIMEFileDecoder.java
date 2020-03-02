@@ -8,10 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.Objects;
 import net.multiphasicapps.io.MIMEFileDecoder;
 import net.multiphasicapps.tac.TestSupplier;
 
@@ -72,12 +74,42 @@ public class TestMIMEFileDecoder
 			decoded = baos.toByteArray();
 		}
 		
-		// Some properties
+		// The decoded is a fixed length, even with the raw data
 		this.secondary("dlen", decoded.length);
-		this.secondary("xlen", expected.length);
 		
-		// They must be the same
-		return Arrays.equals(expected, decoded);
+		// Compare all lines
+		int linecount = 0;
+		try (BufferedReader dec = new BufferedReader(new InputStreamReader(
+				new ByteArrayInputStream(decoded), "utf-8"));
+			BufferedReader exp = new BufferedReader(new InputStreamReader(
+				new ByteArrayInputStream(expected), "utf-8")))
+		{
+			for (;; linecount++)
+			{
+				String dl = dec.readLine();
+				String xl = exp.readLine();
+				
+				// Compare equality first
+				if (!Objects.equals(dl, xl))
+				{
+					// Add these in case
+					this.secondary("decoded", dl);
+					this.secondary("expected", xl);
+					
+					// Fail
+					return false;
+				}
+				
+				if (dl == null || xl == null)
+					break;
+			}
+		}
+		
+		// Line count
+		this.secondary("linecount", linecount);
+		
+		// Would be a mis-match if not reached
+		return true;
 	}
 }
 
