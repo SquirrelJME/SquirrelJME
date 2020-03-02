@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Save test results
           command: |
-            mkdir -p /c/users/circleci/test-results
+            mkdir -p /c/users/circleci/test-results/junit
             /usr/bin/find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
           when: always
           shell: bash.exe
