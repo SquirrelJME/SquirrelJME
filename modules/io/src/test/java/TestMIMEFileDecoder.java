@@ -72,6 +72,10 @@ public class TestMIMEFileDecoder
 			decoded = baos.toByteArray();
 		}
 		
+		// Some properties
+		this.secondary("dlen", decoded.length);
+		this.secondary("xlen", expected.length);
+		
 		// They must be the same
 		return Arrays.equals(expected, decoded);
 	}
