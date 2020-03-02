@@ -34,6 +34,20 @@ jobs:
       - run:
           name: Gradle Build
           command: ./gradlew build --continue --parallel
+  build_macosx:
+    macos:
+      xcode: 11.3.0
+    steps:
+      - checkout
+      - run:
+          name: Update Brew
+          command: brew update
+      - run:
+          name: Install Gradle and OpenJDK 11
+          command: brew install gradle openjdk@11
+      - run:
+          name: Gradle Build
+            command: ./gradlew build --continue --parallel
 
 workflows:
   version: 2
@@ -41,3 +55,4 @@ workflows:
     jobs:
       - build_windows
       - build_linux
+      - build-macosx
