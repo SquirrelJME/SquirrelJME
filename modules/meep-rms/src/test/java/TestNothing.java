@@ -27,7 +27,8 @@ public class TestNothing
 	public Object test(RecordStore __rs)
 		throws RecordStoreException
 	{
-		try (RecordStore rs = RecordStore.openRecordStore("rmstest", true))
+		try (RecordStore rs = RecordStore.openRecordStore("rmstest",
+			true))
 		{
 		}
 		

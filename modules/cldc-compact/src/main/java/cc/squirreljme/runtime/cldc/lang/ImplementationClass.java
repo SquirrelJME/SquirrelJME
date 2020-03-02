@@ -10,8 +10,6 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
-
 /**
  * This is used to return an appropriate class to use for the implemenation
  * of something. This is similar to {@link java.util.ServiceLoader} except
@@ -19,6 +17,7 @@ import cc.squirreljme.runtime.cldc.asm.SystemProperties;
  *
  * @since 2018/12/13
  */
+@Deprecated
 public final class ImplementationClass
 {
 	/**
@@ -26,6 +25,7 @@ public final class ImplementationClass
 	 *
 	 * @since 2018/12/17
 	 */
+	@Deprecated
 	private ImplementationClass()
 	{
 	}
@@ -39,6 +39,7 @@ public final class ImplementationClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
+	@Deprecated
 	public static final String implementationClass(String __n)
 		throws NullPointerException
 	{
@@ -57,8 +58,8 @@ public final class ImplementationClass
 		{
 		}
 		
-		// Otherwise use whatever the VM says to use
-		return SystemProperties.implementationClass(__n);
+		// No implementation
+		return null;
 	}
 }
 
