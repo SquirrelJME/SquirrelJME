@@ -27,7 +27,7 @@ public class TestLinkedListDeque
 	 */
 	public TestLinkedListDeque()
 	{
-		super(new LinkedList<Number>());
+		super(new LinkedList<Number>(), true);
 	}
 }
 

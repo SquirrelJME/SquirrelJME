@@ -27,6 +27,6 @@ public class TestArrayDequeDeque
 	 */
 	public TestArrayDequeDeque()
 	{
-		super(new ArrayDeque<Number>());
+		super(new ArrayDeque<Number>(), false);
 	}
 }

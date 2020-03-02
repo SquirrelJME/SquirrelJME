@@ -25,15 +25,19 @@ abstract class __TestDeque__
 	/** The deque to test. */
 	protected final Deque<Number> deque;
 	
+	/** Can we hash code? */
+	private final boolean _canHashCode;
+	
 	/**
 	 * Initializes the base test.
 	 *
 	 * @param __d The deque to test on.
 	 * @since 2019/01/20
 	 */
-	public __TestDeque__(Deque<Number> __d)
+	public __TestDeque__(Deque<Number> __d, boolean __canHash)
 	{
 		this.deque = __d;
+		this._canHashCode = __canHash;
 	}
 	
 	/**
@@ -84,8 +88,9 @@ abstract class __TestDeque__
 			ita[i] = it.next().intValue();
 		this.secondary("iterator-descending", ita);
 		
-		// Hashcode
-		this.secondary("hashcode", q.hashCode());
+		// Hashcode, but not all collections have a valid hashcode
+		if (this._canHashCode)
+			this.secondary("hashcode", q.hashCode());
 		
 		// As array form
 		this.secondary("array", q.<Integer>toArray(new Integer[q.size()]));
