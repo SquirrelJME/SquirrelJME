@@ -124,7 +124,7 @@ public class Throwable
 		
 		// The stack trace is implicitly filled in by this constructor, it
 		// matches the stack trace of the current thread of execution
-		this._stack = this.__getStackTrace(this, __clip, true);
+		this._stack = Throwable.__getStackTrace(__clip);
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class Throwable
 	public Throwable fillInStackTrace()
 	{
 		// Get stack trace, ignore this method
-		this._stack = this.__getStackTrace(this, 1, false);
+		this._stack = Throwable.__getStackTrace(1);
 		
 		// Returns self
 		return this;
@@ -247,7 +247,7 @@ public class Throwable
 	/**
 	 * Initializes the cause of the throwable if it has not been set.
 	 *
-	 * Calls to {@link #initCause(Throwable)}, {@link #Throwable(Throwable)},
+	 * Calls to this method, {@link #Throwable(Throwable)},
 	 * or {@link #Throwable(String, Throwable)} will cause the cause to be
 	 * initialized, preventing this from being called or called again.
 	 *
@@ -327,15 +327,12 @@ public class Throwable
 	/**
 	 * Obtains the stack trace for the current thread in raw format.
 	 *
-	 * @param __this The this throwable object.
 	 * @param __clip The number of entries on the top to clip.
-	 * @param __initclip Clip off initializers?
 	 * @return The stack trace for the current stack.
 	 * @throws IllegalArgumentException If the clip is negative.
 	 * @since 2018/09/16
 	 */
-	private static int[] __getStackTrace(Throwable __this,
-		int __clip, boolean __initclip)
+	private static int[] __getStackTrace(int __clip)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ29 Cannot specify a negative clip for a
