@@ -11,7 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.jvm.JVMFunction;
 
 public final class Double
 	extends Number
@@ -47,7 +47,7 @@ public final class Double
 	
 	/** The class representing the primitive type. */
 	public static final Class<Double> TYPE =
-		ObjectAccess.<Double>classByNameType("double");
+		JVMFunction.jvmLoadClass(Assembly.classInfoOfDouble());
 	
 	/** The mask for NaN values. */
 	private static final long _NAN_MASK =

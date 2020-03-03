@@ -85,7 +85,7 @@
         <option name="m_maxLength" value="32" />
       </extension>
       <extension name="ConstantWithMutableFieldTypeNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[a-z][a-zA-z_]*" />
+        <option name="m_regex" value="_?[a-zA-Z][A-Z_\d]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
@@ -95,7 +95,7 @@
         <option name="m_maxLength" value="40" />
       </extension>
       <extension name="InstanceVariableNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[a-z][a-zA-z_]*" />
+        <option name="m_regex" value="_?[a-zA-Z][a-zA-z_]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
