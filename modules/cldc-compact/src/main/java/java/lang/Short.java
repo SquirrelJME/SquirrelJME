@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -29,7 +31,7 @@ public final class Short
 	
 	/** The class representing the primitive type. */
 	public static final Class<Short> TYPE =
-		ObjectAccess.<Short>classByNameType("short");
+		JVMFunction.jvmLoadClass(Assembly.classInfoOfShort());
 	
 	/** The value of this integer. */
 	private final short _value;

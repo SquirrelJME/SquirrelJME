@@ -10,8 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -46,7 +47,7 @@ public final class Character
 	
 	/** The class representing the primitive type. */
 	public static final Class<Character> TYPE =
-		ObjectAccess.<Character>classByNameType("char");
+		JVMFunction.jvmLoadClass(Assembly.classInfoOfCharacter());
 	
 	/** The character value. */
 	private final char _value;

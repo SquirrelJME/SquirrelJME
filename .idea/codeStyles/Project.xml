@@ -1,5 +1,6 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <option name="AUTODETECT_INDENTS" value="false" />
     <option name="OTHER_INDENT_OPTIONS">
       <value>
         <option name="USE_TAB_CHARACTER" value="true" />
@@ -51,6 +52,7 @@
           <package name="" withSubpackages="true" static="true" />
         </value>
       </option>
+      <option name="ENABLE_JAVADOC_FORMATTING" value="false" />
       <option name="JD_DO_NOT_WRAP_ONE_LINE_COMMENTS" value="true" />
       <option name="JD_PRESERVE_LINE_FEEDS" value="true" />
       <option name="JD_PARAM_DESCRIPTION_ON_NEW_LINE" value="true" />
@@ -62,6 +64,9 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="JAVA">
+      <option name="RIGHT_MARGIN" value="79" />
+      <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
+      <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="KEEP_LINE_BREAKS" value="false" />
       <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
       <option name="KEEP_CONTROL_STATEMENT_IN_ONE_LINE" value="false" />
@@ -92,6 +97,7 @@
       <option name="WRAP_COMMENTS" value="true" />
       <option name="WRAP_LONG_LINES" value="true" />
       <option name="WRAP_ON_TYPING" value="0" />
+      <option name="SOFT_MARGINS" value="79" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
         <option name="USE_TAB_CHARACTER" value="true" />

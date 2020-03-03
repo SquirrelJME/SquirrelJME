@@ -10,7 +10,8 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.JVMFunction;
 
 /**
  * This is a boxed boolean value.
@@ -30,7 +31,7 @@ public final class Boolean
 	
 	/** The class representing the primitive type. */
 	public static final Class<Boolean> TYPE =
-		ObjectAccess.<Boolean>classByNameType("boolean");
+		JVMFunction.jvmLoadClass(Assembly.classInfoOfBoolean());
 	
 	/** The value of this boolean. */
 	private final boolean _value;

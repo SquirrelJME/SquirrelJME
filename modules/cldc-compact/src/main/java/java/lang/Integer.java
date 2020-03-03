@@ -10,8 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -38,7 +39,7 @@ public final class Integer
 	
 	/** The class type representing the primitive type. */
 	public static final Class<Integer> TYPE =
-		ObjectAccess.<Integer>classByNameType("int");
+		JVMFunction.jvmLoadClass(Assembly.classInfoOfInteger());
 	
 	/** The value of this integer. */
 	private final int _value;
