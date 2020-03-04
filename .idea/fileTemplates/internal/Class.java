@@ -3,7 +3,7 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end 
 
 /**
- * Not Described
+ * Not Described.
  *
  * @since ${YEAR}/${MONTH}/${DAY}
  */
