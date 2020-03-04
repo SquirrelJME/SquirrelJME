@@ -26,7 +26,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build
-          command: gradlew build --continue --parallel
+          command: gradlew build test --continue --parallel
           shell: cmd.exe
       - run:
           name: Save test results
@@ -45,7 +45,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build
-          command: ./gradlew build --continue --parallel
+          command: ./gradlew build test --continue --parallel
       - run:
           name: Save test results
           command: |
@@ -69,7 +69,7 @@ jobs:
           command: brew install gradle openjdk@11
       - run:
           name: Gradle Build
-          command: ./gradlew build --continue --parallel
+          command: ./gradlew build test --continue --parallel
       - run:
           name: Save test results
           command: |
