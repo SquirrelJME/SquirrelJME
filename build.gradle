@@ -2,7 +2,7 @@ group = "cc.squirreljme"
 description = "SquirrelJME is a Java ME 8 Virtual Machine for embedded " +
 	"and Internet of Things devices. It has the ultimate goal of being " +
 	"99.9% compatible with the Java ME standard."
-version = "0.3.0"
+version = "0.3.0-SNAPSHOT"
 
 // Virtual machine version ID
 ext.squirreljmeVMVersion = "03"

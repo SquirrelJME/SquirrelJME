@@ -295,6 +295,10 @@ public final class SuiteVersion
 		// Trim whitespace
 		__v = __v.trim();
 		
+		// Remove snapshot
+		if (__v.endsWith("-SNAPSHOT"))
+			__v = __v.substring(0, __v.length() - "-SNAPSHOT".length());
+		
 		// Output array
 		int[] rv = new int[3];
 		

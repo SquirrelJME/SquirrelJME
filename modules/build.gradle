@@ -13,6 +13,7 @@ subprojects
 	apply plugin: "checkstyle"
 	apply plugin: "cc.squirreljme.plugin"
 	apply plugin: "maven-publish"
+	apply plugin: "signing"
 
 	// This may be needed later if Java 8 support goes away, can use Eclipse
 	// although things will be lost with this...
@@ -41,14 +42,15 @@ subprojects
 			"squirreljme.syscallparam",
 			"squirreljme.syscallreturn" ]
 
-		// Include sources JAR in the build
+		// Include sources and JavaDocs!
 		withSourcesJar()
+		withJavadocJar()
 	}
 
 	// What to publish?
 	publishing {
 		publications {
-			maven(MavenPublication) {
+			mavenJava(MavenPublication) {
 				pom {
 					description = project.description
 					url = "https://squirreljme.cc/"
@@ -93,6 +95,27 @@ subprojects
 				from components.java
 			}
 		}
+
+		// Where does the stuff go?
+		// https://central.sonatype.org/pages/gradle.html
+		repositories {
+			maven {
+				credentials {
+					username = project.properties["squirreljmeNexusUser"]
+					password = project.properties["squirreljmeNexusPassword"]
+				}
+
+				// Currently release to just snapshots
+				url "https://oss.sonatype.org/content/repositories/snapshots/"
+			}
+		}
+	}
+
+	// Needed to publish
+	signing {
+		useGpgCmd()
+
+		sign publishing.publications.mavenJava
 	}
 
 	// Enable SquirrelJME Tests
