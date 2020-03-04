@@ -21,3 +21,4 @@ test
 				resolve("resources").resolve("squirreljme.xml").toFile()]
 		})
 }
+

@@ -2,8 +2,8 @@ import cc.squirreljme.plugin.swm.JavaMEMidletType
 import cc.squirreljme.plugin.swm.JavaMEStandard
 
 description = "This contains the implementation of the " +
-	"record management system which is used to manage records whichmay be " +
-	"used instead of the filesystem (if a filesystem is notsupported)."
+	"record management system which is used to manage records which may be " +
+	"used instead of the filesystem (if a filesystem is not supported)."
 version = rootProject.version
 
 squirreljme

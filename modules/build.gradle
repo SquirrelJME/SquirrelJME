@@ -9,14 +9,17 @@ description = "Modules which are a part of SquirrelJME."
 // Every sub-project needs SquirrelJME specific pieces
 subprojects
 {
-	//apply plugin: "de.set.ecj"
-	apply plugin: "java"
+	apply plugin: "java-library"
 	apply plugin: "checkstyle"
 	apply plugin: "cc.squirreljme.plugin"
+	apply plugin: "maven-publish"
+
+	// This may be needed later if Java 8 support goes away, can use Eclipse
+	// although things will be lost with this...
+	//apply plugin: "de.set.ecj"
 
 	// Configure the compiler
-	java
-	{
+	java {
 		// Java ME 8 is effectively Java 7
         compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
 		compileJava.targetCompatibility = JavaVersion.VERSION_1_7
@@ -37,6 +40,59 @@ subprojects
 			"squirreljme.error",
 			"squirreljme.syscallparam",
 			"squirreljme.syscallreturn" ]
+
+		// Include sources JAR in the build
+		withSourcesJar()
+	}
+
+	// What to publish?
+	publishing {
+		publications {
+			maven(MavenPublication) {
+				pom {
+					description = project.description
+					url = "https://squirreljme.cc/"
+					inceptionYear = "2016"
+
+					licenses {
+						license {
+							name = "GNU General Public License v3"
+							url = "https://www.gnu.org/licenses/gpl-3.0.txt"
+						}
+					}
+
+					organization {
+						name = "Stephanie Gawroriski"
+						url = "https://www.linkedin.com/in/xerthesquirrel/"
+					}
+
+					developers {
+						developer {
+							id = "xerthesquirrel"
+							name = "Stephanie Gawroriski"
+							email = "xerthesquirrel@gmail.com"
+						}
+					}
+
+					scm {
+						connection = "scm:git:git://github.com/SquirrelJME/SquirrelJME.git"
+						url = "https://squirrlejme.cc/"
+					}
+
+					issueManagement {
+						system = "GitHub"
+						url = "https://github.com/SquirrelJME/SquirrelJME/issues"
+					}
+				}
+
+				// Where is this project?
+				artifactId = project.name
+				groupId = "cc.squirreljme.modules"
+
+				// Build from Java code
+				from components.java
+			}
+		}
 	}
 
 	// Enable SquirrelJME Tests
