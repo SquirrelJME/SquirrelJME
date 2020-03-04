@@ -1,0 +1,14 @@
+# 2020/03/03
+
+## 17:54
+
+I think the most important part of SpringCoat now is going to be the memory
+allocation and simulation. Since I want to make it more like SummerCoat so
+that things are a bit easier to debug (and it will probably be faster). So
+like SpringCoat will be a refactor but eventually will be able to run my
+executed code without needing for me to have loaders and such or whatever.
+
+## 17:58
+
+Also the complexity of SpringCoat is insane, but it could use a refactor and
+such.
