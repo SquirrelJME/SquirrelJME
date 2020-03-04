@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.memory.MemoryAccessException;
 import java.util.Random;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -19,6 +20,7 @@ import org.testng.annotations.Test;
  *
  * @since 2020/03/03
  */
+@Ignore("Temporarily ignored for SpringCoat tests to be setup.")
 public class MemoryChunkTest
 {
 	/** The size of the chunk to use. */
