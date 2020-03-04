@@ -19,7 +19,7 @@ import cc.squirreljme.jvm.memory.WritableBasicMemory;
  *
  * @since 2020/03/03
  */
-public class MemoryManager
+public final class MemoryManager
 	implements ReadableBasicMemory, WritableBasicMemory
 {
 	/**

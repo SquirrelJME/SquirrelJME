@@ -18,4 +18,14 @@ dependencies
 	api project(":modules:meep-midlet")
 	api project(":modules:common-vm")
 	api project(":modules:collections")
+	
+	testImplementation "org.testng:testng:7.1.0"
+}
+
+test
+{
+	useTestNG()
+
+	// For easier testing do not quit whenever a TODO happens
+	systemProperty "cc.squirreljme.notodoexit", "true"
 }
