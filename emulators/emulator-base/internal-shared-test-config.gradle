@@ -20,4 +20,7 @@ test
 				projectDir.toPath().resolve("src").resolve("main").
 				resolve("resources").resolve("squirreljme.xml").toFile()]
 		})
+
+	// For easier testing do not quit whenever a TODO happens
+	systemProperty "cc.squirreljme.notodoexit", "true"
 }
