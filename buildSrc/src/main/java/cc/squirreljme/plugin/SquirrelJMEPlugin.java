@@ -15,6 +15,8 @@ import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.RunEmulatedTask;
 import cc.squirreljme.plugin.tasks.RunNativeTask;
+import cc.squirreljme.plugin.tasks.TestsJarManifestTask;
+import cc.squirreljme.plugin.tasks.TestsJarTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -40,6 +42,10 @@ public class SquirrelJMEPlugin
 		__project.getExtensions().<SquirrelJMEPluginConfiguration>create(
 			"squirreljme", SquirrelJMEPluginConfiguration.class,
 			this, __project);
+		
+		// Test classes
+		Task testClasses = __project.getTasks().
+			getByName("testClasses");
 		
 		// Resource processing tasks
 		Task processResources = __project.getTasks().
@@ -73,6 +79,16 @@ public class SquirrelJMEPlugin
 		// Generate the list of tests that are available
 		Task gtl = __project.getTasks().create("generateTestsList",
 			GenerateTestsListTask.class, processTestResources);
+			
+		// Build test JAR
+		Task testJar = __project.getTasks()
+			.create("testJar", TestsJarTask.class,
+			testClasses, processTestResources);
+			
+		// Add SquirrelJME properties to the manifest
+		__project.getTasks().create("additionalTestJarProperties",
+			TestsJarManifestTask.class,
+			testJar, processTestResources);
 		
 		// Add SquirrelJME properties to the manifest
 		Task sjp = __project.getTasks().create("additionalJarProperties",
