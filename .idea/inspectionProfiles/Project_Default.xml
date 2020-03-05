@@ -199,6 +199,15 @@
     <inspection_tool class="MissortedModifiers" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_requireAnnotationsFirst" value="true" />
     </inspection_tool>
+    <inspection_tool class="MisspelledHeader" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="CUSTOM_HEADERS">
+        <header value="X-SquirrelJME-API-Name" />
+        <header value="X-SquirrelJME-API-Vendor" />
+        <header value="X-SquirrelJME-API-Version" />
+        <header value="X-SquirrelJME-DefinedConfigurations" />
+        <header value="X-SquirrelJME-InternalProjectName" />
+      </option>
+    </inspection_tool>
     <inspection_tool class="MisspelledMethodName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="MultiplyOrDivideByPowerOfTwo" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="checkDivision" value="true" />

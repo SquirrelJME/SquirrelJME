@@ -119,7 +119,7 @@ public class SquirrelJMEPluginConfiguration
 	public static boolean isApplication(Project __project)
 		throws NullPointerException
 	{
-		return SquirrelJMEPluginConfiguration.configuration(__project).swmType ==
-			JavaMEMidletType.APPLICATION;
+		return SquirrelJMEPluginConfiguration
+			.configuration(__project).swmType == JavaMEMidletType.APPLICATION;
 	}
 }
