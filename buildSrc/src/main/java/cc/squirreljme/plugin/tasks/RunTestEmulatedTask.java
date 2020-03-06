@@ -52,7 +52,7 @@ public class RunTestEmulatedTask
 	{
 		// Always the TAC test runner is used as the main entry because even
 		// though the tests are MIDlets, we want more power in running them
-		return "net.multiphasicapps.tac.__TestRunner__";
+		return "net.multiphasicapps.tac.MainTestRunner";
 	}
 	
 	/**

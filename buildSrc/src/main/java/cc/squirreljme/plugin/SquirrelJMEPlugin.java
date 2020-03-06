@@ -16,6 +16,7 @@ import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.RunEmulatedTask;
 import cc.squirreljme.plugin.tasks.RunNativeTask;
 import cc.squirreljme.plugin.tasks.RunTestEmulatedTask;
+import cc.squirreljme.plugin.tasks.TestInVMTask;
 import cc.squirreljme.plugin.tasks.TestsJarManifestTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import org.gradle.api.Plugin;
@@ -131,10 +132,7 @@ public class SquirrelJMEPlugin
 		
 		// Run emulated tests
 		Task tsp = __project.getTasks().create("testSpringCoat",
-			RunTestEmulatedTask.class,
+			TestInVMTask.class,
 			testJar, "springcoat");
-		Task tsu = __project.getTasks().create("testSummerCoat",
-			RunTestEmulatedTask.class,
-			testJar, "summercoat");
 	}
 }

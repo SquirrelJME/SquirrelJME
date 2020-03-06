@@ -138,6 +138,10 @@ public class TestsJarManifestTask
 		// SquirrelJME specific indicator that this is for testing
 		attributes.putValue("X-SquirrelJME-Tests", "true");
 		
+		// Main entry point is always the TAC test runner
+		attributes.putValue("Main-Class",
+			"net.multiphasicapps.tac.MainTestRunner");
+		
 		// Write the manifest output
 		try (OutputStream out = Files.newOutputStream(this.__taskOutput(),
 			StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
