@@ -60,14 +60,6 @@ public class SquirrelJMEPlugin
 		Task rna = __project.getTasks().create("runNative",
 			RunNativeTask.class, jarTask);
 		
-		// Run emulated program
-		Task esp = __project.getTasks().create("runSpringCoat",
-			RunEmulatedTask.class,
-			jarTask, "springcoat", false);
-		Task esu = __project.getTasks().create("runSummerCoat",
-			RunEmulatedTask.class,
-			jarTask, "summercoat", false);
-		
 		// Mime Decode Resources
 		Task mmr = __project.getTasks().create("mimeDecodeResources",
 			MimeDecodeResourcesTask.class, SourceSet.MAIN_SOURCE_SET_NAME,
@@ -127,5 +119,13 @@ public class SquirrelJMEPlugin
 		nextError.setDescription("Returns the next free error code.");
 		nextError.doLast((Task __task) ->
 			System.out.println(new ErrorListManager(__project).next()));
+			
+		// Run emulated program
+		Task esp = __project.getTasks().create("runSpringCoat",
+			RunEmulatedTask.class,
+			jarTask, "springcoat", false);
+		Task esu = __project.getTasks().create("runSummerCoat",
+			RunEmulatedTask.class,
+			jarTask, "summercoat", false);
 	}
 }
