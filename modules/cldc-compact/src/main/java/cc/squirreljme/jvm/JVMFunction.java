@@ -160,6 +160,7 @@ public final class JVMFunction
 	 * @return The resulting string.
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	public static final String jvmLoadString(int __p)
 	{
 		// Zero will be the null pointer
