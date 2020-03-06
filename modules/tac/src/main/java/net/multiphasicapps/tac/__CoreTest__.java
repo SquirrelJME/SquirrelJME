@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.midlet.OverrideActiveMidletRestriction;
 import java.io.IOException;
 import java.io.InputStream;
