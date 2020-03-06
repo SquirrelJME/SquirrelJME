@@ -27,6 +27,7 @@ import java.io.PrintStream;
  *
  * @since 2018/09/15
  */
+@SuppressWarnings("FeatureEnvy")
 public class Throwable
 {
 	/** Exception message. */
