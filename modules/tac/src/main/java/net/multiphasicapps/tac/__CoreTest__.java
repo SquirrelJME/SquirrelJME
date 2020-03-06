@@ -58,23 +58,6 @@ abstract class __CoreTest__
 		throws Throwable;
 	
 	/**
-	 * Tests the minimum API level.
-	 *
-	 * @param __lv The level to test.
-	 * @throws InvalidTestException If the API level is not met.
-	 * @since 2019/03/14
-	 */
-	@Deprecated
-	public final void checkApiLevel(int __lv)
-		throws InvalidTestException
-	{
-		// {@squirreljme.error BU0b Minimum API level has not been met.
-		// (The required API level)}
-		if (!ApiLevel.minimumLevel(__lv))
-			throw new InvalidTestException(String.format("BU0b %x", __lv));
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/06
 	 */
