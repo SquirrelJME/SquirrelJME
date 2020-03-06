@@ -10,15 +10,27 @@
 package cc.squirreljme.plugin.tasks;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import org.gradle.api.Project;
 import org.gradle.api.internal.provider.AbstractMinimalProvider;
+import org.gradle.api.internal.tasks.testing.DefaultTestClassDescriptor;
+import org.gradle.api.internal.tasks.testing.DefaultTestMethodDescriptor;
+import org.gradle.api.internal.tasks.testing.DefaultTestSuiteDescriptor;
+import org.gradle.api.internal.tasks.testing.TestCompleteEvent;
+import org.gradle.api.internal.tasks.testing.TestDescriptorInternal;
 import org.gradle.api.internal.tasks.testing.TestExecuter;
 import org.gradle.api.internal.tasks.testing.TestExecutionSpec;
 import org.gradle.api.internal.tasks.testing.TestResultProcessor;
+import org.gradle.api.internal.tasks.testing.TestStartEvent;
 import org.gradle.api.tasks.testing.AbstractTestTask;
 import org.gradle.api.tasks.testing.Test;
+import org.gradle.api.tasks.testing.TestDescriptor;
+import org.gradle.api.tasks.testing.TestOutputEvent;
+import org.gradle.api.tasks.testing.TestResult;
+import org.gradle.internal.impldep.com.google.common.io.Files;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -61,6 +73,9 @@ public class TestInVMTask
 		this.setGroup("squirreljme");
 		this.setDescription("Tests inside of " + __vm + ".");
 		
+		// Always run
+		this.onlyIf((__task) -> true);
+		
 		// Where binary results are going to be stored
 		this.setProperty(TestInVMTask._BINARY_RESULTS_DIRECTORY,
 			this.getProject().getObjects().directoryProperty()
@@ -71,12 +86,12 @@ public class TestInVMTask
 		this.setBinResultsDir(
 			new File(new __BinaryResultsDirectoryProvider__().get()));
 		
-		// Do not generate XML
+		// Ignore HTML
 		this.getReports().getEnabledReports().get("html").setEnabled(false);
 		
-		// Do not generate JUnit XML (at least initially)
-		this.getReports().getEnabledReports().get("junitXml")
-			.setEnabled(false);
+		// Generate JUnit XML
+		this.getReports().getJunitXml().setDestination(
+			this.__tempRoot().resolve("junit.xml").toFile());
 	}
 	
 	/**
@@ -168,13 +183,55 @@ public class TestInVMTask
 		public void execute(TestExecutionSpec __spec,
 			TestResultProcessor __results)
 		{
-			throw new Error("execute()");
+			System.err.println("Initializing test.");
+			Object basicId = new Object();
+			TestDescriptorInternal testId = new DefaultTestSuiteDescriptor(
+				basicId, "suite")
+				{
+					@Override
+					public Object getOwnerBuildOperationId()
+					{
+						return basicId;
+					}
+				};
+				
+			System.err.printf("Starting test: %s%n", __results);
+			__results.started(testId, new TestStartEvent(System.nanoTime()));
+			
+			try
+			{
+				Thread.sleep(5000);
+			}
+			catch (InterruptedException e)
+			{
+			}
+			
+			__results.output(basicId, new TestOutputEvent()
+				{
+					@Override
+					public Destination getDestination()
+					{
+						return Destination.StdOut;
+					}
+					
+					@Override
+					public String getMessage()
+					{
+						return "Hello test output?";
+					}
+				});
+				
+				System.err.println("Completing test.");
+			__results.completed(basicId, new TestCompleteEvent(
+				System.nanoTime(), TestResult.ResultType.SUCCESS));
+			
+			//throw new Error("execute()");
 		}
 		
 		@Override
 		public void stopNow()
 		{
-			throw new Error("stopNow()");
+			System.err.println("Stopping test.");
 		}
 	}
 	
