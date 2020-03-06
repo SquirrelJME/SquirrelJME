@@ -214,7 +214,8 @@ public abstract class VMFactory
 		try
 		{
 			// Debug
-			System.err.println("Starting virtual machine...");
+			System.err.printf("Starting virtual machine (in %s)...%n",
+				mainClass);
 			
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
