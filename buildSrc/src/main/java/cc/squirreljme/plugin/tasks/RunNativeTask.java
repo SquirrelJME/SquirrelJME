@@ -42,7 +42,7 @@ public class RunNativeTask
 	{
 		// Set details of this task
 		this.setGroup("squirreljme");
-		this.setDescription("Runs the program using the emulator.");
+		this.setDescription("Runs the program using the host emulator.");
 		
 		// This only runs if this is an application
 		this.onlyIf(this::__onlyIf);

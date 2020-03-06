@@ -4,7 +4,9 @@
       <w>accel</w>
       <w>backlight</w>
       <w>bootram</w>
+      <w>cfgs</w>
       <w>cldc</w>
+      <w>dlet</w>
       <w>endianess</w>
       <w>fprintf</w>
       <w>gawroriski</w>
@@ -29,6 +31,7 @@
       <w>jthrowable</w>
       <w>jvalue</w>
       <w>jweak</w>
+      <w>midlet</w>
       <w>multiphasicapps</w>
       <w>narg</w>
       <w>phasic</w>
