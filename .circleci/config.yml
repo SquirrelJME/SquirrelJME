@@ -80,6 +80,23 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+  test_springcoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - run:
+          name: Gradle Build
+          command: ./gradlew testSpringCoat --continue --parallel
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
 
 workflows:
   version: 2
@@ -88,3 +105,4 @@ workflows:
       - build_windows
       - build_linux
       - build_macosx
+      - test_springcoat

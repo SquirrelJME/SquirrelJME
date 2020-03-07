@@ -9,21 +9,10 @@
 
 package cc.squirreljme.plugin.tasks;
 
-import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
-import cc.squirreljme.plugin.swm.SuiteDependency;
-import cc.squirreljme.plugin.swm.SuiteDependencyLevel;
-import cc.squirreljme.plugin.swm.SuiteDependencyType;
-import cc.squirreljme.plugin.swm.SuiteName;
-import cc.squirreljme.plugin.swm.SuiteVersion;
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.java.archives.Attributes;
-import org.gradle.api.java.archives.Manifest;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.bundling.Jar;

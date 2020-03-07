@@ -7,25 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tac;
+package cc.squirreljme.plugin.tasks.test;
 
 /**
- * This class is used as the entry points for any tests need to be run as
- * executed from SquirrelJME.
+ * Constants used to define what happens when an exit value is given.
  *
- * @since 2020/03/06
+ * @since 2020/03/07
  */
-@Deprecated
-public final class MainTestRunner
+public interface ExitValueConstants
 {
-	/**
-	 * Main entry point for test running.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2020/03/06
-	 */
-	public static void main(String... __args)
-	{
-		throw new todo.TODO();
-	}
+	/** Test passes. */
+	byte SUCCESS =
+		0;
+	
+	/** Test fails. */
+	byte FAILURE =
+		1;
+	
+	/** Test skipped. */
+	byte SKIPPED =
+		2;
 }

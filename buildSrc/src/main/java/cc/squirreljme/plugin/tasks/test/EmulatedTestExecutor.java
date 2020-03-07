@@ -18,14 +18,16 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Random;
+import java.util.LinkedList;
+import java.util.Objects;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.gradle.api.Project;
 import org.gradle.api.internal.tasks.testing.TestExecuter;
 import org.gradle.api.internal.tasks.testing.TestResultProcessor;
+import org.gradle.api.tasks.testing.TestOutputEvent;
+import org.gradle.process.ExecResult;
 
 /**
  * This is the executer for tests.
@@ -112,13 +114,14 @@ public final class EmulatedTestExecutor
 	 * @param __spec The specification.
 	 * @param __results The output results.
 	 * @param __method The method to run.
-	 * @return Did all tests pass?
-	 * @throws IOException On read errors.
+	 * @return The exit value of the test.
 	 * @since 2020/03/06
 	 */
-	private boolean executeClass(EmulatedTestExecutionSpec __spec,
+	private int executeClass(EmulatedTestExecutionSpec __spec,
 		TestResultProcessor __results, EmulatedTestMethodDescriptor __method)
 	{
+		Project project = this._testInVMTask.getProject();
+		
 		// For some reason test reports do not run if there is no output for
 		// them, so this for the most part forces console output to happen
 		// which makes tests happen
@@ -126,8 +129,54 @@ public final class EmulatedTestExecutor
 			EmulatedTestUtilities.outputErr(String.format(
 			"Running test %s...", __method.getDisplayName())));
 		
-		return new Random(System.nanoTime() + __method.hashCode())
-			.nextBoolean();
+		// Execute the test Java program
+		ExecResult result = project.javaexec(__javaExecSpec ->
+			{
+				Collection<String> args = new LinkedList<>();
+				
+				// Add emulator
+				args.add("-Xemulator:" + __spec.emulator);
+				
+				// Add snapshot path
+				args.add("-Xsnapshot:" + EmulatedTestExecutor.this
+					._testInVMTask.getBinaryResultsDirectory()
+					.file("profile.nps").get().getAsFile()
+					.toPath().toAbsolutePath());
+				
+				// Classpath of the target JAR
+				args.add("-classpath");
+				args.add(EmulatedTestUtilities.classpathString(project,
+					true));
+				
+				// Only run a single test
+				args.add("net.multiphasicapps.tac.MainSingleRunner");
+				
+				// Target this single test
+				args.add(Objects.requireNonNull(__method.getParent(),
+					"No test class?").getClassName());
+				
+				// Configure the VM for execution
+				__javaExecSpec.classpath(EmulatedTestUtilities
+					.emulatorClassPath(project, __spec.emulator));
+				__javaExecSpec.setMain("cc.squirreljme.emulator.vm.VMFactory");
+				__javaExecSpec.setArgs(args);
+				
+				// Pipe outputs to the specified areas so the console can be
+				// read properly!
+				__javaExecSpec.setStandardOutput(new PipeOutputStream(
+					__method.getId(), __results,
+					TestOutputEvent.Destination.StdOut));
+				__javaExecSpec.setErrorOutput(new PipeOutputStream(
+					__method.getId(), __results,
+					TestOutputEvent.Destination.StdErr));
+				
+				// Do not throw an exception on a non-zero exit value since
+				// it is important to us
+				__javaExecSpec.setIgnoreExitValue(true);
+			});
+		
+		// Return the exit value here
+		return result.getExitValue();
 	}
 	
 	/**
@@ -140,6 +189,7 @@ public final class EmulatedTestExecutor
 	 * @throws IOException On read errors.
 	 * @since 2020/03/06
 	 */
+	@SuppressWarnings("FeatureEnvy")
 	private boolean executeClasses(EmulatedTestExecutionSpec __spec,
 		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite)
 		throws IOException
@@ -201,6 +251,11 @@ public final class EmulatedTestExecutor
 		// Now go through the tests we discovered and execute them
 		for (String testClass : testClasses)
 		{
+			// Stop executing? Note that if this is stopped in the middle of
+			// a test we cannot make the tests pass
+			if (this._stopRunning)
+				return false;
+			
 			// In SquirrelJME all tests only have a single run method, so the
 			// run is the actual class of execution
 			EmulatedTestClassDescriptor classy =
@@ -218,10 +273,11 @@ public final class EmulatedTestExecutor
 			try
 			{
 				// Execute individual test
-				boolean passed = this.executeClass(__spec, __results, method);
+				int result = this.executeClass(__spec, __results, method);
 				
 				// Test did not pass
-				if (!passed)
+				if (result != ExitValueConstants.SUCCESS &&
+					result != ExitValueConstants.SKIPPED)
 				{
 					// Clear out the stack trace because they are really
 					// annoying
@@ -234,9 +290,9 @@ public final class EmulatedTestExecutor
 				
 				// End execution
 				__results.completed(method.getId(),
-					EmulatedTestUtilities.passOrFailNow(passed));
+					EmulatedTestUtilities.passSkipOrFailNow(result));
 				__results.completed(classy.getId(),
-					EmulatedTestUtilities.passOrFailNow(passed));
+					EmulatedTestUtilities.passSkipOrFailNow(result));
 			}
 			catch (Throwable t)
 			{

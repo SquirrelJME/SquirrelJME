@@ -367,39 +367,54 @@ public abstract class VMFactory
 			throw new VMException("AK05", e);
 		}
 		
-		// Print them out for debug
-		System.err.println("Entry points:");
-		for (int i = 0, n = entries.size(); i < n; i++)
-			System.err.printf("    %d: %s%n", i, entries.get(i));
-		
-		// If a class was specified and not a boot ID, we must search through
-		// the boot JAR's (the last one) entry points for a match
-		if (__bootid < 0)
+		// If no main class was specified, try looking for a MIDlet
+		String entryClass;
+		boolean isMidlet;
+		if (__bootcl == null)
 		{
-			// Determine the entry point used
+			// Print them out for debug
+			System.err.println("Entry points:");
 			for (int i = 0, n = entries.size(); i < n; i++)
-				if (__bootcl.equals(entries.get(i).entryPoint()))
-				{
-					__bootid = i;
-					break;
-				}
+				System.err.printf("    %d: %s%n", i, entries.get(i));
 			
-			// {@squirreljme.error AK06 Could not find the specified main
-			// class in the entry point list. (The main class)}
+			// If a class was specified and not a boot ID, we must search
+			// through the boot JAR's (the last one) entry points for a match
 			if (__bootid < 0)
-				throw new VMException("AK06 " + __bootcl);
+			{
+				// Determine the entry point used
+				for (int i = 0, n = entries.size(); i < n; i++)
+					if (__bootcl.equals(entries.get(i).entryPoint()))
+					{
+						__bootid = i;
+						break;
+					}
+				
+				// {@squirreljme.error AK06 Could not find the specified main
+				// class in the entry point list. (The main class)}
+				if (__bootid < 0)
+					throw new VMException("AK06 " + __bootcl);
+			}
+			
+			// Do not use an entry point which is outside of the bounds
+			__bootid = Math.max(0, Math.min(entries.size(), __bootid));
+			
+			// Is this entry point a MIDlet? Used as a hint
+			EntryPoint entry = entries.get(__bootid);
+			
+			entryClass = entry.entryPoint();
+			isMidlet = entry.isMidlet();
 		}
 		
-		// Do not use an entry point which is outside of the bounds
-		__bootid = Math.max(0, Math.min(entries.size(), __bootid));
-		
-		// Is this entry point a MIDlet? Used as a hint
-		EntryPoint entry = entries.get(__bootid);
-		boolean ismidlet = entry.isMidlet();
+		// Use this main class
+		else
+		{
+			entryClass = __bootcl;
+			isMidlet = false;
+		}
 		
 		// Create the virtual machine now that everything is available
-		return factory.createVM(__ps, __sm, classpath, entry.entryPoint(),
-			ismidlet, __gd, __sprops, __args);
+		return factory.createVM(__ps, __sm, classpath, entryClass,
+			isMidlet, __gd, __sprops, __args);
 	}
 	
 	/**

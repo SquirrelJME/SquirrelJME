@@ -12,6 +12,7 @@ package cc.squirreljme.plugin.tasks;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
+import cc.squirreljme.plugin.tasks.test.EmulatedTestUtilities;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -43,6 +44,7 @@ public abstract class AbstractEmulatedTask
 	protected final String emulator;
 	
 	/** Configurations to use. */
+	@Deprecated
 	private final String[] _configs;
 	
 	/**
@@ -161,6 +163,7 @@ public abstract class AbstractEmulatedTask
 	 * @return The run class path.
 	 * @since 2020/02/29
 	 */
+	@Deprecated
 	Iterable<Path> __runClassPath()
 	{
 		Collection<Path> result = new LinkedHashSet<>();
@@ -171,32 +174,13 @@ public abstract class AbstractEmulatedTask
 	}
 	
 	/**
-	 * Returns the run class path as a string.
-	 *
-	 * @return The run class path as a string.
-	 * @since 2020/02/29
-	 */
-	String __runClassPathAsString()
-	{
-		StringBuilder sb = new StringBuilder();
-		
-		for (Path path : this.__runClassPath())
-		{
-			if (sb.length() > 0)
-				sb.append(File.pathSeparatorChar);
-			sb.append(path);
-		}
-		
-		return sb.toString();
-	}
-	
-	/**
 	 * Recursively scans and obtains dependencies.
 	 *
 	 * @param __out The output collection.
 	 * @param __at The current project currently at.
 	 * @since 2020/02/29
 	 */
+	@Deprecated
 	final void __recursiveDependencies(Collection<Path> __out, Project __at)
 	{
 		this.__recursiveDependencies(__out, __at, new HashSet<>());
@@ -210,6 +194,7 @@ public abstract class AbstractEmulatedTask
 	 * @param __eval Projects which have been evaluated.
 	 * @since 2020/02/29
 	 */
+	@Deprecated
 	private void __recursiveDependencies(Collection<Path> __out, Project __at,
 		Set<Project> __eval)
 	{
@@ -262,7 +247,6 @@ __outer:
 		for (File file : ((Jar)__at.getTasks().getByName("jar"))
 			.getOutputs().getFiles())
 			__out.add(file.toPath().toAbsolutePath());
-		
 	}
 	
 	/**
@@ -317,8 +301,8 @@ __outer:
 					
 					// Determine program classpath
 					args.add("-classpath");
-					args.add(AbstractEmulatedTask.this.
-						__runClassPathAsString());
+					args.add(EmulatedTestUtilities.classpathAsString(
+						AbstractEmulatedTask.this.__runClassPath()));
 					
 					// Add main class to launch
 					args.add(AbstractEmulatedTask.this.mainClass(
