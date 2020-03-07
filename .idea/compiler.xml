@@ -63,6 +63,8 @@
       <module name="squirreljme.modules.supervisor.main" target="1.7" />
       <module name="squirreljme.modules.supervisor.test" target="1.7" />
       <module name="squirreljme.modules.supervisor.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.tac-runner.main" target="1.7" />
+      <module name="squirreljme.modules.tac-runner.test" target="1.7" />
       <module name="squirreljme.modules.tac-runner.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tac.testFixtures" target="1.7" />
       <module name="squirreljme.modules.test" target="1.7" />

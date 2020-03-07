@@ -140,7 +140,7 @@ public class TestsJarManifestTask
 		
 		// Main entry point is always the TAC test runner
 		attributes.putValue("Main-Class",
-			"net.multiphasicapps.tac.MainTestRunner");
+			"net.multiphasicapps.tac.MainSuiteRunner");
 		
 		// Write the manifest output
 		try (OutputStream out = Files.newOutputStream(this.__taskOutput(),
