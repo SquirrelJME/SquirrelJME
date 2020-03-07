@@ -15,7 +15,8 @@ import cc.squirreljme.jvm.memory.WritableByteMemory;
 
 /**
  * This is a standard chunk of memory which just has a basic set of bytes
- * associated with it.
+ * associated with it. This memory chunk is backed by an array and as such
+ * has a size limitation of 2GiB.
  *
  * @since 2020/03/03
  */
@@ -45,33 +46,83 @@ public final class MemoryChunk
 		this._bytes = new byte[__size];
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/07
+	 */
 	@Override
 	public byte read(long __addr)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		int iaddr = (int)__addr;
+		if (__addr < 0 || __addr > Integer.MAX_VALUE || iaddr >= this.size)
+			throw new MemoryAccessException(__addr);
+		
+		return this._bytes[iaddr];
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/07
+	 */
 	@Override
 	public void read(long __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryAccessException,
 		NullPointerException
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		int iaddr = (int)__addr;
+		if (__addr < 0 || (__addr + __l) > Integer.MAX_VALUE ||
+			iaddr > this.size)
+			throw new MemoryAccessException(__addr);
+		
+		// Transfer bytes
+		byte[] bytes = this._bytes;
+		for (int end = __o + __l; __o < end;)
+			__b[__o++] = bytes[iaddr++];
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/07
+	 */
 	@Override
 	public void write(long __addr, byte __b)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		int iaddr = (int)__addr;
+		if (__addr < 0 || __addr > Integer.MAX_VALUE || iaddr >= this.size)
+			throw new MemoryAccessException(__addr);
+		
+		this._bytes[iaddr] = __b;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/07
+	 */
 	@Override
 	public void write(long __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryAccessException,
 		NullPointerException
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		int iaddr = (int)__addr;
+		if (__addr < 0 || (__addr + __l) > Integer.MAX_VALUE ||
+			iaddr > this.size)
+			throw new MemoryAccessException(__addr);
+		
+		// Transfer bytes
+		byte[] bytes = this._bytes;
+		for (int end = __o + __l; __o < end;)
+			bytes[iaddr++] = __b[__o++];
 	}
 }

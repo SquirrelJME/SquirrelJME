@@ -12,7 +12,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.memory.MemoryAccessException;
 import java.util.Random;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -72,10 +71,23 @@ public class MemoryChunkTest
 	 * @since 2020/03/03
 	 */
 	@Test(expectedExceptions = {MemoryAccessException.class})
-	public void outOfBounds()
+	public void outOfBoundsHigh()
 	{
 		MemoryChunk chunk = new MemoryChunk(MemoryChunkTest._MEMORY_SIZE);
 		
 		chunk.write(MemoryChunkTest._MEMORY_SIZE, (byte)123);
+	}
+	
+	/**
+	 * Tests that out of bounds failure works.
+	 *
+	 * @since 2020/03/07
+	 */
+	@Test(expectedExceptions = {MemoryAccessException.class})
+	public void outOfBoundsLow()
+	{
+		MemoryChunk chunk = new MemoryChunk(MemoryChunkTest._MEMORY_SIZE);
+		
+		chunk.write(-1, (byte)124);
 	}
 }
