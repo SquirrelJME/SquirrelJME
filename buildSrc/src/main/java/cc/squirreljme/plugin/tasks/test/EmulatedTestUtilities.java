@@ -44,6 +44,10 @@ public final class EmulatedTestUtilities
 	private static final String[] _TEST_CONFIGS =
 		new String[]{"testApi", "testImplementation"};
 	
+	/** All configurations. */
+	private static final String[] _ALL_CONFIGS =
+		new String[]{"api", "implementation", "testApi", "testImplementation"};
+	
 	/** Normal JAR task. */
 	private static final String _MAIN_JAR_TASK =
 		"jar";
@@ -121,7 +125,9 @@ public final class EmulatedTestUtilities
 			}
 			
 			// Process each configurations dependencies
-			for (String config : configs)
+			for (String config : (at == __project ?
+				(__test ? EmulatedTestUtilities._ALL_CONFIGS: configs) :
+				EmulatedTestUtilities._MAIN_CONFIGS))
 			{
 				// If no configuration is set
 				Configuration buildConfig = at.getConfigurations()
