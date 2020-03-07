@@ -20,6 +20,9 @@ import org.gradle.api.internal.tasks.testing.DefaultTestSuiteDescriptor;
 public class EmulatedTestSuiteDescriptor
 	extends DefaultTestSuiteDescriptor
 {
+	/** The project running for. */
+	protected final Project project;
+	
 	/**
 	 * Initializes the test suite descriptor.
 	 *
@@ -29,5 +32,18 @@ public class EmulatedTestSuiteDescriptor
 	public EmulatedTestSuiteDescriptor(Project __project)
 	{
 		super(new EmulatedTestId(), __project.getName());
+		
+		this.project = __project;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/06
+	 */
+    @Override
+	public Object getOwnerBuildOperationId()
+	{
+		// This must always be set otherwise Gradle will crash
+		return this.getId();
 	}
 }

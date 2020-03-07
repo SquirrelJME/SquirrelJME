@@ -46,6 +46,17 @@ public class EmulatedTestClassDescriptor
 	 * @since 2020/03/06
 	 */
     @Override
+	public Object getOwnerBuildOperationId()
+	{
+		// This must always be set otherwise Gradle will crash
+		return this.getId();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/06
+	 */
+    @Override
     public TestDescriptorInternal getParent() {
         return this.suite;
     }
