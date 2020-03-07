@@ -43,6 +43,9 @@ public class TestInVMTask
 	/** The emulator to use. */
 	protected final String emulator;
 	
+	/** The JAR task for execution. */
+	protected final Jar jar;
+	
 	/**
 	 * Initializes the task.
 	 *
@@ -55,6 +58,7 @@ public class TestInVMTask
 	{
 		// We need these for tasks and such
 		this.emulator = __vm;
+		this.jar = __jar;
 		
 		// Set description
 		this.setGroup("squirreljme");
@@ -84,8 +88,8 @@ public class TestInVMTask
 		
 		// Include every test that is of a specific pattern, matching
 		// what SquirrelJME uses
-		this.setTestNameIncludePatterns(Arrays.asList("**/*Test", "**/Test*",
-			"**/Do*", "*Test", "Test*", "Do*"));
+		//this.setTestNameIncludePatterns(Arrays.asList("**/*Test", "**/Test*",
+		//	"**/Do*", "*Test", "Test*", "Do*"));
 	}
 	
 	/**
@@ -105,7 +109,7 @@ public class TestInVMTask
 	@Override
 	protected EmulatedTestExecutionSpec createTestExecutionSpec()
 	{
-		return new EmulatedTestExecutionSpec(this.emulator);
+		return new EmulatedTestExecutionSpec(this.emulator, this.jar);
 	}
 	
 	/**

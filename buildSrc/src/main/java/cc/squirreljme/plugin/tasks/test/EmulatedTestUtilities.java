@@ -45,54 +45,6 @@ public final class EmulatedTestUtilities
 	}
 	
 	/**
-	 * Returns a passing completion.
-	 *
-	 * @return An event.
-	 * @since 2020/03/06
-	 */
-	public static TestCompleteEvent passNow()
-	{
-		return new TestCompleteEvent(System.currentTimeMillis(),
-			TestResult.ResultType.SUCCESS);
-	}
-	
-	/**
-	 * Returns a skipping completion.
-	 *
-	 * @return An event.
-	 * @since 2020/03/06
-	 */
-	public static TestCompleteEvent skipNow()
-	{
-		return new TestCompleteEvent(System.currentTimeMillis(),
-			TestResult.ResultType.SKIPPED);
-	}
-	
-	/**
-	 * Returns a test starting now.
-	 *
-	 * @return An event
-	 * @since 2020/03/06
-	 */
-	public static TestStartEvent startNow()
-	{
-		return EmulatedTestUtilities.startNow(null);
-	}
-	
-	/**
-	 * Returns a test starting now.
-	 *
-	 * @param __test The test information.
-	 * @return An event
-	 * @since 2020/03/06
-	 */
-	public static TestStartEvent startNow(TestDescriptorInternal __test)
-	{
-		return new TestStartEvent(System.currentTimeMillis(),
-			(__test == null ? null : __test.getId()));
-	}
-	
-	/**
 	 * Outputs a message.
 	 *
 	 * @param __dest The destination.
@@ -130,5 +82,79 @@ public final class EmulatedTestUtilities
 	{
 		return EmulatedTestUtilities.output(
 			TestOutputEvent.Destination.StdErr, __msg);
+	}
+	
+	/**
+	 * Returns a passing completion.
+	 *
+	 * @return An event.
+	 * @since 2020/03/06
+	 */
+	public static TestCompleteEvent passNow()
+	{
+		return new TestCompleteEvent(System.currentTimeMillis(),
+			TestResult.ResultType.SUCCESS);
+	}
+	
+	/**
+	 * Either passes or fails.
+	 *
+	 * @param __pass Does the test pass?
+	 * @return The event.
+	 * @since 2020/03/06
+	 */
+	public static TestCompleteEvent passOrFailNow(boolean __pass)
+	{
+		return (__pass ? EmulatedTestUtilities.passNow() :
+			EmulatedTestUtilities.failNow());
+	}
+	
+	/**
+	 * Either passes or skips.
+	 *
+	 * @param __pass Does the test pass?
+	 * @return The event.
+	 * @since 2020/03/06
+	 */
+	public static TestCompleteEvent passOrSkipNow(boolean __pass)
+	{
+		return (__pass ? EmulatedTestUtilities.passNow() :
+			EmulatedTestUtilities.skipNow());
+	}
+	
+	/**
+	 * Returns a skipping completion.
+	 *
+	 * @return An event.
+	 * @since 2020/03/06
+	 */
+	public static TestCompleteEvent skipNow()
+	{
+		return new TestCompleteEvent(System.currentTimeMillis(),
+			TestResult.ResultType.SKIPPED);
+	}
+	
+	/**
+	 * Returns a test starting now.
+	 *
+	 * @return An event
+	 * @since 2020/03/06
+	 */
+	public static TestStartEvent startNow()
+	{
+		return EmulatedTestUtilities.startNow(null);
+	}
+	
+	/**
+	 * Returns a test starting now.
+	 *
+	 * @param __test The test information.
+	 * @return An event
+	 * @since 2020/03/06
+	 */
+	public static TestStartEvent startNow(TestDescriptorInternal __test)
+	{
+		return new TestStartEvent(System.currentTimeMillis(),
+			(__test == null ? null : __test.getId()));
 	}
 }
