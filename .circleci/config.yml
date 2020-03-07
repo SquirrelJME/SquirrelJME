@@ -91,12 +91,20 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/springcoat/junit-reports/.*xml' -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - run:
+          name: Save snapshots
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex '.*/springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
           when: always
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+      - store_artifacts:
+          path: ~/test-results/nps
 
 workflows:
   version: 2

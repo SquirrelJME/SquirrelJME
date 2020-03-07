@@ -134,14 +134,18 @@ public final class EmulatedTestExecutor
 			{
 				Collection<String> args = new LinkedList<>();
 				
+				// The class we are executing in
+				String withinClass = Objects.requireNonNull(
+					__method.getParent(),
+					"No test class?").getClassName();
+				
 				// Add emulator
 				args.add("-Xemulator:" + __spec.emulator);
 				
 				// Add snapshot path
 				args.add("-Xsnapshot:" + EmulatedTestExecutor.this
-					._testInVMTask.getBinaryResultsDirectory()
-					.file("profile.nps").get().getAsFile()
-					.toPath().toAbsolutePath());
+					._testInVMTask.__tempRoot().resolve("nps")
+					.resolve(withinClass + ".nps").toAbsolutePath());
 				
 				// Classpath of the target JAR
 				args.add("-classpath");
@@ -152,8 +156,7 @@ public final class EmulatedTestExecutor
 				args.add("net.multiphasicapps.tac.MainSingleRunner");
 				
 				// Target this single test
-				args.add(Objects.requireNonNull(__method.getParent(),
-					"No test class?").getClassName());
+				args.add(withinClass);
 				
 				// Configure the VM for execution
 				__javaExecSpec.classpath(EmulatedTestUtilities
