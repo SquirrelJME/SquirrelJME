@@ -109,6 +109,17 @@ public final class EmulatedTestUtilities
 				for (File file : jarTask.getOutputs().getFiles())
 					rv.add(file.toPath().toAbsolutePath());
 			
+			// If this our own project, we need the main JAR as well, so make
+			// sure it is used!
+			if (at == __project)
+			{
+				Jar mainJar = (Jar)at.getTasks().findByName(
+					EmulatedTestUtilities._MAIN_JAR_TASK);
+				if (mainJar != null)
+					for (File file : mainJar.getOutputs().getFiles())
+						rv.add(file.toPath().toAbsolutePath());
+			}
+			
 			// Process each configurations dependencies
 			for (String config : configs)
 			{
