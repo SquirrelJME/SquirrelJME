@@ -20,7 +20,6 @@ import org.testng.annotations.Test;
  *
  * @since 2020/03/03
  */
-@Ignore("Temporarily ignored for SpringCoat tests to be setup.")
 public class MemoryChunkTest
 {
 	/** The size of the chunk to use. */
