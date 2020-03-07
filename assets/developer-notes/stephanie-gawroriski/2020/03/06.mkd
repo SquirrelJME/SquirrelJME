@@ -1,0 +1,32 @@
+# 2020/03/06
+
+## 08:06
+
+Okay so getting married today yay! So I think the first thing to do to pass
+the time is to split the emulated launch into basic run and then actual
+running so to speak. Well as in testing to make sure things are working.
+
+## 08:51
+
+Actually what would probably be better for testing so that I get test results
+in Gradle and IntelliJ, but this should not be too difficult what I have to do
+in this case would be to have a custom executor that I can hook into the tests
+which just starts up the factory but also manages communication and such. Of
+course I would have to add in test IPC hooks and otherwise, but it would be
+interesting to say the least. But if it works that would be good because then
+I can get individual test results at the VM level which I think is very
+important to have when writing a VM.
+
+## 08:56
+
+Not sure how I am going to actually implement this, but I might figure
+something out eventually.
+
+## 16:27
+
+Okay so I have the basis for the test task, need to figure out how reports
+and results will work.
+
+## 19:07
+
+Okay so trying to add this execution and it does not find tests.
