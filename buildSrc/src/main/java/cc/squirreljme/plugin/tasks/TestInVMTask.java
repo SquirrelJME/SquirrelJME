@@ -9,33 +9,15 @@
 
 package cc.squirreljme.plugin.tasks;
 
-import cc.squirreljme.plugin.tasks.test.EmulatedTestClassDescriptor;
-import cc.squirreljme.plugin.tasks.test.EmulatedTestMethodDescriptor;
-import cc.squirreljme.plugin.tasks.test.EmulatedTestSuiteDescriptor;
-import cc.squirreljme.plugin.tasks.test.EmulatedTestUtilities;
+import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutor;
+import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutionSpec;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
-import org.gradle.api.Project;
 import org.gradle.api.internal.provider.AbstractMinimalProvider;
-import org.gradle.api.internal.tasks.testing.DefaultTestClassDescriptor;
-import org.gradle.api.internal.tasks.testing.DefaultTestMethodDescriptor;
-import org.gradle.api.internal.tasks.testing.DefaultTestSuiteDescriptor;
-import org.gradle.api.internal.tasks.testing.TestCompleteEvent;
-import org.gradle.api.internal.tasks.testing.TestDescriptorInternal;
-import org.gradle.api.internal.tasks.testing.TestExecuter;
-import org.gradle.api.internal.tasks.testing.TestExecutionSpec;
-import org.gradle.api.internal.tasks.testing.TestResultProcessor;
-import org.gradle.api.internal.tasks.testing.TestStartEvent;
 import org.gradle.api.tasks.testing.AbstractTestTask;
 import org.gradle.api.tasks.testing.Test;
-import org.gradle.api.tasks.testing.TestDescriptor;
-import org.gradle.api.tasks.testing.TestOutputEvent;
-import org.gradle.api.tasks.testing.TestResult;
-import org.gradle.internal.impldep.com.google.common.io.Files;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -96,11 +78,14 @@ public class TestInVMTask
 		this.getReports().getHtml().setDestination(
 			this.__tempRoot().resolve("html-reports").toFile());
 		
-		// Generate JUnit XML
+		// Generate JUnit XML, these will be uploaded to CICD
 		this.getReports().getJunitXml().setDestination(
 			this.__tempRoot().resolve("junit-reports").toFile());
 		
-		this.setTestNameIncludePatterns(Arrays.asList("*"));
+		// Include every test that is of a specific pattern, matching
+		// what SquirrelJME uses
+		this.setTestNameIncludePatterns(Arrays.asList("**/*Test", "**/Test*",
+			"**/Do*", "*Test", "Test*", "Do*"));
 	}
 	
 	/**
@@ -108,9 +93,9 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	@Override
-	protected TestExecuter<? extends TestExecutionSpec> createTestExecuter()
+	protected EmulatedTestExecutor createTestExecuter()
 	{
-		return new __Executer__();
+		return new EmulatedTestExecutor(this);
 	}
 	
 	/**
@@ -118,9 +103,9 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	@Override
-	protected TestExecutionSpec createTestExecutionSpec()
+	protected EmulatedTestExecutionSpec createTestExecutionSpec()
 	{
-		return new __Spec__();
+		return new EmulatedTestExecutionSpec(this.emulator);
 	}
 	
 	/**
@@ -173,122 +158,9 @@ public class TestInVMTask
 		 * @since 2020/03/06
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
 		public Class<String> getType()
 		{
 			return String.class;
 		}
-	}
-	
-	/**
-	 * This is the executer for tests.
-	 *
-	 * @since 2020/03/06
-	 */
-	final class __Executer__
-		implements TestExecuter<__Spec__>
-	{
-		@Override
-		public void execute(__Spec__ __spec,
-			TestResultProcessor __results)
-		{
-			// Setup for this suite
-			Project project = TestInVMTask.this.getProject();
-			EmulatedTestSuiteDescriptor suite =
-				new EmulatedTestSuiteDescriptor(project);
-			__results.started(suite, EmulatedTestUtilities.startNow());
-			
-			// Setup class
-			EmulatedTestClassDescriptor classy =
-				new EmulatedTestClassDescriptor(suite, "foo.Foo");
-			__results.started(classy, EmulatedTestUtilities.startNow(suite));
-			
-			// Setup method
-			EmulatedTestMethodDescriptor method =
-				new EmulatedTestMethodDescriptor(classy);
-			__results.started(method, EmulatedTestUtilities.startNow(classy));
-			
-			try
-			{
-				// Show a message
-				__results.output(method.getId(),
-					EmulatedTestUtilities.output("Hello!"));
-					
-				Thread.sleep(5000);
-			}
-			catch (InterruptedException e)
-			{
-			}
-			
-			// Complete tests
-			__results.completed(method.getId(),
-				EmulatedTestUtilities.passNow());
-			__results.completed(classy.getId(),
-				EmulatedTestUtilities.passNow());
-			__results.completed(suite.getId(),
-				EmulatedTestUtilities.passNow());
-			
-			/*
-			System.err.println("Initializing test.");
-			Object basicId = new Object();
-			TestDescriptorInternal testId = new DefaultTestSuiteDescriptor(
-				basicId, "suite")
-				{
-					@Override
-					public Object getOwnerBuildOperationId()
-					{
-						return basicId;
-					}
-				};
-				
-			System.err.printf("Starting test: %s%n", __results);
-			__results.started(testId, new TestStartEvent(System.nanoTime()));
-			
-			try
-			{
-				Thread.sleep(5000);
-			}
-			catch (InterruptedException e)
-			{
-			}
-			
-			__results.output(basicId, new TestOutputEvent()
-				{
-					@Override
-					public Destination getDestination()
-					{
-						return Destination.StdOut;
-					}
-					
-					@Override
-					public String getMessage()
-					{
-						return "Hello test output?";
-					}
-				});
-				
-				System.err.println("Completing test.");
-			__results.completed(basicId, new TestCompleteEvent(
-				System.nanoTime(), TestResult.ResultType.SUCCESS));
-			
-			//throw new Error("execute()");
-			 */
-		}
-		
-		@Override
-		public void stopNow()
-		{
-			System.err.println("Stopping test.");
-		}
-	}
-	
-	/**
-	 * The specification for tests.
-	 *
-	 * @since 2020/03/06
-	 */
-	static final class __Spec__
-		implements TestExecutionSpec
-	{
 	}
 }
