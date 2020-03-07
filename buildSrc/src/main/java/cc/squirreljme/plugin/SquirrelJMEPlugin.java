@@ -15,7 +15,6 @@ import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.RunEmulatedTask;
 import cc.squirreljme.plugin.tasks.RunNativeTask;
-import cc.squirreljme.plugin.tasks.RunTestEmulatedTask;
 import cc.squirreljme.plugin.tasks.TestInVMTask;
 import cc.squirreljme.plugin.tasks.TestsJarManifestTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
@@ -44,6 +43,9 @@ public class SquirrelJMEPlugin
 		__project.getExtensions().<SquirrelJMEPluginConfiguration>create(
 			"squirreljme", SquirrelJMEPluginConfiguration.class,
 			this, __project);
+		
+		// Build task
+		Task build = __project.getTasks().getByName("build");
 		
 		// Test classes
 		Task testClasses = __project.getTasks().

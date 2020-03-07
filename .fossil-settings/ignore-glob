@@ -22,7 +22,6 @@
 *.EXE
 *.OBJ
 *~
-.*
 .idea/*
 /manifest
 /manifest.uuid

@@ -9,11 +9,12 @@
 
 package cc.squirreljme.plugin.tasks;
 
-import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutor;
 import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutionSpec;
+import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutor;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import org.gradle.api.internal.provider.AbstractMinimalProvider;
 import org.gradle.api.tasks.testing.AbstractTestTask;
@@ -90,6 +91,11 @@ public class TestInVMTask
 		// what SquirrelJME uses
 		//this.setTestNameIncludePatterns(Arrays.asList("**/*Test", "**/Test*",
 		//	"**/Do*", "*Test", "Test*", "Do*"));
+		
+		// This needs the JAR task and the emulation task
+		this.dependsOn(__jar,
+			(Callable<Jar>)this::__findEmulatorJarTask,
+			(Callable<Jar>)this::__findEmulatorBaseJarTask);
 	}
 	
 	/**
@@ -110,6 +116,32 @@ public class TestInVMTask
 	protected EmulatedTestExecutionSpec createTestExecutionSpec()
 	{
 		return new EmulatedTestExecutionSpec(this.emulator, this.jar);
+	}
+	
+	/**
+	 * Finds the emulator JAR task.
+	 *
+	 * @return The emulator JAR task.
+	 * @since 2020/02/29
+	 */
+	Jar __findEmulatorBaseJarTask()
+	{
+		return (Jar)Objects.requireNonNull(this.getProject().getRootProject().
+			findProject(":emulators:emulator-base"),
+			"No emulator base?").getTasks().getByName("jar");
+	}
+	
+	/**
+	 * Locates the emulator package to base on.
+	 *
+	 * @return The emulator base.
+	 * @since 2020/02/29
+	 */
+	Jar __findEmulatorJarTask()
+	{
+		return (Jar)Objects.requireNonNull(this.getProject().getRootProject().
+			findProject(":emulators:" + this.emulator + "-vm"),
+			"No emulator?").getTasks().getByName("jar");
 	}
 	
 	/**

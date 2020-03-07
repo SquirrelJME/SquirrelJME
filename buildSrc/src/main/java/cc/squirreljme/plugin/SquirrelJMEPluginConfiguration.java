@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.gradle.api.Project;
+import org.gradle.api.UnknownDomainObjectException;
 
 /**
  * Allows SquirrelJME specific parts of modules to be configured.
@@ -106,6 +107,28 @@ public class SquirrelJMEPluginConfiguration
 		return __proj.getExtensions()
 			.<SquirrelJMEPluginConfiguration>getByType(
 				SquirrelJMEPluginConfiguration.class);
+	}
+	
+	/**
+	 * Gets the configuration from the given project.
+	 *
+	 * @param __proj The project to get the config from.
+	 * @return The resulting configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/07
+	 */
+	public static SquirrelJMEPluginConfiguration configurationOrNull(
+		Project __proj)
+		throws NullPointerException
+	{
+		try
+		{
+			return SquirrelJMEPluginConfiguration.configuration(__proj);
+		}
+		catch (UnknownDomainObjectException e)
+		{
+			return null;
+		}
 	}
 	
 	/**

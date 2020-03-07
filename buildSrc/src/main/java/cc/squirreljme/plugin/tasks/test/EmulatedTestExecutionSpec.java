@@ -41,7 +41,7 @@ public class EmulatedTestExecutionSpec
 		if (__jar == null)
 			throw new NullPointerException("No JAR specified.");
 		
-		this.emulator = (__emu == null ? "springcoat" : "summercoat");
+		this.emulator = (__emu == null ? "springcoat" : __emu);
 		this.jar = __jar;
 	}
 }

@@ -24,6 +24,7 @@ public class RunEmulatedTask
 	extends AbstractEmulatedTask
 {
 	/** Main configurations. */
+	@Deprecated
 	private static final String[] _MAIN_CONFIGS =
 		new String[]{"api", "implementation"};
 	

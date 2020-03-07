@@ -10,13 +10,11 @@
 package net.multiphasicapps.tac;
 
 /**
- * This class is used as the entry points for any tests need to be run as
- * executed from SquirrelJME.
+ * Runs all of the tests within the suite.
  *
- * @since 2020/03/06
+ * @since 2020/03/07
  */
-@Deprecated
-public final class MainTestRunner
+public class MainSuiteRunner
 {
 	/**
 	 * Main entry point for test running.
