@@ -196,7 +196,7 @@ public class TestInVMTask
 			Project project = TestInVMTask.this.getProject();
 			EmulatedTestSuiteDescriptor suite =
 				new EmulatedTestSuiteDescriptor(project);
-			__results.started(suite, EmulatedTestUtilities.startNow(null));
+			__results.started(suite, EmulatedTestUtilities.startNow());
 			
 			// Setup class
 			EmulatedTestClassDescriptor classy =

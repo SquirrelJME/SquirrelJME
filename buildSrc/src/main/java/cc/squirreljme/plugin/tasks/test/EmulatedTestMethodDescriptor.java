@@ -35,6 +35,15 @@ public class EmulatedTestMethodDescriptor
 		
 		this.inClass = __class;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/06
+	 */
+    @Override
+    public String getDisplayName() {
+        return this.inClass.getDisplayName();
+    }
 	
 	/**
 	 * {@inheritDoc}

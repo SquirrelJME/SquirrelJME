@@ -40,6 +40,15 @@ public class EmulatedTestClassDescriptor
 		
 		this.suite = __suite;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/06
+	 */
+    @Override
+    public String getDisplayName() {
+        return this.suite.getDisplayName() + ":" + this.getClassName();
+    }
 	
 	/**
 	 * {@inheritDoc}
