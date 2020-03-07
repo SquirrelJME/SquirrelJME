@@ -114,7 +114,7 @@ workflows:
       - build_linux
       - build_macosx
       - test_springcoat:
-        requires:
-          - build_windows
-          - build_linux
-          - build_macosx
+          requires:
+            - build_windows
+            - build_linux
+            - build_macosx
