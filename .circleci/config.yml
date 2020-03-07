@@ -96,7 +96,7 @@ jobs:
       - run:
           name: Save snapshots
           command: |
-            mkdir -p ~/test-results/junit/
+            mkdir -p ~/test-results/nps/
             find . -type f -regex '.*/springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
           when: always
       - store_test_results:
