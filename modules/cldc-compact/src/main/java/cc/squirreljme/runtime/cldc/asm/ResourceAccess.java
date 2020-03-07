@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/10/07
  */
+@Deprecated
 public final class ResourceAccess
 {
 	/** Resource does not exist. */

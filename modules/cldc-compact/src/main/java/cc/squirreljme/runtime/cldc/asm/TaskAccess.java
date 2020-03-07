@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/11/04
  */
+@Deprecated
 public final class TaskAccess
 {
 	/** The entry point is not valid. */

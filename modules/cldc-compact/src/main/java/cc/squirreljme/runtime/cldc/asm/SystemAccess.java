@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/10/13
  */
+@Deprecated
 public final class SystemAccess
 {
 	/**

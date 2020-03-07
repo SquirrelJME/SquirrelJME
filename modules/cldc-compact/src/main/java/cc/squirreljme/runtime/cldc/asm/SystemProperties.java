@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/09/20
  */
+@Deprecated
 public final class SystemProperties
 {
 	/**

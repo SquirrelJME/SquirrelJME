@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/09/21
  */
+@Deprecated
 public final class ConsoleOutput
 {
 	/** Standard output. */
