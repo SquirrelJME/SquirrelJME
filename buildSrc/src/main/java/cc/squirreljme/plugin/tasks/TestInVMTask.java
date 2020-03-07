@@ -86,6 +86,7 @@ public class TestInVMTask
 		// Generate JUnit XML, these will be uploaded to CICD
 		this.getReports().getJunitXml().setDestination(
 			this.__tempRoot().resolve("junit-reports").toFile());
+		this.getReports().getJunitXml().setOutputPerTestCase(true);
 		
 		// Include every test that is of a specific pattern, matching
 		// what SquirrelJME uses
