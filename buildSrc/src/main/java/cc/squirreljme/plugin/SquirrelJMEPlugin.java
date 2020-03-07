@@ -134,5 +134,8 @@ public class SquirrelJMEPlugin
 		Task tsp = __project.getTasks().create("testSpringCoat",
 			TestInVMTask.class,
 			testJar, "springcoat");
+		Task tsu = __project.getTasks().create("testSummerCoat",
+			TestInVMTask.class,
+			testJar, "summercoat");
 	}
 }
