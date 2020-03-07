@@ -9,9 +9,14 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.tasks.test.EmulatedTestClassDescriptor;
+import cc.squirreljme.plugin.tasks.test.EmulatedTestMethodDescriptor;
+import cc.squirreljme.plugin.tasks.test.EmulatedTestSuiteDescriptor;
+import cc.squirreljme.plugin.tasks.test.EmulatedTestUtilities;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import org.gradle.api.Project;
@@ -73,25 +78,29 @@ public class TestInVMTask
 		this.setGroup("squirreljme");
 		this.setDescription("Tests inside of " + __vm + ".");
 		
-		// Always run
-		this.onlyIf((__task) -> true);
+		// Depend on the JAR task
+		this.dependsOn(__jar);
 		
-		// Where binary results are going to be stored
+		// The input file for our tests is the JAR we want to look at!
+		this.getInputs().file(__jar.getArchiveFile());
+		
+		// Where binary results are going to be stored, these both have to
+		// be set otherwise the test build will fail
 		this.setProperty(TestInVMTask._BINARY_RESULTS_DIRECTORY,
 			this.getProject().getObjects().directoryProperty()
 			.dir(new __BinaryResultsDirectoryProvider__()));
-		
-		// This is deprecated but still has to be set in order for this to
-		// work!
 		this.setBinResultsDir(
 			new File(new __BinaryResultsDirectoryProvider__().get()));
 		
-		// Ignore HTML
-		this.getReports().getEnabledReports().get("html").setEnabled(false);
+		// Generate HTML reports because they are useful
+		this.getReports().getHtml().setDestination(
+			this.__tempRoot().resolve("html-reports").toFile());
 		
 		// Generate JUnit XML
 		this.getReports().getJunitXml().setDestination(
-			this.__tempRoot().resolve("junit.xml").toFile());
+			this.__tempRoot().resolve("junit-reports").toFile());
+		
+		this.setTestNameIncludePatterns(Arrays.asList("*"));
 	}
 	
 	/**
@@ -177,12 +186,49 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	final class __Executer__
-		implements TestExecuter<TestExecutionSpec>
+		implements TestExecuter<__Spec__>
 	{
 		@Override
-		public void execute(TestExecutionSpec __spec,
+		public void execute(__Spec__ __spec,
 			TestResultProcessor __results)
 		{
+			// Setup for this suite
+			Project project = TestInVMTask.this.getProject();
+			EmulatedTestSuiteDescriptor suite =
+				new EmulatedTestSuiteDescriptor(project);
+			__results.started(suite, EmulatedTestUtilities.startNow(null));
+			
+			// Setup class
+			EmulatedTestClassDescriptor classy =
+				new EmulatedTestClassDescriptor(suite, "foo.Foo");
+			__results.started(classy, EmulatedTestUtilities.startNow(suite));
+			
+			// Setup method
+			EmulatedTestMethodDescriptor method =
+				new EmulatedTestMethodDescriptor(classy);
+			__results.started(method, EmulatedTestUtilities.startNow(classy));
+			
+			try
+			{
+				// Show a message
+				__results.output(method.getId(),
+					EmulatedTestUtilities.output("Hello!"));
+					
+				Thread.sleep(5000);
+			}
+			catch (InterruptedException e)
+			{
+			}
+			
+			// Complete tests
+			__results.completed(method.getId(),
+				EmulatedTestUtilities.passNow());
+			__results.completed(classy.getId(),
+				EmulatedTestUtilities.passNow());
+			__results.completed(suite.getId(),
+				EmulatedTestUtilities.passNow());
+			
+			/*
 			System.err.println("Initializing test.");
 			Object basicId = new Object();
 			TestDescriptorInternal testId = new DefaultTestSuiteDescriptor(
@@ -226,6 +272,7 @@ public class TestInVMTask
 				System.nanoTime(), TestResult.ResultType.SUCCESS));
 			
 			//throw new Error("execute()");
+			 */
 		}
 		
 		@Override
@@ -240,7 +287,7 @@ public class TestInVMTask
 	 *
 	 * @since 2020/03/06
 	 */
-	final class __Spec__
+	static final class __Spec__
 		implements TestExecutionSpec
 	{
 	}
