@@ -22,6 +22,7 @@ import java.lang.annotation.Target;
  * @since 2018/12/05
  */
 @Documented
+@Deprecated
 @Retention(value=RetentionPolicy.SOURCE)
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,

@@ -17,6 +17,7 @@ import java.io.IOException;
  *
  * @since 2019/02/02
  */
+@Deprecated
 public interface ConsoleCallback
 {
 	/**

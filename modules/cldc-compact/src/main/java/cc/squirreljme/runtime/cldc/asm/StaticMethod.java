@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.cldc.asm;
  *
  * @since 2018/11/20
  */
+@Deprecated
 public interface StaticMethod
 {
 }
