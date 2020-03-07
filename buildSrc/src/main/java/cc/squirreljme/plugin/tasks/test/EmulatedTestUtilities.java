@@ -89,7 +89,7 @@ public final class EmulatedTestUtilities
 		eval.add(__project);
 		
 		// Process all projects for output
-		Collection<Path> rv = new LinkedList<>();
+		LinkedList<Path> rv = new LinkedList<>();
 		while (!eval.isEmpty())
 		{
 			// Only evaluate project once
@@ -111,7 +111,7 @@ public final class EmulatedTestUtilities
 				inJar : EmulatedTestUtilities._MAIN_JAR_TASK));
 			if (jarTask != null)
 				for (File file : jarTask.getOutputs().getFiles())
-					rv.add(file.toPath().toAbsolutePath());
+					rv.addFirst(file.toPath().toAbsolutePath());
 			
 			// If this our own project, we need the main JAR as well, so make
 			// sure it is used!
@@ -121,7 +121,7 @@ public final class EmulatedTestUtilities
 					EmulatedTestUtilities._MAIN_JAR_TASK);
 				if (mainJar != null)
 					for (File file : mainJar.getOutputs().getFiles())
-						rv.add(file.toPath().toAbsolutePath());
+						rv.addFirst(file.toPath().toAbsolutePath());
 			}
 			
 			// Process each configurations dependencies
