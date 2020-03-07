@@ -226,15 +226,27 @@ public abstract class VMFactory
 				0, 0, null,
 				mainArgs.<String>toArray(new String[mainArgs.size()]));
 			
-			// Run the virtual machine until it exits
+			// Run the virtual machine until it exits, but do not exit yet
+			// because we want the snapshot to be created
 			exitCode = vm.runVm();
-			System.exit(vm.runVm());
 		}
 		
 		// Always write the snapshot file
 		finally
 		{
 			if (snapshotPath != null)
+			{
+				// Create directory where it goes
+				try
+				{
+					Files.createDirectories(snapshotPath.getParent());
+				}
+				catch (IOException e)
+				{
+					// Ignore
+				}
+				
+				// Write file
 				try (OutputStream out = Files.newOutputStream(snapshotPath,
 					StandardOpenOption.WRITE, StandardOpenOption.CREATE,
 					StandardOpenOption.TRUNCATE_EXISTING))
@@ -245,6 +257,7 @@ public abstract class VMFactory
 				{
 					// Ignore
 				}
+			}
 		}
 		
 		// Exit with the exit code the VM gave us back

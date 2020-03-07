@@ -150,7 +150,7 @@ public class TestInVMTask
 	 * @return The temporary root.
 	 * @since 2020/03/06
 	 */
-	final Path __tempRoot()
+	public final Path __tempRoot()
 	{
 		return this.getProject().getBuildDir().toPath().resolve("vm-test").
 			resolve(this.emulator);

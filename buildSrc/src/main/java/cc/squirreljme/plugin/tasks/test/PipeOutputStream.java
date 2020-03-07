@@ -157,6 +157,7 @@ public class PipeOutputStream
 		StringBuilder buffer = this.buffer;
 		
 		// Send to output
+		buffer.append('\n');
 		this.results.output(this.testId, EmulatedTestUtilities.output(
 			this.destination, buffer.toString()));
 		
