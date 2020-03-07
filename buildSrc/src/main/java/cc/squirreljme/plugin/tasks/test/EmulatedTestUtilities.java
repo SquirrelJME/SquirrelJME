@@ -71,6 +71,17 @@ public final class EmulatedTestUtilities
 	/**
 	 * Returns a test starting now.
 	 *
+	 * @return An event
+	 * @since 2020/03/06
+	 */
+	public static TestStartEvent startNow()
+	{
+		return EmulatedTestUtilities.startNow(null);
+	}
+	
+	/**
+	 * Returns a test starting now.
+	 *
 	 * @param __test The test information.
 	 * @return An event
 	 * @since 2020/03/06
