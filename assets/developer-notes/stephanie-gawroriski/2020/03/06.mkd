@@ -30,3 +30,9 @@ and results will work.
 ## 19:07
 
 Okay so trying to add this execution and it does not find tests.
+
+## 22:51
+
+Okay so if an exception is thrown in a suite then the entire group fails and
+it fails to group them together, so I think otherwise there will be skip I
+supposed since not sure how to report failure?

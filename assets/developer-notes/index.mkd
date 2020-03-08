@@ -2519,7 +2519,7 @@
 `04`
 `05`
 [**`06`**](stephanie-gawroriski/2020/03/06.mkd)
-`07`
+[**`07`**](stephanie-gawroriski/2020/03/07.mkd)
  * `08`
 `09`
 `10`
