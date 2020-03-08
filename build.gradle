@@ -17,11 +17,16 @@ idea
 		// Use the proper name for this module
 		name = "SquirrelJME"
 
-		// Treat these as extra resources
-		resourceDirs += file("assets")
-
-		// Exclude these directories
+		// Exclude these directories so IntelliJ does not pick these up
+		// in inspections and builds
 		excludeDirs += file("utils-dev")
+		excludeDirs += file("assets")
+		excludeDirs += file("config")
+		excludeDirs += file(".idea")
+		excludeDirs += file(".circleci")
+		excludeDirs += file(".fossil-settings")
+		excludeDirs += file(".github")
+		excludeDirs += file("gradle")
 	}
 }
 
