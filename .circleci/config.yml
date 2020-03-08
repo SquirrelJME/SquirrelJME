@@ -25,6 +25,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Download FontForge
+          command: curl -L -o fontforge-install.exe https://github.com/fontforge/fontforge/releases/download/20190801/FontForge-2019-08-01-Windows.exe
+          shell: cmd.exe
+      - run:
+          name: Install FontForge
+          command: fontforge-install.exe /verysilent /suppressmsgboxes /norestart /noicons
+          shell: cmd.exe
+      - run:
           name: Gradle Build
           command: gradlew build test --continue --parallel
           shell: cmd.exe
@@ -43,6 +51,9 @@ jobs:
     executor: buildenv
     steps:
       - checkout
+      - run:
+          name: Install FontForge
+          command: sudo apt-get -y install fontforge
       - run:
           name: Gradle Build
           command: ./gradlew build test --continue --parallel
@@ -65,8 +76,8 @@ jobs:
           name: Update Brew
           command: brew update
       - run:
-          name: Install Gradle and OpenJDK 11
-          command: brew install gradle openjdk@11
+          name: Install FontForge, Gradle and OpenJDK 11
+          command: brew install fontforge gradle openjdk@11
       - run:
           name: Gradle Build
           command: ./gradlew build test --continue --parallel

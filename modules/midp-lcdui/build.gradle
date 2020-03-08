@@ -1,5 +1,7 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 import cc.squirreljme.plugin.swm.JavaMEStandard
+import java.nio.file.Paths
+import java.util.regex.Pattern
 
 description = "This contains the standard MIDP LCD User " +
  "Interface which uses graphical text, widgets, and images to interact " +
@@ -24,4 +26,71 @@ dependencies
 	implementation project(":modules:gcf")
 	implementation project(":modules:io")
 	implementation project(":modules:collections")
+}
+
+/** Font compilation task. */
+class CompileFonts extends DefaultTask {
+	/** @return The executable where FontForge is located. */
+	static File fontForgeExePath() {
+		// If we are on Windows, look into program files
+		if (System.getProperty("os.name").toLowerCase().
+			contains("windows")) {
+			File x86Path = Paths.get(Objects.toString(System.getenv(
+				"ProgramFiles(x86)"), "C:\\Program Files (x86)"),
+				"FontForgeBuilds", "bin", "fontforge.exe").toFile()
+			File natPath = Paths.get(Objects.toString(System.getenv(
+				"ProgramFiles"), "C:\\Program Files"),
+				"FontForgeBuilds", "bin", "fontforge.exe").toFile()
+			
+			if (x86Path.exists())
+				return x86Path
+
+			if (natPath.exists())
+				return natPath
+		}
+
+		// Other systems with less than 30% market share, we can look in PATH
+		for (String segment : System.getenv("PATH").split(
+			Pattern.quote(File.pathSeparator))) {
+			File maybe = Paths.get(segment, "fontforge").toFile()
+			if (maybe.exists())
+				return maybe
+
+			// Or that happens to be here too
+			File maybeExe = Paths.get(segment, "fontforge.exe").toFile()
+			if (maybeExe.exists())
+				return maybeExe
+		}
+
+		// Does not exist!
+		return null;
+	}
+
+	/** Performs the task of compiling the fonts. */
+	@TaskAction
+	void performFontsCompilation() {
+		project.exec {ExecSpec __spec ->
+				// Execute this program
+				__spec.executable(fontForgeExePath().toString())
+				
+				// Use Python scripting engine to generate code
+				__spec.args("-c",
+					"fontforge.open(sys.argv[1]).generate(sys.argv[2])",
+					project.rootProject.file("assets/font/monospace.sfdir").
+						toString(),
+					"build//monospace-*.pcf")
+
+				throw new Error("TODO");
+			}
+	}
+}
+
+tasks.register("compileFonts", CompileFonts) {
+	group = "squirreljme"
+	description = "Compiles FontForge fonts into SQFs for SquirrelJME."
+
+	// Only able to perform this task if FontForge actually exists!
+	onlyIf {
+		return fontForgeExePath() != null
+	}
 }
