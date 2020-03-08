@@ -3,6 +3,12 @@ plugins
 	id 'java'
 }
 
+repositories
+{
+	mavenCentral()
+	jcenter()
+}
+
 dependencies
 {
 	implementation gradleApi()

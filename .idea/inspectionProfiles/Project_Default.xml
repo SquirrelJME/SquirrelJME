@@ -1,5 +1,6 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
+    <description>Inspections that best fit how SquirrelJME is structured.</description>
     <option name="myName" value="Project Default" />
     <inspection_tool class="AbstractClassWithOnlyOneDirectInheritor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AbstractMethodOverridesAbstractMethod" enabled="true" level="WARNING" enabled_by_default="true">
