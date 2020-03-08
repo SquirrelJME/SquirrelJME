@@ -25,7 +25,7 @@ public final class DataSerialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
-	public static final String encodeKey(String __key)
+	public static String encodeKey(String __key)
 		throws NullPointerException
 	{
 		if (__key == null)
@@ -74,7 +74,7 @@ public final class DataSerialization
 	 * @return The encoded string, {@code null} has a special value.
 	 * @since 2018/10/06
 	 */
-	public static final String encodeString(String __s)
+	public static String encodeString(String __s)
 	{
 		// Special value for null strings
 		if (__s == null)
@@ -199,7 +199,7 @@ public final class DataSerialization
 	 * @return The resulting serialization.
 	 * @since 2019/01/20
 	 */
-	public static final String serialize(Object __o)
+	public static String serialize(Object __o)
 	{
 		// Null
 		if (__o == null)

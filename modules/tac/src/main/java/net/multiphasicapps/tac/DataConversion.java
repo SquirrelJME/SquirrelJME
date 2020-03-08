@@ -25,7 +25,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
-	public static final char[] arrayCharacterToChar(Character[] __a)
+	public static char[] arrayCharacterToChar(Character[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -46,7 +46,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
-	public static final byte[] arrayNumberToByte(Number[] __a)
+	public static byte[] arrayNumberToByte(Number[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -67,7 +67,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
-	public static final double[] arrayNumberToDouble(Number[] __a)
+	public static double[] arrayNumberToDouble(Number[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -88,7 +88,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
-	public static final float[] arrayNumberToFloat(Number[] __a)
+	public static float[] arrayNumberToFloat(Number[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -109,7 +109,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
-	public static final int[] arrayNumberToInt(Number[] __a)
+	public static int[] arrayNumberToInt(Number[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -130,7 +130,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
-	public static final long[] arrayNumberToLong(Number[] __a)
+	public static long[] arrayNumberToLong(Number[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -151,7 +151,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
-	public static final short[] arrayNumberToShort(Number[] __a)
+	public static short[] arrayNumberToShort(Number[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)

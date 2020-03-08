@@ -10,13 +10,10 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.midlet.OverrideActiveMidletRestriction;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import org.testng.annotations.Test;
@@ -31,17 +28,9 @@ import org.testng.annotations.Test;
 abstract class __CoreTest__
 	implements TestInterface
 {
-	/** {@squirreljme.property test.dump=bool Dump test result manifests?} */
-	public static final String DUMP_ACTUAL =
-		"test.dump";
-	
 	/** Final result of the test, used during the test. */
-	final TestResultBuilder _runresult =
+	final TestResultBuilder _runResult =
 		new TestResultBuilder();
-	
-	/** The status of the test. */
-	volatile TestStatus _status =
-		TestStatus.NOT_RUN;
 	
 	/**
 	 * Runs the given test with the given arguments and resulting in the
@@ -56,12 +45,12 @@ abstract class __CoreTest__
 		throws Throwable;
 	
 	/**
-	 * {@inheritDoc}
+	 * Runs the test for TestNG.
+	 *
 	 * @since 2020/02/23
 	 */
-	@Override
 	@Test
-	public final void run()
+	public final void runForTestNG()
 	{
 		// Run our execution with the default arguments!
 		TestExecution execution = this.runExecution();
@@ -116,7 +105,6 @@ abstract class __CoreTest__
 	{
 		// Use to name this test
 		Class<?> self = this.getClass();
-		String classname = self.getName();
 		
 		// Decode the expected result
 		TestResult expected = TestResult.loadForClass(self);
@@ -125,13 +113,13 @@ abstract class __CoreTest__
 		Object[] args = this.__parseInput(self, __mainargs);
 		
 		// This is the result of the test
-		TestResultBuilder runresult = this._runresult;
+		TestResultBuilder runresult = this._runResult;
 		
 		// Our test result
 		TestStatus status = null;
 		
 		// Run the test, catch any exception to report it
-		Object thrown = null;
+		Object thrown;
 		try
 		{
 			// Run the test
@@ -177,84 +165,8 @@ abstract class __CoreTest__
 			status = (expected.isSatisfiedBy(result) ? TestStatus.SUCCESS :
 				TestStatus.FAILED);
 		
-		// Store the status of the test that just ran
-		this._status = status;
-		
 		// Return the result
 		return new TestExecution(status, self, expected, result, thrown);
-	}
-	
-	/**
-	 * Runs the specified test using the given main arguments as if it
-	 * were a program to be run, if any.
-	 *
-	 * This method will handle dead-locks and otherwise.
-	 *
-	 * @param __mainargs The main arguments to the test which allow parameters
-	 * to be used accordingly.
-	 * @since 2018/10/06
-	 */
-	public final void runTest(String... __mainargs)
-	{
-		if (__mainargs == null)
-			__mainargs = new String[0];
-		
-		// Set a watchdog in case our test takes a very long time to execute
-		DeadlockTimeout dtimeout = new DeadlockTimeout();
-		dtimeout.start();
-		
-		// Remember the old output stream because it will be replaced with
-		// stderr, this way when tests run they do not inadvertently output
-		// to standard output. Standard output being printed to will mess up
-		// the test results generated at the end of tac-runner
-		PrintStream oldout = System.out;
-		
-		// Replace standard output from the test!
-		TestExecution execution;
-		try
-		{
-			// Set the output stream to standard error as noted above
-			try
-			{
-				System.setOut(System.err);
-			}
-			catch (SecurityException e)
-			{
-				// Ignore, oh well
-			}
-			
-			// Execute the test
-			execution = this.runExecution(__mainargs);
-		}
-		finally
-		{
-			// Restore the old output stream
-			try
-			{
-				System.setOut(oldout);
-			}
-			catch (SecurityException e)
-			{
-				// Ignore, things happen
-			}
-		}
-		
-		// Dump test result
-		try
-		{
-			if (Boolean.getBoolean(__CoreTest__.DUMP_ACTUAL))
-				execution.result.writeAsManifest(System.err);
-		}
-		catch (IOException|SecurityException e)
-		{
-			// Ignore, could not dump it?
-		}
-		
-		// Set output according to the status
-		execution.print(System.err);
-		
-		// Stop the watchdog so we do not exit
-		dtimeout.expire();
 	}
 	
 	/**
@@ -269,18 +181,7 @@ abstract class __CoreTest__
 	public final void secondary(String __key, Object __v)
 		throws NullPointerException
 	{
-		this._runresult.putSecondaryValue(__key, __v);
-	}
-	
-	/**
-	 * Returns the test status.
-	 *
-	 * @return The test status.
-	 * @since 2018/10/07
-	 */
-	public final TestStatus status()
-	{
-		return this._status;
+		this._runResult.putSecondaryValue(__key, __v);
 	}
 	
 	/**
@@ -313,7 +214,8 @@ abstract class __CoreTest__
 		
 		// Try to see if there are any arguments in the test file
 		JavaManifestAttributes attr = null;
-		try (InputStream in = __class.getResourceAsStream(basename + ".in"))
+		try (InputStream in = __class.getResourceAsStream(
+			basename + ".in"))
 		{
 			// If the input exists parse and extract the manifest attributes
 			if (in != null)
@@ -330,7 +232,7 @@ abstract class __CoreTest__
 		// specified accordingly: main arguments, system properties, the
 		// default input manifest
 		List<Object> rv = new ArrayList<>();
-		for (int i = 1; i >= 1; i++)
+		for (int i = 1;; i++)
 		{
 			String parse;
 			
