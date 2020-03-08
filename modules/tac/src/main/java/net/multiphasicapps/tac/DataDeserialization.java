@@ -25,7 +25,7 @@ public final class DataDeserialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
-	public static final String decodeKey(String __key)
+	public static String decodeKey(String __key)
 		throws NullPointerException
 	{
 		if (__key == null)
@@ -76,7 +76,7 @@ public final class DataDeserialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
-	public static final String decodeString(String __s)
+	public static String decodeString(String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
@@ -190,7 +190,7 @@ public final class DataDeserialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
-	public static final Object deserialize(String __s)
+	public static Object deserialize(String __s)
 		throws InvalidTestParameterException, NullPointerException
 	{
 		if (__s == null)

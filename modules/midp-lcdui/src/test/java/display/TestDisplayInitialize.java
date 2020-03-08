@@ -12,6 +12,7 @@ package display;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
+import net.multiphasicapps.tac.InvalidTestException;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -29,8 +30,11 @@ public class TestDisplayInitialize
 	@Override
 	public void test()
 	{
-		Display display = Display.getDisplay(this);
+		Display[] displays = Display.getDisplays(0);
+		if (displays.length == 0)
+			throw new InvalidTestException("No displays to test.");
 		
+		Display display = displays[0];
 		display.setCurrent(new __BlankCanvas__());
 	}
 	
