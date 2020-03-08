@@ -1,0 +1,27 @@
+# 2020/03/07
+
+## 10:24
+
+I think I might have an idea on how to get IntelliJ to pickup the tests
+and that is with a broadcasting thing. I saw the `AbstractTestTask` using it
+so I think that is what causes things to be missed. Also I want to make it
+so SpringCoat tests run after all the main OS build passed.
+
+## 10:40
+
+Actually no, that is in the task I extend upon so not sure why IntelliJ does
+not pick it up.
+
+## 11:35
+
+Okay so the console output seems to be not part of the test case.
+
+## 11:38
+
+Looks like there is `TestOutputAssociation.WITH_TESTCASE` so I wonder how
+I can associate output.
+
+## 11:40
+
+Okay so actually it was just a flag, so hopefully this gets fixed and now
+my test cases have console output.
