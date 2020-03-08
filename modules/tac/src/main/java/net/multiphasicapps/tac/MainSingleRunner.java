@@ -24,6 +24,71 @@ public class MainSingleRunner
 	 */
 	public static void main(String... __args)
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error BU0b Expected single argument specifying the
+		// test to run.}
+		if (__args == null || __args.length != 1 || __args[0] == null)
+			throw new IllegalArgumentException("BU0b");
+		
+		// Find the class type
+		Class<?> type;
+		try
+		{
+			type = Class.forName(__args[0]);
+		}
+		catch (ClassNotFoundException e)
+		{
+			// {@squirreljme.error BU0g Could not find main test class.
+			// (The class name)}
+			throw new IllegalArgumentException("BU0g " + __args[0]);
+		}
+		
+		// Create instance of it
+		Object instance;
+		try
+		{
+			instance = type.newInstance();
+		}
+		catch (InstantiationException|IllegalAccessException e)
+		{
+			// {@squirreljme.error BU0h Could not instantiate the class.
+			// (The class name)}
+			throw new IllegalArgumentException("BU0h " + __args[0]);
+		}
+		
+		// Cast the class to the interface for running
+		TestInterface testInstance;
+		try
+		{
+			testInstance = (TestInterface)instance;
+		}
+		catch (ClassCastException e)
+		{
+			// {@squirreljme.error BU0i Class is not the expected type that
+			// it should be. (The class name)}
+			throw new IllegalArgumentException("BU0i " + __args[0]);
+		}
+		
+		// Run the class execution
+		TestExecution execution = testInstance.runExecution();
+		
+		// Print the test execution results
+		execution.print(System.err);
+		
+		// How do we exit?
+		switch (execution.status)
+		{
+			case SUCCESS:
+				System.exit(ExitValueConstants.SUCCESS);
+				break;
+				
+			case FAILED:
+			case TEST_EXCEPTION:
+				System.exit(ExitValueConstants.FAILURE);
+				break;
+			
+			case UNTESTABLE:
+				System.exit(ExitValueConstants.SKIPPED);
+				break;
+		}
 	}
 }

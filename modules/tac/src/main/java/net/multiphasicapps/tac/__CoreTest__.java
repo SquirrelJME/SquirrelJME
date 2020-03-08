@@ -29,8 +29,7 @@ import org.testng.annotations.Test;
  * @since 2018/10/06
  */
 abstract class __CoreTest__
-	extends MIDlet
-	implements OverrideActiveMidletRestriction, TestInterface
+	implements TestInterface
 {
 	/** {@squirreljme.property test.dump=bool Dump test result manifests?} */
 	public static final String DUMP_ACTUAL =
@@ -55,16 +54,6 @@ abstract class __CoreTest__
 	 */
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/10/06
-	 */
-	@Override
-	protected final void destroyApp(boolean __u)
-	{
-		// Not used
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -281,22 +270,6 @@ abstract class __CoreTest__
 		throws NullPointerException
 	{
 		this._runresult.putSecondaryValue(__key, __v);
-	}
-	
-	/**
-	 * Runs the MIDlet, parses input test data then runs the test performing
-	 * any test work that is needed.
-	 *
-	 * @since 2018/10/06
-	 */
-	@Override
-	protected final void startApp()
-	{
-		// Just forward to run, no main arguments are used at all
-		this.runTest((String[])null);
-		
-		// There is just a single program, so exit with the test status
-		System.exit(this._status.ordinal());
 	}
 	
 	/**
