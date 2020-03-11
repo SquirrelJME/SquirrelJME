@@ -97,6 +97,15 @@ public class TestInVMTask
 		this.dependsOn(__jar,
 			(Callable<Jar>)this::__findEmulatorJarTask,
 			(Callable<Jar>)this::__findEmulatorBaseJarTask);
+		
+		// Enable more logging as console output is rather important to
+		// have when running the VMs especially when not fully stable
+		this.testLogging(__settings ->
+			{
+				__settings.setShowCauses(true);
+				__settings.setShowStandardStreams(true);
+				__settings.setShowStackTraces(true);
+			});
 	}
 	
 	/**
