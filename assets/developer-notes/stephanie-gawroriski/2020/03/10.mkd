@@ -1,0 +1,7 @@
+# 2020/03/10
+
+## 19:54
+
+For weak references, objects will just have to keep track of a chian of other
+objects that are weakly referring to this that way they can be cleared. Only
+way I can think of having weak references work.
