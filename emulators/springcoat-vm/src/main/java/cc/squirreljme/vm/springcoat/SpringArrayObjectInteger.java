@@ -15,6 +15,7 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2018/11/04
  */
+@Deprecated
 public final class SpringArrayObjectInteger
 	extends SpringArrayObject
 {

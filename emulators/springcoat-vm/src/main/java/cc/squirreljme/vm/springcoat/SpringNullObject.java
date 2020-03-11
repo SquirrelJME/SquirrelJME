@@ -15,6 +15,7 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2018/09/08
  */
+@Deprecated
 public final class SpringNullObject
 	implements SpringObject
 {

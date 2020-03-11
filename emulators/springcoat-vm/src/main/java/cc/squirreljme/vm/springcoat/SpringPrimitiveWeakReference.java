@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2018/09/23
  */
+@Deprecated
 public final class SpringPrimitiveWeakReference
 	extends SpringPrimitiveReference
 {

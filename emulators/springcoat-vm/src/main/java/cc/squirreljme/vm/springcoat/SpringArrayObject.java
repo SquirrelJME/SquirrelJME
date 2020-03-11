@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2018/09/15
  */
+@Deprecated
 public abstract class SpringArrayObject
 	implements SpringObject
 {
