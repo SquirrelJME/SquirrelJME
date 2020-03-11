@@ -20,7 +20,8 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/04/20
  */
-@SuppressWarnings({"NewMethodNamingConvention", "OverlyComplexClass"})
+@SuppressWarnings({"FeatureEnvy", "NewMethodNamingConvention",
+	"OverlyComplexClass", "RedundantSuppression"})
 public final class Assembly
 {
 	/**
@@ -99,6 +100,17 @@ public final class Assembly
 	 * @since 2019/07/01
 	 */
 	public static native void atomicIncrement(long __addr);
+	
+	/**
+	 * Returns a value that is unique (up to a certain point) within the
+	 * entire virtual machine process. This may be a random number or a simple
+	 * atomic increment/decrement.
+	 *
+	 * @return An atomically obtained value that is different from all other
+	 * tickers.
+	 * @since 2020/03/10
+	 */
+	public static native int atomicTicker();
 	
 	/**
 	 * Trigger breakpoint within the virtual machine.
@@ -287,6 +299,23 @@ public final class Assembly
 	 * @since 2018/11/04
 	 */
 	public static native int floatToRawIntBits(float __f);
+	
+	/**
+	 * Locks access to the garbage collector.
+	 *
+	 * @param __code The locking code.
+	 * @return If the caller obtained the lock.
+	 * @since 2020/03/10
+	 */
+	public static native boolean gcLock(int __code);
+	
+	/**
+	 * Unlocks access to the garbage collector.
+	 *
+	 * @param __code The code that was used at locking time.
+	 * @since 2020/03/10
+	 */
+	public static native void gcUnlock(int __code);
 	
 	/**
 	 * Integer bits to float.
@@ -1265,23 +1294,26 @@ public final class Assembly
 	public static native void poolStore(Object __p, int __i, long __v);
 	
 	/**
-	 * Returns the reference chain.
+	 * Returns the reference chain, this operation must access internal fields
+	 * atomically.
 	 *
 	 * @param __p The object to get the chain of.
 	 * @since 2020/03/10
 	 */
-	public static native Object refChainGet(long __p);
+	public static native ReferenceChain refChainGet(long __p);
 	
 	/**
-	 * Returns the reference chain.
+	 * Returns the reference chain, this operation must access internal fields
+	 * atomically.
 	 *
 	 * @param __p The object to get the chain of.
 	 * @since 2020/03/10
 	 */
-	public static native Object refChainGet(Object __p);
+	public static native ReferenceChain refChainGet(Object __p);
 	
 	/**
-	 * Sets the reference chain.
+	 * Sets the reference chain, this operation must access internal fields
+	 * atomically.
 	 *
 	 * @param __p The object to set the chain of.
 	 * @param __v The new chain to set.
@@ -1290,16 +1322,18 @@ public final class Assembly
 	public static native void refChainSet(long __p, long __v);
 	
 	/**
-	 * Sets the reference chain.
+	 * Sets the reference chain, this operation must access internal fields
+	 * atomically.
 	 *
 	 * @param __p The object to set the chain of.
 	 * @param __v The new chain to set.
 	 * @since 2020/03/10
 	 */
-	public static native void refChainSet(long __p, Object __v);
+	public static native void refChainSet(long __p, ReferenceChain __v);
 	
 	/**
-	 * Sets the reference chain.
+	 * Sets the reference chain, this operation must access internal fields
+	 * atomically.
 	 *
 	 * @param __p The object to set the chain of.
 	 * @param __v The new chain to set.
@@ -1308,13 +1342,14 @@ public final class Assembly
 	public static native void refChainSet(Object __p, long __v);
 	
 	/**
-	 * Sets the reference chain.
+	 * Sets the reference chain, this operation must access internal fields
+	 * atomically.
 	 *
 	 * @param __p The object to set the chain of.
 	 * @param __v The new chain to set.
 	 * @since 2020/03/10
 	 */
-	public static native void refChainSet(Object __p, Object __v);
+	public static native void refChainSet(Object __p, ReferenceChain __v);
 	
 	/**
 	 * Get reference count of object.
@@ -1577,6 +1612,17 @@ public final class Assembly
 	 * @since 2020/02/24
 	 */
 	public static native void specialSetThreadRegister(Thread __v);
+	
+	/**
+	 * Indicates that the thread is now performing a spin-lock burn and will
+	 * waste cycles. If the number of cycles exceeds a certain threshold then
+	 * the CPU control may be given up to another thread or otherwise depending
+	 * on how the virtual machine is threaded it may drop our cycles.
+	 *
+	 * @param __count The number of burned cycles.
+	 * @since 2020/03/10
+	 */
+	public static native void spinLockBurn(int __count);
 	
 	/**
 	 * Invoke system call at the given index.

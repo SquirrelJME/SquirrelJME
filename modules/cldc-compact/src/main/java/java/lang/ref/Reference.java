@@ -10,8 +10,8 @@
 
 package java.lang.ref;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.ReferenceChain;
 
 /**
  * This class represents references which may be referred to using various
@@ -21,37 +21,59 @@ import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
  * @param <T> The type of object to store.
  * @since 2018/09/23
  */
+@SuppressWarnings({"FeatureEnvy", "AbstractClassWithOnlyOneDirectInheritor"})
 public abstract class Reference<T>
 {
-	/** The primitive reference used to access the object. */
-	private final PrimitiveReference _ref;
+	/** The native pointer to the object this reference is looking at. */
+	private volatile long _pointer;
 	
-	/** The queue this reference is in, volatile to be clearned. */
+	/** The queue this reference is in, dropped when enqueued. */
 	private volatile ReferenceQueue<? super T> _queue;
 	
-	/** Has this been enqueued? */
+	/** Has this been enqueued, since the queue reference can drop? */
 	private volatile boolean _enqueued;
 	
 	/**
-	 * Initializes a reference pointing to the given object and an optionally
-	 * specified queue to place this reference into when garbage collection
-	 * occurs.
+	 * Initializes the reference with an optionally specified queue.
 	 *
-	 * @param __r The primitive reference storage.
-	 * @param __v The object to point to, may be {@code null}.
-	 * @param __q When the given object is garbage collected the specified
-	 * queue will be given this reference (not {@code __v} itself}, may be
-	 * {@code null}
-	 * @since 2018/09/23
+	 * @param __v The object to bind a weak reference to.
+	 * @param __q The queue which is given this reference when it has been
+	 * cleared.
+	 * @since 2020/03/10
 	 */
-	Reference(PrimitiveReference __r, T __v, ReferenceQueue<? super T> __q)
+	Reference(Object __v, ReferenceQueue<? super T> __q)
 	{
-		// Set
-		this._ref = __r;
+		// References to null are valid, however they have no effect at all
+		if (__v == null)
+			return;
+		
+		// These can be set quite simply
+		this._pointer = Assembly.objectToPointer(__v);
 		this._queue = __q;
 		
-		// Set primitive reference data
-		ObjectAccess.referenceSet(__r, __v);
+		// We need to lock the garbage collector because we need to modify an
+		// objects reference chain.
+		int code = Assembly.atomicTicker();
+		try
+		{
+			// Lock the garbage collector
+			for (int count = 0; Assembly.gcLock(code);)
+				Assembly.spinLockBurn(count++);
+			
+			// If the object has no reference chain, we need to create one
+			ReferenceChain chain = Assembly.refChainGet(__v);
+			if (chain == null)
+				Assembly.refChainSet(__v, (chain = new ReferenceChain()));
+			
+			// Push ourself to this chain
+			chain.push(this);
+		}
+		
+		// Clear the lock on the garbage collector
+		finally
+		{
+			Assembly.gcUnlock(code);
+		}
 	}
 	
 	/**
@@ -61,7 +83,28 @@ public abstract class Reference<T>
 	 */
 	public void clear()
 	{
-		ObjectAccess.referenceSet(this._ref, null);
+		// Null pointers cannot be cleared (they are already)
+		long pointer = this._pointer;
+		if (pointer == 0)
+			return;
+		
+		// Obtain exclusive control over the garbage collector
+		int code = Assembly.atomicTicker();
+		try
+		{
+			// Lock the garbage collector
+			for (int count = 0; Assembly.gcLock(code);)
+				Assembly.spinLockBurn(count++);
+			
+			// Clear the pointer
+			this.__clear();
+		}
+		
+		// Free our control over the garbage collector
+		finally
+		{
+			Assembly.gcUnlock(code);
+		}
 	}
 	
 	/**
@@ -74,26 +117,41 @@ public abstract class Reference<T>
 	 */
 	public boolean enqueue()
 	{
-		// Already been enqueued
+		// If we do not have a queue then this operation does nothing
 		ReferenceQueue<? super T> queue = this._queue;
-		if (this._enqueued || queue == null)
+		if (queue == null)
 			return false;
 		
-		// Enqueue it
-		queue.__enqueue(this);
+		// Already has been enqueued?
+		if (this._enqueued)
+			return false;
 		
-		// The queue is not needed anymore so there is no need to keep a
-		// reference to it around, this will help remove circular references
-		// if one forgets to drain the queues.
-		this._enqueued = true;
-		this._queue = null;
+		// Obtain exclusive control over the garbage collector
+		int code = Assembly.atomicTicker();
+		try
+		{
+			// Lock the garbage collector
+			for (int count = 0; Assembly.gcLock(code);)
+				Assembly.spinLockBurn(count++);
+			
+			// Enqueue and clear the pointer
+			this.__enqueue();
+			this.__clear();
+			
+			// Was enqueued
+			return true;
+		}
 		
-		// Was enqueued
-		return true;
+		// Free our control over the garbage collector
+		finally
+		{
+			Assembly.gcUnlock(code);
+		}
 	}
 	
 	/**
-	 * Returns the object that this reference refers to.
+	 * Returns the object that this reference refers to, will be {@code null}
+	 * if this never pointed to any object.
 	 *
 	 * @return The reference of this object.
 	 * @since 2018/09/23
@@ -101,12 +159,25 @@ public abstract class Reference<T>
 	@SuppressWarnings({"unchecked"})
 	public T get()
 	{
-		// If the reference was cleared, enqueue it!
-		Object rv = ObjectAccess.referenceGet(this._ref);
-		if (rv == null)
-			this.enqueue();
+		// Obtain exclusive control over the garbage collector
+		int code = Assembly.atomicTicker();
+		try
+		{
+			// Lock the garbage collector
+			for (int count = 0; Assembly.gcLock(code);)
+				Assembly.spinLockBurn(count++);
+			
+			// We can always return the pointer here as long as we are in the
+			// GC lock, this is because the pointer is only cleared when the
+			// object we are pointing to is facing garbage collection
+			return (T)Assembly.pointerToObject(this._pointer);
+		}
 		
-		return (T)rv;
+		// Free our control over the garbage collector
+		finally
+		{
+			Assembly.gcUnlock(code);
+		}
 	}
 	
 	/**
@@ -118,6 +189,31 @@ public abstract class Reference<T>
 	public boolean isEnqueued()
 	{
 		return this._enqueued;
+	}
+	
+	/**
+	 * Clears the pointer.
+	 *
+	 * @since 2020/03/10
+	 */
+	private void __clear()
+	{
+		// Clear pointer
+		this._pointer = 0;
+	}
+	
+	/**
+	 * Enqueues this pointer to the queue.
+	 *
+	 * @since 2020/03/10
+	 */
+	private void __enqueue()
+	{
+		if (true)
+			throw new todo.TODO();
+		
+		// Has been enqueued now
+		this._enqueued = true;
 	}
 }
 
