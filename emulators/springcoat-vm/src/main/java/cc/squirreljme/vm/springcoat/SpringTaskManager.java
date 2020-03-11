@@ -36,6 +36,10 @@ public final class SpringTaskManager
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
 	
+	/** The garbage collection lock. */
+	protected final GarbageCollectionLock gcLock =
+		new GarbageCollectionLock();
+	
 	/** Tasks that are used. */
 	private final Map<Integer, SpringTask> _tasks =
 		new HashMap<>();

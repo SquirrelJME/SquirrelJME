@@ -1126,9 +1126,39 @@ public final class SpringThreadWorker
 			throw new SpringVirtualMachineException(String.format(
 				"Not an assembly call: %s::%s:%s", __class, __name, __type));
 		
+		// This may be used by native methods
+		SpringMachine machine = this.machine;
+		
 		// Depends on the function
 		switch (__name.toString())
 		{
+				// Atomic ticker value
+			case "atomicTicker":
+				return AtomicTicker.next();
+				
+				// Lock the garbage collector
+			case "gcLock":
+				return machine.tasks.gcLock.lock((Integer)__args[0]);
+			
+				// Unlock the garbage collector
+			case "gcUnlock":
+				machine.tasks.gcLock.unlock((Integer)__args[0]);
+				return null;
+				
+				// Conversion of object to pointer
+			case "objectToPointer":
+				{
+					SpringObject object = (SpringObject)__args[0];
+					if (object == null)
+						return 0L;
+					return object.pointerArea().base;
+				}
+				
+				// Spin-lock burn
+			case "spinLockBurn":
+				return null;
+			
+				// Not-implemented
 			default:
 				throw new SpringVirtualMachineException(String.format(
 					"Unknown assembly call: %s:%s", __name, __type));
