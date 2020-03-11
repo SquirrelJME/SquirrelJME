@@ -104,10 +104,10 @@ public final class Assembly
 	/**
 	 * Returns a value that is unique (up to a certain point) within the
 	 * entire virtual machine process. This may be a random number or a simple
-	 * atomic increment/decrement.
+	 * atomic increment/decrement. Zero will never be returned.
 	 *
 	 * @return An atomically obtained value that is different from all other
-	 * tickers.
+	 * tickers, zero will never be returned.
 	 * @since 2020/03/10
 	 */
 	public static native int atomicTicker();
