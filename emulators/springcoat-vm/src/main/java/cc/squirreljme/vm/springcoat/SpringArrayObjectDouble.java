@@ -15,6 +15,7 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2018/11/14
  */
+@Deprecated
 public final class SpringArrayObjectDouble
 	extends SpringArrayObject
 {

@@ -17,6 +17,7 @@ import net.multiphasicapps.classfile.PrimitiveType;
  *
  * @since 2018/11/04
  */
+@Deprecated
 public final class SpringArrayObjectGeneric
 	extends SpringArrayObject
 {
