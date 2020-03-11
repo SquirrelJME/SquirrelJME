@@ -17,34 +17,42 @@ package cc.squirreljme.jvm;
 public interface Constants
 {
 	/** The offset for the object's class type. */
+	@Deprecated
 	byte OBJECT_CLASS_OFFSET =
 		0;
 	
 	/** The offset for the object's reference count. */
+	@Deprecated
 	byte OBJECT_COUNT_OFFSET =
 		4;
 	
 	/** Object monitor owner offset. */
+	@Deprecated
 	byte OBJECT_MONITOR_OFFSET =
 		8;
 	
 	/** Object monitor count offset. */
+	@Deprecated
 	byte OBJECT_MONITOR_COUNT_OFFSET =
 		12;
 	
 	/** Base size for object types. */
+	@Deprecated
 	byte OBJECT_BASE_SIZE =
 		16;
 	
 	/** The offset for array length. */
+	@Deprecated
 	byte ARRAY_LENGTH_OFFSET =
 		16;
 	
 	/** The base size for arrays. */
+	@Deprecated
 	byte ARRAY_BASE_SIZE =
 		20;
 	
 	/** Constant pool cell size. */
+	@Deprecated
 	byte POOL_CELL_SIZE =
 		4;
 	
