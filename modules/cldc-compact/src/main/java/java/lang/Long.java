@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
@@ -33,7 +35,7 @@ public final class Long
 	
 	/** The class representing the primitive long type. */
 	public static final Class<Long> TYPE =
-		ObjectAccess.<Long>classByNameType("long");
+		JVMFunction.<Long>jvmLoadClass(Assembly.classInfoOfLong());
 	
 	/** The value of this long. */
 	private final long _value;

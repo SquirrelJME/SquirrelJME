@@ -20,7 +20,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/04/20
  */
-@SuppressWarnings("NewMethodNamingConvention")
+@SuppressWarnings({"NewMethodNamingConvention", "OverlyComplexClass"})
 public final class Assembly
 {
 	/**
@@ -1265,12 +1265,100 @@ public final class Assembly
 	public static native void poolStore(Object __p, int __i, long __v);
 	
 	/**
+	 * Returns the reference chain.
+	 *
+	 * @param __p The object to get the chain of.
+	 * @since 2020/03/10
+	 */
+	public static native Object refChainGet(long __p);
+	
+	/**
+	 * Returns the reference chain.
+	 *
+	 * @param __p The object to get the chain of.
+	 * @since 2020/03/10
+	 */
+	public static native Object refChainGet(Object __p);
+	
+	/**
+	 * Sets the reference chain.
+	 *
+	 * @param __p The object to set the chain of.
+	 * @param __v The new chain to set.
+	 * @since 2020/03/10
+	 */
+	public static native void refChainSet(long __p, long __v);
+	
+	/**
+	 * Sets the reference chain.
+	 *
+	 * @param __p The object to set the chain of.
+	 * @param __v The new chain to set.
+	 * @since 2020/03/10
+	 */
+	public static native void refChainSet(long __p, Object __v);
+	
+	/**
+	 * Sets the reference chain.
+	 *
+	 * @param __p The object to set the chain of.
+	 * @param __v The new chain to set.
+	 * @since 2020/03/10
+	 */
+	public static native void refChainSet(Object __p, long __v);
+	
+	/**
+	 * Sets the reference chain.
+	 *
+	 * @param __p The object to set the chain of.
+	 * @param __v The new chain to set.
+	 * @since 2020/03/10
+	 */
+	public static native void refChainSet(Object __p, Object __v);
+	
+	/**
+	 * Get reference count of object.
+	 * 
+	 * @param __p The object to get the count for.
+	 * @return The reference count of the object.
+	 * @since 2020/02/24
+	 */
+	public static native int refCountGet(long __p);
+	
+	/**
+	 * Get reference count of object.
+	 * 
+	 * @param __p The object to get the count for.
+	 * @return The reference count of the object.
+	 * @since 2020/02/24
+	 */
+	public static native int refCountGet(Object __p);
+	
+	/**
+	 * Set reference count of object.
+	 * 
+	 * @param __p The object to set the count for.
+	 * @param __v The value to set.
+	 * @since 2020/02/24
+	 */
+	public static native void refCountSet(long __p, int __v);
+	
+	/**
+	 * Set reference count of object.
+	 * 
+	 * @param __p The object to set the count for.
+	 * @param __v The value to set.
+	 * @since 2020/02/24
+	 */
+	public static native void refCountSet(Object __p, int __v);
+	
+	/**
 	 * Perform reference counting logic on object.
 	 *
 	 * @param __p The object to count up.
 	 * @since 2019/05/25
 	 */
-	public static native void refCount(long __p);
+	public static native void refCountUp(long __p);
 	
 	/**
 	 * Perform reference counting logic on object.
@@ -1278,43 +1366,7 @@ public final class Assembly
 	 * @param __p The object to count up.
 	 * @since 2020/02/24
 	 */
-	public static native void refCount(Object __p);
-	
-	/**
-	 * Get reference count of object.
-	 * 
-	 * @param __p The object to get the count for.
-	 * @return The reference count of the object.
-	 * @since 2020/02/24
-	 */
-	public static native int refGetCount(long __p);
-	
-	/**
-	 * Get reference count of object.
-	 * 
-	 * @param __p The object to get the count for.
-	 * @return The reference count of the object.
-	 * @since 2020/02/24
-	 */
-	public static native int refGetCount(Object __p);
-	
-	/**
-	 * Set reference count of object.
-	 * 
-	 * @param __p The object to set the count for.
-	 * @param __v The value to set.
-	 * @since 2020/02/24
-	 */
-	public static native void refSetCount(long __p, int __v);
-	
-	/**
-	 * Set reference count of object.
-	 * 
-	 * @param __p The object to set the count for.
-	 * @param __v The value to set.
-	 * @since 2020/02/24
-	 */
-	public static native void refSetCount(Object __p, int __v);
+	public static native void refCountUp(Object __p);
 	
 	/**
 	 * Perform reference uncounting logic on object.
