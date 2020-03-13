@@ -56,6 +56,26 @@ public final class SpringNullObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/03/13
+	 */
+	@Override
+	public ReferenceChainer refChainer()
+	{
+		throw new SpringVirtualMachineException("Null has no ref chain.");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/13
+	 */
+	@Override
+	public ReferenceCounter refCounter()
+	{
+		throw new SpringVirtualMachineException("Null has no ref counter.");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/09
 	 */
 	@Override

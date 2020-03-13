@@ -1154,6 +1154,23 @@ public final class SpringThreadWorker
 					return object.pointerArea().base;
 				}
 				
+				// Return the reference chain of this object
+			case "refChainGet":
+				return this.mapValueToObject(this.mapValueToObject(__args[0])
+					.refChainer().get());
+				
+				// Set the reference chain of an object
+			case "refChainSet":
+				this.mapValueToObject(__args[0]).refChainer().set(
+					this.mapValueToObject(__args[1]).pointerArea()
+					.basePointer());
+				return null;
+				
+				// Reference count up
+			case "refCountUp":
+				this.mapValueToObject(__args[0]).refCounter().up();
+				return null;
+				
 				// Spin-lock burn
 			case "spinLockBurn":
 				return null;
@@ -1208,8 +1225,8 @@ public final class SpringThreadWorker
 		__cl = this.loadClass(__cl);
 		
 		// Lookup constructor to this method
-		SpringMethod cons = __cl.lookupMethod(false, new MethodName("<init>"),
-			__desc);
+		SpringMethod cons = __cl.lookupMethod(false,
+			new MethodName("<init>"), __desc);
 		
 		// Allocate the object
 		SpringObject rv = this.allocateObject(__cl);
@@ -1233,6 +1250,45 @@ public final class SpringThreadWorker
 		
 		// Return the resulting object
 		return rv;
+	}
+	
+	/**
+	 * Maps an object to a long value.
+	 *
+	 * @param __v The value to convert.
+	 * @return The converted value.
+	 * @since 2020/03/13
+	 */
+	@SuppressWarnings("PointlessBitwiseExpression")
+	final long mapObjectToLong(SpringObject __v)
+	{
+		if (__v == SpringNullObject.NULL)
+			return 0;
+		return ((long)this.uniqueObjectToPointer(__v)) & 0xFFFFFFFFL;
+	}
+	
+	/**
+	 * Maps a value to an object.
+	 *
+	 * @param __v The value to map.
+	 * @return The mapped object.
+	 * @since 2020/03/13
+	 */
+	final SpringObject mapValueToObject(Object __v)
+	{
+		if (__v == null)
+			return SpringNullObject.NULL;
+		else if (__v instanceof Long || __v instanceof Integer)
+			return this.uniquePointerToObject(((Number)__v).intValue());
+		else if (__v instanceof SpringPointer)
+			return this.uniquePointerToObject(((SpringPointer)__v).pointerInt);
+		else if (__v instanceof SpringObject)
+			return (SpringObject)__v;
+		
+		// Cannot map this
+		else
+			throw new SpringVirtualMachineException("Unknown value type: " +
+				__v.getClass().getName());
 	}
 	
 	/**
@@ -3786,6 +3842,7 @@ public final class SpringThreadWorker
 	 * @return The resulting pointer.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public final int uniqueObjectToPointer(SpringObject __p)
 	{
 		// Null reference?
@@ -3803,6 +3860,7 @@ public final class SpringThreadWorker
 	 * @return The resulting pointer.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public final SpringObject uniquePointerToObject(int __p)
 	{
 		// Null reference?
@@ -3819,6 +3877,7 @@ public final class SpringThreadWorker
 	 * @return The resulting string.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public final String uniqueString(int __id)
 	{
 		if (__id == 0)
@@ -3834,6 +3893,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public final int uniqueStringId(String __s)
 		throws NullPointerException
 	{

@@ -36,6 +36,22 @@ public interface SpringObject
 	SpringPointerArea pointerArea();
 	
 	/**
+	 * Returns the reference chain manager.
+	 *
+	 * @return The reference chain pointer.
+	 * @since 2020/03/13
+	 */
+	ReferenceChainer refChainer();
+	
+	/**
+	 * Returns the reference counter.
+	 *
+	 * @return The reference counter.
+	 * @since 2020/03/13
+	 */
+	ReferenceCounter refCounter();
+	
+	/**
 	 * Returns the object type.
 	 *
 	 * @return The object type.

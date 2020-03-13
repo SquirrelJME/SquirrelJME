@@ -48,6 +48,17 @@ public final class SpringPointerArea
 	}
 	
 	/**
+	 * Returns the base pointer.
+	 *
+	 * @return The base pointer.
+	 * @since 2020/03/13
+	 */
+	public final SpringPointer basePointer()
+	{
+		return new SpringPointer(this.base);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/12/21
 	 */

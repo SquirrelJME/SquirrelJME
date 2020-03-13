@@ -32,6 +32,14 @@ public final class SpringSimpleObject
 	/** The pointer for this object. */
 	protected final SpringPointerArea pointer;
 	
+	/** The reference chain for this object. */
+	protected final ReferenceChainer refChain =
+		new ReferenceChainer();
+	
+	/** Counter for references. */
+	protected final ReferenceCounter refCounter =
+		new ReferenceCounter();
+	
 	/** Field storage in the class. */
 	private final SpringFieldStorage[] _fields;
 	
@@ -116,6 +124,26 @@ public final class SpringSimpleObject
 	public final SpringPointerArea pointerArea()
 	{
 		return this.pointer;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/13
+	 */
+	@Override
+	public ReferenceChainer refChainer()
+	{
+		return this.refChain;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/13
+	 */
+	@Override
+	public ReferenceCounter refCounter()
+	{
+		return this.refCounter;
 	}
 	
 	/**
