@@ -137,6 +137,26 @@ public abstract class SpringArrayObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/03/13
+	 */
+	@Override
+	public ReferenceChainer refChainer()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/13
+	 */
+	@Override
+	public ReferenceCounter refCounter()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/15
 	 */
 	@Override
