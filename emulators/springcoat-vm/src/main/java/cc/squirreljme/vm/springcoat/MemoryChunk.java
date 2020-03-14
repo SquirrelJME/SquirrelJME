@@ -88,6 +88,16 @@ public final class MemoryChunk
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/03/14
+	 */
+	@Override
+	public int size()
+	{
+		return this.size;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/03/07
 	 */
 	@Override
