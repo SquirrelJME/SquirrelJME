@@ -47,6 +47,10 @@ public final class SpringTaskManager
 	/** System properties. */
 	private final Map<String, String> _sysprops;
 	
+	/** Initialize the manager for memory. */
+	public MemoryManager memory =
+		new MemoryManager();
+	
 	/** Next task ID. */
 	private int _nextid;
 	

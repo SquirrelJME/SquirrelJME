@@ -447,7 +447,9 @@ public final class SpringThreadWorker
 		{
 			ConstantValueString cvs = (ConstantValueString)__in;
 			
-			// Get the string map but lock on the class loader because a class
+			throw new todo.TODO();
+			
+			/*// Get the string map but lock on the class loader because a class
 			// might want a string but then another thread might be
 			// initializing some class, and it will just deadlock as they wait
 			// on each other
@@ -479,7 +481,7 @@ public final class SpringThreadWorker
 				
 				// Use it
 				return rv;
-			}
+			}*/
 		}
 		
 		// A class object, as needed
@@ -1131,6 +1133,15 @@ public final class SpringThreadWorker
 				// Unlock the garbage collector
 			case "gcUnlock":
 				machine.tasks.gcLock.unlock((Integer)__args[0]);
+				return null;
+				
+				// Lock the memory allocator
+			case "memAllocLock":
+				return machine.tasks.memory.lock((Integer)__args[0]);
+			
+				// Unlocks the memory allocator
+			case "memAllocUnlock":
+				machine.tasks.memory.unlock((Integer)__args[0]);
 				return null;
 				
 				// Conversion of object to pointer

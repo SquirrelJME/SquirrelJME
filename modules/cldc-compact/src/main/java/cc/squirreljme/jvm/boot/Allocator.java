@@ -74,6 +74,7 @@ public final class Allocator
 	private static volatile int _rambase;
 	
 	/** The locking pointer address. */
+	@Deprecated
 	private static volatile int _lockptr;
 	
 	/**

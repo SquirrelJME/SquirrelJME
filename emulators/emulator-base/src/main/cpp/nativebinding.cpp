@@ -91,6 +91,8 @@ static const JNINativeMethod assemblyMethods[] =
 	{"longPack", "(II)J", (void*)Java_cc_squirreljme_jvm_Assembly_longPack},
 	{"longUnpackHigh", "(J)I", (void*)Java_cc_squirreljme_jvm_Assembly_longUnpackHigh},
 	{"longUnpackLow", "(J)I", (void*)Java_cc_squirreljme_jvm_Assembly_longUnpackLow},
+	{"memAllocLock", "(I)Z", (void*)doNothing},
+	{"memAllocUnlock", "(I)V", (void*)doNothing},
 	{"memReadByte", "(JI)I", (void*)notImplemented},
 	{"memReadInt", "(JI)I", (void*)notImplemented},
 	{"memReadJavaInt", "(JI)I", (void*)notImplemented},

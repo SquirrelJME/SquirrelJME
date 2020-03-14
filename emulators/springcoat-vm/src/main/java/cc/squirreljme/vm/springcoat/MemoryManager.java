@@ -22,6 +22,31 @@ import cc.squirreljme.jvm.memory.WritableBasicMemory;
 public final class MemoryManager
 	implements ReadableBasicMemory, WritableBasicMemory
 {
+	/** The current lock. */
+	private int _lock;
+	
+	/**
+	 * Locks the memory manager.
+	 *
+	 * @param __code The locking code.
+	 * @return If this was locked.
+	 * @since 2020/03/04
+	 */
+	public boolean lock(int __code)
+	{
+		synchronized (this)
+		{
+			// Is this unlocked?
+			if (this._lock == 0)
+			{
+				this._lock = __code;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/03/03
@@ -76,6 +101,56 @@ public final class MemoryManager
 		throws MemoryAccessException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Unlocks the allocator.
+	 *
+	 * @param __code The locking code.
+	 * @since 2020/03/14
+	 */
+	public void unlock(int __code)
+	{
+		synchronized (this)
+		{
+			// Unlocking only happens if we matched the right code
+			if (this._lock == __code)
+			{
+				this._lock = 0;
+				
+				// Signal any threads which are lock-polling this lock
+				this.notify();
+			}
+		}
+	}
+	
+	/**
+	 * Waits for the lock to be cleared before continuing.
+	 *
+	 * @param __code The locking code we are using.
+	 * @since 2020/03/14
+	 */
+	public void waitLock(int __code)
+	{
+		synchronized (this)
+		{
+			for (;;)
+			{
+				// Did we claim this lock?
+				if (this.lock(__code))
+					return;
+				
+				// Wait for a signal or to try this lock again
+				try
+				{
+					this.wait(1000);
+				}
+				catch (InterruptedException e)
+				{
+					// Ignore
+				}
+			}
+		}
 	}
 	
 	/**
