@@ -14,5 +14,6 @@ package cc.squirreljme.emulator;
  *
  * @since 2020/02/22
  */
-public class AbstractSystemCallHandler {
+public class AbstractSystemCallHandler
+{
 }
