@@ -754,6 +754,26 @@ public final class Assembly
 	public static native int longUnpackLow(long __v);
 	
 	/**
+	 * Locks access to the memory allocator.
+	 *
+	 * There is a VM managed memory locking because some virtual machines such
+	 * as SpringCoat may perform inline memory allocations
+	 *
+	 * @param __code The locking code.
+	 * @return If the caller obtained the lock.
+	 * @since 2020/03/14
+	 */
+	public static native boolean memAllocLock(int __code);
+	
+	/**
+	 * Locks access to the memory allocator.
+	 *
+	 * @param __code The code that was used at locking time.
+	 * @since 2020/03/14
+	 */
+	public static native void memAllocUnlock(int __code);
+	
+	/**
 	 * Reads byte from address.
 	 *
 	 * @param __p The pointer.
