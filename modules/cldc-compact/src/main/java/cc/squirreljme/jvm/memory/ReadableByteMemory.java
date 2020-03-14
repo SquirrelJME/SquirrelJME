@@ -15,6 +15,7 @@ package cc.squirreljme.jvm.memory;
  * @since 2020/03/03
  */
 public interface ReadableByteMemory
+	extends SizeableMemory
 {
 	/**
 	 * Reads the byte at the given address.

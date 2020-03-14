@@ -15,6 +15,7 @@ package cc.squirreljme.jvm.memory;
  * @since 2020/03/03
  */
 public interface WritableByteMemory
+	extends SizeableMemory
 {
 	/**
 	 * Writes the given byte to the specified address.

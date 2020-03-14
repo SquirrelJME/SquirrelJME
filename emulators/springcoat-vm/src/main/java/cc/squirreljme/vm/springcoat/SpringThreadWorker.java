@@ -443,46 +443,11 @@ public final class SpringThreadWorker
 		// Constant string from the constant pool, which shared a global pool
 		// of string objects! This must be made so that "aaa" == "aaa" is true
 		// even across different classes!
+		
+		// Load a constant value to string
 		else if (__in instanceof ConstantValueString)
-		{
-			ConstantValueString cvs = (ConstantValueString)__in;
-			
-			throw new todo.TODO();
-			
-			/*// Get the string map but lock on the class loader because a class
-			// might want a string but then another thread might be
-			// initializing some class, and it will just deadlock as they wait
-			// on each other
-			SpringMachine machine = this.machine;
-			Map<ConstantValueString, SpringObject> stringmap =
-				machine.__stringMap();
-			synchronized (machine.classLoader().classLoadingLock())
-			{
-				// Pre-cached object already exists?
-				SpringObject rv = stringmap.get(cvs);
-				if (rv != null)
-					return rv;
-				
-				// Setup an array of characters to represent the string data,
-				// this is the simplest thing to do right now
-				SpringObject array = (SpringObject)this.asVMObject(
-					cvs.toString().toCharArray());
-				
-				// Setup string which uses this sequence, but it also needs
-				// to be interned!
-				ClassName strclass = new ClassName("java/lang/String");
-				rv = (SpringObject)this.invokeMethod(false, strclass,
-					new MethodNameAndType("intern", "()Ljava/lang/String;"),
-					this.newInstance(strclass, new MethodDescriptor("([CS)V"),
-						array, 0));
-				
-				// Cache
-				stringmap.put(cvs, rv);
-				
-				// Use it
-				return rv;
-			}*/
-		}
+			return ObjectLoader.loadConstantValueString(
+				this, (ConstantValueString)__in);
 		
 		// A class object, as needed
 		else if (__in instanceof ClassName ||

@@ -11,7 +11,17 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.memory.MemoryAccessException;
 import cc.squirreljme.jvm.memory.ReadableBasicMemory;
+import cc.squirreljme.jvm.memory.ReadableByteMemory;
 import cc.squirreljme.jvm.memory.WritableBasicMemory;
+import cc.squirreljme.jvm.memory.WritableByteMemory;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * This class manages the allocation of memory within SpringCoat, it is used to
@@ -22,8 +32,205 @@ import cc.squirreljme.jvm.memory.WritableBasicMemory;
 public final class MemoryManager
 	implements ReadableBasicMemory, WritableBasicMemory
 {
+	/** ROM storage starting area. */
+	private static final int _ROM_START_POINTER =
+		0x7000_0000;
+	
+	/** The pool of UTF constant strings which are somewhere in memory. */
+	private final Map<String, SpringPointer> _utfPool =
+		new TreeMap<>();
+	
+	/** Readable memory. */
+	private final NavigableMap<Integer, ReadableByteMemory> _memRead =
+		new TreeMap<>();
+	
+	/** Writable memory. */
+	private final NavigableMap<Integer, WritableByteMemory> _memWrite =
+		new TreeMap<>();
+	
+	/** Chunks of memory that make up the ROM. */
+	private final List<WritableByteMemory> _romChunks =
+		new LinkedList<>();
+	
+	/** The next location for ROM chunks. */
+	private int _romNext =
+		MemoryManager._ROM_START_POINTER;
+	
 	/** The current lock. */
 	private int _lock;
+	
+	/**
+	 * Appends the given bytes to the ROM region of memory to persist at
+	 * run-time.
+	 *
+	 * @param __data The chunk of bytes to be added.
+	 * @return The resultant pointer to the chunk.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/14
+	 */
+	public SpringPointer appendRom(byte[] __data)
+		throws NullPointerException
+	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup memory chunk and store here
+		MemoryChunk chunk = new MemoryChunk((__data.length + 3) & (~3));
+		chunk.write(0, __data, 0, __data.length);
+		
+		// Protect ourself because we will be adjusting the chain links
+		synchronized (this)
+		{
+			// Store chunks into ROM region
+			List<WritableByteMemory> romChunks = this._romChunks;
+			romChunks.add(chunk);
+			
+			// Map chunk into memory as read-only
+			int romNext = this._romNext;
+			this.map(romNext, chunk, false);
+			
+			// Prepare the next placement region for more ROM data
+			this._romNext = romNext + ((chunk.size() + 7) & (~7));
+			
+			return new SpringPointer(romNext);
+		}
+	}
+	
+	/**
+	 * Maps this given memory into the global memory.
+	 *
+	 * @param __addr The address to bind to.
+	 * @param __mem The memory to map in.
+	 * @param __write Should this memory be writable?
+	 * @throws IllegalArgumentException If the address is not valid or if
+	 * non-writable memory is attempted to be mapped as writable.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringVirtualMachineException If the memory overlaps.
+	 * @since 2020/03/14
+	 */
+	public void map(long __addr, ReadableByteMemory __mem, boolean __write)
+		throws IllegalArgumentException, NullPointerException,
+			SpringVirtualMachineException
+	{
+		if (__mem == null)
+			throw new NullPointerException("NARG");
+		if (__addr < 0 || __addr > Integer.MAX_VALUE ||
+			__addr + __mem.size() > Integer.MAX_VALUE)
+			throw new IllegalArgumentException(String.format(
+				"Out of bounds map at %08x-%08x.", __addr,
+				__addr + __mem.size()));
+		if (__write && !(__mem instanceof WritableByteMemory))
+			throw new IllegalArgumentException(
+				"Cannot add non-writable memory as writable.");
+		
+		NavigableMap<Integer, ReadableByteMemory> memRead = this._memRead;
+		NavigableMap<Integer, WritableByteMemory> memWrite = this._memWrite;
+		
+		// Region of this memory area
+		int baseAddr = (int)__addr;
+		int endAddr = baseAddr + __mem.size();
+		
+		// Prevent the allocator from allocating memory since we are going to
+		// change the memory structures now
+		int code = AtomicTicker.next();
+		try
+		{
+			// Lock
+			this.waitLock(code);
+			
+			// Memory layout structures will be modified
+			synchronized (this)
+			{
+				// Get possible memory that could overlap in this area
+				Map.Entry<Integer, ReadableByteMemory> floor =
+					memRead.floorEntry(baseAddr);
+				Map.Entry<Integer, ReadableByteMemory> ceil =
+					memRead.ceilingEntry(baseAddr + 1);
+				
+				// Check collision with the floor
+				if (floor != null)
+				{
+					int start = floor.getKey();
+					int end = start + floor.getValue().size();
+					
+					if ((baseAddr >= start && baseAddr < end) ||
+						(endAddr > start && endAddr < end))
+						throw new SpringVirtualMachineException(String.format(
+							"Mapping collision: %08x-%08x ~~> %08x-%08x",
+							baseAddr, endAddr, start, end));
+				}
+				
+				// Check collision with the ceiling
+				if (ceil != null)
+				{
+					int start = ceil.getKey();
+					int end = start + ceil.getValue().size();
+					
+					if ((baseAddr >= start && baseAddr < end) ||
+						(endAddr > start && endAddr < end))
+						throw new SpringVirtualMachineException(String.format(
+							"Mapping collision: %08x-%08x ~~> %08x-%08x",
+							baseAddr, endAddr, start, end));
+				}
+				
+				// Does not collide with another mapping
+				memRead.put(baseAddr, __mem);
+				if (__write)
+					memWrite.put(baseAddr, (WritableByteMemory)__mem);
+			}
+		}
+		finally
+		{
+			this.unlock(code);
+		}
+	}
+	
+	/**
+	 * Loads the specified UTF string into memory.
+	 *
+	 * @param __string The string to load.
+	 * @return The loaded string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/14
+	 */
+	public final SpringPointer loadUtf(String __string)
+		throws NullPointerException
+	{
+		if (__string == null)
+			throw new NullPointerException("NARG");
+		
+		// These strings stack up into a certain region of memory
+		Map<String, SpringPointer> utfPool = this._utfPool;
+		synchronized (this)
+		{
+			// Already cached?
+			SpringPointer rv = utfPool.get(__string);
+			if (rv != null)
+				return rv;
+			
+			// Load the data into a chunk
+			byte[] chunk;
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+				__string.length() << 1);
+				DataOutputStream dos = new DataOutputStream(baos))
+			{
+				dos.writeUTF(__string);
+				
+				chunk = baos.toByteArray();
+			}
+			catch (IOException e)
+			{
+				throw new IllegalArgumentException(
+					"Could not write string.", e);
+			}
+			
+			// Append the UTF data into ROM region of memory
+			rv = this.appendRom(chunk);
+			utfPool.put(__string, rv);
+			
+			return rv;
+		}
+	}
 	
 	/**
 	 * Locks the memory manager.
@@ -101,6 +308,18 @@ public final class MemoryManager
 		throws MemoryAccessException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/14
+	 */
+	@Override
+	public int size()
+	{
+		// This is a virtual region of memory starting from NULL, so the size
+		// is rather large
+		return Integer.MAX_VALUE;
 	}
 	
 	/**

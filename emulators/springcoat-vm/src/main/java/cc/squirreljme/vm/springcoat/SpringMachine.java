@@ -81,18 +81,22 @@ public final class SpringMachine
 		new ArrayList<>();
 	
 	/** Static fields which exist within the virtual machine. */
+	@Deprecated
 	private final Map<SpringField, SpringFieldStorage> _staticfields =
 		new HashMap<>();
 	
 	/** Global strings representing singular constants. */
+	@Deprecated
 	private final Map<ConstantValueString, SpringObject> _strings =
 		new HashMap<>();
 	
 	/** Class objects which represent a given class. */
+	@Deprecated
 	private final Map<ClassName, SpringObject> _classobjects =
 		new HashMap<>();
 	
 	/** Class names by their objects. */
+	@Deprecated
 	private final Map<SpringObject, ClassName> _namesbyclass =
 		new HashMap<>();
 	
@@ -100,10 +104,12 @@ public final class SpringMachine
 	private final String[] _args;
 	
 	/** Long to string map. */
+	@Deprecated
 	private final Map<Long, String> _strlongtostring =
 		new HashMap<>();
 	
 	/** String to long map. */
+	@Deprecated
 	private final Map<String, Long> _strstringtolong =
 		new HashMap<>();
 	
