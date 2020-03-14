@@ -113,10 +113,11 @@ public final class SpringThread
 		// Setup blank frame
 		SpringThread.Frame rv = new SpringThread.Frame();
 		
-		// {@squirreljme.error BK1j Stack overflow.}
+		// Prevent our stack from getting too big
 		List<SpringThread.Frame> frames = this._frames;
 		if (frames.size() >= SpringThread.MAX_STACK_DEPTH)
-			throw new SpringVirtualMachineException("BK1j");
+			throw new SpringVirtualMachineException(
+				"Maximum stack depth exceeded");
 		
 		// Lock on frames as a new one is added
 		synchronized (frames)

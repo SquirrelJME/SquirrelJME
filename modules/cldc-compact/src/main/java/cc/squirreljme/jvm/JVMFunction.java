@@ -34,7 +34,7 @@ public final class JVMFunction
 	 * be returned, otherwise {@code 0} will.
 	 * @since 2019/04/27
 	 */
-	public static final int jvmCanArrayStore(int __p, int __v)
+	public static int jvmCanArrayStore(int __p, int __v)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -48,7 +48,7 @@ public final class JVMFunction
 	 * array.
 	 * @since 2019/04/27
 	 */
-	public static final int jvmComponentType(int __clid)
+	public static int jvmComponentType(int __clid)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -60,7 +60,7 @@ public final class JVMFunction
 	 *
 	 * @since 2019/04/25
 	 */
-	public static final void jvmGarbageCollect()
+	public static void jvmGarbageCollect()
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -72,7 +72,7 @@ public final class JVMFunction
 	 * @param __p The object to garbage collect.
 	 * @since 2019/04/25
 	 */
-	public static final void jvmGarbageCollectObject(int __p)
+	public static void jvmGarbageCollectObject(int __p)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -85,7 +85,7 @@ public final class JVMFunction
 	 * @return The loaded class info.
 	 * @since 2019/12/15
 	 */
-	public static final ClassInfo jvmInitClass(int __ns)
+	public static ClassInfo jvmInitClass(int __ns)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -103,7 +103,7 @@ public final class JVMFunction
 	 * pool of the target class in the high-word.
 	 * @since 2019/04/30
 	 */
-	public static final long jvmInterfacePointer(int __p, int __icl, int __mdx)
+	public static long jvmInterfacePointer(int __p, int __icl, int __mdx)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -117,7 +117,7 @@ public final class JVMFunction
 	 * @return Either {@code 1} if it is an array or {@code 0} if it is not.
 	 * @since 2019/04/27
 	 */
-	public static final int jvmIsArray(int __p)
+	public static int jvmIsArray(int __p)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -132,7 +132,7 @@ public final class JVMFunction
 	 * it is not.
 	 * @since 2019/04/22
 	 */
-	public static final int jvmIsInstance(int __p, int __cldx)
+	public static int jvmIsInstance(int __p, int __cldx)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -147,7 +147,7 @@ public final class JVMFunction
 	 * @return The resulting class.
 	 * @since 2019/05/26
 	 */
-	public static final <T> Class<T> jvmLoadClass(ClassInfo __cldx)
+	public static <T> Class<T> jvmLoadClass(ClassInfo __cldx)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -161,7 +161,7 @@ public final class JVMFunction
 	 * @since 2019/05/26
 	 */
 	@Deprecated
-	public static final String jvmLoadString(int __p)
+	public static String jvmLoadString(int __p)
 	{
 		// Zero will be the null pointer
 		if (__p == 0)
@@ -179,7 +179,7 @@ public final class JVMFunction
 	 * @return The read value.
 	 * @since 2019/05/29
 	 */
-	public static final long jvmMemReadLong(int __addr, int __off)
+	public static long jvmMemReadLong(int __addr, int __off)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -194,7 +194,7 @@ public final class JVMFunction
 	 * @param __lv The low value.
 	 * @since 2019/05/29
 	 */
-	public static final void jvmMemWriteLong(int __addr, int __off, int __hv,
+	public static void jvmMemWriteLong(int __addr, int __off, int __hv,
 		int __lv)
 	{
 		Assembly.breakpoint();
@@ -209,7 +209,7 @@ public final class JVMFunction
 	 * @param __v The value
 	 * @since 2019/05/29
 	 */
-	public static final void jvmMemWriteLong(int __addr, int __off, long __v)
+	public static void jvmMemWriteLong(int __addr, int __off, long __v)
 	{
 		JVMFunction.jvmMemWriteLong(__addr, __off,
 			(int)(__v >>> 32), (int)__v);
@@ -221,7 +221,7 @@ public final class JVMFunction
 	 * @param __p The object to enter.
 	 * @since 2019/04/26
 	 */
-	public static final void jvmMonitorEnter(int __p)
+	public static void jvmMonitorEnter(int __p)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -233,7 +233,7 @@ public final class JVMFunction
 	 * @param __p The object to exit.
 	 * @since 2019/04/26
 	 */
-	public static final void jvmMonitorExit(int __p)
+	public static void jvmMonitorExit(int __p)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -248,7 +248,7 @@ public final class JVMFunction
 	 * class.
 	 * @since 2019/05/24
 	 */
-	public static final int jvmNew(int __cl)
+	public static int jvmNew(int __cl)
 		throws OutOfMemoryError
 	{
 		Assembly.breakpoint();
@@ -266,7 +266,7 @@ public final class JVMFunction
 	 * array.
 	 * @since 2019/04/24
 	 */
-	public static final int jvmNewArray(int __at, int __len)
+	public static int jvmNewArray(int __at, int __len)
 		throws NegativeArraySizeException, OutOfMemoryError
 	{
 		Assembly.breakpoint();
@@ -291,7 +291,7 @@ public final class JVMFunction
 	 * @return The result.
 	 * @since 2019/05/27
 	 */
-	public static final long jvmSystemCall(short __si, int __a, int __b,
+	public static long jvmSystemCall(short __si, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{
 		// Call pure form
