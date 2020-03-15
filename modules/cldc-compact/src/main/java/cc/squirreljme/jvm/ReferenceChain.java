@@ -21,6 +21,9 @@ import java.lang.ref.Reference;
  */
 public final class ReferenceChain
 {
+	/** The head of the chain. */
+	__Link__ _head;
+	
 	/**
 	 * Initializes a new reference chain.
 	 *
@@ -47,6 +50,40 @@ public final class ReferenceChain
 		if (__ref == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Fresh link?
+		if (this._head == null)
+			this._head = new __Link__(__ref);
+		
+		// Needs to be linked in
+		else
+			throw todo.TODO.TODO();
+	}
+	
+	/**
+	 * Individual chain link.
+	 *
+	 * @since 2020/03/15
+	 */
+	static final class __Link__
+	{
+		/** The reference that is linked in. */
+		final Reference<?> _ref;
+		
+		/** The previous link. */
+		__Link__ _prev;
+		
+		/** The next link. */
+		__Link__ _next;
+		
+		/**
+		 * Initializes the link.
+		 *
+		 * @param __ref The reference to link.
+		 * @since 2020/03/15
+		 */
+		__Link__(Reference<?> __ref)
+		{
+			this._ref = __ref;
+		}
 	}
 }
