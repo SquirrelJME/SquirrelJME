@@ -492,8 +492,11 @@ extern "C"
 /** Inter-Process Call. */
 #define SJME_SYSCALL_IPC_CALL SJME_JINT_C(37)
 
+/** Debugging flag options. */
+#define SJME_SYSCALL_DEBUG_FLAGS SJE_JINT_C(38)
+
 /** System call count. */
-#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(38)
+#define SJME_SYSCALL_NUM_SYSCALLS SJME_JINT_C(39)
 
 /*****************************************************************************
 ************************** SYSTEM CALL ERROR CODES ***************************

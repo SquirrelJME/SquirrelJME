@@ -84,6 +84,18 @@ public interface Constants
 	byte CONFIG_HEADER_SIZE =
 		4;
 	
+	/** Stop debugging information from printing. */
+	byte DEBUG_SQUELCH_PRINT =
+		0b0000_0001;
+	
+	/** Do not exit on oops? */
+	byte DEBUG_NO_OOPS_EXIT =
+		0b0000_0010;
+	
+	/** Do not exit on TO-DO? */
+	byte DEBUG_NO_TODO_EXIT =
+		0b0000_0100;
+	
 	/** The thread ID for out-of-bound IPC events. */
 	int OOB_IPC_THREAD =
 		0xFFFFFFFF;

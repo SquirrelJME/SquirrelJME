@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import java.io.PrintStream;
 
@@ -302,7 +303,8 @@ public class Throwable
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		Throwable.__printStackTrace(this, __ps, 0, Throwable._TYPE_EXCEPTION);
+		Throwable.__printStackTrace(this, __ps, 0,
+			Throwable._TYPE_EXCEPTION);
 	}
 	
 	/**

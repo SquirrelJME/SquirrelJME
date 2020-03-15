@@ -11,8 +11,10 @@
 package todo;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
-import java.io.PrintStream;
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import java.util.Arrays;
 
 /**
  * This is an error which is thrown when a condition which should not occur
@@ -21,104 +23,92 @@ import java.io.PrintStream;
  * @since 2018/11/25
  */
 public class OOPS
-	extends Error
+	extends CodeProgressError
 {
 	/**
-	 * Generates an oops with no message.
+	 * Initializes the oops exception.
 	 *
-	 * @since 2018/11/25
+	 * @since 2020/03/15
 	 */
+	@Deprecated
 	public OOPS()
 	{
-		this(null, null);
+		this(null);
 	}
 	
 	/**
-	 * Generates an oops with the given message.
+	 * Initializes the oops exception.
 	 *
-	 * @param __m The message to use.
-	 * @since 2018/11/25
+	 * @param __m The message.
+	 * @since 2020/03/15
 	 */
+	@SuppressWarnings("ThrowableNotThrown")
+	@Deprecated
 	public OOPS(String __m)
 	{
-		this(__m, null);
+		super(__m);
+		
+		OOPS.__oops(true, CallTraceElement.traceRaw(), __m);
 	}
 	
 	/**
-	 * Generates an oops with the given cause.
+	 * Constructor which does not call the static handler.
 	 *
-	 * @param __t The cause to use.
-	 * @since 2018/11/25
+	 * @param __ignore Not used.
+	 * @param __m The message.
+	 * @since 2020/03/15
 	 */
-	public OOPS(Throwable __t)
+	OOPS(@SuppressWarnings("unused") boolean __ignore, String __m)
 	{
-		this(null, __t);
+		super(__m);
 	}
 	
 	/**
-	 * Generates an oops with the given message and cause.
+	 * Handles the OOPS logic and returns OOPS exception.
 	 *
-	 * @param __m The message to use.
-	 * @param __t The cause.
-	 * @since 2018/11/25
+	 * @param __args The arguments to the OOPS.
+	 * @return The resultant exception.
+	 * @since 2020/03/15
 	 */
-	public OOPS(String __m, Throwable __t)
+	@SuppressWarnings({"NewMethodNamingConvention",
+		"MethodNameSameAsClassName"})
+	public static OOPS OOPS(Object... __args)
 	{
-		super(__m, __t);
-		
-		// Detect OOPSes/TODOs tripping multiple times and fail
-		boolean doubletripped = TODO._DOUBLE_TRIP;
-		if (doubletripped)
-			Assembly.sysCallP(SystemCallIndex.FATAL_TODO);
-		TODO._DOUBLE_TRIP = true;
-		
-		// Print a starting banner, but only if the error stream exists
-		PrintStream ps = System.err;
-		if (ps != null)
-		{
-			// Top banner
-			ps.println("****************************************************");
-			ps.print("OOPS CONDITION WAS MET: ");
-			if (__m != null)
-				ps.print(__m);
-			ps.println();
+		return OOPS.__oops(false, CallTraceElement.traceRaw(),
+			__args);
+	}
+	
+	/**
+	 * Handles the OOPS logic and returns OOPS exception.
+	 *
+	 * @param __fromInit From initializer?
+	 * @param __trace The trace.
+	 * @param __args The arguments to the OOPS.
+	 * @return The resultant exception.
+	 * @since 2020/03/15
+	 */
+	static OOPS __oops(boolean __fromInit, int[] __trace, Object... __args)
+	{
+		// Perform printing logic for this trace
+		__Utilities__.dumpTrace('O', 'P', __trace, __args);
 			
-			// Print the current thread
-			ps.print("IN THREAD: ");
-			ps.println(Thread.currentThread());
-			
-			// Spacer
-			ps.println();
-			
-			// Print the trace
-			this.printStackTrace(ps);
-			
-			// Ending banner
-			ps.println("****************************************************");
-		}
-		
-		// No streams are currently available, but we would still like to
-		// report the trace information to the debugger, we might not be in any
-		// condition to actually do printing to the console so this will end
-		// here
-		else
-			Assembly.sysCallP(SystemCallIndex.FATAL_TODO);
-		
-		// {@squirreljme.property
-		// cc.squirreljme.nooopsexit=(boolean)
-		// If this is {@code true} then the OOPS exception will not tell the
-		// virtual machine to exit.}
-		if (!Boolean.valueOf(
-			System.getProperty("cc.squirreljme.nooopsexit")))
+		// Exit on oops?
+		if ((Assembly.sysCallPV(SystemCallIndex.DEBUG_FLAGS) &
+			Constants.DEBUG_NO_TODO_EXIT) != 0)
 			try
 			{
-				System.exit(125);
+				System.exit(126);
 			}
-		
-			// Ignore
 			catch (SecurityException e)
 			{
+				// Could not use normal exit, so try this method
+				Assembly.sysCallP(SystemCallIndex.FATAL_TODO);
 			}
+		
+		// Build exception if not from an initializer
+		if (__fromInit)
+			return null;
+		return new OOPS(false, Arrays.asList(__args).toString());
 	}
 }
 

@@ -40,7 +40,7 @@ import java.util.LinkedList;
 public final class String
 	implements Comparable<String>, CharSequence
 {
-	/** The minumum trim character. */
+	/** The minimum trim character. */
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
@@ -55,6 +55,10 @@ public final class String
 	/** String is already interned? */
 	private static final short _QUICK_INTERN =
 		0b0000_0000__0000_0100;
+	
+	/** Flags which should not be copied. */
+	private static final short _COPY_QUICK =
+		~(String._QUICK_INTERN);
 	
 	/** Intern string table, weakly cached to reduce memory use. */
 	private static final Collection<Reference<String>> _INTERNS =
@@ -96,7 +100,7 @@ public final class String
 		
 		// Just copies all the fields since they were pre-calculated already
 		this._chars = __s._chars;
-		this._quickflags = ((short)(__s._quickflags & (~String._QUICK_INTERN)));
+		this._quickflags = ((short)(__s._quickflags & String._COPY_QUICK));
 		this._hashcode = __s._hashcode;
 	}
 	
@@ -978,6 +982,7 @@ public final class String
 	 * @return The length of this string.
 	 * @since 2018/09/19
 	 */
+	@Override
 	public int length()
 	{
 		return this._chars.length;
@@ -1666,6 +1671,18 @@ __outer:
 	public static String valueOf(double __a)
 	{
 		return Double.valueOf(__a).toString();
+	}
+	
+	/**
+	 * Load UTF-8 string from memory and interns it.
+	 *
+	 * @param __addr The address to load from.
+	 * @return The resultant intern string.
+	 * @since 2020/03/14
+	 */
+	private static String __loadUtfAndIntern(long __addr)
+	{
+		throw new todo.TODO();
 	}
 }
 

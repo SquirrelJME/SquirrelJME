@@ -375,14 +375,16 @@ public final class System
 				
 				// The current encoding
 			case "microedition.encoding":
-				rv = SystemProperties.systemProperty("microedition.encoding");
+				rv = SystemProperties.systemProperty(
+					"microedition.encoding");
 				if (rv == null)
 					return CodecFactory.FALLBACK_ENCODING;
 				return rv;
 				
 				// The current local, must be set!
 			case "microedition.locale":
-				rv = SystemProperties.systemProperty("microedition.locale");
+				rv = SystemProperties.systemProperty(
+					"microedition.locale");
 				if (rv == null)
 					return "en-US";
 				return rv;
