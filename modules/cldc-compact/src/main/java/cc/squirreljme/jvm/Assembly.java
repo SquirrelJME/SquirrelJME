@@ -781,7 +781,7 @@ public final class Assembly
 	 * @return The result of the read.
 	 * @since 2019/04/22
 	 */
-	public static native int memReadByte(long __p, int __o);
+	public static native byte memReadByte(long __p, int __o);
 	
 	/**
 	 * Reads integer from address.
@@ -821,7 +821,17 @@ public final class Assembly
 	 * @return The result of the read.
 	 * @since 2019/05/29
 	 */
-	public static native int memReadJavaShort(long __p, int __o);
+	public static native short memReadJavaShort(long __p, int __o);
+	
+	/**
+	 * Reads long from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2020/03/15
+	 */
+	public static native long memReadLong(long __p, int __o);
 	
 	/**
 	 * Reads pointer from address.
@@ -841,7 +851,7 @@ public final class Assembly
 	 * @return The result of the read.
 	 * @since 2019/04/22
 	 */
-	public static native int memReadShort(long __p, int __o);
+	public static native short memReadShort(long __p, int __o);
 	
 	/**
 	 * Writes byte to address.
@@ -892,6 +902,16 @@ public final class Assembly
 	 * @since 2019/05/29
 	 */
 	public static native void memWriteJavaShort(long __p, int __o, int __v);
+	
+	/**
+	 * Writes long to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2020/03/15
+	 */
+	public static native void memWriteLong(long __p, int __o, long __v);
 	
 	/**
 	 * Writes a pointer to address.

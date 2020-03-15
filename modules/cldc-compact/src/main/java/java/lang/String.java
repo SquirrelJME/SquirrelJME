@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
@@ -1682,7 +1683,72 @@ __outer:
 	 */
 	private static String __loadUtfAndIntern(long __addr)
 	{
-		throw new todo.TODO();
+		// Just treat zero as null pointers in the event this happens so
+		// that nothing really breaks from it
+		if (__addr == 0)
+			return null;
+		
+		// Base address where byte data is stored
+		long bytesBase = __addr + 2;
+		
+		// Count the number of characters in the sequence so we can allocate
+		// a correctly sized character array
+		int numBytes = Assembly.memReadJavaShort(__addr, 0) & 0xFFFF;
+		int numChars = 0;
+		for (int i = 0; i < numBytes; i++)
+		{
+			byte b = Assembly.memReadByte(bytesBase, i);
+			
+			// Single byte
+			if ((b & 0x80) == 0)
+				numChars++;
+			
+			// Double byte
+			else if ((b & 0xE0) == 0xC0)
+			{
+				numChars += 2;
+				i++;
+			}
+			
+			// Triple byte
+			else
+			{
+				numChars += 3;
+				i += 2;
+			}
+		}
+		
+		// Store characters into the array
+		char[] chars = new char[numChars];
+		for (int i = 0, o = 0; i < numBytes; i++)
+		{
+			byte b = Assembly.memReadByte(bytesBase, i);
+			
+			// Single byte
+			if ((b & 0x80) == 0)
+				chars[o++] = (char)(b & 0x7F);
+			
+			// Double byte
+			else if ((b & 0xE0) == 0xC0)
+			{
+				byte c = Assembly.memReadByte(bytesBase, ++i);
+				
+				chars[o++] = (char)(((b & 0x1F) << 6) | (c & 0x3F));
+			}
+			
+			// Triple byte
+			else
+			{
+				byte c = Assembly.memReadByte(bytesBase, ++i);
+				byte d = Assembly.memReadByte(bytesBase, ++i);
+				
+				chars[o++] = (char)(((b & 0x1F) << 12) | ((c & 0x3F) << 6) |
+					(d & 0x3F));
+			}
+		}
+		
+		// Build string and intern
+		return new String(chars, (short)0).intern();
 	}
 }
 

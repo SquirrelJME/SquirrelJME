@@ -1109,6 +1109,29 @@ public final class SpringThreadWorker
 				machine.tasks.memory.unlock((Integer)__args[0]);
 				return null;
 				
+				// Read byte value
+			case "memReadByte":
+				return machine.tasks.memory.read(
+				(Long)__args[0] + (Integer)__args[1]);
+				
+				// Read int value
+			case "memReadJavaInt":
+			case "memReadInt":
+				return machine.tasks.memory.readInt(
+				(Long)__args[0] + (Integer)__args[1]);
+				
+				// Read long value
+			case "memReadJavaLong":
+			case "memReadLong":
+				return machine.tasks.memory.readLong(
+				(Long)__args[0] + (Integer)__args[1]);
+				
+				// Read short value
+			case "memReadJavaShort":
+			case "memReadShort":
+				return machine.tasks.memory.readShort(
+				(Long)__args[0] + (Integer)__args[1]);
+				
 				// Conversion of object to pointer
 			case "objectToPointer":
 				{
