@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.memory.MemoryAccessException;
 import cc.squirreljme.jvm.memory.ReadableBasicMemory;
 import cc.squirreljme.jvm.memory.ReadableByteMemory;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * This class manages the allocation of memory within SpringCoat, it is used to
@@ -41,12 +44,12 @@ public final class MemoryManager
 		new TreeMap<>();
 	
 	/** Readable memory. */
-	private final NavigableMap<Integer, ReadableByteMemory> _memRead =
-		new TreeMap<>();
+	private final ConcurrentNavigableMap<Integer, ReadableByteMemory> _read =
+		new ConcurrentSkipListMap<>();
 	
 	/** Writable memory. */
-	private final NavigableMap<Integer, WritableByteMemory> _memWrite =
-		new TreeMap<>();
+	private final ConcurrentNavigableMap<Integer, WritableByteMemory> _write =
+		new ConcurrentSkipListMap<>();
 	
 	/** Chunks of memory that make up the ROM. */
 	private final List<WritableByteMemory> _romChunks =
@@ -123,8 +126,8 @@ public final class MemoryManager
 			throw new IllegalArgumentException(
 				"Cannot add non-writable memory as writable.");
 		
-		NavigableMap<Integer, ReadableByteMemory> memRead = this._memRead;
-		NavigableMap<Integer, WritableByteMemory> memWrite = this._memWrite;
+		NavigableMap<Integer, ReadableByteMemory> memRead = this._read;
+		NavigableMap<Integer, WritableByteMemory> memWrite = this._write;
 		
 		// Region of this memory area
 		int baseAddr = (int)__addr;
@@ -262,7 +265,23 @@ public final class MemoryManager
 	public byte read(long __addr)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		if (__addr < 0 || __addr > Integer.MAX_VALUE)
+			throw new MemoryAccessException(__addr, "Read out of bounds.");
+		
+		// Get entry where the chunk would be located
+		Map.Entry<Integer, ReadableByteMemory> chunk =
+			this._read.floorEntry((int)__addr);
+		if (chunk == null)
+			throw new MemoryAccessException(__addr, "Unmapped read.");
+		
+		// Check to see if this is still within bounds of that chunk
+		long baseAddr = __addr - chunk.getKey();
+		ReadableByteMemory mem = chunk.getValue();
+		if (baseAddr >= mem.size())
+			throw new MemoryAccessException(__addr, "Overmapped read.");
+		
+		// Read value
+		return mem.read(baseAddr);
 	}
 	
 	/**
@@ -285,7 +304,10 @@ public final class MemoryManager
 	public int readInt(long __addr)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		return (((this.read(__addr) & 0xFF) << 24) |
+			((this.read(__addr + 1) & 0xFF) << 16) |
+			((this.read(__addr + 2) & 0xFF) << 8) |
+			((this.read(__addr + 3) & 0xFF)));
 	}
 	
 	/**
@@ -296,7 +318,8 @@ public final class MemoryManager
 	public long readLong(long __addr)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		return Assembly.longPack(this.readInt(__addr),
+			this.readInt(__addr + 4));
 	}
 	
 	/**
@@ -307,7 +330,8 @@ public final class MemoryManager
 	public short readShort(long __addr)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		return (short)(((this.read(__addr) & 0xFF) << 8) |
+			((this.read(__addr + 1) & 0xFF)));
 	}
 	
 	/**
