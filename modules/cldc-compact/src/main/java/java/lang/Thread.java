@@ -690,6 +690,7 @@ public class Thread
 	 * @since 2018/11/20
 	 */
 	@ImplementationNote("This is the starting point of all threads.")
+	@Deprecated
 	final void __start()
 		throws IllegalThreadStateException
 	{
