@@ -1141,6 +1141,10 @@ public final class SpringThreadWorker
 					return object.pointerArea().base;
 				}
 				
+				// Conversion of pointer to object
+			case "pointerToObject":
+				return this.mapValueToObject(__args[0]);
+				
 				// Return the reference chain of this object
 			case "refChainGet":
 				return this.mapValueToObject(this.mapValueToObject(__args[0])
