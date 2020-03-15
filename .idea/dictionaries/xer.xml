@@ -13,6 +13,8 @@
       <w>fprintf</w>
       <w>gawroriski</w>
       <w>ioob</w>
+      <w>islower</w>
+      <w>isupper</w>
       <w>jarray</w>
       <w>jboolean</w>
       <w>jbyte</w>
@@ -34,6 +36,7 @@
       <w>jvalue</w>
       <w>jweak</w>
       <w>ljava</w>
+      <w>lowercased</w>
       <w>midlet</w>
       <w>multiphasicapps</w>
       <w>narg</w>
@@ -52,6 +55,7 @@
       <w>summercoat</w>
       <w>targetting</w>
       <w>unpure</w>
+      <w>uppercased</w>
       <w>vtable</w>
     </words>
   </dictionary>

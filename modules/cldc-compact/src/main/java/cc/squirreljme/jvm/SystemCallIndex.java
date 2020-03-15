@@ -424,12 +424,20 @@ public interface SystemCallIndex
 		37;
 	
 	/**
+	 * Returns flags used to change how debugging is used within SquirreLJME.
+	 *
+	 * @since 2020/03/15
+	 */
+	byte DEBUG_FLAGS =
+		38;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		38;
+		39;
 }
 

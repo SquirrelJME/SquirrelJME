@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.emulator.fb.NativeFramebuffer;
+import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 
@@ -74,12 +75,41 @@ public final class EmulatorAssembly
 						case SystemCallIndex.QUERY_INDEX:
 						case SystemCallIndex.TIME_MILLI_WALL:
 						case SystemCallIndex.TIME_NANO_MONO:
+						case SystemCallIndex.DEBUG_FLAGS:
 							return 1;
 						
 							// Not-implemented
 						default:
 							return 0;
 					}
+				}
+				
+				// Debugging flags
+			case SystemCallIndex.DEBUG_FLAGS:
+				{
+					int rv = 0;
+					
+					// {@squirreljme.property cc.squirreljme.debug Set to a
+					// boolean value (true or false) which specifies whether
+					// to-do and debug messages should be printed to the
+					// console.}
+					if (!Boolean.getBoolean("cc.squirreljme.debug"))
+						rv |= Constants.DEBUG_SQUELCH_PRINT;
+					
+					// {@squirreljme.property
+					// cc.squirreljme.nooopsexit=(boolean) If this is true then
+					// the OOPS exception will not tell the virtual machine to
+					// exit.}
+					if (Boolean.getBoolean("cc.squirreljme.nooopsexit"))
+						rv |= Constants.DEBUG_NO_OOPS_EXIT;
+					
+					// {@squirreljme.property
+					// cc.squirreljme.notodoexit=(boolean) If this is true then
+					// the virtual machine will not exit when a To-Do is hit.}
+					if (Boolean.getBoolean("cc.squirreljme.notodoexit"))
+						rv |= Constants.DEBUG_NO_TODO_EXIT;
+					
+					return rv;
 				}
 			
 				// Get error

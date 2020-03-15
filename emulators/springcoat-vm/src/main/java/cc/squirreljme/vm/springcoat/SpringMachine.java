@@ -222,6 +222,7 @@ public final class SpringMachine
 	 * resolution.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	public final String debugResolveString(long __p)
 	{
 		if (__p == -1L)
@@ -240,6 +241,7 @@ public final class SpringMachine
 	 * @return The pointer to the string.
 	 * @since 2018/09/29
 	 */
+	@Deprecated
 	public final long debugUnresolveString(String __s)
 	{
 		if (__s == null)
