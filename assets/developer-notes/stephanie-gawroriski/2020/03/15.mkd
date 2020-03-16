@@ -1,0 +1,6 @@
+# 2020/03/15
+
+## 10:10
+
+Okay so I think instead of a `throw new TODO()` it is instead a static that
+returns a throwable, that way I do not have to initialize a throwable.
