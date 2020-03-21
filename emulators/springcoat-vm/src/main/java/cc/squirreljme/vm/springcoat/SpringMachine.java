@@ -10,29 +10,21 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.ThreadStartIndex;
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import cc.squirreljme.runtime.cldc.lang.GuestDepth;
-import cc.squirreljme.runtime.swm.EntryPoint;
-import cc.squirreljme.runtime.swm.EntryPoints;
-import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import java.io.IOException;
-import java.io.InputStream;
+import cc.squirreljme.jvm.ThreadStartIndex;
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.ConstantValueString;
-import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import net.multiphasicapps.classfile.PrimitiveType;
-import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This class contains the instance of the SpringCoat virtual machine and has
@@ -78,11 +70,6 @@ public final class SpringMachine
 	private final Map<SpringField, SpringFieldStorage> _staticfields =
 		new HashMap<>();
 	
-	/** Global strings representing singular constants. */
-	@Deprecated
-	private final Map<ConstantValueString, SpringObject> _strings =
-		new HashMap<>();
-	
 	/** Class objects which represent a given class. */
 	@Deprecated
 	private final Map<ClassName, SpringObject> _classobjects =
@@ -96,24 +83,11 @@ public final class SpringMachine
 	/** Main entry point arguments. */
 	private final String[] _args;
 	
-	/** Long to string map. */
-	@Deprecated
-	private final Map<Long, String> _strlongtostring =
-		new HashMap<>();
-	
-	/** String to long map. */
-	@Deprecated
-	private final Map<String, Long> _strstringtolong =
-		new HashMap<>();
-	
 	/** System properties. */
 	final Map<String, String> _sysproperties;
 	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
-	
-	/** The next long to choose. */
-	private long _strnextlong;
 	
 	/** Is the VM exiting? */
 	private volatile boolean _exiting;
@@ -195,53 +169,6 @@ public final class SpringMachine
 			// Store thread
 			threads.add(rv);
 			return rv;
-		}
-	}
-	
-	/**
-	 * Resolves the given string pointer.
-	 *
-	 * @param __p The pointer.
-	 * @return The string at the given pointer or {@code null} if it has no
-	 * resolution.
-	 * @since 2018/09/29
-	 */
-	@Deprecated
-	public final String debugResolveString(long __p)
-	{
-		if (__p == -1L)
-			return null;
-		
-		synchronized (this.strlock)
-		{
-			return this._strlongtostring.get(__p);
-		}
-	}
-	
-	/**
-	 * Unresolves the given string.
-	 *
-	 * @param __s The string to unresolve.
-	 * @return The pointer to the string.
-	 * @since 2018/09/29
-	 */
-	@Deprecated
-	public final long debugUnresolveString(String __s)
-	{
-		if (__s == null)
-			return -1L;
-		
-		synchronized (this.strlock)
-		{
-			Long rv = this._strstringtolong.get(__s);
-			if (rv != null)
-				return rv;
-			
-			Long next = ++this._strnextlong;
-			this._strstringtolong.put(__s, next);
-			this._strlongtostring.put(next, __s);
-			
-			return next;
 		}
 	}
 	
@@ -343,33 +270,6 @@ public final class SpringMachine
 	}
 	
 	/**
-	 * Returns the number of threads which are currently alive and active.
-	 *
-	 * @return The number of active and alive threads.
-	 * @since 2018/09/03
-	 */
-	public final int numThreads()
-	{
-		// Store thread
-		List<SpringThread> threads = this._threads;
-		synchronized (threads)
-		{
-			return threads.size();
-		}
-	}
-	
-	/**
-	 * Returns the access for resources.
-	 *
-	 * @return The resource access.
-	 * @since 2018/10/07
-	 */
-	public final VMResourceAccess resourceAccess()
-	{
-		return this.resourceaccessor;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/13
 	 */
@@ -421,16 +321,16 @@ public final class SpringMachine
 			worker.resolveClass(PrimitiveType.LONG.toClassName()),
 			ThreadStartIndex.NUM_INDEXES);
 		tsiArgs.set(ThreadStartIndex.MAIN_CLASS_INFO,
-			worker.mapClassToClassInfo(entrycl).pointerArea().basePointer());
+			ObjectLoader.loadClassInfo(worker, entrycl).pointerArea().base());
 		tsiArgs.set(ThreadStartIndex.MAIN_ARGUMENTS,
-			outargs.pointerArea().basePointer());
+			outargs.pointerArea().base());
 		
 		// Enter the frame for that method using the arguments we passed (in
 		// a static fashion)
 		mainthread.enterFrame(worker.loadClass(
 			new ClassName("java/lang/__ThreadStarter__")).lookupMethod(
 			true, new MethodNameAndType("__start", "([J)V")),
-			tsiArgs.pointerArea().basePointer());
+			tsiArgs.pointerArea().base());
 		
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
@@ -534,31 +434,6 @@ public final class SpringMachine
 	}
 	
 	/**
-	 * Returns the task manager which is used.
-	 *
-	 * @return The task manager.
-	 * @since 2018/11/04
-	 */
-	public final SpringTaskManager taskManager()
-	{
-		return this.tasks;
-	}
-	
-	/**
-	 * Splits long to integers.
-	 *
-	 * @param __dx The index.
-	 * @param __v The output integers.
-	 * @param __l The input long.
-	 * @since 2018/09/29
-	 */
-	public static final void longToInt(int __dx, int[] __v, long __l)
-	{
-		__v[__dx] = (int)(__l >>> 32);
-		__v[__dx + 1] = (int)__l;
-	}
-	
-	/**
 	 * Returns the mapping of class names to {@link Class} instances.
 	 *
 	 * @return The mapping of class names to object instances.
@@ -589,17 +464,6 @@ public final class SpringMachine
 	final Map<SpringField, SpringFieldStorage> __staticFieldMap()
 	{
 		return this._staticfields;
-	}
-	
-	/**
-	 * Returns the global string map.
-	 *
-	 * @return The global string map.
-	 * @since 2018/09/16
-	 */
-	final Map<ConstantValueString, SpringObject> __stringMap()
-	{
-		return this._strings;
 	}
 }
 

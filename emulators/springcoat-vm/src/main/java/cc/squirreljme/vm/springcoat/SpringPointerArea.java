@@ -53,7 +53,7 @@ public final class SpringPointerArea
 	 * @return The base pointer.
 	 * @since 2020/03/13
 	 */
-	public final SpringPointer basePointer()
+	public final SpringPointer base()
 	{
 		return new SpringPointer(this.base);
 	}
