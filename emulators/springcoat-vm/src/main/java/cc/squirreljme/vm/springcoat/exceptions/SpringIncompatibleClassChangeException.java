@@ -8,23 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
 
 /**
- * This is thrown when a divide by zero occurs.
+ * This is thrown when a class refers to another reference and it differs
+ * than what was expected at run-time.
  *
- * @since 2018/12/04
+ * @since 2018/09/09
  */
-public class SpringArithmeticException
+public class SpringIncompatibleClassChangeException
 	extends SpringException
-	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/12/04
+	 * @since 2018/09/09
 	 */
-	public SpringArithmeticException()
+	public SpringIncompatibleClassChangeException()
 	{
 	}
 	
@@ -32,9 +32,9 @@ public class SpringArithmeticException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/12/04
+	 * @since 2018/09/09
 	 */
-	public SpringArithmeticException(String __m)
+	public SpringIncompatibleClassChangeException(String __m)
 	{
 		super(__m);
 	}
@@ -44,9 +44,9 @@ public class SpringArithmeticException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/12/04
+	 * @since 2018/09/09
 	 */
-	public SpringArithmeticException(String __m, Throwable __c)
+	public SpringIncompatibleClassChangeException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -55,21 +55,11 @@ public class SpringArithmeticException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/12/04
+	 * @since 2018/09/09
 	 */
-	public SpringArithmeticException(Throwable __c)
+	public SpringIncompatibleClassChangeException(Throwable __c)
 	{
 		super(__c);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/04
-	 */
-	@Override
-	public String targetClass()
-	{
-		return "java/lang/ArithmeticException";
 	}
 }
 

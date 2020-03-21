@@ -8,24 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 
 /**
- * This is thrown when an attempt is made to cast from one class type to
- * another.
+ * This is thrown when an invalid value was attempted to be stored into an
+ * array.
  *
- * @since 2018/09/15
+ * @since 2018/09/16
  */
-public class SpringClassCastException
+public class SpringArrayStoreException
 	extends SpringException
 	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/09/15
+	 * @since 2018/09/16
 	 */
-	public SpringClassCastException()
+	public SpringArrayStoreException()
 	{
 	}
 	
@@ -33,9 +35,9 @@ public class SpringClassCastException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/09/15
+	 * @since 2018/09/16
 	 */
-	public SpringClassCastException(String __m)
+	public SpringArrayStoreException(String __m)
 	{
 		super(__m);
 	}
@@ -45,9 +47,9 @@ public class SpringClassCastException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/09/15
+	 * @since 2018/09/16
 	 */
-	public SpringClassCastException(String __m, Throwable __c)
+	public SpringArrayStoreException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -56,9 +58,9 @@ public class SpringClassCastException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/09/15
+	 * @since 2018/09/16
 	 */
-	public SpringClassCastException(Throwable __c)
+	public SpringArrayStoreException(Throwable __c)
 	{
 		super(__c);
 	}
@@ -70,7 +72,7 @@ public class SpringClassCastException
 	@Override
 	public String targetClass()
 	{
-		return "java/lang/ClassCastException";
+		return "java/lang/ArrayStoreException";
 	}
 }
 

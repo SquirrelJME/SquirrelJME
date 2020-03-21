@@ -8,23 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 
 /**
- * This is thrown when the state of a monitor is not valid.
+ * This is thrown when an invalid out of bounds index was accessed in an
+ * array.
  *
- * @since 2018/09/15
+ * @since 2018/09/16
  */
-public class SpringIllegalMonitorStateException
+public class SpringArrayIndexOutOfBoundsException
 	extends SpringException
 	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/09/15
+	 * @since 2018/09/16
 	 */
-	public SpringIllegalMonitorStateException()
+	public SpringArrayIndexOutOfBoundsException()
 	{
 	}
 	
@@ -32,9 +35,9 @@ public class SpringIllegalMonitorStateException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/09/15
+	 * @since 2018/09/16
 	 */
-	public SpringIllegalMonitorStateException(String __m)
+	public SpringArrayIndexOutOfBoundsException(String __m)
 	{
 		super(__m);
 	}
@@ -44,9 +47,9 @@ public class SpringIllegalMonitorStateException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/09/15
+	 * @since 2018/09/16
 	 */
-	public SpringIllegalMonitorStateException(String __m, Throwable __c)
+	public SpringArrayIndexOutOfBoundsException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -55,9 +58,9 @@ public class SpringIllegalMonitorStateException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/09/15
+	 * @since 2018/09/16
 	 */
-	public SpringIllegalMonitorStateException(Throwable __c)
+	public SpringArrayIndexOutOfBoundsException(Throwable __c)
 	{
 		super(__c);
 	}
@@ -69,7 +72,7 @@ public class SpringIllegalMonitorStateException
 	@Override
 	public String targetClass()
 	{
-		return "java/lang/IllegalMonitorStateException";
+		return "java/lang/ArrayIndexOutOfBoundsException";
 	}
 }
 

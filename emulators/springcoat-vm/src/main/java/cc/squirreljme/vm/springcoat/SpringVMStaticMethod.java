@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
+
 /**
  * This is a virtual machine representation of a static method.
  *

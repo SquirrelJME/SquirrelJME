@@ -15,7 +15,7 @@ import cc.squirreljme.jvm.memory.ReadableBasicMemory;
 import cc.squirreljme.jvm.memory.ReadableByteMemory;
 import cc.squirreljme.jvm.memory.WritableBasicMemory;
 import cc.squirreljme.jvm.memory.WritableByteMemory;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

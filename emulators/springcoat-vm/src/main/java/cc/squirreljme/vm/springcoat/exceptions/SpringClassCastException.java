@@ -8,22 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 
 /**
- * This is the base class for all exceptions within the spring machine.
+ * This is thrown when an attempt is made to cast from one class type to
+ * another.
  *
- * @since 2018/08/05
+ * @since 2018/09/15
  */
-public class SpringException
-	extends RuntimeException
+public class SpringClassCastException
+	extends SpringException
+	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/08/05
+	 * @since 2018/09/15
 	 */
-	public SpringException()
+	public SpringClassCastException()
 	{
 	}
 	
@@ -31,9 +35,9 @@ public class SpringException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/08/05
+	 * @since 2018/09/15
 	 */
-	public SpringException(String __m)
+	public SpringClassCastException(String __m)
 	{
 		super(__m);
 	}
@@ -43,9 +47,9 @@ public class SpringException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/08/05
+	 * @since 2018/09/15
 	 */
-	public SpringException(String __m, Throwable __c)
+	public SpringClassCastException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -54,11 +58,21 @@ public class SpringException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/08/05
+	 * @since 2018/09/15
 	 */
-	public SpringException(Throwable __c)
+	public SpringClassCastException(Throwable __c)
 	{
 		super(__c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public String targetClass()
+	{
+		return "java/lang/ClassCastException";
 	}
 }
 

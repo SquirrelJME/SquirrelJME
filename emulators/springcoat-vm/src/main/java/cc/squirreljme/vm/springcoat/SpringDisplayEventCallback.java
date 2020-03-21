@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;

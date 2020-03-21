@@ -8,23 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
 
 /**
- * This is thrown when a class refers to another reference and it differs
- * than what was expected at run-time.
+ * This is thrown when the virtual machine has been detected to not be
+ * operating properly, this is an error.
  *
- * @since 2018/09/09
+ * @since 2018/09/01
  */
-public class SpringIncompatibleClassChangeException
+public class SpringVirtualMachineException
 	extends SpringException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/09/09
+	 * @since 2018/09/01
 	 */
-	public SpringIncompatibleClassChangeException()
+	public SpringVirtualMachineException()
 	{
 	}
 	
@@ -32,9 +32,9 @@ public class SpringIncompatibleClassChangeException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/09/09
+	 * @since 2018/09/01
 	 */
-	public SpringIncompatibleClassChangeException(String __m)
+	public SpringVirtualMachineException(String __m)
 	{
 		super(__m);
 	}
@@ -44,9 +44,9 @@ public class SpringIncompatibleClassChangeException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/09/09
+	 * @since 2018/09/01
 	 */
-	public SpringIncompatibleClassChangeException(String __m, Throwable __c)
+	public SpringVirtualMachineException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -55,9 +55,9 @@ public class SpringIncompatibleClassChangeException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/09/09
+	 * @since 2018/09/01
 	 */
-	public SpringIncompatibleClassChangeException(Throwable __c)
+	public SpringVirtualMachineException(Throwable __c)
 	{
 		super(__c);
 	}

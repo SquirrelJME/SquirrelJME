@@ -11,6 +11,8 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

@@ -10,6 +10,18 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalAccessException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;

@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalMonitorStateException;
 
 /**
  * This is a monitor which is associated with an object.
