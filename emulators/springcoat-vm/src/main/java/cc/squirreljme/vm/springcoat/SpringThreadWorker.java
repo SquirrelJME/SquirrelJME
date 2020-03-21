@@ -10,7 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.PrintStream;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
@@ -1056,23 +1055,6 @@ public final class SpringThreadWorker
 	}
 	
 	/**
-	 * Maps a class to class info.
-	 *
-	 * @param __class The class ot map.
-	 * @return The object for this class.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/03/21
-	 */
-	public SpringObject mapClassToClassInfo(SpringClass __class)
-		throws NullPointerException
-	{
-		if (__class == null)
-			throw new NullPointerException("NARG");
-		
-		throw Debugging.todo();
-	}
-	
-	/**
 	 * Handles a native action within the VM.
 	 *
 	 * Note that the return value should be a native type, it is translated
@@ -1172,7 +1154,7 @@ public final class SpringThreadWorker
 			case "refChainSet":
 				this.mapValueToObject(__args[0]).refChainer().set(
 					this.mapValueToObject(__args[1]).pointerArea()
-					.basePointer());
+					.base());
 				return null;
 				
 				// Reference count up
@@ -3508,39 +3490,6 @@ public final class SpringThreadWorker
 			return SpringNullObject.NULL;
 		
 		return this.machine.pointers.findObject(__p);
-	}
-	
-	/**
-	 * Returns the string of the given ID.
-	 *
-	 * @param __id The ID to get.
-	 * @return The resulting string.
-	 * @since 2019/06/16
-	 */
-	@Deprecated
-	public final String uniqueString(int __id)
-	{
-		if (__id == 0)
-			return null;
-		return this.machine.debugResolveString((int)__id);
-	}
-	
-	/**
-	 * Returns a unique ID for the given string.
-	 *
-	 * @param __s The String to get the ID of.
-	 * @return The unique string ID.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/06/16
-	 */
-	@Deprecated
-	public final int uniqueStringId(String __s)
-		throws NullPointerException
-	{
-		if (__s == null)
-			return 0;
-		
-		return (int)this.machine.debugUnresolveString(__s);
 	}
 	
 	/**
