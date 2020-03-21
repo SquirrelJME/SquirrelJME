@@ -32,8 +32,6 @@ import java.util.Map;
  *
  * @since 2018/12/07
  */
-@ImplementationNote("Internally all threads start in the Thread.__start() " +
-	"method which sets up the thread and such.")
 public class Thread
 	implements Runnable
 {
@@ -85,12 +83,15 @@ public class Thread
 	private static volatile int _ACTIVE_THREADS;
 	
 	/** Which kind of start are we doing? */
+	@Deprecated
 	private final int _startkind;
 	
 	/** The method to execute. */
+	@Deprecated
 	private final StaticMethod _runmethod;
 	
 	/** The argument to the method. */
+	@Deprecated
 	private final Object _runargument;
 	
 	/** The virtual thread ID. */
@@ -110,7 +111,8 @@ public class Thread
 	private volatile boolean _isalive;
 	
 	/** The priority of the thread. */
-	private volatile int _priority = Thread.NORM_PRIORITY;
+	private volatile int _priority =
+		Thread.NORM_PRIORITY;
 	
 	/** Is this thread interrupted? */
 	volatile boolean _interrupted;
@@ -183,6 +185,7 @@ public class Thread
 	 * @param __rid The real ID.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	private Thread(int __rid, String __n)
 	{
 		this._startkind = -1;
@@ -214,6 +217,7 @@ public class Thread
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/11/20
 	 */
+	@Deprecated
 	private Thread(String __n, int __rk, StaticMethod __mm, Object __ma)
 		throws NullPointerException
 	{
@@ -234,7 +238,8 @@ public class Thread
 		this._runargument = __ma;
 		
 		// The main thread is implicitly started
-		boolean implicitstart = (__rk == Thread._START_MAIN || __rk == Thread._START_MIDLET);
+		boolean implicitstart = (__rk == Thread._START_MAIN ||
+			__rk == Thread._START_MIDLET);
 		this._started = implicitstart;
 	}
 	

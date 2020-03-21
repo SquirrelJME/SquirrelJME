@@ -36,7 +36,8 @@ subprojects
 			"squirreljme.env",
 			"squirreljme.error",
 			"squirreljme.syscallparam",
-			"squirreljme.syscallreturn" ]
+			"squirreljme.syscallreturn",
+			"squirreljme.tsiparam" ]
 	}
 
 	// Enable SquirrelJME Tests
