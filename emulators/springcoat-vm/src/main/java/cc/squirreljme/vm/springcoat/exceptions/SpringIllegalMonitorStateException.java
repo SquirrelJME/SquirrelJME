@@ -8,15 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 
 /**
- * This is thrown when an attempt was made to allocate an array of a negative
- * size.
+ * This is thrown when the state of a monitor is not valid.
  *
  * @since 2018/09/15
  */
-public class SpringNegativeArraySizeException
+public class SpringIllegalMonitorStateException
 	extends SpringException
 	implements SpringConvertableThrowable
 {
@@ -25,7 +26,7 @@ public class SpringNegativeArraySizeException
 	 *
 	 * @since 2018/09/15
 	 */
-	public SpringNegativeArraySizeException()
+	public SpringIllegalMonitorStateException()
 	{
 	}
 	
@@ -35,7 +36,7 @@ public class SpringNegativeArraySizeException
 	 * @param __m The message.
 	 * @since 2018/09/15
 	 */
-	public SpringNegativeArraySizeException(String __m)
+	public SpringIllegalMonitorStateException(String __m)
 	{
 		super(__m);
 	}
@@ -47,7 +48,7 @@ public class SpringNegativeArraySizeException
 	 * @param __c The cause.
 	 * @since 2018/09/15
 	 */
-	public SpringNegativeArraySizeException(String __m, Throwable __c)
+	public SpringIllegalMonitorStateException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -58,7 +59,7 @@ public class SpringNegativeArraySizeException
 	 * @param __c The cause.
 	 * @since 2018/09/15
 	 */
-	public SpringNegativeArraySizeException(Throwable __c)
+	public SpringIllegalMonitorStateException(Throwable __c)
 	{
 		super(__c);
 	}
@@ -70,7 +71,7 @@ public class SpringNegativeArraySizeException
 	@Override
 	public String targetClass()
 	{
-		return "java/lang/NegativeArraySizeException";
+		return "java/lang/IllegalMonitorStateException";
 	}
 }
 

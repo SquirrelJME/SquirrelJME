@@ -8,23 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 
 /**
- * This is an exception which describes something that is very fatal within
- * the virtual machine.
+ * This is thrown when a null reference has been detected.
  *
- * @since 2018/09/20
+ * @since 2018/09/09
  */
-public class SpringFatalException
+public class SpringNullPointerException
 	extends SpringException
+	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/09/20
+	 * @since 2018/09/09
 	 */
-	public SpringFatalException()
+	public SpringNullPointerException()
 	{
 	}
 	
@@ -32,9 +34,9 @@ public class SpringFatalException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/09/20
+	 * @since 2018/09/09
 	 */
-	public SpringFatalException(String __m)
+	public SpringNullPointerException(String __m)
 	{
 		super(__m);
 	}
@@ -44,9 +46,9 @@ public class SpringFatalException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/09/20
+	 * @since 2018/09/09
 	 */
-	public SpringFatalException(String __m, Throwable __c)
+	public SpringNullPointerException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -55,11 +57,21 @@ public class SpringFatalException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/09/20
+	 * @since 2018/09/09
 	 */
-	public SpringFatalException(Throwable __c)
+	public SpringNullPointerException(Throwable __c)
 	{
 		super(__c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public String targetClass()
+	{
+		return "java/lang/NullPointerException";
 	}
 }
 

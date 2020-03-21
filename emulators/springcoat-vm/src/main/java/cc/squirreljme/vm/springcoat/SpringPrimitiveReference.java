@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+
 /**
  * This interface represents a base reference.
  *

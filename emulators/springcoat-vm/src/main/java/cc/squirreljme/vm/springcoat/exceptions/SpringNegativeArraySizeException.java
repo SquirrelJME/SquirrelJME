@@ -8,23 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 
 /**
- * This is thrown when a null reference has been detected.
+ * This is thrown when an attempt was made to allocate an array of a negative
+ * size.
  *
- * @since 2018/09/09
+ * @since 2018/09/15
  */
-public class SpringNullPointerException
+public class SpringNegativeArraySizeException
 	extends SpringException
 	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/09/09
+	 * @since 2018/09/15
 	 */
-	public SpringNullPointerException()
+	public SpringNegativeArraySizeException()
 	{
 	}
 	
@@ -32,9 +35,9 @@ public class SpringNullPointerException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/09/09
+	 * @since 2018/09/15
 	 */
-	public SpringNullPointerException(String __m)
+	public SpringNegativeArraySizeException(String __m)
 	{
 		super(__m);
 	}
@@ -44,9 +47,9 @@ public class SpringNullPointerException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/09/09
+	 * @since 2018/09/15
 	 */
-	public SpringNullPointerException(String __m, Throwable __c)
+	public SpringNegativeArraySizeException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -55,9 +58,9 @@ public class SpringNullPointerException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/09/09
+	 * @since 2018/09/15
 	 */
-	public SpringNullPointerException(Throwable __c)
+	public SpringNegativeArraySizeException(Throwable __c)
 	{
 		super(__c);
 	}
@@ -69,7 +72,7 @@ public class SpringNullPointerException
 	@Override
 	public String targetClass()
 	{
-		return "java/lang/NullPointerException";
+		return "java/lang/NegativeArraySizeException";
 	}
 }
 

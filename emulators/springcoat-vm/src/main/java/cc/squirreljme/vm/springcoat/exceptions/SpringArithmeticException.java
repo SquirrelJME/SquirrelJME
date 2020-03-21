@@ -8,23 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 
 /**
- * This is thrown when the virtual machine has been detected to not be
- * operating properly, this is an error.
+ * This is thrown when a divide by zero occurs.
  *
- * @since 2018/09/01
+ * @since 2018/12/04
  */
-public class SpringVirtualMachineException
+public class SpringArithmeticException
 	extends SpringException
+	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/09/01
+	 * @since 2018/12/04
 	 */
-	public SpringVirtualMachineException()
+	public SpringArithmeticException()
 	{
 	}
 	
@@ -32,9 +34,9 @@ public class SpringVirtualMachineException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/09/01
+	 * @since 2018/12/04
 	 */
-	public SpringVirtualMachineException(String __m)
+	public SpringArithmeticException(String __m)
 	{
 		super(__m);
 	}
@@ -44,9 +46,9 @@ public class SpringVirtualMachineException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/09/01
+	 * @since 2018/12/04
 	 */
-	public SpringVirtualMachineException(String __m, Throwable __c)
+	public SpringArithmeticException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -55,11 +57,21 @@ public class SpringVirtualMachineException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/09/01
+	 * @since 2018/12/04
 	 */
-	public SpringVirtualMachineException(Throwable __c)
+	public SpringArithmeticException(Throwable __c)
 	{
 		super(__c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public String targetClass()
+	{
+		return "java/lang/ArithmeticException";
 	}
 }
 
