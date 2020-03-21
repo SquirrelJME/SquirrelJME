@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.ThreadStartIndex;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
@@ -30,6 +31,7 @@ import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
@@ -54,20 +56,11 @@ public final class SpringMachine
 	/** The boot class. */
 	protected final String bootcl;
 	
-	/** Is the boot a midlet? */
-	protected final boolean bootmid;
-	
-	/** The boot index. */
-	protected final int bootdx;
-	
 	/** The manager for suites. */
 	protected final VMSuiteManager suites;
 	
 	/** Task manager. */
 	protected final SpringTaskManager tasks;
-	
-	/** The depth of this machine. */
-	protected final int guestdepth;
 	
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
@@ -135,33 +128,24 @@ public final class SpringMachine
 	 * @param __cl The class loader.
 	 * @param __tm Task manager.
 	 * @param __bootcl The boot class.
-	 * @param __bootmid The boot class a midlet.
-	 * @param __bootdx The entry point which should be booted when the VM
-	 * runs.
-	 * @param __gd Guest depth.
 	 * @param __profiler The profiler to use.
-	 * @param __nda The native display provider.
 	 * @param __sprops System properties.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, String __bootcl, boolean __bootmid,
-		int __bootdx, int __gd, ProfilerSnapshot __profiler,
+		SpringTaskManager __tm, String __bootcl, ProfilerSnapshot __profiler,
 		Map<String, String> __sprops, String... __args)
 		throws NullPointerException
 	{
-		if (__cl == null || __sm == null)
+		if (__cl == null || __sm == null || __bootcl == null)
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
 		this.classloader = __cl;
 		this.tasks = __tm;
 		this.bootcl = __bootcl;
-		this.bootmid = __bootmid;
-		this.bootdx = __bootdx;
-		this.guestdepth = __gd;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
 			new ProfilerSnapshot());
@@ -251,9 +235,9 @@ public final class SpringMachine
 		{
 			Long rv = this._strstringtolong.get(__s);
 			if (rv != null)
-				return rv.longValue();
+				return rv;
 			
-			Long next = Long.valueOf(++this._strnextlong);
+			Long next = ++this._strnextlong;
 			this._strstringtolong.put(__s, next);
 			this._strlongtostring.put(next, __s);
 			
@@ -396,54 +380,8 @@ public final class SpringMachine
 		SpringClassLoader classloader = this.classloader;
 		VMClassLibrary bootbin = classloader.bootLibrary();
 		
-		// May be specified or not
-		String entryclass = this.bootcl;
-		boolean ismidlet = this.bootmid;
-		int launchid = this.bootdx;
-		
-		// Lookup the entry class via the manifest
-		if (entryclass == null)
-		{
-			// Need to load the manifest where the entry points will be
-			EntryPoints entries;
-			try (InputStream in = bootbin.resourceAsStream(
-				"META-INF/MANIFEST.MF"))
-			{
-				// {@squirreljme.error BK1a Entry point JAR has no manifest.
-				// (The name of the boot binary)}
-				if (in == null)
-					throw new SpringVirtualMachineException("BK1a " +
-						bootbin.name());
-				
-				entries = new EntryPoints(new JavaManifest(in));
-			}
-			
-			// {@squirreljme.error BK1b Failed to read the manifest.}
-			catch (IOException e)
-			{
-				throw new SpringVirtualMachineException("BK1b", e);
-			}
-			
-			int n = entries.size();
-			
-			// Print entry points out out for debug, but only for the first
-			// guest because this is annoying!
-			if (GuestDepth.guestDepth() + 1 == this.guestdepth)
-			{
-				todo.DEBUG.note("Entry points:");
-				for (int i = 0; i < n; i++)
-					todo.DEBUG.note("    %d: %s", i, entries.get(i));
-			}
-			
-			// Use the first program if the ID is not valid
-			if (launchid < 0 || launchid >= n)
-				launchid = 0;
-			
-			// Needed to enter the machine
-			EntryPoint entry = entries.get(launchid);
-			entryclass = entry.entryPoint().toString();
-			ismidlet = entry.isMidlet();
-		}
+		// Must be specified
+		String entryClass = this.bootcl;
 		
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
@@ -457,90 +395,47 @@ public final class SpringMachine
 		
 		// Load the entry point class
 		SpringClass entrycl = worker.loadClass(new ClassName(
-			entryclass.replace('.', '/')));
+			entryClass.replace('.', '/')));
 		
-		// Find the method to be entered in
-		SpringMethod mainmethod;
-		if (ismidlet)
-			mainmethod = entrycl.lookupMethod(false,
-				new MethodNameAndType("startApp", "()V"));
-		else
-			mainmethod = entrycl.lookupMethod(true,
-				new MethodNameAndType("main", "([Ljava/lang/String;)V"));
+		// All code enters at a static main method, regardless of the
+		// circumstances
+		SpringMethod main = entrycl.lookupMethod(true,
+			new MethodNameAndType("main", "([Ljava/lang/String;)V"));
+		SpringPointer mainFp = this.tasks.memory.bindMethod(main);
 		
-		// Setup object to initialize with for thread
-		SpringVMStaticMethod vmsm = new SpringVMStaticMethod(mainmethod);
+		// Initialize main program arguments
+		String[] inargs = this._args;
+		int inlen = inargs.length;
 		
-		// Determine the entry argument, midlets is just the class to run
-		Object entryarg;
-		if (ismidlet)
-			entryarg = worker.asVMObject(entryclass.replace('.', '/'));
-		else
-		{
-			String[] inargs = this._args;
-			int inlen = inargs.length;
-			
-			// Setup array
-			SpringArrayObject outargs = worker.allocateArray(
-				worker.resolveClass(new ClassName("java/lang/String")), inlen);
-			
-			// Initialize the argument array
-			for (int i = 0; i < inlen; i++)
-				outargs.set(i, worker.asVMObject(inargs[i]));
-			
-			entryarg = outargs;
-		}
+		// Setup array
+		SpringArrayObject outargs = worker.allocateArray(
+			worker.resolveClass(new ClassName("java/lang/String")), inlen);
 		
-		// Setup new thread object
-		SpringObject threadobj = worker.newInstance(worker.loadClass(
-			new ClassName("java/lang/Thread")), new MethodDescriptor(
-			"(Ljava/lang/String;ILcc/squirreljme/runtime/cldc/asm/" +
-			"StaticMethod;Ljava/lang/Object;)V"), worker.asVMObject("Main"),
-			(ismidlet ? 3 : 4), vmsm, entryarg);
+		// Initialize the argument array
+		for (int i = 0; i < inlen; i++)
+			outargs.set(i, worker.asVMObject(inargs[i]));
+		
+		// Initialize thread index values
+		SpringArrayObjectLong tsiArgs =
+			(SpringArrayObjectLong)worker.allocateArray(
+			worker.resolveClass(PrimitiveType.LONG.toClassName()),
+			ThreadStartIndex.NUM_INDEXES);
+		tsiArgs.set(ThreadStartIndex.MAIN_CLASS_INFO,
+			worker.mapClassToClassInfo(entrycl).pointerArea().basePointer());
+		tsiArgs.set(ThreadStartIndex.MAIN_ARGUMENTS,
+			outargs.pointerArea().basePointer());
 		
 		// Enter the frame for that method using the arguments we passed (in
 		// a static fashion)
 		mainthread.enterFrame(worker.loadClass(
 			new ClassName("java/lang/__ThreadStarter__")).lookupMethod(
 			true, new MethodNameAndType("__start", "([J)V")),
-			threadobj);
+			tsiArgs.pointerArea().basePointer());
 		
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
 		// thread, so no code is needed to be duplicated at all.
-		try
-		{
-			worker.run();
-		}
-		
-		// Virtual machine exited, do not print fatal trace just exit here
-		catch (SpringMachineExitException e)
-		{
-			throw e;
-		}
-		
-		// Ooopsie!
-		catch (RuntimeException e)
-		{
-			/*PrintStream err = System.err;
-			
-			err.println("****************************");
-			
-			// Print the real stack trace
-			err.println("*** EXTERNAL STACK TRACE ***");
-			e.printStackTrace(err);
-			err.println();
-			
-			// Print the VM seen stack trace
-			err.println("*** INTERNAL STACK TRACE ***");
-			mainthread.printStackTrace(err);
-			err.println();
-			
-			err.println("****************************");*/
-			
-			// Retoss
-			throw e;
-		}
+		worker.run();
 		
 		// Wait until all threads have terminated before actually leaving
 		for (;;)
