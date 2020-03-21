@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.memory.ReadableBasicMemory;
 import cc.squirreljme.jvm.memory.ReadableByteMemory;
 import cc.squirreljme.jvm.memory.WritableBasicMemory;
 import cc.squirreljme.jvm.memory.WritableByteMemory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -54,6 +57,10 @@ public final class MemoryManager
 	/** Chunks of memory that make up the ROM. */
 	private final List<WritableByteMemory> _romChunks =
 		new LinkedList<>();
+	
+	/** The currently bounds methods. */
+	private final ConcurrentMap<SpringPointer, SpringMethod> _boundMethods =
+		new ConcurrentHashMap<>();
 	
 	/** The next location for ROM chunks. */
 	private int _romNext =
@@ -97,6 +104,34 @@ public final class MemoryManager
 			
 			return new SpringPointer(romNext);
 		}
+	}
+	
+	/**
+	 * Binds a method to the given memory address which is used to dynamically
+	 * refer to it.
+	 *
+	 * @param __method The method to bind.
+	 * @return The pointer of the bound method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/21
+	 */
+	public SpringPointer bindMethod(SpringMethod __method)
+		throws NullPointerException
+	{
+		if (__method == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup ROM space for this method
+		byte[] methodRom = new byte[]{-1, -1, -1, -1, -1, -1, -1, -1};
+		SpringPointer rv = this.appendRom(methodRom);
+		
+		// Store the binding of this method
+		synchronized (this)
+		{
+			this._boundMethods.put(rv, __method);
+		}
+		
+		return rv;
 	}
 	
 	/**

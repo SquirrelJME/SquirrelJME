@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.PrintStream;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
@@ -1052,6 +1053,23 @@ public final class SpringThreadWorker
 		
 		// Return the input class
 		return __cl;
+	}
+	
+	/**
+	 * Maps a class to class info.
+	 *
+	 * @param __class The class ot map.
+	 * @return The object for this class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/21
+	 */
+	public SpringObject mapClassToClassInfo(SpringClass __class)
+		throws NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	/**

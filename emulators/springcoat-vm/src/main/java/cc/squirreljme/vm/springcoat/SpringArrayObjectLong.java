@@ -105,7 +105,7 @@ public final class SpringArrayObjectLong
 		// Try setting
 		try
 		{
-			this._elements[__dx] = ((Long)__v).longValue();
+			this._elements[__dx] = ((Number)__v).longValue();
 		}
 		
 		// {@squirreljme.error BK0o Could not set the index in the long

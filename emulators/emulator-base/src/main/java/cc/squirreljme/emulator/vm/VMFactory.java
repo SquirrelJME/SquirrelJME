@@ -12,9 +12,6 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.runtime.cldc.Poking;
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
-import cc.squirreljme.runtime.cldc.lang.GuestDepth;
-import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
@@ -22,23 +19,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import net.multiphasicapps.tool.manifest.JavaManifest;
-import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
@@ -81,8 +75,6 @@ public abstract class VMFactory
 	 * @param __sm The suite manager.
 	 * @param __cp The classpath to initialize with.
 	 * @param __maincl The main class to start executing.
-	 * @param __ismid Is the main class a MIDlet?
-	 * @param __gd The guest depth of the virtual machine.
 	 * @param __sprops System properties for the running program.
 	 * @param __args Arguments for the running program.
 	 * @return An instance of the virtual machine.
@@ -93,8 +85,7 @@ public abstract class VMFactory
 	 */
 	protected abstract VirtualMachine createVM(ProfilerSnapshot __ps,
 		VMSuiteManager __sm, VMClassLibrary[] __cp, String __maincl,
-		boolean __ismid, int __gd, Map<String, String> __sprops,
-		String[] __args)
+		Map<String, String> __sprops, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException;
 	
 	/**
@@ -112,6 +103,7 @@ public abstract class VMFactory
 		String vmName = "springcoat";
 		Path snapshotPath = null;
 		Collection<String> suiteClasspath = new LinkedList<>();
+		Map<String, String> systemProperties = new LinkedHashMap<>();
 		
 		// There always is a profiler being run, just differs if we save it
 		ProfilerSnapshot profilerSnapshot = new ProfilerSnapshot();
@@ -119,6 +111,7 @@ public abstract class VMFactory
 		// Command line format is:
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
+		// -Dsysprop=value
 		// -classpath (class:path:...)
 		// Main-class
 		// Arguments...
@@ -141,6 +134,17 @@ public abstract class VMFactory
 			else if (item.startsWith("-Xsnapshot:"))
 				snapshotPath = Paths.get(
 					item.substring("-Xsnapshot:".length()));
+			
+			// System property
+			else if (item.startsWith("-D"))
+			{
+				int equalDx = item.indexOf('=');
+				if (equalDx < 0)
+					systemProperties.put(item.substring(2), "");
+				else
+					systemProperties.put(item.substring(2, equalDx),
+						item.substring(equalDx + 1));
+			}
 			
 			// JARs to load
 			else if (item.equals("-classpath") || item.equals("-cp"))
@@ -184,9 +188,9 @@ public abstract class VMFactory
 		// Collect all the suites together
 		Collection<String> classpath = new LinkedList<>();
 		Collection<VMClassLibrary> suites = new LinkedList<>();
-		for (String classitem : suiteClasspath)
+		for (String classItem : suiteClasspath)
 		{
-			Path path = Paths.get(classitem);
+			Path path = Paths.get(classItem);
 			
 			// Load it into memory
 			try (InputStream in = Files.newInputStream(path,
@@ -223,7 +227,7 @@ public abstract class VMFactory
 				new ArraySuiteManager(suites),
 				classpath.<String>toArray(new String[classpath.size()]),
 				mainClass,
-				0, 0, null,
+				systemProperties,
 				mainArgs.<String>toArray(new String[mainArgs.size()]));
 			
 			// Run the virtual machine until it exits, but do not exit yet
@@ -274,10 +278,6 @@ public abstract class VMFactory
 	 * @param __cp The starting class path.
 	 * @param __bootcl The booting class, if {@code null} then {@code __bootid}
 	 * is used instead.
-	 * @param __bootid The booting index, if negative then {@code __bootcl}
-	 * is used instead. This value takes priority.
-	 * @param __gd The guest depth of the virtual machine, if negative this
-	 * is automatically determined.
 	 * @param __sprops System properties to pass to the target VM.
 	 * @param __args Arguments to the program which is running.
 	 * @return The created virtual machine.
@@ -287,19 +287,13 @@ public abstract class VMFactory
 	 * @throws VMException If the virtual machine failed to initialize.
 	 * @since 2018/11/17
 	 */
-	public static final VirtualMachine mainVm(String __vm,
+	public static VirtualMachine mainVm(String __vm,
 		ProfilerSnapshot __ps, VMSuiteManager __sm, String[] __cp,
-		String __bootcl, int __bootid, int __gd, Map<String, String> __sprops,
-		String... __args)
+		String __bootcl, Map<String, String> __sprops, String... __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		if (__sm == null || __cp == null)
+		if (__bootcl == null || __sm == null || __cp == null)
 			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AK02 Neither the boot class or boot ID was
-		// specified, one must be specified.}
-		if (__bootcl == null && __bootid < 0)
-			throw new IllegalArgumentException("AK02");
 		
 		// Always exists
 		__args = (__args == null ? new String[0] : __args.clone());
@@ -329,7 +323,7 @@ public abstract class VMFactory
 		{
 			// If no name was specified then use the first one, otherwise
 			// use the one which matches the name
-			if (__vm == null || __vm.equalsIgnoreCase(f.name))
+			if (f.name.equalsIgnoreCase(__vm))
 			{
 				factory = f;
 				break;
@@ -340,10 +334,6 @@ public abstract class VMFactory
 		// exist. (The virtual machine name)}
 		if (factory == null)
 			throw new VMException("AK03 " + __vm);
-		
-		// Automatically determined guest depth? This is always deeper!
-		if (__gd < 0)
-			__gd = GuestDepth.guestDepth() + 1;
 		
 		// Always make a profiler snapshot exist
 		if (__ps == null)
@@ -380,242 +370,9 @@ public abstract class VMFactory
 			throw new VMException("AK05", e);
 		}
 		
-		// If no main class was specified, try looking for a MIDlet
-		String entryClass;
-		boolean isMidlet;
-		if (__bootcl == null)
-		{
-			// Print them out for debug
-			System.err.println("Entry points:");
-			for (int i = 0, n = entries.size(); i < n; i++)
-				System.err.printf("    %d: %s%n", i, entries.get(i));
-			
-			// If a class was specified and not a boot ID, we must search
-			// through the boot JAR's (the last one) entry points for a match
-			if (__bootid < 0)
-			{
-				// Determine the entry point used
-				for (int i = 0, n = entries.size(); i < n; i++)
-					if (__bootcl.equals(entries.get(i).entryPoint()))
-					{
-						__bootid = i;
-						break;
-					}
-				
-				// {@squirreljme.error AK06 Could not find the specified main
-				// class in the entry point list. (The main class)}
-				if (__bootid < 0)
-					throw new VMException("AK06 " + __bootcl);
-			}
-			
-			// Do not use an entry point which is outside of the bounds
-			__bootid = Math.max(0, Math.min(entries.size(), __bootid));
-			
-			// Is this entry point a MIDlet? Used as a hint
-			EntryPoint entry = entries.get(__bootid);
-			
-			entryClass = entry.entryPoint();
-			isMidlet = entry.isMidlet();
-		}
-		
-		// Use this main class
-		else
-		{
-			entryClass = __bootcl;
-			isMidlet = false;
-		}
-		
 		// Create the virtual machine now that everything is available
-		return factory.createVM(__ps, __sm, classpath, entryClass,
-			isMidlet, __gd, __sprops, __args);
-	}
-	
-	/**
-	 * Shaded main entry point.
-	 *
-	 * @param __args Arguments to the program.
-	 * @since 2018/11/17
-	 */
-	@Deprecated
-	public static final void shadedMain(String... __args)
-	{
-		VMFactory.shadedMain((Map<String, String>)null, __args);
-	}
-	
-	/**
-	 * Shaded main entry point, with extra properties map.
-	 *
-	 * @param __sprops Properties map to use.
-	 * @param __args Arguments to the program.
-	 * @since 2018/11/17
-	 */
-	@Deprecated
-	public static final void shadedMain(Map<String, String> __sprops,
-		String... __args)
-	{
-		// Defensive copy and force to exist
-		__args = (__args == null ? new String[0] : __args.clone());
-		__sprops = (__sprops == null ? new HashMap<String, String>() :
-			new HashMap<String, String>(__sprops));
-		
-		// We may be able to grab some properties from the shaded manifest
-		// information, if one is even available
-		JavaManifest man;
-		try (InputStream in = VMFactory.class.getResourceAsStream(
-			"/META-INF/SQUIRRELJME-SHADED.MF"))
-		{
-			man = (in == null ? new JavaManifest() : new JavaManifest(in));
-		}
-		
-		// {@squirreljme.error AK07 Could not read the manifest to load the
-		// launcher's classpath.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("AK07", e);
-		}
-		
-		// These are parameters which will be parsed to handle how to start
-		// the shaded process
-		String useactiveclass = null,
-			useprefix = null,
-			usecp = null,
-			usemain = null;
-		int bootid = -1;
-		
-		// Profiler snapshot to generate to
-		ProfilerSnapshot psnap = null;
-		
-		// Try loading these from properties first, to take more priority
-		try
-		{
-			// {@squirreljme.property cc.squirreljme.vm.shadeactiveclass=class
-			// The class to use to load resources from.}
-			useactiveclass = VMFactory.__getProperty(__sprops,
-				"cc.squirreljme.vm.shadeactiveclass");
-			
-			// {@squirreljme.property cc.squirreljme.vm.shadeprefix=prefix
-			// The resource lookup prefix for the classes.}
-			useprefix = VMFactory.__getProperty(__sprops,
-				"cc.squirreljme.vm.shadeprefix");
-			
-			// {@squirreljme.property cc.squirreljme.vm.shadeclasspath=[class:]
-			// The classes which make up the class path for execution.}
-			usecp = VMFactory.__getProperty(__sprops,
-				"cc.squirreljme.vm.shadeclasspath");
-			
-			// {@squirreljme.property cc.squirreljme.vm.shademain=class
-			// The class to use as the main entry point for the VM.}
-			usemain = VMFactory.__getProperty(__sprops,
-				"cc.squirreljme.vm.shademain");
-			
-			// {@squirreljme.property cc.squirreljme.vm.shadebootid=id
-			// The MIDlet or Main class number to use for entering the JAR.}
-			bootid = Integer.valueOf(VMFactory.__getProperty(__sprops,
-				"cc.squirreljme.vm.shadebootid", "-1"));
-		}
-		catch (SecurityException e)
-		{
-			// Ignore
-		}
-		
-		// If properties were not defined in the system, then they should be
-		// in the manifest
-		JavaManifestAttributes attr = man.getMainAttributes();
-		if (useactiveclass == null)
-			useactiveclass = attr.getValue("ActiveClass");
-		if (useprefix == null)
-			useprefix = attr.getValue("Prefix");
-		if (usecp == null)
-			usecp = attr.getValue("ClassPath");
-		if (usemain == null)
-			usemain = attr.getValue("Main-Class");
-		
-		// Otherwise, if anything is missing use defaults
-		if (useactiveclass == null)
-			useactiveclass = VMFactory.class.getName();
-		if (useprefix == null)
-			useprefix = "/__-squirreljme/";
-		if (bootid < 0)
-			bootid = 0;
-		
-		// Load the resource based suite manager
-		VMSuiteManager sm;
-		try
-		{
-			sm = new ResourceBasedSuiteManager(Class.forName(useactiveclass),
-				useprefix);
-		}
-		
-		// {@squirreljme.error AK08 Could not locate the class to use for
-		// resource lookup. (The class which was not found)}
-		catch (ClassNotFoundException e)
-		{
-			throw new VMException("AK08 " + useactiveclass, e);
-		}
-		
-		// Split the classpath accordingly using ' ', ';', and ':', allow
-		// for multiple forms due to manifests and classpaths used in Windows
-		// and UNIX
-		List<String> classpath = new ArrayList<>();
-		for (int i = 0, n = usecp.length(); i < n;)
-		{
-			// Find end clip position
-			int sp;
-			if ((sp = usecp.indexOf(' ', i)) < 0)
-				if ((sp = usecp.indexOf(';', i)) < 0)
-					if ((sp = usecp.indexOf(':', i)) < 0)
-						sp = n;
-			
-			// Clip string
-			String clip = usecp.substring(i, sp).trim();
-			if (!clip.isEmpty())
-				classpath.add(clip);
-			
-			// Skip the split character
-			i = sp + 1;
-		}
-		
-		// Since we are shaded, we might want to load some extra suites from
-		// some directory
-		List<VMSuiteManager> mergesm = new ArrayList<>();
-		mergesm.add(sm);
-		
-		// Check our working directory
-		String workdir = VMFactory.__getProperty(__sprops, "user.dir");
-		if (workdir != null)
-			try
-			{
-				mergesm.add(new PathSuiteManager(
-					Paths.get(workdir).resolve("lib")));
-			}
-			catch (InvalidPathException e)
-			{
-			}
-		
-		// Check our executable path
-		String execpath = SystemProperties.executablePath();
-		if (execpath != null)
-			try
-			{
-				mergesm.add(new PathSuiteManager(
-					Paths.get(execpath).getParent().resolve("lib")));
-			}
-			catch (InvalidPathException|NullPointerException e)
-			{
-			}
-		
-		// Do the merge?
-		if (mergesm.size() > 1)
-			sm = new MergedSuiteManager(mergesm.<VMSuiteManager>toArray(
-				new VMSuiteManager[mergesm.size()]));
-		
-		// Create the VM
-		VirtualMachine vm = VMFactory.mainVm(null, null,
-			sm, classpath.<String>toArray(new String[classpath.size()]),
-			usemain, bootid, -1, null, __args);
-		
-		// Run the VM and exit with the code it generates
-		System.exit(vm.runVm());
+		return factory.createVM(__ps, __sm, classpath, __bootcl,
+			__sprops, __args);
 	}
 	
 	/**
