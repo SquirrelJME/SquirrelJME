@@ -501,8 +501,9 @@ public final class SpringMachine
 		// Enter the frame for that method using the arguments we passed (in
 		// a static fashion)
 		mainthread.enterFrame(worker.loadClass(
-			new ClassName("java/lang/Thread")).lookupMethod(false,
-			new MethodNameAndType("__start", "()V")), threadobj);
+			new ClassName("java/lang/__ThreadStarter__")).lookupMethod(
+			true, new MethodNameAndType("__start", "([J)V")),
+			threadobj);
 		
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main

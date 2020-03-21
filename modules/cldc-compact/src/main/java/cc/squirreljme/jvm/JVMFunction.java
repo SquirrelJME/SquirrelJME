@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class contains the functions of the virtual machine.
  *
@@ -52,6 +54,19 @@ public final class JVMFunction
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Enters the static main method of the given class.
+	 *
+	 * @param __ci The class info to enter,
+	 * @param __args The arguments to the main entry call.
+	 * @since 2020/03/21
+	 */
+	public static void jvmEnterMain(ClassInfo __ci, String[] __args)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
 	}
 	
 	/**

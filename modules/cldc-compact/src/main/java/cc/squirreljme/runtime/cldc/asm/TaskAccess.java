@@ -22,14 +22,17 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 public final class TaskAccess
 {
 	/** The entry point is not valid. */
+	@Deprecated
 	public static final int ERROR_INVALID_ENTRY =
 		-2;
 	
 	/** Library in the classpath is missing. */
+	@Deprecated
 	public static final int ERROR_MISSING_LIBRARY =
 		-3;
 	
 	/** Exit code indicating bad task things. */
+	@Deprecated
 	public static final int EXIT_CODE_FATAL_EXCEPTION =
 		127;
 	
@@ -49,6 +52,7 @@ public final class TaskAccess
 	 * @since 2018/11/20
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int currentThread();
 	
 	/**
@@ -59,6 +63,7 @@ public final class TaskAccess
 	 * @since 2018/12/07
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native void setThreadPriority(int __tid, int __p);
 	
 	/**
@@ -68,6 +73,7 @@ public final class TaskAccess
 	 * @since 2018/11/21
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native void signalInterrupt(int __tid);
 	
 	/**
@@ -81,6 +87,7 @@ public final class TaskAccess
 	 * @since 2018/11/04
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args);
 	
@@ -101,6 +108,7 @@ public final class TaskAccess
 	 * @since 2019/02/02
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	@Deprecated
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args, String[] __sprops, ConsoleCallback __stdout,
 		ConsoleCallback __stderr);
@@ -115,6 +123,7 @@ public final class TaskAccess
 	 * @since 2018/11/17
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int startThread(Thread __t, String __n);
 	
 	/**
@@ -125,6 +134,7 @@ public final class TaskAccess
 	 * @since 2018/11/04
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	@Deprecated
 	public static final native int taskStatus(int __tid);
 }
 
