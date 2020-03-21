@@ -17,24 +17,17 @@ package cc.squirreljme.jvm;
  */
 public final class ClassInfo
 {
-	/** The magic number which should be used. */
-	public static final int MAGIC_NUMBER =
-		0x4C6F7665;
-	
 	/** Self pointer. */
-	public final int selfptr;
-	
-	/** Magic number used to detect corruption. */
-	public final int magic;
+	public final long selfptr;
 	
 	/** Class information flags. */
 	public final int flags;
 	
 	/** The pointer to the minimized class file. */
-	public final int miniptr;
+	public final long miniptr;
 	
 	/** The pointer to the class name. */
-	public final int namep;
+	public final long namep;
 	
 	/** The allocation size of this class. */
 	public final int size;
@@ -64,13 +57,13 @@ public final class ClassInfo
 	public final Class<?> classobjptr;
 	
 	/** Virtual invoke VTable. */
-	public final int[] vtablevirtual;
+	public final long[] vtablevirtual;
 	
 	/** Virtual invoke VTable pool entries. */
-	public final int[] vtablepool;
+	public final long[] vtablepool;
 	
 	/** The pointer to the constant pool of this class. */
-	public final int pool;
+	public final long pool;
 	
 	/** The JAR this class is a part of. */
 	public final int jardx;
@@ -85,7 +78,10 @@ public final class ClassInfo
 	public final int sfoffset;
 	
 	/** The pointer of the default constructor. */
-	public final int defaultnew;
+	public final long defaultnew;
+	
+	/** The static main pointer of this class. */
+	public final long staticmain;
 	
 	/**
 	 * Class information constructor.
@@ -113,15 +109,12 @@ public final class ClassInfo
 	 * @param __dn The default constructor.
 	 * @since 2019/04/26
 	 */
-	public ClassInfo(int __sp, int __fl, int __minip, int __namep, int __sz,
+	public ClassInfo(long __sp, int __fl, long __minip, long __namep, int __sz,
 		int __bz, int __no, int __dim, int __csz, ClassInfo __scl,
-		ClassInfo[] __icl, ClassInfo __ccl, Class<?> __cop, int[] __vtv,
-		int[] __vtp, int __pool, int __jardx, int __nm, int __cd, int __sfp,
-		int __dn)
+		ClassInfo[] __icl, ClassInfo __ccl, Class<?> __cop, long[] __vtv,
+		long[] __vtp, long __pool, int __jardx, int __nm, int __cd, int __sfp,
+		long __dn, long __sm)
 	{
-		// Always implicitly set magic
-		this.magic = ClassInfo.MAGIC_NUMBER;
-		
 		// Set
 		this.selfptr = __sp;
 		this.flags = __fl;
@@ -136,14 +129,15 @@ public final class ClassInfo
 		this.interfaceclasses = (__icl == null ? new ClassInfo[0] : __icl);
 		this.componentclass = __ccl;
 		this.classobjptr = __cop;
-		this.vtablevirtual = (__vtv == null ? new int[0] : __vtv);
-		this.vtablepool = (__vtp == null ? new int[0] : __vtp);
+		this.vtablevirtual = (__vtv == null ? new long[0] : __vtv);
+		this.vtablepool = (__vtp == null ? new long[0] : __vtp);
 		this.pool = __pool;
 		this.jardx = __jardx;
 		this.nummethods = __nm;
 		this.classdepth = __cd;
 		this.sfoffset = __sfp;
 		this.defaultnew = __dn;
+		this.staticmain = __sm;
 	}
 }
 
