@@ -23,6 +23,7 @@ import java.util.Arrays;
  *
  * @since 2017/02/28
  */
+@Deprecated
 public class TODO
 	extends CodeProgressError
 {
@@ -59,6 +60,7 @@ public class TODO
 	 * @param __m The message.
 	 * @since 2020/03/15
 	 */
+	@Deprecated
 	TODO(@SuppressWarnings("unused") boolean __ignore, String __m)
 	{
 		super(__m);
@@ -70,6 +72,7 @@ public class TODO
 	 * @return An integer, but is not returned from.
 	 * @since 2017/10/27
 	 */
+	@Deprecated
 	@SuppressWarnings("ThrowableNotThrown")
 	public static int missingInteger()
 	{
@@ -84,6 +87,7 @@ public class TODO
 	 * @return Should return that object, but never does.
 	 * @since 2017/10/24
 	 */
+	@Deprecated
 	@SuppressWarnings("ThrowableNotThrown")
 	public static <T> T missingObject()
 	{
@@ -98,6 +102,7 @@ public class TODO
 	 * @param __args The arguments to the call.
 	 * @since 2018/04/02
 	 */
+	@Deprecated
 	public static void note(String __fmt, Object... __args)
 	{
 		__Utilities__.dumpFormatLine('T', 'O', __fmt, __args);
@@ -110,6 +115,7 @@ public class TODO
 	 * @return The resultant exception.
 	 * @since 2020/03/15
 	 */
+	@Deprecated
 	@SuppressWarnings({"NewMethodNamingConvention",
 		"MethodNameSameAsClassName"})
 	public static TODO TODO(Object... __args)
@@ -127,6 +133,7 @@ public class TODO
 	 * @return The resultant exception.
 	 * @since 2020/03/15
 	 */
+	@Deprecated
 	static TODO __todo(boolean __fromInit, int[] __trace, Object... __args)
 	{
 		// Perform printing logic for this trace

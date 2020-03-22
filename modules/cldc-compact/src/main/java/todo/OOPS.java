@@ -22,6 +22,7 @@ import java.util.Arrays;
  *
  * @since 2018/11/25
  */
+@Deprecated
 public class OOPS
 	extends CodeProgressError
 {
@@ -58,6 +59,7 @@ public class OOPS
 	 * @param __m The message.
 	 * @since 2020/03/15
 	 */
+	@Deprecated
 	OOPS(@SuppressWarnings("unused") boolean __ignore, String __m)
 	{
 		super(__m);
@@ -72,6 +74,7 @@ public class OOPS
 	 */
 	@SuppressWarnings({"NewMethodNamingConvention",
 		"MethodNameSameAsClassName"})
+	@Deprecated
 	public static OOPS OOPS(Object... __args)
 	{
 		return OOPS.__oops(false, CallTraceElement.traceRaw(),
@@ -87,6 +90,7 @@ public class OOPS
 	 * @return The resultant exception.
 	 * @since 2020/03/15
 	 */
+	@Deprecated
 	static OOPS __oops(boolean __fromInit, int[] __trace, Object... __args)
 	{
 		// Perform printing logic for this trace
