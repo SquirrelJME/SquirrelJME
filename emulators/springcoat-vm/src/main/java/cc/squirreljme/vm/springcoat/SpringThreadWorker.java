@@ -108,6 +108,7 @@ public final class SpringThreadWorker
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
+	@Deprecated
 	public final SpringArrayObject allocateArray(SpringClass __cl, int __l)
 		throws NullPointerException, SpringNegativeArraySizeException
 	{
@@ -164,6 +165,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/08
 	 */
+	@Deprecated
 	public final SpringObject allocateObject(SpringClass __cl)
 		throws NullPointerException
 	{
@@ -184,6 +186,7 @@ public final class SpringThreadWorker
 	 * @throws SpringFatalException If the object cannot be translated.
 	 * @since 2018/09/20
 	 */
+	@Deprecated
 	public final Object asNativeObject(Object __in)
 		throws NullPointerException, SpringFatalException
 	{
@@ -293,6 +296,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/19
 	 */
+	@Deprecated
 	public final <C> C asNativeObjectUnwrapArray(Class<C> __cl, Object __in)
 		throws NullPointerException
 	{
@@ -314,6 +318,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/20
 	 */
+	@Deprecated
 	public final <C> C asNativeObject(Class<C> __cl, Object __in)
 		throws NullPointerException
 	{
@@ -330,6 +335,7 @@ public final class SpringThreadWorker
 	 * @return The resulting VM object.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public final Object asVMObject(Object __in)
 	{
 		return this.asVMObject(__in, false);
@@ -343,6 +349,7 @@ public final class SpringThreadWorker
 	 * @return The resulting VM object.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public final Object asVMObject(Object __in, boolean __noclassres)
 	{
 		// Null is converted to null
@@ -582,6 +589,7 @@ public final class SpringThreadWorker
 	 * @return The converted object.
 	 * @since 2018/11/19
 	 */
+	@Deprecated
 	public final Object asVMObjectBoxed(Object __in)
 	{
 		// Null is converted to null
@@ -618,6 +626,7 @@ public final class SpringThreadWorker
 	 * @return The converted object.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	public final Object asVMObjectBoxedOrWrappedArray(Object __in)
 	{
 		if (__in == null)
@@ -648,6 +657,7 @@ public final class SpringThreadWorker
 	 * @throws RuntimeException If the type is not an array.
 	 * @since 2018/11/18
 	 */
+	@Deprecated
 	public final SpringObject asWrappedArray(Object __a)
 		throws RuntimeException
 	{
