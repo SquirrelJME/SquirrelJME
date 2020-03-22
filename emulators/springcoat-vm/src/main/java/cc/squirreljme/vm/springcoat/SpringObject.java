@@ -25,6 +25,7 @@ public interface SpringObject
 	 * @return This object's monitor.
 	 * @since 2018/09/15
 	 */
+	@Deprecated
 	SpringMonitor monitor();
 	
 	/**
@@ -41,6 +42,7 @@ public interface SpringObject
 	 * @return The reference chain pointer.
 	 * @since 2020/03/13
 	 */
+	@Deprecated
 	ReferenceChainer refChainer();
 	
 	/**
@@ -49,6 +51,7 @@ public interface SpringObject
 	 * @return The reference counter.
 	 * @since 2020/03/13
 	 */
+	@Deprecated
 	ReferenceCounter refCounter();
 	
 	/**
