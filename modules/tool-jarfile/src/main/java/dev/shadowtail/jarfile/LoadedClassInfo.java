@@ -437,12 +437,6 @@ public final class LoadedClassInfo
 						wp, 0);
 					break;
 					
-					// Magic number
-				case "magic:I":
-					initializer.memWriteInt(
-						wp, ClassInfo.MAGIC_NUMBER);
-					break;
-					
 					// Pointer to the class data in ROM
 				case "miniptr:I":
 					initializer.memWriteInt(Modifier.JAR_OFFSET,
