@@ -14,17 +14,21 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2019/12/21
  */
+@Deprecated
 public final class SpringPointerArea
 	implements Comparable<SpringPointerArea>
 {
 	/** Null pointer. */
+	@Deprecated
 	public static final SpringPointerArea NULL =
 		new SpringPointerArea(0, 0);
 	
 	/** The base address. */
+	@Deprecated
 	public final int base;
 	
 	/** The length of the area. */
+	@Deprecated
 	public final int length;
 	
 	/**
@@ -35,6 +39,7 @@ public final class SpringPointerArea
 	 * @throws IllegalArgumentException If the length is negative.
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	public SpringPointerArea(int __b, int __l)
 		throws IllegalArgumentException
 	{
@@ -53,6 +58,7 @@ public final class SpringPointerArea
 	 * @return The base pointer.
 	 * @since 2020/03/13
 	 */
+	@Deprecated
 	public final SpringPointer base()
 	{
 		return new SpringPointer(this.base);
@@ -63,6 +69,7 @@ public final class SpringPointerArea
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final int compareTo(SpringPointerArea __o)
 	{
 		throw new todo.TODO();
@@ -73,6 +80,7 @@ public final class SpringPointerArea
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final boolean equals(Object __o)
 	{
 		throw new todo.TODO();
@@ -83,6 +91,7 @@ public final class SpringPointerArea
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final int hashCode()
 	{
 		throw new todo.TODO();
@@ -93,6 +102,7 @@ public final class SpringPointerArea
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final String toString()
 	{
 		throw new todo.TODO();
