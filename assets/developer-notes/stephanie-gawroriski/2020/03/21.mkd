@@ -1,0 +1,7 @@
+# 2020/03/21
+
+## 13:16
+
+Since I do not want to complicate the starting point for threads I am going
+to have a starting index which takes a bunch of longs, which is used to pass
+all the possibl thread arguments and otherwise.
