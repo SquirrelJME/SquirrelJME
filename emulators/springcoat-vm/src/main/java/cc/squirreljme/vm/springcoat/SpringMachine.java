@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -82,6 +83,10 @@ public final class SpringMachine
 	@Deprecated
 	private final Map<SpringObject, ClassName> _namesbyclass =
 		new HashMap<>();
+	
+	/** Class informations. */
+	final Map<ClassName, SpringObject> _classInfos =
+		new TreeMap<>();
 	
 	/** Main entry point arguments. */
 	private final String[] _args;

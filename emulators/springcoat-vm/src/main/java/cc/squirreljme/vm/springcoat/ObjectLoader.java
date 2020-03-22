@@ -9,9 +9,10 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -25,10 +26,20 @@ public final class ObjectLoader
 	private static final ClassName _STRING_CLASS =
 		new ClassName("java/lang/String");
 	
+	/** The class info class. */
+	private static final ClassName _CLASSINFO_CLASS =
+		new ClassName("cc/squirreljme/jvm/ClassInfo");
+	
 	/** Load-UTF and intern function. */
 	private static final MethodNameAndType _LOAD_NAME_AND_TYPE =
 		new MethodNameAndType("__loadUtfAndIntern",
 		"(J)Ljava/lang/String;");
+	
+	/** Classinfo constructor. */
+	private static final MethodDescriptor _CLASSINFO_CONSTRUCTOR =
+		new MethodDescriptor("(IJJIIIIILcc/squirreljme/jvm/ClassInfo;" +
+			"[Lcc/squirreljme/jvm/ClassInfo;Lcc/squirreljme/jvm/ClassInfo;" +
+			"Ljava/lang/Class;[J[JJIIIIJJ)V");
 	
 	/**
 	 * Not used.
@@ -54,7 +65,46 @@ public final class ObjectLoader
 		if (__thread == null || __class == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Prevent other threads from loading class infos
+		Map<ClassName, SpringObject> classInfos = __thread.machine._classInfos;
+		synchronized (classInfos)
+		{
+			// Pre-cached?
+			SpringObject rv = classInfos.get(__class.name);
+			if (rv != null)
+				return rv;
+			
+			// Use for the allocation of strings
+			MemoryManager mmu = __thread.machine.tasks.memory;
+			
+			// Initialize instance
+			rv = __thread.newInstance(_CLASSINFO_CLASS, _CLASSINFO_CONSTRUCTOR,
+				0, // int __fl
+				(long)-1, // long __minip
+				mmu.loadUtf(__class.name.toString()).pointer, // long __namep
+				-1, // int __sz
+				-1, // int __bz
+				-1, // int __no
+				-1, // int __dim
+				-1, // int __csz
+				SpringNullObject.NULL, // ClassInfo __scl
+				SpringNullObject.NULL, // ClassInfo[] __icl
+				SpringNullObject.NULL, // ClassInfo __ccl
+				SpringNullObject.NULL, // Class<?> __cop
+				SpringNullObject.NULL, // long[] __vtv
+				SpringNullObject.NULL, // long[] __vtp
+				(long)-1, // long __pool
+				-1, // int __jardx
+				-1, // int __nm
+				-1, // int __cd
+				-1, // int __sfp
+				(long)-1, // long __dn
+				(long)-1); // long __sm
+			
+			// Cache and use it
+			classInfos.put(__class.name, rv);
+			return rv;
+		}
 	}
 	
 	/**
