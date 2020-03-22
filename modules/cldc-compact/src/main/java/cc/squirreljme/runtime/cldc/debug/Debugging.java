@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
+import todo.OOPS;
 import todo.TODO;
 
 /**
@@ -25,6 +26,18 @@ public final class Debugging
 	 */
 	private Debugging()
 	{
+	}
+	
+	/**
+	 * Emits an oops error.
+	 *
+	 * @param __args Argument to the error.
+	 * @return The generated error.
+	 * @since 2020/03/22
+	 */
+	public static OOPS oops(Object... __args)
+	{
+		return OOPS.OOPS(__args);
 	}
 	
 	/**
