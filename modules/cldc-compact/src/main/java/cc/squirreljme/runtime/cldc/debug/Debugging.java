@@ -35,7 +35,8 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/22
 	 */
-	public static OOPS oops(Object... __args)
+	@SuppressWarnings("deprecation")
+	public static Error oops(Object... __args)
 	{
 		return OOPS.OOPS(__args);
 	}
@@ -47,7 +48,8 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
-	public static TODO todo(Object... __args)
+	@SuppressWarnings("deprecation")
+	public static Error todo(Object... __args)
 	{
 		return TODO.TODO(__args);
 	}
@@ -59,6 +61,7 @@ public final class Debugging
 	 * @param __args Arguments.
 	 * @since 2020/03/31
 	 */
+	@SuppressWarnings("deprecation")
 	public static void todoNote(String __fmt, Object... __args)
 	{
 		TODO.note(__fmt, __args);
