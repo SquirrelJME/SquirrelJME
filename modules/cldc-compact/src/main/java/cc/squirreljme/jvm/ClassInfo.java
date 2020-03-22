@@ -53,9 +53,6 @@ public final class ClassInfo
 	/** The component class. */
 	public final ClassInfo componentclass;
 	
-	/** Pointer to the class object. */
-	public final Class<?> classobjptr;
-	
 	/** Virtual invoke VTable. */
 	public final long[] vtablevirtual;
 	
@@ -83,10 +80,12 @@ public final class ClassInfo
 	/** The static main pointer of this class. */
 	public final long staticmain;
 	
+	/** Pointer to the class object, may be dynamically initialized. */
+	public Class<?> classobjptr;
+	
 	/**
 	 * Class information constructor.
 	 *
-	 * @param __sp Self pointer.
 	 * @param __fl Class information flags.
 	 * @param __minip Pointer to the hardware class data in ROM.
 	 * @param __namep The name pointer.
@@ -109,14 +108,14 @@ public final class ClassInfo
 	 * @param __dn The default constructor.
 	 * @since 2019/04/26
 	 */
-	public ClassInfo(long __sp, int __fl, long __minip, long __namep, int __sz,
+	public ClassInfo(int __fl, long __minip, long __namep, int __sz,
 		int __bz, int __no, int __dim, int __csz, ClassInfo __scl,
 		ClassInfo[] __icl, ClassInfo __ccl, Class<?> __cop, long[] __vtv,
 		long[] __vtp, long __pool, int __jardx, int __nm, int __cd, int __sfp,
 		long __dn, long __sm)
 	{
 		// Set
-		this.selfptr = __sp;
+		this.selfptr = Assembly.objectToPointer(this);
 		this.flags = __fl;
 		this.miniptr = __minip;
 		this.namep = __namep;
