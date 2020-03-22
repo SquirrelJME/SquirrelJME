@@ -18,22 +18,28 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalMonitorStateExceptio
  *
  * @since 2018/09/15
  */
+@Deprecated
 public final class SpringMonitor
 {
 	/** The monitor lock. */
+	@Deprecated
 	protected final Object lock =
 		new Object();
 	
 	/** The thread which owns this monitor. */
+	@Deprecated
 	volatile SpringThread _owner;
 	
 	/** Number of threads which are waiting on this monitor. */
+	@Deprecated
 	volatile int _waitcount;
 	
 	/** The number of notifications happening. */
+	@Deprecated
 	volatile int _notifycount;
 	
 	/** The entry count on the monitor. */
+	@Deprecated
 	private int _count;
 	
 	/**
@@ -43,6 +49,7 @@ public final class SpringMonitor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
+	@Deprecated
 	public final void enter(SpringThread __t)
 		throws NullPointerException
 	{
@@ -96,6 +103,7 @@ public final class SpringMonitor
 	 * by this thread.
 	 * @since 2018/09/15
 	 */
+	@Deprecated
 	public final void exit(SpringThread __t, boolean __notify)
 		throws NullPointerException, SpringIllegalMonitorStateException
 	{
@@ -141,6 +149,7 @@ public final class SpringMonitor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/20
 	 */
+	@Deprecated
 	public final int monitorNotify(SpringThread __by, boolean __all)
 		throws NullPointerException
 	{
@@ -183,6 +192,7 @@ public final class SpringMonitor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/21
 	 */
+	@Deprecated
 	public final int monitorWait(SpringThread __by, long __ms, int __ns)
 		throws NullPointerException
 	{
@@ -278,15 +288,6 @@ public final class SpringMonitor
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Waiting information on this monitor.
-	 *
-	 * @since 2018/11/20
-	 */
-	private static final class __Waiting__
-	{
 	}
 }
 

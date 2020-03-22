@@ -14,9 +14,11 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2020/03/13
  */
+@Deprecated
 public final class ReferenceChainer
 {
 	/** The pointer value. */
+	@Deprecated
 	private SpringPointer _pointer;
 	
 	/**
@@ -25,6 +27,7 @@ public final class ReferenceChainer
 	 * @return The chain pointer.
 	 * @since 2020/03/13
 	 */
+	@Deprecated
 	public final SpringPointer get()
 	{
 		return this._pointer;
@@ -36,6 +39,7 @@ public final class ReferenceChainer
 	 * @param __v The new value to set.
 	 * @since 2020/03/13
 	 */
+	@Deprecated
 	public final void set(SpringPointer __v)
 	{
 		this._pointer = __v;

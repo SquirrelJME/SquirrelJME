@@ -14,6 +14,7 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2020/03/13
  */
+@Deprecated
 public final class ReferenceCounter
 {
 	/**
@@ -31,6 +32,7 @@ public final class ReferenceCounter
 	 * @return The new value.
 	 * @since 2020/03/13
 	 */
+	@Deprecated
 	public final int up()
 	{
 		return ++this._count;
