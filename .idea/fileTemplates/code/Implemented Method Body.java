@@ -1,1 +1,1 @@
-throw new cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();

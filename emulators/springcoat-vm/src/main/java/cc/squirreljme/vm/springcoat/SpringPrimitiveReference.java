@@ -27,6 +27,7 @@ public abstract class SpringPrimitiveReference
 	 * @return The value of the reference.
 	 * @since 2018/09/23
 	 */
+	@Deprecated
 	public abstract SpringObject get();
 	
 	/**
@@ -35,6 +36,7 @@ public abstract class SpringPrimitiveReference
 	 * @param __o The object to set.
 	 * @since 2018/09/23
 	 */
+	@Deprecated
 	public abstract void set(SpringObject __o);
 	
 	/**
@@ -42,6 +44,7 @@ public abstract class SpringPrimitiveReference
 	 * @since 2018/09/23
 	 */
 	@Override
+	@Deprecated
 	public final SpringMonitor monitor()
 	{
 		// {@squirreljme.error BK1f Reference types are special and have no
@@ -54,6 +57,7 @@ public abstract class SpringPrimitiveReference
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final SpringPointerArea pointerArea()
 	{
 		throw new todo.TODO();
@@ -64,6 +68,7 @@ public abstract class SpringPrimitiveReference
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceChainer refChainer()
 	{
 		throw new todo.TODO();
@@ -74,6 +79,7 @@ public abstract class SpringPrimitiveReference
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceCounter refCounter()
 	{
 		throw new todo.TODO();
@@ -84,6 +90,7 @@ public abstract class SpringPrimitiveReference
 	 * @since 2018/09/23
 	 */
 	@Override
+	@Deprecated
 	public final SpringClass type()
 	{
 		// {@squirreljme.error BK1g Reference types are special and have no

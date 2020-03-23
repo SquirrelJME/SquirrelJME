@@ -24,6 +24,7 @@ public final class SpringArrayObjectDouble
 	extends SpringArrayObject
 {
 	/** Elements in the array. */
+	@Deprecated
 	private final double[] _elements;
 	
 	/**
@@ -36,6 +37,7 @@ public final class SpringArrayObjectDouble
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/11/14
 	 */
+	@Deprecated
 	public SpringArrayObjectDouble(SpringClass __self, SpringClass __cl,
 		int __l)
 		throws NullPointerException
@@ -55,6 +57,7 @@ public final class SpringArrayObjectDouble
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/18
 	 */
+	@Deprecated
 	public SpringArrayObjectDouble(SpringClass __self, SpringClass __cl,
 		double[] __a)
 		throws NullPointerException
@@ -69,6 +72,7 @@ public final class SpringArrayObjectDouble
 	 * @since 2018/11/19
 	 */
 	@Override
+	@Deprecated
 	public final Object array()
 	{
 		return this._elements;
@@ -80,6 +84,7 @@ public final class SpringArrayObjectDouble
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
+	@Deprecated
 	public final <C> C get(Class<C> __cl, int __dx)
 		throws NullPointerException, SpringArrayIndexOutOfBoundsException
 	{
@@ -103,6 +108,7 @@ public final class SpringArrayObjectDouble
 	 * @since 2018/11/14
 	 */
 	@Override
+	@Deprecated
 	public final void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException
 	{

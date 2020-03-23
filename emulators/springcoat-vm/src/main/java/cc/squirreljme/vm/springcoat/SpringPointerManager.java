@@ -21,21 +21,26 @@ import java.util.Map;
  *
  * @since 2019/12/21
  */
+@Deprecated
 public final class SpringPointerManager
 {
 	/** Queue for cleared references. */
+	@Deprecated
 	private final ReferenceQueue<SpringObject> _queue =
 		new ReferenceQueue<>();
 	
 	/** Reference to integer. */
+	@Deprecated
 	private final Map<Reference<SpringObject>, Integer> _rtoi =
 		new HashMap<>();
 	
 	/** Integer to reference. */
+	@Deprecated
 	private final Map<Integer, Reference<SpringObject>> _itor =
 		new HashMap<>();
 	
 	/** The next allocation address. */
+	@Deprecated
 	private int _next =
 		4;
 	
@@ -47,6 +52,7 @@ public final class SpringPointerManager
 	 * @throws IllegalArgumentException If the length is negative.
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	public final SpringPointerArea allocate(int __l)
 		throws IllegalArgumentException
 	{
@@ -80,6 +86,7 @@ public final class SpringPointerManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/22
 	 */
+	@Deprecated
 	public final SpringPointerArea allocateAndBind(int __l, SpringObject __o)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -113,6 +120,7 @@ public final class SpringPointerManager
 	 * @return The object which was found.
 	 * @since 2019/12/22
 	 */
+	@Deprecated
 	public final SpringObject findObject(int __p)
 	{
 		// Zero address always returns null pointers!

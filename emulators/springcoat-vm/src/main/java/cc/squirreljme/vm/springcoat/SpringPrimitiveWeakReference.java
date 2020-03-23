@@ -23,6 +23,7 @@ public final class SpringPrimitiveWeakReference
 	extends SpringPrimitiveReference
 {
 	/** The reference used. */
+	@Deprecated
 	private Reference<SpringObject> _ref;
 	
 	/**
@@ -30,6 +31,7 @@ public final class SpringPrimitiveWeakReference
 	 * @since 2018/09/23
 	 */
 	@Override
+	@Deprecated
 	public final SpringObject get()
 	{
 		Reference<SpringObject> ref = this._ref;
@@ -43,6 +45,7 @@ public final class SpringPrimitiveWeakReference
 	 * @since 2018/09/23
 	 */
 	@Override
+	@Deprecated
 	public final void set(SpringObject __o)
 	{
 		this._ref = new WeakReference<>(__o);

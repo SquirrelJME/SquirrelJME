@@ -22,6 +22,7 @@ public final class SpringVMStaticMethod
 	implements SpringObject
 {
 	/** The method to execute. */
+	@Deprecated
 	protected final SpringMethod method;
 	
 	/**
@@ -31,6 +32,7 @@ public final class SpringVMStaticMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/20
 	 */
+	@Deprecated
 	public SpringVMStaticMethod(SpringMethod __m)
 		throws NullPointerException
 	{
@@ -45,6 +47,7 @@ public final class SpringVMStaticMethod
 	 * @since 2018/11/20
 	 */
 	@Override
+	@Deprecated
 	public final SpringMonitor monitor()
 	{
 		// {@squirreljme.error BK3b StaticMethod does not have a monitor.}
@@ -56,6 +59,7 @@ public final class SpringVMStaticMethod
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final SpringPointerArea pointerArea()
 	{
 		throw new todo.TODO();
@@ -66,6 +70,7 @@ public final class SpringVMStaticMethod
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceChainer refChainer()
 	{
 		throw new todo.TODO();
@@ -76,6 +81,7 @@ public final class SpringVMStaticMethod
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceCounter refCounter()
 	{
 		throw new todo.TODO();
@@ -86,6 +92,7 @@ public final class SpringVMStaticMethod
 	 * @since 2018/11/20
 	 */
 	@Override
+	@Deprecated
 	public final SpringClass type()
 	{
 		// {@squirreljme.error BK3c StaticMethod does not have a type.}
