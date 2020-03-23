@@ -10,34 +10,33 @@
 package cc.squirreljme.vm.springcoat.objects;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.SpringObject;
-import cc.squirreljme.vm.springcoat.SpringPointer;
+import java.util.AbstractList;
 
 /**
- * This is a viewer for simple objects.
+ * This is a view of an array as a list type.
  *
  * @since 2020/03/22
  */
-public class SimpleObjectViewer
-	implements ObjectViewer
+public final class ArrayViewerAsList<T>
+	extends AbstractList<T>
 {
-	/** The pointer to this object. */
-	protected final SpringPointer pointer;
+	/** The array to view. */
+	protected final ArrayViewer<T> array;
 	
 	/**
-	 * Initializes the simple object viewer.
+	 * Initializes the array viewer as a list.
 	 *
-	 * @param __pointer The pointer of this object.
+	 * @param __array The array to view.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/22
 	 */
-	public SimpleObjectViewer(SpringPointer __pointer)
+	public ArrayViewerAsList(ArrayViewer<T> __array)
 		throws NullPointerException
 	{
-		if (__pointer == null)
+		if (__array == null)
 			throw new NullPointerException("NARG");
 		
-		this.pointer = __pointer;
+		this.array = __array;
 	}
 	
 	/**
@@ -45,8 +44,32 @@ public class SimpleObjectViewer
 	 * @since 2020/03/22
 	 */
 	@Override
-	public SpringPointer pointer()
+	public T get(int __i)
 	{
-		throw Debugging.todo();
+		return this.array.get(__i);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/22
+	 */
+	@Override
+	public T set(int __i, T __v)
+	{
+		ArrayViewer<T> array = this.array;
+		
+		T old = array.get(__i);
+		array.set(__i, __v);
+		return old;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/03/22
+	 */
+	@Override
+	public int size()
+	{
+		return this.array.length();
 	}
 }
