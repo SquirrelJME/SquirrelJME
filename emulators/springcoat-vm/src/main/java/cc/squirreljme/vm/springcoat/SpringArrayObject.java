@@ -26,19 +26,24 @@ public abstract class SpringArrayObject
 	implements SpringObject
 {
 	/** The monitor for this array. */
+	@Deprecated
 	protected final SpringMonitor monitor =
 		new SpringMonitor();
 	
 	/** The type of this object itself. */
+	@Deprecated
 	protected final SpringClass selftype;
 	
 	/** The component type. */
+	@Deprecated
 	protected final SpringClass component;
 	
 	/** The length of the array. */
+	@Deprecated
 	protected final int length;
 	
 	/** String representation. */
+	@Deprecated
 	private Reference<String> _string;
 	
 	/**
@@ -51,6 +56,7 @@ public abstract class SpringArrayObject
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
+	@Deprecated
 	public SpringArrayObject(SpringClass __self, SpringClass __cl, int __l)
 		throws NullPointerException
 	{
@@ -74,6 +80,7 @@ public abstract class SpringArrayObject
 	 * @return The array.
 	 * @since 2018/11/19
 	 */
+	@Deprecated
 	public abstract Object array();
 	
 	/**
@@ -90,6 +97,7 @@ public abstract class SpringArrayObject
 	 * bounds.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public abstract <C> C get(Class<C> __cl, int __dx)
 		throws NullPointerException, SpringArrayIndexOutOfBoundsException;
 	
@@ -104,6 +112,7 @@ public abstract class SpringArrayObject
 	 * bounds.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public abstract void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException;
 	
@@ -112,6 +121,7 @@ public abstract class SpringArrayObject
 	 * @since 2018/09/15
 	 */
 	@Override
+	@Deprecated
 	public final SpringMonitor monitor()
 	{
 		return this.monitor;
@@ -123,6 +133,7 @@ public abstract class SpringArrayObject
 	 * @return The array length.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public final int length()
 	{
 		return this.length;
@@ -133,6 +144,7 @@ public abstract class SpringArrayObject
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final SpringPointerArea pointerArea()
 	{
 		throw new todo.TODO();
@@ -143,6 +155,7 @@ public abstract class SpringArrayObject
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceChainer refChainer()
 	{
 		throw new todo.TODO();
@@ -153,6 +166,7 @@ public abstract class SpringArrayObject
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceCounter refCounter()
 	{
 		throw new todo.TODO();
@@ -163,6 +177,7 @@ public abstract class SpringArrayObject
 	 * @since 2018/09/15
 	 */
 	@Override
+	@Deprecated
 	public final String toString()
 	{
 		Reference<String> ref = this._string;
@@ -181,6 +196,7 @@ public abstract class SpringArrayObject
 	 * @since 2018/09/15
 	 */
 	@Override
+	@Deprecated
 	public final SpringClass type()
 	{
 		return this.selftype;

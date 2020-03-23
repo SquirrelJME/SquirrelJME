@@ -6,3 +6,11 @@
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
+
+/**
+ * Viewers for objects.
+ *
+ * @since 2020/03/22
+ */
+
+package cc.squirreljme.vm.springcoat.objects;

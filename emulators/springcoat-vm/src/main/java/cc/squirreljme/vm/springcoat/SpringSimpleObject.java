@@ -23,27 +23,34 @@ public final class SpringSimpleObject
 	implements SpringObject
 {
 	/** The type of object this is. */
+	@Deprecated
 	protected final SpringClass type;
 	
 	/** The monitor for this object, every object has one. */
+	@Deprecated
 	protected final SpringMonitor monitor =
 		new SpringMonitor();
 	
 	/** The pointer for this object. */
+	@Deprecated
 	protected final SpringPointerArea pointer;
 	
 	/** The reference chain for this object. */
+	@Deprecated
 	protected final ReferenceChainer refChain =
 		new ReferenceChainer();
 	
 	/** Counter for references. */
+	@Deprecated
 	protected final ReferenceCounter refCounter =
 		new ReferenceCounter();
 	
 	/** Field storage in the class. */
+	@Deprecated
 	private final SpringFieldStorage[] _fields;
 	
 	/** String representation. */
+	@Deprecated
 	private Reference<String> _string;
 	
 	/**
@@ -54,6 +61,7 @@ public final class SpringSimpleObject
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/08
 	 */
+	@Deprecated
 	public SpringSimpleObject(SpringClass __cl, SpringPointerManager __spm)
 		throws NullPointerException
 	{
@@ -85,6 +93,7 @@ public final class SpringSimpleObject
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/19
 	 */
+	@Deprecated
 	public final SpringFieldStorage fieldByField(SpringField __f)
 		throws NullPointerException
 	{
@@ -101,6 +110,7 @@ public final class SpringSimpleObject
 	 * @return The storage for the field by the specified index.
 	 * @since 2018/09/16
 	 */
+	@Deprecated
 	public final SpringFieldStorage fieldByIndex(int __dx)
 	{
 		return this._fields[__dx];
@@ -111,6 +121,7 @@ public final class SpringSimpleObject
 	 * @since 2018/09/15
 	 */
 	@Override
+	@Deprecated
 	public final SpringMonitor monitor()
 	{
 		return this.monitor;
@@ -121,6 +132,7 @@ public final class SpringSimpleObject
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final SpringPointerArea pointerArea()
 	{
 		return this.pointer;
@@ -131,6 +143,7 @@ public final class SpringSimpleObject
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceChainer refChainer()
 	{
 		return this.refChain;
@@ -141,6 +154,7 @@ public final class SpringSimpleObject
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceCounter refCounter()
 	{
 		return this.refCounter;
@@ -151,6 +165,7 @@ public final class SpringSimpleObject
 	 * @since 2018/09/15
 	 */
 	@Override
+	@Deprecated
 	public final String toString()
 	{
 		Reference<String> ref = this._string;
@@ -168,6 +183,7 @@ public final class SpringSimpleObject
 	 * @since 2018/09/09
 	 */
 	@Override
+	@Deprecated
 	public final SpringClass type()
 	{
 		return this.type;

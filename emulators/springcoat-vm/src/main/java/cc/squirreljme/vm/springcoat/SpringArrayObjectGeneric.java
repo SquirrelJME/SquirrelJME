@@ -25,9 +25,11 @@ public final class SpringArrayObjectGeneric
 	extends SpringArrayObject
 {
 	/** Elements in the array. */
+	@Deprecated
 	private final Object[] _elements;
 	
 	/** The last class which was checked for compatibility. */
+	@Deprecated
 	private SpringClass _lastvalid;
 	
 	/**
@@ -40,6 +42,7 @@ public final class SpringArrayObjectGeneric
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
+	@Deprecated
 	public SpringArrayObjectGeneric(SpringClass __self, SpringClass __cl,
 		int __l)
 		throws NullPointerException
@@ -93,6 +96,7 @@ public final class SpringArrayObjectGeneric
 	 * @since 2018/11/19
 	 */
 	@Override
+	@Deprecated
 	public final Object array()
 	{
 		return this._elements;
@@ -103,6 +107,7 @@ public final class SpringArrayObjectGeneric
 	 * @since 2018/11/14
 	 */
 	@Override
+	@Deprecated
 	public final <C> C get(Class<C> __cl, int __dx)
 		throws NullPointerException, SpringArrayIndexOutOfBoundsException
 	{
@@ -126,6 +131,7 @@ public final class SpringArrayObjectGeneric
 	 * @since 2018/11/14
 	 */
 	@Override
+	@Deprecated
 	public final void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException
 	{

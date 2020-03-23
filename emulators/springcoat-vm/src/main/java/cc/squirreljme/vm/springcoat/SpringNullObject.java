@@ -23,6 +23,7 @@ public final class SpringNullObject
 	implements SpringObject
 {
 	/** Single null object reference. */
+	@Deprecated
 	public static final SpringNullObject NULL =
 		new SpringNullObject();
 	
@@ -31,6 +32,7 @@ public final class SpringNullObject
 	 *
 	 * @since 2018/09/08
 	 */
+	@Deprecated
 	private SpringNullObject()
 	{
 	}
@@ -40,6 +42,7 @@ public final class SpringNullObject
 	 * @since 2018/09/15
 	 */
 	@Override
+	@Deprecated
 	public final SpringMonitor monitor()
 	{
 		// {@squirreljme.error BK1e Cannot obtain the monitor of an object
@@ -52,6 +55,7 @@ public final class SpringNullObject
 	 * @since 2019/12/21
 	 */
 	@Override
+	@Deprecated
 	public final SpringPointerArea pointerArea()
 	{
 		return SpringPointerArea.NULL;
@@ -62,6 +66,7 @@ public final class SpringNullObject
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceChainer refChainer()
 	{
 		throw new SpringVirtualMachineException("Null has no ref chain.");
@@ -72,6 +77,7 @@ public final class SpringNullObject
 	 * @since 2020/03/13
 	 */
 	@Override
+	@Deprecated
 	public ReferenceCounter refCounter()
 	{
 		throw new SpringVirtualMachineException("Null has no ref counter.");
@@ -82,6 +88,7 @@ public final class SpringNullObject
 	 * @since 2018/09/09
 	 */
 	@Override
+	@Deprecated
 	public final SpringClass type()
 	{
 		return null;

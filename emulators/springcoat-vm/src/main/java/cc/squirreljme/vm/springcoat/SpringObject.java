@@ -17,6 +17,7 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2018/09/08
  */
+@Deprecated
 public interface SpringObject
 {
 	/**
@@ -34,6 +35,7 @@ public interface SpringObject
 	 * @return The pointer area for this object.
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	SpringPointerArea pointerArea();
 	
 	/**
@@ -60,6 +62,7 @@ public interface SpringObject
 	 * @return The object type.
 	 * @since 2018/09/09
 	 */
+	@Deprecated
 	SpringClass type();
 }
 
