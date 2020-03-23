@@ -1,0 +1,7 @@
+# 2020/03/22
+
+## 17:42
+
+What I need is to transform all the object representations to stuff such as
+arrays and otherwise before I can continue, since everything right now is
+just going to memory based layout.
