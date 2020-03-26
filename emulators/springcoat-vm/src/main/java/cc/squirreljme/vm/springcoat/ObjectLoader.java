@@ -9,7 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.objects.ArrayViewer;
+import cc.squirreljme.vm.springcoat.objects.ObjectViewer;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
@@ -133,5 +135,101 @@ public final class ObjectLoader
 		// Call the string internal intern since it does the things needed
 		return __thread.invokeMethod(true, ObjectLoader._STRING_CLASS,
 			ObjectLoader._LOAD_NAME_AND_TYPE, utfPointer.pointer);
+	}
+	
+	/**
+	 * Allocates new array.
+	 *
+	 * @param <T> The type of array viewer to create.
+	 * @param __thread The creating thread.
+	 * @param __componentType The component type.
+	 * @param __len The length of the array.
+	 * @return The array viewer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/25
+	 */
+	public static <T> ArrayViewer<T> newArray(SpringThreadWorker __thread,
+		SpringClass __componentType, int __len)
+		throws NullPointerException
+	{
+		if (__thread == null || __componentType == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Creates a new instance of the given class.
+	 *
+	 * @param __thread The thread to allocate under.
+	 * @param __class The class to allocate.
+	 * @return The allocated object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/25
+	 */
+	public static ObjectViewer newInstance(SpringThreadWorker __thread,
+		SpringClass __class)
+		throws NullPointerException
+	{
+		if (__thread == null || __class == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Allocates a new string.
+	 *
+	 * @param __thread The allocating thread.
+	 * @param __s The string to allocate.
+	 * @return The allocated string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/25
+	 */
+	public static ObjectViewer newString(SpringThreadWorker __thread,
+		String __s)
+		throws NullPointerException
+	{
+		if (__thread == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Initializes a new string array.
+	 *
+	 * @param __thread The thread to create under.
+	 * @param __vs Array values.
+	 * @return The resultant array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/22
+	 */
+	public static ArrayViewer<ObjectViewer> newStringArray(
+		SpringThreadWorker __thread, String... __vs)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		if (__vs == null)
+			__vs = new String[0];
+		
+		// Allocate array
+		ArrayViewer<ObjectViewer> rv = ObjectLoader.<ObjectViewer>newArray(
+			__thread,
+			__thread.machine.classloader.loadClass(ObjectLoader._STRING_CLASS),
+			__vs.length);
+		
+		// Store strings into the array
+		for (int i = 0, n = __vs.length; i < n; i++)
+		{
+			String v = __vs[i];
+			
+			if (v != null)
+				rv.set(i, ObjectLoader.newString(__thread, v));
+		}
+		
+		return rv;
 	}
 }

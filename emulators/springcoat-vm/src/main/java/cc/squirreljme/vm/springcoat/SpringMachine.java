@@ -20,6 +20,8 @@ import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import cc.squirreljme.vm.springcoat.objects.ArrayViewer;
+import cc.squirreljme.vm.springcoat.objects.ObjectViewer;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -310,6 +312,10 @@ public final class SpringMachine
 		SpringMethod main = entrycl.lookupMethod(true,
 			new MethodNameAndType("main", "([Ljava/lang/String;)V"));
 		SpringPointer mainFp = this.tasks.memory.bindMethod(main);
+		
+		// Load in main program arguments
+		ArrayViewer<ObjectViewer> mainArgs =
+			ObjectLoader.newStringArray(worker, this._args);
 		
 		// Initialize main program arguments
 		String[] inargs = this._args;
