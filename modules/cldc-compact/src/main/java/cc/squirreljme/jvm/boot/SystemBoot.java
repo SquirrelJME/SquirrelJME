@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.boot;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -31,6 +32,7 @@ public final class SystemBoot
 	static void __sysBoot(long __ramAddr, int __ramLen,
 		long __configAddr, int __configLen)
 	{
+		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 }

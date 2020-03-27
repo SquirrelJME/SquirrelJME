@@ -329,8 +329,9 @@ public interface SystemCallIndex
 	/**
 	 * Loads the specified class.
 	 *
-	 * @squirreljme.syscallparam 1 A byte array encoded in UTF-8 which contains
-	 * the class name.
+	 * @squirreljme.syscallparam 1 Pointer (high bytes) to a UTF-8 encoded
+	 * byte array.
+	 * @squirreljme.syscallparam 2 Pointer (low bytes).
 	 * @squirreljme.syscallreturn The pointer to the loaded class info, will be
 	 * zero on failure.
 	 */

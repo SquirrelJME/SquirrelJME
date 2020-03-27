@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.memory.ReadableBasicMemory;
 import cc.squirreljme.jvm.memory.ReadableByteMemory;
 import cc.squirreljme.jvm.memory.WritableBasicMemory;
 import cc.squirreljme.jvm.memory.WritableByteMemory;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -40,11 +39,11 @@ public final class MemoryManager
 	implements ReadableBasicMemory, WritableBasicMemory
 {
 	/** RAM storage starting area. */
-	private static final int _RAM_START_ADDRESS =
+	public static final long RAM_START_ADDRESS =
 		0x1000_0000;
 	
 	/** ROM storage starting area. */
-	private static final int _ROM_START_POINTER =
+	private static final long _ROM_START_POINTER =
 		0x7000_0000;
 	
 	/** The pool of UTF constant strings which are somewhere in memory. */
@@ -59,6 +58,10 @@ public final class MemoryManager
 	private final ConcurrentNavigableMap<Integer, WritableByteMemory> _write =
 		new ConcurrentSkipListMap<>();
 	
+	/** Chunks of memory that make up the RAM. */
+	private final List<WritableByteMemory> _ramChunks =
+		new LinkedList<>();
+	
 	/** Chunks of memory that make up the ROM. */
 	private final List<WritableByteMemory> _romChunks =
 		new LinkedList<>();
@@ -67,8 +70,12 @@ public final class MemoryManager
 	private final ConcurrentMap<SpringPointer, SpringMethod> _boundMethods =
 		new ConcurrentHashMap<>();
 	
+	/** The next location for RAM chunks. */
+	private long _ramNext =
+		MemoryManager.RAM_START_ADDRESS;
+	
 	/** The next location for ROM chunks. */
-	private int _romNext =
+	private long _romNext =
 		MemoryManager._ROM_START_POINTER;
 	
 	/** The current lock. */
@@ -101,7 +108,7 @@ public final class MemoryManager
 			romChunks.add(chunk);
 			
 			// Map chunk into memory as read-only
-			int romNext = this._romNext;
+			long romNext = this._romNext;
 			this.map(romNext, chunk, false);
 			
 			// Prepare the next placement region for more ROM data
@@ -125,7 +132,25 @@ public final class MemoryManager
 		if (__len <= 0)
 			throw new IllegalArgumentException("Cannot attach negative RAM.");
 		
-		throw Debugging.todo();
+		// Allocate chunk
+		MemoryChunk chunk = new MemoryChunk(__len);
+		
+		// Protect ourself because we will be adjusting the chain links
+		synchronized (this)
+		{
+			// Store chunks into ROM region
+			List<WritableByteMemory> ramChunks = this._ramChunks;
+			ramChunks.add(chunk);
+			
+			// Map chunk into memory as read-only
+			long ramNext = this._ramNext;
+			this.map(ramNext, chunk, false);
+			
+			// Prepare the next placement region for more ROM data
+			this._ramNext = ramNext + ((chunk.size() + 7) & (~7));
+			
+			return new SpringPointer(ramNext);
+		}
 	}
 	
 	/**
