@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat.objects;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.SpringObject;
 import cc.squirreljme.vm.springcoat.SpringPointer;
 
 /**

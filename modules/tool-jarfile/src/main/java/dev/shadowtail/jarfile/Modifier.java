@@ -25,7 +25,7 @@ public enum Modifier
 	/** Offset by JAR address. */
 	JAR_OFFSET,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

@@ -42,7 +42,7 @@ public enum ElementType
 	/** A class, interface, or enumeration. */
 	TYPE(),
 	
-	/** End. */
+	/* End. */
 	;
 }
 

@@ -128,7 +128,6 @@ public final class UnmodifiableCollection<T>
 	 * @return An unmodifiable view of the collection.
 	 * @since 2017/10/09
 	 */
-	@SuppressWarnings({"unchecked"})
 	public static <T> Collection<T> of(Collection<T> __c)
 	{
 		// If already one, return that collection

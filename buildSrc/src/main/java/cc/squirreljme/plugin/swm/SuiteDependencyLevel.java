@@ -23,7 +23,7 @@ public enum SuiteDependencyLevel
 	/** Optional. */
 	OPTIONAL,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

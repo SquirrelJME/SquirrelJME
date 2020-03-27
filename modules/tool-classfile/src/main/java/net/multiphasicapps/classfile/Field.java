@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public final class Field
 	extends Member
-	implements Annotated, HasMemberFlags
+	implements Annotated
 {
 	/** The flags for the field. */
 	protected final FieldFlags flags;

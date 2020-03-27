@@ -80,17 +80,5 @@ public final class SimpleVector
 	{
 		throw new todo.TODO();
 	}
-
-    final class SimpleVectorEnumerator implements Enumeration {
-        public boolean hasMoreElements()
-		{
-			throw new todo.TODO();
-		}
-
-        public Object nextElement()
-		{
-			throw new todo.TODO();
-		}
-    }
 }
 

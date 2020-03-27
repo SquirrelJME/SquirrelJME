@@ -34,7 +34,7 @@ public class Main
 	 * @param __args Arguments.
 	 * @since 2019/06/15
 	 */
-	public static final void main(String... __args)
+	public static void main(String... __args)
 		throws Throwable
 	{
 		// Read in strings, find maximum length
@@ -81,7 +81,7 @@ public class Main
 				ua = sa / 8;
 			
 			// Write PBM header, use P4 format
-			ps.printf("P4\n");
+			ps.print("P4\n");
 			ps.printf("%d %d\n", iw, ih);
 			
 			// Create image to contain a buffer for a single line, it is not
@@ -122,7 +122,7 @@ public class Main
 				
 				// Go through pixels and export to bulk format
 				for (int i = 0, o = 0; i < sa; i += 8, o++)
-					bulk[o] = (byte)(((rgb[i + 0] & 1) << 7) |
+					bulk[o] = (byte)(((rgb[i] & 1) << 7) |
 						((rgb[i + 1] & 1) << 6) |
 						((rgb[i + 2] & 1) << 5) |
 						((rgb[i + 3] & 1) << 4) |

@@ -48,9 +48,6 @@ public abstract class Reader
 		this.lock = __l;
 	}
 	
-	public abstract void close()
-		throws IOException;
-	
 	/**
 	 * Reads multiple characters.
 	 *

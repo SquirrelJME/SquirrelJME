@@ -26,7 +26,7 @@ public enum FieldAccessTime
 	/** Read access. */
 	READ,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

@@ -131,7 +131,7 @@ public final class ByteCodeProcessor
 	 *
 	 * @since 2019/04/06
 	 */
-	private final void __aaaProcess()
+	private void __aaaProcess()
 	{
 		ByteCode bytecode = this.bytecode;
 		ByteCodeState state = this.state;
@@ -543,7 +543,7 @@ public final class ByteCodeProcessor
 	 *
 	 * @since 2019/04/16
 	 */
-	private final void __doAConstNull()
+	private void __doAConstNull()
 	{
 		// -> [ref]
 		JavaStackResult result = this.state.stack.doStack(0, JavaType.OBJECT);
@@ -562,7 +562,7 @@ public final class ByteCodeProcessor
 	 *
 	 * @since 2019/04/06
 	 */
-	private final void __doArrayLength()
+	private void __doArrayLength()
 	{
 		// An exception may be thrown
 		this._canexception = true;
@@ -586,7 +586,7 @@ public final class ByteCodeProcessor
 	 * object.
 	 * @since 2019/04/06
 	 */
-	private final void __doArrayLoad(PrimitiveType __pt)
+	private void __doArrayLoad(PrimitiveType __pt)
 	{
 		// An exception may be thrown
 		this._canexception = true;
@@ -633,7 +633,7 @@ public final class ByteCodeProcessor
 	 * object.
 	 * @since 2019/04/06
 	 */
-	private final void __doArrayStore(PrimitiveType __pt)
+	private void __doArrayStore(PrimitiveType __pt)
 	{
 		// An exception may be thrown
 		this._canexception = true;
@@ -658,7 +658,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doCheckCast(ClassName __cn)
+	private void __doCheckCast(ClassName __cn)
 		throws NullPointerException
 	{
 		// An exception may be thrown
@@ -685,7 +685,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/16
 	 */
-	private final void __doConvert(StackJavaType __from, StackJavaType __to)
+	private void __doConvert(StackJavaType __from, StackJavaType __to)
 		throws NullPointerException
 	{
 		if (__from == null || __to == null)
@@ -710,7 +710,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doFieldGet(FieldReference __fr)
+	private void __doFieldGet(FieldReference __fr)
 		throws NullPointerException
 	{
 		if (__fr == null)
@@ -740,7 +740,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/04
 	 */
-	private final void __doFieldPut(FieldReference __fr)
+	private void __doFieldPut(FieldReference __fr)
 		throws NullPointerException
 	{
 		if (__fr == null)
@@ -769,7 +769,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doGoto(InstructionJumpTarget __jt)
+	private void __doGoto(InstructionJumpTarget __jt)
 		throws NullPointerException
 	{
 		if (__jt == null)
@@ -796,7 +796,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/05
 	 */
-	private final void __doIf(DataType __type, CompareType __ct,
+	private void __doIf(DataType __type, CompareType __ct,
 		InstructionJumpTarget __ijt)
 		throws NullPointerException
 	{
@@ -829,7 +829,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doIfCmp(DataType __type, CompareType __ct,
+	private void __doIfCmp(DataType __type, CompareType __ct,
 		InstructionJumpTarget __ijt)
 		throws NullPointerException
 	{
@@ -859,7 +859,7 @@ public final class ByteCodeProcessor
 	 * @param __v The value to increment by.
 	 * @since 2019/04/06
 	 */
-	private final void __doIInc(int __l, int __v)
+	private void __doIInc(int __l, int __v)
 	{
 		// Just write an integer to the integer so its state is known
 		JavaStackResult result = this.state.stack.
@@ -888,7 +888,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/16
 	 */
-	private final void __doInstanceOf(ClassName __cl)
+	private void __doInstanceOf(ClassName __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -914,7 +914,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/03
 	 */
-	private final void __doInvoke(InvokeType __t, MethodReference __r)
+	private void __doInvoke(InvokeType __t, MethodReference __r)
 		throws NullPointerException
 	{
 		if (__t == null || __r == null)
@@ -955,7 +955,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/03
 	 */
-	private final void __doLdc(ConstantValue __v)
+	private void __doLdc(ConstantValue __v)
 		throws NullPointerException
 	{
 		if (__v == null)
@@ -1026,7 +1026,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/03
 	 */
-	private final void __doLoad(DataType __jt, int __from)
+	private void __doLoad(DataType __jt, int __from)
 		throws NullPointerException
 	{
 		if (__jt == null)
@@ -1053,7 +1053,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/16
 	 */
-	private final void __doLookupSwitch(LookupSwitch __ls)
+	private void __doLookupSwitch(LookupSwitch __ls)
 		throws NullPointerException
 	{
 		if (__ls == null)
@@ -1079,7 +1079,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doMath(DataType __pt, MathType __mot)
+	private void __doMath(DataType __pt, MathType __mot)
 		throws NullPointerException
 	{
 		if (__pt == null || __mot == null)
@@ -1113,7 +1113,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doMathConst(DataType __pt, MathType __mot, Number __c)
+	private void __doMathConst(DataType __pt, MathType __mot, Number __c)
 		throws NullPointerException
 	{
 		if (__pt == null || __mot == null || __c == null)
@@ -1139,7 +1139,7 @@ public final class ByteCodeProcessor
 	 * @param __enter If the monitor is to be entered.
 	 * @since 2019/04/16
 	 */
-	private final void __doMonitor(boolean __enter)
+	private void __doMonitor(boolean __enter)
 	{
 		// Can toss exception
 		this._canexception = true;
@@ -1164,7 +1164,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	private final void __doMultiANewArray(ClassName __cl, int __dims)
+	private void __doMultiANewArray(ClassName __cl, int __dims)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -1194,7 +1194,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/04
 	 */
-	private final void __doNew(ClassName __cn)
+	private void __doNew(ClassName __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
@@ -1223,7 +1223,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/05
 	 */
-	private final void __doNewArray(ClassName __cn)
+	private void __doNewArray(ClassName __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
@@ -1253,7 +1253,7 @@ public final class ByteCodeProcessor
 	 *
 	 * @since 2019/04/07
 	 */
-	private final void __doNop()
+	private void __doNop()
 	{
 		// Just do nothing
 		this.__update(this.state.stack.doNothing());
@@ -1266,7 +1266,7 @@ public final class ByteCodeProcessor
 	 * returned.
 	 * @since 2019/04/03
 	 */
-	private final void __doReturn(JavaType __rt)
+	private void __doReturn(JavaType __rt)
 	{
 		ByteCodeState state = this.state;
 		
@@ -1289,7 +1289,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/04
 	 */
-	private final void __doStackShuffle(JavaStackShuffleType __st)
+	private void __doStackShuffle(JavaStackShuffleType __st)
 		throws NullPointerException
 	{
 		if (__st == null)
@@ -1316,7 +1316,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doStaticGet(FieldReference __fr)
+	private void __doStaticGet(FieldReference __fr)
 		throws NullPointerException
 	{
 		if (__fr == null)
@@ -1346,7 +1346,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/13
 	 */
-	private final void __doStaticPut(FieldReference __fr)
+	private void __doStaticPut(FieldReference __fr)
 		throws NullPointerException
 	{
 		if (__fr == null)
@@ -1376,7 +1376,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doStore(DataType __jt, int __to)
+	private void __doStore(DataType __jt, int __to)
 		throws NullPointerException
 	{
 		if (__jt == null)
@@ -1404,7 +1404,7 @@ public final class ByteCodeProcessor
 	 *
 	 * @since 2019/04/05
 	 */
-	private final void __doThrow()
+	private void __doThrow()
 	{
 		// An exception will be thrown
 		this._canexception = true;
@@ -1428,7 +1428,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/07
 	 */
-	private final void __update(JavaStackResult __jsr)
+	private void __update(JavaStackResult __jsr)
 		throws NullPointerException
 	{
 		if (__jsr == null)

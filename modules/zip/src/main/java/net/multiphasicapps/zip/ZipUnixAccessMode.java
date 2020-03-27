@@ -45,7 +45,7 @@ public enum ZipUnixAccessMode
 	/** Other execute. */
 	OTHER_EXECUTE,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

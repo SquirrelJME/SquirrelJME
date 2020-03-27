@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat.objects;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
 
 /**

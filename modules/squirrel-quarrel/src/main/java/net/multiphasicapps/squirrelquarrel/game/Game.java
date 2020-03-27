@@ -147,7 +147,7 @@ public class Game
 	 *
 	 * @since 2019/03/24
 	 */
-	private final void __boot()
+	private void __boot()
 	{
 		Units units = this.units;
 		Players players = this.players;

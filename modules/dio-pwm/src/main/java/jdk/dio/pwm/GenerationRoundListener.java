@@ -12,14 +12,11 @@ package jdk.dio.pwm;
 
 import java.nio.IntBuffer;
 import jdk.dio.OutputRoundListener;
-import jdk.dio.RoundCompletionEvent;
 
 public interface GenerationRoundListener
 	extends OutputRoundListener<PWMChannel, IntBuffer>
 {
-	void failed(Throwable __a, PWMChannel __b);
 	
-	void outputRoundCompleted(RoundCompletionEvent<PWMChannel, IntBuffer> __a);
 }
 
 

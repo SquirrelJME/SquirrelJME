@@ -62,7 +62,7 @@ final class __PrintFState__
 	 * Returns the specified argument.
 	 *
 	 * @param <C> The return type.
-	 * @param __i The index.
+	 * @param __cl The class type.
 	 * @return The argument value.
 	 * @throws IllegalArgumentException If the argument is not valid.
 	 * @throws NullPointerException If no class was specified.
@@ -85,7 +85,7 @@ final class __PrintFState__
 	 * Returns the specified argument.
 	 *
 	 * @param <C> The return type.
-	 * @param __i The index.
+	 * @param __cl The class type.
 	 * @param __def The default value, if the input is null then this will
 	 * be returned.
 	 * @return The argument value or the default if it was null.

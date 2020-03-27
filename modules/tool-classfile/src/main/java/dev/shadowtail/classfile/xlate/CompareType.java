@@ -41,7 +41,7 @@ public enum CompareType
 	/** Always false. */
 	FALSE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

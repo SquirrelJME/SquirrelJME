@@ -45,10 +45,10 @@ public final class MinimizedPoolBuilder
 	private final List<int[]> _parts =
 		new ArrayList<>();
 	
-	/**
-	 * Initializes the base pool.
-	 *
-	 * @since 2019/04/14
+	/*
+	  Initializes the base pool.
+	 
+	  @since 2019/04/14
 	 */
 	{
 		// Add null entry to mean nothing
@@ -194,7 +194,7 @@ public final class MinimizedPoolBuilder
 			long v = (Long)__v;
 			return this.__add(__v,
 				this.add((int)(v >>> 32)),
-				this.add((int)(v & 0xFFFFFFFF)));
+				this.add((int)(v)));
 		}
 		
 		// Double
@@ -203,7 +203,7 @@ public final class MinimizedPoolBuilder
 			long v = Double.doubleToRawLongBits((Double)__v);
 			return this.__add(__v,
 				this.add((int)(v >>> 32)),
-				this.add((int)(v & 0xFFFFFFFF)));
+				this.add((int)(v)));
 		}
 		
 		// Used String
@@ -455,7 +455,7 @@ public final class MinimizedPoolBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/24
 	 */
-	private final int __add(Object __v, int... __parts)
+	private int __add(Object __v, int... __parts)
 		throws NullPointerException
 	{
 		if (__v == null)

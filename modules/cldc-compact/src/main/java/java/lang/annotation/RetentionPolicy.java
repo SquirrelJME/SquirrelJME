@@ -27,7 +27,7 @@ public enum RetentionPolicy
 	/** Removed after compilation, does not appear in the class file. */
 	SOURCE(),
 	
-	/** End. */
+	/* End. */
 	;
 }
 

@@ -13,36 +13,32 @@ package java.util;
 public interface Deque<E>
 	extends Queue<E>
 {
-	boolean add(E __a);
 	
 	void addFirst(E __a);
 	
 	void addLast(E __a);
 	
-	boolean contains(Object __a);
-	
 	Iterator<E> descendingIterator();
 	
+	@Override
 	E element();
 	
 	E getFirst();
 	
 	E getLast();
 	
-	Iterator<E> iterator();
-	
-	boolean offer(E __a);
-	
 	boolean offerFirst(E __a);
 	
 	boolean offerLast(E __a);
 	
+	@Override
 	E peek();
 	
 	E peekFirst();
 	
 	E peekLast();
 	
+	@Override
 	E poll();
 	
 	E pollFirst();
@@ -53,9 +49,8 @@ public interface Deque<E>
 	
 	void push(E __a);
 	
+	@Override
 	E remove();
-	
-	boolean remove(Object __a);
 	
 	E removeFirst();
 	
@@ -65,6 +60,5 @@ public interface Deque<E>
 	
 	boolean removeLastOccurrence(Object __a);
 	
-	int size();
 }
 

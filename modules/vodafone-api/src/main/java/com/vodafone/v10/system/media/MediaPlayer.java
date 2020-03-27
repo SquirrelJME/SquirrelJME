@@ -51,12 +51,14 @@ public class MediaPlayer extends Canvas {
 		throw new todo.TODO();
 	}
 
-    public int getWidth()
+    @Override
+	public int getWidth()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getHeight()
+    @Override
+	public int getHeight()
 	{
 		throw new todo.TODO();
 	}
@@ -96,17 +98,20 @@ public class MediaPlayer extends Canvas {
 		throw new todo.TODO();
 	}
 
-    protected  void paint(Graphics var1)
+    @Override
+	protected  void paint(Graphics var1)
 	{
 		throw new todo.TODO();
 	}
 
-    protected  void showNotify()
+    @Override
+	protected  void showNotify()
 	{
 		throw new todo.TODO();
 	}
 
-    protected  void hideNotify()
+    @Override
+	protected  void hideNotify()
 	{
 		throw new todo.TODO();
 	}

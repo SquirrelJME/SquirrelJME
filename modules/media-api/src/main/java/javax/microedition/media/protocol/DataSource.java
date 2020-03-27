@@ -11,7 +11,6 @@
 package javax.microedition.media.protocol;
 
 import java.io.IOException;
-import javax.microedition.media.Control;
 import javax.microedition.media.Controllable;
 
 public abstract class DataSource
@@ -28,10 +27,6 @@ public abstract class DataSource
 	public abstract void disconnect();
 	
 	public abstract String getContentType();
-	
-	public abstract Control getControl(String __a);
-	
-	public abstract Control[] getControls();
 	
 	public abstract SourceStream[] getStreams();
 	

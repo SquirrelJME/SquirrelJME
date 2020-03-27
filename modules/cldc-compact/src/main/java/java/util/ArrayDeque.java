@@ -35,11 +35,13 @@ public class ArrayDeque<E>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void addFirst(E __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void addLast(E __a)
 	{
 		throw new todo.TODO();
@@ -63,21 +65,25 @@ public class ArrayDeque<E>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public Iterator<E> descendingIterator()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E element()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E getFirst()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E getLast()
 	{
 		throw new todo.TODO();
@@ -95,61 +101,73 @@ public class ArrayDeque<E>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean offer(E __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean offerFirst(E __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean offerLast(E __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E peek()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E peekFirst()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E peekLast()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E poll()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E pollFirst()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E pollLast()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E pop()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void push(E __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E remove()
 	{
 		throw new todo.TODO();
@@ -161,21 +179,25 @@ public class ArrayDeque<E>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E removeFirst()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean removeFirstOccurrence(Object __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E removeLast()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean removeLastOccurrence(Object __a)
 	{
 		throw new todo.TODO();

@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.memory.ReadableBasicMemory;
 import cc.squirreljme.jvm.memory.ReadableByteMemory;
 import cc.squirreljme.jvm.memory.WritableBasicMemory;
 import cc.squirreljme.jvm.memory.WritableByteMemory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -38,6 +39,10 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public final class MemoryManager
 	implements ReadableBasicMemory, WritableBasicMemory
 {
+	/** RAM storage starting area. */
+	private static final int _RAM_START_ADDRESS =
+		0x1000_0000;
+	
 	/** ROM storage starting area. */
 	private static final int _ROM_START_POINTER =
 		0x7000_0000;
@@ -78,7 +83,7 @@ public final class MemoryManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/14
 	 */
-	public SpringPointer appendRom(byte[] __data)
+	public final SpringPointer appendRom(byte[] __data)
 		throws NullPointerException
 	{
 		if (__data == null)
@@ -104,6 +109,23 @@ public final class MemoryManager
 			
 			return new SpringPointer(romNext);
 		}
+	}
+	
+	/**
+	 * Attaches the specified amount of RAM to the system.
+	 *
+	 * @param __len The amount of RAM to attach.
+	 * @return The resulting memory pointer.
+	 * @throws IllegalArgumentException If the length is zero or negative.
+	 * @since 2020/03/26
+	 */
+	public final SpringPointer attachRam(int __len)
+		throws IllegalArgumentException
+	{
+		if (__len <= 0)
+			throw new IllegalArgumentException("Cannot attach negative RAM.");
+		
+		throw Debugging.todo();
 	}
 	
 	/**

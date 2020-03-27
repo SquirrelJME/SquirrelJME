@@ -57,8 +57,6 @@ final class __VolumeEnumeration__
 	 * @param __tags The tags to use for basic filtering, if this is empty then
 	 * an empty enumeration will be returned, if this is {@code null} then all
 	 * tags will be selected.
-	 * @return The enumeration over the records.
-	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @throws NullPointerException If no backing store was used.
 	 * @since 2019/05/13
 	 */
@@ -336,7 +334,7 @@ final class __VolumeEnumeration__
 	 * @throws IllegalStateException If this was destroyed.
 	 * @since 2019/05/13
 	 */
-	private final void __checkDestroy()
+	private void __checkDestroy()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error DC0h Record store enumeration has been
@@ -351,7 +349,7 @@ final class __VolumeEnumeration__
 	 * @throws IllegalStateException If the update check could not be made.
 	 * @since 2019/05/13
 	 */
-	private final void __checkRebuild()
+	private void __checkRebuild()
 		throws IllegalStateException
 	{
 		// Could fail

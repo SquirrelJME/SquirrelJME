@@ -349,6 +349,7 @@ public final class StringBuilder
 	 * bounds.
 	 * @since 2018/09/29
 	 */
+	@Override
 	public char charAt(int __dx)
 		throws IndexOutOfBoundsException
 	{
@@ -603,6 +604,7 @@ public final class StringBuilder
 	 * @return The string length.
 	 * @since 2018/09/29
 	 */
+	@Override
 	public int length()
 	{
 		return this._at;
@@ -682,6 +684,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2019/05/11
 	 */
+	@Override
 	public CharSequence subSequence(int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
@@ -754,7 +757,7 @@ public final class StringBuilder
 	 * @return The buffer.
 	 * @since 2018/09/23
 	 */
-	private final char[] __buffer(int __l)
+	private char[] __buffer(int __l)
 	{
 		// Get buffer properties
 		char[] buffer = this._buffer;

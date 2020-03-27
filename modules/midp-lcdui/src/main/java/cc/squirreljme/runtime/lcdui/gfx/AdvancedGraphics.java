@@ -1288,7 +1288,7 @@ public class AdvancedGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/29
 	 */
-	private final Text __buildText(String __s)
+	private Text __buildText(String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
@@ -1333,7 +1333,7 @@ public class AdvancedGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/18
 	 */
-	private final void __drawRegion(Image __src, int __xsrc, int __ysrc,
+	private void __drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch, int __wdest, int __hdest, boolean __dswap)
 		throws IllegalArgumentException, NullPointerException
@@ -1612,7 +1612,7 @@ public class AdvancedGraphics
 	 * @param __txt The message text.
 	 * @since 2019/03/25
 	 */
-	private final void __unimplemented(int __x, int __y, String __txt)
+	private void __unimplemented(int __x, int __y, String __txt)
 		throws NullPointerException
 	{
 		if (__txt == null)
@@ -1629,7 +1629,7 @@ public class AdvancedGraphics
 	 *
 	 * @since 2019/03/24
 	 */
-	private final void __updateFunctions()
+	private void __updateFunctions()
 	{
 		boolean doblending = this.doblending,
 			dotstroke = this.dotstroke;
@@ -1690,7 +1690,7 @@ public class AdvancedGraphics
 	 * @return The clipping bit flags.
 	 * @since 2017/09/10
 	 */
-	private static final int __csOut(int __x, int __y, int __csx, int __csy,
+	private static int __csOut(int __x, int __y, int __csx, int __csy,
 		int __cex, int __cey)
 	{
 		int rv = 0;
@@ -1724,7 +1724,7 @@ public class AdvancedGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private static final int[] __transform(int __trans, int[] __data,
+	private static int[] __transform(int __trans, int[] __data,
 		int __wsrc, int __hsrc, int[] __dimout, boolean __dswap)
 		throws NullPointerException
 	{

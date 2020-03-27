@@ -55,7 +55,7 @@ public enum JavaStackShuffleType
 	/** swap. */
 	SWAP("ba:ab"),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** Forms of this operation. */

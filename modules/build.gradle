@@ -24,11 +24,15 @@ subprojects
 		// All files are always in UTF-8 format
 		compileJava.options.encoding = "utf-8"
 
+		// Emit deprecation errors
+		compileJava.options.deprecation = true
+
 		// Copy to tests
 		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
 		compileTestJava.targetCompatibility = compileJava.targetCompatibility
 		compileTestJava.options.encoding = compileJava.options.encoding
 		compileTestJava.options.verbose = compileJava.options.verbose
+		compileTestJava.options.deprecation = compileJava.options.deprecation
 
 		// Copy to JavaDoc
 		javadoc.options.source = "1.7"

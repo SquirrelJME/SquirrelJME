@@ -38,7 +38,7 @@ public final class IPAddress
 	 * Initializes the address.
 	 *
 	 * @param __h The hostname, may be {@code null}.
-	 * @param __p The port, may be {@link ASSIGNED_PORT}.
+	 * @param __p The port, may be {@link #ASSIGNED_PORT}.
 	 * @throws IllegalArgumentException If the hostname or port is not valid.
 	 * @since 2019/05/06
 	 */

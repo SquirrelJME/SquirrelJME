@@ -13,7 +13,6 @@ package java.lang;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -68,6 +67,7 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(Long __a)
 	{
 		throw new todo.TODO();
@@ -381,7 +381,7 @@ public final class Long
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
-	private static final String __unsignedString(long __v, int __b)
+	private static String __unsignedString(long __v, int __b)
 	{
 		throw new todo.TODO();
 	}

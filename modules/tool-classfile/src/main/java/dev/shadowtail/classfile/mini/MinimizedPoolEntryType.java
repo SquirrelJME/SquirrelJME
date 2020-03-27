@@ -64,7 +64,7 @@ public enum MinimizedPoolEntryType
 	/** A string which has been noted for debug purposes. */
 	NOTED_STRING,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

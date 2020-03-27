@@ -45,7 +45,7 @@ public enum DataType
 	/** Double. */
 	DOUBLE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

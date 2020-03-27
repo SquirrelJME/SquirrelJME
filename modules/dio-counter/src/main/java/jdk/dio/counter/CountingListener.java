@@ -18,7 +18,6 @@ public interface CountingListener
 {
 	void countValueAvailable(CountingEvent __a);
 	
-	void failed(Throwable __a, PulseCounter __b);
 }
 
 

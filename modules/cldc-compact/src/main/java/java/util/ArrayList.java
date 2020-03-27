@@ -24,7 +24,7 @@ package java.util;
  */
 public class ArrayList<E>
 	extends AbstractList<E>
-	implements List<E>, RandomAccess, Cloneable
+	implements RandomAccess, Cloneable
 {
 	/** Capacity growth size. */
 	private static final int _GROWTH =

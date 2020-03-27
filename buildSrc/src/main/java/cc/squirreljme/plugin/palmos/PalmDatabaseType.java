@@ -22,7 +22,7 @@ public enum PalmDatabaseType
 	/** Record database. */
 	RECORD,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

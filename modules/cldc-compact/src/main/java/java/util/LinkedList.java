@@ -32,7 +32,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 	"head and tail of the list.")
 public class LinkedList<E>
 	extends AbstractSequentialList<E>
-	implements List<E>, Deque<E>, Cloneable
+	implements Deque<E>, Cloneable
 {
 	/** The list head. */
 	final __Link__<E> _head =

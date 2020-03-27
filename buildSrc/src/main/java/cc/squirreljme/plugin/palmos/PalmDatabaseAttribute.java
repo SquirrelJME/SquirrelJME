@@ -55,7 +55,7 @@ public enum PalmDatabaseAttribute
 	/** Database is open and has not been closed properly. */
 	OPEN(0x8000),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The bit used. */

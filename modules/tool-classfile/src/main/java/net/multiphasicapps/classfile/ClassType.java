@@ -29,7 +29,7 @@ public enum ClassType
 	/** Annotation. */
 	ANNOTATION,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

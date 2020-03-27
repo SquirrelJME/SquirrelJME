@@ -22,7 +22,7 @@ enum __RewriteType__
 	/** Integer. */
 	INTEGER,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

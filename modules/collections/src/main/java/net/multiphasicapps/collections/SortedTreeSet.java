@@ -68,7 +68,6 @@ public class SortedTreeSet<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	@SuppressWarnings({"unchecked"})
 	public SortedTreeSet(Comparator<? extends V> __comp)
 		throws NullPointerException
 	{
@@ -89,7 +88,6 @@ public class SortedTreeSet<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	@SuppressWarnings({"unchecked"})
 	public SortedTreeSet(Comparator<? extends V> __comp,
 		Collection<? extends V> __s)
 		throws NullPointerException

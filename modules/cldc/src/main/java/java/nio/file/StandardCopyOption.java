@@ -19,7 +19,7 @@ public enum StandardCopyOption
 	
 	REPLACE_EXISTING,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

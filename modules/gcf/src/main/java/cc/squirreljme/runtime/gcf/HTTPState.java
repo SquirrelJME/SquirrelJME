@@ -25,7 +25,7 @@ public enum HTTPState
 	/** Connection is closed. */
 	CLOSED,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

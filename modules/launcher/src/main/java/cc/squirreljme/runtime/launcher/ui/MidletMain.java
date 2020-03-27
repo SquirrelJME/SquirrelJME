@@ -69,10 +69,10 @@ public class MidletMain
 	/** Automatic launch program. */
 	private volatile String _autolaunch;
 	
-	/**
-	 * Initializes the launcher.
-	 *
-	 * @since 2019/04/14
+	/*
+	  Initializes the launcher.
+	 
+	  @since 2019/04/14
 	 */
 	{
 		// Do not crash if we cannot read properties
@@ -250,6 +250,7 @@ public class MidletMain
 				 * {@inheritDoc}
 				 * @since 2019/05/19
 				 */
+				@Override
 				public final void run()
 				{
 					MidletMain.this.refresh();

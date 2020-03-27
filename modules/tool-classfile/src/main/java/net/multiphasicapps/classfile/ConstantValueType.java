@@ -35,7 +35,7 @@ public enum ConstantValueType
 	/** Class. */
 	CLASS,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

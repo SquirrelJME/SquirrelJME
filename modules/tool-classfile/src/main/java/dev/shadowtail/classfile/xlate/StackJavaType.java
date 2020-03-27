@@ -31,7 +31,7 @@ public enum StackJavaType
 	/** Double. */
 	DOUBLE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

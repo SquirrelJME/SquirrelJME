@@ -237,7 +237,7 @@ public final class CodecFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/19
 	 */
-	private static final String __normalizeEncodingName(String __n)
+	private static String __normalizeEncodingName(String __n)
 		throws NullPointerException
 	{
 		if (__n == null)

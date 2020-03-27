@@ -117,7 +117,7 @@ public final class TaskAccess
 	 * Starts the given thread.
 	 *
 	 * @param __t The thread which is to run, the execution point of the
-	 * thread is the {@link Thread#__start()} method.
+	 * thread is the {@code Thread.__start()} method.
 	 * @param __n The name hint of this thread.
 	 * @return The thread ID.
 	 * @since 2018/11/17

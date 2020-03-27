@@ -16,6 +16,7 @@ package javax.microedition.midlet;
  *
  * @since 2019/09/25
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
 public class MIDletStateChangeException
 	extends Exception

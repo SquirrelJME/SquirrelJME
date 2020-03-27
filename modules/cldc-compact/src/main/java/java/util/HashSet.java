@@ -14,7 +14,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
 public class HashSet<E>
 	extends AbstractSet<E>
-	implements Set<E>, Cloneable
+	implements Cloneable
 {
 	/** Internal map. */
 	private final __BucketMap__<E, Object> _map;

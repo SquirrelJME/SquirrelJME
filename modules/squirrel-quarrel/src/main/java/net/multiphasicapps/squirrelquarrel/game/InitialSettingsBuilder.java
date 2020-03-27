@@ -48,10 +48,10 @@ public class InitialSettingsBuilder
 	volatile long _seed =
 		System.currentTimeMillis();
 	
-	/**
-	 * Initializes some more complex settings.
-	 *
-	 * @since 2018/03/19
+	/*
+	  Initializes some more complex settings.
+	 
+	  @since 2018/03/19
 	 */
 	{
 		// Start off all players on their own team (FFA)

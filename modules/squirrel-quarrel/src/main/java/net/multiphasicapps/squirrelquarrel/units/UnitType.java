@@ -28,7 +28,7 @@ public enum UnitType
 	/** Chlorophid: Garden. */
 	CHLOROPHID_GARDEN,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** Base unit information and its properties. */

@@ -81,10 +81,10 @@ public final class Formatter
 	/** The IOException if any was generated. */
 	private IOException _ioe;
 	
-	/**
-	 * Cache the line separator which is derived from the system properties.
-	 *
-	 * @since 2018/10/10
+	/*
+	  Cache the line separator which is derived from the system properties.
+	 
+	  @since 2018/10/10
 	 */
 	static
 	{
@@ -243,7 +243,7 @@ public final class Formatter
 					out.append(c);
 					
 					// Just skip the single character
-					next = i + 1;;
+					next = i + 1;
 					continue;
 				}
 				
@@ -391,7 +391,8 @@ public final class Formatter
 	 * @param __pf Printing state.
 	 * @param __n The number to print.
 	 * @param __base The number's base.
-	 * @throws 
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/03
 	 */
 	private static String __formatOtherUnsignedInt(__PrintFState__ __pf,
 		Number __n, int __base)
@@ -416,7 +417,7 @@ public final class Formatter
 		else if (__n instanceof Short)
 			input = __n.shortValue() & 0xFFFF;
 		else if (__n instanceof Integer)
-			input = __n.intValue() & 0xFFFFFFFF;
+			input = __n.intValue();
 		else
 			input = __n.longValue();
 		

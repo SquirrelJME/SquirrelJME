@@ -28,6 +28,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 		}
@@ -40,6 +41,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int pac = __ag.paintcolorhigh;
@@ -67,6 +69,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int pac = __ag.paintalphacolor;
@@ -107,6 +110,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int __color = __vi[0] | 0xFF_000000,
@@ -169,6 +173,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			// Not implemented, use basic function
@@ -183,6 +188,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int __x1 = __vi[0],
@@ -241,6 +247,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int __x1 = __vi[0],
@@ -302,6 +309,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			// Not implemented, use basic function
@@ -342,6 +350,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			// Not implemented, use basic function
@@ -382,6 +391,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int __o = __vi[0],
@@ -415,6 +425,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int __o = __vi[0],
@@ -442,9 +453,8 @@ public enum AdvancedFunction
 						srb = ((pac & 0xFF00FF) * 0xFF),
 						sgg = (((pac >>> 8) & 0xFF) * 0xFF),
 						dcc = data[dp],
-						xrb = (srb + ((dcc & 0xFF00FF) * 0x00)) >>> 8,
-						xgg = (((sgg +
-							(((dcc >>> 8) & 0xFF) * 0x00)) + 1) * 257) >>> 16;
+						xrb = (srb) >>> 8,
+						xgg = (((sgg) + 1) * 257) >>> 16;
 					
 					data[dp] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
 				}
@@ -458,6 +468,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int __o = __vi[0],
@@ -503,6 +514,7 @@ public enum AdvancedFunction
 		 * {@inheritDoc}
 		 * @since 2019/03/24
 		 */
+		@Override
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
 			int __o = __vi[0],
@@ -541,7 +553,7 @@ public enum AdvancedFunction
 		}
 	},
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

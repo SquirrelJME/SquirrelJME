@@ -35,7 +35,7 @@ public enum SuiteStateFlag
 	/** The suite cannot be updated. */
 	UPDATE_DENIED,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

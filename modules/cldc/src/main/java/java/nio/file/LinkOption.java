@@ -15,7 +15,7 @@ public enum LinkOption
 {
 	NOFOLLOW_LINKS(),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	LinkOption()

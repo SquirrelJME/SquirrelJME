@@ -42,7 +42,7 @@ public enum ClassFlag
 	/** Enumeration. */
 	ENUM,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

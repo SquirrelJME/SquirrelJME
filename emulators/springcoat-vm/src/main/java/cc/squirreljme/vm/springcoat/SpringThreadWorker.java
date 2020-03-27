@@ -61,12 +61,6 @@ public final class SpringThreadWorker
 	/** The thread being run. */
 	protected final SpringThread thread;
 	
-	/** The thread to signal instead for interrupt. */
-	protected final Thread signalinstead;
-	
-	/** The current step count. */
-	private volatile int _stepcount;
-	
 	/**
 	 * Initialize the worker.
 	 *
@@ -85,7 +79,6 @@ public final class SpringThreadWorker
 		
 		this.machine = __m;
 		this.thread = __t;
-		this.signalinstead = (__main ? Thread.currentThread() : null);
 		
 		// Set the thread's worker to this
 		if (__t._worker == null)
@@ -258,9 +251,8 @@ public final class SpringThreadWorker
 			switch (type.toString())
 			{
 				case "java/lang/Integer":
-					return Integer.valueOf((Integer)
-						sso.fieldByField(sscl.lookupField(false,
-						"_value", "I")).get());
+					return sso.fieldByField(sscl.lookupField(false,
+						"_value", "I")).get();
 				
 				case "java/lang/String":
 					return new String(this.<char[]>asNativeObject(
@@ -1282,7 +1274,6 @@ public final class SpringThreadWorker
 	 * @return The converted value.
 	 * @since 2020/03/13
 	 */
-	@SuppressWarnings("PointlessBitwiseExpression")
 	final long mapObjectToLong(SpringObject __v)
 	{
 		if (__v == SpringNullObject.NULL)
@@ -1576,7 +1567,7 @@ public final class SpringThreadWorker
 	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/16
 	 */
-	private final SpringField __lookupInstanceField(FieldReference __f)
+	private SpringField __lookupInstanceField(FieldReference __f)
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 			SpringNoSuchFieldException
 	{
@@ -1612,7 +1603,7 @@ public final class SpringThreadWorker
 	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/09
 	 */
-	private final SpringFieldStorage __lookupStaticField(FieldReference __f)
+	private SpringFieldStorage __lookupStaticField(FieldReference __f)
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 			SpringNoSuchFieldException
 	{
@@ -1644,7 +1635,7 @@ public final class SpringThreadWorker
 	 *
 	 * @since 2018/09/03
 	 */
-	private final strictfp void __singleStep()
+	private strictfp void __singleStep()
 	{
 		// Need the current frame and its byte code
 		SpringThread thread = this.thread;
@@ -1669,9 +1660,6 @@ public final class SpringThreadWorker
 			
 			throw e;
 		}
-		
-		// Increase the step count
-		this._stepcount++;
 		
 		SpringThread.Frame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();
@@ -3433,7 +3421,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/19
 	 */
-	private final void __vmInvokeInterface(Instruction __i, SpringThread __t,
+	private void __vmInvokeInterface(Instruction __i, SpringThread __t,
 		SpringThread.Frame __f)
 		throws NullPointerException
 	{
@@ -3523,7 +3511,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private final void __vmInvokeSpecial(Instruction __i, SpringThread __t,
+	private void __vmInvokeSpecial(Instruction __i, SpringThread __t,
 		SpringThread.Frame __f)
 		throws NullPointerException
 	{
@@ -3592,7 +3580,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private final void __vmInvokeStatic(Instruction __i, SpringThread __t,
+	private void __vmInvokeStatic(Instruction __i, SpringThread __t,
 		SpringThread.Frame __f)
 		throws NullPointerException
 	{
@@ -3647,7 +3635,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	private final void __vmInvokeVirtual(Instruction __i, SpringThread __t,
+	private void __vmInvokeVirtual(Instruction __i, SpringThread __t,
 		SpringThread.Frame __f)
 		throws NullPointerException
 	{
@@ -3697,7 +3685,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private final void __vmNew(Instruction __i, SpringThread.Frame __f)
+	private void __vmNew(Instruction __i, SpringThread.Frame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __f == null)
@@ -3727,7 +3715,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	private final void __vmReturn(SpringThread __thread, Object __value)
+	private void __vmReturn(SpringThread __thread, Object __value)
 		throws NullPointerException
 	{
 		if (__thread == null || __value == null)

@@ -114,10 +114,10 @@ public class Events
 		/** The last key done. */
 		volatile KeyboardType _keyboardtype;
 		
-		/**
-		 * Initializes the canvas.
-		 *
-		 * @since 2018/12/01
+		/*
+		  Initializes the canvas.
+		 
+		  @since 2018/12/01
 		 */
 		{
 			// Setup title
@@ -298,7 +298,7 @@ public class Events
 	 *
 	 * @since 2018/12/01
 	 */
-	public static enum KeyboardType
+	public enum KeyboardType
 	{
 		/** Pressed. */
 		PRESSED,
@@ -309,7 +309,7 @@ public class Events
 		/** Repeated. */
 		REPEATED,
 		
-		/** End. */
+		/* End. */
 		;
 	}
 	
@@ -318,7 +318,7 @@ public class Events
 	 *
 	 * @since 2018/12/01
 	 */
-	public static enum PointerType
+	public enum PointerType
 	{
 		/** Pressed. */
 		PRESSED,
@@ -329,7 +329,7 @@ public class Events
 		/** Dragged. */
 		DRAGGED,
 		
-		/** End. */
+		/* End. */
 		;
 	}
 }

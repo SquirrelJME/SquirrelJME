@@ -134,7 +134,7 @@ enum __PrintFConversion__
 	/** Date and time as: %ta %tb %td %tT %tZ %tY. */
 	DATE_LONG_FORMAT,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -253,7 +253,7 @@ enum __PrintFConversion__
 	 * @return The conversion or {@code null} if it is not valid.
 	 * @since 2018/09/28
 	 */
-	static final __PrintFConversion__ __decode(int __f, int __s)
+	static __PrintFConversion__ __decode(int __f, int __s)
 	{
 		// There are a ton of date formats, so just if a date is used do
 		// not bother

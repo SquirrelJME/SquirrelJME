@@ -141,7 +141,7 @@ public class MegaTileCacher
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	private static final Image __cacheTile(TerrainType __t)
+	private static Image __cacheTile(TerrainType __t)
 		throws NullPointerException
 	{
 		// Check

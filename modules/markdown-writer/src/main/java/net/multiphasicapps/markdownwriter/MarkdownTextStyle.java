@@ -32,7 +32,7 @@ public enum MarkdownTextStyle
 	/** Source code. */
 	CODE(false),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** Is this a normal text style? */

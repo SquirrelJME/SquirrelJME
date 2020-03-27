@@ -22,7 +22,7 @@ enum __RewriteValue__
 	/** Size. */
 	SIZE,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

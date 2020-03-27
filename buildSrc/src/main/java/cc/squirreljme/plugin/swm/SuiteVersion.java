@@ -285,7 +285,7 @@ public final class SuiteVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	private static final int[] __decodeVersion(String __v)
+	private static int[] __decodeVersion(String __v)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check

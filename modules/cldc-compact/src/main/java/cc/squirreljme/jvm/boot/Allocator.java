@@ -300,7 +300,7 @@ public final class Allocator
 	 * @return The allocation pointer.
 	 * @since 2019/06/21
 	 */
-	private static final int __claim(int __tag, int __want, int __seeker,
+	private static int __claim(int __tag, int __want, int __seeker,
 		int __csz, int __cnx)
 	{
 		// Calculate free space in this chunk

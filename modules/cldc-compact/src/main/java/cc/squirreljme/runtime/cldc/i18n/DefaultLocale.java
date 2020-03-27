@@ -55,7 +55,7 @@ public final class DefaultLocale
 	 * @return The default locale.
 	 * @since 2018/09/20
 	 */
-	private static final Locale __defaultLocale()
+	private static Locale __defaultLocale()
 	{
 		// Use local from system property
 		String prop = null;

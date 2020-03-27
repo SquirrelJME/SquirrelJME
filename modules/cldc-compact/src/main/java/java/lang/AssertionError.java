@@ -111,7 +111,7 @@ public class AssertionError
 	 * @return The string form of the object.
 	 * @since 2018/12/04
 	 */
-	private static final String __convert(Object __o)
+	private static String __convert(Object __o)
 	{
 		if (__o == null)
 			return "null";

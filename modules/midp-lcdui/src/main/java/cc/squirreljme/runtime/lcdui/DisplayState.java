@@ -23,7 +23,7 @@ public enum DisplayState
 	/** The foregound state. */
 	FOREGROUND,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

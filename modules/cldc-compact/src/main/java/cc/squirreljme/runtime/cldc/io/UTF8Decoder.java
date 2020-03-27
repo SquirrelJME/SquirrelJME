@@ -73,12 +73,12 @@ public final class UTF8Decoder
 				
 				// U+0080 to U+07FF
 			case 2:
-				return (((__b[__o + 0] & 0b11111) << 6) |
+				return (((__b[__o] & 0b11111) << 6) |
 					(__b[__o + 1] & 0b111111)) | 0x2_0000;
 				
 				// U+0800 to U+FFFF
 			case 3:
-				return (((__b[__o + 0] & 0b1111) << 12) |
+				return (((__b[__o] & 0b1111) << 12) |
 					((__b[__o + 1] & 0b111111) << 6) |
 					(__b[__o + 2] & 0b111111)) | 0x3_0000;
 				

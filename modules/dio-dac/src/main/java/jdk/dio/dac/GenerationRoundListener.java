@@ -12,14 +12,11 @@ package jdk.dio.dac;
 
 import java.nio.IntBuffer;
 import jdk.dio.OutputRoundListener;
-import jdk.dio.RoundCompletionEvent;
 
 public interface GenerationRoundListener
 	extends OutputRoundListener<DACChannel, IntBuffer>
 {
-	void failed(Throwable __a, DACChannel __b);
 	
-	void outputRoundCompleted(RoundCompletionEvent<DACChannel, IntBuffer> __a);
 }
 
 

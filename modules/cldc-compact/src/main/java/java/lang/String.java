@@ -355,6 +355,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/02
 	 */
+	@Override
 	public int compareTo(String __o)
 		throws NullPointerException
 	{
@@ -1384,7 +1385,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/15
 	 */
-	private final boolean __contentEquals(CharSequence __s)
+	private boolean __contentEquals(CharSequence __s)
 		throws NullPointerException
 	{
 		// Check
@@ -1415,7 +1416,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/08
 	 */
-	private final byte[] __getBytes(Encoder __e)
+	private byte[] __getBytes(Encoder __e)
 		throws NullPointerException
 	{
 		if (__e == null)
@@ -1464,7 +1465,7 @@ public final class String
 	 * @return The index of the sequence or {@code -1} if it is not found.
 	 * @since 2019/05/14
 	 */
-	private final int __indexOf(CharSequence __b, int __i)
+	private int __indexOf(CharSequence __b, int __i)
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");

@@ -402,7 +402,7 @@ public class HTTPClientConnection
 	 * state.
 	 * @since 2019/05/13
 	 */
-	private final HTTPRequestBuilder __request()
+	private HTTPRequestBuilder __request()
 		throws IOException
 	{
 		// {@squirreljme.error EC03 Cannot access the request

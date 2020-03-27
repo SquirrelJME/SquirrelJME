@@ -786,7 +786,7 @@ public final class SpringClass
 	 * @return The root type of this type.
 	 * @since 2018/09/27
 	 */
-	private final SpringClass __rootType()
+	private SpringClass __rootType()
 	{
 		SpringClass rv = this;
 		for (SpringClass r = this; r != null; r = r.component)

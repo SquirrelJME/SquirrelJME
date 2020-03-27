@@ -43,7 +43,7 @@ public enum ArgumentFormat
 	/** 64-bit float. */
 	FLOAT64,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

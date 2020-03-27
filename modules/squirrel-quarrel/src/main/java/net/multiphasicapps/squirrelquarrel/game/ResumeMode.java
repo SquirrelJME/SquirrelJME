@@ -23,7 +23,7 @@ public enum ResumeMode
 	/** Treat it as a replay. */
 	REPLAY,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

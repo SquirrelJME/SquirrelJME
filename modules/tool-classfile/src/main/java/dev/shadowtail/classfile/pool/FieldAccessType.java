@@ -23,7 +23,7 @@ public enum FieldAccessType
 	/** Instance. */
 	INSTANCE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

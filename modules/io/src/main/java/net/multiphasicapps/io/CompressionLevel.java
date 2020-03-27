@@ -36,7 +36,7 @@ public enum CompressionLevel
 	/** Slowest compression. */
 	SLOWEST,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The default compression level. */

@@ -170,7 +170,7 @@ public class ClassFlags
 	 * @throws InvalidClassFormatException If they are not valid.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags()
+	private void __checkFlags()
 		throws InvalidClassFormatException
 	{
 		// Interface?

@@ -36,12 +36,14 @@ public class StringKeyHashtable
 		throw new todo.TODO();
 	}
 
-    public final Object put(Object var1, Object var2)
+    @Override
+	public final Object put(Object var1, Object var2)
 	{
 		throw new todo.TODO();
 	}
 
-    protected final void rehash()
+    @Override
+	protected final void rehash()
 	{
 		throw new todo.TODO();
 	}

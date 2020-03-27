@@ -31,8 +31,6 @@ public interface Collection<E>
 	
 	boolean isEmpty();
 	
-	Iterator<E> iterator();
-	
 	boolean remove(Object __a);
 	
 	boolean removeAll(Collection<?> __a);

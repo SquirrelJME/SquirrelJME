@@ -34,12 +34,14 @@ public class VideoData extends MediaData {
 		throw new todo.TODO();
 	}
 
-    public String getMediaType()
+    @Override
+	public String getMediaType()
 	{
 		throw new todo.TODO();
 	}
 
-    public void setData(byte[] var1)
+    @Override
+	public void setData(byte[] var1)
 	{
 		throw new todo.TODO();
 	}

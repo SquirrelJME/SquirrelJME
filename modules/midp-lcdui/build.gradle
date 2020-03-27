@@ -63,7 +63,7 @@ class CompileFonts extends DefaultTask {
 		}
 
 		// Does not exist!
-		return null;
+		return null
 	}
 
 	/** Performs the task of compiling the fonts. */
@@ -80,7 +80,7 @@ class CompileFonts extends DefaultTask {
 						toString(),
 					"build//monospace-*.pcf")
 
-				throw new Error("TODO");
+				throw new Error("TODO")
 			}
 	}
 }

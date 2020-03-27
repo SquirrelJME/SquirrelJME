@@ -29,7 +29,7 @@ public enum SuiteType
 	/** A system suite. */
 	SYSTEM,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
 import cc.squirreljme.vm.springcoat.objects.ArrayViewer;
 import cc.squirreljme.vm.springcoat.objects.ObjectViewer;
 import java.util.Map;
@@ -34,7 +35,7 @@ public final class ObjectLoader
 		new ClassName("cc/squirreljme/jvm/ClassInfo");
 	
 	/** Load-UTF and intern function. */
-	private static final MethodNameAndType _LOAD_NAME_AND_TYPE =
+	private static final MethodNameAndType _LOAD_UTF_NAT =
 		new MethodNameAndType("__loadUtfAndIntern",
 		"(J)Ljava/lang/String;");
 	
@@ -56,7 +57,7 @@ public final class ObjectLoader
 	/**
 	 * Loads the class info from the given class.
 	 *
-	 * @param __class The class ot map.
+	 * @param __class The class to map.
 	 * @return The object for this class.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/21
@@ -81,7 +82,8 @@ public final class ObjectLoader
 			MemoryManager mmu = __thread.machine.tasks.memory;
 			
 			// Initialize instance
-			rv = __thread.newInstance(_CLASSINFO_CLASS, _CLASSINFO_CONSTRUCTOR,
+			rv = __thread.newInstance(ObjectLoader._CLASSINFO_CLASS,
+				ObjectLoader._CLASSINFO_CONSTRUCTOR,
 				0, // int __fl
 				(long)-1, // long __minip
 				mmu.loadUtf(__class.name.toString()).pointer, // long __namep
@@ -134,7 +136,7 @@ public final class ObjectLoader
 		
 		// Call the string internal intern since it does the things needed
 		return __thread.invokeMethod(true, ObjectLoader._STRING_CLASS,
-			ObjectLoader._LOAD_NAME_AND_TYPE, utfPointer.pointer);
+			ObjectLoader._LOAD_UTF_NAT, utfPointer.pointer);
 	}
 	
 	/**
@@ -146,14 +148,18 @@ public final class ObjectLoader
 	 * @param __len The length of the array.
 	 * @return The array viewer.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SpringNegativeArraySizeException If the length is negative.
 	 * @since 2020/03/25
 	 */
 	public static <T> ArrayViewer<T> newArray(SpringThreadWorker __thread,
 		SpringClass __componentType, int __len)
-		throws NullPointerException
+		throws NullPointerException, SpringNegativeArraySizeException
 	{
 		if (__thread == null || __componentType == null)
 			throw new NullPointerException("NARG");
+		
+		if (__len < 0)
+			throw new SpringNegativeArraySizeException("Negative size.");
 		
 		throw Debugging.todo();
 	}
@@ -178,7 +184,7 @@ public final class ObjectLoader
 	}
 	
 	/**
-	 * Allocates a new string.
+	 * Allocates a new string without interning it.
 	 *
 	 * @param __thread The allocating thread.
 	 * @param __s The string to allocate.

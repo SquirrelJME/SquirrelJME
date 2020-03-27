@@ -158,8 +158,8 @@ public enum DrawingItemMethod
 			__g.drawString("Text Field", __x, __y, Graphics.TOP);
 		}
 	},
-
-	/** End. */
+	
+	/* End. */
 	;
 	
 	/**

@@ -16,7 +16,7 @@ package net.multiphasicapps.squirrelquarrel.util;
  * @since 2018/03/18
  */
 public final class ConstantFixedPoint
-	implements Comparable<FixedPoint>, FixedPoint
+	implements FixedPoint
 {
 	/** Bit shift. */
 	public static final int SHIFT =

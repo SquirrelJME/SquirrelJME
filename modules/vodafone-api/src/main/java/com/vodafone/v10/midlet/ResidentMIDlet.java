@@ -24,17 +24,6 @@ public abstract class ResidentMIDlet
 	{
 		throw new todo.TODO();
 	}
-
-    public abstract void ring();
-
-    public abstract void hungup();
-
-    public abstract void received(int var1);
-
-    public abstract void notice(String var1);
-
-    public abstract void ringStarted();
-
-    public abstract void ringStopped();
+	
 }
 

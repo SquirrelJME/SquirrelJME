@@ -10,7 +10,6 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import java.io.PrintStream;
 

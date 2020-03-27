@@ -1063,7 +1063,7 @@ public class InflaterInputStream
 			else
 				if (this.__readBits(1, true) != 0)
 					if (this.__readBits(1, true) != 0)
-						return 0 + this.__readBits(4, true);
+						return this.__readBits(4, true);
 					else
 						return 272 + this.__readBits(3, true);
 				else

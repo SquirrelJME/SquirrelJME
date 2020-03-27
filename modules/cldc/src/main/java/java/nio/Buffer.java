@@ -17,6 +17,33 @@ public abstract class Buffer
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the array of the buffer.
+	 *
+	 * @return The array buffer.
+	 * @since 2020/03/26
+	 */
+	@SuppressWarnings("unused")
+	abstract Object array();
+	
+	/**
+	 * Does this have an array?
+	 *
+	 * @return If this has an array.
+	 * @since 2020/03/26
+	 */
+	@SuppressWarnings("unused")
+	abstract boolean hasArray();
+	
+	/**
+	 * Returns the offset of the array.
+	 *
+	 * @return The array offset.
+	 * @since 2020/03/26
+	 */
+	@SuppressWarnings("unused")
+	abstract int arrayOffset();
+	
 	public final int capacity()
 	{
 		throw new todo.TODO();

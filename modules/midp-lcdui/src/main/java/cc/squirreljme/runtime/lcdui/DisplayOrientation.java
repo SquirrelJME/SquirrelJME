@@ -31,7 +31,7 @@ public enum DisplayOrientation
 	/** Portrait, rotated 180 degrees. */
 	PORTRAIT_180,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

@@ -29,7 +29,7 @@ public enum SuiteDependencyType
 	/** Proprietary. */
 	PROPRIETARY,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
