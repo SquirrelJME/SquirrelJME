@@ -22,17 +22,17 @@ import cc.squirreljme.jvm.JVMFunction;
 public final class ConfigReader
 {
 	/** The configuration base. */
-	protected final int configbase;
+	protected final int configBase;
 	
 	/**
 	 * Initializes the configuration reader.
 	 *
-	 * @param __configbase The configuration base.
+	 * @param __configBase The configuration base.
 	 * @since 2019/06/22
 	 */
-	public ConfigReader(int __configbase)
+	public ConfigReader(int __configBase)
 	{
-		this.configbase = __configbase;
+		this.configBase = __configBase;
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public final class ConfigReader
 		// Where do we start the search from? From the start?
 		int seeker;
 		if (__at == 0)
-			seeker = this.configbase;
+			seeker = this.configBase;
 		
 		// Otherwise, since we parked on a currently found item, we have to
 		// go back and skip over it
@@ -211,7 +211,7 @@ public final class ConfigReader
 	public final int search(int __key)
 	{
 		// Seek through items
-		for (int seeker = this.configbase;;)
+		for (int seeker = this.configBase;;)
 		{
 			// Read key and size
 			int key = Assembly.memReadJavaShort(seeker,

@@ -14,15 +14,11 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.jvm.ThreadStartIndex;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
-import cc.squirreljme.vm.springcoat.objects.ArrayViewer;
-import cc.squirreljme.vm.springcoat.objects.ObjectViewer;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +27,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
-import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
  * This class contains the instance of the SpringCoat virtual machine and has
@@ -45,6 +40,14 @@ public final class SpringMachine
 	/** The default size of RAM. */
 	public static final int DEFAULT_RAM_SIZE =
 		32 * 1048576;
+	
+	/** The boot class. */
+	private static final ClassName _BOOT_CLASS =
+		new ClassName("cc/squirreljme/jvm/boot/SystemBoot");
+	
+	/** The boot method. */
+	private static final MethodNameAndType _BOOT_METHOD =
+		new MethodNameAndType("__sysBoot", "(JIJI)V");
 	
 	/** Lock. */
 	public final Object strlock =
@@ -304,6 +307,17 @@ public final class SpringMachine
 		SpringThreadWorker mainWorker = new SpringThreadWorker(this,
 			mainThread, true);
 		mainThread._worker = mainWorker;
+		
+		// Locate the main bootstrap method
+		SpringClass bootClass = mainWorker.loadClass(
+			SpringMachine._BOOT_CLASS);
+		SpringMethod bootMethod = bootClass.lookupMethod(true,
+			SpringMachine._BOOT_METHOD);
+		
+		// Enter the boot method
+		mainThread.enterFrame(bootMethod,
+			MemoryManager.RAM_START_ADDRESS, 0,
+			0L, 0);
 		
 		// Execute main program loop
 		mainWorker.run();

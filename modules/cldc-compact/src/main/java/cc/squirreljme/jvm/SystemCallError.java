@@ -60,6 +60,10 @@ public final class SystemCallError
 	public static final byte IPC_ERROR =
 		-10;
 	
+	/** Unknown class. */
+	public static final byte NO_SUCH_CLASS =
+		-11;
+	
 	/**
 	 * Not used.
 	 *
