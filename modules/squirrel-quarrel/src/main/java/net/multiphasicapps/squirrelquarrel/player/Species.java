@@ -23,7 +23,7 @@ public enum Species
 	/** Chlorophids, plant based species. */
 	CHLOROPHID,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

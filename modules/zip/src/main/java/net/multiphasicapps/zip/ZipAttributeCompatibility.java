@@ -78,7 +78,7 @@ public enum ZipAttributeCompatibility
 	/** Mac OS X. */
 	MACOSX(19),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The compatibility identifier. */

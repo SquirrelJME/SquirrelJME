@@ -187,11 +187,13 @@ public abstract class Calendar
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public Object clone()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(Calendar __a)
 	{
 		throw new todo.TODO();
@@ -202,6 +204,7 @@ public abstract class Calendar
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean equals(Object __a)
 	{
 		throw new todo.TODO();
@@ -247,6 +250,7 @@ public abstract class Calendar
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int hashCode()
 	{
 		throw new todo.TODO();
@@ -323,6 +327,7 @@ public abstract class Calendar
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public String toString()
 	{
 		throw new todo.TODO();

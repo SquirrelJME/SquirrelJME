@@ -22,7 +22,6 @@ package java.util;
  */
 public class LinkedHashSet<E>
 	extends HashSet<E>
-	implements Set<E>, Cloneable
 {
 	/**
 	 * Initializes the set with the given capacity and load factor.

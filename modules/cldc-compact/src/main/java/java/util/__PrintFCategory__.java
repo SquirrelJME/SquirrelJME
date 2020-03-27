@@ -38,7 +38,7 @@ enum __PrintFCategory__
 	/** Line Separator. */
 	LINE_SEPARATOR,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

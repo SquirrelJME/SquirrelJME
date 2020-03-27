@@ -116,6 +116,7 @@ public class List
 		return rv;
 	}
 	
+	@Override
 	public void delete(int __a)
 	{
 		throw new todo.TODO();
@@ -126,11 +127,13 @@ public class List
 	 *
 	 * @since 2018/11/17
 	 */
+	@Override
 	public void deleteAll()
 	{
 		this._items.clear();
 	}
 	
+	@Override
 	public int getFitPolicy()
 	{
 		throw new todo.TODO();
@@ -144,6 +147,7 @@ public class List
 	 * @throws IndexOutOfBoundsException On null arguments.
 	 * @since 2019/05/18
 	 */
+	@Override
 	public Font getFont(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -168,6 +172,7 @@ public class List
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2019/05/18
 	 */
+	@Override
 	public Image getImage(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -186,6 +191,7 @@ public class List
 		return this._selcommand;
 	}
 	
+	@Override
 	public int getSelectedFlags(boolean[] __a)
 	{
 		throw new todo.TODO();
@@ -223,6 +229,7 @@ public class List
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2019/05/18
 	 */
+	@Override
 	public String getString(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -251,6 +258,7 @@ public class List
 		return Displayable.__getWidth(this, false);
 	}
 	
+	@Override
 	public void insert(int __a, String __b, Image __c)
 	{
 		throw new todo.TODO();
@@ -284,6 +292,7 @@ public class List
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void set(int __a, String __b, Image __c)
 	{
 		throw new todo.TODO();
@@ -305,6 +314,7 @@ public class List
 			UIState.getInstance().repaint();
 	}
 	
+	@Override
 	public void setFitPolicy(int __a)
 	{
 		throw new todo.TODO();
@@ -318,6 +328,7 @@ public class List
 	 * @throws IndexOutOfBoundsException If the item is not within bounds.
 	 * @since 2019/05/20
 	 */
+	@Override
 	public void setFont(int __i, Font __f)
 		throws IndexOutOfBoundsException
 	{
@@ -334,6 +345,7 @@ public class List
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void setSelectedFlags(boolean[] __a)
 	{
 		throw new todo.TODO();

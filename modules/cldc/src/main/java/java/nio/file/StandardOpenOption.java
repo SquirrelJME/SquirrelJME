@@ -33,7 +33,7 @@ public enum StandardOpenOption
 	
 	WRITE(),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	StandardOpenOption()

@@ -2,20 +2,31 @@
   <dictionary name="xer">
     <words>
       <w>accel</w>
+      <w>attrdelim</w>
+      <w>attrname</w>
+      <w>autoflush</w>
       <w>backlight</w>
       <w>bootram</w>
+      <w>bufa</w>
+      <w>bufb</w>
       <w>cfgs</w>
       <w>chainer</w>
+      <w>classinfo</w>
       <w>cldc</w>
       <w>convertable</w>
       <w>dlet</w>
       <w>endianess</w>
+      <w>externed</w>
       <w>fprintf</w>
       <w>gawroriski</w>
+      <w>gratufacoatsjmonhsjmeconh</w>
+      <w>hjoja</w>
+      <w>ijjiiiii</w>
       <w>informations</w>
       <w>ioob</w>
       <w>islower</w>
       <w>isupper</w>
+      <w>jardx</w>
       <w>jarray</w>
       <w>jboolean</w>
       <w>jbyte</w>
@@ -25,6 +36,7 @@
       <w>jfield</w>
       <w>jfloat</w>
       <w>jint</w>
+      <w>jjiiiijj</w>
       <w>jlong</w>
       <w>jme's</w>
       <w>jmethod</w>
@@ -36,11 +48,17 @@
       <w>jthrowable</w>
       <w>jvalue</w>
       <w>jweak</w>
+      <w>konami</w>
       <w>ljava</w>
       <w>lowercased</w>
+      <w>meep</w>
+      <w>microedition</w>
       <w>midlet</w>
+      <w>midp</w>
       <w>multiphasicapps</w>
+      <w>namep</w>
       <w>narg</w>
+      <w>nomanifest</w>
       <w>ourself</w>
       <w>parm</w>
       <w>phasic</w>
@@ -51,6 +69,7 @@
       <w>siiiiii</w>
       <w>siiiiiii</w>
       <w>siiiiiiii</w>
+      <w>sjme</w>
       <w>springcoat</w>
       <w>squirreljme</w>
       <w>stdint</w>
@@ -59,6 +78,7 @@
       <w>unpure</w>
       <w>uppercased</w>
       <w>vtable</w>
+      <w>xratufacoatsjmonhsjmeconh</w>
     </words>
   </dictionary>
 </component>

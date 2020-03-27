@@ -9,7 +9,6 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.jvm.ClassInfo;
 import cc.squirreljme.jvm.Constants;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
@@ -1093,7 +1092,7 @@ public final class LoadedClassInfo
 	 * @throws IllegalStateException If it was garbage collected.
 	 * @since 2019/09/14
 	 */
-	private final BootstrapState __bootstrap()
+	private BootstrapState __bootstrap()
 		throws IllegalStateException
 	{
 		Reference<BootstrapState> ref = this._bootstrap;

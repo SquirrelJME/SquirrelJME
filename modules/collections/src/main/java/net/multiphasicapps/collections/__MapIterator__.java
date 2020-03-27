@@ -111,7 +111,7 @@ class __MapIterator__<K, V>
 	 * @throws NullPointerException On null arguments. 
 	 * @since 2017/03/30
 	 */
-	private final __Data__<K, V> __detect(__Data__<K, V> __data)
+	private __Data__<K, V> __detect(__Data__<K, V> __data)
 		throws ConcurrentModificationException, NullPointerException
 	{
 		// Check

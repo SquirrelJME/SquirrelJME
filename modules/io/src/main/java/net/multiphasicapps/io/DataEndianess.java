@@ -24,7 +24,7 @@ public enum DataEndianess
 	/** Little endian. */
 	LITTLE,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

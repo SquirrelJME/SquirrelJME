@@ -250,7 +250,7 @@ public class CommentReader
 		/** Block comment. */
 		BLOCK,
 		
-		/** End. */
+		/* End. */
 		;
 	}
 }

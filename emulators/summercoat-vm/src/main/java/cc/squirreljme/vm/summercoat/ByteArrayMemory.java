@@ -16,7 +16,6 @@ package cc.squirreljme.vm.summercoat;
  */
 public final class ByteArrayMemory
 	extends AbstractReadableMemory
-	implements ReadableMemory
 {
 	/** The offset to this address. */
 	protected final int offset;

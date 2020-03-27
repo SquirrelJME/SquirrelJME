@@ -34,7 +34,7 @@ public enum MapSize
 	/** Ridiculous. */
 	RIDICULOUSLY_LARGE(80, 80),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The default map size to use. */

@@ -13,7 +13,6 @@ package java.util;
 public interface Queue<E>
 	extends Collection<E>
 {
-	boolean add(E __a);
 	
 	E element();
 	

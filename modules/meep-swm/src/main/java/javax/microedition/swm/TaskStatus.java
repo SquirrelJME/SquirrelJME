@@ -35,7 +35,7 @@ public enum TaskStatus
 	/** Starting. */
 	STARTING,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

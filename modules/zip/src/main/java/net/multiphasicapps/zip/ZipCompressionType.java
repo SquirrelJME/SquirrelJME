@@ -33,7 +33,7 @@ public enum ZipCompressionType
 	/** Deflate algorithm. */
 	DEFLATE(20, 8),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The default compression algorithm to use. */

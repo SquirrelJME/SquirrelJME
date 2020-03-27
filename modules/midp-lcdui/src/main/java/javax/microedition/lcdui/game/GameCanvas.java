@@ -212,10 +212,9 @@ public abstract class GameCanvas
 	/**
 	 * Performs the graphics flip.
 	 *
-	 * @return The flipped graphics.
 	 * @since 2019/06/30
 	 */
-	private final void __flip()
+	private void __flip()
 	{
 		// Get both buffers
 		__Buffer__ bufa = this._bufa,

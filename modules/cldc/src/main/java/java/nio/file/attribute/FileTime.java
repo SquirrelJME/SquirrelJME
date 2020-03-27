@@ -18,16 +18,19 @@ public final class FileTime
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(FileTime __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean equals(Object __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int hashCode()
 	{
 		throw new todo.TODO();
@@ -38,6 +41,7 @@ public final class FileTime
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public String toString()
 	{
 		throw new todo.TODO();

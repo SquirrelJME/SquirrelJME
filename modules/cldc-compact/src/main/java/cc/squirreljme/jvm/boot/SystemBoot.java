@@ -2,42 +2,35 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui;
+package cc.squirreljme.jvm.boot;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * This represents the state of the display hardware.
+ * Boots the SquirrelJME virtual machine system.
  *
- * @since 2017/10/01
+ * @since 2020/03/26
  */
-public enum DisplayHardwareState
+public final class SystemBoot
 {
-	/** Enabled. */
-	ENABLED,
-	
-	/** Disabled. */
-	DISABLED,
-	
-	/** Removed. */
-	ABSENT,
-	
-	/* End. */
-	;
-	
 	/**
-	 * Is this forced to be disabled?
+	 * System boot entry point.
 	 *
-	 * @return If this is forced to be disabled.
-	 * @since 2017/10/01
+	 * @param __ramAddr The RAM address.
+	 * @param __ramLen The size of RAM.
+	 * @param __configAddr The configuration address.
+	 * @param __configLen The configuration length.
+	 * @since 2020/03/26
 	 */
-	public final boolean forceDisabled()
+	@SuppressWarnings("unused")
+	static void __sysBoot(long __ramAddr, int __ramLen,
+		long __configAddr, int __configLen)
 	{
-		return this == DisplayHardwareState.DISABLED || this == DisplayHardwareState.ABSENT;
+		throw Debugging.todo();
 	}
 }
-

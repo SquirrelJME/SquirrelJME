@@ -107,7 +107,6 @@ public final class SpringArrayObjectBoolean
 	 * @since 2018/11/14
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	@Deprecated
 	public final void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException

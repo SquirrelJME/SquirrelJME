@@ -252,8 +252,8 @@ public enum InstallErrorCodes
 
 	/** Version mismatched. */
 	VERSION_MISMATCH,
-
-	/** End. */
+	
+	/* End. */
 	;
 }
 

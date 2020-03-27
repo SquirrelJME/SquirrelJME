@@ -13,22 +13,10 @@ package java.util;
 public interface List<E>
 	extends Collection<E>
 {
-	boolean add(E __a);
 	
 	void add(int __a, E __b);
 	
-	boolean addAll(Collection<? extends E> __a);
-	
 	boolean addAll(int __a, Collection<? extends E> __b);
-	
-	void clear();
-	
-	boolean contains(Object __a);
-	
-	boolean containsAll(Collection<?> __a);
-	
-	@Override
-	boolean equals(Object __a);
 	
 	/**
 	 * Gets the value at the specified index.
@@ -42,14 +30,7 @@ public interface List<E>
 	E get(int __i)
 		throws IndexOutOfBoundsException;
 	
-	@Override
-	int hashCode();
-	
 	int indexOf(Object __a);
-	
-	boolean isEmpty();
-	
-	Iterator<E> iterator();
 	
 	int lastIndexOf(Object __a);
 	
@@ -57,22 +38,13 @@ public interface List<E>
 	
 	ListIterator<E> listIterator(int __a);
 	
-	boolean remove(Object __a);
-	
 	E remove(int __a);
-	
-	boolean removeAll(Collection<?> __a);
-	
-	boolean retainAll(Collection<?> __a);
 	
 	E set(int __a, E __b);
 	
-	int size();
-	
 	List<E> subList(int __a, int __b);
 	
-	Object[] toArray();
-	
+	@Override
 	<T> T[] toArray(T[] __a);
 }
 

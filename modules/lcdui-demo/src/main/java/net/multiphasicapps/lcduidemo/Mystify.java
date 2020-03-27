@@ -116,10 +116,10 @@ public class Mystify
 		private volatile long _nextnano =
 			Long.MIN_VALUE;
 		
-		/**
-		 * Initializes the canvas state.
-		 *
-		 * @since 2018/11/22
+		/*
+		  Initializes the canvas state.
+		 
+		  @since 2018/11/22
 		 */
 		{
 			// Setup title

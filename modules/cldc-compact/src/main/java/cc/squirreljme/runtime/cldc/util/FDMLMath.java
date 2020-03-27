@@ -107,6 +107,7 @@ public final strictfp class FDMLMath
 	 * @return The resulting logarithm value.
 	 * @since 2018/11/02
 	 */
+	@SuppressWarnings({"divzero", "NumericOverflow"})
 	@ImplementationNote("Source http://www.netlib.org/fdlibm/e_log.c")
 	public static double log(double __v)
 	{
@@ -371,7 +372,7 @@ public final strictfp class FDMLMath
 	 * @return The double value.
 	 * @since 2018/11/03
 	 */
-	private static final double __compose(int __hi, int __lo)
+	private static double __compose(int __hi, int __lo)
 	{
 		return Double.longBitsToDouble(
 			(((long)__hi & 0xFFFFFFFFL) << 32) |
@@ -385,7 +386,7 @@ public final strictfp class FDMLMath
 	 * @return The high word of the double.
 	 * @since 2018/11/03
 	 */
-	private static final int __hi(double __v)
+	private static int __hi(double __v)
 	{
 		return (int)(Double.doubleToRawLongBits(__v) >>> 32);
 	}
@@ -397,7 +398,7 @@ public final strictfp class FDMLMath
 	 * @return The low word of the double.
 	 * @since 2018/11/03
 	 */
-	private static final int __lo(double __v)
+	private static int __lo(double __v)
 	{
 		return (int)(Double.doubleToRawLongBits(__v));
 	}

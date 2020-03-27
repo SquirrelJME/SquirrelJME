@@ -20,7 +20,7 @@ public enum AbilityType
 	/** Regenerates HP. */
 	REGENERATES_HP,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

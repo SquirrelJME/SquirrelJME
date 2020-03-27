@@ -38,7 +38,7 @@ public enum DisplayCapability
 	/** Supports vertical scrolling. */
 	SUPPORTS_VERTICAL_SCROLLING,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

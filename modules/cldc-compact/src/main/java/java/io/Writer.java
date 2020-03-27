@@ -25,10 +25,6 @@ public abstract class Writer
 		throw new todo.TODO();
 	}
 	
-	@Override
-	public abstract void close()
-		throws IOException;
-	
 	public abstract void flush()
 		throws IOException;
 	

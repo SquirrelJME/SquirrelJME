@@ -23,7 +23,6 @@ import java.io.IOException;
  */
 public final class SuiteMemory
 	extends AbstractReadableMemory
-	implements ReadableMemory
 {
 	/** The suite manager. */
 	protected final VMSuiteManager suites;
@@ -223,7 +222,7 @@ public final class SuiteMemory
 	 * @throws VMException If it was not found.
 	 * @since 2019/11/28
 	 */
-	private final VMClassLibrary __loadLibrary(String __libname)
+	private VMClassLibrary __loadLibrary(String __libname)
 		throws NullPointerException, VMException
 	{
 		if (__libname == null)

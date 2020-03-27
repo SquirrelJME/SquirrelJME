@@ -37,9 +37,9 @@ public enum GameSpeed
 	FASTER(48),
 	
 	/** Fastest. */
-	FASTEST(42),	
+	FASTEST(42),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The speed of normal. */

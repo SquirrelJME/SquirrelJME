@@ -35,6 +35,7 @@ import java.util.Formatter;
  *
  * @since 2018/09/16
  */
+@SuppressWarnings("RedundantInterfaceDeclaration")
 public class PrintStream
 	extends OutputStream
 	implements Appendable, Closeable
@@ -79,10 +80,10 @@ public class PrintStream
 	/** Error state? */
 	private boolean _inerror;
 	
-	/**
-	 * Cache the line separator which is derived from the system properties.
-	 *
-	 * @since 2018/09/18
+	/*
+	  Cache the line separator which is derived from the system properties.
+	 
+	  @since 2018/09/18
 	 */
 	static
 	{
@@ -153,7 +154,6 @@ public class PrintStream
 	 * @param __autoflush If auto flushing is to be enabled.
 	 * @param __enc The encoder to use to encode characters to bytes.
 	 * @throws NullPointerException On null arguments.
-	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/09/17
 	 */
 	private PrintStream(OutputStream __out, boolean __autoflush, Encoder __enc)
@@ -659,7 +659,7 @@ public class PrintStream
 	 *
 	 * @since 2018/09/21
 	 */
-	private final void __flush()
+	private void __flush()
 	{
 		// Nothing to be written at all?
 		int bat = this._bat;
@@ -713,7 +713,7 @@ public class PrintStream
 	 * printed.
 	 * @since 2018/09/20
 	 */
-	private final void __print(String __s)
+	private void __print(String __s)
 	{
 		synchronized (this)
 		{
@@ -737,7 +737,7 @@ public class PrintStream
 	 * @throws NullPointerException If no format was specified.
 	 * @since 2018/09/23
 	 */
-	private final PrintStream __printf(String __fmt, Object... __args)
+	private PrintStream __printf(String __fmt, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__fmt == null)
@@ -764,10 +764,9 @@ public class PrintStream
 	/**
 	 * Prints the end of line sequence that is used for the current platform.
 	 *
-	 * @return The end of line sequence.
 	 * @since 2018/09/21
 	 */
-	private final void __println()
+	private void __println()
 	{
 		synchronized (this)
 		{
@@ -798,7 +797,7 @@ public class PrintStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/21
 	 */
-	private final void __writeBytes(byte[] __b, int __o, int __l)
+	private void __writeBytes(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__b == null)
@@ -850,7 +849,7 @@ public class PrintStream
 	 * @param __c The character to write.
 	 * @since 2018/09/19
 	 */
-	private final void __writeChar(char __c)
+	private void __writeChar(char __c)
 	{
 		// Encode bytes into the array
 		byte[] minienc = this._minienc;

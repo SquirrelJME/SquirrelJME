@@ -66,10 +66,10 @@ public class ByteDeque
 	/** The relative position of the tail in relation to the last block. */
 	private volatile int _tail;
 	
-	/**
-	 * Sets the default block size.
-	 *
-	 * @since 2016/05/01
+	/*
+	  Sets the default block size.
+	 
+	  @since 2016/05/01
 	 */
 	static
 	{
@@ -1091,7 +1091,7 @@ public class ByteDeque
 	 * @return The number of bytes read.
 	 * @since 2016/08/04
 	 */
-	private final int __getOrSetVia(boolean __last, int __a, byte[] __b,
+	private int __getOrSetVia(boolean __last, int __a, byte[] __b,
 		int __o, int __l, boolean __set)
 	{
 		// Get some things

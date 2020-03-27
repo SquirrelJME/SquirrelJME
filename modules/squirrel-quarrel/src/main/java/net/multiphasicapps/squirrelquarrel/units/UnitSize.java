@@ -26,7 +26,7 @@ public enum UnitSize
 	/** Large. */
 	LARGE,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

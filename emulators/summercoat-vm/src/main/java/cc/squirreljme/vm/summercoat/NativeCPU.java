@@ -1103,7 +1103,7 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	private final void __debugEntry(Frame __f, int __pcl, int __pmn, int __pmt,
+	private void __debugEntry(Frame __f, int __pcl, int __pmn, int __pmt,
 		int __psf)
 		throws NullPointerException
 	{
@@ -1152,7 +1152,7 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/30
 	 */
-	private final void __debugExit(Frame __f)
+	private void __debugExit(Frame __f)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -1182,7 +1182,7 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	private final void __debugPoint(Frame __f, int __sln, int __jop, int __jpc)
+	private void __debugPoint(Frame __f, int __sln, int __jop, int __jpc)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -1200,7 +1200,7 @@ public final class NativeCPU
 	 * @return The resulting string.
 	 * @since 2019/05/15
 	 */
-	private final String __loadUtfString(int __addr)
+	private String __loadUtfString(int __addr)
 	{
 		// Read length to figure out how long the string is
 		WritableMemory memory = this.memory;
@@ -1228,7 +1228,7 @@ public final class NativeCPU
 	 * @return The result.
 	 * @since 2019/05/23
 	 */
-	private final long __sysCall(short __si, int... __args)
+	private long __sysCall(short __si, int... __args)
 	{
 		// Error state for the last call of this type
 		int[] errors = this._syscallerrors;
@@ -1721,8 +1721,8 @@ public final class NativeCPU
 		/** The current task ID. */
 		int _taskid;
 		
-		/**
-		 * Potential initialization.
+		/*
+		  Potential initialization.
 		 */
 		{
 			this._execslices = (NativeCPU.ENABLE_DEBUG ?

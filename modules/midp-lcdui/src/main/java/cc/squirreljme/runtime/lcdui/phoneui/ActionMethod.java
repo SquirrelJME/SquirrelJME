@@ -243,7 +243,7 @@ public enum ActionMethod
 	{
 	},
 	
-	/** End. */
+	/* End. */
 	;
 	
 	

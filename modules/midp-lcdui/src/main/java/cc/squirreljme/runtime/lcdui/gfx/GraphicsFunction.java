@@ -113,7 +113,7 @@ public enum GraphicsFunction
 	/** Draw region. */
 	DRAW_REGION,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

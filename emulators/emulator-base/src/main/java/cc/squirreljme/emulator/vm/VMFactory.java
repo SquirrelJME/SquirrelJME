@@ -385,7 +385,7 @@ public abstract class VMFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/23
 	 */
-	private static final String __getProperty(Map<String, String> __props,
+	private static String __getProperty(Map<String, String> __props,
 		String __key)
 		throws NullPointerException
 	{
@@ -403,7 +403,7 @@ public abstract class VMFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/23
 	 */
-	private static final String __getProperty(Map<String, String> __props,
+	private static String __getProperty(Map<String, String> __props,
 		String __key, String __def)
 		throws NullPointerException
 	{

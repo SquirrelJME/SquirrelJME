@@ -407,7 +407,7 @@ public final class Class<T>
 	 * @return The assertions status to use.
 	 * @since 2016/10/09
 	 */
-	private final boolean __checkAssertionStatus()
+	private boolean __checkAssertionStatus()
 	{
 		// Default to true
 		boolean rv = true;
@@ -492,7 +492,7 @@ public final class Class<T>
 	 * @return The root type of this type.
 	 * @since 2018/09/27
 	 */
-	private final Class<?> __rootType()
+	private Class<?> __rootType()
 	{
 		Class<?> rv = this;
 		for (Class<?> r = this; r != null; r = r._data.component())

@@ -59,13 +59,13 @@ public class PCFFont
 	/**
 	 * Initializes the font.
 	 *
-	 * @param __properties 
-	 * @param __accelerators 
-	 * @param __metrics 
-	 * @param __bitmap 
-	 * @param __encoding 
-	 * @param __scalablewidths 
-	 * @param __glyphnames 
+	 * @param __properties PCF properties.
+	 * @param __accelerators Accelerators.
+	 * @param __metrics Metrics.
+	 * @param __bitmap Bitmaps.
+	 * @param __encoding Encoding.
+	 * @param __scalablewidths Scalable Widths.
+	 * @param __glyphnames The glyph names.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/28
 	 */

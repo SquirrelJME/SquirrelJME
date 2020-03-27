@@ -147,7 +147,7 @@ public final class SplashScreen
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/29
 	 */
-	private static final void __copyright(Graphics __g, boolean __swip)
+	private static void __copyright(Graphics __g, boolean __swip)
 		throws NullPointerException
 	{
 		if (__g == null)

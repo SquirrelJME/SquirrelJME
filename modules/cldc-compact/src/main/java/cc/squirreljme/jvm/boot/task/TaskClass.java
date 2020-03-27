@@ -146,7 +146,7 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/08
 	 */
-	private final void __buildPool(Task __task, ClassInfoUtility __ciu,
+	private void __buildPool(Task __task, ClassInfoUtility __ciu,
 		ClassFileParser __cfp, int __poolp)
 		throws NullPointerException
 	{
@@ -222,7 +222,7 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/28
 	 */
-	private final void __buildVTable(Task __task, ClassInfoUtility __ciu,
+	private void __buildVTable(Task __task, ClassInfoUtility __ciu,
 		ClassFileParser __cfp, int __vtvirtual, int __vtpool)
 		throws NullPointerException
 	{
@@ -242,7 +242,7 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/09
 	 */
-	private final TaskClass __initializeClassInfoArray(Task __task,
+	private TaskClass __initializeClassInfoArray(Task __task,
 		String __cl)
 		throws NullPointerException
 	{
@@ -317,7 +317,7 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/17
 	 */
-	private final TaskClass __initializeClassInfoClass(Task __task,
+	private TaskClass __initializeClassInfoClass(Task __task,
 		String __cl)
 		throws NullPointerException
 	{
@@ -463,7 +463,7 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/09
 	 */
-	private final TaskClass __initializeClassInfoPrimitive(Task __task,
+	private TaskClass __initializeClassInfoPrimitive(Task __task,
 		String __cl)
 		throws NullPointerException
 	{
@@ -539,7 +539,7 @@ public final class TaskClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/08
 	 */
-	private final int __makeString(Task __task, String __s)
+	private int __makeString(Task __task, String __s)
 		throws NullPointerException
 	{
 		if (__task == null || __s == null)

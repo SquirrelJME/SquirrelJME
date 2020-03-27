@@ -32,7 +32,7 @@ public enum SuiteType
 	/** An API. */
 	SQUIRRELJME_API("X-SquirrelJME-API"),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The used prefix. */

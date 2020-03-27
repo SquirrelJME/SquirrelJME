@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.boot.task;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.boot.Globals;
 import cc.squirreljme.jvm.boot.io.MemoryBlob;
 import cc.squirreljme.jvm.boot.lib.ClassNameUtils;

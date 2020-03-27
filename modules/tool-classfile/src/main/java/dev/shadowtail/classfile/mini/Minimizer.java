@@ -89,7 +89,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	private final void __run(OutputStream __os)
+	private void __run(OutputStream __os)
 		throws IOException, NullPointerException
 	{
 		if (__os == null)
@@ -238,7 +238,7 @@ public final class Minimizer
 	 * @return The resulting fields, static and instance split into each.
 	 * @since 2019/03/11
 	 */
-	private final __TempFields__[] __doFields()
+	private __TempFields__[] __doFields()
 	{
 		DualClassRuntimePoolBuilder localpool = this.localpool;
 		
@@ -311,7 +311,7 @@ public final class Minimizer
 			
 			// Determine the base position and check if any alignment is needed
 			// assuming types of a given size are always aligned
-			int basep = (temp._bytes + (fsz - 1)) & ~(fsz - 1);
+			int basep = (temp._bytes + (fsz - 1)) & -fsz;
 			
 			// Constant value may be null, but if it is not then add it
 			// to the pool
@@ -355,7 +355,7 @@ public final class Minimizer
 	 * @return The processed static and instance methods.
 	 * @since 2019/03/13
 	 */
-	private final __TempMethods__[] __doMethods()
+	private __TempMethods__[] __doMethods()
 	{
 		DualClassRuntimePoolBuilder localpool = this.localpool;
 		ClassFile input = this.input;
@@ -427,13 +427,12 @@ public final class Minimizer
 	 * Translates code.
 	 *
 	 * @param __rc The register code used.
-	 * @param __dos The stream to write to.
 	 * @return The resulting stream.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/23
 	 */
-	private final byte[] __translateCode(NativeCode __rc)
+	private byte[] __translateCode(NativeCode __rc)
 		throws IOException, NullPointerException
 	{
 		if (__rc == null)
@@ -838,7 +837,7 @@ public final class Minimizer
 	 * @since 2019/03/24
 	 */
 	@Deprecated
-	private static final byte[] __compact(short[] __st, byte[] __bt)
+	private static byte[] __compact(short[] __st, byte[] __bt)
 		throws IOException, NullPointerException
 	{
 		if (__st == null && __bt == null)

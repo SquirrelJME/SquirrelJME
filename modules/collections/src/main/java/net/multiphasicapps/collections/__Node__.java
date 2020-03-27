@@ -35,7 +35,7 @@ class __Node__<K, V>
 	/**
 	 * Compares this node against the given key.
 	 *
-	 * @param __n The key to compare against.
+	 * @param __k The key to compare against.
 	 * @return The comparison result.
 	 * @since 2017/03/30
 	 */
@@ -47,7 +47,7 @@ class __Node__<K, V>
 	/**
 	 * Compares this node against the given data.
 	 *
-	 * @param __n The data to compare against.
+	 * @param __d The data to compare against.
 	 * @return The comparison result.
 	 * @since 2017/03/30
 	 */

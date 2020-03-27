@@ -67,10 +67,10 @@ public class Fonts
 		/** Fonts to use. */
 		private final Font[] _fonts;
 		
-		/**
-		 * Initializes the canvas.
-		 *
-		 * @since 2018/11/23
+		/*
+		  Initializes the canvas.
+		 
+		  @since 2018/11/23
 		 */
 		{
 			this.setTitle("Font Demo");

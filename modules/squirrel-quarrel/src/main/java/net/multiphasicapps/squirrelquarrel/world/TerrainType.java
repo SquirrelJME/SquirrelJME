@@ -25,7 +25,7 @@ public enum TerrainType
 	/** Dirt. */
 	DIRT(0x6E370B),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** Cache of terrain types. */

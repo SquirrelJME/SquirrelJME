@@ -881,7 +881,7 @@ public final class ByteCode
 	 * @return The owning method.
 	 * @since 2017/10/15
 	 */
-	private final Method __method()
+	private Method __method()
 	{
 		// {@squirreljme.error JC24 The method owning this byte code has been
 		// garbage collected.}

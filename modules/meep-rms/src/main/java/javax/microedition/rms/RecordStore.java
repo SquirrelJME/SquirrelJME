@@ -72,10 +72,10 @@ public class RecordStore
 	/** How many times has this been opened? */
 	private volatile int _opens;
 	
-	/**
-	 * Initializes the record store manager.
-	 *
-	 * @since 2017/02/27
+	/*
+	  Initializes the record store manager.
+	 
+	  @since 2017/02/27
 	 */
 	static
 	{
@@ -875,7 +875,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If it is not open.
 	 * @since 2019/04/15
 	 */
-	private final void __checkOpen()
+	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
 		// {@squirreljme.error DC07 This record store is not open.
@@ -909,7 +909,7 @@ public class RecordStore
 	 * @return The listeners.
 	 * @since 2019/04/15
 	 */
-	private final RecordListener[] __listeners()
+	private RecordListener[] __listeners()
 	{
 		Set<RecordListener> listeners = this._listeners;
 		return listeners.<RecordListener>toArray(
@@ -1171,7 +1171,7 @@ public class RecordStore
 	 * @throws RecordStoreException If there is an error.
 	 * @since 2019/05/01
 	 */
-	private static final void __checkError(int __id)
+	private static void __checkError(int __id)
 		throws RecordStoreException
 	{
 		// Error was detected
@@ -1205,7 +1205,7 @@ public class RecordStore
 	 * If the record store has already been opened then it will return a
 	 * previously opened record store.
 	 *
-	 * @param __n The name of the record store, must consist of 1 to 32
+	 * @param __name The name of the record store, must consist of 1 to 32
 	 * Unicode characters.
 	 * @param __create If {@code true} then if the record store does not
 	 * exist it will be created.

@@ -24,7 +24,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
  */
 public class HashMap<K, V>
 	extends AbstractMap<K, V>
-	implements Map<K, V>, Cloneable
+	implements Cloneable
 {
 	/** Internal map. */
 	final __BucketMap__<K, V> _map;
@@ -171,7 +171,6 @@ public class HashMap<K, V>
 	 * @since 2018/10/07
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public Set<Map.Entry<K, V>> entrySet()
 	{
 		return this._map.entrySet();

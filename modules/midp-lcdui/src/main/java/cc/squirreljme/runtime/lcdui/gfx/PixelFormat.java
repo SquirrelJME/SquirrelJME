@@ -50,7 +50,7 @@ public enum PixelFormat
 	/** Integer RGB888. */
 	INTEGER_RGB888,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

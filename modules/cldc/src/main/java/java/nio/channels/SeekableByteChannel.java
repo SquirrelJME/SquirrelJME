@@ -11,7 +11,6 @@
 package java.nio.channels;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 public interface SeekableByteChannel
 	extends ByteChannel
@@ -22,17 +21,12 @@ public interface SeekableByteChannel
 	SeekableByteChannel position(long __a)
 		throws IOException;
 	
-	int read(ByteBuffer __a)
-		throws IOException;
-	
 	long size()
 		throws IOException;
 	
 	SeekableByteChannel truncate(long __a)
 		throws IOException;
 	
-	int write(ByteBuffer __a)
-		throws IOException;
 }
 
 

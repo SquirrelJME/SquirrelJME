@@ -14,7 +14,6 @@ import java.lang.ref.ReferenceQueue;
 
 public class WeakHashMap<K, V>
 	extends AbstractMap<K, V>
-	implements Map<K, V>
 {
 	/** The default capacity. */
 	private static final int _DEFAULT_CAPACITY =

@@ -127,7 +127,7 @@ final class __Utilities__
 	 * Dumps the trace to the output using the normal trace logic.
 	 *
 	 * @param __a Letter A.
-	 * @param __a Letter B.
+	 * @param __b Letter B.
 	 * @param __trace The trace to print for.
 	 * @since 2020/03/15
 	 */

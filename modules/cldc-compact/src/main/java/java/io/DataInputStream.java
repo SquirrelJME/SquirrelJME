@@ -476,6 +476,7 @@ public class DataInputStream
 	 * @throws UTFDataFormatException If the input UTF data is not correct.
 	 * @since 2018/12/03
 	 */
+	@SuppressWarnings("FinalStaticMethod")
 	public static final String readUTF(DataInput __in)
 		throws EOFException, IOException, NullPointerException,
 			UTFDataFormatException

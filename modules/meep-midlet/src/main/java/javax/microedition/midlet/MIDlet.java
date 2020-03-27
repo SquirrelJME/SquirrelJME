@@ -48,9 +48,18 @@ public abstract class MIDlet
 	 * @throws MIDletStateChangeException If the destruction might stop.
 	 * @since 2020/02/29
 	 */
+	@SuppressWarnings("deprecation")
 	protected abstract void destroyApp(boolean __uc)
 		throws MIDletStateChangeException;
 	
+	/**
+	 * Signals that the application is started and any start logic should be
+	 * performed.
+	 *
+	 * @throws MIDletStateChangeException If the start might stop.
+	 * @since 2020/03/26
+	 */
+	@SuppressWarnings("deprecation")
 	protected abstract void startApp()
 		throws MIDletStateChangeException;
 	
@@ -63,6 +72,7 @@ public abstract class MIDlet
 	 * @return {@code 0} if permission is denied, {@code 1} if permitted,
 	 * and {@code -1} if unknown.
 	 * @throws IllegalStateException If this is a MIDP 3.0 application.
+	 * @deprecated Via standard library.
 	 * @since 2019/05/05
 	 */
 	@Deprecated
@@ -198,6 +208,7 @@ public abstract class MIDlet
 	 *
 	 * This does nothing on SquirrelJME.
 	 *
+	 * @deprecated Via standard library.
 	 * @since 2017/02/08
 	 */
 	@Deprecated
@@ -210,6 +221,7 @@ public abstract class MIDlet
 	 * 
 	 * This does nothing on SquirrelJME.
 	 *
+	 * @deprecated Via standard library.
 	 * @since 2017/02/08
 	 */
 	@Deprecated
@@ -217,6 +229,7 @@ public abstract class MIDlet
 	{
 	}
 	
+	@SuppressWarnings("RedundantThrows")
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
@@ -239,6 +252,7 @@ public abstract class MIDlet
 		throw new todo.TODO();
 	}
 	
+	@SuppressWarnings("unused")
 	public static String getAppProperty(String __name, String __vend,
 		String __attrname, String __attrdelim)
 		throws NullPointerException

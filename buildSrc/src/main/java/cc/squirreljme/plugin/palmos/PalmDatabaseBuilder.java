@@ -418,7 +418,7 @@ public final class PalmDatabaseBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/13
 	 */
-	private static final int __fourToInt(String __four)
+	private static int __fourToInt(String __four)
 		throws NullPointerException
 	{
 		if (__four == null)

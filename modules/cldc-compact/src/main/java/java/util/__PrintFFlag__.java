@@ -38,7 +38,7 @@ enum __PrintFFlag__
 	/** Negative numbers in parenthesis. */
 	NEGATIVE_PARENTHESIS,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** Internal values. */
@@ -57,7 +57,7 @@ enum __PrintFFlag__
 	 * @throws IndexOutOfBoundsException If the ordinal is out of range.
 	 * @since 2018/09/29
 	 */
-	public static final __PrintFFlag__ valueOf(int __i)
+	public static __PrintFFlag__ valueOf(int __i)
 		throws IndexOutOfBoundsException
 	{
 		if (__i < 0 || __i >= __PrintFFlag__.COUNT)
@@ -72,7 +72,7 @@ enum __PrintFFlag__
 	 * @return The flag for the character or {@code null} if it is not valid.
 	 * @since 2018/09/24
 	 */
-	static final __PrintFFlag__ __decode(char __c)
+	static __PrintFFlag__ __decode(char __c)
 	{
 		switch (__c)
 		{

@@ -23,9 +23,6 @@ public interface ATDevice
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	void close()
-		throws IOException;
-	
 	@Deprecated
 	void escapeToCommandMode()
 		throws IOException, UnavailableDeviceException, 

@@ -126,7 +126,8 @@ public class FixedPoint
 		throw new todo.TODO();
 	}
 
-    public FixedPoint clone()
+    @Override
+	public FixedPoint clone()
 	{
 		throw new todo.TODO();
 	}

@@ -16,6 +16,7 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jvm.ThreadStartIndex;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
@@ -41,6 +42,10 @@ import net.multiphasicapps.classfile.PrimitiveType;
 public final class SpringMachine
 	implements Runnable, VirtualMachine
 {
+	/** The default size of RAM. */
+	public static final int DEFAULT_RAM_SIZE =
+		32 * 1048576;
+	
 	/** Lock. */
 	public final Object strlock =
 		new Object();
@@ -286,22 +291,32 @@ public final class SpringMachine
 	@Override
 	public final void run()
 	{
+		// Allocate RAM for data storage
+		MemoryManager mmu = this.tasks.memory;
+		SpringPointer baseRam = mmu.attachRam(SpringMachine.DEFAULT_RAM_SIZE);
+		
+		// Thread that will be used as the main thread of execution, also used
+		// to initialize classes when they are requested
+		SpringThread mainThread = this.createThread("main");
+		
+		// We will be using the same logic in the thread worker if we need to
+		// initialize any objects or arguments
+		SpringThreadWorker mainWorker = new SpringThreadWorker(this,
+			mainThread, true);
+		mainThread._worker = mainWorker;
+		
+		// Execute main program loop
+		mainWorker.run();
+		
+		throw Debugging.todo();
+		
+		/*
 		// Obtain the boot library to read entry points from
 		SpringClassLoader classloader = this.classloader;
 		VMClassLibrary bootbin = classloader.bootLibrary();
 		
 		// Must be specified
 		String entryClass = this.bootcl;
-		
-		// Thread that will be used as the main thread of execution, also used
-		// to initialize classes when they are requested
-		SpringThread mainthread = this.createThread("main");
-		
-		// We will be using the same logic in the thread worker if we need to
-		// initialize any objects or arguments
-		SpringThreadWorker worker = new SpringThreadWorker(this,
-			mainthread, true);
-		mainthread._worker = worker;
 		
 		// Load the entry point class
 		SpringClass entrycl = worker.loadClass(new ClassName(
@@ -386,6 +401,7 @@ public final class SpringMachine
 			{
 			}
 		}
+		 */
 	}
 	
 	/**

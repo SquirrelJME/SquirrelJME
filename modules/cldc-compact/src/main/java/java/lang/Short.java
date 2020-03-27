@@ -12,7 +12,6 @@ package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.JVMFunction;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -64,6 +63,7 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(Short __a)
 	{
 		throw new todo.TODO();
@@ -87,6 +87,7 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int hashCode()
 	{
 		throw new todo.TODO();

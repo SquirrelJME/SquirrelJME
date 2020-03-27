@@ -116,7 +116,7 @@ __outer:
 	 *
 	 * @since 2018/03/05
 	 */
-	private static final void __printHelp()
+	private static void __printHelp()
 	{
 		PrintStream out = System.err;
 		
@@ -136,7 +136,7 @@ __outer:
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	private static final InputStream __wrap(Reader __in, boolean __ip,
+	private static InputStream __wrap(Reader __in, boolean __ip,
 		boolean __rd)
 		throws IOException, NullPointerException
 	{

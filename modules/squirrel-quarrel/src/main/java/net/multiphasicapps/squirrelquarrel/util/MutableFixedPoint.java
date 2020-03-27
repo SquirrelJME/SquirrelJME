@@ -16,7 +16,7 @@ package net.multiphasicapps.squirrelquarrel.util;
  * @since 2018/03/18
  */
 public final class MutableFixedPoint
-	implements Comparable<FixedPoint>, FixedPoint
+	implements FixedPoint
 {
 	/**
 	 * Initializes the fixed point value with the given whole number.

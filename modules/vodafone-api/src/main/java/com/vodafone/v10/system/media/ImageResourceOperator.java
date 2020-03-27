@@ -10,47 +10,56 @@
 package com.vodafone.v10.system.media;
 
 class ImageResourceOperator implements ResourceOperator {
-    public int getResourceType()
+    @Override
+	public int getResourceType()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getResourceCount()
+    @Override
+	public int getResourceCount()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getResourceID(int var1)
+    @Override
+	public int getResourceID(int var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public String getResourceName(int var1)
+    @Override
+	public String getResourceName(int var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public String[] getResourceNames()
+    @Override
+	public String[] getResourceNames()
 	{
 		throw new todo.TODO();
 	}
 
-    public void setResourceByID(MediaPlayer var1, int var2)
+    @Override
+	public void setResourceByID(MediaPlayer var1, int var2)
 	{
 		throw new todo.TODO();
 	}
 
-    public void setResourceByTitle(MediaPlayer var1, String var2)
+    @Override
+	public void setResourceByTitle(MediaPlayer var1, String var2)
 	{
 		throw new todo.TODO();
 	}
 
-    public void setResource(MediaPlayer var1, int var2)
+    @Override
+	public void setResource(MediaPlayer var1, int var2)
 	{
 		throw new todo.TODO();
 	}
 
-    public int getIndexOfResource(int var1)
+    @Override
+	public int getIndexOfResource(int var1)
 	{
 		throw new todo.TODO();
 	}

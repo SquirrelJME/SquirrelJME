@@ -64,7 +64,7 @@ public enum MathType
 	/** Sign 16-bit value. */
 	SIGNX16,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

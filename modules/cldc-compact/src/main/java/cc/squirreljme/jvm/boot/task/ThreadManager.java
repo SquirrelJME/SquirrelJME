@@ -35,10 +35,10 @@ public final class ThreadManager
 	/** The next logical thread id. */
 	private int _nextlid;
 	
-	/**
-	 * Always fills in the boot thread.
-	 *
-	 * @since 2019/10/19
+	/*
+	  Always fills in the boot thread.
+	 
+	  @since 2019/10/19
 	 */
 	{
 		this._threads[0] = this.BOOT_THREAD;

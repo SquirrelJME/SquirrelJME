@@ -26,7 +26,7 @@ public enum SpawnPlacementType
 	/** Normal best fit unit spawning, a creator may be used as a factory. */
 	NORMAL,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

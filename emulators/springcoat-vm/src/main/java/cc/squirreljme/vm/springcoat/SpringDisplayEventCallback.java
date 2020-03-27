@@ -167,7 +167,7 @@ public final class SpringDisplayEventCallback
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/03
 	 */
-	private final Object __exec(String __func, String __desc, Object... __args)
+	private Object __exec(String __func, String __desc, Object... __args)
 		throws NullPointerException
 	{
 		if (__func == null || __args == null)

@@ -45,7 +45,7 @@ public enum PlayerIndex
 	/** Gray. */
 	GRAY("Gray", 0x5A7D8B),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The maximum number of players that can play at once. */

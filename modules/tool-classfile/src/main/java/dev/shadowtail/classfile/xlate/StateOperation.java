@@ -179,7 +179,7 @@ public final class StateOperation
 		/** Wide copy. */
 		WIDE_COPY,
 		
-		/** End. */
+		/* End. */
 		;
 	}
 }

@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.io;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
@@ -25,7 +24,6 @@ import java.io.Writer;
  */
 public class PrintStreamWriter
 	extends Writer
-	implements Closeable
 {
 	/** The stream to write to. */
 	protected final PrintStream output;

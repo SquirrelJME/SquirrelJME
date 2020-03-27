@@ -35,7 +35,7 @@ public enum SuiteInstallStage
 	/** Verifying the download. */
 	VERIFYING,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

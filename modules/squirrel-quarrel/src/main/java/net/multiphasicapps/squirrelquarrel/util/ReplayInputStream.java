@@ -100,7 +100,7 @@ public final class ReplayInputStream
 		{
 			long rv = this.in.readInt();
 			rv <<= 32;
-			rv |= (this.in.readInt() & 0xFFFFFFFF);
+			rv |= (this.in.readInt() & 0xFFFFFFFFL);
 			return rv;
 		}
 		

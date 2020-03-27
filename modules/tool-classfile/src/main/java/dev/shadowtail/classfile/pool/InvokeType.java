@@ -32,7 +32,7 @@ public enum InvokeType
 	/** System invocation type. */
 	SYSTEM,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

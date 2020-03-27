@@ -12,14 +12,11 @@ package jdk.dio.adc;
 
 import java.nio.IntBuffer;
 import jdk.dio.InputRoundListener;
-import jdk.dio.RoundCompletionEvent;
 
 public interface AcquisitionRoundListener
 	extends InputRoundListener<ADCChannel, IntBuffer>
 {
-	void failed(Throwable __a, ADCChannel __b);
 	
-	void inputRoundCompleted(RoundCompletionEvent<ADCChannel, IntBuffer> __a);
 }
 
 

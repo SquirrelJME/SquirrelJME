@@ -264,7 +264,7 @@ public enum DrawingMethod
 		}
 	},
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

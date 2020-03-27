@@ -30,12 +30,14 @@ public class Vector
         throw new todo.TODO();
     }
 
-    public void writeObject(SimpleObjectOutputStream var1) throws IOException
+    @Override
+	public void writeObject(SimpleObjectOutputStream var1) throws IOException
 	{
 		throw new todo.TODO();
 	}
 
-    public void readObject(SimpleObjectInputStream var1) throws IOException
+    @Override
+	public void readObject(SimpleObjectInputStream var1) throws IOException
 	{
 		throw new todo.TODO();
 	}

@@ -23,6 +23,7 @@ import cc.squirreljme.jvm.boot.task.ThreadManager;
  *
  * @since 2019/05/25
  */
+@Deprecated
 public final class Bootstrap
 {
 	/**
@@ -46,6 +47,7 @@ public final class Bootstrap
 	 * @since 2019/05/25
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	static final void __start(int __rambase, int __ramsize,
 		int __rombase, int __romsize, int __confbase, int __confsize)
 	{

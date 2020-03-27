@@ -138,6 +138,7 @@ public abstract class Displayable
 	 * @return The available commands.
 	 * @since 2019/05/17
 	 */
+	@Override
 	public Command[] getCommands()
 	{
 		List<Command> rv = new ArrayList<>();
@@ -169,6 +170,7 @@ public abstract class Displayable
 	 * @return The ticker being shown or {@code null} if there is none.
 	 * @since 2018/03/26
 	 */
+	@Override
 	public Ticker getTicker()
 	{
 		return this._ticker;
@@ -355,6 +357,7 @@ public abstract class Displayable
 	 * @param __h The new heigh of the displayable.
 	 * @since 2016/10/10
 	 */
+	@Override
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
@@ -367,7 +370,7 @@ public abstract class Displayable
 	 * @return Application default title.
 	 * @since 2019/05/16
 	 */
-	private static final String __defaultTitle()
+	private static String __defaultTitle()
 	{
 		// Try getting a sensible name from a system property
 		MIDlet amid = ActiveMidlet.optional();
