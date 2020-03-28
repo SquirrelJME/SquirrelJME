@@ -9,14 +9,17 @@
 
 package cc.squirreljme.jvm.boot.task;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.boot.lib.ClassLibrary;
 import cc.squirreljme.jvm.boot.lib.ClassPath;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This manages multiple tasks.
  *
  * @since 2019/06/22
  */
+@Deprecated
 public final class TaskManager
 {
 	/** The maximum number of permitted tasks. */
@@ -93,6 +96,9 @@ public final class TaskManager
 		if (__cp == null)
 			throw new NullPointerException("NARG");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Tasks that are currently active
 		Task[] tasks = this.tasks;
 		
@@ -166,6 +172,8 @@ public final class TaskManager
 		
 		// Create result
 		return new TaskCreateResult(rv, thread, __mcl, mname, mtype, callargs);
+		
+		 */
 	}
 }
 

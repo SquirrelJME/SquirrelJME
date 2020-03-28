@@ -35,6 +35,7 @@
       <w>jdouble</w>
       <w>jfield</w>
       <w>jfloat</w>
+      <w>jiji</w>
       <w>jint</w>
       <w>jjiiiijj</w>
       <w>jlong</w>
@@ -58,6 +59,7 @@
       <w>multiphasicapps</w>
       <w>namep</w>
       <w>narg</w>
+      <w>nextp</w>
       <w>nomanifest</w>
       <w>ourself</w>
       <w>parm</w>

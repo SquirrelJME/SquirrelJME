@@ -316,7 +316,8 @@ public final class SpringMachine
 		
 		// Enter the boot method
 		mainThread.enterFrame(bootMethod,
-			MemoryManager.RAM_START_ADDRESS, 0,
+			MemoryManager.RAM_START_ADDRESS,
+			SpringMachine.DEFAULT_RAM_SIZE,
 			0L, 0);
 		
 		// Execute main program loop

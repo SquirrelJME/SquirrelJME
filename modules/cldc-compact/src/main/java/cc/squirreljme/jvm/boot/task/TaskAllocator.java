@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.boot.task;
 import cc.squirreljme.jvm.boot.Allocator;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is an allocator which uses a pre-set tag value for any allocations.
@@ -28,7 +29,7 @@ public final class TaskAllocator
 	protected final int tagbits;
 	
 	/** The static field pointer. */
-	private int _staticfieldptr;
+	private long _staticfieldptr;
 	
 	/**
 	 * Initializes the tagged allocator.
@@ -50,12 +51,13 @@ public final class TaskAllocator
 	 * @return The allocated bytes.
 	 * @since 2019/06/23
 	 */
-	public final int allocate(int __tag, int __sz)
+	public final long allocate(int __tag, int __sz)
 	{
 		// Just perform the allocation with our PID as part of the tag and
 		// whatever was passed, masked correctly
-		int rv = Allocator.allocate(
-			this.tagbits | (__tag & Allocator.CHUNK_BITS_VALUE_MASK), __sz);
+		long rv = Allocator.allocate(
+			this.tagbits | (__tag & Allocator.CHUNK_BITS_VALUE_MASK),
+			__sz);
 		
 		// Ran out of memory?
 		if (rv == 0)
@@ -73,7 +75,7 @@ public final class TaskAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int allocateArrayInt(int... __v)
+	public final long allocateArrayInt(int... __v)
 		throws NullPointerException
 	{
 		if (__v == null)
@@ -81,10 +83,10 @@ public final class TaskAllocator
 		
 		// Initialize base array
 		int count = __v.length;
-		int rv = this.allocateArrayIntEmpty(count);
+		long rv = this.allocateArrayIntEmpty(count);
 		
 		// Copy pointer values to the array
-		int bp = rv + Constants.ARRAY_BASE_SIZE;
+		long bp = rv + Constants.ARRAY_BASE_SIZE;
 		for (int i = 0, wp = 0; i < count; i++, wp += 4)
 			Assembly.memWriteInt(bp, wp, __v[i]);
 		
@@ -101,14 +103,17 @@ public final class TaskAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int allocateArrayInt(TaskClass __cl, int... __v)
+	public final long allocateArrayInt(TaskClass __cl, int... __v)
 		throws NullPointerException
 	{
 		if (__cl == null || __v == null)
 			throw new NullPointerException("NARG");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Allocate using the base form
-		int rv = this.allocateArrayInt(__v);
+		long rv = this.allocateArrayInt(__v);
 		
 		// Store object type
 		Assembly.memWriteInt(rv, Constants.OBJECT_CLASS_OFFSET,
@@ -116,6 +121,8 @@ public final class TaskAllocator
 		
 		// Use this
 		return rv;
+		
+		 */
 	}
 	
 	/**
@@ -127,11 +134,11 @@ public final class TaskAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int allocateArrayIntEmpty(int __n)
+	public final long allocateArrayIntEmpty(int __n)
 		throws NullPointerException
 	{
 		// Allocate array pointer
-		int rv = this.allocateObject(Constants.ARRAY_BASE_SIZE + (__n * 4));
+		long rv = this.allocateObject(Constants.ARRAY_BASE_SIZE + (__n * 4));
 		
 		// Write array size
 		Assembly.memWriteInt(rv, Constants.ARRAY_LENGTH_OFFSET, __n);
@@ -149,14 +156,14 @@ public final class TaskAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int allocateArrayIntEmpty(TaskClass __cl, int __n)
+	public final long allocateArrayIntEmpty(TaskClass __cl, int __n)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		// Allocate array pointer
-		int rv = this.allocateObject(__cl,
+		long rv = this.allocateObject(__cl,
 			Constants.ARRAY_BASE_SIZE + (__n * 4));
 		
 		// Write array size
@@ -175,7 +182,7 @@ public final class TaskAllocator
 	 * than the object base size.
 	 * @since 2019/10/26
 	 */
-	public final int allocateObject(int __sz)
+	public final long allocateObject(int __sz)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error SV0x Object allocation is less than the object
@@ -184,7 +191,7 @@ public final class TaskAllocator
 			throw new IllegalArgumentException("SV0x");
 		
 		// Allocate
-		int rv = this.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
+		long rv = this.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
 		
 		// Set initial count to one, to match new
 		Assembly.memWriteInt(rv, Constants.OBJECT_COUNT_OFFSET,
@@ -201,15 +208,20 @@ public final class TaskAllocator
 	 * @return The allocated bytes.
 	 * @since 2019/12/01
 	 */
-	public final int allocateObject(TaskClass __cl, int __sz)
+	public final long allocateObject(TaskClass __cl, int __sz)
 	{
-		int rv = this.allocateObject(__sz);
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
+		long rv = this.allocateObject(__sz);
 		
 		// Store class type here
 		Assembly.memWriteInt(rv, Constants.OBJECT_CLASS_OFFSET,
 			__cl.infoPointer());
 		
 		return rv;
+		
+		 */
 	}
 	
 	/**
@@ -220,7 +232,7 @@ public final class TaskAllocator
 	 * @return The pointer to the allocation.
 	 * @since 2019/11/25
 	 */
-	public final int allocatePool(int __n)
+	public final long allocatePool(int __n)
 	{
 		return this.allocate(Allocator.CHUNK_BIT_IS_POOL, 4 * __n);
 	}
@@ -242,10 +254,10 @@ public final class TaskAllocator
 	 * @return The static field pointer.
 	 * @since 2019/10/13
 	 */
-	public final int getStaticFieldPointer()
+	public final long getStaticFieldPointer()
 	{
 		// If this has already been initialized then use it!
-		int rv = this._staticfieldptr;
+		long rv = this._staticfieldptr;
 		if (rv != 0)
 			return rv;
 		

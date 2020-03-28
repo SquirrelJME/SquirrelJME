@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringException;
@@ -1126,25 +1127,52 @@ public final class SpringThreadWorker
 				// Read byte value
 			case "memReadByte":
 				return machine.tasks.memory.read(
-				(Long)__args[0] + (Integer)__args[1]);
+					(long)__args[0] + (int)__args[1]);
 				
 				// Read int value
 			case "memReadJavaInt":
 			case "memReadInt":
 				return machine.tasks.memory.readInt(
-				(Long)__args[0] + (Integer)__args[1]);
+					(long)__args[0] + (int)__args[1]);
 				
 				// Read long value
 			case "memReadJavaLong":
 			case "memReadLong":
 				return machine.tasks.memory.readLong(
-				(Long)__args[0] + (Integer)__args[1]);
+					(long)__args[0] + (int)__args[1]);
 				
 				// Read short value
 			case "memReadJavaShort":
 			case "memReadShort":
 				return machine.tasks.memory.readShort(
-				(Long)__args[0] + (Integer)__args[1]);
+					(long)__args[0] + (int)__args[1]);
+				
+				// Write byte value
+			case "memWriteByte":
+				machine.tasks.memory.write(
+					(long)__args[0] + (int)__args[1], (byte)__args[2]);
+				return null;
+				
+				// Write int value
+			case "memWriteJavaInt":
+			case "memWriteInt":
+				machine.tasks.memory.writeInt(
+					(long)__args[0] + (int)__args[1], (int)__args[2]);
+				return null;
+				
+				// Write long value
+			case "memWriteJavaLong":
+			case "memWriteLong":
+				machine.tasks.memory.writeLong(
+					(long)__args[0] + (int)__args[1], (long)__args[2]);
+				return null;
+				
+				// Write short value
+			case "memWriteJavaShort":
+			case "memWriteShort":
+				machine.tasks.memory.writeShort(
+					(long)__args[0] + (int)__args[1], (short)__args[2]);
+				return null;
 				
 				// Conversion of object to pointer
 			case "objectToPointer":
