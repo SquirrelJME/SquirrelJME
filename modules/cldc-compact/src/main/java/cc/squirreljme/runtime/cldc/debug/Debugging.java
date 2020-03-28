@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
+import todo.DEBUG;
 import todo.OOPS;
 import todo.TODO;
 
@@ -26,6 +27,19 @@ public final class Debugging
 	 */
 	private Debugging()
 	{
+	}
+	
+	/**
+	 * Emits a debugging note.
+	 *
+	 * @param __fmt The format.
+	 * @param __args The arguments to the string.
+	 * @since 2020/03/27
+	 */
+	@SuppressWarnings("deprecation")
+	public static void debugNote(String __fmt, Object... __args)
+	{
+		DEBUG.note(__fmt, __args);
 	}
 	
 	/**

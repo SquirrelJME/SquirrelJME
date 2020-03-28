@@ -13,6 +13,8 @@ import cc.squirreljme.emulator.fb.NativeFramebuffer;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This contains the implementation of some system calls in the event that the
@@ -76,6 +78,9 @@ public final class EmulatorAssembly
 						case SystemCallIndex.TIME_MILLI_WALL:
 						case SystemCallIndex.TIME_NANO_MONO:
 						case SystemCallIndex.DEBUG_FLAGS:
+						case SystemCallIndex.PD_OF_STDERR:
+						case SystemCallIndex.PD_OF_STDOUT:
+						case SystemCallIndex.PD_WRITE_BYTE:
 							return 1;
 						
 							// Not-implemented
@@ -134,6 +139,47 @@ public final class EmulatorAssembly
 			case SystemCallIndex.FRAMEBUFFER:
 				return NativeFramebuffer.getInstance().systemCall(context,
 					__a, __b, __c, __d, __e, __f, __g, __h);
+					
+				// Descriptor of standard error
+			case SystemCallIndex.PD_OF_STDERR:
+				context.setError(__si, 0);
+				return 2;
+				
+				// Descriptor of standard output
+			case SystemCallIndex.PD_OF_STDOUT:
+				context.setError(__si, 0);
+				return 1;
+				
+				// Write byte
+			case SystemCallIndex.PD_WRITE_BYTE:
+				{
+					OutputStream pipe = (__a == 2 ? System.err :
+						(__a == 1 ? System.out : null));
+					
+					if (pipe != null)
+					{
+						try
+						{
+							pipe.write(__b);
+							context.setError(__si, 0);
+							
+							return 1;
+						}
+						catch (IOException e)
+						{
+							context.setError(__si,
+								SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE);
+							
+							return 0;
+						}
+					}
+					else
+					{
+						context.setError(__si,
+							SystemCallError.PIPE_DESCRIPTOR_INVALID);
+						return 0;
+					}
+				}
 				
 				// Current wall clock
 			case SystemCallIndex.TIME_MILLI_WALL:

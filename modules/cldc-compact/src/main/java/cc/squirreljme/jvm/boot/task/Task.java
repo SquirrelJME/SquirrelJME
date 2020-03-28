@@ -9,10 +9,12 @@
 
 package cc.squirreljme.jvm.boot.task;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.boot.Globals;
 import cc.squirreljme.jvm.boot.lib.ClassInfoUtility;
 import cc.squirreljme.jvm.boot.lib.ClassNameUtils;
 import cc.squirreljme.jvm.boot.lib.ClassPath;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.HashMap;
 
 /**
@@ -171,7 +173,7 @@ public final class Task
 	 * @return The resulting object array.
 	 * @since 2019/10/13
 	 */
-	public final int loadObjectArray(TaskClass __cl, int... __vs)
+	public final long loadObjectArray(TaskClass __cl, int... __vs)
 	{
 		return this.allocator.allocateArrayInt(__cl, __vs);
 	}
@@ -200,12 +202,15 @@ public final class Task
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/13
 	 */
-	public final int newInstance(TaskClass __cl)
+	public final long newInstance(TaskClass __cl)
 		throws NoSuchMethodTaskException, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Need this to load from the class info
 		ClassInfoUtility ciutil = this.classInfoUtility();
 		
@@ -215,7 +220,7 @@ public final class Task
 			throw new NoSuchMethodTaskException("SV13");
 		
 		// Allocate memory here
-		int rv = this.allocator.allocateObject(__cl,
+		long rv = this.allocator.allocateObject(__cl,
 			ciutil.classAllocationSize(__cl));
 		
 		// Invoke the default constructor
@@ -223,6 +228,8 @@ public final class Task
 		
 		// Return the allocated pointer
 		return rv;
+		
+		 */
 	}
 	
 	/**

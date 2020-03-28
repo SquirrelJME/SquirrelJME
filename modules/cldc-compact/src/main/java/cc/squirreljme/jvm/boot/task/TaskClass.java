@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.boot.lib.ClassNameUtils;
 import cc.squirreljme.jvm.boot.lib.ClassPath;
 import cc.squirreljme.jvm.boot.lib.ClassPoolConstants;
 import cc.squirreljme.jvm.boot.lib.PoolClassName;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Objects;
 
 /**
@@ -28,13 +29,14 @@ import java.util.Objects;
  *
  * @since 2019/10/19
  */
+@Deprecated
 public final class TaskClass
 {
 	/** The index of the class in the resource table. */
 	protected final int resourceindex;
 	
 	/** The allocated class information. */
-	private int _infopointer;
+	private long _infopointer;
 	
 	/**
 	 * Initializes the class container.
@@ -54,10 +56,10 @@ public final class TaskClass
 	 * @throws TaskVirtualMachineError If the info pointer was not set.
 	 * @since 2019/10/27
 	 */
-	public final int infoPointer()
+	public final long infoPointer()
 		throws TaskVirtualMachineError
 	{
-		int rv = this._infopointer;
+		long rv = this._infopointer;
 		
 		// {@squirreljme.error SV0n Class information pointer not set.}
 		if (rv == 0)
@@ -109,14 +111,14 @@ public final class TaskClass
 		ClassInfoUtility ciutil = __task.classInfoUtility();
 		
 		// All branches require the info
-		int infopointer = __task.allocator.allocateObject(
+		long infopointer = __task.allocator.allocateObject(
 			ciutil.classInfoAllocationSize());
 		this._infopointer = infopointer;
 		
 		// This object has the class type of ClassInfo so it must always point
 		// to the ClassInfo instance of ClassInfo, however if we are loading
 		// ClassInfo then we just use our own pointer
-		Assembly.memWriteInt(infopointer, Constants.OBJECT_CLASS_OFFSET,
+		Assembly.memWriteLong(infopointer, Constants.OBJECT_CLASS_OFFSET,
 			(ClassNameUtils.isClassInfo(__cl) ? infopointer :
 			__task.loadClass("cc/squirreljme/jvm/ClassInfo")._infopointer));
 		
@@ -161,7 +163,7 @@ public final class TaskClass
 		for (int i = 1, n = pool.count(true); i < n; i++)
 		{
 			// The value to write into the slot
-			int slotv;
+			long slotv;
 			
 			// Depends on the type
 			int type = pool.entryType(true, i);
@@ -207,7 +209,8 @@ public final class TaskClass
 			}
 			
 			// Store slot value
-			Assembly.memWriteInt(__poolp, i * Constants.POOL_CELL_SIZE, slotv);
+			Assembly.memWriteLong(__poolp,
+				i * Constants.POOL_CELL_SIZE, slotv);
 		}
 	}
 	
@@ -249,6 +252,9 @@ public final class TaskClass
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// We just need the utility to access the class info
 		ClassInfoUtility ciutil = __task.classInfoUtility();
 		
@@ -306,6 +312,8 @@ public final class TaskClass
 		
 		// Done
 		return this;
+		
+		 */
 	}
 	
 	/**
@@ -324,6 +332,9 @@ public final class TaskClass
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// We need the parser for class info so that we can initialize the
 		// classes
 		ClassInfoUtility ciutil = __task.classInfoUtility();
@@ -447,11 +458,19 @@ public final class TaskClass
 		// Call static initializer for class, if one exists
 		BinaryBlob clinit = thisparser.methodCodeBytes("<clinit>", "()V");
 		if (clinit != null)
+		{
+			Assembly.breakpoint();
+			throw Debugging.todo();
+			/*
 			__task.contextThread().execute(((MemoryBlob)clinit).baseAddress(),
 				poolpointer);
+			 * /
+		}
 		
 		// All done! This class should hopefully work!
 		return this;
+		
+		 */
 	}
 	
 	/**
@@ -470,6 +489,9 @@ public final class TaskClass
 		if (__task == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// We just need the utility to access the class info
 		ClassInfoUtility ciutil = __task.classInfoUtility();
 		
@@ -528,6 +550,8 @@ public final class TaskClass
 		
 		// Done
 		return this;
+		
+		 */
 	}
 	
 	/**
@@ -545,6 +569,9 @@ public final class TaskClass
 		if (__task == null || __s == null)
 			throw new NullPointerException("NARG");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Count the number of bytes this will take up
 		int bytes = 2;
 		for (int i = 0, n = __s.length(); i < n; i++)
@@ -596,6 +623,8 @@ public final class TaskClass
 		
 		// All done!
 		return rv;
+		
+		 */
 	}
 }
 

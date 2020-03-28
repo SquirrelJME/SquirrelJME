@@ -17,6 +17,7 @@ import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
@@ -161,8 +162,8 @@ public final class SpringThread
 			__args = new Object[0];
 		
 		// Debug
-		/*todo.DEBUG.note("enterFrame(%s::%s, %s)", __m.inClass(),
-			__m.nameAndType(), Arrays.<Object>asList(__args));*/
+		todo.DEBUG.note("enterFrame(%s::%s, %s)", __m.inClass(),
+			__m.nameAndType(), Arrays.<Object>asList(__args));
 		
 		// {@squirreljme.error BK1k Cannot enter the frame for a method which
 		// is abstract. (The class the method is in; The method name and type)}

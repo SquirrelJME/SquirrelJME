@@ -40,7 +40,7 @@ public final class TaskThread
 	protected final int lid;
 	
 	/** The static field pointer for this thread. */
-	private int _staticfieldptr;
+	private long _staticfieldptr;
 	
 	/**
 	 * Initializes the thread.
@@ -142,7 +142,7 @@ public final class TaskThread
 	 * @throws TaskThrownException If the task threw an exception.
 	 * @since 2019/12/08
 	 */
-	public final long execute(int __meth, int __pool, int... __args)
+	public final long execute(long __meth, long __pool, int... __args)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException, TaskThrownException
 	{
@@ -259,7 +259,7 @@ public final class TaskThread
 	 * @param __d The static field pointer.
 	 * @since 2019/10/13
 	 */
-	public final void setStaticFieldPointer(int __d)
+	public final void setStaticFieldPointer(long __d)
 	{
 		this._staticfieldptr = __d;
 	}

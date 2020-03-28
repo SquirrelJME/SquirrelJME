@@ -32,6 +32,9 @@ public final class SystemBoot
 	static void __sysBoot(long __ramAddr, int __ramLen,
 		long __configAddr, int __configLen)
 	{
+		// Initialize the links in RAM
+		Allocator.__initRamLinks(__ramAddr, __ramLen);
+		
 		Assembly.breakpoint();
 		throw Debugging.todo();
 	}

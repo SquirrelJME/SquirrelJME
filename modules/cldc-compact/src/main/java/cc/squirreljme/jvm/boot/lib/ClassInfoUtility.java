@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.boot.lib;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.boot.task.TaskClass;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is a utility which allows access to the various fields within
@@ -19,13 +20,14 @@ import cc.squirreljme.jvm.boot.task.TaskClass;
  *
  * @since 2019/11/30
  */
+@Deprecated
 public final class ClassInfoUtility
 {
 	/** The allocation size. */
 	protected final int allocationsize;
 	
 	/** Class info properties. */
-	protected final int[] properties;
+	protected final long[] properties;
 	
 	/**
 	 * Initializes the class info utility.
@@ -34,11 +36,11 @@ public final class ClassInfoUtility
 	 * @param __props Class info properties.
 	 * @since 2019/11/30
 	 */
-	public ClassInfoUtility(int __as, int[] __props)
+	public ClassInfoUtility(int __as, long[] __props)
 	{
 		this.allocationsize = __as;
 		
-		int[] properties = new int[ClassInfoProperty.NUM_PROPERTIES];
+		long[] properties = new long[ClassInfoProperty.NUM_PROPERTIES];
 		for (int i = 0, lim = Math.min(__props.length,
 			ClassInfoProperty.NUM_PROPERTIES); i < lim; i++)
 			properties[i] = __props[i];
@@ -53,7 +55,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int classAllocationSize(TaskClass __cl)
+	public final long classAllocationSize(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_SIZE);
@@ -67,7 +69,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int classDepth(TaskClass __cl)
+	public final long classDepth(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_CLASSDEPTH);
@@ -92,7 +94,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/14
 	 */
-	public final int defaultNew(TaskClass __cl)
+	public final long defaultNew(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_DEFAULTNEW);
@@ -106,7 +108,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/08
 	 */
-	public final int flags(TaskClass __cl)
+	public final long flags(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_FLAGS);
@@ -120,7 +122,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/08
 	 */
-	public final int jarIndex(TaskClass __cl)
+	public final long jarIndex(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_JARDX);
@@ -134,7 +136,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int methodCount(TaskClass __cl)
+	public final long methodCount(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_NUMMETHODS);
@@ -148,7 +150,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int objectCount(TaskClass __cl)
+	public final long objectCount(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_NUMOBJECTS);
@@ -162,7 +164,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/08
 	 */
-	public final int poolPointer(TaskClass __cl)
+	public final long poolPointer(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_POOL);
@@ -177,14 +179,19 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final int property(TaskClass __cl, int __prop)
+	public final long property(TaskClass __cl, int __prop)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		return Assembly.memReadInt(__cl.infoPointer(),
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
+		return Assembly.memReadLong(__cl.infoPointer(),
 			this.properties[__prop]);
+			
+		 */
 	}
 	
 	/**
@@ -438,15 +445,20 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final void setProperty(TaskClass __cl, int __prop, int __v)
+	public final void setProperty(TaskClass __cl, int __prop, long __v)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Write value
 		Assembly.memWriteInt(__cl.infoPointer(),
 			this.properties[__prop], __v);
+			
+		 */
 	}
 	
 	/**
@@ -457,7 +469,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final void setSelfPointer(TaskClass __cl, int __v)
+	public final void setSelfPointer(TaskClass __cl, long __v)
 		throws NullPointerException
 	{
 		this.setProperty(__cl, ClassInfoProperty.INT_SELFPTR,
@@ -505,7 +517,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/01
 	 */
-	public final void setVTableVirtual(TaskClass __cl, int __v)
+	public final void setVTableVirtual(TaskClass __cl, long __v)
 		throws NullPointerException
 	{
 		this.setProperty(__cl, ClassInfoProperty.INT_ARRAY_VTABLEVIRTUAL,
@@ -520,7 +532,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/08
 	 */
-	public final int vTablePool(TaskClass __cl)
+	public final long vTablePool(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_ARRAY_VTABLEPOOL);
@@ -534,7 +546,7 @@ public final class ClassInfoUtility
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/08
 	 */
-	public final int vTableVirtual(TaskClass __cl)
+	public final long vTableVirtual(TaskClass __cl)
 		throws NullPointerException
 	{
 		return this.property(__cl, ClassInfoProperty.INT_ARRAY_VTABLEVIRTUAL);
@@ -693,7 +705,12 @@ public final class ClassInfoUtility
 		}
 		
 		// Initialize now
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		return new ClassInfoUtility(as, props);
+		
+		 */
 	}
 }
 

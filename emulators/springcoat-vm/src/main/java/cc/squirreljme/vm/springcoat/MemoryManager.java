@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.memory.ReadableBasicMemory;
 import cc.squirreljme.jvm.memory.ReadableByteMemory;
 import cc.squirreljme.jvm.memory.WritableBasicMemory;
 import cc.squirreljme.jvm.memory.WritableByteMemory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -144,7 +145,7 @@ public final class MemoryManager
 			
 			// Map chunk into memory as read-only
 			long ramNext = this._ramNext;
-			this.map(ramNext, chunk, false);
+			this.map(ramNext, chunk, true);
 			
 			// Prepare the next placement region for more ROM data
 			this._ramNext = ramNext + ((chunk.size() + 7) & (~7));
@@ -350,17 +351,20 @@ public final class MemoryManager
 		if (__addr < 0 || __addr > Integer.MAX_VALUE)
 			throw new MemoryAccessException(__addr, "Read out of bounds.");
 		
+		Debugging.debugNote("read: %08x%n", __addr);
+		
 		// Get entry where the chunk would be located
 		Map.Entry<Integer, ReadableByteMemory> chunk =
 			this._read.floorEntry((int)__addr);
 		if (chunk == null)
-			throw new MemoryAccessException(__addr, "Unmapped read.");
+			throw new MemoryAccessException(__addr,
+				String.format("Unmapped read: %08x", __addr));
 		
 		// Check to see if this is still within bounds of that chunk
 		long baseAddr = __addr - chunk.getKey();
 		ReadableByteMemory mem = chunk.getValue();
 		if (baseAddr >= mem.size())
-			throw new MemoryAccessException(__addr, "Overmapped read.");
+			throw new MemoryAccessException(__addr, "Over-mapped read.");
 		
 		// Read value
 		return mem.read(baseAddr);
@@ -486,7 +490,26 @@ public final class MemoryManager
 	public void write(long __addr, byte __b)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		if (__addr < 0 || __addr > Integer.MAX_VALUE)
+			throw new MemoryAccessException(__addr, "Write out of bounds.");
+		
+		Debugging.debugNote("write: %08x <- %d%n", __addr, __b);
+		
+		// Get entry where the chunk would be located
+		Map.Entry<Integer, WritableByteMemory> chunk =
+			this._write.floorEntry((int)__addr);
+		if (chunk == null)
+			throw new MemoryAccessException(__addr,
+				String.format("Unmapped write: %08x", __addr));
+		
+		// Check to see if this is still within bounds of that chunk
+		long baseAddr = __addr - chunk.getKey();
+		WritableByteMemory mem = chunk.getValue();
+		if (baseAddr >= mem.size())
+			throw new MemoryAccessException(__addr, "Over-mapped write.");
+		
+		// Write value
+		mem.write(baseAddr, __b);
 	}
 	
 	/**
@@ -509,7 +532,10 @@ public final class MemoryManager
 	public void writeInt(long __addr, int __v)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		this.write(__addr, (byte)(__v >>> 24));
+		this.write(__addr + 1, (byte)(__v >>> 16));
+		this.write(__addr + 2, (byte)(__v >>> 8));
+		this.write(__addr + 3, (byte)(__v));
 	}
 	
 	/**
@@ -520,7 +546,14 @@ public final class MemoryManager
 	public void writeLong(long __addr, long __v)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		this.write(__addr, (byte)(__v >>> 56));
+		this.write(__addr + 1, (byte)(__v >>> 48));
+		this.write(__addr + 2, (byte)(__v >>> 40));
+		this.write(__addr + 3, (byte)(__v >>> 32));
+		this.write(__addr + 4, (byte)(__v >>> 24));
+		this.write(__addr + 5, (byte)(__v >>> 16));
+		this.write(__addr + 6, (byte)(__v >>> 8));
+		this.write(__addr + 7, (byte)(__v));
 	}
 	
 	/**
@@ -531,6 +564,7 @@ public final class MemoryManager
 	public void writeShort(long __addr, long __v)
 		throws MemoryAccessException
 	{
-		throw new todo.TODO();
+		this.write(__addr, (byte)(__v >>> 8));
+		this.write(__addr + 1, (byte)(__v));
 	}
 }
