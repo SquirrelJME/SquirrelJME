@@ -47,6 +47,6 @@ public interface WritableBasicMemory
 	 * @throws MemoryAccessException If the value could not be written.
 	 * @since 2020/03/03
 	 */
-	void writeShort(long __addr, long __v)
+	void writeShort(long __addr, short __v)
 		throws MemoryAccessException;
 }
