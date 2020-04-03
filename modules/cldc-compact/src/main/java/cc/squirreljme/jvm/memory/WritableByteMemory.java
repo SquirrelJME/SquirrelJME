@@ -21,11 +21,11 @@ public interface WritableByteMemory
 	 * Writes the given byte to the specified address.
 	 *
 	 * @param __addr The address to write.
-	 * @param __b The value to write.
+	 * @param __v The value to write.
 	 * @throws MemoryAccessException If memory could not be written.
 	 * @since 2020/03/03
 	 */
-	void write(long __addr, byte __b)
+	void write(long __addr, byte __v)
 		throws MemoryAccessException;
 	
 	/**

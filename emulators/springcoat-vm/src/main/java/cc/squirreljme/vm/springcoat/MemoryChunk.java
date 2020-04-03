@@ -101,14 +101,14 @@ public final class MemoryChunk
 	 * @since 2020/03/07
 	 */
 	@Override
-	public void write(long __addr, byte __b)
+	public void write(long __addr, byte __v)
 		throws MemoryAccessException
 	{
 		int iaddr = (int)__addr;
 		if (__addr < 0 || __addr > Integer.MAX_VALUE || iaddr >= this.size)
 			throw new MemoryAccessException(__addr);
 		
-		this._bytes[iaddr] = __b;
+		this._bytes[iaddr] = __v;
 	}
 	
 	/**

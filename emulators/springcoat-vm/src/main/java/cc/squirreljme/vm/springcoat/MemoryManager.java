@@ -487,13 +487,13 @@ public final class MemoryManager
 	 * @since 2020/03/03
 	 */
 	@Override
-	public void write(long __addr, byte __b)
+	public void write(long __addr, byte __v)
 		throws MemoryAccessException
 	{
 		if (__addr < 0 || __addr > Integer.MAX_VALUE)
 			throw new MemoryAccessException(__addr, "Write out of bounds.");
 		
-		Debugging.debugNote("write: %08x <- %d%n", __addr, __b);
+		Debugging.debugNote("write: %08x <- %d%n", __addr, __v);
 		
 		// Get entry where the chunk would be located
 		Map.Entry<Integer, WritableByteMemory> chunk =
@@ -509,7 +509,7 @@ public final class MemoryManager
 			throw new MemoryAccessException(__addr, "Over-mapped write.");
 		
 		// Write value
-		mem.write(baseAddr, __b);
+		mem.write(baseAddr, __v);
 	}
 	
 	/**
@@ -561,7 +561,7 @@ public final class MemoryManager
 	 * @since 2020/03/03
 	 */
 	@Override
-	public void writeShort(long __addr, long __v)
+	public void writeShort(long __addr, short __v)
 		throws MemoryAccessException
 	{
 		this.write(__addr, (byte)(__v >>> 8));
