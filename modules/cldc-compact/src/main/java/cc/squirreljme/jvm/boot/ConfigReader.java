@@ -13,6 +13,9 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.ConfigRomType;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.JVMFunction;
+import cc.squirreljme.jvm.memory.ReadableBasicMemory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Iterator;
 
 /**
  * This is a helper class used to read the configuration.
@@ -20,19 +23,35 @@ import cc.squirreljme.jvm.JVMFunction;
  * @since 2019/06/22
  */
 public final class ConfigReader
+	implements Iterable<ConfigEntry>
 {
-	/** The configuration base. */
-	protected final int configBase;
+	/** Configuration memory accessor. */
+	protected final ReadableBasicMemory memory;
 	
 	/**
 	 * Initializes the configuration reader.
 	 *
-	 * @param __configBase The configuration base.
-	 * @since 2019/06/22
+	 * @param __mem The configuration memory area.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/04/03
 	 */
-	public ConfigReader(int __configBase)
+	public ConfigReader(ReadableBasicMemory __mem)
+		throws NullPointerException
 	{
-		this.configBase = __configBase;
+		if (__mem == null)
+			throw new NullPointerException("NARG");
+		
+		this.memory = __mem;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/04/03
+	 */
+	@Override
+	public Iterator<ConfigEntry> iterator()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -44,6 +63,7 @@ public final class ConfigReader
 	 * found.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public final String[] loadKeyValueMap(int __key)
 	{
 		// Configuration scanner
@@ -90,6 +110,7 @@ public final class ConfigReader
 	 * @return The resulting value or {@code 0} if not set.
 	 * @since 2019/10/05
 	 */
+	@Deprecated
 	public final int loadInteger(int __key)
 	{
 		int addr = this.search(__key);
@@ -103,6 +124,7 @@ public final class ConfigReader
 	 * @return The resulting string or {@code null} if it is not set.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public final String loadString(int __key)
 	{
 		return JVMFunction.jvmLoadString(this.search(__key));
@@ -115,6 +137,7 @@ public final class ConfigReader
 	 * @return The resulting string values or {@code null} if there are none.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public final String[] loadStrings(int __key)
 	{
 		// Locate the key pointer
@@ -154,6 +177,7 @@ public final class ConfigReader
 	 * no more entries.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public final int scan(int __key, int __at)
 	{
 		// Where do we start the search from? From the start?
@@ -208,6 +232,7 @@ public final class ConfigReader
 	 * not found.
 	 * @since 2019/06/19
 	 */
+	@Deprecated
 	public final int search(int __key)
 	{
 		// Seek through items
@@ -233,6 +258,17 @@ public final class ConfigReader
 		
 		// Not found
 		return 0;
+	}
+	
+	/**
+	 * Returns the number of configuration items.
+	 *
+	 * @return The number of configuration items.
+	 * @since 2002/04/03
+	 */
+	public final int size()
+	{
+		throw Debugging.todo();
 	}
 }
 

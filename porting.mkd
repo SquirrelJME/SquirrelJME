@@ -4,6 +4,8 @@ SquirrelJME is very much designed to be easily ported to other systems as
 all of the code for it is in Java, which means there is a universal method of
 compilation and executing the code.
 
+***THIS DOCUMENTATION IS OUT OF DATE!***
+
 # Requirements
 
 Although SquirrelJME is a complex project, the layout and design as previously
@@ -23,9 +25,8 @@ the requirements needed for porting:
 
 # Implementation Reminders
 
-## Thread Starting
+## System Boot
 
-All threads including the main thread must have a `Thread` object initialized
-in which `Thread.__start()` is executed for the threads. This method is in
-the virtual machine itself and performs most of the logic needed by the
-library so that porting is simpler.
+The starting point for the system is
+`cc.squirreljme.jvm.boot.SystemBoot.__sysBoot`, which accepts the RAM region
+and configuration data.

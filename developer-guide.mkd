@@ -2,6 +2,8 @@
 
 This is a guide for developers to follow for various parts of the repository.
 
+ * See the [Building](building.mkd).
+
 ## Releasing
 
 When a release is to be made, it is performed in another branch and becomes

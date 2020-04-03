@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.memory.ReadableAssemblyMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -34,6 +35,10 @@ public final class SystemBoot
 	{
 		// Initialize the links in RAM
 		Allocator.__initRamLinks(__ramAddr, __ramLen);
+		
+		// Setup the configuration reader to obtain our entry point info
+		ConfigReader config = new ConfigReader(
+			new ReadableAssemblyMemory(__configAddr, __configLen));
 		
 		Assembly.breakpoint();
 		throw Debugging.todo();
