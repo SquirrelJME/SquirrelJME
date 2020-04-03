@@ -1,8 +1,3 @@
 group = "cc.squirreljme.squirreljme.emulators"
 description = "This module contains all of the emulators available for " +
 	"running SquirrelJME. These run on top of Java SE itself."
-
-subprojects
-{
-	apply plugin: "checkstyle"
-}
