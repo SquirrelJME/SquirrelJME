@@ -61,9 +61,9 @@ public final class TaskClass
 	{
 		long rv = this._infopointer;
 		
-		// {@squirreljme.error SV0n Class information pointer not set.}
+		// {@squirreljme.error ZZqn Class information pointer not set.}
 		if (rv == 0)
-			throw new TaskVirtualMachineError("SV0n");
+			throw new TaskVirtualMachineError("ZZqn");
 		
 		return rv;
 	}
@@ -522,9 +522,9 @@ public final class TaskClass
 				size = 8;
 				break;
 			
-				// {@squirreljme.error SV0z Invalid primitive type.}
+				// {@squirreljme.error ZZqz Invalid primitive type.}
 			default:
-				throw new RuntimeException("SV0z");
+				throw new RuntimeException("ZZqz");
 		}
 		
 		// Set as primitive

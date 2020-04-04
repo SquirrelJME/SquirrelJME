@@ -315,12 +315,12 @@ public final class ClassFileParser
 		// pool can be empty if the class has no methods
 		if (this.splitPoolSize(false) < 0)
 		{
-			// {@squirreljme.error SV0t No root pool was specified and the
+			// {@squirreljme.error ZZqt No root pool was specified and the
 			// class pool is purely virtual.}
 			AbstractPoolParser rootp = (__rt ? this.rootruntimepool :
 				this.rootstaticpool);
 			if (rootp == null)
-				throw new InvalidClassFormatException("SV0t");
+				throw new InvalidClassFormatException("ZZqt");
 			
 			// Initialize aliased pool
 			return new AliasedPoolParser(blob.subSection(off, -len), rootp);

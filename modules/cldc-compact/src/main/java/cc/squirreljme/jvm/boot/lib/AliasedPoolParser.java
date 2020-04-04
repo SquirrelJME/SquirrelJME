@@ -64,10 +64,10 @@ public final class AliasedPoolParser
 		if (rv >= 0)
 			return rv;
 		
-		// {@squirreljme.error SV0w Aliased pool has a count of zero.}
+		// {@squirreljme.error ZZqw Aliased pool has a count of zero.}
 		rv = this.blob.readJavaInt(0);
 		if (rv < 0)
-			throw new InvalidClassFormatException("SV0w");
+			throw new InvalidClassFormatException("ZZqw");
 		
 		// Cache and return
 		this._count = rv;
