@@ -180,6 +180,8 @@ public final class ConfigReader
 	@Deprecated
 	public final int scan(int __key, int __at)
 	{
+		throw Debugging.todo();
+		/*
 		// Where do we start the search from? From the start?
 		int seeker;
 		if (__at == 0)
@@ -221,6 +223,8 @@ public final class ConfigReader
 			seeker += Constants.CONFIG_HEADER_SIZE + Assembly.memReadJavaShort(
 				seeker, Constants.CONFIG_SIZE_OFFSET);
 		}
+		
+		 */
 	}
 	
 	/**
@@ -235,6 +239,8 @@ public final class ConfigReader
 	@Deprecated
 	public final int search(int __key)
 	{
+		throw Debugging.todo();
+		/*
 		// Seek through items
 		for (int seeker = this.configBase;;)
 		{
@@ -258,6 +264,8 @@ public final class ConfigReader
 		
 		// Not found
 		return 0;
+		
+		 */
 	}
 	
 	/**
