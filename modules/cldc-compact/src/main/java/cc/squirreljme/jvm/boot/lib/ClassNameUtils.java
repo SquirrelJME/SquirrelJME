@@ -42,15 +42,15 @@ public final class ClassNameUtils
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error SV0o Cannot get component type of empty
+		// {@squirreljme.error ZZqo Cannot get component type of empty
 		// class name.}
 		int len = __cl.length();
 		if (len <= 0)
-			throw new IllegalArgumentException("SV0o");
+			throw new IllegalArgumentException("ZZqo");
 		
-		// {@squirreljme.error SV0p The class name is not an array.}
+		// {@squirreljme.error ZZqp The class name is not an array.}
 		if (__cl.charAt(0) != '[')
-			throw new IllegalArgumentException("SV0p");
+			throw new IllegalArgumentException("ZZqp");
 		
 		switch (__cl.charAt(1))
 		{
@@ -70,15 +70,15 @@ public final class ClassNameUtils
 				
 				// Class
 			case 'L':
-				// {@squirreljme.error SV0r Expected class name of array type
+				// {@squirreljme.error ZZqr Expected class name of array type
 				// to end in semi-colon.}
 				if (__cl.charAt(len - 1) != ';')
-					throw new IllegalArgumentException("SV0r");
+					throw new IllegalArgumentException("ZZqr");
 				return __cl.substring(2, len - 1);
 			
-				// {@squirreljme.error SV0q Unknown component type.}
+				// {@squirreljme.error ZZqq Unknown component type.}
 			default:
-				throw new InvalidClassFormatException("SV0q");
+				throw new InvalidClassFormatException("ZZqq");
 		}
 	}
 	
@@ -106,8 +106,8 @@ public final class ClassNameUtils
 			if (__cl.charAt(i) != '[')
 				return i - 1;
 		
-		// {@squirreljme.error SV0y Malformed array class name.}
-		throw new InvalidClassFormatException("SV0y");
+		// {@squirreljme.error ZZqy Malformed array class name.}
+		throw new InvalidClassFormatException("ZZqy");
 	}
 	
 	/**

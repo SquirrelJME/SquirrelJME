@@ -72,8 +72,8 @@ public final class TaskManager
 				return rv;
 		}
 		
-		// {@squirreljme.error SV10 No such task exists. (The task)}
-		throw new NoSuchTaskException("SV10 " + __lid);
+		// {@squirreljme.error ZZr0 No such task exists. (The task)}
+		throw new NoSuchTaskException("ZZr0 " + __lid);
 	}
 	
 	/**
@@ -115,9 +115,9 @@ public final class TaskManager
 				if (tasks[pid] == null)
 					break;
 			
-			// {@squirreljme.error SV01 Task limit reached.}
+			// {@squirreljme.error ZZq1 Task limit reached.}
 			if (pid >= TaskManager.MAX_TASKS)
-				throw new TooManyTasksException("SV01");
+				throw new TooManyTasksException("ZZq1");
 			
 			// Setup and store task now
 			rv = new Task(pid, ((this._nextlid++) << TaskManager._TASK_SHIFT) | pid,

@@ -36,9 +36,9 @@ public final class MemoryBlob
 	public MemoryBlob(int __base, int __size)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error SV06 Negative memory blob size.}
+		// {@squirreljme.error ZZQ6 Negative memory blob size.}
 		if (__size < 0)
-			throw new IllegalArgumentException("SV06");
+			throw new IllegalArgumentException("ZZq6");
 		
 		this.base = __base;
 		this.size = __size;
@@ -91,9 +91,9 @@ public final class MemoryBlob
 	public byte readByte(int __o)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error SV09 Out of range region read.}
+		// {@squirreljme.error ZZq9 Out of range region read.}
 		if (__o < 0 || __o >= this.size)
-			throw new IndexOutOfBoundsException("SV09");
+			throw new IndexOutOfBoundsException("ZZq9");
 		
 		return (byte)Assembly.memReadByte(this.base, __o);
 	}
@@ -111,9 +111,9 @@ public final class MemoryBlob
 		if (__i < 0 || __o < 0 || (__o + __l) > __b.length)
 			throw new NullPointerException("IOOB");
 			
-		// {@squirreljme.error SV0u Out of range region read.}
+		// {@squirreljme.error ZZqu Out of range region read.}
 		if (__i < 0 || (__i + __l) > this.size)
-			throw new IndexOutOfBoundsException("SV0u");
+			throw new IndexOutOfBoundsException("ZZqu");
 		
 		for (int i = 0, bp = this.base + __i; i < __l; i++)
 			__b[__o + i] = (byte)Assembly.memReadByte(bp, i);
@@ -127,9 +127,9 @@ public final class MemoryBlob
 	public int readJavaInt(int __o)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error SV09 Out of range region read.}
+		// {@squirreljme.error ZZq9 Out of range region read.}
 		if (__o < 0 || (__o + 3) >= this.size)
-			throw new IndexOutOfBoundsException("SV09");
+			throw new IndexOutOfBoundsException("ZZq9");
 		
 		return Assembly.memReadJavaInt(this.base, __o);
 	}
@@ -142,9 +142,9 @@ public final class MemoryBlob
 	public short readJavaShort(int __o)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error SV09 Out of range region read.}
+		// {@squirreljme.error ZZq9 Out of range region read.}
 		if (__o < 0 || (__o + 1) >= this.size)
-			throw new IndexOutOfBoundsException("SV09");
+			throw new IndexOutOfBoundsException("ZZq9");
 		
 		return (short)Assembly.memReadJavaShort(this.base, __o);
 	}
@@ -157,9 +157,9 @@ public final class MemoryBlob
 	public int readJavaUnsignedShort(int __o)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error SV09 Out of range region read.}
+		// {@squirreljme.error ZZq9 Out of range region read.}
 		if (__o < 0 || (__o + 1) >= this.size)
-			throw new IndexOutOfBoundsException("SV09");
+			throw new IndexOutOfBoundsException("ZZq9");
 		
 		return Assembly.memReadJavaShort(this.base, __o) & 0xFFFF;
 	}

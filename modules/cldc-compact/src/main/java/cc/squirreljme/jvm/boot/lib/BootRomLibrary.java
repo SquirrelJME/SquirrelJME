@@ -226,11 +226,11 @@ public final class BootRomLibrary
 		// Get base address of the library
 		int bp = this.address;
 		
-		// {@squirreljme.error SV07 Attempt to access resource which was not
+		// {@squirreljme.error ZZq7 Attempt to access resource which was not
 		// in range of the boot library.}
 		if (__dx < 0 || __dx >= Assembly.memReadJavaInt(bp,
 			BootRomLibrary.JAR_NUMRC_OFFSET))
-			throw new IndexOutOfBoundsException("SV07");
+			throw new IndexOutOfBoundsException("ZZq7");
 		
 		// Read from the table of contents, the offset to the data.
 		int tocoffset = bp + Assembly.memReadJavaInt(bp,

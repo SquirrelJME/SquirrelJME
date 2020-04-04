@@ -85,10 +85,10 @@ public final class TaskThread
 		if (__cl == null || __mn == null || __mt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error SV12 Cannot execute into a special class type
+		// {@squirreljme.error ZZr2 Cannot execute into a special class type
 		// such as an array or primitive type.}
 		if (ClassNameUtils.isSpecial(__cl))
-			throw new IllegalArgumentException("SV12");
+			throw new IllegalArgumentException("ZZr2");
 		
 		// Get the owning task
 		Task task = Globals.getTaskManager().getTask(this.pid);
@@ -152,10 +152,10 @@ public final class TaskThread
 		if (__args == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error SV11 Cannot execute method with the given
+		// {@squirreljme.error ZZr1 Cannot execute method with the given
 		// number of arguments.}
 		if (__args.length > TaskThread.MAX_CALL_ARGUMENTS)
-			throw new IllegalArgumentException("SV11");
+			throw new IllegalArgumentException("ZZr1");
 		
 		// Get the owning task
 		Task task = Globals.getTaskManager().getTask(this.pid);

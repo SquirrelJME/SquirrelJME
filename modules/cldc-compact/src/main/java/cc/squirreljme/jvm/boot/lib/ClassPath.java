@@ -48,10 +48,10 @@ public final class ClassPath
 		if (__cp == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error SV0a Too many entries on the class path.}
+		// {@squirreljme.error ZZqa Too many entries on the class path.}
 		int n = __cp.length;
 		if (n > (ClassPath._JAR_MASK >>> ClassPath._INDEX_SHIFT))
-			throw new IllegalArgumentException("SV0a");
+			throw new IllegalArgumentException("ZZqa");
 		
 		// Defensive copy and check
 		ClassLibrary[] classpath = new ClassLibrary[n];
@@ -133,11 +133,11 @@ public final class ClassPath
 	public final BinaryBlob resourceData(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error SV08 Out of range resource.}
+		// {@squirreljme.error ZZq8 Out of range resource.}
 		int cpdx = __dx >>> ClassPath._INDEX_SHIFT;
 		ClassLibrary[] classpath = this.classpath;
 		if (cpdx < 0 || cpdx >= classpath.length)
-			throw new IndexOutOfBoundsException("SV08");
+			throw new IndexOutOfBoundsException("ZZq8");
 		
 		// Get resource pointer from this
 		return classpath[cpdx].resourceData(__dx & ClassPath._INDEX_MASK);

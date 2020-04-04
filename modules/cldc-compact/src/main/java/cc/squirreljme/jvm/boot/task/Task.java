@@ -148,11 +148,11 @@ public final class Task
 			if (rv != null)
 				return rv;
 			
-			// {@squirreljme.error SV0m The specified class does not exist
+			// {@squirreljme.error ZZqm The specified class does not exist
 			// and it is not a special class. (The class which does not exist)}
 			int cldx = this.classpath.resourceClassFind(__cl);
 			if (cldx < 0 && !ClassNameUtils.isSpecial(__cl))
-				throw new TaskNoSuchClassException("SV0m " + __cl);
+				throw new TaskNoSuchClassException("ZZqm " + __cl);
 			
 			// Setup new one and store it
 			classes.put(__cl, (rv = new TaskClass(cldx)));
@@ -214,10 +214,10 @@ public final class Task
 		// Need this to load from the class info
 		ClassInfoUtility ciutil = this.classInfoUtility();
 		
-		// {@squirreljme.error SV13 Class has no default constructor.}
+		// {@squirreljme.error ZZr3 Class has no default constructor.}
 		int defnew = ciutil.defaultNew(__cl);
 		if (defnew == 0)
-			throw new NoSuchMethodTaskException("SV13");
+			throw new NoSuchMethodTaskException("ZZr3");
 		
 		// Allocate memory here
 		long rv = this.allocator.allocateObject(__cl,

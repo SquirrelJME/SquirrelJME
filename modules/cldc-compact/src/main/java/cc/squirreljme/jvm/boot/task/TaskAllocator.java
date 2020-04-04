@@ -185,10 +185,10 @@ public final class TaskAllocator
 	public final long allocateObject(int __sz)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error SV0x Object allocation is less than the object
+		// {@squirreljme.error ZZqx Object allocation is less than the object
 		// base size.}
 		if (__sz < Constants.OBJECT_BASE_SIZE)
-			throw new IllegalArgumentException("SV0x");
+			throw new IllegalArgumentException("ZZqx");
 		
 		// Allocate
 		long rv = this.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
