@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.boot.task.TaskCreateResult;
 import cc.squirreljme.jvm.boot.task.TaskManager;
 import cc.squirreljme.jvm.boot.task.TaskSysCallHandler;
 import cc.squirreljme.jvm.boot.task.ThreadManager;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is the bootstrap entry point for the supervisor.
@@ -66,7 +67,10 @@ public final class Bootstrap
 				thm.BOOT_THREAD));
 			
 			// Initialize config reader
-			ConfigReader config = new ConfigReader(__confbase);
+			ConfigReader config = null;
+			if (true)
+				throw Debugging.todo();
+			/*new ConfigReader(__confbase);*/
 			
 			// Basic SquirrelJME Banner
 			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
