@@ -11,7 +11,7 @@ package cc.squirreljme.jvm.boot.lib;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.boot.ConfigReader;
-import cc.squirreljme.jvm.ConfigRomType;
+import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.jvm.JVMFunction;
 
 /**
@@ -121,7 +121,7 @@ public final class BootRom
 		ClassLibrary[] usecp;
 		
 		// Use the passed class-path if one was specified.
-		String[] usercp = __config.loadStrings(ConfigRomType.CLASS_PATH);
+		String[] usercp = __config.loadStrings(ConfigRomKey.CLASS_PATH);
 		if (usercp != null)
 		{
 			// Debug
@@ -184,7 +184,7 @@ public final class BootRom
 		ConfigReader __config)
 	{
 		// Get from configuration first
-		int rv = __config.loadInteger(ConfigRomType.IS_MIDLET);
+		int rv = __config.loadInteger(ConfigRomKey.IS_MIDLET);
 		if (rv != 0)
 			return (rv > 0);
 		
@@ -204,7 +204,7 @@ public final class BootRom
 		ConfigReader __config)
 	{
 		// Use main user class
-		String usermain = __config.loadString(ConfigRomType.MAIN_CLASS);
+		String usermain = __config.loadString(ConfigRomKey.MAIN_CLASS);
 		if (usermain != null)
 			return usermain;
 		

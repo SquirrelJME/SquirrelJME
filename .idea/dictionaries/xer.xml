@@ -15,6 +15,7 @@
       <w>cldc</w>
       <w>convertable</w>
       <w>dlet</w>
+      <w>ebcdic</w>
       <w>endianess</w>
       <w>externed</w>
       <w>fprintf</w>

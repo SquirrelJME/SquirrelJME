@@ -10,6 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.ClassInfo;
+import cc.squirreljme.jvm.JVMFunction;
+import cc.squirreljme.jvm.SystemCall;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
@@ -526,15 +529,8 @@ public final class Class<T>
 		if (__n == null)
 			throw new NullPointerException();
 		
-		// The name will have to be converted to binary form since that is
-		// what is internally used
-		Class<?> rv = ObjectAccess.classByName(__n.replace('.', '/'));
-		
-		// {@squirreljme.error ZZ0z Could not find the specified class. (The
-		// name of the class)}
-		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ0z %s", __n));
-		return rv;
+		// Load the class file data
+		return JVMFunction.jvmLoadClass(SystemCall.loadClass(__n.getBytes()));
 	}
 }
 

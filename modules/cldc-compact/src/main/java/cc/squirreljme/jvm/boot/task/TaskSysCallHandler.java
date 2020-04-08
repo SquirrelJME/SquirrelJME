@@ -11,7 +11,7 @@ package cc.squirreljme.jvm.boot.task;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.boot.ConfigReader;
-import cc.squirreljme.jvm.ConfigRomType;
+import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallIndex;
 
@@ -50,13 +50,13 @@ public final class TaskSysCallHandler
 		// Set handlers
 		Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
 			SupervisorPropertyIndex.TASK_SYSCALL_STATIC_FIELD_POINTER,
-			__cr.loadInteger(ConfigRomType.SYSCALL_STATIC_FIELD_POINTER));
+			__cr.loadInteger(ConfigRomKey.SYSCALL_STATIC_FIELD_POINTER));
 		Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
 			SupervisorPropertyIndex.TASK_SYSCALL_METHOD_HANDLER,
-			__cr.loadInteger(ConfigRomType.SYSCALL_CODE_POINTER));
+			__cr.loadInteger(ConfigRomKey.SYSCALL_CODE_POINTER));
 		Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
 			SupervisorPropertyIndex.TASK_SYSCALL_METHOD_POOL_POINTER,
-			__cr.loadInteger(ConfigRomType.SYSCALL_POOL_POINTER));
+			__cr.loadInteger(ConfigRomKey.SYSCALL_POOL_POINTER));
 		
 		// Message
 		todo.DEBUG.note("Okay.");
