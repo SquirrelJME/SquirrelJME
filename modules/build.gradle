@@ -40,7 +40,8 @@ subprojects
 			"squirreljme.error",
 			"squirreljme.syscallparam",
 			"squirreljme.syscallreturn",
-			"squirreljme.tsiparam" ]
+			"squirreljme.tsiparam",
+			"squirreljme.configtype" ]
 	}
 
 	// Enable SquirrelJME Tests

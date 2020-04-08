@@ -10,8 +10,6 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.ConfigRomType;
-import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.jvm.memory.ReadableBasicMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;

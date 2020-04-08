@@ -2,35 +2,49 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.jvm.boot;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Contains information on SquirrelJME.
+ * Represents a configuration entry.
  *
- * @since 2018/12/05
+ * @since 2020/04/03
  */
-public interface SquirrelJME
+public final class ConfigEntry
 {
-	/** The version of this SquirrelJME runtime. */
-	String RUNTIME_VERSION =
-		"0.3.0";
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/04/03
+	 */
+	@Override
+	public int hashCode()
+	{
+		throw Debugging.todo();
+	}
 	
-	/** The major version. */
-	byte MAJOR_VERSION =
-		0;
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/04/03
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw Debugging.todo();
+	}
 	
-	/** The minor version. */
-	byte MINOR_VERSION =
-		3;
-	
-	/** The release version. */
-	byte RELEASE_VERSION =
-		0;
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/04/03
+	 */
+	@Override
+	public String toString()
+	{
+		throw Debugging.todo();
+	}
 }
-

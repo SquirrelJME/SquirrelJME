@@ -10,7 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.jvm.ConfigRomType;
+import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
@@ -190,28 +190,28 @@ public class SummerCoatFactory
 				SummerCoatFactory.CONFIG_SIZE)))
 		{
 			// Version
-			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_VERSION,
+			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_VERSION,
 				"0.3.0");
 			
 			// Name
-			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_NAME,
+			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_NAME,
 				"SquirrelJME SummerCoat");
 			
 			// Vendor
-			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_VENDOR,
+			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_VENDOR,
 				"Stephanie Gawroriski");
 			
 			// E-Mail
-			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_EMAIL,
+			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_EMAIL,
 				"xerthesquirrel@gmail.com");
 			
 			// URL
-			ConfigRomWriter.writeString(dos, ConfigRomType.JAVA_VM_URL,
+			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_URL,
 				"https://squirreljme.cc/");
 			
 			// Main class
 			if (__maincl != null)
-				ConfigRomWriter.writeString(dos, ConfigRomType.MAIN_CLASS,
+				ConfigRomWriter.writeString(dos, ConfigRomKey.MAIN_CLASS,
 					__maincl.replace('.', '/'));
 			
 			// System properties
@@ -219,27 +219,27 @@ public class SummerCoatFactory
 				for (Map.Entry<String, String> e : __sprops.entrySet())
 				{
 					ConfigRomWriter.writeKeyValue(dos,
-						ConfigRomType.DEFINE_PROPERTY,
+						ConfigRomKey.DEFINE_PROPERTY,
 						e.getKey(), e.getValue());
 				}
 			
 			// Class path
-			ConfigRomWriter.writeStrings(dos, ConfigRomType.CLASS_PATH,
+			ConfigRomWriter.writeStrings(dos, ConfigRomKey.CLASS_PATH,
 				SummerCoatFactory.classPathToStringArray(__cp));
 			
 			// System call handler
 			ConfigRomWriter.writeInteger(
-				dos, ConfigRomType.SYSCALL_STATIC_FIELD_POINTER,
+				dos, ConfigRomKey.SYSCALL_STATIC_FIELD_POINTER,
 				ramstart + bjh.syscallsfp);
 			ConfigRomWriter.writeInteger(
-				dos, ConfigRomType.SYSCALL_CODE_POINTER,
+				dos, ConfigRomKey.SYSCALL_CODE_POINTER,
 				bootjaroff + bjh.syscallhandler);
 			ConfigRomWriter.writeInteger(
-				dos, ConfigRomType.SYSCALL_POOL_POINTER,
+				dos, ConfigRomKey.SYSCALL_POOL_POINTER,
 				ramstart + bjh.syscallpool);
 			
 			// End
-			dos.writeShort(ConfigRomType.END);
+			dos.writeShort(ConfigRomKey.END);
 		}
 		
 		// {@squirreljme.error AE0d Could not write to configuration ROM.}

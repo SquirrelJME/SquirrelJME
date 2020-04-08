@@ -2,35 +2,45 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.jvm;
 
 /**
- * Contains information on SquirrelJME.
+ * Encoding IDs which are built-in to SquirrelJME.
  *
- * @since 2018/12/05
+ * @since 2020/04/07
  */
-public interface SquirrelJME
+public interface BuiltInEncoding
 {
-	/** The version of this SquirrelJME runtime. */
-	String RUNTIME_VERSION =
-		"0.3.0";
-	
-	/** The major version. */
-	byte MAJOR_VERSION =
+	/** Unspecified, use defined property or assume UTF-8. */
+	byte UNSPECIFIED =
 		0;
 	
-	/** The minor version. */
-	byte MINOR_VERSION =
+	/** UTF-8. */
+	byte UTF8 =
+		1;
+	
+	/** ASCII. */
+	byte ASCII =
+		2;
+	
+	/** IBM037 (EBCDIC). */
+	byte IBM037 =
 		3;
 	
-	/** The release version. */
-	byte RELEASE_VERSION =
-		0;
+	/** ISO-8859-1. */
+	byte ISO_8859_1 =
+		4;
+	
+	/** ISO-8859-15. */
+	byte ISO_8859_15 =
+		5;
+	
+	/** The number of built-in encodings. */
+	byte NUM_BUILTIN_ENCODINGS =
+		6;
 }
-
