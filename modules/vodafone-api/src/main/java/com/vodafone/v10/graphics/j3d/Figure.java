@@ -15,7 +15,7 @@ public class Figure
 {
     public Figure(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Figure(String var1)
