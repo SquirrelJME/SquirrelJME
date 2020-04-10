@@ -323,7 +323,8 @@ public final class SpringMachine
 		// Execute main program loop
 		mainWorker.run();
 		
-		throw Debugging.todo();
+		// Check for exiting
+		this.exitCheck();
 		
 		/*
 		// Obtain the boot library to read entry points from

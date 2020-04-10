@@ -141,8 +141,24 @@ public interface ConfigRomKey
 	byte BUILT_IN_ENCODING =
 		15;
 	
+	/**
+	 * The MicroEdition Configuration used, see {@link MicroeditionConfig}.
+	 *
+	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
+	 */
+	byte MICROEDITION_CONFIG =
+		16;
+	
+	/**
+	 * The type of line ending to use, see {@link LineEndingType}.
+	 *
+	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
+	 */
+	byte LINE_ENDING =
+		17;
+	
 	/** Number of available configuration options. */
 	byte NUM_OPTIONS =
-		16;
+		17;
 }
 

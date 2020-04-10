@@ -69,10 +69,6 @@ public abstract class AbstractEmulatedTask
 		// Describe this task
 		this.setGroup("squirreljme");
 		
-		// The output of this task is the profiling snapshot
-		this.getOutputs().files(
-			this.getProject().provider(this::__profilerSnapshotPath));
-		
 		// This only runs if this is an application
 		this.onlyIf(this::__onlyIf);
 		

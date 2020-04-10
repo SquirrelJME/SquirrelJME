@@ -18,6 +18,7 @@ import java.io.PrintStream;
  *
  * @since 2018/10/29
  */
+@Deprecated
 public final class UncaughtExceptionHandler
 {
 	/**
@@ -25,6 +26,7 @@ public final class UncaughtExceptionHandler
 	 *
 	 * @since 2018/10/29
 	 */
+	@Deprecated
 	private UncaughtExceptionHandler()
 	{
 	}
@@ -36,6 +38,7 @@ public final class UncaughtExceptionHandler
 	 * @param __t The throwable to handle.
 	 * @since 2018/10/29
 	 */
+	@Deprecated
 	public static final void handle(Throwable __t)
 	{
 		// Make a nice and big banner on it

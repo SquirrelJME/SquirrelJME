@@ -80,4 +80,17 @@ public final class Debugging
 	{
 		TODO.note(__fmt, __args);
 	}
+	
+	/**
+	 * Returns a TODO for an object.
+	 *
+	 * @param <T> The type.
+	 * @param __args The calling arguments.
+	 * @return Never returns.
+	 * @since 2020/04/09
+	 */
+	public static <T> T todoObject(Object... __args)
+	{
+		throw Debugging.todo(__args);
+	}
 }

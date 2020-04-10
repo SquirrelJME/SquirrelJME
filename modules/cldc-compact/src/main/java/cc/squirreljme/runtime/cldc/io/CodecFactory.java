@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import cc.squirreljme.jvm.BuiltInEncoding;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -31,6 +33,38 @@ public final class CodecFactory
 	 */
 	private CodecFactory()
 	{
+	}
+	
+	/**
+	 * Returns a decoder that is based on a built-in one.
+	 *
+	 * @param __builtIn The {@link BuiltInEncoding}.
+	 * @return The encoder that is built in.
+	 * @since 2020/04/09
+	 */
+	public static Decoder decoder(int __builtIn)
+	{
+		switch (__builtIn)
+		{
+			case BuiltInEncoding.ASCII:
+				return new ASCIIDecoder();
+				
+			case BuiltInEncoding.IBM037:
+				throw Debugging.todo();
+				
+			case BuiltInEncoding.ISO_8859_1:
+				return new ISO88591Decoder();
+				
+			case BuiltInEncoding.ISO_8859_15:
+				return new ISO885915Decoder();
+			
+			case BuiltInEncoding.UTF8:
+				return new UTF8Decoder();
+			
+				// {@squirreljme.error ZZ0Z Unknown encoding. (The encoding)}
+			default:
+				throw new IllegalArgumentException("ZZ0Z " + __builtIn);
+		}
 	}
 	
 	/**
@@ -114,9 +148,9 @@ public final class CodecFactory
 	 * @return The default decoder.
 	 * @since 2018/10/13
 	 */
-	public static final Decoder defaultDecoder()
+	public static Decoder defaultDecoder()
 	{
-		return CodecFactory.decoderUnchecked(CodecFactory.defaultEncoding());
+		return CodecFactory.decoder(Debugging.<Integer>todoObject());
 	}
 	
 	/**
@@ -125,30 +159,40 @@ public final class CodecFactory
 	 * @return The default encoder.
 	 * @since 2018/09/16
 	 */
-	public static final Encoder defaultEncoder()
+	public static Encoder defaultEncoder()
 	{
-		return CodecFactory.encoderUnchecked(CodecFactory.defaultEncoding());
+		return CodecFactory.encoder(Debugging.<Integer>todoObject());
 	}
 	
 	/**
-	 * Returns the default encoding.
+	 * Returns a decoder that is based on a built-in one.
 	 *
-	 * @return The default encoding.
-	 * @since 2018/09/16
+	 * @param __builtIn The {@link BuiltInEncoding}.
+	 * @return The encoder that is built in.
+	 * @since 2020/04/09
 	 */
-	public static final String defaultEncoding()
+	public static Encoder encoder(int __builtIn)
 	{
-		// If no encoding has been set, fallback on one so it is always valid
-		try
+		switch (__builtIn)
 		{
-			String rv = System.getProperty("microedition.encoding");
-			if (rv == null)
-				return CodecFactory.FALLBACK_ENCODING;
-			return rv;
-		}
-		catch (SecurityException e)
-		{
-			return CodecFactory.FALLBACK_ENCODING;
+			case BuiltInEncoding.ASCII:
+				return new ASCIIEncoder();
+				
+			case BuiltInEncoding.IBM037:
+				return new IBM037Encoder();
+				
+			case BuiltInEncoding.ISO_8859_1:
+				return new ISO88591Encoder();
+				
+			case BuiltInEncoding.ISO_8859_15:
+				return new ISO885915Encoder();
+			
+			case BuiltInEncoding.UTF8:
+				return new UTF8Encoder();
+			
+				// {@squirreljme.error ZZ3Y Unknown encoding. (The encoding)}
+			default:
+				throw new IllegalArgumentException("ZZ3Y " + __builtIn);
 		}
 	}
 	
@@ -243,11 +287,8 @@ public final class CodecFactory
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Store original since it will be lowercase
-		String orign = __n;
-		
 		// Lowercase and map values
-		switch ((__n = __n.toLowerCase()))
+		switch (__n.toLowerCase())
 		{
 				// ASCII
 			case "646":
@@ -310,7 +351,7 @@ public final class CodecFactory
 			
 				// Unknown use original
 			default:
-				return orign;
+				return __n;
 		}
 	}
 }
