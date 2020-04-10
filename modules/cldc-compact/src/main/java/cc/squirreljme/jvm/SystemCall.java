@@ -29,6 +29,17 @@ public final class SystemCall
 	}
 	
 	/**
+	 * Exits the virtual machine.
+	 *
+	 * @param __i The exit code.
+	 * @since 2020/04/09
+	 */
+	public static void exit(int __i)
+	{
+		Assembly.sysCall(SystemCallIndex.EXIT, __i);
+	}
+	
+	/**
 	 * Gets the error for the system call.
 	 *
 	 * @param __si The system call to check the error for.

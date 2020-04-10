@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.AbstractSystemCallHandler;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -249,6 +250,7 @@ public final class SystemCallHandler
 					switch (__a)
 					{
 							// Supported system calls
+						case SystemCallIndex.EXIT:
 						case SystemCallIndex.QUERY_INDEX:
 							return 1;
 						
@@ -256,6 +258,11 @@ public final class SystemCallHandler
 						default:
 							return 0;
 					}
+					
+					// Exit the VM
+				case SystemCallIndex.EXIT:
+					__thread.machine.exit(__a);
+					return 0;
 				
 					// System call not supported
 				default:

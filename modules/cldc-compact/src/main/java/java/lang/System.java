@@ -391,7 +391,7 @@ public final class System
 				
 				// The current platform
 			case "microedition.platform":
-				return "SquirrelJME/" + SquirrelJME.RUNTIME_VERSION;
+				return SquirrelJME.MICROEDITION_PLATFORM;
 				
 				// Unknown, use system call
 			default:

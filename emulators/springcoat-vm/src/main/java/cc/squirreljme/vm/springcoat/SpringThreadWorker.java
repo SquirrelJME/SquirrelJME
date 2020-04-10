@@ -1520,8 +1520,48 @@ public final class SpringThreadWorker
 		// Are we exiting in the middle of an exception throwing?
 		this.machine.exitCheck();
 		
-		// Need the current frame and its byte code
+		// Get all frames to check for unchecked ones
 		SpringThread thread = this.thread;
+		SpringThread.Frame[] frames = thread.frames();
+		
+		// Dive down and see
+		int dive = frames.length - 1;
+		while (dive >= 0)
+		{
+			// Get frame details
+			SpringThread.Frame frame = frames[dive];
+			ByteCode code = frame.byteCode();
+			int pc = frame.lastExecutedPc();
+			
+			// Check if there is an exception handler here
+			ExceptionHandler useeh = null;
+			for (ExceptionHandler eh : code.exceptions().at(pc))
+			{
+				// Is this handler compatible for the thrown
+				// exception?
+				SpringClass ehcl = this.loadClass(eh.type());
+				
+				if (ehcl.isCompatible(__o))
+				{
+					useeh = eh;
+					break;
+				}
+			}
+			
+			// We found one, stop
+			if (useeh != null)
+				break;
+			
+			// Otherwise continue the dive
+			dive--;
+		}
+		
+		// Exception is unhandled, so we should just fail here
+		if (dive < 0)
+			throw new SpringFatalException(String.format(
+				"Uncaught exception: %s%n", __o.type().name));
+		
+		// Need the current frame and its byte code
 		SpringThread.Frame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();
 		int pc = frame.lastExecutedPc();
@@ -1553,14 +1593,12 @@ public final class SpringThreadWorker
 			SpringThread.Frame cf = thread.currentFrame();
 			if (cf == null)
 			{
-				// Send our throwable to a special handler
-				this.invokeMethod(true, new ClassName("cc/squirreljme/" +
-					"runtime/cldc/lang/UncaughtExceptionHandler"),
-					new MethodNameAndType("handle",
-					"(Ljava/lang/Throwable;)V"), __o);
+				// Emit warning
+				System.err.printf("Uncaught exception: %s%n",
+					__o.type().name);
 				
-				// Just stop execution here
-				return -1;
+				// Exit
+				throw new SpringMachineExitException(127);
 			}
 			
 			// Toss onto the new current frame
@@ -1722,7 +1760,7 @@ public final class SpringThreadWorker
 		frame.setLastExecutedPc(pc);
 		
 		// Debug
-		/*todo.DEBUG.note("step(%s %s::%s) -> %s", thread.name(),
+		/*System.err.printf("step(%s %s::%s) -> %s%n", thread.name(),
 			method.inClass(), method.nameAndType(), inst);*/
 		
 		// Used to detect the next instruction of execution following this,
