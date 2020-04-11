@@ -86,7 +86,7 @@ public interface ConfigRomKey
 		8;
 	
 	/**
-	 * Is this a MIDlet?
+	 * Is this a MIDlet being launched?
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#BOOLEAN}
 	 */
@@ -159,6 +159,6 @@ public interface ConfigRomKey
 	
 	/** Number of available configuration options. */
 	byte NUM_OPTIONS =
-		17;
+		18;
 }
 
