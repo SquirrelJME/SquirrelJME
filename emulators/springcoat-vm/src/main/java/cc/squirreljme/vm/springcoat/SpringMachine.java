@@ -14,11 +14,16 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jvm.ConfigRomKey;
+import cc.squirreljme.jvm.LineEndingType;
+import cc.squirreljme.jvm.boot.ConfigWriter;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,8 +64,8 @@ public final class SpringMachine
 	/** Resources accessor. */
 	protected final VMResourceAccess resourceaccessor;
 	
-	/** The boot class. */
-	protected final String bootcl;
+	/** The class to start execution within. */
+	protected final String mainClass;
 	
 	/** The manager for suites. */
 	protected final VMSuiteManager suites;
@@ -119,7 +124,7 @@ public final class SpringMachine
 	 * @param __sm The manager for suites.
 	 * @param __cl The class loader.
 	 * @param __tm Task manager.
-	 * @param __bootcl The boot class.
+	 * @param __mainClass The boot class.
 	 * @param __profiler The profiler to use.
 	 * @param __sprops System properties.
 	 * @param __args Main entry point arguments.
@@ -127,17 +132,17 @@ public final class SpringMachine
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, String __bootcl, ProfilerSnapshot __profiler,
+		SpringTaskManager __tm, String __mainClass, ProfilerSnapshot __profiler,
 		Map<String, String> __sprops, String... __args)
 		throws NullPointerException
 	{
-		if (__cl == null || __sm == null || __bootcl == null)
+		if (__cl == null || __sm == null || __mainClass == null)
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
 		this.classloader = __cl;
 		this.tasks = __tm;
-		this.bootcl = __bootcl;
+		this.mainClass = __mainClass;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
 			new ProfilerSnapshot());
@@ -314,11 +319,52 @@ public final class SpringMachine
 		SpringMethod bootMethod = bootClass.lookupMethod(true,
 			SpringMachine._BOOT_METHOD);
 		
+		// Build configuration for the VM
+		ConfigWriter configWriter = new ConfigWriter(false);
+		configWriter.writeUtf(ConfigRomKey.JAVA_VM_VERSION,
+			SquirrelJME.RUNTIME_VERSION);
+		configWriter.writeUtf(ConfigRomKey.JAVA_VM_NAME,
+			"SquirrelJME");
+		configWriter.writeUtf(ConfigRomKey.JAVA_VM_VENDOR,
+			"Stephanie Gawroriski");
+		configWriter.writeUtf(ConfigRomKey.JAVA_VM_EMAIL,
+			"xer@multiphasicapps.net");
+		configWriter.writeUtf(ConfigRomKey.JAVA_VM_URL,
+			"https://squirreljme.cc/");
+		configWriter.writeUtf(ConfigRomKey.MAIN_CLASS,
+			this.mainClass);
+		configWriter.writeUtfList(ConfigRomKey.MAIN_ARGUMENTS,
+			this._args);
+		configWriter.writeInteger(ConfigRomKey.LINE_ENDING,
+			("\n".equals(File.separator) ? LineEndingType.LF :
+			LineEndingType.CRLF));
+		
+		// ConfigRomKey.SYSCALL_STATIC_FIELD_POINTER
+		// ConfigRomKey.SYSCALL_CODE_POINTER
+		// ConfigRomKey.SYSCALL_POOL_POINTER
+		// ConfigRomKey.BUILT_IN_ENCODING
+		// ConfigRomKey.MICROEDITION_CONFIG
+		
+		// Define the class path
+		VMClassLibrary[] classPathLibs = this.classloader.classPath();
+		String[] classPath = new String[classPathLibs.length];
+		for (int i = 0, n = classPath.length; i < n; i++)
+			classPath[i] = classPathLibs[i].name();
+		configWriter.writeUtfList(ConfigRomKey.CLASS_PATH, classPath);
+		
+		// Define all the various properties used for execution
+		for (Map.Entry<String, String> e : this._sysproperties.entrySet())
+			configWriter.writeKeyValuePair(ConfigRomKey.DEFINE_PROPERTY,
+				e.getKey(), e.getValue());
+		
+		// Setup configuration memory
+		SpringPointer configAddr = mmu.appendRom(configWriter.toByteArray());
+		
 		// Enter the boot method
 		mainThread.enterFrame(bootMethod,
 			MemoryManager.RAM_START_ADDRESS,
 			SpringMachine.DEFAULT_RAM_SIZE,
-			0L, 0);
+			configAddr.pointer, configWriter.byteCount());
 		
 		// Execute main program loop
 		mainWorker.run();
