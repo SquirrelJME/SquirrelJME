@@ -47,6 +47,9 @@ public class RunNativeTask
 		// This only runs if this is an application
 		this.onlyIf(this::__onlyIf);
 		
+		// Never up to date
+		this.getOutputs().upToDateWhen(__task -> false);
+		
 		// Run the task accordingly
 		this.doLast(new __ActionTask__());
 		
