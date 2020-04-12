@@ -125,15 +125,15 @@ public final class StateOperation
 	 * Creates a copy operation.
 	 *
 	 * @param __w Is this wide?
-	 * @param __a The source.
-	 * @param __b The destination.
+	 * @param __src The source.
+	 * @param __dst The destination.
 	 * @return The operation.
 	 * @since 2019/04/13
 	 */
-	public static final StateOperation copy(boolean __w, int __a, int __b)
+	public static final StateOperation copy(boolean __w, int __src, int __dst)
 	{
 		return new StateOperation((__w ? Type.WIDE_COPY : Type.COPY),
-			__a, __b);
+			__src, __dst);
 	}
 	
 	/**
