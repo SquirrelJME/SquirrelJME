@@ -24,7 +24,6 @@ import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 	"generated for them, so as such Object effectively has no fields.")
 public class Object
 {
-	
 	/**
 	 * Clones the current copy creating a shallow copy of it if
 	 * {@code Cloneable} is implemented, unless this method is overridden to
