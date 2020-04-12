@@ -1,0 +1,14 @@
+# 2020/04/11
+
+## 20:46
+
+There is a rather serious virus going around which has rather been cutting
+down the time and such I can spend on SquirrelJME, due to stress and otherwise
+since I work for a medical company making very important stuff. So I am rather
+taking a leant back approach of sorts for the time being, using GitHub
+projects for planning and notes otherwise. I have been really busy so could
+not be keeping these notes, but I should continue to do this.
+
+## 20:50
+
+I really want to track hypothetical ports and scenarios.
