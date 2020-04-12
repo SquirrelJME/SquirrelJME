@@ -16,6 +16,10 @@ package cc.squirreljme.jvm;
  */
 public interface ConfigRomType
 {
+	/** End of ROM. */
+	byte END =
+		0;
+	
 	/** Java Modified UTF. */
 	byte UTF =
 		1;
