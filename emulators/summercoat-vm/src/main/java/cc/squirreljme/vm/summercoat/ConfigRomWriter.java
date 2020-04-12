@@ -18,6 +18,7 @@ import java.io.IOException;
  *
  * @since 2019/06/14
  */
+@Deprecated
 public final class ConfigRomWriter
 {
 	/**
