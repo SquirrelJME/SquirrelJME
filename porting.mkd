@@ -4,6 +4,8 @@ SquirrelJME is very much designed to be easily ported to other systems as
 all of the code for it is in Java, which means there is a universal method of
 compilation and executing the code.
 
+Ports of SquirrelJME available at the [port list](ports.mkd).
+
 ***THIS DOCUMENTATION IS OUT OF DATE!***
 
 # Requirements
