@@ -1,0 +1,27 @@
+# Ports
+
+Ports of SquirrelJME either using a future natively compiled port
+or through RatufaCoat with the C compiler.
+
+Additional information in the [porting guide](porting.mkd).
+
+# RatufaCoat
+
+RatufaCoat is written in C and has various ports of it, which are capable of
+running SquirrelJME.
+
+ * RetroArch (Enabled platforms)
+   * Android
+   * Apple iOS (Generic and 9)
+   * Apple Mac OS X
+   * Emscriptem (Javascript/Web Assembly)
+   * Linux (ARM and x86)
+   * Nintendo 3DS
+   * Nintendo GameCube
+   * Nintendo Switch
+   * Nintendo Wii
+   * Nintendo Wii U
+   * PlayStation PSP
+   * PlayStation Vita
+   * Microsoft Windows
+ * Palm OS

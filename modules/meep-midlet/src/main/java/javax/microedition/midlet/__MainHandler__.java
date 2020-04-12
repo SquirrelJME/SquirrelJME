@@ -78,17 +78,20 @@ final class __MainHandler__
 		{
 			instance.startApp();
 		}
-		finally
+		catch (RuntimeException e)
 		{
+			// Print trace of the failure
+			e.printStackTrace();
+			
 			// Always try to destroy the MIDlet
 			try
 			{
 				instance.destroyApp(true);
 			}
-			catch (MIDletStateChangeException e)
+			catch (MIDletStateChangeException f)
 			{
 				// Ignore, but still print a trace
-				e.printStackTrace(System.err);
+				f.printStackTrace(System.err);
 			}
 			
 			// Application is gone now, exit
