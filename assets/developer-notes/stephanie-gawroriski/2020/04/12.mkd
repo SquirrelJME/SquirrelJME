@@ -1,0 +1,7 @@
+# 2020/04/12
+
+## 18:57
+
+So I have the RAM links initialized and the configuration set, so I guess what I
+can do is have a thread boot? I guess really it is just initializing and
+starting the thread of execution.
