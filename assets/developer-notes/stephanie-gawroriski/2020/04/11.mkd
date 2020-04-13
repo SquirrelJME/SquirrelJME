@@ -12,3 +12,9 @@ not be keeping these notes, but I should continue to do this.
 ## 20:50
 
 I really want to track hypothetical ports and scenarios.
+
+## 21:12
+
+Okay so for the interest of time, the SpringCoat, SummerCoat, and RatufaCoat
+bringups are only going to be concerned with running the code and then
+bringing it up after.
