@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCall;
 import cc.squirreljme.jvm.memory.ReadableAssemblyMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 

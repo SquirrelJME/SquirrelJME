@@ -7,6 +7,18 @@ description = "This is the SummerCoat VM which is a more " +
 	"optimized register based virtual machine which should result in faster" +
 	"code execution."
 
+// Setup JavaDoc tags so it does not fail!
+java
+{
+	javadoc.options.tags = [ "squirreljme.property",
+		"squirreljme.env",
+		"squirreljme.error",
+		"squirreljme.syscallparam",
+		"squirreljme.syscallreturn",
+		"squirreljme.tsiparam",
+		"squirreljme.configtype" ]
+}
+
 dependencies
 {
 	api project(":emulators:emulator-base")
