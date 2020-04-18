@@ -47,16 +47,13 @@
             <option value="$PROJECT_DIR$/modules/markdown-writer" />
             <option value="$PROJECT_DIR$/modules/media-api" />
             <option value="$PROJECT_DIR$/modules/meep-cellular" />
-            <option value="$PROJECT_DIR$/modules/meep-concurrency" />
             <option value="$PROJECT_DIR$/modules/meep-event" />
             <option value="$PROJECT_DIR$/modules/meep-key" />
-            <option value="$PROJECT_DIR$/modules/meep-liblets" />
+            <option value="$PROJECT_DIR$/modules/meep-location" />
             <option value="$PROJECT_DIR$/modules/meep-lui" />
             <option value="$PROJECT_DIR$/modules/meep-midlet" />
             <option value="$PROJECT_DIR$/modules/meep-power" />
-            <option value="$PROJECT_DIR$/modules/meep-provisioning" />
             <option value="$PROJECT_DIR$/modules/meep-rms" />
-            <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
             <option value="$PROJECT_DIR$/modules/opengles" />

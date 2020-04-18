@@ -19,14 +19,14 @@ import net.multiphasicapps.tac.TestSupplier;
  * @since 2018/12/06
  */
 public class TestExceptionCatchUp
-	extends TestSupplier<String>
+	extends TestSupplier<Boolean>
 {
 	/**
 	 * Throws an exception.
 	 *
 	 * @since 2018/12/06
 	 */
-	public final String levelA()
+	public final Boolean levelA()
 	{
 		return this.levelB();
 	}
@@ -36,7 +36,7 @@ public class TestExceptionCatchUp
 	 *
 	 * @since 2018/12/06
 	 */
-	public final String levelB()
+	public final Boolean levelB()
 	{
 		throw new NoSuchElementException("TEST");
 	}
@@ -46,7 +46,7 @@ public class TestExceptionCatchUp
 	 * @since 2018/12/06
 	 */
 	@Override
-	public String test()
+	public Boolean test()
 	{
 		try
 		{
@@ -54,7 +54,7 @@ public class TestExceptionCatchUp
 		}
 		catch (NoSuchElementException t)
 		{
-			throw new IllegalArgumentException(t);
+			return true;
 		}
 	}
 }

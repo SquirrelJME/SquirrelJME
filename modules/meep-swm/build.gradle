@@ -13,7 +13,10 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "MEEP Application Management System"
 	swmVendor = "Stephanie Gawroriski"
+
+	// See: https://docs.oracle.com/javame/config/cldc/opt-pkgs/api/meep/api/doc-files/provisioning.html
 	definedStandards += new JavaMEStandard("microedition.swm;;")
+	definedStandards += new JavaMEStandard("microedition.provisioning;;")
 }
 
 dependencies
