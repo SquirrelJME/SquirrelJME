@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.memory.ReadableAssemblyMemory;
+import cc.squirreljme.jvm.process.ProcessSpawner;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -39,6 +40,9 @@ public final class SystemBoot
 		// Setup the configuration reader to obtain our entry point info
 		ConfigReader config = new ConfigReader(
 			new ReadableAssemblyMemory(__configAddr, __configLen));
+		
+		// Spawn the initial process
+		ProcessSpawner spawner = new ProcessSpawner();
 		
 		Assembly.breakpoint();
 		throw Debugging.todo();
