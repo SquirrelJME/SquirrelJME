@@ -40,6 +40,7 @@ dependencies
 	implementation project(":modules:meep-event")
 	implementation project(":modules:meep-key")
 	implementation project(":modules:meep-lui")
+	implementation project(":modules:meep-location")
 	implementation project(":modules:meep-midlet")
 	implementation project(":modules:meep-power")
 	implementation project(":modules:meep-rms")
