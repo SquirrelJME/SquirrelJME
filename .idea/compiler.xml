@@ -3,6 +3,14 @@
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Eclipse" />
     <bytecodeTargetLevel target="7">
+      <module name="squirreljme.modules.meep-concurrency.main" target="1.7" />
+      <module name="squirreljme.modules.meep-concurrency.test" target="1.7" />
+      <module name="squirreljme.modules.meep-liblets.main" target="1.7" />
+      <module name="squirreljme.modules.meep-liblets.test" target="1.7" />
+      <module name="squirreljme.modules.meep-provisioning.main" target="1.7" />
+      <module name="squirreljme.modules.meep-provisioning.test" target="1.7" />
+      <module name="squirreljme.modules.meep-securityframework.main" target="1.7" />
+      <module name="squirreljme.modules.meep-securityframework.test" target="1.7" />
       <module name="squirreljme.modules.tool-profiler.main" target="1.7" />
       <module name="squirreljme.modules.tool-profiler.test" target="1.7" />
     </bytecodeTargetLevel>

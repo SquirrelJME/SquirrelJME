@@ -1,5 +1,6 @@
 import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
 
 version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
 description = "This is the standard Java ME 8 Connection " +
@@ -13,6 +14,9 @@ squirreljme
 	swmName = "Connection Limited Device Configuration"
 	swmVendor = "Stephanie Gawroriski"
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
+
+	// If file support is enabled then GCF will also provide file connections
+	definedStandards += new JavaMEStandard("microedition.io.file.FileConnection;;")
 }
 
 dependencies

@@ -11,7 +11,11 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "MEEP MIDlet Interface"
 	swmVendor = "Stephanie Gawroriski"
+
+	// This provides support for both liblets and midlets
+	// See: https://docs.oracle.com/javame/config/cldc/opt-pkgs/api/meep/api/doc-files/packaging.html#ApplicationSuitesAndLIBlets
 	definedStandards += new JavaMEStandard("microedition.midlet;;")
+	definedStandards += new JavaMEStandard("microedition.liblets;;")
 }
 
 dependencies

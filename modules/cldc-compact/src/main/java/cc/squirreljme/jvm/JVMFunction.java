@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
 
 /**
  * This class contains the functions of the virtual machine.
@@ -73,6 +74,7 @@ public final class JVMFunction
 	 * Performs aggressive garbage collection of the JVM heap to free as much
 	 * memory as possible.
 	 *
+	 * @see Reference
 	 * @since 2019/04/25
 	 */
 	public static void jvmGarbageCollect()

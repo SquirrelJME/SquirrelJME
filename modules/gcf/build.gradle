@@ -1,4 +1,5 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
 
 description = "This projects contains the Generic " +
 	"connection framework which is used to create connections to other " +
@@ -11,6 +12,9 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Generic Connection Framework"
 	swmVendor = "Stephanie Gawroriski"
+
+	definedStandards += new JavaMEStandard("microedition.gcf;;")
+	definedStandards += new JavaMEStandard("microedition.io;;")
 }
 
 dependencies

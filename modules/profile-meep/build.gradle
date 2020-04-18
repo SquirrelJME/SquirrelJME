@@ -1,5 +1,6 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 import cc.squirreljme.plugin.swm.JavaMEProfile
+import cc.squirreljme.plugin.swm.JavaMEStandard
 
 description = "This defines the MEEP profile and is a virtual project."
 version = rootProject.version
@@ -16,6 +17,17 @@ squirreljme
 	definedProfiles += new JavaMEProfile("MIDP-3.0")
 	definedProfiles += new JavaMEProfile("MIDP-3.1")
 	definedProfiles += new JavaMEProfile("MEEP-8")
+
+	// Concurrency support does not define any actual classes, just that
+	// programs may run along side each other. SquirrelJME always supports
+	// this, so this support is always enabled.
+	// See: https://docs.oracle.com/javame/config/cldc/opt-pkgs/api/meep/api/doc-files/concurrency.html
+	definedStandards += new JavaMEStandard("microedition.concurrency;;")
+
+	// SquirrelJME provides support for permissions and otherwise, so this is
+	// always enabled.
+	// See: https://docs.oracle.com/javame/config/cldc/opt-pkgs/api/meep/api/doc-files/security_framework.html
+	definedStandards += new JavaMEStandard("microedition.securityframework;;");
 }
 
 dependencies
@@ -25,16 +37,12 @@ dependencies
 	implementation project(":modules:gcf")
 	implementation project(":modules:media-api")
 	implementation project(":modules:meep-cellular")
-	implementation project(":modules:meep-concurrency")
 	implementation project(":modules:meep-event")
 	implementation project(":modules:meep-key")
-	implementation project(":modules:meep-liblets")
 	implementation project(":modules:meep-lui")
 	implementation project(":modules:meep-midlet")
 	implementation project(":modules:meep-power")
-	implementation project(":modules:meep-provisioning")
 	implementation project(":modules:meep-rms")
-	implementation project(":modules:meep-securityframework")
 	implementation project(":modules:meep-swm")
 	implementation project(":modules:midp-lcdui")
 }
