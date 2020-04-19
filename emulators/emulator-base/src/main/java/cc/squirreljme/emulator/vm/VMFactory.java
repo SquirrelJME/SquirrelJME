@@ -13,11 +13,15 @@ package cc.squirreljme.emulator.vm;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.swm.EntryPoints;
+import cc.squirreljme.vm.JarClassLibrary;
+import cc.squirreljme.vm.NameOverrideClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,6 +36,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.stream.Stream;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -102,6 +107,7 @@ public abstract class VMFactory
 		// Default settings
 		String vmName = "springcoat";
 		Path snapshotPath = null;
+		Collection<String> libraries = new LinkedList<>();
 		Collection<String> suiteClasspath = new LinkedList<>();
 		Map<String, String> systemProperties = new LinkedHashMap<>();
 		
@@ -111,6 +117,7 @@ public abstract class VMFactory
 		// Command line format is:
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
+		// -Xlibraries:(class:path:...)
 		// -Dsysprop=value
 		// -classpath (class:path:...)
 		// Main-class
@@ -146,6 +153,26 @@ public abstract class VMFactory
 						item.substring(equalDx + 1));
 			}
 			
+			// Libraries to make available to the virtual machine
+			else if (item.startsWith("-Xlibraries:"))
+			{
+				// Extract path elements
+				for (int i = item.indexOf(':') + 1, n = item.length();
+					i < n; i++)
+				{
+					// Get location of the next colon
+					int dx = item.indexOf(File.pathSeparatorChar, i);
+					if (dx < 0)
+						dx = n;
+					
+					// Add to path
+					VMFactory.__addPaths(libraries, item.substring(i, dx));
+					
+					// Go to next colon
+					i = dx;
+				}
+			}
+			
 			// JARs to load
 			else if (item.equals("-classpath") || item.equals("-cp"))
 			{
@@ -163,7 +190,8 @@ public abstract class VMFactory
 						dx = n;
 					
 					// Add to path
-					suiteClasspath.add(strings.substring(i, dx));
+					VMFactory.__addPaths(suiteClasspath,
+						strings.substring(i, dx));
 					
 					// Go to next colon
 					i = dx;
@@ -185,33 +213,38 @@ public abstract class VMFactory
 		while (!queue.isEmpty())
 			mainArgs.add(queue.removeFirst());
 		
-		// Collect all the suites together
-		Collection<String> classpath = new LinkedList<>();
-		Collection<VMClassLibrary> suites = new LinkedList<>();
-		for (String classItem : suiteClasspath)
+		// Implicitly include all of the classes specified as part of suites
+		// to be part of the library path
+		libraries.addAll(suiteClasspath);
+		
+		// Determine any suites that are available in the suite library but
+		// are not available to
+		Map<String, VMClassLibrary> suites = new LinkedHashMap<>();
+		for (String library : libraries)
 		{
-			Path path = Paths.get(classItem);
+			Path path = Paths.get(library);
 			
-			// Load it into memory
-			try (InputStream in = Files.newInputStream(path,
-					StandardOpenOption.READ);
-				ZipStreamReader zip = new ZipStreamReader(in))
-			{
-				String normalName = VMFactory.__normalizeName(
-					path.getFileName().toString());
-				
-				System.err.printf("Loading %s (%s)...%n", normalName, path);
-				suites.add(InMemoryClassLibrary.loadZip(
-					normalName, zip));
-				
-				// Use the true name here
-				classpath.add(normalName);
-			}
-			catch (IOException e)
-			{
-				throw new RuntimeException("Could not load library.", e);
-			}
+			// Do not add the same libraries multiple times
+			String normalName = VMFactory.__normalizeName(
+				path.getFileName().toString());
+			if (suites.containsKey(normalName))
+				continue;
+			
+			// Note it
+			System.err.printf("Registering %s (%s)%n", normalName, path);
+			
+			// Place in the class library, but make sure the name matches
+			// the normalized name of the JAR
+			suites.put(normalName, new NameOverrideClassLibrary(
+				JarClassLibrary.of(path), normalName));
 		}
+		
+		// Go through the class path and normalize the names so that it finds
+		// the correct JAR files
+		Collection<String> classpath = new LinkedList<>();
+		for (String classItem : suiteClasspath)
+			classpath.add(VMFactory.__normalizeName(
+				Paths.get(classItem).getFileName().toString()));
 		
 		// Run the VM, but always make sure we can
 		int exitCode = -1;
@@ -224,7 +257,7 @@ public abstract class VMFactory
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
 				profilerSnapshot,
-				new ArraySuiteManager(suites),
+				new ArraySuiteManager(suites.values()),
 				classpath.<String>toArray(new String[classpath.size()]),
 				mainClass,
 				systemProperties,
@@ -376,6 +409,45 @@ public abstract class VMFactory
 	}
 	
 	/**
+	 * Adds paths to the collection of files for the classpath usage.
+	 *
+	 * @param __files The target files.
+	 * @param __path The path to evaluate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/04/19
+	 */
+	private static void __addPaths(Collection<String> __files, String __path)
+		throws NullPointerException
+	{
+		if (__files == null || __path == null)
+			throw new NullPointerException("NARG");
+		
+		// If this is not a wildcard path then ignore it
+		if (!__path.endsWith(File.pathSeparator + "*"))
+		{
+			__files.add(__path);
+			return;
+		}
+		
+		// Try searching for JAR files in a directory
+		try (Stream<Path> stream = Files.walk(
+			Paths.get(__path.substring(0, __path.length() - 1)), 1,
+			FileVisitOption.FOLLOW_LINKS))
+		{
+			stream.forEach(__scan ->
+				{
+					if (__scan.endsWith(".jar") || __scan.endsWith(".JAR"))
+						__files.add(__scan.toString());
+				});
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(String.format(
+				"Could not load wildcard JARs: %s", __path), e);
+		}
+	}
+	
+	/**
 	 * Tries to get a property from a passed map otherwise reads from the
 	 * system properties used.
 	 *
@@ -444,7 +516,7 @@ public abstract class VMFactory
 			throw new NullPointerException("NARG");
 		
 		// Get the base name of the JAR
-		if (__name.endsWith(".jar"))
+		if (__name.endsWith(".jar") || __name.endsWith(".JAR"))
 			__name = __name.substring(0, __name.length() - ".jar".length());
 		
 		// Chop down potential foo"-0.4.0" from the end
@@ -462,7 +534,7 @@ public abstract class VMFactory
 		}
 		
 		// Use this name
-		return __name + ".jar";
+		return __name.toLowerCase() + ".jar";
 	}
 }
 
