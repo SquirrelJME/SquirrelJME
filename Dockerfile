@@ -55,7 +55,7 @@ ENTRYPOINT java \
 	-classpath "/squirreljme/emulator/*:/squirreljme/system/*" \
 	cc.squirreljme.emulator.vm.VMFactory \
 	-Xemulator:springcoat \
-	-Xlibraries="/squirreljme/system/*:/squirreljme/jars/*" \
+	-Xlibraries:"/squirreljme/system/*:/squirreljme/jars/*" \
 	-classpath "/squirreljme/system/*" \
 	javax.microedition.midlet.__MainHandler__ \
 	cc.squirreljme.runtime.launcher.Main
