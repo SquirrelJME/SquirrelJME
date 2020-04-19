@@ -46,6 +46,12 @@ https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
  * [![Twitter](
  https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow)](
    https://twitter.com/MultiPhasicApps)
+ * [![Docker](
+   https://img.shields.io/docker/automated/xerthesquirrel/squirreljme)](
+   https://hub.docker.com/r/xerthesquirrel/squirreljme)
+ * [![Docker Build](
+   https://img.shields.io/docker/build/xerthesquirrel/squirreljme)](
+   https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
 
 Information:
 
