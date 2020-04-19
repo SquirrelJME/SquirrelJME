@@ -10,6 +10,7 @@
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.vm.InMemoryClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;

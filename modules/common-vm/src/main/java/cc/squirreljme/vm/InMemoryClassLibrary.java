@@ -8,9 +8,8 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator.vm;
+package cc.squirreljme.vm;
 
-import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
