@@ -13,8 +13,14 @@ _speculation based on project planning._
 ## 0.10.0 (TBD)
 
  * _To Be Determined_
+ * Virtual Machine: AutumnCoat
+   * Supports generation to native machine code.
+     * ARM
+     * SPARC
+   * Supports multiple Operating Systems
+     * Linux (ARM, SPARC)
 
-## 0.8.0 (TBD)
+## 0.8.0 (June 11, 2021)
 
  * _To Be Determined_
  * Virtual Machine: AutumnCoat
@@ -22,9 +28,25 @@ _speculation based on project planning._
      * Should be smaller and faster.
      * Use less memory.
    * Supports generation to native machine code.
+     * m68k
+     * MIPS
+     * PowerPC
+     * SummerCoat
      * x86
      * x86_64
-     * SummerCoat
+   * Supports multiple "container" formats
+     * Executable Linker Format (ELF)
+     * Palm OS Application (PRC)
+     * SummerCoat ROM (SQC)
+     * Windows Executable (EXE)
+   * Supports multiple Operating Systems
+     * Linux (MIPS, PowerPC, x86, and x86_64)
+     * Mac OS X (PowerPC, x86, and x86_64)
+     * Palm OS (m68k)
+     * Windows (x86 and x86_64)
+ * RatufaCoat
+   * Add support for executing natively compiled code.
+     * If there is no supported engine, SummerCoat will be used.
 
 ## 0.6.0 (January 17, 2021)
 
@@ -54,7 +76,7 @@ improvements.
  * Virtual Machine: SummerCoat
    * Basic optimizing register based virtual machine.
  * Virtual machine: RatufaCoat
-   * A port of SummerCoat to C, intended for RetroArch.
+   * A port of SummerCoat to C, intended for RetroArch and other platforms.
 
 # Released
 

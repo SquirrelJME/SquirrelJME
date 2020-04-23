@@ -24,7 +24,11 @@ More detailed changes:
    * This will make it much easier to develop and allow for contributions!
  * Major Refactorings
    * There have been major refactorings for the code.
+ * Added docker container at `xerthesquirrel/squirreljme`.
  * Programs and Libraries
+   * Removed libraries that were empty but would have been covered by
+     another library, for example there is native LIBlet support but there
+     was an empty project for that support.
    * `cldc-compact`
      * Added a rehash indicator for the internal `__BucketMap__` so that
        `java.util.Hashtable` knows when a reorder was performed.
@@ -54,6 +58,7 @@ More detailed changes:
      * Implemented `java.util.LinkedList`.
      * Made the stack trace printed by `Throwable` much cleaner so that it
        takes up less screen space and is formatted a bit better.
+     * More tests have been added.
      * Return values for `line.separator`, `microedition.encoding`,
        `microedition.configuration`, and `microedition.locale`.
    * `demo-hello`
