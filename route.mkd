@@ -19,6 +19,8 @@ _speculation based on project planning._
  * _To Be Determined_
  * Virtual Machine: AutumnCoat
    * Streamlined and simplified code compiler.
+     * Should be smaller and faster.
+     * Use less memory.
    * Supports generation to native machine code.
      * x86
      * x86_64
@@ -30,12 +32,15 @@ This is a future release and the specified changes are proposed.
 
  * _To Be Determined_
  * 3rd-party development SDK
+ * Additional Core Classes Implemented
  * Additional Library Support
    * Add support for Nokia APIs.
    * Add support for Motorola APIs.
+   * Add support for NTTDocomo APIs.
    * Add support for Samsung APIs.
    * Add support for Siemens APIs.
-   * Add support for Spring APIs.
+   * Add support for Sprint APIs.
+   * Add support for Vodafone APIs.
  * Graphics library overhaul
  * File-system access support
 
