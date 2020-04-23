@@ -22,6 +22,8 @@ More detailed changes:
 
  * Modernized the build system to Gradle!
    * This will make it much easier to develop and allow for contributions!
+ * Major Refactorings
+   * There have been major refactorings for the code.
  * Programs and Libraries
    * `cldc-compact`
      * Added a rehash indicator for the internal `__BucketMap__` so that
@@ -156,6 +158,7 @@ More detailed changes:
      * Allow inheritance of static methods in classes.
      * Profiler thread lists are easier to read because the main suite is
        listed instead of the VM identifier.
+     * Switched to emulating a memory based system to be similar to SummerCoat.
    * SummerCoat
      * New Virtual Machine, register based.
      * Vast improvements over SpringCoat, faster and slimmer.

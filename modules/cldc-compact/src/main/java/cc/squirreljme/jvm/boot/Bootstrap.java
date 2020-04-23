@@ -57,6 +57,9 @@ public final class Bootstrap
 		// the RAM is actually useable.
 		Allocator.__initRamLinks(__rambase, __ramsize);
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Could crash!
 		try
 		{
@@ -70,7 +73,7 @@ public final class Bootstrap
 			ConfigReader config = null;
 			if (true)
 				throw Debugging.todo();
-			/*new ConfigReader(__confbase);*/
+			/*new ConfigReader(__confbase);* /
 			
 			// Basic SquirrelJME Banner
 			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
@@ -137,6 +140,7 @@ public final class Bootstrap
 			Assembly.breakpoint();
 			return;
 		}
+		*/
 	}
 }
 
