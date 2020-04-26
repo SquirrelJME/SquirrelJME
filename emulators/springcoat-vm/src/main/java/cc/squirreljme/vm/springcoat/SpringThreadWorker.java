@@ -1215,8 +1215,23 @@ public final class SpringThreadWorker
 			case "sysCallP":
 			case "sysCallPV":
 			case "sysCallPVL":
-				return SystemCallHandler.dispatch(this,
-					__name, __type, __args);
+				try
+				{
+					// We can use this to debug and measure the time needed
+					// to execute system calls
+					this.thread.profiler.enterFrame(
+						String.format("<SystemCall#%d>", (__args.length > 0 ?
+							((Number)__args[0]).shortValue() : -1)),
+						__name.toString(), __type.toString());
+					
+					return SystemCallHandler.dispatch(this,
+						__name, __type, __args);
+				}
+				finally
+				{
+					// Always clear this frame as we left the system call
+					this.thread.profiler.exitFrame();
+				}
 			
 				// Not-implemented
 			default:
@@ -3679,8 +3694,21 @@ public final class SpringThreadWorker
 		{
 			// Calculate result of method
 			MethodDescriptor type = ref.memberType();
-			Object rv = this.nativeMethod(ref.className(),
-				ref.memberName(), type, args);
+			Object rv;
+			
+			// Measure the performance of native calls
+			try
+			{
+				this.thread.profiler.enterFrame(ref.className().toString(),
+					ref.memberName().toString(), ref.memberType().toString());
+				
+				rv = this.nativeMethod(ref.className(),
+					ref.memberName(), type, args);
+			}
+			finally
+			{
+				this.thread.profiler.exitFrame();
+			}
 			
 			// Push native object to the stack
 			if (type.hasReturnValue())
