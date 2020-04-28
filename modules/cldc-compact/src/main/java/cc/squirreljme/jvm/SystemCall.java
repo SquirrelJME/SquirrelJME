@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * This class contains helpers for all of the system calls to more reliably
  * have a type-safe and easier to use interface to them.
  *
+ * @see SystemCallIndex
  * @since 2020/03/27
  */
 public final class SystemCall
@@ -77,7 +78,7 @@ public final class SystemCall
 	}
 	
 	/**
-	 * Loads the specified class.
+	 * Loads the specified class for the current context.
 	 *
 	 * @param __name The name of the class.
 	 * @return The class information.

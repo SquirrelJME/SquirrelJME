@@ -7,11 +7,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the structures and code for managing processes within
- * the virtual machine.
- *
- * @since 2020/04/18
- */
+package cc.squirreljme.jvm;
 
-package cc.squirreljme.jvm.process;
+/**
+ * This is a virtualized process within the virtual machine which contains
+ * the task context information along with hardware threads that a process
+ * owns.
+ *
+ * @since 2020/04/28
+ */
+public final class VirtualProcess
+{
+	/** The task ID of this process, this identifies the context. */
+	protected final int taskId;
+	
+	/**
+	 * Initializes the virtual process.
+	 *
+	 * @param __tid The task ID of this process.
+	 * @since 2020/04/28
+	 */
+	private VirtualProcess(int __tid)
+	{
+		this.taskId = __tid;
+	}
+}
