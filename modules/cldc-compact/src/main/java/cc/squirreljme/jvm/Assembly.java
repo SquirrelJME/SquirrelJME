@@ -303,6 +303,10 @@ public final class Assembly
 	/**
 	 * Locks access to the garbage collector.
 	 *
+	 * There is only a single lock for the virtual machine process, multiple
+	 * hardware threads running with even different contexts will share the
+	 * same lock.
+	 *
 	 * @param __code The locking code.
 	 * @return If the caller obtained the lock.
 	 * @since 2020/03/10
@@ -758,6 +762,10 @@ public final class Assembly
 	 *
 	 * There is a VM managed memory locking because some virtual machines such
 	 * as SpringCoat may perform inline memory allocations
+	 *
+	 * There is only a single lock for the virtual machine process, multiple
+	 * hardware threads running with even different contexts will share the
+	 * same lock.
 	 *
 	 * @param __code The locking code.
 	 * @return If the caller obtained the lock.

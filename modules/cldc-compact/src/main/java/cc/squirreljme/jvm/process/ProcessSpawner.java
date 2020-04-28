@@ -10,7 +10,8 @@
 package cc.squirreljme.jvm.process;
 
 /**
- * This class is purely responsible for spawning classes.
+ * This class is purely responsible for spawning processes that will run within
+ * the virtual machine.
  *
  * @since 2020/04/18
  */
