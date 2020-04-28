@@ -12,6 +12,7 @@ package cc.squirreljme.jvm;
 /**
  * This contains the index of system calls.
  *
+ * @see SystemCall
  * @since 2019/05/23
  */
 public interface SystemCallIndex
@@ -317,7 +318,7 @@ public interface SystemCallIndex
 		27;
 	
 	/**
-	 * Loads the specified class.
+	 * Loads the specified class for the current thread context.
 	 *
 	 * @squirreljme.syscallparam 1 The Modified UTF specifying the class name.
 	 * @squirreljme.syscallreturn The pointer to the loaded class info, will be
@@ -327,7 +328,7 @@ public interface SystemCallIndex
 		28;
 	
 	/**
-	 * Loads the specified class.
+	 * Loads the specified class for the current thread context.
 	 *
 	 * @squirreljme.syscallparam 1 Pointer (high bytes) to a UTF-8 encoded
 	 * byte array.
@@ -367,7 +368,7 @@ public interface SystemCallIndex
 	/**
 	 * Sets the task ID of the current thread frame.
 	 *
-	 * Only the supervisor is allowed to set tihus.
+	 * Only the supervisor is allowed to set this.
 	 *
 	 * @squirreljme.syscallparam 1 The task ID to set.
 	 * @squirreljme.syscallreturn A non-zero value if this was successful.
@@ -386,7 +387,8 @@ public interface SystemCallIndex
 	/**
 	 * Perform a feedback operation.
 	 *
-	 * @squirreljme.syscallparam 1 The type of feedback to perform.
+	 * @squirreljme.syscallparam 1 The type of {@link DeviceFeedbackType} to
+	 * perform.
 	 * @squirreljme.syscallparam 2 The duration of the feedback.
 	 * @squirreljme.syscallreturn Non-zero on success.
 	 */
@@ -395,6 +397,9 @@ public interface SystemCallIndex
 	
 	/**
 	 * Sleep for the given number of nanoseconds.
+	 *
+	 * If the time to wait is zero, then it will indicate that the current
+	 * thread is yielding its execution cycles.
 	 *
 	 * @squirreljme.syscallparam 1 The number of milliseconds to sleep for.
 	 * @squirreljme.syscallparam 2 The number of nanoseconds to sleep for.
@@ -433,12 +438,27 @@ public interface SystemCallIndex
 		38;
 	
 	/**
+	 * This is the hardware thread interface and this allows the code within
+	 * the virtual machine to manage these.
+	 *
+	 * Access to this system call should only be permitted by the supervisor
+	 * task.
+	 *
+	 * @squirreljme.syscallparam 1 The hardware thread to manage
+	 * @squirreljme.syscallparam ... Any arguments to the call.
+	 * @see HardwareThread
+	 * @since 2020/04/28
+	 */
+	byte HW_THREAD =
+		39;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		39;
+		40;
 }
 
