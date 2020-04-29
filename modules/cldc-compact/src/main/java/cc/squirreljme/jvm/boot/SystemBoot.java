@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCall;
+import cc.squirreljme.jvm.VirtualProcess;
 import cc.squirreljme.jvm.memory.ReadableAssemblyMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -29,7 +31,7 @@ public final class SystemBoot
 	 * @param __configLen The configuration length.
 	 * @since 2020/03/26
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings({"unused"})
 	static void __sysBoot(long __ramAddr, int __ramLen,
 		long __configAddr, int __configLen)
 	{
@@ -40,7 +42,26 @@ public final class SystemBoot
 		ConfigReader config = new ConfigReader(
 			new ReadableAssemblyMemory(__configAddr, __configLen));
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// Spawn our primary process and initialize it
+		VirtualProcess primary = VirtualProcess.spawn();
+		
+		// Start the process
+		primary.start();
+		
+		// Wait for the process to finish execution
+		int exitCode;
+		for (;;)
+			try
+			{
+				exitCode = primary.waitForExit();
+				break;
+			}
+			catch (InterruptedException e)
+			{
+				// Ignore ...
+			}
+		
+		// Now exit with the code
+		SystemCall.exit(exitCode);
 	}
 }
