@@ -1,0 +1,27 @@
+# 2020/04/28
+
+## 19:30
+
+Okay so I need to figure something out with the process spawner. Really what
+the initial thing is that I need to set the entry point which then will have
+to be scanned and such. I also have to keep a context around for varying
+threads and otherwise. So pretty much the main thing is going to be how
+SpringCoat handles this. The virtual machine is going to have to be able to
+have virtual hardware threads and having the ability to switch between them
+and such as needed. So what I really need is a hardware thread manager which
+has threads running on it, it could be cooperative or it could be really
+multi-tasking. These threads would use the same memory locks and such, but
+at least now I could put something in them. Probably a big thing will be to
+actually have this stuff down as system calls and such. I also need to update
+the contracts for certain things to say that these are VM globals.
+
+## 19:46
+
+So what does a hardware thread have? It of course needs the task ID, which
+is very important to tell the context of these tasks together and
+whatnot. Well really it needs the hardware thread ID.
+
+## 19:48
+
+I think what I need as well is a virtual process, which is basically the task
+ID that is used in the system calls and such.
