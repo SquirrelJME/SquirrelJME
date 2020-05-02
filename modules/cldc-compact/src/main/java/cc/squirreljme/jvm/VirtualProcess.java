@@ -20,18 +20,27 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public final class VirtualProcess
 {
+	/** The main thread. */
+	protected final HardwareThread main;
+	
 	/** The task ID of this process, this identifies the context. */
 	protected final int taskId;
 	
 	/**
 	 * Initializes the virtual process.
 	 *
-	 * @param __tid The task ID of this process.
+	 * @param __main The main thread for the process.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/28
 	 */
-	private VirtualProcess(int __tid)
+	private VirtualProcess(HardwareThread __main)
+		throws NullPointerException
 	{
-		this.taskId = __tid;
+		if (__main == null)
+			throw new NullPointerException("NARG");
+		
+		this.main = __main;
+		this.taskId = __main.taskId;
 	}
 	
 	/**
@@ -67,11 +76,18 @@ public final class VirtualProcess
 	 */
 	public static VirtualProcess spawn()
 	{
-		// Grab a "unique" value from the atomic ticker, there are 4 billion
-		// values here so hopefully this does not cause too much of an issue
-		int taskId = Assembly.atomicTicker();
+		// Create hardware thread for the main thread, the hardware thread ID
+		// will become the task ID
+		HardwareThread main = HardwareThread.createThread(
+			true, 0);
+		VirtualProcess rv = new VirtualProcess(main);
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (true)
+		{
+			Assembly.breakpoint();
+			throw Debugging.todo();
+		}
+		
+		return rv;
 	}
 }

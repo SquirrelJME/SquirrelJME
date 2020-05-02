@@ -49,7 +49,19 @@ public final class SystemCall
 	 */
 	public static int getError(short __si)
 	{
-		throw Debugging.todo();
+		return Assembly.sysCallPV(SystemCallIndex.ERROR_GET, __si);
+	}
+	
+	/**
+	 * Has an error occurred from this system call.
+	 *
+	 * @param __si The system call to check.
+	 * @return If this system call has an error.
+	 * @since 2020/05/01
+	 */
+	public static boolean hasError(short __si)
+	{
+		return SystemCall.getError(__si) != SystemCallError.NO_ERROR;
 	}
 	
 	/**
@@ -74,7 +86,7 @@ public final class SystemCall
 	 */
 	public static boolean isSupported(short __si)
 	{
-		throw Debugging.todo();
+		return Assembly.sysCallPV(SystemCallIndex.QUERY_INDEX, __si) != 0;
 	}
 	
 	/**

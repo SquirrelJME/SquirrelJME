@@ -612,7 +612,7 @@ public final class SpringThread
 			Object[] locals = this._locals;
 			
 			// {@squirreljme.error BK1p Cannot push local variable to the stack
-			// because it of the incorrect type. (The varible to push; The
+			// because it of the incorrect type. (The variable to push; The
 			// index to load from; The expected class; The value to push;
 			// The type of value to push)}
 			Object pushy = locals[__dx];
