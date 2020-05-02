@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is the manager for the hardware threads which exist within the VM.
  *
@@ -33,5 +35,52 @@ public final class HardwareThread
 	{
 		this.threadId = __thread;
 		this.taskId = __task;
+	}
+	
+	/**
+	 * Creates a new hardware thread owned by the given task.
+	 *
+	 * @param __main Is this a main thread intended to become a new process?
+	 * @param __taskId The owning task ID of the thread, if this is the main
+	 * thread of a new process this must be zero.
+	 * @return The newly created hardware thread.
+	 * @throws IllegalArgumentException If this is the main thread and the
+	 * task ID is zero.
+	 * @throws OutOfMemoryError If a thread could not be created.
+	 * @since 2020/05/01
+	 */
+	public static HardwareThread createThread(boolean __main, int __taskId)
+		throws IllegalArgumentException, OutOfMemoryError
+	{
+		// {@squirreljme.error ZZ45 New main threads must have a task ID that
+		// is zero.}
+		if (!__main && __taskId != 0)
+			throw new IllegalArgumentException("ZZ45");
+		
+		// {@squirreljme.error ZZ46 Could not create a new hardware thread.}
+		int threadId = Assembly.sysCallV(SystemCallIndex.HW_THREAD,
+			HardwareThreadControl.CONTROL_CREATE_THREAD);
+		if (threadId == 0 || SystemCall.hasError(SystemCallIndex.HW_THREAD))
+			throw new OutOfMemoryError("ZZ46");
+		
+		// The task ID will either be the one specified or it will be the
+		// thread's hardware ID for a one to one mapping
+		int useTaskId = (__main ? threadId : __taskId);
+		
+		// Store this thread and also try to update the task ID of it so it
+		// is more correct regarding the thread.
+		HardwareThread hw = new HardwareThread(threadId, useTaskId);
+		Assembly.sysCallV(SystemCallIndex.HW_THREAD,
+			HardwareThreadControl.CONTROL_THREAD_SET_TASKID,
+			threadId, useTaskId);
+		
+		// {@squirreljme.error ZZ47 Could not set initial task ID of new
+		// thread.}
+		if (SystemCall.hasError(SystemCallIndex.HW_THREAD))
+			throw new IllegalThreadStateException("ZZ47");
+		
+		// Hardware threads are very low level, so there is not much to
+		// initialize here
+		return hw;
 	}
 }

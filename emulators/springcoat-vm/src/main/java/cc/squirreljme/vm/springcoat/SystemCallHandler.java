@@ -210,13 +210,14 @@ public final class SystemCallHandler
 		// to be an actual part of the VM.
 		if (!__pure)
 			return ((Number)__thread.invokeMethod(true,
-			SystemCallHandler._JVM_FUNCTION_CLASS,
-			SystemCallHandler._UNPURE_NAME_AND_TYPE,
-			__a, __b, __c, __d, __e, __f, __g, __h)).longValue();
+				SystemCallHandler._JVM_FUNCTION_CLASS,
+				SystemCallHandler._UNPURE_NAME_AND_TYPE,
+				(int)__sid, __a, __b, __c, __d, __e, __f, __g, __h))
+				.longValue();
 		
 		// Use internal handler for system calls.
-		return SystemCallHandler.handle(__thread, __sid,
-			__a, __b, __c, __d,__e, __f, __g, __h);
+		return SystemCallHandler.handle(__thread,
+			__sid, __a, __b, __c, __d,__e, __f, __g, __h);
 	}
 	
 	/**

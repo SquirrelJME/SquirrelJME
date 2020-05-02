@@ -373,6 +373,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The task ID to set.
 	 * @squirreljme.syscallreturn A non-zero value if this was successful.
 	 */
+	@Deprecated
 	byte FRAME_TASK_ID_SET =
 		32;
 	
@@ -381,6 +382,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The value of the task ID.
 	 */
+	@Deprecated
 	byte FRAME_TASK_ID_GET =
 		33;
 	

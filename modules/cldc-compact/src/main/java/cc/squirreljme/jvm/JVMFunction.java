@@ -267,7 +267,8 @@ public final class JVMFunction
 	public static long jvmSystemCall(short __si, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{
-		// Call pure form
+		// Call pure form since there is no software provision for this system
+		// call
 		return Assembly.sysCallPVL(__si, __a, __b, __c, __d, __e, __f, __g,
 			__h);
 	}
