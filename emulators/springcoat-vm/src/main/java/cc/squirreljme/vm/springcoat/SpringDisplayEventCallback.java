@@ -22,6 +22,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2018/12/03
  */
+@Deprecated
 public final class SpringDisplayEventCallback
 	implements NativeDisplayEventCallback
 {
@@ -57,8 +58,8 @@ public final class SpringDisplayEventCallback
 		this.object = __o;
 		
 		// Setup thread
-		SpringThread thread = __m.createThread("SpringCoat-LCDUIThread");
-		SpringThreadWorker worker = new SpringThreadWorker(__m, thread, false);
+		SpringThread thread = __m.tasks.hardwareThreads.createThread();
+		SpringThreadWorker worker = new SpringThreadWorker(__m, thread);
 		
 		// Need to initialize a thread object because this thread has to be
 		// registered with the runtime in order for programs to operate

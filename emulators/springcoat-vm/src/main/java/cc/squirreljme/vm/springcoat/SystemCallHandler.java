@@ -11,7 +11,9 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.AbstractSystemCallHandler;
 import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallException;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import net.multiphasicapps.classfile.ClassName;
@@ -252,6 +254,7 @@ public final class SystemCallHandler
 					{
 							// Supported system calls
 						case SystemCallIndex.EXIT:
+						case SystemCallIndex.HW_THREAD:
 						case SystemCallIndex.QUERY_INDEX:
 							return 1;
 						
@@ -264,6 +267,11 @@ public final class SystemCallHandler
 				case SystemCallIndex.EXIT:
 					__thread.machine.exit(__a);
 					return 0;
+					
+					// Hardware thread access
+				case SystemCallIndex.HW_THREAD:
+					return __thread.machine.tasks.hardwareThreads.sysCall(
+						__thread, __a, __b, __c, __d, __e, __f, __g, __h);
 				
 					// System call not supported
 				default:
@@ -274,6 +282,19 @@ public final class SystemCallHandler
 					error = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
 					return 0;
 			}
+		}
+		
+		// Possible this is thrown as well
+		catch (SystemCallException e)
+		{
+			// For debugging
+			e.printStackTrace();
+			
+			// Set error code
+			error = e.code;
+			
+			// Since an exception is thrown, just return zero
+			return 0;
 		}
 		
 		// Store the error state

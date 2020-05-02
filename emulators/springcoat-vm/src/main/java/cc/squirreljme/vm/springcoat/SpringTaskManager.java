@@ -25,7 +25,7 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This class manages tasks within SpringCoat and is used to launch and
- * provide access to those that are running.
+ * provide access to those that are running. This is the core for
  *
  * @since 2018/11/04
  */
@@ -41,16 +41,20 @@ public final class SpringTaskManager
 	protected final GarbageCollectionLock gcLock =
 		new GarbageCollectionLock();
 	
+	/** Memory state which is shared between every thread and instance. */
+	protected final MemoryManager memory =
+		new MemoryManager();
+	
+	/** Hardware thread manager. */
+	protected final HardwareThreadManager hardwareThreads;
+	
 	/** Tasks that are used. */
+	@Deprecated
 	private final Map<Integer, SpringTask> _tasks =
 		new HashMap<>();
 	
-	/** System properties. */
+	/** Global system properties. */
 	private final Map<String, String> _sysprops;
-	
-	/** Initialize the manager for memory. */
-	public MemoryManager memory =
-		new MemoryManager();
 	
 	/** Next task ID. */
 	private int _nextid;
@@ -71,10 +75,17 @@ public final class SpringTaskManager
 		if (__sm == null)
 			throw new NullPointerException("NARG");
 		
+		// Make sure the profiler always exists, even if one was not requested
+		if (__ps == null)
+			__ps = new ProfilerSnapshot();
+		
 		this.suites = __sm;
-		this.profiler = (__ps == null ? new ProfilerSnapshot() : __ps);
+		this.profiler = __ps;
 		this._sysprops = (__sp == null ? new HashMap<String, String>() :
 			new HashMap<>(__sp));
+		
+		// Hardware threads needs access to the profiler data for frames
+		this.hardwareThreads = new HardwareThreadManager(__ps);
 	}
 	
 	/**
@@ -89,7 +100,7 @@ public final class SpringTaskManager
 	 * @since 2018/11/04
 	 */
 	public final int startTask(String[] __cp, String __entry, String[] __args,
-		int __gd)
+		@Deprecated int __gd)
 		throws NullPointerException
 	{
 		if (__cp == null || __entry == null || __args == null)

@@ -67,12 +67,10 @@ public final class SpringThreadWorker
 	 *
 	 * @param __m The executing machine.
 	 * @param __t The running thread.
-	 * @param __main Is this the main thread? Used for interrupt hacking.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	public SpringThreadWorker(SpringMachine __m, SpringThread __t,
-		boolean __main)
+	public SpringThreadWorker(SpringMachine __m, SpringThread __t)
 		throws NullPointerException
 	{
 		if (__m == null || __t == null)

@@ -1,5 +1,3 @@
-root = true
-
 [*]
 charset = utf-8
 end_of_line = lf
@@ -14,6 +12,12 @@ ij_formatter_on_tag = @formatter:on
 ij_formatter_tags_enabled = false
 ij_smart_tabs = false
 ij_wrap_on_typing = false
+
+[*.bib]
+indent_style = space
+ij_bibtex_keep_first_column_comment = true
+ij_bibtex_keep_indents_on_empty_lines = false
+ij_bibtex_wrap_long_lines = false
 
 [*.css]
 indent_style = space
@@ -271,7 +275,7 @@ ij_java_use_fq_class_names = false
 ij_java_use_relative_indents = false
 ij_java_use_single_class_imports = true
 ij_java_variable_annotation_wrap = off
-ij_java_visibility = public
+ij_java_visibility = packageLocal
 ij_java_while_brace_force = never
 ij_java_while_on_new_line = false
 ij_java_wrap_comments = true
@@ -554,6 +558,14 @@ ij_stylus_space_after_colon = true
 ij_stylus_space_before_opening_brace = true
 ij_stylus_use_double_quotes = true
 ij_stylus_value_alignment = 0
+
+[*.tikz]
+indent_style = space
+ij_latex_keep_first_column_comment = true
+ij_latex_keep_indents_on_empty_lines = false
+ij_latex_line_comment_add_space = false
+ij_latex_line_comment_at_first_column = true
+ij_latex_wrap_long_lines = false
 
 [.editorconfig]
 ij_editorconfig_align_group_field_declarations = false
@@ -1630,7 +1642,7 @@ ij_html_space_around_equality_in_attribute = false
 ij_html_space_inside_empty_tag = false
 ij_html_text_wrap = normal
 
-[{*.vsl,*.vm,*.ft}]
+[{*.vsl,*.ft,*.vm}]
 indent_style = space
 ij_vtl_keep_indents_on_empty_lines = false
 
