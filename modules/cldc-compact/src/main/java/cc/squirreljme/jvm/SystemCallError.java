@@ -80,7 +80,7 @@ public final class SystemCallError
 	 * @throws SystemCallException If there was an error.
 	 * @since 2020/01/12
 	 */
-	public static final void checkError(short __si)
+	public static void checkError(short __si)
 		throws SystemCallException
 	{
 		int code = SystemCallError.getError(__si);
@@ -95,7 +95,7 @@ public final class SystemCallError
 	 * @return The error, 0 will be on success.
 	 * @since 2019/05/23
 	 */
-	public static final int getError(short __si)
+	public static int getError(short __si)
 	{
 		return Assembly.sysCallV(SystemCallIndex.ERROR_GET, __si);
 	}
@@ -107,21 +107,45 @@ public final class SystemCallError
 	 * @return The resulting string.
 	 * @since 2020/01/12
 	 */
-	public static final String toString(int __err)
+	public static String toString(int __err)
 	{
 		switch (__err)
 		{
-			case SystemCallError.NO_ERROR:					return "NoError";
-			case SystemCallError.UNSUPPORTED_SYSTEM_CALL:	return "UnsupportedSystemCall";
-			case SystemCallError.PIPE_DESCRIPTOR_INVALID:	return "PDInvalid";
-			case SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE:	return "PDBadWrite";
-			case SystemCallError.VALUE_OUT_OF_RANGE:		return "ValueOutOfRange";
-			case SystemCallError.NO_FRAMEBUFFER:			return "NoFramebuffer";
-			case SystemCallError.PERMISSION_DENIED:			return "PermissionDenied";
-			case SystemCallError.INTERRUPTED:				return "Interrupted";
-			case SystemCallError.UNKNOWN:					return "Unknown";
-			case SystemCallError.END_OF_FILE:				return "EndOfFile";
-			case SystemCallError.IPC_ERROR:					return "IPCError";
+			case SystemCallError.NO_ERROR:
+				return "NoError";
+				
+			case SystemCallError.UNSUPPORTED_SYSTEM_CALL:
+				return "UnsupportedSystemCall";
+				
+			case SystemCallError.PIPE_DESCRIPTOR_INVALID:
+				return "PDInvalid";
+				
+			case SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE:
+				return "PDBadWrite";
+				
+			case SystemCallError.VALUE_OUT_OF_RANGE:
+				return "ValueOutOfRange";
+				
+			case SystemCallError.NO_FRAMEBUFFER:
+				return "NoFramebuffer";
+				
+			case SystemCallError.PERMISSION_DENIED:
+				return "PermissionDenied";
+				
+			case SystemCallError.INTERRUPTED:
+				return "Interrupted";
+				
+			case SystemCallError.UNKNOWN:
+				return "Unknown";
+				
+			case SystemCallError.END_OF_FILE:
+				return "EndOfFile";
+				
+			case SystemCallError.IPC_ERROR:
+				return "IPCError";
+			
+			case SystemCallError.NO_SUCH_CLASS:
+				return "NoSuchClass";
 			
 				// Some Other ID?
 			default:

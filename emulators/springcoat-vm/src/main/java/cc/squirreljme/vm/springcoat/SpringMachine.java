@@ -80,10 +80,6 @@ public final class SpringMachine
 	protected final SpringPointerManager pointers =
 		new SpringPointerManager();
 	
-	/** Threads which are available. */
-	private final List<SpringThread> _threads =
-		new ArrayList<>();
-	
 	/** Static fields which exist within the virtual machine. */
 	@Deprecated
 	private final Map<SpringField, SpringFieldStorage> _staticfields =
@@ -132,7 +128,8 @@ public final class SpringMachine
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, String __mainClass, ProfilerSnapshot __profiler,
+		SpringTaskManager __tm, String __mainClass,
+		ProfilerSnapshot __profiler,
 		Map<String, String> __sprops, String... __args)
 		throws NullPointerException
 	{
@@ -162,37 +159,6 @@ public final class SpringMachine
 	public final SpringClassLoader classLoader()
 	{
 		return this.classloader;
-	}
-	
-	/**
-	 * Creates a new thread within the virtual machine.
-	 *
-	 * @param __n The name of the thread.
-	 * @return The newly created thread.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/09/01
-	 */
-	public final SpringThread createThread(String __n)
-		throws NullPointerException
-	{
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		// Store thread
-		List<SpringThread> threads = this._threads;
-		synchronized (threads)
-		{
-			// Initialize new thread
-			int v;
-			SpringThread rv = new SpringThread((v = ++this._nextthreadid), __n,
-				this.profiler.measureThread(String.format("%s-vm%08x-%d-%s",
-				this.classloader.bootLibrary().name(),
-				System.identityHashCode(this), v, __n)));
-			
-			// Store thread
-			threads.add(rv);
-			return rv;
-		}
 	}
 	
 	/**
@@ -242,26 +208,6 @@ public final class SpringMachine
 	}
 	
 	/**
-	 * Gets the thread by the given ID.
-	 *
-	 * @param __id The ID of the thread.
-	 * @return The thread by this ID or {@code null} if it was not found.
-	 * @since 2018/11/21
-	 */
-	public final SpringThread getThread(int __id)
-	{
-		List<SpringThread> threads = this._threads;
-		synchronized (threads)
-		{
-			for (SpringThread t : threads)
-				if (t.id == __id)
-					return t;
-		}
-		
-		return null;
-	}
-	
-	/**
 	 * Returns the static field for the given field.
 	 *
 	 * @param __f The field to get the static field for.
@@ -305,12 +251,12 @@ public final class SpringMachine
 		
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
-		SpringThread mainThread = this.createThread("main");
+		SpringThread mainThread = this.tasks.hardwareThreads.createThread();
 		
 		// We will be using the same logic in the thread worker if we need to
 		// initialize any objects or arguments
 		SpringThreadWorker mainWorker = new SpringThreadWorker(this,
-			mainThread, true);
+			mainThread);
 		mainThread._worker = mainWorker;
 		
 		// Locate the main bootstrap method
