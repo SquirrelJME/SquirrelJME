@@ -9,11 +9,9 @@
 
 package cc.squirreljme.jvm.boot;
 
-import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCall;
 import cc.squirreljme.jvm.VirtualProcess;
 import cc.squirreljme.jvm.memory.ReadableAssemblyMemory;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Boots the SquirrelJME virtual machine system.
@@ -22,6 +20,22 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public final class SystemBoot
 {
+	/** The used configuration reader. */
+	@SuppressWarnings("StaticVariableMayNotBeInitialized")
+	private static ConfigReader _config;
+	
+	/**
+	 * Returns the configuration reader.
+	 *
+	 * @return The configuration reader.
+	 * @since 2020/05/03
+	 */
+	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
+	public static ConfigReader config()
+	{
+		return SystemBoot._config;
+	}
+	
 	/**
 	 * System boot entry point.
 	 *
@@ -41,6 +55,7 @@ public final class SystemBoot
 		// Setup the configuration reader to obtain our entry point info
 		ConfigReader config = new ConfigReader(
 			new ReadableAssemblyMemory(__configAddr, __configLen));
+		SystemBoot._config = config;
 		
 		// Spawn our primary process and initialize it
 		VirtualProcess primary = VirtualProcess.spawn();

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.boot.SystemBoot;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
@@ -267,10 +268,82 @@ public final class JVMFunction
 	public static long jvmSystemCall(short __si, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{
-		// Call pure form since there is no software provision for this system
-		// call
-		return Assembly.sysCallPVL(__si, __a, __b, __c, __d, __e, __f, __g,
-			__h);
+		// Depends on the system call being performed
+		switch (__si)
+		{
+				// Query for support?
+			case SystemCallIndex.QUERY_INDEX:
+				switch (__a)
+				{
+					default:
+						break;
+				}
+				break;
+		}
+		
+		// If this is the supervisor then some calls should just be forwarded
+		// to the task handler which could do things on behalf of the
+		// supervisor if not already handled above. This will ensure that
+		// the supervisor and tasks will have the same handling of system
+		// calls in general cases.
+		if (SystemCall.currentTaskId() == 0)
+			return JVMFunction.jvmSystemCallByTask(0, __si,
+				__a, __b, __c, __d, __e, __f, __g, __h);
+		
+		// Call pure form as nothing is handled by this handler.
+		return Assembly.sysCallPVL(__si,
+			__a, __b, __c, __d, __e, __f, __g, __h);
+	}
+	
+	/**
+	 * This handles system calls which were made in behalf of a task, this
+	 * executes from within the supervisor.
+	 *
+	 * @param __taskId The task that executed the system call.
+	 * @param __si System call index.
+	 * @param __a Argument.
+	 * @param __b Argument.
+	 * @param __c Argument.
+	 * @param __d Argument.
+	 * @param __e Argument.
+	 * @param __f Argument.
+	 * @param __g Argument.
+	 * @param __h Argument.
+	 * @return The result.
+	 * @since 2020/05/03
+	 */
+	public static long jvmSystemCallByTask(int __taskId, short __si,
+		int __a, int __b, int __c, int __d, int __e, int __f, int __g, int __h)
+	{
+		// Depends on the system call type
+		switch (__si)
+		{
+				// Query supported system calls
+			case SystemCallIndex.QUERY_INDEX:
+				switch (__a)
+				{
+					case SystemCallIndex.CONFIG_GET_VALUE:
+					case SystemCallIndex.CONFIG_GET_TYPE:
+						return 1;
+					
+					default:
+						break;
+				}
+				break;
+				
+				// Get configuration key value
+			case SystemCallIndex.CONFIG_GET_VALUE:
+				return SystemBoot.config().rawValue(__a);
+			
+				// Get configuration key type
+			case SystemCallIndex.CONFIG_GET_TYPE:
+				return SystemBoot.config().type(__a);
+		}
+		
+		// Call pure form as the supervisor has no way to handle this system
+		// call either.
+		return Assembly.sysCallPVL(__si,
+			__a, __b, __c, __d, __e, __f, __g, __h);
 	}
 }
 

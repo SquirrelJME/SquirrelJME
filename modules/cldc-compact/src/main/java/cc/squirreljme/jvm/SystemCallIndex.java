@@ -382,7 +382,6 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn The value of the task ID.
 	 */
-	@Deprecated
 	byte FRAME_TASK_ID_GET =
 		33;
 	
@@ -455,12 +454,37 @@ public interface SystemCallIndex
 		39;
 	
 	/**
+	 * Returns the value stored in the configuration.
+	 *
+	 * @squirreljme.syscallparam 1 The key of the value to get, which will
+	 * be one of {@link ConfigRomKey}.
+	 * @squirreljme.syscallreturn The value of the key, or {@code 0} if not
+	 * set.
+	 * @see ConfigRomKey
+	 * @since 2020/05/03
+	 */
+	byte CONFIG_GET_VALUE =
+		40;
+	
+	/**
+	 * Returns the type stored in the configuration for the given key.
+	 *
+	 * @squirreljme.syscallparam 1 The key of the value to get, which will
+	 * be one of {@link ConfigRomKey}.
+	 * @squirreljme.syscallreturn The type of the key, which will be one of
+	 * {@link ConfigRomType}.
+	 * @since 2020/05/03
+	 */
+	byte CONFIG_GET_TYPE =
+		41;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		40;
+		42;
 }
 

@@ -30,6 +30,18 @@ public final class SystemCall
 	}
 	
 	/**
+	 * Returns the current task ID.
+	 *
+	 * @return The current task ID.
+	 * @since 2020/05/03
+	 */
+	public static int currentTaskId()
+	{
+		// Use pure call because this could potentially infinite loop here
+		return Assembly.sysCallPV(SystemCallIndex.FRAME_TASK_ID_GET);
+	}
+	
+	/**
 	 * Exits the virtual machine.
 	 *
 	 * @param __i The exit code.
