@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.boot.ConfigReader;
 import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is the handler for system calls within tasks.
@@ -47,6 +48,9 @@ public final class TaskSysCallHandler
 		// Message
 		todo.DEBUG.note("Setting task system call handler...");
 		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Set handlers
 		Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
 			SupervisorPropertyIndex.TASK_SYSCALL_STATIC_FIELD_POINTER,
@@ -60,6 +64,8 @@ public final class TaskSysCallHandler
 		
 		// Message
 		todo.DEBUG.note("Okay.");
+		
+		 */
 	}
 	
 	/**

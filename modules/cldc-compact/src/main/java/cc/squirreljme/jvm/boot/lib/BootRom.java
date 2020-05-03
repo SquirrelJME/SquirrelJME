@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.boot.ConfigReader;
 import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.jvm.JVMFunction;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This contains boot ROM information.
@@ -108,9 +109,14 @@ public final class BootRom
 	 * @return The libraries to set for the initial classpath.
 	 * @since 2019/06/20
 	 */
+	@Deprecated
 	public static final ClassLibrary[] initialClasspath(int __rombase,
 		ConfigReader __config)
 	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		
+		/*
 		// Load all libraries
 		BootRomLibrary[] bootlibs = BootRom.bootLibraries(__rombase);
 		if (bootlibs == null)
@@ -170,6 +176,7 @@ public final class BootRom
 		
 		// Use them!
 		return usecp;
+		*/
 	}
 	
 	/**
@@ -180,9 +187,13 @@ public final class BootRom
 	 * @return Is this initial program a MIDlet?
 	 * @since 2019/12/14
 	 */
+	@Deprecated
 	public static final boolean initialIsMidlet(int __rombase,
 		ConfigReader __config)
 	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Get from configuration first
 		int rv = __config.loadInteger(ConfigRomKey.IS_MIDLET);
 		if (rv != 0)
@@ -190,6 +201,8 @@ public final class BootRom
 		
 		return Assembly.memReadJavaInt(
 			__rombase, BootRom.ROM_BOOTMAINMIDLET_OFFSET) > 0;
+			
+		 */
 	}
 	
 	/**
@@ -200,9 +213,14 @@ public final class BootRom
 	 * @return The initial main class.
 	 * @since 2019/06/23
 	 */
+	@Deprecated
 	public static final String initialMain(int __rombase,
 		ConfigReader __config)
 	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		
+		/*
 		// Use main user class
 		String usermain = __config.loadString(ConfigRomKey.MAIN_CLASS);
 		if (usermain != null)
@@ -212,6 +230,8 @@ public final class BootRom
 		return JVMFunction.jvmLoadString(__rombase +
 			Assembly.memReadJavaInt(__rombase,
 				BootRom.ROM_BOOTMAINCLASS_OFFSET));
+				
+		 */
 	}
 	
 	/**
