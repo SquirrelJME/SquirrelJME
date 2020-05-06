@@ -87,7 +87,7 @@ void retro_get_system_info(struct retro_system_info* info)
 	/* Set properties. */
 	info->library_name = "squirreljme";
 	info->library_version = SQUIRRELJME_VERSION_STRING;
-	info->valid_extensions = "jar";
+	info->valid_extensions = "jar|jad";
 	
 	/* Full path is not needed, but game data may be specified!. */
 	info->need_fullpath = false;
@@ -195,11 +195,25 @@ void retro_set_environment(retro_environment_t cb)
 		};
 	struct retro_variable vars[] =
 		{
-			{"squirreljme_debug_notes",
-				"Enable Debug Notes; disabled|enabled"},
 			{"squirreljme_cycles_per_frame",
-				"Cycles Per Frame; "
-				"1048576|2097152|4194304|32768|65536|131072|262144|524288"},
+				"Cycles Per Frame (PERFORMANCE); "
+				"1048576|2097152|4194304|8388608|32768|65536|131072|"
+				"262144|524288"},
+			{"squirreljme_line_ending",
+				"Line Endings (PLANNED); "
+				"auto|LF|CRLF|CR"},
+			{"squirreljme_encoding",
+				"Character Encoding (PLANNED); "
+				"auto|ASCII|UTF-8|IBM037|ISO-8859-1|ISO-8859-15"},
+			{"squirreljme_auto_update",
+				"Auto-Update SummerCoat ROM (PLANNED); "
+				"off|stable|development"},
+			{"squirreljme_debug_squelch_print",
+				"Squelch Printing (DEBUG); disabled|enabled"},
+			{"squirreljme_debug_no_oops_exit",
+				"No OOPS Exit (DEBUG); disabled|enabled"},
+			{"squirreljme_debug_no_todo_exit",
+				"No TODO Exit (DEBUG); disabled|enabled"},
 			
 			/* End. */
 			{NULL, NULL}

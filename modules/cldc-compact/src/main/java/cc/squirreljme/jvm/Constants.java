@@ -73,14 +73,17 @@ public interface Constants
 		0x0004;
 	
 	/** Offset for the configuration key. */
+	@Deprecated
 	byte CONFIG_KEY_OFFSET =
 		0;
 	
 	/** Offset for the configuration size. */
+	@Deprecated
 	byte CONFIG_SIZE_OFFSET =
 		2;
 	
 	/** Size of the header for configuration items. */
+	@Deprecated
 	byte CONFIG_HEADER_SIZE =
 		4;
 	
