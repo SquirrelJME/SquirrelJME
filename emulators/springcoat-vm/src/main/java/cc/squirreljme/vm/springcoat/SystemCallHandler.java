@@ -13,8 +13,6 @@ import cc.squirreljme.emulator.AbstractSystemCallHandler;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallException;
 import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -241,6 +239,10 @@ public final class SystemCallHandler
 	private static long handle(SpringThreadWorker __thread, short __sid,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g, int __h)
 	{
+		// The SID used for error access
+		int eSid = (__sid < 0 || __sid >= SystemCallIndex.NUM_SYSCALLS ?
+			0 : __sid);
+		
 		// We must always record the error state at the end of execution
 		int error = SystemCallError.NO_ERROR;
 		try
@@ -253,6 +255,8 @@ public final class SystemCallHandler
 					switch (__a)
 					{
 							// Supported system calls
+						case SystemCallIndex.ERROR_GET:
+						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXIT:
 						case SystemCallIndex.HW_THREAD:
 						case SystemCallIndex.QUERY_INDEX:
@@ -262,6 +266,17 @@ public final class SystemCallHandler
 						default:
 							return 0;
 					}
+					
+					// Get error
+				case SystemCallIndex.ERROR_GET:
+					return __thread.thread._syscallerrors[(__a < 0 ||
+						__a >= SystemCallIndex.NUM_SYSCALLS ? 0 : __a)];
+				
+					// Set error
+				case SystemCallIndex.ERROR_SET:
+					__thread.thread._syscallerrors[(__a < 0 ||
+						__a >= SystemCallIndex.NUM_SYSCALLS ? 0 : __a)] = __b;
+					return 0;
 					
 					// Exit the VM
 				case SystemCallIndex.EXIT:
@@ -292,6 +307,7 @@ public final class SystemCallHandler
 			
 			// Set error code
 			error = e.code;
+			__thread.thread._syscallerrors[eSid] = error;
 			
 			// Since an exception is thrown, just return zero
 			return 0;
@@ -300,9 +316,7 @@ public final class SystemCallHandler
 		// Store the error state
 		finally
 		{
-			__thread.thread._syscallerrors[
-				(__sid < 0 || __sid >= SystemCallIndex.NUM_SYSCALLS ?
-				0 : __sid)] = error;
+			__thread.thread._syscallerrors[eSid] = error;
 		}
 	}
 	

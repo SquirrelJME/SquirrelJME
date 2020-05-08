@@ -108,6 +108,10 @@ public class HardwareThreadManager
 				// Create hardware thread
 			case HardwareThreadControl.CONTROL_CREATE_THREAD:
 				return this.createThread().id;
+				
+				// Set thread task ID
+			case HardwareThreadControl.CONTROL_THREAD_SET_TASKID:
+				
 			
 				// Unsupported hardware thread call
 			default:
