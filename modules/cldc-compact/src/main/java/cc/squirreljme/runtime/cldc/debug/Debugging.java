@@ -35,6 +35,10 @@ public final class Debugging
 	private static int _line =
 		Integer.MIN_VALUE;
 	
+	/** Used to prevent loops. */
+	@SuppressWarnings("StaticVariableMayNotBeInitialized")
+	private static volatile boolean _noLoop;
+	
 	/**
 	 * Not used.
 	 *
@@ -116,12 +120,24 @@ public final class Debugging
 	 * @param __args Arguments.
 	 * @since 2020/05/07
 	 */
-	@SuppressWarnings("ConfusingArgumentToVarargsMethod")
+	@SuppressWarnings({"ConfusingArgumentToVarargsMethod",
+		"StaticVariableUsedBeforeInitialization"})
 	private static void __format(char __cha, char __chb, String __format,
 		Object... __args)
 	{
+		// Print quickly and stop because this may infinite loop
+		if (Debugging._noLoop)
+		{
+			Debugging.__print('X', null);
+			return;
+		}
+		
+		// Print otherwise
 		try
 		{
+			// Do not re-enter this loop
+			Debugging._noLoop = true;
+			
 			// Print header marker
 			Debugging.__print(__cha, __chb, ':', ' ');
 			
@@ -251,6 +267,12 @@ public final class Debugging
 			// End of line
 			Debugging.__printLine();
 		}
+		
+		// Clear loop prevention flag
+		finally
+		{
+			Debugging._noLoop = false;
+		}
 	}
 	
 	/**
@@ -259,7 +281,8 @@ public final class Debugging
 	 * @param __c The character to print.
 	 * @since 2020/05/07
 	 */
-	@SuppressWarnings("ConfusingArgumentToVarargsMethod")
+	@SuppressWarnings({"ConfusingArgumentToVarargsMethod",
+		"SameParameterValue"})
 	private static void __print(char __c)
 	{
 		Debugging.__print(__c, null);
