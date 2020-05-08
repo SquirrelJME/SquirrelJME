@@ -215,6 +215,8 @@ public final class Debugging
 						// Print its value
 						if (value == null)
 							Debugging.__print('n', 'u', 'l', 'l');
+						
+						// Assume a string
 						else
 						{
 							String string = value.toString();
