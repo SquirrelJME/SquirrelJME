@@ -201,8 +201,8 @@ public final class EmulatorAssembly
 				// Un-handled, set as not supported and return a default value
 			default:
 				// Debug
-				Debugging.debugNote(
-					"SysCall?: %d(%d, %d, %d, %d, %d, %d, %d, %d)", __si,
+				System.err.printf(
+					"SysCall?: %d(%d, %d, %d, %d, %d, %d, %d, %d)%n", __si,
 					__a, __b, __c, __d, __e, __f, __g, __h);
 				
 				// Set error
