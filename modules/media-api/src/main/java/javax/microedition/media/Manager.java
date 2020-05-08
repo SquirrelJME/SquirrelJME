@@ -36,7 +36,7 @@ public final class Manager
 	public static Player createPlayer(InputStream __a, String __b)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s, %s)%n", __a, __b);
+		todo.TODO.note("createPlayer(%s, %s)", __a, __b);
 		if (true)
 			return new NullPlayer(__b);
 		
@@ -50,7 +50,7 @@ public final class Manager
 	public static Player createPlayer(String __a)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s)%n", __a);
+		todo.TODO.note("createPlayer(%s)", __a);
 		if (true)
 			return new NullPlayer("application/octet-stream");
 			
@@ -64,7 +64,7 @@ public final class Manager
 	public static Player createPlayer(DataSource __a)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s)%n", __a);
+		todo.TODO.note("createPlayer(%s)", __a);
 		if (true)
 			return new NullPlayer(__a.getContentType());
 		
@@ -77,13 +77,13 @@ public final class Manager
 	
 	public static String[] getSupportedContentTypes(String __a)
 	{
-		todo.DEBUG.note("getSupportedContentTypes(%s)%n", __a);
+		todo.DEBUG.note("getSupportedContentTypes(%s)", __a);
 		throw new todo.TODO();
 	}
 	
 	public static String[] getSupportedProtocols(String __a)
 	{
-		todo.DEBUG.note("getSupportedProtocols(%s)%n", __a);
+		todo.DEBUG.note("getSupportedProtocols(%s)", __a);
 		throw new todo.TODO();
 	}
 	
@@ -101,7 +101,7 @@ public final class Manager
 	public static void playTone(int __a, int __b, int __c)
 		throws MediaException
 	{
-		todo.DEBUG.note("playTone(%d, %d, %d)%n", __a, __b, __c);
+		todo.DEBUG.note("playTone(%d, %d, %d)", __a, __b, __c);
 		if (true)
 			throw new MediaException("TODO");
 		
