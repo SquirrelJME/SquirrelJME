@@ -500,7 +500,7 @@ final class __StackMapParser__
 		targets.put(pp, rv);
 		
 		// Debug
-		/*todo.DEBUG.note("Read state @%d: %s%n", pp, rv);*/
+		/*todo.DEBUG.note("Read state @%d: %s", pp, rv);*/
 	
 		// The stored state
 		return rv;

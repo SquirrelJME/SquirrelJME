@@ -13,6 +13,7 @@ import cc.squirreljme.emulator.fb.NativeFramebuffer;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -200,9 +201,9 @@ public final class EmulatorAssembly
 				// Un-handled, set as not supported and return a default value
 			default:
 				// Debug
-				System.err.printf(
-					"SysCall?: %d(%d, %d, %d, %d, %d, %d, %d, %d)%n",
-					__si, __a, __b, __c, __d, __e, __f, __g, __h);
+				Debugging.debugNote(
+					"SysCall?: %d(%d, %d, %d, %d, %d, %d, %d, %d)", __si,
+					__a, __b, __c, __d, __e, __f, __g, __h);
 				
 				// Set error
 				context.setError(__si,

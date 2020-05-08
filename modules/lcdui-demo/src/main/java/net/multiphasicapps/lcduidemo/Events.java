@@ -152,7 +152,7 @@ public class Events
 			this._numkeys++;
 			
 			// Report event
-			System.err.printf("Key Pressed: %d%n", __code);
+			System.err.printf("Key Pressed: %d", __code);
 			
 			// Repaint to update stuff
 			this.repaint();

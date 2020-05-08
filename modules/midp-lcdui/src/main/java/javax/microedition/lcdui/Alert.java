@@ -184,7 +184,7 @@ public class Alert
 		/*
 		this._message = __s;
 		
-		todo.DEBUG.note("Set alert message: %s%n", __s);
+		todo.DEBUG.note("Set alert message: %s", __s);
 		*/
 	}
 	
