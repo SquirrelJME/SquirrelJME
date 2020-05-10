@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.AbstractSystemCallHandler;
+import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallException;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -255,11 +256,13 @@ public final class SystemCallHandler
 					switch (__a)
 					{
 							// Supported system calls
+						case SystemCallIndex.API_LEVEL:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXIT:
 						case SystemCallIndex.FRAME_TASK_ID_GET:
 						case SystemCallIndex.HW_THREAD:
+						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.QUERY_INDEX:
 							return 1;
 						
@@ -267,6 +270,10 @@ public final class SystemCallHandler
 						default:
 							return 0;
 					}
+					
+					// Current API level
+				case SystemCallIndex.API_LEVEL:
+					return Constants.API_LEVEL_2020_05_10;
 					
 					// Get error
 				case SystemCallIndex.ERROR_GET:
@@ -292,6 +299,27 @@ public final class SystemCallHandler
 				case SystemCallIndex.HW_THREAD:
 					return __thread.machine.tasks.hardwareThreads.sysCall(
 						__thread, __a, __b, __c, __d, __e, __f, __g, __h);
+					
+					// Pipe descriptor of standard output
+				case SystemCallIndex.PD_OF_STDOUT:
+					return 1;
+					
+					// Pipe descriptor of standard error
+				case SystemCallIndex.PD_OF_STDERR:
+					return 2;
+					
+					// Write byte to standard descriptor
+				case SystemCallIndex.PD_WRITE_BYTE:
+					switch (__a)
+					{
+						case 1: System.out.print((char)__b); break;
+						case 2: System.err.print((char)__b); break;
+						
+						default:
+							error = SystemCallError.PIPE_DESCRIPTOR_INVALID;
+							return 0;
+					}
+					return 1;
 				
 					// System call not supported
 				default:

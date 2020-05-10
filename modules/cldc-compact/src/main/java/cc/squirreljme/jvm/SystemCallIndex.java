@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * This contains the index of system calls.
  *
@@ -151,9 +153,10 @@ public interface SystemCallIndex
 	 * SquirrelJME API specified in these system calls better handles various
 	 * features.
 	 *
-	 * @squirreljme.syscallreturn The API level of the virtual machine.
+	 * @squirreljme.syscallreturn The API level of the virtual machine, for
+	 * older VMs this will be one of the {@link ApiLevel} values, for all
+	 * new and current VMs this will be {@link Constants#API_LEVEL_2020_05_10}.
 	 */
-	@Deprecated
 	byte API_LEVEL =
 		12;
 	
