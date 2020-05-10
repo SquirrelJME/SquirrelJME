@@ -20,9 +20,7 @@ when a release is to be made:
    be done, an example would be `release-0.2.x`.
  * In the new `release-0.2.x` branch, update the version numbers in the
    appropriate places so things are updated.
- * When a release is to be made, update the version numbers within the
-   branch then merge that into the `stable` branch.
- * Tag the merged `stable` commit as `0.2.0` or an increasing release version
+ * Tag the commit as `0.2.0` or an increasing release version
    (example: `0.2.1`) for each increasing release.
  * Do all the common release stuff.
  * While in `trunk`, do the following:
