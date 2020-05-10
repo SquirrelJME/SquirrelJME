@@ -6,12 +6,19 @@ This release is dedicated to Emily, the developer of Mu, she was a close and
 dear friend of mine. Rest in piece, you will not be forgotten.
 
 Now SquirrelJME has the SummerCoat virtual machine which is much lighter and
-faster than SpringCoat. There should definitely be very noticable performance
+faster than SpringCoat. There should definitely be very noticeable performance
 increases.
 
 SquirrelJME is also available on RetroArch since the implementation of
 RatufaCoat which is written in C and is capable of using the SquirrelJME
-Runtime.
+Runtime. The core in RetroArch is available from the _Core Updater_ and it is
+called _Java ME (SquirrelJME)_.
+
+***This version requires a 0.4.0 level virtual machine, if you see the***
+***following message:***
+***`This version of SquirrelJME requires a newer execution engine...`***
+***then you will need to update your execution engine, either one of***
+***SummerCoat or RatufaCoat.***
 
 _Note that this is a work in progress and not everything will run, due to_
 _the implementation being incomplete. However it does work and is proven to_
