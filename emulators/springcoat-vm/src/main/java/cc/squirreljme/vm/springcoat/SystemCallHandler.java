@@ -258,6 +258,7 @@ public final class SystemCallHandler
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXIT:
+						case SystemCallIndex.FRAME_TASK_ID_GET:
 						case SystemCallIndex.HW_THREAD:
 						case SystemCallIndex.QUERY_INDEX:
 							return 1;
@@ -282,6 +283,10 @@ public final class SystemCallHandler
 				case SystemCallIndex.EXIT:
 					__thread.machine.exit(__a);
 					return 0;
+					
+					// Get current task ID
+				case SystemCallIndex.FRAME_TASK_ID_GET:
+					return __thread.thread.taskId();
 					
 					// Hardware thread access
 				case SystemCallIndex.HW_THREAD:

@@ -408,6 +408,20 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Returns the task ID.
+	 *
+	 * @return The Task ID.
+	 * @since 2020/05/10
+	 */
+	public int taskId()
+	{
+		synchronized (this)
+		{
+			return this._taskId;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/15
 	 */
