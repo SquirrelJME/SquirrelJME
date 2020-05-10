@@ -14,10 +14,9 @@ import cc.squirreljme.jvm.HardwareThreadControl;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallException;
 import cc.squirreljme.jvm.SystemCallIndex;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * This class manages hardware threads which run within the virtual machine.
@@ -34,7 +33,7 @@ public class HardwareThreadManager
 		new HashMap<>();
 	
 	/**
-	 * Intiializes the hardware thread manager.
+	 * Initializes the hardware thread manager.
 	 *
 	 * @param __profiler The profiler to use.
 	 * @throws NullPointerException On null arguments.
@@ -78,6 +77,29 @@ public class HardwareThreadManager
 	}
 	
 	/**
+	 * Obtains the thread associated with the given id.
+	 *
+	 * @param __id The ID of the read to get.
+	 * @return The resulting thread.
+	 * @throws NoSuchElementException If no such thread exists.
+	 */
+	public final SpringThread getThread(int __id)
+		throws NoSuchElementException
+	{
+		SpringThread rv;
+		synchronized (this)
+		{
+			rv = this._threads.get(__id);
+		}
+		
+		// No thread exists?
+		if (rv == null)
+			throw new NoSuchElementException("No such thread: " + __id);
+		
+		return rv;
+	}
+	
+	/**
 	 * Handles system call from a given thread.
 	 *
 	 * @param __thread The thread this is acting under.
@@ -111,7 +133,16 @@ public class HardwareThreadManager
 				
 				// Set thread task ID
 			case HardwareThreadControl.CONTROL_THREAD_SET_TASKID:
-				
+				try
+				{
+					this.getThread(__a).setTaskId(__b);
+					return 0;
+				}
+				catch (NoSuchElementException e)
+				{
+					throw new SystemCallException(SystemCallIndex.HW_THREAD,
+						SystemCallError.NO_SUCH_THREAD, e);
+				}
 			
 				// Unsupported hardware thread call
 			default:

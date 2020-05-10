@@ -64,6 +64,10 @@ public final class SystemCallError
 	public static final byte NO_SUCH_CLASS =
 		-11;
 	
+	/** No such thread exists. */
+	public static final byte NO_SUCH_THREAD =
+		-12;
+	
 	/**
 	 * Not used.
 	 *
