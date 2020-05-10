@@ -149,9 +149,9 @@ public interface SystemCallIndex
 		11;
 	
 	/**
-	 * The API Level of the VM, this has been deprecated since the current
-	 * SquirrelJME API specified in these system calls better handles various
-	 * features.
+	 * The API Level of the VM, this value should not change much and signifies
+	 * the binary compatibility of SquirrelJME. Breaking changes that will
+	 * completely invalidate a ROM should result in this value being changed.
 	 *
 	 * @squirreljme.syscallreturn The API level of the virtual machine, for
 	 * older VMs this will be one of the {@link ApiLevel} values, for all
