@@ -66,6 +66,13 @@ This is a future release and the specified changes are proposed.
  * Graphics library overhaul
  * File-system access support
 
+## 0.4.x (Perpetual until 0.6.0)
+
+API additions that will be put in for 0.6.0 will be cherry picked into the
+0.4.0 series while maintaining compatibility for 0.4.0 VMs, however features
+added by the 0.6.0 VMs will not be supported there may exist however
+compatibility layers.
+
 # Current
 
 ## 0.4.0 (June 11, 2020)
@@ -86,4 +93,3 @@ This is the first version of SquirrelJME.
 
  * Virtual Machine: SpringCoat
    * Pure interpreter which runs on existing JVMs.
-

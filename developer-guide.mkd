@@ -20,7 +20,9 @@ when a release is to be made:
    be done, an example would be `release-0.2.x`.
  * In the new `release-0.2.x` branch, update the version numbers in the
    appropriate places so things are updated.
- * Tag the commit as `0.2.0` or an increasing release version
+ * When a release is to be made, update the version numbers within the
+   branch then merge that into the `stable` branch.
+ * Tag the merged `stable` commit as `0.2.0` or an increasing release version
    (example: `0.2.1`) for each increasing release.
  * Do all the common release stuff.
  * While in `trunk`, do the following:
@@ -28,6 +30,13 @@ when a release is to be made:
      the version will be incremented by two and will be odd (3, 5, 7, etc.).
    * Add the next version to the changelog, so that it may be updated when
      there is a new major change.
+
+### RetroArch
+
+For RetroArch, the SquirrelJME recipes should be updated to reflect the
+release tag.
+
+ * <https://github.com/libretro/libretro-super>
 
 ### Bug-fix and Otherwise Releases
 
