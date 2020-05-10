@@ -102,5 +102,9 @@ public interface Constants
 	/** The thread ID for out-of-bound IPC events. */
 	int OOB_IPC_THREAD =
 		0xFFFFFFFF;
+	
+	/** This is the API level that is used for "new" SquirrelJME versions. */
+	int API_LEVEL_2020_05_10 =
+		4_0_20131;
 }
 
