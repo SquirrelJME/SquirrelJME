@@ -49,6 +49,9 @@ public final class SpringThread
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
+	
+	/** The task ID of this thread. */
+	private int _taskId;
 		
 	/** String representation. */
 	private Reference<String> _string;
@@ -387,6 +390,20 @@ public final class SpringThread
 					inmethod.inFile(),
 					inmethod.byteCode().lineOfAddress(pc));
 			}
+		}
+	}
+	
+	/**
+	 * Sets the task ID for this thread.
+	 *
+	 * @param __id The ID to set.
+	 * @since 2020/05/09
+	 */
+	public final void setTaskId(int __id)
+	{
+		synchronized (this)
+		{
+			this._taskId = __id;
 		}
 	}
 	
