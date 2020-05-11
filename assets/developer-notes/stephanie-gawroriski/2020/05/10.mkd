@@ -1,0 +1,7 @@
+# 2020/05/10
+
+## 08:58
+
+So, what do I do for process spawning? I do have threads perhaps having
+contextes and otherwise for a thread would work. I wonder if I should have
+independent contexts or something else?
