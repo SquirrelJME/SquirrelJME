@@ -25,6 +25,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The system call index to query.
 	 * @squirreljme.syscallreturn Zero if not supported, otherwise a non-zero
 	 * value.
+	 * @since 2019/05/26
 	 */
 	byte QUERY_INDEX =
 		0;
@@ -41,6 +42,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The system call index to query.
 	 * @squirreljme.syscallreturn The last error code, will be zero if the last
 	 * command succeeded.
+	 * @since 2019/05/26
 	 */
 	byte ERROR_GET =
 		1;
@@ -58,6 +60,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 2 The value to set error register to.
 	 * @squirreljme.syscallreturn The value which was previously in the
 	 * register.
+	 * @since 2019/05/26
 	 */
 	byte ERROR_SET =
 		2;
@@ -66,6 +69,7 @@ public interface SystemCallIndex
 	 * Current wall clock milliseconds.
 	 *
 	 * @squirreljme.syscallreturn The current milliseconds time.
+	 * @since 2019/05/26
 	 */
 	byte TIME_MILLI_WALL =
 		3;
@@ -78,6 +82,7 @@ public interface SystemCallIndex
 	 * to the task system call handler.
 	 *
 	 * @squirreljme.syscallreturn The exception which has been stored.
+	 * @since 2019/05/26
 	 */
 	byte EXCEPTION_LOAD =
 		4;
@@ -86,6 +91,7 @@ public interface SystemCallIndex
 	 * Current monotonic clock nanoseconds (low).
 	 *
 	 * @squirreljme.syscallreturn The monotonic nanoseconds time.
+	 * @since 2019/05/26
 	 */
 	byte TIME_NANO_MONO =
 		5;
@@ -100,6 +106,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The exception to store.
 	 * @squirreljme.syscallreturn The old value that was stored in the
 	 * register.
+	 * @since 2019/05/26
 	 */
 	byte EXCEPTION_STORE =
 		6;
@@ -108,6 +115,7 @@ public interface SystemCallIndex
 	 * VM Information: Free memory in bytes.
 	 *
 	 * @squirreljme.syscallreturn The free memory amount in bytes.
+	 * @since 2019/05/26
 	 */
 	byte VMI_MEM_FREE =
 		7;
@@ -116,6 +124,7 @@ public interface SystemCallIndex
 	 * VM Information: Used memory in bytes.
 	 *
 	 * @squirreljme.syscallreturn The used memory amount in bytes.
+	 * @since 2019/05/26
 	 */
 	byte VMI_MEM_USED =
 		8;
@@ -124,6 +133,7 @@ public interface SystemCallIndex
 	 * VM Information: Max memory in bytes.
 	 *
 	 * @squirreljme.syscallreturn The max memory amount in bytes.
+	 * @since 2019/05/26
 	 */
 	byte VMI_MEM_MAX =
 		9;
@@ -134,6 +144,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn Generally zero although any other value could
 	 * be returned.
+	 * @since 2019/05/26
 	 */
 	byte GARBAGE_COLLECT =
 		10;
@@ -144,6 +155,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The exit code to exit the process with.
 	 * @squirreljme.syscallreturn This generally does not return, if it does
 	 * then the error code will likely specify why this failed.
+	 * @since 2019/05/26
 	 */
 	byte EXIT =
 		11;
@@ -156,6 +168,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The API level of the virtual machine, for
 	 * older VMs this will be one of the {@link ApiLevel} values, for all
 	 * new and current VMs this will be {@link Constants#API_LEVEL_2020_05_10}.
+	 * @since 2019/05/26
 	 */
 	byte API_LEVEL =
 		12;
@@ -164,6 +177,7 @@ public interface SystemCallIndex
 	 * The pipe descriptor for stdin.
 	 *
 	 * @squirreljme.syscallreturn The pipe descriptor for standard input.
+	 * @since 2019/05/27
 	 */
 	byte PD_OF_STDIN =
 		13;
@@ -172,6 +186,7 @@ public interface SystemCallIndex
 	 * The pipe descriptor for stdout.
 	 *
 	 * @squirreljme.syscallreturn The pipe descriptor for standard output.
+	 * @since 2019/05/27
 	 */
 	byte PD_OF_STDOUT =
 		14;
@@ -180,6 +195,7 @@ public interface SystemCallIndex
 	 * The pipe descriptor for stderr.
 	 *
 	 * @squirreljme.syscallreturn The pipe descriptor for standard error.
+	 * @since 2019/05/27
 	 */
 	byte PD_OF_STDERR =
 		15;
@@ -192,6 +208,7 @@ public interface SystemCallIndex
 	 * lowest 8-bits is used.
 	 * @squirreljme.syscallreturn The number of bytes written to the output,
 	 * if this returns a value lower than zero then it indicates an error.
+	 * @since 2019/05/27
 	 */
 	byte PD_WRITE_BYTE =
 		16;
@@ -205,6 +222,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 3 The number of bytes to set.
 	 * @squirreljme.syscallreturn The number of bytes actually written, if this
 	 * is zero then it is likely the system call is not supported.
+	 * @since 2019/05/27
 	 */
 	byte MEM_SET =
 		17;
@@ -221,6 +239,7 @@ public interface SystemCallIndex
 	 * four.
 	 * @squirreljme.syscallreturn The number of bytes actually written,
 	 * if this is zero then it is likely the system call is not supported.
+	 * @since 2019/06/15
 	 */
 	byte MEM_SET_INT =
 		18;
@@ -229,6 +248,7 @@ public interface SystemCallIndex
 	 * Get the height of the call stack.
 	 *
 	 * @squirreljme.syscallreturn The height of the call stack.
+	 * @since 2019/06/15
 	 */
 	byte CALL_STACK_HEIGHT =
 		19;
@@ -242,6 +262,7 @@ public interface SystemCallIndex
 	 * {@link CallStackItem}.
 	 * @squirreljme.syscallreturn The value of the item, if it is undefined or
 	 * not supported then zero will be returned.
+	 * @since 2019/06/16
 	 */
 	byte CALL_STACK_ITEM =
 		20;
@@ -252,6 +273,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The pointer to the modified UTF encoded
 	 * string.
 	 * @squirreljme.syscallreturn An instance of {@link String}.
+	 * @since 2019/06/16
 	 */
 	byte LOAD_STRING =
 		21;
@@ -262,6 +284,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The code to use for the To Do.
 	 * @squirreljme.syscallreturn This should not return unless it is not
 	 * supported.
+	 * @since 2019/06/16
 	 */
 	byte FATAL_TODO =
 		22;
@@ -272,6 +295,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn Generally zero as no value is intended to be
 	 * returned.
+	 * @since 2019/06/16
 	 */
 	byte SUPERVISOR_BOOT_OKAY =
 		23;
@@ -285,6 +309,7 @@ public interface SystemCallIndex
 	 * selected.
 	 * @squirreljme.syscallreturn Whatever value the frame buffer property will
 	 * return.
+	 * @since 2019/06/20
 	 */
 	byte FRAMEBUFFER =
 		24;
@@ -295,6 +320,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallreturn Non-zero if little endian, otherwise zero
 	 * will be big endian.
+	 * @since 2019/06/20
 	 */
 	byte BYTE_ORDER_LITTLE =
 		25;
@@ -305,6 +331,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The option JAR slot to request.
 	 * @squirreljme.syscallreturn A pointer to the data or zero if there is no
 	 * option JAR defined in the requested slot.
+	 * @since 2019/06/21
 	 */
 	byte OPTION_JAR_DATA =
 		26;
@@ -316,28 +343,35 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn The size of the specified option JAR or zero
 	 * if there is no
 	 * option JAR defined in the requested slot.
+	 * @since 2019/06/29
 	 */
 	byte OPTION_JAR_SIZE =
 		27;
 	
 	/**
-	 * Loads the specified class for the current thread context.
+	 * Loads the specified class for the current thread context with a modified
+	 * UTF lookup.
 	 *
-	 * @squirreljme.syscallparam 1 The Modified UTF specifying the class name.
+	 * @squirreljme.syscallparam 1 Pointer (high bytes) to a modified UTF
+	 * string.
+	 * @squirreljme.syscallparam 2 Pointer (low bytes).
 	 * @squirreljme.syscallreturn The pointer to the loaded class info, will be
 	 * zero on failure.
+	 * @since 2019/10/01
 	 */
-	byte LOAD_CLASS_UTF =
+	byte LOAD_CLASS_MUTF =
 		28;
 	
 	/**
-	 * Loads the specified class for the current thread context.
+	 * Loads the specified class for the current thread context with a UTF-8
+	 * encoded byte array lookup.
 	 *
 	 * @squirreljme.syscallparam 1 Pointer (high bytes) to a UTF-8 encoded
 	 * byte array.
 	 * @squirreljme.syscallparam 2 Pointer (low bytes).
 	 * @squirreljme.syscallreturn The pointer to the loaded class info, will be
 	 * zero on failure.
+	 * @since 2019/10/01
 	 */
 	byte LOAD_CLASS_BYTES =
 		29;
@@ -352,6 +386,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The supervisor property to set.
 	 * @squirreljme.syscallparam 2 The new value of the property.
 	 * @squirreljme.syscallreturn A non-zero value if this was successful.
+	 * @since 2019/10/04
 	 */
 	byte SUPERVISOR_PROPERTY_SET =
 		30;
@@ -364,6 +399,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The supervisor property to get.
 	 * @squirreljme.syscallreturn The value of that property, error should be
 	 * checked to ensure that it did not fail.
+	 * @since 2019/10/04
 	 */
 	byte SUPERVISOR_PROPERTY_GET =
 		31;
@@ -375,6 +411,7 @@ public interface SystemCallIndex
 	 *
 	 * @squirreljme.syscallparam 1 The task ID to set.
 	 * @squirreljme.syscallreturn A non-zero value if this was successful.
+	 * @since 2019/10/04
 	 */
 	@Deprecated
 	byte FRAME_TASK_ID_SET =
@@ -384,6 +421,7 @@ public interface SystemCallIndex
 	 * Gets the value of a thread register.
 	 *
 	 * @squirreljme.syscallreturn The value of the task ID.
+	 * @since 2019/10/04
 	 */
 	byte FRAME_TASK_ID_GET =
 		33;
@@ -395,6 +433,7 @@ public interface SystemCallIndex
 	 * perform.
 	 * @squirreljme.syscallparam 2 The duration of the feedback.
 	 * @squirreljme.syscallreturn Non-zero on success.
+	 * @since 2019/10/06
 	 */
 	byte DEVICE_FEEDBACK =
 		34;
@@ -408,6 +447,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallparam 1 The number of milliseconds to sleep for.
 	 * @squirreljme.syscallparam 2 The number of nanoseconds to sleep for.
 	 * @squirreljme.syscallreturn Returns zero unless sleep was interrupted.
+	 * @since 2019/10/06
 	 */
 	byte SLEEP =
 		35;
@@ -416,6 +456,8 @@ public interface SystemCallIndex
 	 * If the framebuffer is shared with the console, this tells the console
 	 * printer to not send messages to the screen as it will corrupt the
 	 * display on the screen.
+	 *
+	 * @since 2019/12/14
 	 */
 	byte SQUELCH_FB_CONSOLE =
 		36;
@@ -429,6 +471,7 @@ public interface SystemCallIndex
 	 * service this was associated with.
 	 * @squirreljme.syscallparam ... Any arguments to the call.
 	 * @squirreljme.syscallreturn The value returned from the remote call.
+	 * @since 2019/12/28
 	 */
 	byte IPC_CALL =
 		37;
@@ -436,6 +479,7 @@ public interface SystemCallIndex
 	/**
 	 * Returns flags used to change how debugging is used within SquirreLJME.
 	 *
+	 * @squirreljme.syscallreturn The debug flags, see {@link Constants}.
 	 * @since 2020/03/15
 	 */
 	byte DEBUG_FLAGS =
@@ -448,7 +492,8 @@ public interface SystemCallIndex
 	 * Access to this system call should only be permitted by the supervisor
 	 * task.
 	 *
-	 * @squirreljme.syscallparam 1 The hardware thread to manage
+	 * @squirreljme.syscallparam 1 The hardware control to execute, this will
+	 * be one of {@link HardwareThreadControl}.
 	 * @squirreljme.syscallparam ... Any arguments to the call.
 	 * @see HardwareThread
 	 * @since 2020/04/28
@@ -482,12 +527,35 @@ public interface SystemCallIndex
 		41;
 	
 	/**
+	 * Access to the ROM using various controls.
+	 *
+	 * @squirreljme.syscallparam 1 The control key, which will be one of
+	 * {@link RomAccessControl}.
+	 * @squirreljme.syscallparam ... Any extra parameters.
+	 * @since 2020/05/10
+	 */
+	byte ROM_ACCESS =
+		42;
+	
+	/**
+	 * Checks for the execution compatibility for SquirrelJME, so that if an
+	 * older ROM is running on too new of an execution system where it is not
+	 * supported then the ROM will fail to work.
+	 *
+	 * @squirreljme.syscallparam 1 The API level of the ROM, this will be
+	 * the value of {@link Constants#API_LEVEL_CURRENT}.
+	 * @since 2020/05/10
+	 */
+	byte CHECK_EXEC_COMPATIBILITY =
+		43;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		42;
+		44;
 }
 

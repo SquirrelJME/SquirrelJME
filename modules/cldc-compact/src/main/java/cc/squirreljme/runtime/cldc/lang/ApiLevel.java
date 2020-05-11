@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
 
 /**
@@ -22,12 +23,15 @@ import cc.squirreljme.jvm.SystemCallIndex;
  * version, release version, year (20yy), day of year). This means they are
  * limited to the form of {@code [0-9].[0-99].[0-9] (Day [0-999] of 20[0-99])}.
  *
+ * The hard-coded current API level for the ROM is located at
+ * {@link Constants#API_LEVEL_CURRENT}.
+ *
  * @since 2018/12/05
  */
 @Deprecated
 public final class ApiLevel
 {
-	/** The current API level. */
+	/** The current API level as defined by the VM. */
 	@Deprecated
 	public static final int CURRENT_LEVEL =
 		Assembly.sysCallV(SystemCallIndex.API_LEVEL);

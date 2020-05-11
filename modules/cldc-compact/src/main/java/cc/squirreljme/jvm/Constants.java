@@ -106,5 +106,9 @@ public interface Constants
 	/** This is the API level that is used for "new" SquirrelJME versions. */
 	int API_LEVEL_2020_05_10 =
 		4_0_20131;
+	
+	/** The current API level. */
+	int API_LEVEL_CURRENT =
+		4_0_20131;
 }
 
