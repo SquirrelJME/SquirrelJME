@@ -79,6 +79,35 @@ public final class HardwareThread
 		if (SystemCall.hasError(SystemCallIndex.HW_THREAD))
 			throw new IllegalThreadStateException("ZZ47");
 		
+		// If this is a main task we are going to have to initialize a context
+		// to store thread information and such inside of it (such as classes
+		// or other things)
+		if (__main)
+		{
+			// Initialize a new context
+			Assembly.sysCallV(SystemCallIndex.HW_THREAD,
+				HardwareThreadControl.CONTROL_INITIALIZE_CONTEXT, useTaskId);
+			
+			// {@squirreljme.error ZZ48 Could not initialize a context for
+			// the main thread.}
+			if (SystemCall.hasError(SystemCallIndex.HW_THREAD))
+				throw new IllegalThreadStateException("ZZ48");
+		}
+		
+		// Otherwise we want to use the context that is part of the main task
+		else
+		{
+			// Use pre-existing context, which will be the main thread/task
+			Assembly.sysCallV(SystemCallIndex.HW_THREAD,
+				HardwareThreadControl.CONTROL_SET_CONTEXT,
+				threadId, useTaskId);
+				
+			// {@squirreljme.error ZZ49 Could not set the new hardware thread
+			// context to be that of the main thread.}
+			if (SystemCall.hasError(SystemCallIndex.HW_THREAD))
+				throw new IllegalThreadStateException("ZZ49");
+		}
+		
 		// Hardware threads are very low level, so there is not much to
 		// initialize here
 		return hw;
