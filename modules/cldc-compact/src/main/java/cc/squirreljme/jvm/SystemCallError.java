@@ -68,6 +68,10 @@ public final class SystemCallError
 	public static final byte NO_SUCH_THREAD =
 		-12;
 	
+	/** Thread already has a context. */
+	public static final byte THREAD_HAS_CONTEXT =
+		-13;
+	
 	/**
 	 * Not used.
 	 *
@@ -150,6 +154,12 @@ public final class SystemCallError
 			
 			case SystemCallError.NO_SUCH_CLASS:
 				return "NoSuchClass";
+				
+			case SystemCallError.NO_SUCH_THREAD:
+				return "NoSuchThread";
+			
+			case SystemCallError.THREAD_HAS_CONTEXT:
+				return "ThreadHasContext";
 			
 				// Some Other ID?
 			default:

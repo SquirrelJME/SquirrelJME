@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.HardwareThreadControl;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallException;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -130,6 +131,38 @@ public class HardwareThreadManager
 				// Create hardware thread
 			case HardwareThreadControl.CONTROL_CREATE_THREAD:
 				return this.createThread().id;
+				
+				// Initialize a new context for the given task
+			case HardwareThreadControl.CONTROL_INITIALIZE_CONTEXT:
+				try
+				{
+					this.getThread(__a).initializeContext();
+					return 0;
+				}
+				catch (IllegalStateException e)
+				{
+					throw new SystemCallException(SystemCallIndex.HW_THREAD,
+						SystemCallError.THREAD_HAS_CONTEXT, e);
+				}
+				
+				// Set thread context
+			case HardwareThreadControl.CONTROL_SET_CONTEXT:
+				try
+				{
+					this.getThread(__a).setContext(
+						this.getThread(__b).context());
+					return 0;
+				}
+				catch (NoSuchElementException e)
+				{
+					throw new SystemCallException(SystemCallIndex.HW_THREAD,
+						SystemCallError.NO_SUCH_THREAD, e);
+				}
+				catch (IllegalStateException e)
+				{
+					throw new SystemCallException(SystemCallIndex.HW_THREAD,
+						SystemCallError.THREAD_HAS_CONTEXT, e);
+				}
 				
 				// Set thread task ID
 			case HardwareThreadControl.CONTROL_THREAD_SET_TASKID:
