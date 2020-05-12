@@ -257,6 +257,7 @@ public final class SystemCallHandler
 					{
 							// Supported system calls
 						case SystemCallIndex.API_LEVEL:
+						case SystemCallIndex.CHECK_EXEC_COMPATIBILITY:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXIT:
@@ -274,6 +275,12 @@ public final class SystemCallHandler
 					// Current API level
 				case SystemCallIndex.API_LEVEL:
 					return Constants.API_LEVEL_2020_05_10;
+					
+					// ROM requests a check for compatibility
+				case SystemCallIndex.CHECK_EXEC_COMPATIBILITY:
+					if (__a >= Constants.API_LEVEL_2020_05_10)
+						return 1;
+					return 0;
 					
 					// Get error
 				case SystemCallIndex.ERROR_GET:
