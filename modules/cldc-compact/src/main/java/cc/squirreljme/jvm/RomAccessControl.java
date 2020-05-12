@@ -51,5 +51,5 @@ public interface RomAccessControl
 	
 	/** The number of controls. */
 	byte NUM_CONTROLS =
-		3;
+		4;
 }

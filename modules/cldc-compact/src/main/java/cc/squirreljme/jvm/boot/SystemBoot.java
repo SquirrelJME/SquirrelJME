@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCall;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -137,7 +138,8 @@ public final class SystemBoot
 		SystemBoot._config = __config;
 		
 		// Spawn our primary process and initialize it
-		VirtualProcess primary = VirtualProcess.spawn();
+		VirtualProcess primary = VirtualProcess.spawn(__config.getStrings(
+			ConfigRomKey.CLASS_PATH));
 		
 		// Start the process
 		primary.start();

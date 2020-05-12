@@ -10,11 +10,12 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.jvm.ConfigRomType;
-import cc.squirreljme.jvm.JVMFunction;
 import cc.squirreljme.jvm.memory.ReadableBasicMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * This is a helper class used to read the configuration.
@@ -45,11 +46,31 @@ public final class ConfigReader
 	}
 	
 	/**
+	 * Gets the string array from a key.
+	 *
+	 * @param __key The {@link ConfigRomKey} to obtain.
+	 * @return The string array.
+	 * @throws IllegalArgumentException If the key does not refer to a value
+	 * that is compatible with a string array.
+	 * @throws NoSuchElementException If no such key exists.
+	 * @since 2020/05/12
+	 */
+	public final String[] getStrings(int __key)
+		throws IllegalArgumentException, NoSuchElementException
+	{
+		// {@squirreljme.error ZZ4B Key is not UTF list type. (The key)}
+		if (this.type(__key) != ConfigRomType.UTF_LIST)
+			throw new IllegalArgumentException("ZZ4B " + __key);
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2020/04/03
 	 */
 	@Override
-	public Iterator<ConfigEntry> iterator()
+	public final Iterator<ConfigEntry> iterator()
 	{
 		throw Debugging.todo();
 	}
@@ -59,9 +80,11 @@ public final class ConfigReader
 	 *
 	 * @param __key The key to use.
 	 * @return The raw value.
+	 * @throws NoSuchElementException If no such key exists.
 	 * @since 2020/05/03
 	 */
-	public long rawValue(int __key)
+	public final long rawValue(int __key)
+		throws NoSuchElementException
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
@@ -83,9 +106,11 @@ public final class ConfigReader
 	 *
 	 * @param __key The key to use.
 	 * @return The {@link ConfigRomType}.
+	 * @throws NoSuchElementException If no such key exists.
 	 * @since 2020/05/03
 	 */
-	public int type(int __key)
+	public final int type(int __key)
+		throws NoSuchElementException
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
