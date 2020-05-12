@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.UnsupportedEncodingException;
 
 /**
  * This class contains helpers for all of the system calls to more reliably
@@ -139,5 +140,72 @@ public final class SystemCall
 		
 		// Loading of classes is our responsibility
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Searches the ROM for the given JAR.
+	 *
+	 * @param __name The name of the ROM to search for.
+	 * @return The ROM reference or {@code null} if no ROM was found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/05/12
+	 */
+	public static RomReference searchJar(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// The system call expects only UTF-8, so we need to decode it as that
+		try
+		{
+			return SystemCall.searchJar(__name.getBytes("utf-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			// {@squirreljme.error ZZ4A Could not decode JAR name.}
+			throw new RuntimeException("ZZ4A", e);
+		}
+	}
+	
+	/**
+	 * Searches the ROM for the given JAR.
+	 *
+	 * @param __name The name of the ROM to search for.
+	 * @return The ROM reference or {@code null} if no ROM was found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/05/12
+	 */
+	public static RomReference searchJar(byte... __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// If this system call is not supported, then just stop here
+		if (SystemCall.isSupported(SystemCallIndex.ROM_ACCESS))
+			return null;
+		
+		// Lookup search
+		long nameP = Assembly.objectToPointer(__name);
+		long id = Assembly.sysCallVL(SystemCallIndex.ROM_ACCESS,
+			RomAccessControl.CONTROL_SEARCH_BY_JAR_BYTES,
+			Assembly.longUnpackHigh(nameP), Assembly.longUnpackLow(nameP));
+		
+		// {@squirreljme.error ZZ4B Could not check for ROM access.
+		if (SystemCall.hasError(SystemCallIndex.ROM_ACCESS))
+		{
+			if (!SystemCall.isError(SystemCallIndex.ROM_ACCESS,
+				SystemCallError.UNSUPPORTED_SYSTEM_CALL))
+				throw new RuntimeException("ZZ4B " +
+					SystemCall.getError(SystemCallIndex.ROM_ACCESS));
+			else
+				return null;
+		}
+		
+		// Make this type safe rather than having to use integers
+		if (id == 0)
+			return null;
+		return new RomReference(id);
 	}
 }

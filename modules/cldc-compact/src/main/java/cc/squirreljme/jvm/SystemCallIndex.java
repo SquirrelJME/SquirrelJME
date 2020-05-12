@@ -527,7 +527,7 @@ public interface SystemCallIndex
 		41;
 	
 	/**
-	 * Access to the ROM using various controls.
+	 * Access to the ROM using various controls, via {@link RomAccessControl}.
 	 *
 	 * @squirreljme.syscallparam 1 The control key, which will be one of
 	 * {@link RomAccessControl}.

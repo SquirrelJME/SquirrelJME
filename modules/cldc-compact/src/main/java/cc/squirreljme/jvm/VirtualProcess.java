@@ -44,6 +44,23 @@ public final class VirtualProcess
 	}
 	
 	/**
+	 * Pushes the specified ROM to the class path so that the process is able
+	 * to use all of the classes and resources within it.
+	 *
+	 * @param __rom The ROM to push to the classpath.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/05/12
+	 */
+	public void pushClasspath(RomReference __rom)
+		throws NullPointerException
+	{
+		if (__rom == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Starts this process.
 	 *
 	 * @since 2020/04/28
@@ -71,16 +88,26 @@ public final class VirtualProcess
 	/**
 	 * Spawns a process.
 	 *
+	 * @param __cp The classpath to use for the process.
 	 * @return The resulting process that was spawned.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/28
 	 */
-	public static VirtualProcess spawn()
+	public static VirtualProcess spawn(String[] __cp)
+		throws NullPointerException
 	{
+		if (__cp == null)
+			throw new NullPointerException("NARG");
+		
 		// Create hardware thread for the main thread, the hardware thread ID
 		// will become the task ID
 		HardwareThread main = HardwareThread.createThread(
 			true, 0);
 		VirtualProcess rv = new VirtualProcess(main);
+		
+		// Push all of the ROM classpath into this process
+		for (int i = 0, n = __cp.length; i < n; i++)
+			rv.pushClasspath(SystemCall.searchJar(__cp[i]));
 		
 		if (true)
 		{

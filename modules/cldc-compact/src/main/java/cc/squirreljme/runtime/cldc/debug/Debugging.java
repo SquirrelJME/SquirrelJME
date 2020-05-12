@@ -76,6 +76,18 @@ public final class Debugging
 	/**
 	 * Emits a To-Do error.
 	 *
+	 * @return The generated error.
+	 * @since 2020/03/21
+	 */
+	@SuppressWarnings("deprecation")
+	public static Error todo()
+	{
+		return TODO.TODO((Object[])null);
+	}
+	
+	/**
+	 * Emits a To-Do error.
+	 *
 	 * @param __args Arguments to the error.
 	 * @return The generated error.
 	 * @since 2020/03/21
