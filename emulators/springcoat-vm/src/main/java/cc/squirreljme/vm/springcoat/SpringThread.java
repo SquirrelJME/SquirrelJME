@@ -52,6 +52,9 @@ public final class SpringThread
 	
 	/** The task ID of this thread. */
 	private int _taskId;
+	
+	/** The context of this thread. */
+	private ThreadContext _context;
 		
 	/** String representation. */
 	private Reference<String> _string;
@@ -89,6 +92,27 @@ public final class SpringThread
 		this.id = __id;
 		this.name = __n;
 		this.profiler = __profiler;
+	}
+	
+	/**
+	 * Returns the thread's context.
+	 *
+	 * @return The thread's context.
+	 * @throws IllegalStateException If this thread has no context
+	 * @since 2020/05/12
+	 */
+	public final ThreadContext context()
+		throws IllegalStateException
+	{
+		ThreadContext rv;
+		synchronized (this)
+		{
+			rv = this._context;
+		}
+		
+		if (rv == null)
+			throw new IllegalStateException("Thread has no context.");
+		return rv;
 	}
 	
 	/**
@@ -276,6 +300,25 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Initializes the thread with a new context.
+	 *
+	 * @return The newly created context.
+	 * @throws IllegalStateException If the thread already has a context.
+	 * @since 2020/05/12
+	 */
+	public final ThreadContext initializeContext()
+		throws IllegalStateException
+	{
+		// Setup new context
+		ThreadContext rv = new ThreadContext();
+		
+		// Try setting it
+		this.setContext(rv);
+		
+		return rv;
+	}
+	
+	/**
 	 * Is exiting the virtual machine okay?
 	 *
 	 * @return If it is okay to exit.
@@ -390,6 +433,29 @@ public final class SpringThread
 					inmethod.inFile(),
 					inmethod.byteCode().lineOfAddress(pc));
 			}
+		}
+	}
+	
+	/**
+	 * Sets the context for a given thread.
+	 *
+	 * @param __context The context to set.
+	 * @throws IllegalStateException If this thread already has a context.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/05/12
+	 */
+	public final void setContext(ThreadContext __context)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__context == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			if (this._context != null)
+				throw new IllegalStateException("Thread has a context.");
+			
+			this._context = __context;
 		}
 	}
 	
