@@ -11,8 +11,11 @@
 package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.BuiltInEncoding;
+import cc.squirreljme.jvm.ConfigRomKey;
+import cc.squirreljme.jvm.SystemCall;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.UnsupportedEncodingException;
+import java.util.NoSuchElementException;
 
 /**
  * This contains the code used to obtain the default encoding as well as
@@ -150,7 +153,7 @@ public final class CodecFactory
 	 */
 	public static Decoder defaultDecoder()
 	{
-		return CodecFactory.decoder(Debugging.<Integer>todoObject());
+		return CodecFactory.decoder(CodecFactory.defaultEncoding());
 	}
 	
 	/**
@@ -161,7 +164,26 @@ public final class CodecFactory
 	 */
 	public static Encoder defaultEncoder()
 	{
-		return CodecFactory.encoder(Debugging.<Integer>todoObject());
+		return CodecFactory.encoder(CodecFactory.defaultEncoding());
+	}
+	
+	/**
+	 * Returns the default encoding.
+	 *
+	 * @return The default encoding.
+	 * @since 2020/05/12
+	 */
+	public static int defaultEncoding()
+	{
+		try
+		{
+			return SystemCall.config(ConfigRomKey.BUILT_IN_ENCODING)
+				.getInteger();
+		}
+		catch (NoSuchElementException e)
+		{
+			return BuiltInEncoding.UTF8;
+		}
 	}
 	
 	/**

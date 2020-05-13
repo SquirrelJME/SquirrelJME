@@ -72,6 +72,10 @@ public final class SystemCallError
 	public static final byte THREAD_HAS_CONTEXT =
 		-13;
 	
+	/** No such configuration key. */
+	public static final byte NO_SUCH_CONFIG_KEY =
+		-14;
+	
 	/**
 	 * Not used.
 	 *
@@ -160,6 +164,9 @@ public final class SystemCallError
 			
 			case SystemCallError.THREAD_HAS_CONTEXT:
 				return "ThreadHasContext";
+			
+			case SystemCallError.NO_SUCH_CONFIG_KEY:
+				return "NoSuchConfigKey";
 			
 				// Some Other ID?
 			default:

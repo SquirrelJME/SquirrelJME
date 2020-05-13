@@ -305,7 +305,7 @@ public final class Character
 		"locale support.")
 	public static char toLowerCase(char __c)
 	{
-		return DefaultLocale.NO_LOCALE.toLowerCase(__c);
+		return DefaultLocale.noLocale().toLowerCase(__c);
 	}
 	
 	/**
@@ -332,7 +332,7 @@ public final class Character
 		"locale support.")
 	public static char toUpperCase(char __c)
 	{
-		return DefaultLocale.NO_LOCALE.toUpperCase(__c);
+		return DefaultLocale.noLocale().toUpperCase(__c);
 	}
 	
 	/**

@@ -12,6 +12,7 @@ package cc.squirreljme.jvm;
 import cc.squirreljme.jvm.boot.SystemBoot;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import java.util.NoSuchElementException;
 
 /**
  * This class contains the functions of the virtual machine.
@@ -315,35 +316,71 @@ public final class JVMFunction
 	public static long jvmSystemCallByTask(int __taskId, short __si,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g, int __h)
 	{
-		// Depends on the system call type
-		switch (__si)
+		try
 		{
-				// Query supported system calls
-			case SystemCallIndex.QUERY_INDEX:
-				switch (__a)
-				{
-					case SystemCallIndex.CONFIG_GET_VALUE:
-					case SystemCallIndex.CONFIG_GET_TYPE:
-						return 1;
+			// Depends on the system call type
+			switch (__si)
+			{
+					// Query supported system calls
+				case SystemCallIndex.QUERY_INDEX:
+					switch (__a)
+					{
+						case SystemCallIndex.CONFIG_GET_VALUE:
+						case SystemCallIndex.CONFIG_GET_TYPE:
+							return 1;
+						
+						default:
+							break;
+					}
+					break;
 					
-					default:
-						break;
-				}
-				break;
+					// Get configuration key value
+				case SystemCallIndex.CONFIG_GET_VALUE:
+					try
+					{
+						return SystemBoot.config().rawValue(__a);
+					}
+					catch (NoSuchElementException e)
+					{
+						throw new SystemCallException(__si,
+							SystemCallError.NO_SUCH_CONFIG_KEY, e);
+					}
 				
-				// Get configuration key value
-			case SystemCallIndex.CONFIG_GET_VALUE:
-				return SystemBoot.config().rawValue(__a);
+					// Get configuration key type
+				case SystemCallIndex.CONFIG_GET_TYPE:
+					try
+					{
+						return SystemBoot.config().type(__a);
+					}
+					catch (NoSuchElementException e)
+					{
+						throw new SystemCallException(__si,
+							SystemCallError.NO_SUCH_CONFIG_KEY, e);
+					}
+			}
 			
-				// Get configuration key type
-			case SystemCallIndex.CONFIG_GET_TYPE:
-				return SystemBoot.config().type(__a);
+			// Call pure form as the supervisor has no way to handle this system
+			// call either.
+			return Assembly.sysCallPVL(__si,
+				__a, __b, __c, __d, __e, __f, __g, __h);
 		}
 		
-		// Call pure form as the supervisor has no way to handle this system
-		// call either.
-		return Assembly.sysCallPVL(__si,
-			__a, __b, __c, __d, __e, __f, __g, __h);
+		// Error occurred, store it and return a default fail value
+		catch (SystemCallException e)
+		{
+			Assembly.sysCallP(SystemCallIndex.ERROR_SET, __si, e.code);
+			return 0;
+		}
+		
+		// Unknown error occurred??
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+			
+			Assembly.sysCallP(SystemCallIndex.ERROR_SET, __si,
+				SystemCallError.UNKNOWN);
+			return 0;
+		}
 	}
 }
 
