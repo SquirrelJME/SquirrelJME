@@ -46,6 +46,27 @@ public final class ConfigReader
 	}
 	
 	/**
+	 * Gets the configuration entry by the given key.
+	 *
+	 * @param __key The key to lookup.
+	 * @return The config entry for the given key.
+	 * @throws NoSuchElementException If the key is not found in the
+	 * configuration.
+	 * @since 2020/05/12
+	 */
+	public final ConfigEntry getByKey(int __key)
+		throws NoSuchElementException
+	{
+		for (ConfigEntry entry : this)
+			if (entry.key() == __key)
+				return entry;
+		
+		// {@squirreljme.error ZZ4D No configuration entry exists for
+		// the given key. (Key type)}
+		throw new NoSuchElementException("ZZ4D " + __key);
+	}
+	
+	/**
 	 * Gets the string array from a key.
 	 *
 	 * @param __key The {@link ConfigRomKey} to obtain.
@@ -58,11 +79,7 @@ public final class ConfigReader
 	public final String[] getStrings(int __key)
 		throws IllegalArgumentException, NoSuchElementException
 	{
-		// {@squirreljme.error ZZ4B Key is not UTF list type. (The key)}
-		if (this.type(__key) != ConfigRomType.UTF_LIST)
-			throw new IllegalArgumentException("ZZ4B " + __key);
-		
-		throw Debugging.todo();
+		return this.getByKey(__key).getStrings();
 	}
 	
 	/**
@@ -86,8 +103,7 @@ public final class ConfigReader
 	public final long rawValue(int __key)
 		throws NoSuchElementException
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		return this.getByKey(__key).rawValue();
 	}
 	
 	/**
@@ -98,7 +114,12 @@ public final class ConfigReader
 	 */
 	public final int size()
 	{
-		throw Debugging.todo();
+		int count = 0;
+		
+		for (ConfigEntry ignored : this)
+			count++;
+		
+		return count;
 	}
 	
 	/**
@@ -112,8 +133,7 @@ public final class ConfigReader
 	public final int type(int __key)
 		throws NoSuchElementException
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		return this.getByKey(__key).type();
 	}
 }
 

@@ -9,7 +9,10 @@
 
 package cc.squirreljme.jvm.boot;
 
+import cc.squirreljme.jvm.ConfigRomKey;
+import cc.squirreljme.jvm.ConfigRomType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.NoSuchElementException;
 
 /**
  * Represents a configuration entry.
@@ -23,8 +26,26 @@ public final class ConfigEntry
 	 * @since 2020/04/03
 	 */
 	@Override
-	public int hashCode()
+	public boolean equals(Object __o)
 	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Gets the string array from this configuration entry.
+	 *
+	 * @return The string array.
+	 * @throws IllegalArgumentException If this entry does not refer to a value
+	 * that is compatible with a string array.
+	 * @since 2020/05/12
+	 */
+	public final String[] getStrings()
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error ZZ4B Entry is not compatible with UTF list.}
+		if (this.type() != ConfigRomType.UTF_LIST)
+			throw new IllegalArgumentException("ZZ4B");
+		
 		throw Debugging.todo();
 	}
 	
@@ -33,7 +54,29 @@ public final class ConfigEntry
 	 * @since 2020/04/03
 	 */
 	@Override
-	public boolean equals(Object __o)
+	public int hashCode()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the key for this type.
+	 *
+	 * @return The key that is used for this entry.
+	 * @since 2020/05/12
+	 */
+	public final int key()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the raw value of this configuration entry.
+	 *
+	 * @return The raw value.
+	 * @since 2020/05/03
+	 */
+	public final long rawValue()
 	{
 		throw Debugging.todo();
 	}
@@ -44,6 +87,18 @@ public final class ConfigEntry
 	 */
 	@Override
 	public String toString()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the type that this entry is.
+	 *
+	 * @return The {@link ConfigRomType}.
+	 * @throws NoSuchElementException If no such key exists.
+	 * @since 2020/05/12
+	 */
+	public final int type()
 	{
 		throw Debugging.todo();
 	}
