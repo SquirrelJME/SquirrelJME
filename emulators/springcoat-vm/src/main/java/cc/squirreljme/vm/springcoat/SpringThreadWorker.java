@@ -1104,6 +1104,11 @@ public final class SpringThreadWorker
 			case "atomicTicker":
 				return AtomicTicker.next();
 				
+				// Long's classInfo
+			case "classInfoOfLong":
+				return this.thread.context().loadClassInfo(this,
+					ClassName.fromPrimitiveType(PrimitiveType.LONG)).pointer();
+				
 				// Lock the garbage collector
 			case "gcLock":
 				return machine.tasks.gcLock.lock((Integer)__args[0]);

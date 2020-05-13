@@ -351,7 +351,7 @@ public final class MemoryManager
 		if (__addr < 0 || __addr > Integer.MAX_VALUE)
 			throw new MemoryAccessException(__addr, "Read out of bounds.");
 		
-		Debugging.debugNote("read: %08x", __addr);
+		//Debugging.debugNote("read: %08x", __addr);
 		
 		// Get entry where the chunk would be located
 		Map.Entry<Integer, ReadableByteMemory> chunk =
@@ -493,7 +493,7 @@ public final class MemoryManager
 		if (__addr < 0 || __addr > Integer.MAX_VALUE)
 			throw new MemoryAccessException(__addr, "Write out of bounds.");
 		
-		Debugging.debugNote("write: %08x <- %d", __addr, __v);
+		//Debugging.debugNote("write: %08x <- %d", __addr, __v);
 		
 		// Get entry where the chunk would be located
 		Map.Entry<Integer, WritableByteMemory> chunk =

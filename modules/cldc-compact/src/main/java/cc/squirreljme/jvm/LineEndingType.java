@@ -16,15 +16,19 @@ package cc.squirreljme.jvm;
  */
 public interface LineEndingType
 {
+	/** Unspecified. */
+	byte UNSPECIFIED =
+		0;
+	
 	/** LF. */
 	byte LF =
-		0;
+		1;
 	
 	/** CR. */
 	byte CR =
-		1;
+		2;
 	
 	/** CRLF. */
 	byte CRLF =
-		2;
+		3;
 }

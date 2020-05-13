@@ -10,8 +10,12 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.emulator.fb.NativeFramebuffer;
+import cc.squirreljme.jvm.ConfigRomKey;
+import cc.squirreljme.jvm.ConfigRomType;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.jvm.LineEndingType;
 import cc.squirreljme.jvm.SystemCallError;
+import cc.squirreljme.jvm.SystemCallException;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -72,9 +76,12 @@ public final class EmulatorAssembly
 					switch (__a)
 					{
 							// Implemented here
+						case SystemCallIndex.CONFIG_GET_TYPE:
+						case SystemCallIndex.CONFIG_GET_VALUE:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.FRAMEBUFFER:
+						case SystemCallIndex.FRAME_TASK_ID_GET:
 						case SystemCallIndex.QUERY_INDEX:
 						case SystemCallIndex.TIME_MILLI_WALL:
 						case SystemCallIndex.TIME_NANO_MONO:
@@ -88,6 +95,38 @@ public final class EmulatorAssembly
 						default:
 							return 0;
 					}
+				}
+				
+				// Get configuration type
+			case SystemCallIndex.CONFIG_GET_TYPE:
+				switch (__a)
+				{
+					case ConfigRomKey.LINE_ENDING:
+						return ConfigRomType.INTEGER;
+					
+					default:
+						context.setError(__si,
+							SystemCallError.NO_SUCH_CONFIG_KEY);
+						return 0;
+				}
+			
+				// Get raw value
+			case SystemCallIndex.CONFIG_GET_VALUE:
+				switch (__a)
+				{
+					case ConfigRomKey.LINE_ENDING:
+						switch (System.getProperty("line.ending"))
+						{
+							case "\r":		return LineEndingType.CR;
+							case "\r\n":	return LineEndingType.CRLF;
+							case "\n":		return LineEndingType.LF;
+							default:		return LineEndingType.UNSPECIFIED;
+						}
+						
+					default:
+						context.setError(__si,
+							SystemCallError.NO_SUCH_CONFIG_KEY);
+						return 0;
 				}
 				
 				// Debugging flags
@@ -140,7 +179,12 @@ public final class EmulatorAssembly
 			case SystemCallIndex.FRAMEBUFFER:
 				return NativeFramebuffer.getInstance().systemCall(context,
 					__a, __b, __c, __d, __e, __f, __g, __h);
-					
+			
+				// Always return a task ID of zero since this is the core
+				// emulator and it does not really make sense here
+			case SystemCallIndex.FRAME_TASK_ID_GET:
+				return 0;
+				
 				// Descriptor of standard error
 			case SystemCallIndex.PD_OF_STDERR:
 				context.setError(__si, 0);

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.boot.Allocator;
 import cc.squirreljme.jvm.boot.SystemBoot;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -28,6 +29,31 @@ public final class JVMFunction
 	 */
 	private JVMFunction()
 	{
+	}
+	
+	/**
+	 * Allocates raw memory for an object.
+	 *
+	 * @param __sz The number of bytes to allocate.
+	 * @return The resulting allocated object.
+	 * @throws IllegalArgumentException If the length is zero or negative.
+	 * @throws OutOfMemoryError If there is no memory left.
+	 * @since 2020/05/13
+	 */
+	public static long jvmAllocateRawObject(int __sz)
+		throws IllegalArgumentException, OutOfMemoryError
+	{
+		// {@squirreljme.error ZZ4C Cannot allocate an object with zero or
+		// negative size.}
+		if (__sz <= 0)
+			throw new IllegalArgumentException("ZZ4C");
+		
+		// Allocate memory region for an object
+		long rv = Allocator.allocate(Allocator.CHUNK_BIT_IS_OBJECT, __sz);
+		if (rv == 0)
+			throw new OutOfMemoryError();
+		
+		return rv;
 	}
 	
 	/**

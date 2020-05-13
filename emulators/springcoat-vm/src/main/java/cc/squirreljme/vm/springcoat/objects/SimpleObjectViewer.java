@@ -46,6 +46,6 @@ public class SimpleObjectViewer
 	@Override
 	public SpringPointer pointer()
 	{
-		throw Debugging.todo();
+		return this.pointer;
 	}
 }

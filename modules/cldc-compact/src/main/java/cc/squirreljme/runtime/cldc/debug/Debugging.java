@@ -371,16 +371,13 @@ public final class Debugging
 				Debugging.__print('\r', null);
 				break;
 				
-			case LineEndingType.CRLF:
-				Debugging.__print('\r', '\n');
-				break;
-				
 			case LineEndingType.LF:
 				Debugging.__print('\n', null);
 				break;
-			
+				
+			case LineEndingType.CRLF:
 			default:
-				Debugging.__print('$', null);
+				Debugging.__print('\r', '\n');
 				break;
 		}
 	}
