@@ -359,8 +359,8 @@ public final class JVMFunction
 					}
 			}
 			
-			// Call pure form as the supervisor has no way to handle this system
-			// call either.
+			// Call pure form as the supervisor has no way to handle this
+			// system call either.
 			return Assembly.sysCallPVL(__si,
 				__a, __b, __c, __d, __e, __f, __g, __h);
 		}
@@ -375,7 +375,7 @@ public final class JVMFunction
 		// Unknown error occurred??
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			Debugging.debugNote("Hiding sysCall exception...");
 			
 			Assembly.sysCallP(SystemCallIndex.ERROR_SET, __si,
 				SystemCallError.UNKNOWN);

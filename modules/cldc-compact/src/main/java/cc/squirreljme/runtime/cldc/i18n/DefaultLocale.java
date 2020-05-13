@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.BuiltInLocale;
 import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.jvm.SystemCall;
 import cc.squirreljme.jvm.boot.ConfigEntry;
+import java.util.NoSuchElementException;
 
 /**
  * This class provides access to the default locale.
@@ -53,13 +54,23 @@ public final class DefaultLocale
 			return rv;
 		
 		// The system could have configured the locale for us (hopefully)
-		ConfigEntry locale = SystemCall.config(ConfigRomKey.BUILT_IN_LOCALE);
-		switch (locale.getInteger())
+		ConfigEntry locale;
+		try
 		{
-			case BuiltInLocale.ENGLISH_US:
-			default:
-				rv = new LocaleEnUs();
-				break;
+			locale = SystemCall.config(ConfigRomKey.BUILT_IN_LOCALE);
+			switch (locale.getInteger())
+			{
+				case BuiltInLocale.ENGLISH_US:
+				default:
+					rv = new LocaleEnUs();
+					break;
+			}
+		}
+		
+		// If none was configured, assume the "no" locale which is enUS
+		catch (NoSuchElementException e)
+		{
+			rv = DefaultLocale.noLocale();
 		}
 		
 		// Cache and use it
@@ -81,6 +92,27 @@ public final class DefaultLocale
 			DefaultLocale._noLocale = (rv = new LocaleEnUs());
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the built-in encoding for the given string.
+	 *
+	 * @param __str The string to get the built-in encoding of.
+	 * @return The built-in encoding from the string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/05/13
+	 */
+	public static int toBuiltIn(String __str)
+		throws NullPointerException
+	{
+		if (__str == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__str)
+		{
+			case "en-US":		return BuiltInLocale.ENGLISH_US;
+			default:			return BuiltInLocale.UNKNOWN;
+		}
 	}
 }
 

@@ -177,8 +177,14 @@ public final class CodecFactory
 	{
 		try
 		{
-			return SystemCall.config(ConfigRomKey.BUILT_IN_ENCODING)
+			int rv = SystemCall.config(ConfigRomKey.BUILT_IN_ENCODING)
 				.getInteger();
+			
+			// Default to UTF-8 if not specified here
+			if (rv == BuiltInEncoding.UNSPECIFIED)
+				return BuiltInEncoding.UTF8;
+			
+			return rv;
 		}
 		catch (NoSuchElementException e)
 		{
@@ -290,6 +296,53 @@ public final class CodecFactory
 		catch (UnsupportedEncodingException e)
 		{
 			throw new RuntimeException(String.format("ZZ04 %s", __enc), e);
+		}
+	}
+	
+	/**
+	 * Returns the built-in encoding for the given string.
+	 *
+	 * @param __str The string to find.
+	 * @return The built-in encoding.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/05/13
+	 */
+	public static int toBuiltIn(String __str)
+		throws NullPointerException
+	{
+		if (__str == null)
+			throw new NullPointerException("NARG");
+		
+		switch (CodecFactory.__normalizeEncodingName(__str))
+		{
+			case "ascii":		return BuiltInEncoding.ASCII;
+			case "ibm037":		return BuiltInEncoding.IBM037;
+			case "iso-8859-1":	return BuiltInEncoding.ISO_8859_1;
+			case "iso-8859-15":	return BuiltInEncoding.ISO_8859_15;
+			case "utf-8":		return BuiltInEncoding.UTF8;
+			default:			return BuiltInEncoding.UNSPECIFIED;
+		}
+	}
+	
+	/**
+	 * Converts a built-in encoding to a string.
+	 *
+	 * @param __builtIn The built-in encoding.
+	 * @return The string for this encoding.
+	 * @since 2020/05/13
+	 */
+	public static String toString(int __builtIn)
+	{
+		switch (__builtIn)
+		{
+			case BuiltInEncoding.ASCII:			return "ascii";
+			case BuiltInEncoding.IBM037:		return "ibm037";
+			case BuiltInEncoding.ISO_8859_1:	return "iso-8859-1";
+			case BuiltInEncoding.ISO_8859_15:	return "iso-8859-15";
+			
+				// Assume UTF-8
+			case BuiltInEncoding.UTF8:
+			default:							return "utf-8";
 		}
 	}
 	

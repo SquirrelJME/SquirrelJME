@@ -361,7 +361,7 @@ public final class Debugging
 		// Get the line type used
 		int line = Debugging._line;
 		if (line == Integer.MIN_VALUE)
-			Debugging._line = (line = Assembly.sysCallPV(
+			Debugging._line = (line = Assembly.sysCallV(
 				SystemCallIndex.CONFIG_GET_VALUE, ConfigRomKey.LINE_ENDING));
 		
 		// Print it depending on what is desired
