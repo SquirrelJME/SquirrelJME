@@ -27,9 +27,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -62,9 +60,11 @@ public final class SpringMachine
 		new Object();
 	
 	/** The class loader. */
+	@Deprecated
 	protected final SpringClassLoader classloader;
 	
 	/** Resources accessor. */
+	@Deprecated
 	protected final VMResourceAccess resourceaccessor;
 	
 	/** The class to start execution within. */
@@ -99,6 +99,7 @@ public final class SpringMachine
 		new HashMap<>();
 	
 	/** Class informations. */
+	@Deprecated
 	final Map<ClassName, SpringObject> _classInfos =
 		new TreeMap<>();
 	
@@ -255,6 +256,18 @@ public final class SpringMachine
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
 		SpringThread mainThread = this.tasks.hardwareThreads.createThread();
+		mainThread.initializeContext();
+		
+		// The bootstrap itself must always have the CLDC-Compact library
+		// in it in order to properly work.
+		VMSuiteManager suites = this.suites;
+		for (String libName : suites.listLibraryNames())
+			if (libName.toLowerCase().contains("cldc-compact"))
+			{
+				mainThread.context().pushClassPath(
+					suites.loadLibrary(libName));
+				break;
+			}
 		
 		// We will be using the same logic in the thread worker if we need to
 		// initialize any objects or arguments

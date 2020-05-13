@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallException;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -330,8 +331,8 @@ public final class SystemCallHandler
 				
 					// System call not supported
 				default:
-					System.err.printf("Un-handled sysCall#%d(%d, %d, %d, " +
-						"%d, %d, %d, %d, %d)%n",
+					Debugging.debugNote("Un-handled sysCall#%d(%d, " +
+						"%d, %d, %d, %d, %d, %d, %d)%n",
 						__sid, __a, __b, __c, __d, __e, __f, __g, __h);
 					
 					error = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
