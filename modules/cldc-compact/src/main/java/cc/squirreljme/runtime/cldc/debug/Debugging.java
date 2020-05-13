@@ -52,6 +52,17 @@ public final class Debugging
 	 * Emits a debugging note.
 	 *
 	 * @param __fmt The format.
+	 * @since 2020/05/13
+	 */
+	public static void debugNote(String __fmt)
+	{
+		Debugging.__format('D', 'B', __fmt, (Object[])null);
+	}
+	
+	/**
+	 * Emits a debugging note.
+	 *
+	 * @param __fmt The format.
 	 * @param __args The arguments to the string.
 	 * @since 2020/03/27
 	 */
@@ -96,6 +107,17 @@ public final class Debugging
 	public static Error todo(Object... __args)
 	{
 		return TODO.TODO(__args);
+	}
+	
+	/**
+	 * Emits a To-Do note.
+	 *
+	 * @param __fmt Format string.
+	 * @since 2020/05/13
+	 */
+	public static void todoNote(String __fmt)
+	{
+		Debugging.__format('T', 'D', __fmt, (Object[])null);
 	}
 	
 	/**
@@ -170,7 +192,6 @@ public final class Debugging
 				// Printing a specifier
 				if (specifier)
 				{
-					
 					// Ignore flags
 					if (c == '-' || c == '#' || c == '+' ||
 						c == ' ' || c == ',' || c == '(' ||

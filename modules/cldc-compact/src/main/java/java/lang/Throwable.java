@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.PrintStream;
 
 /**
@@ -285,8 +286,14 @@ public class Throwable
 	 */
 	public void printStackTrace()
 	{
-		Throwable.__printStackTrace(this, System.err, 0,
-			Throwable._TYPE_EXCEPTION);
+		// It is possible for standard error to not exist yet!
+		if (System.err != null)
+			Throwable.__printStackTrace(this, System.err, 0,
+				Throwable._TYPE_EXCEPTION);
+		
+		// {@squirreljme.error ZZ4L Printing of stack trace too early.}
+		else
+			Debugging.debugNote("ZZ4L");
 	}
 	
 	/**
