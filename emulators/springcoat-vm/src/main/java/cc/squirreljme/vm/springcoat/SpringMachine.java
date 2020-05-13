@@ -14,11 +14,13 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jvm.BuiltInEncoding;
 import cc.squirreljme.jvm.ConfigRomKey;
 import cc.squirreljme.jvm.LineEndingType;
 import cc.squirreljme.jvm.boot.ConfigWriter;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -285,10 +288,17 @@ public final class SpringMachine
 			("\n".equals(File.separator) ? LineEndingType.LF :
 			LineEndingType.CRLF));
 		
+		// Character encoding
+		String meEncoding = Objects.toString(
+			this._sysproperties.get("microedition.encoding"),
+			System.getProperty("microedition.encoding"));
+		configWriter.writeInteger(ConfigRomKey.BUILT_IN_ENCODING,
+			(meEncoding == null ? BuiltInEncoding.UNSPECIFIED :
+			CodecFactory.toBuiltIn(meEncoding)));
+		
 		// ConfigRomKey.SYSCALL_STATIC_FIELD_POINTER
 		// ConfigRomKey.SYSCALL_CODE_POINTER
 		// ConfigRomKey.SYSCALL_POOL_POINTER
-		// ConfigRomKey.BUILT_IN_ENCODING
 		// ConfigRomKey.MICROEDITION_CONFIG
 		
 		// Define the class path
