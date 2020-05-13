@@ -162,7 +162,7 @@ public final class Debugging
 		// Print quickly and stop because this may infinite loop
 		if (Debugging._noLoop)
 		{
-			Debugging.__print('X', null);
+			Debugging.__print('X');
 			return;
 		}
 		
@@ -173,7 +173,8 @@ public final class Debugging
 			Debugging._noLoop = true;
 			
 			// Print header marker
-			Debugging.__print(__cha, __chb, ':', ' ');
+			Debugging.__print(__cha, __chb);
+			Debugging.__print(':', ' ');
 			
 			// The specifier to print along with the field index
 			boolean specifier = false,
@@ -224,7 +225,7 @@ public final class Debugging
 					else if (c == '%' || c == 'n')
 					{
 						if (c == '%')
-							Debugging.__print('%', null);
+							Debugging.__print('%');
 						else
 							Debugging.__printLine();
 						
@@ -247,7 +248,10 @@ public final class Debugging
 						
 						// Print its value
 						if (value == null)
-							Debugging.__print('n', 'u', 'l', 'l');
+						{
+							Debugging.__print('n', 'u');
+							Debugging.__print('l', 'l');
+						}
 						
 						// Assume a string
 						else
@@ -258,11 +262,11 @@ public final class Debugging
 							int strLen = string.length(),
 								pad = width - strLen;
 							while ((pad--) > 0)
-								Debugging.__print(' ', null);
+								Debugging.__print(' ');
 							
 							// Print actual string
 							for (int j = 0; j < strLen; j++)
-								Debugging.__print(string.charAt(j), null);
+								Debugging.__print(string.charAt(j));
 						}
 						
 						// Stop
@@ -284,7 +288,7 @@ public final class Debugging
 				
 				// Plain character?
 				else
-					Debugging.__print(c, null);
+					Debugging.__print(c);
 			}
 			
 			// End of line
@@ -320,18 +324,18 @@ public final class Debugging
 		"SameParameterValue"})
 	private static void __print(char __c)
 	{
-		Debugging.__print(__c, null);
+		Debugging.__print(__c, '\0');
 	}
 	
 	/**
 	 * Prints the given characters.
 	 *
 	 * @param __c The character to print.
-	 * @param __x Extra characters to print.
+	 * @param __d Second character to print.
 	 * @since 2020/05/07
 	 */
 	@SuppressWarnings("FeatureEnvy")
-	private static void __print(char __c, char... __x)
+	private static void __print(char __c, char __d)
 	{
 		// If we do not know the pipe for standard error, get it
 		int pipe = Debugging._pipe;
@@ -344,10 +348,9 @@ public final class Debugging
 			(__c > Debugging._BYTE_LIMIT ? '?' : __c));
 		
 		// Print other characters in bulk, snip to ASCII
-		if (__x != null)
-			for (char c : __x)
-				Assembly.sysCallPV(SystemCallIndex.PD_WRITE_BYTE, pipe,
-					(c > Debugging._BYTE_LIMIT ? '?' : c));
+		if (__d != 0)
+			Assembly.sysCallPV(SystemCallIndex.PD_WRITE_BYTE, pipe,
+				(__d > Debugging._BYTE_LIMIT ? '?' : __d));
 	}
 	
 	/**
@@ -368,11 +371,11 @@ public final class Debugging
 		switch (line)
 		{
 			case LineEndingType.CR:
-				Debugging.__print('\r', null);
+				Debugging.__print('\r', '\0');
 				break;
 				
 			case LineEndingType.LF:
-				Debugging.__print('\n', null);
+				Debugging.__print('\n', '\0');
 				break;
 				
 			case LineEndingType.CRLF:
