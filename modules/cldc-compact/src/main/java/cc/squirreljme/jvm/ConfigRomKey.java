@@ -24,6 +24,7 @@ public interface ConfigRomKey
 	 * Java VM Version.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
+	 * @since 2019/06/14
 	 */
 	byte JAVA_VM_VERSION =
 		1;
@@ -32,6 +33,7 @@ public interface ConfigRomKey
 	 * Java VM Name.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
+	 * @since 2019/06/14
 	 */
 	byte JAVA_VM_NAME =
 		2;
@@ -40,6 +42,7 @@ public interface ConfigRomKey
 	 * Java VM Vendor.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
+	 * @since 2019/06/14
 	 */
 	byte JAVA_VM_VENDOR =
 		3;
@@ -48,6 +51,7 @@ public interface ConfigRomKey
 	 * Java VM E-Mail.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
+	 * @since 2019/06/14
 	 */
 	byte JAVA_VM_EMAIL =
 		4;
@@ -56,6 +60,7 @@ public interface ConfigRomKey
 	 * Java VM URL.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
+	 * @since 2019/06/14
 	 */
 	byte JAVA_VM_URL =
 		5;
@@ -64,6 +69,7 @@ public interface ConfigRomKey
 	 * The guest depth.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
+	 * @since 2019/06/14
 	 */
 	@Deprecated
 	byte GUEST_DEPTH =
@@ -73,6 +79,7 @@ public interface ConfigRomKey
 	 * Main class.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
+	 * @since 2019/06/14
 	 */
 	byte MAIN_CLASS =
 		7;
@@ -81,6 +88,7 @@ public interface ConfigRomKey
 	 * Main program arguments.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#UTF_LIST}
+	 * @since 2019/06/14
 	 */
 	byte MAIN_ARGUMENTS =
 		8;
@@ -89,6 +97,7 @@ public interface ConfigRomKey
 	 * Is this a MIDlet being launched?
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#BOOLEAN}
+	 * @since 2019/06/14
 	 */
 	byte IS_MIDLET =
 		9;
@@ -97,6 +106,7 @@ public interface ConfigRomKey
 	 * Define system property.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#KEY_VALUE_PAIR}
+	 * @since 2019/06/14
 	 */
 	byte DEFINE_PROPERTY =
 		10;
@@ -105,6 +115,7 @@ public interface ConfigRomKey
 	 * Classpath to use.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#UTF_LIST}
+	 * @since 2019/06/14
 	 */
 	byte CLASS_PATH =
 		11;
@@ -113,6 +124,7 @@ public interface ConfigRomKey
 	 * System call static field pointer.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#LONG}
+	 * @since 2019/06/14
 	 */
 	byte SYSCALL_STATIC_FIELD_POINTER =
 		12;
@@ -121,6 +133,7 @@ public interface ConfigRomKey
 	 * System call method pointer.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#LONG}
+	 * @since 2019/06/14
 	 */
 	byte SYSCALL_CODE_POINTER =
 		13;
@@ -129,6 +142,7 @@ public interface ConfigRomKey
 	 * System call pool pointer.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#LONG}
+	 * @since 2019/06/14
 	 */
 	byte SYSCALL_POOL_POINTER =
 		14;
@@ -137,6 +151,7 @@ public interface ConfigRomKey
 	 * The built-in encoding to use, see {@link BuiltInEncoding}.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
+	 * @since 2019/06/14
 	 */
 	byte BUILT_IN_ENCODING =
 		15;
@@ -145,6 +160,7 @@ public interface ConfigRomKey
 	 * The MicroEdition Configuration used, see {@link MicroeditionConfig}.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
+	 * @since 2019/06/14
 	 */
 	byte MICROEDITION_CONFIG =
 		16;
@@ -153,12 +169,22 @@ public interface ConfigRomKey
 	 * The type of line ending to use, see {@link LineEndingType}.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
+	 * @since 2019/06/14
 	 */
 	byte LINE_ENDING =
 		17;
 	
+	/**
+	 * The built-in locale the system is using, see {@link BuiltInLocale}.
+	 *
+	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}.
+	 * @since 2020/05/12
+	 */
+	byte BUILT_IN_LOCALE =
+		18;
+	
 	/** Number of available configuration options. */
 	byte NUM_OPTIONS =
-		18;
+		19;
 }
 

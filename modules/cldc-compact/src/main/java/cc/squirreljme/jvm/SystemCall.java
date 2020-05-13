@@ -9,8 +9,10 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.boot.ConfigEntry;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.UnsupportedEncodingException;
+import java.util.NoSuchElementException;
 
 /**
  * This class contains helpers for all of the system calls to more reliably
@@ -28,6 +30,45 @@ public final class SystemCall
 	 */
 	private SystemCall()
 	{
+	}
+	
+	/**
+	 * Looks up a configuration key that is available through the system call
+	 * lookup for configuration items. A {@link ConfigEntry} will be composed
+	 * to wrap and be able to access all the various values accordingly.
+	 *
+	 * @param __key The configuration key to lookup.
+	 * @throws NoSuchElementException If this key is not found.
+	 * @since 2020/05/12
+	 */
+	public static ConfigEntry config(int __key)
+		throws NoSuchElementException
+	{
+		// We need the type to determine how to decode this entry
+		int type = Assembly.sysCallV(SystemCallIndex.CONFIG_GET_TYPE, __key);
+		
+		// It is possible for an error to happen, so return this here
+		int error = SystemCall.getError(SystemCallIndex.CONFIG_GET_TYPE);
+		if (error != SystemCallError.NO_ERROR)
+		{
+			// {@squirreljme.error ZZ4E No such configuration item has the
+			// specified key. (The key)}
+			if (error == SystemCallError.NO_SUCH_CONFIG_KEY)
+				throw new NoSuchElementException("ZZ4E " + __key);
+			
+			// {@squirreljme.error ZZ4F Other error while trying to access
+			// configuration keys. (The key; The error)}
+			throw new RuntimeException("ZZ4F " + __key + " " + error);
+		}
+		
+		// {@squirreljme.error ZZ4G Could not get value of the configuration
+		// item. (The key)}
+		long rawValue = Assembly.sysCallVL(SystemCallIndex.CONFIG_GET_VALUE,
+			__key);
+		if (SystemCall.hasError(SystemCallIndex.CONFIG_GET_VALUE))
+			throw new RuntimeException("ZZ4G " + __key);
+		
+		return new ConfigEntry(type, rawValue);
 	}
 	
 	/**

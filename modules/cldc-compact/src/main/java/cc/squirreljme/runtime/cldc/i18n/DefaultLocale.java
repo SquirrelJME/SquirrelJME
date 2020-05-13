@@ -10,6 +10,11 @@
 
 package cc.squirreljme.runtime.cldc.i18n;
 
+import cc.squirreljme.jvm.BuiltInLocale;
+import cc.squirreljme.jvm.ConfigRomKey;
+import cc.squirreljme.jvm.SystemCall;
+import cc.squirreljme.jvm.boot.ConfigEntry;
+
 /**
  * This class provides access to the default locale.
  *
@@ -17,13 +22,13 @@ package cc.squirreljme.runtime.cldc.i18n;
  */
 public final class DefaultLocale
 {
-	/** The locale to use for conversion in cases where one is not used. */
-	public static final Locale NO_LOCALE =
-		new LocaleEnUs();
+	/** The cached no locale. */
+	private static Locale _noLocale =
+		null;
 	
 	/** The default locale. */
-	private static final Locale _DEFAULT_LOCALE =
-		DefaultLocale.__defaultLocale();
+	private static Locale _default =
+		null;
 	
 	/**
 	 * Not used.
@@ -41,45 +46,41 @@ public final class DefaultLocale
 	 * @return The default locale, this value should not be cached.
 	 * @since 2018/09/20
 	 */
-	public static final Locale defaultLocale()
+	public static Locale defaultLocale()
 	{
-		Locale rv = DefaultLocale._DEFAULT_LOCALE;
-		if (rv == null)
-			return DefaultLocale.NO_LOCALE;
+		Locale rv = DefaultLocale._default;
+		if (rv != null)
+			return rv;
+		
+		// The system could have configured the locale for us (hopefully)
+		ConfigEntry locale = SystemCall.config(ConfigRomKey.BUILT_IN_LOCALE);
+		switch (locale.getInteger())
+		{
+			case BuiltInLocale.ENGLISH_US:
+			default:
+				rv = new LocaleEnUs();
+				break;
+		}
+		
+		// Cache and use it
+		DefaultLocale._default = rv;
 		return rv;
 	}
 	
 	/**
-	 * Determines the default locale.
+	 * Returns the the "no" locale.
 	 *
-	 * @return The default locale.
-	 * @since 2018/09/20
+	 * @return The no locale.
+	 * @since 2020/05/12
 	 */
-	private static Locale __defaultLocale()
+	public static Locale noLocale()
 	{
-		// Use local from system property
-		String prop = null;
-		try
-		{
-			prop = System.getProperty("microedition.locale");
-		}
-		catch (SecurityException e)
-		{
-		}
+		Locale rv = DefaultLocale._noLocale;
 		
-		// If there is none, default to US
-		if (prop == null)
-			return new LocaleEnUs();
+		if (rv == null)
+			DefaultLocale._noLocale = (rv = new LocaleEnUs());
 		
-		// Determine the locale to use
-		Locale use;
-		switch (prop.toLowerCase())
-		{
-				// Fallback to en-US
-			case "en-us":
-			default:
-				return new LocaleEnUs();
-		}
+		return rv;
 	}
 }
 

@@ -155,7 +155,8 @@ public class TODO
 		// Build exception if not from an initializer
 		if (__fromInit)
 			return null;
-		return new TODO(false, Arrays.asList(__args).toString());
+		return new TODO(false, (__args == null ? null :
+			Arrays.asList(__args).toString()));
 	}
 }
 
