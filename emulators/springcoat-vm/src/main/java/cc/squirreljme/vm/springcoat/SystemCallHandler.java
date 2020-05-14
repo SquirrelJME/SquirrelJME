@@ -332,7 +332,7 @@ public final class SystemCallHandler
 					// System call not supported
 				default:
 					Debugging.debugNote("Un-handled sysCall#%d(%d, " +
-						"%d, %d, %d, %d, %d, %d, %d)%n",
+						"%d, %d, %d, %d, %d, %d, %d)",
 						__sid, __a, __b, __c, __d, __e, __f, __g, __h);
 					
 					error = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
