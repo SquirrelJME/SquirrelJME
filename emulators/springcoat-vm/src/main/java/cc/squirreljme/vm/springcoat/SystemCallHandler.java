@@ -320,8 +320,8 @@ public final class SystemCallHandler
 				case SystemCallIndex.PD_WRITE_BYTE:
 					switch (__a)
 					{
-						case 1: System.out.print((char)__b); break;
-						case 2: System.err.print((char)__b); break;
+						case 1: System.out.write(__b); break;
+						case 2: System.err.write(__b); break;
 						
 						default:
 							error = SystemCallError.PIPE_DESCRIPTOR_INVALID;
