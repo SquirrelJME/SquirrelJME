@@ -1,0 +1,19 @@
+# Gradle Cache
+.gradle
+
+# Git Checkout
+.git
+
+# Gradle Build
+build
+*/build
+**/build
+
+# IntelliJ Settings (Not needed)
+.idea
+
+# Fossil Checkout (UNIX and Windows)
+.fslckout
+_FOSSIL_
+
+
