@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface CustomAttribute {
-	/** @retrun The name of the attribute. */
+	/** @return The name of the attribute. */
 	String name();
 	
 	/** @return The values of the attributes. */
