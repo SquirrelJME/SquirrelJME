@@ -153,14 +153,15 @@ public final class ErrorCodeManager
 				
 				String code = config.javaDocErrorCode;
 				if (code == null)
-					throw new IllegalStateException(String.format(
-						"Project %s has no error code.", sub.getName()));
+					System.err.printf(
+						"WARNING: Project %s has no error code.\n",
+						sub.getName());
 				
 				Project dup = codeMap.put(code.toUpperCase(), sub);
 				if (dup != null)
-					throw new IllegalStateException(String.format(
-						"Project %s shares error code %s with %s.",
-						sub.getName(), code, dup.getName()));
+					System.err.printf(
+						"WARNING: Project %s shares error code %s with %s.\n",
+						sub.getName(), code, dup.getName());
 				
 				unclaimed.remove(code.toUpperCase());
 			}

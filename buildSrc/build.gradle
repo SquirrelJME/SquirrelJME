@@ -3,8 +3,16 @@ plugins
 	id 'java'
 }
 
+repositories
+{
+	mavenCentral()
+	jcenter()
+}
+
 dependencies
 {
 	implementation gradleApi()
-	implementation localGroovy()
+
+	// Jasmin Sable (Java byte code assembler)
+	implementation "ca.mcgill.sable:jasmin:3.0.2"
 }
