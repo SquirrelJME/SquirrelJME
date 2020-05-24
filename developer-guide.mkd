@@ -2,6 +2,8 @@
 
 This is a guide for developers to follow for various parts of the repository.
 
+ * See the [Building](building.mkd).
+
 ## Releasing
 
 When a release is to be made, it is performed in another branch and becomes
@@ -26,6 +28,13 @@ when a release is to be made:
      the version will be incremented by two and will be odd (3, 5, 7, etc.).
    * Add the next version to the changelog, so that it may be updated when
      there is a new major change.
+
+### RetroArch
+
+For RetroArch, the SquirrelJME recipes should be updated to reflect the
+release tag.
+
+ * <https://github.com/libretro/libretro-super>
 
 ### Bug-fix and Otherwise Releases
 
