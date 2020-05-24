@@ -111,9 +111,7 @@ More detailed changes:
      * Override standard output and forward to standard error while a test is
        running, so things are not kludged.
    * `tac-runner`
-     * Allow specific tests to be ran via the main arguments.
-     * Generate JUnit output which can be used in test environments.
-     * Performed some refactoring on the deserialization/serialization code.
+     * Deleted.
    * `tool-classfile`
      * Corrected comparison behavior of `FieldReference`, it did not check the
        class name, so if a class referred to a field of the same name when
