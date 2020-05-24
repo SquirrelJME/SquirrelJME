@@ -2,7 +2,6 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,28 +10,21 @@
 package net.multiphasicapps.tac;
 
 /**
- * This is that status of a test.
+ * Constants used to define what happens when an exit value is given.
  *
- * @since 2018/10/07
+ * @since 2020/03/07
  */
-public enum TestStatus
+public interface ExitValueConstants
 {
-	/** Success. */
-	SUCCESS,
+	/** Test passes. */
+	byte SUCCESS =
+		0;
 	
-	/** Failed. */
-	FAILED,
+	/** Test fails. */
+	byte FAILURE =
+		1;
 	
-	/** Failed due to test exception. */
-	TEST_EXCEPTION,
-	
-	/** Test was not run yet. */
-	NOT_RUN,
-	
-	/** Untestable. */
-	UNTESTABLE,
-	
-	/* End. */
-	;
+	/** Test skipped. */
+	byte SKIPPED =
+		2;
 }
-

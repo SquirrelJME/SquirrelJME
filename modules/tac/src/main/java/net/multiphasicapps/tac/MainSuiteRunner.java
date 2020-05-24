@@ -2,7 +2,6 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,28 +10,20 @@
 package net.multiphasicapps.tac;
 
 /**
- * This is that status of a test.
+ * Runs all of the tests within the suite.
  *
- * @since 2018/10/07
+ * @since 2020/03/07
  */
-public enum TestStatus
+public class MainSuiteRunner
 {
-	/** Success. */
-	SUCCESS,
-	
-	/** Failed. */
-	FAILED,
-	
-	/** Failed due to test exception. */
-	TEST_EXCEPTION,
-	
-	/** Test was not run yet. */
-	NOT_RUN,
-	
-	/** Untestable. */
-	UNTESTABLE,
-	
-	/* End. */
-	;
+	/**
+	 * Main entry point for test running.
+	 *
+	 * @param __args Program arguments.
+	 * @since 2020/03/06
+	 */
+	public static void main(String... __args)
+	{
+		throw new todo.TODO();
+	}
 }
-
