@@ -63,8 +63,8 @@ public class AdditionalManifestPropertiesTask
 	public AdditionalManifestPropertiesTask(Jar __jar, ProcessResources __pr)
 		throws NullPointerException
 	{
-		if (__jar == null)
-			throw new NullPointerException("No JAR specified.");
+		if (__jar == null || __pr == null)
+			throw new NullPointerException("No tasks specified");
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -108,7 +108,7 @@ public class AdditionalManifestPropertiesTask
 	 *
 	 * @since 2002/02/28
 	 */
-	private void __doLast(Task __task)
+	void __doLast(Task __task)
 	{
 		// Get the project and the config details
 		Project project = this.getProject();
@@ -303,7 +303,7 @@ public class AdditionalManifestPropertiesTask
 	 * @return The output manifest file.
 	 * @since 2020/02/28
 	 */
-	private Path __taskOutput()
+	Path __taskOutput()
 	{
 		return this.getProject().getBuildDir().toPath().
 			resolve("SQUIRRELJME.MF");

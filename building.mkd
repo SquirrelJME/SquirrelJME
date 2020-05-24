@@ -124,13 +124,12 @@ SquirrelJME for your current system involves using the alternative makefile.
 # Development Virtual Machines
 
 For development purposes you may use the virtual machines provided by the
-SquirrelJME run-time. You can launch a built-in application by calling the
-build system in the following format: `build launch program (...)`, this will
-use the default virtual machine implementation.
+SquirrelJME run-time. Modules within SquirrelJME have tasks which allow them
+to be ran accordingly.
 
-The following virtual machines are available, these may be selected by
-using `build launch -v (vmname) program (...)`:
-
- * SpringCoat (`springcoat`)
- * SummerCoat (`summercoat`)
- 
+ * SpringCoat
+   * `:modules:<name>:runSpringCoat`
+   * `:modules:<name>:testSpringCoat`
+ * SummerCoat
+   * `:modules:<name>:runSummerCoat`
+   * `:modules:<name>:testSummerCoat`

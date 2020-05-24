@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.LinkedList;
 import javax.inject.Inject;
 import org.gradle.api.Action;
@@ -108,7 +109,7 @@ public class GenerateTestsListTask
 					
 					// Write here
 					out.println(fileName.substring(0,
-						fileName.length() - ".java".length())
+						fileName.lastIndexOf('.'))
 						.replace('\\', '.')
 						.replace('/', '.'));
 				}
@@ -170,12 +171,24 @@ public class GenerateTestsListTask
 	{
 		Project project = this.getProject();
 		
-		// Discover all the input files
-		Collection<__Input__> result = new LinkedList<>();
+		// Add source Java
+		Deque<DirectoryTree> queue = new LinkedList<>();
 		for (DirectoryTree dir : this.getProject().getConvention().
 			getPlugin(JavaPluginConvention.class).getSourceSets().
 			getByName("test").getJava().getSrcDirTrees())
+			queue.addLast(dir);
+		
+		// Add Jasmin sources
+		for (DirectoryTree dir : this.getProject().getConvention().
+			getPlugin(JavaPluginConvention.class).getSourceSets().
+			getByName("test").getResources().getSrcDirTrees())
+			queue.addLast(dir);
+		
+		// Discover all the input files (in sources)
+		Collection<__Input__> result = new LinkedList<>();
+		while (!queue.isEmpty())
 		{
+			DirectoryTree dir = queue.removeFirst();
 			Path baseDir = dir.getDir().toPath();
 			
 			// Process all files in each directory
@@ -245,12 +258,12 @@ public class GenerateTestsListTask
 		
 		// Only consider source files
 		String fileName = __path.getFileName().toString();
-		if (!fileName.endsWith(".java"))
+		if (!fileName.endsWith(".java") && !fileName.endsWith(".j"))
 			return false;
 		
 		// Get base class form
 		String className = fileName.substring(0,
-			fileName.length() - ".java".length());
+			fileName.lastIndexOf('.'));
 		
 		return (className.startsWith("Do") || className.startsWith("Test") ||
 			className.endsWith("Test"));
