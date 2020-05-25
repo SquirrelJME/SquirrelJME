@@ -12,6 +12,11 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.emulator.fb.NativeFramebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.config.ConfigRomKey;
+import cc.squirreljme.jvm.config.ConfigRomType;
+import cc.squirreljme.jvm.config.LineEndingType;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This contains the implementation of some system calls in the event that the
@@ -68,10 +73,15 @@ public final class EmulatorAssembly
 					switch (__a)
 					{
 							// Implemented here
+						case SystemCallIndex.CONFIG_GET_TYPE:
+						case SystemCallIndex.CONFIG_GET_VALUE:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.FRAMEBUFFER:
 						case SystemCallIndex.QUERY_INDEX:
+						case SystemCallIndex.PD_OF_STDERR:
+						case SystemCallIndex.PD_OF_STDOUT:
+						case SystemCallIndex.PD_WRITE_BYTE:
 						case SystemCallIndex.TIME_MILLI_WALL:
 						case SystemCallIndex.TIME_NANO_MONO:
 							return 1;
@@ -80,6 +90,38 @@ public final class EmulatorAssembly
 						default:
 							return 0;
 					}
+				}
+				
+				// Get configuration type
+			case SystemCallIndex.CONFIG_GET_TYPE:
+				switch (__a)
+				{
+					case ConfigRomKey.LINE_ENDING:
+						return ConfigRomType.INTEGER;
+					
+					default:
+						context.setError(__si,
+							SystemCallError.NO_SUCH_CONFIG_KEY);
+						return 0;
+				}
+			
+				// Get raw value
+			case SystemCallIndex.CONFIG_GET_VALUE:
+				switch (__a)
+				{
+					case ConfigRomKey.LINE_ENDING:
+						switch (System.getProperty("line.ending"))
+						{
+							case "\r":		return LineEndingType.CR;
+							case "\r\n":	return LineEndingType.CRLF;
+							case "\n":		return LineEndingType.LF;
+							default:		return LineEndingType.UNSPECIFIED;
+						}
+						
+					default:
+						context.setError(__si,
+							SystemCallError.NO_SUCH_CONFIG_KEY);
+						return 0;
 				}
 			
 				// Get error
@@ -104,6 +146,47 @@ public final class EmulatorAssembly
 			case SystemCallIndex.FRAMEBUFFER:
 				return NativeFramebuffer.getInstance().systemCall(context,
 					__a, __b, __c, __d, __e, __f, __g, __h);
+				
+				// Descriptor of standard error
+			case SystemCallIndex.PD_OF_STDERR:
+				context.setError(__si, 0);
+				return 2;
+				
+				// Descriptor of standard output
+			case SystemCallIndex.PD_OF_STDOUT:
+				context.setError(__si, 0);
+				return 1;
+				
+				// Write byte
+			case SystemCallIndex.PD_WRITE_BYTE:
+				{
+					OutputStream pipe = (__a == 2 ? System.err :
+						(__a == 1 ? System.out : null));
+					
+					if (pipe != null)
+					{
+						try
+						{
+							pipe.write(__b);
+							context.setError(__si, 0);
+							
+							return 1;
+						}
+						catch (IOException e)
+						{
+							context.setError(__si,
+								SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE);
+							
+							return 0;
+						}
+					}
+					else
+					{
+						context.setError(__si,
+							SystemCallError.PIPE_DESCRIPTOR_INVALID);
+						return 0;
+					}
+				}
 				
 				// Current wall clock
 			case SystemCallIndex.TIME_MILLI_WALL:
