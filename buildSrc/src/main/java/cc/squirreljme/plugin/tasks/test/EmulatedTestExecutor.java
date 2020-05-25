@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.channels.ClosedByInterruptException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
@@ -37,6 +38,10 @@ import org.gradle.process.ExecResult;
 public final class EmulatedTestExecutor
 	implements TestExecuter<EmulatedTestExecutionSpec>
 {
+	/** The number of permitted interrupts before failure. */
+	private static final int _MAX_INTERRUPTS =
+		8;
+	
 	/** The service resource file. */
 	public static final String SERVICE_RESOURCE =
 		"META-INF/services/net.multiphasicapps.tac.TestInterface";
@@ -130,6 +135,7 @@ public final class EmulatedTestExecutor
 			"Running test %s...", __method.getDisplayName())));
 		
 		// Execute the test Java program
+		System.err.printf("Executing Java Program...%n");
 		ExecResult result = project.javaexec(__javaExecSpec ->
 			{
 				Collection<String> args = new LinkedList<>();
@@ -179,6 +185,7 @@ public final class EmulatedTestExecutor
 			});
 		
 		// Return the exit value here
+		System.err.printf("Exited with value: %d%n", result.getExitValue());
 		return result.getExitValue();
 	}
 	
@@ -199,54 +206,24 @@ public final class EmulatedTestExecutor
 	{
 		// Extract all of the test classes to be executed
 		Collection<String> testClasses = new TreeSet<>();
-		try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(
-			__spec.jar.getArchiveFile().get().getAsFile().toPath(),
-			StandardOpenOption.READ)))
-		{
-			for (;;)
+		for (int iCount = 0;;)
+			try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(
+				__spec.jar.getArchiveFile().get().getAsFile().toPath(),
+				StandardOpenOption.READ)))
 			{
-				// Stop at the end of the ZIP
-				ZipEntry entry = zip.getNextEntry();
-				if (entry == null)
-					break;
+				EmulatedTestExecutor.__findTestClasses(zip, testClasses);
 				
-				// Only consider the services file
-				if (!EmulatedTestExecutor.SERVICE_RESOURCE
-					.equals(entry.getName()))
-					continue;
-				
-				// We cannot close a stream, so we need to copy the data over
-				// first
-				ByteArrayOutputStream baos = new ByteArrayOutputStream(
-					(int)Math.max(0, entry.getSize()));
-				for (byte[] buf = new byte[4096];;)
-				{
-					int rc = zip.read(buf);
-					if (rc < 0)
-						break;
-					
-					baos.write(buf, 0, rc);
-				}
-				
-				// Read in all the test classes
-				try (BufferedReader br = new BufferedReader(
-					new InputStreamReader(new ByteArrayInputStream(
-					baos.toByteArray()), "utf-8")))
-				{
-					for (;;)
-					{
-						// End of file?
-						String ln = br.readLine();
-						if (ln == null)
-							break;
-						
-						// Add test class to possible tests to run
-						if (!ln.isEmpty())
-							testClasses.add(ln.trim());
-					}
-				}
+				break;
 			}
-		}
+			catch (ClosedByInterruptException e)
+			{
+				// Prevent dead-locking if interrupting just keeps happening
+				if (++iCount >= EmulatedTestExecutor._MAX_INTERRUPTS)
+					throw new RuntimeException(
+						"Could not read JAR due to too many interrupts.", e);
+				
+				System.err.printf("Interrupt during JAR read, retrying...%n");
+			}
 		
 		// Used to flag if every test passed
 		boolean allPassed = true;
@@ -323,5 +300,62 @@ public final class EmulatedTestExecutor
 	{
 		// Stop running and prevent the next test from stopping
 		this._stopRunning = true;
+	}
+	
+	/**
+	 * Attempts to find the test classes.
+	 *
+	 * @param __zip The ZIP to read.
+	 * @param __testClasses The target classes.
+	 * @throws IOException On read failures.
+	 * @since 2020/05/25
+	 */
+	private static void __findTestClasses(ZipInputStream __zip,
+		Collection<String> __testClasses)
+		throws IOException
+	{
+		for (;;)
+		{
+			// Stop at the end of the ZIP
+			ZipEntry entry = __zip.getNextEntry();
+			if (entry == null)
+				break;
+			
+			// Only consider the services file
+			if (!EmulatedTestExecutor.SERVICE_RESOURCE
+				.equals(entry.getName()))
+				continue;
+			
+			// We cannot close a stream, so we need to copy the data over
+			// first
+			ByteArrayOutputStream baos = new ByteArrayOutputStream(
+				(int)Math.max(0, entry.getSize()));
+			for (byte[] buf = new byte[4096];;)
+			{
+				int rc = __zip.read(buf);
+				if (rc < 0)
+					break;
+				
+				baos.write(buf, 0, rc);
+			}
+			
+			// Read in all the test classes
+			try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(
+				baos.toByteArray()), "utf-8")))
+			{
+				for (;;)
+				{
+					// End of file?
+					String ln = br.readLine();
+					if (ln == null)
+						break;
+					
+					// Add test class to possible tests to run
+					if (!ln.isEmpty())
+						__testClasses.add(ln.trim());
+				}
+			}
+		}
 	}
 }

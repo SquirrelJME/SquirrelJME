@@ -13,6 +13,7 @@ import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutionSpec;
 import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutor;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
