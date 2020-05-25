@@ -10,7 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.jvm.ConfigRomType;
+import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;

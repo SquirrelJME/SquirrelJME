@@ -11,25 +11,22 @@
 package todo;
 
 import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class contains static methods for debug printing messages as needed.
  *
  * @since 2018/04/09
  */
+@Deprecated
 public final class DEBUG
 {
-	static
-	{
-		// Poke native VM stuff to make sure it exists before we try to use it
-		Poking.poke();
-	}
-	
 	/**
 	 * Not used.
 	 *
 	 * @since 2018/04/09
 	 */
+	@Deprecated
 	private DEBUG()
 	{
 	}
@@ -42,9 +39,10 @@ public final class DEBUG
 	 * @param __args The arguments to the call.
 	 * @since 2018/04/09
 	 */
+	@Deprecated
 	public static final void note(String __fmt, Object... __args)
 	{
-		TODO.__note("DBUG", __fmt, __args);
+		Debugging.debugNote(__fmt, __args);
 	}
 }
 
