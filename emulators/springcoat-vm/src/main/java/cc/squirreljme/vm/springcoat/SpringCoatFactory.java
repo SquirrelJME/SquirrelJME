@@ -43,15 +43,14 @@ public class SpringCoatFactory
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
 		VMSuiteManager __sm, VMClassLibrary[] __cp, String __maincl,
-		boolean __ismid, int __gd, Map<String, String> __sprops,
-		String[] __args)
+		Map<String, String> __sprops, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Create a new instance of the VM
 		SpringTaskManager tm = new SpringTaskManager(__sm, __ps, __sprops);
 		return new SpringMachine(__sm, new SpringClassLoader(__cp),
-			tm, __maincl, __ismid, -1,
-			__gd, __ps, __sprops, __args);
+			tm, __maincl, false, -1,
+			1, __ps, __sprops, __args);
 	}
 }
 
