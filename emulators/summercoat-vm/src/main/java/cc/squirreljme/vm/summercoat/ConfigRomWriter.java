@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.config.ConfigWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,8 +17,10 @@ import java.io.IOException;
 /**
  * These are utility methods to write to config space.
  *
+ * @see ConfigWriter
  * @since 2019/06/14
  */
+@Deprecated
 public final class ConfigRomWriter
 {
 	/**
@@ -25,6 +28,7 @@ public final class ConfigRomWriter
 	 *
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	private ConfigRomWriter()
 	{
 	}
@@ -39,6 +43,7 @@ public final class ConfigRomWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	public static final void writeData(DataOutputStream __dos, int __opt,
 		byte[] __b)
 		throws IOException, NullPointerException
@@ -75,6 +80,7 @@ public final class ConfigRomWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	public static final void writeInteger(DataOutputStream __dos, int __opt,
 		int __v)
 		throws IOException, NullPointerException
@@ -104,6 +110,7 @@ public final class ConfigRomWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	public static final void writeKeyValue(DataOutputStream __dos, int __opt,
 		String __k, String __v)
 		throws IOException, NullPointerException
@@ -133,6 +140,7 @@ public final class ConfigRomWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	public static final void writeString(DataOutputStream __dos, int __opt,
 		String __v)
 		throws IOException, NullPointerException
@@ -161,6 +169,7 @@ public final class ConfigRomWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	public static final void writeStrings(DataOutputStream __dos, int __opt,
 		String... __v)
 		throws IOException, NullPointerException

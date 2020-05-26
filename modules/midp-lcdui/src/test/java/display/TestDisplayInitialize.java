@@ -29,7 +29,7 @@ public class TestDisplayInitialize
 	@Override
 	public void test()
 	{
-		Display display = Display.getDisplay(this);
+		Display display = Display.getDisplays(0)[0];
 		
 		display.setCurrent(new __BlankCanvas__());
 	}
