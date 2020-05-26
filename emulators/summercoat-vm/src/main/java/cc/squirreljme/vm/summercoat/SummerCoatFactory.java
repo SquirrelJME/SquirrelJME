@@ -77,8 +77,7 @@ public class SummerCoatFactory
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
 		VMSuiteManager __sm, VMClassLibrary[] __cp, String __maincl,
-		boolean __ismid, int __gd, Map<String, String> __sprops,
-		String[] __args)
+		Map<String, String> __sprops, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Virtual memory which provides access to many parts of memory
@@ -211,8 +210,8 @@ public class SummerCoatFactory
 				"https://squirreljme.cc/");
 			
 			// Guest depth
-			ConfigRomWriter.writeInteger(dos, ConfigRomKey.GUEST_DEPTH,
-				__gd);
+			/*ConfigRomWriter.writeInteger(dos, ConfigRomKey.GUEST_DEPTH,
+				__gd);*/
 			
 			// Main class
 			if (__maincl != null)
@@ -220,8 +219,8 @@ public class SummerCoatFactory
 					__maincl.replace('.', '/'));
 			
 			// Is midlet?
-			ConfigRomWriter.writeInteger(dos, ConfigRomKey.IS_MIDLET,
-				(__ismid ? 1 : -1));
+			/*ConfigRomWriter.writeInteger(dos, ConfigRomKey.IS_MIDLET,
+				(__ismid ? 1 : -1));*/
 			
 			// System properties
 			if (__sprops != null)

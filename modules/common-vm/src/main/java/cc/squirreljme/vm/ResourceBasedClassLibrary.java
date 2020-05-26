@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator.vm;
+package cc.squirreljme.vm;
 
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.BufferedReader;
@@ -20,6 +20,14 @@ import java.util.List;
 
 /**
  * This is a class library resource which is based on class resources.
+ *
+ * Resource lookup is done on the {@link #actingclass}, all resource
+ * accesses are done by having a prefix that is before all accesses of
+ * entires. The prefix is so that multiple virtual JARs may exist within a
+ * single JAR.
+ *
+ * The list of resources in the JAR exists in:
+ * {@code ${prefix}/META-INF/squirreljme/resources.list}.
  *
  * @since 2018/11/14
  */
@@ -92,7 +100,7 @@ public final class ResourceBasedClassLibrary
 		// {@squirreljme.error AK09 Could not load resource list.}
 		catch (IOException e)
 		{
-			throw new VMException("AK09");
+			throw new RuntimeException("AK09");
 		}
 		
 		// Cache it and return
