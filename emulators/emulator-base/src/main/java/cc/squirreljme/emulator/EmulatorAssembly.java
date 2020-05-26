@@ -110,7 +110,7 @@ public final class EmulatorAssembly
 				switch (__a)
 				{
 					case ConfigRomKey.LINE_ENDING:
-						switch (System.getProperty("line.ending"))
+						switch (System.getProperty("line.separator"))
 						{
 							case "\r":		return LineEndingType.CR;
 							case "\r\n":	return LineEndingType.CRLF;
