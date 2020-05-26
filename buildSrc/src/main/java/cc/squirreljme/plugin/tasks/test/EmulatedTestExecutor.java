@@ -223,6 +223,9 @@ public final class EmulatedTestExecutor
 						"Could not read JAR due to too many interrupts.", e);
 				
 				System.err.printf("Interrupt during JAR read, retrying...%n");
+				
+				// Clear interrupt flag
+				Thread.interrupted();
 			}
 		
 		// Used to flag if every test passed
