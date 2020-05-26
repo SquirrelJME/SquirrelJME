@@ -121,6 +121,12 @@ SquirrelJME for your current system involves using the alternative makefile.
    * `make -f makefilelibretro CC=i686-w64-mingw32-gcc platform=mingw_x86`
    * `make -f makefilelibretro CC=x86_64-w64-mingw32-gcc platform=mingw_x86_64`
 
+## Docker
+
+In the root directory, execute the command:
+
+ * `docker build .`
+
 # Development Virtual Machines
 
 For development purposes you may use the virtual machines provided by the
