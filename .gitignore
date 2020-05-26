@@ -17,3 +17,8 @@ build/
 .idea/rSettings.xml
 .idea/render.experimental.xml
 .idea/serialmonitor_settings.xml
+
+# Patches
+*.patch
+*.rej
+
