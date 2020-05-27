@@ -1,0 +1,1 @@
+throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
