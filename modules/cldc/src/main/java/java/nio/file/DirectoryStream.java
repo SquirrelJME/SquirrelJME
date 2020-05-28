@@ -17,9 +17,6 @@ import java.util.Iterator;
 public interface DirectoryStream<T>
 	extends Closeable, Iterable<T>
 {
-	@Override
-	Iterator<T> iterator();
-	
 	interface Filter<T>
 	{
 		boolean accept(T __a)

@@ -299,7 +299,7 @@ public class ExtendedDataInputStream
 	 * @throws IOException On read errors.
 	 * @since 2016/09/18
 	 */
-	@Override
+	@SuppressWarnings("override")
 	public String readLine()
 		throws IOException
 	{

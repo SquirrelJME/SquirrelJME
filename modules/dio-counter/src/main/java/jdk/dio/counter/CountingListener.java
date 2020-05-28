@@ -18,8 +18,6 @@ public interface CountingListener
 {
 	void countValueAvailable(CountingEvent __a);
 	
-	@Override
-	void failed(Throwable __a, PulseCounter __b);
 }
 
 

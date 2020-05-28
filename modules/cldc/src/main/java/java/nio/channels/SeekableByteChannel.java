@@ -22,19 +22,12 @@ public interface SeekableByteChannel
 	SeekableByteChannel position(long __a)
 		throws IOException;
 	
-	@Override
-	int read(ByteBuffer __a)
-		throws IOException;
-	
 	long size()
 		throws IOException;
 	
 	SeekableByteChannel truncate(long __a)
 		throws IOException;
 	
-	@Override
-	int write(ByteBuffer __a)
-		throws IOException;
 }
 
 
