@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Gradle Build
+          name: Gradle Build and Test
           command: gradlew build test --continue --parallel
           shell: cmd.exe
       - run:
@@ -44,7 +44,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Gradle Build
+          name: Gradle Build and Test
           command: ./gradlew build test --continue --parallel
       - run:
           name: Save test results
@@ -68,7 +68,7 @@ jobs:
           name: Install Gradle and OpenJDK 11
           command: brew install gradle openjdk@11
       - run:
-          name: Gradle Build
+          name: Gradle Build and Test
           command: ./gradlew build test --continue --parallel
       - run:
           name: Save test results
@@ -85,8 +85,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Gradle Build
-          command: ./gradlew testSpringCoat --continue --parallel -DtestSpringCoat.ignoreFailures=true
+          name: SpringCoat Tests
+          command: ./gradlew testSpringCoat --continue --parallel
           no_output_timeout: 2m
       - run:
           name: Save test results
@@ -106,6 +106,10 @@ jobs:
           path: ~/test-results/junit
       - store_artifacts:
           path: ~/test-results/nps
+      - run:
+          name: Halting due to test failures
+          command: circleci step halt
+          when: on_fail
 
 workflows:
   version: 2
