@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.gradle.api.Project;
+import org.gradle.api.UnknownDomainObjectException;
 
 /**
  * Allows SquirrelJME specific parts of modules to be configured.
@@ -109,6 +110,28 @@ public class SquirrelJMEPluginConfiguration
 	}
 	
 	/**
+	 * Gets the configuration from the given project.
+	 *
+	 * @param __proj The project to get the config from.
+	 * @return The resulting configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/03/07
+	 */
+	public static SquirrelJMEPluginConfiguration configurationOrNull(
+		Project __proj)
+		throws NullPointerException
+	{
+		try
+		{
+			return SquirrelJMEPluginConfiguration.configuration(__proj);
+		}
+		catch (UnknownDomainObjectException e)
+		{
+			return null;
+		}
+	}
+	
+	/**
 	 * Is this a SquirrelJME application?
 	 *
 	 * @param __project The project to check.
@@ -119,7 +142,7 @@ public class SquirrelJMEPluginConfiguration
 	public static boolean isApplication(Project __project)
 		throws NullPointerException
 	{
-		return SquirrelJMEPluginConfiguration.configuration(__project).swmType ==
-			JavaMEMidletType.APPLICATION;
+		return SquirrelJMEPluginConfiguration
+			.configuration(__project).swmType == JavaMEMidletType.APPLICATION;
 	}
 }

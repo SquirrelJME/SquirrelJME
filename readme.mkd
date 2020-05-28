@@ -46,6 +46,12 @@ https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
  * [![Twitter](
  https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow)](
    https://twitter.com/MultiPhasicApps)
+ * [![Docker](
+   https://img.shields.io/docker/automated/xerthesquirrel/squirreljme)](
+   https://hub.docker.com/r/xerthesquirrel/squirreljme)
+ * [![Docker Build](
+   https://img.shields.io/docker/build/xerthesquirrel/squirreljme)](
+   https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
 
 Information:
 
@@ -63,7 +69,7 @@ Information:
    * [Release Roadmap](route.mkd)
  * _Developer Resources_
    * [CircleCI Status](
-     https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)
+     https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
    * [Developer Guide](developer-guide.mkd)
    * [Developer Notes](assets/developer-notes/index.mkd)
    * [Design Document](design.mkd)
@@ -108,6 +114,7 @@ Information:
  * Front facing social media:
    * [YouTube](
      https://www.youtube.com/playlist?list=PLpBpyrtWn1U3motx3AUOm70qG5zraCepD)
+ * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * Personal Accounts (If you wish to contact me this way)
    * [GitHub](https://github.com/XerTheSquirrel/)
    * [Keybase](https://keybase.io/xerthesquirrel)
@@ -118,8 +125,6 @@ Information:
 
 ## Goals
 
- * _To be self-hosting_ - it can build itself while running on itself, provided
-   there is a filesystem and enough memory.
  * _To be small_ - Smaller programs are easier to maintain and are usually
    simpler.
  * _To be fast_ - With the potential of AOT/JIT, systems that do not normally
