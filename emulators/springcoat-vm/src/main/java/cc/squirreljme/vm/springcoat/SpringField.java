@@ -35,7 +35,7 @@ public final class SpringField
 	/**
 	 * Initializes the field.
 	 *
-	 * @param __cn The class this field is in.
+	 * @param __cl The class this field is in.
 	 * @param __f The field definition.
 	 * @param __dx The field index, this is ignored for statics and cannot be
 	 * negative for instances.

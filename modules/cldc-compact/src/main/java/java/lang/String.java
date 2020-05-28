@@ -37,6 +37,7 @@ import java.util.LinkedList;
  *
  * @since 2018/09/16
  */
+@SuppressWarnings("StringOperationCanBeSimplified")
 public final class String
 	implements Comparable<String>, CharSequence
 {

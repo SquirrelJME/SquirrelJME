@@ -167,6 +167,7 @@ public final strictfp class Math
 	 * @return The higher value.
 	 * @since 2018/09/29
 	 */
+	@SuppressWarnings("ManualMinMaxCalculation")
 	public static int max(int __a, int __b)
 	{
 		if (__a > __b)
@@ -197,6 +198,7 @@ public final strictfp class Math
 	 * @return The lower value.
 	 * @since 2018/09/29
 	 */
+	@SuppressWarnings("ManualMinMaxCalculation")
 	public static int min(int __a, int __b)
 	{
 		if (__a < __b)
@@ -212,6 +214,7 @@ public final strictfp class Math
 	 * @return The lower value.
 	 * @since 2018/12/08
 	 */
+	@SuppressWarnings("ManualMinMaxCalculation")
 	public static long min(long __a, long __b)
 	{
 		if (__a < __b)
@@ -227,6 +230,7 @@ public final strictfp class Math
 	 * @return The lower value.
 	 * @since 2018/12/08
 	 */
+	@SuppressWarnings("ManualMinMaxCalculation")
 	public static float min(float __a, float __b)
 	{
 		if (__a < __b)
@@ -242,6 +246,7 @@ public final strictfp class Math
 	 * @return The lower value.
 	 * @since 2018/12/08
 	 */
+	@SuppressWarnings("ManualMinMaxCalculation")
 	public static double min(double __a, double __b)
 	{
 		if (__a < __b)

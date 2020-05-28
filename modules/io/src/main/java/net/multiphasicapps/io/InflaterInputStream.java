@@ -326,7 +326,7 @@ public class InflaterInputStream
 		// output because they are the result of previous decompression.
 		ByteDeque overflow = this.overflow;
 		int ovn = overflow.available(),
-			ovr = (ovn < __l ? ovn : __l);
+			ovr = (Math.min(ovn, __l));
 		int c = overflow.removeFirst(__b, __o, __l);
 		
 		// More bytes can be read from the input compressed data because the
@@ -657,11 +657,7 @@ public class InflaterInputStream
 	
 		// Get the maximum valid length, so for example if the length
 		// is 5 and the distance is two, then only read two bytes.
-		int maxlen;
-		if (__dist < __len)
-			maxlen = __dist;
-		else
-			maxlen = __len;
+		int maxlen = Math.min(__dist, __len);
 		
 		// Create a byte array from the sliding window data
 		byte[] winb = new byte[maxlen];

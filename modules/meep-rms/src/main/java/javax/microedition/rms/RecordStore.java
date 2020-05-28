@@ -1205,7 +1205,7 @@ public class RecordStore
 	 * If the record store has already been opened then it will return a
 	 * previously opened record store.
 	 *
-	 * @param __n The name of the record store, must consist of 1 to 32
+	 * @param __name The name of the record store, must consist of 1 to 32
 	 * Unicode characters.
 	 * @param __create If {@code true} then if the record store does not
 	 * exist it will be created.
