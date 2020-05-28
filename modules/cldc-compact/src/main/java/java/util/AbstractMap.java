@@ -17,6 +17,7 @@ public abstract class AbstractMap<K, V>
 	{
 	}
 	
+	@Override
 	public abstract Set<Map.Entry<K, V>> entrySet();
 	
 	/**
@@ -40,11 +41,13 @@ public abstract class AbstractMap<K, V>
 		return (AbstractMap<?, ?>)super.clone();
 	}
 	
+	@Override
 	public boolean containsKey(Object __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean containsValue(Object __a)
 	{
 		throw new todo.TODO();
@@ -56,6 +59,7 @@ public abstract class AbstractMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public V get(Object __a)
 	{
 		throw new todo.TODO();
@@ -94,6 +98,7 @@ public abstract class AbstractMap<K, V>
 		return new __AbstractMapKeySet__<K, V>(this);
 	}
 	
+	@Override
 	public V put(K __a, V __b)
 	{
 		throw new todo.TODO();

@@ -48,6 +48,7 @@ public abstract class Reader
 		this.lock = __l;
 	}
 	
+	@Override
 	public abstract void close()
 		throws IOException;
 	

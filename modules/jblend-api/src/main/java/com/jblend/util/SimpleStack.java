@@ -57,12 +57,14 @@ public final class SimpleStack
 	}
 
     final class SimpleStackEnumerator implements Enumeration {
-        public boolean hasMoreElements()
+        @Override
+		public boolean hasMoreElements()
 		{
 			throw new todo.TODO();
 		}
 
-        public Object nextElement()
+        @Override
+		public Object nextElement()
 		{
 			throw new todo.TODO();
 		}

@@ -17,8 +17,10 @@ import jdk.dio.RoundCompletionEvent;
 public interface AcquisitionRoundListener
 	extends InputRoundListener<ADCChannel, IntBuffer>
 {
+	@Override
 	void failed(Throwable __a, ADCChannel __b);
 	
+	@Override
 	void inputRoundCompleted(RoundCompletionEvent<ADCChannel, IntBuffer> __a);
 }
 

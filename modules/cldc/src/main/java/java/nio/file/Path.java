@@ -16,6 +16,7 @@ import java.util.Iterator;
 public interface Path
 	extends Comparable<Path>, Iterable<Path>
 {
+	@Override
 	int compareTo(Path __a);
 	
 	boolean endsWith(Path __a);
@@ -42,6 +43,7 @@ public interface Path
 	
 	boolean isAbsolute();
 	
+	@Override
 	Iterator<Path> iterator();
 	
 	Path normalize();

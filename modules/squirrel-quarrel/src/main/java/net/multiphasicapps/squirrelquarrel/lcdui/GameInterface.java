@@ -76,6 +76,7 @@ public final class GameInterface
 	 * {@inheritDoc}
 	 * @since 2018/03/19
 	 */
+	@Override
 	public final void frameRepaintRequest(int __framenum)
 	{
 		// Just have it get repainted

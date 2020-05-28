@@ -475,6 +475,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __v The output value.
 	 * @since 2019/04/12
 	 */
+	@Override
 	public final void doFieldGet(FieldReference __fr,
 		JavaStackResult.Input __i, JavaStackResult.Output __v)
 	{
@@ -1511,6 +1512,7 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @since 2019/04/07
 	 */
+	@Override
 	public final void instructionSetup()
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;

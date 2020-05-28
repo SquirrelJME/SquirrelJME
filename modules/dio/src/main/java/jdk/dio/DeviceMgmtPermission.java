@@ -31,26 +31,31 @@ public class DeviceMgmtPermission
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean equals(Object __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public String getActions()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int hashCode()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean implies(Permission __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public PermissionCollection newPermissionCollection()
 	{
 		throw new todo.TODO();

@@ -350,6 +350,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/02
 	 */
+	@Override
 	public int compareTo(String __o)
 		throws NullPointerException
 	{
@@ -978,6 +979,7 @@ public final class String
 	 * @return The length of this string.
 	 * @since 2018/09/19
 	 */
+	@Override
 	public int length()
 	{
 		return this._chars.length;
