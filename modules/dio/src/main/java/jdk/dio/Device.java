@@ -26,18 +26,11 @@ public interface Device<P extends Device<? super P>>
 	int MIXED_ENDIAN =
 		2;
 	
-	@Override
-	void close()
-		throws IOException;
-	
 	ByteOrder getByteOrder()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
 	<U extends P> DeviceDescriptor<U> getDescriptor();
-	
-	@Override
-	boolean isOpen();
 	
 	void tryLock(int __a)
 		throws UnavailableDeviceException, ClosedDeviceException, 

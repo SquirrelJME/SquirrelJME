@@ -15,8 +15,6 @@ import java.io.IOException;
 public interface HttpsConnection
 	extends HttpConnection
 {
-	@Override
-	int getPort();
 	
 	SecurityInfo getSecurityInfo()
 		throws IOException;

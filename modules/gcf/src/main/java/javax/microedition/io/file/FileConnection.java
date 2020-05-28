@@ -64,22 +64,6 @@ public interface FileConnection
 	void mkdir()
 		throws IOException;
 	
-	@Override
-	DataInputStream openDataInputStream()
-		throws IOException;
-	
-	@Override
-	DataOutputStream openDataOutputStream()
-		throws IOException;
-	
-	@Override
-	InputStream openInputStream()
-		throws IOException;
-	
-	@Override
-	OutputStream openOutputStream()
-		throws IOException;
-	
 	OutputStream openOutputStream(long __a)
 		throws IOException;
 	

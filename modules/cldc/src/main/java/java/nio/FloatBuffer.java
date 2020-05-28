@@ -23,7 +23,7 @@ public abstract class FloatBuffer
 	
 	public abstract float get(int __a);
 	
-	@Override
+	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
 	public abstract boolean isDirect();
 	
 	public abstract ByteOrder order();
@@ -34,13 +34,13 @@ public abstract class FloatBuffer
 	
 	public abstract FloatBuffer slice();
 	
-	@Override
+	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
 	public final float[] array()
 	{
 		throw new todo.TODO();
 	}
 	
-	@Override
+	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
@@ -68,7 +68,7 @@ public abstract class FloatBuffer
 		throw new todo.TODO();
 	}
 	
-	@Override
+	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();

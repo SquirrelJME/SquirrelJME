@@ -29,30 +29,14 @@ public abstract class FileChannel
 		throws IOException;
 	
 	@Override
-	public abstract long position()
-		throws IOException;
-	
-	@Override
 	public abstract FileChannel position(long __a)
-		throws IOException;
-	
-	@Override
-	public abstract int read(ByteBuffer __a)
 		throws IOException;
 	
 	public abstract int read(ByteBuffer __a, long __b)
 		throws IOException;
 	
 	@Override
-	public abstract long size()
-		throws IOException;
-	
-	@Override
 	public abstract FileChannel truncate(long __a)
-		throws IOException;
-	
-	@Override
-	public abstract int write(ByteBuffer __a)
 		throws IOException;
 	
 	public abstract int write(ByteBuffer __a, long __b)

@@ -16,8 +16,6 @@ import jdk.dio.DeviceEventListener;
 public interface GenerationListener
 	extends DeviceEventListener, AsyncErrorHandler<PWMChannel>
 {
-	@Override
-	void failed(Throwable __a, PWMChannel __b);
 	
 	void pulseGenerationCompleted(GenerationEvent __a);
 }
