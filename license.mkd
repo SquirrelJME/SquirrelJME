@@ -24,6 +24,8 @@ SquirrelJME has three types of files which fall under different licenses:
  * Fonts:
    * **SIL Open Font License Version 1.1**
 
+[Commercial licenses are available under the commercial terms](commercial.mkd).
+
 Contributors must agree to the [contributor license](contibuting.mkd) before
 their code may be accepted.
 
@@ -50,7 +52,7 @@ Note that there is no linking exception to the **GNU GPLv3**, this is because:
      design flaws can be fixed and not plague the project for decades.
    * If supporting CPU features are detected they may be used.
  * SquirrelJME does not use JNI, so there will never be a means for native code
-   to be prelinked into a binary and distributed.
+   to be pre-linked into a binary and distributed.
  * However, SquirrelJME may include JARs built-in to the binary. To promote
    open source software, these JARs would have to be GPLv3 compatible. If it is
    desired to include a JAR built-in where it is not GPLv3 compatible then a

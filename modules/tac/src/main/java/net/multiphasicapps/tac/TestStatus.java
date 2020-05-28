@@ -32,7 +32,7 @@ public enum TestStatus
 	/** Untestable. */
 	UNTESTABLE,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

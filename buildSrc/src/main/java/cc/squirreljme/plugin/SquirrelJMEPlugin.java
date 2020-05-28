@@ -12,9 +12,13 @@ package cc.squirreljme.plugin;
 
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
+import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.RunEmulatedTask;
 import cc.squirreljme.plugin.tasks.RunNativeTask;
+import cc.squirreljme.plugin.tasks.TestInVMTask;
+import cc.squirreljme.plugin.tasks.TestsJarManifestTask;
+import cc.squirreljme.plugin.tasks.TestsJarTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -41,41 +45,60 @@ public class SquirrelJMEPlugin
 			"squirreljme", SquirrelJMEPluginConfiguration.class,
 			this, __project);
 		
+		// Build task
+		__project.getTasks().getByName("build");
+		
+		// Class generation
+		Task classes = __project.getTasks()
+			.getByName("classes");
+		Task testClasses = __project.getTasks()
+			.getByName("testClasses");
+		
 		// Resource processing tasks
-		Task processResources = __project.getTasks().
-			getByName("processResources");
-		Task processTestResources = __project.getTasks().
-			getByName("processTestResources");
+		Task processResources = __project.getTasks()
+			.getByName("processResources");
+		Task processTestResources = __project.getTasks()
+			.getByName("processTestResources");
 		
 		// JAR Tasks
 		Task jarTask = __project.getTasks().getByName("jar");
 		
 		// Run native application
-		Task rna = __project.getTasks().create("runNative",
+		__project.getTasks().create("runNative",
 			RunNativeTask.class, jarTask);
 		
-		// Run emulated program
-		Task esp = __project.getTasks().create("runSpringCoat",
-			RunEmulatedTask.class,
-			jarTask, "springcoat", false);
-		Task esu = __project.getTasks().create("runSummerCoat",
-			RunEmulatedTask.class,
-			jarTask, "summercoat", false);
+		// Jasmin Assembly
+		__project.getTasks().create("assembleJasmin",
+			JasminAssembleTask.class, SourceSet.MAIN_SOURCE_SET_NAME,
+			processResources);
+		__project.getTasks().create("assembleTestJasmin",
+			JasminAssembleTask.class, SourceSet.TEST_SOURCE_SET_NAME,
+			processTestResources);
 		
 		// Mime Decode Resources
-		Task mmr = __project.getTasks().create("mimeDecodeResources",
+		__project.getTasks().create("mimeDecodeResources",
 			MimeDecodeResourcesTask.class, SourceSet.MAIN_SOURCE_SET_NAME,
 			processResources);
-		Task tmr = __project.getTasks().create("mimeDecodeTestResources",
+		__project.getTasks().create("mimeDecodeTestResources",
 			MimeDecodeResourcesTask.class, SourceSet.TEST_SOURCE_SET_NAME,
 			processTestResources);
 		
 		// Generate the list of tests that are available
-		Task gtl = __project.getTasks().create("generateTestsList",
+		__project.getTasks().create("generateTestsList",
 			GenerateTestsListTask.class, processTestResources);
+			
+		// Build test JAR
+		Task testJar = __project.getTasks()
+			.create("testJar", TestsJarTask.class,
+			testClasses, processTestResources);
+			
+		// Add SquirrelJME properties to the manifest
+		__project.getTasks().create("additionalTestJarProperties",
+			TestsJarManifestTask.class,
+			testJar, processTestResources);
 		
 		// Add SquirrelJME properties to the manifest
-		Task sjp = __project.getTasks().create("additionalJarProperties",
+		__project.getTasks().create("additionalJarProperties",
 			AdditionalManifestPropertiesTask.class, jarTask, processResources);
 		
 		// List error codes used by projects
@@ -111,5 +134,21 @@ public class SquirrelJMEPlugin
 		nextError.setDescription("Returns the next free error code.");
 		nextError.doLast((Task __task) ->
 			System.out.println(new ErrorListManager(__project).next()));
+			
+		// Run emulated program
+		__project.getTasks().create("runSpringCoat",
+			RunEmulatedTask.class,
+			jarTask, "springcoat");
+		__project.getTasks().create("runSummerCoat",
+			RunEmulatedTask.class,
+			jarTask, "summercoat");
+		
+		// Run emulated tests
+		__project.getTasks().create("testSpringCoat",
+			TestInVMTask.class,
+			testJar, "springcoat");
+		__project.getTasks().create("testSummerCoat",
+			TestInVMTask.class,
+			testJar, "summercoat");
 	}
 }

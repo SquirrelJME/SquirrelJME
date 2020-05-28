@@ -25,8 +25,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Gradle Build
-          command: gradlew build --continue --parallel
+          name: Gradle Build and Test
+          command: gradlew build test --continue --parallel
           shell: cmd.exe
       - run:
           name: Save test results
@@ -44,8 +44,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Gradle Build
-          command: ./gradlew build --continue --parallel
+          name: Gradle Build and Test
+          command: ./gradlew build test --continue --parallel
       - run:
           name: Save test results
           command: |
@@ -68,8 +68,8 @@ jobs:
           name: Install Gradle and OpenJDK 11
           command: brew install gradle openjdk@11
       - run:
-          name: Gradle Build
-          command: ./gradlew build --continue --parallel
+          name: Gradle Build and Test
+          command: ./gradlew build test --continue --parallel
       - run:
           name: Save test results
           command: |
@@ -80,6 +80,36 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+  test_springcoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - run:
+          name: SpringCoat Tests
+          command: |
+            if ! ./gradlew testSpringCoat --continue --parallel
+            then
+              echo "SpringCoat testing failed, ignoring..." 1>&2
+            fi
+          no_output_timeout: 2m
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex '.*/springcoat/junit-reports/.*xml' -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - run:
+          name: Save snapshots
+          command: |
+            mkdir -p ~/test-results/nps/
+            find . -type f -regex '.*/springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+      - store_artifacts:
+          path: ~/test-results/nps
 
 workflows:
   version: 2
@@ -88,3 +118,8 @@ workflows:
       - build_windows
       - build_linux
       - build_macosx
+      - test_springcoat:
+          requires:
+            - build_windows
+            - build_linux
+            - build_macosx

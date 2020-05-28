@@ -4,5 +4,4 @@ description = "This module contains all of the emulators available for " +
 
 subprojects
 {
-	apply plugin: "checkstyle"
 }

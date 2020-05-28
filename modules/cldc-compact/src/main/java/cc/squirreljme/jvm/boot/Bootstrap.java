@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.ConfigRomType;
+import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.boot.lib.BootRom;
 import cc.squirreljme.jvm.boot.task.TaskCreateResult;
@@ -69,10 +69,10 @@ public final class Bootstrap
 			// Basic SquirrelJME Banner
 			todo.DEBUG.note("SquirrelJME Run-Time 0.3.0");
 			todo.DEBUG.note("VM: %s %s",
-				config.loadString(ConfigRomType.JAVA_VM_NAME),
-				config.loadString(ConfigRomType.JAVA_VM_VERSION));
+				config.loadString(ConfigRomKey.JAVA_VM_NAME),
+				config.loadString(ConfigRomKey.JAVA_VM_VERSION));
 			todo.DEBUG.note("(C) %s",
-				config.loadString(ConfigRomType.JAVA_VM_VENDOR));
+				config.loadString(ConfigRomKey.JAVA_VM_VENDOR));
 			todo.DEBUG.note("RAM/ROM (bytes): %d/%d", __ramsize, __romsize);
 			
 			// Spacer
@@ -90,8 +90,8 @@ public final class Bootstrap
 				BootRom.initialClasspath(__rombase, config),
 				BootRom.initialMain(__rombase, config),
 				BootRom.initialIsMidlet(__rombase, config),
-				config.loadStrings(ConfigRomType.MAIN_ARGUMENTS),
-				config.loadKeyValueMap(ConfigRomType.DEFINE_PROPERTY));
+				config.loadStrings(ConfigRomKey.MAIN_ARGUMENTS),
+				config.loadKeyValueMap(ConfigRomKey.DEFINE_PROPERTY));
 			todo.DEBUG.note("Okay.");
 			
 			// Set the kernel as booted okay!

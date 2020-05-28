@@ -228,6 +228,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/08
 	 */
+	@SuppressWarnings({"FeatureEnvy", "resource"})
 	public final void writeAsManifest(OutputStream __os)
 		throws IOException, NullPointerException
 	{
@@ -258,7 +259,8 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/08
 	 */
-	public static final TestResult loadForClass(Class<?> __cl)
+	@SuppressWarnings("FeatureEnvy")
+	public static TestResult loadForClass(Class<?> __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -341,7 +343,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09 
 	 */
-	public static final List<String> throwableList(String __ts)
+	public static List<String> throwableList(String __ts)
 		throws NullPointerException
 	{
 		if (__ts == null)
@@ -498,7 +500,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
-	private static final void __printSingleCompare(PrintStream __ps,
+	private static void __printSingleCompare(PrintStream __ps,
 		String __key, String __a, String __b)
 		throws NullPointerException
 	{

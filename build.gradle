@@ -1,3 +1,5 @@
+apply plugin: 'idea'
+
 group = "cc.squirreljme"
 description = "SquirrelJME is a Java ME 8 Virtual Machine for embedded " +
 	"and Internet of Things devices. It has the ultimate goal of being " +
@@ -6,6 +8,27 @@ version = "0.3.0"
 
 // Virtual machine version ID
 ext.squirreljmeVMVersion = "03"
+
+// IntelliJ Configuration (because the root project is a bit different)
+idea
+{
+	module
+	{
+		// Use the proper name for this module
+		name = "SquirrelJME"
+
+		// Exclude these directories so IntelliJ does not pick these up
+		// in inspections and builds
+		excludeDirs += file("utils-dev")
+		excludeDirs += file("assets")
+		excludeDirs += file("config")
+		excludeDirs += file(".idea")
+		excludeDirs += file(".circleci")
+		excludeDirs += file(".fossil-settings")
+		excludeDirs += file(".github")
+		excludeDirs += file("gradle")
+	}
+}
 
 allprojects
 {

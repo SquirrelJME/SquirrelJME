@@ -11,7 +11,6 @@ subprojects
 {
 	//apply plugin: "de.set.ecj"
 	apply plugin: "java"
-	apply plugin: "checkstyle"
 	apply plugin: "cc.squirreljme.plugin"
 
 	// Configure the compiler
@@ -24,11 +23,15 @@ subprojects
 		// All files are always in UTF-8 format
 		compileJava.options.encoding = "utf-8"
 
+		// Emit deprecation errors
+		compileJava.options.deprecation = true
+
 		// Copy to tests
 		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
 		compileTestJava.targetCompatibility = compileJava.targetCompatibility
 		compileTestJava.options.encoding = compileJava.options.encoding
 		compileTestJava.options.verbose = compileJava.options.verbose
+		compileTestJava.options.deprecation = compileJava.options.deprecation
 
 		// Copy to JavaDoc
 		javadoc.options.source = "1.7"
@@ -36,7 +39,9 @@ subprojects
 			"squirreljme.env",
 			"squirreljme.error",
 			"squirreljme.syscallparam",
-			"squirreljme.syscallreturn" ]
+			"squirreljme.syscallreturn",
+			"squirreljme.tsiparam",
+			"squirreljme.configtype" ]
 	}
 
 	// Enable SquirrelJME Tests

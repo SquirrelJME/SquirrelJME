@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.ConfigRomType;
+import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.JVMFunction;
 
@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.JVMFunction;
  *
  * @since 2019/06/22
  */
+@Deprecated
 public final class ConfigReader
 {
 	/** The configuration base. */
@@ -30,6 +31,7 @@ public final class ConfigReader
 	 * @param __configbase The configuration base.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public ConfigReader(int __configbase)
 	{
 		this.configbase = __configbase;
@@ -44,6 +46,7 @@ public final class ConfigReader
 	 * found.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public final String[] loadKeyValueMap(int __key)
 	{
 		// Configuration scanner
@@ -90,6 +93,7 @@ public final class ConfigReader
 	 * @return The resulting value or {@code 0} if not set.
 	 * @since 2019/10/05
 	 */
+	@Deprecated
 	public final int loadInteger(int __key)
 	{
 		int addr = this.search(__key);
@@ -103,6 +107,7 @@ public final class ConfigReader
 	 * @return The resulting string or {@code null} if it is not set.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public final String loadString(int __key)
 	{
 		return JVMFunction.jvmLoadString(this.search(__key));
@@ -115,6 +120,7 @@ public final class ConfigReader
 	 * @return The resulting string values or {@code null} if there are none.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public final String[] loadStrings(int __key)
 	{
 		// Locate the key pointer
@@ -154,6 +160,7 @@ public final class ConfigReader
 	 * no more entries.
 	 * @since 2019/06/22
 	 */
+	@Deprecated
 	public final int scan(int __key, int __at)
 	{
 		// Where do we start the search from? From the start?
@@ -170,7 +177,7 @@ public final class ConfigReader
 			
 			// If we just happened to be planted at the end, just stop
 			if (Assembly.memReadJavaShort(seeker,
-				Constants.CONFIG_KEY_OFFSET) == ConfigRomType.END)
+				Constants.CONFIG_KEY_OFFSET) == ConfigRomKey.END)
 				return 0;
 			
 			// Otherwise, skip to the next entry start
@@ -186,7 +193,7 @@ public final class ConfigReader
 				Constants.CONFIG_KEY_OFFSET);
 			
 			// Stop at the end
-			if (key == ConfigRomType.END)
+			if (key == ConfigRomKey.END)
 				return 0;
 			
 			// If the key matches then return the value
@@ -208,6 +215,7 @@ public final class ConfigReader
 	 * not found.
 	 * @since 2019/06/19
 	 */
+	@Deprecated
 	public final int search(int __key)
 	{
 		// Seek through items
@@ -220,7 +228,7 @@ public final class ConfigReader
 					Constants.CONFIG_SIZE_OFFSET) & 0xFFFF;
 			
 			// Stop?
-			if (key == ConfigRomType.END)
+			if (key == ConfigRomKey.END)
 				break;
 			
 			// Found here?
