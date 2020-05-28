@@ -78,7 +78,6 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/22
 	 */
-	@SuppressWarnings("deprecation")
 	public static Error oops(Object... __args)
 	{
 		return new OOPS();
@@ -90,7 +89,6 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
-	@SuppressWarnings("deprecation")
 	public static Error todo()
 	{
 		return new TODO();
@@ -103,7 +101,6 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
-	@SuppressWarnings("deprecation")
 	public static Error todo(Object... __args)
 	{
 		return new TODO();
@@ -154,8 +151,7 @@ public final class Debugging
 	 * @param __args Arguments.
 	 * @since 2020/05/07
 	 */
-	@SuppressWarnings({"ConfusingArgumentToVarargsMethod",
-		"StaticVariableUsedBeforeInitialization"})
+	@SuppressWarnings({"StaticVariableUsedBeforeInitialization"})
 	private static void __format(char __cha, char __chb, String __format,
 		Object... __args)
 	{
@@ -320,8 +316,7 @@ public final class Debugging
 	 * @param __c The character to print.
 	 * @since 2020/05/07
 	 */
-	@SuppressWarnings({"ConfusingArgumentToVarargsMethod",
-		"SameParameterValue"})
+	@SuppressWarnings({"SameParameterValue"})
 	private static void __print(char __c)
 	{
 		Debugging.__print(__c, '\0');
@@ -358,7 +353,6 @@ public final class Debugging
 	 *
 	 * @since 2020/05/07
 	 */
-	@SuppressWarnings("ConfusingArgumentToVarargsMethod")
 	private static void __printLine()
 	{
 		// Get the line type used

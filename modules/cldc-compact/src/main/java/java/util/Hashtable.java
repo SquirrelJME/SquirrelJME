@@ -194,7 +194,6 @@ public class Hashtable<K, V>
 	 * @since 2019/05/05
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public Set<Map.Entry<K, V>> entrySet()
 	{
 		synchronized (this)

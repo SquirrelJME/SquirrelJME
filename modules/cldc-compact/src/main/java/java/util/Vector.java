@@ -85,7 +85,6 @@ public class Vector<E>
 	 * @since 2019/05/14
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public void add(int __i, E __v)
 	{
 		synchronized (this)
