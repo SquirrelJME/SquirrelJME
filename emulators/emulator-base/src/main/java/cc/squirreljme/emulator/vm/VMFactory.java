@@ -251,6 +251,10 @@ public abstract class VMFactory
 			// Debug
 			System.err.printf("Starting virtual machine (in %s)...%n",
 				mainClass);
+			/*System.err.printf(" * Libraries: %s%n",
+				VMFactory.__libraryNames(suites.values()));
+			System.err.printf(" * Classpath: %s%n",
+				classpath);*/
 			
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
@@ -383,24 +387,6 @@ public abstract class VMFactory
 			classpath[i] = lib;
 		}
 		
-		// Need to load the manifest where the entry points will be
-		VMClassLibrary bl = classpath[numlibs - 1];
-		EntryPoints entries;
-		try (InputStream in = bl.resourceAsStream("META-INF/MANIFEST.MF"))
-		{
-			// {@squirreljme.error AK04 Entry point JAR has no manifest.}
-			if (in == null)
-				throw new VMException("AK04");
-			
-			entries = new EntryPoints(new JavaManifest(in));
-		}
-		
-		// {@squirreljme.error AK05 Failed to read the manifest.}
-		catch (IOException e)
-		{
-			throw new VMException("AK05", e);
-		}
-		
 		// Create the virtual machine now that everything is available
 		return factory.createVM(__ps, __sm, classpath, __bootcl,
 			__sprops, __args);
@@ -414,14 +400,15 @@ public abstract class VMFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/19
 	 */
+	@SuppressWarnings("SingleCharacterStartsWith")
 	private static void __addPaths(Collection<String> __files, String __path)
 		throws NullPointerException
 	{
 		if (__files == null || __path == null)
 			throw new NullPointerException("NARG");
 		
-		// If this is not a wildcard path then ignore it
-		if (!__path.endsWith(File.pathSeparator + "*"))
+		// Add directly if not a wildcard
+		if (!__path.endsWith("*"))
 		{
 			__files.add(__path);
 			return;
@@ -434,7 +421,8 @@ public abstract class VMFactory
 		{
 			stream.forEach(__scan ->
 				{
-					if (__scan.endsWith(".jar") || __scan.endsWith(".JAR"))
+					String fn = __scan.getFileName().toString();
+					if (fn.endsWith(".jar") || fn.endsWith(".JAR"))
 						__files.add(__scan.toString());
 				});
 		}
@@ -497,6 +485,29 @@ public abstract class VMFactory
 		{
 			return __def;
 		}
+	}
+	
+	/**
+	 * Maps class libraries to names.
+	 *
+	 * @param __libs The values to map to name.
+	 * @return Class libraries to strings.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/05/28
+	 */
+	private static Collection<String> __libraryNames(
+		Iterable<VMClassLibrary> __libs)
+		throws NullPointerException
+	{
+		if (__libs == null)
+			throw new NullPointerException("NARG");
+		
+		Collection<String> rv = new LinkedList<>();
+		
+		for (VMClassLibrary lib : __libs)
+			rv.add(lib.name());
+		
+		return rv;
 	}
 	
 	/**
