@@ -62,6 +62,7 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(Short __a)
 	{
 		throw new todo.TODO();
@@ -85,6 +86,7 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int hashCode()
 	{
 		throw new todo.TODO();

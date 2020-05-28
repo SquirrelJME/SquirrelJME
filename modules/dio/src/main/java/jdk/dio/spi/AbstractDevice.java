@@ -24,11 +24,13 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public final <U extends P> DeviceDescriptor<U> getDescriptor()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void tryLock(int __a)
 		throws UnavailableDeviceException, ClosedDeviceException, 
 			IOException
@@ -42,6 +44,7 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void unlock()
 		throws IOException
 	{

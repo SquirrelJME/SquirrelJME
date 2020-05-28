@@ -23,6 +23,7 @@ public interface ATDevice
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
+	@Override
 	void close()
 		throws IOException;
 	

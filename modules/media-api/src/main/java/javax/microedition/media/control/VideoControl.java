@@ -33,6 +33,7 @@ public interface VideoControl
 	
 	int getSourceWidth();
 	
+	@Override
 	Object initDisplayMode(int __a, Object __b);
 	
 	void setDisplayFullScreen(boolean __a)

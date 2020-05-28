@@ -52,6 +52,7 @@ public final class CommandHandler
 	 * @param __c The command to execute.
 	 * @since 2019/12/25
 	 */
+	@Override
 	public void commandAction(Command __c, Displayable __d)
 	{
 		// Exit the game?

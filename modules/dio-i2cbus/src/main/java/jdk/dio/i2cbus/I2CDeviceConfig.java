@@ -36,6 +36,7 @@ public final class I2CDeviceConfig
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean equals(Object __a)
 	{
 		throw new todo.TODO();
@@ -56,11 +57,13 @@ public final class I2CDeviceConfig
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public String getControllerName()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int getControllerNumber()
 	{
 		throw new todo.TODO();
@@ -76,11 +79,13 @@ public final class I2CDeviceConfig
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int hashCode()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int serialize(OutputStream __a)
 		throws IOException
 	{

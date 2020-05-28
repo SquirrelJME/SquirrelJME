@@ -50,6 +50,7 @@ public interface Annotation
 	 * @return {@code true} if they are logically equivalent.
 	 * @since 2014/10/13
 	 */
+	@Override
 	boolean equals(Object __o);
 	
 	/**
@@ -67,6 +68,7 @@ public interface Annotation
 	 * @return The hash code for this annotation.
 	 * @since 2014/10/13
 	 */
+	@Override
 	int hashCode();
 	
 	/**
@@ -76,6 +78,7 @@ public interface Annotation
 	 * @return The string representation of this annotation.
 	 * @since 2014/10/13
 	 */
+	@Override
 	String toString();
 }
 

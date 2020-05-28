@@ -54,6 +54,7 @@ public enum FieldFlag
 	 * @return The bit mask used for the flag.
 	 * @since 2017/07/07
 	 */
+	@Override
 	public final int javaBitMask()
 	{
 		switch (this)

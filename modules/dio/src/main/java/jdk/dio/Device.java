@@ -26,6 +26,7 @@ public interface Device<P extends Device<? super P>>
 	int MIXED_ENDIAN =
 		2;
 	
+	@Override
 	void close()
 		throws IOException;
 	
@@ -35,6 +36,7 @@ public interface Device<P extends Device<? super P>>
 	
 	<U extends P> DeviceDescriptor<U> getDescriptor();
 	
+	@Override
 	boolean isOpen();
 	
 	void tryLock(int __a)

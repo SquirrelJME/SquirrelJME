@@ -23,6 +23,7 @@ public abstract class IntBuffer
 	
 	public abstract int get(int __a);
 	
+	@Override
 	public abstract boolean isDirect();
 	
 	public abstract ByteOrder order();
@@ -33,16 +34,19 @@ public abstract class IntBuffer
 	
 	public abstract IntBuffer slice();
 	
+	@Override
 	public final int[] array()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(IntBuffer __a)
 	{
 		throw new todo.TODO();
@@ -64,6 +68,7 @@ public abstract class IntBuffer
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();

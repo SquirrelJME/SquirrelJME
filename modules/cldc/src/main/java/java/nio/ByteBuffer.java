@@ -41,6 +41,7 @@ public abstract class ByteBuffer
 	
 	public abstract short getShort(int __a);
 	
+	@Override
 	public abstract boolean isDirect();
 	
 	public abstract ByteBuffer put(byte __a);
@@ -61,16 +62,19 @@ public abstract class ByteBuffer
 	
 	public abstract ByteBuffer slice();
 	
+	@Override
 	public final byte[] array()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(ByteBuffer __a)
 	{
 		throw new todo.TODO();
@@ -92,6 +96,7 @@ public abstract class ByteBuffer
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();

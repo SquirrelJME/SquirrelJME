@@ -19,22 +19,26 @@ public class WatchImpl
 		throw new todo.TODO();
 	}
 
-    public void initWatchValues(int var1, int var2)
+    @Override
+	public void initWatchValues(int var1, int var2)
 	{
 		throw new todo.TODO();
 	}
 
-    public void paint(Graphics var1, int var2, int var3, int var4)
+    @Override
+	public void paint(Graphics var1, int var2, int var3, int var4)
 	{
 		throw new todo.TODO();
 	}
 
-    public String getBackCommand()
+    @Override
+	public String getBackCommand()
 	{
 		throw new todo.TODO();
 	}
 
-    public String getSaveCommand()
+    @Override
+	public String getSaveCommand()
 	{
 		throw new todo.TODO();
 	}

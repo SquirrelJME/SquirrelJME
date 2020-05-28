@@ -33,6 +33,7 @@ public class StringTokenizer
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean hasMoreElements()
 	{
 		throw new todo.TODO();
@@ -43,6 +44,7 @@ public class StringTokenizer
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public Object nextElement()
 	{
 		throw new todo.TODO();

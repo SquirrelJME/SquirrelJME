@@ -55,6 +55,7 @@ public interface UART
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
+	@Override
 	int read(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
@@ -118,6 +119,7 @@ public interface UART
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
+	@Override
 	int write(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
