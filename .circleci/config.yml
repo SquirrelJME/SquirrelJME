@@ -86,7 +86,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build
-          command: ./gradlew testSpringCoat --continue --parallel -DtestSpringCoat.ignoreFailures
+          command: ./gradlew testSpringCoat --continue --parallel -DtestSpringCoat.ignoreFailures=true
           no_output_timeout: 2m
       - run:
           name: Save test results
