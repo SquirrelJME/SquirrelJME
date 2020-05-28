@@ -134,7 +134,6 @@ public final class SpringMachine
 	 * runs.
 	 * @param __gd Guest depth.
 	 * @param __profiler The profiler to use.
-	 * @param __nda The native display provider.
 	 * @param __sprops System properties.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.

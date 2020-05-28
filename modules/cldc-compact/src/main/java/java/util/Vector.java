@@ -49,7 +49,7 @@ public class Vector<E>
 			throw new IllegalArgumentException("ZZ32");
 		
 		this.elementData = new Object[__cap];
-		this.capacityIncrement = (__inc < 0 ? 0 : __inc);
+		this.capacityIncrement = (Math.max(__inc, 0));
 	}
 	
 	/**

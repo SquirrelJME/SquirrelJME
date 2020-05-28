@@ -264,7 +264,7 @@ public final class TableSectionOutputStream
 				writeaddress = section._writeaddress,
 				writesize = section._writesize,
 				writeendaddress = writeaddress + writesize,
-				actualwrite = (cursize < writesize ? cursize : writesize);
+				actualwrite = (Math.min(cursize, writesize));
 			
 			// Write padding until we reach our needed address
 			while (writeptr < writeaddress)
@@ -444,7 +444,7 @@ public final class TableSectionOutputStream
 			
 			// Set
 			this.fixedsize = __size;
-			this.alignment = (__align >= 1 ? __align : 1);
+			this.alignment = (Math.max(__align, 1));
 			this.isvariable = (__size == TableSectionOutputStream.VARIABLE_SIZE);
 			
 			// Dirty flag storage
@@ -558,7 +558,7 @@ public final class TableSectionOutputStream
 			if (this.isvariable && size + __l >= data.length)
 			{
 				data = Arrays.copyOf(data,
-					size + (__l < Section._BUFFER_SIZE ? Section._BUFFER_SIZE : __l));
+					size + (Math.max(__l, Section._BUFFER_SIZE)));
 				this._data = data;
 			}
 			

@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Text;
  *
  * @since 2018/11/19
  */
+@SuppressWarnings({"ManualMinMaxCalculation", "MagicNumber"})
 public abstract class SerializedGraphics
 	extends Graphics
 {
@@ -308,9 +309,6 @@ public abstract class SerializedGraphics
 		int __anchor)
 		throws NullPointerException
 	{
-		int transx = this.transx,
-			transy = this.transy;
-		
 		// Just pass the chars of the string since we cannot represent
 		// string at all
 		this.serialize(GraphicsFunction.DRAW_SUB_CHARS,
@@ -326,9 +324,6 @@ public abstract class SerializedGraphics
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
-		int transx = this.transx,
-			transy = this.transy;
-		
 		// Just pass the chars of the string since we cannot represent
 		// string at all
 		this.serialize(GraphicsFunction.DRAW_SUB_CHARS,
@@ -342,9 +337,6 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawText(Text __t, int __x, int __y)
 	{
-		int transx = this.transx,
-			transy = this.transy;
-		
 		this.serialize(GraphicsFunction.DRAW_TEXT,
 			SerializedGraphics.textSerialize(__t), __x, __y);
 	}
@@ -357,9 +349,6 @@ public abstract class SerializedGraphics
 	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		int transx = this.transx,
-			transy = this.transy;
-		
 		this.serialize(GraphicsFunction.FILL_ARC,
 			__x, __y, __w, __h, __sa, __aa);
 	}
@@ -371,9 +360,6 @@ public abstract class SerializedGraphics
 	@Override
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
-		int transx = this.transx,
-			transy = this.transy;
-		
 		this.serialize(GraphicsFunction.FILL_RECT,
 			__x, __y, __w, __h);
 	}
@@ -386,9 +372,6 @@ public abstract class SerializedGraphics
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		int transx = this.transx,
-			transy = this.transy;
-		
 		this.serialize(GraphicsFunction.FILL_ROUND_RECT,
 			__x, __y, __w, __h, __aw, __ah);
 	}
@@ -401,9 +384,6 @@ public abstract class SerializedGraphics
 	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
-		int transx = this.transx,
-			transy = this.transy;
-		
 		this.serialize(GraphicsFunction.FILL_TRIANGLE,
 			__x1, __y1, __x2, __y2, __x3, __y3);
 	}
