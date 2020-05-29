@@ -52,6 +52,19 @@ jobs:
             mkdir -p ~/test-results/junit/
             find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - 'buildSrc/.gradle/*'
+            - 'buildSrc/build/*'
+            - 'emulators/build/*'
+            - 'emulators/*/build/*'
+            - 'modules/build/*'
+            - 'modules/*/build/*'
+            - 'tools/build/*'
+            - 'tools/*/build/*'
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -84,6 +97,8 @@ jobs:
     executor: buildenv
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: SpringCoat Tests
           command: |

@@ -152,7 +152,7 @@ public final class IntegerList
 			size = this._size;
 		
 		// Need a larger array?
-		if (values == null || (realloced = (size + 1 > nvalues)))
+		if ((realloced = (size + 1 > nvalues)))
 			if (values == null)
 				values = new int[IntegerList._GROW_SIZE];
 			else
@@ -396,7 +396,7 @@ public final class IntegerList
 		int size = this._size;
 		
 		// Values would not be allocated
-		if (size == 0 || values == null)
+		if (size == 0)
 			return new int[0];
 		
 		// Copy values
