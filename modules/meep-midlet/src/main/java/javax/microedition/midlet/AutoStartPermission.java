@@ -22,6 +22,7 @@ public final class AutoStartPermission
 		throw new todo.TODO();
 	}
 
+	@Override
 	public boolean implies(Permission __p)
 	{
 		throw new todo.TODO();

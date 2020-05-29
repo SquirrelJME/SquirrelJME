@@ -427,7 +427,6 @@ public final class Minimizer
 	 * Translates code.
 	 *
 	 * @param __rc The register code used.
-	 * @param __dos The stream to write to.
 	 * @return The resulting stream.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.

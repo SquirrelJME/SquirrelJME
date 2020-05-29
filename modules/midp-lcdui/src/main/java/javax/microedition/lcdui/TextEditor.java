@@ -164,6 +164,7 @@ public class TextEditor
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void setVisible(boolean __v)
 	{
 		throw new todo.TODO();

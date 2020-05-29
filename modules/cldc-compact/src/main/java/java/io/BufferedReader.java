@@ -202,7 +202,7 @@ public class BufferedReader
 		int left = wp - rp;
 		if (left > 0)
 		{
-			int lim = (left < __l ? left : __l);
+			int lim = (Math.min(left, __l));
 			
 			for (; rv < lim; rv++)
 				__c[__o++] = buf[rp++];
@@ -258,7 +258,7 @@ public class BufferedReader
 		// But do not make a super tiny string builder, make a guess as to
 		// what the average line length is.
 		int diff = wp - rp;
-		StringBuilder sb = new StringBuilder((diff > 64 ? diff : 64));
+		StringBuilder sb = new StringBuilder((Math.max(diff, 64)));
 		
 		// Continually read data
 		Reader in = this._in;
@@ -317,7 +317,7 @@ public class BufferedReader
 				
 				// Set new properties
 				this._rp = (rp = ln = 0);
-				this._wp = (wp = (rc > 0 ? rc : 0));
+				this._wp = (wp = (Math.max(rc, 0)));
 			}
 			
 			// Eat newline?

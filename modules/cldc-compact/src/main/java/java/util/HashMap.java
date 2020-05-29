@@ -171,7 +171,6 @@ public class HashMap<K, V>
 	 * @since 2018/10/07
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public Set<Map.Entry<K, V>> entrySet()
 	{
 		return this._map.entrySet();

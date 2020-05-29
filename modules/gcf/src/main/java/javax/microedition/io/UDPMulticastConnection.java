@@ -29,12 +29,6 @@ public interface UDPMulticastConnection
 	void leave(String __a)
 		throws IOException;
 	
-	void receive(Datagram __a)
-		throws IOException;
-	
-	void send(Datagram __a)
-		throws IOException;
-	
 	void setDisableLoopback(boolean __a)
 		throws IOException;
 	

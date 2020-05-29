@@ -27,7 +27,7 @@ class __SectionParagraph__
 	/**
 	 * Initializes the paragraph.
 	 *
-	 * @param __mkd The owning writer.
+	 * @param __mdw The owning writer.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/10/02
 	 */

@@ -53,7 +53,7 @@ public final class NullVolumeControl
 	@Override
 	public final int setLevel(int __v)
 	{
-		this._level = (__v = (__v < 0 ? 0 : (__v > 100 ? 100 : __v)));
+		this._level = (__v = (__v < 0 ? 0 : (Math.min(__v, 100))));
 		return __v;
 	}
 	

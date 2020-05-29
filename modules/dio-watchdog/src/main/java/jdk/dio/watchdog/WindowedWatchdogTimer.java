@@ -19,6 +19,7 @@ public interface WindowedWatchdogTimer
 	long getClosedWindowTimeout()
 		throws IOException, ClosedDeviceException;
 	
+	@Override
 	void start(long __a)
 		throws IOException, ClosedDeviceException;
 	

@@ -42,57 +42,68 @@ public class VideoPlayer
 		throw new todo.TODO();
 	}
 
-    public void setData(MediaData var1)
+    @Override
+	public void setData(MediaData var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public int getX()
+    @Override
+	public int getX()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getY()
+    @Override
+	public int getY()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getWidth()
+    @Override
+	public int getWidth()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getHeight()
+    @Override
+	public int getHeight()
 	{
 		throw new todo.TODO();
 	}
 
-    public void setBounds(int var1, int var2, int var3, int var4)
+    @Override
+	public void setBounds(int var1, int var2, int var3, int var4)
 	{
 		throw new todo.TODO();
 	}
 
-    public int getOriginX()
+    @Override
+	public int getOriginX()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getOriginY()
+    @Override
+	public int getOriginY()
 	{
 		throw new todo.TODO();
 	}
 
-    public void setOrigin(int var1, int var2)
+    @Override
+	public void setOrigin(int var1, int var2)
 	{
 		throw new todo.TODO();
 	}
 
-    public int getMediaWidth()
+    @Override
+	public int getMediaWidth()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getMediaHeight()
+    @Override
+	public int getMediaHeight()
 	{
 		throw new todo.TODO();
 	}
@@ -102,47 +113,56 @@ public class VideoPlayer
 		throw new todo.TODO();
 	}
 
-    public void play()
+    @Override
+	public void play()
 	{
 		throw new todo.TODO();
 	}
 
-    public void play(boolean var1)
+    @Override
+	public void play(boolean var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public void play(int var1)
+    @Override
+	public void play(int var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public void stop()
+    @Override
+	public void stop()
 	{
 		throw new todo.TODO();
 	}
 
-    public void pause()
+    @Override
+	public void pause()
 	{
 		throw new todo.TODO();
 	}
 
-    public void resume()
+    @Override
+	public void resume()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getState()
+    @Override
+	public int getState()
 	{
 		throw new todo.TODO();
 	}
 
-    public void addMediaPlayerListener(MediaPlayerListener var1)
+    @Override
+	public void addMediaPlayerListener(MediaPlayerListener var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public void removeMediaPlayerListener(MediaPlayerListener var1)
+    @Override
+	public void removeMediaPlayerListener(MediaPlayerListener var1)
 	{
 		throw new todo.TODO();
 	}

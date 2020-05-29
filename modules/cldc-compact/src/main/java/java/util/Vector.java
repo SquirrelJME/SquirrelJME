@@ -49,7 +49,7 @@ public class Vector<E>
 			throw new IllegalArgumentException("ZZ32");
 		
 		this.elementData = new Object[__cap];
-		this.capacityIncrement = (__inc < 0 ? 0 : __inc);
+		this.capacityIncrement = (Math.max(__inc, 0));
 	}
 	
 	/**
@@ -85,7 +85,6 @@ public class Vector<E>
 	 * @since 2019/05/14
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public void add(int __i, E __v)
 	{
 		synchronized (this)

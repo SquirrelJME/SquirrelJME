@@ -33,8 +33,6 @@ public interface VideoControl
 	
 	int getSourceWidth();
 	
-	Object initDisplayMode(int __a, Object __b);
-	
 	void setDisplayFullScreen(boolean __a)
 		throws MediaException;
 	

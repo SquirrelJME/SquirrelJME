@@ -47,7 +47,6 @@ final class __NodeTable__
 	 * Parses the frames and loads into a node table.
 	 *
 	 * @param __fs The input frames to map.
-	 * @param __depth The depth of the stack.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */

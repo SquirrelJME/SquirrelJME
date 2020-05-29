@@ -348,7 +348,7 @@ public class ByteDeque
 			return 0;
 		
 		// Do not remove more bytes than there are available
-		int limit = (__l < total ? __l : total);
+		int limit = (Math.min(__l, total));
 		int newtotal = total - limit;
 		
 		// Get some things

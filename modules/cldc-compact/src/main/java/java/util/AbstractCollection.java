@@ -16,7 +16,7 @@ package java.util;
  * Sub-classes are only required to implement {@link #iterator()} and
  * {@link #size()}.
  *
- * To support adding elements {@link add(Object)} must be implemented.
+ * To support adding elements {@link #add(Object)} must be implemented.
  *
  * To support removing elements {@link Iterator#remove()} must be implemented.
  *

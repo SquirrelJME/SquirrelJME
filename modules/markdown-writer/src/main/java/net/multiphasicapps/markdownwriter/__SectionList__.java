@@ -33,7 +33,7 @@ abstract class __SectionList__
 	/**
 	 * Initializes the base for lists.
 	 *
-	 * @param __mkd The owning writer.
+	 * @param __mdw The owning writer.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/10/02
 	 */

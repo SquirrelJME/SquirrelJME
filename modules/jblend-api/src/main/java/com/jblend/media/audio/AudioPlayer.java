@@ -41,7 +41,8 @@ public class AudioPlayer
 		throw new todo.TODO();
 	}
 
-    public void setData(MediaData var1)
+    @Override
+	public void setData(MediaData var1)
 	{
 		throw new todo.TODO();
 	}
@@ -61,47 +62,56 @@ public class AudioPlayer
 		throw new todo.TODO();
 	}
 
-    public void play()
+    @Override
+	public void play()
 	{
 		throw new todo.TODO();
 	}
 
-    public void play(boolean var1)
+    @Override
+	public void play(boolean var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public void play(int var1)
+    @Override
+	public void play(int var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public void stop()
+    @Override
+	public void stop()
 	{
 		throw new todo.TODO();
 	}
 
-    public void pause()
+    @Override
+	public void pause()
 	{
 		throw new todo.TODO();
 	}
 
-    public void resume()
+    @Override
+	public void resume()
 	{
 		throw new todo.TODO();
 	}
 
-    public int getState()
+    @Override
+	public int getState()
 	{
 		throw new todo.TODO();
 	}
 
-    public void addMediaPlayerListener(MediaPlayerListener var1)
+    @Override
+	public void addMediaPlayerListener(MediaPlayerListener var1)
 	{
 		throw new todo.TODO();
 	}
 
-    public void removeMediaPlayerListener(MediaPlayerListener var1)
+    @Override
+	public void removeMediaPlayerListener(MediaPlayerListener var1)
 	{
 		throw new todo.TODO();
 	}

@@ -266,7 +266,7 @@ public class XPMReader
 	 *
 	 * @param __r The source characters.
 	 * @return The header values.
-	 * @throws On read errors.
+	 * @throws IOException On read errors.
 	 * @since 2016/05/22
 	 */
 	private int[] __readHeader(Reader __r)

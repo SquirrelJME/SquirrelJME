@@ -32,6 +32,7 @@ final class __MinimizerFieldSort__
 	 * @param __b The second.
 	 * @since 2019/03/11
 	 */
+	@Override
 	public int compare(Field __a, Field __b)
 	{
 		// Make objects always first so we can quickly scan through objects
