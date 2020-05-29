@@ -34,13 +34,13 @@ public abstract class ShortBuffer
 	
 	public abstract ShortBuffer slice();
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final short[] array()
 	{
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
@@ -68,7 +68,7 @@ public abstract class ShortBuffer
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();

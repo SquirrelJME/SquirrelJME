@@ -317,7 +317,6 @@ public class BufferedReader
 				
 				// Set new properties
 				this._rp = (rp = ln = 0);
-				//noinspection ManualMinMaxCalculation
 				this._wp = (wp = (Math.max(rc, 0)));
 			}
 			

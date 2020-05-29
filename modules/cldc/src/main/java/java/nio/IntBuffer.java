@@ -34,13 +34,13 @@ public abstract class IntBuffer
 	
 	public abstract IntBuffer slice();
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final int[] array()
 	{
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
@@ -68,13 +68,13 @@ public abstract class IntBuffer
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public int hashCode()
 	{
 		throw new todo.TODO();
