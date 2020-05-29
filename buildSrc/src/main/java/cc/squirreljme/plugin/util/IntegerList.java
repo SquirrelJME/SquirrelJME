@@ -156,11 +156,10 @@ public final class IntegerList
 			if (values == null)
 				values = new int[IntegerList._GROW_SIZE];
 			else
-				values = Arrays.copyOf(values,
-					nvalues + IntegerList._GROW_SIZE);
+				values = Arrays.copyOf(values, nvalues + IntegerList._GROW_SIZE);
 		
 		// Move all values up
-		for (int o = size; o > __i; o--)
+		for (int o = size; o > __i; o++)
 			values[o] = values[o - 1];
 		
 		// Set this index
@@ -397,7 +396,7 @@ public final class IntegerList
 		int size = this._size;
 		
 		// Values would not be allocated
-		if (size == 0)
+		if (size == 0 || values == null)
 			return new int[0];
 		
 		// Copy values
