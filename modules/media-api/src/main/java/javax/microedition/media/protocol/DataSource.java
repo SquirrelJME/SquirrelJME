@@ -29,10 +29,6 @@ public abstract class DataSource
 	
 	public abstract String getContentType();
 	
-	public abstract Control getControl(String __a);
-	
-	public abstract Control[] getControls();
-	
 	public abstract SourceStream[] getStreams();
 	
 	public abstract void start()

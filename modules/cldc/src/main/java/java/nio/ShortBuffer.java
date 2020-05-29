@@ -23,6 +23,7 @@ public abstract class ShortBuffer
 	
 	public abstract short get(int __a);
 	
+	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
 	public abstract boolean isDirect();
 	
 	public abstract ByteOrder order();
@@ -33,16 +34,19 @@ public abstract class ShortBuffer
 	
 	public abstract ShortBuffer slice();
 	
+	@SuppressWarnings({"override"})
 	public final short[] array()
 	{
 		throw new todo.TODO();
 	}
 	
+	@SuppressWarnings({"override"})
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(ShortBuffer __a)
 	{
 		throw new todo.TODO();
@@ -64,6 +68,7 @@ public abstract class ShortBuffer
 		throw new todo.TODO();
 	}
 	
+	@SuppressWarnings({"override"})
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();

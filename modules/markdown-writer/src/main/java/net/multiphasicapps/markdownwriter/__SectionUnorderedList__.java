@@ -24,7 +24,7 @@ class __SectionUnorderedList__
 	/**
 	 * Initializes the unordered list section.
 	 *
-	 * @param __mkd The owning writer.
+	 * @param __mdw The owning writer.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/10/02
 	 */

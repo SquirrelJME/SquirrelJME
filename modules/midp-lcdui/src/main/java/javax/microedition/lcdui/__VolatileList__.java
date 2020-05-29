@@ -127,7 +127,6 @@ final class __VolatileList__<T>
 	 * @return {@code true} if it was removed.
 	 * @since 2019/04/15
 	 */
-	@SuppressWarnings({"unchecked"})
 	public final boolean remove(T __v)
 	{
 		Object[] values = this._values;

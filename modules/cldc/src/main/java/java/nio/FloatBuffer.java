@@ -23,6 +23,7 @@ public abstract class FloatBuffer
 	
 	public abstract float get(int __a);
 	
+	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
 	public abstract boolean isDirect();
 	
 	public abstract ByteOrder order();
@@ -33,16 +34,19 @@ public abstract class FloatBuffer
 	
 	public abstract FloatBuffer slice();
 	
+	@SuppressWarnings({"override"})
 	public final float[] array()
 	{
 		throw new todo.TODO();
 	}
 	
+	@SuppressWarnings({"override"})
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int compareTo(FloatBuffer __a)
 	{
 		throw new todo.TODO();
@@ -64,6 +68,7 @@ public abstract class FloatBuffer
 		throw new todo.TODO();
 	}
 	
+	@SuppressWarnings({"override"})
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();

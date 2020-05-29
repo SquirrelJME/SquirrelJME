@@ -55,7 +55,6 @@ public enum ClassVersion
 	 *
 	 * @param __vid The version ID.
 	 * @param __vmx The max version identifier.
-	 * @param __undef Is this version information undefined?
 	 * @param __float Is floating point supported?
 	 * @param __hasid Has invoke dynamic support?
 	 * @param __usesmt Should the StackMapTable attribute be used?

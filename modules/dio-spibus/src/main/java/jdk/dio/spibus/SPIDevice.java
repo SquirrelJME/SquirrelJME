@@ -32,6 +32,7 @@ public interface SPIDevice
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
+	@Override
 	int read(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
@@ -40,6 +41,7 @@ public interface SPIDevice
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;
 	
+	@Override
 	int write(ByteBuffer __a)
 		throws IOException, UnavailableDeviceException, 
 			UnsupportedByteOrderException, ClosedDeviceException;

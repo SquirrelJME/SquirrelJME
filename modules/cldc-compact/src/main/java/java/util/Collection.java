@@ -31,6 +31,7 @@ public interface Collection<E>
 	
 	boolean isEmpty();
 	
+	@Override
 	Iterator<E> iterator();
 	
 	boolean remove(Object __a);

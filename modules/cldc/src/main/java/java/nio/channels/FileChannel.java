@@ -28,25 +28,15 @@ public abstract class FileChannel
 	public abstract void force(boolean __a)
 		throws IOException;
 	
-	public abstract long position()
-		throws IOException;
-	
+	@Override
 	public abstract FileChannel position(long __a)
-		throws IOException;
-	
-	public abstract int read(ByteBuffer __a)
 		throws IOException;
 	
 	public abstract int read(ByteBuffer __a, long __b)
 		throws IOException;
 	
-	public abstract long size()
-		throws IOException;
-	
+	@Override
 	public abstract FileChannel truncate(long __a)
-		throws IOException;
-	
-	public abstract int write(ByteBuffer __a)
 		throws IOException;
 	
 	public abstract int write(ByteBuffer __a, long __b)

@@ -250,6 +250,7 @@ public class MidletMain
 				 * {@inheritDoc}
 				 * @since 2019/05/19
 				 */
+				@Override
 				public final void run()
 				{
 					MidletMain.this.refresh();

@@ -92,7 +92,7 @@ public final class JarMinimizer
 	/**
 	 * Processes the input JAR.
 	 *
-	 * @param __out The output.
+	 * @param __sout The output.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/27

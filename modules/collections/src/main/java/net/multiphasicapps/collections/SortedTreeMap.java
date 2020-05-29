@@ -182,7 +182,6 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public V put(K __k, V __v)
 	{
 		// Insert node

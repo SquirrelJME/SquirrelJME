@@ -26,9 +26,6 @@ public abstract class FileSystem
 	{
 	}
 	
-	public abstract void close()
-		throws IOException;
-	
 	public abstract Iterable<FileStore> getFileStores();
 	
 	public abstract Path getPath(String __a, String... __b);

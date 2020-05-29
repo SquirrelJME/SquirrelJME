@@ -23,7 +23,7 @@ class __SectionHeader__
 	/**
 	 * Initializes the section header.
 	 *
-	 * @param __mkd The owning writer.
+	 * @param __mdw The owning writer.
 	 * @param __abs Absolutely set the specified level if {@code true},
 	 * otherwise level adjustment will be relative.
 	 * @param __level The level to set to if absolute or relative from a
