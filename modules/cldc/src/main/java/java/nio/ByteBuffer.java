@@ -62,13 +62,13 @@ public abstract class ByteBuffer
 	
 	public abstract ByteBuffer slice();
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final byte[] array()
 	{
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
@@ -96,7 +96,7 @@ public abstract class ByteBuffer
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();

@@ -34,13 +34,13 @@ public abstract class FloatBuffer
 	
 	public abstract FloatBuffer slice();
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final float[] array()
 	{
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final int arrayOffset()
 	{
 		throw new todo.TODO();
@@ -68,7 +68,7 @@ public abstract class FloatBuffer
 		throw new todo.TODO();
 	}
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@SuppressWarnings({"override"})
 	public final boolean hasArray()
 	{
 		throw new todo.TODO();
