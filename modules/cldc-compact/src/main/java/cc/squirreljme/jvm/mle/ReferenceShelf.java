@@ -30,14 +30,12 @@ public final class ReferenceShelf
 	}
 	
 	/**
-	 * Gets the object this points to.
+	 * Deletes the reference link, freeing any associated memory.
 	 *
-	 * @param __link The link to get the object of.
-	 * @return The object that this points to, or {@code null} if there
-	 * is no pointed object.
+	 * @param __link The link to delete.
 	 * @since 2020/05/30
 	 */
-	public static native Object linkGet(RefLinkBracket __link);
+	public static native void deleteLink(RefLinkBracket __link);
 	
 	/**
 	 * Returns the link after the specified one.
@@ -46,7 +44,17 @@ public final class ReferenceShelf
 	 * @return The next link or {@code null} if there is none.
 	 * @since 2020/05/30
 	 */
-	public static native RefLinkBracket linkNext(RefLinkBracket __link);
+	public static native RefLinkBracket linkGetNext(RefLinkBracket __link);
+	
+	/**
+	 * Gets the object this points to.
+	 *
+	 * @param __link The link to get the object of.
+	 * @return The object that this points to, or {@code null} if there
+	 * is no pointed object.
+	 * @since 2020/05/30
+	 */
+	public static native Object linkGetObject(RefLinkBracket __link);
 	
 	/**
 	 * Returns the link before the specified one.
@@ -55,7 +63,17 @@ public final class ReferenceShelf
 	 * @return The previous link or {@code null} if there is none.
 	 * @since 2020/05/30
 	 */
-	public static native RefLinkBracket linkPrev(RefLinkBracket __link);
+	public static native RefLinkBracket linkGetPrev(RefLinkBracket __link);
+	
+	/**
+	 * Sets the link that is after this one
+	 *
+	 * @param __link The link.
+	 * @param __next The new link to set, may be {@code null} to clear.
+	 * @since 2020/05/30
+	 */
+	public static native void linkSetNext(RefLinkBracket __link,
+		RefLinkBracket __next);
 	
 	/**
 	 * Sets the object that this points to.
@@ -64,7 +82,25 @@ public final class ReferenceShelf
 	 * @param __v The object to set to, may be {@code null}.
 	 * @since 2020/05/30
 	 */
-	public static native void linkSet(RefLinkBracket __link, Object __v);
+	public static native void linkSetObject(RefLinkBracket __link, Object __v);
+	
+	/**
+	 * Sets the link that is before this one.
+	 *
+	 * @param __link The link.
+	 * @param __prev The new link to set, may be {@code null} to clear.
+	 * @since 2020/05/30
+	 */
+	public static native void linkSetPrev(RefLinkBracket __link,
+		RefLinkBracket __prev);
+	
+	/**
+	 * Creates a new reference link.
+	 *
+	 * @return The newly created reference link.
+	 * @since 2020/05/30
+	 */
+	public static native RefLinkBracket newLink();
 	
 	/**
 	 * Gets the link of an object.

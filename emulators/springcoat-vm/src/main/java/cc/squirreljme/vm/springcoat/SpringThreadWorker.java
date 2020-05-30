@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -1117,9 +1118,6 @@ public final class SpringThreadWorker
 		if (__func == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		/*todo.DEBUG.note("Call native %s", __func);*/
-		
 		// All low-level calls are considered invalid in SpringCoat because
 		// it does not have the given functionality.
 		if (__func.startsWith("cc/squirreljme/jvm/Assembly::") ||
@@ -1140,6 +1138,10 @@ public final class SpringThreadWorker
 			throw new SpringVirtualMachineException(String.format(
 				"Non-MLE native call: %s %s", __func,
 				Arrays.asList(__args)));
+		
+		// Debug
+		Debugging.debugNote("Call native %s %s", __func,
+			Arrays.asList(__args));
 		
 		if (true)
 			return NativeHLEHandler.dispatch(this, __func, __args);

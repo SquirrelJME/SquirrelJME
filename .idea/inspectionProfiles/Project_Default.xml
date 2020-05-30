@@ -75,9 +75,6 @@
     <inspection_tool class="ExceptionNameDoesntEndWithException" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ExplicitArgumentCanBeLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="ExtendsUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="FeatureEnvy" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="ignoreTestCases" value="false" />
-    </inspection_tool>
     <inspection_tool class="FieldNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <extension name="ConstantNamingConvention" enabled="true">
         <option name="m_regex" value="_?[a-zA-Z][A-Z_\d]*" />
@@ -187,7 +184,6 @@
     </inspection_tool>
     <inspection_tool class="LongLine" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="MagicNumber" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="MethodCallInLoopCondition" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodNameSameAsClassName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodNameSameAsParentName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="MethodRefCanBeReplacedWithLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
