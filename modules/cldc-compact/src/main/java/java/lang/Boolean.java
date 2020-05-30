@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
 /**
@@ -30,7 +31,7 @@ public final class Boolean
 	
 	/** The class representing the primitive type. */
 	public static final Class<Boolean> TYPE =
-		ObjectAccess.<Boolean>classByNameType("boolean");
+		TypeShelf.<Boolean>typeToClass(TypeShelf.typeOfBoolean());
 	
 	/** The value of this boolean. */
 	private final boolean _value;

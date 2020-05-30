@@ -2,21 +2,16 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.ref;
-
 /**
- * Represents an internal primitive reference.
+ * This package contains annotations which are used to potentially modify
+ * or signal information about a class or otherwise.
  *
- * @since 2018/09/23
+ * @since 2020/05/30
  */
-@Deprecated
-public interface PrimitiveReference
-{
-}
 
+package cc.squirreljme.jvm.mle.annotation;

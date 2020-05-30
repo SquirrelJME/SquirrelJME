@@ -12,6 +12,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.JVMFunction;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 
 public final class Float
@@ -52,7 +53,7 @@ public final class Float
 	
 	/** The class representing the primitive type. */
 	public static final Class<Float> TYPE =
-		JVMFunction.<Float>jvmLoadClass(Assembly.classInfoOfFloat());
+		TypeShelf.<Float>typeToClass(TypeShelf.typeOfFloat());
 	
 	/** The stored value. */
 	private final float _value;

@@ -10,8 +10,6 @@
 
 package java.lang.ref;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-
 /**
  * A weak reference is one which is garbage collected when there are no strong
  * references to it.
@@ -30,7 +28,7 @@ public class WeakReference<T>
 	 */
 	public WeakReference(T __v)
 	{
-		super(ObjectAccess.newWeakReference(), __v, null);
+		super(__v, null);
 	}
 	
 	/**
@@ -46,7 +44,7 @@ public class WeakReference<T>
 	 */
 	public WeakReference(T __v, ReferenceQueue<? super T> __q)
 	{
-		super(ObjectAccess.newWeakReference(), __v, __q);
+		super(__v, __q);
 	}
 }
 
