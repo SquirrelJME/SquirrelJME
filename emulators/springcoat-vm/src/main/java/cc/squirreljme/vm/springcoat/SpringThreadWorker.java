@@ -1120,6 +1120,30 @@ public final class SpringThreadWorker
 		// Debug
 		/*todo.DEBUG.note("Call native %s", __func);*/
 		
+		// All low-level calls are considered invalid in SpringCoat because
+		// it does not have the given functionality.
+		if (__func.startsWith("cc/squirreljme/jvm/Assembly::") ||
+			__func.startsWith("cc/squirreljme/jvm/mle/lle/"))
+			throw new SpringVirtualMachineException(String.format(
+				"Invalid LLE native call: %s %s", __func,
+				Arrays.asList(__args)));
+		
+		// Do not allow the older SpringCoat "asm" classes to be called as
+		// the interfaces are very different with the MLE layer.
+		if (__func.startsWith("cc/squirreljme/runtime/cldc/asm/"))
+			throw new SpringVirtualMachineException(String.format(
+				"Old-SpringCoat native call: %s %s", __func,
+				Arrays.asList(__args)));
+		
+		// Only allow mid-level native calls
+		if (!__func.startsWith("cc/squirreljme/jvm/mle/"))
+			throw new SpringVirtualMachineException(String.format(
+				"Non-MLE native call: %s %s", __func,
+				Arrays.asList(__args)));
+		
+		if (true)
+			return NativeHLEHandler.dispatch(this, __func, __args);
+		
 		// Depends on the function
 		switch (__func)
 		{

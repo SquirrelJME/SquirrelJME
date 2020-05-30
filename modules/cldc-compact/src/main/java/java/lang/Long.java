@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
@@ -33,7 +34,7 @@ public final class Long
 	
 	/** The class representing the primitive long type. */
 	public static final Class<Long> TYPE =
-		ObjectAccess.<Long>classByNameType("long");
+		TypeShelf.<Long>typeToClass(TypeShelf.typeOfLong());
 	
 	/** The value of this long. */
 	private final long _value;

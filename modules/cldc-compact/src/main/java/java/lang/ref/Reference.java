@@ -10,9 +10,6 @@
 
 package java.lang.ref;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
-
 /**
  * This class represents references which may be referred to using various
  * different means of attachment, as such this family of classes integrates
@@ -23,9 +20,6 @@ import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
  */
 public abstract class Reference<T>
 {
-	/** The primitive reference used to access the object. */
-	private final PrimitiveReference _ref;
-	
 	/** The queue this reference is in, volatile to be clearned. */
 	private volatile ReferenceQueue<? super T> _queue;
 	
@@ -37,17 +31,14 @@ public abstract class Reference<T>
 	 * specified queue to place this reference into when garbage collection
 	 * occurs.
 	 *
-	 * @param __r The primitive reference storage.
 	 * @param __v The object to point to, may be {@code null}.
 	 * @param __q When the given object is garbage collected the specified
 	 * queue will be given this reference (not {@code __v} itself}, may be
 	 * {@code null}
-	 * @since 2018/09/23
+	 * @since 2020/05/30
 	 */
-	Reference(PrimitiveReference __r, T __v, ReferenceQueue<? super T> __q)
+	Reference(T __v, ReferenceQueue<? super T> __q)
 	{
-		// Set
-		this._ref = __r;
 		this._queue = __q;
 		
 		// Set primitive reference data

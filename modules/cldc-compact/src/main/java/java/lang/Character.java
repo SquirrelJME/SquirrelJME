@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
@@ -46,7 +47,7 @@ public final class Character
 	
 	/** The class representing the primitive type. */
 	public static final Class<Character> TYPE =
-		ObjectAccess.<Character>classByNameType("char");
+		TypeShelf.<Character>typeToClass(TypeShelf.typeOfCharacter());
 	
 	/** The character value. */
 	private final char _value;

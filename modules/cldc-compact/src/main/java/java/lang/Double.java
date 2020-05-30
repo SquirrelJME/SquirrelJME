@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
 public final class Double
@@ -47,7 +48,7 @@ public final class Double
 	
 	/** The class representing the primitive type. */
 	public static final Class<Double> TYPE =
-		ObjectAccess.<Double>classByNameType("double");
+		TypeShelf.<Double>typeToClass(TypeShelf.typeOfDouble());
 	
 	/** The mask for NaN values. */
 	private static final long _NAN_MASK =
