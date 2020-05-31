@@ -37,6 +37,14 @@ public interface SpringObject
 	SpringPointerArea pointerArea();
 	
 	/**
+	 * Returns the reference link holder for this object.
+	 *
+	 * @return The reference link for the object.
+	 * @since 2020/05/31
+	 */
+	RefLinkHolder refLink();
+	
+	/**
 	 * Returns the object type.
 	 *
 	 * @return The object type.

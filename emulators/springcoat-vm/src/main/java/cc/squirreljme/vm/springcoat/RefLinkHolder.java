@@ -9,15 +9,35 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
-
 /**
- * This contains the storage for reference links, these chain to each other.
+ * Contains the holder for reference links.
  *
- * @see RefLinkBracket
- * @since 2020/05/30
+ * @since 2020/05/31
  */
-public final class RefLinkBracketObject
-	extends AbstractGhostObject
+public final class RefLinkHolder
 {
+	/** The associated link. */
+	RefLinkObject _link;
+	
+	/**
+	 * Returns the ref link.
+	 *
+	 * @return The link.
+	 * @since 2020/05/31
+	 */
+	public RefLinkObject get()
+	{
+		return this._link;
+	}
+	
+	/**
+	 * Sets the ref link.
+	 *
+	 * @param __link The link.
+	 * @since 2020/05/31
+	 */
+	public void set(RefLinkObject __link)
+	{
+		this._link = __link;
+	}
 }

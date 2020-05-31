@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Represents the null object.
  *
@@ -40,7 +42,7 @@ public final class SpringNullObject
 	{
 		// {@squirreljme.error BK1e Cannot obtain the monitor of an object
 		// that is null.}
-		throw new SpringNullPointerException("BK1e");
+		throw new SpringVirtualMachineException("BK1e");
 	}
 	
 	/**
@@ -51,6 +53,16 @@ public final class SpringNullObject
 	public final SpringPointerArea pointerArea()
 	{
 		return SpringPointerArea.NULL;
+	}
+	
+	/**
+	 * {@inheritDoc
+	 * @since 2020/05/31
+	 */
+	@Override
+	public RefLinkHolder refLink()
+	{
+		throw new SpringVirtualMachineException("NULL has no refLink.");
 	}
 	
 	/**
