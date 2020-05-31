@@ -2,7 +2,6 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,28 +9,23 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
+
 /**
- * This interface represents a base reference.
+ * This contains the storage for reference links, these chain to each other.
  *
- * @since 2018/09/23
+ * @see RefLinkBracket
+ * @since 2020/05/30
  */
-public abstract class SpringPrimitiveReference
+public final class RefLinkObject
 	extends AbstractGhostObject
 {
-	/**
-	 * Gets the object from this reference.
-	 *
-	 * @return The value of the reference.
-	 * @since 2018/09/23
-	 */
-	public abstract SpringObject get();
+	/** The object this links. */
+	volatile SpringObject _object;
 	
-	/**
-	 * Sets the reference to the given object.
-	 *
-	 * @param __o The object to set.
-	 * @since 2018/09/23
-	 */
-	public abstract void set(SpringObject __o);
+	/** The next link in the chain. */
+	volatile RefLinkObject _next;
+	
+	/** The previous link in the chain. */
+	volatile RefLinkObject _prev;
 }
-

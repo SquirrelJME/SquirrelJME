@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -24,6 +25,10 @@ public abstract class SpringArrayObject
 	/** The monitor for this array. */
 	protected final SpringMonitor monitor =
 		new SpringMonitor();
+	
+	/** The reference link holder. */
+	protected final RefLinkHolder refLink =
+		new RefLinkHolder();
 	
 	/** The type of this object itself. */
 	protected final SpringClass selftype;
@@ -104,16 +109,6 @@ public abstract class SpringArrayObject
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException;
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/09/15
-	 */
-	@Override
-	public final SpringMonitor monitor()
-	{
-		return this.monitor;
-	}
-	
-	/**
 	 * Returns the length of this array.
 	 *
 	 * @return The array length.
@@ -126,12 +121,32 @@ public abstract class SpringArrayObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/09/15
+	 */
+	@Override
+	public final SpringMonitor monitor()
+	{
+		return this.monitor;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/12/21
 	 */
 	@Override
 	public final SpringPointerArea pointerArea()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/05/31
+	 */
+	@Override
+	public RefLinkHolder refLink()
+	{
+		return this.refLink;
 	}
 	
 	/**

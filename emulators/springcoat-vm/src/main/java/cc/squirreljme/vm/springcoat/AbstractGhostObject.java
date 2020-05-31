@@ -33,6 +33,17 @@ public abstract class AbstractGhostObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/05/31
+	 */
+	@Override
+	public RefLinkHolder refLink()
+	{
+		throw new SpringVirtualMachineException(
+			"Ghost objects cannot have refLinks: " + this.toString());
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/05/30
 	 */
 	@Override

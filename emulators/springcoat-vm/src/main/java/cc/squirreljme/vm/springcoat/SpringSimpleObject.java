@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -28,7 +29,12 @@ public final class SpringSimpleObject
 	protected final SpringMonitor monitor =
 		new SpringMonitor();
 	
+	/** The reference link holder. */
+	protected final RefLinkHolder refLink =
+		new RefLinkHolder();
+	
 	/** The pointer for this object. */
+	@Deprecated
 	protected final SpringPointerArea pointer;
 	
 	/** Field storage in the class. */
@@ -115,6 +121,16 @@ public final class SpringSimpleObject
 	public final SpringPointerArea pointerArea()
 	{
 		return this.pointer;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/05/31
+	 */
+	@Override
+	public RefLinkHolder refLink()
+	{
+		return this.refLink;
 	}
 	
 	/**
