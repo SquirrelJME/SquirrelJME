@@ -67,12 +67,17 @@ public final class SpringMachine
 	protected final SpringTaskManager tasks;
 	
 	/** The depth of this machine. */
+	@Deprecated
 	protected final int guestdepth;
+	
+	/** The global VM state. */
+	protected final GlobalState globalState;
 	
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
 	
 	/** Pointer manager. */
+	@Deprecated
 	protected final SpringPointerManager pointers =
 		new SpringPointerManager();
 	
@@ -135,6 +140,7 @@ public final class SpringMachine
 	 * @param __gd Guest depth.
 	 * @param __profiler The profiler to use.
 	 * @param __sprops System properties.
+	 * @param __gs Global system state.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
@@ -142,7 +148,7 @@ public final class SpringMachine
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
 		SpringTaskManager __tm, String __bootcl, boolean __bootmid,
 		int __bootdx, int __gd, ProfilerSnapshot __profiler,
-		Map<String, String> __sprops, String... __args)
+		Map<String, String> __sprops, GlobalState __gs, String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null)
@@ -155,6 +161,7 @@ public final class SpringMachine
 		this.bootmid = __bootmid;
 		this.bootdx = __bootdx;
 		this.guestdepth = __gd;
+		this.globalState = __gs;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
 			new ProfilerSnapshot());
