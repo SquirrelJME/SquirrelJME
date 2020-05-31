@@ -14,17 +14,21 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2019/12/21
  */
+@Deprecated
 public final class SpringPointerArea
 	implements Comparable<SpringPointerArea>
 {
 	/** Null pointer. */
+	@Deprecated
 	public static final SpringPointerArea NULL =
 		new SpringPointerArea(0, 0);
 	
 	/** The base address. */
+	@Deprecated
 	public final int base;
 	
 	/** The length of the area. */
+	@Deprecated
 	public final int length;
 	
 	/**
@@ -35,6 +39,7 @@ public final class SpringPointerArea
 	 * @throws IllegalArgumentException If the length is negative.
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	public SpringPointerArea(int __b, int __l)
 		throws IllegalArgumentException
 	{
@@ -51,6 +56,7 @@ public final class SpringPointerArea
 	 * {@inheritDoc}
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	@Override
 	public final int compareTo(SpringPointerArea __o)
 	{
@@ -61,6 +67,7 @@ public final class SpringPointerArea
 	 * {@inheritDoc}
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	@Override
 	public final boolean equals(Object __o)
 	{
@@ -71,6 +78,7 @@ public final class SpringPointerArea
 	 * {@inheritDoc}
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	@Override
 	public final int hashCode()
 	{
@@ -81,6 +89,7 @@ public final class SpringPointerArea
 	 * {@inheritDoc}
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	@Override
 	public final String toString()
 	{

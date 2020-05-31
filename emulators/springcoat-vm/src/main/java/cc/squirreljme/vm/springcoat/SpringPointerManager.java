@@ -20,6 +20,7 @@ import java.util.Map;
  *
  * @since 2019/12/21
  */
+@Deprecated
 public final class SpringPointerManager
 {
 	/** Queue for cleared references. */

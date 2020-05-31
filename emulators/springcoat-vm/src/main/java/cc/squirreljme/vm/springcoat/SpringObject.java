@@ -33,6 +33,7 @@ public interface SpringObject
 	 * @return The pointer area for this object.
 	 * @since 2019/12/21
 	 */
+	@Deprecated
 	SpringPointerArea pointerArea();
 	
 	/**

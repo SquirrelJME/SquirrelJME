@@ -36,6 +36,9 @@ public final class SpringTaskManager
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
 	
+	/** Global state. */
+	protected final GlobalState globalState;
+	
 	/** Tasks that are used. */
 	private final Map<Integer, SpringTask> _tasks =
 		new HashMap<>();
@@ -66,6 +69,7 @@ public final class SpringTaskManager
 		this.profiler = (__ps == null ? new ProfilerSnapshot() : __ps);
 		this._sysprops = (__sp == null ? new HashMap<String, String>() :
 			new HashMap<>(__sp));
+		this.globalState = new GlobalState();
 	}
 	
 	/**
@@ -142,7 +146,7 @@ public final class SpringTaskManager
 		SpringMachine machine = new SpringMachine(suites,
 			new SpringClassLoader(scl), this, null,
 			false, bootdx, __gd + 1,
-			this.profiler, this._sysprops, __args);
+			this.profiler, this._sysprops, this.globalState, __args);
 		
 		// Lock on tasks
 		Map<Integer, SpringTask> tasks = this._tasks;
