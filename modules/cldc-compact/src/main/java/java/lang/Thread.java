@@ -38,6 +38,7 @@ public class Thread
 	implements Runnable
 {
 	/** Use fake name for string? */
+	@Deprecated
 	private static final String _USE_FAKE_NAME =
 		new String();
 	
@@ -54,18 +55,22 @@ public class Thread
 		5;
 	
 	/** Start kind: Self Runnable */
+	@Deprecated
 	private static final int _START_SELF_RUNNABLE =
 		1;
 	
 	/** Start kind: Specified Runnable. */
+	@Deprecated
 	private static final int _START_GIVEN_RUNNABLE =
 		2;
 	
 	/** Start kind: MIDlet (construct then run startApp()). */
+	@Deprecated
 	private static final int _START_MIDLET =
 		3;
 	
 	/** Start kind: main() method (is String[] argument). */
+	@Deprecated
 	private static final int _START_MAIN =
 		4;
 	
@@ -183,6 +188,7 @@ public class Thread
 	 * @param __rid The real ID.
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	private Thread(int __rid, String __n)
 	{
 		this._startkind = -1;
@@ -625,6 +631,7 @@ public class Thread
 	 *
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	final void __registerThread()
 	{
 		// Lock
@@ -646,6 +653,7 @@ public class Thread
 	 *
 	 * @since 2018/12/03
 	 */
+	@Deprecated
 	final void __revokeThread()
 	{
 		// Thread no longer alive
@@ -690,6 +698,7 @@ public class Thread
 	 * @since 2018/11/20
 	 */
 	@ImplementationNote("This is the starting point of all threads.")
+	@Deprecated
 	final void __start()
 		throws IllegalThreadStateException
 	{
