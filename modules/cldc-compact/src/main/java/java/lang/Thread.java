@@ -75,33 +75,42 @@ public class Thread
 		4;
 	
 	/** Threads by virtual ID. */
+	@Deprecated
 	private static final Map<Integer, Thread> _BY_VIRTID =
 		new HashMap<>();
 	
 	/** Threads by real ID. */
+	@Deprecated
 	private static final Map<Integer, Thread> _BY_REALID =
 		new HashMap<>();
 	
 	/** The next virtual thread ID. */
+	@Deprecated
 	private static volatile int _NEXT_VIRTUAL_ID =
 		0;
 	
 	/** The active number of threads. */
+	@Deprecated
 	private static volatile int _ACTIVE_THREADS;
 	
 	/** Which kind of start are we doing? */
+	@Deprecated
 	private final int _startkind;
 	
 	/** The method to execute. */
+	@Deprecated
 	private final StaticMethod _runmethod;
 	
 	/** The argument to the method. */
+	@Deprecated
 	private final Object _runargument;
 	
 	/** The virtual thread ID. */
+	@Deprecated
 	private final int _virtid;
 	
 	/** The real thread ID. */
+	@Deprecated
 	private volatile int _realid =
 		-1;
 	
@@ -240,7 +249,8 @@ public class Thread
 		this._runargument = __ma;
 		
 		// The main thread is implicitly started
-		boolean implicitstart = (__rk == Thread._START_MAIN || __rk == Thread._START_MIDLET);
+		boolean implicitstart = (__rk == Thread._START_MAIN ||
+			__rk == Thread._START_MIDLET);
 		this._started = implicitstart;
 	}
 	
