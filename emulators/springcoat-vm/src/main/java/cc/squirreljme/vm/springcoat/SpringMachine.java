@@ -30,6 +30,7 @@ import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import net.multiphasicapps.classfile.NameAndType;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
@@ -41,6 +42,14 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
 public final class SpringMachine
 	implements Runnable, VirtualMachine
 {
+	/** The class which contains the thread starting point. */
+	private static final ClassName _START_CLASS =
+		new ClassName("java/lang/__Start__");
+	
+	/** The method to enter for main threads. */
+	private static final MethodNameAndType _MAIN_THREAD_METHOD =
+		new MethodNameAndType("__main", "()V");
+	
 	/** Lock. */
 	public final Object strlock =
 		new Object();
@@ -445,13 +454,13 @@ public final class SpringMachine
 		
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
-		SpringThread mainthread = this.createThread("main");
+		SpringThread mainThread = this.createThread("main");
 		
 		// We will be using the same logic in the thread worker if we need to
 		// initialize any objects or arguments
 		SpringThreadWorker worker = new SpringThreadWorker(this,
-			mainthread, true);
-		mainthread._worker = worker;
+			mainThread, true);
+		mainThread._worker = worker;
 		
 		// Load the entry point class
 		SpringClass entrycl = worker.loadClass(new ClassName(
@@ -461,10 +470,12 @@ public final class SpringMachine
 		SpringMethod mainmethod;
 		if (ismidlet)
 			mainmethod = entrycl.lookupMethod(false,
-				new MethodNameAndType("startApp", "()V"));
+				new MethodNameAndType("startApp",
+					"()V"));
 		else
 			mainmethod = entrycl.lookupMethod(true,
-				new MethodNameAndType("main", "([Ljava/lang/String;)V"));
+				new MethodNameAndType("main",
+					"([Ljava/lang/String;)V"));
 		
 		// Setup object to initialize with for thread
 		SpringVMStaticMethod vmsm = new SpringVMStaticMethod(mainmethod);
@@ -472,7 +483,8 @@ public final class SpringMachine
 		// Determine the entry argument, midlets is just the class to run
 		Object entryarg;
 		if (ismidlet)
-			entryarg = worker.asVMObject(entryclass.replace('.', '/'));
+			entryarg = worker.asVMObject(
+				entryclass.replace('.', '/'));
 		else
 		{
 			String[] inargs = this._args;
@@ -480,7 +492,8 @@ public final class SpringMachine
 			
 			// Setup array
 			SpringArrayObject outargs = worker.allocateArray(
-				worker.resolveClass(new ClassName("java/lang/String")), inlen);
+				worker.resolveClass(new ClassName("java/lang/String")),
+				inlen);
 			
 			// Initialize the argument array
 			for (int i = 0; i < inlen; i++)
@@ -489,6 +502,7 @@ public final class SpringMachine
 			entryarg = outargs;
 		}
 		
+		/*
 		// Setup new thread object
 		SpringObject threadobj = worker.newInstance(worker.loadClass(
 			new ClassName("java/lang/Thread")), new MethodDescriptor(
@@ -498,9 +512,14 @@ public final class SpringMachine
 		
 		// Enter the frame for that method using the arguments we passed (in
 		// a static fashion)
-		mainthread.enterFrame(worker.loadClass(
+		mainThread.enterFrame(worker.loadClass(
 			new ClassName("java/lang/Thread")).lookupMethod(false,
 			new MethodNameAndType("__start", "()V")), threadobj);
+		*/
+		
+		// Enter the main entry point which handles the thread logic
+		mainThread.enterFrame(worker.loadClass(SpringMachine._START_CLASS)
+			.lookupMethod(true, SpringMachine._MAIN_THREAD_METHOD));
 		
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
