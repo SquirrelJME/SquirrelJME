@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,6 +36,14 @@ public final class NativeHLEHandler
 	/** Prefix length. */
 	private static final int _REFERENCE_SHELF_PREFIX_LEN =
 		NativeHLEHandler._REFERENCE_SHELF_PREFIX.length();
+	
+	/** Type shelf prefix. */
+	private static final String _TYPE_SHELF_PREFIX =
+		"cc/squirreljme/jvm/mle/TypeShelf::";
+	
+	/** Type shelf prefix lenght. */
+	private static final int _TYPE_SHELF_PREFIX_LEN =
+		NativeHLEHandler._TYPE_SHELF_PREFIX.length();
 	
 	/** How many times to spin before yielding. */
 	private static final int _SPIN_LIMIT =
@@ -146,12 +155,19 @@ public final class NativeHLEHandler
 				__func.substring(NativeHLEHandler._REFERENCE_SHELF_PREFIX_LEN),
 				__args);
 		
+		// Type calls
+		else if (__func.startsWith(NativeHLEHandler._TYPE_SHELF_PREFIX))
+			return NativeHLEHandler.dispatchType(__thread,
+				__func.substring(NativeHLEHandler._TYPE_SHELF_PREFIX_LEN),
+				__args);
+		
 		// Currently Unsupported
 		else
 			throw new SpringVirtualMachineException(String.format(
 				"Unknown MLE native call: %s %s", __func,
 				Arrays.asList(__args)));
 	}
+	
 	/**
 	 * Handles the dispatching of atomic shelf native methods.
 	 *
@@ -241,5 +257,50 @@ public final class NativeHLEHandler
 					"Unknown Reference MLE native call: %s %s", __func,
 					Arrays.asList(__args)));
 		}
+	}
+	
+	/**
+	 * Handles the dispatching of type shelf native methods.
+	 *
+	 * @param __thread The current thread this is acting under.
+	 * @param __func The function which was called.
+	 * @param __args The arguments to the call.
+	 * @return The resulting object returned by the dispatcher.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/02
+	 */
+	public static Object dispatchType(SpringThreadWorker __thread,
+		String __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__thread == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__func)
+		{
+			case "findType:(Ljava/lang/String;)" +
+				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+				return NativeHLEHandler.typeFindType(__thread,
+					__thread.<String>asNativeObject(String.class, __args[0]));
+			
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown Type MLE native call: %s %s", __func,
+					Arrays.asList(__args)));
+		}
+	}
+	
+	/**
+	 * Finds a type by the name of that type.
+	 *
+	 * @param __thread The thread this is working under.
+	 * @param __name The name of the class to lookup.
+	 * @return The type for this class or {@code null}.
+	 * @since 2020/06/02
+	 */
+	public static TypeObject typeFindType(SpringThreadWorker __thread,
+		String __name)
+	{
+		throw Debugging.todo(__name);
 	}
 }

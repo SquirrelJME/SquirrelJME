@@ -100,7 +100,7 @@ You must install XCode, more information is here:
 
  * <https://developer.apple.com/xcode/>
 
-# Build Enviromment
+# Build Environment
 
 The main interaction with the SquirrelJME build environment is with Gradle
 which manages anything related to building and testing. All builds are

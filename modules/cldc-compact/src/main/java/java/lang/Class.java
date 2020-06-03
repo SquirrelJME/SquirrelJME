@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
@@ -529,12 +530,13 @@ public final class Class<T>
 		
 		// The name will have to be converted to binary form since that is
 		// what is internally used
-		Class<?> rv = ObjectAccess.classByName(__n.replace('.', '/'));
+		Class<?> rv = TypeShelf.typeToClass(TypeShelf.findType(
+			__n.replace('.', '/')));
 		
 		// {@squirreljme.error ZZ0z Could not find the specified class. (The
 		// name of the class)}
 		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ0z %s", __n));
+			throw new ClassNotFoundException("ZZ0z " + __n);
 		return rv;
 	}
 }
