@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
@@ -24,7 +25,6 @@ import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 	"generated for them, so as such Object effectively has no fields.")
 public class Object
 {
-	
 	/**
 	 * Clones the current copy creating a shallow copy of it if
 	 * {@code Cloneable} is implemented, unless this method is overridden to
@@ -67,7 +67,7 @@ public class Object
 	 * equal to c), and consistent (if no modifications to the object were made
 	 * then it should return the same value returned as the previous call).
 	 *
-	 * If this method is overriden, then also override {@code hashCode()}.
+	 * If this method is overridden, then also override {@code hashCode()}.
 	 *
 	 * @param __o The object to check equality against.
 	 * @return {@code true} if the two objects are equal.
@@ -87,7 +87,7 @@ public class Object
 	 */
 	public final Class<?> getClass()
 	{
-		return ObjectAccess.classOf(this);
+		return TypeShelf.typeToClass(TypeShelf.objectType(this));
 	}
 	
 	/**

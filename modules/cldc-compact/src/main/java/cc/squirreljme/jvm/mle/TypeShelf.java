@@ -19,6 +19,25 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 public final class TypeShelf
 {
 	/**
+	 * Finds a type by it's name.
+	 *
+	 * @param __name The name of the type.
+	 * @return The type bracket for the type or {@code null} if none was
+	 * found.
+	 * @since 2020/06/02
+	 */
+	public static native TypeBracket findType(String __name);
+	
+	/**
+	 * Returns the type of the given object.
+	 *
+	 * @param __o The object to get the type of.
+	 * @return The type of the given object.
+	 * @since 2020/06/02
+	 */
+	public static native TypeBracket objectType(Object __o);
+	
+	/**
 	 * Returns the type holder for the {@code boolean} primitive type.
 	 *
 	 * @return The type for the primitive type.
