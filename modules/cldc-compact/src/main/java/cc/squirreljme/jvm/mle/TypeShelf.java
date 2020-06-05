@@ -19,6 +19,18 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 public final class TypeShelf
 {
 	/**
+	 * Since types are virtual objects that do not have a true base off
+	 * {@link Object}, this method is used to compare two types with each
+	 * other.
+	 *
+	 * @param __a The first type.
+	 * @param __b The second type.
+	 * @return If these two types are the same.
+	 * @since 2020/06/04
+	 */
+	public static native boolean equals(TypeBracket __a, TypeBracket __b);
+	
+	/**
 	 * Finds a type by it's name.
 	 *
 	 * @param __name The name of the type.

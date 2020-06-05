@@ -993,10 +993,14 @@ public final class SpringThreadWorker
 	 * @param __cn The class to load.
 	 * @return The loaded class.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SpringClassFormatException If the class is not formatted
+	 * properly.
+	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/09/08
 	 */
 	public final SpringClass loadClass(ClassName __cn)
-		throws NullPointerException
+		throws NullPointerException, SpringClassFormatException,
+			SpringClassNotFoundException
 	{
 		if (__cn == null)
 			throw new NullPointerException("NARG");
