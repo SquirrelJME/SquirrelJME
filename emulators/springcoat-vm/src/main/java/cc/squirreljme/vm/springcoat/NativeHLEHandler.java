@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * This contains the native HLE handler for SpringCoat, all functions that
@@ -283,6 +284,11 @@ public final class NativeHLEHandler
 				return NativeHLEHandler.typeFindType(__thread,
 					__thread.<String>asNativeObject(String.class, __args[0]));
 			
+			case "objectType:(Ljava/lang/Object;)" +
+				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+				return NativeHLEHandler.typeFindType(__thread,
+					((SpringObject)__args[0]).type().name().toString());
+			
 			default:
 				throw new SpringVirtualMachineException(String.format(
 					"Unknown Type MLE native call: %s %s", __func,
@@ -301,6 +307,22 @@ public final class NativeHLEHandler
 	public static TypeObject typeFindType(SpringThreadWorker __thread,
 		String __name)
 	{
-		throw Debugging.todo(__name);
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			return new TypeObject(__thread.loadClass(new ClassName(__name)));
+		}
+		
+		// Since the method returns null when not found, we want to return
+		// this here
+		catch (SpringClassNotFoundException e)
+		{
+			// Still print the trace, just in case for debugging
+			e.printStackTrace();
+			
+			return null;
+		}
 	}
 }
