@@ -289,6 +289,10 @@ public final class NativeHLEHandler
 				return NativeHLEHandler.typeFindType(__thread,
 					((SpringObject)__args[0]).type().name().toString());
 			
+			case "typeToClass:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;)Ljava/lang/Class;":
+				throw Debugging.todo();
+			
 			default:
 				throw new SpringVirtualMachineException(String.format(
 					"Unknown Type MLE native call: %s %s", __func,
