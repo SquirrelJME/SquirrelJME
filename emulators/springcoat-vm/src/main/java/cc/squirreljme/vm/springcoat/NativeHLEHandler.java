@@ -291,7 +291,7 @@ public final class NativeHLEHandler
 			
 			case "typeToClass:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;)Ljava/lang/Class;":
-				throw Debugging.todo();
+				return __thread.asVMObject(((TypeObject)__args[0]).classy);
 			
 			default:
 				throw new SpringVirtualMachineException(String.format(
