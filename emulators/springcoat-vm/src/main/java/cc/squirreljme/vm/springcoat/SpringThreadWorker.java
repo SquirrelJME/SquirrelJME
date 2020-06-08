@@ -518,82 +518,18 @@ public final class SpringThreadWorker
 					return rv;
 				
 				// Resolve the input class, so it is initialized
-				SpringClass resclass = (__noclassres ? this.loadClass(name) :
+				SpringClass resClass = (__noclassres ? this.loadClass(name) :
 					this.resolveClass(name));
 				
 				// Resolve the class object
-				SpringClass classobj = this.resolveClass(
+				SpringClass classClass = this.resolveClass(
 					new ClassName("java/lang/Class"));
-				
-				// Copy interfaces into a class array
-				SpringClass[] interfaces = resclass.interfaceClasses();
-				int ni = interfaces.length;
-				SpringArrayObject ints = this.allocateArray(classobj, ni);
-				for (int i = 0; i < ni; i++)
-					ints.set(i, this.asVMObject(interfaces[i]));
-				
-				// See if there is a default constructor
-				SpringMethod defconmeth = resclass.lookupDefaultConstructor();
-				
-				// Get static method for this constructor
-				int defconflags;
-				SpringObject defconsm;
-				if (defconmeth != null)
-				{
-					defconflags = defconmeth.flags().toJavaBits();
-					defconsm = new SpringVMStaticMethod(defconmeth);
-				}
-				
-				// There is none
-				else
-				{
-					defconflags = 0;
-					defconsm = SpringNullObject.NULL;
-				}
-				
-				// Get the static method for enumeration values
-				ClassFlags classflags = resclass.flags();
-				SpringObject enumsm;
-				if (classflags.isEnum())
-					try
-					{
-						enumsm = new SpringVMStaticMethod(
-							resclass.lookupMethod(true,
-							new MethodName("values"),
-							new MethodDescriptor(name.addDimensions(1).
-							field())));
-					}
-					catch (SpringIncompatibleClassChangeException e)
-					{
-						enumsm = SpringNullObject.NULL;
-					}
-				else
-					enumsm = SpringNullObject.NULL;
-				
-				// Initialize V1 class data which is initialized with class
-				// data
-				SpringObject cdata = this.newInstance(new ClassName(
-					"cc/squirreljme/runtime/cldc/lang/ClassDataV1"),
-					new MethodDescriptor("(ILjava/lang/String;" +
-						"Ljava/lang/Class;[Ljava/lang/Class;" +
-						"Ljava/lang/Class;Ljava/lang/String;II" +
-						"Lcc/squirreljme/runtime/cldc/asm/StaticMethod;" +
-						"Lcc/squirreljme/runtime/cldc/asm/StaticMethod;)V"),
-					resclass.specialIndex(),
-					this.asVMObject(name.toString(), true),
-					this.asVMObject(resclass.superClass(), true),
-					ints,
-					(!resclass.isArray() ? SpringNullObject.NULL :
-						this.asVMObject(resclass.componentType(), true)),
-					this.asVMObject(resclass.inJar()),
-					classflags.toJavaBits(),
-					defconflags, defconsm, enumsm);
 				
 				// Initialize class with special class index and some class
 				// information
-				rv = this.newInstance(classobj.name(),
-					new MethodDescriptor(
-					"(Lcc/squirreljme/runtime/cldc/lang/ClassData;)V"), cdata);
+				rv = this.newInstance(classClass.name(), new MethodDescriptor(
+					"(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)V"),
+					new TypeObject(resClass));
 				
 				// Cache and use it
 				com.put(name, rv);
