@@ -1046,48 +1046,51 @@ public final class SpringThreadWorker
 	 * Note that the return value should be a native type, it is translated
 	 * as needed.
 	 *
-	 * @param __func The function to call.
+	 * @param __class The class the function is in.
+	 * @param __method The method being called.
 	 * @param __args The arguments to the function.
 	 * @return The result from the call.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	public final Object nativeMethod(String __func, Object... __args)
+	public final Object nativeMethod(ClassName __class,
+		MethodNameAndType __method, Object... __args)
 		throws NullPointerException
 	{
-		if (__func == null || __args == null)
+		if (__class == null || __method == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		// All low-level calls are considered invalid in SpringCoat because
 		// it does not have the given functionality.
-		if (__func.startsWith("cc/squirreljme/jvm/Assembly::") ||
-			__func.startsWith("cc/squirreljme/jvm/mle/lle/"))
+		if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly") ||
+			__class.toString().startsWith("cc/squirreljme/jvm/mle/lle/"))
 			throw new SpringVirtualMachineException(String.format(
-				"Invalid LLE native call: %s %s", __func,
+				"Invalid LLE native call: %s %s", __class,
 				Arrays.asList(__args)));
 		
 		// Do not allow the older SpringCoat "asm" classes to be called as
 		// the interfaces are very different with the MLE layer.
-		if (__func.startsWith("cc/squirreljme/runtime/cldc/asm/"))
+		if (__class.toString().startsWith("cc/squirreljme/runtime/cldc/asm/"))
 			throw new SpringVirtualMachineException(String.format(
-				"Old-SpringCoat native call: %s %s", __func,
+				"Old-SpringCoat native call: %s %s", __class,
 				Arrays.asList(__args)));
 		
 		// Only allow mid-level native calls
-		if (!__func.startsWith("cc/squirreljme/jvm/mle/"))
+		if (!__class.toString().startsWith("cc/squirreljme/jvm/mle/"))
 			throw new SpringVirtualMachineException(String.format(
-				"Non-MLE native call: %s %s", __func,
+				"Non-MLE native call: %s %s", __class,
 				Arrays.asList(__args)));
 		
 		// Debug
-		Debugging.debugNote("Call native %s %s", __func,
+		Debugging.debugNote("Call native %s::%s %s", __class, __method,
 			Arrays.asList(__args));
 		
 		if (true)
-			return NativeHLEHandler.dispatch(this, __func, __args);
+			return NativeHLEHandler.dispatch(this, __class, __method,
+				__args);
 		
 		// Depends on the function
-		switch (__func)
+		switch (__class + "::" + __method)
 		{
 				// Return the length of the array
 			case "cc/squirreljme/jvm/Assembly::" +
@@ -1739,10 +1742,10 @@ public final class SpringThreadWorker
 					(Integer)__args[0]);
 				
 				// {@squirreljme.error BK25 Unknown native function. (The
-				// native function)}
+				// native class; The native method)}
 			default:
 				throw new SpringVirtualMachineException(
-					String.format("BK25 %s", __func));
+					String.format("BK25 %s %s", __class, __method));
 		}
 	}
 	
@@ -4535,8 +4538,8 @@ public final class SpringThreadWorker
 		{
 			// Calculate result of method
 			MethodDescriptor type = ref.memberType();
-			Object rv = this.nativeMethod(ref.className() + "::" +
-				ref.memberName() + ":" + type, args);
+			Object rv = this.nativeMethod(ref.className(),
+				ref.memberNameAndType(), args);
 			
 			// Push native object to the stack
 			if (type.hasReturnValue())
