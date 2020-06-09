@@ -9,10 +9,10 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This contains the native HLE handler for SpringCoat, all functions that
@@ -22,30 +22,6 @@ import net.multiphasicapps.classfile.ClassName;
  */
 public final class NativeHLEHandler
 {
-	/** Atomic shelf. */
-	private static final String _ATOMIC_SHELF_PREFIX =
-		"cc/squirreljme/jvm/mle/AtomicShelf::";
-	
-	/** Atomic prefix length. */
-	private static final int _ATOMIC_SHELF_PREFIX_LEN =
-		NativeHLEHandler._ATOMIC_SHELF_PREFIX.length();
-	
-	/** Reference shelf class prefix. */
-	private static final String _REFERENCE_SHELF_PREFIX =
-		"cc/squirreljme/jvm/mle/ReferenceShelf::";
-	
-	/** Prefix length. */
-	private static final int _REFERENCE_SHELF_PREFIX_LEN =
-		NativeHLEHandler._REFERENCE_SHELF_PREFIX.length();
-	
-	/** Type shelf prefix. */
-	private static final String _TYPE_SHELF_PREFIX =
-		"cc/squirreljme/jvm/mle/TypeShelf::";
-	
-	/** Type shelf prefix lenght. */
-	private static final int _TYPE_SHELF_PREFIX_LEN =
-		NativeHLEHandler._TYPE_SHELF_PREFIX.length();
-	
 	/** How many times to spin before yielding. */
 	private static final int _SPIN_LIMIT =
 		8;
@@ -131,42 +107,47 @@ public final class NativeHLEHandler
 	 * Handles the dispatching of the native method.
 	 *
 	 * @param __thread The current thread this is acting under.
-	 * @param __func The function which was called.
+	 * @param __class The native class being called.
+	 * @param __method The method being called.
 	 * @param __args The arguments to the call.
 	 * @return The resulting object returned by the dispatcher.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/05/30
 	 */
-	public static Object dispatch(SpringThreadWorker __thread, String __func,
-		Object... __args)
+	public static Object dispatch(SpringThreadWorker __thread,
+		ClassName __class, MethodNameAndType __method, Object... __args)
 		throws NullPointerException
 	{
-		if (__thread == null || __func == null)
+		if (__thread == null || __class == null)
 			throw new NullPointerException("NARG");
 		
-		// Atomic calls
-		if (__func.startsWith(NativeHLEHandler._ATOMIC_SHELF_PREFIX))
-			return NativeHLEHandler.dispatchAtomic(__thread,
-				__func.substring(NativeHLEHandler._ATOMIC_SHELF_PREFIX_LEN),
-				__args);
+		switch (__class.toString())
+		{
+				// Atomic calls
+			case "cc/squirreljme/jvm/mle/AtomicShelf":
+				return NativeHLEHandler.dispatchAtomic(__thread, __method,
+					__args);
+					
+				// Object calls
+			case "cc/squirreljme/jvm/mle/ObjectShelf":
+				return NativeHLEHandler.dispatchObject(__thread, __method,
+					__args);
 		
-		// Reference calls
-		else if (__func.startsWith(NativeHLEHandler._REFERENCE_SHELF_PREFIX))
-			return NativeHLEHandler.dispatchReference(__thread,
-				__func.substring(NativeHLEHandler._REFERENCE_SHELF_PREFIX_LEN),
-				__args);
+				// Reference calls
+			case "cc/squirreljme/jvm/mle/ReferenceShelf":
+				return NativeHLEHandler.dispatchReference(__thread, __method,
+					__args);
 		
-		// Type calls
-		else if (__func.startsWith(NativeHLEHandler._TYPE_SHELF_PREFIX))
-			return NativeHLEHandler.dispatchType(__thread,
-				__func.substring(NativeHLEHandler._TYPE_SHELF_PREFIX_LEN),
-				__args);
-		
-		// Currently Unsupported
-		else
-			throw new SpringVirtualMachineException(String.format(
-				"Unknown MLE native call: %s %s", __func,
-				Arrays.asList(__args)));
+				// Type calls
+			case "cc/squirreljme/jvm/mle/TypeShelf":
+				return NativeHLEHandler.dispatchType(__thread, __method,
+					__args);
+				
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown MLE native call: %s::%s %s", __class, __method,
+					Arrays.asList(__args)));
+		}
 	}
 	
 	/**
@@ -180,13 +161,13 @@ public final class NativeHLEHandler
 	 * @since 2020/05/31
 	 */
 	public static Object dispatchAtomic(SpringThreadWorker __thread,
-		String __func, Object... __args)
+		MethodNameAndType __func, Object... __args)
 		throws NullPointerException
 	{
 		if (__thread == null || __func == null)
 			throw new NullPointerException("NARG");
 		
-		switch (__func)
+		switch (__func.toString())
 		{
 			case "gcLock:()I":
 				return NativeHLEHandler.atomicGcLock(__thread);
@@ -212,6 +193,45 @@ public final class NativeHLEHandler
 	}
 	
 	/**
+	 * Handles the dispatching of object shelf native methods.
+	 *
+	 * @param __thread The current thread this is acting under.
+	 * @param __func The function which was called.
+	 * @param __args The arguments to the call.
+	 * @return The resulting object returned by the dispatcher.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/09
+	 */
+	public static Object dispatchObject(SpringThreadWorker __thread,
+		MethodNameAndType __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__thread == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__func.toString())
+		{
+			case "arrayLength:(Ljava/lang/Object;)I":
+				{
+					SpringObject object = (SpringObject)__args[0];
+					if (object instanceof SpringArrayObject)
+						return ((SpringArrayObject)object).length();
+					return 0;
+				}
+			
+			case "arrayNew:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;I)" +
+				"Ljava/lang/Object;":
+				return __thread.allocateArray(((TypeObject)__args[0]).classy
+					.componentType(), (int)__args[1]);
+			
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown Object MLE native call: %s %s", __func,
+					Arrays.asList(__args)));
+		}
+	}
+	
+	/**
 	 * Handles the dispatching of reference shelf native methods.
 	 *
 	 * @param __thread The current thread this is acting under.
@@ -222,13 +242,13 @@ public final class NativeHLEHandler
 	 * @since 2020/05/30
 	 */
 	public static Object dispatchReference(SpringThreadWorker __thread,
-		String __func, Object... __args)
+		MethodNameAndType __func, Object... __args)
 		throws NullPointerException
 	{
 		if (__thread == null || __func == null)
 			throw new NullPointerException("NARG");
 		
-		switch (__func)
+		switch (__func.toString())
 		{
 			case "linkGetObject:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"RefLinkBracket;)Ljava/lang/Object;":
@@ -271,18 +291,21 @@ public final class NativeHLEHandler
 	 * @since 2020/06/02
 	 */
 	public static Object dispatchType(SpringThreadWorker __thread,
-		String __func, Object... __args)
+		MethodNameAndType __func, Object... __args)
 		throws NullPointerException
 	{
 		if (__thread == null || __func == null)
 			throw new NullPointerException("NARG");
 		
-		switch (__func)
+		switch (__func.toString())
 		{
 			case "findType:(Ljava/lang/String;)" +
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
 				return NativeHLEHandler.typeFindType(__thread,
 					__thread.<String>asNativeObject(String.class, __args[0]));
+			
+			case "isArray:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z":
+				return ((TypeObject)__args[0]).classy.isArray();
 			
 			case "objectType:(Ljava/lang/Object;)" +
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":

@@ -10,10 +10,11 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class is the root of all class trees in Java.
@@ -32,22 +33,21 @@ public class Object
 	 *
 	 * @throws CloneNotSupportedException If cloning is not supported by the
 	 * current class, the default implementation always throws this if the
-	 * {@link Cloneable} interface does not exist.
+	 * {@link Cloneable} interface is not implemented by the current object.
 	 * @return The cloned object.
 	 * @since 2016/02/08
 	 */
+	@SuppressWarnings({"SuspiciousSystemArraycopy", "UseOfClone"})
 	protected Object clone()
 		throws CloneNotSupportedException
 	{
-		// If this is an array copy elements around
-		Class<?> cl = this.getClass();
-		if (cl.isArray())
+		// If this is an array, its elements must be copied
+		int len = ObjectShelf.arrayLength(this);
+		if (len >= 0)
 		{
-			// Need length of this array to recreate!
-			int len = Assembly.arrayLength(this);
-			
 			// Allocate new array
-			Object dest = ObjectAccess.arrayNew(cl, len);
+			Object dest = ObjectShelf.<Object>arrayNew(
+				TypeShelf.objectType(this), len);
 			
 			// Copy everything over
 			System.arraycopy(this, 0, dest, 0, len);
@@ -57,7 +57,10 @@ public class Object
 		}
 		
 		// {@squirreljme.error ZZ1d This object does not support being cloned.}
-		throw new CloneNotSupportedException("ZZ1d");
+		if (!(this instanceof Cloneable))
+			throw new CloneNotSupportedException("ZZ1d");
+		
+		throw Debugging.todo();
 	}
 	
 	/**
