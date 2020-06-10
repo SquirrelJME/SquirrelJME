@@ -10,6 +10,8 @@
 
 package java.io;
 
+import cc.squirreljme.jvm.config.LineEndingType;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Encoder;
@@ -53,9 +55,6 @@ public class PrintStream
 	private static final int _THRESHOLD =
 		90;
 	
-	/** The newline sequence. */
-	private static final String _NEWLINE;
-	
 	/** The stream to write bytes to. */
 	private final OutputStream _out;
 	
@@ -78,26 +77,6 @@ public class PrintStream
 	
 	/** Error state? */
 	private boolean _inerror;
-	
-	/**
-	 * Cache the line separator which is derived from the system properties.
-	 *
-	 * @since 2018/09/18
-	 */
-	static
-	{
-		String nl;
-		try
-		{
-			nl = System.getProperty("line.separator");
-		}
-		catch (SecurityException e)
-		{
-			nl = "\n";
-		}
-		
-		_NEWLINE = nl;
-	}
 	
 	/**
 	 * Writes to the given stream using the default encoding and with no
@@ -764,21 +743,29 @@ public class PrintStream
 	/**
 	 * Prints the end of line sequence that is used for the current platform.
 	 *
-	 * @return The end of line sequence.
 	 * @since 2018/09/21
 	 */
-	private final void __println()
+	private void __println()
 	{
 		synchronized (this)
 		{
-			// If the newline character has not yet been set, use a fallback
-			String nl = PrintStream._NEWLINE;
-			if (nl == null)
-				nl = "\n";
-			
-			// Write the ending
-			for (int i = 0, n = nl.length(); i < n; i++)
-				this.__writeChar(nl.charAt(i));
+			// Write end of line sequence
+			switch (RuntimeShelf.lineEnding())
+			{
+				case LineEndingType.CR:
+					this.__writeChar('\r');
+					break;
+				
+				case LineEndingType.CRLF:
+					this.__writeChar('\r');
+					this.__writeChar('\n');
+					break;
+				
+				case LineEndingType.LF:
+				default:
+					this.__writeChar('\n');
+				
+			}
 			
 			// Flush the stream after every line printed, in the event the
 			// system does not use a UNIX newline
