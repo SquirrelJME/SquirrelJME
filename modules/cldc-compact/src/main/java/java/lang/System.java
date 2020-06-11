@@ -12,10 +12,13 @@ package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
@@ -81,12 +84,12 @@ public final class System
 		// {@squirreljme.error ZZ1x Copy operation would exceed the bounds of
 		// the array. (Source offset; Source length; Destination offset;
 		// Destination length; The copy length)}
-		int srclen = Assembly.arrayLength(__src),
-			destlen = Assembly.arrayLength(__dest);
-		if (__srcoff + __copylen > srclen ||
-			__destoff + __copylen > destlen)
+		int srcLen = ObjectShelf.arrayLength(__src),
+			destLen = ObjectShelf.arrayLength(__dest);
+		if (__srcoff + __copylen > srcLen ||
+			__destoff + __copylen > destLen)
 			throw new IndexOutOfBoundsException(String.format(
-				"ZZ1x %d %d %d %d %d", __srcoff, srclen, __destoff, destlen,
+				"ZZ1x %d %d %d %d %d", __srcoff, srcLen, __destoff, destLen,
 				__copylen));
 		
 		// {@squirreljme.error ZZ1y The source array type is not compatible
@@ -375,17 +378,11 @@ public final class System
 				
 				// The current encoding
 			case "microedition.encoding":
-				rv = SystemProperties.systemProperty("microedition.encoding");
-				if (rv == null)
-					return CodecFactory.FALLBACK_ENCODING;
-				return rv;
+				return CodecFactory.toString(RuntimeShelf.encoding());
 				
-				// The current local, must be set!
+				// The current locale, must be set!
 			case "microedition.locale":
-				rv = SystemProperties.systemProperty("microedition.locale");
-				if (rv == null)
-					return "en-US";
-				return rv;
+				return DefaultLocale.toString(RuntimeShelf.locale());
 				
 				// The current platform
 			case "microedition.platform":

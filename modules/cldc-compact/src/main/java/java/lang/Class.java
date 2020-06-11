@@ -456,16 +456,16 @@ public final class Class<T>
 		if (__n == null)
 			throw new NullPointerException();
 		
-		// The name will have to be converted to binary form since that is
-		// what is internally used
-		Class<?> rv = TypeShelf.typeToClass(TypeShelf.findType(
-			__n.replace('.', '/')));
-		
 		// {@squirreljme.error ZZ0z Could not find the specified class. (The
 		// name of the class)}
-		if (rv == null)
+		TypeBracket found = TypeShelf.findType(
+			__n.replace('.', '/'));
+		if (found == null)
 			throw new ClassNotFoundException("ZZ0z " + __n);
-		return rv;
+		
+		// The name will have to be converted to binary form since that is
+		// what is internally used
+		return TypeShelf.typeToClass(found);
 	}
 }
 

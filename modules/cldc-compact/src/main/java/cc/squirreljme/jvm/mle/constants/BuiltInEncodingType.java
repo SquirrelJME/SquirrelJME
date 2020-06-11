@@ -10,29 +10,37 @@
 package cc.squirreljme.jvm.mle.constants;
 
 /**
- * Constants for line ending.
+ * Encoding IDs which are built-in to SquirrelJME.
  *
- * @since 2020/06/09
+ * @since 2020/04/07
  */
-public interface LineEndingType
+public interface BuiltInEncodingType
 {
-	/** Unknown. */
-	byte UNKNOWN =
+	/** Unspecified, use defined property or assume UTF-8. */
+	byte UNSPECIFIED =
 		0;
 	
-	/** LF. */
-	byte LF =
+	/** UTF-8. */
+	byte UTF8 =
 		1;
 	
-	/** CR. */
-	byte CR =
+	/** ASCII. */
+	byte ASCII =
 		2;
 	
-	/** CRLF. */
-	byte CRLF =
+	/** IBM037 (EBCDIC). */
+	byte IBM037 =
 		3;
-		
-	/** Number of line types. */
-	byte NUM_LINE_ENDINGS =
+	
+	/** ISO-8859-1. */
+	byte ISO_8859_1 =
 		4;
+	
+	/** ISO-8859-15. */
+	byte ISO_8859_15 =
+		5;
+	
+	/** The number of built-in encodings. */
+	byte NUM_BUILTIN_ENCODINGS =
+		6;
 }

@@ -9,6 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.config.LineEndingType;
+import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
+import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.multiphasicapps.classfile.ClassName;
@@ -136,6 +139,11 @@ public final class NativeHLEHandler
 				// Reference calls
 			case "cc/squirreljme/jvm/mle/ReferenceShelf":
 				return NativeHLEHandler.dispatchReference(__thread, __method,
+					__args);
+				
+				// Runtime calls
+			case "cc/squirreljme/jvm/mle/RuntimeShelf":
+				return NativeHLEHandler.dispatchRuntime(__thread, __method,
 					__args);
 		
 				// Type calls
@@ -281,6 +289,57 @@ public final class NativeHLEHandler
 	}
 	
 	/**
+	 * Handles the run-time system such as locales and otherwise.
+	 *
+	 * @param __thread The thread being called under.
+	 * @param __func The method to execute.
+	 * @param __args The arguments to the call.
+	 * @return The result of the call.
+	 * @since 2020/06/11
+	 */
+	public static Object dispatchRuntime(SpringThreadWorker __thread,
+		MethodNameAndType __func, Object... __args)
+	{
+		if (__thread == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__func.toString())
+		{
+			case "encoding:()I":
+				return BuiltInEncodingType.UTF8;
+			
+			case "lineEnding:()I":
+				switch (System.getProperty("line.separator"))
+				{
+					case "\r":		return LineEndingType.CR;
+					case "\n":		return LineEndingType.LF;
+					case "\r\n":	return LineEndingType.CRLF;
+					default:		return LineEndingType.UNSPECIFIED;
+				}
+			
+			case "locale:()I":
+				switch (System.getProperty("user.country"))
+				{
+					case "US":
+						switch (System.getProperty("user.language"))
+						{
+							case "en":
+								return BuiltInLocaleType.ENGLISH_US;
+						}
+						return BuiltInLocaleType.UNSPECIFIED;
+					
+					default:
+						return BuiltInLocaleType.UNSPECIFIED;
+				}
+			
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown Runtime MLE native call: %s %s", __func,
+					Arrays.asList(__args)));
+		}
+	}
+	
+	/**
 	 * Handles the dispatching of type shelf native methods.
 	 *
 	 * @param __thread The current thread this is acting under.
@@ -299,6 +358,11 @@ public final class NativeHLEHandler
 		
 		switch (__func.toString())
 		{
+			case "classToType:(Ljava/lang/Class;)" +
+				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+				return NativeHLEHandler.typeClassToType(__thread,
+					((SpringSimpleObject)__args[0]));
+			
 			case "findType:(Ljava/lang/String;)" +
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
 				return NativeHLEHandler.typeFindType(__thread,
@@ -321,6 +385,23 @@ public final class NativeHLEHandler
 					"Unknown Type MLE native call: %s %s", __func,
 					Arrays.asList(__args)));
 		}
+	}
+	
+	/**
+	 * Returns the type that is associated with the given {@link Class} type.
+	 *
+	 * @param __thread The thread accessing this.
+	 * @param __classObj The input object.
+	 * @return The type that is associated with the class object.
+	 * @since 2020/06/11
+	 */
+	private static TypeObject typeClassToType(SpringThreadWorker __thread,
+		SpringSimpleObject __classObj)
+	{
+		return (TypeObject)__classObj.fieldByField(
+			__thread.resolveClass(new ClassName("java/lang/Class"))
+			.lookupField(false, "_type",
+				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")).get();
 	}
 	
 	/**
