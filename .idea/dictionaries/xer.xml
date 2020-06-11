@@ -5,6 +5,11 @@
       <w>backlight</w>
       <w>bootram</w>
       <w>cldc</w>
+      <w>cpibm</w>
+      <w>csascii</w>
+      <w>csibm</w>
+      <w>csisolatin</w>
+      <w>ebcdic</w>
       <w>endianess</w>
       <w>fprintf</w>
       <w>gawroriski</w>
@@ -29,6 +34,7 @@
       <w>jthrowable</w>
       <w>jvalue</w>
       <w>jweak</w>
+      <w>microedition</w>
       <w>multiphasicapps</w>
       <w>narg</w>
       <w>noassert</w>

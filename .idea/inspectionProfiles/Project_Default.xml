@@ -77,12 +77,12 @@
     <inspection_tool class="ExtendsUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="FieldNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <extension name="ConstantNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[a-zA-Z][A-Z_\d]*" />
+        <option name="m_regex" value="_?[a-zA-Z][A-Za-z_\d]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
       <extension name="ConstantWithMutableFieldTypeNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[a-z][a-zA-z_]*" />
+        <option name="m_regex" value="_?[a-zA-Z][A-Za-z_\d]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
@@ -97,7 +97,7 @@
         <option name="m_maxLength" value="32" />
       </extension>
       <extension name="StaticVariableNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[A-Z][A-Z_\d]*" />
+        <option name="m_regex" value="_?[a-zA-Z][A-Za-z_\d]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
@@ -281,7 +281,7 @@
       <option name="m_limit" value="64" />
     </inspection_tool>
     <inspection_tool class="PackageInfoWithoutPackage" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="PackageNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+    <inspection_tool class="PackageNamingConvention" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <option name="m_regex" value="[a-z]*" />
       <option name="m_minLength" value="2" />
       <option name="m_maxLength" value="16" />

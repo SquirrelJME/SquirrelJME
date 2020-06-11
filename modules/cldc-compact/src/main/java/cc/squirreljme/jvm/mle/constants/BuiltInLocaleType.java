@@ -7,40 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.config;
+package cc.squirreljme.jvm.mle.constants;
 
 /**
- * Encoding IDs which are built-in to SquirrelJME.
+ * Represents a locale which is built-in.
  *
- * @since 2020/04/07
+ * @since 2020/06/11
  */
-public interface BuiltInEncoding
+public interface BuiltInLocaleType
 {
-	/** Unspecified, use defined property or assume UTF-8. */
+	/** Unspecified. */
 	byte UNSPECIFIED =
 		0;
 	
-	/** UTF-8. */
-	byte UTF8 =
+	/** English, US. */
+	byte ENGLISH_US =
 		1;
-	
-	/** ASCII. */
-	byte ASCII =
-		2;
-	
-	/** IBM037 (EBCDIC). */
-	byte IBM037 =
-		3;
-	
-	/** ISO-8859-1. */
-	byte ISO_8859_1 =
-		4;
-	
-	/** ISO-8859-15. */
-	byte ISO_8859_15 =
-		5;
-	
-	/** The number of built-in encodings. */
-	byte NUM_BUILTIN_ENCODINGS =
-		6;
 }

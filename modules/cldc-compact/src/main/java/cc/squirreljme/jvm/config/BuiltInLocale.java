@@ -14,6 +14,7 @@ package cc.squirreljme.jvm.config;
  *
  * @since 2020/05/12
  */
+@Deprecated
 public interface BuiltInLocale
 {
 	/** Unknown, will be treated as US English. */

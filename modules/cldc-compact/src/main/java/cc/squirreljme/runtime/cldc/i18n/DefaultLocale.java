@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.i18n;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+
 /**
  * This class provides access to the default locale.
  *
@@ -18,12 +21,14 @@ package cc.squirreljme.runtime.cldc.i18n;
 public final class DefaultLocale
 {
 	/** The locale to use for conversion in cases where one is not used. */
-	public static final Locale NO_LOCALE =
-		new LocaleEnUs();
+	@SuppressWarnings("RedundantFieldInitialization")
+	private static Locale _noLocale =
+		null;
 	
 	/** The default locale. */
-	private static final Locale _DEFAULT_LOCALE =
-		DefaultLocale.__defaultLocale();
+	@SuppressWarnings("RedundantFieldInitialization")
+	private static Locale _defaultLocale =
+		null;
 	
 	/**
 	 * Not used.
@@ -35,51 +40,76 @@ public final class DefaultLocale
 	}
 	
 	/**
+	 * Returns the built-in locale instance.
+	 *
+	 * @param __id The {@link BuiltInLocaleType}.
+	 * @return The built-in locale.
+	 * @since 2020/06/11
+	 */
+	@SuppressWarnings("SwitchStatementWithTooFewBranches")
+	public static Locale builtInLocale(int __id)
+	{
+		switch (__id)
+		{
+			case BuiltInLocaleType.ENGLISH_US:
+				return new LocaleEnUs();
+			
+				// {@squirreljme.error ZZ3v Unknown built-in locale ID. (ID)}
+			default:
+				throw new IllegalArgumentException("ZZ3v " + __id);
+		}
+	}
+	
+	/**
 	 * Returns the default locale, if one was not initialized yet then "en-US"
 	 * will be used temporarily until one is.
 	 *
 	 * @return The default locale, this value should not be cached.
 	 * @since 2018/09/20
 	 */
-	public static final Locale defaultLocale()
+	public static Locale defaultLocale()
 	{
-		Locale rv = DefaultLocale._DEFAULT_LOCALE;
+		Locale rv = DefaultLocale._defaultLocale;
 		if (rv == null)
-			return DefaultLocale.NO_LOCALE;
+			DefaultLocale._defaultLocale = (rv = DefaultLocale.builtInLocale(
+				RuntimeShelf.locale()));
 		return rv;
 	}
 	
 	/**
-	 * Determines the default locale.
+	 * Returns the default no-locale which is used for default operations.
 	 *
-	 * @return The default locale.
-	 * @since 2018/09/20
+	 * @return The no-locale.
+	 * @since 2020/06/11
 	 */
-	private static final Locale __defaultLocale()
+	public static Locale noLocale()
 	{
-		// Use local from system property
-		String prop = null;
-		try
+		Locale rv = DefaultLocale._noLocale;
+		if (rv == null)
+			DefaultLocale._noLocale = (rv = new LocaleEnUs());
+		return rv;
+	}
+	
+	/**
+	 * Returns the string representation of the given locale.
+	 *
+	 * @param __builtIn The {@link BuiltInLocaleType}.
+	 * @return The string representation of this locale.
+	 * @throws IllegalArgumentException If the built-in encoding is unknown.
+	 * @since 2020/06/11
+	 */
+	@SuppressWarnings("SwitchStatementWithTooFewBranches")
+	public static String toString(int __builtIn)
+		throws IllegalArgumentException
+	{
+		switch (__builtIn)
 		{
-			prop = System.getProperty("microedition.locale");
-		}
-		catch (SecurityException e)
-		{
-		}
-		
-		// If there is none, default to US
-		if (prop == null)
-			return new LocaleEnUs();
-		
-		// Determine the locale to use
-		Locale use;
-		switch (prop.toLowerCase())
-		{
-				// Fallback to en-US
-			case "en-us":
+			case BuiltInLocaleType.ENGLISH_US:	return "en-US";
+			
+				// {@squirreljme.error ZZ4a Unknown built-in encoding.
+				// (The built-in encoding ID)}.
 			default:
-				return new LocaleEnUs();
+				throw new IllegalArgumentException("ZZ4a " + __builtIn);
 		}
 	}
 }
-
