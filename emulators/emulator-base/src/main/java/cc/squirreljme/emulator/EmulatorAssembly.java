@@ -14,7 +14,7 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.config.ConfigRomType;
-import cc.squirreljme.jvm.config.LineEndingType;
+import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import java.io.IOException;
 import java.io.OutputStream;
 

@@ -12,7 +12,7 @@ package cc.squirreljme.runtime.cldc.debug;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.config.ConfigRomKey;
-import cc.squirreljme.jvm.config.LineEndingType;
+import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import todo.OOPS;
 import todo.TODO;
 

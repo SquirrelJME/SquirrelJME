@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.config;
 
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
+import cc.squirreljme.jvm.mle.constants.LineEndingType;
 
 /**
  * This represents an option in the configuration ROM.

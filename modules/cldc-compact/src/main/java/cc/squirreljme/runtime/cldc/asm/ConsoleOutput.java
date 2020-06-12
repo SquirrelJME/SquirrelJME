@@ -18,21 +18,26 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/09/21
  */
+@Deprecated
 public final class ConsoleOutput
 {
 	/** Standard output. */
+	@Deprecated
 	public static final int OUTPUT =
 		1;
 	
 	/** Standard error. */
+	@Deprecated
 	public static final int ERROR =
 		2;
 	
 	/** End of file. */
+	@Deprecated
 	public static final int ERROR_EOF =
 		-1;
 	
 	/** Invalid file descriptor. */
+	@Deprecated
 	public static final int ERROR_INVALIDFD =
 		-2;
 	
@@ -41,6 +46,7 @@ public final class ConsoleOutput
 	 *
 	 * @since 2018/09/21
 	 */
+	@Deprecated
 	private ConsoleOutput()
 	{
 	}
@@ -59,6 +65,7 @@ public final class ConsoleOutput
 	 * returned if this is not supported.
 	 * @since 2018/12/16
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int displayRead(int[] __dim,
 		byte[] __b, int __o, int __l);
@@ -70,6 +77,7 @@ public final class ConsoleOutput
 	 * @return Zero on success, negative values for failure.
 	 * @since 2018/12/08
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int flush(int __fd);
 	
@@ -81,6 +89,7 @@ public final class ConsoleOutput
 	 * @return Zero on success, negative values for failure.
 	 * @since 2018/09/21
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int write(int __fd, int __c);
 	
@@ -94,6 +103,7 @@ public final class ConsoleOutput
 	 * @return Zero on success, negative values for failure.
 	 * @since 2018/12/05
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int write(int __fd,
 		byte[] __b, int __o, int __l);

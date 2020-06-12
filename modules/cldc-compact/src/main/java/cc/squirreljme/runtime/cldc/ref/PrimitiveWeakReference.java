@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.cldc.ref;
  *
  * @since 2018/09/23
  */
+@Deprecated
 public interface PrimitiveWeakReference
 	extends PrimitiveReference
 {

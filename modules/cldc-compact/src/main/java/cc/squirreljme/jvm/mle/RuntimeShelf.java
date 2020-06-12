@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.jvm.config.LineEndingType;
+import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 

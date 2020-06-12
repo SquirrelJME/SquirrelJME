@@ -27,13 +27,13 @@ import java.util.Objects;
 public final class CallTraceElement
 {
 	/** The class name. */
-	protected final String classname;
+	protected final String className;
 	
 	/** The method name. */
-	protected final String methodname;
+	protected final String methodName;
 	
 	/** The method descriptor. */
-	protected final String methoddescriptor;
+	protected final String methodType;
 	
 	/** The execution pointer of the address. */
 	protected final long address;
@@ -45,13 +45,13 @@ public final class CallTraceElement
 	protected final int line;
 	
 	/** The Java byte code instruction. */
-	protected final int jbcinst;
+	protected final int byteCodeOp;
 	
 	/** The Java byte code address. */
-	protected final int jbcaddr;
+	protected final int byteCodeAddr;
 	
 	/** The task ID. */
-	protected final int taskid;
+	protected final int taskId;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -73,31 +73,6 @@ public final class CallTraceElement
 	public CallTraceElement()
 	{
 		this(null, null, null, -1);
-	}
-	
-	/**
-	 * Initializes a call trace element.
-	 *
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @since 2018/02/21
-	 */
-	public CallTraceElement(String __cl, String __mn)
-	{
-		this(__cl, __mn, null, -1);
-	}
-	
-	/**
-	 * Initializes a call trace element.
-	 *
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @param __md The method descriptor.
-	 * @since 2018/02/21
-	 */
-	public CallTraceElement(String __cl, String __mn, String __md)
-	{
-		this(__cl, __mn, __md, -1);
 	}
 	
 	/**
@@ -167,15 +142,15 @@ public final class CallTraceElement
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line, int __jbc, int __jpc, int __tid)
 	{
-		this.classname = __cl;
-		this.methodname = __mn;
-		this.methoddescriptor = __md;
+		this.className = __cl;
+		this.methodName = __mn;
+		this.methodType = __md;
 		this.address = __addr;
 		this.file = __file;
 		this.line = __line;
-		this.jbcinst = __jbc;
-		this.jbcaddr = __jpc;
-		this.taskid = __tid;
+		this.byteCodeOp = __jbc;
+		this.byteCodeAddr = __jpc;
+		this.taskId = __tid;
 	}
 	
 	/**
@@ -197,7 +172,7 @@ public final class CallTraceElement
 	 */
 	public final int byteCodeAddress()
 	{
-		return this.jbcaddr;
+		return this.byteCodeAddr;
 	}
 	
 	/**
@@ -209,7 +184,7 @@ public final class CallTraceElement
 	 */
 	public final int byteCodeInstruction()
 	{
-		return this.jbcinst & 0xFF;
+		return this.byteCodeOp & 0xFF;
 	}
 	
 	/**
@@ -220,7 +195,7 @@ public final class CallTraceElement
 	 */
 	public final String className()
 	{
-		return this.classname;
+		return this.className;
 	}
 	
 	/**
@@ -240,15 +215,15 @@ public final class CallTraceElement
 			return false;
 		
 		CallTraceElement o = (CallTraceElement)__o;
-		return Objects.equals(this.classname, o.classname) &&
-			Objects.equals(this.methodname, o.methodname) &&
-			Objects.equals(this.methoddescriptor, o.methoddescriptor) &&
+		return Objects.equals(this.className, o.className) &&
+			Objects.equals(this.methodName, o.methodName) &&
+			Objects.equals(this.methodType, o.methodType) &&
 			Objects.equals(this.file, o.file) &&
 			this.address == o.address &&
 			this.line == o.line &&
-			this.jbcinst == o.jbcinst &&
-			this.jbcaddr == o.jbcaddr &&
-			this.taskid == o.taskid;
+			this.byteCodeOp == o.byteCodeOp &&
+			this.byteCodeAddr == o.byteCodeAddr &&
+			this.taskId == o.taskId;
 	}
 	
 	/**
@@ -273,15 +248,15 @@ public final class CallTraceElement
 		if (rv == 0)
 		{
 			long address = this.address;
-			this._hash = (rv = Objects.hashCode(this.classname) ^
-				Objects.hashCode(this.methodname) ^
-				Objects.hashCode(this.methoddescriptor) ^
+			this._hash = (rv = Objects.hashCode(this.className) ^
+				Objects.hashCode(this.methodName) ^
+				Objects.hashCode(this.methodType) ^
 				Objects.hashCode(this.file) ^
 				(int)((address >>> 32) | address) ^
 				~this.line +
-				~this.jbcinst +
-				~this.jbcaddr +
-				~this.taskid);
+				~this.byteCodeOp +
+				~this.byteCodeAddr +
+				~this.taskId);
 		}
 		return rv;
 	}
@@ -305,7 +280,7 @@ public final class CallTraceElement
 	 */
 	public final String methodDescriptor()
 	{
-		return this.methoddescriptor;
+		return this.methodType;
 	}
 	
 	/**
@@ -316,7 +291,7 @@ public final class CallTraceElement
 	 */
 	public final String methodName()
 	{
-		return this.methodname;
+		return this.methodName;
 	}
 	
 	/**
@@ -334,13 +309,13 @@ public final class CallTraceElement
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Get all fields to determine how to print it pretty
-			String methodname = this.methodname,
-				methoddescriptor = this.methoddescriptor;
+			String methodname = this.methodName,
+				methoddescriptor = this.methodType;
 			long address = this.address;
 			int line = this.line;
-			int jbcinst = this.jbcinst & 0xFF;
-			int jbcaddr = this.jbcaddr;
-			int taskid = this.taskid;
+			int jbcinst = this.byteCodeOp & 0xFF;
+			int jbcaddr = this.byteCodeAddr;
+			int taskid = this.taskId;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -443,7 +418,7 @@ public final class CallTraceElement
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Get all fields to determine how to print it pretty
-			String classname = this.classname,
+			String classname = this.className,
 				file = this.file;
 			
 			// Format it nicely
@@ -485,15 +460,15 @@ public final class CallTraceElement
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Get all fields to determine how to print it pretty
-			String classname = this.classname,
-				methodname = this.methodname,
-				methoddescriptor = this.methoddescriptor,
+			String classname = this.className,
+				methodname = this.methodName,
+				methoddescriptor = this.methodType,
 				file = this.file;
 			long address = this.address;
 			int line = this.line;
-			int jbcinst = this.jbcinst & 0xFF;
-			int jbcaddr = this.jbcaddr;
-			int taskid = this.taskid;
+			int jbcinst = this.byteCodeOp & 0xFF;
+			int jbcaddr = this.byteCodeAddr;
+			int taskid = this.taskId;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -591,6 +566,7 @@ public final class CallTraceElement
 	 * @return The raw call trace.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public static final int[] traceRaw()
 	{
 		// Get the call height, ignore if not supported!
@@ -634,6 +610,7 @@ public final class CallTraceElement
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public static final CallTraceElement[] traceResolve(int[] __trace)
 		throws NullPointerException
 	{

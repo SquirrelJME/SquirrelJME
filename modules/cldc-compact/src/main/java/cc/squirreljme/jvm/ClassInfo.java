@@ -15,6 +15,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/05/25
  */
+@Deprecated
 public final class ClassInfo
 {
 	/** The magic number which should be used. */

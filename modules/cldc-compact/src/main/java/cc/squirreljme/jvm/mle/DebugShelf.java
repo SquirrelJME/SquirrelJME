@@ -7,28 +7,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.config;
+package cc.squirreljme.jvm.mle;
 
 /**
- * The type of line ending used.
+ * This is the shelf used for accessing the debugging features of SquirrelJME
+ * along with miscellaneous debugging utilities.
  *
- * @since 2020/04/09
+ * @since 2020/06/11
  */
-public interface LineEndingType
+public final class DebugShelf
 {
-	/** Unspecified. */
-	byte UNSPECIFIED =
-		0;
-	
-	/** LF. */
-	byte LF =
-		1;
-	
-	/** CR. */
-	byte CR =
-		2;
-	
-	/** CRLF. */
-	byte CRLF =
-		3;
+	/**
+	 * Not used.
+	 *
+	 * @since 2020/06/11
+	 */
+	private DebugShelf()
+	{
+	}
 }
