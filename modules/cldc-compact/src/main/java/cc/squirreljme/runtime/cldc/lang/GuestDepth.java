@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.cldc.lang;
  *
  * @since 2018/11/04
  */
+@Deprecated
 public final class GuestDepth
 {
 	/** The calculated guest depth. */

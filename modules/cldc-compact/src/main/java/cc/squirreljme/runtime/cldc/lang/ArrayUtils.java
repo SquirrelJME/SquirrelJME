@@ -77,7 +77,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	public static final void arraySet(Object __a, int __dx, Object __v)
+	public static void arraySet(Object __a, int __dx, Object __v)
 		throws ArrayIndexOutOfBoundsException, ClassCastException,
 			IllegalArgumentException, NullPointerException
 	{
@@ -97,7 +97,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	public static final void arraySet(int __type, Object __a, int __dx,
+	public static void arraySet(int __type, Object __a, int __dx,
 		Object __v)
 		throws ArrayIndexOutOfBoundsException, ClassCastException,
 			IllegalArgumentException, NullPointerException
@@ -109,35 +109,35 @@ public final class ArrayUtils
 		switch (__type)
 		{
 			case ArrayUtils.ARRAY_BOOLEAN:
-				((boolean[])__a)[__dx] = ((Boolean)__v).booleanValue();
+				((boolean[])__a)[__dx] = (Boolean)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_BYTE:
-				((byte[])__a)[__dx] = ((Byte)__v).byteValue();
+				((byte[])__a)[__dx] = (Byte)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_SHORT:
-				((short[])__a)[__dx] = ((Short)__v).shortValue();
+				((short[])__a)[__dx] = (Short)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_CHARACTER:
-				((char[])__a)[__dx] = ((Character)__v).charValue();
+				((char[])__a)[__dx] = (Character)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_INTEGER:
-				((int[])__a)[__dx] = ((Integer)__v).intValue();
+				((int[])__a)[__dx] = (Integer)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_LONG:
-				((long[])__a)[__dx] = ((Long)__v).longValue();
+				((long[])__a)[__dx] = (Long)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_FLOAT:
-				((float[])__a)[__dx] = ((Float)__v).floatValue();
+				((float[])__a)[__dx] = (Float)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_DOUBLE:
-				((double[])__a)[__dx] = ((Double)__v).doubleValue();
+				((double[])__a)[__dx] = (Double)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_OBJECT:
@@ -159,7 +159,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	public static final int arrayType(Object __a)
+	public static int arrayType(Object __a)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__a == null)
@@ -201,7 +201,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -223,7 +223,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -246,7 +246,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -270,7 +270,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -295,7 +295,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -321,7 +321,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -348,7 +348,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -376,7 +376,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h)
 		throws NegativeArraySizeException, NullPointerException
@@ -406,7 +406,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i)
 		throws NegativeArraySizeException, NullPointerException
@@ -437,7 +437,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i, int __j)
 		throws NegativeArraySizeException, NullPointerException
@@ -459,7 +459,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/03
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int[] __dims)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -513,7 +513,7 @@ public final class ArrayUtils
 					ArrayUtils.multiANewArray(subtype, nxskip, __dims));
 		}
 		
-		return (Object)rv;
+		return rv;
 	}
 }
 
