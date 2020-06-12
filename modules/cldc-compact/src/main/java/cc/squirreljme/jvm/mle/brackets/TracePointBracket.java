@@ -7,32 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.constants;
+package cc.squirreljme.jvm.mle.brackets;
+
+import cc.squirreljme.jvm.mle.annotation.GhostObject;
 
 /**
- * Constants for line ending.
+ * This represents a single point of tracing within the virtual machine.
  *
- * @since 2020/06/09
+ * @since 2020/06/11
  */
-public interface LineEndingType
+@GhostObject
+public interface TracePointBracket
 {
-	/** Unknown. */
-	byte UNSPECIFIED =
-		0;
-	
-	/** LF. */
-	byte LF =
-		1;
-	
-	/** CR. */
-	byte CR =
-		2;
-	
-	/** CRLF. */
-	byte CRLF =
-		3;
-		
-	/** Number of line types. */
-	byte NUM_LINE_ENDINGS =
-		4;
 }

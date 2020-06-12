@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;

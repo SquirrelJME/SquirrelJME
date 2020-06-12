@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Encoder;
+import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.util.Formatter;
 
 /**
@@ -750,21 +751,14 @@ public class PrintStream
 		synchronized (this)
 		{
 			// Write end of line sequence
-			switch (RuntimeShelf.lineEnding())
+			int lineType = RuntimeShelf.lineEnding();
+			for (int i = 0;; i++)
 			{
-				case LineEndingType.CR:
-					this.__writeChar('\r');
+				char c = LineEndingUtils.toChar(lineType, i);
+				if (c == 0)
 					break;
 				
-				case LineEndingType.CRLF:
-					this.__writeChar('\r');
-					this.__writeChar('\n');
-					break;
-				
-				case LineEndingType.LF:
-				default:
-					this.__writeChar('\n');
-				
+				this.__writeChar(c);
 			}
 			
 			// Flush the stream after every line printed, in the event the

@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
 
 /**
@@ -353,10 +354,7 @@ public final class System
 				
 				// End of line character
 			case "line.separator":
-				rv = SystemProperties.systemProperty("line.separator");
-				if (rv == null)
-					return "\n";
-				return rv;
+				return LineEndingUtils.toString(RuntimeShelf.lineEnding());
 				
 				// The current configuration, must be set!
 			case "microedition.configuration":
