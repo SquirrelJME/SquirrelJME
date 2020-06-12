@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.multiphasicapps.classfile.ClassName;
@@ -130,6 +131,11 @@ public final class NativeHLEHandler
 			case "cc/squirreljme/jvm/mle/AtomicShelf":
 				return NativeHLEHandler.dispatchAtomic(__thread, __method,
 					__args);
+				
+				// Debug calls
+			case "cc/squirreljme/jvm/mle/DebugShelf":
+				return NativeHLEHandler.dispatchDebug(__thread, __method,
+					__args);
 					
 				// Object calls
 			case "cc/squirreljme/jvm/mle/ObjectShelf":
@@ -196,6 +202,36 @@ public final class NativeHLEHandler
 			default:
 				throw new SpringVirtualMachineException(String.format(
 					"Unknown Atomic MLE native call: %s %s", __func,
+					Arrays.asList(__args)));
+		}
+	}
+	
+	/**
+	 * Handles the dispatching of atomic shelf native methods.
+	 *
+	 * @param __thread The current thread this is acting under.
+	 * @param __func The function which was called.
+	 * @param __args The arguments to the call.
+	 * @return The resulting object returned by the dispatcher.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/11
+	 */
+	public static Object dispatchDebug(SpringThreadWorker __thread,
+		MethodNameAndType __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__thread == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__func.toString())
+		{
+			case "traceStack:()" +
+				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;":
+				throw Debugging.todo();
+			
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown Debug MLE native call: %s %s", __func,
 					Arrays.asList(__args)));
 		}
 	}
