@@ -18,17 +18,21 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/11/04
  */
+@Deprecated
 public final class TaskAccess
 {
 	/** The entry point is not valid. */
+	@Deprecated
 	public static final int ERROR_INVALID_ENTRY =
 		-2;
 	
 	/** Library in the classpath is missing. */
+	@Deprecated
 	public static final int ERROR_MISSING_LIBRARY =
 		-3;
 	
 	/** Exit code indicating bad task things. */
+	@Deprecated
 	public static final int EXIT_CODE_FATAL_EXCEPTION =
 		127;
 	
@@ -47,6 +51,7 @@ public final class TaskAccess
 	 * @return The current thread ID.
 	 * @since 2018/11/20
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int currentThread();
 	
@@ -57,6 +62,7 @@ public final class TaskAccess
 	 * @param __p The priority.
 	 * @since 2018/12/07
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void setThreadPriority(int __tid, int __p);
 	
@@ -66,6 +72,7 @@ public final class TaskAccess
 	 * @param __tid The thread to signal.
 	 * @since 2018/11/21
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void signalInterrupt(int __tid);
 	
@@ -79,6 +86,7 @@ public final class TaskAccess
 	 * not start.
 	 * @since 2018/11/04
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args);
@@ -99,6 +107,7 @@ public final class TaskAccess
 	 * not start.
 	 * @since 2019/02/02
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args, String[] __sprops, ConsoleCallback __stdout,
@@ -113,6 +122,7 @@ public final class TaskAccess
 	 * @return The thread ID.
 	 * @since 2018/11/17
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int startThread(Thread __t, String __n);
 	
@@ -123,6 +133,7 @@ public final class TaskAccess
 	 * @return The status for the given task.
 	 * @since 2018/11/04
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int taskStatus(int __tid);
 }

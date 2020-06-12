@@ -48,7 +48,7 @@ public class Throwable
 	private volatile Throwable[] _suppressed;
 	
 	/** Was a cause initialized already? */
-	private volatile boolean _initcause;
+	private volatile boolean _initCause;
 	
 	/**
 	 * The cause of this exception, note this is writeable because of
@@ -120,11 +120,11 @@ public class Throwable
 		// These are trivially set
 		this._message = __m;
 		this._cause = __t;
-		this._initcause = __ic;
+		this._initCause = __ic;
 		
 		// The stack trace is implicitly filled in by this constructor, it
 		// matches the stack trace of the current thread of execution
-		this._stack = this.__getStackTrace(this, __clip, true);
+		this._stack = this.__getStackTrace(this, __clip);
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class Throwable
 	public Throwable fillInStackTrace()
 	{
 		// Get stack trace, ignore this method
-		this._stack = this.__getStackTrace(this, 1, false);
+		this._stack = this.__getStackTrace(this, 1);
 		
 		// Returns self
 		return this;
@@ -227,11 +227,11 @@ public class Throwable
 	}
 	
 	/**
-	 * Returns an array of all the throwables which were suppressed.
+	 * Returns an array of all the {@link Throwable}s which were suppressed.
 	 *
 	 * This method is thread safe.
 	 *
-	 * @return An array of all the suppresed throwables.
+	 * @return An array of all the suppressed {@link Throwable}s.
 	 * @since 2018/09/15
 	 */
 	public final Throwable[] getSuppressed()
@@ -267,11 +267,11 @@ public class Throwable
 		
 		// {@squirreljme.error ZZ28 The cause of the throwable has already
 		// been initialized.}
-		if (this._initcause)
+		if (this._initCause)
 			throw new IllegalStateException("ZZ28");
 		
 		// Set
-		this._initcause = true;
+		this._initCause = true;
 		this._cause = __t;
 		
 		return this;
@@ -301,7 +301,8 @@ public class Throwable
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		Throwable.__printStackTrace(this, __ps, 0, Throwable._TYPE_EXCEPTION);
+		Throwable.__printStackTrace(this, __ps, 0,
+			Throwable._TYPE_EXCEPTION);
 	}
 	
 	/**
@@ -329,13 +330,11 @@ public class Throwable
 	 *
 	 * @param __this The this throwable object.
 	 * @param __clip The number of entries on the top to clip.
-	 * @param __initclip Clip off initializers?
 	 * @return The stack trace for the current stack.
 	 * @throws IllegalArgumentException If the clip is negative.
 	 * @since 2018/09/16
 	 */
-	private static int[] __getStackTrace(Throwable __this,
-		int __clip, boolean __initclip)
+	private static int[] __getStackTrace(Throwable __this, int __clip)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ29 Cannot specify a negative clip for a

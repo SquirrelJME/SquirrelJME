@@ -10,7 +10,7 @@
 
 package java.io;
 
-import cc.squirreljme.jvm.config.LineEndingType;
+import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;

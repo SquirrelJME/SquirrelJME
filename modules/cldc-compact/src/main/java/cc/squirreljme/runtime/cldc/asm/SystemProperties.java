@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/09/20
  */
+@Deprecated
 public final class SystemProperties
 {
 	/**
@@ -26,6 +27,7 @@ public final class SystemProperties
 	 *
 	 * @since 2018/09/20
 	 */
+	@Deprecated
 	private SystemProperties()
 	{
 	}
@@ -38,6 +40,7 @@ public final class SystemProperties
 	 * known.
 	 * @since 2018/12/08
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static native String executablePath();
 	
@@ -47,6 +50,7 @@ public final class SystemProperties
 	 * @return The number of guests.
 	 * @since 2018/11/04
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int guestDepth();
 	
@@ -58,6 +62,7 @@ public final class SystemProperties
 	 * if there is no implementation.
 	 * @since 2018/12/13
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String implementationClass(String __n);
 	
@@ -67,6 +72,7 @@ public final class SystemProperties
 	 * @return The contact e-mail for the virtual machine.
 	 * @since 2017/10/02
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static native String javaVMEmail();
 	
@@ -76,6 +82,7 @@ public final class SystemProperties
 	 * @return The name of the virtual machine.
 	 * @since 2017/10/02
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static native String javaVMName();
 	
@@ -85,6 +92,7 @@ public final class SystemProperties
 	 * @return The URL of the JVM's virtual machine.
 	 * @since 2017/10/02
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static native String javaVMURL();
 	
@@ -103,6 +111,7 @@ public final class SystemProperties
 	 * @return The full Java virtual machine version.
 	 * @since 2017/08/13
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static native String javaVMVersion();
 	
@@ -112,6 +121,7 @@ public final class SystemProperties
 	 * @return The type of operating system SquirrelJME is running on.
 	 * @since 2018/10/14
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int operatingSystemType();
 	
@@ -123,6 +133,7 @@ public final class SystemProperties
 	 * valid.
 	 * @since 2018/09/20
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static native String systemProperty(String __k);
 	
@@ -132,6 +143,7 @@ public final class SystemProperties
 	 * @return The class library version.
 	 * @since 2017/10/02
 	 */
+	@Deprecated
 	public static String javaRuntimeVersion()
 	{
 		return SquirrelJME.RUNTIME_VERSION;
