@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
 
 /**
  * Array backed by a long array.
