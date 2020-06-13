@@ -92,6 +92,9 @@ public final class SourceError
 		List<String> parameters = new ArrayList<String>();
 		if ("(".equals(queue.peekFirst()))
 		{
+			// Remove the starting parenthesis so it is not added
+			queue.removeFirst();
+			
 			// Process queue
 			StringBuilder buffer = new StringBuilder();
 			while (!queue.isEmpty())
@@ -186,9 +189,9 @@ public final class SourceError
 	{
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(Character.toUpperCase(Character.forDigit(
+		sb.append(Character.toLowerCase(Character.forDigit(
 			__index / Character.MAX_RADIX, Character.MAX_RADIX)));
-		sb.append(Character.toUpperCase(Character.forDigit(
+		sb.append(Character.toLowerCase(Character.forDigit(
 			__index % Character.MAX_RADIX, Character.MAX_RADIX)));
 		
 		return sb.toString();

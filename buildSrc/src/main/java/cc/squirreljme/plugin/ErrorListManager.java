@@ -22,7 +22,6 @@ import org.gradle.api.tasks.SourceSet;
  */
 public final class ErrorListManager
 {
-	
 	/** The project to manage the list for. */
 	protected final Project project;
 	
