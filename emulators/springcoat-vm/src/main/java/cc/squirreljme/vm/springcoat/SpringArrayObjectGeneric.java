@@ -66,6 +66,24 @@ public final class SpringArrayObjectGeneric
 	}
 	
 	/**
+	 * Wraps the given array as a generic array.
+	 *
+	 * @param __self The self type.
+	 * @param __cl The component type.
+	 * @param __elements The array elements.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/13
+	 */
+	public SpringArrayObjectGeneric(SpringClass __self, SpringClass __cl,
+		SpringObject[] __elements)
+		throws NullPointerException
+	{
+		super(__self, __cl, __elements.length);
+		
+		this._elements = __elements;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/19
 	 */
