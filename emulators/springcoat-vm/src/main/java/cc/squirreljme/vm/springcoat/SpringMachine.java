@@ -19,6 +19,7 @@ import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
