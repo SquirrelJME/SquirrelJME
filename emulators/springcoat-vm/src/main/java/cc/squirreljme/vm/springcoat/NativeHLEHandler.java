@@ -13,6 +13,9 @@ import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
+import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
+import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.util.Arrays;
@@ -270,7 +273,8 @@ public final class NativeHLEHandler
 			
 			case "arrayNew:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;I)" +
 				"Ljava/lang/Object;":
-				return __thread.allocateArray(((TypeObject)__args[0]).classy
+				return __thread.allocateArray(((TypeObject)__args[0])
+					.getSpringClass()
 					.componentType(), (int)__args[1]);
 			
 			default:
@@ -301,12 +305,12 @@ public final class NativeHLEHandler
 		{
 			case "linkGetObject:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"RefLinkBracket;)Ljava/lang/Object;":
-				return ((RefLinkObject)__args[0])._object;
+				return ((RefLinkObject)__args[0]).getObject();
 			
 			case "linkSetObject:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"RefLinkBracket;Ljava/lang/Object;)V":
-				((RefLinkObject)__args[0])._object =
-					(SpringObject)__args[1];
+				((RefLinkObject)__args[0]).setObject(
+					(SpringObject)__args[1]);
 				return null;
 				
 			case "newLink:()Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;":
@@ -338,6 +342,7 @@ public final class NativeHLEHandler
 	 * @return The result of the call.
 	 * @since 2020/06/11
 	 */
+	@SuppressWarnings("SwitchStatementWithTooFewBranches")
 	public static Object dispatchRuntime(SpringThreadWorker __thread,
 		MethodNameAndType __func, Object... __args)
 	{
@@ -410,7 +415,7 @@ public final class NativeHLEHandler
 					__thread.<String>asNativeObject(String.class, __args[0]));
 			
 			case "isArray:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z":
-				return ((TypeObject)__args[0]).classy.isArray();
+				return ((TypeObject)__args[0]).getSpringClass().isArray();
 			
 			case "objectType:(Ljava/lang/Object;)" +
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
@@ -419,7 +424,8 @@ public final class NativeHLEHandler
 			
 			case "typeToClass:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;)Ljava/lang/Class;":
-				return __thread.asVMObject(((TypeObject)__args[0]).classy);
+				return __thread.asVMObject(((TypeObject)__args[0])
+					.getSpringClass());
 			
 			default:
 				throw new SpringVirtualMachineException(String.format(

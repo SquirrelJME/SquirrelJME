@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
+
 /**
  * This represents anything that is treated by the virtual machine as a kind
  * of object reference. This is needed for SquirrelJME since it exposes a

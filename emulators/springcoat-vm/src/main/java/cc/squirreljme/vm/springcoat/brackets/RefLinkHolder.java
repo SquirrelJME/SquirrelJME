@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.brackets;
 
 /**
  * Contains the holder for reference links.
