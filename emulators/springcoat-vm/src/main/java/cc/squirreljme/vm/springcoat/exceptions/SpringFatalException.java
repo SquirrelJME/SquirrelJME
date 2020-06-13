@@ -8,7 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringException;
 
 /**
  * This is an exception which describes something that is very fatal within

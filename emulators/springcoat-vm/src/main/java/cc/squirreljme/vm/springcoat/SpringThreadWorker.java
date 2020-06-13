@@ -24,6 +24,8 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalAccessException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
