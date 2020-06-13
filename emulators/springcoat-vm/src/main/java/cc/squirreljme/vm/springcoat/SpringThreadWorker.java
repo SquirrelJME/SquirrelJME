@@ -382,39 +382,16 @@ public final class SpringThreadWorker
 		else if (__in instanceof Byte || __in instanceof Short)
 			return Integer.valueOf(((Number)__in).intValue());
 		
-		// Character array
-		else if (__in instanceof char[])
-		{
-			char[] in = (char[])__in;
-			
-			// Setup return array
-			int n = in.length;
-			SpringArrayObject rv = this.allocateArray(
-				this.loadClass(new ClassName("char")), n);
-			
-			// Copy array values
-			for (int i = 0; i < n; i++)
-				rv.set(i, (int)in[i]);
-			
-			return rv;
-		}
-		
-		// Integer array
-		else if (__in instanceof int[])
-		{
-			int[] in = (int[])__in;
-			
-			// Setup return array
-			int n = in.length;
-			SpringArrayObject rv = this.allocateArray(
-				this.loadClass(new ClassName("int")), n);
-			
-			// Copy array values
-			for (int i = 0; i < n; i++)
-				rv.set(i, (int)in[i]);
-			
-			return rv;
-		}
+		// An array type (not copied)
+		else if (__in instanceof boolean[] ||
+			__in instanceof byte[] ||
+			__in instanceof short[] ||
+			__in instanceof char[] ||
+			__in instanceof int[] ||
+			__in instanceof long[] ||
+			__in instanceof float[] ||
+			__in instanceof double[])
+			return this.asWrappedArray(__in);
 		
 		// String array
 		else if (__in instanceof String[])
@@ -571,70 +548,6 @@ public final class SpringThreadWorker
 		Object... __elements)
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * As VM object, but boxed if a primitive.
-	 *
-	 * @param __in The object to convert.
-	 * @return The converted object.
-	 * @since 2018/11/19
-	 */
-	public final Object asVMObjectBoxed(Object __in)
-	{
-		// Null is converted to null
-		if (__in == null)
-			return SpringNullObject.NULL;
-		
-		// Box these
-		else if (__in instanceof Integer)
-			return this.newInstance(new ClassName("java/lang/Integer"),
-				new MethodDescriptor("(I)V"), __in);
-		else if (__in instanceof Long)
-			return this.newInstance(new ClassName("java/lang/Long"),
-				new MethodDescriptor("(J)V"), __in);
-		else if (__in instanceof Float)
-			return this.newInstance(new ClassName("java/lang/Float"),
-				new MethodDescriptor("(F)V"), __in);
-		else if (__in instanceof Double)
-			return this.newInstance(new ClassName("java/lang/Double"),
-				new MethodDescriptor("(D)V"), __in);
-		
-		// As-is
-		else if (__in instanceof SpringObject)
-			return __in;
-		
-		else
-			return this.asVMObject(__in);
-	}
-	
-	/**
-	 * As VM object, if it is an array it is wrapped otherwise if the object is
-	 * a primitive type it becomes boxed.
-	 *
-	 * @param __in The object to convert.
-	 * @return The converted object.
-	 * @since 2018/12/03
-	 */
-	public final Object asVMObjectBoxedOrWrappedArray(Object __in)
-	{
-		if (__in == null)
-			return SpringNullObject.NULL;
-		
-		// Array types
-		else if (__in instanceof boolean[] ||
-			__in instanceof byte[] ||
-			__in instanceof short[] ||
-			__in instanceof char[] ||
-			__in instanceof int[] ||
-			__in instanceof long[] ||
-			__in instanceof float[] ||
-			__in instanceof double[])
-			return this.asWrappedArray(__in);
-		
-		// As boxed type instead
-		else
-			return this.asVMObjectBoxed(__in);
 	}
 	
 	/**

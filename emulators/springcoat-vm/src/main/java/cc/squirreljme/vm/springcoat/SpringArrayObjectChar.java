@@ -68,7 +68,7 @@ public final class SpringArrayObjectChar
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final char[] array()
 	{
 		return this._elements;
 	}

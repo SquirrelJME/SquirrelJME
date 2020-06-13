@@ -68,7 +68,7 @@ public final class SpringArrayObjectDouble
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final double[] array()
 	{
 		return this._elements;
 	}

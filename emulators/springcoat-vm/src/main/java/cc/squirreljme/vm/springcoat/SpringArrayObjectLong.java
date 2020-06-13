@@ -68,7 +68,7 @@ public final class SpringArrayObjectLong
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final long[] array()
 	{
 		return this._elements;
 	}
