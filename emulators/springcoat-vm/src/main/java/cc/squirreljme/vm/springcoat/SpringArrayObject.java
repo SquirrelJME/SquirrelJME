@@ -137,7 +137,7 @@ public abstract class SpringArrayObject
 	 * @since 2020/05/31
 	 */
 	@Override
-	public RefLinkHolder refLink()
+	public final RefLinkHolder refLink()
 	{
 		return this.refLink;
 	}
