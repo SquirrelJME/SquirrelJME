@@ -68,7 +68,7 @@ public final class SpringArrayObjectFloat
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final float[] array()
 	{
 		return this._elements;
 	}

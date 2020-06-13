@@ -68,7 +68,7 @@ public final class SpringArrayObjectBoolean
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final boolean[] array()
 	{
 		return this._elements;
 	}

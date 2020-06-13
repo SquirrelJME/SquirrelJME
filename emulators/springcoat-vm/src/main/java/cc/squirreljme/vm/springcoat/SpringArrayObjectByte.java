@@ -68,7 +68,7 @@ public final class SpringArrayObjectByte
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final byte[] array()
 	{
 		return this._elements;
 	}

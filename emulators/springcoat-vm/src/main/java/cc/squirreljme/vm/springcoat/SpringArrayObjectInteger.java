@@ -68,7 +68,7 @@ public final class SpringArrayObjectInteger
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final int[] array()
 	{
 		return this._elements;
 	}

@@ -430,6 +430,13 @@ public final class NativeHLEHandler
 		}
 	}
 	
+	/**
+	 * Returns the stack trace for the given thread.
+	 *
+	 * @param __thread The thread to trace.
+	 * @return The stack trace for the thread.
+	 * @since 2020/06/13
+	 */
 	private static TracePointObject[] traceTraceStack(
 		SpringThreadWorker __thread)
 	{
