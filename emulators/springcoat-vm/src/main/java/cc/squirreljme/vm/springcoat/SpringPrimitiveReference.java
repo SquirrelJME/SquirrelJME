@@ -15,6 +15,7 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2018/09/23
  */
+@Deprecated
 public abstract class SpringPrimitiveReference
 	extends AbstractGhostObject
 {

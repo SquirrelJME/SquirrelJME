@@ -227,7 +227,10 @@ public final class NativeHLEHandler
 		{
 			case "traceStack:()" +
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;":
-				throw Debugging.todo();
+				return __thread.asVMObjectArray(__thread.resolveClass(
+					new ClassName("[Lcc/squirreljme/jvm/" +
+					"mle/brackets/TracePointBracket;")),
+					NativeHLEHandler.traceTraceStack(__thread));
 			
 			default:
 				throw new SpringVirtualMachineException(String.format(
@@ -421,6 +424,12 @@ public final class NativeHLEHandler
 					"Unknown Type MLE native call: %s %s", __func,
 					Arrays.asList(__args)));
 		}
+	}
+	
+	private static TracePointObject[] traceTraceStack(
+		SpringThreadWorker __thread)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

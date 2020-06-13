@@ -2,7 +2,6 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,12 +10,11 @@
 package cc.squirreljme.vm.springcoat;
 
 /**
- * This represents an instance of an object which has a class and defined
- * fields.
+ * This class stores anything that is within trace points and such.
  *
- * @since 2018/07/22
+ * @since 2020/06/12
  */
-public final class SpringInstance
+public class TracePointObject
+	extends AbstractGhostObject
 {
 }
-

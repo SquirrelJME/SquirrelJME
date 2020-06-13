@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -543,6 +544,20 @@ public final class SpringThreadWorker
 		else
 			throw new RuntimeException(
 				String.format("BK21 %s", __in.getClass()));
+	}
+	
+	/**
+	 * Creates an array from the given elements.
+	 *
+	 * @param __type The array type.
+	 * @param __elements The elements to be in the array.
+	 * @return The array.
+	 * @since 2020/06/12
+	 */
+	public final SpringArrayObject asVMObjectArray(SpringClass __type,
+		Object... __elements)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -3992,6 +4007,7 @@ public final class SpringThreadWorker
 	 * @return The result.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public final long systemCall(short __si, int... __args)
 	{
 		// Make at least 8!
@@ -4370,6 +4386,7 @@ public final class SpringThreadWorker
 	 * @return The resulting pointer.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public final int uniqueObjectToPointer(SpringObject __p)
 	{
 		// Null reference?
@@ -4387,6 +4404,7 @@ public final class SpringThreadWorker
 	 * @return The resulting pointer.
 	 * @since 2019/06/16
 	 */
+	@Deprecated
 	public final SpringObject uniquePointerToObject(int __p)
 	{
 		// Null reference?
@@ -4536,14 +4554,29 @@ public final class SpringThreadWorker
 		// Virtualized native call, depends on what it is
 		if (refmethod.flags().isNative())
 		{
-			// Calculate result of method
-			MethodDescriptor type = ref.memberType();
-			Object rv = this.nativeMethod(ref.className(),
-				ref.memberNameAndType(), args);
+			// Add profiler point for native calls to track them there along
+			// with being able to handle that
+			this.thread.profiler.enterFrame(ref.className().toString(),
+				ref.memberName().toString(), ref.memberType().toString());
 			
-			// Push native object to the stack
-			if (type.hasReturnValue())
-				__f.pushToStack(this.asVMObject(rv, true));
+			// Now perform the actual call
+			try
+			{
+				// Calculate result of method
+				MethodDescriptor type = ref.memberType();
+				Object rv = this.nativeMethod(ref.className(),
+					ref.memberNameAndType(), args);
+				
+				// Push native object to the stack
+				if (type.hasReturnValue())
+					__f.pushToStack(this.asVMObject(rv, true));
+			}
+			
+			// Exit the profiler frame to it is no longer tracked
+			finally
+			{
+				this.thread.profiler.exitFrame();
+			}
 		}
 		
 		// Real code that exists in class file format
