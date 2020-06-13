@@ -275,8 +275,7 @@ public final class NativeHLEHandler
 			case "arrayNew:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;I)" +
 				"Ljava/lang/Object;":
 				return __thread.allocateArray(((TypeObject)__args[0])
-					.getSpringClass()
-					.componentType(), (int)__args[1]);
+					.getSpringClass(), (int)__args[1]);
 			
 			default:
 				throw new SpringVirtualMachineException(String.format(
@@ -440,7 +439,7 @@ public final class NativeHLEHandler
 	private static TracePointObject[] traceTraceStack(
 		SpringThreadWorker __thread)
 	{
-		throw Debugging.todo();
+		throw new SpringVirtualMachineException("TODO");
 	}
 	
 	/**

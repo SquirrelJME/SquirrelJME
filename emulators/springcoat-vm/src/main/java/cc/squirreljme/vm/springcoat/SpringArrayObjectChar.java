@@ -29,17 +29,15 @@ public final class SpringArrayObjectChar
 	 * Initializes the array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __l The array length.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/11/04
 	 */
-	public SpringArrayObjectChar(SpringClass __self, SpringClass __cl,
-		int __l)
+	public SpringArrayObjectChar(SpringClass __self, int __l)
 		throws NullPointerException
 	{
-		super(__self, __cl, __l);
+		super(__self, __l);
 		
 		// Initialize elements
 		this._elements = new char[__l];
@@ -49,16 +47,14 @@ public final class SpringArrayObjectChar
 	 * Wraps the native array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/18
 	 */
-	public SpringArrayObjectChar(SpringClass __self, SpringClass __cl,
-		char[] __a)
+	public SpringArrayObjectChar(SpringClass __self, char[] __a)
 		throws NullPointerException
 	{
-		super(__self, __cl, __a.length);
+		super(__self, __a.length);
 		
 		this._elements = __a;
 	}

@@ -49,16 +49,15 @@ public abstract class SpringArrayObject
 	 * Initializes the array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __l The array length.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
-	public SpringArrayObject(SpringClass __self, SpringClass __cl, int __l)
+	public SpringArrayObject(SpringClass __self, int __l)
 		throws NullPointerException
 	{
-		if (__self == null || __cl == null)
+		if (__self == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error BK01 Attempt to allocate an array of a
@@ -68,7 +67,7 @@ public abstract class SpringArrayObject
 				String.format("BK01 %d", __l));
 		
 		this.selftype = __self;
-		this.component = __cl;
+		this.component = __self.componentType();
 		this.length = __l;
 	}
 	
