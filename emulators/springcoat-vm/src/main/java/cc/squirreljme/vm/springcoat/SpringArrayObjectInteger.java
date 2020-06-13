@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
+
 /**
  * Array backed by an int array.
  *

@@ -10,7 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -21,6 +20,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;

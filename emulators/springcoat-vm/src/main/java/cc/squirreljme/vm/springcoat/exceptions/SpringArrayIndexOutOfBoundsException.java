@@ -8,23 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
+import cc.squirreljme.vm.springcoat.SpringException;
 
 /**
- * This is thrown when a divide by zero occurs.
+ * This is thrown when an invalid out of bounds index was accessed in an
+ * array.
  *
- * @since 2018/12/04
+ * @since 2018/09/16
  */
-public class SpringArithmeticException
+public class SpringArrayIndexOutOfBoundsException
 	extends SpringException
 	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/12/04
+	 * @since 2018/09/16
 	 */
-	public SpringArithmeticException()
+	public SpringArrayIndexOutOfBoundsException()
 	{
 	}
 	
@@ -32,9 +36,9 @@ public class SpringArithmeticException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/12/04
+	 * @since 2018/09/16
 	 */
-	public SpringArithmeticException(String __m)
+	public SpringArrayIndexOutOfBoundsException(String __m)
 	{
 		super(__m);
 	}
@@ -44,9 +48,9 @@ public class SpringArithmeticException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/12/04
+	 * @since 2018/09/16
 	 */
-	public SpringArithmeticException(String __m, Throwable __c)
+	public SpringArrayIndexOutOfBoundsException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -55,9 +59,9 @@ public class SpringArithmeticException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/12/04
+	 * @since 2018/09/16
 	 */
-	public SpringArithmeticException(Throwable __c)
+	public SpringArrayIndexOutOfBoundsException(Throwable __c)
 	{
 		super(__c);
 	}
@@ -69,7 +73,7 @@ public class SpringArithmeticException
 	@Override
 	public String targetClass()
 	{
-		return "java/lang/ArithmeticException";
+		return "java/lang/ArrayIndexOutOfBoundsException";
 	}
 }
 
