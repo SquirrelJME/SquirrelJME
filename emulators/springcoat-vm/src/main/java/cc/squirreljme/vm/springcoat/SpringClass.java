@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

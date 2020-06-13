@@ -22,6 +22,8 @@ import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;

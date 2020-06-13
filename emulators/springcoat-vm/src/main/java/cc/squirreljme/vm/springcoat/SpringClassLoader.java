@@ -11,6 +11,8 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
