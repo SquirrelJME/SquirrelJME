@@ -130,7 +130,7 @@ public final class Debugging
 	}
 	
 	/**
-	 * Returns a TODO for an object.
+	 * Returns a To-Do for an object.
 	 *
 	 * @param <T> The type.
 	 * @param __args The calling arguments.
