@@ -8,7 +8,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
+
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
+import cc.squirreljme.vm.springcoat.SpringException;
 
 /**
  * This is thrown when an invalid value was attempted to be stored into an
