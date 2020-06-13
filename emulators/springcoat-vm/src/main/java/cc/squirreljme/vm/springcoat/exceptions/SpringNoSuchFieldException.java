@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
 
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
 

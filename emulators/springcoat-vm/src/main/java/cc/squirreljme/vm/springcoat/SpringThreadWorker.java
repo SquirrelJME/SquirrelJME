@@ -29,6 +29,8 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalAccessException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
