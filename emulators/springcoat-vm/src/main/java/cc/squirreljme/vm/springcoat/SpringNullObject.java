@@ -10,7 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 
 /**
  * Represents the null object.

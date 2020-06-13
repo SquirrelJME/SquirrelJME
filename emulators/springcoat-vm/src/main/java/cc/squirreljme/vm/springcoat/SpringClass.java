@@ -15,6 +15,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
