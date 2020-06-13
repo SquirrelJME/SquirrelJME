@@ -32,26 +32,24 @@ public final class SpringArrayObjectGeneric
 	 * Initializes the array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __l The array length.
 	 * @throws IllegalArgumentException If the given type is primitive.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
-	public SpringArrayObjectGeneric(SpringClass __self, SpringClass __cl,
-		int __l)
+	public SpringArrayObjectGeneric(SpringClass __self, int __l)
 		throws IllegalArgumentException, NullPointerException,
 			SpringNegativeArraySizeException
 	{
-		super(__self, __cl, __l);
+		super(__self, __l);
 		
 		// Previously this was permitted, however since there are other more
 		// optimal forms for arrays this is no longer needed to have a generic
 		// array to store these values
-		if (__cl.name().primitiveType() != null)
+		if (__self.componentType().name().primitiveType() != null)
 			throw new IllegalArgumentException("Cannot have a generic " +
-				"array of primitive types: " + __cl);
+				"array of primitive types: " + __self);
 		
 		// Initialize elements
 		SpringObject[] elements;
@@ -69,16 +67,15 @@ public final class SpringArrayObjectGeneric
 	 * Wraps the given array as a generic array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __elements The array elements.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/13
 	 */
-	public SpringArrayObjectGeneric(SpringClass __self, SpringClass __cl,
+	public SpringArrayObjectGeneric(SpringClass __self,
 		SpringObject[] __elements)
 		throws NullPointerException
 	{
-		super(__self, __cl, __elements.length);
+		super(__self, __elements.length);
 		
 		this._elements = __elements;
 	}

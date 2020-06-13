@@ -13,6 +13,7 @@
 #include "jni.h"
 #include "cc_squirreljme_emulator_NativeBinding.h"
 #include "cc_squirreljme_jvm_Assembly.h"
+#include "squirreljme.h"
 
 // Method handler for special functions
 JNIEXPORT void JNICALL doNothing(JNIEnv* env, jclass classy);
@@ -270,6 +271,12 @@ JNIEXPORT void JNICALL restrictedFunction(JNIEnv* env, jclass classy)
 JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethods
 	(JNIEnv* env, jclass classy)
 {
-	return env->RegisterNatives(env->FindClass("cc/squirreljme/jvm/Assembly"),
+	jint rv = 0;
+
+	rv |= env->RegisterNatives(env->FindClass("cc/squirreljme/jvm/Assembly"),
 		assemblyMethods, sizeof(assemblyMethods) / sizeof(JNINativeMethod));
+
+	rv |= mleRuntimeInit(env, classy);
+
+	return rv;
 }

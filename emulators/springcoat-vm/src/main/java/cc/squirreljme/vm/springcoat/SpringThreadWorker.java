@@ -116,57 +116,62 @@ public final class SpringThreadWorker
 	 * Allocates the memory needed to store an array of the given class and
 	 * of the given length.
 	 *
-	 * @param __cl The component type.
+	 * @param __cl The array type.
 	 * @param __l The length of the array.
 	 * @return The allocated array.
+	 * @throws IllegalArgumentException If the type is not an array.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
 	public final SpringArrayObject allocateArray(SpringClass __cl, int __l)
-		throws NullPointerException, SpringNegativeArraySizeException
+		throws IllegalArgumentException, NullPointerException,
+			SpringNegativeArraySizeException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		SpringClass dim = this.resolveClass(__cl.name().addDimensions(1));
-		switch (__cl.name().toString())
+		// This must be an array type
+		if (!__cl.isArray())
+			throw new IllegalArgumentException("Not an array: " + __cl);
+		
+		switch (__cl.componentType().name().toString())
 		{
 				// Boolean
 			case "boolean":
-				return new SpringArrayObjectBoolean(dim, __cl, __l);
+				return new SpringArrayObjectBoolean(__cl, __l);
 			
 				// Byte
 			case "byte":
-				return new SpringArrayObjectByte(dim, __cl, __l);
+				return new SpringArrayObjectByte(__cl, __l);
 				
 				// Short
 			case "short":
-				return new SpringArrayObjectShort(dim, __cl, __l);
+				return new SpringArrayObjectShort(__cl, __l);
 				
 				// Char
 			case "char":
-				return new SpringArrayObjectChar(dim, __cl, __l);
+				return new SpringArrayObjectChar(__cl, __l);
 				
 				// Int
 			case "int":
-				return new SpringArrayObjectInteger(dim, __cl, __l);
+				return new SpringArrayObjectInteger(__cl, __l);
 				
 				// Long
 			case "long":
-				return new SpringArrayObjectLong(dim, __cl, __l);
+				return new SpringArrayObjectLong(__cl, __l);
 				
 				// Float
 			case "float":
-				return new SpringArrayObjectFloat(dim, __cl, __l);
+				return new SpringArrayObjectFloat(__cl, __l);
 				
 				// Float
 			case "double":
-				return new SpringArrayObjectDouble(dim, __cl, __l);
+				return new SpringArrayObjectDouble(__cl, __l);
 			
 				// Generic array
 			default:
-				return new SpringArrayObjectGeneric(dim, __cl, __l);
+				return new SpringArrayObjectGeneric(__cl, __l);
 		}
 		
 	}
@@ -205,7 +210,7 @@ public final class SpringThreadWorker
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// Is null refernece
+		// Is null reference
 		else if (__in == SpringNullObject.NULL)
 			return null;
 		
@@ -215,49 +220,8 @@ public final class SpringThreadWorker
 			return __in;
 		
 		// Array type
-		else if (__in instanceof SpringArrayObject)
-		{
-			SpringArrayObject sao = (SpringArrayObject)__in;
-			
-			int len = sao.length();
-			
-			// Depends on the array type
-			SpringClass sscl = sao.type();
-			ClassName type = sscl.name();
-			switch (type.toString())
-			{
-					// Char array
-				case "[C":
-					{
-						char[] rv = new char[len];
-						
-						for (int i = 0; i < len; i++)
-							rv[i] = (char)(sao.<Integer>get(Integer.class, i).
-								intValue());
-						
-						return rv;
-					}
-					
-					// String
-				case "[Ljava/lang/String;":
-					{
-						String[] rv = new String[len];
-						
-						for (int i = 0; i < len; i++)
-							rv[i] = this.<String>asNativeObject(String.class,
-								sao.<SpringObject>get(SpringObject.class, i));
-						
-						return rv;
-					}
-				
-					// {@squirreljme.error BK1y Do not know how to convert the
-					// given virtual machine array to a native machine array.
-					// (The input class)}
-				default:
-					throw new RuntimeException(
-						String.format("BK1y %s", type));
-			}
-		}
+		if (__in instanceof SpringArrayObject)
+			return ((SpringArrayObject)__in).array();
 		
 		// Class type
 		else if (__in instanceof SpringSimpleObject)
@@ -295,28 +259,6 @@ public final class SpringThreadWorker
 		else
 			throw new SpringFatalException(
 				String.format("BK20 %s", __in.getClass()));
-	}
-	
-	/**
-	 * Converts the specified object to a native object or unwraps an array
-	 * for direct access.
-	 *
-	 * @param <C> The resulting class type.
-	 * @param __cl The class to cast to.
-	 * @param __in The input object.
-	 * @return The resulting object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/11/19
-	 */
-	public final <C> C asNativeObjectUnwrapArray(Class<C> __cl, Object __in)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException();
-		
-		if (__in instanceof SpringArrayObject)
-			return __cl.cast(((SpringArrayObject)__in).array());
-		return this.<C>asNativeObject(__cl, __in);
 	}
 	
 	/**
@@ -372,15 +314,15 @@ public final class SpringThreadWorker
 		
 		// Boolean to integer
 		else if (__in instanceof Boolean)
-			return Integer.valueOf((Boolean.TRUE.equals(__in) ? 1 : 0));
+			return (Boolean.TRUE.equals(__in) ? 1 : 0);
 		
 		// Character to Integer
 		else if (__in instanceof Character)
-			return Integer.valueOf(((Character)__in).charValue());
+			return (int)(Character)__in;
 		
 		// Promoted to integer
 		else if (__in instanceof Byte || __in instanceof Short)
-			return Integer.valueOf(((Number)__in).intValue());
+			return ((Number)__in).intValue();
 		
 		// An array type (not copied)
 		else if (__in instanceof boolean[] ||
@@ -393,6 +335,12 @@ public final class SpringThreadWorker
 			__in instanceof double[])
 			return this.asWrappedArray(__in);
 		
+		// Object array type
+		else if (__in instanceof SpringObject[])
+			return new SpringArrayObjectGeneric(
+				this.loadClass(new ClassName("java/lang/Object")),
+				(SpringObject[])__in);
+		
 		// String array
 		else if (__in instanceof String[])
 		{
@@ -401,7 +349,7 @@ public final class SpringThreadWorker
 			// Setup return array
 			int n = in.length;
 			SpringArrayObject rv = this.allocateArray(
-				this.loadClass(new ClassName("java/lang/String")), n);
+				this.loadClass(new ClassName("[Ljava/lang/String;")), n);
 			
 			// Copy array values
 			for (int i = 0; i < n; i++)
@@ -410,7 +358,7 @@ public final class SpringThreadWorker
 			return rv;
 		}
 		
-		// Convertable exception
+		// Convertible exception
 		else if (__in instanceof SpringConvertableThrowable)
 		{
 			SpringConvertableThrowable e = (SpringConvertableThrowable)__in;
@@ -569,56 +517,48 @@ public final class SpringThreadWorker
 		else if (__a instanceof boolean[])
 			return new SpringArrayObjectBoolean(
 				this.loadClass(new ClassName("[Z")),
-				this.loadClass(new ClassName("boolean")),
 				(boolean[])__a);
 		
 		// Byte
 		else if (__a instanceof byte[])
 			return new SpringArrayObjectByte(
 				this.loadClass(new ClassName("[B")),
-				this.loadClass(new ClassName("byte")),
 				(byte[])__a);
 		
 		// Short
 		else if (__a instanceof short[])
 			return new SpringArrayObjectShort(
 				this.loadClass(new ClassName("[S")),
-				this.loadClass(new ClassName("short")),
 				(short[])__a);
 		
 		// Character
 		else if (__a instanceof char[])
 			return new SpringArrayObjectChar(
 				this.loadClass(new ClassName("[C")),
-				this.loadClass(new ClassName("char")),
 				(char[])__a);
 		
 		// Integer
 		else if (__a instanceof int[])
 			return new SpringArrayObjectInteger(
 				this.loadClass(new ClassName("[I")),
-				this.loadClass(new ClassName("int")),
 				(int[])__a);
 		
 		// Long
 		else if (__a instanceof long[])
 			return new SpringArrayObjectLong(
 				this.loadClass(new ClassName("[J")),
-				this.loadClass(new ClassName("long")),
 				(long[])__a);
 		
 		// Float
 		else if (__a instanceof float[])
 			return new SpringArrayObjectFloat(
 				this.loadClass(new ClassName("[F")),
-				this.loadClass(new ClassName("float")),
 				(float[])__a);
 		
 		// Double
 		else if (__a instanceof double[])
 			return new SpringArrayObjectDouble(
 				this.loadClass(new ClassName("[D")),
-				this.loadClass(new ClassName("double")),
 				(double[])__a);
 		
 		// {@squirreljme.error BK22 Cannot wrap this as a native array.
@@ -1560,7 +1500,8 @@ public final class SpringThreadWorker
 					// Allocate new array
 				case InstructionIndex.ANEWARRAY:
 					frame.pushToStack(this.allocateArray(this.resolveClass(
-						inst.<ClassName>argument(0, ClassName.class)),
+						inst.<ClassName>argument(0, ClassName.class)
+						.addDimensions(1)),
 						frame.<Integer>popFromStack(Integer.class)));
 					break;
 					
@@ -3013,7 +2954,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.NEWARRAY:
 					frame.pushToStack(this.allocateArray(this.resolveClass(
 						ClassName.fromPrimitiveType(
-						inst.<PrimitiveType>argument(0, PrimitiveType.class))),
+						inst.<PrimitiveType>argument(0,
+							PrimitiveType.class)).addDimensions(1)),
 						frame.<Integer>popFromStack(Integer.class)));
 					break;
 					

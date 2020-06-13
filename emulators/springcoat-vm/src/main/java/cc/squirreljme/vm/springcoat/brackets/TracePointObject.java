@@ -16,7 +16,7 @@ import cc.squirreljme.vm.springcoat.AbstractGhostObject;
  *
  * @since 2020/06/12
  */
-public class TracePointObject
+public final class TracePointObject
 	extends AbstractGhostObject
 {
 }

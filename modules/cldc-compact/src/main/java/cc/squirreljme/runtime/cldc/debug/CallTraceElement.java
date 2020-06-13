@@ -426,19 +426,14 @@ public final class CallTraceElement
 			StringBuilder sb = new StringBuilder();
 			
 			// Class name
-			sb.append((classname == null ? "<unknown>" : classname));
+			sb.append((classname == null ? "<unknown>" :
+				classname.replace('/', '.')));
 			
 			// Is this in a file?
-			boolean hasfile = (file != null);
-			if (hasfile)
+			if (file != null)
 			{
 				sb.append(" (");
-				
-				// File
-				boolean sp = false;
-				if ((sp |= hasfile))
-					sb.append(file);
-				
+				sb.append(file);
 				sb.append(')');
 			}
 			

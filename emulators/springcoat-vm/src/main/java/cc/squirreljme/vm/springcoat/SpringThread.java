@@ -11,6 +11,8 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
@@ -96,7 +98,7 @@ public final class SpringThread
 	public final SpringThread.Frame currentFrame()
 	{
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			if (frames.isEmpty())
 				return null;
@@ -121,7 +123,7 @@ public final class SpringThread
 			throw new SpringVirtualMachineException("BK1j");
 		
 		// Lock on frames as a new one is added
-		synchronized (frames)
+		synchronized (this)
 		{
 			frames.add(rv);
 		}
@@ -179,7 +181,7 @@ public final class SpringThread
 		
 		// Lock on frames as a new one is added
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			frames.add(rv);
 		}
@@ -247,7 +249,7 @@ public final class SpringThread
 	{
 		// Lock on frames as a new one is added
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			frames.clear();
 		}
@@ -263,10 +265,66 @@ public final class SpringThread
 	{
 		// Lock on frames
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			return frames.<SpringThread.Frame>toArray(
 				new SpringThread.Frame[frames.size()]);
+		}
+	}
+	
+	/**
+	 * Returns the stack trace for this thread.
+	 * 
+	 * @return The stack trace for this thread.
+	 * @since 2020/06/13
+	 */
+	public final CallTraceElement[] getStackTrace()
+	{
+		// Lock since the frames may change!
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (this)
+		{
+			// Setup target array
+			int n = frames.size();
+			CallTraceElement[] rv = new CallTraceElement[n];
+			
+			// The frames at the end are at the top
+			for (int i = n - 1, write = 0; i >= 0; i--, write++)
+			{
+				SpringThread.Frame frame = frames.get(i);
+				CallTraceElement trace;
+				
+				// Blanks are purely virtual standing points so they are
+				// regarded as such
+				if (frame.isBlank())
+				{
+					trace = new CallTraceElement(
+						"<guard>", "<guard>", null,
+						0L, null, -1);
+				}
+				
+				// Print other parts
+				else
+				{
+					SpringMethod inMethod = frame.method();
+					int pc = frame.lastExecutedPc();
+					
+					trace = new CallTraceElement(
+						inMethod.inClass().toString(),
+						inMethod.name().toString(),
+						inMethod.nameAndType().type().toString(),
+						0,
+						inMethod.infile,
+						inMethod.byteCode().lineOfAddress(pc),
+						pc,
+						inMethod.byteCode().getByAddress(pc).operation());
+				}
+				
+				// Store trace in top-most order
+				rv[write] = trace;
+			}
+			
+			return rv;
 		}
 	}
 	
@@ -301,7 +359,7 @@ public final class SpringThread
 	public final int numFrames()
 	{
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			return frames.size();
 		}
@@ -323,7 +381,7 @@ public final class SpringThread
 		// Pop from the stack
 		SpringThread.Frame rv;
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			// {@squirreljme.error BK1o No frames to pop.}
 			int n;
@@ -354,38 +412,11 @@ public final class SpringThread
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		// Note the thread
-		__ps.printf("Thread #%d: %s%n", this.id, this.name);
-		
-		// Lock since the frames may change!
-		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
-		{
-			// The frames at the end are at the top
-			for (int n = frames.size(), i = n - 1; i >= 0; i--)
-			{
-				SpringThread.Frame frame = frames.get(i);
-				
-				// Do not print traces for blank frames
-				if (frame.isBlank())
-				{
-					__ps.printf("    at <guard frame>%n");
-					continue;
-				}
-				
-				SpringMethod inmethod = frame.method();
-				int pc = frame.lastExecutedPc();
-				
-				// Print information
-				__ps.printf("    at %s.%s @ %d [%s] (%s:%d)%n",
-					inmethod.inClass(),
-					inmethod.nameAndType(),
-					pc,
-					inmethod.byteCode().getByAddress(pc).mnemonic(),
-					inmethod.inFile(),
-					inmethod.byteCode().lineOfAddress(pc));
-			}
-		}
+		// Use standard SquirrelJME trace printing here
+		CallTraceUtils.printStackTrace(__ps,
+			String.format("Thread #%d: %s", this.id, this.name),
+			this.getStackTrace(), null, null,
+			0);
 	}
 	
 	/**

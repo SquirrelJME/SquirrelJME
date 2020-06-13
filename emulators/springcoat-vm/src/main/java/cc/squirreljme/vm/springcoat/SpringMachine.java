@@ -488,7 +488,7 @@ public final class SpringMachine
 			
 			// Setup array
 			SpringArrayObject outargs = worker.allocateArray(
-				worker.resolveClass(new ClassName("java/lang/String")),
+				worker.resolveClass(new ClassName("[Ljava/lang/String;")),
 				inlen);
 			
 			// Initialize the argument array
