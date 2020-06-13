@@ -13,6 +13,8 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
