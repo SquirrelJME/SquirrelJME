@@ -8,16 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.exceptions;
 
+import cc.squirreljme.vm.springcoat.SpringException;
 import net.multiphasicapps.classfile.ClassName;
 
 /**
- * This is thrown when the specified class could not be found.
+ * This is thrown when the format of a class is not correct, it is invalid.
  *
  * @since 2018/08/05
  */
-public class SpringClassNotFoundException
+public class SpringClassFormatException
 	extends SpringException
 {
 	/** The name of the class. */
@@ -26,11 +27,11 @@ public class SpringClassNotFoundException
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @param __cn The class which was not found.
+	 * @param __cn The class which was not valid.
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassNotFoundException(ClassName __cn)
+	public SpringClassFormatException(ClassName __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
@@ -42,12 +43,12 @@ public class SpringClassNotFoundException
 	/**
 	 * Initialize the exception with a message and no cause.
 	 *
-	 * @param __cn The class which was not found.
+	 * @param __cn The class which was not valid.
 	 * @param __m The message.
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassNotFoundException(ClassName __cn, String __m)
+	public SpringClassFormatException(ClassName __cn, String __m)
 		throws NullPointerException
 	{
 		super(__m);
@@ -61,13 +62,13 @@ public class SpringClassNotFoundException
 	/**
 	 * Initialize the exception with a message and cause.
 	 *
-	 * @param __cn The class which was not found.
+	 * @param __cn The class which was not valid.
 	 * @param __m The message.
 	 * @param __c The cause.
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassNotFoundException(ClassName __cn, String __m,
+	public SpringClassFormatException(ClassName __cn, String __m,
 		Throwable __c)
 		throws NullPointerException
 	{
@@ -82,12 +83,12 @@ public class SpringClassNotFoundException
 	/**
 	 * Initialize the exception with no message and with a cause.
 	 *
-	 * @param __cn The class which was not found.
+	 * @param __cn The class which was not valid.
 	 * @param __c The cause.
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassNotFoundException(ClassName __cn, Throwable __c)
+	public SpringClassFormatException(ClassName __cn, Throwable __c)
 		throws NullPointerException
 	{
 		super(__c);
