@@ -7,7 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.brackets;
+
+import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringClass;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * Represents a type from within the VM.
@@ -34,5 +38,16 @@ public class TypeObject
 			throw new NullPointerException("NARG");
 		
 		this.classy = __cl;
+	}
+	
+	/**
+	 * Returns the class this refers to.
+	 *
+	 * @return The class this refers to.
+	 * @since 2020/06/13
+	 */
+	public final SpringClass getSpringClass()
+	{
+		return this.classy;
 	}
 }

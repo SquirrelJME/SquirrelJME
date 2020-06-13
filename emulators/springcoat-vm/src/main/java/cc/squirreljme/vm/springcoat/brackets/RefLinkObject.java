@@ -7,9 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
+import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringObject;
 
 /**
  * This contains the storage for reference links, these chain to each other.
@@ -28,4 +30,26 @@ public final class RefLinkObject
 	
 	/** The previous link in the chain. */
 	volatile RefLinkObject _prev;
+	
+	/**
+	 * Returns the object that this points to.
+	 *
+	 * @return The object.
+	 * @since 2020/06/13
+	 */
+	public final SpringObject getObject()
+	{
+		return this._object;
+	}
+	
+	/**
+	 * Sets the object of this holder.
+	 *
+	 * @param __o The object to set.
+	 * @since 2020/06/13
+	 */
+	public void setObject(SpringObject __o)
+	{
+		this._object = __o;
+	}
 }

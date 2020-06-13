@@ -7,7 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.brackets;
+
+import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
 /**
  * This class stores anything that is within trace points and such.

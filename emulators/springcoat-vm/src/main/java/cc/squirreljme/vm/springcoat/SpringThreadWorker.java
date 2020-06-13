@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
