@@ -33,10 +33,6 @@ public final class SpringSimpleObject
 	protected final RefLinkHolder refLink =
 		new RefLinkHolder();
 	
-	/** The pointer for this object. */
-	@Deprecated
-	protected final SpringPointerArea pointer;
-	
 	/** Field storage in the class. */
 	private final SpringFieldStorage[] _fields;
 	
@@ -47,14 +43,13 @@ public final class SpringSimpleObject
 	 * Initializes the object.
 	 *
 	 * @param __cl The class of the object.
-	 * @param __spm The manager for pointers.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/08
 	 */
-	public SpringSimpleObject(SpringClass __cl, SpringPointerManager __spm)
+	public SpringSimpleObject(SpringClass __cl)
 		throws NullPointerException
 	{
-		if (__cl == null || __spm == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __cl;
@@ -69,9 +64,6 @@ public final class SpringSimpleObject
 		int i = 0;
 		for (SpringField f : __cl.fieldTable())
 			fields[i++] = new SpringFieldStorage(f);
-		
-		// Allocate pointer
-		this.pointer = __spm.allocateAndBind(__cl.instancesize, this);
 	}
 	
 	/**
@@ -111,16 +103,6 @@ public final class SpringSimpleObject
 	public final SpringMonitor monitor()
 	{
 		return this.monitor;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/12/21
-	 */
-	@Override
-	public final SpringPointerArea pointerArea()
-	{
-		return this.pointer;
 	}
 	
 	/**
