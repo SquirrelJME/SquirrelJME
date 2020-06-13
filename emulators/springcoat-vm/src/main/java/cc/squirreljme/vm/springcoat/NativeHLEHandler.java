@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -355,13 +356,8 @@ public final class NativeHLEHandler
 				return BuiltInEncodingType.UTF8;
 			
 			case "lineEnding:()I":
-				switch (System.getProperty("line.separator"))
-				{
-					case "\r":		return LineEndingType.CR;
-					case "\n":		return LineEndingType.LF;
-					case "\r\n":	return LineEndingType.CRLF;
-					default:		return LineEndingType.UNSPECIFIED;
-				}
+				return LineEndingUtils.toType(
+					System.getProperty("line.separator"));
 			
 			case "locale:()I":
 				switch (System.getProperty("user.country"))

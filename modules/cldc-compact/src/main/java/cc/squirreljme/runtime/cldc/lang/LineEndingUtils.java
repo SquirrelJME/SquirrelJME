@@ -162,6 +162,33 @@ public final class LineEndingUtils
 	}
 	
 	/**
+	 * Converts the string to the given type.
+	 *
+	 * @param __string The string to convert.
+	 * @return The type from the string.
+	 * @throws IllegalArgumentException If the string is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/13
+	 */
+	public static int toType(String __string)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__string == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__string)
+		{
+			case "\r":		return LineEndingType.CR;
+			case "\n":		return LineEndingType.LF;
+			case "\r\n":	return LineEndingType.CRLF;
+			
+				// {@squirreljme.error ZZ3w Unknown line ending string.}
+			default:
+				throw new IllegalArgumentException("ZZ3w " + __string);
+		}
+	}
+	
+	/**
 	 * Writes the default line ending to the given output.
 	 *
 	 * @param __out Where to write to.
