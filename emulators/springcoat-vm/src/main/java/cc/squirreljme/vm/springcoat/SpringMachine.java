@@ -18,6 +18,7 @@ import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -27,10 +28,8 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
-import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
-import net.multiphasicapps.classfile.NameAndType;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
