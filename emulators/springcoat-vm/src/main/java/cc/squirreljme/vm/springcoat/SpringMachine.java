@@ -86,11 +86,6 @@ public final class SpringMachine
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
 	
-	/** Pointer manager. */
-	@Deprecated
-	protected final SpringPointerManager pointers =
-		new SpringPointerManager();
-	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
 		new ArrayList<>();

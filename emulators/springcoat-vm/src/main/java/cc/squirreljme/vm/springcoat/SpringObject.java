@@ -30,15 +30,6 @@ public interface SpringObject
 	SpringMonitor monitor();
 	
 	/**
-	 * Returns the pointer area for this object.
-	 *
-	 * @return The pointer area for this object.
-	 * @since 2019/12/21
-	 */
-	@Deprecated
-	SpringPointerArea pointerArea();
-	
-	/**
 	 * Returns the reference link holder for this object.
 	 *
 	 * @return The reference link for the object.

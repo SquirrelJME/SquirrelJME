@@ -48,17 +48,6 @@ public abstract class AbstractGhostObject
 	 * @since 2020/05/30
 	 */
 	@Override
-	public final SpringPointerArea pointerArea()
-	{
-		throw new SpringVirtualMachineException(
-			"Ghost objects cannot have pointers: " + this.toString());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/05/30
-	 */
-	@Override
 	public final SpringClass type()
 	{
 		throw new SpringVirtualMachineException(

@@ -22,6 +22,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2018/12/03
  */
+@Deprecated
 public final class SpringDisplayEventCallback
 	implements NativeDisplayEventCallback
 {
