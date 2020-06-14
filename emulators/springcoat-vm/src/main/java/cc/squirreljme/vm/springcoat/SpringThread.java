@@ -316,8 +316,8 @@ public final class SpringThread
 						0,
 						inMethod.infile,
 						inMethod.byteCode().lineOfAddress(pc),
-						pc,
-						inMethod.byteCode().getByAddress(pc).operation());
+						inMethod.byteCode().getByAddress(pc).operation(),
+						pc);
 				}
 				
 				// Store trace in top-most order
