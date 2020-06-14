@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
@@ -34,14 +35,16 @@ import java.io.PrintStream;
 public final class System
 {
 	/** Standard error stream (stderr). */
+	@SuppressWarnings("resource")
 	public static final PrintStream err =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(ConsoleOutput.ERROR), true));
+			new ConsoleOutputStream(StandardPipeType.STDERR), true));
 	
 	/** Standard output stream (stdout). */
+	@SuppressWarnings("resource")
 	public static final PrintStream out =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(ConsoleOutput.OUTPUT), true));
+			new ConsoleOutputStream(StandardPipeType.STDOUT), true));
 	
 	/**
 	 * Not used.

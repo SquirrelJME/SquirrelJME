@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
@@ -18,6 +19,8 @@ import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.multiphasicapps.classfile.ClassName;
@@ -29,6 +32,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2020/05/30
  */
+@SuppressWarnings("OverlyComplexClass")
 public final class NativeHLEHandler
 {
 	/** How many times to spin before yielding. */
@@ -181,6 +185,11 @@ public final class NativeHLEHandler
 				// Runtime calls
 			case "cc/squirreljme/jvm/mle/RuntimeShelf":
 				return NativeHLEHandler.dispatchRuntime(__thread, __method,
+					__args);
+				
+				// Terminal calls
+			case "cc/squirreljme/jvm/mle/TerminalShelf":
+				return NativeHLEHandler.dispatchTerminal(__thread, __method,
 					__args);
 		
 				// Type calls
@@ -411,6 +420,118 @@ public final class NativeHLEHandler
 	}
 	
 	/**
+	 * Handles the dispatching of console shelf native methods.
+	 *
+	 * @param __thread The current thread this is acting under.
+	 * @param __func The function which was called.
+	 * @param __args The arguments to the call.
+	 * @return The resulting object returned by the dispatcher.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/02
+	 */
+	private static Object dispatchTerminal(SpringThreadWorker __thread,
+		MethodNameAndType __func, Object... __args)
+	{
+		if (__thread == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__func.toString())
+		{
+			case "flush:(I)I":
+				return NativeHLEHandler.terminalFlush(__thread,
+					(int)__args[0]);
+				
+			case "write:(II)I":
+				return NativeHLEHandler.terminalWrite(__thread,
+					(int)__args[0], (int)__args[1]);
+				
+			case "write:(I[BII)I":
+				return NativeHLEHandler.terminalWrite(__thread,
+					(int)__args[0],
+					((SpringArrayObjectByte)__args[1]).array(),
+					(int)__args[2],
+					(int)__args[3]);
+			
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown Terminal MLE native call: %s %s", __func,
+					Arrays.asList(__args)));
+		}
+	}
+	
+	/**
+	 * Flushes the output.
+	 *
+	 * @param __thread The thread that is writing.
+	 * @param __fd The file descriptor.
+	 * @return The error status.
+	 * @since 2020/06/14
+	 */
+	private static int terminalFlush(
+		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd)
+	{
+		try
+		{
+			NativeHLEHandler.__fdOutput(__fd).flush();
+			return 1;
+		}
+		catch (IllegalArgumentException|IOException e)
+		{
+			return -1;
+		}
+	}
+	
+	/**
+	 * Writes to the output.
+	 *
+	 * @param __thread The thread that is writing.
+	 * @param __fd The file descriptor.
+	 * @param __c The byte to write.
+	 * @return The error status.
+	 * @since 2020/06/14
+	 */
+	private static int terminalWrite(
+		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd,
+		int __c)
+	{
+		try
+		{
+			NativeHLEHandler.__fdOutput(__fd).write(__c);
+			return 1;
+		}
+		catch (IllegalArgumentException|IOException e)
+		{
+			return -1;
+		}
+	}
+	
+	/**
+	 * Writes to the output.
+	 *
+	 * @param __thread The thread that is writing.
+	 * @param __fd The file descriptor.
+	 * @param __b The bytes to write.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to write.
+	 * @return The error status.
+	 * @since 2020/06/14
+	 */
+	private static int terminalWrite(
+		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd,
+		byte[] __b, int __o, int __l)
+	{
+		try
+		{
+			NativeHLEHandler.__fdOutput(__fd).write(__b, __o, __l);
+			return __l;
+		}
+		catch (IllegalArgumentException|IOException e)
+		{
+			return -1;
+		}
+	}
+	
+	/**
 	 * Handles the dispatching of type shelf native methods.
 	 *
 	 * @param __thread The current thread this is acting under.
@@ -530,10 +651,28 @@ public final class NativeHLEHandler
 		// this here
 		catch (SpringClassNotFoundException e)
 		{
-			// Still print the trace, just in case for debugging
-			e.printStackTrace();
-			
 			return null;
+		}
+	}
+	
+	/**
+	 * Returns the output stream for the given descriptor.
+	 *
+	 * @param __fd The file descriptor.
+	 * @return The output stream for it.
+	 * @throws IllegalArgumentException If the descriptor is not valid.
+	 * @since 2020/06/13
+	 */
+	private static OutputStream __fdOutput(int __fd)
+		throws IllegalArgumentException
+	{
+		switch (__fd)
+		{
+			case StandardPipeType.STDOUT:	return System.out;
+			case StandardPipeType.STDERR:	return System.err;
+			
+			default:
+				throw new IllegalArgumentException("Unknown FD: " + __fd);
 		}
 	}
 }
