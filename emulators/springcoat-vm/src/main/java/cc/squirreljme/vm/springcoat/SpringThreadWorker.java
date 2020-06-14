@@ -975,8 +975,8 @@ public final class SpringThreadWorker
 				Arrays.asList(__args)));
 		
 		// Debug
-		Debugging.debugNote("Call native %s::%s %s", __class, __method,
-			Arrays.asList(__args));
+		/*Debugging.debugNote("Call native %s::%s %s", __class, __method,
+			Arrays.asList(__args));*/
 		
 		return NativeHLEHandler.dispatch(this, __class, __method,
 			__args);

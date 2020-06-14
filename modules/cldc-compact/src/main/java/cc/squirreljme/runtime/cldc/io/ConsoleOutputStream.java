@@ -10,13 +10,16 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
+import cc.squirreljme.jvm.mle.TerminalShelf;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
  * This provides an output stream which writes to a console file descriptor.
  *
+ * @see StandardPipeType
+ * @see TerminalShelf
  * @since 2018/12/08
  */
 public final class ConsoleOutputStream
@@ -45,7 +48,7 @@ public final class ConsoleOutputStream
 		throws IOException
 	{
 		// {@squirreljme.error ZZ05 Could not flush the console.}
-		if (ConsoleOutput.flush(this.fd) < 0)
+		if (TerminalShelf.flush(this.fd) < 0)
 			throw new IOException("ZZ05");
 	}
 	
@@ -58,7 +61,7 @@ public final class ConsoleOutputStream
 		throws IOException
 	{
 		// {@squirreljme.error ZZ06 Error writing to console.}
-		if (ConsoleOutput.write(this.fd, __b) != 0)
+		if (TerminalShelf.write(this.fd, __b) != 0)
 			throw new IOException("ZZ06");
 	}
 	
@@ -74,7 +77,7 @@ public final class ConsoleOutputStream
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error ZZ07 Error writing to console.}
-		if (ConsoleOutput.write(this.fd, __b, 0, __b.length) < 0)
+		if (TerminalShelf.write(this.fd, __b, 0, __b.length) < 0)
 			throw new IOException("ZZ07");
 	}
 	
@@ -92,7 +95,7 @@ public final class ConsoleOutputStream
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// {@squirreljme.error ZZ08 Error writing to console.}
-		if (ConsoleOutput.write(this.fd, __b, __o, __l) < 0)
+		if (TerminalShelf.write(this.fd, __b, __o, __l) < 0)
 			throw new IOException("ZZ08");
 	}
 }
