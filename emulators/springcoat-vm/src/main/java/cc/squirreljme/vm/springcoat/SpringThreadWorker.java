@@ -490,12 +490,24 @@ public final class SpringThreadWorker
 	 * @param __type The array type.
 	 * @param __elements The elements to be in the array.
 	 * @return The array.
+	 * @throws IllegalArgumentException If the type is not an array that is
+	 * compatible with objects.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/12
 	 */
 	public final SpringArrayObject asVMObjectArray(SpringClass __type,
-		Object... __elements)
+		SpringObject... __elements)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		// Prevent invalid arrays from being wrapped
+		if (!__type.isArray() || __type.componentType().name().isPrimitive())
+			throw new IllegalArgumentException("Cannot have object array " +
+				"that is not an array or primitive type: " + __type);
+		
+		return new SpringArrayObjectGeneric(__type, __elements);
 	}
 	
 	/**

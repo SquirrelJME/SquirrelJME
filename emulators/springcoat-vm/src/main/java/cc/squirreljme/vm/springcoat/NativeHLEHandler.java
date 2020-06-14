@@ -9,10 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
@@ -79,7 +78,8 @@ public final class NativeHLEHandler
 	 * @param __key The locking key.
 	 * @since 2020/05/31
 	 */
-	public static void atomicGcUnlock(SpringThreadWorker __thread, int __key)
+	public static void atomicGcUnlock(
+		@SuppressWarnings("unused") SpringThreadWorker __thread, int __key)
 	{
 		// Unlocking is simple and only works if we have the key used to lock
 		// the garbage collector
@@ -108,10 +108,35 @@ public final class NativeHLEHandler
 	 * @return An atomically ticked value.
 	 * @since 2020/05/31
 	 */
-	public static int atomicTick(SpringThreadWorker __thread)
+	public static int atomicTick(
+		@SuppressWarnings("unused") SpringThreadWorker __thread)
 	{
 		return NativeHLEHandler._TICKER.decrementAndGet();
 	}
+	
+	/**
+	 * Gets the trace from the given throwable.
+	 *
+	 * @param __thread The thread calling this.
+	 * @param __throwable The throwable to extract from.
+	 * @return The trace from the throwable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/14
+	 */
+	public static SpringArrayObjectGeneric debugGetThrowableTrace(
+		SpringThreadWorker __thread, SpringSimpleObject __throwable)
+		throws NullPointerException
+	{
+		if (__thread == null || __throwable == null)
+			throw new NullPointerException("NARG");
+		
+		return (SpringArrayObjectGeneric)__throwable.fieldByField(
+			__thread.resolveClass(new ClassName("java/lang/Throwable"))
+			.lookupField(false, "_stack",
+				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"))
+			.get();
+	}
+	
 	
 	/**
 	 * Handles the dispatching of the native method.
@@ -231,6 +256,11 @@ public final class NativeHLEHandler
 		
 		switch (__func.toString())
 		{
+			case "getThrowableTrace:(Ljava/lang/Throwable;)" +
+				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;":
+				return NativeHLEHandler.debugGetThrowableTrace(
+					__thread, (SpringSimpleObject)__args[0]);
+			
 			case "traceStack:()" +
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;":
 				return __thread.asVMObjectArray(__thread.resolveClass(
@@ -416,6 +446,11 @@ public final class NativeHLEHandler
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
 				return NativeHLEHandler.typeFindType(__thread,
 					((SpringObject)__args[0]).type().name().toString());
+				
+			case "runtimeName:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;)Ljava/lang/String;":
+				return ((TypeObject)__args[0]).getSpringClass()
+					.name().toRuntimeString();
 			
 			case "typeToClass:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;)Ljava/lang/Class;":
@@ -434,12 +469,25 @@ public final class NativeHLEHandler
 	 *
 	 * @param __thread The thread to trace.
 	 * @return The stack trace for the thread.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/13
 	 */
-	private static TracePointObject[] traceTraceStack(
+	public static TracePointObject[] traceTraceStack(
 		SpringThreadWorker __thread)
+		throws NullPointerException
 	{
-		throw new SpringVirtualMachineException("TODO");
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		CallTraceElement[] trace = __thread.thread.getStackTrace();
+		
+		int n = trace.length;
+		TracePointObject[] rv = new TracePointObject[n];
+		
+		for (int i = 0; i < n; i++)
+			rv[i] = new TracePointObject(trace[i]);
+		
+		return rv;
 	}
 	
 	/**
@@ -450,7 +498,7 @@ public final class NativeHLEHandler
 	 * @return The type that is associated with the class object.
 	 * @since 2020/06/11
 	 */
-	private static TypeObject typeClassToType(SpringThreadWorker __thread,
+	public static TypeObject typeClassToType(SpringThreadWorker __thread,
 		SpringSimpleObject __classObj)
 	{
 		return (TypeObject)__classObj.fieldByField(

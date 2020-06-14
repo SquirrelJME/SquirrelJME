@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
 /**
@@ -19,4 +20,22 @@ import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 public final class TracePointObject
 	extends AbstractGhostObject
 {
+	/** The trace for the call. */
+	protected final CallTraceElement trace;
+	
+	/**
+	 * Initializes the trace point.
+	 *
+	 * @param __trace The trace to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/14
+	 */
+	public TracePointObject(CallTraceElement __trace)
+		throws NullPointerException
+	{
+		if (__trace == null)
+			throw new NullPointerException("NARG");
+		
+		this.trace = __trace;
+	}
 }

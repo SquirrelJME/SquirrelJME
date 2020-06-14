@@ -306,6 +306,22 @@ public class ClassName
 	}
 	
 	/**
+	 * Returns rhe runtime string as if it were called for
+	 * {@link Class#getName()}.
+	 *
+	 * @return The runtime string as if it were called for
+	 * {@link Class#getName()}.
+	 * @since 2020/06/14
+	 */
+	public String toRuntimeString()
+	{
+		BinaryName binary = this.binary;
+		if (binary != null)
+			return binary.toString().replace('/', '.');
+		return this.toString();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/09/27
 	 */

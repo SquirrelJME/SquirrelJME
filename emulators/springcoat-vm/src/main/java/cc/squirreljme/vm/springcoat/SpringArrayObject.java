@@ -50,15 +50,21 @@ public abstract class SpringArrayObject
 	 *
 	 * @param __self The self type.
 	 * @param __l The array length.
+	 * @throws IllegalArgumentException If the type is not an array.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
 	public SpringArrayObject(SpringClass __self, int __l)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException,
+			SpringNegativeArraySizeException
 	{
 		if (__self == null)
 			throw new NullPointerException("NARG");
+		
+		// The passed type must always be an array
+		if (!__self.isArray())
+			throw new IllegalArgumentException("Type not an array: " + __self);
 		
 		// {@squirreljme.error BK01 Attempt to allocate an array of a
 		// negative size. (The length requested)}
