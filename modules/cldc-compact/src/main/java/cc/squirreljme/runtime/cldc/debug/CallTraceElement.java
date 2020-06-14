@@ -314,8 +314,8 @@ public final class CallTraceElement
 				methoddescriptor = this.methodType;
 			long address = this.address;
 			int line = this.line;
-			int jbcinst = this.byteCodeOp & 0xFF;
-			int jbcaddr = this.byteCodeAddr;
+			int jInst = this.byteCodeOp & 0xFF;
+			int jAddr = this.byteCodeAddr;
 			int taskid = this.taskId;
 			
 			// Format it nicely
@@ -359,40 +359,37 @@ public final class CallTraceElement
 			}
 			
 			// File, Line, and/or Java instruction/address
-			boolean hasline = (line >= 0),
-				hasjbcinst = (jbcinst > 0xFF && jbcinst < 0xFF),
-				hasjbcaddr = (jbcaddr >= 0);
-			if (hasline || hasjbcinst || hasjbcaddr)
+			boolean hasLine = (line >= 0),
+				hasJInst = (jInst >= 0 && jInst < 0xFF),
+				hasJAddr = (jAddr >= 0);
+			if (hasLine || hasJInst || hasJAddr)
 			{
 				sb.append(" (");
 				
 				// Line
 				boolean sp = false;
-				if ((sp |= hasline))
+				if ((sp |= hasLine))
 				{
 					sb.append(':');
 					sb.append(line);
 				}
 				
 				// Java instruction info
-				if (hasjbcinst || hasjbcaddr)
+				if (hasJInst || hasJAddr)
 				{
 					// Using space?
 					if (sp)
 						sb.append(' ');
 					
-					// Used to indicate Java specific stuff
-					sb.append('J');
-					
 					// Write instruction
-					if (hasjbcinst)
-						sb.append(jbcinst);
+					if (hasJInst)
+						sb.append(JavaOpCodeUtils.toString(jInst));
 					
 					// Write address of Java operation
-					if (hasjbcaddr)
+					if (hasJAddr)
 					{
 						sb.append('@');
-						sb.append(jbcaddr);
+						sb.append(jAddr);
 					}
 				}
 				
@@ -532,12 +529,9 @@ public final class CallTraceElement
 					if (sp)
 						sb.append(' ');
 					
-					// Used to indicate Java specific stuff
-					sb.append('J');
-					
 					// Write instruction
 					if (hasjbcinst)
-						sb.append(jbcinst);
+						sb.append(JavaOpCodeUtils.toString(jbcinst));
 					
 					// Write address of Java operation
 					if (hasjbcaddr)
