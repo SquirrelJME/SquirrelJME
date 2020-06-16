@@ -13,6 +13,7 @@ package java.lang;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 
 /**
  * This class contains information about the host memory environment along
@@ -52,7 +53,7 @@ public class Runtime
 		System.getSecurityManager().checkExit(__v);
 		
 		// Then do the exit if no exception was thrown
-		Assembly.sysCall(SystemCallIndex.EXIT, __v);
+		RuntimeShelf.exit(__v);
 	}
 	
 	/**
