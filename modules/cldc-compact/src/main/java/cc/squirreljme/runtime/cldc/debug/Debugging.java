@@ -9,35 +9,42 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.jvm.config.ConfigRomKey;
-import cc.squirreljme.jvm.mle.constants.LineEndingType;
+import cc.squirreljme.jvm.mle.DebugShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.TerminalShelf;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
+import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
+import java.io.PrintStream;
 import todo.OOPS;
-import todo.TODO;
 
 /**
- * This contains static method forwarders.
+ * This class contains all of the static methods which are for writing debug
+ * output and failing accordingly on incomplete code. All the methods here for
+ * the most part do not touch the standard {@link System#err} and
+ * {@link System#out} (which use {@link PrintStream}), as in the event those
+ * have a bug or otherwise issues can occur. The methods here should be
+ * reliable enough on their own to convey a message accordingly.
  *
  * @since 2020/03/21
  */
 public final class Debugging
 {
 	/** Only bytes up to this value are permitted in the output. */
-	public static final int _BYTE_LIMIT =
+	private static final int _BYTE_LIMIT =
 		0x7E;
 	
-	/** The descriptor used for standard error. */
-	private static int _pipe =
-		Integer.MIN_VALUE;
-	
-	/** Line ending type. */
-	private static int _line =
-		Integer.MIN_VALUE;
+	/** Exit status for TODOs. */
+	private static final int _TODO_EXIT_STATUS =
+		63;
 	
 	/** Used to prevent loops. */
 	@SuppressWarnings("StaticVariableMayNotBeInitialized")
 	private static volatile boolean _noLoop;
+	
+	/** This will be set when TODOs are tripped, to prevent infinite loops. */
+	@SuppressWarnings("StaticVariableMayNotBeInitialized")
+	private static volatile boolean _tripped;
 	
 	/**
 	 * Not used.
@@ -91,7 +98,7 @@ public final class Debugging
 	 */
 	public static Error todo()
 	{
-		return new TODO();
+		return Debugging.todo((Object[])null);
 	}
 	
 	/**
@@ -101,9 +108,59 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
+	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
 	public static Error todo(Object... __args)
 	{
-		return new TODO();
+		// Only trip this once! In the event this trips twice, just shortcut
+		// with an exception otherwise
+		if (Debugging._tripped)
+			return new Error("Recursive TODO");
+		Debugging._tripped = true;
+		
+		// Print a very visible banner to not hide this information
+		Debugging.todoNote("*****************************************");
+		Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
+		
+		// Print the stack trace first like this so it does not possibly
+		// get trashed
+		CallTraceUtils.printStackTrace(
+			new ConsoleOutputStream(StandardPipeType.STDERR),
+			"INCOMPLETE CODE", DebugShelf.traceStack(),
+			null, null, 0);
+		
+		// Print all arguments passed afterwards, just in case
+		if (__args != null)
+		{
+			Debugging.todoNote(
+				"-----------------------------------------");
+			
+			int n = __args.length;
+			for (int i = 0; i < n; i++)
+				try
+				{
+					Debugging.todoNote("%d: %s", i, __args[i]);
+				}
+				catch (Throwable ignored)
+				{
+					// Just drop everything here, so we can try to print
+					// as much as we can
+				}
+		}
+		
+		Debugging.todoNote("*****************************************");
+		
+		// Just exit directly so there is no way to continue, if we can
+		try
+		{
+			System.exit(Debugging._TODO_EXIT_STATUS);
+		}
+		catch (SecurityException ignored)
+		{
+			// However just ignore this case if we cannot truly exit here
+		}
+		
+		// Throw normal error here
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -193,11 +250,11 @@ public final class Debugging
 					if (c == '-' || c == '#' || c == '+' ||
 						c == ' ' || c == ',' || c == '(' ||
 						(firstChar && c == '0'))
-						;
+						continue;
 					
 					// Ignore precision
 					else if (c == '.')
-						;
+						continue;
 					
 					// Could be width or argument index position
 					else if ((c >= '1' && c <= '9') ||
@@ -332,19 +389,11 @@ public final class Debugging
 	@SuppressWarnings("FeatureEnvy")
 	private static void __print(char __c, char __d)
 	{
-		// If we do not know the pipe for standard error, get it
-		int pipe = Debugging._pipe;
-		if (pipe == Integer.MIN_VALUE)
-			Debugging._pipe = (pipe = Assembly.sysCallPV(
-				SystemCallIndex.PD_OF_STDERR));
-				
-		// Print first character, snip to ASCII
-		Assembly.sysCallPV(SystemCallIndex.PD_WRITE_BYTE, pipe,
+		TerminalShelf.write(StandardPipeType.STDERR,
 			(__c > Debugging._BYTE_LIMIT ? '?' : __c));
 		
-		// Print other characters in bulk, snip to ASCII
-		if (__d != 0)
-			Assembly.sysCallPV(SystemCallIndex.PD_WRITE_BYTE, pipe,
+		if (__d > 0)
+			TerminalShelf.write(StandardPipeType.STDERR,
 				(__d > Debugging._BYTE_LIMIT ? '?' : __d));
 	}
 	
@@ -355,27 +404,15 @@ public final class Debugging
 	 */
 	private static void __printLine()
 	{
-		// Get the line type used
-		int line = Debugging._line;
-		if (line == Integer.MIN_VALUE)
-			Debugging._line = (line = Assembly.sysCallV(
-				SystemCallIndex.CONFIG_GET_VALUE, ConfigRomKey.LINE_ENDING));
-		
-		// Print it depending on what is desired
-		switch (line)
+		int lineType = RuntimeShelf.lineEnding();
+		for (int i = 0;; i++)
 		{
-			case LineEndingType.CR:
-				Debugging.__print('\r', '\0');
+			char c = LineEndingUtils.toChar(lineType, i);
+			
+			if (c == 0)
 				break;
-				
-			case LineEndingType.LF:
-				Debugging.__print('\n', '\0');
-				break;
-				
-			case LineEndingType.CRLF:
-			default:
-				Debugging.__print('\r', '\n');
-				break;
+			
+			Debugging.__print(c, '\0');
 		}
 	}
 }

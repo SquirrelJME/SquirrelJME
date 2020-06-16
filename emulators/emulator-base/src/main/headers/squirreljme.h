@@ -10,6 +10,9 @@
 #ifndef __SQUIRRELJME_H__
 #define __SQUIRRELJME_H__
 
+#include "jni.h"
+
 jint JNICALL mleRuntimeInit(JNIEnv* env, jclass classy);
+jint JNICALL mleTerminalInit(JNIEnv* env, jclass classy);
 
 #endif /* __SQUIRRELJME_H__ */

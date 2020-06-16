@@ -7,9 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "jni.h"
-#include "cc_squirreljme_jvm_mle_RuntimeShelf.h"
 #include "squirreljme.h"
+#include "cc_squirreljme_jvm_mle_RuntimeShelf.h"
 
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv *, jclass)
 {

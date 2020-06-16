@@ -10,7 +10,6 @@
 
 package todo;
 
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -40,7 +39,7 @@ public final class DEBUG
 	 * @since 2018/04/09
 	 */
 	@Deprecated
-	public static final void note(String __fmt, Object... __args)
+	public static void note(String __fmt, Object... __args)
 	{
 		Debugging.debugNote(__fmt, __args);
 	}
