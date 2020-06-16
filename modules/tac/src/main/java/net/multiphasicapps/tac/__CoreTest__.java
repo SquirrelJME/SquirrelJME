@@ -10,12 +10,17 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.VMType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 /**
@@ -61,37 +66,17 @@ abstract class __CoreTest__
 		// If the test did not pass, throw an exception
 		if (execution.status != TestStatus.SUCCESS)
 		{
+			// Only use as a cause if this is even valid
+			Object tossed = execution.tossed;
+			Throwable tossedThrown = ((tossed instanceof Throwable) ?
+				(Throwable)tossed : null);
+			
 			// If skippable, try throwing a TestNG skip exception if it exists
 			if (execution.status == TestStatus.UNTESTABLE)
-				try
-				{
-					Class<?> skippy = Class.forName(
-						"org.testng.SkipException");
-					
-					// Create instance
-					Object instance = skippy.newInstance();
-					
-					// If it is throwable, we throw it!
-					if (instance instanceof RuntimeException)
-					{
-						RuntimeException re = (RuntimeException)instance;
-						
-						// So this way our information is not completely gone
-						re.initCause(new ThrownTestExecution(
-							execution, null));
-						
-						throw re;
-					}
-				}
-				catch (ClassNotFoundException|InstantiationException|
-					IllegalAccessException e)
-				{
-					// Ignore, treat as failure
-				}
+				throw new SkipException("SKIPPED", tossedThrown);
 			
-			Object tossed = execution.tossed;
-			throw new ThrownTestExecution(execution,
-				((tossed instanceof Throwable) ? (Throwable)tossed : null));
+			// Fail otherwise
+			throw new ThrownTestExecution(execution, tossedThrown);
 		}
 	}
 	
@@ -107,7 +92,8 @@ abstract class __CoreTest__
 		Class<?> self = this.getClass();
 		
 		// Decode the expected result
-		TestResult expected = TestResult.loadForClass(self);
+		Map<String, String> otherKeys = new HashMap<>();
+		TestResult expected = TestResult.loadForClass(self, otherKeys);
 		
 		// Read the inputs for the test
 		Object[] args = this.__parseInput(self, __mainargs);
@@ -122,12 +108,28 @@ abstract class __CoreTest__
 		Object thrown;
 		try
 		{
+			// Determine the system that the test needs to be on, if one was
+			// ever specified in the results
+			int vmType = -1;
+			String onlyIn = otherKeys.get("only-in");
+			if (onlyIn != null)
+				switch (onlyIn)
+				{
+					case "javase":		vmType = VMType.JAVA_SE; break;
+					case "springcoat":	vmType = VMType.SPRINGCOAT; break;
+					case "summercoat":	vmType = VMType.SUMMERCOAT; break;
+				}
+			
+			// {@squirreljme.error BU0j Test cannot run on a different VM.}
+			if (vmType >= 0 && vmType != RuntimeShelf.vmType())
+				throw new UntestableException("BU0j " + vmType);
+			
 			// Run the test
 			runresult.setReturnValue(this.__runTest(args));
 			runresult.setThrownValue((thrown = new __NoExceptionThrown__()));
 		}
 		
-		// Cannot be tested
+		// Cannot be tested at all, so must stop here
 		catch (UntestableException e)
 		{
 			// Cannot be tested so it shall fail

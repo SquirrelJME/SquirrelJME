@@ -35,6 +35,7 @@
       <w>jthrowable</w>
       <w>jvalue</w>
       <w>jweak</w>
+      <w>ljava</w>
       <w>microedition</w>
       <w>multiphasicapps</w>
       <w>narg</w>
@@ -46,9 +47,12 @@
       <w>siiiiii</w>
       <w>siiiiiii</w>
       <w>siiiiiiii</w>
+      <w>springcoat</w>
       <w>squirreljme</w>
       <w>stdint</w>
+      <w>summercoat</w>
       <w>targetting</w>
+      <w>vmtypes</w>
       <w>vtable</w>
     </words>
   </dictionary>

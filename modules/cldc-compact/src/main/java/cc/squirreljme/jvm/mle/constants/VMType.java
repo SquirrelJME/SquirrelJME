@@ -2,37 +2,39 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tac;
+package cc.squirreljme.jvm.mle.constants;
 
 /**
- * This is that status of a test.
+ * This represents the type of SquirrelJME virtual machine that is currently
+ * being used, this is used for example to see which set of MLE calls are
+ * valid and otherwise.
  *
- * @since 2018/10/07
+ * @since 2020/06/16
  */
-public enum TestStatus
+public interface VMType
 {
-	/** Success. */
-	SUCCESS,
+	/** Not known. */
+	byte UNKNOWN =
+		0;
 	
-	/** Failed. */
-	FAILED,
+	/** Running on Standard Java SE. */
+	byte JAVA_SE =
+		1;
 	
-	/** Failed due to test exception. */
-	TEST_EXCEPTION,
+	/** Running on SpringCoat. */
+	byte SPRINGCOAT =
+		2;
 	
-	/** Test was not run yet. */
-	NOT_RUN,
+	/** Running on SummerCoat. */
+	byte SUMMERCOAT =
+		3;
 	
-	/** Untestable, so this must be skipped. */
-	UNTESTABLE,
-	
-	/* End. */
-	;
+	/** The number of VM types. */
+	byte NUM_VMTYPES =
+		4;
 }
-

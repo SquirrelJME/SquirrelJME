@@ -13,6 +13,7 @@
 #include "jni.h"
 
 jint JNICALL mleRuntimeInit(JNIEnv* env, jclass classy);
+jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mleTerminalInit(JNIEnv* env, jclass classy);
 
 #endif /* __SQUIRRELJME_H__ */
