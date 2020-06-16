@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
@@ -412,6 +413,9 @@ public final class NativeHLEHandler
 					default:
 						return BuiltInLocaleType.UNSPECIFIED;
 				}
+			
+			case "vmType:()I":
+				return VMType.SPRINGCOAT;
 			
 			default:
 				throw new SpringVirtualMachineException(String.format(

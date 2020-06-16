@@ -108,6 +108,23 @@ public final class TestResult
 	}
 	
 	/**
+	 * Gets the raw secondary value, if any.
+	 *
+	 * @param __key The key to get.
+	 * @return The value of the key or {@code null} if it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/16
+	 */
+	public final String getSecondaryRawValue(String __key)
+		throws NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		return this._secondary.get(__key);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/08
 	 */
@@ -255,12 +272,15 @@ public final class TestResult
 	 * Loads test results for the specified class.
 	 *
 	 * @param __cl The results to load.
+	 * @param __otherKeys Other keys that were loaded and ignored, this is
+	 * optional.
 	 * @return The results of the test.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/08
 	 */
 	@SuppressWarnings("FeatureEnvy")
-	public static TestResult loadForClass(Class<?> __cl)
+	public static TestResult loadForClass(Class<?> __cl,
+		Map<String, String> __otherKeys)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -326,6 +346,10 @@ public final class TestResult
 							if (rv.getSecondary(skey) == null)
 								rv.putSecondaryEncoded(skey, eval);
 						}
+						
+						// Another key, put into the ignored map
+						else if (__otherKeys != null)
+							__otherKeys.put(ekey, eval);
 						break;
 				}
 			}

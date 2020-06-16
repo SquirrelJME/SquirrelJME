@@ -1,6 +1,6 @@
 package squirreljme;
 
-import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import net.multiphasicapps.tac.TestRunnable;
 
 public class TestArrayLength
@@ -24,38 +24,17 @@ public class TestArrayLength
 			l = new Object[9],
 			o = new Object();
 		
-		// As pointers
-		this.secondary("zp",
-			Assembly.arrayLength(Assembly.objectToPointer(z)));
-		this.secondary("bp",
-			Assembly.arrayLength(Assembly.objectToPointer(b)));
-		this.secondary("sp",
-			Assembly.arrayLength(Assembly.objectToPointer(s)));
-		this.secondary("cp",
-			Assembly.arrayLength(Assembly.objectToPointer(c)));
-		this.secondary("ip",
-			Assembly.arrayLength(Assembly.objectToPointer(i)));
-		this.secondary("jp",
-			Assembly.arrayLength(Assembly.objectToPointer(j)));
-		this.secondary("fp",
-			Assembly.arrayLength(Assembly.objectToPointer(f)));
-		this.secondary("dp",
-			Assembly.arrayLength(Assembly.objectToPointer(d)));
-		this.secondary("lp",
-			Assembly.arrayLength(Assembly.objectToPointer(l)));
-		this.secondary("op",
-			Assembly.arrayLength(Assembly.objectToPointer(o)));
-		
 		// As objects
-		this.secondary("z", Assembly.arrayLength(z));
-		this.secondary("b", Assembly.arrayLength(b));
-		this.secondary("s", Assembly.arrayLength(s));
-		this.secondary("c", Assembly.arrayLength(c));
-		this.secondary("i", Assembly.arrayLength(i));
-		this.secondary("j", Assembly.arrayLength(j));
-		this.secondary("f", Assembly.arrayLength(f));
-		this.secondary("d", Assembly.arrayLength(d));
-		this.secondary("l", Assembly.arrayLength(l));
-		this.secondary("o", Assembly.arrayLength(o));
+		this.secondary("n", ObjectShelf.arrayLength(null));
+		this.secondary("z", ObjectShelf.arrayLength(z));
+		this.secondary("b", ObjectShelf.arrayLength(b));
+		this.secondary("s", ObjectShelf.arrayLength(s));
+		this.secondary("c", ObjectShelf.arrayLength(c));
+		this.secondary("i", ObjectShelf.arrayLength(i));
+		this.secondary("j", ObjectShelf.arrayLength(j));
+		this.secondary("f", ObjectShelf.arrayLength(f));
+		this.secondary("d", ObjectShelf.arrayLength(d));
+		this.secondary("l", ObjectShelf.arrayLength(l));
+		this.secondary("o", ObjectShelf.arrayLength(o));
 	}
 }

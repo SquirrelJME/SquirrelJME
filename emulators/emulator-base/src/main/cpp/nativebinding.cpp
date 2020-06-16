@@ -277,6 +277,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 		assemblyMethods, sizeof(assemblyMethods) / sizeof(JNINativeMethod));
 
 	rv |= mleRuntimeInit(env, classy);
+	rv |= mleObjectInit(env, classy);
 	rv |= mleTerminalInit(env, classy);
 
 	return rv;

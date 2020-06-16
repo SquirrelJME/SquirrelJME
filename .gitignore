@@ -22,3 +22,5 @@ build/
 *.patch
 *.rej
 
+# Crash logs
+*.log

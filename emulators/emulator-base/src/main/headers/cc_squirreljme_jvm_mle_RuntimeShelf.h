@@ -31,6 +31,14 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_mle_RuntimeShelf_lineEnding
 JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_mle_RuntimeShelf_locale
   (JNIEnv *, jclass);
 
+/*
+ * Class:     cc_squirreljme_jvm_mle_RuntimeShelf
+ * Method:    vmType
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_cc_squirreljme_jvm_mle_RuntimeShelf_vmType
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

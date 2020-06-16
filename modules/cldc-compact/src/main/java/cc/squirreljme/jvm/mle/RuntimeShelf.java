@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.VMType;
 
 /**
  * Run-time shelf which contains system information.
@@ -55,4 +56,12 @@ public final class RuntimeShelf
 	 * @since 2020/06/11
 	 */
 	public static native int locale();
+	
+	/**
+	 * Returns the current {@link VMType}.
+	 *
+	 * @return The current {@link VMType}.
+	 * @since 2020/06/16
+	 */
+	public static native int vmType();
 }

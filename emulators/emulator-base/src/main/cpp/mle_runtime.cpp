@@ -10,7 +10,7 @@
 #include "squirreljme.h"
 #include "cc_squirreljme_jvm_mle_RuntimeShelf.h"
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv *, jclass)
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
 {
 #if defined(_WIN32)
 	return 3;
@@ -19,9 +19,16 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv *, jclass)
 #endif
 }
 
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)
+{
+	// The value 1 is Java SE type
+	return 1;
+}
+
 static const JNINativeMethod mleRuntimeMethods[] =
 {
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
+	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
 };
 
 jint JNICALL mleRuntimeInit(JNIEnv* env, jclass classy)

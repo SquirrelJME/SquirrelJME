@@ -14,6 +14,9 @@ import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.IPCCallback;
 import cc.squirreljme.jvm.IPCManager;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
@@ -59,6 +62,12 @@ public final class UIState
 	 */
 	private UIState()
 	{
+		// This will be forwarded at a later date when SpringCoat is more
+		// stable
+		Debugging.todoNote("Fixup UIState init on non-SummerCoat");
+		if (VMType.SUMMERCOAT != RuntimeShelf.vmType())
+			throw new IllegalArgumentException("SMCT");
+		
 		// Get display format
 		this.format = (byte)Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
 			Framebuffer.CONTROL_FORMAT);
