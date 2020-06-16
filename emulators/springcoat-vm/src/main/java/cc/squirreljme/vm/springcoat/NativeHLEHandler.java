@@ -397,7 +397,8 @@ public final class NativeHLEHandler
 				return BuiltInEncodingType.UTF8;
 			
 			case "exit:(I)V":
-				throw new SpringMachineExitException((int)__args[0]);
+				__thread.machine.exit((int)__args[0]);
+				return null;
 			
 			case "lineEnding:()I":
 				return LineEndingUtils.toType(
