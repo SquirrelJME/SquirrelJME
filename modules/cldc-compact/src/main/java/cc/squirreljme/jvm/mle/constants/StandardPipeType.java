@@ -7,38 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.lang;
-
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+package cc.squirreljme.jvm.mle.constants;
 
 /**
- * This is the starting.
+ * Standard pipe descriptor identifiers.
  *
- * @since 2020/05/31
+ * @since 2020/06/14
  */
-@SuppressWarnings("unused")
-final class __Start__
+public interface StandardPipeType
 {
-	/**
-	 * This is the entry point for any thread which is not a main thread.
-	 *
-	 * @since 2020/05/31
-	 */
-	static void __base()
-	{
-		throw Debugging.todo();
-	}
+	/** Standard output. */
+	byte STDOUT =
+		1;
 	
-	/**
-	 * This is the entry point for main threads.
-	 *
-	 * @since 2020/05/31
-	 */
-	static void __main()
-	{
-		// Debug
-		Debugging.debugNote("Starting main thread...");
-		
-		throw Debugging.todo();
-	}
+	/** Standard error. */
+	byte STDERR =
+		2;
 }

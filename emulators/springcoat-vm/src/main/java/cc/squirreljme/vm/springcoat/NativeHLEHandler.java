@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
+import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
  * This contains the native HLE handler for SpringCoat, all functions that
@@ -572,6 +573,16 @@ public final class NativeHLEHandler
 				"TypeBracket;)Ljava/lang/String;":
 				return ((TypeObject)__args[0]).getSpringClass()
 					.name().toRuntimeString();
+			
+			case "typeOfBoolean:()Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;":
+				return new TypeObject(__thread.loadClass(
+					ClassName.fromPrimitiveType(PrimitiveType.BOOLEAN)));
+			
+			case "typeOfInteger:()Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;":
+				return new TypeObject(__thread.loadClass(
+					ClassName.fromPrimitiveType(PrimitiveType.INTEGER)));
 			
 			case "typeToClass:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;)Ljava/lang/Class;":

@@ -10,9 +10,9 @@
 
 package java.io;
 
-import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Encoder;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
@@ -52,9 +52,17 @@ public class PrintStream
 	private static final int _BUFFER_SIZE =
 		96;
 	
+	/** If the buffer gets too big we have to drop bytes. */
+	private static final int _EMERGENCY_HALT =
+		95;
+	
+	/** The maximum number of byte that might be encoded at once. */
+	private static final int _MAX_ENCODE_BYTES =
+		8;
+	
 	/** Threshold before a forced flush. */
 	private static final int _THRESHOLD =
-		90;
+		88;
 	
 	/** The stream to write bytes to. */
 	private final OutputStream _out;
@@ -67,7 +75,7 @@ public class PrintStream
 	
 	/** Mini-byte buffer for encoded characters. */
 	private final byte[] _minienc =
-		new byte[8];
+		new byte[PrintStream._MAX_ENCODE_BYTES];
 	
 	/** The internal buffer. */
 	private final byte[] _buf =
@@ -651,7 +659,7 @@ public class PrintStream
 		boolean oopsie = false;
 		byte[] buf = this._buf;
 		int bop = 0;
-		for (bop = 0; bop < bat; bop++)
+		for (; bop < bat; bop++)
 			try
 			{
 				out.write(buf[bop]);
@@ -693,11 +701,11 @@ public class PrintStream
 	 * printed.
 	 * @since 2018/09/20
 	 */
-	private final void __print(String __s)
+	private void __print(String __s)
 	{
 		synchronized (this)
 		{
-			// Print null explicitely
+			// Print null explicitly
 			if (__s == null)
 				__s = "null";
 			
@@ -779,7 +787,7 @@ public class PrintStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/21
 	 */
-	private final void __writeBytes(byte[] __b, int __o, int __l)
+	private void __writeBytes(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__b == null)
@@ -798,10 +806,13 @@ public class PrintStream
 		boolean flush = false;
 		for (int i = 0; i < __l; i++)
 		{
-			byte b = __b[i];
+			byte b = __b[__o + i];
 			
-			// Fill into buffer
-			buf[bat++] = b;
+			// Fill into buffer as long as we can actually fit bytes here,
+			// if this case ever happens we just for the most part drop the
+			// bytes since there is no room to store them anymore
+			if (bat < PrintStream._EMERGENCY_HALT)
+				buf[bat++] = b;
 			
 			// Auto-flushing on newline?
 			if (autoflush && b == '\n')
@@ -814,6 +825,9 @@ public class PrintStream
 				this._bat = bat;
 				this.__flush();
 				bat = this._bat;
+				
+				// Clear the flush flag as we already flushed once
+				flush = false;
 			}
 		}
 		
@@ -831,19 +845,19 @@ public class PrintStream
 	 * @param __c The character to write.
 	 * @since 2018/09/19
 	 */
-	private final void __writeChar(char __c)
+	private void __writeChar(char __c)
 	{
 		// Encode bytes into the array
-		byte[] minienc = this._minienc;
-		int wc = this._encoder.encode(__c, minienc, 0, minienc.length);
+		byte[] encBytes = this._minienc;
+		int wc = this._encoder.encode(__c, encBytes, 0, encBytes.length);
 		
 		// {@squirreljme.error ZZ0q Did not expect the buffer to be out of
-		// room.}
-		if (wc < 0)
+		// room or be too small.}
+		if (wc < 0 || wc > encBytes.length)
 			throw new Error("ZZ0q");
 		
 		// Write them into the buffer
-		this.__writeBytes(minienc, 0, wc);
+		this.__writeBytes(encBytes, 0, wc);
 	}
 }
 
