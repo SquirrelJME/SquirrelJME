@@ -215,7 +215,7 @@ public final class CallTraceUtils
 		if (__point == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		return new CallTraceElement();
 	}
 	
 	/**

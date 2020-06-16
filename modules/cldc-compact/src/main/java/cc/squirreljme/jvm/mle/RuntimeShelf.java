@@ -40,6 +40,14 @@ public final class RuntimeShelf
 	public static native int encoding();
 	
 	/**
+	 * Exits the virtual machine.
+	 *
+	 * @param __code The exit code.
+	 * @since 2020/06/16
+	 */
+	public static native void exit(int __code);
+	
+	/**
 	 * Returns the line ending type of the system.
 	 *
 	 * @return The line ending type of the system, see {@link LineEndingType}.

@@ -19,6 +19,7 @@ import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -395,6 +396,9 @@ public final class NativeHLEHandler
 			case "encoding:()I":
 				return BuiltInEncodingType.UTF8;
 			
+			case "exit:(I)V":
+				throw new SpringMachineExitException((int)__args[0]);
+			
 			case "lineEnding:()I":
 				return LineEndingUtils.toType(
 					System.getProperty("line.separator"));
@@ -583,10 +587,36 @@ public final class NativeHLEHandler
 				return new TypeObject(__thread.loadClass(
 					ClassName.fromPrimitiveType(PrimitiveType.BOOLEAN)));
 			
+			case "typeOfByte:()Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+				return new TypeObject(__thread.loadClass(
+					ClassName.fromPrimitiveType(PrimitiveType.BYTE)));
+			
+			case "typeOfCharacter:()Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;":
+				return new TypeObject(__thread.loadClass(
+					ClassName.fromPrimitiveType(PrimitiveType.CHARACTER)));
+			
+			case "typeOfDouble:()Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;":
+				return new TypeObject(__thread.loadClass(
+					ClassName.fromPrimitiveType(PrimitiveType.DOUBLE)));
+			
+			case "typeOfFloat:()Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+				return new TypeObject(__thread.loadClass(
+					ClassName.fromPrimitiveType(PrimitiveType.FLOAT)));
+			
 			case "typeOfInteger:()Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;":
 				return new TypeObject(__thread.loadClass(
 					ClassName.fromPrimitiveType(PrimitiveType.INTEGER)));
+			
+			case "typeOfLong:()Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+				return new TypeObject(__thread.loadClass(
+					ClassName.fromPrimitiveType(PrimitiveType.LONG)));
+			
+			case "typeOfShort:()Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+				return new TypeObject(__thread.loadClass(
+					ClassName.fromPrimitiveType(PrimitiveType.SHORT)));
 			
 			case "typeToClass:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;)Ljava/lang/Class;":
