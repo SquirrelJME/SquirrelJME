@@ -19,7 +19,6 @@ import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
-import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -273,6 +272,45 @@ public final class NativeHLEHandler
 				return NativeHLEHandler.debugGetThrowableTrace(
 					__thread, (SpringSimpleObject)__args[0]);
 			
+			case "pointAddress:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TracePointBracket;)J":
+				return ((TracePointObject)__args[0]).getTrace().address();
+				
+			case "pointClass:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TracePointBracket;)Ljava/lang/String;":
+				return __thread.asVMObject(((TracePointObject)__args[0])
+					.getTrace().className());
+				
+			case "pointFile:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TracePointBracket;)Ljava/lang/String;":
+				return __thread.asVMObject(((TracePointObject)__args[0])
+					.getTrace().file());
+				
+			case "pointJavaAddress:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TracePointBracket;)I":
+				return ((TracePointObject)__args[0]).getTrace()
+					.byteCodeAddress();
+				
+			case "pointJavaOperation:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TracePointBracket;)I":
+				return ((TracePointObject)__args[0]).getTrace()
+					.byteCodeInstruction();
+				
+			case "pointLine:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TracePointBracket;)I":
+				return ((TracePointObject)__args[0]).getTrace()
+					.line();
+				
+			case "pointMethodName:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TracePointBracket;)Ljava/lang/String;":
+				return __thread.asVMObject(((TracePointObject)__args[0])
+					.getTrace().methodName());
+				
+			case "pointMethodType:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TracePointBracket;)Ljava/lang/String;":
+				return __thread.asVMObject(((TracePointObject)__args[0])
+					.getTrace().methodDescriptor());
+			
 			case "traceStack:()" +
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;":
 				return __thread.asVMObjectArray(__thread.resolveClass(
@@ -439,7 +477,7 @@ public final class NativeHLEHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/02
 	 */
-	private static Object dispatchTerminal(SpringThreadWorker __thread,
+	public static Object dispatchTerminal(SpringThreadWorker __thread,
 		MethodNameAndType __func, Object... __args)
 	{
 		if (__thread == null || __func == null)
@@ -477,7 +515,7 @@ public final class NativeHLEHandler
 	 * @return The error status.
 	 * @since 2020/06/14
 	 */
-	private static int terminalFlush(
+	public static int terminalFlush(
 		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd)
 	{
 		try
@@ -500,7 +538,7 @@ public final class NativeHLEHandler
 	 * @return The error status.
 	 * @since 2020/06/14
 	 */
-	private static int terminalWrite(
+	public static int terminalWrite(
 		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd,
 		int __c)
 	{
@@ -526,7 +564,7 @@ public final class NativeHLEHandler
 	 * @return The error status.
 	 * @since 2020/06/14
 	 */
-	private static int terminalWrite(
+	public static int terminalWrite(
 		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd,
 		byte[] __b, int __o, int __l)
 	{

@@ -38,6 +38,78 @@ public final class DebugShelf
 	public static native TracePointBracket[] getThrowableTrace(Throwable __t);
 	
 	/**
+	 * Resolves the address from the given point.
+	 *
+	 * @param __point The point to resolve.
+	 * @return The address.
+	 * @since 2020/06/16
+	 */
+	public static native long pointAddress(TracePointBracket __point);
+	
+	/**
+	 * Resolves the class from the given point.
+	 *
+	 * @param __point The point to resolve.
+	 * @return The class.
+	 * @since 2020/06/16
+	 */
+	public static native String pointClass(TracePointBracket __point);
+	
+	/**
+	 * Resolves the file from the given point.
+	 *
+	 * @param __point The point to resolve.
+	 * @return The file.
+	 * @since 2020/06/16
+	 */
+	public static native String pointFile(TracePointBracket __point);
+	
+	/**
+	 * Resolves the Java address from the given point.
+	 *
+	 * @param __point The point to resolve.
+	 * @return The Java address.
+	 * @since 2020/06/16
+	 */
+	public static native int pointJavaAddress(TracePointBracket __point);
+	
+	/**
+	 * Resolves the Java operation from the given point.
+	 *
+	 * @param __point The point to resolve.
+	 * @return The Java operation.
+	 * @since 2020/06/16
+	 */
+	public static native int pointJavaOperation(TracePointBracket __point);
+	
+	/**
+	 * Resolves the line from the given point.
+	 *
+	 * @param __point The point to resolve.
+	 * @return The line.
+	 * @since 2020/06/16
+	 */
+	public static native int pointLine(TracePointBracket __point);
+	
+	/**
+	 * Resolves the method name from the given point.
+	 *
+	 * @param __point The point to resolve.
+	 * @return The method name.
+	 * @since 2020/06/16
+	 */
+	public static native String pointMethodName(TracePointBracket __point);
+	
+	/**
+	 * Resolves the method type from the given point.
+	 *
+	 * @param __point The point to resolve.
+	 * @return The method type.
+	 * @since 2020/06/16
+	 */
+	public static native String pointMethodType(TracePointBracket __point);
+	
+	/**
 	 * Traces the entire stack, the top-most trace point in the stack is always
 	 * first.
 	 *

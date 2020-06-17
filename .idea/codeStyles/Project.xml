@@ -7,6 +7,7 @@
     </option>
     <option name="LINE_SEPARATOR" value="&#10;" />
     <option name="RIGHT_MARGIN" value="79" />
+    <option name="SOFT_MARGINS" value="79" />
     <DBN-PSQL>
       <case-options enabled="true">
         <option name="KEYWORD_CASE" value="lower" />

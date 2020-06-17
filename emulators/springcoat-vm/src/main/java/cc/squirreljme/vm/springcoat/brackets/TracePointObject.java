@@ -38,4 +38,15 @@ public final class TracePointObject
 		
 		this.trace = __trace;
 	}
+	
+	/**
+	 * Returns the trace.
+	 *
+	 * @return The trace.
+	 * @since 2020/06/16
+	 */
+	public final CallTraceElement getTrace()
+	{
+		return this.trace;
+	}
 }

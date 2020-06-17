@@ -215,7 +215,15 @@ public final class CallTraceUtils
 		if (__point == null)
 			throw new NullPointerException("NARG");
 		
-		return new CallTraceElement();
+		return new CallTraceElement(
+			DebugShelf.pointClass(__point),
+			DebugShelf.pointMethodName(__point),
+			DebugShelf.pointMethodType(__point),
+			DebugShelf.pointAddress(__point),
+			DebugShelf.pointFile(__point),
+			DebugShelf.pointLine(__point),
+			DebugShelf.pointJavaOperation(__point),
+			DebugShelf.pointJavaAddress(__point));
 	}
 	
 	/**
