@@ -128,7 +128,7 @@ jobs:
             then
               echo "SpringCoat testing failed, ignoring..." 1>&2
             fi
-          no_output_timeout: 4m
+          no_output_timeout: 14m
       - run:
           name: Save test results
           command: |
@@ -160,7 +160,7 @@ jobs:
             then
               echo "SummerCoat testing failed, ignoring..." 1>&2
             fi
-          no_output_timeout: 4m
+          no_output_timeout: 14m
       - run:
           name: Save test results
           command: |
