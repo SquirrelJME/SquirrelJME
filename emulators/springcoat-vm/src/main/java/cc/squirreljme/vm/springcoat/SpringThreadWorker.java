@@ -1331,12 +1331,6 @@ public final class SpringThreadWorker
 			SpringThread.Frame cf = thread.currentFrame();
 			if (cf == null)
 			{
-				// Send our throwable to a special handler
-				this.invokeMethod(true, new ClassName("cc/squirreljme/" +
-					"runtime/cldc/lang/UncaughtExceptionHandler"),
-					new MethodNameAndType("handle",
-					"(Ljava/lang/Throwable;)V"), __o);
-				
 				// Just stop execution here
 				return -1;
 			}
