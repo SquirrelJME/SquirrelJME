@@ -13,6 +13,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
+import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
@@ -37,19 +38,24 @@ public final class SpringThread
 	/** The thread ID. */
 	protected final int id;
 	
+	/** Is this a main thread? */
+	protected final boolean main;
+	
 	/** The name of this thread. */
 	protected final String name;
 	
 	/** Profiler information. */
 	protected final ProfiledThread profiler;
 	
-	/** System call errors. */
-	final int[] _syscallerrors =
-		new int[SystemCallIndex.NUM_SYSCALLS];
-	
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
+	
+	/** The thread's {@link Thread} instance. */
+	private SpringObject _threadInstance;
+	
+	/** The thread's VM Thread instance. */
+	private VMThreadObject _vmThread;
 		
 	/** String representation. */
 	private Reference<String> _string;
@@ -73,18 +79,21 @@ public final class SpringThread
 	 * Initializes the thread.
 	 *
 	 * @param __id The thread ID.
+	 * @param __main Is this a main thread.
 	 * @param __n The name of the thread.
 	 * @param __profiler Profiled storage.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	SpringThread(int __id, String __n, ProfiledThread __profiler)
+	SpringThread(int __id, boolean __main, String __n,
+		ProfiledThread __profiler)
 		throws NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
 		this.id = __id;
+		this.main = __main;
 		this.name = __n;
 		this.profiler = __profiler;
 	}
@@ -340,6 +349,17 @@ public final class SpringThread
 	}
 	
 	/**
+	 * If this is a main thread or not.
+	 *
+	 * @return If this is a main thread.
+	 * @since 2020/06/17
+	 */
+	public final boolean isMain()
+	{
+		return this.main;
+	}
+	
+	/**
 	 * Returns the name of the thread.
 	 *
 	 * @return The name of the thread.
@@ -417,6 +437,75 @@ public final class SpringThread
 			String.format("Thread #%d: %s", this.id, this.name),
 			this.getStackTrace(), null, null,
 			0);
+	}
+	
+	/**
+	 * Sets the {@link Thread} instance.
+	 *
+	 * @param __object The object to set the instance to.
+	 * @throws IllegalStateException If this thread already has an instance.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public final void setThreadInstance(SpringObject __object)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__object == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Only a single instance is permitted
+			if (this._threadInstance != null)
+				throw new IllegalStateException("Thread has an instance.");
+			
+			this._threadInstance = __object;
+		}
+	}
+	
+	/**
+	 * Sets the virtual machine thread of this thread.
+	 *
+	 * @param __vmThread The thread to set.
+	 * @throws IllegalStateException If this thread already has one.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public final void setVMThread(VMThreadObject __vmThread)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__vmThread == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			if (this._vmThread != null)
+				throw new IllegalStateException("Thread has VM Thread.");
+			
+			this._vmThread = __vmThread;
+		}
+	}
+	
+	/**
+	 * Returns the instance of the {@link Thread} object for this thread.
+	 *
+	 * @return The instance of {@link Thread}.
+	 * @throws IllegalStateException If the thread has no instance.
+	 * @since 2020/06/17
+	 */
+	public final SpringObject threadInstance()
+		throws IllegalStateException
+	{
+		SpringObject rv;
+		synchronized (this)
+		{
+			rv = this._threadInstance;
+		}
+		
+		if (rv == null)
+			throw new IllegalStateException("Thread has no state.");
+		
+		return rv;
 	}
 	
 	/**

@@ -96,6 +96,22 @@ public final class SpringSimpleObject
 	}
 	
 	/**
+	 * Returns the field by the name and type.
+	 *
+	 * @param __static Is this field static?
+	 * @param __name The name of the field.
+	 * @param __type The type of the field.
+	 * @return The storage for the field.
+	 * @since 2020/06/17
+	 */
+	public final SpringFieldStorage fieldByNameAndType(boolean __static,
+		String __name, String __type)
+	{
+		return this.fieldByField(
+			this.type().lookupField(__static, __name, __type));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/15
 	 */

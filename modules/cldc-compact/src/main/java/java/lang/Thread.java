@@ -10,15 +10,9 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.StaticMethod;
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
-import java.util.HashMap;
-import java.util.Map;
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 
 /**
  * A thread represents literally a single stream of execution that can
@@ -32,16 +26,9 @@ import java.util.Map;
  *
  * @since 2018/12/07
  */
-@ImplementationNote("Internally all threads start in the Thread.__start() " +
-	"method which sets up the thread and such.")
 public class Thread
 	implements Runnable
 {
-	/** Use fake name for string? */
-	@Deprecated
-	private static final String _USE_FAKE_NAME =
-		new String();
-	
 	/** Maximum supported priority. */
 	public static final int MAX_PRIORITY =
 		10;
@@ -54,77 +41,31 @@ public class Thread
 	public static final int NORM_PRIORITY =
 		5;
 	
-	/** Start kind: Self Runnable */
-	@Deprecated
-	private static final int _START_SELF_RUNNABLE =
-		1;
+	/** Second in nano seconds. */
+	private static final long _NS_SECOND =
+		1_000_000L;
 	
-	/** Start kind: Specified Runnable. */
-	@Deprecated
-	private static final int _START_GIVEN_RUNNABLE =
-		2;
+	/** The runnable that this thread uses for its main code, if applicable. */
+	@SuppressWarnings("unused")
+	private final Runnable _runnable;
 	
-	/** Start kind: MIDlet (construct then run startApp()). */
-	@Deprecated
-	private static final int _START_MIDLET =
-		3;
-	
-	/** Start kind: main() method (is String[] argument). */
-	@Deprecated
-	private static final int _START_MAIN =
-		4;
-	
-	/** Threads by virtual ID. */
-	@Deprecated
-	private static final Map<Integer, Thread> _BY_VIRTID =
-		new HashMap<>();
-	
-	/** Threads by real ID. */
-	@Deprecated
-	private static final Map<Integer, Thread> _BY_REALID =
-		new HashMap<>();
-	
-	/** The next virtual thread ID. */
-	@Deprecated
-	private static volatile int _NEXT_VIRTUAL_ID =
-		0;
-	
-	/** The active number of threads. */
-	@Deprecated
-	private static volatile int _ACTIVE_THREADS;
-	
-	/** Which kind of start are we doing? */
-	@Deprecated
-	private final int _startkind;
-	
-	/** The method to execute. */
-	@Deprecated
-	private final StaticMethod _runmethod;
-	
-	/** The argument to the method. */
-	@Deprecated
-	private final Object _runargument;
-	
-	/** The virtual thread ID. */
-	@Deprecated
-	private final int _virtid;
-	
-	/** The real thread ID. */
-	@Deprecated
-	private volatile int _realid =
-		-1;
+	/** The virtual machine thread this uses. */
+	private final VMThreadBracket _vmThread;
 	
 	/** The name of this thread. */
 	private volatile String _name;
 	
 	/** Has this thread been started? */
+	@SuppressWarnings("unused")
 	private volatile boolean _started;
 	
 	/** Is this thread alive? */
-	private volatile boolean _isalive;
+	@SuppressWarnings("unused")
+	private volatile boolean _isAlive;
 	
 	/** The priority of the thread. */
-	private volatile int _priority = Thread.NORM_PRIORITY;
+	private volatile int _priority =
+		Thread.NORM_PRIORITY;
 	
 	/** Is this thread interrupted? */
 	volatile boolean _interrupted;
@@ -137,7 +78,11 @@ public class Thread
 	 */
 	public Thread()
 	{
-		this(null, Thread._USE_FAKE_NAME);
+		VMThreadBracket vmThread = ThreadShelf.createVMThread(this);
+		this._vmThread = vmThread;
+		
+		this._runnable = null;
+		this._name = Thread.__defaultName(null, vmThread);
 	}
 	
 	/**
@@ -149,7 +94,11 @@ public class Thread
 	 */
 	public Thread(Runnable __r)
 	{
-		this(__r, Thread._USE_FAKE_NAME);
+		VMThreadBracket vmThread = ThreadShelf.createVMThread(this);
+		this._vmThread = vmThread;
+		
+		this._runnable = __r;
+		this._name = Thread.__defaultName(null, vmThread);
 	}
 	
 	/**
@@ -163,7 +112,14 @@ public class Thread
 	public Thread(String __n)
 		throws NullPointerException
 	{
-		this(null, __n);
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		VMThreadBracket vmThread = ThreadShelf.createVMThread(this);
+		this._vmThread = vmThread;
+		
+		this._runnable = null;
+		this._name = Thread.__defaultName(__n, vmThread);
 	}
 	
 	/**
@@ -178,80 +134,14 @@ public class Thread
 	public Thread(Runnable __r, String __n)
 		throws NullPointerException
 	{
-		this(__n, (__r == null ? Thread._START_SELF_RUNNABLE :
-				Thread._START_GIVEN_RUNNABLE),
-			null, __r);
-	}
-	
-	/**
-	 * Initializes a thread which is registered in this constructor and
-	 * additionally has the given name and real ID.
-	 *
-	 * The thread is started in the started state and technically is not
-	 * removed ever. This is generally used by the native display thread
-	 * since there has to be a thread running as the VM sees it otherwise
-	 * things will break much. A thread started this way never terminates
-	 * unless that termination is explicit.
-	 *
-	 * @param __n The thread name.
-	 * @param __rid The real ID.
-	 * @since 2018/12/03
-	 */
-	@Deprecated
-	private Thread(int __rid, String __n)
-	{
-		this._startkind = -1;
-		this._runmethod = null;
-		this._runargument = null;
-		this._realid = __rid;
-		this._name = __n;
-		this._started = true;
-		this._isalive = true;
-		
-		// Obtain the next virtual ID to use
-		int virtid;
-		synchronized (Thread.class)
-		{
-			this._virtid = (virtid = Thread._NEXT_VIRTUAL_ID++);
-		}
-		
-		// Now register this thread in the main objects
-		this.__registerThread();
-	}
-	
-	/**
-	 * Initializes the thread to execute the given static method.
-	 *
-	 * @param __n The name of the thread.
-	 * @param __rk How is this method to be run?
-	 * @param __mm The static method to call.
-	 * @param __ma The argument to use.
-	 * @throws NullPointerException If no name was specified.
-	 * @since 2018/11/20
-	 */
-	private Thread(String __n, int __rk, StaticMethod __mm, Object __ma)
-		throws NullPointerException
-	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Obtain the next virtual ID to use
-		int virtid;
-		synchronized (Thread.class)
-		{
-			this._virtid = (virtid = Thread._NEXT_VIRTUAL_ID++);
-		}
+		VMThreadBracket vmThread = ThreadShelf.createVMThread(this);
+		this._vmThread = vmThread;
 		
-		// Set
-		this._name = (__n == Thread._USE_FAKE_NAME ? "Thread-" + virtid : __n);
-		this._startkind = __rk;
-		this._runmethod = __mm;
-		this._runargument = __ma;
-		
-		// The main thread is implicitly started
-		boolean implicitstart = (__rk == Thread._START_MAIN ||
-			__rk == Thread._START_MIDLET);
-		this._started = implicitstart;
+		this._runnable = __r;
+		this._name = Thread.__defaultName(__n, vmThread);
 	}
 	
 	/**
@@ -276,7 +166,7 @@ public class Thread
 	 */
 	public long getId()
 	{
-		return this._virtid;
+		return ThreadShelf.vmThreadId(this._vmThread);
 	}
 	
 	/**
@@ -312,9 +202,7 @@ public class Thread
 		this._interrupted = true;
 		
 		// Signal hardware interrupt
-		int realid = this._realid;
-		if (realid >= 0)
-			TaskAccess.signalInterrupt(realid);
+		ThreadShelf.vmThreadInterrupt(this._vmThread);
 	}
 	
 	/**
@@ -325,7 +213,7 @@ public class Thread
 	 */
 	public final boolean isAlive()
 	{
-		return this._isalive;
+		return this._isAlive;
 	}
 	
 	/**
@@ -385,7 +273,7 @@ public class Thread
 	{
 		// The end time, since our thread could be notified
 		long end = (__ms == 0 && __ns == 0 ? Long.MAX_VALUE :
-			System.nanoTime() + (__ms * 1_000_000L) + __ns);
+			System.nanoTime() + (__ms * Thread._NS_SECOND) + __ns);
 		
 		// Lock on self
 		synchronized (this)
@@ -399,12 +287,14 @@ public class Thread
 					return;
 				
 				// Did the thread die yet?
-				if (this._started && !this._isalive)
+				if (ThreadShelf.javaThreadIsStarted(this) &&
+					!this.isAlive())
 					return;
 				
 				// Otherwise wait on our own monitor
 				long diff = end - now;
-				this.wait(diff / 1_000_000L, (int)(diff % 1_000_000L));
+				this.wait(diff / Thread._NS_SECOND,
+					(int)(diff % Thread._NS_SECOND));
 			}
 		}
 	}
@@ -463,10 +353,8 @@ public class Thread
 		// Store for later
 		this._priority = __p;
 		
-		// Only set the priority if the thread is active
-		int realid = this._realid;
-		if (realid >= 0)
-			TaskAccess.setThreadPriority(realid, __p);
+		// Set the thread's hardware priority
+		ThreadShelf.vmThreadSetPriority(this._vmThread, __p);
 	}
 	
 	/**
@@ -482,21 +370,12 @@ public class Thread
 		synchronized (this)
 		{
 			// {@squirreljme.error ZZ21 A thread may only be started once.}
-			if (this._started)
+			if (ThreadShelf.javaThreadIsStarted(this))
 				throw new IllegalThreadStateException("ZZ21");
-			this._started = true;
 			
-			// Start the thread
-			int realid = TaskAccess.startThread(this, this._name);
-			this._realid = realid;
-			
-			// {@squirreljme.error ZZ22 Could not start the thread.}
-			if (realid < 0)
-				throw new RuntimeException("ZZ22");
-			
-			// Set the initial priority of the thread
-			TaskAccess.setThreadPriority(realid, this._priority);
-			this._isalive = true;
+			// {@squirreljme.error ZZ22 Failed to start the thread.}
+			if (!ThreadShelf.vmThreadStart(this._vmThread))
+				throw new IllegalThreadStateException("ZZ22");
 		}
 	}
 	
@@ -520,7 +399,8 @@ public class Thread
 	 */
 	public static int activeCount()
 	{
-		return Thread._ACTIVE_THREADS;
+		return ThreadShelf.aliveThreadCount(
+			true, true);
 	}
 	
 	/**
@@ -531,18 +411,7 @@ public class Thread
 	 */
 	public static Thread currentThread()
 	{
-		int rid = TaskAccess.currentThread();
-		
-		// If the map is not initialized yet, ignore
-		Map<Integer, Thread> byrealid = Thread._BY_REALID;
-		if (byrealid == null)
-			return null;
-		
-		// Lock, it should be in the map
-		synchronized (Thread.class)
-		{
-			return byrealid.get(rid);
-		}
+		return ThreadShelf.currentJavaThread();
 	}
 	
 	/**
@@ -559,7 +428,7 @@ public class Thread
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		return ObjectAccess.holdsLock(TaskAccess.currentThread(), __o);
+		return ObjectShelf.holdsLock(ThreadShelf.currentJavaThread(), __o);
 	}
 	
 	/**
@@ -571,12 +440,7 @@ public class Thread
 	 */
 	public static boolean interrupted()
 	{
-		Thread self = Thread.currentThread();
-		
-		// Check interrupt?
-		boolean rv = self._interrupted;
-		self._interrupted = false;
-		return rv;
+		return ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
 	}
 	
 	/**
@@ -602,6 +466,7 @@ public class Thread
 	 * @throws InterruptedException If the thread was interrupted.
 	 * @since 2018/11/04
 	 */
+	@SuppressWarnings("MagicNumber")
 	public static void sleep(long __ms, int __ns)
 		throws IllegalArgumentException, InterruptedException
 	{
@@ -614,9 +479,10 @@ public class Thread
 		
 		// Perform sleep, if it was interrupted then the return status will
 		// be non-zero!
-		if (Assembly.sysCallV(SystemCallIndex.SLEEP, ims, __ns) != 0)
+		if (ThreadShelf.sleep(ims, __ns))
 		{
-			Thread.currentThread()._interrupted = false;
+			// Signal interrupts
+			Thread.currentThread().interrupt();
 			
 			// {@squirreljme.error ZZ24 Sleep was interrupted.}
 			throw new InterruptedException("ZZ24");
@@ -632,218 +498,37 @@ public class Thread
 	public static void yield()
 	{
 		// Zero times means to yield
-		Assembly.sysCallV(SystemCallIndex.SLEEP, 0, 0);
-	}
-	
-	/**
-	 * Registers this thread so that way it is in the thread list and can be
-	 * obtained and such.
-	 *
-	 * @since 2018/12/03
-	 */
-	@Deprecated
-	final void __registerThread()
-	{
-		// Lock
-		synchronized (Thread.class)
-		{
-			// Increase the active thread count
-			Thread._ACTIVE_THREADS++;
-			
-			// Add threads to the thread list
-			Map<Integer, Thread> byvirtid = Thread._BY_VIRTID,
-				byrealid = Thread._BY_REALID;
-			byvirtid.put(this._virtid, this);
-			byrealid.put(this._realid, this);
-		}
-	}
-	
-	/**
-	 * Ends the current thread and cleans up its registration.
-	 *
-	 * @since 2018/12/03
-	 */
-	@Deprecated
-	final void __revokeThread()
-	{
-		// Thread no longer alive
-		this._isalive = false;
-		
-		// Lock
-		synchronized (Thread.class)
-		{
-			// Decrease the active count
-			Thread._ACTIVE_THREADS--;
-			
-			// Remove from the thread list
-			Map<Integer, Thread> byvirtid = Thread._BY_VIRTID,
-				byrealid = Thread._BY_REALID;
-			byvirtid.remove(this._virtid);
-			byrealid.remove(this._realid);
-		}
-		
-		// Signal all threads which are waiting on a join for this thread
-		// only
-		synchronized (this)
-		{
-			this.notifyAll();
-		}
-		
-		// Signal anything waiting on the class itself, to indicate that
-		// a thread has finished
-		int startkind = this._startkind;
-		if (startkind != Thread._START_MAIN && startkind != Thread._START_MIDLET)
-			synchronized (Thread.class)
-			{
-				Thread.class.notifyAll();
-			}
-	}
-	
-	/**
-	 * This is the starting point for all threads, including the main thread
-	 * and such.
-	 *
-	 * @throws IllegalThreadStateException If the thread has already been
-	 * started.
-	 * @since 2018/11/20
-	 */
-	@ImplementationNote("This is the starting point of all threads.")
-	@Deprecated
-	final void __start()
-		throws IllegalThreadStateException
-	{
-		// Get the kind and determine if this is a main entry point
-		int startkind = this._startkind;
-		boolean ismain = (startkind == Thread._START_MAIN ||
-			startkind == Thread._START_MIDLET);
-		
-		// We need to lock because the real ID might just not get assigned
-		// yet here.
-		int realid;
-		int virtid = this._virtid;
-		if (!ismain)
-			synchronized (this)
-			{
-				// {@squirreljme.error ZZ25 Real ID has not been set yet while
-				// in the lock, this should not occur unless the virtual
-				// machine is very broken.}
-				if ((realid = this._realid) < 0)
-					throw new Error("ZZ25");
-			}
-		
-		// Main thread, so set our real ID to the current thread the VM says
-		// we are since it will still be negatively initialized 
-		else
-		{
-			realid = TaskAccess.currentThread();
-			this._realid = realid;
-		}
-		
-		// The exit code is something that is only handled by the main thread
-		// It will exit with the given code 
-		int exitcode = 0;
-		
-		// Execution setup
 		try
 		{
-			// Register this thread
-			this.__registerThread();
-				
-			// Set the thread as alive
-			this._isalive = true;
-			
-			// The main method and/or its arguments
-			StaticMethod runmethod = this._runmethod;
-			Object runargument = this._runargument;
-			
-			// How do we run this thread?
-			switch (this._startkind)
-			{
-					// Start Runnable in this instance (extended from)
-				case Thread._START_SELF_RUNNABLE:
-					this.run();
-					break;
-					
-					// Start the given runnable
-				case Thread._START_GIVEN_RUNNABLE:
-					((Runnable)runargument).run();
-					break;
-					
-					// Start MIDlet, construct then startApp()
-				case Thread._START_MIDLET:
-					ObjectAccess.invokeStatic(runmethod,
-						ObjectAccess.classByName((String)runargument).
-						__newInstance());
-					break;
-					
-					// Start main(String[]) method
-				case Thread._START_MAIN:
-					ObjectAccess.invokeStatic(runmethod, runargument);
-					break;
-					
-					// Unknown
-				default:
-					throw new todo.OOPS();
-			}
+			Thread.sleep(0, 0);
 		}
-		
-		// Uncaught exception
-		catch (Throwable t)
+		catch (InterruptedException ignored)
 		{
-			// Set the exit code for the process to some error number, if
-			// the VM does not exit in this thread but exits in another
-			// it would at least be set for the main thread
-			// But this is only needed for the main thread
-			if (ismain)
-				exitcode = 127;
-			
-			// Handle uncaught exception
-			UncaughtExceptionHandler.handle(t);
+			// Ignore
 		}
+	}
+	
+	/**
+	 * Determines a default name for the given thread.
+	 *
+	 * @param __name The supplied name of the thread.
+	 * @param __vm The virtual machine thread.
+	 * @return The name to use for the thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	private static String __defaultName(String __name, VMThreadBracket __vm)
+		throws NullPointerException
+	{
+		if (__vm == null)
+			throw new NullPointerException("NARG");
 		
-		// Cleanup after the thread:
-		//  * Signal joins (for those that are waiting)
-		//  * Remove the thread from the thread list
-		//  * Decrease the active count
-		//  * Set thread as not alive
-		finally
-		{
-			// Revoke this thread
-			this.__revokeThread();
-		}
+		// Use the given name
+		if (__name != null)
+			return __name;
 		
-		// If this is the main thread, wait for every other thread to
-		// stop execution. This saves the VM execution code itself from
-		// worrying about which threads are running or not.
-		if (ismain)
-		{
-			// Wait for threads to go away
-			for (;;)
-			{
-				// No threads are active, so that works
-				if (Thread._ACTIVE_THREADS == 0)
-					break;
-				
-				// Wait a bit until trying again, unless we get notified
-				synchronized (Thread.class)
-				{
-					try
-					{
-						// Three seconds is short enough to not be forever
-						// but long enough to where we can get a notify to
-						// quit
-						Thread.class.wait(3_000);
-					}
-					catch (InterruptedException e)
-					{
-					}
-				}
-			}
-			
-			// Exit the VM with our normal exit code, since no other
-			// thread called exit at all for this point
-			Assembly.sysCall(SystemCallIndex.EXIT, exitcode);
-		}
+		// Otherwise it is just the attached thread ID
+		return "Thread-" + ThreadShelf.vmThreadId(__vm);
 	}
 }
 

@@ -47,4 +47,14 @@ public final class ObjectShelf
 	 * @since 2020/06/09
 	 */
 	public static native <T> T arrayNew(TypeBracket __type, int __len);
+	
+	/**
+	 * Checks if the given thread holds the lock on the given method.
+	 *
+	 * @param __javaThread The Java thread to check if it holds the lock.
+	 * @param __o The object to check.
+	 * @return If the given thread holds the lock.
+	 * @since 2020/06/17
+	 */
+	public static native boolean holdsLock(Thread __javaThread, Object __o);
 }
