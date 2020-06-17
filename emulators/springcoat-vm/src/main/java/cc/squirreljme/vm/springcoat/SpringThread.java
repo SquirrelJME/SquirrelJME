@@ -338,6 +338,17 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Is this a daemon thread?
+	 *
+	 * @return If this is a daemon thread.
+	 * @since 2020/06/17
+	 */
+	public final boolean isDaemon()
+	{
+		return this._daemon;
+	}
+	
+	/**
 	 * Is exiting the virtual machine okay?
 	 *
 	 * @return If it is okay to exit.
