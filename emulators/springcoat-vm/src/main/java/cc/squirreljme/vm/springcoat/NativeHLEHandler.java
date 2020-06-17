@@ -12,9 +12,11 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
@@ -463,6 +465,20 @@ public final class NativeHLEHandler
 						return BuiltInLocaleType.UNSPECIFIED;
 				}
 			
+			case "systemProperty:(Ljava/lang/String;)Ljava/lang/String;":
+				return __thread.asVMObject(
+					NativeHLEHandler.runtimeSystemProperty(__thread,
+						__thread.<String>asNativeObject(
+							String.class, __args[0])));
+			
+			case "vmDescription:(I)Ljava/lang/String;":
+				return __thread.asVMObject(
+					NativeHLEHandler.runtimeVmDescription((int)__args[0]));
+			
+			case "vmStatistic:(I)J":
+				return NativeHLEHandler.runtimeVmStatistic(__thread,
+					(int)__args[0]);
+			
 			case "vmType:()I":
 				return VMType.SPRINGCOAT;
 			
@@ -659,6 +675,98 @@ public final class NativeHLEHandler
 					"Unknown Type MLE native call: %s %s", __func,
 					Arrays.asList(__args)));
 		}
+	}
+	
+	/**
+	 * Returns the given system property.
+	 *
+	 * @param __thread The thread to get properties from.
+	 * @param __key The property to get.
+	 * @return The system property or {@code null} if not set.
+	 * @since 2020/06/17
+	 */
+	public static String runtimeSystemProperty(SpringThreadWorker __thread,
+		String __key)
+	{
+		if (__thread == null || __key == null)
+			throw new NullPointerException("NARG");
+		
+		return __thread.machine._sysproperties.get(__key);
+	}
+	
+	/**
+	 * Returns a VM statistic.
+	 *
+	 * @param __thread The thread to get the statistic from.
+	 * @param __key The {@link VMStatisticType} to get.
+	 * @return The value of the statistic, will be {@code 0L} if not any.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public static long runtimeVmStatistic(SpringThreadWorker __thread,
+		int __key)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__key)
+		{
+			case VMStatisticType.MEM_FREE:
+				return Runtime.getRuntime().freeMemory();
+				
+			case VMStatisticType.MEM_MAX:
+				return Runtime.getRuntime().maxMemory();
+			
+			case VMStatisticType.MEM_USED:
+				return Runtime.getRuntime().totalMemory();
+		}
+		
+		return 0L;
+	}
+	
+	/**
+	 * Returns a description of the VM.
+	 *
+	 * @param __key The {@link VMDescriptionType}.
+	 * @return The description.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public static String runtimeVmDescription(int __key)
+		throws NullPointerException
+	{
+		switch (__key)
+		{
+			case VMDescriptionType.EXECUTABLE_PATH:
+				return null;
+			
+			case VMDescriptionType.OS_ARCH:
+				return "springcoat/" + System.getProperty("os.arch");
+				
+			case VMDescriptionType.OS_NAME:
+				return System.getProperty("os.name");
+			
+			case VMDescriptionType.OS_VERSION:
+				return System.getProperty("os.version");
+			
+			case VMDescriptionType.VM_EMAIL:
+				return "xer@multiphasicapps.net";
+				
+			case VMDescriptionType.VM_NAME:
+				return "SquirrelJME SpringCoat";
+			
+			case VMDescriptionType.VM_URL:
+				return "https://squirreljme.cc/";
+				
+			case VMDescriptionType.VM_VENDOR:
+				return "Stephanie Gawroriski";
+			
+			case VMDescriptionType.VM_VERSION:
+				return SquirrelJME.RUNTIME_VERSION;
+		}
+		
+		return null;
 	}
 	
 	/**

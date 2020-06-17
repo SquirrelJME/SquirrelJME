@@ -29,6 +29,7 @@ More detailed changes:
      * Added `java.util.Vector`, it was missing.
      * Added support for ISO-8859-15, this is the newer encoding with the
        Euro symbol.
+     * Added support for `os.arch`, `os.name`, and `os.version`.
      * Corrected bug in `__CanSetPrintStream__` where if it were set to itself
        then it could lead to infinite recursion, instead if this kind of
        stream is attempted to be set it will use the target.
@@ -52,6 +53,7 @@ More detailed changes:
      * Implemented `java.util.LinkedList`.
      * Made the stack trace printed by `Throwable` much cleaner so that it
        takes up less screen space and is formatted a bit better.
+     * Removed `GuestDepth`, it is no longer a concept.
      * Return values for `line.separator`, `microedition.encoding`,
        `microedition.configuration`, and `microedition.locale`.
    * `demo-hello`

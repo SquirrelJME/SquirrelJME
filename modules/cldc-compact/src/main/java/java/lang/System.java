@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
@@ -287,17 +288,10 @@ public final class System
 		String rv;
 		switch (__k)
 		{
-				// API level of SquirrelJME
-			case "cc.squirreljme.apilevel":
-				return ApiLevel.levelToString(ApiLevel.CURRENT_LEVEL);
-			
-				// SquirrelJME guest depth
-			case "cc.squirreljme.guests":
-				return Integer.toString(SystemProperties.guestDepth());
-				
 				// SquirrelJME VM executable path
 			case "cc.squirreljme.vm.execpath":
-				return SystemProperties.executablePath();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.EXECUTABLE_PATH);
 				
 				// SquirrelJME free memory
 			case "cc.squirreljme.vm.freemem":
@@ -317,23 +311,28 @@ public final class System
 				
 				// The version of the JVM (full)
 			case "java.vm.version":
-				return SystemProperties.javaVMVersion();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_VERSION);
 				
 				// The name of the JVM
 			case "java.vm.name":
-				return SystemProperties.javaVMName();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_NAME);
 				
 				// The vendor of the JVM
 			case "java.vm.vendor":
-				return SystemProperties.javaVMVendor();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_VENDOR);
 			
 				// The e-mail of the JVM
 			case "java.vm.vendor.email":
-				return SystemProperties.javaVMEmail();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_EMAIL);
 			
 				// The URL of the JVM
 			case "java.vm.vendor.url":
-				return SystemProperties.javaVMURL();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_URL);
 				
 				// The vendor of the class libraries
 			case "java.vendor":
@@ -353,7 +352,7 @@ public final class System
 				
 				// The version of the run-time
 			case "java.runtime.version":
-				return SystemProperties.javaRuntimeVersion();
+				return SquirrelJME.RUNTIME_VERSION;
 				
 				// End of line character
 			case "line.separator":
@@ -361,21 +360,17 @@ public final class System
 				
 				// The current configuration, must be set!
 			case "microedition.configuration":
-				rv = SystemProperties.systemProperty(
-					"microedition.configuration");
-				if (rv == null)
-					try
-					{
-						Class<?> file = Class.forName("java.nio.FileSystem");
-						if (file == null)
-							return "CLDC-1.8-Compact";
-						return "CLDC-1.8";
-					}
-					catch (ClassNotFoundException e)
-					{
+				try
+				{
+					Class<?> file = Class.forName("java.nio.FileSystem");
+					if (file == null)
 						return "CLDC-1.8-Compact";
-					}
-				return rv;
+					return "CLDC-1.8";
+				}
+				catch (ClassNotFoundException e)
+				{
+					return "CLDC-1.8-Compact";
+				}
 				
 				// The current encoding
 			case "microedition.encoding":
@@ -387,11 +382,26 @@ public final class System
 				
 				// The current platform
 			case "microedition.platform":
-				return "SquirrelJME/" + SquirrelJME.RUNTIME_VERSION;
+				return SquirrelJME.MICROEDITION_PLATFORM;
+				
+				// The operating system architecture
+			case "os.arch":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.OS_ARCH);
+				
+				// The operating system name
+			case "os.name":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.OS_NAME);
+				
+				// The operating system name
+			case "os.version":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.OS_VERSION);
 				
 				// Unknown, use system call
 			default:
-				return SystemProperties.systemProperty(__k);
+				return RuntimeShelf.systemProperty(__k);
 		}
 	}
 	

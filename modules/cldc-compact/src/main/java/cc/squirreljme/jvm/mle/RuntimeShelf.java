@@ -12,6 +12,8 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 
 /**
@@ -64,6 +66,34 @@ public final class RuntimeShelf
 	 * @since 2020/06/11
 	 */
 	public static native int locale();
+	
+	/**
+	 * Returns the system property for the given key, if there is one.
+	 *
+	 * @param __key The property key.
+	 * @return The value of the system property or {@code null}.
+	 * @since 2020/06/17
+	 */
+	public static native String systemProperty(String __key);
+	
+	/**
+	 * Returns a special virtual machine description.
+	 *
+	 * @param __type The {@link VMDescriptionType}.
+	 * @return The string for the given description.
+	 * @since 2020/06/17
+	 */
+	public static native String vmDescription(int __type);
+	
+	/**
+	 * Returns a statistic of the virtual machine.
+	 *
+	 * @param __type The {@link VMStatisticType}.
+	 * @return The value of the statistic, or {@code 0L} if not valid or not
+	 * available.
+	 * @since 2020/06/17
+	 */
+	public static native long vmStatistic(int __type);
 	
 	/**
 	 * Returns the current {@link VMType}.
