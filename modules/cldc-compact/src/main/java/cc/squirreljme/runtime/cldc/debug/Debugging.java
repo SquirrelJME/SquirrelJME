@@ -117,46 +117,58 @@ public final class Debugging
 			return new Error("Recursive TODO");
 		Debugging._tripped = true;
 		
-		// Print a very visible banner to not hide this information
-		Debugging.todoNote("*****************************************");
-		Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
-		
-		// Print the stack trace first like this so it does not possibly
-		// get trashed
-		CallTraceUtils.printStackTrace(
-			new ConsoleOutputStream(StandardPipeType.STDERR),
-			"INCOMPLETE CODE", DebugShelf.traceStack(),
-			null, null, 0);
-		
-		// Print all arguments passed afterwards, just in case
-		if (__args != null)
-		{
-			Debugging.todoNote(
-				"-----------------------------------------");
-			
-			int n = __args.length;
-			for (int i = 0; i < n; i++)
-				try
-				{
-					Debugging.todoNote("%d: %s", i, __args[i]);
-				}
-				catch (Throwable ignored)
-				{
-					// Just drop everything here, so we can try to print
-					// as much as we can
-				}
-		}
-		
-		Debugging.todoNote("*****************************************");
-		
-		// Just exit directly so there is no way to continue, if we can
+		// This try is here so that in event this fails or throws another
+		// exception, we always terminal no matter what
 		try
 		{
-			System.exit(Debugging._TODO_EXIT_STATUS);
+			// Print a very visible banner to not hide this information
+			Debugging.todoNote(
+				"*****************************************");
+			Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
+			
+			// Print the stack trace first like this so it does not possibly
+			// get trashed
+			CallTraceUtils.printStackTrace(
+				new ConsoleOutputStream(StandardPipeType.STDERR),
+				"INCOMPLETE CODE", DebugShelf.traceStack(),
+				null, null, 0);
+			
+			// Print all arguments passed afterwards, just in case
+			if (__args != null)
+			{
+				Debugging.todoNote(
+					"-----------------------------------------");
+				
+				int n = __args.length;
+				for (int i = 0; i < n; i++)
+					try
+					{
+						Debugging.todoNote("%d: %s", i, __args[i]);
+					}
+					catch (Throwable ignored)
+					{
+						// Just drop everything here, so we can try to print
+						// as much as we can
+					}
+			}
+			
+			Debugging.todoNote(
+				"*****************************************");
 		}
-		catch (SecurityException ignored)
+		
+		// Always try to exit at the end of the call, in the event another
+		// exception is thrown
+		finally
 		{
-			// However just ignore this case if we cannot truly exit here
+			// Just exit directly so there is no way to continue, if we can
+			try
+			{
+				System.exit(Debugging._TODO_EXIT_STATUS);
+			}
+			catch (SecurityException ignored)
+			{
+				// However just ignore this case if we cannot truly exit here
+			}
 		}
 		
 		// Throw normal error here
