@@ -9,7 +9,6 @@
 // ---------------------------------------------------------------------------
 
 import javax.microedition.lcdui.Display;
-import net.multiphasicapps.tac.InvalidTestException;
 import net.multiphasicapps.tac.UntestableException;
 
 /**
@@ -23,15 +22,19 @@ final class __Utils__
 	 * Attempts to obtain the display, otherwise the test cannot be ran.
 	 *
 	 * @return The display to use.
-	 * @throws InvalidTestException If the display could not be obtained.
+	 * @throws UntestableException If the display could not be obtained.
 	 * @since 2019/03/04
 	 */
 	public static final Display getDisplay()
-		throws InvalidTestException
+		throws UntestableException
 	{
 		try
 		{
-			return Display.getDisplays(0)[0];
+			Display rv = Display.getDisplays(0)[0];
+			
+			rv.getCapabilities();
+			
+			return rv;
 		}
 		
 		// No display possible?
