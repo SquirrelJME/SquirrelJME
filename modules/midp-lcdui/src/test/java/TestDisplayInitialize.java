@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package display;
-
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
@@ -29,7 +27,7 @@ public class TestDisplayInitialize
 	@Override
 	public void test()
 	{
-		Display display = Display.getDisplays(0)[0];
+		Display display = __Utils__.getDisplay();
 		
 		display.setCurrent(new __BlankCanvas__());
 	}

@@ -142,7 +142,7 @@ public abstract class MIDlet
 				// Some application properties are inside of the manifest so
 				// check that
 				InputStream is = this.getClass().getResourceAsStream(
-					"META-INF/MANIFEST.MF");
+					"/META-INF/MANIFEST.MF");
 				try
 				{
 					// Not found, force failure
