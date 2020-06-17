@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
@@ -91,6 +92,9 @@ public final class SpringTaskManager
 		if (__cp == null || __entry == null || __args == null)
 			throw new NullPointerException("NARG");
 		
+		if (true)
+			throw Debugging.todo("Tasks changed completely!!");
+		
 		VMSuiteManager suites = this.suites;
 		
 		// Load classpath libraries
@@ -146,7 +150,6 @@ public final class SpringTaskManager
 		// Build machine for the task
 		SpringMachine machine = new SpringMachine(suites,
 			new SpringClassLoader(scl), this, null,
-			false, bootdx, __gd + 1,
 			this.profiler, this._sysprops, this.globalState, __args);
 		
 		// Lock on tasks

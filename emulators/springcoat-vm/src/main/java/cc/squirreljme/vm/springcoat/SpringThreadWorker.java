@@ -10,16 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.CallStackItem;
-import cc.squirreljme.jvm.SystemCallError;
-import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
-import cc.squirreljme.runtime.cldc.asm.SystemAccess;
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
-import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -34,8 +24,6 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
@@ -1226,7 +1214,7 @@ public final class SpringThreadWorker
 		
 		// Locate the main class
 		SpringClass bootClass = this.loadClass(
-			machine.bootcl.replace('.', '/'));
+			machine.bootClass.replace('.', '/'));
 		
 		// Lookup the main method
 		SpringMethod main = bootClass.lookupMethod(true,

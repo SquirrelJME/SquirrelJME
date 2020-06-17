@@ -156,6 +156,7 @@ More detailed changes:
      * Allow inheritance of static methods in classes.
      * Profiler thread lists are easier to read because the main suite is
        listed instead of the VM identifier.
+     * Refactored greatly to be much leaner and simplified.
    * SummerCoat
      * New Virtual Machine, register based.
      * Vast improvements over SpringCoat, faster and slimmer.

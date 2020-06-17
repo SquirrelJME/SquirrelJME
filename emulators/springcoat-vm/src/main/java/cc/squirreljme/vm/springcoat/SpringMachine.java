@@ -10,20 +10,14 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.lang.GuestDepth;
-import cc.squirreljme.runtime.swm.EntryPoint;
-import cc.squirreljme.runtime.swm.EntryPoints;
-import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +28,6 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
-import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This class contains the instance of the SpringCoat virtual machine and has
@@ -54,10 +46,6 @@ public final class SpringMachine
 	private static final MethodNameAndType _MAIN_THREAD_METHOD =
 		new MethodNameAndType("__main", "()V");
 	
-	/** Lock. */
-	public final Object strlock =
-		new Object();
-	
 	/** The class loader. */
 	protected final SpringClassLoader classloader;
 	
@@ -65,25 +53,13 @@ public final class SpringMachine
 	protected final VMResourceAccess resourceaccessor;
 	
 	/** The boot class. */
-	protected final String bootcl;
-	
-	/** Is the boot a midlet? */
-	@Deprecated
-	protected final boolean bootmid;
-	
-	/** The boot index. */
-	@Deprecated
-	protected final int bootdx;
+	protected final String bootClass;
 	
 	/** The manager for suites. */
 	protected final VMSuiteManager suites;
 	
 	/** Task manager. */
 	protected final SpringTaskManager tasks;
-	
-	/** The depth of this machine. */
-	@Deprecated
-	protected final int guestdepth;
 	
 	/** The global VM state. */
 	protected final GlobalState globalState;
@@ -114,22 +90,11 @@ public final class SpringMachine
 	/** Main entry point arguments. */
 	private final String[] _args;
 	
-	/** Long to string map. */
-	private final Map<Long, String> _strlongtostring =
-		new HashMap<>();
-	
-	/** String to long map. */
-	private final Map<String, Long> _strstringtolong =
-		new HashMap<>();
-	
 	/** System properties. */
 	final Map<String, String> _sysproperties;
 	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
-	
-	/** The next long to choose. */
-	private long _strnextlong;
 	
 	/** Is the VM exiting? */
 	private volatile boolean _exiting;
@@ -144,10 +109,6 @@ public final class SpringMachine
 	 * @param __cl The class loader.
 	 * @param __tm Task manager.
 	 * @param __bootcl The boot class.
-	 * @param __bootmid The boot class a midlet.
-	 * @param __bootdx The entry point which should be booted when the VM
-	 * runs.
-	 * @param __gd Guest depth.
 	 * @param __profiler The profiler to use.
 	 * @param __sprops System properties.
 	 * @param __gs Global system state.
@@ -156,8 +117,7 @@ public final class SpringMachine
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, String __bootcl, @Deprecated boolean __bootmid,
-		@Deprecated int __bootdx, @Deprecated int __gd,
+		SpringTaskManager __tm, String __bootcl,
 		ProfilerSnapshot __profiler, Map<String, String> __sprops,
 		GlobalState __gs, String... __args)
 		throws NullPointerException
@@ -168,10 +128,7 @@ public final class SpringMachine
 		this.suites = __sm;
 		this.classloader = __cl;
 		this.tasks = __tm;
-		this.bootcl = __bootcl;
-		this.bootmid = __bootmid;
-		this.bootdx = __bootdx;
-		this.guestdepth = __gd;
+		this.bootClass = __bootcl;
 		this.globalState = __gs;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
@@ -390,59 +347,6 @@ public final class SpringMachine
 	@Override
 	public final void run()
 	{
-		// Obtain the boot library to read entry points from
-		SpringClassLoader classloader = this.classloader;
-		VMClassLibrary bootbin = classloader.bootLibrary();
-		
-		// May be specified or not
-		String entryclass = this.bootcl;
-		boolean ismidlet = this.bootmid;
-		int launchid = this.bootdx;
-		
-		// Lookup the entry class via the manifest
-		if (entryclass == null)
-		{
-			// Need to load the manifest where the entry points will be
-			EntryPoints entries;
-			try (InputStream in = bootbin.resourceAsStream(
-				"META-INF/MANIFEST.MF"))
-			{
-				// {@squirreljme.error BK1a Entry point JAR has no manifest.
-				// (The name of the boot binary)}
-				if (in == null)
-					throw new SpringVirtualMachineException("BK1a " +
-						bootbin.name());
-				
-				entries = new EntryPoints(new JavaManifest(in));
-			}
-			
-			// {@squirreljme.error BK1b Failed to read the manifest.}
-			catch (IOException e)
-			{
-				throw new SpringVirtualMachineException("BK1b", e);
-			}
-			
-			int n = entries.size();
-			
-			// Print entry points out out for debug, but only for the first
-			// guest because this is annoying!
-			if (GuestDepth.guestDepth() + 1 == this.guestdepth)
-			{
-				todo.DEBUG.note("Entry points:");
-				for (int i = 0; i < n; i++)
-					todo.DEBUG.note("    %d: %s", i, entries.get(i));
-			}
-			
-			// Use the first program if the ID is not valid
-			if (launchid < 0 || launchid >= n)
-				launchid = 0;
-			
-			// Needed to enter the machine
-			EntryPoint entry = entries.get(launchid);
-			entryclass = entry.entryPoint().toString();
-			ismidlet = entry.isMidlet();
-		}
-		
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
 		SpringThread mainThread = this.createThread("main", true);
@@ -460,46 +364,6 @@ public final class SpringMachine
 			new ClassName("java/lang/Thread"),
 			new MethodDescriptor("(Ljava/lang/String;)V"),
 			worker.asVMObject("main"));
-		
-		// Load the entry point class
-		SpringClass entryClass = worker.loadClass(new ClassName(
-			entryclass.replace('.', '/')));
-		
-		// Find the method to be entered in
-		SpringMethod mainMethod;
-		if (ismidlet)
-			mainMethod = entryClass.lookupMethod(false,
-				new MethodNameAndType("startApp",
-					"()V"));
-		else
-			mainMethod = entryClass.lookupMethod(true,
-				new MethodNameAndType("main",
-					"([Ljava/lang/String;)V"));
-		
-		// Setup object to initialize with for thread
-		SpringVMStaticMethod vmsm = new SpringVMStaticMethod(mainMethod);
-		
-		// Determine the entry argument, midlets is just the class to run
-		Object entryarg;
-		if (ismidlet)
-			entryarg = worker.asVMObject(
-				entryclass.replace('.', '/'));
-		else
-		{
-			String[] inargs = this._args;
-			int inlen = inargs.length;
-			
-			// Setup array
-			SpringArrayObject outargs = worker.allocateArray(
-				worker.resolveClass(new ClassName("[Ljava/lang/String;")),
-				inlen);
-			
-			// Initialize the argument array
-			for (int i = 0; i < inlen; i++)
-				outargs.set(i, worker.asVMObject(inargs[i]));
-			
-			entryarg = outargs;
-		}
 		
 		// Enter the main entry point which handles the thread logic
 		mainThread.enterFrame(worker.loadClass(SpringMachine._START_CLASS)
