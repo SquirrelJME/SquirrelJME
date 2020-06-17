@@ -825,6 +825,25 @@ public final class SpringThreadWorker
 	 * @throws SpringClassFormatException If the class is not formatted
 	 * properly.
 	 * @throws SpringClassNotFoundException If the class was not found.
+	 * @since 2020/06/17
+	 */
+	public final SpringClass loadClass(String __cn)
+		throws NullPointerException, SpringClassFormatException,
+			SpringClassNotFoundException
+	{
+		return this.loadClass(new ClassName(__cn));
+	}
+	
+	/**
+	 * Loads the specified class, potentially performing initialization on it
+	 * if it has not been initialized.
+	 *
+	 * @param __cn The class to load.
+	 * @return The loaded class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringClassFormatException If the class is not formatted
+	 * properly.
+	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/09/08
 	 */
 	public final SpringClass loadClass(ClassName __cn)
@@ -1059,6 +1078,21 @@ public final class SpringThreadWorker
 	 * @return The resolved class.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringIllegalAccessException If the class cannot be accessed.
+	 * @since 2020/06/17
+	 */
+	public final SpringClass resolveClass(String __cl)
+		throws NullPointerException, SpringIllegalAccessException
+	{
+		return this.resolveClass(new ClassName(__cl));
+	}
+	
+	/**
+	 * Resolves the given class, checking access.
+	 *
+	 * @param __cl The class to resolve.
+	 * @return The resolved class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringIllegalAccessException If the class cannot be accessed.
 	 * @since 2018/09/15
 	 */
 	public final SpringClass resolveClass(ClassName __cl)
@@ -1179,6 +1213,43 @@ public final class SpringThreadWorker
 			if (__framelimit == 0)
 				thread._terminate = true;
 		}
+	}
+	
+	/**
+	 * Run the main process for this thread.
+	 *
+	 * @since 2020/06/17
+	 */
+	public final void runProcessMain()
+	{
+		SpringMachine machine = this.machine;
+		
+		// Locate the main class
+		SpringClass bootClass = this.loadClass(
+			machine.bootcl.replace('.', '/'));
+		
+		// Lookup the main method
+		SpringMethod main = bootClass.lookupMethod(true,
+			new MethodNameAndType("main", "([Ljava/lang/String;)V"));
+		
+		// Setup main arguments
+		String[] args = machine.getMainArguments();
+		int argsLen = args.length;
+		
+		// Allocate in VM
+		SpringArrayObject vmArgs = this.allocateArray(
+			this.resolveClass("[Ljava/lang/String;"), argsLen);
+		
+		// Copy everything over
+		for (int i = 0; i < argsLen; i++)
+			vmArgs.set(i, this.asVMObject(args[i]));
+		
+		// Enter the main method with all the passed arguments
+		int deepness = this.thread.numFrames();
+		this.thread.enterFrame(main, vmArgs);
+		
+		// Run until it finishes execution
+		this.run(deepness);
 	}
 	
 	/**

@@ -42,16 +42,23 @@ public final class UncaughtExceptionHandler
 	 */
 	public static void handle(Throwable __t)
 	{
-		Debugging.debugNote("*****************************************");
-		Debugging.debugNote("UNCAUGHT EXCEPTION IN THREAD: ");
+		// Make sure this does not cause the thread to die again
+		try
+		{
+			Debugging.debugNote(
+				"*****************************************");
+			Debugging.debugNote("UNCAUGHT EXCEPTION IN THREAD: ");
+			
+			__t.printStackTrace();
+			
+			Debugging.debugNote(
+				"*****************************************");
+		}
 		
-		__t.printStackTrace();
-		
-		Debugging.debugNote("*****************************************");
-		
-		// Exit the system here for now
-		Debugging.todoNote("Abort due to uncaught exception, fix this!");
-		System.exit(UncaughtExceptionHandler._EXIT_STATUS);
+		// Stop this from failing
+		catch (Throwable ignored)
+		{
+		}
 	}
 }
 

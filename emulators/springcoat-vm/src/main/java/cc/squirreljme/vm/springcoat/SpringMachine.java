@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
@@ -28,8 +29,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
@@ -65,9 +68,11 @@ public final class SpringMachine
 	protected final String bootcl;
 	
 	/** Is the boot a midlet? */
+	@Deprecated
 	protected final boolean bootmid;
 	
 	/** The boot index. */
+	@Deprecated
 	protected final int bootdx;
 	
 	/** The manager for suites. */
@@ -151,9 +156,10 @@ public final class SpringMachine
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, String __bootcl, boolean __bootmid,
-		int __bootdx, int __gd, ProfilerSnapshot __profiler,
-		Map<String, String> __sprops, GlobalState __gs, String... __args)
+		SpringTaskManager __tm, String __bootcl, @Deprecated boolean __bootmid,
+		@Deprecated int __bootdx, @Deprecated int __gd,
+		ProfilerSnapshot __profiler, Map<String, String> __sprops,
+		GlobalState __gs, String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null)
@@ -191,76 +197,35 @@ public final class SpringMachine
 	/**
 	 * Creates a new thread within the virtual machine.
 	 *
-	 * @param __n The name of the thread.
+	 * @param __n The name of the thread, may be {@code null} in which case
+	 * the thread will just get an ID number.
+	 * @param __main Is this a main thread?
 	 * @return The newly created thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	public final SpringThread createThread(String __n)
-		throws NullPointerException
+	public final SpringThread createThread(String __n, boolean __main)
 	{
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
 		// Store thread
 		List<SpringThread> threads = this._threads;
-		synchronized (threads)
+		synchronized (this)
 		{
+			// The name of the thread to use
+			String usedName = (__n != null ? __n :
+				"hwThread-" + this.numThreads());
+			
 			// Initialize new thread
 			int v;
-			SpringThread rv = new SpringThread((v = ++this._nextthreadid), __n,
+			SpringThread rv = new SpringThread(
+				(v = ++this._nextthreadid), __main,
+				usedName,
 				this.profiler.measureThread(String.format("%s-vm%08x-%d-%s",
 				this.classloader.bootLibrary().name(),
-				System.identityHashCode(this), v, __n)));
+				System.identityHashCode(this), v, usedName)));
 			
 			// Store thread
 			threads.add(rv);
 			return rv;
-		}
-	}
-	
-	/**
-	 * Resolves the given string pointer.
-	 *
-	 * @param __p The pointer.
-	 * @return The string at the given pointer or {@code null} if it has no
-	 * resolution.
-	 * @since 2018/09/29
-	 */
-	public final String debugResolveString(long __p)
-	{
-		if (__p == -1L)
-			return null;
-		
-		synchronized (this.strlock)
-		{
-			return this._strlongtostring.get(__p);
-		}
-	}
-	
-	/**
-	 * Unresolves the given string.
-	 *
-	 * @param __s The string to unresolve.
-	 * @return The pointer to the string.
-	 * @since 2018/09/29
-	 */
-	public final long debugUnresolveString(String __s)
-	{
-		if (__s == null)
-			return -1L;
-		
-		synchronized (this.strlock)
-		{
-			Long rv = this._strstringtolong.get(__s);
-			if (rv != null)
-				return rv.longValue();
-			
-			Long next = Long.valueOf(++this._strnextlong);
-			this._strstringtolong.put(__s, next);
-			this._strlongtostring.put(next, __s);
-			
-			return next;
 		}
 	}
 	
@@ -311,23 +276,53 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Returns the main arguments.
+	 *
+	 * @return The main arguments.
+	 * @since 2020/06/17
+	 */
+	public final String[] getMainArguments()
+	{
+		return this._args.clone();
+	}
+	
+	/**
 	 * Gets the thread by the given ID.
 	 *
 	 * @param __id The ID of the thread.
-	 * @return The thread by this ID or {@code null} if it was not found.
+	 * @return The thread by this ID.
+	 * @throws NoSuchElementException If there is no thread that exists by
+	 * that ID.
 	 * @since 2018/11/21
 	 */
 	public final SpringThread getThread(int __id)
+		throws NoSuchElementException
 	{
 		List<SpringThread> threads = this._threads;
-		synchronized (threads)
+		synchronized (this)
 		{
 			for (SpringThread t : threads)
 				if (t.id == __id)
 					return t;
 		}
 		
-		return null;
+		throw new NoSuchElementException("No such thread ID: " + __id);
+	}
+	
+	/**
+	 * Returns all of the process threads.
+	 *
+	 * @return All of the current process threads.
+	 * @since 2020/06/17
+	 */
+	public final SpringThread[] getThreads()
+	{
+		List<SpringThread> threads = this._threads;
+		synchronized (this)
+		{
+			return threads.<SpringThread>toArray(
+				new SpringThread[threads.size()]);
+		}
 	}
 	
 	/**
@@ -371,7 +366,7 @@ public final class SpringMachine
 	{
 		// Store thread
 		List<SpringThread> threads = this._threads;
-		synchronized (threads)
+		synchronized (this)
 		{
 			return threads.size();
 		}
@@ -450,7 +445,7 @@ public final class SpringMachine
 		
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
-		SpringThread mainThread = this.createThread("main");
+		SpringThread mainThread = this.createThread("main", true);
 		
 		// We will be using the same logic in the thread worker if we need to
 		// initialize any objects or arguments
@@ -458,23 +453,31 @@ public final class SpringMachine
 			mainThread, true);
 		mainThread._worker = worker;
 		
+		// Initialize an instance of Thread for this thread, as this is
+		// very important, the call to create VM threads will bind the instance
+		// object and the vm thread together.
+		worker.newInstance(
+			new ClassName("java/lang/Thread"),
+			new MethodDescriptor("(Ljava/lang/String;)V"),
+			worker.asVMObject("main"));
+		
 		// Load the entry point class
-		SpringClass entrycl = worker.loadClass(new ClassName(
+		SpringClass entryClass = worker.loadClass(new ClassName(
 			entryclass.replace('.', '/')));
 		
 		// Find the method to be entered in
-		SpringMethod mainmethod;
+		SpringMethod mainMethod;
 		if (ismidlet)
-			mainmethod = entrycl.lookupMethod(false,
+			mainMethod = entryClass.lookupMethod(false,
 				new MethodNameAndType("startApp",
 					"()V"));
 		else
-			mainmethod = entrycl.lookupMethod(true,
+			mainMethod = entryClass.lookupMethod(true,
 				new MethodNameAndType("main",
 					"([Ljava/lang/String;)V"));
 		
 		// Setup object to initialize with for thread
-		SpringVMStaticMethod vmsm = new SpringVMStaticMethod(mainmethod);
+		SpringVMStaticMethod vmsm = new SpringVMStaticMethod(mainMethod);
 		
 		// Determine the entry argument, midlets is just the class to run
 		Object entryarg;
@@ -498,21 +501,6 @@ public final class SpringMachine
 			entryarg = outargs;
 		}
 		
-		/*
-		// Setup new thread object
-		SpringObject threadobj = worker.newInstance(worker.loadClass(
-			new ClassName("java/lang/Thread")), new MethodDescriptor(
-			"(Ljava/lang/String;ILcc/squirreljme/runtime/cldc/asm/" +
-			"StaticMethod;Ljava/lang/Object;)V"), worker.asVMObject("Main"),
-			(ismidlet ? 3 : 4), vmsm, entryarg);
-		
-		// Enter the frame for that method using the arguments we passed (in
-		// a static fashion)
-		mainThread.enterFrame(worker.loadClass(
-			new ClassName("java/lang/Thread")).lookupMethod(false,
-			new MethodNameAndType("__start", "()V")), threadobj);
-		*/
-		
 		// Enter the main entry point which handles the thread logic
 		mainThread.enterFrame(worker.loadClass(SpringMachine._START_CLASS)
 			.lookupMethod(true, SpringMachine._MAIN_THREAD_METHOD));
@@ -525,69 +513,10 @@ public final class SpringMachine
 			worker.run();
 		}
 		
-		// Virtual machine exited, do not print fatal trace just exit here
-		catch (SpringMachineExitException e)
-		{
-			throw e;
-		}
-		
-		// Ooopsie!
+		// Either failed or threw exit exception
 		catch (RuntimeException e)
 		{
-			/*PrintStream err = System.err;
-			
-			err.println("****************************");
-			
-			// Print the real stack trace
-			err.println("*** EXTERNAL STACK TRACE ***");
-			e.printStackTrace(err);
-			err.println();
-			
-			// Print the VM seen stack trace
-			err.println("*** INTERNAL STACK TRACE ***");
-			mainthread.printStackTrace(err);
-			err.println();
-			
-			err.println("****************************");*/
-			
-			// Retoss
 			throw e;
-		}
-		
-		// Wait until all threads have terminated before actually leaving
-		for (;;)
-		{
-			// Check if the VM is exiting, this would have happen if another
-			// thread called exit
-			// If we do not check, then the VM will never exit even after
-			// another thread has exited
-			this.exitCheck();
-			
-			// No more threads left?
-			int okay = 0,
-				notokay = 0;
-			List<SpringThread> threads = this._threads;
-			synchronized (threads)
-			{
-				for (SpringThread t : threads)
-					if (t.isExitOkay())
-						okay++;
-					else
-						notokay++;
-			}
-			
-			// Okay to exit?
-			if (notokay == 0)
-				return;
-			
-			// Wait a short duration before checking again
-			try
-			{
-				Thread.sleep(500);
-			}
-			catch (InterruptedException e)
-			{
-			}
 		}
 	}
 	

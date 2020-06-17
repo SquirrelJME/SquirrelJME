@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -54,11 +55,14 @@ public final class SpringDisplayEventCallback
 		if (__m == null || __o == null)
 			throw new NullPointerException("NARG");
 		
+		if (true)
+			throw Debugging.todo("SDEC again or something else?");
+		
 		// Set object to call
 		this.object = __o;
 		
 		// Setup thread
-		SpringThread thread = __m.createThread("SpringCoat-LCDUIThread");
+		SpringThread thread = __m.createThread("SpringCoat-LCDUIThread", false);
 		SpringThreadWorker worker = new SpringThreadWorker(__m, thread, false);
 		
 		// Need to initialize a thread object because this thread has to be

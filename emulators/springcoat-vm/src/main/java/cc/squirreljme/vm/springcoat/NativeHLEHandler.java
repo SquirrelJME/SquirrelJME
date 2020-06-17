@@ -14,10 +14,12 @@ import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
+import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
@@ -34,7 +36,7 @@ import net.multiphasicapps.classfile.PrimitiveType;
  *
  * @since 2020/05/30
  */
-@SuppressWarnings("OverlyComplexClass")
+@SuppressWarnings({"OverlyComplexClass", "OverlyCoupledClass"})
 public final class NativeHLEHandler
 {
 	/** How many times to spin before yielding. */
@@ -136,10 +138,9 @@ public final class NativeHLEHandler
 		if (__thread == null || __throwable == null)
 			throw new NullPointerException("NARG");
 		
-		return (SpringArrayObjectGeneric)__throwable.fieldByField(
-			__thread.resolveClass(new ClassName("java/lang/Throwable"))
-			.lookupField(false, "_stack",
-				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"))
+		return (SpringArrayObjectGeneric)__throwable.fieldByNameAndType(
+			false, "_stack",
+			"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;")
 			.get();
 	}
 	
@@ -192,6 +193,11 @@ public final class NativeHLEHandler
 				// Terminal calls
 			case "cc/squirreljme/jvm/mle/TerminalShelf":
 				return NativeHLEHandler.dispatchTerminal(__thread, __method,
+					__args);
+				
+				// Thread calls
+			case "cc/squirreljme/jvm/mle/ThreadShelf":
+				return NativeHLEHandler.dispatchThread(__thread, __method,
 					__args);
 		
 				// Type calls
@@ -508,74 +514,60 @@ public final class NativeHLEHandler
 	}
 	
 	/**
-	 * Flushes the output.
+	 * Handles the dispatching of type thread native methods.
 	 *
-	 * @param __thread The thread that is writing.
-	 * @param __fd The file descriptor.
-	 * @return The error status.
-	 * @since 2020/06/14
+	 * @param __thread The current thread this is acting under.
+	 * @param __func The function which was called.
+	 * @param __args The arguments to the call.
+	 * @return The resulting object returned by the dispatcher.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
 	 */
-	public static int terminalFlush(
-		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd)
+	public static Object dispatchThread(SpringThreadWorker __thread,
+		MethodNameAndType __func, Object... __args)
+		throws NullPointerException
 	{
-		try
+		if (__thread == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__func.toString())
 		{
-			NativeHLEHandler.__fdOutput(__fd).flush();
-			return 1;
-		}
-		catch (IllegalArgumentException|IOException e)
-		{
-			return -1;
-		}
-	}
-	
-	/**
-	 * Writes to the output.
-	 *
-	 * @param __thread The thread that is writing.
-	 * @param __fd The file descriptor.
-	 * @param __c The byte to write.
-	 * @return The error status.
-	 * @since 2020/06/14
-	 */
-	public static int terminalWrite(
-		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd,
-		int __c)
-	{
-		try
-		{
-			NativeHLEHandler.__fdOutput(__fd).write(__c);
-			return 1;
-		}
-		catch (IllegalArgumentException|IOException e)
-		{
-			return -1;
-		}
-	}
-	
-	/**
-	 * Writes to the output.
-	 *
-	 * @param __thread The thread that is writing.
-	 * @param __fd The file descriptor.
-	 * @param __b The bytes to write.
-	 * @param __o The offset into the array.
-	 * @param __l The number of bytes to write.
-	 * @return The error status.
-	 * @since 2020/06/14
-	 */
-	public static int terminalWrite(
-		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd,
-		byte[] __b, int __o, int __l)
-	{
-		try
-		{
-			NativeHLEHandler.__fdOutput(__fd).write(__b, __o, __l);
-			return __l;
-		}
-		catch (IllegalArgumentException|IOException e)
-		{
-			return -1;
+			case "createVMThread:(Ljava/lang/Thread;)Lcc/squirreljme/jvm/" +
+				"mle/brackets/VMThreadBracket;":
+				return NativeHLEHandler.threadCreateVMThread(__thread,
+					(SpringObject)__args[0]);
+			
+			case "currentJavaThread:()Ljava/lang/Thread;":
+				return __thread.thread.threadInstance();
+			
+			case "javaThreadFlagStarted:(Ljava/lang/Thread;)V":
+				NativeHLEHandler.threadJavaThreadFlagStarted(
+					__thread, (SpringSimpleObject)__args[0]);
+				return null;
+			
+			case "javaThreadSetAlive:(Ljava/lang/Thread;Z)V":
+				NativeHLEHandler.threadJavaThreadSetAlive(
+					__thread, (SpringSimpleObject)__args[0],
+					(int)__args[1] != 0);
+				return null;
+			
+			case "runProcessMain:()V":
+				__thread.runProcessMain();
+				return null;
+			
+			case "toVMThread:(Ljava/lang/Thread;)Lcc/squirreljme/" +
+				"jvm/mle/brackets/VMThreadBracket;":
+				return NativeHLEHandler.threadToVMThread(__thread,
+					(SpringSimpleObject)__args[0]);
+			
+			case "vmThreadIsMain:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"VMThreadBracket;)Z":
+				return ((VMThreadObject)__args[0]).getThread().isMain();
+			
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown Thread MLE native call: %s %s", __func,
+					Arrays.asList(__args)));
 		}
 	}
 	
@@ -667,6 +659,211 @@ public final class NativeHLEHandler
 					"Unknown Type MLE native call: %s %s", __func,
 					Arrays.asList(__args)));
 		}
+	}
+	
+	/**
+	 * Flushes the output.
+	 *
+	 * @param __thread The thread that is writing.
+	 * @param __fd The file descriptor.
+	 * @return The error status.
+	 * @since 2020/06/14
+	 */
+	public static int terminalFlush(
+		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd)
+	{
+		try
+		{
+			NativeHLEHandler.__fdOutput(__fd).flush();
+			return 1;
+		}
+		catch (IllegalArgumentException|IOException e)
+		{
+			return -1;
+		}
+	}
+	
+	/**
+	 * Writes to the output.
+	 *
+	 * @param __thread The thread that is writing.
+	 * @param __fd The file descriptor.
+	 * @param __c The byte to write.
+	 * @return The error status.
+	 * @since 2020/06/14
+	 */
+	public static int terminalWrite(
+		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd,
+		int __c)
+	{
+		try
+		{
+			NativeHLEHandler.__fdOutput(__fd).write(__c);
+			return 1;
+		}
+		catch (IllegalArgumentException|IOException e)
+		{
+			return -1;
+		}
+	}
+	
+	/**
+	 * Writes to the output.
+	 *
+	 * @param __thread The thread that is writing.
+	 * @param __fd The file descriptor.
+	 * @param __b The bytes to write.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to write.
+	 * @return The error status.
+	 * @since 2020/06/14
+	 */
+	public static int terminalWrite(
+		@SuppressWarnings("unused") SpringThreadWorker __thread, int __fd,
+		byte[] __b, int __o, int __l)
+	{
+		try
+		{
+			NativeHLEHandler.__fdOutput(__fd).write(__b, __o, __l);
+			return __l;
+		}
+		catch (IllegalArgumentException|IOException e)
+		{
+			return -1;
+		}
+	}
+	
+	/**
+	 * Creates a VM thread for the given thread.
+	 *
+	 * If there is no bound hardware thread, then one will be created that
+	 * is attached to the given thread.
+	 *
+	 * @param __thread The thread this is called by.
+	 * @param __javaThread The Java thread to attach to.
+	 * @return The thread object for the given thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
+	public static VMThreadObject threadCreateVMThread(
+		SpringThreadWorker __thread, SpringObject __javaThread)
+		throws NullPointerException
+	{
+		if (__thread == null || __javaThread == null)
+			throw new NullPointerException("NARG");
+		
+		// Find the thread which the given passed object is bound to, this
+		// is the target thread
+		SpringThread target = null;
+		SpringMachine machine = __thread.machine;
+		synchronized (machine)
+		{
+			// Search through every thread
+			SpringThread[] threads = machine.getThreads();
+			for (SpringThread thread : threads)
+			{
+				SpringObject instance;
+				try
+				{
+					instance = thread.threadInstance();
+				}
+				catch (IllegalStateException ignored)
+				{
+					continue;
+				}
+				
+				// If this is the thread for this, then use that!
+				if (__javaThread == instance)
+				{
+					target = thread;
+					break;
+				}
+			}
+			
+			// If there is exactly one thread, we can rather get into a bit
+			// of a loop where our main thread is created outside of normal
+			// means by the VM and not by any other thread
+			if (threads.length == 1)
+				target = threads[0];
+			
+			// No actual thread exists that the object is bound to, so oops!
+			// We need to actually create one here and bind it accordingly
+			if (target == null)
+				target = machine.createThread(null, false);
+		}
+		
+		// Create object with this attached thread
+		VMThreadObject vmThread = new VMThreadObject(target);
+		
+		// The thread gets these as well
+		target.setThreadInstance(__javaThread);
+		target.setVMThread(vmThread);
+		
+		return vmThread;
+	}
+	
+	/**
+	 * Flags the thread as being started.
+	 *
+	 * @param __thread The calling thread.
+	 * @param __javaThread The thread to flag.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public static void threadJavaThreadFlagStarted(
+		SpringThreadWorker __thread, SpringSimpleObject __javaThread)
+		throws NullPointerException
+	{
+		if (__thread == null || __javaThread == null)
+			throw new NullPointerException("NARG");
+		
+		// Just set the started field to true
+		__javaThread.fieldByNameAndType(
+			false, "_started", "Z").set(true);
+	}
+	
+	/**
+	 * Marks the thread as being alive or not.
+	 *
+	 * @param __thread The calling thread.
+	 * @param __javaThread The thread to flag.
+	 * @param __alive Is this thread alive?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public static void threadJavaThreadSetAlive(SpringThreadWorker __thread,
+		SpringSimpleObject __javaThread, boolean __alive)
+		throws NullPointerException
+	{
+		if (__thread == null || __javaThread == null)
+			throw new NullPointerException("NARG");
+		
+		// Just set the started field to true
+		__javaThread.fieldByNameAndType(
+			false, "_isAlive", "Z").set(__alive);
+	}
+	
+	/**
+	 * Returns the VM Thread of the given thread.
+	 *
+	 * @param __thread The calling thread.
+	 * @param __javaThread The Java thread instance.
+	 * @return The VM thread for the given thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public static VMThreadObject threadToVMThread(SpringThreadWorker __thread,
+		SpringSimpleObject __javaThread)
+		throws NullPointerException
+	{
+		if (__thread == null || __javaThread == null)
+			throw new NullPointerException("NARG");
+		
+		return (VMThreadObject)__javaThread.fieldByField(
+			__thread.resolveClass("java/lang/Thread")
+			.lookupField(false, "_vmThread",
+			"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;")).get();
 	}
 	
 	/**
