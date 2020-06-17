@@ -29,7 +29,6 @@ public class Hello
 			"java.vendor.url",
 			"java.vm.name",
 			"java.vm.version",
-			"cc.squirreljme.apilevel",
 			"java.vm.vendor",
 			"java.vm.vendor.email",
 			"java.vm.vendor.url",
