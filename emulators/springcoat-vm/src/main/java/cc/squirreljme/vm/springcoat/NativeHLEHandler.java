@@ -548,10 +548,17 @@ public final class NativeHLEHandler
 		
 		switch (__func.toString())
 		{
+			case "aliveThreadCount:(ZZ)I":
+				return NativeHLEHandler.threadAliveThreadCount(__thread,
+					((int)__args[0] != 0), ((int)__args[1] != 0));
+			
 			case "createVMThread:(Ljava/lang/Thread;)Lcc/squirreljme/jvm/" +
 				"mle/brackets/VMThreadBracket;":
 				return NativeHLEHandler.threadCreateVMThread(__thread,
 					(SpringObject)__args[0]);
+			
+			case "currentExitCode:()I":
+				return __thread.machine._exitcode;
 			
 			case "currentJavaThread:()Ljava/lang/Thread;":
 				return __thread.thread.threadInstance();
@@ -839,6 +846,44 @@ public final class NativeHLEHandler
 		{
 			return -1;
 		}
+	}
+	
+	/**
+	 * Returns the number of alive threads.
+	 *
+	 * @param __thread The thread that is checking.
+	 * @param __includeMain Include main threads?
+	 * @param __includeDaemon Include daemon threads?
+	 * @return The number of alive threads.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
+	private static int threadAliveThreadCount(SpringThreadWorker __thread,
+		boolean __includeMain, boolean __includeDaemon)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		// Count every thread
+		int count = 0;
+		SpringMachine machine = __thread.machine;
+		synchronized (machine)
+		{
+			for (SpringThread thread : machine.getThreads())
+			{
+				boolean isMain = thread.isMain();
+				boolean isDaemon = thread.isDaemon();
+				
+				if ((__includeMain && isMain) ||
+					(__includeDaemon && isDaemon) ||
+					(!isMain && !isDaemon))
+					count++;
+			}
+		}
+		
+		return count;
 	}
 	
 	/**
