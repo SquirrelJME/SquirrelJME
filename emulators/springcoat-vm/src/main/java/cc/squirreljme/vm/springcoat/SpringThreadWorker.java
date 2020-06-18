@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -1237,7 +1238,7 @@ public final class SpringThreadWorker
 		this.thread.enterFrame(main, vmArgs);
 		
 		// Run until it finishes execution
-		this.run(deepness);
+		this.run(deepness + 1);
 	}
 	
 	/**
@@ -3383,7 +3384,8 @@ public final class SpringThreadWorker
 		{
 			// Add profiler point for native calls to track them there along
 			// with being able to handle that
-			this.thread.profiler.enterFrame(ref.className().toString(),
+			ProfiledFrame pFrame = this.thread.profiler.enterFrame(
+				ref.className().toString(),
 				ref.memberName().toString(), ref.memberType().toString());
 			
 			// Now perform the actual call
