@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
@@ -329,13 +330,17 @@ public final class Class<T>
 	 * @return The newly created instance.
 	 * @since 2018/12/04
 	 */
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "RedundantThrows"})
 	public T newInstance()
 		throws InstantiationException, IllegalAccessException
 	{
-		todo.TODO.note("Implement newInstance() access checks.");
+		Debugging.todoNote("Implement newInstance() access checks.");
 		
-		return (T)this.__newInstance();
+		Object rv = ObjectShelf.newInstance(this._type);
+		if (rv == null)
+			throw new OutOfMemoryError("OOME");
+		
+		return (T)rv;
 	}
 	
 	/**

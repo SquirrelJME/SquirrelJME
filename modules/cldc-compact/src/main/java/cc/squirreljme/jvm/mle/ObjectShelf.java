@@ -57,4 +57,14 @@ public final class ObjectShelf
 	 * @since 2020/06/17
 	 */
 	public static native boolean holdsLock(Thread __javaThread, Object __o);
+	
+	/**
+	 * Creates a new instance of the given type.
+	 *
+	 * @param __type The type to instantiate.
+	 * @return The newly created object or {@code null} if there was no
+	 * memory left.
+	 * @since 2020/06/17
+	 */
+	public static native Object newInstance(TypeBracket __type);
 }
