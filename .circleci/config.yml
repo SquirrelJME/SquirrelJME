@@ -156,7 +156,7 @@ jobs:
       - run:
           name: SummerCoat Tests
           command: |
-            if ! timeout --foreground 12m ./gradlew testSummerCoat --console plain --continue --parallel
+            if ! timeout --foreground 1s ./gradlew testSummerCoat --console plain --continue --parallel
             then
               echo "SummerCoat testing failed, ignoring..." 1>&2
             fi
