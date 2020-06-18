@@ -466,7 +466,7 @@ public final class System
 		if (__o == null)
 			return 0;
 		
-		return ObjectAccess.identityHashCode(__o);
+		return ObjectShelf.identityHashCode(__o);
 	}
 	
 	/**

@@ -59,6 +59,15 @@ public final class ObjectShelf
 	public static native boolean holdsLock(Thread __javaThread, Object __o);
 	
 	/**
+	 * Returns the identity hashcode of the object.
+	 *
+	 * @param __o The object to get the hashcode of.
+	 * @return The identity hashcode of the object.
+	 * @since 2020/06/18
+	 */
+	public static native int identityHashCode(Object __o);
+	
+	/**
 	 * Creates a new instance of the given type.
 	 *
 	 * @param __type The type to instantiate.

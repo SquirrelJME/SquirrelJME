@@ -10,6 +10,8 @@
 
 package java.util;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
@@ -317,8 +319,8 @@ public class Arrays
 	 * @param <T> The resulting type of the array to use.
 	 * @param <U> The input array type.
 	 * @param __src The source array.
-	 * @param __newlen The new length of the array.
-	 * @param __targettype The type type.
+	 * @param __newLen The new length of the array.
+	 * @param __newType The type type.
 	 * @return The copy of the array with the new length and type.
 	 * @throws ArrayStoreException If an element being copied from the source
 	 * array is not compatible with the destination array.
@@ -327,24 +329,25 @@ public class Arrays
 	 * @since 2018/11/04
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static <T, U> T[] copyOf(U[] __src, int __newlen,
-		Class<? extends T[]> __targettype)
+	public static <T, U> T[] copyOf(U[] __src, int __newLen,
+		Class<? extends T[]> __newType)
 		throws ArrayStoreException, NegativeArraySizeException,
 			NullPointerException
 	{
-		if (__src == null || __targettype == null)
+		if (__src == null || __newType == null)
 			throw new NullPointerException("NARG");
-		if (__newlen < 0)
+		if (__newLen < 0)
 			throw new NegativeArraySizeException("NASE");
 		
 		// Allocate array in the target type
-		Object[] rv = (Object[])ObjectAccess.arrayNew(__targettype, __newlen);
+		T[] rv = ObjectShelf.<T[]>arrayNew(TypeShelf.classToType(__newType),
+			__newLen);
 		
 		// Copy source to destination
-		for (int i = 0, n = Math.min(__src.length, __newlen); i < n; i++)
-			rv[i] = __src[i];
+		for (int i = 0, n = Math.min(__src.length, __newLen); i < n; i++)
+			rv[i] = (T)__src[i];
 		
-		return (T[])rv;
+		return rv;
 	}
 	
 	/**

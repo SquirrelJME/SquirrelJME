@@ -41,7 +41,7 @@ import java.util.LinkedList;
 public final class String
 	implements Comparable<String>, CharSequence
 {
-	/** The minumum trim character. */
+	/** The minimum trim character. */
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
