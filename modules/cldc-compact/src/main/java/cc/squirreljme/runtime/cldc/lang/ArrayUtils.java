@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
 /**
@@ -468,19 +470,20 @@ public final class ArrayUtils
 		
 		// Count the number of dimensions represented in the type
 		String typename = __type.getName();
-		int typedims = 0;
-		while (typename.charAt(typedims) == '[')
-			typedims++;
+		int typeDims = 0;
+		while (typename.charAt(typeDims) == '[')
+			typeDims++;
 		
 		// {@squirreljme.error ZZ0e Negative number of dimensions available
 		// or input type is not correct for the array type.}
 		int dims = __dims.length - __skip;
-		if (__skip < 0 || dims <= 0 || typedims < dims)
+		if (__skip < 0 || dims <= 0 || typeDims < dims)
 			throw new IllegalArgumentException("ZZ0e");
 		
 		// Allocate array of this type
-		int numelem = __dims[__skip];
-		Object rv = ObjectAccess.arrayNew(__type, numelem);
+		int numElem = __dims[__skip];
+		Object rv = ObjectShelf.arrayNew(
+			TypeShelf.classToType(__type), numElem);
 		
 		// Need to determine the type for setting
 		int type = ArrayUtils.arrayType(rv);
@@ -505,12 +508,12 @@ public final class ArrayUtils
 			}
 			
 			// Skipping ahead by one
-			int nxskip = __skip + 1;
+			int nextSkip = __skip + 1;
 			
 			// Allocate
-			for (int i = 0; i < numelem; i++)
+			for (int i = 0; i < numElem; i++)
 				ArrayUtils.arraySet(type, rv, i,
-					ArrayUtils.multiANewArray(subtype, nxskip, __dims));
+					ArrayUtils.multiANewArray(subtype, nextSkip, __dims));
 		}
 		
 		return rv;

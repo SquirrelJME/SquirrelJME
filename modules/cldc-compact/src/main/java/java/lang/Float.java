@@ -12,6 +12,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.JVMFunction;
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 
@@ -225,7 +226,7 @@ public final class Float
 	 */
 	public static int floatToRawIntBits(float __v)
 	{
-		return Assembly.floatToRawIntBits(__v);
+		return MathShelf.rawFloatToInt(__v);
 	}
 	
 	/**
@@ -241,7 +242,7 @@ public final class Float
 	 */
 	public static float intBitsToFloat(int __b)
 	{
-		return Assembly.intBitsToFloat(__b);
+		return MathShelf.rawIntToFloat(__b);
 	}
 	
 	public static boolean isInfinite(float __a)
@@ -258,7 +259,8 @@ public final class Float
 	 */
 	public static boolean isNaN(float __v)
 	{
-		return (Float.floatToRawIntBits(__v) & Float._NAN_MASK) == Float._NAN_MASK;
+		return Float._NAN_MASK ==
+			(Float.floatToRawIntBits(__v) & Float._NAN_MASK);
 	}
 	
 	public static float parseFloat(String __a)
@@ -289,6 +291,7 @@ public final class Float
 	 * @return The boxed float.
 	 * @since 2018/11/04
 	 */
+	@SuppressWarnings("UnnecessaryBoxing")
 	public static Float valueOf(float __v)
 	{
 		return new Float(__v);

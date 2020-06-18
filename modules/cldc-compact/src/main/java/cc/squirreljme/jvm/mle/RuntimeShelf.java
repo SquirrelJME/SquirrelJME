@@ -33,6 +33,14 @@ public final class RuntimeShelf
 	}
 	
 	/**
+	 * Returns the current time in milliseconds since UTC.
+	 *
+	 * @return The current time in milliseconds since UTC.
+	 * @since 2020/06/18
+	 */
+	public static native long currentTimeMillis();
+	
+	/**
 	 * Returns the encoding of the system.
 	 *
 	 * @return The encoding of the system, see {@link BuiltInEncodingType}.
@@ -66,6 +74,14 @@ public final class RuntimeShelf
 	 * @since 2020/06/11
 	 */
 	public static native int locale();
+	
+	/**
+	 * Returns the number of monotonic nanoseconds that have elapsed.
+	 *
+	 * @return The monotonic nanosecond clock.
+	 * @since 2020/06/18
+	 */
+	public static native long nanoTime();
 	
 	/**
 	 * Returns the system property for the given key, if there is one.

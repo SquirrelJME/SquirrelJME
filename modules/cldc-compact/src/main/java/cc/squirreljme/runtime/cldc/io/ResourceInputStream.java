@@ -17,8 +17,10 @@ import java.io.InputStream;
 /**
  * This input stream handles reading of resources.
  *
+ * @deprecated Being removed as it is no longer needed.
  * @since 2018/10/07
  */
+@Deprecated
 public final class ResourceInputStream
 	extends InputStream
 {
