@@ -704,6 +704,11 @@ public final class NativeHLEHandler
 				return ((TypeObject)__args[0]).getSpringClass()
 					.name().toRuntimeString();
 			
+			case "superClass:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+				return NativeHLEHandler.typeSuperClass(
+					(TypeObject)__args[0]);
+			
 			case "typeOfBoolean:()Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;":
 				return new TypeObject(__thread.loadClass(
@@ -1243,6 +1248,26 @@ public final class NativeHLEHandler
 		{
 			return null;
 		}
+	}
+	
+	/**
+	 * Returns the superclass of the type.
+	 *
+	 * @param __type The type.
+	 * @return The superclass or {@code null}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	private static SpringObject typeSuperClass(TypeObject __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		SpringClass superClass = __type.getSpringClass().superClass();
+		if (superClass == null)
+			return SpringNullObject.NULL;
+		return new TypeObject(superClass);
 	}
 	
 	/**
