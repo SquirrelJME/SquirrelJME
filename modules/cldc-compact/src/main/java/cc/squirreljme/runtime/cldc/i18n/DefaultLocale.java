@@ -51,6 +51,7 @@ public final class DefaultLocale
 	{
 		switch (__id)
 		{
+			case BuiltInLocaleType.UNSPECIFIED:
 			case BuiltInLocaleType.ENGLISH_US:
 				return new LocaleEnUs();
 			

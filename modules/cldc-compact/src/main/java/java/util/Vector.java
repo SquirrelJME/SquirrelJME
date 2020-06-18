@@ -10,6 +10,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.cldc.util.SynchronizedIterator;
 
@@ -20,6 +21,7 @@ import cc.squirreljme.runtime.cldc.util.SynchronizedIterator;
  * @see ArrayList
  * @since 2019/05/13
  */
+@SuppressWarnings("UseOfClone")
 public class Vector<E>
 	extends AbstractList<E>
 	implements RandomAccess, Cloneable
@@ -75,9 +77,26 @@ public class Vector<E>
 		this(10, 0);
 	}
 	
-	public Vector(Collection<? extends E> __a)
+	/**
+	 * Initializes a vector which is a copy of the given collection.
+	 *
+	 * @param __c The collection to initialize with.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public Vector(Collection<? extends E> __c)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// The initial capacity is always the target collection size
+		int initialCap = __c.size();
+		
+		this.elementData = new Object[initialCap];
+		this.capacityIncrement = initialCap;
+		
+		this.addAll(__c);
 	}
 	
 	/**
@@ -89,41 +108,7 @@ public class Vector<E>
 	{
 		synchronized (this)
 		{
-			int size = this.elementCount;
-			if (__i < 0 || __i > size)
-				throw new IndexOutOfBoundsException("IOOB");
-			
-			Object[] elements = this.elementData;
-			int cap = elements.length,
-				nextsize = size + 1;
-			
-			// Cannot fit in this array
-			Object[] source = elements;
-			if (nextsize > cap)
-			{
-				// Grow the list by a bit
-				int newcap = nextsize + Math.max(1, this.capacityIncrement);
-				elements = new Object[newcap];
-				
-				// Copy old stuff over, but only up to the index as needed
-				for (int i = 0; i < __i; i++)
-					elements[i] = source[i];
-			}
-			
-			// Move down to fit
-			for (int i = size - 1, o = size; o > __i; i--, o--)
-				elements[o] = source[i];
-			
-			// Store data here
-			elements[__i] = __v;
-			
-			// Store new information
-			this.elementCount = nextsize;
-			if (elements != source)
-				this.elementData = elements;
-			
-			// Structurally modified
-			this.modCount++;
+			this.__internalAdd(__i, __v);
 		}
 	}
 	
@@ -159,19 +144,26 @@ public class Vector<E>
 	 * @param __v The element to add.
 	 * @since 2019/05/14
 	 */
+	@SuppressWarnings("UnnecessarySuperQualifier")
 	public void addElement(E __v)
 	{
 		synchronized (this)
 		{
-			this.add(__v);
+			super.add(__v);
 		}
 	}
 	
+	/**
+	 * Returns the capacity of this vector.
+	 *
+	 * @return The capacity of this vector.
+	 * @since 2020/06/17
+	 */
 	public int capacity()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return this.elementData.length;
 		}
 	}
 	
@@ -195,26 +187,37 @@ public class Vector<E>
 	}
 	
 	@Override
-	public Object clone()
+	public Vector<E> clone()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo("Vector clone");
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/17
+	 */
 	@Override
-	public boolean contains(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean containsAll(Collection<?> __a)
+	public boolean contains(Object __v)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.contains(__v);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/17
+	 */
+	@Override
+	public boolean containsAll(Collection<?> __c)
+	{
+		synchronized (this)
+		{
+			return super.containsAll(__c);
 		}
 	}
 	
@@ -228,6 +231,7 @@ public class Vector<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/24
 	 */
+	@SuppressWarnings("ManualArrayCopy")
 	public void copyInto(Object[] __a)
 		throws ArrayStoreException, IndexOutOfBoundsException,
 			NullPointerException
@@ -260,7 +264,7 @@ public class Vector<E>
 	{
 		synchronized (this)
 		{
-			return this.get(__i);
+			return this.__internalGet(__i);
 		}
 	}
 	
@@ -272,7 +276,10 @@ public class Vector<E>
 	 */
 	public Enumeration<E> elements()
 	{
-		return new IteratorToEnumeration<E>(this.iterator());
+		synchronized (this)
+		{
+			return new IteratorToEnumeration<E>(this.iterator());
+		}
 	}
 	
 	/**
@@ -281,6 +288,7 @@ public class Vector<E>
 	 * @param __n The element capacity.
 	 * @since 2019/05/14
 	 */
+	@SuppressWarnings("ManualArrayCopy")
 	public void ensureCapacity(int __n)
 	{
 		synchronized (this)
@@ -291,13 +299,13 @@ public class Vector<E>
 			
 			// Meets or exceeds the desired capacity?
 			Object[] elements = this.elementData;
-			int nowl = elements.length;
-			if (__n <= nowl)
+			int nowLen = elements.length;
+			if (__n <= nowLen)
 				return;
 			
 			// Copy values over
 			Object[] extra = new Object[__n];
-			for (int i = 0; i < nowl; i++)
+			for (int i = 0; i < nowLen; i++)
 				extra[i] = elements[i];
 			
 			// Set
@@ -343,24 +351,24 @@ public class Vector<E>
 	 * @since 2019/05/14
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public E get(int __i)
 	{
 		synchronized (this)
 		{
-			if (__i < 0 || __i >= this.elementCount)
-				throw new ArrayIndexOutOfBoundsException("IOOB");
-			
-			return (E)this.elementData[__i];
+			return this.__internalGet(__i);
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/17
+	 */
 	@Override
 	public int hashCode()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.hashCode();
 		}
 	}
 	
@@ -377,19 +385,26 @@ public class Vector<E>
 		}
 	}
 	
-	public int indexOf(Object __a, int __b)
+	public int indexOf(Object __v, int __base)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
-	public void insertElementAt(E __a, int __b)
+	/**
+	 * Performs the same operation as {@link Vector#add(int, E)}.
+	 *
+	 * @param __v The value to add.
+	 * @param __at The index to add at.
+	 * @since 2020/06/17
+	 */
+	public void insertElementAt(E __v, int __at)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			this.__internalAdd(__at, __v);
 		}
 	}
 	
@@ -406,24 +421,41 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * Returns the last element.
+	 *
+	 * @return The last element.
+	 * @throws NoSuchElementException If there is none.
+	 * @since 2020/06/17
+	 */
+	@SuppressWarnings("unchecked")
 	public E lastElement()
+		throws NoSuchElementException
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			int count = this.elementCount;
+			if (count <= 0)
+				throw new NoSuchElementException("NSEE");
+			
+			return (E)this.elementData[count - 1];
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/17
+	 */
 	@Override
-	public int lastIndexOf(Object __a)
+	public int lastIndexOf(Object __v)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.lastIndexOf(__v);
 		}
 	}
 	
-	public int lastIndexOf(Object __a, int __b)
+	public int lastIndexOf(Object __v, int __base)
 	{
 		synchronized (this)
 		{
@@ -477,12 +509,16 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/17
+	 */
 	@Override
-	public boolean removeAll(Collection<?> __a)
+	public boolean removeAll(Collection<?> __c)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.removeAll(__c);
 		}
 	}
 	
@@ -647,21 +683,101 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/17
+	 */
 	@Override
-	public List<E> subList(int __a, int __b)
+	public List<E> subList(int __from, int __to)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.subList(__from, __to);
 		}
 	}
 	
+	/**
+	 * Trims this vector's capacity to the number of elements that are in
+	 * the vector.
+	 *
+	 * @since 2020/06/17
+	 */
 	public void trimToSize()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			int elementCount = this.elementCount;
+			Object[] elementData = this.elementData;
+			
+			// If this is true then we can just chop the array
+			if (elementData.length > elementCount)
+				this.elementData = Arrays.copyOf(elementData, elementCount);
 		}
+	}
+	
+	/**
+	 * Internal logic for adding values.
+	 *
+	 * @param __i The index to place at.
+	 * @param __v The value to add.
+	 * @since 2020/06/17
+	 */
+	@SuppressWarnings("ManualArrayCopy")
+	private void __internalAdd(int __i, E __v)
+	{
+		int size = this.elementCount;
+		if (__i < 0 || __i > size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		Object[] elements = this.elementData;
+		int cap = elements.length;
+		int nextSize = size + 1;
+		
+		// Cannot fit in this array
+		Object[] source = elements;
+		if (nextSize > cap)
+		{
+			// Grow the list by a bit
+			int newCap = nextSize + Math.max(1, this.capacityIncrement);
+			elements = new Object[newCap];
+			
+			// Copy old stuff over, but only up to the index as needed
+			for (int i = 0; i < __i; i++)
+				elements[i] = source[i];
+		}
+		
+		// Move down to fit
+		for (int i = size - 1, o = size; o > __i; i--, o--)
+			elements[o] = source[i];
+		
+		// Store data here
+		elements[__i] = __v;
+		
+		// Store new information
+		this.elementCount = nextSize;
+		if (elements != source)
+			this.elementData = elements;
+		
+		// Structurally modified
+		this.modCount++;
+	}
+	
+	/**
+	 * Internal get logic.
+	 *
+	 * @param __i The index.
+	 * @return The value at the index.
+	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2020/06/17
+	 */
+	@SuppressWarnings({"unchecked"})
+	private E __internalGet(int __i)
+		throws ArrayIndexOutOfBoundsException
+	{
+		if (__i < 0 || __i >= this.elementCount)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		return (E)this.elementData[__i];
 	}
 }
 
