@@ -316,7 +316,7 @@ public class ClassName
 	public String toRuntimeString()
 	{
 		BinaryName binary = this.binary;
-		if (binary != null)
+		if (!this.isArray() && binary != null)
 			return binary.toString().replace('/', '.');
 		return this.toString();
 	}
