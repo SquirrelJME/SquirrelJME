@@ -223,7 +223,8 @@ public final class Class<T>
 	 */
 	public Class<? super T> getSuperclass()
 	{
-		return TypeShelf.typeToClass(TypeShelf.superClass(this._type));
+		TypeBracket rv = TypeShelf.superClass(this._type);
+		return (rv == null ? null : TypeShelf.typeToClass(rv));
 	}
 	
 	/**
