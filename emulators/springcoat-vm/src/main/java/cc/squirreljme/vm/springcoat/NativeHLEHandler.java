@@ -445,7 +445,7 @@ public final class NativeHLEHandler
 					SpringObject object = (SpringObject)__args[0];
 					if (object instanceof SpringArrayObject)
 						return ((SpringArrayObject)object).length();
-					return 0;
+					return -1;
 				}
 			
 			case "arrayNew:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;I)" +
@@ -1159,8 +1159,9 @@ public final class NativeHLEHandler
 			
 			// If there is exactly one thread, we can rather get into a bit
 			// of a loop where our main thread is created outside of normal
-			// means by the VM and not by any other thread
-			if (threads.length == 1)
+			// means by the VM and not by any other thread.. but only if
+			// this initial thread has no actual instance
+			if (threads.length == 1 && !threads[0].hasThreadInstance())
 				target = threads[0];
 			
 			// No actual thread exists that the object is bound to, so oops!

@@ -338,6 +338,20 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Returns whether or not this thread has an instance.
+	 *
+	 * @return If this thread has an instance.
+	 * @since 2020/06/18
+	 */
+	public final boolean hasThreadInstance()
+	{
+		synchronized (this)
+		{
+			return this._threadInstance != null;
+		}
+	}
+	
+	/**
 	 * Is this a daemon thread?
 	 *
 	 * @return If this is a daemon thread.
