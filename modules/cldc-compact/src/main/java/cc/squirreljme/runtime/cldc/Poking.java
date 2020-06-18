@@ -40,10 +40,8 @@ public final class Poking
 				.newInstance();
 		}
 		catch (ClassNotFoundException|IllegalAccessException|
-			InstantiationException e)
+			InstantiationException ignored)
 		{
-			// Ignore
-			e.printStackTrace(System.err);
 		}
 	}
 }
