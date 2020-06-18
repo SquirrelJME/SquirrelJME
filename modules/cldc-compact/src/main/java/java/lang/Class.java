@@ -194,6 +194,8 @@ public final class Class<T>
 		else
 			want = TypeShelf.binaryPackageName(this._type) + "/" + __name;
 		
+		Debugging.debugNote("Want rc: %s", want);
+		
 		// If our class is within a JAR try to search our own JAR first
 		JarPackageBracket inJar = TypeShelf.inJar(this._type);
 		if (inJar != null)

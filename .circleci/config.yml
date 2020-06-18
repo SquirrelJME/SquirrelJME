@@ -123,11 +123,7 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: |
-            if ! timeout --foreground 12m ./gradlew testSpringCoat --console plain --continue --parallel
-            then
-              echo "SpringCoat testing failed, ignoring..." 1>&2
-            fi
+          command: timeout --foreground 12m ./gradlew testSpringCoat --console plain --continue --parallel
           no_output_timeout: 14m
       - run:
           name: Save test results

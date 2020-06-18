@@ -668,7 +668,8 @@ public final class NativeHLEHandler
 			case "binaryPackageName:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;)Ljava/lang/String;":
 				return __thread.asVMObject(((TypeObject)__args[0])
-					.getSpringClass().name().binaryName().toString());
+					.getSpringClass().name().binaryName().inPackage()
+					.toString());
 			
 			case "classToType:(Ljava/lang/Class;)" +
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
@@ -693,6 +694,16 @@ public final class NativeHLEHandler
 			
 			case "isArray:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z":
 				return ((TypeObject)__args[0]).getSpringClass().isArray();
+			
+			case "isInterface:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;)Z":
+				return ((TypeObject)__args[0]).getSpringClass().flags()
+					.isInterface();
+			
+			case "isPrimitive:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;)Z":
+				return ((TypeObject)__args[0]).getSpringClass().name()
+					.isPrimitive();
 			
 			case "objectType:(Ljava/lang/Object;)" +
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
