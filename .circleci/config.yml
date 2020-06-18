@@ -93,7 +93,7 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
-  constuct_testjars:
+  construct_testjars:
     executor: buildenv
     steps:
       - checkout
@@ -187,12 +187,12 @@ workflows:
       - build_windows
       - build_linux
       - build_macosx
-      - constuct_testjars:
+      - construct_testjars:
           requires:
             - build_linux
       - test_springcoat:
           requires:
-            - constuct_testjars
+            - construct_testjars
       - test_summercoat:
           requires:
-            - constuct_testjars
+            - construct_testjars
