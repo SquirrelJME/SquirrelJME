@@ -192,7 +192,14 @@ public final class Class<T>
 		if (__name.charAt(0) == '/')
 			want = __name.substring(1);
 		else
-			want = TypeShelf.binaryPackageName(this._type) + "/" + __name;
+		{
+			String binName = TypeShelf.binaryPackageName(this._type);
+			
+			if (binName.isEmpty())
+				want = __name;
+			else
+				want = binName + "/" + __name;
+		}
 		
 		Debugging.debugNote("Want rc: %s", want);
 		
