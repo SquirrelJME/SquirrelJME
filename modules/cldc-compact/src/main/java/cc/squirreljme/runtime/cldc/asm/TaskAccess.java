@@ -46,37 +46,6 @@ public final class TaskAccess
 	}
 	
 	/**
-	 * Returns the ID of the current thread.
-	 *
-	 * @return The current thread ID.
-	 * @since 2018/11/20
-	 */
-	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int currentThread();
-	
-	/**
-	 * Sets the priority of the thread.
-	 *
-	 * @param __tid The thread ID.
-	 * @param __p The priority.
-	 * @since 2018/12/07
-	 */
-	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native void setThreadPriority(int __tid, int __p);
-	
-	/**
-	 * Signals a hardware interrupt on the given thread.
-	 *
-	 * @param __tid The thread to signal.
-	 * @since 2018/11/21
-	 */
-	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native void signalInterrupt(int __tid);
-	
-	/**
 	 * Starts the specified task.
 	 *
 	 * @param __cp The classpath used.
@@ -112,19 +81,6 @@ public final class TaskAccess
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args, String[] __sprops, ConsoleCallback __stdout,
 		ConsoleCallback __stderr);
-	
-	/**
-	 * Starts the given thread.
-	 *
-	 * @param __t The thread which is to run, the execution point of the
-	 * thread is the {@code Thread.__start()} method.
-	 * @param __n The name hint of this thread.
-	 * @return The thread ID.
-	 * @since 2018/11/17
-	 */
-	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int startThread(Thread __t, String __n);
 	
 	/**
 	 * Returns the status of the target task.

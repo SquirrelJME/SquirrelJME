@@ -158,14 +158,14 @@ public final class NativeHLEHandler
 	 *
 	 * @param __thread The current thread this is acting under.
 	 * @param __class The native class being called.
-	 * @param __method The method being called.
+	 * @param __func The method being called.
 	 * @param __args The arguments to the call.
 	 * @return The resulting object returned by the dispatcher.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/05/30
 	 */
 	public static Object dispatch(SpringThreadWorker __thread,
-		ClassName __class, MethodNameAndType __method, Object... __args)
+		ClassName __class, MethodNameAndType __func, Object... __args)
 		throws NullPointerException
 	{
 		if (__thread == null || __class == null)
@@ -175,52 +175,57 @@ public final class NativeHLEHandler
 		{
 				// Atomic calls
 			case "cc/squirreljme/jvm/mle/AtomicShelf":
-				return NativeHLEHandler.dispatchAtomic(__thread, __method,
+				return NativeHLEHandler.dispatchAtomic(__thread, __func,
 					__args);
 				
 				// Debug calls
 			case "cc/squirreljme/jvm/mle/DebugShelf":
-				return NativeHLEHandler.dispatchDebug(__thread, __method,
+				return NativeHLEHandler.dispatchDebug(__thread, __func,
 					__args);
 				
 				// Jar calls
 			case "cc/squirreljme/jvm/mle/JarPackageShelf":
-				return NativeHLEHandler.dispatchJar(__thread, __method,
+				return NativeHLEHandler.dispatchJar(__thread, __func,
+					__args);
+				
+				// Math calls
+			case "cc/squirreljme/jvm/mle/MathShelf":
+				return NativeHLEHandler.dispatchMath(__thread, __func,
 					__args);
 				
 				// Object calls
 			case "cc/squirreljme/jvm/mle/ObjectShelf":
-				return NativeHLEHandler.dispatchObject(__thread, __method,
+				return NativeHLEHandler.dispatchObject(__thread, __func,
 					__args);
 		
 				// Reference calls
 			case "cc/squirreljme/jvm/mle/ReferenceShelf":
-				return NativeHLEHandler.dispatchReference(__thread, __method,
+				return NativeHLEHandler.dispatchReference(__thread, __func,
 					__args);
 				
 				// Runtime calls
 			case "cc/squirreljme/jvm/mle/RuntimeShelf":
-				return NativeHLEHandler.dispatchRuntime(__thread, __method,
+				return NativeHLEHandler.dispatchRuntime(__thread, __func,
 					__args);
 				
 				// Terminal calls
 			case "cc/squirreljme/jvm/mle/TerminalShelf":
-				return NativeHLEHandler.dispatchTerminal(__thread, __method,
+				return NativeHLEHandler.dispatchTerminal(__thread, __func,
 					__args);
 				
 				// Thread calls
 			case "cc/squirreljme/jvm/mle/ThreadShelf":
-				return NativeHLEHandler.dispatchThread(__thread, __method,
+				return NativeHLEHandler.dispatchThread(__thread, __func,
 					__args);
 		
 				// Type calls
 			case "cc/squirreljme/jvm/mle/TypeShelf":
-				return NativeHLEHandler.dispatchType(__thread, __method,
+				return NativeHLEHandler.dispatchType(__thread, __func,
 					__args);
 				
 			default:
 				throw new SpringVirtualMachineException(String.format(
-					"Unknown MLE native call: %s::%s %s", __class, __method,
+					"Unknown MLE native call: %s::%s %s", __class, __func,
 					Arrays.asList(__args)));
 		}
 	}
@@ -380,6 +385,43 @@ public final class NativeHLEHandler
 	}
 	
 	/**
+	 * Handles the dispatching of math shelf native methods.
+	 *
+	 * @param __thread The current thread this is acting under.
+	 * @param __func The function which was called.
+	 * @param __args The arguments to the call.
+	 * @return The resulting object returned by the dispatcher.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/18
+	 */
+	public static Object dispatchMath(SpringThreadWorker __thread,
+		MethodNameAndType __func, Object[] __args)
+	{
+		if (__thread == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__func.toString())
+		{
+			case "rawDoubleToLong:(D)J":
+				return Double.doubleToRawLongBits((double)__args[0]);
+				
+			case "rawFloatToInt:(F)I":
+				return Float.floatToRawIntBits((float)__args[0]);
+			
+			case "rawIntToFloat:(I)F":
+				return Float.intBitsToFloat((int)__args[0]);
+			
+			case "rawLongToDouble:(J)D":
+				return Double.longBitsToDouble((long)__args[0]);
+			
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown Math MLE native call: %s %s", __func,
+					Arrays.asList(__args)));
+		}
+	}
+	
+	/**
 	 * Handles the dispatching of object shelf native methods.
 	 *
 	 * @param __thread The current thread this is acting under.
@@ -494,6 +536,9 @@ public final class NativeHLEHandler
 		
 		switch (__func.toString())
 		{
+			case "currentTimeMillis:()J":
+				return System.currentTimeMillis();
+			
 			case "encoding:()I":
 				return BuiltInEncodingType.UTF8;
 			
@@ -519,6 +564,9 @@ public final class NativeHLEHandler
 					default:
 						return BuiltInLocaleType.UNSPECIFIED;
 				}
+			
+			case "nanoTime:()J":
+				return System.nanoTime();
 			
 			case "systemProperty:(Ljava/lang/String;)Ljava/lang/String;":
 				return __thread.asVMObject(

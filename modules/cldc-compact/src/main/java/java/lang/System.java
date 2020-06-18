@@ -10,20 +10,14 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
 
@@ -164,7 +158,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return Assembly.sysCallPVL(SystemCallIndex.TIME_MILLI_WALL);
+		return RuntimeShelf.currentTimeMillis();
 	}
 	
 	/**
@@ -493,7 +487,7 @@ public final class System
 	public static long nanoTime()
 	{
 		// Returns the current monotonic clock time
-		return Assembly.sysCallPVL(SystemCallIndex.TIME_NANO_MONO);
+		return RuntimeShelf.nanoTime();
 	}
 	
 	/**

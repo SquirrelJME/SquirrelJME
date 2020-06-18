@@ -201,8 +201,6 @@ public final class Class<T>
 				want = binName + "/" + __name;
 		}
 		
-		Debugging.debugNote("Want rc: %s", want);
-		
 		// If our class is within a JAR try to search our own JAR first
 		JarPackageBracket inJar = TypeShelf.inJar(this._type);
 		if (inJar != null)
