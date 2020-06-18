@@ -1238,7 +1238,7 @@ public final class SpringThreadWorker
 		this.thread.enterFrame(main, vmArgs);
 		
 		// Run until it finishes execution
-		this.run(deepness + 1);
+		this.run(deepness);
 	}
 	
 	/**
@@ -3404,7 +3404,8 @@ public final class SpringThreadWorker
 			// Exit the profiler frame to it is no longer tracked
 			finally
 			{
-				this.thread.profiler.exitFrame();
+				if (pFrame.inCallCount() > 0)
+					this.thread.profiler.exitFrame();
 			}
 		}
 		
