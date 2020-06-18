@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
@@ -55,9 +56,6 @@ public final class SpringClass
 	/** The number of instance fields that exist. */
 	protected final int instancefieldcount;
 	
-	/** The special class index. */
-	protected final int specialindex;
-	
 	/** The dimentions of this class. */
 	protected final int dimensions;
 	
@@ -65,7 +63,7 @@ public final class SpringClass
 	protected final SpringClass component;
 	
 	/** The JAR this class is in. */
-	protected final String injar;
+	protected final VMClassLibrary inJar;
 	
 	/** The virtualized size of instances for this class. */
 	protected final int instancesize;
@@ -97,14 +95,13 @@ public final class SpringClass
 	 * @param __super The super class of this class.
 	 * @param __interfaces The the interfaces this class implements.
 	 * @param __cf The class file for this class.
-	 * @param __si The special class index.
 	 * @param __ct The component type.
-	 * @param __injar The JAR this class is in.
+	 * @param __inJar The JAR this class is in.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
 	SpringClass(SpringClass __super, SpringClass[] __interfaces,
-		ClassFile __cf, int __si, SpringClass __ct, String __injar)
+		ClassFile __cf, SpringClass __ct, VMClassLibrary __inJar)
 		throws NullPointerException
 	{
 		if (__interfaces == null || __cf == null)
@@ -112,8 +109,7 @@ public final class SpringClass
 		
 		ClassName name = __cf.thisName();
 		this.name = name;
-		this.specialindex = __si;
-		this.injar = __injar;
+		this.inJar = __inJar;
 		this.file = __cf;
 		this.superclass = __super;
 		this.component = __ct;
@@ -311,9 +307,9 @@ public final class SpringClass
 	 * @return The JAR this class is in.
 	 * @since 2018/10/07
 	 */
-	public final String inJar()
+	public final VMClassLibrary inJar()
 	{
-		return this.injar;
+		return this.inJar;
 	}
 	
 	/**
@@ -746,17 +742,6 @@ public final class SpringClass
 				"BK11 %s", this.name));
 		
 		this._initialized = true;
-	}
-	
-	/**
-	 * Returns the special class index.
-	 *
-	 * @return The special class index.
-	 * @since 2018/09/20
-	 */
-	public final int specialIndex()
-	{
-		return this.specialindex;
 	}
 	
 	/**

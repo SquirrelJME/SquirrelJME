@@ -18,17 +18,23 @@ import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
+import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.PrimitiveType;
 
@@ -176,7 +182,12 @@ public final class NativeHLEHandler
 			case "cc/squirreljme/jvm/mle/DebugShelf":
 				return NativeHLEHandler.dispatchDebug(__thread, __method,
 					__args);
-					
+				
+				// Jar calls
+			case "cc/squirreljme/jvm/mle/JarPackageShelf":
+				return NativeHLEHandler.dispatchJar(__thread, __method,
+					__args);
+				
 				// Object calls
 			case "cc/squirreljme/jvm/mle/ObjectShelf":
 				return NativeHLEHandler.dispatchObject(__thread, __method,
@@ -334,6 +345,41 @@ public final class NativeHLEHandler
 	}
 	
 	/**
+	 * Handles the dispatching of JAR shelf native methods.
+	 *
+	 * @param __thread The current thread this is acting under.
+	 * @param __func The function which was called.
+	 * @param __args The arguments to the call.
+	 * @return The resulting object returned by the dispatcher.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public static Object dispatchJar(SpringThreadWorker __thread,
+		MethodNameAndType __func, Object... __args)
+	{
+		if (__thread == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__func.toString())
+		{
+			case "classPath:()[Lcc/squirreljme/jvm/mle/brackets/" +
+				"JarPackageBracket;":
+				return NativeHLEHandler.jarClasspath(__thread);
+			
+			case "openResource:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"JarPackageBracket;Ljava/lang/String;)Ljava/io/InputStream;":
+				return NativeHLEHandler.jarOpenResource(__thread,
+					(JarPackageObject)__args[0],
+					__thread.<String>asNativeObject(String.class, __args[1]));
+			
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"Unknown Jar MLE native call: %s %s", __func,
+					Arrays.asList(__args)));
+		}
+	}
+	
+	/**
 	 * Handles the dispatching of object shelf native methods.
 	 *
 	 * @param __thread The current thread this is acting under.
@@ -364,6 +410,12 @@ public final class NativeHLEHandler
 				"Ljava/lang/Object;":
 				return __thread.allocateArray(((TypeObject)__args[0])
 					.getSpringClass(), (int)__args[1]);
+			
+			case "newInstance:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;)Ljava/lang/Object;":
+				return __thread.newInstance(
+					((TypeObject)__args[0]).getSpringClass(),
+					new MethodDescriptor("()V"));
 			
 			default:
 				throw new SpringVirtualMachineException(String.format(
@@ -613,15 +665,31 @@ public final class NativeHLEHandler
 		
 		switch (__func.toString())
 		{
+			case "binaryPackageName:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"TypeBracket;)Ljava/lang/String;":
+				return __thread.asVMObject(((TypeObject)__args[0])
+					.getSpringClass().name().binaryName().toString());
+			
 			case "classToType:(Ljava/lang/Class;)" +
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
 				return NativeHLEHandler.typeClassToType(__thread,
 					((SpringSimpleObject)__args[0]));
 			
+			case "equals:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;" +
+				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z":
+				return Objects.equals(
+					((TypeObject)__args[0]).getSpringClass(),
+					((TypeObject)__args[1]).getSpringClass());
+			
 			case "findType:(Ljava/lang/String;)" +
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
 				return NativeHLEHandler.typeFindType(__thread,
 					__thread.<String>asNativeObject(String.class, __args[0]));
+				
+			case "inJar:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)" +
+				"Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;":
+				return new JarPackageObject(((TypeObject)__args[0])
+					.getSpringClass().inJar());
 			
 			case "isArray:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z":
 				return ((TypeObject)__args[0]).getSpringClass().isArray();
@@ -681,6 +749,94 @@ public final class NativeHLEHandler
 				throw new SpringVirtualMachineException(String.format(
 					"Unknown Type MLE native call: %s %s", __func,
 					Arrays.asList(__args)));
+		}
+	}
+	
+	/**
+	 * Returns the classpath of the JAR.
+	 *
+	 * @param __thread The thread to get the classpath of.
+	 * @return The classpath of the JAR.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public static SpringArrayObjectGeneric jarClasspath(
+		SpringThreadWorker __thread)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		VMClassLibrary[] springPath = __thread.machine.classloader.classPath();
+		
+		// Wrap the classpath in package objects
+		int n = springPath.length;
+		SpringObject[] rv = new SpringObject[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = new JarPackageObject(springPath[i]);
+		
+		// Wrap
+		return __thread.asVMObjectArray(
+			__thread.resolveClass(
+				"[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"),
+			rv);
+	}
+	
+	/**
+	 * Opens the JAR resource.
+	 *
+	 * @param __thread The thread calling this.
+	 * @param __jar The JAR.
+	 * @param __rcName The resource.
+	 * @return The input stream or {@code null} if there is nothing.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public static SpringObject jarOpenResource(SpringThreadWorker __thread,
+		JarPackageObject __jar, String __rcName)
+		throws NullPointerException
+	{
+		if (__thread == null || __jar == null || __rcName == null)
+			throw new NullPointerException("NARG");
+		
+		// Locate the resource
+		try (InputStream in = __jar.library().resourceAsStream(__rcName))
+		{
+			// Not found
+			if (in == null)
+				return SpringNullObject.NULL;
+			
+			// Copy everything to the a byte array, since it is easier to
+			// handle resources without juggling special resource streams
+			// and otherwise
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+				Math.max(1024, in.available())))
+			{
+				// Copy all the data
+				byte[] copy = new byte[4096];
+				for (;;)
+				{
+					int rc = in.read(copy);
+					
+					if (rc < 0)
+						break;
+					
+					baos.write(copy, 0, rc);
+				}
+				
+				// Use this as the stream input
+				return __thread.newInstance(
+					__thread.loadClass("java/io/ByteArrayInputStream"),
+					new MethodDescriptor("([B)V"),
+					__thread.asVMObject(baos.toByteArray()));
+			}
+		}
+		
+		// Could not read it
+		catch (IOException e)
+		{
+			throw new SpringVirtualMachineException(
+				"Failed to read resource", e);
 		}
 	}
 	
@@ -859,7 +1015,7 @@ public final class NativeHLEHandler
 	 * @since 2020/06/17
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	private static int threadAliveThreadCount(SpringThreadWorker __thread,
+	public static int threadAliveThreadCount(SpringThreadWorker __thread,
 		boolean __includeMain, boolean __includeDaemon)
 		throws NullPointerException
 	{

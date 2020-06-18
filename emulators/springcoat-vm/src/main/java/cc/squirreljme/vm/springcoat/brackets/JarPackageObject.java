@@ -9,44 +9,44 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
-import cc.squirreljme.vm.springcoat.SpringClass;
 
 /**
- * Represents a type from within the VM.
+ * Not Described.
  *
- * @since 2020/06/02
+ * @since 2020/06/17
  */
-public class TypeObject
+public class JarPackageObject
 	extends AbstractGhostObject
 {
-	/** The class this provides. */
-	protected final SpringClass classy;
+	/** The class library. */
+	private final VMClassLibrary library;
 	
 	/**
-	 * Initializes the type object.
+	 * Initializes the package object.
 	 *
-	 * @param __cl The class to use.
+	 * @param __lib The library.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/06/04
+	 * @since 2020/06/17
 	 */
-	public TypeObject(SpringClass __cl)
+	public JarPackageObject(VMClassLibrary __lib)
 		throws NullPointerException
 	{
-		if (__cl == null)
+		if (__lib == null)
 			throw new NullPointerException("NARG");
 		
-		this.classy = __cl;
+		this.library = __lib;
 	}
 	
 	/**
-	 * Returns the class this refers to.
+	 * Returns the library.
 	 *
-	 * @return The class this refers to.
-	 * @since 2020/06/13
+	 * @return The library.
+	 * @since 2020/06/17
 	 */
-	public final SpringClass getSpringClass()
+	public VMClassLibrary library()
 	{
-		return this.classy;
+		return this.library;
 	}
 }

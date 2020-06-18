@@ -484,7 +484,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/12
 	 */
-	public final SpringArrayObject asVMObjectArray(SpringClass __type,
+	public final SpringArrayObjectGeneric asVMObjectArray(SpringClass __type,
 		SpringObject... __elements)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -1033,8 +1033,8 @@ public final class SpringThreadWorker
 		__cl = this.loadClass(__cl);
 		
 		// Lookup constructor to this method
-		SpringMethod cons = __cl.lookupMethod(false, new MethodName("<init>"),
-			__desc);
+		SpringMethod cons = __cl.lookupMethod(false,
+			new MethodName("<init>"), __desc);
 		
 		// Allocate the object
 		SpringObject rv = this.allocateObject(__cl);
