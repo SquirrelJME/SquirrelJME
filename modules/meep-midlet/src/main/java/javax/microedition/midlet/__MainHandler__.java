@@ -9,15 +9,21 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.runtime.cldc.Poking;
 
 /**
- * This class
+ * This class is the main entry point for anything that implements
+ * {@link MIDlet}.
  *
  * @since 2020/02/29
  */
 final class __MainHandler__
 {
+	/** One second in milliseconds. */
+	private static final int _MS_SECOND =
+		1_000;
+	
 	/**
 	 * Main entry point.
 	 *
@@ -76,7 +82,15 @@ final class __MainHandler__
 		// Start the MIDlet and perform any potential handling of it
 		try
 		{
+			// Initialize the MIDlet
 			instance.startApp();
+			
+			// Although we did start the application, the startApp only
+			// ever does initialization and sets some events and otherwise...
+			// So actually stop when the alive count goes to zero
+			while (ThreadShelf.aliveThreadCount(
+				false, false) > 0)
+				ThreadShelf.waitForUpdate(__MainHandler__._MS_SECOND);
 		}
 		finally
 		{
