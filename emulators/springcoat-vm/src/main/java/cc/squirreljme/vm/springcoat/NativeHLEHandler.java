@@ -411,6 +411,9 @@ public final class NativeHLEHandler
 				return __thread.allocateArray(((TypeObject)__args[0])
 					.getSpringClass(), (int)__args[1]);
 			
+			case "identityHashCode:(Ljava/lang/Object;)I":
+				return System.identityHashCode(__args[0]);
+			
 			case "newInstance:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"TypeBracket;)Ljava/lang/Object;":
 				return __thread.newInstance(
