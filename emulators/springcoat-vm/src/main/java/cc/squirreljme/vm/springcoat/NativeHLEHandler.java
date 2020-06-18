@@ -685,6 +685,10 @@ public final class NativeHLEHandler
 				"jvm/mle/brackets/VMThreadBracket;":
 				return NativeHLEHandler.threadToVMThread(__thread,
 					(SpringSimpleObject)__args[0]);
+				
+			case "vmThreadId:(Lcc/squirreljme/jvm/mle/brackets/" +
+				"VMThreadBracket;)I":
+				return ((VMThreadObject)__args[0]).getThread().id;
 			
 			case "vmThreadIsMain:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"VMThreadBracket;)Z":
