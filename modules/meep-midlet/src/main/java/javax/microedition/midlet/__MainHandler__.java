@@ -11,6 +11,7 @@ package javax.microedition.midlet;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class is the main entry point for anything that implements
@@ -40,6 +41,9 @@ final class __MainHandler__
 		
 		// We might be on the emulator
 		Poking.poke();
+		
+		// Debug where we are going in
+		Debugging.debugNote("Entering MIDlet: %s", __args[0]);
 		
 		// Locate the main class before we initialize it
 		Class<?> classType;
