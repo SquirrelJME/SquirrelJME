@@ -12,20 +12,17 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.runtime.cldc.Poking;
-import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
@@ -36,7 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.stream.Stream;
-import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This class is used to initialize virtual machines based on a set of factory
@@ -120,7 +116,7 @@ public abstract class VMFactory
 		// -classpath (class:path:...)
 		// Main-class
 		// Arguments...
-		Deque<String> queue = new ArrayDeque<>(Arrays.<String>asList(__args));
+		Deque<String> queue = new LinkedList<>(Arrays.<String>asList(__args));
 		while (!queue.isEmpty())
 		{
 			// End of our items?

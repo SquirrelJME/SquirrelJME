@@ -9,20 +9,18 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
- * Contains virtual machine global state.
+ * This interface is used to represent keys for the dispatcher.
  *
- * @since 2020/05/30
+ * @since 2020/06/18
  */
-public final class GlobalState
+public interface MLEDispatcherKey
 {
-	/** Ticker for atomic values. */
-	public static final AtomicInteger TICKER =
-		new AtomicInteger();
-	
-	/** The GC lock. */
-	public static final AtomicInteger GC_LOCK =
-		new AtomicInteger();
+	/**
+	 * Returns the key for the item.
+	 *
+	 * @return The key for the item.
+	 * @since 2020/06/18
+	 */
+	String key();
 }

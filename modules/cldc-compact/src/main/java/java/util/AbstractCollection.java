@@ -103,7 +103,7 @@ public abstract class AbstractCollection<E>
 	{
 		// Slow as it checks each entry
 		for (E e : this)
-			if (__v == null ? e == null : __v.equals(e))
+			if (Objects.equals(__v, e))
 				return true;
 		
 		// Not found
@@ -159,7 +159,7 @@ public abstract class AbstractCollection<E>
 		for (Iterator<E> it = this.iterator(); it.hasNext();)
 		{
 			E e = it.next();
-			if (__v == null ? e == null : __v.equals(e))
+			if (Objects.equals(__v, e))
 			{
 				it.remove();
 				return true;
@@ -235,8 +235,8 @@ public abstract class AbstractCollection<E>
 		int n = this.size();
 		Object[] rv = new Object[n];
 		int i = 0;
-		for (Iterator<E> it = this.iterator(); it.hasNext();)
-			rv[i++] = it.next();
+		for (E __e : this)
+			rv[i++] = __e;
 		
 		return rv;
 	}
@@ -290,7 +290,7 @@ public abstract class AbstractCollection<E>
 		
 		// Build string
 		boolean comma = false;
-		for (Iterator<E> it = this.iterator(); it.hasNext();)
+		for (E __e : this)
 		{
 			// Add comma
 			if (comma)
@@ -298,7 +298,7 @@ public abstract class AbstractCollection<E>
 			comma = true;
 			
 			// Add item
-			sb.append(it.next());
+			sb.append(__e);
 		}
 		
 		sb.append("]");

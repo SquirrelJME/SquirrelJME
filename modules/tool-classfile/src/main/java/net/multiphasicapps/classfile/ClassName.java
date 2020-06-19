@@ -318,7 +318,7 @@ public class ClassName
 		BinaryName binary = this.binary;
 		if (!this.isArray() && binary != null)
 			return binary.toString().replace('/', '.');
-		return this.toString();
+		return this.toString().replace('/', '.');
 	}
 	
 	/**

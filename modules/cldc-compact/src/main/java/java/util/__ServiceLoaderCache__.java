@@ -7,22 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
-
-import java.util.concurrent.atomic.AtomicInteger;
+package java.util;
 
 /**
- * Contains virtual machine global state.
+ * Cache for the service loader.
  *
- * @since 2020/05/30
+ * @param <S> The class type.
+ * @since 2018/12/06
  */
-public final class GlobalState
+final class __ServiceLoaderCache__<S>
 {
-	/** Ticker for atomic values. */
-	public static final AtomicInteger TICKER =
-		new AtomicInteger();
-	
-	/** The GC lock. */
-	public static final AtomicInteger GC_LOCK =
-		new AtomicInteger();
+	/** The cache of services. */
+	volatile Object[] _cache;
 }

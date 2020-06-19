@@ -9,20 +9,12 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
- * Contains virtual machine global state.
+ * This represents a function in the MLE.
  *
- * @since 2020/05/30
+ * @since 2020/06/18
  */
-public final class GlobalState
+public interface MLEFunction
+	extends MLEDispatcherKey, MLEDispatcherTarget
 {
-	/** Ticker for atomic values. */
-	public static final AtomicInteger TICKER =
-		new AtomicInteger();
-	
-	/** The GC lock. */
-	public static final AtomicInteger GC_LOCK =
-		new AtomicInteger();
 }

@@ -187,6 +187,7 @@ public final class ThreadShelf
 	 * Performs the actual start of the given thread.
 	 *
 	 * @param __vmThread The thread to start.
+	 * @return If the start of the thread succeeded.
 	 * @since 2020/06/17
 	 */
 	public static native boolean vmThreadStart(VMThreadBracket __vmThread);
