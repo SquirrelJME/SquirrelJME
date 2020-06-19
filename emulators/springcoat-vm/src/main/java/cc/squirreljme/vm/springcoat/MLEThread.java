@@ -11,7 +11,10 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * Functions for {@link ThreadShelf}.
@@ -218,6 +221,35 @@ public enum MLEThread
 		}
 	},
 	
+	/** {@link ThreadShelf#sleep(int, int)}. */
+	SLEEP("sleep:(II)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			int ms = (int)__args[0];
+			int ns = (int)__args[1];
+			
+			if (ms < 0 || ns < 0)
+				Thread.yield();
+			else
+				try
+				{
+					Thread.sleep(ms, ns);
+				}
+				catch (InterruptedException ignored)
+				{
+					return true;
+				}
+			
+			return false;
+		}
+	},
+	
 	/** {@link ThreadShelf#toVMThread(Thread)}. */
 	TO_VM_THREAD("toVMThread:(Ljava/lang/Thread;)Lcc/squirreljme/" +
 		"jvm/mle/brackets/VMThreadBracket;")
@@ -284,6 +316,10 @@ public enum MLEThread
 			SpringThreadWorker worker = new SpringThreadWorker(
 				__thread.machine, target, false);
 			
+			// Enter the base setup frame
+			target.enterFrame(worker.loadClass(MLEThread._START_CLASS)
+				.lookupMethod(true, MLEThread._BASE_THREAD_METHOD));
+			
 			// Try to start it
 			try
 			{
@@ -299,6 +335,14 @@ public enum MLEThread
 	
 	/* End. */
 	;
+	
+	/** The class which contains the thread starting point. */
+	static final ClassName _START_CLASS =
+		new ClassName("java/lang/__Start__");
+	
+	/** The method to enter for main threads. */
+	static final MethodNameAndType _BASE_THREAD_METHOD =
+		new MethodNameAndType("__base", "()V");
 	
 	/** The dispatch key. */
 	protected final String key;
