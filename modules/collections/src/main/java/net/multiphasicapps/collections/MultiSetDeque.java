@@ -40,8 +40,8 @@ public class MultiSetDeque<V>
 	private final List<__Sub__<V>> _subs =
 		new ArrayList<>();
 	
-	/** The master set of added elements. */
-	final Set<V> _master =
+	/** The global set of added elements. */
+	final Set<V> _global =
 		new HashSet<>();
 	
 	/**
@@ -51,8 +51,8 @@ public class MultiSetDeque<V>
 	 */
 	public final void clear()
 	{
-		// Clear the master set
-		this._master.clear();
+		// Clear the global set
+		this._global.clear();
 		
 		// And all the subsets
 		for (__Sub__<V> s : this._subs)
@@ -68,7 +68,7 @@ public class MultiSetDeque<V>
 	 */
 	public final boolean contains(V __v)
 	{
-		return this._master.contains(__v);
+		return this._global.contains(__v);
 	}
 	
 	/**
@@ -108,9 +108,9 @@ public class MultiSetDeque<V>
 		if (__v == null)
 			return false;
 		
-		// If not in the master set then it will not be in any deque
-		Set<V> master = this._master;
-		if (!master.contains(__v))
+		// If not in the global set then it will not be in any deque
+		Set<V> global = this._global;
+		if (!global.contains(__v))
 			return false;
 		
 		// Remove in all
@@ -120,8 +120,8 @@ public class MultiSetDeque<V>
 		for (int i = 0; i < n; i++)
 			rv |= subs.get(i).__remove(__v);
 		
-		// Remove from the master set because it will be no sub-deque
-		master.remove(__v);
+		// Remove from the global set because it will be no sub-deque
+		global.remove(__v);
 		
 		// Was it removed?
 		return rv;

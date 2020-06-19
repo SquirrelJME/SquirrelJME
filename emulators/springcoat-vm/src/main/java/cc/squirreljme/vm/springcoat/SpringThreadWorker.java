@@ -986,8 +986,7 @@ public final class SpringThreadWorker
 		/*Debugging.debugNote("Call native %s::%s %s", __class, __method,
 			Arrays.asList(__args));*/
 		
-		return NativeHLEHandler.dispatch(this, __class, __method,
-			__args);
+		return MLEDispatcher.dispatch(this, __class, __method, __args);
 	}
 	
 	/**
@@ -1633,6 +1632,7 @@ public final class SpringThreadWorker
 						// target type. (The type to cast to; The type of the
 						// object)}
 						if (pop != SpringNullObject.NULL &&
+							!(pop instanceof AbstractGhostObject) &&
 							!as.isAssignableFrom(pop.type()))
 							throw new SpringClassCastException(String.format(
 								"BK2d %s %s", as, pop.type()));
