@@ -58,7 +58,7 @@ public class ArrayList<E>
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ2e Attempt to initialize array list with
-		// a negative capacity. (The capicity)}
+		// a negative capacity. (The capacity)}
 		if (__cap < 0)
 			throw new IllegalArgumentException(
 				String.format("ZZ2e %d", __cap));

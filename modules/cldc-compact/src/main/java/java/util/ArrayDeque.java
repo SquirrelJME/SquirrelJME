@@ -10,203 +10,279 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
+/**
+ * This is a double-ended queue which is backed by an array, this grows
+ * accordingly as elements are added and otherwise. This collection does
+ * not allow {@code null} elements.
+ *
+ * @param <E> The type of element in the queue.
+ * @since 2020/06/19
+ */
+@SuppressWarnings("UseOfClone")
 public class ArrayDeque<E>
 	extends AbstractCollection<E>
 	implements Deque<E>, Cloneable
 {
+	/** The default capacity. */
+	private static final int _DEFAULT_CAPACITY =
+		16;
+	
+	/** The modification count of this queue. */
+	private int _modCount;
+	
+	/**
+	 * Initializes an empty queue with a default capacity of 16.
+	 *
+	 * @since 2020/06/19
+	 */
 	public ArrayDeque()
 	{
-		throw new todo.TODO();
+		this(ArrayDeque._DEFAULT_CAPACITY);
 	}
 	
-	public ArrayDeque(int __a)
+	/**
+	 * Initializes an empty queue with the given initial capacity.
+	 *
+	 * @param __initialCap The initial capacity.
+	 * @throws IllegalArgumentException If the capacity is negative.
+	 * @since 2020/06/19
+	 */
+	public ArrayDeque(int __initialCap)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZxx Cannot have an initial capacity that is
+		// negative. (The initial capacity)}
+		if (__initialCap < 0)
+			throw new IllegalArgumentException("ZZxx " + __initialCap);
+		
+		throw Debugging.todo();
 	}
 	
-	public ArrayDeque(Collection<? extends E> __a)
+	/**
+	 * Initializes the queue with the given collection, the first iterated
+	 * element is at the front of the queue.
+	 *
+	 * @param __c The initial collection to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/19
+	 */
+	public ArrayDeque(Collection<? extends E> __c)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public boolean add(E __a)
+	public boolean add(E __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public void addFirst(E __a)
+	public void addFirst(E __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public void addLast(E __a)
+	public void addLast(E __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public ArrayDeque<E> clone()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public boolean contains(Object __a)
+	public boolean contains(Object __v)
 	{
-		throw new todo.TODO();
+		// Will never contain null
+		if (__v == null)
+			return false;
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public Iterator<E> descendingIterator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E element()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E getFirst()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E getLast()
 	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean isEmpty()
-	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public Iterator<E> iterator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public boolean offer(E __a)
+	public boolean offer(E __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public boolean offerFirst(E __a)
+	public boolean offerFirst(E __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public boolean offerLast(E __a)
+	public boolean offerLast(E __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E peek()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E peekFirst()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E peekLast()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E poll()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E pollFirst()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E pollLast()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E pop()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public void push(E __a)
+	public void push(E __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E remove()
 	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean remove(Object __a)
-	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E removeFirst()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public boolean removeFirstOccurrence(Object __a)
+	public boolean removeFirstOccurrence(Object __v)
 	{
-		throw new todo.TODO();
+		// Will never contain null
+		if (__v == null)
+			return false;
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public E removeLast()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
-	public boolean removeLastOccurrence(Object __a)
+	public boolean removeLastOccurrence(Object __v)
 	{
-		throw new todo.TODO();
+		// Will never contain null
+		if (__v == null)
+			return false;
+		
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 
