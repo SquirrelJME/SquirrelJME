@@ -188,6 +188,20 @@ public enum MLEThread
 		}
 	},
 	
+	/** {@link ThreadShelf#javaThreadRunnable(Thread)}. */
+	JAVA_THREAD_RUNNABLE("javaThreadRunnable:(Ljava/lang/Thread;)" +
+		"Ljava/lang/Runnable;")
+	{
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Just get the state of the given field
+			return ((SpringSimpleObject)__args[0]).fieldByNameAndType(
+				false, "_runnable",
+				"Ljava/lang/Runnable;").get();
+		}
+	},
+	
 	/** {@link ThreadShelf#javaThreadSetAlive(Thread, boolean)}. */
 	JAVA_THREAD_SET_ALIVE("javaThreadSetAlive:(Ljava/lang/Thread;Z)V")
 	{
