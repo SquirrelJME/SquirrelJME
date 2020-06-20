@@ -14,13 +14,15 @@ This is mostly intended for maintainers of _SquirrelJME_.
 
 ***TO BE WRITTEN***
 
-#### Via Patches
+#### Via Fossil Bundles
 
 ***TO BE WRITTEN***
 
-#### Via Bundles
+#### Via Git Bundles
 
 ***TO BE WRITTEN***
+
+ * `git am < my-branch.bun`
 
 ### Merging Branches
 
