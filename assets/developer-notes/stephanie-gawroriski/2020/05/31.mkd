@@ -1,0 +1,8 @@
+# 2020/05/31
+
+## 18:06
+
+Today I learned that GitHub included SquirrelJME in an arctic vault in
+Svalbard, Norway. In any case, my development is getting back on track and
+things seem to be going well so far. I think I am liking the Middle Level
+Emulation thing I am going for.

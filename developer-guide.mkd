@@ -1,8 +1,46 @@
 # Developer Guide
 
 This is a guide for developers to follow for various parts of the repository.
+This is mostly intended for maintainers of _SquirrelJME_.
 
  * See the [Building](building.mkd).
+ * Also see [Contributing](contributing.mkd).
+
+## Accepting Changes
+
+***TO BE WRITTEN***
+
+### Loading Contributions
+
+***TO BE WRITTEN***
+
+#### Via Fossil Bundles
+
+***TO BE WRITTEN***
+
+#### Via Git Bundles
+
+***TO BE WRITTEN***
+
+ * `git am < my-branch.bun`
+
+### Merging Branches
+
+To merge a branch locally, do the following:
+
+ * Update to the branch that will get submissions merged into:
+   * `fossil update trunk`
+ * Merge the other branch into your current `trunk`:
+   * `fossil merge other-branch`
+ * Commit the changes:
+   * `fossil commit`
+   * Be sure to have a meaningful commit message, if the code is from a
+     merge request on a remote repository, have the following in the commit
+     message:
+     * GitHub: `(GitHub Closes #1234)`
+     * GitLab: `(GitLab Closes !1234)`
+ * Synchronize the repositories:
+   * `fossil sync -u`
 
 ## Releasing
 
@@ -47,6 +85,9 @@ a new version is released the release version should be incremented (that is
 be done.
 
 ### Common Release Stuff
+
+***THIS IS OUT OF DATE AND WILL BE CHANGED TO BE DONE PURELY BY CI/CD,***
+***SO THAT IT IS AUTOMATICALLY DONE AND CHECKED WITHOUT ISSUE.***
 
 When a release is done, all of the binaries and according information must be
 updated. It is assumed that `SQUIRRELJME` is an environment variable to the

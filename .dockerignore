@@ -16,4 +16,10 @@ build
 .fslckout
 _FOSSIL_
 
-
+# Contributions
+*.diff
+*.gdiff
+*.patch
+*.rej
+*.bun
+*.bundle
