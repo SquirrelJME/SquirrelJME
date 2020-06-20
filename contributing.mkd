@@ -25,6 +25,36 @@ however since the GitHub is a mirror of another repository it cannot be
 directly committed to as those commits will be erased, however Pull Requests
 can still be made. Continue reading below for a contributing guide.
 
+## Etiquette For Contributing
+
+As with various other projects that exist, please be considerate of how
+_SquirrelJME_ is structured along with maintaining consistency within the
+repository as a whole.
+
+ * Follow the existing syntax and code style of the project.
+   * Keep the syntax the same for consistency, changes to the syntax will
+     cause breakage and result in difficult to merge patches especially so
+     when there are different and various branches. There would also be many
+     unrelated changes which changes the purpose of a patch.
+   * Do not mass reformat files and be careful of IDEs automatically
+     reformatting files.
+   * If there are linters or code style formatters that are not configured
+     for the project for _SquirrelJME_'s code style, configure them for
+     _SquirrelJME_ and add them to the repository.
+ * Ensure that the tests pass.
+   * Note that submissions on GitHub will automatically be run under CI/CD
+     and if there are any issues arising from this, they must be addressed.
+   * You can run all of the tests with the `gradlew test` command.
+ * Do not perform mass automatic refactorings.
+   * These mass refactorings can cause unintended side effects and as well
+     may cause breakages. Also as well, these can cause merge conflicts and
+     otherwise.
+ * The `trunk` branch is always stable code. 
+
+If there are any issues regarding these, please open an issue describing in
+detail the problem and a proposed solution if there is one on [GitHub](
+https://github.com/SquirrelJME/SquirrelJME/issues).
+
 ## Contributor Agreement
 
 **ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING AGREEMENT BEFORE THEIR CODE WILL**
@@ -46,6 +76,7 @@ can still be made. Continue reading below for a contributing guide.
 	 4. If employed by a company, you have a right by that company to provide
 	    contributions to this project.
 	 5. Have pledged to follow the Code of Conduct.
+	 6. Have read and understand the Ettiquite.
 
 ## Committing and Submitting Changes
 
