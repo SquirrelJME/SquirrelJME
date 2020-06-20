@@ -27,7 +27,7 @@ indent_style = unset
 [*.{md,mkd,c,cpp,h,java,js,json,j,sh,xpm,gradle}]
 charset = latin1
 indent_style = tab
-trim_trailing_whitespace = true
+trim_trailing_whitespace = false
 curly_bracket_next_line = true
 spaces_around_operators = false
 spaces_around_brackets = false
