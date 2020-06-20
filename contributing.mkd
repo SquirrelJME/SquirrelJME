@@ -1,28 +1,28 @@
 # Contributing
 
 Before you contribute you should read and understand the [license](license.mkd)
-that SquirrelJME is under. You should abide by the
+that _SquirrelJME_ is under. You should abide by the
 [Code of Conduct](code-of-conduct.mkd), if you fail to keep the pledge your
 contribution will not be accepted since it can create a toxic and unwelcoming
 environment for developers and users.
 
- * For instructions on building, see [this document](building.mkd).
+ * For instructions on building, see [the building guide](building.mkd).
  * Please read the [developer guide](developer-guide.mkd)!
 
-Development can happen on any operating system, however most of the scripts are
-developed targeting Unix compatible systems, this means the following:
+Development can happen on any operating system that has an installation of
+Gradle, a Java JDK, any text editor/IDE (IntelliJ Ultimate is recommended), and
+enough disk space to store the code and repository.
 
- * Linux
- * BSD
- * Mac OS X
- * Cygwin or WSL (Windows)
+There are antiquated scripts in `utils-dev/` that will only run on Unix
+compatible systems such as Linux, BSD, Mac OS X, Cygwin, MSYS2, or WSL. However
+over time these scripts will be integrated into the Gradle build accordingly.
 
 SquirrelJME uses the [Fossil](https://fossil-scm.org/) source control
 system and as such it generally is expected that it is to be used. There also
 are [GitHub Pull Requests](https://github.com/SquirrelJME/SquirrelJME/pulls)
-however since the Git is a mirror, when these are merged there will not be
-an indication that they were merged because any writes to the Git repository
-will be destroyed.
+however since the GitHub is a mirror of another repository it cannot be
+directly committed to as those commits will be erased, however Pull Requests
+can still be made. Continue reading below for a contributing guide.
 
 ## Contributor Agreement
 
@@ -45,3 +45,23 @@ will be destroyed.
 	 4. If employed by a company, you have a right by that company to provide
 	    contributions to this project.
 	 5. Have pledged to follow the Code of Conduct.
+
+## Committing and Submitting Changes
+
+As previously stated, _SquirrelJME_ is developed using
+[Fossil](https://fossil-scm.org/) but if you are not comfortable with it and
+would like to stick to something more familiar then you may also as well use
+[Git](https://git-scm.com/).
+
+For reference, the two sections will accordingly be:
+
+ * With Fossil
+ * With Git
+
+### With Fossil
+
+***TO BE WRITTEN***
+
+### With Git
+
+***TO BE WRITTEN***
