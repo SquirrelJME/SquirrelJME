@@ -206,11 +206,7 @@ Once you have a fork you may check it out:
 It is preferred that your commits are signed using a PGP/GPG key, to enable
 this do the following:
 
- * To enable commit signing:
-   * `fossil settings clearsign on`
- * If there is difficulty finding the PGP command, there is this setting:
-   * `fossil settings pgp-command theCorrectPGPCommand`
- * Read more:
+ * Please read the following guides:
    * <https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work>
    * <https://help.github.com/en/github/authenticating-to-github/signing-commits>
    * <https://docs.gitlab.com/ee/user/project/repository/gpg_signed_commits/>
