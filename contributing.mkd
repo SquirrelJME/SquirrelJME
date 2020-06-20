@@ -99,6 +99,14 @@ it may contain dots, an example being: `jane.doe`):
  * Open the repository, this will load all the contents into this directory:
    * `fossil open ../squirreljme.fossil`
 
+It is preferred that your commits are signed using a PGP/GPG key, to enable
+this do the following:
+
+ * To enable commit signing:
+   * `fossil settings clearsign on`
+ * If there is difficulty finding the PGP command, there is this setting:
+   * `fossil settings pgp-command theCorrectPGPCommand`
+
 After this you are ready to start development!
 
 For reference there is a [Fossil quick-start guide](
@@ -110,11 +118,11 @@ Development should be done in branches and not the main `trunk` as there will
 be a number of changes and will require constant updates:
 
  * Create a new branch, based off `trunk`:
-   * `fossil branch new my-new-branch-name trunk`
+   * `fossil branch new my-branch trunk`
  * Switching to that branch:
-   * `fossil update my-new-branch-name`
+   * `fossil update my-branch`
 
-#### Committing and Making Changes
+#### Committing and Making Changes 
 
 When you are ready to commit your changes to your branch, you may do the
 following:
@@ -139,7 +147,7 @@ this:
    * Make sure you commit any of your current changes or they will be lost:
      * `fossil commit`
    * Update to the branch to be updated:
-     * `fossil update my-new-branch-name`
+     * `fossil update my-branch`
    * Merge in the changes that were made in `trunk`:
      * `fossil merge trunk`
    * Commit the merge:
@@ -152,7 +160,7 @@ and may or may not be accepted. There may be additional requests for changes
 as well. To make a submission do the following:
 
  * Create a bundle for your branch:
-   * `fossil bundle export patch.bun --branch my-new-branch-name --standalone`
+   * `fossil bundle export my-branch.bun --branch my-branch --standalone`
  * Send a copy of this bundle via E-Mail or another means:
    * Via e-mail:
      * Mail to <xer@multiphasicapps.net> OR <xerthesquirrel@gmail.com>.
@@ -191,6 +199,18 @@ Once you have a fork you may check it out:
      * Use the _Project URL_ for _your fork_.
      * Select the _Clone_ button or press _Enter_.
 
+It is preferred that your commits are signed using a PGP/GPG key, to enable
+this do the following:
+
+ * To enable commit signing:
+   * `fossil settings clearsign on`
+ * If there is difficulty finding the PGP command, there is this setting:
+   * `fossil settings pgp-command theCorrectPGPCommand`
+ * Read more:
+   * <https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work>
+   * <https://help.github.com/en/github/authenticating-to-github/signing-commits>
+   * <https://docs.gitlab.com/ee/user/project/repository/gpg_signed_commits/>
+
 After this you are ready to start development!
 
 #### Starting A Branch
@@ -199,13 +219,17 @@ Development should be done in branches and not the main `trunk` as there will
 be a number of changes and will require constant updates:
 
   * Checkout a new branch:
-    * `git checkout -b my-new-branch-name`
+    * `git checkout -b my-branch`
 
 #### Committing and Making Changes
 
 When you are ready to commit your changes to your branch, you may do the
 following:
 
+ * Adding files and changes to be committed:
+   * `git add nameOfFile`
+   * Please _do not_ use `git add .` as it will add every un-related file
+     to the commit and repository!
  * Making a commit:
    * `git commit`
    * Enter the commit description accordingly.
@@ -213,7 +237,7 @@ following:
    * `git push`
    * Note that you may have to set the upstream for the branch, the push
      command should tell you how to do this but for reference it is:
-     * `git push --set-upstream origin my-new-branch-name`
+     * `git push --set-upstream origin my-branch`
 
 #### Staying Up To Date
 
@@ -221,7 +245,17 @@ Since SquirrelJME is actively worked on, there will be changes to other
 branches and the main `trunk` line. You can use the following commands for
 this:
 
-***TO BE WRITTEN***
+ * Checkout the `trunk` branch:
+   * `git checkout trunk`
+ * Pull in the latest changes:
+   * `git pull`
+ * Checkout your branch:
+   * `git checkout my-branch`
+ * Merge in the changes from `trunk`:
+   * `git merge trunk`
+ * Git should automatically commit, if there are conflicts are a merge commit
+   was not made then, you may:
+   * `git commit`
 
 #### Submitting
 
@@ -236,9 +270,9 @@ as well. To make a submission do the following:
 
 Alternatively a Git Bundle may be used:
 
- * Create a bundle for your branch:
-   * ***TO BE WRITTEN***
- * Send a copy of this bundle via E-Mail or another means:
+ * Create a patch bundle for your branch:
+   * `git format-patch --binary --stdout --attach -n trunk..my-branch > my-branch.bun`
+ * Send a copy of this patch bundle via E-Mail or another means:
    * Via e-mail:
      * Mail to <xer@multiphasicapps.net> OR <xerthesquirrel@gmail.com>.
      * _In the SUBJECT line, include:_ "SquirrelJME Patch Submission"
