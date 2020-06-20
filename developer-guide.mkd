@@ -1,8 +1,14 @@
 # Developer Guide
 
 This is a guide for developers to follow for various parts of the repository.
+This is mostly intended for maintainers of _SquirrelJME_.
 
  * See the [Building](building.mkd).
+ * Also see [Contributing](contributing.mkd).
+
+## Accepting Changes
+
+***TO BE WRITTEN***
 
 ## Releasing
 
@@ -47,6 +53,9 @@ a new version is released the release version should be incremented (that is
 be done.
 
 ### Common Release Stuff
+
+***THIS IS OUT OF DATE AND WILL BE CHANGED TO BE DONE PURELY BY CI/CD,***
+***SO THAT IT IS AUTOMATICALLY DONE AND CHECKED WITHOUT ISSUE.***
 
 When a release is done, all of the binaries and according information must be
 updated. It is assumed that `SQUIRRELJME` is an environment variable to the

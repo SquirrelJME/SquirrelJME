@@ -28,7 +28,30 @@ letter prefix followed by two digits and letters.
 ## Installing Java
 
 SquirrelJME requires a Java 8 virtual machine in order to build itself. Gradle
-is used however it is available through Gradle Wrapper.
+is used as well however it is available through Gradle Wrapper.
+
+### AdoptOpenJDK (Windows, Linux, and Mac OS X)
+
+AdoptOpenJDK is the recommended way to build and setup SquirrelJME as it has
+long-term support and is easy to setup. You will need at least a Java 8
+variant of AdoptOpenJDK.
+
+ * <https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot>
+
+Please note that Java 11 may be used as well.
+
+### Oracle's JDK (Windows, Linux, and Mac OS X)
+
+Oracle's JDK supports modern systems and can be downloaded from:
+
+ * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+ 
+Ensure that you **download and install** the ***JDK***.
+
+If running on ReactOS/Windows/Wine, make sure that the `PATH` environment
+variables refers to the JDK's binary directory:
+
+ * `C:\Program Files\Java\jdk1.8.0_131\bin\`
 
 ### Common Linux Distributions
 
@@ -45,27 +68,6 @@ available.
      * `apt-get install openjdk-11-jdk`
  * Gentoo
    * See <https://wiki.gentoo.org/wiki/Java>
-
-### AdoptOpenJDK
-
-AdoptOpenJDK is the recommended way to build and setup SquirrelJME as it has
-long-term support and is easy to setup. You will need at least a Java 8
-variant of AdoptOpenJDK.
-
- * <https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot>
-
-### Oracle's JDK
-
-Oracle's JDK supports modern systems and can be downloaded from:
-
- * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
- 
-Ensure that you **download and install** the ***JDK***.
-
-If running on ReactOS/Windows/Wine, make sure that the `PATH` environment
-variables refers to the JDK's binary directory:
-
- * `C:\Program Files\Java\jdk1.8.0_131\bin\`
 
 ### IntelliJ IDEA (Optional)
 
@@ -89,18 +91,53 @@ For the C++ Compiler which is needed for testing:
 ### Windows
 
 For Gradle to detect a C++ compiler, it needs either Microsoft Visual Studio
-or a GCC installation via Cygwin.
+or a GCC installation via Cygwin, or a GCC installation via Mingw-w64.
 
 More information is located at 
-<https://docs.gradle.org/current/userguide/building_cpp_projects.html#windows>. 
+<https://docs.gradle.org/current/userguide/building_cpp_projects.html#windows>.
+
+#### Microsoft Visual Studio
+
+Microsoft's development environment may be used.
+
+ * Download from <https://visualstudio.microsoft.com/downloads/>.
+ * At the minimum, the following must be installed (pieces that are crossed
+   out may be different for future versions):
+   * _Windows Universal C Runtime_
+   * _C++ Build Tools core Features_
+   * _MSVC ~~v142~~ - VS ~~2019~~ C++ ~~x86/x64~~ build tools_
+   * _C++ Redistributable Update_
+   * _Windows 10 SDK_ 
+ * Alternatively, you can run the Visual Studio installer and import the
+   components file, this file can be found in the root and is called
+   `.vsconfig`.
+
+#### Mingw-w64
+
+You can use Mingw-w64 as well, it is a freely available compiler.
+
+ * Main web site: <https://mingw-w64.org>.
+ * In the downloads section it is recommended to use _MingW-W64-builds_:
+   * For the configuration use:
+     * GCC Version: The latest (at time of writing it was 8.0.0).
+     * Threads: _win32_.
+     * Exception Handling: _seh_.
+     * Install both 32-bit and 64-bit.
+
+#### Cygwin
+
+You can also download Cygwin at: <https://www.cygwin.com/>.
 
 ### Mac OS X
 
-You must install XCode, more information is here:
+You must install XCode, more information on XCode is at
+<https://developer.apple.com/xcode/>. Alternatively there is a command line
+tool to install the XCode command line utilities for example if you are
+using Brew.
 
- * <https://developer.apple.com/xcode/>
+ * `xcode-select --install`
 
-# Build Enviromment
+# Build Environment
 
 The main interaction with the SquirrelJME build environment is with Gradle
 which manages anything related to building and testing. All builds are
