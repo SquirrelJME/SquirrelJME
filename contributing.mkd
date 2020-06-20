@@ -34,7 +34,7 @@ can still be made. Continue reading below for a contributing guide.
 
 	You grant Stephanie Gawroriski (and Multi-Phasic Applications) an
 	irrevocable license that:
-	
+    
 	 1. That you own the contributing work.
 	 2. Grants a patent license, as per the GNU GPLv3.
 	 3. Granting Stephanie Gawroriski (and Multi-Phasic Applications)
@@ -109,8 +109,12 @@ this do the following:
 
 After this you are ready to start development!
 
-For reference there is a [Fossil quick-start guide](
+For reference, there are some guides for Fossil:
+
+ * [Fossil quick-start guide](
 https://www.fossil-scm.org/xfer/doc/tip/www/quickstart.wiki).
+ * [Fossil hints for users of Git](
+https://www.fossil-scm.org/xfer/doc/trunk/www/gitusers.md).
 
 #### Starting A Branch
 
@@ -122,7 +126,7 @@ be a number of changes and will require constant updates:
  * Switching to that branch:
    * `fossil update my-branch`
 
-#### Committing and Making Changes 
+#### Committing and Making Changes
 
 When you are ready to commit your changes to your branch, you may do the
 following:

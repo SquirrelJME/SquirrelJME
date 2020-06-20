@@ -37,6 +37,8 @@ wildcard_import_limit = 0
 # Markdown may be in UTF-8
 [*.{md,mkd}]
 charset = utf-8
+indent_style = space
+trim_trailing_whitespace = false
 
 # YAML uses a bit of a different format compared to the others
 [*.{yml,yaml}]
