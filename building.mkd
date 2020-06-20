@@ -28,7 +28,30 @@ letter prefix followed by two digits and letters.
 ## Installing Java
 
 SquirrelJME requires a Java 8 virtual machine in order to build itself. Gradle
-is used however it is available through Gradle Wrapper.
+is used as well however it is available through Gradle Wrapper.
+
+### AdoptOpenJDK (Windows, Linux, and Mac OS X)
+
+AdoptOpenJDK is the recommended way to build and setup SquirrelJME as it has
+long-term support and is easy to setup. You will need at least a Java 8
+variant of AdoptOpenJDK.
+
+ * <https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot>
+
+Please note that Java 11 may be used as well.
+
+### Oracle's JDK (Windows, Linux, and Mac OS X)
+
+Oracle's JDK supports modern systems and can be downloaded from:
+
+ * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+ 
+Ensure that you **download and install** the ***JDK***.
+
+If running on ReactOS/Windows/Wine, make sure that the `PATH` environment
+variables refers to the JDK's binary directory:
+
+ * `C:\Program Files\Java\jdk1.8.0_131\bin\`
 
 ### Common Linux Distributions
 
@@ -45,27 +68,6 @@ available.
      * `apt-get install openjdk-11-jdk`
  * Gentoo
    * See <https://wiki.gentoo.org/wiki/Java>
-
-### AdoptOpenJDK
-
-AdoptOpenJDK is the recommended way to build and setup SquirrelJME as it has
-long-term support and is easy to setup. You will need at least a Java 8
-variant of AdoptOpenJDK.
-
- * <https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot>
-
-### Oracle's JDK
-
-Oracle's JDK supports modern systems and can be downloaded from:
-
- * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
- 
-Ensure that you **download and install** the ***JDK***.
-
-If running on ReactOS/Windows/Wine, make sure that the `PATH` environment
-variables refers to the JDK's binary directory:
-
- * `C:\Program Files\Java\jdk1.8.0_131\bin\`
 
 ### IntelliJ IDEA (Optional)
 
@@ -89,16 +91,52 @@ For the C++ Compiler which is needed for testing:
 ### Windows
 
 For Gradle to detect a C++ compiler, it needs either Microsoft Visual Studio
-or a GCC installation via Cygwin.
+or a GCC installation via Cygwin, or a GCC installation via Mingw-w64.
 
 More information is located at 
-<https://docs.gradle.org/current/userguide/building_cpp_projects.html#windows>. 
+<https://docs.gradle.org/current/userguide/building_cpp_projects.html#windows>.
+
+#### Microsoft Visual Studio
+
+Microsoft's Visual Studio may be used by Gradle to compile the code, note that
+it only uses the compiler tool from the installation (no GUI is needed).
+
+ * Download from <https://visualstudio.microsoft.com/downloads/>.
+ * At the minimum, the following must be installed (pieces that are crossed
+   out may be different for future versions of Microsoft's Compiler):
+   * _Windows Universal C Runtime_
+   * _C++ Build Tools core Features_
+   * _MSVC ~~v142~~ - VS ~~2019~~ C++ ~~x86/x64~~ build tools_
+   * _C++ Redistributable Update_
+   * _Windows 10 SDK_ 
+ * Alternatively, you can run the Visual Studio installer and import the
+   components file, this file can be found in the root and is called
+   `.vsconfig`.
+
+#### Mingw-w64
+
+You can use Mingw-w64 as well, it is a freely available compiler.
+
+ * Main web site: <https://mingw-w64.org>.
+ * In the downloads section it is recommended to use _MingW-W64-builds_:
+   * For the configuration use:
+     * GCC Version: The latest (at time of writing it was 8.0.0).
+     * Threads: _win32_.
+     * Exception Handling: _seh_.
+     * Install both 32-bit and 64-bit.
+
+#### Cygwin
+
+You can also download Cygwin at: <https://www.cygwin.com/>.
 
 ### Mac OS X
 
-You must install XCode, more information is here:
+You must install XCode, more information on XCode is at
+<https://developer.apple.com/xcode/>. Alternatively there is a command line
+tool to install the XCode command line utilities for example if you are
+using Brew:
 
- * <https://developer.apple.com/xcode/>
+ * `xcode-select --install`
 
 # Build Environment
 
@@ -109,7 +147,10 @@ performed through Gradle Wrapper which is used as the following:
  * Windows: `gradlew`
  * Others: `./gradlew`
 
-Gradle uses tasks of which multiple may be specified accordingly.
+Gradle uses tasks of which multiple may be specified accordingly, such as
+running the tests within the repository:
+
+ * `gradlew test`
 
 ## RetroArch
 
@@ -127,6 +168,9 @@ In the root directory, execute the command:
 
  * `docker build .`
 
+This will create an image that you will be able to use to execute one of
+the built-in virtual machines.
+
 # Development Virtual Machines
 
 For development purposes you may use the virtual machines provided by the
@@ -134,8 +178,8 @@ SquirrelJME run-time. Modules within SquirrelJME have tasks which allow them
 to be ran accordingly.
 
  * SpringCoat
-   * `:modules:<name>:runSpringCoat`
-   * `:modules:<name>:testSpringCoat`
+   * `:modules:<name>:runSpringCoat` (running)
+   * `:modules:<name>:testSpringCoat` (testing)
  * SummerCoat
-   * `:modules:<name>:runSummerCoat`
-   * `:modules:<name>:testSummerCoat`
+   * `:modules:<name>:runSummerCoat` (running)
+   * `:modules:<name>:testSummerCoat` (testing)

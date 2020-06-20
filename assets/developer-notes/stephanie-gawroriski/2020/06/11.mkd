@@ -1,0 +1,16 @@
+# 2020/06/11
+
+## 20:15
+
+How do I want to do call stacks? I suppose that there are multiple ways to
+do them, but otherwise not sure to be honest. What I could do is to
+effectively resolve all of it at once. But one thing I do want is a basically
+"Where Am I" kind of thing. I do want stack traces to be quick and easy to
+create and not take up much space, but be quick to resolve. I do still want to
+do the SummerCoat style traces where it is only resolved when it comes time to
+printing the actual trace.
+
+## 21:37
+
+I am rather happy about how this MLE branch is going along with some
+cleanups and refactors to make the code happier!
