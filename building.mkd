@@ -98,11 +98,12 @@ More information is located at
 
 #### Microsoft Visual Studio
 
-Microsoft's development environment may be used.
+Microsoft's Visual Studio may be used by Gradle to compile the code, note that
+it only uses the compiler tool from the installation (no GUI is needed).
 
  * Download from <https://visualstudio.microsoft.com/downloads/>.
  * At the minimum, the following must be installed (pieces that are crossed
-   out may be different for future versions):
+   out may be different for future versions of Microsoft's Compiler):
    * _Windows Universal C Runtime_
    * _C++ Build Tools core Features_
    * _MSVC ~~v142~~ - VS ~~2019~~ C++ ~~x86/x64~~ build tools_
@@ -133,7 +134,7 @@ You can also download Cygwin at: <https://www.cygwin.com/>.
 You must install XCode, more information on XCode is at
 <https://developer.apple.com/xcode/>. Alternatively there is a command line
 tool to install the XCode command line utilities for example if you are
-using Brew.
+using Brew:
 
  * `xcode-select --install`
 
@@ -146,7 +147,10 @@ performed through Gradle Wrapper which is used as the following:
  * Windows: `gradlew`
  * Others: `./gradlew`
 
-Gradle uses tasks of which multiple may be specified accordingly.
+Gradle uses tasks of which multiple may be specified accordingly, such as
+running the tests within the repository:
+
+ * `gradlew test`
 
 ## RetroArch
 
@@ -164,6 +168,9 @@ In the root directory, execute the command:
 
  * `docker build .`
 
+This will create an image that you will be able to use to execute one of
+the built-in virtual machines.
+
 # Development Virtual Machines
 
 For development purposes you may use the virtual machines provided by the
@@ -171,8 +178,8 @@ SquirrelJME run-time. Modules within SquirrelJME have tasks which allow them
 to be ran accordingly.
 
  * SpringCoat
-   * `:modules:<name>:runSpringCoat`
-   * `:modules:<name>:testSpringCoat`
+   * `:modules:<name>:runSpringCoat` (running)
+   * `:modules:<name>:testSpringCoat` (testing)
  * SummerCoat
-   * `:modules:<name>:runSummerCoat`
-   * `:modules:<name>:testSummerCoat`
+   * `:modules:<name>:runSummerCoat` (running)
+   * `:modules:<name>:testSummerCoat` (testing)

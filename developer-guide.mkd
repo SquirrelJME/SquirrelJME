@@ -10,6 +10,36 @@ This is mostly intended for maintainers of _SquirrelJME_.
 
 ***TO BE WRITTEN***
 
+### Loading Contributions
+
+***TO BE WRITTEN***
+
+#### Via Patches
+
+***TO BE WRITTEN***
+
+#### Via Bundles
+
+***TO BE WRITTEN***
+
+### Merging Branches
+
+To merge a branch locally, do the following:
+
+ * Update to the branch that will get submissions merged into:
+   * `fossil update trunk`
+ * Merge the other branch into your current `trunk`:
+   * `fossil merge other-branch`
+ * Commit the changes:
+   * `fossil commit`
+   * Be sure to have a meaningful commit message, if the code is from a
+     merge request on a remote repository, have the following in the commit
+     message:
+     * GitHub: `(GitHub Closes #1234)`
+     * GitLab: `(GitLab Closes !1234)`
+ * Synchronize the repositories:
+   * `fossil sync -u`
+
 ## Releasing
 
 When a release is to be made, it is performed in another branch and becomes

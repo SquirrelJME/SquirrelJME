@@ -18,7 +18,10 @@ build/
 .idea/render.experimental.xml
 .idea/serialmonitor_settings.xml
 
-# Patches
+# Contributions
+*.diff
+*.gdiff
 *.patch
 *.rej
-
+*.bun
+*.bundle
