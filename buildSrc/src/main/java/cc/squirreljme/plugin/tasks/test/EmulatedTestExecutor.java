@@ -31,7 +31,7 @@ import org.gradle.api.tasks.testing.TestOutputEvent;
 import org.gradle.process.ExecResult;
 
 /**
- * This is the executer for tests.
+ * This is the executor for tests.
  *
  * @since 2020/03/06
  */
