@@ -11,7 +11,6 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is a double-ended queue which is backed by an array, this grows
@@ -22,8 +21,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2020/06/19
  */
 @SuppressWarnings("UseOfClone")
-@ImplementationNote("In SquirrelJME, this is implemented by having a single" +
-	"array managed by pivots for the left and right sides.")
+@ImplementationNote("In SquirrelJME, the current implementation is naive " +
+	"in that it uses an ArrayList, a more optimal solution should be added.")
 public class ArrayDeque<E>
 	extends AbstractCollection<E>
 	implements Deque<E>, Cloneable
@@ -31,15 +30,10 @@ public class ArrayDeque<E>
 	/** The default capacity. */
 	private static final int _DEFAULT_CAPACITY =
 		16;
-
-	/** The modification count of this queue. */
-	final __ModCounter__ _modCount =
-		new __ModCounter__();
 	
-	/** The deque storage. */
-	final __ArrayDequeStore__<E> _store =
-		new __ArrayDequeStore__<E>(this._modCount);
-
+	/** The backing contents. */
+	private final ArrayList<E> _elements;
+	
 	/**
 	 * Initializes an empty queue with a default capacity of 16.
 	 *
@@ -65,9 +59,8 @@ public class ArrayDeque<E>
 		if (__initialCap < 0)
 			throw new IllegalArgumentException("ZZxx " + __initialCap);
 
-		// Setup arrays
-		this._store.__ensureCapacity(__initialCap,
-			false, false);
+		// Setup storage
+		this._elements = new ArrayList<>(__initialCap);
 	}
 
 	/**
@@ -84,21 +77,20 @@ public class ArrayDeque<E>
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		__ArrayDequeStore__<E> store = this._store;
-		
-		// Setup arrays
+		// Initialize empty list with the correct capacity
 		int size = __c.size();
-		store.__ensureCapacity(size,
-			false, true);
+		ArrayList<E> elements = new ArrayList<>(size);
 		
-		// Add elements
-		for (E item : __c)
+		// Check for null and add
+		for (E element : __c)
 		{
-			if (item == null)
+			if (element == null)
 				throw new NullPointerException("NARG");
 			
-			store.__elementAdd(true, item);
+			elements.add(element);
 		}
+		
+		this._elements = elements;
 	}
 
 	/**
@@ -112,7 +104,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		this._store.__elementAdd(true, __v);
+		this.__elementAdd(true, __v);
 		return true;
 	}
 
@@ -127,7 +119,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		this._store.__elementAdd(false, __v);
+		this.__elementAdd(false, __v);
 	}
 
 	/**
@@ -141,7 +133,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 
-		this._store.__elementAdd(true, __v);
+		this.__elementAdd(true, __v);
 	}
 	
 	/**
@@ -151,13 +143,19 @@ public class ArrayDeque<E>
 	@Override
 	public void clear()
 	{
-		this._store.__clear();
+		this._elements.clear();
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/21
+	 */
+	@SuppressWarnings("MethodDoesntCallSuperMethod")
 	@Override
 	public ArrayDeque<E> clone()
 	{
-		throw Debugging.todo();
+		// Just use copy constructor here, for simplicity
+		return new ArrayDeque<>(this);
 	}
 
 	/**
@@ -167,20 +165,7 @@ public class ArrayDeque<E>
 	@Override
 	public boolean contains(Object __v)
 	{
-		// Will never contain null or if it is empty
-		if (__v == null || this._store._size <= 0)
-			return false;
-		
-		for (Iterator<E> it = this._store.__iterator(false);
-			it.hasNext(); )
-		{
-			E item = it.next();
-			
-			if (Objects.equals(item, __v))
-				return true;
-		}
-		
-		return false;
+		return this._elements.contains(__v);
 	}
 
 	/**
@@ -190,7 +175,7 @@ public class ArrayDeque<E>
 	@Override
 	public Iterator<E> descendingIterator()
 	{
-		return this._store.__iterator(true);
+		return this.__iterator(true);
 	}
 
 	/**
@@ -202,10 +187,10 @@ public class ArrayDeque<E>
 		throws NoSuchElementException
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			throw new NoSuchElementException("NSEE");
 		
-		return this._store.__elementGet(false, false);
+		return this.__elementGet(false, false);
 	}
 
 	/**
@@ -217,10 +202,10 @@ public class ArrayDeque<E>
 		throws NoSuchElementException
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			throw new NoSuchElementException("NSEE");
 		
-		return this._store.__elementGet(false, false);
+		return this.__elementGet(false, false);
 	}
 
 	/**
@@ -232,10 +217,10 @@ public class ArrayDeque<E>
 		throws NoSuchElementException
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			throw new NoSuchElementException("NSEE");
 		
-		return this._store.__elementGet(true, false);
+		return this.__elementGet(true, false);
 	}
 
 	/**
@@ -245,7 +230,7 @@ public class ArrayDeque<E>
 	@Override
 	public Iterator<E> iterator()
 	{
-		return this._store.__iterator(false);
+		return this.__iterator(false);
 	}
 
 	/**
@@ -259,7 +244,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 
-		this._store.__elementAdd(true, __v);
+		this.__elementAdd(true, __v);
 		return true;
 	}
 
@@ -274,7 +259,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 
-		this._store.__elementAdd(false, __v);
+		this.__elementAdd(false, __v);
 		return true;
 	}
 
@@ -289,7 +274,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		this._store.__elementAdd(true, __v);
+		this.__elementAdd(true, __v);
 		return true;
 	}
 
@@ -301,10 +286,10 @@ public class ArrayDeque<E>
 	public E peek()
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			return null;
 		
-		return this._store.__elementGet(false, false);
+		return this.__elementGet(false, false);
 	}
 
 	/**
@@ -315,10 +300,10 @@ public class ArrayDeque<E>
 	public E peekFirst()
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			return null;
 		
-		return this._store.__elementGet(false, false);
+		return this.__elementGet(false, false);
 	}
 
 	/**
@@ -329,10 +314,10 @@ public class ArrayDeque<E>
 	public E peekLast()
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			return null;
 		
-		return this._store.__elementGet(true, false);
+		return this.__elementGet(true, false);
 	}
 
 	/**
@@ -343,10 +328,10 @@ public class ArrayDeque<E>
 	public E poll()
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			return null;
 		
-		return this._store.__elementGet(false, true);
+		return this.__elementGet(false, true);
 	}
 
 	/**
@@ -357,10 +342,10 @@ public class ArrayDeque<E>
 	public E pollFirst()
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			return null;
 		
-		return this._store.__elementGet(false, true);
+		return this.__elementGet(false, true);
 	}
 
 	/**
@@ -371,10 +356,10 @@ public class ArrayDeque<E>
 	public E pollLast()
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			return null;
 		
-		return this._store.__elementGet(true, true);
+		return this.__elementGet(true, true);
 	}
 
 	/**
@@ -386,10 +371,10 @@ public class ArrayDeque<E>
 		throws NoSuchElementException
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			throw new NoSuchElementException("NSEE");
 		
-		return this._store.__elementGet(false, true);
+		return this.__elementGet(false, true);
 	}
 
 	/**
@@ -403,7 +388,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 
-		this._store.__elementAdd(false, __v);
+		this.__elementAdd(false, __v);
 	}
 
 	/**
@@ -415,10 +400,10 @@ public class ArrayDeque<E>
 		throws NoSuchElementException
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			throw new NoSuchElementException("NSEE");
 		
-		return this._store.__elementGet(false, true);
+		return this.__elementGet(false, true);
 	}
 
 	/**
@@ -430,10 +415,10 @@ public class ArrayDeque<E>
 		throws NoSuchElementException
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			throw new NoSuchElementException("NSEE");
 		
-		return this._store.__elementGet(false, true);
+		return this.__elementGet(false, true);
 	}
 	
 	/**
@@ -447,8 +432,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			return false;
 		
-		return this.__removeFirst(
-			this._store.__iterator(false), __v);
+		return this.__removeFirst(this.__iterator(false), __v);
 	}
 	
 	/**
@@ -460,10 +444,10 @@ public class ArrayDeque<E>
 		throws NoSuchElementException
 	{
 		// Queue is empty
-		if (this._store._size == 0)
+		if (this._elements.isEmpty())
 			throw new NoSuchElementException("NSEE");
 		
-		return this._store.__elementGet(true, true);
+		return this.__elementGet(true, true);
 	}
 
 	/**
@@ -477,8 +461,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			return false;
 		
-		return this.__removeFirst(
-			this._store.__iterator(true), __v);
+		return this.__removeFirst(this.__iterator(true), __v);
 	}
 	
 	/**
@@ -490,7 +473,88 @@ public class ArrayDeque<E>
 	{
 		// Use the pre-cached size, since we cannot use the pivot positions
 		// as it would be confusing for empty dequeue
-		return this._store._size;
+		return this._elements.size();
+	}
+	
+	/**
+	 * Adds a value to the queue on a given side.
+	 * 
+	 * @param __rightSide Add to the right side? 
+	 * @param __value The value to add.
+	 * @throws NullPointerException On a null value.
+	 * @since 2020/06/20
+	 */
+	private void __elementAdd(boolean __rightSide, E __value)
+		throws NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+		
+		ArrayList<E> elements = this._elements;
+		
+		// Add to end
+		if (__rightSide)
+			elements.add(__value);
+		
+		// Add to start
+		else
+			elements.add(0, __value);
+	}
+	
+	/**
+	 * Removes an element from the queue.
+	 * 
+	 * @param __rightSide Remove from the right side?
+	 * @param __delete Is the element to be deleted?
+	 * @return The element to remove.
+	 * @since 2020/06/20
+	 */
+	private E __elementGet(boolean __rightSide, boolean __delete)
+	{
+		ArrayList<E> elements = this._elements;
+		
+		// {@squirreljme.error ZZ37 Get of element from an empty deque?}
+		int size = elements.size();
+		if (size <= 0)
+			throw new IllegalStateException("ZZ37");
+		
+		// From right?
+		if (__rightSide)
+		{
+			if (__delete)
+				return elements.remove(size - 1);
+			else
+				return elements.get(size - 1);
+		}
+		
+		// From left?
+		else
+		{
+			if (__delete)
+				return elements.remove(0);
+			else
+				return elements.get(0);
+		}
+	}
+	
+	/**
+	 * Returns the element iterator.
+	 * 
+	 * @param __descending Is this descending?
+	 * @return The iterator.
+	 * @since 2020/06/21
+	 */
+	private Iterator<E> __iterator(boolean __descending)
+	{
+		// If descending, use the list iterator but start from the end
+		ArrayList<E> elements = this._elements;
+		if (__descending)
+			return new __DescendingIteratorViaListIterator__<E>(
+				elements.listIterator(elements.size()));
+		
+		// Use normal iterator, do not expose the ListIterator!
+		else
+			return new __HideIterator__<E>(elements.iterator());
 	}
 	
 	/**
