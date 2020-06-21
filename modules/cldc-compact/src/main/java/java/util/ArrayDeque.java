@@ -32,9 +32,13 @@ public class ArrayDeque<E>
 	private static final int _DEFAULT_CAPACITY =
 		16;
 
-	/** The capacity for edges of the collection. */
-	private static final int _EDGE_CAPACITY =
-		8;
+	/** How much more space to add at a time. */
+	private static final int _CAPACITY_JUMP =
+		4;
+
+	/** The modification count of this queue. */
+	final __ModCounter__ _modCount =
+		new __ModCounter__();
 
 	/** Array elements. */
 	private E[] _elements;
@@ -47,9 +51,6 @@ public class ArrayDeque<E>
 
 	/** The right side of the deque, where the last item is (always valid). */
 	private int _rightAt;
-
-	/** The modification count of this queue. */
-	private int _modCount;
 
 	/**
 	 * Initializes an empty queue with a default capacity of 16.
@@ -112,26 +113,39 @@ public class ArrayDeque<E>
 		this._rightAt = size - 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public boolean add(E __v)
 		throws NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
-
-		throw Debugging.todo();
+		
+		this.__elementAdd(true, __v);
+		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public void addFirst(E __v)
 		throws NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
-
-		throw Debugging.todo();
+		
+		this.__elementAdd(false, __v);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public void addLast(E __v)
 		throws NullPointerException
@@ -139,7 +153,7 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 
-		throw Debugging.todo();
+		this.__elementAdd(true, __v);
 	}
 	
 	/**
@@ -153,7 +167,7 @@ public class ArrayDeque<E>
 		// valid
 		int oldSize = this._size;
 		if (oldSize > 0)
-			this._modCount++;
+			this._modCount.modCount++;
 		
 		// Completely destroy the contents of this deque
 		this._elements = null;
@@ -168,22 +182,41 @@ public class ArrayDeque<E>
 		throw Debugging.todo();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public boolean contains(Object __v)
 	{
-		// Will never contain null
-		if (__v == null)
+		// Will never contain null or if it is empty
+		if (__v == null || this._size <= 0)
 			return false;
-
-		throw Debugging.todo();
+		
+		// Scan for the element
+		E[] elements = this._elements;
+		for (int at = this._leftAt, endAt = this._rightAt; at <= endAt; at++)
+			if (Objects.equals(elements[at], __v))
+				return true;
+		
+		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public Iterator<E> descendingIterator()
 	{
-		throw Debugging.todo();
+		return new __ArrayDequeIterator__<E>(this._elements, this._size,
+			this._rightAt, this._leftAt, this._modCount, this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E element()
 		throws NoSuchElementException
@@ -192,9 +225,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			throw new NoSuchElementException("NSEE");
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E getFirst()
 		throws NoSuchElementException
@@ -203,9 +240,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			throw new NoSuchElementException("NSEE");
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E getLast()
 		throws NoSuchElementException
@@ -214,15 +255,24 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			throw new NoSuchElementException("NSEE");
 		
-		throw Debugging.todo();
+		return this.__elementGet(true, false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public Iterator<E> iterator()
 	{
-		throw Debugging.todo();
+		return new __ArrayDequeIterator__<E>(this._elements, this._size,
+			this._leftAt, this._rightAt, this._modCount, this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public boolean offer(E __v)
 		throws NullPointerException
@@ -230,9 +280,14 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 
-		throw Debugging.todo();
+		this.__elementAdd(true, __v);
+		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public boolean offerFirst(E __v)
 		throws NullPointerException
@@ -240,19 +295,29 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 
-		throw Debugging.todo();
+		this.__elementAdd(false, __v);
+		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public boolean offerLast(E __v)
 		throws NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
-
-		throw Debugging.todo();
+		
+		this.__elementAdd(true, __v);
+		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E peek()
 	{
@@ -260,9 +325,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			return null;
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E peekFirst()
 	{
@@ -270,9 +339,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			return null;
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E peekLast()
 	{
@@ -280,9 +353,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			return null;
 		
-		throw Debugging.todo();
+		return this.__elementGet(true, false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E poll()
 	{
@@ -290,9 +367,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			return null;
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, true);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E pollFirst()
 	{
@@ -300,9 +381,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			return null;
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, true);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E pollLast()
 	{
@@ -310,9 +395,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			return null;
 		
-		throw Debugging.todo();
+		return this.__elementGet(true, true);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E pop()
 		throws NoSuchElementException
@@ -321,9 +410,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			throw new NoSuchElementException("NSEE");
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, true);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public void push(E __v)
 		throws NullPointerException
@@ -331,9 +424,13 @@ public class ArrayDeque<E>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 
-		throw Debugging.todo();
+		this.__elementAdd(false, __v);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E remove()
 		throws NoSuchElementException
@@ -342,9 +439,13 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			throw new NoSuchElementException("NSEE");
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, true);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public E removeFirst()
 		throws NoSuchElementException
@@ -353,17 +454,21 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			throw new NoSuchElementException("NSEE");
 		
-		throw Debugging.todo();
+		return this.__elementGet(false, true);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public boolean removeFirstOccurrence(Object __v)
 	{
 		// Will never contain null
 		if (__v == null)
 			return false;
-
-		throw Debugging.todo();
+		
+		return this.__removeFirst(this.iterator(), __v);
 	}
 	
 	/**
@@ -378,19 +483,23 @@ public class ArrayDeque<E>
 		if (this._size == 0)
 			throw new NoSuchElementException("NSEE");
 		
-		throw Debugging.todo();
+		return this.__elementGet(true, true);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/20
+	 */
 	@Override
 	public boolean removeLastOccurrence(Object __v)
 	{
 		// Will never contain null
 		if (__v == null)
 			return false;
-
-		throw Debugging.todo();
+		
+		return this.__removeFirst(this.descendingIterator(), __v);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/06/20
@@ -402,7 +511,32 @@ public class ArrayDeque<E>
 		// as it would be confusing for empty dequeue
 		return this._size;
 	}
-
+	
+	/**
+	 * Adds a value to the queue on a given side.
+	 * 
+	 * @param __rightSide Add to the right side? 
+	 * @param __value The value to add.
+	 * @since 2020/06/20
+	 */
+	private void __elementAdd(boolean __rightSide, E __value)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Removes an element from the queue.
+	 * 
+	 * @param __rightSide Remove from the right side?
+	 * @param __delete Is the element to be deleted?
+	 * @return The element to remove.
+	 * @since 2020/06/20
+	 */
+	private E __elementGet(boolean __rightSide, boolean __delete)
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * Ensures that the given number of elements can be stored, the bumping
 	 * may be used to determine where the extra space should be placed and is
@@ -476,12 +610,44 @@ public class ArrayDeque<E>
 		// If our elements changed position, then our iterators will not be
 		// at the correct location
 		if (origLeftAt != newLeftAt || origRightAt != newRightAt)
-			this._modCount++;
+			this._modCount.modCount++;
 		
 		// Store changes
 		this._leftAt = newLeftAt;
 		this._rightAt = newRightAt;
 		this._elements = newElements;
+	}
+	
+	/**
+	 * Removes the first occurrence of an item with an iterator.
+	 * 
+	 * @param __iterator The iterator.
+	 * @param __v The item to remove.
+	 * @return If it was found and removed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/20
+	 */
+	private boolean __removeFirst(Iterator<E> __iterator, Object __v)
+		throws NullPointerException
+	{
+		if (__iterator == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through every element
+		while (__iterator.hasNext())
+		{
+			E element = __iterator.next();
+			
+			// Was this found?
+			if (Objects.equals(element, __v))
+			{
+				__iterator.remove();
+				return true;
+			}
+		}
+		
+		// Was not found
+		return false;
 	}
 
 	/**
