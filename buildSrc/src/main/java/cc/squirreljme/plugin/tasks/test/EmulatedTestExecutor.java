@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.TreeSet;
+import java.util.concurrent.ForkJoinPool;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.gradle.api.Project;
@@ -88,7 +89,7 @@ public final class EmulatedTestExecutor
 		try
 		{
 			// Execute test classes (find them and run them)
-			allPassed = this.executeClasses(__spec, __results, suite);
+			allPassed = this.__executeClasses(__spec, __results, suite);
 			
 			// Did all tests pass?
 			__results.completed(suite.getId(),
@@ -114,6 +115,79 @@ public final class EmulatedTestExecutor
 	}
 	
 	/**
+	 * Executes the test class.
+	 * 
+	 * @param __spec The specification.
+	 * @param __results The results.
+	 * @param __suite The suite to run.
+	 * @param __testClass The test class.
+	 * @return If this test passed.
+	 * @since 2020/06/21
+	 */
+	private boolean __executeClass(EmulatedTestExecutionSpec __spec,
+		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite,
+		String __testClass)
+	{
+		// In SquirrelJME all tests only have a single run method, so the
+		// run is the actual class of execution
+		EmulatedTestClassDescriptor classy =
+			new EmulatedTestClassDescriptor(__suite, __testClass);
+		EmulatedTestMethodDescriptor method =
+			new EmulatedTestMethodDescriptor(classy);
+		
+		// Start execution
+		__results.started(classy,
+			EmulatedTestUtilities.startNow(__suite));
+		__results.started(method,
+			EmulatedTestUtilities.startNow(classy));
+		
+		// Execute each class alone
+		try
+		{
+			// Execute individual test
+			int result = this.__executeClassVm(__spec, __results, method);
+			
+			// Test did not pass
+			if (result != ExitValueConstants.SUCCESS &&
+				result != ExitValueConstants.SKIPPED)
+			{
+				// Clear out the stack trace because they are really
+				// annoying
+				Throwable empty = new Throwable("Test failed");
+				empty.setStackTrace(new StackTraceElement[0]);
+				
+				// Use this thrown exception
+				__results.failure(method.getId(), empty);
+			}
+			
+			// End execution
+			__results.completed(method.getId(),
+				EmulatedTestUtilities.passSkipOrFailNow(result));
+			__results.completed(classy.getId(),
+				EmulatedTestUtilities.passSkipOrFailNow(result));
+			
+			// Consider passes and skips as successes
+			if (result == ExitValueConstants.SUCCESS ||
+				result == ExitValueConstants.SKIPPED)
+				return true;
+		}
+		catch (Throwable t)
+		{
+			// Report the thrown exception
+			__results.failure(method.getId(), t);
+			__results.completed(method.getId(),
+				EmulatedTestUtilities.failNow());
+			
+			// Fail the class as well
+			__results.completed(classy.getId(),
+				EmulatedTestUtilities.failNow());
+		}
+		
+		// Mark as failed
+		return false;
+	}
+	
+	/**
 	 * Goes through and executes the single test class.
 	 *
 	 * @param __spec The specification.
@@ -122,7 +196,7 @@ public final class EmulatedTestExecutor
 	 * @return The exit value of the test.
 	 * @since 2020/03/06
 	 */
-	private int executeClass(EmulatedTestExecutionSpec __spec,
+	private int __executeClassVm(EmulatedTestExecutionSpec __spec,
 		TestResultProcessor __results, EmulatedTestMethodDescriptor __method)
 	{
 		Project project = this._testInVMTask.getProject();
@@ -200,7 +274,7 @@ public final class EmulatedTestExecutor
 	 * @since 2020/03/06
 	 */
 	@SuppressWarnings("FeatureEnvy")
-	private boolean executeClasses(EmulatedTestExecutionSpec __spec,
+	private boolean __executeClasses(EmulatedTestExecutionSpec __spec,
 		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite)
 		throws IOException
 	{
@@ -231,63 +305,15 @@ public final class EmulatedTestExecutor
 		// Used to flag if every test passed
 		boolean allPassed = true;
 		
+		// Get the common pool for tasks
+		ForkJoinPool pool = ForkJoinPool.commonPool();
+		
 		// Now go through the tests we discovered and execute them
 		for (String testClass : testClasses)
 		{
-			// Stop executing? Note that if this is stopped in the middle of
-			// a test we cannot make the tests pass
-			if (this._stopRunning)
-				return false;
-			
-			// In SquirrelJME all tests only have a single run method, so the
-			// run is the actual class of execution
-			EmulatedTestClassDescriptor classy =
-				new EmulatedTestClassDescriptor(__suite, testClass);
-			EmulatedTestMethodDescriptor method =
-				new EmulatedTestMethodDescriptor(classy);
-			
-			// Start execution
-			__results.started(classy,
-				EmulatedTestUtilities.startNow(__suite));
-			__results.started(method,
-				EmulatedTestUtilities.startNow(classy));
-			
-			// Execute each class alone
-			try
-			{
-				// Execute individual test
-				int result = this.executeClass(__spec, __results, method);
-				
-				// Test did not pass
-				if (result != ExitValueConstants.SUCCESS &&
-					result != ExitValueConstants.SKIPPED)
-				{
-					// Clear out the stack trace because they are really
-					// annoying
-					Throwable empty = new Throwable("Test failed");
-					empty.setStackTrace(new StackTraceElement[0]);
-					
-					// Use this thrown exception
-					__results.failure(method.getId(), empty);
-				}
-				
-				// End execution
-				__results.completed(method.getId(),
-					EmulatedTestUtilities.passSkipOrFailNow(result));
-				__results.completed(classy.getId(),
-					EmulatedTestUtilities.passSkipOrFailNow(result));
-			}
-			catch (Throwable t)
-			{
-				// Report the thrown exception
-				__results.failure(method.getId(), t);
-				__results.completed(method.getId(),
-					EmulatedTestUtilities.failNow());
-				
-				// Fail the class as well
-				__results.completed(classy.getId(),
-					EmulatedTestUtilities.failNow());
-			}
+			// Execute class and check for failure
+			if (!this.__executeClass(__spec, __results, __suite, testClass))
+				allPassed = false;
 		}
 		
 		// Return how all the tests ran
