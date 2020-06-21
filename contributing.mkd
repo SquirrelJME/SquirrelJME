@@ -314,5 +314,6 @@ Alternatively a Git Bundle may be used:
      * Mention `@XerTheSquirrel#5366`, with an upload of the bundle (it may
        be in a ZIP file) and that you _agree_ to the contributor
        agreement as noted above in this document.
-     * Discord has a file size limit, if your file is too big send an e-mail
-       instead.
+     * Discord has a file size limit, if your file is too big, either use a
+     file sharing service like [Firefox Send](https://send.firefox.com), or
+     send an e-mail instead.
