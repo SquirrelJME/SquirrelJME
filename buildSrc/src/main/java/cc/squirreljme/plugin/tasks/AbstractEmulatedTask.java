@@ -16,11 +16,13 @@ import cc.squirreljme.plugin.tasks.test.EmulatedTestUtilities;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
@@ -164,10 +166,12 @@ public abstract class AbstractEmulatedTask
 	 * @return The run class path.
 	 * @since 2020/02/29
 	 */
-	@Deprecated
 	Iterable<Path> __runClassPath()
 	{
 		Collection<Path> result = new LinkedHashSet<>();
+		
+		Deque<Project> projects = new LinkedList<>();
+		Set<Project> didProjects = new TreeSet<>();
 		
 		this.__recursiveDependencies(result, this.getProject());
 		
@@ -182,7 +186,7 @@ public abstract class AbstractEmulatedTask
 	 * @since 2020/02/29
 	 */
 	@Deprecated
-	final void __recursiveDependencies(Collection<Path> __out, Project __at)
+	private void __recursiveDependencies(Collection<Path> __out, Project __at)
 	{
 		this.__recursiveDependencies(__out, __at, new HashSet<>());
 	}

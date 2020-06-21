@@ -132,7 +132,11 @@ class __ArrayDequeIterator__<E>
 		// Check if the deque changed
 		this.__checkModification();
 		
-		throw Debugging.todo();
+		if (true)
+			throw Debugging.todo();
+		
+		// Removing is no longer valid
+		this._lastAt = -1;
 	}
 	
 	/**
