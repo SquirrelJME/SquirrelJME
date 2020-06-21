@@ -69,3 +69,10 @@ secondary-arrayover: int[34]:1234,200,100,0,1,2,3,4,5,6,7,8,
  9,300,400,500,600,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 secondary-arraygrow: int[17]:1234,200,100,0,1,2,3,4,5,6,7,8,
  9,300,400,500,600
+secondary-empty--remove--0: true
+secondary-empty--remove--1: true
+secondary-empty--remove--2: true
+secondary-empty--remove--3: false
+secondary-empty--remove--4: false
+secondary-empty--remove--5: false
+secondary-empty--remove--6: true

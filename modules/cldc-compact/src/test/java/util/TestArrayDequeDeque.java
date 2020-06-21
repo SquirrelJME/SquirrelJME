@@ -13,7 +13,7 @@ package util;
 import java.util.ArrayDeque;
 
 /**
- * Tests array deques.
+ * Tests {@link ArrayDeque}.
  *
  * @since 2019/01/20
  */
@@ -27,6 +27,6 @@ public class TestArrayDequeDeque
 	 */
 	public TestArrayDequeDeque()
 	{
-		super(new ArrayDeque<Number>(), false);
+		super(new ArrayDeque<Integer>(), false);
 	}
 }

@@ -14,6 +14,7 @@ package java.util;
  *
  * @since 2020/06/20
  */
+@Deprecated
 final class __ModCounter__
 {
 	/** The modification count. */
