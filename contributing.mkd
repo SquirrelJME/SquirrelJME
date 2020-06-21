@@ -207,8 +207,8 @@ as well. To make a submission do the following:
        be in a ZIP file) and that you _agree_ to the contributor
        agreement as noted above in this document.
      * Discord has a file size limit, if your file is too big, either use a
-     file sharing service like [Firefox Send](https://send.firefox.com), or
-     send an e-mail instead.
+       file sharing service like [Firefox Send](https://send.firefox.com), or
+       send an e-mail instead.
 
 ### With Git
 
@@ -315,5 +315,5 @@ Alternatively a Git Bundle may be used:
        be in a ZIP file) and that you _agree_ to the contributor
        agreement as noted above in this document.
      * Discord has a file size limit, if your file is too big, either use a
-     file sharing service like [Firefox Send](https://send.firefox.com), or
-     send an e-mail instead.
+       file sharing service like [Firefox Send](https://send.firefox.com), or
+       send an e-mail instead.
