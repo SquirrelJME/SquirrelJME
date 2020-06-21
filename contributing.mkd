@@ -49,7 +49,7 @@ repository as a whole.
    * These mass refactorings can cause unintended side effects and as well
      may cause breakages. Also as well, these can cause merge conflicts and
      otherwise.
- * The `trunk` branch is always stable code. 
+ * The `trunk` branch is always stable code.
 
 If there are any issues regarding these, please open an issue describing in
 detail the problem and a proposed solution if there is one on [GitHub](
