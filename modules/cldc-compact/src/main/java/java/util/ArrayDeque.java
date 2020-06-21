@@ -517,11 +517,44 @@ public class ArrayDeque<E>
 	 * 
 	 * @param __rightSide Add to the right side? 
 	 * @param __value The value to add.
+	 * @throws NullPointerException On a null value.
 	 * @since 2020/06/20
 	 */
 	private void __elementAdd(boolean __rightSide, E __value)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__value == null)
+			throw new NullPointerException("NARG");
+		
+		// Make sure that there is room for this element
+		int oldSize = this._size;
+		int newSize = oldSize + 1;
+		this.__ensureCapacity(newSize, !__rightSide, __rightSide);
+		
+		// Add to the right side
+		E[] elements = this._elements;
+		if (__rightSide)
+		{
+			int rightAt = this._rightAt;
+			
+			elements[++rightAt] = __value;
+			
+			this._rightAt = rightAt;
+		}
+		
+		// Add to the left side
+		else
+		{
+			int leftAt = this._leftAt;
+			
+			elements[--leftAt] = __value;
+			
+			this._leftAt = leftAt;
+		}
+		
+		// Update internal variables
+		this._size = newSize;
+		this._modCount.modCount++;
 	}
 	
 	/**
@@ -534,7 +567,49 @@ public class ArrayDeque<E>
 	 */
 	private E __elementGet(boolean __rightSide, boolean __delete)
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error ZZ37 Get of element from an empty deque?}
+		int oldSize = this._size;
+		if (oldSize == 0)
+			throw new IllegalStateException("ZZ37");
+		
+		// Get/remove from right side
+		E rv;
+		E[] elements = this._elements;
+		if (__rightSide)
+		{
+			int rightAt = this._rightAt;
+			
+			rv = elements[rightAt];
+			
+			if (__delete)
+			{
+				elements[rightAt--] = null;
+				this._rightAt = rightAt;
+			}
+		}
+		
+		// Get/remove from left side
+		else
+		{
+			int leftAt = this._leftAt;
+			
+			rv = elements[leftAt];
+			
+			if (__delete)
+			{
+				elements[leftAt++] = null;
+				this._leftAt = leftAt;
+			}
+		}
+		
+		// Internal state only changes when deletion occurs
+		if (__delete)
+		{
+			this._size = oldSize - 1;
+			this._modCount.modCount++;
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -555,6 +630,7 @@ public class ArrayDeque<E>
 	 * {@code __bumpRight} are {@code true}.
 	 * @since 2020/06/20
 	 */
+	@SuppressWarnings("UnnecessaryLocalVariable")
 	private void __ensureCapacity(int __cap, boolean __bumpLeft,
 		boolean __bumpRight)
 	{
@@ -563,15 +639,25 @@ public class ArrayDeque<E>
 		if (__bumpLeft && __bumpRight)
 			throw new IllegalArgumentException("ZZ3x");
 		
+		// Are we bumping at all?
+		boolean isBumping = __bumpLeft || __bumpRight;
+		
 		// Used to detect if iterators are at new positions
-		int origLeftAt = this._leftAt;
-		int origRightAt = this._rightAt;
+		int oldLeftAt = this._leftAt;
+		int oldRightAt = this._rightAt;
 		int newLeftAt;
 		int newRightAt;
 		
 		// In the event there are element changes
 		E[] oldElements = this._elements;
 		E[] newElements;
+		
+		// The current capacity of the array
+		int currentCapacity = (oldElements == null ? 0 : oldElements.length);
+		
+		// The room that is available on the left and right
+		int roomLeft = oldLeftAt;
+		int roomRight = (currentCapacity - 1) - oldRightAt;
 		
 		// If there is no initialized array, this will be our first allocation
 		// so allocate this many elements
@@ -603,13 +689,22 @@ public class ArrayDeque<E>
 			// to determine if we can shift all the elements over for this
 			// deque
 			boolean underCurrentCap = (__cap <= this._size);
+			if (underCurrentCap)
+			{
+				// If there is room on the left and right side, we do not have
+				// to actually do anything
+				if (roomLeft > 0 && roomRight > 0)
+					return;
+				
+				throw Debugging.todo();
+			}
 			
 			throw Debugging.todo();
 		}
 		
 		// If our elements changed position, then our iterators will not be
 		// at the correct location
-		if (origLeftAt != newLeftAt || origRightAt != newRightAt)
+		if (oldLeftAt != newLeftAt || oldRightAt != newRightAt)
 			this._modCount.modCount++;
 		
 		// Store changes
