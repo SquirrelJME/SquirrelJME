@@ -153,9 +153,11 @@ Development should be done in branches and not the main `trunk` as there will
 be a number of changes and will require constant updates:
 
  * Create a new branch, based off `trunk`:
-   * `fossil branch new my-branch trunk`
+   * `fossil branch new wip-branch trunk`
  * Switching to that branch:
-   * `fossil update my-branch`
+   * `fossil update wip-branch`
+
+Please start your branch with `wip-` when making a branch!
 
 #### Committing and Making Changes
 
@@ -182,7 +184,7 @@ this:
    * Make sure you commit any of your current changes or they will be lost:
      * `fossil commit`
    * Update to the branch to be updated:
-     * `fossil update my-branch`
+     * `fossil update wip-branch`
    * Merge in the changes that were made in `trunk`:
      * `fossil merge trunk`
    * Commit the merge:
@@ -195,7 +197,7 @@ and may or may not be accepted. There may be additional requests for changes
 as well. To make a submission do the following:
 
  * Create a bundle for your branch:
-   * `fossil bundle export my-branch.bun --branch my-branch --standalone`
+   * `fossil bundle export wip-branch.bun --branch wip-branch --standalone`
  * Send a copy of this bundle via E-Mail or another means:
    * Via e-mail:
      * Mail to <xer@multiphasicapps.net> OR <xerthesquirrel@gmail.com>.
@@ -251,7 +253,9 @@ Development should be done in branches and not the main `trunk` as there will
 be a number of changes and will require constant updates:
 
   * Checkout a new branch:
-    * `git checkout -b my-branch`
+    * `git checkout -b wip-branch`
+
+Please start your branch with `wip-` when making a branch!
 
 #### Committing and Making Changes
 
@@ -269,7 +273,7 @@ following:
    * `git push`
    * Note that you may have to set the upstream for the branch, the push
      command should tell you how to do this but for reference it is:
-     * `git push --set-upstream origin my-branch`
+     * `git push --set-upstream origin wip-branch`
 
 #### Staying Up To Date
 
@@ -282,7 +286,7 @@ this:
  * Pull in the latest changes:
    * `git pull`
  * Checkout your branch:
-   * `git checkout my-branch`
+   * `git checkout wip-branch`
  * Merge in the changes from `trunk`:
    * `git merge trunk`
  * Git should automatically commit, if there are conflicts are a merge commit
@@ -303,7 +307,7 @@ as well. To make a submission do the following:
 Alternatively a Git Bundle may be used:
 
  * Create a patch bundle for your branch:
-   * `git format-patch --binary --stdout --attach -n trunk..my-branch > my-branch.bun`
+   * `git format-patch --binary --stdout --attach -n trunk..wip-branch > wip-branch.bun`
  * Send a copy of this patch bundle via E-Mail or another means:
    * Via e-mail:
      * Mail to <xer@multiphasicapps.net> OR <xerthesquirrel@gmail.com>.
