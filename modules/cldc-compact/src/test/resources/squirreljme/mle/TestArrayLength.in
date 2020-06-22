@@ -1,6 +1,5 @@
 result: NoResult
 thrown: NoExceptionThrown
-secondary-n: int:-1
 secondary-o: int:-1
 secondary-z: int:1
 secondary-b: int:2
