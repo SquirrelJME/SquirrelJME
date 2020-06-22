@@ -12,6 +12,7 @@ package net.multiphasicapps.tac;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,6 +34,10 @@ import org.testng.annotations.Test;
 abstract class __CoreTest__
 	implements TestInterface
 {
+	/** Special value for any virtual machine. */
+	private static final byte _ANYCOAT =
+		-89;
+	
 	/** Final result of the test, used during the test. */
 	final TestResultBuilder _runResult =
 		new TestResultBuilder();
@@ -118,11 +123,27 @@ abstract class __CoreTest__
 					case "javase":		vmType = VMType.JAVA_SE; break;
 					case "springcoat":	vmType = VMType.SPRINGCOAT; break;
 					case "summercoat":	vmType = VMType.SUMMERCOAT; break;
+					case "anycoat":		vmType = __CoreTest__._ANYCOAT; break;
 				}
 			
-			// {@squirreljme.error BU0j Test cannot run on a different VM.}
-			if (vmType >= 0 && vmType != RuntimeShelf.vmType())
-				throw new UntestableException("BU0j " + vmType);
+			// {@squirreljme.error BU0k Test is only valid on
+			// AnyCoat (such as SpringCoat/SummerCoat).
+			// (The requested VM type; The system VM type)}
+			int systemVmType = RuntimeShelf.vmType();
+			if (vmType == __CoreTest__._ANYCOAT &&
+				systemVmType != VMType.SPRINGCOAT &&
+				systemVmType != VMType.SUMMERCOAT)
+				throw new UntestableException("BU0k " + vmType + " " +
+					systemVmType);
+			
+			// {@squirreljme.error BU0j Test cannot run on a different VM.
+			// (The requested VM type; The system VM type)}
+			else if (vmType >= 0 && vmType != systemVmType)
+				throw new UntestableException("BU0j " + vmType + " " +
+					systemVmType);
+			
+			// Debug
+			Debugging.debugNote("About to run test...");
 			
 			// Run the test
 			runresult.setReturnValue(this.__runTest(args));
@@ -159,6 +180,9 @@ abstract class __CoreTest__
 				runresult.setThrownValue((thrown = t));
 			}
 		}
+		
+		// Debug
+		Debugging.debugNote("Finished test execution.");
 		
 		// If the status is not yet known, do a comparison with the results to
 		// see if there is a match

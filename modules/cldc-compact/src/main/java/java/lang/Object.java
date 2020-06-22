@@ -12,6 +12,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -119,7 +120,7 @@ public class Object
 	{
 		// {@squirreljme.error ZZ1e This thread does not own the monitor for
 		// this thread.}
-		if (ObjectAccess.monitorNotify(this, false) < 0)
+		if (ObjectShelf.notify(this, false) < 0)
 			throw new IllegalMonitorStateException("ZZ1e");
 	}
 	
@@ -135,7 +136,7 @@ public class Object
 	{
 		// {@squirreljme.error ZZ1f This thread does not own the monitor for
 		// this thread.}
-		if (ObjectAccess.monitorNotify(this, true) < 0)
+		if (ObjectShelf.notify(this, false) < 0)
 			throw new IllegalMonitorStateException("ZZ1f");
 	}
 	
@@ -147,6 +148,7 @@ public class Object
 	 * @return The string representation of this object.
 	 * @since 2016/02/09
 	 */
+	@SuppressWarnings("MagicNumber")
 	public String toString()
 	{
 		return this.getClass().getName() + "@" +
@@ -215,21 +217,21 @@ public class Object
 	{
 		// Call wait, but return status can have multiple kind of things
 		// going on
-		switch (ObjectAccess.monitorWait(this, __ms, __ns))
+		switch (ObjectShelf.wait(this, __ms, __ns))
 		{
 				// {@squirreljme.error ZZ1g Cannot wait on monitor because
 				// this thread does not own the monitor.}
-			case ObjectAccess.MONITOR_NOT_OWNED:
+			case MonitorResultType.NOT_OWNED:
 				throw new IllegalMonitorStateException("ZZ1g");
 			
 				// Not interrupted
-			case ObjectAccess.MONITOR_NOT_INTERRUPTED:
+			case MonitorResultType.NOT_INTERRUPTED:
 				return;
 			
 				// {@squirreljme.error ZZ1h Wait operation has been
 				// interrupted.}
-			case ObjectAccess.MONITOR_INTERRUPTED:
-				Thread.currentThread()._interrupted = false;
+			case MonitorResultType.INTERRUPTED:
+				Thread.currentThread().interrupt();
 				throw new InterruptedException("ZZ1h");
 				
 				// Should not happen

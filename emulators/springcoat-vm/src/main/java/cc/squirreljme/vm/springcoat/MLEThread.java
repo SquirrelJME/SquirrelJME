@@ -298,6 +298,26 @@ public enum MLEThread
 		}
 	},
 	
+	/** {@link ThreadShelf#vmThreadInterrupt(VMThreadBracket)}. */ 
+	VM_THREAD_INTERRUPT("vmThreadInterrupt:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/VMThreadBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			VMThreadObject vmThread = (VMThreadObject)__args[0];
+			
+			// Send an interrupt to the thread
+			vmThread.getThread().hardInterrupt();
+			
+			return null;
+		}
+	},
+	
 	/** {@link ThreadShelf#vmThreadIsMain(VMThreadBracket)}. */
 	VM_THREAD_IS_MAIN("vmThreadIsMain:(Lcc/squirreljme/jvm/mle/" +
 		"brackets/VMThreadBracket;)Z")

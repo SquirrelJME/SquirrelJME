@@ -338,6 +338,26 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Interrupts this thread.
+	 * 
+	 * @since 2020/06/22
+	 */
+	public final void hardInterrupt()
+	{
+		SpringThreadWorker worker = this._worker;
+		if (worker == null)
+			throw new RuntimeException(
+				"Cannot interrupt thread with no worker.");
+		
+		// Signal the other thread or something else?
+		Thread signal = this._worker.signalinstead;
+		if (signal != null)
+			signal.interrupt();
+		else
+			worker.interrupt();
+	}
+	
+	/**
 	 * Returns whether or not this thread has an instance.
 	 *
 	 * @return If this thread has an instance.
