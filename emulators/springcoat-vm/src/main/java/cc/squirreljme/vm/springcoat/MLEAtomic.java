@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.AtomicShelf;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
  * Functions for {@link AtomicShelf}.
@@ -52,7 +53,8 @@ public enum MLEAtomic
 		{
 			// Unlocking is simple and only works if we have the key used to
 			// lock the garbage collector
-			GlobalState.GC_LOCK.compareAndSet((int)__args[0], 0);
+			if (!GlobalState.GC_LOCK.compareAndSet((int)__args[0], 0))
+				throw new SpringMLECallError("Wrong lock code.");
 			
 			return null;
 		}
@@ -68,8 +70,13 @@ public enum MLEAtomic
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			int count = (int)__args[0];
+			
+			if (count < 0)
+				throw new SpringMLECallError("Negative spin count.");
+			
 			// If we spin for too long, instead give up our cycles
-			if ((int)__args[0] > MLEAtomic._SPIN_LIMIT)
+			if (count > MLEAtomic._SPIN_LIMIT)
 				Thread.yield();
 			
 			return null;
