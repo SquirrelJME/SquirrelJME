@@ -1,4 +1,4 @@
-package squirreljme;
+package squirreljme.mle;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import net.multiphasicapps.tac.TestRunnable;
@@ -25,7 +25,6 @@ public class TestArrayLength
 			o = new Object();
 		
 		// As objects
-		this.secondary("n", ObjectShelf.arrayLength(null));
 		this.secondary("z", ObjectShelf.arrayLength(z));
 		this.secondary("b", ObjectShelf.arrayLength(b));
 		this.secondary("s", ObjectShelf.arrayLength(s));
