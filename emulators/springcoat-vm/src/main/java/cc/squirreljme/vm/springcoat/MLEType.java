@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.util.Objects;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -37,7 +38,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.asVMObject(((TypeObject)__args[0])
+			return __thread.asVMObject(MLEType.__type(__args[0])
 				.getSpringClass().name().binaryName().inPackage()
 				.toString());
 		}
@@ -54,7 +55,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((SpringSimpleObject)__args[0]).fieldByField(
+			return MLEType.__simple(__args[0]).fieldByField(
 				__thread.resolveClass(new ClassName("java/lang/Class"))
 				.lookupField(false, "_type",
 				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")).get();
@@ -73,8 +74,8 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return Objects.equals(
-				((TypeObject)__args[0]).getSpringClass(),
-				((TypeObject)__args[1]).getSpringClass());
+				MLEType.__type(__args[0]).getSpringClass(),
+				MLEType.__type(__args[1]).getSpringClass());
 		}
 	},
 	
@@ -89,10 +90,12 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			SpringObject name = MLEType.__notNullObject(__args[0]);
+			
 			try
 			{
 				return new TypeObject(__thread.loadClass(
-					__thread.<String>asNativeObject(String.class, __args[0])));
+					__thread.<String>asNativeObject(String.class, name)));
 			}
 			
 			// Since the method returns null when not found, we want to return
@@ -115,7 +118,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new JarPackageObject(((TypeObject)__args[0])
+			return new JarPackageObject(MLEType.__type(__args[0])
 				.getSpringClass().inJar());
 		}
 	},
@@ -130,7 +133,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((TypeObject)__args[0]).getSpringClass().isArray();
+			return MLEType.__type(__args[0]).getSpringClass().isArray();
 		}
 	},
 	
@@ -145,7 +148,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((TypeObject)__args[0]).getSpringClass().flags()
+			return MLEType.__type(__args[0]).getSpringClass().flags()
 				.isInterface();
 		}
 	},
@@ -161,7 +164,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((TypeObject)__args[0]).getSpringClass().name()
+			return MLEType.__type(__args[0]).getSpringClass().name()
 				.isPrimitive();
 		}
 	},
@@ -178,7 +181,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.loadClass(
-				((SpringObject)__args[0]).type().name().toString()));
+				MLEType.__notNullObject(__args[0]).type().name().toString()));
 		}
 	},
 	
@@ -193,7 +196,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((TypeObject)__args[0]).getSpringClass()
+			return MLEType.__type(__args[0]).getSpringClass()
 				.name().toRuntimeString();
 		}
 	},
@@ -209,7 +212,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringClass superClass = ((TypeObject)__args[0]).getSpringClass()
+			SpringClass superClass = MLEType.__type(__args[0]).getSpringClass()
 				.superClass();
 			
 			if (superClass == null)
@@ -357,7 +360,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.asVMObject(((TypeObject)__args[0])
+			return __thread.asVMObject(MLEType.__type(__args[0])
 				.getSpringClass());
 		}
 	},
@@ -392,5 +395,55 @@ public enum MLEType
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Checks if the object is {@code null}.
+	 * 
+	 * @param __object The object to check.
+	 * @return The object.
+	 * @throws SpringMLECallError If is null.
+	 * @since 2020/06/22
+	 */
+	static SpringObject __notNullObject(Object __object)
+		throws SpringMLECallError
+	{
+		if (__object == null || SpringNullObject.NULL == __object)
+			throw new SpringMLECallError("Null object.");
+		
+		return (SpringObject)__object;
+	}
+	
+	/**
+	 * Checks if this is a simple object.
+	 * 
+	 * @param __object The object to check.
+	 * @return The simple object.
+	 * @throws SpringMLECallError If not a simple object.
+	 * @since 2020/06/22
+	 */
+	static SpringSimpleObject __simple(Object __object)
+	{
+		if (!(__object instanceof SpringSimpleObject))
+			throw new SpringMLECallError("Not a SpringSimpleObject.");
+		
+		return (SpringSimpleObject)__object; 
+	}
+	
+	/**
+	 * Checks if this is a {@link TypeObject}.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a {@link TypeObject} if this is one.
+	 * @throws SpringMLECallError If this is not a {@link TypeObject}.
+	 * @since 2020/06/22
+	 */
+	static TypeObject __type(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof TypeObject))
+			throw new SpringMLECallError("Not a TypeObject.");
+		
+		return (TypeObject)__object; 
 	}
 }

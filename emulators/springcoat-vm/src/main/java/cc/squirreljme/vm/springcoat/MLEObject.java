@@ -11,8 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.TypeObject;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
@@ -23,6 +22,60 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 public enum MLEObject
 	implements MLEFunction
 {
+	/** {@link ObjectShelf#arrayCopy(boolean[], int, boolean[], int, int)}. */
+	ARRAY_COPY_BOOLEAN("arrayCopy:([ZI[ZII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.<SpringArrayObjectBoolean>__arrayCopy(
+				SpringArrayObjectBoolean.class,
+				__args[0], (int)__args[1],
+				__args[2], (int)__args[3], (int)__args[4]);
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayCopy(byte[], int, byte[], int, int)}. */
+	ARRAY_COPY_BYTE("arrayCopy:([BI[BII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.<SpringArrayObjectByte>__arrayCopy(
+				SpringArrayObjectByte.class,
+				__args[0], (int)__args[1],
+				__args[2], (int)__args[3], (int)__args[4]);
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayCopy(short[], int, short[], int, int)}. */
+	ARRAY_COPY_SHORT("arrayCopy:([SI[SII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.<SpringArrayObjectShort>__arrayCopy(
+				SpringArrayObjectShort.class,
+				__args[0], (int)__args[1],
+				__args[2], (int)__args[3], (int)__args[4]);
+			return null;
+		}
+	},
+	
 	/** {@link ObjectShelf#arrayCopy(char[], int, char[], int, int)}. */
 	ARRAY_COPY_CHAR("arrayCopy:([CI[CII)V")
 	{
@@ -33,18 +86,85 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringArrayObjectChar src = (SpringArrayObjectChar)__args[0];
-			int srcOff = (int)__args[1];
-			SpringArrayObjectChar dest = (SpringArrayObjectChar)__args[2];
-			int destOff = (int)__args[3];
-			int len = (int)__args[4];
-			
-			System.arraycopy(src.array(), srcOff,
-				dest.array(), destOff, len);
-			
+			MLEObject.<SpringArrayObjectChar>__arrayCopy(
+				SpringArrayObjectChar.class,
+				__args[0], (int)__args[1],
+				__args[2], (int)__args[3], (int)__args[4]);
 			return null;
 		}
-	}, 
+	},
+	
+	/** {@link ObjectShelf#arrayCopy(int[], int, int[], int, int)}. */
+	ARRAY_COPY_INTEGER("arrayCopy:([II[III)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.<SpringArrayObjectInteger>__arrayCopy(
+				SpringArrayObjectInteger.class,
+				__args[0], (int)__args[1],
+				__args[2], (int)__args[3], (int)__args[4]);
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayCopy(long[], int, long[], int, int)}. */
+	ARRAY_COPY_LONG("arrayCopy:([JI[JII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.<SpringArrayObjectLong>__arrayCopy(
+				SpringArrayObjectLong.class,
+				__args[0], (int)__args[1],
+				__args[2], (int)__args[3], (int)__args[4]);
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayCopy(float[], int, float[], int, int)}. */
+	ARRAY_COPY_FLOAT("arrayCopy:([FI[FII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.<SpringArrayObjectFloat>__arrayCopy(
+				SpringArrayObjectFloat.class,
+				__args[0], (int)__args[1],
+				__args[2], (int)__args[3], (int)__args[4]);
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayCopy(double[], int, double[], int, int)}. */
+	ARRAY_COPY_DOUBLE("arrayCopy:([DI[DII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.<SpringArrayObjectDouble>__arrayCopy(
+				SpringArrayObjectDouble.class,
+				__args[0], (int)__args[1],
+				__args[2], (int)__args[3], (int)__args[4]);
+			return null;
+		}
+	},
 	
 	/** {@link ObjectShelf#arrayLength(Object)}. */
 	ARRAY_LENGTH("arrayLength:(Ljava/lang/Object;)I")
@@ -56,9 +176,11 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject object = (SpringObject)__args[0];
+			SpringObject object = MLEType.__notNullObject(__args[0]);
+			
 			if (object instanceof SpringArrayObject)
 				return ((SpringArrayObject)object).length();
+			
 			return -1;
 		}
 	},
@@ -74,8 +196,12 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.allocateArray(((TypeObject)__args[0])
-				.getSpringClass(), (int)__args[1]);
+			int len = (int)__args[1];
+			if (len < 0)
+				throw new SpringMLECallError("Negative array size.");
+			
+			return __thread.allocateArray(MLEType.__type(__args[0])
+				.getSpringClass(), len);
 		}
 	},
 	
@@ -89,7 +215,8 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return System.identityHashCode(__args[0]);
+			SpringObject object = (SpringObject)__args[0];
+			return System.identityHashCode(MLEType.__notNullObject(object));
 		}
 	},
 	
@@ -105,7 +232,7 @@ public enum MLEObject
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return __thread.newInstance(
-				((TypeObject)__args[0]).getSpringClass(),
+				MLEType.__type(__args[0]).getSpringClass(),
 				new MethodDescriptor("()V"));
 		}
 	},
@@ -120,7 +247,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject target = (SpringObject)__args[0];
+			SpringObject target = MLEType.__notNullObject(__args[0]);
 			boolean notifyAll = (int)__args[1] != 0; 
 			
 			// Signal the monitor
@@ -138,7 +265,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject target = (SpringObject)__args[0];
+			SpringObject target = MLEType.__notNullObject(__args[0]);
 			long ms = (long)__args[1];
 			int ns = (int)__args[2];
 			
@@ -176,5 +303,44 @@ public enum MLEObject
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Copies the given array.
+	 * 
+	 * @param <A> The SpringCoat array type.
+	 * @param __classy The class type.
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The length.
+	 * @throws SpringMLECallError If the input is not valid.
+	 * @since 2020/06/22
+	 */
+	@SuppressWarnings("SuspiciousSystemArraycopy")
+	static <A extends SpringArrayObject> void __arrayCopy(
+		Class<A> __classy, Object __src, int __srcOff,
+		Object __dest, int __destOff, int __len)
+		throws SpringMLECallError
+	{
+		// Wrong array type
+		if (!__classy.isInstance(__src) ||
+			!__classy.isInstance(__dest))
+			throw new SpringMLECallError("Null array.");
+		
+		// Try to copy
+		try
+		{
+			System.arraycopy(((SpringArrayObject)__src).array(), __srcOff,
+				((SpringArrayObject)__dest).array(), __destOff, __len);
+		}
+		
+		// Not a valid copy
+		catch (ArrayStoreException|IndexOutOfBoundsException|
+			NullPointerException e)
+		{
+			throw new SpringMLECallError("Invalid copy.", e);
+		}
 	}
 }

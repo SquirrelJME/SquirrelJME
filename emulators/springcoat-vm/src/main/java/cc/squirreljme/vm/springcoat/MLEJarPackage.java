@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
+import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -65,7 +67,11 @@ public enum MLEJarPackage
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			JarPackageObject jar = (JarPackageObject)__args[0];
+			JarPackageObject jar = MLEJarPackage.__jarObject(__args[0]);
+			
+			if (__args[1] == null)
+				throw new SpringMLECallError("Not a string.");
+			
 			String rcName = __thread.<String>asNativeObject(
 				String.class, __args[1]);
 			
@@ -141,5 +147,22 @@ public enum MLEJarPackage
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Checks if this is a {@link JarPackageObject}.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a jar if this is one.
+	 * @throws SpringMLECallError If this is not a jar.
+	 * @since 2020/06/22
+	 */
+	static JarPackageObject __jarObject(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof JarPackageObject))
+			throw new SpringMLECallError("Not a JarPackageObject.");
+		
+		return (JarPackageObject)__object; 
 	}
 }
