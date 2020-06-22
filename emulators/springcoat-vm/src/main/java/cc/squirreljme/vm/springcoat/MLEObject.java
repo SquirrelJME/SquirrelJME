@@ -23,6 +23,29 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 public enum MLEObject
 	implements MLEFunction
 {
+	/** {@link ObjectShelf#arrayCopy(char[], int, char[], int, int)}. */
+	ARRAY_COPY_CHAR("arrayCopy:([CI[CII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringArrayObjectChar src = (SpringArrayObjectChar)__args[0];
+			int srcOff = (int)__args[1];
+			SpringArrayObjectChar dest = (SpringArrayObjectChar)__args[2];
+			int destOff = (int)__args[3];
+			int len = (int)__args[4];
+			
+			System.arraycopy(src.array(), srcOff,
+				dest.array(), destOff, len);
+			
+			return null;
+		}
+	}, 
+	
 	/** {@link ObjectShelf#arrayLength(Object)}. */
 	ARRAY_LENGTH("arrayLength:(Ljava/lang/Object;)I")
 	{

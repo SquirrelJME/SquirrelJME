@@ -54,10 +54,10 @@ public final class System
 	 * Copies from the source array to the destination.
 	 *
 	 * @param __src The source array.
-	 * @param __srcoff The source offset.
+	 * @param __srcOff The source offset.
 	 * @param __dest The destination array.
-	 * @param __destoff The destination offset.
-	 * @param __copylen The number of elements to copy.
+	 * @param __destOff The destination offset.
+	 * @param __copyLen The number of elements to copy.
 	 * @throws ArrayStoreException If the destination array cannot contain
 	 * the given data.
 	 * @throws IndexOutOfBoundsException If the offset and or/lengths are
@@ -65,8 +65,8 @@ public final class System
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/27
 	 */
-	public static void arraycopy(Object __src, int __srcoff,
-		Object __dest, int __destoff, int __copylen)
+	public static void arraycopy(Object __src, int __srcOff,
+		Object __dest, int __destOff, int __copyLen)
 		throws ArrayStoreException, IndexOutOfBoundsException,
 			NullPointerException
 	{
@@ -76,20 +76,20 @@ public final class System
 		// {@squirreljme.error ZZ1w Negative offsets and/or length cannot be
 		// specified. (The source offset; The destination offset; The copy
 		// length)}
-		if (__srcoff < 0 || __destoff < 0 || __copylen < 0)
+		if (__srcOff < 0 || __destOff < 0 || __copyLen < 0)
 			throw new IndexOutOfBoundsException(String.format("ZZ1w %d %d %d",
-				__srcoff, __destoff, __copylen));
+				__srcOff, __destOff, __copyLen));
 		
 		// {@squirreljme.error ZZ1x Copy operation would exceed the bounds of
 		// the array. (Source offset; Source length; Destination offset;
 		// Destination length; The copy length)}
 		int srcLen = ObjectShelf.arrayLength(__src),
 			destLen = ObjectShelf.arrayLength(__dest);
-		if (__srcoff + __copylen > srcLen ||
-			__destoff + __copylen > destLen)
+		if (__srcOff + __copyLen > srcLen ||
+			__destOff + __copyLen > destLen)
 			throw new IndexOutOfBoundsException(String.format(
-				"ZZ1x %d %d %d %d %d", __srcoff, srcLen, __destoff, destLen,
-				__copylen));
+				"ZZ1x %d %d %d %d %d", __srcOff, srcLen, __destOff, destLen,
+				__copyLen));
 		
 		// {@squirreljme.error ZZ1y The source array type is not compatible
 		// with destination array. (The source array; The destination array)}
@@ -98,9 +98,9 @@ public final class System
 				"ZZ1y %s %s", __src, __dest));
 		
 		// These offsets for the loops are the same
-		int i = __srcoff,
-			o = __destoff,
-			end = __srcoff + __copylen;
+		int i = __srcOff,
+			o = __destOff,
+			end = __srcOff + __copyLen;
 		
 		// Copy depending on the type
 		if (__src instanceof boolean[])
@@ -116,9 +116,8 @@ public final class System
 				i < end; i++, o++)
 			d[o] = s[i];
 		else if (__src instanceof char[])
-			for (char[] s = (char[])__src, d = (char[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
+			ObjectShelf.arrayCopy((char[])__src, __srcOff,
+				(char[])__dest, __destOff, __copyLen);
 		else if (__src instanceof int[])
 			for (int[] s = (int[])__src, d = (int[])__dest;
 				i < end; i++, o++)

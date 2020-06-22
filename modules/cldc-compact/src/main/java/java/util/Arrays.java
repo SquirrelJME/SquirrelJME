@@ -12,7 +12,6 @@ package java.util;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
 import cc.squirreljme.runtime.cldc.util.DoubleArrayList;
@@ -297,7 +296,7 @@ public class Arrays
 	 *
 	 * @param <T> The resulting type of the array to use.
 	 * @param __src The source array.
-	 * @param __newlen The new length of the array.
+	 * @param __newLen The new length of the array.
 	 * @return The copy of the array with the new length and type.
 	 * @throws ArrayStoreException If an element being copied from the source
 	 * array is not compatible with the destination array.
@@ -306,10 +305,10 @@ public class Arrays
 	 * @since 2018/11/04
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static <T> T[] copyOf(T[] __src, int __newlen)
+	public static <T> T[] copyOf(T[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
-		return Arrays.<T, T>copyOf(__src, __newlen,
+		return Arrays.<T, T>copyOf(__src, __newLen,
 			(Class<T[]>)__src.getClass());
 	}
 	
@@ -354,22 +353,22 @@ public class Arrays
 	 * Returns a new copy of the given array of the given length.
 	 *
 	 * @param __src The array to copy.
-	 * @param __newlen The new length of the array.
+	 * @param __newLen The new length of the array.
 	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
-	public static byte[] copyOf(byte[] __src, int __newlen)
+	public static byte[] copyOf(byte[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
-		if (__newlen < 0)
+		if (__newLen < 0)
 			throw new NegativeArraySizeException("NASE");
 		
-		byte[] rv = new byte[__newlen];
-		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+		byte[] rv = new byte[__newLen];
+		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
 			rv[i] = __src[i];
 		
 		return rv;
@@ -379,22 +378,22 @@ public class Arrays
 	 * Returns a new copy of the given array of the given length.
 	 *
 	 * @param __src The array to copy.
-	 * @param __newlen The new length of the array.
+	 * @param __newLen The new length of the array.
 	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
-	public static short[] copyOf(short[] __src, int __newlen)
+	public static short[] copyOf(short[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
-		if (__newlen < 0)
+		if (__newLen < 0)
 			throw new NegativeArraySizeException("NASE");
 		
-		short[] rv = new short[__newlen];
-		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+		short[] rv = new short[__newLen];
+		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
 			rv[i] = __src[i];
 		
 		return rv;
@@ -404,22 +403,22 @@ public class Arrays
 	 * Returns a new copy of the given array of the given length.
 	 *
 	 * @param __src The array to copy.
-	 * @param __newlen The new length of the array.
+	 * @param __newLen The new length of the array.
 	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
-	public static int[] copyOf(int[] __src, int __newlen)
+	public static int[] copyOf(int[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
-		if (__newlen < 0)
+		if (__newLen < 0)
 			throw new NegativeArraySizeException("NASE");
 		
-		int[] rv = new int[__newlen];
-		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+		int[] rv = new int[__newLen];
+		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
 			rv[i] = __src[i];
 		
 		return rv;
@@ -429,22 +428,22 @@ public class Arrays
 	 * Returns a new copy of the given array of the given length.
 	 *
 	 * @param __src The array to copy.
-	 * @param __newlen The new length of the array.
+	 * @param __newLen The new length of the array.
 	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
-	public static long[] copyOf(long[] __src, int __newlen)
+	public static long[] copyOf(long[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
-		if (__newlen < 0)
+		if (__newLen < 0)
 			throw new NegativeArraySizeException("NASE");
 		
-		long[] rv = new long[__newlen];
-		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+		long[] rv = new long[__newLen];
+		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
 			rv[i] = __src[i];
 		
 		return rv;
@@ -454,22 +453,48 @@ public class Arrays
 	 * Returns a new copy of the given array of the given length.
 	 *
 	 * @param __src The array to copy.
-	 * @param __newlen The new length of the array.
+	 * @param __newLen The new length of the array.
 	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
-	public static char[] copyOf(char[] __src, int __newlen)
+	public static char[] copyOf(char[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
-		if (__newlen < 0)
+		if (__newLen < 0)
 			throw new NegativeArraySizeException("NASE");
 		
-		char[] rv = new char[__newlen];
-		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+		char[] rv = new char[__newLen];
+		
+		ObjectShelf.arrayCopy(__src, 0, rv, 0,
+			Math.min(__newLen, __src.length));
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __src The array to copy.
+	 * @param __newLen The new length of the array.
+	 * @return The copied array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static float[] copyOf(float[] __src, int __newLen)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newLen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		float[] rv = new float[__newLen];
+		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
 			rv[i] = __src[i];
 		
 		return rv;
@@ -479,22 +504,22 @@ public class Arrays
 	 * Returns a new copy of the given array of the given length.
 	 *
 	 * @param __src The array to copy.
-	 * @param __newlen The new length of the array.
+	 * @param __newLen The new length of the array.
 	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
-	public static float[] copyOf(float[] __src, int __newlen)
+	public static double[] copyOf(double[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
-		if (__newlen < 0)
+		if (__newLen < 0)
 			throw new NegativeArraySizeException("NASE");
 		
-		float[] rv = new float[__newlen];
-		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+		double[] rv = new double[__newLen];
+		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
 			rv[i] = __src[i];
 		
 		return rv;
@@ -504,47 +529,22 @@ public class Arrays
 	 * Returns a new copy of the given array of the given length.
 	 *
 	 * @param __src The array to copy.
-	 * @param __newlen The new length of the array.
+	 * @param __newLen The new length of the array.
 	 * @return The copied array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
-	public static double[] copyOf(double[] __src, int __newlen)
+	public static boolean[] copyOf(boolean[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
-		if (__newlen < 0)
+		if (__newLen < 0)
 			throw new NegativeArraySizeException("NASE");
 		
-		double[] rv = new double[__newlen];
-		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
-			rv[i] = __src[i];
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns a new copy of the given array of the given length.
-	 *
-	 * @param __src The array to copy.
-	 * @param __newlen The new length of the array.
-	 * @return The copied array.
-	 * @throws NegativeArraySizeException If the new length is negative.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/11/06
-	 */
-	public static boolean[] copyOf(boolean[] __src, int __newlen)
-		throws NegativeArraySizeException, NullPointerException
-	{
-		if (__src == null)
-			throw new NullPointerException("NARG");
-		if (__newlen < 0)
-			throw new NegativeArraySizeException("NASE");
-		
-		boolean[] rv = new boolean[__newlen];
-		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+		boolean[] rv = new boolean[__newLen];
+		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
 			rv[i] = __src[i];
 		
 		return rv;
