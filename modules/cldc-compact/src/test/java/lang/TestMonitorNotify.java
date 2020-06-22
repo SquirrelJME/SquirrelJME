@@ -115,8 +115,6 @@ public class TestMonitorNotify
 				// Sub continued
 				tmn.secondary("sub-after-sleep", tmn._count++);
 			}
-			
-			tmn.secondary("sub-ended", true);
 		}
 	}
 }
