@@ -29,6 +29,19 @@ public final class ObjectShelf
 	}
 	
 	/**
+	 * Copies the given arrays.
+	 * 
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The elements to copy.
+	 * @since 2020/06/22
+	 */
+	public static native void arrayCopy(char[] __src, int __srcOff,
+		char[] __dest, int __destOff, int __len);
+	
+	/**
 	 * Returns the length of the array if this object is an array.
 	 *
 	 * @param __object The object to get the length of.
