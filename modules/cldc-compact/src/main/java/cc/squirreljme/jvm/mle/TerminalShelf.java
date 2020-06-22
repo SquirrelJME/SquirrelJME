@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 
@@ -31,7 +32,7 @@ public final class TerminalShelf
 	/**
 	 * Flushes the stream.
 	 *
-	 * @param __fd The file descriptor to flush.
+	 * @param __fd The {@link StandardPipeType} to flush.
 	 * @return Zero on success, negative values for failure.
 	 * @since 2018/12/08
 	 */
@@ -40,7 +41,7 @@ public final class TerminalShelf
 	/**
 	 * Writes the character to the console output.
 	 *
-	 * @param __fd The file descriptor to write to.
+	 * @param __fd The {@link StandardPipeType} to write to.
 	 * @param __c The byte to write, only the lowest 8-bits are used.
 	 * @return Zero on success, negative values for failure.
 	 * @since 2018/09/21
@@ -50,7 +51,7 @@ public final class TerminalShelf
 	/**
 	 * Writes the given bytes to the console output.
 	 *
-	 * @param __fd The file descriptor to write to.
+	 * @param __fd The {@link StandardPipeType} to write to.
 	 * @param __b The bytes to write.
 	 * @param __o The offset.
 	 * @param __l The length.

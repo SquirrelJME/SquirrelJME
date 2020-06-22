@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 
 /**
- * This shell supports object anything that has to do with objects.
+ * This shelf supports object anything that has to do with objects.
  *
  * @since 2020/06/09
  */
@@ -38,8 +38,99 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
+	public static native void arrayCopy(boolean[] __src, int __srcOff,
+		boolean[] __dest, int __destOff, int __len);
+	
+	/**
+	 * Copies the given arrays.
+	 * 
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The elements to copy.
+	 * @since 2020/06/22
+	 */
+	public static native void arrayCopy(byte[] __src, int __srcOff,
+		byte[] __dest, int __destOff, int __len);
+	
+	/**
+	 * Copies the given arrays.
+	 * 
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The elements to copy.
+	 * @since 2020/06/22
+	 */
+	public static native void arrayCopy(short[] __src, int __srcOff,
+		short[] __dest, int __destOff, int __len);
+	
+	/**
+	 * Copies the given arrays.
+	 * 
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The elements to copy.
+	 * @since 2020/06/22
+	 */
 	public static native void arrayCopy(char[] __src, int __srcOff,
 		char[] __dest, int __destOff, int __len);
+	
+	/**
+	 * Copies the given arrays.
+	 * 
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The elements to copy.
+	 * @since 2020/06/22
+	 */
+	public static native void arrayCopy(int[] __src, int __srcOff,
+		int[] __dest, int __destOff, int __len);
+	
+	/**
+	 * Copies the given arrays.
+	 * 
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The elements to copy.
+	 * @since 2020/06/22
+	 */
+	public static native void arrayCopy(long[] __src, int __srcOff,
+		long[] __dest, int __destOff, int __len);
+	
+	/**
+	 * Copies the given arrays.
+	 * 
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The elements to copy.
+	 * @since 2020/06/22
+	 */
+	public static native void arrayCopy(float[] __src, int __srcOff,
+		float[] __dest, int __destOff, int __len);
+	
+	/**
+	 * Copies the given arrays.
+	 * 
+	 * @param __src The source array.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The elements to copy.
+	 * @since 2020/06/22
+	 */
+	public static native void arrayCopy(double[] __src, int __srcOff,
+		double[] __dest, int __destOff, int __len);
 	
 	/**
 	 * Returns the length of the array if this object is an array.

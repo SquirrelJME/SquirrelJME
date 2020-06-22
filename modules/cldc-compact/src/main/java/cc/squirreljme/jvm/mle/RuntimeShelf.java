@@ -96,7 +96,8 @@ public final class RuntimeShelf
 	 * Returns a special virtual machine description.
 	 *
 	 * @param __type The {@link VMDescriptionType}.
-	 * @return The string for the given description.
+	 * @return The string for the given description or {@code null} if not
+	 * set.
 	 * @since 2020/06/17
 	 */
 	public static native String vmDescription(int __type);
@@ -105,8 +106,7 @@ public final class RuntimeShelf
 	 * Returns a statistic of the virtual machine.
 	 *
 	 * @param __type The {@link VMStatisticType}.
-	 * @return The value of the statistic, or {@code 0L} if not valid or not
-	 * available.
+	 * @return The value of the statistic, or {@code 0L} if not set.
 	 * @since 2020/06/17
 	 */
 	public static native long vmStatistic(int __type);
