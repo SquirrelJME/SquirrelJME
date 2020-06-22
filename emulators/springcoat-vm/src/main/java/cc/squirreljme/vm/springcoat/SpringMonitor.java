@@ -10,7 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalMonitorStateException;
 
 /**
@@ -137,7 +137,7 @@ public final class SpringMonitor
 	 *
 	 * @param __by The thread that is doing the notify.
 	 * @param __all Notify all threads?
-	 * @return The notification status.
+	 * @return The {@link MonitorResultType}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/20
 	 */
@@ -153,7 +153,7 @@ public final class SpringMonitor
 		{
 			// Wrong thread?
 			if (this._owner != __by)
-				return ObjectAccess.MONITOR_NOT_OWNED;
+				return MonitorResultType.NOT_OWNED;
 			
 			// Nothing is waiting, do not bother at all!
 			int waitcount = this._waitcount;
@@ -179,7 +179,7 @@ public final class SpringMonitor
 	 * @param __by The thread doing the wait.
 	 * @param __ms The milliseconds to wait.
 	 * @param __ns The nanoseconds to wait.
-	 * @return The wait result.
+	 * @return The {@link MonitorResultType}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/21
 	 */
@@ -195,7 +195,7 @@ public final class SpringMonitor
 		{
 			// Wrong thread?
 			if (this._owner != __by)
-				return ObjectAccess.MONITOR_NOT_OWNED;
+				return MonitorResultType.NOT_OWNED;
 			
 			// Increase our wait count
 			this._waitcount++;
@@ -238,8 +238,8 @@ public final class SpringMonitor
 					
 					// Whatever state we ended up in
 					if (interrupted)
-						return ObjectAccess.MONITOR_INTERRUPTED;
-					return ObjectAccess.MONITOR_NOT_INTERRUPTED;
+						return MonitorResultType.INTERRUPTED;
+					return MonitorResultType.NOT_INTERRUPTED;
 				}
 				
 				// Otherwise wait for notification to happen

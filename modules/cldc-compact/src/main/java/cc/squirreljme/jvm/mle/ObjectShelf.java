@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 
 /**
  * This shell supports object anything that has to do with objects.
@@ -76,4 +77,25 @@ public final class ObjectShelf
 	 * @since 2020/06/17
 	 */
 	public static native Object newInstance(TypeBracket __type);
+	
+	/**
+	 * Notifies the monitors holding onto this object.
+	 * 
+	 * @param __object The object to signal.
+	 * @param __all Notify all threads?
+	 * @return The {@link MonitorResultType}.
+	 * @since 2020/06/22
+	 */
+	public static native int notify(Object __object, boolean __all);
+	
+	/**
+	 * Waits on the given monitor.
+	 * 
+	 * @param __object The object to wait on.
+	 * @param __ms The milliseconds to wait.
+	 * @param __ns The nanoseconds to wait.
+	 * @return The {@link MonitorResultType}.
+	 * @since 2020/06/22
+	 */
+	public static native int wait(Object __object, long __ms, int __ns);
 }

@@ -85,7 +85,43 @@ public enum MLEObject
 				((TypeObject)__args[0]).getSpringClass(),
 				new MethodDescriptor("()V"));
 		}
-	}
+	},
+	
+	/** {@link ObjectShelf#notify(Object, boolean)}. */
+	NOTIFY("notify:(Ljava/lang/Object;Z)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringObject target = (SpringObject)__args[0];
+			boolean notifyAll = (int)__args[1] != 0; 
+			
+			// Signal the monitor
+			return target.monitor().monitorNotify(__thread.thread, notifyAll);
+		}
+	},
+	
+	/** {@link ObjectShelf#wait(Object, long, int)}. */
+	WAIT("wait:(Ljava/lang/Object;JI)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/22
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringObject target = (SpringObject)__args[0];
+			long ms = (long)__args[1];
+			int ns = (int)__args[2];
+			
+			return target.monitor().monitorWait(__thread.thread, ms, ns);
+		}
+	}, 
 	
 	/* End. */
 	;
