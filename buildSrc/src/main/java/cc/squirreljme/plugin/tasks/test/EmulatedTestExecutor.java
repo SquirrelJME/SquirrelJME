@@ -16,22 +16,26 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.gradle.api.Project;
 import org.gradle.api.internal.tasks.testing.TestExecuter;
 import org.gradle.api.internal.tasks.testing.TestResultProcessor;
-import org.gradle.api.tasks.testing.TestOutputEvent;
 import org.gradle.process.ExecResult;
 
 /**
@@ -52,6 +56,10 @@ public final class EmulatedTestExecutor
 	
 	/** The test task. */
 	private final TestInVMTask _testInVMTask;
+	
+	/** Emulator classpath. */
+	private final Map<String, Iterable<Object>> _emuClassPathCache =
+		new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	
 	/** Should this test be stopped? */
 	private volatile boolean _stopRunning =
@@ -79,6 +87,11 @@ public final class EmulatedTestExecutor
 	{
 		// We need the project to access details
 		Project project = this._testInVMTask.getProject();
+		
+		// Initialize the classpath for our emulator!
+		// Otherwise the Gradle build will fail since it tries to get the
+		// classpath outside of this
+		this.emulatorClassPath(project, __spec.emulator);
 		
 		// Run for this suite/project
 		EmulatedTestSuiteDescriptor suite =
@@ -149,6 +162,12 @@ public final class EmulatedTestExecutor
 		{
 			// Just mark failure
 			result.testFinish(ExitValueConstants.FAILURE, t);
+			
+			// Print the trace since this was outside of the VM
+			synchronized (System.err)
+			{
+				t.printStackTrace(System.err);
+			}
 		}
 		
 		return result;
@@ -210,8 +229,8 @@ public final class EmulatedTestExecutor
 				args.add(withinClass);
 				
 				// Configure the VM for execution
-				__javaExecSpec.classpath(EmulatedTestUtilities
-					.emulatorClassPath(project, __spec.emulator));
+				__javaExecSpec.classpath(EmulatedTestExecutor.this
+					.emulatorClassPath(null, __spec.emulator));
 				__javaExecSpec.setMain("cc.squirreljme.emulator.vm.VMFactory");
 				__javaExecSpec.setArgs(args);
 				
@@ -230,6 +249,46 @@ public final class EmulatedTestExecutor
 	}
 	
 	/**
+	 * Returns the classpath for the emulator.
+	 * 
+	 * @param __project The project to use.
+	 * @param __emulator The emulator to use.
+	 * @return The classpath for the emulator.
+	 * @throws NullPointerException On null arguments, or if {@code __project}
+	 * is null and this is not already cached.
+	 * @since 2020/06/22
+	 */
+	private Iterable<Object> emulatorClassPath(Project __project,
+		String __emulator)
+		throws NullPointerException
+	{
+		if (__emulator == null)
+			throw new NullPointerException("NARG");
+		
+		// Use already cached value
+		Map<String, Iterable<Object>> cache = this._emuClassPathCache;
+		Iterable<Object> rv = cache.get(__emulator);
+		if (rv != null)
+			return rv; 
+		
+		// Get new result
+		Iterable<Object> now = EmulatedTestUtilities.emulatorClassPath(
+			__project, __emulator);
+		
+		// Add to the cache
+		List<Object> toCache = new ArrayList<>();
+		for (Object item : now)
+			toCache.add(item);
+		
+		// Store unreadable form
+		cache.put(__emulator,
+			(rv = Collections.unmodifiableCollection(toCache)));
+		
+		// Ensure it stays unreadable
+		return rv;
+	}
+	
+	/**
 	 * Goes through and executes the test classes.
 	 *
 	 * @param __spec The specification.
@@ -239,7 +298,7 @@ public final class EmulatedTestExecutor
 	 * @throws IOException On read errors.
 	 * @since 2020/03/06
 	 */
-	@SuppressWarnings("FeatureEnvy")
+	@SuppressWarnings({"FeatureEnvy", "MagicNumber"})
 	private boolean __executeClasses(EmulatedTestExecutionSpec __spec,
 		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite)
 		throws IOException
@@ -268,26 +327,83 @@ public final class EmulatedTestExecutor
 				Thread.interrupted();
 			}
 		
-		// Used to flag if every test passed
-		boolean allPassed = true;
+		// Use half of the available CPUs, if the system is SMT then this
+		// should be all the CPUs.
+		int useThreads = Math.max(1,
+			Runtime.getRuntime().availableProcessors() >> 1);
 		
-		// Now go through the tests we discovered and execute them
-		Set<String> failedTests = new TreeSet<>();
+		// Need to use Gradle execution
+		ForkJoinPool pool = new ForkJoinPool(useThreads);
+		
+		// And any results of the runs will be placed in this pool along
+		// with the number of added and finished tests
+		AtomicInteger scheduledTests = new AtomicInteger();
+		AtomicInteger finishedTests = new AtomicInteger();
+		Object finishSignal = new Object();
+		ConcurrentLinkedQueue<EmulatedTestResult> results =
+			new ConcurrentLinkedQueue<>();
+		
+		// Create jobs for the tests
 		for (String testClass : testClasses)
 		{
-			// Execute the test
-			EmulatedTestResult result = this.__executeClass(__spec, __suite,
-				testClass);
+			// Count current tests up
+			scheduledTests.incrementAndGet();
 			
-			// Send in the report
+			// Execute within the pool thread
+			pool.submit(() ->
+				{
+					// Execute the test
+					EmulatedTestResult result = this.__executeClass(
+						__spec, __suite, testClass);
+					
+					// Add the result for processing when it is ready
+					results.add(result);
+					
+					// Signal that something happened
+					synchronized (finishSignal)
+					{
+						finishSignal.notifyAll();;
+					}
+				});
+		}
+		
+		// Keep running until we finished all our scheduled tests
+		Set<String> failedTests = new TreeSet<>();
+		while (finishedTests.get() < scheduledTests.get())
+		{
+			// Check to see if a result is ready
+			EmulatedTestResult result = results.poll();
+			if (result == null)
+			{
+				// Wait until we get a signal that another test finished
+				try
+				{
+					synchronized (finishSignal)
+					{
+						finishSignal.wait(1000L);
+					}
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+				
+				// Try again...
+				continue;
+			}
+			
+			// Report the test
 			result.report(__results);
 			
 			// Did this fail?
 			if (result.isFailure())
-				failedTests.add(testClass);
+				failedTests.add(result.className);
+			
+			// Increase the test counter, as this was grabbed
+			finishedTests.incrementAndGet();
 		}
 		
 		// There were test failures?
+		boolean allPassed = true;
 		if (!failedTests.isEmpty())
 		{
 			// Not every test passed
@@ -297,6 +413,9 @@ public final class EmulatedTestExecutor
 			for (String testClass : failedTests)
 				System.err.printf("Failed Test: %s%n", testClass);
 		}
+		
+		// Shutdown the pool, we no longer need it
+		pool.shutdown();
 		
 		// Return how all the tests ran
 		return allPassed;

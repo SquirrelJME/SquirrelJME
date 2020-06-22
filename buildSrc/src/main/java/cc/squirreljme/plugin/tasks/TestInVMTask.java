@@ -20,6 +20,7 @@ import org.gradle.api.internal.provider.AbstractMinimalProvider;
 import org.gradle.api.tasks.testing.AbstractTestTask;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.tasks.Jar;
+import org.gradle.workers.WorkerExecutor;
 
 /**
  * Tests in virtual machine, this uses an abstract test tasks which implement
