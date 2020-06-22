@@ -21,6 +21,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ForkJoinPool;
 import java.util.zip.ZipEntry;
@@ -305,15 +306,24 @@ public final class EmulatedTestExecutor
 		// Used to flag if every test passed
 		boolean allPassed = true;
 		
-		// Get the common pool for tasks
-		ForkJoinPool pool = ForkJoinPool.commonPool();
-		
 		// Now go through the tests we discovered and execute them
+		Set<String> failedTests = new TreeSet<>();
 		for (String testClass : testClasses)
 		{
 			// Execute class and check for failure
 			if (!this.__executeClass(__spec, __results, __suite, testClass))
-				allPassed = false;
+				failedTests.add(testClass);
+		}
+		
+		// There were test failures?
+		if (!failedTests.isEmpty())
+		{
+			// Not every test passed
+			allPassed = false;
+			
+			// Print all the failed tests out
+			for (String testClass : failedTests)
+				System.err.printf("Failed Test: %s%n", testClass);
 		}
 		
 		// Return how all the tests ran
