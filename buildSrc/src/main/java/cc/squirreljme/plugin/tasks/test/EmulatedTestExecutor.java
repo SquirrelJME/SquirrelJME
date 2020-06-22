@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -119,106 +121,74 @@ public final class EmulatedTestExecutor
 	 * Executes the test class.
 	 * 
 	 * @param __spec The specification.
-	 * @param __results The results.
 	 * @param __suite The suite to run.
 	 * @param __testClass The test class.
 	 * @return If this test passed.
 	 * @since 2020/06/21
 	 */
-	private boolean __executeClass(EmulatedTestExecutionSpec __spec,
-		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite,
-		String __testClass)
+	private EmulatedTestResult __executeClass(EmulatedTestExecutionSpec __spec,
+		EmulatedTestSuiteDescriptor __suite, String __testClass)
 	{
-		// In SquirrelJME all tests only have a single run method, so the
-		// run is the actual class of execution
-		EmulatedTestClassDescriptor classy =
-			new EmulatedTestClassDescriptor(__suite, __testClass);
-		EmulatedTestMethodDescriptor method =
-			new EmulatedTestMethodDescriptor(classy);
+		// Setup result
+		EmulatedTestResult result = new EmulatedTestResult(
+			__suite, __testClass);
 		
-		// Start execution
-		__results.started(classy,
-			EmulatedTestUtilities.startNow(__suite));
-		__results.started(method,
-			EmulatedTestUtilities.startNow(classy));
+		// Signal as started
+		result.testStart();
 		
 		// Execute each class alone
 		try
 		{
 			// Execute individual test
-			int result = this.__executeClassVm(__spec, __results, method);
+			int exitCode = this.__executeClassVm(__spec, result);
 			
-			// Test did not pass
-			if (result != ExitValueConstants.SUCCESS &&
-				result != ExitValueConstants.SKIPPED)
-			{
-				// Clear out the stack trace because they are really
-				// annoying
-				Throwable empty = new Throwable("Test failed");
-				empty.setStackTrace(new StackTraceElement[0]);
-				
-				// Use this thrown exception
-				__results.failure(method.getId(), empty);
-			}
-			
-			// End execution
-			__results.completed(method.getId(),
-				EmulatedTestUtilities.passSkipOrFailNow(result));
-			__results.completed(classy.getId(),
-				EmulatedTestUtilities.passSkipOrFailNow(result));
-			
-			// Consider passes and skips as successes
-			if (result == ExitValueConstants.SUCCESS ||
-				result == ExitValueConstants.SKIPPED)
-				return true;
+			// Finish the test with the result code
+			result.testFinish(exitCode, null);
 		}
 		catch (Throwable t)
 		{
-			// Report the thrown exception
-			__results.failure(method.getId(), t);
-			__results.completed(method.getId(),
-				EmulatedTestUtilities.failNow());
-			
-			// Fail the class as well
-			__results.completed(classy.getId(),
-				EmulatedTestUtilities.failNow());
+			// Just mark failure
+			result.testFinish(ExitValueConstants.FAILURE, t);
 		}
 		
-		// Mark as failed
-		return false;
+		return result;
 	}
 	
 	/**
 	 * Goes through and executes the single test class.
 	 *
 	 * @param __spec The specification.
-	 * @param __results The output results.
-	 * @param __method The method to run.
+	 * @param __result The output result.
 	 * @return The exit value of the test.
 	 * @since 2020/03/06
 	 */
+	@SuppressWarnings("resource")
 	private int __executeClassVm(EmulatedTestExecutionSpec __spec,
-		TestResultProcessor __results, EmulatedTestMethodDescriptor __method)
+		EmulatedTestResult __result)
 	{
 		Project project = this._testInVMTask.getProject();
+		
+		// Setup test standard output and error streams
+		OutputStream stdOut = __result.stdOut();
+		OutputStream stdErr = __result.stdErr();
 		
 		// For some reason test reports do not run if there is no output for
 		// them, so this for the most part forces console output to happen
 		// which makes tests happen
-		__results.output(__method.getId(),
-			EmulatedTestUtilities.outputErr(String.format(
-			"Running test %s...", __method.getDisplayName())));
+		String withinClass = __result.className;
+		try
+		{
+			stdErr.write(String.format("Starting VM for %s...", withinClass)
+				.getBytes());
+		}
+		catch (IOException ignored)
+		{
+		}
 		
 		// Execute the test Java program
-		System.err.printf("Executing Java Program...%n");
 		ExecResult result = project.javaexec(__javaExecSpec ->
 			{
 				Collection<String> args = new LinkedList<>();
-				
-				// The class we are executing in
-				String withinClass = Objects.requireNonNull(
-					__method.getParent(),
-					"No test class?").getClassName();
 				
 				// Add emulator
 				args.add("-Xemulator:" + __spec.emulator);
@@ -247,20 +217,15 @@ public final class EmulatedTestExecutor
 				
 				// Pipe outputs to the specified areas so the console can be
 				// read properly!
-				__javaExecSpec.setStandardOutput(new PipeOutputStream(
-					__method.getId(), __results,
-					TestOutputEvent.Destination.StdOut));
-				__javaExecSpec.setErrorOutput(new PipeOutputStream(
-					__method.getId(), __results,
-					TestOutputEvent.Destination.StdErr));
+				__javaExecSpec.setStandardOutput(stdOut);
+				__javaExecSpec.setErrorOutput(stdErr);
 				
 				// Do not throw an exception on a non-zero exit value since
 				// it is important to us
 				__javaExecSpec.setIgnoreExitValue(true);
 			});
 		
-		// Return the exit value here
-		System.err.printf("Exited with value: %d%n", result.getExitValue());
+		// The exit value is the test result
 		return result.getExitValue();
 	}
 	
@@ -310,8 +275,15 @@ public final class EmulatedTestExecutor
 		Set<String> failedTests = new TreeSet<>();
 		for (String testClass : testClasses)
 		{
-			// Execute class and check for failure
-			if (!this.__executeClass(__spec, __results, __suite, testClass))
+			// Execute the test
+			EmulatedTestResult result = this.__executeClass(__spec, __suite,
+				testClass);
+			
+			// Send in the report
+			result.report(__results);
+			
+			// Did this fail?
+			if (result.isFailure())
 				failedTests.add(testClass);
 		}
 		

@@ -215,6 +215,19 @@ public final class EmulatedTestUtilities
 	}
 	
 	/**
+	 * Fails at the specified time.
+	 * 
+	 * @param __millis The time to fail at.
+	 * @return The completion event.
+	 * @since 2020/06/22
+	 */
+	private static TestCompleteEvent failAt(long __millis)
+	{
+		return new TestCompleteEvent(__millis,
+			TestResult.ResultType.FAILURE);
+	}
+	
+	/**
 	 * Returns a failing completion.
 	 *
 	 * @return An event.
@@ -222,8 +235,7 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestCompleteEvent failNow()
 	{
-		return new TestCompleteEvent(System.currentTimeMillis(),
-			TestResult.ResultType.FAILURE);
+		return EmulatedTestUtilities.failAt(System.currentTimeMillis());
 	}
 	
 	/**
@@ -267,6 +279,19 @@ public final class EmulatedTestUtilities
 	}
 	
 	/**
+	 * Passes at the given time.
+	 * 
+	 * @param __millis The time to pass at.
+	 * @return The completion event.
+	 * @since 2020/06/22
+	 */
+	private static TestCompleteEvent passAt(long __millis)
+	{
+		return new TestCompleteEvent(__millis,
+			TestResult.ResultType.SUCCESS);
+	}
+	
+	/**
 	 * Returns a passing completion.
 	 *
 	 * @return An event.
@@ -274,8 +299,7 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestCompleteEvent passNow()
 	{
-		return new TestCompleteEvent(System.currentTimeMillis(),
-			TestResult.ResultType.SUCCESS);
+		return EmulatedTestUtilities.passAt(System.currentTimeMillis());
 	}
 	
 	/**
@@ -294,14 +318,33 @@ public final class EmulatedTestUtilities
 	/**
 	 * Either passes or skips.
 	 *
+	 * @param __millis The time to finish.
 	 * @param __pass Does the test pass?
 	 * @return The event.
 	 * @since 2020/03/06
 	 */
-	public static TestCompleteEvent passOrSkipNow(boolean __pass)
+	public static TestCompleteEvent passOrSkipAt(long __millis, boolean __pass)
 	{
-		return (__pass ? EmulatedTestUtilities.passNow() :
-			EmulatedTestUtilities.skipNow());
+		return (__pass ? EmulatedTestUtilities.passAt(__millis) :
+			EmulatedTestUtilities.skipAt(__millis));
+	}
+	
+	/**
+	 * Passes, skips, or fails at the given time.
+	 * 
+	 * @param __millis The time to finish.
+	 * @param __exitCode The status code.
+	 * @return The completion event.
+	 * @since 2020/06/22
+	 */
+	public static TestCompleteEvent passSkipOrFailAt(long __millis,
+		int __exitCode)
+	{
+		if (__exitCode == ExitValueConstants.SUCCESS)
+			return EmulatedTestUtilities.passAt(__millis);
+		else if (__exitCode == ExitValueConstants.SKIPPED)
+			return EmulatedTestUtilities.skipAt(__millis);
+		return EmulatedTestUtilities.failAt(__millis);
 	}
 	
 	/**
@@ -313,11 +356,21 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestCompleteEvent passSkipOrFailNow(int __exitCode)
 	{
-		if (__exitCode == ExitValueConstants.SUCCESS)
-			return EmulatedTestUtilities.passNow();
-		else if (__exitCode == ExitValueConstants.SKIPPED)
-			return EmulatedTestUtilities.skipNow();
-		return EmulatedTestUtilities.failNow();
+		return EmulatedTestUtilities.passSkipOrFailAt(
+			System.currentTimeMillis(), __exitCode);
+	}
+	
+	/**
+	 * Skips at the given time.
+	 * 
+	 * @param __millis The time to skip at.
+	 * @return The completion event.
+	 * @since 2020/06/22
+	 */
+	private static TestCompleteEvent skipAt(long __millis)
+	{
+		return new TestCompleteEvent(__millis,
+			TestResult.ResultType.SKIPPED);
 	}
 	
 	/**
@@ -328,8 +381,33 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestCompleteEvent skipNow()
 	{
-		return new TestCompleteEvent(System.currentTimeMillis(),
-			TestResult.ResultType.SKIPPED);
+		return EmulatedTestUtilities.skipAt(System.currentTimeMillis());
+	}
+	
+	/**
+	 * Returns a test starting now.
+	 *
+	 * @param __millis The starting time.
+	 * @return An event
+	 * @since 2020/06/22
+	 */
+	public static TestStartEvent startAt(long __millis)
+	{
+		return EmulatedTestUtilities.startAt(__millis, null);
+	}
+	
+	/**
+	 * Returns a test starting now.
+	 *
+	 * @param __test The test information.
+	 * @return An event
+	 * @since 2020/06/22
+	 */
+	public static TestStartEvent startAt(long __millis,
+		TestDescriptorInternal __test)
+	{
+		return new TestStartEvent(__millis,
+			(__test == null ? null : __test.getId()));
 	}
 	
 	/**
@@ -352,7 +430,7 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestStartEvent startNow(TestDescriptorInternal __test)
 	{
-		return new TestStartEvent(System.currentTimeMillis(),
-			(__test == null ? null : __test.getId()));
+		return EmulatedTestUtilities.startAt(
+			System.currentTimeMillis(), __test);
 	}
 }
