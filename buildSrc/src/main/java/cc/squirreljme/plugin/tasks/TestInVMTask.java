@@ -36,6 +36,7 @@ import org.gradle.jvm.tasks.Jar;
  *
  * @since 2020/03/06
  */
+@Deprecated
 public class TestInVMTask
 	extends AbstractTestTask
 {
@@ -57,6 +58,7 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	@Inject
+	@Deprecated
 	public TestInVMTask(Jar __jar, String __vm)
 	{
 		// We need these for tasks and such
@@ -114,6 +116,7 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	@Override
+	@Deprecated
 	protected EmulatedTestExecutor createTestExecuter()
 	{
 		return new EmulatedTestExecutor(this);
@@ -124,6 +127,7 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	@Override
+	@Deprecated
 	protected EmulatedTestExecutionSpec createTestExecutionSpec()
 	{
 		return new EmulatedTestExecutionSpec(this.emulator, this.jar);
@@ -135,6 +139,7 @@ public class TestInVMTask
 	 * @return The binary results path.
 	 * @since 2020/06/22
 	 */
+	@Deprecated
 	CharSequence __binResultPath()
 	{
 		return this.__tempRoot().resolve("bin-results")
@@ -147,6 +152,7 @@ public class TestInVMTask
 	 * @return The emulator JAR task.
 	 * @since 2020/02/29
 	 */
+	@Deprecated
 	Jar __findEmulatorBaseJarTask()
 	{
 		return (Jar)Objects.requireNonNull(this.getProject().getRootProject().
@@ -160,6 +166,7 @@ public class TestInVMTask
 	 * @return The emulator base.
 	 * @since 2020/02/29
 	 */
+	@Deprecated
 	Jar __findEmulatorJarTask()
 	{
 		return (Jar)Objects.requireNonNull(this.getProject().getRootProject().
@@ -173,6 +180,7 @@ public class TestInVMTask
 	 * @return The temporary root.
 	 * @since 2020/03/06
 	 */
+	@Deprecated
 	public final Path __tempRoot()
 	{
 		return this.getProject().getBuildDir().toPath().resolve("vm-test").
