@@ -10,15 +10,10 @@ description = "This is the SummerCoat VM which is a more " +
 dependencies
 {
 	api project(":emulators:emulator-base")
-
+	
 	api project(":modules:cldc-compact")
-	api project(":modules:collections")
 	api project(":modules:common-vm")
-	api project(":modules:io")
-	api project(":modules:meep-midlet")
-	api project(":modules:meep-swm")
 	api project(":modules:tool-classfile")
 	api project(":modules:tool-jarfile")
-	api project(":modules:tool-manifest-reader")
 	api project(":modules:tool-packfile")
 }

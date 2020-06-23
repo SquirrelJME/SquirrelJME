@@ -84,18 +84,8 @@ public final class NativeBinding
 		}
 		
 		// Attempt cleanup at shutdown.
-		final Path[] paths = new Path[]{libFile, tempDir};
-		Runtime.getRuntime().addShutdownHook(new Thread(() ->
-			{
-				try
-				{
-					for (Path p : paths)
-						Files.delete(p);
-				}
-				catch (IOException e)
-				{
-				}
-			}, "SquirrelJME-LibraryCleanupThread"));
+		Runtime.getRuntime().addShutdownHook(
+			new PathCleanup(libFile, tempDir));
 		
 		// Try loading the library now
 		System.load(libFile.toString());
