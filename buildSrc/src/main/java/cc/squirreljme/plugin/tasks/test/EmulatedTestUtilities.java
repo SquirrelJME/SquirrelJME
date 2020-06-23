@@ -10,13 +10,26 @@
 package cc.squirreljme.plugin.tasks.test;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
@@ -358,6 +371,96 @@ public final class EmulatedTestUtilities
 	{
 		return EmulatedTestUtilities.passSkipOrFailAt(
 			System.currentTimeMillis(), __exitCode);
+	}
+	
+	/**
+	 * Reads test services from the JAR. 
+	 *
+	 * @param __path The path to read from.
+	 * @throws IOException On read failures.
+	 * @since 2020/06/22
+	 */
+	public static Collection<String> readJarServices(Path __path)
+		throws IOException, NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = Files.newInputStream(
+			__path, StandardOpenOption.READ);
+			ZipInputStream zip = new ZipInputStream(in))
+		{
+			return EmulatedTestUtilities.readJarServices(zip);
+		}
+	}
+	
+	/**
+	 * Reads test services from the JAR. 
+	 *
+	 * @param __zip The ZIP to read.
+	 * @throws IOException On read failures.
+	 * @since 2020/05/25
+	 */
+	public static Collection<String> readJarServices(ZipInputStream __zip)
+		throws IOException
+	{
+		// Resultant collection
+		Collection<String> result = new LinkedHashSet<>();
+		
+		// Potential resource file data
+		byte[] resourceData = null;
+		
+		// Go through entries within the ZIP
+		ZipEntry entry;
+		while (null != (entry = __zip.getNextEntry()))
+		{
+			// Only consider the services file
+			if (!Objects.equals(EmulatedTestExecutor.SERVICE_RESOURCE,
+				entry.getName()))
+				continue;
+			
+			// Copy file data
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+			{
+				// Copy bytes
+				byte[] buf = new byte[4096];
+				for (;;)
+				{
+					int rc = __zip.read(buf);
+					
+					if (rc < 0)
+						break;
+					
+					baos.write(buf, 0, rc);
+				}
+				
+				// Set resource data and stop finding entries
+				resourceData = baos.toByteArray();
+				break;
+			}
+		}
+		
+		// Read in service list
+		if (resourceData != null)
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(
+				new ByteArrayInputStream(resourceData),
+					StandardCharsets.UTF_8)))
+			{
+				for (;;)
+				{
+					// End of file?
+					String ln = br.readLine();
+					if (ln == null)
+						break;
+					
+					// Only consider lines with content
+					ln = ln.trim();
+					if (!ln.isEmpty())
+						result.add(ln);
+				}
+			}
+		
+		return result;
 	}
 	
 	/**

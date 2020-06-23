@@ -411,16 +411,11 @@ public abstract class VMFactory
 		}
 		
 		// Try searching for JAR files in a directory
-		try (Stream<Path> stream = Files.walk(
-			Paths.get(__path.substring(0, __path.length() - 1)), 1,
-			FileVisitOption.FOLLOW_LINKS))
+		try
 		{
-			stream.forEach(__scan ->
-				{
-					String fn = __scan.getFileName().toString();
-					if (fn.endsWith(".jar") || fn.endsWith(".JAR"))
-						__files.add(__scan.toString());
-				});
+			Path startPath = Paths.get(
+				__path.substring(0, __path.length() - 1));
+			Files.walkFileTree(startPath, new __JarWalker__(__files));
 		}
 		catch (IOException e)
 		{

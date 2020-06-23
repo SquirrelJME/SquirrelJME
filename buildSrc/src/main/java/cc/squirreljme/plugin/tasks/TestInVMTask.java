@@ -16,11 +16,12 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
-import org.gradle.api.internal.provider.AbstractMinimalProvider;
+import org.gradle.api.internal.provider.AbstractProviderWithValue;
+import org.gradle.api.internal.provider.DefaultProvider;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.testing.AbstractTestTask;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.tasks.Jar;
-import org.gradle.workers.WorkerExecutor;
 
 /**
  * Tests in virtual machine, this uses an abstract test tasks which implement
@@ -76,9 +77,8 @@ public class TestInVMTask
 		// be set otherwise the test build will fail
 		this.setProperty(TestInVMTask._BINARY_RESULTS_DIRECTORY,
 			this.getProject().getObjects().directoryProperty()
-			.dir(new __BinaryResultsDirectoryProvider__()));
-		this.setBinResultsDir(
-			new File(new __BinaryResultsDirectoryProvider__().get()));
+			.dir(new DefaultProvider<>(this::__binResultPath)));
+		this.setBinResultsDir(new File(this.__binResultPath().toString()));
 		
 		// Generate HTML reports because they are useful
 		this.getReports().getHtml().setDestination(
@@ -130,6 +130,18 @@ public class TestInVMTask
 	}
 	
 	/**
+	 * Returns the binary results path.
+	 * 
+	 * @return The binary results path.
+	 * @since 2020/06/22
+	 */
+	CharSequence __binResultPath()
+	{
+		return this.__tempRoot().resolve("bin-results")
+			.toAbsolutePath().toString();
+	}
+	
+	/**
 	 * Finds the emulator JAR task.
 	 *
 	 * @return The emulator JAR task.
@@ -165,49 +177,5 @@ public class TestInVMTask
 	{
 		return this.getProject().getBuildDir().toPath().resolve("vm-test").
 			resolve(this.emulator);
-	}
-	
-	/**
-	 * Provider for directory.
-	 *
-	 * @since 2020/03/06
-	 */
-	class __BinaryResultsDirectoryProvider__
-		extends AbstractMinimalProvider<String>
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/03/06
-		 */
-		@Override
-		public String get()
-			throws IllegalStateException
-		{
-			String rv = this.getOrNull();
-			if (rv == null)
-				throw new IllegalStateException("No directory!");
-			return rv;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/03/06
-		 */
-		@Override
-		public String getOrNull()
-		{
-			return TestInVMTask.this.__tempRoot().resolve("bin-results")
-				.toAbsolutePath().toString();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/03/06
-		 */
-		@Override
-		public Class<String> getType()
-		{
-			return String.class;
-		}
 	}
 }

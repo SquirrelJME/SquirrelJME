@@ -10,11 +10,7 @@
 package cc.squirreljme.plugin.tasks.test;
 
 import cc.squirreljme.plugin.tasks.TestInVMTask;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.file.Files;
@@ -31,7 +27,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.gradle.api.Project;
 import org.gradle.api.internal.tasks.testing.TestExecuter;
@@ -88,36 +83,66 @@ public final class EmulatedTestExecutor
 		// We need the project to access details
 		Project project = this._testInVMTask.getProject();
 		
+		project.getLogger().lifecycle("POINT A");
+		
 		// Initialize the classpath for our emulator!
 		// Otherwise the Gradle build will fail since it tries to get the
 		// classpath outside of this
 		this.emulatorClassPath(project, __spec.emulator);
 		
+		project.getLogger().lifecycle("POINT B");
+		
 		// Run for this suite/project
 		EmulatedTestSuiteDescriptor suite =
 			new EmulatedTestSuiteDescriptor(project);
 		
-		// Indicate that the suite has started execution
-		__results.started(suite, EmulatedTestUtilities.startNow());
+		project.getLogger().lifecycle("POINT C");
 		
 		// Perform testing logic
-		boolean allPassed = true;
+		boolean allPassed;
 		try
 		{
+			project.getLogger().lifecycle("POINT E");
+			
+			// Load tests to run
+			Collection<String> classes = EmulatedTestUtilities.readJarServices(
+				__spec.jar.getArchiveFile().get().getAsFile().toPath());
+				
+			project.getLogger().lifecycle("POINT F");
+			
+			// Report on the found test size (debugging)
+			project.getLogger().lifecycle(String.format(
+				"Found %d tests...%n", classes.size()));
+			
+			project.getLogger().lifecycle("POINT G");
+			
+			// Indicate that the suite has started execution
+			__results.started(suite, EmulatedTestUtilities.startNow());
+			
+			project.getLogger().lifecycle("POINT G.a");
+			
 			// Execute test classes (find them and run them)
-			allPassed = this.__executeClasses(__spec, __results, suite);
+			allPassed = this.__executeClasses(__spec, __results, suite,
+				classes);
+			
+			project.getLogger().lifecycle("POINT H");
 			
 			// Did all tests pass?
 			__results.completed(suite.getId(),
 				EmulatedTestUtilities.passOrFailNow(allPassed));
+			
+			project.getLogger().lifecycle("POINT I");
 		}
+		
+		// Something went wrong it seems
 		catch (Throwable t)
 		{
-			// Report the thrown exception
-			__results.failure(suite.getId(), t);
-			__results.completed(suite.getId(),
-				EmulatedTestUtilities.failNow());
+			project.getLogger().error("Throwable caught during testing.", t);
+			
+			throw new RuntimeException("Caught throwable during testing.", t);
 		}
+		
+		project.getLogger().lifecycle("POINT J");
 		
 		// Did not pass, so cause the task to fail
 		if (!allPassed)
@@ -294,38 +319,21 @@ public final class EmulatedTestExecutor
 	 * @param __spec The specification.
 	 * @param __results The output results.
 	 * @param __suite The suite to run.
+	 * @param __classes The classes to run.
 	 * @return Did all tests pass?
 	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/06
 	 */
 	@SuppressWarnings({"FeatureEnvy", "MagicNumber"})
 	private boolean __executeClasses(EmulatedTestExecutionSpec __spec,
-		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite)
-		throws IOException
+		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite,
+		Iterable<String> __classes)
+		throws IOException, NullPointerException
 	{
-		// Extract all of the test classes to be executed
-		Collection<String> testClasses = new TreeSet<>();
-		for (int iCount = 0;;)
-			try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(
-				__spec.jar.getArchiveFile().get().getAsFile().toPath(),
-				StandardOpenOption.READ)))
-			{
-				EmulatedTestExecutor.__findTestClasses(zip, testClasses);
-				
-				break;
-			}
-			catch (ClosedByInterruptException e)
-			{
-				// Prevent dead-locking if interrupting just keeps happening
-				if (++iCount >= EmulatedTestExecutor._MAX_INTERRUPTS)
-					throw new RuntimeException(
-						"Could not read JAR due to too many interrupts.", e);
-				
-				System.err.printf("Interrupt during JAR read, retrying...%n");
-				
-				// Clear interrupt flag
-				Thread.interrupted();
-			}
+		if (__spec == null || __results == null || __suite == null ||
+			__classes == null)
+			throw new NullPointerException("NARG");
 		
 		// Use half of the available CPUs, if the system is SMT then this
 		// should be all the CPUs.
@@ -344,7 +352,7 @@ public final class EmulatedTestExecutor
 			new ConcurrentLinkedQueue<>();
 		
 		// Create jobs for the tests
-		for (String testClass : testClasses)
+		for (String testClass : __classes)
 		{
 			// Count current tests up
 			scheduledTests.incrementAndGet();
@@ -432,60 +440,4 @@ public final class EmulatedTestExecutor
 		this._stopRunning = true;
 	}
 	
-	/**
-	 * Attempts to find the test classes.
-	 *
-	 * @param __zip The ZIP to read.
-	 * @param __testClasses The target classes.
-	 * @throws IOException On read failures.
-	 * @since 2020/05/25
-	 */
-	private static void __findTestClasses(ZipInputStream __zip,
-		Collection<String> __testClasses)
-		throws IOException
-	{
-		for (;;)
-		{
-			// Stop at the end of the ZIP
-			ZipEntry entry = __zip.getNextEntry();
-			if (entry == null)
-				break;
-			
-			// Only consider the services file
-			if (!EmulatedTestExecutor.SERVICE_RESOURCE
-				.equals(entry.getName()))
-				continue;
-			
-			// We cannot close a stream, so we need to copy the data over
-			// first
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(
-				(int)Math.max(0, entry.getSize()));
-			for (byte[] buf = new byte[4096];;)
-			{
-				int rc = __zip.read(buf);
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
-			
-			// Read in all the test classes
-			try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(new ByteArrayInputStream(
-				baos.toByteArray()), "utf-8")))
-			{
-				for (;;)
-				{
-					// End of file?
-					String ln = br.readLine();
-					if (ln == null)
-						break;
-					
-					// Add test class to possible tests to run
-					if (!ln.isEmpty())
-						__testClasses.add(ln.trim());
-				}
-			}
-		}
-	}
 }
