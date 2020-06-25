@@ -11,30 +11,32 @@ package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.util.FossilExe;
 import javax.inject.Inject;
-import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
-import org.gradle.api.logging.Logging;
 
 /**
- * Task which essentially just outputs the executable path to Fossil.
+ * Prints the Fossil version.
  *
  * @since 2020/06/24
  */
-public class FossilExeTask
+public class FossilExeVersionTask
 	extends DefaultTask
 {
 	/**
 	 * Initializes the task.
 	 * 
+	 * @param __exeTask The executable task.
 	 * @since 2020/06/24
 	 */
 	@Inject
-	public FossilExeTask()
+	public FossilExeVersionTask(FossilExeTask __exeTask)
 	{
 		// Set details of this task
 		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Prints the Fossil executable path.");
+		
+		// Depend on the EXE
+		this.dependsOn(__exeTask);
 		
 		// Action to perform
 		this.doLast(this::action);
@@ -48,6 +50,6 @@ public class FossilExeTask
 	private void action(Task __task)
 	{
 		__task.getLogger().lifecycle(
-			FossilExe.instance().exePath().toString());
+			"Fossil version is: " + FossilExe.instance().version());
 	}
 }
