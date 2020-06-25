@@ -35,8 +35,11 @@ public class FossilExeVersionTask
 		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Prints the Fossil executable path.");
 		
-		// Depend on the EXE
+		// The executable task must run first
 		this.dependsOn(__exeTask);
+		
+		// Fossil must exist
+		this.onlyIf(__task -> FossilExe.isAvailable());
 		
 		// Action to perform
 		this.doLast(this::action);

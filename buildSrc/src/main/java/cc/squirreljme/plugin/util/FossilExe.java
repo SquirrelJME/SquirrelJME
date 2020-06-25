@@ -245,6 +245,35 @@ public final class FossilExe
 	}
 	
 	/**
+	 * Gets the content of the specified file.
+	 * 
+	 * @param __fileName The file name.
+	 * @return The stream for the file data or {@code null} if no such file
+	 * exists or it has no content.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/25
+	 */
+	public final InputStream unversionCat(String __fileName)
+		throws NullPointerException
+	{
+		if (__fileName == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the list of unversioned files.
+	 * 
+	 * @return The list of unversioned files.
+	 * @since 2020/06/25
+	 */
+	public final Collection<String> unversionedLs()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the fossil version.
 	 * 
 	 * @return The fossil version.
@@ -333,5 +362,26 @@ public final class FossilExe
 		// Not found
 		throw new InvalidFossilExeException(
 			"Could not find Fossil executable.");
+	}
+	
+	/**
+	 * Check to see if Fossil is available.
+	 * 
+	 * @return If Fossil is available.
+	 * @since 2020/06/25
+	 */
+	public static boolean isAvailable()
+	{
+		try
+		{
+			FossilExe.instance().version();
+			return true;
+		}
+		
+		// Not available
+		catch (InvalidFossilExeException ignored)
+		{
+			return false;
+		}
 	}
 }
