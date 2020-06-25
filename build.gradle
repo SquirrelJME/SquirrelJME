@@ -1,4 +1,5 @@
 apply plugin: 'idea'
+apply plugin: 'cc.squirreljme.plugin.general'
 
 group = "cc.squirreljme"
 description = "SquirrelJME is a Java ME 8 Virtual Machine for embedded " +
