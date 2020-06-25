@@ -208,9 +208,11 @@ as well. To make a submission do the following:
      * Mention `@XerTheSquirrel#5366`, with an upload of the bundle (it may
        be in a ZIP file) and that you _agree_ to the contributor
        agreement as noted above in this document.
-     * Discord has a file size limit, if your file is too big, either use a
-       file sharing service like [Firefox Send](https://send.firefox.com), or
-       send an e-mail instead.
+     * Note that Discord has a file size limit, if your file is too big please
+       e-mail it or use a file sharing service. Do note that if you use a
+       file sharing service ensure that it has a long expiration (at least
+       30 days) otherwise due to the busy schedules of the developers your
+       contribution may be lost.
 
 ### With Git
 
@@ -318,6 +320,8 @@ Alternatively a Git Bundle may be used:
      * Mention `@XerTheSquirrel#5366`, with an upload of the bundle (it may
        be in a ZIP file) and that you _agree_ to the contributor
        agreement as noted above in this document.
-     * Discord has a file size limit, if your file is too big, either use a
-       file sharing service like [Firefox Send](https://send.firefox.com), or
-       send an e-mail instead.
+     * Note that Discord has a file size limit, if your file is too big please
+       e-mail it or use a file sharing service. Do note that if you use a
+       file sharing service ensure that it has a long expiration (at least
+       30 days) otherwise due to the busy schedules of the developers your
+       contribution may be lost.
