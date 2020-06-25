@@ -30,7 +30,11 @@ public class GeneralSquirrelJMEPlugin
 	public void apply(Project __project)
 	{
 		// Print Fossil executable path
-		__project.getTasks().create("fossilExe",
+		FossilExeTask exeTask = __project.getTasks().create("fossilExe",
 			FossilExeTask.class);
+		
+		// Print Fossil executable path
+		__project.getTasks().create("fossilExeVersion",
+			FossilExeVersionTask.class, exeTask);
 	}
 }
