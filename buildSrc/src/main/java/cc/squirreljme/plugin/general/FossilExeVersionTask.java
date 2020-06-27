@@ -39,7 +39,7 @@ public class FossilExeVersionTask
 		this.dependsOn(__exeTask);
 		
 		// Fossil must exist
-		this.onlyIf(__task -> FossilExe.isAvailable());
+		this.onlyIf(__task -> FossilExe.isAvailable(false));
 		
 		// Action to perform
 		this.doLast(this::action);
@@ -48,6 +48,7 @@ public class FossilExeVersionTask
 	/**
 	 * Performs the task action.
 	 * 
+	 * @param __task The called task.
 	 * @since 2020/06/24
 	 */
 	private void action(Task __task)
