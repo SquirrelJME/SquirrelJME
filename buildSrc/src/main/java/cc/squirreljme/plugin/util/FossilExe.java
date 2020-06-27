@@ -61,6 +61,23 @@ public final class FossilExe
 	}
 	
 	/**
+	 * Cats the given file name.
+	 * 
+	 * @param __fileName The file name.
+	 * @return The file data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	public final byte[] cat(String __fileName)
+		throws NullPointerException
+	{
+		if (__fileName == null)
+			throw new NullPointerException("NARG");
+		
+		return this.runRawOutput("cat", __fileName);
+	}
+	
+	/**
 	 * Returns the current fossil user.
 	 * 
 	 * @return The current fossil user.
