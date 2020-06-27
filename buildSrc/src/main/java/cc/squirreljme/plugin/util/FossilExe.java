@@ -314,7 +314,7 @@ public final class FossilExe
 	 */
 	public final Collection<String> unversionedLs()
 	{
-		throw new Error("TODO");
+		return this.runLineOutput("unversion", "ls");
 	}
 	
 	/**
