@@ -54,7 +54,7 @@ public class DeveloperNoteTask
 		this.dependsOn(__exeTask);
 		
 		// Fossil must exist
-		this.onlyIf(__task -> FossilExe.isAvailable());
+		this.onlyIf(__task -> FossilExe.isAvailable(true));
 		
 		// Action to perform
 		this.doLast(this::action);

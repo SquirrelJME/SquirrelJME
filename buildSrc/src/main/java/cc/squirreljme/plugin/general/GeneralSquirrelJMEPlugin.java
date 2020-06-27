@@ -34,8 +34,12 @@ public class GeneralSquirrelJMEPlugin
 			FossilExeTask.class);
 		
 		// Print Fossil executable path
-		__project.getTasks().create("fossilExeVersion",
+		__project.getTasks().create("fossilVersion",
 			FossilExeVersionTask.class, exeTask);
+		
+		// Print Fossil user
+		__project.getTasks().create("fossilUser",
+			FossilUserTask.class, exeTask);
 		
 		// Developer note
 		__project.getTasks().create("developerNote",
