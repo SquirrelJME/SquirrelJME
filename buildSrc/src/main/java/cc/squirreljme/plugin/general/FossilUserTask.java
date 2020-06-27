@@ -15,25 +15,25 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 
 /**
- * Prints the Fossil version.
+ * Prints the current fossil user.
  *
- * @since 2020/06/24
+ * @since 2020/06/27
  */
-public class FossilExeVersionTask
+public class FossilUserTask
 	extends DefaultTask
 {
 	/**
 	 * Initializes the task.
 	 * 
 	 * @param __exeTask The executable task.
-	 * @since 2020/06/24
+	 * @since 2020/06/27
 	 */
 	@Inject
-	public FossilExeVersionTask(FossilExeTask __exeTask)
+	public FossilUserTask(FossilExeTask __exeTask)
 	{
 		// Set details of this task
 		this.setGroup("squirreljmeGeneral");
-		this.setDescription("Prints the Fossil executable path.");
+		this.setDescription("Prints the current Fossil user.");
 		
 		// The executable task must run first
 		this.dependsOn(__exeTask);
@@ -49,11 +49,11 @@ public class FossilExeVersionTask
 	 * Performs the task action.
 	 * 
 	 * @param __task The called task.
-	 * @since 2020/06/24
+	 * @since 2020/06/27
 	 */
 	private void action(Task __task)
 	{
 		__task.getLogger().lifecycle(
-			"Fossil version is: " + FossilExe.instance().version());
+			"Fossil user is: " + FossilExe.instance().currentUser());
 	}
 }
