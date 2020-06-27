@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -261,6 +262,8 @@ public final class FossilExe
 		finally
 		{
 			process.destroy();
+			
+			System.err.printf("DEBUG -- Exit code: %s%n", process.exitValue());
 		}
 	}
 	
@@ -315,6 +318,74 @@ public final class FossilExe
 	public final Collection<String> unversionedLs()
 	{
 		return this.runLineOutput("unversion", "ls");
+	}
+	
+	/**
+	 * Stores unversion bytes.
+	 * 
+	 * @param __fileName The file name.
+	 * @param __data The data to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	public final void unversionedStoreBytes(String __fileName, byte[] __data)
+		throws NullPointerException
+	{
+		if (__fileName == null || __data == null)
+			throw new NullPointerException("NARG");
+		
+		// Fossil accepts files as unversioned input
+		Path tempFile = null;
+		try
+		{
+			// Setup temporary file
+			tempFile = Files.createTempFile("squirreljme-uvfile",
+				".bin");
+			
+			// Write data to file
+			Files.write(tempFile, __data, StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.CREATE);
+			
+			// Store the file data
+			Process process = this.runCommand("unversion", "add",
+				tempFile.toAbsolutePath().toString(),
+				"--as", __fileName);
+			
+			// Wait for process to complete
+			for (;;)
+				try
+				{
+					if (process.waitFor() != 0)
+						throw new RuntimeException(
+							"Process exited with: " + process.exitValue());
+					
+					return;
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+		}
+		
+		// Could not write data
+		catch (IOException e)
+		{
+			throw new RuntimeException(
+				"Could not store file: " + __fileName, e);
+		}
+		
+		// Clean out file, if it exists
+		finally
+		{
+			if (tempFile != null)
+				try
+				{
+					Files.delete(tempFile);
+				}
+				catch (IOException ignored)
+				{
+				}
+		}
 	}
 	
 	/**

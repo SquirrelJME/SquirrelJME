@@ -121,10 +121,7 @@ public class DeveloperNoteTask
 		}
 		
 		// Store the note in the unversioned space
-		if (true)
-			throw new Error("TODO");
-		
-		throw new Error("TODO");
+		exe.unversionedStoreBytes(filePath, session._content);
 	}
 	
 	/**
