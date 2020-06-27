@@ -55,7 +55,7 @@ public class NoteYear
 		
 		int monthNum = __date.getMonthValue();
 		NoteMonth rv = this.months.computeIfAbsent(monthNum,
-			__key -> new NoteMonth(__key));
+			__key -> new NoteMonth(__date, __key));
 		
 		rv.add(__date, __fileName);
 		

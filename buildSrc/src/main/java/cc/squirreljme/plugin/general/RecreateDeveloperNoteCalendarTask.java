@@ -10,7 +10,6 @@
 package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.util.FossilExe;
-import cc.squirreljme.plugin.util.NoteCalendarFinder;
 import cc.squirreljme.plugin.util.NoteCalendarGenerator;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -58,9 +57,7 @@ public class RecreateDeveloperNoteCalendarTask
 	{
 		try
 		{
-			FossilExe exe = FossilExe.instance();
-			NoteCalendarGenerator.generate(exe,
-				NoteCalendarFinder.findNotes(exe));
+			NoteCalendarGenerator.generateAndStore(FossilExe.instance());
 		}
 		catch (IOException e)
 		{

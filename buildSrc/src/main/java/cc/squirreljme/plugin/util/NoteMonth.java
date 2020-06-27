@@ -28,14 +28,24 @@ public class NoteMonth
 	/** The month number. */
 	public final int month;
 	
+	/** The date. */
+	public final LocalDate date;
+	
 	/**
 	 * Initializes the month.
 	 * 
+	 * @param __date The date.
 	 * @param __num The month number.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/27
 	 */
-	public NoteMonth(int __num)
+	public NoteMonth(LocalDate __date, int __num)
+		throws NullPointerException
 	{
+		if (__date == null)
+			throw new NullPointerException("NARG");
+		
+		this.date = __date;
 		this.month = __num;
 	}
 	
@@ -54,7 +64,7 @@ public class NoteMonth
 		if (__date == null || __fileName == null)
 			throw new NullPointerException("NARG");
 			
-		int weekNum = __date.get(IsoFields.WEEK_BASED_YEAR);
+		int weekNum = __date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
 		NoteWeek rv = this.weeks.computeIfAbsent(weekNum,
 			__key -> new NoteWeek(__key));
 		
