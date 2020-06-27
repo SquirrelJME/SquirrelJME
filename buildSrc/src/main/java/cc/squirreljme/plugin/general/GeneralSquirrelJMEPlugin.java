@@ -44,5 +44,9 @@ public class GeneralSquirrelJMEPlugin
 		// Developer note
 		__project.getTasks().create("developerNote",
 			DeveloperNoteTask.class, exeTask);
+		
+		// Recreate the developer note calendar
+		__project.getTasks().create("recreateDeveloperNoteCalendar",
+			RecreateDeveloperNoteCalendarTask.class, exeTask);
 	}
 }
