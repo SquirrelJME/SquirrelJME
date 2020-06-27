@@ -120,8 +120,9 @@ public class DeveloperNoteTask
 			throw new RuntimeException("Server read/write error.", e);
 		}
 		
-		// Store the note in the unversioned space
-		exe.unversionedStoreBytes(filePath, session._content);
+		// Store the note in the unversioned space, but only if saved
+		if (session._saveCount > 0)
+			exe.unversionedStoreBytes(filePath, session._content);
 	}
 	
 	/**
@@ -216,6 +217,7 @@ public class DeveloperNoteTask
 			
 			// Store into the session bytes
 			__session._content = data.getBytes(StandardCharsets.UTF_8);
+			__session._saveCount++;
 		}
 		
 		// All done?

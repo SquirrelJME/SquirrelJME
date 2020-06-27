@@ -19,6 +19,9 @@ final class __DeveloperNoteSession__
 	/** The file path. */
 	public final String filePath;
 	
+	/** The number of times this was saved. */
+	int _saveCount;
+	
 	/** Submitted content data. */
 	byte[] _content =
 		new byte[0];
