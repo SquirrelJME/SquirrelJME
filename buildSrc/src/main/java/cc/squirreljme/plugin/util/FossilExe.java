@@ -62,6 +62,26 @@ public final class FossilExe
 	}
 	
 	/**
+	 * Returns the current fossil user.
+	 * 
+	 * @return The current fossil user.
+	 * @throws InvalidFossilExeException If the user is not valid.
+	 * @since 2020/06/27
+	 */
+	public final String currentUser()
+		throws InvalidFossilExeException
+	{
+		// Use first line found for the user
+		for (String line : this.runLineOutput("user", "default"))
+			if (!line.isEmpty())
+				return line.trim();
+		
+		// Fail
+		throw new InvalidFossilExeException("No default user set in Fossil, " +
+			"please set `fossil user default user.name`");
+	}
+	
+	/**
 	 * Returns the executable path.
 	 * 
 	 * @return The executable path.
@@ -367,14 +387,23 @@ public final class FossilExe
 	/**
 	 * Check to see if Fossil is available.
 	 * 
+	 * @param __withUser Also check that the user is set?
 	 * @return If Fossil is available.
 	 * @since 2020/06/25
 	 */
-	public static boolean isAvailable()
+	public static boolean isAvailable(boolean __withUser)
 	{
 		try
 		{
-			FossilExe.instance().version();
+			FossilExe exe = FossilExe.instance();
+			
+			// These will throw exceptions if not valid
+			exe.version();
+			
+			// Check user as well?
+			if (__withUser)
+				exe.currentUser();
+			
 			return true;
 		}
 		
