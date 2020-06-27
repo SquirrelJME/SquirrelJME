@@ -131,8 +131,7 @@ public class DeveloperNoteTask
 		if (doCreate)
 			try
 			{
-				NoteCalendarGenerator.generate(exe,
-					NoteCalendarFinder.findNotes(exe));
+				NoteCalendarGenerator.generateAndStore(exe);
 			}
 			catch (IOException e)
 			{
