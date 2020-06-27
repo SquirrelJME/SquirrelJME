@@ -18,12 +18,15 @@ import cc.squirreljme.plugin.util.SimpleHTTPServer;
 import cc.squirreljme.plugin.util.SimpleHTTPStatus;
 import java.awt.Desktop;
 import java.awt.HeadlessException;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
@@ -73,13 +76,17 @@ public class DeveloperNoteTask
 	private void action(Task __task)
 	{
 		// Setup session
-		String filePath = this.__blogFilePath();
+		LocalDateTime now = LocalDateTime.now();
+		String filePath = this.__blogFilePath(now.toLocalDate());
 		__DeveloperNoteSession__ session = new __DeveloperNoteSession__(
 			filePath);
 		
 		// Load pre-existing blog
-		System.err.println("TODO -- Load pre-existing blog.");
-		session._content = "TODO -- Load?".getBytes(StandardCharsets.UTF_8);
+		FossilExe exe = FossilExe.instance();
+		byte[] content = exe.unversionCatBytes(filePath);
+		if (content == null)
+			content = DeveloperNoteTask.__template(now);
+		session._content = content;
 		
 		// Open server
 		try (SimpleHTTPServer<__DeveloperNoteSession__> server =
@@ -273,5 +280,48 @@ public class DeveloperNoteTask
 		
 		// Open the browser using another means
 		System.err.printf("TODO -- Open browser?%n");
+	}
+	
+	/**
+	 * Returns template for blank notes.
+	 * 
+	 * @param __at The date.
+	 * @return The note template.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	@SuppressWarnings("resource")
+	private static byte[] __template(LocalDateTime __at)
+		throws NullPointerException
+	{
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		// Write the template
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+			PrintStream ps = new PrintStream(
+				out, true, "utf-8"))
+		{
+			// Header
+			ps.printf("# %tY/%tm/%td\n", __at, __at, __at);
+			ps.print("\n");
+			
+			// Current time
+			ps.printf("## %tH:%tM", __at, __at);
+			ps.print("\n");
+			
+			// Ending space line for content
+			ps.print("\n");
+			
+			// Clear out and use this template
+			ps.flush();
+			return out.toByteArray();
+		}
+		
+		// Failed to write
+		catch (IOException e)
+		{
+			throw new RuntimeException("Could not create template", e);
+		}
 	}
 }
