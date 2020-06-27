@@ -10,29 +10,38 @@
 package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.util.FossilExe;
+import cc.squirreljme.plugin.util.NoteCalendarGenerator;
+import java.io.IOException;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 
 /**
- * Task which essentially just outputs the executable path to Fossil.
+ * Creates the developer note Calendar.
  *
- * @since 2020/06/24
+ * @since 2020/06/27
  */
-public class FossilExeTask
+public class RecreateDeveloperNoteCalendarTask
 	extends DefaultTask
 {
 	/**
 	 * Initializes the task.
 	 * 
-	 * @since 2020/06/24
+	 * @param __exeTask The executable task.
+	 * @since 2020/06/26
 	 */
 	@Inject
-	public FossilExeTask()
+	public RecreateDeveloperNoteCalendarTask(FossilExeTask __exeTask)
 	{
 		// Set details of this task
 		this.setGroup("squirreljmeGeneral");
-		this.setDescription("Prints the Fossil executable path.");
+		this.setDescription("Edits the developer note for the current day.");
+		
+		// The executable task must run first
+		this.dependsOn(__exeTask);
+		
+		// Fossil must exist
+		this.onlyIf(__task -> FossilExe.isAvailable(true));
 		
 		// Action to perform
 		this.doLast(this::action);
@@ -42,11 +51,17 @@ public class FossilExeTask
 	 * Performs the task action.
 	 * 
 	 * @param __task The called task.
-	 * @since 2020/06/24
+	 * @since 2020/06/26
 	 */
 	private void action(Task __task)
 	{
-		__task.getLogger().lifecycle(
-			FossilExe.instance().exePath().toString());
+		try
+		{
+			NoteCalendarGenerator.generateAndStore(FossilExe.instance());
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("Could not generate calendar.", e);
+		}
 	}
 }
