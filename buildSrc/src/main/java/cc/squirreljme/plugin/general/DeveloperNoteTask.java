@@ -10,6 +10,8 @@
 package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.util.FossilExe;
+import cc.squirreljme.plugin.util.NoteCalendarFinder;
+import cc.squirreljme.plugin.util.NoteCalendarGenerator;
 import cc.squirreljme.plugin.util.SimpleHTTPProtocolException;
 import cc.squirreljme.plugin.util.SimpleHTTPRequest;
 import cc.squirreljme.plugin.util.SimpleHTTPResponse;
@@ -84,7 +86,8 @@ public class DeveloperNoteTask
 		// Load pre-existing blog
 		FossilExe exe = FossilExe.instance();
 		byte[] content = exe.unversionCatBytes(filePath);
-		if (content == null)
+		boolean doCreate = (content == null);
+		if (doCreate)
 			content = DeveloperNoteTask.__template(now);
 		session._content = content;
 		
@@ -123,6 +126,18 @@ public class DeveloperNoteTask
 		// Store the note in the unversioned space, but only if saved
 		if (session._saveCount > 0)
 			exe.unversionedStoreBytes(filePath, session._content);
+		
+		// Recreate the calendar
+		if (doCreate)
+			try
+			{
+				NoteCalendarGenerator.generate(exe,
+					NoteCalendarFinder.findNotes(exe));
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException("Could not generate calendar.", e);
+			}
 	}
 	
 	/**
@@ -168,7 +183,7 @@ public class DeveloperNoteTask
 		
 		// Determine where this is
 		return String.format("developer-notes/%s/%tY/%tm/%td.mkd",
-			__user, __date, __date, __date);
+			__user.replace('.', '-'), __date, __date, __date);
 	}
 	
 	/**
