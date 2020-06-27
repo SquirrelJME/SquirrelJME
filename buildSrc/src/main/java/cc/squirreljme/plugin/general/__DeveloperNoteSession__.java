@@ -16,7 +16,26 @@ package cc.squirreljme.plugin.general;
  */
 final class __DeveloperNoteSession__
 {
+	/** The file path. */
+	public final String filePath;
+	
 	/** Submitted content data. */
 	byte[] _content =
 		new byte[0];
+	
+	/**
+	 * Initializes the session details.
+	 * 
+	 * @param __filePath The file path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	public __DeveloperNoteSession__(String __filePath)
+		throws NullPointerException
+	{
+		if (__filePath == null)
+			throw new NullPointerException("NARG");
+		
+		this.filePath = __filePath;
+	}
 }
