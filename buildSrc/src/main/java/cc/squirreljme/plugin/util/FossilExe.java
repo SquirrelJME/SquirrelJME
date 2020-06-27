@@ -279,7 +279,31 @@ public final class FossilExe
 		if (__fileName == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		byte[] data = this.unversionCatBytes(__fileName);
+		if (data == null)
+			return null;
+		
+		return new ByteArrayInputStream(data);
+	}
+	
+	/**
+	 * Gets the content of the specified file.
+	 * 
+	 * @param __fileName The file name.
+	 * @return The stream for the file data or {@code null} if no such file
+	 * exists or it has no content.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/25
+	 */
+	public final byte[] unversionCatBytes(String __fileName)
+		throws NullPointerException
+	{
+		// If no data is available, return nothing
+		byte[] data = this.runRawOutput("unversion", "cat", __fileName);
+		if (data.length == 0)
+			return null;
+		
+		return data;
 	}
 	
 	/**
