@@ -19,6 +19,7 @@ import java.net.URI;
  *
  * @since 2020/06/24
  */
+@Deprecated
 public final class SimpleHTTPCall
 {
 	/**
