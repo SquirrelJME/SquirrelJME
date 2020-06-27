@@ -228,6 +228,7 @@ public final class FossilExe
 	 * @return The raw output of the command.
 	 * @since 2020/06/25
 	 */
+	@SuppressWarnings("ThrowFromFinallyBlock")
 	public final byte[] runRawOutput(String... __args)
 	{
 		// Start the Fossil process
@@ -249,6 +250,19 @@ public final class FossilExe
 				out.write(buf, 0, rc);
 			}
 			
+			// Wait for it to complete
+			for (;;)
+				try
+				{
+					if (0 != process.waitFor())
+						throw new RuntimeException("Exited with failure.");
+					break;
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+			
+			// Use the result
 			return out.toByteArray();
 		}
 		
@@ -261,9 +275,8 @@ public final class FossilExe
 		// Make sure the process stops
 		finally
 		{
+			// Make sure the process is destroyed
 			process.destroy();
-			
-			System.err.printf("DEBUG -- Exit code: %s%n", process.exitValue());
 		}
 	}
 	

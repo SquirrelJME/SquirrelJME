@@ -109,9 +109,6 @@ public class SimpleHTTPServer<S>
 			// Read in the request
 			SimpleHTTPRequest request = SimpleHTTPRequest.parse(in);
 			
-			// Debug
-			System.err.printf("DEBUG -- Request: %s%n", request);
-			
 			// Handle the request, always do our own favorite icon
 			SimpleHTTPResponse response;
 			if ("/favicon.ico".equals(request.path.getPath()))
@@ -124,9 +121,6 @@ public class SimpleHTTPServer<S>
 			boolean stopHandling = (response == null);
 			if (stopHandling)
 				response = SimpleHTTPServer.__responseEnd();
-			
-			// Debug
-			System.err.printf("DEBUG -- Response: %s%n", response);
 			
 			// Send back to the client
 			try (OutputStream out = client.getOutputStream())
