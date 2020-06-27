@@ -16,24 +16,10 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Get the name of today's blog
-__myname="$($__exedir/myname.sh)"
-__nowyear="$(date +%Y)"
-__nowmont="$(date +%m)"
-__nowdayy="$(date +%d)"
-__htmtime="$__nowyear\/$__nowmont\/$__nowdayy"
-__fname="developer-notes/$__myname/$__nowyear/$__nowmont/$__nowdayy.mkd"
-
 # Go through all unversioned files for the blog
 __changed=0
 fossil uv ls | grep '^developer-notes\/' | while read __line
 do
-	# Ignore today
-	if [ "$__line" = "$__fname" ]
-	then
-		continue
-	fi	
-	
 	# Target directory
 	__target="$__exedir/../assets/$__line"
 	__tardir="$(dirname -- "$__target")"

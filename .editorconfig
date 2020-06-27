@@ -16,6 +16,7 @@ insert_final_newline = true
 tab_width = 4
 indent_size = 4
 max_line_length = 79
+trim_trailing_whitespace = true
 
 # Batch files are Windows specific
 [*.bat]
@@ -34,9 +35,10 @@ spaces_around_brackets = false
 indent_brace_style = Allman
 wildcard_import_limit = 0
 
-# Markdown may be in UTF-8
+# Markdown may be in UTF-8, but uses different indentation depending on context
 [*.{md,mkd}]
 charset = utf-8
+indent_style = unset
 
 # YAML uses a bit of a different format compared to the others
 [*.{yml,yaml}]
