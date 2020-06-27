@@ -15,8 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -132,61 +130,6 @@ public final class FossilExe
 	}
 	
 	/**
-	 * Runs an HTTP command on the Fossil executable, this uses the
-	 * {@code http} command which accepts standard input and output.
-	 * 
-	 * @param __uri The URI to run.
-	 * @return The result of the call.
-	 * @since 2020/06/24
-	 */
-	public final SimpleHTTPCall runHttp(String __uri)
-	{
-		return this.runHttp(URI.create(__uri));
-	}
-	
-	/**
-	 * Runs an HTTP command on the Fossil executable, this uses the
-	 * {@code http} command which accepts standard input and output.
-	 * 
-	 * @param __uri The URI to run.
-	 * @return The result of the call.
-	 * @since 2020/06/24
-	 */
-	public final SimpleHTTPCall runHttp(URI __uri)
-	{
-		// Start the Fossil process
-		Process process = this.runCommand("http");
-		
-		// Send in the HTTP stream
-		try (OutputStream out = process.getOutputStream())
-		{
-			// Send the request
-			SimpleHTTPCall.request(out, __uri);
-			
-			// Flush to ensure that our request was sent
-			out.flush();
-			
-			// Read the result of the process
-			try (InputStream in = process.getInputStream())
-			{
-				return SimpleHTTPCall.parse(in);
-			}
-		}
-		
-		// Could not read or write the command
-		catch (IOException e)
-		{
-			throw new RuntimeException("HTTP read/write error.", e);
-		}
-		
-		// Make sure the process stops regardless of what happens before
-		finally
-		{
-			process.destroy();
-		}
-	}
-	
-	/**
 	 * Executes the command and returns the lines used.
 	 * 
 	 * @param __args The arguments to call.
@@ -228,7 +171,6 @@ public final class FossilExe
 	 * @return The raw output of the command.
 	 * @since 2020/06/25
 	 */
-	@SuppressWarnings("ThrowFromFinallyBlock")
 	public final byte[] runRawOutput(String... __args)
 	{
 		// Start the Fossil process
