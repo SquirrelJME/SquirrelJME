@@ -16,9 +16,10 @@ import cc.squirreljme.plugin.util.SimpleHTTPResponse;
 import cc.squirreljme.plugin.util.SimpleHTTPResponseBuilder;
 import cc.squirreljme.plugin.util.SimpleHTTPServer;
 import cc.squirreljme.plugin.util.SimpleHTTPStatus;
-import java.io.ByteArrayOutputStream;
+import java.awt.Desktop;
+import java.awt.HeadlessException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
@@ -79,9 +80,12 @@ public class DeveloperNoteTask
 			new SimpleHTTPServer<>(session))
 		{
 			// Note on where to get it
-			__task.getLogger().lifecycle(String.format(
-				"Server opened at http://%s:%d/", server.hostname,
-				server.port));
+			String url = String.format("http://%s:%d/", server.hostname,
+				server.port);
+			__task.getLogger().lifecycle("Server opened at " + url);
+			
+			// Launch a web browser
+			DeveloperNoteTask.__launchBrowser(url);
 			
 			// Continuous handling loop
 			for (;;)
@@ -118,7 +122,7 @@ public class DeveloperNoteTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/26
 	 */
-	@SuppressWarnings("MagicNumber")
+	@SuppressWarnings("FeatureEnvy")
 	private SimpleHTTPResponse __httpHandler(
 		__DeveloperNoteSession__ __session, SimpleHTTPRequest __request)
 		throws NullPointerException
@@ -167,5 +171,42 @@ public class DeveloperNoteTask
 		
 		// Build final response
 		return response.build();
+	}
+	
+	/**
+	 * Attempts to launch a browser.
+	 * 
+	 * @param __url The URL to launch.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	private static void __launchBrowser(String __url)
+		throws NullPointerException
+	{
+		if (__url == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to use normal AWT stuff?
+		try
+		{
+			// Not a supported desktop?
+			if (!Desktop.isDesktopSupported())
+				throw new HeadlessException();
+			
+			// Open browser, or try to anyway
+			Desktop desktop = Desktop.getDesktop();
+			desktop.browse(URI.create(__url));
+			
+			// It worked, so stop
+			return;
+		}
+		
+		// Do not fail on this, just try more
+		catch (IOException|HeadlessException ignored)
+		{
+		}
+		
+		// Open the browser using another means
+		System.err.printf("TODO -- Open browser?%n");
 	}
 }
