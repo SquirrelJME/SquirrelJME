@@ -15,12 +15,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,6 +58,43 @@ public final class FossilExe
 			throw new NullPointerException("NARG");
 		
 		this.exe = __exe;
+	}
+	
+	/**
+	 * Cats the given file name.
+	 * 
+	 * @param __fileName The file name.
+	 * @return The file data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	public final byte[] cat(String __fileName)
+		throws NullPointerException
+	{
+		if (__fileName == null)
+			throw new NullPointerException("NARG");
+		
+		return this.runRawOutput("cat", __fileName);
+	}
+	
+	/**
+	 * Returns the current fossil user.
+	 * 
+	 * @return The current fossil user.
+	 * @throws InvalidFossilExeException If the user is not valid.
+	 * @since 2020/06/27
+	 */
+	public final String currentUser()
+		throws InvalidFossilExeException
+	{
+		// Use first line found for the user
+		for (String line : this.runLineOutput("user", "default"))
+			if (!line.isEmpty())
+				return line.trim();
+		
+		// Fail
+		throw new InvalidFossilExeException("No default user set in Fossil, " +
+			"please set `fossil user default user.name`");
 	}
 	
 	/**
@@ -107,61 +143,6 @@ public final class FossilExe
 		catch (IOException e)
 		{
 			throw new RuntimeException("Could not execute command.", e);
-		}
-	}
-	
-	/**
-	 * Runs an HTTP command on the Fossil executable, this uses the
-	 * {@code http} command which accepts standard input and output.
-	 * 
-	 * @param __uri The URI to run.
-	 * @return The result of the call.
-	 * @since 2020/06/24
-	 */
-	public final SimpleHTTPCall runHttp(String __uri)
-	{
-		return this.runHttp(URI.create(__uri));
-	}
-	
-	/**
-	 * Runs an HTTP command on the Fossil executable, this uses the
-	 * {@code http} command which accepts standard input and output.
-	 * 
-	 * @param __uri The URI to run.
-	 * @return The result of the call.
-	 * @since 2020/06/24
-	 */
-	public final SimpleHTTPCall runHttp(URI __uri)
-	{
-		// Start the Fossil process
-		Process process = this.runCommand("http");
-		
-		// Send in the HTTP stream
-		try (OutputStream out = process.getOutputStream())
-		{
-			// Send the request
-			SimpleHTTPCall.request(out, __uri);
-			
-			// Flush to ensure that our request was sent
-			out.flush();
-			
-			// Read the result of the process
-			try (InputStream in = process.getInputStream())
-			{
-				return SimpleHTTPCall.parse(in);
-			}
-		}
-		
-		// Could not read or write the command
-		catch (IOException e)
-		{
-			throw new RuntimeException("HTTP read/write error.", e);
-		}
-		
-		// Make sure the process stops regardless of what happens before
-		finally
-		{
-			process.destroy();
 		}
 	}
 	
@@ -228,6 +209,19 @@ public final class FossilExe
 				out.write(buf, 0, rc);
 			}
 			
+			// Wait for it to complete
+			for (;;)
+				try
+				{
+					if (0 != process.waitFor())
+						throw new RuntimeException("Exited with failure.");
+					break;
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+			
+			// Use the result
 			return out.toByteArray();
 		}
 		
@@ -240,6 +234,7 @@ public final class FossilExe
 		// Make sure the process stops
 		finally
 		{
+			// Make sure the process is destroyed
 			process.destroy();
 		}
 	}
@@ -259,7 +254,31 @@ public final class FossilExe
 		if (__fileName == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		byte[] data = this.unversionCatBytes(__fileName);
+		if (data == null)
+			return null;
+		
+		return new ByteArrayInputStream(data);
+	}
+	
+	/**
+	 * Gets the content of the specified file.
+	 * 
+	 * @param __fileName The file name.
+	 * @return The stream for the file data or {@code null} if no such file
+	 * exists or it has no content.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/25
+	 */
+	public final byte[] unversionCatBytes(String __fileName)
+		throws NullPointerException
+	{
+		// If no data is available, return nothing
+		byte[] data = this.runRawOutput("unversion", "cat", __fileName);
+		if (data.length == 0)
+			return null;
+		
+		return data;
 	}
 	
 	/**
@@ -270,7 +289,75 @@ public final class FossilExe
 	 */
 	public final Collection<String> unversionedLs()
 	{
-		throw new Error("TODO");
+		return this.runLineOutput("unversion", "ls");
+	}
+	
+	/**
+	 * Stores unversion bytes.
+	 * 
+	 * @param __fileName The file name.
+	 * @param __data The data to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	public final void unversionedStoreBytes(String __fileName, byte[] __data)
+		throws NullPointerException
+	{
+		if (__fileName == null || __data == null)
+			throw new NullPointerException("NARG");
+		
+		// Fossil accepts files as unversioned input
+		Path tempFile = null;
+		try
+		{
+			// Setup temporary file
+			tempFile = Files.createTempFile("squirreljme-uvfile",
+				".bin");
+			
+			// Write data to file
+			Files.write(tempFile, __data, StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.CREATE);
+			
+			// Store the file data
+			Process process = this.runCommand("unversion", "add",
+				tempFile.toAbsolutePath().toString(),
+				"--as", __fileName);
+			
+			// Wait for process to complete
+			for (;;)
+				try
+				{
+					if (process.waitFor() != 0)
+						throw new RuntimeException(
+							"Process exited with: " + process.exitValue());
+					
+					return;
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+		}
+		
+		// Could not write data
+		catch (IOException e)
+		{
+			throw new RuntimeException(
+				"Could not store file: " + __fileName, e);
+		}
+		
+		// Clean out file, if it exists
+		finally
+		{
+			if (tempFile != null)
+				try
+				{
+					Files.delete(tempFile);
+				}
+				catch (IOException ignored)
+				{
+				}
+		}
 	}
 	
 	/**
@@ -367,14 +454,23 @@ public final class FossilExe
 	/**
 	 * Check to see if Fossil is available.
 	 * 
+	 * @param __withUser Also check that the user is set?
 	 * @return If Fossil is available.
 	 * @since 2020/06/25
 	 */
-	public static boolean isAvailable()
+	public static boolean isAvailable(boolean __withUser)
 	{
 		try
 		{
-			FossilExe.instance().version();
+			FossilExe exe = FossilExe.instance();
+			
+			// These will throw exceptions if not valid
+			exe.version();
+			
+			// Check user as well?
+			if (__withUser)
+				exe.currentUser();
+			
 			return true;
 		}
 		
