@@ -117,9 +117,6 @@ public final class SimpleHTTPRequest
 			throw new SimpleHTTPProtocolException(
 				"Invalid HTTP request: " + requestLine);
 		
-		// Debug
-		System.err.printf("DEBUG -- Request: %s%n", requestLine);
-		
 		// Use these for later
 		httpMethod = SimpleHTTPMethod.valueOf(
 			requestSplice[0].toUpperCase());
@@ -176,12 +173,6 @@ public final class SimpleHTTPRequest
 				body.write(rc);
 			}
 		}
-		
-		// Debug
-		System.err.printf("DEBUG -- Method: %s%n", httpMethod);
-		System.err.printf("DEBUG -- Path: %s%n", httpPath);
-		System.err.printf("DEBUG -- Headers: %s%n", headers);
-		System.err.printf("DEBUG -- Body: %d bytes%n", body.size());
 		
 		// Build request
 		return new SimpleHTTPRequest(httpMethod, httpPath, headers,
