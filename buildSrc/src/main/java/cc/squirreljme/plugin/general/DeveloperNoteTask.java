@@ -19,8 +19,12 @@ import cc.squirreljme.plugin.util.SimpleHTTPStatus;
 import java.awt.Desktop;
 import java.awt.HeadlessException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.Objects;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
@@ -69,7 +73,9 @@ public class DeveloperNoteTask
 	private void action(Task __task)
 	{
 		// Setup session
-		__DeveloperNoteSession__ session = new __DeveloperNoteSession__();
+		String filePath = this.__blogFilePath();
+		__DeveloperNoteSession__ session = new __DeveloperNoteSession__(
+			filePath);
 		
 		// Load pre-existing blog
 		System.err.println("TODO -- Load pre-existing blog.");
@@ -82,6 +88,7 @@ public class DeveloperNoteTask
 			// Note on where to get it
 			String url = String.format("http://%s:%d/", server.hostname,
 				server.port);
+			__task.getLogger().lifecycle("Editing " + filePath);
 			__task.getLogger().lifecycle("Server opened at " + url);
 			
 			// Launch a web browser
@@ -114,6 +121,52 @@ public class DeveloperNoteTask
 	}
 	
 	/**
+	 * Returns the blog file path.
+	 * 
+	 * @return The path to the blog file.
+	 * @since 2020/06/27
+	 */
+	private String __blogFilePath()
+	{
+		return this.__blogFilePath(LocalDate.now());
+	}
+	
+	/**
+	 * Returns the blog file path.
+	 * 
+	 * @param __date The date to get.
+	 * @return The path to the blog file.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	private String __blogFilePath(LocalDate __date)
+		throws NullPointerException
+	{
+		return this.__blogFilePath(__date,
+			FossilExe.instance().currentUser());
+	}
+	
+	/**
+	 * Returns the blog file path.
+	 * 
+	 * @param __date The date to get.
+	 * @param __user The user to lookup.
+	 * @return The path to the blog file.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	private String __blogFilePath(LocalDate __date, String __user)
+		throws NullPointerException
+	{
+		if (__date == null || __user == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine where this is
+		return String.format("developer-notes/%s/%tY/%tm/%td.mkd",
+			__user, __date, __date, __date);
+	}
+	
+	/**
 	 * Handles the HTTP request.
 	 * 
 	 * @param __session The session being used.
@@ -139,17 +192,29 @@ public class DeveloperNoteTask
 			return response.status(SimpleHTTPStatus.NOT_FOUND).build();
 		
 		// Submission of the form? Load in that data
-		String query = __request.path.getQuery();
+		String query;
+		try
+		{
+			query = URLDecoder.decode(Objects.toString(
+				__request.path.getRawQuery(), ""), "utf-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new RuntimeException("Could not decode query", e);
+		}
+		
+		// Form content?
 		if (query != null && query.startsWith("content="))
 		{
 			// Split off the data
-			String data = query.substring("content=".length());
+			String data = query.substring("content=".length())
+				.replace("\r\n", "\n");
 			
 			// Store into the session bytes
 			__session._content = data.getBytes(StandardCharsets.UTF_8);
 		}
 		
-		// All done!
+		// All done?
 		else if (query != null && query.startsWith("finish="))
 			return null;
 		
