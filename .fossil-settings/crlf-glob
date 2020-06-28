@@ -1,2 +1,5 @@
 # IntellIJ Files (Depends on the host system)
 .idea/*.xml
+
+# Blog index (could be generated on Windows)
+assets/developer-notes/index.mkd
