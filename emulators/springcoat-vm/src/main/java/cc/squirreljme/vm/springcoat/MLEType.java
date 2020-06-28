@@ -123,7 +123,8 @@ public enum MLEType
 	},
 	
 	/** {@link TypeShelf#enumValues(TypeBracket)}. */
-	ENUM_VALUES("Enum[] enumValues(TypeBracket __type)")
+	ENUM_VALUES("enumValues:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/TypeBracket;)[Ljava/lang/Enum;")
 	{
 		/**
 		 * {@inheritDoc}
