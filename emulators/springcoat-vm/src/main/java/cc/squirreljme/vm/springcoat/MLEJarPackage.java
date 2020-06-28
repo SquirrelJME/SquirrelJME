@@ -69,11 +69,10 @@ public enum MLEJarPackage
 		{
 			JarPackageObject jar = MLEJarPackage.__jarObject(__args[0]);
 			
-			if (__args[1] == null)
-				throw new SpringMLECallError("Not a string.");
-			
 			String rcName = __thread.<String>asNativeObject(
 				String.class, __args[1]);
+			if (rcName == null)
+				throw new SpringMLECallError("Null resource string.");
 			
 			// Locate the resource
 			try (InputStream in = jar.library().resourceAsStream(rcName))
