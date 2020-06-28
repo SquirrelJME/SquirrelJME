@@ -76,9 +76,24 @@ public final class TypeShelf
 	 * @param __type The type to get the dimension count for.
 	 * @return The number of dimensions for the type, this will be {@code 0}
 	 * if this is not an array.
+	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/07/06
 	 */
-	public static native int dimensions(TypeBracket __type);
+	public static native int dimensions(TypeBracket __type)
+		throws MLECallError;
+	
+	/**
+	 * Gets the enumeration values for the given type.
+	 * 
+	 * @param __type The type to get the enumerated values from.
+	 * @return The enumeration values for the given type.
+	 * @throws MLECallError If {@code __type} is {@code null} or is not an
+	 * enumeration.
+	 * @since 2020/06/28
+	 */
+	@SuppressWarnings("rawtypes")
+	public static native Enum[] enumValues(TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Since types are virtual objects that do not have a true base off
@@ -117,36 +132,55 @@ public final class TypeShelf
 	 *
 	 * @param __type The type to get the interfaces of.
 	 * @return The interfaces of the class.
+	 * @throws MLECallError If {@code __type} is null. 
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket[] interfaces(TypeBracket __type);
+	public static native TypeBracket[] interfaces(TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns true if this type is an array.
 	 *
 	 * @param __type The type to check.
 	 * @return If this is an array.
+	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native boolean isArray(TypeBracket __type);
+	public static native boolean isArray(TypeBracket __type)
+		throws MLECallError;
+	
+	/**
+	 * Checks if this is an enumeration.
+	 * 
+	 * @param __type The type to check.
+	 * @return If this is an enumeration.
+	 * @throws MLECallError If {@code __type} is {@code null}.
+	 * @since 2020/06/28
+	 */
+	public static native boolean isEnum(TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns true if this type is an interface.
 	 *
 	 * @param __type The type to check.
 	 * @return If this is an interface.
+	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native boolean isInterface(TypeBracket __type);
+	public static native boolean isInterface(TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns true if this is a primitive type.
 	 *
 	 * @param __type The type to check.
 	 * @return If this is a primitive.
+	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native boolean isPrimitive(TypeBracket __type);
+	public static native boolean isPrimitive(TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns the type of the given object.
@@ -163,18 +197,22 @@ public final class TypeShelf
 	 *
 	 * @param __type The type to get the name of.
 	 * @return The runtime name of the class.
+	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native String runtimeName(TypeBracket __type);
+	public static native String runtimeName(TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns the super class of this class.
 	 *
 	 * @param __type The super class of this type.
 	 * @return Return the super class or {@code null} on null arguments.
+	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket superClass(TypeBracket __type);
+	public static native TypeBracket superClass(TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns the type holder for the {@code boolean} primitive type.
