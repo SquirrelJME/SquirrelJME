@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
