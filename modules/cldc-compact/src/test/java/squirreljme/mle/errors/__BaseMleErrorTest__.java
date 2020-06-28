@@ -67,9 +67,6 @@ abstract class __BaseMleErrorTest__
 			}
 		}
 		
-		// Record the call count
-		this.secondary("calls", callCount);
-		
 		// Report the count
 		return errorCount;
 	}
