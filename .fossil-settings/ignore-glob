@@ -4,7 +4,7 @@ buildSrc/.gradle/
 build/
 */build/
 *-original
-.log
+*.log
 
 # IntelliJ
 .idea/workspace.xml
