@@ -8,7 +8,7 @@
 build
 */build
 **/build
-.log
+*.log
 
 # IntelliJ Settings (Not needed)
 .idea
