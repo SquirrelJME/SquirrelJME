@@ -450,6 +450,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Checks if this is an enumeration.
+	 * 
+	 * @return If this is an enumeration.
+	 * @since 2020/06/28
+	 */
+	public final boolean isEnum()
+	{
+		return this.flags().isEnum();
+	}
+	
+	/**
 	 * Has this class been initialized?
 	 *
 	 * @return If the class has been initialized.
