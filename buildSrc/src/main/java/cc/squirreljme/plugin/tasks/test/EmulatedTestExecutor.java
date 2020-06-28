@@ -73,55 +73,37 @@ public final class EmulatedTestExecutor
 		// We need the project to access details
 		Project project = this._testInVMTask.getProject();
 		
-		project.getLogger().lifecycle("POINT A");
-		
 		// Initialize the classpath for our emulator!
 		// Otherwise the Gradle build will fail since it tries to get the
 		// classpath outside of this
 		this.emulatorClassPath(project, __spec.emulator);
 		
-		project.getLogger().lifecycle("POINT B");
-		
 		// Run for this suite/project
 		EmulatedTestSuiteDescriptor suite =
 			new EmulatedTestSuiteDescriptor(project);
-		
-		project.getLogger().lifecycle("POINT C");
 		
 		// Perform testing logic
 		boolean allPassed;
 		try
 		{
-			project.getLogger().lifecycle("POINT E");
-			
 			// Load tests to run
 			Collection<String> classes = EmulatedTestUtilities.readJarServices(
 				__spec.jar.getArchiveFile().get().getAsFile().toPath());
-				
-			project.getLogger().lifecycle("POINT F");
 			
 			// Report on the found test size (debugging)
 			project.getLogger().lifecycle(String.format(
 				"Found %d tests...%n", classes.size()));
 			
-			project.getLogger().lifecycle("POINT G");
-			
 			// Indicate that the suite has started execution
 			__results.started(suite, EmulatedTestUtilities.startNow());
-			
-			project.getLogger().lifecycle("POINT G.a");
 			
 			// Execute test classes (find them and run them)
 			allPassed = this.__executeClasses(__spec, __results, suite,
 				classes);
 			
-			project.getLogger().lifecycle("POINT H");
-			
 			// Did all tests pass?
 			__results.completed(suite.getId(),
 				EmulatedTestUtilities.passOrFailNow(allPassed));
-			
-			project.getLogger().lifecycle("POINT I");
 		}
 		
 		// Something went wrong it seems
@@ -131,8 +113,6 @@ public final class EmulatedTestExecutor
 			
 			throw new RuntimeException("Caught throwable during testing.", t);
 		}
-		
-		project.getLogger().lifecycle("POINT J");
 		
 		// Did not pass, so cause the task to fail
 		if (!allPassed)
