@@ -20,14 +20,15 @@ idea
 
 		// Exclude these directories so IntelliJ does not pick these up
 		// in inspections and builds
-		excludeDirs += file("utils-dev")
-		excludeDirs += file("assets")
-		excludeDirs += file("config")
-		excludeDirs += file(".idea")
 		excludeDirs += file(".circleci")
 		excludeDirs += file(".fossil-settings")
 		excludeDirs += file(".github")
+		excludeDirs += file(".idea")
+		excludeDirs += file(".vscode")
+		excludeDirs += file("assets")
+		excludeDirs += file("config")
 		excludeDirs += file("gradle")
+		excludeDirs += file("utils-dev")
 	}
 }
 
