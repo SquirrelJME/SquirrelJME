@@ -56,8 +56,12 @@ public final class UncaughtExceptionHandler
 		}
 		
 		// Stop this from failing
-		catch (Throwable ignored)
+		catch (Throwable e)
 		{
+			// Emit a message to indicate the reason
+			Debugging.debugNote("UNCAUGHT DOUBLE-EXCEPTION?");
+			Debugging.debugNote("Class: %s", e.getClass().getName());
+			Debugging.debugNote("Message: %s", e.getMessage());
 		}
 	}
 }

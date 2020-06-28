@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
@@ -204,6 +205,29 @@ public enum MLEObject
 				.getSpringClass(), len);
 		}
 	},
+	
+	/** {@link ObjectShelf#holdsLock(Thread, Object)}. */
+	HOLDS_LOCK("holdsLock:(Ljava/lang/Thread;Ljava/lang/Object;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/27
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread vmThread = MLEThread.__vmThread(
+				MLEThread.TO_VM_THREAD.handle(__thread, __args[0]))
+				.getThread();
+			SpringObject target = (SpringObject)__args[1];
+			
+			// Cannot be null
+			if (target == null || target == SpringNullObject.NULL)
+				throw new SpringMLECallError("Target object is null.");
+			
+			return target.monitor().isHeldBy(vmThread);
+		}
+	}, 
 	
 	/** {@link ObjectShelf#identityHashCode(Object)}. */
 	IDENTITY_HASH_CODE("identityHashCode:(Ljava/lang/Object;)I")
