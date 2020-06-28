@@ -433,6 +433,17 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Sets the current exit code.
+	 * 
+	 * @param __exitCode The exit code to set.
+	 * @since 2020/06/27
+	 */
+	public final void setExitCode(int __exitCode)
+	{
+		this._exitcode = __exitCode;
+	}
+	
+	/**
 	 * Returns the suite manager which is available.
 	 *
 	 * @return The suite manager that is available.

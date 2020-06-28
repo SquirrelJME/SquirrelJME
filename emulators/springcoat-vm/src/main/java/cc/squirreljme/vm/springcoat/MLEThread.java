@@ -235,6 +235,24 @@ public enum MLEThread
 		}
 	},
 	
+	/** {@link ThreadShelf#setCurrentExitCode(int)}. */
+	SET_CURRENT_EXIT_CODE("setCurrentExitCode:(I)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/27
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			int exitCode = (int)__args[0];
+			
+			__thread.machine.setExitCode(exitCode);
+			
+			return null;
+		}
+	}, 
+	
 	/** {@link ThreadShelf#sleep(int, int)}. */
 	SLEEP("sleep:(II)Z")
 	{
