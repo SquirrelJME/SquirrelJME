@@ -103,9 +103,9 @@ abstract class __BaseArrayInvalidTest__<A>
 				break;
 			
 			default:
-				return false;
+				return true;
 		}
 		
-		return true;
+		return false;
 	}
 }
