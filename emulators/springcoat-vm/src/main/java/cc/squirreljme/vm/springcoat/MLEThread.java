@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -311,7 +312,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((VMThreadObject)__args[0]).getThread().id;
+			return MLEThread.__vmThread(__args[0]).getThread().id;
 		}
 	},
 	
@@ -346,7 +347,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((VMThreadObject)__args[0]).getThread().isMain();
+			return MLEThread.__vmThread(__args[0]).getThread().isMain();
 		}
 	},
 	
@@ -361,7 +362,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread target = ((VMThreadObject)__args[0]).getThread();
+			SpringThread target = MLEThread.__vmThread(__args[0]).getThread();
 			
 			// Create worker for thread and start it
 			SpringThreadWorker worker = new SpringThreadWorker(
@@ -422,5 +423,22 @@ public enum MLEThread
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Ensures that this is a {@link VMThreadObject}.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a {@link VMThreadObject}.
+	 * @throws SpringMLECallError If this is not one.
+	 * @since 2020/06/27
+	 */
+	static VMThreadObject __vmThread(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof VMThreadObject))
+			throw new SpringMLECallError("Not a VMThreadObject.");
+		
+		return (VMThreadObject)__object; 
 	}
 }
