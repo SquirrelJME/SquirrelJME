@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
@@ -27,6 +28,22 @@ import net.multiphasicapps.classfile.PrimitiveType;
 public enum MLEType
 	implements MLEFunction
 {
+	/** {@link TypeShelf#binaryName(TypeBracket)}. */
+	BINARY_NAME("binaryName:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"TypeBracket;)Ljava/lang/String;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/27
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.asVMObject(MLEType.__type(__args[0])
+				.getSpringClass().name().binaryName().toString());
+		}
+	}, 
+	
 	/** {@link TypeShelf#binaryPackageName(TypeBracket)}. */
 	BINARY_PACKAGE_NAME("binaryPackageName:(Lcc/squirreljme/jvm/" +
 		"mle/brackets/TypeBracket;)Ljava/lang/String;")

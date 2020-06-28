@@ -36,10 +36,11 @@ public enum MLEDebug
 		{
 			SpringObject object = (SpringObject)__args[0];
 			
-			// Must be Throwable
+			// Must be throwable type
 			if (!(object instanceof SpringSimpleObject) ||
-				!"java/lang/Throwable".equals(object.type().name().toString()))
-				throw new SpringMLECallError("Invalid object.");
+				object.type().isAssignableFrom(
+				__thread.resolveClass("java/lang/Throwable")))
+				throw new SpringMLECallError("Not a Throwable.");
 			
 			return ((SpringSimpleObject)object).fieldByNameAndType(
 				false, "_stack",
