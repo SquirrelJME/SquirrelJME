@@ -94,6 +94,14 @@ public class TestTypeShelfInvalid
 				TypeShelf.superClass(null);
 				break;
 			
+			case 16:
+				TypeShelf.isEnum(null);
+				break;
+			
+			case 17:
+				TypeShelf.enumValues(null);
+				break;
+			
 			default:
 				return true;
 		}
