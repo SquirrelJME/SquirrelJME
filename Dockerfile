@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # We need the entire JDK here for this to work!
-FROM openjdk:8-jdk AS build
+FROM openjdk:14-jdk AS build
 
 # emulator-base uses JNI to provide Assembly methods, we need a C++ compiler
 RUN apt-get update
@@ -22,7 +22,7 @@ RUN ./gradlew --no-daemon jar
 
 # We do not need a big complex environment to run SquirrelJME now, so we
 # can use a more compact image here
-FROM openjdk:8-jre
+FROM openjdk:14-jdk
 
 # Description
 LABEL cc.squirreljme.vm="springcoat"
