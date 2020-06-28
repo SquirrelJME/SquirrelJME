@@ -79,6 +79,49 @@ public enum MLEType
 		}
 	},
 	
+	/** {@link TypeShelf#component(TypeBracket)}. */
+	COMPONENT("component:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"TypeBracket;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/28
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringClass type = MLEType.__type(__args[0]).getSpringClass();
+			
+			if (!type.isArray())
+				throw new SpringMLECallError("Not an array type.");
+			
+			return new TypeObject(type.componentType());
+		}
+	},
+	
+	/** {@link TypeShelf#componentRoot(TypeBracket)}. */
+	COMPONENT_ROOT("componentRoot:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/TypeBracket;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/28
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringClass type = MLEType.__type(__args[0]).getSpringClass();
+			
+			if (!type.isArray())
+				throw new SpringMLECallError("Not an array type.");
+			
+			// Find the root component
+			while (type.isArray())
+				type = type.componentType();
+			return new TypeObject(type);
+		}
+	},
+	
 	/** {@link TypeShelf#equals(TypeBracket, TypeBracket)}. */
 	EQUALS("equals:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;" +
 		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z")

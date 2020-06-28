@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
  * Provides the shelf for types that exist within the JVM.
@@ -51,9 +52,12 @@ public final class TypeShelf
 	 *
 	 * @param __type The type to get the component of.
 	 * @return The component type of the class.
+	 * @throws MLECallError If {@code __type} is {@code null} or is not an
+	 * array type.
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket component(TypeBracket __type);
+	public static native TypeBracket component(TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns the root component of this type, this is essentially calling

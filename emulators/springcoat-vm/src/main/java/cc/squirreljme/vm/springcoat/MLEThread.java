@@ -71,7 +71,8 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject javaThread = (SpringObject)__args[0];
+			SpringSimpleObject javaThread = MLEThread.__javaThread(__thread,
+				__args[0]);
 			
 			// Find the thread which the given passed object is bound to, this
 			// is the target thread
@@ -166,7 +167,7 @@ public enum MLEThread
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			// Just set the started field to true
-			((SpringSimpleObject)__args[0]).fieldByNameAndType(
+			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
 				false, "_started", "Z").set(true);
 			return null;
 		}
@@ -183,8 +184,9 @@ public enum MLEThread
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			// Just get the state of the given field
-			return ((SpringSimpleObject)__args[0]).fieldByNameAndType(
-				false, "_started", "Z").get();
+			return MLEThread.__javaThread(__thread, __args[0])
+				.fieldByNameAndType(false, 
+					"_started", "Z").get();
 		}
 	},
 	
@@ -196,7 +198,8 @@ public enum MLEThread
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			// Just get the state of the given field
-			return ((SpringSimpleObject)__args[0]).fieldByNameAndType(
+			return MLEThread.__javaThread(__thread, __args[0])
+				.fieldByNameAndType(
 				false, "_runnable",
 				"Ljava/lang/Runnable;").get();
 		}
@@ -213,7 +216,7 @@ public enum MLEThread
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			// Just set the started field to true
-			((SpringSimpleObject)__args[0]).fieldByNameAndType(
+			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
 				false, "_isAlive", "Z")
 				.set((int)__args[1] != 0);
 			return null;
@@ -293,7 +296,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((SpringSimpleObject)__args[0]).fieldByField(
+			return MLEThread.__javaThread(__thread, __args[0]).fieldByField(
 				__thread.resolveClass("java/lang/Thread")
 				.lookupField(false, "_vmThread",
 				"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;"))
@@ -423,6 +426,34 @@ public enum MLEThread
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Checks if this is a Java thread.
+	 * 
+	 * @param __thread The context thread.
+	 * @param __object The object to check.
+	 * @return The verified object.
+	 * @throws SpringMLECallError If {@code __object} is {@code null} or is
+	 * not an instance of {@link Throwable}.
+	 * @since 2020/06/28
+	 */
+	static SpringSimpleObject __javaThread(SpringThreadWorker __thread,
+		Object __object)
+		throws SpringMLECallError
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		if (!(__object instanceof SpringSimpleObject))
+			throw new SpringMLECallError("Not a Java Thread");
+		
+		SpringSimpleObject rv = (SpringSimpleObject)__object;
+		if (!rv.type().isAssignableFrom(
+			__thread.resolveClass("java/lang/Thread")))
+			throw new SpringMLECallError("Not instance of Thread.");
+		
+		return rv;
 	}
 	
 	/**
