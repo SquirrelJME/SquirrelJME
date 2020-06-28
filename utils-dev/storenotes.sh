@@ -55,7 +55,7 @@ done
 # Files changed?
 #if [ "$__changed" -gt "0" ]
 #then
-	fossil commit -m "Backup developer notes."
+	fossil commit --no-prompt -m "Backup developer notes."
 #fi
 
 # Clear temporary
