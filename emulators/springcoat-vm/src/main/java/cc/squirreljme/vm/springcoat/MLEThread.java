@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
@@ -154,6 +155,28 @@ public enum MLEThread
 			return __thread.thread.threadInstance();
 		}
 	},
+	
+	/** {@link ThreadShelf#javaThreadClearInterrupt(Thread)}. */
+	JAVA_THREAD_CLEAR_INTERRUPT("javaThreadClearInterrupt:" +
+		"(Ljava/lang/Thread;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/28
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringFieldStorage field = MLEThread.__javaThread(__thread,
+				__args[0]).fieldByNameAndType(false, 
+				"_interrupted", "Z");
+			
+			// Get and clear the field value
+			boolean old = (boolean)field.get();
+			field.set(false);
+			return old;
+		}
+	}, 
 	
 	/** {@link ThreadShelf#javaThreadFlagStarted(Thread)}. */
 	JAVA_THREAD_FLAG_STARTED("javaThreadFlagStarted:(Ljava/lang/" +
