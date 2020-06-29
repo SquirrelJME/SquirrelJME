@@ -193,11 +193,22 @@ public class Thread
 	
 	/**
 	 * Interrupts the thread.
+	 * 
+	 * This will call {@link #checkAccess()} if this thread is not the current
+	 * thread.
 	 *
+	 * @throws SecurityException If the current thread is not permitted to
+	 * interrupt this thread.
 	 * @since 2018/11/21
 	 */
 	public void interrupt()
+		throws SecurityException
 	{
+		// If this is not the current thread, we need to talk to the security
+		// manager
+		if (ThreadShelf.currentJavaThread() != this)
+			this.checkAccess();
+		
 		// Signal software interrupt
 		this._interrupted = true;
 		
@@ -229,6 +240,9 @@ public class Thread
 	
 	/**
 	 * Waits forever for a thread to die or until interrupted.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @throws InterruptedException If the thread was interrupted while
 	 * waiting.
@@ -242,6 +256,9 @@ public class Thread
 	
 	/**
 	 * Waits for a thread to die.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @param __ms The milliseconds to wait for, if this is zero then this
 	 * will wait forever.
@@ -260,6 +277,9 @@ public class Thread
 	 * Waits for a thread to die.
 	 *
 	 * If both milliseconds and nanoseconds are zero this will wait forever.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @param __ms The milliseconds to wait for.
 	 * @param __ns The nanoseconds to wait for.
@@ -458,6 +478,9 @@ public class Thread
 	
 	/**
 	 * Causes the thread to sleep for the given milliseconds and nanoseconds.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @param __ms The milliseconds to sleep for.
 	 * @param __ns The nanoseconds to sleep for, in the range of 0-999999.
@@ -481,8 +504,8 @@ public class Thread
 		// be non-zero!
 		if (ThreadShelf.sleep(ims, __ns))
 		{
-			// Signal interrupts
-			Thread.currentThread().interrupt();
+			// The interrupt status becomes cleared for our current thread
+			ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
 			
 			// {@squirreljme.error ZZ24 Sleep was interrupted.}
 			throw new InterruptedException("ZZ24");
