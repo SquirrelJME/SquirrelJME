@@ -12,6 +12,8 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
@@ -91,49 +93,76 @@ public final class System
 				"ZZ1x %d %d %d %d %d", __srcOff, srcLen, __destOff, destLen,
 				__copyLen));
 		
+		// Get both respective classes
+		Class<?> srcClass = __src.getClass();
+		Class<?> destClass = __dest.getClass();
+		
 		// {@squirreljme.error ZZ1y The source array type is not compatible
 		// with destination array. (The source array; The destination array)}
-		if (!__dest.getClass().isAssignableFrom(__src.getClass()))
+		if (!destClass.isAssignableFrom(srcClass))
 			throw new ArrayStoreException(String.format(
 				"ZZ1y %s %s", __src, __dest));
+		
+		// If we are copying nothing then we need not even bother with anything
+		// else and we do not have to check the array types as well.
+		if (__copyLen == 0)
+			return;
+		
+		// Also as well, if the source and destination are the same and the
+		// offsets are the same then nothing will happen at all.
+		if (__src == __dest && __srcOff == __destOff)
+			return;
 		
 		// These offsets for the loops are the same
 		int i = __srcOff,
 			o = __destOff,
 			end = __srcOff + __copyLen;
 		
-		// Copy depending on the type
-		if (__src instanceof boolean[])
-			for (boolean[] s = (boolean[])__src, d = (boolean[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof byte[])
-			for (byte[] s = (byte[])__src, d = (byte[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof short[])
-			for (short[] s = (short[])__src, d = (short[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof char[])
-			ObjectShelf.arrayCopy((char[])__src, __srcOff,
-				(char[])__dest, __destOff, __copyLen);
-		else if (__src instanceof int[])
-			for (int[] s = (int[])__src, d = (int[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof long[])
-			for (long[] s = (long[])__src, d = (long[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof float[])
-			for (float[] s = (float[])__src, d = (float[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof double[])
-			for (double[] s = (double[])__src, d = (double[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
+		// We can use the native type system within MLE to knock off a few
+		// branch possibilities
+		TypeBracket srcType = TypeShelf.classToType(srcClass);
+		TypeBracket component = TypeShelf.component(srcType);
+		
+		// Primitive types can be copied at full speed as they do not require
+		// any references are otherwise to be counted or garbage collection to
+		// be managed
+		if (TypeShelf.isPrimitive(component))
+		{
+			// More common primitives
+			if (__src instanceof byte[])
+				ObjectShelf.arrayCopy((byte[])__src, __srcOff,
+					(byte[])__dest, __destOff, __copyLen);
+			else if (__src instanceof char[])
+				ObjectShelf.arrayCopy((char[])__src, __srcOff,
+					(char[])__dest, __destOff, __copyLen);
+			else if (__src instanceof int[])
+				ObjectShelf.arrayCopy((int[])__src, __srcOff,
+					(int[])__dest, __destOff, __copyLen);
+			else if (__src instanceof short[])
+				ObjectShelf.arrayCopy((short[])__src, __srcOff,
+					(short[])__dest, __destOff, __copyLen);
+			
+			// Less common types
+			else if (__src instanceof boolean[])
+				ObjectShelf.arrayCopy((boolean[])__src, __srcOff,
+					(boolean[])__dest, __destOff, __copyLen);
+			else if (__src instanceof long[])
+				ObjectShelf.arrayCopy((long[])__src, __srcOff,
+					(long[])__dest, __destOff, __copyLen);
+			else if (__src instanceof float[])
+				ObjectShelf.arrayCopy((float[])__src, __srcOff,
+					(float[])__dest, __destOff, __copyLen);
+			else if (__src instanceof double[])
+				ObjectShelf.arrayCopy((double[])__src, __srcOff,
+					(double[])__dest, __destOff, __copyLen);
+			
+			// {@squirreljme.error ZZ1h Not a primitive array type.}
+			else
+				throw new Error("ZZ1h");
+		}
+		
+		// There is no native handler for manual object array copies due to
+		// references and otherwise
 		else
 			for (Object[] s = (Object[])__src, d = (Object[])__dest;
 				i < end; i++, o++)
