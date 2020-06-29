@@ -1,0 +1,22 @@
+# 2020/06/27
+
+## 12:15
+
+This is a test of the note system.
+
+## 12:16
+
+And I really think that this is working!!!
+
+## 12:19
+
+Showing my wife, and is she interested? She knocks her head to the side, so not sure what she actually thinks of it.
+
+## 12:23
+
+Also added not saving when not saved.
+
+## 20:55
+
+Okay so for some reason, there is an issue within Gradle that it really does not like the custom test tasks and such for SpringCoat/SummerCoat. So these will
+have to be redone completely.

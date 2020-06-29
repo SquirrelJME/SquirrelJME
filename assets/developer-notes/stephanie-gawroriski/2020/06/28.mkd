@@ -1,0 +1,5 @@
+# 2020/06/28
+
+## 12:40
+
+One thing I really need to do is to fixup the testing so it does not take a short forever along with other things, is very slow.
