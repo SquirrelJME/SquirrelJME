@@ -6,18 +6,19 @@ build/
 *-original
 *.log
 
-# IntelliJ
-.idea/workspace.xml
-.idea/usage-statistics.xml
-.idea/tasks.xml
-
 # IntelliJ (Shared but not used)
 .idea/aws.xml
 .idea/dbnavigator.xml
+.idea/discord.xml
+.idea/encodings.xml
 .idea/jarRepositories.xml
 .idea/rSettings.xml
 .idea/render.experimental.xml
 .idea/serialmonitor_settings.xml
+.idea/tasks.xml
+.idea/uiDesigner.xml
+.idea/usage-statistics.xml
+.idea/workspace.xml
 
 # Contributions
 *.diff
