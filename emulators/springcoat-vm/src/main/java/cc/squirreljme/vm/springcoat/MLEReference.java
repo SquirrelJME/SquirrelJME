@@ -11,9 +11,8 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
-import java.lang.ref.Reference;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
  * Functions for {@link ReferenceShelf}.
@@ -34,7 +33,7 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((RefLinkObject)__args[0]).getObject();
+			return MLEReference.__refLink(__args[0]).getObject();
 		}
 	},
 	
@@ -49,7 +48,8 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			((RefLinkObject)__args[0]).setObject((SpringObject)__args[1]);
+			MLEReference.__refLink(__args[0])
+				.setObject((SpringObject)__args[1]);
 			return null;
 		}
 	},
@@ -131,5 +131,22 @@ public enum MLEReference
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Checks if this is a {@link RefLinkObject}.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a {@link RefLinkObject} if this is one.
+	 * @throws SpringMLECallError If this is not a {@link RefLinkObject}.
+	 * @since 2020/06/28
+	 */
+	static RefLinkObject __refLink(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof RefLinkObject))
+			throw new SpringMLECallError("Not a RefLinkObject.");
+		
+		return (RefLinkObject)__object; 
 	}
 }

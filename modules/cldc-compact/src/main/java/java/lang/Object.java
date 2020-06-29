@@ -11,8 +11,10 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -158,6 +160,9 @@ public class Object
 	/**
 	 * Causes the current thread to wait on this object's monitor until
 	 * {@link #notify()} or {@link #notifyAll()} has been call.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @throws IllegalMonitorStateException If the current thread does not own
 	 * the monitor for this object.
@@ -175,6 +180,9 @@ public class Object
 	 * Causes the current thread to wait on this object's monitor until
 	 * {@link #notify()} or {@link #notifyAll()} has been call, however it will
 	 * stop after the given time has elapsed.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @param __ms The milliseconds to wait for, if this is {@code 0} then this
 	 * will wait forever.
@@ -199,6 +207,9 @@ public class Object
 	 *
 	 * If both {@code __ms} and {@code __ns} are zero, then the wait will be
 	 * forever.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @param __ms The milliseconds to wait for, if this is {@code 0} then this
 	 * will wait forever.
@@ -227,16 +238,18 @@ public class Object
 				// Not interrupted
 			case MonitorResultType.NOT_INTERRUPTED:
 				return;
-			
-				// {@squirreljme.error ZZ1h Wait operation has been
-				// interrupted.}
+				
+				// Our thread was interrupted
 			case MonitorResultType.INTERRUPTED:
-				Thread.currentThread().interrupt();
+				// The interrupt status becomes cleared for our current thread
+				ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
+				
 				throw new InterruptedException("ZZ1h");
 				
-				// Should not happen
+				// {@squirreljme.error ZZ14 MLE Call returned an invalid
+				// monitor result status.}
 			default:
-				throw new todo.OOPS();
+				throw new MLECallError("ZZ14");
 		}
 	}
 }
