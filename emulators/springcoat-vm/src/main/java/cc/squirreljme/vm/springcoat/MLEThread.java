@@ -172,7 +172,7 @@ public enum MLEThread
 				"_interrupted", "Z");
 			
 			// Get and clear the field value
-			boolean old = (boolean)field.get();
+			Object old = field.get();
 			field.set(false);
 			return old;
 		}
