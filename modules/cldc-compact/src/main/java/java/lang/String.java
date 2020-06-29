@@ -326,10 +326,17 @@ public final class String
 	public char charAt(int __i)
 		throws IndexOutOfBoundsException
 	{
-		char[] chars = this._chars;
-		if (__i < 0 || __i >= chars.length)
-			throw new IndexOutOfBoundsException("IOOB " + __i);
-		return chars[__i];
+		// Rather than bounds checking, directly try to access the array
+		try
+		{
+			return this._chars[__i];
+		}
+		
+		// We must ensure that the correct exception is thrown here
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			throw new StringIndexOutOfBoundsException(__i);
+		}
 	}
 	
 	/**

@@ -368,8 +368,9 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		byte[] rv = new byte[__newLen];
-		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
-			rv[i] = __src[i];
+		
+		ObjectShelf.arrayCopy(__src, 0, rv, 0,
+			Math.min(__newLen, __src.length));
 		
 		return rv;
 	}
@@ -393,8 +394,9 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		short[] rv = new short[__newLen];
-		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
-			rv[i] = __src[i];
+		
+		ObjectShelf.arrayCopy(__src, 0, rv, 0,
+			Math.min(__newLen, __src.length));
 		
 		return rv;
 	}
@@ -418,8 +420,9 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		int[] rv = new int[__newLen];
-		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
-			rv[i] = __src[i];
+		
+		ObjectShelf.arrayCopy(__src, 0, rv, 0,
+			Math.min(__newLen, __src.length));
 		
 		return rv;
 	}
@@ -443,8 +446,9 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		long[] rv = new long[__newLen];
-		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
-			rv[i] = __src[i];
+		
+		ObjectShelf.arrayCopy(__src, 0, rv, 0,
+			Math.min(__newLen, __src.length));
 		
 		return rv;
 	}
@@ -494,8 +498,9 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		float[] rv = new float[__newLen];
-		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
-			rv[i] = __src[i];
+		
+		ObjectShelf.arrayCopy(__src, 0, rv, 0,
+			Math.min(__newLen, __src.length));
 		
 		return rv;
 	}
@@ -519,8 +524,9 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		double[] rv = new double[__newLen];
-		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
-			rv[i] = __src[i];
+		
+		ObjectShelf.arrayCopy(__src, 0, rv, 0,
+			Math.min(__newLen, __src.length));
 		
 		return rv;
 	}
@@ -544,8 +550,9 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		boolean[] rv = new boolean[__newLen];
-		for (int i = 0, n = Math.min(__newLen, __src.length); i < n; i++)
-			rv[i] = __src[i];
+		
+		ObjectShelf.arrayCopy(__src, 0, rv, 0,
+			Math.min(__newLen, __src.length));
 		
 		return rv;
 	}
