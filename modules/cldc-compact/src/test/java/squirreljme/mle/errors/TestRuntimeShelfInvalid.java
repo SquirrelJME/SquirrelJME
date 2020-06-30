@@ -48,6 +48,10 @@ public class TestRuntimeShelfInvalid
 				RuntimeShelf.vmStatistic(VMStatisticType.NUM_STATISTICS);
 				break;
 			
+			case 4:
+				RuntimeShelf.systemProperty(null);
+				break;
+			
 			default:
 				return true;
 		}

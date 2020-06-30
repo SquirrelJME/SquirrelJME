@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
  * Functions for {@link MLERuntime}.
@@ -137,8 +138,13 @@ public enum MLERuntime
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.machine._sysproperties.get(
-				__thread.<String>asNativeObject(String.class, __args[0]));
+			String key = __thread
+				.<String>asNativeObject(String.class, __args[0]);
+			
+			if (key == null)
+				throw new SpringMLECallError("Null key.");
+			
+			return __thread.machine._sysproperties.get(key);
 		}
 	},
 	
@@ -152,7 +158,12 @@ public enum MLERuntime
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			switch ((int)__args[0])
+			int index = (int)__args[0];
+			if (index < 0 || index >= VMDescriptionType.NUM_TYPES)
+				throw new SpringMLECallError(
+					"Index out of range: " + index);
+			
+			switch (index)
 			{
 				case VMDescriptionType.EXECUTABLE_PATH:
 					return null;
@@ -196,7 +207,12 @@ public enum MLERuntime
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			switch ((int)__args[0])
+			int index = (int)__args[0];
+			if (index < 0 || index >= VMDescriptionType.NUM_TYPES)
+				throw new SpringMLECallError(
+					"Index out of range: " + index);
+			
+			switch (index)
 			{
 				case VMStatisticType.MEM_FREE:
 					return Runtime.getRuntime().freeMemory();
