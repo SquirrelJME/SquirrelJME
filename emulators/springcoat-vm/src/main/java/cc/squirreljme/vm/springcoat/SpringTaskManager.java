@@ -11,9 +11,11 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -35,6 +37,9 @@ public final class SpringTaskManager
 	
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
+	
+	/** Global state. */
+	protected final GlobalState globalState;
 	
 	/** Tasks that are used. */
 	private final Map<Integer, SpringTask> _tasks =
@@ -66,6 +71,7 @@ public final class SpringTaskManager
 		this.profiler = (__ps == null ? new ProfilerSnapshot() : __ps);
 		this._sysprops = (__sp == null ? new HashMap<String, String>() :
 			new HashMap<>(__sp));
+		this.globalState = new GlobalState();
 	}
 	
 	/**
@@ -85,6 +91,9 @@ public final class SpringTaskManager
 	{
 		if (__cp == null || __entry == null || __args == null)
 			throw new NullPointerException("NARG");
+		
+		if (true)
+			throw Debugging.todo("Tasks changed completely!!");
 		
 		VMSuiteManager suites = this.suites;
 		
@@ -141,8 +150,7 @@ public final class SpringTaskManager
 		// Build machine for the task
 		SpringMachine machine = new SpringMachine(suites,
 			new SpringClassLoader(scl), this, null,
-			false, bootdx, __gd + 1,
-			this.profiler, this._sysprops, __args);
+			this.profiler, this._sysprops, this.globalState, __args);
 		
 		// Lock on tasks
 		Map<Integer, SpringTask> tasks = this._tasks;

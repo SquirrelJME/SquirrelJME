@@ -20,6 +20,10 @@ import net.multiphasicapps.tac.TestRunnable;
 public class TestMonitorNotify
 	extends TestRunnable
 {
+	/** Monitor timeout, so not waiting forever. */
+	public static final long TIMEOUT =
+		10_000L;
+	
 	/** Counter. */
 	volatile int _count;
 	
@@ -49,8 +53,8 @@ public class TestMonitorNotify
 			// Wait on monitor
 			try
 			{
-				// Wait forever
-				this.wait();
+				// Wait for the time that should be good enough
+				this.wait(TestMonitorNotify.TIMEOUT);
 				
 				// Note
 				this.secondary("expected-resume", this._count++);
@@ -83,8 +87,11 @@ public class TestMonitorNotify
 		@Override
 		public void run()
 		{
-			// Lock on that monitor
 			TestMonitorNotify tmn = TestMonitorNotify.this;
+			
+			tmn.secondary("sub-started", true);
+			
+			// Lock on that monitor
 			synchronized (tmn)
 			{
 				// Note

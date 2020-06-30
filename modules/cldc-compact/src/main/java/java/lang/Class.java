@@ -10,15 +10,13 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.StaticMethod;
-import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
-import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
-import cc.squirreljme.runtime.cldc.lang.ClassData;
-import cc.squirreljme.runtime.cldc.lang.ClassFlag;
+import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * This class is the in-language representation of a Java class, the CLDC
@@ -33,35 +31,29 @@ public final class Class<T>
 	private static final String _ASSERTION_PREFIX =
 		"cc.squirreljme.runtime.noassert.";
 	
-	/** The class data storage. */
-	final ClassData _data;
+	/** The type shelf for this class. */
+	private final TypeBracket _type;
 	
 	/** Has the assertion status been checked already? */
-	private volatile boolean _checkedassert;
+	private volatile boolean _checkedAssert;
 	
 	/** Is this class being asserted? */
-	private volatile boolean _useassert;
-	
-	/** The display name of the class. */
-	private Reference<String> _name;
-	
-	/** String representation of class. */
-	private Reference<String> _string;
+	private volatile boolean _useAssert;
 	
 	/**
-	 * Initializes the class with the class data.
+	 * Initializes the class reference holder.
 	 *
-	 * @param __d The data to use.
+	 * @param __type The type shelf to set this as.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/12/04
+	 * @since 2020/06/07
 	 */
-	private Class(ClassData __d)
+	private Class(TypeBracket __type)
 		throws NullPointerException
 	{
-		if (__d == null)
+		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		this._data = __d;
+		this._type = __type;
 	}
 	
 	/**
@@ -87,11 +79,10 @@ public final class Class<T>
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0v The specifed class is not a sub-class
+		// {@squirreljme.error ZZ0v The specified class is not a sub-class
 		// of this class. (The class being checked; The current class)}
 		if (!this.isAssignableFrom(__cl))
-			throw new ClassCastException(
-				String.format("ZZ0v %s %s", __cl, this));
+			throw new ClassCastException("ZZ0v " + __cl + " " + this);
 		
 		return (Class<? extends U>)this;
 	}
@@ -139,8 +130,8 @@ public final class Class<T>
 	public boolean desiredAssertionStatus()
 	{
 		// If assertions have been checked, they do not have to be rechecked
-		if (this._checkedassert)
-			return this._useassert;
+		if (this._checkedAssert)
+			return this._useAssert;
 		
 		// Otherwise check it
 		return this.__checkAssertionStatus();
@@ -154,18 +145,7 @@ public final class Class<T>
 	 */
 	public String getName()
 	{
-		Reference<String> ref = this._name;
-		String rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-		{
-			String bn = this._data.binaryName();
-			
-			// Slashes become dots
-			this._name = new WeakReference<>((rv = bn.replace('/', '.')));
-		}
-		
-		return rv;
+		return TypeShelf.runtimeName(this._type);
 	}
 	
 	/**
@@ -204,42 +184,39 @@ public final class Class<T>
 		// Do not lookup blank resources
 		if (__name.isEmpty())
 			return null;
-		
-		// This is not within any JAR, so nothing will ever be found
-		String injar = this._data.inJar();
-		if (injar == null)
-			return null;
-		
-		// Absolute paths are not translated
+			
+		// If a resource starts with slash then it is treated as being an
+		// absolute reference, otherwise it will depend on the package the
+		// class is in
 		String want;
-		if (__name.startsWith("/"))
+		if (__name.charAt(0) == '/')
 			want = __name.substring(1);
-		
-		// Otherwise append to the binary name
 		else
 		{
-			// Has a package
-			String pkg = this._data.binaryName();
-			int ld = pkg.lastIndexOf('/');
-			if (ld >= 0)
-				want = pkg.substring(0, ld + 1) + __name;
+			String binName = TypeShelf.binaryPackageName(this._type);
 			
-			// Is in default package
-			else
+			if (binName.isEmpty())
 				want = __name;
+			else
+				want = binName + "/" + __name;
 		}
 		
-		// Open the resource, perhaps
-		InputStream rv = ResourceInputStream.open(injar, want);
-		if (rv != null)
-			return rv;
-		
-		// Otherwise, do a traditional back to front search for the resource
-		// since it might be in another JAR
-		String[] classpath = SuiteAccess.currentClassPath();
-		for (int i = classpath.length - 1; i >= 0; i--)
-			if (null != (rv = ResourceInputStream.open(classpath[i], want)))
+		// If our class is within a JAR try to search our own JAR first
+		JarPackageBracket inJar = TypeShelf.inJar(this._type);
+		if (inJar != null)
+		{
+			InputStream rv = JarPackageShelf.openResource(inJar, want);
+			if (rv != null)
 				return rv;
+		}
+		
+		// Otherwise search every JAR in the classpath for the given resource
+		for (JarPackageBracket jar : JarPackageShelf.classPath())
+		{
+			InputStream rv = JarPackageShelf.openResource(jar, want);
+			if (rv != null)
+				return rv;
+		}
 		
 		// Not found
 		return null;
@@ -251,10 +228,10 @@ public final class Class<T>
 	 * @return The superclass or {@code null} if there is none.
 	 * @since 2017/03/29
 	 */
-	@SuppressWarnings({"unchecked"})
 	public Class<? super T> getSuperclass()
 	{
-		return (Class<? super T>)((Object)this._data.superClass());
+		TypeBracket rv = TypeShelf.superClass(this._type);
+		return (rv == null ? null : TypeShelf.typeToClass(rv));
 	}
 	
 	/**
@@ -265,9 +242,7 @@ public final class Class<T>
 	 */
 	public boolean isArray()
 	{
-		// Guess what! Every array starts with with brackets so this is quite
-		// easily something which can be determined from the classname
-		return this._data.binaryName().startsWith("[");
+		return TypeShelf.isArray(this._type);
 	}
 	
 	/**
@@ -280,33 +255,46 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/27
 	 */
-	@SuppressWarnings("EqualsBetweenInconvertibleTypes")
 	public boolean isAssignableFrom(Class<?> __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+			
+		TypeBracket self = this._type;
+		TypeBracket other = TypeShelf.classToType(__cl);
 		
-		// Go through target superclasses to find this class
-		for (Class<?> r = __cl; r != null; r = r._data.superClass())
+		// Quick determination if this is the same type
+		if (self == other)
+			return true;
+		
+		// Scan through the current and super classes of this class
+		for (TypeBracket rover = self; rover != null;
+			rover = TypeShelf.superClass(rover))
 		{
-			if (r == this)
+			// Is this the same type?
+			if (TypeShelf.equals(self, rover))
 				return true;
-		
-			// Go through interfaces for the class to find this class
-			for (Class<?> i : r._data.interfaceClasses())
-				if (i == this)
+			
+			// Go through interfaces
+			for (TypeBracket iFace : TypeShelf.interfaces(rover))
+				if (TypeShelf.equals(self, iFace))
 					return true;
 		}
 		
 		// If this is an array and the other type is an array with the same
 		// number of dimensions, then compare the base type so that say
 		// Number[] is assignable from Integer[].
-		int thisdims = this._data.dimensions(),
-			otherdims = __cl._data.dimensions();
-		if (thisdims > 0 && thisdims == otherdims)
-			if (this.__rootType().isAssignableFrom(__cl.__rootType()))
-				return true;
+		if (TypeShelf.isArray(self) && TypeShelf.isArray(other))
+		{
+			int thisDims = TypeShelf.dimensions(self);
+			int otherDims = TypeShelf.dimensions(other);
+			
+			if (thisDims > 0 && thisDims == otherDims)
+				return TypeShelf.typeToClass(TypeShelf.componentRoot(self))
+					.isAssignableFrom(TypeShelf.typeToClass(
+						TypeShelf.componentRoot(other)));
+		}
 		
 		// Not assignable
 		return false;
@@ -320,7 +308,7 @@ public final class Class<T>
 	 */
 	public boolean isInterface()
 	{
-		return (this._data.flags() & ClassFlag.INTERFACE) != 0;
+		return TypeShelf.isInterface(this._type);
 	}
 	
 	/**
@@ -350,13 +338,17 @@ public final class Class<T>
 	 * @return The newly created instance.
 	 * @since 2018/12/04
 	 */
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "RedundantThrows"})
 	public T newInstance()
 		throws InstantiationException, IllegalAccessException
 	{
-		todo.TODO.note("Implement newInstance() access checks.");
+		Debugging.todoNote("Implement newInstance() access checks.");
 		
-		return (T)((Object)this.__newInstance());
+		Object rv = ObjectShelf.newInstance(this._type);
+		if (rv == null)
+			throw new OutOfMemoryError("OOME");
+		
+		return (T)rv;
 	}
 	
 	/**
@@ -366,39 +358,12 @@ public final class Class<T>
 	@Override
 	public String toString()
 	{
-		Reference<String> ref = this._string;
-		String rv;
+		// Arrays and primitive types essentially just use the binary name
+		TypeBracket type = this._type;
+		if (TypeShelf.isArray(type) || TypeShelf.isPrimitive(type))
+			return TypeShelf.binaryName(type);
 		
-		if (ref == null || null == (rv = ref.get()))
-		{
-			// Based on the binary name
-			String binaryname = this._data.binaryName();
-			switch (binaryname)
-			{
-					// Primitive types have the same binary name
-				case "boolean":
-				case "byte":
-				case "short":
-				case "char":
-				case "int":
-				case "long":
-				case "float":
-				case "double":
-					rv = binaryname;
-					break;
-				
-					// Otherwise build a string
-				default:
-					rv = (this.isInterface() ? "interface " : "class ") +
-						this.getName(); 
-					break;
-			}
-			
-			// Cache it
-			this._string = new WeakReference<>(rv);
-		}
-		
-		return rv;
+		return (this.isInterface() ? "interface " : "class ") + this.getName();
 	}
 	
 	/**
@@ -408,7 +373,7 @@ public final class Class<T>
 	 * @return The assertions status to use.
 	 * @since 2016/10/09
 	 */
-	private final boolean __checkAssertionStatus()
+	private boolean __checkAssertionStatus()
 	{
 		// Default to true
 		boolean rv = true;
@@ -433,22 +398,9 @@ public final class Class<T>
 		}
 		
 		// Set as marked
-		this._checkedassert = true;
-		this._useassert = rv;
+		this._checkedAssert = true;
+		this._useAssert = rv;
 		return rv;
-	}
-	
-	/**
-	 * Returns the class data.
-	 *
-	 * SpringCoat depends on this method to exist.
-	 *
-	 * @return The class data.
-	 * @since 2018/12/05
-	 */
-	final ClassData __classData()
-	{
-		return this._data;
 	}
 	
 	/**
@@ -460,21 +412,24 @@ public final class Class<T>
 	 * be accessed.
 	 * @since 2018/12/04
 	 */
+	@SuppressWarnings("RedundantThrows")
 	final Object __newInstance()
 		throws InstantiationException, IllegalAccessException
 	{
+		throw Debugging.todo();
+		/*
 		// Get class details
 		ClassData data = this._data;
-		String binaryname = data.binaryName();
+		String binaryName = data.binaryName();
 		
 		// {@squirreljme.error ZZ0x Cannot construct new instance of class
 		// because it has no default constructor.}
 		StaticMethod sm = data.defaultConstructorMethod();
 		if (sm == null)
-			throw new InstantiationException("ZZ0x " + binaryname);
+			throw new InstantiationException("ZZ0x " + binaryName);
 		
 		// Allocate class instance
-		Object rv = ObjectAccess.allocateObject(binaryname);
+		Object rv = ObjectAccess.allocateObject(binaryName);
 		
 		// {@squirreljme.error ZZ0y Could not allocate new instance.}
 		if (rv == null)
@@ -485,20 +440,7 @@ public final class Class<T>
 		
 		// All done!
 		return rv;
-	}
-	
-	/**
-	 * Returns the root type, the base of the component.
-	 *
-	 * @return The root type of this type.
-	 * @since 2018/09/27
-	 */
-	private final Class<?> __rootType()
-	{
-		Class<?> rv = this;
-		for (Class<?> r = this; r != null; r = r._data.component())
-			rv = r;
-		return rv;
+		*/
 	}
 	
 	/**
@@ -527,15 +469,16 @@ public final class Class<T>
 		if (__n == null)
 			throw new NullPointerException();
 		
-		// The name will have to be converted to binary form since that is
-		// what is internally used
-		Class<?> rv = ObjectAccess.classByName(__n.replace('.', '/'));
-		
 		// {@squirreljme.error ZZ0z Could not find the specified class. (The
 		// name of the class)}
-		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ0z %s", __n));
-		return rv;
+		TypeBracket found = TypeShelf.findType(
+			__n.replace('.', '/'));
+		if (found == null)
+			throw new ClassNotFoundException("ZZ0z " + __n);
+		
+		// The name will have to be converted to binary form since that is
+		// what is internally used
+		return TypeShelf.typeToClass(found);
 	}
 }
 

@@ -10,7 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
-import java.io.PrintStream;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This method is called when there has been an uncaught exception being
@@ -20,6 +20,10 @@ import java.io.PrintStream;
  */
 public final class UncaughtExceptionHandler
 {
+	/** Exit status for when this is hit. */
+	private static final int _EXIT_STATUS =
+		62;
+	
 	/**
 	 * Not used.
 	 *
@@ -36,18 +40,29 @@ public final class UncaughtExceptionHandler
 	 * @param __t The throwable to handle.
 	 * @since 2018/10/29
 	 */
-	public static final void handle(Throwable __t)
+	public static void handle(Throwable __t)
 	{
-		// Make a nice and big banner on it
-		PrintStream out = System.err;
-		out.println("****************************************************");
-		out.print("UNCAUGHT EXCEPTION IN THREAD: ");
-		out.println(Thread.currentThread());
+		// Make sure this does not cause the thread to die again
+		try
+		{
+			Debugging.debugNote(
+				"*****************************************");
+			Debugging.debugNote("UNCAUGHT EXCEPTION IN THREAD: ");
+			
+			__t.printStackTrace();
+			
+			Debugging.debugNote(
+				"*****************************************");
+		}
 		
-		if (__t != null)
-			__t.printStackTrace(out);
-		
-		out.println("****************************************************");
+		// Stop this from failing
+		catch (Throwable e)
+		{
+			// Emit a message to indicate the reason
+			Debugging.debugNote("UNCAUGHT DOUBLE-EXCEPTION?");
+			Debugging.debugNote("Class: %s", e.getClass().getName());
+			Debugging.debugNote("Message: %s", e.getMessage());
+		}
 	}
 }
 

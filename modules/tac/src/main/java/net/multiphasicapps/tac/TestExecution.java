@@ -129,4 +129,17 @@ public final class TestExecution
 		
 		return sb.toString();
 	}
+	
+	/**
+	 * Returns the tossed exception as a {@link Throwable}.
+	 *
+	 * @return The tossed as a {@link Throwable} or {@code null} if it is not
+	 * one.
+	 * @since 2020/06/18
+	 */
+	public final Throwable tossedAsThrowable()
+	{
+		Object rv = this.tossed;
+		return (rv instanceof Throwable ? (Throwable)rv : null);
+	}
 }

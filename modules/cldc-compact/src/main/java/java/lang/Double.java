@@ -10,8 +10,8 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.jvm.mle.MathShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 
 public final class Double
 	extends Number
@@ -47,7 +47,7 @@ public final class Double
 	
 	/** The class representing the primitive type. */
 	public static final Class<Double> TYPE =
-		ObjectAccess.<Double>classByNameType("double");
+		TypeShelf.<Double>typeToClass(TypeShelf.typeOfDouble());
 	
 	/** The mask for NaN values. */
 	private static final long _NAN_MASK =
@@ -177,7 +177,7 @@ public final class Double
 	 */
 	public static long doubleToRawLongBits(double __v)
 	{
-		return Assembly.doubleToRawLongBits(__v);
+		return MathShelf.rawDoubleToLong(__v);
 	}
 	
 	public static boolean isInfinite(double __a)
@@ -203,7 +203,7 @@ public final class Double
 	 */
 	public static double longBitsToDouble(long __b)
 	{
-		return Assembly.longBitsToDouble(__b);
+		return MathShelf.rawLongToDouble(__b);
 	}
 	
 	public static double parseDouble(String __a)

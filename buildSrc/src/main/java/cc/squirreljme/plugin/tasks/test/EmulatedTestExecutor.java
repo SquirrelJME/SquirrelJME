@@ -10,44 +10,41 @@
 package cc.squirreljme.plugin.tasks.test;
 
 import cc.squirreljme.plugin.tasks.TestInVMTask;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.channels.ClosedByInterruptException;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.gradle.api.Project;
 import org.gradle.api.internal.tasks.testing.TestExecuter;
 import org.gradle.api.internal.tasks.testing.TestResultProcessor;
-import org.gradle.api.tasks.testing.TestOutputEvent;
 import org.gradle.process.ExecResult;
 
 /**
- * This is the executer for tests.
+ * This is the executor for tests.
  *
  * @since 2020/03/06
  */
 public final class EmulatedTestExecutor
 	implements TestExecuter<EmulatedTestExecutionSpec>
 {
-	/** The number of permitted interrupts before failure. */
-	private static final int _MAX_INTERRUPTS =
-		8;
-	
 	/** The service resource file. */
 	public static final String SERVICE_RESOURCE =
 		"META-INF/services/net.multiphasicapps.tac.TestInterface";
 	
 	/** The test task. */
 	private final TestInVMTask _testInVMTask;
+	
+	/** Emulator classpath. */
+	private final Map<String, Iterable<Object>> _emuClassPathCache =
+		new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	
 	/** Should this test be stopped? */
 	private volatile boolean _stopRunning =
@@ -76,30 +73,45 @@ public final class EmulatedTestExecutor
 		// We need the project to access details
 		Project project = this._testInVMTask.getProject();
 		
+		// Initialize the classpath for our emulator!
+		// Otherwise the Gradle build will fail since it tries to get the
+		// classpath outside of this
+		this.emulatorClassPath(project, __spec.emulator);
+		
 		// Run for this suite/project
 		EmulatedTestSuiteDescriptor suite =
 			new EmulatedTestSuiteDescriptor(project);
 		
-		// Indicate that the suite has started execution
-		__results.started(suite, EmulatedTestUtilities.startNow());
-		
 		// Perform testing logic
-		boolean allPassed = true;
+		boolean allPassed;
 		try
 		{
+			// Load tests to run
+			Collection<String> classes = EmulatedTestUtilities.readJarServices(
+				__spec.jar.getArchiveFile().get().getAsFile().toPath());
+			
+			// Report on the found test size (debugging)
+			project.getLogger().lifecycle(String.format(
+				"Found %d tests...%n", classes.size()));
+			
+			// Indicate that the suite has started execution
+			__results.started(suite, EmulatedTestUtilities.startNow());
+			
 			// Execute test classes (find them and run them)
-			allPassed = this.executeClasses(__spec, __results, suite);
+			allPassed = this.__executeClasses(__spec, __results, suite,
+				classes);
 			
 			// Did all tests pass?
 			__results.completed(suite.getId(),
 				EmulatedTestUtilities.passOrFailNow(allPassed));
 		}
+		
+		// Something went wrong it seems
 		catch (Throwable t)
 		{
-			// Report the thrown exception
-			__results.failure(suite.getId(), t);
-			__results.completed(suite.getId(),
-				EmulatedTestUtilities.failNow());
+			project.getLogger().error("Throwable caught during testing.", t);
+			
+			throw new RuntimeException("Caught throwable during testing.", t);
 		}
 		
 		// Did not pass, so cause the task to fail
@@ -114,36 +126,83 @@ public final class EmulatedTestExecutor
 	}
 	
 	/**
+	 * Executes the test class.
+	 * 
+	 * @param __spec The specification.
+	 * @param __suite The suite to run.
+	 * @param __testClass The test class.
+	 * @return If this test passed.
+	 * @since 2020/06/21
+	 */
+	private EmulatedTestResult __executeClass(EmulatedTestExecutionSpec __spec,
+		EmulatedTestSuiteDescriptor __suite, String __testClass)
+	{
+		// Setup result
+		EmulatedTestResult result = new EmulatedTestResult(
+			__suite, __testClass);
+		
+		// Signal as started
+		result.testStart();
+		
+		// Execute each class alone
+		try
+		{
+			// Execute individual test
+			int exitCode = this.__executeClassVm(__spec, result);
+			
+			// Finish the test with the result code
+			result.testFinish(exitCode, null);
+		}
+		catch (Throwable t)
+		{
+			// Just mark failure
+			result.testFinish(ExitValueConstants.FAILURE, t);
+			
+			// Print the trace since this was outside of the VM
+			synchronized (System.err)
+			{
+				t.printStackTrace(System.err);
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Goes through and executes the single test class.
 	 *
 	 * @param __spec The specification.
-	 * @param __results The output results.
-	 * @param __method The method to run.
+	 * @param __result The output result.
 	 * @return The exit value of the test.
 	 * @since 2020/03/06
 	 */
-	private int executeClass(EmulatedTestExecutionSpec __spec,
-		TestResultProcessor __results, EmulatedTestMethodDescriptor __method)
+	@SuppressWarnings("resource")
+	private int __executeClassVm(EmulatedTestExecutionSpec __spec,
+		EmulatedTestResult __result)
 	{
 		Project project = this._testInVMTask.getProject();
+		
+		// Setup test standard output and error streams
+		OutputStream stdOut = __result.stdOut();
+		OutputStream stdErr = __result.stdErr();
 		
 		// For some reason test reports do not run if there is no output for
 		// them, so this for the most part forces console output to happen
 		// which makes tests happen
-		__results.output(__method.getId(),
-			EmulatedTestUtilities.outputErr(String.format(
-			"Running test %s...", __method.getDisplayName())));
+		String withinClass = __result.className;
+		try
+		{
+			stdErr.write(String.format("Starting VM for %s...", withinClass)
+				.getBytes());
+		}
+		catch (IOException ignored)
+		{
+		}
 		
 		// Execute the test Java program
-		System.err.printf("Executing Java Program...%n");
 		ExecResult result = project.javaexec(__javaExecSpec ->
 			{
 				Collection<String> args = new LinkedList<>();
-				
-				// The class we are executing in
-				String withinClass = Objects.requireNonNull(
-					__method.getParent(),
-					"No test class?").getClassName();
 				
 				// Add emulator
 				args.add("-Xemulator:" + __spec.emulator);
@@ -165,28 +224,63 @@ public final class EmulatedTestExecutor
 				args.add(withinClass);
 				
 				// Configure the VM for execution
-				__javaExecSpec.classpath(EmulatedTestUtilities
-					.emulatorClassPath(project, __spec.emulator));
+				__javaExecSpec.classpath(EmulatedTestExecutor.this
+					.emulatorClassPath(null, __spec.emulator));
 				__javaExecSpec.setMain("cc.squirreljme.emulator.vm.VMFactory");
 				__javaExecSpec.setArgs(args);
 				
 				// Pipe outputs to the specified areas so the console can be
 				// read properly!
-				__javaExecSpec.setStandardOutput(new PipeOutputStream(
-					__method.getId(), __results,
-					TestOutputEvent.Destination.StdOut));
-				__javaExecSpec.setErrorOutput(new PipeOutputStream(
-					__method.getId(), __results,
-					TestOutputEvent.Destination.StdErr));
+				__javaExecSpec.setStandardOutput(stdOut);
+				__javaExecSpec.setErrorOutput(stdErr);
 				
 				// Do not throw an exception on a non-zero exit value since
 				// it is important to us
 				__javaExecSpec.setIgnoreExitValue(true);
 			});
 		
-		// Return the exit value here
-		System.err.printf("Exited with value: %d%n", result.getExitValue());
+		// The exit value is the test result
 		return result.getExitValue();
+	}
+	
+	/**
+	 * Returns the classpath for the emulator.
+	 * 
+	 * @param __project The project to use.
+	 * @param __emulator The emulator to use.
+	 * @return The classpath for the emulator.
+	 * @throws NullPointerException On null arguments, or if {@code __project}
+	 * is null and this is not already cached.
+	 * @since 2020/06/22
+	 */
+	private Iterable<Object> emulatorClassPath(Project __project,
+		String __emulator)
+		throws NullPointerException
+	{
+		if (__emulator == null)
+			throw new NullPointerException("NARG");
+		
+		// Use already cached value
+		Map<String, Iterable<Object>> cache = this._emuClassPathCache;
+		Iterable<Object> rv = cache.get(__emulator);
+		if (rv != null)
+			return rv; 
+		
+		// Get new result
+		Iterable<Object> now = EmulatedTestUtilities.emulatorClassPath(
+			__project, __emulator);
+		
+		// Add to the cache
+		List<Object> toCache = new ArrayList<>();
+		for (Object item : now)
+			toCache.add(item);
+		
+		// Store unreadable form
+		cache.put(__emulator,
+			(rv = Collections.unmodifiableCollection(toCache)));
+		
+		// Ensure it stays unreadable
+		return rv;
 	}
 	
 	/**
@@ -195,99 +289,62 @@ public final class EmulatedTestExecutor
 	 * @param __spec The specification.
 	 * @param __results The output results.
 	 * @param __suite The suite to run.
+	 * @param __classes The classes to run.
 	 * @return Did all tests pass?
 	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/06
 	 */
-	@SuppressWarnings("FeatureEnvy")
-	private boolean executeClasses(EmulatedTestExecutionSpec __spec,
-		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite)
-		throws IOException
+	@SuppressWarnings({"FeatureEnvy", "MagicNumber"})
+	private boolean __executeClasses(EmulatedTestExecutionSpec __spec,
+		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite,
+		Iterable<String> __classes)
+		throws IOException, NullPointerException
 	{
-		// Extract all of the test classes to be executed
-		Collection<String> testClasses = new TreeSet<>();
-		for (int iCount = 0;;)
-			try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(
-				__spec.jar.getArchiveFile().get().getAsFile().toPath(),
-				StandardOpenOption.READ)))
+		if (__spec == null || __results == null || __suite == null ||
+			__classes == null)
+			throw new NullPointerException("NARG");
+		
+		// And any results of the runs will be placed in this pool along
+		// with the number of added and finished tests
+		AtomicInteger finishedTests = new AtomicInteger();
+		
+		// Create jobs for the tests
+		Set<String> failedTests = new TreeSet<>();
+		boolean allPassed = true;
+		for (String testClass : __classes)
+		{
+			// If stopping running, discontinue and fail the tests
+			if (this._stopRunning)
 			{
-				EmulatedTestExecutor.__findTestClasses(zip, testClasses);
-				
+				allPassed = false;
 				break;
 			}
-			catch (ClosedByInterruptException e)
-			{
-				// Prevent dead-locking if interrupting just keeps happening
-				if (++iCount >= EmulatedTestExecutor._MAX_INTERRUPTS)
-					throw new RuntimeException(
-						"Could not read JAR due to too many interrupts.", e);
-				
-				System.err.printf("Interrupt during JAR read, retrying...%n");
-				
-				// Clear interrupt flag
-				Thread.interrupted();
-			}
+			
+			// Execute the test
+			EmulatedTestResult result = this.__executeClass(
+				__spec, __suite, testClass);
+			
+			// Report the test
+			result.report(__results);
+			
+			// Did this fail?
+			if (result.isFailure())
+				failedTests.add(result.className);
+			
+			// Increase the test counter, as this was grabbed
+			finishedTests.incrementAndGet();
+		}
 		
-		// Used to flag if every test passed
-		boolean allPassed = true;
-		
-		// Now go through the tests we discovered and execute them
-		for (String testClass : testClasses)
+		// There were test failures?
+		if (!failedTests.isEmpty())
 		{
-			// Stop executing? Note that if this is stopped in the middle of
-			// a test we cannot make the tests pass
-			if (this._stopRunning)
-				return false;
+			// Not every test passed
+			allPassed = false;
 			
-			// In SquirrelJME all tests only have a single run method, so the
-			// run is the actual class of execution
-			EmulatedTestClassDescriptor classy =
-				new EmulatedTestClassDescriptor(__suite, testClass);
-			EmulatedTestMethodDescriptor method =
-				new EmulatedTestMethodDescriptor(classy);
-			
-			// Start execution
-			__results.started(classy,
-				EmulatedTestUtilities.startNow(__suite));
-			__results.started(method,
-				EmulatedTestUtilities.startNow(classy));
-			
-			// Execute each class alone
-			try
-			{
-				// Execute individual test
-				int result = this.executeClass(__spec, __results, method);
-				
-				// Test did not pass
-				if (result != ExitValueConstants.SUCCESS &&
-					result != ExitValueConstants.SKIPPED)
-				{
-					// Clear out the stack trace because they are really
-					// annoying
-					Throwable empty = new Throwable("Test failed");
-					empty.setStackTrace(new StackTraceElement[0]);
-					
-					// Use this thrown exception
-					__results.failure(method.getId(), empty);
-				}
-				
-				// End execution
-				__results.completed(method.getId(),
-					EmulatedTestUtilities.passSkipOrFailNow(result));
-				__results.completed(classy.getId(),
-					EmulatedTestUtilities.passSkipOrFailNow(result));
-			}
-			catch (Throwable t)
-			{
-				// Report the thrown exception
-				__results.failure(method.getId(), t);
-				__results.completed(method.getId(),
-					EmulatedTestUtilities.failNow());
-				
-				// Fail the class as well
-				__results.completed(classy.getId(),
-					EmulatedTestUtilities.failNow());
-			}
+			// Print all the failed tests out
+			for (String testClass : failedTests)
+				System.err.printf("Failed Test: %s%n", testClass);
 		}
 		
 		// Return how all the tests ran
@@ -303,62 +360,5 @@ public final class EmulatedTestExecutor
 	{
 		// Stop running and prevent the next test from stopping
 		this._stopRunning = true;
-	}
-	
-	/**
-	 * Attempts to find the test classes.
-	 *
-	 * @param __zip The ZIP to read.
-	 * @param __testClasses The target classes.
-	 * @throws IOException On read failures.
-	 * @since 2020/05/25
-	 */
-	private static void __findTestClasses(ZipInputStream __zip,
-		Collection<String> __testClasses)
-		throws IOException
-	{
-		for (;;)
-		{
-			// Stop at the end of the ZIP
-			ZipEntry entry = __zip.getNextEntry();
-			if (entry == null)
-				break;
-			
-			// Only consider the services file
-			if (!EmulatedTestExecutor.SERVICE_RESOURCE
-				.equals(entry.getName()))
-				continue;
-			
-			// We cannot close a stream, so we need to copy the data over
-			// first
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(
-				(int)Math.max(0, entry.getSize()));
-			for (byte[] buf = new byte[4096];;)
-			{
-				int rc = __zip.read(buf);
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
-			
-			// Read in all the test classes
-			try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(new ByteArrayInputStream(
-				baos.toByteArray()), "utf-8")))
-			{
-				for (;;)
-				{
-					// End of file?
-					String ln = br.readLine();
-					if (ln == null)
-						break;
-					
-					// Add test class to possible tests to run
-					if (!ln.isEmpty())
-						__testClasses.add(ln.trim());
-				}
-			}
-		}
 	}
 }

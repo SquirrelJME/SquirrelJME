@@ -41,7 +41,8 @@ public class SquirrelJMEPlugin
 	public void apply(Project __project)
 	{
 		// Add configuration for SquirrelJME
-		__project.getExtensions().<SquirrelJMEPluginConfiguration>create(
+		SquirrelJMEPluginConfiguration config = __project
+			.getExtensions().<SquirrelJMEPluginConfiguration>create(
 			"squirreljme", SquirrelJMEPluginConfiguration.class,
 			this, __project);
 		

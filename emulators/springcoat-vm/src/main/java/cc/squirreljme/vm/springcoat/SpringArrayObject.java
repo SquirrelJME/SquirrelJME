@@ -10,6 +10,10 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -24,6 +28,10 @@ public abstract class SpringArrayObject
 	/** The monitor for this array. */
 	protected final SpringMonitor monitor =
 		new SpringMonitor();
+	
+	/** The reference link holder. */
+	protected final RefLinkHolder refLink =
+		new RefLinkHolder();
 	
 	/** The type of this object itself. */
 	protected final SpringClass selftype;
@@ -41,17 +49,22 @@ public abstract class SpringArrayObject
 	 * Initializes the array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __l The array length.
+	 * @throws IllegalArgumentException If the type is not an array.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
-	public SpringArrayObject(SpringClass __self, SpringClass __cl, int __l)
-		throws NullPointerException
+	public SpringArrayObject(SpringClass __self, int __l)
+		throws IllegalArgumentException, NullPointerException,
+			SpringNegativeArraySizeException
 	{
-		if (__self == null || __cl == null)
+		if (__self == null)
 			throw new NullPointerException("NARG");
+		
+		// The passed type must always be an array
+		if (!__self.isArray())
+			throw new IllegalArgumentException("Type not an array: " + __self);
 		
 		// {@squirreljme.error BK01 Attempt to allocate an array of a
 		// negative size. (The length requested)}
@@ -60,7 +73,7 @@ public abstract class SpringArrayObject
 				String.format("BK01 %d", __l));
 		
 		this.selftype = __self;
-		this.component = __cl;
+		this.component = __self.componentType();
 		this.length = __l;
 	}
 	
@@ -104,16 +117,6 @@ public abstract class SpringArrayObject
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException;
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/09/15
-	 */
-	@Override
-	public final SpringMonitor monitor()
-	{
-		return this.monitor;
-	}
-	
-	/**
 	 * Returns the length of this array.
 	 *
 	 * @return The array length.
@@ -126,12 +129,22 @@ public abstract class SpringArrayObject
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/12/21
+	 * @since 2018/09/15
 	 */
 	@Override
-	public final SpringPointerArea pointerArea()
+	public final SpringMonitor monitor()
 	{
-		throw new todo.TODO();
+		return this.monitor;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/05/31
+	 */
+	@Override
+	public final RefLinkHolder refLink()
+	{
+		return this.refLink;
 	}
 	
 	/**

@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -28,8 +29,9 @@ public final class SpringSimpleObject
 	protected final SpringMonitor monitor =
 		new SpringMonitor();
 	
-	/** The pointer for this object. */
-	protected final SpringPointerArea pointer;
+	/** The reference link holder. */
+	protected final RefLinkHolder refLink =
+		new RefLinkHolder();
 	
 	/** Field storage in the class. */
 	private final SpringFieldStorage[] _fields;
@@ -41,14 +43,13 @@ public final class SpringSimpleObject
 	 * Initializes the object.
 	 *
 	 * @param __cl The class of the object.
-	 * @param __spm The manager for pointers.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/08
 	 */
-	public SpringSimpleObject(SpringClass __cl, SpringPointerManager __spm)
+	public SpringSimpleObject(SpringClass __cl)
 		throws NullPointerException
 	{
-		if (__cl == null || __spm == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __cl;
@@ -63,9 +64,6 @@ public final class SpringSimpleObject
 		int i = 0;
 		for (SpringField f : __cl.fieldTable())
 			fields[i++] = new SpringFieldStorage(f);
-		
-		// Allocate pointer
-		this.pointer = __spm.allocateAndBind(__cl.instancesize, this);
 	}
 	
 	/**
@@ -98,6 +96,22 @@ public final class SpringSimpleObject
 	}
 	
 	/**
+	 * Returns the field by the name and type.
+	 *
+	 * @param __static Is this field static?
+	 * @param __name The name of the field.
+	 * @param __type The type of the field.
+	 * @return The storage for the field.
+	 * @since 2020/06/17
+	 */
+	public final SpringFieldStorage fieldByNameAndType(boolean __static,
+		String __name, String __type)
+	{
+		return this.fieldByField(
+			this.type().lookupField(__static, __name, __type));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/15
 	 */
@@ -109,12 +123,12 @@ public final class SpringSimpleObject
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/12/21
+	 * @since 2020/05/31
 	 */
 	@Override
-	public final SpringPointerArea pointerArea()
+	public RefLinkHolder refLink()
 	{
-		return this.pointer;
+		return this.refLink;
 	}
 	
 	/**

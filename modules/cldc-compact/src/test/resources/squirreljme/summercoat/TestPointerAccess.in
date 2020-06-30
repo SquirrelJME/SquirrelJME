@@ -1,0 +1,7 @@
+result: NoResult
+thrown: NoExceptionThrown
+only-in: summercoat
+secondary-otpnotnull: true
+secondary-sameobject: true
+secondary-zeroisnull: true
+secondary-nulliszero: true

@@ -10,9 +10,13 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.constants.MonitorResultType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class is the root of all class trees in Java.
@@ -24,7 +28,6 @@ import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 	"generated for them, so as such Object effectively has no fields.")
 public class Object
 {
-	
 	/**
 	 * Clones the current copy creating a shallow copy of it if
 	 * {@code Cloneable} is implemented, unless this method is overridden to
@@ -32,22 +35,21 @@ public class Object
 	 *
 	 * @throws CloneNotSupportedException If cloning is not supported by the
 	 * current class, the default implementation always throws this if the
-	 * {@link Cloneable} interface does not exist.
+	 * {@link Cloneable} interface is not implemented by the current object.
 	 * @return The cloned object.
 	 * @since 2016/02/08
 	 */
+	@SuppressWarnings({"SuspiciousSystemArraycopy", "UseOfClone"})
 	protected Object clone()
 		throws CloneNotSupportedException
 	{
-		// If this is an array copy elements around
-		Class<?> cl = this.getClass();
-		if (cl.isArray())
+		// If this is an array, its elements must be copied
+		int len = ObjectShelf.arrayLength(this);
+		if (len >= 0)
 		{
-			// Need length of this array to recreate!
-			int len = Assembly.arrayLength(this);
-			
 			// Allocate new array
-			Object dest = ObjectAccess.arrayNew(cl, len);
+			Object dest = ObjectShelf.<Object>arrayNew(
+				TypeShelf.objectType(this), len);
 			
 			// Copy everything over
 			System.arraycopy(this, 0, dest, 0, len);
@@ -57,7 +59,10 @@ public class Object
 		}
 		
 		// {@squirreljme.error ZZ1d This object does not support being cloned.}
-		throw new CloneNotSupportedException("ZZ1d");
+		if (!(this instanceof Cloneable))
+			throw new CloneNotSupportedException("ZZ1d");
+		
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -67,7 +72,7 @@ public class Object
 	 * equal to c), and consistent (if no modifications to the object were made
 	 * then it should return the same value returned as the previous call).
 	 *
-	 * If this method is overriden, then also override {@code hashCode()}.
+	 * If this method is overridden, then also override {@code hashCode()}.
 	 *
 	 * @param __o The object to check equality against.
 	 * @return {@code true} if the two objects are equal.
@@ -87,7 +92,7 @@ public class Object
 	 */
 	public final Class<?> getClass()
 	{
-		return ObjectAccess.classOf(this);
+		return TypeShelf.typeToClass(TypeShelf.objectType(this));
 	}
 	
 	/**
@@ -116,7 +121,7 @@ public class Object
 	{
 		// {@squirreljme.error ZZ1e This thread does not own the monitor for
 		// this thread.}
-		if (ObjectAccess.monitorNotify(this, false) < 0)
+		if (ObjectShelf.notify(this, false) < 0)
 			throw new IllegalMonitorStateException("ZZ1e");
 	}
 	
@@ -132,7 +137,7 @@ public class Object
 	{
 		// {@squirreljme.error ZZ1f This thread does not own the monitor for
 		// this thread.}
-		if (ObjectAccess.monitorNotify(this, true) < 0)
+		if (ObjectShelf.notify(this, false) < 0)
 			throw new IllegalMonitorStateException("ZZ1f");
 	}
 	
@@ -144,6 +149,7 @@ public class Object
 	 * @return The string representation of this object.
 	 * @since 2016/02/09
 	 */
+	@SuppressWarnings("MagicNumber")
 	public String toString()
 	{
 		return this.getClass().getName() + "@" +
@@ -153,6 +159,9 @@ public class Object
 	/**
 	 * Causes the current thread to wait on this object's monitor until
 	 * {@link #notify()} or {@link #notifyAll()} has been call.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @throws IllegalMonitorStateException If the current thread does not own
 	 * the monitor for this object.
@@ -170,6 +179,9 @@ public class Object
 	 * Causes the current thread to wait on this object's monitor until
 	 * {@link #notify()} or {@link #notifyAll()} has been call, however it will
 	 * stop after the given time has elapsed.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @param __ms The milliseconds to wait for, if this is {@code 0} then this
 	 * will wait forever.
@@ -194,6 +206,9 @@ public class Object
 	 *
 	 * If both {@code __ms} and {@code __ns} are zero, then the wait will be
 	 * forever.
+	 * 
+	 * If the current thread is interrupted, then the interrupt status will
+	 * be cleared for the current thread.
 	 *
 	 * @param __ms The milliseconds to wait for, if this is {@code 0} then this
 	 * will wait forever.
@@ -212,26 +227,28 @@ public class Object
 	{
 		// Call wait, but return status can have multiple kind of things
 		// going on
-		switch (ObjectAccess.monitorWait(this, __ms, __ns))
+		switch (ObjectShelf.wait(this, __ms, __ns))
 		{
 				// {@squirreljme.error ZZ1g Cannot wait on monitor because
 				// this thread does not own the monitor.}
-			case ObjectAccess.MONITOR_NOT_OWNED:
+			case MonitorResultType.NOT_OWNED:
 				throw new IllegalMonitorStateException("ZZ1g");
 			
 				// Not interrupted
-			case ObjectAccess.MONITOR_NOT_INTERRUPTED:
+			case MonitorResultType.NOT_INTERRUPTED:
 				return;
-			
-				// {@squirreljme.error ZZ1h Wait operation has been
-				// interrupted.}
-			case ObjectAccess.MONITOR_INTERRUPTED:
-				Thread.currentThread()._interrupted = false;
+				
+				// Our thread was interrupted
+			case MonitorResultType.INTERRUPTED:
+				// The interrupt status becomes cleared for our current thread
+				ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
+				
 				throw new InterruptedException("ZZ1h");
 				
-				// Should not happen
+				// {@squirreljme.error ZZ14 MLE Call returned an invalid
+				// monitor result status.}
 			default:
-				throw new todo.OOPS();
+				throw new MLECallError("ZZ14");
 		}
 	}
 }

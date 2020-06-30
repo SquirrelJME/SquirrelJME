@@ -17,7 +17,7 @@ package cc.squirreljme.vm.springcoat;
  */
 @Deprecated
 public final class SpringVMStaticMethod
-	implements SpringObject
+	extends AbstractGhostObject
 {
 	/** The method to execute. */
 	protected final SpringMethod method;
@@ -36,38 +36,6 @@ public final class SpringVMStaticMethod
 			throw new NullPointerException("NARG");
 		
 		this.method = __m;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/20
-	 */
-	@Override
-	public final SpringMonitor monitor()
-	{
-		// {@squirreljme.error BK3b StaticMethod does not have a monitor.}
-		throw new SpringFatalException("BK3b");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/12/21
-	 */
-	@Override
-	public final SpringPointerArea pointerArea()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/20
-	 */
-	@Override
-	public final SpringClass type()
-	{
-		// {@squirreljme.error BK3c StaticMethod does not have a type.}
-		throw new SpringFatalException("BK3c");
 	}
 }
 

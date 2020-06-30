@@ -17,6 +17,7 @@ import java.io.IOException;
  *
  * @since 2019/02/02
  */
+@Deprecated
 public interface ConsoleCallback
 {
 	/**
@@ -25,6 +26,7 @@ public interface ConsoleCallback
 	 * @return {@code false} if an {@link IOException} occurred.
 	 * @since 2019/02/02
 	 */
+	@Deprecated
 	boolean close();
 	
 	/**
@@ -33,6 +35,7 @@ public interface ConsoleCallback
 	 * @return {@code false} if an {@link IOException} occurred.
 	 * @since 2019/02/02
 	 */
+	@Deprecated
 	boolean flush();
 	
 	/**
@@ -44,5 +47,6 @@ public interface ConsoleCallback
 	 * @return {@code false} if an {@link IOException} occurred.
 	 * @since 2019/02/02
 	 */
+	@Deprecated
 	boolean write(byte[] __b, int __o, int __l);
 }

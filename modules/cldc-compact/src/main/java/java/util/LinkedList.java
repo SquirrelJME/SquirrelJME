@@ -301,7 +301,7 @@ public class LinkedList<E>
 	public E pollLast()
 	{
 		if (this._size == 0)
-			throw new NoSuchElementException("NSEE");
+			return null;
 		
 		ListIterator<E> it = this.listIterator(this._size);
 		

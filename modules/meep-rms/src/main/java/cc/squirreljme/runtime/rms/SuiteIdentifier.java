@@ -9,13 +9,9 @@
 
 package cc.squirreljme.runtime.rms;
 
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import javax.microedition.midlet.MIDlet;
-import javax.microedition.swm.ManagerFactory;
-import javax.microedition.swm.Suite;
-import javax.microedition.swm.Task;
-import javax.microedition.swm.TaskManager;
 
 /**
  * This is used to help identify suites and such.
@@ -73,17 +69,8 @@ public final class SuiteIdentifier
 		if (rv != null)
 			return rv;
 		
-		// Use task manager
-		if (ApiLevel.minimumLevel(ApiLevel.UNDEFINED))
-		{
-			// Need to obtain the current suite
-			TaskManager tm = ManagerFactory.getTaskManager();
-			Task ct = tm.getCurrentTask();
-			Suite su = ct.getSuite();
-			
-			// Get
-			rv = su.getName();
-		}
+		// TODO: Better means of getting the current name
+		Debugging.todoNote("Better means of currentName()");
 		
 		// Try through the current MIDlet properties
 		if (rv == null)
@@ -114,17 +101,8 @@ public final class SuiteIdentifier
 		if (rv != null)
 			return rv;
 		
-		// Use task manager
-		if (ApiLevel.minimumLevel(ApiLevel.UNDEFINED))
-		{
-			// Need to obtain the current suite
-			TaskManager tm = ManagerFactory.getTaskManager();
-			Task ct = tm.getCurrentTask();
-			Suite su = ct.getSuite();
-			
-			// Get
-			rv = su.getVendor();
-		}
+		// TODO: Better means of getting the current name
+		Debugging.todoNote("Better means of currentVendor()");
 		
 		// Try through the current MIDlet properties
 		if (rv == null)

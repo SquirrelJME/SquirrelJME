@@ -44,6 +44,7 @@ public abstract class InputStream
 	 * @throws IOException On read errors.
 	 * @since 2019/01/20
 	 */
+	@SuppressWarnings("RedundantThrows")
 	@ProgrammerTip("The base implementation always returns 0.")
 	public int available()
 		throws IOException

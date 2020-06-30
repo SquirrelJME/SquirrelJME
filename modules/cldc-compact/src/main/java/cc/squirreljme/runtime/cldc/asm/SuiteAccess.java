@@ -18,12 +18,14 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/10/26
  */
+@Deprecated
 public class SuiteAccess
 {
 	/**
 	 * Compile/install using data which was passed directly to the given
 	 * byte array.
 	 */
+	@Deprecated
 	public static final int WHERE_DIRECT =
 		1;
 	
@@ -31,6 +33,7 @@ public class SuiteAccess
 	 * Compile/install using the given JAR suite specified as a string, this
 	 * may be the same as a classpath value.
 	 */
+	@Deprecated
 	public static final int WHERE_SUITE =
 		2;
 	
@@ -40,6 +43,7 @@ public class SuiteAccess
 	 * @return The suites which are available for usage.
 	 * @since 2018/10/26
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String[] availableSuites();
 	
@@ -49,6 +53,7 @@ public class SuiteAccess
 	 * @return The current classpath.
 	 * @since 2018/12/06
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String[] currentClassPath();
 	
@@ -61,6 +66,7 @@ public class SuiteAccess
 	 * @return The install status.
 	 * @since 2019/04/17
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final native int installJar(int __wh, byte[] __data);
 	
@@ -70,6 +76,7 @@ public class SuiteAccess
 	 * @return The last compile error.
 	 * @since 2019/04/17
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final native int lastCompileError();
 }

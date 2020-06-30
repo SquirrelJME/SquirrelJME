@@ -10,7 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 
 /**
  * This method contains the code which is able to initialize multi-dimensional
@@ -77,7 +78,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	public static final void arraySet(Object __a, int __dx, Object __v)
+	public static void arraySet(Object __a, int __dx, Object __v)
 		throws ArrayIndexOutOfBoundsException, ClassCastException,
 			IllegalArgumentException, NullPointerException
 	{
@@ -97,7 +98,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	public static final void arraySet(int __type, Object __a, int __dx,
+	public static void arraySet(int __type, Object __a, int __dx,
 		Object __v)
 		throws ArrayIndexOutOfBoundsException, ClassCastException,
 			IllegalArgumentException, NullPointerException
@@ -109,35 +110,35 @@ public final class ArrayUtils
 		switch (__type)
 		{
 			case ArrayUtils.ARRAY_BOOLEAN:
-				((boolean[])__a)[__dx] = ((Boolean)__v).booleanValue();
+				((boolean[])__a)[__dx] = (Boolean)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_BYTE:
-				((byte[])__a)[__dx] = ((Byte)__v).byteValue();
+				((byte[])__a)[__dx] = (Byte)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_SHORT:
-				((short[])__a)[__dx] = ((Short)__v).shortValue();
+				((short[])__a)[__dx] = (Short)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_CHARACTER:
-				((char[])__a)[__dx] = ((Character)__v).charValue();
+				((char[])__a)[__dx] = (Character)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_INTEGER:
-				((int[])__a)[__dx] = ((Integer)__v).intValue();
+				((int[])__a)[__dx] = (Integer)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_LONG:
-				((long[])__a)[__dx] = ((Long)__v).longValue();
+				((long[])__a)[__dx] = (Long)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_FLOAT:
-				((float[])__a)[__dx] = ((Float)__v).floatValue();
+				((float[])__a)[__dx] = (Float)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_DOUBLE:
-				((double[])__a)[__dx] = ((Double)__v).doubleValue();
+				((double[])__a)[__dx] = (Double)__v;
 				break;
 				
 			case ArrayUtils.ARRAY_OBJECT:
@@ -159,7 +160,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	public static final int arrayType(Object __a)
+	public static int arrayType(Object __a)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__a == null)
@@ -201,7 +202,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -223,7 +224,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -246,7 +247,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -270,7 +271,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -295,7 +296,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -321,7 +322,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -348,7 +349,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -376,7 +377,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h)
 		throws NegativeArraySizeException, NullPointerException
@@ -406,7 +407,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i)
 		throws NegativeArraySizeException, NullPointerException
@@ -437,7 +438,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i, int __j)
 		throws NegativeArraySizeException, NullPointerException
@@ -459,7 +460,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/03
 	 */
-	public static final Object multiANewArray(Class<?> __type, int __skip,
+	public static Object multiANewArray(Class<?> __type, int __skip,
 		int[] __dims)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -468,19 +469,20 @@ public final class ArrayUtils
 		
 		// Count the number of dimensions represented in the type
 		String typename = __type.getName();
-		int typedims = 0;
-		while (typename.charAt(typedims) == '[')
-			typedims++;
+		int typeDims = 0;
+		while (typename.charAt(typeDims) == '[')
+			typeDims++;
 		
 		// {@squirreljme.error ZZ0e Negative number of dimensions available
 		// or input type is not correct for the array type.}
 		int dims = __dims.length - __skip;
-		if (__skip < 0 || dims <= 0 || typedims < dims)
+		if (__skip < 0 || dims <= 0 || typeDims < dims)
 			throw new IllegalArgumentException("ZZ0e");
 		
 		// Allocate array of this type
-		int numelem = __dims[__skip];
-		Object rv = ObjectAccess.arrayNew(__type, numelem);
+		int numElem = __dims[__skip];
+		Object rv = ObjectShelf.arrayNew(
+			TypeShelf.classToType(__type), numElem);
 		
 		// Need to determine the type for setting
 		int type = ArrayUtils.arrayType(rv);
@@ -505,15 +507,15 @@ public final class ArrayUtils
 			}
 			
 			// Skipping ahead by one
-			int nxskip = __skip + 1;
+			int nextSkip = __skip + 1;
 			
 			// Allocate
-			for (int i = 0; i < numelem; i++)
+			for (int i = 0; i < numElem; i++)
 				ArrayUtils.arraySet(type, rv, i,
-					ArrayUtils.multiANewArray(subtype, nxskip, __dims));
+					ArrayUtils.multiANewArray(subtype, nextSkip, __dims));
 		}
 		
-		return (Object)rv;
+		return rv;
 	}
 }
 

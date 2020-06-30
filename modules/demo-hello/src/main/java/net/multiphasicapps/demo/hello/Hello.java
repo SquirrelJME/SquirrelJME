@@ -29,7 +29,6 @@ public class Hello
 			"java.vendor.url",
 			"java.vm.name",
 			"java.vm.version",
-			"cc.squirreljme.apilevel",
 			"java.vm.vendor",
 			"java.vm.vendor.email",
 			"java.vm.vendor.url",
@@ -54,7 +53,7 @@ public class Hello
 	 * @param __args Program arguments.
 	 * @since 2018/09/22
 	 */
-	public static final void main(String... __args)
+	public static void main(String... __args)
 	{
 		PrintStream out = System.out;
 		

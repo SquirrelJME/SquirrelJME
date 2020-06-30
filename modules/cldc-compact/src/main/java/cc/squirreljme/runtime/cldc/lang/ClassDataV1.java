@@ -70,6 +70,7 @@ public class ClassDataV1
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public ClassDataV1(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
 		Class<?> __ct, String __ij, int __flags, int __dcf, StaticMethod __dcm,
 		StaticMethod __efm)

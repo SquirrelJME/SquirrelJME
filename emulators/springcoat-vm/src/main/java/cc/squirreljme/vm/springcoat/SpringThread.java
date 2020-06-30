@@ -11,6 +11,11 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
+import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -33,19 +38,24 @@ public final class SpringThread
 	/** The thread ID. */
 	protected final int id;
 	
+	/** Is this a main thread? */
+	protected final boolean main;
+	
 	/** The name of this thread. */
 	protected final String name;
 	
 	/** Profiler information. */
 	protected final ProfiledThread profiler;
 	
-	/** System call errors. */
-	final int[] _syscallerrors =
-		new int[SystemCallIndex.NUM_SYSCALLS];
-	
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
+	
+	/** The thread's {@link Thread} instance. */
+	private SpringObject _threadInstance;
+	
+	/** The thread's VM Thread instance. */
+	private VMThreadObject _vmThread;
 		
 	/** String representation. */
 	private Reference<String> _string;
@@ -56,31 +66,34 @@ public final class SpringThread
 	/** Is this a daemon thread? */
 	volatile boolean _daemon;
 	
-	/** Terminate the thread? */
-	volatile boolean _terminate;
-	
 	/** Did we signal exit? */
 	volatile boolean _signaledexit;
 	
 	/** The current worker for the thread. */
 	volatile SpringThreadWorker _worker;
 	
+	/** Terminate the thread? */
+	private volatile boolean _terminate;
+	
 	/**
 	 * Initializes the thread.
 	 *
 	 * @param __id The thread ID.
+	 * @param __main Is this a main thread.
 	 * @param __n The name of the thread.
 	 * @param __profiler Profiled storage.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	SpringThread(int __id, String __n, ProfiledThread __profiler)
+	SpringThread(int __id, boolean __main, String __n,
+		ProfiledThread __profiler)
 		throws NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
 		this.id = __id;
+		this.main = __main;
 		this.name = __n;
 		this.profiler = __profiler;
 	}
@@ -94,7 +107,7 @@ public final class SpringThread
 	public final SpringThread.Frame currentFrame()
 	{
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			if (frames.isEmpty())
 				return null;
@@ -110,6 +123,11 @@ public final class SpringThread
 	 */
 	public final SpringThread.Frame enterBlankFrame()
 	{
+		// Cannot enter frames when terminated
+		if (this.isTerminated())
+			throw new SpringVirtualMachineException(
+				"Cannot enter frame on terminated thread.");
+		
 		// Setup blank frame
 		SpringThread.Frame rv = new SpringThread.Frame();
 		
@@ -119,7 +137,7 @@ public final class SpringThread
 			throw new SpringVirtualMachineException("BK1j");
 		
 		// Lock on frames as a new one is added
-		synchronized (frames)
+		synchronized (this)
 		{
 			frames.add(rv);
 		}
@@ -130,9 +148,6 @@ public final class SpringThread
 		
 		// Had one frame (started)
 		this._hadoneframe = true;
-		
-		// Undo termination
-		this._terminate = false;
 		
 		return rv;
 	}
@@ -153,6 +168,11 @@ public final class SpringThread
 	{
 		if (__m == null)
 			throw new NullPointerException("NARG");
+		
+		// Cannot enter frames when terminated
+		if (this.isTerminated())
+			throw new SpringVirtualMachineException(
+				"Cannot enter frame on terminated thread.");
 		
 		if (__args == null)
 			__args = new Object[0];
@@ -177,16 +197,13 @@ public final class SpringThread
 		
 		// Lock on frames as a new one is added
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			frames.add(rv);
 		}
 		
 		// Had one frame (started)
 		this._hadoneframe = true;
-		
-		// Undo termination
-		this._terminate = false;
 		
 		// Handle synchronized method
 		if (__m.flags().isSynchronized())
@@ -245,7 +262,7 @@ public final class SpringThread
 	{
 		// Lock on frames as a new one is added
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			frames.clear();
 		}
@@ -261,11 +278,112 @@ public final class SpringThread
 	{
 		// Lock on frames
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			return frames.<SpringThread.Frame>toArray(
 				new SpringThread.Frame[frames.size()]);
 		}
+	}
+	
+	/**
+	 * Returns the stack trace for this thread.
+	 * 
+	 * @return The stack trace for this thread.
+	 * @since 2020/06/13
+	 */
+	public final CallTraceElement[] getStackTrace()
+	{
+		// Lock since the frames may change!
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (this)
+		{
+			// Setup target array
+			int n = frames.size();
+			CallTraceElement[] rv = new CallTraceElement[n];
+			
+			// The frames at the end are at the top
+			for (int i = n - 1, write = 0; i >= 0; i--, write++)
+			{
+				SpringThread.Frame frame = frames.get(i);
+				CallTraceElement trace;
+				
+				// Blanks are purely virtual standing points so they are
+				// regarded as such
+				if (frame.isBlank())
+				{
+					trace = new CallTraceElement(
+						"<guard>", "<guard>", null,
+						0L, null, -1);
+				}
+				
+				// Print other parts
+				else
+				{
+					SpringMethod inMethod = frame.method();
+					int pc = frame.lastExecutedPc();
+					
+					trace = new CallTraceElement(
+						inMethod.inClass().toString(),
+						inMethod.name().toString(),
+						inMethod.nameAndType().type().toString(),
+						0,
+						inMethod.infile,
+						inMethod.byteCode().lineOfAddress(pc),
+						inMethod.byteCode().getByAddress(pc).operation(),
+						pc);
+				}
+				
+				// Store trace in top-most order
+				rv[write] = trace;
+			}
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Interrupts this thread.
+	 * 
+	 * @since 2020/06/22
+	 */
+	public final void hardInterrupt()
+	{
+		SpringThreadWorker worker = this._worker;
+		if (worker == null)
+			throw new RuntimeException(
+				"Cannot interrupt thread with no worker.");
+		
+		// Signal the other thread or something else?
+		Thread signal = this._worker.signalinstead;
+		if (signal != null)
+			signal.interrupt();
+		else
+			worker.interrupt();
+	}
+	
+	/**
+	 * Returns whether or not this thread has an instance.
+	 *
+	 * @return If this thread has an instance.
+	 * @since 2020/06/18
+	 */
+	public final boolean hasThreadInstance()
+	{
+		synchronized (this)
+		{
+			return this._threadInstance != null;
+		}
+	}
+	
+	/**
+	 * Is this a daemon thread?
+	 *
+	 * @return If this is a daemon thread.
+	 * @since 2020/06/17
+	 */
+	public final boolean isDaemon()
+	{
+		return this._daemon;
 	}
 	
 	/**
@@ -277,6 +395,31 @@ public final class SpringThread
 	public final boolean isExitOkay()
 	{
 		return this._daemon || this._terminate;
+	}
+	
+	/**
+	 * If this is a main thread or not.
+	 *
+	 * @return If this is a main thread.
+	 * @since 2020/06/17
+	 */
+	public final boolean isMain()
+	{
+		return this.main;
+	}
+	
+	/**
+	 * Returns if this thread has terminated.
+	 * 
+	 * @return If this thread has terminated.
+	 * @since 2020/06/29
+	 */
+	public final boolean isTerminated()
+	{
+		synchronized (this)
+		{
+			return this._terminate;
+		}
 	}
 	
 	/**
@@ -299,7 +442,7 @@ public final class SpringThread
 	public final int numFrames()
 	{
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			return frames.size();
 		}
@@ -321,7 +464,7 @@ public final class SpringThread
 		// Pop from the stack
 		SpringThread.Frame rv;
 		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
 			// {@squirreljme.error BK1o No frames to pop.}
 			int n;
@@ -352,38 +495,100 @@ public final class SpringThread
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		// Note the thread
-		__ps.printf("Thread #%d: %s%n", this.id, this.name);
+		// Use standard SquirrelJME trace printing here
+		CallTraceUtils.printStackTrace(__ps,
+			String.format("Thread #%d: %s", this.id, this.name),
+			this.getStackTrace(), null, null,
+			0);
+	}
+	
+	/**
+	 * Sets the {@link Thread} instance.
+	 *
+	 * @param __object The object to set the instance to.
+	 * @throws IllegalStateException If this thread already has an instance.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public final void setThreadInstance(SpringObject __object)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__object == null)
+			throw new NullPointerException("NARG");
 		
-		// Lock since the frames may change!
-		List<SpringThread.Frame> frames = this._frames;
-		synchronized (frames)
+		synchronized (this)
 		{
-			// The frames at the end are at the top
-			for (int n = frames.size(), i = n - 1; i >= 0; i--)
-			{
-				SpringThread.Frame frame = frames.get(i);
-				
-				// Do not print traces for blank frames
-				if (frame.isBlank())
-				{
-					__ps.printf("    at <guard frame>%n");
-					continue;
-				}
-				
-				SpringMethod inmethod = frame.method();
-				int pc = frame.lastExecutedPc();
-				
-				// Print information
-				__ps.printf("    at %s.%s @ %d [%s] (%s:%d)%n",
-					inmethod.inClass(),
-					inmethod.nameAndType(),
-					pc,
-					inmethod.byteCode().getByAddress(pc).mnemonic(),
-					inmethod.inFile(),
-					inmethod.byteCode().lineOfAddress(pc));
-			}
+			// Only a single instance is permitted
+			if (this._threadInstance != null)
+				throw new IllegalStateException("Thread has an instance.");
+			
+			this._threadInstance = __object;
 		}
+	}
+	
+	/**
+	 * Sets the virtual machine thread of this thread.
+	 *
+	 * @param __vmThread The thread to set.
+	 * @throws IllegalStateException If this thread already has one.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/17
+	 */
+	public final void setVMThread(VMThreadObject __vmThread)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__vmThread == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			if (this._vmThread != null)
+				throw new IllegalStateException("Thread has VM Thread.");
+			
+			this._vmThread = __vmThread;
+		}
+	}
+	
+	/**
+	 * Terminates this thread.
+	 * 
+	 * @since 2020/06/29
+	 */
+	public final void terminate()
+	{
+		// Terminates this thread
+		synchronized (this)
+		{
+			// Set as terminated
+			this._terminate = true;
+		}
+		
+		// Signal to the machine that this thread terminated
+		SpringThreadWorker worker = this._worker;
+		if (worker != null)
+			worker.machine.signalThreadTerminate(this);
+	}
+	
+	/**
+	 * Returns the instance of the {@link Thread} object for this thread.
+	 *
+	 * @return The instance of {@link Thread}.
+	 * @throws IllegalStateException If the thread has no instance.
+	 * @since 2020/06/17
+	 */
+	public final SpringObject threadInstance()
+		throws IllegalStateException
+	{
+		SpringObject rv;
+		synchronized (this)
+		{
+			rv = this._threadInstance;
+		}
+		
+		if (rv == null)
+			throw new IllegalStateException("Thread has no state.");
+		
+		return rv;
 	}
 	
 	/**

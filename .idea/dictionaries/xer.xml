@@ -3,8 +3,15 @@
     <words>
       <w>accel</w>
       <w>backlight</w>
+      <w>baos</w>
       <w>bootram</w>
       <w>cldc</w>
+      <w>compactified</w>
+      <w>cpibm</w>
+      <w>csascii</w>
+      <w>csibm</w>
+      <w>csisolatin</w>
+      <w>ebcdic</w>
       <w>endianess</w>
       <w>fprintf</w>
       <w>gawroriski</w>
@@ -29,18 +36,26 @@
       <w>jthrowable</w>
       <w>jvalue</w>
       <w>jweak</w>
+      <w>ljava</w>
+      <w>microedition</w>
       <w>multiphasicapps</w>
       <w>narg</w>
+      <w>noassert</w>
+      <w>nsee</w>
       <w>phasic</w>
+      <w>roro</w>
       <w>siii</w>
       <w>siiii</w>
       <w>siiiii</w>
       <w>siiiiii</w>
       <w>siiiiiii</w>
       <w>siiiiiiii</w>
+      <w>springcoat</w>
       <w>squirreljme</w>
       <w>stdint</w>
+      <w>summercoat</w>
       <w>targetting</w>
+      <w>vmtypes</w>
       <w>vtable</w>
     </words>
   </dictionary>

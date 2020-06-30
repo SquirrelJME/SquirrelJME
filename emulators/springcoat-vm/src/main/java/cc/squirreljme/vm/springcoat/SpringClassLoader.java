@@ -11,6 +11,9 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -148,10 +151,10 @@ public final class SpringClassLoader
 			
 			// Load class file for this class
 			ClassFile cf;
-			String[] injar = new String[1];
+			VMClassLibrary[] inJar = new VMClassLibrary[1];
 			try
 			{
-				cf = this.loadClassFile(__cn, injar);
+				cf = this.loadClassFile(__cn, inJar);
 			}
 			catch (InvalidClassFormatException e)
 			{
@@ -180,7 +183,7 @@ public final class SpringClassLoader
 			
 			// Load class information
 			rv = new SpringClass(superclass, interfaceclasses, cf,
-				this._nexcsi++, component, injar[0]);
+				component, inJar[0]);
 			
 			// Store for later use
 			classes.put(__cn, rv);
@@ -202,7 +205,7 @@ public final class SpringClassLoader
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/09/01
 	 */
-	public final ClassFile loadClassFile(ClassName __cn, String[] __ij)
+	public final ClassFile loadClassFile(ClassName __cn, VMClassLibrary[] __ij)
 		throws NullPointerException, SpringClassFormatException,
 			SpringClassNotFoundException
 	{
@@ -251,7 +254,7 @@ public final class SpringClassLoader
 				
 				// Record the binary
 				if (__ij != null && __ij.length > 0)
-					__ij[0] = b.name();
+					__ij[0] = b;
 				
 				break;
 			}

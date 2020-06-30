@@ -15,5 +15,6 @@
  * @since 2017/12/27
  */
 
+@Deprecated
 package cc.squirreljme.runtime.cldc.asm;
 

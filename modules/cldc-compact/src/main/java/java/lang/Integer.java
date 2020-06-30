@@ -10,8 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -38,7 +38,7 @@ public final class Integer
 	
 	/** The class type representing the primitive type. */
 	public static final Class<Integer> TYPE =
-		ObjectAccess.<Integer>classByNameType("int");
+		TypeShelf.<Integer>typeToClass(TypeShelf.typeOfInteger());
 	
 	/** The value of this integer. */
 	private final int _value;
@@ -383,6 +383,7 @@ public final class Integer
 	 * @return The number of trailing zeros.
 	 * @since 2018/11/11
 	 */
+	@SuppressWarnings("MagicNumber")
 	public static int numberOfTrailingZeros(int __v)
 	{
 		// c will be the number of zero bits on the right
@@ -426,22 +427,21 @@ public final class Integer
 		// {@squirreljme.error ZZ19 The radix is out of bounds. (The radix)}
 		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
 			throw new NumberFormatException("ZZ19 " + __r);
+			
+		if (__v == null)
+			throw new NumberFormatException("ZZ1a");
 		
 		// {@squirreljme.error ZZ1a String is null or has zero length.}
 		int n = __v.length();
-		if (__v == null || n <= 0)
+		if (n <= 0)
 			throw new NumberFormatException("ZZ1a");
 		
 		// Detect sign
-		boolean neg = false,
-			signed = false;
+		boolean neg;
+		boolean signed = false;
 		char c = __v.charAt(0);
 		if ((neg = (c == '-')) || c == '+')
 			signed = true;
-		
-		// If the number is negative, instead of negating the value at the end
-		// just subtract digits instead.
-		int digsign = (neg ? -1 : 1);
 		
 		// Read all digits
 		int rv = 0;
@@ -465,7 +465,10 @@ public final class Integer
 				throw new NumberFormatException("ZZ1c " + __v);
 			
 			// Add up
-			rv = prod + (dig * digsign);
+			if (neg)
+				rv = prod - dig;
+			else
+				rv = prod + dig;
 		}
 		
 		return rv;

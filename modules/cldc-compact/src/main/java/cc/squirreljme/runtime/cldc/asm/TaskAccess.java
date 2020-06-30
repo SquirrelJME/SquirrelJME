@@ -18,17 +18,21 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/11/04
  */
+@Deprecated
 public final class TaskAccess
 {
 	/** The entry point is not valid. */
+	@Deprecated
 	public static final int ERROR_INVALID_ENTRY =
 		-2;
 	
 	/** Library in the classpath is missing. */
+	@Deprecated
 	public static final int ERROR_MISSING_LIBRARY =
 		-3;
 	
 	/** Exit code indicating bad task things. */
+	@Deprecated
 	public static final int EXIT_CODE_FATAL_EXCEPTION =
 		127;
 	
@@ -42,34 +46,6 @@ public final class TaskAccess
 	}
 	
 	/**
-	 * Returns the ID of the current thread.
-	 *
-	 * @return The current thread ID.
-	 * @since 2018/11/20
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int currentThread();
-	
-	/**
-	 * Sets the priority of the thread.
-	 *
-	 * @param __tid The thread ID.
-	 * @param __p The priority.
-	 * @since 2018/12/07
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native void setThreadPriority(int __tid, int __p);
-	
-	/**
-	 * Signals a hardware interrupt on the given thread.
-	 *
-	 * @param __tid The thread to signal.
-	 * @since 2018/11/21
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native void signalInterrupt(int __tid);
-	
-	/**
 	 * Starts the specified task.
 	 *
 	 * @param __cp The classpath used.
@@ -79,6 +55,7 @@ public final class TaskAccess
 	 * not start.
 	 * @since 2018/11/04
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args);
@@ -99,22 +76,11 @@ public final class TaskAccess
 	 * not start.
 	 * @since 2019/02/02
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args, String[] __sprops, ConsoleCallback __stdout,
 		ConsoleCallback __stderr);
-	
-	/**
-	 * Starts the given thread.
-	 *
-	 * @param __t The thread which is to run, the execution point of the
-	 * thread is the {@code Thread.__start()} method.
-	 * @param __n The name hint of this thread.
-	 * @return The thread ID.
-	 * @since 2018/11/17
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int startThread(Thread __t, String __n);
 	
 	/**
 	 * Returns the status of the target task.
@@ -123,6 +89,7 @@ public final class TaskAccess
 	 * @return The status for the given task.
 	 * @since 2018/11/04
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int taskStatus(int __tid);
 }

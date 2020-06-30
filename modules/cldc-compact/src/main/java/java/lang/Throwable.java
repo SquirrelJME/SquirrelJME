@@ -10,8 +10,11 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.jvm.mle.DebugShelf;
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import java.io.PrintStream;
+import java.util.Arrays;
 
 /**
  * This class is the base class for all types which are thrown, itself being a
@@ -29,26 +32,14 @@ import java.io.PrintStream;
  */
 public class Throwable
 {
-	/** Exception message. */
-	private static final int _TYPE_EXCEPTION =
-		0;
-	
-	/** Caused by message. */
-	private static final int _TYPE_CAUSED_BY =
-		1;
-	
-	/** Suppressed message. */
-	private static final int _TYPE_SUPPRESSED =
-		2;
-	
 	/** The message for this exception. */
 	private final String _message;
 	
 	/** Suppressed exceptions. */
-	private volatile Throwable[] _suppressed;
+	private Throwable[] _suppressed;
 	
 	/** Was a cause initialized already? */
-	private volatile boolean _initcause;
+	private boolean _initCause;
 	
 	/**
 	 * The cause of this exception, note this is writeable because of
@@ -56,10 +47,11 @@ public class Throwable
 	 * of the class library which did not have a cause specified in the
 	 * constructor.
 	 */
-	private volatile Throwable _cause;
+	private Throwable _cause;
 	
-	/** The stack trace for this throwable (in raw form). */
-	private volatile int[] _stack;
+	/** The stack trace for this throwable (in mostly-raw form). */
+	@SuppressWarnings("unused")
+	private TracePointBracket[] _stack;
 	
 	/**
 	 * Initializes a throwable with no cause or message.
@@ -68,7 +60,9 @@ public class Throwable
 	 */
 	public Throwable()
 	{
-		this(false, 2, null, null);
+		this._message = null;
+		
+		this._stack = DebugShelf.traceStack();
 	}
 	
 	/**
@@ -79,7 +73,9 @@ public class Throwable
 	 */
 	public Throwable(String __m)
 	{
-		this(false, 2, __m, null);
+		this._message = __m;
+		
+		this._stack = DebugShelf.traceStack();
 	}
 	
 	/**
@@ -90,7 +86,12 @@ public class Throwable
 	 */
 	public Throwable(Throwable __t)
 	{
-		this(true, 2, null, __t);
+		this._message = null;
+		
+		this._initCause = true;
+		this._cause = __t;
+		
+		this._stack = DebugShelf.traceStack();
 	}
 	
 	/**
@@ -102,35 +103,18 @@ public class Throwable
 	 */
 	public Throwable(String __m, Throwable __t)
 	{
-		this(true, 2, __m, __t);
-	}
-	
-	/**
-	 * Since the cause can only be set once, this constructor needs to keep
-	 * track of whether it was set by a constructor or not.
-	 *
-	 * @param __ic Is the cause initialized?
-	 * @param __clip The number of stack trace entries to clip.
-	 * @param __m The exception message.
-	 * @param __t The cause.
-	 * @since 2018/09/15
-	 */
-	private Throwable(boolean __ic, int __clip, String __m, Throwable __t)
-	{
-		// These are trivially set
 		this._message = __m;
-		this._cause = __t;
-		this._initcause = __ic;
 		
-		// The stack trace is implicitly filled in by this constructor, it
-		// matches the stack trace of the current thread of execution
-		this._stack = this.__getStackTrace(this, __clip, true);
+		this._initCause = true;
+		this._cause = __t;
+		
+		this._stack = DebugShelf.traceStack();
 	}
 	
 	/**
 	 * Adds a suppressed throwable which will be thrown alongside this
 	 * throwable. This is mainly used with try-with-resources although a
-	 * programmer may wish to add related throwables that additionally
+	 * programmer may wish to add related {@link Throwable}s that additionally
 	 * happened.
 	 *
 	 * This method is thread safe.
@@ -151,28 +135,22 @@ public class Throwable
 		if (__t == this)
 			throw new IllegalArgumentException("ZZ26");
 		
-		// Just lock on this to add suppressed exceptions, it is unspecified
-		// where the lock is done, but this prevent creation of an object just
-		// to hold a lock.
-		synchronized (this)
+		// No suppressed exceptions were set, initialize
+		Throwable[] suppressed = this._suppressed;
+		if (suppressed == null)
+			this._suppressed = new Throwable[]{__t};
+		
+		// Otherwise rebuild the array and add it
+		else
 		{
-			// No suppressed exceptions were set, initialize
-			Throwable[] suppressed = this._suppressed;
-			if (suppressed == null)
-				this._suppressed = new Throwable[]{__t};
+			// Add one extra spot to this array
+			int n = suppressed.length;
+			suppressed = Arrays.copyOf(suppressed, n + 1);
 			
-			// Otherwise rebuild the array and add it
-			else
-			{
-				int n = suppressed.length;
-				Throwable[] copy = new Throwable[n + 1];
-				for (int i = 0; i < n; i++)
-					copy[i] = suppressed[i];
-				copy[n] = __t;
-				
-				// Use this instead
-				this._suppressed = copy;
-			}
+			suppressed[n] = __t;
+			
+			// Use this new one instead
+			this._suppressed = suppressed;
 		}
 	}
 	
@@ -185,9 +163,8 @@ public class Throwable
 	public Throwable fillInStackTrace()
 	{
 		// Get stack trace, ignore this method
-		this._stack = this.__getStackTrace(this, 1, false);
+		this._stack = DebugShelf.traceStack();
 		
-		// Returns self
 		return this;
 	}
 	
@@ -227,17 +204,15 @@ public class Throwable
 	}
 	
 	/**
-	 * Returns an array of all the throwables which were suppressed.
+	 * Returns an array of all the {@link Throwable}s which were suppressed.
 	 *
 	 * This method is thread safe.
 	 *
-	 * @return An array of all the suppresed throwables.
+	 * @return An array of all the suppressed {@link Throwable}s.
 	 * @since 2018/09/15
 	 */
 	public final Throwable[] getSuppressed()
 	{
-		// Since this is volatile we can just read whatever value is here
-		// without needing to lock
 		Throwable[] rv = this._suppressed;
 		if (rv == null)
 			return new Throwable[0];
@@ -247,7 +222,7 @@ public class Throwable
 	/**
 	 * Initializes the cause of the throwable if it has not been set.
 	 *
-	 * Calls to {@link #initCause(Throwable)}, {@link #Throwable(Throwable)},
+	 * Calls to this method, {@link #Throwable(Throwable)},
 	 * or {@link #Throwable(String, Throwable)} will cause the cause to be
 	 * initialized, preventing this from being called or called again.
 	 *
@@ -267,11 +242,11 @@ public class Throwable
 		
 		// {@squirreljme.error ZZ28 The cause of the throwable has already
 		// been initialized.}
-		if (this._initcause)
+		if (this._initCause)
 			throw new IllegalStateException("ZZ28");
 		
 		// Set
-		this._initcause = true;
+		this._initCause = true;
 		this._cause = __t;
 		
 		return this;
@@ -284,8 +259,7 @@ public class Throwable
 	 */
 	public void printStackTrace()
 	{
-		Throwable.__printStackTrace(this, System.err, 0,
-			Throwable._TYPE_EXCEPTION);
+		CallTraceUtils.printStackTrace(System.err, this, 0);
 	}
 	
 	/**
@@ -301,7 +275,7 @@ public class Throwable
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		Throwable.__printStackTrace(this, __ps, 0, Throwable._TYPE_EXCEPTION);
+		CallTraceUtils.printStackTrace(__ps, this, 0);
 	}
 	
 	/**
@@ -316,166 +290,12 @@ public class Throwable
 	@Override
 	public String toString()
 	{
-		String clname = this.getClass().getName(),
-			lm = this.getLocalizedMessage();
+		String className = this.getClass().getName();
+		String lm = this.getLocalizedMessage();
 		
 		if (lm == null)
-			return clname;
-		return clname + ": " + lm;
-	}
-	
-	/**
-	 * Obtains the stack trace for the current thread in raw format.
-	 *
-	 * @param __this The this throwable object.
-	 * @param __clip The number of entries on the top to clip.
-	 * @param __initclip Clip off initializers?
-	 * @return The stack trace for the current stack.
-	 * @throws IllegalArgumentException If the clip is negative.
-	 * @since 2018/09/16
-	 */
-	private static int[] __getStackTrace(Throwable __this,
-		int __clip, boolean __initclip)
-		throws IllegalArgumentException
-	{
-		// {@squirreljme.error ZZ29 Cannot specify a negative clip for a
-		// stack trace.}
-		if (__clip < 0)
-			throw new IllegalArgumentException("ZZ29");
-		
-		// Get the raw trace here
-		int[] rawstack = CallTraceElement.traceRaw();
-		
-		// Just use the raw stack
-		return rawstack;
-	}
-	
-	/**
-	 * Prints the indentation of the stack trace.
-	 *
-	 * @param __ps The stream to print to.
-	 * @param __indent The current indentation.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/11
-	 */
-	private static void __printStackIndent(PrintStream __ps, int __indent)
-		throws NullPointerException
-	{
-		if (__ps == null)
-			throw new NullPointerException("NARG");
-		
-		// Doing nothing
-		if (__indent == 0)
-			return;
-		
-		// Base space indent
-		__ps.print("  ");
-		
-		// Print bars for indentation level
-		for (int i = 0; i < __indent; i++)
-			__ps.print('|');
-	}
-	
-	/**
-	 * Prints the stack trace to the specified stream. This is internal so that
-	 * one stack printing does not call the other since it is not specified if
-	 * it actually does it.
-	 *
-	 * @param __t The throwable to print for.
-	 * @param __ps The stream to print to.
-	 * @param __indent The indentation level.
-	 * @param __type The string type to use for the message base.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/09/15
-	 */
-	private static void __printStackTrace(Throwable __t, PrintStream __ps,
-		int __indent, int __type)
-		throws NullPointerException
-	{
-		if (__t == null || __ps == null)
-			throw new NullPointerException("NARG");
-		
-		// Internally raw stacks are stored since that is the fastest way
-		// to generate a stack trace, which will only be resolved when this
-		// method is called to print.
-		int[] rawstack = __t._stack;
-		if (rawstack == null)
-		{
-			__ps.println("<No stack trace>");
-			return;
-		}
-		
-		// Resolve the stack trace so it is easier to work with
-		CallTraceElement[] stack = CallTraceElement.traceResolve(rawstack);
-		
-		// Indent and print exception type
-		Throwable.__printStackIndent(__ps, __indent);
-		switch (__type)
-		{
-			case Throwable._TYPE_CAUSED_BY:
-				__ps.print("> CAUSED BY ");
-				break;
-			
-			case Throwable._TYPE_SUPPRESSED:
-				__ps.print("> SUPPRESSED ");
-				break;
-			
-			case Throwable._TYPE_EXCEPTION:
-			default:
-				__ps.print("EXCEPTION ");
-				break;
-		}
-		
-		// Then the string representation of it, which may be replaced
-		__ps.println(__t.toString());
-		
-		// Increase indentation to get more bars
-		__indent++;
-		
-		// The first entry is the top of the stack so it gets printed first 
-		String wasclass = "<Unknown>";
-		for (int i = 0, n = stack.length; i < n; i++)
-		{
-			// Ignore any elements that may happen to be null
-			CallTraceElement e = stack[i];
-			if (e == null)
-				continue;
-			
-			// Get the element class, always make sure the class is valid
-			// even if it is not known
-			String nowclass = e.className();
-			if (nowclass == null)
-				nowclass = "<Unknown>";
-			
-			// If the class changed, specify that it has
-			if (!nowclass.equals(wasclass))
-			{
-				// Indent
-				Throwable.__printStackIndent(__ps, __indent);
-				
-				__ps.print(" IN ");
-				__ps.println(e.toClassHeaderString());
-				
-				// Changed
-				wasclass = nowclass;
-			}
-			
-			// Indent and print the at line
-			Throwable.__printStackIndent(__ps, __indent);
-			__ps.print("- ");
-			__ps.println(e.toAtLineString());
-		}
-		
-		// Print cause of the exception
-		Throwable cause = __t.getCause();
-		if (cause != null)
-			Throwable.__printStackTrace(cause, __ps, __indent,
-				Throwable._TYPE_CAUSED_BY);
-		
-		// Print suppressed exceptions
-		for (Throwable sup : __t.getSuppressed())
-			Throwable.__printStackTrace(sup, __ps, __indent,
-				Throwable._TYPE_SUPPRESSED);
+			return className;
+		return className + ": " + lm;
 	}
 }
 

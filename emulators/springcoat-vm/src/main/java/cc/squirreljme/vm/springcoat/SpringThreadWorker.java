@@ -10,17 +10,21 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.CallStackItem;
-import cc.squirreljme.jvm.SystemCallError;
-import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
-import cc.squirreljme.runtime.cldc.asm.SystemAccess;
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
-import cc.squirreljme.vm.VMClassLibrary;
-import java.io.IOException;
-import java.io.OutputStream;
+import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.vm.springcoat.brackets.TypeObject;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalAccessException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
@@ -101,57 +105,62 @@ public final class SpringThreadWorker
 	 * Allocates the memory needed to store an array of the given class and
 	 * of the given length.
 	 *
-	 * @param __cl The component type.
+	 * @param __cl The array type.
 	 * @param __l The length of the array.
 	 * @return The allocated array.
+	 * @throws IllegalArgumentException If the type is not an array.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
 	public final SpringArrayObject allocateArray(SpringClass __cl, int __l)
-		throws NullPointerException, SpringNegativeArraySizeException
+		throws IllegalArgumentException, NullPointerException,
+			SpringNegativeArraySizeException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		SpringClass dim = this.resolveClass(__cl.name().addDimensions(1));
-		switch (__cl.name().toString())
+		// This must be an array type
+		if (!__cl.isArray())
+			throw new IllegalArgumentException("Not an array: " + __cl);
+		
+		switch (__cl.componentType().name().toString())
 		{
 				// Boolean
 			case "boolean":
-				return new SpringArrayObjectBoolean(dim, __cl, __l);
+				return new SpringArrayObjectBoolean(__cl, __l);
 			
 				// Byte
 			case "byte":
-				return new SpringArrayObjectByte(dim, __cl, __l);
+				return new SpringArrayObjectByte(__cl, __l);
 				
 				// Short
 			case "short":
-				return new SpringArrayObjectShort(dim, __cl, __l);
+				return new SpringArrayObjectShort(__cl, __l);
 				
 				// Char
 			case "char":
-				return new SpringArrayObjectChar(dim, __cl, __l);
+				return new SpringArrayObjectChar(__cl, __l);
 				
 				// Int
 			case "int":
-				return new SpringArrayObjectInteger(dim, __cl, __l);
+				return new SpringArrayObjectInteger(__cl, __l);
 				
 				// Long
 			case "long":
-				return new SpringArrayObjectLong(dim, __cl, __l);
+				return new SpringArrayObjectLong(__cl, __l);
 				
 				// Float
 			case "float":
-				return new SpringArrayObjectFloat(dim, __cl, __l);
+				return new SpringArrayObjectFloat(__cl, __l);
 				
 				// Float
 			case "double":
-				return new SpringArrayObjectDouble(dim, __cl, __l);
+				return new SpringArrayObjectDouble(__cl, __l);
 			
 				// Generic array
 			default:
-				return new SpringArrayObjectGeneric(dim, __cl, __l);
+				return new SpringArrayObjectGeneric(__cl, __l);
 		}
 		
 	}
@@ -172,7 +181,7 @@ public final class SpringThreadWorker
 		
 		// The called constructor will allocate the space needed to store
 		// this object
-		return new SpringSimpleObject(__cl, this.machine.pointers);
+		return new SpringSimpleObject(__cl);
 	}
 	
 	/**
@@ -190,7 +199,7 @@ public final class SpringThreadWorker
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// Is null refernece
+		// Is null reference
 		else if (__in == SpringNullObject.NULL)
 			return null;
 		
@@ -200,49 +209,8 @@ public final class SpringThreadWorker
 			return __in;
 		
 		// Array type
-		else if (__in instanceof SpringArrayObject)
-		{
-			SpringArrayObject sao = (SpringArrayObject)__in;
-			
-			int len = sao.length();
-			
-			// Depends on the array type
-			SpringClass sscl = sao.type();
-			ClassName type = sscl.name();
-			switch (type.toString())
-			{
-					// Char array
-				case "[C":
-					{
-						char[] rv = new char[len];
-						
-						for (int i = 0; i < len; i++)
-							rv[i] = (char)(sao.<Integer>get(Integer.class, i).
-								intValue());
-						
-						return rv;
-					}
-					
-					// String
-				case "[Ljava/lang/String;":
-					{
-						String[] rv = new String[len];
-						
-						for (int i = 0; i < len; i++)
-							rv[i] = this.<String>asNativeObject(String.class,
-								sao.<SpringObject>get(SpringObject.class, i));
-						
-						return rv;
-					}
-				
-					// {@squirreljme.error BK1y Do not know how to convert the
-					// given virtual machine array to a native machine array.
-					// (The input class)}
-				default:
-					throw new RuntimeException(
-						String.format("BK1y %s", type));
-			}
-		}
+		if (__in instanceof SpringArrayObject)
+			return ((SpringArrayObject)__in).array();
 		
 		// Class type
 		else if (__in instanceof SpringSimpleObject)
@@ -280,28 +248,6 @@ public final class SpringThreadWorker
 		else
 			throw new SpringFatalException(
 				String.format("BK20 %s", __in.getClass()));
-	}
-	
-	/**
-	 * Converts the specified object to a native object or unwraps an array
-	 * for direct access.
-	 *
-	 * @param <C> The resulting class type.
-	 * @param __cl The class to cast to.
-	 * @param __in The input object.
-	 * @return The resulting object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/11/19
-	 */
-	public final <C> C asNativeObjectUnwrapArray(Class<C> __cl, Object __in)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException();
-		
-		if (__in instanceof SpringArrayObject)
-			return __cl.cast(((SpringArrayObject)__in).array());
-		return this.<C>asNativeObject(__cl, __in);
 	}
 	
 	/**
@@ -357,49 +303,32 @@ public final class SpringThreadWorker
 		
 		// Boolean to integer
 		else if (__in instanceof Boolean)
-			return Integer.valueOf((Boolean.TRUE.equals(__in) ? 1 : 0));
+			return (Boolean.TRUE.equals(__in) ? 1 : 0);
 		
 		// Character to Integer
 		else if (__in instanceof Character)
-			return Integer.valueOf(((Character)__in).charValue());
+			return (int)(Character)__in;
 		
 		// Promoted to integer
 		else if (__in instanceof Byte || __in instanceof Short)
-			return Integer.valueOf(((Number)__in).intValue());
+			return ((Number)__in).intValue();
 		
-		// Character array
-		else if (__in instanceof char[])
-		{
-			char[] in = (char[])__in;
-			
-			// Setup return array
-			int n = in.length;
-			SpringArrayObject rv = this.allocateArray(
-				this.loadClass(new ClassName("char")), n);
-			
-			// Copy array values
-			for (int i = 0; i < n; i++)
-				rv.set(i, (int)in[i]);
-			
-			return rv;
-		}
+		// An array type (not copied)
+		else if (__in instanceof boolean[] ||
+			__in instanceof byte[] ||
+			__in instanceof short[] ||
+			__in instanceof char[] ||
+			__in instanceof int[] ||
+			__in instanceof long[] ||
+			__in instanceof float[] ||
+			__in instanceof double[])
+			return this.asWrappedArray(__in);
 		
-		// Integer array
-		else if (__in instanceof int[])
-		{
-			int[] in = (int[])__in;
-			
-			// Setup return array
-			int n = in.length;
-			SpringArrayObject rv = this.allocateArray(
-				this.loadClass(new ClassName("int")), n);
-			
-			// Copy array values
-			for (int i = 0; i < n; i++)
-				rv.set(i, (int)in[i]);
-			
-			return rv;
-		}
+		// Object array type
+		else if (__in instanceof SpringObject[])
+			return new SpringArrayObjectGeneric(
+				this.loadClass(new ClassName("java/lang/Object")),
+				(SpringObject[])__in);
 		
 		// String array
 		else if (__in instanceof String[])
@@ -409,7 +338,7 @@ public final class SpringThreadWorker
 			// Setup return array
 			int n = in.length;
 			SpringArrayObject rv = this.allocateArray(
-				this.loadClass(new ClassName("java/lang/String")), n);
+				this.loadClass(new ClassName("[Ljava/lang/String;")), n);
 			
 			// Copy array values
 			for (int i = 0; i < n; i++)
@@ -418,7 +347,7 @@ public final class SpringThreadWorker
 			return rv;
 		}
 		
-		// Convertable exception
+		// Convertible exception
 		else if (__in instanceof SpringConvertableThrowable)
 		{
 			SpringConvertableThrowable e = (SpringConvertableThrowable)__in;
@@ -517,82 +446,18 @@ public final class SpringThreadWorker
 					return rv;
 				
 				// Resolve the input class, so it is initialized
-				SpringClass resclass = (__noclassres ? this.loadClass(name) :
+				SpringClass resClass = (__noclassres ? this.loadClass(name) :
 					this.resolveClass(name));
 				
 				// Resolve the class object
-				SpringClass classobj = this.resolveClass(
+				SpringClass classClass = this.resolveClass(
 					new ClassName("java/lang/Class"));
-				
-				// Copy interfaces into a class array
-				SpringClass[] interfaces = resclass.interfaceClasses();
-				int ni = interfaces.length;
-				SpringArrayObject ints = this.allocateArray(classobj, ni);
-				for (int i = 0; i < ni; i++)
-					ints.set(i, this.asVMObject(interfaces[i]));
-				
-				// See if there is a default constructor
-				SpringMethod defconmeth = resclass.lookupDefaultConstructor();
-				
-				// Get static method for this constructor
-				int defconflags;
-				SpringObject defconsm;
-				if (defconmeth != null)
-				{
-					defconflags = defconmeth.flags().toJavaBits();
-					defconsm = new SpringVMStaticMethod(defconmeth);
-				}
-				
-				// There is none
-				else
-				{
-					defconflags = 0;
-					defconsm = SpringNullObject.NULL;
-				}
-				
-				// Get the static method for enumeration values
-				ClassFlags classflags = resclass.flags();
-				SpringObject enumsm;
-				if (classflags.isEnum())
-					try
-					{
-						enumsm = new SpringVMStaticMethod(
-							resclass.lookupMethod(true,
-							new MethodName("values"),
-							new MethodDescriptor(name.addDimensions(1).
-							field())));
-					}
-					catch (SpringIncompatibleClassChangeException e)
-					{
-						enumsm = SpringNullObject.NULL;
-					}
-				else
-					enumsm = SpringNullObject.NULL;
-				
-				// Initialize V1 class data which is initialized with class
-				// data
-				SpringObject cdata = this.newInstance(new ClassName(
-					"cc/squirreljme/runtime/cldc/lang/ClassDataV1"),
-					new MethodDescriptor("(ILjava/lang/String;" +
-						"Ljava/lang/Class;[Ljava/lang/Class;" +
-						"Ljava/lang/Class;Ljava/lang/String;II" +
-						"Lcc/squirreljme/runtime/cldc/asm/StaticMethod;" +
-						"Lcc/squirreljme/runtime/cldc/asm/StaticMethod;)V"),
-					resclass.specialIndex(),
-					this.asVMObject(name.toString(), true),
-					this.asVMObject(resclass.superClass(), true),
-					ints,
-					(!resclass.isArray() ? SpringNullObject.NULL :
-						this.asVMObject(resclass.componentType(), true)),
-					this.asVMObject(resclass.inJar()),
-					classflags.toJavaBits(),
-					defconflags, defconsm, enumsm);
 				
 				// Initialize class with special class index and some class
 				// information
-				rv = this.newInstance(classobj.name(),
-					new MethodDescriptor(
-					"(Lcc/squirreljme/runtime/cldc/lang/ClassData;)V"), cdata);
+				rv = this.newInstance(classClass.name(), new MethodDescriptor(
+					"(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)V"),
+					new TypeObject(resClass));
 				
 				// Cache and use it
 				com.put(name, rv);
@@ -609,67 +474,29 @@ public final class SpringThreadWorker
 	}
 	
 	/**
-	 * As VM object, but boxed if a primitive.
+	 * Creates an array from the given elements.
 	 *
-	 * @param __in The object to convert.
-	 * @return The converted object.
-	 * @since 2018/11/19
+	 * @param __type The array type.
+	 * @param __elements The elements to be in the array.
+	 * @return The array.
+	 * @throws IllegalArgumentException If the type is not an array that is
+	 * compatible with objects.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/12
 	 */
-	public final Object asVMObjectBoxed(Object __in)
+	public final SpringArrayObjectGeneric asVMObjectArray(SpringClass __type,
+		SpringObject... __elements)
+		throws IllegalArgumentException, NullPointerException
 	{
-		// Null is converted to null
-		if (__in == null)
-			return SpringNullObject.NULL;
+		if (__type == null)
+			throw new NullPointerException("NARG");
 		
-		// Box these
-		else if (__in instanceof Integer)
-			return this.newInstance(new ClassName("java/lang/Integer"),
-				new MethodDescriptor("(I)V"), __in);
-		else if (__in instanceof Long)
-			return this.newInstance(new ClassName("java/lang/Long"),
-				new MethodDescriptor("(J)V"), __in);
-		else if (__in instanceof Float)
-			return this.newInstance(new ClassName("java/lang/Float"),
-				new MethodDescriptor("(F)V"), __in);
-		else if (__in instanceof Double)
-			return this.newInstance(new ClassName("java/lang/Double"),
-				new MethodDescriptor("(D)V"), __in);
+		// Prevent invalid arrays from being wrapped
+		if (!__type.isArray() || __type.componentType().name().isPrimitive())
+			throw new IllegalArgumentException("Cannot have object array " +
+				"that is not an array or primitive type: " + __type);
 		
-		// As-is
-		else if (__in instanceof SpringObject)
-			return __in;
-		
-		else
-			return this.asVMObject(__in);
-	}
-	
-	/**
-	 * As VM object, if it is an array it is wrapped otherwise if the object is
-	 * a primitive type it becomes boxed.
-	 *
-	 * @param __in The object to convert.
-	 * @return The converted object.
-	 * @since 2018/12/03
-	 */
-	public final Object asVMObjectBoxedOrWrappedArray(Object __in)
-	{
-		if (__in == null)
-			return SpringNullObject.NULL;
-		
-		// Array types
-		else if (__in instanceof boolean[] ||
-			__in instanceof byte[] ||
-			__in instanceof short[] ||
-			__in instanceof char[] ||
-			__in instanceof int[] ||
-			__in instanceof long[] ||
-			__in instanceof float[] ||
-			__in instanceof double[])
-			return this.asWrappedArray(__in);
-		
-		// As boxed type instead
-		else
-			return this.asVMObjectBoxed(__in);
+		return new SpringArrayObjectGeneric(__type, __elements);
 	}
 	
 	/**
@@ -691,56 +518,48 @@ public final class SpringThreadWorker
 		else if (__a instanceof boolean[])
 			return new SpringArrayObjectBoolean(
 				this.loadClass(new ClassName("[Z")),
-				this.loadClass(new ClassName("boolean")),
 				(boolean[])__a);
 		
 		// Byte
 		else if (__a instanceof byte[])
 			return new SpringArrayObjectByte(
 				this.loadClass(new ClassName("[B")),
-				this.loadClass(new ClassName("byte")),
 				(byte[])__a);
 		
 		// Short
 		else if (__a instanceof short[])
 			return new SpringArrayObjectShort(
 				this.loadClass(new ClassName("[S")),
-				this.loadClass(new ClassName("short")),
 				(short[])__a);
 		
 		// Character
 		else if (__a instanceof char[])
 			return new SpringArrayObjectChar(
 				this.loadClass(new ClassName("[C")),
-				this.loadClass(new ClassName("char")),
 				(char[])__a);
 		
 		// Integer
 		else if (__a instanceof int[])
 			return new SpringArrayObjectInteger(
 				this.loadClass(new ClassName("[I")),
-				this.loadClass(new ClassName("int")),
 				(int[])__a);
 		
 		// Long
 		else if (__a instanceof long[])
 			return new SpringArrayObjectLong(
 				this.loadClass(new ClassName("[J")),
-				this.loadClass(new ClassName("long")),
 				(long[])__a);
 		
 		// Float
 		else if (__a instanceof float[])
 			return new SpringArrayObjectFloat(
 				this.loadClass(new ClassName("[F")),
-				this.loadClass(new ClassName("float")),
 				(float[])__a);
 		
 		// Double
 		else if (__a instanceof double[])
 			return new SpringArrayObjectDouble(
 				this.loadClass(new ClassName("[D")),
-				this.loadClass(new ClassName("double")),
 				(double[])__a);
 		
 		// {@squirreljme.error BK22 Cannot wrap this as a native array.
@@ -992,10 +811,33 @@ public final class SpringThreadWorker
 	 * @param __cn The class to load.
 	 * @return The loaded class.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SpringClassFormatException If the class is not formatted
+	 * properly.
+	 * @throws SpringClassNotFoundException If the class was not found.
+	 * @since 2020/06/17
+	 */
+	public final SpringClass loadClass(String __cn)
+		throws NullPointerException, SpringClassFormatException,
+			SpringClassNotFoundException
+	{
+		return this.loadClass(new ClassName(__cn));
+	}
+	
+	/**
+	 * Loads the specified class, potentially performing initialization on it
+	 * if it has not been initialized.
+	 *
+	 * @param __cn The class to load.
+	 * @return The loaded class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringClassFormatException If the class is not formatted
+	 * properly.
+	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/09/08
 	 */
 	public final SpringClass loadClass(ClassName __cn)
-		throws NullPointerException
+		throws NullPointerException, SpringClassFormatException,
+			SpringClassNotFoundException
 	{
 		if (__cn == null)
 			throw new NullPointerException("NARG");
@@ -1105,679 +947,46 @@ public final class SpringThreadWorker
 	 * Note that the return value should be a native type, it is translated
 	 * as needed.
 	 *
-	 * @param __func The function to call.
+	 * @param __class The class the function is in.
+	 * @param __method The method being called.
 	 * @param __args The arguments to the function.
 	 * @return The result from the call.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	public final Object nativeMethod(String __func, Object... __args)
+	public final Object nativeMethod(ClassName __class,
+		MethodNameAndType __method, Object... __args)
 		throws NullPointerException
 	{
-		if (__func == null || __args == null)
+		if (__class == null || __method == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		/*todo.DEBUG.note("Call native %s", __func);*/
+		// All low-level calls are considered invalid in SpringCoat because
+		// it does not have the given functionality.
+		if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly") ||
+			__class.toString().startsWith("cc/squirreljme/jvm/mle/lle/"))
+			throw new SpringVirtualMachineException(String.format(
+				"Invalid LLE native call: %s %s", __class,
+				Arrays.asList(__args)));
 		
-		// Depends on the function
-		switch (__func)
-		{
-				// Return the length of the array
-			case "cc/squirreljme/jvm/Assembly::" +
-				"arrayLength:(Ljava/lang/Object;)I":
-				return ((SpringArrayObject)__args[0]).length();
-				
-				// Pack double together
-			case "cc/squirreljme/jvm/Assembly::" +
-				"doublePack:(II)D":
-				return Double.longBitsToDouble(
-					((((Integer)__args[0]).longValue() << 32L) |
-					((((Integer)__args[1]).longValue()) & 0xFFFFFFFFL)));
-				
-				// Gets the raw bits for the given double value
-			case "cc/squirreljme/jvm/Assembly::" +
-				"doubleToRawLongBits:(D)J":
-				return Double.doubleToRawLongBits((Double)__args[0]);
-				
-				// Float to raw int bits
-			case "cc/squirreljme/jvm/Assembly::" +
-				"floatToRawIntBits:(F)I":
-				return Float.floatToRawIntBits((Float)__args[0]);
-				
-				// Int bits to float
-			case "cc/squirreljme/jvm/Assembly::" +
-				"intBitsToFloat:(I)F":
-				return Float.intBitsToFloat((Integer)__args[0]);
-				
-				// Convert long bits to double
-			case "cc/squirreljme/jvm/Assembly::" +
-				"longBitsToDouble:(J)D":
-				return Double.longBitsToDouble((Long)__args[0]);
-				
-				// Pack long together
-			case "cc/squirreljme/jvm/Assembly::" +
-				"longPack:(II)J":
-				return ((((Integer)__args[0]).longValue() << 32L) |
-					((((Integer)__args[1]).longValue()) & 0xFFFFFFFFL));
-				
-				// Unpack high long
-			case "cc/squirreljme/jvm/Assembly::" +
-				"longUnpackHigh:(L)I":
-				return (int)((((Long)__args[0]).longValue()) >>> 32L);
-				
-				// Unpack low long
-			case "cc/squirreljme/jvm/Assembly::" +
-				"longUnpackLow:(L)I":
-				return (int)(((Long)__args[0]).longValue());
-				
-				// Object to pointer
-			case "cc/squirreljme/jvm/Assembly::" +
-				"objectToPointer:(Ljava/lang/Object;)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"objectToPointerRefQueue:(Ljava/lang/Object;)I":
-				return this.uniqueObjectToPointer((SpringObject)__args[0]);
-				
-				// Pointer to object
-			case "cc/squirreljme/jvm/Assembly::" +
-				"pointerToObject:(I)Ljava/lang/Object;":
-				return this.uniquePointerToObject((Integer)__args[0]);
-				
-				// System calls (no return value)
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(S)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(SI)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(SII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(SIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(SIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(SIIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(SIIIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(SIIIIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCall:(SIIIIIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(S)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(SI)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(SII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(SIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(SIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(SIIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(SIIIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(SIIIIIII)V":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallP:(SIIIIIIII)V":
-				{
-					// System call index and number of arguments used
-					int si = (Integer)__args[0],
-						na = __args.length - 1;
-					
-					// Copy argument values to integers
-					int[] ta = new int[na];
-					for (int i = 1, o = 0; o < na; i++, o++)
-						ta[o] = (Integer)__args[i];
-					
-					// Do system call handler
-					this.systemCall((short)si, ta);
-					return null;
-				}
-				
-				// System calls (returns value)
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(S)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(SI)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(SII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(SIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(SIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(SIIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(SIIIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(SIIIIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallV:(SIIIIIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(S)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(SI)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(SII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(SIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(SIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(SIIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(SIIIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(SIIIIIII)I":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPV:(SIIIIIIII)I":
-				{
-					// System call index and number of arguments used
-					int si = (Integer)__args[0],
-						na = __args.length - 1;
-					
-					// Copy argument values to integers
-					int[] ta = new int[na];
-					for (int i = 1, o = 0; o < na; i++, o++)
-						ta[o] = (Integer)__args[i];
-					
-					// Do system call handler
-					return (int)this.systemCall((short)si, ta);
-				}
-				
-				// System calls (returns long value)
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(S)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(SI)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(SII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(SIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(SIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(SIIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(SIIIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(SIIIIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallVL:(SIIIIIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(S)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(SI)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(SII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(SIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(SIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(SIIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(SIIIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(SIIIIIII)J":
-			case "cc/squirreljme/jvm/Assembly::" +
-				"sysCallPVL:(SIIIIIIII)J":
-				{
-					// System call index and number of arguments used
-					int si = (Integer)__args[0],
-						na = __args.length - 1;
-					
-					// Copy argument values to integers
-					int[] ta = new int[na];
-					for (int i = 1, o = 0; o < na; i++, o++)
-						ta[o] = (Integer)__args[i];
-					
-					// Do system call handler
-					return (long)this.systemCall((short)si, ta);
-				}
-			
-				// Read console buffer
-			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
-				"displayRead:([I[BII)I":
-				return 0;
-				
-				// Flush the console
-			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
-				"flush:(I)I":
-				{
-					int fd = (Integer)__args[0];
-					PrintStream to = (fd == ConsoleOutput.OUTPUT ?
-						System.out : (fd == ConsoleOutput.ERROR ?
-						System.err : null));
-					
-					// Flush if valid
-					if (to != null)
-					{
-						to.flush();
-						return 0;
-					}
-					else
-						return ConsoleOutput.ERROR_INVALIDFD;
-				}
-			
-				// Write to the console
-			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
-				"write:(II)I":
-				{
-					int fd = (Integer)__args[0];
-					PrintStream to = (fd == ConsoleOutput.OUTPUT ?
-						System.out : (fd == ConsoleOutput.ERROR ?
-						System.err : null));
-					
-					// Write if it exists
-					if (to != null)
-					{
-						to.write((Integer)__args[1]);
-						return 0;
-					}
-					else
-						return ConsoleOutput.ERROR_INVALIDFD;
-				}
-				
-				// Write to the console (bulk)
-			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
-				"write:(I[BII)I":
-				{
-					int fd = (Integer)__args[0];
-					PrintStream to = (fd == ConsoleOutput.OUTPUT ?
-						System.out : (fd == ConsoleOutput.ERROR ?
-						System.err : null));
-					
-					// Write if it exists
-					if (to != null)
-					{
-						to.write(
-							(byte[])((SpringArrayObjectByte)__args[1]).array(),
-							(Integer)__args[2],
-							(Integer)__args[3]);
-						return 0;
-					}
-					else
-						return ConsoleOutput.ERROR_INVALIDFD;
-				}
-				
-				// Allocate object but do not construct it
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"allocateObject:(Ljava/lang/String;)Ljava/lang/Object;":
-				return this.allocateObject(this.loadClass(
-					new ClassName(this.<String>asNativeObject(
-					String.class, ((SpringObject)__args[0])))));
-			
-				// Allocate array of a given class
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"arrayNew:(Ljava/lang/Class;I)Ljava/lang/Object;":
-				{
-					// Cannot do a reverse lookup
-					SpringMachine machine = this.machine;
-					Map<SpringObject, ClassName> ocm = machine.
-						__classObjectToNameMap();
-					synchronized (machine.classLoader().classLoadingLock())
-					{
-						// {@squirreljme.error BK24 Could not reverse class
-						// object to class name.}
-						ClassName cn = ocm.get((SpringObject)__args[0]);
-						if (cn == null)
-							throw new SpringVirtualMachineException("BK24");
-						
-						// Lookup class for the component type, we need it
-						SpringClass cl = this.loadClass(cn.componentType());
-						
-						// Allocate array for the component type
-						return this.allocateArray(cl,
-							(Integer)__args[1]);
-					}
-				}
-			
-				// Get the class by the name of whatever is input
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"classByName:(Ljava/lang/String;)Ljava/lang/Class;":
-				try
-				{
-					return this.asVMObject(new ClassName(
-						this.<String>asNativeObject(String.class,
-						(SpringObject)__args[0])), true);
-				}
-				catch (SpringClassNotFoundException e)
-				{
-					return this.asVMObject(null);
-				}
-				
-				// Returns the class data for a class object
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"classData:(Ljava/lang/Class;)Lcc/squirreljme/" +
-				"runtime/cldc/lang/ClassData;":
-				return this.invokeMethod(false,
-					new ClassName("java/lang/Class"),
-					new MethodNameAndType("__classData",
-					"()Lcc/squirreljme/runtime/cldc/lang/ClassData;"),
-					(SpringObject)__args[0]);
-				
-				// Get the class object for an object
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"classOf:(Ljava/lang/Object;)Ljava/lang/Class;":
-				{
-					// Just use the input class of the type
-					SpringObject so = (SpringObject)__args[0];
-					return so.type();
-				}
-				
-				// Check if thread holds the given lock
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"holdsLock:(ILjava/lang/Object;)Z":
-				{
-					SpringThread owner =
-						((SpringObject)__args[1]).monitor()._owner;
-					return (owner == null ? false :
-						((Integer)__args[0]).intValue() == owner.id);
-				}
-				
-				// Identity hash code
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"identityHashCode:(Ljava/lang/Object;)I":
-				return System.identityHashCode(((SpringObject)__args[0]));
-				
-				// Invoke static method
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"invokeStatic:(Lcc/squirreljme/runtime/cldc/asm/" +
-				"StaticMethod;[Ljava/lang/Object;)Ljava/lang/Object;":
-				{
-					// We will need this to pass object arguments
-					SpringArrayObject vargs = (SpringArrayObject)__args[1];
-					
-					// Copy object values
-					int n = vargs.length();
-					Object[] xargs = new Object[n];
-					for (int i = 0; i < n; i++)
-						xargs[i] = vargs.get(Object.class, i);
-					
-					// The method to execute
-					SpringMethod m = ((SpringVMStaticMethod)__args[0]).method;
-					
-					// Enter the frame for this method
-					this.thread.enterFrame(m, xargs);
-					
-					// If the method has no return value, just push a null to
-					// the stack
-					if (!m.nameAndType().type().hasReturnValue())
-						return SpringNullObject.NULL;
-					
-					// No return value, sort of
-					return null;
-				}
-				
-				// Monitor notify
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"monitorNotify:(Ljava/lang/Object;Z)I":
-				return ((SpringObject)__args[0]).monitor().
-					monitorNotify(this.thread,
-					((Integer)__args[1]).intValue() != 0);
-			
-				// Monitor notify
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"monitorWait:(Ljava/lang/Object;JI)I":
-				return ((SpringObject)__args[0]).monitor().
-					monitorWait(this.thread, (Long)__args[1],
-						(Integer)__args[2]);
-				
-				// Create new primitive weak reference
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"newWeakReference:" +
-				"()Lcc/squirreljme/runtime/cldc/ref/PrimitiveReference;":
-				{
-					return new SpringPrimitiveWeakReference();
-				}
-				
-				// Get reference
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"referenceGet:(Lcc/squirreljme/runtime/cldc/ref/" +
-				"PrimitiveReference;)Ljava/lang/Object;":
-				return ((SpringPrimitiveReference)__args[0]).get();
-				
-				// Set reference
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"referenceSet:(Lcc/squirreljme/runtime/cldc/ref/" +
-				"PrimitiveReference;Ljava/lang/Object;)V":
-				((SpringPrimitiveReference)__args[0]).set(
-					(SpringObject)__args[1]);
-				return null;
-				
-				// Returns the number of bytes available in the resource.
-			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
-				"available:(I)I":
-				return this.machine.resourceAccess().available(
-					(Integer)__args[0]);
-				
-				// Close resource in JAR
-			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
-				"close:(I)I":
-				return this.machine.resourceAccess().close(
-					(Integer)__args[0]);
-				
-				// Open resource in JAR
-			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
-				"open:(Ljava/lang/String;Ljava/lang/String;)I":
-				return this.machine.resourceAccess().open(
-					this.<String>asNativeObject(String.class, __args[0]),
-					this.<String>asNativeObject(String.class, __args[1]));
-				
-				// Read resource in JAR
-			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
-				"read:(I[BII)I":
-				return this.machine.resourceAccess().read(
-					(Integer)__args[0],
-					(byte[])((SpringArrayObjectByte)__args[1]).array(),
-					(Integer)__args[2],
-					(Integer)__args[3]);
-			
-				// List suites that are available
-			case "cc/squirreljme/runtime/cldc/asm/SuiteAccess::" +
-				"availableSuites:()[Ljava/lang/String;":
-				return this.machine.suiteManager().listLibraryNames();
-			
-				// List current class path
-			case "cc/squirreljme/runtime/cldc/asm/SuiteAccess::" +
-				"currentClassPath:()[Ljava/lang/String;":
-				{
-					VMClassLibrary[] vp = this.machine.classloader.classPath();
-					int n = vp.length;
-					String[] rv = new String[n];
-					for (int i = 0; i < n; i++)
-						rv[i] = vp[i].name();
-					return this.asVMObject(rv);
-				}
-				
-				// Get environment variable
-			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
-				"getEnv:(Ljava/lang/String;)Ljava/lang/String;":
-				return this.asVMObject(SystemAccess.getEnv(
-					this.<String>asNativeObject(String.class, __args[0])));
-			
-				// Approximated executable path
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"executablePath:()Ljava/lang/String;":
-				// Just use the one of the host VM, if it is known anyway
-				return this.asVMObject(SystemProperties.executablePath());
-				
-				// The guest depth of this virtual machine
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"guestDepth:()I":
-				return this.machine.guestdepth;
-				
-				// The class to use for an implementation of something, by
-				// default
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"implementationClass:(Ljava/lang/String;)Ljava/lang/String;":
-				return SpringNullObject.NULL;
-				
-				// VM e-mail
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"javaVMEmail:()Ljava/lang/String;":
-				return "xerthesquirrel@gmail.com";
-				
-				// VM name
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"javaVMName:()Ljava/lang/String;":
-				return "SquirrelJME SpringCoat";
-				
-				// VM URL
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"javaVMURL:()Ljava/lang/String;":
-				return "http://squirreljme.cc/";
-				
-				// VM vendor
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"javaVMVendor:()Ljava/lang/String;":
-				return "Stephanie Gawroriski";
-				
-				// VM Version
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"javaVMVersion:()Ljava/lang/String;":
-				return "0.2.0";
-				
-				// Get the operating system type
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"operatingSystemType:()I":
-				return OperatingSystemType.UNKNOWN;
-				
-				// Get system property
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"systemProperty:(Ljava/lang/String;)Ljava/lang/String;":
-				String pk = this.<String>asNativeObject(String.class,
-					__args[0]),
-					pv = this.machine._sysproperties.get(pk);
-				if (pv != null)
-					return pv;
-				return System.getProperty(pk);
-				
-				// Current thread ID
-			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"currentThread:()I":
-				return this.thread.id;
-				
-				// Set thread priority
-			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"setThreadPriority:(II)V":
-				{
-					SpringThread st = this.machine.getThread(
-						(Integer)__args[0]);
-					if (st != null)
-					{
-						SpringThreadWorker stw = st._worker;
-						if (stw != null)
-						{
-							Thread signal = stw.signalinstead;
-							if (signal != null)
-								signal.setPriority((Integer)__args[1]);
-							else
-								stw.setPriority((Integer)__args[1]);
-						}
-					}
-					
-					return null;
-				}
-				
-				// Interrupt the given thread
-			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"signalInterrupt:(I)V":
-				{
-					SpringThread st = this.machine.getThread(
-						(Integer)__args[0]);
-					if (st != null)
-					{
-						SpringThreadWorker stw = st._worker;
-						if (stw != null)
-						{
-							Thread signal = stw.signalinstead;
-							if (signal != null)
-								signal.interrupt();
-							else
-								stw.interrupt();
-						}
-					}
-					
-					return null;
-				}
-				
-				// Sleep
-			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"sleep:(JI)Z":
-				try
-				{
-					long ms = (Long)__args[0];
-					int ns = (Integer)__args[1];
-					
-					// Zero time is a yield
-					if (ms == 0 && ns == 0)
-						Thread.yield();
-					
-					// Otherwise sleep for given time
-					else
-						Thread.sleep(ms, ns);
-					return 0;
-				}
-				catch (InterruptedException e)
-				{
-					return 1;
-				}
-				
-				// Start Task
-			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"startTask:([Ljava/lang/String;Ljava/lang/String;" +
-				"[Ljava/lang/String;)I":
-			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"startTask:([Ljava/lang/String;Ljava/lang/String;" +
-				"[Ljava/lang/String;[Ljava/lang/String;" +
-				"Lcc/squirreljme/runtime/cldc/asm/ConsoleCallback;" +
-				"Lcc/squirreljme/runtime/cldc/asm/ConsoleCallback;)I":
-				return this.machine.taskManager().startTask(
-					this.<String[]>asNativeObject(String[].class, __args[0]),
-					this.<String>asNativeObject(String.class, __args[1]),
-					this.<String[]>asNativeObject(String[].class, __args[2]),
-					this.machine.guestdepth);
-				
-				// Start Thread
-			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"startThread:(Ljava/lang/Thread;Ljava/lang/String;)I":
-				{
-					// Create thread
-					String name;
-					SpringThread thread = this.machine.createThread(
-						(name = this.<String>asNativeObject(String.class,
-							__args[1])));
-					
-					// Enter Thread's `__start()`
-					SpringObject throbj = (SpringObject)__args[0];
-					thread.enterFrame(this.resolveClass(
-						new ClassName("java/lang/Thread")).lookupMethod(false,
-						new MethodNameAndType("__start", "()V")), throbj);
-					
-					// Create worker for this thread
-					SpringThreadWorker worker = new SpringThreadWorker(
-						this.machine, thread, false);
-					worker.start();
-					
-					// Return this thread ID
-					return thread.id;
-				}
-				
-				// Task status
-			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"taskStatus:(I)I":
-				return this.machine.taskManager().taskStatus(
-					(Integer)__args[0]);
-				
-				// {@squirreljme.error BK25 Unknown native function. (The
-				// native function)}
-			default:
-				throw new SpringVirtualMachineException(
-					String.format("BK25 %s", __func));
-		}
+		// Do not allow the older SpringCoat "asm" classes to be called as
+		// the interfaces are very different with the MLE layer.
+		if (__class.toString().startsWith("cc/squirreljme/runtime/cldc/asm/"))
+			throw new SpringVirtualMachineException(String.format(
+				"Old-SpringCoat native call: %s %s", __class,
+				Arrays.asList(__args)));
+		
+		// Only allow mid-level native calls
+		if (!__class.toString().startsWith("cc/squirreljme/jvm/mle/"))
+			throw new SpringVirtualMachineException(String.format(
+				"Non-MLE native call: %s %s", __class,
+				Arrays.asList(__args)));
+		
+		// Debug
+		/*Debugging.debugNote("Call native %s::%s %s", __class, __method,
+			Arrays.asList(__args));*/
+		
+		return MLEDispatcher.dispatch(this, __class, __method, __args);
 	}
 	
 	/**
@@ -1823,8 +1032,8 @@ public final class SpringThreadWorker
 		__cl = this.loadClass(__cl);
 		
 		// Lookup constructor to this method
-		SpringMethod cons = __cl.lookupMethod(false, new MethodName("<init>"),
-			__desc);
+		SpringMethod cons = __cl.lookupMethod(false,
+			new MethodName("<init>"), __desc);
 		
 		// Allocate the object
 		SpringObject rv = this.allocateObject(__cl);
@@ -1848,6 +1057,21 @@ public final class SpringThreadWorker
 		
 		// Return the resulting object
 		return rv;
+	}
+	
+	/**
+	 * Resolves the given class, checking access.
+	 *
+	 * @param __cl The class to resolve.
+	 * @return The resolved class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringIllegalAccessException If the class cannot be accessed.
+	 * @since 2020/06/17
+	 */
+	public final SpringClass resolveClass(String __cl)
+		throws NullPointerException, SpringIllegalAccessException
+	{
+		return this.resolveClass(new ClassName(__cl));
 	}
 	
 	/**
@@ -1920,9 +1144,11 @@ public final class SpringThreadWorker
 		// If the VM is exiting then clear the execution stack before we go
 		// away
 		catch (SpringMachineExitException e)
-		{
+		{	
+			// Terminate the thread
+			thread.terminate();
+			
 			// Thread is okay to exit!
-			thread._terminate = true;
 			thread._signaledexit = true;
 			
 			// Exit all frames
@@ -1941,6 +1167,9 @@ public final class SpringThreadWorker
 			// Frame limit is zero, so kill the thread
 			if (__framelimit == 0)
 			{
+				// Terminate the thread
+				thread.terminate();
+				
 				PrintStream err = System.err;
 				
 				err.println("****************************");
@@ -1957,9 +1186,6 @@ public final class SpringThreadWorker
 				
 				err.println("****************************");
 				
-				// Terminate the thread
-				thread._terminate = true;
-				
 				// Exit all frames
 				thread.exitAllFrames();
 				
@@ -1975,8 +1201,45 @@ public final class SpringThreadWorker
 		finally
 		{
 			if (__framelimit == 0)
-				thread._terminate = true;
+				thread.terminate();
 		}
+	}
+	
+	/**
+	 * Run the main process for this thread.
+	 *
+	 * @since 2020/06/17
+	 */
+	public final void runProcessMain()
+	{
+		SpringMachine machine = this.machine;
+		
+		// Locate the main class
+		SpringClass bootClass = this.loadClass(
+			machine.bootClass.replace('.', '/'));
+		
+		// Lookup the main method
+		SpringMethod main = bootClass.lookupMethod(true,
+			new MethodNameAndType("main", "([Ljava/lang/String;)V"));
+		
+		// Setup main arguments
+		String[] args = machine.getMainArguments();
+		int argsLen = args.length;
+		
+		// Allocate in VM
+		SpringArrayObject vmArgs = this.allocateArray(
+			this.resolveClass("[Ljava/lang/String;"), argsLen);
+		
+		// Copy everything over
+		for (int i = 0; i < argsLen; i++)
+			vmArgs.set(i, this.asVMObject(args[i]));
+		
+		// Enter the main method with all the passed arguments
+		int deepness = this.thread.numFrames();
+		this.thread.enterFrame(main, vmArgs);
+		
+		// Run until it finishes execution
+		this.run(deepness);
 	}
 	
 	/**
@@ -2070,12 +1333,6 @@ public final class SpringThreadWorker
 			SpringThread.Frame cf = thread.currentFrame();
 			if (cf == null)
 			{
-				// Send our throwable to a special handler
-				this.invokeMethod(true, new ClassName("cc/squirreljme/" +
-					"runtime/cldc/lang/UncaughtExceptionHandler"),
-					new MethodNameAndType("handle",
-					"(Ljava/lang/Throwable;)V"), __o);
-				
 				// Just stop execution here
 				return -1;
 			}
@@ -2198,7 +1455,7 @@ public final class SpringThreadWorker
 		catch (SpringMachineExitException e)
 		{
 			// Thread is okay to exit!
-			thread._terminate = true;
+			thread.terminate();
 			
 			// Exit profiler stack
 			thread.profiler.exitAll(System.nanoTime());
@@ -2310,7 +1567,8 @@ public final class SpringThreadWorker
 					// Allocate new array
 				case InstructionIndex.ANEWARRAY:
 					frame.pushToStack(this.allocateArray(this.resolveClass(
-						inst.<ClassName>argument(0, ClassName.class)),
+						inst.<ClassName>argument(0, ClassName.class)
+						.addDimensions(1)),
 						frame.<Integer>popFromStack(Integer.class)));
 					break;
 					
@@ -2376,6 +1634,7 @@ public final class SpringThreadWorker
 						// target type. (The type to cast to; The type of the
 						// object)}
 						if (pop != SpringNullObject.NULL &&
+							!(pop instanceof AbstractGhostObject) &&
 							!as.isAssignableFrom(pop.type()))
 							throw new SpringClassCastException(String.format(
 								"BK2d %s %s", as, pop.type()));
@@ -3763,7 +3022,8 @@ public final class SpringThreadWorker
 				case InstructionIndex.NEWARRAY:
 					frame.pushToStack(this.allocateArray(this.resolveClass(
 						ClassName.fromPrimitiveType(
-						inst.<PrimitiveType>argument(0, PrimitiveType.class))),
+						inst.<PrimitiveType>argument(0,
+							PrimitiveType.class)).addDimensions(1)),
 						frame.<Integer>popFromStack(Integer.class)));
 					break;
 					
@@ -4010,452 +3270,9 @@ public final class SpringThreadWorker
 			throw new SpringClassCastException(
 				String.format("BK32 %s %s %s", refclass, objclass, args[0]));
 		
-		// Relookup the method since we need to the right one! Then invoke it
-		__t.enterFrame(objclass.lookupMethod(false, ref.memberNameAndType()),
-			args);
-	}
-	
-	/**
-	 * Internal system call handling.
-	 *
-	 * @param __si System call index.
-	 * @param __args Arguments.
-	 * @return The result.
-	 * @since 2019/05/23
-	 */
-	public final long systemCall(short __si, int... __args)
-	{
-		// Make at least 8!
-		if (__args == null)
-			__args = new int[8];
-		if (__args.length < 8)
-			__args = Arrays.copyOf(__args, 8);
-		
-		// Error state for the last call of this type
-		int[] errors = this.thread._syscallerrors;
-		
-		// Return value with error value, to set if any
-		long rv;
-		int err;
-		
-		// Depends on the system call type
-		switch (__si)
-		{
-				// Check if system call is supported
-			case SystemCallIndex.QUERY_INDEX:
-				{
-					err = 0;
-					switch (__args[0])
-					{
-						case SystemCallIndex.API_LEVEL:
-						case SystemCallIndex.CALL_STACK_HEIGHT:
-						case SystemCallIndex.CALL_STACK_ITEM:
-						case SystemCallIndex.ERROR_GET:
-						case SystemCallIndex.ERROR_SET:
-						case SystemCallIndex.EXIT:
-						case SystemCallIndex.FATAL_TODO:
-						case SystemCallIndex.GARBAGE_COLLECT:
-						case SystemCallIndex.LOAD_STRING:
-						case SystemCallIndex.PD_OF_STDERR:
-						case SystemCallIndex.PD_OF_STDIN:
-						case SystemCallIndex.PD_OF_STDOUT:
-						case SystemCallIndex.PD_WRITE_BYTE:
-						case SystemCallIndex.SLEEP:
-						case SystemCallIndex.TIME_MILLI_WALL:
-						case SystemCallIndex.TIME_NANO_MONO:
-						case SystemCallIndex.VMI_MEM_FREE:
-						case SystemCallIndex.VMI_MEM_MAX:
-						case SystemCallIndex.VMI_MEM_USED:
-							rv = 1;
-							break;
-						
-						default:
-							rv = 0;
-							break;
-					}
-				}
-				break;
-				
-				// Returns the height of the call stack
-			case SystemCallIndex.CALL_STACK_HEIGHT:
-				{
-					rv = this.thread.frames().length;
-					err = 0;
-				}
-				break;
-				
-				// Returns the given call stack item
-			case SystemCallIndex.CALL_STACK_ITEM:
-				{
-					// Need to get all the stack frames first
-					SpringThread.Frame[] frames = this.thread.frames();
-					int numframes = frames.length;
-					int curf = (numframes - __args[0]) - 1;
-					
-					// Out of range item
-					if (curf < 0 || curf >= numframes)
-					{
-						rv = -1;
-						err = SystemCallError.VALUE_OUT_OF_RANGE;
-					}
-					
-					// Depends on the item
-					else
-					{
-						// Reset
-						rv = err = 0;
-						
-						// Get method we are in
-						SpringMethod inmethod = frames[curf].method();
-						
-						// Depends on the item
-						switch (__args[1])
-						{
-								// Class name
-							case CallStackItem.CLASS_NAME:
-								if (inmethod == null)
-									err = SystemCallError.VALUE_OUT_OF_RANGE;
-								else
-									rv = this.uniqueStringId(
-										inmethod.inClass().toString());
-								break;
-
-								// The method name.
-							case CallStackItem.METHOD_NAME:
-								if (inmethod == null)
-									err = SystemCallError.VALUE_OUT_OF_RANGE;
-								else
-									rv = this.uniqueStringId(inmethod.
-										nameAndType().name().toString());
-								break;
-
-								// The method type.
-							case CallStackItem.METHOD_TYPE:
-								if (inmethod == null)
-									err = SystemCallError.VALUE_OUT_OF_RANGE;
-								else
-									rv = this.uniqueStringId(inmethod.
-										nameAndType().type().toString());
-								break;
-
-								// The current file.
-							case CallStackItem.SOURCE_FILE:
-								if (inmethod == null)
-									err = SystemCallError.VALUE_OUT_OF_RANGE;
-								else
-									rv = this.uniqueStringId(
-										inmethod.inFile());
-								break;
-
-								// Source line.
-							case CallStackItem.SOURCE_LINE:
-								rv = frames[curf].lastExecutedPcSourceLine();
-								break;
-
-								// The PC address.
-							case CallStackItem.PC_ADDRESS:
-							case CallStackItem.JAVA_PC_ADDRESS:
-								rv = frames[curf].lastExecutedPc();
-								break;
-
-							default:
-								err = SystemCallError.VALUE_OUT_OF_RANGE;
-								break;
-						}
-					}
-				}
-				break;
-				
-				// Get error
-			case SystemCallIndex.ERROR_GET:
-				{
-					// If the ID is valid then a bad array access will be used
-					int dx = __args[0];
-					if (dx < 0 || dx >= SystemCallIndex.NUM_SYSCALLS)
-						dx = SystemCallIndex.QUERY_INDEX;
-					
-					// Return the stored error code
-					synchronized (errors)
-					{
-						rv = errors[dx];
-					}
-					
-					// Always succeeds
-					err = 0;
-				}
-				break;
-				
-				// Set error
-			case SystemCallIndex.ERROR_SET:
-				{
-					// If the ID is valid then a bad array access will be used
-					int dx = __args[0];
-					if (dx < 0 || dx >= SystemCallIndex.NUM_SYSCALLS)
-						dx = SystemCallIndex.QUERY_INDEX;
-					
-					// Return last error code, and set new one
-					synchronized (errors)
-					{
-						rv = errors[dx];
-						errors[dx] = __args[0];
-					}
-					
-					// Always succeeds
-					err = 0;
-				}
-				break;
-				
-				// Exit the VM
-			case SystemCallIndex.EXIT:
-				{
-					// Tell everything to cleanup and exit
-					this.thread.profiler.exitAll(System.nanoTime());
-					this.machine.exit((Integer)__args[0]);
-					
-					rv = 0;
-					err = 0;
-				}
-				break;
-				
-				// Fatal ToDo
-			case SystemCallIndex.FATAL_TODO:
-				// {@squirreljme.error BK33 Virtual machine code executed
-				// a fatal Todo. (The To Do code)}
-				rv = err = 0;
-				throw new SpringVirtualMachineException("BK33 " + __args[1]);
-				
-				// Invoke the garbage collector
-			case SystemCallIndex.GARBAGE_COLLECT:
-				{
-					Runtime.getRuntime().gc();
-					
-					rv = 0;
-					err = 0;
-				}
-				break;
-				
-				// Loads a string
-			case SystemCallIndex.LOAD_STRING:
-				{
-					rv = (__args[0] == 0 ? 0 :
-						this.uniqueObjectToPointer((SpringObject)
-						this.asVMObject(new ConstantValueString(
-						this.uniqueString(__args[0])))));
-					err = 0;
-				}
-				break;
-			
-				// Current wall clock milliseconds (low).
-			case SystemCallIndex.TIME_MILLI_WALL:
-				{
-					rv = System.currentTimeMillis();
-					err = 0;
-				}
-				break;
-
-				// Current monotonic clock nanoseconds (low).
-			case SystemCallIndex.TIME_NANO_MONO:
-				{
-					rv = System.nanoTime();
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory free bytes
-			case SystemCallIndex.VMI_MEM_FREE:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().freeMemory());
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory used bytes
-			case SystemCallIndex.VMI_MEM_USED:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().totalMemory());
-					err = 0;
-				}
-				break;
-			
-				// VM information: Memory max bytes
-			case SystemCallIndex.VMI_MEM_MAX:
-				{
-					rv = (int)Math.min(Integer.MAX_VALUE,
-						Runtime.getRuntime().maxMemory());
-					err = 0;
-				}
-				break;
-				
-				// API level
-			case SystemCallIndex.API_LEVEL:
-				{
-					rv = ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV;
-					err = 0;
-				}
-				break;
-				
-				// Pipe descriptor of standard input
-			case SystemCallIndex.PD_OF_STDIN:
-				{
-					rv = 0;
-					err = 0;
-				}
-				break;
-				
-				// Pipe descriptor of standard output
-			case SystemCallIndex.PD_OF_STDOUT:
-				{
-					rv = 1;
-					err = 0;
-				}
-				break;
-				
-				// Pipe descriptor of standard error
-			case SystemCallIndex.PD_OF_STDERR:
-				{
-					rv = 1;
-					err = 0;
-				}
-				break;
-				
-				// Write single byte to PD
-			case SystemCallIndex.PD_WRITE_BYTE:
-				{
-					// Depends on the stream
-					int pd = __args[0];
-					OutputStream os = (pd == 1 ? System.out :
-						(pd == 2 ? System.err : null));
-					
-					// Write
-					if (os != null)
-					{
-						try
-						{
-							os.write(__args[1]);
-							
-							// Okay
-							rv = 1;
-							err = 0;
-						}
-						
-						// Failed
-						catch (IOException e)
-						{
-							rv = -1;
-							err = SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE;
-						}
-					}
-					
-					// Failed
-					else
-					{
-						rv = -1;
-						err = SystemCallError.PIPE_DESCRIPTOR_INVALID;
-					}
-				}
-				break;
-				
-				// Sleep
-			case SystemCallIndex.SLEEP:
-				try
-				{
-					Thread.sleep(__args[0], __args[1]);
-					
-					rv = 0;
-					err = SystemCallError.NO_ERROR;
-				}
-				catch (InterruptedException e)
-				{
-					rv = 1;
-					err = SystemCallError.INTERRUPTED;
-				}
-				break;
-			
-			default:
-				// Returns no value but sets an error
-				rv = -1;
-				err = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
-				
-				// If the ID is valid then a bad array access will be used
-				if (__si < 0 || __si >= SystemCallIndex.NUM_SYSCALLS)
-					__si = SystemCallIndex.QUERY_INDEX;
-				break;
-		}
-		
-		// Set error state as needed
-		synchronized (errors)
-		{
-			errors[__si] = err;
-		}
-		
-		// Use returning value
-		return rv;
-	}
-	
-	/**
-	 * Converts an object to a unique pointer.
-	 *
-	 * @param __p The object to convert.
-	 * @return The resulting pointer.
-	 * @since 2019/06/16
-	 */
-	public final int uniqueObjectToPointer(SpringObject __p)
-	{
-		// Null reference?
-		if (__p == SpringNullObject.NULL)
-			return 0;
-		
-		// Return the base of the pointer area
-		return __p.pointerArea().base;
-	}
-	
-	/**
-	 * Converts an object to a unique pointer.
-	 *
-	 * @param __p The object to convert.
-	 * @return The resulting pointer.
-	 * @since 2019/06/16
-	 */
-	public final SpringObject uniquePointerToObject(int __p)
-	{
-		// Null reference?
-		if (__p == 0)
-			return SpringNullObject.NULL;
-		
-		return this.machine.pointers.findObject(__p);
-	}
-	
-	/**
-	 * Returns the string of the given ID.
-	 *
-	 * @param __id The ID to get.
-	 * @return The resulting string.
-	 * @since 2019/06/16
-	 */
-	public final String uniqueString(int __id)
-	{
-		if (__id == 0)
-			return null;
-		return this.machine.debugResolveString((int)__id);
-	}
-	
-	/**
-	 * Returns a unique ID for the given string.
-	 *
-	 * @param __s The String to get the ID of.
-	 * @return The unique string ID.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/06/16
-	 */
-	public final int uniqueStringId(String __s)
-		throws NullPointerException
-	{
-		if (__s == null)
-			return 0;
-		
-		return (int)this.machine.debugUnresolveString(__s);
+		// Re-lookup the method since we need to the right one! Then invoke it
+		__t.enterFrame(objclass.lookupMethod(false,
+			ref.memberNameAndType()), args);
 	}
 	
 	/**
@@ -4567,14 +3384,31 @@ public final class SpringThreadWorker
 		// Virtualized native call, depends on what it is
 		if (refmethod.flags().isNative())
 		{
-			// Calculate result of method
-			MethodDescriptor type = ref.memberType();
-			Object rv = this.nativeMethod(ref.className() + "::" +
-				ref.memberName() + ":" + type, args);
+			// Add profiler point for native calls to track them there along
+			// with being able to handle that
+			ProfiledFrame pFrame = this.thread.profiler.enterFrame(
+				ref.className().toString(),
+				ref.memberName().toString(), ref.memberType().toString());
 			
-			// Push native object to the stack
-			if (type.hasReturnValue())
-				__f.pushToStack(this.asVMObject(rv, true));
+			// Now perform the actual call
+			try
+			{
+				// Calculate result of method
+				MethodDescriptor type = ref.memberType();
+				Object rv = this.nativeMethod(ref.className(),
+					ref.memberNameAndType(), args);
+				
+				// Push native object to the stack
+				if (type.hasReturnValue())
+					__f.pushToStack(this.asVMObject(rv, true));
+			}
+			
+			// Exit the profiler frame to it is no longer tracked
+			finally
+			{
+				if (pFrame.inCallCount() > 0)
+					this.thread.profiler.exitFrame();
+			}
 		}
 		
 		// Real code that exists in class file format

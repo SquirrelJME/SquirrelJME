@@ -13,11 +13,10 @@ import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutionSpec;
 import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutor;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
-import org.gradle.api.internal.provider.AbstractMinimalProvider;
+import org.gradle.api.internal.provider.DefaultProvider;
 import org.gradle.api.tasks.testing.AbstractTestTask;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.tasks.Jar;
@@ -35,6 +34,7 @@ import org.gradle.jvm.tasks.Jar;
  *
  * @since 2020/03/06
  */
+@Deprecated
 public class TestInVMTask
 	extends AbstractTestTask
 {
@@ -56,6 +56,7 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	@Inject
+	@Deprecated
 	public TestInVMTask(Jar __jar, String __vm)
 	{
 		// We need these for tasks and such
@@ -76,9 +77,8 @@ public class TestInVMTask
 		// be set otherwise the test build will fail
 		this.setProperty(TestInVMTask._BINARY_RESULTS_DIRECTORY,
 			this.getProject().getObjects().directoryProperty()
-			.dir(new __BinaryResultsDirectoryProvider__()));
-		this.setBinResultsDir(
-			new File(new __BinaryResultsDirectoryProvider__().get()));
+			.dir(new DefaultProvider<>(this::__binResultPath)));
+		this.setBinResultsDir(new File(this.__binResultPath().toString()));
 		
 		// Generate HTML reports because they are useful
 		this.getReports().getHtml().setDestination(
@@ -107,6 +107,13 @@ public class TestInVMTask
 				__settings.setShowStandardStreams(true);
 				__settings.setShowStackTraces(true);
 			});
+		
+		// Make sure that both report types are enabled!
+		this.reports(__reports ->
+			{
+				__reports.getJunitXml().setEnabled(true);
+				__reports.getHtml().setEnabled(true);
+			});
 	}
 	
 	/**
@@ -114,6 +121,7 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	@Override
+	@Deprecated
 	protected EmulatedTestExecutor createTestExecuter()
 	{
 		return new EmulatedTestExecutor(this);
@@ -124,9 +132,23 @@ public class TestInVMTask
 	 * @since 2020/03/06
 	 */
 	@Override
+	@Deprecated
 	protected EmulatedTestExecutionSpec createTestExecutionSpec()
 	{
 		return new EmulatedTestExecutionSpec(this.emulator, this.jar);
+	}
+	
+	/**
+	 * Returns the binary results path.
+	 * 
+	 * @return The binary results path.
+	 * @since 2020/06/22
+	 */
+	@Deprecated
+	CharSequence __binResultPath()
+	{
+		return this.__tempRoot().resolve("bin-results")
+			.toAbsolutePath().toString();
 	}
 	
 	/**
@@ -135,6 +157,7 @@ public class TestInVMTask
 	 * @return The emulator JAR task.
 	 * @since 2020/02/29
 	 */
+	@Deprecated
 	Jar __findEmulatorBaseJarTask()
 	{
 		return (Jar)Objects.requireNonNull(this.getProject().getRootProject().
@@ -148,6 +171,7 @@ public class TestInVMTask
 	 * @return The emulator base.
 	 * @since 2020/02/29
 	 */
+	@Deprecated
 	Jar __findEmulatorJarTask()
 	{
 		return (Jar)Objects.requireNonNull(this.getProject().getRootProject().
@@ -161,53 +185,10 @@ public class TestInVMTask
 	 * @return The temporary root.
 	 * @since 2020/03/06
 	 */
+	@Deprecated
 	public final Path __tempRoot()
 	{
 		return this.getProject().getBuildDir().toPath().resolve("vm-test").
 			resolve(this.emulator);
-	}
-	
-	/**
-	 * Provider for directory.
-	 *
-	 * @since 2020/03/06
-	 */
-	class __BinaryResultsDirectoryProvider__
-		extends AbstractMinimalProvider<String>
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/03/06
-		 */
-		@Override
-		public String get()
-			throws IllegalStateException
-		{
-			String rv = this.getOrNull();
-			if (rv == null)
-				throw new IllegalStateException("No directory!");
-			return rv;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/03/06
-		 */
-		@Override
-		public String getOrNull()
-		{
-			return TestInVMTask.this.__tempRoot().resolve("bin-results")
-				.toAbsolutePath().toString();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/03/06
-		 */
-		@Override
-		public Class<String> getType()
-		{
-			return String.class;
-		}
 	}
 }

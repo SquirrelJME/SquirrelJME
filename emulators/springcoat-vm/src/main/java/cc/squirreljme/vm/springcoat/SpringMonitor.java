@@ -10,7 +10,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.jvm.mle.constants.MonitorResultType;
+import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalMonitorStateException;
 
 /**
  * This is a monitor which is associated with an object.
@@ -19,10 +20,6 @@ import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
  */
 public final class SpringMonitor
 {
-	/** The monitor lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** The thread which owns this monitor. */
 	volatile SpringThread _owner;
 	
@@ -49,9 +46,8 @@ public final class SpringMonitor
 			throw new NullPointerException("NARG");
 		
 		// Lock on the monitor lock
-		Object lock = this.lock;
 		for (;;)
-			synchronized (lock)
+			synchronized (this)
 			{
 				// We take possession of this monitor
 				SpringThread owner = this._owner;
@@ -75,7 +71,7 @@ public final class SpringMonitor
 					// Wait for lock to be freed
 					try
 					{
-						lock.wait();
+						this.wait();
 					}
 					catch (InterruptedException e)
 					{
@@ -102,8 +98,7 @@ public final class SpringMonitor
 			throw new NullPointerException("NARG");
 		
 		// Lock on the monitor lock
-		Object lock = this.lock;
-		synchronized (lock)
+		synchronized (this)
 		{
 			// {@squirreljme.error BK1c This thread does not own the
 			// monitor.}
@@ -126,8 +121,28 @@ public final class SpringMonitor
 				// Wake up all threads so that they try and lock on the lock
 				// so whoever gets that chance
 				if (__notify)
-					lock.notifyAll();
+					this.notifyAll();
 			}
+		}
+	}
+	
+	/**
+	 * Checks if this monitor is held by the given thread.
+	 * 
+	 * @param __vmThread The virtual machine thread.
+	 * @return If this is held by the given thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/27
+	 */
+	public boolean isHeldBy(SpringThread __vmThread)
+		throws NullPointerException
+	{
+		if (__vmThread == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			return this._owner == __vmThread;
 		}
 	}
 	
@@ -136,7 +151,7 @@ public final class SpringMonitor
 	 *
 	 * @param __by The thread that is doing the notify.
 	 * @param __all Notify all threads?
-	 * @return The notification status.
+	 * @return The {@link MonitorResultType}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/20
 	 */
@@ -147,12 +162,11 @@ public final class SpringMonitor
 			throw new NullPointerException("NARG");
 		
 		// Lock on the monitor lock
-		Object lock = this.lock;
-		synchronized (lock)
+		synchronized (this)
 		{
 			// Wrong thread?
 			if (this._owner != __by)
-				return ObjectAccess.MONITOR_NOT_OWNED;
+				return MonitorResultType.NOT_OWNED;
 			
 			// Nothing is waiting, do not bother at all!
 			int waitcount = this._waitcount;
@@ -166,7 +180,7 @@ public final class SpringMonitor
 				(__all ? waitcount : notifycount + 1));
 			
 			// Notify all threads that something happened with the lock
-			lock.notifyAll();
+			this.notifyAll();
 			
 			return 0;
 		}
@@ -178,7 +192,7 @@ public final class SpringMonitor
 	 * @param __by The thread doing the wait.
 	 * @param __ms The milliseconds to wait.
 	 * @param __ns The nanoseconds to wait.
-	 * @return The wait result.
+	 * @return The {@link MonitorResultType}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/21
 	 */
@@ -189,12 +203,11 @@ public final class SpringMonitor
 			throw new NullPointerException("NARG");
 		
 		// Lock on the monitor lock
-		Object lock = this.lock;
-		synchronized (lock)
+		synchronized (this)
 		{
 			// Wrong thread?
 			if (this._owner != __by)
-				return ObjectAccess.MONITOR_NOT_OWNED;
+				return MonitorResultType.NOT_OWNED;
 			
 			// Increase our wait count
 			this._waitcount++;
@@ -237,8 +250,8 @@ public final class SpringMonitor
 					
 					// Whatever state we ended up in
 					if (interrupted)
-						return ObjectAccess.MONITOR_INTERRUPTED;
-					return ObjectAccess.MONITOR_NOT_INTERRUPTED;
+						return MonitorResultType.INTERRUPTED;
+					return MonitorResultType.NOT_INTERRUPTED;
 				}
 				
 				// Otherwise wait for notification to happen
@@ -258,14 +271,14 @@ public final class SpringMonitor
 							}
 							
 							// Wait for this time
-							lock.wait(rem / 1_000_000L,
+							this.wait(rem / 1_000_000L,
 								(int)(rem % 1_000_000L));
 						}
 						
 						// Wait forever
 						else
 						{
-							lock.wait();
+							this.wait();
 						}
 					}
 					
@@ -277,15 +290,6 @@ public final class SpringMonitor
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Waiting information on this monitor.
-	 *
-	 * @since 2018/11/20
-	 */
-	private static final class __Waiting__
-	{
 	}
 }
 
