@@ -22,6 +22,39 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLEReference
 	implements MLEFunction
 {
+	/** {@link ReferenceShelf#deleteLink(RefLinkBracket)}. */
+	DELETE_LINK("deleteLink:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"RefLinkBracket;)")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Check it, but otherwise do nothing
+			MLEReference.__refLink(__args[0]);
+			
+			return null;
+		}
+	},
+	
+	/** {@link ReferenceShelf#linkGetNext(RefLinkBracket)}. */
+	LINK_GET_NEXT("linkGetNext:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"RefLinkBracket;)Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MLEReference.__refLink(__args[0]).getNext();
+		}
+	},
+	
 	/** {@link ReferenceShelf#linkGetObject(RefLinkBracket)}. */
 	LINK_GET_OBJECT("linkGetObject:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"RefLinkBracket;)Ljava/lang/Object;")
@@ -34,6 +67,38 @@ public enum MLEReference
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return MLEReference.__refLink(__args[0]).getObject();
+		}
+	},
+	
+	/** {@link ReferenceShelf#linkGetPrev(RefLinkBracket)}. */
+	LINK_GET_PREV("linkGetPrev:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"RefLinkBracket;)Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MLEReference.__refLink(__args[0]).getPrev();
+		}
+	},
+	
+	/** {@link ReferenceShelf#linkSetNext(RefLinkBracket, RefLinkBracket)}. */
+	LINK_SET_NEXT("linkSetNext:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"RefLinkBracket;Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEReference.__refLink(__args[0]).setNext(
+				MLEReference.__refLink(__args[1]));
+			return null;
 		}
 	},
 	
@@ -50,6 +115,23 @@ public enum MLEReference
 		{
 			MLEReference.__refLink(__args[0])
 				.setObject((SpringObject)__args[1]);
+			return null;
+		}
+	},
+	
+	/** {@link ReferenceShelf#linkSetPrev(RefLinkBracket, RefLinkBracket)}. */
+	LINK_SET_PREV("linkSetPrev:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"RefLinkBracket;Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEReference.__refLink(__args[0]).setPrev(
+				MLEReference.__refLink(__args[1]));
 			return null;
 		}
 	},
@@ -80,7 +162,11 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return ((SpringObject)__args[0]).refLink().get();
+			SpringObject object = (SpringObject)__args[0];
+			if (!(object instanceof SpringSimpleObject))
+				throw new SpringMLECallError("Invalid object"); 
+			
+			return object.refLink().get();
 		}
 	},
 	
@@ -95,8 +181,11 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			((SpringObject)__args[0]).refLink().set(
-				(RefLinkObject)__args[1]);
+			SpringObject object = (SpringObject)__args[0];
+			if (!(object instanceof SpringSimpleObject))
+				throw new SpringMLECallError("Invalid object"); 
+			
+			object.refLink().set(MLEReference.__refLink(__args[1]));
 			return null;
 		}
 	}

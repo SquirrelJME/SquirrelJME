@@ -257,9 +257,12 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.newInstance(
-				MLEType.__type(__args[0]).getSpringClass(),
-				new MethodDescriptor("()V"));
+			SpringClass type = MLEType.__type(__args[0]).getSpringClass();
+			
+			if (type.isArray())
+				throw new SpringMLECallError("Cannot newInstance array");
+			
+			return __thread.newInstance(type, new MethodDescriptor("()V"));
 		}
 	},
 	
