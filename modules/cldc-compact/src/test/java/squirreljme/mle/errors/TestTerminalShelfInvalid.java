@@ -58,14 +58,19 @@ public class TestTerminalShelfInvalid
 					new byte[12], 2, 12);
 				break;
 			
-			case 7:
+			case 6:
 				TerminalShelf.write(StandardPipeType.STDERR,
 					new byte[12], 0, 14);
 				break;
 			
-			case 8:
+			case 7:
 				TerminalShelf.write(StandardPipeType.STDERR,
 					new byte[12], 2, -14);
+				break;
+			
+			case 8:
+				TerminalShelf.write(-1,
+					new byte[12], 0, 12);
 				break;
 			
 			default:

@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
  * Run-time shelf which contains system information.
@@ -88,9 +89,11 @@ public final class RuntimeShelf
 	 *
 	 * @param __key The property key.
 	 * @return The value of the system property or {@code null}.
+	 * @throws MLECallError If {@code __key} is {@code null}.
 	 * @since 2020/06/17
 	 */
-	public static native String systemProperty(String __key);
+	public static native String systemProperty(String __key)
+		throws MLECallError;
 	
 	/**
 	 * Returns a special virtual machine description.
@@ -98,18 +101,22 @@ public final class RuntimeShelf
 	 * @param __type The {@link VMDescriptionType}.
 	 * @return The string for the given description or {@code null} if not
 	 * set.
+	 * @throws MLECallError If {@code __type} is not valid.
 	 * @since 2020/06/17
 	 */
-	public static native String vmDescription(int __type);
+	public static native String vmDescription(int __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns a statistic of the virtual machine.
 	 *
 	 * @param __type The {@link VMStatisticType}.
 	 * @return The value of the statistic, or {@code 0L} if not set.
+	 * @throws MLECallError If {@code __type} is not valid.
 	 * @since 2020/06/17
 	 */
-	public static native long vmStatistic(int __type);
+	public static native long vmStatistic(int __type)
+		throws MLECallError;
 	
 	/**
 	 * Returns the current {@link VMType}.
