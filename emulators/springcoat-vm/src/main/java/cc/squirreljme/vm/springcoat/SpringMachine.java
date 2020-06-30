@@ -21,6 +21,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -180,6 +181,9 @@ public final class SpringMachine
 				this.classloader.bootLibrary().name(),
 				System.identityHashCode(this), v, usedName)));
 			
+			// Signal that a major state has changed
+			this.notifyAll();
+			
 			// Store thread
 			threads.add(rv);
 			return rv;
@@ -272,14 +276,37 @@ public final class SpringMachine
 	 * @return All of the current process threads.
 	 * @since 2020/06/17
 	 */
+	@SuppressWarnings("UnnecessaryLocalVariable")
 	public final SpringThread[] getThreads()
 	{
+		List<SpringThread> rv = new ArrayList<>();
+		
+		// Go through threads but also cleanup any that have ended
 		List<SpringThread> threads = this._threads;
 		synchronized (this)
 		{
-			return threads.<SpringThread>toArray(
-				new SpringThread[threads.size()]);
+			for (Iterator<SpringThread> it = threads.iterator(); it.hasNext();)
+			{
+				SpringThread thread = it.next();
+				
+				// If the thread is terminating, clean it up
+				if (thread.isTerminated())
+				{
+					// Remove it
+					it.remove();
+					
+					// Signal that a state of a thread has changed
+					this.notifyAll();
+				}
+				
+				// Otherwise add it
+				else
+					rv.add(thread);
+			}
 		}
+		
+		// Use whatever was found
+		return rv.<SpringThread>toArray(new SpringThread[rv.size()]);
 	}
 	
 	/**
@@ -357,6 +384,10 @@ public final class SpringMachine
 			mainThread, true);
 		mainThread._worker = worker;
 		
+		// Enter the main entry point which handles the thread logic
+		mainThread.enterFrame(worker.loadClass(SpringMachine._START_CLASS)
+			.lookupMethod(true, SpringMachine._MAIN_THREAD_METHOD));
+		
 		// Initialize an instance of Thread for this thread, as this is
 		// very important, the call to create VM threads will bind the instance
 		// object and the vm thread together.
@@ -364,10 +395,6 @@ public final class SpringMachine
 			new ClassName("java/lang/Thread"),
 			new MethodDescriptor("(Ljava/lang/String;)V"),
 			worker.asVMObject("main"));
-		
-		// Enter the main entry point which handles the thread logic
-		mainThread.enterFrame(worker.loadClass(SpringMachine._START_CLASS)
-			.lookupMethod(true, SpringMachine._MAIN_THREAD_METHOD));
 		
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
@@ -441,6 +468,18 @@ public final class SpringMachine
 	public final void setExitCode(int __exitCode)
 	{
 		this._exitcode = __exitCode;
+	}
+	
+	/**
+	 * Signals that the given thread terminated.
+	 * 
+	 * @param __thread The thread that was terminated.
+	 * @since 2020/06/29
+	 */
+	public void signalThreadTerminate(SpringThread __thread)
+	{
+		// The act of getting all threads will clear out terminated threads
+		this.getThreads();
 	}
 	
 	/**

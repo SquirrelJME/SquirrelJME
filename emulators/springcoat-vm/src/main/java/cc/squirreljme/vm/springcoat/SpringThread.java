@@ -66,14 +66,14 @@ public final class SpringThread
 	/** Is this a daemon thread? */
 	volatile boolean _daemon;
 	
-	/** Terminate the thread? */
-	volatile boolean _terminate;
-	
 	/** Did we signal exit? */
 	volatile boolean _signaledexit;
 	
 	/** The current worker for the thread. */
 	volatile SpringThreadWorker _worker;
+	
+	/** Terminate the thread? */
+	private volatile boolean _terminate;
 	
 	/**
 	 * Initializes the thread.
@@ -123,6 +123,11 @@ public final class SpringThread
 	 */
 	public final SpringThread.Frame enterBlankFrame()
 	{
+		// Cannot enter frames when terminated
+		if (this.isTerminated())
+			throw new SpringVirtualMachineException(
+				"Cannot enter frame on terminated thread.");
+		
 		// Setup blank frame
 		SpringThread.Frame rv = new SpringThread.Frame();
 		
@@ -144,9 +149,6 @@ public final class SpringThread
 		// Had one frame (started)
 		this._hadoneframe = true;
 		
-		// Undo termination
-		this._terminate = false;
-		
 		return rv;
 	}
 	
@@ -166,6 +168,11 @@ public final class SpringThread
 	{
 		if (__m == null)
 			throw new NullPointerException("NARG");
+		
+		// Cannot enter frames when terminated
+		if (this.isTerminated())
+			throw new SpringVirtualMachineException(
+				"Cannot enter frame on terminated thread.");
 		
 		if (__args == null)
 			__args = new Object[0];
@@ -197,9 +204,6 @@ public final class SpringThread
 		
 		// Had one frame (started)
 		this._hadoneframe = true;
-		
-		// Undo termination
-		this._terminate = false;
 		
 		// Handle synchronized method
 		if (__m.flags().isSynchronized())
@@ -405,6 +409,20 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Returns if this thread has terminated.
+	 * 
+	 * @return If this thread has terminated.
+	 * @since 2020/06/29
+	 */
+	public final boolean isTerminated()
+	{
+		synchronized (this)
+		{
+			return this._terminate;
+		}
+	}
+	
+	/**
 	 * Returns the name of the thread.
 	 *
 	 * @return The name of the thread.
@@ -529,6 +547,26 @@ public final class SpringThread
 			
 			this._vmThread = __vmThread;
 		}
+	}
+	
+	/**
+	 * Terminates this thread.
+	 * 
+	 * @since 2020/06/29
+	 */
+	public final void terminate()
+	{
+		// Terminates this thread
+		synchronized (this)
+		{
+			// Set as terminated
+			this._terminate = true;
+		}
+		
+		// Signal to the machine that this thread terminated
+		SpringThreadWorker worker = this._worker;
+		if (worker != null)
+			worker.machine.signalThreadTerminate(this);
 	}
 	
 	/**
