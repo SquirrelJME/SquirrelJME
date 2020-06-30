@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
@@ -293,7 +292,7 @@ public enum MLEThread
 			int ns = (int)__args[1];
 			
 			if (ms < 0 || ns < 0 || ns > 1000000000)
-				throw new MLECallError("Out of range time.");
+				throw new SpringMLECallError("Out of range time.");
 			
 			if (ms == 0 && ns == 0)
 				Thread.yield();
@@ -413,7 +412,8 @@ public enum MLEThread
 			
 			if (priority < Thread.MIN_PRIORITY ||
 				priority > Thread.MAX_PRIORITY)
-				throw new MLECallError("Thread priority out of bounds.");
+				throw new SpringMLECallError(
+					"Thread priority out of range.");
 			
 			// Try to set the priority
 			try
@@ -422,7 +422,8 @@ public enum MLEThread
 			}
 			catch (IllegalArgumentException|SecurityException e)
 			{
-				throw new MLECallError("Could not set priority.", e);
+				throw new SpringMLECallError(
+					"Could not set priority.", e);
 			}
 			
 			return null;
@@ -477,7 +478,7 @@ public enum MLEThread
 			int ms = (int)__args[0];
 			
 			if (ms < 0)
-				throw new MLECallError("Negative milliseconds");
+				throw new SpringMLECallError("Negative milliseconds");
 			
 			// Waiting for nothing? just give up our slice
 			if (ms == 0)
