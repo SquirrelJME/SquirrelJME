@@ -161,8 +161,8 @@ public class ByteArrayInputStream
 				read = len;
 			
 			// Copy bytes
-			System.arraycopy(buf, pos, __b, 0, len);
-			pos += len;
+			System.arraycopy(buf, pos, __b, 0, read);
+			pos += read;
 			
 			// Store new position
 			this.pos = pos;
