@@ -123,8 +123,8 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 12m ./gradlew testSpringCoat --console plain --continue --parallel
-          no_output_timeout: 14m
+          command: timeout --foreground 15m ./gradlew testSpringCoat --console plain --continue --parallel
+          no_output_timeout: 15m
       - run:
           name: Save test results
           command: |
@@ -156,7 +156,7 @@ jobs:
             then
               echo "SummerCoat testing failed, ignoring..." 1>&2
             fi
-          no_output_timeout: 14m
+          no_output_timeout: 1m
       - run:
           name: Save test results
           command: |
