@@ -1,0 +1,15 @@
+# 2020/06/29
+
+## 21:32
+
+So did not do much tonight but have been inching in progress to the mid-level
+layer and any error checking and functionality. I do work 40 hour weeks and do other things like eat and sleep, but really happy that I can easily jot down
+notes again like I did before. It is easy as well and it works!
+
+## 21:35
+
+Of course I did work all day today, but just taking this at a relaxing pace and doing some changes nothing very serious.
+
+## 22:51
+
+Neat so almost done after a few hours of coding, which means all passing tests???
