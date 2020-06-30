@@ -24,7 +24,7 @@ public enum MLEReference
 {
 	/** {@link ReferenceShelf#deleteLink(RefLinkBracket)}. */
 	DELETE_LINK("deleteLink:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"RefLinkBracket;)")
+		"RefLinkBracket;)V")
 	{
 		/**
 		 * {@inheritDoc}
