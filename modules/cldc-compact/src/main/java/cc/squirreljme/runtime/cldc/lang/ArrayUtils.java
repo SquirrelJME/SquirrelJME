@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
 /**
  * This method contains the code which is able to initialize multi-dimensional

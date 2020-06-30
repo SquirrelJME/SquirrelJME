@@ -92,6 +92,8 @@ final class __MainHandler__
 			// Although we did start the application, the startApp only
 			// ever does initialization and sets some events and otherwise...
 			// So actually stop when the alive count goes to zero
+			// If the application did start graphics, then there will be
+			// a graphics thread.
 			while (ThreadShelf.aliveThreadCount(
 				false, false) > 0)
 				ThreadShelf.waitForUpdate(__MainHandler__._MS_SECOND);
@@ -103,7 +105,8 @@ final class __MainHandler__
 			{
 				instance.destroyApp(true);
 			}
-			catch (MIDletStateChangeException e)
+			catch (@SuppressWarnings("deprecation")
+				MIDletStateChangeException e)
 			{
 				// Ignore, but still print a trace
 				e.printStackTrace(System.err);

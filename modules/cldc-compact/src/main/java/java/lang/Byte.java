@@ -11,7 +11,6 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
