@@ -11,8 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
@@ -356,6 +354,9 @@ public enum MLEObject
 		if (!__classy.isInstance(__src) ||
 			!__classy.isInstance(__dest))
 			throw new SpringMLECallError("Null array.");
+		
+		if (__srcOff < 0 || __destOff < 0 || __len < 0)
+			throw new SpringMLECallError("Negative offset or length.");
 		
 		// Try to copy
 		try

@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -79,14 +80,21 @@ public enum MLETerminal
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			if (!(__args[1] instanceof SpringArrayObjectByte))
+				throw new SpringMLECallError("Not a byte array.");
+			
+			SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
+			int off = (int)__args[2];
 			int len = (int)__args[3];
+			
+			// Perform basic bounds checking here
+			if (off < 0 || len < 0 || (off + len) > buf.length)
+				throw new SpringMLECallError("Index out of bounds.");
 			
 			try
 			{
 				MLETerminal.__fdOutput((int)__args[0])
-					.write(((SpringArrayObjectByte)__args[1]).array(),
-					(int)__args[2],
-					len);
+					.write(buf.array(), off, len);
 				return len;
 			}
 			catch (IllegalArgumentException|IOException e)

@@ -107,6 +107,13 @@ public class TestInVMTask
 				__settings.setShowStandardStreams(true);
 				__settings.setShowStackTraces(true);
 			});
+		
+		// Make sure that both report types are enabled!
+		this.reports(__reports ->
+			{
+				__reports.getJunitXml().setEnabled(true);
+				__reports.getHtml().setEnabled(true);
+			});
 	}
 	
 	/**
