@@ -39,7 +39,7 @@ public enum MLETerminal
 				MLETerminal.__fdOutput((int)__args[0]).flush();
 				return 1;
 			}
-			catch (IllegalArgumentException| IOException e)
+			catch (IllegalArgumentException|IOException e)
 			{
 				return -1;
 			}
@@ -141,11 +141,11 @@ public enum MLETerminal
 	 *
 	 * @param __fd The file descriptor.
 	 * @return The output stream for it.
-	 * @throws IllegalArgumentException If the descriptor is not valid.
+	 * @throws SpringMLECallError If the descriptor is not valid.
 	 * @since 2020/06/13
 	 */
 	static OutputStream __fdOutput(int __fd)
-		throws IllegalArgumentException
+		throws SpringMLECallError
 	{
 		switch (__fd)
 		{
@@ -153,7 +153,7 @@ public enum MLETerminal
 			case StandardPipeType.STDERR:	return System.err;
 			
 			default:
-				throw new IllegalArgumentException("Unknown FD: " + __fd);
+				throw new SpringMLECallError("Unknown FD: " + __fd);
 		}
 	}
 }
