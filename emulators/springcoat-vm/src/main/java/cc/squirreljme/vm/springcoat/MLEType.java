@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
@@ -207,6 +208,31 @@ public enum MLEType
 				.getSpringClass().inJar());
 		}
 	},
+	
+	/** {@link TypeShelf#interfaces(TypeBracket)}. */
+	INTERFACES("interfaces:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"TypeBracket;)[Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringClass type = MLEType.__type(__args[0]).getSpringClass();
+			
+			SpringClass[] interfaces = type.interfaceClasses();
+			int n = interfaces.length;
+			
+			SpringObject[] rv = new SpringObject[n];
+			for (int i = 0; i < n; i++)
+				rv[i] = new TypeObject(interfaces[i]);
+			
+			return __thread.asVMObjectArray(__thread.resolveClass(
+				"[Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"), rv);
+		}
+	}, 
 	
 	/** {@link TypeShelf#isArray(TypeBracket)}. */
 	IS_ARRAY("isArray:(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z")

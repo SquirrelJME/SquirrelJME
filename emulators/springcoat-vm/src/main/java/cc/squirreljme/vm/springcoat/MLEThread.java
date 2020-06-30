@@ -11,7 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
@@ -292,7 +292,10 @@ public enum MLEThread
 			int ms = (int)__args[0];
 			int ns = (int)__args[1];
 			
-			if (ms < 0 || ns < 0)
+			if (ms < 0 || ns < 0 || ns > 1000000000)
+				throw new MLECallError("Out of range time.");
+			
+			if (ms == 0 && ns == 0)
 				Thread.yield();
 			else
 				try
@@ -307,6 +310,23 @@ public enum MLEThread
 			return false;
 		}
 	},
+	
+	/** {@link ThreadShelf#toJavaThread(VMThreadBracket)}. */
+	TO_JAVA_THREAD("toJavaThread:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/VMThreadBracket;)Ljava/lang/Thread;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			VMThreadObject vmThread = MLEThread.__vmThread(__args[0]);
+			
+			return vmThread.getThread().threadInstance();
+		}
+	}, 
 	
 	/** {@link ThreadShelf#toVMThread(Thread)}. */
 	TO_VM_THREAD("toVMThread:(Ljava/lang/Thread;)Lcc/squirreljme/" +
@@ -353,7 +373,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			VMThreadObject vmThread = (VMThreadObject)__args[0];
+			VMThreadObject vmThread = MLEThread.__vmThread(__args[0]);
 			
 			// Send an interrupt to the thread
 			vmThread.getThread().hardInterrupt();
@@ -376,6 +396,38 @@ public enum MLEThread
 			return MLEThread.__vmThread(__args[0]).getThread().isMain();
 		}
 	},
+	
+	/** {@link ThreadShelf#vmThreadSetPriority(VMThreadBracket, int)}. */
+	VM_THREAD_SET_PRIORITY("vmThreadSetPriority:(Lcc/squirreljme/" +
+		"jvm/mle/brackets/VMThreadBracket;I)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread thread = MLEThread.__vmThread(__args[0]).getThread();
+			int priority = (int)__args[1];
+			
+			if (priority < Thread.MIN_PRIORITY ||
+				priority > Thread.MAX_PRIORITY)
+				throw new MLECallError("Thread priority out of bounds.");
+			
+			// Try to set the priority
+			try
+			{
+				thread._worker.setPriority(priority);
+			}
+			catch (IllegalArgumentException|SecurityException e)
+			{
+				throw new MLECallError("Could not set priority.", e);
+			}
+			
+			return null;
+		}
+	}, 
 	
 	/** {@link ThreadShelf#vmThreadStart(VMThreadBracket)}. */
 	VM_THREAD_START("vmThreadStart:(Lcc/squirreljme/jvm/mle/brackets/" +
@@ -410,6 +462,48 @@ public enum MLEThread
 			}
 		}
 	},
+	
+	/** {@link ThreadShelf#waitForUpdate(int)}. */
+	WAIT_FOR_UPDATE("waitForUpdate:(I)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/29
+		 */
+		@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			int ms = (int)__args[0];
+			
+			if (ms < 0)
+				throw new MLECallError("Negative milliseconds");
+			
+			// Waiting for nothing? just give up our slice
+			if (ms == 0)
+			{
+				Thread.yield();
+				return false;
+			}
+			
+			// Wait until the monitor is hit
+			SpringMachine machine = __thread.machine;
+			synchronized (machine)
+			{
+				try
+				{
+					machine.wait(ms);
+				}
+				catch (InterruptedException e)
+				{
+					return true;
+				}
+			}
+			
+			// Assume not interrupted
+			return false;
+		}
+	}, 
 	
 	/* End. */
 	;
