@@ -32,6 +32,17 @@ public final class RefLinkObject
 	volatile RefLinkObject _prev;
 	
 	/**
+	 * Gets the next link.
+	 * 
+	 * @return The link.
+	 * @since 2020/06/29
+	 */
+	public RefLinkObject getNext()
+	{
+		return this._next;
+	}
+	
+	/**
 	 * Returns the object that this points to.
 	 *
 	 * @return The object.
@@ -43,6 +54,28 @@ public final class RefLinkObject
 	}
 	
 	/**
+	 * Gets the previous link.
+	 * 
+	 * @return The link.
+	 * @since 2020/06/29
+	 */
+	public RefLinkObject getPrev()
+	{
+		return this._prev;
+	}
+	
+	/**
+	 * Sets the next link.
+	 * 
+	 * @param __next The new link.
+	 * @since 2020/06/29
+	 */
+	public void setNext(RefLinkObject __next)
+	{
+		this._next = __next;
+	}
+	
+	/**
 	 * Sets the object of this holder.
 	 *
 	 * @param __o The object to set.
@@ -51,5 +84,16 @@ public final class RefLinkObject
 	public void setObject(SpringObject __o)
 	{
 		this._object = __o;
+	}
+	
+	/**
+	 * Sets the previous link.
+	 * 
+	 * @param __prev The new link.
+	 * @since 2020/06/29
+	 */
+	public void setPrev(RefLinkObject __prev)
+	{
+		this._prev = __prev;
 	}
 }
