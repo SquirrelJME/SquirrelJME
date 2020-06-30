@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,6 +73,10 @@ public enum MLEDispatcher
 	/** {@link TypeShelf}. */
 	TYPE("cc/squirreljme/jvm/mle/TypeShelf",
 		MLEType.values()),
+	
+	/** {@link UIFormShelf}. */
+	UI_FORM("cc/squirreljme/jvm/mle/UIFormShelf",
+		MLEUIForm.values()),
 	
 	/* End. */
 	;

@@ -18,12 +18,15 @@ import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.lcdui.mle.EnhancedUIFormEngine;
+import cc.squirreljme.runtime.lcdui.mle.UIFormEngine;
 import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
 import cc.squirreljme.runtime.cldc.Poking;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
 
+@SuppressWarnings("OverlyComplexClass")
 public class Display
 {
 	public static final int ALERT =
@@ -158,6 +161,7 @@ public class Display
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE =
 		8192;
 
+	@SuppressWarnings("FieldNamingConvention")
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 =
 		32768;
 
@@ -181,10 +185,6 @@ public class Display
 
 	public static final int TAB =
 		4;
-	
-	/** The number of down keys to store, for a single hand. */
-	private static final int _NUM_DOWNKEYS =
-		5;
 	
 	/** Listeners for the display. */
 	private static final List<DisplayListener> _LISTENERS =
@@ -446,7 +446,7 @@ public class Display
 	}
 	
 	/**
-	 * Returns the current harware state.
+	 * Returns the current hardware state.
 	 *
 	 * @return The hardware state.
 	 * @since 2018/12/10
@@ -940,11 +940,6 @@ public class Display
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		// First display already made?
-		Display d = Display._DISPLAY;
-		if (d != null)
-			return d;
-		
 		// Use the first display that is available.
 		// In the runtime, each program only ever gets a single MIDlet and
 		// creating new MIDlets is illegal. Thus since getDisplays() has zero
@@ -962,16 +957,20 @@ public class Display
 	 * Obtains the displays which have the given capability from all internal
 	 * display providers.
 	 *
-	 * @param __caps The capabities to use, this is a bitfield and the values
-	 * include all of the {@code SUPPORT_} prefixed constans. If {@code 0} is
+	 * @param __caps The capabilities to use, this is a bitfield and the values
+	 * include all of the {@code SUPPORT_} prefixed constants. If {@code 0} is
 	 * specified then capabilities are not checked.
 	 * @return An array containing the displays with these capabilities.
 	 * @since 2016/10/08
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		// Poke the VM to initialize things potentially
+		// Poke the VM to initialize things potentially, this is just needed
+		// by the native emulator bindings
 		Poking.poke();
+		
+		// Obtain the engine
+		UIFormEngine engine = EnhancedUIFormEngine.getInstance();
 		
 		// Create initial display?
 		Display d = Display._DISPLAY;
