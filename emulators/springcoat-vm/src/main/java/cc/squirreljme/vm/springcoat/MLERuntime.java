@@ -208,7 +208,7 @@ public enum MLERuntime
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			int index = (int)__args[0];
-			if (index < 0 || index >= VMDescriptionType.NUM_TYPES)
+			if (index < 0 || index >= VMStatisticType.NUM_STATISTICS)
 				throw new SpringMLECallError(
 					"Index out of range: " + index);
 			
