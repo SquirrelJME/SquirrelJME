@@ -75,7 +75,8 @@ public class TestThreadShelfInvalid
 				break;
 			
 			case 11:
-				ThreadShelf.vmThreadSetPriority(null, -1);
+				ThreadShelf.vmThreadSetPriority(null, 
+					Thread.MIN_PRIORITY - 1);
 				break;
 			
 			case 12:
@@ -96,6 +97,11 @@ public class TestThreadShelfInvalid
 			
 			case 16:
 				ThreadShelf.sleep(0, Integer.MAX_VALUE);
+				break;
+			
+			case 17:
+				ThreadShelf.vmThreadSetPriority(null, 
+					Thread.MAX_PRIORITY + 1);
 				break;
 			
 			default:

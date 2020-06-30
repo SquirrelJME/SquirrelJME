@@ -1144,9 +1144,11 @@ public final class SpringThreadWorker
 		// If the VM is exiting then clear the execution stack before we go
 		// away
 		catch (SpringMachineExitException e)
-		{
+		{	
+			// Terminate the thread
+			thread.terminate();
+			
 			// Thread is okay to exit!
-			thread._terminate = true;
 			thread._signaledexit = true;
 			
 			// Exit all frames
@@ -1165,6 +1167,9 @@ public final class SpringThreadWorker
 			// Frame limit is zero, so kill the thread
 			if (__framelimit == 0)
 			{
+				// Terminate the thread
+				thread.terminate();
+				
 				PrintStream err = System.err;
 				
 				err.println("****************************");
@@ -1181,9 +1186,6 @@ public final class SpringThreadWorker
 				
 				err.println("****************************");
 				
-				// Terminate the thread
-				thread._terminate = true;
-				
 				// Exit all frames
 				thread.exitAllFrames();
 				
@@ -1199,7 +1201,7 @@ public final class SpringThreadWorker
 		finally
 		{
 			if (__framelimit == 0)
-				thread._terminate = true;
+				thread.terminate();
 		}
 	}
 	
@@ -1453,7 +1455,7 @@ public final class SpringThreadWorker
 		catch (SpringMachineExitException e)
 		{
 			// Thread is okay to exit!
-			thread._terminate = true;
+			thread.terminate();
 			
 			// Exit profiler stack
 			thread.profiler.exitAll(System.nanoTime());
