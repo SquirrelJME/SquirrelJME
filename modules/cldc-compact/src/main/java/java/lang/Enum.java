@@ -12,9 +12,6 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.StaticMethod;
-import cc.squirreljme.runtime.cldc.lang.ClassData;
 
 /**
  * This is the base class for enum types.

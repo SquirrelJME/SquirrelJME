@@ -16,7 +16,6 @@ import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
