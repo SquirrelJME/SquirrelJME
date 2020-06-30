@@ -161,8 +161,8 @@ public class ByteArrayInputStream
 				read = len;
 			
 			// Copy bytes
-			for (int i = 0; i < len; i++)
-				__b[i] = buf[pos++];
+			System.arraycopy(buf, pos, __b, 0, read);
+			pos += read;
 			
 			// Store new position
 			this.pos = pos;
@@ -199,8 +199,8 @@ public class ByteArrayInputStream
 				read = __l;
 			
 			// Copy bytes
-			for (int i = 0; i < read; i++)
-				__b[__o++] = buf[pos++];
+			System.arraycopy(buf, pos, __b, __o, read);
+			pos += read;
 			
 			// Store new position
 			this.pos = pos;

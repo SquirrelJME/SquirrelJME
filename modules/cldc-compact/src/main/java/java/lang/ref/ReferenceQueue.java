@@ -126,6 +126,7 @@ public class ReferenceQueue<T>
 	 * @param __ref The reference to enqueue.
 	 * @since 2018/09/23
 	 */
+	@SuppressWarnings("unused")
 	final void __enqueue(Reference<? extends T> __ref)
 	{
 		// Just ignore and do nothing

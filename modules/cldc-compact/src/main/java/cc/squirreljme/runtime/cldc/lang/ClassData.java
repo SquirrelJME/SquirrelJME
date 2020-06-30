@@ -25,6 +25,7 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 public abstract class ClassData
 {
 	/** The version of the class data. */
+	@Deprecated
 	public final byte version;
 	
 	/**
@@ -33,6 +34,7 @@ public abstract class ClassData
 	 * @param __v The version.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public ClassData(int __v)
 	{
 		this.version = (byte)__v;
@@ -44,6 +46,7 @@ public abstract class ClassData
 	 * @return The binary name.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract String binaryName();
 	
 	/**
@@ -52,6 +55,7 @@ public abstract class ClassData
 	 * @return The array component.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract Class<?> component();
 	
 	/**
@@ -60,6 +64,7 @@ public abstract class ClassData
 	 * @return The default constructor flags.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract int defaultConstructorFlags();
 	
 	/**
@@ -68,6 +73,7 @@ public abstract class ClassData
 	 * @return The static method for the default constructor.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract StaticMethod defaultConstructorMethod();
 	
 	/**
@@ -76,6 +82,7 @@ public abstract class ClassData
 	 * @return The dimension count.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract int dimensions();
 	
 	/**
@@ -84,6 +91,7 @@ public abstract class ClassData
 	 * @return The enumeration values getter.
 	 * @since 2018/12/08
 	 */
+	@Deprecated
 	public abstract StaticMethod enumValues();
 	
 	/**
@@ -92,6 +100,7 @@ public abstract class ClassData
 	 * @return The class flags.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract int flags();
 	
 	/**
@@ -100,6 +109,7 @@ public abstract class ClassData
 	 * @return The JAR this class is in.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract String inJar();
 	
 	/**
@@ -108,6 +118,7 @@ public abstract class ClassData
 	 * @return The interface classes.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract Class<?>[] interfaceClasses();
 	
 	/**
@@ -116,6 +127,7 @@ public abstract class ClassData
 	 * @return The super class.
 	 * @since 2018/12/04
 	 */
+	@Deprecated
 	public abstract Class<?> superClass();
 }
 

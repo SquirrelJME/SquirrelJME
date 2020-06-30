@@ -1,0 +1,20 @@
+# Language Information
+
+# Pronunciation
+
+ * IPA
+   * `[ˈskwərəl] [ʤeɪ] [ɛm] [i]`
+ * Phonetics
+   * `skwUHR-ruhl jAY-Em-EE`
+
+# Translation/Transliterations
+
+The _Squirrel_ in _SquirrelJME_ may be translated or not, if it is translated
+and not transliterated then **Both** with be specified, otherwise it will
+be **Transliteration**.
+
+ * Bosnian
+   * Both: `VjevericaDŽMI`, `ВјеверицаЏМЕ`
+   * Transliteration: `SkvrlDŽMI`, `СкврлЏМI`
+ * Japanese
+   * Transliteration: `スクアルジェエムイ`, `sukuaru je'emui`

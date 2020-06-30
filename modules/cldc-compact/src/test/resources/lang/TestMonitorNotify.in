@@ -8,4 +8,5 @@ secondary-sub--after--notify: int:4
 secondary-sub--after--sleep: int:5
 secondary-sub--in--lock: int:3
 secondary-thread--created: int:2
+secondary-sub--started: true
 

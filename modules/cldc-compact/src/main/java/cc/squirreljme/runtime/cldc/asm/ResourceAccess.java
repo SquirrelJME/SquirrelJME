@@ -21,37 +21,46 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/10/07
  */
+@Deprecated
 public final class ResourceAccess
 {
 	/** Resource does not exist. */
+	@Deprecated
 	public static final int OPEN_STATUS_NO_RESOURCE =
 		-1;
 	
 	/** JAR does not exist. */
+	@Deprecated
 	public static final int OPEN_STATUS_NO_JAR =
 		-2;
 	
 	/** IOException. */
+	@Deprecated
 	public static final int OPEN_STATUS_IOEXCEPTION =
 		-3;
 	
 	/** Read returned EOF. */
+	@Deprecated
 	public static final int READ_STATUS_EOF =
 		-1;
 	
 	/** Read returned unknown file descriptor. */
+	@Deprecated
 	public static final int READ_STATUS_UNKNOWN_FD =
 		-2;
 	
 	/** Read returned IOException. */
+	@Deprecated
 	public static final int READ_STATUS_IOEXCEPTION =
 		-3;
 	
 	/** Descriptor was not found. */
+	@Deprecated
 	public static final int CLOSE_STATUS_UNKNOWN_FD =
 		-2;
 	
 	/** Close resulted in any IOException. */
+	@Deprecated
 	public static final int CLOSE_STATUS_IOEXCEPTION =
 		-3;
 	
@@ -67,6 +76,7 @@ public final class ResourceAccess
 	 * @return The number of available bytes.
 	 * @since 2018/10/07
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int available(int __fd);
 	
@@ -77,6 +87,7 @@ public final class ResourceAccess
 	 * @return A negative value indicating the reason for the failure.
 	 * @since 2018/10/07
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int close(int __fd);
 	
@@ -91,6 +102,7 @@ public final class ResourceAccess
 	 * load the resource.
 	 * @since 2018/10/07
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int open(String __jar, String __res);
 	
@@ -105,6 +117,7 @@ public final class ResourceAccess
 	 * stream was reached.
 	 * @since 2018/10/07
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int read(int __fd, byte[] __b, int __o,
 		int __l);

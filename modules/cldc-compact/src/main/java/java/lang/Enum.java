@@ -10,9 +10,8 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.StaticMethod;
-import cc.squirreljme.runtime.cldc.lang.ClassData;
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 
 /**
  * This is the base class for enum types.
@@ -168,26 +167,22 @@ public abstract class Enum<E extends Enum<E>>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@SuppressWarnings({"rawtypes"})
 	public static <T extends Enum<T>> T valueOf(Class<T> __cl, String __s)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__cl == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		// Get the data for this class because the enum information will be
-		// in here somewhere
-		ClassData data = ObjectAccess.classData(__cl);
+		// {@squirreljme.error ZZ3x Type is not an enumeration. (The type)}
+		TypeBracket type = TypeShelf.classToType(__cl);
+		if (!TypeShelf.isEnum(type))
+			throw new ClassCastException("ZZ3x " + __cl);
 		
-		// {@squirreljme.error ZZ14 Cannot get the value of a non-enumeration
-		// type or it has no implicit {@code values()} method.}
-		StaticMethod getvalues = data.enumValues();
-		if (getvalues == null)
-			throw new ClassCastException("ZZ14");
-		
-		// Go through and check all the names
-		for (Enum e : (Enum[])ObjectAccess.invokeStatic(getvalues))
-			if (__s.equals(e.name()))
-				return __cl.cast(e);
+		// Enumerations will be found by their key name
+		for (Enum value : TypeShelf.enumValues(type))
+			if (__s.equals(value.name()))
+				return __cl.cast(value);
 		
 		// {@squirreljme.error ZZ15 Not an enumeration value. (The value)}
 		throw new IllegalArgumentException(String.format("ZZ15 %s", __s));

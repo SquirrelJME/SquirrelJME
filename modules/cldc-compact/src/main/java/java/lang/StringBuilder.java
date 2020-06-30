@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import java.util.Arrays;
 
 /**
  * This is a string which has a mutable buffer.
@@ -757,7 +758,7 @@ public final class StringBuilder
 	 * @return The buffer.
 	 * @since 2018/09/23
 	 */
-	private final char[] __buffer(int __l)
+	private char[] __buffer(int __l)
 	{
 		// Get buffer properties
 		char[] buffer = this._buffer;
@@ -765,18 +766,16 @@ public final class StringBuilder
 			at = this._at;
 		
 		// Need to resize the buffer to fit this?
-		int nextat = at + __l;
-		if (nextat > limit)
+		int nextAt = at + __l;
+		if (nextAt > limit)
 		{
-			int newcapacity = nextat + StringBuilder._DEFAULT_CAPACITY;
+			int newCapacity = nextAt + StringBuilder._DEFAULT_CAPACITY;
 			
 			// Copy characters over
-			char[] extra = new char[newcapacity];
-			for (int i = 0; i < at; i++)
-				extra[i] = buffer[i];
+			char[] extra = Arrays.copyOf(buffer, newCapacity);
 			
 			this._buffer = (buffer = extra);
-			this._limit = newcapacity;
+			this._limit = newCapacity;
 		}
 		
 		return buffer;

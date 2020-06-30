@@ -10,13 +10,26 @@
 package cc.squirreljme.plugin.tasks.test;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
@@ -215,6 +228,19 @@ public final class EmulatedTestUtilities
 	}
 	
 	/**
+	 * Fails at the specified time.
+	 * 
+	 * @param __millis The time to fail at.
+	 * @return The completion event.
+	 * @since 2020/06/22
+	 */
+	private static TestCompleteEvent failAt(long __millis)
+	{
+		return new TestCompleteEvent(__millis,
+			TestResult.ResultType.FAILURE);
+	}
+	
+	/**
 	 * Returns a failing completion.
 	 *
 	 * @return An event.
@@ -222,8 +248,7 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestCompleteEvent failNow()
 	{
-		return new TestCompleteEvent(System.currentTimeMillis(),
-			TestResult.ResultType.FAILURE);
+		return EmulatedTestUtilities.failAt(System.currentTimeMillis());
 	}
 	
 	/**
@@ -267,6 +292,19 @@ public final class EmulatedTestUtilities
 	}
 	
 	/**
+	 * Passes at the given time.
+	 * 
+	 * @param __millis The time to pass at.
+	 * @return The completion event.
+	 * @since 2020/06/22
+	 */
+	private static TestCompleteEvent passAt(long __millis)
+	{
+		return new TestCompleteEvent(__millis,
+			TestResult.ResultType.SUCCESS);
+	}
+	
+	/**
 	 * Returns a passing completion.
 	 *
 	 * @return An event.
@@ -274,8 +312,7 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestCompleteEvent passNow()
 	{
-		return new TestCompleteEvent(System.currentTimeMillis(),
-			TestResult.ResultType.SUCCESS);
+		return EmulatedTestUtilities.passAt(System.currentTimeMillis());
 	}
 	
 	/**
@@ -294,14 +331,33 @@ public final class EmulatedTestUtilities
 	/**
 	 * Either passes or skips.
 	 *
+	 * @param __millis The time to finish.
 	 * @param __pass Does the test pass?
 	 * @return The event.
 	 * @since 2020/03/06
 	 */
-	public static TestCompleteEvent passOrSkipNow(boolean __pass)
+	public static TestCompleteEvent passOrSkipAt(long __millis, boolean __pass)
 	{
-		return (__pass ? EmulatedTestUtilities.passNow() :
-			EmulatedTestUtilities.skipNow());
+		return (__pass ? EmulatedTestUtilities.passAt(__millis) :
+			EmulatedTestUtilities.skipAt(__millis));
+	}
+	
+	/**
+	 * Passes, skips, or fails at the given time.
+	 * 
+	 * @param __millis The time to finish.
+	 * @param __exitCode The status code.
+	 * @return The completion event.
+	 * @since 2020/06/22
+	 */
+	public static TestCompleteEvent passSkipOrFailAt(long __millis,
+		int __exitCode)
+	{
+		if (__exitCode == ExitValueConstants.SUCCESS)
+			return EmulatedTestUtilities.passAt(__millis);
+		else if (__exitCode == ExitValueConstants.SKIPPED)
+			return EmulatedTestUtilities.skipAt(__millis);
+		return EmulatedTestUtilities.failAt(__millis);
 	}
 	
 	/**
@@ -313,11 +369,111 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestCompleteEvent passSkipOrFailNow(int __exitCode)
 	{
-		if (__exitCode == ExitValueConstants.SUCCESS)
-			return EmulatedTestUtilities.passNow();
-		else if (__exitCode == ExitValueConstants.SKIPPED)
-			return EmulatedTestUtilities.skipNow();
-		return EmulatedTestUtilities.failNow();
+		return EmulatedTestUtilities.passSkipOrFailAt(
+			System.currentTimeMillis(), __exitCode);
+	}
+	
+	/**
+	 * Reads test services from the JAR. 
+	 *
+	 * @param __path The path to read from.
+	 * @throws IOException On read failures.
+	 * @since 2020/06/22
+	 */
+	public static Collection<String> readJarServices(Path __path)
+		throws IOException, NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = Files.newInputStream(
+			__path, StandardOpenOption.READ);
+			ZipInputStream zip = new ZipInputStream(in))
+		{
+			return EmulatedTestUtilities.readJarServices(zip);
+		}
+	}
+	
+	/**
+	 * Reads test services from the JAR. 
+	 *
+	 * @param __zip The ZIP to read.
+	 * @throws IOException On read failures.
+	 * @since 2020/05/25
+	 */
+	public static Collection<String> readJarServices(ZipInputStream __zip)
+		throws IOException
+	{
+		// Resultant collection
+		Collection<String> result = new LinkedHashSet<>();
+		
+		// Potential resource file data
+		byte[] resourceData = null;
+		
+		// Go through entries within the ZIP
+		ZipEntry entry;
+		while (null != (entry = __zip.getNextEntry()))
+		{
+			// Only consider the services file
+			if (!Objects.equals(EmulatedTestExecutor.SERVICE_RESOURCE,
+				entry.getName()))
+				continue;
+			
+			// Copy file data
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+			{
+				// Copy bytes
+				byte[] buf = new byte[4096];
+				for (;;)
+				{
+					int rc = __zip.read(buf);
+					
+					if (rc < 0)
+						break;
+					
+					baos.write(buf, 0, rc);
+				}
+				
+				// Set resource data and stop finding entries
+				resourceData = baos.toByteArray();
+				break;
+			}
+		}
+		
+		// Read in service list
+		if (resourceData != null)
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(
+				new ByteArrayInputStream(resourceData),
+					StandardCharsets.UTF_8)))
+			{
+				for (;;)
+				{
+					// End of file?
+					String ln = br.readLine();
+					if (ln == null)
+						break;
+					
+					// Only consider lines with content
+					ln = ln.trim();
+					if (!ln.isEmpty())
+						result.add(ln);
+				}
+			}
+		
+		return result;
+	}
+	
+	/**
+	 * Skips at the given time.
+	 * 
+	 * @param __millis The time to skip at.
+	 * @return The completion event.
+	 * @since 2020/06/22
+	 */
+	private static TestCompleteEvent skipAt(long __millis)
+	{
+		return new TestCompleteEvent(__millis,
+			TestResult.ResultType.SKIPPED);
 	}
 	
 	/**
@@ -328,8 +484,33 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestCompleteEvent skipNow()
 	{
-		return new TestCompleteEvent(System.currentTimeMillis(),
-			TestResult.ResultType.SKIPPED);
+		return EmulatedTestUtilities.skipAt(System.currentTimeMillis());
+	}
+	
+	/**
+	 * Returns a test starting now.
+	 *
+	 * @param __millis The starting time.
+	 * @return An event
+	 * @since 2020/06/22
+	 */
+	public static TestStartEvent startAt(long __millis)
+	{
+		return EmulatedTestUtilities.startAt(__millis, null);
+	}
+	
+	/**
+	 * Returns a test starting now.
+	 *
+	 * @param __test The test information.
+	 * @return An event
+	 * @since 2020/06/22
+	 */
+	public static TestStartEvent startAt(long __millis,
+		TestDescriptorInternal __test)
+	{
+		return new TestStartEvent(__millis,
+			(__test == null ? null : __test.getId()));
 	}
 	
 	/**
@@ -352,7 +533,7 @@ public final class EmulatedTestUtilities
 	 */
 	public static TestStartEvent startNow(TestDescriptorInternal __test)
 	{
-		return new TestStartEvent(System.currentTimeMillis(),
-			(__test == null ? null : __test.getId()));
+		return EmulatedTestUtilities.startAt(
+			System.currentTimeMillis(), __test);
 	}
 }

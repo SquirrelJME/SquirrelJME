@@ -10,8 +10,6 @@
 package cc.squirreljme.plugin.tasks.test;
 
 import java.io.OutputStream;
-import org.gradle.api.internal.tasks.testing.TestResultProcessor;
-import org.gradle.api.tasks.testing.TestOutputEvent;
 
 /**
  * Pipes output stream to the results output accordingly.
@@ -25,37 +23,31 @@ public class PipeOutputStream
 	protected final StringBuilder buffer =
 		new StringBuilder();
 	
-	/** The test ID. */
-	protected final Object testId;
+	/** The test result. */
+	protected final EmulatedTestResult result;
 	
-	/** The destination. */
-	protected final TestOutputEvent.Destination destination;
-	
-	/** Results for execution. */
-	private final TestResultProcessor results;
+	/** Is this standard error. */
+	protected final boolean stdErr;
 	
 	/** Do we have a carriage return? */
-	private boolean haveCR;
+	private boolean _haveCr;
 	
 	/**
 	 * Initializes the pipe output.
-	 *
-	 * @param __id The test ID.
-	 * @param __r The result processor.
-	 * @param __d The destination.
+	 * 
+	 * @param __result The result to send to.
+	 * @param __stdErr Is this standard error?
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/03/07
+	 * @since 2020/06/22
 	 */
-	public PipeOutputStream(Object __id, TestResultProcessor __r,
-		TestOutputEvent.Destination __d)
+	public PipeOutputStream(EmulatedTestResult __result, boolean __stdErr)
 		throws NullPointerException
 	{
-		if (__id == null || __r == null || __d == null)
-			throw new NullPointerException();
+		if (__result == null)
+			throw new NullPointerException("NARG");
 		
-		this.testId = __id;
-		this.results = __r;
-		this.destination = __d;
+		this.result = __result;
+		this.stdErr = __stdErr;
 	}
 	
 	/**
@@ -72,17 +64,17 @@ public class PipeOutputStream
 		if (__b == '\r' || __b == '\n')
 		{
 			if (__b == '\r')
-				this.haveCR = true;
+				this._haveCr = true;
 			else
 			{
 				this.__flush();
-				this.haveCR = false;
+				this._haveCr = false;
 			}
 		}
 		else
 		{
 			// Flush if we just gave a CR
-			if (this.haveCR)
+			if (this._haveCr)
 				this.__flush();
 			
 			if (__b < 0)
@@ -126,17 +118,17 @@ public class PipeOutputStream
 			if (b == '\r' || b == '\n')
 			{
 				if (b == '\r')
-					this.haveCR = true;
+					this._haveCr = true;
 				else
 				{
 					this.__flush();
-					this.haveCR = false;
+					this._haveCr = false;
 				}
 			}
 			else
 			{
 				// Flush if we just gave a CR
-				if (this.haveCR)
+				if (this._haveCr)
 					this.__flush();
 				
 				if (b < 0)
@@ -154,17 +146,15 @@ public class PipeOutputStream
 	 */
 	private void __flush()
 	{
+		// Send buffer to the output
 		StringBuilder buffer = this.buffer;
-		
-		// Send to output
-		buffer.append('\n');
-		this.results.output(this.testId, EmulatedTestUtilities.output(
-			this.destination, buffer.toString()));
+		this.result.addLine(new ConsoleLine(this.stdErr,
+			System.currentTimeMillis(), buffer.toString()));
 		
 		// Clear the buffer
 		buffer.setLength(0);
 		
 		// Always clear CR state
-		this.haveCR = false;
+		this._haveCr = false;
 	}
 }

@@ -17,7 +17,9 @@
     <inspection_tool class="ArrayLengthInLoopCondition" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AssertEqualsBetweenInconvertibleTypes" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AssignmentUsedAsCondition" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="METHOD_MATCHER_CONFIG" value="java.util.Formatter,format,java.io.Writer,append,com.google.common.base.Preconditions,checkNotNull,org.hibernate.Session,close,java.io.PrintWriter,printf,cc.squirreljme.vm.springcoat.NativeHLEHandler,__fdOutput" />
+    </inspection_tool>
     <inspection_tool class="BeforeClassOrAfterClassIsPublicStaticVoidNoArg" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="BeforeOrAfterIsPublicVoidNoArg" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="BooleanMethodNameMustStartWithQuestion" enabled="false" level="WEAK WARNING" enabled_by_default="false">
@@ -26,6 +28,7 @@
       <option name="onlyWarnOnBaseMethods" value="true" />
       <option name="questionString" value="add,are,can,check,contains,could,endsWith,equals,has,is,matches,must,put,remove,shall,should,startsWith,was,were,will,would" />
     </inspection_tool>
+    <inspection_tool class="CharsetObjectCanBeUsed" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CheckForOutOfMemoryOnLargeArrayAllocation" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_limit" value="64" />
     </inspection_tool>
@@ -75,17 +78,14 @@
     <inspection_tool class="ExceptionNameDoesntEndWithException" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ExplicitArgumentCanBeLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="ExtendsUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="FeatureEnvy" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="ignoreTestCases" value="false" />
-    </inspection_tool>
     <inspection_tool class="FieldNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <extension name="ConstantNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[a-zA-Z][A-Z_\d]*" />
+        <option name="m_regex" value="_?[a-zA-Z][A-Za-z_\d]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
       <extension name="ConstantWithMutableFieldTypeNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[a-z][a-zA-z_]*" />
+        <option name="m_regex" value="_?[a-zA-Z][A-Za-z_\d]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
@@ -100,7 +100,7 @@
         <option name="m_maxLength" value="32" />
       </extension>
       <extension name="StaticVariableNamingConvention" enabled="true">
-        <option name="m_regex" value="_?[A-Z][A-Z_\d]*" />
+        <option name="m_regex" value="_?[a-zA-Z][A-Za-z_\d]*" />
         <option name="m_minLength" value="2" />
         <option name="m_maxLength" value="32" />
       </extension>
@@ -186,8 +186,9 @@
       <option name="m_maxLength" value="20" />
     </inspection_tool>
     <inspection_tool class="LongLine" enabled="true" level="TYPO" enabled_by_default="true" />
-    <inspection_tool class="MagicNumber" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="MethodCallInLoopCondition" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MagicNumber" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <scope name="Tests" level="WEAK WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="MethodNameSameAsClassName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodNameSameAsParentName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="MethodRefCanBeReplacedWithLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
@@ -285,7 +286,7 @@
       <option name="m_limit" value="64" />
     </inspection_tool>
     <inspection_tool class="PackageInfoWithoutPackage" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="PackageNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+    <inspection_tool class="PackageNamingConvention" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <option name="m_regex" value="[a-z]*" />
       <option name="m_minLength" value="2" />
       <option name="m_maxLength" value="16" />

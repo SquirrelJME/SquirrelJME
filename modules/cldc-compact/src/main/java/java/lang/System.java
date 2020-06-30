@@ -10,15 +10,17 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
 
 /**
@@ -30,14 +32,16 @@ import java.io.PrintStream;
 public final class System
 {
 	/** Standard error stream (stderr). */
+	@SuppressWarnings("resource")
 	public static final PrintStream err =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(ConsoleOutput.ERROR), true));
+			new ConsoleOutputStream(StandardPipeType.STDERR), true));
 	
 	/** Standard output stream (stdout). */
+	@SuppressWarnings("resource")
 	public static final PrintStream out =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(ConsoleOutput.OUTPUT), true));
+			new ConsoleOutputStream(StandardPipeType.STDOUT), true));
 	
 	/**
 	 * Not used.
@@ -52,10 +56,10 @@ public final class System
 	 * Copies from the source array to the destination.
 	 *
 	 * @param __src The source array.
-	 * @param __srcoff The source offset.
+	 * @param __srcOff The source offset.
 	 * @param __dest The destination array.
-	 * @param __destoff The destination offset.
-	 * @param __copylen The number of elements to copy.
+	 * @param __destOff The destination offset.
+	 * @param __copyLen The number of elements to copy.
 	 * @throws ArrayStoreException If the destination array cannot contain
 	 * the given data.
 	 * @throws IndexOutOfBoundsException If the offset and or/lengths are
@@ -63,8 +67,8 @@ public final class System
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/27
 	 */
-	public static void arraycopy(Object __src, int __srcoff,
-		Object __dest, int __destoff, int __copylen)
+	public static void arraycopy(Object __src, int __srcOff,
+		Object __dest, int __destOff, int __copyLen)
 		throws ArrayStoreException, IndexOutOfBoundsException,
 			NullPointerException
 	{
@@ -74,65 +78,91 @@ public final class System
 		// {@squirreljme.error ZZ1w Negative offsets and/or length cannot be
 		// specified. (The source offset; The destination offset; The copy
 		// length)}
-		if (__srcoff < 0 || __destoff < 0 || __copylen < 0)
+		if (__srcOff < 0 || __destOff < 0 || __copyLen < 0)
 			throw new IndexOutOfBoundsException(String.format("ZZ1w %d %d %d",
-				__srcoff, __destoff, __copylen));
+				__srcOff, __destOff, __copyLen));
 		
 		// {@squirreljme.error ZZ1x Copy operation would exceed the bounds of
 		// the array. (Source offset; Source length; Destination offset;
 		// Destination length; The copy length)}
-		int srclen = Assembly.arrayLength(__src),
-			destlen = Assembly.arrayLength(__dest);
-		if (__srcoff + __copylen > srclen ||
-			__destoff + __copylen > destlen)
+		int srcLen = ObjectShelf.arrayLength(__src),
+			destLen = ObjectShelf.arrayLength(__dest);
+		if (__srcOff + __copyLen > srcLen ||
+			__destOff + __copyLen > destLen)
 			throw new IndexOutOfBoundsException(String.format(
-				"ZZ1x %d %d %d %d %d", __srcoff, srclen, __destoff, destlen,
-				__copylen));
+				"ZZ1x %d %d %d %d %d", __srcOff, srcLen, __destOff, destLen,
+				__copyLen));
+		
+		// Get both respective classes
+		Class<?> srcClass = __src.getClass();
+		Class<?> destClass = __dest.getClass();
 		
 		// {@squirreljme.error ZZ1y The source array type is not compatible
 		// with destination array. (The source array; The destination array)}
-		if (!__dest.getClass().isAssignableFrom(__src.getClass()))
+		if (!destClass.isAssignableFrom(srcClass))
 			throw new ArrayStoreException(String.format(
 				"ZZ1y %s %s", __src, __dest));
 		
-		// These offsets for the loops are the same
-		int i = __srcoff,
-			o = __destoff,
-			end = __srcoff + __copylen;
+		// If we are copying nothing then we need not even bother with anything
+		// else and we do not have to check the array types as well.
+		if (__copyLen == 0)
+			return;
 		
-		// Copy depending on the type
-		if (__src instanceof boolean[])
-			for (boolean[] s = (boolean[])__src, d = (boolean[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof byte[])
-			for (byte[] s = (byte[])__src, d = (byte[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof short[])
-			for (short[] s = (short[])__src, d = (short[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof char[])
-			for (char[] s = (char[])__src, d = (char[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof int[])
-			for (int[] s = (int[])__src, d = (int[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof long[])
-			for (long[] s = (long[])__src, d = (long[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof float[])
-			for (float[] s = (float[])__src, d = (float[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
-		else if (__src instanceof double[])
-			for (double[] s = (double[])__src, d = (double[])__dest;
-				i < end; i++, o++)
-			d[o] = s[i];
+		// Also as well, if the source and destination are the same and the
+		// offsets are the same then nothing will happen at all.
+		if (__src == __dest && __srcOff == __destOff)
+			return;
+		
+		// These offsets for the loops are the same
+		int i = __srcOff,
+			o = __destOff,
+			end = __srcOff + __copyLen;
+		
+		// We can use the native type system within MLE to knock off a few
+		// branch possibilities
+		TypeBracket srcType = TypeShelf.classToType(srcClass);
+		TypeBracket component = TypeShelf.component(srcType);
+		
+		// Primitive types can be copied at full speed as they do not require
+		// any references are otherwise to be counted or garbage collection to
+		// be managed
+		if (TypeShelf.isPrimitive(component))
+		{
+			// More common primitives
+			if (__src instanceof byte[])
+				ObjectShelf.arrayCopy((byte[])__src, __srcOff,
+					(byte[])__dest, __destOff, __copyLen);
+			else if (__src instanceof char[])
+				ObjectShelf.arrayCopy((char[])__src, __srcOff,
+					(char[])__dest, __destOff, __copyLen);
+			else if (__src instanceof int[])
+				ObjectShelf.arrayCopy((int[])__src, __srcOff,
+					(int[])__dest, __destOff, __copyLen);
+			else if (__src instanceof short[])
+				ObjectShelf.arrayCopy((short[])__src, __srcOff,
+					(short[])__dest, __destOff, __copyLen);
+			
+			// Less common types
+			else if (__src instanceof boolean[])
+				ObjectShelf.arrayCopy((boolean[])__src, __srcOff,
+					(boolean[])__dest, __destOff, __copyLen);
+			else if (__src instanceof long[])
+				ObjectShelf.arrayCopy((long[])__src, __srcOff,
+					(long[])__dest, __destOff, __copyLen);
+			else if (__src instanceof float[])
+				ObjectShelf.arrayCopy((float[])__src, __srcOff,
+					(float[])__dest, __destOff, __copyLen);
+			else if (__src instanceof double[])
+				ObjectShelf.arrayCopy((double[])__src, __srcOff,
+					(double[])__dest, __destOff, __copyLen);
+			
+			// {@squirreljme.error ZZ1h Not a primitive array type.}
+			else
+				throw new Error("ZZ1h");
+		}
+		
+		// There is no native handler for manual object array copies due to
+		// references and otherwise
 		else
 			for (Object[] s = (Object[])__src, d = (Object[])__dest;
 				i < end; i++, o++)
@@ -156,7 +186,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return Assembly.sysCallPVL(SystemCallIndex.TIME_MILLI_WALL);
+		return RuntimeShelf.currentTimeMillis();
 	}
 	
 	/**
@@ -280,17 +310,10 @@ public final class System
 		String rv;
 		switch (__k)
 		{
-				// API level of SquirrelJME
-			case "cc.squirreljme.apilevel":
-				return ApiLevel.levelToString(ApiLevel.CURRENT_LEVEL);
-			
-				// SquirrelJME guest depth
-			case "cc.squirreljme.guests":
-				return Integer.toString(SystemProperties.guestDepth());
-				
 				// SquirrelJME VM executable path
 			case "cc.squirreljme.vm.execpath":
-				return SystemProperties.executablePath();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.EXECUTABLE_PATH);
 				
 				// SquirrelJME free memory
 			case "cc.squirreljme.vm.freemem":
@@ -310,23 +333,28 @@ public final class System
 				
 				// The version of the JVM (full)
 			case "java.vm.version":
-				return SystemProperties.javaVMVersion();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_VERSION);
 				
 				// The name of the JVM
 			case "java.vm.name":
-				return SystemProperties.javaVMName();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_NAME);
 				
 				// The vendor of the JVM
 			case "java.vm.vendor":
-				return SystemProperties.javaVMVendor();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_VENDOR);
 			
 				// The e-mail of the JVM
 			case "java.vm.vendor.email":
-				return SystemProperties.javaVMEmail();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_EMAIL);
 			
 				// The URL of the JVM
 			case "java.vm.vendor.url":
-				return SystemProperties.javaVMURL();
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.VM_URL);
 				
 				// The vendor of the class libraries
 			case "java.vendor":
@@ -346,54 +374,56 @@ public final class System
 				
 				// The version of the run-time
 			case "java.runtime.version":
-				return SystemProperties.javaRuntimeVersion();
+				return SquirrelJME.RUNTIME_VERSION;
 				
 				// End of line character
 			case "line.separator":
-				rv = SystemProperties.systemProperty("line.separator");
-				if (rv == null)
-					return "\n";
-				return rv;
+				return LineEndingUtils.toString(RuntimeShelf.lineEnding());
 				
 				// The current configuration, must be set!
 			case "microedition.configuration":
-				rv = SystemProperties.systemProperty(
-					"microedition.configuration");
-				if (rv == null)
-					try
-					{
-						Class<?> file = Class.forName("java.nio.FileSystem");
-						if (file == null)
-							return "CLDC-1.8-Compact";
-						return "CLDC-1.8";
-					}
-					catch (ClassNotFoundException e)
-					{
+				try
+				{
+					Class<?> file = Class.forName("java.nio.FileSystem");
+					if (file == null)
 						return "CLDC-1.8-Compact";
-					}
-				return rv;
+					return "CLDC-1.8";
+				}
+				catch (ClassNotFoundException e)
+				{
+					return "CLDC-1.8-Compact";
+				}
 				
 				// The current encoding
 			case "microedition.encoding":
-				rv = SystemProperties.systemProperty("microedition.encoding");
-				if (rv == null)
-					return CodecFactory.FALLBACK_ENCODING;
-				return rv;
+				return CodecFactory.toString(RuntimeShelf.encoding());
 				
-				// The current local, must be set!
+				// The current locale, must be set!
 			case "microedition.locale":
-				rv = SystemProperties.systemProperty("microedition.locale");
-				if (rv == null)
-					return "en-US";
-				return rv;
+				return DefaultLocale.toString(RuntimeShelf.locale());
 				
 				// The current platform
 			case "microedition.platform":
-				return "SquirrelJME/" + SquirrelJME.RUNTIME_VERSION;
+				return SquirrelJME.MICROEDITION_PLATFORM;
+				
+				// The operating system architecture
+			case "os.arch":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.OS_ARCH);
+				
+				// The operating system name
+			case "os.name":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.OS_NAME);
+				
+				// The operating system name
+			case "os.version":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.OS_VERSION);
 				
 				// Unknown, use system call
 			default:
-				return SystemProperties.systemProperty(__k);
+				return RuntimeShelf.systemProperty(__k);
 		}
 	}
 	
@@ -458,7 +488,7 @@ public final class System
 		if (__o == null)
 			return 0;
 		
-		return ObjectAccess.identityHashCode(__o);
+		return ObjectShelf.identityHashCode(__o);
 	}
 	
 	/**
@@ -485,7 +515,7 @@ public final class System
 	public static long nanoTime()
 	{
 		// Returns the current monotonic clock time
-		return Assembly.sysCallPVL(SystemCallIndex.TIME_NANO_MONO);
+		return RuntimeShelf.nanoTime();
 	}
 	
 	/**

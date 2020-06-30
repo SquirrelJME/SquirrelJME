@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 
@@ -126,7 +127,7 @@ public final class TestResultBuilder
 			secondary.put(__key.toLowerCase(), __val);
 			
 			// Debug
-			todo.DEBUG.note("%s=%s", __key, __val);
+			Debugging.debugNote("SET %s=%s", __key, __val);
 		}
 	}
 	

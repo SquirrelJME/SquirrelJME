@@ -24,6 +24,7 @@ sourceSets
 			exclude "org/testng/internal/annotations/DisabledRetryAnalyzer.java"
 			exclude "org/testng/annotations/CustomAttribute.java"
 			exclude "org/testng/annotations/Test.java"
+			exclude "org/testng/SkipException.java"
 		}
 	}
 }
@@ -49,4 +50,5 @@ jar
 	exclude("org/testng/internal/annotations/DisabledRetryAnalyzer.class")
 	exclude("org/testng/annotations/CustomAttribute.class")
 	exclude("org/testng/annotations/Test.class")
+	exclude("org/testng/SkipException.class")
 }

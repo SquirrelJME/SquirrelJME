@@ -10,8 +10,9 @@
 
 package java.lang.ref;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
+import cc.squirreljme.jvm.mle.AtomicShelf;
+import cc.squirreljme.jvm.mle.ReferenceShelf;
+import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
 
 /**
  * This class represents references which may be referred to using various
@@ -21,13 +22,14 @@ import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
  * @param <T> The type of object to store.
  * @since 2018/09/23
  */
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class Reference<T>
 {
-	/** The primitive reference used to access the object. */
-	private final PrimitiveReference _ref;
+	/** The chain-link for this reference. */
+	private final RefLinkBracket _link;
 	
-	/** The queue this reference is in, volatile to be clearned. */
-	private volatile ReferenceQueue<? super T> _queue;
+	/** The reference queue which this reference will be sent to when freed. */
+	private final ReferenceQueue<? super T> _queue;
 	
 	/** Has this been enqueued? */
 	private volatile boolean _enqueued;
@@ -37,21 +39,61 @@ public abstract class Reference<T>
 	 * specified queue to place this reference into when garbage collection
 	 * occurs.
 	 *
-	 * @param __r The primitive reference storage.
 	 * @param __v The object to point to, may be {@code null}.
 	 * @param __q When the given object is garbage collected the specified
 	 * queue will be given this reference (not {@code __v} itself}, may be
 	 * {@code null}
-	 * @since 2018/09/23
+	 * @since 2020/05/30
 	 */
-	Reference(PrimitiveReference __r, T __v, ReferenceQueue<? super T> __q)
+	Reference(T __v, ReferenceQueue<? super T> __q)
 	{
-		// Set
-		this._ref = __r;
+		// There is no point in reference counting the null object, so have
+		// no effect happen here
+		if (__v == null)
+		{
+			this._link = null;
+			this._queue = null;
+			this._enqueued = true;
+			
+			return;
+		}
+		
+		// It should be safe to create a new link outside of the lock
+		RefLinkBracket link = ReferenceShelf.newLink();
+		this._link = link;
+		
+		// Since nothing else knows about our link yet, we may set the object
+		ReferenceShelf.linkSetObject(link, __v);
+		
+		// Although there is an optimization
 		this._queue = __q;
 		
-		// Set primitive reference data
-		ObjectAccess.referenceSet(__r, __v);
+		// Must lock the GC since we will be adding a chain to an object
+		int key = 0;
+		try
+		{
+			// Spinlock on the GC
+			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
+				AtomicShelf.spinLock(c);
+			
+			// If the object has an existing link, then we need to chain links
+			RefLinkBracket oldLink = ReferenceShelf.objectGet(__v);
+			if (oldLink != null)
+			{
+				// New link -> Old link
+				ReferenceShelf.linkSetNext(link, oldLink);
+				
+				// New link <- Old link
+				ReferenceShelf.linkSetPrev(oldLink, link);
+			}
+			
+			// The object uses the current link as the head now
+			ReferenceShelf.objectSet(__v, link);
+		}
+		finally
+		{
+			AtomicShelf.gcUnlock(key);
+		}
 	}
 	
 	/**
@@ -61,11 +103,34 @@ public abstract class Reference<T>
 	 */
 	public void clear()
 	{
-		ObjectAccess.referenceSet(this._ref, null);
+		// Lock the GC just in case this link is being used that it does not
+		// mess up anything else
+		int key = 0;
+		try
+		{
+			// Spinlock on the GC
+			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
+				AtomicShelf.spinLock(c);
+			
+			// Only unlink once
+			if (!this._enqueued)
+			{
+				// Un-link this link
+				this.__unLinkAndClear();
+				
+				// Mark this reference as enqueued
+				this._enqueued = true;
+			}
+		}
+		finally
+		{
+			AtomicShelf.gcUnlock(key);
+		}
 	}
 	
 	/**
-	 * Places this reference in the queue.
+	 * Places this reference in the queue and removes the reference, if there
+	 * is no queue this will be the same as {@link #clear()}.
 	 *
 	 * @return If it was added to the queue then this will return true,
 	 * otherwise if there is no queue or it was already added this will
@@ -74,22 +139,47 @@ public abstract class Reference<T>
 	 */
 	public boolean enqueue()
 	{
-		// Already been enqueued
+		// If there is no queue then this has the same effect as clear
 		ReferenceQueue<? super T> queue = this._queue;
-		if (this._enqueued || queue == null)
+		if (queue == null)
+		{
+			this.clear();
+			
+			// Was not actually pushed to the queue, but the reference is now
+			// invalid
 			return false;
+		}
 		
-		// Enqueue it
-		queue.__enqueue(this);
+		// Will this get pushed to the queue?
+		boolean pushToQueue;
 		
-		// The queue is not needed anymore so there is no need to keep a
-		// reference to it around, this will help remove circular references
-		// if one forgets to drain the queues.
-		this._enqueued = true;
-		this._queue = null;
+		// Lock the GC just in case this link is being used that it does not
+		// mess up anything else
+		int key = 0;
+		try
+		{
+			// Spinlock on the GC
+			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
+				AtomicShelf.spinLock(c);
+			
+			// Placing this in the queue invalidates it
+			pushToQueue = !this._enqueued;
+			if (pushToQueue)
+			{
+				// The reference no longer is valid
+				this.__unLinkAndClear();
+				this._enqueued = true;
+			}
+		}
+		finally
+		{
+			AtomicShelf.gcUnlock(key);
+		}
 		
-		// Was enqueued
-		return true;
+		// Only push to the queue if was requested
+		if (pushToQueue)
+			queue.__enqueue(this);
+		return pushToQueue;
 	}
 	
 	/**
@@ -101,8 +191,33 @@ public abstract class Reference<T>
 	@SuppressWarnings({"unchecked"})
 	public T get()
 	{
-		// If the reference was cleared, enqueue it!
-		Object rv = ObjectAccess.referenceGet(this._ref);
+		// The return value, if this is null then this gets enqueued
+		Object rv;
+		
+		// Lock the GC just in case this link is being used that it does not
+		// mess up anything else
+		int key = 0;
+		try
+		{
+			// Spinlock on the GC
+			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
+				AtomicShelf.spinLock(c);
+			
+			// If this was enqueued, then just return nothing
+			if (this._enqueued)
+				return null;
+			
+			// Otherwise use what the link says our object is
+			rv = ReferenceShelf.linkGetObject(this._link);
+		}
+		finally
+		{
+			AtomicShelf.gcUnlock(key);
+		}
+		
+		// If no object was set or was cleared out (perhaps by unlink) then
+		// just inform that enqueue happened. Since this enqueue is here, it
+		// is very possible that enqueuing happens at the last moment.
 		if (rv == null)
 			this.enqueue();
 		
@@ -118,6 +233,39 @@ public abstract class Reference<T>
 	public boolean isEnqueued()
 	{
 		return this._enqueued;
+	}
+	
+	/**
+	 * Un-links this chain.
+	 *
+	 * @since 2020/05/30
+	 */
+	private void __unLinkAndClear()
+	{
+		RefLinkBracket link = this._link;
+		
+		// Get the previous and next links to re-chain
+		RefLinkBracket prev = ReferenceShelf.linkGetPrev(link);
+		RefLinkBracket next = ReferenceShelf.linkGetNext(link);
+		
+		// Have the previous link point to our next
+		if (prev != null)
+			ReferenceShelf.linkSetNext(prev, next);
+		
+		// Have the next link point to our previous
+		if (next != null)
+			ReferenceShelf.linkSetPrev(next, prev);
+		
+		// Clear our links because they are no longer valid
+		ReferenceShelf.linkSetPrev(link, null);
+		ReferenceShelf.linkSetNext(link, null);
+		
+		// Clear the object this links to
+		ReferenceShelf.linkSetObject(link, null);
+		
+		// We can delete our link now and free any associated memory because
+		// it is dangling and serves no purpose otherwise
+		ReferenceShelf.deleteLink(link);
 	}
 }
 

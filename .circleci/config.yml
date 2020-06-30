@@ -93,6 +93,28 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+  construct_testjars:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Constuct Test JARs
+          command: ./gradlew testJar --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - 'buildSrc/.gradle/*'
+            - 'buildSrc/build/*'
+            - 'emulators/build/*'
+            - 'emulators/*/build/*'
+            - 'modules/build/*'
+            - 'modules/*/build/*'
+            - 'tools/build/*'
+            - 'tools/*/build/*'
   test_springcoat:
     executor: buildenv
     steps:
@@ -101,12 +123,8 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: |
-            if ! ./gradlew testSpringCoat --continue --parallel
-            then
-              echo "SpringCoat testing failed, ignoring..." 1>&2
-            fi
-          no_output_timeout: 2m
+          command: timeout --foreground 15m ./gradlew testSpringCoat --console plain --continue --parallel
+          no_output_timeout: 15m
       - run:
           name: Save test results
           command: |
@@ -125,6 +143,38 @@ jobs:
           path: ~/test-results/junit
       - store_artifacts:
           path: ~/test-results/nps
+  test_summercoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: SummerCoat Tests
+          command: |
+            if ! timeout --foreground 1s ./gradlew testSummerCoat --console plain --continue --parallel
+            then
+              echo "SummerCoat testing failed, ignoring..." 1>&2
+            fi
+          no_output_timeout: 1m
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex '.*/summercoat/junit-reports/.*xml' -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - run:
+          name: Save snapshots
+          command: |
+            mkdir -p ~/test-results/nps/
+            find . -type f -regex '.*/summercoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+      - store_artifacts:
+          path: ~/test-results/nps
 
 workflows:
   version: 2
@@ -133,8 +183,12 @@ workflows:
       - build_windows
       - build_linux
       - build_macosx
+      - construct_testjars:
+          requires:
+            - build_linux
       - test_springcoat:
           requires:
-            - build_windows
-            - build_linux
-            - build_macosx
+            - construct_testjars
+      - test_summercoat:
+          requires:
+            - construct_testjars

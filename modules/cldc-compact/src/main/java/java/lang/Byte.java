@@ -10,7 +10,7 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -37,7 +37,7 @@ public final class Byte
 	
 	/** The class representing the primitive type. */
 	public static final Class<Byte> TYPE =
-		ObjectAccess.<Byte>classByNameType("byte");
+		TypeShelf.<Byte>typeToClass(TypeShelf.typeOfByte());
 	
 	/** The value of the byte. */
 	private final byte _value;

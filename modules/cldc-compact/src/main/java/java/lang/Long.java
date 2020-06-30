@@ -10,8 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -33,7 +33,7 @@ public final class Long
 	
 	/** The class representing the primitive long type. */
 	public static final Class<Long> TYPE =
-		ObjectAccess.<Long>classByNameType("long");
+		TypeShelf.<Long>typeToClass(TypeShelf.typeOfLong());
 	
 	/** The value of this long. */
 	private final long _value;
@@ -193,20 +193,81 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
-	public static long parseLong(String __a, int __b)
+	/**
+	 * Returns the value of the specified string using the given radix.
+	 *
+	 * @param __v The String to decode.
+	 * @param __radix The radix to use.
+	 * @return The resulting long.
+	 * @throws NumberFormatException If the string is not valid or the radix
+	 * is outside of the valid bounds.
+	 * @since 2020/06/18
+	 */
+	public static long parseLong(String __v, int __radix)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ25 The radix is out of bounds. (The radix)}
+		if (__radix < Character.MIN_RADIX || __radix > Character.MAX_RADIX)
+			throw new NumberFormatException("ZZ25 " + __radix);
+			
+		if (__v == null)
+			throw new NumberFormatException("ZZ26");
+		
+		// {@squirreljme.error ZZ26 String is null or has zero length.}
+		int n = __v.length();
+		if (n <= 0)
+			throw new NumberFormatException("ZZ26");
+		
+		// Detect sign
+		boolean neg;
+		boolean signed = false;
+		char c = __v.charAt(0);
+		if ((neg = (c == '-')) || c == '+')
+			signed = true;
+		
+		// Read all digits
+		long rv = 0;
+		for (int i = (signed ? 1 : 0); i < n; i++)
+		{
+			// Read character
+			c = __v.charAt(i);
+			
+			// Convert to digit
+			long dig = Character.digit(c, __radix);
+			
+			// {@squirreljme.error ZZ27 Character out of range of radix.
+			// (The input string; The out of range character)}
+			if (dig < 0)
+				throw new NumberFormatException("ZZ27 " + __v + " " + c);
+			
+			// {@squirreljme.error ZZ28 Input integer out of range of 64-bit
+			// long. (The input string)}
+			long prod = rv * __radix;
+			if (rv != 0 && (neg ? (prod > rv) : (prod < rv)))
+				throw new NumberFormatException("ZZ28 " + __v);
+			
+			// Add up
+			if (neg)
+				rv = prod - dig;
+			else
+				rv = prod + dig;
+		}
+		
+		return rv;
 	}
 	
-	public static long parseLong(String __a)
+	/**
+	 * Returns the value of the specified string.
+	 *
+	 * @param __v The String to decode.
+	 * @return The parsed long.
+	 * @throws NumberFormatException If the string is not valid.
+	 * @since 2020/06/18
+	 */
+	public static long parseLong(String __v)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Long.parseLong(__v, 10);
 	}
 	
 	public static long reverse(long __a)

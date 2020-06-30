@@ -20,5 +20,9 @@ public interface SquirrelJME
 	/** The version of this SquirrelJME runtime. */
 	String RUNTIME_VERSION =
 		"0.3.0";
+	
+	/** The microedition platform. */
+	String MICROEDITION_PLATFORM =
+		"SquirrelJME/0.3.0";
 }
 

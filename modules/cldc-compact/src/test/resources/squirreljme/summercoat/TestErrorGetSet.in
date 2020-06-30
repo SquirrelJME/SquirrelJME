@@ -1,0 +1,5 @@
+result: NoResult
+thrown: NoExceptionThrown
+only-in: summercoat
+secondary-sameasorig: true
+secondary-isset: true

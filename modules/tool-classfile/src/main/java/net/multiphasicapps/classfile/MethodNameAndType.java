@@ -31,7 +31,7 @@ public final class MethodNameAndType
 	private Reference<String> _string;
 	
 	/**
-	 * Initializes the method anme and type.
+	 * Initializes the method name and type.
 	 *
 	 * @param __n The name of the method.
 	 * @param __t The type of the method.

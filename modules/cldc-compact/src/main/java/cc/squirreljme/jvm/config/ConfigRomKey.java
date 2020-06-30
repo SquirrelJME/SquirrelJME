@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.config;
 
+import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
+import cc.squirreljme.jvm.mle.constants.LineEndingType;
+
 /**
  * This represents an option in the configuration ROM.
  *
@@ -148,7 +151,7 @@ public interface ConfigRomKey
 		14;
 	
 	/**
-	 * The built-in encoding to use, see {@link BuiltInEncoding}.
+	 * The built-in encoding to use, see {@link BuiltInEncodingType}.
 	 *
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
 	 * @since 2019/06/14

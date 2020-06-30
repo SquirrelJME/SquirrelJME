@@ -29,7 +29,7 @@ public enum TestStatus
 	/** Test was not run yet. */
 	NOT_RUN,
 	
-	/** Untestable. */
+	/** Untestable, so this must be skipped. */
 	UNTESTABLE,
 	
 	/* End. */

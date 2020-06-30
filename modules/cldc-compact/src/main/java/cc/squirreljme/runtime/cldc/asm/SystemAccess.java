@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2018/10/13
  */
+@Deprecated
 public final class SystemAccess
 {
 	/**
@@ -25,6 +26,7 @@ public final class SystemAccess
 	 *
 	 * @since 2018/10/13
 	 */
+	@Deprecated
 	private SystemAccess()
 	{
 	}
@@ -40,6 +42,7 @@ public final class SystemAccess
 	 * @return The value of that variable or {@code null} if it is not set.
 	 * @since 2018/10/14
 	 */
+	@Deprecated
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String getEnv(String __e);
 }

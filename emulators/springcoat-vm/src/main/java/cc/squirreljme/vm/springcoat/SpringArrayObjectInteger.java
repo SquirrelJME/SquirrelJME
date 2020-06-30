@@ -10,6 +10,10 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
+
 /**
  * Array backed by an int array.
  *
@@ -25,17 +29,15 @@ public final class SpringArrayObjectInteger
 	 * Initializes the array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __l The array length.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/11/04
 	 */
-	public SpringArrayObjectInteger(SpringClass __self, SpringClass __cl,
-		int __l)
+	public SpringArrayObjectInteger(SpringClass __self, int __l)
 		throws NullPointerException
 	{
-		super(__self, __cl, __l);
+		super(__self, __l);
 		
 		// Initialize elements
 		this._elements = new int[__l];
@@ -45,16 +47,14 @@ public final class SpringArrayObjectInteger
 	 * Wraps the native array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/18
 	 */
-	public SpringArrayObjectInteger(SpringClass __self, SpringClass __cl,
-		int[] __a)
+	public SpringArrayObjectInteger(SpringClass __self, int[] __a)
 		throws NullPointerException
 	{
-		super(__self, __cl, __a.length);
+		super(__self, __a.length);
 		
 		this._elements = __a;
 	}
@@ -64,7 +64,7 @@ public final class SpringArrayObjectInteger
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final int[] array()
 	{
 		return this._elements;
 	}

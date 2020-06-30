@@ -61,6 +61,9 @@ public final class ProfiledFrame
 	private long _currentsubstart =
 		Long.MIN_VALUE;
 	
+	/** The current in-call count for this frame. */
+	private int _inCallCount;
+	
 	/**
 	 * Initializes this frame.
 	 *
@@ -101,6 +104,9 @@ public final class ProfiledFrame
 		
 		// Mark time
 		this._currentstart = __ns;
+		
+		// Increase call count
+		this._inCallCount++;
 	}
 	
 	/**
@@ -144,8 +150,23 @@ public final class ProfiledFrame
 		this._currentstart = Long.MIN_VALUE;
 		this._subtractself = 0;
 		
+		// Lower the in-call count, make sure it never goes below zero
+		if ((--this._inCallCount) < 0)
+			this._inCallCount = 0;
+		
 		// Return both times since they may be useful
 		return new long[]{total, self, total};
+	}
+	
+	/**
+	 * Returns the number of times this frame is currently in a call.
+	 *
+	 * @return The number of times this frame is considered in a call.
+	 * @since 2020/06/17
+	 */
+	public final int inCallCount()
+	{
+		return this._inCallCount;
 	}
 	
 	/**

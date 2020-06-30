@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This represents a binary name which consists of a class which is
- * separted internally by forwarded slashes.
+ * separated internally by forwarded slashes.
  *
  * @since 2017/09/27
  */

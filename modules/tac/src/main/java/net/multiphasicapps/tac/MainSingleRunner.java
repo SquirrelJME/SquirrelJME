@@ -74,6 +74,12 @@ public class MainSingleRunner
 		// Print the test execution results
 		execution.print(System.err);
 		
+		// Print the tossed exception so that it is in the trace no matter
+		// what (even on pass since it might be a false pass)
+		Throwable tossed = execution.tossedAsThrowable();
+		if (tossed != null)
+			tossed.printStackTrace();
+		
 		// How do we exit?
 		switch (execution.status)
 		{
@@ -87,6 +93,7 @@ public class MainSingleRunner
 				break;
 			
 			case UNTESTABLE:
+				
 				System.exit(ExitValueConstants.SKIPPED);
 				break;
 		}

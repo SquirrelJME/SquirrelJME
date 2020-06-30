@@ -10,7 +10,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import net.multiphasicapps.classfile.PrimitiveType;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
 
 /**
  * Generic array that can store any type.
@@ -21,67 +23,61 @@ public final class SpringArrayObjectGeneric
 	extends SpringArrayObject
 {
 	/** Elements in the array. */
-	private final Object[] _elements;
+	private final SpringObject[] _elements;
 	
 	/** The last class which was checked for compatibility. */
-	private SpringClass _lastvalid;
+	private SpringClass _lastValid;
 	
 	/**
 	 * Initializes the array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __l The array length.
+	 * @throws IllegalArgumentException If the given type is primitive.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/09/15
 	 */
-	public SpringArrayObjectGeneric(SpringClass __self, SpringClass __cl,
-		int __l)
-		throws NullPointerException
+	public SpringArrayObjectGeneric(SpringClass __self, int __l)
+		throws IllegalArgumentException, NullPointerException,
+			SpringNegativeArraySizeException
 	{
-		super(__self, __cl, __l);
+		super(__self, __l);
+		
+		// Previously this was permitted, however since there are other more
+		// optimal forms for arrays this is no longer needed to have a generic
+		// array to store these values
+		if (__self.componentType().name().primitiveType() != null)
+			throw new IllegalArgumentException("Cannot have a generic " +
+				"array of primitive types: " + __self);
 		
 		// Initialize elements
-		Object[] elements;
-		this._elements = (elements = new Object[__l]);
+		SpringObject[] elements;
+		this._elements = (elements = new SpringObject[__l]);
 		
 		// Determine the initial value to use
-		PrimitiveType type = __cl.name().primitiveType();
-		Object v;
-		if (type == null)
-			v = SpringNullObject.NULL;
-		else
-			switch (type)
-			{
-				case BOOLEAN:
-				case BYTE:
-				case SHORT:
-				case CHARACTER:
-				case INTEGER:
-					v = Integer.valueOf(0);
-					break;
-				
-				case LONG:
-					v = Long.valueOf(0);
-					break;
-				
-				case FLOAT:
-					v = Float.valueOf(0);
-					break;
-				
-				case DOUBLE:
-					v = Double.valueOf(0);
-					break;
-				
-				default:
-					throw new todo.OOPS();
-			}
+		SpringObject v = SpringNullObject.NULL;
 		
 		// Set all elements to an initial value depending on the type
-		// Set all 
 		for (int i = 0; i < __l; i++)
 			elements[i] = v;
+	}
+	
+	/**
+	 * Wraps the given array as a generic array.
+	 *
+	 * @param __self The self type.
+	 * @param __elements The array elements.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/13
+	 */
+	public SpringArrayObjectGeneric(SpringClass __self,
+		SpringObject[] __elements)
+		throws NullPointerException
+	{
+		super(__self, __elements.length);
+		
+		this._elements = __elements;
 	}
 	
 	/**
@@ -89,7 +85,7 @@ public final class SpringArrayObjectGeneric
 	 * @since 2018/11/19
 	 */
 	@Override
-	public final Object array()
+	public final SpringObject[] array()
 	{
 		return this._elements;
 	}
@@ -105,7 +101,13 @@ public final class SpringArrayObjectGeneric
 		// Faster to just have the host VM do bounds check
 		try
 		{
-			return __cl.cast(this._elements[__dx]);
+			SpringObject rv = this._elements[__dx];
+			
+			// Always have the special null be used here
+			if (rv == null)
+				rv = SpringNullObject.NULL;
+			
+			return __cl.cast(rv);
 		}
 		
 		// {@squirreljme.error BK0h Out of bounds access to array.
@@ -119,10 +121,27 @@ public final class SpringArrayObjectGeneric
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/14
+	 * @since 2020/06/13
 	 */
 	@Override
 	public final void set(int __dx, Object __v)
+		throws ClassCastException, SpringArrayStoreException,
+			SpringArrayIndexOutOfBoundsException
+	{
+		this.set(__dx, (SpringObject)__v);
+	}
+	
+	/**
+	 * Sets the value in the array.
+	 *
+	 * @param __dx The index.
+	 * @param __v The value to set.
+	 * @throws SpringArrayStoreException If the type is not valid.
+	 * @throws SpringArrayIndexOutOfBoundsException If the index is out of
+	 * bounds.
+	 * @since 2018/11/14
+	 */
+	public final void set(int __dx, SpringObject __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException
 	{
 		try
@@ -131,27 +150,11 @@ public final class SpringArrayObjectGeneric
 			// will usually in most cases set with objects which are compatible
 			// so the rather involved instanceof check will take awhile and
 			// compound for setting single elements.
-			SpringClass lastvalid = this._lastvalid,
-				wouldset = null;
-			
-			// If the input value is an object
-			boolean docheck;
-			if (__v instanceof SpringObject)
-			{
-				// If a check is done, then 
-				wouldset = ((SpringObject)__v).type();
-				
-				// Only if the types differ would we actually check
-				docheck = (wouldset != lastvalid);
-			}
-			
-			// Otherwise always do a check since we do not really know the
-			// class type here
-			else
-				docheck = true;
+			SpringClass lastValid = this._lastValid;
+			SpringClass wouldSet = (__v == null ? null : __v.type());
 			
 			// Performing the check for cache?
-			if (docheck)
+			if (wouldSet != lastValid)
 			{
 				// {@squirreljme.error BK0i The specified type is not
 				// compatible with the values this array stores. (The input
@@ -164,12 +167,12 @@ public final class SpringArrayObjectGeneric
 				// Next validity check would be set if done on an object
 				// Ignore setting it back to null, if one was previously
 				// valid
-				if (wouldset != null)
-					this._lastvalid = wouldset;
+				if (wouldSet != null)
+					this._lastValid = wouldSet;
 			}
 			
 			// Set
-			this._elements[__dx] = __v;
+			this._elements[__dx] = (__v == null ? SpringNullObject.NULL : __v);
 		}
 		
 		// {@squirreljme.error BK0j Out of bounds access to array. (The index;
