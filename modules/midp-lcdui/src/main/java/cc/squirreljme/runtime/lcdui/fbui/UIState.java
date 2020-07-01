@@ -28,31 +28,40 @@ import javax.microedition.lcdui.List;
  *
  * @since 2020/01/12
  */
+@Deprecated
 public final class UIState
 	implements IPCCallback
 {
 	/** User interface state. */
+	@Deprecated
 	private static UIState _UI_STATE;
 	
 	/** Get capabilities of the display. */
+	@Deprecated
 	protected final int capabilities;
 	
 	/** The format of the framebuffer. */
+	@Deprecated
 	protected final byte format;
 	
 	/** Is native IPC used for the framebuffer? */
+	@Deprecated
 	protected final boolean useipc;
 	
 	/** Has screen flipping capability. */
+	@Deprecated
 	protected final boolean canflip;
 	
 	/** Is this a color screen? */
+	@Deprecated
 	protected final boolean iscolor;
 	
 	/** The currently bound display. */
+	@Deprecated
 	protected Display display;
 	
 	/** The current drawable state. */
+	@Deprecated
 	protected UIDrawerState drawerstate;
 	
 	/**
@@ -60,6 +69,7 @@ public final class UIState
 	 *
 	 * @since 2020/01/12
 	 */
+	@Deprecated
 	private UIState()
 	{
 		// This will be forwarded at a later date when SpringCoat is more
@@ -99,6 +109,7 @@ public final class UIState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/12
 	 */
+	@Deprecated
 	public final void bindDisplay(Display __d)
 		throws NullPointerException
 	{
@@ -114,6 +125,7 @@ public final class UIState
 	 * @return The framebuffer capabilities.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final int capabilities()
 	{
 		return this.capabilities;
@@ -125,6 +137,7 @@ public final class UIState
 	 * @return If the display is flipped.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final boolean displayFlipped()
 	{
 		// If the display cannot be flipped, this always returns false
@@ -140,6 +153,7 @@ public final class UIState
 	 * @return The display height.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final int displayHeight()
 	{
 		throw new todo.TODO();
@@ -151,6 +165,7 @@ public final class UIState
 	 * @return If this is a color display.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final boolean displayIsColor()
 	{
 		return this.iscolor;
@@ -162,6 +177,7 @@ public final class UIState
 	 * @return The number of unique colors.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final int displayUniqueColors()
 	{
 		int format = this.format;
@@ -185,6 +201,7 @@ public final class UIState
 	 * @return The display width.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final int displayWidth()
 	{
 		throw new todo.TODO();
@@ -196,6 +213,7 @@ public final class UIState
 	 * @return The current drawer state.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final UIDrawerState drawerState()
 	{
 		return this.drawerstate;
@@ -206,6 +224,7 @@ public final class UIState
 	 * @since 2019/12/28
 	 */
 	@Override
+	@Deprecated
 	public long ipcCall(int __tid, int __ipcid, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{
@@ -217,6 +236,7 @@ public final class UIState
 	 *
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final void repaint()
 	{
 		this.repaint(0, 0, this.displayWidth(), this.displayHeight());
@@ -231,6 +251,7 @@ public final class UIState
 	 * @param __h The height.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
 		if (this.useipc)
@@ -250,6 +271,7 @@ public final class UIState
 	 * @return The new drawing state.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final UIDrawerState setDisplayable(Displayable __d)
 	{
 		UIDrawerState rv;
@@ -281,6 +303,7 @@ public final class UIState
 	 * @param __s The title to set.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final void setTitle(String __s)
 	{
 		char[] chars = (__s == null ? "SquirrelJME" : __s).toCharArray();
@@ -302,6 +325,7 @@ public final class UIState
 	 * @return The instance of the user interface state.
 	 * @since 2020/01/12
 	 */
+	@Deprecated
 	public static final UIState getInstance()
 	{
 		UIState rv = UIState._UI_STATE;

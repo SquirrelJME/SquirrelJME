@@ -12,6 +12,9 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.lcdui.mle.NativeUIBackend;
+import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIFormInstance;
 import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.util.ArrayList;
@@ -28,6 +31,9 @@ import javax.microedition.midlet.MIDlet;
 public abstract class Displayable
 	extends ExposedDisplayable
 {
+	/** The native form instance. */
+	final UIFormInstance _uiForm;
+	
 	/** Commands/Menus which have been added to the displayable. */
 	final __VolatileList__<__Action__> _actions =
 		new __VolatileList__<>();
@@ -36,7 +42,7 @@ public abstract class Displayable
 	volatile Display _display;
 	
 	/** The command listener to call into when commands are generated. */
-	volatile CommandListener _cmdlistener;
+	volatile CommandListener _cmdListener;
 	
 	/** The title of the displayable. */
 	volatile String _title;
@@ -48,6 +54,7 @@ public abstract class Displayable
 	volatile Ticker _ticker;
 	
 	/** Is this widget shown? */
+	@Deprecated
 	volatile boolean _isshown;
 	
 	/**
@@ -57,6 +64,13 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
+		// Create a new form for this displayable
+		UIFormInstance form = NativeUIBackend.getInstance().formNew();
+		this._uiForm = form;
+		
+		// Register it with the global state
+		StaticDisplayState.register(this, form);
+		
 		// Use a default title for now
 		this._dtitle = Displayable.__defaultTitle();
 	}
@@ -129,7 +143,7 @@ public abstract class Displayable
 	@Override
 	protected CommandListener getCommandListener()
 	{
-		return this._cmdlistener;
+		return this._cmdListener;
 	}
 	
 	/**
@@ -263,7 +277,7 @@ public abstract class Displayable
 	 */
 	public void setCommandListener(CommandListener __l)
 	{
-		this._cmdlistener = __l;
+		this._cmdListener = __l;
 	}
 	
 	public void setMenu(Menu __m, int __p)

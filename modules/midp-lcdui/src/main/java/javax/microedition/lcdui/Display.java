@@ -15,13 +15,14 @@ import cc.squirreljme.jvm.DeviceFeedbackType;
 import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
-import cc.squirreljme.runtime.lcdui.mle.EnhancedUIFormEngine;
-import cc.squirreljme.runtime.lcdui.mle.UIFormEngine;
+import cc.squirreljme.runtime.lcdui.mle.NativeUIBackend;
+import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIDisplayInstance;
 import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
-import cc.squirreljme.runtime.cldc.Poking;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
@@ -59,9 +60,11 @@ public class Display
 	public static final int COLOR_IDLE_FOREGROUND =
 		7;
 
+	@SuppressWarnings("FieldNamingConvention")
 	public static final int COLOR_IDLE_HIGHLIGHTED_BACKGROUND =
 		8;
 
+	@SuppressWarnings("FieldNamingConvention")
 	public static final int COLOR_IDLE_HIGHLIGHTED_FOREGROUND =
 		9;
 
@@ -186,12 +189,8 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** Listeners for the display. */
-	private static final List<DisplayListener> _LISTENERS =
-		new ArrayList<>();
-	
-	/** The current display which was created. */
-	private static Display _DISPLAY;
+	/** The native display instance. */ 
+	final UIDisplayInstance _uiDisplay;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -202,10 +201,17 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __uiDisplay The native display.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display()
+	Display(UIDisplayInstance __uiDisplay)
+		throws NullPointerException
 	{
+		if (__uiDisplay == null)
+			throw new NullPointerException("NARG");
+		
+		this._uiDisplay = __uiDisplay;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -738,8 +744,7 @@ public class Display
 			// If we just set current with no actual change, just make sure
 			// our callback is the one which is registered so that way we
 			// take control of the screen
-			if (__show != null)
-				this.__doShowCurrent(__show);
+			this.__doShowCurrent(__show);
 			
 			return;
 		}
@@ -880,8 +885,12 @@ public class Display
 	 */
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
-	{	
-		UIState uis = UIState.getInstance();
+	{
+		// Show the form on the display
+		NativeUIBackend.getInstance().displayShow(this._uiDisplay,
+			__show._uiForm);
+		
+		/*UIState uis = UIState.getInstance();
 		
 		// Always set as shown, easier to work with
 		__show._isshown = true;
@@ -893,7 +902,7 @@ public class Display
 		uis.setDisplayable(__show);
 		
 		// Callback when it is made visible
-		__show.showNotify();
+		__show.showNotify();*/
 	}
 	
 	/**
@@ -909,20 +918,7 @@ public class Display
 	public static void addDisplayListener(DisplayListener __dl)
 		throws NullPointerException
 	{
-		if (__dl == null)
-			throw new NullPointerException("NARG");
-		
-		List<DisplayListener> listeners = Display._LISTENERS;
-		synchronized (listeners)
-		{
-			// Do nothing if it is already in there
-			for (int i = 0, n = listeners.size(); i < n; i++)
-				if (listeners.get(i) == __dl)
-					return;
-			
-			// Add it, if it is not there
-			listeners.add(__dl);
-		}
+		StaticDisplayState.addListener(__dl);
 	}
 	
 	/**
@@ -944,9 +940,9 @@ public class Display
 		// In the runtime, each program only ever gets a single MIDlet and
 		// creating new MIDlets is illegal. Thus since getDisplays() has zero
 		// be the return value for this method, that is used here.
-		Display[] disp = Display.getDisplays(0);
-		if (disp.length > 0)
-			return disp[0];
+		Display[] all = Display.getDisplays(0);
+		if (all.length > 0)
+			return all[0];
 		
 		// {@squirreljme.error EB1p Could not get the display for the specified
 		// MIDlet because no displays are available.}
@@ -961,40 +957,55 @@ public class Display
 	 * include all of the {@code SUPPORT_} prefixed constants. If {@code 0} is
 	 * specified then capabilities are not checked.
 	 * @return An array containing the displays with these capabilities.
+	 * @throws IllegalStateException If there are no compatible displays.
 	 * @since 2016/10/08
 	 */
 	public static Display[] getDisplays(int __caps)
+		throws IllegalStateException
 	{
-		// Poke the VM to initialize things potentially, this is just needed
-		// by the native emulator bindings
-		Poking.poke();
+		// Use cached displays, but otherwise load them
+		Display[] all = StaticDisplayState.DISPLAYS;
+		if (all == null)
+		{
+			// Poke the VM to initialize things potentially, this is just
+			// needed by the native emulator bindings
+			Poking.poke();
+			
+			// Get the displays that are attached to the system
+			UIDisplayInstance[] uiDisplays =
+				NativeUIBackend.getInstance().displays();
+			int n = uiDisplays.length;
+			
+			// Initialize display instances
+			all = new Display[n];
+			for (int i = 0; i < n; i++)
+				all[i] = new Display(uiDisplays[i]);
+			
+			// Use these for future calls
+			StaticDisplayState.DISPLAYS = all;
+			
+			// Inform any listeners that the displays exist now
+			for (DisplayListener listener : StaticDisplayState.listeners())
+				for (Display display : all) 
+					listener.displayAdded(display);
+		}
 		
-		// Obtain the engine
-		UIFormEngine engine = EnhancedUIFormEngine.getInstance();
+		// If we do not care for the capabilities of the displays then just
+		// return all of them
+		if (__caps == 0)
+			return all.clone();
 		
-		// Create initial display?
-		Display d = Display._DISPLAY;
-		if (d == null)
-			synchronized (Display.class)
-			{
-				d = Display._DISPLAY;
-				if (d == null)
-				{
-					Display._DISPLAY = (d = new Display());
-					
-					// Just signify that the display was added here
-					for (DisplayListener dl : Display.__listeners())
-						dl.displayAdded(d);
-				}
-			}
-		
-		// Either the capabilities match or we do not care what the display
-		// supports
-		if (__caps == 0 || ((d.getCapabilities() & __caps) == __caps))
-			return new Display[]{d};
+		// Find possible displays
+		List<Display> possible = new ArrayList<>(all.length);
+		for (Display potential : all)
+			if ((potential.getCapabilities() & __caps) == __caps)
+				possible.add(potential);
 		
 		// {@squirreljme.error EB1q No displays are available.}
-		throw new IllegalStateException("EB1q");
+		if (possible.isEmpty())
+			throw new IllegalStateException("EB1q");
+		
+		return possible.<Display>toArray(new Display[possible.size()]);
 	}
 	
 	/**
@@ -1009,41 +1020,7 @@ public class Display
 	public static void removeDisplayListener(DisplayListener __dl)
 		throws IllegalStateException, NullPointerException
 	{
-		if (__dl == null)
-			throw new NullPointerException("NARG");	
-		
-		List<DisplayListener> listeners = Display._LISTENERS;
-		synchronized (listeners)
-		{
-			boolean didremove = false;
-			for (int i = 0, n = listeners.size(); i < n; i++)
-				if (listeners.get(i) == __dl)
-				{
-					listeners.remove(i);
-					didremove = true;
-				}
-			
-			// {@squirreljme.error EB1r The listener was never added to the
-			// listener set.}
-			if (!didremove)
-				throw new IllegalStateException("EB1r");
-		}
-	}
-	
-	/**
-	 * Returns an array of all the attached listeners.
-	 *
-	 * @return An array of listeners.
-	 * @since 2018/03/24
-	 */
-	static DisplayListener[] __listeners()
-	{
-		List<DisplayListener> listeners = Display._LISTENERS;
-		synchronized (listeners)
-		{
-			return listeners.<DisplayListener>toArray(new DisplayListener[
-				listeners.size()]);
-		}
+		StaticDisplayState.removeListener(__dl);
 	}
 }
 

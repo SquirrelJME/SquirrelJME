@@ -4,6 +4,7 @@
       <w>accel</w>
       <w>backlight</w>
       <w>baos</w>
+      <w>bitfield</w>
       <w>bootram</w>
       <w>cldc</w>
       <w>compactified</w>
@@ -13,8 +14,10 @@
       <w>csisolatin</w>
       <w>ebcdic</w>
       <w>endianess</w>
+      <w>fileselectors</w>
       <w>fprintf</w>
       <w>gawroriski</w>
+      <w>idleitem</w>
       <w>ioob</w>
       <w>jarray</w>
       <w>jboolean</w>
@@ -36,7 +39,9 @@
       <w>jthrowable</w>
       <w>jvalue</w>
       <w>jweak</w>
+      <w>lcdui</w>
       <w>ljava</w>
+      <w>messg</w>
       <w>microedition</w>
       <w>multiphasicapps</w>
       <w>narg</w>
@@ -50,11 +55,15 @@
       <w>siiiiii</w>
       <w>siiiiiii</w>
       <w>siiiiiiii</w>
+      <w>softkey</w>
       <w>springcoat</w>
       <w>squirreljme</w>
       <w>stdint</w>
       <w>summercoat</w>
+      <w>tabbedpanes</w>
       <w>targetting</w>
+      <w>textboxes</w>
+      <w>uiform</w>
       <w>vmtypes</w>
       <w>vtable</w>
     </words>

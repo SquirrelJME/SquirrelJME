@@ -24,6 +24,7 @@ public class TestTypeShelfInvalid
 	 * {@inheritDoc}
 	 * @since 2020/06/22
 	 */
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Override
 	public boolean test(int __index)
 		throws MLECallError
@@ -100,6 +101,18 @@ public class TestTypeShelfInvalid
 			
 			case 17:
 				TypeShelf.enumValues(null);
+				break;
+			
+			case 18:
+				TypeShelf.equals(null, null);
+				break;
+			
+			case 19:
+				TypeShelf.equals(TypeShelf.typeOfByte(), null);
+				break;
+			
+			case 20:
+				TypeShelf.equals(null, TypeShelf.typeOfByte());
 				break;
 			
 			default:

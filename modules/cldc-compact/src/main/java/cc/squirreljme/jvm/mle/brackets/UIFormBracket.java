@@ -7,18 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.mle;
+package cc.squirreljme.jvm.mle.brackets;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.annotation.GhostObject;
 
 /**
- * This interface is used as a wrapper around {@link UIFormShelf}, it is
- * implemented by a class and essentially is used to forward calls to the
- * true backing implementation. This is here so that in the event that
- * {@link UIFormShelf} is not supported, that there is a fall-back.
+ * This represents a form as a whole, it is displayed with
+ * {@link UIDisplayBracket} and contains {@link UIItemBracket}.
  *
- * @since 2020/06/30
+ * @since 2020/07/01
  */
-public interface UIFormEngine
+@GhostObject
+public interface UIFormBracket
 {
 }

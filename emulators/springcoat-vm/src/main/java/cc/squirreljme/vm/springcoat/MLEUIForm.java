@@ -10,11 +10,11 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.awt.HeadlessException;
-import java.awt.Toolkit;
+import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
+import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 
 /**
  * SpringCoat support for {@link UIFormShelf}.
@@ -24,6 +24,57 @@ import java.awt.Toolkit;
 public enum MLEUIForm
 	implements MLEFunction
 {
+	/** {@link UIFormShelf#displays()}. */
+	DISPLAYS("displays:()[Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIDisplayBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/01
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIDisplayBracket[] natives = UIFormShelf.displays();
+			
+			// Wrap the array
+			int n = natives.length;
+			SpringObject[] result = new SpringObject[n];
+			for (int i = 0; i < n; i++)
+				result[i] = new UIDisplayObject(natives[i]);
+			
+			// Use array as result
+			return __thread.asVMObjectArray(__thread.resolveClass(
+				"[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;"),
+				result);
+		}
+	},
+	
+	/** {@link UIFormShelf#displayShow(UIDisplayBracket, UIFormBracket)}. */ 
+	DISPLAY_SHOW("displayShow:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V")
+	{
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			throw Debugging.todo();
+		}
+	},
+	
+	/** {@link UIFormShelf#formNew()}. */
+	FORM_NEW("formNew:()Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/01
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return new UIFormObject(UIFormShelf.formNew());
+		}
+	},
+	
 	/** {@link UIFormShelf#metric(int)}. */
 	METRIC("metric:(I)I")
 	{
@@ -35,31 +86,8 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			int metric = (int)__args[0];
-			if (metric < 0 || metric >= UIMetricType.NUM_METRICS)
-				throw new MLECallError("Invalid metric.");
 			
-			switch (metric)
-			{
-					// Simplest way to check if forms are supported is if
-					// the display is headless or not
-				case UIMetricType.UIFORMS_SUPPORTED:
-					try
-					{
-						// Just try to read the screen size
-						if (null == Toolkit.getDefaultToolkit()
-							.getScreenSize())
-							return 0;
-						
-						return 1;
-					}
-					catch (HeadlessException e)
-					{
-						return 0;
-					}
-				
-				default:
-					throw new RuntimeException("Unknown metric: " + metric);
-			}
+			return UIFormShelf.metric(metric);
 		}
 	}, 
 	

@@ -22,6 +22,7 @@ import javax.microedition.lcdui.Ticker;
  *
  * @since 2019/05/17
  */
+@Deprecated
 public abstract class ExposedDisplayable
 {
 	/** Drawing/action state. */

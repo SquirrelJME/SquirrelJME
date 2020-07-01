@@ -114,11 +114,19 @@ public final class Debugging
 		// Only trip this once! In the event this trips twice, just shortcut
 		// with an exception otherwise
 		if (Debugging._tripped)
+		{
+			// There was a To-Do on this To-Do, so need to report it instead
+			// of just exiting!
+			Debugging.todoNote("TODO TRIPPED IN TODO HANDLER: ");
+			
+			// Toss up and see what happens here
 			return new Error("Recursive TODO");
+		}
 		Debugging._tripped = true;
 		
 		// This try is here so that in event this fails or throws another
 		// exception, we always terminal no matter what
+		boolean stackTracePrinted = false;
 		try
 		{
 			// Print a very visible banner to not hide this information
@@ -132,6 +140,7 @@ public final class Debugging
 				new ConsoleOutputStream(StandardPipeType.STDERR),
 				"INCOMPLETE CODE", DebugShelf.traceStack(),
 				null, null, 0);
+			stackTracePrinted = true;
 			
 			// Print all arguments passed afterwards, just in case
 			if (__args != null)
@@ -154,6 +163,38 @@ public final class Debugging
 			
 			Debugging.todoNote(
 				"*****************************************");
+		}
+		
+		// In the event this happens, we can report it
+		catch (Throwable t)
+		{
+			Debugging.todoNote("THROWABLE TOSSED IN TODO HANDLER!");
+			
+			// Report if we could not print the trace!
+			if (!stackTracePrinted)
+				Debugging.todoNote("COULD NOT PRINT STACK TRACE!");
+			
+			// Try to report what the throwable was
+			try
+			{
+				// Report on it
+				Debugging.todoNote("THROWABLE WAS...");
+				Debugging.todoNote("    CLASS: %s", t.getClass());
+				Debugging.todoNote("    MESSG: %s", t.getMessage());
+				
+				// Try to print the trace
+				CallTraceUtils.printStackTrace(
+					new ConsoleOutputStream(StandardPipeType.STDERR),
+					t, 0);
+			}
+			
+			// This is a point where everything is so wrong we cannot
+			// do anything at all
+			catch (Throwable ignored)
+			{
+				// Report that this happened though 
+				Debugging.todoNote("COULD NOT PRINT BACKUP TRACE!");
+			}
 		}
 		
 		// Always try to exit at the end of the call, in the event another

@@ -10,6 +10,8 @@
 package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -19,8 +21,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/06/30
  */
-public class EnhancedUIFormEngine
-	implements UIFormEngine
+public class NativeUIBackend
+	implements UIBackend
 {
 	/**
 	 * {@squirreljme.property cc.squirreljme.runtime.lcdui.mle.fallback=bool
@@ -41,7 +43,64 @@ public class EnhancedUIFormEngine
 	/** The instance of the form engine to be used. */
 	@SuppressWarnings({"StaticVariableMayNotBeInitialized", 
 		"NonConstantFieldWithUpperCaseName"})
-	private static UIFormEngine _INSTANCE;
+	private static UIBackend _INSTANCE;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/01
+	 */
+	@Override
+	public UIDisplayInstance[] displays()
+	{
+		UIDisplayBracket[] natural = UIFormShelf.displays();
+		
+		int n = natural.length;
+		UIDisplayInstance[] rv = new UIDisplayInstance[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = new NativeUIDisplayInstance(natural[i]);
+		 
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/01
+	 */
+	@Override
+	public void formDelete(UIFormInstance __form)
+		throws NullPointerException
+	{
+		if (__form == null)
+			throw new NullPointerException("NARG");
+		
+		// Natively delete the form
+		UIFormShelf.formDelete(NativeUIBackend.__native(__form));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/01
+	 */
+	@Override
+	public UIFormInstance formNew()
+	{
+		return new NativeUIFormInstance(UIFormShelf.formNew());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/01
+	 */
+	@Override
+	public void displayShow(UIDisplayInstance __display, UIFormInstance __form)
+		throws NullPointerException
+	{
+		if (__display == null || __form == null)
+			throw new NullPointerException("NARG");
+		
+		UIFormShelf.displayShow(NativeUIBackend.__native(__display),
+			NativeUIBackend.__native(__form));
+	}
 	
 	/**
 	 * Gets an instance of the UI engine.
@@ -50,10 +109,10 @@ public class EnhancedUIFormEngine
 	 * @since 2020/06/30
 	 */
 	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
-	public static UIFormEngine getInstance()
+	public static UIBackend getInstance()
 	{
 		// If this was already cached, use that
-		UIFormEngine rv = EnhancedUIFormEngine._INSTANCE;
+		UIBackend rv = NativeUIBackend._INSTANCE;
 		if (rv != null)
 			return rv;
 		
@@ -63,15 +122,15 @@ public class EnhancedUIFormEngine
 		// These are properties which determine which kind of engine can be
 		// returned
 		boolean forceFallback = Boolean.getBoolean(
-			EnhancedUIFormEngine.FORCE_FALLBACK_PROPERTY);
+			NativeUIBackend.FORCE_FALLBACK_PROPERTY);
 		boolean forceHeadless = Boolean.getBoolean(
-			EnhancedUIFormEngine.FORCE_HEADLESS_PROPERTY);
+			NativeUIBackend.FORCE_HEADLESS_PROPERTY);
 		boolean isForcing = (forceFallback || forceHeadless);
 		
 		// Use native forms if supported unless we are forcing other options
 		if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED) &&
 			!isForcing)
-			rv = new EnhancedUIFormEngine();
+			rv = new NativeUIBackend();
 		
 		// Otherwise use the fallback implementation (raw framebuffer)
 		else
@@ -85,7 +144,41 @@ public class EnhancedUIFormEngine
 		}
 		
 		// Cache and use
-		EnhancedUIFormEngine._INSTANCE = rv;
+		NativeUIBackend._INSTANCE = rv;
 		return rv;
+	}
+	
+	/**
+	 * Returns the native bracket.
+	 * 
+	 * @param __instance The instance.
+	 * @return The native bracket.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/07/01
+	 */
+	static UIDisplayBracket __native(UIDisplayInstance __instance)
+		throws NullPointerException
+	{
+		if (__instance == null)
+			throw new NullPointerException("NARG");
+		
+		return ((NativeUIDisplayInstance)__instance).display;
+	}
+	
+	/**
+	 * Returns the native bracket.
+	 * 
+	 * @param __instance The instance.
+	 * @return The native bracket.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/07/01
+	 */
+	static UIFormBracket __native(UIFormInstance __instance)
+		throws NullPointerException
+	{
+		if (__instance == null)
+			throw new NullPointerException("NARG");
+		
+		return ((NativeUIFormInstance)__instance).form;
 	}
 }

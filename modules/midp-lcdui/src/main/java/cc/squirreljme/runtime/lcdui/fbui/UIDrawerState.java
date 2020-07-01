@@ -16,9 +16,11 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2020/01/15
  */
+@Deprecated
 public abstract class UIDrawerState
 {
 	/** The displayable to be drawn/interacted with. */
+	@Deprecated
 	protected final Displayable displayable;
 	
 	/**
@@ -28,6 +30,7 @@ public abstract class UIDrawerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/18
 	 */
+	@Deprecated
 	public UIDrawerState(Displayable __d)
 		throws NullPointerException
 	{
@@ -43,6 +46,7 @@ public abstract class UIDrawerState
 	 * @return The content height.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final int contentHeight()
 	{
 		throw new todo.TODO();
@@ -54,6 +58,7 @@ public abstract class UIDrawerState
 	 * @return The content width.
 	 * @since 2020/01/15
 	 */
+	@Deprecated
 	public final int contentWidth()
 	{
 		throw new todo.TODO();

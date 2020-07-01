@@ -10,6 +10,9 @@
 package squirreljme.mle.errors;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import net.multiphasicapps.tac.UntestableException;
@@ -26,6 +29,7 @@ public class TestUIFormShelfInvalid
 	 * {@inheritDoc}
 	 * @since 2020/06/22
 	 */
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Override
 	public boolean test(int __index)
 		throws MLECallError
@@ -43,6 +47,35 @@ public class TestUIFormShelfInvalid
 			
 			case 1:
 				UIFormShelf.metric(UIMetricType.NUM_METRICS);
+				break;
+			
+			case 2:
+				UIFormShelf.equals((UIDisplayBracket)null, null);
+				break;
+			
+			case 3:
+				UIFormShelf.equals((UIFormBracket)null, null);
+				break;
+			
+			case 4:
+				UIFormShelf.equals((UIItemBracket)null, null);
+				break;
+			
+			case 5:
+				UIFormShelf.displayCurrent(null);
+				break;
+			
+			case 6:
+				UIFormShelf.displayShow(null, null);
+				break;
+			
+			case 7:
+				UIFormShelf.displayShow(UIFormShelf.displays()[0],
+					null);
+				break;
+			
+			case 8:
+				UIFormShelf.formDelete(null);
 				break;
 			
 			default:
