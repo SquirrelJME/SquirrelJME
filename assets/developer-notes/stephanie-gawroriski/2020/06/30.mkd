@@ -1,0 +1,27 @@
+# 2020/06/30
+
+## 08:26
+
+After fixing an error in BAIS all the tests that I have pass in SpringCoat so
+that is very nice! Now I can continue on implementing everything and such, just
+need to spend the day at work right now. But otherwise, I will be continuing
+by doing LCDUI and getting that bumped up.
+
+## 18:20
+
+Actually, I want to do the LCDUI refactor and improvements pretty much now
+rather than having part of it in `wip-midlevel`. I think that branch has gone
+on and I believe it to be a success right now, so I will leave that there and
+merge it in.
+
+## 18:52
+
+Okay so I have an idea for `FormShelf`! Basically everything there is going to
+be a form item for the most part. Positionally speaking there will be special indexes which determine how an item will be placed, these will be a default list-view with zero to positive indexes, whereas negative ones will be special like the left and right soft button command buttons. Each item will be treated exactly the same which I feel is important. Initially for forms, I will have
+each form item be just a customized item where the MIDlet (or SquirrelJME)
+is responsible for the drawing. Then the form manager will manage events
+and such. I think starting at this point will be the simplest. Then eventually
+at a later point I will add custom more appropriate things such as buttons
+and otherwise. One thing to note is that this still will have to ultimately
+be compatible with a basic framebuffer like that for SummerCoat and other
+systems which are not capable of forms.
