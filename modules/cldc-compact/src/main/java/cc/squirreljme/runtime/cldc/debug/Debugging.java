@@ -188,6 +188,26 @@ public final class Debugging
 					t, 0);
 			}
 			
+			// This might occur on the native system
+			catch (LinkageError error)
+			{
+				Debugging.todoNote("WAS LINKAGE ERROR?");
+				
+				// Print the trace of the error and try to find the root
+				// cause of it
+				try
+				{
+					error.printStackTrace(System.err);
+				}
+				
+				// Could not print that either
+				catch (Throwable ignored)
+				{
+					// Report that this happened though 
+					Debugging.todoNote("COULD NOT PRINT LINK TRACE!");
+				}
+			}
+			
 			// This is a point where everything is so wrong we cannot
 			// do anything at all
 			catch (Throwable ignored)
