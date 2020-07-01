@@ -12,9 +12,9 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
  * SpringCoat support for {@link UIFormShelf}.
@@ -57,7 +57,25 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			UIFormShelf.displayShow(MLEUIForm.__display(__args[0]).display,
+				MLEUIForm.__form(__args[1]).form);
+			return null;
+		}
+	},
+	
+	/** {@link UIFormShelf#formDelete(UIFormBracket)}. */
+	FORM_DELETE("formDelete:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIFormBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/01
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.formDelete(MLEUIForm.__form(__args[0]).form);
+			return null;
 		}
 	},
 	
@@ -121,5 +139,39 @@ public enum MLEUIForm
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Gets the object as a {@link UIDisplayObject}.
+	 * 
+	 * @param __o The object.
+	 * @return As the desired {@link UIDisplayObject}.
+	 * @throws SpringMLECallError If the object is not this type.
+	 * @since 2020/07/01
+	 */
+	static UIDisplayObject __display(Object __o)
+		throws SpringMLECallError
+	{
+		if (!(__o instanceof UIDisplayObject))
+			throw new SpringMLECallError("Not a UIDisplayObject.");
+		
+		return (UIDisplayObject)__o;
+	}
+	
+	/**
+	 * Gets the object as a {@link UIFormObject}.
+	 * 
+	 * @param __o The object.
+	 * @return As the desired {@link UIFormObject}.
+	 * @throws SpringMLECallError If the object is not this type.
+	 * @since 2020/07/01
+	 */
+	static UIFormObject __form(Object __o)
+		throws SpringMLECallError
+	{
+		if (!(__o instanceof UIFormObject))
+			throw new SpringMLECallError("Not a UIFormObject.");
+		
+		return (UIFormObject)__o;
 	}
 }
