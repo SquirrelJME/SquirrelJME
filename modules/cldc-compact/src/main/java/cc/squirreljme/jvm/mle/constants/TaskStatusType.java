@@ -10,21 +10,21 @@
 package cc.squirreljme.jvm.mle.constants;
 
 /**
- * Standard pipe descriptor identifiers.
+ * This represents the status of a task.
  *
- * @since 2020/06/14
+ * @since 2020/07/02
  */
-public interface StandardPipeType
+public interface TaskStatusType
 {
-	/** Standard output. */
-	byte STDOUT =
+	/** The task has exited. */
+	byte EXITED =
+		0;
+	
+	/** The task is alive. */
+	byte ALIVE =
 		1;
 	
-	/** Standard error. */
-	byte STDERR =
+	/** The number of status types. */
+	byte NUM_TAS_STATUSES =
 		2;
-	
-	/** The number of standard pipes. */
-	byte NUM_STANDARD_PIPES =
-		3;
 }

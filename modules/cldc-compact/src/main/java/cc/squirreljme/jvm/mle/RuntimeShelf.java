@@ -9,9 +9,9 @@
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
