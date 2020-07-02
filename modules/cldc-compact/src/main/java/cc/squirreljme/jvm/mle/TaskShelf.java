@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import java.io.Closeable;
 
 /**
  * This shelf allows for the management of tasks and otherwise.
@@ -84,6 +85,10 @@ public final class TaskShelf
 	 * contents of the task's output buffer can be read with this.
 	 * 
 	 * This call must never block.
+	 * 
+	 * End-of-file is reached when the buffer is completely drained and the
+	 * task either the task is {@link TaskStatusType#EXITED} or
+	 * {@link Closeable#close()} was called on the output pipe.
 	 * 
 	 * @param __task The task to 
 	 * @param __fd The {@link StandardPipeType} to read from.
