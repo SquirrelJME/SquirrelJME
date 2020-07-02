@@ -84,6 +84,9 @@ improvements.
    * Basic optimizing register based virtual machine.
  * Virtual machine: RatufaCoat
    * A port of SummerCoat to C, intended for RetroArch.
+ * Additional Changes:
+   * Major refactoring to the source code so that the project is much easier
+     and quicker to develop for.
 
 # Released
 

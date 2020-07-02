@@ -10,6 +10,7 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.IOException;
 import java.io.InputStream;
@@ -178,6 +179,21 @@ public abstract class MIDlet
 		return null;
 	}
 	
+	public final MIDletIdentity getMIDletIdentity()
+	{
+		throw Debugging.todo();
+	}
+	
+	public final long getSplashScreenTime()
+	{
+		throw Debugging.todo();
+	}
+	
+	public final boolean isSelectedScreenSaver()
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * Used by the application to notify the MIDlet that it has entered the
 	 * destroyed state and resources should be cleaned up and such. When this
@@ -217,6 +233,17 @@ public abstract class MIDlet
 	{
 	}
 	
+	/**
+	 * Requests that the system perform the given request.
+	 * 
+	 * @param __url The URL to request on the native system.
+	 * @return This wil return {@code true} if the MIDlet must exit first
+	 * before the request can be handled.
+	 * @throws Exception Will throw
+	 * {@code javax.microedition.io.ConnectionNotFoundException} if this
+	 * connection type is not supported.
+	 * @since 2020/07/02
+	 */
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
@@ -226,6 +253,9 @@ public abstract class MIDlet
 		// Returning false here will cause the games to not work.
 		if ("hjoja".equals(__url))
 			return true;
+		
+		// Determine the protocol of the request
+		int fc
 		
 		// Debug
 		todo.DEBUG.note("%s", __url);
