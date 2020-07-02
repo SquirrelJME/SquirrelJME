@@ -56,15 +56,17 @@ This is a future release and the specified changes are proposed.
  * 3rd-party development SDK
  * Additional Core Classes Implemented
  * Additional Library Support
-   * Add support for Nokia APIs.
+   * Add support for LG MultiMedia Phone Profile (MMPP) APIs.
    * Add support for Motorola APIs.
-   * Add support for NTTDocomo APIs.
+   * Add support for Nokia APIs.
+   * Add support for NTT Docomo (a.k.a. i-Mode) APIs.
    * Add support for Samsung APIs.
    * Add support for Siemens APIs.
+   * Add support for SK-VM APIs.
    * Add support for Sprint APIs.
    * Add support for Vodafone APIs.
- * Graphics library overhaul
- * File-system access support
+   * Add support for WIPI APIs.
+ * Virtual FileSystem Support.
 
 ## 0.4.x (Perpetual until 0.6.0)
 
