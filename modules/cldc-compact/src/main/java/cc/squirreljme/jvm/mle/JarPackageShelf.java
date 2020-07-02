@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.io.InputStream;
 
 /**
@@ -26,6 +27,19 @@ public final class JarPackageShelf
 	 * @since 2020/06/07
 	 */
 	public static native JarPackageBracket[] classPath();
+	
+	/**
+	 * Checks if the given brackets refer to the same JAR.
+	 * 
+	 * @param __a The first JAR.
+	 * @param __b The second JAR.
+	 * @return If these are equal or not.
+	 * @throws MLECallError If either argument is {@code null}.
+	 * @since 2020/07/02
+	 */
+	public static native boolean equals(
+		JarPackageBracket __a, JarPackageBracket __b)
+		throws MLECallError;
 	
 	/**
 	 * Opens the resource from the input stream.

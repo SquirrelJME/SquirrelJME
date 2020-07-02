@@ -10,21 +10,26 @@
 package cc.squirreljme.jvm.mle.constants;
 
 /**
- * Standard pipe descriptor identifiers.
+ * This represents the types of redirects that may occur for a launched task
+ * when it is given a pipe.
  *
- * @since 2020/06/14
+ * @since 2020/07/02
  */
-public interface StandardPipeType
+public interface TaskPipeRedirectType
 {
-	/** Standard output. */
-	byte STDOUT =
+	/** Discard all program output. */
+	byte DISCARD =
+		0;
+	
+	/** Buffer the resultant program's output. */
+	byte BUFFER =
 		1;
 	
-	/** Standard error. */
-	byte STDERR =
+	/** Send the output to the virtual machine's terminal output. */
+	byte TERMINAL =
 		2;
 	
-	/** The number of standard pipes. */
-	byte NUM_STANDARD_PIPES =
+	/** The number of redirect types. */
+	byte NUM_REDIRECT_TYPES =
 		3;
 }

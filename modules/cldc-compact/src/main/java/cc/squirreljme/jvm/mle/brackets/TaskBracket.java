@@ -7,24 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.constants;
+package cc.squirreljme.jvm.mle.brackets;
+
+import cc.squirreljme.jvm.mle.annotation.GhostObject;
 
 /**
- * Standard pipe descriptor identifiers.
+ * This represents a single task which is a running application.
  *
- * @since 2020/06/14
+ * @since 2020/07/02
  */
-public interface StandardPipeType
+@GhostObject
+public interface TaskBracket
 {
-	/** Standard output. */
-	byte STDOUT =
-		1;
-	
-	/** Standard error. */
-	byte STDERR =
-		2;
-	
-	/** The number of standard pipes. */
-	byte NUM_STANDARD_PIPES =
-		3;
 }

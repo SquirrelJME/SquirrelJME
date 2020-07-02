@@ -12,10 +12,13 @@ package cc.squirreljme.runtime.cldc.debug;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
+import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
+import java.util.Objects;
 import todo.OOPS;
 
 /**
@@ -128,10 +131,14 @@ public final class Debugging
 			
 			// Print the stack trace first like this so it does not possibly
 			// get trashed
+			TracePointBracket[] trace = DebugShelf.traceStack();
 			CallTraceUtils.printStackTrace(
 				new ConsoleOutputStream(StandardPipeType.STDERR),
-				"INCOMPLETE CODE", DebugShelf.traceStack(),
+				"INCOMPLETE CODE", trace,
 				null, null, 0);
+				
+			// Report the To-Do trace so it is known to another program
+			ThreadShelf.setTrace("INCOMPLETE CODE", trace);
 			
 			// Print all arguments passed afterwards, just in case
 			if (__args != null)
