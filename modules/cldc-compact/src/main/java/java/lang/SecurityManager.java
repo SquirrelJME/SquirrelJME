@@ -14,6 +14,14 @@ import java.security.AccessController;
 import java.security.Permission;
 import java.util.PropertyPermission;
 
+/**
+ * This is the security manager which controls access to various functions of
+ * the virtual machine.
+ * 
+ * Access is checked by {@link AccessController#checkPermission(Permission)}. 
+ * 
+ * @since 2020/07/02
+ */
 public class SecurityManager
 {
 	/** The current security manager, defaults to the system one. */
