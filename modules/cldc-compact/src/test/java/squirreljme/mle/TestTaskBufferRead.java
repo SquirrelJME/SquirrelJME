@@ -14,8 +14,6 @@ import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
-import cc.squirreljme.jvm.mle.constants.TaskStatusType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.TaskInputStream;
 import net.multiphasicapps.tac.TestSupplier;
 
