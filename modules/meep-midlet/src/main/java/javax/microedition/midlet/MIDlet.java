@@ -254,11 +254,8 @@ public abstract class MIDlet
 		if ("hjoja".equals(__url))
 			return true;
 		
-		// Determine the protocol of the request
-		int fc
-		
 		// Debug
-		todo.DEBUG.note("%s", __url);
+		todo.DEBUG.note("Platform request: %s", __url);
 		
 		throw new todo.TODO();
 	}
