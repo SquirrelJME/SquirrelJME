@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIFormSpecialPositionType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -36,6 +37,18 @@ public final class UIFormShelf
 	private UIFormShelf()
 	{
 	}
+	
+	/**
+	 * This is used to register the callback which is called with the user
+	 * interface events and otherwise.
+	 * 
+	 * @param __callback The callback to register.
+	 * @throws MLECallError If {@code __callback} is {@code null} or one has
+	 * already been registered.
+	 * @since 2020/07/03
+	 */
+	public static native void callback(UIFormCallback __callback)
+		throws MLECallError;
 	
 	/**
 	 * Returns the displays which are attached to the system.

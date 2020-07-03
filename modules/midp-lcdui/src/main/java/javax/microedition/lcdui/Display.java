@@ -883,12 +883,22 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
+	@SuppressWarnings("ObviousNullCheck")
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
 	{
 		// Show the form on the display
 		NativeUIBackend.getInstance().displayShow(this._uiDisplay,
 			__show._uiForm);
+		
+		// We need to create a background loop which manages the display state
+		// and otherwise, so this will be an active thread running when we
+		// need it to be running
+		synchronized (StaticDisplayState.class)
+		{
+			if (!StaticDisplayState.isDaemonStarted())
+				StaticDisplayState.startDaemon(new __UIDaemon__());
+		}
 		
 		/*UIState uis = UIState.getInstance();
 		

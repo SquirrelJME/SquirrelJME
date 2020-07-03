@@ -12,6 +12,7 @@ package javax.microedition.midlet;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.midlet.CleanupHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -49,9 +50,11 @@ public abstract class MIDlet
 	 * @throws MIDletStateChangeException If the destruction might stop.
 	 * @since 2020/02/29
 	 */
+	@SuppressWarnings("deprecation")
 	protected abstract void destroyApp(boolean __uc)
 		throws MIDletStateChangeException;
 	
+	@SuppressWarnings("deprecation")
 	protected abstract void startApp()
 		throws MIDletStateChangeException;
 	
@@ -203,7 +206,10 @@ public abstract class MIDlet
 	 */
 	public final void notifyDestroyed()
 	{
-		todo.DEBUG.note("Notification of destruction");
+		Debugging.debugNote("Notification of destruction");
+		
+		// Run all cleanup handlers
+		CleanupHandler.runAll();
 		
 		// Kill the program
 		System.exit(0);
@@ -260,10 +266,16 @@ public abstract class MIDlet
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * This is called when an application was resumed.
+	 * 
+	 * On SquirrelJME this has no effect.
+	 * 
+	 * @since 2020/07/03
+	 */
 	@Deprecated
 	public final void resumeRequest()
 	{
-		throw new todo.TODO();
 	}
 	
 	public static String getAppProperty(String __name, String __vend,

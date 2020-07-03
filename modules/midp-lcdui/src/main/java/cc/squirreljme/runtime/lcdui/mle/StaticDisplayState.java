@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.mle;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -43,6 +44,12 @@ public final class StaticDisplayState
 	private static final ReferenceQueue<Displayable> _FORM_QUEUE =
 		new ReferenceQueue<>();
 	
+	/** The user-interface daemon. */
+	private static UIDaemon _uiDaemon;
+	
+	/** The user-interface daemon thread. */
+	private static Thread _uiDaemonThread;
+	
 	/**
 	 * Adds the specified listener for changes to displays.
 	 *
@@ -69,6 +76,21 @@ public final class StaticDisplayState
 			
 			// Add it, if it is not there
 			listeners.add(__dl);
+		}
+	}
+	
+	/**
+	 * Checks if the UI daemon has been started.
+	 * 
+	 * @return If the UI daemon has been started.
+	 * @since 2020/07/03
+	 */
+	public static boolean isDaemonStarted()
+	{
+		synchronized (StaticDisplayState.class)
+		{
+			return StaticDisplayState._uiDaemon != null &&
+				StaticDisplayState._uiDaemonThread != null;
 		}
 	}
 	
@@ -124,7 +146,7 @@ public final class StaticDisplayState
 	 * 
 	 * @since 2020/07/01
 	 */
-	private static void gc()
+	public static void gc()
 	{
 		// Prevent thread mishaps between threads doing this
 		synchronized (StaticDisplayState.class)
@@ -145,6 +167,42 @@ public final class StaticDisplayState
 				// Perform collection on it
 				NativeUIBackend.getInstance().formDelete(form);
 			}
+		}
+	}
+	
+	/**
+	 * Starts a daemon for the user interface.
+	 * 
+	 * @param __daemon The daemon to start.
+	 * @throws IllegalStateException If a daemon has already started.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/07/03
+	 */
+	public static void startDaemon(UIDaemon __daemon)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__daemon == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (StaticDisplayState.class)
+		{
+			// {@squirreljme.error EB3c Daemon has already been started.}
+			if (StaticDisplayState._uiDaemon != null ||
+				StaticDisplayState._uiDaemonThread != null)
+				throw new IllegalStateException("EB3c");
+			
+			// Register the callback
+			UIFormShelf.callback(__daemon);
+			
+			// Setup daemon thread
+			Thread thread = new Thread(__daemon, "LCDUIDaemonThread");
+			
+			// Start the thread itself
+			thread.start();
+			
+			// Use these for future handling
+			StaticDisplayState._uiDaemon = __daemon;
+			StaticDisplayState._uiDaemonThread = thread;
 		}
 	}
 	
