@@ -15,6 +15,7 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
@@ -148,9 +149,18 @@ public final class SpringMachine
 		this._sysproperties = (__sprops == null ?
 			new HashMap<String, String>() : new HashMap<>(__sprops));
 		
-		// Setup terminal pipes
-		this.terminalPipes = (__pipes == null ? new TerminalPipeManager() :
-			__pipes);
+		// Setup terminal pipes, use a default if there is none
+		if (__pipes != null)
+			this.terminalPipes = __pipes;
+		else
+		{
+			TerminalPipeManager pipes = new TerminalPipeManager();
+			
+			pipes.registerTerminal(StandardPipeType.STDOUT, System.out);
+			pipes.registerTerminal(StandardPipeType.STDERR, System.err);
+			
+			this.terminalPipes = pipes;
+		}
 		
 		// Setup resource accessor
 		this.resourceaccessor = new VMResourceAccess(__sm);
