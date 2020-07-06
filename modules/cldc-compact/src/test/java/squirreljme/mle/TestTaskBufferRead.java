@@ -25,6 +25,10 @@ import net.multiphasicapps.tac.TestSupplier;
 public class TestTaskBufferRead
 	extends TestSupplier<String>
 {
+	/** When to give up, in milliseconds. */
+	public static final long GIVE_UP_DELAY =
+		20_000_000L;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/07/02
@@ -47,8 +51,13 @@ public class TestTaskBufferRead
 		try (TaskInputStream in = new TaskInputStream(task,
 			StandardPipeType.STDOUT))
 		{
-			for (;;)
+			for (long giveUp = System.currentTimeMillis() +
+				TestTaskBufferRead.GIVE_UP_DELAY;;)
 			{
+				// Giving up?
+				if (System.currentTimeMillis() > giveUp)
+					throw new RuntimeException("GIVE");
+				
 				int ch = in.read();
 				
 				// EOF?
