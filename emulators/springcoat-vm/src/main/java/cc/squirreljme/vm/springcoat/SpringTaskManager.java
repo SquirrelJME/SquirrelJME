@@ -85,6 +85,7 @@ public final class SpringTaskManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
+	@Deprecated
 	public final int startTask(String[] __cp, String __entry, String[] __args,
 		int __gd)
 		throws NullPointerException
@@ -150,7 +151,8 @@ public final class SpringTaskManager
 		// Build machine for the task
 		SpringMachine machine = new SpringMachine(suites,
 			new SpringClassLoader(scl), this, null,
-			this.profiler, this._sysprops, this.globalState, , __args);
+			this.profiler, this._sysprops, this.globalState, 
+			null, __args);
 		
 		// Lock on tasks
 		Map<Integer, SpringTask> tasks = this._tasks;
