@@ -118,6 +118,11 @@ public class TestThreadShelfInvalid
 					new TracePointBracket[0]);
 				break;
 			
+			case 21:
+				ThreadShelf.setTrace("message",
+					new TracePointBracket[]{null});
+				break;
+			
 			default:
 				return true;
 		}
