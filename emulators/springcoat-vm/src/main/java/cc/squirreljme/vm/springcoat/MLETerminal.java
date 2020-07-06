@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -32,9 +33,16 @@ public enum MLETerminal
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			int fd = (int)__args[0];
-			
-			return __thread.machine.terminalPipes.mleClose(fd);
+			try
+			{
+				int fd = (int)__args[0];
+				
+				return __thread.machine.terminalPipes.mleClose(fd);
+			}
+			catch (MLECallWouldFail e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
 		}
 	}, 
 	
@@ -48,9 +56,16 @@ public enum MLETerminal
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			int fd = (int)__args[0];
-			
-			return __thread.machine.terminalPipes.mleFlush(fd);
+			try
+			{
+				int fd = (int)__args[0];
+				
+				return __thread.machine.terminalPipes.mleFlush(fd);
+			}
+			catch (MLECallWouldFail e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
 		}
 	},
 	
@@ -61,14 +76,20 @@ public enum MLETerminal
 		 * {@inheritDoc}
 		 * @since 2020/06/18
 		 */
-		@SuppressWarnings("resource")
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			int fd = (int)__args[0];
-			int value = (int)__args[1];
-			
-			return __thread.machine.terminalPipes.mleWrite(fd, value);
+			try
+			{
+				int fd = (int)__args[0];
+				int value = (int)__args[1];
+				
+				return __thread.machine.terminalPipes.mleWrite(fd, value);
+			}
+			catch (MLECallWouldFail e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
 		}
 	},
 	
@@ -79,20 +100,26 @@ public enum MLETerminal
 		 * {@inheritDoc}
 		 * @since 2020/06/18
 		 */
-		@SuppressWarnings("resource")
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			if (!(__args[1] instanceof SpringArrayObjectByte))
-				throw new SpringMLECallError("Not a byte array.");
-			
-			int fd = (int)__args[0];
-			SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
-			int off = (int)__args[2];
-			int len = (int)__args[3];
-			
-			return __thread.machine.terminalPipes
-				.mleWrite(fd, buf.array(), off, len);
+			try
+			{
+				if (!(__args[1] instanceof SpringArrayObjectByte))
+					throw new SpringMLECallError("Not a byte array.");
+				
+				int fd = (int)__args[0];
+				SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
+				int off = (int)__args[2];
+				int len = (int)__args[3];
+				
+				return __thread.machine.terminalPipes
+					.mleWrite(fd, buf.array(), off, len);
+			}
+			catch (MLECallWouldFail e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
 		}
 	},
 	
