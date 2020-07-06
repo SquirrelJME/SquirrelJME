@@ -9,11 +9,14 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import cc.squirreljme.jvm.mle.AtomicShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
+import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 
 /**
  * This is a wrapper around
@@ -48,15 +51,20 @@ public final class TaskInputStream
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws InterruptedIOException If the thread is interrupted during a
+	 * missed read.
 	 * @since 2020/07/02
 	 */
-	@SuppressWarnings("MagicNumber")
+	@SuppressWarnings({"MagicNumber", "DuplicateThrows"})
 	@Override
 	public int read()
-		throws IOException
+		throws InterruptedIOException, IOException
 	{
-		// There is only the bulk read operation
-		for (byte[] buf = new byte[1];;)
+		byte[] buf = new byte[1];
+		Thread self = Thread.currentThread();
+		
+		// There is only the bulk read operation, so we must wrap that
+		for (int spin = 0;; spin++)
 		{
 			int rc = TaskShelf.read(this.task, this.fd, buf, 0, 1);
 			
@@ -70,7 +78,25 @@ public final class TaskInputStream
 			
 			// Missed data
 			else if (rc == 0)
+			{
+				// Allow the current thread to be interrupted during this
+				// to prevent it from blocking forever
+				if (self.isInterrupted())
+				{
+					// Clear interrupt status
+					ThreadShelf.javaThreadClearInterrupt(self);
+					
+					// {@squirreljme.error ZZ4f Interrupt during single byte
+					// task input read.}
+					throw new InterruptedIOException("ZZ4f");
+				} 
+				
+				// Spin lock, which potentially may yield
+				AtomicShelf.spinLock(spin);
+				
+				// Try again
 				continue;
+			}
 			
 			// Return the read byte
 			return buf[0] & 0xFF;
