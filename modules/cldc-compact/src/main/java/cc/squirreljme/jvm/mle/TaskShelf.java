@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
@@ -95,8 +96,8 @@ public final class TaskShelf
 	 * @param __b The buffer to read into.
 	 * @param __o The offset.
 	 * @param __l The length.
-	 * @return A negative value on EOF, otherwise the number of bytes in the
-	 * buffer.
+	 * @return One of {@link PipeErrorType} or the number of bytes which were
+	 * read.
 	 * @throws MLECallError If the task does not use buffering for the given
 	 * descriptor, {@code __fd} is not valid, or the offset and/or length
 	 * are negative or exceed the array bounds.
