@@ -11,10 +11,12 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
@@ -36,6 +38,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2018/07/29
  */
+@SuppressWarnings("OverlyCoupledClass")
 public final class SpringMachine
 	implements Runnable, VirtualMachine
 {
@@ -67,6 +70,9 @@ public final class SpringMachine
 	
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
+	
+	/** The terminal pipe manager. */
+	protected final TerminalPipeManager terminalPipes;
 	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
@@ -103,6 +109,9 @@ public final class SpringMachine
 	/** Exit code of the VM. */
 	volatile int _exitcode;
 	
+	/** The stored call trace. */
+	private CallTraceStorage _storedTrace;
+	
 	/**
 	 * Initializes the virtual machine.
 	 *
@@ -113,14 +122,16 @@ public final class SpringMachine
 	 * @param __profiler The profiler to use.
 	 * @param __sprops System properties.
 	 * @param __gs Global system state.
+	 * @param __pipes The terminal pipe manager, may be {@code null} in which
+	 * case it is initialized for the caller.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, String __bootcl,
-		ProfilerSnapshot __profiler, Map<String, String> __sprops,
-		GlobalState __gs, String... __args)
+		SpringTaskManager __tm, String __bootcl, ProfilerSnapshot __profiler,
+		Map<String, String> __sprops, GlobalState __gs,
+		TerminalPipeManager __pipes, String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null)
@@ -136,6 +147,10 @@ public final class SpringMachine
 			new ProfilerSnapshot());
 		this._sysproperties = (__sprops == null ?
 			new HashMap<String, String>() : new HashMap<>(__sprops));
+		
+		// Setup terminal pipes
+		this.terminalPipes = (__pipes == null ? new TerminalPipeManager() :
+			__pipes);
 		
 		// Setup resource accessor
 		this.resourceaccessor = new VMResourceAccess(__sm);
@@ -480,6 +495,26 @@ public final class SpringMachine
 	{
 		// The act of getting all threads will clear out terminated threads
 		this.getThreads();
+	}
+	
+	/**
+	 * Stores the call trace for this given machine/task.
+	 * 
+	 * @param __message The message to use.
+	 * @param __trace The trace to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/07/06
+	 */
+	public void storeTrace(String __message, CallTraceElement... __trace)
+		throws NullPointerException
+	{
+		if (__message == null || __trace == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this._storedTrace = new CallTraceStorage(__message, __trace); 
+		}
 	}
 	
 	/**

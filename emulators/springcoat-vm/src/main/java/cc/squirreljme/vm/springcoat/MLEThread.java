@@ -10,7 +10,10 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
@@ -276,7 +279,40 @@ public enum MLEThread
 			
 			return null;
 		}
-	}, 
+	},
+	
+	/** {@link ThreadShelf#setTrace(String, TracePointBracket[])}. */ 
+	SET_TRACE("setTrace:(Ljava/lang/String;[Lcc/squirreljme/" +
+		"jvm/mle/brackets/TracePointBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/06
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (!(__args[1] instanceof SpringArrayObjectGeneric))
+				throw new MLECallError("Wrong trace array type.");
+			SpringObject[] gen = ((SpringArrayObjectGeneric)__args[1]).array();
+			
+			// Get the message used
+			String message = __thread.<String>asNativeObject(String.class,
+				__args[0]);
+			if (message == null)
+				throw new MLECallError("No message set.");
+			
+			// Map trace points to the call trace for future get
+			int n = gen.length;
+			CallTraceElement[] trace = new CallTraceElement[n];
+			for (int i = 0; i < n; i++)
+				trace[i] = MLEDebug.__trace(gen[i]).getTrace();
+			
+			// Store the call trace for other tasks to get
+			__thread.machine.storeTrace(message, trace);
+			return null;
+		}
+	},
 	
 	/** {@link ThreadShelf#sleep(int, int)}. */
 	SLEEP("sleep:(II)Z")

@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
-import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayOutputStream;
@@ -53,6 +52,23 @@ public enum MLEJarPackage
 			return __thread.asVMObjectArray(__thread.resolveClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"),
 				rv);
+		}
+	},
+	
+	/** {@link JarPackageShelf#equals(JarPackageBracket, JarPackageBracket)}.*/ 
+	EQUALS("equals(Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;)Z]")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/06
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MLEJarPackage.__jarObject(__args[0]).library() ==
+				MLEJarPackage.__jarObject(__args[1]).library();
 		}
 	},
 	
