@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.terminal;
 
+import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -79,7 +80,7 @@ public final class RealTerminalPipe
 		synchronized (this)
 		{
 			if (this._closed)
-				throw new MLECallError("Real pipe closed.");
+				throw new IOException("Real pipe closed.");
 			
 			this.out.flush();
 		}
@@ -91,9 +92,9 @@ public final class RealTerminalPipe
 	 */
 	@Override
 	public final int read(byte[] __b, int __o, int __l)
-		throws MLECallError
+		throws MLECallWouldFail
 	{
-		throw new MLECallError("Cannot read a real pipe.");
+		throw new MLECallWouldFail("Cannot read a real pipe.");
 	}
 	
 	/**
@@ -119,10 +120,10 @@ public final class RealTerminalPipe
 	 */
 	@Override
 	public final void write(byte[] __b, int __o, int __l)
-		throws IOException, MLECallError
+		throws IOException, MLECallWouldFail
 	{
 		if (__b == null || __o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new MLECallError("Null or out of bounds argument.");
+			throw new MLECallWouldFail("Null or out of bounds argument.");
 		
 		synchronized (this)
 		{

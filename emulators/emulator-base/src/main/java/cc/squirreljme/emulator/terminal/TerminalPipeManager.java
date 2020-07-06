@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.terminal;
 
+import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
@@ -63,15 +64,15 @@ public final class TerminalPipeManager
 	 * 
 	 * @param __fd As called.
 	 * @return As called.
-	 * @throws MLECallError As called.
+	 * @throws MLECallWouldFail As called.
 	 * @since 2020/07/06
 	 */
 	public final int mleClose(int __fd)
-		throws MLECallError
+		throws MLECallWouldFail
 	{
 		try
 		{
-			this.get(__fd).close();
+			this.mleGet(__fd).close();
 			
 			return PipeErrorType.NO_ERROR;
 		}
@@ -86,22 +87,43 @@ public final class TerminalPipeManager
 	 * 
 	 * @param __fd As called.
 	 * @return As called.
-	 * @throws MLECallError As called.
+	 * @throws MLECallWouldFail As called.
 	 * @since 2020/07/06
 	 */
 	@SuppressWarnings("resource")
 	public final int mleFlush(int __fd)
-		throws MLECallError
+		throws MLECallWouldFail
 	{
 		try
 		{
-			this.get(__fd).flush();
+			this.mleGet(__fd).flush();
 			
 			return PipeErrorType.NO_ERROR;
 		}
 		catch (IOException e)
 		{
 			return PipeErrorType.IO_EXCEPTION;
+		}
+	}
+	
+	/**
+	 * Gets the given file descriptor.
+	 * 
+	 * @param __fd The file descriptor.
+	 * @return The resultant pipe.
+	 * @throws MLECallWouldFail If the file descriptor is not set/valid.
+	 * @since 2020/07/06
+	 */
+	public final TerminalPipe mleGet(int __fd)
+		throws MLECallWouldFail
+	{
+		try
+		{
+			return this.get(__fd);
+		}
+		catch (NoSuchElementException e)
+		{
+			throw new MLECallWouldFail("Not a valid FD: " + __fd, e);
 		}
 	}
 	
@@ -113,16 +135,16 @@ public final class TerminalPipeManager
 	 * @param __o As called.
 	 * @param __l As called.
 	 * @return As called.
-	 * @throws MLECallError As called.
+	 * @throws MLECallWouldFail As called.
 	 * @since 2020/07/06
 	 */
 	@SuppressWarnings("resource")
 	public final int mleRead(int __fd, byte[] __b, int __o, int __l)
-		throws MLECallError
+		throws MLECallWouldFail
 	{
 		try
 		{
-			return this.get(__fd).read(__b, __o, __l);
+			return this.mleGet(__fd).read(__b, __o, __l);
 		}
 		catch (IOException e)
 		{
@@ -136,16 +158,16 @@ public final class TerminalPipeManager
 	 * @param __fd As called.
 	 * @param __b As called.
 	 * @return As called.
-	 * @throws MLECallError As called.
+	 * @throws MLECallWouldFail As called.
 	 * @since 2020/07/06
 	 */
 	@SuppressWarnings("resource")
 	public final int mleWrite(int __fd, int __b)
-		throws MLECallError
+		throws MLECallWouldFail
 	{
 		try
 		{
-			this.get(__fd).write(__b);
+			this.mleGet(__fd).write(__b);
 			
 			return 1;
 		}
@@ -163,16 +185,16 @@ public final class TerminalPipeManager
 	 * @param __o As called.
 	 * @param __l As called.
 	 * @return As called.
-	 * @throws MLECallError As called.
+	 * @throws MLECallWouldFail As called.
 	 * @since 2020/07/06
 	 */
 	@SuppressWarnings("resource")
 	public final int mleWrite(int __fd, byte[] __b, int __o, int __l)
-		throws MLECallError
+		throws MLECallWouldFail
 	{
 		try
 		{
-			this.get(__fd).write(__b, __o, __l);
+			this.mleGet(__fd).write(__b, __o, __l);
 			
 			return __l;
 		}

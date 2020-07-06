@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.terminal;
 
+import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.io.IOException;
 import net.multiphasicapps.io.ByteDeque;
@@ -64,10 +65,10 @@ public final class BufferTerminalPipe
 	 */
 	@Override
 	public final int read(byte[] __b, int __o, int __l)
-		throws MLECallError
+		throws MLECallWouldFail
 	{
 		if (__b == null || __o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new MLECallError("Null or out of bounds argument.");
+			throw new MLECallWouldFail("Null or out of bounds argument.");
 		
 		synchronized (this)
 		{
@@ -103,10 +104,10 @@ public final class BufferTerminalPipe
 	 */
 	@Override
 	public final void write(byte[] __b, int __o, int __l)
-		throws IOException, MLECallError
+		throws IOException, MLECallWouldFail
 	{
 		if (__b == null || __o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new MLECallError("Null or out of bounds argument.");
+			throw new MLECallWouldFail("Null or out of bounds argument.");
 		
 		synchronized (this)
 		{

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.emulator.terminal;
 
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.emulator.MLECallWouldFail;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -24,7 +24,7 @@ public interface TerminalPipe
 	/**
 	 * Closes the output.
 	 * 
-	 * @throws MLECallError On close errors.
+	 * @throws IOException On close errors.
 	 * @since 2020/07/06
 	 */
 	@Override
@@ -46,12 +46,12 @@ public interface TerminalPipe
 	 * @param __l The length.
 	 * @return The number of read bytes or a negative value on EOF.
 	 * @throws IOException On read errors.
-	 * @throws MLECallError If the offset and/or length are
+	 * @throws MLECallWouldFail If the offset and/or length are
 	 * negative or exceed the array bounds or on null arguments.
 	 * @since 2020/07/06
 	 */
 	int read(byte[] __b, int __o, int __l)
-		throws IOException, MLECallError;
+		throws IOException, MLECallWouldFail;
 	
 	/**
 	 * Writes a single byte.
@@ -70,10 +70,10 @@ public interface TerminalPipe
 	 * @param __o The offset into the buffer.
 	 * @param __l The length.
 	 * @throws IOException On write errors.
-	 * @throws MLECallError If the offset and/or length are
+	 * @throws MLECallWouldFail If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @since 2020/07/06
 	 */
 	void write(byte[] __b, int __o, int __l)
-		throws IOException, MLECallError;
+		throws IOException, MLECallWouldFail;
 }
