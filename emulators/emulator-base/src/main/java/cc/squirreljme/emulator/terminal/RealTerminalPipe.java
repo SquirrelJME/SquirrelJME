@@ -79,7 +79,7 @@ public final class RealTerminalPipe
 		synchronized (this)
 		{
 			if (this._closed)
-				throw new MLECallError("Discard pipe closed.");
+				throw new MLECallError("Real pipe closed.");
 			
 			this.out.flush();
 		}
@@ -127,7 +127,7 @@ public final class RealTerminalPipe
 		synchronized (this)
 		{
 			if (this._closed)
-				throw new IOException("Discard pipe closed.");
+				throw new IOException("Real pipe closed.");
 			
 			this.out.write(__b, __o, __l);
 		}

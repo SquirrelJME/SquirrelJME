@@ -16,6 +16,10 @@ package cc.squirreljme.jvm.mle.constants;
  */
 public interface StandardPipeType
 {
+	/** Standard input. */
+	byte STDIN =
+		0;
+	
 	/** Standard output. */
 	byte STDOUT =
 		1;
