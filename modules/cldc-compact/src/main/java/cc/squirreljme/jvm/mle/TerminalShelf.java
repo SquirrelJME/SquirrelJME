@@ -32,10 +32,11 @@ public final class TerminalShelf
 	 * Closes the output of the current process.
 	 * 
 	 * @param __fd The {@link StandardPipeType} to close.
+	 * @return A negative value on any kind of error.
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/07/02
 	 */
-	public static native void close(int __fd)
+	public static native int close(int __fd)
 		throws MLECallError;
 	
 	/**

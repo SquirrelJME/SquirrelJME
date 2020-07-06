@@ -91,6 +91,19 @@ public final class ConsoleOutputStream
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/06/15
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		// {@squirreljme.error ZZ3y Could not close the terminal output.}
+		if (TerminalShelf.close(this.fd) < 0)
+			throw new IOException("ZZ3y");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
 	@Override
