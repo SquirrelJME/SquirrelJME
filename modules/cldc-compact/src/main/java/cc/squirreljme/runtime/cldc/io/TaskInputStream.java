@@ -11,6 +11,8 @@ package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -51,6 +53,7 @@ public final class TaskInputStream
 	@SuppressWarnings("MagicNumber")
 	@Override
 	public int read()
+		throws IOException
 	{
 		// There is only the bulk read operation
 		for (byte[] buf = new byte[1];;)
@@ -58,8 +61,12 @@ public final class TaskInputStream
 			int rc = TaskShelf.read(this.task, this.fd, buf, 0, 1);
 			
 			// EOF?
-			if (rc < 0)
+			if (rc == PipeErrorType.END_OF_FILE)
 				return -1;
+			
+			// {@squirreljme.error ZZ45 I/O Error. (The error)}
+			else if (rc < 0)
+				throw new IOException("ZZ45 " + rc);
 			
 			// Missed data
 			else if (rc == 0)
@@ -76,12 +83,19 @@ public final class TaskInputStream
 	 */
 	@Override
 	public int read(byte[] __b)
+		throws IOException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
 		// Forward into
-		return TaskShelf.read(this.task, this.fd, __b, 0, __b.length);
+		int rv = TaskShelf.read(this.task, this.fd, __b, 0, __b.length);
+		
+		// {@squirreljme.error ZZ4c I/O Exception. (The error)} 
+		if (rv < 0 && rv != PipeErrorType.END_OF_FILE)
+			throw new IOException("ZZ4c " + rv);
+		
+		return rv;
 	}
 	
 	/**
@@ -90,6 +104,7 @@ public final class TaskInputStream
 	 */
 	@Override
 	public int read(byte[] __b, int __o, int __l)
+		throws IOException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
@@ -97,6 +112,12 @@ public final class TaskInputStream
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Forward into
-		return TaskShelf.read(this.task, this.fd, __b, __o, __l);
+		int rv = TaskShelf.read(this.task, this.fd, __b, __o, __l);
+		
+		// {@squirreljme.error ZZ4e I/O Exception. (The error)} 
+		if (rv < 0 && rv != PipeErrorType.END_OF_FILE)
+			throw new IOException("ZZ4e " + rv);
+		
+		return rv;
 	}
 }

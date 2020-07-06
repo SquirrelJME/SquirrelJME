@@ -9,12 +9,21 @@
 
 package cc.squirreljme.emulator.terminal;
 
+import cc.squirreljme.jvm.mle.TaskShelf;
+import cc.squirreljme.jvm.mle.TerminalShelf;
+import cc.squirreljme.jvm.mle.brackets.TaskBracket;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.NoSuchElementException;
 
 /**
- * This manages the terminal pipe.
+ * This manages the terminal pipes that are available.
+ * 
+ * There are also helper methods for MLE calls that are mappable to
+ * {@link TerminalShelf} and {@link TaskShelf}.
  *
  * @since 2020/07/06
  */
@@ -46,6 +55,130 @@ public final class TerminalPipeManager
 				throw new NoSuchElementException("No such pipe at: " + __fd);
 			
 			return rv;
+		}
+	}
+	
+	/**
+	 * As {@link TerminalShelf#close(int)}. 
+	 * 
+	 * @param __fd As called.
+	 * @return As called.
+	 * @throws MLECallError As called.
+	 * @since 2020/07/06
+	 */
+	public final int mleClose(int __fd)
+		throws MLECallError
+	{
+		try
+		{
+			this.get(__fd).close();
+			
+			return PipeErrorType.NO_ERROR;
+		}
+		catch (IOException e)
+		{
+			return PipeErrorType.IO_EXCEPTION;
+		}
+	}
+	
+	/**
+	 * As {@link TerminalShelf#flush(int)}
+	 * 
+	 * @param __fd As called.
+	 * @return As called.
+	 * @throws MLECallError As called.
+	 * @since 2020/07/06
+	 */
+	@SuppressWarnings("resource")
+	public final int mleFlush(int __fd)
+		throws MLECallError
+	{
+		try
+		{
+			this.get(__fd).flush();
+			
+			return PipeErrorType.NO_ERROR;
+		}
+		catch (IOException e)
+		{
+			return PipeErrorType.IO_EXCEPTION;
+		}
+	}
+	
+	/**
+	 * As {@link TaskShelf#read(TaskBracket, int, byte[], int, int)}. 
+	 * 
+	 * @param __fd As called.
+	 * @param __b As called.
+	 * @param __o As called.
+	 * @param __l As called.
+	 * @return As called.
+	 * @throws MLECallError As called.
+	 * @since 2020/07/06
+	 */
+	@SuppressWarnings("resource")
+	public final int mleRead(int __fd, byte[] __b, int __o, int __l)
+		throws MLECallError
+	{
+		try
+		{
+			return this.get(__fd).read(__b, __o, __l);
+		}
+		catch (IOException e)
+		{
+			return PipeErrorType.IO_EXCEPTION;
+		} 
+	}
+	
+	/**
+	 * As {@link TerminalShelf#write(int, int)}. 
+	 * 
+	 * @param __fd As called.
+	 * @param __b As called.
+	 * @return As called.
+	 * @throws MLECallError As called.
+	 * @since 2020/07/06
+	 */
+	@SuppressWarnings("resource")
+	public final int mleWrite(int __fd, int __b)
+		throws MLECallError
+	{
+		try
+		{
+			this.get(__fd).write(__b);
+			
+			return 1;
+		}
+		catch (IOException e)
+		{
+			return PipeErrorType.IO_EXCEPTION;
+		}
+	}
+	
+	/**
+	 * As {@link TerminalShelf#write(int, byte[], int, int)}. 
+	 * 
+	 * @param __fd As called.
+	 * @param __b As called.
+	 * @param __o As called.
+	 * @param __l As called.
+	 * @return As called.
+	 * @throws MLECallError As called.
+	 * @since 2020/07/06
+	 */
+	@SuppressWarnings("resource")
+	public final int mleWrite(int __fd, byte[] __b, int __o, int __l)
+		throws MLECallError
+	{
+		try
+		{
+			this.get(__fd).write(__b, __o, __l);
+			
+			return __l;
+		}
+		catch (IOException e)
+		{
+			return PipeErrorType.IO_EXCEPTION;
 		}
 	}
 	
