@@ -293,14 +293,14 @@ public enum MLEThread
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			if (!(__args[1] instanceof SpringArrayObjectGeneric))
-				throw new MLECallError("Wrong trace array type.");
+				throw new SpringMLECallError("Wrong trace array type.");
 			SpringObject[] gen = ((SpringArrayObjectGeneric)__args[1]).array();
 			
 			// Get the message used
 			String message = __thread.<String>asNativeObject(String.class,
 				__args[0]);
 			if (message == null)
-				throw new MLECallError("No message set.");
+				throw new SpringMLECallError("No message set.");
 			
 			// Map trace points to the call trace for future get
 			int n = gen.length;

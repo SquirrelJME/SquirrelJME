@@ -56,9 +56,9 @@ public enum MLEJarPackage
 	},
 	
 	/** {@link JarPackageShelf#equals(JarPackageBracket, JarPackageBracket)}.*/ 
-	EQUALS("equals(Lcc/squirreljme/jvm/mle/brackets/" +
+	EQUALS("equals:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"JarPackageBracket;Lcc/squirreljme/jvm/mle/brackets/" +
-		"JarPackageBracket;)Z]")
+		"JarPackageBracket;)Z")
 	{
 		/**
 		 * {@inheritDoc}
