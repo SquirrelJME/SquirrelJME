@@ -1,0 +1,8 @@
+# 2020/07/06
+
+## 10:44
+
+Took a break over the weekend for my birthday (which is today), was working on retro systems and I needed a programming break. So I put down some base classes
+for the terminal stuff since it is going to be shared more and there are now
+more types of outputs that a task can have (discard, buffered, and terminal).
+The output stuff is much better than how I had it before I believe.
