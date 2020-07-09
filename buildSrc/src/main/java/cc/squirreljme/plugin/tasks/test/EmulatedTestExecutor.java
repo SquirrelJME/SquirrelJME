@@ -295,7 +295,7 @@ public final class EmulatedTestExecutor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/06
 	 */
-	@SuppressWarnings({"FeatureEnvy", "MagicNumber"})
+	@SuppressWarnings({"FeatureEnvy"})
 	private boolean __executeClasses(EmulatedTestExecutionSpec __spec,
 		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite,
 		Iterable<String> __classes)
@@ -322,6 +322,7 @@ public final class EmulatedTestExecutor
 			}
 			
 			// Execute the test
+			System.err.printf("Running test %s...%n", testClass);
 			EmulatedTestResult result = this.__executeClass(
 				__spec, __suite, testClass);
 			
