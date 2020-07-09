@@ -52,7 +52,8 @@ public final class TerminalPipeManager
 			for (TerminalPipe pipe : this._pipes)
 				try
 				{
-					pipe.close();
+					if (pipe != null)
+						pipe.close();
 				}
 				catch (IOException e)
 				{
