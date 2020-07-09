@@ -10,7 +10,7 @@
 package cc.squirreljme.emulator.terminal;
 
 import cc.squirreljme.emulator.MLECallWouldFail;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.io.ByteDeque;
 
@@ -72,7 +72,7 @@ public final class BufferTerminalPipe
 		
 		synchronized (this)
 		{
-			int rv = this.deque.getFirst(__b, __o, __l);
+			int rv = this.deque.removeFirst(__b, __o, __l);
 			
 			// Check if a full end of file has been reached
 			if (rv == 0 && this._closed && this.deque.isEmpty())

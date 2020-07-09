@@ -179,7 +179,11 @@ public final class TerminalPipeManager
 	{
 		try
 		{
-			return this.mleGet(__fd).read(__b, __o, __l);
+			int rv = this.mleGet(__fd).read(__b, __o, __l);
+			
+			if (rv < 0)
+				return PipeErrorType.END_OF_FILE;
+			return rv;
 		}
 		catch (IOException e)
 		{
