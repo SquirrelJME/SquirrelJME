@@ -11,9 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.TerminalShelf;
-import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
-import java.io.OutputStream;
 
 /**
  * Functions for {@link MLETerminal}.
@@ -153,26 +151,5 @@ public enum MLETerminal
 	public String key()
 	{
 		return this.key;
-	}
-	
-	/**
-	 * Returns the output stream for the given descriptor.
-	 *
-	 * @param __fd The file descriptor.
-	 * @return The output stream for it.
-	 * @throws SpringMLECallError If the descriptor is not valid.
-	 * @since 2020/06/13
-	 */
-	static OutputStream __fdOutput(int __fd)
-		throws SpringMLECallError
-	{
-		switch (__fd)
-		{
-			case StandardPipeType.STDOUT:	return System.out;
-			case StandardPipeType.STDERR:	return System.err;
-			
-			default:
-				throw new SpringMLECallError("Unknown FD: " + __fd);
-		}
 	}
 }
