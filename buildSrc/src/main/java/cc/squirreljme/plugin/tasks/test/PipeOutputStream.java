@@ -151,6 +151,10 @@ public class PipeOutputStream
 		this.result.addLine(new ConsoleLine(this.stdErr,
 			System.currentTimeMillis(), buffer.toString()));
 		
+		// Debug it
+		System.err.printf("STD%s: %s%n",
+			(this.stdErr ? "ERR" : "OUT"), buffer);
+		
 		// Clear the buffer
 		buffer.setLength(0);
 		
