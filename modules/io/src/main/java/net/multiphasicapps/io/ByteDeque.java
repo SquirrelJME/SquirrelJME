@@ -479,21 +479,22 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// {@squirreljme.error BD29 The requested address is outside of
-		// the bounds of the queue. (The requested address; The number of
-		// bytes in the queue)}
-		int total = this._total;
-		if (__a < 0 || __a >= total)
-			throw new IndexOutOfBoundsException(String.format("BD29 %d %d",
-				__a, total));
-		
 		// If there are no bytes, all reads do nothing
+		int total = this._total;
 		if (total <= 0)
 			return 0;
 		
+		// {@squirreljme.error BD29 The requested address is outside of
+		// the bounds of the queue. (The requested address; The number of
+		// bytes in the queue)}
+		if (__a >= total)
+			throw new IndexOutOfBoundsException(String.format("BD29 %d %d",
+				__a, total));
+		
 		// If the address is within the starting half then seek from the
 		// start, otherwise start from the trailing end
-		return this.__getOrSetVia((__a < (total >> 1)), __a, __b, __o, __l, false);
+		return this.__getOrSetVia((__a < (total >> 1)),
+			__a, __b, __o, __l, false);
 	}
 	
 	/**
