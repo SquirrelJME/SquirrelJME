@@ -27,7 +27,7 @@ public class TestTaskBufferRead
 {
 	/** When to give up, in milliseconds. */
 	public static final long GIVE_UP_DELAY =
-		20_000_000L;
+		20_000L;
 	
 	/**
 	 * {@inheritDoc}
