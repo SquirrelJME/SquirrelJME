@@ -7,49 +7,46 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.brackets;
 
-import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 
 /**
- * Storage for call traces.
+ * Represents a task object.
  *
- * @since 2020/07/06
+ * @since 2020/07/08
  */
-public final class CallTraceStorage
+public final class TaskObject
+	extends AbstractGhostObject
 {
-	/** The message. */
-	public final String message;
-	
-	/** The trace. */
-	private final CallTraceElement[] _trace;
+	/** The machine. */
+	protected final SpringMachine machine;
 	
 	/**
-	 * Initializes the call trace storage.
+	 * Initializes the task reference.
 	 * 
-	 * @param __message The message.
-	 * @param __trace The trace.
+	 * @param __machine The machine to use.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/07/06
+	 * @since 2020/07/08
 	 */
-	public CallTraceStorage(String __message, CallTraceElement... __trace)
+	public TaskObject(SpringMachine __machine)
 		throws NullPointerException
 	{
-		if (__message == null || __trace == null)
+		if (__machine == null)
 			throw new NullPointerException("NARG");
 		
-		this.message = __message;
-		this._trace = __trace.clone();
+		this.machine = __machine;
 	}
 	
 	/**
-	 * Returns the stored call trace.
+	 * Returns the machine.
 	 * 
-	 * @return The traces.
+	 * @return The machine.
 	 * @since 2020/07/08
 	 */
-	public final CallTraceElement[] trace()
+	public final SpringMachine getMachine()
 	{
-		return this._trace.clone();
+		return this.machine;
 	}
 }
