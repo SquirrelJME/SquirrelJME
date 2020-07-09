@@ -60,6 +60,9 @@ More detailed changes:
      * Made the system properties array `final`.
    * `jblend-api`
      * Added API Stubs.
+   * `io`
+     * Fixed bug in `ByteDeque` if an attempt was made to read from an
+       empty deque.
    * `launcher`
      * Added the system property `cc.squirreljme.autolaunch` to automatically
        launch a program once the program list is read.
@@ -68,7 +71,6 @@ More detailed changes:
    * `media-api`
      * Add null media support for: players, and volume control.
    * `meep-midlet`
-     * Allow a multi-threaded
      * Handle Konami's Mobile US games using a special system request.
      * Implement `MIDlet.checkPermission()`.
    * `meep-rms`
@@ -113,7 +115,7 @@ More detailed changes:
      * Override standard output and forward to standard error while a test is
        running, so things are not kludged.
    * `tac-runner`
-     * Deleted.
+     * Deleted as it is no longer needed.
    * `tool-classfile`
      * Corrected comparison behavior of `FieldReference`, it did not check the
        class name, so if a class referred to a field of the same name when
