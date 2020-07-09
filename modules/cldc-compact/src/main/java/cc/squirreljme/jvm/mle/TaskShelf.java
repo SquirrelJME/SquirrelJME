@@ -36,6 +36,14 @@ public final class TaskShelf
 	}
 	
 	/**
+	 * Returns the tasks which are active.
+	 * 
+	 * @return The active tasks.
+	 * @since 2020/07/09
+	 */
+	public static native TaskBracket[] active();
+	
+	/**
 	 * Returns the current task.
 	 * 
 	 * @return The current task.
