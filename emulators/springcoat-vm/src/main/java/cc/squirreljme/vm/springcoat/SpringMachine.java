@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -251,6 +252,19 @@ public final class SpringMachine
 			// Set as exiting
 			this._exitcode = __code;
 			this._exiting = true;
+			
+			// Close all the pipes on exit because otherwise any calling tasks
+			// will never be able to finish reading these pipes ever until
+			// the process completes
+			try
+			{
+				this.terminalPipes.closeAll();
+			}
+			catch (IOException e)
+			{
+				throw new SpringVirtualMachineException(
+					"Could not close pipes.", e);
+			}
 		}
 	}
 	

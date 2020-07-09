@@ -35,6 +35,40 @@ public final class TerminalPipeManager
 		new TerminalPipe[StandardPipeType.NUM_STANDARD_PIPES];
 	
 	/**
+	 * Closes all of the pipes.
+	 * 
+	 * @throws IOException If there were pipe closures.
+	 * @since 2020/07/09
+	 */
+	public void closeAll()
+		throws IOException
+	{
+		// Exceptions might be deferred
+		IOException defer = null;
+		
+		synchronized (this)
+		{
+			// Close every single pipe
+			for (TerminalPipe pipe : this._pipes)
+				try
+				{
+					pipe.close();
+				}
+				catch (IOException e)
+				{
+					if (defer == null)
+						defer = new IOException("Pipe close exception.");
+					
+					defer.addSuppressed(e);
+				}
+		}
+		
+		// If we deferred close exceptions, then report it
+		if (defer != null)
+			throw defer;
+	}
+	
+	/**
 	 * Gets the pipe for the descriptor.
 	 * 
 	 * @param __fd The file descriptor to get.
