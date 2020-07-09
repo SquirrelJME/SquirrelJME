@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
@@ -47,9 +48,10 @@ public class SpringCoatFactory
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Create a new instance of the VM
-		SpringTaskManager tm = new SpringTaskManager(__sm, __ps, __sprops);
-		return new SpringMachine(__sm, new SpringClassLoader(__cp),
-			tm, __maincl, __ps, __sprops, tm.globalState, null, __args);
+		SpringTaskManager tm = new SpringTaskManager(__sm, __ps);
+		return tm.startTask(__cp, __maincl, __args, __sprops,
+			TaskPipeRedirectType.TERMINAL, TaskPipeRedirectType.TERMINAL,
+			false);
 	}
 }
 

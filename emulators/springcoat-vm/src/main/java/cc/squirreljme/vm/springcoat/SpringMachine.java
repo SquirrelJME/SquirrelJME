@@ -135,7 +135,7 @@ public final class SpringMachine
 		TerminalPipeManager __pipes, String... __args)
 		throws NullPointerException
 	{
-		if (__cl == null || __sm == null)
+		if (__cl == null || __sm == null || __pipes == null)
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
@@ -143,24 +143,12 @@ public final class SpringMachine
 		this.tasks = __tm;
 		this.bootClass = __bootcl;
 		this.globalState = __gs;
+		this.terminalPipes = __pipes;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
 			new ProfilerSnapshot());
 		this._sysproperties = (__sprops == null ?
 			new HashMap<String, String>() : new HashMap<>(__sprops));
-		
-		// Setup terminal pipes, use a default if there is none
-		if (__pipes != null)
-			this.terminalPipes = __pipes;
-		else
-		{
-			TerminalPipeManager pipes = new TerminalPipeManager();
-			
-			pipes.registerTerminal(StandardPipeType.STDOUT, System.out);
-			pipes.registerTerminal(StandardPipeType.STDERR, System.err);
-			
-			this.terminalPipes = pipes;
-		}
 		
 		// Setup resource accessor
 		this.resourceaccessor = new VMResourceAccess(__sm);

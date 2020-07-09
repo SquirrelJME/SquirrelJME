@@ -15,21 +15,17 @@ package cc.squirreljme.vm.springcoat;
  *
  * @since 2018/11/04
  */
+@Deprecated
 public final class SpringTask
 	implements Runnable
 {
 	/** The machine for this task. */
+	@Deprecated
 	protected final SpringMachine machine;
 	
 	/** The ID. */
+	@Deprecated
 	protected final int tid;
-	
-	/** Exit code. */
-	volatile int _exitcode =
-		Integer.MIN_VALUE;
-	
-	/** Is this terminated? */
-	volatile boolean _isterminated;
 	
 	/**
 	 * Initializes the task.
@@ -39,6 +35,7 @@ public final class SpringTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
+	@Deprecated
 	public SpringTask(int __tid, SpringMachine __m)
 		throws NullPointerException
 	{
@@ -54,13 +51,11 @@ public final class SpringTask
 	 * @since 2018/11/04
 	 */
 	@Override
+	@Deprecated
 	public final void run()
 	{
-		this._exitcode = this.machine.runVm();
-		this._isterminated = true;
-		
-		// Debug
-		todo.DEBUG.note("Task is terminated!");
+		// Just straight run the VM
+		this.machine.runVm();
 	}
 }
 

@@ -15,7 +15,7 @@ import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.NoSuchElementException;
@@ -252,6 +252,49 @@ public final class TerminalPipeManager
 		throws IllegalArgumentException, IllegalStateException
 	{
 		this.register(__fd, new BufferTerminalPipe());
+	}
+	
+	/**
+	 * Registers the pipe by a default type.
+	 * 
+	 * Note that using {@link TaskPipeRedirectType#TERMINAL} will use the
+	 * standard input and output streams.
+	 * 
+	 * @param __fd The file descriptor, a {@link StandardPipeType}.
+	 * @param __type The {@link TaskPipeRedirectType}.
+	 * @throws IllegalArgumentException If {@code __type} is not valid or
+	 * if it is {@link TaskPipeRedirectType#TERMINAL} and is not one of
+	 * {@link StandardPipeType#STDOUT} or {@link StandardPipeType#STDERR}.
+	 * @since 2020/07/09
+	 */
+	public final void registerByType(int __fd, int __type)
+		throws IllegalArgumentException
+	{
+		switch (__type)
+		{
+			case TaskPipeRedirectType.DISCARD:
+				this.registerDiscard(__fd);
+				break;
+				
+			case TaskPipeRedirectType.BUFFER:
+				this.registerBuffer(__fd);
+				break;
+				
+			case TaskPipeRedirectType.TERMINAL:
+				boolean isStdOut = __fd == (StandardPipeType.STDOUT);
+				boolean isStdErr = __fd == (StandardPipeType.STDERR);
+				
+				if (!isStdOut && !isStdErr)
+					throw new IllegalArgumentException(
+						"Is neither stdOut or stdErr.");
+				
+				this.registerTerminal(__fd,
+					(isStdOut ? System.out : System.err));
+				break;
+			
+			default:
+				throw new IllegalArgumentException("Invalid type: " + __type);
+		}
 	}
 	
 	/**
