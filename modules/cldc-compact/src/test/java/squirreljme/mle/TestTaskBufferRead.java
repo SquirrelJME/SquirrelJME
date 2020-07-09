@@ -64,6 +64,10 @@ public class TestTaskBufferRead
 				if (ch < 0)
 					break;
 				
+				// Ignore CR and LF
+				if (ch == '\r' || ch == '\n')
+					continue;
+				
 				// Place in the string
 				result.append((char)ch); 
 			}
