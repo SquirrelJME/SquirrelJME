@@ -784,7 +784,8 @@ public final class SpringThreadWorker
 			// exception or otherwise might be signaled we must make an
 			// exception for exit here so it continues going down.
 			if (thread._signaledexit)
-				throw new SpringMachineExitException(this.machine._exitcode);
+				throw new SpringMachineExitException(
+					this.machine.getExitCode());
 			
 			// {@squirreljme.error BK23 Current frame is not our blank frame.}
 			throw new SpringVirtualMachineException("BK23");

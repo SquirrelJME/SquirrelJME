@@ -108,7 +108,7 @@ public final class SpringMachine
 	private volatile boolean _exiting;
 	
 	/** Exit code of the VM. */
-	volatile int _exitcode;
+	private int _exitcode;
 	
 	/** The stored call trace. */
 	private CallTraceStorage _storedTrace;
@@ -225,9 +225,8 @@ public final class SpringMachine
 	public final void exit(int __code)
 		throws SpringMachineExitException
 	{
-		// Set as exiting
-		this._exitcode = __code;
-		this._exiting = true;
+		// Should do the same thing
+		this.exitNoException(__code);
 		
 		// Now signal exit
 		throw new SpringMachineExitException(__code);
@@ -242,9 +241,12 @@ public final class SpringMachine
 	public final void exitCheck()
 		throws SpringMachineExitException
 	{
-		// Only if exiting
-		if (this._exiting)
-			throw new SpringMachineExitException(this._exitcode);
+		synchronized (this)
+		{
+			// Only if exiting
+			if (this._exiting)
+				throw new SpringMachineExitException(this._exitcode);
+		}
 	}
 	
 	/**
@@ -256,9 +258,26 @@ public final class SpringMachine
 	public final void exitNoException(int __code)
 		throws SpringMachineExitException
 	{
-		// Set as exiting
-		this._exitcode = __code;
-		this._exiting = true;
+		synchronized (this)
+		{
+			// Set as exiting
+			this._exitcode = __code;
+			this._exiting = true;
+		}
+	}
+	
+	/**
+	 * Returns the current exit code.
+	 * 
+	 * @return The current exit code.
+	 * @since 2020/07/08
+	 */
+	public int getExitCode()
+	{
+		synchronized (this)
+		{
+			return this._exitcode;
+		}
 	}
 	
 	/**
@@ -284,10 +303,9 @@ public final class SpringMachine
 	public final SpringThread getThread(int __id)
 		throws NoSuchElementException
 	{
-		List<SpringThread> threads = this._threads;
 		synchronized (this)
 		{
-			for (SpringThread t : threads)
+			for (SpringThread t : this.getThreads())
 				if (t.id == __id)
 					return t;
 		}
@@ -301,7 +319,6 @@ public final class SpringMachine
 	 * @return All of the current process threads.
 	 * @since 2020/06/17
 	 */
-	@SuppressWarnings("UnnecessaryLocalVariable")
 	public final SpringThread[] getThreads()
 	{
 		List<SpringThread> rv = new ArrayList<>();
@@ -328,10 +345,29 @@ public final class SpringMachine
 				else
 					rv.add(thread);
 			}
+			
+			// If there are no threads left and we are not yet exiting, exit
+			// this task so it finalizes and cleans accordingly
+			if (!this.isExiting() && threads.isEmpty())
+				this.exitNoException(this.getExitCode());
 		}
 		
 		// Use whatever was found
 		return rv.<SpringThread>toArray(new SpringThread[rv.size()]);
+	}
+	
+	/**
+	 * Returns the stack trace.
+	 * 
+	 * @return The trace.
+	 * @since 2020/07/08
+	 */
+	public final CallTraceStorage getTrace()
+	{
+		synchronized (this)
+		{
+			return this._storedTrace;
+		}
 	}
 	
 	/**
@@ -362,6 +398,20 @@ public final class SpringMachine
 				throw new SpringVirtualMachineException("BK19");
 			
 			return rv;
+		}
+	}
+	
+	/**
+	 * Returns if this task has exited.
+	 * 
+	 * @return If this task is exited.
+	 * @since 2020/07/08
+	 */
+	public final boolean isExiting()
+	{
+		synchronized (this)
+		{
+			return this._exiting;
 		}
 	}
 	
@@ -449,7 +499,7 @@ public final class SpringMachine
 			this.run();
 			
 			// Success, maybe
-			return this._exitcode;
+			return this.getExitCode();
 		}
 		
 		// Exit VM with given code
@@ -492,7 +542,10 @@ public final class SpringMachine
 	 */
 	public final void setExitCode(int __exitCode)
 	{
-		this._exitcode = __exitCode;
+		synchronized (this)
+		{
+			this._exitcode = __exitCode;
+		}
 	}
 	
 	/**
