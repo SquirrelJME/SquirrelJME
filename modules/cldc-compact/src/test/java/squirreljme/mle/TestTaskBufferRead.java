@@ -51,7 +51,6 @@ public class TestTaskBufferRead
 		try (TaskInputStream in = new TaskInputStream(task,
 			StandardPipeType.STDOUT))
 		{
-			byte[] buf = new byte[16];
 			for (long giveUp = System.currentTimeMillis() +
 				TestTaskBufferRead.GIVE_UP_DELAY;;)
 			{
