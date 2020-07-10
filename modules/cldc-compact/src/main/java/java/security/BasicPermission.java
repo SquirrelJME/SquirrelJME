@@ -10,9 +10,26 @@
 
 package java.security;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
+/**
+ * This class represents a basic permission and is the root of most
+ * permissions.
+ * 
+ * There may be a wildcard in the name (ending in an asterisk {@code '*'}),
+ * in which case the start of the permission string is compared while the
+ * other cases are all matches. Note that only a single trailing asterisk is
+ * valid and that only the start of the string is checked. Wildcards mean
+ * that {@code foo.*} implies {@code foo.bar}.
+ * 
+ * @since 2020/07/09
+ */
 public abstract class BasicPermission
 	extends Permission
 {
+	/** The index of the wildcard character, will be {@code < 0} if not. */
+	private final int _wildCardDx;
+	
 	/**
 	 * Initializes the basic permission.
 	 *
@@ -24,15 +41,7 @@ public abstract class BasicPermission
 	public BasicPermission(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__name);
-		
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error ZZ2b The name for basic permissions cannot
-		// be empty.}
-		if (__name.equals(""))
-			throw new IllegalArgumentException("ZZ0z");
+		this(__name, null);
 	}
 	
 	/**
@@ -44,40 +53,113 @@ public abstract class BasicPermission
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/09/18
 	 */
-	public BasicPermission(String __name, String __act)
+	public BasicPermission(String __name,
+		@SuppressWarnings("unused") String __act)
 		throws IllegalArgumentException, NullPointerException
 	{
-		this(__name);
+		super(__name);
+		
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ2b The name for basic permissions cannot
+		// be empty.}
+		if (__name.equals(""))
+			throw new IllegalArgumentException("ZZ0z");
+		
+		// Determine the index where the wildcard is
+		this._wildCardDx = __name.indexOf('*');
 	}
 	
+	/**
+	 * The {@link BasicPermission} implementation checks if {@code __o} is
+	 * the same exact class and that the name matches as well.
+	 * 
+	 * {@inheritDoc}
+	 * @since 2020/07/09
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Short circuit match?
+		if (this == __o)
+			return true;
+		
+		if (__o == null)
+			return false;
+		
+		// This is only valid
+		if (this.getClass() != __o.getClass())
+			return false;
+		
+		return this.getName().equals(((BasicPermission)__o).getName());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/08
+	 */
 	@Override
 	public String getActions()
 	{
-		throw new todo.TODO();
+		// BasicPermissions do not have any actions so this will always return
+		// a blank string as they are ignored
+		return "";
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/09
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		// This only uses the name as actions are ignored
+		return this.getName().hashCode();
 	}
 	
+	/**
+	 * Checks if the specified permission is implied by this one. It will be
+	 * implied if the class type is the same and there is a wildcard match
+	 * if they are being used (i.e. {@code foo.*} implies {@code foo.bar}).
+	 * 
+	 * {@inheritDoc}
+	 * @since 2020/07/09
+	 */
 	@Override
-	public boolean implies(Permission __a)
+	public boolean implies(Permission __o)
 	{
-		throw new todo.TODO();
+		// Short circuit match?
+		if (this.equals(__o))
+			return true;
+		
+		// Null permissions are never implied
+		if (__o == null)
+			return false;
+		
+		// The class type is not compatible.
+		if (this.getClass() != __o.getClass())
+			return false;
+		
+		// If the string is a complete match then we can just stop here
+		String self = this.getName();
+		String other = __o.getName();
+		if (self.equals(other))
+			return true;
+		
+		// Matching against a wildcard?
+		int wildCardDx = this._wildCardDx;
+		if (wildCardDx >= 0)
+			return self.regionMatches(0, other, 0, wildCardDx);
+		
+		// Does not imply
+		return false;
 	}
 	
 	@Override
 	public PermissionCollection newPermissionCollection()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

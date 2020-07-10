@@ -2,23 +2,19 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.ref;
+package cc.squirreljme.runtime.cldc.security;
 
 /**
- * This represents a primitive weak reference which should be garbage
- * collected when it does not point to anything.
+ * This class defines a single security policy that declares a specific
+ * permission and the access control for it.
  *
- * @since 2018/09/23
+ * @since 2020/07/09
  */
-@Deprecated
-public interface PrimitiveWeakReference
-	extends PrimitiveReference
+public final class SecurityPolicy
 {
 }
-
