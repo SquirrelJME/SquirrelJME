@@ -57,12 +57,6 @@ public final class RuntimePermission
 		throws IllegalArgumentException, NullPointerException
 	{
 		super(__name, __act);
-		
-		// {@squirreljme.error ZZ1i Runtime permission name cannot be empty.}
-		if (__name.isEmpty())
-			throw new IllegalArgumentException("ZZ1i");
-		
-		throw Debugging.todo();
 	}
 }
 
