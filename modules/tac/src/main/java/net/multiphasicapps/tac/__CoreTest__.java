@@ -68,6 +68,24 @@ abstract class __CoreTest__
 		// Always print the result
 		execution.print(System.err);
 		
+		// If running on Java SE, print the expected manifest
+		if (execution.status == TestStatus.FAILED)
+			if (RuntimeShelf.vmType() == VMType.JAVA_SE)
+			{
+				System.err.println("****************************************");
+				System.err.println("*** RESULTANT MANIFEST:");
+				
+				try
+				{
+					execution.result.writeAsManifest(System.err);
+				}
+				catch (IOException ignored)
+				{
+				}
+				
+				System.err.println("****************************************");
+			}
+		
 		// If the test did not pass, throw an exception
 		if (execution.status != TestStatus.SUCCESS)
 		{
@@ -192,7 +210,7 @@ abstract class __CoreTest__
 				TestStatus.FAILED);
 		
 		// Return the result
-		return new TestExecution(status, self, expected, result, thrown);
+		return new TestExecution(status, self, result, expected, thrown);
 	}
 	
 	/**

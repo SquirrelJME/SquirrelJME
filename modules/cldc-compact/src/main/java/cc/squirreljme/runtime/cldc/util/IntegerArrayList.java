@@ -13,15 +13,15 @@ import java.util.AbstractList;
 import java.util.List;
 
 /**
- * Provides a list view of a {@code long} array.
+ * Provides a list view of a {@code int} array.
  *
- * @since 2020/01/01
+ * @since 2020/07/11
  */
-public class LongArrayList
-	extends AbstractList<Long>
+public class IntegerArrayList
+	extends AbstractList<Integer>
 {
 	/** The backing array. */
-	protected final long[] array;
+	protected final int[] array;
 	
 	/** The offset. */
 	protected final int offset;
@@ -34,9 +34,9 @@ public class LongArrayList
 	 *
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/01/01
+	 * @since 2020/07/11
 	 */
-	public LongArrayList(long[] __a)
+	public IntegerArrayList(int[] __a)
 		throws NullPointerException
 	{
 		this(__a, 0, __a.length);
@@ -51,9 +51,9 @@ public class LongArrayList
 	 * @throws IndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/01/01
+	 * @since 2020/07/11
 	 */
-	public LongArrayList(long[] __a, int __o, int __l)
+	public IntegerArrayList(int[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__a == null)
@@ -68,10 +68,10 @@ public class LongArrayList
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/01/01
+	 * @since 2020/07/11
 	 */
 	@Override
-	public Long get(int __i)
+	public Integer get(int __i)
 	{
 		if (__i < 0 || __i >= this.size)
 			throw new IndexOutOfBoundsException("IOOB");
@@ -86,20 +86,20 @@ public class LongArrayList
 	 * @param __v The value to set.
 	 * @return The old value.
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
-	 * @since 2020/01/01
+	 * @since 2020/07/11
 	 */
-	public long set(int __i, long __v)
+	public int set(int __i, int __v)
 		throws IndexOutOfBoundsException
 	{
-		return this.set(__i, Long.valueOf(__v));
+		return this.set(__i, Integer.valueOf(__v));
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/01/01
+	 * @since 2020/07/11
 	 */
 	@Override
-	public Long set(int __i, Long __v)
+	public Integer set(int __i, Integer __v)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
@@ -108,14 +108,14 @@ public class LongArrayList
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// The true index to access
-		int truedx = this.offset + __i;
+		int trueDx = this.offset + __i;
 		
 		// Get old value
-		long[] array = this.array;
-		long rv = array[truedx];
+		int[] array = this.array;
+		int rv = array[trueDx];
 		
 		// Set new value
-		array[truedx] = __v;
+		array[trueDx] = __v;
 		
 		// Return the old value
 		return rv;
@@ -123,7 +123,7 @@ public class LongArrayList
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/01/01
+	 * @since 2020/07/11
 	 */
 	@Override
 	public int size()
@@ -138,9 +138,8 @@ public class LongArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
-	public static List<Long> asList(long... __array)
+	public static List<Integer> asList(int... __array)
 	{
-		return new LongArrayList(__array);
+		return new IntegerArrayList(__array);
 	}
 }
-
