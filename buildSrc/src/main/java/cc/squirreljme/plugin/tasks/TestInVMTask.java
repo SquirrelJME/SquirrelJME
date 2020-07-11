@@ -38,6 +38,10 @@ import org.gradle.jvm.tasks.Jar;
 public class TestInVMTask
 	extends AbstractTestTask
 {
+	/** Property for running single test. */
+	public static final String SINGLE_TEST_PROPERTY =
+		"test.single";
+	
 	/** The binary results directory. */
 	private static final String _BINARY_RESULTS_DIRECTORY =
 		"binaryResultsDirectory";
@@ -72,6 +76,10 @@ public class TestInVMTask
 		
 		// The input file for our tests is the JAR we want to look at!
 		this.getInputs().file(__jar.getArchiveFile());
+		
+		// If we are running a single test, disable the up-to-date check
+		if (System.getProperty(TestInVMTask.SINGLE_TEST_PROPERTY) != null)
+			this.getOutputs().upToDateWhen(__task -> false);
 		
 		// Where binary results are going to be stored, these both have to
 		// be set otherwise the test build will fail
