@@ -15,9 +15,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -89,6 +91,18 @@ public final class EmulatedTestExecutor
 			// Load tests to run
 			Collection<String> classes = EmulatedTestUtilities.readJarServices(
 				__spec.jar.getArchiveFile().get().getAsFile().toPath());
+			
+			// Has a single set of tests been specified
+			String singleTest = System.getProperty(
+				TestInVMTask.SINGLE_TEST_PROPERTY);
+			if (singleTest != null)
+				for (Iterator<String> it = classes.iterator(); it.hasNext();)
+				{
+					String test = it.next();
+					
+					if (!test.equals(singleTest))
+						it.remove();
+				}
 			
 			// Report on the found test size (debugging)
 			project.getLogger().lifecycle(String.format(
