@@ -68,7 +68,7 @@ public abstract class BasicPermission
 			throw new IllegalArgumentException("ZZ0z");
 		
 		// Determine the index where the wildcard is
-		this._wildCardDx = __name.indexOf('*');
+		this._wildCardDx = __name.lastIndexOf('*');
 	}
 	
 	/**
@@ -129,17 +129,13 @@ public abstract class BasicPermission
 	@Override
 	public boolean implies(Permission __o)
 	{
-		// Short circuit match?
-		if (this.equals(__o))
+		// Null permissions are never implied, or is a different class
+		if (__o == null || this.getClass() != __o.getClass())
+			return false;
+		
+		// If self, this is always implied
+		if (this == __o)
 			return true;
-		
-		// Null permissions are never implied
-		if (__o == null)
-			return false;
-		
-		// The class type is not compatible.
-		if (this.getClass() != __o.getClass())
-			return false;
 		
 		// If the string is a complete match then we can just stop here
 		String self = this.getName();
@@ -148,9 +144,10 @@ public abstract class BasicPermission
 			return true;
 		
 		// Matching against a wildcard?
-		int wildCardDx = this._wildCardDx;
-		if (wildCardDx >= 0)
-			return self.regionMatches(0, other, 0, wildCardDx);
+		int selfWild = this._wildCardDx;
+		int otherWild = ((BasicPermission)__o)._wildCardDx;
+		if (selfWild >= 0)
+			return self.regionMatches(0, other, 0, selfWild);
 		
 		// Does not imply
 		return false;
