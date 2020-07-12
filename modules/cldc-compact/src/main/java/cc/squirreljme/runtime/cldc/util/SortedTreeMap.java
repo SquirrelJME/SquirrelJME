@@ -8,9 +8,8 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.util.NaturalComparator;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;

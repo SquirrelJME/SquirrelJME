@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package cc.squirreljme.runtime.cldc.util;
 
 /**
  * This represents a single node within the tree.
