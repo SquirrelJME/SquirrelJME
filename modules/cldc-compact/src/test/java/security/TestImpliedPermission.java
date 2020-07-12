@@ -27,8 +27,9 @@ public class TestImpliedPermission
 	/** The name to use for keys. */
 	@SuppressWarnings("SpellCheckingInspection")
 	private static final String[] _NAMES =
-		new String[]{"squirrel", "squirrel*", "squirrel.cute", "sq*",
-			"squirrel.adorable", "*quirrel", "squ*rrel", "cookie"};
+		new String[]{"squirrel", "squirrel*", "squirrel.*", "squirrel.cute",
+			"squirrel.adorable", "sq*", "*quirrel", "squ*rrel", "cookie",
+			"a.b.*", "a.b.c"};
 	
 	/**
 	 * {@inheritDoc}
@@ -43,8 +44,10 @@ public class TestImpliedPermission
 		{
 			String name = TestImpliedPermission._NAMES[i];
 			
-			permissions.put("n-" + i + "-" + name, new __NameOnly__(name));
-			permissions.put("s-" + i + "-" + name, new __SubNameOnly__(name));
+			permissions.put("n-" + i + "-" + name,
+				new __NameOnly__(name));
+			permissions.put("s-" + i + "-" + name,
+				new __SubNameOnly__(name));
 		}
 		
 		// The number of actual permissions to check against
