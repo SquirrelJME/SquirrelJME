@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.JavaOpCodeUtils;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -29,6 +30,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFlags;
@@ -76,6 +78,10 @@ public final class SpringThreadWorker
 	
 	/** The thread to signal instead for interrupt. */
 	protected final Thread signalinstead;
+	
+	/** The manager for this thread's verbosity output. */
+	private final VerboseManager _verbose =
+		new VerboseManager();
 	
 	/** The current step count. */
 	private volatile int _stepcount;
@@ -1253,6 +1259,17 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Returns the verbosity manager.
+	 * 
+	 * @return The verbose manager.
+	 * @since 2020/07/11
+	 */
+	public final VerboseManager verbose()
+	{
+		return this._verbose;
+	}
+	
+	/**
 	 * Checks if an exception is being thrown and sets up the state from it.
 	 *
 	 * @return True if an exception was detected.
@@ -1447,7 +1464,7 @@ public final class SpringThreadWorker
 	 *
 	 * @since 2018/09/03
 	 */
-	private final strictfp void __singleStep()
+	private strictfp void __singleStep()
 	{
 		// Need the current frame and its byte code
 		SpringThread thread = this.thread;
@@ -1508,9 +1525,8 @@ public final class SpringThreadWorker
 		// exception is thrown this could change potentially
 		frame.setLastExecutedPc(pc);
 		
-		// Debug
-		if (SpringThreadWorker.TRACING_ENABLED &&
-			JavaOpCodeUtils.isInvoke(inst.operation()))
+		// Debugging instructions?
+		if (this._verbose.check(frame.level, VerboseDebugFlag.INSTRUCTIONS))
 			Debugging.debugNote("step(%s %s::%s) -> %s", thread.name(),
 				method.inClass(), method.nameAndType(), inst);
 		
@@ -2639,6 +2655,11 @@ public final class SpringThreadWorker
 					
 					// Invoke interface method
 				case InstructionIndex.INVOKEINTERFACE:
+					// Verbose debug?
+					if (this._verbose.check(frame.level,
+						VerboseDebugFlag.METHOD_ENTRY))
+						Debugging.debugNote("Interface: %s", inst);
+				
 					this.__vmInvokeInterface(inst, thread, frame);
 					
 					// Exception to be handled?
@@ -2649,6 +2670,11 @@ public final class SpringThreadWorker
 					// Invoke special method (constructor, superclass,
 					// or private)
 				case InstructionIndex.INVOKESPECIAL:
+					// Verbose debug?
+					if (this._verbose.check(frame.level,
+						VerboseDebugFlag.METHOD_ENTRY))
+						Debugging.debugNote("Special: %s", inst);
+					
 					this.__vmInvokeSpecial(inst, thread, frame);
 					
 					// Exception to be handled?
@@ -2658,6 +2684,12 @@ public final class SpringThreadWorker
 					
 					// Invoke static method
 				case InstructionIndex.INVOKESTATIC:
+					// Verbose debug?
+					if (this._verbose.check(frame.level,
+						VerboseDebugFlag.METHOD_ENTRY |
+						VerboseDebugFlag.INVOKE_STATIC))
+						Debugging.debugNote("Static: %s", inst);
+					
 					this.__vmInvokeStatic(inst, thread, frame);
 					
 					// Exception to be handled?
@@ -2667,6 +2699,11 @@ public final class SpringThreadWorker
 					
 					// Invoke virtual method
 				case InstructionIndex.INVOKEVIRTUAL:
+					// Verbose debug?
+					if (this._verbose.check(frame.level,
+						VerboseDebugFlag.METHOD_ENTRY))
+						Debugging.debugNote("Virtual: %s", inst);
+					
 					this.__vmInvokeVirtual(inst, thread, frame);
 					
 					// Exception to be handled?
@@ -3526,6 +3563,10 @@ public final class SpringThreadWorker
 		// Pop our current frame
 		SpringThread.Frame old = __thread.popFrame();
 		old.setPc(Integer.MIN_VALUE);
+			
+		// Verbose debug?
+		if (this._verbose.check(old.level, VerboseDebugFlag.METHOD_EXIT))
+			Debugging.debugNote("Exiting frame.");
 		
 		// Push the value to the current frame
 		SpringThread.Frame cur = __thread.currentFrame();

@@ -15,9 +15,9 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
@@ -500,6 +500,10 @@ public final class SpringMachine
 		{
 			this.run();
 			
+			// Debug
+			Debugging.debugNote("VM exited normally: %d",
+				this.getExitCode());
+			
 			// Success, maybe
 			return this.getExitCode();
 		}
@@ -507,13 +511,10 @@ public final class SpringMachine
 		// Exit VM with given code
 		catch (SpringMachineExitException e)
 		{
+			// Debug
+			Debugging.debugNote("VM Exited via exception: %d", e.code());
+			
 			return e.code();
-		}
-		
-		// Ignore these exceptions, just fatal exit
-		catch (SpringFatalException e)
-		{
-			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
 		}
 		
 		// Any other exception is fatal and the task must be made to exit
@@ -531,6 +532,10 @@ public final class SpringMachine
 			err.println();
 			
 			err.println("****************************");
+			
+			// Errors are rather bad so rethrow them
+			if (e instanceof Error)
+				throw (Error)e;
 			
 			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
 		}
