@@ -13,7 +13,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.debug.JavaOpCodeUtils;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -30,7 +29,6 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFlags;
@@ -139,6 +137,12 @@ public final class SpringThreadWorker
 		if (!__cl.isArray())
 			throw new IllegalArgumentException("Not an array: " + __cl);
 		
+		// Verbose debug?
+		if (this.verboseCheck(VerboseDebugFlag.ALLOCATION))
+			Debugging.debugNote("Allocate array: %s[%i]",
+				__cl.name, __l);
+		
+		// Depends on the type to be allocated
 		switch (__cl.componentType().name().toString())
 		{
 				// Boolean
@@ -193,6 +197,10 @@ public final class SpringThreadWorker
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+		
+		// Verbose debug?
+		if (this.verboseCheck(VerboseDebugFlag.ALLOCATION))
+			Debugging.debugNote("Allocate object: %s", __cl);
 		
 		// The called constructor will allocate the space needed to store
 		// this object
@@ -893,8 +901,10 @@ public final class SpringThreadWorker
 			if (__cl.isInitialized())
 				return __cl;
 			
-			// Debug
-			/*todo.DEBUG.note("Need to initialize %s.", __cl.name());*/
+			// Verbosity?
+			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+				Debugging.debugNote("Need to initialize %s.", 
+					__cl.name());
 			
 			// Set the class as initialized early to prevent loops, because
 			// a super class might call something from the base class which
@@ -924,6 +934,11 @@ public final class SpringThreadWorker
 			SpringMethod init;
 			try
 			{
+				// Verbosity?
+				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+					Debugging.debugNote("Lookup static init for %s.", 
+						__cl.name());
+				
 				init = __cl.lookupMethod(true,
 					new MethodNameAndType("<clinit>", "()V"));
 			}
@@ -933,23 +948,29 @@ public final class SpringThreadWorker
 			{
 				init = null;
 				
-				// Debug
-				/*todo.DEBUG.note("Class %s has no static initializer.",
-					__cl.name());*/
+				// Verbosity?
+				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+					Debugging.debugNote("No static init for %s.", 
+						__cl.name());
 			}
 			
 			// Static initializer exists, setup a frame and call it
 			if (init != null)
 			{
+				// Verbosity?
+				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+					Debugging.debugNote("Calling static init for %s.", 
+						__cl.name());
+				
 				// Stop execution when the initializer exits
 				SpringThread thread = this.thread;
-				int framelimit = thread.numFrames();
+				int frameLimit = thread.numFrames();
 				
 				// Enter the static initializer
 				thread.enterFrame(init);
 				
 				// Execute until it finishes
-				this.run(framelimit);
+				this.run(frameLimit);
 			}
 		}
 		
@@ -1270,6 +1291,20 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Checks if the verbosity is enabled.
+	 * 
+	 * @param __flags The flags to check.
+	 * @return If this check is enabled.
+	 * @since 2020/07/11
+	 */
+	public boolean verboseCheck(int __flags)
+	{
+		SpringThread.Frame frame = this.thread.currentFrame();
+		
+		return this._verbose.check((frame == null ? 0 : frame.level), __flags);
+	}
+	
+	/**
 	 * Checks if an exception is being thrown and sets up the state from it.
 	 *
 	 * @return True if an exception was detected.
@@ -1323,6 +1358,11 @@ public final class SpringThreadWorker
 	{
 		if (__o == null)
 			throw new NullPointerException("NARG");
+		
+		// Verbose debug?
+		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
+			Debugging.debugNote("Handling exception: %s",
+				__o.type().name);
 			
 		// Are we exiting in the middle of an exception throwing?
 		this.machine.exitCheck();
@@ -1348,6 +1388,11 @@ public final class SpringThreadWorker
 				break;
 			}
 		}
+		
+		// Verbose debug?
+		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
+			Debugging.debugNote("Frame handles %s? %b",
+				__o.type().name, useeh != null);
 		
 		// No handler for this exception, so just go up the
 		// stack and find a handler recursively up every frame
@@ -2656,8 +2701,7 @@ public final class SpringThreadWorker
 					// Invoke interface method
 				case InstructionIndex.INVOKEINTERFACE:
 					// Verbose debug?
-					if (this._verbose.check(frame.level,
-						VerboseDebugFlag.METHOD_ENTRY))
+					if (this.verboseCheck(VerboseDebugFlag.METHOD_ENTRY))
 						Debugging.debugNote("Interface: %s", inst);
 				
 					this.__vmInvokeInterface(inst, thread, frame);
@@ -2671,8 +2715,7 @@ public final class SpringThreadWorker
 					// or private)
 				case InstructionIndex.INVOKESPECIAL:
 					// Verbose debug?
-					if (this._verbose.check(frame.level,
-						VerboseDebugFlag.METHOD_ENTRY))
+					if (this.verboseCheck(VerboseDebugFlag.METHOD_ENTRY))
 						Debugging.debugNote("Special: %s", inst);
 					
 					this.__vmInvokeSpecial(inst, thread, frame);
@@ -2685,9 +2728,8 @@ public final class SpringThreadWorker
 					// Invoke static method
 				case InstructionIndex.INVOKESTATIC:
 					// Verbose debug?
-					if (this._verbose.check(frame.level,
-						VerboseDebugFlag.METHOD_ENTRY |
-						VerboseDebugFlag.INVOKE_STATIC))
+					if (this.verboseCheck(VerboseDebugFlag.METHOD_ENTRY |
+							VerboseDebugFlag.INVOKE_STATIC))
 						Debugging.debugNote("Static: %s", inst);
 					
 					this.__vmInvokeStatic(inst, thread, frame);
@@ -2700,8 +2742,7 @@ public final class SpringThreadWorker
 					// Invoke virtual method
 				case InstructionIndex.INVOKEVIRTUAL:
 					// Verbose debug?
-					if (this._verbose.check(frame.level,
-						VerboseDebugFlag.METHOD_ENTRY))
+					if (this.verboseCheck(VerboseDebugFlag.METHOD_ENTRY))
 						Debugging.debugNote("Virtual: %s", inst);
 					
 					this.__vmInvokeVirtual(inst, thread, frame);
@@ -3211,13 +3252,25 @@ public final class SpringThreadWorker
 		// that is the simplest action
 		catch (SpringException e)
 		{
+			// Verbose debug?
+			if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
+			{
+				Debugging.debugNote("-------------------------------");
+				Debugging.debugNote("Exception, %s: %s",
+					e.getClass().getName(), e.getMessage());
+				
+				e.printStackTrace();
+				
+				Debugging.debugNote("-------------------------------");
+			}
+			
 			// Do not add causes or do anything if this was already thrown
 			if ((e instanceof SpringFatalException) ||
 				(e instanceof SpringMachineExitException))
 				throw e;
 			
 			// Now the exception is either converted or tossed for failure
-			// Is this a convertable exception on the VM?
+			// Is this a convertible exception on the VM?
 			if (e instanceof SpringConvertableThrowable)
 			{
 				// PC converts?
@@ -3524,25 +3577,25 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private final void __vmNew(Instruction __i, SpringThread.Frame __f)
+	private void __vmNew(Instruction __i, SpringThread.Frame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __f == null)
 			throw new NullPointerException("NARG");
 		
 		// Lookup class we want to allocate
-		ClassName allocname;
-		SpringClass toalloc = this.loadClass((allocname =
+		ClassName allocName;
+		SpringClass toAlloc = this.loadClass((allocName =
 			__i.<ClassName>argument(0, ClassName.class)));
 		
 		// {@squirreljme.error BK3a Cannot allocate an instance of the given
 		// class because it cannot be accessed. (The class to allocate)}
-		if (!this.checkAccess(toalloc))
+		if (!this.checkAccess(toAlloc))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK3a %s", allocname));
+				String.format("BK3a %s", allocName));
 		
 		// Push a new allocation to the stack
-		__f.pushToStack(this.allocateObject(toalloc));
+		__f.pushToStack(this.allocateObject(toAlloc));
 	}
 	
 	/**
@@ -3565,7 +3618,7 @@ public final class SpringThreadWorker
 		old.setPc(Integer.MIN_VALUE);
 			
 		// Verbose debug?
-		if (this._verbose.check(old.level, VerboseDebugFlag.METHOD_EXIT))
+		if (this.verboseCheck(VerboseDebugFlag.METHOD_EXIT))
 			Debugging.debugNote("Exiting frame.");
 		
 		// Push the value to the current frame
