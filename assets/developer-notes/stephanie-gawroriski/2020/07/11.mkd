@@ -1,0 +1,7 @@
+# 2020/07/11
+
+## 16:18
+
+I figured out a name for the VBA port of SquirrelJME, it shall be called
+BlockyCoat! Since the Visual Basic for Applications logo and otherwise is
+very blocky and such.
