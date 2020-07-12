@@ -29,7 +29,7 @@ public class TestImpliedPermission
 	private static final String[] _NAMES =
 		new String[]{"squirrel", "squirrel*", "squirrel.*", "squirrel.cute",
 			"squirrel.adorable", "sq*", "*quirrel", "squ*rrel", "cookie",
-			"a.b.*", "a.b.c"};
+			"a.b.*", "a.b.c", "*"};
 	
 	/**
 	 * {@inheritDoc}
