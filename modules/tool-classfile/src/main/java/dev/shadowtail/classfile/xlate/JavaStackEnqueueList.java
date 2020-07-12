@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import net.multiphasicapps.collections.SortedTreeSet;
 
 /**
  * This contains every register which can be cleared after the specified

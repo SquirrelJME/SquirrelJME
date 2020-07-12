@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import java.security.Permission;
 import java.util.Map;
-import net.multiphasicapps.collections.SortedTreeMap;
+import  cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -37,8 +37,6 @@ public class TestImpliedPermission
 	@Override
 	public void test()
 	{
-		int vCode = DebugShelf.verbose(VerboseDebugFlag.ALL);
-		
 		// Build permission mapping of every possibility!
 		Map<String, Permission> permissions = new SortedTreeMap<>();
 		for (int i = 0, n = TestImpliedPermission._NAMES.length; i < n; i++)
@@ -48,8 +46,6 @@ public class TestImpliedPermission
 			permissions.put("n-" + i + "-" + name, new __NameOnly__(name));
 			permissions.put("s-" + i + "-" + name, new __SubNameOnly__(name));
 		}
-		
-		DebugShelf.verboseStop(vCode);
 		
 		// The number of actual permissions to check against
 		int num = permissions.size();
