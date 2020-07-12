@@ -126,6 +126,10 @@ public final class ConsoleOutputStream
 		// {@squirreljme.error ZZ06 Error writing to console.}
 		if (TerminalShelf.write(this.fd, __b) < 0)
 			throw new IOException("ZZ06");
+		
+		// Always flush standard error to force printing
+		if (this.fd == StandardPipeType.STDERR)
+			this.flush();
 	}
 	
 	/**
@@ -142,6 +146,10 @@ public final class ConsoleOutputStream
 		// {@squirreljme.error ZZ07 Error writing to console.}
 		if (TerminalShelf.write(this.fd, __b, 0, __b.length) < 0)
 			throw new IOException("ZZ07");
+		
+		// Always flush standard error to force printing
+		if (this.fd == StandardPipeType.STDERR)
+			this.flush();
 	}
 	
 	/**
@@ -160,6 +168,10 @@ public final class ConsoleOutputStream
 		// {@squirreljme.error ZZ08 Error writing to console.}
 		if (TerminalShelf.write(this.fd, __b, __o, __l) < 0)
 			throw new IOException("ZZ08");
+		
+		// Always flush standard error to force printing
+		if (this.fd == StandardPipeType.STDERR)
+			this.flush();
 	}
 }
 

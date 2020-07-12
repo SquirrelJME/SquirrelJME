@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
@@ -129,16 +130,27 @@ public final class Debugging
 				"*****************************************");
 			Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
 			
-			// Print the stack trace first like this so it does not possibly
-			// get trashed
-			TracePointBracket[] trace = DebugShelf.traceStack();
-			CallTraceUtils.printStackTrace(
-				new ConsoleOutputStream(StandardPipeType.STDERR),
-				"INCOMPLETE CODE", trace,
-				null, null, 0);
-				
-			// Report the To-Do trace so it is known to another program
-			ThreadShelf.setTrace("INCOMPLETE CODE", trace);
+			// If running on Java SE use it's method of printing traces
+			// because the SquirrelJME trace support may be missing
+			if (RuntimeShelf.vmType() == VMType.JAVA_SE)
+			{
+				new Throwable("INCOMPLETE CODE").printStackTrace(System.err);
+			}
+			
+			// Use SquirrelJME's method
+			else
+			{
+				// Print the stack trace first like this so it does not
+				// possibly get trashed
+				TracePointBracket[] trace = DebugShelf.traceStack();
+				CallTraceUtils.printStackTrace(
+					new ConsoleOutputStream(StandardPipeType.STDERR),
+					"INCOMPLETE CODE", trace,
+					null, null, 0);
+					
+				// Report the To-Do trace so it is known to another program
+				ThreadShelf.setTrace("INCOMPLETE CODE", trace);
+			}
 			
 			// Print all arguments passed afterwards, just in case
 			if (__args != null)

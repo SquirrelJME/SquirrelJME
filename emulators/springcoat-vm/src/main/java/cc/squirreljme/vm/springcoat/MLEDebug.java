@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -197,7 +198,37 @@ public enum MLEDebug
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"),
 				rv);
 		}
-	}
+	},
+	
+	/** {@link DebugShelf#verbose(int)}. */
+	VERBOSE("verbose:(I)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/11
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.verbose().add(
+				__thread.thread.numFrames() - 1, (int)__args[0]);
+		}
+	}, 
+	
+	/** {@link DebugShelf#verboseStop(int)}. */
+	VERBOSE_STOP("verboseStop:(I)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/11
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			__thread.verbose().remove((int)__args[0]);
+			return null;
+		}
+	}, 
 	
 	/* End. */
 	;

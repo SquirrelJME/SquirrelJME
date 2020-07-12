@@ -129,10 +129,10 @@ public final class SpringThread
 				"Cannot enter frame on terminated thread.");
 		
 		// Setup blank frame
-		SpringThread.Frame rv = new SpringThread.Frame();
+		List<SpringThread.Frame> frames = this._frames;
+		SpringThread.Frame rv = new SpringThread.Frame(frames.size());
 		
 		// {@squirreljme.error BK1j Stack overflow.}
-		List<SpringThread.Frame> frames = this._frames;
 		if (frames.size() >= SpringThread.MAX_STACK_DEPTH)
 			throw new SpringVirtualMachineException("BK1j");
 		
@@ -188,7 +188,8 @@ public final class SpringThread
 				__m.inClass(), __m.nameAndType()));
 		
 		// Create new frame
-		Frame rv = new Frame(__m, __args);
+		List<SpringThread.Frame> frames = this._frames;
+		Frame rv = new Frame(frames.size(), __m, __args);
 		
 		// Profile for this frame
 		this.profiler.enterFrame(__m.inClass().toString(),
@@ -196,7 +197,6 @@ public final class SpringThread
 			__m.nameAndType().type().toString(), System.nanoTime());
 		
 		// Lock on frames as a new one is added
-		List<SpringThread.Frame> frames = this._frames;
 		synchronized (this)
 		{
 			frames.add(rv);
@@ -616,6 +616,9 @@ public final class SpringThread
 	 */
 	public static class Frame
 	{
+		/** The frame level. */
+		public final int level;
+		
 		/** The current method in this frame. */
 		protected final SpringMethod method;
 		
@@ -655,10 +658,12 @@ public final class SpringThread
 		/**
 		 * Initializes a blank guard frame.
 		 *
+		 * @param __level The frame depth.
 		 * @since 2018/09/20
 		 */
-		private Frame()
+		private Frame(int __level)
 		{
+			this.level = __level;
 			this.method = null;
 			this.code = null;
 			this.thisobject = null;
@@ -670,12 +675,13 @@ public final class SpringThread
 		/**
 		 * Initializes the frame.
 		 *
+		 * @param __level The frame depth.
 		 * @param __m The method used for the frame.
 		 * @param __args The frame arguments.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2018/09/03
 		 */
-		private Frame(SpringMethod __m, Object... __args)
+		Frame(int __level, SpringMethod __m, Object... __args)
 			throws NullPointerException
 		{
 			if (__m == null)
@@ -683,6 +689,7 @@ public final class SpringThread
 			
 			__args = (__args == null ? new Object[0] : __args.clone());
 			
+			this.level = __level;
 			this.isblank = false;
 			this.method = __m;
 			
