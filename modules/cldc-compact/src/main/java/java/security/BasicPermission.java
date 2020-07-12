@@ -67,8 +67,12 @@ public abstract class BasicPermission
 		if (__name.equals(""))
 			throw new IllegalArgumentException("ZZ0z");
 		
-		// Determine the index where the wildcard is
-		this._wildCardDx = __name.lastIndexOf('*');
+		// Determine the index where the wildcard is, but it is only valid
+		// at the end of a string, otherwise it is just treated as a normal
+		// character
+		int nameLen = __name.length();
+		int wildCardDx = __name.lastIndexOf('*');
+		this._wildCardDx = (wildCardDx == nameLen - 1 ? wildCardDx : -1);
 	}
 	
 	/**
