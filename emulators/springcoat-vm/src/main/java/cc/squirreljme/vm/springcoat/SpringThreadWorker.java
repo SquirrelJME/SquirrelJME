@@ -11,6 +11,8 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.JavaOpCodeUtils;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -55,6 +57,13 @@ import net.multiphasicapps.classfile.PrimitiveType;
 public final class SpringThreadWorker
 	extends Thread
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.vm.trace=bool
+	 * Enable tracing within the virtual machine?}
+	 */
+	public static final boolean TRACING_ENABLED =
+		Boolean.getBoolean("cc.squirreljme.vm.trace");
+	
 	/** Number of instructions which can be executed before warning. */
 	private static final int _EXECUTION_THRESHOLD =
 		200000;
@@ -1500,8 +1509,10 @@ public final class SpringThreadWorker
 		frame.setLastExecutedPc(pc);
 		
 		// Debug
-		/*todo.DEBUG.note("step(%s %s::%s) -> %s", thread.name(),
-			method.inClass(), method.nameAndType(), inst);*/
+		if (SpringThreadWorker.TRACING_ENABLED &&
+			JavaOpCodeUtils.isInvoke(inst.operation()))
+			Debugging.debugNote("step(%s %s::%s) -> %s", thread.name(),
+				method.inClass(), method.nameAndType(), inst);
 		
 		// Used to detect the next instruction of execution following this,
 		// may be set accordingly in the frame manually

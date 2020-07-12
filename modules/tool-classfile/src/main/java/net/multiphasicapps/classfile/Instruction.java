@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.JavaOpCodeUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashSet;
@@ -695,7 +696,7 @@ public final class Instruction
 	/**
 	 * Returns the operation that this performs.
 	 *
-	 * @return The operation.
+	 * @return The operation, one of {@link InstructionIndex}.
 	 * @since 2017/05/20
 	 */
 	public int operation()
