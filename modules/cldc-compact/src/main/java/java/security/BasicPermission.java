@@ -81,7 +81,7 @@ public abstract class BasicPermission
 		int wildCardDx = __name.lastIndexOf('*');
 		
 		// Global wildcard
-		if (nameLen == 1 || wildCardDx == 0)
+		if (nameLen == 1 && wildCardDx == 0)
 			this._wildCardDx = 0;
 		
 		// Has wildcard at the end, and is at least two chars wide, and the
