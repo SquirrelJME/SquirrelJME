@@ -255,18 +255,19 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/27
 	 */
+	@SuppressWarnings("EqualsBetweenInconvertibleTypes")
 	public boolean isAssignableFrom(Class<?> __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+		
+		// Quick determination if this is the same type
+		if (this == __cl)
+			return true;
 			
 		TypeBracket self = this._type;
 		TypeBracket other = TypeShelf.classToType(__cl);
-		
-		// Quick determination if this is the same type
-		if (self == other)
-			return true;
 		
 		// Scan through the current and super classes of this class
 		for (TypeBracket rover = self; rover != null;

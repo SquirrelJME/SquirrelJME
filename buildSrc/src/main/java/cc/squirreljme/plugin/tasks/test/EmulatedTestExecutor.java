@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -37,6 +36,10 @@ import org.gradle.process.ExecResult;
 public final class EmulatedTestExecutor
 	implements TestExecuter<EmulatedTestExecutionSpec>
 {
+	/** Trace the tests? */
+	public static final String TRACE_PROPERTY =
+		"test.trace";
+	
 	/** The service resource file. */
 	public static final String SERVICE_RESOURCE =
 		"META-INF/services/net.multiphasicapps.tac.TestInterface";
@@ -217,6 +220,11 @@ public final class EmulatedTestExecutor
 		ExecResult result = project.javaexec(__javaExecSpec ->
 			{
 				Collection<String> args = new LinkedList<>();
+				Collection<String> jvmArgs = new LinkedList<>();
+				
+				// Add tracing?
+				if (Boolean.getBoolean(EmulatedTestExecutor.TRACE_PROPERTY))
+					jvmArgs.add("-Dcc.squirreljme.vm.trace=true");
 				
 				// Add emulator
 				args.add("-Xemulator:" + __spec.emulator);
@@ -242,6 +250,7 @@ public final class EmulatedTestExecutor
 					.emulatorClassPath(null, __spec.emulator));
 				__javaExecSpec.setMain("cc.squirreljme.emulator.vm.VMFactory");
 				__javaExecSpec.setArgs(args);
+				__javaExecSpec.setJvmArgs(jvmArgs);
 				
 				// Pipe outputs to the specified areas so the console can be
 				// read properly!
