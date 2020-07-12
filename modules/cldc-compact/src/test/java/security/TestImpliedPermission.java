@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import java.security.Permission;
 import java.util.Map;
-import java.util.TreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -40,7 +40,7 @@ public class TestImpliedPermission
 		int vCode = DebugShelf.verbose(VerboseDebugFlag.ALL);
 		
 		// Build permission mapping of every possibility!
-		Map<String, Permission> permissions = new TreeMap<>();
+		Map<String, Permission> permissions = new SortedTreeMap<>();
 		for (int i = 0, n = TestImpliedPermission._NAMES.length; i < n; i++)
 		{
 			String name = TestImpliedPermission._NAMES[i];
