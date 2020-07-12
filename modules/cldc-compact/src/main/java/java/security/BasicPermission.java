@@ -16,6 +16,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * This class represents a basic permission and is the root of most
  * permissions.
  * 
+ * Wildcards for permissions have two means of handling:
+ * 
+ * There are pure wildcards which consist of a single {@code '*'} character,
+ * this means that all permissions are implied by it.
+ * 
+ * 
+ * 
  * There may be a wildcard in the name (ending in an asterisk {@code '*'}),
  * in which case the start of the permission string is compared while the
  * other cases are all matches. Note that only a single trailing asterisk is
@@ -72,7 +79,28 @@ public abstract class BasicPermission
 		// character
 		int nameLen = __name.length();
 		int wildCardDx = __name.lastIndexOf('*');
-		this._wildCardDx = (wildCardDx == nameLen - 1 ? wildCardDx : -1);
+		
+		// Global wildcard
+		if (nameLen == 1 || wildCardDx == 0)
+			this._wildCardDx = 0;
+		
+		// Has wildcard at the end, and is at least two chars wide, and the
+		// wildcard is at the end
+		else if (nameLen > 1 && wildCardDx > 1 && wildCardDx == nameLen - 1)
+		{
+			// Wildcards are only valid if they are preceded by a dot
+			char beforeStar = __name.charAt(wildCardDx - 1);
+			if (beforeStar == '.')
+				this._wildCardDx = wildCardDx;
+			
+			// Otherwise not a valid wildcard
+			else
+				this._wildCardDx = -1;
+		}
+		
+		// Not valid wildcard
+		else
+			this._wildCardDx = -1;
 	}
 	
 	/**
