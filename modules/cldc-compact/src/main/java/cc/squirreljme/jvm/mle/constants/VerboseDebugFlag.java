@@ -22,21 +22,37 @@ public interface VerboseDebugFlag
 	
 	/** Be verbose on the called instructions. */
 	byte INSTRUCTIONS =
-		0b0000_0001;
+		0x01;
 	
 	/** Be verbose on the entered methods. */
 	byte METHOD_ENTRY =
-		0b0000_0010;
+		0x02;
 	
 	/** Be verbose on exited methods. */
 	byte METHOD_EXIT =
-		0b0000_0100;
+		0x04;
 	
 	/** Be verbose on MLE calls. */
 	byte MLE_CALL =
-		0b0000_1000;
+		0x08;
 	
 	/** Be verbose on static invocations. */
 	byte INVOKE_STATIC =
-		0b0001_0000;
+		0x10;
+	
+	/** Be verbose on allocations. */
+	byte ALLOCATION =
+		0x20;
+	
+	/** Be verbose on class initializations. */
+	byte CLASS_INITIALIZE =
+		0x40;
+	
+	/** Virtual machine exceptions. */
+	short VM_EXCEPTION =
+		0x80;
+	
+	/** Class lookup failures. */
+	short MISSING_CLASS =
+		0x100;
 }

@@ -10,7 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
@@ -22,7 +22,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
-import cc.squirreljme.emulator.profiler.ProfiledThread;
 
 /**
  * This class contains information about a thread within the virtual machine.
