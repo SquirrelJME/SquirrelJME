@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.util.NaturalComparator;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
@@ -45,10 +46,10 @@ public class SortedTreeMap<K, V>
 	private Reference<Set<Map.Entry<K, V>>> _entryset;
 	
 	/** The root node. */
-	__Node__<K, V> _root;
+	__SortedTreeNode__<K, V> _root;
 	
 	/** The minimum value. */
-	__Data__<K, V> _min;
+	__SortedTreeData__<K, V> _min;
 	
 	/** The size of the tree. */
 	int _size;
@@ -158,7 +159,7 @@ public class SortedTreeMap<K, V>
 		// Check
 		if (ref == null || null == (rv = ref.get()))
 			this._entryset = new WeakReference<>(
-				(rv = new __EntrySet__<>(this)));
+				(rv = new __SortedTreeEntrySet__<>(this)));
 		
 		// Return
 		return rv;
@@ -171,7 +172,7 @@ public class SortedTreeMap<K, V>
 	@Override
 	public V get(Object __k)
 	{
-		__Node__<K, V> node = this.__findNode(__k);
+		__SortedTreeNode__<K, V> node = this.__findNode(__k);
 		if (node == null)
 			return null;
 		return node._data._value;
@@ -186,7 +187,7 @@ public class SortedTreeMap<K, V>
 	{
 		// Insert node
 		__Found__ found = new __Found__();
-		__Node__<K, V> now = this.__insert(null, this._root, found, __k, __v);
+		__SortedTreeNode__<K, V> now = this.__insert(null, this._root, found, __k, __v);
 		
 		// The root of the tree always becomes black
 		now.__makeBlack();
@@ -206,7 +207,7 @@ public class SortedTreeMap<K, V>
 	{
 		// Delete node
 		__Found__ found = new __Found__();
-		__Node__<K, V> newroot = this.__remove(this._root, found, (K)__k);
+		__SortedTreeNode__<K, V> newroot = this.__remove(this._root, found, (K)__k);
 		
 		// The root of the tree is always black
 		this._root = newroot;
@@ -235,7 +236,8 @@ public class SortedTreeMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/30
 	 */
-	private __Node__<K, V> __correctNodes(__Node__<K, V> __at)
+	private __SortedTreeNode__<K, V> __correctNodes(
+		__SortedTreeNode__<K, V> __at)
 		throws NullPointerException
 	{
 		// Check
@@ -267,10 +269,10 @@ public class SortedTreeMap<K, V>
 	 * found.
 	 * @since 2016/09/06
 	 */
-	final __Node__<K, V> __findNode(Object __o)
+	final __SortedTreeNode__<K, V> __findNode(Object __o)
 	{
 		// If there are no nodes then the tree is empty
-		__Node__<K, V> rover = this._root;
+		__SortedTreeNode__<K, V> rover = this._root;
 		if (rover == null)
 			return null;
 		
@@ -286,7 +288,7 @@ public class SortedTreeMap<K, V>
 	 * @since 2017/03/30
 	 */
 	@SuppressWarnings({"unchecked"})
-	final __Node__<K, V> __findNode(__Node__<K, V> __at, Object __k)
+	final __SortedTreeNode__<K, V> __findNode(__SortedTreeNode__<K, V> __at, Object __k)
 	{	
 		// Constant search
 		Comparator<K> compare = this._compare;
@@ -320,7 +322,7 @@ public class SortedTreeMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/30
 	 */
-	private final void __flipColor(__Node__<K, V> __at)
+	private final void __flipColor(__SortedTreeNode__<K, V> __at)
 		throws NullPointerException
 	{
 		// Check
@@ -345,17 +347,18 @@ public class SortedTreeMap<K, V>
 	 * will always return the root of the tree.
 	 * @since 2017/03/30
 	 */
-	private final __Node__<K, V> __insert(__Node__<K, V> __from,
-		__Node__<K, V> __at, __Found__ __found, K __k, V __v)
+	private final __SortedTreeNode__<K, V> __insert(
+		__SortedTreeNode__<K, V> __from,
+		__SortedTreeNode__<K, V> __at, __Found__ __found, K __k, V __v)
 	{
 		// No root of the tree?
 		if (__at == null)
 		{
 			// Setup data
-			__Data__<K, V> data = new __Data__<>(this, __k, __v);
+			__SortedTreeData__<K, V> data = new __SortedTreeData__<>(this, __k, __v);
 			
 			// Create new node
-			__at = new __Node__<>();
+			__at = new __SortedTreeNode__<>();
 			__at._data = data;
 			data._node = __at;
 			
@@ -363,14 +366,14 @@ public class SortedTreeMap<K, V>
 			if (__from != null)
 			{
 				// Need to directly modify the from data links
-				__Data__<K, V> fd = __from._data;
+				__SortedTreeData__<K, V> fd = __from._data;
 				
 				// Link before the from node?
 				if (data.__compare(fd) < 0)
 				{
 					// The from's previous data needs to point to this node
 					// and not the from data
-					__Data__<K, V> pp = fd._prev;
+					__SortedTreeData__<K, V> pp = fd._prev;
 					if (pp != null)
 						pp._next = data;
 					
@@ -388,7 +391,7 @@ public class SortedTreeMap<K, V>
 				else
 				{
 					// The from's next has to point back to this data
-					__Data__<K, V> nn = fd._next;
+					__SortedTreeData__<K, V> nn = fd._next;
 					if (nn != null)
 						nn._prev = data;
 					
@@ -405,7 +408,7 @@ public class SortedTreeMap<K, V>
 			
 			// If the tree has no minimum use this node as it
 			// Otherwise always use the smaller value
-			__Data__<K, V> oldmin = this._min;
+			__SortedTreeData__<K, V> oldmin = this._min;
 			if (oldmin == null || data.__compare(oldmin) < 0)
 				this._min = data;
 			
@@ -443,7 +446,7 @@ public class SortedTreeMap<K, V>
 	 * @return {@code true} if the node is red.
 	 * @since 2017/03/30
 	 */
-	private final boolean __isRed(__Node__<K, V> __n)
+	private final boolean __isRed(__SortedTreeNode__<K, V> __n)
 	{
 		if (__n == null)
 			return false;
@@ -456,7 +459,7 @@ public class SortedTreeMap<K, V>
 	 * @return The minimum node.
 	 * @since 2017/03/30
 	 */
-	private final __Node__<K, V> __min(__Node__<K, V> __at)
+	private final __SortedTreeNode__<K, V> __min(__SortedTreeNode__<K, V> __at)
 	{
 		while (__at._left != null)
 			__at = __at._left;
@@ -470,7 +473,8 @@ public class SortedTreeMap<K, V>
 	 * @return The node that is not a side node.
 	 * @since 2017/03/30
 	 */
-	private final __Node__<K, V> __moveRed(__Node__<K, V> __at, boolean __r)
+	private final __SortedTreeNode__<K, V> __moveRed(
+		__SortedTreeNode__<K, V> __at, boolean __r)
 	{
 		// Flip the node color
 		this.__flipColor(__at);
@@ -511,7 +515,8 @@ public class SortedTreeMap<K, V>
 	 * @return The node at the top (will not be a leaf)
 	 * @since 2017/03/30
 	 */
-	private final __Node__<K, V> __remove(__Node__<K, V> __at,
+	private final __SortedTreeNode__<K, V> __remove(
+		__SortedTreeNode__<K, V> __at,
 		__Found__ __found, K __k)
 	{
 		// Key is lower?
@@ -563,8 +568,8 @@ public class SortedTreeMap<K, V>
 			if (comp == 0)
 			{
 				// Get the node with the minimum value on the right side
-				__Node__<K, V> right = __at._right;
-				__Node__<K, V> minright = this.__min(right);
+				__SortedTreeNode__<K, V> right = __at._right;
+				__SortedTreeNode__<K, V> minright = this.__min(right);
 				
 				// Unlink the current data because that is getting destroyed
 				this.__unlink(__at, __found);
@@ -595,7 +600,8 @@ public class SortedTreeMap<K, V>
 	 * @return The top node.
 	 * @since 2017/03/30
 	 */
-	private final __Node__<K, V> __removeMin(__Node__<K, V> __at,
+	private final __SortedTreeNode__<K, V> __removeMin(
+		__SortedTreeNode__<K, V> __at,
 		__Found__ __found, boolean __unlink)
 	{
 		// If there is no left, remove the left node
@@ -629,7 +635,8 @@ public class SortedTreeMap<K, V>
 	 * @return The center node.
 	 * @since 2017/03/27
 	 */
-	private final __Node__<K, V> __rotate(__Node__<K, V> __at, boolean __r)
+	private final __SortedTreeNode__<K, V> __rotate(
+		__SortedTreeNode__<K, V> __at, boolean __r)
 		throws NullPointerException
 	{
 		// Check
@@ -639,7 +646,7 @@ public class SortedTreeMap<K, V>
 		// Rotate right
 		if (__r)
 		{
-			__Node__<K, V> x = __at._left;
+			__SortedTreeNode__<K, V> x = __at._left;
 			__at._left = x._right;
 			x._right = __at;
 			x._isred = x._right._isred;
@@ -650,7 +657,7 @@ public class SortedTreeMap<K, V>
 		// Rotate left
 		else
 		{
-			__Node__<K, V> x = __at._right;
+			__SortedTreeNode__<K, V> x = __at._right;
 			__at._right = x._left;
 			x._left = __at;
 			x._isred = x._left._isred;
@@ -666,15 +673,15 @@ public class SortedTreeMap<K, V>
 	 * @param __found The found node data.
 	 * @since 2017/03/30
 	 */
-	private final void __unlink(__Node__<K, V> __at, __Found__ __found)
+	private final void __unlink(__SortedTreeNode__<K, V> __at, __Found__ __found)
 	{
 		// Get the data to unlink
-		__Data__<K, V> unlink = __at._data;
+		__SortedTreeData__<K, V> unlink = __at._data;
 		if (__found != null)
 			__found._oldvalue = unlink._value;
 		
 		// Link next node with the previous
-		__Data__<K, V> prev = unlink._prev,
+		__SortedTreeData__<K, V> prev = unlink._prev,
 			next = unlink._next;
 		if (next != null)
 			next._prev = prev;

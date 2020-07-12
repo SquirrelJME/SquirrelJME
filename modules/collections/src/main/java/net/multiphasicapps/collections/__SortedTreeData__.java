@@ -19,7 +19,7 @@ import java.util.Objects;
  *
  * @since 2017/03/30
  */
-class __Data__<K, V>
+class __SortedTreeData__<K, V>
 	implements Map.Entry<K, V>
 {
 	/** The comparison method to use. */
@@ -32,13 +32,13 @@ class __Data__<K, V>
 	volatile V _value;
 	
 	/** The node owning this data (used only to detect modification). */
-	volatile __Node__<K, V> _node;
+	volatile __SortedTreeNode__<K, V> _node;
 	
 	/** The data before this one. */
-	volatile __Data__<K, V> _prev;
+	volatile __SortedTreeData__<K, V> _prev;
 	
 	/** The data after this one. */
-	volatile __Data__<K, V> _next;
+	volatile __SortedTreeData__<K, V> _next;
 	
 	/**
 	 * Initializes the data.
@@ -49,7 +49,7 @@ class __Data__<K, V>
 	 * @throws NullPointerException If no map was specified.
 	 * @since 2017/03/30
 	 */
-	__Data__(SortedTreeMap<K, V> __m, K __k, V __v)
+	__SortedTreeData__(SortedTreeMap<K, V> __m, K __k, V __v)
 		throws NullPointerException
 	{
 		// Check
@@ -149,7 +149,7 @@ class __Data__<K, V>
 	 * @return The comparison result.
 	 * @since 2017/03/30
 	 */
-	final int __compare(__Data__<K, V> __d)
+	final int __compare(__SortedTreeData__<K, V> __d)
 	{
 		return this.__compare(__d._key);
 	}
@@ -161,7 +161,7 @@ class __Data__<K, V>
 	 * @return The comparison result.
 	 * @since 2017/03/30
 	 */
-	final int __compare(__Node__<K, V> __n)
+	final int __compare(__SortedTreeNode__<K, V> __n)
 	{
 		return this.__compare(__n._data);
 	}

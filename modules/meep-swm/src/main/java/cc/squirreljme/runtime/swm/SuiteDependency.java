@@ -13,7 +13,7 @@ package cc.squirreljme.runtime.swm;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.collections.NaturalComparator;
+import  cc.squirreljme.runtime.cldc.util.NaturalComparator;
 import net.multiphasicapps.strings.StringUtils;
 
 /**
