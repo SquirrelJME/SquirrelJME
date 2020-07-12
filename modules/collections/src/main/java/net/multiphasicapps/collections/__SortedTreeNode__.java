@@ -17,20 +17,20 @@ package net.multiphasicapps.collections;
  * @param <V> The value used.
  * @since 2016/09/06
  */
-class __Node__<K, V>
+class __SortedTreeNode__<K, V>
 {
 	/** The color, defaults to red. */
 	volatile boolean _isred =
 		true;
 	
 	/** The currently associated data for this node. */
-	volatile __Data__<K, V> _data;
+	volatile __SortedTreeData__<K, V> _data;
 	
 	/** The node to the left. */
-	volatile __Node__<K, V> _left;
+	volatile __SortedTreeNode__<K, V> _left;
 	
 	/** The node to the right. */
-	volatile __Node__<K, V> _right;
+	volatile __SortedTreeNode__<K, V> _right;
 	
 	/**
 	 * Makes the node black.

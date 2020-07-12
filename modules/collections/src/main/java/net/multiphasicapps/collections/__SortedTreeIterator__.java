@@ -20,17 +20,17 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/09/06
  */
-class __MapIterator__<K, V>
+class __SortedTreeIterator__<K, V>
 	implements Iterator<Map.Entry<K, V>>
 {
 	/** The owning map. */
 	protected final SortedTreeMap<K, V> map;
 	
 	/** The current node position. */
-	private volatile __Data__<K, V> _at;
+	private volatile __SortedTreeData__<K, V> _at;
 	
 	/** The last visited node (for deletion). */
-	private volatile __Data__<K, V> _last;
+	private volatile __SortedTreeData__<K, V> _last;
 	
 	/**
 	 * Iterates over the given map.
@@ -38,7 +38,7 @@ class __MapIterator__<K, V>
 	 * @param __m The map to iterate over.
 	 * @since 2016/09/06
 	 */
-	__MapIterator__(SortedTreeMap<K, V> __m)
+	__SortedTreeIterator__(SortedTreeMap<K, V> __m)
 		throws NullPointerException
 	{
 		// Check
@@ -57,7 +57,7 @@ class __MapIterator__<K, V>
 	@Override
 	public boolean hasNext()
 	{
-		__Data__<K, V> at = this._at;
+		__SortedTreeData__<K, V> at = this._at;
 		if (at == null)
 			return false;
 		return (this.__detect(at) != null);
@@ -71,7 +71,7 @@ class __MapIterator__<K, V>
 	public Map.Entry<K, V> next()
 	{
 		// {@squirreljme.error AC06 No more elements to iterate over.}
-		__Data__<K, V> rv = this._at;
+		__SortedTreeData__<K, V> rv = this._at;
 		if (rv == null)
 			throw new NoSuchElementException("AC06");
 		
@@ -93,7 +93,7 @@ class __MapIterator__<K, V>
 	public void remove()
 	{
 		// {@squirreljme.error AC07 No last entry exists for deletion.}
-		__Data__<K, V> last = this._last;
+		__SortedTreeData__<K, V> last = this._last;
 		if (last == null)
 			throw new IllegalStateException("AC07");
 		
@@ -111,7 +111,8 @@ class __MapIterator__<K, V>
 	 * @throws NullPointerException On null arguments. 
 	 * @since 2017/03/30
 	 */
-	private final __Data__<K, V> __detect(__Data__<K, V> __data)
+	private final __SortedTreeData__<K, V> __detect(
+		__SortedTreeData__<K, V> __data)
 		throws ConcurrentModificationException, NullPointerException
 	{
 		// Check
