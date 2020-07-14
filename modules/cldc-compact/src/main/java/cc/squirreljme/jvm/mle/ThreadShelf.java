@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
@@ -129,6 +130,20 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	public static native void setCurrentExitCode(int __code);
+	
+	/**
+	 * Sets the trace of the current task so that it can be requested by
+	 * another or launching program.
+	 * 
+	 * @param __message The message of the trace.
+	 * @param __trace The trace to set.
+	 * @throws MLECallError If {@code __message} is {@code null}, or
+	 * {@code __trace} or any element within is {@code null}.
+	 * @since 2020/07/02
+	 */
+	public static native void setTrace(String __message,
+		TracePointBracket[] __trace)
+		throws MLECallError;
 	
 	/**
 	 * Sleeps the current thread for the given amount of time.

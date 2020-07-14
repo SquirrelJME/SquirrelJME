@@ -10,8 +10,8 @@
 package net.multiphasicapps.tac;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;
-import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This is used to build {@link TestResult} and is used by the code which

@@ -2,21 +2,15 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.ref;
-
 /**
- * Represents an internal primitive reference.
+ * This contains the security backend for SquirrelJME.
  *
- * @since 2018/09/23
+ * @since 2020/07/02
  */
-@Deprecated
-public interface PrimitiveReference
-{
-}
 
+package java.security;

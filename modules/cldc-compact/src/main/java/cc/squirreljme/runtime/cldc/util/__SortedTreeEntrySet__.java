@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package cc.squirreljme.runtime.cldc.util;
 
 import java.util.AbstractSet;
 import java.util.Iterator;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @param <V> The values to use.
  * @since 2016/09/07
  */
-final class __EntrySet__<K, V>
+final class __SortedTreeEntrySet__<K, V>
 	extends AbstractSet<Map.Entry<K, V>>
 {
 	/** The owning map. */
@@ -34,7 +34,7 @@ final class __EntrySet__<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/07
 	 */
-	__EntrySet__(SortedTreeMap<K, V> __m)
+	__SortedTreeEntrySet__(SortedTreeMap<K, V> __m)
 		throws NullPointerException
 	{
 		// Check
@@ -52,7 +52,7 @@ final class __EntrySet__<K, V>
 	@Override
 	public Iterator<Map.Entry<K, V>> iterator()
 	{
-		return new __MapIterator__<K, V>(this._map);
+		return new __SortedTreeIterator__<K, V>(this._map);
 	}
 	
 	/**

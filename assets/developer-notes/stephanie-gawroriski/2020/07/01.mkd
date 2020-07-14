@@ -1,0 +1,10 @@
+# 2020/07/01
+
+## 19:33
+
+Okay so I am definitely liking how the new `UIForm` stuff is going, seems to
+be much cleaner than before. I do have some global state but I am pretty
+limited and that must be there so no way around that. At least with the forms
+the way I have them now, there can either be native forms or in the future
+fallback forms that are on top of a framebuffer. Of course the native form
+interface is going to be kept to a low number of calls as needed.

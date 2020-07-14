@@ -1,0 +1,14 @@
+# 2020/07/11
+
+## 16:18
+
+I figured out a name for the VBA port of SquirrelJME, it shall be called
+BlockyCoat! Since the Visual Basic for Applications logo and otherwise is
+very blocky and such.
+
+## 21:39
+
+Okay so I wrote the permission test and it just dies on SpringCoat and I know
+it is somewhere in `TreeMap` or at least when it is initialized. So what I
+am going to do is have a special debug method that performs trace points and
+such.

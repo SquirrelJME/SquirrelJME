@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import java.security.AccessController;
+
 /**
  * Represents the type of description used for the VM.
  *
@@ -56,7 +58,14 @@ public interface VMDescriptionType
 	byte OS_ARCH =
 		9;
 	
+	/**
+	 * The current virtual machine security policy, this is used by
+	 * {@link AccessController}.
+	 */
+	byte VM_SECURITY_POLICY =
+		10;
+	
 	/** The current number of properties. */
 	byte NUM_TYPES =
-		10;
+		11;
 }

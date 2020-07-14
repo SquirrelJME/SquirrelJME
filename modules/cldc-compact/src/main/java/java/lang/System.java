@@ -99,7 +99,7 @@ public final class System
 		
 		// {@squirreljme.error ZZ1y The source array type is not compatible
 		// with destination array. (The source array; The destination array)}
-		if (!destClass.isAssignableFrom(srcClass))
+		if (srcClass != destClass && !destClass.isAssignableFrom(srcClass))
 			throw new ArrayStoreException(String.format(
 				"ZZ1y %s %s", __src, __dest));
 		
@@ -129,30 +129,30 @@ public final class System
 		if (TypeShelf.isPrimitive(component))
 		{
 			// More common primitives
-			if (__src instanceof byte[])
+			if (srcClass == byte[].class)
 				ObjectShelf.arrayCopy((byte[])__src, __srcOff,
 					(byte[])__dest, __destOff, __copyLen);
-			else if (__src instanceof char[])
+			else if (srcClass == char[].class)
 				ObjectShelf.arrayCopy((char[])__src, __srcOff,
 					(char[])__dest, __destOff, __copyLen);
-			else if (__src instanceof int[])
+			else if (srcClass == int[].class)
 				ObjectShelf.arrayCopy((int[])__src, __srcOff,
 					(int[])__dest, __destOff, __copyLen);
-			else if (__src instanceof short[])
+			else if (srcClass == short[].class)
 				ObjectShelf.arrayCopy((short[])__src, __srcOff,
 					(short[])__dest, __destOff, __copyLen);
 			
 			// Less common types
-			else if (__src instanceof boolean[])
+			else if (srcClass == boolean[].class)
 				ObjectShelf.arrayCopy((boolean[])__src, __srcOff,
 					(boolean[])__dest, __destOff, __copyLen);
-			else if (__src instanceof long[])
+			else if (srcClass == long[].class)
 				ObjectShelf.arrayCopy((long[])__src, __srcOff,
 					(long[])__dest, __destOff, __copyLen);
-			else if (__src instanceof float[])
+			else if (srcClass == float[].class)
 				ObjectShelf.arrayCopy((float[])__src, __srcOff,
 					(float[])__dest, __destOff, __copyLen);
-			else if (__src instanceof double[])
+			else if (srcClass == double[].class)
 				ObjectShelf.arrayCopy((double[])__src, __srcOff,
 					(double[])__dest, __destOff, __copyLen);
 			

@@ -11,13 +11,17 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +40,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2018/07/29
  */
+@SuppressWarnings("OverlyCoupledClass")
 public final class SpringMachine
 	implements Runnable, VirtualMachine
 {
@@ -67,6 +72,9 @@ public final class SpringMachine
 	
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
+	
+	/** The terminal pipe manager. */
+	protected final TerminalPipeManager terminalPipes;
 	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
@@ -101,7 +109,10 @@ public final class SpringMachine
 	private volatile boolean _exiting;
 	
 	/** Exit code of the VM. */
-	volatile int _exitcode;
+	private int _exitcode;
+	
+	/** The stored call trace. */
+	private CallTraceStorage _storedTrace;
 	
 	/**
 	 * Initializes the virtual machine.
@@ -113,17 +124,19 @@ public final class SpringMachine
 	 * @param __profiler The profiler to use.
 	 * @param __sprops System properties.
 	 * @param __gs Global system state.
+	 * @param __pipes The terminal pipe manager, may be {@code null} in which
+	 * case it is initialized for the caller.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, String __bootcl,
-		ProfilerSnapshot __profiler, Map<String, String> __sprops,
-		GlobalState __gs, String... __args)
+		SpringTaskManager __tm, String __bootcl, ProfilerSnapshot __profiler,
+		Map<String, String> __sprops, GlobalState __gs,
+		TerminalPipeManager __pipes, String... __args)
 		throws NullPointerException
 	{
-		if (__cl == null || __sm == null)
+		if (__cl == null || __sm == null || __pipes == null)
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
@@ -131,6 +144,7 @@ public final class SpringMachine
 		this.tasks = __tm;
 		this.bootClass = __bootcl;
 		this.globalState = __gs;
+		this.terminalPipes = __pipes;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
 			new ProfilerSnapshot());
@@ -200,9 +214,8 @@ public final class SpringMachine
 	public final void exit(int __code)
 		throws SpringMachineExitException
 	{
-		// Set as exiting
-		this._exitcode = __code;
-		this._exiting = true;
+		// Should do the same thing
+		this.exitNoException(__code);
 		
 		// Now signal exit
 		throw new SpringMachineExitException(__code);
@@ -217,9 +230,12 @@ public final class SpringMachine
 	public final void exitCheck()
 		throws SpringMachineExitException
 	{
-		// Only if exiting
-		if (this._exiting)
-			throw new SpringMachineExitException(this._exitcode);
+		synchronized (this)
+		{
+			// Only if exiting
+			if (this._exiting)
+				throw new SpringMachineExitException(this._exitcode);
+		}
 	}
 	
 	/**
@@ -231,9 +247,39 @@ public final class SpringMachine
 	public final void exitNoException(int __code)
 		throws SpringMachineExitException
 	{
-		// Set as exiting
-		this._exitcode = __code;
-		this._exiting = true;
+		synchronized (this)
+		{
+			// Set as exiting
+			this._exitcode = __code;
+			this._exiting = true;
+			
+			// Close all the pipes on exit because otherwise any calling tasks
+			// will never be able to finish reading these pipes ever until
+			// the process completes
+			try
+			{
+				this.terminalPipes.closeAll();
+			}
+			catch (IOException e)
+			{
+				throw new SpringVirtualMachineException(
+					"Could not close pipes.", e);
+			}
+		}
+	}
+	
+	/**
+	 * Returns the current exit code.
+	 * 
+	 * @return The current exit code.
+	 * @since 2020/07/08
+	 */
+	public int getExitCode()
+	{
+		synchronized (this)
+		{
+			return this._exitcode;
+		}
 	}
 	
 	/**
@@ -259,10 +305,9 @@ public final class SpringMachine
 	public final SpringThread getThread(int __id)
 		throws NoSuchElementException
 	{
-		List<SpringThread> threads = this._threads;
 		synchronized (this)
 		{
-			for (SpringThread t : threads)
+			for (SpringThread t : this.getThreads())
 				if (t.id == __id)
 					return t;
 		}
@@ -276,7 +321,6 @@ public final class SpringMachine
 	 * @return All of the current process threads.
 	 * @since 2020/06/17
 	 */
-	@SuppressWarnings("UnnecessaryLocalVariable")
 	public final SpringThread[] getThreads()
 	{
 		List<SpringThread> rv = new ArrayList<>();
@@ -303,10 +347,29 @@ public final class SpringMachine
 				else
 					rv.add(thread);
 			}
+			
+			// If there are no threads left and we are not yet exiting, exit
+			// this task so it finalizes and cleans accordingly
+			if (!this.isExiting() && threads.isEmpty())
+				this.exitNoException(this.getExitCode());
 		}
 		
 		// Use whatever was found
 		return rv.<SpringThread>toArray(new SpringThread[rv.size()]);
+	}
+	
+	/**
+	 * Returns the stack trace.
+	 * 
+	 * @return The trace.
+	 * @since 2020/07/08
+	 */
+	public final CallTraceStorage getTrace()
+	{
+		synchronized (this)
+		{
+			return this._storedTrace;
+		}
 	}
 	
 	/**
@@ -337,6 +400,20 @@ public final class SpringMachine
 				throw new SpringVirtualMachineException("BK19");
 			
 			return rv;
+		}
+	}
+	
+	/**
+	 * Returns if this task has exited.
+	 * 
+	 * @return If this task is exited.
+	 * @since 2020/07/08
+	 */
+	public final boolean isExiting()
+	{
+		synchronized (this)
+		{
+			return this._exiting;
 		}
 	}
 	
@@ -423,20 +500,21 @@ public final class SpringMachine
 		{
 			this.run();
 			
+			// Debug
+			Debugging.debugNote("VM exited normally: %d",
+				this.getExitCode());
+			
 			// Success, maybe
-			return this._exitcode;
+			return this.getExitCode();
 		}
 		
 		// Exit VM with given code
 		catch (SpringMachineExitException e)
 		{
+			// Debug
+			Debugging.debugNote("VM Exited via exception: %d", e.code());
+			
 			return e.code();
-		}
-		
-		// Ignore these exceptions, just fatal exit
-		catch (SpringFatalException e)
-		{
-			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
 		}
 		
 		// Any other exception is fatal and the task must be made to exit
@@ -455,6 +533,10 @@ public final class SpringMachine
 			
 			err.println("****************************");
 			
+			// Errors are rather bad so rethrow them
+			if (e instanceof Error)
+				throw (Error)e;
+			
 			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
 		}
 	}
@@ -467,7 +549,10 @@ public final class SpringMachine
 	 */
 	public final void setExitCode(int __exitCode)
 	{
-		this._exitcode = __exitCode;
+		synchronized (this)
+		{
+			this._exitcode = __exitCode;
+		}
 	}
 	
 	/**
@@ -480,6 +565,26 @@ public final class SpringMachine
 	{
 		// The act of getting all threads will clear out terminated threads
 		this.getThreads();
+	}
+	
+	/**
+	 * Stores the call trace for this given machine/task.
+	 * 
+	 * @param __message The message to use.
+	 * @param __trace The trace to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/07/06
+	 */
+	public void storeTrace(String __message, CallTraceElement... __trace)
+		throws NullPointerException
+	{
+		if (__message == null || __trace == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this._storedTrace = new CallTraceStorage(__message, __trace); 
+		}
 	}
 	
 	/**

@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 
 /**
  * This is the shelf used for accessing the debugging features of SquirrelJME
@@ -117,4 +118,27 @@ public final class DebugShelf
 	 * @since 2020/06/11
 	 */
 	public static native TracePointBracket[] traceStack();
+	
+	/**
+	 * Starts performing verbose virtual machine outputs for debugging.
+	 * 
+	 * This method may or may not have an actual effect.
+	 * 
+	 * When the calling method exits, verbosity should be terminated although
+	 * it is not required. This is so that outer calls do not cause verbosity
+	 * to happen.
+	 * 
+	 * @param __flags The {@link VerboseDebugFlag}.
+	 * @return An integer to be passed to {@link DebugShelf#verboseStop(int)}.
+	 * @since 2020/07/11
+	 */
+	public static native int verbose(int __flags);
+	
+	/**
+	 * Stops performing verbosity output.
+	 * 
+	 * @param __code The previous verbosity state.
+	 * @since 2020/07/11
+	 */
+	public static native void verboseStop(int __code);
 }

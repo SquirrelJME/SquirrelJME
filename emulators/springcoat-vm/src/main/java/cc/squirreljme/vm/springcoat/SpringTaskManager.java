@@ -10,19 +10,20 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.swm.EntryPoints;
-import cc.squirreljme.vm.VMClassLibrary;
-import cc.squirreljme.emulator.vm.VMSuiteManager;
-import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import javax.microedition.swm.TaskStatus;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
-import net.multiphasicapps.tool.manifest.JavaManifest;
+import cc.squirreljme.emulator.terminal.TerminalPipeManager;
+import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.vm.VMClassLibrary;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * This class manages tasks within SpringCoat and is used to launch and
@@ -41,27 +42,23 @@ public final class SpringTaskManager
 	/** Global state. */
 	protected final GlobalState globalState;
 	
-	/** Tasks that are used. */
-	private final Map<Integer, SpringTask> _tasks =
-		new HashMap<>();
+	/** The machine queue. */
+	private final ReferenceQueue<SpringMachine> _machineGc =
+		new ReferenceQueue<>(); 
 	
-	/** System properties. */
-	private final Map<String, String> _sysprops;
-	
-	/** Next task ID. */
-	private int _nextid;
+	/** Machines that are running on the VM. */
+	private final Collection<Reference<SpringMachine>> _machines =
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the task manager.
 	 *
 	 * @param __sm The suite manager.
 	 * @param __ps The snapshot for profiling.
-	 * @param __sp System properties.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	public SpringTaskManager(VMSuiteManager __sm, ProfilerSnapshot __ps,
-		Map<String, String> __sp)
+	public SpringTaskManager(VMSuiteManager __sm, ProfilerSnapshot __ps)
 		throws NullPointerException
 	{
 		if (__sm == null)
@@ -69,143 +66,107 @@ public final class SpringTaskManager
 		
 		this.suites = __sm;
 		this.profiler = (__ps == null ? new ProfilerSnapshot() : __ps);
-		this._sysprops = (__sp == null ? new HashMap<String, String>() :
-			new HashMap<>(__sp));
 		this.globalState = new GlobalState();
 	}
 	
 	/**
-	 * Starts the specified task.
-	 *
-	 * @param __cp The class path to use.
-	 * @param __entry The entry point.
-	 * @param __args Arguments used.
-	 * @param __gd The current guest depth.
-	 * @return The ID of the created task.
+	 * Spawns a new task.
+	 * 
+	 * @param __classpath The classpath to use.
+	 * @param __mainClass The main entry class.
+	 * @param __mainArgs The main arguments.
+	 * @param __sysProps The system properties.
+	 * @param __stdOutMode Standard output mode.
+	 * @param __stdErrMode Standard error mode.
+	 * @param __forkThread Should the task be started on a new thread?
+	 * @return The spawned machine.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/11/04
+	 * @since 2020/07/09
 	 */
-	public final int startTask(String[] __cp, String __entry, String[] __args,
-		int __gd)
+	public SpringMachine startTask(VMClassLibrary[] __classpath,
+		String __mainClass, String[] __mainArgs,
+		Map<String, String> __sysProps, int __stdOutMode, int __stdErrMode,
+		boolean __forkThread)
 		throws NullPointerException
 	{
-		if (__cp == null || __entry == null || __args == null)
+		if (__classpath == null || __mainClass == null || __mainArgs == null ||
+			__sysProps == null)
 			throw new NullPointerException("NARG");
 		
-		if (true)
-			throw Debugging.todo("Tasks changed completely!!");
+		// Setup the pipe manager
+		TerminalPipeManager pipes = new TerminalPipeManager();
 		
-		VMSuiteManager suites = this.suites;
+		// Figure out where the pipe ends go
+		pipes.registerByType(StandardPipeType.STDOUT, __stdOutMode);
+		pipes.registerByType(StandardPipeType.STDERR, __stdErrMode);
 		
-		// Load classpath libraries
-		int cpn = __cp.length;
-		VMClassLibrary[] scl = new VMClassLibrary[cpn];
-		for (int i = 0; i < cpn; i++)
+		// Spawn the machine
+		SpringClassLoader classloader = new SpringClassLoader(__classpath);
+		SpringMachine machine = new SpringMachine(this.suites,
+			classloader, this, __mainClass,
+			this.profiler, new LinkedHashMap<>(__sysProps), this.globalState,
+			pipes, __mainArgs);
+		
+		// Register the machine, use garbage collector for the weak references
+		synchronized (this)
 		{
-			VMClassLibrary lib = suites.loadLibrary(__cp[i]);
-			
-			// If missing, cannot continue
-			if (lib == null)
-			{
-				todo.DEBUG.note("Could not find library: `%s`", __cp[i]);
-				return TaskAccess.ERROR_MISSING_LIBRARY;
-			}
-			
-			scl[i] = lib;
+			this._machines.add(new WeakReference<>(machine, this._machineGc));
 		}
 		
-		// Get the boot library since we need to look at the entry points
-		VMClassLibrary boot = scl[cpn - 1];
-		
-		// Need to load the manifest where the entry points will be
-		EntryPoints entries;
-		try (InputStream in = boot.resourceAsStream("META-INF/MANIFEST.MF"))
+		// Fork a new thread
+		if (__forkThread)
 		{
-			// {@squirreljme.error BK1h Entry point JAR has no manifest.}
-			if (in == null)
-				throw new SpringVirtualMachineException("BK1h");
+			// Setup new thread
+			Thread fork = new Thread(machine, String.format(
+				"%s-%s-main", classloader.bootLibrary().name(),
+				__mainClass));
 			
-			entries = new EntryPoints(new JavaManifest(in));
+			// Start executing it
+			fork.start();
 		}
 		
-		// {@squirreljme.error BK1i Failed to read the manifest.}
-		catch (IOException e)
-		{
-			throw new SpringVirtualMachineException("BK1i", e);
-		}
-		
-		// Determine the entry point used
-		int bootdx = -1;
-		for (int i = 0, n = entries.size(); i < n; i++)
-			if (__entry.equals(entries.get(i).entryPoint()))
-			{
-				bootdx = i;
-				break;
-			}
-		
-		// Could not find the boot point
-		if (bootdx < 0)
-			return TaskAccess.ERROR_INVALID_ENTRY;
-		
-		// Build machine for the task
-		SpringMachine machine = new SpringMachine(suites,
-			new SpringClassLoader(scl), this, null,
-			this.profiler, this._sysprops, this.globalState, __args);
-		
-		// Lock on tasks
-		Map<Integer, SpringTask> tasks = this._tasks;
-		synchronized (tasks)
-		{
-			// Next task ID
-			int tid = ++this._nextid;
-			
-			// Setup task in a new thread to run and such
-			SpringTask rv = new SpringTask(tid, machine);
-			
-			// Store task in active set
-			tasks.put(tid, rv);
-			
-			// Start a thread for this task, which is that task's main thread
-			new Thread(rv, "MainTask-" + tid + "-" + __entry).start();
-			
-			// The task ID is our handle
-			return tid;
-		}
+		// Use the resultant machine
+		return machine;
 	}
 	
 	/**
-	 * Returns the status for a task.
-	 *
-	 * @param __tid The task ID.
-	 * @return The status.
-	 * @since 2018/11/04
+	 * Returns the active tasks.
+	 * 
+	 * @return The active tasks.
+	 * @since 2020/07/09
 	 */
-	public final int taskStatus(int __tid)
+	public final SpringMachine[] tasks()
 	{
-		// Lock on tasks
-		Map<Integer, SpringTask> tasks = this._tasks;
-		synchronized (tasks)
+		Collection<SpringMachine> result = new ArrayList<>();
+		
+		Collection<Reference<SpringMachine>> machines = this._machines;
+		synchronized (this)
 		{
-			// Must be a valid task
-			SpringTask rv = tasks.get(__tid);
-			if (rv == null)
-				return -1;
+			// See if we can early GC the machines that may have gone away
+			ReferenceQueue<SpringMachine> gc = this._machineGc;
+			for (Reference<? extends SpringMachine> ref = gc.poll();
+				ref != null; ref = gc.poll())
+				machines.remove(ref);
 			
-			// Get the exit code
-			int exitcode = rv._exitcode;
-			
-			// Still running
-			if (exitcode == Integer.MIN_VALUE)
-				return TaskStatus.RUNNING.ordinal();
-			
-			// Terminated with success
-			else if (exitcode == 0)
-				return TaskStatus.EXITED_REGULAR.ordinal();
-			
-			// Terminate with something else
-			else
-				return TaskStatus.EXITED_FATAL.ordinal();
+			// Go through machines to add to the collection
+			for (Iterator<Reference<SpringMachine>> it = machines.iterator();
+				it.hasNext();)
+			{
+				Reference<SpringMachine> ref = it.next();
+				SpringMachine machine = ref.get();
+				
+				// Machine was cleared out, so get rid of it
+				if (machine == null)
+				{
+					it.remove();
+					continue;
+				}
+				
+				result.add(machine);
+			}
 		}
+		
+		return result.<SpringMachine>toArray(new SpringMachine[result.size()]);
 	}
 }
 

@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This class contains serializers of data.
  *
@@ -19,6 +23,9 @@ public final class DataSerialization
 {
 	/**
 	 * Encodes key value.
+	 * 
+	 * This is the opposite of
+	 * {@link DataDeserialization#decodeKey(String)}. 
 	 *
 	 * @param __key The key to encode.
 	 * @return The resulting key.
@@ -47,10 +54,23 @@ public final class DataSerialization
 			char redo = 0;
 			switch (c)
 			{
-				case '+':	redo = 'p'; break;
-				case '#':	redo = 'h'; break;
-				case '.':	redo = 'd'; break;
 				case '-':	redo = '-'; break;
+				case '!':	redo = 'x'; break;
+				case '"':	redo = 'q'; break;
+				case '#':	redo = 'h'; break;
+				case '$':	redo = 'm'; break;
+				case '%':	redo = 'c'; break;
+				case '&':	redo = 'e'; break;
+				case '*':	redo = 's'; break;
+				case '+':	redo = 'p'; break;
+				case '.':	redo = 'd'; break;
+				case '/':	redo = 'l'; break;
+				case ':':	redo = 'o'; break;
+				case '?':	redo = 'u'; break;
+				case '@':	redo = 'a'; break;
+				case '^':	redo = 'r'; break;
+				case '|':	redo = 'i'; break;
+				case '~':	redo = 't'; break;
 			}
 			
 			// Was this value being re-encoded?
@@ -69,6 +89,9 @@ public final class DataSerialization
 	
 	/**
 	 * Encodes the given string to a manifest safe format.
+	 * 
+	 * This is the opposite of
+	 * {@link DataDeserialization#decodeString(String)}. 
 	 *
 	 * @param __s The string to encode.
 	 * @return The encoded string, {@code null} has a special value.
@@ -248,6 +271,21 @@ public final class DataSerialization
 		// Long
 		else if (__o instanceof Long)
 			return "long:" + __o;
+		
+		// Boolean array
+		else if ((__o instanceof boolean[]) || (__o instanceof Boolean[]))
+		{
+			List<Boolean> list = ((__o instanceof boolean[]) ?
+				BooleanArrayList.asList((boolean[])__o) :
+				Arrays.asList((Boolean[])__o));
+			
+			StringBuilder sb = new StringBuilder(
+				String.format("boolean[%d]:", list.size()));
+			for (Boolean v : list)
+				sb.append((v ? 'T' : 'f'));
+			
+			return sb.toString();
+		}
 		
 		// Byte array
 		else if ((__o instanceof byte[]) || __o instanceof Byte[])

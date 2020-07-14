@@ -1,0 +1,4 @@
+result: string:Hello!\_Squirrels\_are\_adorable!
+thrown: NoExceptionThrown
+secondary-stderr: int:1
+only-in: anycoat

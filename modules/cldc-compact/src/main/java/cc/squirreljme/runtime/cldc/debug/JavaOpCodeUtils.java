@@ -26,6 +26,19 @@ public final class JavaOpCodeUtils
 	}
 	
 	/**
+	 * Checks if the instruction is an invoke.
+	 * 
+	 * @param __code The opcode.
+	 * @return If it is a method call.
+	 * @since 2020/07/11
+	 */
+	@SuppressWarnings("MagicNumber")
+	public static boolean isInvoke(int __code)
+	{
+		return (__code >= 182 && __code <= 186);
+	}
+	
+	/**
 	 * Converts the op-code to a string.
 	 *
 	 * @param __code The opcode.

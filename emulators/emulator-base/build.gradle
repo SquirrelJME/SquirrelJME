@@ -49,9 +49,10 @@ dependencies
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
 jar {
-	dependsOn "assembleRelease"
+	//dependsOn "assembleRelease"
+	dependsOn "assembleDebug"
 
 	from buildDir.toPath().resolve("lib").resolve("main").
-		resolve("release").toFile()
+		resolve("debug").toFile()
 	into "/"
 }
