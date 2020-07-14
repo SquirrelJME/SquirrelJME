@@ -1,0 +1,7 @@
+# 2020/07/12
+
+## 13:09
+
+Okay so took me a bit to figure out permissions after adding more tests
+and otherwise, so like `*` alone means everything but otherwise only `foo.*`
+where there is a preceding `.` is the only valid string.

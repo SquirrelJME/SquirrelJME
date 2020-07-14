@@ -1,0 +1,22 @@
+# 2020/07/09
+
+## 06:36
+
+Okay so this morning I woke up with indigestion, heart burn, and acid reflux.
+So I took some stuff for it and essentially worked on SquirrelJME to pass the
+time. But right now I implemented the remaining task stuff, which means that
+tasks should be fully completed. I know it is part of the security work but
+it should have been separated but oh well. I can always rename the branch or
+continue off and merge some stuff I have to `trunk`. But in reality the security
+work will be very simple by reading a set of properties and then checking
+against them so the branch should be nearing completion.
+
+## 09:01
+
+So just as I start work all the tests I wrote for CLDC-compact pass, so now I
+can continue after work to just implement all the security stuff.
+
+## 19:16
+
+Okay so what do I call the allow/deny? `PolicyAction` which would take something
+on top of what Windows uses for the firewall.

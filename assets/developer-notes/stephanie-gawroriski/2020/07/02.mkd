@@ -1,0 +1,10 @@
+# 2020/07/02
+
+## 18:11
+
+I decided to step away from the LCDUI work to delve into the world security
+policies so that `SecurityManager` does useful things. At least to test that
+policies work on an application level, I am going to need to able to launch
+other MIDlets within SquirrelJME, so I think for now I will just do a native
+approach that just has it in shelf so I need not worry about SWM stuff which
+does not even support system properties anyway.
