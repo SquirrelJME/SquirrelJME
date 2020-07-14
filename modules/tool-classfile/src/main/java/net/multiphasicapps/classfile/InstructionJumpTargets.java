@@ -9,11 +9,11 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Set;
-import net.multiphasicapps.collections.SortedTreeSet;
 
 /**
  * This represents the targets of jumps that an instruction may jump to.

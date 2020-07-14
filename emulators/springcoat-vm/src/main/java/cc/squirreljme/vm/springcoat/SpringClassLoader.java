@@ -293,5 +293,16 @@ public final class SpringClassLoader
 				"BK16 %s", __cn), e);
 		}
 	}
+	
+	/**
+	 * Returns the root library.
+	 * 
+	 * @return The root library.
+	 * @since 2020/07/09
+	 */
+	public final VMClassLibrary rootLibrary()
+	{
+		return this._classpath[0];
+	}
 }
 

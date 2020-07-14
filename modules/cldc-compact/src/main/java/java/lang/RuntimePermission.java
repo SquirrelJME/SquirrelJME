@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 
 /**
@@ -40,14 +41,7 @@ public final class RuntimePermission
 	public RuntimePermission(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__name);
-		
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error ZZ1i Runtime permission name cannot be empty.}
-		if (__name.isEmpty())
-			throw new IllegalArgumentException("ZZ1i");
+		this(__name, null);
 	}
 	
 	/**
@@ -62,7 +56,7 @@ public final class RuntimePermission
 	public RuntimePermission(String __name, String __act)
 		throws IllegalArgumentException, NullPointerException
 	{
-		this(__name);
+		super(__name, __act);
 	}
 }
 

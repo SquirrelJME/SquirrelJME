@@ -73,6 +73,10 @@ public class TestTerminalShelfInvalid
 					new byte[12], 0, 12);
 				break;
 			
+			case 9:
+				TerminalShelf.close(-1);
+				break;
+			
 			default:
 				return true;
 		}

@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import java.util.AbstractList;
+import java.util.List;
 
 /**
  * Provides a list view of a {@code double} array.
@@ -128,6 +129,18 @@ public class DoubleArrayList
 	public int size()
 	{
 		return this.size;
+	}
+	
+	/**
+	 * Returns the boxed list type of the given primitive array.
+	 * 
+	 * @param __array The array to wrap.
+	 * @return The boxed list type.
+	 * @since 2020/07/11
+	 */
+	public static List<Double> asList(double... __array)
+	{
+		return new DoubleArrayList(__array);
 	}
 }
 

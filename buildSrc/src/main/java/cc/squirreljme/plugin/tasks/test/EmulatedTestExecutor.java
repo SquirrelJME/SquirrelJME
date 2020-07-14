@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,10 @@ import org.gradle.process.ExecResult;
 public final class EmulatedTestExecutor
 	implements TestExecuter<EmulatedTestExecutionSpec>
 {
+	/** Trace the tests? */
+	public static final String TRACE_PROPERTY =
+		"test.trace";
+	
 	/** The service resource file. */
 	public static final String SERVICE_RESOURCE =
 		"META-INF/services/net.multiphasicapps.tac.TestInterface";
@@ -89,6 +94,18 @@ public final class EmulatedTestExecutor
 			// Load tests to run
 			Collection<String> classes = EmulatedTestUtilities.readJarServices(
 				__spec.jar.getArchiveFile().get().getAsFile().toPath());
+			
+			// Has a single set of tests been specified
+			String singleTest = System.getProperty(
+				TestInVMTask.SINGLE_TEST_PROPERTY);
+			if (singleTest != null)
+				for (Iterator<String> it = classes.iterator(); it.hasNext();)
+				{
+					String test = it.next();
+					
+					if (!test.equals(singleTest))
+						it.remove();
+				}
 			
 			// Report on the found test size (debugging)
 			project.getLogger().lifecycle(String.format(
@@ -203,6 +220,11 @@ public final class EmulatedTestExecutor
 		ExecResult result = project.javaexec(__javaExecSpec ->
 			{
 				Collection<String> args = new LinkedList<>();
+				Collection<String> jvmArgs = new LinkedList<>();
+				
+				// Add tracing?
+				if (Boolean.getBoolean(EmulatedTestExecutor.TRACE_PROPERTY))
+					jvmArgs.add("-Dcc.squirreljme.vm.trace=true");
 				
 				// Add emulator
 				args.add("-Xemulator:" + __spec.emulator);
@@ -228,6 +250,7 @@ public final class EmulatedTestExecutor
 					.emulatorClassPath(null, __spec.emulator));
 				__javaExecSpec.setMain("cc.squirreljme.emulator.vm.VMFactory");
 				__javaExecSpec.setArgs(args);
+				__javaExecSpec.setJvmArgs(jvmArgs);
 				
 				// Pipe outputs to the specified areas so the console can be
 				// read properly!
@@ -295,7 +318,7 @@ public final class EmulatedTestExecutor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/06
 	 */
-	@SuppressWarnings({"FeatureEnvy", "MagicNumber"})
+	@SuppressWarnings({"FeatureEnvy"})
 	private boolean __executeClasses(EmulatedTestExecutionSpec __spec,
 		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite,
 		Iterable<String> __classes)
@@ -322,6 +345,7 @@ public final class EmulatedTestExecutor
 			}
 			
 			// Execute the test
+			System.err.printf("Running test %s...%n", testClass);
 			EmulatedTestResult result = this.__executeClass(
 				__spec, __suite, testClass);
 			

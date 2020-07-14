@@ -10,6 +10,7 @@
 package squirreljme.mle.errors;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
@@ -24,7 +25,7 @@ public class TestJarPackageShelfInvalid
 	 * {@inheritDoc}
 	 * @since 2020/06/22
 	 */
-	@SuppressWarnings("resource")
+	@SuppressWarnings({"resource", "ResultOfMethodCallIgnored"})
 	@Override
 	public boolean test(int __index)
 		throws MLECallError
@@ -42,6 +43,20 @@ public class TestJarPackageShelfInvalid
 			case 2:
 				JarPackageShelf.openResource(
 					JarPackageShelf.classPath()[0], null);
+				break;
+			
+			case 3:
+				JarPackageShelf.equals(null, null);
+				break;
+			
+			case 4:
+				JarPackageShelf.equals(
+					JarPackageShelf.classPath()[0], null);
+				break;
+			
+			case 5:
+				JarPackageShelf.equals(
+					null, JarPackageShelf.classPath()[0]);
 				break;
 			
 			default:

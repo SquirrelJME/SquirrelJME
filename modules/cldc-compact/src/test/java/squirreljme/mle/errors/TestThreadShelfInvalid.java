@@ -10,6 +10,7 @@
 package squirreljme.mle.errors;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
@@ -102,6 +103,24 @@ public class TestThreadShelfInvalid
 			case 17:
 				ThreadShelf.vmThreadSetPriority(null, 
 					Thread.MAX_PRIORITY + 1);
+				break;
+			
+			case 18:
+				ThreadShelf.setTrace(null, null);
+				break;
+			
+			case 19:
+				ThreadShelf.setTrace("message", null);
+				break;
+			
+			case 20:
+				ThreadShelf.setTrace(null,
+					new TracePointBracket[0]);
+				break;
+			
+			case 21:
+				ThreadShelf.setTrace("message",
+					new TracePointBracket[]{null});
 				break;
 			
 			default:

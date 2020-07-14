@@ -9,6 +9,6 @@
  */
 public enum ${NAME}
 {
-	/** End. */
+	/* End. */
 	;
 }

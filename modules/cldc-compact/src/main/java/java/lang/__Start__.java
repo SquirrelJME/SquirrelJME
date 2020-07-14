@@ -9,11 +9,13 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
+import java.util.Objects;
 
 /**
  * This is the starting point for every thread regardless of if it is a main
@@ -86,7 +88,15 @@ final class __Start__
 			// unless another exit condition happens this will effectively
 			// mean the process fails
 			if (ThreadShelf.vmThreadIsMain(vmThread))
+			{
+				// Exit with un-handled exception
 				ThreadShelf.setCurrentExitCode(__Start__._UNHANDLED_EXIT_CODE);
+				
+				// Report the trace of this throwable to hopefully help
+				// debug it
+				ThreadShelf.setTrace(Objects.toString(t.getMessage(), 
+					"No message."), DebugShelf.getThrowableTrace(t));
+			}
 		}
 	}
 	
