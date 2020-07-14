@@ -19,6 +19,9 @@ public final class DataDeserialization
 {
 	/**
 	 * Decodes a key for a given secondary value.
+	 * 
+	 * This is the opposite of
+	 * {@link DataSerialization#encodeKey(String)}. 
 	 *
 	 * @param __key The key to decode.
 	 * @return The decoded key.
@@ -39,16 +42,33 @@ public final class DataDeserialization
 		{
 			char c = __key.charAt(i);
 			
+			// Always treated as lowercase
+			if (c >= 'A' && c <= 'Z')
+				c = Character.toLowerCase(c);
+			
 			// Escaping?
 			if (escaped)
 			{
 				// Determine replacement character
 				switch (c)
 				{
-					case 'p':	c = '+'; break;
-					case 'h':	c = '#'; break;
-					case 'd':	c = '.'; break;
 					case '-':	c = '-'; break;
+					case 'x':	c = '!'; break;
+					case 'q':	c = '"'; break;
+					case 'h':	c = '#'; break;
+					case 'm':	c = '$'; break;
+					case 'c':	c = '%'; break;
+					case 'e':	c = '&'; break;
+					case 's':	c = '*'; break;
+					case 'p':	c = '+'; break;
+					case 'd':	c = '.'; break;
+					case 'l':	c = '/'; break;
+					case 'o':	c = ':'; break;
+					case 'u':	c = '?'; break;
+					case 'a':	c = '@'; break;
+					case 'r':	c = '^'; break;
+					case 'i':	c = '|'; break;
+					case 't':	c = '~'; break;
 				}
 				sb.append(c);
 				
@@ -70,6 +90,9 @@ public final class DataDeserialization
 	
 	/**
 	 * Decodes the given string from a manifest safe format to a string.
+	 * 
+	 * This is the opposite of
+	 * {@link DataSerialization#encodeString(String)}. 
 	 *
 	 * @param __s The string to decode.
 	 * @return The decoded string.
@@ -111,7 +134,8 @@ public final class DataDeserialization
 					sub.append(__s.charAt(++i));
 					
 					// Decode character
-					c = (char)(Integer.valueOf(sub.toString(), 16).intValue());
+					c = (char)(Integer.valueOf(
+						sub.toString(), 16).intValue());
 				}
 				
 				// Code for specific characters

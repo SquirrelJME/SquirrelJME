@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.collections.SortedTreeSet;
+import  cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import net.multiphasicapps.collections.UnmodifiableList;
 
 /**

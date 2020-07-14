@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -92,6 +91,19 @@ public final class ConsoleOutputStream
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/06/15
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		// {@squirreljme.error ZZ3y Could not close the terminal output.}
+		if (TerminalShelf.close(this.fd) < 0)
+			throw new IOException("ZZ3y");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
 	@Override
@@ -114,6 +126,10 @@ public final class ConsoleOutputStream
 		// {@squirreljme.error ZZ06 Error writing to console.}
 		if (TerminalShelf.write(this.fd, __b) < 0)
 			throw new IOException("ZZ06");
+		
+		// Always flush standard error to force printing
+		if (this.fd == StandardPipeType.STDERR)
+			this.flush();
 	}
 	
 	/**
@@ -130,6 +146,10 @@ public final class ConsoleOutputStream
 		// {@squirreljme.error ZZ07 Error writing to console.}
 		if (TerminalShelf.write(this.fd, __b, 0, __b.length) < 0)
 			throw new IOException("ZZ07");
+		
+		// Always flush standard error to force printing
+		if (this.fd == StandardPipeType.STDERR)
+			this.flush();
 	}
 	
 	/**
@@ -148,6 +168,10 @@ public final class ConsoleOutputStream
 		// {@squirreljme.error ZZ08 Error writing to console.}
 		if (TerminalShelf.write(this.fd, __b, __o, __l) < 0)
 			throw new IOException("ZZ08");
+		
+		// Always flush standard error to force printing
+		if (this.fd == StandardPipeType.STDERR)
+			this.flush();
 	}
 }
 
