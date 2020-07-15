@@ -24,12 +24,11 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * This class is capable of reading PCF formatted fonts and reading all of
  * the information from it.
  *
- * Information on the font is at these locations:
- * * <https://fontforge.github.io/en-US/documentation/reference/pcf-format/>
- * * <https://web.archive.org/web/20020215194039if_/
- *   http://myhome.hananet.net:80/~bumchul/xfont/pcf.txt>
- * * <https://web.archive.org/web/20090205034052/
- *   http://www.tsg.ne.jp:80/GANA/S/pcf2bdf/pcf.pdf>
+ * Information on the font is at these locations, looking them up on
+ * archive.org:
+ * * https://fontforge.github.io/en-US/documentation/reference/pcf-format/
+ * * http://myhome.hananet.net:80/~bumchul/xfont/pcf.txt
+ * * http://www.tsg.ne.jp:80/GANA/S/pcf2bdf/pcf.pdf
  *
  * @since 2018/11/25
  */

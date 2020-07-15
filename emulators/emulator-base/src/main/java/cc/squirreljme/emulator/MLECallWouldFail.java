@@ -21,7 +21,6 @@ public class MLECallWouldFail
 	 * Initializes the exception.
 	 * 
 	 * @param __m The message.
-	 * @param __c The cause.
 	 * @since 2020/07/06
 	 */
 	public MLECallWouldFail(String __m)
