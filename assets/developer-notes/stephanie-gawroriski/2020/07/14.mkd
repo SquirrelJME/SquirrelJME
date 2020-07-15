@@ -1,0 +1,20 @@
+# 2020/07/14
+
+## 19:26
+
+Going to pull in my `wip-accesscontrol` branch a little but early but still have a fork where I can continue it. Have been wanting to work on the LCDUI stuff and it would be really nice to have the tasks and otherwise that are in that branch.
+So I am just going to early-fork and merge in, also as well I am going to just
+merge those into the UI branch. I can still continue the security stuff.
+
+## 21:00
+
+I had a thought about a secondary thing. Right now my blog syncing for Fossil and the repository proper is done on my server. Have been thinking this night that
+I want to eventually move that over to Gradle and CircleCI jobs that run on a
+cron job. At least once that is off and made independent, I can then have
+another branch do mapping between GitHub and Fossil tickets. In this case the
+tickets in Fossil will just be a backup of the GitHUb ones since I use that for
+the main issue handling. It would however mean that there is ticket history
+within Fossil again and that if I am ever offline or disconnected from the
+internet for a bit I can see which issues exist and such. Also another branch
+I rather forgot about is the publishing branch. That one is so very much
+old I think I should probably just stop it.
