@@ -47,7 +47,7 @@ public final class SpringNullObject
 	}
 	
 	/**
-	 * {@inheritDoc
+	 * {@inheritDoc}
 	 * @since 2020/05/31
 	 */
 	@Override
