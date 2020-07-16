@@ -32,7 +32,10 @@ public interface UIFormSpecialPositionType
 	byte TITLE =
 		-3;
 	
-	/** The ticker position which is always below the title. */
+	/**
+	 * The ticker position which is always below the title, a scrolling effect
+	 * may happen on the item.
+	 */
 	byte TICKER =
 		-4;
 	

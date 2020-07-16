@@ -30,3 +30,7 @@ build/
 
 # Crash logs
 *.log
+
+# Binary Files
+*.ico
+*.png
