@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIFormSpecialPositionType;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
@@ -142,6 +143,18 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	public static native UIFormBracket formNew()
+		throws MLECallError;
+	
+	/**
+	 * Creates a new item.
+	 * 
+	 * @param __type The {@link UIItemType} to create.
+	 * @return The newly created item.
+	 * @throws MLECallError If the item could not be created or the type was
+	 * not valid.
+	 * @since 2020/07/17
+	 */
+	public static native UIItemBracket itemNew(int __type)
 		throws MLECallError;
 	
 	/**
