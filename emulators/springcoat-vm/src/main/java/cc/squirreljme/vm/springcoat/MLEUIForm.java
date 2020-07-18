@@ -12,8 +12,10 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
+import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
@@ -90,6 +92,37 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new UIFormObject(UIFormShelf.formNew());
+		}
+	},
+	
+	/** {@link UIFormShelf#itemDelete(UIItemBracket)}. */
+	ITEM_DELETE("itemDelete:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.itemDelete(MLEUIForm.__item(__args[0]).item);
+			return null;
+		}
+	},
+	
+	/** {@link UIFormShelf#itemNew(int)}. */  
+	ITEM_NEW("itemNew:(I)Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return new UIItemObject(UIFormShelf.itemNew((int)__args[0]));
 		}
 	},
 	
@@ -173,5 +206,22 @@ public enum MLEUIForm
 			throw new SpringMLECallError("Not a UIFormObject.");
 		
 		return (UIFormObject)__o;
+	}
+	
+	/**
+	 * Gets the object as a {@link UIItemObject}.
+	 * 
+	 * @param __o The object.
+	 * @return As the desired {@link UIItemObject}.
+	 * @throws SpringMLECallError If the object is not this type.
+	 * @since 2020/07/01
+	 */
+	static UIItemObject __item(Object __o)
+		throws SpringMLECallError
+	{
+		if (!(__o instanceof UIItemObject))
+			throw new SpringMLECallError("Not a UIItemObject.");
+		
+		return (UIItemObject)__o;
 	}
 }

@@ -12,8 +12,11 @@ package cc.squirreljme.emulator.uiform;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 
@@ -94,6 +97,45 @@ public final class SwingFormShelf
 		throws MLECallError
 	{
 		return new SwingForm();
+	}
+	
+	/**
+	 * As {@link UIFormShelf#itemDelete(UIItemBracket)}.
+	 * 
+	 * @param __item The item to delete.
+	 * @throws MLECallError On null arguments or if the item could not be
+	 * deleted.
+	 * @since 2020/07/18
+	 */
+	public static void itemDelete(UIItemBracket __item)
+		throws MLECallError
+	{
+		if (__item == null)
+			throw new MLECallError("Null item.");
+		
+		((SwingItem)__item).delete();
+	}
+	
+	/**
+	 * As {@link UIFormShelf#itemNew(int)}. 
+	 * 
+	 * @param __type The {@link UIItemType} to create.
+	 * @return The newly created item.
+	 * @throws MLECallError If the item could not be created or the type was
+	 * not valid.
+	 * @since 2020/07/17
+	 */
+	public static UIItemBracket itemNew(int __type)
+		throws MLECallError
+	{
+		if (__type < 0 || __type >= UIItemType.NUM_TYPES)
+			throw new MLECallError("Out of range type: " + __type);
+		
+		switch (__type)
+		{
+			default:
+				throw Debugging.todo(__type);
+		}
 	}
 	
 	/**

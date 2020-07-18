@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -89,7 +88,7 @@ public class TestUIFormShelfInvalid
 				break;
 			
 			case 11:
-				UIFormShelf.itemNew(UIItemType.NUM_TYPE);
+				UIFormShelf.itemNew(UIItemType.NUM_TYPES);
 				break;
 			
 			default:

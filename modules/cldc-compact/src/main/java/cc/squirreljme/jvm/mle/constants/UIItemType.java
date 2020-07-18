@@ -75,6 +75,6 @@ public interface UIItemType
 		13;
 	
 	/** The number of item types. */
-	byte NUM_TYPE =
+	byte NUM_TYPES =
 		14;
 }

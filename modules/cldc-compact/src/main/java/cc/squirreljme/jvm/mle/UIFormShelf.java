@@ -146,6 +146,17 @@ public final class UIFormShelf
 		throws MLECallError;
 	
 	/**
+	 * Deletes the specified item.
+	 * 
+	 * @param __item The item to delete.
+	 * @throws MLECallError On null arguments or if the item could not be
+	 * deleted.
+	 * @since 2020/07/18
+	 */
+	public static native void itemDelete(UIItemBracket __item)
+		throws MLECallError;
+	
+	/**
 	 * Creates a new item.
 	 * 
 	 * @param __type The {@link UIItemType} to create.

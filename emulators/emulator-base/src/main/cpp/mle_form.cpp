@@ -68,6 +68,26 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formNew(JNIEnv* env,
 	return env->CallStaticObjectMethod(call.xclass, call.xmeth);
 }
 
+JNIEXPORT void JNICALL Impl_mle_FormShelf_itemDelete(JNIEnv* env,
+	jclass classy, jobject form)
+{
+	formMethod call;
+	
+	call = findFormMethod(env, "itemDelete",
+		"(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V");
+	env->CallStaticVoidMethod(call.xclass, call.xmeth, form);
+}
+
+JNIEXPORT jobject JNICALL Impl_mle_FormShelf_itemNew(JNIEnv* env,
+	jclass classy, jint type)
+{
+	formMethod call;
+	
+	call = findFormMethod(env, "itemNew",
+		"(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;");
+	return env->CallStaticObjectMethod(call.xclass, call.xmeth, type);
+}
+
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 	jint metricId)
 {
@@ -84,6 +104,8 @@ static const JNINativeMethod mleFormMethods[] =
 	{"displayShow", "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V", (void*)Impl_mle_FormShelf_displayShow},
 	{"formDelete", "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V", (void*)Impl_mle_FormShelf_formDelete},
 	{"formNew", "()Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;", (void*)Impl_mle_FormShelf_formNew},
+	{"itemDelete", "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V", (void*)Impl_mle_FormShelf_itemDelete},
+	{"itemNew", "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;", (void*)Impl_mle_FormShelf_itemNew},
 	{"metric", "(I)I", (void*)Impl_mle_FormShelf_metric},
 };
 
