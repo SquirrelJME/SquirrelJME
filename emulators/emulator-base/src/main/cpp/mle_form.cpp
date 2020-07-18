@@ -65,7 +65,7 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemPositionGet(JNIEnv* env,
 	
 	call = findFormMethod(env, "formItemPosition",
 		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)I");
-	return env->CallStaticIntegerMethod(call.xclass, call.xmeth, form, item);
+	return env->CallStaticIntMethod(call.xclass, call.xmeth, form, item);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_formItemPositionSet(JNIEnv* env,
