@@ -18,7 +18,7 @@ package cc.squirreljme.jvm.mle.constants;
  *
  * @since 2020/06/30
  */
-public interface UIFormSpecialPositionType
+public interface UIItemPosition
 {
 	/** The left command button. */
 	byte LEFT_COMMAND =

@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.jvm.mle.constants.UIFormSpecialPositionType;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -24,7 +24,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  * 
  * Every item on the form has an index, while some have special index numbers
  * which indicate that the element should be placed in a unique position. The
- * special positions are identified in {@link UIFormSpecialPositionType}.
+ * special positions are identified in {@link UIItemPosition}.
  *
  * @since 2020/06/30
  */
@@ -142,8 +142,8 @@ public final class UIFormShelf
 	 * @param __form The form to get from.
 	 * @param __item The item being queried.
 	 * @return The position of the item, may be one of
-	 * {@link UIFormSpecialPositionType} or
-	 * {@link UIFormSpecialPositionType#NOT_ON_FORM} if not on the form.
+	 * {@link UIItemPosition} or
+	 * {@link UIItemPosition#NOT_ON_FORM} if not on the form.
 	 * @throws MLECallError If the form and item are null.
 	 * @since 2020/07/18
 	 */
@@ -157,7 +157,7 @@ public final class UIFormShelf
 	 * @param __form The form to set on.
 	 * @param __item The item to set.
 	 * @param __pos The position to set the item at, may be one of
-	 * {@link UIFormSpecialPositionType}.
+	 * {@link UIItemPosition}.
 	 * @throws MLECallError If the form or item are null, or the position
 	 * is not valid.
 	 * @since 2020/07/18

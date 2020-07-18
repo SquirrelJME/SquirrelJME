@@ -22,8 +22,8 @@ public interface UIItemType
 	byte CANVAS =
 		0;
 	
-	/** Plain text and/or image. */
-	byte PLAIN =
+	/** Plain text and/or image label. */
+	byte LABEL =
 		1;
 	
 	/** Hyperlink. */

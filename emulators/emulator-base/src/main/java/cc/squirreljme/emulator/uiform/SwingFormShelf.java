@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIFormSpecialPositionType;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -94,8 +94,8 @@ public final class SwingFormShelf
 	 * @param __form The form to get from.
 	 * @param __item The item being queried.
 	 * @return The position of the item, may be one of
-	 * {@link UIFormSpecialPositionType} or
-	 * {@link UIFormSpecialPositionType#NOT_ON_FORM} if not on the form.
+	 * {@link UIItemPosition} or
+	 * {@link UIItemPosition#NOT_ON_FORM} if not on the form.
 	 * @throws MLECallError If the form and item are null.
 	 * @since 2020/07/18
 	 */
@@ -106,7 +106,7 @@ public final class SwingFormShelf
 		if (__form == null || __item == null)
 			throw new MLECallError("Null arguments.");
 		
-		throw Debugging.todo();
+		return ((SwingForm)__form).itemPosition((SwingItem)__item);
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public final class SwingFormShelf
 	 * @param __form The form to set on.
 	 * @param __item The item to set.
 	 * @param __pos The position to set the item at, may be one of
-	 * {@link UIFormSpecialPositionType}.
+	 * {@link UIItemPosition}.
 	 * @throws MLECallError If the form or item are null, or the position
 	 * is not valid.
 	 * @since 2020/07/18
@@ -127,10 +127,10 @@ public final class SwingFormShelf
 		if (__form == null || __item == null)
 			throw new MLECallError("Null arguments.");
 		
-		if (__pos < UIFormSpecialPositionType.MIN_VALUE)
+		if (__pos < UIItemPosition.MIN_VALUE)
 			throw new MLECallError("Invalid special position: " + __pos); 
 		
-		throw Debugging.todo();
+		((SwingForm)__form).itemPosition((SwingItem)__item, __pos);
 	}
 	
 	/**
@@ -180,6 +180,48 @@ public final class SwingFormShelf
 		
 		switch (__type)
 		{
+			case UIItemType.CANVAS:
+				return new SwingItemCanvas();
+			
+			case UIItemType.LABEL:
+				return new SwingItemLabel();
+			
+			case UIItemType.HYPERLINK:
+				return new SwingItemHyperlink();
+			
+			case UIItemType.BUTTON:
+				return new SwingItemButton();
+			
+			case UIItemType.SINGLE_LINE_TEXT_BOX:
+				return new SwingItemSingleLineTextBox();
+			
+			case UIItemType.MULTI_LINE_TEXT_BOX:
+				return new SwingItemMultiLineTextBox();
+			
+			case UIItemType.SPACER:
+				return new SwingItemSpacer();
+			
+			case UIItemType.ADJUSTABLE_GAUGE:
+				return new SwingItemAdjustableGauge();
+			
+			case UIItemType.PROGRESS_INDICATOR:
+				return new SwingItemProgressIndicator();
+			
+			case UIItemType.DATE:
+				return new SwingItemDate();
+			
+			case UIItemType.TIME:
+				return new SwingItemTime();
+			
+			case UIItemType.CHECK_BOX:
+				return new SwingItemCheckBox();
+			
+			case UIItemType.RADIO_BUTTON:
+				return new SwingItemRadioButton();
+			
+			case UIItemType.LIST:
+				return new SwingItemList();
+			
 			default:
 				throw Debugging.todo(__type);
 		}
