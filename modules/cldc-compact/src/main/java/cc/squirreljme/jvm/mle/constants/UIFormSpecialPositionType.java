@@ -46,4 +46,8 @@ public interface UIFormSpecialPositionType
 	/** The lowest permitted value, no value can be lower than this. */
 	byte MIN_VALUE =
 		-5;
+	
+	/** The item is not on the form. */
+	int NOT_ON_FORM =
+		Integer.MIN_VALUE;
 }

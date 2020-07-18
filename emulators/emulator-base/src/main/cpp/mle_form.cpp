@@ -56,7 +56,27 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_formDelete(JNIEnv* env,
 	call = findFormMethod(env, "formDelete",
 		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V");
 	env->CallStaticVoidMethod(call.xclass, call.xmeth, form);
-} 
+}
+
+JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemPositionGet(JNIEnv* env,
+	jclass classy, jobject form, jobject item)
+{
+	formMethod call;
+	
+	call = findFormMethod(env, "formItemPosition",
+		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)I");
+	return env->CallStaticIntegerMethod(call.xclass, call.xmeth, form, item);
+}
+
+JNIEXPORT void JNICALL Impl_mle_FormShelf_formItemPositionSet(JNIEnv* env,
+	jclass classy, jobject form, jobject item, jint position)
+{
+	formMethod call;
+	
+	call = findFormMethod(env, "formItemPosition",
+		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;I)V");
+	env->CallStaticVoidMethod(call.xclass, call.xmeth, form, item, position);
+}
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formNew(JNIEnv* env,
 	jclass classy)
@@ -103,6 +123,8 @@ static const JNINativeMethod mleFormMethods[] =
 	{"displays", "()[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;", (void*)Impl_mle_FormShelf_displays},
 	{"displayShow", "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V", (void*)Impl_mle_FormShelf_displayShow},
 	{"formDelete", "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V", (void*)Impl_mle_FormShelf_formDelete},
+	{"formItemPosition", "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)I", (void*)Impl_mle_FormShelf_formItemPositionGet},
+	{"formItemPosition", "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;I)V", (void*)Impl_mle_FormShelf_formItemPositionSet},
 	{"formNew", "()Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;", (void*)Impl_mle_FormShelf_formNew},
 	{"itemDelete", "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V", (void*)Impl_mle_FormShelf_itemDelete},
 	{"itemNew", "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;", (void*)Impl_mle_FormShelf_itemNew},

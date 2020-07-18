@@ -81,6 +81,47 @@ public enum MLEUIForm
 		}
 	},
 	
+	/** {@link UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket)}. */
+	FORM_ITEM_POSITION_GET("formItemPosition:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.formItemPosition(
+				MLEUIForm.__form(__args[0]).form,
+				MLEUIForm.__item(__args[1]).item);
+		}
+	},
+	
+	/**
+	 * {@link
+	 * UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket, int)}.
+	 */
+	FORM_ITEM_POSITION_SET("formItemPosition:(Lcc/squirreljme/jvm/" +
+		"mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;I)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.formItemPosition(
+				MLEUIForm.__form(__args[0]).form,
+				MLEUIForm.__item(__args[1]).item,
+				(int)__args[2]);
+			return null;
+		}
+	},
+	
 	/** {@link UIFormShelf#formNew()}. */
 	FORM_NEW("formNew:()Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;")
 	{

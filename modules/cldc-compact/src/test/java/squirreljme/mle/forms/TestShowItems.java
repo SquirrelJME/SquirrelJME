@@ -16,11 +16,11 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 
 /**
- * Tests the creation of items.
+ * Tests that item showing works.
  *
  * @since 2020/07/18
  */
-public class TestCreateItems
+public class TestShowItems
 	extends __BaseFormTest__
 {
 	/**
@@ -35,11 +35,13 @@ public class TestCreateItems
 			// Create the item
 			UIItemBracket item = UIFormShelf.itemNew(i);
 			
+			// Show it
+			UIFormShelf.formItemPosition(__form, item, 0);
+			this.secondary("pos-" + i,
+				UIFormShelf.formItemPosition(__form, item));
+			
 			// Then quickly delete it
 			UIFormShelf.itemDelete(item);
-			
-			// Note it
-			this.secondary("did-" + i, true);
 		}
 	}
 }

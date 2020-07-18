@@ -128,11 +128,42 @@ public final class UIFormShelf
 	/**
 	 * Deletes the given form.
 	 * 
-	 * @param __bracket The form to delete.
+	 * @param __form The form to delete.
 	 * @throws MLECallError On null arguments or the form could not be deleted.
 	 * @since 2020/07/01
 	 */
-	public static native void formDelete(UIFormBracket __bracket)
+	public static native void formDelete(UIFormBracket __form)
+		throws MLECallError;
+	
+	/**
+	 * Returns the position of the item on the given form, or if it is not
+	 * on the form.
+	 * 
+	 * @param __form The form to get from.
+	 * @param __item The item being queried.
+	 * @return The position of the item, may be one of
+	 * {@link UIFormSpecialPositionType} or
+	 * {@link UIFormSpecialPositionType#NOT_ON_FORM} if not on the form.
+	 * @throws MLECallError If the form and item are null.
+	 * @since 2020/07/18
+	 */
+	public static native int formItemPosition(UIFormBracket __form,
+		UIItemBracket __item)
+		throws MLECallError;
+	
+	/**
+	 * Sets the position of a form's item.
+	 * 
+	 * @param __form The form to set on.
+	 * @param __item The item to set.
+	 * @param __pos The position to set the item at, may be one of
+	 * {@link UIFormSpecialPositionType}.
+	 * @throws MLECallError If the form or item are null, or the position
+	 * is not valid.
+	 * @since 2020/07/18
+	 */
+	public static native void formItemPosition(UIFormBracket __form,
+		UIItemBracket __item, int __pos)
 		throws MLECallError;
 	
 	/**

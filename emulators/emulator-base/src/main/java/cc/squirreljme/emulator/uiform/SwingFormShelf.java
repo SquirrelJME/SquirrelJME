@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIFormSpecialPositionType;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -84,6 +85,52 @@ public final class SwingFormShelf
 			throw new MLECallError("Null form.");
 		
 		((SwingForm)__bracket).delete();
+	}
+	
+	/**
+	 * Returns the position of the item on the given form, or if it is not
+	 * on the form.
+	 * 
+	 * @param __form The form to get from.
+	 * @param __item The item being queried.
+	 * @return The position of the item, may be one of
+	 * {@link UIFormSpecialPositionType} or
+	 * {@link UIFormSpecialPositionType#NOT_ON_FORM} if not on the form.
+	 * @throws MLECallError If the form and item are null.
+	 * @since 2020/07/18
+	 */
+	public static int formItemPosition(UIFormBracket __form,
+		UIItemBracket __item)
+		throws MLECallError
+	{
+		if (__form == null || __item == null)
+			throw new MLECallError("Null arguments.");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Sets the position of a form's item.
+	 * 
+	 * @param __form The form to set on.
+	 * @param __item The item to set.
+	 * @param __pos The position to set the item at, may be one of
+	 * {@link UIFormSpecialPositionType}.
+	 * @throws MLECallError If the form or item are null, or the position
+	 * is not valid.
+	 * @since 2020/07/18
+	 */
+	public static void formItemPosition(UIFormBracket __form,
+		UIItemBracket __item, int __pos)
+		throws MLECallError
+	{
+		if (__form == null || __item == null)
+			throw new MLECallError("Null arguments.");
+		
+		if (__pos < UIFormSpecialPositionType.MIN_VALUE)
+			throw new MLECallError("Invalid special position: " + __pos); 
+		
+		throw Debugging.todo();
 	}
 	
 	/**
