@@ -63,7 +63,7 @@ public final class SwingDisplay
 		JFrame frame = this.frame;
 		
 		// Remove all components from the frame and make our form the only one
-		frame.add(__form.panel, BorderLayout.CENTER);
+		frame.add(__form.formPanel, BorderLayout.CENTER);
 		
 		// Minimize space used
 		frame.pack();

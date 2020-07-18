@@ -15,6 +15,9 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -29,7 +32,7 @@ public final class SwingForm
 	implements UIFormBracket
 {
 	/** The panel which makes up the form. */
-	protected final JPanel panel;
+	protected final JPanel formPanel;
 	
 	/** Specially placed items. */
 	private final SwingItem[] _specialItems =
@@ -38,6 +41,38 @@ public final class SwingForm
 	/** Items on this form. */
 	private final List<SwingItem> _items =
 		new ArrayList<>();
+	
+	/** The command bar. */
+	protected final JPanel commandBar =
+		new JPanel();
+	
+	/** Left command. */
+	protected final JPanel leftCommand =
+		new JPanel();
+	
+	/** Right command. */
+	protected final JPanel rightCommand =
+		new JPanel();
+	
+	/** Title. */
+	protected final JPanel title =
+		new JPanel();
+	
+	/** Standard body. */
+	protected final JPanel body =
+		new JPanel();
+	
+	/** The ticker. */
+	protected final JPanel ticker =
+		new JPanel();
+	
+	/** The top panel (title and ticker). */
+	protected final JPanel topBar =
+		new JPanel();
+	
+	/** The primary form list contents. */
+	protected final JPanel adjacent =
+		new JPanel();
 	
 	/**
 	 * Initializes the form.
@@ -59,7 +94,7 @@ public final class SwingForm
 		// accordingly
 		panel.setLayout(new BorderLayout());
 		
-		this.panel = panel;
+		this.formPanel = panel;
 	}
 	
 	/**
@@ -209,6 +244,9 @@ public final class SwingForm
 					__item._form = this;
 				}
 			}
+			
+			// Refresh the form
+			this.refresh();
 		}
 	}
 	
@@ -229,20 +267,20 @@ public final class SwingForm
 		
 		synchronized (this)
 		{
+			SwingItem old;
+			
 			// Special position
 			if (__pos < 0)
 			{
 				SwingItem[] specialItems = this._specialItems;
 				
-				SwingItem old = specialItems[-__pos];
+				old = specialItems[-__pos];
 				if (old != null)
 					synchronized (old)
 					{
 						specialItems[-__pos] = null;
 						old._form = null;
 					}
-				
-				return old;
 			}
 			
 			// Remove from the item list
@@ -256,15 +294,18 @@ public final class SwingForm
 					throw new MLECallError("Invalid position: " + __pos);
 				
 				// Remove from the list
-				SwingItem old = items.remove(__pos);
+				old = items.remove(__pos);
 				if (old != null)
 					synchronized (old)
 					{
 						old._form = null;
 					}
-				
-				return old;
 			}
+			
+			// Refresh the form
+			this.refresh();
+			
+			return old;
 		}
 	}
 	
@@ -288,6 +329,107 @@ public final class SwingForm
 				throw new MLECallError("Item not on form.");
 			
 			this.itemRemove(foundPos);
+			
+			// Refresh the form
+			this.refresh();
+		}
+	}
+	
+	/**
+	 * Refreshes this form.
+	 * 
+	 * @since 2020/07/18
+	 */
+	public final void refresh()
+	{
+		synchronized (this)
+		{
+			JPanel formPanel = this.formPanel;
+			
+			// The border layout is the simplest for this and makes sense
+			formPanel.removeAll();
+			formPanel.setLayout(new BorderLayout());
+			
+			// If a body item is set, only use this one and care about nothing
+			// else (is the full-screen desired item)
+			SwingItem bodyItem = this.itemAtPosition(UIItemPosition.BODY);
+			if (bodyItem != null)
+			{
+				formPanel.add(bodyItem.component(), BorderLayout.CENTER);
+				return;
+			}
+			
+			// Adding a title and a ticker to the form?
+			SwingItem titleItem = this.itemAtPosition(UIItemPosition.TITLE);
+			SwingItem tickerItem = this.itemAtPosition(UIItemPosition.TICKER);
+			if (titleItem != null || tickerItem != null)
+			{
+				JPanel topBar = this.topBar;
+				
+				// If we are using the grid layout, we have to add one by one
+				// so just remove everything to refresh it
+				topBar.removeAll();
+				topBar.setLayout(new GridLayout(0, 1));
+				
+				// Add the title component
+				if (titleItem != null)
+					topBar.add(titleItem.component());
+				
+				// Then the ticker component (if any)
+				if (tickerItem != null)
+					topBar.add(tickerItem.component());
+				
+				// Now use the top bar on the form
+				formPanel.add(topBar, BorderLayout.PAGE_START);
+			}
+			
+			// Adding commands to the frame?
+			SwingItem leftItem = this.itemAtPosition(
+				UIItemPosition.LEFT_COMMAND);
+			SwingItem rightItem = this.itemAtPosition(
+				UIItemPosition.RIGHT_COMMAND);
+			if (leftItem != null || rightItem != null)
+			{
+				JPanel commandBar = this.commandBar;
+				
+				// Setup command bar for two items
+				commandBar.removeAll();
+				commandBar.setLayout(new GridLayout(1, 2));
+				
+				if (leftItem != null)
+					commandBar.add(leftItem.component());
+				if (rightItem != null)
+					commandBar.add(rightItem.component());
+				
+				// Use as the bottom of the form
+				formPanel.add(commandBar, BorderLayout.PAGE_END);
+			}
+			
+			// Setup normal adjacent items
+			JPanel adjacent = this.adjacent;
+			int n = this.itemCount();
+			
+			// Use a growing layout but one that is even
+			adjacent.removeAll();
+			adjacent.setLayout(new GridBagLayout());
+			
+			// Setup constraints for all the items
+			GridBagConstraints cons = new GridBagConstraints();
+			cons.gridwidth = 1;
+			cons.gridheight = n;
+			cons.fill = GridBagConstraints.HORIZONTAL;
+			
+			// Now add all the various form bits
+			for (int i = 0; i < n; i++)
+			{
+				cons.gridx = 0;
+				cons.gridy = i;
+				
+				adjacent.add(this.itemAtPosition(i).component(), cons);
+			}
+			
+			// Add the final form
+			formPanel.add(adjacent, BorderLayout.CENTER);
 		}
 	}
 }
