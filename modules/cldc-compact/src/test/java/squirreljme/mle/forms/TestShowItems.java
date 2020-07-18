@@ -40,6 +40,15 @@ public class TestShowItems
 			this.secondary("pos-" + i,
 				UIFormShelf.formItemPosition(__form, item));
 			
+			// Wait a bit
+			try
+			{
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException ignored)
+			{
+			}
+			
 			// Then quickly delete it
 			UIFormShelf.itemDelete(item);
 		}

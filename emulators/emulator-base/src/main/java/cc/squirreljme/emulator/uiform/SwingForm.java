@@ -188,7 +188,7 @@ public final class SwingForm
 		throws MLECallError
 	{
 		if (__item == null)
-			throw new MLECallError("NARG");
+			throw new MLECallError("Null arguments");
 		
 		if (__pos < UIItemPosition.MIN_VALUE)
 			throw new MLECallError("Invalid position: " + __pos);
@@ -418,6 +418,9 @@ public final class SwingForm
 			cons.gridwidth = 1;
 			cons.gridheight = n;
 			cons.fill = GridBagConstraints.HORIZONTAL;
+			cons.weightx = 0.0;
+			cons.weighty = 1.0;
+			cons.anchor = GridBagConstraints.PAGE_START;
 			
 			// Now add all the various form bits
 			for (int i = 0; i < n; i++)
@@ -430,6 +433,10 @@ public final class SwingForm
 			
 			// Add the final form
 			formPanel.add(adjacent, BorderLayout.CENTER);
+			
+			// Request everything be redrawn
+			formPanel.validate();
+			formPanel.repaint();
 		}
 	}
 }

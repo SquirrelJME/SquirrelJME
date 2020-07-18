@@ -19,7 +19,6 @@ import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
-import java.util.Objects;
 import todo.OOPS;
 
 /**
@@ -481,6 +480,17 @@ public final class Debugging
 	@SuppressWarnings("FeatureEnvy")
 	private static void __print(char __c, char __d)
 	{
+		// If we are on standard Java SE, use the System.err for output
+		if (RuntimeShelf.vmType() == VMType.JAVA_SE)
+		{
+			System.err.print(__c);
+			if (__d > 0)
+				System.err.print(__d);
+			
+			return;
+		}
+		
+		// Use standard SquirrelJME output
 		TerminalShelf.write(StandardPipeType.STDERR,
 			(__c > Debugging._BYTE_LIMIT ? '?' : __c));
 		

@@ -44,6 +44,10 @@ abstract class __BaseFormTest__
 		UIFormBracket form = UIFormShelf.formNew();
 		try
 		{
+			// We should actually display the form in order to see if it
+			// works
+			UIFormShelf.displayShow(__display, form);
+			
 			// Run the test
 			this.uiTest(__display, form);
 			
