@@ -136,6 +136,32 @@ public final class UIFormShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the item at the given location.
+	 * 
+	 * @param __form The form to check.
+	 * @param __pos The position to check, may be {@link UIItemPosition}.
+	 * @return The item at the given position or {@code null} if it is not
+	 * there.
+	 * @throws MLECallError If the form is not valid or if the position is
+	 * not valid.
+	 * @since 2020/07/19
+	 */
+	public static native UIItemBracket formItemAtPosition(UIFormBracket __form,
+		int __pos)
+		throws MLECallError;
+	
+	/**
+	 * Returns the number of items on the form.
+	 * 
+	 * @param __form The form to get the count from.
+	 * @return The number of normal items on the form.
+	 * @throws MLECallError If the form is null or not valid.
+	 * @since 2020/07/19
+	 */
+	public static native int formItemCount(UIFormBracket __form)
+		throws MLECallError;
+	
+	/**
 	 * Returns the position of the item on the given form, or if it is not
 	 * on the form.
 	 * 

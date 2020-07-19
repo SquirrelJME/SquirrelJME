@@ -165,6 +165,9 @@ public final class SwingForm
 		if (__item == null)
 			throw new MLECallError("NARG");
 		
+		if (__item._isDeleted)
+			throw new MLECallError("Item was deleted.");
+		
 		synchronized (this)
 		{
 			int n = this.itemCount();
@@ -193,6 +196,9 @@ public final class SwingForm
 		
 		if (__pos < UIItemPosition.MIN_VALUE)
 			throw new MLECallError("Invalid position: " + __pos);
+		
+		if (__item._isDeleted)
+			throw new MLECallError("Item was deleted.");
 		
 		// Normalize position
 		int normalPos = __pos + UIItemPosition.SPECIAL_SHIFT;
@@ -335,6 +341,9 @@ public final class SwingForm
 	{
 		if (__item == null)
 			throw new MLECallError("NARG");
+		
+		if (__item._isDeleted)
+			throw new MLECallError("Item was deleted.");
 		
 		synchronized (this)
 		{

@@ -88,6 +88,27 @@ public final class SwingFormShelf
 	}
 	
 	/**
+	 * As {@link UIFormShelf#formItemAtPosition(UIFormBracket, int)}. 
+	 * 
+	 * @param __form The form to check.
+	 * @param __pos The position to check, may be {@link UIItemPosition}.
+	 * @return The item at the given position or {@code null} if it is not
+	 * there.
+	 * @throws MLECallError If the form is not valid or if the position is
+	 * not valid.
+	 * @since 2020/07/19
+	 */
+	public static UIItemBracket formItemAtPosition(UIFormBracket __form,
+		int __pos)
+		throws MLECallError
+	{
+		if (__form == null)
+			throw new MLECallError("Null arguments.");
+		
+		return ((SwingForm)__form).itemAtPosition(__pos);
+	}
+	
+	/**
 	 * As {@link UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket)}. 
 	 * 
 	 * @param __form The form to get from.

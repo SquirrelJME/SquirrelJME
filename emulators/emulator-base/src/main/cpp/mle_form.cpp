@@ -10,142 +10,127 @@
 #include "squirreljme.h"
 #include "cc_squirreljme_jvm_mle_UIFormShelf.h"
 
-struct formMethod
-{
-	jclass xclass;
-	jmethodID xmeth;	
-};
+// The class to forward to
+#define SWINGUIFORM_CLASSNAME "cc/squirreljme/emulator/uiform/SwingFormShelf"
 
-formMethod findFormMethod(JNIEnv* env,
-	const char* const name, const char* const type)
-{
-	formMethod result;
-	
-	result.xclass = env->FindClass(
-		"cc/squirreljme/emulator/uiform/SwingFormShelf");
-	result.xmeth = env->GetStaticMethodID(result.xclass, name, type);
-	
-	return result;
-}
+// Descriptors for calls
+#define SWINGUIFORM_DISPLAYS_DESC "()[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;"
+#define SWINGUIFORM_DISPLAYSHOW_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
+#define SWINGUIFORM_FORMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
+#define SWINGUIFORM_FORMITEMATPOSITION_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
+#define SWINGUIFORM_FORMITEMPOSITIONGET_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)I"
+#define SWINGUIFORM_FORMITEMPOSITIONSET_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;I)V"
+#define SWINGUIFORM_FORMITEMREMOVE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
+#define SWINGUIFORM_FORMNEW_DESC "()Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"
+#define SWINGUIFORM_ITEMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V"
+#define SWINGUIFORM_ITEMNEW_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
+#define SWINGUIFORM_METRIC_DESC "(I)I"
 
-JNIEXPORT jobjectArray JNICALL Impl_mle_FormShelf_displays(JNIEnv* env,
+JNIEXPORT jobject JNICALL Impl_mle_FormShelf_displays(JNIEnv* env,
 	jclass classy)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "displays",
-		"()[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;");
-	return (jobjectArray)env->CallStaticObjectMethod(call.xclass, call.xmeth);
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
+		"displays", SWINGUIFORM_DISPLAYS_DESC);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_displayShow(JNIEnv* env,
 	jclass classy, jobject display, jobject form)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "displayShow",
-		"(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V");
-	env->CallStaticVoidMethod(call.xclass, call.xmeth, display, form);
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"displayShow", SWINGUIFORM_DISPLAYSHOW_DESC,
+		display, form);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_formDelete(JNIEnv* env,
 	jclass classy, jobject form)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "formDelete",
-		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V");
-	env->CallStaticVoidMethod(call.xclass, call.xmeth, form);
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"formDelete", SWINGUIFORM_FORMDELETE_DESC,
+		form);
+}
+
+JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formItemAtPosition(JNIEnv* env,
+	jclass classy, jobject form, jint position)
+{
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
+		"formItemAtPosition", SWINGUIFORM_FORMITEMATPOSITION_DESC,
+		form, position);
 }
 
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemPositionGet(JNIEnv* env,
 	jclass classy, jobject form, jobject item)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "formItemPosition",
-		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)I");
-	return env->CallStaticIntMethod(call.xclass, call.xmeth, form, item);
+	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
+		"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONGET_DESC,
+		form, item);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_formItemPositionSet(JNIEnv* env,
 	jclass classy, jobject form, jobject item, jint position)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "formItemPosition",
-		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;I)V");
-	env->CallStaticVoidMethod(call.xclass, call.xmeth, form, item, position);
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONSET_DESC,
+		form, item, position);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formItemRemove(JNIEnv* env,
 	jclass classy, jobject form, jint position)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "formItemRemove",
-		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;");
-	return env->CallStaticObjectMethod(call.xclass, call.xmeth, form, position);
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
+		"formItemRemove", SWINGUIFORM_FORMITEMREMOVE_DESC,
+		form, position);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formNew(JNIEnv* env,
 	jclass classy)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "formNew",
-		"()Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;");
-	return env->CallStaticObjectMethod(call.xclass, call.xmeth);
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
+		"formNew", SWINGUIFORM_FORMNEW_DESC);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_itemDelete(JNIEnv* env,
 	jclass classy, jobject form)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "itemDelete",
-		"(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V");
-	env->CallStaticVoidMethod(call.xclass, call.xmeth, form);
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"itemDelete", SWINGUIFORM_ITEMDELETE_DESC,
+		form);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_itemNew(JNIEnv* env,
 	jclass classy, jint type)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "itemNew",
-		"(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;");
-	return env->CallStaticObjectMethod(call.xclass, call.xmeth, type);
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
+		"itemNew", SWINGUIFORM_ITEMNEW_DESC,
+		type);
 }
 
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 	jint metricId)
 {
-	formMethod call;
-	
-	call = findFormMethod(env, "metric", "(I)I");
-	return env->CallStaticIntMethod(call.xclass, call.xmeth,
+	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
+		"metric", SWINGUIFORM_METRIC_DESC,
 		metricId);
 }
 
-static const JNINativeMethod mleFormMethods[] =
+static const JNINativeMethod mleforwardMethods[] =
 {
-	{"displays", "()[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;", (void*)Impl_mle_FormShelf_displays},
-	{"displayShow", "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V", (void*)Impl_mle_FormShelf_displayShow},
-	{"formDelete", "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V", (void*)Impl_mle_FormShelf_formDelete},
-	{"formItemPosition", "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)I", (void*)Impl_mle_FormShelf_formItemPositionGet},
-	{"formItemPosition", "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;I)V", (void*)Impl_mle_FormShelf_formItemPositionSet},
-	{"formItemRemove", "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;", (void*)Impl_mle_FormShelf_formItemRemove},
-	{"formNew", "()Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;", (void*)Impl_mle_FormShelf_formNew},
-	{"itemDelete", "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V", (void*)Impl_mle_FormShelf_itemDelete},
-	{"itemNew", "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;", (void*)Impl_mle_FormShelf_itemNew},
-	{"metric", "(I)I", (void*)Impl_mle_FormShelf_metric},
+	{"displays", SWINGUIFORM_DISPLAYS_DESC, (void*)Impl_mle_FormShelf_displays},
+	{"displayShow", SWINGUIFORM_DISPLAYSHOW_DESC, (void*)Impl_mle_FormShelf_displayShow},
+	{"formDelete", SWINGUIFORM_FORMDELETE_DESC, (void*)Impl_mle_FormShelf_formDelete},
+	{"formItemAtPosition", SWINGUIFORM_FORMITEMATPOSITION_DESC, (void*)Impl_mle_FormShelf_formItemAtPosition},
+	{"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONGET_DESC, (void*)Impl_mle_FormShelf_formItemPositionGet},
+	{"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONSET_DESC, (void*)Impl_mle_FormShelf_formItemPositionSet},
+	{"formItemRemove", SWINGUIFORM_FORMITEMREMOVE_DESC, (void*)Impl_mle_FormShelf_formItemRemove},
+	{"formNew", SWINGUIFORM_FORMNEW_DESC, (void*)Impl_mle_FormShelf_formNew},
+	{"itemDelete", SWINGUIFORM_ITEMDELETE_DESC, (void*)Impl_mle_FormShelf_itemDelete},
+	{"itemNew", SWINGUIFORM_ITEMNEW_DESC, (void*)Impl_mle_FormShelf_itemNew},
+	{"metric", SWINGUIFORM_METRIC_DESC, (void*)Impl_mle_FormShelf_metric},
 };
 
 jint JNICALL mleFormInit(JNIEnv* env, jclass classy)
 {
 	return env->RegisterNatives(
 		env->FindClass("cc/squirreljme/jvm/mle/UIFormShelf"),
-		mleFormMethods, sizeof(mleFormMethods) /
+		mleforwardMethods, sizeof(mleforwardMethods) /
 			sizeof(JNINativeMethod));
 }
