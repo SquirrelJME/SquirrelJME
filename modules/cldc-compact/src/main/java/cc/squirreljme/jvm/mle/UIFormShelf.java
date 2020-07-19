@@ -43,12 +43,14 @@ public final class UIFormShelf
 	 * This is used to register the callback which is called with the user
 	 * interface events and otherwise.
 	 * 
+	 * @param __form The form that the callback will act under.
 	 * @param __callback The callback to register.
 	 * @throws MLECallError If {@code __callback} is {@code null} or one has
 	 * already been registered.
 	 * @since 2020/07/03
 	 */
-	public static native void callback(UIFormCallback __callback)
+	public static native void callback(UIFormBracket __form,
+		UIFormCallback __callback)
 		throws MLECallError;
 	
 	/**

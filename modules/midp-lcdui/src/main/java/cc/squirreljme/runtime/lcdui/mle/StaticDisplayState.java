@@ -192,7 +192,7 @@ public final class StaticDisplayState
 				throw new IllegalStateException("EB3c");
 			
 			// Register the callback
-			UIFormShelf.callback(__daemon);
+			UIFormShelf.callback(null, __daemon);
 			
 			// Setup daemon thread
 			Thread thread = new Thread(__daemon, "LCDUIDaemonThread");
