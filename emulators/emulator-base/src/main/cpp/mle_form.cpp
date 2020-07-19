@@ -15,7 +15,10 @@
 
 // Descriptors for calls
 #define SWINGUIFORM_DISPLAYS_DESC "()[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;"
+#define SWINGUIFORM_DISPLAYCURRENT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;)Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"
 #define SWINGUIFORM_DISPLAYSHOW_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
+#define SWINGUIFORM_EQUALSDISPLAY_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;)Z"
+#define SWINGUIFORM_EQUALSFORM_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)Z"
 #define SWINGUIFORM_EQUALSITEM_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)Z"
 #define SWINGUIFORM_FORMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
 #define SWINGUIFORM_FORMITEMATPOSITION_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
@@ -35,12 +38,36 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_displays(JNIEnv* env,
 		"displays", SWINGUIFORM_DISPLAYS_DESC);
 }
 
+JNIEXPORT jobject JNICALL Impl_mle_FormShelf_displayCurrent(JNIEnv* env,
+	jclass classy, jobject display)
+{
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
+		"displayCurrent", SWINGUIFORM_DISPLAYCURRENT_DESC,
+		display);
+}
+
 JNIEXPORT void JNICALL Impl_mle_FormShelf_displayShow(JNIEnv* env,
 	jclass classy, jobject display, jobject form)
 {
 	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"displayShow", SWINGUIFORM_DISPLAYSHOW_DESC,
 		display, form);
+}
+
+JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsDisplay(JNIEnv* env,
+	jclass classy, jobject a, jobject b)
+{
+	return forwardCallStaticBoolean(env, SWINGUIFORM_CLASSNAME,
+		"equals", SWINGUIFORM_EQUALSDISPLAY_DESC,
+		a, b);
+}
+
+JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsForm(JNIEnv* env,
+	jclass classy, jobject a, jobject b)
+{
+	return forwardCallStaticBoolean(env, SWINGUIFORM_CLASSNAME,
+		"equals", SWINGUIFORM_EQUALSFORM_DESC,
+		a, b);
 }
 
 JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsItem(JNIEnv* env,
@@ -133,7 +160,10 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 static const JNINativeMethod mleforwardMethods[] =
 {
 	{"displays", SWINGUIFORM_DISPLAYS_DESC, (void*)Impl_mle_FormShelf_displays},
+	{"displayCurrent", SWINGUIFORM_DISPLAYCURRENT_DESC, (void*)Impl_mle_FormShelf_displayCurrent},
 	{"displayShow", SWINGUIFORM_DISPLAYSHOW_DESC, (void*)Impl_mle_FormShelf_displayShow},
+	{"equals", SWINGUIFORM_EQUALSDISPLAY_DESC, (void*)Impl_mle_FormShelf_equalsDisplay},
+	{"equals", SWINGUIFORM_EQUALSFORM_DESC, (void*)Impl_mle_FormShelf_equalsForm},
 	{"equals", SWINGUIFORM_EQUALSITEM_DESC, (void*)Impl_mle_FormShelf_equalsItem},
 	{"formDelete", SWINGUIFORM_FORMDELETE_DESC, (void*)Impl_mle_FormShelf_formDelete},
 	{"formItemAtPosition", SWINGUIFORM_FORMITEMATPOSITION_DESC, (void*)Impl_mle_FormShelf_formItemAtPosition},

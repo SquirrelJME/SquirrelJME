@@ -53,6 +53,23 @@ public final class SwingFormShelf
 	}
 	
 	/**
+	 * As {@link UIFormShelf#displayCurrent(UIDisplayBracket)}. 
+	 * 
+	 * @param __display The display to query.
+	 * @return The form that is currently shown or {@code null}.
+	 * @throws MLECallError On null arguments.
+	 * @since 2020/07/01
+	 */
+	public static UIFormBracket displayCurrent(UIDisplayBracket __display)
+		throws MLECallError
+	{
+		if (__display == null)
+			throw new MLECallError("Null argument.");
+		
+		return ((SwingDisplay)__display).current();
+	}
+	
+	/**
 	 * Handles
 	 * {@link UIFormShelf#displayShow(UIDisplayBracket, UIFormBracket)}. 
 	 * 

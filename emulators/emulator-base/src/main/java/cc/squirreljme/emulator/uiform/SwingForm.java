@@ -70,6 +70,9 @@ public final class SwingForm
 	protected final JPanel adjacent =
 		new JPanel();
 	
+	/** The display owning this. */
+	SwingDisplay _display;
+	
 	/**
 	 * Initializes the form.
 	 * 

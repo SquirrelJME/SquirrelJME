@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
@@ -28,6 +29,9 @@ public final class SwingDisplay
 	
 	/** The frame that makes up this display. */
 	protected final JFrame frame;
+	
+	/** The current frame visible on the form. */
+	private SwingForm _current;
 	
 	/**
 	 * Initializes the display.
@@ -48,34 +52,81 @@ public final class SwingDisplay
 	}
 	
 	/**
+	 * Returns the current form being displayed.
+	 * 
+	 * @return The current form.
+	 * @since 2020/07/19
+	 */
+	public SwingForm current()
+	{
+		synchronized (this)
+		{
+			return this._current;
+		}
+	}
+	
+	/**
 	 * Shows the given form on the display.
 	 * 
 	 * @param __form The form to show.
-	 * @throws NullPointerException On null arguments.
+	 * @throws MLECallError On null arguments.
 	 * @since 2020/07/01
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public void show(SwingForm __form)
-		throws NullPointerException
+		throws MLECallError
 	{
 		if (__form == null)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
-		JFrame frame = this.frame;
-		
-		// Remove all components from the frame and make our form the only one
-		frame.setLayout(new BorderLayout());
-		frame.add(__form.formPanel, BorderLayout.CENTER);
-		
-		// Minimize space used
-		frame.pack();
-		
-		// If the frame was not already visible then just center it on screen 
-		boolean alreadyVisible = frame.isVisible();
-		if (!alreadyVisible)
-			frame.setLocationRelativeTo(null);
-		
-		// Now show it
-		frame.setVisible(true);
+		synchronized (this)
+		{
+			JFrame frame = this.frame;
+			
+			// The form must not be associated with a display
+			synchronized (__form)
+			{
+				if (__form._display != null)
+					throw new MLECallError(
+						"Associated with display.");
+			}
+			
+			// Remove previous form if there is one
+			SwingForm current = this._current;
+			if (current != null)
+				synchronized (current)
+				{
+					// Snip it out
+					frame.remove(__form.formPanel);
+					
+					// And clear the linking
+					current._display = null;
+				}
+			
+			// Remove all components from the frame and make our form the only
+			// one
+			frame.setLayout(new BorderLayout());
+			frame.add(__form.formPanel, BorderLayout.CENTER);
+			
+			// Minimize space used
+			frame.pack();
+			
+			// If the frame was not already visible then just center it on
+			// screen 
+			boolean alreadyVisible = frame.isVisible();
+			if (!alreadyVisible)
+				frame.setLocationRelativeTo(null);
+			
+			// Now show it
+			frame.setVisible(true);
+			
+			// Currently displayed form
+			synchronized (__form)
+			{
+				this._current = __form;
+				__form._display = this;
+			}
+		}
 	}
 	
 	/**
