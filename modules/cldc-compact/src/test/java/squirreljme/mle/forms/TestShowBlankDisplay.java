@@ -27,8 +27,7 @@ public class TestShowBlankDisplay
 	 */
 	@Override
 	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
-		throws Throwable
 	{
-		UIFormShelf.displayShow(__display, __form);
+		// Does nothing because the form test shows this automatically
 	}
 }

@@ -50,15 +50,6 @@ abstract class __BaseFormTest__
 			
 			// Run the test
 			this.uiTest(__display, form);
-			
-			// Sleep a bit to show the screen
-			try
-			{
-				Thread.sleep(750);
-			}
-			catch (InterruptedException ignored)
-			{
-			}
 		}
 		
 		// Delete the form

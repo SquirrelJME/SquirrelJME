@@ -12,6 +12,9 @@ package cc.squirreljme.runtime.lcdui.mle.pure;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
@@ -23,54 +26,191 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 public class PureUIBackend
 	implements UIBackend
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public void callback(UIFormBracket __form, UIFormCallback __callback)
+		throws MLECallError
+	{
+		UIFormShelf.callback(__form, __callback);
+	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/01
+	 * @since 2020/07/19
 	 */
 	@Override
 	public UIDisplayBracket[] displays()
+		throws MLECallError
 	{
 		return UIFormShelf.displays();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/01
+	 * @since 2020/07/19
+	 */
+	@Override
+	public UIFormBracket displayCurrent(UIDisplayBracket __display)
+		throws MLECallError
+	{
+		return UIFormShelf.displayCurrent(__display);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public void displayShow(UIDisplayBracket __display, UIFormBracket __form)
+		throws MLECallError
+	{
+		UIFormShelf.displayShow(__display, __form);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
+		throws MLECallError
+	{
+		return UIFormShelf.equals(__a, __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public boolean equals(UIFormBracket __a, UIFormBracket __b)
+		throws MLECallError
+	{
+		return UIFormShelf.equals(__a, __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public boolean equals(UIItemBracket __a, UIItemBracket __b)
+		throws MLECallError
+	{
+		return UIFormShelf.equals(__a, __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
 	 */
 	@Override
 	public void formDelete(UIFormBracket __form)
-		throws NullPointerException
+		throws MLECallError
 	{
-		if (__form == null)
-			throw new NullPointerException("NARG");
-		
-		// Natively delete the form
 		UIFormShelf.formDelete(__form);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/01
+	 * @since 2020/07/19
+	 */
+	@Override
+	public UIItemBracket formItemAtPosition(UIFormBracket __form, int __pos)
+		throws MLECallError
+	{
+		return UIFormShelf.formItemAtPosition(__form, __pos);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public int formItemCount(UIFormBracket __form)
+		throws MLECallError
+	{
+		return UIFormShelf.formItemCount(__form);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public int formItemPosition(UIFormBracket __form, UIItemBracket __item)
+		throws MLECallError
+	{
+		return UIFormShelf.formItemPosition(__form, __item);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public void formItemPosition(UIFormBracket __form, UIItemBracket __item,
+		int __pos)
+		throws MLECallError
+	{
+		UIFormShelf.formItemPosition(__form, __item, __pos);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
+		throws MLECallError
+	{
+		return UIFormShelf.formItemRemove(__form, __pos);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
 	 */
 	@Override
 	public UIFormBracket formNew()
+		throws MLECallError
 	{
 		return UIFormShelf.formNew();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/01
+	 * @since 2020/07/19
 	 */
 	@Override
-	public void displayShow(UIDisplayBracket __display, UIFormBracket __form)
-		throws NullPointerException
+	public void itemDelete(UIItemBracket __item)
+		throws MLECallError
 	{
-		if (__display == null || __form == null)
-			throw new NullPointerException("NARG");
-		
-		UIFormShelf.displayShow(__display, __form);
+		UIFormShelf.itemDelete(__item);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public UIItemBracket itemNew(int __type)
+		throws MLECallError
+	{
+		return UIFormShelf.itemNew(__type);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public int metric(int __metric)
+		throws MLECallError
+	{
+		return UIFormShelf.metric(__metric);
+	}
 }

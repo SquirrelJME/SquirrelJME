@@ -12,7 +12,8 @@
  * provides a canvas and callback handler that can be used by virtual machines
  * using SquirrelJME to hook into its graphics callback system.
  *
- * @deprecated Replaced by {@link cc.squirreljme.jvm.mle.UIFormShelf}.
+ * Replaced by {@link cc.squirreljme.jvm.mle.UIFormShelf}.
+ * 
  * @since 2019/12/28
  */
 

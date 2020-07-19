@@ -138,7 +138,7 @@ public class TestUIFormShelfInvalid
 			
 			case 21:
 				UIFormShelf.formItemPosition(UIFormShelf.formNew(),
-					UIFormShelf.itemNew(UIItemType.BUTTON), 0);
+					UIFormShelf.itemNew(UIItemType.BUTTON), 1);
 				break;
 			
 			case 22:

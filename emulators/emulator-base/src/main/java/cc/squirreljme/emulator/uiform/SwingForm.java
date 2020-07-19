@@ -309,7 +309,7 @@ public final class SwingForm
 		{
 			// Check if out of range
 			List<SwingItem> items = this._items;
-			if (normalPos > items.size())
+			if (normalPos >= items.size())
 				throw new MLECallError("Invalid position: " + __pos);
 			
 			// Get item here, which could be null if special
