@@ -21,33 +21,42 @@ import javax.microedition.lcdui.Displayable;
 public final class PhoneUI
 {
 	/** The width of the phone screen. */
+	@Deprecated
 	public static final int DEFAULT_SCREEN_WIDTH =
 		240;
 	
 	/** The height of the phone screen. */
+	@Deprecated
 	public static final int DEFAULT_SCREEN_HEIGHT =
 		320;
 	
 	/** Used to ignore realization. */
+	@Deprecated
 	static final int[] _IGNORE_REALIZATION =
 		new int[4];
 	
 	/** The width of the phone screen. */
+	@Deprecated
 	public final int width;
 	
 	/** The height of the phone screen. */
+	@Deprecated
 	public final int height;
 	
 	/** The backend this UI uses. */
+	@Deprecated
 	protected final PhoneDisplayBackend backend;
 	
 	/** Active display image. */
+	@Deprecated
 	protected final ActiveDisplay activedisplay;
 	
 	/** The current displayable to show. */
+	@Deprecated
 	private Displayable _current;
 	
 	/** Should the display be repainted? */
+	@Deprecated
 	private volatile boolean _repaint;
 	
 	/**
@@ -57,6 +66,7 @@ public final class PhoneUI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public PhoneUI(PhoneDisplayBackend __b)
 		throws NullPointerException
 	{
@@ -72,6 +82,7 @@ public final class PhoneUI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
+	@Deprecated
 	public PhoneUI(PhoneDisplayBackend __b, int __sw, int __sh)
 		throws NullPointerException
 	{
@@ -93,6 +104,7 @@ public final class PhoneUI
 	 * @return The content area height.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final int contentHeight()
 	{
 		return this.activedisplay._contentheight;
@@ -104,6 +116,7 @@ public final class PhoneUI
 	 * @return The content area width.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final int contentWidth()
 	{
 		return this.activedisplay._contentwidth;
@@ -114,6 +127,7 @@ public final class PhoneUI
 	 *
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final void repaint()
 	{
 		this.repaint(0, 0, this.width, this.height);
@@ -128,6 +142,7 @@ public final class PhoneUI
 	 * @param __h The height.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
 		// Realize active display size
@@ -143,6 +158,7 @@ public final class PhoneUI
 	 * @param __d The displayable to draw.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final void setCurrent(Displayable __d)
 	{
 		// Set
@@ -163,6 +179,7 @@ public final class PhoneUI
 	 * @param __t The title to use, {@code null} uses a default title.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final void setTitle(String __t)
 	{
 		// Default title?

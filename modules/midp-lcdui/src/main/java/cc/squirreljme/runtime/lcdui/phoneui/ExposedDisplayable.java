@@ -26,6 +26,7 @@ import javax.microedition.lcdui.Ticker;
 public abstract class ExposedDisplayable
 {
 	/** Drawing/action state. */
+	@Deprecated
 	final State _dstate =
 		new State();
 	

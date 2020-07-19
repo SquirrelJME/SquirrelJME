@@ -16,89 +16,112 @@ import javax.microedition.lcdui.Font;
  *
  * @since 2019/05/16
  */
+@Deprecated
 public final class StandardMetrics
 {
 	/** UI Font size. */
+	@Deprecated
 	public static final byte UI_FONT_SIZE =
 		16;
 	
 	/** Height of the title bar. */
+	@Deprecated
 	public static final int TITLE_BAR_HEIGHT = StandardMetrics.UI_FONT_SIZE;
 	
 	/** Height of the command bar. */
+	@Deprecated
 	public static final int COMMAND_BAR_HEIGHT = StandardMetrics.UI_FONT_SIZE;
 	
 	/** The background bar color. */
+	@Deprecated
 	public static final int BACKGROUND_BAR_COLOR =
 		0xFF_000000;
 	
 	/** The foreground bar color. */
+	@Deprecated
 	public static final int FOREGROUND_BAR_COLOR =
 		0xFF_FFFFFF;
 	
 	/** Transparent background color. */
+	@Deprecated
 	public static final int TRANSPARENT_COLOR =
 		0xFF_FFFFFF;
 	
 	/** Vibration symbol color. */
+	@Deprecated
 	public static final int VIBRATE_COLOR =
 		0xFF_FF00FF;
 	
 	/** Height of the ticker bar. */
+	@Deprecated
 	public static final int TICKER_BAR_HEIGHT = StandardMetrics.UI_FONT_SIZE;
 	
 	/** Background color of the ticker bar. */
+	@Deprecated
 	public static final int BACKGROUND_TICKER_COLOR =
 		0xFF_A6F6FF;
 	
 	/** Foreground color of the ticker bar. */
+	@Deprecated
 	public static final int FOREGROUND_TICKER_COLOR =
 		0xFF_000000;
 	
 	/** The font used for list items. */
+	@Deprecated
 	public static final String LIST_ITEM_FONT =
 		"sansserif";
 	
 	/** The height of list items. */
+	@Deprecated
 	public static final int LIST_ITEM_HEIGHT = StandardMetrics.UI_FONT_SIZE;
 	
 	/** Enabled normal foreground. */
+	@Deprecated
 	public static final int ENABLED_NORMAL_FOREGROUND =
 		0xFF_000000;
 	
 	/** Enabled normal background. */
+	@Deprecated
 	public static final int ENABLED_NORMAL_BACKGROUND =
 		0xFF_FFFFFF;
 	
 	/** Enabled selected foreground. */
+	@Deprecated
 	public static final int ENABLED_SELECTED_FOREGROUND =
 		0xFF_FFFFFF;
 	
 	/** Enable selected background. */
+	@Deprecated
 	public static final int ENABLED_SELECTED_BACKGROUND =
 		0xFF_000088;
 	
 	/** Disabled normal foreground. */
+	@Deprecated
 	public static final int DISABLED_NORMAL_FOREGROUND =
 		0xFF_888888;
 	
 	/** Disabled normal background. */
+	@Deprecated
 	public static final int DISABLED_NORMAL_BACKGROUND =
 		0xFF_FFFFFF;
 	
 	/** Disabled selected foreground. */
+	@Deprecated
 	public static final int DISABLED_SELECTED_FOREGROUND =
 		0xFF_AAAAAA;
 	
 	/** Disabled selected background. */
+	@Deprecated
 	public static final int DISABLED_SELECTED_BACKGROUND =
 		0xFF_888888;
 	
 	/** The focus box color (A). */
+	@Deprecated
 	public static final int FOCUS_A_COLOR =
 		0xFF_FF0000;
 	
 	/** The focus box color (B). */
+	@Deprecated
 	public static final int FOCUS_B_COLOR =
 		0xFF_FFFF00;
 	
@@ -107,6 +130,7 @@ public final class StandardMetrics
 	 *
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	private StandardMetrics()
 	{
 	}
@@ -119,6 +143,7 @@ public final class StandardMetrics
 	 * @return The color to use.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public static final int itemBackgroundColor(boolean __en, boolean __sl)
 	{
 		if (__en)
@@ -141,6 +166,7 @@ public final class StandardMetrics
 	 * @return The color to use.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public static final int itemForegroundColor(boolean __en, boolean __sl)
 	{
 		if (__en)
@@ -161,6 +187,7 @@ public final class StandardMetrics
 	 * @return The item label font.
 	 * @since 2019/12/09
 	 */
+	@Deprecated
 	public static final Font itemLabelFont()
 	{
 		return Font.getFont(StandardMetrics.LIST_ITEM_FONT, 0,

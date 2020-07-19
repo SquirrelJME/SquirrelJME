@@ -21,29 +21,37 @@ import cc.squirreljme.jvm.IPCCallback;
  *
  * @since 2019/12/28
  */
+@Deprecated
 public final class VirtualFramebuffer
 {
 	/** The default width. */
+	@Deprecated
 	public static final int DEFAULT_WIDTH =
 		320;
 	
 	/** The default height. */
+	@Deprecated
 	public static final int DEFAULT_HEIGHT =
 		200;
 	
 	/** The callback to invoke with screen actions. */
+	@Deprecated
 	protected final IPCCallback ipc;
 	
 	/** The width. */
+	@Deprecated
 	protected final int width;
 	
 	/** The height. */
+	@Deprecated
 	protected final int height;
 	
 	/** The raw pixel data. */
+	@Deprecated
 	protected final int[] pixels;
 	
 	/** Title listener. */
+	@Deprecated
 	private FramebufferTitleListener _titlelistener;
 	
 	/**
@@ -53,6 +61,7 @@ public final class VirtualFramebuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public VirtualFramebuffer(IPCCallback __ipc)
 		throws NullPointerException
 	{
@@ -69,6 +78,7 @@ public final class VirtualFramebuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public VirtualFramebuffer(IPCCallback __ipc, int __w, int __h)
 	{
 		if (__ipc == null)
@@ -93,6 +103,7 @@ public final class VirtualFramebuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public final long framebufferControl(int... __args)
 		throws NullPointerException
 	{
@@ -193,6 +204,7 @@ public final class VirtualFramebuffer
 	 * @throws IllegalArgumentException If the property was not known.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public final long framebufferControl(int __pid, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g)
 		throws IllegalArgumentException
@@ -289,6 +301,7 @@ public final class VirtualFramebuffer
 	 * @return The framebuffer pixels.
 	 * @since 2020/01/18
 	 */
+	@Deprecated
 	public final int[] pixels()
 	{
 		return this.pixels;

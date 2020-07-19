@@ -16,10 +16,12 @@ import javax.microedition.lcdui.List;
  *
  * @since 2020/01/18
  */
+@Deprecated
 public class DrawingList
 	extends UIDrawerState
 {
 	/** The list to draw. */
+	@Deprecated
 	protected final List list;
 	
 	/**
@@ -28,6 +30,7 @@ public class DrawingList
 	 * @param __l The list to draw.
 	 * @since 2020/01/18
 	 */
+	@Deprecated
 	public DrawingList(List __l)
 	{
 		super(__l);

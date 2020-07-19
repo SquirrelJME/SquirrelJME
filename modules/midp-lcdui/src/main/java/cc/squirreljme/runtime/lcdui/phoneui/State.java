@@ -15,13 +15,16 @@ package cc.squirreljme.runtime.lcdui.phoneui;
  *
  * @since 2019/05/18
  */
+@Deprecated
 public class State
 {
 	/** The focus index coordinates. */
+	@Deprecated
 	public final Box focusbox =
 		new Box(-1, -1, 0, 0);
 	
 	/** The focused index. */
+	@Deprecated
 	public int focusdx;
 	
 	/**
@@ -29,18 +32,23 @@ public class State
 	 *
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public static final class Box
 	{
 		/** X coordinate. */
+		@Deprecated
 		public int x;
 		
 		/** Y coordinate. */
+		@Deprecated
 		public int y;
 		
 		/** Width. */
+		@Deprecated
 		public int w;
 		
 		/** Height. */
+		@Deprecated
 		public int h;
 		
 		/**
@@ -48,6 +56,7 @@ public class State
 		 *
 		 * @since 2019/05/18
 		 */
+		@Deprecated
 		public Box()
 		{
 		}
@@ -61,6 +70,7 @@ public class State
 		 * @param __h The height.
 		 * @since 2019/05/18
 		 */
+		@Deprecated
 		public Box(int __x, int __y, int __w, int __h)
 		{
 			this.x = __x;
@@ -78,6 +88,7 @@ public class State
 		 * @param __h The height.
 		 * @since 2019/05/18
 		 */
+		@Deprecated
 		public final void set(int __x, int __y, int __w, int __h)
 		{
 			this.x = __x;

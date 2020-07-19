@@ -30,14 +30,17 @@ import javax.microedition.lcdui.TextBox;
  *
  * @since 2019/05/18
  */
+@Deprecated
 public enum ActionMethod
 {
 	/** Alert. */
+	@Deprecated
 	ALERT
 	{
 	},
 	
 	/** Canvas. */
+	@Deprecated
 	CANVAS
 	{
 		/**
@@ -119,11 +122,13 @@ public enum ActionMethod
 	},
 	
 	/** File selector. */
+	@Deprecated
 	FILE_SELECTOR
 	{
 	},
 	
 	/** Form. */
+	@Deprecated
 	FORM
 	{
 		/**
@@ -139,6 +144,7 @@ public enum ActionMethod
 	},
 	
 	/** List. */
+	@Deprecated
 	LIST
 	{
 		/**
@@ -234,11 +240,13 @@ public enum ActionMethod
 	},
 	
 	/** Tabbed Pane. */
+	@Deprecated
 	TABBED_PANE
 	{
 	},
 	
 	/** Text Box. */
+	@Deprecated
 	TEXT_BOX
 	{
 	},
@@ -256,6 +264,7 @@ public enum ActionMethod
 	 * @return {@code true} if the command was handled.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public boolean command(Displayable __d, State __s, int __c)
 	{
 		return false;
@@ -273,6 +282,7 @@ public enum ActionMethod
 	 * @return {@code true} if the display should be repainted.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public boolean keyEvent(Displayable __d, State __s, int __ty, int __kc,
 		int __ch, int __time)
 	{
@@ -291,6 +301,7 @@ public enum ActionMethod
 	 * @return {@code true} if the display should be repainted.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public boolean pointerEvent(Displayable __d, State __s, int __ty, int __x,
 		int __y, int __time)
 	{
@@ -305,6 +316,7 @@ public enum ActionMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public static final ActionMethod of(Class<?> __cl)
 		throws NullPointerException
 	{

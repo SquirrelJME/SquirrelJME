@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.lcdui.vfb;
  *
  * @since 2020/01/17
  */
+@Deprecated
 public interface FramebufferTitleListener
 {
 	/**
@@ -23,6 +24,7 @@ public interface FramebufferTitleListener
 	 * @param __s The title to set.
 	 * @since 2020/01/17
 	 */
+	@Deprecated
 	void titleUpdated(String __s);
 }
 

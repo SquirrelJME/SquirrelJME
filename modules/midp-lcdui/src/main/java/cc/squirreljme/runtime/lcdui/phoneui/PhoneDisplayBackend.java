@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
  *
  * @since 2019/05/16
  */
+@Deprecated
 public interface PhoneDisplayBackend
 {
 	/**
@@ -26,6 +27,7 @@ public interface PhoneDisplayBackend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	void activate(ActiveDisplay __ad)
 		throws NullPointerException;
 	
@@ -35,6 +37,7 @@ public interface PhoneDisplayBackend
 	 * @return The display capabilities.
 	 * @since 2019/05/17
 	 */
+	@Deprecated
 	int capabilities();
 	
 	/**
@@ -44,6 +47,7 @@ public interface PhoneDisplayBackend
 	 * @return If the display is upside-down.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	boolean isUpsidedown();
 	
 	/**
@@ -52,6 +56,7 @@ public interface PhoneDisplayBackend
 	 * @return The display pixel format.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	PixelFormat pixelFormat();
 	
 	/**
@@ -63,6 +68,7 @@ public interface PhoneDisplayBackend
 	 * @param __h The height.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	void repaint(int __x, int __y, int __w, int __h);
 }
 

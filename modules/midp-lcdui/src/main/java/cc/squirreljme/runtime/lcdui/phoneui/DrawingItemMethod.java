@@ -26,9 +26,11 @@ import javax.microedition.lcdui.TextField;
  *
  * @since 2019/12/09
  */
+@Deprecated
 public enum DrawingItemMethod
 {
 	/** Choice group. */
+	@Deprecated
 	CHOICE_GROUP
 	{
 		/**
@@ -44,6 +46,7 @@ public enum DrawingItemMethod
 	},
 	
 	/** Custom item. */
+	@Deprecated
 	CUSTOM_ITEM
 	{
 		/**
@@ -59,6 +62,7 @@ public enum DrawingItemMethod
 	},
 	
 	/** Date field. */
+	@Deprecated
 	DATE_FIELD
 	{
 		/**
@@ -74,6 +78,7 @@ public enum DrawingItemMethod
 	},
 	
 	/** Gauge. */
+	@Deprecated
 	GAUGE
 	{
 		/**
@@ -89,6 +94,7 @@ public enum DrawingItemMethod
 	},
 	
 	/** Image item. */
+	@Deprecated
 	IMAGE_ITEM
 	{
 		/**
@@ -104,6 +110,7 @@ public enum DrawingItemMethod
 	},
 	
 	/** Spacer. */
+	@Deprecated
 	SPACER
 	{
 		/**
@@ -119,6 +126,7 @@ public enum DrawingItemMethod
 	},
 	
 	/** String item. */
+	@Deprecated
 	STRING_ITEM
 	{
 		/**
@@ -145,6 +153,7 @@ public enum DrawingItemMethod
 	},
 	
 	/** Text field. */
+	@Deprecated
 	TEXT_FIELD
 	{
 		/**
@@ -177,6 +186,7 @@ public enum DrawingItemMethod
 	 * @param __sel Is this selected?
 	 * @since 2019/12/09
 	 */
+	@Deprecated
 	public abstract void paint(Displayable __d, Item __i, State __s,
 		Graphics __g, int __x, int __y, int __w, int __h, boolean __enb,
 		boolean __sel);
@@ -189,6 +199,7 @@ public enum DrawingItemMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/09
 	 */
+	@Deprecated
 	public static final DrawingItemMethod of(Class<?> __cl)
 		throws NullPointerException
 	{

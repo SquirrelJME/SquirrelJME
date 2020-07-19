@@ -27,6 +27,7 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2019/05/16
  */
+@Deprecated
 public final class NativeUIBackend
 	implements NativeDisplayEventCallback, PhoneDisplayBackend
 {
@@ -36,23 +37,29 @@ public final class NativeUIBackend
 	 * to {@code true} and it is recommended it be used, otherwise it may be
 	 * disabled if it causes issues with some software.}
 	 */
+	@Deprecated
 	public static boolean USE_ACCELERATION =
 		Boolean.valueOf(System.getProperty("cc.squirreljme.lcdui.acceleration",
 		"true"));
 	
 	/** The native display ID. */
+	@Deprecated
 	protected final int nid;
 	
 	/** The pixel format of the buffer. */
+	@Deprecated
 	protected final PixelFormat pixelformat;
 	
 	/** The active display to use. */
+	@Deprecated
 	private volatile ActiveDisplay _activedisplay;
 	
 	/** The display width. */
+	@Deprecated
 	private int _width;
 	
 	/** The display height. */
+	@Deprecated
 	private int _height;
 	
 	/**
@@ -61,6 +68,7 @@ public final class NativeUIBackend
 	 * @param __nid The native display ID this uses.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public NativeUIBackend(int __nid)
 	{
 		this.nid = __nid;
@@ -78,6 +86,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void activate(ActiveDisplay __ad)
 		throws NullPointerException
@@ -99,6 +108,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/17
 	 */
+	@Deprecated
 	@Override
 	public final int capabilities()
 	{
@@ -121,6 +131,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void command(int __d, int __c)
 	{
@@ -145,6 +156,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void exitRequest(int __d)
 	{
@@ -167,6 +179,7 @@ public final class NativeUIBackend
 	 * @return The graphics for this backend.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final Graphics graphics(boolean[] __a, int[] __dims)
 		throws NullPointerException
 	{
@@ -227,6 +240,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final boolean isUpsidedown()
 	{
@@ -240,6 +254,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void keyEvent(int __d, int __ty, int __kc, int __ch,
 		int __time)
@@ -265,6 +280,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void lostCallback()
 	{
@@ -278,6 +294,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void paintDisplay(int __d, int __x, int __y,
 		int __w, int __h)
@@ -321,6 +338,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final PixelFormat pixelFormat()
 	{
@@ -331,6 +349,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void pointerEvent(int __d, int __ty, int __x, int __y,
 		int __time)
@@ -357,6 +376,7 @@ public final class NativeUIBackend
 	 *
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public final void repaint()
 	{
 		if (true)
@@ -370,6 +390,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
@@ -383,6 +404,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void shown(int __d, int __shown)
 	{
@@ -400,6 +422,7 @@ public final class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	@Override
 	public final void sizeChanged(int __d, int __w, int __h)
 	{

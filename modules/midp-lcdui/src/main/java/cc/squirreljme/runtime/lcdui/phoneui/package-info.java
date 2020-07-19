@@ -11,8 +11,10 @@
  * This package contains and defines a user-interface which is very much like
  * ancient mobile phones to allow for maximum application compatibility.
  *
+ * @deprecated Replaced by {@link cc.squirreljme.jvm.mle.UIFormShelf}.
  * @since 2019/05/16
  */
 
+@Deprecated
 package cc.squirreljme.runtime.lcdui.phoneui;
 

@@ -16,10 +16,12 @@ import javax.microedition.lcdui.Canvas;
  *
  * @since 2020/01/18
  */
+@Deprecated
 public class DrawingCanvas
 	extends UIDrawerState
 {
 	/** The canvas to draw. */
+	@Deprecated
 	protected final Canvas canvas;
 	
 	/**
@@ -28,6 +30,7 @@ public class DrawingCanvas
 	 * @param __c The canvas to draw.
 	 * @since 2020/01/18
 	 */
+	@Deprecated
 	public DrawingCanvas(Canvas __c)
 	{
 		super(__c);

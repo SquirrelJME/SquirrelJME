@@ -18,10 +18,12 @@ import javax.microedition.lcdui.Graphics;
  * @see VirtualFramebuffer
  * @since 2019/12/28
  */
+@Deprecated
 public final class VirtualFramebufferCanvas
 	extends Canvas
 {
 	/** The framebuffer to use. */
+	@Deprecated
 	protected final VirtualFramebuffer framebuffer;
 	
 	/**
@@ -31,6 +33,7 @@ public final class VirtualFramebufferCanvas
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public VirtualFramebufferCanvas(VirtualFramebuffer __fb)
 		throws NullPointerException
 	{
@@ -44,6 +47,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void keyPressed(int __kc)
 	{
@@ -54,6 +58,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void keyReleased(int __kc)
 	{
@@ -64,6 +69,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void keyRepeated(int __kc)
 	{
@@ -74,6 +80,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void paint(Graphics __g)
 	{
@@ -84,6 +91,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void pointerDragged(int __x, int __y)
 	{
@@ -94,6 +102,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void pointerPressed(int __x, int __y)
 	{
@@ -104,6 +113,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void pointerReleased(int __x, int __y)
 	{
@@ -114,6 +124,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void showNotify()
 	{
@@ -124,6 +135,7 @@ public final class VirtualFramebufferCanvas
 	 * {@inheritDoc}
 	 * @since 2018/12/28
 	 */
+	@Deprecated
 	@Override
 	public final void sizeChanged(int __w, int __h)
 	{

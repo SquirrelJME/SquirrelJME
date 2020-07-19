@@ -10,8 +10,10 @@
 /**
  * This contains the Framebuffer UI engine.
  *
+ * @deprecated Replaced by {@link cc.squirreljme.jvm.mle.UIFormShelf}.
  * @since 2020/01/12
  */
 
+@Deprecated
 package cc.squirreljme.runtime.lcdui.fbui;
 

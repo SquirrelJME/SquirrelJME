@@ -28,9 +28,11 @@ import javax.microedition.lcdui.TextBox;
  *
  * @since 2019/05/18
  */
+@Deprecated
 public enum DrawingMethod
 {
 	/** Alert. */
+	@Deprecated
 	ALERT
 	{
 		/**
@@ -46,6 +48,7 @@ public enum DrawingMethod
 	},
 	
 	/** Canvas. */
+	@Deprecated
 	CANVAS
 	{
 		/**
@@ -61,6 +64,7 @@ public enum DrawingMethod
 	},
 	
 	/** File selector. */
+	@Deprecated
 	FILE_SELECTOR
 	{
 		/**
@@ -76,6 +80,7 @@ public enum DrawingMethod
 	},
 	
 	/** Form. */
+	@Deprecated
 	FORM
 	{
 		/**
@@ -148,6 +153,7 @@ public enum DrawingMethod
 	},
 	
 	/** List. */
+	@Deprecated
 	LIST
 	{
 		/**
@@ -235,6 +241,7 @@ public enum DrawingMethod
 	},
 	
 	/** Tabbed pane. */
+	@Deprecated
 	TABBED_PANE
 	{
 		/**
@@ -250,6 +257,7 @@ public enum DrawingMethod
 	},
 	
 	/** Text box. */
+	@Deprecated
 	TEXT_BOX
 	{
 		/**
@@ -277,6 +285,7 @@ public enum DrawingMethod
 	 * @param __h The display height.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public abstract void paint(Displayable __d, State __s, Graphics __g,
 		int __w, int __h);
 	
@@ -288,6 +297,7 @@ public enum DrawingMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public static final DrawingMethod of(Class<?> __cl)
 		throws NullPointerException
 	{

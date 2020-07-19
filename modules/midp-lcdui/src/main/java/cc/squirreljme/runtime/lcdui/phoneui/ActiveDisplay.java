@@ -26,39 +26,51 @@ import javax.microedition.lcdui.Ticker;
  *
  * @since 2019/05/16
  */
+@Deprecated
 public final class ActiveDisplay
 {
 	/** The width of the display. */
+	@Deprecated
 	protected final int width;
 	
 	/** The height of the display. */
+	@Deprecated
 	protected final int height;
 	
 	/** The displayable to draw. */
+	@Deprecated
 	volatile Displayable _current;
 	
 	/** The drawing method to use. */
+	@Deprecated
 	volatile DrawingMethod _drawing;
 	
 	/** The action method to use. */
+	@Deprecated
 	volatile ActionMethod _action;
 	
 	/** Current drawing state. */
+	@Deprecated
 	volatile State _state;
 	
 	/** Content X Area. */
+	@Deprecated
 	int _contentx;
 	
 	/** Content Y Area. */
+	@Deprecated
 	int _contenty;
 	
 	/** Width of the content area. */
+	@Deprecated
 	int _contentwidth;
 	
 	/** Height of the content area. */
+	@Deprecated
 	int _contentheight;
 	
 	/** The title to use. */
+	@Deprecated
 	String _title;
 	
 	/**
@@ -68,6 +80,7 @@ public final class ActiveDisplay
 	 * @param __h The height.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public ActiveDisplay(int __w, int __h)
 	{
 		// Set sizes
@@ -88,6 +101,7 @@ public final class ActiveDisplay
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final void activate(Displayable __d)
 		throws NullPointerException
 	{
@@ -116,6 +130,7 @@ public final class ActiveDisplay
 	 * @return If the display should be repainted.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public final boolean command(int __c)
 	{
 		// Display must be active
@@ -152,6 +167,7 @@ public final class ActiveDisplay
 	 *
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public final void exitRequest()
 	{
 		// Ignore if nothing is set
@@ -186,6 +202,7 @@ public final class ActiveDisplay
 	 * @return If the display should be repainted.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public final boolean keyEvent(int __ty, int __kc, int __ch, int __time)
 	{
 		// Display must be active
@@ -213,6 +230,7 @@ public final class ActiveDisplay
 	 * @param __h The height.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	public final void paint(Graphics __g, int __x, int __y, int __w, int __h)
 	{
 		// Get display details
@@ -419,6 +437,7 @@ public final class ActiveDisplay
 	 * @return If the display should be repainted.
 	 * @since 2019/05/18
 	 */
+	@Deprecated
 	public final boolean pointerEvent(int __ty, int __x, int __y, int __time)
 	{
 		// Display must be active
@@ -440,6 +459,7 @@ public final class ActiveDisplay
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/17
 	 */
+	@Deprecated
 	public final boolean realize(int[] __dims)
 		throws NullPointerException
 	{
