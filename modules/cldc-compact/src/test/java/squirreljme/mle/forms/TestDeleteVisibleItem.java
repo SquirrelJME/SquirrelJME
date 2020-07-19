@@ -14,35 +14,36 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
- * Tests that item showing works.
+ * Checks that deleting visible items fails.
  *
- * @since 2020/07/18
+ * @since 2020/07/19
  */
-public class TestShowItems
+public class TestDeleteVisibleItem
 	extends __BaseFormTest__
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/18
+	 * @since 2020/07/19
 	 */
 	@Override
 	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
+		throws Throwable
 	{
-		for (int i = 0; i < UIItemType.NUM_TYPES; i++)
+		// Create the item and make it visible on the form
+		UIItemBracket item = UIFormShelf.itemNew(UIItemType.BUTTON);
+		UIFormShelf.formItemPosition(__form, item, 0);
+		
+		// Attempt to delete the item
+		try
 		{
-			// Create the item
-			UIItemBracket item = UIFormShelf.itemNew(i);
-			
-			// Show it
-			UIFormShelf.formItemPosition(__form, item, 0);
-			this.secondary("pos-" + i,
-				UIFormShelf.formItemPosition(__form, item));
-			
-			// Then quickly delete it
-			UIFormShelf.formItemRemove(__form, 0);
 			UIFormShelf.itemDelete(item);
+		}
+		catch (MLECallError e)
+		{
+			throw new FormTestException(e);
 		}
 	}
 }

@@ -194,8 +194,9 @@ public final class UIFormShelf
 	 * Deletes the specified item.
 	 * 
 	 * @param __item The item to delete.
-	 * @throws MLECallError On null arguments or if the item could not be
-	 * deleted.
+	 * @throws MLECallError On null arguments, if the item could not be
+	 * deleted, if the item was already deleted, or if the item is currently
+	 * active within a form.
 	 * @since 2020/07/18
 	 */
 	public static native void itemDelete(UIItemBracket __item)

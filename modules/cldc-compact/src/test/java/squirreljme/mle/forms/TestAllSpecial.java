@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Tests all the special slots.
@@ -31,7 +30,6 @@ public class TestAllSpecial
 	 */
 	@Override
 	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
-		throws Throwable
 	{
 		int n = (-UIItemPosition.MIN_VALUE) + 1;
 		UIItemBracket[] special = new UIItemBracket[n];
@@ -54,16 +52,7 @@ public class TestAllSpecial
 			UIFormShelf.formItemPosition(__form, normals[i], i);
 		}
 		
-		// Wait for a bit
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException ignored)
-		{
-		}
-		
-		// Delete all the items
+		// Remove all the items
 		for (int i = n - 1; i >= 0; i--)
 		{
 			// Skip the body so it is not there
@@ -72,15 +61,6 @@ public class TestAllSpecial
 			
 			// Add normal items otherwise			
 			UIFormShelf.formItemRemove(__form, i);
-		}
-		
-		// Wait for a bit
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException ignored)
-		{
 		}
 		
 		// Cleanup

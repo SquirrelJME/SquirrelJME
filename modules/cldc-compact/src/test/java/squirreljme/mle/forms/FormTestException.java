@@ -7,47 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator.uiform;
-
-import javax.swing.JPanel;
+package squirreljme.mle.forms;
 
 /**
- * Time.
+ * Used to indicate a specific exception in form tests.
  *
- * @since 2020/07/18
+ * @since 2020/07/19
  */
-public class SwingItemTime
-	extends SwingItem
+public final class FormTestException
+	extends RuntimeException
 {
-	/** The time picker. */
-	private final JPanel panel;
-	
 	/**
-	 * Initializes the item.
+	 * Initializes the exception.
 	 * 
-	 * @since 2020/07/18
+	 * @param __c The cause.
+	 * @since 2020/07/19
 	 */
-	public SwingItemTime()
+	public FormTestException(Throwable __c)
 	{
-		this.panel = new JPanel();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/18
-	 */
-	@Override
-	public JPanel component()
-	{
-		return this.panel;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/18
-	 */
-	@Override
-	public void deletePost()
-	{
+		super(__c);
 	}
 }

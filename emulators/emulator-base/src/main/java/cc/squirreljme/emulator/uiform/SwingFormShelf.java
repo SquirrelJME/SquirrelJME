@@ -88,8 +88,7 @@ public final class SwingFormShelf
 	}
 	
 	/**
-	 * Returns the position of the item on the given form, or if it is not
-	 * on the form.
+	 * As {@link UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket)}. 
 	 * 
 	 * @param __form The form to get from.
 	 * @param __item The item being queried.
@@ -110,7 +109,8 @@ public final class SwingFormShelf
 	}
 	
 	/**
-	 * Sets the position of a form's item.
+	 * As {@link
+	 * UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket, int)}. 
 	 * 
 	 * @param __form The form to set on.
 	 * @param __item The item to set.
@@ -134,7 +134,7 @@ public final class SwingFormShelf
 	}
 	
 	/**
-	 * Removes the item at the given position on the form.
+	 * As {@link UIFormShelf#formItemRemove(UIFormBracket, int)}. 
 	 * 
 	 * @param __form The form to remove from.
 	 * @param __pos The item to be removed.

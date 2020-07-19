@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import javax.swing.JComponent;
 
 /**
@@ -24,6 +25,9 @@ public abstract class SwingItem
 	/** The form the item is on. */
 	SwingForm _form;
 	
+	/** Has this item been deleted? */
+	boolean _isDeleted;
+	
 	/**
 	 * Returns the component item.
 	 * 
@@ -37,5 +41,30 @@ public abstract class SwingItem
 	 * 
 	 * @since 2020/07/18
 	 */
-	public abstract void delete();
+	public abstract void deletePost();
+	
+	/**
+	 * Deletes the given item.
+	 * 
+	 * @throws MLECallError If it could not deleted.
+	 * @since 2020/07/19
+	 */
+	public final void delete()
+		throws MLECallError
+	{
+		synchronized (this)
+		{
+			if (this._isDeleted)
+				throw new MLECallError("Item already deleted.");
+			
+			if (this._form != null)
+				throw new MLECallError("Item is part of a form.");
+			
+			// Mark as deleted
+			this._isDeleted = true;
+			
+			// Call post deletion handler for cleanup
+			this.deletePost();
+		}
+	}
 }

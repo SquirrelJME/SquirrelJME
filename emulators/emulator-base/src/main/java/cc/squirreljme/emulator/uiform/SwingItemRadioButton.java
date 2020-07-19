@@ -48,7 +48,7 @@ public class SwingItemRadioButton
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void delete()
+	public void deletePost()
 	{
 	}
 }
