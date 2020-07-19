@@ -38,25 +38,4 @@ public abstract class SwingItem
 	 * @since 2020/07/18
 	 */
 	public abstract void delete();
-	
-	/**
-	 * Removes the item from the form it is within.
-	 * 
-	 * @return If it was removed from the form.
-	 * @since 2020/07/18
-	 */
-	public final boolean removeFromForm()
-	{
-		synchronized (this)
-		{
-			// Not on a form
-			SwingForm form = this._form;
-			if (form == null)
-				return false;
-			
-			// Remove from this form
-			form.itemRemove(this);
-			return true;
-		}
-	}
 }

@@ -47,6 +47,10 @@ public interface UIItemPosition
 	byte MIN_VALUE =
 		-5;
 	
+	/** The number of special items, for shifting. */
+	byte SPECIAL_SHIFT =
+		5;
+	
 	/** The item is not on the form. */
 	int NOT_ON_FORM =
 		Integer.MIN_VALUE;

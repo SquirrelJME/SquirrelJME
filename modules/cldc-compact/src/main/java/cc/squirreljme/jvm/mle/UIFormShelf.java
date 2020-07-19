@@ -167,6 +167,20 @@ public final class UIFormShelf
 		throws MLECallError;
 	
 	/**
+	 * Removes the item at the given position on the form.
+	 * 
+	 * @param __form The form to remove from.
+	 * @param __pos The item to be removed.
+	 * @return The item that was removed.
+	 * @throws MLECallError If the form or item are null, the position is
+	 * not valid, or there was no item at the position.
+	 * @since 2020/07/18
+	 */
+	public static native UIItemBracket formItemRemove(UIFormBracket __form,
+		int __pos)
+		throws MLECallError;
+	
+	/**
 	 * Creates a new form.
 	 * 
 	 * @return The newly created form.

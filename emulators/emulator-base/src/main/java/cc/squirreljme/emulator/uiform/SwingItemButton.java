@@ -30,7 +30,10 @@ public class SwingItemButton
 	 */
 	public SwingItemButton()
 	{
+		JButton button = new JButton();
 		this.button = new JButton();
+		
+		button.setText("Button");
 	}
 	
 	/**

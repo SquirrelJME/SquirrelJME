@@ -34,11 +34,7 @@ public final class SwingForm
 	/** The panel which makes up the form. */
 	protected final JPanel formPanel;
 	
-	/** Specially placed items. */
-	private final SwingItem[] _specialItems =
-		new SwingItem[(-UIItemPosition.MIN_VALUE) + 1];
-	
-	/** Items on this form. */
+	/** Items on this form, shifted for special items. */
 	private final List<SwingItem> _items =
 		new ArrayList<>();
 	
@@ -79,8 +75,14 @@ public final class SwingForm
 	 * 
 	 * @since 2020/07/01
 	 */
+	@SuppressWarnings("UnnecessaryLocalVariable")
 	public SwingForm()
 	{
+		// Add starting blank items
+		List<SwingItem> items = this._items;
+		for (int i = 0; i < UIItemPosition.SPECIAL_SHIFT; i++)
+			items.add(null);
+		
 		JPanel panel = new JPanel();
 		
 		// Make sure the panel is not so tiny
@@ -121,18 +123,16 @@ public final class SwingForm
 		if (__pos < UIItemPosition.MIN_VALUE)
 			throw new MLECallError("Bad position: " + __pos);
 		
+		// Normalize
+		int normalPos = __pos + UIItemPosition.SPECIAL_SHIFT;
+		
 		synchronized (this)
 		{
-			// Is this in a special index
-			if (__pos < 0)
-				return this._specialItems[-__pos];
-			
-			// Get based on the index
 			List<SwingItem> items = this._items;
-			if (__pos >= items.size())
+			if (normalPos >= items.size())
 				throw new MLECallError("Invalid index: " + __pos);
 			
-			return items.get(__pos);
+			return items.get(normalPos);
 		}
 	}
 	
@@ -146,7 +146,8 @@ public final class SwingForm
 	{
 		synchronized (this)
 		{
-			return this._items.size();
+			// Items are shifted
+			return this._items.size() - UIItemPosition.SPECIAL_SHIFT;
 		}
 	}
 	
@@ -193,57 +194,80 @@ public final class SwingForm
 		if (__pos < UIItemPosition.MIN_VALUE)
 			throw new MLECallError("Invalid position: " + __pos);
 		
+		// Normalize position
+		int normalPos = __pos + UIItemPosition.SPECIAL_SHIFT;
+		
+		// Prevent thread contention
 		synchronized (this)
 		{
-			// Special index?
-			if (__pos < 0)
+			// Check if out of range
+			List<SwingItem> items = this._items;
+			if (normalPos > items.size())
+				throw new MLECallError("Invalid position: " + __pos);
+			
+			// Get the item that was here, since it will be removed at a later
+			// step
+			SwingItem old = (normalPos < items.size() ? items.get(normalPos) :
+				null);
+			
+			// Do not do anything if the item is staying in the same spot
+			if (__item == old)
+				return;
+			
+			// The item being added may be on another form
+			SwingForm itemForm;
+			synchronized (__item)
 			{
-				SwingItem[] specialItems = this._specialItems;
-				
-				// Remove old item, if there is one
-				SwingItem old = specialItems[-__pos];
-				if (old != null)
-					old.removeFromForm();
-				
-				// Store new item
-				synchronized (__item)
-				{
-					// Remove the given item from the form it is in
-					__item.removeFromForm();
-					
-					// Bind new assignment
-					specialItems[-__pos] = __item;
-					__item._form = this;
-				}
+				itemForm = __item._form;
 			}
 			
-			// Either setting the final item or replacing one
-			else
+			// We need to know the old item's index if it is on this form
+			// as after we adjust things we need to clear the link
+			int oldIndex = (old == null ? UIItemPosition.NOT_ON_FORM :
+				this.itemPosition(old));
+			if (oldIndex != UIItemPosition.NOT_ON_FORM)
+				oldIndex += UIItemPosition.SPECIAL_SHIFT;
+			
+			// If the position is the size of all the elements then we are
+			// adding to the end, make space for it now so that the later
+			// parts of the algorithm are normalized
+			if (normalPos == items.size())
+				items.add(null);
+			
+			// Just overwrite the item here
+			items.set(normalPos, __item);
+			
+			// The old item's form will no longer be valid, we had this item
+			// here so we know it is safe to do this
+			if (old != null)
+				synchronized (old)
+				{
+					old._form = null;
+				}
+			
+			// The item was on a form that was not our own, so clear that
+			// association from it
+			if (itemForm != null && itemForm != this)
+				itemForm.itemRemove(itemForm.itemPosition(__item));
+			
+			// Take claim over this item
+			__item._form = this;
+			
+			// The old item is being moved/replaced on the form
+			if (oldIndex != UIItemPosition.NOT_ON_FORM)
 			{
-				List<SwingItem> items = this._items;
-				int n = items.size();
-				if (__pos > n)
-					throw new MLECallError("Out of range: " + n);
+				// It was a special item, so just clear it
+				if (oldIndex < UIItemPosition.SPECIAL_SHIFT)
+					items.set(oldIndex, null);
 				
-				// Remove old item, if there is one
-				if (__pos != n)
-				{
-					SwingItem old = items.get(__pos);
-					if (old != null)
-						old.removeFromForm();
-				}
-				
-				// Store new item
-				synchronized (__item)
-				{
-					// Remove the given item from the form it is in
-					__item.removeFromForm();
-					
-					// Add the item here, because it would have been removed
-					items.add(__pos, __item);
-					__item._form = this;
-				}
+				// Remove the item at the old position, shift over
+				else
+					items.remove(oldIndex);
 			}
+			
+			// Debug
+			Debugging.debugNote("add(%s, %d): items: %s",
+				__item, __pos, items);
 			
 			// Refresh the form
 			this.refresh();
@@ -258,54 +282,44 @@ public final class SwingForm
 	 * @throws MLECallError If the position is not valid.
 	 * @since 2020/07/18
 	 */
-	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public final SwingItem itemRemove(int __pos)
 		throws MLECallError
 	{
 		if (__pos < UIItemPosition.MIN_VALUE)
 			throw new MLECallError("Invalid position: " + __pos);
 		
+		// Normalize position
+		int normalPos = __pos + UIItemPosition.SPECIAL_SHIFT;
+		
+		// Prevent contention
 		synchronized (this)
 		{
-			SwingItem old;
+			// Check if out of range
+			List<SwingItem> items = this._items;
+			if (normalPos > items.size())
+				throw new MLECallError("Invalid position: " + __pos);
 			
-			// Special position
-			if (__pos < 0)
-			{
-				SwingItem[] specialItems = this._specialItems;
-				
-				old = specialItems[-__pos];
-				if (old != null)
-					synchronized (old)
-					{
-						specialItems[-__pos] = null;
-						old._form = null;
-					}
-			}
+			// Get item here, which could be null if special
+			SwingItem item = items.get(normalPos);
+			if (item == null)
+				throw new MLECallError("No item at: " + __pos);
 			
-			// Remove from the item list
+			// Removing special items just clears the index
+			if (normalPos < UIItemPosition.SPECIAL_SHIFT)
+				items.set(normalPos, null);
+			
+			// But otherwise it gets the index removed
 			else
-			{
-				List<SwingItem> items = this._items;
-				
-				// Check that a bad item is not being removed
-				int n = items.size();
-				if (__pos >= n)
-					throw new MLECallError("Invalid position: " + __pos);
-				
-				// Remove from the list
-				old = items.remove(__pos);
-				if (old != null)
-					synchronized (old)
-					{
-						old._form = null;
-					}
-			}
+				items.remove(normalPos);
+			
+			// Remove form association
+			item._form = null;
 			
 			// Refresh the form
 			this.refresh();
 			
-			return old;
+			// Return the item that was removed
+			return item;
 		}
 	}
 	
@@ -418,7 +432,7 @@ public final class SwingForm
 			cons.gridwidth = 1;
 			cons.gridheight = n;
 			cons.fill = GridBagConstraints.HORIZONTAL;
-			cons.weightx = 0.0;
+			cons.weightx = 1.0;
 			cons.weighty = 1.0;
 			cons.anchor = GridBagConstraints.PAGE_START;
 			
