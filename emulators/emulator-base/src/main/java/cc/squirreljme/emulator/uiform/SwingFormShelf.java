@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
@@ -35,6 +36,24 @@ public final class SwingFormShelf
 	 */
 	private SwingFormShelf()
 	{
+	}
+	
+	/**
+	 * As {@link UIFormShelf#callback(UIFormBracket, UIFormCallback)}. 
+	 * 
+	 * @param __form The form that the callback will act under.
+	 * @param __callback The callback to register.
+	 * @throws MLECallError If {@code __form} is {@code null}.
+	 * @since 2020/07/03
+	 */
+	public static void callback(UIFormBracket __form,
+		UIFormCallback __callback)
+		throws MLECallError
+	{
+		if (__form == null)
+			throw new MLECallError("No form specified.");
+		
+		((SwingForm)__form).setCallback(__callback);
 	}
 	
 	/**

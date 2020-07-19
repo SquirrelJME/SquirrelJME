@@ -9,7 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.mle;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -37,18 +37,12 @@ public final class StaticDisplayState
 		new LinkedList<>();
 	
 	/** The cached forms for {@link Displayable}. */
-	private static final Map<Reference<Displayable>, UIFormInstance> _FORMS =
+	private static final Map<Reference<Displayable>, UIFormBracket> _FORMS =
 		new LinkedHashMap<>();
 	
 	/** Queue which is used for garbage collection of forms. */
 	private static final ReferenceQueue<Displayable> _FORM_QUEUE =
 		new ReferenceQueue<>();
-	
-	/** The user-interface daemon. */
-	private static UIDaemon _uiDaemon;
-	
-	/** The user-interface daemon thread. */
-	private static Thread _uiDaemonThread;
 	
 	/**
 	 * Adds the specified listener for changes to displays.
@@ -80,21 +74,6 @@ public final class StaticDisplayState
 	}
 	
 	/**
-	 * Checks if the UI daemon has been started.
-	 * 
-	 * @return If the UI daemon has been started.
-	 * @since 2020/07/03
-	 */
-	public static boolean isDaemonStarted()
-	{
-		synchronized (StaticDisplayState.class)
-		{
-			return StaticDisplayState._uiDaemon != null &&
-				StaticDisplayState._uiDaemonThread != null;
-		}
-	}
-	
-	/**
 	 * Returns an array of all the attached listeners.
 	 *
 	 * @return An array of listeners.
@@ -119,7 +98,7 @@ public final class StaticDisplayState
 	 * @since 2020/07/01
 	 */
 	public static void register(Displayable __displayable,
-		UIFormInstance __form)
+		UIFormBracket __form)
 		throws NullPointerException
 	{
 		if (__displayable == null || __form == null)
@@ -152,57 +131,21 @@ public final class StaticDisplayState
 		synchronized (StaticDisplayState.class)
 		{
 			ReferenceQueue<Displayable> queue = StaticDisplayState._FORM_QUEUE;
-			Map<Reference<Displayable>, UIFormInstance> forms =
+			Map<Reference<Displayable>, UIFormBracket> forms =
 				StaticDisplayState._FORMS;
 			
 			// If there is anything in the queue, clear it out
 			for (Reference<? extends Displayable> ref = queue.poll();
 				ref != null; ref = queue.poll())
 			{
-				UIFormInstance form = forms.get(ref);
+				UIFormBracket form = forms.get(ref);
 				
 				// Remove from the mapping since it is gone now
 				forms.remove(ref);
 				
 				// Perform collection on it
-				NativeUIBackend.getInstance().formDelete(form);
+				UIBackendFactory.getInstance().formDelete(form);
 			}
-		}
-	}
-	
-	/**
-	 * Starts a daemon for the user interface.
-	 * 
-	 * @param __daemon The daemon to start.
-	 * @throws IllegalStateException If a daemon has already started.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/07/03
-	 */
-	public static void startDaemon(UIDaemon __daemon)
-		throws IllegalStateException, NullPointerException
-	{
-		if (__daemon == null)
-			throw new NullPointerException("NARG");
-		
-		synchronized (StaticDisplayState.class)
-		{
-			// {@squirreljme.error EB3c Daemon has already been started.}
-			if (StaticDisplayState._uiDaemon != null ||
-				StaticDisplayState._uiDaemonThread != null)
-				throw new IllegalStateException("EB3c");
-			
-			// Register the callback
-			UIFormShelf.callback(null, __daemon);
-			
-			// Setup daemon thread
-			Thread thread = new Thread(__daemon, "LCDUIDaemonThread");
-			
-			// Start the thread itself
-			thread.start();
-			
-			// Use these for future handling
-			StaticDisplayState._uiDaemon = __daemon;
-			StaticDisplayState._uiDaemonThread = thread;
 		}
 	}
 	

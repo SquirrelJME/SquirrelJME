@@ -14,6 +14,7 @@
 #define SWINGUIFORM_CLASSNAME "cc/squirreljme/emulator/uiform/SwingFormShelf"
 
 // Descriptors for calls
+#define SWINGUIFORM_CALLBACK_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/callbacks/UIFormCallback;)V"
 #define SWINGUIFORM_DISPLAYS_DESC "()[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;"
 #define SWINGUIFORM_DISPLAYCURRENT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;)Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"
 #define SWINGUIFORM_DISPLAYSHOW_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
@@ -30,6 +31,13 @@
 #define SWINGUIFORM_ITEMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V"
 #define SWINGUIFORM_ITEMNEW_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
 #define SWINGUIFORM_METRIC_DESC "(I)I"
+
+JNIEXPORT void JNICALL Impl_mle_FormShelf_callback(JNIEnv* env,
+	jclass classy, jobject form, jobject callback)
+{
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"callback", SWINGUIFORM_CALLBACK_DESC, form, callback);
+}
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_displays(JNIEnv* env,
 	jclass classy)
@@ -159,6 +167,7 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 
 static const JNINativeMethod mleforwardMethods[] =
 {
+	{"callback", SWINGUIFORM_CALLBACK_DESC, (void*)Impl_mle_FormShelf_callback},
 	{"displays", SWINGUIFORM_DISPLAYS_DESC, (void*)Impl_mle_FormShelf_displays},
 	{"displayCurrent", SWINGUIFORM_DISPLAYCURRENT_DESC, (void*)Impl_mle_FormShelf_displayCurrent},
 	{"displayShow", SWINGUIFORM_DISPLAYSHOW_DESC, (void*)Impl_mle_FormShelf_displayShow},

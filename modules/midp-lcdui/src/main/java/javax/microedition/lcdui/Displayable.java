@@ -10,11 +10,11 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
-import cc.squirreljme.runtime.lcdui.mle.NativeUIBackend;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIFormInstance;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public abstract class Displayable
 	extends ExposedDisplayable
 {
 	/** The native form instance. */
-	final UIFormInstance _uiForm;
+	final UIFormBracket _uiForm;
 	
 	/** Commands/Menus which have been added to the displayable. */
 	final __VolatileList__<__Action__> _actions =
@@ -65,7 +65,7 @@ public abstract class Displayable
 	Displayable()
 	{
 		// Create a new form for this displayable
-		UIFormInstance form = NativeUIBackend.getInstance().formNew();
+		UIFormBracket form = UIBackendFactory.getInstance().formNew();
 		this._uiForm = form;
 		
 		// Register it with the global state

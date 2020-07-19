@@ -7,13 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.mle;
-
 /**
- * This represents an instance of a form.
+ * This is the pure native implementation of the UI Forms.
  *
- * @since 2020/07/01
+ * @since 2020/07/19
  */
-public interface UIFormInstance
-{
-}
+
+package cc.squirreljme.runtime.lcdui.mle.pure;

@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -72,6 +73,9 @@ public final class SwingForm
 	
 	/** The display owning this. */
 	SwingDisplay _display;
+	
+	/** The callback for the form. */
+	private UIFormCallback _callback;
 	
 	/**
 	 * Initializes the form.
@@ -463,6 +467,20 @@ public final class SwingForm
 			// Request everything be redrawn
 			formPanel.validate();
 			formPanel.repaint();
+		}
+	}
+	
+	/**
+	 * Sets the callback to use.
+	 * 
+	 * @param __callback The callback to set.
+	 * @since 2020/07/19
+	 */
+	public void setCallback(UIFormCallback __callback)
+	{
+		synchronized (this)
+		{
+			this._callback = __callback;
 		}
 	}
 }

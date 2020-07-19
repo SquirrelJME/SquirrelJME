@@ -19,9 +19,8 @@ import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
-import cc.squirreljme.runtime.lcdui.mle.NativeUIBackend;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIDisplayInstance;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
 import java.util.ArrayList;
 import java.util.List;
@@ -190,7 +189,7 @@ public class Display
 		4;
 	
 	/** The native display instance. */ 
-	final UIDisplayInstance _uiDisplay;
+	final cc.squirreljme.jvm.mle.brackets.UIDisplayBracket _uiDisplay;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -205,7 +204,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(UIDisplayInstance __uiDisplay)
+	Display(cc.squirreljme.jvm.mle.brackets.UIDisplayBracket __uiDisplay)
 		throws NullPointerException
 	{
 		if (__uiDisplay == null)
@@ -217,7 +216,7 @@ public class Display
 	public void callSerially(Runnable __a)
 	{
 		// Note that the Runnable.run() will be called as if it were serialized
-		// like everything else with @SerializedEvent
+		// like everything else with {@link SerializedEvent}
 		throw new todo.TODO();
 	}
 	
@@ -888,17 +887,8 @@ public class Display
 		throws NullPointerException
 	{
 		// Show the form on the display
-		NativeUIBackend.getInstance().displayShow(this._uiDisplay,
+		UIBackendFactory.getInstance().displayShow(this._uiDisplay,
 			__show._uiForm);
-		
-		// We need to create a background loop which manages the display state
-		// and otherwise, so this will be an active thread running when we
-		// need it to be running
-		synchronized (StaticDisplayState.class)
-		{
-			if (!StaticDisplayState.isDaemonStarted())
-				StaticDisplayState.startDaemon(new __UIDaemon__());
-		}
 		
 		/*UIState uis = UIState.getInstance();
 		
@@ -982,8 +972,8 @@ public class Display
 			Poking.poke();
 			
 			// Get the displays that are attached to the system
-			UIDisplayInstance[] uiDisplays =
-				NativeUIBackend.getInstance().displays();
+			cc.squirreljme.jvm.mle.brackets.UIDisplayBracket[] uiDisplays =
+				UIBackendFactory.getInstance().displays();
 			int n = uiDisplays.length;
 			
 			// Initialize display instances

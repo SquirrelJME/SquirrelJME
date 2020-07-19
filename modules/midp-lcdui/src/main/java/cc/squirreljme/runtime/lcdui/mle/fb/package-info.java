@@ -7,17 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.mle;
-
-import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-
 /**
- * Represents a user-interface daemon.
+ * This contains the UI Form classes which are simulated on top of the
+ * framebuffer.
  *
- * @since 2020/07/03
+ * @since 2020/07/19
  */
-@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-public interface UIDaemon
-	extends AutoCloseable, Runnable, UIFormCallback
-{
-}
+
+package cc.squirreljme.runtime.lcdui.mle.fb;

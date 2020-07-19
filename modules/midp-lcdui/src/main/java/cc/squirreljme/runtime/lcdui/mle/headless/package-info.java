@@ -7,13 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.mle;
-
 /**
- * This represents the display backend.
+ * This contains the headless UI Form classes.
  *
- * @since 2020/07/01
+ * @since 2020/07/19
  */
-public interface UIDisplayInstance
-{
-}
+
+package cc.squirreljme.runtime.lcdui.mle.headless;

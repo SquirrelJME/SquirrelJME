@@ -45,8 +45,7 @@ public final class UIFormShelf
 	 * 
 	 * @param __form The form that the callback will act under.
 	 * @param __callback The callback to register.
-	 * @throws MLECallError If {@code __callback} is {@code null} or one has
-	 * already been registered.
+	 * @throws MLECallError If {@code __form} is {@code null}.
 	 * @since 2020/07/03
 	 */
 	public static native void callback(UIFormBracket __form,
