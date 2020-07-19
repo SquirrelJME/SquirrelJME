@@ -347,8 +347,10 @@ public final class TestResult
 								rv.putSecondaryEncoded(skey, eval);
 						}
 						
-						// Another key, put into the ignored map
-						else if (__otherKeys != null)
+						// Another key, put into the other map, but never
+						// replace values that already exist
+						else if (__otherKeys != null &&
+							!__otherKeys.containsKey(ekey))
 							__otherKeys.put(ekey, eval);
 						break;
 				}
