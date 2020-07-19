@@ -16,8 +16,10 @@
 // Descriptors for calls
 #define SWINGUIFORM_DISPLAYS_DESC "()[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;"
 #define SWINGUIFORM_DISPLAYSHOW_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
+#define SWINGUIFORM_EQUALSITEM_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)Z"
 #define SWINGUIFORM_FORMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
 #define SWINGUIFORM_FORMITEMATPOSITION_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
+#define SWINGUIFORM_FORMITEMCOUNT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)I"
 #define SWINGUIFORM_FORMITEMPOSITIONGET_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)I"
 #define SWINGUIFORM_FORMITEMPOSITIONSET_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;I)V"
 #define SWINGUIFORM_FORMITEMREMOVE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
@@ -41,6 +43,14 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_displayShow(JNIEnv* env,
 		display, form);
 }
 
+JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsItem(JNIEnv* env,
+	jclass classy, jobject a, jobject b)
+{
+	return forwardCallStaticBoolean(env, SWINGUIFORM_CLASSNAME,
+		"equals", SWINGUIFORM_EQUALSITEM_DESC,
+		a, b);
+}
+
 JNIEXPORT void JNICALL Impl_mle_FormShelf_formDelete(JNIEnv* env,
 	jclass classy, jobject form)
 {
@@ -55,6 +65,14 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formItemAtPosition(JNIEnv* env,
 	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"formItemAtPosition", SWINGUIFORM_FORMITEMATPOSITION_DESC,
 		form, position);
+}
+
+JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemCount(JNIEnv* env,
+	jclass classy, jobject form)
+{
+	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
+		"formItemCount", SWINGUIFORM_FORMITEMCOUNT_DESC,
+		form);
 }
 
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemPositionGet(JNIEnv* env,
@@ -116,8 +134,10 @@ static const JNINativeMethod mleforwardMethods[] =
 {
 	{"displays", SWINGUIFORM_DISPLAYS_DESC, (void*)Impl_mle_FormShelf_displays},
 	{"displayShow", SWINGUIFORM_DISPLAYSHOW_DESC, (void*)Impl_mle_FormShelf_displayShow},
+	{"equals", SWINGUIFORM_EQUALSITEM_DESC, (void*)Impl_mle_FormShelf_equalsItem},
 	{"formDelete", SWINGUIFORM_FORMDELETE_DESC, (void*)Impl_mle_FormShelf_formDelete},
 	{"formItemAtPosition", SWINGUIFORM_FORMITEMATPOSITION_DESC, (void*)Impl_mle_FormShelf_formItemAtPosition},
+	{"formItemCount", SWINGUIFORM_FORMITEMCOUNT_DESC, (void*)Impl_mle_FormShelf_formItemCount},
 	{"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONGET_DESC, (void*)Impl_mle_FormShelf_formItemPositionGet},
 	{"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONSET_DESC, (void*)Impl_mle_FormShelf_formItemPositionSet},
 	{"formItemRemove", SWINGUIFORM_FORMITEMREMOVE_DESC, (void*)Impl_mle_FormShelf_formItemRemove},

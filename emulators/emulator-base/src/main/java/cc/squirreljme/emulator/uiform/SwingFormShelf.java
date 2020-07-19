@@ -72,6 +72,63 @@ public final class SwingFormShelf
 	}
 	
 	/**
+	 * As {@link UIFormShelf#equals(UIDisplayBracket, UIDisplayBracket)}. 
+	 * 
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If these are the same display.
+	 * @throws MLECallError If either is {@code null}.
+	 * @since 2020/07/01
+	 */
+	public static boolean equals(UIDisplayBracket __a,
+		UIDisplayBracket __b)
+		throws MLECallError
+	{
+		if (__a == null || __b == null)
+			throw new MLECallError("Null arguments.");
+		
+		return __a == __b;
+	}
+	
+	/**
+	 * As {@link UIFormShelf#equals(UIFormBracket, UIFormBracket)}. 
+	 * 
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If these are the same form.
+	 * @throws MLECallError If either is {@code null}.
+	 * @since 2020/07/01
+	 */
+	public static boolean equals(UIFormBracket __a,
+		UIFormBracket __b)
+		throws MLECallError
+	{
+		if (__a == null || __b == null)
+			throw new MLECallError("Null arguments.");
+		
+		return __a == __b;
+	}
+	
+	/**
+	 * As {@link UIFormShelf#equals(UIItemBracket, UIItemBracket)}. 
+	 * 
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If these are the same item.
+	 * @throws MLECallError If either is {@code null}.
+	 * @since 2020/07/01
+	 */
+	public static boolean equals(UIItemBracket __a,
+		UIItemBracket __b)
+		throws MLECallError
+	{
+		if (__a == null || __b == null)
+			throw new MLECallError("Null arguments.");
+		
+		return __a == __b;
+	}
+	
+	/**
 	 * Handles {@link UIFormShelf#formDelete(UIFormBracket)}. 
 	 * 
 	 * @param __bracket The form to delete.
@@ -106,6 +163,23 @@ public final class SwingFormShelf
 			throw new MLECallError("Null arguments.");
 		
 		return ((SwingForm)__form).itemAtPosition(__pos);
+	}
+	
+	/**
+	 * As {@link UIFormShelf#formItemCount(UIFormBracket)}. 
+	 * 
+	 * @param __form The form to get the count from.
+	 * @return The number of normal items on the form.
+	 * @throws MLECallError If the form is null or not valid.
+	 * @since 2020/07/19
+	 */
+	public static int formItemCount(UIFormBracket __form)
+		throws MLECallError
+	{
+		if (__form == null)
+			throw new MLECallError("Null arguments.");
+		
+		return ((SwingForm)__form).itemCount();
 	}
 	
 	/**

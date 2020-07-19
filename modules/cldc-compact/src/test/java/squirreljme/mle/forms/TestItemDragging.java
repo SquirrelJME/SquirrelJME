@@ -53,7 +53,8 @@ public class TestItemDragging
 			
 			// Is the item at this position, this one?
 			this.secondary("now-isthis-" + pos,
-				UIFormShelf.formItemAtPosition(__form, pos) == item);
+				UIFormShelf.equals(UIFormShelf.formItemAtPosition(__form, pos),
+				item));
 			
 			// The position of the item now
 			this.secondary("now-pos-" + pos,
@@ -63,8 +64,8 @@ public class TestItemDragging
 			oldPos = pos;
 		}
 		
-		this.secondary("zero-isthis",
-			UIFormShelf.formItemAtPosition(__form, 0) == item);
+		this.secondary("zero-isthis", UIFormShelf.equals(
+			UIFormShelf.formItemAtPosition(__form, 0), item));
 		this.secondary("zero-pos",
 			UIFormShelf.formItemPosition(__form, item));
 	}

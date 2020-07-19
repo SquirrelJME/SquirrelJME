@@ -43,5 +43,8 @@ jint JNICALL forwardCallStaticInteger(JNIEnv* env,
 jobject JNICALL forwardCallStaticObject(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
+jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
+	const char* const classy, const char* const name, const char* const type,
+	...);
 
 #endif /* __SQUIRRELJME_H__ */

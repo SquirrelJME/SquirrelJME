@@ -69,4 +69,17 @@ jobject JNICALL forwardCallStaticObject(JNIEnv* env,
 	
 	return rv;
 }
+
+jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
+	const char* const classy, const char* const name, const char* const type,
+	...)
+{
+	jboolean rv;
+	
+	SQUEAK_PREF;
+	rv = env->CallStaticBooleanMethodV(call.xclass, call.xmeth, vaArgs);
+	SQUEAK_POST;
+	
+	return rv;
+}
 	
