@@ -1,3 +1,7 @@
 # Do not automatically adjust line endings so that way the line-feeds are
 # the same and consistent
 * text=false
+
+# CMake
+ratufacoat/cmake-build-release
+ratufacoat/cmake-build-debug
