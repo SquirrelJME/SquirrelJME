@@ -47,15 +47,22 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install CMake
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            wget -c https://github.com/Kitware/CMake/releases/download/v3.16.8/cmake-3.16.8-win64-x64.zip
+            unzip cmake-3.16.8-win64-x64.zip
+      - run:
           name: Setup CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: cmake .
+          command: cmake-3.16.8-win64-x64\bin\cmake.exe .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: cmake --build .
+          command: cmake-3.16.8-win64-x64\bin\cmake.exe --build .
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: .
@@ -111,6 +118,20 @@ jobs:
       xcode: 11.3.0
     steps:
       - checkout
+      - run:
+          name: Update Brew
+          command: brew update
+      - run:
+          name: Install CMake
+          command: brew install cmake
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
