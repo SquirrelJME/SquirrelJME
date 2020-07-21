@@ -1,1 +1,1 @@
-project(SquirrelJME)
+project(SquirrelJME_RatufaCoat)
