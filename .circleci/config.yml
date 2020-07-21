@@ -56,13 +56,13 @@ jobs:
           working_directory: ratufacoat
           shell: cmd.exe
           command: |
-            "%PROGRAMFILES%\CMake\bin\cmake.exe" .
+            %PROGRAMFILES%\CMake\bin\cmake.exe .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
           shell: cmd.exe
           command: |
-            "%PROGRAMFILES%\CMake\bin\cmake.exe" --build .
+            %PROGRAMFILES%\CMake\bin\cmake.exe --build .
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
@@ -97,13 +97,13 @@ jobs:
           working_directory: ratufacoat
           shell: cmd.exe
           command: |
-            "%PROGRAMFILES%\7-Zip\7z.exe" x -y w32.7z
+            %PROGRAMFILES%\7-Zip\7z.exe x -y w32.7z
       - run:
           name: Extract mingw-w64 (64-bit)
           working_directory: ratufacoat
           shell: cmd.exe
           command: |
-            "%PROGRAMFILES%\7-Zip\7z.exe" x -y w64.7z
+            %PROGRAMFILES%\7-Zip\7z.exe x -y w64.7z
       - run:
           name: Register mingw-w64 (32-bit)
           working_directory: ratufacoat
