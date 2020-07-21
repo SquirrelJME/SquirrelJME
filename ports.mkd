@@ -5,11 +5,18 @@ or through RatufaCoat with the C compiler.
 
 Additional information in the [porting guide](porting.mkd).
 
+# AutumnCoat
+
+_AutumnCoat is planned but will support retro-systems along with standard_
+_desktop systems._
+
 # RatufaCoat
 
 RatufaCoat is written in C and has various ports of it, which are capable of
 running SquirrelJME.
 
+ * Linux
+ * Mac OS X
  * RetroArch (Enabled platforms)
    * Android
    * Apple iOS (Generic and 9)
@@ -24,4 +31,4 @@ running SquirrelJME.
    * PlayStation PSP
    * PlayStation Vita
    * Microsoft Windows
- * Palm OS
+ * Windows
