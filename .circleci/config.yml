@@ -15,7 +15,7 @@ executors:
       - image: circleci/openjdk:8-jdk
 
 orbs:
-  win: circleci/windows@2.2.0
+  win: circleci/windows@2.4.0
 
 jobs:
   ################################## WINDOWS #################################
