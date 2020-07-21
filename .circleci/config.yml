@@ -55,16 +55,12 @@ jobs:
           name: Setup CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: |
-            set PATH="%PATH%;%ProgramFiles%\CMake\bin"
-            cmake .
+          command: %PROGRAMFILES%\CMake\bin\cmake.exe .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: |
-            set PATH="%PATH%;%ProgramFiles%\CMake\bin"
-            cmake --build .
+          command: %PROGRAMFILES%\CMake\bin\cmake.exe --build .
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
@@ -75,30 +71,55 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install required dependencies
+          name: Install make
           working_directory: ratufacoat
           shell: cmd.exe
-          command: |
-            curl --retry 2 --connect-timeout 120 -o w32.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/dwarf/i686-8.1.0-release-win32-dwarf-rt_v6-rev0.7z
-            curl --retry 2 --connect-timeout 120 -o w64.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z
-            choco install make
-            choco install 7zip
-            "C:\Program Files\7-Zip\7z.exe" x -y w32.7z
-            "C:\Program Files\7-Zip\7z.exe" x -y w64.7z
+          command: choco install make
+      - run:
+          name: Install 7-zip
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: choco install 7zip
+      - run:
+          name: Download mingw-w64 (32-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: curl --retry 2 --connect-timeout 120 -o w32.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/dwarf/i686-8.1.0-release-win32-dwarf-rt_v6-rev0.7z
+      - run:
+          name: Download mingw-w64 (64-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: curl --retry 2 --connect-timeout 120 -o w64.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z
+      - run:
+          name: Extract mingw-w64 (32-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: "%PROGRAMFILES%\7-Zip\7z.exe" x -y w32.7z
+      - run:
+          name: Extract mingw-w64 (64-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: "%PROGRAMFILES%\7-Zip\7z.exe" x -y w64.7z
+      - run:
+          name: Register mingw-w64 (32-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: setx PATH "%PATH%;%CD%\mingw32\bin"
+      - run:
+          name: Register mingw-w64 (64-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: setx PATH "%PATH%;%CD%\mingw64\bin"
       - run:
           name: Compile libRetro (32-bit)
           working_directory: ratufacoat
           shell: cmd.exe
-          command: |
-            set PATH="%PATH%;%CD%\mingw32\bin"
-            make -f makefilelibretro platform=windows_x86
+          command: make -f makefilelibretro platform=windows_x86
       - run:
           name: Compile libRetro (64-bit)
           working_directory: ratufacoat
           shell: cmd.exe
-          command: |
-            set PATH="%PATH%;%CD%\mingw64\bin"
-            make -f makefilelibretro platform=windows_x86_64
+          command: make -f makefilelibretro platform=windows_x86_64
       - store_artifacts:
           path: ratufacoat\squirreljme_libretro.windows_x86.dll
           destination: squirreljme_libretro.windows_x86.dll
