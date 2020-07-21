@@ -50,17 +50,21 @@ jobs:
           name: Install required dependencies
           working_directory: ratufacoat
           shell: cmd.exe
-          command: choco install cmake.install
+          command: choco install cmake.install --installargs '"ADD_CMAKE_TO_PATH=User"'
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: cmake .
+          command: |
+            set PATH="%PATH%;%ProgramFiles%\CMake\bin"
+            cmake .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: cmake --build .
+          command: |
+            set PATH="%PATH%;%ProgramFiles%\CMake\bin"
+            cmake --build .
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
