@@ -68,7 +68,7 @@ jobs:
           command: cmake-3.16.8-win64-x64\bin\cmake.exe --build .
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
-          destination: build
+          destination: SquirrelJME.exe
   ratufacoat_build_windows_libretro:
     executor:
       name: win/default
@@ -76,21 +76,31 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Download Make
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: curl -L -o make.zip https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81-bin.zip
+      - run:
+          name: Install Make
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: unzip make.zip
+      - run:
           name: Compile libRetro (32-bit)
           working_directory: ratufacoat
           shell: cmd.exe
-          command: mingw32-make -f makefilelibretro platform=windows_x86
+          command: bin\make.exe -f makefilelibretro platform=windows_x86
       - run:
           name: Compile libRetro (64-bit)
           working_directory: ratufacoat
           shell: cmd.exe
-          command: mingw32-make -f makefilelibretro platform=windows_x86_64
+          command: bin\make.exe -f makefilelibretro platform=windows_x86_64
       - store_artifacts:
           path: ratufacoat\squirreljme_libretro.windows_x86.dll
-          destination: build
+          destination: squirreljme_libretro.windows_x86.dll
       - store_artifacts:
           path: ratufacoat\squirreljme_libretro.windows_x86_64.dll
-          destination: build
+          destination: squirreljme_libretro.windows_x86_64.dll
   ################################# MAC OS X #################################
   build_macosx:
     macos:
@@ -137,7 +147,7 @@ jobs:
           command: cmake --build .
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
-          destination: build
+          destination: SquirrelJME
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
@@ -188,7 +198,7 @@ jobs:
           command: cmake --build .
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
-          destination: build
+          destination: SquirrelJME
   construct_testjars:
     executor: buildenv
     steps:
