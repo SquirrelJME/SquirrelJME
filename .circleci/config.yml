@@ -79,8 +79,8 @@ jobs:
           working_directory: ratufacoat
           shell: cmd.exe
           command: |
-            curl -o w32.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/dwarf/i686-8.1.0-release-win32-dwarf-rt_v6-rev0.7z
-            curl -o w64.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z
+            curl --retry 2 --connect-timeout 120 -o w32.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/dwarf/i686-8.1.0-release-win32-dwarf-rt_v6-rev0.7z
+            curl --retry 2 --connect-timeout 120 -o w64.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z
             choco install make
             choco install 7zip
             "C:\Program Files\7-Zip\7z.exe" x -y w32.7z
