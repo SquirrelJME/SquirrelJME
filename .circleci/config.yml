@@ -50,7 +50,7 @@ jobs:
           name: Install required dependencies
           working_directory: ratufacoat
           shell: cmd.exe
-          command: choco install cmake.install --installargs '"ADD_CMAKE_TO_PATH=System"'
+          command: choco install cmake.install
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
