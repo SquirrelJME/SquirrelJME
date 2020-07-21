@@ -78,20 +78,26 @@ jobs:
           name: Install required dependencies
           working_directory: ratufacoat
           shell: cmd.exe
-          command: choco install make mingw
+          command: |
+            curl -o w32.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/dwarf/i686-8.1.0-release-win32-dwarf-rt_v6-rev0.7z
+            curl -o w64.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z
+            choco install make
+            choco install 7zip
+            "C:\Program Files\7-Zip\7z.exe" x -y w32.7z
+            "C:\Program Files\7-Zip\7z.exe" x -y w64.7z
       - run:
           name: Compile libRetro (32-bit)
           working_directory: ratufacoat
           shell: cmd.exe
           command: |
-            set PATH="%PATH%;%ProgramData%\chocolatey\lib\mingw\tools\install\mingw64\bin"
+            set PATH="%PATH%;%CD%\mingw32\bin"
             make -f makefilelibretro platform=windows_x86
       - run:
           name: Compile libRetro (64-bit)
           working_directory: ratufacoat
           shell: cmd.exe
           command: |
-            set PATH="%PATH%;%ProgramData%\chocolatey\lib\mingw\tools\install\mingw64\bin"
+            set PATH="%PATH%;%CD%\mingw64\bin"
             make -f makefilelibretro platform=windows_x86_64
       - store_artifacts:
           path: ratufacoat\squirreljme_libretro.windows_x86.dll
