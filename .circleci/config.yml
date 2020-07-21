@@ -147,6 +147,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install required dependencies
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install -y cmake build-essential
+      - run:
           name: Setup CMake build
           working_directory: ratufacoat
           command: cmake .
