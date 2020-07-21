@@ -55,12 +55,12 @@ jobs:
           name: Setup CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: %PROGRAMFILES%\CMake\bin\cmake.exe .
+          command: "%PROGRAMFILES%\CMake\bin\cmake.exe" .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: %PROGRAMFILES%\CMake\bin\cmake.exe --build .
+          command: "%PROGRAMFILES%\CMake\bin\cmake.exe" --build .
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
