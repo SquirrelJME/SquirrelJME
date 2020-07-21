@@ -18,6 +18,7 @@ orbs:
   win: circleci/windows@2.2.0
 
 jobs:
+  ################################## WINDOWS #################################
   build_windows:
     executor:
       name: win/default
@@ -39,6 +40,56 @@ jobs:
           path: c:\users\circleci\test-results
       - store_artifacts:
           path: c:\users\circleci\test-results
+  ratufacoat_build_windows:
+    executor:
+      name: win/default
+      shell: cmd.exe
+    steps:
+      - checkout
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: cmake .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: cmake --build .
+       - store_artifacts:
+          path: ratufacoat\src\Debug\SquirrelJME.exe
+          destination: .
+  ################################# MAC OS X #################################
+  build_macosx:
+    macos:
+      xcode: 11.3.0
+    steps:
+      - checkout
+      - run:
+          name: Update Brew
+          command: brew update
+      - run:
+          name: Install Gradle and OpenJDK 11
+          command: brew install gradle openjdk@11
+      - run:
+          name: Gradle Build and Test
+          command: ./gradlew build test --continue --parallel
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+  ratufacoat_build_macosx:
+    macos:
+      xcode: 11.3.0
+    steps:
+      - checkout
+  ################################### LINUX ##################################
   build_linux:
     executor: buildenv
     steps:
@@ -69,30 +120,22 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
-  build_macosx:
-    macos:
-      xcode: 11.3.0
+  ratufacoat_build_linux:
+    executor: buildenv
     steps:
       - checkout
       - run:
-          name: Update Brew
-          command: brew update
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake .
       - run:
-          name: Install Gradle and OpenJDK 11
-          command: brew install gradle openjdk@11
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
       - run:
-          name: Gradle Build and Test
-          command: ./gradlew build test --continue --parallel
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results/junit
+          name: Debug ls
+          working_directory: ratufacoat
+          command: ls -al
   construct_testjars:
     executor: buildenv
     steps:
@@ -192,3 +235,12 @@ workflows:
       - test_summercoat:
           requires:
             - construct_testjars
+      - ratufacoat_build_windows:
+          requires:
+            - build_windows
+      - ratufacoat_build_linux:
+          requires:
+            - build_linux
+      - ratufacoat_build_macosx:
+          requires:
+            - build_macosx
