@@ -47,12 +47,15 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Download CMake
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: curl -L -o cmake.zip https://github.com/Kitware/CMake/releases/download/v3.16.8/cmake-3.16.8-win64-x64.zip
+      - run:
           name: Install CMake
           working_directory: ratufacoat
           shell: bash.exe
-          command: |
-            curl -o cmake.zip https://github.com/Kitware/CMake/releases/download/v3.16.8/cmake-3.16.8-win64-x64.zip
-            unzip cmake.zip
+          command: unzip cmake.zip
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
