@@ -59,6 +59,28 @@ jobs:
        - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: .
+  ratufacoat_build_windows_libretro:
+    executor:
+      name: win/default
+      shell: cmd.exe
+    steps:
+      - checkout
+      - run:
+          name: Compile libRetro (32-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: make -f makefilelibretro platform=windows_x86
+      - run:
+          name: Compile libRetro (64-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: make -f makefilelibretro platform=windows_x86_64
+      - store_artifacts:
+          path: ratufacoat\squirreljme_libretro.windows_x86.dll
+          destination: .
+      - store_artifacts:
+          path: ratufacoat\squirreljme_libretro.windows_x86_64.dll
+          destination: .
   ################################# MAC OS X #################################
   build_macosx:
     macos:
@@ -238,6 +260,9 @@ workflows:
       - ratufacoat_build_windows:
           requires:
             - build_windows
+      - ratufacoat_build_windows_libretro:
+          requires:
+            - ratufacoat_build_windows
       - ratufacoat_build_linux:
           requires:
             - build_linux
