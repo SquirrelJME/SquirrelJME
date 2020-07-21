@@ -3,8 +3,6 @@
 buildSrc/.gradle/
 build/
 */build/
-*-original
-*.log
 
 # IntelliJ (Shared but not used)
 .idea/aws.xml
@@ -19,6 +17,7 @@ build/
 .idea/uiDesigner.xml
 .idea/usage-statistics.xml
 .idea/workspace.xml
+ratufacoat/.idea/workspace.xml
 
 # Contributions
 *.diff
@@ -27,6 +26,14 @@ build/
 *.rej
 *.bun
 *.bundle
+*-original
+
+# Crash logs
+*.log
+
+# Binary Files
+*.ico
+*.png
 
 # CMake
 ratufacoat/cmake-build-release
