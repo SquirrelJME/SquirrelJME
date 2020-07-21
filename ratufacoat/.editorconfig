@@ -24,6 +24,11 @@ end_of_line = crlf
 insert_final_newline = unset
 indent_style = unset
 
+# CMake
+[CMakeLists.txt]
+charset = latin1
+indent_style = tab
+
 # Standard source code
 [*.{md,mkd,c,cpp,h,java,js,json,j,sh,xpm,gradle}]
 charset = latin1
