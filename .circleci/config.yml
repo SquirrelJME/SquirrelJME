@@ -83,12 +83,16 @@ jobs:
           name: Compile libRetro (32-bit)
           working_directory: ratufacoat
           shell: cmd.exe
-          command: make -f makefilelibretro platform=windows_x86
+          command: |
+            set PATH="%PATH%;%ProgramData%\chocolatey\lib\mingw\tools\install\mingw64\bin"
+            make -f makefilelibretro platform=windows_x86
       - run:
           name: Compile libRetro (64-bit)
           working_directory: ratufacoat
           shell: cmd.exe
-          command: make -f makefilelibretro platform=windows_x86_64
+          command: |
+            set PATH="%PATH%;%ProgramData%\chocolatey\lib\mingw\tools\install\mingw64\bin"
+            make -f makefilelibretro platform=windows_x86_64
       - store_artifacts:
           path: ratufacoat\squirreljme_libretro.windows_x86.dll
           destination: squirreljme_libretro.windows_x86.dll
