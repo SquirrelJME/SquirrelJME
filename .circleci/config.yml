@@ -56,7 +56,7 @@ jobs:
           working_directory: ratufacoat
           shell: cmd.exe
           command: cmake --build .
-       - store_artifacts:
+      - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: .
   ratufacoat_build_windows_libretro:
