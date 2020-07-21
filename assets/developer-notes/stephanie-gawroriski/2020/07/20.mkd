@@ -1,0 +1,9 @@
+# 2020/07/20
+
+## 20:16
+
+Been thinking of RatufaCoat and it would be best to just support the main
+systems with SDL2 and additionally with RetroArch. The future AutumnCoat will
+have all the native system support for like Palm OS, DOS, and Amiga since I
+can build those out myself in Java rather than relying on ancient and very
+missing C compilers and libraries.
