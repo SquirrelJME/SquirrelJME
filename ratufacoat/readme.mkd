@@ -23,10 +23,10 @@ You may support me on [Patreon](https://www.patreon.com/SquirrelJME)!
    * _Assets_: Creative Commons CC-BY-SA 4.0
    * _Fonts_ : SIL Open Font License Version 1.1
  * [Contributing to SquirrelJME](contributing.mkd)
- 
-Also check out SquirrelJME's sister project _Mu_ at:
 
- * <https://github.com/meepingsnesroms/Mu>
+Dedicated to Emily (1998-2020), the developer of
+[Mu](https://github.com/meepingsnesroms/Mu), you will not be forgotten.
+Rest in peace.
 
 ## Donations
 

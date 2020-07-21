@@ -1,38 +1,22 @@
-EMU_PATH := $(CORE_DIR)
-LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
-COREDEFINES :=
+# ---------------------------------------------------------------------------
+# Multi-Phasic Applications: SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3, or later.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: Makefile specifically for SquirrelJME RatufaCoat on RetroArch.
 
-INCFLAGS := -I$(LIBRETRO_COMM_DIR)/include
+###### CORE DEFINED OPTIONS ######
+NOTHING :=
 
-ifneq (,$(findstring msvc200,$(this_system)))
-	INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
-endif
+COREDEFINES +=
+INCFLAGS := -I$(CORE_DIR)/include
 
-ifneq (,$(findstring msvc20,$(this_system)))
-	# Mu is dependent on stdbool.h and the standard inline directive existing(keeping this is a good idea)
-	INCFLAGS += -I$(CORE_DIR)/fixIncludes/stdbool
-	COREDEFINES += -Dinline=_inline -DINLINE=_inline
-endif
-
-#include $(EMU_PATH)/makefile
-
-COREDEFINES += $(EMU_DEFINES)
-
-SOURCES_C := $(CORE_DIR)/sjmerc.c \
-	$(CORE_DIR)/sjmercnm.c \
-	$(CORE_DIR)/sjmercvm.c \
-	$(CORE_DIR)/sys_libr.c \
-	$(EMU_SOURCES_C)
-SOURCES_CXX := $(EMU_SOURCES_CXX)
-SOURCES_ASM := $(EMU_SOURCES_ASM)
-
-#ifneq ($(STATIC_LINKING), 1)
-#	SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
-#		$(LIBRETRO_COMM_DIR)/compat/compat_posix_string.c \
-#		$(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c \
-#		$(LIBRETRO_COMM_DIR)/encodings/encoding_utf.c \
-#		$(LIBRETRO_COMM_DIR)/memmap/memmap.c \
-#		$(LIBRETRO_COMM_DIR)/streams/file_stream.c \
-#		$(LIBRETRO_COMM_DIR)/string/stdstring.c \
-#		$(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c
-#endif
+SOURCES_C   := $(CORE_DIR)/src/sjmerc.c \
+	$(CORE_DIR)/src/sjmercnm.c \
+	$(CORE_DIR)/src/sjmercvm.c \
+	$(CORE_DIR)/src/sys_libr.c \
+SOURCES_CXX := $(NOTHING)
+SOURCES_ASM := $(NOTHING)
+##################################
