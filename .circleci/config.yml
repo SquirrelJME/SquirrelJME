@@ -47,25 +47,20 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Download CMake
+          name: Install required dependencies
           working_directory: ratufacoat
           shell: cmd.exe
-          command: curl -L -o cmake.zip https://github.com/Kitware/CMake/releases/download/v3.16.8/cmake-3.16.8-win64-x64.zip
-      - run:
-          name: Install CMake
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: unzip cmake.zip
+          command: choco install cmake.install
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: cmake-3.16.8-win64-x64\bin\cmake.exe .
+          command: cmake .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
           shell: cmd.exe
-          command: cmake-3.16.8-win64-x64\bin\cmake.exe --build .
+          command: cmake --build .
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
@@ -76,25 +71,20 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Download Make
+          name: Install required dependencies
           working_directory: ratufacoat
           shell: cmd.exe
-          command: curl -L -o make.zip https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81-bin.zip
-      - run:
-          name: Install Make
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: unzip make.zip
+          command: choco install make
       - run:
           name: Compile libRetro (32-bit)
           working_directory: ratufacoat
           shell: cmd.exe
-          command: bin\make.exe -f makefilelibretro platform=windows_x86
+          command: make -f makefilelibretro platform=windows_x86
       - run:
           name: Compile libRetro (64-bit)
           working_directory: ratufacoat
           shell: cmd.exe
-          command: bin\make.exe -f makefilelibretro platform=windows_x86_64
+          command: make -f makefilelibretro platform=windows_x86_64
       - store_artifacts:
           path: ratufacoat\squirreljme_libretro.windows_x86.dll
           destination: squirreljme_libretro.windows_x86.dll
