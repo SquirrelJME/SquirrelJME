@@ -74,7 +74,7 @@ jobs:
           name: Install required dependencies
           working_directory: ratufacoat
           shell: cmd.exe
-          command: choco install make
+          command: choco install make mingw
       - run:
           name: Compile libRetro (32-bit)
           working_directory: ratufacoat
