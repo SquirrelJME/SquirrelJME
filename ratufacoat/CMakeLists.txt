@@ -6,7 +6,7 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-cmake_minimum_required (VERSION 3.16)
+cmake_minimum_required (VERSION 3.13)
 project(SquirrelJME
 	VERSION 0.3.0
 	DESCRIPTION ""
