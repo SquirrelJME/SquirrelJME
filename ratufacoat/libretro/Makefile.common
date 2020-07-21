@@ -10,13 +10,16 @@
 ###### CORE DEFINED OPTIONS ######
 NOTHING :=
 
-COREDEFINES +=
-INCFLAGS := -I$(CORE_DIR)/include
+TARGET_NAME ?= squirreljme
+COREDEFINES :=
+INCFLAGS := -I$(CORE_DIR)/include $(INCFLAGS)
 
 SOURCES_C   := $(CORE_DIR)/src/sjmerc.c \
 	$(CORE_DIR)/src/sjmercnm.c \
 	$(CORE_DIR)/src/sjmercvm.c \
-	$(CORE_DIR)/src/sys_libr.c \
+	$(CORE_DIR)/src/sys_libr.c
+
 SOURCES_CXX := $(NOTHING)
+
 SOURCES_ASM := $(NOTHING)
 ##################################
