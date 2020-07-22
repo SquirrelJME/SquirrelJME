@@ -47,7 +47,6 @@ public final class SpringArrayObjectBoolean
 	 * Wraps the native array.
 	 *
 	 * @param __self The self type.
-	 * @param __cl The component type.
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/18

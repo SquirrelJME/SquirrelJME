@@ -41,12 +41,10 @@ _speculation based on project planning._
      * Windows Executable (EXE)
    * Supports multiple Operating Systems
      * Linux (MIPS, PowerPC, x86, and x86_64)
+     * Mac OS Classic (PowerPC)
      * Mac OS X (PowerPC, x86, and x86_64)
      * Palm OS (m68k)
      * Windows (x86 and x86_64)
- * RatufaCoat
-   * Add support for executing natively compiled code.
-     * If there is no supported engine, SummerCoat will be used.
 
 ## 0.6.0 (January 17, 2021)
 

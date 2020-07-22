@@ -82,14 +82,14 @@ Information:
 
  * [Online repository](http://squirreljme.cc/)
    ([HTTPS](https://squirreljme.cc/),
-   [Tor (A)](http://squirrelzarhffxz.onion/),
+   [Tor (A)](http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/),
    [Tor (B)](http://squirrelmfbf2udn.onion/))
  * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
  * The repository may be cloned using Fossil:
    * One of these commands:
      * `fossil clone -u http://squirreljme.cc/ squirreljme.fossil`
      * `fossil clone -u https://squirreljme.cc/ squirreljme.fossil`
-     * `fossil clone -u http://squirrelzarhffxz.onion/ squirreljme.fossil`
+     * `fossil clone -u http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/ squirreljme.fossil`
      * `fossil clone -u http://squirrelmfbf2udn.onion/ squirreljme.fossil`
    * `mkdir squirreljme`
    * `cd squirreljme`

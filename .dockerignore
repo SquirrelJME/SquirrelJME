@@ -24,3 +24,20 @@ _FOSSIL_
 *.rej
 *.bun
 *.bundle
+*-original
+*-original-*
+
+# CMake
+ratufacoat/cmake-build-release
+ratufacoat/cmake-build-debug
+ratufacoat/CMakeFiles
+ratufacoat/src/CMakeFiles
+ratufacoat/src/Debug
+ratufacoat/src/Release
+ratufacoat/src/SquirrelJME.dir
+ratufacoat/x86
+ratufacoat/x64
+ratufacoat/out
+*.o
+*.dll
+*.exe

@@ -1,0 +1,15 @@
+# 2020/07/16
+
+## 08:05
+
+So my idea for UIForms and items is that I can make all of the LCDUI stuff
+by using either just the form items or combining them in special ways. This
+way I can reduce some duplication and have some things consistent. Since like
+I know `Canvas` and `CustomItem` are going to be effectively the same exact
+thing just different in the way that graphics are done. Hopefully with this
+consistency, forms will be way easier to do now than they were in the past
+since I tried this before. However my approach is different this time and I
+believe it will work. I am not going to worry about event handling right now
+since I mostly just want all the form stuff displayed first before I continue
+at least within the testing framework. Once that is working, then I can build
+LCDUI on top of that and it should be doable this time.
