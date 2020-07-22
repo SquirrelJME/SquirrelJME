@@ -1,0 +1,10 @@
+# 2020/07/21
+
+## 20:42
+
+So very nice, I updated RatufaCoat to use CMake and fixed the libRetro build
+up a bit. So effectively this means I can use CLion to work on RatufaCoat
+with and it should actually make it easier. With the scope of it reduced it
+would end up being easier to implement. But there will be a standalone
+SDL2 RatufaCoat and then libRetro RatufaCoat. I think that would be the
+simplest and easiest to handle.
