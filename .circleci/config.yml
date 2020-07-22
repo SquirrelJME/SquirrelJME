@@ -54,15 +54,13 @@ jobs:
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
-          shell: cmd.exe
-          command: |
-            %PROGRAMFILES%\CMake\bin\cmake.exe .
+          shell: bash.exe
+          command: "$PROGRAMFILES/CMake/bin/cmake.exe" .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
-          shell: cmd.exe
-          command: |
-            %PROGRAMFILES%\CMake\bin\cmake.exe --build .
+          shell: bash.exe
+          command: "$PROGRAMFILES/CMake/bin/cmake.exe" --build .
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
@@ -95,35 +93,23 @@ jobs:
       - run:
           name: Extract mingw-w64 (32-bit)
           working_directory: ratufacoat
-          shell: cmd.exe
-          command: |
-            %PROGRAMFILES%\7-Zip\7z.exe x -y w32.7z
+          shell: bash.exe
+          command: "$PROGRAMFILES/7-Zip/7z.exe" x -y w32.7z
       - run:
           name: Extract mingw-w64 (64-bit)
           working_directory: ratufacoat
-          shell: cmd.exe
-          command: |
-            %PROGRAMFILES%\7-Zip\7z.exe x -y w64.7z
-      - run:
-          name: Register mingw-w64 (32-bit)
-          working_directory: ratufacoat
-          shell: cmd.exe
-          command: setx PATH "%PATH%;%CD%\mingw32\bin"
-      - run:
-          name: Register mingw-w64 (64-bit)
-          working_directory: ratufacoat
-          shell: cmd.exe
-          command: setx PATH "%PATH%;%CD%\mingw64\bin"
+          shell: bash.exe
+          command: "$PROGRAMFILES/7-Zip/7z.exe" x -y w64.7z
       - run:
           name: Compile libRetro (32-bit)
           working_directory: ratufacoat
-          shell: cmd.exe
-          command: make -f makefilelibretro platform=windows_x86
+          shell: bash.exe
+          command: export PATH="$PATH:$(pwd)/mingw32/bin" && make -f makefilelibretro platform=windows_x86
       - run:
           name: Compile libRetro (64-bit)
           working_directory: ratufacoat
-          shell: cmd.exe
-          command: make -f makefilelibretro platform=windows_x86_64
+          shell: bash.exe
+          command: export PATH="$PATH:$(pwd)/mingw64/bin" && make -f makefilelibretro platform=windows_x86_64
       - store_artifacts:
           path: ratufacoat\squirreljme_libretro.windows_x86.dll
           destination: squirreljme_libretro.windows_x86.dll
