@@ -10,7 +10,6 @@
 #include <stdio.h>
 
 #include "squirreljme.h"
-#include "cc_squirreljme_jvm_mle_TerminalShelf.h"
 
 static FILE* getPipeForFd(jint fd)
 {
