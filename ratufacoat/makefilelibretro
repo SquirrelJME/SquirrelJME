@@ -7,14 +7,16 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Makefile specifically for SquirrelJME RatufaCoat on RetroArch.
 
+###### CORE DEFINED OPTIONS ######
+CORE_DIR := .
+BUILD_DIR = libretro
+##################################
+
 DEBUG = 0
 GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
 STATIC_LINKING = 0
 STATIC_LINKING_LINK = 0
-
-CORE_DIR := .
-BUILD_DIR = libretro
-OBJOUT = -o 
+OBJOUT = -o
 
 ifeq ($(platform),linux-portable_x86)
 include $(BUILD_DIR)/Makefile.linux-portable_x86

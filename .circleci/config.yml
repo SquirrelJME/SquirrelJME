@@ -15,9 +15,10 @@ executors:
       - image: circleci/openjdk:8-jdk
 
 orbs:
-  win: circleci/windows@2.2.0
+  win: circleci/windows@2.4.0
 
 jobs:
+  ################################## WINDOWS #################################
   build_windows:
     executor:
       name: win/default
@@ -39,6 +40,136 @@ jobs:
           path: c:\users\circleci\test-results
       - store_artifacts:
           path: c:\users\circleci\test-results
+  ratufacoat_build_windows:
+    executor:
+      name: win/default
+      shell: cmd.exe
+    steps:
+      - checkout
+      - run:
+          name: Install required dependencies
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: choco install cmake.install
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            "$PROGRAMFILES/CMake/bin/cmake.exe" .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            "$PROGRAMFILES/CMake/bin/cmake.exe" --build .
+      - store_artifacts:
+          path: ratufacoat\src\Debug\SquirrelJME.exe
+          destination: SquirrelJME.exe
+  ratufacoat_build_windows_libretro:
+    executor:
+      name: win/default
+      shell: cmd.exe
+    steps:
+      - checkout
+      - run:
+          name: Install make
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: choco install make
+      - run:
+          name: Install 7-zip
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: choco install 7zip
+      - run:
+          name: Download mingw-w64 (32-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: curl --retry 2 --connect-timeout 120 -o w32.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/dwarf/i686-8.1.0-release-win32-dwarf-rt_v6-rev0.7z
+      - run:
+          name: Download mingw-w64 (64-bit)
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: curl --retry 2 --connect-timeout 120 -o w64.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z
+      - run:
+          name: Extract mingw-w64 (32-bit)
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            "$PROGRAMFILES/7-Zip/7z.exe" x -y w32.7z
+      - run:
+          name: Extract mingw-w64 (64-bit)
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            "$PROGRAMFILES/7-Zip/7z.exe" x -y w64.7z
+      - run:
+          name: Compile libRetro (32-bit)
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            export PATH="$PATH:$(pwd)/mingw32/bin" && make -f makefilelibretro platform=windows_x86
+      - run:
+          name: Compile libRetro (64-bit)
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            export PATH="$PATH:$(pwd)/mingw64/bin" && make -f makefilelibretro platform=windows_x86_64
+      - store_artifacts:
+          path: ratufacoat\squirreljme_libretro.windows_x86.dll
+          destination: squirreljme_libretro.windows_x86.dll
+      - store_artifacts:
+          path: ratufacoat\squirreljme_libretro.windows_x86_64.dll
+          destination: squirreljme_libretro.windows_x86_64.dll
+  ################################# MAC OS X #################################
+  build_macosx:
+    macos:
+      xcode: 11.3.0
+    steps:
+      - checkout
+      - run:
+          name: Update Brew
+          command: brew update
+      - run:
+          name: Install Gradle and OpenJDK 11
+          command: brew install gradle openjdk@11
+      - run:
+          name: Gradle Build and Test
+          command: ./gradlew build test --continue --parallel
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+  ratufacoat_build_macosx:
+    macos:
+      xcode: 11.3.0
+    steps:
+      - checkout
+      - run:
+          name: Update Brew
+          command: brew update
+      - run:
+          name: Install CMake
+          command: brew install cmake
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
+      - store_artifacts:
+          path: ratufacoat/src/SquirrelJME
+          destination: SquirrelJME
+  ################################### LINUX ##################################
   build_linux:
     executor: buildenv
     steps:
@@ -69,30 +200,26 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
-  build_macosx:
-    macos:
-      xcode: 11.3.0
+  ratufacoat_build_linux:
+    executor: buildenv
     steps:
       - checkout
       - run:
-          name: Update Brew
-          command: brew update
-      - run:
-          name: Install Gradle and OpenJDK 11
-          command: brew install gradle openjdk@11
-      - run:
-          name: Gradle Build and Test
-          command: ./gradlew build test --continue --parallel
-      - run:
-          name: Save test results
+          name: Install required dependencies
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
+            sudo apt-get update -y
+            sudo apt-get install -y cmake build-essential
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
       - store_artifacts:
-          path: ~/test-results/junit
+          path: ratufacoat/src/SquirrelJME
+          destination: SquirrelJME
   construct_testjars:
     executor: buildenv
     steps:
@@ -192,3 +319,15 @@ workflows:
       - test_summercoat:
           requires:
             - construct_testjars
+      - ratufacoat_build_windows:
+          requires:
+            - build_windows
+      - ratufacoat_build_windows_libretro:
+          requires:
+            - ratufacoat_build_windows
+      - ratufacoat_build_linux:
+          requires:
+            - build_linux
+      - ratufacoat_build_macosx:
+          requires:
+            - build_macosx
