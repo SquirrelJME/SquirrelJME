@@ -1,0 +1,23 @@
+# 2020/07/19
+
+## 10:38
+
+I am very much liking how the UI stuff is coming out. First I am making sure
+that the basic stuff for it works okay before I dive into LCDUI and such. I
+suppose that I just keep going and making sure that logic is working
+properly.
+
+## 13:24
+
+Sadly my unversioning is not syncing with the latest version of Fossil so going
+to try downgrading for now. But otherwise I am adding more additional
+restrictions on how UIForms work so that way it is easier to implement and there
+are a set of tests that work with it properly.
+
+## 16:08
+
+I had an idea in the shower, instead of having the callback be one per
+everything, it shall be the callback for the form. This makes it much easier
+to implement and I will not have to juggle callbacks. Another idea I had was
+with properties, there would be `int` and `String` properties that are part
+of an item which can be read and possibly set.

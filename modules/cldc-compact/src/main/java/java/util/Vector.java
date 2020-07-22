@@ -394,7 +394,7 @@ public class Vector<E>
 	}
 	
 	/**
-	 * Performs the same operation as {@link Vector#add(int, E)}.
+	 * Performs the same operation as {@link Vector#add(int, Object)}.
 	 *
 	 * @param __v The value to add.
 	 * @param __at The index to add at.
