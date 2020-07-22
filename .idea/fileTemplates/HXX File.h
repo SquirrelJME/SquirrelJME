@@ -1,4 +1,4 @@
-#parse("C Header.h")
+#parse("CPP Header.h")
 
 #ifndef __HEADER_H__
 \#define __HEADER_H__

@@ -8,7 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "squirreljme.h"
-#include "cc_squirreljme_jvm_mle_ObjectShelf.h"
 
 JNIEXPORT jint JNICALL Impl_mle_ObjectShelf_arrayLength(JNIEnv* env,
 	jclass classy, jarray array)

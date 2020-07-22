@@ -16,13 +16,7 @@
 #include "squirreljme.h"
 
 // Method handler for special functions
-JNIEXPORT void JNICALL doNothing(JNIEnv* env, jclass classy);
-JNIEXPORT jint JNICALL doNothingZeroI(JNIEnv* env, jclass classy);
-JNIEXPORT void JNICALL notImplemented(JNIEnv* env, jclass classy);
 JNIEXPORT void JNICALL restrictedFunction(JNIEnv* env, jclass classy);
-
-// Glue for putting names together
-#define GLUE_NAME(name) Java_cc_squirreljme_jvm_Assembly_sysCall##name
 
 // Assembly method mappings
 static const JNINativeMethod assemblyMethods[] =
@@ -177,61 +171,61 @@ static const JNINativeMethod assemblyMethods[] =
 	{"specialSetThreadRegister", "(Ljava/lang/Thread;)V", (void*)restrictedFunction},
 
 	// Un-Pure System Calls
-	{"sysCall", "(S)V", (void*)GLUE_NAME(__S)},
-	{"sysCall", "(SI)V", (void*)GLUE_NAME(__SI)},
-	{"sysCall", "(SII)V", (void*)GLUE_NAME(__SII)},
-	{"sysCall", "(SIII)V", (void*)GLUE_NAME(__SIII)},
-	{"sysCall", "(SIIII)V", (void*)GLUE_NAME(__SIIII)},
-	{"sysCall", "(SIIIII)V", (void*)GLUE_NAME(__SIIIII)},
-	{"sysCall", "(SIIIIII)V", (void*)GLUE_NAME(__SIIIIII)},
-	{"sysCall", "(SIIIIIII)V", (void*)GLUE_NAME(__SIIIIIII)},
-	{"sysCall", "(SIIIIIIII)V", (void*)GLUE_NAME(__SIIIIIIII)},
-	{"sysCallV", "(S)I", (void*)GLUE_NAME(V__S)},
-	{"sysCallV", "(SI)I", (void*)GLUE_NAME(V__SI)},
-	{"sysCallV", "(SII)I", (void*)GLUE_NAME(V__SII)},
-	{"sysCallV", "(SIII)I", (void*)GLUE_NAME(V__SIII)},
-	{"sysCallV", "(SIIII)I", (void*)GLUE_NAME(V__SIIII)},
-	{"sysCallV", "(SIIIII)I", (void*)GLUE_NAME(V__SIIIII)},
-	{"sysCallV", "(SIIIIII)I", (void*)GLUE_NAME(V__SIIIIII)},
-	{"sysCallV", "(SIIIIIII)I", (void*)GLUE_NAME(V__SIIIIIII)},
-	{"sysCallV", "(SIIIIIIII)I", (void*)GLUE_NAME(V__SIIIIIIII)},
-	{"sysCallVL", "(S)J", (void*)GLUE_NAME(VL__S)},
-	{"sysCallVL", "(SI)J", (void*)GLUE_NAME(VL__SI)},
-	{"sysCallVL", "(SII)J", (void*)GLUE_NAME(VL__SII)},
-	{"sysCallVL", "(SIII)J", (void*)GLUE_NAME(VL__SIII)},
-	{"sysCallVL", "(SIIII)J", (void*)GLUE_NAME(VL__SIIII)},
-	{"sysCallVL", "(SIIIII)J", (void*)GLUE_NAME(VL__SIIIII)},
-	{"sysCallVL", "(SIIIIII)J", (void*)GLUE_NAME(VL__SIIIIII)},
-	{"sysCallVL", "(SIIIIIII)J", (void*)GLUE_NAME(VL__SIIIIIII)},
-	{"sysCallVL", "(SIIIIIIII)J", (void*)GLUE_NAME(VL__SIIIIIIII)},
+	{"sysCall", "(S)V", (void*)restrictedFunction},
+	{"sysCall", "(SI)V", (void*)restrictedFunction},
+	{"sysCall", "(SII)V", (void*)restrictedFunction},
+	{"sysCall", "(SIII)V", (void*)restrictedFunction},
+	{"sysCall", "(SIIII)V", (void*)restrictedFunction},
+	{"sysCall", "(SIIIII)V", (void*)restrictedFunction},
+	{"sysCall", "(SIIIIII)V", (void*)restrictedFunction},
+	{"sysCall", "(SIIIIIII)V", (void*)restrictedFunction},
+	{"sysCall", "(SIIIIIIII)V", (void*)restrictedFunction},
+	{"sysCallV", "(S)I", (void*)restrictedFunction},
+	{"sysCallV", "(SI)I", (void*)restrictedFunction},
+	{"sysCallV", "(SII)I", (void*)restrictedFunction},
+	{"sysCallV", "(SIII)I", (void*)restrictedFunction},
+	{"sysCallV", "(SIIII)I", (void*)restrictedFunction},
+	{"sysCallV", "(SIIIII)I", (void*)restrictedFunction},
+	{"sysCallV", "(SIIIIII)I", (void*)restrictedFunction},
+	{"sysCallV", "(SIIIIIII)I", (void*)restrictedFunction},
+	{"sysCallV", "(SIIIIIIII)I", (void*)restrictedFunction},
+	{"sysCallVL", "(S)J", (void*)restrictedFunction},
+	{"sysCallVL", "(SI)J", (void*)restrictedFunction},
+	{"sysCallVL", "(SII)J", (void*)restrictedFunction},
+	{"sysCallVL", "(SIII)J", (void*)restrictedFunction},
+	{"sysCallVL", "(SIIII)J", (void*)restrictedFunction},
+	{"sysCallVL", "(SIIIII)J", (void*)restrictedFunction},
+	{"sysCallVL", "(SIIIIII)J", (void*)restrictedFunction},
+	{"sysCallVL", "(SIIIIIII)J", (void*)restrictedFunction},
+	{"sysCallVL", "(SIIIIIIII)J", (void*)restrictedFunction},
 
-	// Pure System Calls	{"sysCallP", "(S)V", (void*)GLUE_NAME(P__S)},
-	{"sysCallP", "(SI)V", (void*)GLUE_NAME(P__SI)},
-	{"sysCallP", "(SII)V", (void*)GLUE_NAME(P__SII)},
-	{"sysCallP", "(SIII)V", (void*)GLUE_NAME(P__SIII)},
-	{"sysCallP", "(SIIII)V", (void*)GLUE_NAME(P__SIIII)},
-	{"sysCallP", "(SIIIII)V", (void*)GLUE_NAME(P__SIIIII)},
-	{"sysCallP", "(SIIIIII)V", (void*)GLUE_NAME(P__SIIIIII)},
-	{"sysCallP", "(SIIIIIII)V", (void*)GLUE_NAME(P__SIIIIIII)},
-	{"sysCallP", "(SIIIIIIII)V", (void*)GLUE_NAME(P__SIIIIIIII)},
-	{"sysCallPV", "(S)I", (void*)GLUE_NAME(PV__S)},
-	{"sysCallPV", "(SI)I", (void*)GLUE_NAME(PV__SI)},
-	{"sysCallPV", "(SII)I", (void*)GLUE_NAME(PV__SII)},
-	{"sysCallPV", "(SIII)I", (void*)GLUE_NAME(PV__SIII)},
-	{"sysCallPV", "(SIIII)I", (void*)GLUE_NAME(PV__SIIII)},
-	{"sysCallPV", "(SIIIII)I", (void*)GLUE_NAME(PV__SIIIII)},
-	{"sysCallPV", "(SIIIIII)I", (void*)GLUE_NAME(PV__SIIIIII)},
-	{"sysCallPV", "(SIIIIIII)I", (void*)GLUE_NAME(PV__SIIIIIII)},
-	{"sysCallPV", "(SIIIIIIII)I", (void*)GLUE_NAME(PV__SIIIIIIII)},
-	{"sysCallPVL", "(S)J", (void*)GLUE_NAME(PVL__S)},
-	{"sysCallPVL", "(SI)J", (void*)GLUE_NAME(PVL__SI)},
-	{"sysCallPVL", "(SII)J", (void*)GLUE_NAME(PVL__SII)},
-	{"sysCallPVL", "(SIII)J", (void*)GLUE_NAME(PVL__SIII)},
-	{"sysCallPVL", "(SIIII)J", (void*)GLUE_NAME(PVL__SIIII)},
-	{"sysCallPVL", "(SIIIII)J", (void*)GLUE_NAME(PVL__SIIIII)},
-	{"sysCallPVL", "(SIIIIII)J", (void*)GLUE_NAME(PVL__SIIIIII)},
-	{"sysCallPVL", "(SIIIIIII)J", (void*)GLUE_NAME(PVL__SIIIIIII)},
-	{"sysCallPVL", "(SIIIIIIII)J", (void*)GLUE_NAME(PVL__SIIIIIIII)}
+	// Pure System Calls	{"sysCallP", "(S)V", (void*)restrictedFunction},
+	{"sysCallP", "(SI)V", (void*)restrictedFunction},
+	{"sysCallP", "(SII)V", (void*)restrictedFunction},
+	{"sysCallP", "(SIII)V", (void*)restrictedFunction},
+	{"sysCallP", "(SIIII)V", (void*)restrictedFunction},
+	{"sysCallP", "(SIIIII)V", (void*)restrictedFunction},
+	{"sysCallP", "(SIIIIII)V", (void*)restrictedFunction},
+	{"sysCallP", "(SIIIIIII)V", (void*)restrictedFunction},
+	{"sysCallP", "(SIIIIIIII)V", (void*)restrictedFunction},
+	{"sysCallPV", "(S)I", (void*)restrictedFunction},
+	{"sysCallPV", "(SI)I", (void*)restrictedFunction},
+	{"sysCallPV", "(SII)I", (void*)restrictedFunction},
+	{"sysCallPV", "(SIII)I", (void*)restrictedFunction},
+	{"sysCallPV", "(SIIII)I", (void*)restrictedFunction},
+	{"sysCallPV", "(SIIIII)I", (void*)restrictedFunction},
+	{"sysCallPV", "(SIIIIII)I", (void*)restrictedFunction},
+	{"sysCallPV", "(SIIIIIII)I", (void*)restrictedFunction},
+	{"sysCallPV", "(SIIIIIIII)I", (void*)restrictedFunction},
+	{"sysCallPVL", "(S)J", (void*)restrictedFunction},
+	{"sysCallPVL", "(SI)J", (void*)restrictedFunction},
+	{"sysCallPVL", "(SII)J", (void*)restrictedFunction},
+	{"sysCallPVL", "(SIII)J", (void*)restrictedFunction},
+	{"sysCallPVL", "(SIIII)J", (void*)restrictedFunction},
+	{"sysCallPVL", "(SIIIII)J", (void*)restrictedFunction},
+	{"sysCallPVL", "(SIIIIII)J", (void*)restrictedFunction},
+	{"sysCallPVL", "(SIIIIIII)J", (void*)restrictedFunction},
+	{"sysCallPVL", "(SIIIIIIII)J", (void*)restrictedFunction}
 };
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
@@ -243,22 +237,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
 	// Support Java 7!
 	return JNI_VERSION_1_6;
-}
-
-JNIEXPORT void JNICALL doNothing(JNIEnv* env, jclass classy)
-{
-}
-
-JNIEXPORT jint JNICALL doNothingZeroI(JNIEnv* env, jclass classy)
-{
-	return 0;
-}
-
-JNIEXPORT void JNICALL notImplemented(JNIEnv* env, jclass classy)
-{
-	fprintf(stderr, "Not implemented: %s.\n", __func__);
-	env->ThrowNew(env->FindClass("java/lang/IllegalArgumentException"),
-		__func__);
 }
 
 JNIEXPORT void JNICALL restrictedFunction(JNIEnv* env, jclass classy)

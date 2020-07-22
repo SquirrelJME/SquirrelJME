@@ -1,4 +1,4 @@
-/*
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
  * Copyright (c) 1996, 1998, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
