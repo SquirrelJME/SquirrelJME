@@ -8,7 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "squirreljme.h"
-#include "cc_squirreljme_jvm_mle_RuntimeShelf.h"
 
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
 {
