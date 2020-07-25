@@ -106,7 +106,6 @@ Information:
  * Trunk Source Snapshot (Main website or `fossil serve` only):
    * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
    * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
- * [SourceForge](https://sourceforge.net/p/squirreljme/)
 
 ## Links
 
@@ -119,6 +118,7 @@ Information:
    * [YouTube](
      https://www.youtube.com/playlist?list=PLpBpyrtWn1U3motx3AUOm70qG5zraCepD)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
+ * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
    * [GitHub](https://github.com/XerTheSquirrel/)
    * [Keybase](https://keybase.io/xerthesquirrel)
