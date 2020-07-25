@@ -183,3 +183,20 @@ to be ran accordingly.
  * SummerCoat
    * `:modules:<name>:runSummerCoat` (running)
    * `:modules:<name>:testSummerCoat` (testing)
+ * Native (runs on the host Java SE)
+   * `:modules:<name>:runNative` (running)
+   * `:modules:<name>:test` (testing)
+
+The following _System_ properties are available:
+
+ * `squirreljme.midlet=value` -- The MIDlet to run, in the following order:
+   * If `value` is a number and is `-1`, then no MIDlet will be selected and
+     the `Main-Class` attribute will be force selected.
+   * If `value` is a number, then it will be treated as an index. If the index
+     is not within the MIDlet bounds then it will run the first MIDlet.
+   * If `value` is a string, then a search will be performed for a MIDlet
+     with a matching case-insensitive title. 
+   * Otherwise if `value` is a string, it will construct a virtual MIDlet
+     which executes the given value as the name of a class within the JAR.
+ * `test.single=classname` -- Run only the given test:
+   * Will be the test class to be ran.

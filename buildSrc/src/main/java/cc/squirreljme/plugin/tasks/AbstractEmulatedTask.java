@@ -289,9 +289,7 @@ __outer:
 			project.javaexec((JavaExecSpec __spec) ->
 				{
 					// Are we launching a MIDlet?
-					JavaMEMidlet midlet = null;
-					if (!config.midlets.isEmpty())
-						midlet = config.midlets.get(0);
+					JavaMEMidlet midlet = JavaMEMidlet.find(config.midlets);
 					
 					// Build arguments to the VM
 					Collection<String> args = new LinkedList<>();
