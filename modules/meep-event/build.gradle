@@ -13,6 +13,7 @@ squirreljme
 	swmName = "MEEP Event Management"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.event;;")
+	tags += "meep"
 }
 
 dependencies

@@ -21,6 +21,8 @@ squirreljme
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.8-Compact")
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.1")
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.0")
+	tags += "required"
+	tags += "lite"
 }
 
 java

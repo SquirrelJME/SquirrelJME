@@ -13,6 +13,8 @@ squirreljme
 	swmVendor = "Stephanie Gawroriski"
 	midlets += new JavaMEMidlet("Squirrel Quarrel", "icon.xpm",
 		"dev.shadowtail.squirrelquarrel.MainMidlet")
+	tags += "games"
+	tags += "demo"
 }
 
 dependencies

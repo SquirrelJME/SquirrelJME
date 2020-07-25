@@ -13,6 +13,8 @@
       <w>csascii</w>
       <w>csibm</w>
       <w>csisolatin</w>
+      <w>dlet</w>
+      <w>dlets</w>
       <w>ebcdic</w>
       <w>endianess</w>
       <w>fileselectors</w>
@@ -44,6 +46,8 @@
       <w>ljava</w>
       <w>messg</w>
       <w>microedition</w>
+      <w>midlet</w>
+      <w>midlets</w>
       <w>multiphasicapps</w>
       <w>narg</w>
       <w>noassert</w>

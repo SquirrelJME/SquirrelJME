@@ -11,6 +11,7 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Generic Connection Framework"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "j2me"
 }
 
 dependencies

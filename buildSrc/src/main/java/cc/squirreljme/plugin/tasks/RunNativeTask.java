@@ -131,9 +131,7 @@ public class RunNativeTask
 			project.javaexec((JavaExecSpec __spec) ->
 				{
 					// Are we launching a MIDlet?
-					JavaMEMidlet midlet = null;
-					if (!config.midlets.isEmpty())
-						midlet = config.midlets.get(0);
+					JavaMEMidlet midlet = JavaMEMidlet.find(config.midlets);
 					
 					// Which class do we launch?
 					__spec.setMain((midlet != null ?

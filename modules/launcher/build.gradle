@@ -15,6 +15,8 @@ squirreljme
 	ignoreInLauncher = true
 	midlets += new JavaMEMidlet("SquirrelJME Launcher (Graphical)", null,
 		"cc.squirreljme.runtime.launcher.ui.MidletMain")
+	tags += "j2me"
+	tags += "medium"
 }
 
 dependencies

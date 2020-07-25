@@ -10,6 +10,7 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "ZIP Support"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "extra"
 }
 
 dependencies
