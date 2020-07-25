@@ -16,6 +16,7 @@ squirreljme
 	definedProfiles += new JavaMEProfile("MIDP-3.0")
 	definedProfiles += new JavaMEProfile("MIDP-3.1")
 	definedProfiles += new JavaMEProfile("MEEP-8")
+	tags += "meep"
 }
 
 dependencies

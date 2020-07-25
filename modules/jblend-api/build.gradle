@@ -9,6 +9,7 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Aplix JBlend API"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "jblend"
 }
 
 dependencies

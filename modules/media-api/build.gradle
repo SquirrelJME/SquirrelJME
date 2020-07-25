@@ -10,6 +10,7 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Media API"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "j2me"
 }
 
 dependencies

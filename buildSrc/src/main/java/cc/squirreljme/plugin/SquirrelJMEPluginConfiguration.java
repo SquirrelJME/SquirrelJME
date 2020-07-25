@@ -70,6 +70,10 @@ public class SquirrelJMEPluginConfiguration
 	public List<JavaMEMidlet> midlets =
 		new ArrayList<>();
 	
+	/** Tags for the module, used for ROM selection. */
+	public List<String> tags =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the configuration with the contained project.
 	 *

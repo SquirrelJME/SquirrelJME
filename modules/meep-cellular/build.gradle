@@ -12,6 +12,7 @@ squirreljme
 	swmName = "MEEP Cellular Networking"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.cellular;;")
+	tags += "meep"
 }
 
 dependencies

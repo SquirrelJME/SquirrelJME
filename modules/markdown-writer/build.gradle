@@ -11,6 +11,7 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Markdown Writer"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "extra"
 }
 
 dependencies
