@@ -11,6 +11,8 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Mobile 3D Graphics API"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "3d"
+	tags += "graphics"
 }
 
 dependencies

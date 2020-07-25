@@ -14,6 +14,8 @@ squirreljme
 	swmName = "MEEP Application Management System"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.swm;;")
+	tags += "meep"
+	tags += "j2me"
 }
 
 dependencies

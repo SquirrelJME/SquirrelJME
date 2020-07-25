@@ -11,6 +11,7 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Java Debug Wire Protocol"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "testing"
 }
 
 dependencies

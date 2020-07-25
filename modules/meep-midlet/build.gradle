@@ -12,6 +12,8 @@ squirreljme
 	swmName = "MEEP MIDlet Interface"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.midlet;;")
+	tags += "meep"
+	tags += "required"
 }
 
 dependencies

@@ -10,6 +10,8 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "OpenGL ES"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "3d"
+	tags += "graphics"
 }
 
 dependencies

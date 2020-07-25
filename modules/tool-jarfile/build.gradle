@@ -11,6 +11,7 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Jar File Tools"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "compiler"
 }
 
 dependencies

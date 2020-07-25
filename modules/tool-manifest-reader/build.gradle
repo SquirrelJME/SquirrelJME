@@ -10,6 +10,7 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Manifest File Decoder"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "extra"
 }
 
 dependencies

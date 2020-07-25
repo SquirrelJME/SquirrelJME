@@ -12,6 +12,8 @@ squirreljme
 	swmName = "MEEP Line Based Interface"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.lui;;")
+	tags += "meep"
+	tags += "graphics"
 }
 
 dependencies
