@@ -76,7 +76,7 @@ jobs:
           working_directory: ratufacoat
           shell: bash.exe
           command: |
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME.exe squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_win64.exe;
+            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/Debug/SquirrelJME.exe squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_win64.exe;
   ratufacoat_build_windows_libretro:
     executor:
       name: win/default
