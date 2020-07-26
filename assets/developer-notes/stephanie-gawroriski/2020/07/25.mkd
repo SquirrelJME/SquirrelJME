@@ -1,0 +1,13 @@
+# 2020/07/25
+
+## 09:45
+
+I really do like doing small one-off commit kind of things. Basically what I
+just did was add an alternative means of MIDlet selection so that not just
+the first one would be the one that is always ran. This will allow me to try
+other MIDlets much more easier in testing.
+
+## 09:46
+
+Also had another idea, I am going to add tags to all of the MIDlets. It will
+not be used now, but later on it will be used for ROM selection.

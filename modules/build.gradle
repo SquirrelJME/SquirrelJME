@@ -1,6 +1,9 @@
+import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
+
 plugins
 {
 	id "de.set.ecj" version "1.4.1" apply false
+	id "idea"
 }
 
 group = "cc.squirreljme.modules"
@@ -12,7 +15,18 @@ subprojects
 	//apply plugin: "de.set.ecj"
 	apply plugin: "java"
 	apply plugin: "cc.squirreljme.plugin"
-
+	apply plugin: "idea"
+	
+	idea
+	{
+		module
+		{
+			jdkName = "1.7"
+			languageLevel = new IdeaLanguageLevel("1.7")
+			targetBytecodeVersion = JavaVersion.VERSION_1_7
+		}
+	}
+	
 	// Configure the compiler
 	java
 	{

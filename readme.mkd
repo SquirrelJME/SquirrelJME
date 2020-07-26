@@ -52,6 +52,9 @@ https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
  * [![Docker Build](
    https://img.shields.io/docker/build/xerthesquirrel/squirreljme)](
    https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
+ * [![Download SquirrelJME](
+   https://img.shields.io/sourceforge/dm/squirreljme.svg)](
+   https://sourceforge.net/projects/squirreljme/files/latest/download)
 
 Information:
 
@@ -115,6 +118,7 @@ Information:
    * [YouTube](
      https://www.youtube.com/playlist?list=PLpBpyrtWn1U3motx3AUOm70qG5zraCepD)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
+ * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
    * [GitHub](https://github.com/XerTheSquirrel/)
    * [Keybase](https://keybase.io/xerthesquirrel)
