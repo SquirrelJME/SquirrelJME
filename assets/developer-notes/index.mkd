@@ -711,7 +711,7 @@
  * `W27`: `--` `--` [**`01`**](stephanie-gawroriski/2020/07/01.mkd) [**`02`**](stephanie-gawroriski/2020/07/02.mkd) `03` `04` `05` 
  * `W28`: [**`06`**](stephanie-gawroriski/2020/07/06.mkd) `07` `08` [**`09`**](stephanie-gawroriski/2020/07/09.mkd) `10` [**`11`**](stephanie-gawroriski/2020/07/11.mkd) [**`12`**](stephanie-gawroriski/2020/07/12.mkd) 
  * `W29`: `13` [**`14`**](stephanie-gawroriski/2020/07/14.mkd) `15` [**`16`**](stephanie-gawroriski/2020/07/16.mkd) `17` `18` [**`19`**](stephanie-gawroriski/2020/07/19.mkd) 
- * `W30`: [**`20`**](stephanie-gawroriski/2020/07/20.mkd) [**`21`**](stephanie-gawroriski/2020/07/21.mkd) `22` `23` `24` `25` `26` 
+ * `W30`: [**`20`**](stephanie-gawroriski/2020/07/20.mkd) [**`21`**](stephanie-gawroriski/2020/07/21.mkd) `22` `23` `24` [**`25`**](stephanie-gawroriski/2020/07/25.mkd) `26` 
  * `W31`: `27` `28` `29` `30` `31` `--` `--` 
 
 
