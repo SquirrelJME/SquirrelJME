@@ -9,12 +9,11 @@
 
 package lcdui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Form;
 
 /**
- * Not Described.
+ * Base class for form related tests.
  *
  * @since 2020/07/26
  */
