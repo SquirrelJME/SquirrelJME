@@ -21,7 +21,10 @@ subprojects
 	{
 		module
 		{
-			jdkName = "1.7"
+			// This is 1.8 because 1.7 is not really available
+			jdkName = "1.8"
+			
+			// However, everything targets 1.7 otherwise
 			languageLevel = new IdeaLanguageLevel("1.7")
 			targetBytecodeVersion = JavaVersion.VERSION_1_7
 		}
