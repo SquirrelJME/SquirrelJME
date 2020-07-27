@@ -127,6 +127,15 @@ public final class UIFormShelf
 		throws MLECallError;
 	
 	/**
+	 * Flushes all of the events and forces them to be processed.
+	 * 
+	 * @throws MLECallError If events could not be flushed.
+	 * @since 2020/07/26
+	 */
+	public static native void flushEvents()
+		throws MLECallError;
+	
+	/**
 	 * Deletes the given form.
 	 * 
 	 * @param __form The form to delete.
@@ -215,6 +224,16 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	public static native UIFormBracket formNew()
+		throws MLECallError;
+	
+	/**
+	 * Returns the injector for forms, which is used for testing purposes.
+	 * 
+	 * @return The injector for the shelf.
+	 * @throws MLECallError If injecting is not supported.
+	 * @since 2020/07/26
+	 */
+	public static native UIFormCallback injector()
 		throws MLECallError;
 	
 	/**

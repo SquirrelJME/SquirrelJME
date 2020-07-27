@@ -21,6 +21,7 @@
 #define SWINGUIFORM_EQUALSDISPLAY_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;)Z"
 #define SWINGUIFORM_EQUALSFORM_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)Z"
 #define SWINGUIFORM_EQUALSITEM_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)Z"
+#define SWINGUIFORM_FLUSHEVENTS_DESC "()V"
 #define SWINGUIFORM_FORMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
 #define SWINGUIFORM_FORMITEMATPOSITION_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
 #define SWINGUIFORM_FORMITEMCOUNT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)I"
@@ -28,6 +29,7 @@
 #define SWINGUIFORM_FORMITEMPOSITIONSET_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;I)V"
 #define SWINGUIFORM_FORMITEMREMOVE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
 #define SWINGUIFORM_FORMNEW_DESC "()Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"
+#define SWINGUIFORM_INJECTOR_DESC "()Lcc/squirreljme/jvm/mle/callbacks/UIFormCallback;"
 #define SWINGUIFORM_ITEMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V"
 #define SWINGUIFORM_ITEMNEW_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
 #define SWINGUIFORM_METRIC_DESC "(I)I"
@@ -86,6 +88,13 @@ JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsItem(JNIEnv* env,
 		a, b);
 }
 
+JNIEXPORT void JNICALL Impl_mle_FormShelf_flushEvents(JNIEnv* env,
+	jclass classy)
+{
+	forwardCallStaticVoidenv, SWINGUIFORM_CLASSNAME,
+		"flushEvents", SWINGUIFORM_FLUSHEVENTS_DESC);
+}
+
 JNIEXPORT void JNICALL Impl_mle_FormShelf_formDelete(JNIEnv* env,
 	jclass classy, jobject form)
 {
@@ -141,6 +150,13 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formNew(JNIEnv* env,
 		"formNew", SWINGUIFORM_FORMNEW_DESC);
 }
 
+JNIEXPORT jobject JNICALL Impl_mle_FormShelf_injector(JINEnv* env,
+	jclass classy)
+{
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
+		"injector", SWINGUIFORM_INJECTOR_DESC);
+}
+
 JNIEXPORT void JNICALL Impl_mle_FormShelf_itemDelete(JNIEnv* env,
 	jclass classy, jobject form)
 {
@@ -174,6 +190,7 @@ static const JNINativeMethod mleforwardMethods[] =
 	{"equals", SWINGUIFORM_EQUALSDISPLAY_DESC, (void*)Impl_mle_FormShelf_equalsDisplay},
 	{"equals", SWINGUIFORM_EQUALSFORM_DESC, (void*)Impl_mle_FormShelf_equalsForm},
 	{"equals", SWINGUIFORM_EQUALSITEM_DESC, (void*)Impl_mle_FormShelf_equalsItem},
+	{"flushEvents", SWINGUIFORM_FLUSHEVENTS_DESC, (void)Impl_mle_FormShelf_flushEvents},
 	{"formDelete", SWINGUIFORM_FORMDELETE_DESC, (void*)Impl_mle_FormShelf_formDelete},
 	{"formItemAtPosition", SWINGUIFORM_FORMITEMATPOSITION_DESC, (void*)Impl_mle_FormShelf_formItemAtPosition},
 	{"formItemCount", SWINGUIFORM_FORMITEMCOUNT_DESC, (void*)Impl_mle_FormShelf_formItemCount},
@@ -181,6 +198,7 @@ static const JNINativeMethod mleforwardMethods[] =
 	{"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONSET_DESC, (void*)Impl_mle_FormShelf_formItemPositionSet},
 	{"formItemRemove", SWINGUIFORM_FORMITEMREMOVE_DESC, (void*)Impl_mle_FormShelf_formItemRemove},
 	{"formNew", SWINGUIFORM_FORMNEW_DESC, (void*)Impl_mle_FormShelf_formNew},
+	{"injector", SWINGUIFORM_INJECTOR_DESC, (void*)Impl_mle_FormShelf_injector},
 	{"itemDelete", SWINGUIFORM_ITEMDELETE_DESC, (void*)Impl_mle_FormShelf_itemDelete},
 	{"itemNew", SWINGUIFORM_ITEMNEW_DESC, (void*)Impl_mle_FormShelf_itemNew},
 	{"metric", SWINGUIFORM_METRIC_DESC, (void*)Impl_mle_FormShelf_metric},

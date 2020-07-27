@@ -22,7 +22,6 @@ import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
  *
  * @since 2020/07/03
  */
-@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface UIFormCallback
 	extends ShelfCallback
 {

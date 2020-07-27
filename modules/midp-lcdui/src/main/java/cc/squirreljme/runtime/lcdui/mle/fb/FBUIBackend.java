@@ -108,6 +108,17 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	public void flushEvents()
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
 	public void formDelete(UIFormBracket __form)
 		throws MLECallError
 	{
@@ -176,6 +187,17 @@ public class FBUIBackend
 	 */
 	@Override
 	public UIFormBracket formNew()
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/26
+	 */
+	@Override
+	public UIFormCallback injector()
 		throws MLECallError
 	{
 		throw Debugging.todo();

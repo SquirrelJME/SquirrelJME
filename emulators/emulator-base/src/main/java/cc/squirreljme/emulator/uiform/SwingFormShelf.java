@@ -165,6 +165,18 @@ public final class SwingFormShelf
 	}
 	
 	/**
+	 * As {@link UIFormShelf#flushEvents()}.
+	 * 
+	 * @throws MLECallError If events could not be flushed.
+	 * @since 2020/07/26
+	 */
+	public static void flushEvents()
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Handles {@link UIFormShelf#formDelete(UIFormBracket)}. 
 	 * 
 	 * @param __bracket The form to delete.
@@ -294,6 +306,19 @@ public final class SwingFormShelf
 		throws MLECallError
 	{
 		return new SwingForm();
+	}
+	
+	/**
+	 * As {@link UIFormShelf#injector()}.
+	 * 
+	 * @return The injector for the shelf.
+	 * @throws MLECallError If injecting is not supported.
+	 * @since 2020/07/26
+	 */
+	public static UIFormCallback injector()
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

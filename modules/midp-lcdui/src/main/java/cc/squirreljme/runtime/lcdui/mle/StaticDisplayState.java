@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.DisplayListener;
 import javax.microedition.lcdui.Displayable;
@@ -90,34 +91,34 @@ public final class StaticDisplayState
 	}
 	
 	/**
-	 * Registers the displayable with the given form.
+	 * Locates the form for the given displayable.
 	 * 
-	 * @param __displayable The displayable.
-	 * @param __form The form to link.
+	 * @param __displayable The displayable to locate.
+	 * @return The form for the given displayable.
+	 * @throws NoSuchElementException If none were found.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/07/01
+	 * @since 2020/07/26
 	 */
-	public static void register(Displayable __displayable,
-		UIFormBracket __form)
-		throws NullPointerException
+	public static UIFormBracket locate(Displayable __displayable)
+		throws NoSuchElementException, NullPointerException
 	{
-		if (__displayable == null || __form == null)
+		if (__displayable == null)
 			throw new NullPointerException("NARG");
 		
-		// Prevent thread mishaps between threads doing this
+		// Would be previously cached
 		synchronized (StaticDisplayState.class)
 		{
-			// Perform quick garbage collection on forms in the event any
-			// have gone away
-			StaticDisplayState.gc();
-			
-			// Queue the form for future cleanup
-			Reference<Displayable> ref = new WeakReference<>(__displayable,
-				StaticDisplayState._FORM_QUEUE);
-			
-			// Bind this displayable to the form
-			StaticDisplayState._FORMS.put(ref, __form);
+			for (Map.Entry<Reference<Displayable>, UIFormBracket> e :
+				StaticDisplayState._FORMS.entrySet())
+			{
+				if (__displayable == e.getKey().get())
+					return e.getValue();
+			}
 		}
+		
+		// {@squirreljme.error EB3c No form exists for the given
+		// displayable.}
+		throw new NoSuchElementException("EB3c");
 	}
 	
 	/**
@@ -146,6 +147,37 @@ public final class StaticDisplayState
 				// Perform collection on it
 				UIBackendFactory.getInstance().formDelete(form);
 			}
+		}
+	}
+	
+	/**
+	 * Registers the displayable with the given form.
+	 * 
+	 * @param __displayable The displayable.
+	 * @param __form The form to link.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/07/01
+	 */
+	public static void register(Displayable __displayable,
+		UIFormBracket __form)
+		throws NullPointerException
+	{
+		if (__displayable == null || __form == null)
+			throw new NullPointerException("NARG");
+		
+		// Prevent thread mishaps between threads doing this
+		synchronized (StaticDisplayState.class)
+		{
+			// Perform quick garbage collection on forms in the event any
+			// have gone away
+			StaticDisplayState.gc();
+			
+			// Queue the form for future cleanup
+			Reference<Displayable> ref = new WeakReference<>(__displayable,
+				StaticDisplayState._FORM_QUEUE);
+			
+			// Bind this displayable to the form
+			StaticDisplayState._FORMS.put(ref, __form);
 		}
 	}
 	
