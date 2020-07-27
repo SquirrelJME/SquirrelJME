@@ -1,0 +1,34 @@
+# 2020/07/26
+
+## 15:04
+
+Okay so I definitely forgot that MIDP 3 has a bunch of different layout policies
+which do not match how J2ME did things in the past. So going to have to have
+that in UIForms in order for it to be handled properly.
+
+## 15:11
+
+So I really do not want to add `16 * 4 = 64` entries for special items and such
+because that would just be way more complicated than I want. So I think for
+those special item commands and such, I am just going to have a special kind
+of item for the most part. Maybe like a button array? I do have to do menus
+so I need to add this in as well though. So maybe this would be best handled by
+a special type of item? It would basically be an array of buttons for the
+most part. But that in itself would be messy as the items would have lots of
+functionality specific for that item and I just want simple items. So how I best
+go about these items? I should think on it more.
+
+## 20:05
+
+I do have work in the morning and was not really sure what to do today, so I
+cleaned, watched a movie with my wife, and relaxed mostly. I think for now it
+would be best to just implement all of LCDUI in the tests and such just to
+see how it would go. Of course for tests I would need a way to inject events
+accordingly just to ensure that things work properly.
+
+## 20:25
+
+Okay so for injecting, I am just going to have it where I can get the
+callback interface since it would all be in the same format. This would
+make implementation easier and I can always do `MLECallError` if not
+supported.
