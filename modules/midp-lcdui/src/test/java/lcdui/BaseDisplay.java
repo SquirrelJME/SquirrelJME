@@ -9,7 +9,6 @@
 
 package lcdui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Display;
 import net.multiphasicapps.tac.TestRunnable;
 
@@ -18,7 +17,7 @@ import net.multiphasicapps.tac.TestRunnable;
  *
  * @since 2020/07/26
  */
-abstract class __BaseDisplay__
+public abstract class BaseDisplay
 	extends TestRunnable
 {
 	/**

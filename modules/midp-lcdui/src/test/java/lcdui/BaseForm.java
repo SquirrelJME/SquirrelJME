@@ -17,8 +17,8 @@ import javax.microedition.lcdui.Form;
  *
  * @since 2020/07/26
  */
-abstract class __BaseForm__
-	extends __BaseDisplay__
+public abstract class BaseForm
+	extends BaseDisplay
 {
 	/**
 	 * Tests on the given form.
