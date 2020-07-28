@@ -339,6 +339,29 @@ jobs:
           path: ~/test-results/junit
       - store_artifacts:
           path: ~/test-results/nps
+  ################################### USERS ##################################
+  wip-userguide:
+    executor: buildenv
+    steps:
+      - checkout
+      - run:
+          name: Checkout Wiki
+          command: git checkout git@github.com:SquirrelJME/SquirrelJME.wiki.git /tmp/wiki
+      - run:
+          name: Wikify
+          command: .circleci/squirreljme-wikify-user-guide.sh "$(pwd)" "/tmp/wiki"
+      - run:
+          name: Update Git User
+          command: |
+            cd "/tmp/wiki" && git config user.name "SquirrelJME Automation" && git config user.email "xerthesquirrel+squirreljme@gmail.com"
+      - run:
+          name: Commit changes
+          command: |
+            cd "/tmp/wiki" && git commit -m "Synchronize User-Guide" || echo "Ignoring commit."
+      - run:
+          name: Push changes
+          command: |
+            cd "/tmp/wiki" && git push
 
 workflows:
   version: 2
@@ -368,3 +391,11 @@ workflows:
       - ratufacoat_build_macosx:
           requires:
             - build_macosx
+  friendliness:
+    jobs:
+      - export_user_guide:
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-userguide
