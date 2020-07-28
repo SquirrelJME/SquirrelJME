@@ -340,7 +340,7 @@ jobs:
       - store_artifacts:
           path: ~/test-results/nps
   ################################### USERS ##################################
-  wip-userguide:
+  export_user_guide:
     executor: buildenv
     steps:
       - checkout
