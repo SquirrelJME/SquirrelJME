@@ -17,7 +17,7 @@ then
 fi
 
 # These are directories
-__repo="$1"
+__repo="$1/assets/user-guide"
 __wiki="$2"
 
 # These both must be directories
