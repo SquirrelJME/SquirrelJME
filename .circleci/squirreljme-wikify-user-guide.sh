@@ -39,14 +39,25 @@ fi
 __toGitHubName()
 {
 	__srcName="$1"
-	echo "$__srcName" | sed 's/\.mkd$/\.markdown/'
+	
+	if [ "$__srcName" = "readme.mkd" ]
+	then
+		echo "Home.markdown"
+	else
+		echo "$__srcName" | sed 's/\.mkd$/\.markdown/'
+	fi
 }
 
 # Convert to Fossil name
 __toFossilName()
 {
 	__srcName="$1"
-	echo "$__srcName" | sed 's/\.markdown$/\.mkd/'
+	if [ "$__srcName" = "Home.markdown" ]
+	then
+		echo "readme.mkd"
+	else
+		echo "$__srcName" | sed 's/\.markdown$/\.mkd/'
+	fi
 }
 
 # Remove any other old files
