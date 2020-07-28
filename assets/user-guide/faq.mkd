@@ -1,0 +1,7 @@
+# Frequently Asked Questions
+
+ * ***Q***: What are the errors with `XX11`?
+   * ***A***: To conserve space, **SquirrelJME** uses compactified error
+     codes which are stored in an [error directory](error-list.mkd), this is
+     so that descriptive messages can be stored externally without there
+     being additional space being used by the message.
