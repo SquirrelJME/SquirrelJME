@@ -1,0 +1,4 @@
+# Error List
+
+This file is currently a place holder and in the future all of the errors
+will be placed here accordingly.
