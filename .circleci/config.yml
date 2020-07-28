@@ -346,7 +346,7 @@ jobs:
       - checkout
       - run:
           name: Checkout Wiki
-          command: git checkout git@github.com:SquirrelJME/SquirrelJME.wiki.git /tmp/wiki
+          command: git clone git@github.com:SquirrelJME/SquirrelJME.wiki.git /tmp/wiki
       - run:
           name: Wikify
           command: .circleci/squirreljme-wikify-user-guide.sh "$(pwd)" "/tmp/wiki"
