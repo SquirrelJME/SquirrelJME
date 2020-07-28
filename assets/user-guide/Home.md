@@ -8,10 +8,10 @@ some fun with it and otherwise!
 
 You may view this guide on the following:
 
- * [Main Website](https://squirreljme.cc/doc/ckout/assets/user-guide/Home.mkd)
+ * [Main Website](https://squirreljme.cc/doc/ckout/assets/user-guide/Home.md)
  * [GitHub](https://github.com/SquirrelJME/SquirrelJME/wiki)
 
 ## Table of Contents
 
- * [Frequently Asked Questions](faq.mkd)
- * [List of errors](error-list.mkd)
+ * [Frequently Asked Questions](faq.md)
+ * [List of errors](error-list.md)
