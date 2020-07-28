@@ -51,7 +51,7 @@ done
 # Copy and add any files over
 find "$__repo" -type f | while read __repoFile
 do
-	__baseName="$(basename "__repoFile")"
+	__baseName="$(basename "$__repoFile")"
 	
 	cp -vf "$__repoFile" "$__wiki/$__baseName"
 	(cd "$__wiki" && git add "$__wiki/$__baseName")
