@@ -12,6 +12,7 @@ squirreljme
 	swmName = "Jar File Tools"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "compiler"
+	tags += "deprecated-for-autumncoat"
 }
 
 dependencies
