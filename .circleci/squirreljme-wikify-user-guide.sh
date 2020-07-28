@@ -7,7 +7,8 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Wikifies SquirrelJME
+# DESCRIPTION: Wikifies SquirrelJME for GitHub, since GitHub uses a different
+# format for their Wikis...
 
 # Must be valid!
 if [ "$#" -lt "2" ]
@@ -17,42 +18,66 @@ then
 fi
 
 # These are directories
-__repo="$1/assets/user-guide"
-__wiki="$2"
+__foss="$1/assets/user-guide"
+__gith="$2"
 
 # These both must be directories
-if [ ! -d "$__repo" ] || [ ! -d "$__wiki" ]
+if [ ! -d "$__foss" ] || [ ! -d "$__gith" ]
 then
 	echo "Both arguments must be directories."
 	exit 1
 fi
 
 # Target must be a Git repo
-if [ ! -d "$__wiki/.git" ]
+if [ ! -d "$__gith/.git" ]
 then
 	echo "Target not a Git repository."
 	exit 1
 fi
 
-# Remove any files which are missing
-find "$__wiki" -type f | while read __wikiFile
+# Convert to GitHub name
+__toGitHubName()
+{
+	__srcName="$1"
+	echo "$__srcName" | sed 's/\.mkd$/\.markdown/'
+}
+
+# Convert to Fossil name
+__toFossilName()
+{
+	__srcName="$1"
+	echo "$__srcName" | sed 's/\.markdown$/\.mkd/'
+}
+
+# Remove any other old files
+find "$__gith" -type f | grep -e '\.mkd$' -e '\.md$' | while read __githFile
 do
-	__baseName="$(basename "$__wikiFile")"
+	echo "Removing old file $__githFile..."
+	git rm -f "$__githFile"
+done
+
+# Remove any files which are missing
+find "$__gith" -type f | grep '\.markdown$' | while read __githFile
+do
+	__baseGith="$(basename "$__githFile")"
+	__baseFoss="$(__toFossilName "$__baseGith")"
 	
-	# File is missing, remove it
-	if [ ! -f "$__repo/$__baseName" ]
+	# The file may be in the root of the project or elsewhere...
+	if ! find "$__foss/" -type f | grep "$__baseFoss" > /dev/null
 	then
-		echo "Removing file $___baseName..."
+		echo "Removing file $__githFile (aka $__baseFoss)..."
 		
-		git rm -f "$__wikiFile"
+		git rm -f "$__githFile"
 	fi
 done
 
-# Copy and add any files over
-find "$__repo" -type f | while read __repoFile
+# Copy and convert the files for GitHub's Wiki
+find "$__foss" -type f | grep '\.mkd$' | while read __fossFile
 do
-	__baseName="$(basename "$__repoFile")"
+	__baseFoss="$(basename "$__fossFile")"
+	__baseGith="$(__toGitHubName "$__baseFoss")"
 	
-	cp -vf "$__repoFile" "$__wiki/$__baseName"
-	(cd "$__wiki" && git add "$__wiki/$__baseName")
+	# Links need to be properly converted or they will be lost
+	sed 's/(\([^.]*\)\.mkd)/(\1)/g' < "$__fossFile" > "$__gith/$__baseGith"
+	(cd "$__gith" && git add "$__gith/$__baseGith")
 done
