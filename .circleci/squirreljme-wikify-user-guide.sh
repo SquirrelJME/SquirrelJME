@@ -91,6 +91,7 @@ do
 	echo "Converting $__baseFoss to $__baseGith..."
 	
 	# Links need to be properly converted or they will be lost
-	sed 's/(\([^.]*\)\.mkd)/(\1)/g' < "$__fossFile" > "$__gith/$__baseGith"
+	sed 's/(readme\.mkd)/(Home)/g' < "$__fossFile" | \
+		sed 's/(\([^.]*\)\.mkd)/(\1)/g' > "$__gith/$__baseGith"
 	(cd "$__gith" && git add "$__gith/$__baseGith")
 done
