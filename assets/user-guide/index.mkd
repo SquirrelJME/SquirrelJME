@@ -1,0 +1,7 @@
+# SquirrelJME User Guide
+
+Hello! Thank you for trying **SquirrelJME**, we hope that you enjoy it! This
+guide is intended to make it easier to use **SquirrelJME** so you can have
+some fun with it and otherwise!
+
+ * Main website: <https://squirreljme.cc/>
