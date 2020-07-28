@@ -21,6 +21,9 @@ import javax.microedition.lcdui.Graphics;
 public class CanvasPlatform
 	extends Canvas
 {
+	/** The time of the last repaint. */
+	private long _lastRepaint;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/07/26
@@ -28,6 +31,23 @@ public class CanvasPlatform
 	@Override
 	protected void paint(Graphics __g)
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			this._lastRepaint = System.currentTimeMillis();
+		}
+	}
+	
+	/**
+	 * Queries the last repaint time.
+	 * 
+	 * @return The last repaint time.
+	 * @since 2020/07/27
+	 */
+	public final long queryLastRepaint()
+	{
+		synchronized (this)
+		{
+			return this._lastRepaint;
+		}
 	}
 }
