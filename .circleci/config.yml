@@ -358,6 +358,9 @@ jobs:
           name: Commit changes
           command: |
             cd "/tmp/wiki" && git commit -m "Synchronize User-Guide" || echo "Ignoring commit."
+      - add_ssh_keys:
+          fingerprints:
+            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
       - run:
           name: Push changes
           command: |
