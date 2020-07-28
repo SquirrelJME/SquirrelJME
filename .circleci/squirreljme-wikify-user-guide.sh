@@ -53,7 +53,7 @@ __toFossilName()
 find "$__gith" -type f | grep -e '\.mkd$' -e '\.md$' | while read __githFile
 do
 	echo "Removing old file $__githFile..."
-	git rm -f "$__githFile"
+	(cd "$__gith" && git rm -f "$__githFile")
 done
 
 # Remove any files which are missing
@@ -67,7 +67,7 @@ do
 	then
 		echo "Removing file $__githFile (aka $__baseFoss)..."
 		
-		git rm -f "$__githFile"
+		(cd "$__gith" && git rm -f "$__githFile")
 	fi
 done
 
@@ -76,6 +76,8 @@ find "$__foss" -type f | grep '\.mkd$' | while read __fossFile
 do
 	__baseFoss="$(basename "$__fossFile")"
 	__baseGith="$(__toGitHubName "$__baseFoss")"
+	
+	echo "Converting $__baseFoss to $__baseGith..."
 	
 	# Links need to be properly converted or they will be lost
 	sed 's/(\([^.]*\)\.mkd)/(\1)/g' < "$__fossFile" > "$__gith/$__baseGith"
