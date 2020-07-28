@@ -54,7 +54,7 @@ https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
    https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
  * [![Download SquirrelJME](
    https://img.shields.io/sourceforge/dm/squirreljme.svg)](
-   https://sourceforge.net/projects/squirreljme/files/latest/download)
+   https://sourceforge.net/projects/squirreljme/files/)
 
 Information:
 

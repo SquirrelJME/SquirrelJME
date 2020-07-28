@@ -52,6 +52,7 @@ __toGitHubName()
 __toFossilName()
 {
 	__srcName="$1"
+	
 	if [ "$__srcName" = "Home.markdown" ]
 	then
 		echo "readme.mkd"
