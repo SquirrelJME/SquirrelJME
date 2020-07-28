@@ -16,7 +16,7 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 
 /**
- * This is used to get the error lists from a project.
+ * This is a mapping of individual error codes for a project.
  *
  * @since 2020/02/22
  */
