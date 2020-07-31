@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import org.gradle.api.Project;
 
 /**
- * This is used to manage the list of errors and otherwise.
+ * This is a mapping of error codes to projects.
  *
  * @since 2020/02/22
  */

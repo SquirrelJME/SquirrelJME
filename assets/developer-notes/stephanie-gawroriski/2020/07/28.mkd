@@ -1,0 +1,9 @@
+# 2020/07/28
+
+## 18:34
+
+I think this mini branch is good enough for the user guide, so going to
+merge it into trunk. I thought about doing the error list stuff and the new
+blogging in this one, but I do not really see the purpose of that and I do
+not want to drag on the base. I do not know if I want to work on it right now
+or later on.

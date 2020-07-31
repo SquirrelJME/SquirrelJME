@@ -10,6 +10,7 @@ squirreljme
 	swmName = "Class File Reader"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "compiler"
+	tags += "deprecated-for-autumncoat"
 }
 
 dependencies
