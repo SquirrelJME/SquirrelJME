@@ -66,7 +66,6 @@
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />
             <option value="$PROJECT_DIR$/modules/tool-jarfile" />
-            <option value="$PROJECT_DIR$/modules/tool-jdwp" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-reader" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
             <option value="$PROJECT_DIR$/modules/tool-packfile" />
@@ -78,7 +77,6 @@
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />
-            <option value="$PROJECT_DIR$/tools/uudecode" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />
