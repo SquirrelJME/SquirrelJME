@@ -91,7 +91,7 @@ JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsItem(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_FormShelf_flushEvents(JNIEnv* env,
 	jclass classy)
 {
-	forwardCallStaticVoidenv, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"flushEvents", SWINGUIFORM_FLUSHEVENTS_DESC);
 }
 
@@ -150,7 +150,7 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formNew(JNIEnv* env,
 		"formNew", SWINGUIFORM_FORMNEW_DESC);
 }
 
-JNIEXPORT jobject JNICALL Impl_mle_FormShelf_injector(JINEnv* env,
+JNIEXPORT jobject JNICALL Impl_mle_FormShelf_injector(JNIEnv* env,
 	jclass classy)
 {
 	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
@@ -181,7 +181,7 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 		metricId);
 }
 
-static const JNINativeMethod mleforwardMethods[] =
+static const JNINativeMethod mleFormMethods[] =
 {
 	{"callback", SWINGUIFORM_CALLBACK_DESC, (void*)Impl_mle_FormShelf_callback},
 	{"displays", SWINGUIFORM_DISPLAYS_DESC, (void*)Impl_mle_FormShelf_displays},
@@ -190,7 +190,7 @@ static const JNINativeMethod mleforwardMethods[] =
 	{"equals", SWINGUIFORM_EQUALSDISPLAY_DESC, (void*)Impl_mle_FormShelf_equalsDisplay},
 	{"equals", SWINGUIFORM_EQUALSFORM_DESC, (void*)Impl_mle_FormShelf_equalsForm},
 	{"equals", SWINGUIFORM_EQUALSITEM_DESC, (void*)Impl_mle_FormShelf_equalsItem},
-	{"flushEvents", SWINGUIFORM_FLUSHEVENTS_DESC, (void)Impl_mle_FormShelf_flushEvents},
+	{"flushEvents", SWINGUIFORM_FLUSHEVENTS_DESC, (void*)Impl_mle_FormShelf_flushEvents},
 	{"formDelete", SWINGUIFORM_FORMDELETE_DESC, (void*)Impl_mle_FormShelf_formDelete},
 	{"formItemAtPosition", SWINGUIFORM_FORMITEMATPOSITION_DESC, (void*)Impl_mle_FormShelf_formItemAtPosition},
 	{"formItemCount", SWINGUIFORM_FORMITEMCOUNT_DESC, (void*)Impl_mle_FormShelf_formItemCount},
@@ -208,6 +208,5 @@ jint JNICALL mleFormInit(JNIEnv* env, jclass classy)
 {
 	return env->RegisterNatives(
 		env->FindClass("cc/squirreljme/jvm/mle/UIFormShelf"),
-		mleforwardMethods, sizeof(mleforwardMethods) /
-			sizeof(JNINativeMethod));
+		mleFormMethods, sizeof(mleFormMethods) / sizeof(JNINativeMethod));
 }
