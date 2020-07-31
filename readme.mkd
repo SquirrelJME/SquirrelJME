@@ -34,6 +34,12 @@ Badges:
    * [![CircleCI](
      https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg)](
      https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
+   * [![Code Climate maintainability](
+     https://img.shields.io/codeclimate/maintainability-percentage/SquirrelJME/SquirrelJME)](
+     https://codeclimate.com/github/SquirrelJME/SquirrelJME)
+     [![Code Climate technical debt](
+     https://img.shields.io/codeclimate/tech-debt/SquirrelJME/SquirrelJME)](
+     https://codeclimate.com/github/SquirrelJME/SquirrelJME)
    * [![Codebeat](
      https://codebeat.co/badges/3d3e4933-50bd-495c-a8ab-206d9603aa15)](
      https://codebeat.co/projects/github-com-squirreljme-squirreljme-trunk)
