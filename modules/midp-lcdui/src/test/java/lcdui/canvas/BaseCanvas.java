@@ -42,6 +42,14 @@ public abstract class BaseCanvas
 		CanvasPlatform platform = new CanvasPlatform();
 		__display.setCurrent(platform);
 		
-		this.test(__display, platform);
+		try
+		{
+			this.test(__display, platform);
+		}
+		finally
+		{
+			if (__display.getCurrent() == platform)
+				__display.removeCurrent();
+		}
 	}
 }

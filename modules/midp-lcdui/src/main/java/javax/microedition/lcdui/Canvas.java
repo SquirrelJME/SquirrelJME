@@ -39,7 +39,11 @@ public abstract class Canvas
 	public static final int ACTIONS_NONE =
 		0;
 	
-	/** This is a game key for the down direction. */
+	/**
+	 * This is a game key for the down direction.
+	 * 
+	 * The bits of this key are {@code 0b110}, inverted from {@link #UP}.
+	 */
 	public static final int DOWN =
 		6;
 	
@@ -133,15 +137,27 @@ public abstract class Canvas
 	public static final int KEY_UP =
 		-1;
 	
-	/** This is a game key for the left direction. */
+	/** 
+	 * This is a game key for the left direction.
+	 * 
+	 * The bits of this key are {@code 0b010}, inverted from {@link #RIGHT}.
+	 */
 	public static final int LEFT =
 		2;
 	
-	/** This is a game key for the right direction. */
+	/**
+	 * This is a game key for the right direction.
+	 * 
+	 * The bits of this key are {@code 0b101}, inverted from {@link #LEFT}.
+	 */
 	public static final int RIGHT =
 		5;
 	
-	/** This is a game key for the up direction. */
+	/** 
+	 * This is a game key for the up direction.
+	 * 
+	 * The bits of this key are {@code 0b001}, inverted from {@link #DOWN}.
+	 */
 	public static final int UP =
 		1;
 	
