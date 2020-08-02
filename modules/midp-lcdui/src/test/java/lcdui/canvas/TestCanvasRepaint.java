@@ -33,6 +33,7 @@ public class TestCanvasRepaint
 		// Mark the time and request a repaint
 		long base = System.currentTimeMillis();
 		__platform.repaint();
+		__platform.serviceRepaints();
 		
 		boolean gotRepaint = false; 
 		
