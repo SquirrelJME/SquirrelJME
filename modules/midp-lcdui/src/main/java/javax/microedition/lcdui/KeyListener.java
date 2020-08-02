@@ -22,27 +22,27 @@ package javax.microedition.lcdui;
  */
 public interface KeyListener
 {
-	/** The chr alt modifier. */
+	/** Alt key modifier. */
 	int MODIFIER_ALT =
 		65536;
-
-	/** The chr key modifier. */
+		
+	/** Ctrl key modifier. */
 	int MODIFIER_CHR =
 		8388608;
-
-	/** The command key modifier. */
+	
+	/** Command key modifier. */
 	int MODIFIER_COMMAND =
 		4194304;
-
-	/** The ctrl key modifier. */
+	
+	/** Ctrl key modifier. */
 	int MODIFIER_CTRL =
 		262144;
-
-	/** The mask for modifiers. */
+	
+	/** Mask for all the modifier keys. */
 	int MODIFIER_MASK =
 		13041664;
-
-	/** The shift key modifier. */
+	
+	/** Shift key modifier. */
 	int MODIFIER_SHIFT =
 		131072;
 	

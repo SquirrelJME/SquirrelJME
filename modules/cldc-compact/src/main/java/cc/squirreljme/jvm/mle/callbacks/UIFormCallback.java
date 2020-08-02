@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemIntegerProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemStringProperty;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
+import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.jvm.mle.constants.UIMouseButton;
 import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
 
@@ -32,10 +33,11 @@ public interface UIFormCallback
 	 * @param __item The item acted on.
 	 * @param __event One of {@link UIKeyEventType}.
 	 * @param __keyCode Key code for the event.
+	 * @param __modifiers Bit mask of {@link UIKeyModifier}.
 	 * @since 2020/07/19
 	 */
 	void eventKey(UIFormBracket __form, UIItemBracket __item, int __event,
-		int __keyCode);
+		int __keyCode, int __modifiers);
 	
 	/**
 	 * This is called on a mouse action.
@@ -46,10 +48,11 @@ public interface UIFormCallback
 	 * @param __button One of {@link UIMouseButton}.
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
+	 * @param __modifiers Bit mask of {@link UIKeyModifier}.
 	 * @since 2020/07/19
 	 */
 	void eventMouse(UIFormBracket __form, UIItemBracket __item, int __event,
-		int __button, int __x, int __y);
+		int __button, int __x, int __y, int __modifiers);
 	
 	/**
 	 * Draw action for the given item.
