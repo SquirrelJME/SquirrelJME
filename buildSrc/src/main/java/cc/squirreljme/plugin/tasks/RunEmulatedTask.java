@@ -13,7 +13,7 @@ import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import java.util.Objects;
 import javax.inject.Inject;
-import org.gradle.jvm.tasks.Jar;
+import org.gradle.api.Task;
 
 /**
  * Launches the program but runs it in the Virtual Machine.
@@ -36,7 +36,7 @@ public class RunEmulatedTask
 	 * @since 2020/02/29
 	 */
 	@Inject
-	public RunEmulatedTask(Jar __jar, String __emulator)
+	public RunEmulatedTask(Task __jar, String __emulator)
 	{
 		super(__jar, __emulator, RunEmulatedTask._MAIN_CONFIGS);
 		

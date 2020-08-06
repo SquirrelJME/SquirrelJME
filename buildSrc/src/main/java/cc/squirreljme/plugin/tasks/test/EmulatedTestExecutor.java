@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.tasks.test;
 
 import cc.squirreljme.plugin.tasks.TestInVMTask;
+import cc.squirreljme.plugin.util.ArchiveTaskUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public final class EmulatedTestExecutor
 		{
 			// Load tests to run
 			Collection<String> classes = EmulatedTestUtilities.readJarServices(
-				__spec.jar.getArchiveFile().get().getAsFile().toPath());
+				ArchiveTaskUtils.getArchiveFile(__spec.jar).get());
 			
 			// Has a single set of tests been specified
 			String singleTest = System.getProperty(
@@ -314,7 +315,6 @@ public final class EmulatedTestExecutor
 	 * @param __suite The suite to run.
 	 * @param __classes The classes to run.
 	 * @return Did all tests pass?
-	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/06
 	 */
@@ -322,7 +322,7 @@ public final class EmulatedTestExecutor
 	private boolean __executeClasses(EmulatedTestExecutionSpec __spec,
 		TestResultProcessor __results, EmulatedTestSuiteDescriptor __suite,
 		Iterable<String> __classes)
-		throws IOException, NullPointerException
+		throws NullPointerException
 	{
 		if (__spec == null || __results == null || __suite == null ||
 			__classes == null)

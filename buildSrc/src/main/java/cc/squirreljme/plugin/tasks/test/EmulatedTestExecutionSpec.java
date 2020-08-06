@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.tasks.test;
 
+import org.gradle.api.Task;
 import org.gradle.api.internal.tasks.testing.TestExecutionSpec;
 import org.gradle.jvm.tasks.Jar;
 
@@ -25,7 +26,7 @@ public class EmulatedTestExecutionSpec
 	protected final String emulator;
 	
 	/** The JAR to test. */
-	protected final Jar jar;
+	protected final Task jar;
 	
 	/**
 	 * Initializes the emulation specification.
@@ -35,7 +36,7 @@ public class EmulatedTestExecutionSpec
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/06
 	 */
-	public EmulatedTestExecutionSpec(String __emu, Jar __jar)
+	public EmulatedTestExecutionSpec(String __emu, Task __jar)
 		throws NullPointerException
 	{
 		if (__jar == null)

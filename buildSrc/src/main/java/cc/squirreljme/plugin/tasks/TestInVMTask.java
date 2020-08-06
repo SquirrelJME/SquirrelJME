@@ -11,11 +11,13 @@ package cc.squirreljme.plugin.tasks;
 
 import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutionSpec;
 import cc.squirreljme.plugin.tasks.test.EmulatedTestExecutor;
+import cc.squirreljme.plugin.util.ArchiveTaskUtils;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
+import org.gradle.api.Task;
 import org.gradle.api.internal.provider.DefaultProvider;
 import org.gradle.api.tasks.testing.AbstractTestTask;
 import org.gradle.api.tasks.testing.Test;
@@ -50,7 +52,7 @@ public class TestInVMTask
 	protected final String emulator;
 	
 	/** The JAR task for execution. */
-	protected final Jar jar;
+	protected final Task jar;
 	
 	/**
 	 * Initializes the task.
@@ -61,7 +63,7 @@ public class TestInVMTask
 	 */
 	@Inject
 	@Deprecated
-	public TestInVMTask(Jar __jar, String __vm)
+	public TestInVMTask(Task __jar, String __vm)
 	{
 		// We need these for tasks and such
 		this.emulator = __vm;
@@ -75,7 +77,7 @@ public class TestInVMTask
 		this.dependsOn(__jar);
 		
 		// The input file for our tests is the JAR we want to look at!
-		this.getInputs().file(__jar.getArchiveFile());
+		this.getInputs().file(ArchiveTaskUtils.getArchiveFile(__jar));
 		
 		// If we are running a single test, disable the up-to-date check
 		if (System.getProperty(TestInVMTask.SINGLE_TEST_PROPERTY) != null)

@@ -28,6 +28,7 @@ import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.UnknownTaskException;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ProjectDependency;
@@ -45,6 +46,9 @@ public abstract class AbstractEmulatedTask
 	/** The emulator to use. */
 	protected final String emulator;
 	
+	/** Is this a SummerCoat task? */
+	protected final boolean isSummerCoat;
+	
 	/** Configurations to use. */
 	@Deprecated
 	private final String[] _configs;
@@ -58,14 +62,20 @@ public abstract class AbstractEmulatedTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/06
 	 */
-	public AbstractEmulatedTask(Jar __jar, String __emulator,
+	public AbstractEmulatedTask(Task __jar, String __emulator,
 		String... __cfgs)
 		throws NullPointerException
 	{
 		if (__jar == null || __emulator == null)
 			throw new NullPointerException("No JAR or emulator specified.");
 		
+		// Only accept these two kinds
+		if (!(__jar instanceof Jar) && !(__jar instanceof SummerCoatRomTask))
+			throw new IllegalArgumentException("Incompatible dependency: " +
+				__jar.getClass());
+		
 		this.emulator = __emulator;
+		this.isSummerCoat = (__jar instanceof SummerCoatRomTask);
 		this._configs = (__cfgs == null ? new String[0] : __cfgs.clone());
 		
 		// Describe this task
@@ -170,9 +180,6 @@ public abstract class AbstractEmulatedTask
 	{
 		Collection<Path> result = new LinkedHashSet<>();
 		
-		Deque<Project> projects = new LinkedList<>();
-		Set<Project> didProjects = new TreeSet<>();
-		
 		this.__recursiveDependencies(result, this.getProject());
 		
 		return result;
@@ -249,9 +256,19 @@ __outer:
 		// Process the output files for the JAR of this project, use the
 		// absolute path since there might be hard to find libraries that are
 		// relative
-		for (File file : ((Jar)__at.getTasks().getByName("jar"))
-			.getOutputs().getFiles())
-			__out.add(file.toPath().toAbsolutePath());
+		try
+		{
+			Task targetTask = __at.getTasks().getByName(
+				(this.isSummerCoat ? "summerCoatRom" : "jar"));
+			
+			for (File file : targetTask.getOutputs().getFiles())
+				__out.add(file.toPath().toAbsolutePath());
+		}
+		catch (UnknownTaskException ignored)
+		{
+			// Ignore this because there is no JAR or SummerCoat task to
+			// depend on here
+		}
 	}
 	
 	/**
