@@ -89,14 +89,13 @@ public class SquirrelJMEPlugin
 			GenerateTestsListTask.class, processTestResources);
 			
 		// Build test JAR
-		Task testJar = __project.getTasks()
-			.create("testJar", TestsJarTask.class,
+		Task testJarTask = __project.getTasks()
+			.create("testJarTask", TestsJarTask.class,
 			testClasses, processTestResources);
 			
 		// Add SquirrelJME properties to the manifest
 		__project.getTasks().create("additionalTestJarProperties",
-			TestsJarManifestTask.class,
-			testJar, processTestResources);
+			TestsJarManifestTask.class, testJarTask, processTestResources);
 		
 		// Add SquirrelJME properties to the manifest
 		__project.getTasks().create("additionalJarProperties",
@@ -146,10 +145,14 @@ public class SquirrelJMEPlugin
 		
 		// Run emulated tests
 		__project.getTasks().create("testSpringCoat",
-			TestInVMTask.class,
-			testJar, "springcoat");
+			TestInVMTask.class, testJarTask, "springcoat");
 		__project.getTasks().create("testSummerCoat",
-			TestInVMTask.class,
-			testJar, "summercoat");
+			TestInVMTask.class, testJarTask, "summercoat");
+		
+		// Update the archive names for the JAR tasks
+		jarTask.setProperty("archiveFileName",
+			__project.getName() + ".jar");
+		testJarTask.setProperty("archiveFileName",
+			__project.getName() + "-tests.jar");
 	}
 }
