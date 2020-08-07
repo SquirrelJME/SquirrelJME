@@ -95,7 +95,7 @@ public class SquirrelJMEPlugin
 			
 		// Build test JAR
 		Jar testJarTask = (Jar)__project.getTasks()
-			.create("testJarTask", TestsJarTask.class,
+			.create("testJar", TestsJarTask.class,
 			testClasses, processTestResources);
 		testJarTask.getArchiveFileName().set(
 			__project.getName() + "-tests.jar");

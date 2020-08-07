@@ -21,7 +21,7 @@ import org.gradle.api.tasks.SourceSet;
  * @since 2020/08/06
  */
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-public interface VirtualMachineTaskProvider
+public interface VirtualMachineSpecifier
 {
 	/**
 	 * Determines the name of the library that the provider uses for what is

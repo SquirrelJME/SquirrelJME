@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.TaskContainer;
 
 /**
  * This is used to initialize the Gradle tasks for projects accordingly.
@@ -77,11 +78,45 @@ public final class TaskInitialization
 	 * @since 2020/08/07
 	 */
 	private static void initialize(Project __project, String __sourceSet,
-		VirtualMachineType __vmType)
+		VirtualMachineSpecifier __vmType)
 		throws NullPointerException
 	{
+		if (__project == null || __sourceSet == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
 		// Debug
-		System.err.printf("Init %s::%s:%s%n", __project.getName(),
+		System.err.printf("DEBUG -- Init %s::%s:%s%n", __project.getName(),
 			__sourceSet, __vmType.vmName(VMNameFormat.PROPER_NOUN));
+		
+		// Everything will be working on these tasks
+		TaskContainer tasks = __project.getTasks();
+		
+		// Library that needs to be constructed so execution happens properly
+		tasks.create(
+			TaskInitialization.task("lib", __sourceSet, __vmType),
+			MultiVMLibraryTask.class, __sourceSet, __vmType);
+	}
+	
+	/**
+	 * Builds a name for a task.
+	 * 
+	 * @param __name The task name.
+	 * @param __sourceSet The source set for the task base.
+	 * @param __vmType The type of virtual machine used.
+	 * @return A string representing the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/07
+	 */
+	public static String task(String __name, String __sourceSet,
+		VirtualMachineSpecifier __vmType)
+		throws NullPointerException
+	{
+		if (__name == null || __sourceSet == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		return __name +
+			Character.toUpperCase(__sourceSet.charAt(0)) +
+			__sourceSet.substring(1) +
+			__vmType.vmName(VMNameFormat.PROPER_NOUN);
 	}
 }

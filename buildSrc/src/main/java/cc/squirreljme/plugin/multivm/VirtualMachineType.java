@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import org.gradle.api.Project;
+import org.gradle.api.tasks.SourceSet;
 
 /**
  * Represents the type of virtual machine to run.
@@ -17,16 +18,16 @@ import org.gradle.api.Project;
  * @since 2020/08/06
  */
 public enum VirtualMachineType
-	implements VirtualMachineTaskProvider
+	implements VirtualMachineSpecifier
 {
 	/** Hosted virtual machine. */
-	HOSTED("Hosted"),
+	HOSTED("Hosted", "jar"),
 	
 	/** SpringCoat virtual machine. */
-	SPRINGCOAT("SpringCoat"),
+	SPRINGCOAT("SpringCoat", "jar"),
 	
 	/** SummerCoat virtual machine. */
-	SUMMERCOAT("SummerCoat"),
+	SUMMERCOAT("SummerCoat", "sqc"),
 	
 	/* End. */
 	;
@@ -34,20 +35,25 @@ public enum VirtualMachineType
 	/** The proper name of the VM. */
 	public final String properName;
 	
+	/** The extension for the VM. */
+	public final String extension;
+	
 	/**
 	 * Returns the proper name of the virtual machine.
 	 * 
 	 * @param __properName The proper name of the VM.
+	 * @param __extension The library extension.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/06
 	 */
-	VirtualMachineType(String __properName)
+	VirtualMachineType(String __properName, String __extension)
 		throws NullPointerException
 	{
 		if (__properName == null)
 			throw new NullPointerException("NARG");
 		
 		this.properName = __properName;
+		this.extension = __extension;
 	}
 	
 	/**
@@ -58,7 +64,15 @@ public enum VirtualMachineType
 	public String outputLibraryName(Project __project, String __sourceSet)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// The main library should never show its original source set
+		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
+			return __project.getName() + "." + this.extension;
+		
+		// Otherwise include the source sets
+		return __project.getName() + __sourceSet + "." + this.extension;
 	}
 	
 	/**
