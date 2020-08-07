@@ -9,9 +9,12 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.provider.Provider;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -63,10 +66,22 @@ public class MultiVMLibraryTask
 		this.getInputs().file(baseJar.getArchiveFile());
 		
 		// The output depends on the task and its source set
-		this.getOutputs().file(__vmType
-			.outputLibraryName(project, __sourceSet));
+		this.getOutputs().file(this.outputPath());
 		
 		// Performs the action of the task
 		this.doLast(new MultiVMLibraryTaskAction());
+	}
+	
+	/**
+	 * Returns the output path of the archive. 
+	 * 
+	 * @return The output path.
+	 * @since 2020/08/07
+	 */
+	public final Provider<Path> outputPath()
+	{
+		return this.getProject().provider(() -> this.getProject().getBuildDir()
+			.toPath().resolve(Paths.get(this.vmType
+			.outputLibraryName(this.getProject(), this.sourceSet))));
 	}
 }
