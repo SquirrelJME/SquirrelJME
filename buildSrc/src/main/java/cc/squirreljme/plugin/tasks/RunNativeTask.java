@@ -28,6 +28,7 @@ import org.gradle.process.JavaExecSpec;
  *
  * @since 2020/02/29
  */
+@Deprecated
 public class RunNativeTask
 	extends DefaultTask
 {

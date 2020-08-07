@@ -16,13 +16,11 @@ import cc.squirreljme.plugin.tasks.test.EmulatedTestUtilities;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
@@ -40,6 +38,7 @@ import org.gradle.process.JavaExecSpec;
  *
  * @since 2020/03/06
  */
+@Deprecated
 public abstract class AbstractEmulatedTask
 	extends DefaultTask
 {

@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
-import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
 import org.gradle.jvm.tasks.Jar;
 
@@ -24,6 +23,7 @@ import org.gradle.jvm.tasks.Jar;
  *
  * @since 2020/08/06
  */
+@Deprecated
 public class SummerCoatRomTask
 	extends DefaultTask
 {

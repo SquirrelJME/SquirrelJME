@@ -20,6 +20,7 @@ import org.gradle.api.Task;
  *
  * @since 2020/02/29
  */
+@Deprecated
 public class RunEmulatedTask
 	extends AbstractEmulatedTask
 {

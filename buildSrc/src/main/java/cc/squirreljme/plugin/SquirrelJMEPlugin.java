@@ -10,6 +10,7 @@
 
 package cc.squirreljme.plugin;
 
+import cc.squirreljme.plugin.multivm.TaskInitialization;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
@@ -160,5 +161,8 @@ public class SquirrelJMEPlugin
 			romTask, "summercoat");
 		__project.getTasks().create("testSummerCoat",
 			TestInVMTask.class, testRomTask, "summercoat");
+		
+		// Initialize Virtual Machine tasks for the project
+		TaskInitialization.initialize(__project);
 	}
 }

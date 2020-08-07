@@ -7,7 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.util;
+package cc.squirreljme.plugin.multivm;
+
+import org.gradle.api.Project;
 
 /**
  * Represents the type of virtual machine to run.
@@ -15,9 +17,10 @@ package cc.squirreljme.plugin.util;
  * @since 2020/08/06
  */
 public enum VirtualMachineType
+	implements VirtualMachineTaskProvider
 {
-	/** Native virtual machine. */
-	NATIVE("Native"),
+	/** Hosted virtual machine. */
+	HOSTED("Hosted"),
 	
 	/** SpringCoat virtual machine. */
 	SPRINGCOAT("SpringCoat"),
@@ -48,17 +51,37 @@ public enum VirtualMachineType
 	}
 	
 	/**
-	 * Returns the proper name of the virtual machine.
-	 * 
-	 * @param __firstLower Should the first letter be lowercase?
-	 * @return The proper name of the VM.
-	 * @since 2020/08/06
+	 * {@inheritDoc}
+	 * @since 2020/08/07
 	 */
-	public final String properName(boolean __firstLower)
+	@Override
+	public String outputLibraryName(Project __project, String __sourceSet)
+		throws NullPointerException
 	{
-		if (__firstLower)
-			return Character.toLowerCase(this.properName.charAt(0)) +
-				this.properName.substring(1);
-		return this.properName;
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/07
+	 */
+	@Override
+	public String vmName(VMNameFormat __format)
+		throws NullPointerException
+	{
+		String properName = this.properName;
+		switch (__format)
+		{
+			case LOWERCASE:
+				return properName.toLowerCase();
+				
+			case CAMEL_CASE:
+				return Character.toLowerCase(properName.charAt(0)) +
+					properName.substring(1);
+				
+			case PROPER_NOUN:
+			default:
+				return properName;
+		}
 	}
 }
