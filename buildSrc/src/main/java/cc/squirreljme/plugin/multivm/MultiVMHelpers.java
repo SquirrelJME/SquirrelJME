@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.util.Collection;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
@@ -27,6 +28,25 @@ public final class MultiVMHelpers
 	 */
 	private MultiVMHelpers()
 	{
+	}
+	
+	/**
+	 * Returns a collection of the tests that are available.
+	 * 
+	 * @param __project The project to check.
+	 * @param __sourceSet The source set for the project.
+	 * @return The list of available tests.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/07
+	 */
+	public static Collection<String> availableTests(Project __project,
+		String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

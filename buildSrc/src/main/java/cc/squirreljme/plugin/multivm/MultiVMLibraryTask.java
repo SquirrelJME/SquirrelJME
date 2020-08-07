@@ -54,7 +54,7 @@ public class MultiVMLibraryTask
 		// These are used at the build stage
 		this.sourceSet = __sourceSet;
 		this.vmType = __vmType;
-			
+		
 		// Set details of this task
 		this.setGroup("squirreljme");
 		this.setDescription("Compiles/constructs the library for execution.");

@@ -92,9 +92,21 @@ public final class TaskInitialization
 		TaskContainer tasks = __project.getTasks();
 		
 		// Library that needs to be constructed so execution happens properly
-		tasks.create(
+		MultiVMLibraryTask libTask = tasks.create(
 			TaskInitialization.task("lib", __sourceSet, __vmType),
 			MultiVMLibraryTask.class, __sourceSet, __vmType);
+		
+		// Running the target
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+			tasks.create(
+				TaskInitialization.task("run", __sourceSet, __vmType),
+				MultiVMRunTask.class, __sourceSet, __vmType, libTask);
+		
+		// Testing the target
+		else if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+			tasks.create(
+				TaskInitialization.task("test", __sourceSet, __vmType),
+				MultiVMTestTask.class, __sourceSet, __vmType, libTask);
 	}
 	
 	/**
