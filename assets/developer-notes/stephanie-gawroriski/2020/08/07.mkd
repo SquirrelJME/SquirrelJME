@@ -1,0 +1,8 @@
+# 2020/08/07
+
+## 09:07
+
+So I have a day off today so will be working on this if I do. Regardless
+this should be a bit short of a branch and will probably take at most a few
+days (I hope anyway). But first in order is going to be actually building the
+JAR or whatever that the virtual machine needs.
