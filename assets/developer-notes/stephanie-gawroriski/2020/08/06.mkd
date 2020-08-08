@@ -1,0 +1,12 @@
+# 2020/08/06
+
+## 18:24
+
+Okay so I am doing a refactor of the VM stuff. I think it would be the best
+thing to have separate JARs and otherwise for SpringCoat, SummerCoat, and
+the future AutumnCoat. That way the standard `jar` and whatnot are not
+used and modified for resources and such. this would involve folding the
+resource generation tasks into this Jar processing one. The resource adding
+stuff is kind of a hack. I would still need the MIME decoding tasks for the
+resources however. So maybe I really just need it for anything past
+SpringCoat.
