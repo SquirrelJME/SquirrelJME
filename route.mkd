@@ -123,6 +123,9 @@ to run most software that exists.
    * [ ] Add support for WIPI APIs
  * [ ] Audio Support
  * [ ] HTTP Support
+ * [ ] Security Manager Support
+   * [ ] Checks
+   * [ ] Policies
  * [ ] Software Development Kit, accessible via Gradle
  * [ ] TCP/IP Support
  * [ ] Virtual FileSystem Support
@@ -135,22 +138,44 @@ This is the second version of SquirrelJME which provides virtual machine
 improvements.
 
 This release existed through both the previous release plan and the now
-current goal oriented releases.
+current goal oriented releases, as such this list is more oriented into what
+needs to be done.
 
- * [ ] Additional Virtual Machines
-   * [ ] Virtual Machine: SummerCoat
-   * [ ] Virtual machine: RatufaCoat
-     * [ ] LCDUI Support
-     * [X] RetroArch support
-   * [ ] Modern "Mid-Level" API implementations
-     * [X] Within _SpringCoat_
-     * [ ] Within _SummerCoat_
  * [ ] LCDUI Enhancement
-   * [ ] Framebuffer
+   * [ ] Framebuffer Fallback
    * [ ] Native UI Widgets
  * [X] Modernization of SpringCoat
  * [X] Modernization of the build system using Gradle.
+ * [ ] Software Floating Point (IEEE 754)
+   * [ ] 32-bit Float
+   * [ ] 64-bit Double
  * [X] User Guide
+ * [ ] Virtual Machine: SummerCoat
+   * [ ] Compilation of ROMs
+     * [X] Class Compilation
+     * [ ] Gradle Tasks
+     * [X] Packaging Compiled Code into ROMs
+   * [ ] Native UI Widgets
+   * [ ] Refactoring and Cleanup
+ * [ ] Virtual machine: RatufaCoat
+   * [ ] Framebuffer
+   * [ ] LCDUI Support
+   * [ ] Refactoring and Cleanup
+     * [ ] Better Code Organization
+     * [X] CMake
+   * [X] RetroArch Support
+     * [X] Framebuffer
+     * [X] Input Controls
+     * [ ] Save States
+       * [ ] Saving
+       * [ ] Loading
+     * [ ] System Properties (Input as Cheats)
+   * [ ] SDL2 Support
+     * [ ] Framebuffer
+     * [ ] Input Controls
+ * [ ] Modern "Mid-Level" API implementations
+   * [X] Within _SpringCoat_
+   * [ ] Within _SummerCoat_
 
 ## Released
 
@@ -162,4 +187,3 @@ This release was before the goal-oriented release planning.
 
  * Virtual Machine: SpringCoat
    * Pure interpreter which runs on existing JVMs.
-
