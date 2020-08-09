@@ -382,7 +382,7 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jint ia, ib, ic;
 	sjme_jbyte ba;
 	sjme_vmemptr pa;
-	sjme_cpustate* cpustate;
+	sjme_cpuframe* cpustate;
 	
 	/* Called wrong? */
 	if (jvm == NULL || cpu == NULL || args == NULL || rv == NULL)
@@ -977,7 +977,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_vmemptr tempp;
 	sjme_jint* r;
 	sjme_jint ia, ib, ic, id, ie;
-	sjme_cpustate* oldcpu;
+	sjme_cpuframe* oldcpu;
 	sjme_jlong_combine longcombine;
 	
 	/* Invalid argument? */
@@ -2199,8 +2199,8 @@ sjme_jint sjme_initboot(sjme_jvm* jvm, sjme_error* error)
 /** Destroys the virtual machine instance. */
 sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error)
 {
-	sjme_cpustate* cpu;
-	sjme_cpustate* oldcpu;
+	sjme_cpuframe* cpu;
+	sjme_cpuframe* oldcpu;
 	sjme_jint i;
 	
 	/* Missing this? */

@@ -58,12 +58,12 @@ typedef struct sjme_jint_div
 } sjme_jint_div;
 
 /**
- * Virtual CPU state.
+ * This contains the state of a single CPU frame.
  *
  * @since 2019/06/27
  */
-typedef struct sjme_cpustate sjme_cpustate;
-struct sjme_cpustate
+typedef struct sjme_cpuframe sjme_cpuframe;
+struct sjme_cpuframe
 {
 	/** PC. */
 	sjme_vmemptr pc;
@@ -96,7 +96,7 @@ struct sjme_cpustate
 	sjme_jint taskid;
 	
 	/** The parent CPU state. */
-	sjme_cpustate* parent;
+	sjme_cpuframe* parent;
 };
 
 /** Virtual CPU. */
@@ -116,7 +116,7 @@ struct sjme_cpu
 	sjme_jint supervisorprops[SJME_SUPERPROP_NUM_PROPERTIES];
 	
 	/* Current CPU state. */
-	sjme_cpustate state;
+	sjme_cpuframe state;
 	
 	/** Stored IPC Exception. */
 	sjme_jint ipcexception;
