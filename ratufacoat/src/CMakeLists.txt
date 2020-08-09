@@ -7,4 +7,4 @@
 # ---------------------------------------------------------------------------
 
 add_executable(SquirrelJME
-	sjmerc.c sjmercnm.c sjmercvm.c sys_stdc.c opcode.h)
+	sjmerc.c sjmercnm.c sjmercvm.c sys_stdc.c stringies.c)

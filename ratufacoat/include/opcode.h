@@ -49,7 +49,6 @@
 /** Special.*/
 #define SJME_ENC_SPECIAL_B UINT8_C(0xF0)
 
-
 /** If equal to constant. */
 #define SJME_OP_IFEQ_CONST UINT8_C(0xE6)
 
@@ -98,4 +97,4 @@
 /** Compare and exchange. */
 #define SJME_OP_BREAKPOINT UINT8_C(0xFF)
 
-#endif //SQUIRRELJME_OPCODE_H
+#endif /* SQUIRRELJME_OPCODE_H */

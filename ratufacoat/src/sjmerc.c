@@ -17,6 +17,7 @@
 #include "sjmecon.h"
 #include "sjmebsqf.h"
 #include "sjmevdef.h"
+#include "stringies.h"
 
 /** Sets the error code. */
 void sjme_seterror(sjme_error* error, sjme_jint code, sjme_jint value)
@@ -1738,6 +1739,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 /** Prints the error to the console output. */
 void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 {
+#define ERROR_SIZE 256
+    sjme_jbyte message[ERROR_SIZE];
+    sjme_jint messageLen = ERROR_SIZE;
+
 	sjme_jint i, z;
 	sjme_jint ec;
 	sjme_jbyte b;
@@ -1746,6 +1751,9 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 	
 	/* Get output console. */
 	po = (jvm->nativefuncs != NULL ? jvm->nativefuncs->stderr_write : NULL);
+
+	/* Load the JVM error into the target buffer. */
+	sjme_describeJvmError(error, message, &messageLen);
 	
 	/* Write the failure message. */
 	sjme_console_pipewrite(jvm, po, sjme_execfailmessage, 0,
@@ -1783,6 +1791,8 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 	/* Always flush the screen on error. */
 	if (jvm->fbinfo->flush != NULL)
 		jvm->fbinfo->flush();
+
+#undef ERROR_SIZE
 }
 
 /** Executes code running within the JVM. */
