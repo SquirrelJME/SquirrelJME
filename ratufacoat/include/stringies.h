@@ -15,7 +15,8 @@
  *
  * @param error The error to describe.
  * @param destMessage The destination buffer to contain the bytes
- * @param destLen The length of the described error.
+ * @param destLen The length of the described error, this is taken as the
+ * buffer input initially.
  * @since 2020/08/09
  */
 void sjme_describeJvmError(sjme_error* error,

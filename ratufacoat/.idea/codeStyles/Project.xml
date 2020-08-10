@@ -73,7 +73,12 @@
       <option name="SPACE_BEFORE_REFERENCE_IN_DECLARATION" value="false" />
       <option name="SPACE_AFTER_REFERENCE_IN_DECLARATION" value="true" />
       <option name="DISCHARGED_SHORT_TERNARY_OPERATOR" value="true" />
+      <option name="USE_MODERN_CASTS" value="false" />
+      <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
     </Objective-C>
+    <Objective-C-extensions>
+      <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
+    </Objective-C-extensions>
     <codeStyleSettings language="Groovy">
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />

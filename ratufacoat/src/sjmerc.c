@@ -1742,11 +1742,6 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 #define ERROR_SIZE 256
     sjme_jbyte message[ERROR_SIZE];
     sjme_jint messageLen = ERROR_SIZE;
-
-	sjme_jint i, z;
-	sjme_jint ec;
-	sjme_jbyte b;
-	sjme_jbyte hex[8];
 	sjme_jint (*po)(sjme_jint b);
 	
 	/* Get output console. */
@@ -1756,37 +1751,8 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 	sjme_describeJvmError(error, message, &messageLen);
 	
 	/* Write the failure message. */
-	sjme_console_pipewrite(jvm, po, sjme_execfailmessage, 0,
-		sizeof(sjme_execfailmessage) / sizeof(sjme_jbyte), error);
-	
-	/* Read in hex bytes, for both forms. */
-	for (z = 0; z < 2; z++)
-	{
-		/* Form hex value. */
-		ec = (z == 0 ? error->code : error->value);
-		for (i = 0; i < 8; i++)
-		{
-			b = (ec >> (4 * i)) & SJME_JINT_C(0xF);
-			hex[7 - i] = (b < 10 ? 48 : (b - 10) + 97);
-		}
-		
-		/* Print hex. */
-		sjme_console_pipewrite(jvm, po,
-			hex, 0, sizeof(hex) / sizeof(sjme_jbyte), error);
-		
-		/* Extra space? */
-		if (z == 0)
-		{
-			b = 32;
-			sjme_console_pipewrite(jvm, po, &b, 0, 1, error);
-		}
-	}
-	
-	/* End newline. */
-	b = 13;
-	sjme_console_pipewrite(jvm, po, &b, 0, 1, error);
-	b = 10;
-	sjme_console_pipewrite(jvm, po, &b, 0, 1, error);
+	sjme_console_pipewrite(jvm, po, message, 0,
+		sizeof(messageLen) / sizeof(sjme_jbyte), error);
 	
 	/* Always flush the screen on error. */
 	if (jvm->fbinfo->flush != NULL)
