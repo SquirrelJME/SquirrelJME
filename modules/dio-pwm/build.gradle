@@ -11,6 +11,7 @@ squirreljme
 	swmName = "JavaME 8 Device I/O (PWM)"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("dio.pwm;;1.0.1")
+	tags += "embedded"
 }
 
 dependencies

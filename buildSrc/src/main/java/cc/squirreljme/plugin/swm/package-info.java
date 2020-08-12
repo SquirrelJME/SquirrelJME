@@ -8,11 +8,9 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contians the JDWP implementation which allows for debugging
- * Java applications running on SquirrelJME.
+ * Contains the Suite management wrappers.
  *
- * @since 2019/05/16
+ * @since 2020/07/25
  */
 
-package dev.shadowtail.jdwp;
-
+package cc.squirreljme.plugin.swm;

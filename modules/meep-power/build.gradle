@@ -13,6 +13,7 @@ squirreljme
 	swmName = "MEEP Power Management"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.power;;")
+	tags += "meep"
 }
 
 dependencies

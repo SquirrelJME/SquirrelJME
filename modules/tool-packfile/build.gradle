@@ -10,6 +10,8 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Compiled JAR Packfile Support"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "compiler"
+	tags += "deprecated-for-autumncoat"
 }
 
 dependencies

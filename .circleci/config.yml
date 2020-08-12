@@ -7,6 +7,8 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CircleCI Build Configuration
+# SourceForge: squirreljme@frs.sourceforge.net
+# SourceForge Root: /home/frs/project/squirreljme/AutoBuild/
 
 version: 2.1
 executors:
@@ -66,6 +68,15 @@ jobs:
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
+      - add_ssh_keys:
+          fingerprints:
+            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
+      - run:
+          name: Upload to SourceForge
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/Debug/SquirrelJME.exe squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_win64.exe || echo Ignoring failed upload;
   ratufacoat_build_windows_libretro:
     executor:
       name: win/default
@@ -122,6 +133,16 @@ jobs:
       - store_artifacts:
           path: ratufacoat\squirreljme_libretro.windows_x86_64.dll
           destination: squirreljme_libretro.windows_x86_64.dll
+      - add_ssh_keys:
+          fingerprints:
+            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
+      - run:
+          name: Upload to SourceForge
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no squirreljme_libretro.windows_x86.dll squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/squirreljme_libretro.windows_x86.dll || echo Ignoring failed upload;
+            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no squirreljme_libretro.windows_x86_64.dll squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/squirreljme_libretro.windows_x86_64.dll || echo Ignoring failed upload;
   ################################# MAC OS X #################################
   build_macosx:
     macos:
@@ -169,6 +190,14 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
           destination: SquirrelJME
+      - add_ssh_keys:
+          fingerprints:
+            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
+      - run:
+          name: Upload to SourceForge
+          working_directory: ratufacoat
+          command: |
+            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_macosx || echo Ignoring failed upload;
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
@@ -220,6 +249,14 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
           destination: SquirrelJME
+      - add_ssh_keys:
+          fingerprints:
+            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
+      - run:
+          name: Upload to SourceForge
+          working_directory: ratufacoat
+          command: |
+            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_linux_amd64 || echo Ignoring failed upload;
   construct_testjars:
     executor: buildenv
     steps:
@@ -302,6 +339,32 @@ jobs:
           path: ~/test-results/junit
       - store_artifacts:
           path: ~/test-results/nps
+  ################################### USERS ##################################
+  export_user_guide:
+    executor: buildenv
+    steps:
+      - checkout
+      - run:
+          name: Checkout Wiki
+          command: git clone git@github.com:SquirrelJME/SquirrelJME.wiki.git /tmp/wiki
+      - run:
+          name: Wikify
+          command: .circleci/squirreljme-wikify-user-guide.sh "$(pwd)" "/tmp/wiki"
+      - run:
+          name: Update Git User
+          command: |
+            cd "/tmp/wiki" && git config user.name "SquirrelJME Automation" && git config user.email "xerthesquirrel+squirreljme@gmail.com"
+      - run:
+          name: Commit changes
+          command: |
+            cd "/tmp/wiki" && git commit -m "Synchronize User-Guide" || echo "Ignoring commit."
+      - add_ssh_keys:
+          fingerprints:
+            - "26:b8:ae:4d:53:64:4c:6a:59:3d:a6:60:44:90:9d:6c"
+      - run:
+          name: Push changes
+          command: |
+            cd "/tmp/wiki" && git push
 
 workflows:
   version: 2
@@ -331,3 +394,11 @@ workflows:
       - ratufacoat_build_macosx:
           requires:
             - build_macosx
+  friendliness:
+    jobs:
+      - export_user_guide:
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-userguide

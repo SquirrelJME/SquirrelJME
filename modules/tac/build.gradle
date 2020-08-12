@@ -11,6 +11,7 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Testing Framework"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "testing"
 }
 
 // We need to compile a class but not write it to:

@@ -1,0 +1,17 @@
+# SquirrelJME User Guide
+
+Hello! Thank you for trying **SquirrelJME**, we hope that you enjoy it! This
+guide is intended to make it easier to use **SquirrelJME** so you can have
+some fun with it and otherwise!
+
+ * Main Website: <https://squirreljme.cc/>
+
+You may view this guide on the following:
+
+ * [SquirrelJME.cc](https://squirreljme.cc/doc/trunk/assets/user-guide/readme.mkd)
+ * [GitHub](https://github.com/SquirrelJME/SquirrelJME/wiki)
+
+## Table of Contents
+
+ * [Frequently Asked Questions](faq.mkd)
+ * [List of errors](error-list.mkd)

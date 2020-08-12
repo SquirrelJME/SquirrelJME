@@ -7,11 +7,15 @@
       <w>baos</w>
       <w>bootram</w>
       <w>cldc</w>
+      <w>codebeat</w>
       <w>compactified</w>
       <w>cpibm</w>
       <w>csascii</w>
       <w>csibm</w>
       <w>csisolatin</w>
+      <w>dlet</w>
+      <w>dlets</w>
+      <w>dreamcast</w>
       <w>ebcdic</w>
       <w>endianess</w>
       <w>fprintf</w>
@@ -37,13 +41,17 @@
       <w>jthrowable</w>
       <w>jvalue</w>
       <w>jweak</w>
+      <w>lcdui</w>
       <w>ljava</w>
       <w>microedition</w>
+      <w>midlet</w>
+      <w>midlets</w>
       <w>multiphasicapps</w>
       <w>narg</w>
       <w>noassert</w>
       <w>nsee</w>
       <w>phasic</w>
+      <w>ratufa</w>
       <w>roro</w>
       <w>siii</w>
       <w>siiii</w>
@@ -51,6 +59,7 @@
       <w>siiiiii</w>
       <w>siiiiiii</w>
       <w>siiiiiiii</w>
+      <w>sparc</w>
       <w>springcoat</w>
       <w>squirreljme</w>
       <w>stdint</w>

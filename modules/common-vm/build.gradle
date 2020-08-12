@@ -11,6 +11,7 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Common Virtual Machine Classes"
 	swmVendor = "Stephanie Gawroriski"
+	tags += "compiler"
 }
 
 dependencies

@@ -30,31 +30,47 @@ Rest in peace.
 
 Badges:
 
- * ![Commit Activity](
-https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
- * [![Patreon](
-   https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.herokuapp.com%2FSquirrelJME%2Fpledges&style=flat)](
-   https://www.patreon.com/SquirrelJME)
- * [![Liberapay](
-  https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
-   https://liberapay.com/xershadowtail)
- * [![CircleCI](
-   https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg)](
-   https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
- * [![Discord](https://img.shields.io/discord/278929900893634560.svg)](
-   https://discord.gg/9PkMMKt)
- * [![Twitter](
- https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow)](
-   https://twitter.com/MultiPhasicApps)
- * [![Docker](
-   https://img.shields.io/docker/automated/xerthesquirrel/squirreljme)](
-   https://hub.docker.com/r/xerthesquirrel/squirreljme)
- * [![Docker Build](
-   https://img.shields.io/docker/build/xerthesquirrel/squirreljme)](
-   https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
+ * _Checks and Quality_
+   * [![CircleCI](
+     https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg)](
+     https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
+   * [![Code Climate maintainability](
+     https://img.shields.io/codeclimate/maintainability-percentage/SquirrelJME/SquirrelJME)](
+     https://codeclimate.com/github/SquirrelJME/SquirrelJME)
+     [![Code Climate technical debt](
+     https://img.shields.io/codeclimate/tech-debt/SquirrelJME/SquirrelJME)](
+     https://codeclimate.com/github/SquirrelJME/SquirrelJME)
+   * [![Codebeat](
+     https://codebeat.co/badges/3d3e4933-50bd-495c-a8ab-206d9603aa15)](
+     https://codebeat.co/projects/github-com-squirreljme-squirreljme-trunk)
+   * [![Docker Build](
+     https://img.shields.io/docker/cloud/build/xerthesquirrel/squirreljme)](
+     https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
+ * _Social and Community_
+   * [![Discord](https://img.shields.io/discord/278929900893634560.svg)](
+     https://discord.gg/9PkMMKt)
+   * [![Liberapay](
+     https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
+     https://liberapay.com/xershadowtail)
+   * [![Twitter](
+     https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow)](
+     https://twitter.com/MultiPhasicApps)
+ * _Downloads and Activity_
+   * ![Commit Activity](
+     https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
+   * [![Docker](
+     https://img.shields.io/docker/cloud/automated/xerthesquirrel/squirreljme)](
+     https://hub.docker.com/r/xerthesquirrel/squirreljme)
+   * [![Docker Pulls](
+     https://img.shields.io/docker/pulls/xerthesquirrel/squirreljme)](
+     https://hub.docker.com/r/xerthesquirrel/squirreljme)
+   * [![SourceForge Downloads](
+     https://img.shields.io/sourceforge/dm/squirreljme.svg)](
+     https://sourceforge.net/projects/squirreljme/files/)
 
 Information:
 
+ * [User Guide](assets/user-guide/readme.mkd)
  * [Code of Conduct](code-of-conduct.mkd)
  * [License](license.mkd)
    * _Source_: GNU General Public License, Version 3 or later
@@ -116,6 +132,7 @@ Information:
    * [YouTube](
      https://www.youtube.com/playlist?list=PLpBpyrtWn1U3motx3AUOm70qG5zraCepD)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
+ * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
    * [GitHub](https://github.com/XerTheSquirrel/)
    * [Keybase](https://keybase.io/xerthesquirrel)

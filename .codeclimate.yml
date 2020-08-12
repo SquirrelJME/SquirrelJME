@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------------------
+# Multi-Phasic Applications: SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+#     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3+, or later.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: Configuration for CodeClimate
+
+version: 2
+checks:
+  # The number of arguments for methods and such tends to be on the larger
+  # size since more arguments need to be passed. There are also standard
+  # APIs that will need to be considered in this as well.
+  argument-count:
+    config:
+      threshold: 12
+
+  # Due to the nature of being a JVM, the number of lines in a file can be
+  # quite high. Introducing more classes and methods just to move stuff out
+  # of classes and otherwise will just result in more confusion. Additionally
+  # with the number of comments that exist, this increases the file line
+  # count much. It would be better to still keep the comments because otherwise
+  # maintaining a complex project such as this one will be difficult.
+  file-lines:
+    config:
+      threshold: 850
+
+  # This is called "Cognitive Complexity" in the UI, it has a default low
+  # number at 5 which is too much for even the most simplest methods. It seems
+  # that using Synchronized will inflate the amount.
+  method-complexity:
+    config:
+      threshold: 24
+
+  # The number of lines in methods in SquirrelJME is more than most other
+  # projects as there is more commenting and logic within them. It would
+  # degrade the quality and readability of the code if methods were split into
+  # even more places.
+  method-lines:
+    config:
+      threshold: 100
+
+  # The number of methods in a class tends to be on the higher side, especially
+  # with standardized classes.
+  method-count:
+    config:
+      threshold: 65
+
+  # There may be many return statements in methods that consist of large
+  # switches, the default here is 4 which is too small for most of the code.
+  return-statements:
+    config:
+      threshold: 32
+
+exclude_patterns:
+  # Ignore the Gradle plugin
+  - "buildSrc/"
+
+  # Ignore tests
+  - "**/test"
+
+  # Ignore OpenGL Interfaces
+  - "**/opengles/GL10.java"
+  - "**/opengles/GL11.java"

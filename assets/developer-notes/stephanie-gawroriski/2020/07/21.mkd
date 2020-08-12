@@ -1,0 +1,18 @@
+# 2020/07/21
+
+## 20:42
+
+So very nice, I updated RatufaCoat to use CMake and fixed the libRetro build
+up a bit. So effectively this means I can use CLion to work on RatufaCoat
+with and it should actually make it easier. With the scope of it reduced it
+would end up being easier to implement. But there will be a standalone
+SDL2 RatufaCoat and then libRetro RatufaCoat. I think that would be the
+simplest and easiest to handle.
+
+## 23:02
+
+So although I was rather tired and the day was a bit difficult, at least
+after I rested for a bit I did some nice things! I do like the very small
+short-lived refactoring branches as a kind of break from the longer feature
+branches. Additionally if I update those feature branches from what is in
+trunk they will not get too out of date.

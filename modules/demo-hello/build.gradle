@@ -11,6 +11,7 @@ squirreljme
 	swmName = "Hello (Demo)"
 	swmVendor = "Stephanie Gawroriski"
 	mainClass = "net.multiphasicapps.demo.hello.Hello"
+	tags += "demo"
 }
 
 dependencies

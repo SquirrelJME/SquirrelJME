@@ -73,6 +73,8 @@
       <module name="squirreljme.modules.tool-compiler.test" target="1.7" />
       <module name="squirreljme.modules.tool-compiler.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-jarfile.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.tool-jdwp.main" target="1.7" />
+      <module name="squirreljme.modules.tool-jdwp.test" target="1.7" />
       <module name="squirreljme.modules.tool-jdwp.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-reader.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-writer.testFixtures" target="1.7" />
@@ -89,6 +91,8 @@
       <module name="squirreljme.tools.javap.test" target="1.7" />
       <module name="squirreljme.tools.sxs.main" target="1.7" />
       <module name="squirreljme.tools.sxs.test" target="1.7" />
+      <module name="squirreljme.tools.uudecode.main" target="1.8" />
+      <module name="squirreljme.tools.uudecode.test" target="1.8" />
       <module name="squirreljme.utilities.main" target="1.7" />
       <module name="squirreljme.utilities.test" target="1.7" />
     </bytecodeTargetLevel>

@@ -12,6 +12,7 @@ squirreljme
 	swmName = "MEEP Concurrency"
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.concurrency;;")
+	tags += "meep"
 }
 
 dependencies
