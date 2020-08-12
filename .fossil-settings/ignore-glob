@@ -35,6 +35,7 @@ ratufacoat/.idea/workspace.xml
 # Binary Files
 *.ico
 *.png
+*.sqc
 
 # CMake
 ratufacoat/cmake-build-release
