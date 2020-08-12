@@ -1,12 +1,15 @@
 # Changelog
 
-# 0.4.0 (September 12, 2020)
+## 0.4.0
 
 This release is dedicated to Emily, the developer of Mu, she was a close and
 dear friend of mine. Rest in piece, you will not be forgotten.
 
+This release existed through both the previous release plan and the now
+current goal oriented releases.
+
 Now SquirrelJME has the SummerCoat virtual machine which is much lighter and
-faster than SpringCoat. There should definitely be very noticable performance
+faster than SpringCoat. There should definitely be very noticeable performance
 increases.
 
 SquirrelJME is also available on RetroArch since the implementation of
@@ -171,7 +174,7 @@ More detailed changes:
    * Removed the `test.sh` script, it was empty.
    * Removed unused scripts due to the Gradle refactor.
 
-# 0.2.0 (December 25, 2018)
+## 0.2.0 (December 25, 2018)
 
 SquirrelJME's first release!
 

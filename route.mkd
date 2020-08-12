@@ -1,96 +1,189 @@
-# Release Roadmap
+# Release Goals Route
 
-# Future
+**SquirrelJME** follows a goal-oriented release plan rather than one of
+fixed dates. This is to reduce stress and not put hard time limits but
+more of an action-oriented plan to meet when it is time for releases.
+
+Until all of the goals are met (or otherwise pushed back or dropped if
+needed) the lowest version number will remain at _zero_. Otherwise, when the
+goals are met the _Release Candidate_ process will start.
+
+To reduce the possibility of releases failing due to issues, there will be a
+release candidate as a kind of test to ensure that the release process works
+and that **SquirrelJME** actually functions. There will be as many release
+candidates as needed for the fixing of issues, however once the release is
+determined to be stable enough it will then become an actual release and
+get an even numbered release version.
+
+## Future
 
 _Please note that this information may change over time and is just_
 _speculation based on project planning._
 
-## 1.0.0/0.12.0 (TBD)
+### 1.2.0/0.12.0
 
  * _To Be Determined_
- * At or exceeding 85% implementation.
+ * [ ] Main Standard Libraries at **85%** Implementation.
 
-## 0.10.0 (TBD)
-
- * _To Be Determined_
- * Virtual Machine: AutumnCoat
-   * Supports generation to native machine code.
-     * ARM
-     * SPARC
-   * Supports multiple Operating Systems
-     * Linux (ARM, SPARC)
-
-## 0.8.0 (June 11, 2021)
-
- * _To Be Determined_
- * Virtual Machine: AutumnCoat
-   * Streamlined and simplified code compiler.
-     * Should be smaller and faster.
-     * Use less memory.
-   * Supports generation to native machine code.
-     * m68k
-     * MIPS
-     * PowerPC
-     * SummerCoat
-     * x86
-     * x86_64
-   * Supports multiple "container" formats
-     * Executable Linker Format (ELF)
-     * Palm OS Application (PRC)
-     * SummerCoat ROM (SQC)
-     * Windows Executable (EXE)
-   * Supports multiple Operating Systems
-     * Linux (MIPS, PowerPC, x86, and x86_64)
-     * Mac OS Classic (PowerPC)
-     * Mac OS X (PowerPC, x86, and x86_64)
-     * Palm OS (m68k)
-     * Windows (x86 and x86_64)
-
-## 0.6.0 (January 17, 2021)
+### 0.10.0
 
 This is a future release and the specified changes are proposed.
 
+This is a mostly interest driving version that is to see how many retro systems
+_SquirrelJME_ can be put onto using the new compiler implementation.
+
  * _To Be Determined_
- * 3rd-party development SDK
- * Additional Core Classes Implemented
- * Additional Library Support
-   * Add support for LG MultiMedia Phone Profile (MMPP) APIs.
-   * Add support for Motorola APIs.
-   * Add support for Nokia APIs.
-   * Add support for NTT Docomo (a.k.a. i-Mode) APIs.
-   * Add support for Samsung APIs.
-   * Add support for Siemens APIs.
-   * Add support for SK-VM APIs.
-   * Add support for Sprint APIs.
-   * Add support for Vodafone APIs.
-   * Add support for WIPI APIs.
- * Virtual FileSystem Support.
+ * [ ] Virtual Machine: _AutumnCoat_:
+   * [ ] Supported Architectures:
+     * [ ] ARM
+     * [ ] m68k
+     * [ ] MIPS
+     * [ ] SH4
+     * [ ] SPARC
+   * [ ] Supported Archive Holders:
+     * [ ] Macintosh BinHex (Resource Fork Storage)
+   * [ ] Supported Linker Formats:
+     * [ ] Amiga Hunk
+     * [ ] Palm OS Applications
+       * [ ] ARM Applications 
+       * [ ] m68k Applications
+     * [ ] Preferred Executable Format
+     * [ ] Windows Executables (EXE)
+       * [ ] New Executable (16-bit)
+   * [ ] Supported Operating Systems:
+     * [ ] Amiga (m68k)
+     * [ ] Dreamcast
+     * [ ] Linux
+       * [ ] MIPS
+       * [ ] SPARC
+     * [ ] Mac OS Classic
+       * [ ] m68k
+       * [ ] PowerPC
+     * [ ] Mac OS X
+       * [ ] PowerPC
+     * [ ] Palm OS
+       * [ ] Palm OS 4.x and earlier
+       * [ ] Palm OS 5.x
+     * [ ] Windows
+       * [ ] 16-bit Windows 3.x
 
-## 0.4.x (Perpetual until 0.6.0)
+## 0.8.0
 
-API additions that will be put in for 0.6.0 will be cherry picked into the
-0.4.0 series while maintaining compatibility for 0.4.0 VMs, however features
-added by the 0.6.0 VMs will not be supported there may exist however
-compatibility layers.
+This is a future release and the specified changes are proposed.
 
-# Current
+This version will contain the new _AutumnCoat_ compiler which will be
+modernized and be able to support actual native executables.
 
-## 0.4.0 (September 12, 2020)
+ * _To Be Determined_
+ * [ ] Virtual Machine: _AutumnCoat_:
+   * [ ] Streamlined and simplified code compiler
+   * [ ] Supported Architectures:
+     * [ ] PowerPC
+     * [ ] SummerCoat
+     * [ ] x86
+     * [ ] x86_64
+   * [ ] Supported Linker Formats:
+     * [ ] Executable Linker Format (ELF)
+     * [ ] Mach-O (Mac OS X)
+     * [ ] Raw Code Chunk
+     * [ ] SummerCoat ROM
+     * [ ] Windows Executables (EXE)
+       * [ ] Portable Executable (32-bit/64-bit)
+       * [ ] Extended 64-bit Support
+   * [ ] Supported Operating Systems:
+     * [ ] Linux
+       * [ ] PowerPC
+       * [ ] x86/x86_64
+     * [ ] Mac OS X
+       * [ ] PowerPC
+       * [ ] x86/x86_64
+     * [ ] Windows
+       * [ ] 32-bit Windows 9x/NT/2000/XP/7/8/10
+       * [ ] 64-bit Windows 10 
+
+### 0.6.0
+
+This is a future release and the specified changes are proposed.
+
+Will contain the vast majority of the API implementations which should be able
+to run most software that exists.
+
+ * _To Be Determined_
+ * [ ] Additional Core Classes Implemented
+ * [ ] Additional Library Support:
+   * [ ] Add support for LG MultiMedia Phone Profile (MMPP) APIs
+   * [ ] Add support for Motorola APIs
+   * [ ] Add support for Nokia APIs
+   * [ ] Add support for NTT Docomo (a.k.a. i-Mode) APIs
+   * [ ] Add support for Samsung APIs
+   * [ ] Add support for Siemens APIs
+   * [ ] Add support for SK-VM APIs
+   * [ ] Add support for Sprint APIs
+   * [ ] Add support for Vodafone APIs
+   * [ ] Add support for WIPI APIs
+ * [ ] Audio Support
+ * [ ] HTTP Support
+ * [ ] Security Manager Support
+   * [ ] Checks
+   * [ ] Policies
+ * [ ] Software Development Kit, accessible via Gradle
+ * [ ] TCP/IP Support
+ * [ ] Virtual FileSystem Support
+
+## Current
+
+### 0.4.0
 
 This is the second version of SquirrelJME which provides virtual machine
 improvements.
 
- * Virtual Machine: SummerCoat
-   * Basic optimizing register based virtual machine.
- * Virtual machine: RatufaCoat
-   * A port of SummerCoat to C, intended for RetroArch.
+This release existed through both the previous release plan and the now
+current goal oriented releases, as such this list is more oriented into what
+needs to be done.
 
-# Released
+ * [ ] LCDUI Enhancement
+   * [ ] Framebuffer Fallback
+   * [ ] Native UI Widgets
+ * [X] Modernization of SpringCoat
+ * [X] Modernization of the build system using Gradle.
+ * [ ] Software Floating Point (IEEE 754)
+   * [ ] 32-bit Float
+   * [ ] 64-bit Double
+ * [X] User Guide
+ * [ ] Virtual Machine: SummerCoat
+   * [ ] Compilation of ROMs
+     * [X] Class Compilation
+     * [ ] Gradle Tasks
+     * [X] Packaging Compiled Code into ROMs
+   * [ ] Native UI Widgets
+   * [ ] Refactoring and Cleanup
+ * [ ] Virtual machine: RatufaCoat
+   * [ ] Framebuffer
+   * [ ] LCDUI Support
+   * [ ] Refactoring and Cleanup
+     * [ ] Better Code Organization
+     * [X] CMake
+   * [X] RetroArch Support
+     * [X] Framebuffer
+     * [X] Input Controls
+     * [ ] Save States
+       * [ ] Saving
+       * [ ] Loading
+     * [ ] System Properties (Input as Cheats)
+   * [ ] SDL2 Support
+     * [ ] Framebuffer
+     * [ ] Input Controls
+ * [ ] Modern "Mid-Level" API implementations
+   * [X] Within _SpringCoat_
+   * [ ] Within _SummerCoat_
 
-## 0.2.0 (December 25, 2018)
+## Released
+
+### 0.2.0 (December 25, 2018)
 
 This is the first version of SquirrelJME.
 
+This release was before the goal-oriented release planning.
+
  * Virtual Machine: SpringCoat
    * Pure interpreter which runs on existing JVMs.
-
