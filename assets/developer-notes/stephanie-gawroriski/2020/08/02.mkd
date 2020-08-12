@@ -1,0 +1,52 @@
+# 2020/08/02
+
+## 13:26
+
+I have ideas for Squirrel Quarrel, for the given points:
+
+ * Campaign with at least 9 missions.
+ * There will be 4 players (4 color blind friendly colors).
+ * There will be fog of war.
+ * There will be custom maps.
+   * Random map selection only via seed.
+ * Game Play
+   * Will involve scouts and acorn/leaves collecting.
+   * Limited number of squirrels in play: 8 squirrels.
+   * Acorns are used to birth new squirrels.
+   * Leaves are used to build nests and upgrade areas.
+   * All squirrel units are the same.
+     * Squirrels can carry acorns/leaves/sticks and return to base.
+     * The more the squirrel carries the less damage they do.
+     * They can be equipped with weapons to increase damage taken.
+     * They can be equipped with armor to decrease damage received.
+     * Weapons and armor may break and have limited durability.
+   * Simple command set:
+     * Attack/move/build/gather/drop in direction.
+   * The maps will be generally small.
+   * There will be: grass, dirt, leaves, acorns, sticks, trees, and water.
+ * Multiplayer play
+   * Controller choices
+     * On Device
+     * Remote Communication (Listen as Host)
+     * Remote Communication (Connect as Host)
+     * Code Exchange (Host)
+     * Computer (A...-Z...)
+       * Letters from A-Z if good word is available, different AIs for each.
+       * Acorn, Curious, Gray, Ratufa, Squeak, etc.
+   * Joining multiplayer is done with:
+     * Remote Communication (Listen as Joiner)
+     * Remote Communication (Connect as Joiner)
+     * Code Exchange (Joiner)
+   * Exchange Codes will be `0` through `9` with `*` and `#`
+     * Allows two or more players to play with two devices and no connection.
+     * There will be a "give code and wait for code" screen which is used to
+       give the player the other code and also receive their code too.
+     * Will be huffman compressed to make them shorter and conserve space.
+     * Check code will be at the end.
+     * Codes will be in a form of `1234*56#1234*56#*7890##` shorter
+       sequence groups to make division easier. The star symbol will be
+       for extra data and a check, is just to split it up. There will be
+       a check digit at the very end to ensure the command was entered
+       property.
+   * Communication will be any GCF read/write two-way stream.
+     * Generally TCP, Serial, or Modem.
