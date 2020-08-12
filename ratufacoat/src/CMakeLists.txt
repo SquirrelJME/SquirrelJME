@@ -10,6 +10,11 @@
 # Base core library
 add_library(SquirrelJMECore STATIC
 	sjmerc.c sjmercnm.c sjmercvm.c stringies.c syscall.c)
+target_include_directories(SquirrelJMECore PUBLIC
+	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
 # Add the SDL2 Implementation
 add_subdirectory(sdl2)
+
+# And the libRetro Implementation (Testing)
+add_subdirectory(libretro)

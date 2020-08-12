@@ -19,10 +19,9 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 # Include directories for the project
 add_subdirectory(src)
-target_include_directories(SquirrelJMECore PUBLIC
-	"${PROJECT_BINARY_DIR}" "include")
 target_include_directories(SquirrelJME PUBLIC
 	"${PROJECT_BINARY_DIR}" "include")
 
 # Testing
 add_subdirectory(tests)
+

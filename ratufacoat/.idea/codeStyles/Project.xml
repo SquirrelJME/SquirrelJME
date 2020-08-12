@@ -79,6 +79,11 @@
     <Objective-C-extensions>
       <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
     </Objective-C-extensions>
+    <codeStyleSettings language="CMake">
+      <indentOptions>
+        <option name="USE_TAB_CHARACTER" value="true" />
+      </indentOptions>
+    </codeStyleSettings>
     <codeStyleSettings language="Groovy">
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
