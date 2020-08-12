@@ -66,7 +66,7 @@ jobs:
           command: |
             "$PROGRAMFILES/CMake/bin/cmake.exe" --build .
       - store_artifacts:
-          path: ratufacoat\src\Debug\SquirrelJME.exe
+          path: ratufacoat\src\sdl2\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
       - add_ssh_keys:
           fingerprints:
@@ -180,6 +180,9 @@ jobs:
           name: Install CMake
           command: brew install cmake
       - run:
+          name: Install libcheck
+          command: brew install check
+      - run:
           name: Setup CMake build
           working_directory: ratufacoat
           command: cmake .
@@ -188,7 +191,7 @@ jobs:
           working_directory: ratufacoat
           command: cmake --build .
       - store_artifacts:
-          path: ratufacoat/src/SquirrelJME
+          path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
       - add_ssh_keys:
           fingerprints:
@@ -237,7 +240,7 @@ jobs:
           name: Install required dependencies
           command: |
             sudo apt-get update -y
-            sudo apt-get install -y cmake build-essential
+            sudo apt-get install -y cmake build-essential check
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
@@ -247,7 +250,7 @@ jobs:
           working_directory: ratufacoat
           command: cmake --build .
       - store_artifacts:
-          path: ratufacoat/src/SquirrelJME
+          path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
       - add_ssh_keys:
           fingerprints:

@@ -5,11 +5,9 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Main project source code
+# DESCRIPTION: SDL2 front-end to SquirrelJME
 
-# Base core library
-add_library(SquirrelJMECore STATIC
-	sjmerc.c sjmercnm.c sjmercvm.c stringies.c syscall.c)
-
-# Add the SDL2 Implementation
-add_subdirectory(sdl2)
+add_executable(SquirrelJME
+	sys_stdc.c)
+target_link_libraries(SquirrelJME
+    SquirrelJMECore)
