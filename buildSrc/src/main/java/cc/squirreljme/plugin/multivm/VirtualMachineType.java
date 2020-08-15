@@ -9,6 +9,10 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
 
@@ -21,13 +25,60 @@ public enum VirtualMachineType
 	implements VirtualMachineSpecifier
 {
 	/** Hosted virtual machine. */
-	HOSTED("Hosted", "jar"),
+	HOSTED("Hosted", "jar")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/08/15
+		 */
+		@Override
+		public void processLibrary(InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			// Is just pure copy of the JAR
+			MultiVMHelpers.copy(__in, __out);
+		}
+	},
 	
 	/** SpringCoat virtual machine. */
-	SPRINGCOAT("SpringCoat", "jar"),
+	SPRINGCOAT("SpringCoat", "jar")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/08/15
+		 */
+		@Override
+		public void processLibrary(InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			// Is just pure copy of the JAR
+			MultiVMHelpers.copy(__in, __out);
+		}
+	},
 	
 	/** SummerCoat virtual machine. */
-	SUMMERCOAT("SummerCoat", "sqc"),
+	SUMMERCOAT("SummerCoat", "sqc")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/08/15
+		 */
+		@Override
+		public void processLibrary(InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			throw new Error("TODO");
+		}
+	},
 	
 	/* End. */
 	;

@@ -9,6 +9,9 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
 
@@ -35,6 +38,18 @@ public interface VirtualMachineSpecifier
 	 */
 	String outputLibraryName(Project __project, String __sourceSet)
 		throws NullPointerException;
+	
+	/**
+	 * Processes the library.
+	 * 
+	 * @param __in The input data, this may be a JAR or otherwise.
+	 * @param __out The destination output file.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/15
+	 */
+	void processLibrary(InputStream __in, OutputStream __out)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Returns the virtual machine name using the given name format.
