@@ -14,7 +14,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Set;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
@@ -26,6 +34,14 @@ import org.gradle.jvm.tasks.Jar;
  */
 public final class MultiVMHelpers
 {
+	/** Main configurations. */
+	private static final String[] _MAIN_CONFIGS =
+		new String[]{"api", "implementation"};
+	
+	/** Test configurations. */
+	private static final String[] _TEST_CONFIGS =
+		new String[]{"testApi", "testImplementation"};
+	
 	/* Copy buffer size. */
 	public static final int COPY_BUFFER =
 		4096;
@@ -135,5 +151,100 @@ public final class MultiVMHelpers
 				throw new IllegalStateException("Unknown sourceSet: " +
 					__sourceSet);
 		}
+	}
+	
+	/**
+	 * Resolves tasks from the projects and tasks.
+	 * 
+	 * @param <T> The class to resolve as.
+	 * @param __class The class to resolve as.
+	 * @param __project The project to latch onto for lookup.
+	 * @param __in The input project and task names.
+	 * @return An iterable which has the projects resolved.
+	 * @throws NullPointerException On null arguments.
+	 */
+	public static <T extends Task> Iterable<T> resolveProjectTasks(
+		Class<T> __class, Project __project, Iterable<ProjectAndTaskName> __in)
+		throws NullPointerException
+	{
+		if (__project == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		Collection<T> result = new LinkedList<>();
+		
+		// Map projects and tasks back into tasks
+		for (ProjectAndTaskName depend : __in)
+			result.add(__class.cast(__project.project(depend.project)
+				.getTasks().getByName(depend.task)));
+		
+		return Collections.unmodifiableCollection(result);
+	}
+	
+	/**
+	 * Returns the task dependencies to get outputs from that would be
+	 * considered a part of the project's class path used at execution time.
+	 * 
+	 * @param __project The task to get from.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine information.
+	 * @return The direct run dependencies for the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/15
+	 */
+	public static Collection<ProjectAndTaskName> runClassTasks(
+		Project __project, String __sourceSet,
+		VirtualMachineSpecifier __vmType)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		Set<ProjectAndTaskName> result = new LinkedHashSet<>();
+		
+		// Debug
+		System.err.printf("DEBUG -- Eval: %s (%s-%s)%n",
+			__project.getPath(), __sourceSet,
+			__vmType.vmName(VMNameFormat.PROPER_NOUN));
+		
+		// If we are testing then we depend on the main TAC library, otherwise
+		// we will not be able to do any actual testing
+		if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+			result.addAll(MultiVMHelpers.runClassTasks(
+				__project.findProject(":modules:tac"),
+				SourceSet.MAIN_SOURCE_SET_NAME, __vmType));
+		
+		// Go through the configurations to yank in the dependencies as needed
+		for (String config : MultiVMHelpers._MAIN_CONFIGS)
+		{
+			// The configuration may be optional
+			Configuration foundConfig = __project.getConfigurations()
+				.findByName(config);
+			if (foundConfig == null)
+				continue;
+			
+			// Handle dependencies
+			for (Dependency depend : foundConfig.getDependencies())
+			{
+				// Only consider projects
+				if (!(depend instanceof ProjectDependency))
+					continue;
+				
+				Project sub = ((ProjectDependency)depend)
+					.getDependencyProject();
+				result.addAll(MultiVMHelpers.runClassTasks(sub, 
+					SourceSet.MAIN_SOURCE_SET_NAME, __vmType));
+			}
+		}
+		
+		// Finally add our own library for usages
+		result.add(ProjectAndTaskName.of(__project,
+			TaskInitialization.task("lib", __sourceSet, __vmType)));
+		
+		// Debug
+		System.err.printf("DEBUG -- Deps: %s (%s-%s) -> %s%n",
+			__project.getPath(), __sourceSet,
+			__vmType.vmName(VMNameFormat.PROPER_NOUN), result);
+		
+		return Collections.unmodifiableCollection(result);
 	}
 }

@@ -51,8 +51,10 @@ public class MultiVMRunTask
 		this.setGroup("squirreljme");
 		this.setDescription("Executes the program to start running it.");
 		
-		// Depends on the library to exist first
-		this.dependsOn(__libTask);
+		// This task depends on the various VM libraries of this class
+		// depending on the dependencies
+		this.dependsOn(this.getProject().provider(
+			new VMRunDependencies(this, __sourceSet, __vmType)));
 		
 		// Only run if entry points are valid
 		this.onlyIf(new CheckForEntryPoints());

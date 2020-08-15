@@ -119,7 +119,7 @@ public final class EmulatedTestUtilities
 			
 			// Add the JARs of execution, but for this project use the
 			// main/test JAR accordingly to what we want but for dependencies
-			// always use the main JAR becuase we do not want tests at all
+			// always use the main JAR because we do not want tests at all
 			Jar jarTask = (Jar)at.getTasks().findByName((at == __project ?
 				inJar : EmulatedTestUtilities._MAIN_JAR_TASK));
 			if (jarTask != null)
