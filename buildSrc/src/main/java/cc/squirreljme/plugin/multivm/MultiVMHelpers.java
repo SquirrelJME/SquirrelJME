@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -235,7 +236,8 @@ public final class MultiVMHelpers
 		
 		// If we are testing then we depend on the main TAC library, otherwise
 		// we will not be able to do any actual testing
-		if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+		boolean isTesting = __sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME);
+		if (isTesting)
 		{
 			// Depend on TAC
 			result.addAll(MultiVMHelpers.runClassTasks(
@@ -248,7 +250,8 @@ public final class MultiVMHelpers
 		}
 		
 		// Go through the configurations to yank in the dependencies as needed
-		for (String config : MultiVMHelpers._MAIN_CONFIGS)
+		for (String config : (isTesting ? MultiVMHelpers._TEST_CONFIGS :
+			MultiVMHelpers._MAIN_CONFIGS))
 		{
 			// The configuration may be optional
 			Configuration foundConfig = __project.getConfigurations()
@@ -265,6 +268,14 @@ public final class MultiVMHelpers
 				
 				Project sub = ((ProjectDependency)depend)
 					.getDependencyProject();
+				
+				// Only consider SquirrelJME projects
+				SquirrelJMEPluginConfiguration squirreljmeConf =
+					SquirrelJMEPluginConfiguration.configurationOrNull(sub);
+				if (squirreljmeConf == null)
+					continue;
+				
+				// Otherwise, handle the dependencies
 				result.addAll(MultiVMHelpers.runClassTasks(sub, 
 					SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
 			}
@@ -275,6 +286,9 @@ public final class MultiVMHelpers
 		
 		// Ignore our own project
 		__did.add(selfProjectTask);
+		
+		// Debug as needed
+		__project.getLogger().debug("Run Depends: {}", result);
 		
 		return Collections.unmodifiableCollection(result);
 	}
