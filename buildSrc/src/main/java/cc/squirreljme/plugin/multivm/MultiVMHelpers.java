@@ -233,11 +233,6 @@ public final class MultiVMHelpers
 		
 		Set<ProjectAndTaskName> result = new LinkedHashSet<>();
 		
-		// Debug
-		System.err.printf("DEBUG -- Eval: %s (%s-%s)%n",
-			__project.getPath(), __sourceSet,
-			__vmType.vmName(VMNameFormat.PROPER_NOUN));
-		
 		// If we are testing then we depend on the main TAC library, otherwise
 		// we will not be able to do any actual testing
 		if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
@@ -280,11 +275,6 @@ public final class MultiVMHelpers
 		
 		// Ignore our own project
 		__did.add(selfProjectTask);
-		
-		// Debug
-		System.err.printf("DEBUG -- Deps: %s (%s-%s) -> %s%n",
-			__project.getPath(), __sourceSet,
-			__vmType.vmName(VMNameFormat.PROPER_NOUN), result);
 		
 		return Collections.unmodifiableCollection(result);
 	}
