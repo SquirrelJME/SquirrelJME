@@ -12,6 +12,8 @@ package cc.squirreljme.plugin.multivm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
 
@@ -50,6 +52,27 @@ public interface VirtualMachineSpecifier
 	 */
 	void processLibrary(InputStream __in, OutputStream __out)
 		throws IOException, NullPointerException;
+	
+	/**
+	 * Spawns a virtual machine.
+	 * 
+	 * @param __project Project for current lookup.
+	 * @param __stdOut Standard output.
+	 * @param __stdErr Standard error.
+	 * @param __mainClass The main class to execute.
+	 * @param __sysProps The system properties to define.
+	 * @param __classPath The class path of the execution target.
+	 * @param __args Arguments to the started program.
+	 * @return The exit status of the program
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/15
+	 */
+	int spawnJvm(Project __project, OutputStream __stdOut,
+		OutputStream __stdErr, String __mainClass,
+		Map<String, String> __sysProps, Path[] __classPath,
+		String... __args)
+		throws IOException, NullPointerException;  
 	
 	/**
 	 * Returns the virtual machine name using the given name format.

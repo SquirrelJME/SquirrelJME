@@ -12,7 +12,8 @@ package cc.squirreljme.plugin.multivm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
 
@@ -41,6 +42,20 @@ public enum VirtualMachineType
 			// Is just pure copy of the JAR
 			MultiVMHelpers.copy(__in, __out);
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/08/15
+		 */
+		@Override
+		public int spawnJvm(Project __project, OutputStream __stdOut,
+			OutputStream __stdErr, String __mainClass,
+			Map<String, String> __sysProps, Path[] __classPath,
+			String... __args)
+			throws IOException, NullPointerException
+		{
+			throw new Error("TODO");
+		}
 	},
 	
 	/** SpringCoat virtual machine. */
@@ -60,6 +75,20 @@ public enum VirtualMachineType
 			// Is just pure copy of the JAR
 			MultiVMHelpers.copy(__in, __out);
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/08/15
+		 */
+		@Override
+		public int spawnJvm(Project __project, OutputStream __stdOut,
+			OutputStream __stdErr, String __mainClass,
+			Map<String, String> __sysProps, Path[] __classPath,
+			String... __args)
+			throws IOException, NullPointerException
+		{
+			throw new Error("TODO");
+		}
 	},
 	
 	/** SummerCoat virtual machine. */
@@ -76,6 +105,20 @@ public enum VirtualMachineType
 			if (__in == null || __out == null)
 				throw new NullPointerException("NARG");
 			
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/08/15
+		 */
+		@Override
+		public int spawnJvm(Project __project, OutputStream __stdOut,
+			OutputStream __stdErr, String __mainClass,
+			Map<String, String> __sysProps, Path[] __classPath,
+			String... __args)
+			throws IOException, NullPointerException
+		{
 			throw new Error("TODO");
 		}
 	},
