@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -196,8 +197,39 @@ public final class MultiVMHelpers
 		VirtualMachineSpecifier __vmType)
 		throws NullPointerException
 	{
+		return MultiVMHelpers.runClassTasks(__project, __sourceSet, __vmType,
+			null);
+	}
+	
+	/**
+	 * Returns the task dependencies to get outputs from that would be
+	 * considered a part of the project's class path used at execution time.
+	 * 
+	 * @param __project The task to get from.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine information.
+	 * @param __did Projects that have been processed.
+	 * @return The direct run dependencies for the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/15
+	 */
+	public static Collection<ProjectAndTaskName> runClassTasks(
+		Project __project, String __sourceSet,
+		VirtualMachineSpecifier __vmType, Set<ProjectAndTaskName> __did)
+		throws NullPointerException
+	{
 		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
+		
+		// Make sure this is always set
+		if (__did == null)
+			__did = new HashSet<>();
+		
+		// If this process was already processed, ignore it
+		ProjectAndTaskName selfProjectTask = ProjectAndTaskName.of(__project,
+			TaskInitialization.task("lib", __sourceSet, __vmType));
+		if (__did.contains(selfProjectTask))
+			return Collections.emptySet();
 		
 		Set<ProjectAndTaskName> result = new LinkedHashSet<>();
 		
@@ -209,9 +241,16 @@ public final class MultiVMHelpers
 		// If we are testing then we depend on the main TAC library, otherwise
 		// we will not be able to do any actual testing
 		if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+		{
+			// Depend on TAC
 			result.addAll(MultiVMHelpers.runClassTasks(
 				__project.findProject(":modules:tac"),
-				SourceSet.MAIN_SOURCE_SET_NAME, __vmType));
+				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
+			
+			// Depend on our main project as we will be testing it
+			result.addAll(MultiVMHelpers.runClassTasks(__project,
+				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
+		}
 		
 		// Go through the configurations to yank in the dependencies as needed
 		for (String config : MultiVMHelpers._MAIN_CONFIGS)
@@ -232,13 +271,15 @@ public final class MultiVMHelpers
 				Project sub = ((ProjectDependency)depend)
 					.getDependencyProject();
 				result.addAll(MultiVMHelpers.runClassTasks(sub, 
-					SourceSet.MAIN_SOURCE_SET_NAME, __vmType));
+					SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
 			}
 		}
 		
 		// Finally add our own library for usages
-		result.add(ProjectAndTaskName.of(__project,
-			TaskInitialization.task("lib", __sourceSet, __vmType)));
+		result.add(selfProjectTask);
+		
+		// Ignore our own project
+		__did.add(selfProjectTask);
 		
 		// Debug
 		System.err.printf("DEBUG -- Deps: %s (%s-%s) -> %s%n",
