@@ -22,10 +22,10 @@ public class MultiVMRunTask
 	implements MultiVMExecutableTask
 {
 	/** The source set used. */
-	public final String sourceSet;
+	protected final String sourceSet;
 	
 	/** The virtual machine type. */
-	public final VirtualMachineSpecifier vmType;
+	protected final VirtualMachineSpecifier vmType;
 	
 	/**
 	 * Initializes the task.
@@ -57,10 +57,13 @@ public class MultiVMRunTask
 		this.dependsOn(this.getProject().provider(
 			new VMRunDependencies(this, __sourceSet, __vmType)));
 		
+		// Additionally this depends on the emulator backend to be available
+		this.dependsOn(new VMEmulatorDependencies(this, __vmType));
+		
 		// Only run if entry points are valid
 		this.onlyIf(new CheckForEntryPoints());
 		
 		// Performs the action of the task
-		this.doLast(new MultiVMRunTaskAction());
+		this.doLast(new MultiVMRunTaskAction(__sourceSet, __vmType));
 	}
 }

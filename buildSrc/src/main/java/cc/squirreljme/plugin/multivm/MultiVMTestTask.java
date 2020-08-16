@@ -22,10 +22,10 @@ public class MultiVMTestTask
 	implements MultiVMExecutableTask
 {
 	/** The source set used. */
-	public final String sourceSet;
+	protected final String sourceSet;
 	
 	/** The virtual machine type. */
-	public final VirtualMachineSpecifier vmType;
+	protected final VirtualMachineSpecifier vmType;
 	
 	/**
 	 * Initializes the task.
@@ -55,6 +55,9 @@ public class MultiVMTestTask
 		// Depends on the library to exist first
 		this.dependsOn(this.getProject().provider(
 			new VMRunDependencies(this, __sourceSet, __vmType)));
+		
+		// Additionally this depends on the emulator backend to be available
+		this.dependsOn(new VMEmulatorDependencies(this, __vmType));
 		
 		// Only run if there are actual tests to run
 		this.onlyIf(new CheckForTests(__sourceSet));

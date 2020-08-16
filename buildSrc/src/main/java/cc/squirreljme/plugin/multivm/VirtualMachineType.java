@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Map;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
 
 /**
@@ -26,7 +27,8 @@ public enum VirtualMachineType
 	implements VirtualMachineSpecifier
 {
 	/** Hosted virtual machine. */
-	HOSTED("Hosted", "jar")
+	HOSTED("Hosted", "jar",
+		":emulators:emulator-base")
 	{
 		/**
 		 * {@inheritDoc}
@@ -48,7 +50,7 @@ public enum VirtualMachineType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public int spawnJvm(Project __project, OutputStream __stdOut,
+		public int spawnJvm(Task __task, OutputStream __stdOut,
 			OutputStream __stdErr, String __mainClass,
 			Map<String, String> __sysProps, Path[] __classPath,
 			String... __args)
@@ -59,7 +61,8 @@ public enum VirtualMachineType
 	},
 	
 	/** SpringCoat virtual machine. */
-	SPRINGCOAT("SpringCoat", "jar")
+	SPRINGCOAT("SpringCoat", "jar",
+		":emulators:springcoat-vm")
 	{
 		/**
 		 * {@inheritDoc}
@@ -81,7 +84,7 @@ public enum VirtualMachineType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public int spawnJvm(Project __project, OutputStream __stdOut,
+		public int spawnJvm(Task __task, OutputStream __stdOut,
 			OutputStream __stdErr, String __mainClass,
 			Map<String, String> __sysProps, Path[] __classPath,
 			String... __args)
@@ -92,7 +95,8 @@ public enum VirtualMachineType
 	},
 	
 	/** SummerCoat virtual machine. */
-	SUMMERCOAT("SummerCoat", "sqc")
+	SUMMERCOAT("SummerCoat", "sqc",
+		":emulators:summercoat-vm")
 	{
 		/**
 		 * {@inheritDoc}
@@ -113,7 +117,7 @@ public enum VirtualMachineType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public int spawnJvm(Project __project, OutputStream __stdOut,
+		public int spawnJvm(Task __task, OutputStream __stdOut,
 			OutputStream __stdErr, String __mainClass,
 			Map<String, String> __sysProps, Path[] __classPath,
 			String... __args)
@@ -132,22 +136,29 @@ public enum VirtualMachineType
 	/** The extension for the VM. */
 	public final String extension;
 	
+	/** The project used for the emulator. */
+	public final String emulatorProject;
+	
 	/**
 	 * Returns the proper name of the virtual machine.
 	 * 
 	 * @param __properName The proper name of the VM.
 	 * @param __extension The library extension.
+	 * @param __emulatorProject The project used for the emulator.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/06
 	 */
-	VirtualMachineType(String __properName, String __extension)
+	VirtualMachineType(String __properName, String __extension,
+		String __emulatorProject)
 		throws NullPointerException
 	{
-		if (__properName == null)
+		if (__properName == null || __extension == null ||
+			__emulatorProject == null)
 			throw new NullPointerException("NARG");
 		
 		this.properName = __properName;
 		this.extension = __extension;
+		this.emulatorProject = __emulatorProject;
 	}
 	
 	/**
@@ -191,5 +202,15 @@ public enum VirtualMachineType
 			default:
 				return properName;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/16
+	 */
+	@Override
+	public String emulatorProject()
+	{
+		return this.emulatorProject;
 	}
 }

@@ -22,7 +22,7 @@ public class CheckForTests
 	implements Spec<Task>
 {
 	/** The source set to check. */
-	private final String sourceSet;
+	protected final String sourceSet;
 	
 	/**
 	 * Initializes the checker.

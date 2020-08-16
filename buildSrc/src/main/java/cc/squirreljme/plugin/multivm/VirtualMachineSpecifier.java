@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Map;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
 
 /**
@@ -56,7 +57,7 @@ public interface VirtualMachineSpecifier
 	/**
 	 * Spawns a virtual machine.
 	 * 
-	 * @param __project Project for current lookup.
+	 * @param __task The task being executed, may be used as context.
 	 * @param __stdOut Standard output.
 	 * @param __stdErr Standard error.
 	 * @param __mainClass The main class to execute.
@@ -68,7 +69,7 @@ public interface VirtualMachineSpecifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	int spawnJvm(Project __project, OutputStream __stdOut,
+	int spawnJvm(Task __task, OutputStream __stdOut,
 		OutputStream __stdErr, String __mainClass,
 		Map<String, String> __sysProps, Path[] __classPath,
 		String... __args)
@@ -84,4 +85,13 @@ public interface VirtualMachineSpecifier
 	 */
 	String vmName(VMNameFormat __format)
 		throws NullPointerException;
+	
+	/**
+	 * Returns the name of the project that is used to run this using the
+	 * emulator.
+	 * 
+	 * @return The project used for running the emulator.
+	 * @since 2020/08/16
+	 */
+	String emulatorProject();
 }

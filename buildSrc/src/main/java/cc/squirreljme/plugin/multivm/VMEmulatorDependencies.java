@@ -9,49 +9,53 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import org.gradle.api.Action;
+import java.util.concurrent.Callable;
 import org.gradle.api.Task;
 
 /**
- * Runs the program within the virtual machine.
+ * This class is used to provide the dependency lookup for the emulator
+ * backend, this is so the emulator is build.
  *
- * @since 2020/08/07
+ * @since 2020/08/16
  */
-public class MultiVMRunTaskAction
-	implements Action<Task>
+public final class VMEmulatorDependencies
+	implements Callable<Task>
 {
-	/** The source set used. */
-	protected final String sourceSet;
+	/** The task referencing this. */
+	protected final Task task;
 	
 	/** The virtual machine type. */
 	protected final VirtualMachineSpecifier vmType;
 	
 	/**
-	 * Initializes the task action.
+	 * Initializes the dependencies.
 	 * 
-	 * @param __sourceSet The source set to use.
+	 * @param __task The task to reference.
 	 * @param __vmType The virtual machine type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/16
 	 */
-	public MultiVMRunTaskAction(String __sourceSet,
+	public VMEmulatorDependencies(MultiVMExecutableTask __task,
 		VirtualMachineSpecifier __vmType)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__task == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
+		this.task = __task;
 		this.vmType = __vmType;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/08/07
+	 * @since 2020/08/16
+	 * @return
 	 */
 	@Override
-	public void execute(Task __task)
+	public Task call()
 	{
-		throw new Error("TODO");
+		return this.task.getProject().getRootProject()
+			.project(this.vmType.emulatorProject())
+			.getTasks().getByName("assemble");
 	}
 }
