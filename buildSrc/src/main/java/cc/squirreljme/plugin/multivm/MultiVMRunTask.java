@@ -19,6 +19,7 @@ import org.gradle.api.DefaultTask;
  */
 public class MultiVMRunTask
 	extends DefaultTask
+	implements MultiVMExecutableTask
 {
 	/** The source set used. */
 	public final String sourceSet;

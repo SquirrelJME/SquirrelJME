@@ -19,6 +19,7 @@ import org.gradle.api.DefaultTask;
  */
 public class MultiVMTestTask
 	extends DefaultTask
+	implements MultiVMExecutableTask
 {
 	/** The source set used. */
 	public final String sourceSet;
@@ -52,7 +53,8 @@ public class MultiVMTestTask
 		this.setDescription("Runs the various automated tests.");
 		
 		// Depends on the library to exist first
-		this.dependsOn(__libTask);
+		this.dependsOn(this.getProject().provider(
+			new VMRunDependencies(this, __sourceSet, __vmType)));
 		
 		// Only run if there are actual tests to run
 		this.onlyIf(new CheckForTests(__sourceSet));

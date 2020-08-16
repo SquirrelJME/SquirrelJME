@@ -21,7 +21,7 @@ public final class VMRunDependencies
 	implements Callable<Iterable<MultiVMLibraryTask>>
 {
 	/** The task executing under. */
-	protected final MultiVMRunTask task;
+	protected final MultiVMExecutableTask task;
 	
 	/** The source set working under. */
 	protected final String sourceSet;
@@ -38,7 +38,7 @@ public final class VMRunDependencies
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public VMRunDependencies(MultiVMRunTask __task, String __sourceSet,
+	public VMRunDependencies(MultiVMExecutableTask __task, String __sourceSet,
 		VirtualMachineSpecifier __vmType)
 		throws NullPointerException
 	{
@@ -57,7 +57,7 @@ public final class VMRunDependencies
 	@Override
 	public final Iterable<MultiVMLibraryTask> call()
 	{
-		MultiVMRunTask task = this.task;
+		MultiVMExecutableTask task = this.task;
 		return MultiVMHelpers.<MultiVMLibraryTask>resolveProjectTasks(
 			MultiVMLibraryTask.class, task.getProject(),
 			MultiVMHelpers.runClassTasks(this.task.getProject(),
