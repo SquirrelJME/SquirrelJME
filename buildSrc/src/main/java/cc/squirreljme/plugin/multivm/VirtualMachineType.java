@@ -56,6 +56,29 @@ public enum VirtualMachineType
 			String... __args)
 			throws IOException, NullPointerException
 		{
+			if (__task == null || __stdOut == null || __stdErr == null ||
+				__mainClass == null || __sysProps == null ||
+				__classPath == null || __args == null)
+				throw new NullPointerException("NARG");
+			
+			// Determine the class-path for the emulator
+			if (true)
+				throw new Error("TODO");
+			
+			// Append the target class path on top of this, as everything
+			// will be running directly
+			if (true)
+				throw new Error("TODO");
+			
+			// Setup output stream pipes
+			if (true)
+				throw new Error("TODO");
+			
+			// Directly use the target main class
+			if (true)
+				throw new Error("TODO");
+			
+			// Execute the VM and return the exit code
 			throw new Error("TODO");
 		}
 	},
@@ -90,6 +113,13 @@ public enum VirtualMachineType
 			String... __args)
 			throws IOException, NullPointerException
 		{
+			if (__task == null || __stdOut == null || __stdErr == null ||
+				__mainClass == null || __sysProps == null ||
+				__classPath == null || __args == null)
+				throw new NullPointerException("NARG");
+			
+			// Use a common handler to execute the VM as the VMs all have
+			// the same entry point handlers and otherwise
 			throw new Error("TODO");
 		}
 	},
@@ -109,6 +139,7 @@ public enum VirtualMachineType
 			if (__in == null || __out == null)
 				throw new NullPointerException("NARG");
 			
+			// Use the standard JAR processing implementations 
 			throw new Error("TODO");
 		}
 		
@@ -123,6 +154,13 @@ public enum VirtualMachineType
 			String... __args)
 			throws IOException, NullPointerException
 		{
+			if (__task == null || __stdOut == null || __stdErr == null ||
+				__mainClass == null || __sysProps == null ||
+				__classPath == null || __args == null)
+				throw new NullPointerException("NARG");
+			
+			// Use a common handler to execute the VM as the VMs all have
+			// the same entry point handlers and otherwise
 			throw new Error("TODO");
 		}
 	},

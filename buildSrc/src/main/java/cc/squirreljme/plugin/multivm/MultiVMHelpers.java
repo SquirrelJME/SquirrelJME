@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Set;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -156,6 +158,29 @@ public final class MultiVMHelpers
 	}
 	
 	/**
+	 * Returns the main class to execute.
+	 *
+	 * @param __cfg The configuration.
+	 * @param __midlet The MIDlet to be ran.
+	 * @return The main class.
+	 * @throws NullPointerException If {@code __cfg} is {@code null}.
+	 * @since 2020/03/06
+	 */
+	public static String mainClass(SquirrelJMEPluginConfiguration __cfg,
+		JavaMEMidlet __midlet)
+		throws NullPointerException
+	{
+		if (__cfg == null)
+			throw new NullPointerException("NARG");
+		
+		// We either run the MIDlet or we do not
+		return (__midlet != null ?
+			"javax.microedition.midlet.__MainHandler__" :
+			Objects.requireNonNull(__cfg.mainClass,
+			"No main class in project."));
+	}
+	
+	/**
 	 * Resolves tasks from the projects and tasks.
 	 * 
 	 * @param <T> The class to resolve as.
@@ -180,6 +205,41 @@ public final class MultiVMHelpers
 				.getTasks().getByName(depend.task)));
 		
 		return Collections.unmodifiableCollection(result);
+	}
+	
+	/**
+	 * Returns the path of the all the JARs which make up the classpath for
+	 * running an executable.
+	 * 
+	 * @param __task The task to get for.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine type.
+	 * @return An array of paths containing the class path of execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/20
+	 */
+	public static Path[] runClassPath(MultiVMExecutableTask __task,
+		String __sourceSet, VirtualMachineSpecifier __vmType)
+		throws NullPointerException
+	{
+		if (__task == null || __sourceSet == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		// Get tasks that are used for dependency running
+		Iterable<MultiVMLibraryTask> tasks =
+			MultiVMHelpers.<MultiVMLibraryTask>resolveProjectTasks(
+				MultiVMLibraryTask.class, __task.getProject(), MultiVMHelpers
+					.runClassTasks(__task.getProject(), __sourceSet,
+						__vmType));
+		
+		// Get the outputs of these, as they will be used. Ensure the order is
+		// kept otherwise execution may be non-deterministic and could break.
+		Set<Path> classPath = new LinkedHashSet<>();
+		for (MultiVMLibraryTask vmLib : tasks)
+			classPath.add(vmLib.getOutputs().getFiles().getSingleFile()
+				.toPath());
+		
+		return classPath.toArray(new Path[classPath.size()]);
 	}
 	
 	/**

@@ -120,6 +120,7 @@ public class DeveloperNoteTask
 		// Problem with the server
 		catch (IOException e)
 		{
+			e.printStackTrace();
 			throw new RuntimeException("Server read/write error.", e);
 		}
 		

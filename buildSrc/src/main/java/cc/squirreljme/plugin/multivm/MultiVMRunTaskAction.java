@@ -9,6 +9,11 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collection;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 
@@ -52,6 +57,45 @@ public class MultiVMRunTaskAction
 	@Override
 	public void execute(Task __task)
 	{
+		// Need this to get the program details
+		SquirrelJMEPluginConfiguration config =
+			SquirrelJMEPluginConfiguration.configuration(__task.getProject());
+			
+		// Gather the class path to use for target execution, this is all the
+		// SquirrelJME modules this depends on
+		VirtualMachineSpecifier vmType = this.vmType;
+		Path[] classPath = MultiVMHelpers.runClassPath(
+			(MultiVMExecutableTask)__task, this.sourceSet, vmType);
+		
+		// Debug
+		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
+		
+		// Determine the main entry class or MIDlet to use
+		JavaMEMidlet midlet = JavaMEMidlet.find(config.midlets);
+		String mainClass = MultiVMHelpers.mainClass(config, midlet);
+		
+		// Debug
+		__task.getLogger().debug("MIDlet: {}", midlet);
+		__task.getLogger().debug("MainClass: {}", mainClass);
+		
+		// Executing MIDlet
+		if (true)
+		{
+			// Use the MIDlet entry wrapper
+			if (true)
+				throw new Error("TODO");
+			
+			// 
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Executing non-MIDlet via Main class
+		else
+			throw new Error("TODO");
+		
+		// Execute the virtual machine, if the exit status is non-zero then
+		// the task execution will be considered as a failure
 		throw new Error("TODO");
 	}
 }

@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.tasks;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.MultiVMHelpers;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import java.util.Objects;
 import javax.inject.Inject;
@@ -53,11 +54,7 @@ public class RunEmulatedTask
 	protected String mainClass(SquirrelJMEPluginConfiguration __cfg,
 		JavaMEMidlet __midlet)
 	{
-		// We either run the MIDlet or we do not
-		return (__midlet != null ?
-			"javax.microedition.midlet.__MainHandler__" :
-			Objects.requireNonNull(__cfg.mainClass,
-			"No main class in project."));
+		return MultiVMHelpers.mainClass(__cfg, __midlet);
 	}
 	
 	/**
