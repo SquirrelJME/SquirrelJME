@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
@@ -184,10 +185,32 @@ public final class EmulatedTestUtilities
 	 *
 	 * @param __paths Class paths.
 	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/21
+	 */
+	public static String classpathAsString(Path... __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		return EmulatedTestUtilities.classpathAsString(Arrays.asList(__paths));
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/02/29
 	 */
 	public static String classpathAsString(Iterable<Path> __paths)
+		throws NullPointerException
 	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
 		StringBuilder sb = new StringBuilder();
 		
 		for (Path path : __paths)

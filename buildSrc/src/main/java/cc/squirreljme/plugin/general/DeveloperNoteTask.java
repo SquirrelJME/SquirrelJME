@@ -10,7 +10,6 @@
 package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.util.FossilExe;
-import cc.squirreljme.plugin.util.NoteCalendarFinder;
 import cc.squirreljme.plugin.util.NoteCalendarGenerator;
 import cc.squirreljme.plugin.util.SimpleHTTPProtocolException;
 import cc.squirreljme.plugin.util.SimpleHTTPRequest;

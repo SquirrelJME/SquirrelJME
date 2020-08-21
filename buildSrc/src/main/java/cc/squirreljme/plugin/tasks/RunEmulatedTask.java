@@ -12,7 +12,6 @@ package cc.squirreljme.plugin.tasks;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.MultiVMHelpers;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
-import java.util.Objects;
 import javax.inject.Inject;
 import org.gradle.api.Task;
 

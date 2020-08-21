@@ -11,9 +11,12 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 
@@ -78,24 +81,25 @@ public class MultiVMRunTaskAction
 		__task.getLogger().debug("MIDlet: {}", midlet);
 		__task.getLogger().debug("MainClass: {}", mainClass);
 		
-		// Executing MIDlet
-		if (true)
-		{
-			// Use the MIDlet entry wrapper
-			if (true)
-				throw new Error("TODO");
-			
-			// 
-			if (true)
-				throw new Error("TODO");
-		}
-		
-		// Executing non-MIDlet via Main class
-		else
-			throw new Error("TODO");
+		// If executing a MIDlet, then the single main argument is the actual
+		// name of the MIDlet to execute
+		List<String> args = new ArrayList<>();
+		if (midlet != null)
+			args.add(midlet.mainClass);
 		
 		// Execute the virtual machine, if the exit status is non-zero then
 		// the task execution will be considered as a failure
-		throw new Error("TODO");
+		try
+		{
+			int exitValue;
+			if (0 != (exitValue = this.vmType.spawnJvm(__task, System.out,
+				System.err, mainClass, Collections.emptyMap(), classPath,
+				args.<String>toArray(new String[args.size()]))))
+				throw new RuntimeException("Task exited with: " + exitValue);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("Task I/O Exception.", e);
+		}
 	}
 }

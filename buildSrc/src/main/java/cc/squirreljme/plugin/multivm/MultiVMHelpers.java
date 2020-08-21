@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -178,6 +179,24 @@ public final class MultiVMHelpers
 			"javax.microedition.midlet.__MainHandler__" :
 			Objects.requireNonNull(__cfg.mainClass,
 			"No main class in project."));
+	}
+	
+	/**
+	 * Returns the project classpath.
+	 *
+	 * @param __project The project.
+	 * @return The class path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/29
+	 */
+	public static Iterable<File> projectRuntimeClasspath(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("No project specified.");
+		
+		return __project.getConfigurations().
+			getByName("runtimeClasspath").getFiles();
 	}
 	
 	/**

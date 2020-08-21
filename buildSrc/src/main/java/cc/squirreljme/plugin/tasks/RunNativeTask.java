@@ -10,8 +10,10 @@
 package cc.squirreljme.plugin.tasks;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.MultiVMHelpers;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
+import java.io.File;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
@@ -94,14 +96,10 @@ public class RunNativeTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/02/29
 	 */
-	static Object __projectClassPath(Project __project)
+	static Iterable<File> __projectClassPath(Project __project)
 		throws NullPointerException
 	{
-		if (__project == null)
-			throw new NullPointerException("No project specified.");
-		
-		return __project.getConfigurations().
-			getByName("runtimeClasspath").getFiles();
+		return MultiVMHelpers.projectRuntimeClasspath(__project);
 	}
 	
 	/**
