@@ -9,8 +9,11 @@
 
 package cc.squirreljme.plugin.general;
 
+import cc.squirreljme.plugin.ErrorCodeManager;
+import cc.squirreljme.plugin.ErrorListManager;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 
 /**
  * This is a plugin that performs general SquirrelJME tasks and is mostly used
@@ -48,5 +51,13 @@ public class GeneralSquirrelJMEPlugin
 		// Recreate the developer note calendar
 		__project.getTasks().create("recreateDeveloperNoteCalendar",
 			RecreateDeveloperNoteCalendarTask.class, exeTask);
+		
+		// List error prefixes used by projects
+		__project.getTasks().create("listErrorPrefixes",
+			ListErrorPrefixTask.class);
+		
+		// Determine the next error prefix that is available
+		__project.getTasks().create("nextErrorPrefix",
+			NextErrorPrefixTask.class);
 	}
 }

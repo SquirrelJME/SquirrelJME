@@ -108,24 +108,6 @@ public class SquirrelJMEPlugin
 		__project.getTasks().create("additionalJarProperties",
 			AdditionalManifestPropertiesTask.class, jarTask, processResources);
 		
-		// List error codes used by projects
-		Task listErrorCodes = __project.getTasks()
-			.create("listErrorPrefixes");
-		listErrorCodes.setGroup("squirreljme");
-		listErrorCodes.setDescription("Lists error prefixes.");
-		listErrorCodes.doLast((Task __task) ->
-			new ErrorCodeManager(__project.getRootProject())
-				.print(System.out));
-		
-		// Determine the next error code that is available
-		Task nextErrorCode = __project.getTasks()
-			.create("nextErrorPrefix");
-		nextErrorCode.setGroup("squirreljme");
-		nextErrorCode.setDescription("Returns the next free error prefix.");
-		nextErrorCode.doLast((Task __task) ->
-			System.out.println(new ErrorCodeManager(__project.getRootProject())
-				.next()));
-		
 		// List errors in single project
 		Task listErrors = __project.getTasks()
 			.create("listErrorIds");
