@@ -14,7 +14,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Task;
 
 /**
- * Not Described.
+ * Action for getting the next error prefix.
  *
  * @since 2020/08/22
  */

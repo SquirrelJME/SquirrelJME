@@ -34,6 +34,7 @@ public class ListErrorPrefixTask
 		this.setGroup("squirreljme");
 		this.setDescription("Lists error prefixes.");
 		
+		// The action to perform
 		this.doLast(new ListErrorPrefixTaskAction());
 	}
 }
