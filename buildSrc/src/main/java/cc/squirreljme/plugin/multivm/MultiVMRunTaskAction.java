@@ -89,17 +89,10 @@ public class MultiVMRunTaskAction
 		
 		// Execute the virtual machine, if the exit status is non-zero then
 		// the task execution will be considered as a failure
-		try
-		{
-			int exitValue;
-			if (0 != (exitValue = this.vmType.spawnJvm(__task, System.out,
-				System.err, mainClass, Collections.emptyMap(), classPath,
-				args.<String>toArray(new String[args.size()]))))
-				throw new RuntimeException("Task exited with: " + exitValue);
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException("Task I/O Exception.", e);
-		}
+		int exitValue;
+		if (0 != (exitValue = this.vmType.spawnJvm(__task, System.out,
+			System.err, mainClass, Collections.emptyMap(), classPath,
+			args.<String>toArray(new String[args.size()]))))
+			throw new RuntimeException("Task exited with: " + exitValue);
 	}
 }

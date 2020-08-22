@@ -65,7 +65,6 @@ public interface VirtualMachineSpecifier
 	 * @param __classPath The class path of the execution target.
 	 * @param __args Arguments to the started program.
 	 * @return The exit status of the program
-	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
@@ -73,7 +72,7 @@ public interface VirtualMachineSpecifier
 		OutputStream __stdErr, String __mainClass,
 		Map<String, String> __sysProps, Path[] __classPath,
 		String... __args)
-		throws IOException, NullPointerException;  
+		throws NullPointerException;  
 	
 	/**
 	 * Returns the virtual machine name using the given name format.

@@ -63,7 +63,7 @@ public enum VirtualMachineType
 			OutputStream __stdErr, String __mainClass,
 			Map<String, String> __sysProps, Path[] __classPath,
 			String... __args)
-			throws IOException, NullPointerException
+			throws NullPointerException
 		{
 			if (__task == null || __stdOut == null || __stdErr == null ||
 				__mainClass == null || __sysProps == null ||
@@ -144,13 +144,8 @@ public enum VirtualMachineType
 			OutputStream __stdErr, String __mainClass,
 			Map<String, String> __sysProps, Path[] __classPath,
 			String... __args)
-			throws IOException, NullPointerException
+			throws NullPointerException
 		{
-			if (__task == null || __stdOut == null || __stdErr == null ||
-				__mainClass == null || __sysProps == null ||
-				__classPath == null || __args == null)
-				throw new NullPointerException("NARG");
-			
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
 			return this.spawnVmViaFactory(__task,
@@ -174,7 +169,7 @@ public enum VirtualMachineType
 			if (__in == null || __out == null)
 				throw new NullPointerException("NARG");
 			
-			// Use the standard JAR processing implementations
+			// Use the AOT backend for execution
 			throw new Error("TODO");
 		}
 		
@@ -187,13 +182,8 @@ public enum VirtualMachineType
 			OutputStream __stdErr, String __mainClass,
 			Map<String, String> __sysProps, Path[] __classPath,
 			String... __args)
-			throws IOException, NullPointerException
+			throws NullPointerException
 		{
-			if (__task == null || __stdOut == null || __stdErr == null ||
-				__mainClass == null || __sysProps == null ||
-				__classPath == null || __args == null)
-				throw new NullPointerException("NARG");
-			
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
 			return this.spawnVmViaFactory(__task,
@@ -266,14 +256,13 @@ public enum VirtualMachineType
 	 * @param __classPath The class path of the execution target.
 	 * @param __args Arguments to the started program.
 	 * @return The exit status of the program
-	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
 	public int spawnVmViaFactory(Task __task, OutputStream __stdOut,
 		OutputStream __stdErr, String __mainClass,
 		Map<String, String> __sysProps, Path[] __classPath, String[] __args)
-		throws IOException, NullPointerException
+		throws NullPointerException
 	{
 		if (__task == null || __stdOut == null ||
 			__stdErr == null || __mainClass == null || __sysProps == null ||
