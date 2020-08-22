@@ -110,25 +110,25 @@ public class SquirrelJMEPlugin
 		
 		// List error codes used by projects
 		Task listErrorCodes = __project.getTasks()
-			.create("listErrorCodes");
+			.create("listErrorPrefixes");
 		listErrorCodes.setGroup("squirreljme");
-		listErrorCodes.setDescription("Lists error code prefixes.");
+		listErrorCodes.setDescription("Lists error prefixes.");
 		listErrorCodes.doLast((Task __task) ->
 			new ErrorCodeManager(__project.getRootProject())
 				.print(System.out));
 		
 		// Determine the next error code that is available
 		Task nextErrorCode = __project.getTasks()
-			.create("nextErrorCode");
+			.create("nextErrorPrefix");
 		nextErrorCode.setGroup("squirreljme");
-		nextErrorCode.setDescription("Returns the next free error code.");
+		nextErrorCode.setDescription("Returns the next free error prefix.");
 		nextErrorCode.doLast((Task __task) ->
 			System.out.println(new ErrorCodeManager(__project.getRootProject())
 				.next()));
 		
 		// List errors in single project
 		Task listErrors = __project.getTasks()
-			.create("listErrors");
+			.create("listErrorIds");
 		listErrors.setGroup("squirreljme");
 		listErrors.setDescription("Lists all of the source error codes.");
 		listErrors.doLast((Task __task) ->
@@ -136,7 +136,7 @@ public class SquirrelJMEPlugin
 		
 		// Returns the next available error in single project
 		Task nextError = __project.getTasks()
-			.create("nextError");
+			.create("nextErrorId");
 		nextError.setGroup("squirreljme");
 		nextError.setDescription("Returns the next free error code.");
 		nextError.doLast((Task __task) ->
