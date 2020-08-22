@@ -84,10 +84,6 @@ public final class TaskInitialization
 		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		System.err.printf("DEBUG -- Init %s::%s:%s%n", __project.getName(),
-			__sourceSet, __vmType.vmName(VMNameFormat.PROPER_NOUN));
-		
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
 		
