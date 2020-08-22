@@ -19,4 +19,11 @@ import org.gradle.api.Task;
 public interface MultiVMExecutableTask
 	extends Task
 {
+	/**
+	 * Returns the source set that is used.
+	 * 
+	 * @return The source set for the task.
+	 * @since 2020/08/21
+	 */
+	String getSourceSet();
 }

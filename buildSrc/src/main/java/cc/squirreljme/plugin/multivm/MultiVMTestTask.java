@@ -65,4 +65,14 @@ public class MultiVMTestTask
 		// Performs the action of the task
 		this.doLast(new MultiVMTestTaskAction());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/21
+	 */
+	@Override
+	public String getSourceSet()
+	{
+		return this.sourceSet;
+	}
 }

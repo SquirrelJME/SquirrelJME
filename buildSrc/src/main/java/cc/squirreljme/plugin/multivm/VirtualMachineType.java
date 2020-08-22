@@ -300,9 +300,15 @@ public enum VirtualMachineType
 		// Add emulator to launch
 		vmArgs.add("-Xemulator:" + this.vmName(VMNameFormat.LOWERCASE));
 		
-		// Snapshot file (if any)
-		/*vmArgs.add("-Xsnapshot:" + AbstractEmulatedTask.this.
-			__profilerSnapshotPath().toPath().toString());*/
+		// Always set a snapshot file, as it is very useful. Try to use the VM
+		// cache dir, but using the build directory is okay
+		Path cacheDir = ((__task instanceof MultiVMExecutableTask) ?
+			MultiVMHelpers.cacheDir(__task.getProject(), this,
+			((MultiVMExecutableTask)__task).getSourceSet()).get() :
+			__task.getProject().getBuildDir().toPath());
+		vmArgs.add("-Xsnapshot:" + cacheDir.resolve(
+			__task.getProject().getName() + "_" +
+			__mainClass.replace('.', '-') + ".nps"));
 		
 		// Class path for the target program to launch
 		vmArgs.add("-classpath");

@@ -66,4 +66,14 @@ public class MultiVMRunTask
 		// Performs the action of the task
 		this.doLast(new MultiVMRunTaskAction(__sourceSet, __vmType));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/21
+	 */
+	@Override
+	public String getSourceSet()
+	{
+		return this.sourceSet;
+	}
 }
