@@ -1,4 +1,4 @@
-# RatufaCat (SquirrelJME)
+# RatufaCoat (SquirrelJME)
 
 ***RatufaCoat*** is a Java ME Virtual Machine which is capable of running the
 SquirrelJME run-time. It is written in C and is intended to be used as an
