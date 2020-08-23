@@ -21,6 +21,10 @@ public class MultiVMTestTask
 	extends DefaultTask
 	implements MultiVMExecutableTask
 {
+	/** Property for running single test. */
+	public static final String SINGLE_TEST_PROPERTY =
+		"test.single";
+	
 	/** The source set used. */
 	protected final String sourceSet;
 	

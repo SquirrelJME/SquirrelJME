@@ -48,7 +48,7 @@ public class CheckForTests
 	public boolean isSatisfiedBy(Task __task)
 	{
 		// If specifying a single test to run, always allow running tests
-		if (null != System.getProperty(TestInVMTask.SINGLE_TEST_PROPERTY))
+		if (null != System.getProperty(MultiVMTestTask.SINGLE_TEST_PROPERTY))
 			return true;
 		
 		// Is only valid if there is at least one test

@@ -14,6 +14,13 @@ import org.gradle.api.Task;
 
 /**
  * Performs the testing of the program.
+ * 
+ * This is responsible for executing the test and outputting JUnit results as
+ * well which record the test logs accordingly. This also will record snapshots
+ * for profiling and otherwise, if possible.
+ * 
+ * Entry is via {@code net.multiphasicapps.tac.MainSingleRunner} which is
+ * passed the test to load and execute.
  *
  * @since 2020/08/07
  */
