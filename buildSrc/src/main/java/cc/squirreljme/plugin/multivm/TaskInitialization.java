@@ -122,6 +122,14 @@ public final class TaskInitialization
 		if (__name == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
+		// If this is the main source set, never include the source set as
+		// it becomes implied. Additionally if the name and the source set
+		// are the same, reduce the confusion so there is no "testTestHosted".
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME) ||
+			__sourceSet.equals(__name))
+			return __name + __vmType.vmName(VMNameFormat.PROPER_NOUN);
+		
+		// Otherwise include it
 		return __name +
 			Character.toUpperCase(__sourceSet.charAt(0)) +
 			__sourceSet.substring(1) +

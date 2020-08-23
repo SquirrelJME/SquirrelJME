@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -100,6 +101,50 @@ public final class MultiVMHelpers
 		return __project.provider(() -> __project.getBuildDir().toPath()
 			.resolve("squirreljme").resolve("vm-" + __sourceSet + "-" +
 				__vmType.vmName(VMNameFormat.LOWERCASE)));
+	}
+	
+
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/21
+	 */
+	public static String classpathAsString(Path... __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		return MultiVMHelpers.classpathAsString(Arrays.asList(__paths));
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/29
+	 */
+	public static String classpathAsString(Iterable<Path> __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (Path path : __paths)
+		{
+			if (sb.length() > 0)
+				sb.append(File.pathSeparatorChar);
+			sb.append(path);
+		}
+		
+		return sb.toString();
 	}
 	
 	/**

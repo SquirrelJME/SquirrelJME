@@ -9,7 +9,6 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.tasks.test.EmulatedTestUtilities;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -301,7 +300,7 @@ public enum VirtualMachineType
 		
 		// Class path for the target program to launch
 		vmArgs.add("-classpath");
-		vmArgs.add(EmulatedTestUtilities.classpathAsString(__classPath));
+		vmArgs.add(MultiVMHelpers.classpathAsString(__classPath));
 		
 		// Any system properties
 		for (Map.Entry<String, String> sysProp : __sysProps.entrySet())

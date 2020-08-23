@@ -15,10 +15,6 @@ import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
-import cc.squirreljme.plugin.tasks.RunEmulatedTask;
-import cc.squirreljme.plugin.tasks.RunNativeTask;
-import cc.squirreljme.plugin.tasks.SummerCoatRomTask;
-import cc.squirreljme.plugin.tasks.TestInVMTask;
 import cc.squirreljme.plugin.tasks.TestsJarManifestTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import org.gradle.api.Plugin;
@@ -68,10 +64,6 @@ public class SquirrelJMEPlugin
 		Jar jarTask = (Jar)__project.getTasks().getByName("jar");
 		jarTask.getArchiveFileName().set(
 			__project.getName() + ".jar");
-		
-		// Run native application
-		__project.getTasks().create("runNative",
-			RunNativeTask.class, jarTask);
 		
 		// Jasmin Assembly
 		__project.getTasks().create("assembleJasmin",
@@ -123,26 +115,6 @@ public class SquirrelJMEPlugin
 		nextError.setDescription("Returns the next free error code.");
 		nextError.doLast((Task __task) ->
 			System.out.println(new ErrorListManager(__project).next()));
-			
-		// SpringCoat run and test
-		__project.getTasks().create("runSpringCoat",
-			RunEmulatedTask.class,
-			jarTask, "springcoat");
-		__project.getTasks().create("testSpringCoat",
-			TestInVMTask.class, testJarTask, "springcoat");
-		
-		// SummerCoat ROM building
-		SummerCoatRomTask romTask =__project.getTasks().create(
-			"summerCoatRom", SummerCoatRomTask.class, jarTask);
-		SummerCoatRomTask testRomTask =__project.getTasks().create(
-			"testSummerCoatRom", SummerCoatRomTask.class, testJarTask);
-		
-		// SummerCoat run and test
-		__project.getTasks().create("runSummerCoat",
-			RunEmulatedTask.class,
-			romTask, "summercoat");
-		__project.getTasks().create("testSummerCoat",
-			TestInVMTask.class, testRomTask, "summercoat");
 		
 		// Initialize Virtual Machine tasks for the project
 		TaskInitialization.initialize(__project);

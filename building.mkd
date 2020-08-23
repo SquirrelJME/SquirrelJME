@@ -184,7 +184,7 @@ to be ran accordingly.
    * `:modules:<name>:runSummerCoat` (running)
    * `:modules:<name>:testSummerCoat` (testing)
  * Native (runs on the host Java SE)
-   * `:modules:<name>:runNative` (running)
+   * `:modules:<name>:runHosted` (running)
    * `:modules:<name>:test` (testing)
 
 The following _System_ properties are available:

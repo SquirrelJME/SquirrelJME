@@ -9,7 +9,6 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.tasks.TestInVMTask;
 import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 
