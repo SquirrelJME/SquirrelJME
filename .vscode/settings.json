@@ -2,5 +2,6 @@
 	"editor.rulers": [
 	79
 	],
-	"java.import.maven.enabled": false
+	"java.import.maven.enabled": false,
+	"java.configuration.updateBuildConfiguration": "automatic"
 }
