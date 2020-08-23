@@ -20,6 +20,31 @@ import org.gradle.api.Task;
 public class MultiVMTestTaskAction
 	implements Action<Task>
 {
+	/** The source set used. */
+	protected final String sourceSet;
+	
+	/** The virtual machine type. */
+	protected final VirtualMachineSpecifier vmType;
+	
+	/**
+	 * Initializes the virtual machine task action.
+	 * 
+	 * @param __sourceSet The source set.
+	 * @param __vmType The virtual machine type used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/23
+	 */
+	public MultiVMTestTaskAction(String __sourceSet,
+		VirtualMachineSpecifier __vmType)
+		throws NullPointerException
+	{
+		if (__sourceSet == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		this.sourceSet = __sourceSet;
+		this.vmType = __vmType;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/08/07

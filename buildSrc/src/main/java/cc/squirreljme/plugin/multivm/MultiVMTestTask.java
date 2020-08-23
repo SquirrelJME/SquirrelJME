@@ -63,7 +63,7 @@ public class MultiVMTestTask
 		this.onlyIf(new CheckForTests(__sourceSet));
 		
 		// Performs the action of the task
-		this.doLast(new MultiVMTestTaskAction());
+		this.doLast(new MultiVMTestTaskAction(__sourceSet, __vmType));
 	}
 	
 	/**
