@@ -351,8 +351,18 @@ public enum VirtualMachineType
 	 * @since 2020/08/16
 	 */
 	@Override
-	public String emulatorProject()
+	public final String emulatorProject()
 	{
 		return this.emulatorProject;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/23
+	 */
+	@Override
+	public final boolean hasRom()
+	{
+		return this == VirtualMachineType.SUMMERCOAT;
 	}
 }

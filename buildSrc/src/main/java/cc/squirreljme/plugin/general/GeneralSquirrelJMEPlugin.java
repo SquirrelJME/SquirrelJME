@@ -9,11 +9,9 @@
 
 package cc.squirreljme.plugin.general;
 
-import cc.squirreljme.plugin.ErrorCodeManager;
-import cc.squirreljme.plugin.ErrorListManager;
+import cc.squirreljme.plugin.multivm.TaskInitialization;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 
 /**
  * This is a plugin that performs general SquirrelJME tasks and is mostly used
@@ -59,5 +57,8 @@ public class GeneralSquirrelJMEPlugin
 		// Determine the next error prefix that is available
 		__project.getTasks().create("nextErrorPrefix",
 			NextErrorPrefixTask.class);
+		
+		// Setup ROM tasks, only once
+		TaskInitialization.romTasks(__project);
 	}
 }

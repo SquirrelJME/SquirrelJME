@@ -30,6 +30,23 @@ import org.gradle.api.tasks.SourceSet;
 public interface VirtualMachineSpecifier
 {
 	/**
+	 * Is there a ROM task for the VM?
+	 * 
+	 * @return If a ROM is available.
+	 * @since 2020/08/23
+	 */
+	boolean hasRom();
+	
+	/**
+	 * Returns the name of the project that is used to run this using the
+	 * emulator.
+	 * 
+	 * @return The project used for running the emulator.
+	 * @since 2020/08/16
+	 */
+	String emulatorProject();
+	
+	/**
 	 * Determines the name of the library that the provider uses for what is
 	 * executed by the virtual machine and output by the virtual machine.
 	 * 
@@ -84,13 +101,4 @@ public interface VirtualMachineSpecifier
 	 */
 	String vmName(VMNameFormat __format)
 		throws NullPointerException;
-	
-	/**
-	 * Returns the name of the project that is used to run this using the
-	 * emulator.
-	 * 
-	 * @return The project used for running the emulator.
-	 * @since 2020/08/16
-	 */
-	String emulatorProject();
 }

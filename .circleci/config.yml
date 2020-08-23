@@ -279,6 +279,15 @@ jobs:
             - 'modules/*/build/*'
             - 'tools/build/*'
             - 'tools/*/build/*'
+  construct_testSummerCoatSQC:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Test SummerCoat ROM
+          command: ./gradlew romTestSummerCoat --continue --parallel
   test_springcoat:
     executor: buildenv
     steps:
@@ -376,12 +385,15 @@ workflows:
       - construct_testjars:
           requires:
             - build_linux
+      - construct_testSummerCoatSQC:
+          requires:
+            - construct_testjars
       - test_springcoat:
           requires:
             - construct_testjars
       - test_summercoat:
           requires:
-            - construct_testjars
+            - construct_testSummerCoatSQC
       - ratufacoat_build_windows:
           requires:
             - build_windows

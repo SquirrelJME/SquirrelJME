@@ -20,6 +20,11 @@ import org.gradle.api.tasks.TaskContainer;
  */
 public final class TaskInitialization
 {
+	/** Source sets that are used. */
+	private static final String[] _SOURCE_SETS =
+		new String[]{SourceSet.MAIN_SOURCE_SET_NAME,
+			SourceSet.TEST_SOURCE_SET_NAME};
+	
 	/**
 	 * Not used.
 	 * 
@@ -43,10 +48,8 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 		
 		// Initialize or both main classes and such
-		TaskInitialization.initialize(__project,
-			SourceSet.MAIN_SOURCE_SET_NAME);
-		TaskInitialization.initialize(__project,
-			SourceSet.TEST_SOURCE_SET_NAME);
+		for (String sourceSet : TaskInitialization._SOURCE_SETS)
+			TaskInitialization.initialize(__project, sourceSet);
 	}
 	
 	/**
@@ -57,7 +60,7 @@ public final class TaskInitialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/07
 	 */
-	private static void initialize(Project __project, String __sourceSet)
+	public static void initialize(Project __project, String __sourceSet)
 		throws NullPointerException
 	{
 		if (__project == null || __sourceSet == null)
@@ -77,7 +80,7 @@ public final class TaskInitialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/07
 	 */
-	private static void initialize(Project __project, String __sourceSet,
+	public static void initialize(Project __project, String __sourceSet,
 		VirtualMachineSpecifier __vmType)
 		throws NullPointerException
 	{
@@ -103,6 +106,51 @@ public final class TaskInitialization
 			tasks.create(
 				TaskInitialization.task("test", __sourceSet, __vmType),
 				MultiVMTestTask.class, __sourceSet, __vmType, libTask);
+	}
+	
+	/**
+	 * Initializes ROM tasks for the given base project.
+	 * 
+	 * @param __project The root project.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/23
+	 */
+	public static void romTasks(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+			
+		// Initialize or both main classes and such
+		for (String sourceSet : TaskInitialization._SOURCE_SETS)
+			for (VirtualMachineType vmType : VirtualMachineType.values())
+				TaskInitialization.romTasks(__project, sourceSet, vmType);
+	}
+	
+	/**
+	 * Initializes ROM tasks for the given base project.
+	 * 
+	 * @param __project The root project.
+	 * @param __sourceSet The source set to use.
+	 * @param __vmType The virtual machine type used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/23
+	 */
+	private static void romTasks(Project __project, String __sourceSet,
+		VirtualMachineType __vmType)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null || __vmType == null)
+			throw new NullPointerException("NARG");
+			
+		// Everything will be working on these tasks
+		TaskContainer tasks = __project.getTasks();
+		
+		// Does the VM utilize ROMs?
+		if (__vmType.hasRom())
+			tasks.create(
+				TaskInitialization.task("rom", __sourceSet, __vmType),
+				MultiVMRomTask.class, __sourceSet, __vmType);
 	}
 	
 	/**
