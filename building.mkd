@@ -200,3 +200,12 @@ The following _System_ properties are available:
      which executes the given value as the name of a class within the JAR.
  * `test.single=classname` -- Run only the given test:
    * Will be the test class to be ran.
+
+# Building ROMs
+
+Full ROMs can be built with the following tasks, note that test ROMs contain
+all the testing libraries and are generally used to ensure things are working:
+
+ * _SummerCoat_
+   * `romSummerCoat`
+   * `romTestSummerCoat`
