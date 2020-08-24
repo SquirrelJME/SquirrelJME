@@ -48,6 +48,8 @@ jobs:
       shell: cmd.exe
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Install required dependencies
           working_directory: ratufacoat
@@ -83,6 +85,8 @@ jobs:
       shell: cmd.exe
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Install make
           working_directory: ratufacoat
@@ -179,6 +183,8 @@ jobs:
       - run:
           name: Install CMake
           command: brew install cmake
+      - attach_workspace:
+          at: .
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
@@ -217,14 +223,9 @@ jobs:
           paths:
             - '.gradle/*'
             - 'build/*'
-            - 'buildSrc/.gradle/*'
-            - 'buildSrc/build/*'
-            - 'emulators/build/*'
-            - 'emulators/*/build/*'
-            - 'modules/build/*'
-            - 'modules/*/build/*'
-            - 'tools/build/*'
-            - 'tools/*/build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -238,6 +239,8 @@ jobs:
           command: |
             sudo apt-get update -y
             sudo apt-get install -y cmake build-essential
+      - attach_workspace:
+          at: .
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
@@ -257,37 +260,6 @@ jobs:
           working_directory: ratufacoat
           command: |
             scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_linux_amd64 || echo Ignoring failed upload;
-  construct_testjars:
-    executor: buildenv
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Constuct Test JARs
-          command: ./gradlew testJar --continue --parallel
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - 'buildSrc/.gradle/*'
-            - 'buildSrc/build/*'
-            - 'emulators/build/*'
-            - 'emulators/*/build/*'
-            - 'modules/build/*'
-            - 'modules/*/build/*'
-            - 'tools/build/*'
-            - 'tools/*/build/*'
-  construct_testSummerCoatSQC:
-    executor: buildenv
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct Test SummerCoat ROM
-          command: ./gradlew romTestSummerCoat --continue --parallel
   test_springcoat:
     executor: buildenv
     steps:
@@ -375,37 +347,158 @@ jobs:
           command: |
             cd "/tmp/wiki" && git push
 
+  ################################ CONSTRUCTION ###############################
+  # Runs the `testJar` task so any operations following this will run faster
+  # when they need to use these JARs
+  construct_testJars:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Constuct Test JARs
+          command: ./gradlew testJar --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # Constructs the ROM fragment libraries for SummerCoat, since they are used
+  # for general ROM construction
+  construct_libSummerCoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Constuct SummerCoat Libraries
+          command: ./gradlew libSummerCoat --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # All of the tests so that they can run from within SummerCoat
+  construct_libTestSummerCoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Constuct Test SummerCoat Libraries
+          command: ./gradlew libTestSummerCoat --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # Constructs the standard SummerCoat ROM, could be uploaded later
+  construct_romSummerCoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct SummerCoat ROM
+          command: ./gradlew romSummerCoat --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # Constructs the test SummerCoat ROM, could be uploaded later, this is so
+  # that any RatufaCoats have an actual ROM that can be tested to ensure that
+  # it properly works.
+  construct_romTestSummerCoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Test SummerCoat ROM
+          command: ./gradlew romTestSummerCoat --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+
 workflows:
   version: 2
   tests:
     jobs:
+      ############################# STANDARD TESTS ############################
       - build_windows
       - build_linux
       - build_macosx
-      - construct_testjars:
-          requires:
-            - build_linux
-      - construct_testSummerCoatSQC:
-          requires:
-            - construct_testjars
       - test_springcoat:
           requires:
-            - construct_testjars
+            - construct_testJars
       - test_summercoat:
           requires:
-            - construct_testSummerCoatSQC
+            - construct_libTestSummerCoat
+
+      ###################### LIBRARY AND ROM CONSTRUCTION #####################
+      - construct_testJars:
+          requires:
+            - build_linux
+      - construct_libSummerCoat:
+          requires:
+            - build_linux
+      - construct_libTestSummerCoat:
+          requires:
+            - construct_libSummerCoat
+            - construct_testJars
+      - construct_romSummerCoat:
+          requires:
+            - construct_libSummerCoat
+      - construct_romTestSummerCoat:
+          requires:
+            - construct_libTestSummerCoat
+
+      ############################## RATUFACOAT ##############################
       - ratufacoat_build_windows:
           requires:
             - build_windows
+            - construct_romTestSummerCoat
       - ratufacoat_build_windows_libretro:
           requires:
             - ratufacoat_build_windows
       - ratufacoat_build_linux:
           requires:
             - build_linux
+            - construct_romTestSummerCoat
       - ratufacoat_build_macosx:
           requires:
             - build_macosx
+            - construct_romTestSummerCoat
+
+  #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:
     jobs:
       - export_user_guide:
