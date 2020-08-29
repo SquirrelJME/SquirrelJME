@@ -721,7 +721,7 @@
  * `W32`: `03` `04` `05` [**`06`**](stephanie-gawroriski/2020/08/06.mkd) [**`07`**](stephanie-gawroriski/2020/08/07.mkd) `08` `09` 
  * `W33`: `10` `11` `12` `13` `14` [**`15`**](stephanie-gawroriski/2020/08/15.mkd) `16` 
  * `W34`: `17` `18` `19` `20` [**`21`**](stephanie-gawroriski/2020/08/21.mkd) [**`22`**](stephanie-gawroriski/2020/08/22.mkd) [**`23`**](stephanie-gawroriski/2020/08/23.mkd) 
- * `W35`: `24` `25` `26` `27` `28` `29` `30` 
+ * `W35`: `24` `25` `26` `27` [**`28`**](stephanie-gawroriski/2020/08/28.mkd) `29` `30` 
  * `W36`: `31` `--` `--` `--` `--` `--` `--` 
 
 
