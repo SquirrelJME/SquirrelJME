@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
 import java.io.File;
 import java.io.IOException;
@@ -18,14 +19,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.LinkedList;
 import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.file.DirectoryTree;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
@@ -104,7 +103,7 @@ public class GenerateTestsListTask
 				StandardOpenOption.WRITE)))
 			{
 				// Write lines for each input
-				for (__Input__ input : this.__taskInputs())
+				for (FileLocation input : this.__taskInputs())
 				{
 					String fileName = input.relative.toString();
 					
@@ -168,41 +167,10 @@ public class GenerateTestsListTask
 	 * @return The task inputs.
 	 * @since 2020/02/28
 	 */
-	private Iterable<__Input__> __taskInputs()
+	private Iterable<FileLocation> __taskInputs()
 	{
-		Project project = this.getProject();
-		
-		// Add source Java
-		Deque<DirectoryTree> queue = new LinkedList<>();
-		for (DirectoryTree dir : this.getProject().getConvention().
-			getPlugin(JavaPluginConvention.class).getSourceSets().
-			getByName("test").getJava().getSrcDirTrees())
-			queue.addLast(dir);
-		
-		// Add Jasmin sources
-		for (DirectoryTree dir : this.getProject().getConvention().
-			getPlugin(JavaPluginConvention.class).getSourceSets().
-			getByName("test").getResources().getSrcDirTrees())
-			queue.addLast(dir);
-		
-		// Discover all the input files (in sources)
-		Collection<__Input__> result = new LinkedList<>();
-		while (!queue.isEmpty())
-		{
-			DirectoryTree dir = queue.removeFirst();
-			Path baseDir = dir.getDir().toPath();
-			
-			// Process all files in each directory
-			for (File file : project.files(dir))
-			{
-				Path path = file.toPath();
-				
-				if (TestDetection.isTest(path))
-					result.add(new __Input__(path, baseDir.relativize(path)));
-			}
-		}
-		
-		return result;
+		return TestDetection.onlyTests(TestDetection.sourceSetFiles(
+			this.getProject(), SourceSet.TEST_SOURCE_SET_NAME));
 	}
 	
 	/**
@@ -214,7 +182,7 @@ public class GenerateTestsListTask
 	private FileCollection __taskInputsAsFileCollection()
 	{
 		Collection<File> result = new LinkedList<>();
-		for (__Input__ file : this.__taskInputs())
+		for (FileLocation file : this.__taskInputs())
 			result.add(file.absolute.toFile());
 		
 		return this.getProject().files(result);
