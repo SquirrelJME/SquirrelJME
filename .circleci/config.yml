@@ -357,7 +357,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Constuct Test JARs
+          name: Construct Test JARs
           command: ./gradlew testJar --continue --parallel
       - persist_to_workspace:
           root: .
@@ -377,7 +377,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Constuct SummerCoat Libraries
+          name: Construct SummerCoat Libraries
           command: ./gradlew libSummerCoat --continue --parallel
       - persist_to_workspace:
           root: .
@@ -396,7 +396,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Constuct Test SummerCoat Libraries
+          name: Construct Test SummerCoat Libraries
           command: ./gradlew libTestSummerCoat --continue --parallel
       - persist_to_workspace:
           root: .
