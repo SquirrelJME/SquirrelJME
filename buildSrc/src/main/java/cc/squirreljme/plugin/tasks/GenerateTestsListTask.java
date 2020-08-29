@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.util.TestDetection;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -196,7 +197,7 @@ public class GenerateTestsListTask
 			{
 				Path path = file.toPath();
 				
-				if (GenerateTestsListTask.__isTest(path))
+				if (TestDetection.isTest(path))
 					result.add(new __Input__(path, baseDir.relativize(path)));
 			}
 		}
@@ -243,29 +244,4 @@ public class GenerateTestsListTask
 		return this.getProject().files(this.__taskOutput().toFile());
 	}
 	
-	/**
-	 * Is this considered a test?
-	 *
-	 * @param __path The path to get.
-	 * @return If this is considered a test.
-	 * @since 2020/02/8
-	 */
-	private static boolean __isTest(Path __path)
-		throws NullPointerException
-	{
-		if (__path == null)
-			throw new NullPointerException();
-		
-		// Only consider source files
-		String fileName = __path.getFileName().toString();
-		if (!fileName.endsWith(".java") && !fileName.endsWith(".j"))
-			return false;
-		
-		// Get base class form
-		String className = fileName.substring(0,
-			fileName.lastIndexOf('.'));
-		
-		return (className.startsWith("Do") || className.startsWith("Test") ||
-			className.endsWith("Test"));
-	}
 }
