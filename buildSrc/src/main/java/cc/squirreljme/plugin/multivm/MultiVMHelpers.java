@@ -11,6 +11,8 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import cc.squirreljme.plugin.util.FileLocation;
+import cc.squirreljme.plugin.util.TestDetection;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -77,7 +80,13 @@ public final class MultiVMHelpers
 		if (__project == null || __sourceSet == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		Collection<String> result = new TreeSet<>();
+		for (FileLocation file : TestDetection.onlyTests(
+			TestDetection.sourceSetFiles(__project, __sourceSet)))
+			result.add(MultiVMHelpers.pathToString('.',
+				MultiVMHelpers.stripExtension(file.relative)));
+		
+		return Collections.unmodifiableCollection(result);
 	}
 	
 	/**
@@ -224,6 +233,39 @@ public final class MultiVMHelpers
 			"javax.microedition.midlet.__MainHandler__" :
 			Objects.requireNonNull(__cfg.mainClass,
 			"No main class in project."));
+	}
+	
+	/**
+	 * Converts the given path to a String using the delimiter.
+	 * 
+	 * @param __delim The delimiter.
+	 * @param __path The path to convert.
+	 * @return The path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/30
+	 */
+	public static String pathToString(char __delim, Path __path)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// If the path is of only a single element (or none) then it is just
+		// whatever the string form of the path is
+		int n = __path.getNameCount();
+		if (n <= 1)
+			return __path.toString();
+		
+		// Build together the string
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < n; i++)
+		{
+			if (i > 0)
+				sb.append(__delim);
+			sb.append(__path.getName(i).toString());
+		}
+		
+		return sb.toString();
 	}
 	
 	/**
@@ -415,5 +457,52 @@ public final class MultiVMHelpers
 		__project.getLogger().debug("Run Depends: {}", result);
 		
 		return Collections.unmodifiableCollection(result);
+	}
+	
+	/**
+	 * Returns all of the tests to run.
+	 * 
+	 * @param __project The project to check.
+	 * @param __sourceSet The source set to check.
+	 * @return All of the tests that should be ran.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/30
+	 */
+	public static Collection<String> runningTests(Project __project,
+		String __sourceSet)
+		throws NullPointerException
+	{
+		// If specifying a single test to run, always allow running tests
+		String singleTest = System.getProperty(
+			MultiVMTestTask.SINGLE_TEST_PROPERTY);
+		if (singleTest != null)
+			return Collections.singletonList(singleTest);
+		
+		// Is only valid if there is at least one test
+		return MultiVMHelpers.availableTests(__project, __sourceSet);
+	}
+	
+	/**
+	 * Strips the extension from the path.
+	 * 
+	 * @param __path The path to strip the extension from.
+	 * @return The input path with the extension stripped.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/30
+	 */
+	public static Path stripExtension(Path __path)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// If there is no extension part then nothing has to be done
+		String fileName = __path.getFileName().toString();
+		int lastDot = fileName.lastIndexOf('.');
+		if (lastDot < 0)
+			return __path;
+		
+		// The "renamed" file is in the same parent directory
+		return __path.resolveSibling(fileName.substring(0, lastDot));
 	}
 }

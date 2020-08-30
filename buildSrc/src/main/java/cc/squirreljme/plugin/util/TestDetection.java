@@ -97,7 +97,7 @@ public final class TestDetection
 		Collection<FileLocation> filtered = new ArrayList<>();
 		for (FileLocation check : __files)
 		{
-			if (!TestDetection.isTest(check.relative))
+			if (TestDetection.isTest(check.relative))
 				filtered.add(check);
 		}
 		

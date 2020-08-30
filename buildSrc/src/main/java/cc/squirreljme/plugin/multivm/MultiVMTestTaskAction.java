@@ -59,6 +59,10 @@ public class MultiVMTestTaskAction
 	@Override
 	public void execute(Task __task)
 	{
+		// Debug
+		__task.getLogger().debug("Tests: {}", MultiVMHelpers.runningTests(
+			__task.getProject(), this.sourceSet));
+		
 		throw new Error("TODO");
 	}
 }

@@ -211,5 +211,4 @@ public class GenerateTestsListTask
 		// There is just a single output file
 		return this.getProject().files(this.__taskOutput().toFile());
 	}
-	
 }
