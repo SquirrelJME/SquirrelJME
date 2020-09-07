@@ -12,6 +12,9 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
+import org.gradle.process.JavaExecSpec;
+import org.gradle.process.internal.DslExecActionFactory;
+import org.gradle.workers.WorkerExecutor;
 
 /**
  * Used to test the virtual machine, generates test results from the run.
@@ -35,6 +38,7 @@ public class MultiVMTestTask
 	/**
 	 * Initializes the task.
 	 * 
+	 * @param __executor The executor for the task.
 	 * @param __sourceSet The source set to use.
 	 * @param __vmType The virtual machine type.
 	 * @param __libTask The task used to create libraries, this may be directly
@@ -42,11 +46,12 @@ public class MultiVMTestTask
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public MultiVMTestTask(String __sourceSet,
+	public MultiVMTestTask(WorkerExecutor __executor, DslExecActionFactory __execSpec, String __sourceSet,
 		VirtualMachineSpecifier __vmType, MultiVMLibraryTask __libTask)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null || __libTask == null)
+		if (__executor == null || __sourceSet == null || __vmType == null ||
+			__libTask == null)
 			throw new NullPointerException("NARG");
 			
 		// These are used at the test stage
@@ -81,7 +86,11 @@ public class MultiVMTestTask
 		this.onlyIf(new CheckForTests(__sourceSet));
 		
 		// Performs the action of the task
-		this.doLast(new MultiVMTestTaskAction(__sourceSet, __vmType));
+		this.doLast(new MultiVMTestTaskAction(__executor, __sourceSet,
+			__vmType));
+		
+		System.err.printf("DEBUG -- Spec? %s%n",
+			__execSpec.newDecoratedJavaExecAction().getCommandLine());
 	}
 	
 	/**

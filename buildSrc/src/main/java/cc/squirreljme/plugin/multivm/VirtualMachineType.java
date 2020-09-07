@@ -108,6 +108,9 @@ public enum VirtualMachineType
 					
 					// Any desired system properties
 					__exec.systemProperties(__sysProps);
+					
+					System.err.printf("DEBUG -- CommandLine: %s%n",
+						__exec.getCommandLine());
 				});
 			
 			// Use the exit value of the task
