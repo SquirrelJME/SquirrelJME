@@ -13,6 +13,7 @@ import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -391,6 +391,36 @@ public final class MultiVMHelpers
 		
 		return __project.getConfigurations().
 			getByName("runtimeClasspath").getFiles();
+	}
+	
+	/**
+	 * Reads all of the bytes from the stream.
+	 * 
+	 * @param __in The stream to read from.
+	 * @return All of the read bytes.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/07
+	 */
+	public static byte[] readAll(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream(4096))
+		{
+			byte[] buf = new byte[4096];
+			for (;;)
+			{
+				int rc = __in.read(buf);
+				
+				if (rc < 0)
+					return out.toByteArray();
+				
+				out.write(buf, 0, rc);
+			}
+		}
 	}
 	
 	/**

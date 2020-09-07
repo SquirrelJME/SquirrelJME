@@ -50,8 +50,15 @@ public abstract class VMTestWorkAction
 				{
 				}
 			
+			// Read all of standard error and output, these will be stored
+			// in the log
+			byte[] stdOut = MultiVMHelpers.readAll(process.getInputStream());
+			byte[] stdErr = MultiVMHelpers.readAll(process.getErrorStream());
+			
 			System.err.printf("DEBUG -- %s: %d%n",
 				parameters.getTestName().get(), exitCode);
+			System.out.write(stdOut);
+			System.err.write(stdErr);
 		}
 		
 		// Process failed to execute
