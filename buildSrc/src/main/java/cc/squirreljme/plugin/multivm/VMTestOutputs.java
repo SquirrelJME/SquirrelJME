@@ -73,7 +73,8 @@ public class VMTestOutputs
 		// The output of the task will be the test results
 		for (String testName :
 			MultiVMHelpers.runningTests(project, sourceSet).keySet())
-			result.add(resultRoot.resolve("TEST-" + testName + ".xml"));
+			result.add(resultRoot.resolve(
+				MultiVMHelpers.testResultXmlName(testName)));
 		
 		return result;
 	}

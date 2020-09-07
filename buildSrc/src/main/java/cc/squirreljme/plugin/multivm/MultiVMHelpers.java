@@ -620,4 +620,21 @@ public final class MultiVMHelpers
 		return __project.provider(() -> MultiVMHelpers.cacheDir(
 			__project, __vmType, __sourceSet).get().resolve("junit"));
 	}
+	
+	/**
+	 * Returns the test result XML file name.
+	 * 
+	 * @param __testName The test name.
+	 * @return The name of the XML to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/06
+	 */
+	public static String testResultXmlName(String __testName)
+		throws NullPointerException
+	{
+		if (__testName == null)
+			throw new NullPointerException("NARG");
+		
+		return "TEST-" + __testName + ".xml";
+	}
 }
