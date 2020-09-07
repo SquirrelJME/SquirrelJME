@@ -53,7 +53,6 @@ public class VMTestInputs
 	 */
 	@Override
 	public Iterable<Path> call()
-		throws Exception
 	{
 		Collection<Path> result = new LinkedHashSet<>();
 		

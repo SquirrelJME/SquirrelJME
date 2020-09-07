@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 
@@ -62,6 +63,11 @@ public class MultiVMTestTask
 		
 		// Additionally this depends on the emulator backend to be available
 		this.dependsOn(new VMEmulatorDependencies(this, __vmType));
+		
+		// Add the entire JAR as input, so that if it changes for any reason
+		// then all tests should be considered invalid and rerun
+		this.getInputs().file(this.getProject().provider(
+			new SingleTaskOutputFile(__libTask)));
 		
 		// All of the input source files to be tested
 		this.getInputs().files(this.getProject().provider(

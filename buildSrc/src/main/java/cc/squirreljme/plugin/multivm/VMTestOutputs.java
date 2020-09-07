@@ -12,7 +12,6 @@ package cc.squirreljme.plugin.multivm;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import org.gradle.api.Project;
 
@@ -61,7 +60,6 @@ public class VMTestOutputs
 	 */
 	@Override
 	public Iterable<Path> call()
-		throws Exception
 	{
 		Collection<Path> result = new LinkedHashSet<>();
 		
