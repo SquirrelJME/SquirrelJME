@@ -9,11 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import java.util.concurrent.ExecutorService;
-import javax.inject.Inject;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.tasks.JavaExec;
+import java.io.IOException;
 import org.gradle.workers.WorkAction;
 
 /**
@@ -28,16 +24,40 @@ public abstract class VMTestWorkAction
 	 * {@inheritDoc}
 	 * @since 2020/09/07
 	 */
+	@SuppressWarnings("UseOfProcessBuilder")
 	@Override
 	public void execute()
 	{
 		MultiVMTestParameters parameters = this.getParameters();
 		
-		// Debug
-		System.err.printf("DEBUG -- Testing %s: %s%n",
-			parameters.getTestName().get(),
-			parameters.getCommandLine().get());
+		// The process might not be able to execute
+		try
+		{
+			// Start the process with the command line that was pre-determined
+			Process process = new ProcessBuilder(parameters.getCommandLine()
+				.get().toArray(new String[0])).start();
+			
+			// Wait for the process to terminate, the exit code will contain
+			// the result of the test (pass, skip, fail)
+			int exitCode = -1;
+			for (;;)
+				try
+				{
+					exitCode = process.waitFor();
+					break;
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+			
+			System.err.printf("DEBUG -- %s: %d%n",
+				parameters.getTestName().get(), exitCode);
+		}
 		
-		//throw new Error("TODO");
+		// Process failed to execute
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }
