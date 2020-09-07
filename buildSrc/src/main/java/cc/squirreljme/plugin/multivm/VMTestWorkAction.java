@@ -31,7 +31,7 @@ public abstract class VMTestWorkAction
 {
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
-		120_000_000_000L;
+		240_000_000_000L;
 	
 	/**
 	 * {@inheritDoc}
@@ -175,6 +175,7 @@ public abstract class VMTestWorkAction
 			"time=\"%.3f\" " +
 			"/>",
 			__testName, __testName, __nsDur / 1_000_000D);
+		__out.println();
 		
 		// Write both buffers
 		VMTestWorkAction.__writeXmlText(__out, "system-out", __stdOut);
