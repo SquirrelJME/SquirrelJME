@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.util;
 
+import cc.squirreljme.plugin.multivm.MultiVMHelpers;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public final class TestDetection
 	 * @return If this is considered a test.
 	 * @since 2020/02/28
 	 */
+	@Deprecated
 	public static boolean isTest(Path __path)
 		throws NullPointerException
 	{
@@ -71,9 +73,9 @@ public final class TestDetection
 		if (__className == null)
 			throw new NullPointerException("NARG");
 		
-		// Get base name of the file
-		String base = __className.substring(0,
-			__className.lastIndexOf('.'));
+		// Get base name of the class
+		int ld = __className.lastIndexOf('.');
+		String base = (ld < 0 ? __className : __className.substring(ld + 1));
 		
 		return (base.startsWith("Do") || base.startsWith("Test") ||
 			base.endsWith("Test"));
@@ -85,8 +87,12 @@ public final class TestDetection
 	 * @param __files The files to filtered.
 	 * @return The filtered files.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link MultiVMHelpers#availableTests(Project, String)}
+	 * and do not use {@link MultiVMHelpers#runningTests(Project, String)} as
+	 * that only concerns tests for running.
 	 * @since 2020/08/29
 	 */
+	@Deprecated
 	public static Collection<FileLocation> onlyTests(
 		Collection<FileLocation> __files)
 		throws NullPointerException

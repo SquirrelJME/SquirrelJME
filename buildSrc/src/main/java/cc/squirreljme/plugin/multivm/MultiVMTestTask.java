@@ -63,6 +63,14 @@ public class MultiVMTestTask
 		// Additionally this depends on the emulator backend to be available
 		this.dependsOn(new VMEmulatorDependencies(this, __vmType));
 		
+		// All of the input source files to be tested
+		this.getInputs().files(this.getProject().provider(
+			new VMTestInputs(this, __sourceSet)));
+		
+		// All of the test results that are created
+		this.getOutputs().files(this.getProject().provider(
+			new VMTestOutputs(this, __sourceSet, __vmType)));
+		
 		// Only run if there are actual tests to run
 		this.onlyIf(new CheckForTests(__sourceSet));
 		

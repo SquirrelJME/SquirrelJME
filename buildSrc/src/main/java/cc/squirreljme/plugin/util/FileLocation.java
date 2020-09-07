@@ -44,6 +44,34 @@ public final class FileLocation
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/09/06
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof FileLocation))
+			return false;
+		
+		FileLocation o = (FileLocation)__o;
+		return this.relative.equals(o.relative) &&
+			this.absolute.equals(o.absolute);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/06
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.absolute.hashCode() ^ this.relative.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/02/28
 	 */
 	@Override

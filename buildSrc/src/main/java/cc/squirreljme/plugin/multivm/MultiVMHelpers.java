@@ -21,11 +21,14 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -73,20 +76,74 @@ public final class MultiVMHelpers
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/07
 	 */
-	public static Collection<String> availableTests(Project __project,
-		String __sourceSet)
+	public static Map<String, CandidateTestFiles> availableTests(
+		Project __project, String __sourceSet)
 		throws NullPointerException
 	{
 		if (__project == null || __sourceSet == null)
 			throw new NullPointerException("NARG");
 		
-		Collection<String> result = new TreeSet<>();
-		for (FileLocation file : TestDetection.onlyTests(
-			TestDetection.sourceSetFiles(__project, __sourceSet)))
-			result.add(MultiVMHelpers.pathToString('.',
-				MultiVMHelpers.stripExtension(file.relative)));
+		// Mappings of both source and expected files
+		Set<String> names = new TreeSet<>();
+		Map<String, FileLocation> sources = new HashMap<>();
+		Map<String, FileLocation> expects = new HashMap<>();
 		
-		return Collections.unmodifiableCollection(result);
+		// Scan through every file and match sources and expected tests
+		for (FileLocation file :
+			TestDetection.sourceSetFiles(__project, __sourceSet))
+		{
+			// If this is a MIME encoded file, normalize the name so it does
+			// not include the mime extension as that is removed at JAR build
+			// time
+			Path normalized;
+			if ("__mime".equals(MultiVMHelpers.getExtension(file.relative)))
+				normalized = MultiVMHelpers.stripExtension(file.relative);
+			else
+				normalized = file.relative;
+			
+			// Determine the name of the class, used to filter if this is
+			// a valid test or not
+			String testName = MultiVMHelpers.pathToString('.',
+					MultiVMHelpers.stripExtension(normalized));
+			
+			// Ignore if this does not match the expected name form
+			if (!TestDetection.isTest(testName))
+				continue;
+			
+			// Is a valid test name, so store it for later
+			names.add(testName);
+			
+			// Determine how this file is to be handled
+			switch (MultiVMHelpers.getExtension(normalized))
+			{
+					// Executable Classes
+				case "class":
+				case "java":
+				case "j":
+					sources.put(testName, file);
+					break;
+				
+					// Test expectations
+				case "in":
+					expects.put(testName, file);
+					break;
+			}
+		}
+		
+		// Map tests and candidate sets to normal candidates
+		Map<String, CandidateTestFiles> result = new TreeMap<>();
+		for (String testName : names) 
+		{
+			// May be an abstract test?
+			FileLocation source = sources.get(testName);
+			if (source == null)
+				continue;
+			
+			result.put(testName,
+				new CandidateTestFiles(source, expects.get(testName)));
+		}
+		
+		return Collections.unmodifiableMap(result);
 	}
 	
 	/**
@@ -112,7 +169,6 @@ public final class MultiVMHelpers
 				__vmType.vmName(VMNameFormat.LOWERCASE)));
 	}
 	
-
 	/**
 	 * Returns the class path as a string.
 	 *
@@ -181,6 +237,30 @@ public final class MultiVMHelpers
 			
 			__out.write(buf, 0, rc);
 		}
+	}
+	
+	/**
+	 * Gets the extension from the given path.
+	 * 
+	 * @param __path The path to get from.
+	 * @return The file extension.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/06
+	 */
+	public static String getExtension(Path __path)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Does this file even have an extension to it?
+		String fileName = __path.getFileName().toString();
+		int ld = fileName.lastIndexOf('.');
+		if (ld < 0)
+			return "";
+		
+		// Otherwise extract it
+		return fileName.substring(ld + 1);
 	}
 	
 	/**
@@ -468,18 +548,31 @@ public final class MultiVMHelpers
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/30
 	 */
-	public static Collection<String> runningTests(Project __project,
-		String __sourceSet)
+	public static Map<String, CandidateTestFiles> runningTests(
+		Project __project, String __sourceSet)
 		throws NullPointerException
 	{
-		// If specifying a single test to run, always allow running tests
+		Map<String, CandidateTestFiles> available =
+			MultiVMHelpers.availableTests(__project, __sourceSet);
+		
+		// If specifying a single test to run only specify that
 		String singleTest = System.getProperty(
 			MultiVMTestTask.SINGLE_TEST_PROPERTY);
 		if (singleTest != null)
-			return Collections.singletonList(singleTest);
+		{
+			// If the test has no matching file then it is probably something
+			// else and likely an error
+			CandidateTestFiles files = available.get(singleTest);
+			if (files == null)
+				throw new IllegalArgumentException(
+					"Missing or invalid test: " + singleTest);
+			
+			// The resultant map will only contain this test
+			return Collections.singletonMap(singleTest, files);
+		}
 		
 		// Is only valid if there is at least one test
-		return MultiVMHelpers.availableTests(__project, __sourceSet);
+		return available;
 	}
 	
 	/**
@@ -504,5 +597,27 @@ public final class MultiVMHelpers
 		
 		// The "renamed" file is in the same parent directory
 		return __path.resolveSibling(fileName.substring(0, lastDot));
+	}
+	
+	/**
+	 * Returns the directory where test results go.
+	 * 
+	 * @param __project The project to get the cache directory of.
+	 * @param __vmType The virtual machine being used.
+	 * @param __sourceSet The source set for the library, as there might be
+	 * duplicates between them potentially.
+	 * @return The path provider to the test result directory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/06
+	 */
+	public static Provider<Path> testResultDir(Project __project,
+		VirtualMachineSpecifier __vmType, String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		return __project.provider(() -> MultiVMHelpers.cacheDir(
+			__project, __vmType, __sourceSet).get().resolve("junit"));
 	}
 }
