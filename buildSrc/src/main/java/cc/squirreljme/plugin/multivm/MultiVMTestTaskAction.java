@@ -11,6 +11,8 @@ package cc.squirreljme.plugin.multivm;
 
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Supplier;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
@@ -94,6 +96,10 @@ public class MultiVMTestTaskAction
 		Path resultDir = MultiVMHelpers.testResultDir(__task.getProject(),
 			vmType, sourceSet).get();
 		
+		// All of the result files will be read afterwards to determine whether
+		// this task will pass or fail
+		Set<Path> xmlResults = new TreeSet<>();
+		
 		// Execute the tests concurrently
 		for (String testName : MultiVMHelpers.runningTests(__task.getProject(),
 				sourceSet).keySet())
@@ -106,17 +112,25 @@ public class MultiVMTestTaskAction
 				MultiVMHelpers.runClassPath((MultiVMExecutableTask)__task,
 					sourceSet, vmType), testName);
 			
+			// Where will the results be read from?
+			Path xmlResult = resultDir.resolve(
+				MultiVMHelpers.testResultXmlName(testName));
+			xmlResults.add(xmlResult);
+			
 			// Submit our work task which should be a simple JVM execute due
 			// to the limitations of Gradle workers
 			queue.submit(VMTestWorkAction.class, __params ->
 				{
 					// The test and where the results will go
 					__params.getTestName().set(testName);
-					__params.getResultFile().set(resultDir.resolve(
-						MultiVMHelpers.testResultXmlName(testName)).toFile());
+					__params.getResultFile().set(xmlResult.toFile());
 					
 					// The command line to execute
 					__params.getCommandLine().set(execSpec.getCommandLine());
+					
+					// Name of the VM for hostname setting
+					__params.getVmName()
+						.set(vmType.vmName(VMNameFormat.PROPER_NOUN));
 				});
 		}
 		

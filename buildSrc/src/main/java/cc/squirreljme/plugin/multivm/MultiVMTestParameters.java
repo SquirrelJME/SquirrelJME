@@ -50,4 +50,12 @@ public interface MultiVMTestParameters
 	 * @since 2020/09/06
 	 */
 	Property<String> getTestName();
+	
+	/**
+	 * Returns the virtual machine name.
+	 * 
+	 * @return The virtual machine name.
+	 * @since 2020/09/07
+	 */
+	Property<String> getVmName();
 }
