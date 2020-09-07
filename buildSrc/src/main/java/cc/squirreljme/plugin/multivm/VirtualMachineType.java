@@ -264,15 +264,21 @@ public enum VirtualMachineType
 		// Add emulator to launch
 		vmArgs.add("-Xemulator:" + this.vmName(VMNameFormat.LOWERCASE));
 		
-		// Always set a snapshot file, as it is very useful. Try to use the VM
-		// cache dir, but using the build directory is okay
-		Path cacheDir = ((__task instanceof MultiVMExecutableTask) ?
-			MultiVMHelpers.cacheDir(__task.getProject(), this,
+		// Determine where profiler snapshots are to go, try to use the
+		// profiler directory for that
+		Path profilerDir = ((__task instanceof MultiVMExecutableTask) ?
+			MultiVMHelpers.profilerDir(__task.getProject(), this,
 			((MultiVMExecutableTask)__task).getSourceSet()).get() :
 			__task.getProject().getBuildDir().toPath());
-		vmArgs.add("-Xsnapshot:" + cacheDir.resolve(
+		
+		// Use the main class name unless this is a test, so that they are
+		// named better
+		String profilerClass = (__mainClass.equals(
+			MultiVMHelpers.SINGLE_TEST_RUNNER) && __args.length > 0 ?
+			__args[0] : __mainClass);
+		vmArgs.add("-Xsnapshot:" + profilerDir.resolve(
 			__task.getProject().getName() + "_" +
-			__mainClass.replace('.', '-') + ".nps"));
+			profilerClass.replace('.', '-') + ".nps"));
 		
 		// Class path for the target program to launch
 		vmArgs.add("-classpath");

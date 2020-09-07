@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -46,6 +47,10 @@ import org.gradle.jvm.tasks.Jar;
  */
 public final class MultiVMHelpers
 {
+	/** The class used for single test runs. */
+	public static final String SINGLE_TEST_RUNNER =
+		"net.multiphasicapps.tac.MainSingleRunner";
+	
 	/** Main configurations. */
 	private static final String[] _MAIN_CONFIGS =
 		new String[]{"api", "implementation"};
@@ -346,6 +351,28 @@ public final class MultiVMHelpers
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * Returns the directory where profiler snapshots go.
+	 * 
+	 * @param __project The project to get the cache directory of.
+	 * @param __vmType The virtual machine being used.
+	 * @param __sourceSet The source set for the library, as there might be
+	 * duplicates between them potentially.
+	 * @return The path provider to the profiler snapshot directory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/06
+	 */
+	public static Provider<Path> profilerDir(Project __project,
+		VirtualMachineSpecifier __vmType, String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		return __project.provider(() -> MultiVMHelpers.cacheDir(
+			__project, __vmType, __sourceSet).get().resolve("nps"));
 	}
 	
 	/**

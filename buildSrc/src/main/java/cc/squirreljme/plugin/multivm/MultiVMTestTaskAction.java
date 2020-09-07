@@ -101,7 +101,7 @@ public class MultiVMTestTaskAction
 			// Determine the arguments that are used to spawn the JVM
 			JavaExecSpec execSpec = specFactory.get();
 			vmType.spawnJvmArguments(__task, execSpec,
-				"net.multiphasicapps.tac.MainSingleRunner",
+				MultiVMHelpers.SINGLE_TEST_RUNNER,
 				Collections.<String, String>emptyMap(),
 				MultiVMHelpers.runClassPath((MultiVMExecutableTask)__task,
 					sourceSet, vmType), testName);
