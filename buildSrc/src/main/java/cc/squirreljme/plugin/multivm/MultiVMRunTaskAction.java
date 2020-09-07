@@ -11,7 +11,6 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.process.ExecResult;
 
 /**
  * Runs the program within the virtual machine.
@@ -89,10 +89,21 @@ public class MultiVMRunTaskAction
 		
 		// Execute the virtual machine, if the exit status is non-zero then
 		// the task execution will be considered as a failure
-		int exitValue;
-		if (0 != (exitValue = this.vmType.spawnJvm(__task, System.out,
-			System.err, mainClass, Collections.emptyMap(), classPath,
-			args.<String>toArray(new String[args.size()]))))
+		ExecResult exitResult = __task.getProject().javaexec(__spec ->
+		{
+			// Use filled JVM arguments
+			vmType.spawnJvmArguments(__task, __spec, mainClass,
+				Collections.<String, String>emptyMap(), classPath,
+				args.<String>toArray(new String[args.size()]));
+			
+			// Use these streams directly
+			__spec.setStandardOutput(System.out);
+			__spec.setErrorOutput(System.err);
+		});
+		
+		// Did the task fail?
+		int exitValue = exitResult.getExitValue();
+		if (exitValue != 0)
 			throw new RuntimeException("Task exited with: " + exitValue);
 	}
 }

@@ -34,10 +34,9 @@ public abstract class VMTestWorkAction
 		MultiVMTestParameters parameters = this.getParameters();
 		
 		// Debug
-		System.err.printf("DEBUG -- Testing %s...%n",
-			parameters.getTestName());
-		
-		parameters.getTestRunResults().get().failCount.incrementAndGet();
+		System.err.printf("DEBUG -- Testing %s: %s%n",
+			parameters.getTestName().get(),
+			parameters.getCommandLine().get());
 		
 		//throw new Error("TODO");
 	}

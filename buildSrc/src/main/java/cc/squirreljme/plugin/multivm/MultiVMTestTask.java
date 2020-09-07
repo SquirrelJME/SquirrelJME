@@ -12,7 +12,6 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
-import org.gradle.process.JavaExecSpec;
 import org.gradle.process.internal.DslExecActionFactory;
 import org.gradle.workers.WorkerExecutor;
 
@@ -39,6 +38,8 @@ public class MultiVMTestTask
 	 * Initializes the task.
 	 * 
 	 * @param __executor The executor for the task.
+	 * @param __execFactory This is a work around to use internal executions
+	 * for specifications needed to spawn VMs within workers.
 	 * @param __sourceSet The source set to use.
 	 * @param __vmType The virtual machine type.
 	 * @param __libTask The task used to create libraries, this may be directly
@@ -46,12 +47,13 @@ public class MultiVMTestTask
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public MultiVMTestTask(WorkerExecutor __executor, DslExecActionFactory __execSpec, String __sourceSet,
+	public MultiVMTestTask(WorkerExecutor __executor,
+		@Deprecated DslExecActionFactory __execFactory, String __sourceSet,
 		VirtualMachineSpecifier __vmType, MultiVMLibraryTask __libTask)
 		throws NullPointerException
 	{
-		if (__executor == null || __sourceSet == null || __vmType == null ||
-			__libTask == null)
+		if (__executor == null || __execFactory == null ||
+			__sourceSet == null || __vmType == null || __libTask == null)
 			throw new NullPointerException("NARG");
 			
 		// These are used at the test stage
@@ -86,11 +88,13 @@ public class MultiVMTestTask
 		this.onlyIf(new CheckForTests(__sourceSet));
 		
 		// Performs the action of the task
-		this.doLast(new MultiVMTestTaskAction(__executor, __sourceSet,
+		// HACK: Note that this uses internal Gradle classes to create a
+		// standard execution spec. Since this may change or break in the
+		// future the rest of it is hidden from the class which does the
+		// actual task action
+		this.doLast(new MultiVMTestTaskAction(__executor,
+			() -> __execFactory.newDecoratedJavaExecAction(), __sourceSet,
 			__vmType));
-		
-		System.err.printf("DEBUG -- Spec? %s%n",
-			__execSpec.newDecoratedJavaExecAction().getCommandLine());
 	}
 	
 	/**

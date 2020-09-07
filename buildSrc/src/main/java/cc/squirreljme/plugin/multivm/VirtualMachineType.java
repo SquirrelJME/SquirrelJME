@@ -23,7 +23,7 @@ import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.process.ExecResult;
+import org.gradle.process.JavaExecSpec;
 
 /**
  * Represents the type of virtual machine to run.
@@ -56,17 +56,14 @@ public enum VirtualMachineType
 		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
-		@SuppressWarnings("ConstantConditions")
 		@Override
-		public int spawnJvm(Task __task, OutputStream __stdOut,
-			OutputStream __stdErr, String __mainClass,
-			Map<String, String> __sysProps, Path[] __classPath,
-			String... __args)
+		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+			String __mainClass, Map<String, String> __sysProps,
+			Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
-			if (__task == null || __stdOut == null || __stdErr == null ||
-				__mainClass == null || __sysProps == null ||
-				__classPath == null || __args == null)
+			if (__task == null || __execSpec == null || __mainClass == null ||
+				__sysProps == null || __classPath == null || __args == null)
 				throw new NullPointerException("NARG");
 			
 			// Start with the base emulator class path
@@ -86,35 +83,18 @@ public enum VirtualMachineType
 			// Debug
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
 			
-			// Execute the VM and return the exit code
-			ExecResult result = __task.getProject().javaexec(
-				(__exec) ->
-				{
-					// The outputs we desired, if specified
-					if (__stdOut != null)
-						__exec.setStandardOutput(__stdOut);
-					if (__stdErr != null)
-						__exec.setErrorOutput(__stdErr);
-					
-					// Use the classpath we previously determined
-					__exec.classpath(classPath);
-					
-					// Main class was the directly specified class, we do not
-					// need to handle the standard VM factory launcher
-					__exec.setMain(__mainClass);
-					
-					// Use the passed arguments directly
-					__exec.setArgs(Arrays.asList(__args));
-					
-					// Any desired system properties
-					__exec.systemProperties(__sysProps);
-					
-					System.err.printf("DEBUG -- CommandLine: %s%n",
-						__exec.getCommandLine());
-				});
+			// Use the classpath we previously determined
+			__execSpec.classpath(classPath);
 			
-			// Use the exit value of the task
-			return result.getExitValue();
+			// Main class was the directly specified class, we do not
+			// need to handle the standard VM factory launcher
+			__execSpec.setMain(__mainClass);
+			
+			// Use the passed arguments directly
+			__execSpec.setArgs(Arrays.asList(__args));
+			
+			// Any desired system properties
+			__execSpec.systemProperties(__sysProps);
 		}
 	},
 	
@@ -142,17 +122,15 @@ public enum VirtualMachineType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public int spawnJvm(Task __task, OutputStream __stdOut,
-			OutputStream __stdErr, String __mainClass,
-			Map<String, String> __sysProps, Path[] __classPath,
-			String... __args)
+		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+			String __mainClass, Map<String, String> __sysProps,
+			Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
-			return this.spawnVmViaFactory(__task,
-				__stdOut, __stdErr, __mainClass, __sysProps, __classPath,
-				__args);
+			this.spawnVmViaFactory(__task, __execSpec, __mainClass,
+				__sysProps, __classPath, __args);
 		}
 	},
 	
@@ -180,17 +158,15 @@ public enum VirtualMachineType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public int spawnJvm(Task __task, OutputStream __stdOut,
-			OutputStream __stdErr, String __mainClass,
-			Map<String, String> __sysProps, Path[] __classPath,
-			String... __args)
+		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+			String __mainClass, Map<String, String> __sysProps,
+			Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
-			return this.spawnVmViaFactory(__task,
-				__stdOut, __stdErr, __mainClass, __sysProps, __classPath,
-				__args);
+			this.spawnVmViaFactory(__task, __execSpec, __mainClass,
+				__sysProps, __classPath, __args);
 		}
 	},
 	
@@ -251,24 +227,21 @@ public enum VirtualMachineType
 	 * Spawns a virtual machine using the standard {@code VmFactory} class.
 	 * 
 	 * @param __task The task being executed, may be used as context.
-	 * @param __stdOut Standard output.
-	 * @param __stdErr Standard error.
+	 * @param __execSpec The execution specification.
 	 * @param __mainClass The main class to execute.
 	 * @param __sysProps The system properties to define.
 	 * @param __classPath The class path of the execution target.
 	 * @param __args Arguments to the started program.
-	 * @return The exit status of the program
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public int spawnVmViaFactory(Task __task, OutputStream __stdOut,
-		OutputStream __stdErr, String __mainClass,
-		Map<String, String> __sysProps, Path[] __classPath, String[] __args)
+	public void spawnVmViaFactory(Task __task, JavaExecSpec __execSpec,
+		String __mainClass, Map<String, String> __sysProps, Path[] __classPath,
+		String[] __args)
 		throws NullPointerException
 	{
-		if (__task == null || __stdOut == null ||
-			__stdErr == null || __mainClass == null || __sysProps == null ||
-			__classPath == null || __args == null)
+		if (__task == null || __execSpec == null || __mainClass == null ||
+			__sysProps == null || __classPath == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine the class-path for the emulator
@@ -317,10 +290,8 @@ public enum VirtualMachineType
 		
 		// Launching is effectively the same as the hosted run but with the
 		// VM here instead
-		return VirtualMachineType.HOSTED.spawnJvm(__task,
-			__stdOut, __stdErr,
-			"cc.squirreljme.emulator.vm.VMFactory",
-			__sysProps,
+		VirtualMachineType.HOSTED.spawnJvmArguments(__task, __execSpec,
+			"cc.squirreljme.emulator.vm.VMFactory", __sysProps,
 			vmClassPath.<Path>toArray(new Path[vmClassPath.size()]),
 			vmArgs.<String>toArray(new String[vmArgs.size()]));
 	}

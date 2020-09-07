@@ -10,13 +10,11 @@
 package cc.squirreljme.plugin.multivm;
 
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.inject.Inject;
+import java.util.Collections;
+import java.util.function.Supplier;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.JavaExec;
-import org.gradle.process.JavaForkOptions;
+import org.gradle.process.JavaExecSpec;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
@@ -44,16 +42,21 @@ public class MultiVMTestTaskAction
 	/** The virtual machine type. */
 	protected final VirtualMachineSpecifier vmType;
 	
+	/** Factory for making specifications. */
+	protected final Supplier<JavaExecSpec> specFactory;
+	
 	/**
 	 * Initializes the virtual machine task action.
 	 * 
 	 * @param __executor The executor for tasks.
+	 * @param __specFactory Factory for creating specifications.
 	 * @param __sourceSet The source set.
 	 * @param __vmType The virtual machine type used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	public MultiVMTestTaskAction(WorkerExecutor __executor, String __sourceSet,
+	public MultiVMTestTaskAction(WorkerExecutor __executor,
+		Supplier<JavaExecSpec> __specFactory, String __sourceSet,
 		VirtualMachineSpecifier __vmType)
 		throws NullPointerException
 	{
@@ -61,6 +64,7 @@ public class MultiVMTestTaskAction
 			throw new NullPointerException("NARG");
 		
 		this.executor = __executor;
+		this.specFactory = __specFactory;
 		this.sourceSet = __sourceSet;
 		this.vmType = __vmType;
 	}
@@ -79,38 +83,52 @@ public class MultiVMTestTaskAction
 		// We want our tasks to run from within Gradle
 		WorkQueue queue = this.executor.noIsolation();
 		
+		// We will need this as we cannot pass tasks for execution specs
+		// due to a serialization barrier, so we must only pass command line
+		// arguments
+		Supplier<JavaExecSpec> specFactory = this.specFactory;
+		
 		// All results will go here
+		String sourceSet = this.sourceSet;
 		VirtualMachineSpecifier vmType = this.vmType;
 		Path resultDir = MultiVMHelpers.testResultDir(__task.getProject(),
-			vmType, this.sourceSet).get();
-		
-		// This is used to keep track of all the tests and see what happened
-		// and to determine if a task passes or fails
-		VMTestRunResults results = new VMTestRunResults();
+			vmType, sourceSet).get();
 		
 		// Execute the tests concurrently
-		for (String test : MultiVMHelpers.runningTests(__task.getProject(),
-				this.sourceSet).keySet())
+		for (String testName : MultiVMHelpers.runningTests(__task.getProject(),
+				sourceSet).keySet())
+		{
+			// Determine the arguments that are used to spawn the JVM
+			JavaExecSpec execSpec = specFactory.get();
+			vmType.spawnJvmArguments(__task, execSpec,
+				"net.multiphasicapps.tac.MainSingleRunner",
+				Collections.<String, String>emptyMap(),
+				MultiVMHelpers.runClassPath((MultiVMExecutableTask)__task,
+					sourceSet, vmType), testName);
+			
+			// Submit our work task which should be a simple JVM execute due
+			// to the limitations of Gradle workers
 			queue.submit(VMTestWorkAction.class, __params ->
 				{
-					__params.getTestRunResults().set(results);
-					//__params.getTask().set(__task);
-					__params.getVmType().set(vmType);
-					__params.getTestName().set(test);
+					// The test and where the results will go
+					__params.getTestName().set(testName);
 					__params.getResultFile().set(resultDir.resolve(
-						MultiVMHelpers.testResultXmlName(test)).toFile());
+						MultiVMHelpers.testResultXmlName(testName)).toFile());
+					
+					// The command line to execute
+					__params.getCommandLine().set(execSpec.getCommandLine());
 				});
+		}
 		
 		// Wait for the queue to finish
 		queue.await();
 		
 		// Print any tests that failed
-		for (String testName : results.failures)
-			__task.getLogger().error("Failing test: {}", testName);
+		if (true)
+			throw new Error("TODO");
 		
-		// Throw exception on failure in this case
-		if (results.failCount.get() > 0)
-			throw new RuntimeException(String.format("%d tests failed.",
-				results.failCount.get()));
+		// If there were failures, then fail this task
+		if (true)
+			throw new Error("TODO");
 	}
 }

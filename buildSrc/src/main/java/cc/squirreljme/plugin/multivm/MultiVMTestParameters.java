@@ -10,8 +10,10 @@
 package cc.squirreljme.plugin.multivm;
 
 import java.util.Calendar;
+import java.util.List;
 import org.gradle.api.Task;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.workers.WorkParameters;
@@ -26,6 +28,14 @@ public interface MultiVMTestParameters
 	extends WorkParameters
 {
 	/**
+	 * Returns the command line to be executed.
+	 * 
+	 * @return The command line to execute.
+	 * @since 2020/09/07
+	 */
+	ListProperty<String> getCommandLine();
+	
+	/**
 	 * Returns the result of the test.
 	 * 
 	 * @return The result of the test.
@@ -34,34 +44,10 @@ public interface MultiVMTestParameters
 	RegularFileProperty getResultFile();
 	
 	/**
-	 * The task to create the virtual machine under.
-	 * 
-	 * @return The task used for this, used to create a VM.
-	 * @since 2020/09/07
-	 */
-	//Property<Task> getTask();
-	
-	/**
 	 * The test to be ran.
 	 * 
 	 * @return The test to be ran.
 	 * @since 2020/09/06
 	 */
 	Property<String> getTestName();
-	
-	/**
-	 * The virtual machine to be used.
-	 * 
-	 * @return The virtual machine type to use.
-	 * @since 2020/09/07
-	 */
-	Property<VirtualMachineSpecifier> getVmType();
-	
-	/**
-	 * Returns the test run results.
-	 * 
-	 * @return The test run results.
-	 * @since 2020/09/07
-	 */
-	Property<VMTestRunResults> getTestRunResults();
 }

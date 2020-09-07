@@ -17,6 +17,7 @@ import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.process.JavaExecSpec;
 
 /**
  * Provider interface for the various virtual machines that are available.
@@ -72,22 +73,21 @@ public interface VirtualMachineSpecifier
 		throws IOException, NullPointerException;
 	
 	/**
-	 * Spawns a virtual machine.
-	 * 
-	 * @param __task The task being executed, may be used as context.
-	 * @param __stdOut Standard output.
-	 * @param __stdErr Standard error.
+	 * Fills the execution spec with the arguments used to create the
+	 * virtual machine.
+	 *
+	 * @param __task The task used as a latch to obtain the needed virtual
+	 * machine and other details.
+	 * @param __execSpec The execution spec to fill.
 	 * @param __mainClass The main class to execute.
 	 * @param __sysProps The system properties to define.
 	 * @param __classPath The class path of the execution target.
 	 * @param __args Arguments to the started program.
-	 * @return The exit status of the program
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	int spawnJvm(Task __task, OutputStream __stdOut,
-		OutputStream __stdErr, String __mainClass,
-		Map<String, String> __sysProps, Path[] __classPath,
+	void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+		String __mainClass, Map<String, String> __sysProps, Path[] __classPath,
 		String... __args)
 		throws NullPointerException;  
 	
