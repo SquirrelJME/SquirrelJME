@@ -1,0 +1,6 @@
+# 2020/09/05
+
+## 11:25
+
+So I need to figure out how Gradle workers work and how they would be used to
+accelerate the speed of testing by spawning VMs and otherwise.

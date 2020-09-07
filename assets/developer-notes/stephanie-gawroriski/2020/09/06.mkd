@@ -1,0 +1,7 @@
+# 2020/09/06
+
+## 20:06
+
+I am hoping that with proper inputs and outputs, that the tests do not need to
+be re-ran if they were already done. This will increase the build speed in
+the situation where the tests should be ran.
