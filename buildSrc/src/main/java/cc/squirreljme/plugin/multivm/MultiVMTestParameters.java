@@ -36,6 +36,14 @@ public interface MultiVMTestParameters
 	ListProperty<String> getCommandLine();
 	
 	/**
+	 * The current test count.
+	 * 
+	 * @return The current test count.
+	 * @since 2020/09/07
+	 */
+	Property<Integer> getCount();
+	
+	/**
 	 * Returns the result of the test.
 	 * 
 	 * @return The result of the test.
@@ -50,6 +58,14 @@ public interface MultiVMTestParameters
 	 * @since 2020/09/06
 	 */
 	Property<String> getTestName();
+	
+	/**
+	 * The total number of tests.
+	 * 
+	 * @return The test total.
+	 * @since 2020/09/07
+	 */
+	Property<Integer> getTotal();
 	
 	/**
 	 * Returns the virtual machine name.

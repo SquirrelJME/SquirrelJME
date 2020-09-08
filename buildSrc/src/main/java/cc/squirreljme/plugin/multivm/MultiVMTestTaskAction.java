@@ -35,6 +35,10 @@ import org.gradle.workers.WorkerExecutor;
 public class MultiVMTestTaskAction
 	implements Action<Task>
 {
+	/** The maximum parallel tests that can run at once. */
+	private static final int _MAX_PARALLEL_TESTS =
+		4;
+	
 	/** The worker executor. */
 	protected final WorkerExecutor executor;
 	
@@ -75,6 +79,7 @@ public class MultiVMTestTaskAction
 	 * {@inheritDoc}
 	 * @since 2020/08/07
 	 */
+	@SuppressWarnings("UnstableApiUsage")
 	@Override
 	public void execute(Task __task)
 	{
@@ -100,9 +105,22 @@ public class MultiVMTestTaskAction
 		// this task will pass or fail
 		Set<Path> xmlResults = new TreeSet<>();
 		
-		// Execute the tests concurrently
-		for (String testName : MultiVMHelpers.runningTests(__task.getProject(),
-				sourceSet).keySet())
+		// How many tests should be run be at once?
+		int cpuCount = Runtime.getRuntime().availableProcessors();
+		int maxParallel = (cpuCount <= 1 ? 1 : Math.min(
+			Math.max(2, Runtime.getRuntime().availableProcessors() / 2),
+			MultiVMTestTaskAction._MAX_PARALLEL_TESTS));
+		
+		// Determine the number of tests
+		Set<String> testNames = MultiVMHelpers.runningTests(
+			__task.getProject(), sourceSet).keySet();
+		int numTests = testNames.size();
+		
+		// Execute the tests concurrently but up to the limit, as testing is
+		// very intense on CPU
+		int runCount = 0;
+		int submitCount = 0;
+		for (String testName : testNames)
 		{
 			// Determine the arguments that are used to spawn the JVM
 			JavaExecSpec execSpec = specFactory.get();
@@ -116,6 +134,9 @@ public class MultiVMTestTaskAction
 			Path xmlResult = resultDir.resolve(
 				MultiVMHelpers.testResultXmlName(testName));
 			xmlResults.add(xmlResult);
+			
+			// Which test number is this?
+			int submitId = ++submitCount;
 			
 			// Submit our work task which should be a simple JVM execute due
 			// to the limitations of Gradle workers
@@ -131,7 +152,22 @@ public class MultiVMTestTaskAction
 					// Name of the VM for hostname setting
 					__params.getVmName()
 						.set(vmType.vmName(VMNameFormat.PROPER_NOUN));
+					
+					// Used for progress tracking
+					__params.getCount().set(submitId);
+					__params.getTotal().set(numTests);
 				});
+			
+			// Already requested the number of tests to run, so let them
+			// finish first
+			if (++runCount >= maxParallel)
+			{
+				// Reset counter so that we can trigger this again
+				runCount = 0;
+				
+				// Wait for the current set to finish
+				queue.await();
+			}
 		}
 		
 		// Wait for the queue to finish

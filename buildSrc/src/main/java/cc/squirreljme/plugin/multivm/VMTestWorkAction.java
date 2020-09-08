@@ -43,12 +43,20 @@ public abstract class VMTestWorkAction
 	{
 		MultiVMTestParameters parameters = this.getParameters();
 		
+		// Threads for processing stream data
+		Thread stdOutThread = null;
+		Thread stdErrThread = null;
+		
+		// The current and total test IDs, used to measure progress
+		int count = parameters.getCount().get();
+		int total = parameters.getTotal().get();
+		
 		// The process might not be able to execute
 		try
 		{
 			// Note this is running
 			String testName = parameters.getTestName().get();
-			System.err.printf("???? %s%n", testName);
+			System.err.printf("???? %s (%d/%d)%n", testName, count, total);
 			
 			// Clock the starting time
 			long clockStart = System.currentTimeMillis();
@@ -57,6 +65,20 @@ public abstract class VMTestWorkAction
 			// Start the process with the command line that was pre-determined
 			Process process = new ProcessBuilder(parameters.getCommandLine()
 				.get().toArray(new String[0])).start();
+			
+			// Setup listening buffer threads
+			VMTestOutputBuffer stdOut = new VMTestOutputBuffer(
+				process.getInputStream(), System.out, false);
+			VMTestOutputBuffer stdErr = new VMTestOutputBuffer(
+				process.getErrorStream(), System.err, true);
+			
+			// Setup threads for reading standard output and standard error
+			stdOutThread = new Thread(stdOut, "stdOutReader");
+			stdErrThread = new Thread(stdErr, "stdErrReader");
+			
+			// Start both threads so console lines can be read as they appear
+			stdOutThread.start();
+			stdErrThread.start();
 			
 			// Wait for the process to terminate, the exit code will contain
 			// the result of the test (pass, skip, fail)
@@ -69,7 +91,8 @@ public abstract class VMTestWorkAction
 					if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
 					{
 						// Note it
-						System.err.printf("TIME %s%n", testName);
+						System.err.printf("TIME %s (%d/%d)%n", testName,
+							count, total);
 						
 						// Stop it now
 						process.destroyForcibly();
@@ -92,12 +115,8 @@ public abstract class VMTestWorkAction
 			
 			// Note this has finished
 			VMTestResult testResult = VMTestResult.valueOf(exitCode);
-			System.err.printf("%4s %s%n", testResult, testName);
-			
-			// Read all of standard error and output, these will be stored
-			// in the log
-			byte[] stdOut = MultiVMHelpers.readAll(process.getInputStream());
-			byte[] stdErr = MultiVMHelpers.readAll(process.getErrorStream());
+			System.err.printf("%4s %s (%d/%d)%n", testResult, testName,
+				count, total);
 			
 			// Write the XML file
 			try (PrintStream out = new PrintStream(Files.newOutputStream(
@@ -109,8 +128,9 @@ public abstract class VMTestWorkAction
 				// Write the resultant XML, this will be read later for
 				// detection purposes
 				VMTestWorkAction.__writeXml(out, testName, testResult,
-					parameters.getVmName().get(), clockStart, nsDur, stdOut,
-					stdErr);
+					parameters.getVmName().get(), clockStart, nsDur,
+					stdOut.getBytes(stdOutThread),
+					stdErr.getBytes(stdErrThread));
 				
 				// Make sure everything is written
 				out.flush();
@@ -121,6 +141,16 @@ public abstract class VMTestWorkAction
 		catch (IOException e)
 		{
 			throw new RuntimeException(e);
+		}
+		
+		// Interrupt read/write threads
+		finally
+		{
+			if (stdOutThread != null)
+				stdOutThread.interrupt();
+			
+			if (stdErrThread != null)
+				stdErrThread.interrupt();
 		}
 	}
 	
