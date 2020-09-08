@@ -35,6 +35,10 @@ import org.gradle.workers.WorkerExecutor;
 public class MultiVMTestTaskAction
 	implements Action<Task>
 {
+	/** The special key for quick finding test results. */
+	static final String _SPECIAL_KEY = 
+		"XERSQUIRRELJMEXER";
+	
 	/** The maximum parallel tests that can run at once. */
 	private static final int _MAX_PARALLEL_TESTS =
 		4;

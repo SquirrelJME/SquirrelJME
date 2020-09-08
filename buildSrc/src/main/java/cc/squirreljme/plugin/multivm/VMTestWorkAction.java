@@ -197,8 +197,19 @@ public abstract class VMTestWorkAction
 			nowTimestamp, __vmName, __nsDur / 1_000_000D);
 		__out.println();
 		
-		// No properties are used
-		__out.println("<properties />");
+		// Begin properties
+		__out.println("<properties>");
+		
+		// A special property is used for a quick search to determine if there
+		// is a pass, skip, or fail as the test result needs to be read to
+		// determine if the task is okay 
+		__out.printf("<property name=\"squirreljme.test.result\" " +
+			"value=\"%s:%s:\" />", MultiVMTestTaskAction._SPECIAL_KEY,
+			__result.name());
+		__out.println();
+		
+		// End properties
+		__out.println("</properties>");
 		
 		// Output the single test case
 		__out.printf("<testcase name=\"%s\" classname=\"%s\" " +
@@ -209,7 +220,7 @@ public abstract class VMTestWorkAction
 		
 		// Write both buffers
 		VMTestWorkAction.__writeXmlText(__out, "system-out", __stdOut);
-		VMTestWorkAction.__writeXmlText(__out, "system-out", __stdErr);
+		VMTestWorkAction.__writeXmlText(__out, "system-err", __stdErr);
 		
 		// Close test suite
 		__out.println("</testsuite>");
