@@ -220,7 +220,7 @@ public enum VirtualMachineType
 			return __project.getName() + "." + this.extension;
 		
 		// Otherwise include the source sets
-		return __project.getName() + __sourceSet + "." + this.extension;
+		return __project.getName() + "-" + __sourceSet + "." + this.extension;
 	}
 	
 	/**
