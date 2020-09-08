@@ -211,16 +211,18 @@ public abstract class VMTestWorkAction
 		// End properties
 		__out.println("</properties>");
 		
-		// Output the single test case
+		// Begin test case
 		__out.printf("<testcase name=\"%s\" classname=\"%s\" " +
-			"time=\"%.3f\" " +
-			"/>",
+			"time=\"%.3f\">",
 			__testName, __testName, __nsDur / 1_000_000D);
 		__out.println();
 		
 		// Write both buffers
 		VMTestWorkAction.__writeXmlText(__out, "system-out", __stdOut);
 		VMTestWorkAction.__writeXmlText(__out, "system-err", __stdErr);
+		
+		// End test case
+		__out.println("</testcase>");
 		
 		// Close test suite
 		__out.println("</testsuite>");
