@@ -178,6 +178,9 @@ public abstract class VMTestWorkAction
 			__stdOut == null || __stdErr == null || __vmName == null)
 			throw new NullPointerException("NARG");
 		
+		// Write the XML header
+		__out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		
 		// Determine the counts for the test
 		int numTests = 1;
 		int numSkipped = (__result == VMTestResult.SKIP ? 1 : 0);
