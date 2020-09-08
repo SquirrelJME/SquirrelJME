@@ -58,7 +58,7 @@ public class MainSingleRunner
 		{
 			// {@squirreljme.error BU0h Could not instantiate the class.
 			// (The class name)}
-			throw new IllegalArgumentException("BU0h " + __args[0]);
+			throw new IllegalArgumentException("BU0h " + __args[0], e);
 		}
 		
 		// Cast the class to the interface for running

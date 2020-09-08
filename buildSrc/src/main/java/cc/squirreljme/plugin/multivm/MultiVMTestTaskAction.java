@@ -9,9 +9,13 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 import org.gradle.api.Action;
@@ -107,7 +111,7 @@ public class MultiVMTestTaskAction
 		
 		// All of the result files will be read afterwards to determine whether
 		// this task will pass or fail
-		Set<Path> xmlResults = new TreeSet<>();
+		Map<String, Path> xmlResults = new TreeMap<>();
 		
 		// How many tests should be run be at once?
 		int cpuCount = Runtime.getRuntime().availableProcessors();
@@ -137,7 +141,7 @@ public class MultiVMTestTaskAction
 			// Where will the results be read from?
 			Path xmlResult = resultDir.resolve(
 				MultiVMHelpers.testResultXmlName(testName));
-			xmlResults.add(xmlResult);
+			xmlResults.put(testName, xmlResult);
 			
 			// Which test number is this?
 			int submitId = ++submitCount;
@@ -177,12 +181,74 @@ public class MultiVMTestTaskAction
 		// Wait for the queue to finish
 		queue.await();
 		
-		// Print any tests that failed
-		if (true)
-			throw new Error("TODO");
+		// Determine the tests that failed
+		Set<String> failedTests = this.__failedTests(xmlResults);
 		
-		// If there were failures, then fail this task
-		if (true)
-			throw new Error("TODO");
+		// Print any tests that failed
+		for (String testName : failedTests)
+			__task.getLogger().error("Failed test: {}", testName);
+		
+		// If there were failures, then fail this task with an exception
+		if (!failedTests.isEmpty())
+			throw new RuntimeException(
+				"There were failing tests: " + failedTests);
+	}
+	
+	/**
+	 * Goes through all of the XML files and searches for failed tests.
+	 * 
+	 * @param __xmlResults The result paths for tests. 
+	 * @return The set of failed tests.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/08
+	 */
+	private Set<String> __failedTests(Map<String, Path> __xmlResults)
+		throws NullPointerException
+	{
+		if (__xmlResults == null)
+			throw new NullPointerException("NARG");
+		
+		// Failure sequence
+		Set<String> result = new TreeSet<>();
+		for (Map.Entry<String, Path> test : __xmlResults.entrySet())
+			try
+			{
+				// Check all lines of the file and see if one is found
+				for (String line : Files.readAllLines(test.getValue()))
+				{
+					// Locate the special key
+					int keyDx = line.indexOf(
+						MultiVMTestTaskAction._SPECIAL_KEY);
+					if (keyDx < 0)
+						continue;
+					
+					// Find the first colon key
+					int leftCol = line.indexOf(':', keyDx);
+					if (leftCol < 0)
+						continue;
+					
+					// Then the second
+					int rightCol = line.indexOf(':', leftCol + 1);
+					if (rightCol < 0)
+						continue;
+					
+					// Locate the test result
+					VMTestResult testResult = VMTestResult.valueOf(
+						line.substring(leftCol + 1, rightCol));
+					
+					// Consider this a failure
+					if (testResult == VMTestResult.FAIL)
+						result.add(test.getKey());
+					
+					// Stop processing as we found it
+					break;
+				}
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException("Could not read test XML.", e);
+			}
+		
+		return result;
 	}
 }
