@@ -36,6 +36,7 @@ ratufacoat/.idea/workspace.xml
 *.ico
 *.png
 *.sqc
+
 # CMake
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
