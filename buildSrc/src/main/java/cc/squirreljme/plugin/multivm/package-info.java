@@ -7,4 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.tasks.test;
+/**
+ * Utilities and tasks for working with multiple virtual machines and backing
+ * systems.
+ *
+ * @since 2020/08/06
+ */
+
+package cc.squirreljme.plugin.multivm;

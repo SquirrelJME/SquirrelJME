@@ -7,50 +7,47 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.tasks;
+package cc.squirreljme.plugin.util;
 
-import cc.squirreljme.plugin.util.FileLocation;
 import java.nio.file.Path;
+import java.util.concurrent.Callable;
+import org.gradle.api.Task;
 
 /**
- * The output for a task.
+ * This takes the output of a task and provides a {@link Callable} so that
+ * it produces that single file.
  *
- * @since 2020/02/28
+ * @since 2020/09/06
  */
-final class __Output__
+public class SingleTaskOutputFile
+	implements Callable<Path>
 {
-	/** The input file. */
-	public final FileLocation input;
-	
-	/** The output path. */
-	public final Path output;
+	/** The task to get. */
+	protected final Task task;
 	
 	/**
-	 * Initializes the output path.
-	 *
-	 * @param __input The input path.
-	 * @param __output The output path.
+	 * Initializes the utility.
+	 * 
+	 * @param __task The task to extract from.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/28
+	 * @since 2020/09/06
 	 */
-	public __Output__(FileLocation __input, Path __output)
+	public SingleTaskOutputFile(Task __task)
 		throws NullPointerException
 	{
-		if (__input == null || __output == null)
-			throw new NullPointerException();
+		if (__task == null)
+			throw new NullPointerException("NARG");
 		
-		this.input = __input;
-		this.output = __output;
+		this.task = __task;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/02/28
+	 * @since 2020/09/06
 	 */
 	@Override
-	public final String toString()
+	public Path call()
 	{
-		return String.format("{input=%s, output=%s}",
-			this.input, this.output);
+		return this.task.getOutputs().getFiles().getSingleFile().toPath();
 	}
 }

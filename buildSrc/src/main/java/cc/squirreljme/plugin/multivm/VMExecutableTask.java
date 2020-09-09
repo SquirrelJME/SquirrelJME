@@ -7,13 +7,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.tasks.test;
+package cc.squirreljme.plugin.multivm;
+
+import org.gradle.api.Task;
 
 /**
- * Emulated test ID.
+ * Executable multi-vm task.
  *
- * @since 2020/03/06
+ * @since 2020/08/15
  */
-public final class EmulatedTestId
+public interface VMExecutableTask
+	extends Task
 {
+	/**
+	 * Returns the source set that is used.
+	 * 
+	 * @return The source set for the task.
+	 * @since 2020/08/21
+	 */
+	String getSourceSet();
 }

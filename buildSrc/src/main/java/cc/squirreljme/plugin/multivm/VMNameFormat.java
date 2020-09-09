@@ -7,24 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.tasks.test;
+package cc.squirreljme.plugin.multivm;
 
 /**
- * Constants used to define what happens when an exit value is given.
+ * The format of the virtual machine name.
  *
- * @since 2020/03/07
+ * @since 2020/08/06
  */
-public interface ExitValueConstants
+public enum VMNameFormat
 {
-	/** Test passes. */
-	byte SUCCESS =
-		0;
+	/** lowercase. */
+	LOWERCASE,
 	
-	/** Test fails. */
-	byte FAILURE =
-		1;
+	/** camelCase. */
+	CAMEL_CASE,
 	
-	/** Test skipped. */
-	byte SKIPPED =
-		2;
+	/** ProperNoun. */
+	PROPER_NOUN,
+	
+	/* End. */
+	;
 }
