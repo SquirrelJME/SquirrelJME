@@ -21,7 +21,7 @@ public class CheckRomShouldBuild
 	implements Spec<Task>
 {
 	/** The virtual machine specifier. */
-	protected final VirtualMachineSpecifier vmType;
+	protected final VMSpecifier vmType;
 	
 	/**
 	 * Checks if a ROM should be built.
@@ -30,7 +30,7 @@ public class CheckRomShouldBuild
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	public CheckRomShouldBuild(VirtualMachineSpecifier __vmType)
+	public CheckRomShouldBuild(VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__vmType == null)

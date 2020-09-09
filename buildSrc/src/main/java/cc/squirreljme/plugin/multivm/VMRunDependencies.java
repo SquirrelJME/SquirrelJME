@@ -12,22 +12,22 @@ package cc.squirreljme.plugin.multivm;
 import java.util.concurrent.Callable;
 
 /**
- * This is the set of dependencies for {@link MultiVMRunTask} which takes all
+ * This is the set of dependencies for {@link VMRunTask} which takes all
  * of the dependencies directly needed in order to run the program.
  *
  * @since 2020/08/15
  */
 public final class VMRunDependencies
-	implements Callable<Iterable<MultiVMLibraryTask>>
+	implements Callable<Iterable<VMLibraryTask>>
 {
 	/** The task executing under. */
-	protected final MultiVMExecutableTask task;
+	protected final VMExecutableTask task;
 	
 	/** The source set working under. */
 	protected final String sourceSet;
 	
 	/** The virtual machine type. */
-	protected final VirtualMachineSpecifier vmType;
+	protected final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the provider.
@@ -38,8 +38,8 @@ public final class VMRunDependencies
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public VMRunDependencies(MultiVMExecutableTask __task, String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+	public VMRunDependencies(VMExecutableTask __task, String __sourceSet,
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__task == null || __sourceSet == null || __vmType == null)
@@ -55,12 +55,12 @@ public final class VMRunDependencies
 	 * @since 2020/08/15
 	 */
 	@Override
-	public final Iterable<MultiVMLibraryTask> call()
+	public final Iterable<VMLibraryTask> call()
 	{
-		MultiVMExecutableTask task = this.task;
-		return MultiVMHelpers.<MultiVMLibraryTask>resolveProjectTasks(
-			MultiVMLibraryTask.class, task.getProject(),
-			MultiVMHelpers.runClassTasks(this.task.getProject(),
+		VMExecutableTask task = this.task;
+		return VMHelpers.<VMLibraryTask>resolveProjectTasks(
+			VMLibraryTask.class, task.getProject(),
+			VMHelpers.runClassTasks(this.task.getProject(),
 				this.sourceSet, this.vmType));
 	}
 }

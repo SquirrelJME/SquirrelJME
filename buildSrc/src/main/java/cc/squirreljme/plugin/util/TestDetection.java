@@ -9,7 +9,7 @@
 
 package cc.squirreljme.plugin.util;
 
-import cc.squirreljme.plugin.multivm.MultiVMHelpers;
+import cc.squirreljme.plugin.multivm.VMHelpers;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -87,8 +87,8 @@ public final class TestDetection
 	 * @param __files The files to filtered.
 	 * @return The filtered files.
 	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link MultiVMHelpers#availableTests(Project, String)}
-	 * and do not use {@link MultiVMHelpers#runningTests(Project, String)} as
+	 * @deprecated Use {@link VMHelpers#availableTests(Project, String)}
+	 * and do not use {@link VMHelpers#runningTests(Project, String)} as
 	 * that only concerns tests for running.
 	 * @since 2020/08/29
 	 */

@@ -25,13 +25,13 @@ public class VMTestOutputs
 	implements Callable<Iterable<Path>>
 {
 	/** The task executing under. */
-	protected final MultiVMExecutableTask task;
+	protected final VMExecutableTask task;
 	
 	/** The source set working under. */
 	protected final String sourceSet;
 	
 	/** The virtual machine type. */
-	protected final VirtualMachineSpecifier vmType;
+	protected final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the handler.
@@ -42,8 +42,8 @@ public class VMTestOutputs
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/06
 	 */
-	public VMTestOutputs(MultiVMExecutableTask __task, String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+	public VMTestOutputs(VMExecutableTask __task, String __sourceSet,
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__task == null || __sourceSet == null || __vmType == null)
@@ -67,14 +67,14 @@ public class VMTestOutputs
 		String sourceSet = this.sourceSet;
 		
 		// Determine the root test result directory
-		Path resultRoot = MultiVMHelpers.testResultDir(
+		Path resultRoot = VMHelpers.testResultDir(
 			project, this.vmType, sourceSet).get();
 		
 		// The output of the task will be the test results
 		for (String testName :
-			MultiVMHelpers.runningTests(project, sourceSet).keySet())
+			VMHelpers.runningTests(project, sourceSet).keySet())
 			result.add(resultRoot.resolve(
-				MultiVMHelpers.testResultXmlName(testName)));
+				VMHelpers.testResultXmlName(testName)));
 		
 		return result;
 	}

@@ -9,36 +9,37 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 /**
- * Dependencies for building the ROM, will depend on every library that exists.
+ * Returns the inputs for the ROM.
  *
  * @since 2020/08/23
  */
-public class MultiVMRomDependencies
-	implements Callable<Iterable<MultiVMLibraryTask>>
+public class VMRomInputs
+	implements Callable<Iterable<Path>>
 {
-	/** The task to execute for. */
-	protected final MultiVMRomTask task;
-	
 	/** The source set used. */
 	protected final String sourceSet;
 	
-	/** The virtual machine creating for. */
-	protected final VirtualMachineSpecifier vmType;
+	/** The task to generate for. */
+	protected final VMRomTask task;
+	
+	/** The type of virtual machine used. */
+	protected final VMSpecifier vmType;
 	
 	/**
-	 * Initializes the ROM dependency task.
+	 * Initializes the handler.
 	 * 
-	 * @param __task The task to use.
-	 * @param __sourceSet The source set.
+	 * @param __task The task to create for.
+	 * @param __sourceSet The source set to use.
 	 * @param __vmType The virtual machine type.
-	 * @throws NullPointerException on null arguments.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	public MultiVMRomDependencies(MultiVMRomTask __task, String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+	public VMRomInputs(VMRomTask __task,
+		String __sourceSet, VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__task == null || __sourceSet == null || __vmType == null)
@@ -54,8 +55,8 @@ public class MultiVMRomDependencies
 	 * @since 2020/08/23
 	 */
 	@Override
-	public Iterable<MultiVMLibraryTask> call()
+	public Iterable<Path> call()
 	{
-		throw new Error("TODO -- MultiVMRomDependencies");
+		throw new Error("TODO -- MultiVMRomInputs");
 	}
 }

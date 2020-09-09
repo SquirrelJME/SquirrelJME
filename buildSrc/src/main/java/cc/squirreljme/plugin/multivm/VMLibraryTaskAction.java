@@ -24,14 +24,14 @@ import org.gradle.api.Task;
  *
  * @since 2020/08/07
  */
-public class MultiVMLibraryTaskAction
+public class VMLibraryTaskAction
 	implements Action<Task>
 {
 	/** The source set used. */
 	public final String sourceSet;
 	
 	/** The virtual machine type. */
-	public final VirtualMachineSpecifier vmType;
+	public final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the task action.
@@ -41,8 +41,8 @@ public class MultiVMLibraryTaskAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public MultiVMLibraryTaskAction(String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+	public VMLibraryTaskAction(String __sourceSet,
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__sourceSet == null || __vmType == null)

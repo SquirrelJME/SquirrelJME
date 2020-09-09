@@ -25,14 +25,14 @@ import org.gradle.process.ExecResult;
  *
  * @since 2020/08/07
  */
-public class MultiVMRunTaskAction
+public class VMRunTaskAction
 	implements Action<Task>
 {
 	/** The source set used. */
 	protected final String sourceSet;
 	
 	/** The virtual machine type. */
-	protected final VirtualMachineSpecifier vmType;
+	protected final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the task action.
@@ -42,8 +42,8 @@ public class MultiVMRunTaskAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/16
 	 */
-	public MultiVMRunTaskAction(String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+	public VMRunTaskAction(String __sourceSet,
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__sourceSet == null || __vmType == null)
@@ -66,16 +66,16 @@ public class MultiVMRunTaskAction
 			
 		// Gather the class path to use for target execution, this is all the
 		// SquirrelJME modules this depends on
-		VirtualMachineSpecifier vmType = this.vmType;
-		Path[] classPath = MultiVMHelpers.runClassPath(
-			(MultiVMExecutableTask)__task, this.sourceSet, vmType);
+		VMSpecifier vmType = this.vmType;
+		Path[] classPath = VMHelpers.runClassPath(
+			(VMExecutableTask)__task, this.sourceSet, vmType);
 		
 		// Debug
 		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
 		
 		// Determine the main entry class or MIDlet to use
 		JavaMEMidlet midlet = JavaMEMidlet.find(config.midlets);
-		String mainClass = MultiVMHelpers.mainClass(config, midlet);
+		String mainClass = VMHelpers.mainClass(config, midlet);
 		
 		// Debug
 		__task.getLogger().debug("MIDlet: {}", midlet);

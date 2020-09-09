@@ -22,14 +22,14 @@ import org.gradle.jvm.tasks.Jar;
  *
  * @since 2020/08/07
  */
-public class MultiVMLibraryTask
+public class VMLibraryTask
 	extends DefaultTask
 {
 	/** The source set used. */
 	public final String sourceSet;
 	
 	/** The virtual machine type. */
-	public final VirtualMachineSpecifier vmType;
+	public final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the library creation task.
@@ -40,15 +40,15 @@ public class MultiVMLibraryTask
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public MultiVMLibraryTask(String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+	public VMLibraryTask(String __sourceSet,
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 			
 		Project project = this.getProject();
-		Jar baseJar = MultiVMHelpers.jarTask(project, __sourceSet);
+		Jar baseJar = VMHelpers.jarTask(project, __sourceSet);
 		
 		// These are used at the build stage
 		this.sourceSet = __sourceSet;
@@ -68,7 +68,7 @@ public class MultiVMLibraryTask
 		this.getOutputs().file(this.outputPath());
 		
 		// Performs the action of the task
-		this.doLast(new MultiVMLibraryTaskAction(__sourceSet, __vmType));
+		this.doLast(new VMLibraryTaskAction(__sourceSet, __vmType));
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class MultiVMLibraryTask
 	 */
 	public final Provider<Path> outputPath()
 	{
-		return this.getProject().provider(() -> MultiVMHelpers.cacheDir(
+		return this.getProject().provider(() -> VMHelpers.cacheDir(
 			this.getProject(), this.vmType, this.sourceSet).get()
 			.resolve(this.vmType.outputLibraryName(this.getProject(),
 			this.sourceSet)));

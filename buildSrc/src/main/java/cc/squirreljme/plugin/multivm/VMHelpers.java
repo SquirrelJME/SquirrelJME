@@ -45,7 +45,7 @@ import org.gradle.jvm.tasks.Jar;
  *
  * @since 2020/08/07
  */
-public final class MultiVMHelpers
+public final class VMHelpers
 {
 	/** The class used for single test runs. */
 	public static final String SINGLE_TEST_RUNNER =
@@ -68,7 +68,7 @@ public final class MultiVMHelpers
 	 * 
 	 * @since 2020/08/07
 	 */
-	private MultiVMHelpers()
+	private VMHelpers()
 	{
 	}
 	
@@ -101,15 +101,15 @@ public final class MultiVMHelpers
 			// not include the mime extension as that is removed at JAR build
 			// time
 			Path normalized;
-			if ("__mime".equals(MultiVMHelpers.getExtension(file.relative)))
-				normalized = MultiVMHelpers.stripExtension(file.relative);
+			if ("__mime".equals(VMHelpers.getExtension(file.relative)))
+				normalized = VMHelpers.stripExtension(file.relative);
 			else
 				normalized = file.relative;
 			
 			// Determine the name of the class, used to filter if this is
 			// a valid test or not
-			String testName = MultiVMHelpers.pathToString('.',
-					MultiVMHelpers.stripExtension(normalized));
+			String testName = VMHelpers.pathToString('.',
+					VMHelpers.stripExtension(normalized));
 			
 			// Ignore if this does not match the expected name form
 			if (!TestDetection.isTest(testName))
@@ -119,7 +119,7 @@ public final class MultiVMHelpers
 			names.add(testName);
 			
 			// Determine how this file is to be handled
-			switch (MultiVMHelpers.getExtension(normalized))
+			switch (VMHelpers.getExtension(normalized))
 			{
 					// Executable Classes
 				case "class":
@@ -163,7 +163,7 @@ public final class MultiVMHelpers
 	 * @since 2020/08/15
 	 */
 	public static Provider<Path> cacheDir(Project __project,
-		VirtualMachineSpecifier __vmType, String __sourceSet)
+		VMSpecifier __vmType, String __sourceSet)
 		throws NullPointerException
 	{
 		if (__project == null || __vmType == null)
@@ -188,7 +188,7 @@ public final class MultiVMHelpers
 		if (__paths == null)
 			throw new NullPointerException("NARG");
 		
-		return MultiVMHelpers.classpathAsString(Arrays.asList(__paths));
+		return VMHelpers.classpathAsString(Arrays.asList(__paths));
 	}
 	
 	/**
@@ -232,7 +232,7 @@ public final class MultiVMHelpers
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		byte[] buf = new byte[MultiVMHelpers.COPY_BUFFER];
+		byte[] buf = new byte[VMHelpers.COPY_BUFFER];
 		for (;;)
 		{
 			int rc = __in.read(buf);
@@ -365,13 +365,13 @@ public final class MultiVMHelpers
 	 * @since 2020/09/06
 	 */
 	public static Provider<Path> profilerDir(Project __project,
-		VirtualMachineSpecifier __vmType, String __sourceSet)
+		VMSpecifier __vmType, String __sourceSet)
 		throws NullPointerException
 	{
 		if (__project == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
-		return __project.provider(() -> MultiVMHelpers.cacheDir(
+		return __project.provider(() -> VMHelpers.cacheDir(
 			__project, __vmType, __sourceSet).get().resolve("nps"));
 	}
 	
@@ -461,24 +461,24 @@ public final class MultiVMHelpers
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/20
 	 */
-	public static Path[] runClassPath(MultiVMExecutableTask __task,
-		String __sourceSet, VirtualMachineSpecifier __vmType)
+	public static Path[] runClassPath(VMExecutableTask __task,
+		String __sourceSet, VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__task == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
 		// Get tasks that are used for dependency running
-		Iterable<MultiVMLibraryTask> tasks =
-			MultiVMHelpers.<MultiVMLibraryTask>resolveProjectTasks(
-				MultiVMLibraryTask.class, __task.getProject(), MultiVMHelpers
+		Iterable<VMLibraryTask> tasks =
+			VMHelpers.<VMLibraryTask>resolveProjectTasks(
+				VMLibraryTask.class, __task.getProject(), VMHelpers
 					.runClassTasks(__task.getProject(), __sourceSet,
 						__vmType));
 		
 		// Get the outputs of these, as they will be used. Ensure the order is
 		// kept otherwise execution may be non-deterministic and could break.
 		Set<Path> classPath = new LinkedHashSet<>();
-		for (MultiVMLibraryTask vmLib : tasks)
+		for (VMLibraryTask vmLib : tasks)
 			classPath.add(vmLib.getOutputs().getFiles().getSingleFile()
 				.toPath());
 		
@@ -498,10 +498,10 @@ public final class MultiVMHelpers
 	 */
 	public static Collection<ProjectAndTaskName> runClassTasks(
 		Project __project, String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
-		return MultiVMHelpers.runClassTasks(__project, __sourceSet, __vmType,
+		return VMHelpers.runClassTasks(__project, __sourceSet, __vmType,
 			null);
 	}
 	
@@ -519,7 +519,7 @@ public final class MultiVMHelpers
 	 */
 	public static Collection<ProjectAndTaskName> runClassTasks(
 		Project __project, String __sourceSet,
-		VirtualMachineSpecifier __vmType, Set<ProjectAndTaskName> __did)
+		VMSpecifier __vmType, Set<ProjectAndTaskName> __did)
 		throws NullPointerException
 	{
 		if (__project == null || __sourceSet == null || __vmType == null)
@@ -543,18 +543,18 @@ public final class MultiVMHelpers
 		if (isTesting)
 		{
 			// Depend on TAC
-			result.addAll(MultiVMHelpers.runClassTasks(
+			result.addAll(VMHelpers.runClassTasks(
 				__project.findProject(":modules:tac"),
 				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
 			
 			// Depend on our main project as we will be testing it
-			result.addAll(MultiVMHelpers.runClassTasks(__project,
+			result.addAll(VMHelpers.runClassTasks(__project,
 				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
 		}
 		
 		// Go through the configurations to yank in the dependencies as needed
-		for (String config : (isTesting ? MultiVMHelpers._TEST_CONFIGS :
-			MultiVMHelpers._MAIN_CONFIGS))
+		for (String config : (isTesting ? VMHelpers._TEST_CONFIGS :
+			VMHelpers._MAIN_CONFIGS))
 		{
 			// The configuration may be optional
 			Configuration foundConfig = __project.getConfigurations()
@@ -579,7 +579,7 @@ public final class MultiVMHelpers
 					continue;
 				
 				// Otherwise, handle the dependencies
-				result.addAll(MultiVMHelpers.runClassTasks(sub, 
+				result.addAll(VMHelpers.runClassTasks(sub, 
 					SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
 			}
 		}
@@ -610,11 +610,11 @@ public final class MultiVMHelpers
 		throws NullPointerException
 	{
 		Map<String, CandidateTestFiles> available =
-			MultiVMHelpers.availableTests(__project, __sourceSet);
+			VMHelpers.availableTests(__project, __sourceSet);
 		
 		// If specifying a single test to run only specify that
 		String singleTest = System.getProperty(
-			MultiVMTestTask.SINGLE_TEST_PROPERTY);
+			VMTestTask.SINGLE_TEST_PROPERTY);
 		if (singleTest != null)
 		{
 			// If the test has no matching file then it is probably something
@@ -668,13 +668,13 @@ public final class MultiVMHelpers
 	 * @since 2020/09/06
 	 */
 	public static Provider<Path> testResultDir(Project __project,
-		VirtualMachineSpecifier __vmType, String __sourceSet)
+		VMSpecifier __vmType, String __sourceSet)
 		throws NullPointerException
 	{
 		if (__project == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
-		return __project.provider(() -> MultiVMHelpers.cacheDir(
+		return __project.provider(() -> VMHelpers.cacheDir(
 			__project, __vmType, __sourceSet).get().resolve("junit"));
 	}
 	

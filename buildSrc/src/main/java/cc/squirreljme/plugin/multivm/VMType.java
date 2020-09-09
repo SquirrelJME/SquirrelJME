@@ -30,8 +30,8 @@ import org.gradle.process.JavaExecSpec;
  *
  * @since 2020/08/06
  */
-public enum VirtualMachineType
-	implements VirtualMachineSpecifier
+public enum VMType
+	implements VMSpecifier
 {
 	/** Hosted virtual machine. */
 	HOSTED("Hosted", "jar",
@@ -49,7 +49,7 @@ public enum VirtualMachineType
 				throw new NullPointerException("NARG");
 			
 			// Is just pure copy of the JAR
-			MultiVMHelpers.copy(__in, __out);
+			VMHelpers.copy(__in, __out);
 		}
 		
 		/**
@@ -68,7 +68,7 @@ public enum VirtualMachineType
 			
 			// Start with the base emulator class path
 			List<Object> classPath = new ArrayList<>();
-			classPath.add(MultiVMHelpers.projectRuntimeClasspath(
+			classPath.add(VMHelpers.projectRuntimeClasspath(
 				__task.getProject().project(this.emulatorProject)));
 			
 			// Add all of the emulator outputs
@@ -114,7 +114,7 @@ public enum VirtualMachineType
 				throw new NullPointerException("NARG");
 			
 			// Is just pure copy of the JAR
-			MultiVMHelpers.copy(__in, __out);
+			VMHelpers.copy(__in, __out);
 		}
 		
 		/**
@@ -191,7 +191,7 @@ public enum VirtualMachineType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/06
 	 */
-	VirtualMachineType(String __properName, String __extension,
+	VMType(String __properName, String __extension,
 		String __emulatorProject)
 		throws NullPointerException
 	{
@@ -246,7 +246,7 @@ public enum VirtualMachineType
 		
 		// Determine the class-path for the emulator
 		List<Path> vmClassPath = new ArrayList<>();
-		for (File file : MultiVMHelpers.projectRuntimeClasspath(
+		for (File file : VMHelpers.projectRuntimeClasspath(
 			__task.getProject().project(this.emulatorProject)))
 			vmClassPath.add(file.toPath());
 		
@@ -266,15 +266,15 @@ public enum VirtualMachineType
 		
 		// Determine where profiler snapshots are to go, try to use the
 		// profiler directory for that
-		Path profilerDir = ((__task instanceof MultiVMExecutableTask) ?
-			MultiVMHelpers.profilerDir(__task.getProject(), this,
-			((MultiVMExecutableTask)__task).getSourceSet()).get() :
+		Path profilerDir = ((__task instanceof VMExecutableTask) ?
+			VMHelpers.profilerDir(__task.getProject(), this,
+			((VMExecutableTask)__task).getSourceSet()).get() :
 			__task.getProject().getBuildDir().toPath());
 		
 		// Use the main class name unless this is a test, so that they are
 		// named better
 		String profilerClass = (__mainClass.equals(
-			MultiVMHelpers.SINGLE_TEST_RUNNER) && __args.length > 0 ?
+			VMHelpers.SINGLE_TEST_RUNNER) && __args.length > 0 ?
 			__args[0] : __mainClass);
 		vmArgs.add("-Xsnapshot:" + profilerDir.resolve(
 			__task.getProject().getName() + "_" +
@@ -282,7 +282,7 @@ public enum VirtualMachineType
 		
 		// Class path for the target program to launch
 		vmArgs.add("-classpath");
-		vmArgs.add(MultiVMHelpers.classpathAsString(__classPath));
+		vmArgs.add(VMHelpers.classpathAsString(__classPath));
 		
 		// Any system properties
 		for (Map.Entry<String, String> sysProp : __sysProps.entrySet())
@@ -296,7 +296,7 @@ public enum VirtualMachineType
 		
 		// Launching is effectively the same as the hosted run but with the
 		// VM here instead
-		VirtualMachineType.HOSTED.spawnJvmArguments(__task, __execSpec,
+		VMType.HOSTED.spawnJvmArguments(__task, __execSpec,
 			"cc.squirreljme.emulator.vm.VMFactory", __sysProps,
 			vmClassPath.<Path>toArray(new Path[vmClassPath.size()]),
 			vmArgs.<String>toArray(new String[vmArgs.size()]));
@@ -343,6 +343,6 @@ public enum VirtualMachineType
 	@Override
 	public final boolean hasRom()
 	{
-		return this == VirtualMachineType.SUMMERCOAT;
+		return this == VMType.SUMMERCOAT;
 	}
 }

@@ -20,9 +20,9 @@ import org.gradle.workers.WorkerExecutor;
  *
  * @since 2020/08/07
  */
-public class MultiVMTestTask
+public class VMTestTask
 	extends DefaultTask
-	implements MultiVMExecutableTask
+	implements VMExecutableTask
 {
 	/** Property for running single test. */
 	public static final String SINGLE_TEST_PROPERTY =
@@ -32,7 +32,7 @@ public class MultiVMTestTask
 	protected final String sourceSet;
 	
 	/** The virtual machine type. */
-	protected final VirtualMachineSpecifier vmType;
+	protected final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the task.
@@ -47,9 +47,9 @@ public class MultiVMTestTask
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public MultiVMTestTask(WorkerExecutor __executor,
+	public VMTestTask(WorkerExecutor __executor,
 		@Deprecated DslExecActionFactory __execFactory, String __sourceSet,
-		VirtualMachineSpecifier __vmType, MultiVMLibraryTask __libTask)
+		VMSpecifier __vmType, VMLibraryTask __libTask)
 		throws NullPointerException
 	{
 		if (__executor == null || __execFactory == null ||
@@ -92,7 +92,7 @@ public class MultiVMTestTask
 		// standard execution spec. Since this may change or break in the
 		// future the rest of it is hidden from the class which does the
 		// actual task action
-		this.doLast(new MultiVMTestTaskAction(__executor,
+		this.doLast(new VMTestTaskAction(__executor,
 			() -> __execFactory.newDecoratedJavaExecAction(), __sourceSet,
 			__vmType));
 	}

@@ -17,14 +17,14 @@ import org.gradle.api.DefaultTask;
  *
  * @since 2020/08/23
  */
-public class MultiVMRomTask
+public class VMRomTask
 	extends DefaultTask
 {
 	/** The source set used. */
 	public final String sourceSet;
 	
 	/** The virtual machine type. */
-	public final VirtualMachineSpecifier vmType;
+	public final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the library creation task.
@@ -35,8 +35,8 @@ public class MultiVMRomTask
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public MultiVMRomTask(String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+	public VMRomTask(String __sourceSet,
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__sourceSet == null || __vmType == null)
@@ -50,21 +50,21 @@ public class MultiVMRomTask
 		this.setDescription("Builds the combined ROM.");
 		
 		// The JAR we are compiling has to be built first
-		this.dependsOn(new MultiVMRomDependencies(
+		this.dependsOn(new VMRomDependencies(
 			this, __sourceSet, __vmType));
 		
 		// Only execute this task in certain cases
 		this.onlyIf(new CheckRomShouldBuild(__vmType));
 		
 		// The inputs of this tasks are all the ROM files to merge
-		this.getInputs().file(new MultiVMRomInputs(
+		this.getInputs().file(new VMRomInputs(
 			this, __sourceSet, __vmType));
 		
 		// And the output is a primary single file for the ROM
-		this.getOutputs().file(new MultiVMRomOutputs(
+		this.getOutputs().file(new VMRomOutputs(
 			this, __sourceSet, __vmType));
 		
 		// Action for performing the actual linkage of the ROM
-		this.doLast(new MultiVMRomTaskAction(__sourceSet, __vmType));
+		this.doLast(new VMRomTaskAction(__sourceSet, __vmType));
 	}
 }

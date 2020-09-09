@@ -9,13 +9,9 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import java.util.Calendar;
-import java.util.List;
-import org.gradle.api.Task;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 import org.gradle.workers.WorkParameters;
 
 /**
@@ -24,7 +20,7 @@ import org.gradle.workers.WorkParameters;
  *
  * @since 2020/09/06
  */
-public interface MultiVMTestParameters
+public interface VMTestParameters
 	extends WorkParameters
 {
 	/**

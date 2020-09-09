@@ -28,7 +28,7 @@ import org.gradle.process.JavaExecSpec;
  * @since 2020/08/06
  */
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-public interface VirtualMachineSpecifier
+public interface VMSpecifier
 {
 	/**
 	 * Is there a ROM task for the VM?

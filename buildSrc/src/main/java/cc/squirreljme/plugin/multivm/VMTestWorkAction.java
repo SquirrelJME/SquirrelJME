@@ -27,7 +27,7 @@ import org.gradle.workers.WorkAction;
  */
 @SuppressWarnings("UnstableApiUsage")
 public abstract class VMTestWorkAction
-	implements WorkAction<MultiVMTestParameters>
+	implements WorkAction<VMTestParameters>
 {
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
@@ -41,7 +41,7 @@ public abstract class VMTestWorkAction
 	@Override
 	public void execute()
 	{
-		MultiVMTestParameters parameters = this.getParameters();
+		VMTestParameters parameters = this.getParameters();
 		
 		// Threads for processing stream data
 		Thread stdOutThread = null;
@@ -207,7 +207,7 @@ public abstract class VMTestWorkAction
 		// is a pass, skip, or fail as the test result needs to be read to
 		// determine if the task is okay 
 		__out.printf("<property name=\"squirreljme.test.result\" " +
-			"value=\"%s:%s:\" />", MultiVMTestTaskAction._SPECIAL_KEY,
+			"value=\"%s:%s:\" />", VMTestTaskAction._SPECIAL_KEY,
 			__result.name());
 		__out.println();
 		

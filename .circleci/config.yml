@@ -274,13 +274,13 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/springcoat/junit-reports/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-springcoat/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
             mkdir -p ~/test-results/nps/
-            find . -type f -regex '.*/springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+            find . -type f -regex '.*/vm-test-springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -306,13 +306,13 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/summercoat/junit-reports/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-summercoat/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
             mkdir -p ~/test-results/nps/
-            find . -type f -regex '.*/summercoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+            find . -type f -regex '.*/vm-test-summercoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -447,7 +447,6 @@ jobs:
             - '*/build/*'
             - '*/*/build/*'
 
-
 workflows:
   version: 2
   tests:
@@ -459,44 +458,44 @@ workflows:
       - test_springcoat:
           requires:
             - construct_testJars
-      - test_summercoat:
-          requires:
-            - construct_libTestSummerCoat
+#      - test_summercoat:
+#          requires:
+#            - construct_libTestSummerCoat
 
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:
           requires:
             - build_linux
-      - construct_libSummerCoat:
-          requires:
-            - build_linux
-      - construct_libTestSummerCoat:
-          requires:
-            - construct_libSummerCoat
-            - construct_testJars
-      - construct_romSummerCoat:
-          requires:
-            - construct_libSummerCoat
-      - construct_romTestSummerCoat:
-          requires:
-            - construct_libTestSummerCoat
+#      - construct_libSummerCoat:
+#          requires:
+#            - build_linux
+#      - construct_libTestSummerCoat:
+#          requires:
+#            - construct_libSummerCoat
+#            - construct_testJars
+#      - construct_romSummerCoat:
+#          requires:
+#            - construct_libSummerCoat
+#      - construct_romTestSummerCoat:
+#          requires:
+#            - construct_libTestSummerCoat
 
       ############################## RATUFACOAT ##############################
-      - ratufacoat_build_windows:
-          requires:
-            - build_windows
-            - construct_romTestSummerCoat
-      - ratufacoat_build_windows_libretro:
-          requires:
-            - ratufacoat_build_windows
-      - ratufacoat_build_linux:
-          requires:
-            - build_linux
-            - construct_romTestSummerCoat
-      - ratufacoat_build_macosx:
-          requires:
-            - build_macosx
-            - construct_romTestSummerCoat
+#      - ratufacoat_build_windows:
+#          requires:
+#            - build_windows
+#            - construct_romTestSummerCoat
+#      - ratufacoat_build_windows_libretro:
+#          requires:
+#            - ratufacoat_build_windows
+#      - ratufacoat_build_linux:
+#          requires:
+#            - build_linux
+#            - construct_romTestSummerCoat
+#      - ratufacoat_build_macosx:
+#          requires:
+#            - build_macosx
+#            - construct_romTestSummerCoat
 
   #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:

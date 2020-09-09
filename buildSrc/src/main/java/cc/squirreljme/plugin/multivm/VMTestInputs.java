@@ -24,7 +24,7 @@ public class VMTestInputs
 	implements Callable<Iterable<Path>>
 {
 	/** The task executing under. */
-	protected final MultiVMExecutableTask task;
+	protected final VMExecutableTask task;
 	
 	/** The source set working under. */
 	protected final String sourceSet;
@@ -37,7 +37,7 @@ public class VMTestInputs
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/06
 	 */
-	public VMTestInputs(MultiVMExecutableTask __task, String __sourceSet)
+	public VMTestInputs(VMExecutableTask __task, String __sourceSet)
 		throws NullPointerException
 	{
 		if (__task == null || __sourceSet == null)
@@ -57,7 +57,7 @@ public class VMTestInputs
 		Collection<Path> result = new LinkedHashSet<>();
 		
 		// The source and result of the test make up the input
-		for (CandidateTestFiles file : MultiVMHelpers.runningTests(
+		for (CandidateTestFiles file : VMHelpers.runningTests(
 			this.task.getProject(), this.sourceSet).values())
 		{
 			result.add(file.sourceCode.absolute);

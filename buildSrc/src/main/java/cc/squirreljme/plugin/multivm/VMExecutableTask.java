@@ -16,7 +16,7 @@ import org.gradle.api.Task;
  *
  * @since 2020/08/15
  */
-public interface MultiVMExecutableTask
+public interface VMExecutableTask
 	extends Task
 {
 	/**

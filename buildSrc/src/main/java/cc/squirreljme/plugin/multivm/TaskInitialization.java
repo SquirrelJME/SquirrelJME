@@ -67,7 +67,7 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 		
 		// Initialize for each VM
-		for (VirtualMachineType vmType : VirtualMachineType.values())
+		for (VMType vmType : VMType.values())
 			TaskInitialization.initialize(__project, __sourceSet, vmType);
 	}
 	
@@ -81,7 +81,7 @@ public final class TaskInitialization
 	 * @since 2020/08/07
 	 */
 	public static void initialize(Project __project, String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__project == null || __sourceSet == null || __vmType == null)
@@ -91,21 +91,21 @@ public final class TaskInitialization
 		TaskContainer tasks = __project.getTasks();
 		
 		// Library that needs to be constructed so execution happens properly
-		MultiVMLibraryTask libTask = tasks.create(
+		VMLibraryTask libTask = tasks.create(
 			TaskInitialization.task("lib", __sourceSet, __vmType),
-			MultiVMLibraryTask.class, __sourceSet, __vmType);
+			VMLibraryTask.class, __sourceSet, __vmType);
 		
 		// Running the target
 		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
 			tasks.create(
 				TaskInitialization.task("run", __sourceSet, __vmType),
-				MultiVMRunTask.class, __sourceSet, __vmType, libTask);
+				VMRunTask.class, __sourceSet, __vmType, libTask);
 		
 		// Testing the target
 		else if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
 			tasks.create(
 				TaskInitialization.task("test", __sourceSet, __vmType),
-				MultiVMTestTask.class, __sourceSet, __vmType, libTask);
+				VMTestTask.class, __sourceSet, __vmType, libTask);
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public final class TaskInitialization
 			
 		// Initialize or both main classes and such
 		for (String sourceSet : TaskInitialization._SOURCE_SETS)
-			for (VirtualMachineType vmType : VirtualMachineType.values())
+			for (VMType vmType : VMType.values())
 				TaskInitialization.romTasks(__project, sourceSet, vmType);
 	}
 	
@@ -137,7 +137,7 @@ public final class TaskInitialization
 	 * @since 2020/08/23
 	 */
 	private static void romTasks(Project __project, String __sourceSet,
-		VirtualMachineType __vmType)
+		VMType __vmType)
 		throws NullPointerException
 	{
 		if (__project == null || __sourceSet == null || __vmType == null)
@@ -150,7 +150,7 @@ public final class TaskInitialization
 		if (__vmType.hasRom())
 			tasks.create(
 				TaskInitialization.task("rom", __sourceSet, __vmType),
-				MultiVMRomTask.class, __sourceSet, __vmType);
+				VMRomTask.class, __sourceSet, __vmType);
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public final class TaskInitialization
 	 * @since 2020/08/07
 	 */
 	public static String task(String __name, String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__name == null || __sourceSet == null || __vmType == null)

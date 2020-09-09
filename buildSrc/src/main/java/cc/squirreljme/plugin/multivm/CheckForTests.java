@@ -46,7 +46,7 @@ public class CheckForTests
 	@Override
 	public boolean isSatisfiedBy(Task __task)
 	{
-		return !MultiVMHelpers.runningTests(__task.getProject(),
+		return !VMHelpers.runningTests(__task.getProject(),
 			this.sourceSet).isEmpty();
 	}
 }

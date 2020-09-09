@@ -25,7 +25,7 @@ public final class VMEmulatorDependencies
 	protected final Task task;
 	
 	/** The virtual machine type. */
-	protected final VirtualMachineSpecifier vmType;
+	protected final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the dependencies.
@@ -35,8 +35,8 @@ public final class VMEmulatorDependencies
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/16
 	 */
-	public VMEmulatorDependencies(MultiVMExecutableTask __task,
-		VirtualMachineSpecifier __vmType)
+	public VMEmulatorDependencies(VMExecutableTask __task,
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__task == null || __vmType == null)

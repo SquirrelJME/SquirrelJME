@@ -36,7 +36,7 @@ import org.gradle.workers.WorkerExecutor;
  *
  * @since 2020/08/07
  */
-public class MultiVMTestTaskAction
+public class VMTestTaskAction
 	implements Action<Task>
 {
 	/** The special key for quick finding test results. */
@@ -54,7 +54,7 @@ public class MultiVMTestTaskAction
 	protected final String sourceSet;
 	
 	/** The virtual machine type. */
-	protected final VirtualMachineSpecifier vmType;
+	protected final VMSpecifier vmType;
 	
 	/** Factory for making specifications. */
 	protected final Supplier<JavaExecSpec> specFactory;
@@ -69,9 +69,9 @@ public class MultiVMTestTaskAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	public MultiVMTestTaskAction(WorkerExecutor __executor,
+	public VMTestTaskAction(WorkerExecutor __executor,
 		Supplier<JavaExecSpec> __specFactory, String __sourceSet,
-		VirtualMachineSpecifier __vmType)
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
 		if (__sourceSet == null || __vmType == null)
@@ -92,7 +92,7 @@ public class MultiVMTestTaskAction
 	public void execute(Task __task)
 	{
 		// Debug
-		__task.getLogger().debug("Tests: {}", MultiVMHelpers.runningTests(
+		__task.getLogger().debug("Tests: {}", VMHelpers.runningTests(
 			__task.getProject(), this.sourceSet));
 		
 		// We want our tasks to run from within Gradle
@@ -105,8 +105,8 @@ public class MultiVMTestTaskAction
 		
 		// All results will go here
 		String sourceSet = this.sourceSet;
-		VirtualMachineSpecifier vmType = this.vmType;
-		Path resultDir = MultiVMHelpers.testResultDir(__task.getProject(),
+		VMSpecifier vmType = this.vmType;
+		Path resultDir = VMHelpers.testResultDir(__task.getProject(),
 			vmType, sourceSet).get();
 		
 		// All of the result files will be read afterwards to determine whether
@@ -117,10 +117,10 @@ public class MultiVMTestTaskAction
 		int cpuCount = Runtime.getRuntime().availableProcessors();
 		int maxParallel = (cpuCount <= 1 ? 1 : Math.min(
 			Math.max(2, Runtime.getRuntime().availableProcessors() / 2),
-			MultiVMTestTaskAction._MAX_PARALLEL_TESTS));
+			VMTestTaskAction._MAX_PARALLEL_TESTS));
 		
 		// Determine the number of tests
-		Set<String> testNames = MultiVMHelpers.runningTests(
+		Set<String> testNames = VMHelpers.runningTests(
 			__task.getProject(), sourceSet).keySet();
 		int numTests = testNames.size();
 		
@@ -133,14 +133,14 @@ public class MultiVMTestTaskAction
 			// Determine the arguments that are used to spawn the JVM
 			JavaExecSpec execSpec = specFactory.get();
 			vmType.spawnJvmArguments(__task, execSpec,
-				MultiVMHelpers.SINGLE_TEST_RUNNER,
+				VMHelpers.SINGLE_TEST_RUNNER,
 				Collections.<String, String>emptyMap(),
-				MultiVMHelpers.runClassPath((MultiVMExecutableTask)__task,
+				VMHelpers.runClassPath((VMExecutableTask)__task,
 					sourceSet, vmType), testName);
 			
 			// Where will the results be read from?
 			Path xmlResult = resultDir.resolve(
-				MultiVMHelpers.testResultXmlName(testName));
+				VMHelpers.testResultXmlName(testName));
 			xmlResults.put(testName, xmlResult);
 			
 			// Which test number is this?
@@ -218,7 +218,7 @@ public class MultiVMTestTaskAction
 				{
 					// Locate the special key
 					int keyDx = line.indexOf(
-						MultiVMTestTaskAction._SPECIAL_KEY);
+						VMTestTaskAction._SPECIAL_KEY);
 					if (keyDx < 0)
 						continue;
 					

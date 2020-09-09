@@ -17,15 +17,15 @@ import org.gradle.api.DefaultTask;
  *
  * @since 2020/08/07
  */
-public class MultiVMRunTask
+public class VMRunTask
 	extends DefaultTask
-	implements MultiVMExecutableTask
+	implements VMExecutableTask
 {
 	/** The source set used. */
 	protected final String sourceSet;
 	
 	/** The virtual machine type. */
-	protected final VirtualMachineSpecifier vmType;
+	protected final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the task.
@@ -37,8 +37,8 @@ public class MultiVMRunTask
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public MultiVMRunTask(String __sourceSet,
-		VirtualMachineSpecifier __vmType, MultiVMLibraryTask __libTask)
+	public VMRunTask(String __sourceSet,
+		VMSpecifier __vmType, VMLibraryTask __libTask)
 		throws NullPointerException
 	{
 		if (__sourceSet == null || __vmType == null || __libTask == null)
@@ -64,7 +64,7 @@ public class MultiVMRunTask
 		this.onlyIf(new CheckForEntryPoints());
 		
 		// Performs the action of the task
-		this.doLast(new MultiVMRunTaskAction(__sourceSet, __vmType));
+		this.doLast(new VMRunTaskAction(__sourceSet, __vmType));
 	}
 	
 	/**
