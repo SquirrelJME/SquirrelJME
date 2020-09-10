@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.util.FileLocation;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -168,12 +169,12 @@ public abstract class AbstractResourceTask
 	 * @return The task inputs.
 	 * @since 2020/02/28
 	 */
-	protected final Iterable<__Input__> taskInputs()
+	protected final Iterable<FileLocation> taskInputs()
 	{
 		Project project = this.getProject();
 		
 		// Discover all the input files
-		Collection<__Input__> result = new LinkedList<>();
+		Collection<FileLocation> result = new LinkedList<>();
 		for (DirectoryTree dir : this.getProject().getConvention().
 			getPlugin(JavaPluginConvention.class).getSourceSets().
 			getByName(this.sourceSet).getResources().getSrcDirTrees())
@@ -189,7 +190,7 @@ public abstract class AbstractResourceTask
 				if (!this.isMatchingExtension(path))
 					continue;
 				
-				result.add(new __Input__(path, baseDir.relativize(path)));
+				result.add(new FileLocation(path, baseDir.relativize(path)));
 			}
 		}
 		
@@ -205,7 +206,7 @@ public abstract class AbstractResourceTask
 	protected final FileCollection taskInputsAsFileCollection()
 	{
 		Collection<File> result = new LinkedList<>();
-		for (__Input__ file : this.taskInputs())
+		for (FileLocation file : this.taskInputs())
 			result.add(file.absolute.toFile());
 		
 		return this.getProject().files(result);
@@ -225,7 +226,7 @@ public abstract class AbstractResourceTask
 		
 		// Store output files accordingly
 		Collection<__Output__> result = new LinkedList<>();
-		for (__Input__ input : this.taskInputs())
+		for (FileLocation input : this.taskInputs())
 			result.add(new __Output__(input, outDir.resolve(
 				this.removeExtension(input.relative) + outputExtension)));
 		

@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.Poking;
+
 /**
  * Runs a single test.
  *
@@ -24,6 +26,10 @@ public class MainSingleRunner
 	 */
 	public static void main(String... __args)
 	{
+		// Poke any native VM stuff as it is needed during hosted testing or
+		// potential other areas
+		Poking.poke();
+		
 		// {@squirreljme.error BU0b Expected single argument specifying the
 		// test to run.}
 		if (__args == null || __args.length != 1 || __args[0] == null)
@@ -52,7 +58,7 @@ public class MainSingleRunner
 		{
 			// {@squirreljme.error BU0h Could not instantiate the class.
 			// (The class name)}
-			throw new IllegalArgumentException("BU0h " + __args[0]);
+			throw new IllegalArgumentException("BU0h " + __args[0], e);
 		}
 		
 		// Cast the class to the interface for running

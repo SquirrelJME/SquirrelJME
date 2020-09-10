@@ -10,19 +10,18 @@
 
 package cc.squirreljme.plugin;
 
+import cc.squirreljme.plugin.multivm.TaskInitialization;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
-import cc.squirreljme.plugin.tasks.RunEmulatedTask;
-import cc.squirreljme.plugin.tasks.RunNativeTask;
-import cc.squirreljme.plugin.tasks.TestInVMTask;
 import cc.squirreljme.plugin.tasks.TestsJarManifestTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.jvm.tasks.Jar;
 
 /**
  * Plugin for all SquirrelJME operations that are needed in Gradle in order
@@ -62,11 +61,9 @@ public class SquirrelJMEPlugin
 			.getByName("processTestResources");
 		
 		// JAR Tasks
-		Task jarTask = __project.getTasks().getByName("jar");
-		
-		// Run native application
-		__project.getTasks().create("runNative",
-			RunNativeTask.class, jarTask);
+		Jar jarTask = (Jar)__project.getTasks().getByName("jar");
+		jarTask.getArchiveFileName().set(
+			__project.getName() + ".jar");
 		
 		// Jasmin Assembly
 		__project.getTasks().create("assembleJasmin",
@@ -89,40 +86,23 @@ public class SquirrelJMEPlugin
 			GenerateTestsListTask.class, processTestResources);
 			
 		// Build test JAR
-		Task testJar = __project.getTasks()
+		Jar testJarTask = (Jar)__project.getTasks()
 			.create("testJar", TestsJarTask.class,
 			testClasses, processTestResources);
+		testJarTask.getArchiveFileName().set(
+			__project.getName() + "-tests.jar");
 			
 		// Add SquirrelJME properties to the manifest
 		__project.getTasks().create("additionalTestJarProperties",
-			TestsJarManifestTask.class,
-			testJar, processTestResources);
+			TestsJarManifestTask.class, testJarTask, processTestResources);
 		
 		// Add SquirrelJME properties to the manifest
 		__project.getTasks().create("additionalJarProperties",
 			AdditionalManifestPropertiesTask.class, jarTask, processResources);
 		
-		// List error codes used by projects
-		Task listErrorCodes = __project.getTasks()
-			.create("listErrorCodes");
-		listErrorCodes.setGroup("squirreljme");
-		listErrorCodes.setDescription("Lists error code prefixes.");
-		listErrorCodes.doLast((Task __task) ->
-			new ErrorCodeManager(__project.getRootProject())
-				.print(System.out));
-		
-		// Determine the next error code that is available
-		Task nextErrorCode = __project.getTasks()
-			.create("nextErrorCode");
-		nextErrorCode.setGroup("squirreljme");
-		nextErrorCode.setDescription("Returns the next free error code.");
-		nextErrorCode.doLast((Task __task) ->
-			System.out.println(new ErrorCodeManager(__project.getRootProject())
-				.next()));
-		
 		// List errors in single project
 		Task listErrors = __project.getTasks()
-			.create("listErrors");
+			.create("listErrorIds");
 		listErrors.setGroup("squirreljme");
 		listErrors.setDescription("Lists all of the source error codes.");
 		listErrors.doLast((Task __task) ->
@@ -130,26 +110,13 @@ public class SquirrelJMEPlugin
 		
 		// Returns the next available error in single project
 		Task nextError = __project.getTasks()
-			.create("nextError");
+			.create("nextErrorId");
 		nextError.setGroup("squirreljme");
 		nextError.setDescription("Returns the next free error code.");
 		nextError.doLast((Task __task) ->
 			System.out.println(new ErrorListManager(__project).next()));
-			
-		// Run emulated program
-		__project.getTasks().create("runSpringCoat",
-			RunEmulatedTask.class,
-			jarTask, "springcoat");
-		__project.getTasks().create("runSummerCoat",
-			RunEmulatedTask.class,
-			jarTask, "summercoat");
 		
-		// Run emulated tests
-		__project.getTasks().create("testSpringCoat",
-			TestInVMTask.class,
-			testJar, "springcoat");
-		__project.getTasks().create("testSummerCoat",
-			TestInVMTask.class,
-			testJar, "summercoat");
+		// Initialize Virtual Machine tasks for the project
+		TaskInitialization.initialize(__project);
 	}
 }

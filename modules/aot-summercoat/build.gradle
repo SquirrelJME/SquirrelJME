@@ -1,0 +1,24 @@
+import cc.squirreljme.plugin.swm.JavaMEConfiguration
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
+description = "The Ahead-of-Time SummerCoat compiler."
+
+squirreljme
+{
+	javaDocErrorCode = "AA"
+	swmType = JavaMEMidletType.API
+	swmName = "SummerCoat AOT"
+	swmVendor = "Stephanie Gawroriski"
+	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
+	tags += "aot-compiler"
+	tags += "compiler:summercoat"
+}
+
+dependencies
+{
+	implementation project(":modules:aot")
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:tool-jarfile")
+	implementation project(":modules:tool-packfile")
+}

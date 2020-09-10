@@ -1,0 +1,6 @@
+# 2020/08/21
+
+## 08:19
+
+I have been rather slowly working on things during the week. Have been quite
+busy but slowly making progress on the Multi-VM refactor.

@@ -19,6 +19,8 @@
             <option value="$PROJECT_DIR$/emulators/springcoat-vm" />
             <option value="$PROJECT_DIR$/emulators/summercoat-vm" />
             <option value="$PROJECT_DIR$/modules" />
+            <option value="$PROJECT_DIR$/modules/aot" />
+            <option value="$PROJECT_DIR$/modules/aot-summercoat" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
             <option value="$PROJECT_DIR$/modules/collections" />
@@ -72,8 +74,6 @@
             <option value="$PROJECT_DIR$/modules/vodafone-api" />
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/tools" />
-            <option value="$PROJECT_DIR$/tools/dump-class" />
-            <option value="$PROJECT_DIR$/tools/dump-zip" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />

@@ -153,9 +153,14 @@ public final class ErrorCodeManager
 				
 				String code = config.javaDocErrorCode;
 				if (code == null)
+				{
 					System.err.printf(
 						"WARNING: Project %s has no error code.\n",
 						sub.getName());
+					
+					// Cannot do anything at this point
+					continue;
+				}
 				
 				Project dup = codeMap.put(code.toUpperCase(), sub);
 				if (dup != null)

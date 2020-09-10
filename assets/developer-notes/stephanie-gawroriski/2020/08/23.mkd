@@ -1,0 +1,15 @@
+# 2020/08/23
+
+## 15:59
+
+Have been very slowly working through the task stuff and I like where it is
+going. Will be much easier to manage and do lots of things as well regarding
+the tasks and otherwise. At least with this, making new tasks will be pretty
+easy and they are all standardized into a very similar set of tasks. Also
+the general task set is working well when I only want a single main task for
+a VM. Also have been thinking about AutumnCoat. There are going to be a ton
+of variants so not too sure how I would handle these. I could add additional
+AutumnCoat types but that would be messy, so there would probably be a variants
+thing and you can specify with a property which variant you want to build. I
+suppose the best thing to do is force it to be specified otherwise it would be
+an unknown of sorts.

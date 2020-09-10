@@ -57,7 +57,7 @@ public class TestsJarTask
 	{
 		SourceSet set = this.getProject().getConvention()
 			.getPlugin(JavaPluginConvention.class).getSourceSets()
-			.getByName("test");
+			.getByName(SourceSet.TEST_SOURCE_SET_NAME);
 		return this.getProject().files(set.getOutput().getClassesDirs(),
 			set.getOutput().getResourcesDir());
 	}

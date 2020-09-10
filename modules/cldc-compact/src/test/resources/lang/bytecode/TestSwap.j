@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class lang/bytecode/TestSwap
+.class public lang/bytecode/TestSwap
 .super net/multiphasicapps/tac/TestInteger
 
 .method public <init>()V

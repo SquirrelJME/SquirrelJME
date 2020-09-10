@@ -1,0 +1,15 @@
+# 2020/08/15
+
+## 10:51
+
+Not sure how I want to handle running. I need to set clear dependencies so
+I am going to have through them all and basically just figure out the parent
+projects, if they are module ones, and then depend on the VM's library
+processing one. Suppose that is it really.
+
+## 22:34
+
+So with this refactor I am having much nicer dependency resolution and letting
+Gradle do a bunch of it too. Also a bunch of it is lazy evaluated so that
+means that processing time is a bit faster. But now I do have the correct
+ordering of everything which will basically be very nice.

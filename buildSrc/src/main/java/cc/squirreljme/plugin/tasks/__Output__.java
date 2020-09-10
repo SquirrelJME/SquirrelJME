@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.util.FileLocation;
 import java.nio.file.Path;
 
 /**
@@ -19,7 +20,7 @@ import java.nio.file.Path;
 final class __Output__
 {
 	/** The input file. */
-	public final __Input__ input;
+	public final FileLocation input;
 	
 	/** The output path. */
 	public final Path output;
@@ -32,7 +33,7 @@ final class __Output__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/02/28
 	 */
-	public __Output__(__Input__ __input, Path __output)
+	public __Output__(FileLocation __input, Path __output)
 		throws NullPointerException
 	{
 		if (__input == null || __output == null)
