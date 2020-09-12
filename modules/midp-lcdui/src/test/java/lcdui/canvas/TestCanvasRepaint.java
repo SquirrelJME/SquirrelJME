@@ -27,9 +27,6 @@ public class TestCanvasRepaint
 	@Override
 	public void test(Display __display, CanvasPlatform __platform)
 	{
-		// Wait for the canvas to settle
-		FormUtils.flushAndWait(500);
-		
 		// Mark the time and request a repaint
 		long base = System.currentTimeMillis();
 		__platform.repaint();

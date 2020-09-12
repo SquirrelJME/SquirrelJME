@@ -8,7 +8,9 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This packages contains the implementation of MIDP 3.
+ * This packages contains the implementation of the Limited Capability Device
+ * User Interface for MIDP 3, it is backwards compatible with MIDP 2 and
+ * MIDP 1.
  *
  * @since 2020/06/30
  */

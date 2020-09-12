@@ -9,11 +9,13 @@
 
 package lcdui.canvas;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import lcdui.FormUtils;
 
 /**
- * Tests that a canvas is full-screen.
+ * Tests that a canvas is full-screen via
+ * {@link Canvas#setFullScreenMode(boolean)}).
  *
  * @since 2020/09/12
  */
@@ -27,9 +29,6 @@ public class TestCanvasFullScreen
 	@Override
 	public void test(Display __display, CanvasPlatform __platform)
 	{
-		// Wait for the canvas to settle
-		FormUtils.flushAndWait(500);
-		
 		// Get initial sizes
 		int width = __platform.getWidth();
 		int height = __platform.getHeight();

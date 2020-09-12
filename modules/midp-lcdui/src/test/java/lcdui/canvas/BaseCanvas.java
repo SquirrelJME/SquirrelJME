@@ -11,6 +11,7 @@ package lcdui.canvas;
 
 import javax.microedition.lcdui.Display;
 import lcdui.BaseDisplay;
+import lcdui.FormUtils;
 
 /**
  * Base tests for canvases.
@@ -42,8 +43,13 @@ public abstract class BaseCanvas
 		CanvasPlatform platform = new CanvasPlatform();
 		__display.setCurrent(platform);
 		
+		// Perform testing on the canvas
 		try
 		{
+			// Wait for the canvas events to settle
+			FormUtils.flushAndWait(500);
+			
+			// Run the test
 			this.test(__display, platform);
 		}
 		finally
