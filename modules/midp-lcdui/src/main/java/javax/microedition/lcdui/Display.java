@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
@@ -24,6 +25,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.microedition.midlet.MIDlet;
 
 @SuppressWarnings("OverlyComplexClass")
@@ -882,10 +884,13 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
-	@SuppressWarnings("ObviousNullCheck")
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
 	{
+		// Debug
+		Debugging.debugNote("Showing %s on display.",
+			(__show != null ? __show.getClass() : "null"));
+		
 		// Show the form on the display
 		UIBackendFactory.getInstance().displayShow(this._uiDisplay,
 			__show._uiForm);

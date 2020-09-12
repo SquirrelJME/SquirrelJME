@@ -9,42 +9,32 @@
 
 package lcdui.canvas;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 
 /**
- * Tests that the standard key codes do in fact map to game keys.
+ * Ensures that game actions do have keys.
  *
- * @since 2020/08/02
+ * @since 2020/09/12
  */
-public class TestCanvasStandardKeyCodes
+public class TestCanvasValidActions
 	extends BaseCanvas
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/08/02
+	 * @since 2020/09/12
 	 */
 	@Override
 	public void test(Display __display, CanvasPlatform __platform)
 	{
-		// Set bits within the mask
-		long gameKeyMask = 0;
-		for (int i = Canvas.KEY_SELECT; i <= Canvas.KEY_DELETE; i++)
-			try
-			{
-				int gameKey = __platform.getGameAction(i);
-				
-				if (gameKey <= 0)
-					continue;
-				
-				gameKeyMask |= (1 << gameKey);
-			}
-			catch (IllegalArgumentException ignored)
-			{
-			}
+		int mask = 0;
 		
-		// There should have been all the game keys in this
-		this.secondary("mask", gameKeyMask);
+		for (int gameKey : new int[]{Canvas.UP, Canvas.DOWN, Canvas.LEFT,
+			Canvas.RIGHT, Canvas.FIRE, Canvas.GAME_A, Canvas.GAME_B,
+			Canvas.GAME_C, Canvas.GAME_D})
+			if (__platform.getKeyCode(gameKey) != 0)
+				mask |= (1 << gameKey);
+		
+		this.secondary("mask", mask);
 	}
 }

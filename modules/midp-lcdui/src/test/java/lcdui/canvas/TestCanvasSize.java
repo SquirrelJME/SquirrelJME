@@ -19,6 +19,10 @@ import javax.microedition.lcdui.Display;
 public class TestCanvasSize
 	extends BaseCanvas
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/02
+	 */
 	@Override
 	public void test(Display __display, CanvasPlatform __platform)
 	{

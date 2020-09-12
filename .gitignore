@@ -18,6 +18,7 @@ build/
 .idea/usage-statistics.xml
 .idea/workspace.xml
 ratufacoat/.idea/workspace.xml
+file-*
 
 # Contributions
 *.diff
