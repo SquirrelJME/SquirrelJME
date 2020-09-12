@@ -8,6 +8,13 @@
 // -------------------------------------------------------------------------*/
 
 #include "squirreljme.h"
+
+JNIEXPORT void JNICALL Impl_mle_ThreadShelf_javaThreadSetDaemon(JNIEnv* env,
+	jclass classy, jobject javaThread)
+{
+	forwardCallStaticVoid(env, "cc/squirreljme/emulator/NativeThreadShelf",
+		"javaThreadSetDaemon", "(Ljava/lang/Thread;)V", javaThread);
+}
 		
 JNIEXPORT void JNICALL Impl_mle_ThreadShelf_setTrace(JNIEnv* env,
 	jclass classy, jint fd, jobject string, jobject array)
@@ -17,6 +24,8 @@ JNIEXPORT void JNICALL Impl_mle_ThreadShelf_setTrace(JNIEnv* env,
 
 static const JNINativeMethod mleThreadMethods[] =
 {
+	{"javaThreadSetDaemon", "(Ljava/lang/Thread;)V",
+		(void*)Impl_mle_ThreadShelf_javaThreadSetDaemon},
 	{"setTrace", "(Ljava/lang/String;[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;)V",
 		(void*)Impl_mle_ThreadShelf_setTrace},
 };

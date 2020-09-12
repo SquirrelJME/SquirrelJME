@@ -23,6 +23,7 @@ import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
  *
  * @since 2020/07/03
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface UIFormCallback
 	extends ShelfCallback
 {
@@ -53,6 +54,15 @@ public interface UIFormCallback
 	 */
 	void eventMouse(UIFormBracket __form, UIItemBracket __item, int __event,
 		int __button, int __x, int __y, int __modifiers);
+	
+	/**
+	 * Request to exit the form, usually means the application is being
+	 * closed or attempted to be closed.
+	 * 
+	 * @param __form The form being exited.
+	 * @since 2020/09/12
+	 */
+	void exitRequest(UIFormBracket __form);
 	
 	/**
 	 * Draw action for the given item.

@@ -47,6 +47,11 @@ public enum MLEThread
 			{
 				for (SpringThread thread : machine.getThreads())
 				{
+					// Ignore any threads that are marked terminated or has not
+					// been started as it has no frames
+					if (thread.isTerminated() || thread.numFrames() == 0)
+						continue;
+					
 					boolean isMain = thread.isMain();
 					boolean isDaemon = thread.isDaemon();
 					
@@ -243,6 +248,35 @@ public enum MLEThread
 			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
 				false, "_isAlive", "Z")
 				.set((int)__args[1] != 0);
+			return null;
+		}
+	},
+	
+	/** {@link ThreadShelf#javaThreadSetDaemon(Thread)}. */ 
+	JAVA_THREAD_SET_DAEMON("javaThreadSetDaemon:(Ljava/lang/Thread;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/12
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread vmThread = MLEThread.__vmThread(
+				MLEThread.TO_VM_THREAD.handle(__thread, __args[0]))
+				.getThread();
+			
+			synchronized (vmThread)
+			{
+				// Cannot be changed once started
+				if (vmThread.isTerminated() || vmThread.numFrames() > 0)
+					throw new SpringMLECallError("Thread is started.");
+				
+				// Set as a daemon thread
+				vmThread.setDaemon();
+			}
+			
+			// No value is returned
 			return null;
 		}
 	},

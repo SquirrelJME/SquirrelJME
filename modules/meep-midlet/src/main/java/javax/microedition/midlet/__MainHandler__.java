@@ -86,17 +86,45 @@ final class __MainHandler__
 		// Start the MIDlet and perform any potential handling of it
 		try
 		{
-			// Initialize the MIDlet
-			instance.startApp();
+			// It is possible that attempting to start the application causes
+			// a failure, in which case we want to wrap the exception
+			// accordingly
+			Throwable throwable = null;
+			try
+			{
+				// Initialize the MIDlet
+				instance.startApp();
+			}
+			catch (Throwable cause)
+			{
+				throwable = cause;
+			}
 			
 			// Although we did start the application, the startApp only
 			// ever does initialization and sets some events and otherwise...
 			// So actually stop when the alive count goes to zero
 			// If the application did start graphics, then there will be
-			// a graphics thread.
+			// a daemon graphics thread which we want to count as well.
 			while (ThreadShelf.aliveThreadCount(
-				false, false) > 0)
+				false, true) > 0)
 				ThreadShelf.waitForUpdate(__MainHandler__._MS_SECOND);
+			
+			// If an exception was thrown then fail here
+			if (throwable != null)
+			{
+				// Show a noisy banner to make this visible
+				System.err.println("****************************************");
+				System.err.println("MIDLET THREW EXCEPTION:");
+				
+				// Make sure the output is printed
+				throwable.printStackTrace(System.err);
+				
+				// End of banner
+				System.err.println("****************************************");
+				
+				// Toss it
+				throw throwable;
+			}
 		}
 		finally
 		{

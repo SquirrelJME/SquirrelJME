@@ -15,17 +15,20 @@ import cc.squirreljme.jvm.DeviceFeedbackType;
 import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.microedition.midlet.MIDlet;
 
 @SuppressWarnings("OverlyComplexClass")
@@ -887,12 +890,41 @@ public class Display
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
 	{
+		if (__show == null)
+			throw new NullPointerException("NARG");
+		
 		// Debug
-		Debugging.debugNote("Showing %s on display.",
-			(__show != null ? __show.getClass() : "null"));
+		Debugging.debugNote("Showing %s on display.", __show.getClass());
+		
+		// Get the backend to call on
+		UIBackend backend = UIBackendFactory.getInstance();
+		
+		// Check and ensure that the background thread exists
+		synchronized (StaticDisplayState.class)
+		{
+			// If there is no background thread yet, initialize it
+			Thread bgThread = StaticDisplayState.backgroundThread();
+			if (bgThread == null)
+			{
+				// The user interface thread to use
+				__MLEUIThread__ uiRunner = new __MLEUIThread__();
+				
+				// Initialize thread and make it a background worker
+				bgThread = new Thread(uiRunner, "SquirrelJME-LCDUI");
+				ThreadShelf.javaThreadSetDaemon(bgThread);
+				
+				// Set background thread state and start it
+				StaticDisplayState.setBackgroundThread(bgThread, uiRunner);
+				bgThread.start();
+			}
+			
+			// Set callback for the displayed form so it can receive events
+			backend.callback(__show._uiForm,
+				StaticDisplayState.callback());
+		}
 		
 		// Show the form on the display
-		UIBackendFactory.getInstance().displayShow(this._uiDisplay,
+		backend.displayShow(this._uiDisplay,
 			__show._uiForm);
 		
 		/*UIState uis = UIState.getInstance();

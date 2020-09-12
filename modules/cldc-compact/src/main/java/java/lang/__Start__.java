@@ -70,17 +70,11 @@ final class __Start__
 				// Execute it
 				run.run();
 			}
-			
-			// Mark the thread as dead
-			ThreadShelf.javaThreadSetAlive(javaThread, false);
 		}
 		
 		// Missed an exception, so handle it there
 		catch (Throwable t)
 		{
-			// Mark the thread as dead
-			ThreadShelf.javaThreadSetAlive(javaThread, false);
-			
 			// Use the other exception handler
 			UncaughtExceptionHandler.handle(t);
 			
@@ -97,6 +91,13 @@ final class __Start__
 				ThreadShelf.setTrace(Objects.toString(t.getMessage(), 
 					"No message."), DebugShelf.getThrowableTrace(t));
 			}
+		}
+		
+		// Make sure the thread is not marked as being alive on termination
+		finally
+		{
+			// Mark the thread as dead
+			ThreadShelf.javaThreadSetAlive(javaThread, false);
 		}
 	}
 	

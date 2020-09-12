@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -28,7 +29,7 @@ import javax.microedition.lcdui.Displayable;
  * @since 2020/07/01
  */
 public final class StaticDisplayState
-{
+{	
 	/** The displays that are initialized currently. */
 	@SuppressWarnings("StaticVariableMayNotBeInitialized")
 	public static Display[] DISPLAYS;
@@ -44,6 +45,15 @@ public final class StaticDisplayState
 	/** Queue which is used for garbage collection of forms. */
 	private static final ReferenceQueue<Displayable> _FORM_QUEUE =
 		new ReferenceQueue<>();
+	
+	/** Graphics handling thread. */
+	private static Thread _BACKGROUND_THREAD;
+	
+	/** The callback used for form events. */
+	private static UIFormCallback _CALLBACK;
+	
+	/** Is this terminating? */
+	private static volatile boolean _IS_TERMINATING;
 	
 	/**
 	 * Adds the specified listener for changes to displays.
@@ -71,6 +81,52 @@ public final class StaticDisplayState
 			
 			// Add it, if it is not there
 			listeners.add(__dl);
+		}
+	}
+	
+	/**
+	 * Returns the background thread used for LCDUI callbacks.
+	 * 
+	 * @return The background thread, or {@code null} if not set.
+	 * @since 2020/09/12
+	 */
+	public static Thread backgroundThread()
+	{
+		synchronized (StaticDisplayState.class)
+		{
+			return StaticDisplayState._BACKGROUND_THREAD;
+		}
+	}
+	
+	/**
+	 * Returns the callback event handler.
+	 * 
+	 * @return The callback for events.
+	 * @since 2020/09/12
+	 */
+	public static UIFormCallback callback()
+	{
+		synchronized (StaticDisplayState.class)
+		{
+			return StaticDisplayState._CALLBACK;
+		}
+	}
+	
+	/**
+	 * Attempts to destroy the user interface.
+	 * 
+	 * @since 2020/09/12
+	 */
+	public static void destroy()
+	{
+		synchronized (StaticDisplayState.class)
+		{
+			// Remove all listeners
+			for (DisplayListener listener : StaticDisplayState.listeners())
+				StaticDisplayState.removeListener(listener);
+			
+			// Perform garbage collection to cleanup anything
+			StaticDisplayState.gc();
 		}
 	}
 	
@@ -151,6 +207,20 @@ public final class StaticDisplayState
 	}
 	
 	/**
+	 * Checks if the UI is in the terminating state.
+	 * 
+	 * @return If this is terminating.
+	 * @since 2020/09/12
+	 */
+	public static boolean isTerminating()
+	{
+		synchronized (StaticDisplayState.class)
+		{
+			return StaticDisplayState._IS_TERMINATING;
+		}
+	}
+	
+	/**
 	 * Registers the displayable with the given form.
 	 * 
 	 * @param __displayable The displayable.
@@ -211,6 +281,53 @@ public final class StaticDisplayState
 			// listener set.}
 			if (!didRemove)
 				throw new IllegalStateException("EB1r");
+		}
+	}
+	
+	/**
+	 * Sets the background thread.
+	 * 
+	 * @param __thread The thread to set.
+	 * @param __callback The callback for forms.
+	 * @throws IllegalStateException If a thread was already set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/12
+	 */
+	public static void setBackgroundThread(Thread __thread,
+		UIFormCallback __callback)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__thread == null || __callback == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (StaticDisplayState.class)
+		{
+			// {@squirreljme.error EB3d There is already a background thread
+			// present.}
+			if (StaticDisplayState._BACKGROUND_THREAD != null)
+				throw new IllegalStateException("EB3d");
+			
+			StaticDisplayState._BACKGROUND_THREAD = __thread;
+			StaticDisplayState._CALLBACK = __callback;
+		}
+	}
+	
+	/**
+	 * Terminates the user interface.
+	 * 
+	 * @since 2020/09/12
+	 */
+	public static void terminate()
+	{
+		synchronized (StaticDisplayState.class)
+		{
+			// Mark as terminating
+			StaticDisplayState._IS_TERMINATING = true;
+			
+			// Interrupt the LCDUI thread so it knows to exit
+			Thread bgThread = StaticDisplayState._BACKGROUND_THREAD;
+			if (bgThread != null)
+				bgThread.interrupt();
 		}
 	}
 }

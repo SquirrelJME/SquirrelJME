@@ -502,6 +502,19 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Sets this thread as a daemon thread.
+	 * 
+	 * @since 2020/09/12
+	 */
+	public void setDaemon()
+	{
+		synchronized (this)
+		{
+			this._daemon = true;
+		}
+	}
+	
+	/**
 	 * Sets the {@link Thread} instance.
 	 *
 	 * @param __object The object to set the instance to.
