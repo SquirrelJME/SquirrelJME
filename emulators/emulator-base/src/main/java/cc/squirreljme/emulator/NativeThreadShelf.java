@@ -39,11 +39,13 @@ public final class NativeThreadShelf
 	public static int aliveThreadCount(boolean __includeMain,
 		boolean __includeDaemon)
 	{
+		int daemon = 0;
+		int nonDaemon = 0;
+		
 		// Count each thread, the only way to check how many threads exist
 		// and what is there is to get all stack traces... this is a bit slow
 		// but this is only needed for Hosted so it should not be too bad on
 		// performance.
-		int activeCount = 0;
 		for (Thread thread : Thread.getAllStackTraces().keySet())
 		{
 			// Ignore daemon threads if we do not want them
@@ -52,12 +54,15 @@ public final class NativeThreadShelf
 			
 			// Count living threads
 			if (thread.isAlive())
-				activeCount++;
+				if (thread.isDaemon())
+					daemon++;
+				else
+					nonDaemon++;
 		}
 		
 		// One of these threads here might be the main thread or it might not
 		// be but it is hard to tell regardless
-		return Math.max(0, activeCount - (__includeMain ? 0 : 1));
+		return daemon + Math.max(0, nonDaemon - (__includeMain ? 0 : 1));
 	}
 	
 	/**
