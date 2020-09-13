@@ -76,6 +76,10 @@ public final class SpringMachine
 	/** The terminal pipe manager. */
 	protected final TerminalPipeManager terminalPipes;
 	
+	/** State for the callback threader. */
+	private final CallbackThreader _cbThreader =
+		new CallbackThreader();
+	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
 		new ArrayList<>();

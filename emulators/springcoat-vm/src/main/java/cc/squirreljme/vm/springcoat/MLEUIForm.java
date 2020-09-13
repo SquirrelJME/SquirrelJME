@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
@@ -26,6 +27,32 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLEUIForm
 	implements MLEFunction
 {
+	/** {@link UIFormShelf#callback(UIFormBracket, UIFormCallback)}. */
+	CALLBACK("callback:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIFormBracket;Lcc/squirreljme/jvm/mle/callbacks/UIFormCallback;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/13
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormObject form = MLEUIForm.__form(__args[0]);
+			SpringObject callback = (SpringObject)__args[1];
+			
+			if (callback == null)
+				throw new SpringMLECallError("Null callback.");
+			
+			// Since the callback is in SpringCoat, it has to be wrapped to
+			// forward calls into, there also needs to be threads to do work
+			// in
+			UIFormShelf.callback(form.form,
+				new UIFormCallbackAdapter(__thread.machine, callback));
+			return null;
+		}
+	}, 
+	
 	/** {@link UIFormShelf#displays()}. */
 	DISPLAYS("displays:()[Lcc/squirreljme/jvm/mle/brackets/" +
 		"UIDisplayBracket;")
