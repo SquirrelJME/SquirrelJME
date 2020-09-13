@@ -496,7 +496,7 @@ public final class SpringThread
 		
 		// Use standard SquirrelJME trace printing here
 		CallTraceUtils.printStackTrace(__ps,
-			String.format("Thread #%d: %s", this.id, this.name),
+			String.format("SpringThread #%d: %s", this.id, this.name),
 			this.getStackTrace(), null, null,
 			0);
 	}

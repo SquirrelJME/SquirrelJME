@@ -34,7 +34,7 @@ public final class TaskAccess
 	/** Exit code indicating bad task things. */
 	@Deprecated
 	public static final int EXIT_CODE_FATAL_EXCEPTION =
-		127;
+		123;
 	
 	/**
 	 * Not used.

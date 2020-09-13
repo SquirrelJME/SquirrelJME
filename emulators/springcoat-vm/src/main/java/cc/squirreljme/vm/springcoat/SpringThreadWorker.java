@@ -3285,11 +3285,11 @@ public final class SpringThreadWorker
 			// Not a wrapped exception, kill the VM
 			else
 			{
-				// Kill the VM
-				this.machine.exitNoException(127);
-				
 				// Print the stack trace
 				thread.printStackTrace(System.err);
+				
+				// Kill the VM
+				this.machine.exitNoException(123);
 				
 				// Where is this located?
 				SpringMethod inmethod = frame.method();
