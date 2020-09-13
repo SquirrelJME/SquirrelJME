@@ -11,9 +11,14 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.constants.UIItemProperty;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -34,6 +39,9 @@ public abstract class Displayable
 	/** The native form instance. */
 	final UIFormBracket _uiForm;
 	
+	/** The title of the form. */
+	final UIItemBracket _uiTitle;
+	
 	/** Commands/Menus which have been added to the displayable. */
 	final __VolatileList__<__Action__> _actions =
 		new __VolatileList__<>();
@@ -45,10 +53,10 @@ public abstract class Displayable
 	volatile CommandListener _cmdListener;
 	
 	/** The title of the displayable. */
-	volatile String _title;
+	volatile String _userTitle;
 	
 	/** Display title to use. */
-	volatile String _dtitle;
+	volatile String __displayTitle;
 	
 	/** The ticker of the displayable. */
 	volatile Ticker _ticker;
@@ -64,15 +72,27 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
+		UIBackend instance = UIBackendFactory.getInstance();
+		
 		// Create a new form for this displayable
-		UIFormBracket form = UIBackendFactory.getInstance().formNew();
-		this._uiForm = form;
+		UIFormBracket uiForm = instance.formNew();
+		this._uiForm = uiForm;
 		
 		// Register it with the global state
-		StaticDisplayState.register(this, form);
+		StaticDisplayState.register(this, uiForm);
 		
 		// Use a default title for now
-		this._dtitle = Displayable.__defaultTitle();
+		String title = Displayable.__defaultTitle();
+		this.__displayTitle = Displayable.__defaultTitle();
+		
+		// Setup the title item
+		UIItemBracket uiTitle = instance.itemNew(UIItemType.LABEL);
+		instance.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
+		instance.itemProperty(uiTitle, UIItemProperty.STRING_LABEL,
+			title);
+		
+		// Store for future adjustments
+		this._uiTitle = uiTitle;
 	}
 	
 	/**
@@ -198,7 +218,7 @@ public abstract class Displayable
 	 */
 	public String getTitle()
 	{
-		return this._title;
+		return this._userTitle;
 	}
 	
 	public void invalidateCommandLayout()
@@ -338,7 +358,7 @@ public abstract class Displayable
 	public void setTitle(String __t)
 	{
 		// Cache it for later return
-		this._title = __t;
+		this._userTitle = __t;
 		
 		// If no title is being set, fallback to a default one (derived from
 		// the suite)
@@ -346,12 +366,12 @@ public abstract class Displayable
 			__t = Displayable.__defaultTitle();
 		
 		// Store this
-		this._dtitle = __t;
+		this.__displayTitle = __t;
 		
-		// Set the title of the display
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().setTitle(__t);
+		// We can always set the title for the widget as the form should be
+		// allocated
+		UIBackendFactory.getInstance().itemProperty(this._uiTitle,
+			UIItemProperty.STRING_LABEL, __t);
 	}
 	
 	/**
@@ -384,7 +404,7 @@ public abstract class Displayable
 	 * @return Application default title.
 	 * @since 2019/05/16
 	 */
-	private static final String __defaultTitle()
+	private static String __defaultTitle()
 	{
 		// Try getting a sensible name from a system property
 		MIDlet amid = ActiveMidlet.optional();
@@ -415,6 +435,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	static final int __getHeight(Displayable __d, boolean __full)
 		throws NullPointerException
 	{
@@ -439,6 +460,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
+	@Deprecated
 	static final int __getWidth(Displayable __d, boolean __full)
 	{
 		if (__d == null)

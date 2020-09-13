@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.constants.UIItemProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -400,6 +401,55 @@ public final class SwingFormShelf
 			default:
 				throw Debugging.todo(__type);
 		}
+	}
+	/**
+	 * As {@link UIFormShelf#itemProperty(UIItemBracket, int, int)}.
+	 * 
+	 * @param __item The item to set.
+	 * @param __intProp The {@link UIItemProperty}.
+	 * @param __newValue The new value to set.
+	 * @throws MLECallError If the item is not valid or the property is not
+	 * valid or not an integer property.
+	 * @since 2020/09/13
+	 */
+	public static void itemProperty(UIItemBracket __item,
+		int __intProp, int __newValue)
+		throws MLECallError
+	{
+		if (__item == null)
+			throw new MLECallError("Null item.");
+		
+		// Debug
+		Debugging.debugNote("itemProperty(%s, %d, %d)",
+			__item, __intProp, __newValue);
+		
+		// Forward
+		((SwingItem)__item).property(__intProp, __newValue);
+	}
+	
+	/**
+	 * As {@link UIFormShelf#itemProperty(UIItemBracket, int, String)}. 
+	 * 
+	 * @param __item The item to set.
+	 * @param __strProp The {@link UIItemProperty}.
+	 * @param __newValue The new value to set.
+	 * @throws MLECallError If the item is not valid or the property is not
+	 * valid or not a string property.
+	 * @since 2020/09/13
+	 */
+	public static void itemProperty(UIItemBracket __item,
+		int __strProp, String __newValue)
+		throws MLECallError
+	{
+		if (__item == null)
+			throw new MLECallError("Null item.");
+		
+		// Debug
+		Debugging.debugNote("itemProperty(%s, %d, %s)",
+			__item, __strProp, __newValue);
+		
+		// Forward
+		((SwingItem)__item).property(__strProp, __newValue);
 	}
 	
 	/**

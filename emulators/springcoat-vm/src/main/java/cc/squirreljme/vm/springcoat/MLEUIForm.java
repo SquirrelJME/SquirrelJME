@@ -194,6 +194,44 @@ public enum MLEUIForm
 		}
 	},
 	
+	/** {@link UIFormShelf#itemProperty(UIItemBracket, int, int)}. */ 
+	ITEM_PROPERTY_INT("itemProperty:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/UIItemBracket;II)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/13
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.itemProperty(
+				MLEUIForm.__item(__args[0]).item,
+				(int)__args[1],
+				(int)__args[2]);
+			return null;
+		}
+	},
+	
+	/** {@link UIFormShelf#itemProperty(UIItemBracket, int, int)}. */ 
+	ITEM_PROPERTY_STRING("itemProperty:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/UIItemBracket;ILjava/lang/String;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/13
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.itemProperty(
+				MLEUIForm.__item(__args[0]).item,
+				(int)__args[1],
+				__thread.<String>asNativeObject(String.class, __args[2]));
+			return null;
+		}
+	},
+	
 	/** {@link UIFormShelf#metric(int)}. */
 	METRIC("metric:(I)I")
 	{

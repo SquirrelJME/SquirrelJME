@@ -230,6 +230,28 @@ public class HeadlessUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	public void itemProperty(UIItemBracket __item, int __intProp,
+		int __newValue)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public void itemProperty(UIItemBracket __item, int __strProp,
+		String __newValue)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
 	public int metric(int __metric)
 		throws MLECallError
 	{

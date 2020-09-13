@@ -12,17 +12,21 @@ package cc.squirreljme.jvm.mle.constants;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 
 /**
- * Integer properties for {@link UIItemBracket}.
+ * Integer and String properties for {@link UIItemBracket}.
  *
  * @since 2020/07/19
  */
-public interface UIItemIntegerProperty
+public interface UIItemProperty
 {
 	/** Null property. */
-	byte INTEGER_NULL =
+	byte NULL =
 		0;
 	
-	/** The number of properties. */
-	byte NUM_INTEGER_PROPERTIES =
+	/** The label of the item. */
+	byte STRING_LABEL =
 		1;
+	
+	/** The number of properties. */
+	byte NUM_PROPERTIES =
+		2;
 }

@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import javax.swing.JComponent;
 
@@ -42,6 +43,27 @@ public abstract class SwingItem
 	 * @since 2020/07/18
 	 */
 	public abstract void deletePost();
+	
+	/**
+	 * Sets the given property.
+	 * 
+	 * @param __id The {@link UIItemProperty} to set.
+	 * @param __newValue The new value to set.
+	 * @throws MLECallError If the property is not valid.
+	 * @since 2020/09/13
+	 */
+	public abstract void property(int __id, int __newValue)
+		throws MLECallError;
+	
+	/**
+	 * Sets the given property.
+	 * 
+	 * @param __id The {@link UIItemProperty} to set.
+	 * @param __newValue The new value to set.
+	 * @throws MLECallError If the property is not valid.
+	 * @since 2020/09/13
+	 */
+	public abstract void property(int __id, String __newValue);
 	
 	/**
 	 * Deletes the given item.

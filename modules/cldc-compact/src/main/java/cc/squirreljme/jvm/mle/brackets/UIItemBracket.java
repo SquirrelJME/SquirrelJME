@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
  *
  * @since 2020/07/01
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 @GhostObject
 public interface UIItemBracket
 {

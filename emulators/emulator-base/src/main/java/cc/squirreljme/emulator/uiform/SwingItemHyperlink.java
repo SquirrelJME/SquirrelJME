@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JButton;
 
@@ -50,5 +51,18 @@ public class SwingItemHyperlink
 	@Override
 	public void deletePost()
 	{
+	}
+	
+	@Override
+	public void property(int __id, int __newValue)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public void property(int __id, String __newValue)
+	{
+		throw Debugging.todo();
 	}
 }

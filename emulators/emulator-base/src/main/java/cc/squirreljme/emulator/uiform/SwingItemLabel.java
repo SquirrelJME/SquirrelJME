@@ -9,7 +9,8 @@
 
 package cc.squirreljme.emulator.uiform;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.mle.constants.UIItemProperty;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import javax.swing.JLabel;
 
 /**
@@ -50,5 +51,38 @@ public class SwingItemLabel
 	@Override
 	public void deletePost()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/18
+	 */
+	@Override
+	public void property(int __id, int __newValue)
+		throws MLECallError
+	{
+		switch (__id)
+		{
+			default:
+				throw new MLECallError("Invalid property: " + __id);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/18
+	 */
+	@Override
+	public void property(int __id, String __newValue)
+	{
+		switch (__id)
+		{
+			case UIItemProperty.STRING_LABEL:
+				this.label.setText(__newValue);
+				break;
+			
+			default:
+				throw new MLECallError("Invalid property: " + __id);
+		}
 	}
 }

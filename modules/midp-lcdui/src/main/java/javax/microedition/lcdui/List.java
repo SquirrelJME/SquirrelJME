@@ -78,7 +78,7 @@ public class List
 			throw new IllegalArgumentException("EB2k " + __type);
 		
 		// Set
-		this._title = __title;
+		this._userTitle = __title;
 		this._type = __type;
 		
 		// Append all of the items to the list

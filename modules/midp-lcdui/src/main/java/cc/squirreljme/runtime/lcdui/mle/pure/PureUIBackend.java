@@ -230,6 +230,28 @@ public class PureUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	public void itemProperty(UIItemBracket __item, int __intProp,
+		int __newValue)
+	{
+		UIFormShelf.itemProperty(__item, __intProp, __newValue);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public void itemProperty(UIItemBracket __item, int __strProp,
+		String __newValue)
+	{
+		UIFormShelf.itemProperty(__item, __strProp, __newValue);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
 	public int metric(int __metric)
 		throws MLECallError
 	{
