@@ -1181,7 +1181,7 @@ public final class SpringThreadWorker
 		// If the VM is exiting then clear the execution stack before we go
 		// away
 		catch (SpringMachineExitException e)
-		{	
+		{
 			// Terminate the thread
 			thread.terminate();
 			
@@ -1193,35 +1193,32 @@ public final class SpringThreadWorker
 			
 			// Exit profiler stack
 			thread.profiler.exitAll(System.nanoTime());
-			
-			// Do not rethrow though
-			return;
 		}
 		
 		// Caught exception
 		catch (RuntimeException e)
 		{
+			// Printing of the stack trace for the VM error
+			PrintStream err = System.err;
+			err.println("****************************");
+			
+			// Print the real stack trace
+			err.println("*** EXTERNAL STACK TRACE ***");
+			e.printStackTrace(err);
+			err.println();
+			
+			// Print the VM seen stack trace
+			err.println("*** INTERNAL STACK TRACE ***");
+			thread.printStackTrace(err);
+			err.println();
+			
+			err.println("****************************");
+			
 			// Frame limit is zero, so kill the thread
 			if (__framelimit == 0)
 			{
 				// Terminate the thread
 				thread.terminate();
-				
-				PrintStream err = System.err;
-				
-				err.println("****************************");
-				
-				// Print the real stack trace
-				err.println("*** EXTERNAL STACK TRACE ***");
-				e.printStackTrace(err);
-				err.println();
-				
-				// Print the VM seen stack trace
-				err.println("*** INTERNAL STACK TRACE ***");
-				thread.printStackTrace(err);
-				err.println();
-				
-				err.println("****************************");
 				
 				// Exit all frames
 				thread.exitAllFrames();
@@ -3282,12 +3279,9 @@ public final class SpringThreadWorker
 					return;
 			}
 			
-			// Not a wrapped exception, kill the VM
+			// Not a wrapped exception, toss up higher which will kill the VM
 			else
 			{
-				// Print the stack trace
-				thread.printStackTrace(System.err);
-				
 				// Where is this located?
 				SpringMethod inmethod = frame.method();
 				ClassName inclassname = inmethod.inClass();
@@ -3307,9 +3301,6 @@ public final class SpringThreadWorker
 				e.addSuppressed(new SpringVirtualMachineException(
 					String.format("BK2y %s %s %d %s %d %s", inclassname,
 					inmethod.nameAndType(), pc, onfile, online, inst)));
-				
-				// Kill the VM
-				this.machine.exitNoException(123);
 				
 				// {@squirreljme.error BK2z Fatal VM exception.}
 				throw new SpringFatalException("BK2z", e);
