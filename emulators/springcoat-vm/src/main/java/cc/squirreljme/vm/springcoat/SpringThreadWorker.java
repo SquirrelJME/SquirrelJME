@@ -3288,9 +3288,6 @@ public final class SpringThreadWorker
 				// Print the stack trace
 				thread.printStackTrace(System.err);
 				
-				// Kill the VM
-				this.machine.exitNoException(123);
-				
 				// Where is this located?
 				SpringMethod inmethod = frame.method();
 				ClassName inclassname = inmethod.inClass();
@@ -3310,6 +3307,9 @@ public final class SpringThreadWorker
 				e.addSuppressed(new SpringVirtualMachineException(
 					String.format("BK2y %s %s %d %s %d %s", inclassname,
 					inmethod.nameAndType(), pc, onfile, online, inst)));
+				
+				// Kill the VM
+				this.machine.exitNoException(123);
 				
 				// {@squirreljme.error BK2z Fatal VM exception.}
 				throw new SpringFatalException("BK2z", e);
