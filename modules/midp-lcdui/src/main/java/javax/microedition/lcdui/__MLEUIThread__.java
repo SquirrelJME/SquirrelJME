@@ -16,6 +16,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -68,6 +70,21 @@ final class __MLEUIThread__
 		
 		// Terminate the user interface
 		StaticDisplayState.terminate();
+		
+		// Have the MIDlet destroy itself
+		try
+		{
+			MIDlet midlet = ActiveMidlet.get();
+			
+			// Destroy the midlet
+			midlet.notifyDestroyed();
+		}
+		
+		// No active MIDlet, ignore
+		catch (IllegalStateException ignored)
+		{
+			Debugging.debugNote("No current MIDlet?");
+		}
 	}
 	
 	/**
@@ -112,7 +129,6 @@ final class __MLEUIThread__
 	 * {@inheritDoc}
 	 * @since 2020/09/12
 	 */
-	@SuppressWarnings("ConditionalBreakInInfiniteLoop")
 	@Override
 	public void run()
 	{
@@ -139,6 +155,9 @@ final class __MLEUIThread__
 			{
 			}
 		}
+		
+		// Debug
+		Debugging.debugNote("UI loop terminated.");
 		
 		// Destroy everything possible
 		StaticDisplayState.destroy();

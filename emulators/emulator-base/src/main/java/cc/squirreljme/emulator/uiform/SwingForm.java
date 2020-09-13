@@ -107,6 +107,20 @@ public final class SwingForm
 	}
 	
 	/**
+	 * Returns the form's callback
+	 * 
+	 * @return The callback for this form.
+	 * @since 2020/09/13
+	 */
+	public UIFormCallback callback()
+	{
+		synchronized (this)
+		{
+			return this._callback;
+		}
+	}
+	
+	/**
 	 * Deletes the form.
 	 * 
 	 * @since 2020/07/01
@@ -476,7 +490,7 @@ public final class SwingForm
 	 * @param __callback The callback to set.
 	 * @since 2020/07/19
 	 */
-	public void setCallback(UIFormCallback __callback)
+	public final void setCallback(UIFormCallback __callback)
 	{
 		synchronized (this)
 		{

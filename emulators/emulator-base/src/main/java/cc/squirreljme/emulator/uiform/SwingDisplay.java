@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 /**
  * Represents a Swing Display.
@@ -47,6 +48,13 @@ public final class SwingDisplay
 		
 		// Use a basic layout for the form
 		frame.setLayout(new BorderLayout());
+		
+		// We will be handling window closing, so disable the button and
+		// implement the close logic ourselves
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		
+		// Add window listener to handle close events and resizing
+		frame.addWindowListener(new HandleDisplayWindowEvent(this));
 		
 		this.frame = frame;
 	}
