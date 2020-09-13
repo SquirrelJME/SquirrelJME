@@ -123,6 +123,9 @@ final class __MLEUIThread__
 		// actions
 		for (;;)
 		{
+			// Debug
+			Debugging.debugNote("UI Loop...");
+		
 			// Stop if terminating
 			if (StaticDisplayState.isTerminating())
 				break;

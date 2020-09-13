@@ -9,6 +9,14 @@
 
 #include "squirreljme.h"
 
+JNIEXPORT jint JNICALL Impl_mle_ThreadShelf_aliveThreadCount(JNIEnv* env,
+	jclass classy, jboolean includeMain, jboolean includeDaemon)
+{
+	return forwardCallStaticInteger(env,
+		"cc/squirreljme/emulator/NativeThreadShelf",
+		"aliveThreadCount", "(ZZ)I", includeMain, includeDaemon);
+}
+
 JNIEXPORT void JNICALL Impl_mle_ThreadShelf_javaThreadSetDaemon(JNIEnv* env,
 	jclass classy, jobject javaThread)
 {
@@ -24,6 +32,8 @@ JNIEXPORT void JNICALL Impl_mle_ThreadShelf_setTrace(JNIEnv* env,
 
 static const JNINativeMethod mleThreadMethods[] =
 {
+	{"aliveThreadCount", "(ZZ)I",
+		(void*)Impl_mle_ThreadShelf_aliveThreadCount},
 	{"javaThreadSetDaemon", "(Ljava/lang/Thread;)V",
 		(void*)Impl_mle_ThreadShelf_javaThreadSetDaemon},
 	{"setTrace", "(Ljava/lang/String;[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;)V",
