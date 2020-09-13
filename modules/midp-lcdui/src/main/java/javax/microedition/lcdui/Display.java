@@ -16,8 +16,6 @@ import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.jvm.mle.UIFormShelf;
-import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;

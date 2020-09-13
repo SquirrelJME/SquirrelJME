@@ -17,6 +17,13 @@ JNIEXPORT jint JNICALL Impl_mle_ThreadShelf_aliveThreadCount(JNIEnv* env,
 		"aliveThreadCount", "(ZZ)I", includeMain, includeDaemon);
 }
 
+JNIEXPORT jobject JNICALL Impl_mle_ThreadShelf_currentJavaThread(JNIEnv* env,
+	jclass classy)
+{
+	return forwardCallStaticObject(env, "java/lang/Thread",
+		"currentThread", "()Ljava/lang/Thread;");
+}
+
 JNIEXPORT void JNICALL Impl_mle_ThreadShelf_javaThreadSetDaemon(JNIEnv* env,
 	jclass classy, jobject javaThread)
 {
@@ -34,6 +41,8 @@ static const JNINativeMethod mleThreadMethods[] =
 {
 	{"aliveThreadCount", "(ZZ)I",
 		(void*)Impl_mle_ThreadShelf_aliveThreadCount},
+	{"currentJavaThread", "()Ljava/lang/Thread;",
+		(void*)Impl_mle_ThreadShelf_currentJavaThread},
 	{"javaThreadSetDaemon", "(Ljava/lang/Thread;)V",
 		(void*)Impl_mle_ThreadShelf_javaThreadSetDaemon},
 	{"setTrace", "(Ljava/lang/String;[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;)V",
