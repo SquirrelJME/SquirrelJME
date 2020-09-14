@@ -1,0 +1,6 @@
+# 2020/09/13
+
+## 10:21
+
+So hosted does not crash but SpringCoat crashes randomly, there must be
+something I am missing in the emulator-base native code.
