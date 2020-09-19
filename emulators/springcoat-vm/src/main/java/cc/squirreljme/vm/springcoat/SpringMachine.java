@@ -18,7 +18,6 @@ import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
@@ -435,6 +434,19 @@ public final class SpringMachine
 		{
 			return threads.size();
 		}
+	}
+	
+	/**
+	 * Obtains a temporary callback thread.
+	 * 
+	 * @return The thread to to be used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/15
+	 */
+	public final CallbackThread obtainCallbackThread()
+		throws NullPointerException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

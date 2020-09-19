@@ -745,11 +745,13 @@ public final class SpringThreadWorker
 	 * @param __nat The name and type.
 	 * @param __args The arguments.
 	 * @return The return value, if any.
+	 * @throws MethodInvokeException If the invoked method threw an exception.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/20
 	 */
 	public final Object invokeMethod(boolean __static, ClassName __cl,
 		MethodNameAndType __nat, Object... __args)
-		throws NullPointerException
+		throws MethodInvokeException, NullPointerException
 	{
 		if (__cl == null || __nat == null || __args == null)
 			throw new NullPointerException("NARG");
@@ -814,12 +816,14 @@ public final class SpringThreadWorker
 			throw new SpringVirtualMachineException("BK23");
 		}
 		
+		// Wrap the exception if there is one
+		Object rv = blank.tossedException();
+		if (rv != null)
+			rv = new MethodInvokeException((SpringObject)rv);
+		
 		// Read return value from the blank frame
-		Object rv;
-		if (__nat.type().hasReturnValue())
+		else if (__nat.type().hasReturnValue())
 			rv = blank.popFromStack();
-		else
-			rv = null;
 		
 		// Pop the blank frame, we do not need it anymore
 		thread.popFrame();

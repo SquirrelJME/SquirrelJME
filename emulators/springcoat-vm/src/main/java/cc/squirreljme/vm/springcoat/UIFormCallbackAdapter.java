@@ -13,6 +13,9 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This adapter is responsible for when it is called, to call into SpringCoat
@@ -23,6 +26,10 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class UIFormCallbackAdapter
 	implements UIFormCallback
 {
+	/** The callback class. */
+	private static final ClassName CALLBACK_CLASS =
+		new ClassName("cc/squirreljme/jvm/mle/callbacks/UIFormCallback");
+	
 	/** The object to call into. */
 	private final SpringObject callback;
 	
@@ -45,6 +52,34 @@ public class UIFormCallbackAdapter
 		
 		this.machine = __machine;
 		this.callback = __cb;
+	}
+	
+	/**
+	 * Invokes the callback.
+	 * 
+	 * @param __nat The name and type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/15
+	 */
+	public void callbackInvoke(MethodNameAndType __nat, Object... __args)
+		throws NullPointerException
+	{
+		if (__nat == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup callback thread for handling
+		try (CallbackThread cb = this.machine.obtainCallbackThread())
+		{
+			// Invoke the given method
+			Object fail = cb.thread().invokeMethod(false,
+				UIFormCallbackAdapter.CALLBACK_CLASS, __nat,
+				__args);
+			
+			// Request failed, do not fail but eat the exception
+			if (fail != null)
+				Debugging.debugNote("Callback exception: %s", fail);
+		}
 	}
 	
 	/**
@@ -76,7 +111,10 @@ public class UIFormCallbackAdapter
 	@Override
 	public void exitRequest(UIFormBracket __form)
 	{
-		throw Debugging.todo();
+		this.callbackInvoke(
+			MethodNameAndType.ofArguments("exitRequest", null,
+			"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"),
+			new UIFormObject(__form));
 	}
 	
 	/**

@@ -22,6 +22,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This class contains information about a thread within the virtual machine.
@@ -372,6 +374,29 @@ public final class SpringThread
 		{
 			return this._threadInstance != null;
 		}
+	}
+	
+	/**
+	 * Invokes the given method, this forwards to
+	 * {@link SpringThreadWorker#invokeMethod(boolean, ClassName,
+	 * MethodNameAndType, Object...)}.
+	 * 
+	 * @param __static Is the method static?
+	 * @param __cl The class to execute from within.
+	 * @param __nat The method to be invoked.
+	 * @param __args The arguments to the call.
+	 * @return The return value from the method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/15
+	 */
+	public final Object invokeMethod(boolean __static, ClassName __cl,
+		MethodNameAndType __nat, Object... __args)
+		throws NullPointerException
+	{
+		if (__cl == null || __nat == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		return this._worker.invokeMethod(__static, __cl, __nat, __args);
 	}
 	
 	/**
