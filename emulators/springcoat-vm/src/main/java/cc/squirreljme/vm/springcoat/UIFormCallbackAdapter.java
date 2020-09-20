@@ -68,13 +68,18 @@ public class UIFormCallbackAdapter
 		if (__nat == null || __args == null)
 			throw new NullPointerException("NARG");
 		
+		// Inject our object into the call
+		int argLen = __args.length;
+		Object[] callArgs = new Object[argLen + 1];
+		System.arraycopy(__args, 0, callArgs, 1, argLen);
+		callArgs[0] = this.callback;
+		
 		// Setup callback thread for handling
 		try (CallbackThread cb = this.machine.obtainCallbackThread())
 		{
 			// Invoke the given method
 			Object fail = cb.thread().invokeMethod(false,
-				UIFormCallbackAdapter.CALLBACK_CLASS, __nat,
-				__args);
+				UIFormCallbackAdapter.CALLBACK_CLASS, __nat, callArgs);
 			
 			// Request failed, do not fail but eat the exception
 			if (fail != null)

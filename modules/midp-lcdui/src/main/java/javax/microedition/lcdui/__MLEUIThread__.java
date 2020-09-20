@@ -40,8 +40,9 @@ final class __MLEUIThread__
 		int __event, int __keyCode, int __modifiers)
 	{
 		// Debug
-		Debugging.debugNote("eventKey(%s, %s, %d, %d, %x)",
-			__form, __item, __event, __keyCode, __modifiers);
+		Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
+			System.identityHashCode(__form), System.identityHashCode(__item),
+			__event, __keyCode, __modifiers);
 	}
 	
 	/**
@@ -53,8 +54,9 @@ final class __MLEUIThread__
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
 		// Debug
-		Debugging.debugNote("eventMouse(%s, %s, %d, %d, %d, %d, %x)",
-			__form, __item, __event, __button, __x, __y, __modifiers);
+		Debugging.debugNote("eventMouse(%08x, %08x, %d, %d, %d, %d, %x)",
+			System.identityHashCode(__form), System.identityHashCode(__item),
+			__event, __button, __x, __y, __modifiers);
 	}
 	
 	/**
@@ -65,8 +67,8 @@ final class __MLEUIThread__
 	public void exitRequest(UIFormBracket __form)
 	{
 		// Debug
-		Debugging.debugNote("exitRequest(%s)",
-			__form);
+		Debugging.debugNote("exitRequest(%08x) @ %s",
+			System.identityHashCode(__form), Thread.currentThread());
 		
 		// Terminate the user interface
 		StaticDisplayState.terminate();
@@ -95,8 +97,8 @@ final class __MLEUIThread__
 	public void paint(UIFormBracket __form, UIItemBracket __item)
 	{
 		// Debug
-		Debugging.debugNote("paint(%s, %s)",
-			__form, __item);
+		Debugging.debugNote("paint(%08x, %08x)",
+			System.identityHashCode(__form), System.identityHashCode(__item));
 	}
 	
 	/**
@@ -108,8 +110,9 @@ final class __MLEUIThread__
 		int __intProp, int __old, int __new)
 	{
 		// Debug
-		Debugging.debugNote("propertyChange(%s, %s, %d, %d, %d)",
-			__form, __item, __intProp, __old, __new);
+		Debugging.debugNote("propertyChange(%08x, %08x, %d, %d, %d)",
+			System.identityHashCode(__form), System.identityHashCode(__item),
+			__intProp, __old, __new);
 	}
 	
 	/**
@@ -121,8 +124,9 @@ final class __MLEUIThread__
 		int __strProp, String __old, String __new)
 	{
 		// Debug
-		Debugging.debugNote("propertyChange(%s, %s, %d, %s, %s)",
-			__form, __item, __strProp, __old, __new);
+		Debugging.debugNote("propertyChange(%08x, %08x, %d, %s, %s)",
+			System.identityHashCode(__form), System.identityHashCode(__item),
+			__strProp, __old, __new);
 	}
 	
 	/**

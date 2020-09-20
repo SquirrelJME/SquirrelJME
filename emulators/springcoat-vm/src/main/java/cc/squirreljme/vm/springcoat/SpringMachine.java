@@ -18,13 +18,16 @@ import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -50,6 +53,14 @@ public final class SpringMachine
 	/** The method to enter for main threads. */
 	private static final MethodNameAndType _MAIN_THREAD_METHOD =
 		new MethodNameAndType("__main", "()V");
+	
+	/** The thread class. */
+	private static final ClassName _THREAD_CLASS =
+		new ClassName("java/lang/Thread");
+	
+	/** The new thread instance. */
+	private static final MethodDescriptor _THREAD_NEW =
+		new MethodDescriptor("(Ljava/lang/String;)V");
 	
 	/** The class loader. */
 	protected final SpringClassLoader classloader;
@@ -104,6 +115,10 @@ public final class SpringMachine
 	
 	/** System properties. */
 	final Map<String, String> _sysproperties;
+	
+	/** Callback threads that are available for use. */
+	private final Collection<CallbackThread> _cbThreads =
+		new LinkedList<>();
 	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
@@ -446,7 +461,52 @@ public final class SpringMachine
 	public final CallbackThread obtainCallbackThread()
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		Collection<CallbackThread> cbThreads = this._cbThreads;
+		synchronized (this)
+		{
+			// Find the thread that can be opened
+			CallbackThread rv = null;
+			for (CallbackThread thread : cbThreads)
+				if (thread.canOpen())
+				{
+					rv = thread;
+					break;
+				}
+			
+			// Use this thread
+			if (rv != null)
+			{
+				rv.open();
+				return rv;
+			}
+			
+			// Setup new thread and its worker
+			String name = "callback#" + cbThreads.size();
+			SpringThread thread = this.createThread(name, false);
+			SpringThreadWorker worker = new SpringThreadWorker(this,
+				thread, false);
+			
+			// This always is a daemon thread
+			thread.setDaemon();
+			
+			// Enter blank thread so it is always at the ready
+			thread.enterBlankFrame();
+			
+			// Allocate thread object instance, this will get a VM thread
+			// created for it in the constructor and otherwise
+			SpringObject jvmThread = worker.newInstance(
+				SpringMachine._THREAD_CLASS, SpringMachine._THREAD_NEW,
+				worker.asVMObject(name));
+			thread.setThreadInstance(jvmThread);
+			
+			// Register this
+			rv = new CallbackThread(thread);
+			cbThreads.add(rv);
+			
+			// Open and use it
+			rv.open();
+			return rv;
+		}
 	}
 	
 	/**
