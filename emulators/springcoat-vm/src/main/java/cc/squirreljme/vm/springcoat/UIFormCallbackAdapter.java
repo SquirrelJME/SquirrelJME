@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
+import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -95,7 +96,13 @@ public class UIFormCallbackAdapter
 	public void eventKey(UIFormBracket __form, UIItemBracket __item,
 		int __event, int __keyCode, int __modifiers)
 	{
-		throw Debugging.todo();
+		this.callbackInvoke(
+			MethodNameAndType.ofArguments("eventKey", null,
+				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
+				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
+				"I", "I", "I"),
+			new UIFormObject(__form), new UIItemObject(__item),
+			__event, __keyCode, __modifiers);
 	}
 	
 	/**
@@ -106,7 +113,13 @@ public class UIFormCallbackAdapter
 	public void eventMouse(UIFormBracket __form, UIItemBracket __item,
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
-		throw Debugging.todo();
+		this.callbackInvoke(
+			MethodNameAndType.ofArguments("eventMouse", null,
+				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
+				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
+				"I", "I", "I", "I", "I"),
+			new UIFormObject(__form), new UIItemObject(__item),
+			__event, __button, __x, __y, __modifiers);
 	}
 	
 	/**
@@ -129,7 +142,11 @@ public class UIFormCallbackAdapter
 	@Override
 	public void paint(UIFormBracket __form, UIItemBracket __item)
 	{
-		throw Debugging.todo();
+		this.callbackInvoke(
+			MethodNameAndType.ofArguments("paint", null,
+				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
+				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"),
+			new UIFormObject(__form), new UIItemObject(__item));
 	}
 	
 	/**
@@ -140,7 +157,13 @@ public class UIFormCallbackAdapter
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __old, int __new)
 	{
-		throw Debugging.todo();
+		this.callbackInvoke(
+			MethodNameAndType.ofArguments("propertyChange", null,
+				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
+				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
+				"I", "I", "I"),
+			new UIFormObject(__form), new UIItemObject(__item),
+			__intProp, __old, __new);
 	}
 	
 	/**
@@ -151,6 +174,12 @@ public class UIFormCallbackAdapter
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __strProp, String __old, String __new)
 	{
-		throw Debugging.todo();
+		this.callbackInvoke(
+			MethodNameAndType.ofArguments("propertyChange", null,
+				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
+				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
+				"I", "Ljava/lang/String;", "Ljava/lang/String;"),
+			new UIFormObject(__form), new UIItemObject(__item),
+			__strProp, __old, __new);
 	}
 }
