@@ -140,13 +140,18 @@ public class UIFormCallbackAdapter
 	 * @since 2020/09/13
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item)
+	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+		int __bw, int __bh, Object __buf, int[] __pal,
+		int __sx, int __sy, int __sw, int __sh)
 	{
 		this.callbackInvoke(
 			MethodNameAndType.ofArguments("paint", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
-				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"),
-			new UIFormObject(__form), new UIItemObject(__item));
+				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
+				"I", "I", "I", "Ljava/lang/Object;", "[I",
+				"I", "I", "I", "I"),
+			new UIFormObject(__form), new UIItemObject(__item),
+			__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh);
 	}
 	
 	/**

@@ -20,6 +20,7 @@ import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
@@ -187,10 +188,19 @@ public final class SpringThread
 		if (__m.isAbstract())
 			throw new SpringVirtualMachineException(String.format("BK1k %s %s",
 				__m.inClass(), __m.nameAndType()));
+				
+		SpringThreadWorker worker = this._worker;
+		
+		// Convert all of the object to virtual machine objects if they are
+		// not already
+		Object[] vmArgs = Arrays.copyOf(__args, __args.length);
+		if (worker != null)
+			for (int i = 0, n = __args.length; i < n; i++)
+				vmArgs[i] = worker.asVMObject(vmArgs[i], true);
 		
 		// Create new frame
 		List<SpringThread.Frame> frames = this._frames;
-		Frame rv = new Frame(frames.size(), __m, __args);
+		Frame rv = new Frame(frames.size(), __m, vmArgs);
 		
 		// Profile for this frame
 		this.profiler.enterFrame(__m.inClass().toString(),
@@ -218,12 +228,12 @@ public final class SpringThread
 				// {@squirreljme.error BK1l Cannot enter a synchronized static
 				// method without a thread working, since we need to load
 				// the class object.}
-				SpringThreadWorker worker = this._worker;
 				if (worker == null)
 					throw new SpringVirtualMachineException("BK1l");
 				
 				// Use the class object
-				monitor = (SpringObject)worker.asVMObject(__m.inClass(), true);
+				monitor = (SpringObject)worker.asVMObject(
+					__m.inClass(), true);
 			}
 			
 			// On this object

@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.jvm.mle.constants.UIMouseButton;
 import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 
 /**
  * Interface that is used a callback on a user-interface form is to be done.
@@ -67,9 +68,21 @@ public interface UIFormCallback
 	 * 
 	 * @param __form The form to be acted on.
 	 * @param __item The item to draw.
+	 * @param __pf The {@link UIPixelFormat} used for the draw.
+	 * @param __bw The buffer width.
+	 * @param __bh The buffer height.
+	 * @param __buf The target buffer to draw to, this is cast to the correct
+	 * buffer format.
+	 * @param __pal The color palette, may be {@code null}. 
+	 * @param __sx Starting surface X coordinate.
+	 * @param __sy Starting surface Y coordinate.
+	 * @param __sw Surface width.
+	 * @param __sh Surface height.
 	 * @since 2020/07/19
 	 */
-	void paint(UIFormBracket __form, UIItemBracket __item);
+	void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+		int __bw, int __bh, Object __buf, int[] __pal,
+		int __sx, int __sy, int __sw, int __sh);
 	
 	/**
 	 * This is called when a property on an item has changed.

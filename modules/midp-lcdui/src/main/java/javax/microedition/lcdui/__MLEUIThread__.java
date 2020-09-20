@@ -94,11 +94,16 @@ final class __MLEUIThread__
 	 * @since 2020/09/12
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item)
+	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+		int __bw, int __bh, Object __buf, int[] __pal,
+		int __sx, int __sy, int __sw, int __sh)
 	{
 		// Debug
-		Debugging.debugNote("paint(%08x, %08x)",
-			System.identityHashCode(__form), System.identityHashCode(__item));
+		Debugging.debugNote("paint(%08x, %08x, %d, " +
+			"%d, %d, %s, %s, " +
+			"%d, %d, %d, %d)",
+			System.identityHashCode(__form), System.identityHashCode(__item),
+			__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh);
 	}
 	
 	/**
