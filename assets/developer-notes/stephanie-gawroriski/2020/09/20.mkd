@@ -1,0 +1,8 @@
+# 2020/09/20
+
+## 22:47
+
+I got forms drawing again, which is nice and a good thing which means making
+progress. Naturally the registration searching fails, but I figured it out
+that I am not comparing the right objects as they are wrapped in SpringCoat.
+This just means that I have to make it so they use the right comparison.
