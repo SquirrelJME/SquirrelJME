@@ -264,44 +264,6 @@ public enum MLEUIForm
 		}
 	},
 	
-	/** {@link UIFormShelf#itemProperty(UIItemBracket, int, int)}. */ 
-	ITEM_PROPERTY_INT("itemProperty:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/UIItemBracket;II)V")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/09/13
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			UIFormShelf.itemProperty(
-				MLEUIForm.__item(__args[0]).item,
-				(int)__args[1],
-				(int)__args[2]);
-			return null;
-		}
-	},
-	
-	/** {@link UIFormShelf#itemProperty(UIItemBracket, int, int)}. */ 
-	ITEM_PROPERTY_STRING("itemProperty:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/UIItemBracket;ILjava/lang/String;)V")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/09/13
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			UIFormShelf.itemProperty(
-				MLEUIForm.__item(__args[0]).item,
-				(int)__args[1],
-				__thread.<String>asNativeObject(String.class, __args[2]));
-			return null;
-		}
-	},
-	
 	/** {@link UIFormShelf#metric(int)}. */
 	METRIC("metric:(I)I")
 	{
@@ -316,7 +278,79 @@ public enum MLEUIForm
 			
 			return UIFormShelf.metric(metric);
 		}
-	}, 
+	},
+	
+	/** {@link UIFormShelf#widgetPropertyInt(UIWidgetBracket, int)}. */
+	WIDGET_PROPERTY_GET_INT("widgetPropertyInt:(Lcc/squirreljme/jvm/" +
+		"mle/brackets/UIWidgetBracket;I)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/21
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.widgetPropertyInt(
+				MLEUIForm.__widget(__args[0]).widget(),
+				(int)__args[1]);
+		}
+	},
+	
+	/** {@link UIFormShelf#widgetPropertyStr(UIWidgetBracket, int)}. */
+	WIDGET_PROPERTY_GET_SET("widgetPropertyStr:(Lcc/squirreljme/jvm/" +
+		"mle/brackets/UIWidgetBracket;I)Ljava/lang/String;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/21
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.widgetPropertyStr(
+				MLEUIForm.__widget(__args[0]).widget(),
+				(int)__args[1]);
+		}
+	},
+	
+	/** {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int)}. */ 
+	WIDGET_PROPERTY_SET_INT("widgetProperty:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/UIWidgetBracket;II)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/13
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.widgetProperty(
+				MLEUIForm.__widget(__args[0]).widget(),
+				(int)__args[1],
+				(int)__args[2]);
+			return null;
+		}
+	},
+	
+	/** {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int)}. */ 
+	WIDGET_PROPERTY_SET_STR("widgetProperty:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/UIWidgetBracket;ILjava/lang/String;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/13
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.widgetProperty(
+				MLEUIForm.__widget(__args[0]).widget(),
+				(int)__args[1],
+				__thread.<String>asNativeObject(String.class, __args[2]));
+			return null;
+		}
+	},
 	
 	/* End. */
 	;

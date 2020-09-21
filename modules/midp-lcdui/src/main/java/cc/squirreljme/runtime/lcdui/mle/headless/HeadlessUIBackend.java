@@ -242,7 +242,18 @@ public class HeadlessUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void itemProperty(UIItemBracket __item, int __intProp,
+	public int metric(int __metric)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public void widgetProperty(UIItemBracket __item, int __intProp,
 		int __newValue)
 	{
 		throw Debugging.todo();
@@ -253,7 +264,7 @@ public class HeadlessUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void itemProperty(UIItemBracket __item, int __strProp,
+	public void widgetProperty(UIItemBracket __item, int __strProp,
 		String __newValue)
 	{
 		throw Debugging.todo();
@@ -264,7 +275,18 @@ public class HeadlessUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int metric(int __metric)
+	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp)
 		throws MLECallError
 	{
 		throw Debugging.todo();

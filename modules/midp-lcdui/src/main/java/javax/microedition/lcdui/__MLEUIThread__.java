@@ -33,6 +33,9 @@ final class __MLEUIThread__
 	private static final long _SLEEP_TIME =
 		5_000;
 	
+	/** Are we within a paint? */
+	private boolean _inPaint;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/12
@@ -42,9 +45,9 @@ final class __MLEUIThread__
 		int __event, int __keyCode, int __modifiers)
 	{
 		// Debug
-		Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
+		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
-			__event, __keyCode, __modifiers);
+			__event, __keyCode, __modifiers);*/
 	}
 	
 	/**
@@ -56,9 +59,9 @@ final class __MLEUIThread__
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
 		// Debug
-		Debugging.debugNote("eventMouse(%08x, %08x, %d, %d, %d, %d, %x)",
+		/*Debugging.debugNote("eventMouse(%08x, %08x, %d, %d, %d, %d, %x)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
-			__event, __button, __x, __y, __modifiers);
+			__event, __button, __x, __y, __modifiers);*/
 	}
 	
 	/**
@@ -69,8 +72,8 @@ final class __MLEUIThread__
 	public void exitRequest(UIFormBracket __form)
 	{
 		// Debug
-		Debugging.debugNote("exitRequest(%08x) @ %s",
-			System.identityHashCode(__form), Thread.currentThread());
+		/*Debugging.debugNote("exitRequest(%08x) @ %s",
+			System.identityHashCode(__form), Thread.currentThread());*/
 		
 		// Terminate the user interface
 		StaticDisplayState.terminate();
@@ -101,22 +104,41 @@ final class __MLEUIThread__
 		int __sy, int __sw, int __sh)
 	{
 		// Debug
-		Debugging.debugNote("paint(%08x, %08x, %d, " +
+		/*Debugging.debugNote("paint(%08x, %08x, %d, " +
 			"%d, %d, %s, %d, %s, " +
 			"%d, %d, %d, %d)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
 			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
+		*/
 		
-		// Setup graphics for drawing
-		Graphics gfx = new AdvancedGraphics((int[])__buf, false,
-			null, __sw, __sh, __bw, __offset, __sx, __sy);
+		// Since painting is a heavy operation, only allow single paints to
+		// happen at a time. This should generally never be called
+		// concurrently ever.
+		synchronized (this)
+		{
+			if (this._inPaint)
+				return;
+			this._inPaint = true;
+		}
 		
-		// Forward to one of the items that draws
-		DisplayWidget widget = StaticDisplayState.locate(__item);
-		if (widget instanceof Canvas)
-			((Canvas)widget).paint(gfx);
-		else if (widget instanceof CustomItem)
-			((CustomItem)widget).paint(gfx, __sw, __sh);
+		// Perform the painting, always clear the flag out
+		try
+		{
+			// Setup graphics for drawing
+			Graphics gfx = new AdvancedGraphics((int[])__buf, false,
+				null, __sw, __sh, __bw, __offset, __sx, __sy);
+			
+			// Forward to one of the items that draws
+			DisplayWidget widget = StaticDisplayState.locate(__item);
+			if (widget instanceof Canvas)
+				((Canvas)widget).__paint(gfx, __sw, __sh);
+			else if (widget instanceof CustomItem)
+				((CustomItem)widget).__paint(gfx, __sw, __sh);
+		}
+		finally
+		{
+			this._inPaint = false;
+		}
 	}
 	
 	/**
@@ -128,9 +150,9 @@ final class __MLEUIThread__
 		int __intProp, int __old, int __new)
 	{
 		// Debug
-		Debugging.debugNote("propertyChange(%08x, %08x, %d, %d, %d)",
+		/*Debugging.debugNote("propertyChange(%08x, %08x, %d, %d, %d)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
-			__intProp, __old, __new);
+			__intProp, __old, __new);*/
 	}
 	
 	/**
@@ -142,9 +164,9 @@ final class __MLEUIThread__
 		int __strProp, String __old, String __new)
 	{
 		// Debug
-		Debugging.debugNote("propertyChange(%08x, %08x, %d, %s, %s)",
+		/*Debugging.debugNote("propertyChange(%08x, %08x, %d, %s, %s)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
-			__strProp, __old, __new);
+			__strProp, __old, __new);*/
 	}
 	
 	/**
@@ -161,9 +183,6 @@ final class __MLEUIThread__
 		// actions
 		for (;;)
 		{
-			// Debug
-			Debugging.debugNote("UI Loop...");
-		
 			// Stop if terminating
 			if (StaticDisplayState.isTerminating())
 				break;

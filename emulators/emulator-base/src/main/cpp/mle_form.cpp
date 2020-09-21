@@ -33,8 +33,10 @@
 #define SWINGUIFORM_INJECTOR_DESC "()Lcc/squirreljme/jvm/mle/callbacks/UIFormCallback;"
 #define SWINGUIFORM_ITEMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V"
 #define SWINGUIFORM_ITEMNEW_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
-#define SWINGUIFORM_ITEMPROPERTY_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;II)V"
-#define SWINGUIFORM_ITEMPROPERTY_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;ILjava/lang/String;)V"
+#define SWINGUIFORM_WIDGETPROPERTY_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;II)V"
+#define SWINGUIFORM_WIDGETPROPERTY_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;ILjava/lang/String;)V"
+#define SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;I)I"
+#define SWINGUIFORM_WIDGETPROPERTY_GET_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;I)Ljava/lang/String;"
 #define SWINGUIFORM_METRIC_DESC "(I)I"
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_callback(JNIEnv* env,
@@ -184,28 +186,44 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_itemNew(JNIEnv* env,
 		type);
 }
 
-JNIEXPORT void JNICALL Impl_mle_FormShelf_itemPropertyInt(JNIEnv* env,
-	jclass classy, jobject item, jint property, jint newValue)
-{
-	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
-		"itemProperty", SWINGUIFORM_ITEMPROPERTY_INT_DESC,
-		item, property, newValue);
-}
-
-JNIEXPORT void JNICALL Impl_mle_FormShelf_itemPropertyStr(JNIEnv* env,
-	jclass classy, jobject item, jint property, jobject newValue)
-{
-	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
-		"itemProperty", SWINGUIFORM_ITEMPROPERTY_STR_DESC,
-		item, property, newValue);
-}
-
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 	jint metricId)
 {
 	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
 		"metric", SWINGUIFORM_METRIC_DESC,
 		metricId);
+}
+
+JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyInt(JNIEnv* env,
+	jclass classy, jobject item, jint property, jint newValue)
+{
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_INT_DESC,
+		item, property, newValue);
+}
+
+JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyStr(JNIEnv* env,
+	jclass classy, jobject item, jint property, jobject newValue)
+{
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_STR_DESC,
+		item, property, newValue);
+}
+
+JNIEXPORT jint JNICALL Impl_mle_FormShelf_widgetPropertyGetInt(JNIEnv* env,
+	jclass classy, jobject item, jint property)
+{
+	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
+		"widgetPropertyInt", SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC,
+		item, property);
+}
+
+JNIEXPORT jobject JNICALL Impl_mle_FormShelf_widgetPropertyGetStr(JNIEnv* env,
+	jclass classy, jobject item, jint property)
+{
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
+		"widgetPropertyStr", SWINGUIFORM_WIDGETPROPERTY_GET_STR_DESC,
+		item, property);
 }
 
 static const JNINativeMethod mleFormMethods[] =
@@ -229,9 +247,11 @@ static const JNINativeMethod mleFormMethods[] =
 	{"injector", SWINGUIFORM_INJECTOR_DESC, (void*)Impl_mle_FormShelf_injector},
 	{"itemDelete", SWINGUIFORM_ITEMDELETE_DESC, (void*)Impl_mle_FormShelf_itemDelete},
 	{"itemNew", SWINGUIFORM_ITEMNEW_DESC, (void*)Impl_mle_FormShelf_itemNew},
-	{"itemProperty", SWINGUIFORM_ITEMPROPERTY_INT_DESC, (void*)Impl_mle_FormShelf_itemPropertyInt},
-	{"itemProperty", SWINGUIFORM_ITEMPROPERTY_STR_DESC, (void*)Impl_mle_FormShelf_itemPropertyStr},
 	{"metric", SWINGUIFORM_METRIC_DESC, (void*)Impl_mle_FormShelf_metric},
+	{"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_INT_DESC, (void*)Impl_mle_FormShelf_widgetPropertyInt},
+	{"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_STR_DESC, (void*)Impl_mle_FormShelf_widgetPropertyStr},
+	{"widgetPropertyInt", SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC, (void*)Impl_mle_FormShelf_widgetPropertyGetInt},
+	{"widgetPropertyStr", SWINGUIFORM_WIDGETPROPERTY_GET_STR_DESC, (void*)Impl_mle_FormShelf_widgetPropertyGetStr},
 };
 
 jint JNICALL mleFormInit(JNIEnv* env, jclass classy)

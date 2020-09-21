@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
  *
  * @since 2020/07/19
  */
-public interface UIItemProperty
+public interface UIWidgetProperty
 {
 	/** Null property. */
 	byte NULL =
@@ -26,7 +26,19 @@ public interface UIItemProperty
 	byte STRING_LABEL =
 		1;
 	
+	/** Widget width. */
+	byte INT_WIDTH =
+		2;
+	
+	/** Widget height. */
+	byte INT_HEIGHT =
+		3;
+	
+	/** Signals that a repaint should happen. */
+	byte INT_SIGNAL_REPAINT =
+		4;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		2;
+		5;
 }

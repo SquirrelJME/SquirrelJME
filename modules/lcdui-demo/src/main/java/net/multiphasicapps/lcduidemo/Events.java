@@ -124,7 +124,7 @@ public class Events
 			this.setTitle("Events");
 			
 			// Draw as opaque, so we do not need to update everything
-			this.setPaintMode(false);
+			this.setPaintMode(true);
 		}
 			
 		/**

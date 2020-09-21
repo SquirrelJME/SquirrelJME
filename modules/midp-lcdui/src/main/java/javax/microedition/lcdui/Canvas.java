@@ -14,12 +14,16 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UISpecialCode;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -179,10 +183,10 @@ public abstract class Canvas
 	volatile boolean _isFullScreen;
 	
 	/** Service repaint counter. */
-	volatile int _paintservice;
+	volatile int _paintCount;
 	
 	/** Was a repaint requested? */
-	volatile boolean _paintwanted;
+	volatile boolean _waitPaint;
 	
 	/**
 	 * Initializes the base canvas.
@@ -241,7 +245,8 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, this._isFullScreen);
+		return UIBackendFactory.getInstance().widgetPropertyInt(
+			this._uiCanvas, UIWidgetProperty.INT_HEIGHT);
 	}
 	
 	/**
@@ -288,7 +293,8 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, this._isFullScreen);
+		return UIBackendFactory.getInstance().widgetPropertyInt(
+			this._uiCanvas, UIWidgetProperty.INT_WIDTH);
 	}
 	
 	/**
@@ -510,9 +516,29 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint(__x, __y, __w, __h);
+		// Mark paint as being waited for
+		this._waitPaint = true;
+		
+		// Request repainting
+		UIBackend instance = UIBackendFactory.getInstance();
+		
+		// Send repaint properties
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT,
+			UISpecialCode.REPAINT_KEY_X | __x);
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT,
+			UISpecialCode.REPAINT_KEY_Y | __y);
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT,
+			UISpecialCode.REPAINT_KEY_WIDTH | __w);
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT,
+			UISpecialCode.REPAINT_KEY_HEIGHT | __h);
+		
+		// Execute the paint
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0);
 	}
 	
 	/**
@@ -529,13 +555,16 @@ public abstract class Canvas
 	public final void serviceRepaints()
 	{
 		// If a paint was not requested then do nothing
-		if (!this._paintwanted)
+		if (!this._waitPaint)
 			return;
 		
+		// No longer waiting for a paint to occur
+		this._waitPaint = false;
+		
 		// Just wait until the service count changes
-		int nowpsv = this._paintservice;
-		while (nowpsv == this._paintservice)
-			break;
+		int atCount = this._paintCount;
+		while (atCount == this._paintCount)
+			;
 	}
 	
 	/**
@@ -627,6 +656,42 @@ public abstract class Canvas
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
+	}
+	
+	/**
+	 * Paints and forwards Graphics.
+	 * 
+	 * @param __gfx Graphics to draw.
+	 * @param __sw Surface width.
+	 * @param __sh Surface height.
+	 * @since 2020/09/21
+	 */
+	final void __paint(Graphics __gfx, int __sw, int __sh)
+	{
+		// Draw background?
+		if (!this._transparent)
+		{
+			int old = __gfx.getAlphaColor();
+			__gfx.setColor(UIBackendFactory.getInstance().metric(
+				UIMetricType.COLOR_CANVAS_BACKGROUND));
+			
+			__gfx.fillRect(0, 0, __sw, __sh);
+			
+			__gfx.setAlphaColor(old);
+		}
+		
+		// Forward Draw
+		try
+		{
+			this.paint(__gfx);
+		}
+		
+		// Handle repaint servicing
+		finally
+		{
+			// Increment the paint counter, that it happened
+			this._paintCount++;
+		}
 	}
 }
 

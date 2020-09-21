@@ -23,7 +23,11 @@ public interface UIMetricType
 	byte UIFORMS_SUPPORTED =
 		0;
 	
+	/** Background color for opaque canvases. */
+	byte COLOR_CANVAS_BACKGROUND =
+		1;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		1;
+		2;
 }

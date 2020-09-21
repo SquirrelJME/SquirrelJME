@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.uiform;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
@@ -31,7 +32,7 @@ import javax.swing.JPanel;
  * @since 2020/07/01
  */
 public final class SwingForm
-	implements UIFormBracket
+	implements UIFormBracket, SwingWidget
 {
 	/** The panel which makes up the form. */
 	protected final JPanel formPanel;
@@ -510,5 +511,49 @@ public final class SwingForm
 		{
 			this._callback = __callback;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public final void property(int __id, int __newValue)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public final void property(int __id, String __newValue)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public int propertyInt(int __intProp)
+		throws MLECallError
+	{
+		throw Debugging.todo("Property: " + __intProp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public String propertyStr(int __strProp)
+		throws MLECallError
+	{
+		throw Debugging.todo("Property: " + __strProp);
 	}
 }

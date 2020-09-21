@@ -10,7 +10,10 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public abstract class CustomItem
 	extends Item
@@ -206,6 +209,32 @@ public abstract class CustomItem
 	protected void traverseOut()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Paints and forwards Graphics.
+	 * 
+	 * @param __gfx Graphics to draw.
+	 * @param __sw Surface width.
+	 * @param __sh Surface height.
+	 * @since 2020/09/21
+	 */
+	final void __paint(Graphics __gfx, int __sw, int __sh)
+	{
+		// Draw background?
+		if (!this._transparent)
+		{
+			int old = __gfx.getAlphaColor();
+			__gfx.setColor(UIBackendFactory.getInstance().metric(
+				UIMetricType.COLOR_CANVAS_BACKGROUND));
+			
+			__gfx.fillRect(0, 0, __sw, __sh);
+			
+			__gfx.setAlphaColor(old);
+		}
+		
+		// Forward draw
+		this.paint(__gfx, __sw, __sh);
 	}
 }
 

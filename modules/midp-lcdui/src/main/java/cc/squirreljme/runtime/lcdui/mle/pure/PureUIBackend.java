@@ -243,31 +243,53 @@ public class PureUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void itemProperty(UIItemBracket __item, int __intProp,
-		int __newValue)
-	{
-		UIFormShelf.itemProperty(__item, __intProp, __newValue);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/19
-	 */
-	@Override
-	public void itemProperty(UIItemBracket __item, int __strProp,
-		String __newValue)
-	{
-		UIFormShelf.itemProperty(__item, __strProp, __newValue);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/19
-	 */
-	@Override
 	public int metric(int __metric)
 		throws MLECallError
 	{
 		return UIFormShelf.metric(__metric);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public void widgetProperty(UIItemBracket __item, int __intProp,
+		int __newValue)
+	{
+		UIFormShelf.widgetProperty(__item, __intProp, __newValue);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public void widgetProperty(UIItemBracket __item, int __strProp,
+		String __newValue)
+	{
+		UIFormShelf.widgetProperty(__item, __strProp, __newValue);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp)
+		throws MLECallError
+	{
+		return UIFormShelf.widgetPropertyInt(__widget, __intProp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp)
+		throws MLECallError
+	{
+		return UIFormShelf.widgetPropertyStr(__widget, __strProp);
 	}
 }

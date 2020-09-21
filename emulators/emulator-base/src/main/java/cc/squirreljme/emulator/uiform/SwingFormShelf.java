@@ -16,13 +16,14 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIItemProperty;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
+import javax.swing.UIManager;
 
 /**
  * Java Swing implementation of the  form shelf.
@@ -31,6 +32,14 @@ import java.awt.Toolkit;
  */
 public final class SwingFormShelf
 {
+	/** Alpha transparency mask. */
+	private static final int _ALPHA_MASK =
+		0xFF_000000;
+	
+	/** Color mask. */
+	private static final int _COLOR_MASK =
+		0x00_FFFFFF;
+	
 	/**
 	 * Not used.
 	 * 
@@ -422,55 +431,6 @@ public final class SwingFormShelf
 				throw Debugging.todo(__type);
 		}
 	}
-	/**
-	 * As {@link UIFormShelf#itemProperty(UIItemBracket, int, int)}.
-	 * 
-	 * @param __item The item to set.
-	 * @param __intProp The {@link UIItemProperty}.
-	 * @param __newValue The new value to set.
-	 * @throws MLECallError If the item is not valid or the property is not
-	 * valid or not an integer property.
-	 * @since 2020/09/13
-	 */
-	public static void itemProperty(UIItemBracket __item,
-		int __intProp, int __newValue)
-		throws MLECallError
-	{
-		if (__item == null)
-			throw new MLECallError("Null item.");
-		
-		// Debug
-		Debugging.debugNote("itemProperty(%s, %d, %d)",
-			__item, __intProp, __newValue);
-		
-		// Forward
-		((SwingItem)__item).property(__intProp, __newValue);
-	}
-	
-	/**
-	 * As {@link UIFormShelf#itemProperty(UIItemBracket, int, String)}. 
-	 * 
-	 * @param __item The item to set.
-	 * @param __strProp The {@link UIItemProperty}.
-	 * @param __newValue The new value to set.
-	 * @throws MLECallError If the item is not valid or the property is not
-	 * valid or not a string property.
-	 * @since 2020/09/13
-	 */
-	public static void itemProperty(UIItemBracket __item,
-		int __strProp, String __newValue)
-		throws MLECallError
-	{
-		if (__item == null)
-			throw new MLECallError("Null item.");
-		
-		// Debug
-		Debugging.debugNote("itemProperty(%s, %d, %s)",
-			__item, __strProp, __newValue);
-		
-		// Forward
-		((SwingItem)__item).property(__strProp, __newValue);
-	}
 	
 	/**
 	 * Handles {@link UIFormShelf#metric(int)}. 
@@ -505,8 +465,95 @@ public final class SwingFormShelf
 					return 0;
 				}
 			
+				// Background for canvases
+			case UIMetricType.COLOR_CANVAS_BACKGROUND:
+				return UIManager.getColor("desktop")
+					.getRGB() & SwingFormShelf._COLOR_MASK;
+			
 			default:
 				throw new MLECallError("Unknown metric: " + __metricId);
 		}
+	}
+	
+	/**
+	 * As {@link UIFormShelf#(UIWidgetBracket, int, int)}.
+	 * 
+	 * @param __item The item to set.
+	 * @param __intProp The {@link UIWidgetProperty}.
+	 * @param __newValue The new value to set.
+	 * @throws MLECallError If the item is not valid or the property is not
+	 * valid or not an integer property.
+	 * @since 2020/09/13
+	 */
+	public static void widgetProperty(UIWidgetBracket __item,
+		int __intProp, int __newValue)
+		throws MLECallError
+	{
+		if (__item == null)
+			throw new MLECallError("Null item.");
+		
+		// Forward
+		((SwingWidget)__item).property(__intProp, __newValue);
+	}
+	
+	/**
+	 * As {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, String)}. 
+	 * 
+	 * @param __item The item to set.
+	 * @param __strProp The {@link UIWidgetProperty}.
+	 * @param __newValue The new value to set.
+	 * @throws MLECallError If the item is not valid or the property is not
+	 * valid or not a string property.
+	 * @since 2020/09/13
+	 */
+	public static void widgetProperty(UIWidgetBracket __item,
+		int __strProp, String __newValue)
+		throws MLECallError
+	{
+		if (__item == null)
+			throw new MLECallError("Null item.");
+		
+		// Forward
+		((SwingWidget)__item).property(__strProp, __newValue);
+	}
+	
+	/**
+	 * Gets a property of the given widget.
+	 * 
+	 * @param __widget The widget to get from.
+	 * @param __intProp The {@link UIWidgetProperty}.
+	 * @return The value of the property.
+	 * @throws MLECallError If the widget or property is not valid.
+	 * @since 2020/09/21
+	 */
+	public static int widgetPropertyInt(UIWidgetBracket __widget,
+		int __intProp)
+		throws MLECallError
+	{
+		if (__widget == null)
+			throw new MLECallError("No widget.");
+		
+		// Forward
+		return ((SwingWidget)__widget).propertyInt(__intProp);
+	}
+	
+	/**
+	 * Gets a property of the given widget.
+	 * 
+	 * @param __widget The widget to get from.
+	 * @param __strProp The {@link UIWidgetProperty}.
+	 * @return The value of the property.
+	 * @throws MLECallError If the widget or property is not valid.
+	 * @since 2020/09/21
+	 */
+	public static String widgetPropertyStr(UIWidgetBracket __widget,
+		int __strProp)
+		throws MLECallError
+	{
+		if (__widget == null)
+			throw new MLECallError("No widget.");
+		
+		// Forward
+		return ((SwingWidget)__widget).propertyStr(__strProp);
 	}
 }

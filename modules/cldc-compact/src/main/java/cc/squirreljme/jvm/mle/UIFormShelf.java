@@ -15,7 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIItemProperty;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -276,34 +276,6 @@ public final class UIFormShelf
 		throws MLECallError;
 	
 	/**
-	 * Sets the given item property.
-	 * 
-	 * @param __item The item to set.
-	 * @param __intProp The {@link UIItemProperty}.
-	 * @param __newValue The new value to set.
-	 * @throws MLECallError If the item is not valid or the property is not
-	 * valid or not an integer property.
-	 * @since 2020/09/13
-	 */
-	public static native void itemProperty(UIItemBracket __item,
-		int __intProp, int __newValue)
-		throws MLECallError;
-	
-	/**
-	 * Sets the given item property.
-	 * 
-	 * @param __item The item to set.
-	 * @param __strProp The {@link UIItemProperty}.
-	 * @param __newValue The new value to set.
-	 * @throws MLECallError If the item is not valid or the property is not
-	 * valid or not a string property.
-	 * @since 2020/09/13
-	 */
-	public static native void itemProperty(UIItemBracket __item,
-		int __strProp, String __newValue)
-		throws MLECallError;
-	
-	/**
 	 * Returns a metric which describes something about the user interface
 	 * forms implementation or other details about the system.
 	 * 
@@ -316,5 +288,59 @@ public final class UIFormShelf
 	 * @since 2020/06/30
 	 */
 	public static native int metric(int __metric)
+		throws MLECallError;
+	
+	/**
+	 * Sets the given item property.
+	 * 
+	 * @param __widget The item to set.
+	 * @param __intProp The {@link UIWidgetProperty}.
+	 * @param __newValue The new value to set.
+	 * @throws MLECallError If the item is not valid or the property is not
+	 * valid or not an integer property.
+	 * @since 2020/09/13
+	 */
+	public static native void widgetProperty(UIWidgetBracket __widget,
+		int __intProp, int __newValue)
+		throws MLECallError;
+	
+	/**
+	 * Sets the given item property.
+	 * 
+	 * @param __widget The item to set.
+	 * @param __strProp The {@link UIWidgetProperty}.
+	 * @param __newValue The new value to set.
+	 * @throws MLECallError If the item is not valid or the property is not
+	 * valid or not a string property.
+	 * @since 2020/09/13
+	 */
+	public static native void widgetProperty(UIWidgetBracket __widget,
+		int __strProp, String __newValue)
+		throws MLECallError;
+	
+	/**
+	 * Gets a property of the given widget.
+	 * 
+	 * @param __widget The widget to get from.
+	 * @param __intProp The {@link UIWidgetProperty}.
+	 * @return The value of the property.
+	 * @throws MLECallError If the widget or property is not valid.
+	 * @since 2020/09/21
+	 */
+	public static native int widgetPropertyInt(UIWidgetBracket __widget,
+		int __intProp)
+		throws MLECallError;
+	
+	/**
+	 * Gets a property of the given widget.
+	 * 
+	 * @param __widget The widget to get from.
+	 * @param __strProp The {@link UIWidgetProperty}.
+	 * @return The value of the property.
+	 * @throws MLECallError If the widget or property is not valid.
+	 * @since 2020/09/21
+	 */
+	public static native String widgetPropertyStr(UIWidgetBracket __widget,
+		int __strProp)
 		throws MLECallError;
 }

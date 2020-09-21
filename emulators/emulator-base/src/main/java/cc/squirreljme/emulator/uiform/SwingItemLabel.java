@@ -9,7 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
-import cc.squirreljme.jvm.mle.constants.UIItemProperty;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import javax.swing.JLabel;
 
@@ -77,7 +77,7 @@ public class SwingItemLabel
 	{
 		switch (__id)
 		{
-			case UIItemProperty.STRING_LABEL:
+			case UIWidgetProperty.STRING_LABEL:
 				this.label.setText(__newValue);
 				break;
 			

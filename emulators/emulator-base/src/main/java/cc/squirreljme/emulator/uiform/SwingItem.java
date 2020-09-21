@@ -10,8 +10,9 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemProperty;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JComponent;
 
 /**
@@ -21,7 +22,7 @@ import javax.swing.JComponent;
  * @since 2020/07/18
  */
 public abstract class SwingItem
-	implements UIItemBracket
+	implements UIItemBracket, SwingWidget
 {
 	/** The form the item is on. */
 	SwingForm _form;
@@ -45,27 +46,6 @@ public abstract class SwingItem
 	public abstract void deletePost();
 	
 	/**
-	 * Sets the given property.
-	 * 
-	 * @param __id The {@link UIItemProperty} to set.
-	 * @param __newValue The new value to set.
-	 * @throws MLECallError If the property is not valid.
-	 * @since 2020/09/13
-	 */
-	public abstract void property(int __id, int __newValue)
-		throws MLECallError;
-	
-	/**
-	 * Sets the given property.
-	 * 
-	 * @param __id The {@link UIItemProperty} to set.
-	 * @param __newValue The new value to set.
-	 * @throws MLECallError If the property is not valid.
-	 * @since 2020/09/13
-	 */
-	public abstract void property(int __id, String __newValue);
-	
-	/**
 	 * Deletes the given item.
 	 * 
 	 * @throws MLECallError If it could not deleted.
@@ -87,6 +67,44 @@ public abstract class SwingItem
 			
 			// Call post deletion handler for cleanup
 			this.deletePost();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public int propertyInt(int __intProp)
+		throws MLECallError
+	{
+		switch (__intProp)
+		{
+				// Form width
+			case UIWidgetProperty.INT_WIDTH:
+				return this.component().getWidth();
+				
+				// Form height
+			case UIWidgetProperty.INT_HEIGHT:
+				return this.component().getHeight();
+			
+			default:
+				throw new MLECallError("Unknown IntProp: " + __intProp);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public String propertyStr(int __strProp)
+		throws MLECallError
+	{
+		switch (__strProp)
+		{
+			default:
+				throw new MLECallError("Unknown IntProp: " + __strProp);
 		}
 	}
 }

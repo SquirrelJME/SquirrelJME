@@ -13,7 +13,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIItemProperty;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
@@ -90,7 +90,7 @@ public abstract class Displayable
 		// Setup the title item
 		UIItemBracket uiTitle = instance.itemNew(UIItemType.LABEL);
 		instance.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
-		instance.itemProperty(uiTitle, UIItemProperty.STRING_LABEL,
+		instance.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
 			title);
 		
 		// Store for future adjustments
@@ -372,8 +372,8 @@ public abstract class Displayable
 		
 		// We can always set the title for the widget as the form should be
 		// allocated
-		UIBackendFactory.getInstance().itemProperty(this._uiTitle,
-			UIItemProperty.STRING_LABEL, __t);
+		UIBackendFactory.getInstance().widgetProperty(this._uiTitle,
+			UIWidgetProperty.STRING_LABEL, __t);
 	}
 	
 	/**

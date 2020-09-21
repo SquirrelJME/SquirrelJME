@@ -11,7 +11,7 @@ package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemProperty;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.jvm.mle.constants.UIMouseButton;
@@ -90,7 +90,7 @@ public interface UIFormCallback
 	 * 
 	 * @param __form The form to be acted on.
 	 * @param __item The item to be acted on.
-	 * @param __intProp One of {@link UIItemProperty}.
+	 * @param __intProp One of {@link UIWidgetProperty}.
 	 * @param __old The old value.
 	 * @param __new The new value.
 	 * @since 2020/07/19
@@ -103,7 +103,7 @@ public interface UIFormCallback
 	 * 
 	 * @param __form The form to be acted on.
 	 * @param __item The item to be acted on.
-	 * @param __strProp One of {@link UIItemProperty}.
+	 * @param __strProp One of {@link UIWidgetProperty}.
 	 * @param __old The old value.
 	 * @param __new The new value.
 	 * @since 2020/07/19
