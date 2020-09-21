@@ -10,11 +10,16 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -161,6 +166,9 @@ public abstract class Canvas
 	public static final int UP =
 		1;
 	
+	/** The native display instance. */
+	final UIItemBracket _uiCanvas;
+	
 	/** The key listener to use. */
 	private KeyListener _keylistener;
 	
@@ -168,7 +176,7 @@ public abstract class Canvas
 	boolean _transparent;
 	
 	/** Should this be ran full-screen? */
-	volatile boolean _isfullscreen;
+	volatile boolean _isFullScreen;
 	
 	/** Service repaint counter. */
 	volatile int _paintservice;
@@ -183,6 +191,15 @@ public abstract class Canvas
 	 */
 	protected Canvas()
 	{
+		// Build new canvas
+		UIItemBracket uiCanvas = UIFormShelf.itemNew(UIItemType.CANVAS);
+		this._uiCanvas = uiCanvas;
+		
+		// Register self for future paint events
+		StaticDisplayState.register(this, uiCanvas);
+		
+		// Show it on the form for this displayable
+		UIFormShelf.formItemPosition(this._uiForm, uiCanvas, 0);
 	}
 	
 	/**
@@ -224,7 +241,7 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, this._isfullscreen);
+		return Displayable.__getHeight(this, this._isFullScreen);
 	}
 	
 	/**
@@ -271,7 +288,7 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, this._isfullscreen);
+		return Displayable.__getWidth(this, this._isFullScreen);
 	}
 	
 	/**
@@ -350,7 +367,7 @@ public abstract class Canvas
 		"access to this flag.")
 	protected boolean isFullscreen()
 	{
-		return this._isfullscreen;
+		return this._isFullScreen;
 	}
 	
 	/**
@@ -538,17 +555,17 @@ public abstract class Canvas
 	 */
 	public void setFullScreenMode(boolean __f)
 	{
-		// Do nothing if already fullscreen
-		if (this._isfullscreen == __f)
+		// Do nothing if the state is the same
+		if (this._isFullScreen == __f)
 			return;
 		
 		// Set new mode
-		this._isfullscreen = __f;
+		this._isFullScreen = __f;
 		
-		// Repaint the display if we have one so that it actually is used
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();
+		// Depending on full-screen either choose the first position or the
+		// full-screen body of the form
+		UIFormShelf.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
+			UIItemPosition.BODY : 0));
 	}
 	
 	/**

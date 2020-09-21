@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -35,6 +36,7 @@ import javax.microedition.midlet.MIDlet;
  */
 public abstract class Displayable
 	extends ExposedDisplayable
+	implements DisplayWidget
 {
 	/** The native form instance. */
 	final UIFormBracket _uiForm;

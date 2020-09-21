@@ -13,8 +13,10 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
@@ -98,6 +100,17 @@ public class PureUIBackend
 	 */
 	@Override
 	public boolean equals(UIItemBracket __a, UIItemBracket __b)
+		throws MLECallError
+	{
+		return UIFormShelf.equals(__a, __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/20
+	 */
+	@Override
+	public boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
 		throws MLECallError
 	{
 		return UIFormShelf.equals(__a, __b);

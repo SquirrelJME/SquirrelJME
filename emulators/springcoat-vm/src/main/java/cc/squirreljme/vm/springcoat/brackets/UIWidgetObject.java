@@ -7,21 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.brackets;
+package cc.squirreljme.vm.springcoat.brackets;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
+import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
 /**
- * This represents an item within a {@link UIFormShelf}, it has one of the
- * {@link UIItemType} for its type.
+ * Base class for widgets.
  *
- * @since 2020/07/01
+ * @since 2020/09/20
  */
-@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-@GhostObject
-public interface UIItemBracket
-	extends UIWidgetBracket
+public abstract class UIWidgetObject
+	extends AbstractGhostObject
 {
+	/**
+	 * Returns the used widget.
+	 * 
+	 * @return The widget.
+	 * @since 2020/09/20
+	 */
+	public abstract UIWidgetBracket widget();
 }

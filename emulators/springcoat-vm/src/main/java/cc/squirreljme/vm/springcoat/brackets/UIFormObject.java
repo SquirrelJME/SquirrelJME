@@ -10,6 +10,8 @@
 package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
 /**
@@ -18,7 +20,7 @@ import cc.squirreljme.vm.springcoat.AbstractGhostObject;
  * @since 2020/07/01
  */
 public final class UIFormObject
-	extends AbstractGhostObject
+	extends UIWidgetObject
 {
 	/** The form to wrap. */
 	public final UIFormBracket form;
@@ -37,5 +39,15 @@ public final class UIFormObject
 			throw new NullPointerException("NARG");
 		
 		this.form = __form;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/20
+	 */
+	@Override
+	public UIFormBracket widget()
+	{
+		return this.form;
 	}
 }

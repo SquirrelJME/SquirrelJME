@@ -13,10 +13,12 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
+import cc.squirreljme.vm.springcoat.brackets.UIWidgetObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
@@ -89,6 +91,74 @@ public enum MLEUIForm
 			UIFormShelf.displayShow(MLEUIForm.__display(__args[0]).display,
 				MLEUIForm.__form(__args[1]).form);
 			return null;
+		}
+	},
+	
+	/** {@link UIFormShelf#equals(UIDisplayBracket, UIDisplayBracket)}. */
+	EQUALS_DISPLAY("equals:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIDisplayBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.equals(MLEUIForm.__display(__args[0]).display,
+				MLEUIForm.__display(__args[1]).display);
+		}
+	},
+	
+	/** {@link UIFormShelf#equals(UIFormBracket, UIFormBracket)}. */
+	EQUALS_FORM("equals:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIFormBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.equals(MLEUIForm.__form(__args[0]).form,
+				MLEUIForm.__form(__args[1]).form);
+		}
+	},
+	
+	/** {@link UIFormShelf#equals(UIItemBracket, UIItemBracket)}. */
+	EQUALS_ITEM("equals:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.equals(MLEUIForm.__item(__args[0]).item,
+				MLEUIForm.__item(__args[1]).item);
+		}
+	},
+	
+	/** {@link UIFormShelf#equals(UIWidgetBracket, UIWidgetBracket)}. */
+	EQUALS_WIDGET("equals:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIWidgetBracket;Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIWidgetBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/09/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.equals(MLEUIForm.__widget(__args[0]).widget(),
+				MLEUIForm.__widget(__args[1]).widget());
 		}
 	},
 	
@@ -329,5 +399,22 @@ public enum MLEUIForm
 			throw new SpringMLECallError("Not a UIItemObject.");
 		
 		return (UIItemObject)__o;
+	}
+	
+	/**
+	 * Gets the widget from this object.
+	 * 
+	 * @param __o The object to get from.
+	 * @throws SpringMLECallError If not one.
+	 * @return The widget.
+	 * @since 2020/09/20
+	 */
+	static UIWidgetObject __widget(Object __o)
+		throws SpringMLECallError
+	{
+		if (!(__o instanceof UIWidgetObject))
+			throw new SpringMLECallError("Not a UIWidgetObject.");
+		
+		return (UIWidgetObject)__o;
 	}
 }

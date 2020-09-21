@@ -11,8 +11,10 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 
 public abstract class Item
+	implements DisplayWidget
 {
 	public static final int BUTTON =
 		2;

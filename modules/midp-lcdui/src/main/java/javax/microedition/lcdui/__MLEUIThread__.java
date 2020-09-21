@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -95,15 +97,26 @@ final class __MLEUIThread__
 	 */
 	@Override
 	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
-		int __bw, int __bh, Object __buf, int[] __pal,
-		int __sx, int __sy, int __sw, int __sh)
+		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
+		int __sy, int __sw, int __sh)
 	{
 		// Debug
 		Debugging.debugNote("paint(%08x, %08x, %d, " +
-			"%d, %d, %s, %s, " +
+			"%d, %d, %s, %d, %s, " +
 			"%d, %d, %d, %d)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
-			__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh);
+			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
+		
+		// Setup graphics for drawing
+		Graphics gfx = new AdvancedGraphics((int[])__buf, false,
+			null, __sw, __sh, __bw, __offset, __sx, __sy);
+		
+		// Forward to one of the items that draws
+		DisplayWidget widget = StaticDisplayState.locate(__item);
+		if (widget instanceof Canvas)
+			((Canvas)widget).paint(gfx);
+		else if (widget instanceof CustomItem)
+			((CustomItem)widget).paint(gfx, __sw, __sh);
 	}
 	
 	/**

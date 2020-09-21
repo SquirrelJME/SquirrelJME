@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.mle.fb;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -98,6 +99,17 @@ public class FBUIBackend
 	 */
 	@Override
 	public boolean equals(UIItemBracket __a, UIItemBracket __b)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/20
+	 */
+	@Override
+	public boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
 		throws MLECallError
 	{
 		throw Debugging.todo();

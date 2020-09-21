@@ -21,6 +21,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -76,6 +77,18 @@ public final class SwingForm
 	
 	/** The callback for the form. */
 	private UIFormCallback _callback;
+	
+	static
+	{
+		try
+		{
+			// Greatly optimizes speed
+			JFrame.setDefaultLookAndFeelDecorated(true);
+		}
+		catch (Throwable ignored)
+		{
+		}
+	}
 	
 	/**
 	 * Initializes the form.
@@ -461,7 +474,8 @@ public final class SwingForm
 			GridBagConstraints cons = new GridBagConstraints();
 			cons.gridwidth = 1;
 			cons.gridheight = n;
-			cons.fill = GridBagConstraints.HORIZONTAL;
+			cons.fill = (n > 1 ? GridBagConstraints.HORIZONTAL :
+				GridBagConstraints.BOTH);
 			cons.weightx = 1.0;
 			cons.weighty = 1.0;
 			cons.anchor = GridBagConstraints.PAGE_START;

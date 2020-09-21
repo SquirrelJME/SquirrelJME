@@ -9,7 +9,10 @@
 
 package cc.squirreljme.runtime.lcdui.mle;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -21,7 +24,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.DisplayListener;
-import javax.microedition.lcdui.Displayable;
 
 /**
  * Static state of the LCDUI sub-system.
@@ -38,12 +40,13 @@ public final class StaticDisplayState
 	private static final List<DisplayListener> _LISTENERS =
 		new LinkedList<>();
 	
-	/** The cached forms for {@link Displayable}. */
-	private static final Map<Reference<Displayable>, UIFormBracket> _FORMS =
+	/** The cached forms for {@link DisplayWidget}. */
+	private static final Map<Reference<DisplayWidget>, UIWidgetBracket>
+		_WIDGETS =
 		new LinkedHashMap<>();
 	
 	/** Queue which is used for garbage collection of forms. */
-	private static final ReferenceQueue<Displayable> _FORM_QUEUE =
+	private static final ReferenceQueue<DisplayWidget> _QUEUE =
 		new ReferenceQueue<>();
 	
 	/** Graphics handling thread. */
@@ -147,27 +150,63 @@ public final class StaticDisplayState
 	}
 	
 	/**
-	 * Locates the form for the given displayable.
+	 * Locates the widget for the given native.
 	 * 
-	 * @param __displayable The displayable to locate.
-	 * @return The form for the given displayable.
+	 * @param __native The native to locate.
+	 * @return The widget for the given native.
+	 * @throws NoSuchElementException If none were found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/20
+	 */
+	public static DisplayWidget locate(UIWidgetBracket __native)
+		throws NoSuchElementException, NullPointerException
+	{
+		if (__native == null)
+			throw new NullPointerException("NARG");
+			
+		// Would be previously cached
+		UIBackend instance = UIBackendFactory.getInstance();
+		synchronized (StaticDisplayState.class)
+		{
+			for (Map.Entry<Reference<DisplayWidget>, UIWidgetBracket> e :
+				StaticDisplayState._WIDGETS.entrySet())
+			{
+				if (instance.equals(__native, e.getValue()))
+				{
+					DisplayWidget rv = e.getKey().get();
+					if (rv != null)
+						return rv; 
+				}
+			}
+		}
+		
+		// {@squirreljme.error EB3e No widget exists for the given
+		// native.}
+		throw new NoSuchElementException("EB3e");
+	}
+	
+	/**
+	 * Locates the widget for the given display widget.
+	 * 
+	 * @param __widget The displayable to locate.
+	 * @return The widget for the given displayable.
 	 * @throws NoSuchElementException If none were found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/26
 	 */
-	public static UIFormBracket locate(Displayable __displayable)
+	public static UIWidgetBracket locate(DisplayWidget __widget)
 		throws NoSuchElementException, NullPointerException
 	{
-		if (__displayable == null)
+		if (__widget == null)
 			throw new NullPointerException("NARG");
 		
 		// Would be previously cached
 		synchronized (StaticDisplayState.class)
 		{
-			for (Map.Entry<Reference<Displayable>, UIFormBracket> e :
-				StaticDisplayState._FORMS.entrySet())
+			for (Map.Entry<Reference<DisplayWidget>, UIWidgetBracket> e :
+				StaticDisplayState._WIDGETS.entrySet())
 			{
-				if (__displayable == e.getKey().get())
+				if (__widget == e.getKey().get())
 					return e.getValue();
 			}
 		}
@@ -187,21 +226,25 @@ public final class StaticDisplayState
 		// Prevent thread mishaps between threads doing this
 		synchronized (StaticDisplayState.class)
 		{
-			ReferenceQueue<Displayable> queue = StaticDisplayState._FORM_QUEUE;
-			Map<Reference<Displayable>, UIFormBracket> forms =
-				StaticDisplayState._FORMS;
+			ReferenceQueue<DisplayWidget> queue = StaticDisplayState._QUEUE;
+			Map<Reference<DisplayWidget>, UIWidgetBracket> widgets =
+				StaticDisplayState._WIDGETS;
 			
 			// If there is anything in the queue, clear it out
-			for (Reference<? extends Displayable> ref = queue.poll();
+			for (Reference<? extends DisplayWidget> ref = queue.poll();
 				ref != null; ref = queue.poll())
 			{
-				UIFormBracket form = forms.get(ref);
+				UIWidgetBracket widget = widgets.get(ref);
 				
 				// Remove from the mapping since it is gone now
-				forms.remove(ref);
+				widgets.remove(ref);
 				
 				// Perform collection on it
-				UIBackendFactory.getInstance().formDelete(form);
+				UIBackend instance = UIBackendFactory.getInstance();
+				if (widget instanceof UIFormBracket)
+					instance.formDelete((UIFormBracket)widget);
+				else if (widget instanceof UIItemBracket)
+					instance.itemDelete((UIItemBracket)widget);
 			}
 		}
 	}
@@ -223,16 +266,16 @@ public final class StaticDisplayState
 	/**
 	 * Registers the displayable with the given form.
 	 * 
-	 * @param __displayable The displayable.
-	 * @param __form The form to link.
+	 * @param __widget The displayable.
+	 * @param __native The native to link.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/01
 	 */
-	public static void register(Displayable __displayable,
-		UIFormBracket __form)
+	public static void register(DisplayWidget __widget,
+		UIWidgetBracket __native)
 		throws NullPointerException
 	{
-		if (__displayable == null || __form == null)
+		if (__widget == null || __native == null)
 			throw new NullPointerException("NARG");
 		
 		// Prevent thread mishaps between threads doing this
@@ -243,11 +286,11 @@ public final class StaticDisplayState
 			StaticDisplayState.gc();
 			
 			// Queue the form for future cleanup
-			Reference<Displayable> ref = new WeakReference<>(__displayable,
-				StaticDisplayState._FORM_QUEUE);
+			Reference<DisplayWidget> ref = new WeakReference<>(__widget,
+				StaticDisplayState._QUEUE);
 			
 			// Bind this displayable to the form
-			StaticDisplayState._FORMS.put(ref, __form);
+			StaticDisplayState._WIDGETS.put(ref, __native);
 		}
 	}
 	

@@ -10,6 +10,8 @@
 package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
 /**
@@ -18,7 +20,7 @@ import cc.squirreljme.vm.springcoat.AbstractGhostObject;
  * @since 2020/07/18
  */
 public final class UIItemObject
-	extends AbstractGhostObject
+	extends UIWidgetObject
 {
 	/** The item to wrap. */
 	public final UIItemBracket item;
@@ -37,5 +39,15 @@ public final class UIItemObject
 			throw new NullPointerException("NARG");
 		
 		this.item = __item;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/20
+	 */
+	@Override
+	public UIItemBracket widget()
+	{
+		return this.item;
 	}
 }

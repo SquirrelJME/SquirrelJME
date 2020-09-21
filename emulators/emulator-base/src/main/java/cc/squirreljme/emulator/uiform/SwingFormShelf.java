@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemProperty;
@@ -157,6 +158,25 @@ public final class SwingFormShelf
 	 */
 	public static boolean equals(UIItemBracket __a,
 		UIItemBracket __b)
+		throws MLECallError
+	{
+		if (__a == null || __b == null)
+			throw new MLECallError("Null arguments.");
+		
+		return __a == __b;
+	}
+	
+	/**
+	 * As {@link UIFormShelf#equals(UIWidgetBracket, UIWidgetBracket)}. 
+	 * 
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If these are the same item.
+	 * @throws MLECallError If either is {@code null}.
+	 * @since 2020/09/20
+	 */
+	public static boolean equals(UIWidgetBracket __a,
+		UIWidgetBracket __b)
 		throws MLECallError
 	{
 		if (__a == null || __b == null)

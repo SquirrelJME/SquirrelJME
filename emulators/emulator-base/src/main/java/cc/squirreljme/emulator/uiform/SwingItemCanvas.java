@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 /**
@@ -22,7 +23,7 @@ public class SwingItemCanvas
 	extends SwingItem
 {
 	/** The panel being drawn on. */
-	private final JPanel panel;
+	protected final __PaintingPanel__ panel;
 	
 	/**
 	 * Initializes the item.
@@ -31,7 +32,7 @@ public class SwingItemCanvas
 	 */
 	public SwingItemCanvas()
 	{
-		this.panel = new JPanel();
+		this.panel = new __PaintingPanel__(this);
 	}
 	
 	/**
