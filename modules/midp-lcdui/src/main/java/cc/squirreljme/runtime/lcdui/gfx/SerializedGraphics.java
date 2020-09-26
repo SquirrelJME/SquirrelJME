@@ -32,6 +32,7 @@ import javax.microedition.lcdui.Text;
  * @since 2018/11/19
  */
 @SuppressWarnings({"ManualMinMaxCalculation", "MagicNumber"})
+@Deprecated
 public abstract class SerializedGraphics
 	extends Graphics
 {

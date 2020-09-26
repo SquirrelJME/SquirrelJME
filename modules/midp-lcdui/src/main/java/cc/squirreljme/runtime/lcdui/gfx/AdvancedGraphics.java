@@ -20,6 +20,9 @@ import javax.microedition.lcdui.game.Sprite;
 /**
  * This class contains the advanced graphics functions which uses
  * pre-determined functions to determine how to draw something.
+ * 
+ * This class will eventually be replaced by generic auto-generated classes
+ * which can handle every pixel format.
  *
  * @since 2019/03/24
  */
