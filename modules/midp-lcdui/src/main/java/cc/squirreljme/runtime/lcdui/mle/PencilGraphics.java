@@ -19,7 +19,8 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
 
 /**
- * Not Described.
+ * This delegates drawing operations to either the hardware graphics layer
+ * or the software graphics layer.
  * 
  * This utilizes both {@link PencilShelf} and {@link PencilBracket} for native
  * graphics.
@@ -110,8 +111,8 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawARGB16(short[] __data, int __off, int __scanlen, int __x,
-		int __y, int __w, int __h)
+	public final void drawARGB16(short[] __data, int __off, int __scanlen,
+		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
 		throw Debugging.todo();
@@ -177,8 +178,8 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRGB16(short[] __data, int __off, int __scanlen, int __x,
-		int __y, int __w, int __h)
+	public final void drawRGB16(short[] __data, int __off, int __scanlen,
+		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
 		throw Debugging.todo();
@@ -199,8 +200,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRegion(Image __src, int __xsrc, int __ysrc, int __wsrc,
-		int __hsrc, int __trans, int __xdest, int __ydest, int __anch)
+	public final void drawRegion(Image __src, int __xsrc, int __ysrc,
+		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
+		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
 		throw Debugging.todo();
@@ -211,9 +213,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRegion(Image __src, int __xsrc, int __ysrc, int __wsrc,
-		int __hsrc, int __trans, int __xdest, int __ydest, int __anch,
-		int __wdest, int __hdest)
+	public final void drawRegion(Image __src, int __xsrc, int __ysrc,
+		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
+		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
 	{
 		throw Debugging.todo();
@@ -224,8 +226,8 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRoundRect(int __x, int __y, int __w, int __h, int __aw,
-		int __ah)
+	public final void drawRoundRect(int __x, int __y, int __w, int __h,
+		int __aw, int __ah)
 	{
 		throw Debugging.todo();
 	}
@@ -246,8 +248,8 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawSubstring(String __s, int __o, int __l, int __x, int __y,
-		int __anchor)
+	public final void drawSubstring(String __s, int __o, int __l,
+		int __x, int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
 		throw Debugging.todo();
@@ -289,8 +291,8 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillRoundRect(int __x, int __y, int __w, int __h, int __aw,
-		int __ah)
+	public final void fillRoundRect(int __x, int __y, int __w, int __h,
+		int __aw, int __ah)
 	{
 		throw Debugging.todo();
 	}
@@ -300,8 +302,8 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
-		int __y3)
+	public final void fillTriangle(int __x1, int __y1, int __x2, int __y2,
+		int __x3, int __y3)
 	{
 		throw Debugging.todo();
 	}
