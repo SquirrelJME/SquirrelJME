@@ -24,7 +24,11 @@ public interface UIPixelFormat
 	byte BYTE_INDEXED256 =
 		1;
 	
+	/** 32-bit RGB ({@code int}). */
+	byte INT_RGB888 =
+		2;
+	
 	/** The number of pixel formats. */
 	byte NUM_PIXEL_FORMATS =
-		2;
+		3;
 }

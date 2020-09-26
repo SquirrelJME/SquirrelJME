@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -45,14 +46,36 @@ public final class SoftwareGraphicsFactory
 	 * @param __sy Starting surface Y coordinate.
 	 * @param __sw Surface width.
 	 * @param __sh Surface height.
+	 * @throws IllegalArgumentException If the pixel format is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
 	public static Graphics softwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__pf)
+		{
+				// 32-bit RGB(A)
+			case UIPixelFormat.INT_RGB888:
+			case UIPixelFormat.INT_RGBA8888:
+				return new AdvancedGraphics(
+					(int[])__buf,
+					(__pf == UIPixelFormat.INT_RGBA8888),
+					null,
+					__sw, __sh,
+					__bw,
+					__offset,
+					__sx, __sy);
+			
+			// {@squirreljme.error EB3f Unsupported software pixel format.
+			// (The pixel format)}
+			default:
+				throw new IllegalArgumentException("EB3f " + __pf);
+		}
 	}
 }

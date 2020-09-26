@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
@@ -56,6 +57,10 @@ public enum MLEDispatcher
 	/** {@link ObjectShelf}. */
 	OBJECT("cc/squirreljme/jvm/mle/ObjectShelf",
 		MLEObject.values()),
+	
+	/** {@link PencilShelf}. */
+	PENCIL("cc/squirreljme/jvm/mle/PencilShelf",
+		MLEPencil.values()),
 	
 	/** {@link ReferenceShelf}. */
 	REFERENCE("cc/squirreljme/jvm/mle/ReferenceShelf",

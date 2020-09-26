@@ -13,8 +13,8 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -124,9 +124,9 @@ final class __MLEUIThread__
 		// Perform the painting, always clear the flag out
 		try
 		{
-			// Setup graphics for drawing
-			Graphics gfx = new AdvancedGraphics((int[])__buf, false,
-				null, __sw, __sh, __bw, __offset, __sx, __sy);
+			// Try to use hardware accelerated graphics where possible
+			Graphics gfx = PencilGraphics.hardwareGraphics(__pf,
+				__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
 			
 			// Forward to one of the items that draws
 			DisplayWidget widget = StaticDisplayState.locate(__item);
