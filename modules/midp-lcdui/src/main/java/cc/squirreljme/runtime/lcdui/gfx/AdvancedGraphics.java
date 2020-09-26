@@ -1233,10 +1233,10 @@ public class AdvancedGraphics
 	 * @since 2019/03/24
 	 */
 	@Override
-	public void setFont(Font __a)
+	public void setFont(Font __font)
 	{
 		// Just set it
-		this.font = __a;
+		this.font = __font;
 	}
 	
 	/**

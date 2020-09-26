@@ -550,11 +550,11 @@ public abstract class Graphics
 	/**
 	 * Sets the font to use for drawing operations.
 	 *
-	 * @param __a The font to use for drawing, if {@code null} then the
+	 * @param __font The font to use for drawing, if {@code null} then the
 	 * default font is used.
 	 * @since 2017/02/09
 	 */
-	public abstract void setFont(Font __a);
+	public abstract void setFont(Font __font);
 	
 	/**
 	 * Sets a grayscale color which has all the red, green, and blue

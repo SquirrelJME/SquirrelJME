@@ -116,7 +116,7 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code drawRoundRect}. 
 	 */
-	short DRAW_ROUNDRECT =
+	short DRAW_ROUND_RECT =
 		512;
 	
 	/**
