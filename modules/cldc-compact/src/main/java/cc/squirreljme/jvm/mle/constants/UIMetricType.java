@@ -27,7 +27,23 @@ public interface UIMetricType
 	byte COLOR_CANVAS_BACKGROUND =
 		1;
 	
+	/** The maximum display width. */
+	byte DISPLAY_MAX_WIDTH =
+		2;
+	
+	/** The maximum display height. */
+	byte DISPLAY_MAX_HEIGHT =
+		3;
+	
+	/** The current display width. */
+	byte DISPLAY_CURRENT_WIDTH =
+		4;
+	
+	/** The current display height. */
+	byte DISPLAY_CURRENT_HEIGHT =
+		5;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		2;
+		6;
 }

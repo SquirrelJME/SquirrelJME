@@ -161,7 +161,7 @@ public class List
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, false);
+		return Displayable.__getHeight(this);
 	}
 	
 	/**
@@ -255,7 +255,7 @@ public class List
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, false);
+		return Displayable.__getWidth(this);
 	}
 	
 	@Override

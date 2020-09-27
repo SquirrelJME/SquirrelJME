@@ -245,8 +245,7 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return UIBackendFactory.getInstance().widgetPropertyInt(
-			this._uiCanvas, UIWidgetProperty.INT_HEIGHT);
+		return Displayable.__getHeight(this);
 	}
 	
 	/**
@@ -293,8 +292,7 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return UIBackendFactory.getInstance().widgetPropertyInt(
-			this._uiCanvas, UIWidgetProperty.INT_WIDTH);
+		return Displayable.__getWidth(this);
 	}
 	
 	/**

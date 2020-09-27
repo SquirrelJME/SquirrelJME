@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
@@ -111,21 +112,27 @@ public class Display
 	public static final int ORIENTATION_PORTRAIT_180 =
 		4;
 
+	/** Displayed at the bottom of the screen. */
 	public static final int SOFTKEY_BOTTOM =
 		800;
 
+	/** The mask and number of items that are permitted for soft-key items. */
 	public static final int SOFTKEY_INDEX_MASK =
 		15;
 
+	/** Displayed on the left side of the screen. */
 	public static final int SOFTKEY_LEFT =
 		820;
 
+	/** Displayed off-screen, using physical hardware buttons. */
 	public static final int SOFTKEY_OFFSCREEN =
 		880;
 
+	/** Displayed on the right side of the screen. */
 	public static final int SOFTKEY_RIGHT =
 		860;
 
+	/** Displayed at the top of the screen. */
 	public static final int SOFTKEY_TOP =
 		840;
 
@@ -199,6 +206,9 @@ public class Display
 	
 	/** The displayable to show on exit. */
 	private volatile Displayable _exit;
+	
+	/** The layout policy of this display. */
+	private CommandLayoutPolicy _layoutPolicy;
 	
 	/**
 	 * Initializes the display instance.
@@ -407,14 +417,35 @@ public class Display
 		return (rv & 0xFFFFFF);
 	}
 	
+	/**
+	 * Returns the current command layout policy. The policy of the
+	 * {@link Displayable} takes precedence.
+	 * 
+	 * @return The current command layout policy, may be {@code null}.
+	 * @since 2020/09/27
+	 */
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
-		throw new todo.TODO();
+		return this._layoutPolicy;
 	}
 	
+	/**
+	 * Returns the preferred placement for commands.
+	 * 
+	 * @param __ct The command type, see {@link Command}.
+	 * @return The preferred placements or {@code null} if there are none.
+	 * @throws IllegalArgumentException If the command type is not valid.
+	 * @since 2020/09/27
+	 */
 	public int[] getCommandPreferredPlacements(int __ct)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB3l Invalid command type. (The type)}
+		if (__ct < Command.SCREEN || __ct > Command.ITEM)
+			throw new IllegalArgumentException("EB3l " + __ct);
+		
+		// In SquirrelJME, commands are in the same places as menu items
+		return this.getMenuPreferredPlacements();
 	}
 	
 	/**
@@ -448,9 +479,53 @@ public class Display
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns all of the possible exact placements where items may go on
+	 * a given border.
+	 * 
+	 * The orientation of the display does affect the border positions, if
+	 * the orientation has changed then this must be called again.
+	 * 
+	 * For top/bottom borders, the order is from left to right.
+	 * 
+	 * For left/right borders, the order is top to bottom.
+	 * 
+	 * The first possible placement on a border is always {@code BORDER + 1}.
+	 * 
+	 * @param __b The border to get, must be one of {@link #SOFTKEY_TOP},
+	 * {@link #SOFTKEY_BOTTOM}, {@link #SOFTKEY_LEFT}, {@link #SOFTKEY_RIGHT},
+	 * or {@link #SOFTKEY_OFFSCREEN}.
+	 * @return The valid placements for the given border, or {@code null}
+	 * if the border is not supported.
+	 * @throws IllegalArgumentException If the border is not valid.
+	 * @since 2020/09/27
+	 */
 	public int[] getExactPlacementPositions(int __b)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// Un-project the layout to get the correct order
+		__b = this.__layoutProject(__b);
+		
+		// Depends on the border that was requested
+		switch (__b)
+		{
+				// None of these positions are valid in SquirrelJME
+			case Display.SOFTKEY_OFFSCREEN:
+			case Display.SOFTKEY_TOP:
+			case Display.SOFTKEY_LEFT:
+			case Display.SOFTKEY_RIGHT:
+				return null;
+				
+				// There are only two slots along the bottom of the screen
+			case Display.SOFTKEY_BOTTOM:
+				return new int[]{
+					this.__layoutProject(Display.SOFTKEY_BOTTOM + 1),
+					this.__layoutProject(Display.SOFTKEY_BOTTOM + 2)};
+			
+				// {@squirreljme.error EB1p Invalid border. (The border)}
+			default:
+				throw new IllegalArgumentException("EB1p " + __b);
+		}
 	}
 	
 	/**
@@ -477,7 +552,8 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return UIState.getInstance().displayHeight();
+		return UIBackendFactory.getInstance()
+			.metric(UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
 	public IdleItem getIdleItem()
@@ -485,14 +561,30 @@ public class Display
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the preferred placement for menus.
+	 * 
+	 * @return The preferred placements or {@code null} if there are none.
+	 * @since 2020/09/27
+	 */
 	public int[] getMenuPreferredPlacements()
 	{
-		throw new todo.TODO();
+		// The preferred placements for menus are the same as the supported
+		// ones
+		return this.getMenuSupportedPlacements();
 	}
 	
+	/**
+	 * Returns all of the placements which support menu items.
+	 *  
+	 * @return The list of supported menu item placements.
+	 * @since 2020/09/27
+	 */
 	public int[] getMenuSupportedPlacements()
 	{
-		throw new todo.TODO();
+		// In SquirrelJME, commands and menus can only be placed along the
+		// bottom of the screen
+		return this.getExactPlacementPositions(Display.SOFTKEY_BOTTOM);
 	}
 	
 	/**
@@ -503,21 +595,28 @@ public class Display
 	 */
 	public int getOrientation()
 	{
-		// Landscape just means a longer width
-		boolean landscape = this.getWidth() > this.getHeight();
+		int width, height;
 		
-		// If it is detected that the display is upsidedown, just say that
-		// it was rotated 180 degrees
-		if (UIState.getInstance().displayFlipped())
-			if (landscape)
-				return Display.ORIENTATION_LANDSCAPE_180;
-			else
-				return Display.ORIENTATION_PORTRAIT_180;
+		// If a form is being shown, use those dimensions
+		Displayable form = this._current;
+		if (form != null)
+		{
+			width = Displayable.__getWidth(form);
+			height = Displayable.__getHeight(form);
+		}
+		
+		// Otherwise use the display dimensions
 		else
-			if (landscape)
-				return Display.ORIENTATION_LANDSCAPE;
-			else
-				return Display.ORIENTATION_PORTRAIT;
+		{
+			width = this.getWidth();
+			height = this.getHeight();
+		}
+		
+		// Landscape just means a longer width
+		if (width > height)
+			return Display.ORIENTATION_LANDSCAPE;
+		else
+			return Display.ORIENTATION_PORTRAIT;
 	}
 	
 	/**
@@ -528,7 +627,8 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return UIState.getInstance().displayWidth();
+		return UIBackendFactory.getInstance()
+			.metric(UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
 	/**
@@ -945,7 +1045,67 @@ public class Display
 		this._current = __show;
 		
 		// Notify that it was shown
-		__show.showNotify();
+		__show.__showNotify();
+	}
+	
+	/**
+	 * Projects the border for the given layout according to the screen
+	 * orientation. Calling this method twice with a previously projected item
+	 * will result in the projection being reversed.
+	 * 
+	 * @param __b The border or item to project.
+	 * @return The projection of the border.
+	 * @since 2020/09/27
+	 */
+	final int __layoutProject(int __b)
+	{
+		// Get the true border and the item position
+		int border = __b & (~Display.SOFTKEY_INDEX_MASK);
+		int position = __b & Display.SOFTKEY_INDEX_MASK;
+		
+		// {@squirreljme.error EB3j Invalid item position. (The position)}
+		if (position <= 0)
+			throw new IllegalArgumentException("EB3j " + position);
+		
+		// Depends if the display is flipped or not
+		switch (this.getOrientation())
+		{
+				// Normal layout, does not get modified
+			case Display.ORIENTATION_PORTRAIT:
+			case Display.ORIENTATION_LANDSCAPE:
+				return __b;
+			
+				// Rotation will adjust which border items appear on
+			case Display.ORIENTATION_PORTRAIT_180:
+			case Display.ORIENTATION_LANDSCAPE_180:
+				switch (border)
+				{
+						// If the item is offscreen, it never gets adjusted
+					case Display.SOFTKEY_OFFSCREEN:
+						return __b;
+					
+					case Display.SOFTKEY_TOP:
+						return Display.SOFTKEY_BOTTOM + position;
+						
+					case Display.SOFTKEY_BOTTOM:
+						return Display.SOFTKEY_TOP + position;
+						
+					case Display.SOFTKEY_LEFT:
+						return Display.SOFTKEY_RIGHT + position;
+						
+					case Display.SOFTKEY_RIGHT:
+						return Display.SOFTKEY_LEFT + position;
+					
+						// {@squirreljme.error EB3k Invalid border position.
+						// (The border position).
+					default:
+						throw new IllegalArgumentException("EB3k " + border);
+				}
+			
+				// This should not occur
+			default:
+				throw Debugging.oops("Invalid orientation.");
+		}
 	}
 	
 	/**

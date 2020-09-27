@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -62,6 +63,12 @@ public abstract class Displayable
 	
 	/** The ticker of the displayable. */
 	volatile Ticker _ticker;
+	
+	/** The current layout, if valid this will be set. */
+	private __Layout__ _layout;
+	
+	/** The layout policy of this displayable. */
+	private CommandLayoutPolicy _layoutPolicy;
 	
 	/**
 	 * Initializes the base displayable object.
@@ -135,13 +142,18 @@ public abstract class Displayable
 			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
 				throw new DisplayCapabilityException("EB1s");
 		
-		// Add the command
+		// Do nothing if the command has already been added
+		__VolatileList__<__Action__> actions = this._actions;
+		if (actions.containsUniqueObjRef(__c))
+			return;
+		
+		// Otherwise make it part of the display
 		this._actions.addUniqueObjRef(__c);
 		
-		// Repaint display?
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();
+		// Re-calculate the commands shown on the display, if the display
+		// is even visible
+		if (this.__isShown())
+			this.__layoutCommands();
 	}
 	
 	public Command getCommand(int __p)
@@ -149,9 +161,16 @@ public abstract class Displayable
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the current command layout policy. The policy here takes
+	 * precedence over the one set in {@link Display}.
+	 * 
+	 * @return The current command layout policy, may be {@code null}.
+	 * @since 2020/09/27
+	 */
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
-		throw new todo.TODO();
+		return this._layoutPolicy;
 	}
 	
 	/**
@@ -219,9 +238,16 @@ public abstract class Displayable
 		return this._userTitle;
 	}
 	
+	/**
+	 * Invalidates the command layout and forces it to be recalculated, if the
+	 * display is not visible or focused then this will be ignored.
+	 * 
+	 * @since 2020/09/27
+	 */
 	public void invalidateCommandLayout()
 	{
-		throw new todo.TODO();
+		if (this.__isShown())
+			this.__layoutCommands();
 	}
 	
 	/**
@@ -274,9 +300,25 @@ public abstract class Displayable
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the command at the given position.
+	 * 
+	 * @param __c The command to set.
+	 * @param __p The position to set.
+	 * @throws DisplayCapabilityException If the display does not support
+	 * commands.
+	 * @throws IllegalArgumentException If the placement is not valid.
+	 * @throws IllegalStateException If this was not called from within the
+	 * {@link CommandLayoutPolicy#onCommandLayout(Displayable)} method or
+	 * the command layout passed is not the same.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/27
+	 */
 	public void setCommand(Command __c, int __p)
+		throws DisplayCapabilityException, IllegalArgumentException,
+			IllegalStateException, NullPointerException 
 	{
-		throw new todo.TODO();
+		this.__layoutActionSet(__c, __p);
 	}
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __p)
@@ -296,9 +338,25 @@ public abstract class Displayable
 		this._cmdListener = __l;
 	}
 	
+	/**
+	 * Sets the menu at the given position.
+	 * 
+	 * @param __m The menu to set.
+	 * @param __p The position to set.
+	 * @throws DisplayCapabilityException If the display does not support
+	 * commands.
+	 * @throws IllegalArgumentException If the placement is not valid.
+	 * @throws IllegalStateException If this was not called from within the
+	 * {@link CommandLayoutPolicy#onCommandLayout(Displayable)} method or
+	 * the command layout passed is not the same.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/27
+	 */
 	public void setMenu(Menu __m, int __p)
+		throws DisplayCapabilityException, IllegalArgumentException,
+			IllegalStateException, NullPointerException 
 	{
-		throw new todo.TODO();
+		this.__layoutActionSet(__m, __p);
 	}
 	
 	/**
@@ -415,6 +473,128 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * Sets the command or menu at the given position.
+	 * 
+	 * @param __a The action to set.
+	 * @param __p The position to set.
+	 * @throws DisplayCapabilityException If the display does not support
+	 * commands.
+	 * @throws IllegalArgumentException If the placement is not valid.
+	 * @throws IllegalStateException If this was not called from within the
+	 * {@link CommandLayoutPolicy#onCommandLayout(Displayable)} method or
+	 * the command layout passed is not the same.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/27
+	 */
+	private void __layoutActionSet(__Action__ __a, int __p)
+		throws DisplayCapabilityException, IllegalArgumentException,
+			IllegalStateException, NullPointerException 
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB3i The current display does not support
+		// commands.}
+		Display display = this._display;
+		if (display == null ||
+			0 == (display.getCapabilities() & Display.SUPPORTS_COMMANDS))
+			throw new IllegalArgumentException("EB3i");
+		
+		// {@squirreljme.error EB3h The current displayable is not getting
+		// its layout calculated.}
+		__Layout__ layout = this._layout;
+		if (layout == null)
+			throw new IllegalStateException("EB3h");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Performs the laying out the commands, in the event they have changed
+	 * or otherwise.
+	 * 
+	 * @since 2020/09/27
+	 */
+	private void __layoutCommands()
+	{
+		// Get our own policy or the one specified by the display
+		Display display = this._display;
+		CommandLayoutPolicy policy = this.getCommandLayoutPolicy();
+		if (policy == null && display != null)
+			policy = display.getCommandLayoutPolicy();
+		
+		// Setup new layout and set state
+		try (__Layout__ layout = new __Layout__())
+		{
+			// Any layout calls will affect this one
+			this._layout = layout;
+			
+			// Either use the user specified policy or a default one
+			if (policy != null)
+				policy.onCommandLayout(this);
+			else
+				this.__layoutDefault(layout);
+			
+			// Make whatever state was set in the layout as set
+			this.__layoutExecute(layout);
+		}
+		
+		// Cancel the layout state
+		finally
+		{
+			this._layout = null;
+		}
+	}
+	
+	/**
+	 * Lays out commands using a default means.
+	 * 
+	 * @param __layout The layout state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/27
+	 */
+	private void __layoutDefault(__Layout__ __layout)
+		throws NullPointerException
+	{
+		if (__layout == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Executes the given layout.
+	 * 
+	 * @param __layout The layout to execute.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/27
+	 */
+	private void __layoutExecute(__Layout__ __layout)
+		throws NullPointerException
+	{
+		if (__layout == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Does internal work when a form is being shown.
+	 * 
+	 * @since 2020/09/27
+	 */
+	@SerializedEvent
+	final void __showNotify()
+	{
+		// Layout all the given commands, either they were changed or the
+		// display was shown
+		this.__layoutCommands();
+		
+		// Forward to the implementation specific notification
+		this.showNotify();
+	}
+	
+	/**
 	 * Returns a default title to use for the application.
 	 *
 	 * @return Application default title.
@@ -446,49 +626,47 @@ public abstract class Displayable
 	 * Returns the displayable height.
 	 *
 	 * @param __d The displayable.
-	 * @param __full Return the full screen?
 	 * @return The height.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
-	@Deprecated
-	static int __getHeight(Displayable __d, boolean __full)
+	static int __getHeight(Displayable __d)
 		throws NullPointerException
 	{
 		if (__d == null)
 			throw new NullPointerException("NARG");
-		
-		// Use dimension from default display
+			
+		// The default maximum display height?
 		Display display = __d._display;
 		if (display == null)
 			return Display.getDisplays(0)[0].getHeight();
 		
-		// Use drawer width
-		return UIState.getInstance().drawerState().contentHeight();
+		// Get current form size
+		return UIBackendFactory.getInstance().widgetPropertyInt(
+			__d._uiForm, UIWidgetProperty.INT_HEIGHT);
 	}
 	
 	/**
 	 * Returns the displayable width.
 	 *
 	 * @param __d The displayable.
-	 * @param __full Return the full screen?
 	 * @return The width.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
-	@Deprecated
-	static int __getWidth(Displayable __d, boolean __full)
+	static int __getWidth(Displayable __d)
 	{
 		if (__d == null)
 			throw new NullPointerException("NARG");
 			
-		// Use dimension from default display
+		// The default maximum display height?
 		Display display = __d._display;
 		if (display == null)
 			return Display.getDisplays(0)[0].getWidth();
 		
-		// Use drawer width
-		return UIState.getInstance().drawerState().contentWidth();
+		// Get current form size
+		return UIBackendFactory.getInstance().widgetPropertyInt(
+			__d._uiForm, UIWidgetProperty.INT_WIDTH);
 	}
 }
 

@@ -89,6 +89,22 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Checks if this list contains the given item.
+	 * 
+	 * @param __v The value to check.
+	 * @return If this contains the item or not.
+	 * @since 2020/09/27
+	 */
+	public boolean containsUniqueObjRef(T __v)
+	{
+		for (Object v : this._values)
+			if (__v == v)
+				return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Gets the element at the given index.
 	 *
 	 * @param __i The index to get.
