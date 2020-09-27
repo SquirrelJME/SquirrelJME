@@ -8,10 +8,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.event;
+package cc.squirreljme.jvm.mle.constants;
 
 /**
- * This byteerface contains identifiers for non-standard keys.
+ * This interface contains identifiers for non-standard keys.
  *
  * @since 2017/02/12
  */
@@ -98,7 +98,7 @@ public interface NonStandardKey
 		-27;
 	
 	/** Meta. */
-	byte META =
+	byte META_COMMAND =
 		-28;
 	
 	/** Numlock. */
@@ -123,7 +123,7 @@ public interface NonStandardKey
 	
 	/** F24. */
 	byte F24 =
-		-34;
+		-35;
 	
 	/** F1. */
 	byte F1 = NonStandardKey.F24 - 24;

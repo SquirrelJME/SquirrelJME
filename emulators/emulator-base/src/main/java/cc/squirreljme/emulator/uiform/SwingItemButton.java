@@ -9,9 +9,14 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.constants.NonStandardKey;
+import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 /**
@@ -21,6 +26,7 @@ import javax.swing.JButton;
  */
 public class SwingItemButton
 	extends SwingItem
+	implements ActionListener
 {
 	/** The button. */
 	private final JButton button;
@@ -36,6 +42,31 @@ public class SwingItemButton
 		this.button = new JButton();
 		
 		button.setText("Button");
+		
+		// To detect button presses
+		button.addActionListener(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/27
+	 */
+	@Override
+	public void actionPerformed(ActionEvent __e)
+	{
+		Debugging.debugNote("Button pressed!");
+		
+		SwingForm form = this._form;
+		if (form == null)
+			return;
+		
+		UIFormCallback callback = form.callback();
+		if (callback == null)
+			return;
+		
+		// Fake this as a key being pressed on this item
+		callback.eventKey(form, this, UIKeyEventType.KEY_PRESSED,
+			NonStandardKey.META_COMMAND, 0);
 	}
 	
 	/**

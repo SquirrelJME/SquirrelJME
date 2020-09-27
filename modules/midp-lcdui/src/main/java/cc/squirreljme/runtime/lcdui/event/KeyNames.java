@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.event;
 
+import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import javax.microedition.lcdui.Canvas;
 
 /**
@@ -70,7 +71,7 @@ public final class KeyNames
 			case NonStandardKey.HOME:		return "Home";
 			case NonStandardKey.INSERT:		return "Insert";
 			case NonStandardKey.LOGO:		return "Logo";
-			case NonStandardKey.META:		return "Meta";
+			case NonStandardKey.META_COMMAND:		return "Meta";
 			case NonStandardKey.NUMLOCK:	return "NumLock";
 			case NonStandardKey.PAGE_UP:	return "PageUp";
 			case NonStandardKey.PAGE_DOWN:	return "PageDown";
