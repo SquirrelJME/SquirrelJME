@@ -112,29 +112,29 @@ public class Display
 	public static final int ORIENTATION_PORTRAIT_180 =
 		4;
 
-	/** Displayed at the bottom of the screen. */
-	public static final int SOFTKEY_BOTTOM =
-		800;
-
 	/** The mask and number of items that are permitted for soft-key items. */
 	public static final int SOFTKEY_INDEX_MASK =
 		15;
+
+	/** Displayed at the bottom of the screen. */
+	public static final int SOFTKEY_BOTTOM =
+		800;
 
 	/** Displayed on the left side of the screen. */
 	public static final int SOFTKEY_LEFT =
 		820;
 
-	/** Displayed off-screen, using physical hardware buttons. */
-	public static final int SOFTKEY_OFFSCREEN =
-		880;
+	/** Displayed at the top of the screen. */
+	public static final int SOFTKEY_TOP =
+		840;
 
 	/** Displayed on the right side of the screen. */
 	public static final int SOFTKEY_RIGHT =
 		860;
 
-	/** Displayed at the top of the screen. */
-	public static final int SOFTKEY_TOP =
-		840;
+	/** Displayed off-screen, using physical hardware buttons. */
+	public static final int SOFTKEY_OFFSCREEN =
+		880;
 
 	public static final int STATE_BACKGROUND =
 		0;
@@ -1062,10 +1062,6 @@ public class Display
 		// Get the true border and the item position
 		int border = __b & (~Display.SOFTKEY_INDEX_MASK);
 		int position = __b & Display.SOFTKEY_INDEX_MASK;
-		
-		// {@squirreljme.error EB3j Invalid item position. (The position)}
-		if (position <= 0)
-			throw new IllegalArgumentException("EB3j " + position);
 		
 		// Depends if the display is flipped or not
 		switch (this.getOrientation())

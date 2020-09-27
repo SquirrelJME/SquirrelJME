@@ -38,19 +38,21 @@ final class __VolatileList__<T>
 	 * in this list.
 	 *
 	 * @param __v The value to add.
+	 * @return If the value has been added or not.
 	 * @since 2018/11/17
 	 */
-	public final void addUniqueObjRef(T __v)
+	public final boolean addUniqueObjRef(T __v)
 	{
 		Object[] values = this._values;
 		
 		// Already in the list? Do nothing
 		for (Object v : values)
 			if (v == __v)
-				return;
+				return false;
 		
 		// Otherwise append
 		this.append(__v);
+		return true;
 	}
 	
 	/**
@@ -132,8 +134,7 @@ final class __VolatileList__<T>
 	@SuppressWarnings({"unchecked"})
 	public final Iterator<T> iterator()
 	{
-		return (Iterator<T>)
-			((Object)(Arrays.<Object>asList(this._values).iterator()));
+		return this.valuesAsList().iterator();
 	}
 	
 	/**
@@ -220,6 +221,16 @@ final class __VolatileList__<T>
 		
 		// And use the passed or recreated array
 		return __ov;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/27
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.valuesAsList().toString();
 	}
 	
 	/**

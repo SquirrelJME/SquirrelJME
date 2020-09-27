@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JButton;
@@ -74,6 +75,14 @@ public class SwingItemButton
 	@Override
 	public void property(int __id, String __newValue)
 	{
-		throw Debugging.todo();
+		switch (__id)
+		{
+			case UIWidgetProperty.STRING_LABEL:
+				this.button.setText(__newValue);
+				break;
+			
+			default:
+				throw new MLECallError("Unknown property: " + __id);
+		}
 	}
 }

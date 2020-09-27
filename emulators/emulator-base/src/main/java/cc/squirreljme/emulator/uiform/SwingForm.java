@@ -543,7 +543,17 @@ public final class SwingForm
 	public int propertyInt(int __intProp)
 		throws MLECallError
 	{
-		throw Debugging.todo("Property: " + __intProp);
+		switch (__intProp)
+		{
+			case UIWidgetProperty.INT_WIDTH:
+				return this.body.getWidth();
+			
+			case UIWidgetProperty.INT_HEIGHT:
+				return this.body.getHeight();
+			
+			default:
+				throw new MLECallError("Unknown property: " + __intProp);
+		}
 	}
 	
 	/**

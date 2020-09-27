@@ -148,7 +148,7 @@ public abstract class Displayable
 			return;
 		
 		// Otherwise make it part of the display
-		this._actions.addUniqueObjRef(__c);
+		actions.addUniqueObjRef(__c);
 		
 		// Re-calculate the commands shown on the display, if the display
 		// is even visible
@@ -539,6 +539,15 @@ public abstract class Displayable
 			this.__layoutExecute(layout);
 		}
 		
+		// If this failed, print it out
+		catch (RuntimeException e)
+		{
+			e.printStackTrace();
+			
+			// re-toss
+			throw e;
+		}
+		
 		// Cancel the layout state
 		finally
 		{
@@ -558,8 +567,60 @@ public abstract class Displayable
 	{
 		if (__layout == null)
 			throw new NullPointerException("NARG");
+			
+		Display display = this._display;
 		
-		throw Debugging.todo();
+		// Go through commands and menu items, try to place them in their
+		// default normal positions where possible
+		for (__Action__ action : this._actions)
+		{
+			// Get the preferred placement for these items
+			int[] prefPlace = ((action instanceof Command) ?
+				display.getCommandPreferredPlacements(((Command)action)._type)
+				: display.getMenuPreferredPlacements());
+			
+			// Use the first available place for anything that is empty
+			int usePlace = -1;
+			for (int place : prefPlace)
+				if (__layout.get(place) == null)
+				{
+					usePlace = place;
+					break;
+				}
+			
+			// Otherwise, try to set the item at the lowest placement
+			if (usePlace < 0)
+			{
+				// Determine the priority of this item
+				int actPriority = __Action__.__getPriority(action);
+				
+				// The position and the currently lowest scoring slot
+				int plopPlace = -1;
+				int plopPriority = Integer.MIN_VALUE;
+				
+				// Find the spot with the lowest priority
+				for (int place : prefPlace)
+				{
+					int tickPriority = __layout.getPriority(place);
+					
+					// Does this have a lowest priority?
+					if (plopPlace < 0 || tickPriority > plopPriority)
+					{
+						plopPlace = place;
+						plopPriority = tickPriority;
+					}
+				}
+				
+				// If our item has a higher priority than the the lowest
+				// priority item, that gets replaced
+				if (plopPlace >= 0 && actPriority < plopPriority)
+					usePlace = plopPlace;
+			}
+			
+			// If we could place the item here, do that placement
+			if (usePlace > 0)
+				__layout.set(action, usePlace);
+		}
 	}
 	
 	/**
@@ -575,7 +636,56 @@ public abstract class Displayable
 		if (__layout == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Left command item
+		this.__layoutExecute(__layout, Display.SOFTKEY_BOTTOM + 1,
+			UIItemPosition.LEFT_COMMAND);
+		
+		// Right command item
+		this.__layoutExecute(__layout, Display.SOFTKEY_BOTTOM + 2,
+			UIItemPosition.RIGHT_COMMAND);
+	}
+	
+	/**
+	 * Executes the given layout.
+	 * 
+	 * @param __layout The layout to execute.
+	 * @param __from The from position, one of the softkey positions.
+	 * @param __to The target position, one of {@link UIItemPosition}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/27
+	 */
+	private void __layoutExecute(__Layout__ __layout, int __from, int __to)
+		throws NullPointerException
+	{
+		if (__layout == null)
+			throw new NullPointerException("NARG");
+		
+		UIFormBracket form = this._uiForm;
+		UIBackend backend = UIBackendFactory.getInstance();
+		
+		// If there is nothing here, clear it
+		__Action__ action = __layout.get(__from);
+		if (action == null)
+		{
+			// Remove anything that is in this position
+			if (null != backend.formItemAtPosition(form, __to))
+				backend.formItemRemove(form, __to);
+			
+			return;
+		}
+		
+		// Create new widget that goes into this position
+		if (action instanceof Command)
+		{
+			__CommandWidget__ cm = new __CommandWidget__((Command)action);
+			backend.formItemPosition(form, cm._uiItem, __to);
+		}
+		
+		// Menu item
+		else
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
