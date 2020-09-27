@@ -636,8 +636,8 @@ public enum MLEThread
 			throw new SpringMLECallError("Not a Java Thread");
 		
 		SpringSimpleObject rv = (SpringSimpleObject)__object;
-		if (!rv.type().isAssignableFrom(
-			__thread.resolveClass("java/lang/Thread")))
+		if (!__thread.resolveClass("java/lang/Thread")
+			.isAssignableFrom(rv.type()))
 			throw new SpringMLECallError("Not instance of Thread.");
 		
 		return rv;
