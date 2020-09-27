@@ -326,25 +326,9 @@ public final class UIState
 	 * @since 2020/01/12
 	 */
 	@Deprecated
-	public static final UIState getInstance()
+	public static UIState getInstance()
 	{
-		UIState rv = UIState._UI_STATE;
-		if (rv != null)
-			return rv;
-		
-		// We may need to create an instance
-		synchronized (UIState.class)
-		{
-			// Try again
-			rv = UIState._UI_STATE;
-			if (rv != null)
-				return rv;
-			
-			// Initialize new state
-			UIState._UI_STATE = (rv = new UIState());
-			
-			return rv;
-		}
+		throw Debugging.todo("Deprecated UIState.getInstance()");
 	}
 }
 
