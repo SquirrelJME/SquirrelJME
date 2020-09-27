@@ -63,10 +63,6 @@ public abstract class Displayable
 	/** The ticker of the displayable. */
 	volatile Ticker _ticker;
 	
-	/** Is this widget shown? */
-	@Deprecated
-	volatile boolean _isshown;
-	
 	/**
 	 * Initializes the base displayable object.
 	 *
@@ -248,9 +244,7 @@ public abstract class Displayable
 	 */
 	public boolean isShown()
 	{
-		// Must be shown and have a parent, because anything without a
-		// parent is invisible
-		return this._isshown && this._display != null;
+		return this.__isShown();
 	}
 	
 	/**
@@ -401,6 +395,26 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * Returns if this displayable is currently being shown.
+	 *
+	 * @return If the displayable is being shown.
+	 * @since 2020/09/27
+	 */
+	final boolean __isShown()
+	{
+		// If there is no display then this cannot possibly be shown
+		Display display = this._display;
+		if (display == null)
+			return false;
+		
+		// When checking if shown, actually probe the current form on the
+		// display as another task may have taken the display from us
+		UIBackend backend = UIBackendFactory.getInstance();
+		return backend.equals(this._uiForm,
+			backend.displayCurrent(display._uiDisplay));
+	}
+	
+	/**
 	 * Returns a default title to use for the application.
 	 *
 	 * @return Application default title.
@@ -438,7 +452,7 @@ public abstract class Displayable
 	 * @since 2019/05/16
 	 */
 	@Deprecated
-	static final int __getHeight(Displayable __d, boolean __full)
+	static int __getHeight(Displayable __d, boolean __full)
 		throws NullPointerException
 	{
 		if (__d == null)
@@ -463,7 +477,7 @@ public abstract class Displayable
 	 * @since 2019/05/16
 	 */
 	@Deprecated
-	static final int __getWidth(Displayable __d, boolean __full)
+	static int __getWidth(Displayable __d, boolean __full)
 	{
 		if (__d == null)
 			throw new NullPointerException("NARG");

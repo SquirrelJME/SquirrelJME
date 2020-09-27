@@ -69,8 +69,9 @@ public interface UIBackend
 	 * Show the given form on the display.
 	 * 
 	 * @param __display The form to display on screen.
-	 * @param __form The form to display.
-	 * @throws MLECallError On {@code null} arguments.
+	 * @param __form The form to display, if {@code null} then no item is
+	 * shown on the display.
+	 * @throws MLECallError On {@code __display} is {@code null}.
 	 * @since 2020/07/01
 	 */
 	void displayShow(UIDisplayBracket __display, UIFormBracket __form)

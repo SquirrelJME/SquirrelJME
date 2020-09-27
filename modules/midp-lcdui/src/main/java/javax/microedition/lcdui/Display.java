@@ -683,7 +683,7 @@ public class Display
 		todo.DEBUG.note("Showing alert \"%s\"", __show._message);
 		
 		// Perform call on this display
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		try
 		{
@@ -731,21 +731,20 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
-		// Enter background state?
+		// There technically is no background state in SquirrelJME, a
+		// background state being one that turns off the display or
+		// otherwise
 		if (__show == null)
-		{
-			todo.TODO.note("Enter background state.");
-			/*head.setState(DisplayState.BACKGROUND);*/
 			return;
-		}
 		
-		// If we are trying to show the same display, do nothing
+		// If we are trying to show the same display, force foreground
 		Displayable current = this._current;
 		if (current == __show)
 		{
-			// If we just set current with no actual change, just make sure
-			// our callback is the one which is registered so that way we
-			// take control of the screen
+			// This will force the form to be currently shown on the screen
+			// even if another task has set the form. Since displays may only
+			// have a single form associated with them, this effectively
+			// retakes control accordingly
 			this.__doShowCurrent(__show);
 			
 			return;
@@ -763,22 +762,8 @@ public class Display
 		if (__show._display != null)
 			throw new IllegalStateException("EB1m");
 		
-		// Clear current's parent
-		if (current != null)
-		{
-			// Stop showing
-			current._isshown = false;
-			current.hideNotify();
-			
-			// Not used anymore
-			current._display = null;
-		}
-		
-		// Set new parent
-		__show._display = this;
-		this._current = __show;
-		
-		// Do common showing stuff
+		// Hide the current display then show the new one
+		this.__doHideCurrent();
 		this.__doShowCurrent(__show);
 	}
 	
@@ -879,6 +864,36 @@ public class Display
 	}
 	
 	/**
+	 * Hides the current displayable.
+	 * 
+	 * @return The currently displayed displayable unless not set.
+	 * @since 2020/09/27
+	 */
+	private Displayable __doHideCurrent()
+	{
+		// Nothing was ever visible on this display?
+		Displayable current = this._current;
+		if (current == null)
+			return null;
+		
+		// Hide the form on the display, but only if it is currently shown
+		// as we do not want to un-hide another form being displayed if it
+		// is from another process
+		if (current.__isShown())
+			UIBackendFactory.getInstance()
+				.displayShow(this._uiDisplay, null);
+		
+		// Unlink display
+		current._display = null;
+		this._current = null;
+		
+		// Send notification that this is now hidden
+		current.hideNotify();
+		
+		return current;
+	}
+	
+	/**
 	 * Do current show logic.
 	 *
 	 * @param __show The displayable to show.
@@ -925,19 +940,12 @@ public class Display
 		backend.displayShow(this._uiDisplay,
 			__show._uiForm);
 		
-		/*UIState uis = UIState.getInstance();
+		// Set new parent
+		__show._display = this;
+		this._current = __show;
 		
-		// Always set as shown, easier to work with
-		__show._isshown = true;
-		
-		// Set title of our display to the title of the Displayable
-		uis.setTitle(__show._dtitle);
-		
-		// Set drawn displayable
-		uis.setDisplayable(__show);
-		
-		// Callback when it is made visible
-		__show.showNotify();*/
+		// Notify that it was shown
+		__show.showNotify();
 	}
 	
 	/**
