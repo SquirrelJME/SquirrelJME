@@ -45,9 +45,24 @@ final class __MLEUIThread__
 		int __event, int __keyCode, int __modifiers)
 	{
 		// Debug
-		Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
+		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
-			__event, __keyCode, __modifiers);
+			__event, __keyCode, __modifiers);*/
+		
+		DisplayWidget widget = StaticDisplayState.locate(__item);
+		
+		// Commands are special in that they are not actually displayables
+		// so they get special handling
+		if (widget instanceof __CommandWidget__)
+			((__CommandWidget__)widget).__activate();
+		
+		// Canvas with key events
+		else if (widget instanceof Canvas)
+			throw Debugging.todo();
+		
+		// CustomItem with key events
+		else if (widget instanceof CustomItem)
+			throw Debugging.todo();
 	}
 	
 	/**

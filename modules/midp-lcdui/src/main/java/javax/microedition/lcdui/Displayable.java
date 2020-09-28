@@ -677,7 +677,8 @@ public abstract class Displayable
 		// Create new widget that goes into this position
 		if (action instanceof Command)
 		{
-			__CommandWidget__ cm = new __CommandWidget__((Command)action);
+			__CommandWidget__ cm = new __CommandWidget__(
+				this, (Command)action);
 			backend.formItemPosition(form, cm._uiItem, __to);
 		}
 		

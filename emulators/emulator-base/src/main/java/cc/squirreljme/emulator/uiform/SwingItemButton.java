@@ -17,7 +17,9 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import javax.swing.JButton;
+import javax.swing.Timer;
 
 /**
  * Button.
@@ -39,9 +41,7 @@ public class SwingItemButton
 	public SwingItemButton()
 	{
 		JButton button = new JButton();
-		this.button = new JButton();
-		
-		button.setText("Button");
+		this.button = button;
 		
 		// To detect button presses
 		button.addActionListener(this);
@@ -54,8 +54,6 @@ public class SwingItemButton
 	@Override
 	public void actionPerformed(ActionEvent __e)
 	{
-		Debugging.debugNote("Button pressed!");
-		
 		SwingForm form = this._form;
 		if (form == null)
 			return;
