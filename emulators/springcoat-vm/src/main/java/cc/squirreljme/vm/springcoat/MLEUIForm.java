@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
@@ -177,6 +178,22 @@ public enum MLEUIForm
 			return null;
 		}
 	},
+	
+	/** {@link UIFormShelf#formItemAtPosition(UIFormBracket, int)}. */
+	FORM_ITEM_AT_POSITION("")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/10/03
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return new UIItemObject(UIFormShelf.formItemAtPosition(
+				MLEUIForm.__form(__args[0]).form,
+				(int)__args[1]));
+		}
+	}, 
 	
 	/** {@link UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket)}. */
 	FORM_ITEM_POSITION_GET("formItemPosition:(Lcc/squirreljme/jvm/mle/" +
