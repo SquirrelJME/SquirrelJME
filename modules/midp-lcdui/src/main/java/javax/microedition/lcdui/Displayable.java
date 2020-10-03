@@ -611,12 +611,12 @@ public abstract class Displayable
 			throw new NullPointerException("NARG");
 		
 		// Left command item
-		this.__layoutExecute(__layout, Display.SOFTKEY_BOTTOM + 1,
-			UIItemPosition.LEFT_COMMAND);
+		this.__layoutExecute(__layout, Display._SOFTKEY_LEFT_COMMAND, 
+			Display.__layoutSoftKeyToPos(Display._SOFTKEY_LEFT_COMMAND));
 		
 		// Right command item
-		this.__layoutExecute(__layout, Display.SOFTKEY_BOTTOM + 2,
-			UIItemPosition.RIGHT_COMMAND);
+		this.__layoutExecute(__layout, Display._SOFTKEY_RIGHT_COMMAND,
+			Display.__layoutSoftKeyToPos(Display._SOFTKEY_RIGHT_COMMAND));
 	}
 	
 	/**

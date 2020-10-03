@@ -201,7 +201,7 @@
       <option name="m_requireAnnotationsFirst" value="true" />
     </inspection_tool>
     <inspection_tool class="MisspelledMethodName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="MultiplyOrDivideByPowerOfTwo" enabled="true" level="WARNING" enabled_by_default="true">
+    <inspection_tool class="MultiplyOrDivideByPowerOfTwo" enabled="true" level="TYPO" enabled_by_default="true">
       <option name="checkDivision" value="true" />
     </inspection_tool>
     <inspection_tool class="NewClassNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">

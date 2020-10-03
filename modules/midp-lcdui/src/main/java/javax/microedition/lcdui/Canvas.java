@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
@@ -279,9 +280,68 @@ public abstract class Canvas
 		return KeyNames.getKeyName(__a);
 	}
 	
-	public int[] getSoftkeyLabelCoordinates(int __p)
+	/**
+	 * Gets the coordinates of a soft key of where it would be placed on the
+	 * screen in relation to the canvas.
+	 * 
+	 * The returned coordinates may be negative and may be outside of the
+	 * screen.
+	 * 
+	 * @param __sk The position to get, will be one of the soft key
+	 * coordinates except for {@link Display#SOFTKEY_OFFSCREEN}.
+	 * @throws IllegalArgumentException If the coordinates are not valid, or
+	 * the border is {@link Display#SOFTKEY_OFFSCREEN}.
+	 * @return The coordinates, these will be {@code [x, y, width, height]}.
+	 * @since 2020/10/03
+	 */
+	public int[] getSoftkeyLabelCoordinates(int __sk)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// Remove any rotation from the soft key
+		Display display = this._display;
+		if (display != null)
+			__sk = display.__layoutProject(__sk);
+		
+		int index = (__sk & Display.SOFTKEY_INDEX_MASK);
+		
+		// {@squirreljme.error EB17 The placement is not valid or not supported
+		// on this device/implementation. (The placement)}
+		if (index == 0 || (__sk != Display._SOFTKEY_LEFT_COMMAND &&
+			__sk != Display._SOFTKEY_RIGHT_COMMAND))
+			throw new IllegalArgumentException("EB17 " + __sk);
+		
+		UIBackend backend = UIBackendFactory.getInstance();
+		
+		// Use the item's actual position
+		int uiPos = Display.__layoutSoftKeyToPos(__sk);
+		UIItemBracket item = backend.formItemAtPosition(this._uiForm, uiPos);
+		if (item != null)
+			return new int[]{
+					backend.widgetPropertyInt(item,
+						UIWidgetProperty.INT_X_POSITION),
+					backend.widgetPropertyInt(item,
+						UIWidgetProperty.INT_Y_POSITION),
+					backend.widgetPropertyInt(item,
+						UIWidgetProperty.INT_WIDTH),
+					backend.widgetPropertyInt(item,
+						UIWidgetProperty.INT_HEIGHT),
+				};
+		
+		// Otherwise make a guess at where it could be located since it cannot
+		// be well known
+		int halfWidth = this.getWidth() / 2;
+		int height = this.getHeight();
+		switch (__sk)
+		{
+			case Display._SOFTKEY_LEFT_COMMAND:
+				return new int[]{0, height, halfWidth, 16};
+			
+			case Display._SOFTKEY_RIGHT_COMMAND:
+				return new int[]{halfWidth, height, halfWidth, 16};
+			
+			default:
+				throw Debugging.oops(__sk);
+		}
 	}
 	
 	/**
@@ -305,7 +365,8 @@ public abstract class Canvas
 	public boolean hasPointerEvents()
 	{
 		Display d = this._display;
-		return (d != null ? d : Display.getDisplays(0)[0]).hasPointerEvents();
+		return (d != null ? d :
+			Display.getDisplays(0)[0]).hasPointerEvents();
 	}
 	
 	/**

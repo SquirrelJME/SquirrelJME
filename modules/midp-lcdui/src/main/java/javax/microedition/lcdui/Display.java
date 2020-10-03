@@ -12,10 +12,10 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.DeviceFeedbackType;
-import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.Poking;
@@ -32,6 +32,14 @@ import javax.microedition.midlet.MIDlet;
 @SuppressWarnings("OverlyComplexClass")
 public class Display
 {
+	/** The soft-key for the left command. */
+	static final int _SOFTKEY_LEFT_COMMAND =
+		Display.SOFTKEY_BOTTOM + 1;
+	
+	/** The soft-key for the right command. */
+	static final int _SOFTKEY_RIGHT_COMMAND =
+		Display.SOFTKEY_BOTTOM + 2;
+	
 	public static final int ALERT =
 		3;
 
@@ -349,7 +357,12 @@ public class Display
 		// manages pretty much everything in a framebuffer every display will
 		// always have certain capabilities
 		return (hasinput ? Display.SUPPORTS_INPUT_EVENTS : 0) |
-			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) | Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS | Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS | Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES | Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES | Display.SUPPORTS_MENUS;*/
+			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) |
+			Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
+			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
+			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
+			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
+			Display.SUPPORTS_MENUS;*/
 	}
 	
 	/**
@@ -1267,6 +1280,51 @@ public class Display
 		throws IllegalStateException, NullPointerException
 	{
 		StaticDisplayState.removeListener(__dl);
+	}
+	
+	/**
+	 * Converts a {@link UIItemPosition} to a softkey.
+	 * 
+	 * @param __pos The {@link UIItemPosition} to get the soft key of.
+	 * @return The softkey position or a negative value if not valid.
+	 * @since 2020/10/03
+	 */
+	static int __layoutPosToSoftKey(int __pos)
+	{
+		switch (__pos)
+		{
+			case UIItemPosition.LEFT_COMMAND:
+				return Display._SOFTKEY_LEFT_COMMAND;
+				
+			case UIItemPosition.RIGHT_COMMAND:
+				return Display._SOFTKEY_RIGHT_COMMAND;
+			
+			default:
+				return -1;
+		}
+	}
+	
+	/**
+	 * Returns the position where the soft key belongs.
+	 * 
+	 * @param __softKey The soft key to get the UI position from.
+	 * @return The {@link UIItemPosition} of the item, or
+	 * {@link UIItemPosition#NOT_ON_FORM} if not valid.
+	 * @since 2020/10/03
+	 */
+	static int __layoutSoftKeyToPos(int __softKey)
+	{
+		switch (__softKey)
+		{
+			case Display._SOFTKEY_LEFT_COMMAND:
+				return UIItemPosition.LEFT_COMMAND;
+				
+			case Display._SOFTKEY_RIGHT_COMMAND:
+				return UIItemPosition.RIGHT_COMMAND;
+			
+			default:
+				return UIItemPosition.NOT_ON_FORM;
+		}
 	}
 }
 

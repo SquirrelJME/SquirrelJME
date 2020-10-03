@@ -38,7 +38,15 @@ public interface UIWidgetProperty
 	byte INT_SIGNAL_REPAINT =
 		4;
 	
+	/** X position. */
+	byte INT_X_POSITION =
+		5;
+	
+	/** Y position. */
+	byte INT_Y_POSITION =
+		6;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		5;
+		7;
 }
