@@ -219,7 +219,6 @@ public abstract class Canvas
 	 * @param __g The graphics to draw into.
 	 * @since 2018/03/28
 	 */
-	@Override
 	@SerializedEvent
 	protected abstract void paint(Graphics __g);
 	
@@ -343,7 +342,6 @@ public abstract class Canvas
 	 *
 	 * @since 2018/03/28
 	 */
-	@Override
 	@SerializedEvent
 	protected void hideNotify()
 	{
@@ -366,7 +364,6 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2019/05/17
 	 */
-	@Override
 	@ImplementationNote("This is in SquirrelJME only and is used to provide " +
 		"access to this flag.")
 	protected boolean isFullscreen()
@@ -378,7 +375,6 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2019/05/17
 	 */
-	@Override
 	@ImplementationNote("This is in SquirrelJME only and is used to provide " +
 		"access to this flag.")
 	protected boolean isTransparent()
@@ -392,7 +388,6 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void keyPressed(int __code)
 	{
@@ -405,7 +400,6 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void keyReleased(int __code)
 	{
@@ -418,7 +412,6 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void keyRepeated(int __code)
 	{
@@ -436,7 +429,6 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void pointerDragged(int __x, int __y)
 	{
@@ -453,7 +445,6 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void pointerPressed(int __x, int __y)
 	{
@@ -470,7 +461,6 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void pointerReleased(int __x, int __y)
 	{
@@ -639,7 +629,6 @@ public abstract class Canvas
 	 *
 	 * @since 2018/12/02.
 	 */
-	@Override
 	@SerializedEvent
 	protected void showNotify()
 	{

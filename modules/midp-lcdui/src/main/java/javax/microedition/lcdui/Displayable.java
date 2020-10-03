@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
-import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,6 @@ import javax.microedition.midlet.MIDlet;
  * @since 2016/10/08
  */
 public abstract class Displayable
-	extends ExposedDisplayable
 	implements DisplayWidget
 {
 	/** The native form instance. */
@@ -174,10 +172,11 @@ public abstract class Displayable
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the command listener.
+	 * 
+	 * @return The command listener.
 	 * @since 2019/05/18
 	 */
-	@Override
 	protected CommandListener getCommandListener()
 	{
 		return this._cmdListener;
@@ -189,7 +188,6 @@ public abstract class Displayable
 	 * @return The available commands.
 	 * @since 2019/05/17
 	 */
-	@Override
 	public Command[] getCommands()
 	{
 		List<Command> rv = new ArrayList<>();
@@ -221,7 +219,6 @@ public abstract class Displayable
 	 * @return The ticker being shown or {@code null} if there is none.
 	 * @since 2018/03/26
 	 */
-	@Override
 	public Ticker getTicker()
 	{
 		return this._ticker;
@@ -248,18 +245,6 @@ public abstract class Displayable
 	{
 		if (this.__isShown())
 			this.__layoutCommands();
-	}
-	
-	/**
-	 * This method is called after this has been hidden from the display,
-	 * whether it was removed or concealed. This can be used to stop timers
-	 * for example since they might not be needed when this is not visible.
-	 *
-	 * @since 2019/05/18
-	 */
-	@SerializedEvent
-	void hideNotify()
-	{
 	}
 	
 	/**
@@ -429,23 +414,12 @@ public abstract class Displayable
 	}
 	
 	/**
-	 * This is called when the canvas has been shown.
-	 *
-	 * @since 2018/05/18
-	 */
-	@SerializedEvent
-	void showNotify()
-	{
-	}
-	
-	/**
 	 * This is called when the size of the displayable has changed.
 	 *
 	 * @param __w The new width of the displayable.
-	 * @param __h The new heigh of the displayable.
+	 * @param __h The new height of the displayable.
 	 * @since 2016/10/10
 	 */
-	@Override
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
@@ -693,16 +667,22 @@ public abstract class Displayable
 	 * Does internal work when a form is being shown.
 	 * 
 	 * @since 2020/09/27
+	 * @param __show
 	 */
 	@SerializedEvent
-	final void __showNotify()
+	final void __showNotify(Displayable __show)
+		throws NullPointerException
 	{
+		if (__show == null)
+			throw new NullPointerException("NARG");
+		
 		// Layout all the given commands, either they were changed or the
 		// display was shown
 		this.__layoutCommands();
 		
-		// Forward to the implementation specific notification
-		this.showNotify();
+		// Inform canvases that they are now hidden
+		if (__show instanceof Canvas)
+			((Canvas)__show).showNotify();
 	}
 	
 	/**

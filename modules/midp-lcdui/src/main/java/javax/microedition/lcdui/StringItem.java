@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class StringItem
 	extends Item
@@ -73,7 +73,7 @@ public class StringItem
 	public Font getFont()
 	{
 		Font rv = this._font;
-		return (rv == null ? StandardMetrics.itemLabelFont() : rv);
+		throw Debugging.todo();
 	}
 	
 	/**

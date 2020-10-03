@@ -26,7 +26,6 @@ import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
-import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
@@ -976,6 +975,8 @@ public class Display
 	private int __bestImageSize(int __e, boolean __h)
 		throws IllegalArgumentException
 	{
+		throw Debugging.todo();
+		/*
 		// Depends
 		switch (__e)
 		{
@@ -1005,7 +1006,7 @@ public class Display
 			default:
 				throw new IllegalArgumentException(String.format("EB1o %d",
 					__e));
-		}
+		}*/
 	}
 	
 	/**
@@ -1032,8 +1033,9 @@ public class Display
 		current._display = null;
 		this._current = null;
 		
-		// Send notification that this is now hidden
-		current.hideNotify();
+		// Inform canvases that they are now hidden
+		if (current instanceof Canvas)
+			((Canvas)current).hideNotify();
 		
 		return current;
 	}
@@ -1090,7 +1092,7 @@ public class Display
 		this._current = __show;
 		
 		// Notify that it was shown
-		__show.__showNotify();
+		__show.__showNotify(__show);
 	}
 	
 	/**
