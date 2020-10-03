@@ -13,11 +13,10 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -382,9 +381,10 @@ public abstract class Displayable
 			this._ticker = __t;
 			
 			// Update display
-			Display d = this._display;
+			throw Debugging.todo();
+			/*Display d = this._display;
 			if (d != null)
-				UIState.getInstance().repaint();
+				UIState.getInstance().repaint();*/
 		}
 	}
 	

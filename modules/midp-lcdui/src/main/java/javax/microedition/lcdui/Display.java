@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -340,7 +339,8 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		int caps = UIState.getInstance().capabilities();
+		throw Debugging.todo();
+		/*int caps = UIState.getInstance().capabilities();
 		boolean hastouch = ((caps & Framebuffer.CAPABILITY_TOUCH) != 0);
 		boolean hasinput = hastouch |
 			((caps & Framebuffer.CAPABILITY_KEYBOARD) != 0);
@@ -349,7 +349,7 @@ public class Display
 		// manages pretty much everything in a framebuffer every display will
 		// always have certain capabilities
 		return (hasinput ? Display.SUPPORTS_INPUT_EVENTS : 0) |
-			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) | Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS | Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS | Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES | Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES | Display.SUPPORTS_MENUS;
+			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) | Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS | Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS | Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES | Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES | Display.SUPPORTS_MENUS;*/
 	}
 	
 	/**

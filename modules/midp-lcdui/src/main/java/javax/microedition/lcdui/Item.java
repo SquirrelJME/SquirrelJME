@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 
 public abstract class Item
@@ -223,14 +223,15 @@ public abstract class Item
 	{
 		this._label = __l;
 		
-		// Repaint the display
+		throw Debugging.todo();
+		/*// Repaint the display
 		Displayable displayable = this._displayable;
 		if (displayable != null)
 		{
 			Display display = displayable._display;
 			if (display != null)
 				UIState.getInstance().repaint();
-		}
+		}*/
 	}
 	
 	/**

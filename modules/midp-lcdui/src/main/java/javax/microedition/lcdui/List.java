@@ -11,7 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class List
 	extends Screen
@@ -109,11 +109,13 @@ public class List
 			e._selected = true;
 		
 		// Update display
+		throw Debugging.todo();
+		/*
 		Display d = this._display;
 		if (d != null)
 			UIState.getInstance().repaint();
 		
-		return rv;
+		return rv;*/
 	}
 	
 	@Override
@@ -309,9 +311,11 @@ public class List
 		this._items.get(__i)._disabled = !__e;
 		
 		// Update display
+		throw Debugging.todo();
+		/*
 		Display d = this._display;
 		if (d != null)
-			UIState.getInstance().repaint();
+			UIState.getInstance().repaint();*/
 	}
 	
 	@Override
@@ -335,9 +339,11 @@ public class List
 		this._items.get(__i)._font = __f;
 		
 		// Update display
+		throw Debugging.todo();
+		/*
 		Display d = this._display;
 		if (d != null)
-			UIState.getInstance().repaint();
+			UIState.getInstance().repaint();*/
 	}
 	
 	public void setSelectCommand(Command __a)
@@ -377,9 +383,11 @@ public class List
 		}
 		
 		// Update display
+		throw Debugging.todo();
+		/*
 		Display d = this._display;
 		if (d != null)
-			UIState.getInstance().repaint();
+			UIState.getInstance().repaint();*/
 	}
 	
 	/**

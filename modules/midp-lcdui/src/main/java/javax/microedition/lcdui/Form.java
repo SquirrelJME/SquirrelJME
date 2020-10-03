@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class Form
 	extends Screen
@@ -131,11 +131,12 @@ public class Form
 		int rv = items.append(__i);
 		
 		// Update display
-		Display d = this._display;
+		throw Debugging.todo();
+		/*Display d = this._display;
 		if (d != null)
 			UIState.getInstance().repaint();
 		
-		return rv;
+		return rv;*/
 	}
 	
 	public void delete(int __a)
