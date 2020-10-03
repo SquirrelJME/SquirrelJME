@@ -10,6 +10,7 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
@@ -50,11 +51,15 @@ public abstract class MIDlet
 	 * @throws MIDletStateChangeException If the destruction might stop.
 	 * @since 2020/02/29
 	 */
-	@SuppressWarnings("deprecation")
 	protected abstract void destroyApp(boolean __uc)
 		throws MIDletStateChangeException;
 	
-	@SuppressWarnings("deprecation")
+	/**
+	 * This is the starting point for all MIDlets.
+	 * 
+	 * @throws MIDletStateChangeException If the MIDlet should not start.
+	 * @since 2020/10/03
+	 */
 	protected abstract void startApp()
 		throws MIDletStateChangeException;
 	
@@ -69,7 +74,7 @@ public abstract class MIDlet
 	 * @throws IllegalStateException If this is a MIDP 3.0 application.
 	 * @since 2019/05/05
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public final int checkPermission(String __p)
 		throws IllegalStateException
 	{
@@ -222,7 +227,7 @@ public abstract class MIDlet
 	 *
 	 * @since 2017/02/08
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public final void notifyPaused()
 	{
 	}
@@ -234,7 +239,7 @@ public abstract class MIDlet
 	 *
 	 * @since 2017/02/08
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public void pauseApp()
 	{
 	}
@@ -273,7 +278,7 @@ public abstract class MIDlet
 	 * 
 	 * @since 2020/07/03
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public final void resumeRequest()
 	{
 	}

@@ -43,13 +43,17 @@ public interface UIItemPosition
 	byte BODY =
 		-5;
 	
+	/** The touch-screen control interface. */
+	byte TOUCH_CONTROLS =
+		-6;
+	
 	/** The lowest permitted value, no value can be lower than this. */
 	byte MIN_VALUE =
-		-5;
+		-6;
 	
 	/** The number of special items, for shifting. */
 	byte SPECIAL_SHIFT =
-		5;
+		6;
 	
 	/** The item is not on the form. */
 	int NOT_ON_FORM =

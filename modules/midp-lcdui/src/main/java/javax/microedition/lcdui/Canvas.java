@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -40,12 +41,33 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 public abstract class Canvas
 	extends Displayable
 {
+	/**
+	 * Every button that is possibly available.
+	 * 
+	 * The following buttons are shown:
+	 * - Any from {@link #ACTIONS_NAVIGATION}.
+	 * - {@link #GAME_A}.
+	 * - {@link #GAME_B}.
+	 * - {@link #GAME_C}.
+	 * - {@link #GAME_D}.
+	 */
 	public static final int ACTIONS_ALL =
 		-2;
 	
+	/**
+	 * Directional buttons and fire to appear on the display screen.
+	 * 
+	 * The following buttons are shown:
+	 * - {@link #UP}.
+	 * - {@link #DOWN}.
+	 * - {@link #LEFT}.
+	 * - {@link #RIGHT}.
+	 * - {@link #FIRE}.
+	 */
 	public static final int ACTIONS_NAVIGATION =
 		-1;
 	
+	/** No actions are required. */
 	public static final int ACTIONS_NONE =
 		0;
 	
@@ -188,6 +210,9 @@ public abstract class Canvas
 	
 	/** Was a repaint requested? */
 	volatile boolean _waitPaint;
+	
+	/** The actions which are required. */
+	private int _requiredActions;
 	
 	/**
 	 * Initializes the base canvas.
@@ -361,7 +386,7 @@ public abstract class Canvas
 	 * @return {@code true} if pointer events are available.
 	 * @since 2017/02/12
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public boolean hasPointerEvents()
 	{
 		Display d = this._display;
@@ -376,7 +401,7 @@ public abstract class Canvas
 	 * @return {@code true} if pointer motion events are available.
 	 * @since 2017/02/12
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public boolean hasPointerMotionEvents()
 	{
 		Display d = this._display;
@@ -680,8 +705,27 @@ public abstract class Canvas
 		this._transparent = !__opaque;
 	}
 	
+	/**
+	 * Sets the required actions that are to be shown on the touch screen when
+	 * this canvas is active.
+	 * 
+	 * @param __actions The actions to use.
+	 * @throws IllegalArgumentException If the actions are not valid.
+	 * @since 2020/10/03
+	 */
 	public void setRequiredActions(int __actions)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error EB18 Invalid action. {The action ID}) */
+		if (__actions != Canvas.ACTIONS_ALL &&
+			__actions != Canvas.ACTIONS_NAVIGATION &&
+			__actions != Canvas.ACTIONS_NONE)
+			throw new IllegalArgumentException("EB18 " + __actions);
+		
+		// Not a touch screen, so does not matter
+		if (!this.hasPointerEvents())
+			return;
+		
 		throw new todo.TODO();
 	}
 	

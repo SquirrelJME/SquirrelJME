@@ -7,17 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui;
+package cc.squirreljme.runtime.cldc.annotation;
 
 /**
- * Represents extended capabilities of the display.
+ * The API defines this as being deprecated.
  *
- * @since 2019/05/05
+ * @since 2020/10/03
  */
-public interface ExtendedCapabilities
+public @interface ApiDefinedDeprecated
 {
-	/** Does this support pointer events? */
-	int SUPPORTS_POINTER_EVENTS =
-		0x4000_0000;
 }
-

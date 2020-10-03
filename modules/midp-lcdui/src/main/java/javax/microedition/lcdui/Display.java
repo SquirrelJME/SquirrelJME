@@ -15,12 +15,12 @@ import cc.squirreljme.jvm.DeviceFeedbackType;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -652,8 +652,9 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return 0 != (this.getCapabilities() &
-			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
+		return (UIBackendFactory.getInstance().metric(
+			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
+			(UIInputFlag.POINTER);
 	}
 	
 	/**
@@ -664,8 +665,10 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return 0 != (this.getCapabilities() &
-			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
+		return (UIBackendFactory.getInstance().metric(
+			UIMetricType.INPUT_FLAGS) &
+			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
+			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
 	}
 	
 	/**

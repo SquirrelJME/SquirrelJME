@@ -51,7 +51,11 @@ public interface UIMetricType
 	byte DISPLAY_PIXEL_FORMAT =
 		7;
 	
+	/** Returns the {@link UIInputFlag} that determine how the UI controls. */
+	byte INPUT_FLAGS =
+		8;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		8;
+		9;
 }
