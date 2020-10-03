@@ -287,12 +287,12 @@ public abstract class Displayable
 			return;
 		
 		// Remove the command
-		this._actions.remove(__c);
-		
-		// Repaint display?
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();
+		if (this._actions.remove(__c))
+		{
+			// Re-layout any removed commands so they are gone
+			if (this.__isShown())
+				this.__layoutCommands();
+		}
 	}
 	
 	public void removeCommandOrMenu(int __p)

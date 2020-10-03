@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
@@ -674,24 +675,35 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return UIState.getInstance().displayIsColor();
+		return UIBackendFactory.getInstance().metric(
+			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
 	}
 	
 	/**
-	 * Returns the number of alpha-transparency levels.
-	 *
-	 * Alpha levels range from fully transparent to fully opaue.
-	 *
-	 * There will always be at least two levels.
+	 * Returns the number of alpha-transparency levels. Alpha levels range
+	 * from fully transparent to fully opaque.
+	 * 
+	 * It is required by implementations to support at least 16 levels of
+	 * alpha transparency.
 	 *
 	 * @return The alpha transparency levels.
 	 * @since 2016/10/14
 	 */
+	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		// Always return 2 because SquirrelJME operates on a flat framebuffer
-		// where there is no such thing as transparency
-		return 2;
+		switch (UIBackendFactory.getInstance().metric(
+			UIMetricType.DISPLAY_PIXEL_FORMAT))
+		{
+				// If the display format is 16-bit, just use this here
+			case UIPixelFormat.SHORT_RGBA4444:
+				return 16;
+			
+				// Use 256 since all other image formats would get their
+				// alpha colors calculated.
+			default:
+				return 256;
+		}
 	}
 	
 	/**
@@ -704,9 +716,42 @@ public class Display
 	 * @return The number of available colors.
 	 * @since 2016/10/14
 	 */
+	@SuppressWarnings("MagicNumber")
 	public int numColors()
 	{
-		return UIState.getInstance().displayUniqueColors();
+		int pf;
+		switch ((pf = UIBackendFactory.getInstance().metric(
+			UIMetricType.DISPLAY_PIXEL_FORMAT)))
+		{
+			case UIPixelFormat.INT_RGB888:
+			case UIPixelFormat.INT_RGBA8888:
+				return 16_777_216;
+			
+			case UIPixelFormat.SHORT_INDEXED65536:
+				return 65536;
+			
+			case UIPixelFormat.SHORT_RGB565:
+				return 8192;
+			
+			case UIPixelFormat.SHORT_RGBA4444:
+				return 4096;
+			
+			case UIPixelFormat.BYTE_INDEXED256:
+				return 256;
+			
+			case UIPixelFormat.PACKED_INDEXED4:
+				return 16;
+			
+			case UIPixelFormat.PACKED_INDEXED2:
+				return 4;
+			
+			case UIPixelFormat.PACKED_INDEXED1:
+				return 2;
+			
+				// {@squirreljme.error EB3j Unhandled pixel format. (Format)}.
+			default:
+				throw Debugging.oops("EB3j", pf);
+		}
 	}
 	
 	public void removeCurrent()

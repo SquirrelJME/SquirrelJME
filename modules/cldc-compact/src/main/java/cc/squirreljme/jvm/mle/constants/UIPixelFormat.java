@@ -16,19 +16,43 @@ package cc.squirreljme.jvm.mle.constants;
  */
 public interface UIPixelFormat
 {
-	/** 32-bit RGBA ({@code int}). */
+	/** 32-bit RGBA ({@code int}) [Java ME Standard]. */
 	byte INT_RGBA8888 =
 		0;
 	
-	/** 256 Colors ({@code byte}). */
-	byte BYTE_INDEXED256 =
+	/** 32-bit RGB ({@code int}) [Java ME Standard]. */
+	byte INT_RGB888 =
 		1;
 	
-	/** 32-bit RGB ({@code int}). */
-	byte INT_RGB888 =
+	/** 16-bit RGBA4444. ({@code short}) [Java ME Standard]. */
+	byte SHORT_RGBA4444 =
 		2;
+	
+	/** 16-bit RGB565. ({@code short}) [Java ME Standard]. */
+	byte SHORT_RGB565 =
+		3;
+	
+	/** 65536 Colors ({@code short}). */
+	byte SHORT_INDEXED65536 =
+		4;
+	
+	/** 256 Colors ({@code byte}). */
+	byte BYTE_INDEXED256 =
+		5;
+	
+	/** Packed 16 colors (4-bit). ({@code packed byte}) */
+	byte PACKED_INDEXED4 =
+		6;
+	
+	/** Packed 4 Colors (2-bit). ({@code packed byte}) */
+	byte PACKED_INDEXED2 =
+		7;
+	
+	/** Packed 2 colors (1-bit). ({@code packed byte}) */
+	byte PACKED_INDEXED1 =
+		8;
 	
 	/** The number of pixel formats. */
 	byte NUM_PIXEL_FORMATS =
-		3;
+		9;
 }

@@ -56,12 +56,8 @@ final class __MLEUIThread__
 		if (widget instanceof __CommandWidget__)
 			((__CommandWidget__)widget).__activate();
 		
-		// Canvas with key events
-		else if (widget instanceof Canvas)
-			throw Debugging.todo();
-		
-		// CustomItem with key events
-		else if (widget instanceof CustomItem)
+		// Displayables which have standard key access
+		else if ((widget instanceof Canvas) || (widget instanceof CustomItem))
 			throw Debugging.todo();
 	}
 	

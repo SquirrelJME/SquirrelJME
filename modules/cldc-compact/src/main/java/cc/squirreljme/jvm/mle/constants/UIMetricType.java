@@ -43,7 +43,15 @@ public interface UIMetricType
 	byte DISPLAY_CURRENT_HEIGHT =
 		5;
 	
+	/** Is the display monochromatic? */
+	byte DISPLAY_MONOCHROMATIC =
+		6;
+	
+	/** Returns the {@link UIPixelFormat} of the display. */
+	byte DISPLAY_PIXEL_FORMAT =
+		7;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		6;
+		8;
 }
