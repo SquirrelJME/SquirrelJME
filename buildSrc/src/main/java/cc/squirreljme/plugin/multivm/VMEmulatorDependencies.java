@@ -9,17 +9,19 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.util.Arrays;
 import java.util.concurrent.Callable;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 /**
  * This class is used to provide the dependency lookup for the emulator
- * backend, this is so the emulator is build.
+ * backend, this is so the emulator is built.
  *
  * @since 2020/08/16
  */
 public final class VMEmulatorDependencies
-	implements Callable<Task>
+	implements Callable<Iterable<Task>>
 {
 	/** The task referencing this. */
 	protected final Task task;
@@ -52,10 +54,14 @@ public final class VMEmulatorDependencies
 	 * @return
 	 */
 	@Override
-	public Task call()
+	public Iterable<Task> call()
 	{
-		return this.task.getProject().getRootProject()
-			.project(this.vmType.emulatorProject())
-			.getTasks().getByName("assemble");
+		Project root = this.task.getProject().getRootProject();
+		
+		return Arrays.<Task>asList(
+			root.project(this.vmType.emulatorProject())
+				.getTasks().getByName("assemble"),
+			root.project(":emulators:emulator-base")
+				.getTasks().getByName("jar"));
 	}
 }
