@@ -96,7 +96,7 @@ public final class UIFormShelf
 	 * 
 	 * @param __display The form to display on screen.
 	 * @param __form The form to display.
-	 * @throws MLECallError On {@code null} arguments.
+	 * @throws MLECallError On {@code __display} is {@code null}.
 	 * @since 2020/07/01
 	 */
 	public static native void displayShow(UIDisplayBracket __display,

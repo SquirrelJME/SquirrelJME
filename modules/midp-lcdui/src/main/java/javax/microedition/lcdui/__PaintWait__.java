@@ -7,28 +7,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package lcdui.canvas;
-
-import javax.microedition.lcdui.Display;
+package javax.microedition.lcdui;
 
 /**
- * Tests that canvases have some size to them.
+ * This is used by {@link Canvas#serviceRepaints()} and is used to check
+ * for paints.
  *
- * @since 2020/08/02
+ * @since 2020/10/04
  */
-public class TestCanvasSize
-	extends BaseCanvas
+final class __PaintWait__
+	implements Runnable
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/08/02
+	 * @since 2020/10/04
 	 */
 	@Override
-	public void test(Display __display, CanvasPlatform __platform)
+	public void run()
 	{
-		__platform.serviceRepaints();
-		
-		this.secondary("width", __platform.getWidth() > 0);
-		this.secondary("height", __platform.getHeight() > 0);
 	}
 }

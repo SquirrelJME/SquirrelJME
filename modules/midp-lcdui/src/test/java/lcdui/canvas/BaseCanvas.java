@@ -48,6 +48,7 @@ public abstract class BaseCanvas
 		{
 			// Wait for the canvas events to settle
 			FormUtils.flushAndWait(500);
+			__display.callSerially(new __Wait__());
 			
 			// Run the test
 			this.test(__display, platform);

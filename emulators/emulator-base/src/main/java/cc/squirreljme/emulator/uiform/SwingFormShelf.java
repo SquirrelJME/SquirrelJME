@@ -24,6 +24,8 @@ import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.DisplayMode;
+import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.lang.ref.Reference;
@@ -151,8 +153,8 @@ public final class SwingFormShelf
 		UIFormBracket __form)
 		throws MLECallError
 	{
-		if (__display == null || __form == null)
-			throw new MLECallError("Null display or form.");
+		if (__display == null)
+			throw new MLECallError("Null display.");
 		
 		((SwingDisplay)__display).show((SwingForm)__form);
 	}
@@ -532,6 +534,14 @@ public final class SwingFormShelf
 			case UIMetricType.DISPLAY_CURRENT_HEIGHT:
 				return Toolkit.getDefaultToolkit().getScreenSize().height;
 			
+				// Maximum display width 
+			case UIMetricType.DISPLAY_MAX_WIDTH:
+				return SwingFormShelf.__maxResolution(false);
+			
+				// Maximum display height
+			case UIMetricType.DISPLAY_MAX_HEIGHT:
+				return SwingFormShelf.__maxResolution(true);
+			
 				// Pixel format
 			case UIMetricType.DISPLAY_PIXEL_FORMAT:
 				return UIPixelFormat.INT_RGB888;
@@ -550,6 +560,7 @@ public final class SwingFormShelf
 				throw new MLECallError("Unknown metric: " + __metricId);
 		}
 	}
+	
 	
 	/**
 	 * As {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int)}.
@@ -631,5 +642,24 @@ public final class SwingFormShelf
 		
 		// Forward
 		return ((SwingWidget)__widget).propertyStr(__strProp);
+	}
+	
+	/**
+	 * Returns the max resolution.
+	 * 
+	 * @param __height Use the height.
+	 * @return The resolution.
+	 * @since 2020/10/04
+	 */
+	private static int __maxResolution(boolean __height)
+	{
+		// Determine the max supported resolution
+		int rv = 0;
+		for (DisplayMode mode : GraphicsEnvironment
+			.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+			.getDisplayModes())
+			rv = Math.max(rv, (__height ? mode.getHeight() : mode.getWidth()));
+		
+		return rv;
 	}
 }

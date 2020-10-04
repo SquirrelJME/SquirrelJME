@@ -29,6 +29,8 @@ public class TestCanvasRepaint
 	{
 		// Mark the time and request a repaint
 		long base = System.currentTimeMillis();
+		
+		// Request painting
 		__platform.repaint();
 		__platform.serviceRepaints();
 		

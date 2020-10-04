@@ -51,8 +51,8 @@ public class TestCanvasFullScreen
 		this.secondary("width", newWidth >= width);
 		this.secondary("height", newHeight > height);
 		
-		// It should also be the same size as the display
-		this.secondary("wdisp", newWidth == __display.getWidth());
-		this.secondary("hdisp", newHeight == __display.getHeight());
+		// The canvas should be smaller or at the maximum display resolution
+		this.secondary("wdisp", newWidth <= __display.getWidth());
+		this.secondary("hdisp", newHeight <= __display.getHeight());
 	}
 }

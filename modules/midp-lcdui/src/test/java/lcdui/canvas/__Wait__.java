@@ -9,26 +9,21 @@
 
 package lcdui.canvas;
 
-import javax.microedition.lcdui.Display;
-
 /**
- * Tests that canvases have some size to them.
+ * This does nothing.
  *
- * @since 2020/08/02
+ * @since 2020/10/04
  */
-public class TestCanvasSize
-	extends BaseCanvas
+class __Wait__
+	implements Runnable
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/08/02
+	 * @since 2020/10/04
 	 */
 	@Override
-	public void test(Display __display, CanvasPlatform __platform)
+	public void run()
 	{
-		__platform.serviceRepaints();
-		
-		this.secondary("width", __platform.getWidth() > 0);
-		this.secondary("height", __platform.getHeight() > 0);
+		// Does nothing
 	}
 }

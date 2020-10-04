@@ -208,9 +208,6 @@ public abstract class Canvas
 	/** Service repaint counter. */
 	volatile int _paintCount;
 	
-	/** Was a repaint requested? */
-	volatile boolean _waitPaint;
-	
 	/** The actions which are required. */
 	private int _requiredActions;
 	
@@ -590,9 +587,6 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		// Mark paint as being waited for
-		this._waitPaint = true;
-		
 		// Request repainting
 		UIBackend instance = UIBackendFactory.getInstance();
 		
@@ -616,7 +610,7 @@ public abstract class Canvas
 	}
 	
 	/**
-	 * This forces any pending repaint requests to be serviced immedietely,
+	 * This forces any pending repaint requests to be serviced immediately,
 	 * blocking until paint has been called. If the canvas is not visible on
 	 * the display or if there are no pending repaints then this call does
 	 * nothing.
@@ -628,17 +622,35 @@ public abstract class Canvas
 	 */
 	public final void serviceRepaints()
 	{
-		// If a paint was not requested then do nothing
-		if (!this._waitPaint)
+		// If there is no current display then nothing can ever be repainted
+		Display display = this._display;
+		if (display == null)
 			return;
 		
-		// No longer waiting for a paint to occur
-		this._waitPaint = false;
+		// Get the current paint count
+		int count;
+		synchronized (this)
+		{
+			count = this._paintCount;
+		}
 		
-		// Just wait until the service count changes
-		int atCount = this._paintCount;
-		while (atCount == this._paintCount)
-			;
+		// Initialize the waiter
+		__PaintWait__ wait = new __PaintWait__();
+		
+		// Wait loop for repaints
+		for (;;)
+		{
+			// Call this, as when it is complete the event loop would have ran
+			this.repaint();
+			display.callSerially(wait);
+			
+			// Did the paint counter change?
+			synchronized (this)
+			{
+				if (this._paintCount != count)
+					break;
+			}
+		}
 	}
 	
 	/**
@@ -782,7 +794,10 @@ public abstract class Canvas
 		finally
 		{
 			// Increment the paint counter, that it happened
-			this._paintCount++;
+			synchronized (this)
+			{
+				this._paintCount++;
+			}
 		}
 	}
 }

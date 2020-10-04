@@ -136,8 +136,11 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			SpringObject form = (SpringObject)__args[1];
+			
 			UIFormShelf.displayShow(MLEUIForm.__display(__args[0]).display,
-				MLEUIForm.__form(__args[1]).form);
+				(form == null || form == SpringNullObject.NULL ? null :
+				MLEUIForm.__form(__args[1]).form));
 			return null;
 		}
 	},

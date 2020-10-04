@@ -77,27 +77,24 @@ public final class SwingDisplay
 	 * Shows the given form on the display.
 	 * 
 	 * @param __form The form to show.
-	 * @throws MLECallError On null arguments.
 	 * @since 2020/07/01
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public void show(SwingForm __form)
 		throws MLECallError
 	{
-		if (__form == null)
-			throw new MLECallError("NARG");
-		
 		synchronized (this)
 		{
 			JFrame frame = this.frame;
 			
 			// The form must not be associated with a display
-			synchronized (__form)
-			{
-				if (__form._display != null)
-					throw new MLECallError(
-						"Associated with display.");
-			}
+			if (__form != null)
+				synchronized (__form)
+				{
+					if (__form._display != null)
+						throw new MLECallError(
+							"Associated with display.");
+				}
 			
 			// Remove previous form if there is one
 			SwingForm current = this._current;
@@ -105,34 +102,44 @@ public final class SwingDisplay
 				synchronized (current)
 				{
 					// Snip it out
-					frame.remove(__form.formPanel);
+					frame.remove(current.formPanel);
 					
 					// And clear the linking
 					current._display = null;
 				}
 			
-			// Remove all components from the frame and make our form the only
-			// one
-			frame.setLayout(new BorderLayout());
-			frame.add(__form.formPanel, BorderLayout.CENTER);
-			
-			// Minimize space used
-			frame.pack();
-			
-			// If the frame was not already visible then just center it on
-			// screen 
-			boolean alreadyVisible = frame.isVisible();
-			if (!alreadyVisible)
-				frame.setLocationRelativeTo(null);
-			
-			// Now show it
-			frame.setVisible(true);
-			
-			// Currently displayed form
-			synchronized (__form)
+			// Hide the current form
+			if (__form == null)
 			{
-				this._current = __form;
-				__form._display = this;
+				frame.setVisible(false);
+			}
+			
+			// Make our form visible
+			else
+			{
+				// Remove all components from the frame and make our form the
+				// only one
+				frame.setLayout(new BorderLayout());
+				frame.add(__form.formPanel, BorderLayout.CENTER);
+				
+				// Minimize space used
+				frame.pack();
+				
+				// If the frame was not already visible then just center it on
+				// screen 
+				boolean alreadyVisible = frame.isVisible();
+				if (!alreadyVisible)
+					frame.setLocationRelativeTo(null);
+				
+				// Now show it
+				frame.setVisible(true);
+				
+				// Currently displayed form
+				synchronized (__form)
+				{
+					this._current = __form;
+					__form._display = this;
+				}
 			}
 		}
 	}
