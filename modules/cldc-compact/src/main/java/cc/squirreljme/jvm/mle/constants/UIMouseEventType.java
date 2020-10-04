@@ -14,8 +14,8 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 
 /**
- * Mouse event for {@link
- * UIFormCallback#eventMouse(UIFormBracket, UIItemBracket, int, int, int,int)}.
+ * Mouse event for {@link UIFormCallback#eventMouse(UIFormBracket,
+ * UIItemBracket, int, int, int, int, int)}.
  *
  * @since 2020/07/19
  */

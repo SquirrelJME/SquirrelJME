@@ -14,6 +14,7 @@
 #define SWINGUIFORM_CLASSNAME "cc/squirreljme/emulator/uiform/SwingFormShelf"
 
 // Descriptors for calls
+#define SWINGUIFORM_CALLBACK_DISPLAY_DESC "(Ljava/lang/Object;Lcc/squirreljme/jvm/mle/callbacks/UIDisplayCallback;)V"
 #define SWINGUIFORM_CALLBACK_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/callbacks/UIFormCallback;)V"
 #define SWINGUIFORM_DISPLAYS_DESC "()[Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;"
 #define SWINGUIFORM_DISPLAYCURRENT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;)Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"
@@ -33,11 +34,19 @@
 #define SWINGUIFORM_INJECTOR_DESC "()Lcc/squirreljme/jvm/mle/callbacks/UIFormCallback;"
 #define SWINGUIFORM_ITEMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V"
 #define SWINGUIFORM_ITEMNEW_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
+#define SWINGUIFORM_LATER_DESC "(II)V"
+#define SWINGUIFORM_METRIC_DESC "(I)I"
 #define SWINGUIFORM_WIDGETPROPERTY_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;II)V"
 #define SWINGUIFORM_WIDGETPROPERTY_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;ILjava/lang/String;)V"
 #define SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;I)I"
 #define SWINGUIFORM_WIDGETPROPERTY_GET_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;I)Ljava/lang/String;"
-#define SWINGUIFORM_METRIC_DESC "(I)I"
+
+JNIEXPORT void JNICALL Impl_mle_FormShelf_callbackDisplay(JNIEnv* env,
+	jclass classy, jobject ref, jobject callback)
+{
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"callback", SWINGUIFORM_CALLBACK_DISPLAY_DESC, ref, callback);
+}
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_callback(JNIEnv* env,
 	jclass classy, jobject form, jobject callback)
@@ -186,6 +195,14 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_itemNew(JNIEnv* env,
 		type);
 }
 
+JNIEXPORT void JNICALL Impl_mle_FormShelf_later(JNIEnv* env, jclass classy,
+	jint displayKey, jint serialKey)
+{
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"later", SWINGUIFORM_LATER_DESC,
+		displayKey, serialKey);
+}
+
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 	jint metricId)
 {
@@ -228,6 +245,7 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_widgetPropertyGetStr(JNIEnv* env,
 
 static const JNINativeMethod mleFormMethods[] =
 {
+	{"callback", SWINGUIFORM_CALLBACK_DISPLAY_DESC, (void*)Impl_mle_FormShelf_callbackDisplay},
 	{"callback", SWINGUIFORM_CALLBACK_DESC, (void*)Impl_mle_FormShelf_callback},
 	{"displays", SWINGUIFORM_DISPLAYS_DESC, (void*)Impl_mle_FormShelf_displays},
 	{"displayCurrent", SWINGUIFORM_DISPLAYCURRENT_DESC, (void*)Impl_mle_FormShelf_displayCurrent},
@@ -247,6 +265,7 @@ static const JNINativeMethod mleFormMethods[] =
 	{"injector", SWINGUIFORM_INJECTOR_DESC, (void*)Impl_mle_FormShelf_injector},
 	{"itemDelete", SWINGUIFORM_ITEMDELETE_DESC, (void*)Impl_mle_FormShelf_itemDelete},
 	{"itemNew", SWINGUIFORM_ITEMNEW_DESC, (void*)Impl_mle_FormShelf_itemNew},
+	{"later", SWINGUIFORM_LATER_DESC, (void*)Impl_mle_FormShelf_later},
 	{"metric", SWINGUIFORM_METRIC_DESC, (void*)Impl_mle_FormShelf_metric},
 	{"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_INT_DESC, (void*)Impl_mle_FormShelf_widgetPropertyInt},
 	{"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_STR_DESC, (void*)Impl_mle_FormShelf_widgetPropertyStr},

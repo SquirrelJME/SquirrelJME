@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
@@ -31,6 +32,19 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  */
 public interface UIBackend
 {
+	/**
+	 * Registers a display callback that is to be called when information about
+	 * displays changes.
+	 * 
+	 * @param __ref The object this refers to, if it gets garbage collected
+	 * then this becomes invalidated.
+	 * @param __dc The display callback to use.
+	 * @throws MLECallError On null arguments.
+	 * @since 2020/10/03
+	 */
+	void callback(Object __ref, UIDisplayCallback __dc)
+		throws MLECallError;
+	
 	/**
 	 * This is used to register the callback which is called with the user
 	 * interface events and otherwise.
@@ -254,6 +268,17 @@ public interface UIBackend
 	 * @since 2020/07/17
 	 */
 	UIItemBracket itemNew(int __type)
+		throws MLECallError;
+	
+	/**
+	 * Calls the given method serially within the main event handler.
+	 * 
+	 * @param __displayId The display identifier.
+	 * @param __serialId The serial identifier.
+	 * @throws MLECallError If the call is not valid.
+	 * @since 2020/10/03
+	 */
+	void later(int __displayId, int __serialId)
 		throws MLECallError;
 	
 	/**

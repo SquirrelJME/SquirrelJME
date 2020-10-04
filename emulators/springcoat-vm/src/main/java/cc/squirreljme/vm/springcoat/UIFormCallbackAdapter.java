@@ -56,39 +56,6 @@ public class UIFormCallbackAdapter
 	}
 	
 	/**
-	 * Invokes the callback.
-	 * 
-	 * @param __nat The name and type.
-	 * @param __args The arguments to the call.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/09/15
-	 */
-	public void callbackInvoke(MethodNameAndType __nat, Object... __args)
-		throws NullPointerException
-	{
-		if (__nat == null || __args == null)
-			throw new NullPointerException("NARG");
-		
-		// Inject our object into the call
-		int argLen = __args.length;
-		Object[] callArgs = new Object[argLen + 1];
-		System.arraycopy(__args, 0, callArgs, 1, argLen);
-		callArgs[0] = this.callback;
-		
-		// Setup callback thread for handling
-		try (CallbackThread cb = this.machine.obtainCallbackThread())
-		{
-			// Invoke the given method
-			Object fail = cb.thread().invokeMethod(false,
-				UIFormCallbackAdapter.CALLBACK_CLASS, __nat, callArgs);
-			
-			// Request failed, do not fail but eat the exception
-			if (fail != null)
-				Debugging.debugNote("Callback exception: %s", fail);
-		}
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/13
 	 */
@@ -96,7 +63,7 @@ public class UIFormCallbackAdapter
 	public void eventKey(UIFormBracket __form, UIItemBracket __item,
 		int __event, int __keyCode, int __modifiers)
 	{
-		this.callbackInvoke(
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("eventKey", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
@@ -113,7 +80,7 @@ public class UIFormCallbackAdapter
 	public void eventMouse(UIFormBracket __form, UIItemBracket __item,
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
-		this.callbackInvoke(
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("eventMouse", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
@@ -129,7 +96,7 @@ public class UIFormCallbackAdapter
 	@Override
 	public void exitRequest(UIFormBracket __form)
 	{
-		this.callbackInvoke(
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("exitRequest", null,
 			"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"),
 			new UIFormObject(__form));
@@ -144,7 +111,7 @@ public class UIFormCallbackAdapter
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh)
 	{
-		this.callbackInvoke(
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("paint", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
@@ -162,7 +129,7 @@ public class UIFormCallbackAdapter
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __old, int __new)
 	{
-		this.callbackInvoke(
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("propertyChange", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
@@ -179,12 +146,48 @@ public class UIFormCallbackAdapter
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __strProp, String __old, String __new)
 	{
-		this.callbackInvoke(
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("propertyChange", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "Ljava/lang/String;", "Ljava/lang/String;"),
 			new UIFormObject(__form), new UIItemObject(__item),
 			__strProp, __old, __new);
+	}
+	
+	/**
+	 * Invokes the callback.
+	 * 
+	 * @param __machine The target machine.
+	 * @param __target The target to call.
+	 * @param __nat The name and type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/15
+	 */
+	static void __callbackInvoke(SpringMachine __machine,
+		SpringObject __target, MethodNameAndType __nat, Object... __args)
+		throws NullPointerException
+	{
+		if (__nat == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Inject our object into the call
+		int argLen = __args.length;
+		Object[] callArgs = new Object[argLen + 1];
+		System.arraycopy(__args, 0, callArgs, 1, argLen);
+		callArgs[0] = __target;
+		
+		// Setup callback thread for handling
+		try (CallbackThread cb = __machine.obtainCallbackThread())
+		{
+			// Invoke the given method
+			Object fail = cb.thread().invokeMethod(false,
+				UIFormCallbackAdapter.CALLBACK_CLASS, __nat, callArgs);
+			
+			// Request failed, do not fail but eat the exception
+			if (fail != null)
+				Debugging.debugNote("Callback exception: %s", fail);
+		}
 	}
 }

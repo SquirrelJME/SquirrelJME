@@ -153,6 +153,10 @@ public class VMTestOutputBuffer
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		// Nothing being written?
+		if (__l == 0)
+			return;
+		
 		// This override is used for standard error so that any output here
 		// is done directly without considering the current output at all 
 		boolean unbuffered = this.unbuffered;
@@ -171,11 +175,11 @@ public class VMTestOutputBuffer
 						break;
 				
 					// Push the first chunk of bytes
-					this.__push(__b, __o, at - __o);
+					this.__push(__b, __o, (at + 1) - __o);
 					
 					// Then the second chunk of bytes at the trailing end, this
 					// may result in more splits
-					this.__push(__b, at, end - at);
+					this.__push(__b, at + 1, end - (at + 1));
 					
 					// Do not process anything
 					return;

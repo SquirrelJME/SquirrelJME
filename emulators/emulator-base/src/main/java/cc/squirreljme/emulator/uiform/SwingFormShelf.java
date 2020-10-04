@@ -14,15 +14,24 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 /**
@@ -40,6 +49,14 @@ public final class SwingFormShelf
 	private static final int _COLOR_MASK =
 		0x00_FFFFFF;
 	
+	/** Injector into Swing. */
+	private static final UIFormCallback _INJECTOR =
+		new SwingInjector();
+	
+	/** Display callbacks that are available. */
+	static final Map<Reference<?>, UIDisplayCallback> _DISPLAY_CALLBACKS =
+		new IdentityHashMap<>();
+	
 	/**
 	 * Not used.
 	 * 
@@ -47,6 +64,28 @@ public final class SwingFormShelf
 	 */
 	private SwingFormShelf()
 	{
+	}
+	
+	/**
+	 * As {@link UIFormShelf#callback(Object, UIDisplayCallback)}. 
+	 * 
+	 * @param __ref The object this refers to, if it gets garbage collected
+	 * then this becomes invalidated.
+	 * @param __dc The display callback to use.
+	 * @throws MLECallError On null arguments.
+	 * @since 2020/10/03
+	 */
+	public static void callback(Object __ref, UIDisplayCallback __dc)
+		throws MLECallError
+	{
+		if (__ref == null || __dc == null)
+			throw new MLECallError("Null arguments.");
+		
+		synchronized (SwingFormShelf.class)
+		{
+			SwingFormShelf._DISPLAY_CALLBACKS
+				.put(new WeakReference<>(__ref), __dc);
+		}
 	}
 	
 	/**
@@ -203,7 +242,13 @@ public final class SwingFormShelf
 	public static void flushEvents()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		try
+		{
+			SwingUtilities.invokeAndWait(new NothingRunnable());
+		}
+		catch (InterruptedException|InvocationTargetException ignored)
+		{
+		}
 	}
 	
 	/**
@@ -348,7 +393,7 @@ public final class SwingFormShelf
 	public static UIFormCallback injector()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return SwingFormShelf._INJECTOR;
 	}
 	
 	/**
@@ -433,6 +478,20 @@ public final class SwingFormShelf
 	}
 	
 	/**
+	 * Handles {@link UIFormShelf#later(int, int)}. 
+	 * 
+	 * @param __displayId The display identifier.
+	 * @param __serialId The serial identifier.
+	 * @throws MLECallError If the call is not valid.
+	 * @since 2020/10/03
+	 */
+	public static void later(int __displayId, int __serialId)
+		throws MLECallError
+	{
+		SwingUtilities.invokeLater(new CallLater(__displayId, __serialId));
+	}
+	
+	/**
 	 * Handles {@link UIFormShelf#metric(int)}. 
 	 * 
 	 * @param __metricId The {@link UIMetricType}.
@@ -464,6 +523,23 @@ public final class SwingFormShelf
 				{
 					return 0;
 				}
+				
+				// CurrentScreen width
+			case UIMetricType.DISPLAY_CURRENT_WIDTH:
+				return Toolkit.getDefaultToolkit().getScreenSize().width;
+				
+				// Current Screen height
+			case UIMetricType.DISPLAY_CURRENT_HEIGHT:
+				return Toolkit.getDefaultToolkit().getScreenSize().height;
+			
+				// Pixel format
+			case UIMetricType.DISPLAY_PIXEL_FORMAT:
+				return UIPixelFormat.INT_RGB888;
+				
+				// Input types supported (this is not a game console)
+			case UIMetricType.INPUT_FLAGS:
+				return UIInputFlag.KEYBOARD | UIInputFlag.POINTER |
+					UIInputFlag.POINTER_MOTION;
 			
 				// Background for canvases
 			case UIMetricType.COLOR_CANVAS_BACKGROUND:
@@ -476,7 +552,7 @@ public final class SwingFormShelf
 	}
 	
 	/**
-	 * As {@link UIFormShelf#(UIWidgetBracket, int, int)}.
+	 * As {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int)}.
 	 * 
 	 * @param __item The item to set.
 	 * @param __intProp The {@link UIWidgetProperty}.

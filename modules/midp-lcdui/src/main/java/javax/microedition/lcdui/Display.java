@@ -15,18 +15,24 @@ import cc.squirreljme.jvm.DeviceFeedbackType;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 
 @SuppressWarnings("OverlyComplexClass")
@@ -205,6 +211,10 @@ public class Display
 	public static final int TAB =
 		4;
 	
+	/** Serial runs of this method. */
+	static final Map<Integer, Runnable> _SERIAL_RUNS =
+		new HashMap<>();
+	
 	/** The native display instance. */ 
 	final cc.squirreljme.jvm.mle.brackets.UIDisplayBracket _uiDisplay;
 	
@@ -224,20 +234,85 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(cc.squirreljme.jvm.mle.brackets.UIDisplayBracket __uiDisplay)
+	Display(UIDisplayBracket __uiDisplay)
 		throws NullPointerException
 	{
 		if (__uiDisplay == null)
 			throw new NullPointerException("NARG");
 		
 		this._uiDisplay = __uiDisplay;
+		
+		// Check and ensure that the background thread exists
+		synchronized (StaticDisplayState.class)
+		{
+			// If there is no background thread yet, initialize it
+			Thread bgThread = StaticDisplayState.backgroundThread();
+			if (bgThread == null)
+			{
+				// The user interface thread to use
+				__MLEUIThread__ uiRunner = new __MLEUIThread__();
+				
+				// Initialize thread and make it a background worker
+				bgThread = new Thread(uiRunner, "SquirrelJME-LCDUI");
+				ThreadShelf.javaThreadSetDaemon(bgThread);
+				
+				// Set background thread state and start it
+				StaticDisplayState.setBackgroundThread(bgThread, uiRunner);
+				bgThread.start();
+			}
+			
+			// Register the display for callbacks
+			UIBackendFactory.getInstance().callback(this,
+				(UIDisplayCallback)StaticDisplayState.callback());
+		}
 	}
 	
-	public void callSerially(Runnable __a)
+	/**
+	 * Calls the given runner within the event handler serially.
+	 * 
+	 * Note that the Runnable.run() will be called as if it were serialized
+	 * like everything else with {@link SerializedEvent}.
+	 * 
+	 * @param __run The method to run.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/03
+	 */
+	@SuppressWarnings("MagicNumber")
+	public void callSerially(Runnable __run)
+		throws NullPointerException
 	{
-		// Note that the Runnable.run() will be called as if it were serialized
-		// like everything else with {@link SerializedEvent}
-		throw new todo.TODO();
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the identifiers for this display and the run call
+		int idDisplay = System.identityHashCode(StaticDisplayState.callback());
+		Integer idRunner = System.identityHashCode(__run);
+		
+		// Perform the serialization call
+		synchronized (Display.class)
+		{
+			// Store into the serial runner
+			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
+			serialRuns.put(idRunner, __run);
+			
+			// Perform the call so it is done later
+			UIBackendFactory.getInstance().later(idDisplay, idRunner);
+			
+			// Constantly loop waiting for the call to be gone
+			for (;;)
+				try
+				{
+					// If this disappeared from the map then it was invoked
+					if (!serialRuns.containsKey(idRunner))
+						break;
+					
+					// Wait for trigger or timeout
+					Display.class.wait(1_000L);
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+		}
 	}
 	
 	/**
@@ -347,22 +422,20 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		throw Debugging.todo();
-		/*int caps = UIState.getInstance().capabilities();
-		boolean hastouch = ((caps & Framebuffer.CAPABILITY_TOUCH) != 0);
-		boolean hasinput = hastouch |
-			((caps & Framebuffer.CAPABILITY_KEYBOARD) != 0);
-		
-		// Use the capabilities of the native display, but since SquirrelJME
-		// manages pretty much everything in a framebuffer every display will
-		// always have certain capabilities
-		return (hasinput ? Display.SUPPORTS_INPUT_EVENTS : 0) |
-			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) |
-			Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
+		// These are all standard and expected to always be supported
+		int rv = Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
 			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
 			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
 			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
-			Display.SUPPORTS_MENUS;*/
+			Display.SUPPORTS_MENUS;
+			
+		UIBackend backend = UIBackendFactory.getInstance();
+		
+		// Supports any kind of input?
+		if (0 != backend.metric(UIMetricType.INPUT_FLAGS))
+			rv |= Display.SUPPORTS_INPUT_EVENTS;
+		
+		return rv;
 	}
 	
 	/**
@@ -1075,25 +1148,9 @@ public class Display
 		// Get the backend to call on
 		UIBackend backend = UIBackendFactory.getInstance();
 		
-		// Check and ensure that the background thread exists
+		// Use the global callback thread
 		synchronized (StaticDisplayState.class)
 		{
-			// If there is no background thread yet, initialize it
-			Thread bgThread = StaticDisplayState.backgroundThread();
-			if (bgThread == null)
-			{
-				// The user interface thread to use
-				__MLEUIThread__ uiRunner = new __MLEUIThread__();
-				
-				// Initialize thread and make it a background worker
-				bgThread = new Thread(uiRunner, "SquirrelJME-LCDUI");
-				ThreadShelf.javaThreadSetDaemon(bgThread);
-				
-				// Set background thread state and start it
-				StaticDisplayState.setBackgroundThread(bgThread, uiRunner);
-				bgThread.start();
-			}
-			
 			// Set callback for the displayed form so it can receive events
 			backend.callback(__show._uiForm,
 				StaticDisplayState.callback());

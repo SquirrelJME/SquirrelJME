@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
@@ -40,6 +41,19 @@ public final class UIFormShelf
 	private UIFormShelf()
 	{
 	}
+	
+	/**
+	 * Registers a display callback that is to be called when information about
+	 * displays changes.
+	 * 
+	 * @param __ref The object this refers to, if it gets garbage collected
+	 * then this becomes invalidated.
+	 * @param __dc The display callback to use.
+	 * @throws MLECallError On null arguments.
+	 * @since 2020/10/03
+	 */
+	public static native void callback(Object __ref, UIDisplayCallback __dc)
+		throws MLECallError;
 	
 	/**
 	 * This is used to register the callback which is called with the user
@@ -288,6 +302,17 @@ public final class UIFormShelf
 	 * @since 2020/06/30
 	 */
 	public static native int metric(int __metric)
+		throws MLECallError;
+	
+	/**
+	 * Calls the given method at a later time.
+	 * 
+	 * @param __displayId The display identifier.
+	 * @param __serialId The serial identifier.
+	 * @throws MLECallError If the call is not valid.
+	 * @since 2020/10/03
+	 */
+	public static native void later(int __displayId, int __serialId)
 		throws MLECallError;
 	
 	/**

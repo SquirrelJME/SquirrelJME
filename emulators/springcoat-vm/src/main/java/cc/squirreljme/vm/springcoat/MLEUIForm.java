@@ -30,8 +30,36 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLEUIForm
 	implements MLEFunction
 {
+	/** Registers a display callback. */
+	CALLBACK_DISPLAY("callback:" +
+		"(Ljava/lang/Object;Lcc/squirreljme/jvm/mle/callbacks/" +
+		"UIDisplayCallback;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/10/03
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringObject ref = (SpringObject)__args[0];
+			if (ref == null || ref == SpringNullObject.NULL)
+				throw new SpringMLECallError("Null reference.");
+			
+			SpringObject callback = (SpringObject)__args[1];
+			if (callback == null || callback == SpringNullObject.NULL)
+				throw new SpringMLECallError("Null callback.");
+			
+			// The callback needs to be wrapped accordingly
+			UIFormShelf.callback(ref,
+				new UIDisplayCallbackAdapter(__thread.machine, callback));
+			
+			return null;
+		}
+	},
+	
 	/** {@link UIFormShelf#callback(UIFormBracket, UIFormCallback)}. */
-	CALLBACK("callback:(Lcc/squirreljme/jvm/mle/brackets/" +
+	CALLBACK_FORM("callback:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"UIFormBracket;Lcc/squirreljme/jvm/mle/callbacks/UIFormCallback;)V")
 	{
 		/**
@@ -42,9 +70,9 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			UIFormObject form = MLEUIForm.__form(__args[0]);
-			SpringObject callback = (SpringObject)__args[1];
 			
-			if (callback == null)
+			SpringObject callback = (SpringObject)__args[1];
+			if (callback == null || callback == SpringNullObject.NULL)
 				throw new SpringMLECallError("Null callback.");
 			
 			// Since the callback is in SpringCoat, it has to be wrapped to
@@ -163,6 +191,21 @@ public enum MLEUIForm
 		}
 	},
 	
+	/** {@link UIFormShelf#flushEvents()}. */
+	FLUSH_EVENTS("flushEvents:()V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/10/03
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.flushEvents();
+			return null;
+		}
+	},
+	
 	/** {@link UIFormShelf#formDelete(UIFormBracket)}. */
 	FORM_DELETE("formDelete:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"UIFormBracket;)V")
@@ -180,7 +223,9 @@ public enum MLEUIForm
 	},
 	
 	/** {@link UIFormShelf#formItemAtPosition(UIFormBracket, int)}. */
-	FORM_ITEM_AT_POSITION("")
+	FORM_ITEM_AT_POSITION("formItemAtPosition:(Lcc/squirreljme/jvm/" +
+		"mle/brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -189,9 +234,10 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new UIItemObject(UIFormShelf.formItemAtPosition(
-				MLEUIForm.__form(__args[0]).form,
-				(int)__args[1]));
+			UIItemBracket rv = UIFormShelf.formItemAtPosition(
+				MLEUIForm.__form(__args[0]).form, (int)__args[1]);
+			
+			return (rv == null ? null : new UIItemObject(rv));
 		}
 	}, 
 	
@@ -278,6 +324,21 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new UIItemObject(UIFormShelf.itemNew((int)__args[0]));
+		}
+	},
+	
+	/** {@link UIFormShelf#later(int, int)}. */ 
+	LATER("later:(II)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/10/03
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.later((int)__args[0], (int)__args[1]);
+			return null;
 		}
 	},
 	

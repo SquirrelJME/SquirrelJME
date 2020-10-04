@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -19,6 +20,7 @@ import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 
 /**
@@ -27,7 +29,7 @@ import javax.microedition.midlet.MIDlet;
  * @since 2020/09/12
  */
 final class __MLEUIThread__
-	implements Runnable, UIFormCallback
+	implements Runnable, UIDisplayCallback, UIFormCallback
 {
 	/** The time to sleep for between periodic checks. */
 	private static final long _SLEEP_TIME =
@@ -102,6 +104,41 @@ final class __MLEUIThread__
 		catch (IllegalStateException ignored)
 		{
 			Debugging.debugNote("No current MIDlet?");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/03
+	 */
+	@Override
+	public void later(int __displayId, int __serialId)
+	{
+		// Call with the wrong ID? Ignore this
+		if (__displayId != System.identityHashCode(this))
+			return;
+		
+		// Look to see if it is a valid call
+		Integer key = __serialId;
+		synchronized (Display.class)
+		{
+			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
+			
+			// Run it
+			Runnable runner = serialRuns.get(key);
+			if (runner != null)
+				try
+				{
+					runner.run();
+				}
+				finally
+				{
+					// Always clear it, even with failures
+					serialRuns.remove(key);
+					
+					// Notify all the threads that something happened
+					Display.class.notifyAll();
+				}
 		}
 	}
 	

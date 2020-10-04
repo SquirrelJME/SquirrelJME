@@ -27,7 +27,7 @@ final class __Utils__
 	 * @throws UntestableException If the display could not be obtained.
 	 * @since 2019/03/04
 	 */
-	public static final Display getDisplay()
+	public static Display getDisplay()
 		throws UntestableException
 	{
 		try
