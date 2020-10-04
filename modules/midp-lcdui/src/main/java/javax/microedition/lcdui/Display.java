@@ -842,9 +842,15 @@ public class Display
 		}
 	}
 	
+	/**
+	 * Removes the currently displayed displayable.
+	 * 
+	 * @since 2020/10/04
+	 */
 	public void removeCurrent()
 	{
-		throw new todo.TODO();
+		// Just performs the internal hiding logic
+		this.__doHideCurrent();
 	}
 	
 	/**

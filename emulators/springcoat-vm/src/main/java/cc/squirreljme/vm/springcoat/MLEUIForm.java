@@ -110,6 +110,25 @@ public enum MLEUIForm
 		}
 	},
 	
+	/** {@link UIFormShelf#displayCurrent(UIDisplayBracket)}. */ 
+	DISPLAY_CURRENT("displayCurrent:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/UIDisplayBracket;)Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIFormBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/10/04
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormBracket form = UIFormShelf.displayCurrent(
+				MLEUIForm.__display(__args[0]).display);
+			
+			return (form == null ? null : new UIFormObject(form));
+		}
+	},
+	
 	/** {@link UIFormShelf#displayShow(UIDisplayBracket, UIFormBracket)}. */ 
 	DISPLAY_SHOW("displayShow:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V")
