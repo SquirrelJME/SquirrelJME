@@ -32,6 +32,9 @@ public class CanvasPlatform
 	{
 		synchronized (this)
 		{
+			// Debug
+			System.err.println("Repaint happened...");
+			
 			this._lastRepaint = System.currentTimeMillis();
 		}
 	}

@@ -26,6 +26,7 @@ public class TestCanvasSize
 	@Override
 	public void test(Display __display, CanvasPlatform __platform)
 	{
+		__platform.repaint();
 		__platform.serviceRepaints();
 		
 		this.secondary("width", __platform.getWidth() > 0);

@@ -11,7 +11,6 @@ package lcdui.canvas;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
-import lcdui.FormUtils;
 
 /**
  * Tests that a canvas is full-screen via
@@ -39,9 +38,6 @@ public class TestCanvasFullScreen
 		// Request a repaint and wait for it to occur
 		__platform.repaint();
 		__platform.serviceRepaints();
-		
-		// Wait for the canvas to settle again
-		FormUtils.flushAndWait(500);
 		
 		// Query the sizes again for checking
 		int newWidth = __platform.getWidth();

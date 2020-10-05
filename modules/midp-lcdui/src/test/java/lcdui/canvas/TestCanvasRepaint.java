@@ -10,7 +10,6 @@
 package lcdui.canvas;
 
 import javax.microedition.lcdui.Display;
-import lcdui.FormUtils;
 
 /**
  * Tests that repainting works.
@@ -20,6 +19,14 @@ import lcdui.FormUtils;
 public class TestCanvasRepaint
 	extends BaseCanvas
 {
+	/** The number of times to try. */
+	private static final int _RETRIES =
+		5;
+	
+	/** Timeout before retries. */
+	private static final int _TIMEOUT =
+		1000;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/07/27
@@ -30,23 +37,34 @@ public class TestCanvasRepaint
 		// Mark the time and request a repaint
 		long base = System.currentTimeMillis();
 		
-		// Request painting
-		__platform.repaint();
-		__platform.serviceRepaints();
-		
 		boolean gotRepaint = false; 
 		
-		// Wait for the signal
-		long end = FormUtils.futureTime(3000);
-		while (FormUtils.untilThen(end))
+		// Try multiple times, as due to loops and threading it is possible
+		// for this to miss
+		for (int i = 0; i < TestCanvasRepaint._RETRIES; i++)
 		{
+			// Try repainting...
+			__platform.repaint();
+			__platform.serviceRepaints();
+			
+			// Did this happen?
 			if (__platform.queryLastRepaint() > base)
-			{
 				gotRepaint = true;
-				break;
+			
+			// Debug
+			System.err.println("Waiting for a repaint...");
+			
+			// Wait again
+			try
+			{
+				Thread.sleep(TestCanvasRepaint._TIMEOUT);
+			}
+			catch (InterruptedException ignored)
+			{
 			}
 		}
 		
+		// Hopefully this was triggered
 		this.secondary("repainted", gotRepaint);
 	}
 }

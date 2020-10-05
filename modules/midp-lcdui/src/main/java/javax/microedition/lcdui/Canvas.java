@@ -205,8 +205,8 @@ public abstract class Canvas
 	/** Should this be ran full-screen? */
 	volatile boolean _isFullScreen;
 	
-	/** Service repaint counter. */
-	volatile int _paintCount;
+	/** The number of pending paints. */
+	volatile int _pendingPaints;
 	
 	/** The actions which are required. */
 	private int _requiredActions;
@@ -604,6 +604,12 @@ public abstract class Canvas
 			UIWidgetProperty.INT_SIGNAL_REPAINT,
 			UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
+		// Count pending paints up before we signal the final repaint
+		synchronized (this)
+		{
+			this._pendingPaints++;
+		}
+		
 		// Execute the paint
 		instance.widgetProperty(this._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0);
@@ -627,28 +633,23 @@ public abstract class Canvas
 		if (display == null)
 			return;
 		
-		// Get the current paint count
-		int count;
-		synchronized (this)
-		{
-			count = this._paintCount;
-		}
-		
-		// Initialize the waiter
+		// This does nothing, but it used as a runner for waiting until our
+		// serial call has been completed.
 		__PaintWait__ wait = new __PaintWait__();
 		
-		// Wait loop for repaints
-		for (;;)
+		// Lock on the Display class because the callSerially() does the
+		// waiting on this, so that becomes out barrier.
+		synchronized (Display.class)
 		{
-			// Call this, as when it is complete the event loop would have ran
-			this.repaint();
-			display.callSerially(wait);
-			
-			// Did the paint counter change?
-			synchronized (this)
+			for (;;)
 			{
-				if (this._paintCount != count)
-					break;
+				// No repaints are left to be performed, stop now
+				if (this._pendingPaints == 0)
+					return;
+				
+				// Call this, as when it is complete the event loop would
+				// have completed a run
+				display.callSerially(wait);
 			}
 		}
 	}
@@ -793,10 +794,18 @@ public abstract class Canvas
 		// Handle repaint servicing
 		finally
 		{
-			// Increment the paint counter, that it happened
-			synchronized (this)
+			// We repainted the canvas, so reduce the pending paint counter
+			synchronized (Display.class)
 			{
-				this._paintCount++;
+				// Drop the count, if there is any
+				int pending = this._pendingPaints;
+				if (pending > 0)
+				{
+					this._pendingPaints = pending - 1;
+					
+					// Signal that a repaint was done
+					Display.class.notifyAll();
+				}
 			}
 		}
 	}
