@@ -26,10 +26,14 @@ public class TestCanvasSize
 	@Override
 	public void test(Display __display, CanvasPlatform __platform)
 	{
-		__platform.repaint();
-		__platform.serviceRepaints();
+		// Get the size
+		int width = __platform.getWidth();
+		int height = __platform.getHeight(); 
 		
-		this.secondary("width", __platform.getWidth() > 0);
-		this.secondary("height", __platform.getHeight() > 0);
+		// Debug
+		System.err.printf("Canvas size: (%d, %d)%n", width, height);
+		
+		this.secondary("width", width > 0);
+		this.secondary("height", height > 0);
 	}
 }

@@ -267,7 +267,7 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this);
+		return Displayable.__getHeight(this, this._uiCanvas);
 	}
 	
 	/**
@@ -373,7 +373,7 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this);
+		return Displayable.__getWidth(this, this._uiCanvas);
 	}
 	
 	/**
@@ -605,7 +605,7 @@ public abstract class Canvas
 			UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
 		// Count pending paints up before we signal the final repaint
-		synchronized (this)
+		synchronized (Display.class)
 		{
 			this._pendingPaints++;
 		}
@@ -801,7 +801,9 @@ public abstract class Canvas
 				int pending = this._pendingPaints;
 				if (pending > 0)
 				{
-					this._pendingPaints = pending - 1;
+					// Clear all paints, since this could have been called
+					// multiple times and we may have done one
+					this._pendingPaints = 0;
 					
 					// Signal that a repaint was done
 					Display.class.notifyAll();

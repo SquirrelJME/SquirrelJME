@@ -28,7 +28,6 @@ import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -687,8 +686,8 @@ public class Display
 		Displayable form = this._current;
 		if (form != null)
 		{
-			width = Displayable.__getWidth(form);
-			height = Displayable.__getHeight(form);
+			width = Displayable.__getWidth(form, null);
+			height = Displayable.__getHeight(form, null);
 		}
 		
 		// Otherwise use the display dimensions

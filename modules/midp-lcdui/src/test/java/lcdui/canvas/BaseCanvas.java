@@ -9,6 +9,7 @@
 
 package lcdui.canvas;
 
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import javax.microedition.lcdui.Display;
 import lcdui.BaseDisplay;
 
@@ -20,6 +21,10 @@ import lcdui.BaseDisplay;
 public abstract class BaseCanvas
 	extends BaseDisplay
 {
+	/** The number of times to let the canvas settle before testing. */
+	private static final int _SETTLE_COUNT =
+		5;
+	
 	/**
 	 * Performs the canvas test.
 	 * 
@@ -45,8 +50,28 @@ public abstract class BaseCanvas
 		// Perform testing on the canvas
 		try
 		{
-			// Wait for the canvas events to settle
-			__display.callSerially(new __Wait__());
+			// Allow the canvas to settle and properly appear
+			for (int i = 0; i < BaseCanvas._SETTLE_COUNT; i++)
+			{
+				// Wait for the canvas events to settle
+				__display.callSerially(new __Wait__());
+				
+				// Repaint and wait for those to appear
+				platform.repaint();
+				platform.serviceRepaints();
+				
+				// Flush events to settle these
+				UIBackendFactory.getInstance().flushEvents();
+				
+				// Sleep a bit
+				try
+				{
+					Thread.sleep(100);
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+			}
 			
 			// Run the test
 			this.test(__display, platform);

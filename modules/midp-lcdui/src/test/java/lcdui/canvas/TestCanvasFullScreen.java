@@ -10,6 +10,7 @@
 package lcdui.canvas;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 
 /**
@@ -28,6 +29,14 @@ public class TestCanvasFullScreen
 	@Override
 	public void test(Display __display, CanvasPlatform __platform)
 	{
+		// Add a button, it should go away
+		__platform.addCommand(
+			new Command("Test button", Command.OK, 0)); 
+		
+		// Request a repaint and wait for it to occur
+		__platform.repaint();
+		__platform.serviceRepaints();
+		
 		// Get initial sizes
 		int width = __platform.getWidth();
 		int height = __platform.getHeight();
@@ -45,7 +54,7 @@ public class TestCanvasFullScreen
 		
 		// Full-screen should cause the canvas to grow in size
 		this.secondary("width", newWidth >= width);
-		this.secondary("height", newHeight > height);
+		this.secondary("height", newHeight >= height);
 		
 		// The canvas should be smaller or at the maximum display resolution
 		this.secondary("wdisp", newWidth <= __display.getWidth());

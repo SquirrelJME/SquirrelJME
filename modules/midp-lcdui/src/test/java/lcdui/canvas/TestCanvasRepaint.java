@@ -49,7 +49,10 @@ public class TestCanvasRepaint
 			
 			// Did this happen?
 			if (__platform.queryLastRepaint() > base)
+			{
 				gotRepaint = true;
+				break;
+			}
 			
 			// Debug
 			System.err.println("Waiting for a repaint...");

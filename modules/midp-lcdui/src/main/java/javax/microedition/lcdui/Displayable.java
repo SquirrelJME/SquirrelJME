@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
@@ -717,11 +718,12 @@ public abstract class Displayable
 	 * Returns the displayable height.
 	 *
 	 * @param __d The displayable.
+	 * @param __alt
 	 * @return The height.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
-	static int __getHeight(Displayable __d)
+	static int __getHeight(Displayable __d, UIWidgetBracket __alt)
 		throws NullPointerException
 	{
 		if (__d == null)
@@ -734,18 +736,20 @@ public abstract class Displayable
 		
 		// Get current form size
 		return UIBackendFactory.getInstance().widgetPropertyInt(
-			__d._uiForm, UIWidgetProperty.INT_HEIGHT);
+			(__alt != null ? __alt : __d._uiForm),
+			UIWidgetProperty.INT_HEIGHT);
 	}
 	
 	/**
 	 * Returns the displayable width.
 	 *
 	 * @param __d The displayable.
+	 * @param __alt Alternative widget to check.
 	 * @return The width.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
-	static int __getWidth(Displayable __d)
+	static int __getWidth(Displayable __d, UIWidgetBracket __alt)
 	{
 		if (__d == null)
 			throw new NullPointerException("NARG");
@@ -757,7 +761,8 @@ public abstract class Displayable
 		
 		// Get current form size
 		return UIBackendFactory.getInstance().widgetPropertyInt(
-			__d._uiForm, UIWidgetProperty.INT_WIDTH);
+			(__alt != null ? __alt : __d._uiForm),
+			UIWidgetProperty.INT_WIDTH);
 	}
 }
 

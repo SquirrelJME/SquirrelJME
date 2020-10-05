@@ -182,7 +182,7 @@ public class Form
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this);
+		return Displayable.__getHeight(this, null);
 	}
 	
 	public FormLayoutPolicy getLayoutPolicy()
@@ -197,7 +197,7 @@ public class Form
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this);
+		return Displayable.__getWidth(this, null);
 	}
 	
 	public void insert(int __a, Item __b)

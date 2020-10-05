@@ -30,6 +30,7 @@ public class CanvasPlatform
 	@Override
 	protected void paint(Graphics __g)
 	{
+		// Set paint as having happened
 		synchronized (this)
 		{
 			// Debug
@@ -37,6 +38,14 @@ public class CanvasPlatform
 			
 			this._lastRepaint = System.currentTimeMillis();
 		}
+		
+		// Will need these to fill the canvas with something
+		int width = this.getWidth();
+		int height = this.getHeight();
+		
+		// Draw an X
+		__g.drawLine(0, 0, width, height);
+		__g.drawLine(0, height, width, 0);
 	}
 	
 	/**
