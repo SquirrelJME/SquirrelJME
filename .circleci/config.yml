@@ -29,13 +29,13 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: gradlew build test --continue --parallel
+          command: gradlew build testHosted --continue --parallel
           shell: cmd.exe
       - run:
           name: Save test results
           command: |
             mkdir -p /c/users/circleci/test-results/junit
-            /usr/bin/find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
           shell: bash.exe
       - store_test_results:
@@ -161,12 +161,12 @@ jobs:
           command: brew install gradle openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build test --continue --parallel
+          command: ./gradlew build testHosted --continue --parallel
       - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -211,12 +211,12 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build test --continue --parallel
+          command: ./gradlew build testHosted --continue --parallel
       - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
       - persist_to_workspace:
           root: .
