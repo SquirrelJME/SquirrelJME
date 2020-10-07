@@ -4,7 +4,7 @@ test
 	// SquirrelJME uses a different test framework, so we cannot rely on
 	// Gradle to correctly pick it up
 	scanForTestClasses = false
-	includes = ['**/*Test', '**/Test*', '**/Do*',
+	includes = ['**' + '/*Test', '**' + '/Test*', '**' + '/Do*',
 		'*Test', 'Test*', 'Do*']
 	
 	// Make the standard streams always show
@@ -20,4 +20,18 @@ test
 				projectDir.toPath().resolve("src").resolve("main").
 				resolve("resources").resolve("squirreljme.xml").toFile()]
 		})
+		
+	// Reduce the usages of signals within the JVM
+	jvmArgs += "-Xrs"
+	
+	// Force JNI to be extra-checked, as debugging it is more difficult
+	// and can randomly cause issues
+	jvmArgs += "-Xcheck:jni"
+	
+	// All classes should be verified
+	jvmArgs += "-Xverify:all"
+	
+	// Compile classes and methods as they are reached
+	jvmArgs += "-Xbatch"
+	jvmArgs += "-Xcomp"
 }

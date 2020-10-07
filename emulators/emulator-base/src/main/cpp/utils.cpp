@@ -35,11 +35,19 @@ forwardMethod JNICALL findForwardMethod(JNIEnv* env,
 #define SQUEAK_POST \
 	va_end(vaArgs);
 
+// Debugging?
+#if defined(_DEBUG) || defined(DEBUG)
+	#define DEBUG_CALL fprintf(stderr, "JNI Forward: %s:%s\n", classy, name);
+#else
+	#define DEBUG_CALL
+#endif
+
 void JNICALL forwardCallStaticVoid(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...)
 {
 	SQUEAK_PREF;
+	DEBUG_CALL;
 	env->CallStaticVoidMethodV(call.xclass, call.xmeth, vaArgs);
 	SQUEAK_POST;
 }
@@ -51,6 +59,7 @@ jint JNICALL forwardCallStaticInteger(JNIEnv* env,
 	int rv;
 	
 	SQUEAK_PREF;
+	DEBUG_CALL;
 	rv = env->CallStaticIntMethodV(call.xclass, call.xmeth, vaArgs);
 	SQUEAK_POST;
 	
@@ -64,6 +73,7 @@ jobject JNICALL forwardCallStaticObject(JNIEnv* env,
 	jobject rv;
 	
 	SQUEAK_PREF;
+	DEBUG_CALL;
 	rv = env->CallStaticObjectMethodV(call.xclass, call.xmeth, vaArgs);
 	SQUEAK_POST;
 	
@@ -77,6 +87,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	jboolean rv;
 	
 	SQUEAK_PREF;
+	DEBUG_CALL;
 	rv = env->CallStaticBooleanMethodV(call.xclass, call.xmeth, vaArgs);
 	SQUEAK_POST;
 	

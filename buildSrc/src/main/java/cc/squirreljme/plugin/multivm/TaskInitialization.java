@@ -50,6 +50,9 @@ public final class TaskInitialization
 		// Initialize or both main classes and such
 		for (String sourceSet : TaskInitialization._SOURCE_SETS)
 			TaskInitialization.initialize(__project, sourceSet);
+		
+		// Disable the test task, since it is non-functional
+		__project.getTasks().replace("test", DefunctTestTask.class); 
 	}
 	
 	/**

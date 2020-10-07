@@ -233,7 +233,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 	JNIEnv* env;
 
 	// Used to indicate that something might be happened
-	fprintf(stderr, "SquirrelJME Native Bindings Initializing...\n");
+	fprintf(stderr, "JNI Sub-Level: Loading Library...\n");
 
 	// Support Java 7!
 	return JNI_VERSION_1_6;
@@ -250,6 +250,9 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 	(JNIEnv* env, jclass classy)
 {
 	jint rv = 0;
+	
+	// It is happening!
+	fprintf(stderr, "JNI Sub-Level: Binding Methods...\n");
 
 	rv |= env->RegisterNatives(env->FindClass("cc/squirreljme/jvm/Assembly"),
 		assemblyMethods, sizeof(assemblyMethods) / sizeof(JNINativeMethod));
@@ -261,6 +264,9 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 	rv |= mleRuntimeInit(env, classy);
 	rv |= mleTerminalInit(env, classy);
 	rv |= mleThreadInit(env, classy);
+	
+	// It happened!
+	fprintf(stderr, "JNI Sub-Level: Methods are now bound!\n");
 
 	return rv;
 }

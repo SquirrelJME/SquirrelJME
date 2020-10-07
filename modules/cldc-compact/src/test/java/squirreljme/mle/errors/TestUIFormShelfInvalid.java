@@ -76,8 +76,7 @@ public class TestUIFormShelfInvalid
 				break;
 			
 			case 7:
-				UIFormShelf.displayShow(UIFormShelf.displays()[0],
-					null);
+				UIFormShelf.callback(null, (UIDisplayCallback)null);
 				break;
 			
 			case 8:
@@ -152,10 +151,6 @@ public class TestUIFormShelfInvalid
 			case 23:
 				UIFormShelf.formItemRemove(UIFormShelf.formNew(),
 					UIItemPosition.BODY);
-				break;
-			
-			case 24:
-				UIFormShelf.callback(null, (UIDisplayCallback)null);
 				break;
 			
 			default:

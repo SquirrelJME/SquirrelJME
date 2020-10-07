@@ -52,6 +52,7 @@ public abstract class VMTestWorkAction
 		int total = parameters.getTotal().get();
 		
 		// The process might not be able to execute
+		Process process = null;
 		try
 		{
 			// Note this is running
@@ -63,7 +64,7 @@ public abstract class VMTestWorkAction
 			long nsStart = System.nanoTime();
 			
 			// Start the process with the command line that was pre-determined
-			Process process = new ProcessBuilder(parameters.getCommandLine()
+			process = new ProcessBuilder(parameters.getCommandLine()
 				.get().toArray(new String[0])).start();
 			
 			// Setup listening buffer threads
@@ -106,8 +107,16 @@ public abstract class VMTestWorkAction
 						break;
 					}
 				}
-				catch (InterruptedException ignored)
+				catch (InterruptedException e)
 				{
+					// Add note that this happened
+					System.err.printf("INTR %s%n", testName);
+					
+					// Stop the process from running
+					process.destroyForcibly();
+					
+					// Stop running tests
+					throw new RuntimeException("Interrupted: " + testName, e);
 				}
 			
 			// Clock the ending time
@@ -146,9 +155,16 @@ public abstract class VMTestWorkAction
 		// Interrupt read/write threads
 		finally
 		{
+			// If our test process is still alive, stop it
+			if (process != null)
+				if (process.isAlive())
+					process.destroyForcibly();
+			
+			// Stop the standard output thread from running
 			if (stdOutThread != null)
 				stdOutThread.interrupt();
 			
+			// Stop the standard error thread from running
 			if (stdErrThread != null)
 				stdErrThread.interrupt();
 		}
