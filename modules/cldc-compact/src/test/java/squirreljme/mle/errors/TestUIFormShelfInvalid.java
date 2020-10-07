@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
@@ -83,7 +85,7 @@ public class TestUIFormShelfInvalid
 				break;
 			
 			case 9:
-				UIFormShelf.callback(null, null);
+				UIFormShelf.callback(null, (UIFormCallback)null);
 				break;
 			
 			case 10:
@@ -150,6 +152,10 @@ public class TestUIFormShelfInvalid
 			case 23:
 				UIFormShelf.formItemRemove(UIFormShelf.formNew(),
 					UIItemPosition.BODY);
+				break;
+			
+			case 24:
+				UIFormShelf.callback(null, (UIDisplayCallback)null);
 				break;
 			
 			default:
