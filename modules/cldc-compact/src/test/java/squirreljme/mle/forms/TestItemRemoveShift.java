@@ -33,7 +33,6 @@ public class TestItemRemoveShift
 	 */
 	@Override
 	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
-		throws Throwable
 	{
 		// Setup all the items and add to the form beforehand
 		List<UIItemBracket> items = new ArrayList<>();
@@ -53,7 +52,7 @@ public class TestItemRemoveShift
 			int count = items.size();
 			
 			// Determine index to be removed
-			int dx = random.nextInt(count);
+			int dx = (count == 1 ? 0 : random.nextInt(count));
 			
 			// Remove that item
 			UIItemBracket old = UIFormShelf.formItemRemove(__form, dx);
