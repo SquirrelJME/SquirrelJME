@@ -31,7 +31,7 @@ public abstract class VMTestWorkAction
 {
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
-		360_000_000_000L;
+		240_000_000_000L;
 	
 	/**
 	 * {@inheritDoc}
@@ -41,7 +41,9 @@ public abstract class VMTestWorkAction
 	@Override
 	public void execute()
 	{
+		// Determine the name of the test
 		VMTestParameters parameters = this.getParameters();
+		String testName = parameters.getTestName().get();
 		
 		// Threads for processing stream data
 		Thread stdOutThread = null;
@@ -56,7 +58,6 @@ public abstract class VMTestWorkAction
 		try
 		{
 			// Note this is running
-			String testName = parameters.getTestName().get();
 			System.err.printf("???? %s (%d/%d)%n", testName, count, total);
 			
 			// Clock the starting time
@@ -97,6 +98,11 @@ public abstract class VMTestWorkAction
 						
 						// Stop it now
 						process.destroyForcibly();
+						stdOutThread.interrupt();
+						stdErrThread.interrupt();
+						
+						// Jump out of the loop rather than waiting for the
+						// process to die
 						break;
 					}
 					
@@ -112,11 +118,13 @@ public abstract class VMTestWorkAction
 					// Add note that this happened
 					System.err.printf("INTR %s%n", testName);
 					
-					// Stop the process from running
+					// Stop the processes that are running
 					process.destroyForcibly();
+					stdOutThread.interrupt();
+					stdErrThread.interrupt();
 					
-					// Stop running tests
-					throw new RuntimeException("Interrupted: " + testName, e);
+					// Stop running the loop
+					break;
 				}
 			
 			// Clock the ending time
@@ -149,7 +157,7 @@ public abstract class VMTestWorkAction
 		// Process failed to execute
 		catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException("I/O Exception in " + testName, e);
 		}
 		
 		// Interrupt read/write threads
@@ -235,6 +243,12 @@ public abstract class VMTestWorkAction
 			"time=\"%.3f\">",
 			__testName, __testName, __nsDur / 1_000_000D);
 		__out.println();
+		
+		// Failed tests use this tag accordingly, despite there being a
+		// failures indicator 
+		if (__result == VMTestResult.FAIL)
+			__out.printf("<failure type=\"%s\">Failed test %s</failure>%n",
+				__testName, __testName);
 		
 		// Write both buffers
 		VMTestWorkAction.__writeXmlText(__out, "system-out", __stdOut);

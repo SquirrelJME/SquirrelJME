@@ -12,6 +12,7 @@ package squirreljme.mle.forms;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Base tests on forms associated with a display.
@@ -55,7 +56,14 @@ abstract class __BaseFormTest__
 		// Delete the form
 		finally
 		{
+			// Debug
+			Debugging.debugNote("Cleaning up form...");
+			
+			// Remove from the display and delete it
+			UIFormShelf.displayShow(__display, null);
 			UIFormShelf.formDelete(form);
+			
+			Debugging.debugNote("Cleaned up!");
 		}
 	}
 }

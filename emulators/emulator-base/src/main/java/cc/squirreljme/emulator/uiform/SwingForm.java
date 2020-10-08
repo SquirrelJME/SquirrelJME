@@ -141,7 +141,13 @@ public final class SwingForm
 	 */
 	public void delete()
 	{
-		Debugging.todoNote("Form deletion?");
+		// Prevent contention
+		synchronized (this)
+		{
+			// Hide the current form
+			if (this._display != null)
+				this._display.show(null);
+		}
 	}
 	
 	/**
