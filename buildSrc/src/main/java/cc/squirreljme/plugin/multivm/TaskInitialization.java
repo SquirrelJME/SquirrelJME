@@ -9,16 +9,12 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.internal.tasks.AbstractTaskDependency;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
-import org.gradle.api.tasks.TaskDependency;
 
 /**
  * This is used to initialize the Gradle tasks for projects accordingly.
