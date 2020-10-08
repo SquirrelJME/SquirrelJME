@@ -1,5 +1,5 @@
 // Our tests must be properly configured before they will work
-test
+/*test
 {
 	// SquirrelJME uses a different test framework, so we cannot rely on
 	// Gradle to correctly pick it up
@@ -34,4 +34,4 @@ test
 	// Compile classes and methods as they are reached
 	jvmArgs += "-Xbatch"
 	jvmArgs += "-Xcomp"
-}
+}*/

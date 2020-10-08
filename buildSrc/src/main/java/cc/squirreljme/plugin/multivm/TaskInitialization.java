@@ -9,9 +9,16 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.internal.tasks.AbstractTaskDependency;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.TaskDependency;
 
 /**
  * This is used to initialize the Gradle tasks for projects accordingly.
@@ -52,7 +59,25 @@ public final class TaskInitialization
 			TaskInitialization.initialize(__project, sourceSet);
 		
 		// Disable the test task, since it is non-functional
-		__project.getTasks().replace("test", DefunctTestTask.class); 
+		__project.getTasks().replace("test", DefunctTestTask.class);
+		
+		Task check = __project.getTasks().getByName("check");
+		for (Iterator<Object> it = check.getDependsOn().iterator();
+			it.hasNext();)
+		{
+			// Get the root item, if a provider of one
+			Object item = it.next();
+			if (item instanceof Provider)
+				item = ((Provider<?>)item).get();
+			
+			// Only consider tasks
+			if (!(item instanceof Task))
+				continue;
+			
+			// Remove the test task, since we do not want it to run here
+			if ("test".equals(((Task)item).getName()))
+				it.remove();
+		}
 	}
 	
 	/**
