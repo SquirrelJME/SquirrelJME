@@ -42,9 +42,13 @@ public class TestIntegerParse
 		this.secondary("lmax10",
 			Long.parseLong("9223372036854775807", 10));
 		
-		this.secondary("lmin10s",
-			Long.toString(Long.MIN_VALUE, 10));
-		this.secondary("lmax10s",
-			Long.toString(Long.MAX_VALUE, 10));
+		// Try to convert the minimum and maximum long values for every base
+		for (int i = Character.MIN_RADIX; i <= Character.MAX_RADIX; i++)
+		{
+			this.secondary("lmin" + i + "s",
+				Long.toString(Long.MIN_VALUE, i));
+			this.secondary("lmax" + i + "s",
+				Long.toString(Long.MAX_VALUE, i));
+		}
 	}
 }
