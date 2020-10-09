@@ -57,4 +57,5 @@ ratufacoat/out
 *.exe
 
 # Fossil files
+_FOSSIL_
 ci-comment-*.txt
