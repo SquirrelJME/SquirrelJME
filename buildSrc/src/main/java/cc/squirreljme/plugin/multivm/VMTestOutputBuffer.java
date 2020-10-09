@@ -200,8 +200,12 @@ public class VMTestOutputBuffer
 		}
 		
 		// If not buffered write out output as fast as we possibly can do so
+		// Do a flush so our output is always sent through
 		if (unbuffered)
+		{
 			this.out.write(__b, __o, __l);
+			this.out.flush();
+		}
 		
 		// If we ended in a newline, flush out the write buffer
 		else if (endingNewline)

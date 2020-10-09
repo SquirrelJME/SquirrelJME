@@ -9,9 +9,11 @@
 
 package squirreljme.mle.forms;
 
+import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -41,7 +43,9 @@ abstract class __BaseFormTest__
 	@Override
 	protected final void uiTest(UIDisplayBracket __display)
 		throws Throwable
-	{
+	{	
+		DebugShelf.verbose(VerboseDebugFlag.METHOD_ENTRY);
+		
 		UIFormBracket form = UIFormShelf.formNew();
 		try
 		{

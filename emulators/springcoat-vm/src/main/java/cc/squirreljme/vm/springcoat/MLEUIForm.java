@@ -261,7 +261,22 @@ public enum MLEUIForm
 			
 			return (rv == null ? null : new UIItemObject(rv));
 		}
-	}, 
+	},
+	
+	/** {@link UIFormShelf#formItemCount(UIFormBracket)}. */ 
+	FORM_ITEM_COUNT("formItemCount:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/UIFormBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/10/09
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.formItemCount(MLEUIForm.__form(__args[0]).form);
+		}
+	},
 	
 	/** {@link UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket)}. */
 	FORM_ITEM_POSITION_GET("formItemPosition:(Lcc/squirreljme/jvm/mle/" +
@@ -301,6 +316,23 @@ public enum MLEUIForm
 				MLEUIForm.__item(__args[1]).item,
 				(int)__args[2]);
 			return null;
+		}
+	},
+	
+	/** {@link UIFormShelf#formItemRemove(UIFormBracket, int)}. */ 
+	FORM_ITEM_REMOVE("formItemRemove:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/UIFormBracket;I)Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/10/09
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return new UIItemObject(UIFormShelf.formItemRemove(
+				MLEUIForm.__form(__args[0]).form, (int)__args[1]));
 		}
 	},
 	

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  * Represents a single Swing form, which is built-on top of a panel that
@@ -188,7 +189,8 @@ public final class SwingForm
 		synchronized (this)
 		{
 			// Items are shifted
-			return this._items.size() - UIItemPosition.SPECIAL_SHIFT;
+			return Math.max(0,
+				this._items.size() - UIItemPosition.SPECIAL_SHIFT);
 		}
 	}
 	
@@ -337,6 +339,8 @@ public final class SwingForm
 		
 		// Normalize position
 		int normalPos = __pos + UIItemPosition.SPECIAL_SHIFT;
+		if (normalPos < 0)
+			throw new MLECallError("Invalid position: " + __pos);
 		
 		// Prevent contention
 		synchronized (this)
@@ -402,12 +406,93 @@ public final class SwingForm
 	/**
 	 * Refreshes this form.
 	 * 
-	 * @since 2020/07/18
+	 * @since 2020/10/09
 	 */
 	public final void refresh()
 	{
+		SwingUtilities.invokeLater(new __Refresher__(this));
+	}
+	
+	/**
+	 * Sets the callback to use.
+	 * 
+	 * @param __callback The callback to set.
+	 * @since 2020/07/19
+	 */
+	public final void setCallback(UIFormCallback __callback)
+	{
 		synchronized (this)
 		{
+			this._callback = __callback;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public final void property(int __id, int __newValue)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public final void property(int __id, String __newValue)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public int propertyInt(int __intProp)
+		throws MLECallError
+	{
+		switch (__intProp)
+		{
+			case UIWidgetProperty.INT_WIDTH:
+				return this.body.getWidth();
+			
+			case UIWidgetProperty.INT_HEIGHT:
+				return this.body.getHeight();
+			
+			default:
+				throw new MLECallError("Unknown property: " + __intProp);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	public String propertyStr(int __strProp)
+		throws MLECallError
+	{
+		throw Debugging.todo("Property: " + __strProp);
+	}
+	
+	/**
+	 * Refreshes this form.
+	 * 
+	 * @since 2020/07/18
+	 */
+	final void __refresh()
+	{
+		synchronized (this)
+		{
+			// Debug
+			Debugging.debugNote("Refreshing form (locked)...");
+			
 			JPanel formPanel = this.formPanel;
 			
 			// The border layout is the simplest for this and makes sense
@@ -488,6 +573,7 @@ public final class SwingForm
 			cons.anchor = GridBagConstraints.PAGE_START;
 			
 			// Now add all the various form bits
+			Debugging.debugNote("Placing %d items...", n);
 			for (int i = 0; i < n; i++)
 			{
 				cons.gridx = 0;
@@ -503,73 +589,5 @@ public final class SwingForm
 			formPanel.validate();
 			formPanel.repaint();
 		}
-	}
-	
-	/**
-	 * Sets the callback to use.
-	 * 
-	 * @param __callback The callback to set.
-	 * @since 2020/07/19
-	 */
-	public final void setCallback(UIFormCallback __callback)
-	{
-		synchronized (this)
-		{
-			this._callback = __callback;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/21
-	 */
-	@Override
-	public final void property(int __id, int __newValue)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/21
-	 */
-	@Override
-	public final void property(int __id, String __newValue)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/21
-	 */
-	@Override
-	public int propertyInt(int __intProp)
-		throws MLECallError
-	{
-		switch (__intProp)
-		{
-			case UIWidgetProperty.INT_WIDTH:
-				return this.body.getWidth();
-			
-			case UIWidgetProperty.INT_HEIGHT:
-				return this.body.getHeight();
-			
-			default:
-				throw new MLECallError("Unknown property: " + __intProp);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/21
-	 */
-	@Override
-	public String propertyStr(int __strProp)
-		throws MLECallError
-	{
-		throw Debugging.todo("Property: " + __strProp);
 	}
 }

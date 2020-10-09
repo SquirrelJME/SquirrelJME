@@ -35,12 +35,12 @@ public class TestItemRemoveShift
 	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
 	{
 		// Setup all the items and add to the form beforehand
-		List<UIItemBracket> items = new ArrayList<>();
+		List<__Holder__> items = new ArrayList<>();
 		for (int i = 0; i < UIItemType.NUM_TYPES; i++)
 		{
 			UIItemBracket item = UIFormShelf.itemNew(i);
 			
-			items.add(item);
+			items.add(new __Holder__(item));
 			UIFormShelf.formItemPosition(__form, item, i);
 		}
 		
@@ -59,7 +59,7 @@ public class TestItemRemoveShift
 			
 			// Should both be the same items from the list
 			this.secondary("same-" + removalCount,
-				UIFormShelf.equals(old, items.remove(dx)));
+				UIFormShelf.equals(old, items.remove(dx).item));
 			
 			// Count should be reduced by one
 			int subCount = count - 1;
@@ -69,7 +69,7 @@ public class TestItemRemoveShift
 			// All of these should be the same item in the list
 			boolean[] matches = new boolean[subCount];
 			for (int j = 0; j < subCount; j++)
-				matches[j] = UIFormShelf.equals(items.get(j),
+				matches[j] = UIFormShelf.equals(items.get(j).item,
 					UIFormShelf.formItemAtPosition(__form, j));
 			this.secondary("sameitems-" + removalCount, matches);
 			

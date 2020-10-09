@@ -96,14 +96,8 @@ public abstract class VMTestWorkAction
 						System.err.printf("TIME %s (%d/%d)%n", testName,
 							count, total);
 						
-						// Stop it now
-						process.destroyForcibly();
-						stdOutThread.interrupt();
-						stdErrThread.interrupt();
-						
-						// Jump out of the loop rather than waiting for the
-						// process to die
-						break;
+						// The logic for interrupts is the same
+						throw new InterruptedException("Test Timeout");
 					}
 					
 					// Wait for completion
@@ -119,7 +113,7 @@ public abstract class VMTestWorkAction
 					System.err.printf("INTR %s%n", testName);
 					
 					// Stop the processes that are running
-					process.destroyForcibly();
+					process.destroy();
 					stdOutThread.interrupt();
 					stdErrThread.interrupt();
 					

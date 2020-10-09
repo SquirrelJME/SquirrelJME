@@ -38,6 +38,9 @@ file-*
 # Crash logs
 *.log
 
+# VisualVM files
+java_pid*.hprof
+
 # CMake
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
