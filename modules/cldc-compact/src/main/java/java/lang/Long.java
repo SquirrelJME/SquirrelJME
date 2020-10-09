@@ -354,8 +354,8 @@ public final class Long
 		StringBuilder sb = new StringBuilder();
 		
 		// Negative? Remember it but we need to swap the sign
-		boolean negative;
-		if ((negative = (__v < 0)))
+		boolean negative = (__v < 0);
+		if (negative)
 			__v = -__v;
 		
 		// Insert characters at the end of the string, they will be reversed

@@ -1,0 +1,10 @@
+result: NoResult
+thrown: NoExceptionThrown
+secondary-imin10: int:-2147483648
+secondary-imax10: int:2147483647
+secondary-imin10s: string:-2147483648
+secondary-imax10s: string:2147483647
+secondary-lmin10: long:-9223372036854775808
+secondary-lmax10: long:9223372036854775807
+secondary-lmin10s: string:-9223372036854775808
+secondary-lmax10s: string:9223372036854775807
