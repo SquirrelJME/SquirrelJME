@@ -823,10 +823,11 @@ public final class VMHelpers
 		if (value == null)
 			return null;
 		
-		// Split fields, if there are zero or only one entries then there is
-		// no point to multiple parameters
+		// Split fields, if there are zero then there are no parameters...
+		// however for at least one there might be disable parameters so always
+		// accept these as tests are expected these
 		String[] splice = value.split("[ \t]");
-		if (splice.length <= 1)
+		if (splice.length <= 0)
 			return null;
 		
 		return Arrays.asList(splice);

@@ -546,6 +546,10 @@ public final class SwingFormShelf
 			case UIMetricType.DISPLAY_PIXEL_FORMAT:
 				return UIPixelFormat.INT_RGB888;
 				
+				// The display is not monochromatic
+			case UIMetricType.DISPLAY_MONOCHROMATIC:
+				return 0;
+				
 				// Input types supported (this is not a game console)
 			case UIMetricType.INPUT_FLAGS:
 				return UIInputFlag.KEYBOARD | UIInputFlag.POINTER |

@@ -7,33 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.constants;
+package mleui;
 
 /**
- * Bit field for input types that are supported.
+ * Indicates that the display test is failing.
  *
- * @since 2020/10/03
+ * @since 2020/10/10
  */
-public interface UIInputFlag
+public class FailingExecution
+	extends RuntimeException
 {
-	/** Has gamepad input. */
-	byte GAMEPAD =
-		1;
-	
-	/** Has keyboard input. */
-	byte KEYBOARD =
-		2;
-	
-	/** Has pointer input. */
-	byte POINTER =
-		4;
-	
-	/** Has pointer motion. */
-	byte POINTER_MOTION =
-		8;
-	
-	/** All input types. */
-	byte ALL_MASK =
-		UIInputFlag.GAMEPAD | UIInputFlag.KEYBOARD |
-		UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION;
+	/**
+	 * Initializes the exception.
+	 * 
+	 * @param __s The message.
+	 * @since 2020/10/10
+	 */
+	public FailingExecution(String __s)
+	{
+		super(__s);
+	}
 }
