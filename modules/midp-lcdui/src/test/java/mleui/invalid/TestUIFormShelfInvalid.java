@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.mle.errors;
+package mleui.invalid;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
@@ -19,6 +19,8 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import mleui.BaseBackend;
 import net.multiphasicapps.tac.UntestableException;
 
 /**
@@ -27,129 +29,164 @@ import net.multiphasicapps.tac.UntestableException;
  * @since 2020/06/30
  */
 public class TestUIFormShelfInvalid
-	extends __BaseMleErrorTest__
+	extends BaseBackend
 {
+	@Override
+	public void backendTest(UIBackend __backend, UIDisplayBracket __display)
+		throws Throwable
+	{
+		// Call sub-test methods and make sure they fail
+		int callCount = 0;
+		int errorCount = 0;
+		for (int i = 0;; i++)
+		{
+			// Perform the call
+			try
+			{
+				callCount++;
+				
+				// Run the test and stop if this is the end
+				if (this.test(__backend, i))
+				{
+					callCount--;
+					break;
+				}
+				
+				// Send invalid secondary to flag that something is wrong
+				this.secondary("not-thrown-" + i, i);
+			}
+			
+			// Caught exception that we want
+			catch (MLECallError ignored)
+			{
+				errorCount++;
+			}
+		}
+		
+		// Report the count
+		this.secondary("calls", callCount);
+		this.secondary("errors", errorCount);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/06/22
 	 */
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	@Override
-	public boolean test(int __index)
+	public boolean test(UIBackend __backend, int __index)
 		throws MLECallError
 	{
 		// Check to see if forms are actually supported, if not then we cannot
 		// check if it is invalid
-		if (0 == UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
+		if (0 == __backend.metric(UIMetricType.UIFORMS_SUPPORTED))
 			throw new UntestableException("UIForms Not Supported!");
 		
 		UIItemBracket fake;
-		
 		switch (__index)
 		{
 			case 0:
-				UIFormShelf.metric(-1);
+				__backend.metric(-1);
 				break;
 			
 			case 1:
-				UIFormShelf.metric(UIMetricType.NUM_METRICS);
+				__backend.metric(UIMetricType.NUM_METRICS);
 				break;
 			
 			case 2:
-				UIFormShelf.equals((UIDisplayBracket)null, null);
+				__backend.equals((UIDisplayBracket)null, null);
 				break;
 			
 			case 3:
-				UIFormShelf.equals((UIFormBracket)null, null);
+				__backend.equals((UIFormBracket)null, null);
 				break;
 			
 			case 4:
-				UIFormShelf.equals((UIItemBracket)null, null);
+				__backend.equals((UIItemBracket)null, null);
 				break;
 			
 			case 5:
-				UIFormShelf.displayCurrent(null);
+				__backend.displayCurrent(null);
 				break;
 			
 			case 6:
-				UIFormShelf.displayShow(null, null);
+				__backend.displayShow(null, null);
 				break;
 			
 			case 7:
-				UIFormShelf.callback(null, (UIDisplayCallback)null);
+				__backend.callback(null, (UIDisplayCallback)null);
 				break;
 			
 			case 8:
-				UIFormShelf.formDelete(null);
+				__backend.formDelete(null);
 				break;
 			
 			case 9:
-				UIFormShelf.callback(null, (UIFormCallback)null);
+				__backend.callback(null, (UIFormCallback)null);
 				break;
 			
 			case 10:
-				UIFormShelf.itemNew(-1);
+				__backend.itemNew(-1);
 				break;
 			
 			case 11:
-				UIFormShelf.itemNew(UIItemType.NUM_TYPES);
+				__backend.itemNew(UIItemType.NUM_TYPES);
 				break;
 			
 			case 12:
-				UIFormShelf.itemDelete(null);
+				__backend.itemDelete(null);
 				break;
 			
 			case 13:
-				fake = UIFormShelf.itemNew(UIItemType.BUTTON);
-				UIFormShelf.itemDelete(fake);
-				UIFormShelf.itemDelete(fake);
+				fake = __backend.itemNew(UIItemType.BUTTON);
+				__backend.itemDelete(fake);
+				__backend.itemDelete(fake);
 				break;
 			
 			case 14:
-				UIFormShelf.formItemCount(null);
+				__backend.formItemCount(null);
 				break;
 			
 			case 15:
-				UIFormShelf.formItemRemove(null, 0);
+				__backend.formItemRemove(null, 0);
 				break;
 			
 			case 16:
-				UIFormShelf.formItemRemove(UIFormShelf.formNew(), 0);
+				__backend.formItemRemove(__backend.formNew(), 0);
 				break;
 			
 			case 17:
-				UIFormShelf.formItemRemove(UIFormShelf.formNew(),
+				__backend.formItemRemove(__backend.formNew(),
 					UIItemPosition.MIN_VALUE - 1);
 				break;
 			
 			case 18:
-				UIFormShelf.formItemAtPosition(UIFormShelf.formNew(),
+				__backend.formItemAtPosition(__backend.formNew(),
 					UIItemPosition.MIN_VALUE - 1);
 				break;
 			
 			case 19:
-				UIFormShelf.formItemAtPosition(UIFormShelf.formNew(),
+				__backend.formItemAtPosition(__backend.formNew(),
 					0);
 				break;
 			
 			case 20:
-				UIFormShelf.formItemPosition(UIFormShelf.formNew(),
+				__backend.formItemPosition(__backend.formNew(),
 					null, -1);
 				break;
 			
 			case 21:
-				UIFormShelf.formItemPosition(UIFormShelf.formNew(),
-					UIFormShelf.itemNew(UIItemType.BUTTON), 1);
+				__backend.formItemPosition(__backend.formNew(),
+					__backend.itemNew(UIItemType.BUTTON), 1);
 				break;
 			
 			case 22:
-				UIFormShelf.formItemPosition(UIFormShelf.formNew(),
-					UIFormShelf.itemNew(UIItemType.BUTTON),
+				__backend.formItemPosition(__backend.formNew(),
+					__backend.itemNew(UIItemType.BUTTON),
 					UIItemPosition.MIN_VALUE - 1);
 				break;
 			
 			case 23:
-				UIFormShelf.formItemRemove(UIFormShelf.formNew(),
+				__backend.formItemRemove(__backend.formNew(),
 					UIItemPosition.BODY);
 				break;
 			
