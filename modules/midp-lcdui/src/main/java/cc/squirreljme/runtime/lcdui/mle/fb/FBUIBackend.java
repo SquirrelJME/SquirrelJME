@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.headless.HeadlessAttachment;
 
 /**
  * This is a virtual user interface form backend which is backed on the
@@ -28,6 +29,22 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 public class FBUIBackend
 	implements UIBackend
 {
+	/**
+	 * Initializes the framebuffer backend with the given attachment.
+	 * 
+	 * @param __a The attachment to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/09
+	 */
+	public FBUIBackend(FBAttachment __a)
+		throws NullPointerException
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/07/19

@@ -60,6 +60,7 @@ abstract class __CoreTest__
 	 * @since 2020/02/23
 	 */
 	@Test
+	@Deprecated
 	public final void runForTestNG()
 	{
 		// Run our execution with the default arguments!

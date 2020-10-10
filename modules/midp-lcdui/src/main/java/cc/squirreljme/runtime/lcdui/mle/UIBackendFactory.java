@@ -11,10 +11,12 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
-import cc.squirreljme.runtime.lcdui.mle.headless.HeadlessUIBackend;
-import cc.squirreljme.runtime.lcdui.mle.pure.PureUIBackend;
+import cc.squirreljme.runtime.lcdui.mle.fb.NativeFBAttachment;
+import cc.squirreljme.runtime.lcdui.mle.headless.HeadlessAttachment;
+import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
 
 /**
  * Used to gain access to the {@link UIBackend}.
@@ -42,7 +44,7 @@ public final class UIBackendFactory
 	/** The instance of the form engine to be used. */
 	@SuppressWarnings({"StaticVariableMayNotBeInitialized", 
 		"NonConstantFieldWithUpperCaseName"})
-	private static UIBackend _INSTANCE;
+	private static UIBackend _DEFAULT;
 	
 	/**
 	 * Gets an instance of the UI engine.
@@ -54,7 +56,7 @@ public final class UIBackendFactory
 	public static UIBackend getInstance()
 	{
 		// If this was already cached, use that
-		UIBackend rv = UIBackendFactory._INSTANCE;
+		UIBackend rv = UIBackendFactory._DEFAULT;
 		if (rv != null)
 			return rv;
 		
@@ -72,7 +74,7 @@ public final class UIBackendFactory
 		// Use native forms if supported unless we are forcing other options
 		if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED) &&
 			!isForcing)
-			rv = new PureUIBackend();
+			rv = new NativeUIBackend();
 		
 		// Otherwise use the fallback implementation (raw framebuffer)
 		else
@@ -80,15 +82,16 @@ public final class UIBackendFactory
 			// Use a headless interface? This is if we have no framebuffer
 			// and the only have to have graphics is to fake it
 			if (forceHeadless)
-				rv = new HeadlessUIBackend();
+				rv = new FBUIBackend(new HeadlessAttachment(
+					UIPixelFormat.INT_RGB888, 240, 320));
 			
 			// Use a method that uses the backing framebuffer here instead
 			else
-				rv = new FBUIBackend();
+				rv = new FBUIBackend(new NativeFBAttachment());
 		}
 		
 		// Cache and use
-		UIBackendFactory._INSTANCE = rv;
+		UIBackendFactory._DEFAULT = rv;
 		return rv;
 	}
 }

@@ -99,7 +99,6 @@ public class MainSingleRunner
 				break;
 			
 			case UNTESTABLE:
-				
 				System.exit(ExitValueConstants.SKIPPED);
 				break;
 		}

@@ -7,8 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.mle.headless;
+package cc.squirreljme.runtime.lcdui.mle.pure;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
@@ -16,16 +17,15 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
- * This is a virtual user interface form backend which has no effect as it
- * is purely a headless implementation.
+ * This is a form engine which is used when UI Forms are supported by the
+ * native implementation.
  *
- * @since 2020/07/19
+ * @since 2020/06/30
  */
-public class HeadlessUIBackend
+public class NativeUIBackend
 	implements UIBackend
 {
 	/**
@@ -36,7 +36,7 @@ public class HeadlessUIBackend
 	public void callback(Object __ref, UIDisplayCallback __dc)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		UIFormShelf.callback(__ref, __dc);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class HeadlessUIBackend
 	public void callback(UIFormBracket __form, UIFormCallback __callback)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		UIFormShelf.callback(__form, __callback);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class HeadlessUIBackend
 	public UIDisplayBracket[] displays()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.displays();
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class HeadlessUIBackend
 	public UIFormBracket displayCurrent(UIDisplayBracket __display)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.displayCurrent(__display);
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class HeadlessUIBackend
 	public void displayShow(UIDisplayBracket __display, UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		UIFormShelf.displayShow(__display, __form);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class HeadlessUIBackend
 	public boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.equals(__a, __b);
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class HeadlessUIBackend
 	public boolean equals(UIFormBracket __a, UIFormBracket __b)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.equals(__a, __b);
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class HeadlessUIBackend
 	public boolean equals(UIItemBracket __a, UIItemBracket __b)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.equals(__a, __b);
 	}
 	
 	/**
@@ -124,7 +124,7 @@ public class HeadlessUIBackend
 	public boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.equals(__a, __b);
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class HeadlessUIBackend
 	public void flushEvents()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		UIFormShelf.flushEvents();
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public class HeadlessUIBackend
 	public void formDelete(UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		UIFormShelf.formDelete(__form);
 	}
 	
 	/**
@@ -157,7 +157,7 @@ public class HeadlessUIBackend
 	public UIItemBracket formItemAtPosition(UIFormBracket __form, int __pos)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.formItemAtPosition(__form, __pos);
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public class HeadlessUIBackend
 	public int formItemCount(UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.formItemCount(__form);
 	}
 	
 	/**
@@ -179,7 +179,7 @@ public class HeadlessUIBackend
 	public int formItemPosition(UIFormBracket __form, UIItemBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.formItemPosition(__form, __item);
 	}
 	
 	/**
@@ -191,7 +191,7 @@ public class HeadlessUIBackend
 		int __pos)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		UIFormShelf.formItemPosition(__form, __item, __pos);
 	}
 	
 	/**
@@ -202,7 +202,7 @@ public class HeadlessUIBackend
 	public UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.formItemRemove(__form, __pos);
 	}
 	
 	/**
@@ -213,7 +213,7 @@ public class HeadlessUIBackend
 	public UIFormBracket formNew()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.formNew();
 	}
 	
 	/**
@@ -224,7 +224,7 @@ public class HeadlessUIBackend
 	public UIFormCallback injector()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.injector();
 	}
 	
 	/**
@@ -235,7 +235,7 @@ public class HeadlessUIBackend
 	public void itemDelete(UIItemBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		UIFormShelf.itemDelete(__item);
 	}
 	
 	/**
@@ -246,7 +246,7 @@ public class HeadlessUIBackend
 	public UIItemBracket itemNew(int __type)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.itemNew(__type);
 	}
 	
 	/**
@@ -257,7 +257,7 @@ public class HeadlessUIBackend
 	public void later(int __displayId, int __serialId)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		UIFormShelf.later(__displayId, __serialId);
 	}
 	
 	/**
@@ -268,7 +268,7 @@ public class HeadlessUIBackend
 	public int metric(int __metric)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.metric(__metric);
 	}
 	
 	/**
@@ -279,7 +279,7 @@ public class HeadlessUIBackend
 	public void widgetProperty(UIItemBracket __item, int __intProp,
 		int __newValue)
 	{
-		throw Debugging.todo();
+		UIFormShelf.widgetProperty(__item, __intProp, __newValue);
 	}
 	
 	/**
@@ -290,7 +290,7 @@ public class HeadlessUIBackend
 	public void widgetProperty(UIItemBracket __item, int __strProp,
 		String __newValue)
 	{
-		throw Debugging.todo();
+		UIFormShelf.widgetProperty(__item, __strProp, __newValue);
 	}
 	
 	/**
@@ -301,7 +301,7 @@ public class HeadlessUIBackend
 	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.widgetPropertyInt(__widget, __intProp);
 	}
 	
 	/**
@@ -312,6 +312,6 @@ public class HeadlessUIBackend
 	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		return UIFormShelf.widgetPropertyStr(__widget, __strProp);
 	}
 }
