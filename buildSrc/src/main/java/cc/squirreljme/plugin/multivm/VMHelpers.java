@@ -18,7 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +33,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -58,6 +62,10 @@ public final class VMHelpers
 	/** Test configurations. */
 	private static final String[] _TEST_CONFIGS =
 		new String[]{"testApi", "testImplementation"};
+	
+	/** Declaration of multi-test parameters. */
+	private static final String _MULTI_PARAMETERS_KEY =
+		"multi-parameters";
 	
 	/* Copy buffer size. */
 	public static final int COPY_BUFFER =
@@ -107,15 +115,12 @@ public final class VMHelpers
 				normalized = file.relative;
 			
 			// Determine the name of the class, used to filter if this is
-			// a valid test or not
+			// a valid test or not at a later stage
 			String testName = VMHelpers.pathToString('.',
 					VMHelpers.stripExtension(normalized));
 			
-			// Ignore if this does not match the expected name form
-			if (!TestDetection.isTest(testName))
-				continue;
-			
-			// Is a valid test name, so store it for later
+			// Always add the test now, since this could be a super class
+			// of a test but not something that should be called
 			names.add(testName);
 			
 			// Determine how this file is to be handled
@@ -139,13 +144,30 @@ public final class VMHelpers
 		Map<String, CandidateTestFiles> result = new TreeMap<>();
 		for (String testName : names) 
 		{
+			// Ignore if this does not match the expected name form
+			if (!TestDetection.isTest(testName))
+				continue;
+			
 			// May be an abstract test?
 			FileLocation source = sources.get(testName);
 			if (source == null)
 				continue;
 			
-			result.put(testName,
-				new CandidateTestFiles(source, expects.get(testName)));
+			// Load the expected results and see if there multi-parameters
+			Collection<String> multiParams = VMHelpers.__parseMultiParams(
+				VMHelpers.__loadExpectedResults(testName, result));
+			
+			// Single test, has no parameters
+			FileLocation ex = expects.get(testName);
+			if (multiParams == null || multiParams.isEmpty())
+				result.put(testName,
+					new CandidateTestFiles(source, ex));
+			
+			// Otherwise signify all the parameters within
+			else
+				for (String multiParam : multiParams)
+					result.put(testName + "@" + multiParam,
+						new CandidateTestFiles(source, ex));
 		}
 		
 		return Collections.unmodifiableMap(result);
@@ -693,5 +715,103 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		return "TEST-" + __testName + ".xml";
+	}
+	
+	/**
+	 * Loads the expected results for a test.
+	 * 
+	 * @param __testName  The test being parsed.
+	 * @param __candidates The candidates available, used for super classes.
+	 * @return The expected results.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/09
+	 */
+	private static Manifest __loadExpectedResults(String __testName,
+		Map<String, CandidateTestFiles> __candidates)
+		throws NullPointerException
+	{
+		if (__testName == null || __candidates == null)
+			throw new NullPointerException("NARG");
+		
+		// If there is no candidate for this test, always just return a
+		// blank manifest to be parsed
+		CandidateTestFiles candidate = __candidates.get(__testName);
+		if (candidate == null)
+			return new Manifest(); 
+		
+		// Load information gleaned from the source code
+		__SourceInfo__ info;
+		try (InputStream in = Files.newInputStream(
+			candidate.sourceCode.absolute, StandardOpenOption.READ))
+		{
+			info = __SourceInfo__.load(in);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("Could not parse source: " +
+				__testName);
+		}
+		
+		// Read the current manifest
+		Manifest over;
+		try (InputStream in = Files.newInputStream(
+			candidate.expectedResult.absolute, StandardOpenOption.READ))
+		{
+			over = new Manifest(in);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("Could not parse manifest: " +
+				__testName);
+		}
+		
+		// If there is no super class there is no need to even try reading or
+		// merging any of them
+		if (info.superClass == null)
+			return over;
+		
+		// Load the manifest that belongs to the super class if that is
+		// possible, a blank will be used if missing
+		Manifest under = VMHelpers.__loadExpectedResults(info.superClass,
+			__candidates);
+		
+		// Add the underlying manifest, provided it does not replace anything
+		// on the higher level
+		Attributes overAttr = over.getMainAttributes();
+		for (Map.Entry<Object, Object> e : under.getMainAttributes()
+			.entrySet())
+			overAttr.putIfAbsent(e.getKey(), e.getValue());
+		
+		return over;
+	}
+	
+	/**
+	 * Parses multi-parameters from test results.
+	 * 
+	 * @param __expected The expected results to parse.
+	 * @return The multi-parameters, if any.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/09
+	 */
+	private static Collection<String> __parseMultiParams(
+		Manifest __expected)
+		throws NullPointerException
+	{
+		if (__expected == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the possible parameter values
+		String value = __expected.getMainAttributes()
+			.getValue(VMHelpers._MULTI_PARAMETERS_KEY);
+		if (value == null)
+			return null;
+		
+		// Split fields, if there are zero or only one entries then there is
+		// no point to multiple parameters
+		String[] splice = value.split("[ \t]");
+		if (splice.length <= 1)
+			return null;
+		
+		return Arrays.asList(splice);
 	}
 }

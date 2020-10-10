@@ -9,6 +9,8 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.multivm.CandidateTestFiles;
+import cc.squirreljme.plugin.multivm.VMHelpers;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
 import java.io.File;
@@ -20,6 +22,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
 import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
@@ -102,17 +105,10 @@ public class GenerateTestsListTask
 				StandardOpenOption.TRUNCATE_EXISTING,
 				StandardOpenOption.WRITE)))
 			{
-				// Write lines for each input
-				for (FileLocation input : this.__taskInputs())
-				{
-					String fileName = input.relative.toString();
-					
-					// Write here
-					out.println(fileName.substring(0,
-						fileName.lastIndexOf('.'))
-						.replace('\\', '.')
-						.replace('/', '.'));
-				}
+				// Every available test becomes the name of every test
+				for (String name : VMHelpers.availableTests(this.getProject(),
+					SourceSet.TEST_SOURCE_SET_NAME).keySet())
+					out.println(name);
 				
 				// Make sure the output is written
 				out.flush();
@@ -169,8 +165,19 @@ public class GenerateTestsListTask
 	 */
 	private Iterable<FileLocation> __taskInputs()
 	{
-		return TestDetection.onlyTests(TestDetection.sourceSetFiles(
-			this.getProject(), SourceSet.TEST_SOURCE_SET_NAME));
+		Collection<FileLocation> inputs = new LinkedList<>();
+		
+		for (CandidateTestFiles file : VMHelpers.availableTests(
+			this.getProject(), SourceSet.TEST_SOURCE_SET_NAME).values())
+		{
+			if (file.sourceCode != null)
+				inputs.add(file.sourceCode);
+			
+			if (file.expectedResult != null)
+				inputs.add(file.expectedResult);
+		}
+		
+		return inputs;
 	}
 	
 	/**
