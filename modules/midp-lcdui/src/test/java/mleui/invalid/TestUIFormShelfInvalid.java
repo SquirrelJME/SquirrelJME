@@ -9,7 +9,6 @@
 
 package mleui.invalid;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
@@ -24,7 +23,7 @@ import mleui.BaseBackend;
 import net.multiphasicapps.tac.UntestableException;
 
 /**
- * Tests whether {@link UIFormShelf} fails as it should with invalid values.
+ * Tests whether {@link UIBackend} fails as it should with invalid values.
  *
  * @since 2020/06/30
  */
