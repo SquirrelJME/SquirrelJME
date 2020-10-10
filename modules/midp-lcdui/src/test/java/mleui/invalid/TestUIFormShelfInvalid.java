@@ -9,6 +9,7 @@
 
 package mleui.invalid;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
@@ -31,7 +32,7 @@ public class TestUIFormShelfInvalid
 	extends BaseBackend
 {
 	@Override
-	public void backendTest(UIBackend __backend, UIDisplayBracket __display)
+	public void test(UIBackend __backend, UIDisplayBracket __display)
 		throws Throwable
 	{
 		// Call sub-test methods and make sure they fail

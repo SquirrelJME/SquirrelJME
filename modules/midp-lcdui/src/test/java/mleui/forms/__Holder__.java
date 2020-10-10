@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.mle.forms;
+package mleui.forms;
 
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 

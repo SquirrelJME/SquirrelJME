@@ -7,39 +7,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.mle.forms;
+package mleui.forms;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
- * Tests the creation of items.
+ * Tests that showing a blank form works properly.
  *
- * @since 2020/07/18
+ * @since 2020/07/01
  */
-public class TestCreateItems
+public class TestShowBlankDisplay
 	extends __BaseFormTest__
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/18
+	 * @since 2020/07/01
 	 */
 	@Override
-	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
+	protected void test(UIBackend __backend, UIDisplayBracket __display,
+		UIFormBracket __form)
 	{
-		for (int i = 0; i < UIItemType.NUM_TYPES; i++)
-		{
-			// Create the item
-			UIItemBracket item = UIFormShelf.itemNew(i);
-			
-			// Then quickly delete it
-			UIFormShelf.itemDelete(item);
-			
-			// Note it
-			this.secondary("did-" + i, true);
-		}
+		// Does nothing because the form test shows this automatically
 	}
 }

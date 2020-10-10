@@ -7,11 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the tests for
- * {@link cc.squirreljme.jvm.mle.UIFormShelf}.
- *
- * @since 2020/07/01
- */
+package mleui.forms;
 
-package squirreljme.mle.forms;
+/**
+ * Used to indicate a specific exception in form tests.
+ *
+ * @since 2020/07/19
+ */
+public final class FormTestException
+	extends RuntimeException
+{
+	/**
+	 * Initializes the exception.
+	 * 
+	 * @param __c The cause.
+	 * @since 2020/07/19
+	 */
+	public FormTestException(Throwable __c)
+	{
+		super(__c);
+	}
+}

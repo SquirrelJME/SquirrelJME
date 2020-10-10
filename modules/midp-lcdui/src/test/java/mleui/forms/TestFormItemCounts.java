@@ -7,15 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.mle.forms;
+package mleui.forms;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
  * Tests that item counts are correct in forms.
@@ -34,43 +33,44 @@ public class TestFormItemCounts
 	 * @since 2020/07/19
 	 */
 	@Override
-	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
+	protected void test(UIBackend __backend, UIDisplayBracket __display,
+		UIFormBracket __form)
 	{
 		// Before adding everything
-		this.secondary("beforeall", UIFormShelf.formItemCount(__form));
+		this.secondary("beforeall", __backend.formItemCount(__form));
 		
 		// Adding to the special items should not have any effect on size
-		UIItemBracket left = UIFormShelf.itemNew(UIItemType.BUTTON);
-		UIFormShelf.formItemPosition(__form, left,
+		UIItemBracket left = __backend.itemNew(UIItemType.BUTTON);
+		__backend.formItemPosition(__form, left,
 			UIItemPosition.LEFT_COMMAND);
-		this.secondary("leftcmd", UIFormShelf.formItemCount(__form));
+		this.secondary("leftcmd", __backend.formItemCount(__form));
 		
 		// Adding items should increase the item count
 		UIItemBracket[] items = new UIItemBracket[TestFormItemCounts.COUNT];
 		for (int i = 0; i < TestFormItemCounts.COUNT; i++)
 		{
-			items[i] = UIFormShelf.itemNew(UIItemType.BUTTON);
+			items[i] = __backend.itemNew(UIItemType.BUTTON);
 			
-			UIFormShelf.formItemPosition(__form, items[i], i);
+			__backend.formItemPosition(__form, items[i], i);
 			
 			this.secondary("afteradd-" + i,
-				UIFormShelf.formItemCount(__form));
+				__backend.formItemCount(__form));
 		}
 		
 		// Should be COUNT
-		this.secondary("afteradds", UIFormShelf.formItemCount(__form));
+		this.secondary("afteradds", __backend.formItemCount(__form));
 		
 		// Remove everything
 		for (int i = TestFormItemCounts.COUNT - 1; i >= 0; i--)
 		{
-			this.secondary("removed-same-" + i, UIFormShelf.equals(
-				UIFormShelf.formItemRemove(__form, i), items[i]));
+			this.secondary("removed-same-" + i, __backend.equals(
+				__backend.formItemRemove(__form, i), items[i]));
 			
 			this.secondary("remove-" + i,
-				UIFormShelf.formItemCount(__form));
+				__backend.formItemCount(__form));
 		}
 		
 		// There should be nothing left
-		this.secondary("afterall", UIFormShelf.formItemCount(__form));
+		this.secondary("afterall", __backend.formItemCount(__form));
 	}
 }

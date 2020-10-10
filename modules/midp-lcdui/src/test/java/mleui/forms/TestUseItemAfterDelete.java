@@ -7,42 +7,45 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.mle.forms;
+package mleui.forms;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
- * Tests that item showing works.
+ * Tests that items cannot be used after deletion.
  *
- * @since 2020/07/18
+ * @since 2020/07/19
  */
-public class TestShowItems
+public class TestUseItemAfterDelete
 	extends __BaseFormTest__
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/18
+	 * @since 2020/07/19
 	 */
 	@Override
-	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
+	protected void test(UIBackend __backend, UIDisplayBracket __display,
+		UIFormBracket __form)
 	{
-		for (int i = 0; i < UIItemType.NUM_TYPES; i++)
+		// Create the item
+		UIItemBracket item = __backend.itemNew(UIItemType.BUTTON);
+		
+		// Quickly delete it so it is not valid
+		__backend.itemDelete(item);
+		
+		// Attempt to place it on the form
+		try
 		{
-			// Create the item
-			UIItemBracket item = UIFormShelf.itemNew(i);
-			
-			// Show it
-			UIFormShelf.formItemPosition(__form, item, 0);
-			this.secondary("pos-" + i,
-				UIFormShelf.formItemPosition(__form, item));
-			
-			// Then quickly delete it
-			UIFormShelf.formItemRemove(__form, 0);
-			UIFormShelf.itemDelete(item);
+			__backend.formItemPosition(__form, item, 0);
+		}
+		catch (MLECallError e)
+		{
+			throw new FormTestException(e);
 		}
 	}
 }

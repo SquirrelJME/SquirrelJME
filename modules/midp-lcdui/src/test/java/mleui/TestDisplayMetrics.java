@@ -33,7 +33,7 @@ public class TestDisplayMetrics
 	 * @since 2020/10/10
 	 */
 	@Override
-	public void backendTest(UIBackend __backend, UIDisplayBracket __display)
+	public void test(UIBackend __backend, UIDisplayBracket __display)
 		throws Throwable
 	{
 		// Check that the lower count fails

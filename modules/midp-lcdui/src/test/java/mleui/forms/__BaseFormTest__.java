@@ -7,14 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.mle.forms;
+package mleui.forms;
 
 import cc.squirreljme.jvm.mle.DebugShelf;
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import mleui.BaseBackend;
 
 /**
  * Base tests on forms associated with a display.
@@ -22,18 +23,19 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2020/07/01
  */
 abstract class __BaseFormTest__
-	extends __BaseDisplayTest__
+	extends BaseBackend
 {
 	/**
 	 * Performs the UI test.
 	 * 
+	 * @param __backend The backend to use for calls.
 	 * @param __display The display.
 	 * @param __form The form.
 	 * @throws Throwable Any exceptions as needed.
 	 * @since 2020/07/01
 	 */
-	protected abstract void uiTest(UIDisplayBracket __display,
-		UIFormBracket __form)
+	protected abstract void test(UIBackend __backend,
+		UIDisplayBracket __display, UIFormBracket __form)
 		throws Throwable;
 	
 	/**
@@ -41,20 +43,20 @@ abstract class __BaseFormTest__
 	 * @since 2020/07/01
 	 */
 	@Override
-	protected final void uiTest(UIDisplayBracket __display)
+	public final void test(UIBackend __backend, UIDisplayBracket __display)
 		throws Throwable
 	{	
 		DebugShelf.verbose(VerboseDebugFlag.METHOD_ENTRY);
 		
-		UIFormBracket form = UIFormShelf.formNew();
+		UIFormBracket form = __backend.formNew();
 		try
 		{
 			// We should actually display the form in order to see if it
 			// works
-			UIFormShelf.displayShow(__display, form);
+			__backend.displayShow(__display, form);
 			
 			// Run the test
-			this.uiTest(__display, form);
+			this.test(__backend, __display, form);
 		}
 		
 		// Delete the form
@@ -64,8 +66,8 @@ abstract class __BaseFormTest__
 			Debugging.debugNote("Cleaning up form...");
 			
 			// Remove from the display and delete it
-			UIFormShelf.displayShow(__display, null);
-			UIFormShelf.formDelete(form);
+			__backend.displayShow(__display, null);
+			__backend.formDelete(form);
 			
 			Debugging.debugNote("Cleaned up!");
 		}

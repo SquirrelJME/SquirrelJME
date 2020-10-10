@@ -7,24 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.mle.forms;
-
 /**
- * Used to indicate a specific exception in form tests.
+ * This package contains the tests for
+ * {@link cc.squirreljme.jvm.mle.__backend}.
  *
- * @since 2020/07/19
+ * @since 2020/07/01
  */
-public final class FormTestException
-	extends RuntimeException
-{
-	/**
-	 * Initializes the exception.
-	 * 
-	 * @param __c The cause.
-	 * @since 2020/07/19
-	 */
-	public FormTestException(Throwable __c)
-	{
-		super(__c);
-	}
-}
+
+package mleui.forms;

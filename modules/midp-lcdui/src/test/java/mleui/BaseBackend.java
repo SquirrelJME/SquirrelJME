@@ -36,7 +36,7 @@ public abstract class BaseBackend
 	 * @throws Throwable On any exception.
 	 * @since 2020/10/09
 	 */
-	public abstract void backendTest(UIBackend __backend,
+	public abstract void test(UIBackend __backend,
 		UIDisplayBracket __display)
 		throws Throwable;
 	
@@ -49,7 +49,7 @@ public abstract class BaseBackend
 		throws Throwable
 	{
 		UIBackend backend = BaseBackend.__getBackend(__backend);
-		this.backendTest(backend, backend.displays()[0]);
+		this.test(backend, backend.displays()[0]);
 	}
 	
 	/**

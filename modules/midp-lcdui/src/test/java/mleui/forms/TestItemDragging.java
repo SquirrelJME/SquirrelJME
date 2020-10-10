@@ -7,14 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.mle.forms;
+package mleui.forms;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
  * Drags an item across the form to ensure that it gets reassigned properly
@@ -30,10 +30,11 @@ public class TestItemDragging
 	 * @since 2020/07/19
 	 */
 	@Override
-	protected void uiTest(UIDisplayBracket __display, UIFormBracket __form)
+	protected void test(UIBackend __backend, UIDisplayBracket __display,
+		UIFormBracket __form)
 	{
 		// This item will be dragged around
-		UIItemBracket item = UIFormShelf.itemNew(UIItemType.BUTTON);
+		UIItemBracket item = __backend.itemNew(UIItemType.BUTTON);
 		
 		// Move around each position!
 		int oldPos = UIItemPosition.NOT_ON_FORM;
@@ -41,32 +42,32 @@ public class TestItemDragging
 		{
 			// Is the old position null?
 			if (oldPos != UIItemPosition.NOT_ON_FORM)
-				this.secondary("old-isnull-" + pos, UIFormShelf
+				this.secondary("old-isnull-" + pos, __backend
 					.formItemAtPosition(__form, oldPos) == null);
 			
 			// The position of the item then
 			this.secondary("then-pos-" + pos,
-				UIFormShelf.formItemPosition(__form, item));
+				__backend.formItemPosition(__form, item));
 			
 			// Set new item position
-			UIFormShelf.formItemPosition(__form, item, pos);
+			__backend.formItemPosition(__form, item, pos);
 			
 			// Is the item at this position, this one?
 			this.secondary("now-isthis-" + pos,
-				UIFormShelf.equals(UIFormShelf.formItemAtPosition(__form, pos),
+				__backend.equals(__backend.formItemAtPosition(__form, pos),
 				item));
 			
 			// The position of the item now
 			this.secondary("now-pos-" + pos,
-				UIFormShelf.formItemPosition(__form, item));
+				__backend.formItemPosition(__form, item));
 			
 			// Old position becomes the current one
 			oldPos = pos;
 		}
 		
-		this.secondary("zero-isthis", UIFormShelf.equals(
-			UIFormShelf.formItemAtPosition(__form, 0), item));
+		this.secondary("zero-isthis", __backend.equals(
+			__backend.formItemAtPosition(__form, 0), item));
 		this.secondary("zero-pos",
-			UIFormShelf.formItemPosition(__form, item));
+			__backend.formItemPosition(__form, item));
 	}
 }
