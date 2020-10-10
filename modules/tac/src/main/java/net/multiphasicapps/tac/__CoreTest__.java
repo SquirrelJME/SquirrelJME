@@ -230,7 +230,8 @@ abstract class __CoreTest__
 	}
 	
 	/**
-	 * Parses the input file for arguments.
+	 * Parses the input file for main program arguments, these are passed
+	 * directly into the test.
 	 *
 	 * @param __class The class for this test, used to load off manifests.
 	 * @param __mainargs Main program arguments.

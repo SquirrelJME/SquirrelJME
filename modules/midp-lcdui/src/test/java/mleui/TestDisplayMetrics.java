@@ -11,36 +11,23 @@ package mleui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import net.multiphasicapps.tac.TestConsumer;
 
 /**
- * Base for all backend tests.
+ * Tests that display metrics work properly.
  *
- * @since 2020/10/09
+ * @since 2020/10/10
  */
-public abstract class BaseBackend
-	extends TestConsumer<String>
+public class TestDisplayMetrics
+	extends BaseBackend
 {
-	/**
-	 * Performs the testing of the given backend.
-	 * 
-	 * @param __backend The backend to test.
-	 * @throws Throwable On any exception.
-	 * @since 2020/10/09
-	 */
-	public abstract void backendTest(UIBackend __backend)
-		throws Throwable;
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/10/10
 	 */
 	@Override
-	public void test(String __s)
+	public void backendTest(UIBackend __backend)
 		throws Throwable
 	{
-		Debugging.debugNote("Parameter: %s", __s);
-		
-		throw Debugging.todo(__s);
+		throw Debugging.todo();
 	}
 }

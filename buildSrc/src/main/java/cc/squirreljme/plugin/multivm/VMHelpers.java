@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -140,34 +141,43 @@ public final class VMHelpers
 			}
 		}
 		
-		// Map tests and candidate sets to normal candidates
-		Map<String, CandidateTestFiles> result = new TreeMap<>();
-		for (String testName : names) 
+		// Setup full set of possible candidates
+		Map<String, CandidateTestFiles> fullSet = new TreeMap<>();
+		for (String testName : names)
 		{
-			// Ignore if this does not match the expected name form
-			if (!TestDetection.isTest(testName))
-				continue;
-			
 			// May be an abstract test?
 			FileLocation source = sources.get(testName);
 			if (source == null)
 				continue;
 			
+			// Store it
+			fullSet.put(testName,
+				new CandidateTestFiles(source, expects.get(testName)));
+		}
+		
+		// Map tests and candidate sets to normal candidates
+		Map<String, CandidateTestFiles> result = new TreeMap<>();
+		for (Map.Entry<String, CandidateTestFiles> entry : fullSet.entrySet())
+		{
+			String testName = entry.getKey();
+			
+			// Ignore if this does not match the expected name form
+			if (!TestDetection.isTest(testName))
+				continue;
+			
 			// Load the expected results and see if there multi-parameters
 			Collection<String> multiParams = VMHelpers.__parseMultiParams(
-				VMHelpers.__loadExpectedResults(testName, result));
+				VMHelpers.__loadExpectedResults(testName, fullSet));
 			
 			// Single test, has no parameters
-			FileLocation ex = expects.get(testName);
+			CandidateTestFiles candidate = entry.getValue();
 			if (multiParams == null || multiParams.isEmpty())
-				result.put(testName,
-					new CandidateTestFiles(source, ex));
+				result.put(testName, candidate);
 			
 			// Otherwise signify all the parameters within
 			else
 				for (String multiParam : multiParams)
-					result.put(testName + "@" + multiParam,
-						new CandidateTestFiles(source, ex));
+					result.put(testName + "@" + multiParam, candidate);
 		}
 		
 		return Collections.unmodifiableMap(result);
@@ -744,26 +754,33 @@ public final class VMHelpers
 		try (InputStream in = Files.newInputStream(
 			candidate.sourceCode.absolute, StandardOpenOption.READ))
 		{
-			info = __SourceInfo__.load(in);
+			if ("j".equals(VMHelpers.getExtension(
+				candidate.sourceCode.absolute)))
+				info = __SourceInfo__.loadJasmin(in);
+			else
+				info = __SourceInfo__.loadJava(in);
 		}
 		catch (IOException e)
 		{
 			throw new RuntimeException("Could not parse source: " +
-				__testName);
+				__testName, e);
 		}
 		
 		// Read the current manifest
 		Manifest over;
-		try (InputStream in = Files.newInputStream(
-			candidate.expectedResult.absolute, StandardOpenOption.READ))
-		{
-			over = new Manifest(in);
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException("Could not parse manifest: " +
-				__testName);
-		}
+		if (candidate.expectedResult == null)
+			over = new Manifest();
+		else
+			try (InputStream in = Files.newInputStream(
+				candidate.expectedResult.absolute, StandardOpenOption.READ))
+			{
+				over = new Manifest(in);
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException("Could not parse manifest: " +
+					__testName, e);
+			}
 		
 		// If there is no super class there is no need to even try reading or
 		// merging any of them
