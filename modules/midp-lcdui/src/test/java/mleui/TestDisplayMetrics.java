@@ -73,7 +73,7 @@ public class TestDisplayMetrics
 				this.secondary("fail-" + metric, true);
 			}
 		
-		this.secondary("okay", (int)UIMetricType.NUM_METRICS);
+		this.secondary("okay", okayCount);
 		this.secondary("total", (int)UIMetricType.NUM_METRICS);
 	}
 	
