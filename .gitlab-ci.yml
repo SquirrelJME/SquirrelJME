@@ -47,6 +47,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/libnx-static.yml'
 
+  # PlayStation Vita
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/vita-static.yml'
+
 # Stages for building
 stages:
   - build-prepare
@@ -107,4 +111,11 @@ libretro-build-libnx-aarch64:
   extends:
     - .core-defs
     - .libretro-libnx-static-retroarch-master
+    - .squirreljme-post-common
+
+# PlayStation Vita
+libretro-build-vita:
+  extends:
+    - .core-defs
+    - .libretro-vita-static-retroarch-master
     - .squirreljme-post-common
