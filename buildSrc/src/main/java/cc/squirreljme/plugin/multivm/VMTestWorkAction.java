@@ -241,18 +241,40 @@ public abstract class VMTestWorkAction
 		// Failed tests use this tag accordingly, despite there being a
 		// failures indicator 
 		if (__result == VMTestResult.FAIL)
-			__out.printf("<failure type=\"%s\">Failed test %s</failure>%n",
-				__testName, __testName);
+		{
+			__out.printf("<failure type=\"%s\">", __testName);
+			VMTestWorkAction.__writeXmlText(__out, __stdErr);
+			__out.println("</failure>");
+		}
 		
 		// Write both buffers
-		VMTestWorkAction.__writeXmlText(__out, "system-out", __stdOut);
-		VMTestWorkAction.__writeXmlText(__out, "system-err", __stdErr);
+		VMTestWorkAction.__writeXmlTextTag(__out, "system-out", __stdOut);
+		VMTestWorkAction.__writeXmlTextTag(__out, "system-err", __stdErr);
 		
 		// End test case
 		__out.println("</testcase>");
 		
 		// Close test suite
 		__out.println("</testsuite>");
+	}
+	
+	/**
+	 * Writes the given XML Text.
+	 * 
+	 * @param __out The target stream.
+	 * @param __text The text to write.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/12
+	 */
+	private static void __writeXmlText(PrintStream __out, byte[] __text)
+		throws NullPointerException
+	{
+		if (__out == null || __text == null)
+			throw new NullPointerException("NARG");
+		
+		__out.print("<![CDATA[");
+		__out.print(new String(__text));
+		__out.print("]]>");
 	}
 	
 	/**
@@ -265,21 +287,17 @@ public abstract class VMTestWorkAction
 	 * @since 2020/09/07
 	 */
 	@SuppressWarnings("resource")
-	private static void __writeXmlText(PrintStream __out, String __key,
+	private static void __writeXmlTextTag(PrintStream __out, String __key,
 		byte[] __text)
 		throws NullPointerException
 	{
 		if (__out == null || __key == null || __text == null)
 			throw new NullPointerException("NARG");
 		
-		// Start section
-		__out.printf("<%s><![CDATA[", __key);
-		
-		// Write all the bytes
-		__out.print(new String(__text));
-		
-		// End section
-		__out.printf("]]></%s>", __key);
+		// Write tag into here
+		__out.printf("<%s>", __key);
+		VMTestWorkAction.__writeXmlText(__out, __text);
+		__out.printf("</%s>", __key);
 		__out.println();
 	}
 }
