@@ -276,7 +276,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void widgetProperty(UIItemBracket __item, int __intProp,
+	public void widgetProperty(UIWidgetBracket __item, int __intProp,
 		int __newValue)
 	{
 		UIFormShelf.widgetProperty(__item, __intProp, __newValue);
@@ -287,7 +287,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void widgetProperty(UIItemBracket __item, int __strProp,
+	public void widgetProperty(UIWidgetBracket __item, int __strProp,
 		String __newValue)
 	{
 		UIFormShelf.widgetProperty(__item, __strProp, __newValue);

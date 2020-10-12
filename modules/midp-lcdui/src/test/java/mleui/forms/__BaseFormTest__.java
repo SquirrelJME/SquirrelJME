@@ -54,6 +54,7 @@ abstract class __BaseFormTest__
 			// We should actually display the form in order to see if it
 			// works
 			__backend.displayShow(__display, form);
+			__backend.flushEvents();
 			
 			// Run the test
 			this.test(__backend, __display, form);

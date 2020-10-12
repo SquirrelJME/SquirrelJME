@@ -18,7 +18,6 @@ import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.headless.HeadlessAttachment;
 
 /**
  * This is a virtual user interface form backend which is backed on the
@@ -293,7 +292,7 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void widgetProperty(UIItemBracket __item, int __intProp,
+	public void widgetProperty(UIWidgetBracket __item, int __intProp,
 		int __newValue)
 	{
 		throw Debugging.todo();
@@ -304,7 +303,7 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void widgetProperty(UIItemBracket __item, int __strProp,
+	public void widgetProperty(UIWidgetBracket __item, int __strProp,
 		String __newValue)
 	{
 		throw Debugging.todo();

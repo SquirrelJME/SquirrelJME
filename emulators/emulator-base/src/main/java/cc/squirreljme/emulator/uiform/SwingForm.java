@@ -457,13 +457,20 @@ public final class SwingForm
 	public int propertyInt(int __intProp)
 		throws MLECallError
 	{
+		SwingDisplay display = this._display;
 		switch (__intProp)
 		{
+			case UIWidgetProperty.INT_X_POSITION:
+				return (display != null ? display.frame.getX() : 0);
+			
+			case UIWidgetProperty.INT_Y_POSITION:
+				return (display != null ? display.frame.getY() : 0);
+			
 			case UIWidgetProperty.INT_WIDTH:
-				return this.body.getWidth();
+				return this.formPanel.getWidth();
 			
 			case UIWidgetProperty.INT_HEIGHT:
-				return this.body.getHeight();
+				return this.formPanel.getHeight();
 			
 			default:
 				throw new MLECallError("Unknown property: " + __intProp);
@@ -474,11 +481,16 @@ public final class SwingForm
 	 * {@inheritDoc}
 	 * @since 2020/09/21
 	 */
+	@SuppressWarnings("SwitchStatementWithTooFewBranches")
 	@Override
 	public String propertyStr(int __strProp)
 		throws MLECallError
 	{
-		throw Debugging.todo("Property: " + __strProp);
+		switch (__strProp)
+		{
+			default:
+				throw new MLECallError("Unknown property: " + __strProp);
+		}
 	}
 	
 	/**

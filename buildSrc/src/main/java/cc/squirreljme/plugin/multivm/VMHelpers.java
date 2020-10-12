@@ -649,15 +649,22 @@ public final class VMHelpers
 			VMTestTask.SINGLE_TEST_PROPERTY);
 		if (singleTest != null)
 		{
-			// If the test has no matching file then it is probably something
-			// else and likely an error
-			CandidateTestFiles files = available.get(singleTest);
-			if (files == null)
-				throw new IllegalArgumentException(
-					"Missing or invalid test: " + singleTest);
+			// We need to check every test, since we may have multi-parameters
+			// to consider
+			Map<String, CandidateTestFiles> singles = new LinkedHashMap<>();
+			for (Map.Entry<String, CandidateTestFiles> e : available
+				.entrySet())
+				if (VMHelpers.__isSingleTest(e.getKey(), singleTest))
+					singles.put(e.getKey(), e.getValue());
 			
-			// The resultant map will only contain this test
-			return Collections.singletonMap(singleTest, files);
+			// If we found at least one test then we can test those, there may
+			// be multiple ones due to multi-parameters
+			if (!singles.isEmpty())
+				return Collections.unmodifiableMap(singles);
+			
+			// If the test has no matching file, then just ignore it
+			__project.getLogger().info("Could not find test {}, ignoring.",
+				singleTest);
 		}
 		
 		// Is only valid if there is at least one test
@@ -725,6 +732,33 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		return "TEST-" + __testName + ".xml";
+	}
+	
+	/**
+	 * Checks if this is the single test to run, depending if multi-parameters
+	 * are used or not.
+	 * 
+	 * @param __key The key to check.
+	 * @param __singleTest The single test that was requested.
+	 * @return If this is the matching single test.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/11
+	 */
+	private static boolean __isSingleTest(String __key, String __singleTest)
+		throws NullPointerException
+	{
+		if (__key == null || __singleTest == null)
+			throw new NullPointerException("NARG");
+		
+		// If the test does not have a multi-parameter match it exactly.
+		// However if we requested a specific multi-parameter then match that
+		// as well
+		int la = __key.indexOf('@');
+		if (la < 0 || __singleTest.indexOf('@') >= 0)
+			return __key.equals(__singleTest);
+		
+		// Only match by the basename, if multi-parameter assume all of them
+		return __key.substring(0, la).equals(__singleTest);
 	}
 	
 	/**

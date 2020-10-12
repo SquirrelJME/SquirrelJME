@@ -306,7 +306,7 @@ public interface UIBackend
 	 * valid or not an integer property.
 	 * @since 2020/09/13
 	 */
-	void widgetProperty(UIItemBracket __item, int __intProp, int __newValue);
+	void widgetProperty(UIWidgetBracket __item, int __intProp, int __newValue);
 	
 	/**
 	 * Sets the given item property.
@@ -318,7 +318,7 @@ public interface UIBackend
 	 * valid or not a string property.
 	 * @since 2020/09/13
 	 */
-	void widgetProperty(UIItemBracket __item, int __strProp,
+	void widgetProperty(UIWidgetBracket __item, int __strProp,
 		String __newValue);
 	
 	/**

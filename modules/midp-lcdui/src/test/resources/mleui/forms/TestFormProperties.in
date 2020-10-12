@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-total: int:7
+secondary-neg--fails: true
+secondary-null--fails: true
+secondary-pos--fails: true
+secondary-no--label: true
+secondary-no--repaint: true
+secondary-positive--width: true
+secondary-positive--height: true
+secondary-has--x: true
+secondary-has--y: true

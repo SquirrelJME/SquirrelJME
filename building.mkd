@@ -203,6 +203,9 @@ The following _System_ properties are available:
      which executes the given value as the name of a class within the JAR.
  * `test.single=classname` -- Run only the given test:
    * Will be the test class to be ran.
+   * Multi-parameter tests are in the form of `classname@parameter`, if a
+     parameter is specified then only that one will be matched. Otherwise
+     this will include all tests of that given parameter.
 
 # Building ROMs
 
