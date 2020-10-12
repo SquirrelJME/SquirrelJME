@@ -15,8 +15,10 @@
 .core-defs:
   variables:
     CORENAME: squirreljme
+    JNI_PATH: ratufacoat/libretro/
+
+    # This is not needed by SquirrelJME, but it may be needed by RetroArch
     GIT_SUBMODULE_STRATEGY: recursive
-    JNI_PATH: ratufacoat/libretro
 
 # Post extends for SquirrelJME
 .squirreljme-post-common:
@@ -34,6 +36,11 @@ include:
   # Linux 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/linux-x64.yml'
+
+  ################################## CELLULAR ################################
+  # Android
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/android-jni.yml'
 
   ################################## CONSOLES ################################
 
@@ -60,6 +67,35 @@ libretro-build-linux-x64:
   extends:
     - .core-defs
     - .libretro-linux-x64-make-default
+    - .squirreljme-post-common
+
+################################### CELLULAR #################################
+# Android ARMv7a
+android-armeabi-v7a:
+  extends:
+    - .core-defs
+    - .libretro-android-jni-armeabi-v7a
+    - .squirreljme-post-common
+
+# Android ARMv8a
+android-arm64-v8a:
+  extends:
+    - .core-defs
+    - .libretro-android-jni-arm64-v8a
+    - .squirreljme-post-common
+
+# Android 64-bit x86
+android-x86_64:
+  extends:
+    - .core-defs
+    - .libretro-android-jni-x86_64
+    - .squirreljme-post-common
+
+# Android 32-bit x86
+android-x86:
+  extends:
+    - .core-defs
+    - .libretro-android-jni-x86
     - .squirreljme-post-common
 
 ################################### CONSOLES #################################
