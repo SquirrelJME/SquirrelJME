@@ -243,13 +243,13 @@ public abstract class VMTestWorkAction
 		if (__result == VMTestResult.FAIL)
 		{
 			__out.printf("<failure type=\"%s\">", __testName);
-			VMTestWorkAction.__writeXmlText(__out, __stdErr);
+			VMTestWorkAction.__writeText(__out, __stdErr);
 			__out.println("</failure>");
 		}
 		
 		// Write both buffers
-		VMTestWorkAction.__writeXmlTextTag(__out, "system-out", __stdOut);
-		VMTestWorkAction.__writeXmlTextTag(__out, "system-err", __stdErr);
+		VMTestWorkAction.__writeTextTag(__out, "system-out", __stdOut);
+		VMTestWorkAction.__writeTextTag(__out, "system-err", __stdErr);
 		
 		// End test case
 		__out.println("</testcase>");
@@ -266,7 +266,7 @@ public abstract class VMTestWorkAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/12
 	 */
-	private static void __writeXmlText(PrintStream __out, byte[] __text)
+	private static void __writeText(PrintStream __out, byte[] __text)
 		throws NullPointerException
 	{
 		if (__out == null || __text == null)
@@ -287,7 +287,7 @@ public abstract class VMTestWorkAction
 	 * @since 2020/09/07
 	 */
 	@SuppressWarnings("resource")
-	private static void __writeXmlTextTag(PrintStream __out, String __key,
+	private static void __writeTextTag(PrintStream __out, String __key,
 		byte[] __text)
 		throws NullPointerException
 	{
@@ -296,7 +296,7 @@ public abstract class VMTestWorkAction
 		
 		// Write tag into here
 		__out.printf("<%s>", __key);
-		VMTestWorkAction.__writeXmlText(__out, __text);
+		VMTestWorkAction.__writeText(__out, __text);
 		__out.printf("</%s>", __key);
 		__out.println();
 	}
