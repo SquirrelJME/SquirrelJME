@@ -24,6 +24,12 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/windows-x64-mingw.yml'
 
+# Stages for building
+stages:
+  - build-prepare
+  - build-shared
+  - build-static
+
 # Windows 64-bit
 libretro-build-windows-x64:
   extends:
