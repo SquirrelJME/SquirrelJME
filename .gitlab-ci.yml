@@ -17,9 +17,6 @@
     CORENAME: squirreljme
     JNI_PATH: ratufacoat/libretro/
 
-    # This is not needed by SquirrelJME, but it may be needed by RetroArch
-    GIT_SUBMODULE_STRATEGY: recursive
-
 # Post extends for SquirrelJME
 .squirreljme-post-common:
   variables:
