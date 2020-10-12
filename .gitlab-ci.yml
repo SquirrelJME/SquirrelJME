@@ -1,0 +1,25 @@
+# ---------------------------------------------------------------------------
+# Multi-Phasic Applications: SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3+, or later.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: GitLab CI/CD for libRetro (NOT FOR GitLab-proper)
+
+# Core definitions
+.core-defs:
+  variables:
+    CORENAME: squirreljme
+    GIT_SUBMODULE_STRATEGY: recursive
+
+    # Where are the build files?
+    JNI_PATH: libretro
+    MAKEFILE_PATH: ratufacoat/
+    MAKEFILE: makefilelibretro
+
+# Windows 64-bit Build
+libretro-build-windows-x64:
+  extends:
+    - .core-defs
+    - .libretro-windows-x64-mingw-make-default
