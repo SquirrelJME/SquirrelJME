@@ -12,11 +12,7 @@
   variables:
     CORENAME: squirreljme
     GIT_SUBMODULE_STRATEGY: recursive
-
-    # Where are the build files?
     JNI_PATH: ratufacoat/libretro
-    MAKEFILE_PATH: ratufacoat/
-    MAKEFILE: makefilelibretro
 
 # Inclusion templates, required for the build to work
 include:
@@ -35,3 +31,6 @@ libretro-build-windows-x64:
   extends:
     - .core-defs
     - .libretro-windows-x64-mingw-make-default
+  variables:
+    MAKEFILE_PATH: ratufacoat/
+    MAKEFILE: makefilelibretro
