@@ -18,6 +18,12 @@
     MAKEFILE_PATH: ratufacoat/
     MAKEFILE: makefilelibretro
 
+# Inclusion templates, required for the build to work
+include:
+  # Windows 64-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-x64-mingw.yml'
+
 # Windows 64-bit
 libretro-build-windows-x64:
   extends:
