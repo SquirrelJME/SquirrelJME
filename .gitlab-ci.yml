@@ -14,11 +14,11 @@
     GIT_SUBMODULE_STRATEGY: recursive
 
     # Where are the build files?
-    JNI_PATH: libretro
+    JNI_PATH: ratufacoat/libretro
     MAKEFILE_PATH: ratufacoat/
     MAKEFILE: makefilelibretro
 
-# Windows 64-bit Build
+# Windows 64-bit
 libretro-build-windows-x64:
   extends:
     - .core-defs
