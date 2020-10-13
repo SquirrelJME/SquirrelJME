@@ -1,0 +1,118 @@
+# ---------------------------------------------------------------------------
+# Multi-Phasic Applications: SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3+, or later.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: GitLab CI/CD for libRetro (NOT FOR GitLab-proper)
+
+##############################################################################
+################################# BOILERPLATE ################################
+##############################################################################
+
+# Core definitions
+.core-defs:
+  variables:
+    CORENAME: squirreljme
+    JNI_PATH: ratufacoat/libretro/
+
+# Post extends for SquirrelJME
+.squirreljme-post-common:
+  variables:
+    MAKEFILE_PATH: ratufacoat/
+    MAKEFILE: makefilelibretro
+
+# Inclusion templates, required for the build to work
+include:
+  ################################## DESKTOPS ################################
+  # Windows 64-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-x64-mingw.yml'
+
+  # Linux 64-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/linux-x64.yml'
+
+  ################################## CELLULAR ################################
+  # Android
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/android-jni.yml'
+
+  ################################## CONSOLES ################################
+  # Nintendo Switch
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/libnx-static.yml'
+
+  # PlayStation Vita
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/vita-static.yml'
+
+# Stages for building
+stages:
+  - build-prepare
+  - build-shared
+  - build-static
+
+##############################################################################
+#################################### STAGES ##################################
+##############################################################################
+
+################################### DESKTOPS #################################
+# Windows 64-bit
+libretro-build-windows-x64:
+  extends:
+    - .core-defs
+    - .libretro-windows-x64-mingw-make-default
+    - .squirreljme-post-common
+
+# Linux 64-bit
+libretro-build-linux-x64:
+  extends:
+    - .core-defs
+    - .libretro-linux-x64-make-default
+    - .squirreljme-post-common
+
+################################### CELLULAR #################################
+# Android ARMv7a
+android-armeabi-v7a:
+  extends:
+    - .core-defs
+    - .libretro-android-jni-armeabi-v7a
+    - .squirreljme-post-common
+
+# Android ARMv8a
+android-arm64-v8a:
+  extends:
+    - .core-defs
+    - .libretro-android-jni-arm64-v8a
+    - .squirreljme-post-common
+
+# Android 64-bit x86
+android-x86_64:
+  extends:
+    - .core-defs
+    - .libretro-android-jni-x86_64
+    - .squirreljme-post-common
+
+# Android 32-bit x86
+android-x86:
+  extends:
+    - .core-defs
+    - .libretro-android-jni-x86
+    - .squirreljme-post-common
+
+################################### CONSOLES #################################
+# Nintendo Switch
+libretro-build-libnx-aarch64:
+  extends:
+    - .core-defs
+    - .libretro-libnx-static-retroarch-master
+    - .squirreljme-post-common
+
+# PlayStation Vita
+libretro-build-vita:
+  extends:
+    - .core-defs
+    - .libretro-vita-static-retroarch-master
+    - .squirreljme-post-common
