@@ -295,7 +295,8 @@ public enum VMType
 		vmArgs.addAll(Arrays.asList(__args));
 		
 		// Launching is effectively the same as the hosted run but with the
-		// VM here instead
+		// VM here instead. System properties are passed through so that the
+		// holding VM and the sub-VM share the same properties.
 		VMType.HOSTED.spawnJvmArguments(__task, __execSpec,
 			"cc.squirreljme.emulator.vm.VMFactory", __sysProps,
 			vmClassPath.<Path>toArray(new Path[vmClassPath.size()]),

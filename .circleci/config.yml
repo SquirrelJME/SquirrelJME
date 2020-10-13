@@ -28,16 +28,16 @@ jobs:
     steps:
       - checkout
       - run:
+          shell: cmd.exe
           name: Gradle Build and Test
           command: gradlew build testHosted --continue --parallel
-          shell: cmd.exe
       - run:
+          shell: bash.exe
           name: Save test results
           command: |
             mkdir -p /c/users/circleci/test-results/junit
-            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
+            /usr/binfind . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
           when: always
-          shell: bash.exe
       - store_test_results:
           path: c:\users\circleci\test-results
       - store_artifacts:
@@ -137,6 +137,7 @@ jobs:
           working_directory: ratufacoat
           command: |
             scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_macosx || echo Ignoring failed upload;
+
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
@@ -144,7 +145,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted --continue --parallel
+          command: ./gradlew build testHosted -Djava.awt.headless=true --continue --parallel
       - run:
           name: Save test results
           command: |
@@ -418,9 +419,6 @@ workflows:
 #          requires:
 #            - build_windows
 #            - construct_romTestSummerCoat
-#      - ratufacoat_build_windows_libretro:
-#          requires:
-#            - ratufacoat_build_windows
 #      - ratufacoat_build_linux:
 #          requires:
 #            - build_linux
