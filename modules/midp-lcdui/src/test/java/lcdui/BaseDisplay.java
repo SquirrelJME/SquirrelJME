@@ -9,8 +9,13 @@
 
 package lcdui;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
 import javax.microedition.lcdui.Display;
 import net.multiphasicapps.tac.TestRunnable;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * Base class for display tests.
@@ -38,6 +43,10 @@ public abstract class BaseDisplay
 	public final void test()
 		throws Throwable
 	{
+		Debugging.todoNote("BaseDisplay::test() -- Headless check.");
+		if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
+			throw new UntestableException("Native forms not supported.");
+		
 		// Forward test
 		this.test(Display.getDisplays(0)[0]);
 	}
