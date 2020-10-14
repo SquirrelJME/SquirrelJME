@@ -145,7 +145,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted -Djava.awt.headless=true --continue --parallel
+          command: ./gradlew build testHosted --continue --parallel
       - run:
           name: Save test results
           command: |
