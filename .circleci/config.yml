@@ -36,7 +36,7 @@ jobs:
           name: Save test results
           command: |
             mkdir -p /c/users/circleci/test-results/junit
-            /usr/binfind . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
+            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
           when: always
       - store_test_results:
           path: c:\users\circleci\test-results
