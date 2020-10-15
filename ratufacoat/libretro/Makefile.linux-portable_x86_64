@@ -1,20 +1,11 @@
 ##############
 # Works on hosts Linux
-# 
+#
 
 #########################
 # Check the host platform
 
-HOST_PLATFORM = linux
-ifeq ($(shell uname -a),)
-  HOST_PLATFORM = windows
-else ifneq ($(findstring MINGW,$(shell uname -a)),)
-  HOST_PLATFORM = windows
-else ifneq ($(findstring Darwin,$(shell uname -a)),)
-  HOST_PLATFORM = darwin
-else ifneq ($(findstring win,$(shell uname -a)),)
-  HOST_PLATFORM = windows
-endif
+include $(BUILD_DIR)/Makefile.common.hostcheck
 
 #########################
 # Set the target platform
@@ -41,7 +32,7 @@ LIBEXT = .linux-portable_x86_64.a
 
 STATIC_LINKING = 0
 platform       = unix
-PLATDEFS       = 
+PLATDEFS       =
 PLATCFLAGS     = -m64 -fpic -fstrict-aliasing
 PLATCXXFLAGS   = -m64 -fpic -fstrict-aliasing
 PLATLDFLAGS    = -m64 -shared -lm -Wl,-version-script=$(BUILD_DIR)/link.T
@@ -86,7 +77,7 @@ endif
 
 CORE_DIR  ?= ..
 BUILD_DIR ?= .
-INCLUDES   = 
+INCLUDES   =
 
 include $(BUILD_DIR)/Makefile.common
 
