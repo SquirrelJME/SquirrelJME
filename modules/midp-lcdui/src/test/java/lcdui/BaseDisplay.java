@@ -44,7 +44,7 @@ public abstract class BaseDisplay
 		throws Throwable
 	{
 		Debugging.todoNote("BaseDisplay::test() -- Headless check.");
-		if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
+		if (0 == UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
 			throw new UntestableException("Native forms not supported.");
 		
 		// Forward test
