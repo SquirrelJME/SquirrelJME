@@ -44,6 +44,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/libnx-static.yml'
 
+  # PLayStation 2
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/ps2-static.yml'
+
   # PlayStation Vita
   - project: 'libretro-infrastructure/ci-templates'
     file: '/vita-static.yml'
@@ -108,6 +112,13 @@ libretro-build-libnx-aarch64:
   extends:
     - .core-defs
     - .libretro-libnx-static-retroarch-master
+    - .squirreljme-post-common
+
+# PlayStation 2
+libretro-build-ps2:
+  extends:
+    - .core-defs
+    - .libretro-ps2-static-retroarch-master
     - .squirreljme-post-common
 
 # PlayStation Vita
