@@ -32,27 +32,35 @@ public interface UIPixelFormat
 	byte SHORT_RGB565 =
 		3;
 	
+	/** 16-bit RGB555. ({@code short}). */
+	byte SHORT_RGB555 =
+		4;
+	
+	/** 16-bit ABGR1555. ({@code short}) [PlayStation 2]. */
+	byte SHORT_ABGR1555 =
+		5;
+	
 	/** 65536 Colors ({@code short}). */
 	byte SHORT_INDEXED65536 =
-		4;
+		6;
 	
 	/** 256 Colors ({@code byte}). */
 	byte BYTE_INDEXED256 =
-		5;
+		7;
 	
 	/** Packed 16 colors (4-bit). ({@code packed byte}) */
 	byte PACKED_INDEXED4 =
-		6;
+		8;
 	
 	/** Packed 4 Colors (2-bit). ({@code packed byte}) */
 	byte PACKED_INDEXED2 =
-		7;
+		9;
 	
 	/** Packed 2 colors (1-bit). ({@code packed byte}) */
 	byte PACKED_INDEXED1 =
-		8;
+		10;
 	
 	/** The number of pixel formats. */
 	byte NUM_PIXEL_FORMATS =
-		9;
+		11;
 }
