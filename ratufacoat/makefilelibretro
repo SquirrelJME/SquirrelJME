@@ -470,6 +470,7 @@ else ifeq ($(platform), ps2)
 	CFLAGS += -Wall -DPS2 -DNO_UNALIGNED_ACCESS -DABGR1555 -DRENDER_GSKIT_PS2 -fsingle-precision-constant
 	CFLAGS += -I$(PS2SDK)/ee/include -I$(PS2SDK)/common/include  -I$(PS2DEV)/gsKit/include
 	STATIC_LINKING = 1
+	STATIC_LINKING_LINK = 1
 
 # Windows
 else
