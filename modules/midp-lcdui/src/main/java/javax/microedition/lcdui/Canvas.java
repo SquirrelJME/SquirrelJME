@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
@@ -783,13 +784,20 @@ public abstract class Canvas
 	}
 	
 	/**
-	 * Paints and forwards Graphics.
-	 * 
-	 * @param __gfx Graphics to draw.
-	 * @param __sw Surface width.
-	 * @param __sh Surface height.
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	boolean __isPainted()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/09/21
 	 */
+	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh)
 	{
 		// Draw background?
@@ -828,6 +836,52 @@ public abstract class Canvas
 					Display.class.notifyAll();
 				}
 			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
+		int __intProp, int __old, int __new)
+	{
+		UIBackend instance = UIBackendFactory.getInstance();
+		
+		// Only act on the canvas item
+		if (!instance.equals(__item, this._uiCanvas))
+			return false;
+		
+		// Depends on the property
+		switch (__intProp)
+		{
+				// Shown state changed?
+			case UIWidgetProperty.INT_IS_SHOWN:
+				if (__new == 0)
+					this.hideNotify();
+				else
+					this.showNotify();
+				return true;
+			
+				// New width?
+			case UIWidgetProperty.INT_WIDTH:
+				this.sizeChanged(__new, this.getHeight());
+				return true;
+				
+				// Height changed?
+			case UIWidgetProperty.INT_HEIGHT:
+				this.sizeChanged(this.getWidth(), __new);
+				return true;
+				
+				// Both changed?
+			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
+				this.sizeChanged(__old, __new);
+				return true;
+			
+				// Un-Handled
+			default:
+				return false;
 		}
 	}
 }

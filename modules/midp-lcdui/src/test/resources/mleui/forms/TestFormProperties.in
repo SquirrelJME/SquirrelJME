@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
-secondary-total: int:7
+secondary-total: int:9
 secondary-neg--fails: true
 secondary-null--fails: true
 secondary-pos--fails: true
@@ -11,3 +11,5 @@ secondary-positive--width: true
 secondary-positive--height: true
 secondary-has--x: true
 secondary-has--y: true
+secondary-has--shown: true
+secondary-no--wah: true

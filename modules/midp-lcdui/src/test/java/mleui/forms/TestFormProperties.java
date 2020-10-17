@@ -148,6 +148,14 @@ public class TestFormProperties
 				this.secondary("has-y", !noEitherGet);
 				break;
 			
+			case UIWidgetProperty.INT_IS_SHOWN:
+				this.secondary("has-shown", !noEitherGet);
+				break;
+			
+			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
+				this.secondary("no-wah", noEitherGet);
+				return; 
+			
 			default:
 				throw new FailingExecution("Missing " + __property);
 		}

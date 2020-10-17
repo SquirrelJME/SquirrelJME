@@ -46,7 +46,15 @@ public interface UIWidgetProperty
 	byte INT_Y_POSITION =
 		6;
 	
+	/** Is this shown? */
+	byte INT_IS_SHOWN =
+		7;
+	
+	/** Width and height in old+new. */
+	byte INT_WIDTH_AND_HEIGHT =
+		8;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		7;
+		9;
 }

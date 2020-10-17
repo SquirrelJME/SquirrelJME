@@ -9,9 +9,13 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JComponent;
 
 /**
@@ -45,6 +49,20 @@ public abstract class SwingItem
 	public abstract void deletePost();
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	public final UIFormCallback callback()
+	{
+		SwingForm form = this._form;
+		if (form == null)
+			return null;
+		
+		return form.callback();
+	}
+	
+	/**
 	 * Deletes the given item.
 	 * 
 	 * @throws MLECallError If it could not deleted.
@@ -67,6 +85,26 @@ public abstract class SwingItem
 			// Call post deletion handler for cleanup
 			this.deletePost();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	public UIFormBracket form()
+	{
+		return this._form;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	public UIItemBracket item()
+	{
+		return this;
 	}
 	
 	/**

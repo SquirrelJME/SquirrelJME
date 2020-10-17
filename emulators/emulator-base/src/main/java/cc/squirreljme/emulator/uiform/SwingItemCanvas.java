@@ -37,7 +37,10 @@ public class SwingItemCanvas
 	 */
 	public SwingItemCanvas()
 	{
-		this.panel = new __PaintingPanel__(this);
+		__PaintingPanel__ panel = new __PaintingPanel__(this);
+		this.panel = panel;
+		
+		panel.addComponentListener(new HandleComponentEvents(this));
 	}
 	
 	/**

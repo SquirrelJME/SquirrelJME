@@ -35,7 +35,7 @@ import javax.microedition.midlet.MIDlet;
  * @since 2016/10/08
  */
 public abstract class Displayable
-	implements DisplayWidget
+	extends __CommonWidget__
 {
 	/** The native form instance. */
 	final UIFormBracket _uiForm;

@@ -9,7 +9,10 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
@@ -21,6 +24,30 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 public interface SwingWidget
 	extends UIWidgetBracket
 {
+	/**
+	 * Returns the widget's callback
+	 * 
+	 * @return The callback for this widget.
+	 * @since 2020/10/17
+	 */
+	UIFormCallback callback();
+	
+	/**
+	 * Returns the form that owns this.
+	 * 
+	 * @return The form that owns this.
+	 * @since 2020/10/17
+	 */
+	UIFormBracket form();
+	
+	/**
+	 * Returns the item, if this is one.
+	 * 
+	 * @return The item.
+	 * @since 2020/10/17
+	 */
+	UIItemBracket item();
+	
 	/**
 	 * Sets the given property.
 	 * 

@@ -10,8 +10,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public abstract class CustomItem
@@ -44,6 +48,9 @@ public abstract class CustomItem
 	protected static final int TRAVERSE_VERTICAL =
 		2;
 	
+	/** The native display instance. */
+	final UIItemBracket _uiCanvas;
+	
 	/** Is the rendering transparent or opaque? */
 	boolean _transparent;
 	
@@ -52,6 +59,12 @@ public abstract class CustomItem
 	
 	/** The default key listener implementation. */
 	private KeyListener _defaultKeyListener;
+	
+	/** The last width. */
+	private int _lastWidth;
+	
+	/** The last height. */
+	private int _lastHeight;
 	
 	protected CustomItem(String __a)
 	{
@@ -226,15 +239,16 @@ public abstract class CustomItem
 	}
 	
 	/**
-	 * Paints and forwards Graphics.
-	 * 
-	 * @param __gfx Graphics to draw.
-	 * @param __sw Surface width.
-	 * @param __sh Surface height.
+	 * {@inheritDoc}
 	 * @since 2020/09/21
 	 */
+	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh)
 	{
+		// Store the last dimensions
+		this._lastHeight = __sw;
+		this._lastHeight = __sh;
+		
 		// Draw background?
 		if (!this._transparent)
 		{
@@ -265,6 +279,61 @@ public abstract class CustomItem
 				(rv = new __CustomItemDefaultKeyListener__(this));
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
+		int __intProp, int __old, int __new)
+	{
+		UIBackend instance = UIBackendFactory.getInstance();
+		
+		// Only act on the canvas item
+		if (!instance.equals(__item, this._uiCanvas))
+			return false;
+		
+		// Depends on the property
+		switch (__intProp)
+		{
+				// Shown state changed?
+			case UIWidgetProperty.INT_IS_SHOWN:
+				if (__new == 0)
+					this.hideNotify();
+				else
+					this.showNotify();
+				return true;
+			
+				// New size?
+			case UIWidgetProperty.INT_WIDTH:
+			case UIWidgetProperty.INT_HEIGHT:
+			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
+				if (__intProp == UIWidgetProperty.INT_WIDTH_AND_HEIGHT)
+				{
+					this._lastHeight = __old;
+					this._lastHeight = __new;
+				}
+				else if (__intProp == UIWidgetProperty.INT_WIDTH)
+				{
+					__old = __new;
+					this._lastWidth = __old;
+					__new = this._lastHeight;
+				}
+				else
+				{
+					__old = this._lastWidth;
+					this._lastHeight = __new;
+				}
+			
+				this.sizeChanged(__old, __new);
+				return true;
+			
+				// Un-Handled
+			default:
+				return false;
+		}
 	}
 }
 

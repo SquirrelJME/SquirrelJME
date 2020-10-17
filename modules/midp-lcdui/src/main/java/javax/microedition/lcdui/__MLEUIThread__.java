@@ -164,33 +164,39 @@ final class __MLEUIThread__
 			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
 		*/
 		
-		// Since painting is a heavy operation, only allow single paints to
-		// happen at a time. This should generally never be called
-		// concurrently ever.
-		synchronized (this)
+		DisplayWidget widget = StaticDisplayState.locate(__form);
+		if (widget instanceof __CommonWidget__)
 		{
-			if (this._inPaint)
+			// Ignore widgets which do not want the paint event
+			__CommonWidget__ common = (__CommonWidget__)widget;
+			if (!common.__isPainted())
 				return;
-			this._inPaint = true;
-		}
-		
-		// Perform the painting, always clear the flag out
-		try
-		{
-			// Try to use hardware accelerated graphics where possible
-			Graphics gfx = PencilGraphics.hardwareGraphics(__pf,
-				__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
-			
-			// Forward to one of the items that draws
-			DisplayWidget widget = StaticDisplayState.locate(__item);
-			if (widget instanceof Canvas)
-				((Canvas)widget).__paint(gfx, __sw, __sh);
-			else if (widget instanceof CustomItem)
-				((CustomItem)widget).__paint(gfx, __sw, __sh);
-		}
-		finally
-		{
-			this._inPaint = false;
+				
+			// Since painting is a heavy operation, only allow single paints to
+			// happen at a time. This should generally never be called
+			// concurrently ever.
+			synchronized (this)
+			{
+				if (this._inPaint)
+					return;
+				this._inPaint = true;
+			}
+				
+			// The paint flag always needs to be cleared when finished
+			try
+			{
+				// Try to use hardware accelerated graphics where possible
+				Graphics gfx = PencilGraphics.hardwareGraphics(__pf,
+					__bw, __bh, __buf, __offset, __pal, __sx, __sy,
+					__sw, __sh);
+				
+				// Forward the paint call
+				common.__paint(gfx, __sw, __sh);
+			}
+			finally
+			{
+				this._inPaint = false;
+			}
 		}
 	}
 	
@@ -206,6 +212,12 @@ final class __MLEUIThread__
 		/*Debugging.debugNote("propertyChange(%08x, %08x, %d, %d, %d)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
 			__intProp, __old, __new);*/
+			
+		// Forward to handler
+		DisplayWidget widget = StaticDisplayState.locate(__form);
+		if (widget instanceof __CommonWidget__)
+			((__CommonWidget__)widget).__propertyChange(__form, __item,
+				__intProp, __old, __new);
 	}
 	
 	/**
@@ -220,6 +232,12 @@ final class __MLEUIThread__
 		/*Debugging.debugNote("propertyChange(%08x, %08x, %d, %s, %s)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
 			__strProp, __old, __new);*/
+		
+		// Forward to handler
+		DisplayWidget widget = StaticDisplayState.locate(__form);
+		if (widget instanceof __CommonWidget__)
+			((__CommonWidget__)widget).__propertyChange(__form, __item,
+				__strProp, __old, __new);
 	}
 	
 	/**

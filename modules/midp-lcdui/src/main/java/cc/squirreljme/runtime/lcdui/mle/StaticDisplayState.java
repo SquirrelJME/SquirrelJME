@@ -153,8 +153,7 @@ public final class StaticDisplayState
 	 * Locates the widget for the given native.
 	 * 
 	 * @param __native The native to locate.
-	 * @return The widget for the given native.
-	 * @throws NoSuchElementException If none were found.
+	 * @return The widget for the given native or {@code null} if not found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/20
 	 */
@@ -182,7 +181,7 @@ public final class StaticDisplayState
 		
 		// {@squirreljme.error EB3e No widget exists for the given
 		// native.}
-		throw new NoSuchElementException("EB3e");
+		return null;
 	}
 	
 	/**

@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
@@ -122,11 +123,10 @@ public final class SwingForm
 	}
 	
 	/**
-	 * Returns the form's callback
-	 * 
-	 * @return The callback for this form.
+	 * {@inheritDoc}
 	 * @since 2020/09/13
 	 */
+	@Override
 	public UIFormCallback callback()
 	{
 		synchronized (this)
@@ -149,6 +149,26 @@ public final class SwingForm
 			if (this._display != null)
 				this._display.show(null);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	public UIFormBracket form()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	public UIItemBracket item()
+	{
+		return null;
 	}
 	
 	/**
@@ -471,6 +491,9 @@ public final class SwingForm
 			
 			case UIWidgetProperty.INT_HEIGHT:
 				return this.formPanel.getHeight();
+			
+			case UIWidgetProperty.INT_IS_SHOWN:
+				return (this.formPanel.isVisible() ? 1 : 0);
 			
 			default:
 				throw new MLECallError("Unknown property: " + __intProp);
