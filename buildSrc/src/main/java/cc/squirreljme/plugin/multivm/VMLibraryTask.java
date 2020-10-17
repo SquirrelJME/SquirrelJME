@@ -24,6 +24,7 @@ import org.gradle.jvm.tasks.Jar;
  */
 public class VMLibraryTask
 	extends DefaultTask
+	implements VMExecutableTask
 {
 	/** The source set used. */
 	public final String sourceSet;
@@ -83,5 +84,15 @@ public class VMLibraryTask
 			this.getProject(), this.vmType, this.sourceSet).get()
 			.resolve(this.vmType.outputLibraryName(this.getProject(),
 			this.sourceSet)));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	public String getSourceSet()
+	{
+		return this.sourceSet;
 	}
 }

@@ -1,0 +1,117 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.plugin.multivm;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import org.gradle.api.Action;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.process.ExecResult;
+
+/**
+ * This is the action for running the full entire suite in the emulator.
+ *
+ * @since 2020/10/17
+ */
+public class VMFullSuiteTaskAction
+	implements Action<Task>
+{
+	/** The additional libraries to load. */
+	public static final String LIBRARIES_PROPERTY =
+		"full.libraries";
+	
+	/** The virtual machine creating for. */
+	protected final VMSpecifier vmType;
+	
+	/**
+	 * Initializes the task.
+	 * 
+	 * @param __vmType The VM to make a ROM for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/17
+	 */
+	public VMFullSuiteTaskAction(VMSpecifier __vmType)
+		throws NullPointerException
+	{
+		if (__vmType == null)
+			throw new NullPointerException("NARG");
+		
+		this.vmType = __vmType;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	public void execute(Task __task)
+	{
+		Project root = __task.getProject().getRootProject();
+		
+		// We need all of the libraries to load and to be available
+		Collection<Path> libPath = new LinkedHashSet<>();
+		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
+		{
+			System.err.printf("Task: %s %s%n", dep, dep.getClass());
+			
+			// Load executable library tasks from our own VM
+			if (dep instanceof VMExecutableTask)
+				for (File file : dep.getOutputs().getFiles())
+					libPath.add(file.toPath());
+		}
+		
+		// Additional items onto the library set?
+		String exLib = System.getProperty(
+			VMFullSuiteTaskAction.LIBRARIES_PROPERTY);
+		if (exLib != null)
+			libPath.addAll(Arrays.asList(VMHelpers.classpathDecode(exLib)));
+		
+		// Determine the initial classpath of the launcher, which is always
+		// ran first
+		Collection<Path> classPath = new LinkedHashSet<>();
+		classPath.addAll(Arrays
+			.asList(VMHelpers.runClassPath((VMExecutableTask)root.project(
+				":modules:launcher").getTasks().getByName(TaskInitialization
+					.task("lib", SourceSet.MAIN_SOURCE_SET_NAME,
+					 this.vmType)),
+				SourceSet.MAIN_SOURCE_SET_NAME, this.vmType)));
+		
+		// Debug these, just to ensure they work
+		__task.getLogger().debug("LibPath: {}", libPath);
+		__task.getLogger().debug("Classpath: {}", classPath);
+		
+		// Run the virtual machine with everything
+		ExecResult exitResult = __task.getProject().javaexec(__spec ->
+			{
+				// Use filled JVM arguments
+				this.vmType.spawnJvmArguments(__task, __spec,
+					"javax.microedition.midlet.__MainHandler__",
+					new LinkedHashMap<String, String>(),
+					libPath.<Path>toArray(new Path[libPath.size()]),
+					classPath.<Path>toArray(new Path[classPath.size()]),
+					"cc.squirreljme.runtime.launcher.ui.MidletMain");
+				
+				// Use these streams directly
+				__spec.setStandardOutput(System.out);
+				__spec.setErrorOutput(System.err);
+			});
+		
+		// Did the task fail?
+		int exitValue = exitResult.getExitValue();
+		if (exitValue != 0)
+			throw new RuntimeException("Task exited with: " + exitValue);
+	}
+}

@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -59,12 +60,20 @@ public enum VMType
 		@Override
 		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
-			Path[] __classPath, String... __args)
+			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			if (__task == null || __execSpec == null || __mainClass == null ||
 				__sysProps == null || __classPath == null || __args == null)
 				throw new NullPointerException("NARG");
+				
+			// Add our selection of libraries into the hosted environment so in
+			// the event the active libraries are needed, they are available.
+			Map<String, String> sysProps = new LinkedHashMap<>(__sysProps);
+			sysProps.put("squirreljme.hosted.libraries",
+				VMHelpers.classpathAsString(__libPath));
+			sysProps.put("squirreljme.hosted.classpath",
+				VMHelpers.classpathAsString(__classPath));
 			
 			// Start with the base emulator class path
 			List<Object> classPath = new ArrayList<>();
@@ -94,7 +103,7 @@ public enum VMType
 			__execSpec.setArgs(Arrays.asList(__args));
 			
 			// Any desired system properties
-			__execSpec.systemProperties(__sysProps);
+			__execSpec.systemProperties(sysProps);
 		}
 	},
 	
@@ -124,13 +133,13 @@ public enum VMType
 		@Override
 		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
-			Path[] __classPath, String... __args)
+			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
 			this.spawnVmViaFactory(__task, __execSpec, __mainClass,
-				__sysProps, __classPath, __args);
+				__sysProps, __libPath, __classPath, __args);
 		}
 	},
 	
@@ -160,13 +169,13 @@ public enum VMType
 		@Override
 		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
-			Path[] __classPath, String... __args)
+			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
 			this.spawnVmViaFactory(__task, __execSpec, __mainClass,
-				__sysProps, __classPath, __args);
+				__sysProps, __libPath, __classPath, __args);
 		}
 	},
 	
@@ -230,18 +239,20 @@ public enum VMType
 	 * @param __execSpec The execution specification.
 	 * @param __mainClass The main class to execute.
 	 * @param __sysProps The system properties to define.
+	 * @param __libPath The library path to use.
 	 * @param __classPath The class path of the execution target.
 	 * @param __args Arguments to the started program.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
 	public void spawnVmViaFactory(Task __task, JavaExecSpec __execSpec,
-		String __mainClass, Map<String, String> __sysProps, Path[] __classPath,
-		String[] __args)
+		String __mainClass, Map<String, String> __sysProps, Path[] __libPath,
+		Path[] __classPath, String[] __args)
 		throws NullPointerException
 	{
 		if (__task == null || __execSpec == null || __mainClass == null ||
-			__sysProps == null || __classPath == null || __args == null)
+			__sysProps == null || __libPath == null || __classPath == null ||
+			__args == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine the class-path for the emulator
@@ -263,6 +274,9 @@ public enum VMType
 		
 		// Add emulator to launch
 		vmArgs.add("-Xemulator:" + this.vmName(VMNameFormat.LOWERCASE));
+		
+		// Add library paths, suites that are available for consumption
+		vmArgs.add("-Xlibraries:" + VMHelpers.classpathAsString(__libPath));
 		
 		// Determine where profiler snapshots are to go, try to use the
 		// profiler directory for that
@@ -294,12 +308,16 @@ public enum VMType
 		// Any arguments to the target run
 		vmArgs.addAll(Arrays.asList(__args));
 		
+		// Classpath used for execution
+		Path[] classPath = vmClassPath.<Path>toArray(
+			new Path[vmClassPath.size()]);
+		
 		// Launching is effectively the same as the hosted run but with the
 		// VM here instead. System properties are passed through so that the
 		// holding VM and the sub-VM share the same properties.
 		VMType.HOSTED.spawnJvmArguments(__task, __execSpec,
 			"cc.squirreljme.emulator.vm.VMFactory", __sysProps,
-			vmClassPath.<Path>toArray(new Path[vmClassPath.size()]),
+			__libPath, classPath,
 			vmArgs.<String>toArray(new String[vmArgs.size()]));
 	}
 	

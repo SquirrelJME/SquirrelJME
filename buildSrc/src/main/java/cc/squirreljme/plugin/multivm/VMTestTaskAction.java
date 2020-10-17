@@ -12,7 +12,6 @@ package cc.squirreljme.plugin.multivm;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -138,10 +137,11 @@ public class VMTestTaskAction
 		{
 			// Determine the arguments that are used to spawn the JVM
 			JavaExecSpec execSpec = specFactory.get();
+			Path[] classPath = VMHelpers.runClassPath(
+				(VMExecutableTask)__task, sourceSet, vmType);
 			vmType.spawnJvmArguments(__task, execSpec,
-				VMHelpers.SINGLE_TEST_RUNNER, sysProps,
-				VMHelpers.runClassPath((VMExecutableTask)__task,
-					sourceSet, vmType), testName);
+				VMHelpers.SINGLE_TEST_RUNNER, sysProps, classPath, classPath,
+				testName);
 			
 			// Where will the results be read from?
 			Path xmlResult = resultDir.resolve(

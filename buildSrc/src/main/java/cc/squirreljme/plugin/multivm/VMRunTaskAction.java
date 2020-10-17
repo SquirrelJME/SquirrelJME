@@ -97,7 +97,8 @@ public class VMRunTaskAction
 			{
 				// Use filled JVM arguments
 				vmType.spawnJvmArguments(__task, __spec, mainClass,
-					Collections.<String, String>emptyMap(), classPath,
+					Collections.<String, String>emptyMap(),
+					classPath, classPath,
 					args.<String>toArray(new String[args.size()]));
 				
 				// Use these streams directly

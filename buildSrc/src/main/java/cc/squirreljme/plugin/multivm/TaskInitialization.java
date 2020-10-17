@@ -133,6 +133,47 @@ public final class TaskInitialization
 	}
 	
 	/**
+	 * Initializes the full-suite run which selects every API and library
+	 * module available, along with allowing an external 3rd library classpath
+	 * launching.
+	 * 
+	 * @param __project The root project.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/17
+	 */
+	public static void initializeFullSuiteTask(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		for (VMType vmType : VMType.values())
+			TaskInitialization.initializeFullSuiteTask(__project, vmType);
+	}
+	
+	/**
+	 * Initializes the full-suite run which selects every API and library
+	 * module available, along with allowing an external 3rd library classpath
+	 * launching.
+	 * 
+	 * @param __project The root project.
+	 * @param __vmType The virtual machine type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/17
+	 */
+	private static void initializeFullSuiteTask(Project __project,
+		VMType __vmType)
+		throws NullPointerException
+	{
+		if (__project == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		__project.getTasks().create(
+			TaskInitialization.task("full", "", __vmType),
+			VMFullSuite.class, __vmType);
+	}
+	
+	/**
 	 * Initializes ROM tasks for the given base project.
 	 * 
 	 * @param __project The root project.
@@ -198,7 +239,7 @@ public final class TaskInitialization
 		// it becomes implied. Additionally if the name and the source set
 		// are the same, reduce the confusion so there is no "testTestHosted".
 		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME) ||
-			__sourceSet.equals(__name))
+			__sourceSet.equals(__name) || __sourceSet.isEmpty())
 			return __name + __vmType.vmName(VMNameFormat.PROPER_NOUN);
 		
 		// Otherwise include it

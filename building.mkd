@@ -215,3 +215,21 @@ all the testing libraries and are generally used to ensure things are working:
  * _SummerCoat_
    * `romSummerCoat`
    * `romTestSummerCoat`
+
+# Full Suite Virtual Machines
+
+There is a task which initializes a full suite of SquirrelJME, including
+every module. This can be used to run a specific program within SquirrelJME's
+environment through Gradle.
+
+ * `fullHosted` -- Hosted Environment.
+ * `fullSpringCoat` -- SpringCoat.
+ * `fullSummerCoat` -- SummerCoat.
+
+There are system properties that are available and can be used to modify
+the behavior:
+
+ * `full.libraries=path...` -- Additional libraries to place onto the
+   suite path.
+   * Same format as the `-classpath` argument. On Windows this will use `;`
+     as separators, while other systems will use `:`.

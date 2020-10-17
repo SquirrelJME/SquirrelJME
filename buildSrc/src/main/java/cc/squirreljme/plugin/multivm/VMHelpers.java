@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.regex.Pattern;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -247,6 +249,27 @@ public final class VMHelpers
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * Decodes the classpath string.
+	 * 
+	 * @param __string The string to decode.
+	 * @return The decoded path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/17
+	 */
+	public static Path[] classpathDecode(String __string)
+		throws NullPointerException
+	{
+		if (__string == null)
+			throw new NullPointerException("NARG");
+		
+		Collection<Path> result = new LinkedList<>();
+		for (String split : __string.split(Pattern.quote(File.pathSeparator)))
+			result.add(Paths.get(split));
+		
+		return result.<Path>toArray(new Path[result.size()]);
 	}
 	
 	/**
