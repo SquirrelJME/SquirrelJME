@@ -12,7 +12,6 @@ package cc.squirreljme.emulator.uiform;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Injector into Swing's code execution.
@@ -30,7 +29,9 @@ public class SwingInjector
 	public void eventKey(UIFormBracket __form, UIItemBracket __item,
 		int __event, int __keyCode, int __modifiers)
 	{
-		throw Debugging.todo();
+		UIFormCallback callback = ((SwingForm)__form).callback();
+		if (callback != null)
+			callback.eventKey(__form, __item, __event, __keyCode, __modifiers);
 	}
 	
 	/**
@@ -41,7 +42,10 @@ public class SwingInjector
 	public void eventMouse(UIFormBracket __form, UIItemBracket __item,
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
-		throw Debugging.todo();
+		UIFormCallback callback = ((SwingForm)__form).callback();
+		if (callback != null)
+			callback.eventMouse(__form, __item, __event, __button, __x, __y,
+				__modifiers);
 	}
 	
 	/**
@@ -51,7 +55,9 @@ public class SwingInjector
 	@Override
 	public void exitRequest(UIFormBracket __form)
 	{
-		throw Debugging.todo();
+		UIFormCallback callback = ((SwingForm)__form).callback();
+		if (callback != null)
+			callback.exitRequest(__form);
 	}
 	
 	/**
@@ -63,7 +69,10 @@ public class SwingInjector
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh)
 	{
-		throw Debugging.todo();
+		UIFormCallback callback = ((SwingForm)__form).callback();
+		if (callback != null)
+			callback.paint(__form, __item, __pf, __bw, __bh, __buf, __offset,
+				__pal, __sx, __sy, __sw, __sh);
 	}
 	
 	/**
@@ -74,7 +83,9 @@ public class SwingInjector
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __old, int __new)
 	{
-		throw Debugging.todo();
+		UIFormCallback callback = ((SwingForm)__form).callback();
+		if (callback != null)
+			callback.propertyChange(__form, __item, __intProp, __old, __new);
 	}
 	
 	/**
@@ -85,6 +96,8 @@ public class SwingInjector
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __strProp, String __old, String __new)
 	{
-		throw Debugging.todo();
+		UIFormCallback callback = ((SwingForm)__form).callback();
+		if (callback != null)
+			callback.propertyChange(__form, __item, __strProp, __old, __new);
 	}
 }
