@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
@@ -47,9 +48,9 @@ final class __MLEUIThread__
 		int __event, int __keyCode, int __modifiers)
 	{
 		// Debug
-		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
+		Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
-			__event, __keyCode, __modifiers);*/
+			__event, __keyCode, __modifiers);
 		
 		DisplayWidget widget = StaticDisplayState.locate(__item);
 		
@@ -59,8 +60,12 @@ final class __MLEUIThread__
 			((__CommandWidget__)widget).__activate();
 		
 		// Displayables which have standard key access
-		else if ((widget instanceof Canvas) || (widget instanceof CustomItem))
-			throw Debugging.todo();
+		else if (widget instanceof Canvas)
+			this.__eventKey((Canvas)widget, null,
+				__event, __keyCode, __modifiers);
+		else if (widget instanceof CustomItem)
+			this.__eventKey(null, (CustomItem)widget,
+				__event, __keyCode, __modifiers);
 	}
 	
 	/**
@@ -250,5 +255,63 @@ final class __MLEUIThread__
 		
 		// Destroy everything possible
 		StaticDisplayState.destroy();
+	}
+	
+	/**
+	 * Performs the actual handling of key events with the common canvas and
+	 * custom items.
+	 * 
+	 * @param __canvas The Canvas used
+	 * @param __cItem The custom item.
+	 * @param __event The {@link UIKeyEventType}.
+	 * @param __keyCode The key code, may be a character or special key.
+	 * @param __modifiers The modifiers for the key.
+	 * @throws IllegalArgumentException If both arguments are null or not
+	 * null.
+	 * @since 2020/10/16
+	 */
+	private void __eventKey(Canvas __canvas, CustomItem __cItem, int __event,
+		int __keyCode, int __modifiers)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if ((__canvas == null) == (__cItem == null))
+			throw new IllegalArgumentException("NARG");
+		
+		// Potential key listener that is shared between both
+		KeyListener defaultKL, customKL;
+		if (__canvas != null)
+		{
+			defaultKL = __canvas.__defaultKeyListener();
+			customKL = __canvas._keyListener;
+		}
+		
+		// Otherwise custom items are used
+		else
+		{
+			defaultKL = __cItem.__defaultKeyListener();
+			customKL = __cItem._keyListener;
+		}
+		
+		// Forward the event accordingly
+		switch (__event)
+		{
+			case UIKeyEventType.KEY_PRESSED:
+				defaultKL.keyPressed(__keyCode, __modifiers);
+				if (customKL != null)
+					customKL.keyPressed(__keyCode, __modifiers);
+				break;
+			
+			case UIKeyEventType.KEY_RELEASE:
+				defaultKL.keyReleased(__keyCode, __modifiers);
+				if (customKL != null)
+					customKL.keyReleased(__keyCode, __modifiers);
+				break;
+			
+			case UIKeyEventType.KEY_REPEATED:
+				defaultKL.keyRepeated(__keyCode, __modifiers);
+				if (customKL != null)
+					customKL.keyRepeated(__keyCode, __modifiers);
+				break;
+		}
 	}
 }

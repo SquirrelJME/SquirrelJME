@@ -197,7 +197,7 @@ public abstract class Canvas
 	final UIItemBracket _uiCanvas;
 	
 	/** The key listener to use. */
-	private KeyListener _keylistener;
+	KeyListener _keyListener;
 	
 	/** Is the rendering transparent or opaque? */
 	boolean _transparent;
@@ -207,6 +207,9 @@ public abstract class Canvas
 	
 	/** The number of pending paints. */
 	volatile int _pendingPaints;
+	
+	/** The default key listener implementation. */
+	private KeyListener _defaultKeyListener;
 	
 	/** The actions which are required. */
 	private int _requiredActions;
@@ -695,7 +698,7 @@ public abstract class Canvas
 	 */
 	public void setKeyListener(KeyListener __kl)
 	{
-		this._keylistener = __kl;
+		this._keyListener = __kl;
 	}
 	
 	/**
@@ -761,6 +764,22 @@ public abstract class Canvas
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
+	}
+	
+	/**
+	 * Returns the default key listener implementation for this class.
+	 * 
+	 * @return The default key listener.
+	 * @since 2020/10/16
+	 */
+	final KeyListener __defaultKeyListener()
+	{
+		KeyListener rv = this._defaultKeyListener;
+		if (rv == null)
+			this._defaultKeyListener =
+				(rv = new __CanvasDefaultKeyListener__(this));
+		
+		return rv;
 	}
 	
 	/**

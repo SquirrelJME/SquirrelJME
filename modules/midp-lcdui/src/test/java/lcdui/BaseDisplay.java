@@ -12,7 +12,6 @@ package lcdui;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
 import javax.microedition.lcdui.Display;
 import net.multiphasicapps.tac.TestRunnable;
 import net.multiphasicapps.tac.UntestableException;

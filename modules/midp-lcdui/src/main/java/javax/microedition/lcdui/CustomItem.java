@@ -12,7 +12,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public abstract class CustomItem
@@ -47,6 +46,12 @@ public abstract class CustomItem
 	
 	/** Is the rendering transparent or opaque? */
 	boolean _transparent;
+	
+	/** The listener to use for key events. */
+	KeyListener _keyListener;
+	
+	/** The default key listener implementation. */
+	private KeyListener _defaultKeyListener;
 	
 	protected CustomItem(String __a)
 	{
@@ -162,9 +167,18 @@ public abstract class CustomItem
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the key listener which is used to handle key events.
+	 *
+	 * If this is set then {@link #keyPressed(int)}, {@link #keyReleased(int)},
+	 * and {@link #keyRepeated} will still be called.
+	 *
+	 * @param __kl The key listener to use, {@code null} clears it.
+	 * @since 2020/10/16
+	 */
 	public void setKeyListener(KeyListener __kl)
 	{
-		throw new todo.TODO();
+		this._keyListener = __kl;
 	}
 	
 	/**
@@ -235,6 +249,22 @@ public abstract class CustomItem
 		
 		// Forward draw
 		this.paint(__gfx, __sw, __sh);
+	}
+	
+	/**
+	 * Returns the default key listener implementation for this class.
+	 * 
+	 * @return The default key listener.
+	 * @since 2020/10/16
+	 */
+	final KeyListener __defaultKeyListener()
+	{
+		KeyListener rv = this._defaultKeyListener;
+		if (rv == null)
+			this._defaultKeyListener =
+				(rv = new __CustomItemDefaultKeyListener__(this));
+		
+		return rv;
 	}
 }
 
