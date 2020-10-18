@@ -24,7 +24,7 @@ import java.util.Random;
  * @since 2020/07/19
  */
 public class TestItemRemoveShift
-	extends __BaseFormTest__
+	extends BaseUIFormTest
 {
 	/**
 	 * {@inheritDoc}

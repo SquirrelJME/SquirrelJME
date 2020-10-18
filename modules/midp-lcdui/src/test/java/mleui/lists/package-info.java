@@ -7,28 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package mleui.forms;
-
-import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-
 /**
- * Tests that showing a blank form works properly.
+ * Tests for the MLE UI lists.
  *
- * @since 2020/07/01
+ * @since 2020/10/18
  */
-public class TestShowBlankDisplay
-	extends BaseUIFormTest
-{
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/01
-	 */
-	@Override
-	protected void test(UIBackend __backend, UIDisplayBracket __display,
-		UIFormBracket __form)
-	{
-		// Does nothing because the form test shows this automatically
-	}
-}
+
+package mleui.lists;

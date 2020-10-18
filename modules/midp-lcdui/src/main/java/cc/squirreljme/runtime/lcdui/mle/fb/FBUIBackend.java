@@ -293,7 +293,7 @@ public class FBUIBackend
 	 */
 	@Override
 	public void widgetProperty(UIWidgetBracket __item, int __intProp,
-		int __newValue)
+		int __sub, int __newValue)
 	{
 		throw Debugging.todo();
 	}
@@ -304,7 +304,7 @@ public class FBUIBackend
 	 */
 	@Override
 	public void widgetProperty(UIWidgetBracket __item, int __strProp,
-		String __newValue)
+		int __sub, String __newValue)
 	{
 		throw Debugging.todo();
 	}
@@ -314,7 +314,8 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp)
+	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp,
+		int __sub)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -325,7 +326,8 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp)
+	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp,
+		int __sub)
 		throws MLECallError
 	{
 		throw Debugging.todo();

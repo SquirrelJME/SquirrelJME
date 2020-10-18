@@ -18,7 +18,6 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -91,7 +90,7 @@ public abstract class Displayable
 		// Setup the title item
 		UIItemBracket uiTitle = instance.itemNew(UIItemType.LABEL);
 		instance.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
-		instance.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
+		instance.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL, 0,
 			title);
 		
 		// Store for future adjustments
@@ -411,7 +410,7 @@ public abstract class Displayable
 		// We can always set the title for the widget as the form should be
 		// allocated
 		UIBackendFactory.getInstance().widgetProperty(this._uiTitle,
-			UIWidgetProperty.STRING_LABEL, __t);
+			UIWidgetProperty.STRING_LABEL, 0, __t);
 	}
 	
 	/**
@@ -737,7 +736,7 @@ public abstract class Displayable
 		// Get current form size
 		return UIBackendFactory.getInstance().widgetPropertyInt(
 			(__alt != null ? __alt : __d._uiForm),
-			UIWidgetProperty.INT_HEIGHT);
+			UIWidgetProperty.INT_HEIGHT, 0);
 	}
 	
 	/**
@@ -762,7 +761,7 @@ public abstract class Displayable
 		// Get current form size
 		return UIBackendFactory.getInstance().widgetPropertyInt(
 			(__alt != null ? __alt : __d._uiForm),
-			UIWidgetProperty.INT_WIDTH);
+			UIWidgetProperty.INT_WIDTH, 0);
 	}
 }
 

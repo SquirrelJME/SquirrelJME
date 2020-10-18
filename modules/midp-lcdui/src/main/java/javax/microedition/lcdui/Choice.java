@@ -10,7 +10,6 @@
 
 package javax.microedition.lcdui;
 
-
 public interface Choice
 {
 	int EXCLUSIVE =
@@ -34,7 +33,17 @@ public interface Choice
 	int TEXT_WRAP_ON =
 		1;
 	
-	int append(String __a, Image __b);
+	/**
+	 * Appends the specified item to the list.
+	 * 
+	 * @param __label The label of item. 
+	 * @param __icon The icon of the item.
+	 * @return the index of the newly added item.
+	 * @throws NullPointerException If no {@code __label} was set.
+	 * @since 2020/10/18
+	 */
+	int append(String __label, Image __icon)
+		throws NullPointerException;
 	
 	void delete(int __a);
 	

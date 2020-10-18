@@ -7,44 +7,70 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package mleui.forms;
+package mleui.lists;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import mleui.forms.BaseUIFormTest;
 
 /**
- * Checks that deleting visible items fails.
+ * This is the base class for any tests on lists.
  *
- * @since 2020/07/19
+ * @since 2020/10/18
  */
-public class TestDeleteVisibleItem
+public abstract class BaseList
 	extends BaseUIFormTest
 {
 	/**
+	 * Tests the list.
+	 * 
+	 * @param __backend The backend used.
+	 * @param __display The display used.
+	 * @param __form The form used.
+	 * @param __list The list used.
+	 * @since 2020/10/18
+	 */
+	public abstract void test(UIBackend __backend, UIDisplayBracket __display,
+		UIFormBracket __form, UIItemBracket __list);
+	
+	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/19
+	 * @since 2020/10/18
 	 */
 	@Override
 	protected void test(UIBackend __backend, UIDisplayBracket __display,
 		UIFormBracket __form)
 		throws Throwable
 	{
-		// Create the item and make it visible on the form
-		UIItemBracket item = __backend.itemNew(UIItemType.BUTTON);
-		__backend.formItemPosition(__form, item, 0);
-		
-		// Attempt to delete the item
+		UIItemBracket list = __backend.itemNew(UIItemType.LIST);
 		try
 		{
-			__backend.itemDelete(item);
+			// Add to the form
+			__backend.formItemPosition(__form, list, UIItemPosition.BODY);
+			
+			// Forward to the test
+			this.test(__backend, __display, __form, list);
 		}
-		catch (MLECallError e)
+		
+		// Try deleting the item and freeing it up
+		finally
 		{
-			throw new FormTestException(e);
+			try
+			{
+				__backend.formItemRemove(__form, UIItemPosition.BODY);
+				__backend.itemDelete(list);
+			}
+			
+			// Ignored otherwise
+			catch (MLECallError e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }

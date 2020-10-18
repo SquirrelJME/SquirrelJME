@@ -46,5 +46,25 @@ final class __ChoiceEntry__
 		this._string = __s;
 		this._image = __i;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/18
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		return this == __o;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/18
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return System.identityHashCode(this);
+	}
 }
 

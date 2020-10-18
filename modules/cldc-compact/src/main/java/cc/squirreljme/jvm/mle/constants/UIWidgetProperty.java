@@ -78,7 +78,11 @@ public interface UIWidgetProperty
 	byte STRING_LIST_LABEL =
 		14; 
 	
+	/** The ID for a list entry, to detect changes. */
+	byte STRING_LIST_ID_CODE =
+		15;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		15;
+		16;
 }

@@ -23,7 +23,7 @@ import mleui.FailingExecution;
  * @since 2020/10/11
  */
 public class TestFormProperties
-	extends __BaseFormTest__
+	extends BaseUIFormTest
 {
 	/** Invalid string. */
 	private static final String _INVALID_STRING =
@@ -90,7 +90,7 @@ public class TestFormProperties
 		Integer iVal = null;
 		try
 		{
-			iVal = __backend.widgetPropertyInt(__form, __property);
+			iVal = __backend.widgetPropertyInt(__form, __property, 0);
 		}
 		catch (MLECallError e)
 		{
@@ -101,7 +101,7 @@ public class TestFormProperties
 		String sVal = TestFormProperties._INVALID_STRING;
 		try
 		{
-			sVal = __backend.widgetPropertyStr(__form, __property);
+			sVal = __backend.widgetPropertyStr(__form, __property, 0);
 		}
 		catch (MLECallError e)
 		{
@@ -178,6 +178,10 @@ public class TestFormProperties
 			
 			case UIWidgetProperty.STRING_LIST_LABEL:
 				this.secondary("no-list-label", noEitherGet);
+				return;
+			
+			case UIWidgetProperty.STRING_LIST_ID_CODE:
+				this.secondary("no-list-idcode", noEitherGet);
 				return;
 			
 			default:

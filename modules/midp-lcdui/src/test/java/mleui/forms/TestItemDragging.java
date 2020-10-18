@@ -23,7 +23,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  * @since 2020/07/19
  */
 public class TestItemDragging
-	extends __BaseFormTest__
+	extends BaseUIFormTest
 {
 	/**
 	 * {@inheritDoc}

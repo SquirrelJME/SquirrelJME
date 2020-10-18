@@ -22,7 +22,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  * @since 2020/07/19
  */
 public class TestUseItemAfterDelete
-	extends __BaseFormTest__
+	extends BaseUIFormTest
 {
 	/**
 	 * {@inheritDoc}

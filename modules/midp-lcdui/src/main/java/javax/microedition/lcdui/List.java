@@ -10,8 +10,15 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public class List
 	extends Screen
@@ -24,6 +31,9 @@ public class List
 	/** Items on the list. */
 	final __VolatileList__<__ChoiceEntry__> _items =
 		new __VolatileList__<>();
+	
+	/** The user interface list. */
+	final UIItemBracket _uiList;
 	
 	/** The type of list this is. */
 	private final int _type;
@@ -81,6 +91,16 @@ public class List
 		this._userTitle = __title;
 		this._type = __type;
 		
+		// Build new list
+		UIItemBracket uiList = UIFormShelf.itemNew(UIItemType.LIST);
+		this._uiList = uiList;
+		
+		// Register self for future events
+		StaticDisplayState.register(this, uiList);
+		
+		// Show it on the form for this displayable
+		UIFormShelf.formItemPosition(this._uiForm, uiList, 0);
+		
 		// Append all of the items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)
 			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
@@ -109,15 +129,9 @@ public class List
 			e._selected = true;
 		
 		// Update display
+		this.__refresh();
 		
-		
-		throw Debugging.todo();
-		/*
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();
-		
-		return rv;*/
+		return rv;
 	}
 	
 	@Override
@@ -400,6 +414,25 @@ public class List
 	public int size()
 	{
 		return this._items.size();
+	}
+	
+	/**
+	 * Performs graphical refreshing of the list.
+	 * 
+	 * @since 2020/10/18
+	 */
+	private void __refresh()
+	{
+		UIItemBracket uiList = this._uiList;
+		UIBackend backend = UIBackendFactory.getInstance();
+		java.util.List<__ChoiceEntry__> choices = this._items.valuesAsList();
+		
+		// Set new size of the list
+		int n = choices.size();
+		backend.widgetProperty(uiList, UIWidgetProperty.INT_NUM_ELEMENTS,
+			0, n); 
+		
+		throw Debugging.todo();
 	}
 }
 

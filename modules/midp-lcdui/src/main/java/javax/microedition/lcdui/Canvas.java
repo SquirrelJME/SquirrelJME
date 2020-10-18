@@ -344,13 +344,13 @@ public abstract class Canvas
 		if (item != null)
 			return new int[]{
 					backend.widgetPropertyInt(item,
-						UIWidgetProperty.INT_X_POSITION),
+						UIWidgetProperty.INT_X_POSITION, 0),
 					backend.widgetPropertyInt(item,
-						UIWidgetProperty.INT_Y_POSITION),
+						UIWidgetProperty.INT_Y_POSITION, 0),
 					backend.widgetPropertyInt(item,
-						UIWidgetProperty.INT_WIDTH),
+						UIWidgetProperty.INT_WIDTH, 0),
 					backend.widgetPropertyInt(item,
-						UIWidgetProperty.INT_HEIGHT),
+						UIWidgetProperty.INT_HEIGHT, 0),
 				};
 		
 		// Otherwise make a guess at where it could be located since it cannot
@@ -596,17 +596,13 @@ public abstract class Canvas
 		
 		// Send repaint properties
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT,
-			UISpecialCode.REPAINT_KEY_X | __x);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_X | __x);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT,
-			UISpecialCode.REPAINT_KEY_Y | __y);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_Y | __y);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT,
-			UISpecialCode.REPAINT_KEY_WIDTH | __w);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_WIDTH | __w);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT,
-			UISpecialCode.REPAINT_KEY_HEIGHT | __h);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
 		// Count pending paints up before we signal the final repaint
 		synchronized (Display.class)
@@ -616,7 +612,7 @@ public abstract class Canvas
 		
 		// Execute the paint
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, 0);
 	}
 	
 	/**

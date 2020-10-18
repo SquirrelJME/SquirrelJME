@@ -277,9 +277,9 @@ public class NativeUIBackend
 	 */
 	@Override
 	public void widgetProperty(UIWidgetBracket __item, int __intProp,
-		int __newValue)
+		int __sub, int __newValue)
 	{
-		UIFormShelf.widgetProperty(__item, __intProp, 0, __newValue);
+		UIFormShelf.widgetProperty(__item, __intProp, __sub, __newValue);
 	}
 	
 	/**
@@ -288,9 +288,9 @@ public class NativeUIBackend
 	 */
 	@Override
 	public void widgetProperty(UIWidgetBracket __item, int __strProp,
-		String __newValue)
+		int __sub, String __newValue)
 	{
-		UIFormShelf.widgetProperty(__item, __strProp, 0, __newValue);
+		UIFormShelf.widgetProperty(__item, __strProp, __sub, __newValue);
 	}
 	
 	/**
@@ -298,10 +298,11 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp)
+	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp,
+		int __sub)
 		throws MLECallError
 	{
-		return UIFormShelf.widgetPropertyInt(__widget, __intProp, 0);
+		return UIFormShelf.widgetPropertyInt(__widget, __intProp, __sub);
 	}
 	
 	/**
@@ -309,9 +310,10 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp)
+	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp,
+		int __sub)
 		throws MLECallError
 	{
-		return UIFormShelf.widgetPropertyStr(__widget, __strProp, 0);
+		return UIFormShelf.widgetPropertyStr(__widget, __strProp, __sub);
 	}
 }
