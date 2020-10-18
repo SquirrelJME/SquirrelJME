@@ -58,7 +58,7 @@ public class SwingItemProgressIndicator
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void property(int __id, int __newValue)
+	public void property(int __id, int __sub, int __newValue)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -69,7 +69,7 @@ public class SwingItemProgressIndicator
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void property(int __id, String __newValue)
+	public void property(int __id, int __sub, String __newValue)
 	{
 		throw Debugging.todo();
 	}

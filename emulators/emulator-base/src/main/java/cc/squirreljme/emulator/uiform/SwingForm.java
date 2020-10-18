@@ -452,7 +452,7 @@ public final class SwingForm
 	 * @since 2020/09/21
 	 */
 	@Override
-	public final void property(int __id, int __newValue)
+	public final void property(int __id, int __sub, int __newValue)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -463,7 +463,7 @@ public final class SwingForm
 	 * @since 2020/09/21
 	 */
 	@Override
-	public final void property(int __id, String __newValue)
+	public final void property(int __id, int __sub, String __newValue)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -474,7 +474,7 @@ public final class SwingForm
 	 * @since 2020/09/21
 	 */
 	@Override
-	public int propertyInt(int __intProp)
+	public int propertyInt(int __intProp, int __sub)
 		throws MLECallError
 	{
 		SwingDisplay display = this._display;
@@ -506,7 +506,7 @@ public final class SwingForm
 	 */
 	@SuppressWarnings("SwitchStatementWithTooFewBranches")
 	@Override
-	public String propertyStr(int __strProp)
+	public String propertyStr(int __strProp, int __sub)
 		throws MLECallError
 	{
 		switch (__strProp)

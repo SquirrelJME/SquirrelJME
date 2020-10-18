@@ -103,12 +103,14 @@ public class List
 		int rv = items.append((e = new __ChoiceEntry__(__s, __i)));
 		
 		// If this is the only item and this is an exclusive list, select it
-		int ltype = this._type;
-		if (items.size() == 1 && (ltype == Choice.EXCLUSIVE ||
-			ltype == Choice.IMPLICIT))
+		int lType = this._type;
+		if (items.size() == 1 && (lType == Choice.EXCLUSIVE ||
+			lType == Choice.IMPLICIT))
 			e._selected = true;
 		
 		// Update display
+		
+		
 		throw Debugging.todo();
 		/*
 		Display d = this._display;

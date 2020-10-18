@@ -243,7 +243,7 @@ public abstract class CustomItem
 	 * @since 2020/09/21
 	 */
 	@Override
-	final void __paint(Graphics __gfx, int __sw, int __sh)
+	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 		// Store the last dimensions
 		this._lastHeight = __sw;

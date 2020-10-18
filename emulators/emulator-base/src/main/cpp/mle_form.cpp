@@ -36,10 +36,10 @@
 #define SWINGUIFORM_ITEMNEW_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
 #define SWINGUIFORM_LATER_DESC "(II)V"
 #define SWINGUIFORM_METRIC_DESC "(I)I"
-#define SWINGUIFORM_WIDGETPROPERTY_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;II)V"
-#define SWINGUIFORM_WIDGETPROPERTY_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;ILjava/lang/String;)V"
-#define SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;I)I"
-#define SWINGUIFORM_WIDGETPROPERTY_GET_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;I)Ljava/lang/String;"
+#define SWINGUIFORM_WIDGETPROPERTY_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;III)V"
+#define SWINGUIFORM_WIDGETPROPERTY_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;IILjava/lang/String;)V"
+#define SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;II)I"
+#define SWINGUIFORM_WIDGETPROPERTY_GET_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;II)Ljava/lang/String;"
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_callbackDisplay(JNIEnv* env,
 	jclass classy, jobject ref, jobject callback)
@@ -212,35 +212,35 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyInt(JNIEnv* env,
-	jclass classy, jobject item, jint property, jint newValue)
+	jclass classy, jobject item, jint property, jint sub, jint newValue)
 {
 	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_INT_DESC,
-		item, property, newValue);
+		item, property, sub, newValue);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyStr(JNIEnv* env,
-	jclass classy, jobject item, jint property, jobject newValue)
+	jclass classy, jobject item, jint property, jint sub, jobject newValue)
 {
 	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_STR_DESC,
-		item, property, newValue);
+		item, property, sub, newValue);
 }
 
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_widgetPropertyGetInt(JNIEnv* env,
-	jclass classy, jobject item, jint property)
+	jclass classy, jobject item, jint property, jint sub)
 {
 	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
 		"widgetPropertyInt", SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC,
-		item, property);
+		item, property, sub);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_widgetPropertyGetStr(JNIEnv* env,
-	jclass classy, jobject item, jint property)
+	jclass classy, jobject item, jint property, jint sub)
 {
 	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"widgetPropertyStr", SWINGUIFORM_WIDGETPROPERTY_GET_STR_DESC,
-		item, property);
+		item, property, sub);
 }
 
 static const JNINativeMethod mleFormMethods[] =

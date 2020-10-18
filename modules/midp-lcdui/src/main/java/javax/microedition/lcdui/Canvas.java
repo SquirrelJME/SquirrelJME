@@ -798,7 +798,7 @@ public abstract class Canvas
 	 * @since 2020/09/21
 	 */
 	@Override
-	final void __paint(Graphics __gfx, int __sw, int __sh)
+	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 		// Draw background?
 		if (!this._transparent)

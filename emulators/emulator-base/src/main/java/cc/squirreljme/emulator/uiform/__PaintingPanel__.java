@@ -11,8 +11,6 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -83,7 +81,7 @@ class __PaintingPanel__
 					callback.paint(form, item, UIPixelFormat.INT_RGBA8888,
 						pW, pH, ((DataBufferInt)pixelImage.getRaster()
 							.getDataBuffer()).getData(), 0,
-							null, 0, 0, pW, pH);
+							null, 0, 0, pW, pH, 0);
 			}
 		}
 		

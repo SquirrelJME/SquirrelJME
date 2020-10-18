@@ -67,7 +67,7 @@ public class SwingItemCanvas
 	 * @since 2020/09/21
 	 */
 	@Override
-	public void property(int __id, int __val)
+	public void property(int __id, int __sub, int __val)
 		throws MLECallError
 	{
 		switch (__id)
@@ -114,7 +114,7 @@ public class SwingItemCanvas
 	 * @since 2020/09/21
 	 */
 	@Override
-	public void property(int __id, String __newValue)
+	public void property(int __id, int __sub, String __newValue)
 	{
 		throw Debugging.todo();
 	}

@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
@@ -412,9 +411,9 @@ public enum MLEUIForm
 		}
 	},
 	
-	/** {@link UIFormShelf#widgetPropertyInt(UIWidgetBracket, int)}. */
+	/** {@link UIFormShelf#widgetPropertyInt(UIWidgetBracket, int, int)}. */
 	WIDGET_PROPERTY_GET_INT("widgetPropertyInt:(Lcc/squirreljme/jvm/" +
-		"mle/brackets/UIWidgetBracket;I)I")
+		"mle/brackets/UIWidgetBracket;II)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -425,13 +424,13 @@ public enum MLEUIForm
 		{
 			return UIFormShelf.widgetPropertyInt(
 				MLEUIForm.__widget(__args[0]).widget(),
-				(int)__args[1]);
+				(int)__args[1], (int)__args[2]);
 		}
 	},
 	
-	/** {@link UIFormShelf#widgetPropertyStr(UIWidgetBracket, int)}. */
+	/** {@link UIFormShelf#widgetPropertyStr(UIWidgetBracket, int, int)}. */
 	WIDGET_PROPERTY_GET_SET("widgetPropertyStr:(Lcc/squirreljme/jvm/" +
-		"mle/brackets/UIWidgetBracket;I)Ljava/lang/String;")
+		"mle/brackets/UIWidgetBracket;II)Ljava/lang/String;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -442,13 +441,13 @@ public enum MLEUIForm
 		{
 			return UIFormShelf.widgetPropertyStr(
 				MLEUIForm.__widget(__args[0]).widget(),
-				(int)__args[1]);
+				(int)__args[1], (int)__args[2]);
 		}
 	},
 	
-	/** {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int)}. */ 
+	/** {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int, int)}. */ 
 	WIDGET_PROPERTY_SET_INT("widgetProperty:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/UIWidgetBracket;II)V")
+		"brackets/UIWidgetBracket;III)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -459,15 +458,14 @@ public enum MLEUIForm
 		{
 			UIFormShelf.widgetProperty(
 				MLEUIForm.__widget(__args[0]).widget(),
-				(int)__args[1],
-				(int)__args[2]);
+				(int)__args[1], (int)__args[2], (int)__args[3]);
 			return null;
 		}
 	},
 	
-	/** {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int)}. */ 
+	/** {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int, int)}. */ 
 	WIDGET_PROPERTY_SET_STR("widgetProperty:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/UIWidgetBracket;ILjava/lang/String;)V")
+		"brackets/UIWidgetBracket;IILjava/lang/String;)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -478,8 +476,8 @@ public enum MLEUIForm
 		{
 			UIFormShelf.widgetProperty(
 				MLEUIForm.__widget(__args[0]).widget(),
-				(int)__args[1],
-				__thread.<String>asNativeObject(String.class, __args[2]));
+				(int)__args[1], (int)__args[2],
+				__thread.<String>asNativeObject(String.class, __args[3]));
 			return null;
 		}
 	},

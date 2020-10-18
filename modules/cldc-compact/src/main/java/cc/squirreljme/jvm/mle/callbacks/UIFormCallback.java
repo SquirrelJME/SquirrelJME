@@ -79,11 +79,13 @@ public interface UIFormCallback
 	 * @param __sy Starting surface Y coordinate.
 	 * @param __sw Surface width.
 	 * @param __sh Surface height.
+	 * @param __special Special value for painting, may be {@code 0} or any
+	 * other value if it is meaningful to what is being painted.
 	 * @since 2020/07/19
 	 */
 	void paint(UIFormBracket __form, UIItemBracket __item, int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
-		int __sw, int __sh);
+		int __sw, int __sh, int __special);
 	
 	/**
 	 * This is called when a property on an item has changed.
@@ -91,12 +93,13 @@ public interface UIFormCallback
 	 * @param __form The form to be acted on.
 	 * @param __item The item to be acted on.
 	 * @param __intProp One of {@link UIWidgetProperty}.
+	 * @param __sub The sub-index of the property.
 	 * @param __old The old value.
 	 * @param __new The new value.
 	 * @since 2020/07/19
 	 */
 	void propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __old, int __new);
+		int __intProp, int __sub, int __old, int __new);
 	
 	/**
 	 * This is called when a property on an item has changed.
@@ -104,10 +107,11 @@ public interface UIFormCallback
 	 * @param __form The form to be acted on.
 	 * @param __item The item to be acted on.
 	 * @param __strProp One of {@link UIWidgetProperty}.
+	 * @param __sub The sub-index of the property.
 	 * @param __old The old value.
 	 * @param __new The new value.
 	 * @since 2020/07/19
 	 */
 	void propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __strProp, String __old, String __new);
+		int __strProp, int __sub, String __old, String __new);
 }

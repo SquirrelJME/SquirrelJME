@@ -109,16 +109,34 @@ public class UIFormCallbackAdapter
 	@Override
 	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
-		int __sy, int __sw, int __sh)
+		int __sy, int __sw, int __sh, int __special)
 	{
 		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("paint", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I", "Ljava/lang/Object;", "I", "[I",
+				"I", "I", "I", "I", "I"),
+			new UIFormObject(__form), new UIItemObject(__item),
+			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh,
+			__special);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/13
+	 */
+	@Override
+	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
+		int __intProp, int __sub, int __old, int __new)
+	{
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
+			MethodNameAndType.ofArguments("propertyChange", null,
+				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
+				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I", "I"),
 			new UIFormObject(__form), new UIItemObject(__item),
-			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
+			__intProp, __sub, __old, __new);
 	}
 	
 	/**
@@ -127,32 +145,15 @@ public class UIFormCallbackAdapter
 	 */
 	@Override
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __old, int __new)
+		int __strProp, int __sub, String __old, String __new)
 	{
 		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("propertyChange", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
-				"I", "I", "I"),
+				"I", "I", "Ljava/lang/String;", "Ljava/lang/String;"),
 			new UIFormObject(__form), new UIItemObject(__item),
-			__intProp, __old, __new);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/13
-	 */
-	@Override
-	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __strProp, String __old, String __new)
-	{
-		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
-			MethodNameAndType.ofArguments("propertyChange", null,
-				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
-				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
-				"I", "Ljava/lang/String;", "Ljava/lang/String;"),
-			new UIFormObject(__form), new UIItemObject(__item),
-			__strProp, __old, __new);
+			__strProp, __sub, __old, __new);
 	}
 	
 	/**

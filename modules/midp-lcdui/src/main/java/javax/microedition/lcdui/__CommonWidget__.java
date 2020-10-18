@@ -39,9 +39,11 @@ abstract class __CommonWidget__
 	 * @param __gfx Graphics to draw.
 	 * @param __sw Surface width.
 	 * @param __sh Surface height.
+	 * @param __special The special painting code, may be {@code 0} or any
+	 * other value depending on what is being painted.
 	 * @since 2020/09/21
 	 */
-	void __paint(Graphics __gfx, int __sw, int __sh)
+	void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 	}
 	

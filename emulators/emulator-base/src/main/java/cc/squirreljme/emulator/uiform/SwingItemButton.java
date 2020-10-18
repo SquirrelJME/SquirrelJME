@@ -17,9 +17,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import javax.swing.JButton;
-import javax.swing.Timer;
 
 /**
  * Button.
@@ -91,7 +89,7 @@ public class SwingItemButton
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void property(int __id, int __newValue)
+	public void property(int __id, int __sub, int __newValue)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -102,7 +100,7 @@ public class SwingItemButton
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void property(int __id, String __newValue)
+	public void property(int __id, int __sub, String __newValue)
 	{
 		switch (__id)
 		{

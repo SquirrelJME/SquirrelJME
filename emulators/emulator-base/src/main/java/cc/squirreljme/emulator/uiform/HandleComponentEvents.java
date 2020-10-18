@@ -55,8 +55,7 @@ public class HandleComponentEvents
 		// Report changes
 		Component component = __e.getComponent();
 		callback.propertyChange(widget.form(), widget.item(),
-			UIWidgetProperty.INT_WIDTH_AND_HEIGHT,
-			component.getWidth(), component.getHeight());
+			UIWidgetProperty.INT_WIDTH_AND_HEIGHT, 0, component.getWidth(), component.getHeight());
 	}
 	
 	/**
@@ -77,9 +76,9 @@ public class HandleComponentEvents
 		// Report changes
 		Component component = __e.getComponent();
 		callback.propertyChange(widget.form(), widget.item(),
-			UIWidgetProperty.INT_X_POSITION, -1, component.getX());
+			UIWidgetProperty.INT_X_POSITION, 0, -1, component.getX());
 		callback.propertyChange(widget.form(), widget.item(),
-			UIWidgetProperty.INT_Y_POSITION, -1, component.getY());
+			UIWidgetProperty.INT_Y_POSITION, 0, -1, component.getY());
 	}
 	
 	/**
@@ -99,7 +98,7 @@ public class HandleComponentEvents
 		
 		// Report changes
 		callback.propertyChange(widget.form(), widget.item(),
-			UIWidgetProperty.INT_IS_SHOWN, -1, 1);
+			UIWidgetProperty.INT_IS_SHOWN, 0, -1, 1);
 	}
 	
 	/**
@@ -119,6 +118,6 @@ public class HandleComponentEvents
 		
 		// Report changes
 		callback.propertyChange(widget.form(), widget.item(),
-			UIWidgetProperty.INT_IS_SHOWN, -1, 0);
+			UIWidgetProperty.INT_IS_SHOWN, 0, -1, 0);
 	}
 }

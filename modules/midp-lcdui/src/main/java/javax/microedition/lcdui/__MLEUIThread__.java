@@ -154,7 +154,7 @@ final class __MLEUIThread__
 	@Override
 	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
-		int __sy, int __sw, int __sh)
+		int __sy, int __sw, int __sh, int __special)
 	{
 		// Debug
 		/*Debugging.debugNote("paint(%08x, %08x, %d, " +
@@ -191,7 +191,7 @@ final class __MLEUIThread__
 					__sw, __sh);
 				
 				// Forward the paint call
-				common.__paint(gfx, __sw, __sh);
+				common.__paint(gfx, __sw, __sh, __special);
 			}
 			finally
 			{
@@ -206,7 +206,7 @@ final class __MLEUIThread__
 	 */
 	@Override
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __old, int __new)
+		int __intProp, int __sub, int __old, int __new)
 	{
 		// Debug
 		/*Debugging.debugNote("propertyChange(%08x, %08x, %d, %d, %d)",
@@ -226,7 +226,7 @@ final class __MLEUIThread__
 	 */
 	@Override
 	public void propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __strProp, String __old, String __new)
+		int __strProp, int __sub, String __old, String __new)
 	{
 		// Debug
 		/*Debugging.debugNote("propertyChange(%08x, %08x, %d, %s, %s)",

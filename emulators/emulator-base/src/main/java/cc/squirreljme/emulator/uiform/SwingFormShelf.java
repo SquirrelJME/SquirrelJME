@@ -567,45 +567,47 @@ public final class SwingFormShelf
 	
 	
 	/**
-	 * As {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int)}.
+	 * As {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int, int)}.
 	 * 
 	 * @param __item The item to set.
 	 * @param __intProp The {@link UIWidgetProperty}.
+	 * @param __sub The sub-index.
 	 * @param __newValue The new value to set.
 	 * @throws MLECallError If the item is not valid or the property is not
 	 * valid or not an integer property.
 	 * @since 2020/09/13
 	 */
 	public static void widgetProperty(UIWidgetBracket __item,
-		int __intProp, int __newValue)
+		int __intProp, int __sub, int __newValue)
 		throws MLECallError
 	{
 		if (__item == null)
 			throw new MLECallError("Null item.");
 		
 		// Forward
-		((SwingWidget)__item).property(__intProp, __newValue);
+		((SwingWidget)__item).property(__intProp, __sub, __newValue);
 	}
 	
 	/**
-	 * As {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, String)}. 
+	 * As {@link UIFormShelf#widgetProperty(UIWidgetBracket, int, int, String)}. 
 	 * 
 	 * @param __item The item to set.
 	 * @param __strProp The {@link UIWidgetProperty}.
+	 * @param __sub The sub-index.
 	 * @param __newValue The new value to set.
 	 * @throws MLECallError If the item is not valid or the property is not
 	 * valid or not a string property.
 	 * @since 2020/09/13
 	 */
 	public static void widgetProperty(UIWidgetBracket __item,
-		int __strProp, String __newValue)
+		int __strProp, int __sub, String __newValue)
 		throws MLECallError
 	{
 		if (__item == null)
 			throw new MLECallError("Null item.");
 		
 		// Forward
-		((SwingWidget)__item).property(__strProp, __newValue);
+		((SwingWidget)__item).property(__strProp, __sub, __newValue);
 	}
 	
 	/**
@@ -613,19 +615,20 @@ public final class SwingFormShelf
 	 * 
 	 * @param __widget The widget to get from.
 	 * @param __intProp The {@link UIWidgetProperty}.
+	 * @param __sub The sub-index.
 	 * @return The value of the property.
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
 	public static int widgetPropertyInt(UIWidgetBracket __widget,
-		int __intProp)
+		int __intProp, int __sub)
 		throws MLECallError
 	{
 		if (__widget == null)
 			throw new MLECallError("No widget.");
 		
 		// Forward
-		return ((SwingWidget)__widget).propertyInt(__intProp);
+		return ((SwingWidget)__widget).propertyInt(__intProp, __sub);
 	}
 	
 	/**
@@ -633,19 +636,20 @@ public final class SwingFormShelf
 	 * 
 	 * @param __widget The widget to get from.
 	 * @param __strProp The {@link UIWidgetProperty}.
+	 * @param __sub The sub-index.
 	 * @return The value of the property.
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
 	public static String widgetPropertyStr(UIWidgetBracket __widget,
-		int __strProp)
+		int __strProp, int __sub)
 		throws MLECallError
 	{
 		if (__widget == null)
 			throw new MLECallError("No widget.");
 		
 		// Forward
-		return ((SwingWidget)__widget).propertyStr(__strProp);
+		return ((SwingWidget)__widget).propertyStr(__strProp, __sub);
 	}
 	
 	/**

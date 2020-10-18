@@ -320,13 +320,14 @@ public final class UIFormShelf
 	 * 
 	 * @param __widget The item to set.
 	 * @param __intProp The {@link UIWidgetProperty}.
+	 * @param __sub The sub-index.
 	 * @param __newValue The new value to set.
 	 * @throws MLECallError If the item is not valid or the property is not
 	 * valid or not an integer property.
 	 * @since 2020/09/13
 	 */
 	public static native void widgetProperty(UIWidgetBracket __widget,
-		int __intProp, int __newValue)
+		int __intProp, int __sub, int __newValue)
 		throws MLECallError;
 	
 	/**
@@ -334,13 +335,14 @@ public final class UIFormShelf
 	 * 
 	 * @param __widget The item to set.
 	 * @param __strProp The {@link UIWidgetProperty}.
+	 * @param __sub The sub-index.
 	 * @param __newValue The new value to set.
 	 * @throws MLECallError If the item is not valid or the property is not
 	 * valid or not a string property.
 	 * @since 2020/09/13
 	 */
 	public static native void widgetProperty(UIWidgetBracket __widget,
-		int __strProp, String __newValue)
+		int __strProp, int __sub, String __newValue)
 		throws MLECallError;
 	
 	/**
@@ -348,12 +350,13 @@ public final class UIFormShelf
 	 * 
 	 * @param __widget The widget to get from.
 	 * @param __intProp The {@link UIWidgetProperty}.
+	 * @param __sub The sub-index.
 	 * @return The value of the property.
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
 	public static native int widgetPropertyInt(UIWidgetBracket __widget,
-		int __intProp)
+		int __intProp, int __sub)
 		throws MLECallError;
 	
 	/**
@@ -361,11 +364,12 @@ public final class UIFormShelf
 	 * 
 	 * @param __widget The widget to get from.
 	 * @param __strProp The {@link UIWidgetProperty}.
+	 * @param __sub The sub-index.
 	 * @return The value of the property.
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
 	public static native String widgetPropertyStr(UIWidgetBracket __widget,
-		int __strProp)
+		int __strProp, int __sub)
 		throws MLECallError;
 }

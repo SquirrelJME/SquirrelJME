@@ -67,13 +67,8 @@ public class MidletMain
 	private volatile __Program__[] _programs;
 	
 	/** Automatic launch program. */
-	private volatile String _autolaunch;
+	private volatile String _autoLaunch;
 	
-	/**
-	 * Initializes the launcher.
-	 *
-	 * @since 2019/04/14
-	 */
 	{
 		// Do not crash if we cannot read properties
 		String al = null;
@@ -85,7 +80,7 @@ public class MidletMain
 		{
 		}
 		
-		this._autolaunch = al;
+		this._autoLaunch = al;
 	}
 	
 	/**
@@ -207,10 +202,10 @@ public class MidletMain
 			MidletMain._MAIN_DISPLAY.setCurrent(programlist);
 		
 		// Automatically launch a program?
-		String autolaunch = this._autolaunch;
+		String autolaunch = this._autoLaunch;
 		if (autolaunch != null)
 		{
-			this._autolaunch = null;
+			this._autoLaunch = null;
 			
 			// Launch it
 			System.err.println("Auto-launching " + autolaunch + "...");
@@ -244,18 +239,7 @@ public class MidletMain
 		long endtime = System.nanoTime() + 1_000_000_000L;
 		
 		// Refresh the list in another thread
-		Thread refresher = new Thread("LauncherRefresh")
-			{
-				/**
-				 * {@inheritDoc}
-				 * @since 2019/05/19
-				 */
-				@Override
-				public final void run()
-				{
-					MidletMain.this.refresh();
-				}
-			};
+		Thread refresher = new __Refresher__(this);
 		refresher.start();
 		
 		// Instead of showing the program list early, just show a splash screen

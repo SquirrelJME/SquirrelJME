@@ -156,6 +156,30 @@ public class TestFormProperties
 				this.secondary("no-wah", noEitherGet);
 				return; 
 			
+			case UIWidgetProperty.INT_LIST_ENABLED:
+				this.secondary("no-list-enabled", noEitherGet);
+				return;
+			
+			case UIWidgetProperty.INT_LIST_PAINT_ICON:
+				this.secondary("no-list-paint", noEitherGet);
+				return;
+			
+			case UIWidgetProperty.INT_LIST_SELECTED:
+				this.secondary("no-list-selected", noEitherGet);
+				return;
+			
+			case UIWidgetProperty.INT_LIST_TYPE:
+				this.secondary("no-list-type", noEitherGet);
+				return;
+			
+			case UIWidgetProperty.INT_NUM_ELEMENTS:
+				this.secondary("no-num-elements", noEitherGet);
+				return;
+			
+			case UIWidgetProperty.STRING_LIST_LABEL:
+				this.secondary("no-list-label", noEitherGet);
+				return;
+			
 			default:
 				throw new FailingExecution("Missing " + __property);
 		}

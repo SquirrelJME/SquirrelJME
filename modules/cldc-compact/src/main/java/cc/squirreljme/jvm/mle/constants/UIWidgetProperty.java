@@ -54,7 +54,31 @@ public interface UIWidgetProperty
 	byte INT_WIDTH_AND_HEIGHT =
 		8;
 	
+	/** The type of {@link UIListType} to use. */
+	byte INT_LIST_TYPE =
+		9;
+	
+	/** The number of elements to appear on a list. */
+	byte INT_NUM_ELEMENTS =
+		10;
+	
+	/** Enable or get enabled for a given list item */
+	byte INT_LIST_ENABLED =
+		11;
+	
+	/** Select or get select for a given list item. */
+	byte INT_LIST_SELECTED =
+		12;
+	
+	/** Use a painted icon for a list icon. */
+	byte INT_LIST_PAINT_ICON =
+		13;
+	
+	/** The label for a list item. */
+	byte STRING_LIST_LABEL =
+		14; 
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		9;
+		15;
 }

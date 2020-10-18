@@ -11,11 +11,9 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JComponent;
 
 /**
@@ -112,7 +110,7 @@ public abstract class SwingItem
 	 * @since 2020/09/21
 	 */
 	@Override
-	public int propertyInt(int __intProp)
+	public int propertyInt(int __intProp, int __sub)
 		throws MLECallError
 	{
 		switch (__intProp)
@@ -135,7 +133,7 @@ public abstract class SwingItem
 	 * @since 2020/09/21
 	 */
 	@Override
-	public String propertyStr(int __strProp)
+	public String propertyStr(int __strProp, int __sub)
 		throws MLECallError
 	{
 		switch (__strProp)

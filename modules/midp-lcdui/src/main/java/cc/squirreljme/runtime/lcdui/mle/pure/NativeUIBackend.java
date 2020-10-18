@@ -279,7 +279,7 @@ public class NativeUIBackend
 	public void widgetProperty(UIWidgetBracket __item, int __intProp,
 		int __newValue)
 	{
-		UIFormShelf.widgetProperty(__item, __intProp, __newValue);
+		UIFormShelf.widgetProperty(__item, __intProp, 0, __newValue);
 	}
 	
 	/**
@@ -290,7 +290,7 @@ public class NativeUIBackend
 	public void widgetProperty(UIWidgetBracket __item, int __strProp,
 		String __newValue)
 	{
-		UIFormShelf.widgetProperty(__item, __strProp, __newValue);
+		UIFormShelf.widgetProperty(__item, __strProp, 0, __newValue);
 	}
 	
 	/**
@@ -301,7 +301,7 @@ public class NativeUIBackend
 	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp)
 		throws MLECallError
 	{
-		return UIFormShelf.widgetPropertyInt(__widget, __intProp);
+		return UIFormShelf.widgetPropertyInt(__widget, __intProp, 0);
 	}
 	
 	/**
@@ -312,6 +312,6 @@ public class NativeUIBackend
 	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp)
 		throws MLECallError
 	{
-		return UIFormShelf.widgetPropertyStr(__widget, __strProp);
+		return UIFormShelf.widgetPropertyStr(__widget, __strProp, 0);
 	}
 }

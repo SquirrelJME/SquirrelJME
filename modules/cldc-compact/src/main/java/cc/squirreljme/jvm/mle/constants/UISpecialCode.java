@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.mle.constants;
 
 /**
- * Special user interface codes.
+ * Special user interface constants.
  *
  * @since 2020/09/21
  */
