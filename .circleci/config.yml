@@ -70,15 +70,6 @@ jobs:
       - store_artifacts:
           path: ratufacoat\src\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
-      - add_ssh_keys:
-          fingerprints:
-            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
-      - run:
-          name: Upload to SourceForge
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/Debug/SquirrelJME.exe squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_win64.exe || echo Ignoring failed upload;
 
   ################################# MAC OS X #################################
   build_macosx:
@@ -129,14 +120,6 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
           destination: SquirrelJME
-      - add_ssh_keys:
-          fingerprints:
-            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
-      - run:
-          name: Upload to SourceForge
-          working_directory: ratufacoat
-          command: |
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_macosx || echo Ignoring failed upload;
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
@@ -185,14 +168,6 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
           destination: SquirrelJME
-      - add_ssh_keys:
-          fingerprints:
-            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
-      - run:
-          name: Upload to SourceForge
-          working_directory: ratufacoat
-          command: |
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_linux_amd64 || echo Ignoring failed upload;
   test_springcoat:
     executor: buildenv
     steps:

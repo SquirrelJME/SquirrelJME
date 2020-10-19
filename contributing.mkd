@@ -14,10 +14,6 @@ Development can happen on any operating system that has an installation of
 Gradle, a Java JDK, any text editor/IDE (IntelliJ Ultimate is recommended), and
 enough disk space to store the code and repository.
 
-There are antiquated scripts in `utils-dev/` that will only run on Unix
-compatible systems such as Linux, BSD, Mac OS X, Cygwin, MSYS2, or WSL. However
-over time these scripts will be integrated into the Gradle build accordingly.
-
 SquirrelJME uses the [Fossil](https://fossil-scm.org/) source control
 system and as such it generally is expected that it is to be used. There also
 are [GitHub Pull Requests](https://github.com/SquirrelJME/SquirrelJME/pulls)
@@ -37,19 +33,20 @@ repository as a whole.
      when there are different and various branches. There would also be many
      unrelated changes which changes the purpose of a patch.
    * Do not mass reformat files and be careful of IDEs automatically
-     reformatting files.
+     reformatting/refactoring files.
    * If there are linters or code style formatters that are not configured
      for the project for _SquirrelJME_'s code style, configure them for
      _SquirrelJME_ and add them to the repository.
  * Ensure that the tests pass.
    * Note that submissions on GitHub will automatically be run under CI/CD
      and if there are any issues arising from this, they must be addressed.
-   * You can run all of the tests with the `gradlew test` command.
+   * You can run all of the tests with the `gradlew testHosted` command.
  * Do not perform mass automatic refactorings.
    * These mass refactorings can cause unintended side effects and as well
      may cause breakages. Also as well, these can cause merge conflicts and
      otherwise.
- * The `trunk` branch is always stable code.
+ * The `trunk` branch is _always_ stable code. It must _always_ pass and
+   be in a state of release!
 
 If there are any issues regarding these, please open an issue describing in
 detail the problem and a proposed solution if there is one on [GitHub](
