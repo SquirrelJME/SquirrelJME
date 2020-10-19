@@ -37,6 +37,11 @@ repository as a whole.
    * If there are linters or code style formatters that are not configured
      for the project for _SquirrelJME_'s code style, configure them for
      _SquirrelJME_ and add them to the repository.
+ * Make sure your code is well documented and has the JavaDoc for the
+   library functions.
+   * _Do not_ copy and paste from other Java libraries, it is not legal to do
+     so. You must express what the method, class, or otherwise does in your
+     own words.
  * Ensure that the tests pass.
    * Note that submissions on GitHub will automatically be run under CI/CD
      and if there are any issues arising from this, they must be addressed.
@@ -47,10 +52,36 @@ repository as a whole.
      otherwise.
  * The `trunk` branch is _always_ stable code. It must _always_ pass and
    be in a state of release!
+ * Do not copy and paste code from _Stack Overflow_ or other Java projects
+   such as but not limited to OpenJDK, PhoneME, Apache Harmony, GNU GCJ/GIJ,
+   GNU ClassPath, Android, OpenJ9, and others.
+ * Do not copy and paste JavaDoc or other documentation from other Java
+   projects. Documentation is copy written by the original writers. 
 
 If there are any issues regarding these, please open an issue describing in
 detail the problem and a proposed solution if there is one on [GitHub](
 https://github.com/SquirrelJME/SquirrelJME/issues).
+
+## Exceptions to Contributing
+
+If you have worked on the following projects, you are not permitted to
+contribute to this project due to potential poisoning:
+
+ * _Apache_:
+   * Apache Harmony
+ * _Free Software Foundation_:
+   * GNU Compiler for Java (GCJ)
+   * GNU Classpath
+   * GNU Interpreter for Java (GIJ)
+ * _IBM_:
+   * _OpenJ9_
+ * _Microsoft_:
+   * Microsoft Java Virtual Machine (MSJVM)
+ * _Oracle_/_Sun Microsystems_:
+   * HotSpot
+   * Java (eventually became OpenJDK)
+   * OpenJDK
+   * PhoneME
 
 ## Contributor Agreement
 
