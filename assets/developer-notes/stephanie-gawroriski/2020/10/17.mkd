@@ -5,3 +5,10 @@
 I feel rather well, I have less distractions and such so I can work on
 SquirrelJME and relax like I used to when developing. I know I have not
 really been keeping up with all the notes, but progress is going well.
+
+## 17:27
+
+For `List` I think for the icons I can just use paint and otherwise to grab an
+image for them. At least use that to figure out how to actually draw icon
+images. Is the only way I can think of that would allow them to be set using
+the existing code.
