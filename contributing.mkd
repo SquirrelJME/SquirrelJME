@@ -64,8 +64,8 @@ https://github.com/SquirrelJME/SquirrelJME/issues).
 
 ## Exceptions to Contributing
 
-If you have worked on the following projects, you are not permitted to
-contribute to this project due to potential poisoning:
+If you have worked on the following projects for the following companies, you
+are not permitted to contribute to this project due to potential poisoning:
 
  * _Apache_:
    * Apache Harmony
@@ -73,6 +73,8 @@ contribute to this project due to potential poisoning:
    * GNU Compiler for Java (GCJ)
    * GNU Classpath
    * GNU Interpreter for Java (GIJ)
+ * _Google_:
+   * Android
  * _IBM_:
    * _OpenJ9_
  * _Microsoft_:
