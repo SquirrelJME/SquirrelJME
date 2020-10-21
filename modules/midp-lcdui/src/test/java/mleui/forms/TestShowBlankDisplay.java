@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  * @since 2020/07/01
  */
 public class TestShowBlankDisplay
-	extends BaseUIFormTest
+	extends BaseUIForm
 {
 	/**
 	 * {@inheritDoc}

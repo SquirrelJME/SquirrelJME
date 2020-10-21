@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import mleui.forms.BaseUIFormTest;
+import mleui.forms.BaseUIForm;
 
 /**
  * This is the base class for any tests on lists.
@@ -24,7 +24,7 @@ import mleui.forms.BaseUIFormTest;
  * @since 2020/10/18
  */
 public abstract class BaseList
-	extends BaseUIFormTest
+	extends BaseUIForm
 {
 	/**
 	 * Tests the list.

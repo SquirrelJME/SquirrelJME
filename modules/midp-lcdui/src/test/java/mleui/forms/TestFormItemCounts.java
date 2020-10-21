@@ -22,7 +22,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  * @since 2020/07/19
  */
 public class TestFormItemCounts
-	extends BaseUIFormTest
+	extends BaseUIForm
 {
 	/** The number of items to add. */
 	public static final int COUNT =

@@ -22,7 +22,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  * @since 2020/07/18
  */
 public class TestAllSpecial
-	extends BaseUIFormTest
+	extends BaseUIForm
 {
 	/**
 	 * {@inheritDoc}

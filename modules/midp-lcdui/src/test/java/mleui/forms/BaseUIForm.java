@@ -22,7 +22,7 @@ import mleui.BaseBackend;
  *
  * @since 2020/07/01
  */
-public abstract class BaseUIFormTest
+public abstract class BaseUIForm
 	extends BaseBackend
 {
 	/**

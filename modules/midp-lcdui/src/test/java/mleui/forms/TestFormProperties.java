@@ -23,7 +23,7 @@ import mleui.FailingExecution;
  * @since 2020/10/11
  */
 public class TestFormProperties
-	extends BaseUIFormTest
+	extends BaseUIForm
 {
 	/** Invalid string. */
 	private static final String _INVALID_STRING =
