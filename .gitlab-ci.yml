@@ -34,6 +34,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/linux-x64.yml'
 
+  # MacOS 64-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/osx-x64.yml'
+
   ################################## CELLULAR ################################
   # Android
   - project: 'libretro-infrastructure/ci-templates'
@@ -75,6 +79,13 @@ libretro-build-linux-x64:
   extends:
     - .core-defs
     - .libretro-linux-x64-make-default
+    - .squirreljme-post-common
+
+# MacOS 64-bit
+libretro-build-osx-x64:
+  extends:
+    - .core-defs
+    - .libretro-osx-x64-make-default
     - .squirreljme-post-common
 
 ################################### CELLULAR #################################
