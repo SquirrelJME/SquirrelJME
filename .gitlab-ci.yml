@@ -138,3 +138,4 @@ libretro-build-vita:
     - .core-defs
     - .libretro-vita-static-retroarch-master
     - .squirreljme-post-common
+
