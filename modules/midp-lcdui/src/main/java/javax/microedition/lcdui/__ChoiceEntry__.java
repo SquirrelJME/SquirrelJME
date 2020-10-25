@@ -13,6 +13,8 @@ package javax.microedition.lcdui;
 /**
  * This is a package public mutable class which represents single choices
  * within anything which uses choices.
+ * 
+ * These choices are only comparable against themselves
  *
  * @since 2017/08/20
  */
@@ -64,7 +66,18 @@ final class __ChoiceEntry__
 	@Override
 	public final int hashCode()
 	{
-		return System.identityHashCode(this);
+		int rv = System.identityHashCode(this);
+		
+		rv ^= (this._selected ? 0x8000_0000 : 0x4000_0000);
+		rv ^= (this._disabled ? 0x0800_0000 : 0x0400_0000);
+		rv ^= (this._string != null ?
+			(this._string.hashCode() | 0x0080_0000) : 0x0040_0000);
+		rv ^= (this._image != null ?
+			(this._image.hashCode() | 0x0008_0000) : 0x0004_0000);
+		rv ^= (this._font != null ?
+			(this._font.hashCode() | 0x0000_8000) : 0x0000_4000);
+		
+		return rv;
 	}
 }
 
