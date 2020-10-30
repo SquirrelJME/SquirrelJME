@@ -251,7 +251,7 @@ public class List
 	public String getString(int __i)
 		throws IndexOutOfBoundsException
 	{
-		return this._items.get(__i)._string;
+		return this._items.get(__i)._label;
 	}
 	
 	/**

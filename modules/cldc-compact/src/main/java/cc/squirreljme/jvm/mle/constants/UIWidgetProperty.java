@@ -63,26 +63,30 @@ public interface UIWidgetProperty
 		10;
 	
 	/** Enable or get enabled for a given list item */
-	byte INT_LIST_ENABLED =
+	byte INT_LIST_ITEM_DISABLED =
 		11;
 	
 	/** Select or get select for a given list item. */
-	byte INT_LIST_SELECTED =
+	byte INT_LIST_ITEM_SELECTED =
 		12;
 	
-	/** Use a painted icon for a list icon. */
-	byte INT_LIST_PAINT_ICON =
+	/** The dimension of the drawn icon image ({@code DxD}). */
+	byte INT_LIST_ITEM_ICON_DIMENSION =
 		13;
 	
 	/** The label for a list item. */
-	byte STRING_LIST_LABEL =
+	byte STRING_LIST_ITEM_LABEL =
 		14; 
 	
 	/** The ID for a list entry, to detect changes. */
-	byte STRING_LIST_ID_CODE =
+	byte INT_LIST_ITEM_ID_CODE =
 		15;
+	
+	/** The font to use for the item ({@code pxsize|style|name}). */
+	byte STRING_LIST_ITEM_FONT =
+		16;
 	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		16;
+		17;
 }

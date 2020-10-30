@@ -156,15 +156,15 @@ public class TestFormProperties
 				this.secondary("no-wah", noEitherGet);
 				return; 
 			
-			case UIWidgetProperty.INT_LIST_ENABLED:
+			case UIWidgetProperty.INT_LIST_ITEM_DISABLED:
 				this.secondary("no-list-enabled", noEitherGet);
 				return;
 			
-			case UIWidgetProperty.INT_LIST_PAINT_ICON:
+			case UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION:
 				this.secondary("no-list-paint", noEitherGet);
 				return;
 			
-			case UIWidgetProperty.INT_LIST_SELECTED:
+			case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
 				this.secondary("no-list-selected", noEitherGet);
 				return;
 			
@@ -176,11 +176,11 @@ public class TestFormProperties
 				this.secondary("no-num-elements", noEitherGet);
 				return;
 			
-			case UIWidgetProperty.STRING_LIST_LABEL:
+			case UIWidgetProperty.STRING_LIST_ITEM_LABEL:
 				this.secondary("no-list-label", noEitherGet);
 				return;
 			
-			case UIWidgetProperty.STRING_LIST_ID_CODE:
+			case UIWidgetProperty.INT_LIST_ITEM_ID_CODE:
 				this.secondary("no-list-idcode", noEitherGet);
 				return;
 			

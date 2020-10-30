@@ -21,7 +21,7 @@ package javax.microedition.lcdui;
 final class __ChoiceEntry__
 {
 	/** The string to display for this choice. */
-	volatile String _string;
+	volatile String _label;
 	
 	/** The image to display for this choice. */
 	volatile Image _image;
@@ -45,7 +45,7 @@ final class __ChoiceEntry__
 	__ChoiceEntry__(String __s, Image __i)
 	{
 		// Set
-		this._string = __s;
+		this._label = __s;
 		this._image = __i;
 	}
 	
@@ -70,8 +70,8 @@ final class __ChoiceEntry__
 		
 		rv ^= (this._selected ? 0x8000_0000 : 0x4000_0000);
 		rv ^= (this._disabled ? 0x0800_0000 : 0x0400_0000);
-		rv ^= (this._string != null ?
-			(this._string.hashCode() | 0x0080_0000) : 0x0040_0000);
+		rv ^= (this._label != null ?
+			(this._label.hashCode() | 0x0080_0000) : 0x0040_0000);
 		rv ^= (this._image != null ?
 			(this._image.hashCode() | 0x0008_0000) : 0x0004_0000);
 		rv ^= (this._font != null ?
