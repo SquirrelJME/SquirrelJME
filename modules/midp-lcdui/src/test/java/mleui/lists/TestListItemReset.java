@@ -101,6 +101,6 @@ public class TestListItemReset
 			0, 2);
 		ListItem secondZero = ListItem.of(__backend, __list, 1);
 		
-		this.secondary("second-zero", zeroItem.equals(secondZero));
+		this.secondary("second-last-zero", zeroItem.equals(secondZero));
 	}
 }
