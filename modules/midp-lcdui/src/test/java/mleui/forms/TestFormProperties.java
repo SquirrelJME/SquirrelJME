@@ -156,6 +156,10 @@ public class TestFormProperties
 				this.secondary("no-wah", noEitherGet);
 				return; 
 			
+			case UIWidgetProperty.INT_LIST_TYPE:
+				this.secondary("no-list-type", noEitherGet);
+				return;
+			
 			case UIWidgetProperty.INT_LIST_ITEM_DISABLED:
 				this.secondary("no-list-enabled", noEitherGet);
 				return;
@@ -168,10 +172,6 @@ public class TestFormProperties
 				this.secondary("no-list-selected", noEitherGet);
 				return;
 			
-			case UIWidgetProperty.INT_LIST_TYPE:
-				this.secondary("no-list-type", noEitherGet);
-				return;
-			
 			case UIWidgetProperty.INT_NUM_ELEMENTS:
 				this.secondary("no-num-elements", noEitherGet);
 				return;
@@ -182,6 +182,10 @@ public class TestFormProperties
 			
 			case UIWidgetProperty.INT_LIST_ITEM_ID_CODE:
 				this.secondary("no-list-idcode", noEitherGet);
+				return;
+			
+			case UIWidgetProperty.STRING_LIST_ITEM_FONT:
+				this.secondary("no-list-font", noEitherGet);
 				return;
 			
 			default:
