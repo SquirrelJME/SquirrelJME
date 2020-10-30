@@ -204,6 +204,7 @@ public final class Integer
 	 * @return The number of bits set in the value.
 	 * @since 2018/11/11
 	 */
+	@SuppressWarnings("MagicNumber")
 	public static int bitCount(int __v)
 	{
 		__v = __v - ((__v >>> 1) & 0x55555555);
@@ -347,14 +348,42 @@ public final class Integer
 		return Integer.decode(prop);
 	}
 	
-	public static int highestOneBit(int __a)
+	/**
+	 * Returns the highest one bit of the given number.
+	 * 
+	 * @param __v The value to get.
+	 * @return The highest one bit of the given number.
+	 * @since 2020/10/29
+	 */
+	@SuppressWarnings({"DuplicatedCode", "MagicNumber"})
+	public static int highestOneBit(int __v)
 	{
-		throw new todo.TODO();
+		__v = __v | (__v >>> 1);
+		__v = __v | (__v >>> 2);
+		__v = __v | (__v >>> 4);
+		__v = __v | (__v >>> 8);
+		__v = __v | (__v >>> 16);
+		
+		return __v - (__v >>> 1);
 	}
 	
-	public static int lowestOneBit(int __a)
+	/**
+	 * Returns the single one bit for the given value.
+	 * 
+	 * @param __v The value to get the lowest single bit of.
+	 * @return The lowest single bit of the given integer.
+	 * @since 2020/10/29
+	 */
+	@SuppressWarnings({"DuplicatedCode", "MagicNumber"})
+	public static int lowestOneBit(int __v)
 	{
-		throw new todo.TODO();
+		__v = __v | (__v << 1);
+		__v = __v | (__v << 2);
+		__v = __v | (__v << 4);
+		__v = __v | (__v << 8);
+		__v = __v | (__v << 16);
+		
+		return __v - (__v << 1);
 	}
 	
 	/**
@@ -364,6 +393,7 @@ public final class Integer
 	 * @return The number of leading zeros.
 	 * @since 2019/04/14
 	 */
+	@SuppressWarnings({"MagicNumber", "DuplicatedCode"})
 	public static int numberOfLeadingZeros(int __v)
 	{
 		// From https://stackoverflow.com/a/23857066/11286149
@@ -495,6 +525,7 @@ public final class Integer
 	 * @return The integer but with the bits reversed.
 	 * @since 2018/11/11
 	 */
+	@SuppressWarnings("MagicNumber")
 	@ImplementationNote("Taken from " +
 		"<http://aggregate.org/MAGIC/#Bit%20Reversal>.")
 	public static int reverse(int __i)
