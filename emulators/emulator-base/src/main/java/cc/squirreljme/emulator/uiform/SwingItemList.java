@@ -9,8 +9,10 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
 /**
@@ -21,8 +23,11 @@ import javax.swing.JList;
 public class SwingItemList
 	extends SwingItem
 {
+	/** The model for the list. */
+	private final DefaultListModel<ListEntry> model;
+	
 	/** The list used. */
-	private final JList<Object> list;
+	private final JList<ListEntry> list;
 	
 	/**
 	 * Initializes the item.
@@ -31,7 +36,9 @@ public class SwingItemList
 	 */
 	public SwingItemList()
 	{
-		this.list = new JList<Object>();
+		DefaultListModel<ListEntry> model = new DefaultListModel<>();
+		this.model = model;
+		this.list = new JList<ListEntry>(model);
 	}
 	
 	/**
@@ -61,7 +68,36 @@ public class SwingItemList
 	public void property(int __id, int __sub, int __newValue)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		DefaultListModel<ListEntry> model = this.model;
+		JList<ListEntry> list = this.list;
+		int n = model.getSize();
+		
+		try
+		{
+			switch (__id)
+			{
+				case UIWidgetProperty.INT_NUM_ELEMENTS:
+					if (__newValue < 0)
+						throw new MLECallError("Negative list size.");
+					
+					while (__newValue < n)
+						model.removeElementAt(--n);
+					while (__newValue > n)
+						model.add(n++, new ListEntry());
+					break;
+				
+				case UIWidgetProperty.INT_LIST_ITEM_ID_CODE:
+					model.get(__sub)._idCode = __newValue;
+					break;
+				
+				default:
+					throw new MLECallError("" + __id);
+			}
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new MLECallError("Invalid index: " + __sub, e);
+		}
 	}
 	
 	/**
@@ -72,5 +108,33 @@ public class SwingItemList
 	public void property(int __id, int __sub, String __newValue)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/31
+	 */
+	@Override
+	public int propertyInt(int __intProp, int __sub)
+		throws MLECallError
+	{
+		DefaultListModel<ListEntry> model = this.model;
+		JList<ListEntry> list = this.list;
+		
+		try
+		{
+			switch (__intProp)
+			{
+				case UIWidgetProperty.INT_LIST_ITEM_ID_CODE:
+					return model.get(__sub)._idCode;
+				
+				default:
+					return super.propertyInt(__intProp, __sub);
+			}
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new MLECallError("Invalid index: " + __sub, e);
+		}
 	}
 }

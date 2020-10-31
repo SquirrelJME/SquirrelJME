@@ -46,7 +46,7 @@ public class VMFullSuite
 		
 		// This always runs, no matter what
 		this.onlyIf(new AlwaysTrue());
-		this.getOutputs().upToDateWhen(new AlwaysTrue());
+		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// This depends on everything!
 		this.dependsOn(new VMFullSuiteDepends(this, __vmType));

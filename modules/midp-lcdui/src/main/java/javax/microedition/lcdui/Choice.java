@@ -55,8 +55,30 @@ public interface Choice
 	
 	Image getImage(int __a);
 	
-	int getSelectedFlags(boolean[] __a);
+	/**
+	 * Gets all of the items which have been selected and stores them into
+	 * the boolean array.
+	 * 
+	 * @param __result The resultant boolean array.
+	 * @return The number of selected elements.
+	 * @throws IllegalArgumentException If the array is shorter than the
+	 * number of items in the list.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/31
+	 */
+	int getSelectedFlags(boolean[] __result)
+		throws IllegalArgumentException, NullPointerException;
 	
+	/**
+	 * Returns the selected element index.
+	 * 
+	 * For {@link Choice#MULTIPLE} the result will always be {@code -1}.
+	 * 
+	 * @return The selected index; or {@code -1} if there the list is empty,
+	 * no items are selected, or the result cannot be represented as a single
+	 * value.
+	 * @since 2020/10/31
+	 */
 	int getSelectedIndex();
 	
 	String getString(int __a);

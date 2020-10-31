@@ -10,7 +10,11 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
+import cc.squirreljme.runtime.swm.EntryPoint;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Alert;
@@ -20,6 +24,7 @@ import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.Task;
 import javax.microedition.swm.TaskStatus;
+import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * Stores the program information which is mapped to what is displayed.
@@ -28,91 +33,42 @@ import javax.microedition.swm.TaskStatus;
  */
 final class __Program__
 {
-	/** The suite that is used. */
-	protected final Suite suite;
+	/** The JAR used. */
+	protected final JarPackageBracket jar;
 	
-	/** The name of the suite. */
-	protected final String suitename;
-	
-	/** The main entry point. */
-	protected final String main;
+	/** The entry point used. */
+	protected final EntryPoint entry;
 	
 	/** The display name of this suite. */
-	protected final String displayname;
+	protected final String displayName;
 	
-	/** The SquirrelJME name. */
-	protected final String squirreljmename;
-	
-	/** The name of the JAR (SquirrelJME specific). */
-	protected final String jarfile;
-	
-	/** The icon resource to use. */
-	protected final String iconrc;
-	
-	/** The active task. */
-	final __ActiveTask__ _activetask;
+	/** The currently active task. */
+	final __ActiveTask__ _activeTask;
 	
 	/** The icon to show for this program. */
 	Image _icon;
 	
 	/**
-	 * Initializes the program.
-	 *
-	 * @param __suite The suite used.
-	 * @param __main The main class.
-	 * @param __dn The display name of this suite.
-	 * @param __at The active task.
-	 * @param __iconrc The icon resource used, may be {@code null}.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/11/16
+	 * @param __jar The JAR the program is in.
+	 * @param __man The manifest of the JAR.
+	 * @param __activeTask The active task.
+	 * @param __entry The entry point.
+	 * @throws NullPointerException
 	 */
-	__Program__(Suite __suite, String __main, String __dn,
-		__ActiveTask__ __at, String __iconrc)
+	public __Program__(JarPackageBracket __jar, JavaManifest __man,
+		__ActiveTask__ __activeTask, EntryPoint __entry)
 		throws NullPointerException
 	{
-		if (__suite == null || __main == null || __at == null)
+		if (__jar == null || __man == null || __activeTask == null ||
+			__entry == null)
 			throw new NullPointerException("NARG");
 		
-		this.suite = __suite;
-		this.main = __main;
-		this.iconrc = __iconrc;
+		this.jar = __jar;
+		this._activeTask = __activeTask;
+		this.entry = __entry;
 		
-		String suitename = __suite.getName();
-		this.suitename = suitename;
-		
-		String displayname;
-		this.displayname = (displayname = (__dn != null ? __dn :
-			suitename + " " + __main));
-		this._activetask = __at;
-		
-		// Try to get the internal project name for SquirrelJME, this is used
-		// for quick launching
-		String sjn = __suite.getAttributeValue(
-			"X-SquirrelJME-InternalProjectName");
-		if (sjn == null)
-		{
-			// Only add normal characters
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0, n = displayname.length(); i < n; i++)
-			{
-				char c = displayname.charAt(i);
-				if (Character.isDigit(c) || Character.isLowerCase(c) ||
-					Character.isUpperCase(c))
-					sb.append(c);
-			}
-			
-			sjn = sb.toString();
-		}
-		
-		// SquirrelJME special name
-		String squirreljmename = sjn.toLowerCase();
-		this.squirreljmename = squirreljmename;
-		
-		// SquirrelJME specific name for the JAR file this belongs to,
-		// note that this is only valid within SquirrelJME itself as the
-		// property is set from the launcher
-		String jarfile = __suite.getAttributeValue("x-squirreljme-jarfile");
-		this.jarfile = (jarfile == null ? squirreljmename : jarfile);
+		String midName = __man.getMainAttributes().getValue("MIDlet-Name");
+		this.displayName = (__entry.isMidlet() ? __entry.name() : midName);
 	}
 	
 	/**
@@ -129,12 +85,12 @@ final class __Program__
 			return rv;
 		
 		// No image is here at all
-		String iconrc = this.iconrc;
-		if (iconrc == null || iconrc.isEmpty())
+		String iconRc = this.entry.imageResource();
+		if (iconRc == null || iconRc.isEmpty())
 			return null;
 		
 		// Load image from JAR resource
-		try (InputStream in = ResourceInputStream.open(this.jarfile, iconrc))
+		try (InputStream in = JarPackageShelf.openResource(this.jar, iconRc))
 		{
 			// No resource exists
 			if (in == null)
@@ -163,7 +119,7 @@ final class __Program__
 	 */
 	public final String displayName()
 	{
-		return this.displayname;
+		return this.displayName;
 	}
 	
 	/**
@@ -173,12 +129,14 @@ final class __Program__
 	 */
 	final void __launch()
 	{
+		throw Debugging.todo();
+		/*
 		// Need these
 		Suite suite = this.suite;
 		String main = this.main;
 		
 		// Make it so only a single thing can be launched
-		__ActiveTask__ activetask = this._activetask;
+		__ActiveTask__ activetask = this._activeTask;
 		synchronized (activetask)
 		{
 			// Do not start another task until the current one has finished
@@ -223,6 +181,8 @@ final class __Program__
 			MidletMain._TIMER.schedule(new __ReControlTask__(
 				MidletMain._MAIN_DISPLAY, activetask), 500, 500);
 		}
+		
+		 */
 	}
 }
 

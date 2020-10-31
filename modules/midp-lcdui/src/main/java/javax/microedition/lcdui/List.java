@@ -38,11 +38,8 @@ public class List
 	/** The type of list this is. */
 	private final int _type;
 	
-	/** The focal index. */
-	volatile int _focalindex;
-	
 	/** Selection command. */
-	volatile Command _selcommand =
+	volatile Command _selCommand =
 		List.SELECT_COMMAND;
 	
 	/**
@@ -169,7 +166,8 @@ public class List
 	public Font getFont(int __i)
 		throws IndexOutOfBoundsException
 	{
-		return this._items.get(__i)._font;
+		throw Debugging.todo();/*
+		return this._items.get(__i)._font;*/
 	}
 	
 	/**
@@ -198,19 +196,13 @@ public class List
 	}
 	
 	/**
-	 * Returns the command to use when an item is selected.
-	 *
-	 * @return The select command.
-	 * @since 2019/05/18
+	 * {@inheritDoc}
+	 * @since 2020/10/31
+	 * @param __result
 	 */
-	@ImplementationNote("This is a SquirrelJME specific method.")
-	public Command getSelectCommand()
-	{
-		return this._selcommand;
-	}
-	
 	@Override
-	public int getSelectedFlags(boolean[] __a)
+	public int getSelectedFlags(boolean[] __result)
+		throws IllegalArgumentException, NullPointerException
 	{
 		throw new todo.TODO();
 	}
@@ -222,21 +214,7 @@ public class List
 	@Override
 	public int getSelectedIndex()
 	{
-		// Multiple choice is always invalid
-		if (this._type == Choice.MULTIPLE)
-			return -1;
-		
-		// Find the first entry!
-		int at = 0;
-		for (__ChoiceEntry__ e : this._items)
-		{
-			if (e._selected)
-				return at;
-			at++;
-		}
-		
-		// Not found
-		return -1;
+		return __Utils__.__getSelectedIndex(this, this._type);
 	}
 	
 	/**
@@ -301,7 +279,8 @@ public class List
 	public boolean isSelected(int __i)
 		throws IndexOutOfBoundsException
 	{
-		return this._items.get(__i)._selected;
+		throw Debugging.todo();/*
+		return this._items.get(__i)._selected;*/
 	}
 	
 	@Override
@@ -381,6 +360,7 @@ public class List
 	public void setSelectedIndex(int __i, boolean __e)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();/*
 		// Check bounds
 		__VolatileList__<__ChoiceEntry__> items = this._items;
 		int n = items.size();
@@ -432,7 +412,25 @@ public class List
 		backend.widgetProperty(uiList, UIWidgetProperty.INT_NUM_ELEMENTS,
 			0, n); 
 		
-		throw Debugging.todo();
+		// Detect any changes that have occurred
+		for (int i = 0; i < n; i++)
+		{
+			// Check to see if the item has changed from what we have
+			// previously cached, used to quickly determine if it needs to
+			// actually be updated.
+			__ChoiceEntry__ current = choices.get(i); 
+			int mId = backend.widgetPropertyInt(uiList,
+				UIWidgetProperty.INT_LIST_ITEM_ID_CODE, i);
+			if (current.hashCode() == mId)
+				continue;
+			
+			/*if (true)
+				throw Debugging.todo();*/
+			
+			// Update the ID code to check for future changes to the list
+			backend.widgetProperty(uiList,
+				UIWidgetProperty.INT_LIST_ITEM_ID_CODE, i, current.hashCode());
+		}
 	}
 }
 
