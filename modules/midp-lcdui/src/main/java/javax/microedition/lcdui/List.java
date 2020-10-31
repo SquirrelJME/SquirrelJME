@@ -424,8 +424,29 @@ public class List
 			if (current.hashCode() == mId)
 				continue;
 			
-			/*if (true)
-				throw Debugging.todo();*/
+			// Forward basic properties to the list
+			backend.widgetProperty(uiList,
+				UIWidgetProperty.STRING_LIST_ITEM_LABEL, i, current._label);
+			
+			// Images are always square and based on their highest dimension
+			Image image = current._image;
+			backend.widgetProperty(uiList,
+				UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION, i,
+				(image == null ? 0 :
+					Math.max(image.getWidth(), image.getHeight())));
+			
+			// Flag states
+			backend.widgetProperty(uiList,
+				UIWidgetProperty.INT_LIST_ITEM_DISABLED, i,
+				(current._disabled ? 1 : 0));
+			backend.widgetProperty(uiList,
+				UIWidgetProperty.INT_LIST_ITEM_SELECTED, i,
+				(current._selected ? 1 : 0));
+			
+			// Description of the font, if any
+			String fontDescription = current._fontDescription;
+			backend.widgetProperty(uiList,
+				UIWidgetProperty.STRING_LIST_ITEM_FONT, i, fontDescription);
 			
 			// Update the ID code to check for future changes to the list
 			backend.widgetProperty(uiList,

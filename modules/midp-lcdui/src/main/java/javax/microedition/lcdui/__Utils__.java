@@ -28,6 +28,23 @@ final class __Utils__
 	}
 	
 	/**
+	 * Describes the font used.
+	 * 
+	 * @param __font The font to describe.
+	 * @return The description of the font.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/31
+	 */
+	public static String __describeFont(Font __font)
+		throws NullPointerException
+	{
+		if (__font == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Calculates the selected index.
 	 * 
 	 * @param __c The choice to look within.

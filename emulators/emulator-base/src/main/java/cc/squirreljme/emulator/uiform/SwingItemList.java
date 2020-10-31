@@ -90,6 +90,18 @@ public class SwingItemList
 					model.get(__sub)._idCode = __newValue;
 					break;
 				
+				case UIWidgetProperty.INT_LIST_ITEM_DISABLED:
+					model.get(__sub)._disabled = (__newValue != 0);
+					break;
+				
+				case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
+					model.get(__sub)._selected = (__newValue != 0);
+					break;
+				
+				case UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION:
+					model.get(__sub)._iconDimension = __newValue;
+					break;
+				
 				default:
 					throw new MLECallError("" + __id);
 			}
@@ -107,7 +119,30 @@ public class SwingItemList
 	@Override
 	public void property(int __id, int __sub, String __newValue)
 	{
-		throw Debugging.todo();
+		DefaultListModel<ListEntry> model = this.model;
+		JList<ListEntry> list = this.list;
+		int n = model.getSize();
+		
+		try
+		{
+			switch (__id)
+			{
+				case UIWidgetProperty.STRING_LIST_ITEM_LABEL:
+					model.get(__sub)._label = __newValue;
+					break;
+				
+				case UIWidgetProperty.STRING_LIST_ITEM_FONT:
+					model.get(__sub)._fontDescription = __newValue;
+					break;
+				
+				default:
+					throw new MLECallError("" + __id);
+			}
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new MLECallError("Invalid index: " + __sub, e);
+		}
 	}
 	
 	/**
