@@ -50,7 +50,10 @@ public final class JarPackageShelf
 	public static native JarPackageBracket[] libraries();
 	
 	/**
-	 * Returns the path to the given JAR
+	 * Returns the path to the given JAR.
+	 * 
+	 * Note that this may or may not be a physical path, it could be a
+	 * representation of the JAR file in string form.
 	 * 
 	 * @param __jar The JAR to get the path of.
 	 * @return The path of the given JAR.
