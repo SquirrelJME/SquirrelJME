@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.general;
 
+import cc.squirreljme.plugin.multivm.AlwaysFalse;
 import cc.squirreljme.plugin.util.FossilExe;
 import cc.squirreljme.plugin.util.NoteCalendarGenerator;
 import cc.squirreljme.plugin.util.SimpleHTTPProtocolException;
@@ -63,6 +64,7 @@ public class DeveloperNoteTask
 		
 		// Fossil must exist
 		this.onlyIf(__task -> FossilExe.isAvailable(true));
+		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// Action to perform
 		this.doLast(this::action);

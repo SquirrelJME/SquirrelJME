@@ -44,14 +44,16 @@ public abstract class BaseList
 	public void test(Display __display)
 		throws Throwable
 	{
+		// Every type of list needs to be tested
 		for (int i = Choice.EXCLUSIVE; i <= Choice.IMPLICIT; i++)
 		{
-			 List list = new List("List Test", i);
+			String typeName = (i == Choice.EXCLUSIVE ? "exclusive" :
+				(i == Choice.IMPLICIT ? "implicit" : "multiple"));
+			
+			List list = new List("List " + typeName, i);
 			
 			__display.setCurrent(list);
 			
-			String typeName = (i == Choice.EXCLUSIVE ? "exclusive" :
-				(i == Choice.IMPLICIT ? "implicit" : "multiple"));
 			this.test(__display, list, i, typeName);
 		}
 	}

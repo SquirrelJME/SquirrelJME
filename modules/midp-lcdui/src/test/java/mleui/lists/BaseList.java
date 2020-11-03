@@ -33,10 +33,12 @@ public abstract class BaseList
 	 * @param __display The display used.
 	 * @param __form The form used.
 	 * @param __list The list used.
+	 * @throws Throwable On any exception.
 	 * @since 2020/10/18
 	 */
 	public abstract void test(UIBackend __backend, UIDisplayBracket __display,
-		UIFormBracket __form, UIItemBracket __list);
+		UIFormBracket __form, UIItemBracket __list)
+		throws Throwable;
 	
 	/**
 	 * {@inheritDoc}
