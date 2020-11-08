@@ -41,20 +41,34 @@ public abstract class BaseList
 	 * @since 2020/11/11
 	 */
 	@Override
-	public void test(Display __display)
+	public void test(Display __display, String __param)
 		throws Throwable
 	{
-		// Every type of list needs to be tested
-		for (int i = Choice.EXCLUSIVE; i <= Choice.IMPLICIT; i++)
+		// Which type of list is used?
+		int listType;
+		switch (__param)
 		{
-			String typeName = (i == Choice.EXCLUSIVE ? "exclusive" :
-				(i == Choice.IMPLICIT ? "implicit" : "multiple"));
+			case "EXCLUSIVE":
+				listType = Choice.EXCLUSIVE;
+				break;
+				
+			case "IMPLICIT":
+				listType = Choice.IMPLICIT;
+				break;
+				
+			case "MULTIPLE":
+				listType = Choice.MULTIPLE;
+				break;
 			
-			List list = new List("List " + typeName, i);
-			
-			__display.setCurrent(list);
-			
-			this.test(__display, list, i, typeName);
+			default:
+				throw new IllegalArgumentException(__param);
 		}
+		
+		// Setup and test list
+		List list = new List("List " + __param, listType);
+		
+		__display.setCurrent(list);
+		
+		this.test(__display, list, listType, __param);
 	}
 }

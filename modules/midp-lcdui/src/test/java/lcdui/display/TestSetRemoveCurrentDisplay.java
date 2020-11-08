@@ -13,6 +13,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import lcdui.BaseDisplay;
+import net.multiphasicapps.tac.OptionalFirstParameter;
 
 /**
  * Tests that setting and removing the current display is valid.
@@ -21,13 +22,14 @@ import lcdui.BaseDisplay;
  */
 public class TestSetRemoveCurrentDisplay
 	extends BaseDisplay
+	implements OptionalFirstParameter
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/07/26
 	 */
 	@Override
-	public void test(Display __display)
+	public void test(Display __display, String __param)
 	{
 		// Use any kind of thing
 		Displayable form = new Form(null);

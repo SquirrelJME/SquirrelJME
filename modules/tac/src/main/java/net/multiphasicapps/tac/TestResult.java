@@ -274,13 +274,15 @@ public final class TestResult
 	 * @param __cl The results to load.
 	 * @param __otherKeys Other keys that were loaded and ignored, this is
 	 * optional.
+	 * @param __multiParam Optional multi-parameter which may be used to load
+	 * results elsewhere.
 	 * @return The results of the test.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException If no class was specified.
 	 * @since 2019/05/08
 	 */
 	@SuppressWarnings("FeatureEnvy")
 	public static TestResult loadForClass(Class<?> __cl,
-		Map<String, String> __otherKeys)
+		Map<String, String> __otherKeys, String __multiParam)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -292,67 +294,79 @@ public final class TestResult
 		for (Class<?> at = __cl; at != null; at = at.getSuperclass())
 		{
 			// Determine base name of the class
-			String atname = at.getName();
-			int ld = atname.lastIndexOf('.');
-			String atbase = (ld < 0 ? atname : atname.substring(ld + 1));
+			String atName = at.getName();
+			int ld = atName.lastIndexOf('.');
+			String atBase = (ld < 0 ? atName : atName.substring(ld + 1));
 			
-			// Parse and handle manifest
-			JavaManifest man;
-			try (InputStream in = at.getResourceAsStream(atbase + ".in"))
+			// Try to load multi-parameter and standard results, the multi
+			// parameters take precedence since they are more specific for
+			// tests
+			for (int i = 0; i < 2; i++)
 			{
-				// No manifest here, ignore
-				if (in == null)
+				// Skip first case if not for multi parameter
+				boolean isForMulti = (i == 0);
+				if (isForMulti && __multiParam == null)
 					continue;
 				
-				// Parse
-				man = new JavaManifest(in);
-			}
-			
-			// Ignore
-			catch (IOException e)
-			{
-				continue;
-			}
-			
-			// Work with attributes and decode them
-			JavaManifestAttributes attr = man.getMainAttributes();
-			for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
-			{
-				String ekey = e.getKey().toString().toLowerCase(),
-					eval = e.getValue();
-				
-				// Depends on the encoded key
-				switch (ekey)
+				// Parse and handle manifest
+				JavaManifestAttributes attr;
+				try (InputStream in = at.getResourceAsStream(
+					(isForMulti ? atBase + "@" + __multiParam :
+					atBase) + ".in"))
 				{
-						// Returned value
-					case "result":
-						if (rv.getReturn() == null)
-							rv.setReturnEncoded(eval);
-						break;
+					// No manifest here, ignore
+					if (in == null)
+						continue;
 					
-						// Thrown value
-					case "thrown":
-						if (rv.getThrown() == null)
-							rv.setThrownEncoded(eval);
-						break;
+					// Parse
+					attr = new JavaManifest(in).getMainAttributes();
+				}
+				
+				// Ignore
+				catch (IOException e)
+				{
+					continue;
+				}
+				
+				// Work with attributes and decode them
+				for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
+				{
+					String ekey = e.getKey().toString().toLowerCase(),
+						eval = e.getValue();
+					
+					// Depends on the encoded key
+					switch (ekey)
+					{
+							// Returned value
+						case "result":
+							if (rv.getReturn() == null)
+								rv.setReturnEncoded(eval);
+							break;
 						
-						// Possibly handle secondary values
-					default:
-						if (ekey.startsWith("secondary-"))
-						{
-							String skey = DataDeserialization.decodeKey(
-								ekey.substring(10));
+							// Thrown value
+						case "thrown":
+							if (rv.getThrown() == null)
+								rv.setThrownEncoded(eval);
+							break;
 							
-							if (rv.getSecondary(skey) == null)
-								rv.putSecondaryEncoded(skey, eval);
-						}
-						
-						// Another key, put into the other map, but never
-						// replace values that already exist
-						else if (__otherKeys != null &&
-							!__otherKeys.containsKey(ekey))
-							__otherKeys.put(ekey, eval);
-						break;
+							// Possibly handle secondary values
+						default:
+							if (ekey.startsWith("secondary-"))
+							{
+								String skey = DataDeserialization.decodeKey(
+									ekey.substring(10));
+								
+								if (rv.getSecondary(skey) == null)
+									rv.putSecondaryEncoded(skey, eval);
+							}
+							
+							// Another key, put into the other map, but never
+							// replace values that already exist
+							else if (__otherKeys != null &&
+								!__otherKeys.containsKey(ekey))
+								__otherKeys.put(ekey, eval);
+							break;
+					}
 				}
 			}
 		}

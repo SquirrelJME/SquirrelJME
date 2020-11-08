@@ -9,9 +9,9 @@
 
 package lcdui.display;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Display;
 import lcdui.BaseDisplay;
+import net.multiphasicapps.tac.OptionalFirstParameter;
 
 /**
  * Tests that serial calls happen properly.
@@ -20,6 +20,7 @@ import lcdui.BaseDisplay;
  */
 public class TestCallSerially
 	extends BaseDisplay
+	implements OptionalFirstParameter
 {
 	/**
 	 * {@inheritDoc}
@@ -27,7 +28,7 @@ public class TestCallSerially
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	@Override
-	public void test(Display __display)
+	public void test(Display __display, String __param)
 	{
 		__SerialRun__ run = new __SerialRun__();
 		

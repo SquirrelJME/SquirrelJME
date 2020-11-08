@@ -11,6 +11,7 @@ package lcdui;
 
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Form;
+import net.multiphasicapps.tac.OptionalFirstParameter;
 
 /**
  * Base class for form related tests.
@@ -19,6 +20,7 @@ import javax.microedition.lcdui.Form;
  */
 public abstract class BaseForm
 	extends BaseDisplay
+	implements OptionalFirstParameter
 {
 	/**
 	 * Tests on the given form.
@@ -36,7 +38,7 @@ public abstract class BaseForm
 	 * @since 2020/07/27
 	 */
 	@Override
-	public final void test(Display __display)
+	public final void test(Display __display, String __param)
 		throws Throwable
 	{
 		Form form = new Form("Test");

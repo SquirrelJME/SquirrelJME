@@ -12,6 +12,7 @@ package lcdui.canvas;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import javax.microedition.lcdui.Display;
 import lcdui.BaseDisplay;
+import net.multiphasicapps.tac.OptionalFirstParameter;
 
 /**
  * Base tests for canvases.
@@ -20,6 +21,7 @@ import lcdui.BaseDisplay;
  */
 public abstract class BaseCanvas
 	extends BaseDisplay
+	implements OptionalFirstParameter
 {
 	/** The number of times to let the canvas settle before testing. */
 	private static final int _SETTLE_COUNT =
@@ -41,7 +43,7 @@ public abstract class BaseCanvas
 	 * @since 2020/07/27
 	 */
 	@Override
-	public final void test(Display __display)
+	public final void test(Display __display, String __param)
 		throws Throwable
 	{
 		CanvasPlatform platform = new CanvasPlatform();

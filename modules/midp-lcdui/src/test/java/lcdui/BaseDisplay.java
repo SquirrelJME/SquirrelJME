@@ -13,7 +13,8 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Display;
-import net.multiphasicapps.tac.TestRunnable;
+import net.multiphasicapps.tac.OptionalFirstParameter;
+import net.multiphasicapps.tac.TestConsumer;
 import net.multiphasicapps.tac.UntestableException;
 
 /**
@@ -22,16 +23,17 @@ import net.multiphasicapps.tac.UntestableException;
  * @since 2020/07/26
  */
 public abstract class BaseDisplay
-	extends TestRunnable
+	extends TestConsumer<String>
 {
 	/**
 	 * Tests with the given display.
 	 * 
 	 * @param __display The display to test on.
+	 * @param __param The parameter to use, this is optional.
 	 * @throws Throwable On any exception.
 	 * @since 2020/07/26
 	 */
-	public abstract void test(Display __display)
+	public abstract void test(Display __display, String __param)
 		throws Throwable;
 	
 	/**
@@ -39,7 +41,7 @@ public abstract class BaseDisplay
 	 * @since 2020/07/26
 	 */
 	@Override
-	public final void test()
+	public final void test(String __param)
 		throws Throwable
 	{
 		Debugging.todoNote("BaseDisplay::test() -- Headless check.");
@@ -47,6 +49,6 @@ public abstract class BaseDisplay
 			throw new UntestableException("Native forms not supported.");
 		
 		// Forward test
-		this.test(Display.getDisplays(0)[0]);
+		this.test(Display.getDisplays(0)[0], __param);
 	}
 }

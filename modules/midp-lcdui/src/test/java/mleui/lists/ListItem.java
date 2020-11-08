@@ -69,7 +69,7 @@ public final class ListItem
 	@Override
 	public final int hashCode()
 	{
-		int rv = System.identityHashCode(this);
+		int rv = 0;
 		
 		rv ^= (this._selected ? 0x8000_0000 : 0x4000_0000);
 		rv ^= (this._disabled ? 0x0800_0000 : 0x0400_0000);

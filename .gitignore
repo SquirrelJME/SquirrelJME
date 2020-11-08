@@ -34,6 +34,7 @@ file-*
 *.ico
 *.png
 *.sqc
+*.xcf
 
 # Crash logs
 *.log
