@@ -7,6 +7,7 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Configuration for CodeClimate
+# https://docs.codeclimate.com/docs/advanced-configuration
 
 version: 2
 checks:
@@ -53,6 +54,16 @@ checks:
   return-statements:
     config:
       threshold: 32
+
+  # Code duplication (affects all languages)
+  # https://docs.codeclimate.com/docs/default-analysis-configuration
+  # Java defaults to 40
+  similar-code:
+    config:
+      threshold: 120
+  identical-code:
+    config:
+      threshold: 120
 
 exclude_patterns:
   # Ignore the Gradle plugin
