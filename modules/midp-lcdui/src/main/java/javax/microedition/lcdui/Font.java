@@ -659,10 +659,15 @@ public final class Font
 	 * Locates a font which matches the specified parameters the closest, a
 	 * font will always be returned if the parameters do not match.
 	 *
-	 * @param __face The font face, this is a single value.
+	 * @param __face The font face, this is a single value, one of:
+	 * {@link Font#FACE_SYSTEM}, {@link Font#FACE_MONOSPACE}, or
+	 * {@link Font#FACE_PROPORTIONAL}.
 	 * @param __style The style of the font, this may be a combination of
-	 * values.
-	 * @param __size The size of the font, this is a single value.
+	 * values, one of: {@link Font#STYLE_BOLD}, {@link Font#STYLE_ITALIC},
+	 * {@link Font#STYLE_PLAIN}, or {@link Font#STYLE_UNDERLINED}.
+	 * @param __size The size of the font, this is a single value, one of:
+	 * {@link Font#SIZE_SMALL}, {@link Font#SIZE_MEDIUM}, or
+	 * {@link Font#SIZE_LARGE}.
 	 * @return The nearest font which matches the specified parameters.
 	 * @throws IllegalArgumentException If the input parameters are not valid.
 	 * @since 2017/05/25
@@ -671,14 +676,14 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1y Invalid font face specified. (The face)}
-		if ((__face & ~(Font.FACE_SYSTEM | Font.FACE_MONOSPACE | Font.FACE_PROPORTIONAL)) != 0
-			|| Integer.bitCount(__face) > 1)
+		if ((__face & ~(Font.FACE_SYSTEM | Font.FACE_MONOSPACE |
+			Font.FACE_PROPORTIONAL)) != 0 || Integer.bitCount(__face) > 1)
 			throw new IllegalArgumentException(String.format("EB1y %d",
 				__face));
 		
 		// {@squirreljme.error EB1z Invalid font size specified. (The size)}
-		if ((__size & ~(Font.SIZE_SMALL | Font.SIZE_MEDIUM | Font.SIZE_LARGE)) != 0
-			|| Integer.bitCount(__size) > 1)
+		if ((__size & ~(Font.SIZE_SMALL | Font.SIZE_MEDIUM |
+			Font.SIZE_LARGE)) != 0 || Integer.bitCount(__size) > 1)
 			throw new IllegalArgumentException(String.format("EB1z %d",
 				__size));
 		

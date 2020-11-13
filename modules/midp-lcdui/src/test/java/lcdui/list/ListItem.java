@@ -10,6 +10,7 @@
 package lcdui.list;
 
 import java.util.Objects;
+import java.util.Random;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
@@ -144,5 +145,55 @@ public final class ListItem
 			__list.getFont(__dx),
 			__list.isEnabled(__dx),
 			__list.isSelected(__dx));
+	}
+	
+	/**
+	 * Returns a randomized item.
+	 * 
+	 * @param __rand The randomized source.
+	 * @return A newly randomized list item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/13
+	 */
+	public static ListItem random(Random __rand)
+		throws NullPointerException
+	{
+		if (__rand == null)
+			throw new NullPointerException("NARG");
+		
+		// Face
+		int face;
+		switch (__rand.nextInt(3))
+		{
+			case 0:		face = Font.FACE_MONOSPACE; break;
+			case 1:		face = Font.FACE_PROPORTIONAL; break;
+			default:	face = Font.FACE_SYSTEM; break;
+		}
+		
+		// Style
+		int style;
+		switch (__rand.nextInt(4))
+		{
+			case 0:		style = Font.STYLE_BOLD; break;
+			case 1:		style = Font.STYLE_ITALIC; break;
+			case 2:		style = Font.STYLE_PLAIN; break;
+			default:	style = Font.STYLE_UNDERLINED; break;
+		}
+		
+		// Size
+		int size;
+		switch (__rand.nextInt(3))
+		{
+			case 0:		size = Font.SIZE_LARGE; break;
+			case 1:		size = Font.SIZE_MEDIUM; break;
+			default:	size = Font.SIZE_SMALL; break;
+		}
+		
+		return new ListItem(
+			Character.toString((char)('a' + __rand.nextInt(25))),
+			Image.createImage(1 + __rand.nextInt(16),
+				1 + __rand.nextInt(16)),
+			Font.getFont(face, style, size),
+			true, false);
 	}
 }
