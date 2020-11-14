@@ -26,7 +26,7 @@ public final class ListEntry
 	boolean _disabled;
 	
 	/** The description of the font. */
-	String _fontDescription;
+	int _fontDescription;
 	
 	/** The ID code of this entry. */
 	int _idCode;

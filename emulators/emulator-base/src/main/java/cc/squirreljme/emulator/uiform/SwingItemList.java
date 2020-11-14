@@ -11,7 +11,6 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
@@ -102,6 +101,10 @@ public class SwingItemList
 					model.get(__sub)._iconDimension = __newValue;
 					break;
 				
+				case UIWidgetProperty.INT_LIST_ITEM_FONT:
+					model.get(__sub)._fontDescription = __newValue;
+					break;
+				
 				default:
 					throw new MLECallError("" + __id);
 			}
@@ -129,10 +132,6 @@ public class SwingItemList
 			{
 				case UIWidgetProperty.STRING_LIST_ITEM_LABEL:
 					model.get(__sub)._label = __newValue;
-					break;
-				
-				case UIWidgetProperty.STRING_LIST_ITEM_FONT:
-					model.get(__sub)._fontDescription = __newValue;
 					break;
 				
 				default:

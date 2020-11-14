@@ -10,23 +10,73 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
+import cc.squirreljme.jvm.mle.constants.UIFontFlag;
 import javax.microedition.lcdui.Font;
 
 /**
- * This class provides static methods for the conversion of font sizes from
- * pixel sizes to logical sizes.
+ * This class provides static utility methods for fonts and otherwise.
  *
  * @since 2018/11/24
  */
-public final class FontSizeConversion
+public final class FontUtilities
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2018/11/24
 	 */
-	private FontSizeConversion()
+	private FontUtilities()
 	{
+	}
+	
+	/**
+	 * Converts a representation of the font to a system font ID.
+	 * 
+	 * @param __font The font to identify.
+	 * @return The identifier for the font.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/14
+	 */
+	public static int fontToSystemFont(Font __font)
+		throws NullPointerException
+	{
+		if (__font == null)
+			throw new NullPointerException("NARG");
+		
+		int id = 0;
+		
+		// Shift in size
+		int size = __font.getPixelSize();
+		id |= (size > UIFontFlag.PIXEL_SIZE_MASK ? UIFontFlag.PIXEL_SIZE_MASK :
+			size);
+		
+		// Shift in font face
+		switch (__font.getFace())
+		{
+			case Font.FACE_PROPORTIONAL:
+				id |= UIFontFlag.FACE_PROPORTIONAL;
+				break;
+				
+			case Font.FACE_MONOSPACE:
+				id |= UIFontFlag.FACE_MONOSPACE;
+				break;
+			
+			case Font.FACE_SYSTEM:
+			default:
+				id |= UIFontFlag.FACE_SYSTEM;
+				break;
+		}
+		
+		// Map font style
+		int style = __font.getStyle();
+		if ((style & Font.STYLE_ITALIC) != 0)
+			id |= UIFontFlag.STYLE_ITALIC_FLAG;
+		if ((style & Font.STYLE_BOLD) != 0)
+			id |= UIFontFlag.STYLE_BOLD_FLAG;
+		if ((style & Font.STYLE_UNDERLINED) != 0)
+			id |= UIFontFlag.STYLE_UNDERLINED_FLAG;
+		
+		return id;
 	}
 	
 	/**
@@ -65,7 +115,7 @@ public final class FontSizeConversion
 	 * @return The logical size.
 	 * @since 2018/11/24
 	 */
-	public static final int pixelSizeToLogicalSize(int __psz)
+	public static int pixelSizeToLogicalSize(int __psz)
 	{
 		if (__psz < 10)
 			return Font.SIZE_SMALL;

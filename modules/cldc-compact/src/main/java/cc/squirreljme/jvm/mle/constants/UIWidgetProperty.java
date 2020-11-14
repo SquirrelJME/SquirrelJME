@@ -83,7 +83,7 @@ public interface UIWidgetProperty
 		15;
 	
 	/** The font to use for the item ({@code pxsize|style|name}). */
-	byte STRING_LIST_ITEM_FONT =
+	byte INT_LIST_ITEM_FONT =
 		16;
 	
 	/** The number of properties. */

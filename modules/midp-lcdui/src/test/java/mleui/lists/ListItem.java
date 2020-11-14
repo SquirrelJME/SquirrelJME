@@ -37,7 +37,7 @@ public final class ListItem
 	String _label;
 	
 	/** The font to use. */
-	String _font;
+	int _font;
 	
 	/**
 	 * {@inheritDoc}
@@ -59,7 +59,7 @@ public final class ListItem
 			this._iconDimension == o._iconDimension &&
 			this._idCode == o._idCode &&
 			Objects.equals(this._label, o._label) &&
-			Objects.equals(this._font, o._font);
+			this._font == o._font;
 	}
 	
 	/**
@@ -77,8 +77,7 @@ public final class ListItem
 			(this._label.hashCode() | 0x0080_0000) : 0x0040_0000);
 		rv ^= this._iconDimension;
 		rv ^= this._idCode;
-		rv ^= (this._font != null ?
-			(this._font.hashCode() | 0x0000_8000) : 0x0000_4000);
+		rv ^= this._font;
 		
 		return rv;
 	}
@@ -106,7 +105,7 @@ public final class ListItem
 		__backend.widgetProperty(__list, __i,
 			UIWidgetProperty.STRING_LIST_ITEM_LABEL, this._label);
 		__backend.widgetProperty(__list, __i,
-			UIWidgetProperty.STRING_LIST_ITEM_FONT, this._font);
+			UIWidgetProperty.INT_LIST_ITEM_FONT, this._font);
 	}
 	
 	/**
@@ -131,11 +130,11 @@ public final class ListItem
 			UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION);
 		rv._idCode = __backend.widgetPropertyInt(__list, __i,
 			UIWidgetProperty.INT_LIST_ITEM_ID_CODE);
+		rv._font = __backend.widgetPropertyInt(__list, __i,
+			UIWidgetProperty.INT_LIST_ITEM_FONT);
 			
 		rv._label = __backend.widgetPropertyStr(__list, __i,
 			UIWidgetProperty.STRING_LIST_ITEM_LABEL);
-		rv._font = __backend.widgetPropertyStr(__list, __i,
-			UIWidgetProperty.STRING_LIST_ITEM_FONT);
 		
 		return rv;
 	}

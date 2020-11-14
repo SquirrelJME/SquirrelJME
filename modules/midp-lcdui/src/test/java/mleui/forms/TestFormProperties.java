@@ -184,7 +184,7 @@ public class TestFormProperties
 				this.secondary("no-list-idcode", noEitherGet);
 				return;
 			
-			case UIWidgetProperty.STRING_LIST_ITEM_FONT:
+			case UIWidgetProperty.INT_LIST_ITEM_FONT:
 				this.secondary("no-list-font", noEitherGet);
 				return;
 			

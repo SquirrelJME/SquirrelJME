@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.font.FontSizeConversion;
+import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import java.io.IOException;
 import java.io.InputStream;
@@ -238,7 +238,7 @@ public final class Font
 		
 		// Use default font size?
 		if (__pxs == 0)
-			__pxs = FontSizeConversion.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
+			__pxs = FontUtilities.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
 		
 		// {@squirreljme.error EB1u The pixel size of a font cannot be
 		// negative.}
@@ -395,7 +395,7 @@ public final class Font
 	 */
 	public int getSize()
 	{
-		return FontSizeConversion.pixelSizeToLogicalSize(this._pixelsize);
+		return FontUtilities.pixelSizeToLogicalSize(this._pixelsize);
 	}
 	
 	/**
@@ -697,7 +697,7 @@ public final class Font
 		
 		// Get fonts that might exist
 		Font[] scan = Font.getAvailableFonts(__face, __style,
-			FontSizeConversion.logicalSizeToPixelSize(__size));
+			FontUtilities.logicalSizeToPixelSize(__size));
 		
 		// If no fonts were found, use a default font with a derived pixel
 		// size as such
@@ -709,7 +709,7 @@ public final class Font
 			try
 			{
 				return d.deriveFont(__style,
-					FontSizeConversion.logicalSizeToPixelSize(__size));
+					FontUtilities.logicalSizeToPixelSize(__size));
 			}
 			catch (IllegalArgumentException e)
 			{

@@ -194,6 +194,6 @@ public final class ListItem
 			Image.createImage(1 + __rand.nextInt(16),
 				1 + __rand.nextInt(16)),
 			Font.getFont(face, style, size),
-			true, false);
+			__rand.nextBoolean(), __rand.nextBoolean());
 	}
 }

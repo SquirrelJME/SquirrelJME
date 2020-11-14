@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -289,10 +290,24 @@ public class List
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/14
+	 */
 	@Override
-	public void set(int __a, String __b, Image __c)
+	public void set(int __i, String __label, Image __icon)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__label == null)
+			throw new NullPointerException("NARG");
+		
+		// Set properties
+		__ChoiceEntry__ entry = this._items.get(__i);
+		entry._label = __label;
+		entry._image = __icon;
+		
+		// Update display
+		this.__refresh();
 	}
 	
 	/**
@@ -306,11 +321,7 @@ public class List
 		this._items.get(__i)._disabled = !__e;
 		
 		// Update display
-		throw Debugging.todo();
-		/*
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();*/
+		this.__refresh();
 	}
 	
 	@Override
@@ -334,11 +345,7 @@ public class List
 		this._items.get(__i)._font = __f;
 		
 		// Update display
-		throw Debugging.todo();
-		/*
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();*/
+		this.__refresh();
 	}
 	
 	public void setSelectCommand(Command __a)
@@ -360,30 +367,7 @@ public class List
 	public void setSelectedIndex(int __i, boolean __e)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();/*
-		// Check bounds
-		__VolatileList__<__ChoiceEntry__> items = this._items;
-		int n = items.size();
-		if (__i < 0 || __i >= n)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		// If deselecting or using this on multiple lists, just direct set
-		if (!__e || this._type == Choice.MULTIPLE)
-			items.get(__i)._selected = __e;
-		
-		// Otherwise only select the item that matches the index
-		else
-		{
-			for (int i = 0; i < n; i++)
-				this._items.get(i)._selected = (__i == i);
-		}
-		
-		// Update display
-		throw Debugging.todo();
-		/*
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();*/
+		__Utils__.__setSelectedIndex(this, this._type, __i, __e);
 	}
 	
 	/**
@@ -444,9 +428,10 @@ public class List
 				(current._selected ? 1 : 0));
 			
 			// Description of the font, if any
-			String fontDescription = current._fontDescription;
+			Font font = current._font;
 			backend.widgetProperty(uiList,
-				UIWidgetProperty.STRING_LIST_ITEM_FONT, i, fontDescription);
+				UIWidgetProperty.INT_LIST_ITEM_FONT, i, (font == null ? 0 :
+					FontUtilities.fontToSystemFont(font)));
 			
 			// Update the ID code to check for future changes to the list
 			backend.widgetProperty(uiList,

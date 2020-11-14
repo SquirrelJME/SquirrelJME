@@ -89,7 +89,18 @@ public interface Choice
 	
 	boolean isSelected(int __a);
 	
-	void set(int __a, String __b, Image __c);
+	/**
+	 * Sets the item at the given position.
+	 * 
+	 * @param __i The index to set.
+	 * @param __label The label to use for the item.
+	 * @param __icon The icon to use for the item.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws NullPointerException If no label was specified.
+	 * @since 2020/11/14
+	 */
+	void set(int __i, String __label, Image __icon)
+		throws IndexOutOfBoundsException, NullPointerException;
 	
 	void setEnabled(int __i, boolean __e);
 	

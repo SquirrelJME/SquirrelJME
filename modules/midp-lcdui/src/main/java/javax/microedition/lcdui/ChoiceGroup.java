@@ -227,7 +227,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void set(int __a, String __b, Image __c)
+	public void set(int __i, String __label, Image __icon)
 	{
 		throw new todo.TODO();
 	}

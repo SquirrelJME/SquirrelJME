@@ -13,7 +13,9 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import javax.microedition.lcdui.Font;
 
 /**
  * Tests resetting of list items after a list has been resized and those items
@@ -51,7 +53,7 @@ public class TestListItemReset
 		first._iconDimension = 16;
 		first._selected = true;
 		first._disabled = true;
-		first._font = "12||monospace";
+		first._font = FontUtilities.fontToSystemFont(Font.getDefaultFont());
 		first._label = "Cute Squirrel!";
 		
 		first.into(__backend, __list, 0);
@@ -78,7 +80,8 @@ public class TestListItemReset
 		second._iconDimension = 32;
 		second._selected = true;
 		second._disabled = true;
-		second._font = "12||serif";
+		second._font = FontUtilities.fontToSystemFont(Font.getFont(
+			Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_LARGE));
 		second._label = "Cute Squeak!";
 		
 		second.into(__backend, __list, 1);
