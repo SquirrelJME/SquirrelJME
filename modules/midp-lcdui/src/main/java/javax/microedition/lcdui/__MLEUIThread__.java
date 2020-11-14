@@ -63,7 +63,7 @@ final class __MLEUIThread__
 			
 			// List activations will activate the given list item
 			else if (widget instanceof List)
-				throw Debugging.todo();
+				((List)widget).__selectCommand(__keyCode);
 		}
 		
 		// Displayables which have standard key access

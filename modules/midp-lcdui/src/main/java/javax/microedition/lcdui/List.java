@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -40,8 +41,7 @@ public class List
 	private final int _type;
 	
 	/** Selection command. */
-	volatile Command _selCommand =
-		List.SELECT_COMMAND;
+	volatile Command _selCommand;
 	
 	/**
 	 * Initializes the list.
@@ -102,6 +102,13 @@ public class List
 		// Append all of the items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)
 			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
+		
+		// Implicit lists have a specific select command used
+		if (__type == Choice.IMPLICIT)
+		{
+			this._selCommand = List.SELECT_COMMAND;
+			this.addCommand(List.SELECT_COMMAND);
+		}
 	}
 	
 	/**
@@ -437,6 +444,29 @@ public class List
 			backend.widgetProperty(uiList,
 				UIWidgetProperty.INT_LIST_ITEM_ID_CODE, i, current.hashCode());
 		}
+	}
+	
+	/**
+	 * Selects the given item.
+	 * 
+	 * @param __keyCode The item being selected.
+	 * @since 2020/11/14
+	 */
+	@SerializedEvent
+	final void __selectCommand(int __keyCode)
+	{
+		// This command is only executed for implicit lists only
+		if (this._type != Choice.IMPLICIT)
+			return;
+		
+		// These must both be set, otherwise nothing can be activated
+		Command selCommand = this._selCommand;
+		CommandListener listener = this._cmdListener;
+		if (selCommand == null || listener == null)
+			return;
+		
+		// Send in the command action
+		listener.commandAction(selCommand, this);
 	}
 }
 
