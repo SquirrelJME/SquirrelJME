@@ -37,7 +37,8 @@ public final class FontSizeConversion
 	 * @throws IllegalArgumentException If the logical font size is not valid.
 	 * @since 2018/11/24
 	 */
-	public static final int logicalSizeToPixelSize(int __lsz)
+	@SuppressWarnings("MagicNumber")
+	public static int logicalSizeToPixelSize(int __lsz)
 		throws IllegalArgumentException
 	{
 		switch (__lsz)

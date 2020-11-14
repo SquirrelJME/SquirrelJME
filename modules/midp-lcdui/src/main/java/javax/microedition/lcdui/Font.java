@@ -561,7 +561,8 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1v Invalid font style specified. (The style)}
-		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_ITALIC |
+			Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1v %d",
 				__style));
 		
@@ -581,8 +582,12 @@ public final class Font
 	/**
 	 * Returns all of the fonts which are available in the given format.
 	 *
-	 * @param __face The face type of the font.
-	 * @param __style The style of the font.
+	 * @param __face The font face, this is a single value, one of:
+	 * {@link Font#FACE_SYSTEM}, {@link Font#FACE_MONOSPACE}, or
+	 * {@link Font#FACE_PROPORTIONAL}.
+	 * @param __style The style of the font, this may be a combination of
+	 * values, one of: {@link Font#STYLE_BOLD}, {@link Font#STYLE_ITALIC},
+	 * {@link Font#STYLE_PLAIN}, or {@link Font#STYLE_UNDERLINED}.
 	 * @param __pxs The pixel size of the font.
 	 * @return The available fonts.
 	 * @throws IllegalArgumentException If the parameters are not correct.
@@ -592,7 +597,8 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1w Invalid font style specified. (The style)}
-		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_ITALIC |
+			Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1w %d",
 				__style));
 		
@@ -647,8 +653,10 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)}
-		if (__spec != Font.FONT_INPUT_TEXT && __spec != Font.FONT_STATIC_TEXT &&
-			__spec != Font.FONT_IDLE_TEXT && __spec != Font.FONT_IDLE_HIGHLIGHTED_TEXT)
+		if (__spec != Font.FONT_INPUT_TEXT &&
+			__spec != Font.FONT_STATIC_TEXT &&
+			__spec != Font.FONT_IDLE_TEXT &&
+			__spec != Font.FONT_IDLE_HIGHLIGHTED_TEXT)
 			throw new IllegalArgumentException("EB1x " + __spec);
 		
 		// This is always the default font
