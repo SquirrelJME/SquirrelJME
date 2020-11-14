@@ -9,11 +9,12 @@
 
 package cc.squirreljme.runtime.lcdui.mle;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -162,7 +163,7 @@ public final class StaticDisplayState
 	{
 		if (__native == null)
 			throw new NullPointerException("NARG");
-			
+		
 		// Would be previously cached
 		UIBackend instance = UIBackendFactory.getInstance();
 		synchronized (StaticDisplayState.class)
@@ -191,13 +192,60 @@ public final class StaticDisplayState
 	 * @return The widget for the given displayable.
 	 * @throws NoSuchElementException If none were found.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/07/26
+	 * @since 2020/11/14
 	 */
 	public static UIWidgetBracket locate(DisplayWidget __widget)
 		throws NoSuchElementException, NullPointerException
 	{
-		if (__widget == null)
+		return StaticDisplayState.locate(__widget, Integer.MIN_VALUE);
+	}
+	
+	/**
+	 * Locates the widget for the given display widget.
+	 * 
+	 * @param __widget The displayable to locate.
+	 * @param __type The {@link UIItemType} to look for, may be
+	 * {@link Integer#MIN_VALUE} if not considered.
+	 * @return The widget for the given displayable.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @throws NoSuchElementException If none were found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/14
+	 */
+	public static UIWidgetBracket locate(DisplayWidget __widget, int __type)
+		throws IllegalArgumentException, NoSuchElementException,
+			NullPointerException
+	{
+		return StaticDisplayState.locate(__widget, __type,
+			UIBackendFactory.getInstance());
+	}
+	
+	/**
+	 * Locates the widget for the given display widget.
+	 * 
+	 * @param __widget The displayable to locate.
+	 * @param __type The {@link UIItemType} to look for, may be
+	 * {@link Integer#MIN_VALUE} if not considered.
+	 * @param __backend The backend to reference for properties, this is
+	 * likely to only be used for testing purposes.
+	 * @return The widget for the given displayable.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @throws NoSuchElementException If none were found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/07/26
+	 */
+	public static UIWidgetBracket locate(DisplayWidget __widget, int __type,
+		UIBackend __backend)
+		throws IllegalArgumentException, NoSuchElementException,
+			NullPointerException
+	{
+		if (__widget == null || __backend == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB39 Invalid item type. (The type)}
+		if ((__type < UIItemType.FORM && __type != Integer.MIN_VALUE) ||
+			__type > UIItemType.NUM_TYPES)
+			throw new IllegalArgumentException("EB39 " + __type);
 		
 		// Would be previously cached
 		synchronized (StaticDisplayState.class)
@@ -205,8 +253,17 @@ public final class StaticDisplayState
 			for (Map.Entry<Reference<DisplayWidget>, UIWidgetBracket> e :
 				StaticDisplayState._WIDGETS.entrySet())
 			{
-				if (__widget == e.getKey().get())
+				DisplayWidget possible = e.getKey().get();
+				if (possible == __widget)
+				{
+					// Are we looking for a specific type of item?
+					if (__type != Integer.MIN_VALUE)
+						if (__type != __backend.widgetPropertyInt(e.getValue(),
+							UIWidgetProperty.INT_UIITEM_TYPE, 0))
+							continue;
+					
 					return e.getValue();
+				}
 			}
 		}
 		

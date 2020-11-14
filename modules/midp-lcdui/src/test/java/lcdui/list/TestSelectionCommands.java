@@ -9,6 +9,10 @@
 
 package lcdui.list;
 
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -56,8 +60,15 @@ public class TestSelectionCommands
 		for (int i = 0; i < TestSelectionCommands.NUM_ITEMS; i++)
 		{
 			// Send event and wait for it to be flushed out
-			backend.widgetProperty(StaticDisplayState.locate(__list),
+			backend.widgetProperty(StaticDisplayState.locate(__list,
+					UIItemType.LIST, backend),
 				UIWidgetProperty.INT_LIST_ITEM_SELECTED, i, 1);
+			backend.injector().eventKey(
+				(UIFormBracket)StaticDisplayState.locate(__list,
+					UIItemType.FORM, backend),
+				(UIItemBracket)StaticDisplayState.locate(__list,
+					UIItemType.LIST, backend),
+				UIKeyEventType.COMMAND_ACTIVATED, i, 0);
 			backend.flushEvents();
 			
 			// Make sure it was selected

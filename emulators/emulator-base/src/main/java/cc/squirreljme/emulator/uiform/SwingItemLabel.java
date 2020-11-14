@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import javax.swing.JLabel;
@@ -31,6 +32,8 @@ public class SwingItemLabel
 	 */
 	public SwingItemLabel()
 	{
+		super(UIItemType.LABEL);
+		
 		this.label = new JLabel();
 	}
 	

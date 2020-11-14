@@ -86,7 +86,11 @@ public interface UIWidgetProperty
 	byte INT_LIST_ITEM_FONT =
 		16;
 	
+	/** The {@link UIItemType} this item is. */
+	byte INT_UIITEM_TYPE =
+		17;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		17;
+		18;
 }

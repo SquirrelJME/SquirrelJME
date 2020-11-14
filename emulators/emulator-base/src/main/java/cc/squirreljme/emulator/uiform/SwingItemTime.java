@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JPanel;
@@ -31,6 +32,8 @@ public class SwingItemTime
 	 */
 	public SwingItemTime()
 	{
+		super(UIItemType.TIME);
+		
 		this.panel = new JPanel();
 	}
 	

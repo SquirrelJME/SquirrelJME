@@ -10,7 +10,7 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.jvm.mle.constants.NonStandardKey;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -38,6 +38,8 @@ public class SwingItemButton
 	 */
 	public SwingItemButton()
 	{
+		super(UIItemType.BUTTON);
+		
 		JButton button = new JButton();
 		this.button = button;
 		
@@ -61,8 +63,8 @@ public class SwingItemButton
 			return;
 		
 		// Fake this as a key being pressed on this item
-		callback.eventKey(form, this, UIKeyEventType.KEY_PRESSED,
-			NonStandardKey.META_COMMAND, 0);
+		callback.eventKey(form, this, UIKeyEventType.COMMAND_ACTIVATED,
+			0, 0);
 	}
 	
 	/**

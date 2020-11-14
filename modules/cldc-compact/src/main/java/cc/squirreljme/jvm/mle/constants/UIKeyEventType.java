@@ -34,7 +34,11 @@ public interface UIKeyEventType
 	byte KEY_REPEATED =
 		2;
 	
+	/** Command activated (special). */
+	byte COMMAND_ACTIVATED =
+		3;
+	
 	/** The number of key events. */
 	byte NUM_KEY_EVENTS =
-		3;
+		4;
 }

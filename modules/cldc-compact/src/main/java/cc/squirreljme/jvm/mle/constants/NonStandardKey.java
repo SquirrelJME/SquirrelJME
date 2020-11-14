@@ -98,7 +98,7 @@ public interface NonStandardKey
 		-27;
 	
 	/** Meta. */
-	byte META_COMMAND =
+	byte META =
 		-28;
 	
 	/** Numlock. */

@@ -90,8 +90,8 @@ public abstract class Displayable
 		// Setup the title item
 		UIItemBracket uiTitle = instance.itemNew(UIItemType.LABEL);
 		instance.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
-		instance.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL, 0,
-			title);
+		instance.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
+			0, title);
 		
 		// Store for future adjustments
 		this._uiTitle = uiTitle;

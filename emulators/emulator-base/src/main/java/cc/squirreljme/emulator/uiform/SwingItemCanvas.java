@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -37,6 +38,8 @@ public class SwingItemCanvas
 	 */
 	public SwingItemCanvas()
 	{
+		super(UIItemType.CANVAS);
+		
 		__PaintingPanel__ panel = new __PaintingPanel__(this);
 		this.panel = panel;
 		

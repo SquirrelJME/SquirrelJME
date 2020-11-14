@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import javax.swing.DefaultListModel;
@@ -35,6 +36,8 @@ public class SwingItemList
 	 */
 	public SwingItemList()
 	{
+		super(UIItemType.LIST);
+		
 		DefaultListModel<ListEntry> model = new DefaultListModel<>();
 		this.model = model;
 		this.list = new JList<ListEntry>(model);

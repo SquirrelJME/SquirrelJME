@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JTextField;
@@ -31,6 +32,8 @@ public class SwingItemMultiLineTextBox
 	 */
 	public SwingItemMultiLineTextBox()
 	{
+		super(UIItemType.MULTI_LINE_TEXT_BOX);
+		
 		this.text = new JTextField();
 	}
 	

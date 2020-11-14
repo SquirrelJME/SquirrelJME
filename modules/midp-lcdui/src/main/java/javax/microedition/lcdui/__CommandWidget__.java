@@ -62,7 +62,8 @@ final class __CommandWidget__
 		this._uiItem = item;
 		
 		// Set item text
-		backend.widgetProperty(item, UIWidgetProperty.STRING_LABEL, 0, __action.__getLabel());
+		backend.widgetProperty(item, UIWidgetProperty.STRING_LABEL,
+			0, __action.__getLabel());
 	}
 	
 	/**

@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.uiform;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import javax.swing.JComponent;
@@ -25,11 +26,25 @@ import javax.swing.JComponent;
 public abstract class SwingItem
 	implements UIItemBracket, SwingWidget
 {
+	/** The {@link UIItemType}. */
+	public final int itemType;
+	
 	/** The form the item is on. */
 	SwingForm _form;
 	
 	/** Has this item been deleted? */
 	boolean _isDeleted;
+	
+	/**
+	 * Initializes the base item.
+	 * 
+	 * @param __itemType The {@link UIItemType}.
+	 * @since 2020/11/14
+	 */
+	protected SwingItem(int __itemType)
+	{
+		this.itemType = __itemType;
+	}
 	
 	/**
 	 * Returns the component item.

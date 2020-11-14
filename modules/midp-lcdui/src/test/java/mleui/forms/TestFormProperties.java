@@ -188,6 +188,10 @@ public class TestFormProperties
 				this.secondary("no-list-font", noEitherGet);
 				return;
 			
+			case UIWidgetProperty.INT_UIITEM_TYPE:
+				this.secondary("is-form", iVal == UIItemType.FORM);
+				break;
+			
 			default:
 				throw new FailingExecution("Missing " + __property);
 		}

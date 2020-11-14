@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JButton;
@@ -31,6 +32,8 @@ public class SwingItemCheckBox
 	 */
 	public SwingItemCheckBox()
 	{
+		super(UIItemType.CHECK_BOX);
+		
 		this.button = new JButton();
 	}
 	

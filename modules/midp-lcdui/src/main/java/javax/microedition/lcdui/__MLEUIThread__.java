@@ -54,10 +54,17 @@ final class __MLEUIThread__
 		
 		DisplayWidget widget = StaticDisplayState.locate(__item);
 		
-		// Commands are special in that they are not actually displayables
-		// so they get special handling
-		if (widget instanceof __CommandWidget__)
-			((__CommandWidget__)widget).__activate();
+		// Commands are special key events
+		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
+		{
+			// Command button widgets will activate the given command
+			if (widget instanceof __CommandWidget__)
+				((__CommandWidget__)widget).__activate();
+			
+			// List activations will activate the given list item
+			else if (widget instanceof List)
+				throw Debugging.todo();
+		}
 		
 		// Displayables which have standard key access
 		else if (widget instanceof Canvas)
