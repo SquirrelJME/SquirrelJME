@@ -224,7 +224,7 @@ final class __MLEUIThread__
 		DisplayWidget widget = StaticDisplayState.locate(__form);
 		if (widget instanceof __CommonWidget__)
 			((__CommonWidget__)widget).__propertyChange(__form, __item,
-				__intProp, __old, __new);
+				__intProp, __sub, __old, __new);
 	}
 	
 	/**
@@ -244,7 +244,7 @@ final class __MLEUIThread__
 		DisplayWidget widget = StaticDisplayState.locate(__form);
 		if (widget instanceof __CommonWidget__)
 			((__CommonWidget__)widget).__propertyChange(__form, __item,
-				__strProp, __old, __new);
+				__strProp, __sub, __old, __new);
 	}
 	
 	/**

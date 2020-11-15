@@ -59,7 +59,8 @@ public interface Choice
 	 * Gets all of the items which have been selected and stores them into
 	 * the boolean array.
 	 * 
-	 * @param __result The resultant boolean array.
+	 * @param __result The resultant boolean array, if the array is longer
+	 * then the extra elements will be set to {@code false}.
 	 * @return The number of selected elements.
 	 * @throws IllegalArgumentException If the array is shorter than the
 	 * number of items in the list.

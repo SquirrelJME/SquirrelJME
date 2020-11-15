@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
@@ -206,13 +207,12 @@ public class List
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/10/31
-	 * @param __result
 	 */
 	@Override
 	public int getSelectedFlags(boolean[] __result)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		return __Utils__.__getSelectedFlags(this, __result);
 	}
 	
 	/**
@@ -287,8 +287,7 @@ public class List
 	public boolean isSelected(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();/*
-		return this._items.get(__i)._selected;*/
+		return this._items.get(__i)._selected;
 	}
 	
 	@Override
@@ -363,7 +362,10 @@ public class List
 	@Override
 	public void setSelectedFlags(boolean[] __a)
 	{
-		throw new todo.TODO();
+		if (true)
+			throw new todo.TODO();
+		
+		this.__refresh();
 	}
 	
 	/**
@@ -385,6 +387,25 @@ public class List
 	public int size()
 	{
 		return this._items.size();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/15
+	 */
+	@Override
+	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
+		int __intProp, int __sub, int __old, int __new)
+	{
+		switch (__intProp)
+		{
+			case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
+				this.__updateSelection(__sub, __new != 0);
+				return true;
+		}
+		
+		return super.__propertyChange(__form, __item, __intProp, __sub,
+			__old, __new);
 	}
 	
 	/**
@@ -467,6 +488,33 @@ public class List
 		
 		// Send in the command action
 		listener.commandAction(selCommand, this);
+	}
+	
+	/**
+	 * Updates the selection of the list.
+	 * 
+	 * @param __i The index to set.
+	 * @param __b Is this set?
+	 * @since 2020/11/15
+	 */
+	@SerializedEvent
+	private void __updateSelection(int __i, boolean __b)
+	{
+		// Drop any attempts to clear selection if not on multiple choice lists
+		// as implicit/explicit always have a single item selected and we do
+		// not want to end up in a state where only a single item gets selected
+		int type = this._type;
+		if (!__b && type != Choice.MULTIPLE)
+			return;
+		
+		// Determine how items should be selected
+		boolean[] flags = __Utils__.__calculateSetSelectedIndexFlags(this,
+			type, __i, __b);
+		
+		// Update the flags on all the items
+		__VolatileList__<__ChoiceEntry__> items = this._items;
+		for (int i = 0, n = flags.length; i < n; i++)
+			items.get(i)._selected = flags[i];
 	}
 }
 

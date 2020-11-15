@@ -841,7 +841,7 @@ public abstract class Canvas
 	 */
 	@Override
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __old, int __new)
+		int __intProp, int __sub, int __old, int __new)
 	{
 		UIBackend instance = UIBackendFactory.getInstance();
 		

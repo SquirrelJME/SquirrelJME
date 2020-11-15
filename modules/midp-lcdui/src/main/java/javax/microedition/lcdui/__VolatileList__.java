@@ -239,9 +239,10 @@ final class __VolatileList__<T>
 	 * @return The list values.
 	 * @since 2018/11/18
 	 */
-	public final Object[] values()
+	@SuppressWarnings("unchecked")
+	public final T[] values()
 	{
-		return this._values;
+		return (T[])this._values;
 	}
 	
 	/**

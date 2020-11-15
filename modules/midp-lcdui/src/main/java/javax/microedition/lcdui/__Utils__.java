@@ -28,6 +28,103 @@ final class __Utils__
 	}
 	
 	/**
+	 * Calculates the flags to use for the selected indexes.
+	 * 
+	 * @param __c The choice to set in.
+	 * @param __type The type of list being set.
+	 * @param __i The index being set.
+	 * @param __e The state of this flag.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/15
+	 */
+	public static boolean[] __calculateSetSelectedIndexFlags(Choice __c,
+		int __type, int __i, boolean __e)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Not within the list bounds?
+		int n = __c.size();
+		if (__i < 0 || __i >= n)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Get current list selection flags
+		boolean[] flags = new boolean[n];
+		__c.getSelectedFlags(flags);
+		
+		// If multiple choice, we can set the field directly
+		if (__type == Choice.MULTIPLE)
+			flags[__i] = __e;
+		
+		// If we are deselecting something, this will effectively do nothing
+		// unless we are deselecting the item that is currently selected
+		else if (!__e)
+		{
+			// If this item is selected, deselect it and just select the first
+			// item
+			if (flags[__i])
+			{
+				flags[__i] = false;
+				flags[0] = true;
+			}
+		}
+		
+		// Otherwise, only a single item becomes selected
+		else
+		{
+			// Update set of flags to use for the selections
+			for (int i = 0; i < n; i++)
+				flags[__i] = (i == __i);
+		}
+		
+		// Return the resultant flags to use
+		return flags;
+	}
+	
+	/**
+	 * Gets all of the items which have been selected and stores them into
+	 * the boolean array.
+	 * 
+	 * @param __c The choice to look within.
+	 * @param __result The resultant boolean array, if the array is longer
+	 * then the extra elements will be set to {@code false}.
+	 * @return The number of selected elements.
+	 * @throws IllegalArgumentException If the array is shorter than the
+	 * number of items in the list.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/31
+	 */
+	public static int __getSelectedFlags(Choice __c, boolean[] __result)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__c == null || __result == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB3b Invalid flag array length. (The length)}
+		int outLen = __result.length;
+		int listLen = __c.size();
+		if (outLen < listLen)
+			throw new IllegalArgumentException("EB3b " + listLen);
+		
+		// Determine which items are selected
+		int count = 0;
+		for (int i = 0; i < listLen; i++)
+			if (__c.isSelected(i))
+			{
+				__result[i] = true;
+				count++;
+			}
+		
+		// Anything following the end is wiped out
+		for (int i = listLen; i < outLen; i++)
+			__result[i] = false;
+		
+		return count;
+	}
+	
+	/**
 	 * Calculates the selected index.
 	 * 
 	 * @param __c The choice to look within.
@@ -86,40 +183,8 @@ final class __Utils__
 		boolean __e)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		if (__c == null)
-			throw new NullPointerException("NARG");
-		
-		// Not within the list bounds?
-		int n = __c.size();
-		if (__i < 0 || __i >= n)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		// Get current list selection flags
-		boolean[] flags = new boolean[n];
-		__c.getSelectedFlags(flags);
-		
-		// If multiple choice, we can set the field directly
-		if (__type == Choice.MULTIPLE)
-			flags[__i] = __e;
-		
-		// Otherwise, only a single item becomes selected
-		else if (n > 0)
-		{
-			// Update set of flags to use for the selections
-			boolean hadSelection = false;
-			for (int i = 0; i < n; i++)
-			{
-				hadSelection |= flags[__i];
-				flags[__i] = (__e && i == __i);
-			}
-			
-			// If we are deselecting something and we had a selection then
-			// do nothing at all
-			if (!__e && hadSelection)
-				return;
-		}
-		
 		// Set new flag state
-		__c.setSelectedFlags(flags);
+		__c.setSelectedFlags(__Utils__.__calculateSetSelectedIndexFlags(
+			__c, __type, __i, __e));
 	}
 }
