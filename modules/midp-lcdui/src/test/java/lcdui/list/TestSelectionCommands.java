@@ -55,19 +55,20 @@ public class TestSelectionCommands
 		for (int i = 0; i < TestSelectionCommands.NUM_ITEMS; i++)
 			__list.append(Character.toString((char)('a' + i)), null);
 		
-		// Set items as selected, which should trigger selection
+		// Native holders for the widgets
 		UIBackend backend = UIBackendFactory.getInstance();
+		UIFormBracket form = (UIFormBracket)StaticDisplayState.locate(__list,
+			UIItemType.FORM, backend);
+		UIItemBracket item = (UIItemBracket)StaticDisplayState.locate(__list,
+			UIItemType.LIST, backend);
+		
+		// Set items as selected, which should trigger selection
 		for (int i = 0; i < TestSelectionCommands.NUM_ITEMS; i++)
 		{
 			// Send event and wait for it to be flushed out
-			backend.widgetProperty(StaticDisplayState.locate(__list,
-					UIItemType.LIST, backend),
-				UIWidgetProperty.INT_LIST_ITEM_SELECTED, i, 1);
-			backend.injector().eventKey(
-				(UIFormBracket)StaticDisplayState.locate(__list,
-					UIItemType.FORM, backend),
-				(UIItemBracket)StaticDisplayState.locate(__list,
-					UIItemType.LIST, backend),
+			backend.injector().propertyChange(form, item,
+				UIWidgetProperty.INT_LIST_ITEM_SELECTED, i, 0, 1);
+			backend.injector().eventKey(form, item,
 				UIKeyEventType.COMMAND_ACTIVATED, i, 0);
 			backend.flushEvents();
 			

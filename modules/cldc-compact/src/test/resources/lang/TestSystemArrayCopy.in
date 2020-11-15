@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+multi-parameters: BOOLEAN BYTE SHORT CHAR INT LONG FLOAT DOUBLE OBJECT
+secondary-full: true
+secondary-sum--htl: int:15
+secondary-sum--lth: int:10
+secondary-hash--htl: int:802431368
+secondary-hash--lth: int:-871211640

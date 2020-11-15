@@ -127,11 +127,41 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Inserts the item at the given index.
+	 * 
+	 * @param __at The position to add at.
+	 * @param __item The item to add.
+	 * @throws IndexOutOfBoundsException If the given index is not within the
+	 * bounds for insertion.
+	 * @since 2020/11/15
+	 */
+	public void insert(int __at, T __item)
+		throws IndexOutOfBoundsException
+	{
+		Object[] values = this._values;
+		int vn = values.length;
+		
+		// Out of bounds?
+		if (__at < 0 || __at >= vn)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Setup new array and shift values down 
+		Object[] newValues = Arrays.copyOf(values, vn + 1);
+		System.arraycopy(newValues, __at,
+			newValues, __at + 1, vn - __at);
+		
+		// Store new value at this point
+		newValues[__at] = __item;
+		
+		// Use these new values
+		this._values = newValues;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/18
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public final Iterator<T> iterator()
 	{
 		return this.valuesAsList().iterator();

@@ -166,7 +166,7 @@ public final class System
 		else
 			for (Object[] s = (Object[])__src, d = (Object[])__dest;
 				i < end; i++, o++)
-			d[o] = s[i];
+				d[o] = s[i];
 	}
 	
 	/**

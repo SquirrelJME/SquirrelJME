@@ -151,18 +151,13 @@ final class __Utils__
 		// We can get all the flags used, if nothing is selected we can just
 		// stop without checking the elements at all
 		boolean[] flags = new boolean[n];
-		int numSel = __c.getSelectedFlags(flags);
-		if (numSel <= 0)
-			return -1;
-		
-		// This should not occur
-		if (numSel > 1)
-			throw Debugging.oops(numSel);
+		int numSel = __Utils__.__getSelectedFlags(__c, flags);
 		
 		// Find the first (and only) selected index
-		for (int i = 0; i < n; i++)
-			if (flags[i])
-				return i;
+		if (numSel == 1)
+			for (int i = 0; i < n; i++)
+				if (flags[i])
+					return i;
 		
 		// This should not occur
 		throw Debugging.oops(numSel);

@@ -120,24 +120,11 @@ public class List
 	public int append(String __s, Image __i)
 		throws NullPointerException
 	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
+		// Appending is just the same as inserting at the end of the list
+		int dx = this.size();
+		this.insert(dx, __s, __i);
 		
-		// Append item
-		__ChoiceEntry__ e;
-		__VolatileList__<__ChoiceEntry__> items = this._items;
-		int rv = items.append((e = new __ChoiceEntry__(__s, __i)));
-		
-		// If this is the only item and this is an exclusive list, select it
-		int lType = this._type;
-		if (items.size() == 1 && (lType == Choice.EXCLUSIVE ||
-			lType == Choice.IMPLICIT))
-			e._selected = true;
-		
-		// Update display
-		this.__refresh();
-		
-		return rv;
+		return dx;
 	}
 	
 	@Override
@@ -262,10 +249,29 @@ public class List
 		return Displayable.__getWidth(this, null);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/15
+	 */
 	@Override
-	public void insert(int __a, String __b, Image __c)
+	public void insert(int __at, String __s, Image __i)
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Append item
+		__ChoiceEntry__ e;
+		__VolatileList__<__ChoiceEntry__> items = this._items;
+		items.insert(__at, (e = new __ChoiceEntry__(__s, __i)));
+		
+		// If this is the only item and this is an exclusive list, select it
+		int lType = this._type;
+		if (items.size() == 1 && (lType == Choice.EXCLUSIVE ||
+			lType == Choice.IMPLICIT))
+			e._selected = true;
+		
+		// Update display
+		this.__refresh();
 	}
 	
 	/**
@@ -506,6 +512,8 @@ public class List
 		int type = this._type;
 		if (!__b && type != Choice.MULTIPLE)
 			return;
+		
+		Debugging.debugNote("Selection update: %d -> %s", __i, __b);
 		
 		// Determine how items should be selected
 		boolean[] flags = __Utils__.__calculateSetSelectedIndexFlags(this,

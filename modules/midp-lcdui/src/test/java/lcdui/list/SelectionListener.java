@@ -9,6 +9,7 @@
 
 package lcdui.list;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.microedition.lcdui.Command;
@@ -46,6 +47,8 @@ public class SelectionListener
 				
 				this.selectedItems.add(index);
 				this.lastSelected = index;
+				
+				Debugging.debugNote("New selection: %d", index);
 			}
 	}
 }

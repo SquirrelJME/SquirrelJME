@@ -84,7 +84,18 @@ public interface Choice
 	
 	String getString(int __a);
 	
-	void insert(int __a, String __b, Image __c);
+	/**
+	 * Inserts an item at the given index.
+	 * 
+	 * @param __at The index to insert at.
+	 * @param __str The string of the item.
+	 * @param __icon The icon to use for the item.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/15
+	 */
+	void insert(int __at, String __str, Image __icon)
+		throws IndexOutOfBoundsException, NullPointerException;
 	
 	boolean isEnabled(int __i);
 	
