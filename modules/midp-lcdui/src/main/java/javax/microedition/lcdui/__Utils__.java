@@ -74,9 +74,8 @@ final class __Utils__
 		// Otherwise, only a single item becomes selected
 		else
 		{
-			// Update set of flags to use for the selections
 			for (int i = 0; i < n; i++)
-				flags[__i] = (i == __i);
+				flags[i] = (i == __i);
 		}
 		
 		// Return the resultant flags to use
@@ -111,11 +110,13 @@ final class __Utils__
 		// Determine which items are selected
 		int count = 0;
 		for (int i = 0; i < listLen; i++)
-			if (__c.isSelected(i))
-			{
-				__result[i] = true;
+		{
+			boolean isSel = __c.isSelected(i);
+			__result[i] = isSel;
+			
+			if (isSel)
 				count++;
-			}
+		}
 		
 		// Anything following the end is wiped out
 		for (int i = listLen; i < outLen; i++)

@@ -264,7 +264,8 @@ public class List
 		__VolatileList__<__ChoiceEntry__> items = this._items;
 		items.insert(__at, (e = new __ChoiceEntry__(__s, __i)));
 		
-		// If this is the only item and this is an exclusive list, select it
+		// If this is the first item and our list needs to have an item
+		// selection then force it to be selected
 		int lType = this._type;
 		if (items.size() == 1 && (lType == Choice.EXCLUSIVE ||
 			lType == Choice.IMPLICIT))
@@ -512,8 +513,6 @@ public class List
 		int type = this._type;
 		if (!__b && type != Choice.MULTIPLE)
 			return;
-		
-		Debugging.debugNote("Selection update: %d -> %s", __i, __b);
 		
 		// Determine how items should be selected
 		boolean[] flags = __Utils__.__calculateSetSelectedIndexFlags(this,

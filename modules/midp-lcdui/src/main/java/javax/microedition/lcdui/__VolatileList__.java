@@ -142,7 +142,7 @@ final class __VolatileList__<T>
 		int vn = values.length;
 		
 		// Out of bounds?
-		if (__at < 0 || __at >= vn)
+		if (__at < 0 || __at > vn)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Setup new array and shift values down 

@@ -90,7 +90,7 @@ public final class Debugging
 	 */
 	public static Error oops(Object... __args)
 	{
-		return new OOPS();
+		return Debugging.todo(__args);
 	}
 	
 	/**
