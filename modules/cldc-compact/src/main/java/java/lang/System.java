@@ -113,11 +113,6 @@ public final class System
 		if (__src == __dest && __srcOff == __destOff)
 			return;
 		
-		// These offsets for the loops are the same
-		int i = __srcOff,
-			o = __destOff,
-			end = __srcOff + __copyLen;
-		
 		// We can use the native type system within MLE to knock off a few
 		// branch possibilities
 		TypeBracket srcType = TypeShelf.classToType(srcClass);
@@ -164,9 +159,30 @@ public final class System
 		// There is no native handler for manual object array copies due to
 		// references and otherwise
 		else
-			for (Object[] s = (Object[])__src, d = (Object[])__dest;
-				i < end; i++, o++)
-				d[o] = s[i];
+		{
+			Object[] src = (Object[])__src;
+			Object[] dest = (Object[])__dest; 
+			
+			// Right-to-left copy when going from left to right would overwrite
+			// the source
+			if (__destOff > __srcOff)
+			{
+				int i = (__srcOff + __copyLen) - 1,
+					o = (__destOff + __copyLen) - 1;
+				
+				for (; i >= __srcOff; i--, o--)
+					dest[o] = src[i];
+			}
+			
+			// Left-to-right copy
+			else
+			{
+				// These offsets for the loops are the same
+				int end = __srcOff + __copyLen;
+				for (; __srcOff < end; __srcOff++, __destOff++)
+					dest[__destOff] = src[__srcOff];
+			}
+		}
 	}
 	
 	/**
