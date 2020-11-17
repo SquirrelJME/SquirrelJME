@@ -1,0 +1,6 @@
+# 2020/11/15
+
+## 17:06
+
+There is actually an error in the `System.arrayCopy()` method where arrays are
+not copied properly if they are the same source or destination.
