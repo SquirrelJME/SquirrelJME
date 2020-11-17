@@ -230,6 +230,7 @@ jobs:
           path: ~/test-results/nps
   ################################### USERS ##################################
   export_user_guide:
+    resource_class: small
     executor: buildenv
     steps:
       - checkout
