@@ -162,6 +162,9 @@ public class SwingItemList
 		{
 			switch (__intProp)
 			{
+				case UIWidgetProperty.INT_NUM_ELEMENTS:
+					return model.size();
+				
 				case UIWidgetProperty.INT_LIST_ITEM_ID_CODE:
 					return model.get(__sub)._idCode;
 				

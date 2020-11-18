@@ -92,20 +92,25 @@ public final class ListItem
 	 */
 	public void into(UIBackend __backend, UIItemBracket __list, int __i)
 	{
-		__backend.widgetProperty(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_DISABLED, (this._disabled ? 1 : 0));
-		__backend.widgetProperty(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_SELECTED, (this._selected ? 1 : 0));
-		__backend.widgetProperty(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION,
+		__backend.widgetProperty(__list, 
+			UIWidgetProperty.INT_LIST_ITEM_DISABLED, __i,
+			(this._disabled ? 1 : 0));
+		__backend.widgetProperty(__list,
+			UIWidgetProperty.INT_LIST_ITEM_SELECTED, __i,
+			(this._selected ? 1 : 0));
+		__backend.widgetProperty(__list,
+			UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION, __i,
 			this._iconDimension);
-		__backend.widgetProperty(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_ID_CODE, this._idCode);
+		__backend.widgetProperty(__list,
+			UIWidgetProperty.INT_LIST_ITEM_ID_CODE, __i,
+			this._idCode);
 			
-		__backend.widgetProperty(__list, __i,
-			UIWidgetProperty.STRING_LIST_ITEM_LABEL, this._label);
-		__backend.widgetProperty(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_FONT, this._font);
+		__backend.widgetProperty(__list,
+			UIWidgetProperty.STRING_LIST_ITEM_LABEL, __i,
+			this._label);
+		__backend.widgetProperty(__list,
+			UIWidgetProperty.INT_LIST_ITEM_FONT, __i,
+			this._font);
 	}
 	
 	/**

@@ -23,7 +23,8 @@ public class ListCallback
 	implements UIFormCallback
 {
 	/** Painted items. */
-	volatile int _painted;
+	volatile int _painted =
+		-1;
 	
 	/**
 	 * {@inheritDoc}
