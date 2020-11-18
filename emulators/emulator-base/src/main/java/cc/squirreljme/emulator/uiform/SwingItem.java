@@ -62,6 +62,18 @@ public abstract class SwingItem
 	public abstract void deletePost();
 	
 	/**
+	 * This may be overridden by items that need to know when they are added
+	 * to forms in the event they need to perform callbacks and otherwise.
+	 * 
+	 * @param __form The form this was added on.
+	 * @param __pos The position of the item.
+	 * @since 2020/11/17
+	 */
+	public void addedOnForm(SwingForm __form, int __pos)
+	{
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2020/10/17
 	 */
@@ -105,7 +117,7 @@ public abstract class SwingItem
 	 * @since 2020/10/17
 	 */
 	@Override
-	public UIFormBracket form()
+	public SwingForm form()
 	{
 		return this._form;
 	}

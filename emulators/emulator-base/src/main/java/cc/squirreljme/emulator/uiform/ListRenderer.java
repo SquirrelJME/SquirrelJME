@@ -9,45 +9,35 @@
 
 package cc.squirreljme.emulator.uiform;
 
-import javax.swing.ImageIcon;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
+import javax.swing.JList;
 
 /**
- * Represents an entry within a list.
+ * Renderer for list items.
  *
- * @since 2020/10/31
+ * @since 2020/11/17
  */
-public final class ListEntry
+public class ListRenderer
+	extends DefaultListCellRenderer
 {
-	/** The dimension of the icon. */
-	int _iconDimension;
-	
-	/** Is this item selected? */
-	boolean _selected;
-	
-	/** Is this item disabled? */
-	boolean _disabled;
-	
-	/** The description of the font. */
-	int _fontDescription;
-	
-	/** The ID code of this entry. */
-	int _idCode;
-	
-	/** The label of the item. */
-	String _label;
-	
-	/** The icon to use for the item. */
-	ImageIcon _icon;
-	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/10/31
+	 * @since 2020/11/17
 	 */
 	@Override
-	public String toString()
+	public Component getListCellRendererComponent(
+		JList<?> __list, Object __entry, int __index,
+		boolean __isSelected, boolean __cellHasFocus)
 	{
-		String label = this._label;
-		return (label == null ? "" : label);
+		ListEntry entry = (ListEntry)__entry;
+		JLabel label = (JLabel)super.getListCellRendererComponent(__list,
+			__entry, __index, entry._selected, __cellHasFocus);
+		
+		label.setIcon(entry._icon);
+		label.setText(entry.toString());
+		
+		return label;
 	}
 }

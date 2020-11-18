@@ -54,6 +54,7 @@ public abstract class BaseList
 		{
 			// Add to the form
 			__backend.formItemPosition(__form, list, UIItemPosition.BODY);
+			__backend.flushEvents();
 			
 			// Forward to the test
 			this.test(__backend, __display, __form, list);

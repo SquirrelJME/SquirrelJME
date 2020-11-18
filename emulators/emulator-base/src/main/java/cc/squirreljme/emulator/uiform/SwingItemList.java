@@ -9,11 +9,14 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.SwingUtilities;
 
 /**
  * List.
@@ -24,10 +27,10 @@ public class SwingItemList
 	extends SwingItem
 {
 	/** The model for the list. */
-	private final DefaultListModel<ListEntry> model;
+	final DefaultListModel<ListEntry> _model;
 	
 	/** The list used. */
-	private final JList<ListEntry> list;
+	final JList<ListEntry> _list;
 	
 	/**
 	 * Initializes the item.
@@ -39,8 +42,28 @@ public class SwingItemList
 		super(UIItemType.LIST);
 		
 		DefaultListModel<ListEntry> model = new DefaultListModel<>();
-		this.model = model;
-		this.list = new JList<ListEntry>(model);
+		this._model = model;
+		
+		// Use custom renderer for the list
+		JList<ListEntry> list = new JList<ListEntry>(model);
+		list.setCellRenderer(new ListRenderer());
+		
+		this._list = list;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/17
+	 */
+	@Override
+	public void addedOnForm(SwingForm __form, int __pos)
+	{
+		// Request that all icons be refreshed accordingly, this requires
+		// that a callback be defined for the item which it should be when it
+		// is part of the form
+		DefaultListModel<ListEntry> model = this._model;
+		for (int i = 0, n = model.size(); i < n; i++)
+			this.__requestIconUpdate(i, model.get(i)._iconDimension);
 	}
 	
 	/**
@@ -50,7 +73,7 @@ public class SwingItemList
 	@Override
 	public JList<?> component()
 	{
-		return this.list;
+		return this._list;
 	}
 	
 	/**
@@ -70,8 +93,8 @@ public class SwingItemList
 	public void property(int __id, int __sub, int __newValue)
 		throws MLECallError
 	{
-		DefaultListModel<ListEntry> model = this.model;
-		JList<ListEntry> list = this.list;
+		DefaultListModel<ListEntry> model = this._model;
+		JList<ListEntry> list = this._list;
 		int n = model.getSize();
 		
 		try
@@ -101,7 +124,7 @@ public class SwingItemList
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION:
-					model.get(__sub)._iconDimension = __newValue;
+					this.__requestIconUpdate(__sub, __newValue);
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_FONT:
@@ -116,6 +139,12 @@ public class SwingItemList
 		{
 			throw new MLECallError("Invalid index: " + __sub, e);
 		}
+		
+		// Always make sure list is updated
+		finally
+		{
+			list.repaint();
+		}
 	}
 	
 	/**
@@ -125,8 +154,8 @@ public class SwingItemList
 	@Override
 	public void property(int __id, int __sub, String __newValue)
 	{
-		DefaultListModel<ListEntry> model = this.model;
-		JList<ListEntry> list = this.list;
+		DefaultListModel<ListEntry> model = this._model;
+		JList<ListEntry> list = this._list;
 		int n = model.getSize();
 		
 		try
@@ -145,6 +174,12 @@ public class SwingItemList
 		{
 			throw new MLECallError("Invalid index: " + __sub, e);
 		}
+		
+		// Always make sure list is updated
+		finally
+		{
+			list.repaint();
+		}
 	}
 	
 	/**
@@ -155,8 +190,8 @@ public class SwingItemList
 	public int propertyInt(int __intProp, int __sub)
 		throws MLECallError
 	{
-		DefaultListModel<ListEntry> model = this.model;
-		JList<ListEntry> list = this.list;
+		DefaultListModel<ListEntry> model = this._model;
+		JList<ListEntry> list = this._list;
 		
 		try
 		{
@@ -176,5 +211,42 @@ public class SwingItemList
 		{
 			throw new MLECallError("Invalid index: " + __sub, e);
 		}
+	}
+	
+	/**
+	 * Requests that the icon be updated.
+	 * 
+	 * @param __sub The item.
+	 * @param __dim The dimension to use.
+	 * @since 2020/11/17
+	 */
+	private void __requestIconUpdate(int __sub, int __dim)
+	{
+		ListEntry entry = this._model.get(__sub);
+		entry._iconDimension = __dim;
+		
+		// Clear the icon?
+		if (__dim <= 0)
+		{
+			entry._icon = null;
+			return;
+		}
+		
+		// Can only do something if there is a form
+		SwingForm form = this.form();
+		if (form == null)
+			return;
+		
+		// We can only do something if there is a callback
+		UIFormCallback callback = form.callback();
+		if (callback == null)
+			return;
+		
+		// Debug
+		Debugging.debugNote("Request icon: %dx%d", __dim, __dim);
+		
+		// Send in request to update the icon accordingly
+		SwingUtilities.invokeLater(new ListIconUpdate(
+			callback, form, this, entry, __sub, __dim));
 	}
 }

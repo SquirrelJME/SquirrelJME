@@ -338,6 +338,10 @@ public final class SwingForm
 			Debugging.debugNote("add(%s, %d): items: %s",
 				__item, __pos, items);
 			
+			// There may be widgets that need to be adjusted accordingly when
+			// this is displayed on the form
+			__item.addedOnForm(this, __pos);
+			
 			// Refresh the form
 			this.refresh();
 		}

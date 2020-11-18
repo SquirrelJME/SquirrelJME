@@ -12,7 +12,6 @@ package mleui.lists;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Callback for list events.
@@ -23,8 +22,7 @@ public class ListCallback
 	implements UIFormCallback
 {
 	/** Painted items. */
-	volatile int _painted =
-		-1;
+	volatile int _painted;
 	
 	/**
 	 * {@inheritDoc}

@@ -38,6 +38,9 @@ public class TestListIconImage
 		// Make the list able to store an element
 		__backend.widgetProperty(__list, UIWidgetProperty.INT_NUM_ELEMENTS,
 			0, 1);
+		__backend.widgetProperty(__list,
+			UIWidgetProperty.STRING_LIST_ITEM_LABEL,
+			0, "A list item!");
 		__backend.flushEvents();
 		
 		// Draw various numbers of items
@@ -50,6 +53,14 @@ public class TestListIconImage
 			
 			// Hope that it gets a draw event
 			__backend.flushEvents();
+			
+			try
+			{
+				Thread.sleep(3000);
+			}
+			catch (Throwable ignored)
+			{
+			}
 		}
 		
 		// Icons which got painted?
