@@ -40,6 +40,9 @@ public final class ListEntry
 	/** The icon to use for the item. */
 	ImageIcon _icon;
 	
+	/** Is the icon dirty? */
+	boolean _dirtyIcon;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/10/31

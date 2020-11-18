@@ -37,6 +37,7 @@ public class ListRenderer
 		
 		label.setIcon(entry._icon);
 		label.setText(entry.toString());
+		label.setEnabled(!entry._disabled);
 		
 		return label;
 	}

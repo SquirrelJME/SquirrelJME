@@ -29,9 +29,6 @@ final class __ChoiceEntry__
 	/** The font to use for this choice. */
 	volatile Font _font;
 	
-	/** Cached description of the font. */
-	volatile String _fontDescription;
-	
 	/** Is this entry selected? */
 	volatile boolean _selected;
 	

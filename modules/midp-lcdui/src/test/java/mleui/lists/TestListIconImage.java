@@ -53,14 +53,6 @@ public class TestListIconImage
 			
 			// Hope that it gets a draw event
 			__backend.flushEvents();
-			
-			try
-			{
-				Thread.sleep(3000);
-			}
-			catch (Throwable ignored)
-			{
-			}
 		}
 		
 		// Icons which got painted?

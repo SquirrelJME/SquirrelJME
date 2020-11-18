@@ -12,6 +12,7 @@ package mleui.lists;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Callback for list events.
@@ -62,6 +63,8 @@ public class ListCallback
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
+		Debugging.debugNote("Painting icon! %dx%d", __bw, __bh);
+		
 		synchronized (this)
 		{
 			int hob = Integer.highestOneBit(__special);

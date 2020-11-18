@@ -65,7 +65,7 @@ public class VMFullSuiteTaskAction
 		Collection<Path> libPath = new LinkedHashSet<>();
 		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
 		{
-			System.err.printf("Task: %s %s%n", dep, dep.getClass());
+			//System.err.printf("Task: %s %s%n", dep, dep.getClass());
 			
 			// Load executable library tasks from our own VM
 			if (dep instanceof VMExecutableTask)

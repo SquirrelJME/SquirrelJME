@@ -127,19 +127,19 @@ public final class ListItem
 	{
 		ListItem rv = new ListItem();
 		
-		rv._disabled = (0 != __backend.widgetPropertyInt(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_DISABLED));
-		rv._selected = (0 != __backend.widgetPropertyInt(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_SELECTED));
-		rv._iconDimension = __backend.widgetPropertyInt(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION);
-		rv._idCode = __backend.widgetPropertyInt(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_ID_CODE);
-		rv._font = __backend.widgetPropertyInt(__list, __i,
-			UIWidgetProperty.INT_LIST_ITEM_FONT);
+		rv._disabled = (0 != __backend.widgetPropertyInt(__list,
+			UIWidgetProperty.INT_LIST_ITEM_DISABLED, __i));
+		rv._selected = (0 != __backend.widgetPropertyInt(__list,
+			UIWidgetProperty.INT_LIST_ITEM_SELECTED, __i));
+		rv._iconDimension = __backend.widgetPropertyInt(__list,
+			UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION, __i);
+		rv._idCode = __backend.widgetPropertyInt(__list,
+			UIWidgetProperty.INT_LIST_ITEM_ID_CODE, __i);
+		rv._font = __backend.widgetPropertyInt(__list,
+			UIWidgetProperty.INT_LIST_ITEM_FONT, __i);
 			
-		rv._label = __backend.widgetPropertyStr(__list, __i,
-			UIWidgetProperty.STRING_LIST_ITEM_LABEL);
+		rv._label = __backend.widgetPropertyStr(__list,
+			UIWidgetProperty.STRING_LIST_ITEM_LABEL, __i);
 		
 		return rv;
 	}

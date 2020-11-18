@@ -203,8 +203,48 @@ public class SwingItemList
 				case UIWidgetProperty.INT_LIST_ITEM_ID_CODE:
 					return model.get(__sub)._idCode;
 				
+				case UIWidgetProperty.INT_LIST_ITEM_DISABLED:
+					return (model.get(__sub)._disabled ? 1 : 0);
+				
+				case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
+					return (model.get(__sub)._selected ? 1 : 0);
+				
+				case UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION:
+					return model.get(__sub)._iconDimension;
+				
+				case UIWidgetProperty.INT_LIST_ITEM_FONT:
+					return model.get(__sub)._fontDescription;
+				
 				default:
 					return super.propertyInt(__intProp, __sub);
+			}
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new MLECallError("Invalid index: " + __sub, e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/17
+	 */
+	@Override
+	public String propertyStr(int __strProp, int __sub)
+		throws MLECallError
+	{
+		DefaultListModel<ListEntry> model = this._model;
+		JList<ListEntry> list = this._list;
+		
+		try
+		{
+			switch (__strProp)
+			{
+				case UIWidgetProperty.STRING_LIST_ITEM_LABEL:
+					return model.get(__sub)._label;
+				
+				default:
+					return super.propertyStr(__strProp, __sub);
 			}
 		}
 		catch (IndexOutOfBoundsException e)
@@ -225,6 +265,9 @@ public class SwingItemList
 		ListEntry entry = this._model.get(__sub);
 		entry._iconDimension = __dim;
 		
+		// Make the icon dirty, to make it update
+		entry._dirtyIcon = true;
+		
 		// Clear the icon?
 		if (__dim <= 0)
 		{
@@ -232,14 +275,13 @@ public class SwingItemList
 			return;
 		}
 		
-		// Can only do something if there is a form
-		SwingForm form = this.form();
-		if (form == null)
-			return;
+		// Debug
+		Debugging.debugNote("Form+Callback? %d", __dim);
 		
-		// We can only do something if there is a callback
-		UIFormCallback callback = form.callback();
-		if (callback == null)
+		// Can only do something if there is a form and callback
+		SwingForm form = this.form();
+		UIFormCallback callback = (form != null ? form.callback() : null);
+		if (form == null || callback == null)
 			return;
 		
 		// Debug

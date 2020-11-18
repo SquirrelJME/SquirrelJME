@@ -22,7 +22,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -425,6 +428,35 @@ public final class SwingForm
 			// Refresh the form
 			this.refresh();
 		}
+	}
+	
+	/**
+	 * Tells the form that it was made current.
+	 * 
+	 * @since 2020/11/17
+	 */
+	public void madeCurrent()
+	{
+		// Determine items to be updated
+		Map<Integer, SwingItem> items = new LinkedHashMap<>();
+		synchronized (this)
+		{
+			int n = this.itemCount();
+			for (int i = UIItemPosition.MIN_VALUE; i < n; i++)
+			{
+				SwingItem item = this.itemAtPosition(i);
+				
+				if (item != null) 
+					items.put(i, item);
+			}
+		}
+		
+		// Tell the item that it has been "added" to the form
+		for (Map.Entry<Integer, SwingItem> entry : items.entrySet())
+			entry.getValue().addedOnForm(this, entry.getKey());
+		
+		// Force the form to refresh
+		this.refresh();
 	}
 	
 	/**

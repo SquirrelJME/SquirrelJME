@@ -398,6 +398,34 @@ public class List
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/11/17
+	 */
+	@Override
+	boolean __isPainted()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/17
+	 */
+	@Override
+	void __paint(Graphics __gfx, int __sw, int __sh, int __special)
+	{
+		__ChoiceEntry__ entry = this._items.get(__special);
+		
+		// Draw the image over the buffer
+		Image image = entry._image;
+		if (image != null)
+		{
+			__gfx.drawImage(image, 0, 0,
+				Graphics.TOP | Graphics.LEFT);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/11/15
 	 */
 	@Override

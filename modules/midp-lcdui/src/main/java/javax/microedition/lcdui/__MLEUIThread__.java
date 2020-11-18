@@ -216,9 +216,9 @@ final class __MLEUIThread__
 		int __intProp, int __sub, int __old, int __new)
 	{
 		// Debug
-		Debugging.debugNote("propertyChange(%08x, %08x, %d, %d, %d)",
+		/*Debugging.debugNote("propertyChange(%08x, %08x, %d, %d, %d)",
 			System.identityHashCode(__form), System.identityHashCode(__item),
-			__intProp, __old, __new);
+			__intProp, __old, __new);*/
 			
 		// Forward to handler
 		DisplayWidget widget = StaticDisplayState.locate(__form);

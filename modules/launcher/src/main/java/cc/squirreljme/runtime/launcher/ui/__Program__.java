@@ -13,17 +13,10 @@ package cc.squirreljme.runtime.launcher.ui;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Image;
-import javax.microedition.swm.ManagerFactory;
-import javax.microedition.swm.Suite;
-import javax.microedition.swm.Task;
-import javax.microedition.swm.TaskStatus;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
@@ -48,12 +41,18 @@ final class __Program__
 	/** The icon to show for this program. */
 	Image _icon;
 	
+	/** Was an icon loaded? */
+	boolean _loadedIcon;
+	
 	/**
+	 * Initializes the program.
+	 * 
 	 * @param __jar The JAR the program is in.
 	 * @param __man The manifest of the JAR.
 	 * @param __activeTask The active task.
 	 * @param __entry The entry point.
-	 * @throws NullPointerException
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/17
 	 */
 	public __Program__(JarPackageBracket __jar, JavaManifest __man,
 		__ActiveTask__ __activeTask, EntryPoint __entry)
@@ -81,7 +80,7 @@ final class __Program__
 	{
 		// Image already known?
 		Image rv = this._icon;
-		if (rv != null)
+		if (rv != null || this._loadedIcon)
 			return rv;
 		
 		// No image is here at all
@@ -103,10 +102,15 @@ final class __Program__
 		// Not a valid image, ignore
 		catch (IOException e)
 		{
-			return null;
+			rv = null;
+			
+			// Failed, so maybe attempt to debug why?
+			e.printStackTrace();
 		}
 		
-		// Cache and use
+		// Cache and use it, flag that an icon was loaded so it does not
+		// constantly try to load icons for programs
+		this._loadedIcon = true;
 		this._icon = rv;
 		return rv;
 	}

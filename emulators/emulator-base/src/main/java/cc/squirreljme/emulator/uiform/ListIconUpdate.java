@@ -91,7 +91,8 @@ public class ListIconUpdate
 		bi.setRGB(0, 0, dimension, dimension,
 			pixelBuffer, 0, dimension);
 		
-		// Use this icon for the list
+		// Use this icon for the list, indicate the icon is no longer dirty
 		this.entry._icon = new ImageIcon(bi);
+		this.entry._dirtyIcon = false;
 	}
 }

@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
@@ -142,6 +143,10 @@ public final class SwingDisplay
 				}
 			}
 		}
+		
+		// Tell the form it was made current
+		if (__form != null)
+			__form.madeCurrent();
 	}
 	
 	/**
