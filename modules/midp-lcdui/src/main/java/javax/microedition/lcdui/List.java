@@ -366,12 +366,55 @@ public class List
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/20
+	 */
 	@Override
-	public void setSelectedFlags(boolean[] __a)
+	public void setSelectedFlags(boolean[] __flags)
+		throws IllegalArgumentException, NullPointerException
 	{
-		if (true)
-			throw new todo.TODO();
+		if (__flags == null)
+			throw new NullPointerException();
+			
+		java.util.List<__ChoiceEntry__> items = this._items.valuesAsList();
 		
+		// {@squirreljme.error EB3n Array is longer than the list size.
+		// (The list size; the array size)}
+		int n = items.size();
+		if (n > __flags.length)
+			throw new IllegalArgumentException("EB3n " + n + " " +
+				__flags.length);
+		
+		// Limited selection?
+		int type = this._type;
+		boolean limitSelection = (type == Choice.IMPLICIT ||
+			type == Choice.EXCLUSIVE);
+		
+		// Adjust selections
+		int selCount = 0;
+		for (int i = 0; i < n; i++)
+		{
+			// If selection is limited, then make sure no other items get
+			// selected
+			boolean flag = __flags[i];
+			if (flag)
+			{
+				if (limitSelection && selCount >= 1)
+					flag = false;
+				else
+					selCount++;
+			}
+			
+			// Use the flag
+			items.get(i)._selected = flag;
+		}
+		
+		// If nothing was selected, force the first item to be selected
+		if (limitSelection && selCount == 0 && n > 0)
+			items.get(0)._selected = true;
+		
+		// Send updates to the UI
 		this.__refresh();
 	}
 	

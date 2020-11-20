@@ -251,7 +251,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void setSelectedFlags(boolean[] __a)
+	public void setSelectedFlags(boolean[] __flags)
 	{
 		throw new todo.TODO();
 	}

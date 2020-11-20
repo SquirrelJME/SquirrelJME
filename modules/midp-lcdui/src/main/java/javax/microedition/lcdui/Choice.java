@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+@SuppressWarnings("UnusedReturnValue")
 public interface Choice
 {
 	int EXCLUSIVE =
@@ -120,7 +121,18 @@ public interface Choice
 	
 	void setFont(int __a, Font __b);
 	
-	void setSelectedFlags(boolean[] __a);
+	/**
+	 * Sets the selected flags for the choice. For {@link #IMPLICIT} and
+	 * {@link #EXCLUSIVE} only a single item will be selected, if no items
+	 * were selected then the first item will become selected.
+	 * 
+	 * @param __flags The flags to set on the list.
+	 * @throws IllegalArgumentException If the array is too short.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/20
+	 */
+	void setSelectedFlags(boolean[] __flags)
+		throws IllegalArgumentException, NullPointerException;
 	
 	void setSelectedIndex(int __a, boolean __b);
 	
