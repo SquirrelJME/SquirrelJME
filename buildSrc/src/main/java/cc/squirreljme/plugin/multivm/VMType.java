@@ -9,7 +9,6 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +25,6 @@ import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.TaskContainer;
 import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
 
@@ -160,7 +158,7 @@ public enum VMType
 		@Override
 		public void processLibrary(Task __task, InputStream __in,
 			OutputStream __out)
-			throws IOException, NullPointerException
+			throws NullPointerException
 		{
 			if (__task == null || __in == null || __out == null)
 				throw new NullPointerException("NARG");
@@ -185,6 +183,9 @@ public enum VMType
 					// Use the error stream directory
 					__spec.setErrorOutput(System.err);
 					
+					// Processing is done directly from the input
+					__spec.setStandardInput(__in);
+					
 					// The caller will consume the entire output of what was
 					// processed, so
 					__spec.setStandardOutput(__out);
@@ -198,7 +199,7 @@ public enum VMType
 			int code;
 			if ((code = exitResult.getExitValue()) != 0)
 				throw new RuntimeException(String.format(
-					"Failed to process library (exit code %d): ???", code));
+					"Failed to process library (exit code %d).", code));
 		}
 		
 		/**
