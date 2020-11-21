@@ -1,5 +1,10 @@
 # Frequently Asked Questions
 
+ * ***Q***: Is _SquirrelJME_ only on _Windows_?
+   * ***A***: No, _SquirrelJME_ is a cross-platform Java Virtual Machine that
+     can run on a variety of platforms. These include your standard Windows,
+     Linux, and Mac OS systems, but also as well those available to RetroArch
+     such as the Wii and PS2.
  * ***Q***: **PhoneME**'s source code is available, why do you not use that
    to make development faster?
    * ***A***: One of the major things is that **SquirrelJME** is a clean room
