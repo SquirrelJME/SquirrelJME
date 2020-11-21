@@ -11,68 +11,62 @@
 
 #include "squirreljme.h"
 
-static FILE* getPipeForFd(jint fd)
+// The class to forward to
+#define TERMINAL_CLASSNAME "cc/squirreljme/emulator/EmulatedTerminalShelf"
+
+#define TERMINAL_CLOSE_DESC "(I)I"
+#define TERMINAL_FLUSH_DESC "(I)I"
+#define TERMINAL_READIABIII_DESC "(I[BII)I"
+#define TERMINAL_WRITEIII_DESC "(II)I"
+#define TERMINAL_WRITEIABIII_DESC "(I[BII)I"
+
+JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_close(JNIEnv* env,
+	jclass classy, jint fd)
 {
-	if (fd == 1)
-		return stdout;
-	else if (fd == 2)
-		return stderr;
-	return NULL;
+	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
+		"close", TERMINAL_CLOSE_DESC,
+		fd);
 }
 
 JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_flush(JNIEnv* env,
 	jclass classy, jint fd)
 {
-	FILE* pipe = getPipeForFd(fd);
+	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
+		"flush", TERMINAL_FLUSH_DESC,
+		fd);
+}
 
-	if (pipe == NULL)
-		return -1;
-
-	if (fflush(pipe) == 0)
-		return 1;
-	return -1;
+JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_readIABIII(
+	JNIEnv* env, jclass classy, jint fd, jbyteArray buf, jint off, jint len)
+{
+	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
+		"read", TERMINAL_READIABIII_DESC,
+		fd, buf, off, len);
 }
 
 JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_writeII(JNIEnv* env,
 	jclass classy, jint fd, jint code)
 {
-	FILE* pipe = getPipeForFd(fd);
-
-	if (pipe == NULL)
-		return -1;
-
-	if (fputc(code, pipe) >= 0)
-		return 1;
-	return -1;
+	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
+		"write", TERMINAL_WRITEIII_DESC,
+		fd, code);
 }
 
 JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_writeIABIII(
 	JNIEnv* env, jclass classy, jint fd, jbyteArray buf, jint off, jint len)
 {
-	jbyte* jbuf;
-	FILE* pipe = getPipeForFd(fd);
-
-	if (pipe == NULL)
-		return -1;
-	
-	int okay = 0;
-	jbuf = (jbyte*)env->GetByteArrayElements(buf, NULL);
-	for (int i = 0; i < len; i++)
-		if (fputc(jbuf[off++], pipe) >= 0)
-			okay++;
-		else
-			break;
-	
-	env->ReleaseByteArrayElements(buf, jbuf, 0);
-	
-	return okay;
+	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
+		"write", TERMINAL_WRITEIABIII_DESC,
+		fd, buf, off, len);
 }
 
 static const JNINativeMethod mleTerminalMethods[] =
 {
-	{"flush", "(I)I", (void*)Impl_mle_TerminalShelf_flush},
-	{"write", "(II)I", (void*)Impl_mle_TerminalShelf_writeII},
-	{"write", "(I[BII)I", (void*)Impl_mle_TerminalShelf_writeIABIII},
+	{"close", TERMINAL_CLOSE_DESC", (void*)Impl_mle_TerminalShelf_close},
+	{"flush", TERMINAL_FLUSH_DESC, (void*)Impl_mle_TerminalShelf_flush},
+	{"read", TERMINAL_READIABIII_DESC, (void*)Impl_mle_TerminalShelf_readIABIII},
+	{"write", TERMINAL_WRITEIII_DESC, (void*)Impl_mle_TerminalShelf_writeII},
+	{"write", TERMINAL_WRITEIABIII_DESC, (void*)Impl_mle_TerminalShelf_writeIABIII},
 };
 
 jint JNICALL mleTerminalInit(JNIEnv* env, jclass classy)

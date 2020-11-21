@@ -52,6 +52,22 @@ public final class TerminalShelf
 		throws MLECallError;
 	
 	/**
+	 * Reads from the given pipe into the output buffer.
+	 *
+	 * @param __fd The {@link StandardPipeType} to read from.
+	 * @param __b The bytes to read into.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return One of {@link PipeErrorType} or the number of read bytes.
+	 * @throws MLECallError If {@code __fd} is not valid, the offset and/or
+	 * length are negative or exceed the buffer size, or {@code __b} is
+	 * {@code null}.
+	 * @since 2018/12/05
+	 */
+	public static native int read(int __fd, byte[] __b, int __o, int __l)
+		throws MLECallError;
+	
+	/**
 	 * Writes the character to the console output.
 	 *
 	 * @param __fd The {@link StandardPipeType} to write to.
