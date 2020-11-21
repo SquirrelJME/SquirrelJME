@@ -211,6 +211,42 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Deletes the given item.
+	 * 
+	 * @param __dx The index to delete.
+	 * @return The deleted item.
+	 * @throws IndexOutOfBoundsException If the given item is not within
+	 * bounds.
+	 * @since 2020/11/21
+	 */
+	public __ChoiceEntry__ remove(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		Object[] values = this._values;
+		
+		int n = values.length;
+		if (__dx < 0 || __dx >= n)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		Object[] newValues = new Object[n - 1];
+		
+		// Copy left
+		System.arraycopy(values, 0,
+			newValues, 0, __dx);
+		
+		// Copy right as long as there is something to copy
+		if (__dx + 1 < n)
+			System.arraycopy(values, __dx + 1,
+				newValues, __dx, (n - __dx) - 1);
+		
+		// Update values
+		this._values = newValues;
+		
+		// Return the old value
+		return (__ChoiceEntry__)values[__dx];
+	}
+	
+	/**
 	 * Returns the number of values.
 	 *
 	 * @return The number of values stored.

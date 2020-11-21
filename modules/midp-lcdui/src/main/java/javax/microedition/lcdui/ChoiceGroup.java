@@ -130,7 +130,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void delete(int __a)
+	public void delete(int __dx)
 	{
 		throw new todo.TODO();
 	}

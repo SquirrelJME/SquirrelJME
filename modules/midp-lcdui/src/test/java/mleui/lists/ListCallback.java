@@ -63,11 +63,12 @@ public class ListCallback
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
-		Debugging.debugNote("Painting icon! %dx%d", __bw, __bh);
+		int hob = Integer.highestOneBit(Math.max(__sw, __sh));
+		Debugging.debugNote("Painting icon! %dx%d (%d)",
+			__bw, __bh, hob);
 		
 		synchronized (this)
 		{
-			int hob = Integer.highestOneBit(__special);
 			if (hob >= 1 && hob < Integer.MAX_VALUE)
 				this._painted |= hob;
 		}

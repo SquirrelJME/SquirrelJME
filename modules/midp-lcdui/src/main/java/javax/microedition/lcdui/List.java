@@ -16,7 +16,6 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
@@ -127,10 +126,17 @@ public class List
 		return dx;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/21
+	 */
 	@Override
-	public void delete(int __a)
+	public void delete(int __dx)
 	{
-		throw new todo.TODO();
+		this._items.remove(__dx);
+		
+		// Ensure it is up to date
+		this.__refresh();
 	}
 	
 	/**
@@ -142,6 +148,9 @@ public class List
 	public void deleteAll()
 	{
 		this._items.clear();
+		
+		// Update UI
+		this.__refresh();
 	}
 	
 	@Override
@@ -162,8 +171,7 @@ public class List
 	public Font getFont(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();/*
-		return this._items.get(__i)._font;*/
+		return this._items.get(__i)._font;
 	}
 	
 	/**

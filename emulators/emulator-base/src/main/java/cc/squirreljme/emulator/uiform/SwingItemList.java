@@ -275,17 +275,11 @@ public class SwingItemList
 			return;
 		}
 		
-		// Debug
-		Debugging.debugNote("Form+Callback? %d", __dim);
-		
 		// Can only do something if there is a form and callback
 		SwingForm form = this.form();
 		UIFormCallback callback = (form != null ? form.callback() : null);
 		if (form == null || callback == null)
 			return;
-		
-		// Debug
-		Debugging.debugNote("Request icon: %dx%d", __dim, __dim);
 		
 		// Send in request to update the icon accordingly
 		SwingUtilities.invokeLater(new ListIconUpdate(

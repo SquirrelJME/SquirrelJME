@@ -46,7 +46,15 @@ public interface Choice
 	int append(String __label, Image __icon)
 		throws NullPointerException;
 	
-	void delete(int __a);
+	/**
+	 * Deletes the specified item.
+	 * 
+	 * @param __dx The index to delete.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @since 2020/11/21
+	 */
+	void delete(int __dx)
+		throws IndexOutOfBoundsException;
 	
 	void deleteAll();
 	

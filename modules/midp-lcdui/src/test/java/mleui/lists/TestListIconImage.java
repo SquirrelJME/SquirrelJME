@@ -55,6 +55,9 @@ public class TestListIconImage
 			__backend.flushEvents();
 		}
 		
+		// Wait until drawing potentially happens
+		__backend.flushEvents();
+		
 		// Icons which got painted?
 		synchronized (lc)
 		{
