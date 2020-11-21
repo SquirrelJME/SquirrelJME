@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +26,8 @@ import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.TaskContainer;
+import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
 
 /**
@@ -43,7 +47,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(InputStream __in, OutputStream __out)
+		public void processLibrary(Task __task, InputStream __in,
+			OutputStream __out)
 			throws IOException, NullPointerException
 		{
 			if (__in == null || __out == null)
@@ -116,7 +121,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(InputStream __in, OutputStream __out)
+		public void processLibrary(Task __task, InputStream __in,
+			OutputStream __out)
 			throws IOException, NullPointerException
 		{
 			if (__in == null || __out == null)
@@ -152,14 +158,72 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(InputStream __in, OutputStream __out)
+		public void processLibrary(Task __task, InputStream __in,
+			OutputStream __out)
 			throws IOException, NullPointerException
 		{
-			if (__in == null || __out == null)
+			if (__task == null || __in == null || __out == null)
 				throw new NullPointerException("NARG");
 			
-			// Use the AOT backend for execution
-			throw new Error("TODO");
+			// Class path is of the compiler target, it does not matter
+			Path[] classPath = VMHelpers.runClassPath(__task.getProject()
+				.getRootProject().project(":modules:aot-summercoat"),
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
+			
+			// Call the AOT backend
+			ExecResult exitResult = __task.getProject().javaexec(__spec ->
+				{
+					// Figure out the arguments to the JVM, it does not matter
+					// what the classpath is
+					VMType.HOSTED.spawnJvmArguments(__task, __spec,
+						"cc.squirreljme.jvm.aot.Main",
+						Collections.emptyMap(),
+						classPath,
+						classPath,
+						"-Xcompiler:summercoat");
+					
+					// Use the error stream directory
+					__spec.setErrorOutput(System.err);
+					
+					// The caller will consume the entire output of what was
+					// processed, so
+					__spec.setStandardOutput(__out);
+					
+					// Ignore error states, let us handle it instead of Gradle
+					// so we could handle multiple different exit codes.
+					__spec.setIgnoreExitValue(true);
+				});
+			
+			// Processing the library did not work?
+			int code;
+			if ((code = exitResult.getExitValue()) != 0)
+				throw new RuntimeException(String.format(
+					"Failed to process library (exit code %d): ???", code));
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/11/21
+		 */
+		@Override
+		public Iterable<Task> processLibraryDependencies(
+			VMLibraryTask __task)
+			throws NullPointerException
+		{
+			Project project = __task.getProject().getRootProject()
+				.project(":modules:aot-summercoat");
+			Project rootProject = project.getRootProject();
+			
+			// Make sure the AOT compiler is always up to date when this is
+			// ran, otherwise things can be very weird if it is not updated
+			// which would not be a good thing at all
+			Collection<Task> rv = new LinkedList<>();
+			for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
+				rv.add(rootProject.project(task.project).getTasks()
+					.getByName(task.task));
+			
+			return rv;
 		}
 		
 		/**
@@ -343,6 +407,18 @@ public enum VMType
 			default:
 				return properName;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/21
+	 */
+	@Override
+	public Iterable<Task> processLibraryDependencies(
+		VMLibraryTask __task)
+		throws NullPointerException
+	{
+		return Collections.emptyList();
 	}
 	
 	/**

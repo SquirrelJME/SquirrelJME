@@ -73,7 +73,7 @@ public class VMLibraryTaskAction
 				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
 				StandardOpenOption.CREATE))
 			{
-				this.vmType.processLibrary(in, out);
+				this.vmType.processLibrary(__task, in, out);
 			}
 			
 			// Move the file over

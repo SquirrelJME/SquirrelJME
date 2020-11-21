@@ -52,6 +52,7 @@ import org.gradle.jvm.tasks.Jar;
  *
  * @since 2020/08/07
  */
+@SuppressWarnings("OverlyComplexClass")
 public final class VMHelpers
 {
 	/** The class used for single test runs. */
@@ -514,21 +515,39 @@ public final class VMHelpers
 	 * @param __vmType The virtual machine type.
 	 * @return An array of paths containing the class path of execution.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/08/20
+	 * @since 2020/11/21
 	 */
-	public static Path[] runClassPath(VMExecutableTask __task,
+	public static Path[] runClassPath(Task __task,
 		String __sourceSet, VMSpecifier __vmType)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		return VMHelpers.runClassPath(__task.getProject(),
+			__sourceSet, __vmType);
+	}
+	
+	/**
+	 * Returns the path of the all the JARs which make up the classpath for
+	 * running an executable.
+	 * 
+	 * @param __project The project to get for.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine type.
+	 * @return An array of paths containing the class path of execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/20
+	 */
+	public static Path[] runClassPath(Project __project,
+		String __sourceSet, VMSpecifier __vmType)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
 		// Get tasks that are used for dependency running
 		Iterable<VMLibraryTask> tasks =
 			VMHelpers.<VMLibraryTask>resolveProjectTasks(
-				VMLibraryTask.class, __task.getProject(), VMHelpers
-					.runClassTasks(__task.getProject(), __sourceSet,
-						__vmType));
+				VMLibraryTask.class, __project, VMHelpers
+					.runClassTasks(__project, __sourceSet, __vmType));
 		
 		// Get the outputs of these, as they will be used. Ensure the order is
 		// kept otherwise execution may be non-deterministic and could break.

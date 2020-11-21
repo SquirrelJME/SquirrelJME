@@ -10,9 +10,11 @@
 package cc.squirreljme.plugin.multivm;
 
 import java.nio.file.Path;
+import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.provider.Provider;
 import org.gradle.jvm.tasks.Jar;
 
@@ -60,7 +62,8 @@ public class VMLibraryTask
 		this.setDescription("Compiles/constructs the library for execution.");
 		
 		// The JAR we are compiling has to be built first
-		this.dependsOn(baseJar);
+		this.dependsOn(baseJar,
+			new VMLibraryTaskDependencies(this, this.vmType));
 		
 		// The input of this task is the JAR that was created
 		this.getInputs().file(baseJar.getArchiveFile());

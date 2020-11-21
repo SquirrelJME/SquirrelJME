@@ -63,13 +63,15 @@ public interface VMSpecifier
 	/**
 	 * Processes the library.
 	 * 
+	 *
+	 * @param __task
 	 * @param __in The input data, this may be a JAR or otherwise.
 	 * @param __out The destination output file.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	void processLibrary(InputStream __in, OutputStream __out)
+	void processLibrary(Task __task, InputStream __in, OutputStream __out)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -101,5 +103,17 @@ public interface VMSpecifier
 	 * @since 2020/08/06
 	 */
 	String vmName(VMNameFormat __format)
+		throws NullPointerException;
+	
+	/**
+	 * Returns the optional library dependencies needed to perform library
+	 * processing, if any.
+	 * 
+	 * @param __task The owning task.
+	 * @return Iterable of dependent tasks.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/21
+	 */
+	Iterable<Task> processLibraryDependencies(VMLibraryTask __task)
 		throws NullPointerException;
 }
