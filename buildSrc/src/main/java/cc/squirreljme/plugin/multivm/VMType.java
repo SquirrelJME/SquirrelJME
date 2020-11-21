@@ -165,7 +165,8 @@ public enum VMType
 			
 			// Class path is of the compiler target, it does not matter
 			Path[] classPath = VMHelpers.runClassPath(__task.getProject()
-				.getRootProject().project(":modules:aot-summercoat"),
+				.getRootProject().project(":modules:aot-" +
+					this.vmName(VMNameFormat.LOWERCASE)),
 				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
 			
 			// Call the AOT backend
@@ -178,7 +179,10 @@ public enum VMType
 						Collections.emptyMap(),
 						classPath,
 						classPath,
-						"-Xcompiler:summercoat");
+						"-Xcompiler:" +
+							this.vmName(VMNameFormat.LOWERCASE),
+						"-Xname:" + __task.getProject().getName(),
+						"compile");
 					
 					// Use the error stream directory
 					__spec.setErrorOutput(System.err);
@@ -212,7 +216,8 @@ public enum VMType
 			throws NullPointerException
 		{
 			Project project = __task.getProject().getRootProject()
-				.project(":modules:aot-summercoat");
+				.project(":modules:aot-" +
+					this.vmName(VMNameFormat.LOWERCASE));
 			Project rootProject = project.getRootProject();
 			
 			// Make sure the AOT compiler is always up to date when this is

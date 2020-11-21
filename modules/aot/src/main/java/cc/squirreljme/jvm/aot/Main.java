@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
 
 /**
  * Main entry point for the compiler runner.
@@ -22,11 +23,11 @@ public class Main
 	 * Main entry point for the compiler interface.
 	 * 
 	 * @param __args Arguments to the main class.
-	 * @since 2020/11/2
+	 * @since 2020/11/21
 	 */
 	public static void main(String... __args)
 	{
-		System.err.println("Hello AOT?");
+		System.err.printf("AOT: %s%n", Arrays.asList(__args));
 		
 		throw Debugging.todo("AOT Main");
 	}
