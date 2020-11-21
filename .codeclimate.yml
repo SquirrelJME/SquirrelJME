@@ -75,3 +75,10 @@ exclude_patterns:
   # Ignore OpenGL Interfaces
   - "**/opengles/GL10.java"
   - "**/opengles/GL11.java"
+
+  # Testing Framework (It does very specific things)
+  - "modules/tac/"
+
+  # Code that effectively is the same and is not possible to correct
+  - "modules/midp-lcdui/src/main/java/javax/microedition/lcdui/__CanvasDefaultKeyListener__.java"
+  - "modules/midp-lcdui/src/main/java/javax/microedition/lcdui/__CustomItemKeyListener__.java"
