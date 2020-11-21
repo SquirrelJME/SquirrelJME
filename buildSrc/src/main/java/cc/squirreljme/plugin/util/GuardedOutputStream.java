@@ -50,7 +50,18 @@ public final class GuardedOutputStream
 	public void close()
 		throws IOException
 	{
-		this._closed = true;
+		if (!this._closed)
+		{
+			// Make sure everything is written before closing
+			try
+			{
+				this.out.flush();
+			}
+			finally
+			{
+				this._closed = true;
+			}
+		}
 	}
 	
 	/**
