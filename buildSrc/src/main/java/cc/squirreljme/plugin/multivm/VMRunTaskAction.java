@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,8 +103,8 @@ public class VMRunTaskAction
 					args.<String>toArray(new String[args.size()]));
 				
 				// Use these streams directly
-				__spec.setStandardOutput(System.out);
-				__spec.setErrorOutput(System.err);
+				__spec.setStandardOutput(new GuardedOutputStream(System.out));
+				__spec.setErrorOutput(new GuardedOutputStream(System.err));
 			});
 		
 		// Did the task fail?

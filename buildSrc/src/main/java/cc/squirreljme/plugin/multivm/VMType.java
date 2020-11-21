@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -185,7 +186,7 @@ public enum VMType
 						"compile");
 					
 					// Use the error stream directory
-					__spec.setErrorOutput(System.err);
+					__spec.setErrorOutput(new GuardedOutputStream(System.err));
 					
 					// Processing is done directly from the input
 					__spec.setStandardInput(__in);
