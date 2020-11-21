@@ -85,6 +85,10 @@
       <module name="squirreljme.modules.vodafone-api.testFixtures" target="1.7" />
       <module name="squirreljme.modules.zip.testFixtures" target="1.7" />
       <module name="squirreljme.test" target="1.7" />
+      <module name="squirreljme.tools.dump-class.main" target="1.8" />
+      <module name="squirreljme.tools.dump-class.test" target="1.8" />
+      <module name="squirreljme.tools.dump-zip.main" target="1.8" />
+      <module name="squirreljme.tools.dump-zip.test" target="1.8" />
       <module name="squirreljme.tools.instruction-popcount.main" target="1.7" />
       <module name="squirreljme.tools.instruction-popcount.test" target="1.7" />
       <module name="squirreljme.tools.javap.main" target="1.7" />

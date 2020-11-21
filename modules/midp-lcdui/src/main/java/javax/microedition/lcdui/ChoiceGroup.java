@@ -85,7 +85,8 @@ public class ChoiceGroup
 		
 		// {@squirreljme.error EB1c Invalid choice type specified for a
 		// choice group. (The choice type)}
-		if (__ct < ChoiceGroup._MIN_TYPE || __ct > ChoiceGroup._MAX_TYPE || __ct == Choice.IMPLICIT)
+		if (__ct < ChoiceGroup._MIN_TYPE || __ct > ChoiceGroup._MAX_TYPE ||
+			__ct == Choice.IMPLICIT)
 			throw new IllegalArgumentException(String.format("EB1c %d", __ct));
 		
 		// Set
@@ -129,7 +130,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void delete(int __a)
+	public void delete(int __dx)
 	{
 		throw new todo.TODO();
 	}
@@ -159,15 +160,19 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public int getSelectedFlags(boolean[] __a)
+	public int getSelectedFlags(boolean[] __result)
 	{
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/31
+	 */
 	@Override
 	public int getSelectedIndex()
 	{
-		throw new todo.TODO();
+		return __Utils__.__getSelectedIndex(this, this._type);
 	}
 	
 	@Override
@@ -222,7 +227,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void set(int __a, String __b, Image __c)
+	public void set(int __i, String __label, Image __icon)
 	{
 		throw new todo.TODO();
 	}
@@ -246,7 +251,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void setSelectedFlags(boolean[] __a)
+	public void setSelectedFlags(boolean[] __flags)
 	{
 		throw new todo.TODO();
 	}

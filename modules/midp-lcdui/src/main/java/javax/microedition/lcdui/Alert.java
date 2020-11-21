@@ -64,9 +64,9 @@ public class Alert
 		this._type = __type;
 		
 		// Set titles
-		this._title = __title;
+		this._userTitle = __title;
 		if (__title != null)
-			this._dtitle = __title;
+			this.__displayTitle = __title;
 	}
 	
 	@Override

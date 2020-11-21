@@ -1,0 +1,15 @@
+# 2020/10/09
+
+## 14:36
+
+Have not left any notes in awhile, but this day I am off and I have a four
+day weekend which is nice. Going to be taking it easy. For some odd reason
+when running `TestItemRemoveShift` it never finishes, but when I added debugging
+it just started working again. So confused as to why.
+
+## 21:44
+
+My integer parsing was totally messed up, but interesting. But other than this
+I am looking into multi-tests. I want to support native and backend tests but
+have them be a bit different, so rather figuring things out on how this is
+best be done.

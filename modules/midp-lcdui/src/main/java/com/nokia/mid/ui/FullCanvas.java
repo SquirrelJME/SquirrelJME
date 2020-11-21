@@ -9,6 +9,7 @@
 
 package com.nokia.mid.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -76,7 +77,7 @@ public abstract class FullCanvas
 	 *
 	 * @since 2019/09/23
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public FullCanvas()
 	{
 		// Nokia API just says to call this instead, so this is done

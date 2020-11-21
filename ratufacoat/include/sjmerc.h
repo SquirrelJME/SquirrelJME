@@ -77,7 +77,7 @@
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || \
 	(defined(__WATCOMC__) && __WATCOMC__ >= 1270) || \
 	(defined(_MSC_VER) && _MSC_VER >= 1600) || \
-	(defined(PSP))
+	(defined(PSP) || defined(PS2))
 	#include <stdint.h>
 
 /** Old Microsoft. */

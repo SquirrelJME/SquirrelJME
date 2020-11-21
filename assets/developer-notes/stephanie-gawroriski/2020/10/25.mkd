@@ -1,0 +1,6 @@
+# 2020/10/25
+
+## 18:49
+
+I figured for choice I want to have a key used to determine if the choice
+entries have changed or not.

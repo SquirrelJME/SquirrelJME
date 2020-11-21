@@ -12,20 +12,39 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.DeviceFeedbackType;
-import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
-import cc.squirreljme.runtime.lcdui.common.CommonColors;
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
-import cc.squirreljme.runtime.lcdui.phoneui.StandardMetrics;
+import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
+import cc.squirreljme.jvm.mle.constants.UIInputFlag;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 
+@SuppressWarnings("OverlyComplexClass")
 public class Display
 {
+	/** The soft-key for the left command. */
+	static final int _SOFTKEY_LEFT_COMMAND =
+		Display.SOFTKEY_BOTTOM + 1;
+	
+	/** The soft-key for the right command. */
+	static final int _SOFTKEY_RIGHT_COMMAND =
+		Display.SOFTKEY_BOTTOM + 2;
+	
 	public static final int ALERT =
 		3;
 
@@ -56,9 +75,11 @@ public class Display
 	public static final int COLOR_IDLE_FOREGROUND =
 		7;
 
+	@SuppressWarnings("FieldNamingConvention")
 	public static final int COLOR_IDLE_HIGHLIGHTED_BACKGROUND =
 		8;
 
+	@SuppressWarnings("FieldNamingConvention")
 	public static final int COLOR_IDLE_HIGHLIGHTED_FOREGROUND =
 		9;
 
@@ -103,23 +124,29 @@ public class Display
 	public static final int ORIENTATION_PORTRAIT_180 =
 		4;
 
-	public static final int SOFTKEY_BOTTOM =
-		800;
-
+	/** The mask and number of items that are permitted for soft-key items. */
 	public static final int SOFTKEY_INDEX_MASK =
 		15;
 
+	/** Displayed at the bottom of the screen. */
+	public static final int SOFTKEY_BOTTOM =
+		800;
+
+	/** Displayed on the left side of the screen. */
 	public static final int SOFTKEY_LEFT =
 		820;
 
-	public static final int SOFTKEY_OFFSCREEN =
-		880;
+	/** Displayed at the top of the screen. */
+	public static final int SOFTKEY_TOP =
+		840;
 
+	/** Displayed on the right side of the screen. */
 	public static final int SOFTKEY_RIGHT =
 		860;
 
-	public static final int SOFTKEY_TOP =
-		840;
+	/** Displayed off-screen, using physical hardware buttons. */
+	public static final int SOFTKEY_OFFSCREEN =
+		880;
 
 	public static final int STATE_BACKGROUND =
 		0;
@@ -158,6 +185,7 @@ public class Display
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE =
 		8192;
 
+	@SuppressWarnings("FieldNamingConvention")
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 =
 		32768;
 
@@ -182,16 +210,12 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** The number of down keys to store, for a single hand. */
-	private static final int _NUM_DOWNKEYS =
-		5;
+	/** Serial runs of this method. */
+	static final Map<Integer, Runnable> _SERIAL_RUNS =
+		new HashMap<>();
 	
-	/** Listeners for the display. */
-	private static final List<DisplayListener> _LISTENERS =
-		new ArrayList<>();
-	
-	/** The current display which was created. */
-	private static Display _DISPLAY;
+	/** The native display instance. */ 
+	final cc.squirreljme.jvm.mle.brackets.UIDisplayBracket _uiDisplay;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -199,20 +223,95 @@ public class Display
 	/** The displayable to show on exit. */
 	private volatile Displayable _exit;
 	
+	/** The layout policy of this display. */
+	private CommandLayoutPolicy _layoutPolicy;
+	
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __uiDisplay The native display.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display()
+	Display(UIDisplayBracket __uiDisplay)
+		throws NullPointerException
 	{
+		if (__uiDisplay == null)
+			throw new NullPointerException("NARG");
+		
+		this._uiDisplay = __uiDisplay;
+		
+		// Check and ensure that the background thread exists
+		synchronized (StaticDisplayState.class)
+		{
+			// If there is no background thread yet, initialize it
+			Thread bgThread = StaticDisplayState.backgroundThread();
+			if (bgThread == null)
+			{
+				// The user interface thread to use
+				__MLEUIThread__ uiRunner = new __MLEUIThread__();
+				
+				// Initialize thread and make it a background worker
+				bgThread = new Thread(uiRunner, "SquirrelJME-LCDUI");
+				ThreadShelf.javaThreadSetDaemon(bgThread);
+				
+				// Set background thread state and start it
+				StaticDisplayState.setBackgroundThread(bgThread, uiRunner);
+				bgThread.start();
+			}
+			
+			// Register the display for callbacks
+			UIBackendFactory.getInstance().callback(this,
+				(UIDisplayCallback)StaticDisplayState.callback());
+		}
 	}
 	
-	public void callSerially(Runnable __a)
+	/**
+	 * Calls the given runner within the event handler serially.
+	 * 
+	 * Note that the Runnable.run() will be called as if it were serialized
+	 * like everything else with {@link SerializedEvent}.
+	 * 
+	 * @param __run The method to run.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/03
+	 */
+	@SuppressWarnings("MagicNumber")
+	public void callSerially(Runnable __run)
+		throws NullPointerException
 	{
-		// Note that the Runnable.run() will be called as if it were serialized
-		// like everything else with @SerializedEvent
-		throw new todo.TODO();
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the identifiers for this display and the run call
+		int idDisplay = System.identityHashCode(StaticDisplayState.callback());
+		Integer idRunner = System.identityHashCode(__run);
+		
+		// Perform the serialization call
+		synchronized (Display.class)
+		{
+			// Store into the serial runner
+			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
+			serialRuns.put(idRunner, __run);
+			
+			// Perform the call so it is done later
+			UIBackendFactory.getInstance().later(idDisplay, idRunner);
+			
+			// Constantly loop waiting for the call to be gone
+			for (;;)
+				try
+				{
+					// If this disappeared from the map then it was invoked
+					if (!serialRuns.containsKey(idRunner))
+						break;
+					
+					// Wait for trigger or timeout
+					Display.class.wait(1_000L);
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+		}
 	}
 	
 	/**
@@ -322,16 +421,20 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		int caps = UIState.getInstance().capabilities();
-		boolean hastouch = ((caps & Framebuffer.CAPABILITY_TOUCH) != 0);
-		boolean hasinput = hastouch |
-			((caps & Framebuffer.CAPABILITY_KEYBOARD) != 0);
+		// These are all standard and expected to always be supported
+		int rv = Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
+			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
+			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
+			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
+			Display.SUPPORTS_MENUS;
+			
+		UIBackend backend = UIBackendFactory.getInstance();
 		
-		// Use the capabilities of the native display, but since SquirrelJME
-		// manages pretty much everything in a framebuffer every display will
-		// always have certain capabilities
-		return (hasinput ? Display.SUPPORTS_INPUT_EVENTS : 0) |
-			(hastouch ? ExtendedCapabilities.SUPPORTS_POINTER_EVENTS : 0) | Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS | Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS | Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES | Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES | Display.SUPPORTS_MENUS;
+		// Supports any kind of input?
+		if (0 != backend.metric(UIMetricType.INPUT_FLAGS))
+			rv |= Display.SUPPORTS_INPUT_EVENTS;
+		
+		return rv;
 	}
 	
 	/**
@@ -399,14 +502,35 @@ public class Display
 		return (rv & 0xFFFFFF);
 	}
 	
+	/**
+	 * Returns the current command layout policy. The policy of the
+	 * {@link Displayable} takes precedence.
+	 * 
+	 * @return The current command layout policy, may be {@code null}.
+	 * @since 2020/09/27
+	 */
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
-		throw new todo.TODO();
+		return this._layoutPolicy;
 	}
 	
+	/**
+	 * Returns the preferred placement for commands.
+	 * 
+	 * @param __ct The command type, see {@link Command}.
+	 * @return The preferred placements or {@code null} if there are none.
+	 * @throws IllegalArgumentException If the command type is not valid.
+	 * @since 2020/09/27
+	 */
 	public int[] getCommandPreferredPlacements(int __ct)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB3l Invalid command type. (The type)}
+		if (__ct < Command.SCREEN || __ct > Command.ITEM)
+			throw new IllegalArgumentException("EB3l " + __ct);
+		
+		// In SquirrelJME, commands are in the same places as menu items
+		return this.getMenuPreferredPlacements();
 	}
 	
 	/**
@@ -440,13 +564,57 @@ public class Display
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns all of the possible exact placements where items may go on
+	 * a given border.
+	 * 
+	 * The orientation of the display does affect the border positions, if
+	 * the orientation has changed then this must be called again.
+	 * 
+	 * For top/bottom borders, the order is from left to right.
+	 * 
+	 * For left/right borders, the order is top to bottom.
+	 * 
+	 * The first possible placement on a border is always {@code BORDER + 1}.
+	 * 
+	 * @param __b The border to get, must be one of {@link #SOFTKEY_TOP},
+	 * {@link #SOFTKEY_BOTTOM}, {@link #SOFTKEY_LEFT}, {@link #SOFTKEY_RIGHT},
+	 * or {@link #SOFTKEY_OFFSCREEN}.
+	 * @return The valid placements for the given border, or {@code null}
+	 * if the border is not supported.
+	 * @throws IllegalArgumentException If the border is not valid.
+	 * @since 2020/09/27
+	 */
 	public int[] getExactPlacementPositions(int __b)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// Un-project the layout to get the correct order
+		__b = this.__layoutProject(__b);
+		
+		// Depends on the border that was requested
+		switch (__b)
+		{
+				// None of these positions are valid in SquirrelJME
+			case Display.SOFTKEY_OFFSCREEN:
+			case Display.SOFTKEY_TOP:
+			case Display.SOFTKEY_LEFT:
+			case Display.SOFTKEY_RIGHT:
+				return null;
+				
+				// There are only two slots along the bottom of the screen
+			case Display.SOFTKEY_BOTTOM:
+				return new int[]{
+					this.__layoutProject(Display.SOFTKEY_BOTTOM + 1),
+					this.__layoutProject(Display.SOFTKEY_BOTTOM + 2)};
+			
+				// {@squirreljme.error EB1p Invalid border. (The border)}
+			default:
+				throw new IllegalArgumentException("EB1p " + __b);
+		}
 	}
 	
 	/**
-	 * Returns the current harware state.
+	 * Returns the current hardware state.
 	 *
 	 * @return The hardware state.
 	 * @since 2018/12/10
@@ -469,7 +637,8 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return UIState.getInstance().displayHeight();
+		return UIBackendFactory.getInstance()
+			.metric(UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
 	public IdleItem getIdleItem()
@@ -477,14 +646,30 @@ public class Display
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the preferred placement for menus.
+	 * 
+	 * @return The preferred placements or {@code null} if there are none.
+	 * @since 2020/09/27
+	 */
 	public int[] getMenuPreferredPlacements()
 	{
-		throw new todo.TODO();
+		// The preferred placements for menus are the same as the supported
+		// ones
+		return this.getMenuSupportedPlacements();
 	}
 	
+	/**
+	 * Returns all of the placements which support menu items.
+	 *  
+	 * @return The list of supported menu item placements.
+	 * @since 2020/09/27
+	 */
 	public int[] getMenuSupportedPlacements()
 	{
-		throw new todo.TODO();
+		// In SquirrelJME, commands and menus can only be placed along the
+		// bottom of the screen
+		return this.getExactPlacementPositions(Display.SOFTKEY_BOTTOM);
 	}
 	
 	/**
@@ -495,21 +680,28 @@ public class Display
 	 */
 	public int getOrientation()
 	{
-		// Landscape just means a longer width
-		boolean landscape = this.getWidth() > this.getHeight();
+		int width, height;
 		
-		// If it is detected that the display is upsidedown, just say that
-		// it was rotated 180 degrees
-		if (UIState.getInstance().displayFlipped())
-			if (landscape)
-				return Display.ORIENTATION_LANDSCAPE_180;
-			else
-				return Display.ORIENTATION_PORTRAIT_180;
+		// If a form is being shown, use those dimensions
+		Displayable form = this._current;
+		if (form != null)
+		{
+			width = Displayable.__getWidth(form, null);
+			height = Displayable.__getHeight(form, null);
+		}
+		
+		// Otherwise use the display dimensions
 		else
-			if (landscape)
-				return Display.ORIENTATION_LANDSCAPE;
-			else
-				return Display.ORIENTATION_PORTRAIT;
+		{
+			width = this.getWidth();
+			height = this.getHeight();
+		}
+		
+		// Landscape just means a longer width
+		if (width > height)
+			return Display.ORIENTATION_LANDSCAPE;
+		else
+			return Display.ORIENTATION_PORTRAIT;
 	}
 	
 	/**
@@ -520,7 +712,8 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return UIState.getInstance().displayWidth();
+		return UIBackendFactory.getInstance()
+			.metric(UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
 	/**
@@ -531,8 +724,9 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return 0 != (this.getCapabilities() &
-			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
+		return (UIBackendFactory.getInstance().metric(
+			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
+			(UIInputFlag.POINTER);
 	}
 	
 	/**
@@ -543,8 +737,10 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return 0 != (this.getCapabilities() &
-			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
+		return (UIBackendFactory.getInstance().metric(
+			UIMetricType.INPUT_FLAGS) &
+			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
+			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
 	}
 	
 	/**
@@ -566,24 +762,35 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return UIState.getInstance().displayIsColor();
+		return UIBackendFactory.getInstance().metric(
+			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
 	}
 	
 	/**
-	 * Returns the number of alpha-transparency levels.
-	 *
-	 * Alpha levels range from fully transparent to fully opaue.
-	 *
-	 * There will always be at least two levels.
+	 * Returns the number of alpha-transparency levels. Alpha levels range
+	 * from fully transparent to fully opaque.
+	 * 
+	 * It is required by implementations to support at least 16 levels of
+	 * alpha transparency.
 	 *
 	 * @return The alpha transparency levels.
 	 * @since 2016/10/14
 	 */
+	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		// Always return 2 because SquirrelJME operates on a flat framebuffer
-		// where there is no such thing as transparency
-		return 2;
+		switch (UIBackendFactory.getInstance().metric(
+			UIMetricType.DISPLAY_PIXEL_FORMAT))
+		{
+				// If the display format is 16-bit, just use this here
+			case UIPixelFormat.SHORT_RGBA4444:
+				return 16;
+			
+				// Use 256 since all other image formats would get their
+				// alpha colors calculated.
+			default:
+				return 256;
+		}
 	}
 	
 	/**
@@ -596,14 +803,53 @@ public class Display
 	 * @return The number of available colors.
 	 * @since 2016/10/14
 	 */
+	@SuppressWarnings("MagicNumber")
 	public int numColors()
 	{
-		return UIState.getInstance().displayUniqueColors();
+		int pf;
+		switch ((pf = UIBackendFactory.getInstance().metric(
+			UIMetricType.DISPLAY_PIXEL_FORMAT)))
+		{
+			case UIPixelFormat.INT_RGB888:
+			case UIPixelFormat.INT_RGBA8888:
+				return 16_777_216;
+			
+			case UIPixelFormat.SHORT_INDEXED65536:
+				return 65536;
+			
+			case UIPixelFormat.SHORT_RGB565:
+				return 8192;
+			
+			case UIPixelFormat.SHORT_RGBA4444:
+				return 4096;
+			
+			case UIPixelFormat.BYTE_INDEXED256:
+				return 256;
+			
+			case UIPixelFormat.PACKED_INDEXED4:
+				return 16;
+			
+			case UIPixelFormat.PACKED_INDEXED2:
+				return 4;
+			
+			case UIPixelFormat.PACKED_INDEXED1:
+				return 2;
+			
+				// {@squirreljme.error EB3j Unhandled pixel format. (Format)}.
+			default:
+				throw Debugging.oops("EB3j", pf);
+		}
 	}
 	
+	/**
+	 * Removes the currently displayed displayable.
+	 * 
+	 * @since 2020/10/04
+	 */
 	public void removeCurrent()
 	{
-		throw new todo.TODO();
+		// Just performs the internal hiding logic
+		this.__doHideCurrent();
 	}
 	
 	/**
@@ -675,7 +921,7 @@ public class Display
 		todo.DEBUG.note("Showing alert \"%s\"", __show._message);
 		
 		// Perform call on this display
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		try
 		{
@@ -723,23 +969,21 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
-		// Enter background state?
+		// There technically is no background state in SquirrelJME, a
+		// background state being one that turns off the display or
+		// otherwise
 		if (__show == null)
-		{
-			todo.TODO.note("Enter background state.");
-			/*head.setState(DisplayState.BACKGROUND);*/
 			return;
-		}
 		
-		// If we are trying to show the same display, do nothing
+		// If we are trying to show the same display, force foreground
 		Displayable current = this._current;
 		if (current == __show)
 		{
-			// If we just set current with no actual change, just make sure
-			// our callback is the one which is registered so that way we
-			// take control of the screen
-			if (__show != null)
-				this.__doShowCurrent(__show);
+			// This will force the form to be currently shown on the screen
+			// even if another task has set the form. Since displays may only
+			// have a single form associated with them, this effectively
+			// retakes control accordingly
+			this.__doShowCurrent(__show);
 			
 			return;
 		}
@@ -756,22 +1000,8 @@ public class Display
 		if (__show._display != null)
 			throw new IllegalStateException("EB1m");
 		
-		// Clear current's parent
-		if (current != null)
-		{
-			// Stop showing
-			current._isshown = false;
-			current.hideNotify();
-			
-			// Not used anymore
-			current._display = null;
-		}
-		
-		// Set new parent
-		__show._display = this;
-		this._current = __show;
-		
-		// Do common showing stuff
+		// Hide the current display then show the new one
+		this.__doHideCurrent();
 		this.__doShowCurrent(__show);
 	}
 	
@@ -839,6 +1069,8 @@ public class Display
 	private int __bestImageSize(int __e, boolean __h)
 		throws IllegalArgumentException
 	{
+		throw Debugging.todo();
+		/*
 		// Depends
 		switch (__e)
 		{
@@ -868,7 +1100,38 @@ public class Display
 			default:
 				throw new IllegalArgumentException(String.format("EB1o %d",
 					__e));
-		}
+		}*/
+	}
+	
+	/**
+	 * Hides the current displayable.
+	 * 
+	 * @return The currently displayed displayable unless not set.
+	 * @since 2020/09/27
+	 */
+	private Displayable __doHideCurrent()
+	{
+		// Nothing was ever visible on this display?
+		Displayable current = this._current;
+		if (current == null)
+			return null;
+		
+		// Hide the form on the display, but only if it is currently shown
+		// as we do not want to un-hide another form being displayed if it
+		// is from another process
+		if (current.__isShown())
+			UIBackendFactory.getInstance()
+				.displayShow(this._uiDisplay, null);
+		
+		// Unlink display
+		current._display = null;
+		this._current = null;
+		
+		// Inform canvases that they are now hidden
+		if (current instanceof Canvas)
+			((Canvas)current).hideNotify();
+		
+		return current;
 	}
 	
 	/**
@@ -880,20 +1143,90 @@ public class Display
 	 */
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
-	{	
-		UIState uis = UIState.getInstance();
+	{
+		if (__show == null)
+			throw new NullPointerException("NARG");
 		
-		// Always set as shown, easier to work with
-		__show._isshown = true;
+		// Debug
+		Debugging.debugNote("Showing %s on display.", __show.getClass());
 		
-		// Set title of our display to the title of the Displayable
-		uis.setTitle(__show._dtitle);
+		// Get the backend to call on
+		UIBackend backend = UIBackendFactory.getInstance();
 		
-		// Set drawn displayable
-		uis.setDisplayable(__show);
+		// Use the global callback thread
+		synchronized (StaticDisplayState.class)
+		{
+			// Set callback for the displayed form so it can receive events
+			backend.callback(__show._uiForm,
+				StaticDisplayState.callback());
+		}
 		
-		// Callback when it is made visible
-		__show.showNotify();
+		// Show the form on the display
+		backend.displayShow(this._uiDisplay,
+			__show._uiForm);
+		
+		// Set new parent
+		__show._display = this;
+		this._current = __show;
+		
+		// Notify that it was shown
+		__show.__showNotify(__show);
+	}
+	
+	/**
+	 * Projects the border for the given layout according to the screen
+	 * orientation. Calling this method twice with a previously projected item
+	 * will result in the projection being reversed.
+	 * 
+	 * @param __b The border or item to project.
+	 * @return The projection of the border.
+	 * @since 2020/09/27
+	 */
+	final int __layoutProject(int __b)
+	{
+		// Get the true border and the item position
+		int border = __b & (~Display.SOFTKEY_INDEX_MASK);
+		int position = __b & Display.SOFTKEY_INDEX_MASK;
+		
+		// Depends if the display is flipped or not
+		switch (this.getOrientation())
+		{
+				// Normal layout, does not get modified
+			case Display.ORIENTATION_PORTRAIT:
+			case Display.ORIENTATION_LANDSCAPE:
+				return __b;
+			
+				// Rotation will adjust which border items appear on
+			case Display.ORIENTATION_PORTRAIT_180:
+			case Display.ORIENTATION_LANDSCAPE_180:
+				switch (border)
+				{
+						// If the item is offscreen, it never gets adjusted
+					case Display.SOFTKEY_OFFSCREEN:
+						return __b;
+					
+					case Display.SOFTKEY_TOP:
+						return Display.SOFTKEY_BOTTOM + position;
+						
+					case Display.SOFTKEY_BOTTOM:
+						return Display.SOFTKEY_TOP + position;
+						
+					case Display.SOFTKEY_LEFT:
+						return Display.SOFTKEY_RIGHT + position;
+						
+					case Display.SOFTKEY_RIGHT:
+						return Display.SOFTKEY_LEFT + position;
+					
+						// {@squirreljme.error EB3k Invalid border position.
+						// (The border position).
+					default:
+						throw new IllegalArgumentException("EB3k " + border);
+				}
+			
+				// This should not occur
+			default:
+				throw Debugging.oops("Invalid orientation.");
+		}
 	}
 	
 	/**
@@ -909,20 +1242,7 @@ public class Display
 	public static void addDisplayListener(DisplayListener __dl)
 		throws NullPointerException
 	{
-		if (__dl == null)
-			throw new NullPointerException("NARG");
-		
-		List<DisplayListener> listeners = Display._LISTENERS;
-		synchronized (listeners)
-		{
-			// Do nothing if it is already in there
-			for (int i = 0, n = listeners.size(); i < n; i++)
-				if (listeners.get(i) == __dl)
-					return;
-			
-			// Add it, if it is not there
-			listeners.add(__dl);
-		}
+		StaticDisplayState.addListener(__dl);
 	}
 	
 	/**
@@ -940,18 +1260,13 @@ public class Display
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		// First display already made?
-		Display d = Display._DISPLAY;
-		if (d != null)
-			return d;
-		
 		// Use the first display that is available.
 		// In the runtime, each program only ever gets a single MIDlet and
 		// creating new MIDlets is illegal. Thus since getDisplays() has zero
 		// be the return value for this method, that is used here.
-		Display[] disp = Display.getDisplays(0);
-		if (disp.length > 0)
-			return disp[0];
+		Display[] all = Display.getDisplays(0);
+		if (all.length > 0)
+			return all[0];
 		
 		// {@squirreljme.error EB1p Could not get the display for the specified
 		// MIDlet because no displays are available.}
@@ -962,40 +1277,59 @@ public class Display
 	 * Obtains the displays which have the given capability from all internal
 	 * display providers.
 	 *
-	 * @param __caps The capabities to use, this is a bitfield and the values
-	 * include all of the {@code SUPPORT_} prefixed constans. If {@code 0} is
+	 * @param __caps The capabilities to use, this is a bitfield and the values
+	 * include all of the {@code SUPPORT_} prefixed constants. If {@code 0} is
 	 * specified then capabilities are not checked.
 	 * @return An array containing the displays with these capabilities.
+	 * @throws IllegalStateException If there are no compatible displays.
 	 * @since 2016/10/08
 	 */
 	public static Display[] getDisplays(int __caps)
+		throws IllegalStateException
 	{
-		// Poke the VM to initialize things potentially
-		Poking.poke();
+		// Use cached displays, but otherwise load them
+		Display[] all = StaticDisplayState.DISPLAYS;
+		if (all == null)
+		{
+			// Poke the VM to initialize things potentially, this is just
+			// needed by the native emulator bindings
+			Poking.poke();
+			
+			// Get the displays that are attached to the system
+			cc.squirreljme.jvm.mle.brackets.UIDisplayBracket[] uiDisplays =
+				UIBackendFactory.getInstance().displays();
+			int n = uiDisplays.length;
+			
+			// Initialize display instances
+			all = new Display[n];
+			for (int i = 0; i < n; i++)
+				all[i] = new Display(uiDisplays[i]);
+			
+			// Use these for future calls
+			StaticDisplayState.DISPLAYS = all;
+			
+			// Inform any listeners that the displays exist now
+			for (DisplayListener listener : StaticDisplayState.listeners())
+				for (Display display : all) 
+					listener.displayAdded(display);
+		}
 		
-		// Create initial display?
-		Display d = Display._DISPLAY;
-		if (d == null)
-			synchronized (Display.class)
-			{
-				d = Display._DISPLAY;
-				if (d == null)
-				{
-					Display._DISPLAY = (d = new Display());
-					
-					// Just signify that the display was added here
-					for (DisplayListener dl : Display.__listeners())
-						dl.displayAdded(d);
-				}
-			}
+		// If we do not care for the capabilities of the displays then just
+		// return all of them
+		if (__caps == 0)
+			return all.clone();
 		
-		// Either the capabilities match or we do not care what the display
-		// supports
-		if (__caps == 0 || ((d.getCapabilities() & __caps) == __caps))
-			return new Display[]{d};
+		// Find possible displays
+		List<Display> possible = new ArrayList<>(all.length);
+		for (Display potential : all)
+			if ((potential.getCapabilities() & __caps) == __caps)
+				possible.add(potential);
 		
 		// {@squirreljme.error EB1q No displays are available.}
-		throw new IllegalStateException("EB1q");
+		if (possible.isEmpty())
+			throw new IllegalStateException("EB1q");
+		
+		return possible.<Display>toArray(new Display[possible.size()]);
 	}
 	
 	/**
@@ -1010,40 +1344,51 @@ public class Display
 	public static void removeDisplayListener(DisplayListener __dl)
 		throws IllegalStateException, NullPointerException
 	{
-		if (__dl == null)
-			throw new NullPointerException("NARG");	
-		
-		List<DisplayListener> listeners = Display._LISTENERS;
-		synchronized (listeners)
+		StaticDisplayState.removeListener(__dl);
+	}
+	
+	/**
+	 * Converts a {@link UIItemPosition} to a softkey.
+	 * 
+	 * @param __pos The {@link UIItemPosition} to get the soft key of.
+	 * @return The softkey position or a negative value if not valid.
+	 * @since 2020/10/03
+	 */
+	static int __layoutPosToSoftKey(int __pos)
+	{
+		switch (__pos)
 		{
-			boolean didremove = false;
-			for (int i = 0, n = listeners.size(); i < n; i++)
-				if (listeners.get(i) == __dl)
-				{
-					listeners.remove(i);
-					didremove = true;
-				}
+			case UIItemPosition.LEFT_COMMAND:
+				return Display._SOFTKEY_LEFT_COMMAND;
+				
+			case UIItemPosition.RIGHT_COMMAND:
+				return Display._SOFTKEY_RIGHT_COMMAND;
 			
-			// {@squirreljme.error EB1r The listener was never added to the
-			// listener set.}
-			if (!didremove)
-				throw new IllegalStateException("EB1r");
+			default:
+				return -1;
 		}
 	}
 	
 	/**
-	 * Returns an array of all the attached listeners.
-	 *
-	 * @return An array of listeners.
-	 * @since 2018/03/24
+	 * Returns the position where the soft key belongs.
+	 * 
+	 * @param __softKey The soft key to get the UI position from.
+	 * @return The {@link UIItemPosition} of the item, or
+	 * {@link UIItemPosition#NOT_ON_FORM} if not valid.
+	 * @since 2020/10/03
 	 */
-	static DisplayListener[] __listeners()
+	static int __layoutSoftKeyToPos(int __softKey)
 	{
-		List<DisplayListener> listeners = Display._LISTENERS;
-		synchronized (listeners)
+		switch (__softKey)
 		{
-			return listeners.<DisplayListener>toArray(new DisplayListener[
-				listeners.size()]);
+			case Display._SOFTKEY_LEFT_COMMAND:
+				return UIItemPosition.LEFT_COMMAND;
+				
+			case Display._SOFTKEY_RIGHT_COMMAND:
+				return UIItemPosition.RIGHT_COMMAND;
+			
+			default:
+				return UIItemPosition.NOT_ON_FORM;
 		}
 	}
 }

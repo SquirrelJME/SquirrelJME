@@ -38,12 +38,21 @@ public abstract class TestConsumer<A>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
+		// If the first parameter is optional, ignore it
+		Object testArg;
+		if (this instanceof OptionalFirstParameter)
+			testArg = (__args.length == 0 ? null : __args[0]);
+		
 		// {@squirreljme.error BU05 Test takes one parameter.}
-		if (__args.length != 1)
+		else if (__args.length != 1)
 			throw new InvalidTestParameterException("BU05");
 		
+		// Load first argument
+		else
+			testArg = __args[0];
+		
 		// Run the test
-		this.test((A)__args[0]);
+		this.test((A)testArg);
 		
 		// No result is generated
 		return new __NoResult__();

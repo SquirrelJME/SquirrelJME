@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
  *
  * @since 2018/11/19
  */
+@Deprecated
 public final class AcceleratedGraphics
 	extends SerializedGraphics
 {

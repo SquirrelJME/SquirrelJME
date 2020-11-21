@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class lang/bytecode/TestDup
+.class public lang/bytecode/TestDup
 .super net/multiphasicapps/tac/TestInteger
 
 .method public <init>()V

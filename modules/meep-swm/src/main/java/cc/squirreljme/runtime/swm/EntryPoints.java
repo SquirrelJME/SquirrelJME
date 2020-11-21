@@ -59,9 +59,10 @@ public class EntryPoints
 		List<EntryPoint> target = new ArrayList<>();
 		
 		// Parse main class first
-		String oldclass = __attr.get(new JavaManifestKey("Main-Class"));
-		if (oldclass != null)
-			target.add(new EntryPoint("Command Line", oldclass, false));
+		String oldClass = __attr.get(new JavaManifestKey("Main-Class"));
+		if (oldClass != null)
+			target.add(new EntryPoint("Command Line", oldClass,
+				null, false));
 		
 		// Parse MIDlet identifiers next
 		for (int i = 1; i >= 1; i++)
@@ -81,14 +82,15 @@ public class EntryPoints
 				throw new RuntimeException("DG03");
 		
 			// Split fields
+			String iconRc = midletval.substring(pc + 1, sc).trim();
 			target.add(new EntryPoint(midletval.substring(0, pc).trim(),
-				midletval.substring(sc + 1).trim(), true));
+				midletval.substring(sc + 1).trim(),
+				(iconRc.isEmpty() ? null : iconRc), true));
 		}
 		
 		// Finalize
-		EntryPoint[] entrypoints = target.<EntryPoint>toArray(
+		this._entrypoints = target.<EntryPoint>toArray(
 			new EntryPoint[target.size()]);
-		this._entrypoints = entrypoints;
 	}
 	
 	/**

@@ -38,19 +38,21 @@ final class __VolatileList__<T>
 	 * in this list.
 	 *
 	 * @param __v The value to add.
+	 * @return If the value has been added or not.
 	 * @since 2018/11/17
 	 */
-	public final void addUniqueObjRef(T __v)
+	public final boolean addUniqueObjRef(T __v)
 	{
 		Object[] values = this._values;
 		
 		// Already in the list? Do nothing
 		for (Object v : values)
 			if (v == __v)
-				return;
+				return false;
 		
 		// Otherwise append
 		this.append(__v);
+		return true;
 	}
 	
 	/**
@@ -89,6 +91,22 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Checks if this list contains the given item.
+	 * 
+	 * @param __v The value to check.
+	 * @return If this contains the item or not.
+	 * @since 2020/09/27
+	 */
+	public boolean containsUniqueObjRef(T __v)
+	{
+		for (Object v : this._values)
+			if (__v == v)
+				return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Gets the element at the given index.
 	 *
 	 * @param __i The index to get.
@@ -109,15 +127,44 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Inserts the item at the given index.
+	 * 
+	 * @param __at The position to add at.
+	 * @param __item The item to add.
+	 * @throws IndexOutOfBoundsException If the given index is not within the
+	 * bounds for insertion.
+	 * @since 2020/11/15
+	 */
+	public void insert(int __at, T __item)
+		throws IndexOutOfBoundsException
+	{
+		Object[] values = this._values;
+		int vn = values.length;
+		
+		// Out of bounds?
+		if (__at < 0 || __at > vn)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Setup new array and shift values down 
+		Object[] newValues = Arrays.copyOf(values, vn + 1);
+		System.arraycopy(newValues, __at,
+			newValues, __at + 1, vn - __at);
+		
+		// Store new value at this point
+		newValues[__at] = __item;
+		
+		// Use these new values
+		this._values = newValues;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/18
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public final Iterator<T> iterator()
 	{
-		return (Iterator<T>)
-			((Object)(Arrays.<Object>asList(this._values).iterator()));
+		return this.valuesAsList().iterator();
 	}
 	
 	/**
@@ -164,6 +211,42 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Deletes the given item.
+	 * 
+	 * @param __dx The index to delete.
+	 * @return The deleted item.
+	 * @throws IndexOutOfBoundsException If the given item is not within
+	 * bounds.
+	 * @since 2020/11/21
+	 */
+	public __ChoiceEntry__ remove(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		Object[] values = this._values;
+		
+		int n = values.length;
+		if (__dx < 0 || __dx >= n)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		Object[] newValues = new Object[n - 1];
+		
+		// Copy left
+		System.arraycopy(values, 0,
+			newValues, 0, __dx);
+		
+		// Copy right as long as there is something to copy
+		if (__dx + 1 < n)
+			System.arraycopy(values, __dx + 1,
+				newValues, __dx, (n - __dx) - 1);
+		
+		// Update values
+		this._values = newValues;
+		
+		// Return the old value
+		return (__ChoiceEntry__)values[__dx];
+	}
+	
+	/**
 	 * Returns the number of values.
 	 *
 	 * @return The number of values stored.
@@ -207,14 +290,25 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/27
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.valuesAsList().toString();
+	}
+	
+	/**
 	 * Returns the values in the list.
 	 *
 	 * @return The list values.
 	 * @since 2018/11/18
 	 */
-	public final Object[] values()
+	@SuppressWarnings("unchecked")
+	public final T[] values()
 	{
-		return this._values;
+		return (T[])this._values;
 	}
 	
 	/**

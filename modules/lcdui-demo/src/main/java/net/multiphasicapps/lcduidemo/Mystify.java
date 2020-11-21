@@ -125,9 +125,6 @@ public class Mystify
 			// Setup title
 			this.setTitle("Mystify Your Squirrels");
 			
-			// Draw as transparent
-			this.setPaintMode(false);
-			
 			// Setup points
 			Point[][] points = this.points;
 			

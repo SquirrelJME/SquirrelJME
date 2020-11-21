@@ -728,14 +728,14 @@ public class ForwardingGraphics
 	 * @since 2016/10/10
 	 */
 	@Override
-	public void setFont(Font __a)
+	public void setFont(Font __font)
 	{
 		Graphics graphics = this._graphics;
 		if (graphics != null)
-			graphics.setFont(__a);
+			graphics.setFont(__font);
 		
 		// Store
-		this._font = __a;
+		this._font = __font;
 	}
 	
 	/**

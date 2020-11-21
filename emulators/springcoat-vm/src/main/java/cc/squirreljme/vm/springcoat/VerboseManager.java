@@ -28,6 +28,8 @@ public final class VerboseManager
 	private int _nextCode;
 	
 	/**
+	 * Adds verbosity at the given frame point.
+	 * 
 	 * @param __numFrames The frame count to limit at.
 	 * @param __flags The verbosity flags to set.
 	 * @return The code for the verbosity level.

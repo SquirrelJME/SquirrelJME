@@ -168,7 +168,7 @@ public final class SimpleHTTPRequest
 				int rc = __in.read();
 				
 				if (rc < 0)
-					throw new SimpleHTTPProtocolException("Got EOF");
+					throw new SimpleHTTPProtocolException("Got EOF in body");
 				
 				body.write(rc);
 			}

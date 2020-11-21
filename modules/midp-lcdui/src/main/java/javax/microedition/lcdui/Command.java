@@ -169,8 +169,8 @@ public class Command
 		this._priority = __pri;
 		
 		// Part of action
-		this._shortlabel = __sl;
-		this._longlabel = __ll;
+		this._shortLabel = __sl;
+		this._longLabel = __ll;
 		this._image = __i;
 	}
 	
@@ -232,7 +232,7 @@ public class Command
 		if (this._implspec)
 			return "";
 		
-		return this._shortlabel;
+		return this._shortLabel;
 	}
 	
 	/**
@@ -247,7 +247,7 @@ public class Command
 		if (this._implspec)
 			return null;
 		
-		return this._longlabel;
+		return this._longLabel;
 	}
 	
 	/**

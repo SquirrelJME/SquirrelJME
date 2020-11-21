@@ -12,8 +12,20 @@ package javax.microedition.midlet;
 
 public final class MIDletIdentity
 {
+	public static final String IDENTIFIED_THIRD_PARTY =
+		"IdentifiedThirdParty";
+	
+	public static final String MANUFACTURER =
+		"Manufacturer";
+	
+	public static final String OPERATOR =
+		"Operator";
+	
+	public static final String UNIDENTIFIED_THIRD_PARTY =
+		"UnidentifiedThirdParty";
+	
 	/**
-	 * Internally intialized.
+	 * Internally initialized.
 	 *
 	 * @since 2016/08/30
 	 */

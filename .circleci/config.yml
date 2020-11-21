@@ -28,16 +28,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Gradle Build and Test
-          command: gradlew build test --continue --parallel
           shell: cmd.exe
+          name: Gradle Build and Test
+          command: gradlew build testHosted --continue --parallel
       - run:
+          shell: bash.exe
           name: Save test results
           command: |
             mkdir -p /c/users/circleci/test-results/junit
-            /usr/bin/find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
+            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
           when: always
-          shell: bash.exe
       - store_test_results:
           path: c:\users\circleci\test-results
       - store_artifacts:
@@ -48,6 +48,8 @@ jobs:
       shell: cmd.exe
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Install required dependencies
           working_directory: ratufacoat
@@ -74,81 +76,7 @@ jobs:
       - store_artifacts:
           path: ratufacoat\src\sdl2\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
-      - add_ssh_keys:
-          fingerprints:
-            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
-      - run:
-          name: Upload to SourceForge
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/Debug/SquirrelJME.exe squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_win64.exe || echo Ignoring failed upload;
-  ratufacoat_build_windows_libretro:
-    executor:
-      name: win/default
-      shell: cmd.exe
-    steps:
-      - checkout
-      - run:
-          name: Install make
-          working_directory: ratufacoat
-          shell: cmd.exe
-          command: choco install make
-      - run:
-          name: Install 7-zip
-          working_directory: ratufacoat
-          shell: cmd.exe
-          command: choco install 7zip
-      - run:
-          name: Download mingw-w64 (32-bit)
-          working_directory: ratufacoat
-          shell: cmd.exe
-          command: curl --retry 2 --connect-timeout 120 -o w32.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/dwarf/i686-8.1.0-release-win32-dwarf-rt_v6-rev0.7z
-      - run:
-          name: Download mingw-w64 (64-bit)
-          working_directory: ratufacoat
-          shell: cmd.exe
-          command: curl --retry 2 --connect-timeout 120 -o w64.7z -L https://download.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z
-      - run:
-          name: Extract mingw-w64 (32-bit)
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            "$PROGRAMFILES/7-Zip/7z.exe" x -y w32.7z
-      - run:
-          name: Extract mingw-w64 (64-bit)
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            "$PROGRAMFILES/7-Zip/7z.exe" x -y w64.7z
-      - run:
-          name: Compile libRetro (32-bit)
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            export PATH="$PATH:$(pwd)/mingw32/bin" && make -f makefilelibretro platform=windows_x86
-      - run:
-          name: Compile libRetro (64-bit)
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            export PATH="$PATH:$(pwd)/mingw64/bin" && make -f makefilelibretro platform=windows_x86_64
-      - store_artifacts:
-          path: ratufacoat\squirreljme_libretro.windows_x86.dll
-          destination: squirreljme_libretro.windows_x86.dll
-      - store_artifacts:
-          path: ratufacoat\squirreljme_libretro.windows_x86_64.dll
-          destination: squirreljme_libretro.windows_x86_64.dll
-      - add_ssh_keys:
-          fingerprints:
-            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
-      - run:
-          name: Upload to SourceForge
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no squirreljme_libretro.windows_x86.dll squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/squirreljme_libretro.windows_x86.dll || echo Ignoring failed upload;
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no squirreljme_libretro.windows_x86_64.dll squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/squirreljme_libretro.windows_x86_64.dll || echo Ignoring failed upload;
+
   ################################# MAC OS X #################################
   build_macosx:
     macos:
@@ -163,12 +91,12 @@ jobs:
           command: brew install gradle openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build test --continue --parallel
+          command: ./gradlew build testHosted --continue --parallel
       - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -185,6 +113,8 @@ jobs:
       - run:
           name: Install CMake
           command: brew install cmake
+      - attach_workspace:
+          at: .
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
@@ -200,14 +130,7 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
-      - add_ssh_keys:
-          fingerprints:
-            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
-      - run:
-          name: Upload to SourceForge
-          working_directory: ratufacoat
-          command: |
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_macosx || echo Ignoring failed upload;
+
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
@@ -215,26 +138,21 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build test --continue --parallel
+          command: ./gradlew build testHosted --continue --parallel
       - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/build/test-results/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
       - persist_to_workspace:
           root: .
           paths:
             - '.gradle/*'
             - 'build/*'
-            - 'buildSrc/.gradle/*'
-            - 'buildSrc/build/*'
-            - 'emulators/build/*'
-            - 'emulators/*/build/*'
-            - 'modules/build/*'
-            - 'modules/*/build/*'
-            - 'tools/build/*'
-            - 'tools/*/build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -248,6 +166,8 @@ jobs:
           command: |
             sudo apt-get update -y
             sudo apt-get install -y cmake build-essential
+      - attach_workspace:
+          at: .
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
@@ -263,36 +183,6 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
-      - add_ssh_keys:
-          fingerprints:
-            - "89:2f:af:c5:51:83:22:57:78:18:5e:13:9c:a8:41:23"
-      - run:
-          name: Upload to SourceForge
-          working_directory: ratufacoat
-          command: |
-            scp -B -o BatchMode=yes -o StrictHostKeyChecking=no src/SquirrelJME squirreljme@frs.sourceforge.net:/home/frs/project/squirreljme/AutoBuild/$CIRCLE_BRANCH/ratufacoat_linux_amd64 || echo Ignoring failed upload;
-  construct_testjars:
-    executor: buildenv
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Constuct Test JARs
-          command: ./gradlew testJar --continue --parallel
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - 'buildSrc/.gradle/*'
-            - 'buildSrc/build/*'
-            - 'emulators/build/*'
-            - 'emulators/*/build/*'
-            - 'modules/build/*'
-            - 'modules/*/build/*'
-            - 'tools/build/*'
-            - 'tools/*/build/*'
   test_springcoat:
     executor: buildenv
     steps:
@@ -307,13 +197,13 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/springcoat/junit-reports/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-springcoat/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
             mkdir -p ~/test-results/nps/
-            find . -type f -regex '.*/springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+            find . -type f -regex '.*/vm-test-springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -339,13 +229,13 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/summercoat/junit-reports/.*xml' -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex '.*/vm-test-summercoat/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
             mkdir -p ~/test-results/nps/
-            find . -type f -regex '.*/summercoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+            find . -type f -regex '.*/vm-test-summercoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -355,6 +245,7 @@ jobs:
           path: ~/test-results/nps
   ################################### USERS ##################################
   export_user_guide:
+    resource_class: small
     executor: buildenv
     steps:
       - checkout
@@ -380,34 +271,154 @@ jobs:
           command: |
             cd "/tmp/wiki" && git push
 
+  ################################ CONSTRUCTION ###############################
+  # Runs the `testJar` task so any operations following this will run faster
+  # when they need to use these JARs
+  construct_testJars:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Test JARs
+          command: ./gradlew testJar --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # Constructs the ROM fragment libraries for SummerCoat, since they are used
+  # for general ROM construction
+  construct_libSummerCoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct SummerCoat Libraries
+          command: ./gradlew libSummerCoat --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # All of the tests so that they can run from within SummerCoat
+  construct_libTestSummerCoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Test SummerCoat Libraries
+          command: ./gradlew libTestSummerCoat --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # Constructs the standard SummerCoat ROM, could be uploaded later
+  construct_romSummerCoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct SummerCoat ROM
+          command: ./gradlew romSummerCoat --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # Constructs the test SummerCoat ROM, could be uploaded later, this is so
+  # that any RatufaCoats have an actual ROM that can be tested to ensure that
+  # it properly works.
+  construct_romTestSummerCoat:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Test SummerCoat ROM
+          command: ./gradlew romTestSummerCoat --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
 workflows:
   version: 2
   tests:
     jobs:
+      ############################# STANDARD TESTS ############################
       - build_windows
       - build_linux
       - build_macosx
-      - construct_testjars:
-          requires:
-            - build_linux
       - test_springcoat:
           requires:
-            - construct_testjars
-      - test_summercoat:
-          requires:
-            - construct_testjars
-      - ratufacoat_build_windows:
-          requires:
-            - build_windows
-      - ratufacoat_build_windows_libretro:
-          requires:
-            - ratufacoat_build_windows
-      - ratufacoat_build_linux:
+            - construct_testJars
+#      - test_summercoat:
+#          requires:
+#            - construct_libTestSummerCoat
+
+      ###################### LIBRARY AND ROM CONSTRUCTION #####################
+      - construct_testJars:
           requires:
             - build_linux
-      - ratufacoat_build_macosx:
-          requires:
-            - build_macosx
+#      - construct_libSummerCoat:
+#          requires:
+#            - build_linux
+#      - construct_libTestSummerCoat:
+#          requires:
+#            - construct_libSummerCoat
+#            - construct_testJars
+#      - construct_romSummerCoat:
+#          requires:
+#            - construct_libSummerCoat
+#      - construct_romTestSummerCoat:
+#          requires:
+#            - construct_libTestSummerCoat
+
+      ############################## RATUFACOAT ##############################
+#      - ratufacoat_build_windows:
+#          requires:
+#            - build_windows
+#            - construct_romTestSummerCoat
+#      - ratufacoat_build_linux:
+#          requires:
+#            - build_linux
+#            - construct_romTestSummerCoat
+#      - ratufacoat_build_macosx:
+#          requires:
+#            - build_macosx
+#            - construct_romTestSummerCoat
+
+  #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:
     jobs:
       - export_user_guide:

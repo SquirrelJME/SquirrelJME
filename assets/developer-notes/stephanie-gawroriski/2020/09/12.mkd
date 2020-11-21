@@ -1,0 +1,6 @@
+# 2020/09/12
+
+## 18:43
+
+I noticed that when I created a thread and it was not started yet then the
+alive count would be zero. So this is definitely a bug.

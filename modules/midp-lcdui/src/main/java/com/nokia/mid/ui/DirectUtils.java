@@ -66,7 +66,8 @@ public class DirectUtils
 		g.setBlendingMode(Graphics.SRC);
 		
 		// Draw image on top
-		g.drawRegion(base, 0, 0, w, h, 0, 0, 0, 0);
+		g.drawRegion(base, 0, 0, w, h, 0, 0, 
+			0, 0);
 		
 		// Use resulting image
 		return mutable;

@@ -10,13 +10,15 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+
 /**
  * This must be thrown if the state change in a MIDlet has failed, however
  * it is deprecated and no longer should be used.
  *
  * @since 2019/09/25
  */
-@Deprecated
+@ApiDefinedDeprecated
 public class MIDletStateChangeException
 	extends Exception
 {
@@ -25,7 +27,7 @@ public class MIDletStateChangeException
 	 *
 	 * @since 2019/09/25
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public MIDletStateChangeException()
 	{
 	}
@@ -36,7 +38,7 @@ public class MIDletStateChangeException
 	 * @param __s The message to use.
 	 * @since 2019/09/25
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public MIDletStateChangeException(String __s)
 	{
 		super(__s);

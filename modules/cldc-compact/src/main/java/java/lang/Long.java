@@ -354,8 +354,8 @@ public final class Long
 		StringBuilder sb = new StringBuilder();
 		
 		// Negative? Remember it but we need to swap the sign
-		boolean negative;
-		if ((negative = (__v < 0)))
+		boolean negative = (__v < 0);
+		if (negative)
 			__v = -__v;
 		
 		// Insert characters at the end of the string, they will be reversed
@@ -369,8 +369,21 @@ public final class Long
 			if (__v == 0 && digit)
 				break;
 			
+			// If our remainder is negative then this is likely the minimum
+			// number, so this needs to be corrected and normalized
+			else if (mod < 0)
+			{
+				// We can negate the number once we have removed the remainder
+				// from it. For power of 2 radixes (2, 4, 8, 16, and 32) this
+				// will be zero, but no other radix will have a value of zero.
+				// By the next run our number will be smaller, so that it will
+				// auto-normalize itself and print appropriately.
+				__v = -(__v - mod);
+				mod = -mod;
+			}
+			
 			// Print character
-			sb.append((char)(mod < 10 ? '0' + mod : 'a' + (mod - 10)));
+			sb.append(Character.forDigit(mod, __r));
 			digit = true;
 			
 			// Stop printing characters

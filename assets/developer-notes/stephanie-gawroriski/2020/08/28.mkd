@@ -1,0 +1,9 @@
+# 2020/08/28
+
+## 20:50
+
+So it is the weekend again which means I can spend time on SquirrelJME
+potentially. Taking things a bit easy, so naturally will have slow progress
+as this week was busy. I got more books on ancient hardware so that will be
+very useful for when I do retro ports. I also did some thinking about ROM
+stripping to make it as tiny as possible, since that would be important.

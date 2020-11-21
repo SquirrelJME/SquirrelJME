@@ -1,0 +1,7 @@
+# 2020/11/01
+
+## 12:39
+
+A new month has happened! Also daylights savings time has ended. Still working
+on the MLE LCDUI branch, but that is close to merging once I get the list stuff
+working and being able to launch things initially.

@@ -9,8 +9,10 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -69,6 +71,44 @@ public enum MLEJarPackage
 		{
 			return MLEJarPackage.__jarObject(__args[0]).library() ==
 				MLEJarPackage.__jarObject(__args[1]).library();
+		}
+	},
+	
+	/** {@link JarPackageShelf#libraries()}. */
+	LIBRARIES("libraries:()[Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/10/31
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			VMSuiteManager suites = __thread.machine.suites;
+			
+			String[] names = suites.listLibraryNames();
+			int n = names.length;
+			
+			// Load each library as a reference
+			SpringObject[] result = new SpringObject[n];
+			for (int i = 0; i < n; i++)
+				result[i] = new JarPackageObject(suites.loadLibrary(names[i]));
+			
+			return __thread.asVMObjectArray(__thread.resolveClass(
+				"[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"),
+				result);
+		}
+	},
+	
+	/** {@link JarPackageShelf#libraryPath(JarPackageBracket)}. */ 
+	LIBRARY_PATH("libraryPath:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;)Ljava/lang/String;")
+	{
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MLEJarPackage.__jarObject(__args[0]).library().name();
 		}
 	},
 	

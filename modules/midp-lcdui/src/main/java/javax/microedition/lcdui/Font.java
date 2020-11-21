@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.font.FontSizeConversion;
+import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import java.io.IOException;
 import java.io.InputStream;
@@ -238,7 +238,7 @@ public final class Font
 		
 		// Use default font size?
 		if (__pxs == 0)
-			__pxs = FontSizeConversion.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
+			__pxs = FontUtilities.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
 		
 		// {@squirreljme.error EB1u The pixel size of a font cannot be
 		// negative.}
@@ -395,7 +395,7 @@ public final class Font
 	 */
 	public int getSize()
 	{
-		return FontSizeConversion.pixelSizeToLogicalSize(this._pixelsize);
+		return FontUtilities.pixelSizeToLogicalSize(this._pixelsize);
 	}
 	
 	/**
@@ -561,7 +561,8 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1v Invalid font style specified. (The style)}
-		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_ITALIC |
+			Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1v %d",
 				__style));
 		
@@ -581,8 +582,12 @@ public final class Font
 	/**
 	 * Returns all of the fonts which are available in the given format.
 	 *
-	 * @param __face The face type of the font.
-	 * @param __style The style of the font.
+	 * @param __face The font face, this is a single value, one of:
+	 * {@link Font#FACE_SYSTEM}, {@link Font#FACE_MONOSPACE}, or
+	 * {@link Font#FACE_PROPORTIONAL}.
+	 * @param __style The style of the font, this may be a combination of
+	 * values, one of: {@link Font#STYLE_BOLD}, {@link Font#STYLE_ITALIC},
+	 * {@link Font#STYLE_PLAIN}, or {@link Font#STYLE_UNDERLINED}.
 	 * @param __pxs The pixel size of the font.
 	 * @return The available fonts.
 	 * @throws IllegalArgumentException If the parameters are not correct.
@@ -592,7 +597,8 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1w Invalid font style specified. (The style)}
-		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_ITALIC |
+			Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1w %d",
 				__style));
 		
@@ -647,8 +653,10 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)}
-		if (__spec != Font.FONT_INPUT_TEXT && __spec != Font.FONT_STATIC_TEXT &&
-			__spec != Font.FONT_IDLE_TEXT && __spec != Font.FONT_IDLE_HIGHLIGHTED_TEXT)
+		if (__spec != Font.FONT_INPUT_TEXT &&
+			__spec != Font.FONT_STATIC_TEXT &&
+			__spec != Font.FONT_IDLE_TEXT &&
+			__spec != Font.FONT_IDLE_HIGHLIGHTED_TEXT)
 			throw new IllegalArgumentException("EB1x " + __spec);
 		
 		// This is always the default font
@@ -659,10 +667,15 @@ public final class Font
 	 * Locates a font which matches the specified parameters the closest, a
 	 * font will always be returned if the parameters do not match.
 	 *
-	 * @param __face The font face, this is a single value.
+	 * @param __face The font face, this is a single value, one of:
+	 * {@link Font#FACE_SYSTEM}, {@link Font#FACE_MONOSPACE}, or
+	 * {@link Font#FACE_PROPORTIONAL}.
 	 * @param __style The style of the font, this may be a combination of
-	 * values.
-	 * @param __size The size of the font, this is a single value.
+	 * values, one of: {@link Font#STYLE_BOLD}, {@link Font#STYLE_ITALIC},
+	 * {@link Font#STYLE_PLAIN}, or {@link Font#STYLE_UNDERLINED}.
+	 * @param __size The size of the font, this is a single value, one of:
+	 * {@link Font#SIZE_SMALL}, {@link Font#SIZE_MEDIUM}, or
+	 * {@link Font#SIZE_LARGE}.
 	 * @return The nearest font which matches the specified parameters.
 	 * @throws IllegalArgumentException If the input parameters are not valid.
 	 * @since 2017/05/25
@@ -671,20 +684,20 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB1y Invalid font face specified. (The face)}
-		if ((__face & ~(Font.FACE_SYSTEM | Font.FACE_MONOSPACE | Font.FACE_PROPORTIONAL)) != 0
-			|| Integer.bitCount(__face) > 1)
+		if ((__face & ~(Font.FACE_SYSTEM | Font.FACE_MONOSPACE |
+			Font.FACE_PROPORTIONAL)) != 0 || Integer.bitCount(__face) > 1)
 			throw new IllegalArgumentException(String.format("EB1y %d",
 				__face));
 		
 		// {@squirreljme.error EB1z Invalid font size specified. (The size)}
-		if ((__size & ~(Font.SIZE_SMALL | Font.SIZE_MEDIUM | Font.SIZE_LARGE)) != 0
-			|| Integer.bitCount(__size) > 1)
+		if ((__size & ~(Font.SIZE_SMALL | Font.SIZE_MEDIUM |
+			Font.SIZE_LARGE)) != 0 || Integer.bitCount(__size) > 1)
 			throw new IllegalArgumentException(String.format("EB1z %d",
 				__size));
 		
 		// Get fonts that might exist
 		Font[] scan = Font.getAvailableFonts(__face, __style,
-			FontSizeConversion.logicalSizeToPixelSize(__size));
+			FontUtilities.logicalSizeToPixelSize(__size));
 		
 		// If no fonts were found, use a default font with a derived pixel
 		// size as such
@@ -696,7 +709,7 @@ public final class Font
 			try
 			{
 				return d.deriveFont(__style,
-					FontSizeConversion.logicalSizeToPixelSize(__size));
+					FontUtilities.logicalSizeToPixelSize(__size));
 			}
 			catch (IllegalArgumentException e)
 			{

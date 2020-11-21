@@ -128,8 +128,7 @@ Information:
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
  * Front facing social media:
-   * [YouTube](
-     https://www.youtube.com/playlist?list=PLpBpyrtWn1U3motx3AUOm70qG5zraCepD)
+   * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
@@ -138,6 +137,8 @@ Information:
    * [LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)
    * [Mastodon (awoo.space)](https://awoo.space/@XerTheSquirrel)
    * [Twitter](https://twitter.com/XerShadowTail)
+   * [YouTube (Personal)](
+     https://www.youtube.com/channel/UCJ4QrvbDhjtd7u6EpfBQ__g)
    * E-Mail: <xer@multiphasicapps.net>
 
 ## Goals
@@ -207,5 +208,4 @@ WHERE IT IS NOT SUPPORTED BY ORACLE).***
 OF THIS SOFTWARE. AS SUCH THE FIRST MAJOR VERSION RELEASE WILL BE WHEN IT IS
 COMPATIBLE SO AS TO NOT VIOLATE POTENTIAL LICENSES, AND IF POSSIBLE BE VERIFIED
 WITH ANY APPLICABLE TCKS (SO IT WOULD BE AN "OFFICIAL" IMPLEMENTATION).***
-
 

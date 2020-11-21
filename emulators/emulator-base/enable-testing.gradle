@@ -13,10 +13,6 @@ dependencies
 	testImplementation project(":emulators:emulator-base")
 }
 
-test
-{
-}
-
 // Include Common Testing Configuration
 apply from: project.rootProject.findProject(":emulators:emulator-base").
 	projectDir.toPath().resolve("internal-shared-test-config.gradle").toFile()

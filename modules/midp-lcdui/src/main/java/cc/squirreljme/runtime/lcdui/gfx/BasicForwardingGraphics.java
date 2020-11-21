@@ -518,9 +518,9 @@ public class BasicForwardingGraphics
 	 * @since 2016/10/10
 	 */
 	@Override
-	public void setFont(Font __a)
+	public void setFont(Font __font)
 	{
-		this.graphics.setFont(__a);
+		this.graphics.setFont(__font);
 	}
 	
 	/**

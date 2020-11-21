@@ -86,22 +86,28 @@ public interface KeyListener
 		
 	int LEFT =
 		2;
-		
+	
+	/** Alt key modifier. */
 	int MODIFIER_ALT =
 		65536;
 		
+	/** Ctrl key modifier. */
 	int MODIFIER_CHR =
 		8388608;
-		
+	
+	/** Command key modifier. */
 	int MODIFIER_COMMAND =
 		4194304;
-		
+	
+	/** Ctrl key modifier. */
 	int MODIFIER_CTRL =
 		262144;
-		
+	
+	/** Mask for all the modifier keys. */
 	int MODIFIER_MASK =
 		13041664;
-		
+	
+	/** Shift key modifier. */
 	int MODIFIER_SHIFT =
 		131072;
 		

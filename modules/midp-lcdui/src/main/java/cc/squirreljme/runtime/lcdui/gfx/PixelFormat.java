@@ -18,36 +18,47 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2018/03/24
  */
+@Deprecated
 public enum PixelFormat
 {
 	/** Byte Packed Indexed, 1-bit. */
+	@Deprecated
 	BYTE_INDEXED1,
 	
 	/** Byte Packed Indexed, 2-bit. */
+	@Deprecated
 	BYTE_INDEXED2,
 	
 	/** Byte Packed Indexed, 4-bit. */
+	@Deprecated
 	BYTE_INDEXED4,
 	
 	/** Byte Indexed. */
+	@Deprecated
 	BYTE_INDEXED8,
 	
 	/** Byte RGB332. */
+	@Deprecated
 	BYTE_RGB332,
 	
 	/** Short Indexed. */
+	@Deprecated
 	SHORT_INDEXED16,
 	
 	/** Short ARGB4444. */
+	@Deprecated
 	SHORT_ARGB4444,
 	
 	/** Short RGB565. */
+	@Deprecated
 	SHORT_RGB565,
 	
 	/** Integer ARGB8888. */
+	@Deprecated
 	INTEGER_ARGB8888,
 	
 	/** Integer RGB888. */
+	@Deprecated
 	INTEGER_RGB888,
 	
 	/** End. */

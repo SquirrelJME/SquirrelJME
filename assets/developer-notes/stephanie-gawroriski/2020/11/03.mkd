@@ -1,0 +1,8 @@
+# 2020/11/03
+
+## 17:42
+
+So I need to make a bunch of tests for the lists before I can go and do them
+all, so I have a baseline of progress and to make sure they are working. I
+suppose initially it will be adding and removing elements, and selections. I
+think those are the most important.

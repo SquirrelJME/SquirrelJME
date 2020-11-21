@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.lcdui.gfx;
  *
  * @since 2018/11/19
  */
+@Deprecated
 public enum GraphicsFunction
 {
 	/** Set color. */

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-sum--htl: int:15
+secondary-sum--lth: int:-1
+secondary-hash--htl: int:745551748
+secondary-hash--lth: int:2004566884

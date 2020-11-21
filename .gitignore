@@ -18,6 +18,7 @@ build/
 .idea/usage-statistics.xml
 .idea/workspace.xml
 ratufacoat/.idea/workspace.xml
+file-*
 
 # Contributions
 *.diff
@@ -29,13 +30,17 @@ ratufacoat/.idea/workspace.xml
 *-original
 *-original-*
 
-# Crash logs
-*.log
-
 # Binary Files
 *.ico
 *.png
 *.sqc
+*.xcf
+
+# Crash logs
+*.log
+
+# VisualVM files
+java_pid*.hprof
 
 # CMake
 ratufacoat/cmake-build-release
@@ -51,3 +56,7 @@ ratufacoat/out
 *.o
 *.dll
 *.exe
+
+# Fossil files
+_FOSSIL_
+ci-comment-*.txt

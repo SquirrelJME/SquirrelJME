@@ -33,21 +33,8 @@ SOFTWARE.
 
 ## Pricing
 
-SquirrelJME has a flat-rate licensing for each device it is installed on, an
-installed device includes devices for development purposes, for
-commercial purposes, and for non-profit purposes.
+SquirrelJME has a flat-rate licensing depending on the license duration, the
+license allows you to use SquirrelJME and have it not under the GPLv3:
 
- * **1-99 Devices**: _20.00 USD/device_
-   * Price Range: 20 USD to 1,980 USD
- * **100-999 Devices**: _19.00 USD/device_
-   * Price Range: 1,999 USD to 17,081 USD
- * **1000+ Devices**: _18.00 USD/device_
-   * Price Range: Starting at 17,099 USD
-
-An unlimited device license is available for a fixed amount of time:
-
- * **1-year term**: _1,000 USD_
- * **2-year term**: _1,750 USD_
- * **5-year term**: _3,250 USD_
- * **10-year term**: _4,500 USD_
- * **Unlimited term**: _7,000 USD_
+ * **5-year duration license term**: _4,000 USD_
+ * **Unlimited duration license term**: _7,000 USD_

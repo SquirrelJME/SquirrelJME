@@ -7,6 +7,7 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Configuration for CodeClimate
+# https://docs.codeclimate.com/docs/advanced-configuration
 
 version: 2
 checks:
@@ -54,6 +55,16 @@ checks:
     config:
       threshold: 32
 
+  # Code duplication (affects all languages)
+  # https://docs.codeclimate.com/docs/default-analysis-configuration
+  # Java defaults to 40
+  similar-code:
+    config:
+      threshold: 120
+  identical-code:
+    config:
+      threshold: 120
+
 exclude_patterns:
   # Ignore the Gradle plugin
   - "buildSrc/"
@@ -64,3 +75,10 @@ exclude_patterns:
   # Ignore OpenGL Interfaces
   - "**/opengles/GL10.java"
   - "**/opengles/GL11.java"
+
+  # Testing Framework (It does very specific things)
+  - "modules/tac/"
+
+  # Code that effectively is the same and is not possible to correct
+  - "modules/midp-lcdui/src/main/java/javax/microedition/lcdui/__CanvasDefaultKeyListener__.java"
+  - "modules/midp-lcdui/src/main/java/javax/microedition/lcdui/__CustomItemKeyListener__.java"

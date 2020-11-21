@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.event;
 
+import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import javax.microedition.lcdui.Canvas;
 
 /**
@@ -36,7 +37,7 @@ public final class EventTranslate
 	 * valid.
 	 * @since 2019/04/14
 	 */
-	public static final int gameActionToKeyCode(int __gc)
+	public static int gameActionToKeyCode(int __gc)
 	{
 		// This performs the reverse of keyCodeToGameAction() except that
 		// it maps game keys back to associated number keys.
@@ -67,7 +68,8 @@ public final class EventTranslate
 	 * @return The game action or {@code 0} if it is not valid.
 	 * @since 2018/12/09
 	 */
-	public static final int keyCodeToGameAction(int __kc)
+	@SuppressWarnings("DuplicateBranchesInSwitch")
+	public static int keyCodeToGameAction(int __kc)
 	{
 		// Game actions are mapped to physical keys such as left/right/up/down
 		// and select. Also since some phones only have a dial pad this means
@@ -80,25 +82,25 @@ public final class EventTranslate
 		switch (__kc)
 		{
 				// Map these to game keys using number pad layout
-			case Canvas.KEY_NUM1:	return Canvas.GAME_A;
-			case Canvas.KEY_NUM2:	return Canvas.UP;
-			case Canvas.KEY_NUM3:	return Canvas.GAME_B;
-			case Canvas.KEY_NUM4:	return Canvas.LEFT;
-			case Canvas.KEY_NUM5:	return Canvas.FIRE;
-			case Canvas.KEY_NUM6:	return Canvas.RIGHT;
-			case Canvas.KEY_NUM7:	return Canvas.GAME_C;
-			case Canvas.KEY_NUM8:	return Canvas.DOWN;
-			case Canvas.KEY_NUM9:	return Canvas.GAME_D;
+			case Canvas.KEY_NUM1:				return Canvas.GAME_A;
+			case Canvas.KEY_NUM2:				return Canvas.UP;
+			case Canvas.KEY_NUM3:				return Canvas.GAME_B;
+			case Canvas.KEY_NUM4:				return Canvas.LEFT;
+			case Canvas.KEY_NUM5:				return Canvas.FIRE;
+			case Canvas.KEY_NUM6:				return Canvas.RIGHT;
+			case Canvas.KEY_NUM7:				return Canvas.GAME_C;
+			case Canvas.KEY_NUM8:				return Canvas.DOWN;
+			case Canvas.KEY_NUM9:				return Canvas.GAME_D;
 			
 				// Arrow keys map to their direct game keys
-			case Canvas.KEY_UP:		return Canvas.UP;
-			case Canvas.KEY_DOWN:	return Canvas.DOWN;
-			case Canvas.KEY_LEFT:	return Canvas.LEFT;
-			case Canvas.KEY_RIGHT:	return Canvas.RIGHT;
+			case Canvas.KEY_UP:					return Canvas.UP;
+			case Canvas.KEY_DOWN:				return Canvas.DOWN;
+			case Canvas.KEY_LEFT:				return Canvas.LEFT;
+			case Canvas.KEY_RIGHT:				return Canvas.RIGHT;
 			
 				// Map space bar and enter to fire
 			case ' ':
-			case '\n':			return Canvas.FIRE;
+			case '\n':							return Canvas.FIRE;
 			
 				// Virtually mapped game keys, likely from a VM running on top
 			case NonStandardKey.VGAME_UP:		return Canvas.UP;

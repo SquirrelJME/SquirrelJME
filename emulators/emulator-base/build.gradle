@@ -68,3 +68,59 @@ java
 		"squirreljme.configtype" ]
 }
 
+// Improve debugging with native code compiles, these are only used by the
+// build system tests so these do not impact users at all
+tasks.withType(CppCompile).configureEach() {
+	debuggable = true
+	optimized = false
+	
+	// Additional compiler options for each compiler
+	compilerArgs.addAll toolChain.map { toolChain ->
+		// Microsoft Visual C++
+		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
+			return [
+				// Disable optimization
+				"/Od",
+			
+				// Buffer security check
+				"/GS",
+				
+				// Run-time error checking
+				"/RTC",
+				
+				// Enable all warnings
+				"/Wall",
+				
+				// Our object files contain _full_ debug info
+				"/Z7",
+				
+				// End
+				]
+		}
+		
+		return []
+	}
+}
+
+// Ensure debugging information is used when linking
+tasks.withType(LinkSharedLibrary).configureEach() {
+	debuggable = true
+	
+	// Additional compiler options for each compiler
+	linkerArgs.addAll toolChain.map { toolChain ->
+		// Microsoft Visual C++
+		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
+			return [
+				// Full debug info
+				"/DEBUG:FULL",
+				
+				// Create map file
+				"/MAP"
+			
+				// End
+				]
+		}
+		
+		return []
+	}
+}
