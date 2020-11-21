@@ -10,7 +10,10 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.midlet.CleanupHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -51,6 +54,12 @@ public abstract class MIDlet
 	protected abstract void destroyApp(boolean __uc)
 		throws MIDletStateChangeException;
 	
+	/**
+	 * This is the starting point for all MIDlets.
+	 * 
+	 * @throws MIDletStateChangeException If the MIDlet should not start.
+	 * @since 2020/10/03
+	 */
 	protected abstract void startApp()
 		throws MIDletStateChangeException;
 	
@@ -65,7 +74,7 @@ public abstract class MIDlet
 	 * @throws IllegalStateException If this is a MIDP 3.0 application.
 	 * @since 2019/05/05
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public final int checkPermission(String __p)
 		throws IllegalStateException
 	{
@@ -178,6 +187,21 @@ public abstract class MIDlet
 		return null;
 	}
 	
+	public final MIDletIdentity getMIDletIdentity()
+	{
+		throw Debugging.todo();
+	}
+	
+	public final long getSplashScreenTime()
+	{
+		throw Debugging.todo();
+	}
+	
+	public final boolean isSelectedScreenSaver()
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * Used by the application to notify the MIDlet that it has entered the
 	 * destroyed state and resources should be cleaned up and such. When this
@@ -187,7 +211,10 @@ public abstract class MIDlet
 	 */
 	public final void notifyDestroyed()
 	{
-		todo.DEBUG.note("Notification of destruction");
+		Debugging.debugNote("Notification of destruction");
+		
+		// Run all cleanup handlers
+		CleanupHandler.runAll();
 		
 		// Kill the program
 		System.exit(0);
@@ -200,7 +227,7 @@ public abstract class MIDlet
 	 *
 	 * @since 2017/02/08
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public final void notifyPaused()
 	{
 	}
@@ -212,11 +239,22 @@ public abstract class MIDlet
 	 *
 	 * @since 2017/02/08
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public void pauseApp()
 	{
 	}
 	
+	/**
+	 * Requests that the system perform the given request.
+	 * 
+	 * @param __url The URL to request on the native system.
+	 * @return This wil return {@code true} if the MIDlet must exit first
+	 * before the request can be handled.
+	 * @throws Exception Will throw
+	 * {@code javax.microedition.io.ConnectionNotFoundException} if this
+	 * connection type is not supported.
+	 * @since 2020/07/02
+	 */
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
@@ -228,15 +266,21 @@ public abstract class MIDlet
 			return true;
 		
 		// Debug
-		todo.DEBUG.note("%s", __url);
+		todo.DEBUG.note("Platform request: %s", __url);
 		
 		throw new todo.TODO();
 	}
 	
-	@Deprecated
+	/**
+	 * This is called when an application was resumed.
+	 * 
+	 * On SquirrelJME this has no effect.
+	 * 
+	 * @since 2020/07/03
+	 */
+	@ApiDefinedDeprecated
 	public final void resumeRequest()
 	{
-		throw new todo.TODO();
 	}
 	
 	public static String getAppProperty(String __name, String __vend,

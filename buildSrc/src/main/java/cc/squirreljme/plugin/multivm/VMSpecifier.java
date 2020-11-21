@@ -81,14 +81,15 @@ public interface VMSpecifier
 	 * @param __execSpec The execution spec to fill.
 	 * @param __mainClass The main class to execute.
 	 * @param __sysProps The system properties to define.
+	 * @param __libPath The library path to use for the virtual machine.
 	 * @param __classPath The class path of the execution target.
 	 * @param __args Arguments to the started program.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
 	void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
-		String __mainClass, Map<String, String> __sysProps, Path[] __classPath,
-		String... __args)
+		String __mainClass, Map<String, String> __sysProps, Path[] __libPath,
+		Path[] __classPath, String... __args)
 		throws NullPointerException;  
 	
 	/**

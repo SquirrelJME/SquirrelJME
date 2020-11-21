@@ -31,7 +31,7 @@ public abstract class VMTestWorkAction
 {
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
-		360_000_000_000L;
+		240_000_000_000L;
 	
 	/**
 	 * {@inheritDoc}
@@ -41,7 +41,9 @@ public abstract class VMTestWorkAction
 	@Override
 	public void execute()
 	{
+		// Determine the name of the test
 		VMTestParameters parameters = this.getParameters();
+		String testName = parameters.getTestName().get();
 		
 		// Threads for processing stream data
 		Thread stdOutThread = null;
@@ -52,10 +54,10 @@ public abstract class VMTestWorkAction
 		int total = parameters.getTotal().get();
 		
 		// The process might not be able to execute
+		Process process = null;
 		try
 		{
 			// Note this is running
-			String testName = parameters.getTestName().get();
 			System.err.printf("???? %s (%d/%d)%n", testName, count, total);
 			
 			// Clock the starting time
@@ -63,7 +65,7 @@ public abstract class VMTestWorkAction
 			long nsStart = System.nanoTime();
 			
 			// Start the process with the command line that was pre-determined
-			Process process = new ProcessBuilder(parameters.getCommandLine()
+			process = new ProcessBuilder(parameters.getCommandLine()
 				.get().toArray(new String[0])).start();
 			
 			// Setup listening buffer threads
@@ -94,9 +96,8 @@ public abstract class VMTestWorkAction
 						System.err.printf("TIME %s (%d/%d)%n", testName,
 							count, total);
 						
-						// Stop it now
-						process.destroyForcibly();
-						break;
+						// The logic for interrupts is the same
+						throw new InterruptedException("Test Timeout");
 					}
 					
 					// Wait for completion
@@ -106,8 +107,18 @@ public abstract class VMTestWorkAction
 						break;
 					}
 				}
-				catch (InterruptedException ignored)
+				catch (InterruptedException e)
 				{
+					// Add note that this happened
+					System.err.printf("INTR %s%n", testName);
+					
+					// Stop the processes that are running
+					process.destroy();
+					stdOutThread.interrupt();
+					stdErrThread.interrupt();
+					
+					// Stop running the loop
+					break;
 				}
 			
 			// Clock the ending time
@@ -140,15 +151,22 @@ public abstract class VMTestWorkAction
 		// Process failed to execute
 		catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException("I/O Exception in " + testName, e);
 		}
 		
 		// Interrupt read/write threads
 		finally
 		{
+			// If our test process is still alive, stop it
+			if (process != null)
+				if (process.isAlive())
+					process.destroyForcibly();
+			
+			// Stop the standard output thread from running
 			if (stdOutThread != null)
 				stdOutThread.interrupt();
 			
+			// Stop the standard error thread from running
 			if (stdErrThread != null)
 				stdErrThread.interrupt();
 		}
@@ -220,15 +238,43 @@ public abstract class VMTestWorkAction
 			__testName, __testName, __nsDur / 1_000_000D);
 		__out.println();
 		
+		// Failed tests use this tag accordingly, despite there being a
+		// failures indicator 
+		if (__result == VMTestResult.FAIL)
+		{
+			__out.printf("<failure type=\"%s\">", __testName);
+			VMTestWorkAction.__writeText(__out, __stdErr);
+			__out.println("</failure>");
+		}
+		
 		// Write both buffers
-		VMTestWorkAction.__writeXmlText(__out, "system-out", __stdOut);
-		VMTestWorkAction.__writeXmlText(__out, "system-err", __stdErr);
+		VMTestWorkAction.__writeTextTag(__out, "system-out", __stdOut);
+		VMTestWorkAction.__writeTextTag(__out, "system-err", __stdErr);
 		
 		// End test case
 		__out.println("</testcase>");
 		
 		// Close test suite
 		__out.println("</testsuite>");
+	}
+	
+	/**
+	 * Writes the given XML Text.
+	 * 
+	 * @param __out The target stream.
+	 * @param __text The text to write.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/12
+	 */
+	private static void __writeText(PrintStream __out, byte[] __text)
+		throws NullPointerException
+	{
+		if (__out == null || __text == null)
+			throw new NullPointerException("NARG");
+		
+		__out.print("<![CDATA[");
+		__out.print(new String(__text));
+		__out.print("]]>");
 	}
 	
 	/**
@@ -241,21 +287,17 @@ public abstract class VMTestWorkAction
 	 * @since 2020/09/07
 	 */
 	@SuppressWarnings("resource")
-	private static void __writeXmlText(PrintStream __out, String __key,
+	private static void __writeTextTag(PrintStream __out, String __key,
 		byte[] __text)
 		throws NullPointerException
 	{
 		if (__out == null || __key == null || __text == null)
 			throw new NullPointerException("NARG");
 		
-		// Start section
-		__out.printf("<%s><![CDATA[", __key);
-		
-		// Write all the bytes
-		__out.print(new String(__text));
-		
-		// End section
-		__out.printf("]]></%s>", __key);
+		// Write tag into here
+		__out.printf("<%s>", __key);
+		VMTestWorkAction.__writeText(__out, __text);
+		__out.printf("</%s>", __key);
 		__out.println();
 	}
 }

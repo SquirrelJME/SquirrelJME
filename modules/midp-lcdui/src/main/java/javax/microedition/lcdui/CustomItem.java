@@ -10,7 +10,13 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public abstract class CustomItem
 	extends Item
@@ -42,8 +48,23 @@ public abstract class CustomItem
 	protected static final int TRAVERSE_VERTICAL =
 		2;
 	
+	/** The native display instance. */
+	final UIItemBracket _uiCanvas;
+	
 	/** Is the rendering transparent or opaque? */
 	boolean _transparent;
+	
+	/** The listener to use for key events. */
+	KeyListener _keyListener;
+	
+	/** The default key listener implementation. */
+	private KeyListener _defaultKeyListener;
+	
+	/** The last width. */
+	private int _lastWidth;
+	
+	/** The last height. */
+	private int _lastHeight;
 	
 	protected CustomItem(String __a)
 	{
@@ -159,9 +180,18 @@ public abstract class CustomItem
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the key listener which is used to handle key events.
+	 *
+	 * If this is set then {@link #keyPressed(int)}, {@link #keyReleased(int)},
+	 * and {@link #keyRepeated} will still be called.
+	 *
+	 * @param __kl The key listener to use, {@code null} clears it.
+	 * @since 2020/10/16
+	 */
 	public void setKeyListener(KeyListener __kl)
 	{
-		throw new todo.TODO();
+		this._keyListener = __kl;
 	}
 	
 	/**
@@ -206,6 +236,104 @@ public abstract class CustomItem
 	protected void traverseOut()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
+	{
+		// Store the last dimensions
+		this._lastHeight = __sw;
+		this._lastHeight = __sh;
+		
+		// Draw background?
+		if (!this._transparent)
+		{
+			int old = __gfx.getAlphaColor();
+			__gfx.setColor(UIBackendFactory.getInstance().metric(
+				UIMetricType.COLOR_CANVAS_BACKGROUND));
+			
+			__gfx.fillRect(0, 0, __sw, __sh);
+			
+			__gfx.setAlphaColor(old);
+		}
+		
+		// Forward draw
+		this.paint(__gfx, __sw, __sh);
+	}
+	
+	/**
+	 * Returns the default key listener implementation for this class.
+	 * 
+	 * @return The default key listener.
+	 * @since 2020/10/16
+	 */
+	final KeyListener __defaultKeyListener()
+	{
+		KeyListener rv = this._defaultKeyListener;
+		if (rv == null)
+			this._defaultKeyListener =
+				(rv = new __CustomItemDefaultKeyListener__(this));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
+		int __intProp, int __sub, int __old, int __new)
+	{
+		UIBackend instance = UIBackendFactory.getInstance();
+		
+		// Only act on the canvas item
+		if (!instance.equals(__item, this._uiCanvas))
+			return false;
+		
+		// Depends on the property
+		switch (__intProp)
+		{
+				// Shown state changed?
+			case UIWidgetProperty.INT_IS_SHOWN:
+				if (__new == 0)
+					this.hideNotify();
+				else
+					this.showNotify();
+				return true;
+			
+				// New size?
+			case UIWidgetProperty.INT_WIDTH:
+			case UIWidgetProperty.INT_HEIGHT:
+			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
+				if (__intProp == UIWidgetProperty.INT_WIDTH_AND_HEIGHT)
+				{
+					this._lastHeight = __old;
+					this._lastHeight = __new;
+				}
+				else if (__intProp == UIWidgetProperty.INT_WIDTH)
+				{
+					__old = __new;
+					this._lastWidth = __old;
+					__new = this._lastHeight;
+				}
+				else
+				{
+					__old = this._lastWidth;
+					this._lastHeight = __new;
+				}
+			
+				this.sizeChanged(__old, __new);
+				return true;
+			
+				// Un-Handled
+			default:
+				return false;
+		}
 	}
 }
 

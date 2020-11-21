@@ -103,9 +103,11 @@ public final class TypeShelf
 	 * @param __a The first type.
 	 * @param __b The second type.
 	 * @return If these two types are the same.
+	 * @throws MLECallError If either are {@code null}.
 	 * @since 2020/06/04
 	 */
-	public static native boolean equals(TypeBracket __a, TypeBracket __b);
+	public static native boolean equals(TypeBracket __a, TypeBracket __b)
+		throws MLECallError;
 	
 	/**
 	 * Finds a type by it's name.

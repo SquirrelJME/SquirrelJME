@@ -12,7 +12,7 @@ package cc.squirreljme.plugin.multivm;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -124,6 +124,11 @@ public class VMTestTaskAction
 			__task.getProject(), sourceSet).keySet();
 		int numTests = testNames.size();
 		
+		// Determine system properties to use for testing
+		Map<String, String> sysProps = new LinkedHashMap<>();
+		if (Boolean.getBoolean("java.awt.headless"))
+			sysProps.put("java.awt.headless", "true");
+		
 		// Execute the tests concurrently but up to the limit, as testing is
 		// very intense on CPU
 		int runCount = 0;
@@ -132,11 +137,11 @@ public class VMTestTaskAction
 		{
 			// Determine the arguments that are used to spawn the JVM
 			JavaExecSpec execSpec = specFactory.get();
+			Path[] classPath = VMHelpers.runClassPath(
+				(VMExecutableTask)__task, sourceSet, vmType);
 			vmType.spawnJvmArguments(__task, execSpec,
-				VMHelpers.SINGLE_TEST_RUNNER,
-				Collections.<String, String>emptyMap(),
-				VMHelpers.runClassPath((VMExecutableTask)__task,
-					sourceSet, vmType), testName);
+				VMHelpers.SINGLE_TEST_RUNNER, sysProps, classPath, classPath,
+				testName);
 			
 			// Where will the results be read from?
 			Path xmlResult = resultDir.resolve(

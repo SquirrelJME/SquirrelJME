@@ -854,9 +854,9 @@ public final class EnforcedDrawingAreaGraphics
 	 * @since 2018/12/02
 	 */
 	@Override
-	public final void setFont(Font __f)
+	public final void setFont(Font __font)
 	{
-		this.graphics.setFont(__f);
+		this.graphics.setFont(__font);
 	}
 	
 	/**

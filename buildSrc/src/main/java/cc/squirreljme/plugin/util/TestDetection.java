@@ -9,7 +9,6 @@
 
 package cc.squirreljme.plugin.util;
 
-import cc.squirreljme.plugin.multivm.VMHelpers;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -40,29 +39,6 @@ public final class TestDetection
 	/**
 	 * Is this considered a test?
 	 *
-	 * @param __path The path to check.
-	 * @return If this is considered a test.
-	 * @since 2020/02/28
-	 */
-	@Deprecated
-	public static boolean isTest(Path __path)
-		throws NullPointerException
-	{
-		if (__path == null)
-			throw new NullPointerException("NARG");
-			
-		// Only consider source files
-		String baseName = __path.getFileName().toString();
-		if (!baseName.endsWith(".java") && !baseName.endsWith(".j"))
-			return false;
-		
-		// Use class name calculation
-		return TestDetection.isTest(__path.getFileName().toString());
-	}
-	
-	/**
-	 * Is this considered a test?
-	 *
 	 * @param __className The class name to check.
 	 * @return If this is considered a test.
 	 * @since 2020/08/28
@@ -79,35 +55,6 @@ public final class TestDetection
 		
 		return (base.startsWith("Do") || base.startsWith("Test") ||
 			base.endsWith("Test"));
-	}
-	
-	/**
-	 * Filters the input collection so there are only tests.
-	 * 
-	 * @param __files The files to filtered.
-	 * @return The filtered files.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link VMHelpers#availableTests(Project, String)}
-	 * and do not use {@link VMHelpers#runningTests(Project, String)} as
-	 * that only concerns tests for running.
-	 * @since 2020/08/29
-	 */
-	@Deprecated
-	public static Collection<FileLocation> onlyTests(
-		Collection<FileLocation> __files)
-		throws NullPointerException
-	{
-		if (__files == null)
-			throw new NullPointerException("NARG");
-		
-		Collection<FileLocation> filtered = new ArrayList<>();
-		for (FileLocation check : __files)
-		{
-			if (TestDetection.isTest(check.relative))
-				filtered.add(check);
-		}
-		
-		return filtered;
 	}
 	
 	/**

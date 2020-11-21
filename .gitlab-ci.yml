@@ -20,7 +20,7 @@
 # Post extends for SquirrelJME
 .squirreljme-post-common:
   variables:
-    MAKEFILE_PATH: ratufacoat/
+    MAKEFILE_PATH: ratufacoat
     MAKEFILE: makefilelibretro
 
 # Inclusion templates, required for the build to work

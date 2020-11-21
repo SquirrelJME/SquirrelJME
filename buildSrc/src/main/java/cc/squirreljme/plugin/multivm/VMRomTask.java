@@ -13,12 +13,13 @@ import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 
 /**
- * This task is responsible for compiling a ROM, if a VM uses one.
+ * This task is responsible for compiling a combined ROM, if a VM uses one.
  *
  * @since 2020/08/23
  */
 public class VMRomTask
 	extends DefaultTask
+	implements VMExecutableTask
 {
 	/** The source set used. */
 	public final String sourceSet;
@@ -66,5 +67,15 @@ public class VMRomTask
 		
 		// Action for performing the actual linkage of the ROM
 		this.doLast(new VMRomTaskAction(__sourceSet, __vmType));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	public String getSourceSet()
+	{
+		return this.sourceSet;
 	}
 }

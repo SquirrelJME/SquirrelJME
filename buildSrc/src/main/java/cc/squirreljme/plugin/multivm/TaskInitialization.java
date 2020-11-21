@@ -9,7 +9,10 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.util.Iterator;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
 
@@ -50,6 +53,27 @@ public final class TaskInitialization
 		// Initialize or both main classes and such
 		for (String sourceSet : TaskInitialization._SOURCE_SETS)
 			TaskInitialization.initialize(__project, sourceSet);
+		
+		// Disable the test task, since it is non-functional
+		__project.getTasks().replace("test", DefunctTestTask.class);
+		
+		Task check = __project.getTasks().getByName("check");
+		for (Iterator<Object> it = check.getDependsOn().iterator();
+			it.hasNext();)
+		{
+			// Get the root item, if a provider of one
+			Object item = it.next();
+			if (item instanceof Provider)
+				item = ((Provider<?>)item).get();
+			
+			// Only consider tasks
+			if (!(item instanceof Task))
+				continue;
+			
+			// Remove the test task, since we do not want it to run here
+			if ("test".equals(((Task)item).getName()))
+				it.remove();
+		}
 	}
 	
 	/**
@@ -106,6 +130,47 @@ public final class TaskInitialization
 			tasks.create(
 				TaskInitialization.task("test", __sourceSet, __vmType),
 				VMTestTask.class, __sourceSet, __vmType, libTask);
+	}
+	
+	/**
+	 * Initializes the full-suite run which selects every API and library
+	 * module available, along with allowing an external 3rd library classpath
+	 * launching.
+	 * 
+	 * @param __project The root project.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/17
+	 */
+	public static void initializeFullSuiteTask(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		for (VMType vmType : VMType.values())
+			TaskInitialization.initializeFullSuiteTask(__project, vmType);
+	}
+	
+	/**
+	 * Initializes the full-suite run which selects every API and library
+	 * module available, along with allowing an external 3rd library classpath
+	 * launching.
+	 * 
+	 * @param __project The root project.
+	 * @param __vmType The virtual machine type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/17
+	 */
+	private static void initializeFullSuiteTask(Project __project,
+		VMType __vmType)
+		throws NullPointerException
+	{
+		if (__project == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		__project.getTasks().create(
+			TaskInitialization.task("full", "", __vmType),
+			VMFullSuite.class, __vmType);
 	}
 	
 	/**
@@ -174,7 +239,7 @@ public final class TaskInitialization
 		// it becomes implied. Additionally if the name and the source set
 		// are the same, reduce the confusion so there is no "testTestHosted".
 		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME) ||
-			__sourceSet.equals(__name))
+			__sourceSet.equals(__name) || __sourceSet.isEmpty())
 			return __name + __vmType.vmName(VMNameFormat.PROPER_NOUN);
 		
 		// Otherwise include it

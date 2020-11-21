@@ -60,5 +60,8 @@ public class GeneralSquirrelJMEPlugin
 		
 		// Setup ROM tasks, only once
 		TaskInitialization.romTasks(__project);
+		
+		// Initialize the full suite tasks
+		TaskInitialization.initializeFullSuiteTask(__project);
 	}
 }

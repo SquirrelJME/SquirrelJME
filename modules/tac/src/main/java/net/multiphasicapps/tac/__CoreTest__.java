@@ -60,6 +60,7 @@ abstract class __CoreTest__
 	 * @since 2020/02/23
 	 */
 	@Test
+	@Deprecated
 	public final void runForTestNG()
 	{
 		// Run our execution with the default arguments!
@@ -114,15 +115,20 @@ abstract class __CoreTest__
 		// Use to name this test
 		Class<?> self = this.getClass();
 		
-		// Decode the expected result
-		Map<String, String> otherKeys = new HashMap<>();
-		TestResult expected = TestResult.loadForClass(self, otherKeys);
-		
 		// Read the inputs for the test
 		Object[] args = this.__parseInput(self, __mainargs);
 		
+		// Potential multi-parameter?
+		String multiParam = ((args.length > 0 && args[0] instanceof String) ?
+			(String)args[0] : null);
+		
+		// Decode the expected result
+		Map<String, String> otherKeys = new HashMap<>();
+		TestResult expected = TestResult.loadForClass(self, otherKeys,
+			multiParam);
+		
 		// This is the result of the test
-		TestResultBuilder runresult = this._runResult;
+		TestResultBuilder runResult = this._runResult;
 		
 		// Our test result
 		TestStatus status = null;
@@ -164,8 +170,8 @@ abstract class __CoreTest__
 			Debugging.debugNote("About to run test...");
 			
 			// Run the test
-			runresult.setReturnValue(this.__runTest(args));
-			runresult.setThrownValue((thrown = new __NoExceptionThrown__()));
+			runResult.setReturnValue(this.__runTest(args));
+			runResult.setThrownValue((thrown = new __NoExceptionThrown__()));
 		}
 		
 		// Cannot be tested at all, so must stop here
@@ -194,8 +200,8 @@ abstract class __CoreTest__
 			// Normal test which threw a possibly valid exception
 			else
 			{
-				runresult.setReturnValue(new __ExceptionThrown__());
-				runresult.setThrownValue((thrown = t));
+				runResult.setReturnValue(new __ExceptionThrown__());
+				runResult.setThrownValue((thrown = t));
 			}
 		}
 		
@@ -204,7 +210,7 @@ abstract class __CoreTest__
 		
 		// If the status is not yet known, do a comparison with the results to
 		// see if there is a match
-		TestResult result = runresult.build();
+		TestResult result = runResult.build();
 		if (status == null)
 			status = (expected.isSatisfiedBy(result) ? TestStatus.SUCCESS :
 				TestStatus.FAILED);
@@ -229,7 +235,8 @@ abstract class __CoreTest__
 	}
 	
 	/**
-	 * Parses the input file for arguments.
+	 * Parses the input file for main program arguments, these are passed
+	 * directly into the test.
 	 *
 	 * @param __class The class for this test, used to load off manifests.
 	 * @param __mainargs Main program arguments.

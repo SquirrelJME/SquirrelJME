@@ -83,7 +83,8 @@ public class VMLibraryTaskAction
 		}
 		catch (IOException e)
 		{
-			throw new RuntimeException("I/O Error processing file.", e);
+			throw new RuntimeException("I/O Error processing input for " +
+				__task.getProject().getName(), e);
 		}
 		
 		// Ensure the temporary file is cleaned up on failure

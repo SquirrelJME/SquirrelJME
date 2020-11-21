@@ -32,6 +32,7 @@ import javax.microedition.lcdui.Text;
  * @since 2018/11/19
  */
 @SuppressWarnings({"ManualMinMaxCalculation", "MagicNumber"})
+@Deprecated
 public abstract class SerializedGraphics
 	extends Graphics
 {
@@ -656,15 +657,15 @@ public abstract class SerializedGraphics
 	 * @since 2018/11/19
 	 */
 	@Override
-	public void setFont(Font __f)
+	public void setFont(Font __font)
 	{
 		// Default?
-		if (__f == null)
-			__f = Font.getDefaultFont();
+		if (__font == null)
+			__font = Font.getDefaultFont();
 		
 		// Serialize it
 		this.serialize(GraphicsFunction.SET_FONT,
-			SerializedGraphics.fontSerialize(__f));
+			SerializedGraphics.fontSerialize(__font));
 	}
 	
 	/**

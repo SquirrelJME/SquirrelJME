@@ -87,19 +87,24 @@ public class VMRunTaskAction
 		if (midlet != null)
 			args.add(midlet.mainClass);
 		
+		// Debug
+		__task.getLogger().debug("Target Working Dir: {}",
+			System.getProperty("user.dir"));
+		
 		// Execute the virtual machine, if the exit status is non-zero then
 		// the task execution will be considered as a failure
 		ExecResult exitResult = __task.getProject().javaexec(__spec ->
-		{
-			// Use filled JVM arguments
-			vmType.spawnJvmArguments(__task, __spec, mainClass,
-				Collections.<String, String>emptyMap(), classPath,
-				args.<String>toArray(new String[args.size()]));
-			
-			// Use these streams directly
-			__spec.setStandardOutput(System.out);
-			__spec.setErrorOutput(System.err);
-		});
+			{
+				// Use filled JVM arguments
+				vmType.spawnJvmArguments(__task, __spec, mainClass,
+					Collections.<String, String>emptyMap(),
+					classPath, classPath,
+					args.<String>toArray(new String[args.size()]));
+				
+				// Use these streams directly
+				__spec.setStandardOutput(System.out);
+				__spec.setErrorOutput(System.err);
+			});
 		
 		// Did the task fail?
 		int exitValue = exitResult.getExitValue();

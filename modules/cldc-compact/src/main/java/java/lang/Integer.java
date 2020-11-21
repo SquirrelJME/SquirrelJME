@@ -204,6 +204,7 @@ public final class Integer
 	 * @return The number of bits set in the value.
 	 * @since 2018/11/11
 	 */
+	@SuppressWarnings("MagicNumber")
 	public static int bitCount(int __v)
 	{
 		__v = __v - ((__v >>> 1) & 0x55555555);
@@ -347,14 +348,42 @@ public final class Integer
 		return Integer.decode(prop);
 	}
 	
-	public static int highestOneBit(int __a)
+	/**
+	 * Returns the highest one bit of the given number.
+	 * 
+	 * @param __v The value to get.
+	 * @return The highest one bit of the given number.
+	 * @since 2020/10/29
+	 */
+	@SuppressWarnings({"DuplicatedCode", "MagicNumber"})
+	public static int highestOneBit(int __v)
 	{
-		throw new todo.TODO();
+		__v = __v | (__v >>> 1);
+		__v = __v | (__v >>> 2);
+		__v = __v | (__v >>> 4);
+		__v = __v | (__v >>> 8);
+		__v = __v | (__v >>> 16);
+		
+		return __v - (__v >>> 1);
 	}
 	
-	public static int lowestOneBit(int __a)
+	/**
+	 * Returns the single one bit for the given value.
+	 * 
+	 * @param __v The value to get the lowest single bit of.
+	 * @return The lowest single bit of the given integer.
+	 * @since 2020/10/29
+	 */
+	@SuppressWarnings({"DuplicatedCode", "MagicNumber"})
+	public static int lowestOneBit(int __v)
 	{
-		throw new todo.TODO();
+		__v = __v | (__v << 1);
+		__v = __v | (__v << 2);
+		__v = __v | (__v << 4);
+		__v = __v | (__v << 8);
+		__v = __v | (__v << 16);
+		
+		return __v - (__v << 1);
 	}
 	
 	/**
@@ -364,6 +393,7 @@ public final class Integer
 	 * @return The number of leading zeros.
 	 * @since 2019/04/14
 	 */
+	@SuppressWarnings({"MagicNumber", "DuplicatedCode"})
 	public static int numberOfLeadingZeros(int __v)
 	{
 		// From https://stackoverflow.com/a/23857066/11286149
@@ -495,6 +525,7 @@ public final class Integer
 	 * @return The integer but with the bits reversed.
 	 * @since 2018/11/11
 	 */
+	@SuppressWarnings("MagicNumber")
 	@ImplementationNote("Taken from " +
 		"<http://aggregate.org/MAGIC/#Bit%20Reversal>.")
 	public static int reverse(int __i)
@@ -567,49 +598,10 @@ public final class Integer
 	 */
 	public static String toString(int __v, int __r)
 	{
-		// If the radix is not valid, then just force to 10
-		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
-			__r = 10;
-		
-		StringBuilder sb = new StringBuilder();
-		
-		// Negative? Remember it but we need to swap the sign
-		boolean negative;
-		if ((negative = (__v < 0)))
-			__v = -__v;
-		
-		// Insert characters at the end of the string, they will be reversed
-		// later, it is easier this way
-		for (boolean digit = false;;)
-		{
-			// Determine the current place
-			int mod = (int)(__v % __r);
-			
-			// Do not print if any other digit was stored
-			if (__v == 0 && digit)
-				break;
-			
-			// Print character
-			sb.append((char)(mod < 10 ? '0' + mod : 'a' + (mod - 10)));
-			digit = true;
-			
-			// Stop printing characters
-			if (__v == 0)
-				break;
-			
-			// Use the remaining division
-			else
-				__v = __v / __r;
-		}
-		
-		// Add the sign in
-		if (negative)
-			sb.append('-');
-			
-		// Because the values are added in the opposite order, reverse it
-		sb.reverse();
-		
-		return sb.toString();
+		// This is effectively the same code as the long version, so to reduce
+		// duplication just forward along. This way we only need to consider
+		// one version
+		return Long.toString(__v, __r);
 	}
 	
 	/**

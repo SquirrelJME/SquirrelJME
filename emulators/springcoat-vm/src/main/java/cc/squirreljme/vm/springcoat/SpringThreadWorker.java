@@ -745,11 +745,13 @@ public final class SpringThreadWorker
 	 * @param __nat The name and type.
 	 * @param __args The arguments.
 	 * @return The return value, if any.
+	 * @throws MethodInvokeException If the invoked method threw an exception.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/20
 	 */
 	public final Object invokeMethod(boolean __static, ClassName __cl,
 		MethodNameAndType __nat, Object... __args)
-		throws NullPointerException
+		throws MethodInvokeException, NullPointerException
 	{
 		if (__cl == null || __nat == null || __args == null)
 			throw new NullPointerException("NARG");
@@ -814,12 +816,14 @@ public final class SpringThreadWorker
 			throw new SpringVirtualMachineException("BK23");
 		}
 		
+		// Wrap the exception if there is one
+		Object rv = blank.tossedException();
+		if (rv != null)
+			rv = new MethodInvokeException((SpringObject)rv);
+		
 		// Read return value from the blank frame
-		Object rv;
-		if (__nat.type().hasReturnValue())
+		else if (__nat.type().hasReturnValue())
 			rv = blank.popFromStack();
-		else
-			rv = null;
 		
 		// Pop the blank frame, we do not need it anymore
 		thread.popFrame();
@@ -1181,7 +1185,7 @@ public final class SpringThreadWorker
 		// If the VM is exiting then clear the execution stack before we go
 		// away
 		catch (SpringMachineExitException e)
-		{	
+		{
 			// Terminate the thread
 			thread.terminate();
 			
@@ -1193,35 +1197,32 @@ public final class SpringThreadWorker
 			
 			// Exit profiler stack
 			thread.profiler.exitAll(System.nanoTime());
-			
-			// Do not rethrow though
-			return;
 		}
 		
 		// Caught exception
 		catch (RuntimeException e)
 		{
+			// Printing of the stack trace for the VM error
+			PrintStream err = System.err;
+			err.println("****************************");
+			
+			// Print the real stack trace
+			err.println("*** EXTERNAL STACK TRACE ***");
+			e.printStackTrace(err);
+			err.println();
+			
+			// Print the VM seen stack trace
+			err.println("*** INTERNAL STACK TRACE ***");
+			thread.printStackTrace(err);
+			err.println();
+			
+			err.println("****************************");
+			
 			// Frame limit is zero, so kill the thread
 			if (__framelimit == 0)
 			{
 				// Terminate the thread
 				thread.terminate();
-				
-				PrintStream err = System.err;
-				
-				err.println("****************************");
-				
-				// Print the real stack trace
-				err.println("*** EXTERNAL STACK TRACE ***");
-				e.printStackTrace(err);
-				err.println();
-				
-				// Print the VM seen stack trace
-				err.println("*** INTERNAL STACK TRACE ***");
-				thread.printStackTrace(err);
-				err.println();
-				
-				err.println("****************************");
 				
 				// Exit all frames
 				thread.exitAllFrames();
@@ -3282,15 +3283,9 @@ public final class SpringThreadWorker
 					return;
 			}
 			
-			// Not a wrapped exception, kill the VM
+			// Not a wrapped exception, toss up higher which will kill the VM
 			else
 			{
-				// Kill the VM
-				this.machine.exitNoException(127);
-				
-				// Print the stack trace
-				thread.printStackTrace(System.err);
-				
 				// Where is this located?
 				SpringMethod inmethod = frame.method();
 				ClassName inclassname = inmethod.inClass();

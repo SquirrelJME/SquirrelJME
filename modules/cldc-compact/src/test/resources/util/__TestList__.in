@@ -85,16 +85,14 @@ secondary-previtequal6: true
 secondary-previtequal7: true
 secondary-previtequal8: true
 secondary-previtequal9: true
-secondary-prevnoneleft: throwable:java.util.NoSuchElementException,jav
- a.lang.RuntimeException,Exception,Throwable
+secondary-prevnoneleft: throwable:java.util.NoSuchElementException
 secondary-removeempty: false
 secondary-removeindex: string:Are!
 secondary-removemoresquirrels: true
 secondary-removesize: int:2
 secondary-removevalue: true
 secondary-set13: string:12
-secondary-set29: throwable:IndexOutOfBoundsException,RuntimeException,
- Exception,Throwable:Index\_29\_out\_of\_bounds\_for\_length\_19
+secondary-set29: throwable:IndexOutOfBoundsException
 secondary-set6: string:5
 secondary-stringform: string:[Hello!,\_1,\_2,\_Xer!,\_6,\_8,\_10,\_11,
  \_13,\_14,\_16,\_17,\_Squirrels!]

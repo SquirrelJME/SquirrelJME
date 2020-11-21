@@ -33,7 +33,7 @@ public final class MethodDescriptor
 	/**
 	 * Initializes the descriptor with the given descriptors.
 	 *
-	 * @param __rv The return value.
+	 * @param __rv The return value, may be {@code null} for {@code void}.
 	 * @param __args Arguments to the descriptor.
 	 * @throws InvalidClassFormatException If the descriptor is not valid.
 	 * @throws NullPointerException On null arguments.
@@ -42,7 +42,7 @@ public final class MethodDescriptor
 	public MethodDescriptor(FieldDescriptor __rv, FieldDescriptor... __args)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__rv == null || __args == null)
+		if (__args == null)
 			throw new NullPointerException("NARG");
 		
 		// Need to build the string representation
@@ -288,6 +288,30 @@ public final class MethodDescriptor
 	public String toString()
 	{
 		return this.string;
+	}
+	
+	/**
+	 * Creates a descriptor from the given input strings.
+	 * 
+	 * @param __rv The return value of the method, may be {@code null}.
+	 * @param __args The arguments of the method.
+	 * @return The descriptor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/15
+	 */
+	public static MethodDescriptor ofArguments(String __rv, String... __args)
+		throws NullPointerException
+	{
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		int n = __args.length;
+		FieldDescriptor[] args = new FieldDescriptor[n];
+		for (int i = 0; i < n; i++)
+			args[i] = new FieldDescriptor(__args[i]);
+		
+		return new MethodDescriptor(
+			(__rv == null ? null : new FieldDescriptor(__rv)), args);
 	}
 }
 

@@ -187,7 +187,7 @@ abstract class __IdentityBaseSet__<T>
 	 *
 	 * @since 2017/12/28
 	 */
-	private final class __Iterator__
+	final class __Iterator__
 		implements Iterator<T>
 	{
 		/** The boxed iterator. */

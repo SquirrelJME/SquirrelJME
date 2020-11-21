@@ -154,5 +154,26 @@ public final class MethodNameAndType
 	{
 		return this.type;
 	}
+	
+	/**
+	 * Creates a name and type from the given input strings.
+	 * 
+	 * @param __name The method name.
+	 * @param __rv The return value of the method, may be {@code null}.
+	 * @param __args The arguments of the method.
+	 * @return The descriptor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/09/15
+	 */
+	public static MethodNameAndType ofArguments(String __name, String __rv,
+		String... __args)
+		throws NullPointerException
+	{
+		if (__name == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		return new MethodNameAndType(__name,
+			MethodDescriptor.ofArguments(__rv, __args));
+	}
 }
 

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-good--lower: true
+secondary-good--upper: true
+secondary-okay: int:9
+secondary-total: int:9
+secondary-forms--supported: true
+secondary-positive--max--width: true
+secondary-positive--max--height: true
+secondary-positive--current--width: true
+secondary-positive--current--height: true
+secondary-mono: true
+secondary-pf: true
+secondary-pf--mono--okay: true
+secondary-inputs: int:0

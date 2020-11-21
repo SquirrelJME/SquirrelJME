@@ -46,10 +46,33 @@ JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_writeII(JNIEnv* env,
 	return -1;
 }
 
+JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_writeIABIII(
+	JNIEnv* env, jclass classy, jint fd, jbyteArray buf, jint off, jint len)
+{
+	jbyte* jbuf;
+	FILE* pipe = getPipeForFd(fd);
+
+	if (pipe == NULL)
+		return -1;
+	
+	int okay = 0;
+	jbuf = (jbyte*)env->GetByteArrayElements(buf, NULL);
+	for (int i = 0; i < len; i++)
+		if (fputc(jbuf[off++], pipe) >= 0)
+			okay++;
+		else
+			break;
+	
+	env->ReleaseByteArrayElements(buf, jbuf, 0);
+	
+	return okay;
+}
+
 static const JNINativeMethod mleTerminalMethods[] =
 {
 	{"flush", "(I)I", (void*)Impl_mle_TerminalShelf_flush},
 	{"write", "(II)I", (void*)Impl_mle_TerminalShelf_writeII},
+	{"write", "(I[BII)I", (void*)Impl_mle_TerminalShelf_writeIABIII},
 };
 
 jint JNICALL mleTerminalInit(JNIEnv* env, jclass classy)

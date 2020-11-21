@@ -18,7 +18,6 @@ import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,7 +31,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
-import java.util.stream.Stream;
 
 /**
  * This class is used to initialize virtual machines based on a set of factory
@@ -108,6 +106,11 @@ public abstract class VMFactory
 		// There always is a profiler being run, just differs if we save it
 		ProfilerSnapshot profilerSnapshot = new ProfilerSnapshot();
 		
+		// Determine the path separator character
+		String sepString = System.getProperty("path.separator");
+		char sepChar = (sepString == null || sepString.isEmpty() ? ':' :
+			sepString.charAt(0));
+		
 		// Command line format is:
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
@@ -151,7 +154,7 @@ public abstract class VMFactory
 			else if (item.startsWith("-Xlibraries:"))
 			{
 				// Extract path elements
-				for (int i = item.indexOf(':') + 1, n = item.length();
+				for (int i = item.indexOf(sepChar) + 1, n = item.length();
 					i < n; i++)
 				{
 					// Get location of the next colon
@@ -179,7 +182,7 @@ public abstract class VMFactory
 				for (int i = 0, n = strings.length(); i < n; i++)
 				{
 					// Get location of the next colon
-					int dx = strings.indexOf(File.pathSeparatorChar, i);
+					int dx = strings.indexOf(sepChar, i);
 					if (dx < 0)
 						dx = n;
 					

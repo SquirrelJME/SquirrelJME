@@ -192,8 +192,22 @@ public final class CallTraceUtils
 		
 		// Ignore these completely, should hopefully not happen if the
 		// Appendable we are writing to is a PrintStream or StringBuilder.
-		catch (IOException ignored)
+		catch (Throwable e)
 		{
+			// Add indication that there was a double fault here
+			try
+			{
+				CallTraceUtils.__appendIndent(__out, __indentLevel);
+				__out.append("FAULT IN printStackTrace()!");
+				LineEndingUtils.append(__out);
+			}
+			
+			// Give up
+			catch (Throwable ignored)
+			{
+			}
+			
+			// Just report that this happened
 			return true;
 		}
 		

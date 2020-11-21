@@ -10,8 +10,24 @@
 
 package javax.microedition.lcdui;
 
+/**
+ * This interface is called when commands need to be laid out onto the display.
+ * 
+ * This allows the use of:
+ *  - {@link Displayable#setCommand(Command, int)}.
+ *  - {@link Displayable#setMenu(Menu, int)}.
+ *  - {@link Displayable#removeCommandOrMenu(int)}. 
+ * 
+ * @since 2020/09/27
+ */
 public interface CommandLayoutPolicy
 {
-	void onCommandLayout(Displayable __disp);
+	/**
+	 * Callback for when the policy is being updated.
+	 * 
+	 * @param __d The displayable getting the policy set.
+	 * @since 2020/09/27
+	 */
+	void onCommandLayout(Displayable __d);
 }
 

@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.swm;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 /**
  * This represents an entry point of a JAR.
@@ -27,8 +28,11 @@ public final class EntryPoint
 	/** The entry point class. */
 	protected final String entry;
 	
+	/** The image used. */
+	protected final String imageResource;
+	
 	/** Is this a midlet? */
-	protected final boolean ismidlet;
+	protected final boolean isMidlet;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -38,11 +42,13 @@ public final class EntryPoint
 	 *
 	 * @param __name The name of the entry point.
 	 * @param __entry The class used for entry.
+	 * @param __imgRc The image resource to use.
 	 * @param __mid Is this a midlet launch?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/20
 	 */
-	public EntryPoint(String __name, String __entry, boolean __mid)
+	public EntryPoint(String __name, String __entry, String __imgRc,
+		boolean __mid)
 		throws NullPointerException
 	{
 		// Check
@@ -52,7 +58,8 @@ public final class EntryPoint
 		// Set
 		this.name = __name;
 		this.entry = __entry;
-		this.ismidlet = __mid;
+		this.imageResource = __imgRc;
+		this.isMidlet = __mid;
 	}
 	
 	/**
@@ -63,8 +70,8 @@ public final class EntryPoint
 	public int compareTo(EntryPoint __o)
 	{
 		// Do non-midlets first
-		boolean ma = this.ismidlet,
-			mb = __o.ismidlet;
+		boolean ma = this.isMidlet,
+			mb = __o.isMidlet;
 		if (ma != mb)
 			if (!ma)
 				return -1;
@@ -103,7 +110,8 @@ public final class EntryPoint
 		EntryPoint o = (EntryPoint)__o;
 		return this.name.equals(o.name) &&
 			this.entry.equals(o.entry) &&
-			this.ismidlet == o.ismidlet;
+			Objects.equals(this.imageResource, o.imageResource) &&
+			this.isMidlet == o.isMidlet;
 	}
 	
 	/**
@@ -113,8 +121,21 @@ public final class EntryPoint
 	@Override
 	public int hashCode()
 	{
+		String imageResource = this.imageResource;
 		return this.name.hashCode() ^ this.entry.hashCode() ^
-			(this.ismidlet ? 1 : 0);
+			(this.isMidlet ? 1 : 0) ^
+			(imageResource == null ? 0 : imageResource.hashCode());
+	}
+	
+	/**
+	 * Returns the image to use.
+	 * 
+	 * @return The image resource or {@code null} if there is none.
+	 * @since 2020/10/31
+	 */
+	public String imageResource()
+	{
+		return this.imageResource;
 	}
 	
 	/**
@@ -125,7 +146,7 @@ public final class EntryPoint
 	 */
 	public boolean isMidlet()
 	{
-		return this.ismidlet;
+		return this.isMidlet;
 	}
 	
 	/**
@@ -152,7 +173,7 @@ public final class EntryPoint
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"%s (%s: %s)", this.name, (this.ismidlet ? "MIDlet" :
+				"%s (%s: %s)", this.name, (this.isMidlet ? "MIDlet" :
 				"Classic"), this.entry)));
 		
 		return rv;

@@ -29,7 +29,8 @@ public final class ObjectShelf
 	}
 	
 	/**
-	 * Copies the given arrays.
+	 * Copies the given arrays. If the source and destination are the same
+	 * array, the copy operation will not collide with itself.
 	 * 
 	 * @param __src The source array.
 	 * @param __srcOff The source offset.
@@ -42,7 +43,8 @@ public final class ObjectShelf
 		boolean[] __dest, int __destOff, int __len);
 	
 	/**
-	 * Copies the given arrays.
+	 * Copies the given arrays. If the source and destination are the same
+	 * array, the copy operation will not collide with itself.
 	 * 
 	 * @param __src The source array.
 	 * @param __srcOff The source offset.
@@ -55,7 +57,8 @@ public final class ObjectShelf
 		byte[] __dest, int __destOff, int __len);
 	
 	/**
-	 * Copies the given arrays.
+	 * Copies the given arrays. If the source and destination are the same
+	 * array, the copy operation will not collide with itself.
 	 * 
 	 * @param __src The source array.
 	 * @param __srcOff The source offset.
@@ -68,7 +71,8 @@ public final class ObjectShelf
 		short[] __dest, int __destOff, int __len);
 	
 	/**
-	 * Copies the given arrays.
+	 * Copies the given arrays. If the source and destination are the same
+	 * array, the copy operation will not collide with itself.
 	 * 
 	 * @param __src The source array.
 	 * @param __srcOff The source offset.
@@ -81,7 +85,8 @@ public final class ObjectShelf
 		char[] __dest, int __destOff, int __len);
 	
 	/**
-	 * Copies the given arrays.
+	 * Copies the given arrays. If the source and destination are the same
+	 * array, the copy operation will not collide with itself.
 	 * 
 	 * @param __src The source array.
 	 * @param __srcOff The source offset.
@@ -94,7 +99,8 @@ public final class ObjectShelf
 		int[] __dest, int __destOff, int __len);
 	
 	/**
-	 * Copies the given arrays.
+	 * Copies the given arrays. If the source and destination are the same
+	 * array, the copy operation will not collide with itself.
 	 * 
 	 * @param __src The source array.
 	 * @param __srcOff The source offset.
@@ -107,7 +113,8 @@ public final class ObjectShelf
 		long[] __dest, int __destOff, int __len);
 	
 	/**
-	 * Copies the given arrays.
+	 * Copies the given arrays. If the source and destination are the same
+	 * array, the copy operation will not collide with itself.
 	 * 
 	 * @param __src The source array.
 	 * @param __srcOff The source offset.
@@ -120,7 +127,8 @@ public final class ObjectShelf
 		float[] __dest, int __destOff, int __len);
 	
 	/**
-	 * Copies the given arrays.
+	 * Copies the given arrays. If the source and destination are the same
+	 * array, the copy operation will not collide with itself.
 	 * 
 	 * @param __src The source array.
 	 * @param __srcOff The source offset.
