@@ -30,6 +30,18 @@ public final class TerminalShelf
 	}
 	
 	/**
+	 * Returns the number of available bytes for reading, if it is known.
+	 * 
+	 * @param __fd The {@link StandardPipeType} to close.
+	 * @return The number of bytes ready for immediate reading, will be
+	 * zero if there are none. For errors one of {@link PipeErrorType}.
+	 * @throws MLECallError If {@code __fd} is not valid.
+	 * @since 2020/11/22
+	 */
+	public static native int available(int __fd)
+		throws MLECallError;
+	
+	/**
 	 * Closes the output of the current process.
 	 * 
 	 * @param __fd The {@link StandardPipeType} to close.

@@ -17,4 +17,5 @@ squirreljme
 dependencies
 {
 	implementation project(":modules:cldc-compact")
+	implementation project(":modules:zip")
 }

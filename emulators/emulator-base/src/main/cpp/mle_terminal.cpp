@@ -14,11 +14,20 @@
 // The class to forward to
 #define TERMINAL_CLASSNAME "cc/squirreljme/emulator/EmulatedTerminalShelf"
 
+#define TERMINAL_AVAILABLE_DESC "(I)I"
 #define TERMINAL_CLOSE_DESC "(I)I"
 #define TERMINAL_FLUSH_DESC "(I)I"
 #define TERMINAL_READIABIII_DESC "(I[BII)I"
 #define TERMINAL_WRITEIII_DESC "(II)I"
 #define TERMINAL_WRITEIABIII_DESC "(I[BII)I"
+
+JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_available(JNIEnv* env,
+	jclass classy, jint fd)
+{
+	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
+		"available", TERMINAL_CLOSE_DESC,
+		fd);
+}
 
 JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_close(JNIEnv* env,
 	jclass classy, jint fd)
@@ -62,7 +71,8 @@ JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_writeIABIII(
 
 static const JNINativeMethod mleTerminalMethods[] =
 {
-	{"close", TERMINAL_CLOSE_DESC", (void*)Impl_mle_TerminalShelf_close},
+	{"available", TERMINAL_AVAILABLE_DESC, (void*)Impl_mle_TerminalShelf_available},
+	{"close", TERMINAL_CLOSE_DESC, (void*)Impl_mle_TerminalShelf_close},
 	{"flush", TERMINAL_FLUSH_DESC, (void*)Impl_mle_TerminalShelf_flush},
 	{"read", TERMINAL_READIABIII_DESC, (void*)Impl_mle_TerminalShelf_readIABIII},
 	{"write", TERMINAL_WRITEIII_DESC, (void*)Impl_mle_TerminalShelf_writeII},

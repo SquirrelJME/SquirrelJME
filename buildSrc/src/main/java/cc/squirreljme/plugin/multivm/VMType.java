@@ -230,6 +230,12 @@ public enum VMType
 				rv.add(rootProject.project(task.project).getTasks()
 					.getByName(task.task));
 			
+			// Make sure the hosted environment is working since it needs to
+			// be kept up to date as well
+			for (Task task : new VMEmulatorDependencies(__task,
+				VMType.HOSTED).call())
+				rv.add(task);
+			
 			return rv;
 		}
 		

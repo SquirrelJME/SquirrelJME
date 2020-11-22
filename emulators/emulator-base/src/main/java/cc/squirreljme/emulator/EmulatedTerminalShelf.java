@@ -26,6 +26,30 @@ import java.io.OutputStream;
 public class EmulatedTerminalShelf
 {
 	/**
+	 * Returns the number of available bytes for reading, if it is known.
+	 * 
+	 * @param __fd The {@link StandardPipeType} to close.
+	 * @return The number of bytes ready for immediate reading, will be
+	 * zero if there are none. For errors one of {@link PipeErrorType}.
+	 * @throws MLECallError If {@code __fd} is not valid.
+	 * @since 2020/11/22
+	 */
+	public static int available(int __fd)
+		throws MLECallError
+	{
+		try
+		{
+			return EmulatedTerminalShelf.__input(__fd).available();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			
+			return PipeErrorType.IO_EXCEPTION;
+		}
+	}
+	
+	/**
 	 * Closes the output of the current process.
 	 * 
 	 * @param __fd The {@link StandardPipeType} to close.
