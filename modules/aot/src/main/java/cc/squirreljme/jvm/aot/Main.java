@@ -10,7 +10,8 @@
 package cc.squirreljme.jvm.aot;
 
 import cc.squirreljme.runtime.cldc.Poking;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -136,6 +137,12 @@ public class Main
 		if (__backend == null || __name == null || __args == null)
 			throw new NullPointerException("NARG");
 		
+		// Setup compilation arguments
+		CompileSettings settings = new CompileSettings();
+		
+		// Setup glob for final linking
+		LinkGlob glob = __backend.linkGlob(settings, __name, System.out);
+		
 		// Read input JAR and perform inline compilation
 		try (InputStream in = new StandardInputStream();
 			ZipStreamReader zip = new ZipStreamReader(in))
@@ -149,11 +156,37 @@ public class Main
 					if (entry == null)
 						break;
 					
-					System.err.println(entry.name());
+					// Only compile classes
+					String name = entry.name();
+					if (!name.endsWith(".class"))
+					{
+						// Link in the resource as-is however
+						glob.join(name, true, entry);
+						
+						continue;
+					}
+					
+					// Perform class compilation
+					try (ByteArrayOutputStream classBytes =
+						new ByteArrayOutputStream())
+					{
+						// Perform compilation
+						__backend.compileClass(settings,
+							name.substring(0,
+								name.length() - ".class".length()),
+							entry, classBytes);
+						
+						// Link in the resultant object
+						try (InputStream bain = new ByteArrayInputStream(
+							classBytes.toByteArray()))
+						{
+							glob.join(name, false, bain);
+						}
+					} 
 				}
 			
-			// Link fragments to larger portion
-			throw Debugging.todo();
+			// Linking stage is finished
+			glob.finish();
 		}
 	}
 }

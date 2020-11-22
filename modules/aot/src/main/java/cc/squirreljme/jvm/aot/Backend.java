@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.aot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ServiceLoader;
 
 /**
@@ -21,6 +24,36 @@ import java.util.ServiceLoader;
  */
 public interface Backend
 {
+	/**
+	 * Performs compilation of a single class.
+	 * 
+	 * @param __settings The settings for compilation.
+	 * @param __name The name of the class being compiled.
+	 * @param __in The input stream.
+	 * @param __out The output stream.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/22
+	 */
+	void compileClass(CompileSettings __settings, String __name,
+		InputStream __in, OutputStream __out)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Creates a glob that is used for linking compiled classes together.
+	 * 
+	 * @param __settings The settings for compilation.
+	 * @param __name The name of the glob.
+	 * @param __out The destination output.
+	 * @return The glob for linking.
+	 * @throws IOException On any read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/22
+	 */
+	LinkGlob linkGlob(CompileSettings __settings, String __name,
+		OutputStream __out)
+		throws IOException, NullPointerException;
+	
 	/**
 	 * Returns the name of the backend.
 	 * 
