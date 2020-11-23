@@ -455,7 +455,7 @@ public final class NativeCodeBuilder
 			NativeInstruction ri = point.instruction;
 			int rie = ri.encoding();
 			
-			NativeCodeLabel jt = null;
+			NativeCodeLabel jt;
 			
 			// Depends on the encoding
 			switch (rie)
@@ -518,7 +518,7 @@ public final class NativeCodeBuilder
 				{
 					// {@squirreljme.error JC0z The specified label was
 					// never defined. (The label)}
-					Integer rlp = labels.get((NativeCodeLabel)a);
+					Integer rlp = labels.get(a);
 					if (rlp == null)
 						throw new IllegalArgumentException("JC0z " + a);
 					

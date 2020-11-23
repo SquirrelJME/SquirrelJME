@@ -130,7 +130,7 @@ public final class AnnotationTable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/15
 	 */
-	public static final AnnotationTable parse(Pool __pool,
+	public static AnnotationTable parse(Pool __pool,
 		AttributeTable __attrs)
 		throws IOException, NullPointerException
 	{

@@ -89,7 +89,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	private final void __run(OutputStream __os)
+	private void __run(OutputStream __os)
 		throws IOException, NullPointerException
 	{
 		if (__os == null)
@@ -238,7 +238,7 @@ public final class Minimizer
 	 * @return The resulting fields, static and instance split into each.
 	 * @since 2019/03/11
 	 */
-	private final __TempFields__[] __doFields()
+	private __TempFields__[] __doFields()
 	{
 		DualClassRuntimePoolBuilder localpool = this.localpool;
 		
@@ -311,7 +311,7 @@ public final class Minimizer
 			
 			// Determine the base position and check if any alignment is needed
 			// assuming types of a given size are always aligned
-			int basep = (temp._bytes + (fsz - 1)) & ~(fsz - 1);
+			int basep = (temp._bytes + (fsz - 1)) & -fsz;
 			
 			// Constant value may be null, but if it is not then add it
 			// to the pool
@@ -355,7 +355,7 @@ public final class Minimizer
 	 * @return The processed static and instance methods.
 	 * @since 2019/03/13
 	 */
-	private final __TempMethods__[] __doMethods()
+	private __TempMethods__[] __doMethods()
 	{
 		DualClassRuntimePoolBuilder localpool = this.localpool;
 		ClassFile input = this.input;
@@ -432,7 +432,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/23
 	 */
-	private final byte[] __translateCode(NativeCode __rc)
+	private byte[] __translateCode(NativeCode __rc)
 		throws IOException, NullPointerException
 	{
 		if (__rc == null)
@@ -460,7 +460,7 @@ public final class Minimizer
 			
 			// Record that the instruction is at this position
 			int baseaddr;
-			indexpos[cdx] = (baseaddr = dos.size());
+			indexpos[cdx] = dos.size();
 			
 			// Operation to handle
 			int op = i.operation();
@@ -646,7 +646,7 @@ public final class Minimizer
 	 * @return The generated UUID.
 	 * @since 2019/04/27
 	 */
-	public static final long generateUUID()
+	public static long generateUUID()
 	{
 		// Hopefully this seed is good enough?
 		Random rand = new Random(System.nanoTime() +
@@ -670,7 +670,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/17
 	 */
-	public static final byte[] minimize(ClassFile __cf)
+	public static byte[] minimize(ClassFile __cf)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		return Minimizer.minimize(null, __cf);
@@ -687,7 +687,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	public static final byte[] minimize(DualClassRuntimePoolBuilder __dp,
+	public static byte[] minimize(DualClassRuntimePoolBuilder __dp,
 		ClassFile __cf)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
@@ -717,7 +717,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	public static final void minimize(ClassFile __cf, OutputStream __os)
+	public static void minimize(ClassFile __cf, OutputStream __os)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		Minimizer.minimize(null, __cf, __os);
@@ -735,7 +735,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	public static final void minimize(DualClassRuntimePoolBuilder __dp,
+	public static void minimize(DualClassRuntimePoolBuilder __dp,
 		ClassFile __cf, OutputStream __os)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
@@ -755,7 +755,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	public static final MinimizedClassFile minimizeAndDecode(ClassFile __cf)
+	public static MinimizedClassFile minimizeAndDecode(ClassFile __cf)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__cf == null)
@@ -785,7 +785,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	public static final void writeVUShort(DataOutputStream __dos, int __v)
+	public static void writeVUShort(DataOutputStream __dos, int __v)
 		throws IOException, NullPointerException
 	{
 		if (__dos == null)
@@ -817,7 +817,7 @@ public final class Minimizer
 	 * @since 2019/04/14
 	 */
 	@Deprecated
-	static final int __checkUShort(int __v)
+	static int __checkUShort(int __v)
 		throws InvalidClassFormatException
 	{
 		// {@squirreljme.error JC0o Unsigned short out of range. (The value)}
@@ -837,7 +837,7 @@ public final class Minimizer
 	 * @since 2019/03/24
 	 */
 	@Deprecated
-	private static final byte[] __compact(short[] __st, byte[] __bt)
+	private static byte[] __compact(short[] __st, byte[] __bt)
 		throws IOException, NullPointerException
 	{
 		if (__st == null && __bt == null)
@@ -906,7 +906,7 @@ public final class Minimizer
 	 * @since 2019/04/14
 	 */
 	@Deprecated
-	static final int __dosRound(DataOutputStream __dos)
+	static int __dosRound(DataOutputStream __dos)
 		throws IOException, NullPointerException
 	{
 		if (__dos == null)
@@ -926,7 +926,7 @@ public final class Minimizer
 	 * @since 2019/04/14
 	 */
 	@Deprecated
-	static final int __relAdd(int __rel, int __v)
+	static int __relAdd(int __rel, int __v)
 	{
 		__rel += __v;
 		return (__rel + 3) & (~3);

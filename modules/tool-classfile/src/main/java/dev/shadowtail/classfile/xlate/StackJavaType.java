@@ -31,7 +31,7 @@ public enum StackJavaType
 	/** Double. */
 	DOUBLE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -132,7 +132,7 @@ public enum StackJavaType
 	 * @return The resulting stack type.
 	 * @since 2019/04/08
 	 */
-	public static final StackJavaType of(int __i)
+	public static StackJavaType of(int __i)
 	{
 		switch (__i)
 		{

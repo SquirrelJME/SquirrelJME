@@ -45,7 +45,7 @@ public enum FieldFlag
 	/** Enumeration. */
 	ENUM,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

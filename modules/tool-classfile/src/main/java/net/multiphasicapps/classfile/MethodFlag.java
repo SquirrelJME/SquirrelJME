@@ -54,7 +54,7 @@ public enum MethodFlag
 	/** Synthetic method. */
 	SYNTHETIC,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

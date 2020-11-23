@@ -41,7 +41,7 @@ public enum PrimitiveType
 	/** Boolean. */
 	BOOLEAN,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

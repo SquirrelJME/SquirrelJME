@@ -282,7 +282,7 @@ public final class NativeInstruction
 	 * @throws InvalidInstructionException If the encoding is not known.
 	 * @since 2019/03/27
 	 */
-	public static final int argumentCount(int __op)
+	public static int argumentCount(int __op)
 		throws InvalidInstructionException
 	{
 		// Depends on the encoding
@@ -336,7 +336,7 @@ public final class NativeInstruction
 	 * @return The argument format.
 	 * @since 2018/04/16
 	 */
-	public static final ArgumentFormat[] argumentFormat(int __op)
+	public static ArgumentFormat[] argumentFormat(int __op)
 	{
 		switch (NativeInstruction.encoding(__op))
 		{
@@ -348,6 +348,9 @@ public final class NativeInstruction
 				
 				// [r16, reglist]
 			case NativeInstructionType.SYSTEM_CALL:
+				
+				// [reg w/ memaddr, reglist]
+			case NativeInstructionType.INVOKE:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
@@ -432,14 +435,8 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG,
 					ArgumentFormat.INT32,
 					ArgumentFormat.VJUMP);
-				
-				// [reg w/ memaddr, reglist]
-			case NativeInstructionType.INVOKE:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUREG,
-					ArgumentFormat.REGLIST);
 			
-				// [r16 (check), r16 (get), r16 (set), r16 (addr), u16 (off)]
+			// [r16 (check), r16 (get), r16 (set), r16 (addr), u16 (off)]
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
@@ -461,7 +458,7 @@ public final class NativeInstruction
 	 * @return The encoding for the given operation.
 	 * @since 2019/03/24
 	 */
-	public static final int encoding(int __op)
+	public static int encoding(int __op)
 	{
 		// Special operations all use unique encodings so just return their
 		// opcode, while all of the other operations use one of the pre-defined
@@ -482,7 +479,7 @@ public final class NativeInstruction
 	 * @return The mnemonic for the operation.
 	 * @since 2019/04/07
 	 */
-	public static final String mnemonic(int __op)
+	public static String mnemonic(int __op)
 	{
 		switch (NativeInstruction.encoding(__op))
 		{

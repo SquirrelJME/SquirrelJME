@@ -64,7 +64,7 @@ public enum MinimizedPoolEntryType
 	/** A string which has been noted for debug purposes. */
 	NOTED_STRING,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -124,7 +124,7 @@ public enum MinimizedPoolEntryType
 	 * @throws IllegalArgumentException If the type is not valid.
 	 * @since 2019/04/17
 	 */
-	public static final MinimizedPoolEntryType of(int __i)
+	public static MinimizedPoolEntryType of(int __i)
 		throws IllegalArgumentException
 	{
 		switch (__i)
@@ -160,7 +160,7 @@ public enum MinimizedPoolEntryType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	public static final MinimizedPoolEntryType ofClass(Class<?> __cl)
+	public static MinimizedPoolEntryType ofClass(Class<?> __cl)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__cl == null)
@@ -187,10 +187,11 @@ public enum MinimizedPoolEntryType
 				return MinimizedPoolEntryType.INVOKED_METHOD;
 			case "net.multiphasicapps.classfile.ClassName":
 				return MinimizedPoolEntryType.CLASS_NAME;
+				
 			case "net.multiphasicapps.classfile.ClassNames":
-				return MinimizedPoolEntryType.CLASS_NAMES;
 			case "List net.multiphasicapps.classfile.ClassName":
 				return MinimizedPoolEntryType.CLASS_NAMES;
+				
 			case "net.multiphasicapps.classfile.MethodDescriptor":
 				return MinimizedPoolEntryType.METHOD_DESCRIPTOR;
 			case "dev.shadowtail.classfile.pool.UsedString":

@@ -45,7 +45,7 @@ public enum DataType
 	/** Double. */
 	DOUBLE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -135,7 +135,7 @@ public enum DataType
 	 * @return The resulting compare type.
 	 * @since 2019/04/08
 	 */
-	public static final DataType of(int __i)
+	public static DataType of(int __i)
 	{
 		switch (__i)
 		{
@@ -160,7 +160,7 @@ public enum DataType
 	 * @return The data type used.
 	 * @since 2019/03/24
 	 */
-	public static final DataType of(PrimitiveType __t)
+	public static DataType of(PrimitiveType __t)
 	{
 		if (__t == null)
 			return DataType.OBJECT;
@@ -189,7 +189,7 @@ public enum DataType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/27
 	 */
-	public static final DataType of(JavaType __t)
+	public static DataType of(JavaType __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -206,7 +206,7 @@ public enum DataType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	public static final DataType of(FieldDescriptor __t)
+	public static DataType of(FieldDescriptor __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -223,7 +223,7 @@ public enum DataType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/27
 	 */
-	public static final DataType of(StackJavaType __t)
+	public static DataType of(StackJavaType __t)
 		throws NullPointerException
 	{
 		if (__t == null)

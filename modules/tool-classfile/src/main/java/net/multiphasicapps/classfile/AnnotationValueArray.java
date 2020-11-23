@@ -21,7 +21,7 @@ import java.util.RandomAccess;
  */
 public final class AnnotationValueArray
 	extends AbstractList<AnnotationValue>
-	implements AnnotationValue, List<AnnotationValue>, RandomAccess
+	implements AnnotationValue, RandomAccess
 {
 	/** The elements of the array. */
 	private final AnnotationValue[] _values;

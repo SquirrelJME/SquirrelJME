@@ -149,7 +149,7 @@ public final class Annotation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/06/16
 	 */
-	public static final Annotation parse(Pool __pool, DataInputStream __in)
+	public static Annotation parse(Pool __pool, DataInputStream __in)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__pool == null || __in == null)
@@ -188,7 +188,7 @@ public final class Annotation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/01
 	 */
-	public static final AnnotationValue parseValue(Pool __pool,
+	public static AnnotationValue parseValue(Pool __pool,
 		DataInputStream __in)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{

@@ -236,7 +236,7 @@ public final class MinimizedClassHeader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/16
 	 */
-	public static final MinimizedClassHeader decode(InputStream __is)
+	public static MinimizedClassHeader decode(InputStream __is)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__is == null)

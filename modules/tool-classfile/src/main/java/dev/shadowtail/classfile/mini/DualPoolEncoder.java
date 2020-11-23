@@ -70,7 +70,7 @@ public final class DualPoolEncoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/07
 	 */
-	public static final DualClassRuntimePool decode(byte[] __b,
+	public static DualClassRuntimePool decode(byte[] __b,
 		int __co, int __cl, int __ro, int __rl)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
@@ -349,7 +349,7 @@ public final class DualPoolEncoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/17
 	 */
-	public static final DualPoolEncodeResult encode(
+	public static DualPoolEncodeResult encode(
 		DualClassRuntimePoolBuilder __dp, OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -465,7 +465,7 @@ public final class DualPoolEncoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/25
 	 */
-	public static final DualPoolEncodeResult encodeLayered(
+	public static DualPoolEncodeResult encodeLayered(
 		DualClassRuntimePoolBuilder __src, DualClassRuntimePoolBuilder __onto,
 		OutputStream __out)
 		throws IOException, NullPointerException
@@ -519,7 +519,7 @@ public final class DualPoolEncoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/20
 	 */
-	public static final byte[] encodeValue(MinimizedPoolEntryType __t,
+	public static byte[] encodeValue(MinimizedPoolEntryType __t,
 		short[] __p, boolean __wide, Object __v)
 		throws IOException, NullPointerException
 	{
@@ -541,7 +541,7 @@ public final class DualPoolEncoder
 					// the UTF length, the length of the actual string
 					// could be useful. But only keep the lowest part
 					// as that will be "good enough"
-					dos.writeShort((short)__p[0]);
+					dos.writeShort(__p[0]);
 					dos.writeUnsignedShortChecked(__p[1]);
 					
 					// Write string UTF data

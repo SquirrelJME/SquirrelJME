@@ -122,7 +122,7 @@ public final class InnerClasses
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/15
 	 */
-	public static final InnerClasses parse(Pool __pool,
+	public static InnerClasses parse(Pool __pool,
 		AttributeTable __attrs)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{

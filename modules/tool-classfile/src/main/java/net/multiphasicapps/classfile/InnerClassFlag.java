@@ -48,7 +48,7 @@ public enum InnerClassFlag
 	/** Enumeration. */
 	ENUM,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**

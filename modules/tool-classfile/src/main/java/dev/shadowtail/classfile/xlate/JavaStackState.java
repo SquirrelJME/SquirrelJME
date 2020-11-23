@@ -1223,14 +1223,13 @@ public final class JavaStackState
 		int stacktop = this.stacktop;
 		
 		// Working pop list when match is found
-		int basetop = -1,
-			maxpop = -1;
+		int basetop,
+			maxpop;
 		
 		// Search for the matching function to use for this state
 		for (JavaStackShuffleType.Function tryf : __t._functions)
 		{
 			// Clear for run
-			basetop = -1;
 			
 			// Input slots are used
 			JavaStackShuffleType.Slots sls = tryf.in;
@@ -1425,7 +1424,7 @@ public final class JavaStackState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/30
 	 */
-	public static final JavaStackState of(StackMapTableState __s, int... __lw)
+	public static JavaStackState of(StackMapTableState __s, int... __lw)
 		throws NullPointerException
 	{
 		if (__s == null)

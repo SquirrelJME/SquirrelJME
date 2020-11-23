@@ -23,7 +23,7 @@ public enum FieldAccessType
 	/** Instance. */
 	INSTANCE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -45,7 +45,7 @@ public enum FieldAccessType
 	 * @throws IllegalArgumentException If it is not valid.
 	 * @since 2019/04/17
 	 */
-	public static final FieldAccessType of(int __i)
+	public static FieldAccessType of(int __i)
 		throws IllegalArgumentException
 	{
 		switch (__i)

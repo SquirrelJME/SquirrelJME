@@ -1457,7 +1457,6 @@ public final class NearNativeByteCodeHandler
 		
 		// Do not jump at this point, just return the exception check will be
 		// flagged which will start the exception handling
-		return;
 	}
 	
 	/**
@@ -1699,7 +1698,6 @@ public final class NearNativeByteCodeHandler
 			this.__generateReturn(enq);
 			
 			// Exception handler was generated
-			didehfall = true;
 		}
 		
 		// Generate transition labels
@@ -1741,7 +1739,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __dxr The index register.
 	 * @since 2019/04/27
 	 */
-	private final void __basicCheckArrayBound(int __ir, int __dxr)
+	private void __basicCheckArrayBound(int __ir, int __dxr)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1777,7 +1775,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __vr The value register.
 	 * @since 2019/04/27
 	 */
-	private final void __basicCheckArrayStore(int __ir, int __vr)
+	private void __basicCheckArrayStore(int __ir, int __vr)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1798,7 +1796,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __cl The class to check.
 	 * @since 2019/04/22
 	 */
-	private final void __basicCheckCCE(int __ir, ClassName __cl)
+	private void __basicCheckCCE(int __ir, ClassName __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -1835,7 +1833,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __br The B register.
 	 * @since 2019/06/24
 	 */
-	private final void __basicCheckDBZ(int __br)
+	private void __basicCheckDBZ(int __br)
 	{
 		// If the B register is zero, then we throw the exception
 		this.codebuilder.addIfZero(__br, this.__labelMakeException(
@@ -1848,7 +1846,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __ir The type to check.
 	 * @since 2019/04/27
 	 */
-	private final void __basicCheckIsArray(int __ir)
+	private void __basicCheckIsArray(int __ir)
 	{
 		// Call internal helper
 		this.__invokeStatic(InvokeType.SYSTEM,
@@ -1867,7 +1865,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __lr The length register.
 	 * @since 2019/06/28
 	 */
-	private final void __basicCheckNAS(int __lr)
+	private void __basicCheckNAS(int __lr)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1884,7 +1882,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __ir The register to check.
 	 * @since 2019/04/22
 	 */
-	private final void __basicCheckNPE(int __ir)
+	private void __basicCheckNPE(int __ir)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1899,7 +1897,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __ir The register to check.
 	 * @since 2019/06/28
 	 */
-	private final void __basicCheckOOM(int __ir)
+	private void __basicCheckOOM(int __ir)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1916,7 +1914,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/26
 	 */
-	private final __EData__ __eData(NativeCodeLabel __lab)
+	private __EData__ __eData(NativeCodeLabel __lab)
 		throws NullPointerException
 	{
 		if (__lab == null)
@@ -1937,7 +1935,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/24
 	 */
-	private final AccessedField __fieldAccess(FieldAccessType __at,
+	private AccessedField __fieldAccess(FieldAccessType __at,
 		FieldReference __fr, boolean __read)
 		throws NullPointerException
 	{
@@ -1959,7 +1957,7 @@ public final class NearNativeByteCodeHandler
 	 * @return The label to this return point.
 	 * @since 2019/04/11
 	 */
-	private final NativeCodeLabel __generateReturn()
+	private NativeCodeLabel __generateReturn()
 	{
 		return this.__generateReturn(this.state.stack.possibleEnqueue());
 	}
@@ -1968,11 +1966,11 @@ public final class NearNativeByteCodeHandler
 	 * Generates or jumps to another return point for the given enqueue.
 	 *
 	 * @param __eq The enqueue to return for.
-	 * @return The label to this return point.
 	 * @throws NullPointerException On null arguments.
-	 * @return
+	 * @return The label to this return point.
+	 * @since 2019/04/11
 	 */
-	private final NativeCodeLabel __generateReturn(JavaStackEnqueueList __eq)
+	private NativeCodeLabel __generateReturn(JavaStackEnqueueList __eq)
 		throws NullPointerException
 	{
 		if (__eq == null)
@@ -2110,7 +2108,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException If no name or type were specified.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeAssembly(MethodName __name,
+	private void __invokeAssembly(MethodName __name,
 		MethodDescriptor __type, JavaStackResult.Output __out,
 		JavaStackResult.Input... __in)
 		throws NullPointerException
@@ -2230,6 +2228,12 @@ public final class NearNativeByteCodeHandler
 				// Integer/Float bits
 			case "floatToRawIntBits":
 			case "intBitsToFloat":
+				
+				// object -> pointer
+			case "objectToPointer":
+				
+				// Long unpack high
+			case "longUnpackHigh":
 				if (__in[0].register != __out.register)
 					codebuilder.addCopy(__in[0].register, __out.register);
 				break;
@@ -2286,13 +2290,7 @@ public final class NearNativeByteCodeHandler
 					codebuilder.addCopy(__in[0].register, __out.register);
 				break;
 			
-				// Long unpack high
-			case "longUnpackHigh":
-				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
-				break;
-				
-				// Long unpack low
+			// Long unpack low
 			case "longUnpackLow":
 				if (__in[0].register + 1 != __out.register)
 					codebuilder.addCopy(__in[0].register + 1, __out.register);
@@ -2368,13 +2366,7 @@ public final class NearNativeByteCodeHandler
 					__in[0].register, __in[1].register);
 				break;
 			
-				// object -> pointer
-			case "objectToPointer":
-				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
-				break;
-				
-				// object -> pointer, with ref clear
+			// object -> pointer, with ref clear
 			case "objectToPointerRefQueue":
 				// Push references
 				this.__refPush();
@@ -2531,7 +2523,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeInstance(InvokeType __it, ClassName __cl,
+	private void __invokeInstance(InvokeType __it, ClassName __cl,
 		String __mn, String __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -2551,7 +2543,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeInstance(InvokeType __it, ClassName __cl,
+	private void __invokeInstance(InvokeType __it, ClassName __cl,
 		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -2670,7 +2662,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeNew(ClassName __cl, int __out)
+	private void __invokeNew(ClassName __cl, int __out)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -2707,7 +2699,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeStatic(InvokeType __it, String __cl,
+	private void __invokeStatic(InvokeType __it, String __cl,
 		String __mn, String __mt, int... __args)
 		throws NullPointerException
 	{
@@ -2727,7 +2719,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeStatic(InvokeType __it, String __cl,
+	private void __invokeStatic(InvokeType __it, String __cl,
 		String __mn, String __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -2747,7 +2739,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeStatic(InvokeType __it, ClassName __cl,
+	private void __invokeStatic(InvokeType __it, ClassName __cl,
 		String __mn, String __mt, int... __args)
 		throws NullPointerException
 	{
@@ -2767,7 +2759,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeStatic(InvokeType __it, ClassName __cl,
+	private void __invokeStatic(InvokeType __it, ClassName __cl,
 		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -2833,7 +2825,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __in The input system call arguments.
 	 * @since 2109/05/27
 	 */
-	private final void __invokeSysCall(boolean __pure, boolean __long,
+	private void __invokeSysCall(boolean __pure, boolean __long,
 		JavaStackResult.Output __out, JavaStackResult.Input... __in)
 	{
 		// Invoked methods can thrown an exception, so do
@@ -2942,7 +2934,7 @@ public final class NearNativeByteCodeHandler
 	 * @return The label to the exception.
 	 * @since 2019/04/09
 	 */
-	private final NativeCodeLabel __labelException()
+	private NativeCodeLabel __labelException()
 	{
 		// Get both states for when an exception is handled (transition) and
 		// for where it is not handled (full cleanup)
@@ -2994,7 +2986,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/12
 	 */
-	private final NativeCodeLabel __labelJava(InstructionJumpTarget __jt)
+	private NativeCodeLabel __labelJava(InstructionJumpTarget __jt)
 		throws NullPointerException
 	{
 		if (__jt == null)
@@ -3024,7 +3016,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/13
 	 */
-	private final NativeCodeLabel __labelJavaTransition(StateOperations __sops,
+	private NativeCodeLabel __labelJavaTransition(StateOperations __sops,
 		InstructionJumpTarget __jt)
 		throws NullPointerException
 	{
@@ -3065,7 +3057,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/10
 	 */
-	private final NativeCodeLabel __labelMakeException(String __cl)
+	private NativeCodeLabel __labelMakeException(String __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -3102,7 +3094,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/24
 	 */
-	private final NativeCodeLabel __labelRefClearJump(NativeCodeLabel __tl)
+	private NativeCodeLabel __labelRefClearJump(NativeCodeLabel __tl)
 		throws NullPointerException
 	{
 		if (__tl == null)
@@ -3122,7 +3114,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/24
 	 */
-	private final NativeCodeLabel __labelRefClearJump(
+	private NativeCodeLabel __labelRefClearJump(
 		JavaStackEnqueueList __eql, NativeCodeLabel __tl)
 		throws NullPointerException
 	{
@@ -3159,7 +3151,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/19
 	 */
-	private final void __loadClassInfo(String __cl, int __r)
+	private void __loadClassInfo(String __cl, int __r)
 		throws NullPointerException
 	{
 		this.__loadClassInfo(new ClassName(__cl), __r);
@@ -3173,7 +3165,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
-	private final void __loadClassInfo(ClassName __cl, int __r)
+	private void __loadClassInfo(ClassName __cl, int __r)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -3230,7 +3222,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __r The register to place it in.
 	 * @since 2019/04/26
 	 */
-	private final void __loadClassObject(ClassName __cl, int __r)
+	private void __loadClassObject(ClassName __cl, int __r)
 	{
 		VolatileRegisterStack volatiles = this.volatiles;
 		
@@ -3258,7 +3250,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
-	private final void __loadClassPool(ClassName __cl, int __r)
+	private void __loadClassPool(ClassName __cl, int __r)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -3321,7 +3313,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __r The register to enter a monitor for.
 	 * @since 2019/04/26
 	 */
-	private final void __monitor(boolean __enter, int __r)
+	private void __monitor(boolean __enter, int __r)
 	{
 		// Call helper method
 		this.__invokeStatic(InvokeType.SYSTEM,
@@ -3334,7 +3326,7 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @since 2019/03/30
 	 */
-	private final void __refClear()
+	private void __refClear()
 	{
 		// Do nothing if nothing has been enqueued
 		JavaStackEnqueueList lastenqueue = this._lastenqueue;
@@ -3366,7 +3358,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __r The register to reference to count.
 	 * @since 2019/04/25
 	 */
-	private final void __refCount(int __r)
+	private void __refCount(int __r)
 	{
 		// If the object is null then it will not be counted, this is skipped
 		NativeCodeLabel ncj = new NativeCodeLabel("refnocount",
@@ -3391,7 +3383,7 @@ public final class NearNativeByteCodeHandler
 	 * @return True if the push list was not empty.
 	 * @since 2019/04/10
 	 */
-	private final boolean __refPush()
+	private boolean __refPush()
 		throws NullPointerException
 	{
 		return this.__refPush(this.state.result.enqueue());
@@ -3405,7 +3397,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/30
 	 */
-	private final boolean __refPush(JavaStackEnqueueList __r)
+	private boolean __refPush(JavaStackEnqueueList __r)
 		throws NullPointerException
 	{
 		if (__r == null)
@@ -3453,7 +3445,7 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @since 2019/11/24
 	 */
-	private final void __refReset()
+	private void __refReset()
 	{
 		this._lastenqueue = null;
 	}
@@ -3464,7 +3456,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __r The register to reference to uncount.
 	 * @since 2019/04/25
 	 */
-	private final void __refUncount(int __r)
+	private void __refUncount(int __r)
 	{
 		// If the object is null then it will not be uncounted, this is skipped
 		NativeCodeLabel ncj = new NativeCodeLabel("refnouncount",
@@ -3508,7 +3500,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/25
 	 */
-	private final NativeCodeLabel __useEDataAndGetLabel(__EData__ __ed)
+	private NativeCodeLabel __useEDataAndGetLabel(__EData__ __ed)
 		throws NullPointerException
 	{
 		if (__ed == null)
@@ -3530,7 +3522,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/16
 	 */
-	private final void __useEDataDebugPoint(__EData__ __ed, int __jop)
+	private void __useEDataDebugPoint(__EData__ __ed, int __jop)
 		throws NullPointerException
 	{
 		if (__ed == null)

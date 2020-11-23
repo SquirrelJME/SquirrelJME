@@ -64,7 +64,7 @@ public enum MathType
 	/** Sign 16-bit value. */
 	SIGNX16,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -84,10 +84,12 @@ public enum MathType
 			case CMPG:
 				switch (__jt)
 				{
-					case INTEGER:	return "(II)I";
-					case LONG:		return "(IIII)I";
-					case FLOAT:		return "(II)I";
-					case DOUBLE:	return "(IIII)I";
+					case INTEGER:
+					case FLOAT:
+						return "(II)I";
+					case LONG:
+					case DOUBLE:
+						return "(IIII)I";
 				}
 				break;
 			
@@ -136,7 +138,7 @@ public enum MathType
 	 * @return The resulting math type.
 	 * @since 2019/04/08
 	 */
-	public static final MathType of(int __i)
+	public static MathType of(int __i)
 	{
 		switch (__i)
 		{

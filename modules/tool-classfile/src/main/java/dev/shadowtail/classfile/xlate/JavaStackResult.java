@@ -69,7 +69,7 @@ public final class JavaStackResult
 		JavaStackEnqueueList __eq, InputOutput... __io)
 		throws NullPointerException
 	{
-		this(__bs, __as, __eq, (StateOperations)null, __io);
+		this(__bs, __as, __eq, null, __io);
 	}
 	
 	/**
@@ -287,7 +287,7 @@ public final class JavaStackResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/31
 	 */
-	public static final Input makeInput(JavaStackState.Info __i)
+	public static Input makeInput(JavaStackState.Info __i)
 		throws NullPointerException
 	{
 		return new Input(__i);
@@ -301,7 +301,7 @@ public final class JavaStackResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/31
 	 */
-	public static final Output makeOutput(JavaStackState.Info __i)
+	public static Output makeOutput(JavaStackState.Info __i)
 		throws NullPointerException
 	{
 		return new Output(__i);

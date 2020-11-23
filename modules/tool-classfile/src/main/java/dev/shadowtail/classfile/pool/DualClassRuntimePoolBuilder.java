@@ -127,15 +127,13 @@ public final class DualClassRuntimePoolBuilder
 				
 				// A string that is noted for its value (debugging)
 			case NOTED_STRING:
-				return runpool.add(__v,
-					this.addStatic(__v.toString()).index);
 				
 				// A string that is used
 			case USED_STRING:
 				return runpool.add(__v,
 					this.addStatic(__v.toString()).index);
 			
-				// Unknown
+			// Unknown
 			default:
 				// {@squirreljme.error JC4f Invalid type in runtime pool.
 				// (The type)}

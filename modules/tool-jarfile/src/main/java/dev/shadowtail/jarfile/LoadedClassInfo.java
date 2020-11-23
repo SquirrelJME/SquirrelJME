@@ -11,6 +11,7 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.ClassInfo;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
@@ -966,7 +967,7 @@ public final class LoadedClassInfo
 						break;
 					
 					case "Ljava/lang/String;":
-						throw new todo.TODO("Write string");
+						throw Debugging.todo("Write string");
 					
 						// Unknown
 					default:

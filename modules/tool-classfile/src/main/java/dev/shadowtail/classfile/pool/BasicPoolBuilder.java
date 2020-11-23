@@ -29,10 +29,10 @@ public final class BasicPoolBuilder
 	protected final Map<Object, BasicPoolEntry> entries =
 		new LinkedHashMap<>();
 	
-	/**
-	 * Base pool initialization.
-	 *
-	 * @since 2019/07/15
+	/*
+	  Base pool initialization.
+	 
+	  @since 2019/07/15
 	 */
 	{
 		// The first entry of the constant pool is always null!

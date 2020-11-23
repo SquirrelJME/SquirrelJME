@@ -1479,7 +1479,7 @@ public final class SimplifiedJavaInstruction
 	 * @return The mnemonic for the string.
 	 * @since 2019/04/03
 	 */
-	public static final String mnemonic(int __op)
+	public static String mnemonic(int __op)
 	{
 		switch (__op)
 		{

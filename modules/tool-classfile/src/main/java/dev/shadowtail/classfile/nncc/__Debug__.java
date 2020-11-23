@@ -19,10 +19,10 @@ final class __Debug__
 	/** Debug enabled? */
 	public static final boolean ENABLED;
 	
-	/**
-	 * Gets the debug flag.
-	 *
-	 * @since 2019/04/16
+	/*
+	  Gets the debug flag.
+	 
+	  @since 2019/04/16
 	 */
 	static
 	{

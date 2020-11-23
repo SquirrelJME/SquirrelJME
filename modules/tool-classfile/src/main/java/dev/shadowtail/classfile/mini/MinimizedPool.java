@@ -220,7 +220,7 @@ public final class MinimizedPool
 	 * @since 2019/04/16
 	 */
 	@Deprecated
-	public static final MinimizedPool decode(int __n, byte[] __is, int __o,
+	public static MinimizedPool decode(int __n, byte[] __is, int __o,
 		int __l)
 		throws IndexOutOfBoundsException, InvalidClassFormatException,
 			NullPointerException
@@ -437,18 +437,16 @@ public final class MinimizedPool
 								// Long
 							case LONG:
 								v = (((long)(((Integer)values[part[0]])
-										<< 32L)) |
-									(((long)(((Integer)values[part[1]]) &
-										0xFFFFFFFFL))));
+										<< 0)) | ((Integer)values[part[1]]) &
+											0xFFFFFFFFL);
 								break;
 								
 								// Double
 							case DOUBLE:
 								v = Double.longBitsToDouble(
 									(((long)(((Integer)values[part[0]])
-										<< 32L)) |
-									(((long)(((Integer)values[part[1]]) &
-										0xFFFFFFFFL)))));
+										<< 0)) | ((Integer)values[part[1]]) &
+											0xFFFFFFFFL));
 								break;
 								
 								// Used string
