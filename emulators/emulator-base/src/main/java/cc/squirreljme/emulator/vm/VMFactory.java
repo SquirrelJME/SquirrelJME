@@ -14,6 +14,7 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
+import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
@@ -230,10 +231,19 @@ public abstract class VMFactory
 			// Note it
 			System.err.printf("Registering %s (%s)%n", normalName, path);
 			
+			// Treat SQCs special in that they have a specific resource for
+			// their ROM data
+			VMClassLibrary place;
+			if (path.toString().endsWith(".sqc") ||
+				path.toString().endsWith(".SQC"))
+				place = new SummerCoatJarLibrary(path);
+			else
+				place = JarClassLibrary.of(path);
+			
 			// Place in the class library, but make sure the name matches
 			// the normalized name of the JAR
-			suites.put(normalName, new NameOverrideClassLibrary(
-				JarClassLibrary.of(path), normalName));
+			suites.put(normalName,
+				new NameOverrideClassLibrary(place, normalName));
 		}
 		
 		// Go through the class path and normalize the names so that it finds

@@ -9,12 +9,16 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This represents the single virtual memory space for suite memory.
@@ -190,12 +194,36 @@ public final class SuiteMemory
 		VMClassLibrary clib = this.__loadLibrary(libname);
 		
 		// Debug
-		todo.DEBUG.note("Initialize suite %s @%08d", libname, this.offset);
+		todo.DEBUG.note("Initialize suite %s @%08d",
+			libname, this.offset);
 		
-		// Minimize and format the JAR
-		byte[] jf = JarMinimizer.minimize(
-			(libname.startsWith("cldc-compact.") ||
-			libname.startsWith("cldc-compact-")), clib);
+		// Since the new build system using Gradle, JARs are already
+		// compiled and minimized producing much faster and cached runs
+		// rather than recompiling everything over and over.
+		byte[] jf;
+		try (InputStream in = clib.resourceAsStream(
+				SummerCoatJarLibrary.ROM_CHUNK_RESOURCE);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// No ROM actually exists?
+			if (in == null)
+				throw new VMException("JAR has no SummerCoat ROM: " + libname);
+			
+			// Copy ROM data
+			byte[] buf = new byte[4096];
+			for (;;)
+			{
+				int rc = in.read(buf);
+				
+				if (rc < 0)
+					break;
+				
+				baos.write(buf, 0, rc);
+			}
+			
+			// Use finalized ROM data
+			jf = baos.toByteArray();
+		}
 		
 		// {@squirreljme.error AE09 Suite chunk size limit was exceeded.
 		// (The required chunk size; The limit; More space that is needed)}
