@@ -81,7 +81,7 @@ public final class JarMinimizer
 		
 		// Use the passed pool if it was passed, but otherwise just use one
 		// in the event one was not passed through (uses our own pool)
-		boolean owndualpool = (__boot ? false : (__dp == null));
+		boolean owndualpool = (!__boot && (__dp == null));
 		this.dualpool = (__boot ? null : (owndualpool ?
 			new DualClassRuntimePoolBuilder() : __dp));
 		this.owndualpool = owndualpool;
@@ -372,7 +372,7 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/27
 	 */
-	public static final byte[] minimize(boolean __boot, VMClassLibrary __in)
+	public static byte[] minimize(boolean __boot, VMClassLibrary __in)
 		throws IOException, NullPointerException
 	{
 		if (__in == null)
@@ -400,7 +400,7 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/27
 	 */
-	public static final void minimize(boolean __boot, VMClassLibrary __in,
+	public static void minimize(boolean __boot, VMClassLibrary __in,
 		OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -419,7 +419,7 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/17
 	 */
-	public static final void minimize(boolean __boot, VMClassLibrary __in,
+	public static void minimize(boolean __boot, VMClassLibrary __in,
 		OutputStream __out, MinimizedJarHeader[] __mjh)
 		throws IOException, NullPointerException
 	{
@@ -439,7 +439,7 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/29
 	 */
-	public static final void minimize(DualClassRuntimePoolBuilder __dp,
+	public static void minimize(DualClassRuntimePoolBuilder __dp,
 		boolean __boot, VMClassLibrary __in, OutputStream __out,
 		MinimizedJarHeader[] __mjh)
 		throws IOException, NullPointerException
