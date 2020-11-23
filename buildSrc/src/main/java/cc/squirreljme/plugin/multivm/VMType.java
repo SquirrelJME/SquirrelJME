@@ -47,8 +47,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(Task __task, InputStream __in,
-			OutputStream __out)
+		public void processLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
 			if (__in == null || __out == null)
@@ -121,8 +121,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(Task __task, InputStream __in,
-			OutputStream __out)
+		public void processLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
 			if (__in == null || __out == null)
@@ -158,8 +158,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(Task __task, InputStream __in,
-			OutputStream __out)
+		public void processLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
 			throws NullPointerException
 		{
 			if (__task == null || __in == null || __out == null)
@@ -189,8 +189,10 @@ public enum VMType
 			// Perform compilation
 			args.add("compile");
 			
-			// Is this a boot loader?
-			if (config.isBootLoader)
+			// Is this a boot loader? This is never valid for tests as they
+			// are just extra libraries, it does not make sense to have them
+			// be loadable.
+			if (!__isTest && config.isBootLoader)
 				args.add("-boot");
 			
 			// Call the AOT backend

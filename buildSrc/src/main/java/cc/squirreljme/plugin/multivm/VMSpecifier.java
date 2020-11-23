@@ -63,15 +63,16 @@ public interface VMSpecifier
 	/**
 	 * Processes the library.
 	 * 
-	 *
-	 * @param __task
+	 * @param __task The task running this, may be used to launch a VM.
+	 * @param __isTest Is this a test run?
 	 * @param __in The input data, this may be a JAR or otherwise.
 	 * @param __out The destination output file.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	void processLibrary(Task __task, InputStream __in, OutputStream __out)
+	void processLibrary(Task __task, boolean __isTest, InputStream __in,
+		OutputStream __out)
 		throws IOException, NullPointerException;
 	
 	/**
