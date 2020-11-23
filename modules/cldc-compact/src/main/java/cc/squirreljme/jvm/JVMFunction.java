@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class contains the functions of the virtual machine.
  *
@@ -37,7 +39,7 @@ public final class JVMFunction
 	public static final int jvmCanArrayStore(int __p, int __v)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -51,7 +53,7 @@ public final class JVMFunction
 	public static final int jvmComponentType(int __clid)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -63,7 +65,7 @@ public final class JVMFunction
 	public static final void jvmGarbageCollect()
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -75,7 +77,7 @@ public final class JVMFunction
 	public static final void jvmGarbageCollectObject(int __p)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -88,7 +90,7 @@ public final class JVMFunction
 	public static final ClassInfo jvmInitClass(int __ns)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -106,7 +108,7 @@ public final class JVMFunction
 	public static final long jvmInterfacePointer(int __p, int __icl, int __mdx)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 		// Assembly.longPack(hi, lo)
 	}
 	
@@ -120,7 +122,7 @@ public final class JVMFunction
 	public static final int jvmIsArray(int __p)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -135,7 +137,7 @@ public final class JVMFunction
 	public static final int jvmIsInstance(int __p, int __cldx)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -150,7 +152,7 @@ public final class JVMFunction
 	public static final <T> Class<T> jvmLoadClass(ClassInfo __cldx)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -167,7 +169,7 @@ public final class JVMFunction
 			return null;
 		
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -181,7 +183,7 @@ public final class JVMFunction
 	public static final long jvmMemReadLong(int __addr, int __off)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -197,7 +199,7 @@ public final class JVMFunction
 		int __lv)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -223,7 +225,7 @@ public final class JVMFunction
 	public static final void jvmMonitorEnter(int __p)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -235,7 +237,7 @@ public final class JVMFunction
 	public static final void jvmMonitorExit(int __p)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -251,7 +253,7 @@ public final class JVMFunction
 		throws OutOfMemoryError
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -269,7 +271,18 @@ public final class JVMFunction
 		throws NegativeArraySizeException, OutOfMemoryError
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Handler for pure virtual calls.
+	 * 
+	 * @since 2020/11/23
+	 */
+	public static void jvmPureVirtualCall()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
 	}
 	
 	/**
