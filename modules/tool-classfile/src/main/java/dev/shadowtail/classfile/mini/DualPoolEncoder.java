@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolBuilder;
@@ -307,13 +308,13 @@ public final class DualPoolEncoder
 								
 								// Unknown
 							default:
-								throw new todo.OOPS(etype.name());
+								throw Debugging.oops(etype.name());
 						}
 						break;
 						
 						// Unknown
 					default:
-						throw new todo.OOPS(etype.name());
+						throw Debugging.oops(etype.name());
 				}
 				
 				// Record entry
@@ -578,7 +579,7 @@ public final class DualPoolEncoder
 				break;
 			
 			default:
-				throw new todo.OOPS(__t.name());
+				throw Debugging.oops(__t.name());
 		}
 		
 		return output.toByteArray();

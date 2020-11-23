@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
-import java.util.List;
 import java.util.RandomAccess;
 
 /**
@@ -51,7 +51,7 @@ public final class AnnotationValueArray
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public final class AnnotationValueArray
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public final class AnnotationValueArray
 	@Override
 	public final AnnotationValue get(int __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public final class AnnotationValueArray
 	@Override
 	public final int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public final class AnnotationValueArray
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

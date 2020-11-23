@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
@@ -356,7 +357,7 @@ public final class Pool
 					break;
 					
 				default:
-					throw new todo.OOPS();
+					throw Debugging.oops();
 			}
 			
 			// Add to order

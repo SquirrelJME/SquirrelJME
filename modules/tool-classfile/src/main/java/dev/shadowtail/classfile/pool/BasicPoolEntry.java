@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.pool;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 
 /**
@@ -89,7 +90,7 @@ public final class BasicPoolEntry
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -99,7 +100,7 @@ public final class BasicPoolEntry
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

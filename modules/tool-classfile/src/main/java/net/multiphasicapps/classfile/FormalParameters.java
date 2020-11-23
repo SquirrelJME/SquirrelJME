@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class stores and represents the formal parameters of a method.
  *
@@ -24,7 +26,7 @@ public final class FormalParameters
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -34,7 +36,7 @@ public final class FormalParameters
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -44,7 +46,7 @@ public final class FormalParameters
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

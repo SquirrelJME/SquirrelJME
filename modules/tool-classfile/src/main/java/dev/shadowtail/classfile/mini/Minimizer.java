@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
@@ -606,7 +607,7 @@ public final class Minimizer
 					
 						// Unknown
 					default:
-						throw new todo.OOPS(i.toString());
+						throw Debugging.oops(i.toString());
 				}
 			}
 		}

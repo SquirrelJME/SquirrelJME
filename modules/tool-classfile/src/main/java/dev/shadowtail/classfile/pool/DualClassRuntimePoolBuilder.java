@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.pool;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
@@ -139,7 +140,7 @@ public final class DualClassRuntimePoolBuilder
 				// (The type)}
 				if (!type.isRuntime())
 					throw new IllegalArgumentException("JC4f " + type);
-				throw new todo.OOPS(type.name());
+				throw Debugging.oops(type.name());
 		}
 	}
 	
@@ -256,7 +257,7 @@ public final class DualClassRuntimePoolBuilder
 				// (The type)}
 				if (!type.isStatic())
 					throw new IllegalArgumentException("JC4e " + type);
-				throw new todo.OOPS(type.name());
+				throw Debugging.oops(type.name());
 		}
 	}
 	
@@ -268,7 +269,7 @@ public final class DualClassRuntimePoolBuilder
 	 */
 	public final DualClassRuntimePool build()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

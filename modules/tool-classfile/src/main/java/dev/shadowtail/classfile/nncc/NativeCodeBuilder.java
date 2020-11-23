@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
@@ -121,7 +122,7 @@ public final class NativeCodeBuilder
 		
 		// Debug
 		if (__Debug__.ENABLED)
-			todo.DEBUG.note("@%d -> %s %s", atdx,
+			Debugging.debugNote("@%d -> %s %s", atdx,
 				NativeInstruction.mnemonic(__op), Arrays.asList(__args));
 			
 		// Store all information
@@ -273,7 +274,7 @@ public final class NativeCodeBuilder
 				throw new RuntimeException("JC0t");
 			
 			default:
-				throw new todo.OOPS(__jt.name());
+				throw Debugging.oops(__jt.name());
 		}
 		
 		// Build operation
@@ -314,7 +315,7 @@ public final class NativeCodeBuilder
 				throw new RuntimeException("JC0u");
 			
 			default:
-				throw new todo.OOPS(__jt.name());
+				throw Debugging.oops(__jt.name());
 		}
 		
 		// Build operation
@@ -585,7 +586,7 @@ public final class NativeCodeBuilder
 	{
 		// Debug
 		if (__Debug__.ENABLED)
-			todo.DEBUG.note("Label %s -> @%d", __l, __pc);
+			Debugging.debugNote("Label %s -> @%d", __l, __pc);
 		
 		// Add
 		this._labels.put(__l, __pc);

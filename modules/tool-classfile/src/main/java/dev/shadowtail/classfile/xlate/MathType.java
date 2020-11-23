@@ -9,6 +9,8 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents a math operation to be performed.
  *
@@ -128,7 +130,7 @@ public enum MathType
 				break;
 		}
 		
-		throw new todo.OOPS(this + " " + __jt);
+		throw Debugging.oops(this + " " + __jt);
 	}
 	
 	/**

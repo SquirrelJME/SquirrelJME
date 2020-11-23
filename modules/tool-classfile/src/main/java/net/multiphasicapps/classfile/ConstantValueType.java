@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This indicates the type that a constant value is.
  *
@@ -91,7 +93,7 @@ public enum ConstantValueType
 					"Ljava/lang/Class;".equals(__d.toString());
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -155,7 +157,7 @@ public enum ConstantValueType
 				"Ljava/lang/Class;"));
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 }

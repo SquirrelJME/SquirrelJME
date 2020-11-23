@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
@@ -286,7 +287,7 @@ public final class JarMinimizer
 			
 			// Debug
 			if (JarMinimizer._ENABLE_DEBUG)
-				todo.DEBUG.note("Boot entry: %d/0x%08x", bootmeth, bootmeth);
+				Debugging.debugNote("Boot entry: %d/0x%08x", bootmeth, bootmeth);
 		}
 		
 		// No bootstrapping being done
@@ -313,7 +314,7 @@ public final class JarMinimizer
 		
 		// Debug
 		if (JarMinimizer._ENABLE_DEBUG)
-			todo.DEBUG.note("Own pool=%s, dualpool=%s",
+			Debugging.debugNote("Own pool=%s, dualpool=%s",
 				this.owndualpool, dualpool);
 		
 		// We are using our own dual pool, so write it out as if it were

@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.InvokedMethod;
@@ -410,7 +411,7 @@ public final class MinimizedPoolBuilder
 						
 						// Should not occur
 					default:
-						throw new todo.OOPS(et.name());
+						throw Debugging.oops(et.name());
 				}
 				
 				// Round positions

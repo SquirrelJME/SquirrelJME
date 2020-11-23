@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
@@ -455,12 +456,12 @@ public final class MinimizedPool
 								break;
 								
 							default:
-								throw new todo.OOPS(type.name());
+								throw Debugging.oops(type.name());
 						}
 						break;
 					
 					default:
-						throw new todo.OOPS(type.name());
+						throw Debugging.oops(type.name());
 				}
 			}
 			

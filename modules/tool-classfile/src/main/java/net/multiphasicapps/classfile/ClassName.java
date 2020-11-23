@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Objects;
 
 /**
@@ -376,7 +377,7 @@ public class ClassName
 				return new ClassName("double");
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

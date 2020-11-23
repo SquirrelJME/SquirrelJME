@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * These are flags which modify how a class is accessed and is behaved.
  *
@@ -63,7 +65,7 @@ public enum ClassFlag
 			case ANNOTATION:	return 0x2000;
 			case ENUM:			return 0x4000;
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 }

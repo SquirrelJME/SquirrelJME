@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 
@@ -98,7 +99,7 @@ public final class ExceptionHandlerTransition
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

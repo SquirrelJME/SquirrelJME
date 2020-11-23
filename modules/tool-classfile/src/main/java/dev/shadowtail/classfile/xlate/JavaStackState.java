@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -846,7 +847,7 @@ public final class JavaStackState
 		
 		// Debug
 		if (__Debug__.ENABLED)
-			todo.DEBUG.note("Source map: %s", source);
+			Debugging.debugNote("Source map: %s", source);
 		
 		// Number of entries to push
 		int pushcount = sout.max;
@@ -915,7 +916,7 @@ public final class JavaStackState
 				
 				// Debug
 				if (__Debug__.ENABLED)
-					todo.DEBUG.note("Pre %d -> %d", pre, useval);
+					Debugging.debugNote("Pre %d -> %d", pre, useval);
 			}
 			
 			// Set value as being stored here
@@ -974,9 +975,9 @@ public final class JavaStackState
 		// Debug
 		if (__Debug__.ENABLED)
 		{
-			todo.DEBUG.note("Will transition the stack!");
-			todo.DEBUG.note("From: %s", this);
-			todo.DEBUG.note("To  : %s", __ts);
+			Debugging.debugNote("Will transition the stack!");
+			Debugging.debugNote("From: %s", this);
+			Debugging.debugNote("To  : %s", __ts);
 		}
 		
 		// {@squirreljme.error JC1p A transition cannot be made where the
@@ -1141,7 +1142,7 @@ public final class JavaStackState
 		
 		// Debug
 		if (__Debug__.ENABLED)
-			todo.DEBUG.note("SMTS: %s", __smts);
+			Debugging.debugNote("SMTS: %s", __smts);
 			
 		// Input stack properties
 		Info[] locals = this._locals.clone(),

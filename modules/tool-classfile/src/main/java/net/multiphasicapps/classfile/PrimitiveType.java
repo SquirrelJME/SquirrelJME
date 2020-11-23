@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This enumeration represents a primitive type.
  *
@@ -63,7 +65,7 @@ public enum PrimitiveType
 			case LONG:
 			case DOUBLE:	return 8;
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -118,7 +120,7 @@ public enum PrimitiveType
 			case LONG:		return JavaType.LONG;
 			case DOUBLE:	return JavaType.DOUBLE;
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -142,7 +144,7 @@ public enum PrimitiveType
 			case DOUBLE:	return new ClassName("double");
 			
 			default:
-				throw new todo.OOPS(this.toString());
+				throw Debugging.oops(this.toString());
 		}
 	}
 }

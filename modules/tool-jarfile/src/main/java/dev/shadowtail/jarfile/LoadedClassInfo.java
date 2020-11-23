@@ -556,7 +556,7 @@ public final class LoadedClassInfo
 						
 						// Not handled yet!
 					default:
-						throw new todo.OOPS(key);
+						throw Debugging.oops(key);
 				}
 			}
 			catch (InvalidClassFormatException e)
@@ -867,7 +867,7 @@ public final class LoadedClassInfo
 					break;
 					
 				default:
-					throw new todo.OOPS(type.name());
+					throw Debugging.oops(type.name());
 			}
 			
 			// Write value to the in-memory slot
@@ -875,7 +875,7 @@ public final class LoadedClassInfo
 			
 			// Debug
 			if (JarMinimizer._ENABLE_DEBUG)
-				todo.DEBUG.note("Pool %s -> %08x = %08x",
+				Debugging.debugNote("Pool %s -> %08x = %08x",
 					entry.value, rv + (4 * i), vx);
 		}
 		
@@ -971,7 +971,7 @@ public final class LoadedClassInfo
 					
 						// Unknown
 					default:
-						throw new todo.OOPS(mf.type.toString());
+						throw Debugging.oops(mf.type.toString());
 				}
 			}
 		}

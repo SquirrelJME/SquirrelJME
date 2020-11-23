@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -439,7 +440,7 @@ public final class MinimizedClassFile
 				if (__ppool == null)
 					throw new NullPointerException("JC4h");
 				
-				throw new todo.TODO();
+				throw Debugging.todo();
 			}
 			
 			// Decode physical pool within the class

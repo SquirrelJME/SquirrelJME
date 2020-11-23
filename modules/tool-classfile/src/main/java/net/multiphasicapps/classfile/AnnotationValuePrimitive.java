@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents an annotation value that represents a primitive constant.
  *
@@ -45,7 +47,7 @@ public final class AnnotationValuePrimitive
 	@Override
 	public final double doubleValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -55,7 +57,7 @@ public final class AnnotationValuePrimitive
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -65,7 +67,7 @@ public final class AnnotationValuePrimitive
 	@Override
 	public final float floatValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -75,7 +77,7 @@ public final class AnnotationValuePrimitive
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -85,7 +87,7 @@ public final class AnnotationValuePrimitive
 	@Override
 	public final int intValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -95,7 +97,7 @@ public final class AnnotationValuePrimitive
 	@Override
 	public final long longValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -105,7 +107,7 @@ public final class AnnotationValuePrimitive
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

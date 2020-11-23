@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.nncc;
 import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
@@ -1286,7 +1287,7 @@ public final class NearNativeByteCodeHandler
 					break;
 				
 				default:
-					throw new todo.OOPS();
+					throw Debugging.oops();
 			}
 	}
 	
@@ -2507,7 +2508,7 @@ public final class NearNativeByteCodeHandler
 				break;
 			
 			default:
-				throw new todo.OOPS(asmfunc);
+				throw Debugging.oops(asmfunc);
 		}
 	}
 	

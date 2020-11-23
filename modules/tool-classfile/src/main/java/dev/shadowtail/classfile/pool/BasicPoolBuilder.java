@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.pool;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -86,7 +87,7 @@ public final class BasicPoolBuilder
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

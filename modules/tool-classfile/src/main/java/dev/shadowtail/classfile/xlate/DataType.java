@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -79,7 +80,7 @@ public enum DataType
 			case DOUBLE:	return 8;
 		}
 		
-		throw new todo.OOPS(this.name());
+		throw Debugging.oops(this.name());
 	}
 	
 	/**
@@ -102,7 +103,7 @@ public enum DataType
 			case DOUBLE:	return JavaType.DOUBLE;
 		}
 		
-		throw new todo.OOPS(this.name());
+		throw Debugging.oops(this.name());
 	}
 	
 	/**
@@ -125,7 +126,7 @@ public enum DataType
 			case DOUBLE:	return StackJavaType.DOUBLE;
 		}
 		
-		throw new todo.OOPS(this.name());
+		throw Debugging.oops(this.name());
 	}
 	
 	/**
@@ -177,7 +178,7 @@ public enum DataType
 			case DOUBLE:	return DataType.DOUBLE;
 			
 			default:
-				throw new todo.OOPS(__t.name());
+				throw Debugging.oops(__t.name());
 		}
 	}
 	
@@ -237,7 +238,7 @@ public enum DataType
 			case DOUBLE:	return DataType.DOUBLE;
 		}
 		
-		throw new todo.OOPS();
+		throw Debugging.oops();
 	}
 }
 

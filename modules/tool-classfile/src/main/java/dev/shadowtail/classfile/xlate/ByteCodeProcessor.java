@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.InvokeType;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
@@ -165,7 +166,7 @@ public final class ByteCodeProcessor
 				
 				// Debug
 				if (__Debug__.ENABLED)
-					todo.DEBUG.note("%s %s (%s)", (dohandling ? "Handling" :
+					Debugging.debugNote("%s %s (%s)", (dohandling ? "Handling" :
 						"Preprocessing"), sji, inst);
 				
 				// Current instruction info
@@ -239,13 +240,13 @@ public final class ByteCodeProcessor
 					{
 						// Debug
 						if (__Debug__.ENABLED)
-							todo.DEBUG.note("SMT BEF: %s", stack);
+							Debugging.debugNote("SMT BEF: %s", stack);
 						
 						stack = stack.filterByStackMap(smts);
 						
 						// Debug
 						if (__Debug__.ENABLED)
-							todo.DEBUG.note("SMT AFT: %s", stack);
+							Debugging.debugNote("SMT AFT: %s", stack);
 					}
 					
 					// If we are jumping back to this instruction at any point
@@ -523,7 +524,7 @@ public final class ByteCodeProcessor
 					
 						// Not yet implemented
 					default:
-						throw new todo.OOPS(
+						throw Debugging.oops(
 							sji.toString() + "/" + inst.toString());
 				}
 				
@@ -1012,7 +1013,7 @@ public final class ByteCodeProcessor
 				break;
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -1498,10 +1499,10 @@ public final class ByteCodeProcessor
 					// Debug
 					if (__Debug__.ENABLED)
 					{
-						todo.DEBUG.note("Transition is required! %d -> %d",
+						Debugging.debugNote("Transition is required! %d -> %d",
 							addr, jta);
-						todo.DEBUG.note("From: %s", use);
-						todo.DEBUG.note("To  : %s", dss);
+						Debugging.debugNote("From: %s", use);
+						Debugging.debugNote("To  : %s", dss);
 					}
 					
 					// Get pre-existing collision state here, if any
@@ -1518,7 +1519,7 @@ public final class ByteCodeProcessor
 					
 					// Debug
 					if (__Debug__.ENABLED)
-						todo.DEBUG.note("Coll: %s", dss);
+						Debugging.debugNote("Coll: %s", dss);
 				}
 			}
 	}
