@@ -205,10 +205,7 @@ public enum VMType
 						Collections.emptyMap(),
 						classPath,
 						classPath,
-						"-Xcompiler:" +
-							this.vmName(VMNameFormat.LOWERCASE),
-						"-Xname:" + __task.getProject().getName(),
-						"compile");
+						args.toArray(new String[args.size()]));
 					
 					// Use the error stream directory
 					__spec.setErrorOutput(new GuardedOutputStream(System.err));

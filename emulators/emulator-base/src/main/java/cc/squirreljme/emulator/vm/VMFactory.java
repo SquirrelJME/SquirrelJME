@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
@@ -229,7 +230,8 @@ public abstract class VMFactory
 				continue;
 			
 			// Note it
-			System.err.printf("Registering %s (%s)%n", normalName, path);
+			Debugging.debugNote("Registering %s (%s)",
+				normalName, path);
 			
 			// Treat SQCs special in that they have a specific resource for
 			// their ROM data
