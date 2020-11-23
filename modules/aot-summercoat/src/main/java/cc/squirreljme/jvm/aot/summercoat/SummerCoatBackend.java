@@ -30,11 +30,25 @@ public class SummerCoatBackend
 	 * @since 2020/11/22
 	 */
 	@Override
-	public void compileClass(CompileSettings __settings, String __name,
-		InputStream __in, OutputStream __out)
+	public void compileClass(CompileSettings __settings, LinkGlob __glob,
+		String __name, InputStream __in, OutputStream __out)
 		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__settings == null || __glob == null || __name == null ||
+			__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy from the source to the destination
+		byte[] buf = new byte[4096];
+		for (;;)
+		{
+			int rc = __in.read(buf);
+			
+			if (rc < 0)
+				break;
+			
+			__out.write(buf, 0, rc);
+		}
 	}
 	
 	/**
@@ -42,10 +56,14 @@ public class SummerCoatBackend
 	 * @since 2020/11/22
 	 */
 	@Override
-	public LinkGlob linkGlob(CompileSettings __settings, String __name)
+	public LinkGlob linkGlob(CompileSettings __settings, String __name,
+		OutputStream __out)
 		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__settings == null || __name == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		return new SummerCoatLinkGlob(__settings, __name, __out);
 	}
 	
 	/**

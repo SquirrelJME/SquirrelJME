@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -164,11 +165,33 @@ public enum VMType
 			if (__task == null || __in == null || __out == null)
 				throw new NullPointerException("NARG");
 			
+			// Need to access the config for ROM building
+			SquirrelJMEPluginConfiguration config =
+				SquirrelJMEPluginConfiguration
+				.configuration(__task.getProject());
+			
 			// Class path is of the compiler target, it does not matter
 			Path[] classPath = VMHelpers.runClassPath(__task.getProject()
 				.getRootProject().project(":modules:aot-" +
 					this.vmName(VMNameFormat.LOWERCASE)),
 				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
+			
+			// Setup arguments for compilation
+			Collection<String> args = new ArrayList<>();
+			
+			// The engine to use
+			args.add("-Xcompiler:" +
+				this.vmName(VMNameFormat.LOWERCASE));
+			
+			// The name of this JAR
+			args.add("-Xname:" + __task.getProject().getName());
+			
+			// Perform compilation
+			args.add("compile");
+			
+			// Is this a boot loader?
+			if (config.isBootLoader)
+				args.add("-boot");
 			
 			// Call the AOT backend
 			ExecResult exitResult = __task.getProject().javaexec(__spec ->

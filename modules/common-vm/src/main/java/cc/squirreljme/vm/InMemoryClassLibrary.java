@@ -35,14 +35,14 @@ public final class InMemoryClassLibrary
 	private final Map<String, byte[]> _cache;
 	
 	/**
-	 * Internally initializes the library.
+	 * Initializes the library.
 	 *
 	 * @param __n The name.
-	 * @param __m The internal mapping.
+	 * @param __m The internal mapping, the byte arrays will not be copied.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/08
 	 */
-	private InMemoryClassLibrary(String __n, Map<String, byte[]> __m)
+	public InMemoryClassLibrary(String __n, Map<String, byte[]> __m)
 		throws NullPointerException
 	{
 		if (__n == null || __m == null)

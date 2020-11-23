@@ -10,6 +10,10 @@
 /**
  * This contains the SummerCoat Ahead-Of-Time Implementation which is
  * responsible for the creation of ROM files and otherwise.
+ * 
+ * Note that SummerCoat is very inefficient when used from within the
+ * AOT engine, it will soon be replaced by a more efficient and faster
+ * AutumnCoat AOT engine.
  *
  * @since 2020/11/21
  */

@@ -138,7 +138,7 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		// Setup compilation arguments
-		CompileSettings settings = new CompileSettings();
+		CompileSettings settings = Main.parseCompileSettings(__args);
 		
 		// Setup glob for final linking
 		LinkGlob glob = __backend.linkGlob(settings, __name, System.out);
@@ -171,7 +171,7 @@ public class Main
 						new ByteArrayOutputStream())
 					{
 						// Perform compilation
-						__backend.compileClass(settings,
+						__backend.compileClass(settings, glob,
 							name.substring(0,
 								name.length() - ".class".length()),
 							entry, classBytes);
@@ -188,5 +188,45 @@ public class Main
 			// Linking stage is finished
 			glob.finish();
 		}
+	}
+	
+	/**
+	 * Parses compile settings for the compilation step.
+	 * 
+	 * @param __args The arguments to parse.
+	 * @return The resultant settings.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/23
+	 */
+	private static CompileSettings parseCompileSettings(Deque<String> __args)
+		throws NullPointerException
+	{
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		// Possible settings
+		boolean isBootLoader = false;
+		
+		// Parse settings
+		while (!__args.isEmpty())
+		{
+			String arg = __args.removeFirst();
+			
+			switch (arg)
+			{
+					// Is this a bootloader?
+				case "-boot":
+					isBootLoader = true;
+					break;
+				
+					// {@squirreljme.error AE06 Unknown compilation setting.
+					// (The argument)}
+				default:
+					throw new IllegalArgumentException("AE06 " + arg);
+			}
+		}
+		
+		// Initialize final settings
+		return new CompileSettings(isBootLoader);
 	}
 }

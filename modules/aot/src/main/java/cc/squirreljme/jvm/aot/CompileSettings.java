@@ -16,4 +16,17 @@ package cc.squirreljme.jvm.aot;
  */
 public final class CompileSettings
 {
+	/** Is this a boot loader? */
+	public final boolean isBootLoader;
+	
+	/**
+	 * Initializes the compilation settings.
+	 * 
+	 * @param __isBootLoader Is this a boot loader?
+	 * @since 2020/11/23
+	 */
+	public CompileSettings(boolean __isBootLoader)
+	{
+		this.isBootLoader = __isBootLoader;
+	}
 }

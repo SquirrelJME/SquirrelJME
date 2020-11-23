@@ -20,6 +20,16 @@ import java.io.InputStream;
 public interface LinkGlob
 {
 	/**
+	 * Indicates that compilation is complete and the final binary should
+	 * be output.
+	 * 
+	 * @throws IOException On read/write errors.
+	 * @since 2020/11/22
+	 */
+	void finish()
+		throws IOException;
+		
+	/**
 	 * Joins this into the linking structure.
 	 * 
 	 * @param __name The name of the object to link.
@@ -31,14 +41,4 @@ public interface LinkGlob
 	 */
 	void join(String __name, boolean __isRc, InputStream __data)
 		throws IOException, NullPointerException;
-	
-	/**
-	 * Indicates that compilation is complete and the final binary should
-	 * be output.
-	 * 
-	 * @throws IOException On read/write errors.
-	 * @since 2020/11/22
-	 */
-	void finish()
-		throws IOException;
 }
