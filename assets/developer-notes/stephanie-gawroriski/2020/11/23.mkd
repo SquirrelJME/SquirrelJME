@@ -1,0 +1,35 @@
+# 2020/11/23
+
+## 13:12
+
+Okay, so SummerCoat is very clunky and very old, but just like SpringCoat I can
+do refactorings on it to make it much nicer. So my current problem is that the
+bootstrap generator is having problems with interfaces. I know back then I did
+not really handle interfaces all that well, so I am going to need these if I do
+not already have the following pool types:
+
+ * VTable for Interface I of Class C.
+ * Interface Method Index for Method I:M of Interface I.
+
+I thought up of three but as I was writing this, I only need these two.
+Naturally of course there is definitely going to be a refactor of SummerCoat.
+But I have to do some of this first so that things can actually link or build
+the ROM for this branch. I should probably do the more refactoring once I get
+a baseline for new work to be done.
+
+## 13:40
+
+Also I was taking a shower but I want to move away from the memory based
+bootloader to a pre-linked bootloader. Instead of referring to things and
+setting up a chunk of memory, there is a list of instructions on prelinking.
+Another thing would be to move the `ClassInfo` stuff into a kind of thing
+like MLE, but where it is managed by the execution system. This will complicate
+and add complexity to that design but going to not be too worried about it
+as it will make things easier to implement and understand. At least with
+this, I should be able to have it where I can neatly load up ROMs and keep
+everything simple.
+
+## 16:21
+
+I think before I can do anything with this, I am going to have to do some
+kind of refactoring to make this easier to do.
