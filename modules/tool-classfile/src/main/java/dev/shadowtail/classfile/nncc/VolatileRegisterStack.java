@@ -38,7 +38,7 @@ public final class VolatileRegisterStack
 	}
 	
 	/**
-	 * Clears all of the used volatile reisters.
+	 * Clears all of the used volatile registers.
 	 *
 	 * @since 2019/05/25
 	 */
@@ -54,7 +54,7 @@ public final class VolatileRegisterStack
 	 * @throws IllegalStateException If no registers are available.
 	 * @since 2019/05/24
 	 */
-	public final int get()
+	public final int getUnmanaged()
 		throws IllegalStateException
 	{
 		// Find next register to use from the base, use any register which
@@ -81,7 +81,7 @@ public final class VolatileRegisterStack
 	 * @throws IllegalStateException If it was never used.
 	 * @since 2019/05/24
 	 */
-	public final void remove(int __r)
+	public final void removeUnmanaged(int __r)
 		throws IllegalStateException
 	{
 		// {@squirreljme.error JC13 Register to remove was never previously
