@@ -3265,8 +3265,8 @@ public final class NearNativeByteCodeHandler
 			new ClassPool(__cl), __r);
 		
 		// Detect classes which are dynamically initialized
-		if (!ClassLoadingAdjustments.isDeferredLoad(this.state.classname.toString(),
-			__cl.toString()))
+		if (!ClassLoadingAdjustments.isDeferredLoad(
+			this.state.classname.toString(), __cl.toString()))
 			return;
 		
 		// Jump if the pool is already loaded
