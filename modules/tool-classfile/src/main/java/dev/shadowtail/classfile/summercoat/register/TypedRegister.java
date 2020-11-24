@@ -16,7 +16,7 @@ package dev.shadowtail.classfile.summercoat.register;
  * @since 2020/11/24
  */
 public final class TypedRegister<T>
-	extends BasicRegister
+	extends Register
 {
 	/** The type used. */
 	protected final Class<T> type;
@@ -29,7 +29,7 @@ public final class TypedRegister<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/24
 	 */
-	protected TypedRegister(Class<T> __class, int __register)
+	public TypedRegister(Class<T> __class, int __register)
 		throws NullPointerException
 	{
 		super(__register);

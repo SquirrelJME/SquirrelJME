@@ -9,6 +9,8 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.summercoat.register.TypedRegister;
+import dev.shadowtail.classfile.summercoat.register.Volatile;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -45,6 +47,25 @@ public final class VolatileRegisterStack
 	public final void clear()
 	{
 		this._used.clear();
+	}
+	
+	/**
+	 * Returns a volatile typed volatile register.
+	 * 
+	 * @param <T> The typed register type.
+	 * @param __cl The typed register type.
+	 * @return A volatile typed register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/24
+	 */
+	public final <T> Volatile<TypedRegister<T>> getTyped(Class<T> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return new Volatile<>(this,
+			new TypedRegister<T>(__cl, this.getUnmanaged()));
 	}
 	
 	/**

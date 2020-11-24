@@ -20,10 +20,10 @@ import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.UsedString;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.CompareType;
@@ -64,6 +64,7 @@ public final class NearNativeByteCodeHandler
 	implements ByteCodeHandler
 {
 	/** The jvm functions class. */
+	@Deprecated
 	public static final ClassName JVMFUNC_CLASS =
 		new ClassName("cc/squirreljme/jvm/JVMFunction");
 	

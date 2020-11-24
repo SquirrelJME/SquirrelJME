@@ -14,7 +14,7 @@ package dev.shadowtail.classfile.summercoat.register;
  *
  * @since 2020/11/24
  */
-public abstract class BasicRegister
+public abstract class Register
 {
 	/** The register Id. */
 	public final int register;
@@ -25,9 +25,23 @@ public abstract class BasicRegister
 	 * @param __register The register to get.
 	 * @since 2020/11/24
 	 */
-	protected BasicRegister(int __register)
+	protected Register(int __register)
 	{
 		this.register = __register;
+	}
+	
+	/**
+	 * Uses the same register in this class, but as a plain register.
+	 * 
+	 * @return The plain register.
+	 * @since 2020/11/24
+	 */
+	public final PlainRegister asPlain()
+	{
+		if (this instanceof PlainRegister)
+			return (PlainRegister)this;
+		
+		return new PlainRegister(this.register);
 	}
 	
 	/**
@@ -40,11 +54,11 @@ public abstract class BasicRegister
 		if (__o == this)
 			return true;
 		
-		if (!(__o instanceof BasicRegister))
+		if (!(__o instanceof Register))
 			return false;
 		
 		return this.getClass() == __o.getClass() &&
-			this.register == ((BasicRegister)__o).register;
+			this.register == ((Register)__o).register;
 	}
 	
 	/**
