@@ -23,7 +23,7 @@ import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.lang.ref.Reference;
 import java.util.Deque;
@@ -844,12 +844,12 @@ public final class LoadedClassInfo
 					break;
 					
 					// Index of method
-				case METHOD_INDEX:
-					MethodIndex mi = entry.<MethodIndex>value(
-						MethodIndex.class);
+				case VIRTUAL_METHOD_INDEX:
+					VirtualMethodIndex mi = entry.<VirtualMethodIndex>value(
+						VirtualMethodIndex.class);
 					
 					mx = null;
-					vx = bootstrap.findClass(mi.inclass).methodIndex(
+					vx = bootstrap.findClass(mi.inClass).methodIndex(
 						mi.name, mi.type);
 					break;
 					

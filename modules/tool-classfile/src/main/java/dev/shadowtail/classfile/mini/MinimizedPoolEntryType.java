@@ -13,7 +13,7 @@ import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.UsedString;
@@ -77,7 +77,7 @@ public enum MinimizedPoolEntryType
 	USED_STRING(true, UsedString.class),
 	
 	/** The index of a method. */
-	METHOD_INDEX(true, MethodIndex.class),
+	VIRTUAL_METHOD_INDEX(true, VirtualMethodIndex.class),
 	
 	/**
 	 * Class information.

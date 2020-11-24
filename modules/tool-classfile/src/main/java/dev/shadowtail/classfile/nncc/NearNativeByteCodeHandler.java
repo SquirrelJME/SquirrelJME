@@ -20,7 +20,7 @@ import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.UsedString;
@@ -760,7 +760,7 @@ public final class NearNativeByteCodeHandler
 				// Load the method index of the volatile method in question
 				int volimethdx = volatiles.get();
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new MethodIndex(__r.handle().outerClass(),
+					new VirtualMethodIndex(__r.handle().outerClass(),
 						__r.handle().name(), __r.handle().descriptor()),
 					volimethdx);
 				
@@ -2634,7 +2634,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Method index
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new MethodIndex(__cl, __mn, __mt), methodptr);
+			new VirtualMethodIndex(__cl, __mn, __mt), methodptr);
 			
 		// Load from the pool table
 		codebuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,

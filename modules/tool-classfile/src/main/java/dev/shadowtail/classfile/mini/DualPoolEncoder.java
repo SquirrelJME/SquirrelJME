@@ -22,7 +22,7 @@ import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayInputStream;
@@ -172,7 +172,7 @@ public final class DualPoolEncoder
 					case DOUBLE:
 					case INVOKED_METHOD:
 					case METHOD_DESCRIPTOR:
-					case METHOD_INDEX:
+					case VIRTUAL_METHOD_INDEX:
 					case NOTED_STRING:
 					case USED_STRING:
 						// Read parts
@@ -282,8 +282,8 @@ public final class DualPoolEncoder
 								break;
 								
 								// Method index in vtable
-							case METHOD_INDEX:
-								value = new MethodIndex(
+							case VIRTUAL_METHOD_INDEX:
+								value = new VirtualMethodIndex(
 									classpool.<ClassName>byIndex(
 										ClassName.class, parts[1]),
 									classpool.<String>byIndex(
@@ -567,7 +567,7 @@ public final class DualPoolEncoder
 			case LONG:
 			case INVOKED_METHOD:
 			case METHOD_DESCRIPTOR:
-			case METHOD_INDEX:
+			case VIRTUAL_METHOD_INDEX:
 			case NOTED_STRING:
 			case USED_STRING:
 				if (__wide)

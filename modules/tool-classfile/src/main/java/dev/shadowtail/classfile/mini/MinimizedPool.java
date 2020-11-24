@@ -16,7 +16,7 @@ import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -344,7 +344,7 @@ public final class MinimizedPool
 					case LONG:
 					case DOUBLE:
 					case USED_STRING:
-					case METHOD_INDEX:
+					case VIRTUAL_METHOD_INDEX:
 						// Wide parts
 						if (iswide)
 						{
@@ -428,8 +428,8 @@ public final class MinimizedPool
 								break;
 								
 								// The method index
-							case METHOD_INDEX:
-								v = new MethodIndex(
+							case VIRTUAL_METHOD_INDEX:
+								v = new VirtualMethodIndex(
 									(ClassName)values[part[1]],
 									new MethodName((String)values[part[2]]),
 									(MethodDescriptor)values[part[3]]);

@@ -118,11 +118,11 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(mh.descriptor()).index);
 				
 				// The index of a method
-			case METHOD_INDEX:
-				MethodIndex v = (MethodIndex)__v;
+			case VIRTUAL_METHOD_INDEX:
+				VirtualMethodIndex v = (VirtualMethodIndex)__v;
 				return runpool.add(__v,
 					0x7FFF,
-					this.addStatic(v.inclass).index,
+					this.addStatic(v.inClass).index,
 					this.addStatic(v.name.toString()).index,
 					this.addStatic(v.type).index);
 				

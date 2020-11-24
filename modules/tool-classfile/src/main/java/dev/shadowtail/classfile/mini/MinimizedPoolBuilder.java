@@ -14,7 +14,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.pool.UsedString;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -163,12 +163,12 @@ public final class MinimizedPoolBuilder
 		}
 		
 		// Index of method
-		else if (__v instanceof MethodIndex)
+		else if (__v instanceof VirtualMethodIndex)
 		{
-			MethodIndex v = (MethodIndex)__v;
+			VirtualMethodIndex v = (VirtualMethodIndex)__v;
 			return this.__add(__v,
 				0x7FFF,
-				this.add(v.inclass),
+				this.add(v.inClass),
 				this.add(v.name.toString()),
 				this.add(v.type));
 		}
@@ -389,7 +389,7 @@ public final class MinimizedPoolBuilder
 					case LONG:
 					case DOUBLE:
 					case USED_STRING:
-					case METHOD_INDEX:
+					case VIRTUAL_METHOD_INDEX:
 						{
 							// Write number of parts
 							int npart = part.length;
