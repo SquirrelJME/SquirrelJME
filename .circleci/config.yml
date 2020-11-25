@@ -26,6 +26,10 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
+    environment:
+      # Flag to use all processors when running tests as CircleCI on Windows
+      # has 2 CPUs with 4 logical CPUs
+      USE_ALL_PROCESSORS: true
     steps:
       - checkout
       - run:

@@ -270,12 +270,17 @@ public class VMTestTaskAction
 	 * @return The physical processor count.
 	 * @since 2020/11/25
 	 */
+	@SuppressWarnings("CallToSystemGetenv")
 	public static int physicalProcessorCount()
 	{
 		// Use pre-cached value if it is already known
 		int rv = VMTestTaskAction._CACHED_CPU_COUNT;
 		if (rv > 0)
 			return rv;
+		
+		// If this variable is set, just force all CPUs to be used
+		if (Boolean.parseBoolean(System.getenv("USE_ALL_PROCESSORS")))
+			return Math.max(1, Runtime.getRuntime().availableProcessors());
 		
 		// We need this so we can make a better guess of our current system
 		String osName = System.getProperty("os.name").toLowerCase();
