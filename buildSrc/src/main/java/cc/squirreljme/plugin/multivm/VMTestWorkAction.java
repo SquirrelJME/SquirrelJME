@@ -101,7 +101,7 @@ public abstract class VMTestWorkAction
 					}
 					
 					// Wait for completion
-					if (process.waitFor(10, TimeUnit.SECONDS))
+					if (process.waitFor(3, TimeUnit.SECONDS))
 					{
 						exitCode = process.waitFor();
 						break;
