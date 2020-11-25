@@ -7,28 +7,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm;
+package dev.shadowtail.classfile.summercoat.register;
 
 /**
- * This is a router which just forward IPC requests to the standard manager.
+ * Represents an interface of a given object, for the JVM implementation these
+ * represent a joined _Interface_ and _Object's Class_ as there needs to be
+ * a point of reference to these interfaces.
  *
- * @since 2019/12/28
+ * @since 2020/11/24
  */
-@Deprecated
-public final class DefaultIPCRouter
-	implements IPCCallback
+public final class InterfaceOfObject
+	extends Register
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2019/12/28
+	 * Initializes the basic register.
+	 *
+	 * @param __register The register to get.
+	 * @since 2020/11/24
 	 */
-	@Override
-	@Deprecated
-	public final long ipcCall(int __tid, int __ipcid, int __a, int __b,
-		int __c, int __d, int __e, int __f, int __g, int __h)
+	public InterfaceOfObject(int __register)
 	{
-		return IPCManager.ipcCall(__tid, __ipcid, __a, __b, __c, __d, __e,
-			__f, __g, __h);
+		super(__register);
 	}
 }
-

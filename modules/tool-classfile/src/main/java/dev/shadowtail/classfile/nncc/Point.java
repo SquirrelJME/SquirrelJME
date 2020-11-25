@@ -7,28 +7,31 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm;
+package dev.shadowtail.classfile.nncc;
 
 /**
- * This is a router which just forward IPC requests to the standard manager.
+ * This stores the information for a single point in the native code.
  *
- * @since 2019/12/28
+ * @since 2019/04/26
  */
-@Deprecated
-public final class DefaultIPCRouter
-	implements IPCCallback
+public final class Point
 {
+	/** The instruction used. */
+	public final NativeInstruction instruction;
+	
 	/**
-	 * {@inheritDoc}
-	 * @since 2019/12/28
+	 * Initializes the instruction point.
+	 *
+	 * @param __i The instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/26
 	 */
-	@Override
-	@Deprecated
-	public final long ipcCall(int __tid, int __ipcid, int __a, int __b,
-		int __c, int __d, int __e, int __f, int __g, int __h)
+	public Point(NativeInstruction __i)
+		throws NullPointerException
 	{
-		return IPCManager.ipcCall(__tid, __ipcid, __a, __b, __c, __d, __e,
-			__f, __g, __h);
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		this.instruction = __i;
 	}
 }
-

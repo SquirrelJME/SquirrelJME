@@ -24,6 +24,10 @@ import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.pool.VirtualMethodIndex;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
+import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
+import dev.shadowtail.classfile.summercoat.register.PlainRegister;
+import dev.shadowtail.classfile.summercoat.register.Volatile;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.CompareType;
@@ -743,17 +747,56 @@ public final class NearNativeByteCodeHandler
 		// Interface, special, or virtual
 		else
 		{
+			@Deprecated int instReg = __in[0].register;
+			PlainRegister objectReg = new PlainRegister(instReg);
+			
 			// Check that the object is of the given class type and is not null
-			int ireg = __in[0].register;
-			this.__basicCheckNPE(ireg);
+			this.__basicCheckNPE(instReg);
 			
 			// Check types if this is not compatible
 			if (!__in[0].isCompatible(__r.handle().outerClass()))
-				this.__basicCheckCCE(ireg, __r.handle().outerClass());
+				this.__basicCheckCCE(instReg, __r.handle().outerClass());
 			
 			// Invoking interface method
 			if (__t == InvokeType.INTERFACE)
 			{
+				// Setup temporarily used registers
+				try (Volatile<InterfaceOfObject> iClass =
+					volatiles.getInterfaceOfObject())
+				{
+					// Lookup the interface for a given object, we need this
+					// to know which actual class implements the interface so
+					// we can load the pool and call into the class
+					// This creates a Interface+object.class relationship
+					codebuilder.addInterfaceForObject(
+						new InterfaceClassName(mh.outerClass()),
+						objectReg, iClass);
+					
+					// The interface method index in the interface table needs
+					// to be known in order to know where to grab our pool
+					// and method pointers
+					if (true)
+						throw Debugging.todo();
+					
+					// Load the next pool pointer for the target
+					// class that should be getting this
+					if (true)
+						throw Debugging.todo();
+					
+					// Load the method pointer so we can actually call the
+					// given function
+					if (true)
+						throw Debugging.todo();
+					
+					// Invoke the interface, return values and exceptions are
+					// handled later on
+					if (true)
+						throw Debugging.todo();
+				}
+				
+				if (true)
+					throw Debugging.todo();
+				
 				// Load the interface we are looking in
 				int voliclass = volatiles.getUnmanaged();
 				this.__loadClassInfo(__r.handle().outerClass(), voliclass);
@@ -770,7 +813,7 @@ public final class NearNativeByteCodeHandler
 				this.__invokeStatic(InvokeType.SYSTEM,
 					NearNativeByteCodeHandler.JVMFUNC_CLASS,
 					"jvmInterfacePointer", "(III)J",
-					ireg, voliclass, volimethdx);
+					instReg, voliclass, volimethdx);
 				
 				// We need to extract the pool pointer of the class we
 				// are calling in so that nothing is horribly incorrect

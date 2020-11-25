@@ -17,6 +17,7 @@ import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.pool.VirtualMethodIndex;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -78,6 +79,9 @@ public enum MinimizedPoolEntryType
 	
 	/** The index of a method. */
 	VIRTUAL_METHOD_INDEX(true, VirtualMethodIndex.class),
+	
+	/** An invokable interface class, used for interface binding. */
+	INTERFACE_CLASS(true, InterfaceClassName.class),
 	
 	/**
 	 * Class information.

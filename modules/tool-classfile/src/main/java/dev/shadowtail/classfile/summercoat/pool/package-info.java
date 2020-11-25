@@ -7,28 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm;
-
 /**
- * This is a router which just forward IPC requests to the standard manager.
+ * This contains pool entries for SummerCoat.
  *
- * @since 2019/12/28
+ * @since 2020/11/24
  */
-@Deprecated
-public final class DefaultIPCRouter
-	implements IPCCallback
-{
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/12/28
-	 */
-	@Override
-	@Deprecated
-	public final long ipcCall(int __tid, int __ipcid, int __a, int __b,
-		int __c, int __d, int __e, int __f, int __g, int __h)
-	{
-		return IPCManager.ipcCall(__tid, __ipcid, __a, __b, __c, __d, __e,
-			__f, __g, __h);
-	}
-}
 
+package dev.shadowtail.classfile.summercoat.pool;

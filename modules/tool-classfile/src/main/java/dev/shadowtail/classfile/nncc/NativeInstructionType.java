@@ -114,6 +114,10 @@ public interface NativeInstructionType
 	short STORE_TO_INTARRAY =
 		0xF5;
 	
+	/** Get interface I for object. */
+	short INTERFACE_I_FOR_OBJECT =
+		0xF6;
+	
 	/**
 	 * Invoke. 
 	 * {@code iiiixxxx}.

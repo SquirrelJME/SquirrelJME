@@ -23,7 +23,7 @@ public final class PlainRegister
 	 * @param __register The register to get.
 	 * @since 2020/11/24
 	 */
-	protected PlainRegister(int __register)
+	public PlainRegister(int __register)
 	{
 		super(__register);
 	}

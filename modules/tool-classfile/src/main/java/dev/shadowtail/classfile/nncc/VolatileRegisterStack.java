@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
 import dev.shadowtail.classfile.summercoat.register.TypedRegister;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
 import java.util.ArrayList;
@@ -47,6 +48,18 @@ public final class VolatileRegisterStack
 	public final void clear()
 	{
 		this._used.clear();
+	}
+	
+	/**
+	 * Returns a volatile to represent this as an interface of an object.
+	 * 
+	 * @return Interface of object register.
+	 * @since 2020/11/24
+	 */
+	public Volatile<InterfaceOfObject> getInterfaceOfObject()
+	{
+		return new Volatile<>(this,
+			new InterfaceOfObject(this.getUnmanaged()));
 	}
 	
 	/**
