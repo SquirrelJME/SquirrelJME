@@ -25,8 +25,11 @@ import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
+import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
 import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
+import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
 import dev.shadowtail.classfile.summercoat.register.PlainRegister;
+import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
@@ -761,8 +764,14 @@ public final class NearNativeByteCodeHandler
 			if (__t == InvokeType.INTERFACE)
 			{
 				// Setup temporarily used registers
-				try (Volatile<InterfaceOfObject> iClass =
-					volatiles.getInterfaceOfObject())
+				try (Volatile<InterfaceOfObject> iOfO =
+						volatiles.getInterfaceOfObject();
+					Volatile<InterfaceVTIndex> iVti =
+						volatiles.getInterfaceVTIndex();
+					Volatile<ExecutablePointer> epp =
+						volatiles.getExecutablePointer();
+					Volatile<RuntimePoolPointer> rpp =
+						volatiles.getRuntimePoolPointer())
 				{
 					// Lookup the interface for a given object, we need this
 					// to know which actual class implements the interface so
@@ -770,21 +779,25 @@ public final class NearNativeByteCodeHandler
 					// This creates a Interface+object.class relationship
 					codebuilder.addInterfaceForObject(
 						new InterfaceClassName(mh.outerClass()),
-						objectReg, iClass);
+						objectReg, iOfO.register);
 					
 					// The interface method index in the interface table needs
 					// to be known in order to know where to grab our pool
 					// and method pointers
-					if (true)
-						throw Debugging.todo();
+					codebuilder.addInterfaceVTIndexLookup(
+						new InvokedMethod(InvokeType.INTERFACE, mh),
+						iOfO.register, iVti.register);
 					
-					// Load the next pool pointer for the target
-					// class that should be getting this
-					if (true)
-						throw Debugging.todo();
+					// Load both the pool and target pointer to the method to
+					// invoke
+					codebuilder.addInterfaceVTLoad(
+						iOfO.register, iVti.register,
+						epp.register, rpp.register);
+						
+					// Invoke the given pointer and pool index
+					// COMBINED BOTH BELOW 
 					
-					// Load the method pointer so we can actually call the
-					// given function
+					// Load the pool pointer
 					if (true)
 						throw Debugging.todo();
 					

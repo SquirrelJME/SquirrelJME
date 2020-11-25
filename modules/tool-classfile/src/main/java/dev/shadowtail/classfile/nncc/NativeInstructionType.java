@@ -96,6 +96,14 @@ public interface NativeInstructionType
 	short DEBUG_POINT =
 		0xEA;
 	
+	/** Load execp/poolp from interface VTable. */
+	short INTERFACE_VT_LOAD =
+		0xF1;
+	
+	/** Lookup VTable Index for Interface. */
+	short INTERFACE_VT_DX_LOOKUP =
+		0xF2;
+	
 	/**
 	 * Return. 
 	 * {@code iiiixxxx, return}.

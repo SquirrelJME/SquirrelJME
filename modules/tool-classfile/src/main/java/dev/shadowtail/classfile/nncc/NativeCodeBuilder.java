@@ -11,10 +11,14 @@
 package dev.shadowtail.classfile.nncc;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
+import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
 import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
+import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
 import dev.shadowtail.classfile.summercoat.register.PlainRegister;
 import dev.shadowtail.classfile.summercoat.register.Register;
+import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
@@ -203,18 +207,64 @@ public final class NativeCodeBuilder
 	 * @param __name The name of the interface.
 	 * @param __objectReg The object register to access.
 	 * @param __dest The destination register.
+	 * @return The created instruction.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/24
 	 */
 	public NativeInstruction addInterfaceForObject(InterfaceClassName __name,
-		PlainRegister __objectReg, Volatile<InterfaceOfObject> __dest)
+		PlainRegister __objectReg, InterfaceOfObject __dest)
 		throws NullPointerException
 	{
 		if (__name == null || __objectReg == null || __dest == null)
 			throw new NullPointerException("NARG");
 		
 		return this.__add(NativeInstructionType.INTERFACE_I_FOR_OBJECT,
-			__name, __objectReg, __dest.register);
+			__name, __objectReg, __dest);
+	}
+	
+	/**
+	 * Adds lookup of an interface VTable Index.
+	 * 
+	 * @param __target The target method to call.
+	 * @param __iOfO The source interface of an object used.
+	 * @param __dest The destination register to get the information from.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/24
+	 */
+	public NativeInstruction addInterfaceVTIndexLookup(InvokedMethod __target,
+		InterfaceOfObject __iOfO, InterfaceVTIndex __dest)
+		throws NullPointerException
+	{
+		if (__target == null || __iOfO == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__add(NativeInstructionType.INTERFACE_VT_DX_LOOKUP,
+			__target, __iOfO, __dest);
+	}
+	
+	/**
+	 * Adds load of an interface VTable.
+	 * 
+	 * @param __iOfO The interface of the given object.
+	 * @param __iVti The VTable index.
+	 * @param __destExecP The destination execution pointer.
+	 * @param __destPool The destination pool pointer.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/24
+	 */
+	public NativeInstruction addInterfaceVTLoad(
+		InterfaceOfObject __iOfO, InterfaceVTIndex __iVti,
+		ExecutablePointer __destExecP, RuntimePoolPointer __destPool)
+		throws NullPointerException
+	{
+		if (__iOfO == null || __iVti == null ||
+			__destExecP == null || __destPool == null)
+			throw new NullPointerException("NARG");
+			
+		return this.__add(NativeInstructionType.INTERFACE_VT_LOAD,
+			__iOfO, __iVti, __destExecP, __destPool);
 	}
 	
 	/**
@@ -641,9 +691,15 @@ public final class NativeCodeBuilder
 			if (o == null)
 				throw new NullPointerException("NARG");
 			
-			// Integer value?
-			int oi = ((o instanceof Register) ? ((Register)o).register :
-				((o instanceof Number) ? ((Number)o).intValue() : -1));
+			// Referencing a volatile register?
+			int oi;
+			if (o instanceof Volatile)
+				oi = ((Volatile<?>)o).register.register;
+			
+			// Easily obtainable integer value?
+			else
+				oi = ((o instanceof Register) ? ((Register)o).register :
+					((o instanceof Number) ? ((Number)o).intValue() : -1));
 			
 			// Make sure values are good
 			switch (afmt[i])

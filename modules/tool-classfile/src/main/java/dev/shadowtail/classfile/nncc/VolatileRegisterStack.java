@@ -9,7 +9,10 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
 import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
+import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
+import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
 import dev.shadowtail.classfile.summercoat.register.TypedRegister;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
 import java.util.ArrayList;
@@ -51,6 +54,18 @@ public final class VolatileRegisterStack
 	}
 	
 	/**
+	 * Returns a volatile executable pointer.
+	 * 
+	 * @return The executable pointer.
+	 * @since 2020/11/24
+	 */
+	public Volatile<ExecutablePointer> getExecutablePointer()
+	{
+		return new Volatile<>(this,
+			new ExecutablePointer(this.getUnmanaged()));
+	}
+	
+	/**
 	 * Returns a volatile to represent this as an interface of an object.
 	 * 
 	 * @return Interface of object register.
@@ -60,6 +75,30 @@ public final class VolatileRegisterStack
 	{
 		return new Volatile<>(this,
 			new InterfaceOfObject(this.getUnmanaged()));
+	}
+	
+	/**
+	 * Returns a register to store an interface virtual table index.
+	 * 
+	 * @return Volatile to store an interface vtable index.
+	 * @since 2020/11/24
+	 */
+	public Volatile<InterfaceVTIndex> getInterfaceVTIndex()
+	{
+		return new Volatile<>(this,
+			new InterfaceVTIndex(this.getUnmanaged()));
+	}
+	
+	/**
+	 * Returns a volatile to represent a runtime pool pointer.
+	 * 
+	 * @return A register to store the runtime pool pointer.
+	 * @since 2020/11/24
+	 */
+	public Volatile<RuntimePoolPointer> getRuntimePoolPointer()
+	{
+		return new Volatile<>(this,
+			new RuntimePoolPointer(this.getUnmanaged()));
 	}
 	
 	/**
