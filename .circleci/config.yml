@@ -9,6 +9,7 @@
 # DESCRIPTION: CircleCI Build Configuration
 # SourceForge: squirreljme@frs.sourceforge.net
 # SourceForge Root: /home/frs/project/squirreljme/AutoBuild/
+# CircleCI Reference: https://circleci.com/docs/2.0/env-vars/
 
 version: 2.1
 executors:
@@ -75,14 +76,21 @@ jobs:
   build_macosx:
     macos:
       xcode: 11.3.0
+    environment:
+      # Do not auto-update brew as this takes forever and we really just want
+      # a single package
+      HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
+      #
+#      - run:
+#          name: Update Brew
+#          command: brew update
       - run:
-          name: Update Brew
-          command: brew update
-      - run:
-          name: Install Gradle and OpenJDK 11
-          command: brew install gradle openjdk@11
+          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
+          # we do not need that
+          name: Install OpenJDK 11
+          command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
           command: ./gradlew build testHosted --continue --parallel
@@ -99,11 +107,15 @@ jobs:
   ratufacoat_build_macosx:
     macos:
       xcode: 11.3.0
+    environment:
+      # Do not auto-update brew as this takes forever and we really just want
+      # a single package
+      HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
-      - run:
-          name: Update Brew
-          command: brew update
+#      - run:
+#          name: Update Brew
+#          command: brew update
       - run:
           name: Install CMake
           command: brew install cmake
@@ -149,6 +161,7 @@ jobs:
           path: ~/test-results/junit
   ratufacoat_build_linux:
     executor: buildenv
+    resource_class: small
     steps:
       - checkout
       - run:
@@ -229,6 +242,7 @@ jobs:
           path: ~/test-results/junit
       - store_artifacts:
           path: ~/test-results/nps
+
   ################################### USERS ##################################
   export_user_guide:
     resource_class: small
