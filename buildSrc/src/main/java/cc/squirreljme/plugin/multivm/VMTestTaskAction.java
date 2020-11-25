@@ -338,8 +338,6 @@ public class VMTestTaskAction
 				{
 					String ln = br.readLine();
 					
-					System.err.printf("CPU Check: %s%n", ln);
-					
 					if (ln == null)
 						break;
 					
