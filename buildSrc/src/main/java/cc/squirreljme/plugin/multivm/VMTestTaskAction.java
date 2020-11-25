@@ -9,7 +9,10 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
@@ -18,6 +21,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Supplier;
+import javax.swing.AbstractAction;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.process.JavaExecSpec;
@@ -46,6 +50,9 @@ public class VMTestTaskAction
 	/** The maximum parallel tests that can run at once. */
 	private static final int _MAX_PARALLEL_TESTS =
 		4;
+	
+	/** Cached CPU count. */
+	private static volatile int _CACHED_CPU_COUNT;
 	
 	/** The worker executor. */
 	protected final WorkerExecutor executor;
@@ -116,7 +123,7 @@ public class VMTestTaskAction
 		// How many tests should be run be at once?
 		int cpuCount = Runtime.getRuntime().availableProcessors();
 		int maxParallel = (cpuCount <= 1 ? 1 : Math.min(
-			Math.max(2, Runtime.getRuntime().availableProcessors() / 2),
+			Math.max(2, VMTestTaskAction.physicalProcessorCount()),
 			VMTestTaskAction._MAX_PARALLEL_TESTS));
 		
 		// Determine the number of tests
@@ -255,5 +262,106 @@ public class VMTestTaskAction
 			}
 		
 		return result;
+	}
+	
+	/**
+	 * Returns the physical processor count.
+	 * 
+	 * @return The physical processor count.
+	 * @since 2020/11/25
+	 */
+	public static int physicalProcessorCount()
+	{
+		// Use pre-cached value if it is already known
+		int rv = VMTestTaskAction._CACHED_CPU_COUNT;
+		if (rv > 0)
+			return rv;
+		
+		// We need this so we can make a better guess of our current system
+		String osName = System.getProperty("os.name").toLowerCase();
+		
+		// Running on Windows
+		if (rv <= 0 && osName.contains("windows"))
+			rv = VMTestTaskAction.__cpuCountOnWindows();
+		
+		// Fallback to a generic CPU count
+		if (rv <= 0)
+			rv = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
+		
+		// Cache it and use it
+		VMTestTaskAction._CACHED_CPU_COUNT = rv;
+		return rv;
+	}
+	
+	/**
+	 * Attempts to get the physical CPU count on Windows.
+	 * 
+	 * @return The physical CPU count on Windows, {@code 0} is returned if it
+	 * could not be obtained.
+	 * @since 2020/11/25
+	 */
+	@SuppressWarnings("UseOfProcessBuilder")
+	private static int __cpuCountOnWindows()
+	{
+		// This information could be obtained by running a specific program
+		try
+		{
+			// Spawn new process that will contain the CPU count
+			Process proc = new ProcessBuilder()
+				.command("cmd", "/C", "WMIC", "CPU", "Get", "/Format:List")
+				.redirectError(ProcessBuilder.Redirect.INHERIT)
+				.start();
+			
+			// Let the process run accordingly 
+			try
+			{
+				// Command failed to start, so likely unreliable
+				if (proc.waitFor() != 0)
+					return 0;
+			}
+			
+			// We probably want the process to go away if this happens
+			catch (InterruptedException ignored)
+			{
+				proc.destroyForcibly();
+				
+				// The CPU count will be invalid here
+				return 0;
+			}
+			
+			// Look for the CPU information lines
+			int numCores = 0;
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(
+				proc.getInputStream(), StandardCharsets.UTF_8)))
+			{
+				for (;;)
+				{
+					String ln = br.readLine();
+					
+					if (ln == null)
+						break;
+					
+					// Number of cores in the system
+					if (ln.startsWith("NumberOfCores="))
+						numCores = Integer.parseInt(
+							ln.substring(ln.indexOf('=') + 1));
+				}
+			}
+			
+			// Were we able to glean the CPU count?
+			if (numCores > 0)
+				return numCores;
+			return 0;
+		}
+		
+		// Ignore failures
+		catch (IOException|NumberFormatException e)
+		{
+			// Toss exception
+			new RuntimeException("Could not determine physical CPU count.", e)
+				.printStackTrace();
+			
+			return 0;
+		}
 	}
 }
