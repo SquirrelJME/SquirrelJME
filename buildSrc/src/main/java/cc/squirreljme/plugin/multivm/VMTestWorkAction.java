@@ -31,7 +31,7 @@ public abstract class VMTestWorkAction
 {
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
-		240_000_000_000L;
+		360_000_000_000L;
 	
 	/**
 	 * {@inheritDoc}

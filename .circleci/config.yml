@@ -82,10 +82,6 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
-      #
-#      - run:
-#          name: Update Brew
-#          command: brew update
       - run:
           # Only OpenJDK is required, Gradle always uses Gradle wrapper so
           # we do not need that
@@ -113,9 +109,6 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
-#      - run:
-#          name: Update Brew
-#          command: brew update
       - run:
           name: Install CMake
           command: brew install cmake
