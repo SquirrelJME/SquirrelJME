@@ -121,10 +121,10 @@ public class VMTestTaskAction
 		Map<String, Path> xmlResults = new TreeMap<>();
 		
 		// How many tests should be run be at once?
-		int cpuCount = Runtime.getRuntime().availableProcessors();
-		int maxParallel = (cpuCount <= 1 ? 1 : Math.min(
-			Math.max(2, VMTestTaskAction.physicalProcessorCount()),
-			VMTestTaskAction._MAX_PARALLEL_TESTS));
+		int cpuCount = VMTestTaskAction.physicalProcessorCount();
+		int maxParallel = (cpuCount <= 1 ? 1 :
+			Math.min(Math.max(2, cpuCount),
+				VMTestTaskAction._MAX_PARALLEL_TESTS));
 		
 		// Determine the number of tests
 		Set<String> testNames = VMHelpers.runningTests(
@@ -349,9 +349,7 @@ public class VMTestTaskAction
 			}
 			
 			// Were we able to glean the CPU count?
-			if (numCores > 0)
-				return numCores;
-			return 0;
+			return Math.max(numCores, 0);
 		}
 		
 		// Ignore failures
