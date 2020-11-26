@@ -236,10 +236,19 @@ public class VMTestTaskAction
 			ps.println("name,status,duration,simpleDuration");
 			
 			// Print each test
+			long totalTime = 0;
 			for (ResultantTestInfo e : testResults.values())
+			{
+				totalTime += e.nanoseconds;
+				
 				ps.printf("%s,%s,%d,%s%n",
 					e.name, e.result.name(), e.nanoseconds,
 					VMTestTaskAction.__simpleDuration(e.nanoseconds));
+			}
+			
+			// Put out totals
+			ps.printf("TOTAL,,%d,%s%n",
+				totalTime, VMTestTaskAction.__simpleDuration(totalTime));
 			
 			// Ensure everything is written
 			ps.flush();
