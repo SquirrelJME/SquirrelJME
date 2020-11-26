@@ -26,7 +26,6 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: "large"
     environment:
       # Flag to use all processors when running tests as CircleCI on Windows
       # has 2 CPUs with 4 logical CPUs
@@ -397,7 +396,9 @@ workflows:
   tests:
     jobs:
       ############################# STANDARD TESTS ############################
-      - build_windows
+      # Building on Windows is expensive and slow for now, builds take too much
+      # execution time for it to be affordable.
+#      - build_windows
       - build_linux
       - build_macosx
       - test_springcoat:
