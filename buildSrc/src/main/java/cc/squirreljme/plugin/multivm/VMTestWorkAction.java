@@ -31,7 +31,7 @@ public abstract class VMTestWorkAction
 {
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
-		240_000_000_000L;
+		360_000_000_000L;
 	
 	/**
 	 * {@inheritDoc}
@@ -101,7 +101,7 @@ public abstract class VMTestWorkAction
 					}
 					
 					// Wait for completion
-					if (process.waitFor(10, TimeUnit.SECONDS))
+					if (process.waitFor(3, TimeUnit.SECONDS))
 					{
 						exitCode = process.waitFor();
 						break;

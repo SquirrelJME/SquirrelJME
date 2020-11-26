@@ -26,18 +26,22 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
+    environment:
+      # Flag to use all processors when running tests as CircleCI on Windows
+      # has 2 CPUs with 4 logical CPUs
+      USE_ALL_PROCESSORS: true
     steps:
       - checkout
       - run:
           shell: cmd.exe
           name: Gradle Build and Test
-          command: gradlew build testHosted --continue --parallel
+          command: gradlew build testHosted --console plain --continue --parallel
       - run:
           shell: bash.exe
           name: Save test results
           command: |
-            mkdir -p /c/users/circleci/test-results/junit
-            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
+            mkdir -p /c/users/circleci/test-results/junit-windows
+            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
           when: always
       - store_test_results:
           path: c:\users\circleci\test-results
@@ -82,10 +86,6 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
-      #
-#      - run:
-#          name: Update Brew
-#          command: brew update
       - run:
           # Only OpenJDK is required, Gradle always uses Gradle wrapper so
           # we do not need that
@@ -93,12 +93,12 @@ jobs:
           command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted --continue --parallel
+          command: ./gradlew build testHosted --console plain --continue --parallel
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/junit-macosx/
+            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit-macosx/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -113,9 +113,6 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
-#      - run:
-#          name: Update Brew
-#          command: brew update
       - run:
           name: Install CMake
           command: brew install cmake
@@ -140,12 +137,12 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted --continue --parallel
+          command: ./gradlew build testHosted --console plain --continue --parallel
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit-linux/ \;
           when: always
       - persist_to_workspace:
           root: .
@@ -195,14 +192,14 @@ jobs:
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/vm-test-springcoat/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/junit-springcoat/
+            find . -type f -regex '.*/vm-test-springcoat/junit/.*xml' -exec cp {} ~/test-results/junit-springcoat/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
-            mkdir -p ~/test-results/nps/
-            find . -type f -regex '.*/vm-test-springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+            mkdir -p ~/test-results/nps-springcoat/
+            find . -type f -regex '.*/vm-test-springcoat/nps/.*nps' -exec cp {} ~/test-results/nps-springcoat/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -218,23 +215,19 @@ jobs:
           at: .
       - run:
           name: SummerCoat Tests
-          command: |
-            if ! timeout --foreground 1s ./gradlew testSummerCoat --console plain --continue --parallel
-            then
-              echo "SummerCoat testing failed, ignoring..." 1>&2
-            fi
-          no_output_timeout: 1m
+          command: timeout --foreground 15m ./gradlew testSummerCoat --console plain --continue --parallel
+          no_output_timeout: 15m
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/vm-test-summercoat/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/junit-summercoat/
+            find . -type f -regex '.*/vm-test-summercoat/junit/.*xml' -exec cp {} ~/test-results/junit-summercoat/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
-            mkdir -p ~/test-results/nps/
-            find . -type f -regex '.*/vm-test-summercoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+            mkdir -p ~/test-results/nps-summercoat/
+            find . -type f -regex '.*/vm-test-summercoat/nps/.*nps' -exec cp {} ~/test-results/nps-summercoat/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -282,7 +275,7 @@ jobs:
           at: .
       - run:
           name: Construct Test JARs
-          command: ./gradlew testJar --continue --parallel
+          command: ./gradlew testJar --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -302,7 +295,7 @@ jobs:
           at: .
       - run:
           name: Construct SummerCoat Libraries
-          command: ./gradlew libSummerCoat --continue --parallel
+          command: ./gradlew libSummerCoat --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -321,7 +314,7 @@ jobs:
           at: .
       - run:
           name: Construct Test SummerCoat Libraries
-          command: ./gradlew libTestSummerCoat --continue --parallel
+          command: ./gradlew libTestSummerCoat --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -340,7 +333,7 @@ jobs:
           at: .
       - run:
           name: Construct SummerCoat ROM
-          command: ./gradlew romSummerCoat --continue --parallel
+          command: ./gradlew romSummerCoat --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -361,7 +354,7 @@ jobs:
           at: .
       - run:
           name: Construct Test SummerCoat ROM
-          command: ./gradlew romTestSummerCoat --continue --parallel
+          command: ./gradlew romTestSummerCoat --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
