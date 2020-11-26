@@ -225,8 +225,14 @@ public abstract class VMTestWorkAction
 		// is a pass, skip, or fail as the test result needs to be read to
 		// determine if the task is okay 
 		__out.printf("<property name=\"squirreljme.test.result\" " +
-			"value=\"%s:%s:\" />", VMTestTaskAction._SPECIAL_KEY,
+			"value=\"%s:result:%s:\" />", VMTestTaskAction._SPECIAL_KEY,
 			__result.name());
+		__out.println();
+		
+		// Also
+		__out.printf("<property name=\"squirreljme.test.nanoseconds\" " +
+			"value=\"%s:nanoseconds:%s:\" />", VMTestTaskAction._SPECIAL_KEY,
+			__nsDur);
 		__out.println();
 		
 		// End properties

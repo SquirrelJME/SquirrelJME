@@ -41,7 +41,14 @@ jobs:
           name: Save test results
           command: |
             mkdir -p /c/users/circleci/test-results/junit-windows
-            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
+            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
+          when: always
+      - run:
+          shell: bash.exe
+          name: Save test results
+          command: |
+            mkdir -p /c/users/circleci/test-results/csv-windows
+            /usr/bin/find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} /c/users/circleci/test-results/csv-windows/ \;
           when: always
       - store_test_results:
           path: c:\users\circleci\test-results
@@ -98,12 +105,18 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit-macosx/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit-macosx/ \;
+            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
+          when: always
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/csv-macosx/
+            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-macosx/ \;
           when: always
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
+          path: ~/test-results
   ratufacoat_build_macosx:
     macos:
       xcode: 11.3.0
@@ -142,7 +155,13 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit-linux/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit-linux/ \;
+            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/csv-linux/
+            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-linux/ \;
           when: always
       - persist_to_workspace:
           root: .
@@ -155,7 +174,7 @@ jobs:
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
+          path: ~/test-results
   ratufacoat_build_linux:
     executor: buildenv
     resource_class: small
@@ -193,20 +212,24 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit-springcoat/
-            find . -type f -regex '.*/vm-test-springcoat/junit/.*xml' -exec cp {} ~/test-results/junit-springcoat/ \;
+            find . -type f -regex '.*/vm-test-springcoat/junit/.*\.xml' -exec cp {} ~/test-results/junit-springcoat/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
             mkdir -p ~/test-results/nps-springcoat/
-            find . -type f -regex '.*/vm-test-springcoat/nps/.*nps' -exec cp {} ~/test-results/nps-springcoat/ \;
+            find . -type f -regex '.*/vm-test-springcoat/nps/.*\.nps' -exec cp {} ~/test-results/nps-springcoat/ \;
+          when: always
+      - run:
+          name: Save snapshots
+          command: |
+            mkdir -p ~/test-results/csv-springcoat/
+            find . -type f -regex '.*/vm-test-springcoat/csv/.*\.csv' -exec cp {} ~/test-results/csv-springcoat/ \;
           when: always
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
-      - store_artifacts:
-          path: ~/test-results/nps
+          path: ~/test-results
   test_summercoat:
     executor: buildenv
     steps:
@@ -221,20 +244,24 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit-summercoat/
-            find . -type f -regex '.*/vm-test-summercoat/junit/.*xml' -exec cp {} ~/test-results/junit-summercoat/ \;
+            find . -type f -regex '.*/vm-test-summercoat/junit/.*\.xml' -exec cp {} ~/test-results/junit-summercoat/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
             mkdir -p ~/test-results/nps-summercoat/
-            find . -type f -regex '.*/vm-test-summercoat/nps/.*nps' -exec cp {} ~/test-results/nps-summercoat/ \;
+            find . -type f -regex '.*/vm-test-summercoat/nps/.*\.nps' -exec cp {} ~/test-results/nps-summercoat/ \;
+          when: always
+      - run:
+          name: Save snapshots
+          command: |
+            mkdir -p ~/test-results/csv-summercoat/
+            find . -type f -regex '.*/vm-test-summercoat/csv/.*\.csv' -exec cp {} ~/test-results/csv-summercoat/ \;
           when: always
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
-      - store_artifacts:
-          path: ~/test-results/nps
+          path: ~/test-results
 
   ################################### USERS ##################################
   export_user_guide:
@@ -369,7 +396,9 @@ workflows:
   tests:
     jobs:
       ############################# STANDARD TESTS ############################
-      - build_windows
+      # Building on Windows is expensive and slow for now, builds take too much
+      # execution time for it to be affordable.
+#      - build_windows
       - build_linux
       - build_macosx
       - test_springcoat:
