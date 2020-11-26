@@ -26,6 +26,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
+      size: "large"
     environment:
       # Flag to use all processors when running tests as CircleCI on Windows
       # has 2 CPUs with 4 logical CPUs
