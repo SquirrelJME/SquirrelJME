@@ -67,7 +67,7 @@ public class VMTestOutputs
 		String sourceSet = this.sourceSet;
 		
 		// Determine the root test result directory
-		Path resultRoot = VMHelpers.testResultDir(
+		Path resultRoot = VMHelpers.testResultXmlDir(
 			project, this.vmType, sourceSet).get();
 		
 		// The output of the task will be the test results
@@ -75,6 +75,10 @@ public class VMTestOutputs
 			VMHelpers.runningTests(project, sourceSet).keySet())
 			result.add(resultRoot.resolve(
 				VMHelpers.testResultXmlName(testName)));
+		
+		// Result CSV file that contains a summary on all the tests
+		result.add(VMHelpers.testResultsCsvDir(project, this.vmType, sourceSet)
+			.get().resolve(VMHelpers.testResultsCsvName(project)));
 		
 		return result;
 	}

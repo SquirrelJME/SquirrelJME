@@ -729,7 +729,7 @@ public final class VMHelpers
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/06
 	 */
-	public static Provider<Path> testResultDir(Project __project,
+	public static Provider<Path> testResultXmlDir(Project __project,
 		VMSpecifier __vmType, String __sourceSet)
 		throws NullPointerException
 	{
@@ -755,6 +755,45 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		return "TEST-" + __testName + ".xml";
+	}
+	
+	/**
+	 * Returns the directory where test results go.
+	 * 
+	 * @param __project The project to get the cache directory of.
+	 * @param __vmType The virtual machine being used.
+	 * @param __sourceSet The source set for the library, as there might be
+	 * duplicates between them potentially.
+	 * @return The path provider to the test result directory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/26
+	 */
+	public static Provider<Path> testResultsCsvDir(Project __project,
+		VMSpecifier __vmType, String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		return __project.provider(() -> VMHelpers.cacheDir(
+			__project, __vmType, __sourceSet).get().resolve("csv"));
+	}
+	
+	/**
+	 * Returns the name for the CSV file.
+	 * 
+	 * @param __project The project this falls under.
+	 * @return The path of the CSV results file.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/26
+	 */
+	public static Path testResultsCsvName(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		return Paths.get("RESULTS-" + __project.getName() + ".csv");
 	}
 	
 	/**
