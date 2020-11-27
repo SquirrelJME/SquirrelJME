@@ -236,8 +236,7 @@ public abstract class VMFactory
 			// Treat SQCs special in that they have a specific resource for
 			// their ROM data
 			VMClassLibrary place;
-			if (path.toString().endsWith(".sqc") ||
-				path.toString().endsWith(".SQC"))
+			if (SummerCoatJarLibrary.isSqc(path))
 				place = new SummerCoatJarLibrary(path);
 			else
 				place = JarClassLibrary.of(path);

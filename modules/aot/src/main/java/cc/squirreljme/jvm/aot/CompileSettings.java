@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.aot;
 
+import java.util.Deque;
+
 /**
  * This class contains settings for compilation.
  *
@@ -28,5 +30,45 @@ public final class CompileSettings
 	public CompileSettings(boolean __isBootLoader)
 	{
 		this.isBootLoader = __isBootLoader;
+	}
+	
+	/**
+	 * Parses compile settings for the compilation step.
+	 * 
+	 * @param __args The arguments to parse.
+	 * @return The resultant settings.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/23
+	 */
+	public static CompileSettings parse(Deque<String> __args)
+		throws NullPointerException
+	{
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		// Possible settings
+		boolean isBootLoader = false;
+		
+		// Parse settings
+		while (!__args.isEmpty())
+		{
+			String arg = __args.removeFirst();
+			
+			switch (arg)
+			{
+					// Is this a bootloader?
+				case "-boot":
+					isBootLoader = true;
+					break;
+				
+					// {@squirreljme.error AE06 Unknown compilation setting.
+					// (The argument)}
+				default:
+					throw new IllegalArgumentException("AE06 " + arg);
+			}
+		}
+		
+		// Initialize final settings
+		return new CompileSettings(isBootLoader);
 	}
 }

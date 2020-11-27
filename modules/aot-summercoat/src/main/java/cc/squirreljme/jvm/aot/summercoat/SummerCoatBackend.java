@@ -12,10 +12,14 @@ package cc.squirreljme.jvm.aot.summercoat;
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.aot.RomSettings;
+import cc.squirreljme.vm.SummerCoatJarLibrary;
+import cc.squirreljme.vm.VMClassLibrary;
+import dev.shadowtail.packfile.PackMinimizer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * This is the backend for SummerCoat.
@@ -74,5 +78,53 @@ public class SummerCoatBackend
 	public String name()
 	{
 		return "summercoat";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/27
+	 */
+	@Override
+	public void rom(RomSettings __settings, OutputStream __out,
+		VMClassLibrary... __libs)
+		throws IOException, NullPointerException
+	{
+		if (__settings == null || __out == null || __libs == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to find the boot library
+		String bootLib = null;
+		for (VMClassLibrary lib : __libs)
+		{
+			String name = lib.name();
+			
+			// Determine the base name
+			int lastPath = Math.max(name.lastIndexOf('/'),
+				name.lastIndexOf('\\'));
+			name = (lastPath >= 0 ? name.substring(lastPath + 1) : name);
+			
+			// Clip off extension
+			if (SummerCoatJarLibrary.isSqc(name) ||
+				name.endsWith(".jar") || name.endsWith(".JAR"))
+				name = name.substring(name.length() - 4);
+			
+			// Is this cldc-compact?
+			if (name.equals("cldc-compact"))
+				bootLib = lib.name();
+		}
+		
+		// {@squirreljme.error AA01 Could not find the boot library.
+		// (The available libraries)}
+		if (bootLib == null)
+			throw new IllegalArgumentException(
+				"AA01 " + Arrays.asList(__libs));
+		
+		// Call the minimizer directly, just use a base library for the main
+		// boot since it does not matter as the bootstrap should find the
+		// launcher or the correct program to load rather than having it
+		// baked into the ROM
+		PackMinimizer.minimize(__out, bootLib, new String[]{bootLib},
+			"cc.squirreljme.jvm.summercoat.Bootstrap",
+			false, __libs);
 	}
 }

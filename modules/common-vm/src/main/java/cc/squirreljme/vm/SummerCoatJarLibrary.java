@@ -84,4 +84,38 @@ public class SummerCoatJarLibrary
 		
 		return Files.newInputStream(this.path, StandardOpenOption.READ);
 	}
+	
+	/**
+	 * Checks if this is a SQC or not.
+	 * 
+	 * @param __s The file name.
+	 * @return If this is a SQC ROM.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	public static boolean isSqc(Path __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return SummerCoatJarLibrary.isSqc(__s.toString());
+	}
+	
+	/**
+	 * Checks if this is a SQC or not.
+	 * 
+	 * @param __s The file name.
+	 * @return If this is a SQC ROM.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	public static boolean isSqc(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return __s.endsWith(".sqc") || __s.endsWith(".SQC");
+	}
 }

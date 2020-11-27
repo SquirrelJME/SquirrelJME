@@ -9,9 +9,12 @@
 
 package cc.squirreljme.jvm.aot;
 
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Collection;
 import java.util.ServiceLoader;
 
 /**
@@ -63,4 +66,18 @@ public interface Backend
 	 * @since 2020/11/22
 	 */
 	String name();
+	
+	/**
+	 * Links together the ROM.
+	 * 
+	 * @param __settings ROM settings.
+	 * @param __out The stream to write to.
+	 * @param __libs The libraries to combined.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	void rom(RomSettings __settings, OutputStream __out,
+		VMClassLibrary... __libs)
+		throws IOException, NullPointerException;
 }

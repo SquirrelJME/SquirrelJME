@@ -19,8 +19,12 @@ squirreljme
 dependencies
 {
 	implementation project(":modules:aot")
+	implementation project(":modules:common-vm")
+	
+	// Library Building
 	implementation project(":modules:tool-classfile")
 	implementation project(":modules:tool-jarfile")
+	
+	// ROM Linking
 	implementation project(":modules:tool-packfile")
-	implementation project(":modules:common-vm")
 }

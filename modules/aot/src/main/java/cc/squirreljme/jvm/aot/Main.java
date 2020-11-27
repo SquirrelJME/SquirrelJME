@@ -10,11 +10,16 @@
 package cc.squirreljme.jvm.aot;
 
 import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.vm.JarClassLibrary;
+import cc.squirreljme.vm.SummerCoatJarLibrary;
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.ServiceLoader;
@@ -113,6 +118,11 @@ public class Main
 			case "compile":
 				Main.mainCompile(backend, name, args);
 				break;
+				
+				// Link multiple libraries into one
+			case "rom":
+				Main.mainRom(backend, args);
+				break;
 			
 			// {@squirreljme.error AE02 Unknown mode. (The mode)}
 			default:
@@ -137,8 +147,8 @@ public class Main
 		if (__backend == null || __name == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup compilation arguments
-		CompileSettings settings = Main.parseCompileSettings(__args);
+		// Parse compilation arguments
+		CompileSettings settings = CompileSettings.parse(__args);
 		
 		// Setup glob for final linking
 		LinkGlob glob = __backend.linkGlob(settings, __name, System.out);
@@ -191,42 +201,45 @@ public class Main
 	}
 	
 	/**
-	 * Parses compile settings for the compilation step.
+	 * Links the ROM together as one.
 	 * 
-	 * @param __args The arguments to parse.
-	 * @return The resultant settings.
+	 * @param __backend The backend to use.
+	 * @param __args The arguments to the ROM linking.
+	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/11/23
+	 * @since 2020/11/27
 	 */
-	private static CompileSettings parseCompileSettings(Deque<String> __args)
-		throws NullPointerException
+	public static void mainRom(Backend __backend, Deque<String> __args)
+		throws IOException, NullPointerException
 	{
-		if (__args == null)
+		if (__backend == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		// Possible settings
-		boolean isBootLoader = false;
+		// Parse rom arguments
+		RomSettings settings = RomSettings.parse(__args);
 		
-		// Parse settings
-		while (!__args.isEmpty())
+		// Load all libraries
+		Collection<VMClassLibrary> libs = new LinkedList<>();
+		while (__args.isEmpty())
 		{
 			String arg = __args.removeFirst();
 			
-			switch (arg)
-			{
-					// Is this a bootloader?
-				case "-boot":
-					isBootLoader = true;
-					break;
-				
-					// {@squirreljme.error AE06 Unknown compilation setting.
-					// (The argument)}
-				default:
-					throw new IllegalArgumentException("AE06 " + arg);
-			}
+			// Determine the correct kind of library to load
+			VMClassLibrary lib;
+			if (SummerCoatJarLibrary.isSqc(arg))
+				lib = new SummerCoatJarLibrary(Paths.get(arg));
+			else
+				lib = JarClassLibrary.of(Paths.get(arg));
+			
+			libs.add(lib);
 		}
 		
-		// Initialize final settings
-		return new CompileSettings(isBootLoader);
+		// {@squirreljme.error AE08 No libraries specified to link together.}
+		if (libs.isEmpty())
+			throw new IllegalArgumentException("AE08");
+		
+		// Perform combined linking
+		__backend.rom(settings, System.out,
+			libs.toArray(new VMClassLibrary[libs.size()]));
 	}
 }
