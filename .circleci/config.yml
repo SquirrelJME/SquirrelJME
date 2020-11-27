@@ -393,7 +393,6 @@ workflows:
     jobs:
       ############################# STANDARD TESTS ############################
       - build_linux
-      - build_macosx
       - test_springcoat:
           requires:
             - construct_testJars
@@ -401,9 +400,16 @@ workflows:
 #          requires:
 #            - construct_libTestSummerCoat
 
+      # Mac OS X runs decently however the jobs for it have a higher cost, so
+      # only perform builds and tests for trunk to lower costs.
+      - build_macosx:
+        filters:
+          branches:
+            only: trunk
+
       # Building on Windows is currently expensive and takes longer, so only
-      # run these builds on trunk to lower costs
-      - build_windows
+      # run these builds on trunk to lower costs.
+      - build_windows:
         filters:
           branches:
             only: trunk
