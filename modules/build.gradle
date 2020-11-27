@@ -90,6 +90,7 @@ configure(subprojects
 	{
 		// All projects depend on the Compact CLDC Library
 		implementation project(":modules:cldc-compact")
+		
 		testImplementation project(":modules:cldc-compact")
 	}
 }

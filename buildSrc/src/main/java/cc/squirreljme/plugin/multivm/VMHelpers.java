@@ -65,7 +65,7 @@ public final class VMHelpers
 	
 	/** Test configurations. */
 	private static final String[] _TEST_CONFIGS =
-		new String[]{"testApi", "testImplementation"};
+		new String[]{"testImplementation", "testImplementation"};
 	
 	/** Declaration of multi-test parameters. */
 	private static final String _MULTI_PARAMETERS_KEY =
