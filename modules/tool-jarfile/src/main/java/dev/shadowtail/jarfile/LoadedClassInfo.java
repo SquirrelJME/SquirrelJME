@@ -22,6 +22,7 @@ import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
+import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.pool.VirtualMethodIndex;
@@ -192,13 +193,22 @@ public final class LoadedClassInfo
 		if (__fn == null || __fd == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BC02 Could not locate instance field. (Class;
-		// Field Name; Field Type)}
 		MinimizedField mf = this._class.field(false, __fn, __fd);
 		if (mf == null)
+		{
+			// Look in super class if it does not exist, since it could be
+			// a clunked field reference on a parent class
+			ClassName sn = this._class.superName();
+			if (sn != null)
+				return this.__bootstrap().findClass(sn)
+					.fieldInstanceOffset(__fn, __fd);
+			
+			// {@squirreljme.error BC02 Could not locate instance field.
+			// (Class; Field Name; Field Type)}
 			throw new InvalidClassFormatException(
 				String.format("BC02 %s %s %s", this._class.thisName(), __fn,
 					__fd));
+		}
 		
 		// Determine offset to field
 		return this.baseOffset() + mf.offset;
@@ -635,12 +645,21 @@ public final class LoadedClassInfo
 			return this._classoffset + mcf.header.smoff + mm.codeoffset;
 		
 		// Otherwise fallback to instance methods
-		// {@squirreljme.error BC07 Could not locate the given method.
-		// (The class; The name; The type)}
 		mm = mcf.method(false, __mn, __mt);
 		if (mm == null)
+		{
+			// Try looking for the method in the super class as this may be
+			// shadowed from that class
+			ClassName sn = this.superName();
+			if (sn != null)
+				return this.__bootstrap().findClass(sn)
+					.methodCodeAddress(__mn, __mt);
+			
+			// {@squirreljme.error BC07 Could not locate the given method.
+			// (The class; The name; The type)}
 			throw new InvalidClassFormatException(
 				String.format("BC07 %s %s %s", mcf.thisName(), __mn, __mt));
+		}
 		return this._classoffset + mcf.header.imoff + mm.codeoffset;
 	}
 	
@@ -837,10 +856,22 @@ public final class LoadedClassInfo
 					InvokedMethod im = entry.<InvokedMethod>value(
 						InvokedMethod.class);
 					
-					mx = Modifier.JAR_OFFSET;
-					vx = bootstrap.findClass(im.handle.outerClass()).
-						methodCodeAddress(im.handle.name(),
-							im.handle.descriptor());
+					if (im.type == InvokeType.INTERFACE)
+					{
+						// TODO: The bootloader preloading will be completely
+						// changed and reworked.
+						Debugging.todoNote("Handle interface invoke.");
+						
+						mx = Modifier.NONE;
+						vx = 0;
+					}
+					else
+					{
+						mx = Modifier.JAR_OFFSET;
+						vx = bootstrap.findClass(im.handle.outerClass()).
+							methodCodeAddress(im.handle.name(),
+								im.handle.descriptor());
+					}
 					break;
 					
 					// Index of method
@@ -975,7 +1006,11 @@ public final class LoadedClassInfo
 						break;
 					
 					case "Ljava/lang/String;":
-						throw Debugging.todo("Write string");
+						// TODO: Write constant string value, however the
+						// TODO: bootstrap is going to be completely be
+						// TODO: redone, so ignore here.
+						Debugging.debugNote("Write constant string");
+						break;
 					
 						// Unknown
 					default:
