@@ -403,16 +403,18 @@ workflows:
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
       - build_macosx:
-        filters:
-          branches:
-            only: trunk
+          filters:
+            branches:
+              only:
+                - trunk
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
       - build_windows:
-        filters:
-          branches:
-            only: trunk
+          filters:
+            branches:
+              only:
+                - trunk
 
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:
