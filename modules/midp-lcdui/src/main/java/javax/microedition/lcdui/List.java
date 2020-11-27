@@ -464,7 +464,17 @@ public class List
 	@Override
 	void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
-		__ChoiceEntry__ entry = this._items.get(__special);
+		__ChoiceEntry__ entry;
+		try
+		{
+			entry = this._items.get(__special);
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			e.printStackTrace();
+			
+			return;
+		}
 		
 		// Draw the image over the buffer
 		Image image = entry._image;

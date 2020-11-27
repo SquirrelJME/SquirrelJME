@@ -9,6 +9,7 @@
 # DESCRIPTION: CircleCI Build Configuration
 # SourceForge: squirreljme@frs.sourceforge.net
 # SourceForge Root: /home/frs/project/squirreljme/AutoBuild/
+# CircleCI Reference: https://circleci.com/docs/2.0/env-vars/
 
 version: 2.1
 executors:
@@ -30,13 +31,20 @@ jobs:
       - run:
           shell: cmd.exe
           name: Gradle Build and Test
-          command: gradlew build testHosted --continue --parallel
+          command: gradlew build testHosted --console plain --continue --parallel
       - run:
           shell: bash.exe
           name: Save test results
           command: |
-            mkdir -p /c/users/circleci/test-results/junit
-            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} /c/users/circleci/test-results/junit/ \;
+            mkdir -p /c/users/circleci/test-results/junit-windows
+            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
+          when: always
+      - run:
+          shell: bash.exe
+          name: Save test results
+          command: |
+            mkdir -p /c/users/circleci/test-results/csv-windows
+            /usr/bin/find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} /c/users/circleci/test-results/csv-windows/ \;
           when: always
       - store_test_results:
           path: c:\users\circleci\test-results
@@ -81,35 +89,45 @@ jobs:
   build_macosx:
     macos:
       xcode: 11.3.0
+    environment:
+      # Do not auto-update brew as this takes forever and we really just want
+      # a single package
+      HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
       - run:
-          name: Update Brew
-          command: brew update
-      - run:
-          name: Install Gradle and OpenJDK 11
-          command: brew install gradle openjdk@11
+          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
+          # we do not need that
+          name: Install OpenJDK 11
+          command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted --continue --parallel
+          command: ./gradlew build testHosted --console plain --continue --parallel
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/junit-macosx/
+            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
+          when: always
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/csv-macosx/
+            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-macosx/ \;
           when: always
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
+          path: ~/test-results
   ratufacoat_build_macosx:
     macos:
       xcode: 11.3.0
+    environment:
+      # Do not auto-update brew as this takes forever and we really just want
+      # a single package
+      HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
-      - run:
-          name: Update Brew
-          command: brew update
       - run:
           name: Install CMake
           command: brew install cmake
@@ -138,12 +156,18 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted --continue --parallel
+          command: ./gradlew build testHosted --console plain --continue --parallel
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/csv-linux/
+            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-linux/ \;
           when: always
       - persist_to_workspace:
           root: .
@@ -156,9 +180,10 @@ jobs:
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
+          path: ~/test-results
   ratufacoat_build_linux:
     executor: buildenv
+    resource_class: small
     steps:
       - checkout
       - run:
@@ -196,21 +221,25 @@ jobs:
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/vm-test-springcoat/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/junit-springcoat/
+            find . -type f -regex '.*/vm-test-springcoat/junit/.*\.xml' -exec cp {} ~/test-results/junit-springcoat/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
-            mkdir -p ~/test-results/nps/
-            find . -type f -regex '.*/vm-test-springcoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+            mkdir -p ~/test-results/nps-springcoat/
+            find . -type f -regex '.*/vm-test-springcoat/nps/.*\.nps' -exec cp {} ~/test-results/nps-springcoat/ \;
+          when: always
+      - run:
+          name: Save snapshots
+          command: |
+            mkdir -p ~/test-results/csv-springcoat/
+            find . -type f -regex '.*/vm-test-springcoat/csv/.*\.csv' -exec cp {} ~/test-results/csv-springcoat/ \;
           when: always
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
-      - store_artifacts:
-          path: ~/test-results/nps
+          path: ~/test-results
   test_summercoat:
     executor: buildenv
     steps:
@@ -219,30 +248,31 @@ jobs:
           at: .
       - run:
           name: SummerCoat Tests
-          command: |
-            if ! timeout --foreground 1s ./gradlew testSummerCoat --console plain --continue --parallel
-            then
-              echo "SummerCoat testing failed, ignoring..." 1>&2
-            fi
-          no_output_timeout: 1m
+          command: timeout --foreground 15m ./gradlew testSummerCoat --console plain --continue --parallel
+          no_output_timeout: 15m
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex '.*/vm-test-summercoat/junit/.*xml' -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/junit-summercoat/
+            find . -type f -regex '.*/vm-test-summercoat/junit/.*\.xml' -exec cp {} ~/test-results/junit-summercoat/ \;
           when: always
       - run:
           name: Save snapshots
           command: |
-            mkdir -p ~/test-results/nps/
-            find . -type f -regex '.*/vm-test-summercoat/nps/.*nps' -exec cp {} ~/test-results/nps/ \;
+            mkdir -p ~/test-results/nps-summercoat/
+            find . -type f -regex '.*/vm-test-summercoat/nps/.*\.nps' -exec cp {} ~/test-results/nps-summercoat/ \;
+          when: always
+      - run:
+          name: Save snapshots
+          command: |
+            mkdir -p ~/test-results/csv-summercoat/
+            find . -type f -regex '.*/vm-test-summercoat/csv/.*\.csv' -exec cp {} ~/test-results/csv-summercoat/ \;
           when: always
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
-      - store_artifacts:
-          path: ~/test-results/nps
+          path: ~/test-results
+
   ################################### USERS ##################################
   export_user_guide:
     resource_class: small
@@ -282,7 +312,7 @@ jobs:
           at: .
       - run:
           name: Construct Test JARs
-          command: ./gradlew testJar --continue --parallel
+          command: ./gradlew testJar --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -302,7 +332,7 @@ jobs:
           at: .
       - run:
           name: Construct SummerCoat Libraries
-          command: ./gradlew libSummerCoat --continue --parallel
+          command: ./gradlew libSummerCoat --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -321,7 +351,7 @@ jobs:
           at: .
       - run:
           name: Construct Test SummerCoat Libraries
-          command: ./gradlew libTestSummerCoat --continue --parallel
+          command: ./gradlew libTestSummerCoat --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -340,7 +370,7 @@ jobs:
           at: .
       - run:
           name: Construct SummerCoat ROM
-          command: ./gradlew romSummerCoat --continue --parallel
+          command: ./gradlew romSummerCoat --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -361,7 +391,7 @@ jobs:
           at: .
       - run:
           name: Construct Test SummerCoat ROM
-          command: ./gradlew romTestSummerCoat --continue --parallel
+          command: ./gradlew romTestSummerCoat --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
@@ -376,15 +406,33 @@ workflows:
   tests:
     jobs:
       ############################# STANDARD TESTS ############################
-      - build_windows
       - build_linux
-      - build_macosx
       - test_springcoat:
           requires:
             - construct_testJars
 #      - test_summercoat:
 #          requires:
 #            - construct_libTestSummerCoat
+
+      # Mac OS X runs decently however the jobs for it have a higher cost, so
+      # only perform builds and tests for trunk to lower costs.
+      - build_macosx:
+          requires:
+            - build_linux
+          filters:
+            branches:
+              only:
+                - trunk
+
+      # Building on Windows is currently expensive and takes longer, so only
+      # run these builds on trunk to lower costs.
+      - build_windows:
+          requires:
+            - build_linux
+          filters:
+            branches:
+              only:
+                - trunk
 
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:

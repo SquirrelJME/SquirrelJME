@@ -121,7 +121,8 @@ final class __VolatileList__<T>
 		// Is this in bounds?
 		Object[] values = this._values;
 		if (__i < 0 || __i >= values.length)
-			throw new IndexOutOfBoundsException("IOOB");
+			throw new IndexOutOfBoundsException("IOOB " + __i + " " +
+				values.length);
 		
 		return (T)values[__i];
 	}

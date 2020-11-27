@@ -1,0 +1,6 @@
+# 2020/11/22
+
+## 08:40
+
+I think having available for standard input could be useful, like maybe standard
+input is opening a file?

@@ -31,7 +31,7 @@ public abstract class VMTestWorkAction
 {
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
-		240_000_000_000L;
+		360_000_000_000L;
 	
 	/**
 	 * {@inheritDoc}
@@ -101,7 +101,7 @@ public abstract class VMTestWorkAction
 					}
 					
 					// Wait for completion
-					if (process.waitFor(10, TimeUnit.SECONDS))
+					if (process.waitFor(3, TimeUnit.SECONDS))
 					{
 						exitCode = process.waitFor();
 						break;
@@ -225,8 +225,14 @@ public abstract class VMTestWorkAction
 		// is a pass, skip, or fail as the test result needs to be read to
 		// determine if the task is okay 
 		__out.printf("<property name=\"squirreljme.test.result\" " +
-			"value=\"%s:%s:\" />", VMTestTaskAction._SPECIAL_KEY,
+			"value=\"%s:result:%s:\" />", VMTestTaskAction._SPECIAL_KEY,
 			__result.name());
+		__out.println();
+		
+		// Also
+		__out.printf("<property name=\"squirreljme.test.nanoseconds\" " +
+			"value=\"%s:nanoseconds:%s:\" />", VMTestTaskAction._SPECIAL_KEY,
+			__nsDur);
 		__out.println();
 		
 		// End properties
