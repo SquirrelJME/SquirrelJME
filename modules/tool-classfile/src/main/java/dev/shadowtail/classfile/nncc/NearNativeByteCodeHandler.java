@@ -795,19 +795,18 @@ public final class NearNativeByteCodeHandler
 						epp.register, rpp.register);
 						
 					// Invoke the given pointer and pool index
-					// COMBINED BOTH BELOW 
-					
-					// Load the pool pointer
-					if (true)
-						throw Debugging.todo();
+					codebuilder.addInterfaceVTLoad(
+						iOfO.register, iVti.register,
+						epp.register, rpp.register);
 					
 					// Invoke the interface, return values and exceptions are
 					// handled later on
-					if (true)
-						throw Debugging.todo();
+					codebuilder.addInvokePoolAndPointer(
+						epp.register, rpp.register, reglist);
 				}
 				
-				if (true)
+				// TODO: Old-code, delete this when verified
+				/*if (true)
 					throw Debugging.todo();
 				
 				// Load the interface we are looking in
@@ -839,7 +838,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Cleanup
 				volatiles.removeUnmanaged(voliclass);
-				volatiles.removeUnmanaged(volimethdx);
+				volatiles.removeUnmanaged(volimethdx);*/
 			}
 			
 			// Special or virtual

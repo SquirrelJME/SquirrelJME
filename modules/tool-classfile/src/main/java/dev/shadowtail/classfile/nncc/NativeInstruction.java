@@ -299,6 +299,7 @@ public final class NativeInstruction
 			case NativeInstructionType.LOAD_POOL:
 			case NativeInstructionType.STORE_POOL:
 			case NativeInstructionType.SYSTEM_CALL:
+			case NativeInstructionType.INVOKE_POINTER_ONLY:
 				return 2;
 					
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
@@ -315,6 +316,7 @@ public final class NativeInstruction
 			case NativeInstructionType.STORE_TO_INTARRAY:
 			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
 			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
+			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
 				return 3;
 				
 			case NativeInstructionType.DEBUG_ENTRY:
@@ -351,9 +353,8 @@ public final class NativeInstruction
 				
 				// [r16, reglist]
 			case NativeInstructionType.SYSTEM_CALL:
-				
-				// [reg w/ memaddr, reglist]
 			case NativeInstructionType.INVOKE:
+			case NativeInstructionType.INVOKE_POINTER_ONLY:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
@@ -376,6 +377,13 @@ public final class NativeInstruction
 				return ArgumentFormat.of(
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VUREG);
+					
+				// [r16, r16, reglist]
+			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.REGLIST);
 					
 				// [p16, r16, r16]
 			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
@@ -568,6 +576,12 @@ public final class NativeInstruction
 			
 			case NativeInstructionType.INTERFACE_VT_LOAD:
 				return "INTERFACE_VT_LOAD";
+			
+			case NativeInstructionType.INVOKE_POINTER_ONLY:
+				return "INVOKE_POINTER_ONLY";
+			
+			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
+				return "INVOKE_POOL_AND_POINTER";
 			
 			default:
 				return String.format("UNKNOWN_%02x", __op);

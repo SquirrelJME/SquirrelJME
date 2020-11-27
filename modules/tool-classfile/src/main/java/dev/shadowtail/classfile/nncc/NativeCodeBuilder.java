@@ -268,6 +268,44 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds an invocation of a pool and pointer value.
+	 * 
+	 * @param __exec The executable pointer.
+	 * @param __pool The pool pointer.
+	 * @param __args Arguments to the call.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	public NativeInstruction addInvokePoolAndPointer(ExecutablePointer __exec,
+		RuntimePoolPointer __pool, Register... __args)
+	{
+		return this.addInvokePoolAndPointer(__exec, __pool,
+			new RegisterList(__args));
+	}
+	
+	/**
+	 * Adds an invocation of a pool and pointer value.
+	 * 
+	 * @param __exec The executable pointer.
+	 * @param __pool The pool pointer.
+	 * @param __args Arguments to the call.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	public NativeInstruction addInvokePoolAndPointer(ExecutablePointer __exec,
+		RuntimePoolPointer __pool, RegisterList __args)
+		throws NullPointerException
+	{
+		if (__exec == null || __pool == null || __args == null)
+			throw new NullPointerException("NARG");
+			
+		return this.__add(NativeInstructionType.INVOKE_POOL_AND_POINTER,
+			__exec, __pool, __args);
+	}
+	
+	/**
 	 * Adds a math via constant operation.
 	 *
 	 * @param __jt The Java type.
