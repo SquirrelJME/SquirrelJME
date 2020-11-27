@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.pool;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldDescriptor;
@@ -125,6 +126,12 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(v.inClass).index,
 					this.addStatic(v.name.toString()).index,
 					this.addStatic(v.type).index);
+				
+				// The name of an interface class
+			case INTERFACE_CLASS:
+				InterfaceClassName icn = (InterfaceClassName)__v;
+				return runpool.add(__v,
+					this.addStatic(icn.name).index);
 				
 				// A string that is noted for its value (debugging)
 			case NOTED_STRING:

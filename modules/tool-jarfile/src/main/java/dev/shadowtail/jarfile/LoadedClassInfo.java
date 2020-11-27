@@ -866,6 +866,14 @@ public final class LoadedClassInfo
 						UsedString.class).toString());
 					break;
 					
+					// Interface class
+				case INTERFACE_CLASS:
+					Debugging.todoNote("Utilize INTERFACE_CLASS");
+					
+					mx = Modifier.NONE;
+					vx = 0;
+					break;
+					
 				default:
 					throw Debugging.oops(type.name());
 			}

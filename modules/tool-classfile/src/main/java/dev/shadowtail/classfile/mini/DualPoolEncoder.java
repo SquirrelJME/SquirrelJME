@@ -25,6 +25,7 @@ import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.pool.VirtualMethodIndex;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -175,6 +176,7 @@ public final class DualPoolEncoder
 					case VIRTUAL_METHOD_INDEX:
 					case NOTED_STRING:
 					case USED_STRING:
+					case INTERFACE_CLASS:
 						// Read parts
 						if (iswide)
 							for (int p = 0; p < numparts; p++)
@@ -304,6 +306,13 @@ public final class DualPoolEncoder
 								value = new UsedString(
 									classpool.byIndex(parts[0]).
 									<String>value(String.class));
+								break;
+								
+								// Interface class
+							case INTERFACE_CLASS:
+								value = new InterfaceClassName(
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[0]));
 								break;
 								
 								// Unknown
@@ -570,6 +579,7 @@ public final class DualPoolEncoder
 			case VIRTUAL_METHOD_INDEX:
 			case NOTED_STRING:
 			case USED_STRING:
+			case INTERFACE_CLASS:
 				if (__wide)
 					for (int i = 0, n = __p.length; i < n; i++)
 						dos.writeShortChecked(__p[i]);
