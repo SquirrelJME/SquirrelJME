@@ -26,10 +26,6 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-    environment:
-      # Flag to use all processors when running tests as CircleCI on Windows
-      # has 2 CPUs with 4 logical CPUs
-      USE_ALL_PROCESSORS: true
     steps:
       - checkout
       - run:
@@ -396,9 +392,6 @@ workflows:
   tests:
     jobs:
       ############################# STANDARD TESTS ############################
-      # Building on Windows is expensive and slow for now, builds take too much
-      # execution time for it to be affordable.
-#      - build_windows
       - build_linux
       - build_macosx
       - test_springcoat:
@@ -407,6 +400,13 @@ workflows:
 #      - test_summercoat:
 #          requires:
 #            - construct_libTestSummerCoat
+
+      # Building on Windows is currently expensive and takes longer, so only
+      # run these builds on trunk to lower costs
+      - build_windows
+        filters:
+          branches:
+            only: trunk
 
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:
