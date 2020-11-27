@@ -42,13 +42,39 @@ public final class JarPackageShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the libraries which are available to the virtual machine.
+	 * 
+	 * @return The libraries that are currently available.
+	 * @since 2020/10/31
+	 */
+	public static native JarPackageBracket[] libraries();
+	
+	/**
+	 * Returns the path to the given JAR.
+	 * 
+	 * Note that this may or may not be a physical path, it could be a
+	 * representation of the JAR file in string form.
+	 * 
+	 * @param __jar The JAR to get the path of.
+	 * @return The path of the given JAR.
+	 * @throws MLECallError If the JAR is not valid.
+	 * @since 2020/10/31
+	 */
+	public static native String libraryPath(JarPackageBracket __jar)
+		throws MLECallError;
+	
+	/**
 	 * Opens the resource from the input stream.
 	 *
 	 * @param __jar The JAR to open.
 	 * @param __rc The resource to load from the given JAR.
-	 * @return Input stream to the resource.
+	 * @return Input stream to the resource, may be {@code null} if it does
+	 * not exist.
+	 * @throws MLECallError If the JAR is not valid or the resource was not
+	 * specified.
 	 * @since 2020/06/07
 	 */
 	public static native InputStream openResource(JarPackageBracket __jar,
-		String __rc);
+		String __rc)
+		throws MLECallError;
 }

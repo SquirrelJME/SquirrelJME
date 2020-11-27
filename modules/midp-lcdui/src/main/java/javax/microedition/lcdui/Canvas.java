@@ -10,11 +10,23 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UISpecialCode;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -30,16 +42,41 @@ import cc.squirreljme.runtime.lcdui.fbui.UIState;
 public abstract class Canvas
 	extends Displayable
 {
+	/**
+	 * Every button that is possibly available.
+	 * 
+	 * The following buttons are shown:
+	 * - Any from {@link #ACTIONS_NAVIGATION}.
+	 * - {@link #GAME_A}.
+	 * - {@link #GAME_B}.
+	 * - {@link #GAME_C}.
+	 * - {@link #GAME_D}.
+	 */
 	public static final int ACTIONS_ALL =
 		-2;
 	
+	/**
+	 * Directional buttons and fire to appear on the display screen.
+	 * 
+	 * The following buttons are shown:
+	 * - {@link #UP}.
+	 * - {@link #DOWN}.
+	 * - {@link #LEFT}.
+	 * - {@link #RIGHT}.
+	 * - {@link #FIRE}.
+	 */
 	public static final int ACTIONS_NAVIGATION =
 		-1;
 	
+	/** No actions are required. */
 	public static final int ACTIONS_NONE =
 		0;
 	
-	/** This is a game key for the down direction. */
+	/**
+	 * This is a game key for the down direction.
+	 * 
+	 * The bits of this key are {@code 0b110}, inverted from {@link #UP}.
+	 */
 	public static final int DOWN =
 		6;
 	
@@ -133,32 +170,50 @@ public abstract class Canvas
 	public static final int KEY_UP =
 		-1;
 	
-	/** This is a game key for the left direction. */
+	/** 
+	 * This is a game key for the left direction.
+	 * 
+	 * The bits of this key are {@code 0b010}, inverted from {@link #RIGHT}.
+	 */
 	public static final int LEFT =
 		2;
 	
-	/** This is a game key for the right direction. */
+	/**
+	 * This is a game key for the right direction.
+	 * 
+	 * The bits of this key are {@code 0b101}, inverted from {@link #LEFT}.
+	 */
 	public static final int RIGHT =
 		5;
 	
-	/** This is a game key for the up direction. */
+	/** 
+	 * This is a game key for the up direction.
+	 * 
+	 * The bits of this key are {@code 0b001}, inverted from {@link #DOWN}.
+	 */
 	public static final int UP =
 		1;
 	
+	/** The native display instance. */
+	final UIItemBracket _uiCanvas;
+	
 	/** The key listener to use. */
-	private KeyListener _keylistener;
+	KeyListener _keyListener;
 	
 	/** Is the rendering transparent or opaque? */
 	boolean _transparent;
 	
 	/** Should this be ran full-screen? */
-	volatile boolean _isfullscreen;
+	volatile boolean _isFullScreen;
 	
-	/** Service repaint counter. */
-	volatile int _paintservice;
+	/** The number of pending paints. */
+	volatile int _pendingPaints;
 	
-	/** Was a repaint requested? */
-	volatile boolean _paintwanted;
+	/** The default key listener implementation. */
+	private KeyListener _defaultKeyListener;
+	
+	/** The actions which are required. */
+	private int _requiredActions;
 	
 	/**
 	 * Initializes the base canvas.
@@ -167,6 +222,15 @@ public abstract class Canvas
 	 */
 	protected Canvas()
 	{
+		// Build new canvas
+		UIItemBracket uiCanvas = UIFormShelf.itemNew(UIItemType.CANVAS);
+		this._uiCanvas = uiCanvas;
+		
+		// Register self for future paint events
+		StaticDisplayState.register(this, uiCanvas);
+		
+		// Show it on the form for this displayable
+		UIFormShelf.formItemPosition(this._uiForm, uiCanvas, 0);
 	}
 	
 	/**
@@ -182,7 +246,6 @@ public abstract class Canvas
 	 * @param __g The graphics to draw into.
 	 * @since 2018/03/28
 	 */
-	@Override
 	@SerializedEvent
 	protected abstract void paint(Graphics __g);
 	
@@ -208,7 +271,7 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, this._isfullscreen);
+		return Displayable.__getHeight(this, this._uiCanvas);
 	}
 	
 	/**
@@ -243,9 +306,68 @@ public abstract class Canvas
 		return KeyNames.getKeyName(__a);
 	}
 	
-	public int[] getSoftkeyLabelCoordinates(int __p)
+	/**
+	 * Gets the coordinates of a soft key of where it would be placed on the
+	 * screen in relation to the canvas.
+	 * 
+	 * The returned coordinates may be negative and may be outside of the
+	 * screen.
+	 * 
+	 * @param __sk The position to get, will be one of the soft key
+	 * coordinates except for {@link Display#SOFTKEY_OFFSCREEN}.
+	 * @throws IllegalArgumentException If the coordinates are not valid, or
+	 * the border is {@link Display#SOFTKEY_OFFSCREEN}.
+	 * @return The coordinates, these will be {@code [x, y, width, height]}.
+	 * @since 2020/10/03
+	 */
+	public int[] getSoftkeyLabelCoordinates(int __sk)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// Remove any rotation from the soft key
+		Display display = this._display;
+		if (display != null)
+			__sk = display.__layoutProject(__sk);
+		
+		int index = (__sk & Display.SOFTKEY_INDEX_MASK);
+		
+		// {@squirreljme.error EB17 The placement is not valid or not supported
+		// on this device/implementation. (The placement)}
+		if (index == 0 || (__sk != Display._SOFTKEY_LEFT_COMMAND &&
+			__sk != Display._SOFTKEY_RIGHT_COMMAND))
+			throw new IllegalArgumentException("EB17 " + __sk);
+		
+		UIBackend backend = UIBackendFactory.getInstance();
+		
+		// Use the item's actual position
+		int uiPos = Display.__layoutSoftKeyToPos(__sk);
+		UIItemBracket item = backend.formItemAtPosition(this._uiForm, uiPos);
+		if (item != null)
+			return new int[]{
+					backend.widgetPropertyInt(item,
+						UIWidgetProperty.INT_X_POSITION, 0),
+					backend.widgetPropertyInt(item,
+						UIWidgetProperty.INT_Y_POSITION, 0),
+					backend.widgetPropertyInt(item,
+						UIWidgetProperty.INT_WIDTH, 0),
+					backend.widgetPropertyInt(item,
+						UIWidgetProperty.INT_HEIGHT, 0),
+				};
+		
+		// Otherwise make a guess at where it could be located since it cannot
+		// be well known
+		int halfWidth = this.getWidth() / 2;
+		int height = this.getHeight();
+		switch (__sk)
+		{
+			case Display._SOFTKEY_LEFT_COMMAND:
+				return new int[]{0, height, halfWidth, 16};
+			
+			case Display._SOFTKEY_RIGHT_COMMAND:
+				return new int[]{halfWidth, height, halfWidth, 16};
+			
+			default:
+				throw Debugging.oops(__sk);
+		}
 	}
 	
 	/**
@@ -255,7 +377,7 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, this._isfullscreen);
+		return Displayable.__getWidth(this, this._uiCanvas);
 	}
 	
 	/**
@@ -265,11 +387,12 @@ public abstract class Canvas
 	 * @return {@code true} if pointer events are available.
 	 * @since 2017/02/12
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public boolean hasPointerEvents()
 	{
 		Display d = this._display;
-		return (d != null ? d : Display.getDisplays(0)[0]).hasPointerEvents();
+		return (d != null ? d :
+			Display.getDisplays(0)[0]).hasPointerEvents();
 	}
 	
 	/**
@@ -279,7 +402,7 @@ public abstract class Canvas
 	 * @return {@code true} if pointer motion events are available.
 	 * @since 2017/02/12
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public boolean hasPointerMotionEvents()
 	{
 		Display d = this._display;
@@ -306,7 +429,6 @@ public abstract class Canvas
 	 *
 	 * @since 2018/03/28
 	 */
-	@Override
 	@SerializedEvent
 	protected void hideNotify()
 	{
@@ -329,19 +451,17 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2019/05/17
 	 */
-	@Override
 	@ImplementationNote("This is in SquirrelJME only and is used to provide " +
 		"access to this flag.")
 	protected boolean isFullscreen()
 	{
-		return this._isfullscreen;
+		return this._isFullScreen;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/17
 	 */
-	@Override
 	@ImplementationNote("This is in SquirrelJME only and is used to provide " +
 		"access to this flag.")
 	protected boolean isTransparent()
@@ -355,7 +475,6 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void keyPressed(int __code)
 	{
@@ -368,7 +487,6 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void keyReleased(int __code)
 	{
@@ -381,7 +499,6 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void keyRepeated(int __code)
 	{
@@ -399,7 +516,6 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void pointerDragged(int __x, int __y)
 	{
@@ -416,7 +532,6 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void pointerPressed(int __x, int __y)
 	{
@@ -433,7 +548,6 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@Override
 	@SerializedEvent
 	protected void pointerReleased(int __x, int __y)
 	{
@@ -477,13 +591,32 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint(__x, __y, __w, __h);
+		// Request repainting
+		UIBackend instance = UIBackendFactory.getInstance();
+		
+		// Send repaint properties
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_X | __x);
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_Y | __y);
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_WIDTH | __w);
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_HEIGHT | __h);
+		
+		// Count pending paints up before we signal the final repaint
+		synchronized (Display.class)
+		{
+			this._pendingPaints++;
+		}
+		
+		// Execute the paint
+		instance.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, 0);
 	}
 	
 	/**
-	 * This forces any pending repaint requests to be serviced immedietely,
+	 * This forces any pending repaint requests to be serviced immediately,
 	 * blocking until paint has been called. If the canvas is not visible on
 	 * the display or if there are no pending repaints then this call does
 	 * nothing.
@@ -495,14 +628,30 @@ public abstract class Canvas
 	 */
 	public final void serviceRepaints()
 	{
-		// If a paint was not requested then do nothing
-		if (!this._paintwanted)
+		// If there is no current display then nothing can ever be repainted
+		Display display = this._display;
+		if (display == null)
 			return;
 		
-		// Just wait until the service count changes
-		int nowpsv = this._paintservice;
-		while (nowpsv == this._paintservice)
-			break;
+		// This does nothing, but it used as a runner for waiting until our
+		// serial call has been completed.
+		__PaintWait__ wait = new __PaintWait__();
+		
+		// Lock on the Display class because the callSerially() does the
+		// waiting on this, so that becomes out barrier.
+		synchronized (Display.class)
+		{
+			for (;;)
+			{
+				// No repaints are left to be performed, stop now
+				if (this._pendingPaints == 0)
+					return;
+				
+				// Call this, as when it is complete the event loop would
+				// have completed a run
+				display.callSerially(wait);
+			}
+		}
 	}
 	
 	/**
@@ -522,17 +671,17 @@ public abstract class Canvas
 	 */
 	public void setFullScreenMode(boolean __f)
 	{
-		// Do nothing if already fullscreen
-		if (this._isfullscreen == __f)
+		// Do nothing if the state is the same
+		if (this._isFullScreen == __f)
 			return;
 		
 		// Set new mode
-		this._isfullscreen = __f;
+		this._isFullScreen = __f;
 		
-		// Repaint the display if we have one so that it actually is used
-		Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();
+		// Depending on full-screen either choose the first position or the
+		// full-screen body of the form
+		UIFormShelf.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
+			UIItemPosition.BODY : 0));
 	}
 	
 	/**
@@ -546,7 +695,7 @@ public abstract class Canvas
 	 */
 	public void setKeyListener(KeyListener __kl)
 	{
-		this._keylistener = __kl;
+		this._keyListener = __kl;
 	}
 	
 	/**
@@ -569,8 +718,27 @@ public abstract class Canvas
 		this._transparent = !__opaque;
 	}
 	
+	/**
+	 * Sets the required actions that are to be shown on the touch screen when
+	 * this canvas is active.
+	 * 
+	 * @param __actions The actions to use.
+	 * @throws IllegalArgumentException If the actions are not valid.
+	 * @since 2020/10/03
+	 */
 	public void setRequiredActions(int __actions)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error EB18 Invalid action. {The action ID}) */
+		if (__actions != Canvas.ACTIONS_ALL &&
+			__actions != Canvas.ACTIONS_NAVIGATION &&
+			__actions != Canvas.ACTIONS_NONE)
+			throw new IllegalArgumentException("EB18 " + __actions);
+		
+		// Not a touch screen, so does not matter
+		if (!this.hasPointerEvents())
+			return;
+		
 		throw new todo.TODO();
 	}
 	
@@ -579,7 +747,6 @@ public abstract class Canvas
 	 *
 	 * @since 2018/12/02.
 	 */
-	@Override
 	@SerializedEvent
 	protected void showNotify()
 	{
@@ -594,6 +761,124 @@ public abstract class Canvas
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
+	}
+	
+	/**
+	 * Returns the default key listener implementation for this class.
+	 * 
+	 * @return The default key listener.
+	 * @since 2020/10/16
+	 */
+	final KeyListener __defaultKeyListener()
+	{
+		KeyListener rv = this._defaultKeyListener;
+		if (rv == null)
+			this._defaultKeyListener =
+				(rv = new __CanvasDefaultKeyListener__(this));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	boolean __isPainted()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/21
+	 */
+	@Override
+	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
+	{
+		// Draw background?
+		if (!this._transparent)
+		{
+			int old = __gfx.getAlphaColor();
+			__gfx.setColor(UIBackendFactory.getInstance().metric(
+				UIMetricType.COLOR_CANVAS_BACKGROUND));
+			
+			__gfx.fillRect(0, 0, __sw, __sh);
+			
+			__gfx.setAlphaColor(old);
+		}
+		
+		// Forward Draw
+		try
+		{
+			this.paint(__gfx);
+		}
+		
+		// Handle repaint servicing
+		finally
+		{
+			// We repainted the canvas, so reduce the pending paint counter
+			synchronized (Display.class)
+			{
+				// Drop the count, if there is any
+				int pending = this._pendingPaints;
+				if (pending > 0)
+				{
+					// Clear all paints, since this could have been called
+					// multiple times and we may have done one
+					this._pendingPaints = 0;
+					
+					// Signal that a repaint was done
+					Display.class.notifyAll();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/10/17
+	 */
+	@Override
+	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
+		int __intProp, int __sub, int __old, int __new)
+	{
+		UIBackend instance = UIBackendFactory.getInstance();
+		
+		// Only act on the canvas item
+		if (!instance.equals(__item, this._uiCanvas))
+			return false;
+		
+		// Depends on the property
+		switch (__intProp)
+		{
+				// Shown state changed?
+			case UIWidgetProperty.INT_IS_SHOWN:
+				if (__new == 0)
+					this.hideNotify();
+				else
+					this.showNotify();
+				return true;
+			
+				// New width?
+			case UIWidgetProperty.INT_WIDTH:
+				this.sizeChanged(__new, this.getHeight());
+				return true;
+				
+				// Height changed?
+			case UIWidgetProperty.INT_HEIGHT:
+				this.sizeChanged(this.getWidth(), __new);
+				return true;
+				
+				// Both changed?
+			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
+				this.sizeChanged(__old, __new);
+				return true;
+			
+				// Un-Handled
+			default:
+				return false;
+		}
 	}
 }
 

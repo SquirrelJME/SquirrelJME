@@ -14,13 +14,17 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 import net.multiphasicapps.classfile.ClassName;
@@ -54,6 +58,10 @@ public enum MLEDispatcher
 	OBJECT("cc/squirreljme/jvm/mle/ObjectShelf",
 		MLEObject.values()),
 	
+	/** {@link PencilShelf}. */
+	PENCIL("cc/squirreljme/jvm/mle/PencilShelf",
+		MLEPencil.values()),
+	
 	/** {@link ReferenceShelf}. */
 	REFERENCE("cc/squirreljme/jvm/mle/ReferenceShelf",
 		MLEReference.values()),
@@ -77,6 +85,10 @@ public enum MLEDispatcher
 	/** {@link TypeShelf}. */
 	TYPE("cc/squirreljme/jvm/mle/TypeShelf",
 		MLEType.values()),
+	
+	/** {@link UIFormShelf}. */
+	UI_FORM("cc/squirreljme/jvm/mle/UIFormShelf",
+		MLEUIForm.values()),
 	
 	/* End. */
 	;

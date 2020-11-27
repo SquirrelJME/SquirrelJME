@@ -28,6 +28,7 @@ import java.util.Set;
  *
  * @since 2017/12/08
  */
+@Deprecated
 final class __SystemSuiteManager__
 	implements SuiteManager
 {

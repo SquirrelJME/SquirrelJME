@@ -68,6 +68,7 @@ public class Random
 	 * @return The produced value.
 	 * @since 2018/11/02
 	 */
+	@SuppressWarnings("MagicNumber")
 	protected int next(int __bits)
 	{
 		// This has to be atomic
@@ -117,6 +118,7 @@ public class Random
 	 * @return The next value.
 	 * @since 2018/11/02
 	 */
+	@SuppressWarnings("MagicNumber")
 	public double nextDouble()
 	{
 		return (((long)this.next(26) << 27) + this.next(27)) /
@@ -129,6 +131,7 @@ public class Random
 	 * @return The next value.
 	 * @since 2018/11/02
 	 */
+	@SuppressWarnings("MagicNumber")
 	public float nextFloat()
 	{
 		return this.next(24) / ((float)(1 << 24));
@@ -198,6 +201,7 @@ public class Random
 	 * @throws IllegalArgumentException If the cap is zero or negative.
 	 * @since 2018/11/02
 	 */
+	@SuppressWarnings("MagicNumber")
 	public int nextInt(int __cap)
 		throws IllegalArgumentException
 	{
@@ -226,6 +230,7 @@ public class Random
 	 * @return The next long value.
 	 * @since 2018/11/02
 	 */
+	@SuppressWarnings("MagicNumber")
 	public long nextLong()
 	{
 		return ((long)this.next(32) << 32) + this.next(32);
@@ -239,6 +244,7 @@ public class Random
 	 * @param __seed The seed to use.
 	 * @since 2018/11/02
 	 */
+	@SuppressWarnings("MagicNumber")
 	public void setSeed(long __seed)
 	{
 		synchronized (this)

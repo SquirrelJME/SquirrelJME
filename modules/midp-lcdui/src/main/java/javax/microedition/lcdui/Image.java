@@ -10,8 +10,9 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -103,9 +104,13 @@ public class Image
 		if (!this.isMutable())
 			throw new IllegalStateException("EB28");
 		
-		// Create
-		return new AdvancedGraphics(this._data, this._alpha, null, this._width,
-			this._height, this._width, 0, 0, 0);
+		// Create hardware accelerated graphics where possible
+		return PencilGraphics.hardwareGraphics(
+			(this._alpha ? UIPixelFormat.INT_RGBA8888 :
+				UIPixelFormat.INT_RGB888),
+			this._width, this._height,
+			this._data, 0, null,
+			0, 0, this._width, this._height);
 	}
 	
 	/**

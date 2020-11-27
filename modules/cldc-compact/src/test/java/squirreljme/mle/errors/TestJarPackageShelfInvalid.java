@@ -59,6 +59,10 @@ public class TestJarPackageShelfInvalid
 					null, JarPackageShelf.classPath()[0]);
 				break;
 			
+			case 6:
+				JarPackageShelf.libraryPath(null);
+				break;
+			
 			default:
 				return true;
 		}

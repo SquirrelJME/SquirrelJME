@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.Poking;
+
 /**
  * Runs a single test.
  *
@@ -24,16 +26,39 @@ public class MainSingleRunner
 	 */
 	public static void main(String... __args)
 	{
+		// Poke any native VM stuff as it is needed during hosted testing or
+		// potential other areas
+		Poking.poke();
+		
 		// {@squirreljme.error BU0b Expected single argument specifying the
 		// test to run.}
 		if (__args == null || __args.length != 1 || __args[0] == null)
 			throw new IllegalArgumentException("BU0b");
+			
+		String singleArg = __args[0];
+		
+		// Determine if this is a multi-parameter test
+		String typeName;
+		String multiParameter;
+		int iat = singleArg.indexOf('@');
+		if (iat >= 0)
+		{
+			typeName = singleArg.substring(0, iat);
+			multiParameter = singleArg.substring(iat + 1);
+		}
+		
+		// Normal test with no multi-parameter
+		else
+		{
+			typeName = singleArg;
+			multiParameter = null;
+		}
 		
 		// Find the class type
 		Class<?> type;
 		try
 		{
-			type = Class.forName(__args[0]);
+			type = Class.forName(typeName);
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -52,7 +77,7 @@ public class MainSingleRunner
 		{
 			// {@squirreljme.error BU0h Could not instantiate the class.
 			// (The class name)}
-			throw new IllegalArgumentException("BU0h " + __args[0]);
+			throw new IllegalArgumentException("BU0h " + __args[0], e);
 		}
 		
 		// Cast the class to the interface for running
@@ -68,8 +93,12 @@ public class MainSingleRunner
 			throw new IllegalArgumentException("BU0i " + __args[0]);
 		}
 		
-		// Run the class execution
-		TestExecution execution = testInstance.runExecution();
+		// Run the class execution, there might be a multi-parameter which will
+		// be passed in accordingly
+		TestExecution execution =
+			(multiParameter == null ? testInstance.runExecution() :
+			testInstance.runExecution(
+				DataSerialization.serialize(multiParameter)));
 		
 		// Print the test execution results
 		execution.print(System.err);
@@ -93,7 +122,6 @@ public class MainSingleRunner
 				break;
 			
 			case UNTESTABLE:
-				
 				System.exit(ExitValueConstants.SKIPPED);
 				break;
 		}

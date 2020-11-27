@@ -1,0 +1,2 @@
+result: ExceptionThrown
+thrown: throwable:mleui.forms.FormTestException

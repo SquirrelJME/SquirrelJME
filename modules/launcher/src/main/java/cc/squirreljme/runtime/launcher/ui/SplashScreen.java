@@ -9,8 +9,10 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Canvas;
@@ -29,7 +31,7 @@ public final class SplashScreen
 	/** The copyright string. */
 	public static final String COPYRIGHT =
 		"https://squirreljme.cc/\n" +
-		"(C) 2013-2019 Stephanie Gawroriski\n" +
+		"(C) 2013-2020 Stephanie Gawroriski\n" +
 		"Licensed under the GPLv3!\nDonate to me on Patreon:\n" +
 		"*** https://www.patreon.com/SquirrelJME! ***";
 	
@@ -71,8 +73,8 @@ public final class SplashScreen
 		// Draw the raw image data, is the fastest
 		int[] image = this._image;
 		if (image != null)
-			__g.drawRGB(image, 0, SplashScreen.WIDTH, 0, 0, SplashScreen.WIDTH,
-				SplashScreen.HEIGHT, false);
+			__g.drawRGB(image, 0, SplashScreen.WIDTH, 0, 0,
+				SplashScreen.WIDTH, SplashScreen.HEIGHT, false);
 		
 		// The image is not fully loaded yet, so draw the copyright at least
 		else
@@ -125,8 +127,11 @@ public final class SplashScreen
 		
 		// Text will be drawn using the advanced graphics since it can
 		// operate on integer buffers directly
-		Graphics g = new AdvancedGraphics(image, false, null,
-			SplashScreen.WIDTH, SplashScreen.HEIGHT, SplashScreen.WIDTH, 0, 0, 0);
+		Graphics g = PencilGraphics.hardwareGraphics(
+			UIPixelFormat.INT_RGB888, 
+			SplashScreen.WIDTH, SplashScreen.HEIGHT,
+			image, 0, null, 0, 0,
+			SplashScreen.WIDTH, SplashScreen.HEIGHT);
 		
 		// Draw copyright at the bottom
 		SplashScreen.__copyright(g, false);
@@ -147,7 +152,7 @@ public final class SplashScreen
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/29
 	 */
-	private static final void __copyright(Graphics __g, boolean __swip)
+	private static void __copyright(Graphics __g, boolean __swip)
 		throws NullPointerException
 	{
 		if (__g == null)
@@ -162,7 +167,8 @@ public final class SplashScreen
 		if (__swip)
 		{
 			// SquirrelJME String
-			__g.drawString("SquirrelJME", 2, 2, Graphics.TOP | Graphics.LEFT);
+			__g.drawString("SquirrelJME", 2, 2,
+				Graphics.TOP | Graphics.LEFT);
 			
 			// Loading...
 			__g.drawString("Loading...", 120, 160,

@@ -1,0 +1,14 @@
+# 2020/11/21
+
+## 14:12
+
+I am going to need standard input for the AOT JAR processing, but this should
+not be hard to do. At least doing the AOT over standard pipes makes it the
+easiest to use and it could be done as a stream.
+
+## 14:17
+
+Also so glad I did the refactor on the Gradle tasks and such, this is making
+the AOT part much easier. Also this is much easier and handles better than the
+previous build system compilation. At least with the AOT modules I will be able
+to use those directly from within SquirrelJME to compile things naturally.

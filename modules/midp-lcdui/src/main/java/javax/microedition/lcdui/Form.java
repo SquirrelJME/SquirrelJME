@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class Form
 	extends Screen
@@ -131,11 +131,12 @@ public class Form
 		int rv = items.append(__i);
 		
 		// Update display
-		Display d = this._display;
+		throw Debugging.todo();
+		/*Display d = this._display;
 		if (d != null)
 			UIState.getInstance().repaint();
 		
-		return rv;
+		return rv;*/
 	}
 	
 	public void delete(int __a)
@@ -181,7 +182,7 @@ public class Form
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, false);
+		return Displayable.__getHeight(this, null);
 	}
 	
 	public FormLayoutPolicy getLayoutPolicy()
@@ -196,7 +197,7 @@ public class Form
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, false);
+		return Displayable.__getWidth(this, null);
 	}
 	
 	public void insert(int __a, Item __b)

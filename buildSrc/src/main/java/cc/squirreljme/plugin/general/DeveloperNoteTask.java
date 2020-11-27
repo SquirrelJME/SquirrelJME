@@ -9,8 +9,8 @@
 
 package cc.squirreljme.plugin.general;
 
+import cc.squirreljme.plugin.multivm.AlwaysFalse;
 import cc.squirreljme.plugin.util.FossilExe;
-import cc.squirreljme.plugin.util.NoteCalendarFinder;
 import cc.squirreljme.plugin.util.NoteCalendarGenerator;
 import cc.squirreljme.plugin.util.SimpleHTTPProtocolException;
 import cc.squirreljme.plugin.util.SimpleHTTPRequest;
@@ -64,6 +64,7 @@ public class DeveloperNoteTask
 		
 		// Fossil must exist
 		this.onlyIf(__task -> FossilExe.isAvailable(true));
+		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// Action to perform
 		this.doLast(this::action);
@@ -120,6 +121,7 @@ public class DeveloperNoteTask
 		// Problem with the server
 		catch (IOException e)
 		{
+			e.printStackTrace();
 			throw new RuntimeException("Server read/write error.", e);
 		}
 		

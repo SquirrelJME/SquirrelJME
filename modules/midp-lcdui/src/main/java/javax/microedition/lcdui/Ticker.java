@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.fbui.UIState;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * A ticker contains an infinitely scrolling message.
@@ -84,7 +84,8 @@ public class Ticker
 		}
 		
 		// If this is being shown, then force the view to repaint
-		UIState.getInstance().repaint();
+		throw Debugging.todo();
+		/*UIState.getInstance().repaint();*/
 	}
 }
 

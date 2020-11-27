@@ -1,0 +1,15 @@
+# 2020/08/22
+
+## 09:32
+
+I think having the AOT compilers standalone as modules would work in both cases.
+I could call them from the build system using a standard interface. Will have
+to see though. There also could probably be state on standard output on progress
+and otherwise. But I do have the feeling of wanting to exercise this morning
+so I will do that. I also think the general error code prefixes should be put
+in the General package.
+
+## 15:18
+
+Spent the bulk of the day cleaning and preparing dinner, but in a programming
+mood a bit. Will be doing it of course slowly. But regardless progress is okay.

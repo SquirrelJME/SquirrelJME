@@ -1,0 +1,67 @@
+# 2020/09/07
+
+## 10:17
+
+So the Gradle workers use serialization for the parameters, so will have to
+do a kind of workaround to make it work.
+
+## 10:28
+
+Well, I would like parallel test execution however for workers there is no
+way to forward or inject tasks or the Java executor. So these are stuck being
+single threaded unless I can hack it.
+
+## 10:38
+
+Looks like what I can do is instead return the command line that would spawn
+the JVM rather than having the enumeration do it itself. Only way I can think of
+to do what I need to. It should not be too bad as I can wrap the info in a
+class just to make sure it does the thing.
+
+## 10:41
+
+So `JavaExecSpec` has `getCommandLine()` which returns the entire command line
+for the VM, this is what I want. Luckily I do not use environment variables
+since those do not exist in Java ME 8 anyway. So I suppose what I need to do
+is just create this single instance somehow...
+
+## 11:20
+
+So I made a workaround, I am basically just filling the execution spec where
+I can and then invoking the VM. I have not started the tests or the test
+results yet, but that should not be too difficult. At least at this rate I
+should actually have concurrent test execution which should be a bit faster
+and if there are at least two CPUs then that should mean time being cut in
+half which would save me a bunch of money.
+
+## 11:23
+
+Of course the snapshot is using the wrong main class, so need to fix that
+or at least have an override for it.
+
+## 13:57
+
+I think it executing in parallel is nice, it went through the hosted tests
+in seven seconds but not sure if it was a success as I need to handle the
+logging and otherwise as needed. Will probably be best to do it after
+process termination as to not block.
+
+## 20:00
+
+I am going to await after executing one or more tests rather than pushing them
+all into the pool at once. Hopefully this makes things better.
+
+## 20:37
+
+Okay so after doing all the live console outputs, it actually makes the tests
+run... this means that it froze because it was trying to write the output but
+there must have been no room at all. Interesting.
+
+## 21:28
+
+Definitely feeling that the Multi-VM refactor is nearing completion which is
+a nice thing. It has been going awhile. Also I know I was going to do
+SummerCoat stuff, but I am going to snip that off as it should not be getting
+considered at all. Think what I should do is just disable those pipelines so
+I just have the few to worry about.
+

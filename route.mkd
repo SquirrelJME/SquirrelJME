@@ -178,6 +178,9 @@ needs to be done.
    * [ ] Within _SummerCoat_
 
 ## Released
+ * Additional Changes:
+   * Major refactoring to the source code so that the project is much easier
+     and quicker to develop for.
 
 ### 0.2.0 (December 25, 2018)
 

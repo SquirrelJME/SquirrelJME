@@ -116,6 +116,17 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
+	 * Sets the thread to be a daemon thread, it cannot be started.
+	 * 
+	 * @param __javaThread The thread to set as a daemon thread.
+	 * @throws MLECallError If {@code __javaThread} is null or is already
+	 * started.
+	 * @since 2020/09/12
+	 */
+	public static native void javaThreadSetDaemon(Thread __javaThread)
+		throws MLECallError;
+	
+	/**
 	 * Runs the main entry point for the current process and gives it all of
 	 * the arguments that were specified on program initialization.
 	 *

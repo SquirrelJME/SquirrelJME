@@ -28,6 +28,9 @@ public final class NativeBinding
 		// Find the library to load
 		String libName = System.mapLibraryName("emulator-base");
 		
+		// Debug
+		System.err.printf("Java Over-Layer: Locating %s...%n", libName);
+		
 		// Copy resource to the output
 		Path tempDir = null,
 			libFile = null;
@@ -38,9 +41,13 @@ public final class NativeBinding
 				throw new RuntimeException(String.format(
 					"Library %s not found in resource.", libName));
 			
+			
 			// Store the library as a given file
 			tempDir = Files.createTempDirectory("squirreljme-lib");
 			libFile = tempDir.resolve(libName);
+			
+			// Debug
+			System.err.printf("Java Over-Layer: Extracting %s...%n", libName);
 			
 			// Write to the disk as we can only load there
 			try (OutputStream out = Files.newOutputStream(libFile,
@@ -83,16 +90,28 @@ public final class NativeBinding
 			throw new RuntimeException("Could not copy native library.", e);
 		}
 		
+		// Debug
+		System.err.printf("Java Over-Layer: Extracting %s...%n", libFile);
+		
 		// Attempt cleanup at shutdown.
 		Runtime.getRuntime().addShutdownHook(
 			new PathCleanup(libFile, tempDir));
 		
+		// Debug
+		System.err.printf("Java Over-Layer: Loading %s...%n", libFile);
+		
 		// Try loading the library now
 		System.load(libFile.toString());
+		
+		// Debug
+		System.err.printf("Java Over-Layer: Binding methods...%n");
 		
 		// Bind methods
 		if (NativeBinding.__bindMethods() != 0)
 			throw new RuntimeException("Could not bind methods!");
+		
+		// Debug
+		System.err.printf("Java Over-Layer: Methods bound!%n");
 	}
 	
 	/**

@@ -719,10 +719,38 @@
  * `___`: `Mo` `Tu` `We` `Th` `Fr` `Sa` `Su`
  * `W31`: `--` `--` `--` `--` `--` `01` [**`02`**](stephanie-gawroriski/2020/08/02.mkd) 
  * `W32`: `03` `04` `05` [**`06`**](stephanie-gawroriski/2020/08/06.mkd) [**`07`**](stephanie-gawroriski/2020/08/07.mkd) `08` `09` 
- * `W33`: `10` `11` `12` `13` `14` `15` `16` 
- * `W34`: `17` `18` `19` `20` `21` `22` `23` 
- * `W35`: `24` `25` `26` `27` `28` `29` `30` 
+ * `W33`: `10` `11` `12` `13` `14` [**`15`**](stephanie-gawroriski/2020/08/15.mkd) `16` 
+ * `W34`: `17` `18` `19` `20` [**`21`**](stephanie-gawroriski/2020/08/21.mkd) [**`22`**](stephanie-gawroriski/2020/08/22.mkd) [**`23`**](stephanie-gawroriski/2020/08/23.mkd) 
+ * `W35`: `24` `25` `26` `27` [**`28`**](stephanie-gawroriski/2020/08/28.mkd) `29` `30` 
  * `W36`: `31` `--` `--` `--` `--` `--` `--` 
+
+#### September
+
+ * `___`: `Mo` `Tu` `We` `Th` `Fr` `Sa` `Su`
+ * `W36`: `--` [**`01`**](stephanie-gawroriski/2020/09/01.mkd) `02` `03` `04` [**`05`**](stephanie-gawroriski/2020/09/05.mkd) [**`06`**](stephanie-gawroriski/2020/09/06.mkd) 
+ * `W37`: [**`07`**](stephanie-gawroriski/2020/09/07.mkd) `08` `09` [**`10`**](stephanie-gawroriski/2020/09/10.mkd) `11` [**`12`**](stephanie-gawroriski/2020/09/12.mkd) [**`13`**](stephanie-gawroriski/2020/09/13.mkd) 
+ * `W38`: `14` `15` `16` `17` `18` `19` [**`20`**](stephanie-gawroriski/2020/09/20.mkd) 
+ * `W39`: `21` `22` `23` `24` `25` `26` [**`27`**](stephanie-gawroriski/2020/09/27.mkd) 
+ * `W40`: `28` `29` `30` `--` `--` `--` `--` 
+
+#### October
+
+ * `___`: `Mo` `Tu` `We` `Th` `Fr` `Sa` `Su`
+ * `W40`: `--` `--` `--` `01` `02` `03` [**`04`**](stephanie-gawroriski/2020/10/04.mkd) 
+ * `W41`: `05` `06` `07` `08` [**`09`**](stephanie-gawroriski/2020/10/09.mkd) `10` `11` 
+ * `W42`: `12` `13` `14` `15` `16` [**`17`**](stephanie-gawroriski/2020/10/17.mkd) `18` 
+ * `W43`: `19` `20` `21` `22` `23` `24` [**`25`**](stephanie-gawroriski/2020/10/25.mkd) 
+ * `W44`: `26` `27` `28` `29` `30` `31` `--` 
+
+#### November
+
+ * `___`: `Mo` `Tu` `We` `Th` `Fr` `Sa` `Su`
+ * `W44`: `--` `--` `--` `--` `--` `--` [**`01`**](stephanie-gawroriski/2020/11/01.mkd) 
+ * `W45`: `02` [**`03`**](stephanie-gawroriski/2020/11/03.mkd) `04` `05` `06` `07` `08` 
+ * `W46`: `09` `10` `11` `12` `13` `14` [**`15`**](stephanie-gawroriski/2020/11/15.mkd) 
+ * `W47`: `16` `17` `18` `19` `20` [**`21`**](stephanie-gawroriski/2020/11/21.mkd) [**`22`**](stephanie-gawroriski/2020/11/22.mkd) 
+ * `W48`: [**`23`**](stephanie-gawroriski/2020/11/23.mkd) [**`24`**](stephanie-gawroriski/2020/11/24.mkd) `25` `26` `27` `28` `29` 
+ * `W49`: `30` `--` `--` `--` `--` `--` `--` 
 
 
 

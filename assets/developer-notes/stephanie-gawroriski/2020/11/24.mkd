@@ -1,0 +1,16 @@
+# 2020/11/24
+
+## 11:25
+
+Okay so I think I am going to like the new stuff I am putting in as a base,
+such as volatiles that are `AutoCloseable` and various typed registers. I
+think will help reduce bugs and exploit type safety and otherwise. Also was
+thinking about how interfaces are to be handled, we need to get interface I
+of a given object so I was thinking of an instruction that gets an interface
+identifier I for a class of a given object, since they are dynamic at
+run-time potentially. This would add a new instruction but I could use it as
+a basis for new and upcoming changes and refactors. Was also thinking of the
+load pool changes as well, since that would possibly be getting changed. I
+just want to make the generated code a bit more simple, but still very possible
+to do native compilation. I think SummerCoat's weaknesses is that it is too
+native.

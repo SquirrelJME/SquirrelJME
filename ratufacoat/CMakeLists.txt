@@ -9,7 +9,7 @@
 cmake_minimum_required (VERSION 3.13)
 project(SquirrelJME
 	VERSION 0.3.0
-	DESCRIPTION ""
+	DESCRIPTION "A Java ME 8 Virtual Machine."
 	HOMEPAGE_URL https://squirreljme.cc/
 	LANGUAGES C)
 
