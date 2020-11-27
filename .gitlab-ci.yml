@@ -56,6 +56,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/vita-static.yml'
 
+  # Dingux (GCW Zero)
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/dingux-i386.yml'
+
 # Stages for building
 stages:
   - build-prepare
@@ -139,3 +143,9 @@ libretro-build-vita:
     - .libretro-vita-static-retroarch-master
     - .squirreljme-post-common
 
+# Dingux (GCW Zero)
+libretro-build-dingux:
+  extends:
+    - .core-defs
+    - .libretro-dingux-i386-make-default
+    - .squirreljme-post-common
