@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * These are flags which are used by methods.
  *
@@ -54,7 +56,7 @@ public enum MethodFlag
 	/** Synthetic method. */
 	SYNTHETIC,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -82,7 +84,7 @@ public enum MethodFlag
 			case SYNTHETIC:		return 0x1000;
 
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 }

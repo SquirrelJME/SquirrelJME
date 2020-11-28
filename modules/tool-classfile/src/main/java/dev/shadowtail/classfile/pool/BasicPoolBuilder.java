@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.pool;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,10 +30,10 @@ public final class BasicPoolBuilder
 	protected final Map<Object, BasicPoolEntry> entries =
 		new LinkedHashMap<>();
 	
-	/**
-	 * Base pool initialization.
-	 *
-	 * @since 2019/07/15
+	/*
+	  Base pool initialization.
+	 
+	  @since 2019/07/15
 	 */
 	{
 		// The first entry of the constant pool is always null!
@@ -86,7 +87,7 @@ public final class BasicPoolBuilder
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

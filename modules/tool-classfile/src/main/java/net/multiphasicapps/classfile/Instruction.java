@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.classfile;
 
-import cc.squirreljme.runtime.cldc.debug.JavaOpCodeUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashSet;
@@ -784,7 +783,7 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	static final int __readByte(byte[] __a, int __o)
+	static int __readByte(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		return (byte)Instruction.__readUnsignedByte(__a, __o);
@@ -801,7 +800,7 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
-	static final int __readInt(byte[] __a, int __o)
+	static int __readInt(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
@@ -831,7 +830,7 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	static final int __readShort(byte[] __a, int __o)
+	static int __readShort(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		return (short)Instruction.__readUnsignedShort(__a, __o);
@@ -848,7 +847,7 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/08
 	 */
-	static final int __readUnsignedByte(byte[] __a, int __o)
+	static int __readUnsignedByte(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
@@ -875,7 +874,7 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/15
 	 */
-	static final int __readUnsignedShort(byte[] __a, int __o)
+	static int __readUnsignedShort(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check

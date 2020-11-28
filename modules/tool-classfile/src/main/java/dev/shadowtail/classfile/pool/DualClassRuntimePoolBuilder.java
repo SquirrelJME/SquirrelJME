@@ -9,7 +9,9 @@
 
 package dev.shadowtail.classfile.pool;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldDescriptor;
@@ -117,31 +119,35 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(mh.descriptor()).index);
 				
 				// The index of a method
-			case METHOD_INDEX:
-				MethodIndex v = (MethodIndex)__v;
+			case VIRTUAL_METHOD_INDEX:
+				VirtualMethodIndex v = (VirtualMethodIndex)__v;
 				return runpool.add(__v,
 					0x7FFF,
-					this.addStatic(v.inclass).index,
+					this.addStatic(v.inClass).index,
 					this.addStatic(v.name.toString()).index,
 					this.addStatic(v.type).index);
 				
+				// The name of an interface class
+			case INTERFACE_CLASS:
+				InterfaceClassName icn = (InterfaceClassName)__v;
+				return runpool.add(__v,
+					this.addStatic(icn.name).index);
+				
 				// A string that is noted for its value (debugging)
 			case NOTED_STRING:
-				return runpool.add(__v,
-					this.addStatic(__v.toString()).index);
 				
 				// A string that is used
 			case USED_STRING:
 				return runpool.add(__v,
 					this.addStatic(__v.toString()).index);
 			
-				// Unknown
+			// Unknown
 			default:
 				// {@squirreljme.error JC4f Invalid type in runtime pool.
 				// (The type)}
 				if (!type.isRuntime())
 					throw new IllegalArgumentException("JC4f " + type);
-				throw new todo.OOPS(type.name());
+				throw Debugging.oops(type.name());
 		}
 	}
 	
@@ -258,7 +264,7 @@ public final class DualClassRuntimePoolBuilder
 				// (The type)}
 				if (!type.isStatic())
 					throw new IllegalArgumentException("JC4e " + type);
-				throw new todo.OOPS(type.name());
+				throw Debugging.oops(type.name());
 		}
 	}
 	
@@ -270,7 +276,7 @@ public final class DualClassRuntimePoolBuilder
 	 */
 	public final DualClassRuntimePool build()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -45,7 +46,7 @@ public enum DataType
 	/** Double. */
 	DOUBLE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -79,7 +80,7 @@ public enum DataType
 			case DOUBLE:	return 8;
 		}
 		
-		throw new todo.OOPS(this.name());
+		throw Debugging.oops(this.name());
 	}
 	
 	/**
@@ -102,7 +103,7 @@ public enum DataType
 			case DOUBLE:	return JavaType.DOUBLE;
 		}
 		
-		throw new todo.OOPS(this.name());
+		throw Debugging.oops(this.name());
 	}
 	
 	/**
@@ -125,7 +126,7 @@ public enum DataType
 			case DOUBLE:	return StackJavaType.DOUBLE;
 		}
 		
-		throw new todo.OOPS(this.name());
+		throw Debugging.oops(this.name());
 	}
 	
 	/**
@@ -135,7 +136,7 @@ public enum DataType
 	 * @return The resulting compare type.
 	 * @since 2019/04/08
 	 */
-	public static final DataType of(int __i)
+	public static DataType of(int __i)
 	{
 		switch (__i)
 		{
@@ -160,7 +161,7 @@ public enum DataType
 	 * @return The data type used.
 	 * @since 2019/03/24
 	 */
-	public static final DataType of(PrimitiveType __t)
+	public static DataType of(PrimitiveType __t)
 	{
 		if (__t == null)
 			return DataType.OBJECT;
@@ -177,7 +178,7 @@ public enum DataType
 			case DOUBLE:	return DataType.DOUBLE;
 			
 			default:
-				throw new todo.OOPS(__t.name());
+				throw Debugging.oops(__t.name());
 		}
 	}
 	
@@ -189,7 +190,7 @@ public enum DataType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/27
 	 */
-	public static final DataType of(JavaType __t)
+	public static DataType of(JavaType __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -206,7 +207,7 @@ public enum DataType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	public static final DataType of(FieldDescriptor __t)
+	public static DataType of(FieldDescriptor __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -223,7 +224,7 @@ public enum DataType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/27
 	 */
-	public static final DataType of(StackJavaType __t)
+	public static DataType of(StackJavaType __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -237,7 +238,7 @@ public enum DataType
 			case DOUBLE:	return DataType.DOUBLE;
 		}
 		
-		throw new todo.OOPS();
+		throw Debugging.oops();
 	}
 }
 

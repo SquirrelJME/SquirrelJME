@@ -96,6 +96,22 @@ public interface NativeInstructionType
 	short DEBUG_POINT =
 		0xEA;
 	
+	/** Invoke only a given pointer. */
+	short INVOKE_POINTER_ONLY =
+		0xEF;
+	
+	/** Invoke for pool and pointer. */
+	short INVOKE_POOL_AND_POINTER =
+		0xF0;
+	
+	/** Load execp/poolp from interface VTable. */
+	short INTERFACE_VT_LOAD =
+		0xF1;
+	
+	/** Lookup VTable Index for Interface. */
+	short INTERFACE_VT_DX_LOOKUP =
+		0xF2;
+	
 	/**
 	 * Return. 
 	 * {@code iiiixxxx, return}.
@@ -114,10 +130,20 @@ public interface NativeInstructionType
 	short STORE_TO_INTARRAY =
 		0xF5;
 	
+	/** Get interface I for object. */
+	short INTERFACE_I_FOR_OBJECT =
+		0xF6;
+	
 	/**
 	 * Invoke. 
 	 * {@code iiiixxxx}.
+	 * 
+	 * @deprecated This instruction will use the deprecated
+	 * {@link NativeCode#NEXT_POOL_REGISTER} and copy it to the pool register
+	 * accordingly, use {@link NativeInstructionType#INVOKE_POINTER_ONLY} or
+	 * {@link NativeInstructionType#INVOKE_POOL_AND_POINTER} instead.
 	 */
+	@Deprecated
 	short INVOKE =
 		0xF7;
 	

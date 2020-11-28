@@ -26,7 +26,7 @@ public enum ClassVersion
 	/** CLDC 8 (aka Java 7). */
 	CLDC_8((51 << 16), (52 << 16), true, false, true),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** The minimum supported version. */

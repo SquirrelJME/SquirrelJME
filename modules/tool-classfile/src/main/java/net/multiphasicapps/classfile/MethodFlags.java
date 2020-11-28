@@ -209,7 +209,7 @@ public final class MethodFlags
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags(ClassFlags __oc, MethodName __mn)
+	private void __checkFlags(ClassFlags __oc, MethodName __mn)
 		throws InvalidClassFormatException
 	{
 		// Check

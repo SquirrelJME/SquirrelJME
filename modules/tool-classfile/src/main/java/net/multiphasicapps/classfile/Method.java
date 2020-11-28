@@ -27,7 +27,7 @@ import java.util.Set;
  */
 public final class Method
 	extends Member
-	implements Annotated, HasMemberFlags
+	implements Annotated
 {
 	/** The version of the class. */
 	protected final ClassVersion version;

@@ -17,7 +17,6 @@ package net.multiphasicapps.classfile;
  */
 public final class FieldFlags
 	extends MemberFlags<FieldFlag>
-	implements AccessibleFlags
 {
 	/**
 	 * Decodes field flags from the bit field and performs no checking.
@@ -172,7 +171,7 @@ public final class FieldFlags
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags(ClassFlags __oc)
+	private void __checkFlags(ClassFlags __oc)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check

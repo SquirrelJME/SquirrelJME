@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import java.lang.ref.Reference;
 
@@ -91,7 +92,7 @@ public final class EnqueueAndLabel
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

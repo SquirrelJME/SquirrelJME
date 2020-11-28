@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.summercoat.register.Register;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -57,6 +58,24 @@ public final class RegisterList
 		Iterator<Integer> it = __r.iterator();
 		for (int i = 0; i < n; i++)
 			regs[i] = it.next();
+		
+		this._registers = regs;
+	}
+	
+	/**
+	 * Initializes the register list.
+	 * 
+	 * @param __args Registers to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	public RegisterList(Register... __args)
+		throws NullPointerException
+	{
+		int n = (__args == null ? 0 : __args.length);
+		int[] regs = new int[n];
+		for (int i = 0; i < n; i++)
+			regs[i] = __args[i].register;
 		
 		this._registers = regs;
 	}

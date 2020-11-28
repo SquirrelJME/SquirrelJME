@@ -424,19 +424,18 @@ workflows:
       - construct_testJars:
           requires:
             - build_linux
-#      - construct_libSummerCoat:
-#          requires:
-#            - build_linux
-#      - construct_libTestSummerCoat:
-#          requires:
-#            - construct_libSummerCoat
-#            - construct_testJars
-#      - construct_romSummerCoat:
-#          requires:
-#            - construct_libSummerCoat
-#      - construct_romTestSummerCoat:
-#          requires:
-#            - construct_libTestSummerCoat
+      - construct_libSummerCoat:
+          requires:
+            - build_linux
+      - construct_libTestSummerCoat:
+          requires:
+            - construct_testJars
+      - construct_romSummerCoat:
+          requires:
+            - construct_libSummerCoat
+      - construct_romTestSummerCoat:
+          requires:
+            - construct_libTestSummerCoat
 
       ############################## RATUFACOAT ##############################
 #      - ratufacoat_build_windows:

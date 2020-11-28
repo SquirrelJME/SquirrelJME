@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public final class JavaStackResult
 		JavaStackEnqueueList __eq, InputOutput... __io)
 		throws NullPointerException
 	{
-		this(__bs, __as, __eq, (StateOperations)null, __io);
+		this(__bs, __as, __eq, null, __io);
 	}
 	
 	/**
@@ -112,16 +113,16 @@ public final class JavaStackResult
 		// Debug
 		if (__Debug__.ENABLED)
 		{
-			todo.DEBUG.note("*** Stack Result ***");
-			todo.DEBUG.note("BEF: %s", __bs);
-			todo.DEBUG.note("AFT: %s", __as);
+			Debugging.debugNote("*** Stack Result ***");
+			Debugging.debugNote("BEF: %s", __bs);
+			Debugging.debugNote("AFT: %s", __as);
 			if (__eq != null && !__eq.isEmpty())
-				todo.DEBUG.note("ENQ: %s", __eq);
-			todo.DEBUG.note("IN : %s", in);
-			todo.DEBUG.note("OUT: %s", out);
+				Debugging.debugNote("ENQ: %s", __eq);
+			Debugging.debugNote("IN : %s", in);
+			Debugging.debugNote("OUT: %s", out);
 			if (__ops != null && !__ops.isEmpty())
-				todo.DEBUG.note("OPS: %s", __ops);
-			todo.DEBUG.note("********************");
+				Debugging.debugNote("OPS: %s", __ops);
+			Debugging.debugNote("********************");
 		}
 	}
 	
@@ -167,7 +168,7 @@ public final class JavaStackResult
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -177,7 +178,7 @@ public final class JavaStackResult
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -287,7 +288,7 @@ public final class JavaStackResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/31
 	 */
-	public static final Input makeInput(JavaStackState.Info __i)
+	public static Input makeInput(JavaStackState.Info __i)
 		throws NullPointerException
 	{
 		return new Input(__i);
@@ -301,7 +302,7 @@ public final class JavaStackResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/31
 	 */
-	public static final Output makeOutput(JavaStackState.Info __i)
+	public static Output makeOutput(JavaStackState.Info __i)
 		throws NullPointerException
 	{
 		return new Output(__i);
@@ -372,7 +373,7 @@ public final class JavaStackResult
 		@Override
 		public final boolean equals(Object __o)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		/**
@@ -382,7 +383,7 @@ public final class JavaStackResult
 		@Override
 		public final int hashCode()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		/**
@@ -531,7 +532,7 @@ public final class JavaStackResult
 		@Override
 		public final boolean equals(Object __o)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		/**
@@ -541,7 +542,7 @@ public final class JavaStackResult
 		@Override
 		public final int hashCode()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		/**

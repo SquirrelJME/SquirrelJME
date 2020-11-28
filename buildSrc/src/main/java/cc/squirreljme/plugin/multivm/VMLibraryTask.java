@@ -60,7 +60,8 @@ public class VMLibraryTask
 		this.setDescription("Compiles/constructs the library for execution.");
 		
 		// The JAR we are compiling has to be built first
-		this.dependsOn(baseJar);
+		this.dependsOn(baseJar,
+			new VMLibraryTaskDependencies(this, this.vmType));
 		
 		// The input of this task is the JAR that was created
 		this.getInputs().file(baseJar.getArchiveFile());

@@ -43,7 +43,7 @@ public enum ArgumentFormat
 	/** 64-bit float. */
 	FLOAT64,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -53,7 +53,7 @@ public enum ArgumentFormat
 	 * @return {@code __a}.
 	 * @since 2019/04/16
 	 */
-	public static final ArgumentFormat[] of(ArgumentFormat... __a)
+	public static ArgumentFormat[] of(ArgumentFormat... __a)
 	{
 		return (__a == null ? new ArgumentFormat[0] : __a);
 	}

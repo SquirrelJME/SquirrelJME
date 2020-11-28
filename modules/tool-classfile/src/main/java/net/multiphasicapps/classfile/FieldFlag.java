@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * These are flags which are associated with class fields.
  *
@@ -45,7 +47,7 @@ public enum FieldFlag
 	/** Enumeration. */
 	ENUM,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -70,7 +72,7 @@ public enum FieldFlag
 			case ENUM:		return 0x4000;
 
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 }

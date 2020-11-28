@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -306,7 +307,7 @@ public final class MinimizedClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/07
 	 */
-	public static final MinimizedClassFile decode(InputStream __is)
+	public static MinimizedClassFile decode(InputStream __is)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		return MinimizedClassFile.decode(__is, null);
@@ -324,7 +325,7 @@ public final class MinimizedClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	public static final MinimizedClassFile decode(InputStream __is,
+	public static MinimizedClassFile decode(InputStream __is,
 		DualClassRuntimePool __ppool)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
@@ -352,7 +353,7 @@ public final class MinimizedClassFile
 			byte[] buf = new byte[512];
 			for (int left = datasize; left > 0;)
 			{
-				int rc = __is.read(buf, 0, (512 < left ? 512 : left));
+				int rc = __is.read(buf, 0, (Math.min(512, left)));
 				
 				// EOF?
 				if (rc < 0)
@@ -381,7 +382,7 @@ public final class MinimizedClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/07
 	 */
-	public static final MinimizedClassFile decode(byte[] __is)
+	public static MinimizedClassFile decode(byte[] __is)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		return MinimizedClassFile.decode(__is, null);
@@ -399,7 +400,7 @@ public final class MinimizedClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/16
 	 */
-	public static final MinimizedClassFile decode(byte[] __is,
+	public static MinimizedClassFile decode(byte[] __is,
 		DualClassRuntimePool __ppool)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
@@ -439,7 +440,7 @@ public final class MinimizedClassFile
 				if (__ppool == null)
 					throw new NullPointerException("JC4h");
 				
-				throw new todo.TODO();
+				throw Debugging.todo();
 			}
 			
 			// Decode physical pool within the class

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -105,8 +106,8 @@ public class VMFullSuiteTaskAction
 					"cc.squirreljme.runtime.launcher.ui.MidletMain");
 				
 				// Use these streams directly
-				__spec.setStandardOutput(System.out);
-				__spec.setErrorOutput(System.err);
+				__spec.setStandardOutput(new GuardedOutputStream(System.out));
+				__spec.setErrorOutput(new GuardedOutputStream(System.err));
 			});
 		
 		// Did the task fail?

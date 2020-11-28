@@ -11,11 +11,11 @@ dependencies
 {
 	api project(":emulators:emulator-base")
 	
-	api project(":modules:cldc-compact")
-	api project(":modules:common-vm")
-	api project(":modules:tool-classfile")
-	api project(":modules:tool-jarfile")
-	api project(":modules:tool-packfile")
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:common-vm")
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:tool-jarfile")
+	implementation project(":modules:tool-packfile")
 }
 
 java
