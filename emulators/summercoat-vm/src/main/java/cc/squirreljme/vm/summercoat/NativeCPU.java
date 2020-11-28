@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.InvalidInstructionException;
 import dev.shadowtail.classfile.nncc.NativeCode;
@@ -31,6 +32,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import java.util.Objects;
 
 /**
  * This represents a native CPU which may run within its own thread to
@@ -266,11 +268,9 @@ public final class NativeCPU
 			}
 			
 			// Print the call trace
-			CallTraceElement[] calltrace = this.trace();
-			System.err.println("Call trace:");
-			for (CallTraceElement l : calltrace)
-				System.err.printf("    %s%n", l);
-			System.err.println();
+			CallTraceUtils.printStackTrace(System.err,
+				Objects.toString(e.getMessage(), "Fatal Exception"),
+				this.trace(), null, null, 0);
 			
 			// Spacer
 			System.err.println("********************************************");
