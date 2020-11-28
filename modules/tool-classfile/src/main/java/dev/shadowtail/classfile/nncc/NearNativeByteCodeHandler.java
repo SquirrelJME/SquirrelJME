@@ -24,11 +24,15 @@ import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.pool.VirtualMethodIndex;
+import dev.shadowtail.classfile.summercoat.HelperFunction;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
+import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
 import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
 import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
+import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.PlainRegister;
+import dev.shadowtail.classfile.summercoat.register.Register;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
@@ -2594,6 +2598,25 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Invokes the given helper function.
+	 * 
+	 * @param __func The function to execute.
+	 * @param __r The values to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	private void __invokeHelper(HelperFunction __func, Register... __r)
+		throws NullPointerException
+	{
+		if (__func == null || __r == null)
+			throw new NullPointerException("NARG");
+		
+		// Call the given static method instead
+		this.__invokeStatic(InvokeType.STATIC, HelperFunction.HELPER_CLASS,
+			__func.member.name(), __func.member.type(), new RegisterList(__r));
+	}
+	
+	/**
 	 * Invokes instance method, doing the needed pool loading and all the
 	 * complicated stuff in a simple point of code.
 	 *
@@ -3438,21 +3461,37 @@ public final class NearNativeByteCodeHandler
 	 * Generates code to reference count the given register.
 	 *
 	 * @param __r The register to reference to count.
+	 * @deprecated Use the type safe {@link #__refCount(MemHandleRegister)}. 
 	 * @since 2019/04/25
 	 */
+	@Deprecated
 	private void __refCount(int __r)
 	{
+		this.__refCount(MemHandleRegister.of(__r));
+	}
+	
+	/**
+	 * Generates code to reference count the given register.
+	 *
+	 * @param __r The register reference to count.
+	 * @since 2019/04/25
+	 */
+	private void __refCount(MemHandleRegister __r)
+		throws NullPointerException
+	{
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
 		// If the object is null then it will not be counted, this is skipped
 		NativeCodeLabel ncj = new NativeCodeLabel("refnocount",
 			this._refclunk++);
 		
-		// Do not do any counting if this is zero
+		// Do not do any counting if this is a NULL reference
 		NativeCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.addIfZero(__r, ncj);
+		codebuilder.addIfZero(__r.register, ncj);
 		
-		// Add count
-		codebuilder.add(NativeInstructionType.ATOMIC_INT_INCREMENT,
-			__r, Constants.OBJECT_COUNT_OFFSET);
+		// Count this handle directly up
+		codebuilder.addMemHandleCountUp(__r);
 		
 		// No count is jumped here
 		codebuilder.label(ncj);
@@ -3535,43 +3574,56 @@ public final class NearNativeByteCodeHandler
 	/**
 	 * Generates code to reference uncount the given register.
 	 *
-	 * @param __r The register to reference to uncount.
+	 * @param __r The reference to uncount.
+	 * @deprecated Use the type safe {@link #__refUncount(MemHandleRegister)}.  
 	 * @since 2019/04/25
 	 */
+	@Deprecated
 	private void __refUncount(int __r)
 	{
+		this.__refUncount(MemHandleRegister.of(__r));
+	}
+	
+	/**
+	 * Generates code to reference uncount the given register.
+	 *
+	 * @param __r The reference to uncount.
+	 * @since 2020/11/28
+	 */
+	private void __refUncount(MemHandleRegister __r)
+		throws NullPointerException
+	{
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
 		// If the object is null then it will not be uncounted, this is skipped
-		NativeCodeLabel ncj = new NativeCodeLabel("refnouncount",
+		NativeCodeLabel ncj = new NativeCodeLabel("RefNoUnCount",
 			this._refclunk++);
 		
-		// Need volatiles
-		VolatileRegisterStack volatiles = this.volatiles;
-		int volnowcount = volatiles.getUnmanaged();
+		// Do not do any un-counting if this is null
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		codeBuilder.addIfZero(__r.register, ncj);
 		
-		// Do not do any uncounting if this is null
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.addIfZero(__r, ncj);
-		
-		// Add uncount
-		codebuilder.add(NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET,
-			volnowcount, __r, Constants.OBJECT_COUNT_OFFSET);
-		
-		// If the count is still positive, we do not GC
-		codebuilder.addIfPositive(volnowcount, ncj);
-		
-		// Call garbage collect on object via helper
-		this.__invokeStatic(InvokeType.SYSTEM,
-			NearNativeByteCodeHandler.JVMFUNC_CLASS,
-			"jvmGarbageCollectObject", "(I)V", __r);
-		
-		// Reset the variable to zero to prevent it from being used again
-		codebuilder.addCopy(NativeCode.ZERO_REGISTER, __r);
-		
-		// No uncount or not GCed are jumped here
-		codebuilder.label(ncj);
-		
-		// No longer needed
-		volatiles.removeUnmanaged(volnowcount);
+		// We need a register to determine if we should do garbage collection
+		try (Volatile<IntValueRegister> count = this.volatiles.getIntValue())
+		{
+			// Perform the uncount, store the count value somewhere we can
+			// check to ensure that we do need to GC
+			codeBuilder.addMemHandleCountDown(__r, count.register); 
+			
+			// If the count is still positive, we do not GC
+			codeBuilder.addIfPositive(count.register, ncj);
+			
+			// Call garbage collect on object via helper
+			this.__invokeHelper(HelperFunction.GC_MEM_HANDLE,
+				__r);
+			
+			// Reset the variable to zero to prevent it from being used again
+			codeBuilder.addCopy(MemHandleRegister.NULL, __r);
+			
+			// Null reference or no GC performed
+			codeBuilder.label(ncj);
+		}
 	}
 	
 	/**

@@ -10,6 +10,7 @@
 package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
+import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
 import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
 import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
@@ -63,6 +64,18 @@ public final class VolatileRegisterStack
 	{
 		return new Volatile<>(this,
 			new ExecutablePointer(this.getUnmanaged()));
+	}
+	
+	/**
+	 * Obtains an integer value register.
+	 * 
+	 * @return An integer value register.
+	 * @since 2020/11/28
+	 */
+	public Volatile<IntValueRegister> getIntValue()
+	{
+		return new Volatile<>(this,
+			new IntValueRegister(this.getUnmanaged()));
 	}
 	
 	/**

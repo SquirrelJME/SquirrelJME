@@ -422,7 +422,10 @@ public interface SystemCallIndex
 	 * service this was associated with.
 	 * @squirreljme.syscallparam ... Any arguments to the call.
 	 * @squirreljme.syscallreturn The value returned from the remote call.
+	 * @deprecated IPCs are being replaced by something that should work
+	 * better in the future.
 	 */
+	@Deprecated
 	byte IPC_CALL =
 		37;
 	

@@ -292,6 +292,9 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_EXIT:
 			case NativeInstructionType.RETURN:
 				return 0;
+				
+			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
+				return 1;
 			
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.COPY:
@@ -300,6 +303,7 @@ public final class NativeInstruction
 			case NativeInstructionType.STORE_POOL:
 			case NativeInstructionType.SYSTEM_CALL:
 			case NativeInstructionType.INVOKE_POINTER_ONLY:
+			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
 				return 2;
 					
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
@@ -351,6 +355,11 @@ public final class NativeInstruction
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
 				
+				// [r16]
+			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG);
+				
 				// [r16, reglist]
 			case NativeInstructionType.SYSTEM_CALL:
 			case NativeInstructionType.INVOKE:
@@ -361,6 +370,7 @@ public final class NativeInstruction
 				
 				// [r16, r16]
 			case NativeInstructionType.COPY:
+			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG);
@@ -582,6 +592,12 @@ public final class NativeInstruction
 			
 			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
 				return "INVOKE_POOL_AND_POINTER";
+			
+			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
+				return "MEM_HANDLE_COUNT_DOWN";
+				
+			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
+				return "MEM_HANDLE_COUNT_UP";
 			
 			default:
 				return String.format("UNKNOWN_%02x", __op);

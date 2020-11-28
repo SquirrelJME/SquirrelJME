@@ -96,6 +96,14 @@ public interface NativeInstructionType
 	short DEBUG_POINT =
 		0xEA;
 	
+	/** Count memory handle down. */
+	short MEM_HANDLE_COUNT_DOWN =
+		0xED;
+	
+	/** Count memory handle up. */
+	short MEM_HANDLE_COUNT_UP =
+		0xEE;
+	
 	/** Invoke only a given pointer. */
 	short INVOKE_POINTER_ONLY =
 		0xEF;

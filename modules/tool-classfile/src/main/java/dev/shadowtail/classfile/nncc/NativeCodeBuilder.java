@@ -14,8 +14,10 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
+import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
 import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
 import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
+import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.PlainRegister;
 import dev.shadowtail.classfile.summercoat.register.Register;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
@@ -96,10 +98,34 @@ public final class NativeCodeBuilder
 	 * @param __from The source.
 	 * @param __to The destination.
 	 * @return The resulting instruction.
+	 * @deprecated Use the type safe {@link #addCopy(Register, Register)}
+	 * instead.
 	 * @since 2019/04/12
 	 */
+	@Deprecated
 	public final NativeInstruction addCopy(int __from, int __to)
 	{
+		return this.<PlainRegister>addCopy(
+			new PlainRegister(__from), new PlainRegister(__to));
+	}
+	
+	/**
+	 * Adds a copy from one register to another.
+	 *
+	 * @param <R> The register type to copy.
+	 * @param __from The source.
+	 * @param __to The destination.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final <R extends Register> NativeInstruction addCopy(
+		R __from, R __to)
+		throws NullPointerException
+	{
+		if (__from == null || __to == null)
+			throw new NullPointerException("NARG");
+		
 		return this.__add(NativeInstructionType.COPY,
 			__from, __to);
 	}
@@ -113,18 +139,41 @@ public final class NativeCodeBuilder
 	 * @param __jt The target of the jump.
 	 * @return The resulting instruction.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use the type safe {@link #addIfICmp(CompareType,
+	 * IntValueRegister, IntValueRegister, NativeCodeLabel)} instead. 
 	 * @since 2019/04/10
 	 */
+	@Deprecated
 	public final NativeInstruction addIfICmp(CompareType __ct, int __a,
 		int __b, NativeCodeLabel __jt)
 		throws NullPointerException
 	{
-		if (__ct == null || __jt == null)
+		return this.addIfICmp(__ct, IntValueRegister.of(__a),
+			IntValueRegister.of(__b), __jt);
+	}
+	
+	/**
+	 * Adds an integer comparison instruction.
+	 *
+	 * @param __ct The type of comparison to make
+	 * @param __a The first register.
+	 * @param __b The register to compare against.
+	 * @param __jt The target of the jump.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addIfICmp(CompareType __ct,
+		IntValueRegister __a, IntValueRegister __b, NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		if (__ct == null || __a == null || __b == null || __jt == null)
 			throw new NullPointerException("NARG");
 		
 		// Build operation
-		return this.__add(NativeInstructionType.IF_ICMP |
-			__ct.ordinal(), __a, __b, __jt);
+		return this.__add(
+			NativeInstructionType.IF_ICMP | __ct.ordinal(),
+			__a, __b, __jt);
 	}
 	
 	/**
@@ -152,16 +201,34 @@ public final class NativeCodeBuilder
 	 * @param __a The register to check.
 	 * @param __jt The target of the jump.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use the type safe {@link #addIfPositive(IntValueRegister,
+	 * NativeCodeLabel)} instead. 
 	 * @since 2019/11/30
 	 */
+	@Deprecated
 	public final NativeInstruction addIfPositive(int __a, NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		return this.addIfPositive(IntValueRegister.of(__a), __jt);
+	}
+	
+	/**
+	 * Adds a jump if the given register is positive.
+	 *
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addIfPositive(IntValueRegister __a,
+		NativeCodeLabel __jt)
 		throws NullPointerException
 	{
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
 		return this.addIfICmp(CompareType.GREATER_THAN, __a,
-			NativeCode.ZERO_REGISTER, __jt);
+			IntValueRegister.ZERO, __jt);
 	}
 	
 	/**
@@ -385,6 +452,45 @@ public final class NativeCodeBuilder
 		// Build operation
 		int rop = op | __mf.ordinal();
 		return this.__add(rop, __a, __b, __c);
+	}
+	
+	/**
+	 * Adds counting down of a memory handle.
+	 * 
+	 * @param __r The register to count.
+	 * @param __outCount The output of the register that receives the now
+	 * current object count, can be used to determine if GC must be done.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addMemHandleCountDown(MemHandleRegister __r,
+		IntValueRegister __outCount)
+		throws NullPointerException
+	{
+		if (__r == null || __outCount == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__add(NativeInstructionType.MEM_HANDLE_COUNT_DOWN,
+			__r, __outCount);
+	}
+	
+	/**
+	 * Adds counting up of a memory handle.
+	 * 
+	 * @param __r The register to count.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addMemHandleCountUp(MemHandleRegister __r)
+		throws NullPointerException
+	{
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__add(NativeInstructionType.MEM_HANDLE_COUNT_UP,
+			__r);
 	}
 	
 	/**

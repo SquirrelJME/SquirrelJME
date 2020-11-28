@@ -24,6 +24,10 @@ public final class MachineState
 	/** The profiler snapshot to write to. */
 	protected final ProfilerSnapshot profiler;
 	
+	/** The memory handle manager. */
+	protected final MemHandleManager memHandles =
+		new MemHandleManager();
+	
 	/** Was the supervisor okay? */
 	private volatile boolean _supervisorokay;
 	

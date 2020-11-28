@@ -11,12 +11,13 @@ package cc.squirreljme.jvm.mle.lle;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
- * This contains the shell for printing to the console and otherwise.
+ * Low-level {@link TerminalShelf}.
  *
  * @since 2020/06/14
  */

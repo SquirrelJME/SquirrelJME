@@ -9,14 +9,17 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.InvalidInstructionException;
 import dev.shadowtail.classfile.nncc.NativeCode;
@@ -28,10 +31,9 @@ import dev.shadowtail.classfile.xlate.MathType;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
-import cc.squirreljme.emulator.profiler.ProfiledThread;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import java.util.Objects;
 
 /**
@@ -361,8 +363,7 @@ public final class NativeCPU
 			int op = icache[bpc] & 0xFF;
 			
 			// Reset all input arguments
-			for (int i = 0, n = args.length; i < n; i++)
-				args[i] = 0;
+			Arrays.fill(args, 0);
 			
 			// Register list, just one is used everywhere
 			int[] reglist = null;
@@ -373,7 +374,7 @@ public final class NativeCPU
 			for (int i = 0, n = af.length; i < n; i++)
 				switch (af[i])
 				{
-					// Variable sized entries, may be pool values
+						// Variable sized entries, may be pool values
 					case VUINT:
 					case VUREG:
 					case VPOOL:
@@ -396,14 +397,20 @@ public final class NativeCPU
 							
 							// {@squirreljme.error AE03 Reference to register
 							// which is out of range of maximum number of
-							// registers. (The register index)}
+							// registers. (The operation; The register index;
+							// The argument formats; The decoded arguments)}
 							if (af[i] == ArgumentFormat.VUREG &&
 								(base < 0 || base >= NativeCode.MAX_REGISTERS))
-								throw new VMException("AE03 " + base);
+								throw new VMException(String.format(
+									"AE03 %s %d %s %s",
+									NativeInstruction.mnemonic(op), base,
+									Arrays.asList(af),
+									IntegerArrayList.asList(args)
+										.subList(0, af.length)));
 						}
 						break;
 					
-					// Register list.
+						// Register list.
 					case REGLIST:
 						{
 							// Wide
@@ -432,7 +439,7 @@ public final class NativeCPU
 						}
 						break;
 					
-					// 32-bit integer/float
+						// 32-bit integer/float
 					case INT32:
 					case FLOAT32:
 						args[i] = ((icache[rargp++] & 0xFF) << 24) |
@@ -499,8 +506,8 @@ public final class NativeCPU
 						// a break point then exit it
 						if (profiler != null)
 						{
-							profiler.enterFrame("<breakpoint>", "<breakpoint>",
-								"<breakpoint>");
+							profiler.enterFrame("<breakpoint>",
+								"<breakpoint>", "<breakpoint>");
 							profiler.exitFrame();
 						}
 						
@@ -1015,6 +1022,17 @@ public final class NativeCPU
 							pointcounter = 0;
 						}
 					}
+					break;
+					
+					// Count reference up
+				case NativeInstructionType.MEM_HANDLE_COUNT_UP:
+					this.state.memHandles.get(lr[args[0]]).count(true);
+					break;
+				
+					// Count reference down
+				case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
+					lr[args[1]] = this.state.memHandles.get(lr[args[0]])
+						.count(false);
 					break;
 					
 					// {@squirreljme.error AE0n Invalid instruction.}

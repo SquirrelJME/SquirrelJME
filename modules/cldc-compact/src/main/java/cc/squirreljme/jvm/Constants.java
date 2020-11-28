@@ -16,31 +16,66 @@ package cc.squirreljme.jvm;
  */
 public interface Constants
 {
-	/** The offset for the object's class type. */
+	/**
+	 * The offset for the object's class type.
+	 *
+	 * @deprecated Memory specific constants are not to be used anymore. 
+	 */
+	@Deprecated
 	byte OBJECT_CLASS_OFFSET =
 		0;
 	
-	/** The offset for the object's reference count. */
+	/**
+	 * The offset for the object's reference count.
+	 *
+	 * @deprecated Memory specific constants are not to be used anymore. 
+	 */
+	@Deprecated
 	byte OBJECT_COUNT_OFFSET =
 		4;
 	
-	/** Object monitor owner offset. */
+	/**
+	 * Object monitor owner offset.
+	 *
+	 * @deprecated Memory specific constants are not to be used anymore. 
+	 */
+	@Deprecated
 	byte OBJECT_MONITOR_OFFSET =
 		8;
 	
-	/** Object monitor count offset. */
+	/**
+	 * Object monitor count offset.
+	 *
+	 * @deprecated Memory specific constants are not to be used anymore. 
+	 */
+	@Deprecated
 	byte OBJECT_MONITOR_COUNT_OFFSET =
 		12;
 	
-	/** Base size for object types. */
+	/**
+	 * Base size for object types.
+	 *
+	 * @deprecated Memory specific constants are not to be used anymore. 
+	 */
+	@Deprecated
 	byte OBJECT_BASE_SIZE =
 		16;
 	
-	/** The offset for array length. */
+	/**
+	 * The offset for array length.
+	 *
+	 * @deprecated Memory specific constants are not to be used anymore. 
+	 */
+	@Deprecated
 	byte ARRAY_LENGTH_OFFSET =
 		16;
 	
-	/** The base size for arrays. */
+	/**
+	 * The base size for arrays.
+	 *
+	 * @deprecated Memory specific constants are not to be used anymore. 
+	 */
+	@Deprecated
 	byte ARRAY_BASE_SIZE =
 		20;
 	
