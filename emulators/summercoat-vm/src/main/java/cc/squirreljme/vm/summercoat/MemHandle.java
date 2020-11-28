@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @since 2020/11/28
  */
-public final class MemHandle
+public abstract class MemHandle
 {
 	/** The handle count. */
 	private final AtomicInteger _count =
@@ -29,7 +29,7 @@ public final class MemHandle
 	 * @return The new count.
 	 * @since 2020/11/28
 	 */
-	public int count(boolean __up)
+	public final int count(boolean __up)
 	{
 		if (__up)
 			return this._count.incrementAndGet();
