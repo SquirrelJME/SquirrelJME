@@ -9,8 +9,20 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.SourceSet;
 
 /**
  * This performs the actual work that is needed to build the ROM.
@@ -53,6 +65,53 @@ public class VMRomTaskAction
 	public void execute(Task __task)
 		throws NullPointerException
 	{
-		throw new Error("TODO -- MultiVMRomTaskAction");
+		String sourceSet = this.sourceSet;
+		VMSpecifier vmType = this.vmType;
+		
+		Path tempFile = null;
+		try
+		{
+			// We need somewhere safe to store the file
+			tempFile = Files.createTempFile(
+				this.vmType.vmName(VMNameFormat.LOWERCASE), sourceSet);
+			
+			// Get all of the libraries to translate
+			Set<Path> libPaths = new LinkedHashSet<>();
+			for (VMLibraryTask task : VMRomDependencies.libraries(__task,
+				sourceSet, vmType))
+				for (File f : task.getOutputs().getFiles().getFiles())
+					libPaths.add(f.toPath());
+			
+			// Setup output file for writing
+			try (OutputStream out = Files.newOutputStream(tempFile,
+				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.CREATE))
+			{
+				this.vmType.processRom(__task, out, libPaths);
+			}
+			
+			// Move the file over
+			Files.move(tempFile,
+				__task.getOutputs().getFiles().getSingleFile().toPath(),
+				StandardCopyOption.REPLACE_EXISTING);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("I/O Error linking ROM for " +
+				__task.getProject().getName(), e);
+		}
+		
+		// Always try to cleanup the temporary file
+		finally
+		{
+			if (tempFile != null)
+				try
+				{
+					Files.deleteIfExists(tempFile);
+				}
+				catch (IOException ignored)
+				{
+				}
+		}
 	}
 }

@@ -180,8 +180,7 @@ public enum VMType
 			Collection<String> args = new ArrayList<>();
 			
 			// The engine to use
-			args.add("-Xcompiler:" +
-				this.vmName(VMNameFormat.LOWERCASE));
+			args.add("-Xcompiler:" + this.vmName(VMNameFormat.LOWERCASE));
 			
 			// The name of this JAR
 			args.add("-Xname:" + __task.getProject().getName());
@@ -263,6 +262,69 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2020/11/27
+		 */
+		@Override
+		public void processRom(Task __task, OutputStream __out,
+			Collection<Path> __libs)
+			throws IOException, NullPointerException
+		{
+			if (__task == null || __out == null || __libs == null)
+				throw new NullPointerException("NARG");
+			
+			// Class path is of the compiler target, it does not matter
+			Path[] classPath = VMHelpers.runClassPath(__task.getProject()
+				.getRootProject().project(":modules:aot-" +
+					this.vmName(VMNameFormat.LOWERCASE)),
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
+			
+			// Setup arguments for compilation
+			Collection<String> args = new ArrayList<>();
+			
+			// The engine to use
+			args.add("-Xcompiler:" + this.vmName(VMNameFormat.LOWERCASE));
+			
+			// Perform ROM creation
+			args.add("-Xname:squirreljme");
+			args.add("rom");
+			
+			// Put down paths to libraries to link together
+			for (Path path : __libs)
+				args.add(path.toString());
+			
+			// Call the AOT backend
+			ExecResult exitResult = __task.getProject().javaexec(__spec ->
+				{
+					// Figure out the arguments to the JVM, it does not matter
+					// what the classpath is
+					VMType.HOSTED.spawnJvmArguments(__task, __spec,
+						"cc.squirreljme.jvm.aot.Main",
+						Collections.emptyMap(),
+						classPath,
+						classPath,
+						args.toArray(new String[args.size()]));
+					
+					// Use the error stream directory
+					__spec.setErrorOutput(new GuardedOutputStream(System.err));
+					
+					// The caller will consume the entire output of what was
+					// processed, so
+					__spec.setStandardOutput(__out);
+					
+					// Ignore error states, let us handle it instead of Gradle
+					// so we could handle multiple different exit codes.
+					__spec.setIgnoreExitValue(true);
+				});
+			
+			// Processing the library did not work?
+			int code;
+			if ((code = exitResult.getExitValue()) != 0)
+				throw new RuntimeException(String.format(
+					"Failed to process ROM (exit code %d).", code));
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
@@ -314,6 +376,26 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/08/16
+	 */
+	@Override
+	public final String emulatorProject()
+	{
+		return this.emulatorProject;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/23
+	 */
+	@Override
+	public final boolean hasRom()
+	{
+		return this == VMType.SUMMERCOAT;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/08/07
 	 */
 	@Override
@@ -329,6 +411,43 @@ public enum VMType
 		
 		// Otherwise include the source sets
 		return __project.getName() + "-" + __sourceSet + "." + this.extension;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/27
+	 */
+	@Override
+	public String outputRomName(String __sourceSet)
+		throws NullPointerException
+	{
+		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
+			return "squirreljme." + this.extension;
+		return "squirreljme-" + __sourceSet + "." + this.extension;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/21
+	 */
+	@Override
+	public Iterable<Task> processLibraryDependencies(
+		VMLibraryTask __task)
+		throws NullPointerException
+	{
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/27
+	 */
+	@Override
+	public void processRom(Task __task, OutputStream __out,
+		Collection<Path> __libs)
+		throws IOException, NullPointerException
+	{
+		throw new RuntimeException(this.name() + " is not ROM capable.");
 	}
 	
 	/**
@@ -442,37 +561,5 @@ public enum VMType
 			default:
 				return properName;
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/11/21
-	 */
-	@Override
-	public Iterable<Task> processLibraryDependencies(
-		VMLibraryTask __task)
-		throws NullPointerException
-	{
-		return Collections.emptyList();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/08/16
-	 */
-	@Override
-	public final String emulatorProject()
-	{
-		return this.emulatorProject;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/08/23
-	 */
-	@Override
-	public final boolean hasRom()
-	{
-		return this == VMType.SUMMERCOAT;
 	}
 }

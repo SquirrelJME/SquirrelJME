@@ -220,7 +220,7 @@ public class Main
 		
 		// Load all libraries
 		Collection<VMClassLibrary> libs = new LinkedList<>();
-		while (__args.isEmpty())
+		while (!__args.isEmpty())
 		{
 			String arg = __args.removeFirst();
 			

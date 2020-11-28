@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -83,6 +84,16 @@ public class SummerCoatJarLibrary
 			return null;
 		
 		return Files.newInputStream(this.path, StandardOpenOption.READ);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/27
+	 */
+	@Override
+	public String toString()
+	{
+		return this.name();
 	}
 	
 	/**

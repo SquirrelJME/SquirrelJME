@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
@@ -61,6 +63,17 @@ public interface VMSpecifier
 		throws NullPointerException;
 	
 	/**
+	 * Determines the output ROM name.
+	 * 
+	 * @param __sourceSet The source set used.
+	 * @return The name the ROM should be.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	String outputRomName(String __sourceSet)
+		throws NullPointerException;
+	
+	/**
 	 * Processes the library.
 	 * 
 	 * @param __task The task running this, may be used to launch a VM.
@@ -73,6 +86,31 @@ public interface VMSpecifier
 	 */
 	void processLibrary(Task __task, boolean __isTest, InputStream __in,
 		OutputStream __out)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Returns the optional library dependencies needed to perform library
+	 * processing, if any.
+	 * 
+	 * @param __task The owning task.
+	 * @return Iterable of dependent tasks.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/21
+	 */
+	Iterable<Task> processLibraryDependencies(VMLibraryTask __task)
+		throws NullPointerException;
+	
+	/**
+	 * Processes the ROM file for linking.
+	 * 
+	 * @param __task The task running under.
+	 * @param __out The output of the given path.
+	 * @param __libs The libraries to link in.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	void processRom(Task __task, OutputStream __out, Collection<Path> __libs)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -104,17 +142,5 @@ public interface VMSpecifier
 	 * @since 2020/08/06
 	 */
 	String vmName(VMNameFormat __format)
-		throws NullPointerException;
-	
-	/**
-	 * Returns the optional library dependencies needed to perform library
-	 * processing, if any.
-	 * 
-	 * @param __task The owning task.
-	 * @return Iterable of dependent tasks.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/11/21
-	 */
-	Iterable<Task> processLibraryDependencies(VMLibraryTask __task)
 		throws NullPointerException;
 }

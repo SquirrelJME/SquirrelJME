@@ -10,11 +10,9 @@
 package cc.squirreljme.plugin.multivm;
 
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.provider.Provider;
 import org.gradle.jvm.tasks.Jar;
 

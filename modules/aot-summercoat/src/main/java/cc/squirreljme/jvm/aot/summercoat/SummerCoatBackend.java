@@ -106,7 +106,7 @@ public class SummerCoatBackend
 			// Clip off extension
 			if (SummerCoatJarLibrary.isSqc(name) ||
 				name.endsWith(".jar") || name.endsWith(".JAR"))
-				name = name.substring(name.length() - 4);
+				name = name.substring(0, name.length() - 4);
 			
 			// Is this cldc-compact?
 			if (name.equals("cldc-compact"))
