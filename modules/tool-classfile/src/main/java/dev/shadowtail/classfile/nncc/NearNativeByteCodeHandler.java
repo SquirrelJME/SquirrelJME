@@ -47,7 +47,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
@@ -70,6 +72,14 @@ import net.multiphasicapps.classfile.MethodReference;
 public final class NearNativeByteCodeHandler
 	implements ByteCodeHandler
 {
+	/** The package shelves are in, for remapping. */
+	public static final BinaryName MLE_SHELF_PACKAGE =
+		new BinaryName("cc/squirreljme/jvm/mle");
+		
+	/** Target packages for shelves to call instead. */
+	public static final BinaryName LLE_SHELF_PACKAGE =
+		new BinaryName("cc/squirreljme/jvm/mle/lle");
+	
 	/** The jvm functions class. */
 	@Deprecated
 	public static final ClassName JVMFUNC_CLASS =
@@ -701,11 +711,26 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Output __out, JavaStackResult.Input... __in)
 	{
 		// Target class
-		ClassName targetclass = __r.handle().outerClass();
+		ClassName targetClass = __r.handle().outerClass();
+		
+		// Remap method to LLE implementation of classes?
+		if (NearNativeByteCodeHandler.MLE_SHELF_PACKAGE
+			.equals(targetClass.inPackage()) &&
+			targetClass.toString().endsWith("Shelf"))
+		{
+			// Map to new class
+			__r = new MethodReference(NearNativeByteCodeHandler
+				.LLE_SHELF_PACKAGE.resolve(new ClassIdentifier(
+					"LLE" + __r.className().simpleName())).toClass(),
+				__r.memberName(), __r.memberType(), __r.isInterface());
+			
+			// Needs to be recycled
+			targetClass = __r.handle().outerClass();
+		}
 		
 		// Invocation of assembly method?
 		if ("cc/squirreljme/jvm/Assembly".equals(
-			targetclass.toString()))
+			targetClass.toString()))
 		{
 			// Forward
 			this.__invokeAssembly(__r.handle().name(),

@@ -246,13 +246,13 @@ public final class JarMinimizer
 		{
 			// The class being booted
 			LoadedClassInfo booting = bootstrap.findClass(
-				"cc/squirreljme/jvm/boot/Bootstrap");
+				"cc/squirreljme/jvm/summercoat/Bootstrap");
 			
 			// Get all the bootstrap information before it is written!
 			int bootpool = booting.poolPointer();
 			int bootsfbp = bootstrap.staticFieldAreaAddress();
 			int bootmeth = booting.methodCodeAddress(
-				new MethodName("__start"), null);
+				new MethodName("vmEntry"), null);
 			int bootidba = bootstrap.findClass("[B").infoPointer();
 			int bootidbd = bootstrap.findClass("[[B").infoPointer();
 			

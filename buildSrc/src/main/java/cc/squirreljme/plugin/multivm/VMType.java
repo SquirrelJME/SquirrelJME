@@ -248,8 +248,17 @@ public enum VMType
 			Collection<Task> rv = new LinkedList<>();
 			for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
 				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
-				rv.add(rootProject.project(task.project).getTasks()
-					.getByName(task.task));
+			{
+				Project taskProject = rootProject.project(task.project);
+				
+				// Depends on all of the classes, not just the libraries, for
+				// anything the AOT compiler uses. If the compiler changes we
+				// need to make sure the updated compiler is used!
+				rv.add(taskProject.getTasks().getByName("classes"));
+				
+				// The library that makes up the task is important
+				rv.add(taskProject.getTasks().getByName(task.task));
+			}
 			
 			// Make sure the hosted environment is working since it needs to
 			// be kept up to date as well

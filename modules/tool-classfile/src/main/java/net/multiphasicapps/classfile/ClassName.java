@@ -307,6 +307,23 @@ public class ClassName
 	}
 	
 	/**
+	 * Returns the simple name of the class.
+	 * 
+	 * @return The simple name of the class.
+	 * @throws IllegalStateException If this is a primitive or array.
+	 * @since 2020/11/28
+	 */
+	public ClassIdentifier simpleName()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error JC0g Cannot get the simple name of a primitive
+		// or array type.}
+		if (this.isArray() || this.isPrimitive())
+			throw new IllegalStateException("JC0g");
+		return this.binary.simpleName();
+	}
+	
+	/**
 	 * Returns rhe runtime string as if it were called for
 	 * {@link Class#getName()}.
 	 *

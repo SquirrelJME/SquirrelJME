@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.summercoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Main bootstrap entry point.
  *
@@ -16,4 +18,13 @@ package cc.squirreljme.jvm.summercoat;
  */
 public final class Bootstrap
 {
+	/**
+	 * Main entry point for the virtual machine.
+	 * 
+	 * @since 2020/11/28
+	 */
+	public static void vmEntry()
+	{
+		throw Debugging.todo();
+	}
 }
