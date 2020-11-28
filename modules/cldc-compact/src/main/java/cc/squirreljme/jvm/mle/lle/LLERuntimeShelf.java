@@ -124,5 +124,9 @@ public final class LLERuntimeShelf
 	 * @return The current {@link VMType}.
 	 * @since 2020/06/16
 	 */
-	public static native int vmType();
+	public static int vmType()
+	{
+		// The virtual machine type here is always SummerCoat
+		return VMType.SUMMERCOAT;
+	}
 }

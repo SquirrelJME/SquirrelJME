@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.mle.lle;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -88,8 +90,16 @@ public final class LLETerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/09/21
 	 */
-	public static native int write(int __fd, int __c)
-		throws MLECallError;
+	public static int write(int __fd, int __c)
+		throws MLECallError
+	{
+		// {@squirreljme.error ZZ4h Could not write single byte to pipe.}
+		if (Assembly.sysCallV(SystemCallIndex.PD_WRITE_BYTE,
+			LLETerminalShelf.__pipeOfFd(__fd), __c) <= 0)
+			throw new MLECallError("ZZ4h");
+		
+		return 1;
+	}
 	
 	/**
 	 * Writes the given bytes to the console output.
@@ -104,6 +114,52 @@ public final class LLETerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
-	public static native int write(int __fd, byte[] __b, int __o, int __l)
-		throws MLECallError;
+	public static int write(int __fd, byte[] __b, int __o, int __l)
+		throws MLECallError
+	{
+		// {@squirreljme.error ZZ1i Invalid write arguments.}
+		if (__b == null || __o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new MLECallError("ZZ1i");
+		
+		// Where are the bytes going?
+		int scFd = LLETerminalShelf.__pipeOfFd(__fd);
+		
+		// Write all bytes to the output
+		// {@squirreljme.error ZZ4i Could not write multiple bytes to pipe.}
+		for (int i = 0; i < __l; i++)
+			if (Assembly.sysCallV(SystemCallIndex.PD_WRITE_BYTE, scFd,
+				__b[__o + i]) <= 0)
+			throw new MLECallError("ZZ4i");
+		
+		return __l;
+	}
+	
+	/**
+	 * Returns the pipe used for the file descriptor.
+	 * 
+	 * @param __fd The {@link StandardPipeType}.
+	 * @return The standard pipe ID for SummerCoat's pipes.
+	 * @throws MLECallError If the pipe is not valid.
+	 * @since 2020/11/28
+	 */
+	private static int __pipeOfFd(int __fd)
+		throws MLECallError
+	{
+		switch (__fd)
+		{
+			case StandardPipeType.STDIN:
+				return Assembly.sysCallV(SystemCallIndex.PD_OF_STDIN);
+				
+			case StandardPipeType.STDOUT:
+				return Assembly.sysCallV(SystemCallIndex.PD_OF_STDOUT);
+				
+			case StandardPipeType.STDERR:
+				return Assembly.sysCallV(SystemCallIndex.PD_OF_STDERR);
+			
+				// {@squirreljme.error ZZ4g Could not map a standard pipe
+				// descriptor. (The file descriptor)}
+			default:
+				throw new MLECallError("ZZ4g " + __fd);
+		}
+	}
 }
