@@ -504,22 +504,17 @@ public final class NativeCPU
 			{
 					// CPU Breakpoint
 				case NativeInstructionType.BREAKPOINT:
-					// Breakpoints only function when debugging is enabled
-					if (NativeCPU.ENABLE_DEBUG)
+					// If profiling, immediately enter the frame to signal
+					// a break point then exit it
+					if (profiler != null)
 					{
-						// If profiling, immediately enter the frame to signal
-						// a break point then exit it
-						if (profiler != null)
-						{
-							profiler.enterFrame("<breakpoint>",
-								"<breakpoint>", "<breakpoint>");
-							profiler.exitFrame();
-						}
-						
-						// {@squirreljme.error AE04 CPU breakpoint hit.}
-						throw new VMException("AE04");
+						profiler.enterFrame("<breakpoint>",
+							"<breakpoint>", "<breakpoint>");
+						profiler.exitFrame();
 					}
-					break;
+					
+					// {@squirreljme.error AE04 CPU breakpoint hit.}
+					throw new VMException("AE04");
 				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:

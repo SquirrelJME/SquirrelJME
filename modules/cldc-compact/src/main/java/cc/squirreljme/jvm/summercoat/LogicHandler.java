@@ -50,6 +50,9 @@ public final class LogicHandler
 	 */
 	public static void initClass(ClassInfoBracket __info)
 	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
 		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
@@ -64,6 +67,27 @@ public final class LogicHandler
 	 */
 	public static boolean isInstance(int __o, ClassInfoBracket __info)
 	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Allocates a new instance of the given class.
+	 * 
+	 * @param __info The class to allocate.
+	 * @return The allocated object data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/29
+	 */
+	public static Object newInstance(ClassInfoBracket __info)
+		throws NullPointerException
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
 		Assembly.breakpoint();
 		throw Debugging.todo();
 	}

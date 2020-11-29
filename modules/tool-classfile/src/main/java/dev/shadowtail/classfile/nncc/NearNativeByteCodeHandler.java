@@ -2787,26 +2787,38 @@ public final class NearNativeByteCodeHandler
 	private void __invokeNew(ClassName __cl, int __out)
 		throws NullPointerException
 	{
-		if (__cl == null)
+		this.__invokeNew(__cl, MemHandleRegister.of(__out));
+	}
+	
+	/**
+	 * Allocates a new object.
+	 *
+	 * @param __cl The class to create.
+	 * @param __out The output register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/29
+	 */
+	private void __invokeNew(ClassName __cl, MemHandleRegister __out)
+		throws NullPointerException
+	{
+		if (__cl == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Need a volatile
-		VolatileRegisterStack volatiles = this.volatiles;
-		int volwantcl = volatiles.getUnmanaged();
-		
-		// Load class data
-		this.__loadClassInfo(__cl, volwantcl);
-		
-		// Call allocator, copy to result
-		this.__invokeStatic(InvokeType.SYSTEM,
-			NearNativeByteCodeHandler.JVMFUNC_CLASS, "jvmNew",
-			"(I)I", volwantcl);
-		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out);
-		
-		// Not needed
-		volatiles.removeUnmanaged(volwantcl);
+		// We need a volatile for the class to allocate!
+		try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
+			this.volatiles.getTyped(ClassInfoPointer.class))
+		{
+			// Load class data
+			this.__loadClassInfo(__cl, classInfo.register);
+			
+			// Call allocator, copy to result
+			this.__invokeHelper(HelperFunction.NEW_INSTANCE,
+				classInfo.register);
+			codeBuilder.<MemHandleRegister>addCopy(
+				MemHandleRegister.RETURN, __out);
+		}
 	}
 	
 	/**

@@ -33,6 +33,10 @@ public enum HelperFunction
 	INIT_CLASS("initClass", "(Lcc/squirreljme/jvm/" +
 		"summercoat/brackets/ClassInfoBracket;)V"),
 	
+	/** Create new instance of a class. */
+	NEW_INSTANCE("newInstance", "(Lcc/squirreljme/jvm/" +
+		"summercoat/brackets/ClassInfoBracket;)Ljava/lang/Object;"),
+	
 	/* End. */
 	;
 	

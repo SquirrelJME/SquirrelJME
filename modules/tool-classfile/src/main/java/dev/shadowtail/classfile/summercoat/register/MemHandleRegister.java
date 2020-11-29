@@ -19,6 +19,10 @@ import dev.shadowtail.classfile.nncc.NativeCode;
 public final class MemHandleRegister
 	extends Register
 {
+	/** Return register. */
+	public static final MemHandleRegister RETURN =
+		MemHandleRegister.of(NativeCode.RETURN_REGISTER);
+	
 	/** The always null reference register. */
 	public static final MemHandleRegister NULL =
 		MemHandleRegister.of(NativeCode.ZERO_REGISTER);
