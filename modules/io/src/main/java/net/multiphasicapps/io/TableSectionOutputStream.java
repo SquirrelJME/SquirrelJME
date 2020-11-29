@@ -298,6 +298,11 @@ public final class TableSectionOutputStream
 						else
 							value = refsection.get()._writesize;
 						break;
+						
+						// Value
+					case VALUE:
+						value = rewrite._future.get();
+						break;
 				}
 				
 				// Add offset of value
@@ -721,6 +726,28 @@ public final class TableSectionOutputStream
 			throws IOException
 		{
 			this.writeInt(Float.floatToIntBits(__v));
+		}
+		
+		/**
+		 * Writes a future integer.
+		 * 
+		 * @return Future integer value.
+		 * @throws IOException On read/write errors.
+		 * @since 2020/11/29
+		 */
+		public TableSectionFutureInt writeFutureInt()
+			throws IOException
+		{
+			TableSectionFutureInt rv = new TableSectionFutureInt();
+			
+			// Record rewrite
+			this._rewrites.add(new __Rewrite__(this._size,
+				__RewriteType__.INTEGER, __RewriteValue__.VALUE, rv));
+				
+			// Place padding
+			this.writeInt(0);
+			
+			return rv;
 		}
 		
 		/**

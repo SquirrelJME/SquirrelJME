@@ -51,6 +51,10 @@ public final class MinimizedClassHeader
 	public static final int HEADER_SIZE_WITH_MAGIC =
 		MinimizedClassHeader.HEADER_SIZE_WITHOUT_MAGIC + 4;
 	
+	/** The maximum header size. */
+	public static final int MAXIMUM_HEADER_SIZE =
+		8 + (StaticClassInfoProperty.NUM_STATIC_PROPERTIES * 4);
+	
 	/** The format version of the class. */
 	protected final short formatVersion;
 	

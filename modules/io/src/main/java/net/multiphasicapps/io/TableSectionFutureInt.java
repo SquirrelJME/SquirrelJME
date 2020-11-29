@@ -10,22 +10,40 @@
 package net.multiphasicapps.io;
 
 /**
- * This is the value to be written.
+ * Future value storage with {@link TableSectionOutputStream}.
  *
- * @since 2019/08/17
+ * @since 2020/11/29
  */
-enum __RewriteValue__
+public final class TableSectionFutureInt
 {
-	/** Address. */
-	ADDRESS,
+	/** The value to use. */
+	private volatile int _value;
 	
-	/** Size. */
-	SIZE,
+	/**
+	 * Returns the stored value.
+	 * 
+	 * @return The value.
+	 * @since 2020/11/29
+	 */
+	public final int get()
+	{
+		synchronized (this)
+		{
+			return this._value;
+		} 
+	}
 	
-	/** Value. */
-	VALUE,
-	
-	/* End. */
-	;
+	/**
+	 * Sets the stored value.
+	 * 
+	 * @param __v The value to set.
+	 * @since 2020/11/29
+	 */
+	public final void set(int __v)
+	{
+		synchronized (this)
+		{
+			this._value = __v;
+		} 
+	}
 }
-

@@ -34,6 +34,35 @@ final class __Rewrite__
 	/** The target section to use. */
 	final Reference<TableSectionOutputStream.Section> _section;
 	
+	/** Future value. */
+	final TableSectionFutureInt _future;
+	
+	/**
+	 * Initializes the rewrite info.
+	 *
+	 * @param __addr The address to replace.
+	 * @param __type The value type to rewrite.
+	 * @param __value The value of the information.
+	 * @param __future The future value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/29
+	 */
+	public __Rewrite__(int __addr, __RewriteType__ __type,
+		__RewriteValue__ __value, TableSectionFutureInt __future)
+		throws NullPointerException
+	{
+		if (__type == null || __value == null || __future == null)
+			throw new NullPointerException("NARG");
+		
+		this._address = __addr;
+		this._offset = 0;
+		
+		this._type = __type;
+		this._value = __value;
+		this._section = null;
+		this._future = __future;
+	}
+	
 	/**
 	 * Initializes the rewrite info.
 	 *
@@ -58,6 +87,7 @@ final class __Rewrite__
 		this._offset = __offset;
 		this._section = (__section == null ? null :
 			new WeakReference<>(__section));
+		this._future = null;
 	}
 }
 

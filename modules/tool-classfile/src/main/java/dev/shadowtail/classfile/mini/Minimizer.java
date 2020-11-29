@@ -10,6 +10,8 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.summercoat.constants.StaticClassInfoProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
@@ -39,6 +41,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
+import net.multiphasicapps.io.TableSectionFutureInt;
 import net.multiphasicapps.io.TableSectionOutputStream;
 
 /**
@@ -111,14 +114,18 @@ public final class Minimizer
 		__TempMethods__[] methods = this.__doMethods();
 		
 		// Initialize header section
-		TableSectionOutputStream.Section header =
-			output.addSection(MinimizedClassHeader.HEADER_SIZE_WITH_MAGIC);
+		TableSectionOutputStream.Section header = output.addSection(
+			TableSectionOutputStream.VARIABLE_SIZE, 4);
 		
-		// Write magic number to specify this format
+		// Magic number and minimized format 
 		header.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
+		header.writeShort(ClassInfoConstants.VERSION_20201129);
 		
 		// Unused, may be used later when needed
-		header.writeShort(0);
+		TableSectionFutureInt[] properties = new TableSectionFutureInt[
+			StaticClassInfoProperty.NUM_STATIC_PROPERTIES];
+		for (int i = 0; i < StaticClassInfoProperty.NUM_STATIC_PROPERTIES; i++)
+			properties[i] = header.writeFutureInt();
 		
 		// The index of the instance method named __start
 		header.writeByte(methods[1].findMethodIndex("__start"));
