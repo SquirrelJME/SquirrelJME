@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.InvalidInstructionException;
@@ -141,6 +142,10 @@ public final class NativeCPU
 	 */
 	public final Frame enterFrame(int __pc, int... __args)
 	{
+		// Debug this
+		Debugging.debugNote("SC::enterFrame(%08x, %s)",
+			__pc, IntegerArrayList.asList(__args));
+		
 		// Old frame, to source globals from
 		LinkedList<Frame> frames = this._frames;
 		Frame lastframe = frames.peekLast();
@@ -1161,6 +1166,12 @@ public final class NativeCPU
 				(scl == null ? "<AClass>" : scl),
 				(smn == null ? "<AMethod>" : smn),
 				(smt == null ? "<AType>" : smt));
+		
+		// Debug this
+		Debugging.debugNote("SC::enterFrame!(%s:%s %s)",
+			(scl == null ? "<AClass>" : scl),
+			(smn == null ? "<AMethod>" : smn),
+			(smt == null ? "<AType>" : smt));
 	}
 	
 	/**
