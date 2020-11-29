@@ -19,7 +19,7 @@ public final class TypedRegister<T>
 	extends Register
 {
 	/** The type used. */
-	protected final Class<T> type;
+	public final Class<T> type;
 	
 	/**
 	 * Initializes the basic register.

@@ -127,6 +127,27 @@ public enum MinimizedPoolEntryType
 	}
 	
 	/**
+	 * Checks if this is a compatible class.
+	 * 
+	 * @param __cl The class to check.
+	 * @return If this is a compatible class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final boolean isClass(Class<?> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		for (Class<?> cl : this._classes)
+			if (__cl == cl)
+				return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Can this be in the runtime pool?
 	 *
 	 * @return If this can be in the runtime pool.

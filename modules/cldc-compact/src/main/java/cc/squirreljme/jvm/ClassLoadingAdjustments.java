@@ -24,7 +24,7 @@ public final class ClassLoadingAdjustments
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
-	public static final boolean isDeferredLoad(String __cl)
+	public static boolean isDeferredLoad(String __cl)
 		throws NullPointerException
 	{
 		switch (__cl)
@@ -131,7 +131,10 @@ public final class ClassLoadingAdjustments
 				return false;
 				
 			default:
-				return true;
+				// Certain classes within packages must be loaded in order
+				// for the VM to properly work
+				return !__cl.startsWith("cc/squirreljme/jvm/mle/") &&
+					!__cl.startsWith("cc/squirreljme/jvm/summercoat/");
 		}
 	}
 	
@@ -144,7 +147,7 @@ public final class ClassLoadingAdjustments
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
-	public static final boolean isDeferredLoad(String __self, String __cl)
+	public static boolean isDeferredLoad(String __self, String __cl)
 		throws NullPointerException
 	{
 		if (__self == null || __cl == null)

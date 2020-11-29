@@ -46,6 +46,13 @@ public interface NativeInstructionType
 		0x30;
 	
 	/**
+	 * Memory access to a memory handle (register).
+	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
+	 */
+	short MEM_HANDLE_OFF_REG =
+		0x40;
+	
+	/**
 	 * Math, R=RC, Integer.
 	 * {@code iiiiMMMM, r3 = r1 ? c2}.
 	 */
@@ -65,6 +72,13 @@ public interface NativeInstructionType
 	 */
 	short MEMORY_OFF_ICONST_JAVA =
 		0xB0;
+	
+	/**
+	 * Memory access to a memory handle (constant value).
+	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
+	 */
+	short MEM_HANDLE_OFF_ICONST =
+		0xC0;
 	
 	/**
 	 * Special.
@@ -113,10 +127,12 @@ public interface NativeInstructionType
 		0xF0;
 	
 	/** Load execp/poolp from interface VTable. */
+	@Deprecated
 	short INTERFACE_VT_LOAD =
 		0xF1;
 	
 	/** Lookup VTable Index for Interface. */
+	@Deprecated
 	short INTERFACE_VT_DX_LOOKUP =
 		0xF2;
 	
@@ -139,6 +155,7 @@ public interface NativeInstructionType
 		0xF5;
 	
 	/** Get interface I for object. */
+	@Deprecated
 	short INTERFACE_I_FOR_OBJECT =
 		0xF6;
 	

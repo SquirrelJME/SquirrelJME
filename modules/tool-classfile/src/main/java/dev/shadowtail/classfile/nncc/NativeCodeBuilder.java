@@ -11,6 +11,7 @@
 package dev.shadowtail.classfile.nncc;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
@@ -21,7 +22,9 @@ import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.PlainRegister;
 import dev.shadowtail.classfile.summercoat.register.Register;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
+import dev.shadowtail.classfile.summercoat.register.TypedRegister;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
+import dev.shadowtail.classfile.summercoat.register.WideRegister;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
@@ -38,6 +41,7 @@ import net.multiphasicapps.classfile.InstructionJumpTarget;
  *
  * @since 2019/03/16
  */
+@SuppressWarnings("UnusedReturnValue")
 public final class NativeCodeBuilder
 {
 	/** Label positions. */
@@ -183,16 +187,55 @@ public final class NativeCodeBuilder
 	 * @param __a The register to check.
 	 * @param __jt The target of the jump.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use the type-safe {@link #addIfNonZero(IntValueRegister,
+	 * NativeCodeLabel)} instead.
 	 * @since 2019/04/11
 	 */
+	@Deprecated
 	public final NativeInstruction addIfNonZero(int __a, NativeCodeLabel __jt)
 		throws NullPointerException
 	{
-		if (__jt == null)
+		return this.addIfNonZero(IntValueRegister.of(__a), __jt);
+	}
+	
+	/**
+	 * Adds a jump if the given register is not zero. No reference clears are
+	 * performed by this call.
+	 *
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addIfNonZero(IntValueRegister __a,
+		NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		if (__a == null || __jt == null)
 			throw new NullPointerException("NARG");
 		
-		return this.addIfICmp(CompareType.NOT_EQUALS, __a,
-			NativeCode.ZERO_REGISTER, __jt);
+		return this.addIfICmp(CompareType.NOT_EQUALS,
+			__a, IntValueRegister.ZERO, __jt);
+	}
+	
+	/**
+	 * Jumps if a memory handle is {@code null}.
+	 * 
+	 * @param __ir The register to check.
+	 * @param __jump The target to jump to if null.
+	 * @return The generated instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public NativeInstruction addIfNull(MemHandleRegister __ir,
+		NativeCodeLabel __jump)
+		throws NullPointerException
+	{
+		if (__ir == null || __jump == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addIfICmp(CompareType.NOT_EQUALS, __ir.asIntValue(),
+			MemHandleRegister.NULL.asIntValue(), __jump);
 	}
 	
 	/**
@@ -266,6 +309,26 @@ public final class NativeCodeBuilder
 		
 		return this.addIfICmp(CompareType.TRUE, NativeCode.ZERO_REGISTER,
 			NativeCode.ZERO_REGISTER, __jt);
+	}
+	
+	/**
+	 * Loads an integer constant to a register.
+	 * 
+	 * @param __v The constant to load.
+	 * @param __to The target register.
+	 * @return The generated instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public NativeInstruction addIntegerConst(int __v, IntValueRegister __to)
+		throws NullPointerException
+	{
+		if (__to == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addMathConst(
+			DataType.INTEGER.toStackJavaType(), MathType.OR,
+			IntValueRegister.ZERO.register, __v, __to.register);
 	}
 	
 	/**
@@ -494,6 +557,136 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds memory handle accessing.
+	 * 
+	 * @param __dt The data type for access.
+	 * @param __load Is this a load?
+	 * @param __inOut The input/output register.
+	 * @param __mh The memory handle used.
+	 * @param __offset The offset of the access.
+	 * @return The generated instruction.
+	 * @throws IllegalArgumentException If this is a wide access, use the
+	 * wide variant of this method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addMemHandleAccess(DataType __dt,
+		boolean __load, IntValueRegister __inOut, MemHandleRegister __mh,
+		IntValueRegister __offset)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__dt == null || __inOut == null || __mh == null ||
+			__offset == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC30 Cannot use wide values with this method.
+		// (The data type)}
+		if (__dt.isWide())
+			throw new IllegalArgumentException("JC30 " + __dt);
+		
+		return this.__add(NativeInstructionType.MEM_HANDLE_OFF_REG |
+			(__load ? 0b1000 : 0) | __dt.ordinal(),
+			__inOut, __mh, __offset);
+	}
+	
+	/**
+	 * Adds memory handle accessing.
+	 * 
+	 * @param __dt The data type for access.
+	 * @param __load Is this a load?
+	 * @param __inOut The input/output register.
+	 * @param __mh The memory handle used.
+	 * @param __offset The offset of the access.
+	 * @return The generated instruction.
+	 * @throws IllegalArgumentException If this is a wide access, use the
+	 * wide variant of this method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addMemHandleAccess(DataType __dt,
+		boolean __load, IntValueRegister __inOut, MemHandleRegister __mh,
+		int __offset)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__dt == null || __inOut == null || __mh == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC0i Cannot use wide values with this method.
+		// (The data type)}
+		if (__dt.isWide())
+			throw new IllegalArgumentException("JC0i " + __dt);
+		
+		return this.__add(NativeInstructionType.MEM_HANDLE_OFF_ICONST |
+			(__load ? 0b1000 : 0) | __dt.ordinal(),
+			__inOut, __mh, __offset);
+	}
+	
+	/**
+	 * Adds memory handle accessing.
+	 * 
+	 * @param __dt The data type for access.
+	 * @param __load Is this a load?
+	 * @param __inOut The input/output register.
+	 * @param __mh The memory handle used.
+	 * @param __offset The offset of the access.
+	 * @return The generated instruction.
+	 * @throws IllegalArgumentException If this is a wide access, use the
+	 * wide variant of this method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addMemHandleAccess(DataType __dt,
+		boolean __load, WideRegister __inOut, MemHandleRegister __mh,
+		IntValueRegister __offset)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__dt == null || __inOut == null || __mh == null ||
+			__offset == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC4o Cannot use narrow values with this method.
+		// (The data type)}
+		if (!__dt.isWide())
+			throw new IllegalArgumentException("JC4o " + __dt);
+		
+		return this.__add(NativeInstructionType.MEM_HANDLE_OFF_REG |
+			(__load ? 0b1000 : 0) | __dt.ordinal(),
+			__inOut.low, __inOut.high, __mh, __offset);
+	}
+	
+	/**
+	 * Adds memory handle accessing.
+	 * 
+	 * @param __dt The data type for access.
+	 * @param __load Is this a load?
+	 * @param __inOut The input/output register.
+	 * @param __mh The memory handle used.
+	 * @param __offset The offset of the access.
+	 * @return The generated instruction.
+	 * @throws IllegalArgumentException If this is a wide access, use the
+	 * wide variant of this method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public final NativeInstruction addMemHandleAccess(DataType __dt,
+		boolean __load, WideRegister __inOut, MemHandleRegister __mh,
+		int __offset)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__dt == null || __inOut == null || __mh == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC4n Cannot use narrow values with this method.
+		// (The data type)}
+		if (!__dt.isWide())
+			throw new IllegalArgumentException("JC4n " + __dt);
+		
+		return this.__add(NativeInstructionType.MEM_HANDLE_OFF_ICONST |
+			(__load ? 0b1000 : 0) | __dt.ordinal(),
+			__inOut.low, __inOut.high, __mh, __offset);
+	}
+	
+	/**
 	 * Adds memory offset by constant.
 	 *
 	 * @param __dt The data type used.
@@ -601,6 +794,58 @@ public final class NativeCodeBuilder
 		// Generate
 		return this.__add(NativeInstructionType.MEMORY_OFF_REG_JAVA |
 			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
+	}
+	
+	/**
+	 * Loads from the constant pool.
+	 * 
+	 * @param <P> The pool type.
+	 * @param __poolRef The pool reference.
+	 * @param __register The target register.
+	 * @return The generated instruction.
+	 * @throws IllegalArgumentException If the types are not compatible.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public <P> NativeInstruction addPoolLoad(P __poolRef,
+		TypedRegister<P> __register)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__poolRef == null || __register == null)
+			throw new NullPointerException("NARG");
+		
+		// Check to make sure the type is compatible
+		// {@squirreljme.error JC4p (The register; The defined pool type;
+		// The pool reference type)}
+		MinimizedPoolEntryType poolType = MinimizedPoolEntryType.ofClass(
+			__register.type);
+		if (__register.type != __poolRef.getClass() ||
+			!poolType.isClass(__poolRef.getClass()))
+			throw new IllegalArgumentException(String.format("JC4p %s %s %s",
+				__register, poolType, __poolRef.getClass()));
+		
+		return this.__add(NativeInstructionType.LOAD_POOL,
+			__poolRef, __register);
+	}
+	
+	/**
+	 * Adds a system call instruction.
+	 * 
+	 * @param __id The system call ID.
+	 * @param __regs The registers to pass to the call.
+	 * @return The generated instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	public NativeInstruction addSysCall(IntValueRegister __id,
+		Register... __regs)
+		throws NullPointerException
+	{
+		if (__id == null || __regs == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__add(NativeInstructionType.SYSTEM_CALL,
+			__id, new RegisterList(__regs));
 	}
 	
 	/**

@@ -660,6 +660,7 @@ public final class LoadedClassInfo
 			throw new InvalidClassFormatException(
 				String.format("BC07 %s %s %s", mcf.thisName(), __mn, __mt));
 		}
+		
 		return this._classoffset + mcf.header.imoff + mm.codeoffset;
 	}
 	

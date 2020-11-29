@@ -9,6 +9,8 @@
 
 package dev.shadowtail.classfile.summercoat.register;
 
+import dev.shadowtail.classfile.nncc.NativeCode;
+
 /**
  * This is a register that contains an integer value.
  *
@@ -17,9 +19,13 @@ package dev.shadowtail.classfile.summercoat.register;
 public final class IntValueRegister
 	extends Register
 {
+	/** The return register. */
+	public static final Register RETURN =
+		IntValueRegister.of(NativeCode.RETURN_REGISTER);
+	
 	/** The zero register. */
 	public static final IntValueRegister ZERO =
-		IntValueRegister.of(0);
+		IntValueRegister.of(NativeCode.ZERO_REGISTER);
 	
 	/**
 	 * Initializes the basic register.

@@ -34,7 +34,9 @@ import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.PlainRegister;
 import dev.shadowtail.classfile.summercoat.register.Register;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
+import dev.shadowtail.classfile.summercoat.register.TypedRegister;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
+import dev.shadowtail.classfile.summercoat.register.WideRegister;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.CompareType;
@@ -502,64 +504,53 @@ public final class NearNativeByteCodeHandler
 	public final void doFieldGet(FieldReference __fr,
 		JavaStackResult.Input __i, JavaStackResult.Output __v)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		
 		// Push references
 		this.__refPush();
 		
 		// The instance register
-		int ireg = __i.register;
+		MemHandleRegister instance = MemHandleRegister.of(__i.register);
 		
-		// Cannot be null
-		this.__basicCheckNPE(ireg);
+		// Cannot be null!
+		this.__basicCheckNPE(instance);
 		
 		// Must be the given class
 		if (!__i.isCompatible(__fr.className()))
-			this.__basicCheckCCE(ireg, __fr.className());
+			this.__basicCheckCCE(instance, __fr.className());
 		
 		// We already checked the only valid exceptions, so do not perform
 		// later handling!
 		this.state.canexception = false;
 		
-		// Determine volatile registers
-		VolatileRegisterStack volatiles = this.volatiles;
-		int tempreg = volatiles.getUnmanaged();
-		
-		// Read field offset
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, true), tempreg);
-		
-		// Data type used
-		DataType dt = DataType.of(__fr.memberType().primitiveType());
-		
-		// Use helper function?
-		if (dt.isWide())
+		// We need a volatile for the field offset
+		try (Volatile<TypedRegister<AccessedField>> fOff =
+			this.volatiles.getTyped(AccessedField.class))
 		{
-			// Read memory
-			this.__invokeStatic(InvokeType.SYSTEM,
-				NearNativeByteCodeHandler.JVMFUNC_CLASS,
-				"jvmMemReadLong", "(II)J",
-				ireg, tempreg);
+			// Read field offset
+			NativeCodeBuilder codeBuilder = this.codebuilder;
+			codeBuilder.<AccessedField>addPoolLoad(this.__fieldAccess(
+				FieldAccessType.INSTANCE, __fr, true), fOff.register);
 			
-			// Copy return value
-			codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
-				__v.register + 1);
-			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-				__v.register);
+			// Data type used
+			DataType dt = DataType.of(__fr.memberType().primitiveType());
+			
+			// Reading wide value?
+			if (dt.isWide())
+				codeBuilder.addMemHandleAccess(dt, true,
+					WideRegister.of(__v.register, __v.register + 1),
+					instance, fOff.register.asIntValue());
+			
+			// Narrow value
+			else
+			{
+				codeBuilder.addMemHandleAccess(dt, true,
+					IntValueRegister.of(__v.register),
+					instance, fOff.register.asIntValue());
+				
+				// Need to count up object?
+				if (__fr.memberType().isObject())
+					this.__refCount(MemHandleRegister.of(__v.register));
+			}
 		}
-		
-		// Read from memory
-		else
-			codebuilder.addMemoryOffReg(
-				dt, true,
-				__v.register, ireg, tempreg);
-		
-		// Count it up?
-		if (__fr.memberType().isObject())
-			this.__refCount(__v.register);
-		
-		// Not used anymore
-		volatiles.removeUnmanaged(tempreg);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -1880,37 +1871,48 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @param __ir The register to check.
 	 * @param __cl The class to check.
+	 * @deprecated Use the type-safe
+	 * {@link #__basicCheckNPE(MemHandleRegister)} instead. 
 	 * @since 2019/04/22
 	 */
+	@Deprecated
 	private void __basicCheckCCE(int __ir, ClassName __cl)
 		throws NullPointerException
 	{
-		if (__cl == null)
+		this.__basicCheckCCE(MemHandleRegister.of(__ir), __cl);
+	}
+	
+	/**
+	 * Basic check if the instance is of the given class.
+	 *
+	 * @param __ir The register to check.
+	 * @param __cl The class to check.
+	 * @since 2020/11/28
+	 */
+	private void __basicCheckCCE(MemHandleRegister __ir, ClassName __cl)
+		throws NullPointerException
+	{
+		if (__ir == null || __cl == null)
 			throw new NullPointerException("NARG");
-			
-		NativeCodeBuilder codebuilder = this.codebuilder;
 		
 		// Need volatiles
-		VolatileRegisterStack volatiles = this.volatiles;
-		int volwantcldx = volatiles.getUnmanaged();
-		
-		// Load desired target class type
-		this.__loadClassInfo(__cl, volwantcldx);
-		
-		// Call helper class
-		this.__invokeStatic(InvokeType.SYSTEM,
-			NearNativeByteCodeHandler.JVMFUNC_CLASS,
-			"jvmIsInstance", "(II)I", __ir, volwantcldx);
-		
-		// If the resulting method call returns zero then it is not an instance
-		// of the given class. The return register is checked because the
-		// value of that method will be placed there.
-		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
-			this.__labelRefClearJump(this.__labelMakeException(
-			"java/lang/ClassCastException")));
-		
-		// No longer needed
-		volatiles.removeUnmanaged(volwantcldx);
+		try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
+			this.volatiles.getTyped(ClassInfoPointer.class))
+		{
+			// Load desired target class type
+			this.__loadClassInfo(__cl, classInfo.register);
+			
+			// Call helper class
+			this.__invokeHelper(HelperFunction.IS_INSTANCE,
+				__ir, classInfo.register);
+			
+			// If the resulting method call returns zero then it is not an
+			// instance of the given class. The return register is checked
+			// because the value of that method will be placed there.
+			this.codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
+				this.__labelRefClearJump(this.__labelMakeException(
+				"java/lang/ClassCastException")));
+		}
 	}
 	
 	/**
@@ -1966,15 +1968,30 @@ public final class NearNativeByteCodeHandler
 	 * Basic check if the instance is null.
 	 *
 	 * @param __ir The register to check.
+	 * @deprecated Use the type safe {@link #__basicCheckNPE(
+	 * MemHandleRegister)}. 
 	 * @since 2019/04/22
 	 */
+	@Deprecated
 	private void __basicCheckNPE(int __ir)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		this.__basicCheckNPE(MemHandleRegister.of(__ir));
+	}
+	
+	/**
+	 * Basic check if the instance is null.
+	 *
+	 * @param __ir The register to check.
+	 * @since 2020/11/28
+	 */
+	private void __basicCheckNPE(MemHandleRegister __ir)
+		throws NullPointerException
+	{
+		if (__ir == null)
+			throw new NullPointerException("NARG");
 		
-		// Just a plain zero check
-		codebuilder.addIfZero(__ir, this.__labelRefClearJump(
-			this.__labelMakeException("java/lang/NullPointerException")));
+		this.codebuilder.addIfNull(__ir, this.__labelRefClearJump(
+			this.__labelMakeException("java/lang/NullPointerException"))); 
 	}
 	
 	/**
@@ -3034,6 +3051,48 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Invokes the given pure system call that returns an integer value.
+	 * 
+	 * @param __sysCall The {@link SystemCallIndex}.
+	 * @param __rv The return value.
+	 * @param __regs The registers to call.
+	 * @throws IllegalArgumentException If the system call is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	private void __invokeSysCallV(int __sysCall, IntValueRegister __rv,
+		Register... __regs)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__rv == null || __regs == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC4q The system call is not valid. (The system
+		// call ID)}
+		if (__sysCall < 0 || __sysCall >= SystemCallIndex.NUM_SYSCALLS)
+			throw new IllegalArgumentException("JC4q " + __sysCall);
+		
+		// Invoked methods can thrown an exception, so do
+		// checks! Otherwise the behavior we expect might not
+		// happen
+		this.state.canexception = true;
+		
+		// We need volatiles
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		try (Volatile<IntValueRegister> callId = this.volatiles.getIntValue())
+		{
+			// Load integer constant
+			codeBuilder.addIntegerConst(__sysCall, callId.register);
+			
+			// Perform the call
+			codeBuilder.addSysCall(callId.register, __regs);
+			
+			// Copy return value
+			codeBuilder.addCopy(IntValueRegister.RETURN, __rv);
+		}
+	}
+	
+	/**
 	 * Creates and stores an exception.
 	 *
 	 * @return The label to the exception.
@@ -3273,51 +3332,55 @@ public final class NearNativeByteCodeHandler
 	private void __loadClassInfo(ClassName __cl, int __r)
 		throws NullPointerException
 	{
-		if (__cl == null)
+		this.__loadClassInfo(__cl, new TypedRegister<ClassInfoPointer>(
+			ClassInfoPointer.class, __r));
+	}
+	
+	/**
+	 * Loads the class information for a class.
+	 *
+	 * @param __cl The class to load.
+	 * @param __r The output register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/28
+	 */
+	private void __loadClassInfo(ClassName __cl,
+		TypedRegister<ClassInfoPointer> __r)
+		throws NullPointerException
+	{
+		if (__cl == null || __r == null)
 			throw new NullPointerException("NARG");
 		
 		// Used for loading code
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Attempt load to the target register
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
+		// Load cached pool entry
+		codeBuilder.<ClassInfoPointer>addPoolLoad(
 			new ClassInfoPointer(__cl), __r);
 		
-		// Detect classes which are dynamically initialized or self
-		if (!ClassLoadingAdjustments.isDeferredLoad(this.state.classname.toString(),
-			__cl.toString()))
+		// There are classes that must always exist within the VM in an
+		// always loaded state, otherwise there can be a very bad infinite
+		// recursive trying to load these important classes.
+		if (!ClassLoadingAdjustments.isDeferredLoad(__cl.toString()))
 			return;
 		
-		// If the class is already loaded do not try loading
-		NativeCodeLabel isloaded = new NativeCodeLabel("ciisloaded",
+		// Check if the class is initialized or not
+		NativeCodeLabel isLoadPt = new NativeCodeLabel("classInfoLoaded",
 			this._refclunk++);
-		codebuilder.addIfNonZero(__r, isloaded);
-		
-		// Need register to load the class info
-		VolatileRegisterStack volatiles = this.volatiles;
-		int volnoted = volatiles.getUnmanaged();
-		
-		// Load the noted class name
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new NotedString(__cl.toString()), volnoted);
-		
-		// Initialize the class
-		this.__invokeStatic(InvokeType.SYSTEM,
-			NearNativeByteCodeHandler.JVMFUNC_CLASS,
-			"jvmInitClass", "(I)Lcc/squirreljme/jvm/ClassInfo;", volnoted);
-		
-		// Store the result of the init into the pool
-		codebuilder.add(NativeInstructionType.STORE_POOL,
-			new ClassInfoPointer(__cl), NativeCode.RETURN_REGISTER);
-		
-		// Use the value of it
-		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
-		
-		// Cleanup
-		volatiles.removeUnmanaged(volnoted);
+		try (Volatile<IntValueRegister> isInitBool = volatiles.getIntValue())
+		{
+			// If the class is already loaded do not try loading
+			this.__invokeSysCallV(SystemCallIndex.CHECK_IF_CLASS_INIT,
+				isInitBool.register, __r);
+			codeBuilder.addIfNonZero(isInitBool.register, isLoadPt);
+			
+			// Otherwise try to initialize the class
+			this.__invokeHelper(HelperFunction.INIT_CLASS,
+				__r);
+		}
 		
 		// End point is here
-		codebuilder.label(isloaded);
+		codeBuilder.label(isLoadPt);
 	}
 	
 	/**

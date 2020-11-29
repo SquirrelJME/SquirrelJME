@@ -11,6 +11,7 @@ package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.config.ConfigRomType;
+import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 
 /**
  * This contains the index of system calls.
@@ -455,12 +456,22 @@ public interface SystemCallIndex
 		39;
 	
 	/**
+	 * Checks if a class is considered initialized.
+	 * 
+	 * @squirreljme.syscallparam 1 A {@link ClassInfoBracket}.
+	 * @squirreljme.syscallreturn If a class is initialized or not.
+	 * @since 2020/11/28
+	 */
+	byte CHECK_IF_CLASS_INIT =
+		40;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		40;
+		41;
 }
 

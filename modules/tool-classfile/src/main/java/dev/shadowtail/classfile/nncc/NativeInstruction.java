@@ -323,6 +323,12 @@ public final class NativeInstruction
 			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
 				return 3;
 				
+			case NativeInstructionType.MEM_HANDLE_OFF_REG:
+			case NativeInstructionType.MEM_HANDLE_OFF_ICONST:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return 4;
+				return 3;
+				
 			case NativeInstructionType.DEBUG_ENTRY:
 			case NativeInstructionType.INTERFACE_VT_LOAD:
 				return 4;
@@ -435,6 +441,19 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG);
+					
+				// [r16 [+r16], r16, r16]
+			case NativeInstructionType.MEM_HANDLE_OFF_REG:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return ArgumentFormat.of(
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG);
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG);
 			
 				// [r16, i32, r16]
 			case NativeInstructionType.MATH_CONST_INT:
@@ -446,6 +465,19 @@ public final class NativeInstruction
 				// [r16, r16, i32]
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.INT32);
+				
+				// [r16 [+r16], r16, i32]
+			case NativeInstructionType.MEM_HANDLE_OFF_ICONST:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return ArgumentFormat.of(
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.INT32);
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
@@ -551,6 +583,16 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 				return "MEM_" +
+					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
+					"_" +
+					DataType.of(__op & 0x07).name() +
+					"_" +
+					(((__op & 0x80) != 0) ? "ICONST" : "REG") +
+					"_JAVA";
+			
+			case NativeInstructionType.MEM_HANDLE_OFF_REG:
+			case NativeInstructionType.MEM_HANDLE_OFF_ICONST:
+				return "MEM_HANDLE_OFF_" +
 					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
 					"_" +
 					DataType.of(__op & 0x07).name() +

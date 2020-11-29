@@ -9,14 +9,14 @@
 
 package dev.shadowtail.classfile.summercoat;
 
+import cc.squirreljme.jvm.summercoat.LogicHandler;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.MemberNameAndType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
- * Helper function for JVM calls.
+ * Helper function for JVM calls, calls into {@link LogicHandler}.
  *
  * @since 2020/11/28
  */
@@ -24,6 +24,14 @@ public enum HelperFunction
 {
 	/** Garbage collect handle. */
 	GC_MEM_HANDLE("gcMemHandle", "(I)V"),
+	
+	/** Is this an instance of the class? */
+	IS_INSTANCE("isInstance", "(Ljava/lang/Object;Lcc/" +
+		"squirreljme/jvm/summercoat/brackets/ClassInfoBracket;)Z"),
+	
+	/** Initialize class. */
+	INIT_CLASS("initClass", "(Lcc/squirreljme/jvm/" +
+		"summercoat/brackets/ClassInfoBracket;)Z"),
 	
 	/* End. */
 	;

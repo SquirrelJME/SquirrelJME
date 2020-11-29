@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -36,6 +37,32 @@ public final class LogicHandler
 	 * @since 2020/11/28
 	 */
 	public static void gcMemHandle(int __p)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Initializes the given class.
+	 * 
+	 * @param __info The class info to initialize.
+	 * @since 2020/11/28
+	 */
+	public static void initClass(ClassInfoBracket __info)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Checks if this is an instance of the given class.
+	 * 
+	 * @param __o The object to check.
+	 * @param __info The class information to check.
+	 * @return If this is an instance of the given class.
+	 * @since 2020/11/28
+	 */
+	public static boolean isInstance(int __o, ClassInfoBracket __info)
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
