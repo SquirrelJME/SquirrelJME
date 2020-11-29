@@ -3361,7 +3361,8 @@ public final class NearNativeByteCodeHandler
 		// There are classes that must always exist within the VM in an
 		// always loaded state, otherwise there can be a very bad infinite
 		// recursive trying to load these important classes.
-		if (!ClassLoadingAdjustments.isDeferredLoad(__cl.toString()))
+		if (!ClassLoadingAdjustments.isDeferredLoad(
+			this.state.classname.toString(), __cl.toString()))
 			return;
 		
 		// Check if the class is initialized or not
