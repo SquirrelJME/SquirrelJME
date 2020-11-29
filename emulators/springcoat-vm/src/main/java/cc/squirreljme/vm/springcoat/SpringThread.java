@@ -13,6 +13,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
@@ -180,8 +181,8 @@ public final class SpringThread
 			__args = new Object[0];
 		
 		// Debug
-		/*todo.DEBUG.note("enterFrame(%s::%s, %s)", __m.inClass(),
-			__m.nameAndType(), Arrays.<Object>asList(__args));*/
+		Debugging.debugNote("enterFrame(%s::%s, %s)", __m.inClass(),
+			__m.nameAndType(), Arrays.<Object>asList(__args));
 		
 		// {@squirreljme.error BK1k Cannot enter the frame for a method which
 		// is abstract. (The class the method is in; The method name and type)}
