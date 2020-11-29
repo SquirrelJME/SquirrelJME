@@ -12,6 +12,7 @@ package cc.squirreljme.jvm;
 import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.config.ConfigRomType;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoProperty;
 
 /**
  * This contains the index of system calls.
@@ -481,11 +482,12 @@ public interface SystemCallIndex
 	 * Returns the size of the given class information.
 	 * 
 	 * @squirreljme.syscallparam 1 The {@link ClassInfoBracket}.
+	 * @squirreljme.syscallparam 2 A {@link ClassInfoProperty}.
 	 * @squirreljme.syscallreturn The size of the handle or a negative value
 	 * if this is not valid.
 	 * @since 2020/11/29
 	 */
-	byte CLASS_INFO_GET_SIZE =
+	byte CLASS_INFO_GET_PROPERTY =
 		42;
 	
 	/**

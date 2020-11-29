@@ -12,7 +12,6 @@ package dev.shadowtail.classfile.nncc;
 import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
@@ -3103,8 +3102,8 @@ public final class NearNativeByteCodeHandler
 		int id;
 		switch (__r.memberName().toString())
 		{
-			case "classInfoGetSize":
-				id = SystemCallIndex.CLASS_INFO_GET_SIZE;
+			case "classInfoGetProperty":
+				id = SystemCallIndex.CLASS_INFO_GET_PROPERTY;
 				break;
 			
 			case "errorGet":

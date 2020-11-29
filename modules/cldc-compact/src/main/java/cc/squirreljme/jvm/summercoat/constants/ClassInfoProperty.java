@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.boot.lib;
+package cc.squirreljme.jvm.summercoat.constants;
 
 /**
  * This contains properties of class info.
@@ -16,8 +16,8 @@ package cc.squirreljme.jvm.boot.lib;
  */
 public interface ClassInfoProperty
 {
-	/** Self pointer. */
-	byte INT_SELFPTR =
+	/** The class version number. */
+	byte INT_VERSION =
 		0;
 	
 	/** Magic number used to detect corruption. */
@@ -37,7 +37,7 @@ public interface ClassInfoProperty
 		4;
 	
 	/** The allocation size of this class. */
-	byte INT_SIZE =
+	byte INT_ALLOCATION_SIZE =
 		5;
 	
 	/** The base offset for fields in this class. */
@@ -104,8 +104,12 @@ public interface ClassInfoProperty
 	byte INT_DEFAULTNEW =
 		21;
 	
+	/** Self pointer. */
+	byte INT_SELFPTR =
+		22;
+	
 	/** The number of properties available. */
 	byte NUM_PROPERTIES =
-		22;
+		23;
 }
 

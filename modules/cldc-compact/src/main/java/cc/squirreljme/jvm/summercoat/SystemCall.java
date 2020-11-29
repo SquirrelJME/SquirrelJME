@@ -9,11 +9,11 @@
 
 package cc.squirreljme.jvm.summercoat;
 
-import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoProperty;
 
 /**
  * This is a helper wrapper around system calls.
@@ -32,16 +32,18 @@ public final class SystemCall
 	}
 	
 	/**
-	 * {@link SystemCallIndex#CLASS_INFO_GET_SIZE}: Returns the allocated size
-	 * of the class.
+	 * {@link SystemCallIndex#CLASS_INFO_GET_PROPERTY}: Returns the value of
+	 * the given class property.
 	 * 
 	 * @param __info The information to get.
-	 * @return The size of the class information.
+	 * @param __id The {@link ClassInfoProperty}.
+	 * @return The value of the given property.
 	 * @throws MLECallError If {@code __info} is {@code null} or is not a
 	 * valid class.
 	 * @since 2020/11/29
 	 */
-	public static native int classInfoGetSize(ClassInfoBracket __info)
+	public static native int classInfoGetProperty(ClassInfoBracket __info,
+		int __id)
 		throws MLECallError;
 	
 	/**

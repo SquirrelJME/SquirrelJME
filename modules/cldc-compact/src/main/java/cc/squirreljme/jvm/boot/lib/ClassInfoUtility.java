@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.boot.lib;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.boot.task.TaskClass;
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoProperty;
 
 /**
  * This is a utility which allows access to the various fields within
@@ -56,7 +57,7 @@ public final class ClassInfoUtility
 	public final int classAllocationSize(TaskClass __cl)
 		throws NullPointerException
 	{
-		return this.property(__cl, ClassInfoProperty.INT_SIZE);
+		return this.property(__cl, ClassInfoProperty.INT_ALLOCATION_SIZE);
 	}
 	
 	/**
@@ -228,7 +229,7 @@ public final class ClassInfoUtility
 	public final void setClassAllocationSize(TaskClass __cl, int __v)
 		throws NullPointerException
 	{
-		this.setProperty(__cl, ClassInfoProperty.INT_SIZE,
+		this.setProperty(__cl, ClassInfoProperty.INT_ALLOCATION_SIZE,
 			__v);
 	}
 	
@@ -601,7 +602,7 @@ public final class ClassInfoUtility
 
 					// The allocation size of this class.
 				case "size:int":
-					pdx = ClassInfoProperty.INT_SIZE;
+					pdx = ClassInfoProperty.INT_ALLOCATION_SIZE;
 					break;
 
 					// The base offset for fields in this class.
