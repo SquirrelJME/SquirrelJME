@@ -26,12 +26,12 @@ public enum HelperFunction
 	GC_MEM_HANDLE("gcMemHandle", "(I)V"),
 	
 	/** Is this an instance of the class? */
-	IS_INSTANCE("isInstance", "(Ljava/lang/Object;Lcc/" +
-		"squirreljme/jvm/summercoat/brackets/ClassInfoBracket;)Z"),
+	IS_INSTANCE("isInstance", "(I" +
+		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;)Z"),
 	
 	/** Initialize class. */
 	INIT_CLASS("initClass", "(Lcc/squirreljme/jvm/" +
-		"summercoat/brackets/ClassInfoBracket;)Z"),
+		"summercoat/brackets/ClassInfoBracket;)V"),
 	
 	/* End. */
 	;
