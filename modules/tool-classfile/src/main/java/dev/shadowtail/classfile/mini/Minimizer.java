@@ -41,8 +41,9 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
-import net.multiphasicapps.io.TableSectionFutureInt;
-import net.multiphasicapps.io.TableSectionOutputStream;
+import net.multiphasicapps.io.ChunkSection;
+import net.multiphasicapps.io.ChunkFutureInteger;
+import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * This takes an input class file and translates it to the minimized format
@@ -104,7 +105,7 @@ public final class Minimizer
 		ClassFile input = this.input;
 		
 		// The output section
-		TableSectionOutputStream output = new TableSectionOutputStream();
+		ChunkWriter output = new ChunkWriter();
 		
 		// This is the relative pool that the class file uses
 		DualClassRuntimePoolBuilder localpool = this.localpool;
@@ -114,15 +115,15 @@ public final class Minimizer
 		__TempMethods__[] methods = this.__doMethods();
 		
 		// Initialize header section
-		TableSectionOutputStream.Section header = output.addSection(
-			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		ChunkSection header = output.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
 		
 		// Magic number and minimized format 
 		header.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
 		header.writeShort(ClassInfoConstants.VERSION_20201129);
 		
 		// Unused, may be used later when needed
-		TableSectionFutureInt[] properties = new TableSectionFutureInt[
+		ChunkFutureInteger[] properties = new ChunkFutureInteger[
 			StaticClassInfoProperty.NUM_STATIC_PROPERTIES];
 		for (int i = 0; i < StaticClassInfoProperty.NUM_STATIC_PROPERTIES; i++)
 			properties[i] = header.writeFutureInt();
@@ -183,7 +184,7 @@ public final class Minimizer
 		for (int i = 0; i < 2; i++)
 		{
 			// Generate section
-			TableSectionOutputStream.Section subsection =
+			ChunkSection subsection =
 				output.addSection(fields[i].getBytes(localpool), 4);
 			
 			// Write section details
@@ -195,7 +196,7 @@ public final class Minimizer
 		for (int i = 0; i < 2; i++)
 		{
 			// Generate section
-			TableSectionOutputStream.Section subsection =
+			ChunkSection subsection =
 				output.addSection(methods[i].getBytes(localpool), 4);
 			
 			// Write section details
@@ -217,7 +218,7 @@ public final class Minimizer
 		header.writeInt(0);
 		
 		// Where our pools are going
-		TableSectionOutputStream.Section lpd = output.addSection();
+		ChunkSection lpd = output.addSection();
 		
 		// Encode the local pool or the local pool on top of the JAR pool
 		DualClassRuntimePoolBuilder jarpool = this.jarpool;
@@ -234,7 +235,7 @@ public final class Minimizer
 		header.writeInt(der.runtimepoolsize);
 		
 		// Write end magic number, which is at the end of the file
-		TableSectionOutputStream.Section eofmagic = output.addSection(4);
+		ChunkSection eofmagic = output.addSection(4);
 		eofmagic.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
 		
 		// Write resulting file

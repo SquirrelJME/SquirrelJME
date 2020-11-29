@@ -32,10 +32,10 @@ final class __Rewrite__
 	final int _offset;
 	
 	/** The target section to use. */
-	final Reference<TableSectionOutputStream.Section> _section;
+	final Reference<ChunkSection> _section;
 	
 	/** Future value. */
-	final TableSectionFutureInt _future;
+	final ChunkFutureInteger _future;
 	
 	/**
 	 * Initializes the rewrite info.
@@ -48,7 +48,7 @@ final class __Rewrite__
 	 * @since 2020/11/29
 	 */
 	public __Rewrite__(int __addr, __RewriteType__ __type,
-		__RewriteValue__ __value, TableSectionFutureInt __future)
+		__RewriteValue__ __value, ChunkFutureInteger __future)
 		throws NullPointerException
 	{
 		if (__type == null || __value == null || __future == null)
@@ -75,7 +75,7 @@ final class __Rewrite__
 	 * @since 2019/08/17
 	 */
 	__Rewrite__(int __addr, __RewriteType__ __type, __RewriteValue__ __value,
-		int __offset, TableSectionOutputStream.Section __section)
+		int __offset, ChunkSection __section)
 		throws NullPointerException
 	{
 		if (__type == null || __value == null)

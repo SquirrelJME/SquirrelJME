@@ -10,40 +10,17 @@
 package net.multiphasicapps.io;
 
 /**
- * Future value storage with {@link TableSectionOutputStream}.
+ * This represents a future chunk.
  *
  * @since 2020/11/29
  */
-public final class TableSectionFutureInt
+public interface ChunkFuture
 {
-	/** The value to use. */
-	private volatile int _value;
-	
 	/**
-	 * Returns the stored value.
+	 * Obtains the value from this future.
 	 * 
-	 * @return The value.
+	 * @return The value of this future.
 	 * @since 2020/11/29
 	 */
-	public final int get()
-	{
-		synchronized (this)
-		{
-			return this._value;
-		} 
-	}
-	
-	/**
-	 * Sets the stored value.
-	 * 
-	 * @param __v The value to set.
-	 * @since 2020/11/29
-	 */
-	public final void set(int __v)
-	{
-		synchronized (this)
-		{
-			this._value = __v;
-		} 
-	}
+	int get();
 }

@@ -24,7 +24,8 @@ import java.util.Arrays;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodName;
-import net.multiphasicapps.io.TableSectionOutputStream;
+import net.multiphasicapps.io.ChunkSection;
+import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * This class is responsible for creating minimized Jar files which will then
@@ -124,14 +125,14 @@ public final class JarMinimizer
 			manifestlen = 0;
 		
 		// Table of the entire JAR for writing
-		TableSectionOutputStream out = new TableSectionOutputStream();
+		ChunkWriter out = new ChunkWriter();
 		
 		// Start the header and table of contents
 		// These are fixed size because the bootstrapper needs to know the
 		// true pointer of the minified class file in the JAR
-		TableSectionOutputStream.Section header = out.addSection(
+		ChunkSection header = out.addSection(
 			MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC, 4);
-		TableSectionOutputStream.Section toc = out.addSection(
+		ChunkSection toc = out.addSection(
 			numrc * 16, 4);
 		
 		// Write base header and contents information
@@ -152,8 +153,8 @@ public final class JarMinimizer
 			String rc = rcnames[i];
 			
 			// Section to contain the data for this resource
-			TableSectionOutputStream.Section rcdata = out.addSection(
-				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			ChunkSection rcdata = out.addSection(
+				ChunkWriter.VARIABLE_SIZE, 4);
 			
 			// Process the resource
 			try (InputStream in = input.resourceAsStream(rc))
@@ -196,8 +197,8 @@ public final class JarMinimizer
 			toc.writeInt(rc.hashCode());
 			
 			// Write name of the resource
-			TableSectionOutputStream.Section rcname = out.addSection(
-				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			ChunkSection rcname = out.addSection(
+				ChunkWriter.VARIABLE_SIZE, 4);
 			rcname.writeUTF(rc);
 			toc.writeSectionAddressInt(rcname);
 			
@@ -212,8 +213,8 @@ public final class JarMinimizer
 			// There is a manifest
 			if (in != null)
 			{
-				TableSectionOutputStream.Section manifest = out.addSection(
-					TableSectionOutputStream.VARIABLE_SIZE, 4);
+				ChunkSection manifest = out.addSection(
+					ChunkWriter.VARIABLE_SIZE, 4);
 				
 				// Copy the manifest to an uncompressed section
 				for (;;)
@@ -264,7 +265,7 @@ public final class JarMinimizer
 				scpool = tshclass.poolPointer();
 			
 			// Setup the BootRAM
-			TableSectionOutputStream.Section bootram = out.addSection(
+			ChunkSection bootram = out.addSection(
 				bootstrap.initializer.toByteArray(), 4);
 			
 			// Boot memory offset, size
@@ -322,7 +323,7 @@ public final class JarMinimizer
 		if (this.owndualpool && dualpool != null)
 		{
 			// Where our pools are going
-			TableSectionOutputStream.Section lpd = out.addSection();
+			ChunkSection lpd = out.addSection();
 			
 			// Encode the pools
 			DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, lpd);

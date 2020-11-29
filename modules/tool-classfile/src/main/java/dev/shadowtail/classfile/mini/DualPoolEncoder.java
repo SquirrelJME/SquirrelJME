@@ -36,7 +36,8 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
-import net.multiphasicapps.io.TableSectionOutputStream;
+import net.multiphasicapps.io.ChunkSection;
+import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * This contains the encoder and decoder for dual pools.
@@ -367,23 +368,23 @@ public final class DualPoolEncoder
 			throw new NullPointerException("NARG");
 		
 		// Table sections are used for output
-		TableSectionOutputStream output = new TableSectionOutputStream();
+		ChunkWriter output = new ChunkWriter();
 		
 		// Build sections for output
-		TableSectionOutputStream.Section clssection = output.addSection(
-			TableSectionOutputStream.VARIABLE_SIZE, 4);
-		TableSectionOutputStream.Section runsection = output.addSection(
-			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		ChunkSection clssection = output.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
+		ChunkSection runsection = output.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
 		
 		// Write both of the pools
 		for (boolean isruntime = false;; isruntime = true)
 		{
 			// Sub output which writes to the section
-			TableSectionOutputStream sub = new TableSectionOutputStream();
+			ChunkWriter sub = new ChunkWriter();
 			
 			// Section containing the table of contents
-			TableSectionOutputStream.Section toc = sub.addSection(
-				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			ChunkSection toc = sub.addSection(
+				ChunkWriter.VARIABLE_SIZE, 4);
 			
 			// Are we encoding the static or run-time pool?
 			BasicPoolBuilder pool = (isruntime ? __dp.runtimePool() :
@@ -435,8 +436,8 @@ public final class DualPoolEncoder
 				
 				// Encode the data into a section somewhere in this
 				// sub-section
-				TableSectionOutputStream.Section data = sub.addSection(
-					TableSectionOutputStream.VARIABLE_SIZE, 4);
+				ChunkSection data = sub.addSection(
+					ChunkWriter.VARIABLE_SIZE, 4);
 				data.write(DualPoolEncoder.encodeValue(et, ep, iswide, ev));
 				
 				// Write pool table entry
@@ -484,11 +485,11 @@ public final class DualPoolEncoder
 			throw new NullPointerException("NARG");
 		
 		// The resulting table
-		TableSectionOutputStream table = new TableSectionOutputStream();
+		ChunkWriter table = new ChunkWriter();
 		
 		// Process static entries
-		TableSectionOutputStream.Section sl = table.addSection(
-			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		ChunkSection sl = table.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
 		for (BasicPoolEntry e : __src.classPool())
 		{
 			if (e.index == 0)
@@ -498,8 +499,8 @@ public final class DualPoolEncoder
 		}
 		
 		// Process run-time entries
-		TableSectionOutputStream.Section rl = table.addSection(
-			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		ChunkSection rl = table.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
 		for (BasicPoolEntry e : __src.runtimePool())
 		{
 			if (e.index == 0)
@@ -537,8 +538,8 @@ public final class DualPoolEncoder
 			throw new NullPointerException("NARG");
 		
 		// Output for this data
-		TableSectionOutputStream output = new TableSectionOutputStream();
-		TableSectionOutputStream.Section dos = output.addSection();
+		ChunkWriter output = new ChunkWriter();
+		ChunkSection dos = output.addSection();
 		
 		// Depends on the type
 		switch (__t)

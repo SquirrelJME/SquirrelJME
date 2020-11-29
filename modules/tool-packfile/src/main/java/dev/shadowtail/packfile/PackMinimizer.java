@@ -22,7 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
-import net.multiphasicapps.io.TableSectionOutputStream;
+import net.multiphasicapps.io.ChunkSection;
+import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * This class is used to pack multiple JAR files into a single packed ROM, so
@@ -110,7 +111,7 @@ public class PackMinimizer
 			__boot = __boot + ".jar";
 		
 		// Write ROM sections
-		TableSectionOutputStream out = new TableSectionOutputStream();
+		ChunkWriter out = new ChunkWriter();
 		
 		// Number of libraries to process
 		int numlibs = __libs.length;
@@ -120,9 +121,9 @@ public class PackMinimizer
 		int[] cpdx = new int[numinitcp];
 		
 		// Header and table of contents sections
-		TableSectionOutputStream.Section header = out.addSection(
+		ChunkSection header = out.addSection(
 			MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC, 4);
-		TableSectionOutputStream.Section toc = out.addSection(
+		ChunkSection toc = out.addSection(
 			MinimizedPackHeader.TOC_ENTRY_SIZE * numlibs, 4);
 		
 		// Setup dual-pool where all combined values are stored as needed
@@ -131,7 +132,7 @@ public class PackMinimizer
 		
 		// Section of the boot JAR
 		int bootjarindex = -1;
-		TableSectionOutputStream.Section bootjarsection = null;
+		ChunkSection bootjarsection = null;
 		
 		// Go through each library, minimize and write!
 		for (int i = 0; i < numlibs; i++)
@@ -157,13 +158,13 @@ public class PackMinimizer
 				}
 			
 			// Write name of JAR
-			TableSectionOutputStream.Section jname = out.addSection(
-				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			ChunkSection jname = out.addSection(
+				ChunkWriter.VARIABLE_SIZE, 4);
 			jname.writeUTF(name);
 			
 			// Output JAR data
-			TableSectionOutputStream.Section jdata = out.addSection(
-				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			ChunkSection jdata = out.addSection(
+				ChunkWriter.VARIABLE_SIZE, 4);
 			
 			// Is this a boot library?
 			boolean isboot;
@@ -277,8 +278,8 @@ public class PackMinimizer
 		}
 		
 		// Write initial classpath
-		TableSectionOutputStream.Section icp = out.addSection(
-			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		ChunkSection icp = out.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
 		for (int i = 0; i < numinitcp; i++)
 			icp.writeInt(cpdx[i]);
 		
@@ -294,8 +295,8 @@ public class PackMinimizer
 		}
 		else
 		{
-			TableSectionOutputStream.Section mcl = out.addSection(
-				TableSectionOutputStream.VARIABLE_SIZE, 4);
+			ChunkSection mcl = out.addSection(
+				ChunkWriter.VARIABLE_SIZE, 4);
 			
 			// Main class
 			mcl.writeUTF(__mainbc.replace('.', '/'));
@@ -306,8 +307,8 @@ public class PackMinimizer
 		}
 		
 		// Encode the constant pools
-		TableSectionOutputStream.Section lpd = out.addSection(
-			TableSectionOutputStream.VARIABLE_SIZE, 4);
+		ChunkSection lpd = out.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
 		DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, lpd);
 		
 		// Static pool
