@@ -841,11 +841,27 @@ public final class NativeCodeBuilder
 		Register... __regs)
 		throws NullPointerException
 	{
+		return this.addSysCall(__id, new RegisterList(__regs));
+	}
+	
+	/**
+	 * Adds a system call instruction.
+	 * 
+	 * @param __id The system call ID.
+	 * @param __regs The registers to pass to the call.
+	 * @return The generated instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/29
+	 */
+	public NativeInstruction addSysCall(IntValueRegister __id,
+		RegisterList __regs)
+		throws NullPointerException
+	{
 		if (__id == null || __regs == null)
 			throw new NullPointerException("NARG");
 		
 		return this.__add(NativeInstructionType.SYSTEM_CALL,
-			__id, new RegisterList(__regs));
+			__id, __regs);
 	}
 	
 	/**

@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -87,6 +88,11 @@ public final class LogicHandler
 	{
 		if (__info == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ4j Class not valid or has no size?}
+		int allocSize = SystemCall.classInfoGetSize(__info);
+		if (allocSize <= 0)
+			throw new MLECallError("ZZ4j");
 		
 		Assembly.breakpoint();
 		throw Debugging.todo();

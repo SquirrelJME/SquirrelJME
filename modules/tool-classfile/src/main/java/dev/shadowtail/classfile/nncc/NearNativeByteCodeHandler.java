@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.nncc;
 import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
@@ -723,8 +724,18 @@ public final class NearNativeByteCodeHandler
 			targetClass = __r.handle().outerClass();
 		}
 		
+		// Invoking a helped system call
+		else if ("cc/squirreljme/jvm/summercoat/SystemCall".equals(
+			targetClass.toString()))
+		{
+			this.__invokeSysCallHelped(__r, __out, __in);
+				
+			// Do nothing else
+			return;
+		}
+		
 		// Invocation of assembly method?
-		if ("cc/squirreljme/jvm/Assembly".equals(
+		else if ("cc/squirreljme/jvm/Assembly".equals(
 			targetClass.toString()))
 		{
 			// Forward
@@ -2331,9 +2342,16 @@ public final class NearNativeByteCodeHandler
 				// Integer/Float bits
 			case "floatToRawIntBits":
 			case "intBitsToFloat":
+				if (__in[0].register != __out.register)
+					codebuilder.addCopy(__in[0].register, __out.register);
+				break;
 				
 				// object -> pointer
 			case "objectToPointer":
+			case "objectToPointerWide":
+				if (__in[0].register != __out.register)
+					codebuilder.addCopy(__in[0].register, __out.register);
+				break;
 				
 				// Long unpack high
 			case "longUnpackHigh":
@@ -2471,6 +2489,7 @@ public final class NearNativeByteCodeHandler
 			
 			// object -> pointer, with ref clear
 			case "objectToPointerRefQueue":
+			case "objectToPointerRefQueueWide":
 				// Push references
 				this.__refPush();
 				
@@ -2484,7 +2503,9 @@ public final class NearNativeByteCodeHandler
 			
 				// pointer -> object (and variants)
 			case "pointerToObject":
+			case "pointerToObjectWide":
 			case "pointerToClassInfo":
+			case "pointerToClassInfoWide":
 				if (__in[0].register != __out.register)
 					codebuilder.addCopy(__in[0].register, __out.register);
 				
@@ -3063,6 +3084,89 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Invokes a helped system call.
+	 * 
+	 * @param __r The reference to call.
+	 * @param __out The output register.
+	 * @param __in The input arguments.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/29
+	 */
+	public final void __invokeSysCallHelped(MethodReference __r,
+		JavaStackResult.Output __out, JavaStackResult.Input... __in)
+		throws NullPointerException
+	{
+		if (__r == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine the system call index to call into
+		int id;
+		switch (__r.memberName().toString())
+		{
+			case "classInfoGetSize":
+				id = SystemCallIndex.CLASS_INFO_GET_SIZE;
+				break;
+			
+			case "errorGet":
+				id = SystemCallIndex.ERROR_GET;
+				break;
+			
+			case "errorSet":
+				id = SystemCallIndex.ERROR_SET;
+				break; 
+			
+				// {@squirreljme.error JC4r The specified system call method
+				// is not known. (The method)}
+			default:
+				throw new IllegalArgumentException("JC4r " + __r); 
+		}
+		
+		// We definitely need volatiles for the index and other parts!
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		try (Volatile<IntValueRegister> idReg = this.volatiles.getIntValue())
+		{
+			// Load integer constant
+			codeBuilder.addIntegerConst(id, idReg.register);
+			
+			// Perform the call
+			codeBuilder.addSysCall(idReg.register, new RegisterList(__in));
+				
+			// Is there a return value?
+			if (__out != null)
+			{
+				codeBuilder.addCopy(IntValueRegister.RETURN,
+					IntValueRegister.of(__out.register));
+				
+				// Wide value?
+				if (__out.type.isWide())
+					codeBuilder.addCopy(IntValueRegister.RETURN_TWO,
+						IntValueRegister.of(__out.register + 1));
+			}
+			
+			// The error get/set are always successful, otherwise bad things
+			// will happen, so check to see if an error occurred!
+			if (id != SystemCallIndex.ERROR_GET &&
+				id != SystemCallIndex.ERROR_SET)
+				try (Volatile<IntValueRegister> getErrId =
+					this.volatiles.getIntValue())
+				{
+					// Load the get error index in
+					codeBuilder.addIntegerConst(SystemCallIndex.ERROR_GET,
+						getErrId.register);
+					
+					// Perform the call
+					codeBuilder.addSysCall(getErrId.register,
+						idReg.register);
+					
+					// Did we fail the system call?
+					NativeCodeLabel fail = this.__labelMakeException(
+						"cc/squirreljme/jvm/mle/exceptions/MLECallError");
+					codeBuilder.addIfNonZero(IntValueRegister.RETURN, fail);
+				}
+		}
+	}
+	
+	/**
 	 * Invokes the given pure system call that returns an integer value.
 	 * 
 	 * @param __sysCall The {@link SystemCallIndex}.
@@ -3229,6 +3333,7 @@ public final class NearNativeByteCodeHandler
 	 * exception.
 	 *
 	 * @param __cl The class to create.
+	 * @param __regs Extra registers for exceptions.
 	 * @return The label for that target.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/10

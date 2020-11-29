@@ -1682,6 +1682,11 @@ public final class NativeCPU
 			errors[__si] = err;
 		}
 		
+		// Debug result
+		Debugging.debugNote("SC::sysCall(%d, %s) -> %d (err: %d)",
+			__si, IntegerArrayList.asList(__args),
+			rv, err);
+		
 		// Use returning value
 		return rv;
 	}

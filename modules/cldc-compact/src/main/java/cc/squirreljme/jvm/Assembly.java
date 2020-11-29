@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.summercoat.SystemCall;
+
 /**
  * This class is used special by the compiler to transform all the various
  * operations into regular instructions rather than method calls.
@@ -1117,8 +1119,10 @@ public final class Assembly
 	 *
 	 * @param __o The object to read from.
 	 * @return The resulting class info.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2020/02/23
 	 */
+	@Deprecated
 	public static native ClassInfo objectGetClassInfo(long __o);
 	
 	/**
@@ -1126,8 +1130,10 @@ public final class Assembly
 	 *
 	 * @param __o The object to read from.
 	 * @return The resulting class info.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2020/02/23
 	 */
+	@Deprecated
 	public static native ClassInfo objectGetClassInfo(Object __o);
 	
 	/**
@@ -1135,8 +1141,10 @@ public final class Assembly
 	 *
 	 * @param __o The object to read from.
 	 * @return The resulting class info.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2020/02/23
 	 */
+	@Deprecated
 	public static native long objectGetClassInfoPointer(long __o);
 	
 	/**
@@ -1144,8 +1152,10 @@ public final class Assembly
 	 *
 	 * @param __o The object to read from.
 	 * @return The resulting class info.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2020/02/23
 	 */
+	@Deprecated
 	public static native long objectGetClassInfoPointer(Object __o);
 	
 	/**
@@ -1153,8 +1163,10 @@ public final class Assembly
 	 *
 	 * @param __o The object to set the class of.
 	 * @param __v The class info to set.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2020/02/23
 	 */
+	@Deprecated
 	public static native void objectSetClassInfo(long __o, long __v);
 	
 	/**
@@ -1162,8 +1174,10 @@ public final class Assembly
 	 *
 	 * @param __o The object to set the class of.
 	 * @param __v The class info to set.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2020/02/23
 	 */
+	@Deprecated
 	public static native void objectSetClassInfo(Object __o, long __v);
 	
 	/**
@@ -1171,8 +1185,10 @@ public final class Assembly
 	 *
 	 * @param __o The object to set the class of.
 	 * @param __v The class info to set.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2020/02/23
 	 */
+	@Deprecated
 	public static native void objectSetClassInfo(long __o, ClassInfo __v);
 	
 	/**
@@ -1180,8 +1196,10 @@ public final class Assembly
 	 *
 	 * @param __o The object to set the class of.
 	 * @param __v The class info to set.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2020/02/23
 	 */
+	@Deprecated
 	public static native void objectSetClassInfo(Object __o, ClassInfo __v);
 	
 	/**
@@ -1189,9 +1207,20 @@ public final class Assembly
 	 *
 	 * @param __o The object.
 	 * @return The pointer of the object.
+	 * @since 2020/11/29
+	 */
+	public static native int objectToPointer(Object __o);
+	
+	/**
+	 * Used to convert an object to a pointer.
+	 *
+	 * @param __o The object.
+	 * @return The pointer of the object.
+	 * @deprecated Wide pointers are going away.
 	 * @since 2019/04/21
 	 */
-	public static native long objectToPointer(Object __o);
+	@Deprecated
+	public static native long objectToPointerWide(Object __o);
 	
 	/**
 	 * Used to convert an object to a pointer, do use reference queing for it
@@ -1202,7 +1231,20 @@ public final class Assembly
 	 * @return The pointer of the object.
 	 * @since 2019/04/21
 	 */
-	public static native long objectToPointerRefQueue(Object __o);
+	public static native int objectToPointerRefQueue(Object __o);
+	
+	/**
+	 * Used to convert an object to a pointer, do use reference queing for it
+	 * so that if the object is a candidate for reference counting it will
+	 * be uncounted.
+	 *
+	 * @param __o The object.
+	 * @return The pointer of the object.
+	 * @deprecated Wide pointers are going away.
+	 * @since 2019/04/21
+	 */
+	@Deprecated
+	public static native long objectToPointerRefQueueWide(Object __o);
 	
 	/**
 	 * Used to convert a pointer to an object.
@@ -1211,6 +1253,17 @@ public final class Assembly
 	 * @return The object of the pointer.
 	 * @since 2019/04/21
 	 */
+	public static native Object pointerToObject(int __p);
+	
+	/**
+	 * Used to convert a pointer to an object.
+	 *
+	 * @param __p The pointer.
+	 * @return The object of the pointer.
+	 * @deprecated Wide pointers are going away.
+	 * @since 2019/04/21
+	 */
+	@Deprecated
 	public static native Object pointerToObject(long __p);
 	
 	/**
@@ -1218,8 +1271,10 @@ public final class Assembly
 	 *
 	 * @param __p The pointer.
 	 * @return The object of the pointer.
+	 * @deprecated {@link ClassInfo} is going away.
 	 * @since 2019/04/21
 	 */
+	@Deprecated
 	public static native ClassInfo pointerToClassInfo(long __p);
 	
 	/**
@@ -1270,7 +1325,7 @@ public final class Assembly
 	 * @param __p The object to count up.
 	 * @since 2019/05/25
 	 */
-	public static native void refCount(long __p);
+	public static native void refCount(int __p);
 	
 	/**
 	 * Perform reference counting logic on object.
@@ -1287,7 +1342,7 @@ public final class Assembly
 	 * @return The reference count of the object.
 	 * @since 2020/02/24
 	 */
-	public static native int refGetCount(long __p);
+	public static native int refGetCount(int __p);
 	
 	/**
 	 * Get reference count of object.
@@ -1305,7 +1360,7 @@ public final class Assembly
 	 * @param __v The value to set.
 	 * @since 2020/02/24
 	 */
-	public static native void refSetCount(long __p, int __v);
+	public static native void refSetCount(int __p, int __v);
 	
 	/**
 	 * Set reference count of object.
@@ -1322,7 +1377,7 @@ public final class Assembly
 	 * @param __p The object to count down.
 	 * @since 2019/05/25
 	 */
-	public static native void refUncount(long __p);
+	public static native void refUncount(int __p);
 	
 	/**
 	 * Perform reference uncounting logic on object.
@@ -1530,8 +1585,10 @@ public final class Assembly
 	 * Invoke system call at the given index.
 	 *
 	 * @param __si The {@link SystemCallIndex}.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si);
 	
 	/**
@@ -1539,8 +1596,10 @@ public final class Assembly
 	 *
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si, int __a);
 	
 	/**
@@ -1549,8 +1608,10 @@ public final class Assembly
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
 	 * @param __b Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si, int __a, int __b);
 	
 	/**
@@ -1560,8 +1621,10 @@ public final class Assembly
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si, int __a, int __b, int __c);
 	
 	/**
@@ -1572,8 +1635,10 @@ public final class Assembly
 	 * @param __b Argument.
 	 * @param __c Argument.
 	 * @param __d Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si, int __a, int __b, int __c,
 		int __d);
 	
@@ -1586,8 +1651,10 @@ public final class Assembly
 	 * @param __c Argument.
 	 * @param __d Argument.
 	 * @param __e Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si, int __a, int __b, int __c,
 		int __d, int __e);
 	
@@ -1601,8 +1668,10 @@ public final class Assembly
 	 * @param __d Argument.
 	 * @param __e Argument.
 	 * @param __f Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f);
 	
@@ -1617,8 +1686,10 @@ public final class Assembly
 	 * @param __e Argument.
 	 * @param __f Argument.
 	 * @param __g Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g);
 	
@@ -1634,8 +1705,10 @@ public final class Assembly
 	 * @param __f Argument.
 	 * @param __g Argument.
 	 * @param __h Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native void sysCall(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g, int __h);
 	
@@ -1643,8 +1716,10 @@ public final class Assembly
 	 * Invoke pure system call at the given index.
 	 *
 	 * @param __si The address to invoke.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si);
 	
 	/**
@@ -1652,8 +1727,10 @@ public final class Assembly
 	 *
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si, int __a);
 	
 	/**
@@ -1662,8 +1739,10 @@ public final class Assembly
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
 	 * @param __b Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si, int __a, int __b);
 	
 	/**
@@ -1672,9 +1751,11 @@ public final class Assembly
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
 	 * @param __b Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @param __c Argument.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si, int __a, int __b, int __c);
 	
 	/**
@@ -1685,8 +1766,10 @@ public final class Assembly
 	 * @param __b Argument.
 	 * @param __c Argument.
 	 * @param __d Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si, int __a, int __b, int __c,
 		int __d);
 	
@@ -1699,8 +1782,10 @@ public final class Assembly
 	 * @param __c Argument.
 	 * @param __d Argument.
 	 * @param __e Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si, int __a, int __b, int __c,
 		int __d, int __e);
 	
@@ -1714,8 +1799,10 @@ public final class Assembly
 	 * @param __d Argument.
 	 * @param __e Argument.
 	 * @param __f Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f);
 	
@@ -1730,8 +1817,10 @@ public final class Assembly
 	 * @param __e Argument.
 	 * @param __f Argument.
 	 * @param __g Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g);
 	
@@ -1747,8 +1836,10 @@ public final class Assembly
 	 * @param __f Argument.
 	 * @param __g Argument.
 	 * @param __h Argument.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native void sysCallP(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g, int __h);
 	
@@ -1757,8 +1848,10 @@ public final class Assembly
 	 *
 	 * @param __si The {@link SystemCallIndex}.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si);
 	
 	/**
@@ -1767,8 +1860,10 @@ public final class Assembly
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si, int __a);
 	
 	/**
@@ -1778,8 +1873,10 @@ public final class Assembly
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si, int __a, int __b);
 	
 	/**
@@ -1790,8 +1887,10 @@ public final class Assembly
 	 * @param __b Argument.
 	 * @param __c Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si, int __a, int __b, int __c);
 	
 	/**
@@ -1803,8 +1902,10 @@ public final class Assembly
 	 * @param __c Argument.
 	 * @param __d Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si, int __a, int __b, int __c,
 		int __d);
 	
@@ -1818,8 +1919,10 @@ public final class Assembly
 	 * @param __d Argument.
 	 * @param __e Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si, int __a, int __b, int __c,
 		int __d, int __e);
 	
@@ -1834,8 +1937,10 @@ public final class Assembly
 	 * @param __e Argument.
 	 * @param __f Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f);
 	
@@ -1851,8 +1956,10 @@ public final class Assembly
 	 * @param __f Argument.
 	 * @param __g Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g);
 	
@@ -1869,8 +1976,10 @@ public final class Assembly
 	 * @param __g Argument.
 	 * @param __h Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native int sysCallPV(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g, int __h);
 		
@@ -1879,8 +1988,10 @@ public final class Assembly
 	 *
 	 * @param __si The {@link SystemCallIndex}.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si);
 	
 	/**
@@ -1889,8 +2000,10 @@ public final class Assembly
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si, int __a);
 	
 	/**
@@ -1900,8 +2013,10 @@ public final class Assembly
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si, int __a, int __b);
 	
 	/**
@@ -1912,8 +2027,10 @@ public final class Assembly
 	 * @param __b Argument.
 	 * @param __c Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si, int __a, int __b, int __c);
 	
 	/**
@@ -1925,8 +2042,10 @@ public final class Assembly
 	 * @param __c Argument.
 	 * @param __d Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si, int __a, int __b, int __c,
 		int __d);
 	
@@ -1940,8 +2059,10 @@ public final class Assembly
 	 * @param __d Argument.
 	 * @param __e Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si, int __a, int __b, int __c,
 		int __d, int __e);
 	
@@ -1956,8 +2077,10 @@ public final class Assembly
 	 * @param __e Argument.
 	 * @param __f Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f);
 	
@@ -1973,8 +2096,10 @@ public final class Assembly
 	 * @param __f Argument.
 	 * @param __g Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g);
 	
@@ -1991,8 +2116,10 @@ public final class Assembly
 	 * @param __g Argument.
 	 * @param __h Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static native long sysCallPVL(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g, int __h);
 	
@@ -2001,8 +2128,10 @@ public final class Assembly
 	 *
 	 * @param __si The {@link SystemCallIndex}.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si);
 	
 	/**
@@ -2011,8 +2140,10 @@ public final class Assembly
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si, int __a);
 	
 	/**
@@ -2022,8 +2153,10 @@ public final class Assembly
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si, int __a, int __b);
 	
 	/**
@@ -2034,8 +2167,10 @@ public final class Assembly
 	 * @param __b Argument.
 	 * @param __c Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si, int __a, int __b, int __c);
 	
 	/**
@@ -2047,8 +2182,10 @@ public final class Assembly
 	 * @param __c Argument.
 	 * @param __d Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si, int __a, int __b, int __c,
 		int __d);
 	
@@ -2062,8 +2199,10 @@ public final class Assembly
 	 * @param __d Argument.
 	 * @param __e Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si, int __a, int __b, int __c,
 		int __d, int __e);
 	
@@ -2078,8 +2217,10 @@ public final class Assembly
 	 * @param __e Argument.
 	 * @param __f Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f);
 	
@@ -2095,8 +2236,10 @@ public final class Assembly
 	 * @param __f Argument.
 	 * @param __g Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g);
 	
@@ -2113,8 +2256,10 @@ public final class Assembly
 	 * @param __g Argument.
 	 * @param __h Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native int sysCallV(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g, int __h);
 		
@@ -2123,8 +2268,10 @@ public final class Assembly
 	 *
 	 * @param __si The {@link SystemCallIndex}.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si);
 	
 	/**
@@ -2133,8 +2280,10 @@ public final class Assembly
 	 * @param __si The {@link SystemCallIndex}.
 	 * @param __a Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si, int __a);
 	
 	/**
@@ -2144,8 +2293,10 @@ public final class Assembly
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si, int __a, int __b);
 	
 	/**
@@ -2156,8 +2307,10 @@ public final class Assembly
 	 * @param __b Argument.
 	 * @param __c Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si, int __a, int __b, int __c);
 	
 	/**
@@ -2169,8 +2322,10 @@ public final class Assembly
 	 * @param __c Argument.
 	 * @param __d Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si, int __a, int __b, int __c,
 		int __d);
 	
@@ -2184,8 +2339,10 @@ public final class Assembly
 	 * @param __d Argument.
 	 * @param __e Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si, int __a, int __b, int __c,
 		int __d, int __e);
 	
@@ -2200,8 +2357,10 @@ public final class Assembly
 	 * @param __e Argument.
 	 * @param __f Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f);
 	
@@ -2217,8 +2376,10 @@ public final class Assembly
 	 * @param __f Argument.
 	 * @param __g Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g);
 	
@@ -2235,8 +2396,10 @@ public final class Assembly
 	 * @param __g Argument.
 	 * @param __h Argument.
 	 * @return The result of the invocation.
+	 * @deprecated Use {@link SystemCall} instead.
 	 * @since 2019/05/23
 	 */
+	@Deprecated
 	public static native long sysCallVL(short __si, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g, int __h);
 }

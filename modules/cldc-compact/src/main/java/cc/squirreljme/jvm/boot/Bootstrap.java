@@ -60,7 +60,7 @@ public final class Bootstrap
 			// Initialize kernel thread, since there has to be a thread
 			// reference for classes to work!
 			ThreadManager thm = Globals.getThreadManager();
-			Assembly.specialSetThreadRegister(Assembly.objectToPointer(
+			Assembly.specialSetThreadRegister(Assembly.objectToPointerWide(
 				thm.BOOT_THREAD));
 			
 			// Initialize config reader

@@ -20,8 +20,12 @@ public final class IntValueRegister
 	extends Register
 {
 	/** The return register. */
-	public static final Register RETURN =
+	public static final IntValueRegister RETURN =
 		IntValueRegister.of(NativeCode.RETURN_REGISTER);
+	
+	/** The second return register. */
+	public static final IntValueRegister RETURN_TWO = 
+		IntValueRegister.of(NativeCode.RETURN_TWO_REGISTER);
 	
 	/** The zero register. */
 	public static final IntValueRegister ZERO =

@@ -466,12 +466,35 @@ public interface SystemCallIndex
 		40;
 	
 	/**
+	 * Allocates a new memory handle.
+	 * 
+	 * @squirreljme.syscallparam 1 
+	 * @squirreljme.syscallparam 2
+	 * @squirreljme.syscallparam 3 The number of bytes to allocate for.
+	 * @squirreljme.syscallreturn The newly allocated memory handle.
+	 * @since 2020/11/29
+	 */
+	byte MEM_HANDLE_NEW_SIZE =
+		41;
+	
+	/**
+	 * Returns the size of the given class information.
+	 * 
+	 * @squirreljme.syscallparam 1 The {@link ClassInfoBracket}.
+	 * @squirreljme.syscallreturn The size of the handle or a negative value
+	 * if this is not valid.
+	 * @since 2020/11/29
+	 */
+	byte CLASS_INFO_GET_SIZE =
+		42;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		41;
+		43;
 }
 
