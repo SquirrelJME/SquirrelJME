@@ -11,105 +11,96 @@ package cc.squirreljme.jvm.summercoat.constants;
 
 /**
  * This contains properties of class info.
+ * 
+ * Static properties are declared in {@link StaticClassInfoProperty}.
  *
  * @since 2019/11/30
  */
 public interface ClassInfoProperty
+	extends StaticClassInfoProperty
 {
-	/** The class version number. */
-	byte INT_VERSION =
-		0;
-	
 	/** Magic number used to detect corruption. */
+	@Deprecated
 	byte INT_MAGIC =
-		1;
-	
-	/** Class information flags. */
-	byte INT_FLAGS =
-		2;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 1;
 	
 	/** The pointer to the minimized class file. */
+	@Deprecated
 	byte INT_MINIPTR =
-		3;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 3;
 	
 	/** The pointer to the class name. */
+	@Deprecated
 	byte INT_NAMEP =
-		4;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 4;
 	
 	/** The allocation size of this class. */
+	@Deprecated
 	byte INT_ALLOCATION_SIZE =
-		5;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 5;
 	
 	/** The base offset for fields in this class. */
+	@Deprecated
 	byte INT_BASE =
-		6;
-	
-	/** The number of objects in the instance fields, for GC. */
-	byte INT_NUMOBJECTS =
-		7;
-	
-	/** The dimensions this class uses, if it is an array. */
-	byte INT_DIMENSIONS =
-		8;
-	
-	/** The cell size of components if this is an array. */
-	byte INT_CELLSIZE =
-		9;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 6;
 	
 	/** The super class data. */
+	@Deprecated
 	byte CLASSINFO_SUPERCLASS =
-		10;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 10;
 	
 	/** Interfaces. */
+	@Deprecated
 	byte CLASSINFO_ARRAY_INTERFACECLASSES =
-		11;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 11;
 	
 	/** The component class. */
+	@Deprecated
 	byte CLASSINFO_COMPONENTCLASS =
-		12;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 12;
 	
 	/** Pointer to the class object. */
+	@Deprecated
 	byte CLASS_CLASSOBJPTR =
-		13;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 13;
 	
 	/** Virtual invoke VTable. */
+	@Deprecated
 	byte INT_ARRAY_VTABLEVIRTUAL =
-		14;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 14;
 	
 	/** Virtual invoke VTable pool entries. */
+	@Deprecated
 	byte INT_ARRAY_VTABLEPOOL =
-		15;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 15;
 	
 	/** The pointer to the constant pool of this class. */
+	@Deprecated
 	byte INT_POOL =
-		16;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 16;
 	
 	/** The JAR Index. */
+	@Deprecated
 	byte INT_JARDX =
-		17;
-	
-	/** The number of methods the class has. */
-	byte INT_NUMMETHODS =
-		18;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 17;
 	
 	/** The depth of this class. */
+	@Deprecated
 	byte INT_CLASSDEPTH =
-		19;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 19;
 	
 	/** Static field offset. */
+	@Deprecated
 	byte INT_SFOFFSET =
-		20;
-	
-	/** New instance method. */
-	byte INT_DEFAULTNEW =
-		21;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 20;
 	
 	/** Self pointer. */
+	@Deprecated
 	byte INT_SELFPTR =
-		22;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 22;
 	
 	/** The number of properties available. */
 	byte NUM_PROPERTIES =
-		23;
+		StaticClassInfoProperty.NUM_STATIC_PROPERTIES + 23;
 }
 

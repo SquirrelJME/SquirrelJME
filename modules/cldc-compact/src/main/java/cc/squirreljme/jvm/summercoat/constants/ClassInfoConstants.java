@@ -7,11 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package cc.squirreljme.jvm.summercoat.constants;
+
 /**
- * This package contains the classes and utilities regarding client tasks.
+ * Constants for class information.
  *
- * @since 2019/09/22
+ * @since 2020/11/29
  */
-
-package cc.squirreljme.jvm.boot.task;
-
+public interface ClassInfoConstants
+{
+	/** Legacy class version from a long time ago. */
+	short VERSION_LEGACY =
+		0;
+	
+	/** Class version from 2020/11/29. */
+	short VERSION_20201129 =
+		1;
+}

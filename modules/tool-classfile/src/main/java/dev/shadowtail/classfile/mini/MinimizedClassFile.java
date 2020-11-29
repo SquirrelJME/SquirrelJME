@@ -162,7 +162,7 @@ public final class MinimizedClassFile
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._flags = new WeakReference<>((rv =
-				new ClassFlags(this.header.classflags)));
+				new ClassFlags(this.header.getClassflags())));
 		
 		return rv;
 	}
@@ -175,7 +175,7 @@ public final class MinimizedClassFile
 	 */
 	public final ClassNames interfaceNames()
 	{
-		int idx = this.header.classints;
+		int idx = this.header.getClassints();
 		if (idx == 0)
 			return new ClassNames();
 		return this.pool.getByIndex(false, idx).
@@ -277,7 +277,7 @@ public final class MinimizedClassFile
 	 */
 	public final ClassName superName()
 	{
-		int sdx = this.header.classsuper;
+		int sdx = this.header.getClasssuper();
 		if (sdx == 0)
 			return null;
 		return this.pool.getByIndex(false, sdx).
@@ -292,7 +292,7 @@ public final class MinimizedClassFile
 	 */
 	public final ClassName thisName()
 	{
-		return this.pool.getByIndex(false, this.header.classname).
+		return this.pool.getByIndex(false, this.header.getClassname()).
 			<ClassName>value(ClassName.class);
 	}
 	
@@ -416,7 +416,7 @@ public final class MinimizedClassFile
 			
 			// {@squirreljme.error JC01 Length of class file does not match
 			// length of array. (The file length; The array length)}
-			int fsz = header.filesize;
+			int fsz = header.getFilesize();
 			if (fsz != __is.length)
 				throw new InvalidClassFormatException("JC01 " + fsz +
 					" " + __is.length);
@@ -434,7 +434,7 @@ public final class MinimizedClassFile
 			
 			// Virtual constant pool which relies on a parent one
 			DualClassRuntimePool pool;
-			if (header.staticpoolsize < 0 || header.runtimepoolsize < 0)
+			if (header.getStaticpoolsize() < 0 || header.getRuntimepoolsize() < 0)
 			{
 				// {@squirreljme.error JC4h No parent pool was specified.}
 				if (__ppool == null)
@@ -446,22 +446,24 @@ public final class MinimizedClassFile
 			// Decode physical pool within the class
 			else
 			{
-				pool = DualPoolEncoder.decode(__is,
-					header.staticpooloff, header.staticpoolsize,
-					header.runtimepooloff, header.runtimepoolsize);
+				pool = DualPoolEncoder.decode(__is, header.getStaticpooloff(),
+					header.getStaticpoolsize(), header.getRuntimepooloff(),
+					header.getRuntimepoolsize());
 			}
 			
 			// Read static and instance fields
 			MinimizedField[] sfields = MinimizedField.decodeFields(
-					header.sfcount, pool, __is, header.sfoff, header.sfsize),
-				ifields = MinimizedField.decodeFields(
-					header.ifcount, pool, __is, header.ifoff, header.ifsize);
+				header.getSfcount(), pool, __is, header.getSfoff(),
+				header.getSfsize()),
+				ifields = MinimizedField.decodeFields(header.getIfcount(), pool, __is,
+					header.getIfoff(), header.getIfsize());
 			
 			// Read static and instance methods
 			MinimizedMethod[] smethods = MinimizedMethod.decodeMethods(
-					header.smcount, pool, __is, header.smoff, header.smsize),
-				imethods = MinimizedMethod.decodeMethods(
-					header.imcount, pool, __is, header.imoff, header.imsize);
+				header.getSmcount(), pool, __is, header.getSmoff(),
+				header.getSmsize()),
+				imethods = MinimizedMethod.decodeMethods(header.getImcount(), pool, __is,
+					header.getImoff(), header.getImsize());
 			
 			// Build final class
 			return new MinimizedClassFile(header, pool,

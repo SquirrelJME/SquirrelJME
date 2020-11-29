@@ -123,8 +123,8 @@ public final class LoadedClassInfo
 		// This class is the size of the super class and our size
 		ClassName supercl = this._class.superName();
 		this._allocsize = (rv = (supercl == null ? 0 :
-			bootstrap.findClass(supercl).allocationSize()) +
-			this._class.header.ifbytes);
+			bootstrap.findClass(supercl).allocationSize()) + this._class.header
+			.getIfbytes());
 		
 		return rv;
 	}
@@ -510,7 +510,7 @@ public final class LoadedClassInfo
 						// The number of objects in this class
 					case "numobjects:I":
 						initializer.memWriteInt(
-							wp, this._class.header.ifobjs);
+							wp, this._class.header.getIfobjs());
 						break;
 						
 					case "pool:I":
@@ -642,7 +642,7 @@ public final class LoadedClassInfo
 		// Lookup static first
 		MinimizedMethod mm = mcf.method(true, __mn, __mt);
 		if (mm != null)
-			return this._classoffset + mcf.header.smoff + mm.codeoffset;
+			return this._classoffset + mcf.header.getSmoff() + mm.codeoffset;
 		
 		// Otherwise fallback to instance methods
 		mm = mcf.method(false, __mn, __mt);
@@ -661,7 +661,7 @@ public final class LoadedClassInfo
 				String.format("BC07 %s %s %s", mcf.thisName(), __mn, __mt));
 		}
 		
-		return this._classoffset + mcf.header.imoff + mm.codeoffset;
+		return this._classoffset + mcf.header.getImoff() + mm.codeoffset;
 	}
 	
 	/**
@@ -714,7 +714,7 @@ public final class LoadedClassInfo
 		MinimizedClassFile cf = this._class;
 		
 		// The base method count
-		int self = cf.header.imcount;
+		int self = cf.header.getImcount();
 		
 		// If there is no super class it is just the count
 		ClassName supername = cf.superName();
@@ -750,8 +750,8 @@ public final class LoadedClassInfo
 			throw new InvalidClassFormatException("BC0f " + __v);
 		
 		// The offset of this entry is based on where it was found!
-		return (inruntime ? this._class.header.runtimepooloff :
-			this._class.header.staticpooloff) + entry.offset;
+		return (inruntime ? this._class.header.getRuntimepooloff() :
+			this._class.header.getStaticpooloff()) + entry.offset;
 	}
 	
 	/**
@@ -791,8 +791,8 @@ public final class LoadedClassInfo
 		
 		// Absolute offsets for each pool (in the ROM)
 		int classoffset = this._classoffset;
-		int clpadd = classoffset + miniclass.header.staticpooloff,
-			rtpadd = classoffset + miniclass.header.runtimepooloff;
+		int clpadd = classoffset + miniclass.header.getStaticpooloff(),
+			rtpadd = classoffset + miniclass.header.getRuntimepooloff();
 		
 		// We only need space to fit the run-time pool
 		int n = rtpool.size();
@@ -952,7 +952,7 @@ public final class LoadedClassInfo
 			
 			// Allocate memory
 			smemoff = bootstrap.allocateStaticFieldSpace(
-				this._class.header.sfsize);
+				this._class.header.getSfsize());
 			
 			// Store
 			this._smemoff = smemoff;

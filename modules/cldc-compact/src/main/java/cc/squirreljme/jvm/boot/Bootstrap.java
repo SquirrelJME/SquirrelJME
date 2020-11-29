@@ -10,13 +10,6 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.config.ConfigRomKey;
-import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.jvm.boot.lib.BootRom;
-import cc.squirreljme.jvm.boot.task.TaskCreateResult;
-import cc.squirreljme.jvm.boot.task.TaskManager;
-import cc.squirreljme.jvm.boot.task.TaskSysCallHandler;
-import cc.squirreljme.jvm.boot.task.ThreadManager;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
