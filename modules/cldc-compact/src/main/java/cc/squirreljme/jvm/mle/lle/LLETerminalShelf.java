@@ -95,7 +95,7 @@ public final class LLETerminalShelf
 		throws MLECallError
 	{
 		// {@squirreljme.error ZZ4h Could not write single byte to pipe.}
-		if (Assembly.sysCallV(SystemCallIndex.PD_WRITE_BYTE,
+		if (Assembly.sysCallPV(SystemCallIndex.PD_WRITE_BYTE,
 			LLETerminalShelf.__pipeOfFd(__fd), __c) <= 0)
 			throw new MLECallError("ZZ4h");
 		
@@ -128,7 +128,7 @@ public final class LLETerminalShelf
 		// Write all bytes to the output
 		// {@squirreljme.error ZZ4i Could not write multiple bytes to pipe.}
 		for (int i = 0; i < __l; i++)
-			if (Assembly.sysCallV(SystemCallIndex.PD_WRITE_BYTE, scFd,
+			if (Assembly.sysCallPV(SystemCallIndex.PD_WRITE_BYTE, scFd,
 				__b[__o + i]) <= 0)
 			throw new MLECallError("ZZ4i");
 		
@@ -149,13 +149,13 @@ public final class LLETerminalShelf
 		switch (__fd)
 		{
 			case StandardPipeType.STDIN:
-				return Assembly.sysCallV(SystemCallIndex.PD_OF_STDIN);
+				return Assembly.sysCallPV(SystemCallIndex.PD_OF_STDIN);
 				
 			case StandardPipeType.STDOUT:
-				return Assembly.sysCallV(SystemCallIndex.PD_OF_STDOUT);
+				return Assembly.sysCallPV(SystemCallIndex.PD_OF_STDOUT);
 				
 			case StandardPipeType.STDERR:
-				return Assembly.sysCallV(SystemCallIndex.PD_OF_STDERR);
+				return Assembly.sysCallPV(SystemCallIndex.PD_OF_STDERR);
 			
 				// {@squirreljme.error ZZ4g Could not map a standard pipe
 				// descriptor. (The file descriptor)}
