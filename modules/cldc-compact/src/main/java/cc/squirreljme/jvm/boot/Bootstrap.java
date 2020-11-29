@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.boot.task.TaskCreateResult;
 import cc.squirreljme.jvm.boot.task.TaskManager;
 import cc.squirreljme.jvm.boot.task.TaskSysCallHandler;
 import cc.squirreljme.jvm.boot.task.ThreadManager;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is the bootstrap entry point for the supervisor.
@@ -49,6 +50,9 @@ public final class Bootstrap
 	static final void __start(int __rambase, int __ramsize,
 		int __rombase, int __romsize, int __confbase, int __confsize)
 	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+		/*
 		// Initialize the RAM links to setup dirty bits and initialize the
 		// last block of memory with anything that remains. This makes it so
 		// the RAM is actually useable.
@@ -131,6 +135,8 @@ public final class Bootstrap
 			Assembly.breakpoint();
 			return;
 		}
+		
+		 */
 	}
 }
 

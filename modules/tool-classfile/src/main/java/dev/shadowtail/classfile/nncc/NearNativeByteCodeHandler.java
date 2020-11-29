@@ -3113,8 +3113,24 @@ public final class NearNativeByteCodeHandler
 			
 			case "errorSet":
 				id = SystemCallIndex.ERROR_SET;
-				break; 
+				break;
 			
+			case "pdOfStdErr":
+				id = SystemCallIndex.PD_OF_STDERR;
+				break;
+				
+			case "pdOfStdIn":
+				id = SystemCallIndex.PD_OF_STDIN;
+				break;
+				
+			case "pdOfStdOut": 
+				id = SystemCallIndex.PD_OF_STDOUT;
+				break;
+			
+			case "pdWriteByte":
+				id = SystemCallIndex.PD_WRITE_BYTE;
+				break;
+				
 				// {@squirreljme.error JC4r The specified system call method
 				// is not known. (The method)}
 			default:

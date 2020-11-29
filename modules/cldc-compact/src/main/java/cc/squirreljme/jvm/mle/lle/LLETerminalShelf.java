@@ -9,12 +9,11 @@
 
 package cc.squirreljme.jvm.mle.lle;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.summercoat.SystemCall;
 
 /**
  * Low-level {@link TerminalShelf}.
@@ -95,7 +94,7 @@ public final class LLETerminalShelf
 		throws MLECallError
 	{
 		// {@squirreljme.error ZZ4h Could not write single byte to pipe.}
-		if (Assembly.sysCallPV(SystemCallIndex.PD_WRITE_BYTE,
+		if (SystemCall.pdWriteByte(
 			LLETerminalShelf.__pipeOfFd(__fd), __c) <= 0)
 			throw new MLECallError("ZZ4h");
 		
@@ -128,9 +127,8 @@ public final class LLETerminalShelf
 		// Write all bytes to the output
 		// {@squirreljme.error ZZ4i Could not write multiple bytes to pipe.}
 		for (int i = 0; i < __l; i++)
-			if (Assembly.sysCallPV(SystemCallIndex.PD_WRITE_BYTE, scFd,
-				__b[__o + i]) <= 0)
-			throw new MLECallError("ZZ4i");
+			if (SystemCall.pdWriteByte(scFd, __b[__o + i]) <= 0)
+				throw new MLECallError("ZZ4i");
 		
 		return __l;
 	}
@@ -149,13 +147,13 @@ public final class LLETerminalShelf
 		switch (__fd)
 		{
 			case StandardPipeType.STDIN:
-				return Assembly.sysCallPV(SystemCallIndex.PD_OF_STDIN);
+				return SystemCall.pdOfStdIn();
 				
 			case StandardPipeType.STDOUT:
-				return Assembly.sysCallPV(SystemCallIndex.PD_OF_STDOUT);
+				return SystemCall.pdOfStdOut();
 				
 			case StandardPipeType.STDERR:
-				return Assembly.sysCallPV(SystemCallIndex.PD_OF_STDERR);
+				return SystemCall.pdOfStdErr();
 			
 				// {@squirreljme.error ZZ4g Could not map a standard pipe
 				// descriptor. (The file descriptor)}

@@ -64,4 +64,46 @@ public final class SystemCall
 	 * @since 2020/11/29
 	 */
 	public static native int errorSet(int __dx, int __err);
+	
+	/**
+	 * Returns the pipe descriptor of standard error.
+	 * 
+	 * @return The pipe Id.
+	 * @throws MLECallError On errors.
+	 * @since 2020/11/29
+	 */
+	public static native int pdOfStdErr()
+		throws MLECallError;
+	
+	/**
+	 * Returns the pipe descriptor of standard input.
+	 * 
+	 * @return The pipe Id.
+	 * @throws MLECallError On errors.
+	 * @since 2020/11/29
+	 */
+	public static native int pdOfStdIn()
+		throws MLECallError;
+	
+	/**
+	 * Returns the pipe descriptor of standard output.
+	 * 
+	 * @return The pipe Id.
+	 * @throws MLECallError On errors.
+	 * @since 2020/11/29
+	 */
+	public static native int pdOfStdOut()
+		throws MLECallError;
+	
+	/**
+	 * Writes a single byte to the output.
+	 * 
+	 * @param __pipe The pipe to write to. 
+	 * @param __c The character to write.
+	 * @return The bytes read or a negative value on errors.
+	 * @throws MLECallError On errors.
+	 * @since 2020/11/29
+	 */
+	public static native int pdWriteByte(int __pipe, int __c)
+		throws MLECallError;
 }

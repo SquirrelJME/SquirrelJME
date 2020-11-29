@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class contains information about the host memory environment along
@@ -75,7 +76,8 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		Assembly.sysCall(SystemCallIndex.GARBAGE_COLLECT);
+		throw Debugging.todo();
+		/*Assembly.sysCall(SystemCallIndex.GARBAGE_COLLECT);*/
 	}
 	
 	/**

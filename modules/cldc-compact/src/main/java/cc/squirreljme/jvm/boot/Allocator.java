@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This contains the static memory allocator.
@@ -218,6 +219,8 @@ public final class Allocator
 	 */
 	public static final void freeWithoutLock(int __p)
 	{
+		throw Debugging.todo();
+		/*
 		// This should never happen
 		if (__p == 0 || __p == Constants.BAD_MAGIC)
 			Assembly.breakpoint();
@@ -285,7 +288,7 @@ public final class Allocator
 		
 		// Set chunk as free now, keep the original size
 		Assembly.memWriteInt(seeker, Allocator.CHUNK_SIZE_OFFSET,
-			csz | Allocator.CHUNK_TAG_FREE);
+			csz | Allocator.CHUNK_TAG_FREE);*/
 	}
 	
 	/**
@@ -302,6 +305,8 @@ public final class Allocator
 	private static final int __claim(int __tag, int __want, int __seeker,
 		int __csz, int __cnx)
 	{
+		throw Debugging.todo();
+		/*
 		// Calculate free space in this chunk
 		int freespace = (__csz & Allocator.CHUNK_SIZE_MASK);
 		
@@ -353,7 +358,7 @@ public final class Allocator
 		}
 		
 		// Return the used pointer
-		return rv;
+		return rv;*/
 	}
 	
 	/**

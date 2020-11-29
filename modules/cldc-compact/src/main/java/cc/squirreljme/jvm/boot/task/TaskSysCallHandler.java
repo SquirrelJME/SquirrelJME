@@ -11,9 +11,7 @@ package cc.squirreljme.jvm.boot.task;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.boot.ConfigReader;
-import cc.squirreljme.jvm.config.ConfigRomKey;
-import cc.squirreljme.jvm.SupervisorPropertyIndex;
-import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is the handler for system calls within tasks.
@@ -43,23 +41,9 @@ public final class TaskSysCallHandler
 	{
 		if (__cr == null)
 			throw new NullPointerException("NARG");
-			
-		// Message
-		todo.DEBUG.note("Setting task system call handler...");
 		
-		// Set handlers
-		Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
-			SupervisorPropertyIndex.TASK_SYSCALL_STATIC_FIELD_POINTER,
-			__cr.loadInteger(ConfigRomKey.SYSCALL_STATIC_FIELD_POINTER));
-		Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
-			SupervisorPropertyIndex.TASK_SYSCALL_METHOD_HANDLER,
-			__cr.loadInteger(ConfigRomKey.SYSCALL_CODE_POINTER));
-		Assembly.sysCallP(SystemCallIndex.SUPERVISOR_PROPERTY_SET,
-			SupervisorPropertyIndex.TASK_SYSCALL_METHOD_POOL_POINTER,
-			__cr.loadInteger(ConfigRomKey.SYSCALL_POOL_POINTER));
-		
-		// Message
-		todo.DEBUG.note("Okay.");
+		Assembly.breakpoint();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -82,8 +66,8 @@ public final class TaskSysCallHandler
 	public static final long taskSysCall(int __tid, int __oldsfp, short __si,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g, int __h)
 	{
-		return Assembly.sysCallPVL(__si, __a, __b, __c, __d, __e, __f, __g,
-			__h);
+		Assembly.breakpoint();
+		throw Debugging.todo();
 	}
 }
 

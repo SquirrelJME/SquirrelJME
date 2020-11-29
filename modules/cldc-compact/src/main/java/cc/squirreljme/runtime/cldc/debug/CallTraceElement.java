@@ -10,10 +10,6 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.CallStackItem;
-import cc.squirreljme.jvm.SystemCallError;
-import cc.squirreljme.jvm.SystemCallIndex;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -546,126 +542,6 @@ public final class CallTraceElement
 			this._string = new WeakReference<>((rv = sb.toString()));
 		}
 		
-		return rv;
-	}
-	
-	/**
-	 * Obtains the current raw call trace which has not been resolved.
-	 *
-	 * @return The raw call trace.
-	 * @since 2019/06/16
-	 */
-	@Deprecated
-	public static final int[] traceRaw()
-	{
-		// Get the call height, ignore if not supported!
-		int callheight = Assembly.sysCallPV(SystemCallIndex.CALL_STACK_HEIGHT);
-		if (callheight <= 0 || Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
-			SystemCallIndex.CALL_STACK_HEIGHT) != SystemCallError.NO_ERROR)
-			return new int[0];
-		
-		// Remove the top-most frame because it will be this method
-		callheight--;
-		
-		// Get the call parameters
-		int[] rv = new int[callheight * CallStackItem.NUM_ITEMS];
-		for (int z = 0, base = 0; z < callheight; z++,
-			base += CallStackItem.NUM_ITEMS)
-			for (int i = 0; i < CallStackItem.NUM_ITEMS; i++)
-			{
-				// Get parameter
-				int vx = Assembly.sysCallPV(SystemCallIndex.CALL_STACK_ITEM,
-					1 + z, i);
-				
-				// Nullify unknown or invalid parameters
-				if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
-					SystemCallIndex.CALL_STACK_ITEM) !=
-					SystemCallError.NO_ERROR)
-					vx = 0;
-				
-				// Fill in
-				rv[base + i] = vx;
-			}
-		
-		// Return the raw parameters
-		return rv;
-	}
-	
-	/**
-	 * Resolves the specified call trace into call trace elements.
-	 *
-	 * @param __trace The trace to resolve.
-	 * @return The resolved trace.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/06/16
-	 */
-	@Deprecated
-	public static final CallTraceElement[] traceResolve(int[] __trace)
-		throws NullPointerException
-	{
-		if (__trace == null)
-			throw new NullPointerException("NARG");
-		
-		// Get the call height
-		int callheight = __trace.length / CallStackItem.NUM_ITEMS;
-		
-		// Process all the items
-		CallTraceElement[] rv = new CallTraceElement[callheight];
-		for (int z = 0, base = 0; z < callheight; z++,
-			base += CallStackItem.NUM_ITEMS)
-		{
-			// Load class name
-			int xcl = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[base + CallStackItem.CLASS_NAME]);
-			String scl = ((xcl == 0 || Assembly.sysCallV(
-				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-				SystemCallError.NO_ERROR) ?
-				(String)null : (String)Assembly.pointerToObject(xcl));
-				
-			// Load method name
-			int xmn = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[base + CallStackItem.METHOD_NAME]);
-			String smn = ((xmn == 0 || Assembly.sysCallV(
-				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-				SystemCallError.NO_ERROR) ?
-				(String)null : (String)Assembly.pointerToObject(xmn));
-			
-			// Load method type
-			int xmt = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[base + CallStackItem.METHOD_NAME]);
-			String smt = ((xmt == 0 || Assembly.sysCallV(
-				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-				SystemCallError.NO_ERROR) ?
-				(String)null : (String)Assembly.pointerToObject(xmt));
-			
-			// Load source file
-			int xsf = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[base + CallStackItem.SOURCE_FILE]);
-			String ssf = ((xsf == 0 || Assembly.sysCallV(
-				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-				SystemCallError.NO_ERROR) ?
-				(String)null : (String)Assembly.pointerToObject(xsf));
-			
-			// The PC address
-			int pcaddr = __trace[base + CallStackItem.PC_ADDRESS];
-			
-			// Task ID
-			int tid = __trace[base + CallStackItem.TASK_ID];
-			
-			// Build elements
-			rv[z] = new CallTraceElement(
-				scl,
-				smn,
-				smt,
-				(pcaddr == 0 ? -1 : pcaddr),
-				ssf,
-				__trace[base + CallStackItem.SOURCE_LINE],
-				__trace[base + CallStackItem.JAVA_OPERATION],
-				__trace[base + CallStackItem.JAVA_PC_ADDRESS],
-				tid);
-		}
-		
-		// Use the resolved form
 		return rv;
 	}
 }

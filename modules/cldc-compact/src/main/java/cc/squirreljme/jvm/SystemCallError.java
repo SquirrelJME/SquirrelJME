@@ -86,33 +86,6 @@ public final class SystemCallError
 	}
 	
 	/**
-	 * Checks if an error was set, if it was an exception is thrown.
-	 *
-	 * @param __si The system call to check.
-	 * @throws SystemCallException If there was an error.
-	 * @since 2020/01/12
-	 */
-	public static void checkError(short __si)
-		throws SystemCallException
-	{
-		int code = SystemCallError.getError(__si);
-		if (code != SystemCallError.NO_ERROR)
-			throw new SystemCallException(__si, code);
-	}
-	
-	/**
-	 * Returns the error state.
-	 *
-	 * @param __si The system call index.
-	 * @return The error, 0 will be on success.
-	 * @since 2019/05/23
-	 */
-	public static int getError(short __si)
-	{
-		return Assembly.sysCallV(SystemCallIndex.ERROR_GET, __si);
-	}
-	
-	/**
 	 * Converts the error to a string.
 	 *
 	 * @param __err The input error.
