@@ -1,0 +1,8 @@
+# 2020/11/29
+
+## 15:46
+
+I am definitely going to need to refactor the table section writing, I need to
+make a better interface for it and optimize it for futures now that I am doing
+the properties table for it. Possible I want to add a late binding future so
+I can set it to any future value. It would be useful.
