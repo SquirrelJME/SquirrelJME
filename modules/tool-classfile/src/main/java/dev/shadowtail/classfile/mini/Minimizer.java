@@ -128,6 +128,9 @@ public final class Minimizer
 		for (int i = 0; i < StaticClassInfoProperty.NUM_STATIC_PROPERTIES; i++)
 			properties[i] = header.writeFutureInt();
 		
+		if (true)
+			throw Debugging.todo("Write new header format.");
+		
 		// The index of the instance method named __start
 		header.writeByte(methods[1].findMethodIndex("__start"));
 		
