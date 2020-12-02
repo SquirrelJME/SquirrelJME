@@ -16,10 +16,6 @@
   variables:
     CORENAME: squirreljme
     JNI_PATH: ratufacoat/libretro/
-
-# Post extends for SquirrelJME
-.squirreljme-post-common:
-  variables:
     MAKEFILE_PATH: ratufacoat
     MAKEFILE: makefilelibretro
 
@@ -74,78 +70,67 @@ stages:
 # Windows 64-bit
 libretro-build-windows-x64:
   extends:
-    - .core-defs
     - .libretro-windows-x64-mingw-make-default
-    - .squirreljme-post-common
+    - .core-defs
 
 # Linux 64-bit
 libretro-build-linux-x64:
   extends:
-    - .core-defs
     - .libretro-linux-x64-make-default
-    - .squirreljme-post-common
+    - .core-defs
 
 # MacOS 64-bit
 libretro-build-osx-x64:
   extends:
-    - .core-defs
     - .libretro-osx-x64-make-default
-    - .squirreljme-post-common
+    - .core-defs
 
 ################################### CELLULAR #################################
 # Android ARMv7a
 android-armeabi-v7a:
   extends:
-    - .core-defs
     - .libretro-android-jni-armeabi-v7a
-    - .squirreljme-post-common
+    - .core-defs
 
 # Android ARMv8a
 android-arm64-v8a:
   extends:
-    - .core-defs
     - .libretro-android-jni-arm64-v8a
-    - .squirreljme-post-common
+    - .core-defs
 
 # Android 64-bit x86
 android-x86_64:
   extends:
-    - .core-defs
     - .libretro-android-jni-x86_64
-    - .squirreljme-post-common
+    - .core-defs
 
 # Android 32-bit x86
 android-x86:
   extends:
-    - .core-defs
     - .libretro-android-jni-x86
-    - .squirreljme-post-common
+    - .core-defs
 
 ################################### CONSOLES #################################
 # Nintendo Switch
 libretro-build-libnx-aarch64:
   extends:
-    - .core-defs
     - .libretro-libnx-static-retroarch-master
-    - .squirreljme-post-common
+    - .core-defs
 
 # PlayStation 2
 libretro-build-ps2:
   extends:
-    - .core-defs
     - .libretro-ps2-static-retroarch-master
-    - .squirreljme-post-common
+    - .core-defs
 
 # PlayStation Vita
 libretro-build-vita:
   extends:
-    - .core-defs
     - .libretro-vita-static-retroarch-master
-    - .squirreljme-post-common
+    - .core-defs
 
 # Dingux (GCW Zero)
 libretro-build-dingux:
   extends:
-    - .core-defs
     - .libretro-dingux-i386-make-default
-    - .squirreljme-post-common
+    - .core-defs
