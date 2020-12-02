@@ -282,7 +282,7 @@ public final class NativeInstruction
 	 * @throws InvalidInstructionException If the encoding is not known.
 	 * @since 2019/03/27
 	 */
-	public static final int argumentCount(int __op)
+	public static int argumentCount(int __op)
 		throws InvalidInstructionException
 	{
 		// Depends on the encoding
@@ -299,6 +299,7 @@ public final class NativeInstruction
 			case NativeInstructionType.LOAD_POOL:
 			case NativeInstructionType.STORE_POOL:
 			case NativeInstructionType.SYSTEM_CALL:
+			case NativeInstructionType.INVOKE_POINTER_ONLY:
 				return 2;
 					
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
@@ -313,9 +314,13 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 			case NativeInstructionType.STORE_TO_INTARRAY:
+			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
+			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
+			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
 				return 3;
 				
 			case NativeInstructionType.DEBUG_ENTRY:
+			case NativeInstructionType.INTERFACE_VT_LOAD:
 				return 4;
 			
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
@@ -336,7 +341,7 @@ public final class NativeInstruction
 	 * @return The argument format.
 	 * @since 2018/04/16
 	 */
-	public static final ArgumentFormat[] argumentFormat(int __op)
+	public static ArgumentFormat[] argumentFormat(int __op)
 	{
 		switch (NativeInstruction.encoding(__op))
 		{
@@ -348,6 +353,8 @@ public final class NativeInstruction
 				
 				// [r16, reglist]
 			case NativeInstructionType.SYSTEM_CALL:
+			case NativeInstructionType.INVOKE:
+			case NativeInstructionType.INVOKE_POINTER_ONLY:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
@@ -369,6 +376,21 @@ public final class NativeInstruction
 			case NativeInstructionType.STORE_POOL:
 				return ArgumentFormat.of(
 					ArgumentFormat.VPOOL,
+					ArgumentFormat.VUREG);
+					
+				// [r16, r16, reglist]
+			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.REGLIST);
+					
+				// [p16, r16, r16]
+			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
+			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
+				return ArgumentFormat.of(
+					ArgumentFormat.VPOOL,
+					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG);
 					
 				// [p16, p16, p16, p16]
@@ -432,14 +454,16 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG,
 					ArgumentFormat.INT32,
 					ArgumentFormat.VJUMP);
-				
-				// [reg w/ memaddr, reglist]
-			case NativeInstructionType.INVOKE:
+			
+				// [r16, r16, r16, r16]
+			case NativeInstructionType.INTERFACE_VT_LOAD:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
-					ArgumentFormat.REGLIST);
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG);
 			
-				// [r16 (check), r16 (get), r16 (set), r16 (addr), u16 (off)]
+			// [r16 (check), r16 (get), r16 (set), r16 (addr), u16 (off)]
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
@@ -461,7 +485,7 @@ public final class NativeInstruction
 	 * @return The encoding for the given operation.
 	 * @since 2019/03/24
 	 */
-	public static final int encoding(int __op)
+	public static int encoding(int __op)
 	{
 		// Special operations all use unique encodings so just return their
 		// opcode, while all of the other operations use one of the pre-defined
@@ -482,7 +506,7 @@ public final class NativeInstruction
 	 * @return The mnemonic for the operation.
 	 * @since 2019/04/07
 	 */
-	public static final String mnemonic(int __op)
+	public static String mnemonic(int __op)
 	{
 		switch (NativeInstruction.encoding(__op))
 		{
@@ -543,6 +567,21 @@ public final class NativeInstruction
 			case NativeInstructionType.STORE_TO_INTARRAY:
 				return "STORE_TO_INTARRAY";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
+		
+			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
+				return "INTERFACE_I_FOR_OBJECT";
+			
+			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
+				return "INTERFACE_VT_DX_LOOKUP";
+			
+			case NativeInstructionType.INTERFACE_VT_LOAD:
+				return "INTERFACE_VT_LOAD";
+			
+			case NativeInstructionType.INVOKE_POINTER_ONLY:
+				return "INVOKE_POINTER_ONLY";
+			
+			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
+				return "INVOKE_POOL_AND_POINTER";
 			
 			default:
 				return String.format("UNKNOWN_%02x", __op);

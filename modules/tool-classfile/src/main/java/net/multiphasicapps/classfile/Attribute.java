@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
@@ -72,7 +73,7 @@ public final class Attribute
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -82,7 +83,7 @@ public final class Attribute
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -125,7 +126,7 @@ public final class Attribute
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

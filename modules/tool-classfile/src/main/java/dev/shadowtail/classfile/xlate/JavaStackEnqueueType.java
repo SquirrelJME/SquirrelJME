@@ -22,7 +22,7 @@ public enum JavaStackEnqueueType
 	/** Cached state. */
 	CACHED,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

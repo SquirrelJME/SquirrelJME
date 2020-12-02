@@ -142,7 +142,7 @@ public final class MinimizedJarHeader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/27
 	 */
-	public static final MinimizedJarHeader decode(InputStream __in)
+	public static MinimizedJarHeader decode(InputStream __in)
 		throws IOException, NullPointerException
 	{
 		if (__in == null)

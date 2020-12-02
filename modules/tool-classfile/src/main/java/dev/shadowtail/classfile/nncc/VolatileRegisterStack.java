@@ -9,6 +9,12 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
+import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
+import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
+import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
+import dev.shadowtail.classfile.summercoat.register.TypedRegister;
+import dev.shadowtail.classfile.summercoat.register.Volatile;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -38,7 +44,7 @@ public final class VolatileRegisterStack
 	}
 	
 	/**
-	 * Clears all of the used volatile reisters.
+	 * Clears all of the used volatile registers.
 	 *
 	 * @since 2019/05/25
 	 */
@@ -48,13 +54,80 @@ public final class VolatileRegisterStack
 	}
 	
 	/**
+	 * Returns a volatile executable pointer.
+	 * 
+	 * @return The executable pointer.
+	 * @since 2020/11/24
+	 */
+	public Volatile<ExecutablePointer> getExecutablePointer()
+	{
+		return new Volatile<>(this,
+			new ExecutablePointer(this.getUnmanaged()));
+	}
+	
+	/**
+	 * Returns a volatile to represent this as an interface of an object.
+	 * 
+	 * @return Interface of object register.
+	 * @since 2020/11/24
+	 */
+	public Volatile<InterfaceOfObject> getInterfaceOfObject()
+	{
+		return new Volatile<>(this,
+			new InterfaceOfObject(this.getUnmanaged()));
+	}
+	
+	/**
+	 * Returns a register to store an interface virtual table index.
+	 * 
+	 * @return Volatile to store an interface vtable index.
+	 * @since 2020/11/24
+	 */
+	public Volatile<InterfaceVTIndex> getInterfaceVTIndex()
+	{
+		return new Volatile<>(this,
+			new InterfaceVTIndex(this.getUnmanaged()));
+	}
+	
+	/**
+	 * Returns a volatile to represent a runtime pool pointer.
+	 * 
+	 * @return A register to store the runtime pool pointer.
+	 * @since 2020/11/24
+	 */
+	public Volatile<RuntimePoolPointer> getRuntimePoolPointer()
+	{
+		return new Volatile<>(this,
+			new RuntimePoolPointer(this.getUnmanaged()));
+	}
+	
+	/**
+	 * Returns a volatile typed volatile register.
+	 * 
+	 * @param <T> The typed register type.
+	 * @param __cl The typed register type.
+	 * @return A volatile typed register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/24
+	 */
+	public final <T> Volatile<TypedRegister<T>> getTyped(Class<T> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return new Volatile<>(this,
+			new TypedRegister<T>(__cl, this.getUnmanaged()));
+	}
+	
+	/**
 	 * Returns the next volatile register.
 	 *
 	 * @return The next volatile register.
 	 * @throws IllegalStateException If no registers are available.
 	 * @since 2019/05/24
 	 */
-	public final int get()
+	public final int getUnmanaged()
 		throws IllegalStateException
 	{
 		// Find next register to use from the base, use any register which
@@ -81,7 +154,7 @@ public final class VolatileRegisterStack
 	 * @throws IllegalStateException If it was never used.
 	 * @since 2019/05/24
 	 */
-	public final void remove(int __r)
+	public final void removeUnmanaged(int __r)
 		throws IllegalStateException
 	{
 		// {@squirreljme.error JC13 Register to remove was never previously

@@ -18,9 +18,11 @@ import java.util.Map;
  *
  * @since 2019/12/28
  */
+@Deprecated
 public final class IPCManager
 {
 	/** Services that are available. */
+	@Deprecated
 	private static final Map<Integer, IPCCallback> _IPC_MAP =
 		new HashMap<>();
 	
@@ -29,6 +31,7 @@ public final class IPCManager
 	 *
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	private IPCManager()
 	{
 	}
@@ -49,6 +52,7 @@ public final class IPCManager
 	 * @return The result of the IPC call.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public static final long ipcCall(int __tid, int __ipcid, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{
@@ -80,6 +84,7 @@ public final class IPCManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public static final long ipcCall(int __tid, int... __v)
 		throws NullPointerException
 	{
@@ -110,6 +115,7 @@ public final class IPCManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public static final long ipcCall(int __tid, int __ipcid, int... __v)
 		throws NullPointerException
 	{
@@ -138,6 +144,7 @@ public final class IPCManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public static final void register(int __ipcid, IPCCallback __cb)
 		throws IllegalArgumentException, NullPointerException
 	{

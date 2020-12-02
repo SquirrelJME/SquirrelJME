@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents a flag which may be associated with an inner class.
  *
@@ -48,7 +50,7 @@ public enum InnerClassFlag
 	/** Enumeration. */
 	ENUM,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -72,7 +74,7 @@ public enum InnerClassFlag
 			case ENUM:			return 0x4000;
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 }

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents an inner class that is contained within an outer class, it
  * is used by the compiler to determine how classes are contained within each
@@ -78,7 +80,7 @@ public final class InnerClass
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -99,7 +101,7 @@ public final class InnerClass
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -155,7 +157,7 @@ public final class InnerClass
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

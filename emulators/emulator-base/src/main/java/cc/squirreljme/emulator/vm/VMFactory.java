@@ -12,8 +12,10 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
+import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
@@ -228,12 +230,21 @@ public abstract class VMFactory
 				continue;
 			
 			// Note it
-			System.err.printf("Registering %s (%s)%n", normalName, path);
+			Debugging.debugNote("Registering %s (%s)",
+				normalName, path);
+			
+			// Treat SQCs special in that they have a specific resource for
+			// their ROM data
+			VMClassLibrary place;
+			if (SummerCoatJarLibrary.isSqc(path))
+				place = new SummerCoatJarLibrary(path);
+			else
+				place = JarClassLibrary.of(path);
 			
 			// Place in the class library, but make sure the name matches
 			// the normalized name of the JAR
-			suites.put(normalName, new NameOverrideClassLibrary(
-				JarClassLibrary.of(path), normalName));
+			suites.put(normalName,
+				new NameOverrideClassLibrary(place, normalName));
 		}
 		
 		// Go through the class path and normalize the names so that it finds
@@ -518,9 +529,10 @@ public abstract class VMFactory
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// Get the base name of the JAR
-		if (__name.endsWith(".jar") || __name.endsWith(".JAR"))
-			__name = __name.substring(0, __name.length() - ".jar".length());
+		// Get the base name of the JAR or SQC
+		if (__name.endsWith(".jar") || __name.endsWith(".JAR") ||
+			__name.endsWith(".sqc") || __name.endsWith(".SQC"))
+			__name = __name.substring(0, __name.length() - 4);
 		
 		// Chop down potential foo"-0.4.0" from the end
 		for (int n = __name.length(), i = n - 1; i >= 0; i--)

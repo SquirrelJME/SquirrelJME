@@ -53,12 +53,11 @@ public class VMRunTask
 		this.setDescription("Executes the program to start running it.");
 		
 		// This task depends on the various VM libraries of this class
-		// depending on the dependencies
+		// depending on the dependencies along with the emulator being
+		// available as well
 		this.dependsOn(this.getProject().provider(
-			new VMRunDependencies(this, __sourceSet, __vmType)));
-		
-		// Additionally this depends on the emulator backend to be available
-		this.dependsOn(new VMEmulatorDependencies(this, __vmType));
+			new VMRunDependencies(this, __sourceSet, __vmType)),
+			new VMEmulatorDependencies(this, __vmType));
 		
 		// Only run if entry points are valid
 		this.onlyIf(new CheckForEntryPoints());

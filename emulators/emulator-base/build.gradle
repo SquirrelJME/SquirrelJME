@@ -48,12 +48,15 @@ dependencies
 
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
+boolean useDebugLib = false
 jar {
-	//dependsOn "assembleRelease"
-	dependsOn "assembleDebug"
+	dependsOn (useDebugLib ? "assembleDebug" : "assembleRelease")
+	
+	java.nio.file.Path libPath = buildDir.toPath().resolve("lib")
+		.resolve("main").resolve((useDebugLib ? "debug" : "release"))
+	project.ext.libPathBase = libPath
 
-	from buildDir.toPath().resolve("lib").resolve("main").
-		resolve("debug").toFile()
+	from libPath.toFile()
 	into "/"
 }
 
@@ -70,12 +73,17 @@ java
 
 // Improve debugging with native code compiles, these are only used by the
 // build system tests so these do not impact users at all
-tasks.withType(CppCompile).configureEach() {
-	debuggable = true
-	optimized = false
+tasks.withType(CppCompile).configureEach() {item ->
+	// Never do this for release!
+	if (item.name.toLowerCase().contains("release")) {
+		return
+	}
+
+	item.debuggable = true
+	item.optimized = false
 	
 	// Additional compiler options for each compiler
-	compilerArgs.addAll toolChain.map { toolChain ->
+	item.compilerArgs.addAll toolChain.map { toolChain ->
 		// Microsoft Visual C++
 		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
 			return [
@@ -103,11 +111,16 @@ tasks.withType(CppCompile).configureEach() {
 }
 
 // Ensure debugging information is used when linking
-tasks.withType(LinkSharedLibrary).configureEach() {
-	debuggable = true
+tasks.withType(LinkSharedLibrary).configureEach() { item ->
+	// Never do this for release!
+	if (item.name.toLowerCase().contains("release")) {
+		return
+	}
+	
+	item.getDebuggable().set(true)
 	
 	// Additional compiler options for each compiler
-	linkerArgs.addAll toolChain.map { toolChain ->
+	item.linkerArgs.addAll toolChain.map { toolChain ->
 		// Microsoft Visual C++
 		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
 			return [

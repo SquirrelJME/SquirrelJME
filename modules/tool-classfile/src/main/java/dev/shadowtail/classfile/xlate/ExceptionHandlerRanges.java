@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
@@ -52,7 +53,7 @@ public final class ExceptionHandlerRanges
 		
 		// Debug
 		if (__Debug__.ENABLED)
-			todo.DEBUG.note("EHRanges: %s", this._ranges);
+			Debugging.debugNote("EHRanges: %s", this._ranges);
 	}
 	
 	/**

@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.nncc;
 import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
@@ -19,10 +20,17 @@ import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.UsedString;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
+import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
+import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
+import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
+import dev.shadowtail.classfile.summercoat.register.PlainRegister;
+import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
+import dev.shadowtail.classfile.summercoat.register.Volatile;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.CompareType;
@@ -63,6 +71,7 @@ public final class NearNativeByteCodeHandler
 	implements ByteCodeHandler
 {
 	/** The jvm functions class. */
+	@Deprecated
 	public static final ClassName JVMFUNC_CLASS =
 		new ClassName("cc/squirreljme/jvm/JVMFunction");
 	
@@ -214,7 +223,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Grab some volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volaip = volatiles.get();
+		int volaip = volatiles.getUnmanaged();
 		
 		// Determine array index position
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
@@ -244,7 +253,7 @@ public final class NearNativeByteCodeHandler
 				__v.register, __in.register, volaip);
 		
 		// Not used anymore
-		volatiles.remove(volaip);
+		volatiles.removeUnmanaged(volaip);
 		
 		// If reading an object reference count up!
 		if (__dt == DataType.OBJECT)
@@ -280,7 +289,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Grab some volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volaip = volatiles.get();
+		int volaip = volatiles.getUnmanaged();
 		
 		// Determine array index position
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
@@ -300,7 +309,7 @@ public final class NearNativeByteCodeHandler
 			this.__refCount(__v.register);
 			
 			// Read existing object so it can be uncounted later
-			voltemp = volatiles.get();
+			voltemp = volatiles.getUnmanaged();
 			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
 				voltemp, __in.register, volaip);
 		}
@@ -331,11 +340,11 @@ public final class NearNativeByteCodeHandler
 			this.__refUncount(voltemp);
 			
 			// Not needed
-			volatiles.remove(voltemp);
+			volatiles.removeUnmanaged(voltemp);
 		}
 		
 		// No longer used
-		volatiles.remove(volaip);
+		volatiles.removeUnmanaged(volaip);
 		
 		// Clear references
 		this.__refClear();
@@ -500,7 +509,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Determine volatile registers
 		VolatileRegisterStack volatiles = this.volatiles;
-		int tempreg = volatiles.get();
+		int tempreg = volatiles.getUnmanaged();
 		
 		// Read field offset
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -536,7 +545,7 @@ public final class NearNativeByteCodeHandler
 			this.__refCount(__v.register);
 		
 		// Not used anymore
-		volatiles.remove(tempreg);
+		volatiles.removeUnmanaged(tempreg);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -571,7 +580,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Get volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volfioff = volatiles.get();
+		int volfioff = volatiles.getUnmanaged();
 		
 		// Read field offset
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -591,7 +600,7 @@ public final class NearNativeByteCodeHandler
 			this.__refCount(__v.register);
 			
 			// Read the value of the field for later clear
-			voltemp = volatiles.get();
+			voltemp = volatiles.getUnmanaged();
 			codebuilder.addMemoryOffReg(
 				dt, true,
 				voltemp, ireg, volfioff);
@@ -621,11 +630,11 @@ public final class NearNativeByteCodeHandler
 			this.__refUncount(voltemp);
 			
 			// Not needed
-			volatiles.remove(voltemp);
+			volatiles.removeUnmanaged(voltemp);
 		}
 		
 		// No longer used
-		volatiles.remove(volfioff);
+		volatiles.removeUnmanaged(volfioff);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -663,7 +672,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volwantcldx = volatiles.get();
+		int volwantcldx = volatiles.getUnmanaged();
 		
 		// Load desired class index type
 		this.__loadClassInfo(__cl, volwantcldx);
@@ -677,7 +686,7 @@ public final class NearNativeByteCodeHandler
 		this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
 		
 		// No longer needed
-		volatiles.remove(volwantcldx);
+		volatiles.removeUnmanaged(volwantcldx);
 		
 		// Clear references in the event it was overwritten
 		this.__refClear();
@@ -741,25 +750,73 @@ public final class NearNativeByteCodeHandler
 		// Interface, special, or virtual
 		else
 		{
+			@Deprecated int instReg = __in[0].register;
+			PlainRegister objectReg = new PlainRegister(instReg);
+			
 			// Check that the object is of the given class type and is not null
-			int ireg = __in[0].register;
-			this.__basicCheckNPE(ireg);
+			this.__basicCheckNPE(instReg);
 			
 			// Check types if this is not compatible
 			if (!__in[0].isCompatible(__r.handle().outerClass()))
-				this.__basicCheckCCE(ireg, __r.handle().outerClass());
+				this.__basicCheckCCE(instReg, __r.handle().outerClass());
 			
 			// Invoking interface method
 			if (__t == InvokeType.INTERFACE)
 			{
+				// Setup temporarily used registers
+				try (Volatile<InterfaceOfObject> iOfO =
+						volatiles.getInterfaceOfObject();
+					Volatile<InterfaceVTIndex> iVti =
+						volatiles.getInterfaceVTIndex();
+					Volatile<ExecutablePointer> epp =
+						volatiles.getExecutablePointer();
+					Volatile<RuntimePoolPointer> rpp =
+						volatiles.getRuntimePoolPointer())
+				{
+					// Lookup the interface for a given object, we need this
+					// to know which actual class implements the interface so
+					// we can load the pool and call into the class
+					// This creates a Interface+object.class relationship
+					codebuilder.addInterfaceForObject(
+						new InterfaceClassName(mh.outerClass()),
+						objectReg, iOfO.register);
+					
+					// The interface method index in the interface table needs
+					// to be known in order to know where to grab our pool
+					// and method pointers
+					codebuilder.addInterfaceVTIndexLookup(
+						new InvokedMethod(InvokeType.INTERFACE, mh),
+						iOfO.register, iVti.register);
+					
+					// Load both the pool and target pointer to the method to
+					// invoke
+					codebuilder.addInterfaceVTLoad(
+						iOfO.register, iVti.register,
+						epp.register, rpp.register);
+						
+					// Invoke the given pointer and pool index
+					codebuilder.addInterfaceVTLoad(
+						iOfO.register, iVti.register,
+						epp.register, rpp.register);
+					
+					// Invoke the interface, return values and exceptions are
+					// handled later on
+					codebuilder.addInvokePoolAndPointer(
+						epp.register, rpp.register, reglist);
+				}
+				
+				// TODO: Old-code, delete this when verified
+				/*if (true)
+					throw Debugging.todo();
+				
 				// Load the interface we are looking in
-				int voliclass = volatiles.get();
+				int voliclass = volatiles.getUnmanaged();
 				this.__loadClassInfo(__r.handle().outerClass(), voliclass);
 				
 				// Load the method index of the volatile method in question
-				int volimethdx = volatiles.get();
+				int volimethdx = volatiles.getUnmanaged();
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new MethodIndex(__r.handle().outerClass(),
+					new VirtualMethodIndex(__r.handle().outerClass(),
 						__r.handle().name(), __r.handle().descriptor()),
 					volimethdx);
 				
@@ -768,7 +825,7 @@ public final class NearNativeByteCodeHandler
 				this.__invokeStatic(InvokeType.SYSTEM,
 					NearNativeByteCodeHandler.JVMFUNC_CLASS,
 					"jvmInterfacePointer", "(III)J",
-					ireg, voliclass, volimethdx);
+					instReg, voliclass, volimethdx);
 				
 				// We need to extract the pool pointer of the class we
 				// are calling in so that nothing is horribly incorrect
@@ -780,8 +837,8 @@ public final class NearNativeByteCodeHandler
 					NativeCode.RETURN_REGISTER, reglist);
 				
 				// Cleanup
-				volatiles.remove(voliclass);
-				volatiles.remove(volimethdx);
+				volatiles.removeUnmanaged(voliclass);
+				volatiles.removeUnmanaged(volimethdx);*/
 			}
 			
 			// Special or virtual
@@ -990,8 +1047,8 @@ public final class NearNativeByteCodeHandler
 			int volbh = -1, volbl = -7;
 			while (volbl != (volbh + 1))
 			{
-				volbh = volatiles.get();
-				volbl = volatiles.get();
+				volbh = volatiles.getUnmanaged();
+				volbl = volatiles.getUnmanaged();
 			}
 			
 			// Read in raw value
@@ -1022,8 +1079,8 @@ public final class NearNativeByteCodeHandler
 				__c);
 			
 			// Cleanup
-			volatiles.remove(volbh);
-			volatiles.remove(volbl);
+			volatiles.removeUnmanaged(volbh);
+			volatiles.removeUnmanaged(volbl);
 		}
 	}
 	
@@ -1056,7 +1113,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volclassobj = volatiles.get();
+		int volclassobj = volatiles.getUnmanaged();
 		
 		// Load the class we want to allocate
 		this.__loadClassObject(__cl, volclassobj);
@@ -1084,7 +1141,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
 		
 		// Not needed anymore
-		volatiles.remove(volclassobj);
+		volatiles.removeUnmanaged(volclassobj);
 	}
 	
 	/**
@@ -1098,7 +1155,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need result register
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volresult = volatiles.get();
+		int volresult = volatiles.getUnmanaged();
 		
 		// Perform new invocation
 		this.__invokeNew(__cn, volresult);
@@ -1113,7 +1170,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addCopy(volresult, __out.register);
 		
 		// Not needed
-		volatiles.remove(volresult);
+		volatiles.removeUnmanaged(volresult);
 	}
 	
 	/**
@@ -1131,8 +1188,8 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volclassdx = volatiles.get(),
-			volresult = volatiles.get();
+		int volclassdx = volatiles.getUnmanaged(),
+			volresult = volatiles.getUnmanaged();
 		
 		// Load the class data for the array type
 		// If not a fixed class index, then rely on the value in the pool
@@ -1145,7 +1202,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, volresult);
 		
 		// No longer needed
-		volatiles.remove(volclassdx);
+		volatiles.removeUnmanaged(volclassdx);
 		
 		// Check for out of memory
 		this.__basicCheckOOM(volresult);
@@ -1157,7 +1214,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addCopy(volresult, __out.register);
 		
 		// Not needed
-		volatiles.remove(volresult);
+		volatiles.removeUnmanaged(volresult);
 	}
 	
 	/**
@@ -1185,7 +1242,7 @@ public final class NearNativeByteCodeHandler
 			codebuilder.addIfNonZero(__out.register, ispresent);
 			
 			// Load the noted string
-			int volstrptr = volatiles.get();
+			int volstrptr = volatiles.getUnmanaged();
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
 				new NotedString((String)__v), volstrptr);
 				
@@ -1195,7 +1252,7 @@ public final class NearNativeByteCodeHandler
 				"jvmLoadString", "(I)Ljava/lang/String;", volstrptr);
 			
 			// Cleanup
-			volatiles.remove(volstrptr);
+			volatiles.removeUnmanaged(volstrptr);
 			
 			// Store into the pull and copy the result as well
 			codebuilder.add(NativeInstructionType.STORE_POOL,
@@ -1286,7 +1343,7 @@ public final class NearNativeByteCodeHandler
 					break;
 				
 				default:
-					throw new todo.OOPS();
+					throw Debugging.oops();
 			}
 	}
 	
@@ -1309,7 +1366,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volsfo = volatiles.get();
+		int volsfo = volatiles.getUnmanaged();
 		
 		// Read static offset
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -1346,7 +1403,7 @@ public final class NearNativeByteCodeHandler
 			this.__refCount(__v.register);
 		
 		// Not needed
-		volatiles.remove(volsfo);
+		volatiles.removeUnmanaged(volsfo);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -1371,7 +1428,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volsfo = volatiles.get();
+		int volsfo = volatiles.getUnmanaged();
 		
 		// Read field offset
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -1391,7 +1448,7 @@ public final class NearNativeByteCodeHandler
 			this.__refCount(__v.register);
 			
 			// Read the value of the field for later clear
-			voltemp = volatiles.get();
+			voltemp = volatiles.getUnmanaged();
 			codebuilder.addMemoryOffReg(
 				dt, true,
 				voltemp, NativeCode.STATIC_FIELD_REGISTER, volsfo);
@@ -1422,11 +1479,11 @@ public final class NearNativeByteCodeHandler
 			this.__refUncount(voltemp);
 			
 			// Not needed
-			volatiles.remove(voltemp);
+			volatiles.removeUnmanaged(voltemp);
 		}
 		
 		// Not needed
-		volatiles.remove(volsfo);
+		volatiles.removeUnmanaged(volsfo);
 		
 		// Clear references as needed
 		this.__refClear();
@@ -1457,7 +1514,6 @@ public final class NearNativeByteCodeHandler
 		
 		// Do not jump at this point, just return the exception check will be
 		// flagged which will start the exception handling
-		return;
 	}
 	
 	/**
@@ -1617,7 +1673,7 @@ public final class NearNativeByteCodeHandler
 			// register because the method we call may end up just clearing it
 			// and stopping if a make exception is done (because there is an
 			// exception here).
-			int exinst = volatiles.get();
+			int exinst = volatiles.getUnmanaged();
 			this.__invokeNew(csl.classname, exinst);
 			
 			// Initialize the exception
@@ -1628,7 +1684,7 @@ public final class NearNativeByteCodeHandler
 			codebuilder.addCopy(exinst, NativeCode.EXCEPTION_REGISTER);
 			
 			// Done with this
-			volatiles.remove(exinst);
+			volatiles.removeUnmanaged(exinst);
 			
 			// Generate jump to exception handler
 			codebuilder.addGoto(csl.label);
@@ -1675,7 +1731,7 @@ public final class NearNativeByteCodeHandler
 			for (ExceptionHandler eh : ehtable)
 			{
 				// Load the class type for the exception to check against
-				int volehclassdx = volatiles.get();
+				int volehclassdx = volatiles.getUnmanaged();
 				this.__loadClassInfo(eh.type(), volehclassdx);
 				
 				// Call instance handler check
@@ -1685,7 +1741,7 @@ public final class NearNativeByteCodeHandler
 					NativeCode.EXCEPTION_REGISTER, volehclassdx);
 				
 				// Cleanup
-				volatiles.remove(volehclassdx);
+				volatiles.removeUnmanaged(volehclassdx);
 				
 				// If the return value is non-zero then it is an instance, in
 				// which case we jump to the handler address.
@@ -1699,7 +1755,6 @@ public final class NearNativeByteCodeHandler
 			this.__generateReturn(enq);
 			
 			// Exception handler was generated
-			didehfall = true;
 		}
 		
 		// Generate transition labels
@@ -1741,7 +1796,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __dxr The index register.
 	 * @since 2019/04/27
 	 */
-	private final void __basicCheckArrayBound(int __ir, int __dxr)
+	private void __basicCheckArrayBound(int __ir, int __dxr)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1754,7 +1809,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volarraylen = volatiles.get();
+		int volarraylen = volatiles.getUnmanaged();
 		
 		// Read length of array
 		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
@@ -1767,7 +1822,7 @@ public final class NearNativeByteCodeHandler
 			__dxr, volarraylen, lab);
 		
 		// No longer needed
-		volatiles.remove(volarraylen);
+		volatiles.removeUnmanaged(volarraylen);
 	}
 	
 	/**
@@ -1777,7 +1832,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __vr The value register.
 	 * @since 2019/04/27
 	 */
-	private final void __basicCheckArrayStore(int __ir, int __vr)
+	private void __basicCheckArrayStore(int __ir, int __vr)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1798,7 +1853,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __cl The class to check.
 	 * @since 2019/04/22
 	 */
-	private final void __basicCheckCCE(int __ir, ClassName __cl)
+	private void __basicCheckCCE(int __ir, ClassName __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -1808,7 +1863,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volwantcldx = volatiles.get();
+		int volwantcldx = volatiles.getUnmanaged();
 		
 		// Load desired target class type
 		this.__loadClassInfo(__cl, volwantcldx);
@@ -1826,7 +1881,7 @@ public final class NearNativeByteCodeHandler
 			"java/lang/ClassCastException")));
 		
 		// No longer needed
-		volatiles.remove(volwantcldx);
+		volatiles.removeUnmanaged(volwantcldx);
 	}
 	
 	/**
@@ -1835,7 +1890,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __br The B register.
 	 * @since 2019/06/24
 	 */
-	private final void __basicCheckDBZ(int __br)
+	private void __basicCheckDBZ(int __br)
 	{
 		// If the B register is zero, then we throw the exception
 		this.codebuilder.addIfZero(__br, this.__labelMakeException(
@@ -1848,7 +1903,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __ir The type to check.
 	 * @since 2019/04/27
 	 */
-	private final void __basicCheckIsArray(int __ir)
+	private void __basicCheckIsArray(int __ir)
 	{
 		// Call internal helper
 		this.__invokeStatic(InvokeType.SYSTEM,
@@ -1867,7 +1922,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __lr The length register.
 	 * @since 2019/06/28
 	 */
-	private final void __basicCheckNAS(int __lr)
+	private void __basicCheckNAS(int __lr)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1884,7 +1939,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __ir The register to check.
 	 * @since 2019/04/22
 	 */
-	private final void __basicCheckNPE(int __ir)
+	private void __basicCheckNPE(int __ir)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1899,7 +1954,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __ir The register to check.
 	 * @since 2019/06/28
 	 */
-	private final void __basicCheckOOM(int __ir)
+	private void __basicCheckOOM(int __ir)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -1916,7 +1971,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/26
 	 */
-	private final __EData__ __eData(NativeCodeLabel __lab)
+	private __EData__ __eData(NativeCodeLabel __lab)
 		throws NullPointerException
 	{
 		if (__lab == null)
@@ -1937,7 +1992,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/24
 	 */
-	private final AccessedField __fieldAccess(FieldAccessType __at,
+	private AccessedField __fieldAccess(FieldAccessType __at,
 		FieldReference __fr, boolean __read)
 		throws NullPointerException
 	{
@@ -1959,7 +2014,7 @@ public final class NearNativeByteCodeHandler
 	 * @return The label to this return point.
 	 * @since 2019/04/11
 	 */
-	private final NativeCodeLabel __generateReturn()
+	private NativeCodeLabel __generateReturn()
 	{
 		return this.__generateReturn(this.state.stack.possibleEnqueue());
 	}
@@ -1968,11 +2023,11 @@ public final class NearNativeByteCodeHandler
 	 * Generates or jumps to another return point for the given enqueue.
 	 *
 	 * @param __eq The enqueue to return for.
-	 * @return The label to this return point.
 	 * @throws NullPointerException On null arguments.
-	 * @return
+	 * @return The label to this return point.
+	 * @since 2019/04/11
 	 */
-	private final NativeCodeLabel __generateReturn(JavaStackEnqueueList __eq)
+	private NativeCodeLabel __generateReturn(JavaStackEnqueueList __eq)
 		throws NullPointerException
 	{
 		if (__eq == null)
@@ -2008,14 +2063,14 @@ public final class NearNativeByteCodeHandler
 				// Protect return value, if there is one
 				if (this.isreturn)
 				{
-					ssh = volatiles.get();
+					ssh = volatiles.getUnmanaged();
 					codebuilder.addCopy(NativeCode.RETURN_REGISTER, ssh);
 				}
 				
 				// And wide value, if any
 				if (this.isreturnwide)
 				{
-					ssl = volatiles.get();
+					ssl = volatiles.getUnmanaged();
 					codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, ssl);
 				}
 				
@@ -2027,14 +2082,14 @@ public final class NearNativeByteCodeHandler
 				if (this.isreturn)
 				{
 					codebuilder.addCopy(ssh, NativeCode.RETURN_REGISTER);
-					volatiles.remove(ssh);
+					volatiles.removeUnmanaged(ssh);
 				}
 				
 				// Recover wide, if any
 				if (this.isreturnwide)
 				{
 					codebuilder.addCopy(ssl, NativeCode.RETURN_REGISTER + 1);
-					volatiles.remove(ssl);
+					volatiles.removeUnmanaged(ssl);
 				}
 			}
 			
@@ -2060,14 +2115,14 @@ public final class NearNativeByteCodeHandler
 		// Protect return value, if there is one
 		if (this.isreturn)
 		{
-			ssh = volatiles.get();
+			ssh = volatiles.getUnmanaged();
 			codebuilder.addCopy(NativeCode.RETURN_REGISTER, ssh);
 		}
 		
 		// And wide value, if any
 		if (this.isreturnwide)
 		{
-			ssl = volatiles.get();
+			ssl = volatiles.getUnmanaged();
 			codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, ssl);
 		}
 		
@@ -2080,14 +2135,14 @@ public final class NearNativeByteCodeHandler
 		if (this.isreturn)
 		{
 			codebuilder.addCopy(ssh, NativeCode.RETURN_REGISTER);
-			volatiles.remove(ssh);
+			volatiles.removeUnmanaged(ssh);
 		}
 		
 		// Recover wide, if any
 		if (this.isreturnwide)
 		{
 			codebuilder.addCopy(ssl, NativeCode.RETURN_REGISTER + 1);
-			volatiles.remove(ssl);
+			volatiles.removeUnmanaged(ssl);
 		}
 		
 		// Recursively go down since the enqueues may possibly be shared, if
@@ -2110,7 +2165,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException If no name or type were specified.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeAssembly(MethodName __name,
+	private void __invokeAssembly(MethodName __name,
 		MethodDescriptor __type, JavaStackResult.Output __out,
 		JavaStackResult.Input... __in)
 		throws NullPointerException
@@ -2230,6 +2285,12 @@ public final class NearNativeByteCodeHandler
 				// Integer/Float bits
 			case "floatToRawIntBits":
 			case "intBitsToFloat":
+				
+				// object -> pointer
+			case "objectToPointer":
+				
+				// Long unpack high
+			case "longUnpackHigh":
 				if (__in[0].register != __out.register)
 					codebuilder.addCopy(__in[0].register, __out.register);
 				break;
@@ -2286,13 +2347,7 @@ public final class NearNativeByteCodeHandler
 					codebuilder.addCopy(__in[0].register, __out.register);
 				break;
 			
-				// Long unpack high
-			case "longUnpackHigh":
-				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
-				break;
-				
-				// Long unpack low
+			// Long unpack low
 			case "longUnpackLow":
 				if (__in[0].register + 1 != __out.register)
 					codebuilder.addCopy(__in[0].register + 1, __out.register);
@@ -2368,13 +2423,7 @@ public final class NearNativeByteCodeHandler
 					__in[0].register, __in[1].register);
 				break;
 			
-				// object -> pointer
-			case "objectToPointer":
-				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
-				break;
-				
-				// object -> pointer, with ref clear
+			// object -> pointer, with ref clear
 			case "objectToPointerRefQueue":
 				// Push references
 				this.__refPush();
@@ -2515,7 +2564,7 @@ public final class NearNativeByteCodeHandler
 				break;
 			
 			default:
-				throw new todo.OOPS(asmfunc);
+				throw Debugging.oops(asmfunc);
 		}
 	}
 	
@@ -2531,7 +2580,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeInstance(InvokeType __it, ClassName __cl,
+	private void __invokeInstance(InvokeType __it, ClassName __cl,
 		String __mn, String __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -2551,7 +2600,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeInstance(InvokeType __it, ClassName __cl,
+	private void __invokeInstance(InvokeType __it, ClassName __cl,
 		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -2563,10 +2612,10 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles to work with
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volclassid = volatiles.get(),
-			volvtable = volatiles.get(),
-			methodptr = volatiles.get(),
-			volptable = volatiles.get();
+		int volclassid = volatiles.getUnmanaged(),
+			volvtable = volatiles.getUnmanaged(),
+			methodptr = volatiles.getUnmanaged(),
+			volptable = volatiles.getUnmanaged();
 		
 		// Special invocation?
 		boolean isspecial = (__it == InvokeType.SPECIAL);
@@ -2592,7 +2641,7 @@ public final class NearNativeByteCodeHandler
 			else
 			{
 				// Read the super class of our current class
-				int volscfo = volatiles.get();
+				int volscfo = volatiles.getUnmanaged();
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
 					new AccessedField(FieldAccessTime.NORMAL,
 						FieldAccessType.INSTANCE,
@@ -2606,7 +2655,7 @@ public final class NearNativeByteCodeHandler
 					volclassid, volclassid, volscfo);
 				
 				// Cleanup
-				volatiles.remove(volscfo);
+				volatiles.removeUnmanaged(volscfo);
 			}
 		}
 		
@@ -2641,7 +2690,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Method index
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new MethodIndex(__cl, __mn, __mt), methodptr);
+			new VirtualMethodIndex(__cl, __mn, __mt), methodptr);
 			
 		// Load from the pool table
 		codebuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
@@ -2656,10 +2705,10 @@ public final class NearNativeByteCodeHandler
 			methodptr, __args);
 		
 		// Cleanup volatiles
-		volatiles.remove(volclassid);
-		volatiles.remove(volvtable);
-		volatiles.remove(methodptr);
-		volatiles.remove(volptable);
+		volatiles.removeUnmanaged(volclassid);
+		volatiles.removeUnmanaged(volvtable);
+		volatiles.removeUnmanaged(methodptr);
+		volatiles.removeUnmanaged(volptable);
 	}
 	
 	/**
@@ -2670,7 +2719,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeNew(ClassName __cl, int __out)
+	private void __invokeNew(ClassName __cl, int __out)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -2680,7 +2729,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need a volatile
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volwantcl = volatiles.get();
+		int volwantcl = volatiles.getUnmanaged();
 		
 		// Load class data
 		this.__loadClassInfo(__cl, volwantcl);
@@ -2692,7 +2741,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out);
 		
 		// Not needed
-		volatiles.remove(volwantcl);
+		volatiles.removeUnmanaged(volwantcl);
 	}
 	
 	/**
@@ -2707,7 +2756,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeStatic(InvokeType __it, String __cl,
+	private void __invokeStatic(InvokeType __it, String __cl,
 		String __mn, String __mt, int... __args)
 		throws NullPointerException
 	{
@@ -2727,7 +2776,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeStatic(InvokeType __it, String __cl,
+	private void __invokeStatic(InvokeType __it, String __cl,
 		String __mn, String __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -2747,7 +2796,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeStatic(InvokeType __it, ClassName __cl,
+	private void __invokeStatic(InvokeType __it, ClassName __cl,
 		String __mn, String __mt, int... __args)
 		throws NullPointerException
 	{
@@ -2767,7 +2816,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private final void __invokeStatic(InvokeType __it, ClassName __cl,
+	private void __invokeStatic(InvokeType __it, ClassName __cl,
 		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
 		throws NullPointerException
 	{
@@ -2779,8 +2828,8 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatile
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volsmp = volatiles.get(),
-			volexe = volatiles.get();
+		int volsmp = volatiles.getUnmanaged(),
+			volexe = volatiles.getUnmanaged();
 		
 		// Load address of the target method
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -2820,8 +2869,8 @@ public final class NearNativeByteCodeHandler
 		}
 		
 		// Not needed
-		volatiles.remove(volexe);
-		volatiles.remove(volsmp);
+		volatiles.removeUnmanaged(volexe);
+		volatiles.removeUnmanaged(volsmp);
 	}
 	
 	/**
@@ -2833,7 +2882,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __in The input system call arguments.
 	 * @since 2109/05/27
 	 */
-	private final void __invokeSysCall(boolean __pure, boolean __long,
+	private void __invokeSysCall(boolean __pure, boolean __long,
 		JavaStackResult.Output __out, JavaStackResult.Input... __in)
 	{
 		// Invoked methods can thrown an exception, so do
@@ -2856,8 +2905,8 @@ public final class NearNativeByteCodeHandler
 			
 			// Need to store the return value of this call
 			VolatileRegisterStack volatiles = this.volatiles;
-			int rvlo = volatiles.get(),
-				rvhi = volatiles.get();
+			int rvlo = volatiles.getUnmanaged(),
+				rvhi = volatiles.getUnmanaged();
 			
 			// Defensive copy of return value
 			if (__out != null)
@@ -2871,7 +2920,7 @@ public final class NearNativeByteCodeHandler
 			}
 			
 			// Load the system call index for IPC exception store
-			int ipcesid = volatiles.get();
+			int ipcesid = volatiles.getUnmanaged();
 			this.codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
 				NativeCode.ZERO_REGISTER, SystemCallIndex.EXCEPTION_STORE,
 				ipcesid);
@@ -2881,7 +2930,7 @@ public final class NearNativeByteCodeHandler
 				ipcesid, new RegisterList(NativeCode.ZERO_REGISTER));
 			
 			// Quickly copy out exception value
-			int eval = volatiles.get();
+			int eval = volatiles.getUnmanaged();
 			this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, eval);
 			
 			// If this value is set, then we fail
@@ -2900,10 +2949,10 @@ public final class NearNativeByteCodeHandler
 			}
 			
 			// No longer needed
-			volatiles.remove(eval);
-			volatiles.remove(ipcesid);
-			volatiles.remove(rvhi);
-			volatiles.remove(rvlo);
+			volatiles.removeUnmanaged(eval);
+			volatiles.removeUnmanaged(ipcesid);
+			volatiles.removeUnmanaged(rvhi);
+			volatiles.removeUnmanaged(rvlo);
 		}
 		
 		// Unpure system call (possibly adapted by our own handler)
@@ -2942,7 +2991,7 @@ public final class NearNativeByteCodeHandler
 	 * @return The label to the exception.
 	 * @since 2019/04/09
 	 */
-	private final NativeCodeLabel __labelException()
+	private NativeCodeLabel __labelException()
 	{
 		// Get both states for when an exception is handled (transition) and
 		// for where it is not handled (full cleanup)
@@ -2994,7 +3043,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/12
 	 */
-	private final NativeCodeLabel __labelJava(InstructionJumpTarget __jt)
+	private NativeCodeLabel __labelJava(InstructionJumpTarget __jt)
 		throws NullPointerException
 	{
 		if (__jt == null)
@@ -3024,7 +3073,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/13
 	 */
-	private final NativeCodeLabel __labelJavaTransition(StateOperations __sops,
+	private NativeCodeLabel __labelJavaTransition(StateOperations __sops,
 		InstructionJumpTarget __jt)
 		throws NullPointerException
 	{
@@ -3065,7 +3114,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/10
 	 */
-	private final NativeCodeLabel __labelMakeException(String __cl)
+	private NativeCodeLabel __labelMakeException(String __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -3102,7 +3151,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/24
 	 */
-	private final NativeCodeLabel __labelRefClearJump(NativeCodeLabel __tl)
+	private NativeCodeLabel __labelRefClearJump(NativeCodeLabel __tl)
 		throws NullPointerException
 	{
 		if (__tl == null)
@@ -3122,7 +3171,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/24
 	 */
-	private final NativeCodeLabel __labelRefClearJump(
+	private NativeCodeLabel __labelRefClearJump(
 		JavaStackEnqueueList __eql, NativeCodeLabel __tl)
 		throws NullPointerException
 	{
@@ -3159,7 +3208,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/19
 	 */
-	private final void __loadClassInfo(String __cl, int __r)
+	private void __loadClassInfo(String __cl, int __r)
 		throws NullPointerException
 	{
 		this.__loadClassInfo(new ClassName(__cl), __r);
@@ -3173,7 +3222,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
-	private final void __loadClassInfo(ClassName __cl, int __r)
+	private void __loadClassInfo(ClassName __cl, int __r)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -3198,7 +3247,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need register to load the class info
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volnoted = volatiles.get();
+		int volnoted = volatiles.getUnmanaged();
 		
 		// Load the noted class name
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -3217,7 +3266,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
 		
 		// Cleanup
-		volatiles.remove(volnoted);
+		volatiles.removeUnmanaged(volnoted);
 		
 		// End point is here
 		codebuilder.label(isloaded);
@@ -3230,12 +3279,12 @@ public final class NearNativeByteCodeHandler
 	 * @param __r The register to place it in.
 	 * @since 2019/04/26
 	 */
-	private final void __loadClassObject(ClassName __cl, int __r)
+	private void __loadClassObject(ClassName __cl, int __r)
 	{
 		VolatileRegisterStack volatiles = this.volatiles;
 		
 		// Load the class info for the class
-		int volcdvt = volatiles.get();
+		int volcdvt = volatiles.getUnmanaged();
 		this.__loadClassInfo(__cl, volcdvt);
 		
 		// Call internal class object loader
@@ -3244,7 +3293,7 @@ public final class NearNativeByteCodeHandler
 			"jvmLoadClass", "(I)Ljava/lang/Class;", volcdvt);
 		
 		// Cleanup
-		volatiles.remove(volcdvt);
+		volatiles.removeUnmanaged(volcdvt);
 		
 		// Copy return value to the output register
 		this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
@@ -3258,7 +3307,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
-	private final void __loadClassPool(ClassName __cl, int __r)
+	private void __loadClassPool(ClassName __cl, int __r)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -3272,8 +3321,8 @@ public final class NearNativeByteCodeHandler
 			new ClassPool(__cl), __r);
 		
 		// Detect classes which are dynamically initialized
-		if (!ClassLoadingAdjustments.isDeferredLoad(this.state.classname.toString(),
-			__cl.toString()))
+		if (!ClassLoadingAdjustments.isDeferredLoad(
+			this.state.classname.toString(), __cl.toString()))
 			return;
 		
 		// Jump if the pool is already loaded
@@ -3283,9 +3332,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatile to get the class info
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volcinfo = volatiles.get(),
-			volpoolv = volatiles.get(),
-			volscfo = volatiles.get();
+		int volcinfo = volatiles.getUnmanaged(),
+			volpoolv = volatiles.getUnmanaged(),
+			volscfo = volatiles.getUnmanaged();
 		
 		// Load the ClassInfo for the class we want
 		this.__loadClassInfo(__cl, volcinfo);
@@ -3306,9 +3355,9 @@ public final class NearNativeByteCodeHandler
 			new ClassPool(__cl), volpoolv);
 		
 		// Cleanup
-		volatiles.remove(volcinfo);
-		volatiles.remove(volpoolv);
-		volatiles.remove(volscfo);
+		volatiles.removeUnmanaged(volcinfo);
+		volatiles.removeUnmanaged(volpoolv);
+		volatiles.removeUnmanaged(volscfo);
 		
 		// End point is here
 		codebuilder.label(isloaded);
@@ -3321,7 +3370,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __r The register to enter a monitor for.
 	 * @since 2019/04/26
 	 */
-	private final void __monitor(boolean __enter, int __r)
+	private void __monitor(boolean __enter, int __r)
 	{
 		// Call helper method
 		this.__invokeStatic(InvokeType.SYSTEM,
@@ -3334,7 +3383,7 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @since 2019/03/30
 	 */
-	private final void __refClear()
+	private void __refClear()
 	{
 		// Do nothing if nothing has been enqueued
 		JavaStackEnqueueList lastenqueue = this._lastenqueue;
@@ -3356,7 +3405,7 @@ public final class NearNativeByteCodeHandler
 			this.__refUncount(v);
 			
 			// Free it for later usage
-			volatiles.remove(v);
+			volatiles.removeUnmanaged(v);
 		}
 	}
 	
@@ -3366,7 +3415,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __r The register to reference to count.
 	 * @since 2019/04/25
 	 */
-	private final void __refCount(int __r)
+	private void __refCount(int __r)
 	{
 		// If the object is null then it will not be counted, this is skipped
 		NativeCodeLabel ncj = new NativeCodeLabel("refnocount",
@@ -3391,7 +3440,7 @@ public final class NearNativeByteCodeHandler
 	 * @return True if the push list was not empty.
 	 * @since 2019/04/10
 	 */
-	private final boolean __refPush()
+	private boolean __refPush()
 		throws NullPointerException
 	{
 		return this.__refPush(this.state.result.enqueue());
@@ -3405,7 +3454,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/30
 	 */
-	private final boolean __refPush(JavaStackEnqueueList __r)
+	private boolean __refPush(JavaStackEnqueueList __r)
 		throws NullPointerException
 	{
 		if (__r == null)
@@ -3428,7 +3477,7 @@ public final class NearNativeByteCodeHandler
 		for (int i = 0; i < n; i++)
 		{
 			// Get the volatile register to copy into
-			int v = volatiles.get();
+			int v = volatiles.getUnmanaged();
 			
 			// Copy to the volatile
 			codebuilder.addCopy(__r.get(i), v);
@@ -3453,7 +3502,7 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @since 2019/11/24
 	 */
-	private final void __refReset()
+	private void __refReset()
 	{
 		this._lastenqueue = null;
 	}
@@ -3464,7 +3513,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __r The register to reference to uncount.
 	 * @since 2019/04/25
 	 */
-	private final void __refUncount(int __r)
+	private void __refUncount(int __r)
 	{
 		// If the object is null then it will not be uncounted, this is skipped
 		NativeCodeLabel ncj = new NativeCodeLabel("refnouncount",
@@ -3472,7 +3521,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volnowcount = volatiles.get();
+		int volnowcount = volatiles.getUnmanaged();
 		
 		// Do not do any uncounting if this is null
 		NativeCodeBuilder codebuilder = this.codebuilder;
@@ -3497,7 +3546,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.label(ncj);
 		
 		// No longer needed
-		volatiles.remove(volnowcount);
+		volatiles.removeUnmanaged(volnowcount);
 	}
 	
 	/**
@@ -3508,7 +3557,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/25
 	 */
-	private final NativeCodeLabel __useEDataAndGetLabel(__EData__ __ed)
+	private NativeCodeLabel __useEDataAndGetLabel(__EData__ __ed)
 		throws NullPointerException
 	{
 		if (__ed == null)
@@ -3530,7 +3579,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/16
 	 */
-	private final void __useEDataDebugPoint(__EData__ __ed, int __jop)
+	private void __useEDataDebugPoint(__EData__ __ed, int __jop)
 		throws NullPointerException
 	{
 		if (__ed == null)

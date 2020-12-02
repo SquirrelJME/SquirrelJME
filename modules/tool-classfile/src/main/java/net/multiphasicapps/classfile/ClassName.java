@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Objects;
 
 /**
@@ -342,7 +343,7 @@ public class ClassName
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	public static final ClassName fromPrimitiveType(PrimitiveType __t)
+	public static ClassName fromPrimitiveType(PrimitiveType __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -376,7 +377,7 @@ public class ClassName
 				return new ClassName("double");
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -388,7 +389,7 @@ public class ClassName
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/22
 	 */
-	public static final boolean isValidClassName(String __cn)
+	public static boolean isValidClassName(String __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)

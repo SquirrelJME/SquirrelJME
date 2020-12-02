@@ -9,14 +9,15 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.UsedString;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -220,7 +221,7 @@ public final class MinimizedPool
 	 * @since 2019/04/16
 	 */
 	@Deprecated
-	public static final MinimizedPool decode(int __n, byte[] __is, int __o,
+	public static MinimizedPool decode(int __n, byte[] __is, int __o,
 		int __l)
 		throws IndexOutOfBoundsException, InvalidClassFormatException,
 			NullPointerException
@@ -343,7 +344,7 @@ public final class MinimizedPool
 					case LONG:
 					case DOUBLE:
 					case USED_STRING:
-					case METHOD_INDEX:
+					case VIRTUAL_METHOD_INDEX:
 						// Wide parts
 						if (iswide)
 						{
@@ -427,8 +428,8 @@ public final class MinimizedPool
 								break;
 								
 								// The method index
-							case METHOD_INDEX:
-								v = new MethodIndex(
+							case VIRTUAL_METHOD_INDEX:
+								v = new VirtualMethodIndex(
 									(ClassName)values[part[1]],
 									new MethodName((String)values[part[2]]),
 									(MethodDescriptor)values[part[3]]);
@@ -437,18 +438,16 @@ public final class MinimizedPool
 								// Long
 							case LONG:
 								v = (((long)(((Integer)values[part[0]])
-										<< 32L)) |
-									(((long)(((Integer)values[part[1]]) &
-										0xFFFFFFFFL))));
+										<< 0)) | ((Integer)values[part[1]]) &
+											0xFFFFFFFFL);
 								break;
 								
 								// Double
 							case DOUBLE:
 								v = Double.longBitsToDouble(
 									(((long)(((Integer)values[part[0]])
-										<< 32L)) |
-									(((long)(((Integer)values[part[1]]) &
-										0xFFFFFFFFL)))));
+										<< 0)) | ((Integer)values[part[1]]) &
+											0xFFFFFFFFL));
 								break;
 								
 								// Used string
@@ -457,12 +456,12 @@ public final class MinimizedPool
 								break;
 								
 							default:
-								throw new todo.OOPS(type.name());
+								throw Debugging.oops(type.name());
 						}
 						break;
 					
 					default:
-						throw new todo.OOPS(type.name());
+						throw Debugging.oops(type.name());
 				}
 			}
 			

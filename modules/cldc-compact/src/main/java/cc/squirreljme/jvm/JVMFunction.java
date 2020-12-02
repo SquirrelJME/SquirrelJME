@@ -9,11 +9,16 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class contains the functions of the virtual machine.
  *
+ * @deprecated This entire class is going to be removed as it will be made
+ * not needed with future changes.
  * @since 2019/05/25
  */
+@Deprecated
 public final class JVMFunction
 {
 	/**
@@ -21,6 +26,7 @@ public final class JVMFunction
 	 *
 	 * @since 2019/05/25
 	 */
+	@Deprecated
 	private JVMFunction()
 	{
 	}
@@ -34,10 +40,11 @@ public final class JVMFunction
 	 * be returned, otherwise {@code 0} will.
 	 * @since 2019/04/27
 	 */
+	@Deprecated
 	public static final int jvmCanArrayStore(int __p, int __v)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -48,10 +55,11 @@ public final class JVMFunction
 	 * array.
 	 * @since 2019/04/27
 	 */
+	@Deprecated
 	public static final int jvmComponentType(int __clid)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -60,10 +68,11 @@ public final class JVMFunction
 	 *
 	 * @since 2019/04/25
 	 */
+	@Deprecated
 	public static final void jvmGarbageCollect()
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -72,10 +81,11 @@ public final class JVMFunction
 	 * @param __p The object to garbage collect.
 	 * @since 2019/04/25
 	 */
+	@Deprecated
 	public static final void jvmGarbageCollectObject(int __p)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -85,10 +95,11 @@ public final class JVMFunction
 	 * @return The loaded class info.
 	 * @since 2019/12/15
 	 */
+	@Deprecated
 	public static final ClassInfo jvmInitClass(int __ns)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -103,10 +114,11 @@ public final class JVMFunction
 	 * pool of the target class in the high-word.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public static final long jvmInterfacePointer(int __p, int __icl, int __mdx)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 		// Assembly.longPack(hi, lo)
 	}
 	
@@ -117,10 +129,11 @@ public final class JVMFunction
 	 * @return Either {@code 1} if it is an array or {@code 0} if it is not.
 	 * @since 2019/04/27
 	 */
+	@Deprecated
 	public static final int jvmIsArray(int __p)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -132,10 +145,27 @@ public final class JVMFunction
 	 * it is not.
 	 * @since 2019/04/22
 	 */
+	@Deprecated
 	public static final int jvmIsInstance(int __p, int __cldx)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the {@link Class} instance for the given class info pointer,
+	 * if none has been created yet then it will be created as needed.
+	 *
+	 * @param <T> The class type.
+	 * @param __cldx The class index pointer.
+	 * @return The resulting class.
+	 * @since 2020/11/27
+	 */
+	@Deprecated
+	public static final <T> Class<T> jvmLoadClass(int __cldx)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -147,10 +177,11 @@ public final class JVMFunction
 	 * @return The resulting class.
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	public static final <T> Class<T> jvmLoadClass(ClassInfo __cldx)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -160,6 +191,7 @@ public final class JVMFunction
 	 * @return The resulting string.
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	public static final String jvmLoadString(int __p)
 	{
 		// Zero will be the null pointer
@@ -167,7 +199,7 @@ public final class JVMFunction
 			return null;
 		
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -178,10 +210,11 @@ public final class JVMFunction
 	 * @return The read value.
 	 * @since 2019/05/29
 	 */
+	@Deprecated
 	public static final long jvmMemReadLong(int __addr, int __off)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -193,11 +226,12 @@ public final class JVMFunction
 	 * @param __lv The low value.
 	 * @since 2019/05/29
 	 */
+	@Deprecated
 	public static final void jvmMemWriteLong(int __addr, int __off, int __hv,
 		int __lv)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -208,6 +242,7 @@ public final class JVMFunction
 	 * @param __v The value
 	 * @since 2019/05/29
 	 */
+	@Deprecated
 	public static final void jvmMemWriteLong(int __addr, int __off, long __v)
 	{
 		JVMFunction.jvmMemWriteLong(__addr, __off,
@@ -220,10 +255,11 @@ public final class JVMFunction
 	 * @param __p The object to enter.
 	 * @since 2019/04/26
 	 */
+	@Deprecated
 	public static final void jvmMonitorEnter(int __p)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -232,10 +268,11 @@ public final class JVMFunction
 	 * @param __p The object to exit.
 	 * @since 2019/04/26
 	 */
+	@Deprecated
 	public static final void jvmMonitorExit(int __p)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -247,11 +284,12 @@ public final class JVMFunction
 	 * class.
 	 * @since 2019/05/24
 	 */
+	@Deprecated
 	public static final int jvmNew(int __cl)
 		throws OutOfMemoryError
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -265,11 +303,24 @@ public final class JVMFunction
 	 * array.
 	 * @since 2019/04/24
 	 */
+	@Deprecated
 	public static final int jvmNewArray(int __at, int __len)
 		throws NegativeArraySizeException, OutOfMemoryError
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Handler for pure virtual calls.
+	 * 
+	 * @since 2020/11/23
+	 */
+	@Deprecated
+	public static void jvmPureVirtualCall()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -290,6 +341,7 @@ public final class JVMFunction
 	 * @return The result.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static final long jvmSystemCall(short __si, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{

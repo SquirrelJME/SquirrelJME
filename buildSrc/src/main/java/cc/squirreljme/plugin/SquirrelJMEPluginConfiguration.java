@@ -74,6 +74,9 @@ public class SquirrelJMEPluginConfiguration
 	public List<String> tags =
 		new ArrayList<>();
 	
+	/** Is this a bootloader? */
+	public boolean isBootLoader;
+	
 	/**
 	 * Initializes the configuration with the contained project.
 	 *

@@ -11,6 +11,7 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.ClassInfo;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
@@ -21,9 +22,10 @@ import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
+import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.UsedString;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import java.lang.ref.Reference;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -191,13 +193,22 @@ public final class LoadedClassInfo
 		if (__fn == null || __fd == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BC02 Could not locate instance field. (Class;
-		// Field Name; Field Type)}
 		MinimizedField mf = this._class.field(false, __fn, __fd);
 		if (mf == null)
+		{
+			// Look in super class if it does not exist, since it could be
+			// a clunked field reference on a parent class
+			ClassName sn = this._class.superName();
+			if (sn != null)
+				return this.__bootstrap().findClass(sn)
+					.fieldInstanceOffset(__fn, __fd);
+			
+			// {@squirreljme.error BC02 Could not locate instance field.
+			// (Class; Field Name; Field Type)}
 			throw new InvalidClassFormatException(
 				String.format("BC02 %s %s %s", this._class.thisName(), __fn,
 					__fd));
+		}
 		
 		// Determine offset to field
 		return this.baseOffset() + mf.offset;
@@ -282,257 +293,288 @@ public final class LoadedClassInfo
 			ClassName cn = cnmf.classname;
 			MinimizedField mf = cnmf.field;
 			
-			// The write pointer of this data
-			int wp = rv + bootstrap.findClass(cn).baseOffset() + mf.offset;
-			
-			// Depends on the key (specified where and its type)
-			String key = mf.name + ":" + mf.type;
-			switch (key)
+			try
 			{
-					// Base offset for the class
-				case "base:I":
-					initializer.memWriteInt(wp, this.baseOffset());
-					break;
-					
-					// Cell size
-				case "cellsize:I":
-					{
-						// Determine the cell size
-						int cellsize;
-						switch (thisname.toString())
-						{
-							case "byte":
-							case "boolean":
-							case "[Z":
-							case "[B":
-								cellsize = 1;
-								break;
-							
-							case "short":
-							case "char":
-							case "[S":
-							case "[C":
-								cellsize = 2;
-								break;
-								
-							case "long":
-							case "double":
-							case "[J":
-							case "[D":
-								cellsize = 8;
-								break;
-								
-							default:
-								cellsize = 4;
-								break;
-						}
-						
-						// Write
-						initializer.memWriteInt(
-							wp, cellsize);
-					}
-					break;
+				// The write pointer of this data
+				int wp = rv + bootstrap.findClass(cn).baseOffset() + mf.offset;
 				
-					// Class info reference
-				case "_class:I":
-					initializer.memWriteInt(Modifier.RAM_OFFSET,
-						wp, bootstrap.findClass(
-							"cc/squirreljme/jvm/ClassInfo").infoPointer());
-					break;
-					
-					// The depth of this class
-				case "classdepth:I":
-					initializer.memWriteInt(wp, this.classDepth());
-					break;
-					
-					// Class<?> pointer, starts always at zero since it
-					// is generated at run-time
-				case "classobjptr:Ljava/lang/Class;":
-					initializer.memWriteInt(
-						wp, 0);
-					break;
-					
-					// Component class
-				case "componentclass:Lcc/squirreljme/jvm/ClassInfo;":
-					// Write class ID of component type
-					if (thisname.isArray())
-						initializer.memWriteInt(Modifier.RAM_OFFSET,
-							wp, bootstrap.findClass(
-								thisname.componentType()).infoPointer());
-					
-					// Write null pointer
-					else
-						initializer.memWriteInt(wp, 0);
-					break;
-					
-					// Default new constructor
-				case "defaultnew:I":
-					try
-					{
-						initializer.memWriteInt(Modifier.JAR_OFFSET,
-							wp, this.methodCodeAddress("<init>", "()V"));
-					}
-					catch (InvalidClassFormatException e)
-					{
-					}
-					break;
-					
-					// Dimensions
-				case "dimensions:I":
-					initializer.memWriteInt(
-						wp, thisname.dimensions());
-					break;
-					
-					// Class info flags
-				case "flags:I":
-					{
-						int flags = 0;
+				// Depends on the key (specified where and its type)
+				String key = mf.name + ":" + mf.type;
+				switch (key)
+				{
+						// Base offset for the class
+					case "base:I":
+						initializer.memWriteInt(wp, this.baseOffset());
+						break;
 						
-						// Is this array?
-						if (thisname.isArray())
+						// Cell size
+					case "cellsize:I":
 						{
-							// Flag it
-							flags |= Constants.CIF_IS_ARRAY;
-							
-							// Is its component an object as well?
-							if (!thisname.componentType().isPrimitive())
-								flags |= Constants.CIF_IS_ARRAY_OF_OBJECTS;
-						}
-						
-						// Is this primitive?
-						if (thisname.isPrimitive())
-							flags |= Constants.CIF_IS_PRIMITIVE;
-						
-						// Write flags
-						initializer.memWriteInt(wp, flags);
-					}
-					break;
-						
-						// Interface class information
-					case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
-						{
-							// Get interfaces pointer list
-							int xp = bootstrap.classNamesInfoPointer(
-								mcf.interfaceNames());
+							// Determine the cell size
+							int cellsize;
+							switch (thisname.toString())
+							{
+								case "byte":
+								case "boolean":
+								case "[Z":
+								case "[B":
+									cellsize = 1;
+									break;
 								
-							// Write pointer here
-							initializer.memWriteInt(Modifier.RAM_OFFSET,
-								wp, xp);
+								case "short":
+								case "char":
+								case "[S":
+								case "[C":
+									cellsize = 2;
+									break;
+									
+								case "long":
+								case "double":
+								case "[J":
+								case "[D":
+									cellsize = 8;
+									break;
+									
+								default:
+									cellsize = 4;
+									break;
+							}
 							
-							// The interface names in the bootstrap is the
-							// pointer to the ClassInfo, but as an int array
-							// type instead of an object array type. But we
-							// can just override it.
-							initializer.memWriteInt(Modifier.RAM_OFFSET,
-								xp + Constants.OBJECT_CLASS_OFFSET,
-								bootstrap.findClass(
-								"[Lcc/squirreljme/jvm/ClassInfo;").
-								infoPointer());
+							// Write
+							initializer.memWriteInt(
+								wp, cellsize);
 						}
 						break;
 					
-					// The JAR index, always zero for the bootstrap
-				case "jardx:I":
-					initializer.memWriteInt(
-						wp, 0);
-					break;
-					
-					// Magic number
-				case "magic:I":
-					initializer.memWriteInt(
-						wp, ClassInfo.MAGIC_NUMBER);
-					break;
-					
-					// Pointer to the class data in ROM
-				case "miniptr:I":
-					initializer.memWriteInt(Modifier.JAR_OFFSET,
-						wp, this.romOffset());
-					break;
-					
-					// Monitor count
-				case "_moncount:I":
-					initializer.memWriteInt(
-						wp, 0);
-					break;
-					
-					// Thread owning the monitor (which there is none)
-				case "_monitor:I":
-					initializer.memWriteInt(
-						wp, 0);
-					break;
-					
-					// Pointer to the class name
-				case "namep:I":
-					initializer.memWriteInt(Modifier.JAR_OFFSET,
-						wp, this.romOffset() + this.poolEntryOffset(
-						this._class.thisName().toString()) + 4);
-					break;
-					
-					// The number of available methods
-				case "nummethods:I":
-					initializer.memWriteInt(wp, this.methodSize());
-					break;
-					
-					// The number of objects in this class
-				case "numobjects:I":
-					initializer.memWriteInt(
-						wp, this._class.header.ifobjs);
-					break;
-					
-				case "pool:I":
-					initializer.memWriteInt(Modifier.RAM_OFFSET,
-						wp, this.poolPointer());
-					break;
-					
-					// Reference count for this class data, should never
-					// be freed
-				case "_refcount:I":
-					initializer.memWriteInt(
-						wp, 999999);
-					break;
-					
-					// Pointer to our own class info
-				case "selfptr:I":
-					initializer.memWriteInt(Modifier.RAM_OFFSET,
-						wp, rv);
-					break;
-					
-					// Static field offset
-				case "sfoffset:I":
-					initializer.memWriteInt(
-						wp, this.staticFieldOffset());
-					break;
-				
-					// Allocation size of this class
-				case "size:I":
-					initializer.memWriteInt(wp, this.allocationSize());
-					break;
-					
-					// Super class info
-				case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
-					ClassName sn = mcf.superName();
-					if (sn == null)
-						initializer.memWriteInt(wp, 0);
-					else
+						// Class info reference
+					case "_class:I":
 						initializer.memWriteInt(Modifier.RAM_OFFSET,
-							wp, bootstrap.findClass(sn).infoPointer());
-					break;
+							wp, bootstrap.findClass(
+								"cc/squirreljme/jvm/ClassInfo").infoPointer());
+						break;
 						
-					// VTable for virtual calls
-				case "vtablevirtual:[I":
-					initializer.memWriteInt(Modifier.RAM_OFFSET,
-						wp, this.vTables()[0]);
-					break;
+						// The depth of this class
+					case "classdepth:I":
+						initializer.memWriteInt(wp, this.classDepth());
+						break;
+						
+						// Class<?> pointer, starts always at zero since it
+						// is generated at run-time
+					case "classobjptr:Ljava/lang/Class;":
+						initializer.memWriteInt(
+							wp, 0);
+						break;
+						
+						// Component class
+					case "componentclass:Lcc/squirreljme/jvm/ClassInfo;":
+						// Write class ID of component type
+						if (thisname.isArray())
+							initializer.memWriteInt(Modifier.RAM_OFFSET,
+								wp, bootstrap.findClass(
+									thisname.componentType()).infoPointer());
+						
+						// Write null pointer
+						else
+							initializer.memWriteInt(wp, 0);
+						break;
+						
+						// Default new constructor
+					case "defaultnew:I":
+						int dnvp;
+						
+						// If this is an array class, then the default
+						// constructor should be the default constructor of
+						// object since arrays are fake
+						if (thisname.isArray())
+							dnvp = bootstrap.findClass("java/lang/Object")
+								.methodCodeAddress("<init>", "()V");
+						
+						// Normal lookup
+						else
+						{
+							// if the default constructor does not exist, just
+							// ignore it
+							if (mcf.method(false,
+								new MethodName("<init>"),
+								new MethodDescriptor("()V")) == null)
+								dnvp = 0;
+							
+							// Otherwise use the given method
+							else
+								dnvp = this.methodCodeAddress("<init>",
+									"()V");
+						}
+						
+						// Write offset of the method, if it is even valid
+						if (dnvp != 0)
+							initializer.memWriteInt(Modifier.JAR_OFFSET,
+								wp, dnvp);
+						break;
+						
+						// Dimensions
+					case "dimensions:I":
+						initializer.memWriteInt(
+							wp, thisname.dimensions());
+						break;
+						
+						// Class info flags
+					case "flags:I":
+						{
+							int flags = 0;
+							
+							// Is this array?
+							if (thisname.isArray())
+							{
+								// Flag it
+								flags |= Constants.CIF_IS_ARRAY;
+								
+								// Is its component an object as well?
+								if (!thisname.componentType().isPrimitive())
+									flags |= Constants.CIF_IS_ARRAY_OF_OBJECTS;
+							}
+							
+							// Is this primitive?
+							if (thisname.isPrimitive())
+								flags |= Constants.CIF_IS_PRIMITIVE;
+							
+							// Write flags
+							initializer.memWriteInt(wp, flags);
+						}
+						break;
+							
+							// Interface class information
+						case "interfaceclasses:[Lcc/squirreljme/jvm/ClassInfo;":
+							{
+								// Get interfaces pointer list
+								int xp = bootstrap.classNamesInfoPointer(
+									mcf.interfaceNames());
+									
+								// Write pointer here
+								initializer.memWriteInt(Modifier.RAM_OFFSET,
+									wp, xp);
+								
+								// The interface names in the bootstrap is the
+								// pointer to the ClassInfo, but as an int array
+								// type instead of an object array type. But we
+								// can just override it.
+								initializer.memWriteInt(Modifier.RAM_OFFSET,
+									xp + Constants.OBJECT_CLASS_OFFSET,
+									bootstrap.findClass(
+									"[Lcc/squirreljme/jvm/ClassInfo;").
+									infoPointer());
+							}
+							break;
+						
+						// The JAR index, always zero for the bootstrap
+					case "jardx:I":
+						initializer.memWriteInt(
+							wp, 0);
+						break;
+						
+						// Magic number
+					case "magic:I":
+						initializer.memWriteInt(
+							wp, ClassInfo.MAGIC_NUMBER);
+						break;
+						
+						// Pointer to the class data in ROM
+					case "miniptr:I":
+						initializer.memWriteInt(Modifier.JAR_OFFSET,
+							wp, this.romOffset());
+						break;
+						
+						// Monitor count
+					case "_moncount:I":
+						initializer.memWriteInt(
+							wp, 0);
+						break;
+						
+						// Thread owning the monitor (which there is none)
+					case "_monitor:I":
+						initializer.memWriteInt(
+							wp, 0);
+						break;
+						
+						// Pointer to the class name
+					case "namep:I":
+						initializer.memWriteInt(Modifier.JAR_OFFSET,
+							wp, this.romOffset() + this.poolEntryOffset(
+							this._class.thisName().toString()) + 4);
+						break;
+						
+						// The number of available methods
+					case "nummethods:I":
+						initializer.memWriteInt(wp, this.methodSize());
+						break;
+						
+						// The number of objects in this class
+					case "numobjects:I":
+						initializer.memWriteInt(
+							wp, this._class.header.ifobjs);
+						break;
+						
+					case "pool:I":
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.poolPointer());
+						break;
+						
+						// Reference count for this class data, should never
+						// be freed
+					case "_refcount:I":
+						initializer.memWriteInt(
+							wp, 999999);
+						break;
+						
+						// Pointer to our own class info
+					case "selfptr:I":
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, rv);
+						break;
+						
+						// Static field offset
+					case "sfoffset:I":
+						initializer.memWriteInt(
+							wp, this.staticFieldOffset());
+						break;
 					
-					// VTable for pool setting
-				case "vtablepool:[I":
-					initializer.memWriteInt(Modifier.RAM_OFFSET,
-						wp, this.vTables()[1]);
-					break;
-					
-					// Not handled yet!
-				default:
-					throw new todo.OOPS(key);
+						// Allocation size of this class
+					case "size:I":
+						initializer.memWriteInt(wp, this.allocationSize());
+						break;
+						
+						// Super class info
+					case "superclass:Lcc/squirreljme/jvm/ClassInfo;":
+						ClassName sn = mcf.superName();
+						if (sn == null)
+							initializer.memWriteInt(wp, 0);
+						else
+							initializer.memWriteInt(Modifier.RAM_OFFSET,
+								wp, bootstrap.findClass(sn).infoPointer());
+						break;
+							
+						// VTable for virtual calls
+					case "vtablevirtual:[I":
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.vTables()[0]);
+						break;
+						
+						// VTable for pool setting
+					case "vtablepool:[I":
+						initializer.memWriteInt(Modifier.RAM_OFFSET,
+							wp, this.vTables()[1]);
+						break;
+						
+						// Not handled yet!
+					default:
+						throw Debugging.oops(key);
+				}
+			}
+			catch (InvalidClassFormatException e)
+			{
+				// {@squirreljme.error BC05 Could not initialize the class
+				// field. (This class name; The field being initialized.)}
+				throw new InvalidClassFormatException(String.format(
+					"BC05 %s %s", thisname, cnmf), e);
 			}
 		}
 		
@@ -603,12 +645,21 @@ public final class LoadedClassInfo
 			return this._classoffset + mcf.header.smoff + mm.codeoffset;
 		
 		// Otherwise fallback to instance methods
-		// {@squirreljme.error BC07 Could not locate the given method.
-		// (The class; The name; The type)}
 		mm = mcf.method(false, __mn, __mt);
 		if (mm == null)
+		{
+			// Try looking for the method in the super class as this may be
+			// shadowed from that class
+			ClassName sn = this.superName();
+			if (sn != null)
+				return this.__bootstrap().findClass(sn)
+					.methodCodeAddress(__mn, __mt);
+			
+			// {@squirreljme.error BC07 Could not locate the given method.
+			// (The class; The name; The type)}
 			throw new InvalidClassFormatException(
 				String.format("BC07 %s %s %s", mcf.thisName(), __mn, __mt));
+		}
 		return this._classoffset + mcf.header.imoff + mm.codeoffset;
 	}
 	
@@ -639,7 +690,8 @@ public final class LoadedClassInfo
 					"BC08 " + __mn + " " + __mt);
 			
 			// See if the super class has it
-			return this.__bootstrap().findClass(scn).methodIndex(__mn, __mt);
+			return this.__bootstrap().findClass(scn)
+				.methodIndex(__mn, __mt);
 		}
 		
 		// Is the index offset from the method base of this class
@@ -804,19 +856,31 @@ public final class LoadedClassInfo
 					InvokedMethod im = entry.<InvokedMethod>value(
 						InvokedMethod.class);
 					
-					mx = Modifier.JAR_OFFSET;
-					vx = bootstrap.findClass(im.handle.outerClass()).
-						methodCodeAddress(im.handle.name(),
-							im.handle.descriptor());
+					if (im.type == InvokeType.INTERFACE)
+					{
+						// TODO: The bootloader preloading will be completely
+						// changed and reworked.
+						Debugging.todoNote("Handle interface invoke.");
+						
+						mx = Modifier.NONE;
+						vx = 0;
+					}
+					else
+					{
+						mx = Modifier.JAR_OFFSET;
+						vx = bootstrap.findClass(im.handle.outerClass()).
+							methodCodeAddress(im.handle.name(),
+								im.handle.descriptor());
+					}
 					break;
 					
 					// Index of method
-				case METHOD_INDEX:
-					MethodIndex mi = entry.<MethodIndex>value(
-						MethodIndex.class);
+				case VIRTUAL_METHOD_INDEX:
+					VirtualMethodIndex mi = entry.<VirtualMethodIndex>value(
+						VirtualMethodIndex.class);
 					
 					mx = null;
-					vx = bootstrap.findClass(mi.inclass).methodIndex(
+					vx = bootstrap.findClass(mi.inClass).methodIndex(
 						mi.name, mi.type);
 					break;
 					
@@ -833,8 +897,16 @@ public final class LoadedClassInfo
 						UsedString.class).toString());
 					break;
 					
+					// Interface class
+				case INTERFACE_CLASS:
+					Debugging.todoNote("Utilize INTERFACE_CLASS");
+					
+					mx = Modifier.NONE;
+					vx = 0;
+					break;
+					
 				default:
-					throw new todo.OOPS(type.name());
+					throw Debugging.oops(type.name());
 			}
 			
 			// Write value to the in-memory slot
@@ -842,8 +914,8 @@ public final class LoadedClassInfo
 			
 			// Debug
 			if (JarMinimizer._ENABLE_DEBUG)
-				todo.DEBUG.note("Pool %s -> %08x = %08x", entry.value,
-					rv + (4 * i), vx);
+				Debugging.debugNote("Pool %s -> %08x = %08x",
+					entry.value, rv + (4 * i), vx);
 		}
 		
 		// Return the pointer where the pool was allocated
@@ -934,11 +1006,15 @@ public final class LoadedClassInfo
 						break;
 					
 					case "Ljava/lang/String;":
-						throw new todo.TODO("Write string");
+						// TODO: Write constant string value, however the
+						// TODO: bootstrap is going to be completely be
+						// TODO: redone, so ignore here.
+						Debugging.debugNote("Write constant string");
+						break;
 					
 						// Unknown
 					default:
-						throw new todo.OOPS(mf.type.toString());
+						throw Debugging.oops(mf.type.toString());
 				}
 			}
 		}

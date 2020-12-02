@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolBuilder;
@@ -21,9 +22,10 @@ import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
-import dev.shadowtail.classfile.pool.MethodIndex;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.UsedString;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -70,7 +72,7 @@ public final class DualPoolEncoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/07
 	 */
-	public static final DualClassRuntimePool decode(byte[] __b,
+	public static DualClassRuntimePool decode(byte[] __b,
 		int __co, int __cl, int __ro, int __rl)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
@@ -171,9 +173,10 @@ public final class DualPoolEncoder
 					case DOUBLE:
 					case INVOKED_METHOD:
 					case METHOD_DESCRIPTOR:
-					case METHOD_INDEX:
+					case VIRTUAL_METHOD_INDEX:
 					case NOTED_STRING:
 					case USED_STRING:
+					case INTERFACE_CLASS:
 						// Read parts
 						if (iswide)
 							for (int p = 0; p < numparts; p++)
@@ -281,8 +284,8 @@ public final class DualPoolEncoder
 								break;
 								
 								// Method index in vtable
-							case METHOD_INDEX:
-								value = new MethodIndex(
+							case VIRTUAL_METHOD_INDEX:
+								value = new VirtualMethodIndex(
 									classpool.<ClassName>byIndex(
 										ClassName.class, parts[1]),
 									classpool.<String>byIndex(
@@ -305,15 +308,22 @@ public final class DualPoolEncoder
 									<String>value(String.class));
 								break;
 								
+								// Interface class
+							case INTERFACE_CLASS:
+								value = new InterfaceClassName(
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[0]));
+								break;
+								
 								// Unknown
 							default:
-								throw new todo.OOPS(etype.name());
+								throw Debugging.oops(etype.name());
 						}
 						break;
 						
 						// Unknown
 					default:
-						throw new todo.OOPS(etype.name());
+						throw Debugging.oops(etype.name());
 				}
 				
 				// Record entry
@@ -349,7 +359,7 @@ public final class DualPoolEncoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/17
 	 */
-	public static final DualPoolEncodeResult encode(
+	public static DualPoolEncodeResult encode(
 		DualClassRuntimePoolBuilder __dp, OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -465,7 +475,7 @@ public final class DualPoolEncoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/25
 	 */
-	public static final DualPoolEncodeResult encodeLayered(
+	public static DualPoolEncodeResult encodeLayered(
 		DualClassRuntimePoolBuilder __src, DualClassRuntimePoolBuilder __onto,
 		OutputStream __out)
 		throws IOException, NullPointerException
@@ -519,7 +529,7 @@ public final class DualPoolEncoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/20
 	 */
-	public static final byte[] encodeValue(MinimizedPoolEntryType __t,
+	public static byte[] encodeValue(MinimizedPoolEntryType __t,
 		short[] __p, boolean __wide, Object __v)
 		throws IOException, NullPointerException
 	{
@@ -541,7 +551,7 @@ public final class DualPoolEncoder
 					// the UTF length, the length of the actual string
 					// could be useful. But only keep the lowest part
 					// as that will be "good enough"
-					dos.writeShort((short)__p[0]);
+					dos.writeShort(__p[0]);
 					dos.writeUnsignedShortChecked(__p[1]);
 					
 					// Write string UTF data
@@ -566,9 +576,10 @@ public final class DualPoolEncoder
 			case LONG:
 			case INVOKED_METHOD:
 			case METHOD_DESCRIPTOR:
-			case METHOD_INDEX:
+			case VIRTUAL_METHOD_INDEX:
 			case NOTED_STRING:
 			case USED_STRING:
+			case INTERFACE_CLASS:
 				if (__wide)
 					for (int i = 0, n = __p.length; i < n; i++)
 						dos.writeShortChecked(__p[i]);
@@ -578,7 +589,7 @@ public final class DualPoolEncoder
 				break;
 			
 			default:
-				throw new todo.OOPS(__t.name());
+				throw Debugging.oops(__t.name());
 		}
 		
 		return output.toByteArray();

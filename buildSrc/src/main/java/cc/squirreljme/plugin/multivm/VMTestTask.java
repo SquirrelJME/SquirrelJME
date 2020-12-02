@@ -64,12 +64,11 @@ public class VMTestTask
 		this.setGroup("squirreljme");
 		this.setDescription("Runs the various automated tests.");
 		
-		// Depends on the library to exist first
+		// Depends on the library to exist first along with the emulator
+		// itself
 		this.dependsOn(this.getProject().provider(
-			new VMRunDependencies(this, __sourceSet, __vmType)));
-		
-		// Additionally this depends on the emulator backend to be available
-		this.dependsOn(new VMEmulatorDependencies(this, __vmType));
+			new VMRunDependencies(this, __sourceSet, __vmType)),
+			new VMEmulatorDependencies(this, __vmType));
 		
 		// Add the entire JAR as input, so that if it changes for any reason
 		// then all tests should be considered invalid and rerun

@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.SourceSet;
 
 /**
  * Performs the action of building the virtual machine.
@@ -73,7 +74,9 @@ public class VMLibraryTaskAction
 				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
 				StandardOpenOption.CREATE))
 			{
-				this.vmType.processLibrary(in, out);
+				this.vmType.processLibrary(__task,
+					SourceSet.TEST_SOURCE_SET_NAME.equals(this.sourceSet),
+					in, out);
 			}
 			
 			// Move the file over

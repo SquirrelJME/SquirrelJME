@@ -17,9 +17,7 @@
     <inspection_tool class="ArrayLengthInLoopCondition" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AssertEqualsBetweenInconvertibleTypes" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AssignmentUsedAsCondition" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="METHOD_MATCHER_CONFIG" value="java.util.Formatter,format,java.io.Writer,append,com.google.common.base.Preconditions,checkNotNull,org.hibernate.Session,close,java.io.PrintWriter,printf,cc.squirreljme.vm.springcoat.NativeHLEHandler,__fdOutput" />
-    </inspection_tool>
+    <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="BeforeClassOrAfterClassIsPublicStaticVoidNoArg" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="BeforeOrAfterIsPublicVoidNoArg" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="BooleanMethodNameMustStartWithQuestion" enabled="false" level="WEAK WARNING" enabled_by_default="false">
@@ -122,7 +120,7 @@
     </inspection_tool>
     <inspection_tool class="InconsistentLineSeparators" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="IndexOfReplaceableByContains" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="InterfaceWithOnlyOneDirectInheritor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InterfaceWithOnlyOneDirectInheritor" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="JUnit4AnnotatedMethodInJUnit3TestCase" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5MalformedNestedClass" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5MalformedParameterized" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -320,7 +318,7 @@
     <inspection_tool class="SimplifiableJUnitAssertion" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SimplifyForEach" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="Since15" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="SingleCharacterStartsWith" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SingleCharacterStartsWith" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="StandardVariableNames" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="StaticCallOnSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -330,6 +328,9 @@
     <inspection_tool class="StaticPseudoFunctionalStyleMethod" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="StaticSuite" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="StringRepeatCanBeUsed" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SwitchStatementWithTooFewBranches" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="m_limit" value="2" />
+    </inspection_tool>
     <inspection_tool class="SystemGetenv" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="TestFailedLine" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="TestMethodIsPublicVoidNoArg" enabled="false" level="WARNING" enabled_by_default="false" />

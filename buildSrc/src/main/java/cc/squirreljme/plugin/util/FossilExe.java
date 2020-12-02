@@ -37,8 +37,7 @@ import org.gradle.internal.os.OperatingSystem;
 public final class FossilExe
 {
 	/** Cached executable. */
-	@SuppressWarnings({"StaticVariableMayNotBeInitialized", "unused", 
-		"FieldNamingConvention"})
+	@SuppressWarnings({"StaticVariableMayNotBeInitialized", "unused"})
 	private static FossilExe _cached;
 	
 	/** The executable path. */

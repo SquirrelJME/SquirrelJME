@@ -117,7 +117,7 @@ final class __StackMapParser__
 		boolean isiinit = isinstance && __m.name().isInstanceInitializer();
 		for (int i = 0; i < jn; i++)
 			nextlocals[i] = new StackMapTableEntry(jis[i],
-				(isiinit ? (i != 0) : true));
+				(!isiinit || (i != 0)));
 		
 		// Initialize entries with nothing
 		for (int i = 0, n = nextstack.length; i < n; i++)
@@ -500,7 +500,7 @@ final class __StackMapParser__
 		targets.put(pp, rv);
 		
 		// Debug
-		/*todo.DEBUG.note("Read state @%d: %s%n", pp, rv);*/
+		/*Debugging.debugNote("Read state @%d: %s%n", pp, rv);*/
 	
 		// The stored state
 		return rv;

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents the type descriptor of a field.
  *
@@ -345,7 +347,7 @@ public final class FieldDescriptor
 			
 				// Should not occur
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

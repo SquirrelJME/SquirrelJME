@@ -277,8 +277,7 @@ public final class JavaStackEnqueueList
 		int[] from = this._registers;
 		int ss = this.stackstart;
 		int[] rv = new int[ss];
-		for (int i = 0; i < ss; i++)
-			rv[i] = from[i];
+		System.arraycopy(from, 0, rv, 0, ss);
 		
 		return new JavaStackEnqueueList(ss, rv);
 	}
@@ -385,8 +384,7 @@ public final class JavaStackEnqueueList
 		
 		// Copy bits
 		int[] rv = new int[n];
-		for (int i = 0; i < n; i++)
-			rv[i] = from[i];
+		System.arraycopy(from, 0, rv, 0, n);
 		
 		return new JavaStackEnqueueList(this.stackstart, rv);
 	}
@@ -400,7 +398,7 @@ public final class JavaStackEnqueueList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/13
 	 */
-	public static final JavaStackEnqueueList merge(JavaStackEnqueueList __a,
+	public static JavaStackEnqueueList merge(JavaStackEnqueueList __a,
 		JavaStackEnqueueList __b)
 		throws NullPointerException
 	{

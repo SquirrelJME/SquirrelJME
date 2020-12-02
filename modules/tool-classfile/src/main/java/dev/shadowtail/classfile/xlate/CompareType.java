@@ -41,7 +41,7 @@ public enum CompareType
 	/** Always false. */
 	FALSE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -51,7 +51,7 @@ public enum CompareType
 	 * @return The resulting compare type.
 	 * @since 2019/04/08
 	 */
-	public static final CompareType of(int __i)
+	public static CompareType of(int __i)
 	{
 		switch (__i)
 		{

@@ -1,0 +1,13 @@
+# 2020/11/27
+
+## 09:42
+
+I am going to update invoke methods to get rid of the need to have a store on
+next pool register since that could be error prone. There will be two new
+invokes that use the pool reference and another that just uses the handle.
+
+## 11:21
+
+So the next current thing in this very tiny branch, with what should be tiny,
+is figuring out how to munge together all the ROMs into a single piece
+effectively but also not duplicate everything if that makes any sense.

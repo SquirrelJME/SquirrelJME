@@ -9,14 +9,17 @@
 
 package dev.shadowtail.packfile;
 
+import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.io.TableSectionOutputStream;
@@ -32,7 +35,7 @@ public class PackMinimizer
 	/**
 	 * Minimizes the class library.
 	 *
-	 * @param __boot The boot class used for the entry point.
+	 * @param __boot The boot JAR used for the entry point.
 	 * @param __initcp The initial classpath, if any.
 	 * @param __mainbc Main boot class.
 	 * @param __libs The libraries to minimize.
@@ -41,7 +44,7 @@ public class PackMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/29
 	 */
-	public static final byte[] minimize(String __boot,
+	public static byte[] minimize(String __boot,
 		String[] __initcp, String __mainbc, boolean __ismid,
 		VMClassLibrary... __libs)
 		throws IOException, NullPointerException
@@ -50,7 +53,8 @@ public class PackMinimizer
 			throw new NullPointerException("NARG");
 		
 		// Write into resulting array
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1048576))
+		try (ByteArrayOutputStream baos =
+			new ByteArrayOutputStream(1048576))
 		{
 			// Minimize
 			PackMinimizer.minimize(baos, __boot, __initcp, __mainbc, __ismid,
@@ -65,7 +69,7 @@ public class PackMinimizer
 	 * Minimizes the class library.
 	 *
 	 * @param __os The stream to write the minimized file to.
-	 * @param __boot The boot class used for the entry point.
+	 * @param __boot The boot JAR used for the entry point.
 	 * @param __initcp Initial classpath.
 	 * @param __mainbc Main boot class.
 	 * @param __ismid Is this a MIDlet?
@@ -74,7 +78,7 @@ public class PackMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/29
 	 */
-	public static final void minimize(OutputStream __os, String __boot,
+	public static void minimize(OutputStream __os, String __boot,
 		String[] __initcp, String __mainbc, boolean __ismid,
 		VMClassLibrary... __libs)
 		throws IOException, NullPointerException
@@ -93,12 +97,16 @@ public class PackMinimizer
 				throw new NullPointerException("NARG");
 			
 			// Append JAR always
-			if (!vx.endsWith(".jar"))
+			if (SummerCoatJarLibrary.isSqc(vx))
+				__initcp[i] = vx.substring(0, vx.length() - 4) + ".jar";
+			else if (!vx.endsWith(".jar"))
 				__initcp[i] = vx + ".jar";
 		}
 		
 		// Make sure it ends in JAR
-		if (!__boot.endsWith(".jar"))
+		if (SummerCoatJarLibrary.isSqc(__boot))
+			__boot = __boot.substring(0, __boot.length() - 4) + ".jar";
+		else if (!__boot.endsWith(".jar"))
 			__boot = __boot + ".jar";
 		
 		// Write ROM sections
@@ -131,8 +139,13 @@ public class PackMinimizer
 			VMClassLibrary lib = __libs[i];
 			String name = lib.name();
 			
+			// Is this a SummerCoat ROM?
+			boolean isSqc = SummerCoatJarLibrary.isSqc(name);
+			
 			// Normalize extension
-			if (!name.endsWith(".jar"))
+			if (isSqc)
+				name = name.substring(0, name.length() - 4) + ".sqc";
+			else if (!name.endsWith(".jar"))
 				name = name + ".jar";
 			
 			// Find library used in the initial classpath
@@ -163,18 +176,61 @@ public class PackMinimizer
 			// Writing could fail however, so this makes it easier to find
 			// the location of that failure
 			MinimizedJarHeader mjh;
-			try
+			try (InputStream rom = lib.resourceAsStream(
+				SummerCoatJarLibrary.ROM_CHUNK_RESOURCE))
 			{
-				// Used to get the header
-				MinimizedJarHeader[] mjha = new MinimizedJarHeader[1];
+				// ROM is precompiled
+				if (isSqc)
+				{
+					// {@squirreljme.error BI02 SQC is missing resource.}
+					if (rom == null)
+						throw new RuntimeException("BI02");
+					
+					// Header information
+					ByteArrayOutputStream rawHeader =
+						new ByteArrayOutputStream(
+							MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC);
+					
+					// Copy ROM directory to the ROM resource
+					byte[] buf = new byte[4096];
+					for (;;)
+					{
+						int rc = rom.read(buf);
+						
+						if (rc < 0)
+							break;
+						
+						// Store in header bytes for future reading
+						if (rawHeader.size() <
+							MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC)
+							rawHeader.write(buf, 0, Math.min(rc,
+								MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC));
+						
+						// Copy always the ROM since it will be used
+						// directly
+						jdata.write(buf, 0, rc);
+					}
+					
+					// Decode the raw header bytes that are part of the SQC
+					// since we need to know its information
+					mjh = MinimizedJarHeader.decode(new ByteArrayInputStream(
+						rawHeader.toByteArray()));
+				}
 				
-				// The boot JAR is completely stand-alone, so do not use
-				// a global JAR pool for it.
-				JarMinimizer.minimize((isboot ? null : dualpool), isboot, lib,
-					jdata, mjha);
-				
-				// Get the generated header
-				mjh = mjha[0];
+				// Jar must be compiled
+				else
+				{
+					// Used to get the header
+					MinimizedJarHeader[] mjha = new MinimizedJarHeader[1];
+					
+					// The boot JAR is completely stand-alone, so do not use
+					// a global JAR pool for it.
+					JarMinimizer.minimize((isboot ? null : dualpool), isboot,
+						lib, jdata, mjha);
+						
+					// Get the generated header
+					mjh = mjha[0];
+				}
 			}
 			
 			// {@squirreljme.error BI01 Could not minimize the JAR due to
