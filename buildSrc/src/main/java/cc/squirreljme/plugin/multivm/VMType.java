@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +80,17 @@ public enum VMType
 				VMHelpers.classpathAsString(__libPath));
 			sysProps.put("squirreljme.hosted.classpath",
 				VMHelpers.classpathAsString(__classPath));
+			
+			// Can we directly refer to the emulator library already?
+			// Only if it has not already been given, doing it here will enable
+			// every sub-process quick access to the library
+			if (!sysProps.containsKey("squirreljme.emulator.libpath"))
+			{
+				Path emuLib = VMHelpers.findEmulatorLib(__task);
+				if (emuLib != null && Files.exists(emuLib))
+					sysProps.put("squirreljme.emulator.libpath",
+						emuLib.toString());
+			}
 			
 			// Start with the base emulator class path
 			List<Object> classPath = new ArrayList<>();

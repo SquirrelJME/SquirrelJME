@@ -301,6 +301,40 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Attempts to find the emulator library so that can be loaded directly
+	 * instead of being extracted by each test process, if possible.
+	 * 
+	 * @param __task The task running under.
+	 * @return The path to the emulator library.
+	 * @since 2020/12/01
+	 */
+	@SuppressWarnings("ConstantConditions")
+	public static Path findEmulatorLib(Task __task)
+		throws NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		// Figure out what the library is called
+		String libName = System.mapLibraryName("emulator-base");
+		
+		// We need to look through the emulator base tasks to determine
+		// the library to select
+		Project emuBase = __task.getProject().getRootProject()
+			.findProject(":emulators:emulator-base");
+		
+		// Is this valid?
+		Object raw = emuBase.getExtensions().getExtraProperties()
+			.get("libPathBase");
+		if (!(raw instanceof Path))
+			return null;
+		
+		// Library is here?
+		return ((Path)raw).resolve(
+			System.mapLibraryName("emulator-base"));
+	}
+	
+	/**
 	 * Gets the extension from the given path.
 	 * 
 	 * @param __path The path to get from.

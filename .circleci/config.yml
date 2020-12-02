@@ -26,11 +26,18 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
+    environment:
+      # Use a reduced amount of memory to all of the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
     steps:
       - checkout
       - run:
           shell: cmd.exe
           name: Gradle Build and Test
+          # According to documentation, Gradle on Windows has trouble and tries
+          # to make way too many workers which causes extreme resource.
+          # contention --max-workers=2
           command: gradlew build testHosted --console plain --continue --parallel
       - run:
           shell: bash.exe

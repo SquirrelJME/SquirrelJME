@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 /**
@@ -23,13 +24,92 @@ import java.nio.file.StandardOpenOption;
  */
 public final class NativeBinding
 {
+	/** Property for pre-loading libraries. */
+	public static final String LIB_PRELOAD =
+		"squirreljme.emulator.libpath";
+	
 	static
+	{
+		long loadNs = System.nanoTime();
+		try
+		{
+			// Try to use a preloaded library, otherwise load it in
+			Path libFile = NativeBinding.__checkPreload();
+			if (libFile == null)
+				libFile = NativeBinding.__libFromResources();
+				
+			// Debug
+			System.err.printf("Java Over-Layer: Loading %s...%n", libFile);
+			
+			// Try loading the library now
+			System.load(libFile.toString());
+			
+			// Debug
+			System.err.printf("Java Over-Layer: Binding methods...%n");
+			
+			// Bind methods
+			if (NativeBinding.__bindMethods() != 0)
+				throw new RuntimeException("Could not bind methods!");
+			
+			// Debug
+			System.err.printf("Java Over-Layer: Methods bound!%n");
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("Could not load library.", e);
+		}
+		
+		// Track execution time
+		finally
+		{
+			System.err.printf("Java Over-Layer: Loading took %dms%n",
+				(System.nanoTime() - loadNs) / 1_000_000L);
+		}
+	}
+	
+	/**
+	 * Binds methods accordingly.
+	 *
+	 * @since 2020/02/26
+	 */
+	private static native int __bindMethods();
+	
+	/**
+	 * Checks to see if the preloaded library is available.
+	 * 
+	 * @return The path to the library or {@code null} if not preloaded.
+	 * @since 2020/12/01
+	 */
+	private static Path __checkPreload()
+	{
+		String libProp = System.getProperty(NativeBinding.LIB_PRELOAD);
+		if (libProp == null)
+			return null;
+		
+		Path path = Paths.get(libProp);
+		if (Files.exists(path))
+			return path;
+		return null;
+	}
+	
+	/**
+	 * Tries to load the library from resources.
+	 * 
+	 * @return The loaded library.
+	 * @throws IOException On read/write errors.
+	 * @since 2020/12/01
+	 */
+	private static Path __libFromResources()
+		throws IOException
 	{
 		// Find the library to load
 		String libName = System.mapLibraryName("emulator-base");
 		
 		// Debug
 		System.err.printf("Java Over-Layer: Locating %s...%n", libName);
+		
+		// Timing for extraction
+		long startNs = System.nanoTime();
 		
 		// Copy resource to the output
 		Path tempDir = null,
@@ -40,7 +120,6 @@ public final class NativeBinding
 			if (in == null)
 				throw new RuntimeException(String.format(
 					"Library %s not found in resource.", libName));
-			
 			
 			// Store the library as a given file
 			tempDir = Files.createTempDirectory("squirreljme-lib");
@@ -56,7 +135,7 @@ public final class NativeBinding
 					StandardOpenOption.WRITE))
 			{
 				// Store here
-				byte[] buf = new byte[4096];
+				byte[] buf = new byte[262144];
 				for (;;)
 				{
 					int rc = in.read(buf);
@@ -70,6 +149,17 @@ public final class NativeBinding
 				// Make sure it is on the disk
 				out.flush();
 			}
+			
+			// Attempt cleanup at shutdown.
+			Runtime.getRuntime().addShutdownHook(
+				new PathCleanup(libFile, tempDir));
+		
+			// Debug
+			System.err.printf("Java Over-Layer: Extracted to %s...%n",
+				libFile);
+			
+			// Use this path
+			return libFile;
 		}
 		catch (IOException e)
 		{
@@ -87,37 +177,14 @@ public final class NativeBinding
 				e.addSuppressed(f);
 			}
 			
-			throw new RuntimeException("Could not copy native library.", e);
+			throw new IOException("Could not copy native library.", e);
 		}
 		
-		// Debug
-		System.err.printf("Java Over-Layer: Extracting %s...%n", libFile);
-		
-		// Attempt cleanup at shutdown.
-		Runtime.getRuntime().addShutdownHook(
-			new PathCleanup(libFile, tempDir));
-		
-		// Debug
-		System.err.printf("Java Over-Layer: Loading %s...%n", libFile);
-		
-		// Try loading the library now
-		System.load(libFile.toString());
-		
-		// Debug
-		System.err.printf("Java Over-Layer: Binding methods...%n");
-		
-		// Bind methods
-		if (NativeBinding.__bindMethods() != 0)
-			throw new RuntimeException("Could not bind methods!");
-		
-		// Debug
-		System.err.printf("Java Over-Layer: Methods bound!%n");
+		// Track execution time
+		finally
+		{
+			System.err.printf("Java Over-Layer: Extraction took %dms%n",
+				(System.nanoTime() - startNs) / 1_000_000L);
+		}
 	}
-	
-	/**
-	 * Binds methods accordingly.
-	 *
-	 * @since 2020/02/26
-	 */
-	private static native int __bindMethods();
 }
