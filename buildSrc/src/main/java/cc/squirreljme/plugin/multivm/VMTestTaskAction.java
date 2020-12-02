@@ -27,7 +27,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 import org.gradle.api.Action;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.jvm.tasks.Jar;
+import org.gradle.nativeplatform.tasks.LinkSharedLibrary;
 import org.gradle.process.JavaExecSpec;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
@@ -139,6 +142,11 @@ public class VMTestTaskAction
 		Map<String, String> sysProps = new LinkedHashMap<>();
 		if (Boolean.getBoolean("java.awt.headless"))
 			sysProps.put("java.awt.headless", "true");
+		
+		// Can we directly refer to the emulator library already?
+		Path emuLib = VMTestTaskAction.__findEmulatorLib(__task);
+		if (emuLib != null && Files.exists(emuLib))
+			sysProps.put("squirreljme.emulator.libpath", emuLib.toString());
 		
 		// Execute the tests concurrently but up to the limit, as testing is
 		// very intense on CPU
@@ -455,6 +463,40 @@ public class VMTestTaskAction
 			
 			return 0;
 		}
+	}
+	
+	/**
+	 * Attempts to find the emulator library so that can be loaded directly
+	 * instead of being extracted by each test process, if possible.
+	 * 
+	 * @param __task The task running under.
+	 * @return The path to the emulator library.
+	 * @since 2020/12/01
+	 */
+	@SuppressWarnings("ConstantConditions")
+	private static Path __findEmulatorLib(Task __task)
+		throws NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		// Figure out what the library is called
+		String libName = System.mapLibraryName("emulator-base");
+		
+		// We need to look through the emulator base tasks to determine
+		// the library to select
+		Project emuBase = __task.getProject().getRootProject()
+			.findProject(":emulators:emulator-base");
+		
+		// Is this valid?
+		Object raw = emuBase.getExtensions().getExtraProperties()
+			.get("libPathBase");
+		if (!(raw instanceof Path))
+			return null;
+		
+		// Library is here?
+		return ((Path)raw).resolve(
+			System.mapLibraryName("emulator-base"));
 	}
 	
 	/**
