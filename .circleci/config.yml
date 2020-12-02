@@ -29,7 +29,7 @@ jobs:
     environment:
       # Use a reduced amount of memory to all of the VMs so that it does not
       # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx2g
+      JAVA_OPTS: -Xmx3g
     steps:
       - checkout
       - run:
@@ -37,8 +37,8 @@ jobs:
           name: Gradle Build and Test
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
-          # contention
-          command: gradlew build testHosted --no-daemon --max-workers=2 --console plain --continue --parallel
+          # contention --max-workers=2
+          command: gradlew build testHosted --console plain --continue --parallel
       - run:
           shell: bash.exe
           name: Save test results
