@@ -40,9 +40,6 @@ Badges:
      [![Code Climate technical debt](
      https://img.shields.io/codeclimate/tech-debt/SquirrelJME/SquirrelJME)](
      https://codeclimate.com/github/SquirrelJME/SquirrelJME)
-   * [![Codebeat](
-     https://codebeat.co/badges/3d3e4933-50bd-495c-a8ab-206d9603aa15)](
-     https://codebeat.co/projects/github-com-squirreljme-squirreljme-trunk)
    * [![Docker Build](
      https://img.shields.io/docker/cloud/build/xerthesquirrel/squirreljme)](
      https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
