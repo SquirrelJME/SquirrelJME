@@ -27,21 +27,21 @@ public final class ChunkSection
 	extends OutputStream
 	implements DataOutput
 {
-	/** The size of the bufer. */
+	/** The size of the buffer. */
 	private static final int _BUFFER_SIZE =
 		512;
 	
 	/** The fixed size of this section. */
-	protected final int fixedsize;
+	protected final int fixedSize;
 	
 	/** The alignment of this section. */
 	protected final int alignment;
 	
 	/** Is this a variable size section? */
-	protected final boolean isvariable;
+	protected final boolean isVariable;
 	
-	/** Data rewrites which are possible. */
-	final List<__Rewrite__> _rewrites =
+	/** Futures and where they go. */
+	final List<__FuturePoint__> _futures =
 		new LinkedList<>();
 	
 	/** The tracker for the dirtiness. */
@@ -54,11 +54,11 @@ public final class ChunkSection
 	int _size;
 	
 	/** The write address of this section. */
-	int _writeaddress =
+	int _writeAddr =
 		-1;
 	
 	/** The write size of this section. */
-	int _writesize =
+	int _writeSize =
 		-1;
 	
 	/**
@@ -82,9 +82,9 @@ public final class ChunkSection
 			throw new IllegalArgumentException("BD3l " + __size);
 		
 		// Set
-		this.fixedsize = __size;
+		this.fixedSize = __size;
 		this.alignment = (Math.max(__align, 1));
-		this.isvariable = (__size == ChunkWriter.VARIABLE_SIZE);
+		this.isVariable = (__size == ChunkWriter.VARIABLE_SIZE);
 		
 		// Dirty flag storage
 		this._dirty = __d;
@@ -118,6 +118,54 @@ public final class ChunkSection
 	}
 	
 	/**
+	 * Returns a future on the section address.
+	 * 
+	 * @return The future.
+	 * @since 2020/12/04
+	 */
+	public final ChunkFutureSection futureAddress()
+	{
+		return this.futureAddress(0);
+	}
+	
+	/**
+	 * Returns a future on the section address with a given offset.
+	 * 
+	 * @param __off The offset used.
+	 * @return The future.
+	 * @since 2020/12/04
+	 */
+	public final ChunkFutureSection futureAddress(int __off)
+	{
+		return new ChunkFutureSection(
+			ChunkFutureSectionKind.ADDRESS, this, __off);
+	}
+	
+	/**
+	 * Returns a future on the section size.
+	 * 
+	 * @return The future.
+	 * @since 2020/12/04
+	 */
+	public final ChunkFutureSection futureSize()
+	{
+		return this.futureSize(0);
+	}
+	
+	/**
+	 * Returns a future on the section size with a given offset.
+	 * 
+	 * @param __off The offset used.
+	 * @return The future.
+	 * @since 2020/12/04
+	 */
+	public final ChunkFutureSection futureSize(int __off)
+	{
+		return new ChunkFutureSection(
+			ChunkFutureSectionKind.SIZE, this, __off);
+	}
+	
+	/**
 	 * Returns the current written size of the section.
 	 *
 	 * @return The current section size.
@@ -139,12 +187,12 @@ public final class ChunkSection
 		// {@squirreljme.error BD3m Size of section exceeded. (The size
 		// of the section)}
 		int size = this._size;
-		if (!this.isvariable && size + 1 > this.fixedsize)
+		if (!this.isVariable && size + 1 > this.fixedSize)
 			throw new IOException("BD3m " + size);
 		
 		// Possibly resize the data array, only when variable
 		byte[] data = this._data;
-		if (this.isvariable && size >= data.length)
+		if (this.isVariable && size >= data.length)
 		{
 			data = Arrays.copyOf(data, size + ChunkSection._BUFFER_SIZE);
 			this._data = data;
@@ -189,12 +237,12 @@ public final class ChunkSection
 		
 		// {@squirreljme.error BD3p Size of section exceeded.}
 		int size = this._size;
-		if (!this.isvariable && size + __l > this.fixedsize)
+		if (!this.isVariable && size + __l > this.fixedSize)
 			throw new IOException("BD3p");
 		
 		// Possibly resize the data array (only when variable)
 		byte[] data = this._data;
-		if (this.isvariable && size + __l >= data.length)
+		if (this.isVariable && size + __l >= data.length)
 		{
 			data = Arrays.copyOf(data,
 				size + (Math.max(__l, ChunkSection._BUFFER_SIZE)));
@@ -318,40 +366,6 @@ public final class ChunkSection
 	}
 	
 	/**
-	 * Writes the size of the file as an integer.
-	 *
-	 * @throws IOException On write errors.
-	 * @since 2019/08/11
-	 */
-	public final void writeFileSizeInt()
-		throws IOException
-	{
-		// Record rewrite
-		this._rewrites.add(new __Rewrite__(this._size,
-			__RewriteType__.INTEGER, __RewriteValue__.SIZE, 0, null));
-			
-		// Place padding
-		this.writeInt(0);
-	}
-	
-	/**
-	 * Writes the size of the file as a short.
-	 *
-	 * @throws IOException On write errors.
-	 * @since 2019/08/11
-	 */
-	public final void writeFileSizeShort()
-		throws IOException
-	{
-		// Record rewrite
-		this._rewrites.add(new __Rewrite__(this._size,
-			__RewriteType__.SHORT, __RewriteValue__.SIZE, 0, null));
-			
-		// Place padding
-		this.writeShort(0);
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2019/08/11
 	 */
@@ -363,23 +377,39 @@ public final class ChunkSection
 	}
 	
 	/**
+	 * @param __dt The data type to write.
+	 * @param __val The value to write.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/04
+	 */
+	public final void writeFuture(ChunkDataType __dt, ChunkFuture __val)
+		throws IOException, NullPointerException
+	{
+		if (__dt == null || __val == null)
+			throw new NullPointerException("NARG");
+		
+		// Record rewrite
+		this._futures.add(new __FuturePoint__(this._size, __dt, __val));
+		
+		// Place padding
+		this.writePadding(__dt.numBytes);
+	}
+	
+	/**
 	 * Writes a future integer.
 	 * 
 	 * @return Future integer value.
 	 * @throws IOException On read/write errors.
 	 * @since 2020/11/29
 	 */
+	@Deprecated
 	public ChunkFutureInteger writeFutureInt()
 		throws IOException
 	{
 		ChunkFutureInteger rv = new ChunkFutureInteger();
 		
-		// Record rewrite
-		this._rewrites.add(new __Rewrite__(this._size,
-			__RewriteType__.INTEGER, __RewriteValue__.VALUE, rv));
-			
-		// Place padding
-		this.writeInt(0);
+		this.writeFuture(ChunkDataType.INTEGER, rv);
 		
 		return rv;
 	}
@@ -463,6 +493,7 @@ public final class ChunkSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/24
 	 */
+	@Deprecated
 	public final void writeSectionAddressInt(ChunkSection __s)
 		throws IOException, NullPointerException
 	{
@@ -478,18 +509,14 @@ public final class ChunkSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/11
 	 */
+	@Deprecated
 	public final void writeSectionAddressInt(ChunkSection __s, int __o)
 		throws IOException, NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Record rewrite
-		this._rewrites.add(new __Rewrite__(this._size,
-			__RewriteType__.INTEGER, __RewriteValue__.ADDRESS, __o, __s));
-			
-		// Place padding
-		this.writeInt(0);
+		this.writeFuture(ChunkDataType.INTEGER, __s.futureAddress(__o));
 	}
 	
 	/**
@@ -500,6 +527,7 @@ public final class ChunkSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/24
 	 */
+	@Deprecated
 	public final void writeSectionAddressShort(ChunkSection __s)
 		throws IOException, NullPointerException
 	{
@@ -515,18 +543,14 @@ public final class ChunkSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/11
 	 */
+	@Deprecated
 	public final void writeSectionAddressShort(ChunkSection __s, int __o)
 		throws IOException, NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Record rewrite
-		this._rewrites.add(new __Rewrite__(this._size,
-			__RewriteType__.SHORT, __RewriteValue__.ADDRESS, __o, __s));
-			
-		// Place padding
-		this.writeShort(0);
+		this.writeFuture(ChunkDataType.SHORT, __s.futureAddress(__o));
 	}
 	
 	/**
@@ -537,18 +561,14 @@ public final class ChunkSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/11
 	 */
+	@Deprecated
 	public final void writeSectionSizeInt(ChunkSection __s)
 		throws IOException, NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Record rewrite
-		this._rewrites.add(new __Rewrite__(this._size,
-			__RewriteType__.INTEGER, __RewriteValue__.SIZE, 0, __s));
-			
-		// Place padding
-		this.writeInt(0);
+		this.writeFuture(ChunkDataType.INTEGER, __s.futureSize());
 	}
 	
 	/**
@@ -559,18 +579,14 @@ public final class ChunkSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/11
 	 */
+	@Deprecated
 	public final void writeSectionSizeShort(ChunkSection __s)
 		throws IOException, NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Record rewrite
-		this._rewrites.add(new __Rewrite__(this._size,
-			__RewriteType__.SHORT, __RewriteValue__.SIZE, 0, __s));
-			
-		// Place padding
-		this.writeShort(0);
+		this.writeFuture(ChunkDataType.SHORT, __s.futureSize());
 	}
 	
 	/**

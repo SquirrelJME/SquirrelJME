@@ -14,16 +14,13 @@ package net.multiphasicapps.io;
  *
  * @since 2019/08/17
  */
-enum __RewriteValue__
+public enum ChunkFutureSectionKind
 {
 	/** Address. */
 	ADDRESS,
 	
 	/** Size. */
 	SIZE,
-	
-	/** Value. */
-	VALUE,
 	
 	/* End. */
 	;

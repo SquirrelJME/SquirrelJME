@@ -14,15 +14,29 @@ package net.multiphasicapps.io;
  *
  * @since 2019/08/17
  */
-enum __RewriteType__
+public enum ChunkDataType
 {
 	/** Short. */
-	SHORT,
+	SHORT(2),
 	
 	/** Integer. */
-	INTEGER,
+	INTEGER(4),
 	
-	/** End. */
+	/* End. */
 	;
+	
+	/** The number of bytes used for the data type. */
+	public final int numBytes;
+	
+	/**
+	 * Initializes the data type information.
+	 * 
+	 * @param __numBytes The number of bytes to use.
+	 * @since 2020/12/04
+	 */
+	ChunkDataType(int __numBytes)
+	{
+		this.numBytes = __numBytes;
+	}
 }
 

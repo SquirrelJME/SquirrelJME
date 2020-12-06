@@ -40,7 +40,7 @@ public final class ChunkWriter
 		new __Dirty__();
 	
 	/** The current file size. */
-	private int _filesize;
+	private int _fileSize;
 	
 	/**
 	 * Adds a section which is of a variable size.
@@ -162,7 +162,18 @@ public final class ChunkWriter
 	public final int fileSize()
 	{
 		this.__undirty();
-		return this._filesize;
+		return this._fileSize;
+	}
+	
+	/**
+	 * Returns a future for this chunk.
+	 * 
+	 * @return The future for this chunk.
+	 * @since 2020/12/05
+	 */
+	public final ChunkFutureChunk futureSize()
+	{
+		return new ChunkFutureChunk(this);
 	}
 	
 	/**
@@ -180,7 +191,7 @@ public final class ChunkWriter
 			throw new NullPointerException("NARG");
 		
 		this.__undirty();
-		return __s._writeaddress;
+		return __s._writeAddr;
 	}
 	
 	/**
@@ -198,7 +209,7 @@ public final class ChunkWriter
 			throw new NullPointerException("NARG");
 		
 		this.__undirty();
-		return __s._writesize;
+		return __s._writeSize;
 	}
 	
 	/**
@@ -243,11 +254,11 @@ public final class ChunkWriter
 			throw new NullPointerException("NARG");
 		
 		// The current write pointer
-		int writeptr = 0;
+		int writePtr = 0;
 		
 		// Un-dirty and get the file size
 		this.__undirty();
-		int filesize = this._filesize;
+		int filesize = this._fileSize;
 		
 		// Write each individual section to the output stream
 		List<ChunkSection> sections = this._sections;
@@ -257,82 +268,54 @@ public final class ChunkWriter
 			
 			// Get properties of the section
 			byte[] data = section._data;
-			int cursize = section._size,
-				writeaddress = section._writeaddress,
-				writesize = section._writesize,
-				writeendaddress = writeaddress + writesize,
-				actualwrite = (Math.min(cursize, writesize));
+			int curSize = section._size,
+				writeAddr = section._writeAddr,
+				writeSize = section._writeSize,
+				writeEndAddr = writeAddr + writeSize,
+				actualWrite = (Math.min(curSize, writeSize));
 			
 			// Write padding until we reach our needed address
-			while (writeptr < writeaddress)
+			while (writePtr < writeAddr)
 			{
 				__os.write(0);
-				writeptr++;
+				writePtr++;
 			}
 			
-			// Rewrites must be processed to figure out how to refer to
-			// other section aliases!
-			for (__Rewrite__ rewrite : section._rewrites)
+			// Process any futures that are available and store their values
+			// into the array accordingly.
+			for (__FuturePoint__ point : section._futures)
 			{
-				// The target section if any
-				Reference<ChunkSection> refsection =
-					rewrite._section;
-				
-				// Determine the value that is to be written
-				int value = 0;
-				switch (rewrite._value)
-				{
-						// Address of section
-					case ADDRESS:
-						if (refsection != null)
-							value = refsection.get()._writeaddress;
-						break;
-						
-						// Size of section or file.
-					case SIZE:
-						if (refsection == null)
-							value = filesize;
-						else
-							value = refsection.get()._writesize;
-						break;
-						
-						// Value
-					case VALUE:
-						value = rewrite._future.get();
-						break;
-				}
-				
-				// Add offset of value
-				value += rewrite._offset;
+				// Determine the value to write
+				int value = point.value.get(); 
 				
 				// Perform the actual rewrite
-				int paddr = rewrite._address;
-				switch (rewrite._type)
+				int pa = point.address;
+				switch (point.type)
 				{
 					case SHORT:
-						data[paddr] = (byte)(value >>> 8);
-						data[paddr + 1] = (byte)(value);
+						data[pa] = (byte)(value >>> 8);
+						data[pa + 1] = (byte)(value);
 						break;
 					
 					case INTEGER:
-						data[paddr] = (byte)(value >>> 24);
-						data[paddr + 1] = (byte)(value >>> 16);
-						data[paddr + 2] = (byte)(value >>> 8);
-						data[paddr + 3] = (byte)(value);
+						data[pa] = (byte)(value >>> 24);
+						data[pa + 1] = (byte)(value >>> 16);
+						data[pa + 2] = (byte)(value >>> 8);
+						data[pa + 3] = (byte)(value);
 						break;
 				}
 			}
 			
 			// Write the section data as an entire chunk, note that this
 			// could be a fixed size section with a short buffer!
-			__os.write(data, 0, actualwrite);
-			writeptr += actualwrite;
+			__os.write(data, 0, actualWrite);
+			writePtr += actualWrite;
 			
 			// Write padding until we reach our ending address
-			while (writeptr < writeendaddress)
+			while (writePtr < writeEndAddr)
 			{
 				__os.write(0);
-				writeptr++;
+				writePtr++;
 			}
 		}
 	}
@@ -342,7 +325,7 @@ public final class ChunkWriter
 	 *
 	 * @since 2019/08/25
 	 */
-	private final void __undirty()
+	private void __undirty()
 	{
 		// There is no need to calculate if this is not dirty at all
 		__Dirty__ dirty = this._dirty;
@@ -350,7 +333,7 @@ public final class ChunkWriter
 			return;
 		
 		// Our current file size
-		int filesize = 0;
+		int fileSize = 0;
 		
 		// We must go through all of the sections, perform their required
 		// alignment while additionally calculating their addresses within
@@ -361,21 +344,21 @@ public final class ChunkWriter
 			ChunkSection section = sections.get(i);
 			
 			// Perform alignment of this section
-			if ((filesize % section.alignment) != 0)
-				filesize += section.alignment - (filesize % section.alignment);
+			if ((fileSize % section.alignment) != 0)
+				fileSize += section.alignment - (fileSize % section.alignment);
 			
 			// Section is addressed here
-			section._writeaddress = filesize;
+			section._writeAddr = fileSize;
 			
 			// Move the current file size up by the section's size
-			int writesize = (section.isvariable ?
-				section._size : section.fixedsize);
-			filesize += writesize;
-			section._writesize = writesize;
+			int writeSize = (section.isVariable ?
+				section._size : section.fixedSize);
+			fileSize += writeSize;
+			section._writeSize = writeSize;
 		}
 		
 		// Store file size
-		this._filesize = filesize;
+		this._fileSize = fileSize;
 		
 		// Clear dirty flag
 		dirty._dirty = false;

@@ -41,6 +41,9 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
+import net.multiphasicapps.io.ChunkDataType;
+import net.multiphasicapps.io.ChunkForwardedFuture;
+import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkSection;
 import net.multiphasicapps.io.ChunkFutureInteger;
 import net.multiphasicapps.io.ChunkWriter;
@@ -123,10 +126,18 @@ public final class Minimizer
 		header.writeShort(ClassInfoConstants.VERSION_20201129);
 		
 		// Unused, may be used later when needed
-		ChunkFutureInteger[] properties = new ChunkFutureInteger[
+		ChunkForwardedFuture[] properties = new ChunkForwardedFuture[
 			StaticClassInfoProperty.NUM_STATIC_PROPERTIES];
 		for (int i = 0; i < StaticClassInfoProperty.NUM_STATIC_PROPERTIES; i++)
-			properties[i] = header.writeFutureInt();
+		{
+			// Initialize the future that will later be used to initialize
+			// the value.
+			ChunkForwardedFuture future = new ChunkForwardedFuture();
+			properties[i] = future;
+			
+			// This property is written here
+			header.writeFuture(ChunkDataType.INTEGER, future);
+		}
 		
 		if (true)
 			throw Debugging.todo("Write new header format.");
@@ -215,7 +226,7 @@ public final class Minimizer
 		// Write absolute file size! This saves time in calculating how big
 		// a file we have and we can just read that many bytes for all the
 		// data areas or similar if needed
-		header.writeFileSizeInt();
+		header.writeFuture(ChunkDataType.INTEGER, output.futureSize());
 		
 		// Not used anymore
 		header.writeInt(0);
