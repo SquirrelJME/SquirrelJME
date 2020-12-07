@@ -39,6 +39,20 @@ public final class ChunkForwardedFuture
 	}
 	
 	/**
+	 * Checks if this future is set or not.
+	 * 
+	 * @return If this is set or not.
+	 * @since 2020/12/06
+	 */
+	public boolean isSet()
+	{
+		synchronized (this)
+		{
+			return null != this._future;
+		}
+	}
+	
+	/**
 	 * Sets the future to read a value from.
 	 * 
 	 * @param __future The future to set.
@@ -55,5 +69,21 @@ public final class ChunkForwardedFuture
 		{
 			this._future = __future;
 		}
+	}
+	
+	/**
+	 * Sets the future to this integer value.
+	 * 
+	 * @param __value The value to set.
+	 * @return The generated future.
+	 * @since 2020/12/06
+	 */
+	public ChunkFutureInteger setInt(int __value)
+	{
+		ChunkFutureInteger future = new ChunkFutureInteger(__value);
+		
+		this.set(future);
+		
+		return future;
 	}
 }

@@ -258,11 +258,8 @@ public final class JarMinimizer
 			int bootidbd = bootstrap.findClass("[[B").infoPointer();
 			
 			// Get the handler for system calls and such
-			LoadedClassInfo tshclass = bootstrap.findClass(
-				"cc/squirreljme/jvm/boot/task/TaskSysCallHandler");
-			int scmeth = tshclass.methodCodeAddress(
-				new MethodName("taskSysCall"), null),
-				scpool = tshclass.poolPointer();
+			int scmeth = 0;
+			int scpool = 0;
 			
 			// Setup the BootRAM
 			ChunkSection bootram = out.addSection(

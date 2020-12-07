@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
-import cc.squirreljme.jvm.summercoat.constants.ClassInfoProperty;
+import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 
 /**
  * This is a helper wrapper around system calls.
@@ -36,7 +36,7 @@ public final class SystemCall
 	 * the given class property.
 	 * 
 	 * @param __info The information to get.
-	 * @param __id The {@link ClassInfoProperty}.
+	 * @param __id The {@link ClassProperty}.
 	 * @return The value of the given property.
 	 * @throws MLECallError If {@code __info} is {@code null} or is not a
 	 * valid class.

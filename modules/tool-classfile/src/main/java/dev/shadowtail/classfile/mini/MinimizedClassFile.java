@@ -422,7 +422,7 @@ public final class MinimizedClassFile
 					" " + __is.length);
 			
 			// {@squirreljme.error JC02 End of file magic number is invalid.
-			// (The read magic number)}
+			// (The read magic number; The expected value; The file size)}
 			int endmagic;
 			if (MinimizedClassHeader.END_MAGIC_NUMBER !=
 				(endmagic = (((__is[fsz - 4] & 0xFF) << 24) |
@@ -430,7 +430,8 @@ public final class MinimizedClassFile
 				((__is[fsz - 2] & 0xFF) << 8) |
 				(__is[fsz - 1] & 0xFF))))
 				throw new InvalidClassFormatException(
-					String.format("JC02 %08x", endmagic));
+					String.format("JC02 %08x %08x %d", endmagic,
+						MinimizedClassHeader.END_MAGIC_NUMBER, fsz));
 			
 			// Virtual constant pool which relies on a parent one
 			DualClassRuntimePool pool;

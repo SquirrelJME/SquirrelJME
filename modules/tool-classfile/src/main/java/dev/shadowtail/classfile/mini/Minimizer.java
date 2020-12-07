@@ -11,7 +11,7 @@
 package dev.shadowtail.classfile.mini;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.summercoat.constants.StaticClassInfoProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
@@ -43,9 +43,7 @@ import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.io.ChunkDataType;
 import net.multiphasicapps.io.ChunkForwardedFuture;
-import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkSection;
-import net.multiphasicapps.io.ChunkFutureInteger;
 import net.multiphasicapps.io.ChunkWriter;
 
 /**
@@ -121,14 +119,18 @@ public final class Minimizer
 		ChunkSection header = output.addSection(
 			ChunkWriter.VARIABLE_SIZE, 4);
 		
-		// Magic number and minimized format 
+		// Magic number and minimized format, since about November 2020 there
+		// is a new version format
 		header.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
 		header.writeShort(ClassInfoConstants.VERSION_20201129);
 		
+		// The number of properties used, is always constant for now
+		header.writeShort(StaticClassProperty.NUM_STATIC_PROPERTIES);
+		
 		// Unused, may be used later when needed
 		ChunkForwardedFuture[] properties = new ChunkForwardedFuture[
-			StaticClassInfoProperty.NUM_STATIC_PROPERTIES];
-		for (int i = 0; i < StaticClassInfoProperty.NUM_STATIC_PROPERTIES; i++)
+			StaticClassProperty.NUM_STATIC_PROPERTIES];
+		for (int i = 0; i < StaticClassProperty.NUM_STATIC_PROPERTIES; i++)
 		{
 			// Initialize the future that will later be used to initialize
 			// the value.
@@ -139,100 +141,105 @@ public final class Minimizer
 			header.writeFuture(ChunkDataType.INTEGER, future);
 		}
 		
-		if (true)
-			throw Debugging.todo("Write new header format.");
+		// This value is currently meaningless so for now it is always zero
+		properties[StaticClassProperty.INT_PROPERTY_VERSION_ID].setInt(0);
 		
-		// The index of the instance method named __start
-		header.writeByte(methods[1].findMethodIndex("__start"));
+		// The entry point for the Virtual Machine Bootstrap
+		properties[StaticClassProperty.INT_BOOT_METHOD_INDEX].setInt(
+			methods[1].findMethodIndex("vmEntry"));
 		
 		// Data type of the class
-		header.writeByte(DataType.of(input.thisName().field()).ordinal());
+		properties[StaticClassProperty.INT_DATA_TYPE].setInt(
+			DataType.of(input.thisName().field()).ordinal());
 		
 		// This may be null for Object
-		ClassName supernamecn = input.superName();
+		ClassName superNameCn = input.superName();
 		
-		// Unused
-		header.writeShort(0);
+		// Store class information, such as the flags
+		properties[StaticClassProperty.INT_CLASS_FLAGS].setInt(
+			input.flags().toJavaBits());
 		
-		// Store class information, such as the flags, name, superclass,
-		// interfaces, class type, and version
-		header.writeInt(input.flags().toJavaBits());
-		header.writeUnsignedShortChecked(
+		// name, superclass, and interfaces
+		properties[StaticClassProperty.SPOOL_THIS_CLASS_NAME].setInt(
 			localpool.add(false, input.thisName()).index);
-		header.writeUnsignedShortChecked((supernamecn == null ? 0 :
-			localpool.add(false, supernamecn).index));
-		header.writeUnsignedShortChecked(
+		properties[StaticClassProperty.SPOOL_SUPER_CLASS_NAME].setInt(
+			(superNameCn == null ? 0 :
+				localpool.add(false, superNameCn).index));
+		properties[StaticClassProperty.SPOOL_INTERFACES].setInt(
 			localpool.add(false, input.interfaceNames()).index);
-		header.writeByte(input.type().ordinal());
-		header.writeByte(input.version().ordinal());
+		
+		// Class type and version
+		properties[StaticClassProperty.INT_CLASS_TYPE].setInt(
+			input.type().ordinal());
+		properties[StaticClassProperty.INT_CLASS_VERSION].setInt(
+			input.version().ordinal());
 		
 		// Needed for debugging to figure out what file the class is in,
 		// will be very useful
 		String sfn = input.sourceFile();
-		header.writeUnsignedShortChecked((sfn == null ? 0 :
-			localpool.add(false, sfn).index));
+		properties[StaticClassProperty.SPOOL_SOURCE_FILENAME].setInt(
+			(sfn == null ? 0 : localpool.add(false, sfn).index));
 		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)
 		{
+			int base = (i == 0 ?
+				StaticClassProperty.BASEDX_STATIC_FIELD :
+				StaticClassProperty.BASEDX_INSTANCE_FIELD);
 			__TempFields__ tf = fields[i];
 			
-			header.writeUnsignedShortChecked(tf._count);
-			header.writeUnsignedShortChecked((tf._bytes + 3) & (~3));
-			header.writeUnsignedShortChecked(tf._objects);
+			// Generate section
+			ChunkSection subsection =
+				output.addSection(tf.getBytes(localpool), 4);
+			
+			properties[base + StaticClassProperty.BASEDX_INT_X_FIELD_COUNT]
+				.setInt(tf._count);
+			properties[base + StaticClassProperty.BASEDX_INT_X_FIELD_BYTES]
+				.setInt((tf._bytes + 3) & (~3));
+			properties[base + StaticClassProperty.BASEDX_INT_X_FIELD_OBJECTS]
+				.setInt(tf._objects);
+			properties[base + StaticClassProperty.BASEDX_OFFSET_X_FIELD_DATA]
+				.set(subsection.futureAddress());
+			properties[base + StaticClassProperty.BASEDX_SIZE_X_FIELD_DATA]
+				.set(subsection.futureSize());
 		}
 		
 		// Write static and instance method counts
 		for (int i = 0; i < 2; i++)
 		{
+			int base = (i == 0 ?
+				StaticClassProperty.BASEDX_STATIC_METHOD :
+				StaticClassProperty.BASEDX_INSTANCE_METHOD);
 			__TempMethods__ tm = methods[i];
 			
-			header.writeUnsignedShortChecked(tm._count);
-		}
-		
-		// Unused, the pool was here
-		header.writeInt(0);
-		header.writeInt(0);
-		
-		// Field locator
-		for (int i = 0; i < 2; i++)
-		{
 			// Generate section
 			ChunkSection subsection =
-				output.addSection(fields[i].getBytes(localpool), 4);
+				output.addSection(tm.getBytes(localpool), 4);
 			
-			// Write section details
-			header.writeSectionAddressInt(subsection);
-			header.writeSectionSizeInt(subsection);
-		}
-		
-		// Method locator
-		for (int i = 0; i < 2; i++)
-		{
-			// Generate section
-			ChunkSection subsection =
-				output.addSection(methods[i].getBytes(localpool), 4);
-			
-			// Write section details
-			header.writeSectionAddressInt(subsection);
-			header.writeSectionSizeInt(subsection);
+			properties[base + StaticClassProperty.BASEDX_INT_X_METHOD_COUNT]
+				.setInt(tm._count);
+			properties[base + StaticClassProperty.BASEDX_OFFSET_X_METHOD_DATA]
+				.set(subsection.futureAddress());
+			properties[base + StaticClassProperty.BASEDX_SIZE_X_METHOD_DATA]
+				.set(subsection.futureSize());
 		}
 		
 		// Generate a UUID and write it
 		long uuid = Minimizer.generateUUID();
-		header.writeInt((int)(uuid >>> 32));
-		header.writeInt((int)uuid);
+		properties[StaticClassProperty.INT_UUID_HI].setInt(
+			(int)(uuid >>> 32));
+		properties[StaticClassProperty.INT_UUID_LO].setInt(
+			(int)uuid);
 		
 		// Write absolute file size! This saves time in calculating how big
 		// a file we have and we can just read that many bytes for all the
 		// data areas or similar if needed
-		header.writeFuture(ChunkDataType.INTEGER, output.futureSize());
-		
-		// Not used anymore
-		header.writeInt(0);
+		properties[StaticClassProperty.INT_FILE_SIZE].set(
+			output.futureSize());
 		
 		// Where our pools are going
-		ChunkSection lpd = output.addSection();
+		ChunkSection lpd = output.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
 		
 		// Encode the local pool or the local pool on top of the JAR pool
 		DualClassRuntimePoolBuilder jarpool = this.jarpool;
@@ -241,16 +248,26 @@ public final class Minimizer
 			DualPoolEncoder.encodeLayered(localpool, jarpool, lpd));
 		
 		// Static pool
-		header.writeSectionAddressInt(lpd, der.staticpooloff);
-		header.writeInt(der.staticpoolsize);
+		properties[StaticClassProperty.OFFSET_STATIC_POOL]
+			.set(lpd.futureAddress(der.staticpooloff));
+		properties[StaticClassProperty.SIZE_STATIC_POOL]
+			.setInt(der.staticpoolsize);
 		
 		// Run-time pool
-		header.writeSectionAddressInt(lpd, der.runtimepooloff);
-		header.writeInt(der.runtimepoolsize);
+		properties[StaticClassProperty.OFFSET_RUNTIME_POOL]
+			.set(lpd.futureAddress(der.runtimepooloff));
+		properties[StaticClassProperty.SIZE_RUNTIME_POOL]
+			.setInt(der.runtimepoolsize);
 		
-		// Write end magic number, which is at the end of the file
-		ChunkSection eofmagic = output.addSection(4);
-		eofmagic.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
+		// Verify values are set
+		for (int i = 0; i < StaticClassProperty.NUM_STATIC_PROPERTIES; i++)
+			if (!properties[i].isSet())
+				throw Debugging.oops(i);
+		
+		// Write end magic number, which is at the end of the file. This is
+		// to make sure stuff is properly read.
+		ChunkSection eofMagic = output.addSection(4);
+		eofMagic.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
 		
 		// Write resulting file
 		output.writeTo(__os);
@@ -679,7 +696,8 @@ public final class Minimizer
 			(System.currentTimeMillis() << 24) + (++Minimizer._UUID_COUNTER));
 		
 		// Skip a random amount of values to run it for a bit
-		for (int i = 0, n = rand.nextInt(32 + rand.nextInt(32)); i < n; i++)
+		for (int i = 0, n = rand.nextInt(32 + rand.nextInt(32));
+			i < n; i++)
 			rand.nextInt();
 		
 		// Just use the next long value

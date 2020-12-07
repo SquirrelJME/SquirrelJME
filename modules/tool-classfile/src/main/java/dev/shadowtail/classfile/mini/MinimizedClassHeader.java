@@ -10,7 +10,7 @@
 package dev.shadowtail.classfile.mini;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.summercoat.constants.StaticClassInfoProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import dev.shadowtail.classfile.xlate.DataType;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public final class MinimizedClassHeader
 	
 	/** The maximum header size. */
 	public static final int MAXIMUM_HEADER_SIZE =
-		8 + (StaticClassInfoProperty.NUM_STATIC_PROPERTIES * 4);
+		8 + (StaticClassProperty.NUM_STATIC_PROPERTIES * 4);
 	
 	/** The format version of the class. */
 	protected final short formatVersion;
@@ -78,18 +78,18 @@ public final class MinimizedClassHeader
 		
 		// {@squirreljme.error JC4t Too many properties were passed to the
 		// class file.}
-		if (__props.length > StaticClassInfoProperty.NUM_STATIC_PROPERTIES)
+		if (__props.length > StaticClassProperty.NUM_STATIC_PROPERTIES)
 			throw new IllegalArgumentException("JC4t " + __props.length);
 		
 		this.formatVersion = __fVer;
 		this._properties = Arrays.copyOf(__props,
-			StaticClassInfoProperty.NUM_STATIC_PROPERTIES);
+			StaticClassProperty.NUM_STATIC_PROPERTIES);
 	}
 	
 	/**
 	 * Gets the specified class information property.
 	 * 
-	 * @param __property The {@link StaticClassInfoProperty} to get.
+	 * @param __property The {@link StaticClassProperty} to get.
 	 * @return The property value.
 	 * @throws IllegalArgumentException If the property is not valid.
 	 * @since 2020/11/29
@@ -99,7 +99,7 @@ public final class MinimizedClassHeader
 	{
 		// {@squirreljme.error JC4s Invalid class property. (The property)}
 		if (__property < 0 ||
-			__property >= StaticClassInfoProperty.NUM_STATIC_PROPERTIES)
+			__property >= StaticClassProperty.NUM_STATIC_PROPERTIES)
 			throw new IllegalArgumentException("JC4s " + __property);
 		
 		return this._properties[__property];
@@ -109,224 +109,224 @@ public final class MinimizedClassHeader
 	@Deprecated
 	public int getClassflags()
 	{
-		return this.get(StaticClassInfoProperty.INT_CLASS_FLAGS);
+		return this.get(StaticClassProperty.INT_CLASS_FLAGS);
 	}
 	
 	/** Interfaces in class. */
 	@Deprecated
 	public int getClassints()
 	{
-		return this.get(StaticClassInfoProperty.SPOOL_INTERFACES);
+		return this.get(StaticClassProperty.SPOOL_INTERFACES);
 	}
 	
 	/** Name of class. */
 	@Deprecated
 	public int getClassname()
 	{
-		return this.get(StaticClassInfoProperty.SPOOL_THIS_CLASS_NAME);
+		return this.get(StaticClassProperty.SPOOL_THIS_CLASS_NAME);
 	}
 	
 	/** Class source filename. */
 	@Deprecated
 	public int getClasssfn()
 	{
-		return this.get(StaticClassInfoProperty.SPOOL_SOURCE_FILENAME);
+		return this.get(StaticClassProperty.SPOOL_SOURCE_FILENAME);
 	}
 	
 	/** Super class name. */
 	@Deprecated
 	public int getClasssuper()
 	{
-		return this.get(StaticClassInfoProperty.SPOOL_SUPER_CLASS_NAME);
+		return this.get(StaticClassProperty.SPOOL_SUPER_CLASS_NAME);
 	}
 	
 	/** Class type. */
 	@Deprecated
 	public int getClasstype()
 	{
-		return this.get(StaticClassInfoProperty.INT_CLASS_TYPE);
+		return this.get(StaticClassProperty.INT_CLASS_TYPE);
 	}
 	
 	/** Class version. */
 	@Deprecated
 	public int getClassvers()
 	{
-		return this.get(StaticClassInfoProperty.INT_CLASS_VERSION);
+		return this.get(StaticClassProperty.INT_CLASS_VERSION);
 	}
 	
 	/** The data type of the class. */
 	@Deprecated
 	public DataType getDatatype()
 	{
-		return DataType.of(this.get(StaticClassInfoProperty.INT_DATA_TYPE));
+		return DataType.of(this.get(StaticClassProperty.INT_DATA_TYPE));
 	}
 	
 	/** File size. */
 	@Deprecated
 	public int getFilesize()
 	{
-		return this.get(StaticClassInfoProperty.INT_FILE_SIZE);
+		return this.get(StaticClassProperty.INT_FILE_SIZE);
 	}
 	
 	/** Instance field bytes. */
 	@Deprecated
 	public int getIfbytes()
 	{
-		return this.get(StaticClassInfoProperty.INT_INSTANCE_FIELD_BYTES);
+		return this.get(StaticClassProperty.INT_INSTANCE_FIELD_BYTES);
 	}
 	
 	/** Instance field count. */
 	@Deprecated
 	public int getIfcount()
 	{
-		return this.get(StaticClassInfoProperty.INT_INSTANCE_FIELD_COUNT);
+		return this.get(StaticClassProperty.INT_INSTANCE_FIELD_COUNT);
 	}
 	
 	/** Instance field objects. */
 	@Deprecated
 	public int getIfobjs()
 	{
-		return this.get(StaticClassInfoProperty.INT_INSTANCE_FIELD_OBJECTS);
+		return this.get(StaticClassProperty.INT_INSTANCE_FIELD_OBJECTS);
 	}
 	
 	/** Instance field data offset. */
 	@Deprecated
 	public int getIfoff()
 	{
-		return this.get(StaticClassInfoProperty.OFFSET_INSTANCE_FIELD_DATA);
+		return this.get(StaticClassProperty.OFFSET_INSTANCE_FIELD_DATA);
 	}
 	
 	/** Instance field data size. */
 	@Deprecated
 	public int getIfsize()
 	{
-		return this.get(StaticClassInfoProperty.SIZE_INSTANCE_FIELD_DATA);
+		return this.get(StaticClassProperty.SIZE_INSTANCE_FIELD_DATA);
 	}
 	
 	/** Instance method count. */
 	@Deprecated
 	public int getImcount()
 	{
-		return this.get(StaticClassInfoProperty.INT_INSTANCE_METHOD_COUNT);
+		return this.get(StaticClassProperty.INT_INSTANCE_METHOD_COUNT);
 	}
 	
 	/** Instance method data offset. */
 	@Deprecated
 	public int getImoff()
 	{
-		return this.get(StaticClassInfoProperty.OFFSET_INSTANCE_METHOD_DATA);
+		return this.get(StaticClassProperty.OFFSET_INSTANCE_METHOD_DATA);
 	}
 	
 	/** Instance method data size. */
 	@Deprecated
 	public int getImsize()
 	{
-		return this.get(StaticClassInfoProperty.SIZE_INSTANCE_METHOD_DATA);
+		return this.get(StaticClassProperty.SIZE_INSTANCE_METHOD_DATA);
 	}
 	
 	/** Runtime constant pool offset. */
 	@Deprecated
 	public int getRuntimepooloff()
 	{
-		return this.get(StaticClassInfoProperty.OFFSET_RUNTIME_POOL);
+		return this.get(StaticClassProperty.OFFSET_RUNTIME_POOL);
 	}
 	
 	/** Runtime constant pool size. */
 	@Deprecated
 	public int getRuntimepoolsize()
 	{
-		return this.get(StaticClassInfoProperty.SIZE_RUNTIME_POOL);
+		return this.get(StaticClassProperty.SIZE_RUNTIME_POOL);
 	}
 	
 	/** Static field bytes. */
 	@Deprecated
 	public int getSfbytes()
 	{
-		return this.get(StaticClassInfoProperty.INT_STATIC_FIELD_BYTES);
+		return this.get(StaticClassProperty.INT_STATIC_FIELD_BYTES);
 	}
 	
 	/** Static field count. */
 	@Deprecated
 	public int getSfcount()
 	{
-		return this.get(StaticClassInfoProperty.INT_STATIC_FIELD_COUNT);
+		return this.get(StaticClassProperty.INT_STATIC_FIELD_COUNT);
 	}
 	
 	/** Static field objects. */
 	@Deprecated
 	public int getSfobjs()
 	{
-		return this.get(StaticClassInfoProperty.INT_STATIC_FIELD_OBJECTS);
+		return this.get(StaticClassProperty.INT_STATIC_FIELD_OBJECTS);
 	}
 	
 	/** Static field data offset. */
 	@Deprecated
 	public int getSfoff()
 	{
-		return this.get(StaticClassInfoProperty.OFFSET_STATIC_FIELD_DATA);
+		return this.get(StaticClassProperty.OFFSET_STATIC_FIELD_DATA);
 	}
 	
 	/** Static field data size. */
 	@Deprecated
 	public int getSfsize()
 	{
-		return this.get(StaticClassInfoProperty.SIZE_STATIC_FIELD_DATA);
+		return this.get(StaticClassProperty.SIZE_STATIC_FIELD_DATA);
 	}
 	
 	/** Static method count. */
 	@Deprecated
 	public int getSmcount()
 	{
-		return this.get(StaticClassInfoProperty.INT_STATIC_METHOD_COUNT);
+		return this.get(StaticClassProperty.INT_STATIC_METHOD_COUNT);
 	}
 	
 	/** Static method data offset. */
 	@Deprecated
 	public int getSmoff()
 	{
-		return this.get(StaticClassInfoProperty.OFFSET_STATIC_METHOD_DATA);
+		return this.get(StaticClassProperty.OFFSET_STATIC_METHOD_DATA);
 	}
 	
 	/** Static method data size. */
 	@Deprecated
 	public int getSmsize()
 	{
-		return this.get(StaticClassInfoProperty.SIZE_STATIC_METHOD_DATA);
+		return this.get(StaticClassProperty.SIZE_STATIC_METHOD_DATA);
 	}
 	
 	/** The index of the method which is __start. */
 	@Deprecated
 	public int getStartmethodindex()
 	{
-		return this.get(StaticClassInfoProperty.INT_BOOT_METHOD_INDEX);
+		return this.get(StaticClassProperty.INT_BOOT_METHOD_INDEX);
 	}
 	
 	/** Static constant pool offset. */
 	@Deprecated
 	public int getStaticpooloff()
 	{
-		return this.get(StaticClassInfoProperty.OFFSET_STATIC_POOL);
+		return this.get(StaticClassProperty.OFFSET_STATIC_POOL);
 	}
 	
 	/** Static constant pool size. */
 	@Deprecated
 	public int getStaticpoolsize()
 	{
-		return this.get(StaticClassInfoProperty.SIZE_STATIC_POOL);
+		return this.get(StaticClassProperty.SIZE_STATIC_POOL);
 	}
 	
 	/** High bits for UUID. */
 	@Deprecated
 	public int getUuidhi()
 	{
-		return this.get(StaticClassInfoProperty.INT_UUID_HI);
+		return this.get(StaticClassProperty.INT_UUID_HI);
 	}
 	
 	/** Low bits for UUID. */
 	@Deprecated
 	public int getUuidlo()
 	{
-		return this.get(StaticClassInfoProperty.INT_UUID_LO);
+		return this.get(StaticClassProperty.INT_UUID_LO);
 	}
 	
 	/**

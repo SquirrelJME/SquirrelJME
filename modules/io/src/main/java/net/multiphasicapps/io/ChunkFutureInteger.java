@@ -21,6 +21,26 @@ public final class ChunkFutureInteger
 	private volatile int _value;
 	
 	/**
+	 * Initializes the future to zero.
+	 * 
+	 * @since 2020/12/06
+	 */
+	public ChunkFutureInteger()
+	{
+	}
+	
+	/**
+	 * Initializes the future to the given value.
+	 * 
+	 * @param __value The value.
+	 * @since 2020/12/06
+	 */
+	public ChunkFutureInteger(int __value)
+	{
+		this._value = __value;
+	}
+	
+	/**
 	 * Returns the stored value.
 	 * 
 	 * @return The value.

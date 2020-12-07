@@ -12,7 +12,7 @@ package cc.squirreljme.jvm.summercoat;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
-import cc.squirreljme.jvm.summercoat.constants.ClassInfoProperty;
+import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -92,7 +92,7 @@ public final class LogicHandler
 		
 		// {@squirreljme.error ZZ4j Class has no allocated size?}
 		int allocSize = SystemCall.classInfoGetProperty(__info,
-			ClassInfoProperty.INT_ALLOCATION_SIZE);
+			ClassProperty.INT_ALLOCATION_SIZE);
 		if (allocSize <= 0)
 			throw new MLECallError("ZZ4j");
 		

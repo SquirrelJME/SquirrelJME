@@ -13,12 +13,16 @@ package cc.squirreljme.jvm.summercoat.constants;
  * Static class information properties, these are properties that are stored
  * within minimized class files.
  * 
- * Run-time properties are handled in {@link ClassInfoProperty}.
+ * Run-time properties are handled in {@link ClassProperty}.
  *
  * @since 2020/11/29
  */
-public interface StaticClassInfoProperty
+public interface StaticClassProperty
 {
+	/** The property based version ID. */
+	byte INT_PROPERTY_VERSION_ID =
+		0;
+	
 	/** The index of the method which is the bootstrap entry point. */
 	byte INT_BOOT_METHOD_INDEX =
 		1;
@@ -70,48 +74,48 @@ public interface StaticClassInfoProperty
 	byte INT_STATIC_FIELD_OBJECTS =
 		12;
 	
-	/** Instance field count. */
-	byte INT_INSTANCE_FIELD_COUNT =
-		13;
-	
-	/** Instance field bytes. */
-	byte INT_INSTANCE_FIELD_BYTES =
-		14;
-	
-	/** Instance field objects. */
-	byte INT_INSTANCE_FIELD_OBJECTS =
-		15;
-	
-	/** Static method count. */
-	byte INT_STATIC_METHOD_COUNT =
-		16;
-	
-	/** Instance method count. */
-	byte INT_INSTANCE_METHOD_COUNT =
-		17;
-	
 	/** Static field data offset. */
 	byte OFFSET_STATIC_FIELD_DATA =
-		18;
+		13;
 	
 	/** Static field data size. */
 	byte SIZE_STATIC_FIELD_DATA =
-		19;
+		14;
+	
+	/** Instance field count. */
+	byte INT_INSTANCE_FIELD_COUNT =
+		15;
+	
+	/** Instance field bytes. */
+	byte INT_INSTANCE_FIELD_BYTES =
+		16;
+	
+	/** Instance field objects. */
+	byte INT_INSTANCE_FIELD_OBJECTS =
+		17;
 	
 	/** Instance field data offset. */
 	byte OFFSET_INSTANCE_FIELD_DATA =
-		20;
+		18;
 	
 	/** Instance field data size. */
 	byte SIZE_INSTANCE_FIELD_DATA =
-		21;
+		19;
+	
+	/** Static method count. */
+	byte INT_STATIC_METHOD_COUNT =
+		20;
 	
 	/** Static method data offset. */
 	byte OFFSET_STATIC_METHOD_DATA =
-		22;
+		21;
 	
 	/** Static method data size. */
 	byte SIZE_STATIC_METHOD_DATA =
+		22;
+	
+	/** Instance method count. */
+	byte INT_INSTANCE_METHOD_COUNT =
 		23;
 	
 	/** Instance method data offset. */
@@ -153,4 +157,52 @@ public interface StaticClassInfoProperty
 	/** The number of static properties. */
 	byte NUM_STATIC_PROPERTIES =
 		33;
+	
+	/** Static field base index. */
+	byte BASEDX_STATIC_FIELD =
+		StaticClassProperty.INT_STATIC_FIELD_COUNT;
+	
+	/** Instance field base index. */
+	byte BASEDX_INSTANCE_FIELD =
+		StaticClassProperty.INT_INSTANCE_FIELD_COUNT;
+	
+	/** Static method base index. */
+	byte BASEDX_STATIC_METHOD =
+		StaticClassProperty.INT_STATIC_METHOD_COUNT;
+	
+	/** Instance method base index. */
+	byte BASEDX_INSTANCE_METHOD =
+		StaticClassProperty.INT_INSTANCE_METHOD_COUNT;
+	
+	/** Field count (Base index). */
+	byte BASEDX_INT_X_FIELD_COUNT =
+		0;
+	
+	/** Field bytes (Base index). */
+	byte BASEDX_INT_X_FIELD_BYTES =
+		1;
+	
+	/** Field objects (Base index). */
+	byte BASEDX_INT_X_FIELD_OBJECTS =
+		2;
+	
+	/** Field data offset (Base index). */
+	byte BASEDX_OFFSET_X_FIELD_DATA =
+		3;
+	
+	/** Field data size (Base index). */
+	byte BASEDX_SIZE_X_FIELD_DATA =
+		4;
+		
+	/** Method count (Base index). */
+	byte BASEDX_INT_X_METHOD_COUNT =
+		0;
+	
+	/** Method data offset (Base index). */
+	byte BASEDX_OFFSET_X_METHOD_DATA =
+		1;
+	
+	/** Method data size (Base index). */
+	byte BASEDX_SIZE_X_METHOD_DATA =
+		2;
 }
