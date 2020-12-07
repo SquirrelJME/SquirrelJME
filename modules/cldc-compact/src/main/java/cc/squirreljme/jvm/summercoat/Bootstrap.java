@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.summercoat;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -25,6 +26,7 @@ public final class Bootstrap
 	 */
 	public static void vmEntry()
 	{
+		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 }
