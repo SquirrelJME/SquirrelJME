@@ -1,0 +1,14 @@
+# 2020/12/06
+
+## 19:35
+
+Okay so having properties in that array set for class information properties
+makes everything so much better. There are still JAR headers though, which I
+will have to remake and such to do the same thing. It is very much easier to
+process and I can easily add more properties and otherwise for this.
+
+## 19:39
+
+Then probably after that I can do something such as doing the new way for the
+initial state with handles and otherwise. Class pre-initialization, so to
+speak.
