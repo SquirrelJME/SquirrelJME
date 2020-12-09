@@ -9,6 +9,7 @@
 
 package dev.shadowtail.packfile;
 
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
@@ -190,7 +191,7 @@ public class PackMinimizer
 					// Header information
 					ByteArrayOutputStream rawHeader =
 						new ByteArrayOutputStream(
-							MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC);
+							ClassInfoConstants.JAR_MAXIMUM_HEADER_SIZE);
 					
 					// Copy ROM directory to the ROM resource
 					byte[] buf = new byte[4096];
@@ -203,9 +204,9 @@ public class PackMinimizer
 						
 						// Store in header bytes for future reading
 						if (rawHeader.size() <
-							MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC)
+							ClassInfoConstants.JAR_MAXIMUM_HEADER_SIZE)
 							rawHeader.write(buf, 0, Math.min(rc,
-								MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC));
+								ClassInfoConstants.JAR_MAXIMUM_HEADER_SIZE));
 						
 						// Copy always the ROM since it will be used
 						// directly
@@ -247,10 +248,10 @@ public class PackMinimizer
 			toc.writeSectionSizeInt(jdata);
 			
 			// Write manifest details if it is valid
-			if (mjh.manifestlen > 0)
+			if (mjh.getManifestlen() > 0)
 			{
-				toc.writeSectionAddressInt(jdata, mjh.manifestoff);
-				toc.writeInt(mjh.manifestlen);
+				toc.writeSectionAddressInt(jdata, mjh.getManifestoff());
+				toc.writeInt(mjh.getManifestlen());
 			}
 			else
 			{
@@ -260,7 +261,7 @@ public class PackMinimizer
 		}
 		
 		// Write header details
-		header.writeInt(MinimizedPackHeader.MAGIC_NUMBER);
+		header.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
 		header.writeInt(numlibs);
 		header.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
 		

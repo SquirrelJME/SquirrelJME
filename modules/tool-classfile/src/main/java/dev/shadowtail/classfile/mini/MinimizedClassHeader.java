@@ -11,7 +11,6 @@ package dev.shadowtail.classfile.mini;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
-import dev.shadowtail.classfile.xlate.DataType;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,36 +24,6 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  */
 public final class MinimizedClassHeader
 {
-	/** The magic number for the header. */
-	public static final int MAGIC_NUMBER =
-		0x00586572;
-	
-	/** Magic number for the end of file. */
-	public static final int END_MAGIC_NUMBER =
-		0x42796521;
-	
-	/**
-	 * The size of the header without the magic number.
-	 * 
-	 * @deprecated The header size is now dynamic.
-	 */
-	@Deprecated
-	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		108;
-	
-	/**
-	 * The size of the header with the magic number.
-	 *
-	 * @deprecated The header size is not dynamic. 
-	 */
-	@Deprecated
-	public static final int HEADER_SIZE_WITH_MAGIC =
-		MinimizedClassHeader.HEADER_SIZE_WITHOUT_MAGIC + 4;
-	
-	/** The maximum header size. */
-	public static final int MAXIMUM_HEADER_SIZE =
-		8 + (StaticClassProperty.NUM_STATIC_PROPERTIES * 4);
-	
 	/** The format version of the class. */
 	protected final short formatVersion;
 	
@@ -126,39 +95,11 @@ public final class MinimizedClassHeader
 		return this.get(StaticClassProperty.SPOOL_THIS_CLASS_NAME);
 	}
 	
-	/** Class source filename. */
-	@Deprecated
-	public int getClasssfn()
-	{
-		return this.get(StaticClassProperty.SPOOL_SOURCE_FILENAME);
-	}
-	
 	/** Super class name. */
 	@Deprecated
 	public int getClasssuper()
 	{
 		return this.get(StaticClassProperty.SPOOL_SUPER_CLASS_NAME);
-	}
-	
-	/** Class type. */
-	@Deprecated
-	public int getClasstype()
-	{
-		return this.get(StaticClassProperty.INT_CLASS_TYPE);
-	}
-	
-	/** Class version. */
-	@Deprecated
-	public int getClassvers()
-	{
-		return this.get(StaticClassProperty.INT_CLASS_VERSION);
-	}
-	
-	/** The data type of the class. */
-	@Deprecated
-	public DataType getDatatype()
-	{
-		return DataType.of(this.get(StaticClassProperty.INT_DATA_TYPE));
 	}
 	
 	/** File size. */
@@ -238,25 +179,11 @@ public final class MinimizedClassHeader
 		return this.get(StaticClassProperty.SIZE_RUNTIME_POOL);
 	}
 	
-	/** Static field bytes. */
-	@Deprecated
-	public int getSfbytes()
-	{
-		return this.get(StaticClassProperty.INT_STATIC_FIELD_BYTES);
-	}
-	
 	/** Static field count. */
 	@Deprecated
 	public int getSfcount()
 	{
 		return this.get(StaticClassProperty.INT_STATIC_FIELD_COUNT);
-	}
-	
-	/** Static field objects. */
-	@Deprecated
-	public int getSfobjs()
-	{
-		return this.get(StaticClassProperty.INT_STATIC_FIELD_OBJECTS);
 	}
 	
 	/** Static field data offset. */
@@ -294,13 +221,6 @@ public final class MinimizedClassHeader
 		return this.get(StaticClassProperty.SIZE_STATIC_METHOD_DATA);
 	}
 	
-	/** The index of the method which is __start. */
-	@Deprecated
-	public int getStartmethodindex()
-	{
-		return this.get(StaticClassProperty.INT_BOOT_METHOD_INDEX);
-	}
-	
 	/** Static constant pool offset. */
 	@Deprecated
 	public int getStaticpooloff()
@@ -313,20 +233,6 @@ public final class MinimizedClassHeader
 	public int getStaticpoolsize()
 	{
 		return this.get(StaticClassProperty.SIZE_STATIC_POOL);
-	}
-	
-	/** High bits for UUID. */
-	@Deprecated
-	public int getUuidhi()
-	{
-		return this.get(StaticClassProperty.INT_UUID_HI);
-	}
-	
-	/** Low bits for UUID. */
-	@Deprecated
-	public int getUuidlo()
-	{
-		return this.get(StaticClassProperty.INT_UUID_LO);
 	}
 	
 	/**
@@ -350,15 +256,15 @@ public final class MinimizedClassHeader
 		
 		// {@squirreljme.error JC04 Invalid minimized class magic number.
 		// (The magic number)}
-		int readMagic;
-		if (MinimizedClassHeader.MAGIC_NUMBER != (readMagic = dis.readInt()))
+		int magic;
+		if (ClassInfoConstants.CLASS_MAGIC_NUMBER != (magic = dis.readInt()))
 			throw new InvalidClassFormatException(String.format("JC04 %08x",
-				readMagic));
+				magic));
 		
 		// {@squirreljme.error JC4u Cannot decode class because the version
 		// identifier is not known. (The format version of the class)}
 		int formatVersion = dis.readUnsignedShort();
-		if (formatVersion != ClassInfoConstants.VERSION_20201129)
+		if (formatVersion != ClassInfoConstants.CLASS_VERSION_20201129)
 			throw new RuntimeException("JC4u " + formatVersion);
 		
 		// Read in all the data

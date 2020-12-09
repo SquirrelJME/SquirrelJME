@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
@@ -338,7 +339,7 @@ public final class MinimizedClassFile
 			Math.min(1048576, __is.available())))
 		{
 			// Read the entire header for the class
-			for (int i = 0; i < MinimizedClassHeader.HEADER_SIZE_WITH_MAGIC;
+			for (int i = 0; i < ClassInfoConstants.CLASS_MAXIMUM_HEADER_SIZE;
 				i++)
 				baos.write(__is.read());
 			
@@ -424,14 +425,14 @@ public final class MinimizedClassFile
 			// {@squirreljme.error JC02 End of file magic number is invalid.
 			// (The read magic number; The expected value; The file size)}
 			int endmagic;
-			if (MinimizedClassHeader.END_MAGIC_NUMBER !=
+			if (ClassInfoConstants.CLASS_END_MAGIC_NUMBER !=
 				(endmagic = (((__is[fsz - 4] & 0xFF) << 24) |
 				((__is[fsz - 3] & 0xFF) << 16) |
 				((__is[fsz - 2] & 0xFF) << 8) |
 				(__is[fsz - 1] & 0xFF))))
 				throw new InvalidClassFormatException(
 					String.format("JC02 %08x %08x %d", endmagic,
-						MinimizedClassHeader.END_MAGIC_NUMBER, fsz));
+						ClassInfoConstants.CLASS_END_MAGIC_NUMBER, fsz));
 			
 			// Virtual constant pool which relies on a parent one
 			DualClassRuntimePool pool;

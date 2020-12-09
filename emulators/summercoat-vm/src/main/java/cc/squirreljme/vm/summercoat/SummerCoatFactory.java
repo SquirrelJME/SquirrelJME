@@ -239,13 +239,13 @@ public class SummerCoatFactory
 			// System call handler
 			ConfigRomWriter.writeInteger(
 				dos, ConfigRomKey.SYSCALL_STATIC_FIELD_POINTER,
-				ramstart + bjh.syscallsfp);
+				ramstart + bjh.getSyscallsfp());
 			ConfigRomWriter.writeInteger(
 				dos, ConfigRomKey.SYSCALL_CODE_POINTER,
-				bootjaroff + bjh.syscallhandler);
+				bootjaroff + bjh.getSyscallhandler());
 			ConfigRomWriter.writeInteger(
 				dos, ConfigRomKey.SYSCALL_POOL_POINTER,
-				ramstart + bjh.syscallpool);
+				ramstart + bjh.getSyscallpool());
 			
 			// End
 			dos.writeShort(ConfigRomKey.END);
@@ -258,7 +258,7 @@ public class SummerCoatFactory
 		}
 		
 		// Load the bootstrap JAR header
-		int bra = bootjaroff + bjh.bootoffset,
+		int bra = bootjaroff + bjh.getBootoffset(),
 			lram;
 		
 		// Debug
@@ -267,11 +267,11 @@ public class SummerCoatFactory
 		
 		// Load the boot RAM
 		try (DataInputStream dis = new DataInputStream(
-			new ReadableMemoryInputStream(vmem, bra, bjh.bootsize)))
+			new ReadableMemoryInputStream(vmem, bra, bjh.getBootsize())))
 		{
 			// Indicate where it is
 			Debugging.debugNote("BootRAM: Addr=%08x Len=%d",
-				bra, bjh.bootsize);
+				bra, bjh.getBootsize());
 			
 			// Read entire RAM space
 			lram = dis.readInt();
@@ -373,15 +373,16 @@ public class SummerCoatFactory
 		
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(ms, vmem, 0, __ps);
-		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh.bootstart,
+		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh
+				.getBootstart(),
 			ramstart, ramsize, rombase, romsize,
 			SummerCoatFactory.CONFIG_BASE_ADDR, SummerCoatFactory.CONFIG_SIZE);
 		
 		// Seed initial frame registers
 		iframe._registers[NativeCode.POOL_REGISTER] =
-			ramstart + bjh.bootpool;
+			ramstart + bjh.getBootpool();
 		iframe._registers[NativeCode.STATIC_FIELD_REGISTER] =
-			ramstart + bjh.bootsfieldbase;
+			ramstart + bjh.getBootsfieldbase();
 		
 		// Setup virtual machine with initial thread
 		return new SummerCoatVirtualMachine(cpu);

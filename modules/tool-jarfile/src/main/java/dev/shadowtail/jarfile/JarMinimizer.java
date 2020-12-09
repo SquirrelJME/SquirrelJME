@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
@@ -131,12 +132,12 @@ public final class JarMinimizer
 		// These are fixed size because the bootstrapper needs to know the
 		// true pointer of the minified class file in the JAR
 		ChunkSection header = out.addSection(
-			MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC, 4);
+			ClassInfoConstants.JAR_MAXIMUM_HEADER_SIZE, 4);
 		ChunkSection toc = out.addSection(
 			numrc * 16, 4);
 		
 		// Write base header and contents information
-		header.writeInt(MinimizedJarHeader.MAGIC_NUMBER);
+		header.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
 		header.writeInt(numrc);
 		header.writeSectionAddressInt(toc);
 		

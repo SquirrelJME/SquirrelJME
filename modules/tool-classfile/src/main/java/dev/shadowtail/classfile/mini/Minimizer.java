@@ -121,8 +121,8 @@ public final class Minimizer
 		
 		// Magic number and minimized format, since about November 2020 there
 		// is a new version format
-		header.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
-		header.writeShort(ClassInfoConstants.VERSION_20201129);
+		header.writeInt(ClassInfoConstants.CLASS_MAGIC_NUMBER);
+		header.writeShort(ClassInfoConstants.CLASS_VERSION_20201129);
 		
 		// The number of properties used, is always constant for now
 		header.writeShort(StaticClassProperty.NUM_STATIC_PROPERTIES);
@@ -142,7 +142,7 @@ public final class Minimizer
 		}
 		
 		// This value is currently meaningless so for now it is always zero
-		properties[StaticClassProperty.INT_PROPERTY_VERSION_ID].setInt(0);
+		properties[StaticClassProperty.INT_CLASS_VERSION_ID].setInt(0);
 		
 		// The entry point for the Virtual Machine Bootstrap
 		properties[StaticClassProperty.INT_BOOT_METHOD_INDEX].setInt(
@@ -267,7 +267,7 @@ public final class Minimizer
 		// Write end magic number, which is at the end of the file. This is
 		// to make sure stuff is properly read.
 		ChunkSection eofMagic = output.addSection(4);
-		eofMagic.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
+		eofMagic.writeInt(ClassInfoConstants.CLASS_END_MAGIC_NUMBER);
 		
 		// Write resulting file
 		output.writeTo(__os);

@@ -11,6 +11,7 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import dev.shadowtail.packfile.MinimizedPackHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -240,7 +241,7 @@ public final class SuitesMemory
 				(MinimizedPackHeader.TOC_ENTRY_SIZE * numsuites);
 			
 			// Write pack header
-			dos.writeInt(MinimizedPackHeader.MAGIC_NUMBER);
+			dos.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
 			
 			// Count and table of contents position
 			dos.writeInt(numsuites);

@@ -17,10 +17,34 @@ package cc.squirreljme.jvm.summercoat.constants;
 public interface ClassInfoConstants
 {
 	/** Legacy class version from a long time ago. */
-	short VERSION_LEGACY =
+	short CLASS_VERSION_LEGACY =
 		0;
 	
 	/** Class version from 2020/11/29. */
-	short VERSION_20201129 =
+	short CLASS_VERSION_20201129 =
 		1;
+	
+	/** Magic number for the end of file. */
+	int CLASS_END_MAGIC_NUMBER =
+		0x42796521;
+	
+	/** The magic number for the header. */
+	int CLASS_MAGIC_NUMBER =
+		0x00586572;
+	
+	/** The maximum header size. */
+	short CLASS_MAXIMUM_HEADER_SIZE =
+		8 + (StaticClassProperty.NUM_STATIC_PROPERTIES * 4);
+	
+	/** The maximum size of a JAR header. */
+	int JAR_MAXIMUM_HEADER_SIZE =
+		8 + (JarProperty.NUM_JAR_PROPERTIES * 4);
+	
+	/** Magic number for the JAR. */
+	int JAR_MAGIC_NUMBER =
+		0x00456570;
+	
+	/** Magic number for the pack file. */
+	int PACK_MAGIC_NUMBER =
+		0x58455223;
 }

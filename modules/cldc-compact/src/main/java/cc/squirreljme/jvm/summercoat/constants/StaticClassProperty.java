@@ -20,7 +20,7 @@ package cc.squirreljme.jvm.summercoat.constants;
 public interface StaticClassProperty
 {
 	/** The property based version ID. */
-	byte INT_PROPERTY_VERSION_ID =
+	byte INT_CLASS_VERSION_ID =
 		0;
 	
 	/** The index of the method which is the bootstrap entry point. */

@@ -9,12 +9,11 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
-import dev.shadowtail.jarfile.JarMinimizer;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -239,7 +238,7 @@ public final class SuiteMemory
 		// Load the JAR header
 		this._jarheader = MinimizedJarHeader.decode(
 			new ReadableMemoryInputStream(rm, 0,
-				MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC));
+				ClassInfoConstants.JAR_MAXIMUM_HEADER_SIZE));
 	}
 	
 	/**
