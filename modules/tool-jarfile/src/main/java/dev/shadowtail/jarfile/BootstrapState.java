@@ -31,13 +31,16 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  *
  * @since 2019/09/14
  */
+@Deprecated
 public final class BootstrapState
 {
 	/** The size of the static field area. */
+	@Deprecated
 	public static final int STATIC_FIELD_SIZE =
 		8192;
 	
 	/** The initializer to use. */
+	@Deprecated
 	protected final Initializer initializer =
 		new Initializer();
 	
@@ -46,17 +49,21 @@ public final class BootstrapState
 		new LinkedHashMap<>();
 	
 	/** Reference to self. */
+	@Deprecated
 	private final Reference<BootstrapState> _selfref =
 		new WeakReference<>(this);
 	
 	/** Intern strings. */
+	@Deprecated
 	private final Map<String, Integer> _interns =
 		new HashMap<>();
 	
 	/** Static field pointer area. */
+	@Deprecated
 	private int _sfieldarea;
 	
 	/** Static field area next pointer. */
+	@Deprecated
 	private int _sfieldnext;
 	
 	/**
@@ -66,6 +73,7 @@ public final class BootstrapState
 	 * @throws IllegalArgumentException If the size is zero or negative.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int allocateStaticFieldSpace(int __sz)
 		throws IllegalArgumentException
 	{
@@ -100,6 +108,7 @@ public final class BootstrapState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
+	@Deprecated
 	public final int buildCharArray(char... __v)
 		throws NullPointerException
 	{
@@ -142,6 +151,7 @@ public final class BootstrapState
 	 * @return The pointer to the integer array.
 	 * @since 2019/09/16
 	 */
+	@Deprecated
 	public final int buildIntArray(Modifier __m, int... __v)
 		throws NullPointerException
 	{
@@ -157,6 +167,7 @@ public final class BootstrapState
 	 * @return The pointer to the integer array.
 	 * @since 2019/09/16
 	 */
+	@Deprecated
 	public final int buildIntArray(String __t, Modifier __m, int... __v)
 		throws NullPointerException
 	{
@@ -175,6 +186,7 @@ public final class BootstrapState
 	 * @return The pointer to the integer array.
 	 * @since 2019/09/16
 	 */
+	@Deprecated
 	public final int buildIntArray(ClassName __t, Modifier __m, int... __v)
 		throws NullPointerException
 	{
@@ -193,6 +205,7 @@ public final class BootstrapState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int classNamesInfoPointer(ClassNames __cls)
 		throws NullPointerException
 	{
@@ -221,6 +234,7 @@ public final class BootstrapState
 	 * @return The pointer to the integer array.
 	 * @since 2019/09/16
 	 */
+	@Deprecated
 	public final int finalizeIntArray(int __p, Modifier __m, int... __v)
 		throws NullPointerException
 	{
@@ -237,6 +251,7 @@ public final class BootstrapState
 	 * @return The pointer to the integer array.
 	 * @since 2019/09/16
 	 */
+	@Deprecated
 	public final int finalizeIntArray(int __p, ClassName __t, Modifier __m,
 		int... __v)
 		throws NullPointerException
@@ -282,6 +297,7 @@ public final class BootstrapState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final LoadedClassInfo findClass(String __cl)
 		throws InvalidClassFormatException, NullPointerException
 	{
@@ -300,6 +316,7 @@ public final class BootstrapState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final LoadedClassInfo findClass(ClassName __cl)
 		throws InvalidClassFormatException, NullPointerException
 	{
@@ -333,6 +350,7 @@ public final class BootstrapState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
+	@Deprecated
 	public final int internString(String __s)
 		throws NullPointerException
 	{
@@ -380,6 +398,7 @@ public final class BootstrapState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final LoadedClassInfo loadClassFile(byte[] __b, int __pos)
 		throws IOException, NullPointerException
 	{
@@ -409,6 +428,7 @@ public final class BootstrapState
 	 * @return The pointer to the array.
 	 * @since 2019/12/15
 	 */
+	@Deprecated
 	public final int reserveCharArray(int __n)
 	{
 		return this.initializer.allocate(
@@ -422,6 +442,7 @@ public final class BootstrapState
 	 * @return The pointer to the integer array.
 	 * @since 2019/09/16
 	 */
+	@Deprecated
 	public final int reserveIntArray(int __n)
 	{
 		return this.initializer.allocate(
@@ -434,6 +455,7 @@ public final class BootstrapState
 	 * @return The static field address area.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int staticFieldAreaAddress()
 	{
 		// Allocate area for static fields, if not done yet

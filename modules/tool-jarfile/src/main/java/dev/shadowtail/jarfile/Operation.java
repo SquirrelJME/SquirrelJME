@@ -14,18 +14,23 @@ package dev.shadowtail.jarfile;
  *
  * @since 2019/04/30
  */
+@Deprecated
 public final class Operation
 {
 	/** The value modifier. */
+	@Deprecated
 	public final Modifier mod;
 	
 	/** Operation size. */
+	@Deprecated
 	public final int size;
 	
 	/** The address. */
+	@Deprecated
 	public final int addr;
 	
 	/** The value. */
+	@Deprecated
 	public final Number value;
 	
 	/**
@@ -38,6 +43,7 @@ public final class Operation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public Operation(Modifier __m, byte __s, int __a, Number __v)
 		throws NullPointerException
 	{

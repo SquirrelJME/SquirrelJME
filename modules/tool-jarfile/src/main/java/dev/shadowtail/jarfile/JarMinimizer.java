@@ -40,6 +40,7 @@ public final class JarMinimizer
 	 * {@squirreljme.property dev.shadowtail.jarfile.debug=boolean
 	 * Should debugging text be printed for the JAR minimizer?}
 	 */
+	@Deprecated
 	static final boolean _ENABLE_DEBUG =
 		Boolean.getBoolean("dev.shadowtail.jarfile.debug");
 	
@@ -53,10 +54,10 @@ public final class JarMinimizer
 	protected final VMClassLibrary input;
 	
 	/** The dual-combined constant pool. */
-	protected final DualClassRuntimePoolBuilder dualpool;
+	protected final DualClassRuntimePoolBuilder dualPool;
 	
 	/** Are we using our own dual pool? */
-	protected final boolean owndualpool;
+	protected final boolean isOurDualPool;
 	
 	/** The resulting JAR header. */
 	private MinimizedJarHeader _jheader;
@@ -84,9 +85,9 @@ public final class JarMinimizer
 		// Use the passed pool if it was passed, but otherwise just use one
 		// in the event one was not passed through (uses our own pool)
 		boolean owndualpool = (!__boot && (__dp == null));
-		this.dualpool = (__boot ? null : (owndualpool ?
+		this.dualPool = (__boot ? null : (owndualpool ?
 			new DualClassRuntimePoolBuilder() : __dp));
-		this.owndualpool = owndualpool;
+		this.isOurDualPool = owndualpool;
 		
 		// Setup bootstrap, but only if booting
 		this.bootstrap = (__boot ? new BootstrapState() : null);
@@ -95,15 +96,15 @@ public final class JarMinimizer
 	/**
 	 * Processes the input JAR.
 	 *
-	 * @param __sout The output.
+	 * @param __out The output.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/27
 	 */
-	private final void __process(OutputStream __sout)
+	private void __process(OutputStream __out)
 		throws IOException, NullPointerException
 	{
-		if (__sout == null)
+		if (__out == null)
 			throw new NullPointerException("NARG");
 		
 		// The current state of the bootstrap
@@ -142,7 +143,7 @@ public final class JarMinimizer
 		header.writeSectionAddressInt(toc);
 		
 		// The global dual-constant pool if one is available
-		DualClassRuntimePoolBuilder dualpool = this.dualpool;
+		DualClassRuntimePoolBuilder dualpool = this.dualPool;
 		
 		// Buffer for byte copies
 		byte[] copybuf = new byte[512];
@@ -314,11 +315,11 @@ public final class JarMinimizer
 		// Debug
 		if (JarMinimizer._ENABLE_DEBUG)
 			Debugging.debugNote("Own pool=%s, dualpool=%s",
-				this.owndualpool, dualpool);
+				this.isOurDualPool, dualpool);
 		
 		// We are using our own dual pool, so write it out as if it were
 		// in the pack file. It is only local to this JAR.
-		if (this.owndualpool && dualpool != null)
+		if (this.isOurDualPool && dualpool != null)
 		{
 			// Where our pools are going
 			ChunkSection lpd = out.addSection();
@@ -357,7 +358,7 @@ public final class JarMinimizer
 			new ByteArrayInputStream(jardata));
 		
 		// Write to output
-		__sout.write(jardata);
+		__out.write(jardata);
 	}
 	
 	/**

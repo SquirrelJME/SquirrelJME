@@ -17,12 +17,15 @@ import net.multiphasicapps.classfile.ClassName;
  *
  * @since 2019/09/21
  */
+@Deprecated
 public final class ClassNameAndMinimizedMethod
 {
 	/** The class name. */
+	@Deprecated
 	public final ClassName classname;
 	
 	/** The method. */
+	@Deprecated
 	public final MinimizedMethod method;
 	
 	/**
@@ -33,6 +36,7 @@ public final class ClassNameAndMinimizedMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/21
 	 */
+	@Deprecated
 	public ClassNameAndMinimizedMethod(ClassName __cn, MinimizedMethod __mm)
 		throws NullPointerException
 	{

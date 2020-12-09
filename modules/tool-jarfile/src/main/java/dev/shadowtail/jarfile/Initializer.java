@@ -27,28 +27,35 @@ import java.util.List;
  *
  * @since 2019/04/30
  */
+@Deprecated
 public final class Initializer
 {
 	/** Memory chunk size offset. */
+	@Deprecated
 	public static final int CHUNK_SIZE_OFFSET =
 		0;
 	
 	/** Next chunk address. */
+	@Deprecated
 	public static final int CHUNK_NEXT_OFFSET =
 		4;
 	
 	/** The length of chunks. */
+	@Deprecated
 	public static final int CHUNK_LENGTH =
 		8;
 	
 	/** Operations. */
+	@Deprecated
 	private final List<Operation> _ops =
 		new ArrayList<>();
 	
 	/** Current allocated temporary space. */
+	@Deprecated
 	private byte[] _bytes = new byte[65536];
 	
 	/** Current size of the initializer. */
+	@Deprecated
 	private int _size =
 		0;
 	
@@ -59,6 +66,7 @@ public final class Initializer
 	 * @return The pointer address of the allocation.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final int allocate(int __sz)
 	{
 		// Force minimum size, otherwise things will get very messed up
@@ -99,6 +107,7 @@ public final class Initializer
 	 * @param __v The value to write.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final void memWriteByte(int __addr, int __v)
 	{
 		this.memWriteByte(null, __addr, __v);
@@ -112,6 +121,7 @@ public final class Initializer
 	 * @param __v The value to write.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final void memWriteByte(Modifier __m, int __addr, int __v)
 	{
 		// Record action?
@@ -130,6 +140,7 @@ public final class Initializer
 	 * @param __v The value to write.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final void memWriteInt(int __addr, int __v)
 	{
 		this.memWriteInt(null, __addr, __v);
@@ -143,6 +154,7 @@ public final class Initializer
 	 * @param __v The value to write.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final void memWriteInt(Modifier __m, int __addr, int __v)
 	{
 		// Record action?
@@ -165,6 +177,7 @@ public final class Initializer
 	 * @param __v The value to write.
 	 * @since 2019/05/25
 	 */
+	@Deprecated
 	public final void memWriteLong(int __addr, long __v)
 	{
 		this.memWriteLong(null, __addr, __v);
@@ -178,6 +191,7 @@ public final class Initializer
 	 * @param __v The value to write.
 	 * @since 2019/05/25
 	 */
+	@Deprecated
 	public final void memWriteLong(Modifier __m, int __addr, long __v)
 	{
 		// Record action?
@@ -204,6 +218,7 @@ public final class Initializer
 	 * @param __v The value to write.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final void memWriteShort(int __addr, int __v)
 	{
 		this.memWriteShort(null, __addr, __v);
@@ -217,6 +232,7 @@ public final class Initializer
 	 * @param __v The value to write.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final void memWriteShort(Modifier __m, int __addr, int __v)
 	{
 		// Record action?
@@ -236,6 +252,7 @@ public final class Initializer
 	 * @return The byte array representing the sequence.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final byte[] toByteArray()
 	{
 		List<Operation> ops = this._ops;

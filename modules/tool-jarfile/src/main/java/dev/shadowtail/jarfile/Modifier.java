@@ -14,15 +14,19 @@ package dev.shadowtail.jarfile;
  *
  * @since 2019/04/30
  */
+@Deprecated
 public enum Modifier
 {
 	/** No modification to be done. */
+	@Deprecated
 	NONE,
 	
 	/** Offset by RAM address. */
+	@Deprecated
 	RAM_OFFSET,
 	
 	/** Offset by JAR address. */
+	@Deprecated
 	JAR_OFFSET,
 	
 	/** End. */

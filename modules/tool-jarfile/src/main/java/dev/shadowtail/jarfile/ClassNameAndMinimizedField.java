@@ -17,12 +17,15 @@ import net.multiphasicapps.classfile.ClassName;
  *
  * @since 2019/09/14
  */
+@Deprecated
 public final class ClassNameAndMinimizedField
 {
 	/** The class name. */
+	@Deprecated
 	public final ClassName classname;
 	
 	/** The field. */
+	@Deprecated
 	public final MinimizedField field;
 	
 	/**
@@ -33,6 +36,7 @@ public final class ClassNameAndMinimizedField
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public ClassNameAndMinimizedField(ClassName __cn, MinimizedField __mf)
 		throws NullPointerException
 	{
@@ -48,6 +52,7 @@ public final class ClassNameAndMinimizedField
 	 * @since 2019/09/21
 	 */
 	@Override
+	@Deprecated
 	public final String toString()
 	{
 		return this.classname + ":" + this.field.nameAndType();

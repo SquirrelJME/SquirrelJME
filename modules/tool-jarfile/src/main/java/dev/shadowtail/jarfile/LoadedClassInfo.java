@@ -41,45 +41,57 @@ import net.multiphasicapps.classfile.MethodName;
  *
  * @since 2019/04/30
  */
+@Deprecated
 public final class LoadedClassInfo
 {
 	/** The bootstrap reference. */
+	@Deprecated
 	private final Reference<BootstrapState> _bootstrap;
 	
 	/** The minimized class. */
+	@Deprecated
 	private final MinimizedClassFile _class;
 	
 	/** The offset to the class. */
+	@Deprecated
 	private final int _classoffset;
 	
 	/** The offset to the constant pool allocation. */
+	@Deprecated
 	private int _pooloffset =
 		-1;
 	
 	/** Static memory offset. */
+	@Deprecated
 	private int _smemoff =
 		-1;
 	
 	/** The class data V2 offset. */
+	@Deprecated
 	private int _classdata =
 		-1;
 	
 	/** The size of instances for this class. */
+	@Deprecated
 	private int _allocsize;
 	
 	/** The base pointer position for fields. */
+	@Deprecated
 	private int _baseoff =
 		-1;
 	
 	/** The VTable for this class. */
+	@Deprecated
 	private int _vtable =
 		-1;
 	
 	/** The constant pool references for this class vtable. */
+	@Deprecated
 	private int _vtablepool =
 		-1;
 	
 	/** The depth of this class. */
+	@Deprecated
 	private int _classdepth =
 		-1;
 	
@@ -92,6 +104,7 @@ public final class LoadedClassInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	LoadedClassInfo(MinimizedClassFile __cl, int __co,
 		Reference<BootstrapState> __bs)
 		throws NullPointerException
@@ -110,6 +123,7 @@ public final class LoadedClassInfo
 	 * @return The allocated instance size.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int allocationSize()
 	{
 		// Pre-cached already?
@@ -135,6 +149,7 @@ public final class LoadedClassInfo
 	 * @return The base off of this class.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int baseOffset()
 	{
 		// Was already cached?
@@ -159,6 +174,7 @@ public final class LoadedClassInfo
 	 * @return The depth of this class.
 	 * @since 2019/12/01
 	 */
+	@Deprecated
 	public final int classDepth()
 	{
 		// Was already cached?
@@ -187,6 +203,7 @@ public final class LoadedClassInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int fieldInstanceOffset(FieldName __fn, FieldDescriptor __fd)
 		throws InvalidClassFormatException, NullPointerException
 	{
@@ -224,6 +241,7 @@ public final class LoadedClassInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int fieldStaticOffset(FieldName __fn, FieldDescriptor __fd)
 		throws InvalidClassFormatException, NullPointerException
 	{
@@ -251,6 +269,7 @@ public final class LoadedClassInfo
 	 * @return The pointer to the class information.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int infoPointer()
 	{
 		// If it has already been initialized use it
@@ -588,6 +607,7 @@ public final class LoadedClassInfo
 	 * @return The method base.
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	public final int methodBase()
 	{
 		// Need the bootstrap
@@ -611,6 +631,7 @@ public final class LoadedClassInfo
 	 * @return The address of the given method.
 	 * @since 2019/09/20
 	 */
+	@Deprecated
 	public final int methodCodeAddress(String __mn, String __mt)
 		throws NullPointerException
 	{
@@ -630,6 +651,7 @@ public final class LoadedClassInfo
 	 * @return The address of the given method.
 	 * @since 2019/04/30
 	 */
+	@Deprecated
 	public final int methodCodeAddress(MethodName __mn, MethodDescriptor __mt)
 		throws NullPointerException
 	{
@@ -672,6 +694,7 @@ public final class LoadedClassInfo
 	 * @return The index of the given method.
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	public final int methodIndex(MethodName __mn, MethodDescriptor __mt)
 		throws NullPointerException
 	{
@@ -705,6 +728,7 @@ public final class LoadedClassInfo
 	 * @return The method size.
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	public final int methodSize()
 	{
 		// Need the bootstrap
@@ -732,6 +756,7 @@ public final class LoadedClassInfo
 	 * @return The offset of the given value.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int poolEntryOffset(Object __v)
 	{
 		// Need pool for this!
@@ -760,6 +785,7 @@ public final class LoadedClassInfo
 	 * @return The pointer to the class constant pool.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int poolPointer()
 	{
 		// Need the bootstrap!
@@ -929,6 +955,7 @@ public final class LoadedClassInfo
 	 * @return The ROM offset of the class.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int romOffset()
 	{
 		return this._classoffset;
@@ -940,6 +967,7 @@ public final class LoadedClassInfo
 	 * @return The pointer of this class static field area.
 	 * @since 2019/12/14
 	 */
+	@Deprecated
 	public final int staticFieldOffset()
 	{
 		// Do we need to allocate static field space for this class?
@@ -1029,6 +1057,7 @@ public final class LoadedClassInfo
 	 * @return The class super-class.
 	 * @since 2019/09/21
 	 */
+	@Deprecated
 	public final LoadedClassInfo superClass()
 	{
 		ClassName sn = this._class.superName();
@@ -1041,6 +1070,7 @@ public final class LoadedClassInfo
 	 * @return The name of the super class.
 	 * @since 2019/09/21
 	 */
+	@Deprecated
 	public final ClassName superName()
 	{
 		return this._class.superName();
@@ -1052,6 +1082,7 @@ public final class LoadedClassInfo
 	 * @return The name of this class.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final ClassName thisName()
 	{
 		return this._class.thisName();
@@ -1064,6 +1095,7 @@ public final class LoadedClassInfo
 	 * @return The method table pointer and the pool pointer table.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	public final int[] vTables()
 	{
 		// Need the bootstrap
@@ -1176,6 +1208,7 @@ public final class LoadedClassInfo
 	 * @throws IllegalStateException If it was garbage collected.
 	 * @since 2019/09/14
 	 */
+	@Deprecated
 	private final BootstrapState __bootstrap()
 		throws IllegalStateException
 	{
