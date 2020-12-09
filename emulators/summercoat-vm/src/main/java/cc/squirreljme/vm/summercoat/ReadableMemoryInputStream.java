@@ -32,6 +32,19 @@ public final class ReadableMemoryInputStream
 	private int _at;
 	
 	/**
+	 * Initializes the input read memory.
+	 * 
+	 * @param __mem The memory to read from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/09
+	 */
+	public ReadableMemoryInputStream(ReadableMemory __mem)
+		throws NullPointerException
+	{
+		this(__mem, __mem.memRegionOffset(), __mem.memRegionSize());
+	}
+	
+	/**
 	 * Initializes the stream.
 	 *
 	 * @param __mem The memory.

@@ -7,29 +7,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.jarfile;
+package dev.shadowtail.packfile;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * The table of contents for a given JAR, contains offsets and otherwise for
- * the data.
+ * Minimized pack file table of contents.
  *
- * @since 2020/12/08
+ * @since 2020/12/09
  */
-public final class MinimizedJarTOC
+public final class MinimizedPackTOC
 {
 	/**
-	 * Decodes the input JAR table of contents.
+	 * Decodes the pack file table of contents.
 	 * 
-	 * @param __in The stream to decode from.
-	 * @return The resultant table of contents.
+	 * @param __in The stream to read from.
+	 * @return The read table of contents.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/09
 	 */
-	public static MinimizedJarTOC decode(InputStream __in)
+	public static MinimizedPackTOC decode(InputStream __in)
 		throws IOException, NullPointerException
 	{
 		if (__in == null)

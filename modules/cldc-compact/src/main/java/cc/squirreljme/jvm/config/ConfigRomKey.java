@@ -17,9 +17,11 @@ import cc.squirreljme.jvm.mle.constants.LineEndingType;
  *
  * @since 2019/06/14
  */
+@Deprecated
 public interface ConfigRomKey
 {
 	/** End of configuration. */
+	@Deprecated
 	byte END =
 		0;
 	
@@ -29,6 +31,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte JAVA_VM_VERSION =
 		1;
 	
@@ -38,6 +41,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte JAVA_VM_NAME =
 		2;
 	
@@ -47,6 +51,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte JAVA_VM_VENDOR =
 		3;
 	
@@ -56,6 +61,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte JAVA_VM_EMAIL =
 		4;
 	
@@ -65,6 +71,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte JAVA_VM_URL =
 		5;
 	
@@ -84,6 +91,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#UTF}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte MAIN_CLASS =
 		7;
 	
@@ -93,6 +101,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#UTF_LIST}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte MAIN_ARGUMENTS =
 		8;
 	
@@ -102,6 +111,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#BOOLEAN}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte IS_MIDLET =
 		9;
 	
@@ -111,6 +121,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#KEY_VALUE_PAIR}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte DEFINE_PROPERTY =
 		10;
 	
@@ -120,6 +131,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#UTF_LIST}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte CLASS_PATH =
 		11;
 	
@@ -129,6 +141,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#LONG}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte SYSCALL_STATIC_FIELD_POINTER =
 		12;
 	
@@ -138,6 +151,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#LONG}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte SYSCALL_CODE_POINTER =
 		13;
 	
@@ -147,6 +161,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#LONG}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte SYSCALL_POOL_POINTER =
 		14;
 	
@@ -156,6 +171,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte BUILT_IN_ENCODING =
 		15;
 	
@@ -165,6 +181,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte MICROEDITION_CONFIG =
 		16;
 	
@@ -174,6 +191,7 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}
 	 * @since 2019/06/14
 	 */
+	@Deprecated
 	byte LINE_ENDING =
 		17;
 	
@@ -183,10 +201,12 @@ public interface ConfigRomKey
 	 * @squirreljme.configtype {@link ConfigRomType#INTEGER}.
 	 * @since 2020/05/12
 	 */
+	@Deprecated
 	byte BUILT_IN_LOCALE =
 		18;
 	
 	/** Number of available configuration options. */
+	@Deprecated
 	byte NUM_OPTIONS =
 		19;
 }

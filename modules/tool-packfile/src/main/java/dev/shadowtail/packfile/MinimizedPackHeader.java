@@ -9,6 +9,12 @@
 
 package dev.shadowtail.packfile;
 
+import cc.squirreljme.jvm.summercoat.constants.JarProperty;
+import cc.squirreljme.jvm.summercoat.constants.PackProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * This represents the header for a minimized pack file, it mostly just
  * represents a number of JAR files which are combined into one.
@@ -115,6 +121,44 @@ public final class MinimizedPackHeader
 		this.staticpoolsize = __fs[at++];
 		this.runtimepooloff = __fs[at++];
 		this.runtimepoolsize = __fs[at++];
+	}
+	
+	/**
+	 * Gets the specified property.
+	 * 
+	 * @param __property The {@link PackProperty} to get.
+	 * @return The property value.
+	 * @throws IllegalArgumentException If the property is not valid.
+	 * @since 2020/12/09
+	 */
+	public final int get(int __property)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BI03 Invalid Pack property. (The property)}
+		if (__property < 0 ||
+			__property >= PackProperty.NUM_PACK_PROPERTIES)
+			throw new IllegalArgumentException("BI03 " + __property);
+		
+		throw Debugging.todo();
+		/*return this._properties[__property];*/
+	}
+	
+	/**
+	 * Decodes the input pack header.
+	 * 
+	 * @param __in The stream to decode from.
+	 * @return The resultant header.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/09
+	 */
+	public static MinimizedPackHeader decode(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 }
 

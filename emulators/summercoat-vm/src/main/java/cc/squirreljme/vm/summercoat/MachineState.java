@@ -29,7 +29,7 @@ public final class MachineState
 		new MemHandleManager();
 	
 	/** Was the supervisor okay? */
-	private volatile boolean _supervisorokay;
+	private volatile boolean _superVisorOkay;
 	
 	/**
 	 * Initializes the machine state.
@@ -58,7 +58,7 @@ public final class MachineState
 	{
 		synchronized (this)
 		{
-			this._supervisorokay = true;
+			this._superVisorOkay = true;
 		}
 	}
 	
@@ -72,7 +72,7 @@ public final class MachineState
 	{
 		synchronized (this)
 		{
-			return this._supervisorokay;
+			return this._superVisorOkay;
 		}
 	}
 }
