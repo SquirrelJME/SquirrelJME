@@ -27,11 +27,11 @@ import net.multiphasicapps.classfile.MethodHandle;
 public final class DualClassRuntimePoolBuilder
 {
 	/** The class pool. */
-	protected final BasicPoolBuilder classpool =
+	protected final BasicPoolBuilder classPool =
 		new BasicPoolBuilder();
 	
 	/** The run-time pool. */
-	protected final BasicPoolBuilder runpool =
+	protected final BasicPoolBuilder runPool =
 		new BasicPoolBuilder();
 	
 	/**
@@ -70,8 +70,8 @@ public final class DualClassRuntimePoolBuilder
 			throw new NullPointerException("NARG");
 		
 		// The pool to be added to and the underlying static pool
-		BasicPoolBuilder runpool = this.runpool,
-			classpool = this.classpool;
+		BasicPoolBuilder runpool = this.runPool,
+			classpool = this.classPool;
 		
 		// Already within the pool?
 		BasicPoolEntry rv = runpool.getByValue(__v);
@@ -167,7 +167,7 @@ public final class DualClassRuntimePoolBuilder
 			throw new NullPointerException("NARG");
 		
 		// The pool to be added to
-		BasicPoolBuilder classpool = this.classpool;
+		BasicPoolBuilder classpool = this.classPool;
 		
 		// Already within the pool?
 		BasicPoolEntry rv = classpool.getByValue(__v);
@@ -287,7 +287,7 @@ public final class DualClassRuntimePoolBuilder
 	 */
 	public final BasicPoolBuilder classPool()
 	{
-		return this.classpool;
+		return this.classPool;
 	}
 	
 	/**
@@ -298,7 +298,7 @@ public final class DualClassRuntimePoolBuilder
 	 */
 	public final BasicPoolBuilder runtimePool()
 	{
-		return this.runpool;
+		return this.runPool;
 	}
 }
 

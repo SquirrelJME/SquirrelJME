@@ -28,12 +28,12 @@ public interface JarProperty
 	byte OFFSET_TOC =
 		2;
 	
-	/** Manifest offset. */
-	byte OFFSET_MANIFEST =
+	/** Table of contents size. */
+	byte SIZE_TOC =
 		3;
 	
-	/** Manifest length. */
-	byte SIZE_MANIFEST =
+	/** The manifest index. */
+	byte RCDX_MANIFEST =
 		4;
 	
 	/** Boot initializer offset. */

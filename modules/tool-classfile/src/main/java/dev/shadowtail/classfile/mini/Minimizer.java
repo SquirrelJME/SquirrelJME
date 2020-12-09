@@ -62,10 +62,10 @@ public final class Minimizer
 	protected final ClassFile input;
 	
 	/** The Jar or ROM backed pool, is optional. */
-	protected final DualClassRuntimePoolBuilder jarpool;
+	protected final DualClassRuntimePoolBuilder jarPool;
 	
 	/** The local constant pool. */
-	protected final DualClassRuntimePoolBuilder localpool =
+	protected final DualClassRuntimePoolBuilder localPool =
 		new DualClassRuntimePoolBuilder();
 	
 	/**
@@ -85,7 +85,7 @@ public final class Minimizer
 		this.input = __cf;
 		
 		// This is the packing JAR/ROM pool, this may be null
-		this.jarpool = __dp;
+		this.jarPool = __dp;
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public final class Minimizer
 		ChunkWriter output = new ChunkWriter();
 		
 		// This is the relative pool that the class file uses
-		DualClassRuntimePoolBuilder localpool = this.localpool;
+		DualClassRuntimePoolBuilder localPool = this.localPool;
 		
 		// Process all fields and methods
 		__TempFields__[] fields = this.__doFields();
@@ -125,11 +125,11 @@ public final class Minimizer
 		header.writeShort(ClassInfoConstants.CLASS_VERSION_20201129);
 		
 		// The number of properties used, is always constant for now
-		header.writeShort(StaticClassProperty.NUM_STATIC_PROPERTIES);
-		
-		// Unused, may be used later when needed
 		ChunkForwardedFuture[] properties = new ChunkForwardedFuture[
 			StaticClassProperty.NUM_STATIC_PROPERTIES];
+		header.writeUnsignedShortChecked(properties.length);
+		
+		// Initialize empty properties
 		for (int i = 0; i < StaticClassProperty.NUM_STATIC_PROPERTIES; i++)
 		{
 			// Initialize the future that will later be used to initialize
@@ -161,12 +161,12 @@ public final class Minimizer
 		
 		// name, superclass, and interfaces
 		properties[StaticClassProperty.SPOOL_THIS_CLASS_NAME].setInt(
-			localpool.add(false, input.thisName()).index);
+			localPool.add(false, input.thisName()).index);
 		properties[StaticClassProperty.SPOOL_SUPER_CLASS_NAME].setInt(
 			(superNameCn == null ? 0 :
-				localpool.add(false, superNameCn).index));
+				localPool.add(false, superNameCn).index));
 		properties[StaticClassProperty.SPOOL_INTERFACES].setInt(
-			localpool.add(false, input.interfaceNames()).index);
+			localPool.add(false, input.interfaceNames()).index);
 		
 		// Class type and version
 		properties[StaticClassProperty.INT_CLASS_TYPE].setInt(
@@ -178,7 +178,7 @@ public final class Minimizer
 		// will be very useful
 		String sfn = input.sourceFile();
 		properties[StaticClassProperty.SPOOL_SOURCE_FILENAME].setInt(
-			(sfn == null ? 0 : localpool.add(false, sfn).index));
+			(sfn == null ? 0 : localPool.add(false, sfn).index));
 		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)
@@ -190,7 +190,7 @@ public final class Minimizer
 			
 			// Generate section
 			ChunkSection subsection =
-				output.addSection(tf.getBytes(localpool), 4);
+				output.addSection(tf.getBytes(localPool), 4);
 			
 			properties[base + StaticClassProperty.BASEDX_INT_X_FIELD_COUNT]
 				.setInt(tf._count);
@@ -214,7 +214,7 @@ public final class Minimizer
 			
 			// Generate section
 			ChunkSection subsection =
-				output.addSection(tm.getBytes(localpool), 4);
+				output.addSection(tm.getBytes(localPool), 4);
 			
 			properties[base + StaticClassProperty.BASEDX_INT_X_METHOD_COUNT]
 				.setInt(tm._count);
@@ -242,10 +242,10 @@ public final class Minimizer
 			ChunkWriter.VARIABLE_SIZE, 4);
 		
 		// Encode the local pool or the local pool on top of the JAR pool
-		DualClassRuntimePoolBuilder jarpool = this.jarpool;
-		DualPoolEncodeResult der = (jarpool == null ?
-			DualPoolEncoder.encode(localpool, lpd) :
-			DualPoolEncoder.encodeLayered(localpool, jarpool, lpd));
+		DualClassRuntimePoolBuilder jarPool = this.jarPool;
+		DualPoolEncodeResult der = (jarPool == null ?
+			DualPoolEncoder.encode(localPool, lpd) :
+			DualPoolEncoder.encodeLayered(localPool, jarPool, lpd));
 		
 		// Static pool
 		properties[StaticClassProperty.OFFSET_STATIC_POOL]
@@ -281,7 +281,7 @@ public final class Minimizer
 	 */
 	private __TempFields__[] __doFields()
 	{
-		DualClassRuntimePoolBuilder localpool = this.localpool;
+		DualClassRuntimePoolBuilder localpool = this.localPool;
 		
 		// Static and instance fields are split because they are stored
 		// in different places
@@ -398,7 +398,7 @@ public final class Minimizer
 	 */
 	private __TempMethods__[] __doMethods()
 	{
-		DualClassRuntimePoolBuilder localpool = this.localpool;
+		DualClassRuntimePoolBuilder localpool = this.localPool;
 		ClassFile input = this.input;
 		
 		// Split static and instance methods to make them easier to locate
@@ -491,7 +491,7 @@ public final class Minimizer
 		List<__Jump__> jumpreps = new LinkedList<>();
 		
 		// Operations will reference this constant pool
-		DualClassRuntimePoolBuilder localpool = this.localpool;
+		DualClassRuntimePoolBuilder localpool = this.localPool;
 		
 		// Go through each instruction
 		for (int cdx = 0; cdx < cdn; cdx++)

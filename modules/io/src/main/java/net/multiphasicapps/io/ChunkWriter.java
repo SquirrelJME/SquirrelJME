@@ -258,7 +258,6 @@ public final class ChunkWriter
 		
 		// Un-dirty and get the file size
 		this.__undirty();
-		int filesize = this._fileSize;
 		
 		// Write each individual section to the output stream
 		List<ChunkSection> sections = this._sections;
