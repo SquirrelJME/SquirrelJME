@@ -41,7 +41,14 @@ public final class NativeCode
 	public static final int EXCEPTION_REGISTER =
 		3;
 	
-	/** The pointer containing static field data. */
+	/**
+	 * The pointer containing static field data.
+	 * 
+	 * @deprecated Because static fields will be referred to by an instance
+	 * of the class information rather than be within a single fixed size
+	 * chunk of memory.
+	 */
+	@Deprecated
 	public static final int STATIC_FIELD_REGISTER =
 		4;
 	
