@@ -9,11 +9,15 @@
 
 package dev.shadowtail.packfile;
 
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
  * This represents the header for a minimized pack file, it mostly just
@@ -23,7 +27,6 @@ import java.io.InputStream;
  */
 public final class MinimizedPackHeader
 {
-	
 	/** The size of the header without the magic number. */
 	@Deprecated
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
@@ -49,78 +52,25 @@ public final class MinimizedPackHeader
 	public static final int TOC_ENTRY_SIZE =
 		20;
 	
-	/** The number of jars in this packfile. (4) */
-	public final int numjars;
+	/** The format version of the JAR. */
+	protected final short formatVersion;
 	
-	/** The offset to the table of contents. (8) */
-	public final int tocoffset;
-	
-	/** The index of the JAR which should be the boot point. (12) */
-	public final int bootjarindex;
-	
-	/** The offset into the packfile where the boot entry is. (16) */
-	public final int bootjaroffset;
-	
-	/** The size of the boot jar. (20) */
-	public final int bootjarsize;
-	
-	/** Initial class path library indexes. (24) */
-	public final int booticpoffset;
-	
-	/** Initial class path library index count. (28) */
-	public final int booticpsize;
-	
-	/** Initial main class to boot. (32) */
-	public final int bootmainclass;
-	
-	/** Initial main entry type. (36) */
-	public final int bootmaintype;
-	
-	/** Static constant pool offset. */
-	public final int staticpooloff;
-	
-	/** Static constant pool size. */
-	public final int staticpoolsize;
-	
-	/** Runtime constant pool offset. */
-	public final int runtimepooloff;
-	
-	/** Runtime constant pool size. */
-	public final int runtimepoolsize;
+	/** The properties of the class. */
+	private final int[] _properties;
 	
 	/**
-	 * Initializes the pack header.
-	 *
-	 * @param __fs Fields.
+	 * Initializes the JAR header.
+	 * 
+	 * @param __fV The format version of the JAR header.
+	 * @param __properties The properties for the JAR.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/28
+	 * @since 2020/12/09
 	 */
-	public MinimizedPackHeader(int... __fs)
-		throws NullPointerException
+	public MinimizedPackHeader(short __fV, int... __properties)
 	{
-		if (__fs == null)
-			throw new NullPointerException("NARG");
-		
-		int at = 0;
-		
-		// Jar and table of contents
-		this.numjars = __fs[at++];
-		this.tocoffset = __fs[at++];
-		
-		// Boot JAR that may be specified
-		this.bootjarindex = __fs[at++];
-		this.bootjaroffset = __fs[at++];
-		this.bootjarsize = __fs[at++];
-		this.booticpoffset = __fs[at++];
-		this.booticpsize = __fs[at++];
-		this.bootmainclass = __fs[at++];
-		this.bootmaintype = __fs[at++];
-		
-		// Static and run-time constant pool
-		this.staticpooloff = __fs[at++];
-		this.staticpoolsize = __fs[at++];
-		this.runtimepooloff = __fs[at++];
-		this.runtimepoolsize = __fs[at++];
+		this.formatVersion = __fV;
+		this._properties = Arrays.copyOf(__properties,
+			JarProperty.NUM_JAR_PROPERTIES);
 	}
 	
 	/**
@@ -158,7 +108,29 @@ public final class MinimizedPackHeader
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		DataInputStream dis = new DataInputStream(__in);
+		
+		// {@squirreljme.error BI04 Invalid minimized Jar magic number.
+		// (The magic number)}
+		int magic;
+		if (ClassInfoConstants.PACK_MAGIC_NUMBER != (magic = dis.readInt()))
+			throw new InvalidClassFormatException(String.format("BI04 %08x",
+				magic));
+		
+		// {@squirreljme.error BI05 Cannot decode pack file because the version
+		// identifier is not known. (The format version of the pack file)}
+		int formatVersion = dis.readUnsignedShort();
+		if (formatVersion != ClassInfoConstants.CLASS_VERSION_20201129)
+			throw new RuntimeException("BI05 " + formatVersion);
+		
+		// Read in all the data
+		int numProperties = dis.readUnsignedShort();
+		int[] properties = new int[numProperties];
+		for (int i = 0; i < numProperties; i++)
+			properties[i] = dis.readInt();
+		
+		// Setup finalized pack
+		return new MinimizedPackHeader((short)formatVersion, properties);
 	}
 }
 

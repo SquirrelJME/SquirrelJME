@@ -100,7 +100,7 @@ public class PackMinimizer
 			
 			// Append JAR always
 			if (SummerCoatJarLibrary.isSqc(vx))
-				__initcp[i] = vx.substring(0, vx.length() - 4) + ".jar";
+				__initcp[i] = vx.substring(0, vx.length() - 4) + ".sqc";
 			else if (!vx.endsWith(".jar"))
 				__initcp[i] = vx + ".jar";
 		}
