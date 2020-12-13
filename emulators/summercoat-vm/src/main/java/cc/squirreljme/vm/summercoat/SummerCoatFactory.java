@@ -111,7 +111,8 @@ public class SummerCoatFactory
 		// Load the boot JAR information
 		MinimizedJarHeader bootJarHeader;
 		MinimizedJarTOC bootJarToc;
-		try (InputStream packIn = new ReadableMemoryInputStream(romMemory))
+		try (InputStream packIn = new ReadableMemoryInputStream(
+			romMemory, 0, romMemory.memRegionSize()))
 		{
 			// Read the pack header
 			bootJarHeader = MinimizedJarHeader.decode(packIn);

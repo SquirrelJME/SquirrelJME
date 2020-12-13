@@ -41,7 +41,7 @@ public final class ReadableMemoryInputStream
 	public ReadableMemoryInputStream(ReadableMemory __mem)
 		throws NullPointerException
 	{
-		this(__mem, __mem.memRegionOffset(), __mem.memRegionSize());
+		this(__mem, 0/*__mem.memRegionOffset()*/, __mem.memRegionSize());
 	}
 	
 	/**

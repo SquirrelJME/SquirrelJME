@@ -11,21 +11,13 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
-import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.summercoat.constants.PackProperty;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.PreAddressedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
-import dev.shadowtail.packfile.MinimizedPackHeader;
 import dev.shadowtail.packfile.PackMinimizer;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.multiphasicapps.io.ChunkSection;
-import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * This class contains the memory information for every single suite which
@@ -179,7 +171,8 @@ public final class SuitesMemory
 		SuiteMemory[] suiteMem = this._suitemem;
 		if (si < 0 || si >= suiteMem.length)
 			throw new VMException(String.format(
-				"Invalid byte read: %#08x (%d relative)", __addr, si));
+				"Invalid byte read: %#08x (library: %d of %d)",
+				__addr, si, suiteMem.length));
 		
 		// Read from suite memory
 		return suiteMem[si].memReadByte(__addr - suiteMem[si].offset);
@@ -235,6 +228,9 @@ public final class SuitesMemory
 		SuiteMemory[] suiteMem = this._suitemem;
 		int numSuites = suiteMem.length;
 		
+		// The base address of this memory
+		int base = this.offset;
+		
 		// Use virtually set predefined addresses so we can recycle the
 		// minimizer writing code without needing to duplicate everything
 		// This ensures that it works as well.
@@ -242,7 +238,8 @@ public final class SuitesMemory
 		for (int i = 0; i < numSuites; i++)
 		{
 			SuiteMemory from = suiteMem[i];
-			pre[i] = new PreAddressedClassLibrary(from.memRegionOffset(),
+			pre[i] = new PreAddressedClassLibrary(
+				from.memRegionOffset() - base,
 				from.memRegionSize(), from.libName);
 		}
 		

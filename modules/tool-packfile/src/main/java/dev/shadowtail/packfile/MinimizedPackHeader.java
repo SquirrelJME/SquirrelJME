@@ -89,8 +89,7 @@ public final class MinimizedPackHeader
 			__property >= PackProperty.NUM_PACK_PROPERTIES)
 			throw new IllegalArgumentException("BI03 " + __property);
 		
-		throw Debugging.todo();
-		/*return this._properties[__property];*/
+		return this._properties[__property];
 	}
 	
 	/**
