@@ -243,8 +243,7 @@ public final class SuitesMemory
 		for (int i = 0; i < numSuites; i++)
 		{
 			SuiteMemory from = suiteMem[i];
-			pre[i] = new PreAddressedClassLibrary(
-				from.memRegionOffset() - base,
+			pre[i] = new PreAddressedClassLibrary(from.memRegionOffset(),
 				from.memRegionSize(), from.libName);
 		}
 		

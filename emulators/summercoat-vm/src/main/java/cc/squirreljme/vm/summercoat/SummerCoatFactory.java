@@ -17,6 +17,7 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
+import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.nncc.NativeCode;
@@ -108,11 +109,17 @@ public class SummerCoatFactory
 			SummerCoatFactory.__loadRomHeader(romMemory, packTocOut);
 		TableOfContents<MinimizedPackHeader> packToc = packTocOut[0];
 		
+		// The index of the JAR we are booting into
+		int bootDx = packHeader.get(PackProperty.INDEX_BOOT_JAR);
+		
+		Debugging.debugNote("PackToc: %s%n", packToc);
+		
 		// Load the boot JAR information
 		MinimizedJarHeader bootJarHeader;
 		TableOfContents<MinimizedJarHeader> bootJarToc;
-		try (InputStream packIn = new ReadableMemoryInputStream(
-			romMemory, 0, romMemory.memRegionSize()))
+		try (InputStream packIn = new ReadableMemoryInputStream(romMemory,
+			packToc.get(bootDx, PackTocProperty.OFFSET_DATA),
+			packToc.get(bootDx, PackTocProperty.SIZE_DATA)))
 		{
 			// Read the pack header
 			bootJarHeader = MinimizedJarHeader.decode(packIn);

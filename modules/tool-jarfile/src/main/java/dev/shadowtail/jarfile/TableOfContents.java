@@ -87,10 +87,40 @@ public final class TableOfContents<H>
 			throw new IndexOutOfBoundsException("IOOB i" + __dx);
 			
 		int span = this.span;
-		if (__prop < 0 || __prop > span)
+		if (__prop < 0 || __prop >= span)
 			throw new IndexOutOfBoundsException("IOOB p" + __prop);
 		
 		return this._fields[(__dx * span) + __prop];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/13
+	 */
+	@Override
+	public final String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append('{');
+		for (int dx = 0, count = this.count; dx < count; dx++)
+		{
+			if (dx > 0)
+				sb.append(", ");
+			
+			sb.append('[');
+			for (int p = 0, span = this.span; p < span; p++)
+			{
+				if (p > 0)
+					sb.append(", ");
+				
+				sb.append(this.get(dx, p));
+			}
+			sb.append(']');
+		}
+		sb.append('}');
+		
+		return sb.toString();
 	}
 	
 	/**
