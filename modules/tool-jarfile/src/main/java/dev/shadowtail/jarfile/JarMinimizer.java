@@ -171,6 +171,10 @@ public final class JarMinimizer
 		// share pool entries between classes and JARs accordingly
 		DualClassRuntimePoolBuilder dualPool = this.dualPool;
 		
+		// Is this a boot JAR?
+		boolean isBoot = this.boot;
+		__BootState__ bootState = (isBoot ? new __BootState__() : null);
+		
 		// Buffer for byte copies
 		byte[] buf = new byte[16384];
 		
@@ -198,7 +202,7 @@ public final class JarMinimizer
 			boolean isClass = (rc.endsWith(".class") &&
 				ClassName.isValidClassName(rc.substring(0, rc.length() - 6)));
 			boolean isManifest = rc.equals("META-INF/MANIFEST.MF");
-			boolean isBootClass = (this.boot && isClass &&
+			boolean isBootClass = (isBoot && isClass &&
 				JarMinimizer._BOOT_CLASS_RC.equals(rc));
 			
 			// The manifest is at this index
@@ -224,7 +228,17 @@ public final class JarMinimizer
 			{
 				// Minimize directly to the JARs
 				if (isClass)
+				{
 					Minimizer.minimize(dualPool, ClassFile.decode(in), rcData);
+					
+					// If we are setting up the boot state, add this class for
+					// later processing
+					if (isBoot)
+						try (InputStream rcIn = rcData.currentStream())
+						{
+							bootState.addClass(rcIn, isBootClass);
+						}
+				}
 				
 				// Otherwise perform a plain copy operation
 				else

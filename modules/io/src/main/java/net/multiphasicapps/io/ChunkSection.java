@@ -9,10 +9,12 @@
 
 package net.multiphasicapps.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -105,6 +107,18 @@ public final class ChunkSection
 	public final void close()
 	{
 		// Do nothing
+	}
+	
+	/**
+	 * Returns an input stream of what is currently in the input buffer, it is
+	 * undefined whether or not future data is written or not.
+	 * 
+	 * @return An input stream of the current buffer data.
+	 * @since 2020/12/13
+	 */
+	public final InputStream currentStream()
+	{
+		return new ByteArrayInputStream(this._data, 0, this._size);
 	}
 	
 	/**
