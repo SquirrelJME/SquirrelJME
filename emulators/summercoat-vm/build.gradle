@@ -16,6 +16,7 @@ dependencies
 	implementation project(":modules:tool-classfile")
 	implementation project(":modules:tool-jarfile")
 	implementation project(":modules:tool-packfile")
+	implementation project(":modules:io")
 }
 
 java

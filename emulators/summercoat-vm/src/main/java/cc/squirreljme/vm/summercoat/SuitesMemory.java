@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.packfile.MinimizedPackHeader;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.io.ChunkSection;
+import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * This class contains the memory information for every single suite which
@@ -31,9 +34,8 @@ public final class SuitesMemory
 	extends AbstractReadableMemory
 	implements ReadableMemory
 {
-	/** Configuration and table space size. */
-	@Deprecated
-	public static final int CONFIG_TABLE_SIZE =
+	/** Size of the ROM header, the maximum permitted. */
+	public static final int ROM_HEADER_SIZE =
 		1048576;
 	
 	/** The suite chunk size. */
@@ -55,9 +57,8 @@ public final class SuitesMemory
 	/** This is the mapping of suite names to memory. */
 	private final Map<String, SuiteMemory> _suitemap;
 	
-	/** The suite configuration table (addresses of suites). */
-	@Deprecated
-	private volatile ReadableMemory _configtable;
+	/** The ROM header information. */
+	private volatile ReadableMemory _headerRom;
 	
 	/** Was the config table initialized? */
 	private volatile boolean _didInit;
@@ -88,7 +89,7 @@ public final class SuitesMemory
 		Map<String, SuiteMemory> suitemap = new LinkedHashMap<>();
 		
 		// Setup memory regions for the various suites
-		int off = SuitesMemory.CONFIG_TABLE_SIZE;
+		int off = SuitesMemory.ROM_HEADER_SIZE;
 		for (int i = 0; i < n; i++, off += SuitesMemory.SUITE_CHUNK_SIZE)
 		{
 			// Need the suite name for later lookup on init
@@ -168,20 +169,21 @@ public final class SuitesMemory
 			throw new IllegalStateException("Memory not initialized.");
 		
 		// Reading from the config table?
-		if (__addr < SuitesMemory.CONFIG_TABLE_SIZE)
-			return this._configtable.memReadByte(__addr);
+		if (__addr >= 0 && __addr < SuitesMemory.ROM_HEADER_SIZE)
+			return this._headerRom.memReadByte(__addr);
 		
 		// Determine the suite index we are wanting to look in memory
-		int si = (__addr - SuitesMemory.CONFIG_TABLE_SIZE) /
+		int si = (__addr - SuitesMemory.ROM_HEADER_SIZE) /
 			SuitesMemory.SUITE_CHUNK_SIZE;
 		
-		// Instead of failing, return some invalid values
-		SuiteMemory[] suitemem = this._suitemem;
-		if (si < 0 || si >= suitemem.length)
-			return 0xFF;
+		// Fail if illegal memory is read, this should never happen
+		SuiteMemory[] suiteMem = this._suitemem;
+		if (si < 0 || si >= suiteMem.length)
+			throw new VMException(String.format(
+				"Invalid byte read: %08x (%d relative)", __addr, si));
 		
 		// Read from suite memory
-		return suitemem[si].memReadByte(__addr - suitemem[si].offset);
+		return suiteMem[si].memReadByte(__addr - suiteMem[si].offset);
 	}
 	
 	/**
@@ -233,6 +235,33 @@ public final class SuitesMemory
 		// Get suites and the number of them for processing
 		SuiteMemory[] suiteMem = this._suitemem;
 		int numSuites = suiteMem.length;
+		
+		// Write the virtual header
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			ChunkWriter out = new ChunkWriter();
+			
+			// Start of header
+			ChunkSection header = out.addSection(
+				ChunkWriter.VARIABLE_SIZE, 4);
+			header.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
+			header.writeShort(ClassInfoConstants.CLASS_VERSION_20201129);
+			header.writeShort(PackProperty.NUM_PACK_PROPERTIES);
+			
+			if (true)
+				throw Debugging.todo();
+			
+			// Store written configuration table
+			out.writeTo(baos);
+			this._headerRom = new ByteArrayMemory(this.offset,
+				baos.toByteArray());
+		}
+		
+		// Failed to write the virtual header, so fail
+		catch (IOException e)
+		{
+			throw new RuntimeException("Could not write virtual header.", e);
+		}
 		
 		if (true)
 			throw Debugging.todo();
@@ -303,7 +332,7 @@ public final class SuitesMemory
 			// Store written configuration table
 			ReadableMemory configtable = new ByteArrayMemory(packoffset,
 				pbaos.toByteArray());
-			this._configtable = configtable;
+			this._headerRom = configtable;
 		}
 		
 		// {@squirreljme.error AE0b Could not write the virtual packfile.}
