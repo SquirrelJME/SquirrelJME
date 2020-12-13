@@ -10,13 +10,13 @@
 package cc.squirreljme.jvm.summercoat.constants;
 
 /**
- * Properties for Jar table of contents.
+ * Properties for the pack file table of content entries.
  *
- * @since 2020/12/08
+ * @since 2020/12/12
  */
-public interface JarTocProperty
+public interface PackTocProperty
 {
-	/** Flags for the property. */
+	/** Flags for the JAR. */
 	byte INT_FLAGS =
 		0;
 	
@@ -28,15 +28,15 @@ public interface JarTocProperty
 	byte OFFSET_NAME =
 		2;
 	
-	/** Offset to the resource data. */
+	/** Offset to the JAR data. */
 	byte OFFSET_DATA =
 		3;
 	
-	/** The size of the resource data. */
+	/** The size of the JAR data. */
 	byte SIZE_DATA =
 		4;
 	
 	/** The properties available. */
-	byte NUM_JAR_TOC_PROPERTIES =
+	byte NUM_PACK_TOC_PROPERTIES =
 		5;
 }

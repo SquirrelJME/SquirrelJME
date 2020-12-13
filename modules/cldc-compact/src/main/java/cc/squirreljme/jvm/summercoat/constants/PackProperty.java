@@ -36,7 +36,15 @@ public interface PackProperty
 	byte INDEX_BOOT_JAR =
 		4;
 	
+	/** Epoch millis of creation date (high). */
+	byte TIME_DATE_HIGH =
+		5;
+	
+	/** Epoch millis of creation date (low). */
+	byte TIME_DATE_LOW =
+		6;
+	
 	/** The number of pack properties. */
 	byte NUM_PACK_PROPERTIES =
-		5;
+		7;
 }

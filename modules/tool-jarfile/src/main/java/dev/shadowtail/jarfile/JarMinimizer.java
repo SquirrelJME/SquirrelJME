@@ -131,7 +131,7 @@ public final class JarMinimizer
 		// accordingly as needed
 		ChunkSection header = out.addSection(
 			ChunkWriter.VARIABLE_SIZE, 4);
-			
+		
 		// Magic number and minimized format, since about November 2020 there
 		// is a new version format
 		header.writeInt(ClassInfoConstants.JAR_MAGIC_NUMBER);

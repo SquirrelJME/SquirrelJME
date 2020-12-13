@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.packfile.MinimizedPackHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -31,6 +32,7 @@ public final class SuitesMemory
 	implements ReadableMemory
 {
 	/** Configuration and table space size. */
+	@Deprecated
 	public static final int CONFIG_TABLE_SIZE =
 		1048576;
 	
@@ -54,10 +56,11 @@ public final class SuitesMemory
 	private final Map<String, SuiteMemory> _suitemap;
 	
 	/** The suite configuration table (addresses of suites). */
+	@Deprecated
 	private volatile ReadableMemory _configtable;
 	
 	/** Was the config table initialized? */
-	private volatile boolean _didconfiginit;
+	private volatile boolean _didInit;
 	
 	/**
 	 * Initializes the suites memory.
@@ -77,8 +80,8 @@ public final class SuitesMemory
 		this.suites = __sm;
 		
 		// All the libraries which are available for usage
-		String[] libnames = __sm.listLibraryNames();
-		int n = libnames.length;
+		String[] libNames = __sm.listLibraryNames();
+		int n = libNames.length;
 		
 		// Setup suite memory area
 		SuiteMemory[] suitemem = new SuiteMemory[n];
@@ -89,7 +92,7 @@ public final class SuitesMemory
 		for (int i = 0; i < n; i++, off += SuitesMemory.SUITE_CHUNK_SIZE)
 		{
 			// Need the suite name for later lookup on init
-			String libname = libnames[i];
+			String libname = libNames[i];
 			
 			// Normalize and add JAR
 			if (!libname.endsWith(".jar"))
@@ -160,9 +163,9 @@ public final class SuitesMemory
 	@Override
 	public int memReadByte(int __addr)
 	{
-		// Needs to be initialized?
-		if (!this._didconfiginit)
-			this.__init();
+		// ROM memory was not initialized, so it is invalid
+		if (!this._didInit)
+			throw new IllegalStateException("Memory not initialized.");
 		
 		// Reading from the config table?
 		if (__addr < SuitesMemory.CONFIG_TABLE_SIZE)
@@ -205,19 +208,20 @@ public final class SuitesMemory
 	 * Initializes the configuration space.
 	 *
 	 * @since 2019/04/21
+	 * @since 2020/12/12
 	 */
 	final void __init()
 	{
 		// Do not initialize twice!
-		if (this._didconfiginit)
+		if (this._didInit)
 			return;
-		this._didconfiginit = true;
+		this._didInit = true;
 		
 		// Initialize the bootstrap
-		SuiteMemory superv = this.findLibrary("cldc-compact");
+		SuiteMemory bootLib = this.findLibrary("cldc-compact");
 		try
 		{
-			superv.__init();
+			bootLib.__init();
 		}
 		
 		// {@squirreljme.error AE0a Could not initialize the supervisor.}
@@ -227,8 +231,11 @@ public final class SuitesMemory
 		}
 		
 		// Get suites and the number of them for processing
-		SuiteMemory[] suitemem = this._suitemem;
-		int numsuites = suitemem.length;
+		SuiteMemory[] suiteMem = this._suitemem;
+		int numSuites = suiteMem.length;
+		
+		if (true)
+			throw Debugging.todo();
 		
 		// Build a virtualized pack header which works with SummerCoat and
 		// matches the ROM format (just appears as a larger ROM)
@@ -238,18 +245,18 @@ public final class SuitesMemory
 		{
 			// Relative offset for names
 			int reloff = MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC +
-				(MinimizedPackHeader.TOC_ENTRY_SIZE * numsuites);
+				(MinimizedPackHeader.TOC_ENTRY_SIZE * numSuites);
 			
 			// Write pack header
 			dos.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
 			
 			// Count and table of contents position
-			dos.writeInt(numsuites);
+			dos.writeInt(numSuites);
 			dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
 			
 			// Boot properties
-			dos.writeInt(Arrays.asList(suitemem).indexOf(superv));
-			dos.writeInt(superv.offset);
+			dos.writeInt(Arrays.asList(suiteMem).indexOf(bootLib));
+			dos.writeInt(bootLib.offset);
 			dos.writeInt(SuitesMemory.SUITE_CHUNK_SIZE);
 			dos.writeInt(0);
 			dos.writeInt(0);
@@ -267,9 +274,9 @@ public final class SuitesMemory
 			DataOutputStream ndos = new DataOutputStream(nbaos);
 			
 			// Write TOC
-			for (int i = 0; i < numsuites; i++)
+			for (int i = 0; i < numSuites; i++)
 			{
-				SuiteMemory suite = suitemem[i];
+				SuiteMemory suite = suiteMem[i];
 				
 				// Align name
 				while (((reloff + ndos.size()) & 1) != 0)

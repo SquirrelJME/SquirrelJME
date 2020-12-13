@@ -10,19 +10,20 @@
 package dev.shadowtail.packfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.summercoat.constants.JarProperty;
+import cc.squirreljme.jvm.summercoat.constants.PackProperty;
+import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
-import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
-import dev.shadowtail.classfile.mini.DualPoolEncoder;
-import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.jarfile.JarMinimizer;
-import dev.shadowtail.jarfile.MinimizedJarHeader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.io.ChunkDataType;
+import net.multiphasicapps.io.ChunkForwardedFuture;
 import net.multiphasicapps.io.ChunkSection;
 import net.multiphasicapps.io.ChunkWriter;
 
@@ -37,18 +38,14 @@ public class PackMinimizer
 	/**
 	 * Minimizes the class library.
 	 *
-	 * @param __boot The boot JAR used for the entry point.
-	 * @param __initcp The initial classpath, if any.
-	 * @param __mainbc Main boot class.
+	 * @param __bootLib The boot JAR used for the entry point.
 	 * @param __libs The libraries to minimize.
 	 * @return The resulting minimized pack file.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/29
 	 */
-	public static byte[] minimize(String __boot,
-		String[] __initcp, String __mainbc, boolean __ismid,
-		VMClassLibrary... __libs)
+	public static byte[] minimize(String __bootLib, VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
 		if (__libs == null)
@@ -59,8 +56,7 @@ public class PackMinimizer
 			new ByteArrayOutputStream(1048576))
 		{
 			// Minimize
-			PackMinimizer.minimize(baos, __boot, __initcp, __mainbc, __ismid,
-				__libs);
+			PackMinimizer.minimize(baos, __bootLib, __libs);
 			
 			// Return result
 			return baos.toByteArray();
@@ -70,131 +66,95 @@ public class PackMinimizer
 	/**
 	 * Minimizes the class library.
 	 *
-	 * @param __os The stream to write the minimized file to.
-	 * @param __boot The boot JAR used for the entry point.
-	 * @param __initcp Initial classpath.
-	 * @param __mainbc Main boot class.
-	 * @param __ismid Is this a MIDlet?
+	 * @param __out The stream to write the minimized file to.
+	 * @param __bootLib The boot JAR used for the entry point.
 	 * @param __libs The libraries to minimize.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/29
 	 */
-	public static void minimize(OutputStream __os, String __boot,
-		String[] __initcp, String __mainbc, boolean __ismid,
+	public static void minimize(OutputStream __out, String __bootLib,
 		VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
-		if (__os == null || __libs == null ||
-			(__boot != null && (__initcp == null || __mainbc == null)))
+		if (__out == null || __libs == null || __bootLib == null)
 			throw new NullPointerException("NARG");
 		
-		// Defensive copy and check for nulls
-		__initcp = (__initcp == null ? new String[0] : __initcp.clone());
-		for (int i = 0, n = __initcp.length; i < n; i++)
-		{
-			String vx = __initcp[i];
-			
-			if (vx == null)
-				throw new NullPointerException("NARG");
-			
-			// Append JAR always
-			if (SummerCoatJarLibrary.isSqc(vx))
-				__initcp[i] = vx.substring(0, vx.length() - 4) + ".sqc";
-			else if (!vx.endsWith(".jar"))
-				__initcp[i] = vx + ".jar";
-		}
-		
-		// Make sure it ends in JAR
-		if (SummerCoatJarLibrary.isSqc(__boot))
-			__boot = __boot.substring(0, __boot.length() - 4) + ".jar";
-		else if (!__boot.endsWith(".jar"))
-			__boot = __boot + ".jar";
+		// Make sure the boot JAR is normalized
+		__bootLib = PackMinimizer.normalizeJarName(__bootLib);
 		
 		// Write ROM sections
 		ChunkWriter out = new ChunkWriter();
 		
-		// Number of libraries to process
-		int numlibs = __libs.length;
-		
-		// Initialize classpath indexes
-		int numinitcp = __initcp.length;
-		int[] cpdx = new int[numinitcp];
-		
-		// Header and table of contents sections
+		// Start the header and table of contents, these will be written to
+		// accordingly as needed
 		ChunkSection header = out.addSection(
-			MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC, 4);
-		ChunkSection toc = out.addSection(
-			MinimizedPackHeader.TOC_ENTRY_SIZE * numlibs, 4);
+			ChunkWriter.VARIABLE_SIZE, 4);
 		
-		// Setup dual-pool where all combined values are stored as needed
-		DualClassRuntimePoolBuilder dualpool =
-			new DualClassRuntimePoolBuilder();
+		// Magic number and minimized format, since about November 2020 there
+		// is a new version format
+		header.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
+		header.writeShort(ClassInfoConstants.CLASS_VERSION_20201129);
 		
-		// Section of the boot JAR
-		int bootjarindex = -1;
-		ChunkSection bootjarsection = null;
+		// The number of properties used, is always constant for now
+		ChunkForwardedFuture[] properties = new ChunkForwardedFuture[
+			PackProperty.NUM_PACK_PROPERTIES];
+		header.writeUnsignedShortChecked(properties.length);
+		
+		// This value is currently meaningless so for now it is always zero
+		properties[PackProperty.INT_PACK_VERSION_ID].setInt(0);
+		
+		// Record timestamp of the packfile
+		long created = System.currentTimeMillis();
+		properties[PackProperty.TIME_DATE_HIGH].setInt((int)(created >>> 32));
+		properties[PackProperty.TIME_DATE_LOW].setInt((int)created);
+		
+		// Table of contents that represents the JAR
+		ChunkSection toc = out.addSection(ChunkWriter.VARIABLE_SIZE, 4);
+		properties[PackProperty.COUNT_TOC].setInt(__libs.length);
+		properties[PackProperty.OFFSET_TOC].set(toc.futureAddress());
+		properties[PackProperty.SIZE_TOC].set(toc.futureSize());
 		
 		// Go through each library, minimize and write!
-		for (int i = 0; i < numlibs; i++)
+		ChunkForwardedFuture[] tocFill = new ChunkForwardedFuture[
+			PackTocProperty.NUM_PACK_TOC_PROPERTIES];
+		for (int i = 0, n = __libs.length; i < n; i++)
 		{
-			VMClassLibrary lib = __libs[i];
-			String name = lib.name();
+			// Reset the table of contents fill
+			for (int q = 0; q < PackTocProperty.NUM_PACK_TOC_PROPERTIES; q++)
+				tocFill[q] = new ChunkForwardedFuture();
 			
-			// Is this a SummerCoat ROM?
+			VMClassLibrary lib = __libs[i];
+			
+			// Determine the normal name of the JAR and if this is a SQC
+			String name = PackMinimizer.normalizeJarName(lib.name());
 			boolean isSqc = SummerCoatJarLibrary.isSqc(name);
 			
-			// Normalize extension
-			if (isSqc)
-				name = name.substring(0, name.length() - 4) + ".sqc";
-			else if (!name.endsWith(".jar"))
-				name = name + ".jar";
+			// If this is the boot library, it goes to this one
+			boolean isBoot = __bootLib.equals(name);
+			if (isBoot)
+				properties[PackProperty.INDEX_BOOT_JAR].setInt(i);
 			
-			// Find library used in the initial classpath
-			for (int j = 0; j < numinitcp; j++)
-				if (name.equals(__initcp[j]))
-				{
-					cpdx[j] = i;
-					break;
-				}
+			// Hash code for the JAR, to find it quicker potentially
+			tocFill[PackTocProperty.INT_NAME_HASHCODE].setInt(name.hashCode());
 			
-			// Write name of JAR
-			ChunkSection jname = out.addSection(
+			// Spill in name
+			ChunkSection utfName = out.addSection(
 				ChunkWriter.VARIABLE_SIZE, 4);
-			jname.writeUTF(name);
+			utfName.writeUTF(name);
+			tocFill[PackTocProperty.OFFSET_NAME].set(utfName.futureAddress());
 			
 			// Output JAR data
-			ChunkSection jdata = out.addSection(
+			ChunkSection jarData = out.addSection(
 				ChunkWriter.VARIABLE_SIZE, 4);
 			
-			// Is this a boot library?
-			boolean isboot;
-			if ((isboot = name.equals(__boot)))
-			{
-				bootjarindex = i;
-				bootjarsection = jdata;
-			}
-			
-			// Writing could fail however, so this makes it easier to find
-			// the location of that failure
-			MinimizedJarHeader mjh;
-			try (InputStream rom = lib.resourceAsStream(
-				SummerCoatJarLibrary.ROM_CHUNK_RESOURCE))
-			{
-				// ROM is precompiled
-				if (isSqc)
+			// Direct SQC Copy, it is precompiled already and need not be
+			// recompiled again.
+			if (isSqc)
+				try (InputStream rom = lib.resourceAsStream(
+					SummerCoatJarLibrary.ROM_CHUNK_RESOURCE))
 				{
-					// {@squirreljme.error BI02 SQC is missing resource.}
-					if (rom == null)
-						throw new RuntimeException("BI02");
-					
-					// Header information
-					ByteArrayOutputStream rawHeader =
-						new ByteArrayOutputStream(
-							ClassInfoConstants.JAR_MAXIMUM_HEADER_SIZE);
-					
-					// Copy ROM directory to the ROM resource
-					byte[] buf = new byte[4096];
+					byte[] buf = new byte[16384];
 					for (;;)
 					{
 						int rc = rom.read(buf);
@@ -202,126 +162,57 @@ public class PackMinimizer
 						if (rc < 0)
 							break;
 						
-						// Store in header bytes for future reading
-						if (rawHeader.size() <
-							ClassInfoConstants.JAR_MAXIMUM_HEADER_SIZE)
-							rawHeader.write(buf, 0, Math.min(rc,
-								ClassInfoConstants.JAR_MAXIMUM_HEADER_SIZE));
-						
-						// Copy always the ROM since it will be used
-						// directly
-						jdata.write(buf, 0, rc);
+						jarData.write(buf, 0, rc);
 					}
-					
-					// Decode the raw header bytes that are part of the SQC
-					// since we need to know its information
-					mjh = MinimizedJarHeader.decode(new ByteArrayInputStream(
-						rawHeader.toByteArray()));
 				}
-				
-				// Jar must be compiled
-				else
-				{
-					// Used to get the header
-					MinimizedJarHeader[] mjha = new MinimizedJarHeader[1];
-					
-					// The boot JAR is completely stand-alone, so do not use
-					// a global JAR pool for it.
-					JarMinimizer.minimize((isboot ? null : dualpool), isboot,
-						lib, jdata, mjha);
-						
-					// Get the generated header
-					mjh = mjha[0];
-				}
-			}
 			
-			// {@squirreljme.error BI01 Could not minimize the JAR due to
-			// an invalid class file. (The name)}
-			catch (InvalidClassFormatException e)
-			{
-				throw new InvalidClassFormatException("BI01 " + name, e);
-			}
-			
-			// Write TOC details
-			toc.writeSectionAddressInt(jname);
-			toc.writeSectionAddressInt(jdata);
-			toc.writeSectionSizeInt(jdata);
-			
-			// Write manifest details if it is valid
-			if (mjh.getManifestlen() > 0)
-			{
-				toc.writeSectionAddressInt(jdata, mjh.getManifestoff());
-				toc.writeInt(mjh.getManifestlen());
-			}
+			// Normal JAR to be minimized
 			else
-			{
-				toc.writeInt(0);
-				toc.writeInt(0);
-			}
-		}
-		
-		// Write header details
-		header.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
-		header.writeInt(numlibs);
-		header.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
-		
-		// Optional BootJAR information
-		header.writeInt(bootjarindex);
-		if (bootjarsection != null)
-		{
-			header.writeSectionAddressInt(bootjarsection);
-			header.writeSectionSizeInt(bootjarsection);
-		}
-		else
-		{
-			header.writeInt(0);
-			header.writeInt(0);
-		}
-		
-		// Write initial classpath
-		ChunkSection icp = out.addSection(
-			ChunkWriter.VARIABLE_SIZE, 4);
-		for (int i = 0; i < numinitcp; i++)
-			icp.writeInt(cpdx[i]);
-		
-		// More boot information
-		header.writeSectionAddressInt(icp);
-		header.writeInt(numinitcp);
-		
-		// Main entry point name
-		if (__mainbc == null)
-		{
-			header.writeInt(0);
-			header.writeInt(0);
-		}
-		else
-		{
-			ChunkSection mcl = out.addSection(
-				ChunkWriter.VARIABLE_SIZE, 4);
+				try
+				{
+					JarMinimizer.minimize(null, isBoot, lib,
+						jarData, null);
+				}
+				catch (InvalidClassFormatException e)
+				{
+					// {@squirreljme.error BI01 Could not minimize the JAR due
+					// to an invalid class file. (The name)}
+					throw new InvalidClassFormatException("BI01 " + name, e);
+				}
 			
-			// Main class
-			mcl.writeUTF(__mainbc.replace('.', '/'));
-			header.writeSectionAddressInt(mcl);
-			
-			// Is this a MIDlet?
-			header.writeInt((__ismid ? 1 : -1));
+			// Store the TOC fill accordingly
+			for (int q = 0; q < PackTocProperty.NUM_PACK_TOC_PROPERTIES; q++)
+				toc.writeFuture(ChunkDataType.INTEGER, tocFill[q]);
 		}
 		
-		// Encode the constant pools
-		ChunkSection lpd = out.addSection(
-			ChunkWriter.VARIABLE_SIZE, 4);
-		DualPoolEncodeResult der = DualPoolEncoder.encode(dualpool, lpd);
+		// Verify values are set
+		for (int i = 0; i < JarProperty.NUM_JAR_PROPERTIES; i++)
+			if (!properties[i].isSet())
+				throw Debugging.oops(i);
 		
-		// Static pool
-		header.writeSectionAddressInt(lpd, der.staticpooloff);
-		header.writeInt(der.staticpoolsize);
+		// Write the resultant JAR to the output
+		out.writeTo(__out);
+	}
+	
+	/**
+	 * Normalizes the name of the JAR.
+	 * 
+	 * @param __name The JAR name.
+	 * @return The normalized name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/12
+	 */
+	private static String normalizeJarName(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
 		
-		// Run-time pool
-		header.writeSectionAddressInt(lpd, der.runtimepooloff);
-		header.writeInt(der.runtimepoolsize);
-		
-		// Finish off
-		out.writeTo(__os);
+		if (SummerCoatJarLibrary.isSqc(__name))
+			return __name.substring(0, __name.length() - 4) + ".sqc";
+		else if (!__name.endsWith(".jar"))
+			return __name + ".jar";
+		return __name;
 	}
 }
 

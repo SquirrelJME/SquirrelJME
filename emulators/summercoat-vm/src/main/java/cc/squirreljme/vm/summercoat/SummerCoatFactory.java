@@ -10,14 +10,15 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.jvm.config.ConfigRomKey;
-import cc.squirreljme.jvm.summercoat.constants.PackProperty;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jvm.config.ConfigRomKey;
+import cc.squirreljme.jvm.summercoat.constants.PackProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.jarfile.MinimizedJarTOC;
@@ -33,7 +34,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import todo.DEBUG;
 
 /**
@@ -102,26 +102,11 @@ public class SummerCoatFactory
 		vMem.mapRegion(romMemory);
 		int romSize = romMemory.memRegionSize();
 		
-		// Determine the address of the boot JAR and its header
-		MinimizedPackHeader packHeader;
-		MinimizedPackTOC packToc;
-		try (InputStream packIn = new ReadableMemoryInputStream(romMemory))
-		{
-			// Read the pack header
-			packHeader = MinimizedPackHeader.decode(packIn);
-			
-			// Parse the table of contents
-			try (InputStream packTocIn = new ReadableMemoryInputStream(
-				romMemory, packHeader.get(PackProperty.OFFSET_TOC),
-				packHeader.get(PackProperty.SIZE_TOC)))
-			{
-				packToc = MinimizedPackTOC.decode(packTocIn);
-			}
-		}
-		catch (IOException e)
-		{
-			throw new VMException("Could not read pack headers.", e);
-		}
+		// Read in the appropriate ROM header
+		MinimizedPackTOC[] packTocOut = new MinimizedPackTOC[1];
+		MinimizedPackHeader packHeader =
+			SummerCoatFactory.__loadRomHeader(romMemory, packTocOut);
+		MinimizedPackTOC packToc = packTocOut[0];
 		
 		// Load the boot JAR information
 		MinimizedJarHeader bootJarHeader;
@@ -414,6 +399,9 @@ public class SummerCoatFactory
 			// Debug
 			Debugging.debugNote("Using ROM %s", romFile);
 			
+			// Resultant ROM memory
+			ByteArrayMemory romMemory;
+			
 			// Copy all of the file data
 			Path p = Paths.get(romFile);
 			try (InputStream in = Files.newInputStream(p,
@@ -434,7 +422,7 @@ public class SummerCoatFactory
 				}
 				
 				// Initialize memory with the ROM data
-				return new ByteArrayMemory(__romBase, baos.toByteArray());
+				romMemory = new ByteArrayMemory(__romBase, baos.toByteArray());
 			}
 			
 			// {@squirreljme.error AE0c Could not load SummerCoat ROM. (File)}
@@ -442,6 +430,8 @@ public class SummerCoatFactory
 			{
 				throw new RuntimeException("AE0c " + romFile, e);
 			}
+			
+			return romMemory;
 		}
 		
 		// Dynamically initialized suite memory
@@ -480,6 +470,44 @@ public class SummerCoatFactory
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Loads the ROM header.
+	 * 
+	 * @param __rom The ROM to read from.
+	 * @param __packToc The output table of contents.
+	 * @return The read pack header.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/12
+	 */
+	private static MinimizedPackHeader __loadRomHeader(ReadableMemory __rom,
+		MinimizedPackTOC[] __packToc)
+		throws NullPointerException
+	{
+		if (__rom == null || __packToc == null)
+			throw new NullPointerException("NARG");
+		
+		// Read header data from memory
+		try (InputStream packIn = new ReadableMemoryInputStream(__rom))
+		{
+			// Read the pack header
+			MinimizedPackHeader header = MinimizedPackHeader.decode(packIn);
+			
+			// Parse the table of contents
+			try (InputStream packTocIn = new ReadableMemoryInputStream(
+				__rom, header.get(PackProperty.OFFSET_TOC),
+				header.get(PackProperty.SIZE_TOC)))
+			{
+				__packToc[0] = MinimizedPackTOC.decode(packTocIn);
+			}
+			
+			return header;
+		}
+		catch (IOException e)
+		{
+			throw new VMException("Could not read pack headers.", e);
+		}
 	}
 }
 
