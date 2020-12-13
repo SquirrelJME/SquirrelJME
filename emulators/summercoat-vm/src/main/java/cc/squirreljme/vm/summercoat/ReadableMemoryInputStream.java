@@ -41,7 +41,10 @@ public final class ReadableMemoryInputStream
 	public ReadableMemoryInputStream(ReadableMemory __mem)
 		throws NullPointerException
 	{
-		this(__mem, 0/*__mem.memRegionOffset()*/, __mem.memRegionSize());
+		// The address is zero and not __mem.memRegionOffset() because this
+		// address is relative to the piece of memory and not the address
+		// of that memory
+		this(__mem, 0, __mem.memRegionSize());
 	}
 	
 	/**

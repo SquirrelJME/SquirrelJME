@@ -158,6 +158,11 @@ public final class SuitesMemory
 		// ROM memory was not initialized, so it is invalid
 		if (!this._didInit)
 			throw new IllegalStateException("Memory not initialized.");
+			
+		// Negative address accessed
+		if (__addr < 0)
+			throw new VMException(String.format(
+				"Negative address byte read: %#08x", __addr));
 		
 		// Reading from the config table?
 		if (__addr >= 0 && __addr < SuitesMemory.ROM_HEADER_SIZE)
