@@ -14,7 +14,10 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.PreAddressedClassLibrary;
+import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.packfile.MinimizedPackHeader;
+import dev.shadowtail.packfile.PackMinimizer;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -93,11 +96,7 @@ public final class SuitesMemory
 		for (int i = 0; i < n; i++, off += SuitesMemory.SUITE_CHUNK_SIZE)
 		{
 			// Need the suite name for later lookup on init
-			String libname = libNames[i];
-			
-			// Normalize and add JAR
-			if (!libname.endsWith(".jar"))
-				libname = libname + ".jar";
+			String libname = PackMinimizer.normalizeJarName(libNames[i]);
 			
 			// Map suite
 			SuiteMemory sm;
@@ -180,7 +179,7 @@ public final class SuitesMemory
 		SuiteMemory[] suiteMem = this._suitemem;
 		if (si < 0 || si >= suiteMem.length)
 			throw new VMException(String.format(
-				"Invalid byte read: %08x (%d relative)", __addr, si));
+				"Invalid byte read: %#08x (%d relative)", __addr, si));
 		
 		// Read from suite memory
 		return suiteMem[si].memReadByte(__addr - suiteMem[si].offset);
@@ -236,23 +235,23 @@ public final class SuitesMemory
 		SuiteMemory[] suiteMem = this._suitemem;
 		int numSuites = suiteMem.length;
 		
+		// Use virtually set predefined addresses so we can recycle the
+		// minimizer writing code without needing to duplicate everything
+		// This ensures that it works as well.
+		VMClassLibrary[] pre = new VMClassLibrary[numSuites];
+		for (int i = 0; i < numSuites; i++)
+		{
+			SuiteMemory from = suiteMem[i];
+			pre[i] = new PreAddressedClassLibrary(from.memRegionOffset(),
+				from.memRegionSize(), from.libName);
+		}
+		
 		// Write the virtual header
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
-			ChunkWriter out = new ChunkWriter();
+			PackMinimizer.minimize(baos, bootLib.libName, pre); 
 			
-			// Start of header
-			ChunkSection header = out.addSection(
-				ChunkWriter.VARIABLE_SIZE, 4);
-			header.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
-			header.writeShort(ClassInfoConstants.CLASS_VERSION_20201129);
-			header.writeShort(PackProperty.NUM_PACK_PROPERTIES);
-			
-			if (true)
-				throw Debugging.todo();
-			
-			// Store written configuration table
-			out.writeTo(baos);
+			// Store ROM virtual header
 			this._headerRom = new ByteArrayMemory(this.offset,
 				baos.toByteArray());
 		}
@@ -261,84 +260,6 @@ public final class SuitesMemory
 		catch (IOException e)
 		{
 			throw new RuntimeException("Could not write virtual header.", e);
-		}
-		
-		if (true)
-			throw Debugging.todo();
-		
-		// Build a virtualized pack header which works with SummerCoat and
-		// matches the ROM format (just appears as a larger ROM)
-		int packoffset = this.offset;
-		try (ByteArrayOutputStream pbaos = new ByteArrayOutputStream(4096);
-			DataOutputStream dos = new DataOutputStream(pbaos))
-		{
-			// Relative offset for names
-			int reloff = MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC +
-				(MinimizedPackHeader.TOC_ENTRY_SIZE * numSuites);
-			
-			// Write pack header
-			dos.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
-			
-			// Count and table of contents position
-			dos.writeInt(numSuites);
-			dos.writeInt(MinimizedPackHeader.HEADER_SIZE_WITH_MAGIC);
-			
-			// Boot properties
-			dos.writeInt(Arrays.asList(suiteMem).indexOf(bootLib));
-			dos.writeInt(bootLib.offset);
-			dos.writeInt(SuitesMemory.SUITE_CHUNK_SIZE);
-			dos.writeInt(0);
-			dos.writeInt(0);
-			dos.writeInt(0);
-			dos.writeInt(0);
-			
-			// Class and run-time constant pools
-			dos.writeInt(0);
-			dos.writeInt(0);
-			dos.writeInt(0);
-			dos.writeInt(0);
-			
-			// Name table output
-			ByteArrayOutputStream nbaos = new ByteArrayOutputStream(4096);
-			DataOutputStream ndos = new DataOutputStream(nbaos);
-			
-			// Write TOC
-			for (int i = 0; i < numSuites; i++)
-			{
-				SuiteMemory suite = suiteMem[i];
-				
-				// Align name
-				while (((reloff + ndos.size()) & 1) != 0)
-					ndos.write(0);
-				
-				// Name position
-				dos.writeInt(reloff + ndos.size());
-				
-				// Write name
-				ndos.writeUTF(suite.libname);
-				
-				// Offset and size of the chunk
-				dos.writeInt(suite.offset);
-				dos.writeInt(SuitesMemory.SUITE_CHUNK_SIZE);
-				
-				// The manifest is not known, must be searched
-				dos.writeInt(0);
-				dos.writeInt(0);
-			}
-			
-			// Write name table
-			nbaos.writeTo(dos);
-			
-			// Store written configuration table
-			ReadableMemory configtable = new ByteArrayMemory(packoffset,
-				pbaos.toByteArray());
-			this._headerRom = configtable;
-		}
-		
-		// {@squirreljme.error AE0b Could not write the virtual packfile.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("AE0b", e);
 		}
 	}
 }

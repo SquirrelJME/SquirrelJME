@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.PreAddressedClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.jarfile.JarMinimizer;
@@ -101,6 +102,18 @@ public class PackMinimizer
 			PackProperty.NUM_PACK_PROPERTIES];
 		header.writeUnsignedShortChecked(properties.length);
 		
+		// Initialize empty properties
+		for (int i = 0; i < PackProperty.NUM_PACK_PROPERTIES; i++)
+		{
+			// Initialize the future that will later be used to initialize
+			// the value.
+			ChunkForwardedFuture future = new ChunkForwardedFuture();
+			properties[i] = future;
+			
+			// This property is written here
+			header.writeFuture(ChunkDataType.INTEGER, future);
+		}
+		
 		// This value is currently meaningless so for now it is always zero
 		properties[PackProperty.INT_PACK_VERSION_ID].setInt(0);
 		
@@ -126,6 +139,12 @@ public class PackMinimizer
 			
 			VMClassLibrary lib = __libs[i];
 			
+			// No flags are currently defined
+			tocFill[PackTocProperty.INT_FLAGS].setInt(0);
+			
+			// Is this a pre-addressed library?
+			boolean isPreAddr = (lib instanceof PreAddressedClassLibrary);
+			
 			// Determine the normal name of the JAR and if this is a SQC
 			String name = PackMinimizer.normalizeJarName(lib.name());
 			boolean isSqc = SummerCoatJarLibrary.isSqc(name);
@@ -144,49 +163,74 @@ public class PackMinimizer
 			utfName.writeUTF(name);
 			tocFill[PackTocProperty.OFFSET_NAME].set(utfName.futureAddress());
 			
-			// Output JAR data
-			ChunkSection jarData = out.addSection(
-				ChunkWriter.VARIABLE_SIZE, 4);
+			// Is the offset and size of this JAR pre-addressed? If it is then
+			// we do not need to compile or copy the ROM since the address
+			// is already known.
+			if (isPreAddr)
+			{
+				PreAddressedClassLibrary pre = (PreAddressedClassLibrary)lib;
+				
+				tocFill[PackTocProperty.OFFSET_DATA].setInt(pre.offset);
+				tocFill[PackTocProperty.SIZE_DATA].setInt(pre.size);
+			}
 			
-			// Direct SQC Copy, it is precompiled already and need not be
-			// recompiled again.
-			if (isSqc)
-				try (InputStream rom = lib.resourceAsStream(
-					SummerCoatJarLibrary.ROM_CHUNK_RESOURCE))
-				{
-					byte[] buf = new byte[16384];
-					for (;;)
-					{
-						int rc = rom.read(buf);
-						
-						if (rc < 0)
-							break;
-						
-						jarData.write(buf, 0, rc);
-					}
-				}
-			
-			// Normal JAR to be minimized
+			// Is a JAR that needs to be copied in or stored
 			else
-				try
-				{
-					JarMinimizer.minimize(null, isBoot, lib,
-						jarData, null);
-				}
-				catch (InvalidClassFormatException e)
-				{
-					// {@squirreljme.error BI01 Could not minimize the JAR due
-					// to an invalid class file. (The name)}
-					throw new InvalidClassFormatException("BI01 " + name, e);
-				}
+			{
+				// Output JAR data
+				ChunkSection jarData = out.addSection(
+					ChunkWriter.VARIABLE_SIZE, 4);
+				tocFill[PackTocProperty.OFFSET_DATA]
+					.set(jarData.futureAddress());
+				tocFill[PackTocProperty.SIZE_DATA]
+					.set(jarData.futureSize());
+			
+				// Direct SQC Copy, it is precompiled already and need not be
+				// recompiled again.
+				if (isSqc)
+					try (InputStream rom = lib.resourceAsStream(
+						SummerCoatJarLibrary.ROM_CHUNK_RESOURCE))
+					{
+						byte[] buf = new byte[16384];
+						for (;;)
+						{
+							int rc = rom.read(buf);
+							
+							if (rc < 0)
+								break;
+							
+							jarData.write(buf, 0, rc);
+						}
+					}
+				
+				// Normal JAR to be minimized
+				else
+					try
+					{
+						JarMinimizer.minimize(null, isBoot, lib,
+							jarData, null);
+					}
+					catch (InvalidClassFormatException e)
+					{
+						// {@squirreljme.error BI01 Could not minimize the JAR
+						// due to an invalid class file. (The name)}
+						throw new InvalidClassFormatException(
+							"BI01 " + name, e);
+					}
+			}
 			
 			// Store the TOC fill accordingly
 			for (int q = 0; q < PackTocProperty.NUM_PACK_TOC_PROPERTIES; q++)
+			{
+				if (!tocFill[q].isSet())
+					throw Debugging.oops(q);
+				
 				toc.writeFuture(ChunkDataType.INTEGER, tocFill[q]);
+			}
 		}
 		
 		// Verify values are set
-		for (int i = 0; i < JarProperty.NUM_JAR_PROPERTIES; i++)
+		for (int i = 0; i < PackProperty.NUM_PACK_PROPERTIES; i++)
 			if (!properties[i].isSet())
 				throw Debugging.oops(i);
 		
@@ -202,7 +246,7 @@ public class PackMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/12
 	 */
-	private static String normalizeJarName(String __name)
+	public static String normalizeJarName(String __name)
 		throws NullPointerException
 	{
 		if (__name == null)

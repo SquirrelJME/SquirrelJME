@@ -32,7 +32,7 @@ public final class SuiteMemory
 	protected final VMSuiteManager suites;
 	
 	/** The library this uses. */
-	protected final String libname;
+	protected final String libName;
 	
 	/** The offset to this memory region. */
 	protected final int offset;
@@ -61,7 +61,7 @@ public final class SuiteMemory
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
-		this.libname = __ln;
+		this.libName = __ln;
 		this.offset = __off;
 	}
 	
@@ -189,7 +189,7 @@ public final class SuiteMemory
 		this._didinit = true;
 		
 		// Load the class library
-		String libname = this.libname;
+		String libname = this.libName;
 		VMClassLibrary clib = this.__loadLibrary(libname);
 		
 		// Debug
