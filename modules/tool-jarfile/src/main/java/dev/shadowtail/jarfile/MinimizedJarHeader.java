@@ -149,11 +149,11 @@ public final class MinimizedJarHeader
 		DataInputStream dis = new DataInputStream(__in);
 		
 		// {@squirreljme.error BC06 Invalid minimized Jar magic number.
-		// (The magic number)}
+		// (The magic number; The expected magic number)}
 		int magic;
 		if (ClassInfoConstants.JAR_MAGIC_NUMBER != (magic = dis.readInt()))
-			throw new InvalidClassFormatException(String.format("BC06 %08x",
-				magic));
+			throw new InvalidClassFormatException(String.format(
+				"BC06 %08x %08x", magic, ClassInfoConstants.JAR_MAGIC_NUMBER));
 		
 		// {@squirreljme.error BC0g Cannot decode class because the version
 		// identifier is not known. (The format version of the class)}

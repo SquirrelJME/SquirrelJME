@@ -11,6 +11,7 @@ package dev.shadowtail.packfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
+import cc.squirreljme.jvm.summercoat.constants.JarTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -127,6 +128,11 @@ public class PackMinimizer
 		properties[PackProperty.COUNT_TOC].setInt(__libs.length);
 		properties[PackProperty.OFFSET_TOC].set(toc.futureAddress());
 		properties[PackProperty.SIZE_TOC].set(toc.futureSize());
+		
+		// Start the table of contents off with the number of entries and the
+		// ints per entry
+		toc.writeUnsignedShortChecked(__libs.length);
+		toc.writeUnsignedShortChecked(PackTocProperty.NUM_PACK_TOC_PROPERTIES);
 		
 		// Go through each library, minimize and write!
 		ChunkForwardedFuture[] tocFill = new ChunkForwardedFuture[

@@ -21,9 +21,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
-import dev.shadowtail.jarfile.MinimizedJarTOC;
+import dev.shadowtail.jarfile.TableOfContents;
 import dev.shadowtail.packfile.MinimizedPackHeader;
-import dev.shadowtail.packfile.MinimizedPackTOC;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -103,14 +102,15 @@ public class SummerCoatFactory
 		int romSize = romMemory.memRegionSize();
 		
 		// Read in the appropriate ROM header
-		MinimizedPackTOC[] packTocOut = new MinimizedPackTOC[1];
+		TableOfContents<MinimizedPackHeader>[] packTocOut =
+			new TableOfContents[1];
 		MinimizedPackHeader packHeader =
 			SummerCoatFactory.__loadRomHeader(romMemory, packTocOut);
-		MinimizedPackTOC packToc = packTocOut[0];
+		TableOfContents<MinimizedPackHeader> packToc = packTocOut[0];
 		
 		// Load the boot JAR information
 		MinimizedJarHeader bootJarHeader;
-		MinimizedJarTOC bootJarToc;
+		TableOfContents<MinimizedJarHeader> bootJarToc;
 		try (InputStream packIn = new ReadableMemoryInputStream(
 			romMemory, 0, romMemory.memRegionSize()))
 		{
@@ -122,7 +122,8 @@ public class SummerCoatFactory
 				romMemory, bootJarHeader.get(PackProperty.OFFSET_TOC),
 				bootJarHeader.get(PackProperty.SIZE_TOC)))
 			{
-				bootJarToc = MinimizedJarTOC.decode(packTocIn);
+				bootJarToc = TableOfContents.<MinimizedJarHeader>decode(
+					MinimizedJarHeader.class, packTocIn);
 			}
 		}
 		catch (IOException e)
@@ -483,7 +484,7 @@ public class SummerCoatFactory
 	 * @since 2020/12/12
 	 */
 	private static MinimizedPackHeader __loadRomHeader(ReadableMemory __rom,
-		MinimizedPackTOC[] __packToc)
+		TableOfContents<MinimizedPackHeader>[] __packToc)
 		throws NullPointerException
 	{
 		if (__rom == null || __packToc == null)
@@ -500,7 +501,8 @@ public class SummerCoatFactory
 				__rom, header.get(PackProperty.OFFSET_TOC),
 				header.get(PackProperty.SIZE_TOC)))
 			{
-				__packToc[0] = MinimizedPackTOC.decode(packTocIn);
+				__packToc[0] = TableOfContents.<MinimizedPackHeader>decode(
+					MinimizedPackHeader.class, packTocIn);
 			}
 			
 			return header;

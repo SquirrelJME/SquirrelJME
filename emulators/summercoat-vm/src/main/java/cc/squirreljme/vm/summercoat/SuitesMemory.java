@@ -165,7 +165,7 @@ public final class SuitesMemory
 				"Negative address byte read: %#08x", __addr));
 		
 		// Reading from the config table?
-		if (__addr >= 0 && __addr < SuitesMemory.ROM_HEADER_SIZE)
+		if (__addr < SuitesMemory.ROM_HEADER_SIZE)
 			return this._headerRom.memReadByte(__addr);
 		
 		// Determine the suite index we are wanting to look in memory
@@ -174,7 +174,7 @@ public final class SuitesMemory
 		
 		// Fail if illegal memory is read, this should never happen
 		SuiteMemory[] suiteMem = this._suitemem;
-		if (si < 0 || si >= suiteMem.length)
+		if (si >= suiteMem.length)
 			throw new VMException(String.format(
 				"Invalid byte read: %#08x (library: %d of %d)",
 				__addr, si, suiteMem.length));
