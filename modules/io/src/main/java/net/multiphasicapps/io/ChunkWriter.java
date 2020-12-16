@@ -160,7 +160,7 @@ public final class ChunkWriter
 	 */
 	public final int fileSize()
 	{
-		this.__undirty();
+		this.undirty();
 		return this._fileSize;
 	}
 	
@@ -189,7 +189,7 @@ public final class ChunkWriter
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		this.__undirty();
+		this.undirty();
 		return __s._writeAddr;
 	}
 	
@@ -207,7 +207,7 @@ public final class ChunkWriter
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		this.__undirty();
+		this.undirty();
 		return __s._writeSize;
 	}
 	
@@ -239,6 +239,50 @@ public final class ChunkWriter
 	}
 	
 	/**
+	 * Un-dirties and calculates all the section layout and information.
+	 *
+	 * @since 2019/08/25
+	 */
+	public void undirty()
+	{
+		// There is no need to calculate if this is not dirty at all
+		__Dirty__ dirty = this._dirty;
+		if (!dirty._dirty)
+			return;
+		
+		// Our current file size
+		int fileSize = 0;
+		
+		// We must go through all of the sections, perform their required
+		// alignment while additionally calculating their addresses within
+		// the file for section references.
+		List<ChunkSection> sections = this._sections;
+		for (int i = 0, n = sections.size(); i < n; i++)
+		{
+			ChunkSection section = sections.get(i);
+			
+			// Perform alignment of this section
+			if ((fileSize % section.alignment) != 0)
+				fileSize += section.alignment - (fileSize % section.alignment);
+			
+			// Section is addressed here
+			section._writeAddr = fileSize;
+			
+			// Move the current file size up by the section's size
+			int writeSize = (section.isVariable ?
+				section._size : section.fixedSize);
+			fileSize += writeSize;
+			section._writeSize = writeSize;
+		}
+		
+		// Store file size
+		this._fileSize = fileSize;
+		
+		// Clear dirty flag
+		dirty._dirty = false;
+	}
+	
+	/**
 	 * Writes the table file to the given output stream.
 	 *
 	 * @param __os The stream to write to.
@@ -256,7 +300,7 @@ public final class ChunkWriter
 		int writePtr = 0;
 		
 		// Un-dirty and get the file size
-		this.__undirty();
+		this.undirty();
 		
 		// Write each individual section to the output stream
 		List<ChunkSection> sections = this._sections;
@@ -316,49 +360,5 @@ public final class ChunkWriter
 				writePtr++;
 			}
 		}
-	}
-	
-	/**
-	 * Undirties and calculations all the section layout and information.
-	 *
-	 * @since 2019/08/25
-	 */
-	private void __undirty()
-	{
-		// There is no need to calculate if this is not dirty at all
-		__Dirty__ dirty = this._dirty;
-		if (!dirty._dirty)
-			return;
-		
-		// Our current file size
-		int fileSize = 0;
-		
-		// We must go through all of the sections, perform their required
-		// alignment while additionally calculating their addresses within
-		// the file for section references.
-		List<ChunkSection> sections = this._sections;
-		for (int i = 0, n = sections.size(); i < n; i++)
-		{
-			ChunkSection section = sections.get(i);
-			
-			// Perform alignment of this section
-			if ((fileSize % section.alignment) != 0)
-				fileSize += section.alignment - (fileSize % section.alignment);
-			
-			// Section is addressed here
-			section._writeAddr = fileSize;
-			
-			// Move the current file size up by the section's size
-			int writeSize = (section.isVariable ?
-				section._size : section.fixedSize);
-			fileSize += writeSize;
-			section._writeSize = writeSize;
-		}
-		
-		// Store file size
-		this._fileSize = fileSize;
-		
-		// Clear dirty flag
-		dirty._dirty = false;
 	}
 }

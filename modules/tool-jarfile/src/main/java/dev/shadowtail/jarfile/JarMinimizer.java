@@ -18,6 +18,7 @@ import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.DualPoolEncodeResult;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.Minimizer;
+import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -223,7 +224,7 @@ public final class JarMinimizer
 			tocFill[JarTocProperty.OFFSET_DATA].set(rcData.futureAddress());
 			tocFill[JarTocProperty.SIZE_DATA].set(rcData.futureSize());
 			
-			// Process the resource
+			// Process the resources
 			try (InputStream in = input.resourceAsStream(rc))
 			{
 				// Minimize directly to the JARs
@@ -234,10 +235,9 @@ public final class JarMinimizer
 					// If we are setting up the boot state, add this class for
 					// later processing
 					if (isBoot)
-						try (InputStream rcIn = rcData.currentStream())
-						{
-							bootState.addClass(rcIn, isBootClass);
-						}
+						bootState.addClass(
+							new ClassName(rc.substring(0, rc.length() - 6)),
+							rcData, isBootClass);
 				}
 				
 				// Otherwise perform a plain copy operation
@@ -263,10 +263,65 @@ public final class JarMinimizer
 		if (!properties[JarProperty.RCDX_MANIFEST].isSet())
 			properties[JarProperty.RCDX_MANIFEST].setInt(-1);
 		
-		// Doing bootstrapping?
-		/*
-		if (bootstrap != null)
+		// We are using our own dual pool, so write it out as if it were
+		// in the pack file. It is only local to this JAR.
+		ChunkSection lpd = null;
+		if (isBoot || this.isOurDualPool)
 		{
+			// Encode pool into a new section
+			lpd = out.addSection(ChunkWriter.VARIABLE_SIZE, 4);
+			DualPoolEncodeResult der = DualPoolEncoder.encode(dualPool, lpd);
+			
+			// Static pool
+			properties[JarProperty.OFFSET_STATIC_POOL]
+				.set(lpd.futureAddress(der.staticpooloff));
+			properties[JarProperty.SIZE_STATIC_POOL]
+				.setInt(der.staticpoolsize);
+			
+			// Run-time pool
+			properties[JarProperty.OFFSET_RUNTIME_POOL]
+				.set(lpd.futureAddress(der.runtimepooloff));
+			properties[JarProperty.SIZE_RUNTIME_POOL]
+				.setInt(der.runtimepoolsize);
+		}
+		
+		// We are using the global pack pool, so set special indicators
+		// that we are doing as such! The minimized class will use special
+		// a special aliased pool for the pack file.
+		else
+		{
+			// Static pool offset and size
+			properties[JarProperty.OFFSET_STATIC_POOL].setInt(-1);
+			properties[JarProperty.SIZE_STATIC_POOL].setInt(-1);
+			
+			// Runtime pool offset and size
+			properties[JarProperty.OFFSET_RUNTIME_POOL].setInt(-1);
+			properties[JarProperty.SIZE_RUNTIME_POOL].setInt(-1);
+		}
+		
+		// Doing bootstrapping?
+		if (isBoot)
+		{
+			// Make sure all the addresses and otherwise are filled so we know
+			// our own offsets and otherwise.
+			out.undirty();
+			
+			// Load the pool we just created for the JAR, since we need to
+			// use it for processing
+			byte[] poolBytes = lpd.currentBytes();
+			int lpdStart = lpd.futureAddress().get();
+			DualClassRuntimePool decPool = DualPoolEncoder.decode(poolBytes,
+				properties[JarProperty.OFFSET_STATIC_POOL].get() -
+					lpdStart, properties[JarProperty.SIZE_STATIC_POOL].get(),
+				properties[JarProperty.OFFSET_RUNTIME_POOL].get() -
+					lpdStart, properties[JarProperty.SIZE_RUNTIME_POOL].get());
+			
+			// Tell the state to actually boot the system
+			bootState.boot(decPool);
+			
+			if (true)
+				throw Debugging.todo();
+			/*
 			// The class being booted
 			LoadedClassInfo booting = bootstrap.findClass(
 				"cc/squirreljme/jvm/summercoat/Bootstrap");
@@ -308,52 +363,18 @@ public final class JarMinimizer
 			// Debug
 			if (JarMinimizer._ENABLE_DEBUG)
 				Debugging.debugNote("Boot entry: %d/0x%08x", bootmeth, bootmeth);
+				
+			 */
 		}
 		
 		// No bootstrapping to be done
-		else*/
+		else
 		{
 			// No boot properties are valid here
 			properties[JarProperty.OFFSET_BOOT_INIT].setInt(0);
 			properties[JarProperty.OFFSET_BOOT_SIZE].setInt(0);
 			properties[JarProperty.METHODPTRDX_ENTRY_POOL].setInt(0);
 			properties[JarProperty.RCDX_START_CLASS].setInt(0);
-		}
-		
-		// We are using our own dual pool, so write it out as if it were
-		// in the pack file. It is only local to this JAR.
-		if (this.isOurDualPool && dualPool != null)
-		{
-			// Encode pool into a new section
-			ChunkSection lpd = out.addSection(
-				ChunkWriter.VARIABLE_SIZE, 4);
-			DualPoolEncodeResult der = DualPoolEncoder.encode(dualPool, lpd);
-			
-			// Static pool
-			properties[JarProperty.OFFSET_STATIC_POOL]
-				.set(lpd.futureAddress(der.staticpooloff));
-			properties[JarProperty.SIZE_STATIC_POOL]
-				.setInt(der.staticpoolsize);
-			
-			// Run-time pool
-			properties[JarProperty.OFFSET_RUNTIME_POOL]
-				.set(lpd.futureAddress(der.runtimepooloff));
-			properties[JarProperty.SIZE_RUNTIME_POOL]
-				.setInt(der.runtimepoolsize);
-		}
-		
-		// We are using the global pack pool, so set special indicators
-		// that we are doing as such! The minimized class will use special
-		// a special aliased pool for the pack file.
-		else
-		{
-			// Static pool offset and size
-			properties[JarProperty.OFFSET_STATIC_POOL].setInt(-1);
-			properties[JarProperty.SIZE_STATIC_POOL].setInt(-1);
-			
-			// Runtime pool offset and size
-			properties[JarProperty.OFFSET_RUNTIME_POOL].setInt(-1);
-			properties[JarProperty.SIZE_RUNTIME_POOL].setInt(-1);
 		}
 		
 		// Verify values are set

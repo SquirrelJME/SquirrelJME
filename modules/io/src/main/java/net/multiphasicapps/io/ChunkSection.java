@@ -110,6 +110,17 @@ public final class ChunkSection
 	}
 	
 	/**
+	 * Returns a byte array of all the data that was written.
+	 * 
+	 * @return A copy of the byte array that makes up this data.
+	 * @since 2020/12/16
+	 */
+	public byte[] currentBytes()
+	{
+		return Arrays.copyOf(this._data, this._size);
+	}
+	
+	/**
 	 * Returns an input stream of what is currently in the input buffer, it is
 	 * undefined whether or not future data is written or not.
 	 * 

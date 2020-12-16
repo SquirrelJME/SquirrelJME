@@ -334,42 +334,25 @@ public final class MinimizedClassFile
 			throw new NullPointerException("NARG");
 		
 		// Initialize byte array with guess to how many bytes can be read
-		byte[] mcdata;
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
 			Math.min(1048576, __is.available())))
 		{
-			// Read the entire header for the class
-			for (int i = 0; i < ClassInfoConstants.CLASS_MAXIMUM_HEADER_SIZE;
-				i++)
-				baos.write(__is.read());
-			
-			// Read the data size to determine how much to read
-			byte[] xhead = baos.toByteArray();
-			int datasize = ((xhead[92] & 0xFF) << 24) |
-				((xhead[93] & 0xFF) << 16) |
-				((xhead[94] & 0xFF) << 8) |
-				((xhead[95] & 0xFF));
-			
 			// Read all the data size bytes
-			byte[] buf = new byte[512];
-			for (int left = datasize; left > 0;)
+			byte[] buf = new byte[8192];
+			for (;;)
 			{
-				int rc = __is.read(buf, 0, (Math.min(512, left)));
+				int rc = __is.read(buf);
 				
 				// EOF?
 				if (rc < 0)
 					break;
 				
 				baos.write(buf, 0, rc);
-				left -= rc;
 			}
 			
 			// Finish off
-			mcdata = baos.toByteArray();
+			return MinimizedClassFile.decode(baos.toByteArray(), __ppool);
 		}
-		
-		// Decode now
-		return MinimizedClassFile.decode(mcdata, __ppool);
 	}
 	
 	/**
@@ -436,13 +419,17 @@ public final class MinimizedClassFile
 			
 			// Virtual constant pool which relies on a parent one
 			DualClassRuntimePool pool;
-			if (header.getStaticpoolsize() < 0 || header.getRuntimepoolsize() < 0)
+			if (header.getStaticpoolsize() < 0 ||
+				header.getRuntimepoolsize() < 0)
 			{
 				// {@squirreljme.error JC4h No parent pool was specified.}
 				if (__ppool == null)
 					throw new NullPointerException("JC4h");
-				
-				throw Debugging.todo();
+					
+				pool = DualPoolEncoder.decodeLayered(__is,
+					header.getStaticpooloff(), -header.getStaticpoolsize(),
+					header.getRuntimepooloff(), -header.getRuntimepoolsize(),
+					__ppool);
 			}
 			
 			// Decode physical pool within the class

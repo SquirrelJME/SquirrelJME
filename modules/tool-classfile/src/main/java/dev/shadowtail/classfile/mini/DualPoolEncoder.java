@@ -350,6 +350,74 @@ public final class DualPoolEncoder
 	}
 	
 	/**
+	 * Decodes the specified layered pool.
+	 *
+	 * @param __b The input byte array.
+	 * @param __co The class pool offset.
+	 * @param __cl The class pool length.
+	 * @param __ro The run-time pool offset.
+	 * @param __rl The run-time pool length.
+	 * @param __pool The pool to layer from.
+	 * @return The resulting dual pool.
+	 * @throws InvalidClassFormatException If the pool is not valid.
+	 * @throws IOException If the pool could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2002/12/16
+	 */
+	public static DualClassRuntimePool decodeLayered(byte[] __b,
+		int __co, int __cl, int __ro, int __rl, DualClassRuntimePool __pool)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		BasicPoolEntry[] classPool = null;
+		BasicPoolEntry[] runPool = null;
+		
+		// We need to load both the static pool and the runtime pool, these
+		// are both encoded the same exact way
+		for (int type = 0; type < 2; type++)
+		{
+			// Are we loading the class pool?
+			boolean isClass = (type == 0);
+			
+			// Which pool did we layer over?
+			BasicPool under = (isClass ? __pool.classPool() :
+				__pool.runtimePool());
+			
+			// Read from the target pool
+			BasicPoolEntry[] target;
+			try (DataInputStream in = new DataInputStream((isClass ?
+				new ByteArrayInputStream(__b, __co, __cl) :
+				new ByteArrayInputStream(__b, __ro, __rl))))
+			{
+				// {@squirreljme.error JC4v Invalid pool size. (The size)}
+				int size = in.readInt();
+				if (size < 0)
+					throw new InvalidClassFormatException("JC4v " + size);
+				
+				// Initialize null pool entry
+				target = new BasicPoolEntry[size];
+				target[0] = under.byIndex(0);
+				
+				// Read all the other entries
+				for (int i = 1; i < size; i++)
+					target[i] = under.byIndex(in.readInt()); 
+			}
+			
+			// Set the appropriate target pool
+			if (isClass)
+				classPool = target;
+			else
+				runPool = target;
+		}
+		
+		// Use these pools
+		return new DualClassRuntimePool(
+			new BasicPool(classPool), new BasicPool(runPool));
+	}	
+	
+	/**
 	 * Encodes the dual pool to the given output stream and returns the
 	 * result.
 	 *

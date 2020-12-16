@@ -243,7 +243,8 @@ public final class Minimizer
 		
 		// Encode the local pool or the local pool on top of the JAR pool
 		DualClassRuntimePoolBuilder jarPool = this.jarPool;
-		DualPoolEncodeResult der = (jarPool == null ?
+		boolean ourPool = (jarPool == null);
+		DualPoolEncodeResult der = (ourPool ?
 			DualPoolEncoder.encode(localPool, lpd) :
 			DualPoolEncoder.encodeLayered(localPool, jarPool, lpd));
 		
