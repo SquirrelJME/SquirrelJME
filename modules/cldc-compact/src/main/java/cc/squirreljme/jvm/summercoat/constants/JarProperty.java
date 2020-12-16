@@ -45,7 +45,7 @@ public interface JarProperty
 		6;
 	
 	/** The entry pool for the starting class, used to reference data. */
-	byte METHODPTRDX_ENTRY_POOL =
+	byte MEMHANDLEID_START_POOL =
 		7;
 	
 	/**

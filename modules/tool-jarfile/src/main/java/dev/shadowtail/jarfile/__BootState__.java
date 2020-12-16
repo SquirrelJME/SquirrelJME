@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
@@ -37,6 +38,10 @@ final class __BootState__
 	/** The state of all classes. */
 	private final Map<ClassName, __ClassState__> _classStates =
 		new HashMap<>();
+	
+	/** Memory handles for the boot state, to be written accordingly. */
+	private final __MemHandles__ _memHandles =
+		new __MemHandles__();
 		
 	/** The name of the boot class. */
 	private ClassName _bootClass;
@@ -73,14 +78,18 @@ final class __BootState__
 	 * Performs the boot process for the system.
 	 * 
 	 * @param __pool The pool to use for loading.
+	 * @param __outData The output data for the bootstrap.
+	 * @param __startPoolHandleId The target handle ID for the pool.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/16
 	 */
-	public void boot(DualClassRuntimePool __pool)
+	public void boot(DualClassRuntimePool __pool, ChunkSection __outData,
+		int[] __startPoolHandleId)
 		throws IOException, NullPointerException
 	{
-		if (__pool == null)
+		if (__pool == null || __outData == null ||
+			__startPoolHandleId == null)
 			throw new NullPointerException("NARG");
 		
 		// Set the boot pool because we need everything that is inside
@@ -89,7 +98,12 @@ final class __BootState__
 		// Recursively load the boot class and any dependent class
 		__ClassState__ boot = this.__loadClass(this._bootClass);
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Determine the starting memory handle ID
+		__startPoolHandleId[0] = boot.poolMemHandle.id;
+		
+		// Write the memory handles into boot memory
+		__MemHandles__ memHandles = this._memHandles;
+		throw Debugging.todo();
 	}
 	
 	/**

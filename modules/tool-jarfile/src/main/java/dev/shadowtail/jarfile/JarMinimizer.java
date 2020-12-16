@@ -175,6 +175,7 @@ public final class JarMinimizer
 		// Is this a boot JAR?
 		boolean isBoot = this.boot;
 		__BootState__ bootState = (isBoot ? new __BootState__() : null);
+		int bootClassDx = -1;
 		
 		// Buffer for byte copies
 		byte[] buf = new byte[16384];
@@ -235,9 +236,12 @@ public final class JarMinimizer
 					// If we are setting up the boot state, add this class for
 					// later processing
 					if (isBoot)
+					{
+						bootClassDx = i;
 						bootState.addClass(
 							new ClassName(rc.substring(0, rc.length() - 6)),
 							rcData, isBootClass);
+					}
 				}
 				
 				// Otherwise perform a plain copy operation
@@ -316,55 +320,23 @@ public final class JarMinimizer
 				properties[JarProperty.OFFSET_RUNTIME_POOL].get() -
 					lpdStart, properties[JarProperty.SIZE_RUNTIME_POOL].get());
 			
-			// Tell the state to actually boot the system
-			bootState.boot(decPool);
+			// Tell the state to actually boot the system and record the
+			// contents into the target bootstrap section
+			ChunkSection bootstrap = out.addSection(
+				ChunkWriter.VARIABLE_SIZE, 4);
+			int[] startPoolHandleId = new int[1];
+			bootState.boot(decPool, bootstrap, startPoolHandleId);
 			
-			if (true)
-				throw Debugging.todo();
-			/*
-			// The class being booted
-			LoadedClassInfo booting = bootstrap.findClass(
-				"cc/squirreljme/jvm/summercoat/Bootstrap");
-			
-			// Get all the bootstrap information before it is written!
-			int bootpool = booting.poolPointer();
-			int bootsfbp = bootstrap.staticFieldAreaAddress();
-			int bootmeth = booting.methodCodeAddress(
-				new MethodName("vmEntry"), null);
-			int bootidba = bootstrap.findClass("[B").infoPointer();
-			int bootidbd = bootstrap.findClass("[[B").infoPointer();
-			
-			// Get the handler for system calls and such
-			int scmeth = 0;
-			int scpool = 0;
-			
-			// Setup the BootRAM
-			ChunkSection bootram = out.addSection(
-				bootstrap.initializer.toByteArray(), 4);
-			
-			// Boot memory offset, size
-			header.writeSectionAddressInt(bootram);
-			header.writeSectionSizeInt(bootram);
-			
-			// Pool, sfa, code
-			header.writeInt(bootpool);
-			header.writeInt(bootsfbp);
-			header.writeInt(bootmeth);
-			
-			// System call SFP, handler, and pool
-			header.writeInt(bootsfbp);
-			header.writeInt(scmeth);
-			header.writeInt(scpool);
-			
-			// classidba, classidbaa
-			header.writeInt(bootidba);
-			header.writeInt(bootidbd);
-			
-			// Debug
-			if (JarMinimizer._ENABLE_DEBUG)
-				Debugging.debugNote("Boot entry: %d/0x%08x", bootmeth, bootmeth);
-				
-			 */
+			// Use the properties of the bootstrap which will be read on
+			// virtual machine initialization
+			properties[JarProperty.OFFSET_BOOT_INIT]
+				.set(bootstrap.futureAddress());
+			properties[JarProperty.OFFSET_BOOT_SIZE]
+				.set(bootstrap.futureSize());
+			properties[JarProperty.MEMHANDLEID_START_POOL]
+				.setInt(startPoolHandleId[0]);
+			properties[JarProperty.RCDX_START_CLASS]
+				.setInt(bootClassDx);
 		}
 		
 		// No bootstrapping to be done
@@ -373,7 +345,7 @@ public final class JarMinimizer
 			// No boot properties are valid here
 			properties[JarProperty.OFFSET_BOOT_INIT].setInt(0);
 			properties[JarProperty.OFFSET_BOOT_SIZE].setInt(0);
-			properties[JarProperty.METHODPTRDX_ENTRY_POOL].setInt(0);
+			properties[JarProperty.MEMHANDLEID_START_POOL].setInt(0);
 			properties[JarProperty.RCDX_START_CLASS].setInt(0);
 		}
 		

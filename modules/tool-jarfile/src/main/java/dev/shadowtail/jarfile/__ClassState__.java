@@ -20,10 +20,13 @@ import net.multiphasicapps.classfile.ClassName;
 final class __ClassState__
 {
 	/** The class data. */
-	public final MinimizedClassFile classFile;
+	protected final MinimizedClassFile classFile;
 	
 	/** The name of this class. */
-	public final ClassName thisName;
+	protected final ClassName thisName;
+	
+	/** The memory handle that is used for the pool. */
+	__MemHandle__ poolMemHandle;
 	
 	/**
 	 * Initializes the base empty class state.
