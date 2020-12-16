@@ -33,6 +33,10 @@ final class __BootState__
 	/** Classes which have been read. */
 	private final Map<ClassName, MinimizedClassFile> _readClasses =
 		new HashMap<>();
+	
+	/** The state of all classes. */
+	private final Map<ClassName, __ClassState__> _classStates =
+		new HashMap<>();
 		
 	/** The name of the boot class. */
 	private ClassName _bootClass;
@@ -82,7 +86,8 @@ final class __BootState__
 		// Set the boot pool because we need everything that is inside
 		this._pool = __pool;
 		
-		MinimizedClassFile bootFile = this.readClass(this._bootClass);
+		// Recursively load the boot class and any dependent class
+		__ClassState__ boot = this.__loadClass(this._bootClass);
 		
 		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
@@ -114,11 +119,45 @@ final class __BootState__
 			rv = MinimizedClassFile.decode(in, this._pool);
 			
 			// Debug
-			Debugging.debugNote("Loaded %s...", rv.thisName());
+			Debugging.debugNote("Read %s...", rv.thisName());
 		}
 		
 		// Cache it and use it
 		readClasses.put(__class, rv);
 		return rv;
+	}
+	
+	/**
+	 * Loads the specified class.
+	 * 
+	 * @param __cl The class to load.
+	 * @return The class state for the class.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/16
+	 */
+	final __ClassState__ __loadClass(ClassName __cl)
+		throws IOException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Has this class already been loaded?
+		Map<ClassName, __ClassState__> classStates = this._classStates;
+		__ClassState__ rv = classStates.get(__cl);
+		if (rv != null)
+			return rv;
+		
+		// Debug
+		Debugging.debugNote("Loading %s...", __cl);
+		
+		// Read the class data as fast as possible and store into the map so
+		// we can recursive and recycle classes.
+		MinimizedClassFile classFile = this.readClass(this._bootClass);
+		rv = new __ClassState__(classFile.thisName(), classFile);
+		classStates.put(__cl, rv);
+		
+		throw Debugging.todo();
+		//Map<ClassName, __ClassState__> _classStates
 	}
 }
