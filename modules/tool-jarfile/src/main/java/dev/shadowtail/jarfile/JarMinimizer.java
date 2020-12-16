@@ -92,10 +92,10 @@ public final class JarMinimizer
 		
 		// Use the passed pool if it was passed, but otherwise just use one
 		// in the event one was not passed through (uses our own pool)
-		boolean owndualpool = (!__boot && (__dp == null));
-		this.dualPool = (__boot ? null : (owndualpool ?
-			new DualClassRuntimePoolBuilder() : __dp));
-		this.isOurDualPool = owndualpool;
+		boolean ownDualPool = (__dp == null);
+		this.dualPool = (ownDualPool ?
+			new DualClassRuntimePoolBuilder() : __dp);
+		this.isOurDualPool = ownDualPool;
 	}
 	
 	/**

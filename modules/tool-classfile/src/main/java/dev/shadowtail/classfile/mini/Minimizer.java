@@ -111,10 +111,6 @@ public final class Minimizer
 		// This is the relative pool that the class file uses
 		DualClassRuntimePoolBuilder localPool = this.localPool;
 		
-		// Process all fields and methods
-		__TempFields__[] fields = this.__doFields();
-		__TempMethods__[] methods = this.__doMethods();
-		
 		// Initialize header section
 		ChunkSection header = output.addSection(
 			ChunkWriter.VARIABLE_SIZE, 4);
@@ -143,10 +139,6 @@ public final class Minimizer
 		
 		// This value is currently meaningless so for now it is always zero
 		properties[StaticClassProperty.INT_CLASS_VERSION_ID].setInt(0);
-		
-		// The entry point for the Virtual Machine Bootstrap
-		properties[StaticClassProperty.INT_BOOT_METHOD_INDEX].setInt(
-			methods[1].findMethodIndex("vmEntry"));
 		
 		// Data type of the class
 		properties[StaticClassProperty.INT_DATA_TYPE].setInt(
@@ -179,6 +171,14 @@ public final class Minimizer
 		String sfn = input.sourceFile();
 		properties[StaticClassProperty.SPOOL_SOURCE_FILENAME].setInt(
 			(sfn == null ? 0 : localPool.add(false, sfn).index));
+		
+		// Process all fields and methods
+		__TempFields__[] fields = this.__doFields();
+		__TempMethods__[] methods = this.__doMethods();
+		
+		// The entry point for the Virtual Machine Bootstrap
+		properties[StaticClassProperty.INT_BOOT_METHOD_INDEX].setInt(
+			methods[1].findMethodIndex("vmEntry"));
 		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)

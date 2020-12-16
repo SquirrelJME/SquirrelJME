@@ -12,7 +12,6 @@ package net.multiphasicapps.io;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.ref.Reference;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public final class ChunkWriter
 	private final List<ChunkSection> _sections =
 		new LinkedList<>();
 	
-	/** Are the section informations dirty? */
+	/** Are the section properties dirty? */
 	private final __Dirty__ _dirty =
 		new __Dirty__();
 	
