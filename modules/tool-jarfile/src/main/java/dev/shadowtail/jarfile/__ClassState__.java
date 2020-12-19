@@ -26,7 +26,7 @@ final class __ClassState__
 	protected final ClassName thisName;
 	
 	/** The memory handle that is used for the pool. */
-	__MemHandle__ poolMemHandle;
+	__PoolHandle__ poolMemHandle;
 	
 	/**
 	 * Initializes the base empty class state.

@@ -9,9 +9,10 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.pool.BasicPool;
+import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.IOException;
 import java.io.InputStream;
@@ -171,7 +172,38 @@ final class __BootState__
 		rv = new __ClassState__(classFile.thisName(), classFile);
 		classStates.put(__cl, rv);
 		
+		// Everything is based on the run-time pool, so we need to load
+		// everything inside
+		BasicPool rtPool = classFile.pool.runtimePool();
+		int rtPoolSz = rtPool.size();
+		
+		// Allocate storage for the constant pool
+		__MemHandles__ memHandles = this._memHandles;
+		__PoolHandle__ pool = memHandles.allocPool(rtPoolSz);
+		rv.poolMemHandle = pool;
+		
+		// Set all of the entries within the pool
+		for (int i = 0; i < rtPoolSz; i++)
+			pool.set(i, this.loadPool(rtPool.byIndex(i)));
+		
 		throw Debugging.todo();
 		//Map<ClassName, __ClassState__> _classStates
+	}
+	
+	/**
+	 * Loads the specified pool entry into memory and returns the handle.
+	 * 
+	 * @param __entry The entry to load.
+	 * @return The memory handle for the entry data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/29
+	 */
+	private __MemHandle__ loadPool(BasicPoolEntry __entry)
+		throws NullPointerException
+	{
+		if (__entry == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 }

@@ -43,14 +43,7 @@ public enum MinimizedPoolEntryType
 	/** Class names (used for interfaces). */
 	CLASS_NAMES(false, ClassNames.class),
 	
-	/**
-	 * The constant pool for the given class.
-	 *
-	 * @deprecated This will be handled by the outer-VM layer eventually and
-	 * will mean that there will be an easier interface to access the class
-	 * pool and such.
-	 */
-	@Deprecated
+	/** The constant run-time pool for a given class. */
 	CLASS_POOL(true, ClassPool.class),
 	
 	/** Accessed Field. */

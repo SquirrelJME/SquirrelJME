@@ -7,28 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.jarfile;
-
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+package cc.squirreljme.jvm.summercoat.constants;
 
 /**
- * This class contains the state of memory handles within the boot system.
+ * The type that a memory handle is.
  *
- * @since 2020/12/16
+ * @since 2020/12/19
  */
-final class __MemHandles__
+public interface MemHandleType
 {
-	/**
-	 * Allocates a pool handle.
-	 * 
-	 * @param __sz The number of entries to place in.
-	 * @return The allocated handle.
-	 * @throws IllegalArgumentException If size is zero or negative.
-	 * @since 2020/12/29
-	 */
-	public __PoolHandle__ allocPool(int __sz)
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
-	}
 }
