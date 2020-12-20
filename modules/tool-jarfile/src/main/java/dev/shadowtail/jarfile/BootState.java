@@ -26,7 +26,7 @@ import net.multiphasicapps.io.ChunkSection;
  *
  * @since 2020/12/13
  */
-final class __BootState__
+public final class BootState
 {
 	/** The class data used. */
 	private final Map<ClassName, ChunkSection> _rawChunks =
@@ -37,12 +37,12 @@ final class __BootState__
 		new HashMap<>();
 	
 	/** The state of all classes. */
-	private final Map<ClassName, __ClassState__> _classStates =
+	private final Map<ClassName, ClassState> _classStates =
 		new HashMap<>();
 	
 	/** Memory handles for the boot state, to be written accordingly. */
-	private final __MemHandles__ _memHandles =
-		new __MemHandles__();
+	private final MemHandles _memHandles =
+		new MemHandles();
 		
 	/** The name of the boot class. */
 	private ClassName _bootClass;
@@ -97,13 +97,13 @@ final class __BootState__
 		this._pool = __pool;
 		
 		// Recursively load the boot class and any dependent class
-		__ClassState__ boot = this.__loadClass(this._bootClass);
+		ClassState boot = this.__loadClass(this._bootClass);
 		
 		// Determine the starting memory handle ID
 		__startPoolHandleId[0] = boot.poolMemHandle.id;
 		
 		// Write the memory handles into boot memory
-		__MemHandles__ memHandles = this._memHandles;
+		MemHandles memHandles = this._memHandles;
 		throw Debugging.todo();
 	}
 	
@@ -151,15 +151,15 @@ final class __BootState__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/16
 	 */
-	final __ClassState__ __loadClass(ClassName __cl)
+	final ClassState __loadClass(ClassName __cl)
 		throws IOException, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		// Has this class already been loaded?
-		Map<ClassName, __ClassState__> classStates = this._classStates;
-		__ClassState__ rv = classStates.get(__cl);
+		Map<ClassName, ClassState> classStates = this._classStates;
+		ClassState rv = classStates.get(__cl);
 		if (rv != null)
 			return rv;
 		
@@ -169,7 +169,7 @@ final class __BootState__
 		// Read the class data as fast as possible and store into the map so
 		// we can recursive and recycle classes.
 		MinimizedClassFile classFile = this.readClass(this._bootClass);
-		rv = new __ClassState__(classFile.thisName(), classFile);
+		rv = new ClassState(classFile.thisName(), classFile);
 		classStates.put(__cl, rv);
 		
 		// Everything is based on the run-time pool, so we need to load
@@ -178,8 +178,8 @@ final class __BootState__
 		int rtPoolSz = rtPool.size();
 		
 		// Allocate storage for the constant pool
-		__MemHandles__ memHandles = this._memHandles;
-		__PoolHandle__ pool = memHandles.allocPool(rtPoolSz);
+		MemHandles memHandles = this._memHandles;
+		PoolHandle pool = memHandles.allocPool(rtPoolSz);
 		rv.poolMemHandle = pool;
 		
 		// Set all of the entries within the pool
@@ -198,7 +198,7 @@ final class __BootState__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
-	private __MemHandle__ loadPool(BasicPoolEntry __entry)
+	private MemHandle loadPool(BasicPoolEntry __entry)
 		throws NullPointerException
 	{
 		if (__entry == null)

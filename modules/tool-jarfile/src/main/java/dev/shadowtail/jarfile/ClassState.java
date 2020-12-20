@@ -17,7 +17,7 @@ import net.multiphasicapps.classfile.ClassName;
  *
  * @since 2020/12/16
  */
-final class __ClassState__
+public final class ClassState
 {
 	/** The class data. */
 	protected final MinimizedClassFile classFile;
@@ -26,7 +26,7 @@ final class __ClassState__
 	protected final ClassName thisName;
 	
 	/** The memory handle that is used for the pool. */
-	__PoolHandle__ poolMemHandle;
+	PoolHandle poolMemHandle;
 	
 	/**
 	 * Initializes the base empty class state.
@@ -36,7 +36,7 @@ final class __ClassState__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/16
 	 */
-	__ClassState__(ClassName __thisName, MinimizedClassFile __classFile)
+	ClassState(ClassName __thisName, MinimizedClassFile __classFile)
 		throws NullPointerException
 	{
 		if (__thisName == null || __classFile == null)

@@ -174,7 +174,7 @@ public final class JarMinimizer
 		
 		// Is this a boot JAR?
 		boolean isBoot = this.boot;
-		__BootState__ bootState = (isBoot ? new __BootState__() : null);
+		BootState bootState = (isBoot ? new BootState() : null);
 		int bootClassDx = -1;
 		
 		// Buffer for byte copies

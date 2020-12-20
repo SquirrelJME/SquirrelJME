@@ -16,7 +16,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/12/16
  */
-final class __MemHandles__
+public final class MemHandles
 {
 	/**
 	 * Allocates a pool handle.
@@ -26,7 +26,7 @@ final class __MemHandles__
 	 * @throws IllegalArgumentException If size is zero or negative.
 	 * @since 2020/12/29
 	 */
-	public __PoolHandle__ allocPool(int __sz)
+	public PoolHandle allocPool(int __sz)
 		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
