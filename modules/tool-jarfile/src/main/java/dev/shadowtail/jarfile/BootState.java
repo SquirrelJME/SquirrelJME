@@ -100,7 +100,7 @@ public final class BootState
 		ClassState boot = this.__loadClass(this._bootClass);
 		
 		// Determine the starting memory handle ID
-		__startPoolHandleId[0] = boot.poolMemHandle.id;
+		__startPoolHandleId[0] = boot._poolMemHandle.id;
 		
 		// Write the memory handles into boot memory
 		MemHandles memHandles = this._memHandles;
@@ -172,15 +172,19 @@ public final class BootState
 		rv = new ClassState(classFile.thisName(), classFile);
 		classStates.put(__cl, rv);
 		
+		// Allocate storage for the class information
+		MemHandles memHandles = this._memHandles;
+		ClassInfoHandle classInfo = memHandles.allocClassInfo();
+		rv._classInfoHandle = classInfo;
+		
 		// Everything is based on the run-time pool, so we need to load
 		// everything inside
 		BasicPool rtPool = classFile.pool.runtimePool();
 		int rtPoolSz = rtPool.size();
 		
 		// Allocate storage for the constant pool
-		MemHandles memHandles = this._memHandles;
 		PoolHandle pool = memHandles.allocPool(rtPoolSz);
-		rv.poolMemHandle = pool;
+		rv._poolMemHandle = pool;
 		
 		// Set all of the entries within the pool
 		for (int i = 0; i < rtPoolSz; i++)

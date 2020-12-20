@@ -25,8 +25,11 @@ public final class ClassState
 	/** The name of this class. */
 	protected final ClassName thisName;
 	
+	/** This is a handle for class information. */
+	ClassInfoHandle _classInfoHandle;
+	
 	/** The memory handle that is used for the pool. */
-	PoolHandle poolMemHandle;
+	PoolHandle _poolMemHandle;
 	
 	/**
 	 * Initializes the base empty class state.

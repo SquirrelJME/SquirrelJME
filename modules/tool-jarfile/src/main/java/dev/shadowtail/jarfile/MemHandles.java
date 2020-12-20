@@ -19,6 +19,17 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class MemHandles
 {
 	/**
+	 * This allocates a handle for class information.
+	 * 
+	 * @return The allocated class information handle.
+	 * @since 2020/12/20
+	 */
+	public ClassInfoHandle allocClassInfo()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Allocates a pool handle.
 	 * 
 	 * @param __sz The number of entries to place in.
