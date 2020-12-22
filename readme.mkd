@@ -122,6 +122,7 @@ Information:
  * [My Portfolio](https://shadowtail.dev/)
  * [My Public PGP Key](public-key.gpg.mkd)
  * [SquirrelJME Twitter](https://twitter.com/MultiPhasicApps)
+ * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
  * Front facing social media:
