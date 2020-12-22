@@ -9,13 +9,15 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a handle which represents a list of properties.
  *
  * @since 2020/12/20
  */
 public abstract class PropertyListHandle
-	extends MemHandle
+	extends ListValueHandle
 {
 	/**
 	 * Initializes the base property list handle.
@@ -29,5 +31,38 @@ public abstract class PropertyListHandle
 		throws IllegalArgumentException
 	{
 		super(__id);
+	}
+	
+	/**
+	 * Sets the given integer property.
+	 * 
+	 * @param __prop The property to set.
+	 * @param __iVal The integer value to set.
+	 * @throws IllegalArgumentException If the property is not valid.
+	 * @since 2020/12/21
+	 */
+	@Override
+	public void set(int __prop, int __iVal)
+		throws IllegalArgumentException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Sets the given memory handle property.
+	 * 
+	 * @param __prop The property to set.
+	 * @param __memHandle The memory handle to refer to.
+	 * @throws IllegalArgumentException If the property is not valid.
+	 * @since 2020/12/21
+	 */
+	@Override
+	public void set(int __prop, MemHandle __memHandle)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__memHandle == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 }

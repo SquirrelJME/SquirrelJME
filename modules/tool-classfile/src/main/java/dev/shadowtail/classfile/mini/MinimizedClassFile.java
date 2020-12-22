@@ -101,37 +101,37 @@ public final class MinimizedClassFile
 	/**
 	 * Searches for a field by the given name and type.
 	 *
-	 * @param __is Search for static field?
+	 * @param __static Search for static field?
 	 * @param __n The name.
 	 * @param __t The type.
 	 * @return The field or {@code null} if not found.
 	 * @since 2019/04/22
 	 */
-	public final MinimizedField field(boolean __is, FieldName __n,
+	public final MinimizedField field(boolean __static, FieldName __n,
 		FieldDescriptor __t)
 		throws NullPointerException
 	{
 		if (__n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		return this.field(__is, new FieldNameAndType(__n, __t));
+		return this.field(__static, new FieldNameAndType(__n, __t));
 	}
 	
 	/**
 	 * Searches for a field by the given name and type.
 	 *
-	 * @param __is Search for static field?
+	 * @param __static Search for static field?
 	 * @param __nat The name and type.
 	 * @return The field or {@code null} if not found.
 	 * @since 2019/04/22
 	 */
-	public final MinimizedField field(boolean __is, FieldNameAndType __nat)
+	public final MinimizedField field(boolean __static, FieldNameAndType __nat)
 		throws NullPointerException
 	{
 		if (__nat == null)
 			throw new NullPointerException("NARG");
 		
-		for (MinimizedField mf : (__is ? this._sfields : this._ifields))
+		for (MinimizedField mf : (__static ? this._sfields : this._ifields))
 			if (mf.name.equals(__nat.name()) && mf.type.equals(__nat.type()))
 				return mf;
 		
@@ -141,13 +141,13 @@ public final class MinimizedClassFile
 	/**
 	 * Returns the fields in the class.
 	 *
-	 * @param __is If true then static fields are returned.
+	 * @param __static If true then static fields are returned.
 	 * @return The fields.
 	 * @since 2019/04/17
 	 */
-	public final MinimizedField[] fields(boolean __is)
+	public final MinimizedField[] fields(boolean __static)
 	{
-		return (__is ? this._sfields.clone() : this._ifields.clone());
+		return (__static ? this._sfields.clone() : this._ifields.clone());
 	}
 	
 	/**
@@ -205,20 +205,20 @@ public final class MinimizedClassFile
 	/**
 	 * Searches for a method by the given name and type.
 	 *
-	 * @param __is Search for static method?
+	 * @param __static Search for static method?
 	 * @param __n The name.
 	 * @param __t The type, if {@code null} the type is ignored.
 	 * @return The method or {@code null} if not found.
 	 * @since 2019/04/22
 	 */
-	public final MinimizedMethod method(boolean __is, MethodName __n,
+	public final MinimizedMethod method(boolean __static, MethodName __n,
 		MethodDescriptor __t)
 		throws NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		for (MinimizedMethod mm : (__is ? this._smethods : this._imethods))
+		for (MinimizedMethod mm : (__static ? this._smethods : this._imethods))
 			if (mm.name.equals(__n) && (__t == null || mm.type.equals(__t)))
 				return mm;
 		
@@ -229,18 +229,19 @@ public final class MinimizedClassFile
 	/**
 	 * Searches for a method by the given name and type.
 	 *
-	 * @param __is Search for static method?
+	 * @param __static Search for static method?
 	 * @param __nat The name and type.
 	 * @return The method or {@code null} if not found.
 	 * @since 2019/04/22
 	 */
-	public final MinimizedMethod method(boolean __is, MethodNameAndType __nat)
+	public final MinimizedMethod method(boolean __static,
+		MethodNameAndType __nat)
 		throws NullPointerException
 	{
 		if (__nat == null)
 			throw new NullPointerException("NARG");
 		
-		for (MinimizedMethod mm : (__is ? this._smethods : this._imethods))
+		for (MinimizedMethod mm : (__static ? this._smethods : this._imethods))
 			if (mm.name.equals(__nat.name()) && mm.type.equals(__nat.type()))
 				return mm;
 		
@@ -250,13 +251,13 @@ public final class MinimizedClassFile
 	/**
 	 * Returns the methods in the class.
 	 *
-	 * @param __is If true then static methods are returned.
+	 * @param __static If true then static methods are returned.
 	 * @return The methods.
 	 * @since 2019/04/17
 	 */
-	public final MinimizedMethod[] methods(boolean __is)
+	public final MinimizedMethod[] methods(boolean __static)
 	{
-		return (__is ? this._smethods.clone() : this._imethods.clone());
+		return (__static ? this._smethods.clone() : this._imethods.clone());
 	}
 	
 	/**

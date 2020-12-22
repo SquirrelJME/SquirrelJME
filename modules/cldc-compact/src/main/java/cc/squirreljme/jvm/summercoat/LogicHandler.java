@@ -92,7 +92,7 @@ public final class LogicHandler
 		
 		// {@squirreljme.error ZZ4j Class has no allocated size?}
 		int allocSize = SystemCall.classInfoGetProperty(__info,
-			ClassProperty.INT_ALLOCATION_SIZE);
+			ClassProperty.SIZE_ALLOCATION);
 		if (allocSize <= 0)
 			throw new MLECallError("ZZ4j");
 		

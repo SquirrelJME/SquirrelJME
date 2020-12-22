@@ -87,7 +87,7 @@ public interface StaticClassProperty
 		15;
 	
 	/** Instance field bytes. */
-	byte INT_INSTANCE_FIELD_BYTES =
+	byte SIZE_INSTANCE_FIELDS =
 		16;
 	
 	/** Instance field objects. */

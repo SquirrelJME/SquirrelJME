@@ -269,6 +269,17 @@ public class ClassName
 	}
 	
 	/**
+	 * Checks if this is the object class.
+	 * 
+	 * @return If this is the object class.
+	 * @since 2020/12/21
+	 */
+	public boolean isObject()
+	{
+		return this.toString().equals("java/lang/Object");
+	}
+	
+	/**
 	 * Does this class refer to a primitive type?
 	 *
 	 * @return If this is a primitive type.

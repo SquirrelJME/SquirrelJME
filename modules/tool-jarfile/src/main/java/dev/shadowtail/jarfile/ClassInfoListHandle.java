@@ -10,22 +10,22 @@
 package dev.shadowtail.jarfile;
 
 /**
- * This represents a handle for the constant pool of a class.
+ * A list that is a number of class handles.
  *
- * @since 2020/12/19
+ * @since 2020/12/21
  */
-public final class PoolHandle
+public class ClassInfoListHandle
 	extends ListValueHandle
 {
 	/**
-	 * Initializes the base memory handle.
+	 * Initializes the base class list handle.
 	 *
 	 * @param __id The memory handle ID.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified.
-	 * @since 2020/12/19
+	 * @since 2020/12/21
 	 */
-	PoolHandle(int __id)
+	ClassInfoListHandle(int __id)
 		throws IllegalArgumentException
 	{
 		super(__id);

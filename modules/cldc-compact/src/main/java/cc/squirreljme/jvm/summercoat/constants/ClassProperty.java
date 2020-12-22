@@ -29,29 +29,24 @@ public interface ClassProperty
 	byte INT_MINIPTR =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 3;
 	
-	/** The pointer to the class name. */
-	@Deprecated
-	byte INT_NAMEP =
+	/** The pointer to the class name (in descriptor form). */
+	byte MEMHANDLE_THISNAME_DESC =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 4;
 	
-	/** The allocation size of this class. */
-	@Deprecated
-	byte INT_ALLOCATION_SIZE =
+	/** The allocation size of this class to store all of its fields. */
+	byte SIZE_ALLOCATION =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 5;
 	
-	/** The base offset for fields in this class. */
-	@Deprecated
-	byte INT_BASE =
+	/** The base offset for instance fields in this class. */
+	byte OFFSETBASE_INSTANCE_FIELDS =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 6;
 	
 	/** The super class data. */
-	@Deprecated
-	byte CLASSINFO_SUPERCLASS =
+	byte CLASSINFO_SUPER =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 10;
 	
 	/** Interfaces. */
-	@Deprecated
-	byte CLASSINFO_ARRAY_INTERFACECLASSES =
+	byte CLASSINFOS_INTERFACECLASSES =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 11;
 	
 	/** The component class. */
@@ -59,9 +54,8 @@ public interface ClassProperty
 	byte CLASSINFO_COMPONENTCLASS =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 12;
 	
-	/** Pointer to the class object. */
-	@Deprecated
-	byte CLASS_CLASSOBJPTR =
+	/** Pointer to a {@link Class} instance. */
+	byte MEMHANDLE_LANGCLASS_INSTANCE =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 13;
 	
 	/** Virtual invoke VTable. */
@@ -75,8 +69,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 15;
 	
 	/** The pointer to the constant pool of this class. */
-	@Deprecated
-	byte INT_POOL =
+	byte POOLHANDLE_POOL =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 16;
 	
 	/** The JAR Index. */
@@ -89,14 +82,17 @@ public interface ClassProperty
 	byte INT_CLASSDEPTH =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
 	
-	/** Static field offset. */
-	@Deprecated
-	byte INT_SFOFFSET =
+	/** Memory handle base for static fields. */
+	byte MEMHANDLEBASE_STATIC_FIELDS =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
 	
 	/** Self pointer. */
 	@Deprecated
 	byte INT_SELFPTR =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
+	
+	/** The pointer to the class name (in {@link Class#getName()} form). */
+	byte MEMHANDLE_THISNAME_CLASSGETNAME =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
 	
 	/** The number of properties available. */
