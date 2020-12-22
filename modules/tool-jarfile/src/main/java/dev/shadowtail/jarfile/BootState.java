@@ -86,6 +86,24 @@ public final class BootState
 	}
 	
 	/**
+	 * Returns all of the interfaces that are implemented by the given class.
+	 * 
+	 * @param __cl The class to get for.
+	 * @return All of the interfaces that the class implements.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/21
+	 */
+	public ClassNames allInterfaces(ClassName __cl)
+		throws IOException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Performs the boot process for the system.
 	 * 
 	 * @param __pool The pool to use for loading.
@@ -180,11 +198,15 @@ public final class BootState
 		classInfo.set(ClassProperty.MEMHANDLEBASE_STATIC_FIELDS,
 			staticFieldData);
 		
+		// Store the pointer to where the Class ROM exists in memory.
+		if (true)
+			throw Debugging.todo();
+		// MEMPTR_ROM_CLASS
+		
 		// Need to determine if we are Object or our super class is Object
 		// that way there can be shortcuts on resolution
 		ClassName superClass = classFile.superName();
 		boolean isThisObject = classFile.thisName().isObject();
-		boolean isSuperObject = superClass.isObject();
 		
 		// If this is the object class, then it is well known what the size
 		// of the various classes are
@@ -193,6 +215,9 @@ public final class BootState
 			classInfo.set(ClassProperty.OFFSETBASE_INSTANCE_FIELDS, 0);
 			classInfo.set(ClassProperty.SIZE_INSTANCE_FIELDS,
 				header.get(StaticClassProperty.SIZE_INSTANCE_FIELD_DATA));
+			
+			// There is no depth to this class
+			classInfo.set(ClassProperty.INT_CLASSDEPTH, 0);
 		}
 		
 		// Is there a super class for this class?
@@ -217,11 +242,12 @@ public final class BootState
 			// our storage for fields
 			classInfo.set(ClassProperty.SIZE_ALLOCATION, base +
 				header.get(StaticClassProperty.SIZE_INSTANCE_FIELD_DATA));
+			
+			// This is one deeper than the super class
+			classInfo.set(ClassProperty.INT_CLASSDEPTH,
+				superClassState._classInfoHandle
+					.getInteger(ClassProperty.INT_CLASSDEPTH) + 1);
 		}
-		
-		// Set all of the entries within the pool
-		for (int i = 0; i < rtPoolSz; i++)
-			pool.set(i, this.__loadPool(rtPool.byIndex(i)));
 		
 		// Fill in any interfaces the class implements
 		ClassNames interfaces = classFile.interfaceNames();
@@ -241,9 +267,43 @@ public final class BootState
 			throw Debugging.todo();
 		}
 		
+		// Determine the VTable for all non-interface instance methods
+		if (true)
+			throw Debugging.todo();
+		
+		// Determine all of the interfaces that this class possibly implements.
+		// This will be used by instance checks and eventual interface VTable
+		// lookup
+		ClassNames allInterfaces = this.allInterfaces(__cl);
+		classInfo.set(ClassProperty.CLASSINFOS_ALL_INTERFACECLASSES, 
+			memHandles.allocClassInfos(
+				this.loadClasses(allInterfaces.toArray())));
+		
+		// Pre-build all of the interface VTables for every interface that
+		// this class implements, a class gets a VTable for all interfaces
+		// and inherited interfaces it implements.
+		// ex: ArrayList gets VTables for Cloneable, Collection<E>, List<E>,
+		// RandomAccess
+		if (true)
+			throw Debugging.todo();
+		
 		// Load the information for the Class<?> instance
 		classInfo.set(ClassProperty.MEMHANDLE_LANGCLASS_INSTANCE,
 			this.loadLangClass(__cl));
+		
+		// Set and initialize all of the entries within the pool
+		for (int i = 0; i < rtPoolSz; i++)
+			pool.set(i, this.__loadPool(rtPool.byIndex(i)));
+		
+		// The component class, if this is an array
+		if (__cl.isArray())
+			classInfo.set(ClassProperty.CLASSINFO_COMPONENTCLASS,
+				this.loadClass(__cl.componentType())._classInfoHandle);
+		
+		// Determine the function pointer to the default new instance
+		if (true)
+			throw Debugging.todo();
+		// FUNCPTR_DEFAULT_NEW
 		
 		throw Debugging.todo();
 		//Map<ClassName, __ClassState__> _classStates
