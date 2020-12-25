@@ -7,13 +7,19 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.summercoat.constants;
+package dev.shadowtail.jarfile;
 
 /**
- * The type that a memory handle is.
+ * This class contains the state of memory actions, that is everything that
+ * has modified or set memory specifically.
+ * 
+ * There are actions which act upon memory handles and set a specific value
+ * or otherwise within them. This is to the bootloader is able to reconstruct
+ * the pre-boot state and determine the best way to represent whatever is
+ * written.
  *
- * @since 2020/12/19
+ * @since 2020/12/22
  */
-public interface MemHandleType
+public final class MemActions
 {
 }

@@ -46,9 +46,13 @@ public final class BootState
 	private final Map<ClassName, ClassState> _classStates =
 		new HashMap<>();
 	
+	/** Actions performed on memory. */
+	private final MemActions _memActions =
+		new MemActions();
+	
 	/** Memory handles for the boot state, to be written accordingly. */
 	private final MemHandles _memHandles =
-		new MemHandles();
+		new MemHandles(this._memActions);
 	
 	/** Internal strings. */
 	private final Map<String, MemHandle> _internStrings =
