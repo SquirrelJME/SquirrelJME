@@ -22,10 +22,6 @@
 # Inclusion templates, required for the build to work
 include:
   ################################## DESKTOPS ################################
-  # Windows 64-bit
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/windows-x64-mingw.yml'
-
   # Linux 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/linux-x64.yml'
@@ -34,15 +30,35 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/osx-x64.yml'
 
+  # Windows 64-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-x64-mingw.yml'
+
   ################################## CELLULAR ################################
   # Android
   - project: 'libretro-infrastructure/ci-templates'
     file: '/android-jni.yml'
 
   ################################## CONSOLES ################################
+  # Dingux (GCW Zero)
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/dingux-mips32.yml'
+
+  # Nintendo 3DS
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/ctr-static.yml'
+
+  # Nintendo GameCube
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/ngc-static.yml'
+
   # Nintendo Switch
   - project: 'libretro-infrastructure/ci-templates'
     file: '/libnx-static.yml'
+
+  # Nintendo Wii
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/wii-static.yml'
 
   # PLayStation 2
   - project: 'libretro-infrastructure/ci-templates'
@@ -51,10 +67,6 @@ include:
   # PlayStation Vita
   - project: 'libretro-infrastructure/ci-templates'
     file: '/vita-static.yml'
-
-  # Dingux (GCW Zero)
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/dingux-i386.yml'
 
 # Stages for building
 stages:
@@ -67,12 +79,6 @@ stages:
 ##############################################################################
 
 ################################### DESKTOPS #################################
-# Windows 64-bit
-libretro-build-windows-x64:
-  extends:
-    - .libretro-windows-x64-mingw-make-default
-    - .core-defs
-
 # Linux 64-bit
 libretro-build-linux-x64:
   extends:
@@ -83,6 +89,12 @@ libretro-build-linux-x64:
 libretro-build-osx-x64:
   extends:
     - .libretro-osx-x64-make-default
+    - .core-defs
+
+# Windows 64-bit
+libretro-build-windows-x64:
+  extends:
+    - .libretro-windows-x64-mingw-make-default
     - .core-defs
 
 ################################### CELLULAR #################################
@@ -111,10 +123,34 @@ android-x86:
     - .core-defs
 
 ################################### CONSOLES #################################
+# Dingux (GCW Zero)
+libretro-build-dingux:
+  extends:
+    - .libretro-dingux-mips32-make-default
+    - .core-defs
+
+# Nintendo 3DS
+libretro-build-3ds:
+  extends:
+    - .libretro-ctr-static-retroarch-master
+    - .core-defs
+
+# Nintendo GameCube
+libretro-build-ngc:
+  extends:
+    - .libretro-ngc-static-retroarch-master
+    - .core-defs
+
 # Nintendo Switch
 libretro-build-libnx-aarch64:
   extends:
     - .libretro-libnx-static-retroarch-master
+    - .core-defs
+
+# Nintendo Wii
+libretro-build-wii:
+  extends:
+    - .libretro-wii-static-retroarch-master
     - .core-defs
 
 # PlayStation 2
@@ -127,10 +163,4 @@ libretro-build-ps2:
 libretro-build-vita:
   extends:
     - .libretro-vita-static-retroarch-master
-    - .core-defs
-
-# Dingux (GCW Zero)
-libretro-build-dingux:
-  extends:
-    - .libretro-dingux-i386-make-default
     - .core-defs
