@@ -4,6 +4,9 @@ import org.gradle.util.VersionNumber
 plugins {
 	id "de.set.ecj" version "1.4.1" apply false
 	id "idea"
+	
+	// For BinTray publishing, do not apply but it is used by sub-projects
+	id "com.jfrog.bintray" version "1.8.5" apply false
 }
 
 group = "cc.squirreljme.modules"
@@ -28,6 +31,7 @@ subprojects {
 	apply plugin: "cc.squirreljme.plugin"
 	apply plugin: "idea"
 	apply plugin: "maven-publish"
+	apply plugin: "com.jfrog.bintray"
 	
 	idea {
 		module
@@ -136,6 +140,23 @@ subprojects {
 		repositories {
 			// Publishing to local Maven
 			mavenLocal()
+		}
+	}
+	
+	// Publishing to BinTray
+	bintray {
+		user = System.getProperty("bintray.user",
+			Objects.toString(System.getenv("BINTRAY_USER"), "user_unset!"))
+		key = System.getProperty("bintray.key",
+			Objects.toString(System.getenv("BINTRAY_KEY"), "key_unset!"))
+		
+		publications = ['maven']
+		
+		pkg {
+			repo = "SquirrelJME"
+			name = "module-" + project.name
+			licenses = ['GPL-3.0']
+			vcsUrl = "https://squirreljme.cc/"
 		}
 	}
 }
