@@ -178,6 +178,46 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
+
+  ### JavaDoc JAR
+  build_javadocJar:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build JavaDoc JAR
+          command: ./gradlew javadocJar --console plain --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  ### Sources JAR
+  build_sourcesJar:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Sources JAR
+          command: ./gradlew sourcesJar --console plain --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  ### RatufaCoat
   ratufacoat_build_linux:
     executor: buildenv
     resource_class: small
@@ -201,6 +241,8 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
           destination: SquirrelJME
+
+  ### SpringCoat
   test_springcoat:
     executor: buildenv
     steps:
@@ -400,6 +442,12 @@ workflows:
     jobs:
       ############################# STANDARD TESTS ############################
       - build_linux
+      - build_javadocJar:
+          requires:
+            - build_linux
+      - build_sourcesJar:
+          requires:
+            - build_linux
       - test_springcoat:
           requires:
             - construct_testJars
