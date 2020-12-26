@@ -10,12 +10,13 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import java.io.IOException;
 import java.io.OutputStream;
 
 public interface DeviceConfig<P extends Device<? super P>>
 {
-	@Deprecated
+	@ApiDefinedDeprecated
 	int DEFAULT =
 		-1;
 	
