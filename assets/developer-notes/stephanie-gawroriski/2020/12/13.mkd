@@ -1,0 +1,8 @@
+# 2020/12/13
+
+## 14:19
+
+I suppose the only thing now is to have the new memory handle with pool and
+class references baked into the ROM and read in. Pretty much is the next step
+to do, then once I have that I can go with running the bootstrap and hope that
+this time around things are different and not very difficult.
