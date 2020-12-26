@@ -1,0 +1,19 @@
+# 2020/11/28
+
+## 14:28
+
+I need to add a means into Gradle to force libraries to be recompiled to
+SummerCoat if the compiler itself changed for any reason. So that way I can
+have more reliable compiling and checking without having stale issues.
+
+## 15:13
+
+I figured it out and made it up to date nicely, so that is good. It seems to
+be very much more reliable. Also I can work on the compiler and not have to
+worry about cleaning and rebuilding as now it will detect if the compiler
+changed.
+
+## 21:12
+
+Will need to handle a new way of creating objects with the memory handles and
+such.

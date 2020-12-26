@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
@@ -356,7 +357,7 @@ public final class Pool
 					break;
 					
 				default:
-					throw new todo.OOPS();
+					throw Debugging.oops();
 			}
 			
 			// Add to order
@@ -389,14 +390,13 @@ public final class Pool
 					
 					// Name of a class
 				case Pool.TAG_CLASS:
-					out = new ClassName(((UTFConstantEntry)
-						__entries[((int[])in)[0]]).toString());
+					out = new ClassName(__entries[((int[])in)[0]].toString());
 					break;
 					
 					// String constant
 				case Pool.TAG_STRING:
 					out = new ConstantValueString(
-						((UTFConstantEntry)__entries[((int[])in)[0]]).
+						__entries[((int[])in)[0]].
 							toString());
 					break;
 					
@@ -405,8 +405,8 @@ public final class Pool
 					{
 						int[] ina = (int[])in;
 						out = new NameAndType(
-							((UTFConstantEntry)__entries[ina[0]]).toString(),
-							((UTFConstantEntry)__entries[ina[1]]).toString());
+							__entries[ina[0]].toString(),
+							__entries[ina[1]].toString());
 					}
 					break;
 					

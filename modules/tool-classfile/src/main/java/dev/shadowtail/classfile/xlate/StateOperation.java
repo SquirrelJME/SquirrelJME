@@ -130,7 +130,7 @@ public final class StateOperation
 	 * @return The operation.
 	 * @since 2019/04/13
 	 */
-	public static final StateOperation copy(boolean __w, int __a, int __b)
+	public static StateOperation copy(boolean __w, int __a, int __b)
 	{
 		return new StateOperation((__w ? Type.WIDE_COPY : Type.COPY),
 			__a, __b);
@@ -143,7 +143,7 @@ public final class StateOperation
 	 * @return The operation.
 	 * @since 2019/04/13
 	 */
-	public static final StateOperation count(int __a)
+	public static StateOperation count(int __a)
 	{
 		return new StateOperation(Type.COUNT, __a);
 	}
@@ -155,7 +155,7 @@ public final class StateOperation
 	 * @return The operation.
 	 * @since 2019/04/13
 	 */
-	public static final StateOperation uncount(int __a)
+	public static StateOperation uncount(int __a)
 	{
 		return new StateOperation(Type.UNCOUNT, __a);
 	}
@@ -179,7 +179,7 @@ public final class StateOperation
 		/** Wide copy. */
 		WIDE_COPY,
 		
-		/** End. */
+		/* End. */
 		;
 	}
 }

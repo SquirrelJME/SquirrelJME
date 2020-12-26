@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.config.ConfigRomKey;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
@@ -268,6 +269,10 @@ public class SummerCoatFactory
 		try (DataInputStream dis = new DataInputStream(
 			new ReadableMemoryInputStream(vmem, bra, bjh.bootsize)))
 		{
+			// Indicate where it is
+			Debugging.debugNote("BootRAM: Addr=%08x Len=%d",
+				bra, bjh.bootsize);
+			
 			// Read entire RAM space
 			lram = dis.readInt();
 			byte[] bram = new byte[lram];

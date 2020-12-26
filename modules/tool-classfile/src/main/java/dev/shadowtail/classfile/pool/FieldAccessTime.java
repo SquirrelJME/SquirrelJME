@@ -26,7 +26,7 @@ public enum FieldAccessTime
 	/** Read access. */
 	READ,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -37,7 +37,7 @@ public enum FieldAccessTime
 	 * @throws IllegalArgumentException If it is not valid.
 	 * @since 2019/04/17
 	 */
-	public static final FieldAccessTime of(int __i)
+	public static FieldAccessTime of(int __i)
 		throws IllegalArgumentException
 	{
 		switch (__i)

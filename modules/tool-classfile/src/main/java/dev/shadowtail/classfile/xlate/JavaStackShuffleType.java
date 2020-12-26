@@ -55,7 +55,7 @@ public enum JavaStackShuffleType
 	/** swap. */
 	SWAP("ba:ab"),
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/** Forms of this operation. */
@@ -141,7 +141,7 @@ public enum JavaStackShuffleType
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/04/01
 		 */
-		public static final Function of(String __s)
+		public static Function of(String __s)
 			throws IllegalArgumentException, NullPointerException
 		{
 			if (__s == null)

@@ -32,7 +32,7 @@ public enum SimpleStorageType
 	/** Double. */
 	DOUBLE,
 	
-	/** End. */
+	/* End. */
 	;
 }
 

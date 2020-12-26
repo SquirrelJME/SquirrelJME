@@ -9,63 +9,122 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.pool.AccessedField;
+import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.ClassPool;
+import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.pool.NotedString;
+import dev.shadowtail.classfile.pool.NullPoolEntry;
+import dev.shadowtail.classfile.pool.UsedString;
+import dev.shadowtail.classfile.pool.VirtualMethodIndex;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.MethodDescriptor;
+
 /**
  * This represents the entry type in the pool.
+ * 
+ * The order is significant as it is used to identify the types used.
  *
  * @since 2019/04/14
  */
 public enum MinimizedPoolEntryType
 {
 	/** Nothing. */
-	NULL,
+	NULL(true, NullPoolEntry.class),
 	
 	/** String. */
-	STRING,
+	STRING(false, String.class),
 	
 	/** Name of class. */
-	CLASS_NAME,
+	CLASS_NAME(false, ClassName.class),
 	
 	/** Class names (used for interfaces). */
-	CLASS_NAMES,
+	CLASS_NAMES(false, ClassNames.class),
 	
-	/** The constant pool for the given class. */
-	CLASS_POOL,
+	/**
+	 * The constant pool for the given class.
+	 *
+	 * @deprecated This will be handled by the outer-VM layer eventually and
+	 * will mean that there will be an easier interface to access the class
+	 * pool and such.
+	 */
+	@Deprecated
+	CLASS_POOL(true, ClassPool.class),
 	
 	/** Accessed Field. */
-	ACCESSED_FIELD,
+	ACCESSED_FIELD(true, AccessedField.class),
 	
 	/** Invoked Method. */
-	INVOKED_METHOD,
+	INVOKED_METHOD(true, InvokedMethod.class),
 	
 	/** Method Descriptor. */
-	METHOD_DESCRIPTOR,
+	METHOD_DESCRIPTOR(false, MethodDescriptor.class),
 	
 	/** Integer. */
-	INTEGER,
+	INTEGER(false, Integer.class),
 	
 	/** Float. */
-	FLOAT,
+	FLOAT(false, Float.class),
 	
 	/** Long. */
-	LONG,
+	LONG(false, Long.class),
 	
 	/** Double. */
-	DOUBLE,
+	DOUBLE(false, Double.class),
 	
 	/** A plain string that was used. */
-	USED_STRING,
+	USED_STRING(true, UsedString.class),
 	
 	/** The index of a method. */
-	METHOD_INDEX,
+	VIRTUAL_METHOD_INDEX(true, VirtualMethodIndex.class),
 	
-	/** Class information. */
-	CLASS_INFO_POINTER,
+	/** An invokable interface class, used for interface binding. */
+	INTERFACE_CLASS(true, InterfaceClassName.class),
+	
+	/**
+	 * Class information.
+	 *
+	 * @deprecated Class info pointers will be going away as it will be
+	 * managed and obtainable by the outer-VM layer.
+	 */
+	@Deprecated
+	CLASS_INFO_POINTER(true, ClassInfoPointer.class),
 	
 	/** A string which has been noted for debug purposes. */
-	NOTED_STRING,
+	NOTED_STRING(true, NotedString.class),
 	
-	/** End. */
+	/* End. */
 	;
+	
+	/** Static values. */
+	private static final MinimizedPoolEntryType[] _VALUES =
+		MinimizedPoolEntryType.values();
+	
+	/** Classes used. */
+	private final Class<?>[] _classes;
+	
+	/** Is this a run-time entry? */
+	protected final boolean isRunTime;
+	
+	/**
+	 * Initializes the enumeration.
+	 * 
+	 * @param __isRt Is this for run-time?
+	 * @param __classes Classes that represent this type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/24
+	 */
+	MinimizedPoolEntryType(boolean __isRt, Class<?>... __classes)
+		throws NullPointerException
+	{
+		if (__classes == null)
+			throw new NullPointerException("NARG");
+		
+		this.isRunTime = __isRt;
+		this._classes = __classes;
+	}
 	
 	/**
 	 * Can this be in the runtime pool?
@@ -75,20 +134,7 @@ public enum MinimizedPoolEntryType
 	 */
 	public final boolean isRuntime()
 	{
-		switch (this)
-		{
-			case NULL:
-			case CLASS_INFO_POINTER:
-			case CLASS_POOL:
-			case ACCESSED_FIELD:
-			case INVOKED_METHOD:
-			case USED_STRING:
-			case METHOD_INDEX:
-			case NOTED_STRING:
-				return true;
-		}
-		
-		return false;
+		return this == MinimizedPoolEntryType.NULL || this.isRunTime;
 	}
 	
 	/**
@@ -99,21 +145,8 @@ public enum MinimizedPoolEntryType
 	 */
 	public final boolean isStatic()
 	{
-		switch (this)
-		{
-			case NULL:
-			case STRING:
-			case CLASS_NAME:
-			case CLASS_NAMES:
-			case METHOD_DESCRIPTOR:
-			case INTEGER:
-			case FLOAT:
-			case LONG:
-			case DOUBLE:
-				return true;
-		}
-		
-		return false;
+		// This is the opposite of run-time
+		return this == MinimizedPoolEntryType.NULL || !this.isRunTime;
 	}
 	
 	/**
@@ -124,28 +157,12 @@ public enum MinimizedPoolEntryType
 	 * @throws IllegalArgumentException If the type is not valid.
 	 * @since 2019/04/17
 	 */
-	public static final MinimizedPoolEntryType of(int __i)
+	public static MinimizedPoolEntryType of(int __i)
 		throws IllegalArgumentException
 	{
-		switch (__i)
-		{
-			case 0:		return MinimizedPoolEntryType.NULL;
-			case 1:		return MinimizedPoolEntryType.STRING;
-			case 2:		return MinimizedPoolEntryType.CLASS_NAME;
-			case 3:		return MinimizedPoolEntryType.CLASS_NAMES;
-			case 4:		return MinimizedPoolEntryType.CLASS_POOL;
-			case 5:		return MinimizedPoolEntryType.ACCESSED_FIELD;
-			case 6:		return MinimizedPoolEntryType.INVOKED_METHOD;
-			case 7:		return MinimizedPoolEntryType.METHOD_DESCRIPTOR;
-			case 8:		return MinimizedPoolEntryType.INTEGER;
-			case 9:		return MinimizedPoolEntryType.FLOAT;
-			case 10:	return MinimizedPoolEntryType.LONG;
-			case 11:	return MinimizedPoolEntryType.DOUBLE;
-			case 12:	return MinimizedPoolEntryType.USED_STRING;
-			case 13:	return MinimizedPoolEntryType.METHOD_INDEX;
-			case 14:	return MinimizedPoolEntryType.CLASS_INFO_POINTER;
-			case 15:	return MinimizedPoolEntryType.NOTED_STRING;
-		}
+		for (MinimizedPoolEntryType e : MinimizedPoolEntryType._VALUES)
+			if (e.ordinal() == __i)
+				return e;
 		
 		// {@squirreljme.error JC0e Unknown pool type. (The type)}
 		throw new IllegalArgumentException("JC0e " + __i);
@@ -160,50 +177,17 @@ public enum MinimizedPoolEntryType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	public static final MinimizedPoolEntryType ofClass(Class<?> __cl)
+	public static MinimizedPoolEntryType ofClass(Class<?> __cl)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// Easier to do it just by name
-		switch (__cl.getName())
-		{
-			case "java.lang.String":
-				return MinimizedPoolEntryType.STRING;
-			case "java.lang.Integer":
-				return MinimizedPoolEntryType.INTEGER;
-			case "java.lang.Float":
-				return MinimizedPoolEntryType.FLOAT;
-			case "java.lang.Long":
-				return MinimizedPoolEntryType.LONG;
-			case "java.lang.Double":
-				return MinimizedPoolEntryType.DOUBLE;
-			case "dev.shadowtail.classfile.pool.AccessedField":
-				return MinimizedPoolEntryType.ACCESSED_FIELD;
-			case "dev.shadowtail.classfile.pool.ClassPool":
-				return MinimizedPoolEntryType.CLASS_POOL;
-			case "dev.shadowtail.classfile.pool.InvokedMethod":
-				return MinimizedPoolEntryType.INVOKED_METHOD;
-			case "net.multiphasicapps.classfile.ClassName":
-				return MinimizedPoolEntryType.CLASS_NAME;
-			case "net.multiphasicapps.classfile.ClassNames":
-				return MinimizedPoolEntryType.CLASS_NAMES;
-			case "List net.multiphasicapps.classfile.ClassName":
-				return MinimizedPoolEntryType.CLASS_NAMES;
-			case "net.multiphasicapps.classfile.MethodDescriptor":
-				return MinimizedPoolEntryType.METHOD_DESCRIPTOR;
-			case "dev.shadowtail.classfile.pool.UsedString":
-				return MinimizedPoolEntryType.USED_STRING;
-			case "dev.shadowtail.classfile.pool.MethodIndex":
-				return MinimizedPoolEntryType.METHOD_INDEX;
-			case "dev.shadowtail.classfile.pool.ClassInfoPointer":
-				return MinimizedPoolEntryType.CLASS_INFO_POINTER;
-			case "dev.shadowtail.classfile.pool.NotedString":
-				return MinimizedPoolEntryType.NOTED_STRING;
-			case "dev.shadowtail.classfile.pool.NullPoolEntry":
-				return MinimizedPoolEntryType.NULL;
-		}
+		// Try to find the given class
+		for (MinimizedPoolEntryType e : MinimizedPoolEntryType._VALUES)
+			for (Class<?> classy : e._classes)
+				if (__cl == classy)
+					return e;
 		
 		// {@squirreljme.error JC0f Class does not map to a pool entry
 		// type. (The class)}

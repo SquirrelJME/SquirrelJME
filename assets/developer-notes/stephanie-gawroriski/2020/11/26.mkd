@@ -1,0 +1,7 @@
+# 2020/11/26
+
+## 14:19
+
+I think what I need to figure out why some tests are slow or otherwise
+would be to get the timings for all the tests and just see what is going on
+regarding them.

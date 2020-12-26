@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -287,12 +288,12 @@ public final class Initializer
 						break;
 					
 					default:
-						throw new todo.OOPS();
+						throw Debugging.oops();
 				}
 				
 				// Debug
 				if (JarMinimizer._ENABLE_DEBUG)
-					todo.DEBUG.note("Op %-5d: %d@0x%08x = %d (%s)",
+					Debugging.debugNote("Op %-5d: %d@0x%08x = %d (%s)",
 						i, op.size, op.addr, op.value, op.mod);
 			}
 			
@@ -301,7 +302,7 @@ public final class Initializer
 			
 			// Debug
 			if (JarMinimizer._ENABLE_DEBUG)
-				todo.DEBUG.note("Wrote %d bytes, %d ops", dos.size(), n);
+				Debugging.debugNote("Wrote %d bytes, %d ops", dos.size(), n);
 			
 			// Done!
 			return baos.toByteArray();

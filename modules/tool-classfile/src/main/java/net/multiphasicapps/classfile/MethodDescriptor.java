@@ -258,7 +258,7 @@ public final class MethodDescriptor
 		{
 			FieldDescriptor a;
 			JavaType j;
-			rv.add(j = new JavaType(a = this.argument(i)));
+			rv.add(j = new JavaType(this.argument(i)));
 			
 			// Add top of long/double but with unique distinct types
 			if (j.isWide())

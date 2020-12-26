@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.JavaType;
 
@@ -31,7 +32,7 @@ public enum StackJavaType
 	/** Double. */
 	DOUBLE,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -50,7 +51,7 @@ public enum StackJavaType
 			case DOUBLE:	return "Double";
 		}
 		
-		throw new todo.OOPS();
+		throw Debugging.oops();
 	}
 	
 	/**
@@ -69,7 +70,7 @@ public enum StackJavaType
 			case DOUBLE:	return "D";
 		}
 		
-		throw new todo.OOPS();
+		throw Debugging.oops();
 	}
 	
 	/**
@@ -100,7 +101,7 @@ public enum StackJavaType
 			case DOUBLE:	base = "SoftDouble"; break;
 			
 			default:
-				throw new todo.TODO();
+				throw Debugging.todo();
 		}
 		
 		return new ClassName("cc/squirreljme/jvm/" + base);
@@ -122,7 +123,7 @@ public enum StackJavaType
 			case DOUBLE:	return JavaType.DOUBLE;
 		}
 		
-		throw new todo.OOPS(this.name());
+		throw Debugging.oops(this.name());
 	}
 	
 	/**
@@ -132,7 +133,7 @@ public enum StackJavaType
 	 * @return The resulting stack type.
 	 * @since 2019/04/08
 	 */
-	public static final StackJavaType of(int __i)
+	public static StackJavaType of(int __i)
 	{
 		switch (__i)
 		{

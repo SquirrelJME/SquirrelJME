@@ -27,7 +27,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 import org.gradle.api.Action;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.jvm.tasks.Jar;
+import org.gradle.nativeplatform.tasks.LinkSharedLibrary;
 import org.gradle.process.JavaExecSpec;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
@@ -139,6 +142,11 @@ public class VMTestTaskAction
 		Map<String, String> sysProps = new LinkedHashMap<>();
 		if (Boolean.getBoolean("java.awt.headless"))
 			sysProps.put("java.awt.headless", "true");
+		
+		// Can we directly refer to the emulator library already?
+		Path emuLib = VMHelpers.findEmulatorLib(__task);
+		if (emuLib != null && Files.exists(emuLib))
+			sysProps.put("squirreljme.emulator.libpath", emuLib.toString());
 		
 		// Execute the tests concurrently but up to the limit, as testing is
 		// very intense on CPU

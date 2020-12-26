@@ -186,7 +186,7 @@ public final class MinimizedMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public static final MinimizedMethod[] decodeMethods(int __n,
+	public static MinimizedMethod[] decodeMethods(int __n,
 		DualClassRuntimePool __p, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, InvalidClassFormatException,
 			NullPointerException

@@ -23,6 +23,9 @@ squirreljme
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.0")
 	tags += "required"
 	tags += "lite"
+	
+	// This is considered a boot loader for SummerCoat
+	isBootLoader = true
 }
 
 java

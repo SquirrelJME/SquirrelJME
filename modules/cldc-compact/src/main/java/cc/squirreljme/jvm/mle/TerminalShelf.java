@@ -30,6 +30,18 @@ public final class TerminalShelf
 	}
 	
 	/**
+	 * Returns the number of available bytes for reading, if it is known.
+	 * 
+	 * @param __fd The {@link StandardPipeType} to close.
+	 * @return The number of bytes ready for immediate reading, will be
+	 * zero if there are none. For errors one of {@link PipeErrorType}.
+	 * @throws MLECallError If {@code __fd} is not valid.
+	 * @since 2020/11/22
+	 */
+	public static native int available(int __fd)
+		throws MLECallError;
+	
+	/**
 	 * Closes the output of the current process.
 	 * 
 	 * @param __fd The {@link StandardPipeType} to close.
@@ -49,6 +61,22 @@ public final class TerminalShelf
 	 * @since 2018/12/08
 	 */
 	public static native int flush(int __fd)
+		throws MLECallError;
+	
+	/**
+	 * Reads from the given pipe into the output buffer.
+	 *
+	 * @param __fd The {@link StandardPipeType} to read from.
+	 * @param __b The bytes to read into.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return One of {@link PipeErrorType} or the number of read bytes.
+	 * @throws MLECallError If {@code __fd} is not valid, the offset and/or
+	 * length are negative or exceed the buffer size, or {@code __b} is
+	 * {@code null}.
+	 * @since 2018/12/05
+	 */
+	public static native int read(int __fd, byte[] __b, int __o, int __l)
 		throws MLECallError;
 	
 	/**

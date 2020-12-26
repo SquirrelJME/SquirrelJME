@@ -881,7 +881,7 @@ public final class ByteCode
 	 * @return The owning method.
 	 * @since 2017/10/15
 	 */
-	private final Method __method()
+	private Method __method()
 	{
 		// {@squirreljme.error JC24 The method owning this byte code has been
 		// garbage collected.}
@@ -901,7 +901,7 @@ public final class ByteCode
 	@SuppressWarnings({"unchecked"})
 	private static Reference<Instruction>[] __newCache(int __l)
 	{
-		return (Reference<Instruction>[])((Object)new Reference[__l]);
+		return (Reference<Instruction>[])new Reference[__l];
 	}
 	
 	/**
@@ -1249,8 +1249,7 @@ public final class ByteCode
 			ByteCode.this.codelen;
 		
 		/** The read address. */
-		private int _at =
-			0;
+		private int _at;
 		
 		/**
 		 * {@inheritDoc}

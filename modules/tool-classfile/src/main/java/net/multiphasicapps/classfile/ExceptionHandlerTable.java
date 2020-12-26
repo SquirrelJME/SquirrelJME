@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -255,7 +256,7 @@ public final class ExceptionHandlerTable
 	 */
 	public final InstructionAddressRange range()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

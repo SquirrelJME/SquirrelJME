@@ -110,7 +110,6 @@ public final class InnerClassFlags
 						break;
 					
 					default:
-						v = null;
 						continue;
 				}
 				
@@ -171,7 +170,7 @@ public final class InnerClassFlags
 	 * valid.
 	 * @since 2018/05/15
 	 */
-	private final void __checkFlags()
+	private void __checkFlags()
 		throws InvalidClassFormatException
 	{
 		// Construct class flags which checks if they are valid

@@ -9,7 +9,10 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.concurrent.Callable;
 
 /**
@@ -57,6 +60,13 @@ public class VMRomInputs
 	@Override
 	public Iterable<Path> call()
 	{
-		throw new Error("TODO -- MultiVMRomInputs");
+		// All the inputs for the ROM are the outputs of all the library tasks
+		Collection<Path> rv = new LinkedHashSet<>();
+		for (VMLibraryTask task : VMRomDependencies.libraries(this.task,
+			this.sourceSet, this.vmType))
+			for (File f : task.getOutputs().getFiles().getFiles())
+				rv.add(f.toPath());
+		
+		return rv;
 	}
 }

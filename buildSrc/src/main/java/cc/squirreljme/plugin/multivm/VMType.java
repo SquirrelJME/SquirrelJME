@@ -9,14 +9,18 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +28,7 @@ import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
 
 /**
@@ -43,7 +48,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(InputStream __in, OutputStream __out)
+		public void processLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
 			if (__in == null || __out == null)
@@ -74,6 +80,17 @@ public enum VMType
 				VMHelpers.classpathAsString(__libPath));
 			sysProps.put("squirreljme.hosted.classpath",
 				VMHelpers.classpathAsString(__classPath));
+			
+			// Can we directly refer to the emulator library already?
+			// Only if it has not already been given, doing it here will enable
+			// every sub-process quick access to the library
+			if (!sysProps.containsKey("squirreljme.emulator.libpath"))
+			{
+				Path emuLib = VMHelpers.findEmulatorLib(__task);
+				if (emuLib != null && Files.exists(emuLib))
+					sysProps.put("squirreljme.emulator.libpath",
+						emuLib.toString());
+			}
 			
 			// Start with the base emulator class path
 			List<Object> classPath = new ArrayList<>();
@@ -116,7 +133,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(InputStream __in, OutputStream __out)
+		public void processLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
 			if (__in == null || __out == null)
@@ -152,14 +170,169 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(InputStream __in, OutputStream __out)
-			throws IOException, NullPointerException
+		public void processLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws NullPointerException
 		{
-			if (__in == null || __out == null)
+			if (__task == null || __in == null || __out == null)
 				throw new NullPointerException("NARG");
 			
-			// Use the AOT backend for execution
-			throw new Error("TODO");
+			// Need to access the config for ROM building
+			SquirrelJMEPluginConfiguration config =
+				SquirrelJMEPluginConfiguration
+				.configuration(__task.getProject());
+			
+			// Class path is of the compiler target, it does not matter
+			Path[] classPath = VMHelpers.runClassPath(__task.getProject()
+				.getRootProject().project(":modules:aot-" +
+					this.vmName(VMNameFormat.LOWERCASE)),
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
+			
+			// Setup arguments for compilation
+			Collection<String> args = new ArrayList<>();
+			
+			// The engine to use
+			args.add("-Xcompiler:" + this.vmName(VMNameFormat.LOWERCASE));
+			
+			// The name of this JAR
+			args.add("-Xname:" + __task.getProject().getName());
+			
+			// Perform compilation
+			args.add("compile");
+			
+			// Is this a boot loader? This is never valid for tests as they
+			// are just extra libraries, it does not make sense to have them
+			// be loadable.
+			if (!__isTest && config.isBootLoader)
+				args.add("-boot");
+			
+			// Call the AOT backend
+			ExecResult exitResult = __task.getProject().javaexec(__spec ->
+				{
+					// Figure out the arguments to the JVM, it does not matter
+					// what the classpath is
+					VMType.HOSTED.spawnJvmArguments(__task, __spec,
+						"cc.squirreljme.jvm.aot.Main",
+						Collections.emptyMap(),
+						classPath,
+						classPath,
+						args.toArray(new String[args.size()]));
+					
+					// Use the error stream directory
+					__spec.setErrorOutput(new GuardedOutputStream(System.err));
+					
+					// Processing is done directly from the input
+					__spec.setStandardInput(__in);
+					
+					// The caller will consume the entire output of what was
+					// processed, so
+					__spec.setStandardOutput(__out);
+					
+					// Ignore error states, let us handle it instead of Gradle
+					// so we could handle multiple different exit codes.
+					__spec.setIgnoreExitValue(true);
+				});
+			
+			// Processing the library did not work?
+			int code;
+			if ((code = exitResult.getExitValue()) != 0)
+				throw new RuntimeException(String.format(
+					"Failed to process library (exit code %d).", code));
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/11/21
+		 */
+		@Override
+		public Iterable<Task> processLibraryDependencies(
+			VMLibraryTask __task)
+			throws NullPointerException
+		{
+			Project project = __task.getProject().getRootProject()
+				.project(":modules:aot-" +
+					this.vmName(VMNameFormat.LOWERCASE));
+			Project rootProject = project.getRootProject();
+			
+			// Make sure the AOT compiler is always up to date when this is
+			// ran, otherwise things can be very weird if it is not updated
+			// which would not be a good thing at all
+			Collection<Task> rv = new LinkedList<>();
+			for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
+				rv.add(rootProject.project(task.project).getTasks()
+					.getByName(task.task));
+			
+			// Make sure the hosted environment is working since it needs to
+			// be kept up to date as well
+			for (Task task : new VMEmulatorDependencies(__task,
+				VMType.HOSTED).call())
+				rv.add(task);
+			
+			return rv;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/11/27
+		 */
+		@Override
+		public void processRom(Task __task, OutputStream __out,
+			Collection<Path> __libs)
+			throws IOException, NullPointerException
+		{
+			if (__task == null || __out == null || __libs == null)
+				throw new NullPointerException("NARG");
+			
+			// Class path is of the compiler target, it does not matter
+			Path[] classPath = VMHelpers.runClassPath(__task.getProject()
+				.getRootProject().project(":modules:aot-" +
+					this.vmName(VMNameFormat.LOWERCASE)),
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
+			
+			// Setup arguments for compilation
+			Collection<String> args = new ArrayList<>();
+			
+			// The engine to use
+			args.add("-Xcompiler:" + this.vmName(VMNameFormat.LOWERCASE));
+			
+			// Perform ROM creation
+			args.add("-Xname:squirreljme");
+			args.add("rom");
+			
+			// Put down paths to libraries to link together
+			for (Path path : __libs)
+				args.add(path.toString());
+			
+			// Call the AOT backend
+			ExecResult exitResult = __task.getProject().javaexec(__spec ->
+				{
+					// Figure out the arguments to the JVM, it does not matter
+					// what the classpath is
+					VMType.HOSTED.spawnJvmArguments(__task, __spec,
+						"cc.squirreljme.jvm.aot.Main",
+						Collections.emptyMap(),
+						classPath,
+						classPath,
+						args.toArray(new String[args.size()]));
+					
+					// Use the error stream directory
+					__spec.setErrorOutput(new GuardedOutputStream(System.err));
+					
+					// The caller will consume the entire output of what was
+					// processed, so
+					__spec.setStandardOutput(__out);
+					
+					// Ignore error states, let us handle it instead of Gradle
+					// so we could handle multiple different exit codes.
+					__spec.setIgnoreExitValue(true);
+				});
+			
+			// Processing the library did not work?
+			int code;
+			if ((code = exitResult.getExitValue()) != 0)
+				throw new RuntimeException(String.format(
+					"Failed to process ROM (exit code %d).", code));
 		}
 		
 		/**
@@ -215,6 +388,26 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/08/16
+	 */
+	@Override
+	public final String emulatorProject()
+	{
+		return this.emulatorProject;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/23
+	 */
+	@Override
+	public final boolean hasRom()
+	{
+		return this == VMType.SUMMERCOAT;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/08/07
 	 */
 	@Override
@@ -230,6 +423,43 @@ public enum VMType
 		
 		// Otherwise include the source sets
 		return __project.getName() + "-" + __sourceSet + "." + this.extension;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/27
+	 */
+	@Override
+	public String outputRomName(String __sourceSet)
+		throws NullPointerException
+	{
+		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
+			return "squirreljme." + this.extension;
+		return "squirreljme-" + __sourceSet + "." + this.extension;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/21
+	 */
+	@Override
+	public Iterable<Task> processLibraryDependencies(
+		VMLibraryTask __task)
+		throws NullPointerException
+	{
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/11/27
+	 */
+	@Override
+	public void processRom(Task __task, OutputStream __out,
+		Collection<Path> __libs)
+		throws IOException, NullPointerException
+	{
+		throw new RuntimeException(this.name() + " is not ROM capable.");
 	}
 	
 	/**
@@ -343,25 +573,5 @@ public enum VMType
 			default:
 				return properName;
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/08/16
-	 */
-	@Override
-	public final String emulatorProject()
-	{
-		return this.emulatorProject;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/08/23
-	 */
-	@Override
-	public final boolean hasRom()
-	{
-		return this == VMType.SUMMERCOAT;
 	}
 }

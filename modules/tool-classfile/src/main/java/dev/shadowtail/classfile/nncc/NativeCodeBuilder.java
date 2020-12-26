@@ -10,6 +10,16 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
+import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
+import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
+import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
+import dev.shadowtail.classfile.summercoat.register.PlainRegister;
+import dev.shadowtail.classfile.summercoat.register.Register;
+import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
+import dev.shadowtail.classfile.summercoat.register.Volatile;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
@@ -68,65 +78,16 @@ public final class NativeCodeBuilder
 	 * @return The resulting temporary instruction.
 	 * @throws IllegalArgumentException If the argument count is incorrect.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/16
+	 * @deprecated Do not call this method to add new instructions as it
+	 * does not provide any kind of type safety that could be utilized by the
+	 * compiler.
+	 * @since 2020/11/24
 	 */
+	@Deprecated
 	public final NativeInstruction add(int __op, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// Needed for argument format check
-		ArgumentFormat[] afmt = NativeInstruction.argumentFormat(__op);
-		int fnar = afmt.length;
-		
-		// Build instruction
-		NativeInstruction rv = new NativeInstruction(__op, __args);
-		
-		// {@squirreljme.error JC0q Operation has an incorrect number of
-		// arguments. (The instruction)}
-		if (fnar != __args.length)
-			throw new IllegalArgumentException("JC0q " + rv);
-		
-		// Check format
-		for (int i = 0; i < fnar; i++)
-		{
-			// Cannot be null
-			Object o = __args[i];
-			if (o == null)
-				throw new NullPointerException("NARG");
-			
-			// Integer value?
-			int oi = ((o instanceof Number) ? ((Number)o).intValue() : -1);
-			
-			// Make sure values are good
-			switch (afmt[i])
-			{
-					// {@squirreljme.error JC0r Use of register which is out
-					// of range of the maximum register count.
-					// (The instruction)}
-				case VUREG:
-					if (oi < 0 || oi >= NativeCode.MAX_REGISTERS)
-						throw new IllegalArgumentException("JC0r " + rv);
-					break;
-				
-					// {@squirreljme.error JC0s Cannot jump to a non-label.
-					// (The instruction)}
-				case VJUMP:
-					if (!(o instanceof NativeCodeLabel))
-						throw new IllegalArgumentException("JC0s " + rv);
-					break;
-			}
-		}
-		
-		// Create instruction
-		int atdx = this._nextaddr++;
-		
-		// Debug
-		if (__Debug__.ENABLED)
-			todo.DEBUG.note("@%d -> %s %s", atdx,
-				NativeInstruction.mnemonic(__op), Arrays.asList(__args));
-			
-		// Store all information
-		this._points.put(atdx, new Point(rv));
-		return rv;
+		return this.__add(__op, __args);
 	}
 	
 	/**
@@ -139,7 +100,7 @@ public final class NativeCodeBuilder
 	 */
 	public final NativeInstruction addCopy(int __from, int __to)
 	{
-		return this.add(NativeInstructionType.COPY,
+		return this.__add(NativeInstructionType.COPY,
 			__from, __to);
 	}
 	
@@ -162,7 +123,7 @@ public final class NativeCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		// Build operation
-		return this.add(NativeInstructionType.IF_ICMP |
+		return this.__add(NativeInstructionType.IF_ICMP |
 			__ct.ordinal(), __a, __b, __jt);
 	}
 	
@@ -241,6 +202,110 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds get of an interface for a given object.
+	 * 
+	 * @param __name The name of the interface.
+	 * @param __objectReg The object register to access.
+	 * @param __dest The destination register.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/24
+	 */
+	public NativeInstruction addInterfaceForObject(InterfaceClassName __name,
+		PlainRegister __objectReg, InterfaceOfObject __dest)
+		throws NullPointerException
+	{
+		if (__name == null || __objectReg == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__add(NativeInstructionType.INTERFACE_I_FOR_OBJECT,
+			__name, __objectReg, __dest);
+	}
+	
+	/**
+	 * Adds lookup of an interface VTable Index.
+	 * 
+	 * @param __target The target method to call.
+	 * @param __iOfO The source interface of an object used.
+	 * @param __dest The destination register to get the information from.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/24
+	 */
+	public NativeInstruction addInterfaceVTIndexLookup(InvokedMethod __target,
+		InterfaceOfObject __iOfO, InterfaceVTIndex __dest)
+		throws NullPointerException
+	{
+		if (__target == null || __iOfO == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__add(NativeInstructionType.INTERFACE_VT_DX_LOOKUP,
+			__target, __iOfO, __dest);
+	}
+	
+	/**
+	 * Adds load of an interface VTable.
+	 * 
+	 * @param __iOfO The interface of the given object.
+	 * @param __iVti The VTable index.
+	 * @param __destExecP The destination execution pointer.
+	 * @param __destPool The destination pool pointer.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/24
+	 */
+	public NativeInstruction addInterfaceVTLoad(
+		InterfaceOfObject __iOfO, InterfaceVTIndex __iVti,
+		ExecutablePointer __destExecP, RuntimePoolPointer __destPool)
+		throws NullPointerException
+	{
+		if (__iOfO == null || __iVti == null ||
+			__destExecP == null || __destPool == null)
+			throw new NullPointerException("NARG");
+			
+		return this.__add(NativeInstructionType.INTERFACE_VT_LOAD,
+			__iOfO, __iVti, __destExecP, __destPool);
+	}
+	
+	/**
+	 * Adds an invocation of a pool and pointer value.
+	 * 
+	 * @param __exec The executable pointer.
+	 * @param __pool The pool pointer.
+	 * @param __args Arguments to the call.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	public NativeInstruction addInvokePoolAndPointer(ExecutablePointer __exec,
+		RuntimePoolPointer __pool, Register... __args)
+	{
+		return this.addInvokePoolAndPointer(__exec, __pool,
+			new RegisterList(__args));
+	}
+	
+	/**
+	 * Adds an invocation of a pool and pointer value.
+	 * 
+	 * @param __exec The executable pointer.
+	 * @param __pool The pool pointer.
+	 * @param __args Arguments to the call.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	public NativeInstruction addInvokePoolAndPointer(ExecutablePointer __exec,
+		RuntimePoolPointer __pool, RegisterList __args)
+		throws NullPointerException
+	{
+		if (__exec == null || __pool == null || __args == null)
+			throw new NullPointerException("NARG");
+			
+		return this.__add(NativeInstructionType.INVOKE_POOL_AND_POINTER,
+			__exec, __pool, __args);
+	}
+	
+	/**
 	 * Adds a math via constant operation.
 	 *
 	 * @param __jt The Java type.
@@ -273,12 +338,12 @@ public final class NativeCodeBuilder
 				throw new RuntimeException("JC0t");
 			
 			default:
-				throw new todo.OOPS(__jt.name());
+				throw Debugging.oops(__jt.name());
 		}
 		
 		// Build operation
 		int rop = op | __mf.ordinal();
-		return this.add(rop, __a, __b, __c);
+		return this.__add(rop, __a, __b, __c);
 	}
 	
 	/**
@@ -314,12 +379,12 @@ public final class NativeCodeBuilder
 				throw new RuntimeException("JC0u");
 			
 			default:
-				throw new todo.OOPS(__jt.name());
+				throw Debugging.oops(__jt.name());
 		}
 		
 		// Build operation
 		int rop = op | __mf.ordinal();
-		return this.add(rop, __a, __b, __c);
+		return this.__add(rop, __a, __b, __c);
 	}
 	
 	/**
@@ -345,7 +410,7 @@ public final class NativeCodeBuilder
 		if (__dt.isWide())
 			throw new IllegalArgumentException("JC0v");
 		
-		return this.add(NativeInstructionType.MEMORY_OFF_ICONST |
+		return this.__add(NativeInstructionType.MEMORY_OFF_ICONST |
 			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
 	}
 	
@@ -372,7 +437,7 @@ public final class NativeCodeBuilder
 		if (__dt.isWide())
 			throw new IllegalArgumentException("JC0w");
 		
-		return this.add(NativeInstructionType.MEMORY_OFF_ICONST_JAVA |
+		return this.__add(NativeInstructionType.MEMORY_OFF_ICONST_JAVA |
 			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
 	}
 	
@@ -400,7 +465,7 @@ public final class NativeCodeBuilder
 			throw new IllegalArgumentException("JC0x");
 		
 		// Generate
-		return this.add(NativeInstructionType.MEMORY_OFF_REG |
+		return this.__add(NativeInstructionType.MEMORY_OFF_REG |
 			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
 	}
 	
@@ -428,7 +493,7 @@ public final class NativeCodeBuilder
 			throw new IllegalArgumentException("JC0y");
 		
 		// Generate
-		return this.add(NativeInstructionType.MEMORY_OFF_REG_JAVA |
+		return this.__add(NativeInstructionType.MEMORY_OFF_REG_JAVA |
 			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
 	}
 	
@@ -455,7 +520,7 @@ public final class NativeCodeBuilder
 			NativeInstruction ri = point.instruction;
 			int rie = ri.encoding();
 			
-			NativeCodeLabel jt = null;
+			NativeCodeLabel jt;
 			
 			// Depends on the encoding
 			switch (rie)
@@ -518,7 +583,7 @@ public final class NativeCodeBuilder
 				{
 					// {@squirreljme.error JC0z The specified label was
 					// never defined. (The label)}
-					Integer rlp = labels.get((NativeCodeLabel)a);
+					Integer rlp = labels.get(a);
 					if (rlp == null)
 						throw new IllegalArgumentException("JC0z " + a);
 					
@@ -585,7 +650,7 @@ public final class NativeCodeBuilder
 	{
 		// Debug
 		if (__Debug__.ENABLED)
-			todo.DEBUG.note("Label %s -> @%d", __l, __pc);
+			Debugging.debugNote("Label %s -> @%d", __l, __pc);
 		
 		// Add
 		this._labels.put(__l, __pc);
@@ -630,31 +695,82 @@ public final class NativeCodeBuilder
 		return (rv == null ? -1 : rv);
 	}
 	
+	
 	/**
-	 * This stores the information for a single point in the native code.
+	 * Adds a new instruction.
 	 *
-	 * @since 2019/04/26
+	 * @param __op The operation to add.
+	 * @param __args The arguments to the operation.
+	 * @return The resulting temporary instruction.
+	 * @throws IllegalArgumentException If the argument count is incorrect.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/16
 	 */
-	public static final class Point
+	private NativeInstruction __add(int __op, Object... __args)
+		throws IllegalArgumentException, NullPointerException
 	{
-		/** The instruction used. */
-		public final NativeInstruction instruction;
+		// Needed for argument format check
+		ArgumentFormat[] afmt = NativeInstruction.argumentFormat(__op);
+		int fnar = afmt.length;
 		
-		/**
-		 * Initializes the instruction point.
-		 *
-		 * @param __i The instruction.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2019/04/26
-		 */
-		public Point(NativeInstruction __i)
-			throws NullPointerException
+		// Build instruction
+		NativeInstruction rv = new NativeInstruction(__op, __args);
+		
+		// {@squirreljme.error JC0q Operation has an incorrect number of
+		// arguments. (The instruction)}
+		if (fnar != __args.length)
+			throw new IllegalArgumentException("JC0q " + rv);
+		
+		// Check format
+		for (int i = 0; i < fnar; i++)
 		{
-			if (__i == null)
+			// Cannot be null
+			Object o = __args[i];
+			if (o == null)
 				throw new NullPointerException("NARG");
 			
-			this.instruction = __i;
+			// Referencing a volatile register?
+			int oi;
+			if (o instanceof Volatile)
+				oi = ((Volatile<?>)o).register.register;
+			
+			// Easily obtainable integer value?
+			else
+				oi = ((o instanceof Register) ? ((Register)o).register :
+					((o instanceof Number) ? ((Number)o).intValue() : -1));
+			
+			// Make sure values are good
+			switch (afmt[i])
+			{
+					// {@squirreljme.error JC0r Use of register which is out
+					// of range of the maximum register count.
+					// (The instruction; The register specified)}
+				case VUREG:
+					if (oi < 0 || oi >= NativeCode.MAX_REGISTERS)
+						throw new IllegalArgumentException("JC0r " + rv +
+							" " + oi);
+					break;
+				
+					// {@squirreljme.error JC0s Cannot jump to a non-label.
+					// (The instruction)}
+				case VJUMP:
+					if (!(o instanceof NativeCodeLabel))
+						throw new IllegalArgumentException("JC0s " + rv);
+					break;
+			}
 		}
+		
+		// Create instruction
+		int atdx = this._nextaddr++;
+		
+		// Debug
+		if (__Debug__.ENABLED)
+			Debugging.debugNote("@%d -> %s %s", atdx,
+				NativeInstruction.mnemonic(__op), Arrays.asList(__args));
+			
+		// Store all information
+		this._points.put(atdx, new Point(rv));
+		return rv;
 	}
 }
 

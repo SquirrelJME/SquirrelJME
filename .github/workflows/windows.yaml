@@ -9,10 +9,3 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build with Gradle
       run: cmd /c gradlew build testHosted --console plain --continue --parallel
-    - uses: actions/upload-artifact@v2
-      with:
-        name: windows-build-results
-        if-no-files-found: warn
-        path: |
-          **/vm-test-hosted/csv/*.csv
-          **/vm-test-hosted/junit/*.xml

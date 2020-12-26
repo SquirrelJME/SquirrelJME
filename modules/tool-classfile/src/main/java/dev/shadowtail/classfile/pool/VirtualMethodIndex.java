@@ -20,10 +20,10 @@ import net.multiphasicapps.classfile.MethodName;
  *
  * @since 2019/04/30
  */
-public final class MethodIndex
+public final class VirtualMethodIndex
 {
 	/** The name of the class. */
-	public final ClassName inclass;
+	public final ClassName inClass;
 	
 	/** The method name. */
 	public final MethodName name;
@@ -37,7 +37,6 @@ public final class MethodIndex
 	/** The string form. */
 	private Reference<String> _string;
 	
-	
 	/**
 	 * Initializes the index holder.
 	 *
@@ -47,7 +46,7 @@ public final class MethodIndex
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/11
 	 */
-	public MethodIndex(ClassName __cl, String __n, MethodDescriptor __t)
+	public VirtualMethodIndex(ClassName __cl, String __n, MethodDescriptor __t)
 		throws NullPointerException
 	{
 		this(__cl, new MethodName(__n), __t);
@@ -62,13 +61,13 @@ public final class MethodIndex
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
-	public MethodIndex(ClassName __cl, MethodName __n, MethodDescriptor __t)
+	public VirtualMethodIndex(ClassName __cl, MethodName __n, MethodDescriptor __t)
 		throws NullPointerException
 	{
 		if (__cl == null || __n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		this.inclass = __cl;
+		this.inClass = __cl;
 		this.name = __n;
 		this.type = __t;
 	}
@@ -83,14 +82,14 @@ public final class MethodIndex
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof MethodIndex))
+		if (!(__o instanceof VirtualMethodIndex))
 			return false;
 		
 		if (this.hashCode() != __o.hashCode())
 			return false;
 		
-		MethodIndex o = (MethodIndex)__o;
-		return this.inclass.equals(o.inclass) &&
+		VirtualMethodIndex o = (VirtualMethodIndex)__o;
+		return this.inClass.equals(o.inClass) &&
 			this.name.equals(o.name) &&
 			this.type.equals(o.type);
 	}
@@ -104,7 +103,7 @@ public final class MethodIndex
 	{
 		int rv = this._hash;
 		if (rv == 0)
-			this._hash = (rv = this.inclass.hashCode() ^
+			this._hash = (rv = this.inClass.hashCode() ^
 				this.name.hashCode() ^ this.type.hashCode());
 		return rv;
 	}
@@ -121,7 +120,7 @@ public final class MethodIndex
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"%s::%s:%s", this.inclass, this.name, this.type)));
+				"%s::%s:%s", this.inClass, this.name, this.type)));
 		
 		return rv;
 	}

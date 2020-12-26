@@ -17,4 +17,7 @@ squirreljme
 dependencies
 {
 	implementation project(":modules:cldc-compact")
+	implementation project(":modules:cldc")
+	implementation project(":modules:zip")
+	implementation project(":modules:common-vm")
 }

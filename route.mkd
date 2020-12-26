@@ -142,8 +142,9 @@ current goal oriented releases, as such this list is more oriented into what
 needs to be done.
 
  * [ ] LCDUI Enhancement
+   * [ ] Accelerated Graphics
    * [ ] Framebuffer Fallback
-   * [ ] Native UI Widgets
+   * [ ] Native UI Widgets (_PARTIAL_)
  * [X] Modernization of SpringCoat
  * [X] Modernization of the build system using Gradle.
  * [ ] Software Floating Point (IEEE 754)
@@ -151,13 +152,15 @@ needs to be done.
    * [ ] 64-bit Double
  * [X] User Guide
  * [ ] Virtual Machine: SummerCoat
-   * [ ] Compilation of ROMs
+   * [X] Compilation of ROMs
      * [X] Class Compilation
-     * [ ] Gradle Tasks
+     * [X] Gradle Tasks
      * [X] Packaging Compiled Code into ROMs
-   * [ ] Native UI Widgets
+   * [ ] Native UI Widgets (_PARTIAL_)
    * [ ] Refactoring and Cleanup
  * [ ] Virtual machine: RatufaCoat
+   * [ ] Accelerated Graphics
+   * [ ] Built-In ROM
    * [ ] Framebuffer
    * [ ] LCDUI Support
    * [ ] Refactoring and Cleanup

@@ -9,54 +9,49 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import java.nio.file.Path;
 import java.util.concurrent.Callable;
+import org.gradle.api.Task;
 
 /**
- * Returns the outputs of the ROM.
+ * Dependencies for the VM library building task.
  *
- * @since 2020/08/23
+ * @since 2020/11/21
  */
-public class VMRomOutputs
-	implements Callable<Iterable<Path>>
+public class VMLibraryTaskDependencies
+	implements Callable<Iterable<Task>>
 {
-	/** The source set used. */
-	protected final String sourceSet;
+	/** The task this is for. */
+	protected final VMLibraryTask task;
 	
-	/** The task to generate for. */
-	protected final VMRomTask task;
-	
-	/** The type of virtual machine used. */
+	/** The virtual machine to target. */
 	protected final VMSpecifier vmType;
 	
 	/**
-	 * Initializes the handler.
+	 * Initializes the task dependencies.
 	 * 
-	 * @param __task The task to create for.
-	 * @param __sourceSet The source set to use.
-	 * @param __vmType The virtual machine type.
+	 * @param __task The task owning this.
+	 * @param __vmType The virtual machine to target.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/08/23
+	 * @since 2020/11/21
 	 */
-	public VMRomOutputs(VMRomTask __task,
-		String __sourceSet, VMSpecifier __vmType)
+	public VMLibraryTaskDependencies(VMLibraryTask __task,
+		VMSpecifier __vmType)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		if (__task == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.sourceSet = __sourceSet;
 		this.vmType = __vmType;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/08/23
+	 * @since 2020/11/21
 	 */
 	@Override
-	public Iterable<Path> call()
+	public Iterable<Task> call()
 	{
-		throw new Error("TODO -- MultiVMRomOutputs");
+		return this.vmType.processLibraryDependencies(this.task);
 	}
 }

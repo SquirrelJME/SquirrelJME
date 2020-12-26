@@ -57,7 +57,14 @@ public final class NativeCode
 	public static final int POOL_REGISTER =
 		6;
 	
-	/** The register which contains the next pool pointer to use. */
+	/**
+	 * The register which contains the next pool pointer to use.
+	 *
+	 * @deprecated This is deprecated because
+	 * {@link NativeInstructionType#INVOKE} is deprecated and pool pointers
+	 * for invoke will be explicitly set or not used at all.
+	 */
+	@Deprecated
 	public static final int NEXT_POOL_REGISTER =
 		7;
 	

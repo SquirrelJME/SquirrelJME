@@ -32,7 +32,7 @@ public enum InvokeType
 	/** System invocation type. */
 	SYSTEM,
 	
-	/** End. */
+	/* End. */
 	;
 	
 	/**
@@ -65,7 +65,7 @@ public enum InvokeType
 	 * @throws IllegalArgumentException If it is not valid.
 	 * @since 2019/04/17
 	 */
-	public static final InvokeType of(int __i)
+	public static InvokeType of(int __i)
 		throws IllegalArgumentException
 	{
 		switch (__i)

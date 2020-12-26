@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -122,7 +123,7 @@ public final class JavaType
 	{
 		// Check
 		if (__i == 0)
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		this._internal = __i;
 		this.type = null;

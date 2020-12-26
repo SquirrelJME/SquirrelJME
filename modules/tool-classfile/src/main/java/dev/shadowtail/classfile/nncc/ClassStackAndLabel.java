@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.xlate.JavaStackState;
 import java.lang.ref.Reference;
 import net.multiphasicapps.classfile.ClassName;
@@ -99,7 +100,7 @@ public final class ClassStackAndLabel
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

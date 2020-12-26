@@ -13,12 +13,20 @@ squirreljme
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
 	tags += "aot-compiler"
 	tags += "compiler:summercoat"
+	mainClass = "cc.squirreljme.jvm.aot.Main"
 }
 
 dependencies
 {
+	implementation project(":modules:cldc")
+	
 	implementation project(":modules:aot")
+	implementation project(":modules:common-vm")
+	
+	// Library Building
 	implementation project(":modules:tool-classfile")
 	implementation project(":modules:tool-jarfile")
+	
+	// ROM Linking
 	implementation project(":modules:tool-packfile")
 }
