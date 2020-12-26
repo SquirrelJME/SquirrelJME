@@ -2,31 +2,29 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.nio.file;
+package cc.squirreljme.completion;
 
-import cc.squirreljme.completion.Completion;
-import cc.squirreljme.completion.CompletionState;
-import cc.squirreljme.completion.Standard;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@Standard
-public enum LinkOption
-	implements OpenOption, CopyOption
+/**
+ * Represents a standard API class.
+ *
+ * @since 2020/12/25
+ */
+@Documented
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
+public @interface Standard
 {
-	@Completion(CompletionState.NOTHING)
-	NOFOLLOW_LINKS(),
-	
-	/** End. */
-	;
-	
-	LinkOption()
-	{
-		throw new todo.TODO();
-	}
+	/** Possible note. */
+	String value() default "";
 }
-

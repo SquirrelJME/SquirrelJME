@@ -24,7 +24,8 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD,
-	ElementType.TYPE})
+	ElementType.TYPE, ElementType.CONSTRUCTOR})
+@SuppressWarnings("unused")
 public @interface Completion
 {
 	/** How complete this is. */
