@@ -217,6 +217,17 @@ jobs:
             - '*/build/*'
             - '*/*/build/*'
 
+  ### BinTray Publishing
+  bintray_publish:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Sources JAR
+          command: ./gradlew bintrayUpload bintrayPublish --console plain --continue --parallel
+
   ### RatufaCoat
   ratufacoat_build_linux:
     executor: buildenv
@@ -474,6 +485,17 @@ workflows:
             branches:
               only:
                 - trunk
+
+      # Publishing to BinTray for any releases
+      - bintray_publish:
+          requires:
+            - build_javadocJar
+            - build_sourcesJar
+          filters:
+            tags:
+              only: /^[0-9]+.[0-9]+.[0-9]+$/
+            branches:
+              ignore: /.*/
 
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:
