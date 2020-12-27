@@ -228,6 +228,17 @@ jobs:
           name: Build Sources JAR
           command: ./gradlew bintrayUpload bintrayPublish --console plain --continue --parallel
 
+  ### OSS SonaType Nexus
+  sonatype_publish:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Sources JAR
+          command: ./gradlew publishMavenPublicationToMavenRepository --console plain --continue --parallel
+
   ### RatufaCoat
   ratufacoat_build_linux:
     executor: buildenv
@@ -496,6 +507,17 @@ workflows:
               only: /^[0-9]+.[0-9]+.[0-9]+$/
             branches:
               ignore: /.*/
+
+      # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
+      - sonatype_publish:
+          requires:
+            - build_javadocJar
+            - build_sourcesJar
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-centralpublish
 
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:
