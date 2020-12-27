@@ -198,25 +198,6 @@ jobs:
             - '*/build/*'
             - '*/*/build/*'
 
-  ### Sources JAR
-  build_sourcesJar:
-    executor: buildenv
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build Sources JAR
-          command: ./gradlew sourcesJar --console plain --continue --parallel
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
-
   ### BinTray Publishing
   bintray_publish:
     executor: buildenv
@@ -467,9 +448,6 @@ workflows:
       - build_javadocJar:
           requires:
             - build_linux
-      - build_sourcesJar:
-          requires:
-            - build_linux
       - test_springcoat:
           requires:
             - construct_testJars
@@ -501,7 +479,6 @@ workflows:
       - bintray_publish:
           requires:
             - build_javadocJar
-            - build_sourcesJar
           filters:
             tags:
               only: /^[0-9]+.[0-9]+.[0-9]+$/
@@ -512,7 +489,6 @@ workflows:
       - sonatype_publish:
           requires:
             - build_javadocJar
-            - build_sourcesJar
           filters:
             branches:
               only:
