@@ -122,7 +122,7 @@ subprojects {
 					}
 					
 					issueManagement {
-						name = "GitHub"
+						system = "GitHub"
 						url = "https://github.com/SquirrelJME/SquirrelJME/issues"
 					}
 				}

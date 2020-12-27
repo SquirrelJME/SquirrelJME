@@ -206,7 +206,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Build Sources JAR
+          name: Publish to BinTray
           command: ./gradlew bintrayUpload bintrayPublish --console plain --continue --parallel
 
   ### OSS SonaType Nexus
@@ -217,7 +217,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Build Sources JAR
+          name: Publish to OSS SonaType
           command: ./gradlew publishMavenPublicationToMavenRepository --console plain --continue --parallel
 
   ### RatufaCoat
