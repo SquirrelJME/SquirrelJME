@@ -154,7 +154,7 @@ subprojects {
 		
 		pkg {
 			repo = "SquirrelJME"
-			name = "module-" + project.name
+			name = project.name
 			licenses = ['GPL-3.0']
 			vcsUrl = "https://squirreljme.cc/"
 			
