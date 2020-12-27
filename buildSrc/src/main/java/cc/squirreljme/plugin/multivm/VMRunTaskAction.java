@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -97,7 +98,8 @@ public class VMRunTaskAction
 		ExecResult exitResult = __task.getProject().javaexec(__spec ->
 			{
 				// Use filled JVM arguments
-				vmType.spawnJvmArguments(__task, __spec, mainClass,
+				vmType.spawnJvmArguments(__task,
+					new GradleJavaExecSpecFiller(__spec), mainClass,
 					Collections.<String, String>emptyMap(),
 					classPath, classPath,
 					args.<String>toArray(new String[args.size()]));

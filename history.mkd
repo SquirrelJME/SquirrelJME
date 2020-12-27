@@ -683,6 +683,10 @@ Other than that, at the end of the month I started work on doing the completion
 counts which would be used to determine how far I am with standard API
 implementations and otherwise.
 
+Near the very end of the month, publishing was added to Maven Local, BinTray,
+and OSS SonaType. This would allow documentation to potentially be downloaded
+or browser, but will mean that SquirrelJME can be consumed by others.
+
 ### 2021
 
 To be written...
