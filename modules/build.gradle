@@ -1,24 +1,40 @@
 import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
+import org.gradle.util.VersionNumber
 
-plugins
-{
+plugins {
 	id "de.set.ecj" version "1.4.1" apply false
 	id "idea"
+	
+	// For BinTray publishing, do not apply but it is used by sub-projects
+	id "com.jfrog.bintray" version "1.8.5" apply false
 }
 
 group = "cc.squirreljme.modules"
 description = "Modules which are a part of SquirrelJME."
 
+// Helper function to normalize the Maven version
+static VersionNumber normalizeMavenVersion(Object __inVersion) {
+	VersionNumber inVersion = VersionNumber.parse(__inVersion.toString())
+	
+	// If this is an even version, then this is a release version
+	if ((inVersion.minor % 2) == 0)
+		return inVersion
+	
+	// Otherwise odd numbers are considered to be "snapshot" versions
+	return VersionNumber.parse(inVersion.toString() + "-SNAPSHOT")
+}
+
 // Every sub-project needs SquirrelJME specific pieces
-subprojects
-{
+subprojects {
 	//apply plugin: "de.set.ecj"
 	apply plugin: "java"
 	apply plugin: "cc.squirreljme.plugin"
 	apply plugin: "idea"
+	apply plugin: "maven-publish"
+	apply plugin: "com.jfrog.bintray"
+	apply plugin: "signing"
 	
-	idea
-	{
+	idea {
 		module
 		{
 			// This is 1.8 because 1.7 is not really available
@@ -31,8 +47,7 @@ subprojects
 	}
 	
 	// Configure the compiler
-	java
-	{
+	java {
 		// Java ME 8 is effectively Java 7
         compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
 		compileJava.targetCompatibility = JavaVersion.VERSION_1_7
@@ -59,22 +74,138 @@ subprojects
 			"squirreljme.syscallreturn",
 			"squirreljme.tsiparam",
 			"squirreljme.configtype" ]
+			
+		// Build sources and JavaDoc as well
+		withSourcesJar()
+		withJavadocJar()
 	}
 
 	// Enable SquirrelJME Tests
 	apply from: project.rootProject.findProject(":emulators:emulator-base").
 		projectDir.toPath().resolve("enable-testing.gradle").toFile()
+	
+	// Publishing
+	publishing {
+		// What is being published?
+		publications {
+			maven(MavenPublication) {
+				// Adjustments to the Maven POM
+				pom {
+					name = "SquirrelJME Module " + project.name
+					url = "https://squirreljme.cc/"
+					
+					// SquirrelJME started to exist in 2016!
+					inceptionYear = "2016"
+					
+					licenses {
+						license {
+							name = "GNU General Public License v3"
+							url = "http://127.0.0.1:8080/file?name=LICENSE&ci=trunk"
+						}
+					}
+					
+					developers {
+						developer {
+							id = "stephanie.gawroriski"
+							name = "Stephanie Gawroriski"
+							email = "xerthesquirrel@gmail.com"
+						}
+					}
+						
+					scm {
+						url = "https://squirreljme.cc/"
+					}
+					
+					organization {
+						name = "SquirrelJME"
+						url = "https://squirreljme.cc/"
+					}
+					
+					issueManagement {
+						system = "GitHub"
+						url = "https://github.com/SquirrelJME/SquirrelJME/issues"
+					}
+				}
+				
+				// Normal information
+				groupId = "cc.squirreljme.modules"
+				artifactId = project.name
+				version = normalizeMavenVersion(rootProject.version)
+				
+				// What is being published?
+				from components.java
+			}
+		}
+		
+		// Where is this to be published?
+		repositories {
+			// Publishing to local Maven
+			mavenLocal()
+			
+			// OSSRH Repository (https://oss.sonatype.org/)
+			maven {
+				url = (normalizeMavenVersion(rootProject.version)
+					.toString().endsWith("-SNAPSHOT") ? 
+					"https://oss.sonatype.org/content/repositories/snapshots/" :
+					"https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+				
+				credentials {
+					username = findProperty("ossrhUser") ?: "ossrh_user_unset!"
+					password = findProperty("ossrhPassword") ?: "ossrh_pass_unset!"
+				}
+			}
+		}
+	}
+	
+	// Publishing to BinTray
+	bintray {
+		user = findProperty("bintrayUser") ?: "bintray_user_unset!"
+		key = findProperty("bintrayKey") ?: "bintray_key_unset!"
+		
+		publications = ['maven']
+		
+		pkg {
+			repo = "SquirrelJME"
+			name = project.name
+			licenses = ['GPL-3.0']
+			vcsUrl = "https://squirreljme.cc/"
+			
+			version {
+				name = normalizeMavenVersion(rootProject.version)
+			}
+		}
+	}
+	
+	// Signing publications
+	signing {
+		required {
+			false
+		}
+		
+		// Load key into memory and the password
+		def signingKeyId = findProperty("signingKeyId")
+		def signingPassword = findProperty("signingPassword")
+		
+		def signingKeyBase64 = findProperty("signingKey")
+		def signingKey = (signingKeyBase64 == null ? null :
+			new String(Base64.getMimeDecoder()
+				.decode(signingKeyBase64.toString()), "utf-8"))
+		
+		// Use in memory key signing
+		useInMemoryPgpKeys(/*signingKeyId,*/ signingKey, signingPassword)
+		
+		// The default Maven release becomes signed
+		sign publishing.publications.maven
+	}
 }
 
 // Properties for every sub-project, except for cldc-compact as it is special
 configure(subprojects
-	- project(":modules:cldc-compact"))
-{
+	- project(":modules:cldc-compact")) {
 	apply plugin: "java"
 
 	// All projects use the base classpath
-    java
-    {
+    java {
 		// Only use SquirrelJME's boot classes, not the system SDK
 		Project cldcCompactProject = project(":modules:cldc-compact")
 		compileJava.options.bootstrapClasspath = project.objects.
@@ -86,8 +217,7 @@ configure(subprojects
 			.collect()
     }
 
-	dependencies
-	{
+	dependencies {
 		// All projects depend on the Compact CLDC Library
 		implementation project(":modules:cldc-compact")
 		

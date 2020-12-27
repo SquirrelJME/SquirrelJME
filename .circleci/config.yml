@@ -178,6 +178,49 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
+
+  ### JavaDoc JAR
+  build_javadocJar:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build JavaDoc JAR
+          command: ./gradlew javadocJar --console plain --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  ### BinTray Publishing
+  bintray_publish:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Publish to BinTray
+          command: ./gradlew bintrayUpload bintrayPublish --console plain --continue --parallel
+
+  ### OSS SonaType Nexus
+  sonatype_publish:
+    executor: buildenv
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Publish to OSS SonaType
+          command: ./gradlew publishMavenPublicationToMavenRepository --console plain --continue --parallel
+
+  ### RatufaCoat
   ratufacoat_build_linux:
     executor: buildenv
     resource_class: small
@@ -201,6 +244,8 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
           destination: SquirrelJME
+
+  ### SpringCoat
   test_springcoat:
     executor: buildenv
     steps:
@@ -400,6 +445,9 @@ workflows:
     jobs:
       ############################# STANDARD TESTS ############################
       - build_linux
+      - build_javadocJar:
+          requires:
+            - build_linux
       - test_springcoat:
           requires:
             - construct_testJars
@@ -426,6 +474,26 @@ workflows:
             branches:
               only:
                 - trunk
+
+      # Publishing to BinTray for any releases
+      - bintray_publish:
+          requires:
+            - build_javadocJar
+          filters:
+            tags:
+              only: /^[0-9]+.[0-9]+.[0-9]+$/
+            branches:
+              ignore: /.*/
+
+      # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
+      - sonatype_publish:
+          requires:
+            - build_javadocJar
+          filters:
+            branches:
+              only:
+                - trunk
+                - wip-centralpublish
 
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:

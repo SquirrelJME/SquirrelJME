@@ -97,10 +97,15 @@ public enum MLERuntime
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			switch (System.getProperty("user.country"))
+			String country = System.getProperty("user.country",
+				"unknown");
+			String lang = System.getProperty("user.language",
+				"unknown");
+			
+			switch (country)
 			{
 				case "US":
-					switch (System.getProperty("user.language"))
+					switch (lang)
 					{
 						case "en":
 							return BuiltInLocaleType.ENGLISH_US;

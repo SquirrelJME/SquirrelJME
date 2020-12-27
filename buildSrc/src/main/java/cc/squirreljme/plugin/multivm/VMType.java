@@ -10,7 +10,9 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
+import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +66,7 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+		public void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
@@ -149,7 +151,7 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+		public void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
@@ -211,7 +213,8 @@ public enum VMType
 				{
 					// Figure out the arguments to the JVM, it does not matter
 					// what the classpath is
-					VMType.HOSTED.spawnJvmArguments(__task, __spec,
+					VMType.HOSTED.spawnJvmArguments(__task,
+						new GradleJavaExecSpecFiller(__spec),
 						"cc.squirreljme.jvm.aot.Main",
 						Collections.emptyMap(),
 						classPath,
@@ -318,7 +321,8 @@ public enum VMType
 				{
 					// Figure out the arguments to the JVM, it does not matter
 					// what the classpath is
-					VMType.HOSTED.spawnJvmArguments(__task, __spec,
+					VMType.HOSTED.spawnJvmArguments(__task,
+						new GradleJavaExecSpecFiller(__spec),
 						"cc.squirreljme.jvm.aot.Main",
 						Collections.emptyMap(),
 						classPath,
@@ -349,7 +353,7 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+		public void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
@@ -484,7 +488,7 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public void spawnVmViaFactory(Task __task, JavaExecSpec __execSpec,
+	public void spawnVmViaFactory(Task __task, JavaExecSpecFiller __execSpec,
 		String __mainClass, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String[] __args)
 		throws NullPointerException
