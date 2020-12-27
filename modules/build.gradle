@@ -157,6 +157,10 @@ subprojects {
 			name = "module-" + project.name
 			licenses = ['GPL-3.0']
 			vcsUrl = "https://squirreljme.cc/"
+			
+			version {
+				name = normalizeMavenVersion(rootProject.version)
+			}
 		}
 	}
 }
