@@ -28,6 +28,10 @@ public final class MemHandles
 	private final Map<Integer, MemHandle> _handles =
 		new SortedTreeMap<>();
 	
+	/** The next memory handle ID. */
+	private int _nextId =
+		1;
+	
 	/**
 	 * Initializes the memory handles.
 	 * 
