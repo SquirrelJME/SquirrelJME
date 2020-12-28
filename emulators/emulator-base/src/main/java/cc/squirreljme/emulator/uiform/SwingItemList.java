@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Random;
 import javax.swing.DefaultListModel;
@@ -34,7 +35,7 @@ import javax.swing.event.ListSelectionListener;
  */
 public class SwingItemList
 	extends SwingItem
-	implements ListSelectionListener, KeyListener
+	implements ListSelectionListener, KeyListener, MouseListener
 {
 	/** The model for the list. */
 	final DefaultListModel<ListEntry> _model;
@@ -68,6 +69,7 @@ public class SwingItemList
 		
 		// Register listener to listen for enter/return to select an item
 		list.addKeyListener(this);
+		list.addMouseListener(this);
 	}
 	
 	/**
@@ -114,16 +116,7 @@ public class SwingItemList
 		// Only emit if we desire this behavior and specific keys were typed
 		if (this._enterCommand && (__e.getKeyCode() == KeyEvent.VK_ENTER ||
 			__e.getKeyCode() == KeyEvent.VK_SPACE))
-		{
-			// Can only do something if there is a form and callback
-			SwingForm form = this.form();
-			UIFormCallback callback = (form != null ? form.callback() : null);
-			if (form == null || callback == null)
-				return;
-			
-			callback.eventKey(form, this,
-				UIKeyEventType.COMMAND_ACTIVATED, 0, 0);
-		}
+			this.__activate();
 	}
 	
 	/**
@@ -141,6 +134,54 @@ public class SwingItemList
 	 */
 	@Override
 	public void keyTyped(KeyEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mouseClicked(MouseEvent __e)
+	{
+		// Only emit if we desire this behavior and we double clicked
+		if (this._enterCommand && __e.getClickCount() >= 2)
+			this.__activate();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mouseEntered(MouseEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mouseExited(MouseEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mousePressed(MouseEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mouseReleased(MouseEvent __e)
 	{
 	}
 	
@@ -372,6 +413,23 @@ public class SwingItemList
 		callback.propertyChange(form, this,
 			UIWidgetProperty.INT_UPDATE_LIST_SELECTION_LOCK, 0,
 			keyCode, 0);
+	}
+	
+	/**
+	 * Activates this list.
+	 * 
+	 * @since 2020/12/28
+	 */
+	private void __activate()
+	{
+		// Can only do something if there is a form and callback
+		SwingForm form = this.form();
+		UIFormCallback callback = (form != null ? form.callback() : null);
+		if (form == null || callback == null)
+			return;
+		
+		callback.eventKey(form, this,
+			UIKeyEventType.COMMAND_ACTIVATED, 0, 0);
 	}
 	
 	/**
