@@ -11,10 +11,14 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -30,13 +34,16 @@ import javax.swing.event.ListSelectionListener;
  */
 public class SwingItemList
 	extends SwingItem
-	implements ListSelectionListener
+	implements ListSelectionListener, KeyListener
 {
 	/** The model for the list. */
 	final DefaultListModel<ListEntry> _model;
 	
 	/** The list used. */
 	final JList<ListEntry> _list;
+	
+	/** Is the enter command being used to select an item? */
+	private boolean _enterCommand;
 	
 	/**
 	 * Initializes the item.
@@ -58,6 +65,9 @@ public class SwingItemList
 		
 		// Register a listener for selection changes
 		list.addListSelectionListener(this);
+		
+		// Register listener to listen for enter/return to select an item
+		list.addKeyListener(this);
 	}
 	
 	/**
@@ -91,6 +101,46 @@ public class SwingItemList
 	 */
 	@Override
 	public void deletePost()
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void keyPressed(KeyEvent __e)
+	{
+		// Only emit if we desire this behavior and specific keys were typed
+		if (this._enterCommand && (__e.getKeyCode() == KeyEvent.VK_ENTER ||
+			__e.getKeyCode() == KeyEvent.VK_SPACE))
+		{
+			// Can only do something if there is a form and callback
+			SwingForm form = this.form();
+			UIFormCallback callback = (form != null ? form.callback() : null);
+			if (form == null || callback == null)
+				return;
+			
+			callback.eventKey(form, this,
+				UIKeyEventType.COMMAND_ACTIVATED, 0, 0);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void keyReleased(KeyEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void keyTyped(KeyEvent __e)
 	{
 	}
 	
@@ -353,6 +403,9 @@ public class SwingItemList
 		
 		// Use this one
 		this._list.setSelectionMode(mode);
+		
+		// Is the enter command used?
+		this._enterCommand = (__type == UIListType.IMPLICIT);
 	}
 	
 	/**
