@@ -68,7 +68,8 @@ java
 		"squirreljme.syscallparam",
 		"squirreljme.syscallreturn",
 		"squirreljme.tsiparam",
-		"squirreljme.configtype" ]
+		"squirreljme.configtype",
+		"squirreljme.uiwidgetparam" ]
 }
 
 // Improve debugging with native code compiles, these are only used by the

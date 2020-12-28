@@ -133,6 +133,8 @@ final class __Program__
 	 */
 	final void __launch()
 	{
+		Debugging.debugNote("Launching %s...", this.displayName);
+		
 		throw Debugging.todo();
 		/*
 		// Need these

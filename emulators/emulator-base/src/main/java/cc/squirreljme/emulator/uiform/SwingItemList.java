@@ -11,12 +11,17 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * List.
@@ -25,6 +30,7 @@ import javax.swing.SwingUtilities;
  */
 public class SwingItemList
 	extends SwingItem
+	implements ListSelectionListener
 {
 	/** The model for the list. */
 	final DefaultListModel<ListEntry> _model;
@@ -49,6 +55,9 @@ public class SwingItemList
 		list.setCellRenderer(new ListRenderer());
 		
 		this._list = list;
+		
+		// Register a listener for selection changes
+		list.addListSelectionListener(this);
 	}
 	
 	/**
@@ -120,7 +129,17 @@ public class SwingItemList
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
-					model.get(__sub)._selected = (__newValue != 0);
+					{
+						// Update the model
+						boolean sel = (__newValue != 0);
+						model.get(__sub)._selected = sel;
+						
+						// There are two different methods for selections
+						if (sel)
+							list.addSelectionInterval(__sub,__sub);
+						else
+							list.removeSelectionInterval(__sub, __sub);
+					}
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION:
@@ -129,6 +148,11 @@ public class SwingItemList
 				
 				case UIWidgetProperty.INT_LIST_ITEM_FONT:
 					model.get(__sub)._fontDescription = __newValue;
+					break;
+				
+					// Change of the list type
+				case UIWidgetProperty.INT_LIST_TYPE:
+					this.__changeListType(__newValue);
 					break;
 				
 				default:
@@ -251,6 +275,84 @@ public class SwingItemList
 		{
 			throw new MLECallError("Invalid index: " + __sub, e);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void valueChanged(ListSelectionEvent __e)
+	{
+		// Do not emit selection changes if it is still being changed, since
+		// this could result in a rush of events
+		if (__e.getValueIsAdjusting())
+			return;
+		
+		// Can only do something if there is a form and callback
+		SwingForm form = this.form();
+		UIFormCallback callback = (form != null ? form.callback() : null);
+		if (form == null || callback == null)
+			return;
+		
+		// The list selection is being updated
+		int keyCode = new Random().nextInt();
+		callback.propertyChange(form, this,
+			UIWidgetProperty.INT_UPDATE_LIST_SELECTION_LOCK, 0,
+			0, keyCode);
+		
+		// Send updates on all the items which were selected or not
+		JList<ListEntry> list = this._list;
+		DefaultListModel<ListEntry> model = this._model;
+		for (int dx = __e.getFirstIndex(),
+			end = __e.getLastIndex(); dx <= end; dx++)
+		{
+			boolean sel = list.isSelectedIndex(dx);
+			
+			// Update the selection model for the list
+			model.get(dx)._selected = sel;
+			
+			// Inform the list of the change
+			callback.propertyChange(form, this,
+				UIWidgetProperty.INT_LIST_ITEM_SELECTED, dx,
+				keyCode, (sel ? 1 : 0));
+		}
+		
+		// List no longer being updated
+		callback.propertyChange(form, this,
+			UIWidgetProperty.INT_UPDATE_LIST_SELECTION_LOCK, 0,
+			keyCode, 0);
+	}
+	
+	/**
+	 * Changes the type of list used.
+	 * 
+	 * @param __type The type of list to use.
+	 * @since 2020/12/28
+	 */
+	private void __changeListType(int __type)
+	{
+		// Which model are we using?
+		int mode;
+		switch (__type)
+		{
+				// These are both effectively the same, except one always
+				// selects the focused item
+			case UIListType.IMPLICIT:
+			case UIListType.EXCLUSIVE:
+				mode = ListSelectionModel.SINGLE_SELECTION;
+				break;
+			
+			case UIListType.MULTIPLE:
+				mode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+				break;
+			
+			default:
+				return;
+		}
+		
+		// Use this one
+		this._list.setSelectionMode(mode);
 	}
 	
 	/**

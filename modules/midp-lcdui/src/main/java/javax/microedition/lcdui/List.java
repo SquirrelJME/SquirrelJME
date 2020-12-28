@@ -10,12 +10,13 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
@@ -42,6 +43,9 @@ public class List
 	
 	/** Selection command. */
 	volatile Command _selCommand;
+	
+	/** The current locking code. */
+	volatile int _lockingCode;
 	
 	/**
 	 * Initializes the list.
@@ -90,14 +94,15 @@ public class List
 		this._type = __type;
 		
 		// Build new list
-		UIItemBracket uiList = UIFormShelf.itemNew(UIItemType.LIST);
+		UIBackend backend = UIBackendFactory.getInstance();
+		UIItemBracket uiList = backend.itemNew(UIItemType.LIST);
 		this._uiList = uiList;
 		
 		// Register self for future events
 		StaticDisplayState.register(this, uiList);
 		
 		// Show it on the form for this displayable
-		UIFormShelf.formItemPosition(this._uiForm, uiList, 0);
+		backend.formItemPosition(this._uiForm, uiList, 0);
 		
 		// Append all of the items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)
@@ -109,6 +114,22 @@ public class List
 			this._selCommand = List.SELECT_COMMAND;
 			this.addCommand(List.SELECT_COMMAND);
 		}
+		
+		// Determine the native list type
+		int nativeType;
+		switch (__type)
+		{
+			case Choice.IMPLICIT:	nativeType = UIListType.IMPLICIT; break;
+			case Choice.EXCLUSIVE:	nativeType = UIListType.EXCLUSIVE; break;
+			case Choice.MULTIPLE:	nativeType = UIListType.MULTIPLE; break;
+			
+			default:
+				throw Debugging.oops(__type);
+		}
+		
+		// Inform the backend that this is the kind of list we want
+		backend.widgetProperty(uiList, UIWidgetProperty.INT_LIST_TYPE, 0,
+			nativeType);
 	}
 	
 	/**
@@ -495,8 +516,21 @@ public class List
 	{
 		switch (__intProp)
 		{
+			case UIWidgetProperty.INT_UPDATE_LIST_SELECTION_LOCK:
+				{
+					// Only allow locking code changes if the old code is zero
+					// and is our matching code
+					int oldCode = this._lockingCode;
+					if (oldCode == __old)
+						this._lockingCode = __new;
+				}
+				return true;
+			
+				// List selection changes, this only updates if the locking
+				// code is a match
 			case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
-				this.__updateSelection(__sub, __new != 0);
+				if (__old == this._lockingCode)
+					this.__updateSelection(__sub, __new != 0);
 				return true;
 		}
 		

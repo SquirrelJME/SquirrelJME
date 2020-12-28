@@ -26,5 +26,6 @@ java
 		"squirreljme.syscallparam",
 		"squirreljme.syscallreturn",
 		"squirreljme.tsiparam",
-		"squirreljme.configtype" ]
+		"squirreljme.configtype",
+		"squirreljme.uiwidgetparam" ]
 }
