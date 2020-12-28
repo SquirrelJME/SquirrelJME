@@ -21,6 +21,7 @@ import javax.microedition.swm.TaskStatus;
  *
  * @since 2019/02/02
  */
+@Deprecated
 public interface ExtendedTaskManager
 {
 	/**

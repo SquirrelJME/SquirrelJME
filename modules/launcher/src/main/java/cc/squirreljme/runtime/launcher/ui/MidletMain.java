@@ -61,11 +61,11 @@ public class MidletMain
 	static volatile Display _MAIN_DISPLAY;
 	
 	/** The list which contains all of the programs we can run. */
-	protected final List programlist =
+	protected final List programList =
 		new List("SquirrelJME Launcher", Choice.IMPLICIT);
 	
 	/** The active task. */
-	private final __ActiveTask__ _activetask =
+	private final __ActiveTask__ _activeTask =
 		new __ActiveTask__();
 	
 	/** The current end-time for the splash screen. */
@@ -111,11 +111,11 @@ public class MidletMain
 	{
 		// When a refresh is happening, change the title so that is
 		// indicated
-		List programList = this.programlist;
+		List programList = this.programList;
 		programList.setTitle("Loading (Querying Suites)...");
 		
 		// Used for checking and such
-		__ActiveTask__ activeTask = this._activetask;
+		__ActiveTask__ activeTask = this._activeTask;
 		
 		// The list was previously not used
 		if (programList.size() <= 0)
@@ -253,7 +253,7 @@ public class MidletMain
 		MidletMain._MAIN_DISPLAY = disp;
 		
 		// Add commands to the list so things can be done with them
-		List programList = this.programlist;
+		List programList = this.programList;
 		programList.addCommand(MidletMain.EXIT_COMMAND);
 		programList.addCommand(MidletMain.ABOUT_COMMAND);
 		
@@ -289,13 +289,13 @@ public class MidletMain
 			throw new NullPointerException("NARG");
 		
 		// Indication that something is happening
-		this.programlist.setTitle("Launching " + __p.displayName + "...");
+		this.programList.setTitle("Launching " + __p.displayName + "...");
 		
 		// Launch this program
 		__p.__launch();
 		
 		// All done so, return the title back
-		this.programlist.setTitle("SquirrelJME Launcher");
+		this.programList.setTitle("SquirrelJME Launcher");
 	}
 	
 	/**
@@ -405,7 +405,7 @@ public class MidletMain
 			else if (__c == MidletMain.EXIT_COMMAND)
 			{
 				// Indication that something is happening
-				MidletMain.this.programlist.setTitle("Exiting...");
+				MidletMain.this.programList.setTitle("Exiting...");
 				
 				System.exit(0);
 			}
