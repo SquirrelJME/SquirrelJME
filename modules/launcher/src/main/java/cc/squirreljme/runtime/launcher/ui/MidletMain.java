@@ -10,14 +10,15 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
-import cc.squirreljme.jvm.mle.JarPackageShelf;
-import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.swm.EntryPoint;
-import cc.squirreljme.runtime.swm.EntryPoints;
-import java.io.IOException;
-import java.io.InputStream;
+import cc.squirreljme.runtime.swm.launch.Application;
+import cc.squirreljme.runtime.swm.launch.SuiteScanListener;
+import cc.squirreljme.runtime.swm.launch.SuiteScanner;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
@@ -26,8 +27,6 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
-import javax.microedition.midlet.MIDletStateChangeException;
-import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This is the main midlet for the LCDUI based launcher interface.
@@ -68,14 +67,18 @@ public class MidletMain
 	private final __ActiveTask__ _activeTask =
 		new __ActiveTask__();
 	
+	/** The suites which are mapped to the list. */
+	private final ArrayList<Application> _listedSuites =
+		new ArrayList<>();
+	
 	/** The current end-time for the splash screen. */
 	private volatile long _endTime;
 	
-	/** The programs which are mapped to the list. */
-	private volatile __Program__[] _programs;
-	
 	/** Automatic launch program. */
 	private volatile String _autoLaunch;
+	
+	/** Lock for loading. */
+	private volatile boolean _refreshLock;
 	
 	{
 		// Do not crash if we cannot read properties
@@ -84,7 +87,7 @@ public class MidletMain
 		{
 			al = System.getProperty(MidletMain.AUTOLAUNCH_PROPERTY);
 		}
-		catch (SecurityException e)
+		catch (SecurityException ignored)
 		{
 		}
 		
@@ -97,7 +100,6 @@ public class MidletMain
 	 */
 	@Override
 	protected void destroyApp(boolean __uc)
-		throws MIDletStateChangeException
 	{
 		// This is not used at all
 	}
@@ -109,108 +111,56 @@ public class MidletMain
 	 */
 	public void refresh()
 	{
-		// When a refresh is happening, change the title so that is
-		// indicated
-		List programList = this.programList;
-		programList.setTitle("Loading (Querying Suites)...");
-		
-		// Used for checking and such
-		__ActiveTask__ activeTask = this._activeTask;
-		
-		// The list was previously not used
-		if (programList.size() <= 0)
+		// Prevent double refresh
+		synchronized (this)
 		{
-			// Add a message saying what is going on
-			programList.append("Loading available programs...", null);
-			programList.append("This might take awhile!", null);
-			programList.append("UP/DOWN -- Adjust focused item", null);
-			programList.append("FIRE    -- Select item", null);
-			programList.append("The SPACEBAR key is the FIRE key", null);
-			
-			// Re-flip on this display
-			if (MidletMain._MAIN_DISPLAY.getCurrent() == programList)
-				MidletMain._MAIN_DISPLAY.setCurrent(programList);
+			if (this._refreshLock)
+				return;
+			this._refreshLock = true;
 		}
 		
-		// Go through all of the available application suites and build the
-		// program list
-		boolean queried = false;
-		int foundcount = 0;
-		
-		// Locate programs via the library path
-		ArrayList<__Program__> programs = new ArrayList<>();
-		JarPackageBracket[] jars = JarPackageShelf.libraries();
-		for (JarPackageBracket jar : jars)
+		// Used to clear the lock when done, always!
+		try
 		{
-			// Debug
-			Debugging.debugNote("Checking %s...",
-				JarPackageShelf.libraryPath(jar));
+			// When a refresh is happening, change the title so that is
+			// indicated
+			List programList = this.programList;
+			programList.setTitle("Querying Suites...");
 			
-			// Try to read the manifest from the given JAR
-			JavaManifest man;
-			try (InputStream rc = JarPackageShelf.openResource(jar,
-				"META-INF/MANIFEST.MF"))
+			// Clear the list of all programs
+			programList.deleteAll();
+			
+			// Look for suites to load
+			SuiteScanListener handler;
+			synchronized (this)
 			{
-				// If no manifest exists, might not be a JAR
-				if (rc == null)
-					continue;
+				// Reset the application list
+				ArrayList<Application> listedSuites = this._listedSuites;
+				listedSuites.clear();
 				
-				man = new JavaManifest(rc);
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-				
-				continue;
+				// Used to add suites and indicate progress
+				handler = new __ProgressListener__(programList, listedSuites);
 			}
 			
-			// Hide this on the SquirrelJME launcher?
-			if (Boolean.parseBoolean(man.getMainAttributes().getValue(
-				"X-SquirrelJME-NoLauncher")))
-				continue;
+			// Scan all of the available suites for launching
+			SuiteScanner.scanSuites(handler);
 			
-			// Query is done, scan suites
-			if (!queried)
-			{
-				programList.setTitle("Loading (Scanning Suites)...");
-				queried = true;
-			}
-			
-			// Handle each entry point and create an entry in the list for it
-			for (EntryPoint entry : new EntryPoints(man))
-			{
-				// Build program
-				programs.add(new __Program__(jar, man, activeTask, entry));
-				
-				// Say it was found via the title
-				programList.setTitle(String.format(
-					"Loading (%d Found)...", ++foundcount));
-			}
+			// All done so, return the title back
+			programList.setTitle("SquirrelJME Launcher");
 		}
 		
-		// Indicate that the program list is being built
-		programList.setTitle(String.format(
-			"Building List (%d Found)...", foundcount));
-		
-		// Build program array
-		__Program__[] arrprogs = programs.<__Program__>toArray(
-			new __Program__[programs.size()]);
-		
-		// Clear the program list
-		programList.deleteAll();
-		
-		// Build the list in the program order
-		for (__Program__ p : arrprogs)
-			programList.append(p.displayName(), p.displayImage());
-		
-		// Use this list
-		this._programs = arrprogs;
-		
-		// All done so, return the title back
-		programList.setTitle("SquirrelJME Launcher");
+		// Clear the refresh lock
+		finally
+		{
+			synchronized (this)
+			{
+				this._refreshLock = false;
+			}
+		}
 		
 		// If the program list started too quickly then wait until the splash
-		// time has expired so it is always shown
+		// time has expired so it is always shown for a fixed amount of time
+		// This is intended for branding and showing credit
 		long endTime = this._endTime;
 		for (long nowTime = System.nanoTime(); nowTime < endTime;
 			nowTime = System.nanoTime())
@@ -232,6 +182,8 @@ public class MidletMain
 		String autoLaunch = this._autoLaunch;
 		if (autoLaunch != null)
 		{
+			// Do not try auto-launching whenever there is a refresh since we
+			// may just get stuck in a loop here
 			this._autoLaunch = null;
 			
 			// Launch it
@@ -249,8 +201,8 @@ public class MidletMain
 	{
 		// We will need to access our own display to build the list of
 		// MIDlets that could actually be ran
-		Display disp = Display.getDisplay(this);
-		MidletMain._MAIN_DISPLAY = disp;
+		Display display = Display.getDisplay(this);
+		MidletMain._MAIN_DISPLAY = display;
 		
 		// Add commands to the list so things can be done with them
 		List programList = this.programList;
@@ -270,9 +222,10 @@ public class MidletMain
 		
 		// Instead of showing the program list early, just show a splash screen
 		// with a handsome Lex and the version information
-		SplashScreen spl = new SplashScreen(disp.getWidth(), disp.getHeight());
-		if (disp.getCurrent() == null)
-			disp.setCurrent(spl);
+		SplashScreen spl = new SplashScreen(
+			display.getWidth(), display.getHeight());
+		if (display.getCurrent() == null)
+			display.setCurrent(spl);
 	}
 	
 	/**
@@ -282,20 +235,29 @@ public class MidletMain
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	private void __launch(__Program__ __p)
+	private void __launch(Application __p)
 		throws NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
 		// Indication that something is happening
-		this.programList.setTitle("Launching " + __p.displayName + "...");
+		this.programList.setTitle("Launching " + __p.displayName() + "...");
 		
 		// Launch this program
-		__p.__launch();
+		__ActiveTask__ activeTask = this._activeTask;
+		synchronized (activeTask)
+		{
+			activeTask._task = __p.launch();
+		}
 		
-		// All done so, return the title back
+		// We launched, so revert the title
 		this.programList.setTitle("SquirrelJME Launcher");
+		
+		// Set a timer to periodically check if we should show the program
+		// list again
+		MidletMain._TIMER.schedule(new __ReControlTask__(
+			MidletMain._MAIN_DISPLAY, activeTask), 2000, 2000);
 	}
 	
 	/**
@@ -306,14 +268,21 @@ public class MidletMain
 	 */
 	private void __launch(int __p)
 	{
-		__Program__[] programs = this._programs;
+		Application app;
+		synchronized (this)
+		{
+			ArrayList<Application> programs = this._listedSuites;
+			
+			// Do nothing if out of bounds
+			if (__p < 0 || __p >= programs.size())
+				return;
+			
+			// Launch this one
+			app = programs.get(__p);
+		}
 		
-		// Do nothing if out of bounds
-		if (programs == null || __p < 0 || __p >= programs.length)
-			return;
-		
-		// Launch
-		this.__launch(programs[__p]);
+		// Do the actual launching of it
+		this.__launch(app);
 	}
 	
 	/**
@@ -326,37 +295,40 @@ public class MidletMain
 	private void __launch(String __p)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
-		/*
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		// This will use multiple matches, with less priority following
-		__Program__ bysj = null,
-			bydn = null,
-			bysn = null,
-			bymc = null;
-		
-		// Find all the possible matches for a program
-		for (__Program__ p : this._programs)
-			if (bysj == null && __p.equalsIgnoreCase(p.squirreljmeName))
-				bysj = p;
-			else if (bydn == null && __p.equalsIgnoreCase(p.displayName))
-				bydn = p;
-			else if (bysn == null && __p.equalsIgnoreCase(p.suiteName))
-				bysn = p;
-			else if (bymc == null && __p.equalsIgnoreCase(p.main))
-				bymc = p;
-		
-		// Use a priority based order
-		__Program__ p = (bysj != null ? bysj :
-			(bydn != null ? bydn :
-			(bysn != null ? bysn :
-			(bymc != null ? bymc : null))));
-		if (p != null)
+		// Get the applications that are available
+		Application[] apps;
+		synchronized (this)
 		{
-			this.__launch(p);
-			return;
+			ArrayList<Application> listed = this._listedSuites;
+			apps = listed.toArray(new Application[listed.size()]);
+		}
+		
+		// Find all the possible matches for a program with given criteria
+		Map<SearchOrder, Application> found = new HashMap<>();
+		for (Application app : apps)
+		{
+			if (Objects.equals(__p, app.displayName()))
+				found.put(SearchOrder.DISPLAY_NAME, app);
+			else if (Objects.equals(__p, app.entryPoint().entryPoint()))
+				found.put(SearchOrder.MAIN_CLASS, app);
+			else if (Objects.equals(__p, app.entryPoint().name()))
+				found.put(SearchOrder.SUITE_NAME, app);
+			else if (Objects.equals(__p, app.squirrelJMEName()))
+				found.put(SearchOrder.SQUIRRELJME_NAME, app);
+		}
+		
+		// Use priority based order when finding the application
+		for (SearchOrder order : SearchOrder.values())
+		{
+			Application app = found.get(order);
+			if (app != null)
+			{
+				this.__launch(app);
+				return;
+			}
 		}
 		
 		// If everything fails, just assume it is an index to a program on the
@@ -365,11 +337,9 @@ public class MidletMain
 		{
 			this.__launch(Integer.parseInt(__p));
 		}
-		catch (NumberFormatException e)
+		catch (NumberFormatException ignored)
 		{
 		}
-		
-		 */
 	}
 	
 	/**
@@ -393,12 +363,12 @@ public class MidletMain
 				// If the list is empty then do nothing because it will NPE
 				// or out of bounds if the selection is off
 				List list = (List)__d;
-				int seldx = list.getSelectedIndex();
-				if (list.size() <= 0 || seldx < 0)
+				int selDx = list.getSelectedIndex();
+				if (list.size() <= 0 || selDx < 0)
 					return;
 				
 				// Call other launcher
-				MidletMain.this.__launch(seldx);
+				MidletMain.this.__launch(selDx);
 			}
 			
 			// Exiting the VM?
@@ -407,12 +377,19 @@ public class MidletMain
 				// Indication that something is happening
 				MidletMain.this.programList.setTitle("Exiting...");
 				
+				// We should kill the running task since we exited
+				TaskBracket task = MidletMain.this._activeTask._task;
+				if (task != null)
+					Debugging.todoNote("Kill task on exit.");
+				
+				// Stop running
 				System.exit(0);
 			}
 			
 			// About SquirrelJME
 			else if (__c == MidletMain.ABOUT_COMMAND)
 			{
+				Debugging.todoNote("Show about screen.");
 			}
 		}
 	}

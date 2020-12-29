@@ -7,13 +7,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm.launch;
+package cc.squirreljme.runtime.launcher.ui;
 
 /**
- * This contains the list of suites and libraries.
+ * The preferred sort order for applications.
  *
- * @since 2020/12/28
+ * @since 2020/12/29
  */
-public final class SuiteState
+public enum SearchOrder
 {
+	/** The SquirrelJME Name of the application. */
+	SQUIRRELJME_NAME,
+	
+	/** The display name of the application. */
+	DISPLAY_NAME,
+	
+	/** The suite name of the application. */
+	SUITE_NAME,
+	
+	/** The main class. */
+	MAIN_CLASS,
+	
+	/* End. */
+	;
 }

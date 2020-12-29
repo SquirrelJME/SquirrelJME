@@ -2,24 +2,27 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.launcher.ui;
-
-import cc.squirreljme.jvm.mle.brackets.TaskBracket;
+package cc.squirreljme.runtime.swm.launch;
 
 /**
- * The currently active task.
+ * This is a listener which specifies when a suite has been scanned in.
  *
- * @since 2018/12/10
+ * @since 2020/12/29
  */
-final class __ActiveTask__
+public interface SuiteScanListener
 {
-	/** The current task. */
-	volatile TaskBracket _task;
+	/**
+	 * Indicates that the given application was scanned.
+	 * 
+	 * @param __app The application that has been scanned.
+	 * @param __dx The JAR index, used to indicate progress.
+	 * @param __total The total number of JARs scanned.
+	 * @since 2020/12/29
+	 */
+	void scanned(Application __app, int __dx, int __total);
 }
-
