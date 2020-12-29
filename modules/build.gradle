@@ -91,7 +91,9 @@ subprojects {
 			maven(MavenPublication) {
 				// Adjustments to the Maven POM
 				pom {
-					name = "SquirrelJME Module " + project.name
+					/*System.err.printf("Name/Desc: %s %s%n", project.squirreljme.swmName ?: project.name, project.description)
+					name = project.squirreljme.swmName ?: project.name
+					description = project.description*/
 					url = "https://squirreljme.cc/"
 					
 					// SquirrelJME started to exist in 2016!
@@ -100,7 +102,7 @@ subprojects {
 					licenses {
 						license {
 							name = "GNU General Public License v3"
-							url = "http://127.0.0.1:8080/file?name=LICENSE&ci=trunk"
+							url = "https://squirreljme.cc/file?name=LICENSE&ci=trunk"
 						}
 					}
 					
@@ -111,9 +113,20 @@ subprojects {
 							email = "xerthesquirrel@gmail.com"
 						}
 					}
+					
+					contributors {
+						contributor {
+							name = "Stephanie Gawroriski"
+							email = "xerthesquirrel@gmail.com"
+							roles = [ "Primary Developer" ]
+							timezone = "America/New_York"
+							url = "https://shadowtail.dev/"
+						}
+					}
 						
 					scm {
 						url = "https://squirreljme.cc/"
+						connection = "fossil:https://squirreljme.cc/"
 					}
 					
 					organization {
@@ -124,6 +137,46 @@ subprojects {
 					issueManagement {
 						system = "GitHub"
 						url = "https://github.com/SquirrelJME/SquirrelJME/issues"
+					}
+					
+					ciManagement {
+						system = "CircleCI"
+						url = "https://app.circleci.com/pipelines/github/SquirrelJME"
+					}
+					
+					withXml {
+						// Lazy evaluation of the project name and description so that it
+						// uses the proper name for Maven and otherwise
+						asNode().appendNode("name", project.squirreljme.swmName ?: project.name)
+						asNode().appendNode("description", project.description)
+						
+						def propMap = asNode().appendNode("properties")
+						
+						// Properties that are needed by Maven, although
+						// not recommended to use Maven for building
+						propMap.appendNode("maven.compiler.source",
+							"1.7")
+						propMap.appendNode("maven.compiler.target",
+							"1.7")
+						propMap.appendNode("project.build.sourceEncoding",
+							"UTF-8")
+						
+						// SquirrelJME properties
+						if (project.squirreljme.swmType != null)
+							propMap.appendNode("squirreljme.type",
+								project.squirreljme.swmType)
+						propMap.appendNode("squirreljme.vendor",
+							project.squirreljme.swmVendor)
+						propMap.appendNode("squirreljme.errorCode",
+							project.squirreljme.javaDocErrorCode)
+						propMap.appendNode("squirreljme.configurations",
+							Objects.toString(project.squirreljme.definedConfigurations))
+						propMap.appendNode("squirreljme.profiles",
+							Objects.toString(project.squirreljme.definedProfiles))
+						propMap.appendNode("squirreljme.standards",
+							Objects.toString(project.squirreljme.definedStandards))
+						propMap.appendNode("squirreljme.midlets",
+							Objects.toString(project.squirreljme.midlets))
 					}
 				}
 				
