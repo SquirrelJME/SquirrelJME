@@ -182,28 +182,6 @@ jobs:
       - store_artifacts:
           path: ~/test-results
 
-  ### JavaDoc JAR
-  build_javadocJar:
-    executor: buildenv
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build JavaDoc JAR
-          command: ./gradlew javadocJar --console plain --continue --parallel
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
-
   ### BinTray Publishing
   bintray_publish:
     executor: buildenv
@@ -481,9 +459,6 @@ workflows:
     jobs:
       ############################# STANDARD TESTS ############################
       - build_linux
-      - build_javadocJar:
-          requires:
-            - build_linux
       - test_springcoat:
           requires:
             - construct_testJars
@@ -514,7 +489,7 @@ workflows:
       # Publishing to BinTray for any releases
       - bintray_publish:
           requires:
-            - build_javadocJar
+            - build_linux
           filters:
             tags:
               only: /^[0-9]+.[0-9]+.[0-9]+$/
@@ -524,7 +499,7 @@ workflows:
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:
           requires:
-            - build_javadocJar
+            - build_linux
           filters:
             branches:
               only:
