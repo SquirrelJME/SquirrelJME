@@ -94,6 +94,16 @@ jobs:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
       HOMEBREW_NO_AUTO_UPDATE: 1
+
+      # Do not auto-clean brew, this wastes time and everything will be thrown
+      # out when the container finishes anyway
+      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
+
+      # Do not send analytics
+      HOMEBREW_NO_ANALYTICS: 1
+
+      # Do not cleanup after installation
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
       - checkout
       - run:
