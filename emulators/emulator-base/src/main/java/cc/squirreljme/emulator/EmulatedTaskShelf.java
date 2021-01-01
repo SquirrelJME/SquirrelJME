@@ -181,11 +181,6 @@ public final class EmulatedTaskShelf
 		// Use these arguments
 		builder.command(args);
 		
-		// Debug
-		Debugging.debugNote("CmdLine Args:");
-		for (String arg : args)
-			Debugging.debugNote(">>> %s", arg);
-		
 		// Alternative piping for standard output
 		switch (__stdOut)
 		{
