@@ -22,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Random;
 import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -199,6 +200,9 @@ public class SwingItemList
 		
 		try
 		{
+			ListEntry elem;
+			
+			// Depends on which action was performed
 			switch (__id)
 			{
 				case UIWidgetProperty.INT_NUM_ELEMENTS:
@@ -216,14 +220,32 @@ public class SwingItemList
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_DISABLED:
-					model.get(__sub)._disabled = (__newValue != 0);
+					{
+						boolean nowDisabled = (__newValue != 0);
+						
+						elem = model.get(__sub);
+						elem._disabled = nowDisabled;
+						
+						// Disabling an element means it cannot be selected
+						if (nowDisabled)
+						{
+							elem._selected = false;
+							list.removeSelectionInterval(__sub, __sub);
+						}
+					}
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
 					{
-						// Update the model
+						elem = model.get(__sub);
+						
+						// Disabled items cannot be selected at all
 						boolean sel = (__newValue != 0);
-						model.get(__sub)._selected = sel;
+						if (elem._disabled && sel)
+							break;
+						
+						// Update the model
+						elem._selected = sel;
 						
 						// There are two different methods for selections
 						if (sel)
@@ -399,15 +421,25 @@ public class SwingItemList
 			end = Math.min(__e.getLastIndex(), model.size() - 1);
 			dx <= end; dx++)
 		{
+			ListEntry entry = model.get(dx);
 			boolean sel = list.isSelectedIndex(dx);
 			
-			// Update the selection model for the list
-			model.get(dx)._selected = sel;
+			// If this item was somehow disabled, then remove selection from it
+			if (sel && entry._disabled)
+			{
+				entry._selected = false;
+				sel = false;
+			}
 			
-			// Inform the list of the change
-			callback.propertyChange(form, this,
-				UIWidgetProperty.INT_LIST_ITEM_SELECTED, dx,
-				keyCode, (sel ? 1 : 0));
+			// Update the selection model for the list
+			boolean was = entry._selected;
+			entry._selected = sel;
+			
+			// Inform the list of the change, if it actually happened
+			if (was != sel)
+				callback.propertyChange(form, this,
+					UIWidgetProperty.INT_LIST_ITEM_SELECTED, dx,
+					keyCode, (sel ? 1 : 0));
 		}
 		
 		// List no longer being updated
