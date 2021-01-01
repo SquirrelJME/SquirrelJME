@@ -15,6 +15,7 @@
 #define TASK_CLASSNAME "cc/squirreljme/emulator/EmulatedTaskShelf"
 
 #define TASK_START_DESC "([Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/String;II)Lcc/squirreljme/jvm/mle/brackets/TaskBracket;"
+#define TASK_STATUS_DESC "(Lcc/squirreljme/jvm/mle/brackets/TaskBracket;)I"
 
 JNIEXPORT jobject JNICALL Impl_mle_TaskShelf_start(
 	JNIEnv* env, jclass classy, jobjectArray classPath, jstring mainClass,
@@ -25,9 +26,18 @@ JNIEXPORT jobject JNICALL Impl_mle_TaskShelf_start(
 		classPath, mainClass, args, sysPropPairs, stdOut, stdErr);
 }
 
+JNIEXPORT jint JNICALL Impl_mle_TaskShelf_status(
+	JNIEnv* env, jclass classy, jobject task)
+{
+	return forwardCallStaticInteger(env, TASK_CLASSNAME,
+		"status", TASK_STATUS_DESC,
+		task);
+}
+
 static const JNINativeMethod mleTaskMethods[] =
 {
 	{"start", TASK_START_DESC, (void*)Impl_mle_TaskShelf_start},
+	{"status", TASK_STATUS_DESC, (void*)Impl_mle_TaskShelf_status},
 };
 
 jint JNICALL mleTaskInit(JNIEnv* env, jclass classy)
@@ -35,5 +45,5 @@ jint JNICALL mleTaskInit(JNIEnv* env, jclass classy)
 	return env->RegisterNatives(
 		env->FindClass("cc/squirreljme/jvm/mle/TaskShelf"),
 		mleTaskMethods, sizeof(mleTaskMethods) /
-			sizeof(mleTaskMethods));
+			sizeof(JNINativeMethod));
 }

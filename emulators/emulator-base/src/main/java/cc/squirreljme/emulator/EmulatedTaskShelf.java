@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
+import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.File;
@@ -228,6 +229,26 @@ public final class EmulatedTaskShelf
 		{
 			throw new MLECallError("Could not spawn task.", e);
 		}
+	}
+	
+	/**
+	 * As {@link TaskShelf#status(TaskBracket)}. 
+	 * 
+	 * @param __task The task to request the status of.
+	 * @return One of {@link TaskStatusType}.
+	 * @throws MLECallError If the task is not valid.
+	 * @since 2020/12/31
+	 */
+	public static int status(TaskBracket __task)
+		throws MLECallError
+	{
+		if (__task == null)
+			throw new MLECallError("Null task.");
+		
+		Process process = ((EmulatedTaskBracket)__task).process;
+		if (process.isAlive())
+			return TaskStatusType.ALIVE;
+		return TaskStatusType.EXITED;
 	}
 	
 	/**

@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
@@ -1161,9 +1162,11 @@ public class Display
 				StaticDisplayState.callback());
 		}
 		
-		// Show the form on the display
-		backend.displayShow(this._uiDisplay,
-			__show._uiForm);
+		// Show the form on the display, as long as it is not already on there
+		UIDisplayBracket uiDisplay = this._uiDisplay;
+		UIFormBracket wasForm = backend.displayCurrent(uiDisplay);
+		if (wasForm == null || !backend.equals(__show._uiForm, wasForm))
+			backend.displayShow(uiDisplay, __show._uiForm);
 		
 		// Set new parent
 		__show._display = this;
