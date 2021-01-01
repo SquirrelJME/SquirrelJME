@@ -339,7 +339,7 @@ public class AdditionalManifestPropertiesTask
 		StringBuilder sb = new StringBuilder();
 		for (Object o : __it)
 		{
-			// Add delimeter?
+			// Add decimeter?
 			if (sb.length() > 0)
 				sb.append(__delim);
 			

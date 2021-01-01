@@ -10,8 +10,10 @@
 package cc.squirreljme.runtime.swm.launch;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
+import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.SuiteInfo;
@@ -127,7 +129,26 @@ public final class Application
 	 */
 	public TaskBracket launch()
 	{
-		throw Debugging.todo();
+		// Find libraries to base off
+		Library[] libraries = this._libraries.matchDependencies(
+			this.info.dependencies(), true);
+		int numLibs = libraries.length;
+		
+		// Determine the class path used from this
+		JarPackageBracket[] classPath = new JarPackageBracket[numLibs + 1];
+		for (int i = 0; i < numLibs; i++)
+			classPath[i] = libraries[i].jar;
+		classPath[numLibs] = this.jar;
+		
+		// Have the task launch itself
+		EntryPoint entry = this.entryPoint;
+		return TaskShelf.start(classPath,
+			(entry.isMidlet() ? "javax.microedition.midlet.__MainHandler__" :
+				entry.entryPoint()),
+			new String[0],
+			new String[0],
+			TaskPipeRedirectType.TERMINAL,
+			TaskPipeRedirectType.TERMINAL);
 	}
 	
 	/**
