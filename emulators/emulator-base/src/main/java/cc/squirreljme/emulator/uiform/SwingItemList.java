@@ -396,7 +396,8 @@ public class SwingItemList
 		JList<ListEntry> list = this._list;
 		DefaultListModel<ListEntry> model = this._model;
 		for (int dx = __e.getFirstIndex(),
-			end = __e.getLastIndex(); dx <= end; dx++)
+			end = Math.min(__e.getLastIndex(), model.size() - 1);
+			dx <= end; dx++)
 		{
 			boolean sel = list.isSelectedIndex(dx);
 			

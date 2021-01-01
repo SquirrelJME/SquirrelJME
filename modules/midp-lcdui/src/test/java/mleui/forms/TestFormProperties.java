@@ -192,6 +192,10 @@ public class TestFormProperties
 				this.secondary("is-form", iVal == UIItemType.FORM);
 				break;
 			
+			case UIWidgetProperty.INT_UPDATE_LIST_SELECTION_LOCK:
+				this.secondary("no-selection-lock", noEitherGet);
+				return;
+			
 			default:
 				throw new FailingExecution("Missing " + __property);
 		}

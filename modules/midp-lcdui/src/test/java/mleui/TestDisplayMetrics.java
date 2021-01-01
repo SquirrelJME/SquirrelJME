@@ -147,6 +147,12 @@ public class TestDisplayMetrics
 					this.secondary("bad-color-" + __metric, color);
 				break;
 			
+				// Vibration support is limited to do
+			case UIMetricType.SUPPORTS_VIBRATION:
+				int vib = __backend.metric(__metric);
+				this.secondary("vibrate", (vib == 0 || vib == 1));
+				break;
+			
 			default:
 				throw new FailingExecution("Missing " + __metric);
 		}
