@@ -60,6 +60,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/wii-static.yml'
 
+  # Nintendo Wii U
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/wiiu-static.yml'
+
   # PLayStation 2
   - project: 'libretro-infrastructure/ci-templates'
     file: '/ps2-static.yml'
@@ -151,6 +155,12 @@ libretro-build-libnx-aarch64:
 libretro-build-wii:
   extends:
     - .libretro-wii-static-retroarch-master
+    - .core-defs
+
+# Nintendo Wii U
+libretro-build-wiiu:
+  extends:
+    - .libretro-wiiu-static-retroarch-master
     - .core-defs
 
 # PlayStation 2

@@ -7,31 +7,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.constants;
+package cc.squirreljme.runtime.launcher.ui;
 
 /**
- * The type of list to use.
+ * The preferred sort order for applications.
  *
- * @since 2020/10/17
+ * @since 2020/12/29
  */
-public interface UIListType
+public enum SearchOrder
 {
-	/** Only one element may be selected at a time. */
-	byte EXCLUSIVE =
-		0;
+	/** The SquirrelJME Name of the application. */
+	SQUIRRELJME_NAME,
 	
-	/**
-	 * The item that is focused is always the only one selected, pressing an
-	 * action key (like enter/space) will activate the item.
-	 */
-	byte IMPLICIT =
-		1;
+	/** The display name of the application. */
+	DISPLAY_NAME,
 	
-	/** Any number of items may be selected. */
-	byte MULTIPLE =
-		2;
+	/** The suite name of the application. */
+	SUITE_NAME,
 	
-	/** The number of list types. */
-	byte NUM_LIST_TYPES =
-		3;
+	/** The main class. */
+	MAIN_CLASS,
+	
+	/* End. */
+	;
 }

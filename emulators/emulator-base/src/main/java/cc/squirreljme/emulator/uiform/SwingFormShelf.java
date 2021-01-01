@@ -559,6 +559,15 @@ public final class SwingFormShelf
 			case UIMetricType.COLOR_CANVAS_BACKGROUND:
 				return UIManager.getColor("desktop")
 					.getRGB() & SwingFormShelf._COLOR_MASK;
+				
+				// Vibration not supported
+			case UIMetricType.SUPPORTS_VIBRATION:
+				return 0;
+				
+				// Command and list height
+			case UIMetricType.COMMAND_BAR_HEIGHT:
+			case UIMetricType.LIST_ITEM_HEIGHT:
+				return 16;
 			
 			default:
 				throw new MLECallError("Unknown metric: " + __metricId);

@@ -160,13 +160,12 @@ public final class JavaMEProfile
 	@Override
 	public String toString()
 	{
-		
 		Reference<String> ref = this._string;
 		String rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = "Profile " +
-				this.name + ":" + this.version));
+			this._string = new WeakReference<>(
+				(rv = this.name + "-" + this.version));
 		
 		return rv;
 	}

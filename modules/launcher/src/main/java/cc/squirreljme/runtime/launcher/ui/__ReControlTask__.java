@@ -10,10 +10,13 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import cc.squirreljme.jvm.mle.TaskShelf;
+import cc.squirreljme.jvm.mle.brackets.TaskBracket;
+import cc.squirreljme.jvm.mle.constants.TaskStatusType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.TimerTask;
 import javax.microedition.lcdui.Display;
-import javax.microedition.swm.Task;
-import javax.microedition.swm.TaskStatus;
 
 /**
  * This is used to regain control of tasks and make it so the launcher is
@@ -62,7 +65,7 @@ final class __ReControlTask__
 		boolean recover = false;
 		synchronized (active)
 		{
-			Task task = active._task;
+			TaskBracket task = active._task;
 			
 			// If null, then we should recover because it was cleared
 			if (task == null)
@@ -70,25 +73,35 @@ final class __ReControlTask__
 			
 			// If the task has stopped for any reason, we recover
 			if (!recover)
-			{
-				TaskStatus status = task.getStatus();
-				recover = (status != TaskStatus.RUNNING &&
-					status != TaskStatus.STARTING);
-			}
+				try
+				{
+					int status = TaskShelf.status(task);
+					recover = (status != TaskStatusType.ALIVE);
+				}
+				catch (MLECallError e)
+				{
+					e.printStackTrace();
+					
+					// Probably crashed?
+					recover = true;
+				}
 			
 			// Recover our display?
 			if (recover)
 			{
 				// Note it
-				todo.DEBUG.note("Recovering %s...", task);
+				Debugging.debugNote("Recovering launcher...");
+				
+				// We no longer have a task launched
+				active._task = null;
+				
+				// Cancel self since we did it!
+				this.cancel();
 				
 				// Make it current which takes the display over again, we
 				// do not need to specify which displayable it was because the
 				// display remembers it
 				display.setCurrent(display.getCurrent());
-				
-				// Cancel self since we did it!
-				this.cancel();
 			}
 		}
 	}

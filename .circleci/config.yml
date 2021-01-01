@@ -38,7 +38,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew build testHosted --console plain --continue --parallel
+          command: gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
       - run:
           shell: bash.exe
           name: Save test results
@@ -94,6 +94,16 @@ jobs:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
       HOMEBREW_NO_AUTO_UPDATE: 1
+
+      # Do not auto-clean brew, this wastes time and everything will be thrown
+      # out when the container finishes anyway
+      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
+
+      # Do not send analytics
+      HOMEBREW_NO_ANALYTICS: 1
+
+      # Do not cleanup after installation
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
       - checkout
       - run:
@@ -103,7 +113,7 @@ jobs:
           command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted --console plain --continue --parallel
+          command: ./gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
       - run:
           name: Save test results
           command: |
@@ -149,6 +159,9 @@ jobs:
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - run:
@@ -179,28 +192,12 @@ jobs:
       - store_artifacts:
           path: ~/test-results
 
-  ### JavaDoc JAR
-  build_javadocJar:
-    executor: buildenv
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build JavaDoc JAR
-          command: ./gradlew javadocJar --console plain --continue --parallel
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
-
   ### BinTray Publishing
   bintray_publish:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -212,6 +209,9 @@ jobs:
   ### OSS SonaType Nexus
   sonatype_publish:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -224,6 +224,9 @@ jobs:
   ratufacoat_build_linux:
     executor: buildenv
     resource_class: small
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - run:
@@ -248,6 +251,9 @@ jobs:
   ### SpringCoat
   test_springcoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -280,6 +286,9 @@ jobs:
           path: ~/test-results
   test_summercoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -344,6 +353,9 @@ jobs:
   # when they need to use these JARs
   construct_testJars:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -364,6 +376,9 @@ jobs:
   # for general ROM construction
   construct_libSummerCoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -383,6 +398,9 @@ jobs:
   # All of the tests so that they can run from within SummerCoat
   construct_libTestSummerCoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -402,6 +420,9 @@ jobs:
   # Constructs the standard SummerCoat ROM, could be uploaded later
   construct_romSummerCoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -423,6 +444,9 @@ jobs:
   # it properly works.
   construct_romTestSummerCoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -445,9 +469,6 @@ workflows:
     jobs:
       ############################# STANDARD TESTS ############################
       - build_linux
-      - build_javadocJar:
-          requires:
-            - build_linux
       - test_springcoat:
           requires:
             - construct_testJars
@@ -478,7 +499,7 @@ workflows:
       # Publishing to BinTray for any releases
       - bintray_publish:
           requires:
-            - build_javadocJar
+            - build_linux
           filters:
             tags:
               only: /^[0-9]+.[0-9]+.[0-9]+$/
@@ -488,7 +509,7 @@ workflows:
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:
           requires:
-            - build_javadocJar
+            - build_linux
           filters:
             branches:
               only:

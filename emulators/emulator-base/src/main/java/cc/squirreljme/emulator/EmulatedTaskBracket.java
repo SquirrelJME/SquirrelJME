@@ -2,24 +2,39 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.launcher.ui;
+package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 
 /**
- * The currently active task.
+ * Represents a native task.
  *
- * @since 2018/12/10
+ * @since 2020/12/31
  */
-final class __ActiveTask__
+public class EmulatedTaskBracket
+	implements TaskBracket
 {
-	/** The current task. */
-	volatile TaskBracket _task;
+	/** The process to check and access. */
+	protected final Process process;
+	
+	/**
+	 * Initializes the task holder.
+	 * 
+	 * @param __proc The process this is running on.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/31
+	 */
+	public EmulatedTaskBracket(Process __proc)
+		throws NullPointerException
+	{
+		if (__proc == null)
+			throw new NullPointerException("NARG");
+		
+		this.process = __proc;
+	}
 }
-

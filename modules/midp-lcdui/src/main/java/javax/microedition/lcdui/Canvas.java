@@ -10,7 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
@@ -223,14 +222,15 @@ public abstract class Canvas
 	protected Canvas()
 	{
 		// Build new canvas
-		UIItemBracket uiCanvas = UIFormShelf.itemNew(UIItemType.CANVAS);
+		UIBackend backend = UIBackendFactory.getInstance();
+		UIItemBracket uiCanvas = backend.itemNew(UIItemType.CANVAS);
 		this._uiCanvas = uiCanvas;
 		
 		// Register self for future paint events
 		StaticDisplayState.register(this, uiCanvas);
 		
 		// Show it on the form for this displayable
-		UIFormShelf.formItemPosition(this._uiForm, uiCanvas, 0);
+		backend.formItemPosition(this._uiForm, uiCanvas, 0);
 	}
 	
 	/**
@@ -680,7 +680,8 @@ public abstract class Canvas
 		
 		// Depending on full-screen either choose the first position or the
 		// full-screen body of the form
-		UIFormShelf.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
+		UIBackend backend = UIBackendFactory.getInstance();
+		backend.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
 			UIItemPosition.BODY : 0));
 	}
 	

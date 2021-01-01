@@ -22,6 +22,7 @@ import java.util.jar.JarInputStream;
 import net.multiphasicapps.zip.blockreader.FileChannelBlockAccessor;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -72,8 +73,6 @@ public class EmulatedJarPackageBracket
 			new FileChannelBlockAccessor(this.path)))
 		{
 			ZipBlockEntry entry = zip.get(__rc);
-			if (entry == null)
-				return null;
 			
 			// Copy contents of the entry into memory
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -92,6 +91,10 @@ public class EmulatedJarPackageBracket
 			}
 			
 			return new ByteArrayInputStream(baos.toByteArray());
+		}
+		catch (ZipEntryNotFoundException ignored)
+		{
+			return null;
 		}
 		catch (IOException e)
 		{

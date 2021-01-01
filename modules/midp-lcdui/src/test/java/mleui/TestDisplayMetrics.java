@@ -147,6 +147,22 @@ public class TestDisplayMetrics
 					this.secondary("bad-color-" + __metric, color);
 				break;
 			
+				// Vibration support is limited to do
+			case UIMetricType.SUPPORTS_VIBRATION:
+				int vib = __backend.metric(__metric);
+				this.secondary("vibrate", (vib == 0 || vib == 1));
+				break;
+			
+			case UIMetricType.LIST_ITEM_HEIGHT:
+				this.secondary("positive-list-height",
+				__backend.metric(__metric) > 0);
+				break;
+			
+			case UIMetricType.COMMAND_BAR_HEIGHT:
+				this.secondary("positive-command-height",
+				__backend.metric(__metric) > 0);
+				break;
+			
 			default:
 				throw new FailingExecution("Missing " + __metric);
 		}

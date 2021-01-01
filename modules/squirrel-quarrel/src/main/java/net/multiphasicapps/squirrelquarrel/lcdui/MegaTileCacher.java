@@ -106,7 +106,7 @@ public class MegaTileCacher
 			TerrainType oldtype = null;
 			Image tilepic = null;
 			
-			// Go through the megatile to draw
+			// Go through the mega-tile to draw
 			for (int ty = 0, dy = 0; ty < MegaTile.TILES_PER_MEGA_TILE;
 				ty++, dy += Tile.PIXEL_SIZE)
 				for (int tx = 0, dx = 0; tx < MegaTile.TILES_PER_MEGA_TILE;

@@ -22,7 +22,7 @@ import java.io.OutputStream;
  *
  * @since 2020/11/21
  */
-@SuppressWarnings("resource")
+@SuppressWarnings({"resource", "unused"})
 public class EmulatedTerminalShelf
 {
 	/**

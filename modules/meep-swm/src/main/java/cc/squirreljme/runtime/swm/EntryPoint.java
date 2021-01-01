@@ -58,8 +58,11 @@ public final class EntryPoint
 		// Set
 		this.name = __name;
 		this.entry = __entry;
-		this.imageResource = __imgRc;
 		this.isMidlet = __mid;
+		
+		// This may include an absolute path, however that can be stripped off
+		this.imageResource = (__imgRc == null ? null :
+			(__imgRc.startsWith("/") ? __imgRc.substring(1) : __imgRc));
 	}
 	
 	/**

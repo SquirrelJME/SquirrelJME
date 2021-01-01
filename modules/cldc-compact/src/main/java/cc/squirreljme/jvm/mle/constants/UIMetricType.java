@@ -55,7 +55,19 @@ public interface UIMetricType
 	byte INPUT_FLAGS =
 		8;
 	
+	/** Is vibration supported? */
+	byte SUPPORTS_VIBRATION =
+		9;
+	
+	/** The height of list items. */
+	byte LIST_ITEM_HEIGHT =
+		10;
+	
+	/** The height of the command bar. */
+	byte COMMAND_BAR_HEIGHT =
+		11;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		9;
+		12;
 }
