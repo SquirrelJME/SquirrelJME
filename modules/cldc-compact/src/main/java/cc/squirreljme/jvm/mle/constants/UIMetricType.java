@@ -55,7 +55,11 @@ public interface UIMetricType
 	byte INPUT_FLAGS =
 		8;
 	
+	/** Is vibration supported? */
+	byte SUPPORTS_VIBRATION =
+		9;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		9;
+		10;
 }

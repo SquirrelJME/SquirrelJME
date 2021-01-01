@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.DeviceFeedbackType;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
@@ -1048,14 +1049,13 @@ public class Display
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1n");
 		
-		// Clear vibration
-		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.VIBRATE, __d);
+		// Only perform the action if we can vibrate the device
+		UIBackend backend = UIBackendFactory.getInstance();
+		if (backend.metric(UIMetricType.SUPPORTS_VIBRATION) != 0)
+			throw Debugging.todo();
 		
-		// Only return true if no error was generated
-		return (SystemCallError.NO_ERROR ==
-			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-				SystemCallIndex.DEVICE_FEEDBACK));
+		// There is none, so we cannot say we control it
+		return false;
 	}
 	
 	/**
