@@ -37,6 +37,7 @@
       <option name="TEST_NAME_PREFIX" value="Test" />
       <option name="TEST_NAME_SUFFIX" value="" />
       <option name="SUBCLASS_NAME_SUFFIX" value="" />
+      <option name="VISIBILITY" value="protected" />
       <option name="REPLACE_NULL_CHECK" value="false" />
       <option name="REPLACE_SUM" value="false" />
       <option name="CLASS_NAMES_IN_JAVADOC" value="3" />

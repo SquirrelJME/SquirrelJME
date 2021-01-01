@@ -1,7 +1,21 @@
+import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
+
 group = "cc.squirreljme.squirreljme.emulators"
 description = "This module contains all of the emulators available for " +
 	"running SquirrelJME. These run on top of Java SE itself."
 
 subprojects
 {
+	apply plugin: "idea"
+	
+	idea {
+		module
+		{
+			// The emulators run on Java 8 because this is for the host VM
+			// which can take advantage of this.
+			jdkName = "1.8"
+			languageLevel = new IdeaLanguageLevel("1.8")
+			targetBytecodeVersion = JavaVersion.VERSION_1_8
+		}
+	}
 }

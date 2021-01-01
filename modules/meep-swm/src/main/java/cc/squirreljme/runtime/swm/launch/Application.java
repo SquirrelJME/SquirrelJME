@@ -145,7 +145,8 @@ public final class Application
 		return TaskShelf.start(classPath,
 			(entry.isMidlet() ? "javax.microedition.midlet.__MainHandler__" :
 				entry.entryPoint()),
-			new String[0],
+			(entry.isMidlet() ? new String[]{entry.entryPoint()} :
+				new String[0]),
 			new String[0],
 			TaskPipeRedirectType.TERMINAL,
 			TaskPipeRedirectType.TERMINAL);

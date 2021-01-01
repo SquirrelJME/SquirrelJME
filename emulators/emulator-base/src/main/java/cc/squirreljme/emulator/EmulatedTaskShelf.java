@@ -15,6 +15,20 @@ import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Emulation for {@link TaskShelf}.
@@ -24,6 +38,22 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @SuppressWarnings("unused")
 public final class EmulatedTaskShelf
 {
+	/** Property for the libraries that are available. */
+	public static final String AVAILABLE_LIBRARIES =
+		"squirreljme.hosted.libraries";
+	
+	/** Property for the classpath of the currently running task. */
+	public static final String RUN_CLASSPATH =
+		"squirreljme.hosted.classpath";
+	
+	/** Property for the classpath of the currently running VM. */
+	public static final String HOSTED_VM_CLASSPATH =
+		"squirreljme.hosted.vm.classpath";
+	
+	/** The virtual machine support path, the minimal needed to run a VM. */
+	public static final String HOSTED_VM_SUPPORTPATH =
+		"squirreljme.hosted.vm.supportpath";
+	
 	/**
 	 * As {@link TaskShelf#start(JarPackageBracket[], String, String[],
 	 * String[], int, int)}. 
@@ -51,6 +81,191 @@ public final class EmulatedTaskShelf
 		String[] __sysPropPairs, int __stdOut, int __stdErr)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__classPath == null || __mainClass == null || __args == null ||
+			__sysPropPairs == null)
+			throw new MLECallError("Null start() arguments.");
+		
+		// Start building the process
+		@SuppressWarnings("UseOfProcessBuilder")
+		ProcessBuilder builder = new ProcessBuilder();
+		List<String> args = new LinkedList<>();
+		
+		// We will be calling the Java executable
+		args.add("java");
+		
+		// By default inherit all system properties
+		Map<String, String> sysProps = new LinkedHashMap<>();
+		for (Map.Entry<Object, Object> e : System.getProperties().entrySet())
+			sysProps.put(e.getKey().toString(),
+				Objects.toString(e.getValue(), ""));
+		
+		// We need the support path to determine how we are launching this
+		Path[] vmSupportPath = EmulatedTaskShelf.__classpathDecode(
+			System.getProperty(EmulatedTaskShelf.HOSTED_VM_SUPPORTPATH));
+		
+		// Determine the classpath as if one were just running the application
+		// itself, this is the virtual classpath to run the process
+		Path[] runClassPath = new Path[__classPath.length];
+		for (int i = 0, n = __classPath.length; i < n; i++)
+			runClassPath[i] = ((EmulatedJarPackageBracket)__classPath[i]).path;
+		
+		// We need to tell it what our own classpath is, logically
+		sysProps.put(EmulatedTaskShelf.RUN_CLASSPATH,
+			EmulatedTaskShelf.__classpathAsString(runClassPath));
+		
+		// Combine these two to make the running classpath, this includes the
+		// emulator as well
+		Set<Path> allLibs = new LinkedHashSet<>();
+		allLibs.addAll(Arrays.<Path>asList(vmSupportPath));
+		allLibs.addAll(Arrays.<Path>asList(runClassPath));
+		
+		// Tell the target what classpath we are running under
+		String allLibsStr = EmulatedTaskShelf.__classpathAsString(allLibs);
+		sysProps.put(EmulatedTaskShelf.HOSTED_VM_CLASSPATH,
+			allLibsStr);
+		
+		// Place in the actual target classpath which is the combination of
+		// the base VM one and the target one
+		args.add("-classpath");
+		args.add(allLibsStr);
+		
+		/*public static final String AVAILABLE_LIBRARIES =
+			"squirreljme.hosted.libraries";
+		public static final String RUN_CLASSPATH =
+			"squirreljme.hosted.classpath";
+		public static final String HOSTED_VM_CLASSPATH =
+			"squirreljme.hosted.vm.classpath";*/
+		
+		// Use all declared system properties to ensure that they are properly
+		// inherited from the host virtual machine
+		for (Map.Entry<String, String> e : sysProps.entrySet())
+			args.add(String.format("-D%s=%s",
+				e.getKey(), e.getValue()));
+		
+		// The main class is our direct main class, we do not need special
+		// handling for it at all
+		args.add(__mainClass);
+		
+		// Add all of the calling arguments we desire to be forwarded to the
+		// sub-process
+		args.addAll(Arrays.<String>asList(__args));
+		
+		// Use these arguments
+		builder.command(args);
+		
+		// Debug
+		Debugging.debugNote("CmdLine Args: %s", args);
+		
+		// Alternative piping for standard output
+		switch (__stdOut)
+		{
+			case TaskPipeRedirectType.TERMINAL:
+				builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+				break;
+			
+			case TaskPipeRedirectType.BUFFER:
+			case TaskPipeRedirectType.DISCARD:
+				throw Debugging.todo();
+			
+			default:
+				throw new MLECallError("Unknown stdOut: " + __stdOut);
+		}
+		
+		// Alternative piping for standard output
+		switch (__stdErr)
+		{
+			case TaskPipeRedirectType.TERMINAL:
+				builder.redirectError(ProcessBuilder.Redirect.INHERIT);
+				break;
+			
+			case TaskPipeRedirectType.BUFFER:
+			case TaskPipeRedirectType.DISCARD:
+				throw Debugging.todo();
+			
+			default:
+				throw new MLECallError("Unknown stdOut: " + __stdOut);
+		}
+		
+		// Start and track the process
+		try
+		{
+			// Start the process and ensure that when this VM terminates that
+			// the sub-process is terminated as well.
+			Process process = builder.start();
+			Runtime.getRuntime()
+				.addShutdownHook(new Thread(new ProcessKiller(process),
+					String.format("processKiller@%08x",
+						System.identityHashCode(process))));
+			
+			return new EmulatedTaskBracket(process);
+		}
+		catch (IOException e)
+		{
+			throw new MLECallError("Could not spawn task.", e);
+		}
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/21
+	 */
+	static String __classpathAsString(Path... __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		return EmulatedTaskShelf.__classpathAsString(Arrays.asList(__paths));
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/29
+	 */
+	static String __classpathAsString(Iterable<Path> __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (Path path : __paths)
+		{
+			if (sb.length() > 0)
+				sb.append(File.pathSeparatorChar);
+			sb.append(path);
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Decodes the classpath string.
+	 * 
+	 * @param __string The string to decode.
+	 * @return The decoded path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/10/17
+	 */
+	static Path[] __classpathDecode(String __string)
+		throws NullPointerException
+	{
+		if (__string == null)
+			throw new NullPointerException("NARG");
+		
+		Collection<Path> result = new LinkedList<>();
+		for (String split : __string.split(Pattern.quote(File.pathSeparator)))
+			result.add(Paths.get(split));
+		
+		return result.<Path>toArray(new Path[result.size()]);
 	}
 }
