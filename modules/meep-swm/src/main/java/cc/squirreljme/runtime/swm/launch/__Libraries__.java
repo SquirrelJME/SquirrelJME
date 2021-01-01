@@ -10,8 +10,9 @@
 package cc.squirreljme.runtime.swm.launch;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.SuiteInfo;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Lazily loaded library handling, for later dependency handling.
@@ -20,6 +21,10 @@ import cc.squirreljme.runtime.swm.SuiteInfo;
  */
 final class __Libraries__
 {
+	/** The available libraries. */
+	private final List<Library> _libs =
+		new LinkedList<>();
+	
 	/**
 	 * Registers a library for later dependency handling.
 	 * 
@@ -34,6 +39,9 @@ final class __Libraries__
 		if (__info == null || __jar == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			this._libs.add(new Library(__info, __jar));
+		}
 	}
 }

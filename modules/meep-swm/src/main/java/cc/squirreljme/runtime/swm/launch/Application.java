@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.swm.launch;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -27,20 +28,40 @@ public final class Application
 	private static final String _NO_LAUNCHER =
 		"X-SquirrelJME-NoLauncher";
 	
+	/** The suite information. */
+	protected final SuiteInfo info;
+	
+	/** The JAR this references. */
+	protected final JarPackageBracket jar;
+	
+	/** The entry point used. */
+	protected final EntryPoint entryPoint;
+	
+	/** The library information. */
+	private final __Libraries__ _libraries;
+	
 	/**
 	 * Initializes the application.
 	 * 
 	 * @param __info The JAR information.
 	 * @param __jar The JAR to reference.
 	 * @param __libs The lazy library initializer.
+	 * @param __entryPoint The entry point used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
 	Application(SuiteInfo __info, JarPackageBracket __jar,
-		__Libraries__ __libs)
+		__Libraries__ __libs, EntryPoint __entryPoint)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__info == null || __jar == null || __libs == null ||
+			__entryPoint == null)
+			throw new NullPointerException("NARG");
+		
+		this.info = __info;
+		this.jar = __jar;
+		this.entryPoint = __entryPoint;
+		this._libraries = __libs;
 	}
 	
 	/**
@@ -51,7 +72,12 @@ public final class Application
 	 */
 	public String displayName()
 	{
-		throw Debugging.todo();
+		EntryPoint entry = this.entryPoint;
+		String result = (entry.isMidlet() ? entry.name() :
+			this.info.manifest().getMainAttributes()
+				.getValue("MIDlet-Name"));
+		
+		return (result == null ? entry.entryPoint() : result);
 	}
 	
 	/**
@@ -62,7 +88,7 @@ public final class Application
 	 */
 	public final EntryPoint entryPoint()
 	{
-		throw Debugging.todo();
+		return this.entryPoint;
 	}
 	
 	/**
@@ -74,7 +100,11 @@ public final class Application
 	 */
 	public InputStream iconStream()
 	{
-		throw Debugging.todo();
+		String imgRc = this.entryPoint.imageResource();
+		if (imgRc != null)
+			return JarPackageShelf.openResource(this.jar,
+				this.entryPoint.imageResource());
+		return null;
 	}
 	
 	/**
@@ -85,7 +115,8 @@ public final class Application
 	 */
 	public boolean isNoLauncher()
 	{
-		throw Debugging.todo();
+		return this.info.manifest().getMainAttributes()
+			.definesValue(Application._NO_LAUNCHER);
 	}
 	
 	/**

@@ -12,6 +12,8 @@ package cc.squirreljme.runtime.swm.launch;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.swm.EntryPoint;
+import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.runtime.swm.InvalidSuiteException;
 import cc.squirreljme.runtime.swm.SuiteInfo;
 import java.io.IOException;
@@ -110,13 +112,18 @@ public final class SuiteScanner
 				
 				// Handle application
 				case MIDLET:
-					// Setup application information
-					Application app = new Application(info, jar, libs);
-					result.add(app);
-					
-					// Indicate that it was scanned
-					if (__listener != null)
-						__listener.scanned(app, i, numJars);
+					// Setup application information for all possible entry
+					// points
+					for (EntryPoint e : new EntryPoints(man))
+					{
+						// Load application
+						Application app = new Application(info, jar, libs, e);
+						result.add(app);
+						
+						// Indicate that it was scanned
+						if (__listener != null)
+							__listener.scanned(app, i, numJars);
+					}
 					break;
 				
 				// Unknown?
