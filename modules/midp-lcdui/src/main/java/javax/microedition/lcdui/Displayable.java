@@ -639,6 +639,7 @@ public abstract class Displayable
 		
 		// If there is nothing here, clear it
 		__Action__ action = __layout.get(__from);
+		Debugging.debugNote("LayoutExec at %d -> %d (%s)", __from, __to, action);
 		if (action == null)
 		{
 			// Remove anything that is in this position

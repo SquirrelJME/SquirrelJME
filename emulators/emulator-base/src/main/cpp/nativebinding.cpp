@@ -242,9 +242,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 JNIEXPORT void JNICALL restrictedFunction(JNIEnv* env, jclass classy)
 {
 	// Call the oops method, so we can get a reasonable stack trace
-	forwardCallStaticObject(env,
+	env->Throw((jthrowable)forwardCallStaticObject(env,
 		"cc.squirreljme.runtime.cldc.debug.Debugging",
-		"oops", "()java/lang/Error");
+		"oops", "()java/lang/Error"));
 }
 
 JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethods
