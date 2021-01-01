@@ -73,7 +73,8 @@ subprojects {
 			"squirreljme.syscallparam",
 			"squirreljme.syscallreturn",
 			"squirreljme.tsiparam",
-			"squirreljme.configtype" ]
+			"squirreljme.configtype",
+			"squirreljme.uiwidgetparam" ]
 			
 		// Build sources and JavaDoc as well
 		withSourcesJar()

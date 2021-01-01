@@ -7,31 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.constants;
+package cc.squirreljme.runtime.lcdui.image;
 
 /**
- * The type of list to use.
+ * This is thrown if this is not an XPM color.
  *
- * @since 2020/10/17
+ * @since 2021/01/01
  */
-public interface UIListType
+public class NotAnXPMColorException
+	extends RuntimeException
 {
-	/** Only one element may be selected at a time. */
-	byte EXCLUSIVE =
-		0;
-	
 	/**
-	 * The item that is focused is always the only one selected, pressing an
-	 * action key (like enter/space) will activate the item.
+	 * Initializes the exception.
+	 * 
+	 * @param __s The string used.
+	 * @since 2021/01/01
 	 */
-	byte IMPLICIT =
-		1;
-	
-	/** Any number of items may be selected. */
-	byte MULTIPLE =
-		2;
-	
-	/** The number of list types. */
-	byte NUM_LIST_TYPES =
-		3;
+	public NotAnXPMColorException(String __s)
+	{
+		super(__s);
+	}
 }

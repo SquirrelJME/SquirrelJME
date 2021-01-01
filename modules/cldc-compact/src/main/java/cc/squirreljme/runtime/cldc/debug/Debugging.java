@@ -84,6 +84,17 @@ public final class Debugging
 	/**
 	 * Emits an oops error.
 	 *
+	 * @return The generated error.
+	 * @since 2020/12/31
+	 */
+	public static Error oops()
+	{
+		return Debugging.todo();
+	}
+	
+	/**
+	 * Emits an oops error.
+	 *
 	 * @param __args Argument to the error.
 	 * @return The generated error.
 	 * @since 2020/03/22

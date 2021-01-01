@@ -66,7 +66,14 @@ public interface UIWidgetProperty
 	byte INT_LIST_ITEM_DISABLED =
 		11;
 	
-	/** Select or get select for a given list item. */
+	/**
+	 * Select or get select for a given list item. If the locking code is not
+	 * the same, this is likely from another sequence.
+	 * 
+	 * @squirreljme.uiwidgetparam 1 The locking code, to check which list
+	 * selection update sequence this is in.
+	 * @squirreljme.uiwidgetparam 2 The selection state of the item.
+	 */
 	byte INT_LIST_ITEM_SELECTED =
 		12;
 	
@@ -90,7 +97,17 @@ public interface UIWidgetProperty
 	byte INT_UIITEM_TYPE =
 		17;
 	
+	/**
+	 * Select or get select for a given list item.
+	 * 
+	 * @squirreljme.uiwidgetparam 1 The current locking code this is intended
+	 * for, for new codes this should be zero.
+	 * @squirreljme.uiwidgetparam 2 The new locking code, zero clears.
+	 */
+	byte INT_UPDATE_LIST_SELECTION_LOCK =
+		18;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		18;
+		19;
 }

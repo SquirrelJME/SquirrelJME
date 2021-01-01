@@ -7,31 +7,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.constants;
+package cc.squirreljme.runtime.swm.launch;
 
 /**
- * The type of list to use.
+ * This is a listener which specifies when a suite has been scanned in.
  *
- * @since 2020/10/17
+ * @since 2020/12/29
  */
-public interface UIListType
+public interface SuiteScanListener
 {
-	/** Only one element may be selected at a time. */
-	byte EXCLUSIVE =
-		0;
-	
 	/**
-	 * The item that is focused is always the only one selected, pressing an
-	 * action key (like enter/space) will activate the item.
+	 * Indicates that the given application was scanned.
+	 * 
+	 * @param __app The application that has been scanned.
+	 * @param __dx The JAR index, used to indicate progress.
+	 * @param __total The total number of JARs scanned.
+	 * @since 2020/12/29
 	 */
-	byte IMPLICIT =
-		1;
-	
-	/** Any number of items may be selected. */
-	byte MULTIPLE =
-		2;
-	
-	/** The number of list types. */
-	byte NUM_LIST_TYPES =
-		3;
+	void scanned(Application __app, int __dx, int __total);
 }

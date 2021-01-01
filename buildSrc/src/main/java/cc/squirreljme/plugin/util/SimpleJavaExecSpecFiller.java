@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.util;
 
+import cc.squirreljme.plugin.multivm.VMHelpers;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,7 +75,7 @@ public class SimpleJavaExecSpecFiller
 		// Define the classpath
 		StringBuilder classPath = new StringBuilder();
 		String pathSep = File.pathSeparator;
-		for (Path path : SimpleJavaExecSpecFiller.__resolve(this._classPath))
+		for (Path path : VMHelpers.resolvePath(this._classPath))
 		{
 			// We need the path separator between libraries
 			if (classPath.length() > 0)
@@ -149,65 +150,7 @@ public class SimpleJavaExecSpecFiller
 	 */
 	private static Path __findJavaExe()
 	{
+		// TODO: This is somewhere in "java.home"
 		return Paths.get("java");
-	}
-	
-	/**
-	 * Resolves path elements as needed to determine where a file is.
-	 * 
-	 * @param __in The input to resolve.
-	 * @return The path of the given object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/12/27
-	 */
-	private static Iterable<Path> __resolve(Object __in)
-		throws NullPointerException
-	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
-		// Direct file paths
-		if (__in instanceof Path)
-			return Collections.singleton((Path)__in);
-		else if (__in instanceof File)
-			return Collections.singleton(((File)__in).toPath());
-		
-		// A produced value
-		else if (__in instanceof Callable)
-			try
-			{
-				return SimpleJavaExecSpecFiller.__resolve(
-					((Callable<?>)__in).call());
-			}
-			catch (Exception e)
-			{
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				
-				throw new RuntimeException("Could not run Callable.", e);
-			}
-		
-		// A supplied value
-		else if (__in instanceof Supplier)
-			return SimpleJavaExecSpecFiller.__resolve(
-					((Supplier<?>)__in).get());
-		
-		// An iterable sequence
-		else if (__in instanceof Iterable)
-		{
-			List<Path> result = new ArrayList<>();
-			
-			// Process each one
-			for (Object obj : (Iterable<?>)__in)
-				for (Path sub : SimpleJavaExecSpecFiller.__resolve(obj))
-					result.add(sub);
-			
-			return result;
-		}
-		
-		// Unknown
-		else
-			throw new RuntimeException(String.format(
-				"Unknown input path type %s", __in.getClass()));			
 	}
 }

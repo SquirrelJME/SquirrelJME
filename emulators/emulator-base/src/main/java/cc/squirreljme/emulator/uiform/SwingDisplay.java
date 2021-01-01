@@ -97,8 +97,12 @@ public final class SwingDisplay
 							"Associated with display.");
 				}
 			
-			// Remove previous form if there is one
+			// Do nothing if this is already current
 			SwingForm current = this._current;
+			if (current == __form)
+				return;
+			
+			// Remove previous form if there is one
 			if (current != null)
 				synchronized (current)
 				{

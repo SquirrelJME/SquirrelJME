@@ -24,14 +24,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.process.ExecResult;
-import org.gradle.process.JavaExecSpec;
 
 /**
  * Represents the type of virtual machine to run.
@@ -100,13 +101,29 @@ public enum VMType
 				__task.getProject().project(this.emulatorProject)));
 			
 			// Add all of the emulator outputs
+			Set<Path> vmSupportPath = new LinkedHashSet<>(); 
 			for (File file : __task.getProject().project(this.emulatorProject)
 				.getTasks().getByName("jar").getOutputs().getFiles())
-				classPath.add(file);
+				vmSupportPath.add(file.toPath());
+			
+			// Use all the supporting path
+			classPath.addAll(vmSupportPath);
 			
 			// Append the target class path on top of this, as everything
 			// will be running directly
 			classPath.addAll(Arrays.asList(__classPath));
+			
+			// Add the VM classpath so it can be recreated if we need to spawn
+			// additional tasks such as by the launcher
+			sysProps.put("squirreljme.hosted.vm.supportpath",
+				VMHelpers.classpathAsString(vmSupportPath));
+			sysProps.put("squirreljme.hosted.vm.classpath",
+				VMHelpers.classpathAsString(VMHelpers.resolvePath(classPath)));
+			
+			// Declare system properties that are all the originally defined
+			// system properties
+			for (Map.Entry<String, String> e : __sysProps.entrySet())
+				sysProps.put("squirreljme.orig." + e.getKey(), e.getValue());
 			
 			// Debug
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
