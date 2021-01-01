@@ -1070,38 +1070,35 @@ public class Display
 	private int __bestImageSize(int __e, boolean __h)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
-		/*
 		// Depends
+		UIBackend backend = UIBackendFactory.getInstance();
 		switch (__e)
 		{
-			case Display.LIST_ELEMENT:
-				return StandardMetrics.LIST_ITEM_HEIGHT;
-				
 			case Display.CHOICE_GROUP_ELEMENT:
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 			case Display.ALERT:
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 			case Display.TAB:
-				throw new todo.TODO();
-				
-			case Display.COMMAND:
-				return StandardMetrics.COMMAND_BAR_HEIGHT;
+				throw Debugging.todo();
 				
 			case Display.NOTIFICATION:
-				throw new todo.TODO();
+				throw Debugging.todo();
+				
+			case Display.LIST_ELEMENT:
+				return backend.metric(UIMetricType.LIST_ITEM_HEIGHT);
 				
 			case Display.MENU:
-				return StandardMetrics.COMMAND_BAR_HEIGHT;
+			case Display.COMMAND:
+				return backend.metric(UIMetricType.COMMAND_BAR_HEIGHT);
 				
 				// {@squirreljme.error EB1o Cannot get the best image size of
 				// the specified element. (The element specifier)}
 			default:
 				throw new IllegalArgumentException(String.format("EB1o %d",
 					__e));
-		}*/
+		}
 	}
 	
 	/**

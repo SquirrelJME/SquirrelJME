@@ -59,7 +59,15 @@ public interface UIMetricType
 	byte SUPPORTS_VIBRATION =
 		9;
 	
+	/** The height of list items. */
+	byte LIST_ITEM_HEIGHT =
+		10;
+	
+	/** The height of the command bar. */
+	byte COMMAND_BAR_HEIGHT =
+		11;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		10;
+		12;
 }

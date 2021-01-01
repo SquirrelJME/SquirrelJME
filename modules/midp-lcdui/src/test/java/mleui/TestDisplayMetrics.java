@@ -153,6 +153,16 @@ public class TestDisplayMetrics
 				this.secondary("vibrate", (vib == 0 || vib == 1));
 				break;
 			
+			case UIMetricType.LIST_ITEM_HEIGHT:
+				this.secondary("positive-list-height",
+				__backend.metric(__metric) > 0);
+				break;
+			
+			case UIMetricType.COMMAND_BAR_HEIGHT:
+				this.secondary("positive-command-height",
+				__backend.metric(__metric) > 0);
+				break;
+			
 			default:
 				throw new FailingExecution("Missing " + __metric);
 		}
