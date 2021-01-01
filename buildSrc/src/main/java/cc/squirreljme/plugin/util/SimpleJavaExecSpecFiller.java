@@ -150,6 +150,7 @@ public class SimpleJavaExecSpecFiller
 	 */
 	private static Path __findJavaExe()
 	{
+		// TODO: This is somewhere in "java.home"
 		return Paths.get("java");
 	}
 }

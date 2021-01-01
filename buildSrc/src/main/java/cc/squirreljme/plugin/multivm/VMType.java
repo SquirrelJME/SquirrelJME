@@ -120,6 +120,11 @@ public enum VMType
 			sysProps.put("squirreljme.hosted.vm.classpath",
 				VMHelpers.classpathAsString(VMHelpers.resolvePath(classPath)));
 			
+			// Declare system properties that are all the originally defined
+			// system properties
+			for (Map.Entry<String, String> e : __sysProps.entrySet())
+				sysProps.put("squirreljme.orig." + e.getKey(), e.getValue());
+			
 			// Debug
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
 			

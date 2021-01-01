@@ -54,6 +54,10 @@ public final class EmulatedTaskShelf
 	public static final String HOSTED_VM_SUPPORTPATH =
 		"squirreljme.hosted.vm.supportpath";
 	
+	/** Original property prefix. */
+	public static final String ORIGINAL_PROP_PREFIX =
+		"squirreljme.orig.";
+	
 	/**
 	 * As {@link TaskShelf#start(JarPackageBracket[], String, String[],
 	 * String[], int, int)}. 
@@ -91,13 +95,44 @@ public final class EmulatedTaskShelf
 		List<String> args = new LinkedList<>();
 		
 		// We will be calling the Java executable
+		// TODO: This is somewhere in "java.home"
 		args.add("java");
 		
-		// By default inherit all system properties
+		// Determine which system properties we inherit from
 		Map<String, String> sysProps = new LinkedHashMap<>();
 		for (Map.Entry<Object, Object> e : System.getProperties().entrySet())
-			sysProps.put(e.getKey().toString(),
-				Objects.toString(e.getValue(), ""));
+		{
+			// System properties 
+			String key = e.getKey().toString();
+			if (key.startsWith(EmulatedTaskShelf.ORIGINAL_PROP_PREFIX))
+			{
+				// Extract the original property so we use it directly
+				sysProps.put(key.substring(
+					EmulatedTaskShelf.ORIGINAL_PROP_PREFIX.length()),
+					Objects.toString(e.getValue(), ""));
+				
+				// And add the property we based this off, so that we if the
+				// task we are starting wants to launch another task it gets
+				// all of them as well
+				sysProps.put(key,
+					Objects.toString(e.getValue(), ""));
+			}
+			
+			// Otherwise only initially inherit these specific properties
+			else
+			{
+				switch (key)
+				{
+					case EmulatedTaskShelf.AVAILABLE_LIBRARIES:
+					case EmulatedTaskShelf.RUN_CLASSPATH:
+					case EmulatedTaskShelf.HOSTED_VM_CLASSPATH:
+					case EmulatedTaskShelf.HOSTED_VM_SUPPORTPATH:
+						sysProps.put(key,
+							Objects.toString(e.getValue(), ""));
+						break;
+				}
+			}
+		}
 		
 		// We need the support path to determine how we are launching this
 		Path[] vmSupportPath = EmulatedTaskShelf.__classpathDecode(
@@ -129,13 +164,6 @@ public final class EmulatedTaskShelf
 		args.add("-classpath");
 		args.add(allLibsStr);
 		
-		/*public static final String AVAILABLE_LIBRARIES =
-			"squirreljme.hosted.libraries";
-		public static final String RUN_CLASSPATH =
-			"squirreljme.hosted.classpath";
-		public static final String HOSTED_VM_CLASSPATH =
-			"squirreljme.hosted.vm.classpath";*/
-		
 		// Use all declared system properties to ensure that they are properly
 		// inherited from the host virtual machine
 		for (Map.Entry<String, String> e : sysProps.entrySet())
@@ -154,7 +182,9 @@ public final class EmulatedTaskShelf
 		builder.command(args);
 		
 		// Debug
-		Debugging.debugNote("CmdLine Args: %s", args);
+		Debugging.debugNote("CmdLine Args:");
+		for (String arg : args)
+			Debugging.debugNote(">>> %s", arg);
 		
 		// Alternative piping for standard output
 		switch (__stdOut)
