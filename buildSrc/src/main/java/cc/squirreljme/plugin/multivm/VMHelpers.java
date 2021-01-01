@@ -331,7 +331,7 @@ public final class VMHelpers
 		
 		// Library is here?
 		return ((Path)raw).resolve(
-			System.mapLibraryName("emulator-base"));
+			System.mapLibraryName("emulator-base")).toAbsolutePath();
 	}
 	
 	/**
