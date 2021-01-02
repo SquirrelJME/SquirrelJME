@@ -10,12 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.DeviceFeedbackType;
-import cc.squirreljme.jvm.SystemCallError;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
