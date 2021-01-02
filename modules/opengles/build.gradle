@@ -16,7 +16,7 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc")
+	api project(":modules:cldc")
 
-	implementation project(":modules:midp-lcdui")
+	api project(":modules:midp-lcdui")
 }
