@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -70,7 +71,8 @@ public final class MemHandles
 	 */
 	public ClassInfoHandle allocClassInfo()
 	{
-		throw Debugging.todo();
+		return this.<ClassInfoHandle>__register(
+			new ClassInfoHandle(this.__nextId()));
 	}
 	
 	/**
@@ -105,14 +107,58 @@ public final class MemHandles
 	/**
 	 * Allocates a pool handle.
 	 * 
-	 * @param __sz The number of entries to place in.
+	 * @param __count The number of entries to place in.
 	 * @return The allocated handle.
 	 * @throws IllegalArgumentException If size is zero or negative.
 	 * @since 2020/12/29
 	 */
-	public PoolHandle allocPool(int __sz)
+	public PoolHandle allocPool(int __count)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		return this.<PoolHandle>__register(
+			new PoolHandle(this.__nextId(), __count));
+	}
+	
+	/**
+	 * Returns the next ID for memory handles.
+	 * 
+	 * @return The next ID for handles.
+	 * @since 2021/01/02
+	 */
+	private int __nextId()
+	{
+		synchronized (this)
+		{
+			// Always use the same class of numbers (even/odd)
+			int rv = this._nextId;
+			this._nextId = rv + 2;
+			
+			return BootstrapConstants.HANDLE_SECURITY_BITS | rv;
+		}
+	}
+	
+	/**
+	 * Registers the given memory handle.
+	 * 
+	 * @param <H> The type of handle to register.
+	 * @param __handle The handle to register.
+	 * @return {@code __handle}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/02
+	 */
+	private <H extends MemHandle> H __register(H __handle)
+		throws NullPointerException
+	{
+		if (__handle == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// {@squirreljme.error BC02 Duplicated handle ID. (The ID)}
+			if (null != this._handles.put(__handle.id, __handle))
+				throw new IllegalStateException("BC02 " + __handle.id);
+		}
+		
+		return __handle;
 	}
 }

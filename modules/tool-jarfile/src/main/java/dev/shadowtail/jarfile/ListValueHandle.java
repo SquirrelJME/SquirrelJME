@@ -19,18 +19,28 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class ListValueHandle
 	extends MemHandle
 {
+	/** The number of items in this list. */
+	protected final int count;
+	
 	/**
 	 * Initializes the base list handle.
 	 *
 	 * @param __id The memory handle ID.
+	 * @param __count The size of the list.
 	 * @throws IllegalArgumentException If the memory handle does not have the
-	 * correct security bits specified.
+	 * correct security bits specified or if the count is negative.
 	 * @since 2020/12/21
 	 */
-	ListValueHandle(int __id)
+	ListValueHandle(int __id, int __count)
 		throws IllegalArgumentException
 	{
-		super(__id);
+		super(__id, 4 * __count);
+		
+		// {@squirreljme.error BC03 Negative list size. (The count}}
+		if (__count < 0)
+			throw new IllegalArgumentException("BC03 " + __count);
+		
+		this.count = __count;
 	}
 	
 	/**

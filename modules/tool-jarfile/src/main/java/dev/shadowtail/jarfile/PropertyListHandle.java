@@ -23,14 +23,15 @@ public abstract class PropertyListHandle
 	 * Initializes the base property list handle.
 	 *
 	 * @param __id The memory handle ID.
+	 * @param __count The size of the list.
 	 * @throws IllegalArgumentException If the memory handle does not have the
-	 * correct security bits specified.
+	 * correct security bits specified or if the count is negative.
 	 * @since 2020/12/20
 	 */
-	PropertyListHandle(int __id)
+	PropertyListHandle(int __id, int __count)
 		throws IllegalArgumentException
 	{
-		super(__id);
+		super(__id, __count);
 	}
 	
 	/**

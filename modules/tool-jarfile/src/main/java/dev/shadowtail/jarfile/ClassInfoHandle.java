@@ -9,6 +9,8 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+
 /**
  * This is a handle that represents class information.
  *
@@ -28,6 +30,6 @@ public class ClassInfoHandle
 	ClassInfoHandle(int __id)
 		throws IllegalArgumentException
 	{
-		super(__id);
+		super(__id, ClassProperty.NUM_RUNTIME_PROPERTIES);
 	}
 }

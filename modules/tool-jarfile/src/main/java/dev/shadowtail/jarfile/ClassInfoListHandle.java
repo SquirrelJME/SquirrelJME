@@ -21,13 +21,14 @@ public class ClassInfoListHandle
 	 * Initializes the base class list handle.
 	 *
 	 * @param __id The memory handle ID.
+	 * @param __count The number of handles to reference.
 	 * @throws IllegalArgumentException If the memory handle does not have the
-	 * correct security bits specified.
+	 * correct security bits specified or if the count is negative.
 	 * @since 2020/12/21
 	 */
-	ClassInfoListHandle(int __id)
+	ClassInfoListHandle(int __id, int __count)
 		throws IllegalArgumentException
 	{
-		super(__id);
+		super(__id, __count);
 	}
 }

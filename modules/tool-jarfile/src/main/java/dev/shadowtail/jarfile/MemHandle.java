@@ -21,15 +21,19 @@ public abstract class MemHandle
 	/** The memory handle ID. */
 	public final int id;
 	
+	/** The number of bytes used. */
+	protected final int byteSize;
+	
 	/**
 	 * Initializes the base memory handle.
 	 * 
 	 * @param __id The memory handle ID.
+	 * @param __bytes The number of bytes the handle consumes.
 	 * @throws IllegalArgumentException If the memory handle does not have the
-	 * correct security bits specified.
+	 * correct security bits specified or if the byte size is negative.
 	 * @since 2020/12/16
 	 */
-	MemHandle(int __id)
+	MemHandle(int __id, int __bytes)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error BC01 Invalid memory handle security bit IDs.
@@ -39,6 +43,12 @@ public abstract class MemHandle
 			throw new IllegalArgumentException(
 				"BC01 0b" + Integer.toString(__id, 2));
 		
+		// {@squirreljme.error BC04 Cannot create memory handle with a negative
+		// size. (The number of bytes used)}
+		if (__bytes < 0)
+			throw new IllegalArgumentException("BC04 " + __bytes);
+		
 		this.id = __id;
+		this.byteSize = __bytes;
 	}
 }
