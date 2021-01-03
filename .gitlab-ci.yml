@@ -5,7 +5,7 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: GitLab CI/CD for libRetro (NOT FOR GitLab-proper)
+# DESCRIPTION: GitLab CI/CD for libRetro
 
 ##############################################################################
 ################################# BOILERPLATE ################################
@@ -29,6 +29,10 @@ include:
   # MacOS 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/osx-x64.yml'
+
+  # Windows 32-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-i686-mingw.yml'
 
   # Windows 64-bit
   - project: 'libretro-infrastructure/ci-templates'
@@ -93,6 +97,12 @@ libretro-build-linux-x64:
 libretro-build-osx-x64:
   extends:
     - .libretro-osx-x64-make-default
+    - .core-defs
+
+# Windows 32-bit
+libretro-build-windows-i686:
+  extends:
+    - .libretro-windows-i686-mingw-make-default
     - .core-defs
 
 # Windows 64-bit
