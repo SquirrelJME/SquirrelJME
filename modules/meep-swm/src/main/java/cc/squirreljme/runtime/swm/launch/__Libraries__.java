@@ -110,13 +110,13 @@ final class __Libraries__
 		{
 			// Determine if this library matches one of dependencies we are
 			// looking for
-			MatchResult result = __set.match(lib.info.provided());
+			MatchResult result = __set.match(lib.provided());
 			if (!result.hasMatches())
 				continue;
 			
 			// Recursively go down
 			Collections.addAll(rv, __Libraries__.matchDependencies(
-				lib.info.dependencies(), false, __from));
+				lib.dependencies(), false, __from));
 			
 			// Use this as a dependency
 			rv.add(lib);

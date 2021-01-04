@@ -13,6 +13,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class UUID
 {
+	private final String _uuid;
+	
 	@SuppressWarnings("unused")
 	public UUID(long __l)
 	{
@@ -20,9 +22,9 @@ public class UUID
 	}
 	
 	@SuppressWarnings("unused")
-	public UUID(String __s, boolean __b)
+	public UUID(String __uuid, boolean __short)
 	{
-		throw Debugging.todo();
+		this._uuid = __uuid;
 	}
 	
 	@Override
