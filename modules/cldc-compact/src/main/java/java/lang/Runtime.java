@@ -75,7 +75,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		Assembly.sysCall(SystemCallIndex.GARBAGE_COLLECT);
+		RuntimeShelf.garbageCollect();
 	}
 	
 	/**

@@ -278,6 +278,17 @@ public final class UIFormShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the form the item is on.
+	 * 
+	 * @param __item The item to get.
+	 * @return The form the item is on.
+	 * @throws MLECallError If {@code __item} is {@code null}.
+	 * @since 2021/01/03
+	 */
+	public static native UIFormBracket itemForm(UIItemBracket __item)
+		throws MLECallError;
+	
+	/**
 	 * Creates a new item.
 	 * 
 	 * @param __type The {@link UIItemType} to create.

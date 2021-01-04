@@ -300,7 +300,19 @@ public final class StaticDisplayState
 				if (widget instanceof UIFormBracket)
 					instance.formDelete((UIFormBracket)widget);
 				else if (widget instanceof UIItemBracket)
-					instance.itemDelete((UIItemBracket)widget);
+				{
+					UIItemBracket item = (UIItemBracket)widget;
+					
+					// The item could be part of a form still, so remove it
+					// from that form. If items happen to garnage collect
+					// before forms it will be removed
+					UIFormBracket form = instance.itemForm(item);
+					if (form != null)
+						instance.formItemRemove(form,
+							instance.formItemPosition(form, item));
+					
+					instance.itemDelete(item);
+				}
 			}
 		}
 	}

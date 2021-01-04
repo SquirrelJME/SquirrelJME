@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
 only-in: override-because-we-use-formshelf-on-javase
-secondary-calls: int:24
-secondary-errors: int:24
+secondary-calls: int:25
+secondary-errors: int:25

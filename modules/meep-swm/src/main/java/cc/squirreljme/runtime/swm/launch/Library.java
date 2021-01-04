@@ -11,6 +11,8 @@ package cc.squirreljme.runtime.swm.launch;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.swm.DependencyInfo;
+import cc.squirreljme.runtime.swm.ProvidedInfo;
 import cc.squirreljme.runtime.swm.SuiteInfo;
 
 /**
@@ -26,6 +28,12 @@ public final class Library
 	
 	/** The JAR which contains the library. */
 	protected final JarPackageBracket jar;
+	
+	/** Dependencies. */
+	private DependencyInfo _dependencies;
+	
+	/** Provided dependencies. */
+	private ProvidedInfo _provided;
 	
 	/**
 	 * Initializes the library.
@@ -43,5 +51,33 @@ public final class Library
 		
 		this.info = __info;
 		this.jar = __jar;
+	}
+	
+	/**
+	 * Returns the dependencies.
+	 * 
+	 * @return Dependencies.
+	 * @since 2021/01/03
+	 */
+	protected DependencyInfo dependencies()
+	{
+		DependencyInfo rv = this._dependencies;
+		if (rv == null)
+			this._dependencies = (rv = this.info.dependencies());
+		return rv;
+	}
+	
+	/**
+	 * Returns the provided dependencies.
+	 * 
+	 * @return Provided dependencies.
+	 * @since 2021/01/03
+	 */
+	protected ProvidedInfo provided()
+	{
+		ProvidedInfo rv = this._provided;
+		if (rv == null)
+			this._provided = (rv = this.info.provided());
+		return rv;
 	}
 }

@@ -21,6 +21,19 @@ public abstract class UIWidgetObject
 	extends AbstractGhostObject
 {
 	/**
+	 * Initializes the base widget with the type it represents.
+	 *
+	 * @param __rep The type this represents.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/03
+	 */
+	public UIWidgetObject(Class<? extends UIWidgetBracket> __rep)
+		throws NullPointerException
+	{
+		super(__rep);
+	}
+	
+	/**
 	 * Returns the used widget.
 	 * 
 	 * @return The widget.

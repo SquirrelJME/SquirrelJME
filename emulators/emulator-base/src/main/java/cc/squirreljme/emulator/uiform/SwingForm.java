@@ -23,7 +23,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JFrame;
@@ -151,6 +150,11 @@ public final class SwingForm
 			// Hide the current form
 			if (this._display != null)
 				this._display.show(null);
+			
+			// Remove all items from the form
+			List<SwingItem> items = this._items;
+			for (SwingItem item : items.toArray(new SwingItem[items.size()]))
+				this.itemRemove(item);
 		}
 	}
 	

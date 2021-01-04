@@ -163,6 +163,11 @@ public class TestDisplayMetrics
 				__backend.metric(__metric) > 0);
 				break;
 			
+			case UIMetricType.SUPPORTS_BACKLIGHT_CONTROL:
+				int bl = __backend.metric(__metric);
+				this.secondary("backlight", (bl == 0 || bl == 1));
+				break;
+			
 			default:
 				throw new FailingExecution("Missing " + __metric);
 		}

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 import cc.squirreljme.vm.springcoat.SpringMachine;
 
@@ -33,6 +34,8 @@ public final class TaskObject
 	public TaskObject(SpringMachine __machine)
 		throws NullPointerException
 	{
+		super(TaskBracket.class);
+		
 		if (__machine == null)
 			throw new NullPointerException("NARG");
 		
