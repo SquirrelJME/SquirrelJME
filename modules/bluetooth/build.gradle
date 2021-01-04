@@ -1,0 +1,24 @@
+import cc.squirreljme.plugin.swm.JavaMEConfiguration
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
+description = "Bluetooth and OBEX Support"
+
+squirreljme
+{
+	javaDocErrorCode = "AF"
+	swmType = JavaMEMidletType.API
+	swmName = "Bluetooth API"
+	swmVendor = "Stephanie Gawroriski"
+	definedConfigurations += new JavaMEConfiguration("CLDC-1.1")
+	definedStandards += new JavaMEStandard("bluetooth.api", "JCP", "1.0")
+	definedStandards += new JavaMEStandard("bluetooth.api", "JCP", "1.1")
+	definedStandards += new JavaMEStandard("bluetooth.api", "JCP", "1.1.1")
+	tags += "bluetooth"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}
