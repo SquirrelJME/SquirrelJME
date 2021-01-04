@@ -9,11 +9,20 @@
 
 package javax.bluetooth;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
+
 public class ServiceRegistrationException
+	extends IOException
 {
+	public ServiceRegistrationException()
+	{
+		throw Debugging.todo();
+	}
+	
+	@SuppressWarnings("unused")
+	public ServiceRegistrationException(String __s)
+	{
+		throw Debugging.todo();
+	}
 }

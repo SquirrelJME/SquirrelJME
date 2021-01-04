@@ -9,11 +9,13 @@
 
 package javax.bluetooth;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
-public class L2CAPConnectionNotifier
+import java.io.IOException;
+import javax.microedition.io.Connection;
+
+public interface L2CAPConnectionNotifier
+	extends Connection
 {
+	@SuppressWarnings("RedundantThrows")
+	L2CAPConnection acceptAndOpen()
+		throws IOException;
 }

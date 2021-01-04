@@ -9,11 +9,28 @@
 
 package javax.bluetooth;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class DeviceClass
 {
+	@SuppressWarnings("unused")
+	public DeviceClass(int __i)
+	{
+		throw Debugging.todo();
+	}
+	
+	public int getMajorDeviceClass()
+	{
+		throw Debugging.todo();
+	}
+	
+	public int getMinorDeviceClass()
+	{
+		throw Debugging.todo();
+	}
+	
+	public int getServiceClasses()
+	{
+		throw Debugging.todo();
+	}
 }

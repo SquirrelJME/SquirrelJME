@@ -9,11 +9,20 @@
 
 package javax.bluetooth;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
+
 public class BluetoothStateException
+	extends IOException
 {
+	public BluetoothStateException()
+	{
+		throw Debugging.todo();
+	}
+	
+	@SuppressWarnings("unused")
+	public BluetoothStateException(String __s)
+	{
+		throw Debugging.todo();
+	}
 }

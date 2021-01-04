@@ -9,11 +9,37 @@
 
 package javax.bluetooth;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class UUID
 {
+	@SuppressWarnings("unused")
+	public UUID(long __l)
+	{
+		throw Debugging.todo();
+	}
+	
+	@SuppressWarnings("unused")
+	public UUID(String __s, boolean __b)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public String toString()
+	{
+		throw Debugging.todo();
+	}
 }

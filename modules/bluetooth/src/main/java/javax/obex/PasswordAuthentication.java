@@ -9,11 +9,23 @@
 
 package javax.obex;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class PasswordAuthentication
 {
+	@SuppressWarnings("unused")
+	public PasswordAuthentication(byte[] __bytes, byte[] __bytes1)
+	{
+		throw Debugging.todo();
+	}
+	
+	public byte[] getPassword()
+	{
+		throw Debugging.todo();
+	}
+	
+	public byte[] getUserName()
+	{
+		throw Debugging.todo();
+	}
 }

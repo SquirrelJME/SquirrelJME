@@ -9,11 +9,47 @@
 
 package javax.obex;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
-public class HeaderSet
+import java.io.IOException;
+
+public interface HeaderSet
 {
+	int APPLICATION_PARAMETER = 76;
+	
+	int COUNT = 192;
+	
+	int DESCRIPTION = 5;
+	
+	int HTTP = 71;
+	
+	int LENGTH = 195;
+	
+	int NAME = 1;
+	
+	int OBJECT_CLASS = 79;
+	
+	int TARGET = 70;
+	
+	int TIME_4_BYTE = 196;
+	
+	int TIME_ISO_8601 = 68;
+	
+	int TYPE = 66;
+	
+	int WHO = 74;
+	
+	void createAuthenticationChallenge(String __a, boolean __b, boolean __c);
+	
+	@SuppressWarnings("RedundantThrows")
+	Object getHeader(int __a)
+		throws IOException;
+	
+	@SuppressWarnings("RedundantThrows")
+	int[] getHeaderList()
+		throws IOException;
+	
+	@SuppressWarnings("RedundantThrows")
+	int getResponseCode()
+		throws IOException;
+	
+	void setHeader(int __a, Object __b);
 }

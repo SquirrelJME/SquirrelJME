@@ -9,11 +9,10 @@
 
 package javax.obex;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
-public class Authenticator
+public interface Authenticator
 {
+	PasswordAuthentication onAuthenticationChallenge(String __a, boolean __b,
+		boolean __c);
+	
+	byte[] onAuthenticationResponse(byte[] __a);
 }

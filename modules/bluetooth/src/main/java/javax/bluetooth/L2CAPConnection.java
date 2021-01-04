@@ -9,11 +9,33 @@
 
 package javax.bluetooth;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
-public class L2CAPConnection
+import java.io.IOException;
+import javax.microedition.io.Connection;
+
+public interface L2CAPConnection
+	extends Connection
 {
+	int DEFAULT_MTU = 672;
+	
+	int MINIMUM_MTU = 48;
+	
+	@SuppressWarnings("RedundantThrows")
+	int getReceiveMTU()
+		throws IOException;
+	
+	@SuppressWarnings("RedundantThrows")
+	int getTransmitMTU()
+		throws IOException;
+	
+	@SuppressWarnings("RedundantThrows")
+	boolean ready()
+		throws IOException;
+	
+	@SuppressWarnings("RedundantThrows")
+	int receive(byte[] __a)
+		throws IOException;
+	
+	@SuppressWarnings("RedundantThrows")
+	void send(byte[] __a)
+		throws IOException;
 }

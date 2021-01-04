@@ -9,11 +9,17 @@
 
 package javax.obex;
 
-/**
- * Not Described.
- *
- * @since 2021/01/03
- */
-public class SessionNotifier
+import java.io.IOException;
+import javax.microedition.io.Connection;
+
+public interface SessionNotifier
+	extends Connection
 {
+	@SuppressWarnings("RedundantThrows")
+	Connection acceptAndOpen(ServerRequestHandler __a)
+		throws IOException;
+	
+	@SuppressWarnings("RedundantThrows")
+	Connection acceptAndOpen(ServerRequestHandler __a, Authenticator __b)
+		throws IOException;
 }
