@@ -35,6 +35,8 @@ public final class UIFormObject
 	public UIFormObject(UIFormBracket __form)
 		throws NullPointerException
 	{
+		super(UIFormBracket.class);
+		
 		if (__form == null)
 			throw new NullPointerException("NARG");
 		

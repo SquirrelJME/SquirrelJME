@@ -20,6 +20,7 @@ public final class SpringVMStaticMethod
 	extends AbstractGhostObject
 {
 	/** The method to execute. */
+	@Deprecated
 	protected final SpringMethod method;
 	
 	/**
@@ -29,9 +30,12 @@ public final class SpringVMStaticMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/20
 	 */
+	@Deprecated
 	public SpringVMStaticMethod(SpringMethod __m)
 		throws NullPointerException
 	{
+		super(SpringVMStaticMethod.class);
+		
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		

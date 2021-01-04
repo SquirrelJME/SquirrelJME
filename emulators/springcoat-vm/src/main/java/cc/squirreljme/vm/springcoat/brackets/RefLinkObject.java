@@ -32,6 +32,16 @@ public final class RefLinkObject
 	volatile RefLinkObject _prev;
 	
 	/**
+	 * Initializes the ref link.
+	 *
+	 * @since 2021/01/03
+	 */
+	public RefLinkObject()
+	{
+		super(RefLinkBracket.class);
+	}
+	
+	/**
 	 * Gets the next link.
 	 * 
 	 * @return The link.

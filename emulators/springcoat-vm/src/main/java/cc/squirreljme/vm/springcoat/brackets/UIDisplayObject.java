@@ -33,6 +33,8 @@ public final class UIDisplayObject
 	public UIDisplayObject(UIDisplayBracket __display)
 		throws NullPointerException
 	{
+		super(UIDisplayBracket.class);
+		
 		if (__display == null)
 			throw new NullPointerException("NARG");
 		

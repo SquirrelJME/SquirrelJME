@@ -114,12 +114,12 @@ final class __Libraries__
 			if (!result.hasMatches())
 				continue;
 			
-			// Use this as a dependency
-			rv.add(lib);
-			
 			// Recursively go down
 			Collections.addAll(rv, __Libraries__.matchDependencies(
 				lib.info.dependencies(), false, __from));
+			
+			// Use this as a dependency
+			rv.add(lib);
 			
 			// Use remaining unmatched set
 			__set = result.unmatched();
