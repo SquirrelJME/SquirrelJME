@@ -71,6 +71,22 @@ public enum MLERuntime
 		}
 	},
 	
+	/** {@link RuntimeShelf#garbageCollect()}. */
+	GARBAGE_COLLECT("garbageCollect:()V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/04
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Use the system GC since it is the only suggestion we can make
+			Runtime.getRuntime().gc();
+			return null;
+		}
+	},
+	
 	/** {@link RuntimeShelf#lineEnding()}. */
 	LINE_ENDING("lineEnding:()I")
 	{
