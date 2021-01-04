@@ -19,10 +19,31 @@ public class Collections
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Does the same as {@link Collection#addAll(Collection)} with
+	 * {@code __target.addAll(Arrays.asList(__v))}.
+	 * 
+	 * @param <T> The type to add.
+	 * @param __target The target collection.
+	 * @param __v The values to add.
+	 * @return If the collection was modified.
+	 * @throws IllegalArgumentException If a value of {@code __v} cannot be
+	 * added to the collection.
+	 * @throws NullPointerException On null arguments or the collection does
+	 * not allow null arguments.
+	 * @throws UnsupportedOperationException If adding elements is not
+	 * supported.
+	 * @since 2021/01/03
+	 */
 	@SuppressWarnings({"unchecked"})
-	public static <T> boolean addAll(Collection<? super T> __a, T... __b)
+	public static <T> boolean addAll(Collection<? super T> __target, T... __v)
+		throws IllegalArgumentException, NullPointerException,
+			UnsupportedOperationException
 	{
-		throw new todo.TODO();
+		if (__target == null)
+			throw new NullPointerException("NARG");
+		
+		return __target.addAll(Arrays.asList(__v));
 	}
 	
 	public static <T> int binarySearch(List<? extends Comparable<? super T>>
