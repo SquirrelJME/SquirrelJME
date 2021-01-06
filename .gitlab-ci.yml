@@ -141,7 +141,7 @@ android-x86:
     - .core-defs
 
 # iOS 9
-ios-9:
+libretro-build-ios-9:
   extends:
     - .libretro-ios9-make-default
     - .core-defs
@@ -154,7 +154,7 @@ libretro-build-dingux:
     - .core-defs
 
 # Nintendo 3DS
-libretro-build-3ds:
+libretro-build-ctr:
   extends:
     - .libretro-ctr-static-retroarch-master
     - .core-defs
