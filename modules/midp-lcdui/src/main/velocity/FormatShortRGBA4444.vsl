@@ -7,18 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-#set($foo=2)
+#set($pfId="SHORT_RGBA4444")
+#set($pfArrayType="short")
+#set($pfHasAlpha=true)
 
-import javax.microedition.lcdui.Graphics;
-
-/**
- * Generic Multi-Format Graphics.
- *
- * This code is automatically generated.
- *
- * @since 2021/01/07
- */
-public class GenericGraphics
-    extends BaseGenericGraphics
-{
-}
+// Include base velocity source
+#include("GenericGraphics.vsl")
