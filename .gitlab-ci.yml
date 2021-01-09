@@ -22,6 +22,10 @@
 # Inclusion templates, required for the build to work
 include:
   ################################## DESKTOPS ################################
+  # Linux 32-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/linux-i686.yml'
+
   # Linux 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/linux-x64.yml'
@@ -96,6 +100,12 @@ stages:
 ##############################################################################
 
 ################################### DESKTOPS #################################
+# Linux 32-bit
+libretro-build-linux-i686:
+  extends:
+    - .libretro-linux-i686-make-default
+    - .core-defs
+
 # Linux 64-bit
 libretro-build-linux-x64:
   extends:
