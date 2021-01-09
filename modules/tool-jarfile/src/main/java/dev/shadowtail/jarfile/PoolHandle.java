@@ -21,15 +21,16 @@ public final class PoolHandle
 	 * Initializes the base memory handle.
 	 *
 	 * @param __id The memory handle ID.
+	 * @param __memActions Memory actions used.
 	 * @parma __count The number of entries in the pool.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified or if the pool is too small.
 	 * @since 2020/12/19
 	 */
-	PoolHandle(int __id, int __count)
+	PoolHandle(int __id, MemActions __memActions, int __count)
 		throws IllegalArgumentException
 	{
-		super(__id, __count);
+		super(__id, __memActions, __count);
 		
 		// {@squirreljme.error BC05 Pool must have at least one entry.
 		// (The count)}

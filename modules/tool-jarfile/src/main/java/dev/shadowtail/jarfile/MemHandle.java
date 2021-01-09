@@ -24,18 +24,25 @@ public abstract class MemHandle
 	/** The number of bytes used. */
 	protected final int byteSize;
 	
+	/** The memory actions used. */
+	protected final MemActions memActions;
+	
 	/**
 	 * Initializes the base memory handle.
 	 * 
 	 * @param __id The memory handle ID.
+	 * @param __memActions The memory actions that are used.
 	 * @param __bytes The number of bytes the handle consumes.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified or if the byte size is negative.
 	 * @since 2020/12/16
 	 */
-	MemHandle(int __id, int __bytes)
-		throws IllegalArgumentException
+	MemHandle(int __id, MemActions __memActions, int __bytes)
+		throws IllegalArgumentException, NullPointerException
 	{
+		if (__memActions == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error BC01 Invalid memory handle security bit IDs.
 		// (The handle)}
 		if ((__id & BootstrapConstants.HANDLE_SECURITY_MASK) !=
@@ -49,6 +56,7 @@ public abstract class MemHandle
 			throw new IllegalArgumentException("BC04 " + __bytes);
 		
 		this.id = __id;
+		this.memActions = __memActions;
 		this.byteSize = __bytes;
 	}
 }

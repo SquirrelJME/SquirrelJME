@@ -26,15 +26,16 @@ public class ListValueHandle
 	 * Initializes the base list handle.
 	 *
 	 * @param __id The memory handle ID.
+	 * @param __memActions The memory actions used.
 	 * @param __count The size of the list.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified or if the count is negative.
 	 * @since 2020/12/21
 	 */
-	ListValueHandle(int __id, int __count)
+	ListValueHandle(int __id, MemActions __memActions, int __count)
 		throws IllegalArgumentException
 	{
-		super(__id, 4 * __count);
+		super(__id, __memActions, 4 * __count);
 		
 		// {@squirreljme.error BC03 Negative list size. (The count}}
 		if (__count < 0)

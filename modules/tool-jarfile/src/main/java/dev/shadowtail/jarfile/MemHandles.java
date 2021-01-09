@@ -72,7 +72,7 @@ public final class MemHandles
 	public ClassInfoHandle allocClassInfo()
 	{
 		return this.<ClassInfoHandle>__register(
-			new ClassInfoHandle(this.__nextId()));
+			new ClassInfoHandle(this.__nextId(), this.memActions));
 	}
 	
 	/**
@@ -116,7 +116,7 @@ public final class MemHandles
 		throws IllegalArgumentException
 	{
 		return this.<PoolHandle>__register(
-			new PoolHandle(this.__nextId(), __count));
+			new PoolHandle(this.__nextId(), this.memActions, __count));
 	}
 	
 	/**

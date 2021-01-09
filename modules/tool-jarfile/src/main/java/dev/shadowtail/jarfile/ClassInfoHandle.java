@@ -23,13 +23,14 @@ public class ClassInfoHandle
 	 * Initializes the base memory handle.
 	 *
 	 * @param __id The memory handle ID.
+	 * @param __memActions
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified.
 	 * @since 2020/12/20
 	 */
-	ClassInfoHandle(int __id)
+	ClassInfoHandle(int __id, MemActions __memActions)
 		throws IllegalArgumentException
 	{
-		super(__id, ClassProperty.NUM_RUNTIME_PROPERTIES);
+		super(__id, __memActions, ClassProperty.NUM_RUNTIME_PROPERTIES);
 	}
 }
