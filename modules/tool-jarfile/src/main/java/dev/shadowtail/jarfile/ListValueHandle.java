@@ -32,10 +32,10 @@ public class ListValueHandle
 	 * correct security bits specified or if the count is negative.
 	 * @since 2020/12/21
 	 */
-	ListValueHandle(int __id, MemActions __memActions, int __count)
+	ListValueHandle(int __kind, int __id, MemActions __memActions, int __count)
 		throws IllegalArgumentException
 	{
-		super(__id, __memActions, 4 * __count);
+		super(__kind, __id, __memActions, 4 * __count);
 		
 		// {@squirreljme.error BC03 Negative list size. (The count}}
 		if (__count < 0)
@@ -70,7 +70,10 @@ public class ListValueHandle
 	public void set(int __i, int __iVal)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		if (__i < 0 || __i >= this.count)
+			throw new IndexOutOfBoundsException("IOOB " + __i);
+		
+		this.memActions.writeInteger(this, __i * 4, __iVal);
 	}
 	
 	/**
@@ -88,6 +91,9 @@ public class ListValueHandle
 		if (__handle == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		if (__i < 0 || __i >= this.count)
+			throw new IndexOutOfBoundsException("IOOB " + __i);
+		
+		this.memActions.writeInteger(this, __i * 4, __handle);
 	}
 }

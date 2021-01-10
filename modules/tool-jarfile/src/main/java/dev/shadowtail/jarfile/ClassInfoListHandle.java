@@ -9,6 +9,8 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+
 /**
  * A list that is a number of class handles.
  *
@@ -30,6 +32,6 @@ public class ClassInfoListHandle
 	ClassInfoListHandle(int __id, MemActions __memActions, int __count)
 		throws IllegalArgumentException
 	{
-		super(__id, __memActions, __count);
+		super(MemHandleKind.CLASS_INFO_LIST, __id, __memActions, __count);
 	}
 }

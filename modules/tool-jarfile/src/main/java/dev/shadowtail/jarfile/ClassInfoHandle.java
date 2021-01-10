@@ -10,6 +10,7 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 
 /**
  * This is a handle that represents class information.
@@ -23,7 +24,7 @@ public class ClassInfoHandle
 	 * Initializes the base memory handle.
 	 *
 	 * @param __id The memory handle ID.
-	 * @param __memActions
+	 * @param __memActions The memory actions used.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified.
 	 * @since 2020/12/20
@@ -31,6 +32,7 @@ public class ClassInfoHandle
 	ClassInfoHandle(int __id, MemActions __memActions)
 		throws IllegalArgumentException
 	{
-		super(__id, __memActions, ClassProperty.NUM_RUNTIME_PROPERTIES);
+		super(MemHandleKind.CLASS_INFO, __id, __memActions,
+			ClassProperty.NUM_RUNTIME_PROPERTIES);
 	}
 }

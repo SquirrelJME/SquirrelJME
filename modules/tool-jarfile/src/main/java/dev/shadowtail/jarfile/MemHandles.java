@@ -55,12 +55,20 @@ public final class MemHandles
 	 * @param __kind The {@link MemHandleKind}.
 	 * @param __sz The number of bytes to allocate.
 	 * @return A raw memory handle.
-	 * @throws IllegalArgumentException If {@code __kind} is not valid.
+	 * @throws IllegalArgumentException If {@code __kind} is not valid or
+	 * the size is negative.
 	 * @since 2020/12/21
 	 */
 	public MemHandle alloc(int __kind, int __sz)
+		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error BC08 Invalid kind. (The kind}}
+		if (__kind <= MemHandleKind.UNDEFINED ||
+			__kind >= MemHandleKind.NUM_KINDS)
+			throw new IllegalArgumentException("BC08 " + __kind);
+		
+		return this.<MemHandle>__register(new ChunkMemHandle(__kind,
+			this.__nextId(), this.memActions, __sz));
 	}
 	
 	/**
@@ -101,7 +109,7 @@ public final class MemHandles
 	 */
 	public MemHandle allocFields(int __sz)
 	{
-		throw Debugging.todo();
+		return this.alloc(MemHandleKind.FIELD_DATA, __sz);
 	}
 	
 	/**

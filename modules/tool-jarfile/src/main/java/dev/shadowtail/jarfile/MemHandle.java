@@ -30,6 +30,8 @@ public abstract class MemHandle
 	/**
 	 * Initializes the base memory handle.
 	 * 
+	 *
+	 * @param __kind
 	 * @param __id The memory handle ID.
 	 * @param __memActions The memory actions that are used.
 	 * @param __bytes The number of bytes the handle consumes.
@@ -37,7 +39,7 @@ public abstract class MemHandle
 	 * correct security bits specified or if the byte size is negative.
 	 * @since 2020/12/16
 	 */
-	MemHandle(int __id, MemActions __memActions, int __bytes)
+	MemHandle(int __kind, int __id, MemActions __memActions, int __bytes)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__memActions == null)

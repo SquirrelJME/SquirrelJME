@@ -16,4 +16,27 @@ package cc.squirreljme.jvm.summercoat.constants;
  */
 public interface MemHandleKind
 {
+	/** Undefined. */
+	byte UNDEFINED =
+		0;
+	
+	/** Field storage. */
+	byte FIELD_DATA =
+		1;
+	
+	/** Class information. */
+	byte CLASS_INFO =
+		2;
+	
+	/** A list of classes. */
+	byte CLASS_INFO_LIST =
+		3;
+	
+	/** The constant pool. */
+	byte POOL =
+		4;
+	
+	/** The number of kinds used. */
+	byte NUM_KINDS =
+		5;
 }

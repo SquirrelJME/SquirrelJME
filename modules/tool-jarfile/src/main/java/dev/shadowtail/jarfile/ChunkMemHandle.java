@@ -12,31 +12,27 @@ package dev.shadowtail.jarfile;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 
 /**
- * This represents a handle for the constant pool of a class.
+ * A memory handle that represents a chunk.
  *
- * @since 2020/12/19
+ * @since 2021/01/10
  */
-public final class PoolHandle
-	extends ListValueHandle
+public class ChunkMemHandle
+	extends MemHandle
 {
 	/**
 	 * Initializes the base memory handle.
 	 *
+	 * @param __kind The {@link MemHandleKind}.
 	 * @param __id The memory handle ID.
-	 * @param __memActions Memory actions used.
-	 * @parma __count The number of entries in the pool.
+	 * @param __memActions The memory actions that are used.
+	 * @param __bytes The number of bytes the handle consumes.
 	 * @throws IllegalArgumentException If the memory handle does not have the
-	 * correct security bits specified or if the pool is too small.
-	 * @since 2020/12/19
+	 * correct security bits specified or if the byte size is negative.
+	 * @since 2021/01/10
 	 */
-	PoolHandle(int __id, MemActions __memActions, int __count)
-		throws IllegalArgumentException
+	ChunkMemHandle(int __kind, int __id, MemActions __memActions, int __bytes)
+		throws IllegalArgumentException, NullPointerException
 	{
-		super(MemHandleKind.POOL, __id, __memActions, __count);
-		
-		// {@squirreljme.error BC05 Pool must have at least one entry.
-		// (The count)}
-		if (__count <= 0)
-			throw new IllegalArgumentException("BC05 " + __count);
+		super(__kind, __id, __memActions, __bytes);
 	}
 }
