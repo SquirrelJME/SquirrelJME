@@ -50,53 +50,53 @@ public final class MemActions
 		if (rv != null)
 			return rv;
 		
-		actions.put(ref, (rv = new MemHandleActions()));
+		actions.put(ref, (rv = new MemHandleActions(__memHandle.byteSize)));
 		return rv;
 	}
 	
 	/**
-	 * Writes the given value into the given offset of a memory handle.
+	 * Reads from the given handle.
 	 * 
-	 * @param __memHandle The memory handle to store in.
-	 * @param __off The offset to place.
-	 * @param __iVal The value to store.
+	 * @param <V> The type to read.
+	 * @param __cl The type to read.
+	 * @param __memHandle The handle to read from.
+	 * @param __type The type of value read.
+	 * @param __off The offset of the value.
+	 * @return The read value.
+	 * @throws ClassCastException If the class is not the expected class.
 	 * @throws IndexOutOfBoundsException If the offset is out of bounds.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/10
 	 */
-	public void writeInteger(MemHandle __memHandle, int __off,
-		int __iVal)
-		throws IndexOutOfBoundsException, NullPointerException
+	protected <V> V read(Class<V> __cl, MemHandle __memHandle,
+		MemoryType __type, int __off)
+		throws ClassCastException, IndexOutOfBoundsException
 	{
-		if (__memHandle == null)
+		if (__memHandle == null || __type == null || __cl == null)
 			throw new NullPointerException("NARG");
+		if (__off < 0 || __off >= __memHandle.byteSize)
+			throw new IndexOutOfBoundsException("NARG");
 		
-		if (__off < 0 || (__off + 3) > __memHandle.byteSize)
-			throw new IndexOutOfBoundsException("IOOB " + __off);
-		
-		this.get(__memHandle).writeInteger(__off, __iVal);
+		return this.get(__memHandle).read(__cl, __type, __off);
 	}
 	
 	/**
 	 * Writes the given value into the given offset of a memory handle.
 	 * 
 	 * @param __memHandle The memory handle to store in.
+	 * @param __type The type of value rea.d
 	 * @param __off The offset to place.
-	 * @param __hVal The value to store.
+	 * @param __oVal The value to store.
 	 * @throws IndexOutOfBoundsException If the offset is out of bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/10
 	 */
-	public void writeInteger(MemHandle __memHandle, int __off,
-		MemHandle __hVal)
+	public void write(MemHandle __memHandle, MemoryType __type, int __off,
+		Object __oVal)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		if (__memHandle == null || __hVal == null)
+		if (__memHandle == null || __type == null || __oVal == null)
 			throw new NullPointerException("NARG");
 		
-		if (__off < 0 || (__off + 3) > __memHandle.byteSize)
-			throw new IndexOutOfBoundsException("IOOB " + __off);
-		
-		this.get(__memHandle).writeInteger(__off, __hVal);
+		this.get(__memHandle).write(__type, __off, __oVal);
 	}
 }

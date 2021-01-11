@@ -9,7 +9,8 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.NoSuchElementException;
+import net.multiphasicapps.io.ChunkFuture;
 
 /**
  * Represents a plain list value handle.
@@ -51,12 +52,25 @@ public class ListValueHandle
 	 * @return The value at the given index.
 	 * @throws IllegalStateException If this is not of the given type.
 	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws NoSuchElementException If no value was written.
 	 * @since 2020/12/21
 	 */
 	public int getInteger(int __i)
-		throws IllegalStateException, IndexOutOfBoundsException
+		throws IllegalStateException, IndexOutOfBoundsException,
+			NoSuchElementException
 	{
-		throw Debugging.todo();
+		if (__i < 0 || __i >= this.count)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// The value stored may be null
+		Integer rv = this.memActions.<Integer>read(Integer.class,
+			this, MemoryType.INTEGER, __i * 4);
+		
+		// {@squirreljme.error BC0e No value was stored in the list.}
+		if (rv == null)
+			throw new NoSuchElementException("BC0e");
+		
+		return rv;
 	}
 	
 	/**
@@ -73,7 +87,8 @@ public class ListValueHandle
 		if (__i < 0 || __i >= this.count)
 			throw new IndexOutOfBoundsException("IOOB " + __i);
 		
-		this.memActions.writeInteger(this, __i * 4, __iVal);
+		this.memActions.write(this,
+			MemoryType.INTEGER, __i * 4, __iVal);
 	}
 	
 	/**
@@ -94,6 +109,29 @@ public class ListValueHandle
 		if (__i < 0 || __i >= this.count)
 			throw new IndexOutOfBoundsException("IOOB " + __i);
 		
-		this.memActions.writeInteger(this, __i * 4, __handle);
+		this.memActions.write(this,
+			MemoryType.INTEGER, __i * 4, __handle);
+	}
+	
+	/**
+	 * Sets the entry at the given index.
+	 * 
+	 * @param __i The index to set.
+	 * @param __future The future to set it to.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/10
+	 */
+	public void set(int __i, ChunkFuture __future)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__future == null)
+			throw new NullPointerException("NARG");
+		
+		if (__i < 0 || __i >= this.count)
+			throw new IndexOutOfBoundsException("IOOB " + __i);
+		
+		this.memActions.write(this,
+			MemoryType.INTEGER, __i * 4, __future);
 	}
 }

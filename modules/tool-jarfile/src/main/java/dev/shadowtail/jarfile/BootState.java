@@ -172,7 +172,7 @@ public final class BootState
 		
 		// Read the class data as fast as possible and store into the map so
 		// we can recursive and recycle classes.
-		MinimizedClassFile classFile = this.readClass(this._bootClass);
+		MinimizedClassFile classFile = this.readClass(__cl);
 		rv = new ClassState(classFile.thisName(), classFile);
 		classStates.put(__cl, rv);
 		
@@ -183,6 +183,11 @@ public final class BootState
 		MemHandles memHandles = this._memHandles;
 		ClassInfoHandle classInfo = memHandles.allocClassInfo();
 		rv._classInfoHandle = classInfo;
+		
+		// Copy all of the static properties since they would not normally
+		// be copied
+		for (int i = 0; i < StaticClassProperty.NUM_STATIC_PROPERTIES; i++)
+			classInfo.set(i, header.get(i));
 		
 		// Everything is based on the run-time pool, so we need to load
 		// everything inside
@@ -203,9 +208,8 @@ public final class BootState
 			staticFieldData);
 		
 		// Store the pointer to where the Class ROM exists in memory.
-		if (true)
-			throw Debugging.todo();
-		// MEMPTR_ROM_CLASS
+		classInfo.set(ClassProperty.MEMPTR_ROM_CLASS,
+			this._rawChunks.get(classFile.thisName()).futureAddress());
 		
 		// Need to determine if we are Object or our super class is Object
 		// that way there can be shortcuts on resolution
@@ -217,7 +221,7 @@ public final class BootState
 		if (isThisObject)
 		{
 			classInfo.set(ClassProperty.OFFSETBASE_INSTANCE_FIELDS, 0);
-			classInfo.set(ClassProperty.SIZE_INSTANCE_FIELDS,
+			classInfo.set(ClassProperty.SIZE_ALLOCATION,
 				header.get(StaticClassProperty.SIZE_INSTANCE_FIELD_DATA));
 			
 			// There is no depth to this class
@@ -230,7 +234,7 @@ public final class BootState
 		if (superClass != null)
 			classInfo.set(ClassProperty.CLASSINFO_SUPER,
 				superClassState._classInfoHandle);
-				
+		
 		// Determine the allocation size of this class, we need to know this
 		// as soon as possible but we can only determine this once object
 		// is handled.
