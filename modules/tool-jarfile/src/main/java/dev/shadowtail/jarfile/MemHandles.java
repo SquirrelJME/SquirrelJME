@@ -11,7 +11,6 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public final class MemHandles
 	 * the size is negative.
 	 * @since 2020/12/21
 	 */
-	public MemHandle alloc(int __kind, int __sz)
+	public ChunkMemHandle alloc(int __kind, int __sz)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error BC08 Invalid kind. (The kind}}
@@ -67,20 +66,35 @@ public final class MemHandles
 			__kind >= MemHandleKind.NUM_KINDS)
 			throw new IllegalArgumentException("BC08 " + __kind);
 		
-		return this.<MemHandle>__register(new ChunkMemHandle(__kind,
+		return this.<ChunkMemHandle>__register(new ChunkMemHandle(__kind,
 			this.__nextId(), this.memActions, __sz));
 	}
 	
 	/**
 	 * This allocates a handle for class information.
 	 * 
+	 * @param __cl The class to refer to.
 	 * @return The allocated class information handle.
 	 * @since 2020/12/20
 	 */
-	public ClassInfoHandle allocClassInfo()
+	public ClassInfoHandle allocClassInfo(ClassState __cl)
 	{
 		return this.<ClassInfoHandle>__register(
-			new ClassInfoHandle(this.__nextId(), this.memActions));
+			new ClassInfoHandle(this.__nextId(), this.memActions, __cl));
+	}
+	
+	/**
+	 * Allocates storage for referring to multiple classes.
+	 * 
+	 * @param __count The number of classes to store for.
+	 * @return Allocated class information data.
+	 * @since 2021/01/10
+	 */
+	public ClassInfoListHandle allocClassInfos(int __count)
+	{
+		return this.<ClassInfoListHandle>__register(
+			new ClassInfoListHandle(this.__nextId(), this.memActions,
+			__count));
 	}
 	
 	/**
@@ -97,7 +111,15 @@ public final class MemHandles
 		if (__classes == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Setup array which is a copy of the values
+		int n = __classes.length;
+		ClassInfoListHandle rv = this.allocClassInfos(n);
+		
+		// Initialize all handles
+		for (int i = 0; i < n; i++)
+			rv.set(i, __classes[i]._classInfoHandle);
+		
+		return rv;
 	}
 	
 	/**
@@ -107,9 +129,21 @@ public final class MemHandles
 	 * @return The memory handle for field storage.
 	 * @since 2020/12/21
 	 */
-	public MemHandle allocFields(int __sz)
+	public ChunkMemHandle allocFields(int __sz)
 	{
-		return this.alloc(MemHandleKind.FIELD_DATA, __sz);
+		return this.alloc(MemHandleKind.STATIC_FIELD_DATA, __sz);
+	}
+	
+	/**
+	 * Allocates the object data.
+	 * 
+	 * @param __sz The number of bytes to allocate.
+	 * @return The allocated object.
+	 * @since 2021/01/10
+	 */
+	public ChunkMemHandle allocObject(int __sz)
+	{
+		return this.alloc(MemHandleKind.OBJECT_INSTANCE, __sz);
 	}
 	
 	/**

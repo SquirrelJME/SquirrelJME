@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.io.ChunkSection;
 
 /**
@@ -34,6 +35,10 @@ import net.multiphasicapps.io.ChunkSection;
  */
 public final class BootState
 {
+	/** The name of the string class. */
+	private static final ClassName STRING_CLASS =
+		new ClassName("java/lang/String");
+	
 	/** The class data used. */
 	private final Map<ClassName, ChunkSection> _rawChunks =
 		new HashMap<>();
@@ -147,6 +152,29 @@ public final class BootState
 	}
 	
 	/**
+	 * Loads a character array.
+	 * 
+	 * @param __v The values to store.
+	 * @return The loaded character array.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/10
+	 */
+	public final ChunkMemHandle loadArrayChar(char... __v)
+		throws IOException, NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Prepare array to store the character data
+		int n = __v.length;
+		ChunkMemHandle rv = this.prepareArray(PrimitiveType.CHARACTER
+			.toClassName().addDimensions(1), n);
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Loads the specified class.
 	 * 
 	 * @param __cl The class to load.
@@ -181,7 +209,7 @@ public final class BootState
 		
 		// Allocate storage for the class information
 		MemHandles memHandles = this._memHandles;
-		ClassInfoHandle classInfo = memHandles.allocClassInfo();
+		ClassInfoHandle classInfo = memHandles.allocClassInfo(rv);
 		rv._classInfoHandle = classInfo;
 		
 		// Copy all of the static properties since they would not normally
@@ -215,6 +243,10 @@ public final class BootState
 		// that way there can be shortcuts on resolution
 		ClassName superClass = classFile.superName();
 		boolean isThisObject = classFile.thisName().isObject();
+		
+		// This should never happen, hopefully!
+		if (!isThisObject && superClass == null)
+			throw Debugging.oops();
 		
 		// If this is the object class, then it is well known what the size
 		// of the various classes are
@@ -313,8 +345,8 @@ public final class BootState
 			throw Debugging.todo();
 		// FUNCPTR_DEFAULT_NEW
 		
-		throw Debugging.todo();
-		//Map<ClassName, __ClassState__> _classStates
+		// Loading the class is complete!
+		return rv;
 	}
 	
 	/**
@@ -381,6 +413,84 @@ public final class BootState
 		if (rv != null)
 			return rv;
 		
+		// Load the string class and prepare an object that we will be writing
+		// into as required
+		ChunkMemHandle object = this.prepareObject(BootState.STRING_CLASS);
+		
+		// The only part of string that needs to be set is the character data
+		this.objectFieldSet(object, "_chars", "[C",
+			this.loadArrayChar(__s.toCharArray()));
+		
+		return object;
+	}
+	
+	/**
+	 * Sets the given field for the object instance.
+	 * 
+	 * @param __object The object to set.
+	 * @param __name The name of the field.
+	 * @param __type The type of the field.
+	 * @param __v The value to store.
+	 * @throws IllegalArgumentException If the class does not have that field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/10
+	 */
+	private void objectFieldSet(ChunkMemHandle __object, String __name,
+		String __type, Object __v)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__object == null || __name == null || __type == null ||
+			__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Prepares an array instance.
+	 * 
+	 * @param __cl The class type to use for the array.
+	 * @param __len The length of the array.
+	 * @return The handle for the array data.
+	 * @throws IllegalArgumentException If the class is not an array or the
+	 * array length is negative.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/10
+	 */
+	public ChunkMemHandle prepareArray(ClassName __cl, int __len)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		if (__len < 0)
+			throw new IllegalArgumentException("NEGV " + __len);
+		
+		// {@squirreljme.error BC0f Class is not an array. (The class)}
+		if (!__cl.isArray())
+			throw new IllegalArgumentException("BC0f" + __cl);
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Prepares memory that contains an instance for the given class.
+	 * 
+	 * @param __cl The class to load.
+	 * @return The handle to the class data.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/10
+	 */
+	public ChunkMemHandle prepareObject(ClassName __cl)
+		throws IOException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		//allocObject(int __sz)
+		//this._memHandles.allocFields(
+		
 		throw Debugging.todo();
 	}
 	
@@ -393,7 +503,7 @@ public final class BootState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/16
 	 */
-	private MinimizedClassFile readClass(ClassName __class)
+	public MinimizedClassFile readClass(ClassName __class)
 		throws IOException, NullPointerException
 	{
 		if (__class == null)

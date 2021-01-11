@@ -20,8 +20,8 @@ public interface MemHandleKind
 	byte UNDEFINED =
 		0;
 	
-	/** Field storage. */
-	byte FIELD_DATA =
+	/** Static field storage. */
+	byte STATIC_FIELD_DATA =
 		1;
 	
 	/** Class information. */
@@ -36,7 +36,19 @@ public interface MemHandleKind
 	byte POOL =
 		4;
 	
+	/** Instance of an object. */
+	byte OBJECT_INSTANCE =
+		5;
+	
+	/** Virtual method VTable. */
+	byte VIRTUAL_VTABLE =
+		6;
+	
+	/** Interface method VTable. */
+	byte INTERFACE_VTABLE =
+		7;
+	
 	/** The number of kinds used. */
 	byte NUM_KINDS =
-		5;
+		8;
 }
