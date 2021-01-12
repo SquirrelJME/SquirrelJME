@@ -488,10 +488,17 @@ public final class BootState
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		//allocObject(int __sz)
-		//this._memHandles.allocFields(
+		// We need to know about the class to work with it
+		ClassState state = this.loadClass(__cl);
 		
-		throw Debugging.todo();
+		// Allocate memory needed to store the object handle
+		ChunkMemHandle rv = this._memHandles.allocObject(
+			state._classInfoHandle.getInteger(ClassProperty.SIZE_ALLOCATION));
+		
+		if (true)
+			throw Debugging.todo();
+		
+		return rv;
 	}
 	
 	/**

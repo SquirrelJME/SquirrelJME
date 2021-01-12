@@ -54,6 +54,15 @@ import net.multiphasicapps.io.ChunkWriter;
  */
 public final class Minimizer
 {
+	/** The type for class information. */
+	private static final FieldDescriptor CLASS_INFO_FIELD_DESC =
+		new FieldDescriptor(
+		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;");
+	
+	/** The descriptor for the thread type. */
+	private static final FieldDescriptor THREAD_FIELD_DESC =
+		new FieldDescriptor("Ljava/lang/Thread;");
+	
 	/** Counter for UUIDs. */
 	private static volatile int _UUID_COUNTER =
 		17;
@@ -300,36 +309,31 @@ public final class Minimizer
 		List<Field> sorted = new ArrayList<>(this.input.fields());
 		Collections.sort(sorted, new __MinimizerFieldSort__());
 		
-		// If this is an object, add the special class type (internal class
-		// pointer) and the reference count. These are always in a fixed
-		// order.
+		// If this is an object, add the special fields in a specifically
+		// defined fixed order. This is used within SummerCoat to specially
+		// handle these kinds of objects.
 		if (isobject)
 		{
 			// (ClassInfo) Synthetic + Transient + Final
 			sorted.add(0, new Field(new FieldFlags(0x1090),
-				new FieldName("_class"),
-				FieldDescriptor.INTEGER, null, null));
-			
-			// (Reference count) Synthetic + Transient + Volatile
-			sorted.add(1, new Field(new FieldFlags(0x10c0),
-				new FieldName("_refcount"),
-				FieldDescriptor.INTEGER, null, null));
+				new FieldName("_classInfo"),
+				Minimizer.CLASS_INFO_FIELD_DESC, null, null));
 			
 			// (monitor owning thread) Synthetic + Transient + Volatile
 			sorted.add(2, new Field(new FieldFlags(0x10c0),
 				new FieldName("_monitor"),
-				FieldDescriptor.INTEGER, null, null));
+				Minimizer.THREAD_FIELD_DESC, null, null));
 			
 			// (monitor enter count) Synthetic + Transient + Volatile
 			sorted.add(3, new Field(new FieldFlags(0x10c0),
-				new FieldName("_moncount"),
+				new FieldName("_monitorCount"),
 				FieldDescriptor.INTEGER, null, null));
 		}
 		
 		// If an array, add the length of the array
 		else if (isarray)
 		{
-			// Synthetic + Transient + Final
+			// (array length) Synthetic + Transient + Final
 			sorted.add(0, new Field(new FieldFlags(0x1090),
 				new FieldName("_length"),
 				FieldDescriptor.INTEGER, null, null));
