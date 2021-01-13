@@ -10,6 +10,7 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * A memory handle that represents a chunk.
@@ -34,5 +35,42 @@ public class ChunkMemHandle
 		throws IllegalArgumentException, NullPointerException
 	{
 		super(__kind, __id, __memActions, __bytes);
+	}
+	
+	/**
+	 * Reads the given value from the memory chunk.
+	 * 
+	 * @param <V> The class type to read.
+	 * @param __cl The class type to read.
+	 * @param __off The offset into the handle.
+	 * @param __type The type of value to read.
+	 * @return The read value.
+	 * @since 2021/01/12
+	 */
+	protected <V> V read(Class<V> __cl, int __off, MemoryType __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		return this.memActions.<V>read(__cl, this, __type, __off);
+	}
+	
+	/**
+	 * Writes the given value of the given type at the given offset.
+	 * 
+	 * @param __off The offset of the type.
+	 * @param __type The type of value to store.
+	 * @param __v The value to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/12
+	 */
+	protected void write(int __off, MemoryType __type, Object __v)
+		throws NullPointerException
+	{
+		if (__type == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		this.memActions.write(this, __type, __off, __v);
 	}
 }

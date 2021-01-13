@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
+import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
@@ -23,8 +24,10 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.io.ChunkSection;
 
@@ -35,8 +38,21 @@ import net.multiphasicapps.io.ChunkSection;
  */
 public final class BootState
 {
+	/** The length of an array. */
+	private static final FieldNameAndType _ARRAY_LENGTH =
+		new FieldNameAndType("_length", "I");
+	
+	/** The object class. */
+	private static final ClassName _OBJECT_CLASS =
+		new ClassName("java/lang/Object");
+	
+	/** Object class info. */
+	private static final FieldNameAndType _OBJECT_CLASS_INFO =
+		new FieldNameAndType("_classInfo",
+		Minimizer.CLASS_INFO_FIELD_DESC);
+	
 	/** The name of the string class. */
-	private static final ClassName STRING_CLASS =
+	private static final ClassName _STRING_CLASS =
 		new ClassName("java/lang/String");
 	
 	/** The class data used. */
@@ -166,12 +182,23 @@ public final class BootState
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
+		// The class used
+		ClassName type = PrimitiveType.CHARACTER
+			.toClassName().addDimensions(1);
+		
 		// Prepare array to store the character data
 		int n = __v.length;
-		ChunkMemHandle rv = this.prepareArray(PrimitiveType.CHARACTER
-			.toClassName().addDimensions(1), n);
+		ChunkMemHandle rv = this.prepareArray(type, n);
 		
-		throw Debugging.todo();
+		// Determine the base offset to write to
+		int baseOff = this.loadClass(type)._classInfoHandle
+			.getInteger(ClassProperty.SIZE_ALLOCATION);
+		
+		// Write all the elements to it
+		for (int i = 0, off = baseOff; i < n; i++, off += 2)
+			rv.write(off, MemoryType.SHORT, (int)__v[i]);
+		
+		return rv;
 	}
 	
 	/**
@@ -235,9 +262,11 @@ public final class BootState
 		classInfo.set(ClassProperty.MEMHANDLEBASE_STATIC_FIELDS,
 			staticFieldData);
 		
-		// Store the pointer to where the Class ROM exists in memory.
-		classInfo.set(ClassProperty.MEMPTR_ROM_CLASS,
-			this._rawChunks.get(classFile.thisName()).futureAddress());
+		// Store the pointer to where the Class ROM exists in memory, but this
+		// is only valid for non-special classes
+		if (!__cl.isArray() && !__cl.isPrimitive())
+			classInfo.set(ClassProperty.MEMPTR_ROM_CLASS,
+				this._rawChunks.get(classFile.thisName()).futureAddress());
 		
 		// Need to determine if we are Object or our super class is Object
 		// that way there can be shortcuts on resolution
@@ -266,6 +295,9 @@ public final class BootState
 		if (superClass != null)
 			classInfo.set(ClassProperty.CLASSINFO_SUPER,
 				superClassState._classInfoHandle);
+		
+		// Store for later
+		rv._superClass = superClassState;
 		
 		// Determine the allocation size of this class, we need to know this
 		// as soon as possible but we can only determine this once object
@@ -415,35 +447,110 @@ public final class BootState
 		
 		// Load the string class and prepare an object that we will be writing
 		// into as required
-		ChunkMemHandle object = this.prepareObject(BootState.STRING_CLASS);
+		ChunkMemHandle object = this.prepareObject(BootState._STRING_CLASS);
 		
 		// The only part of string that needs to be set is the character data
-		this.objectFieldSet(object, "_chars", "[C",
+		this.objectFieldSet(object,
+			new FieldNameAndType("_chars", "[C"),
 			this.loadArrayChar(__s.toCharArray()));
 		
 		return object;
 	}
 	
 	/**
+	 * Gets the value for the given instance field.
+	 * 
+	 * @param <V> The type of value requested.
+	 * @param __cl The type of vlaue requested.
+	 * @param __object The object to get.
+	 * @param __nat The name and type of the field.
+	 * @throws IllegalArgumentException If the class does not have that field.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/12
+	 */
+	public  <V> V objectFieldGet(Class<V> __cl, ChunkMemHandle __object,
+		FieldNameAndType __nat)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__object == null || __nat == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine the starting point for the object scan
+		ClassState start;
+		if (__nat.equals(BootState._OBJECT_CLASS_INFO))
+			start = this.loadClass(BootState._OBJECT_CLASS);
+		else
+			start = this.<ClassInfoHandle>objectFieldGet(ClassInfoHandle.class,
+				__object, BootState._OBJECT_CLASS_INFO).classState();
+		
+		// Determine where in the object we will be reading the value
+		for (ClassState at = start; at != null; at = at._superClass)
+			for (MinimizedField f : at.classFile.fields(false))
+				if (__nat.equals(f.nameAndType()))
+				{
+					// Where is this field located?
+					int offset = f.offset + at._classInfoHandle.getInteger(
+						ClassProperty.OFFSETBASE_INSTANCE_FIELDS);
+					
+					// Set value here
+					return __object.<V>read(__cl, offset,
+						MemoryType.of(__nat.type().dataType()));
+				}
+		
+		// {@squirreljme.error BC0k Class does not contain the given field.
+		// (The class; The field)}
+		throw new IllegalArgumentException(String.format("BC0k %s %s",
+			start.thisName, __nat));
+	}
+	
+	/**
 	 * Sets the given field for the object instance.
 	 * 
 	 * @param __object The object to set.
-	 * @param __name The name of the field.
-	 * @param __type The type of the field.
+	 * @param __nat The name and type of the field.
 	 * @param __v The value to store.
 	 * @throws IllegalArgumentException If the class does not have that field.
+	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/10
 	 */
-	private void objectFieldSet(ChunkMemHandle __object, String __name,
-		String __type, Object __v)
-		throws IllegalArgumentException, NullPointerException
+	public void objectFieldSet(ChunkMemHandle __object, FieldNameAndType __nat,
+		Object __v)
+		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		if (__object == null || __name == null || __type == null ||
-			__v == null)
+		if (__object == null || __nat == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Determine the starting point for the object scan
+		ClassState start;
+		if (__nat.equals(BootState._OBJECT_CLASS_INFO))
+			start = this.loadClass(BootState._OBJECT_CLASS);
+		else
+			start = this.<ClassInfoHandle>objectFieldGet(ClassInfoHandle.class,
+				__object, BootState._OBJECT_CLASS_INFO).classState();
+		
+		// Determine where in the object we will be writing the value
+		for (ClassState at = start; at != null; at = at._superClass)
+			for (MinimizedField f : at.classFile.fields(false))
+				if (__nat.equals(f.nameAndType()))
+				{
+					// Where is this field located?
+					int offset = f.offset + at._classInfoHandle.getInteger(
+						ClassProperty.OFFSETBASE_INSTANCE_FIELDS);
+					
+					// Set value here
+					__object.write(offset,
+						MemoryType.of(__nat.type().dataType()), __v);
+					
+					// Stop processing, since we set some value
+					return;
+				}
+		
+		// {@squirreljme.error BC0j Class does not contain the given field.
+		// (The class; The field)}
+		throw new IllegalArgumentException(String.format("BC0j %s %s",
+			start.thisName, __nat));
 	}
 	
 	/**
@@ -470,7 +577,23 @@ public final class BootState
 		if (!__cl.isArray())
 			throw new IllegalArgumentException("BC0f" + __cl);
 		
-		throw Debugging.todo();
+		// We need to know about the class to work with it
+		ClassState state = this.loadClass(__cl);
+		
+		// Allocate memory needed to store the array handle, this includes
+		// room for all of the elements accordingly
+		ChunkMemHandle rv = this._memHandles.allocObject(
+			state._classInfoHandle
+				.getInteger(ClassProperty.SIZE_ALLOCATION) +
+				(__len * __cl.componentType().field().dataType().size()));
+		
+		// Set array field information
+		this.objectFieldSet(rv, BootState._OBJECT_CLASS_INFO,
+			state._classInfoHandle);
+		this.objectFieldSet(rv, BootState._ARRAY_LENGTH,
+			__len);
+		
+		return rv;
 	}
 	
 	/**
@@ -479,14 +602,21 @@ public final class BootState
 	 * @param __cl The class to load.
 	 * @return The handle to the class data.
 	 * @throws IOException On read errors.
+	 * @throws IllegalArgumentException If an object is attempted to be
+	 * allocated.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/10
 	 */
 	public ChunkMemHandle prepareObject(ClassName __cl)
-		throws IOException, NullPointerException
+		throws IllegalArgumentException, IOException, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BC0i Cannot use this method to initialize a
+		// primitive or array type. (The class name)}
+		if (__cl.isPrimitive() || __cl.isArray())
+			throw new IllegalArgumentException("BC0i " + __cl);
 		
 		// We need to know about the class to work with it
 		ClassState state = this.loadClass(__cl);
@@ -495,8 +625,9 @@ public final class BootState
 		ChunkMemHandle rv = this._memHandles.allocObject(
 			state._classInfoHandle.getInteger(ClassProperty.SIZE_ALLOCATION));
 		
-		if (true)
-			throw Debugging.todo();
+		// Set object field information
+		this.objectFieldSet(rv, BootState._OBJECT_CLASS_INFO,
+			state._classInfoHandle);
 		
 		return rv;
 	}
@@ -522,14 +653,20 @@ public final class BootState
 		if (rv != null)
 			return rv;
 		
+		// Arrays are special and are dynamically created accordingly
+		if (__class.isArray() || __class.isPrimitive())
+			rv = MinimizedClassFile.decode(Minimizer.minimize(
+				ClassFile.special(__class.field())));
+		
 		// Load in class data
-		try (InputStream in = this._rawChunks.get(__class).currentStream())
-		{
-			rv = MinimizedClassFile.decode(in, this._pool);
-			
-			// Debug
-			Debugging.debugNote("Read %s...", rv.thisName());
-		}
+		else
+			try (InputStream in = this._rawChunks.get(__class).currentStream())
+			{
+				rv = MinimizedClassFile.decode(in, this._pool);
+				
+				// Debug
+				Debugging.debugNote("Read %s...", rv.thisName());
+			}
 		
 		// Cache it and use it
 		readClasses.put(__class, rv);

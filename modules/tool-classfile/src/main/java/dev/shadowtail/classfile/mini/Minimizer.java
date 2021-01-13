@@ -55,12 +55,12 @@ import net.multiphasicapps.io.ChunkWriter;
 public final class Minimizer
 {
 	/** The type for class information. */
-	private static final FieldDescriptor CLASS_INFO_FIELD_DESC =
+	public static final FieldDescriptor CLASS_INFO_FIELD_DESC =
 		new FieldDescriptor(
 		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;");
 	
 	/** The descriptor for the thread type. */
-	private static final FieldDescriptor THREAD_FIELD_DESC =
+	public static final FieldDescriptor THREAD_FIELD_DESC =
 		new FieldDescriptor("Ljava/lang/Thread;");
 	
 	/** Counter for UUIDs. */
@@ -320,12 +320,12 @@ public final class Minimizer
 				Minimizer.CLASS_INFO_FIELD_DESC, null, null));
 			
 			// (monitor owning thread) Synthetic + Transient + Volatile
-			sorted.add(2, new Field(new FieldFlags(0x10c0),
+			sorted.add(1, new Field(new FieldFlags(0x10c0),
 				new FieldName("_monitor"),
 				Minimizer.THREAD_FIELD_DESC, null, null));
 			
 			// (monitor enter count) Synthetic + Transient + Volatile
-			sorted.add(3, new Field(new FieldFlags(0x10c0),
+			sorted.add(2, new Field(new FieldFlags(0x10c0),
 				new FieldName("_monitorCount"),
 				FieldDescriptor.INTEGER, null, null));
 		}

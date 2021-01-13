@@ -9,6 +9,9 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import dev.shadowtail.classfile.xlate.DataType;
+
 /**
  * The memory type used.
  *
@@ -24,6 +27,9 @@ public enum MemoryType
 	
 	/** Integer. */
 	INTEGER(4),
+	
+	/** Long. */
+	LONG(8),
 	
 	/* End. */
 	;
@@ -44,5 +50,33 @@ public enum MemoryType
 	{
 		this.byteCount = __size;
 		this.lastOffset = __size - 1;
+	}
+	
+	/**
+	 * Returns the memory type that is used to represent a value.
+	 * 
+	 * @param __dataType The data type.
+	 * @return The memory type of the data type.
+	 * @since 2021/01/12
+	 */
+	protected static MemoryType of(DataType __dataType)
+	{
+		switch (__dataType)
+		{
+			case BYTE:		return MemoryType.BYTE;
+			
+			case CHARACTER:
+			case SHORT:		return MemoryType.SHORT;
+			
+			case OBJECT:
+			case INTEGER:
+			case FLOAT:		return MemoryType.INTEGER;
+			
+			case LONG:
+			case DOUBLE:	return MemoryType.LONG;
+			
+			default:
+				throw Debugging.oops();
+		}
 	}
 }

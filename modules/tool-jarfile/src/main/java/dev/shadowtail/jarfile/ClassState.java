@@ -31,6 +31,9 @@ public final class ClassState
 	/** The memory handle that is used for the pool. */
 	PoolHandle _poolMemHandle;
 	
+	/** The super class. */
+	ClassState _superClass;
+	
 	/**
 	 * Initializes the base empty class state.
 	 * 
