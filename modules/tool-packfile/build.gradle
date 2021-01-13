@@ -16,11 +16,11 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc-compact")
-	implementation project(":modules:cldc")
+	api project(":modules:cldc-compact")
+	api project(":modules:cldc")
 
-	implementation project(":modules:common-vm")
-	implementation project(":modules:tool-classfile")
-	implementation project(":modules:tool-jarfile")
-	implementation project(":modules:io")
+	api project(":modules:common-vm")
+	api project(":modules:tool-classfile")
+	api project(":modules:tool-jarfile")
+	api project(":modules:io")
 }

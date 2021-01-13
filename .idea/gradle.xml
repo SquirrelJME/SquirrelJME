@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/aot" />
             <option value="$PROJECT_DIR$/modules/aot-summercoat" />
+            <option value="$PROJECT_DIR$/modules/bluetooth" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
             <option value="$PROJECT_DIR$/modules/collections" />

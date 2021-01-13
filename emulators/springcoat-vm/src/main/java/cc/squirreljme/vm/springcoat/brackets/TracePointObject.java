@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
@@ -33,6 +34,8 @@ public final class TracePointObject
 	public TracePointObject(CallTraceElement __trace)
 		throws NullPointerException
 	{
+		super(TracePointBracket.class);
+		
 		if (__trace == null)
 			throw new NullPointerException("NARG");
 		

@@ -35,6 +35,8 @@ public final class UIItemObject
 	public UIItemObject(UIItemBracket __item)
 		throws NullPointerException
 	{
+		super(UIItemBracket.class);
+		
 		if (__item == null)
 			throw new NullPointerException("NARG");
 		

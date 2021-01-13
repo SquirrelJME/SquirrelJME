@@ -181,7 +181,7 @@ public class AdditionalManifestPropertiesTask
 				attributes.putValue(
 					"X-SquirrelJME-DefinedStandards",
 					AdditionalManifestPropertiesTask
-						.__delimate(config.definedStandards, ' '));
+						.__delimate(config.definedStandards, ','));
 		}
 		
 		// Find all module dependencies

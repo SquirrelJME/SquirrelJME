@@ -76,8 +76,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		throw Debugging.todo();
-		/*Assembly.sysCall(SystemCallIndex.GARBAGE_COLLECT);*/
+		RuntimeShelf.garbageCollect();
 	}
 	
 	/**

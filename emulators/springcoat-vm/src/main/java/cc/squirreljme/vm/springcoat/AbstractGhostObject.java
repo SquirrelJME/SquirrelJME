@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 
@@ -21,6 +22,25 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 public abstract class AbstractGhostObject
 	implements SpringObject
 {
+	/** Which type does this represent? */
+	protected final Class<?> represents;
+	
+	/**
+	 * Initializes the base object with the type it represents.
+	 * 
+	 * @param __rep The type this represents.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/03
+	 */
+	public AbstractGhostObject(Class<?> __rep)
+		throws NullPointerException
+	{
+		if (__rep == null)
+			throw new NullPointerException("NARG");
+		
+		this.represents = __rep;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/05/30

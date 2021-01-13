@@ -27,7 +27,7 @@ static VersionNumber normalizeMavenVersion(Object __inVersion) {
 // Every sub-project needs SquirrelJME specific pieces
 subprojects {
 	//apply plugin: "de.set.ecj"
-	apply plugin: "java"
+	apply plugin: "java-library"
 	apply plugin: "cc.squirreljme.plugin"
 	apply plugin: "idea"
 	apply plugin: "maven-publish"
@@ -256,7 +256,7 @@ subprojects {
 // Properties for every sub-project, except for cldc-compact as it is special
 configure(subprojects
 	- project(":modules:cldc-compact")) {
-	apply plugin: "java"
+	apply plugin: "java-library"
 
 	// All projects use the base classpath
     java {
@@ -273,7 +273,7 @@ configure(subprojects
 
 	dependencies {
 		// All projects depend on the Compact CLDC Library
-		implementation project(":modules:cldc-compact")
+		api project(":modules:cldc-compact")
 		
 		testImplementation project(":modules:cldc-compact")
 	}

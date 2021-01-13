@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
@@ -236,6 +237,17 @@ public class NativeUIBackend
 		throws MLECallError
 	{
 		UIFormShelf.itemDelete(__item);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/03
+	 */
+	@Override
+	public UIFormBracket itemForm(UIItemBracket __item)
+		throws MLECallError
+	{
+		return UIFormShelf.itemForm(__item);
 	}
 	
 	/**

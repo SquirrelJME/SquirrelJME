@@ -20,10 +20,10 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc-compact")
+	api project(":modules:cldc-compact")
 
-	implementation project(":modules:collections")
-	implementation project(":modules:meep-midlet")
-	implementation project(":modules:strings")
-	implementation project(":modules:tool-manifest-reader")
+	api project(":modules:collections")
+	api project(":modules:meep-midlet")
+	api project(":modules:strings")
+	api project(":modules:tool-manifest-reader")
 }

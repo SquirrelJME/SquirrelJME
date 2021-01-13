@@ -18,15 +18,15 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc")
+	api project(":modules:cldc")
 	
-	implementation project(":modules:aot")
-	implementation project(":modules:common-vm")
+	api project(":modules:aot")
+	api project(":modules:common-vm")
 	
 	// Library Building
-	implementation project(":modules:tool-classfile")
-	implementation project(":modules:tool-jarfile")
+	api project(":modules:tool-classfile")
+	api project(":modules:tool-jarfile")
 	
 	// ROM Linking
-	implementation project(":modules:tool-packfile")
+	api project(":modules:tool-packfile")
 }

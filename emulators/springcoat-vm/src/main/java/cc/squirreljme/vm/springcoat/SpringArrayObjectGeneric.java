@@ -151,10 +151,21 @@ public final class SpringArrayObjectGeneric
 			// so the rather involved instanceof check will take awhile and
 			// compound for setting single elements.
 			SpringClass lastValid = this._lastValid;
-			SpringClass wouldSet = (__v == null ? null : __v.type());
+			SpringClass wouldSet = (__v == null ||
+				(__v instanceof AbstractGhostObject) ? null : __v.type());
+			
+			// Ghost objects may only be placed in their own array
+			if (__v instanceof AbstractGhostObject)
+			{
+				SpringClass component = this.component;
+				if (!component.name.toRuntimeString()
+					.equals(((AbstractGhostObject)__v).represents.getName()))
+					throw new SpringArrayStoreException(String.format(
+						"Array assign of wrong ghost: %s %s", __v, component));
+			}
 			
 			// Performing the check for cache?
-			if (wouldSet != lastValid)
+			else if (wouldSet != lastValid)
 			{
 				// {@squirreljme.error BK0i The specified type is not
 				// compatible with the values this array stores. (The input

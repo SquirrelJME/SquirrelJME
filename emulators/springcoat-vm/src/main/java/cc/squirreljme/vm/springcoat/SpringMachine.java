@@ -62,6 +62,10 @@ public final class SpringMachine
 	private static final MethodDescriptor _THREAD_NEW =
 		new MethodDescriptor("(Ljava/lang/String;)V");
 	
+	/** The next virtual machine ID. */
+	private static volatile int _nextVmNumber =
+		1; 
+	
 	/** The class loader. */
 	protected final SpringClassLoader classloader;
 	
@@ -85,6 +89,9 @@ public final class SpringMachine
 	
 	/** The terminal pipe manager. */
 	protected final TerminalPipeManager terminalPipes;
+	
+	/** The virtual machine identifier. */
+	protected final String vmId;
 	
 	/** State for the callback threader. */
 	private final CallbackThreader _cbThreader =
@@ -171,6 +178,15 @@ public final class SpringMachine
 		
 		// Setup resource accessor
 		this.resourceaccessor = new VMResourceAccess(__sm);
+		
+		// Determine an ID for the VM, used for profiler information
+		synchronized (SpringMachine.class)
+		{
+			this.vmId = String.format("%s#%d@%08x",
+				__cl.bootLibrary().name(),
+				SpringMachine._nextVmNumber++,
+				System.identityHashCode(this));
+		}
 	}
 	
 	/**
@@ -209,9 +225,8 @@ public final class SpringMachine
 			SpringThread rv = new SpringThread(
 				(v = ++this._nextthreadid), __main,
 				usedName,
-				this.profiler.measureThread(String.format("%s-vm%08x-%d-%s",
-				this.classloader.bootLibrary().name(),
-				System.identityHashCode(this), v, usedName)));
+				this.profiler.measureThread(String.format("VM_%s-%d-%s",
+				this.vmId, v, usedName)));
 			
 			// Signal that a major state has changed
 			this.notifyAll();

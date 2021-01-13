@@ -59,6 +59,14 @@ public final class RuntimeShelf
 	public static native void exit(int __code);
 	
 	/**
+	 * Suggests that garbage collection be done, this may happen now, in
+	 * the future, or never as it is not defined.
+	 * 
+	 * @since 2021/01/04
+	 */
+	public static native void garbageCollect();
+	
+	/**
 	 * Returns the line ending type of the system.
 	 *
 	 * @return The line ending type of the system, see {@link LineEndingType}.

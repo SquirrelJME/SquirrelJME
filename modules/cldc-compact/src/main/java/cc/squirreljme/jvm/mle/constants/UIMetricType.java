@@ -67,7 +67,11 @@ public interface UIMetricType
 	byte COMMAND_BAR_HEIGHT =
 		11;
 	
+	/** Supports controlling the backlight. */
+	byte SUPPORTS_BACKLIGHT_CONTROL =
+		12;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		12;
+		13;
 }
