@@ -12,6 +12,7 @@ package dev.shadowtail.jarfile;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
@@ -21,9 +22,13 @@ import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
@@ -45,6 +50,10 @@ public final class BootState
 	/** The object class. */
 	private static final ClassName _OBJECT_CLASS =
 		new ClassName("java/lang/Object");
+	
+	/** The class for {@link Class}. */
+	private static final ClassName _CLASS_CLASS =
+		new ClassName("java/lang/Class");
 	
 	/** Object class info. */
 	private static final FieldNameAndType _OBJECT_CLASS_INFO =
@@ -125,7 +134,40 @@ public final class BootState
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// All types that are interfaces
+		Set<ClassName> result = new SortedTreeSet<>();
+		
+		// Seed initial queue with the current class
+		Deque<ClassName> queue = new LinkedList<>();
+		queue.add(__cl);
+		
+		// Drain the queue and visit all the various classes
+		Set<ClassName> visited = new HashSet<>();
+		while (!queue.isEmpty())
+		{
+			// Only visit classes once
+			ClassName visit = queue.remove();
+			if (visited.contains(visit))
+				continue;
+			
+			// Do not visit again
+			visited.add(visit);
+			
+			// If this is an interface, use that
+			ClassState state = this.loadClass(visit);
+			if (state.classFile.flags().isInterface())
+				result.add(visit);
+			
+			// Add the interfaces to the queue for processing 
+			queue.addAll(state.classFile.interfaceNames());
+			
+			// Add the super class to go up if there is one
+			ClassName parent = state.classFile.superName();
+			if (parent != null)
+				queue.add(parent);
+		}
+		
+		return new ClassNames(result);
 	}
 	
 	/**
@@ -155,16 +197,16 @@ public final class BootState
 		// Chain link all the internal strings needed by the bootstrap so that
 		// they are consistent. This also needs to handle weak references so
 		// these strings can be GCed.
-		if (true)
+		Debugging.todoNote("Chainlink intern strings.");
+		if (false)
 			throw Debugging.todo();
 		// this._internStrings
 		
 		// Determine the starting memory handle ID
 		__startPoolHandleId[0] = boot._poolMemHandle.id;
 		
-		// Write the memory handles into boot memory
-		MemHandles memHandles = this._memHandles;
-		throw Debugging.todo();
+		// Write the memory handles (and actions) into boot memory
+		this._memHandles.chunkOut(__outData);
 	}
 	
 	/**
@@ -274,8 +316,8 @@ public final class BootState
 		boolean isThisObject = classFile.thisName().isObject();
 		
 		// This should never happen, hopefully!
-		if (!isThisObject && superClass == null)
-			throw Debugging.oops();
+		if (!__cl.isPrimitive() && !isThisObject && superClass == null)
+			throw Debugging.oops(classFile.thisName(), superClass);
 		
 		// If this is the object class, then it is well known what the size
 		// of the various classes are
@@ -286,6 +328,17 @@ public final class BootState
 				header.get(StaticClassProperty.SIZE_INSTANCE_FIELD_DATA));
 			
 			// There is no depth to this class
+			classInfo.set(ClassProperty.INT_CLASSDEPTH, 0);
+		}
+		
+		// Primitive types are special cases
+		else if (__cl.isPrimitive())
+		{
+			classInfo.set(ClassProperty.SIZE_ALLOCATION,
+				__cl.primitiveType().bytes());
+			
+			// These do not make sense
+			classInfo.set(ClassProperty.OFFSETBASE_INSTANCE_FIELDS, 0);
 			classInfo.set(ClassProperty.INT_CLASSDEPTH, 0);
 		}
 		
@@ -302,7 +355,7 @@ public final class BootState
 		// Determine the allocation size of this class, we need to know this
 		// as soon as possible but we can only determine this once object
 		// is handled.
-		if (!isThisObject)
+		if (!isThisObject && !__cl.isPrimitive())
 		{
 			// The base of the class is the allocation size of the super
 			// class
@@ -336,12 +389,12 @@ public final class BootState
 		// Store in constant values for fields
 		for (MinimizedField staticField : classFile.fields(true))
 		{
-			throw Debugging.todo();
+			Debugging.todoNote("Static field.");
 		}
 		
 		// Determine the VTable for all non-interface instance methods
 		if (true)
-			throw Debugging.todo();
+			Debugging.todoNote("Virtual VTable");
 		
 		// Determine all of the interfaces that this class possibly implements.
 		// This will be used by instance checks and eventual interface VTable
@@ -357,7 +410,7 @@ public final class BootState
 		// ex: ArrayList gets VTables for Cloneable, Collection<E>, List<E>,
 		// RandomAccess
 		if (true)
-			throw Debugging.todo();
+			Debugging.todoNote("Interface VTables");
 		
 		// Load the information for the Class<?> instance
 		classInfo.set(ClassProperty.MEMHANDLE_LANGCLASS_INSTANCE,
@@ -374,7 +427,7 @@ public final class BootState
 		
 		// Determine the function pointer to the default new instance
 		if (true)
-			throw Debugging.todo();
+			Debugging.todoNote("FuncPtr New");
 		// FUNCPTR_DEFAULT_NEW
 		
 		// Loading the class is complete!
@@ -410,16 +463,29 @@ public final class BootState
 	 * 
 	 * @param __cl The class to load for.
 	 * @return The {@link Class} instance.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/21
 	 */
 	public MemHandle loadLangClass(ClassName __cl)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+			
+		// Load the string class and prepare an object that we will be writing
+		// into as required
+		ChunkMemHandle object = this.prepareObject(BootState._CLASS_CLASS);
 		
-		throw Debugging.todo();
+		// There just needs to be a handle to the class information, note
+		// that class information is a kind of TypeBracket at least on
+		// SummerCoat.
+		this.objectFieldSet(object,
+			new FieldNameAndType("_type",
+				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"),
+			this.loadClass(__cl)._classInfoHandle);
+		
+		return object;
 	}
 	
 	/**
@@ -687,6 +753,9 @@ public final class BootState
 		if (__entry == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		if (false)
+			throw Debugging.todo();
+		Debugging.todoNote("Load pool entry: %s", __entry);
+		return this._memHandles.allocObject(0);
 	}
 }

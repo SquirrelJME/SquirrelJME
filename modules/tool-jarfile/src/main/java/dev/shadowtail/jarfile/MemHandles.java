@@ -11,8 +11,12 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.io.ChunkSection;
 
 /**
  * This class contains the state of memory handles within the boot system.
@@ -159,6 +163,53 @@ public final class MemHandles
 	{
 		return this.<PoolHandle>__register(
 			new PoolHandle(this.__nextId(), this.memActions, __count));
+	}
+	
+	/**
+	 * Writes the memory handles and actions to the output chunk.
+	 * 
+	 * @param __outData The destination.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/13
+	 */
+	protected void chunkOut(ChunkSection __outData)
+		throws IOException, NullPointerException
+	{
+		if (__outData == null)
+			throw new NullPointerException("NARG");
+		
+		// Process every handle that is available
+		MemActions memActions = this.memActions;
+		for (MemHandle handle : this._handles.values())
+		{
+			// Write handle information
+			__outData.writeInt(handle.id);
+			__outData.writeUnsignedShortChecked(handle.byteSize);
+			
+			// Write all of the various actions out
+			MemHandleActions actions = memActions.optional(handle);
+			if (actions != null)
+			{
+				// Internal short storage
+				List<Object> iStore = actions._iStore;
+				short[] iMap = actions._iMap;
+				
+				// Go through the mapping table to find entries to record
+				for (int i = 0, n = iMap.length; i < n; i++)
+				{
+					throw Debugging.todo();
+				}
+			}
+			
+			// End of action sequence and guard
+			__outData.writeByte(0);
+			__outData.writeInt(0xE3F4C2B1);
+		}
+		
+		// End of sequence and guard
+		__outData.writeInt(0);
+		__outData.writeInt(0xFEFFEFFF);
 	}
 	
 	/**

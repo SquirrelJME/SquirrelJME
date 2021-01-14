@@ -53,6 +53,22 @@ public final class MemActions
 		actions.put(ref, (rv = new MemHandleActions(__memHandle.byteSize)));
 		return rv;
 	}
+	/**
+	 * Returns the actions for the given handle, if any.
+	 * 
+	 * @param __memHandle The handle to get.
+	 * @return The actions for this single memory handle or {@code null} if
+	 * none were created.
+	 * @since 2021/01/13
+	 */
+	protected MemHandleActions optional(MemHandle __memHandle)
+		throws NullPointerException
+	{
+		if (__memHandle == null)
+			throw new NullPointerException("NARG");
+		
+		return this._actions.get(new __MemHandleRef__(__memHandle));
+	}
 	
 	/**
 	 * Reads from the given handle.

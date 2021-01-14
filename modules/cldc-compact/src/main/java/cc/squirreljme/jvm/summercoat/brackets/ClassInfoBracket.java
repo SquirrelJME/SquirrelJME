@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.summercoat.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 
 /**
  * Bracket for class information.
@@ -18,5 +19,6 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
  */
 @GhostObject
 public interface ClassInfoBracket
+	extends TypeBracket
 {
 }

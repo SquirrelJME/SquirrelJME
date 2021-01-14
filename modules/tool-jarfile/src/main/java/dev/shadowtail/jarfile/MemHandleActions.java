@@ -24,11 +24,11 @@ public final class MemHandleActions
 	protected final int byteCount;
 	
 	/** Storage for written values. */
-	private final List<Object> _iStore =
+	final List<Object> _iStore =
 		new ArrayList<>();
 	
 	/** The index value mapping. */
-	private final byte[] _iMap;
+	final short[] _iMap;
 	
 	/**
 	 * Initializes the memory handle actions.
@@ -44,7 +44,7 @@ public final class MemHandleActions
 			throw new IllegalArgumentException("NEGV");
 		
 		this.byteCount = __byteSize;
-		this._iMap = new byte[__byteSize];
+		this._iMap = new short[__byteSize];
 		
 		// The first value is always null as it is a null reference!
 		this._iStore.add(null);
@@ -75,14 +75,14 @@ public final class MemHandleActions
 			throw new IllegalArgumentException("ALGN " + __off);
 		
 		// The read storage ID
-		byte storageId = 0;
+		short storageId = 0;
 		
 		// Check to make sure a value is not being overwritten so that
 		// everywhere is only written to once ever.
-		byte[] iMap = this._iMap;
+		short[] iMap = this._iMap;
 		for (int i = 0, n = __type.byteCount; i < n; i++)
 		{
-			byte readId = iMap[__off + i];
+			short readId = iMap[__off + i];
 			
 			// On the first read, all addresses must be the same as read
 			if (storageId == 0)
@@ -99,7 +99,7 @@ public final class MemHandleActions
 		
 		// Read whatever storage was specified as being here and make sure it
 		// is the type we expected it to be.
-		return __cl.cast(this._iStore.get(storageId & 0xFF));
+		return __cl.cast(this._iStore.get(storageId & 0xFFFF));
 	}
 	
 	/**
@@ -138,13 +138,13 @@ public final class MemHandleActions
 		// memory handle. (The written value count)}
 		List<Object> iStore = this._iStore;
 		int nextId = iStore.size();
-		if ((byte)nextId == 0)
+		if ((short)nextId == 0)
 			throw new IllegalStateException("BC0b " + nextId);
 		
 		// Check to make sure a value is not being overwritten so that
 		// everywhere is only written to once ever.
 		// {@squirreljme.error BC0c Value is being overwritten.}
-		byte[] iMap = this._iMap;
+		short[] iMap = this._iMap;
 		for (int i = 0, n = __type.byteCount; i < n; i++)
 			if (iMap[__off + i] != 0)
 				throw new IllegalStateException("BC0c");
@@ -154,6 +154,6 @@ public final class MemHandleActions
 		
 		// Store value here
 		for (int i = 0, n = __type.byteCount; i < n; i++)
-			iMap[__off + i] = (byte)nextId; 
+			iMap[__off + i] = (short)nextId; 
 	}
 }
