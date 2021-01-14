@@ -88,11 +88,23 @@ ifeq ($(shell uname -a),)
 	system_platform = win
 else ifneq ($(findstring Darwin,$(shell uname -a)),)
 	system_platform = osx
-ifeq ($(shell uname -p),powerpc)
-	arch = ppc
-else
-	arch = intel
-endif
+
+	# Architecture is not defined?
+	ifeq ($(arch),)
+		# PowerPC?
+		ifeq ($(shell uname -p),powerpc)
+			arch = ppc
+		else
+			# ARM?
+			ifeq ($(shell uname -p),arm)
+				arch = arm
+
+			# Assume x86 otherwise
+			else
+				arch = intel
+			endif
+		endif
+	endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
 endif
@@ -134,9 +146,18 @@ else ifeq ($(platform), osx)
 	EXT    ?= dylib
 	TARGET := $(TARGET_NAME)_libretro.$(EXT)
 	fpic := -fPIC
+
 ifeq ($(arch),ppc)
 		CFLAGS += -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
 endif
+
+ifeq ($(arch),arm)
+		CFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CPPFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CXXFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		LDFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+endif
+
 	OSXVER = $(shell sw_vers -productVersion | cut -d. -f 2)
 	OSX_GT_MOJAVE = $(shell (( $(OSXVER) >= 14)) && echo "YES")
 ifneq ($(OSX_GT_MOJAVE),YES)
@@ -548,7 +569,7 @@ else
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	@echo "** BUILDING $(TARGET) FOR PLATFORM $(platform) **"
+	@echo "** BUILDING $(TARGET) FOR PLATFORM $(platform) $(arch) **"
 ifeq ($(platform), emscripten)
 	$(CC) $(CFLAGS) $(OBJOUT)$@ $^
 else ifeq ($(STATIC_LINKING_LINK), 1)
