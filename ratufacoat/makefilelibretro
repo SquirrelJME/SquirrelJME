@@ -88,15 +88,23 @@ ifeq ($(shell uname -a),)
 	system_platform = win
 else ifneq ($(findstring Darwin,$(shell uname -a)),)
 	system_platform = osx
-ifeq ($(shell uname -p),powerpc)
-	arch = ppc
-else
-	ifeq ($(shell uname -p),arm)
-		arch = arm
-	else
-		arch = intel
+
+	# Architecture is not defined?
+	ifeq ($(arch),)
+		# PowerPC?
+		ifeq ($(shell uname -p),powerpc)
+			arch = ppc
+		else
+			# ARM?
+			ifeq ($(shell uname -p),arm)
+				arch = arm
+
+			# Assume x86 otherwise
+			else
+				arch = intel
+			endif
+		endif
 	endif
-endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
 endif
