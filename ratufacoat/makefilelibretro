@@ -91,7 +91,11 @@ else ifneq ($(findstring Darwin,$(shell uname -a)),)
 ifeq ($(shell uname -p),powerpc)
 	arch = ppc
 else
-	arch = intel
+	ifeq ($(shell uname -p),arm)
+		arch = arm
+	else
+		arch = intel
+	endif
 endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
@@ -134,9 +138,17 @@ else ifeq ($(platform), osx)
 	EXT    ?= dylib
 	TARGET := $(TARGET_NAME)_libretro.$(EXT)
 	fpic := -fPIC
+
 ifeq ($(arch),ppc)
 		CFLAGS += -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
 endif
+
+ifeq ($(arch),arm)
+		CFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CPPFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CXXFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+endif
+
 	OSXVER = $(shell sw_vers -productVersion | cut -d. -f 2)
 	OSX_GT_MOJAVE = $(shell (( $(OSXVER) >= 14)) && echo "YES")
 ifneq ($(OSX_GT_MOJAVE),YES)
