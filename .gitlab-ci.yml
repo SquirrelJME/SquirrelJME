@@ -36,7 +36,7 @@ include:
 
   # MacOS ARM 64-bit
   - project: 'libretro-infrastructure/ci-templates'
-    ref:  'macosx-arm64'
+    ref:  'macosx-arm'
     file: '/osx-arm64.yml'
 
   # Windows 32-bit
