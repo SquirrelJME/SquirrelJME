@@ -48,7 +48,43 @@ public interface MemHandleKind
 	byte INTERFACE_VTABLE =
 		7;
 	
+	/** Boolean array (really byte). */
+	byte BOOLEAN_ARRAY =
+		8;
+	
+	/** Boolean/byte array. */
+	byte BYTE_ARRAY =
+		9;
+	
+	/** Short array. */
+	byte SHORT_ARRAY =
+		10;
+	
+	/** Character array. */
+	byte CHARACTER_ARRAY =
+		11;
+	
+	/** Integer array. */
+	byte INTEGER_ARRAY =
+		12;
+	
+	/** Long array. */
+	byte LONG_ARRAY =
+		13;
+	
+	/** Float array. */
+	byte FLOAT_ARRAY =
+		14;
+	
+	/** Double array. */
+	byte DOUBLE_ARRAY =
+		15;
+	
+	/** Object (memory handle) array. */
+	byte OBJECT_ARRAY =
+		16;
+	
 	/** The number of kinds used. */
 	byte NUM_KINDS =
-		8;
+		17;
 }

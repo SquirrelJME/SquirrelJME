@@ -287,6 +287,7 @@ public enum VMType
 				// anything the AOT compiler uses. If the compiler changes we
 				// need to make sure the updated compiler is used!
 				rv.add(taskProject.getTasks().getByName("classes"));
+				rv.add(taskProject.getTasks().getByName("jar"));
 				
 				// The library that makes up the task is important
 				rv.add(taskProject.getTasks().getByName(task.task));

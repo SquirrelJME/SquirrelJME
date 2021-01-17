@@ -299,9 +299,6 @@ public class ClassName
 	 */
 	public final PrimitiveType primitiveType()
 	{
-		if (!this.isPrimitive())
-			return null;
-		
 		switch (this.binary.toString())
 		{
 			case "boolean":		return PrimitiveType.BOOLEAN;
@@ -312,9 +309,9 @@ public class ClassName
 			case "long":		return PrimitiveType.LONG;
 			case "float":		return PrimitiveType.FLOAT;
 			case "double":		return PrimitiveType.DOUBLE;
-			default:
-				throw new RuntimeException("TODO");
 		}
+		
+		return null;
 	}
 	
 	/**

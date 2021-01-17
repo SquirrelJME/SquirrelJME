@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.TaskContainer;
 
 /**
  * This class is used to provide the dependency lookup for the emulator
@@ -58,10 +59,17 @@ public final class VMEmulatorDependencies
 	{
 		Project root = this.task.getProject().getRootProject();
 		
+		TaskContainer emu = root.project(this.vmType.emulatorProject())
+			.getTasks();
+		TaskContainer emuBase = root.project(":emulators:emulator-base")
+			.getTasks();
+		
 		return Arrays.<Task>asList(
-			root.project(this.vmType.emulatorProject())
-				.getTasks().getByName("assemble"),
-			root.project(":emulators:emulator-base")
-				.getTasks().getByName("jar"));
+			emu.getByName("jar"),
+			emu.getByName("assemble"),
+			emuBase.getByName("jar"),
+			emuBase.getByName("assemble"),
+			emuBase.getByName("assembleDebug"),
+			emuBase.getByName("assembleRelease"));
 	}
 }

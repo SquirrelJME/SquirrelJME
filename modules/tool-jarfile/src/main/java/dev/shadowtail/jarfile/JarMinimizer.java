@@ -337,6 +337,10 @@ public final class JarMinimizer
 				.setInt(startPoolHandleId[0]);
 			properties[JarProperty.RCDX_START_CLASS]
 				.setInt(bootClassDx);
+			
+			// Base array size
+			properties[JarProperty.SIZE_BASE_ARRAY]
+				.setInt(bootState._baseArraySize);
 		}
 		
 		// No bootstrapping to be done
@@ -347,6 +351,9 @@ public final class JarMinimizer
 			properties[JarProperty.SIZE_BOOT_INIT].setInt(0);
 			properties[JarProperty.MEMHANDLEID_START_POOL].setInt(0);
 			properties[JarProperty.RCDX_START_CLASS].setInt(0);
+			
+			// No known array base size
+			properties[JarProperty.SIZE_BASE_ARRAY].setInt(0);
 		}
 		
 		// Verify values are set

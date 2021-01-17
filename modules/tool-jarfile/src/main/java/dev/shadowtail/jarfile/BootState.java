@@ -10,6 +10,7 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
@@ -93,6 +94,10 @@ public final class BootState
 	
 	/** The pool references to use for booting. */
 	private DualClassRuntimePool _pool;
+	
+	/** Base array size. */
+	int _baseArraySize =
+		-1;
 	
 	/**
 	 * Adds the specified class to be loaded and handled later.
@@ -233,8 +238,7 @@ public final class BootState
 		ChunkMemHandle rv = this.prepareArray(type, n);
 		
 		// Determine the base offset to write to
-		int baseOff = this.loadClass(type)._classInfoHandle
-			.getInteger(ClassProperty.SIZE_ALLOCATION);
+		int baseOff = this._baseArraySize;
 		
 		// Write all the elements to it
 		for (int i = 0, off = baseOff; i < n; i++, off += 2)
@@ -646,12 +650,64 @@ public final class BootState
 		// We need to know about the class to work with it
 		ClassState state = this.loadClass(__cl);
 		
+		// Determine the memory handle kind used
+		int handleKind;
+		PrimitiveType pType = __cl.componentType().primitiveType();
+		if (pType == null)
+			handleKind = MemHandleKind.OBJECT_ARRAY;
+		else
+			switch (pType)
+			{
+				case BOOLEAN:
+				case BYTE:
+					handleKind = MemHandleKind.BYTE_ARRAY;
+					break;
+				
+				case CHARACTER:
+					handleKind = MemHandleKind.CHARACTER_ARRAY;
+					break;
+					
+				case DOUBLE:
+					handleKind = MemHandleKind.DOUBLE_ARRAY;
+					break;
+					
+				case FLOAT:
+					handleKind = MemHandleKind.FLOAT_ARRAY;
+					break;
+					
+				case INTEGER:
+					handleKind = MemHandleKind.INTEGER_ARRAY;
+					break;
+					
+				case LONG:
+					handleKind = MemHandleKind.LONG_ARRAY;
+					break;
+					
+				case SHORT:
+					handleKind = MemHandleKind.SHORT_ARRAY;
+					break;
+					
+				default:
+					throw Debugging.oops();
+			}
+		
+		// Calculate the base size for arrays
+		int baseArraySize = this._baseArraySize;
+		if (baseArraySize < 0)
+		{
+			baseArraySize = state._classInfoHandle
+				.getInteger(ClassProperty.SIZE_ALLOCATION);
+			this._baseArraySize = baseArraySize;
+		}
+		
 		// Allocate memory needed to store the array handle, this includes
 		// room for all of the elements accordingly
-		ChunkMemHandle rv = this._memHandles.allocObject(
-			state._classInfoHandle
-				.getInteger(ClassProperty.SIZE_ALLOCATION) +
+		ChunkMemHandle rv = this._memHandles.alloc(
+			handleKind, baseArraySize +
 				(__len * __cl.componentType().field().dataType().size()));
+		
+		// Store the array size as a hint
+		rv._arraySize = __len;
 		
 		// Set array field information
 		this.objectFieldSet(rv, BootState._OBJECT_CLASS_INFO,

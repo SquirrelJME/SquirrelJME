@@ -71,7 +71,11 @@ public interface JarProperty
 	byte SIZE_RUNTIME_POOL =
 		12;
 	
+	/** The base allocation size of arrays. */
+	byte SIZE_BASE_ARRAY =
+		13;
+	
 	/** The number of properties in the JAR. */
 	byte NUM_JAR_PROPERTIES =
-		13;
+		14;
 }

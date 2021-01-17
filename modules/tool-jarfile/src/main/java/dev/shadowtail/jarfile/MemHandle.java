@@ -33,6 +33,10 @@ public abstract class MemHandle
 	/** The reference count of this handle. */
 	int _refCount;
 	
+	/** Array size, if this is one. */
+	int _arraySize =
+		-1;
+	
 	/**
 	 * Initializes the base memory handle.
 	 * 

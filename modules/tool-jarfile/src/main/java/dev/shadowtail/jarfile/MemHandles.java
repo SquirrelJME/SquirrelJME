@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -189,6 +190,11 @@ public final class MemHandles
 			__outData.writeUnsignedShortChecked(handle._refCount);
 			__outData.writeUnsignedShortChecked(handle.byteSize);
 			__outData.writeByte(handle.kind);
+			
+			// If this is an array, write the array size here as well for
+			// quicker usage
+			if (SummerCoatUtil.isArrayKind(handle.kind))
+				__outData.writeUnsignedShortChecked(handle._arraySize);
 		}
 		
 		// End of preload guard

@@ -15,13 +15,14 @@ import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
+import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
-import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.jarfile.TableOfContents;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -127,12 +128,13 @@ public class SummerCoatFactory
 			bootJarHeader = MinimizedJarHeader.decode(packIn);
 			
 			// Parse the table of contents
-			try (InputStream packTocIn = new ReadableMemoryInputStream(
-				romMemory, bootJarHeader.get(PackProperty.OFFSET_TOC),
-				bootJarHeader.get(PackProperty.SIZE_TOC)))
+			try (InputStream bootJarTocIn = new ReadableMemoryInputStream(
+				romMemory,
+				bootJarOff + bootJarHeader.get(JarProperty.OFFSET_TOC),
+				bootJarHeader.get(JarProperty.SIZE_TOC)))
 			{
 				bootJarToc = TableOfContents.<MinimizedJarHeader>decode(
-					MinimizedJarHeader.class, packTocIn);
+					MinimizedJarHeader.class, bootJarTocIn);
 			}
 		}
 		catch (IOException e)
@@ -156,6 +158,9 @@ public class SummerCoatFactory
 		{
 			// BootRAM memory handle IDs to 
 			Map<Integer, MemHandle> virtHandles = new HashMap<>();
+			
+			// Base array size, needed for array allocation
+			int arrayBase = bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY);
 			
 			// Pre-load handles to determine all of their IDs and sizes
 			// accordingly before the later load logic happens 
@@ -185,8 +190,20 @@ public class SummerCoatFactory
 					throw new VMException("Invalid MemHandle Kind: " +
 						handleKind);
 				
+				// If this is an array, read the array length
+				int arrayLen = -1;
+				if (SummerCoatUtil.isArrayKind(handleKind))
+					arrayLen = dis.readUnsignedShort();
+				
 				// Setup memory handle for this
-				MemHandle memHandle = memHandles.alloc(handleKind, byteSize);
+				MemHandle memHandle;
+				if (SummerCoatUtil.isArrayKind(handleKind))
+					memHandle = memHandles.allocArray(handleKind, arrayBase,
+						arrayLen);
+				else
+					memHandle = memHandles.alloc(handleKind, byteSize);
+				
+				// Store it for later usage
 				virtHandles.put(handleId, memHandle);
 				
 				// Set initial count since it would have gone up on
@@ -195,11 +212,10 @@ public class SummerCoatFactory
 			}
 			
 			// Check if the guards are valid or not
-			int guardPA = dis.readInt();
-			int guardPB = dis.readInt();
-			if (guardPA != 0 || guardPB != BootstrapConstants.PRE_SEQ_GUARD)
-				throw new VMException(String.format("Invalid Pre: %08x %08x",
-					guardPA, guardPB));
+			int preSeqGuard = dis.readInt();
+			if (preSeqGuard != BootstrapConstants.PRE_SEQ_GUARD)
+				throw new VMException(String.format("Invalid Pre: %08x",
+					preSeqGuard));
 			
 			// Load handle data writing information
 			for (;;)
@@ -214,15 +230,33 @@ public class SummerCoatFactory
 				if (handle == null)
 					throw new VMException("Invalid handle: " + handleId);
 				
-				throw Debugging.todo();
+				// Read and initialize big data?
+				boolean hasBigData = (dis.readByte() != 0);
+				if (hasBigData)
+				{
+					// Read it in
+					byte[] bigData = new byte[handle.size];
+					dis.readFully(bigData);
+					
+					// Write it into the memory handle completely
+					throw Debugging.todo();
+				}
+				
+				if (true)
+					throw Debugging.todo();
+				
+				// Ensure the guard is valid
+				int actGuard = dis.readInt();
+				if (actGuard != BootstrapConstants.ACTION_SEQ_GUARD)
+					throw new VMException(String.format("Invalid Act: %08x",
+						actGuard));
 			}
 			
 			// Check if the guards are valid or not
-			int guardEA = dis.readInt();
-			int guardEB = dis.readInt();
-			if (guardEA != 0 || guardEB != BootstrapConstants.MEMORY_SEQ_GUARD)
-				throw new VMException(String.format("Invalid End: %08x %08x",
-					guardEA, guardEB));
+			int memSeqGuard = dis.readInt();
+			if (memSeqGuard != BootstrapConstants.MEMORY_SEQ_GUARD)
+				throw new VMException(String.format("Invalid End: %08x",
+					memSeqGuard));
 		}
 		
 		// {@squirreljme.error AE0h Could not initialize the boot RAM for
