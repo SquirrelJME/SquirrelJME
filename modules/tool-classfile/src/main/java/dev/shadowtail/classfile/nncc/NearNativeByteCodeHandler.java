@@ -84,7 +84,7 @@ public final class NearNativeByteCodeHandler
 		
 	/** Target packages for shelves to call instead. */
 	public static final BinaryName LLE_SHELF_PACKAGE =
-		new BinaryName("cc/squirreljme/jvm/mle/lle");
+		new BinaryName("cc/squirreljme/jvm/summercoat/lle");
 	
 	/** The jvm functions class. */
 	@Deprecated

@@ -1005,7 +1005,7 @@ public final class SpringThreadWorker
 		// All low-level calls are considered invalid in SpringCoat because
 		// it does not have the given functionality.
 		if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly") ||
-			__class.toString().startsWith("cc/squirreljme/jvm/mle/lle/"))
+			__class.toString().startsWith("cc/squirreljme/jvm/summercoat/lle/"))
 			throw new SpringVirtualMachineException(String.format(
 				"Invalid LLE native call: %s %s", __class,
 				Arrays.asList(__args)));

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.lle;
+package cc.squirreljme.jvm.summercoat.lle;
 
 /**
  * This shelf provides helpers for atomic operations.
