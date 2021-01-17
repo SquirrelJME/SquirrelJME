@@ -36,6 +36,10 @@ public interface BootstrapConstants
 	int MEMORY_SEQ_GUARD =
 		0xFEFFEFFF;
 	
+	/** Preload sequence guard. */
+	int PRE_SEQ_GUARD =
+		0x8651DE91;
+	
 	/** Flag for memory handle actions. */
 	byte ACTION_MEMHANDLE_FLAG = 
 		0x40;

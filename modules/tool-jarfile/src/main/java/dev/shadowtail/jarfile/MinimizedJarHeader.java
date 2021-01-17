@@ -74,7 +74,7 @@ public final class MinimizedJarHeader
 	/** Boot initializer offset. */
 	public int getBootoffset()
 	{
-		throw Debugging.todo();
+		return this.get(JarProperty.OFFSET_BOOT_INIT);
 	}
 	
 	/** The boot pool offset. */
@@ -92,7 +92,7 @@ public final class MinimizedJarHeader
 	/** Boot initializer size. */
 	public int getBootsize()
 	{
-		throw Debugging.todo();
+		return this.get(JarProperty.SIZE_BOOT_INIT);
 	}
 	
 	/** The start method offset. */

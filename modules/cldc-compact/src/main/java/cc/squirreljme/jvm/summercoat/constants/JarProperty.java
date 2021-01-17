@@ -41,7 +41,7 @@ public interface JarProperty
 		5;
 	
 	/** Boot initializer size. */
-	byte OFFSET_BOOT_SIZE =
+	byte SIZE_BOOT_INIT =
 		6;
 	
 	/** The entry pool for the starting class, used to reference data. */

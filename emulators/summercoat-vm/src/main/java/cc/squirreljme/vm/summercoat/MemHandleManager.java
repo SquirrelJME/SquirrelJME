@@ -27,6 +27,22 @@ public final class MemHandleManager
 		new ConcurrentSkipListMap<>();
 	
 	/**
+	 * Allocates the given handle.
+	 * 
+	 * @param __kind The kind of memory handle to allocate.
+	 * @param __byteSize The number of bytes to allocate.
+	 * @return The allocated handle.
+	 * @throws IllegalArgumentException If the kind is not valid or the
+	 * requested size is negative.
+	 * @since 2021/01/17
+	 */
+	protected MemHandle alloc(int __kind, int __byteSize)
+		throws IllegalArgumentException
+	{
+		throw new Error("TODO " + __kind + " " + __byteSize);
+	}
+	
+	/**
 	 * Returns the given memory handle.
 	 * 
 	 * @param __id The identifier of the handle.

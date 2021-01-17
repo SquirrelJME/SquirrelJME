@@ -18,6 +18,9 @@ import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
  */
 public abstract class MemHandle
 {
+	/** The kind of handle this is. */
+	protected final int kind;
+	
 	/** The memory handle ID. */
 	public final int id;
 	
@@ -27,11 +30,13 @@ public abstract class MemHandle
 	/** The memory actions used. */
 	protected final MemActions memActions;
 	
+	/** The reference count of this handle. */
+	int _refCount;
+	
 	/**
 	 * Initializes the base memory handle.
 	 * 
-	 *
-	 * @param __kind
+	 * @param __kind The kind of handle this is.
 	 * @param __id The memory handle ID.
 	 * @param __memActions The memory actions that are used.
 	 * @param __bytes The number of bytes the handle consumes.
@@ -57,6 +62,7 @@ public abstract class MemHandle
 		if (__bytes < 0)
 			throw new IllegalArgumentException("BC04 " + __bytes);
 		
+		this.kind = __kind;
 		this.id = __id;
 		this.memActions = __memActions;
 		this.byteSize = __bytes;

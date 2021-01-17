@@ -180,13 +180,26 @@ public final class MemHandles
 		if (__outData == null)
 			throw new NullPointerException("NARG");
 		
-		// Process every handle that is available
+		// Pre-load handle IDs, so that all of them are known at once
 		MemActions memActions = this.memActions;
 		for (MemHandle handle : this._handles.values())
 		{
 			// Write handle information
 			__outData.writeInt(handle.id);
+			__outData.writeUnsignedShortChecked(handle._refCount);
 			__outData.writeUnsignedShortChecked(handle.byteSize);
+			__outData.writeByte(handle.kind);
+		}
+		
+		// End of preload guard
+		__outData.writeInt(0);
+		__outData.writeInt(BootstrapConstants.PRE_SEQ_GUARD);
+			
+		// Process every handle that is available
+		for (MemHandle handle : this._handles.values())
+		{
+			// Which handle is this for?
+			__outData.writeInt(handle.id);
 			
 			// Write all of the various actions out
 			MemHandleActions actions = memActions.optional(handle);
@@ -250,7 +263,10 @@ public final class MemHandles
 						
 						// Memory handle reference
 						else if (store instanceof MemHandle)
-							__outData.writeInt(((MemHandle)store).id);
+						{
+							MemHandle ref = (MemHandle)store;
+							__outData.writeInt(ref.id);
+						}
 						
 						// Should not occur
 						else

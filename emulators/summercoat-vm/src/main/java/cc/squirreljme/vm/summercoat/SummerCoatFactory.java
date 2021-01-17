@@ -15,7 +15,8 @@ import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.jvm.config.ConfigRomKey;
+import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -26,15 +27,14 @@ import dev.shadowtail.jarfile.TableOfContents;
 import dev.shadowtail.packfile.MinimizedPackHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 import java.util.Map;
-import todo.DEBUG;
 
 /**
  * This is the factory which is capable of creating instances of the
@@ -93,6 +93,7 @@ public class SummerCoatFactory
 		
 		// Setup non-cpu VM state
 		MachineState ms = new MachineState(vMem, __ps);
+		MemHandleManager memHandles = ms.memHandles;
 		
 		// The ROM always starts here
 		int romBase = SummerCoatFactory.SUITE_BASE_ADDR;
@@ -117,8 +118,9 @@ public class SummerCoatFactory
 		// Load the boot JAR information
 		MinimizedJarHeader bootJarHeader;
 		TableOfContents<MinimizedJarHeader> bootJarToc;
+		int bootJarOff;
 		try (InputStream packIn = new ReadableMemoryInputStream(romMemory,
-			packToc.get(bootDx, PackTocProperty.OFFSET_DATA),
+			(bootJarOff = packToc.get(bootDx, PackTocProperty.OFFSET_DATA)),
 			packToc.get(bootDx, PackTocProperty.SIZE_DATA)))
 		{
 			// Read the pack header
@@ -138,215 +140,89 @@ public class SummerCoatFactory
 			throw new VMException("Could not read boot JAR headers.", e);
 		}
 		
-		// Address and decoded header of the boot JAR
-		if (true)
-			throw Debugging.todo();
-		int bootJarAddr = 0;
-		
 		// Initialize RAM
 		int ramSize = SummerCoatFactory.DEFAULT_RAM_SIZE,
 			ramAddr = SummerCoatFactory.RAM_START_ADDRESS;
 		vMem.mapRegion(new RawMemory(ramAddr, ramSize));
 		
-		// Initialize configuration memory
-		WritableMemory cmem = new RawMemory(SummerCoatFactory.CONFIG_BASE_ADDR,
-			SummerCoatFactory.CONFIG_SIZE);
-		vMem.mapRegion(cmem);
-		
-		// Read the boot JAR offset of this packfile
-		int bootjaroff = romBase + vMem.memReadInt(romBase +
-				MinimizedPackHeader.OFFSET_OF_BOOTJAROFFSET),
-			bootjarsize = vMem.memReadInt(romBase +
-				MinimizedPackHeader.OFFSET_OF_BOOTJARSIZE);
-		
 		// Load the bootstrap JAR header
-		MinimizedJarHeader bjh;
-		try (InputStream bin = new ReadableMemoryInputStream(vMem,
-			bootjaroff, bootjarsize))
-		{
-			bjh = MinimizedJarHeader.decode(bin);
-		}
-		
-		// {@squirreljme.error AE0e Could not read the boot JAR header.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("AE0e", e);
-		}
-		
-		// Write configuration information
-		try (DataOutputStream dos = new DataOutputStream(
-			new WritableMemoryOutputStream(cmem, 0,
-				SummerCoatFactory.CONFIG_SIZE)))
-		{
-			// Version
-			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_VERSION,
-				"0.3.0");
-			
-			// Name
-			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_NAME,
-				"SquirrelJME SummerCoat");
-			
-			// Vendor
-			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_VENDOR,
-				"Stephanie Gawroriski");
-			
-			// E-Mail
-			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_EMAIL,
-				"xerthesquirrel@gmail.com");
-			
-			// URL
-			ConfigRomWriter.writeString(dos, ConfigRomKey.JAVA_VM_URL,
-				"https://squirreljme.cc/");
-			
-			// Guest depth
-			/*ConfigRomWriter.writeInteger(dos, ConfigRomKey.GUEST_DEPTH,
-				__gd);*/
-			
-			// Main class
-			if (__maincl != null)
-				ConfigRomWriter.writeString(dos, ConfigRomKey.MAIN_CLASS,
-					__maincl.replace('.', '/'));
-			
-			// Is midlet?
-			/*ConfigRomWriter.writeInteger(dos, ConfigRomKey.IS_MIDLET,
-				(__ismid ? 1 : -1));*/
-			
-			// System properties
-			if (__sysProps != null)
-				for (Map.Entry<String, String> e : __sysProps.entrySet())
-				{
-					ConfigRomWriter.writeKeyValue(dos,
-						ConfigRomKey.DEFINE_PROPERTY,
-						e.getKey(), e.getValue());
-				}
-			
-			// Class path
-			ConfigRomWriter.writeStrings(dos, ConfigRomKey.CLASS_PATH,
-				SummerCoatFactory.classPathToStringArray(__cp));
-			
-			// System call handler
-			ConfigRomWriter.writeInteger(
-				dos, ConfigRomKey.SYSCALL_STATIC_FIELD_POINTER,
-				ramAddr + bjh.getSyscallsfp());
-			ConfigRomWriter.writeInteger(
-				dos, ConfigRomKey.SYSCALL_CODE_POINTER,
-				bootjaroff + bjh.getSyscallhandler());
-			ConfigRomWriter.writeInteger(
-				dos, ConfigRomKey.SYSCALL_POOL_POINTER,
-				ramAddr + bjh.getSyscallpool());
-			
-			// End
-			dos.writeShort(ConfigRomKey.END);
-		}
-		
-		// {@squirreljme.error AE0d Could not write to configuration ROM.}
-		catch (IOException e)
-		{
-			throw new VMException("AE0d", e);
-		}
-		
-		// Load the bootstrap JAR header
-		int bra = bootjaroff + bjh.getBootoffset(),
-			lram;
-		
-		// Debug
-		if (NativeCPU.ENABLE_DEBUG)
-			DEBUG.note("Unpacking BootRAM!");
+		int bootRamOff = bootJarOff + bootJarHeader.getBootoffset(),
+			bootRamLen = bootJarHeader.getBootsize();
 		
 		// Load the boot RAM
+		Debugging.debugNote("Loading BootRAM!");
 		try (DataInputStream dis = new DataInputStream(
-			new ReadableMemoryInputStream(vMem, bra, bjh.getBootsize())))
+			new ReadableMemoryInputStream(romMemory, bootRamOff, bootRamLen)))
 		{
-			// Indicate where it is
-			Debugging.debugNote("BootRAM: Addr=%08x Len=%d",
-				bra, bjh.getBootsize());
+			// BootRAM memory handle IDs to 
+			Map<Integer, MemHandle> virtHandles = new HashMap<>();
 			
-			// Read entire RAM space
-			lram = dis.readInt();
-			byte[] bram = new byte[lram];
-			dis.readFully(bram);
-			
-			// Write into memory
-			vMem.memWriteBytes(ramAddr, bram, 0, lram);
-			
-			// Handle RAM initializers
-			int n = dis.readInt();
-			for (int i = 0; i < n; i++)
+			// Pre-load handles to determine all of their IDs and sizes
+			// accordingly before the later load logic happens 
+			for (;;)
 			{
-				int key = dis.readUnsignedByte(),
-					addr = dis.readInt() + ramAddr,
-					mod = (key & 0x0F),
-					siz = ((key & 0xF0) >>> 4);
+				// Determine the handle ID for this
+				int handleId = dis.readInt();
 				
-				// Which offset is used?
-				int off;
-				switch (mod)
-				{
-						// Nothing
-					case 0:
-						off = 0;
-						break;
-						
-						// RAM
-					case 1:
-						off = ramAddr;
-						break;
-					
-						// JAR
-					case 2:
-						off = bootjaroff;
-						break;
-					
-						// {@squirreljme.error AE0f Corrupt Boot RAM with
-						// invalid value modifier. (Modifier)}
-					default:
-						throw new VMException("AE0f " + mod);
-				}
+				// No more remain?
+				if (handleId == 0)
+					break;
 				
-				// Depends on operation size
-				switch (siz)
-				{
-						// Byte
-					case 1:
-						vMem.memWriteByte(addr, dis.readByte() + off);
-						break;
-					
-						// Short
-					case 2:
-						vMem.memWriteShort(addr, dis.readShort() + off);
-						break;
-					
-						// Integer
-					case 4:
-						vMem.memWriteInt(addr, dis.readInt() + off);
-						break;
-						
-						// Long
-					case 8:
-						{
-							long v = dis.readLong() + off;
-							vMem.memWriteInt(addr, (int)(v >>> 32));
-							vMem.memWriteInt(addr + 4, (int)(v));
-						}
-						break;
-					
-						// {@squirreljme.error AE0g Corrupt Boot RAM with
-						// invalid size. (Size)}
-					default:
-						throw new VMException("AE0g " + siz);
-				}
+				// Invalid security bits
+				if ((handleId & BootstrapConstants.HANDLE_SECURITY_MASK) !=
+					BootstrapConstants.HANDLE_SECURITY_BITS)
+					throw new VMException(
+						"Invalid security bits: 0b" +
+						Integer.toString(handleId, 2));
+				
+				// Read handle information
+				int initCount = dis.readUnsignedShort();
+				int byteSize = dis.readUnsignedShort();
+				
+				// Determine if the kind is valid
+				int handleKind = dis.readUnsignedByte();
+				if (handleKind <= 0 || handleKind >= MemHandleKind.NUM_KINDS)
+					throw new VMException("Invalid MemHandle Kind: " +
+						handleKind);
+				
+				// Setup memory handle for this
+				MemHandle memHandle = memHandles.alloc(handleKind, byteSize);
+				virtHandles.put(handleId, memHandle);
+				
+				// Set initial count since it would have gone up on
+				// initialization
+				memHandle.setCount(initCount);
 			}
 			
-			// {@squirreljme.AE04 Expected value at end of initializer
-			// memory, the Boot RAM is corrupt. (Key value)}
-			int key;
-			if (-1 != (key = dis.readInt()))
-				throw new VMException("AE04 " + key);
+			// Check if the guards are valid or not
+			int guardPA = dis.readInt();
+			int guardPB = dis.readInt();
+			if (guardPA != 0 || guardPB != BootstrapConstants.PRE_SEQ_GUARD)
+				throw new VMException(String.format("Invalid Pre: %08x %08x",
+					guardPA, guardPB));
+			
+			// Load handle data writing information
+			for (;;)
+			{
+				// Read the handle we will be writing
+				int handleId = dis.readInt();
+				if (handleId == 0)
+					break;
 				
-			// Debug
-			if (NativeCPU.ENABLE_DEBUG)
-				DEBUG.note("BootRAM unpacked at %08x (size %d)!",
-					ramAddr, lram);
+				// Ensure the handle is actually valid!
+				MemHandle handle = virtHandles.get(handleId);
+				if (handle == null)
+					throw new VMException("Invalid handle: " + handleId);
+				
+				throw Debugging.todo();
+			}
+			
+			// Check if the guards are valid or not
+			int guardEA = dis.readInt();
+			int guardEB = dis.readInt();
+			if (guardEA != 0 || guardEB != BootstrapConstants.MEMORY_SEQ_GUARD)
+				throw new VMException(String.format("Invalid End: %08x %08x",
+					guardEA, guardEB));
 		}
 		
 		// {@squirreljme.error AE0h Could not initialize the boot RAM for
@@ -356,21 +232,19 @@ public class SummerCoatFactory
 			throw new VMException("AE0h", e);
 		}
 		
+		throw Debugging.todo("Boot CPU!");
+		/*
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps);
 		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh
-				.getBootstart(),
-			ramAddr, ramSize, romBase, romSize,
-			SummerCoatFactory.CONFIG_BASE_ADDR, SummerCoatFactory.CONFIG_SIZE);
+				.getBootstart());
 		
 		// Seed initial frame registers
 		iframe._registers[NativeCode.POOL_REGISTER] =
 			ramAddr + bjh.getBootpool();
-		iframe._registers[NativeCode.STATIC_FIELD_REGISTER] =
-			ramAddr + bjh.getBootsfieldbase();
 		
 		// Setup virtual machine with initial thread
-		return new SummerCoatVirtualMachine(cpu);
+		return new SummerCoatVirtualMachine(cpu);*/
 	}
 	
 	/**

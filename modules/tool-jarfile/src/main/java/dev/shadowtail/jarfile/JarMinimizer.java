@@ -331,7 +331,7 @@ public final class JarMinimizer
 			// virtual machine initialization
 			properties[JarProperty.OFFSET_BOOT_INIT]
 				.set(bootstrap.futureAddress());
-			properties[JarProperty.OFFSET_BOOT_SIZE]
+			properties[JarProperty.SIZE_BOOT_INIT]
 				.set(bootstrap.futureSize());
 			properties[JarProperty.MEMHANDLEID_START_POOL]
 				.setInt(startPoolHandleId[0]);
@@ -344,7 +344,7 @@ public final class JarMinimizer
 		{
 			// No boot properties are valid here
 			properties[JarProperty.OFFSET_BOOT_INIT].setInt(0);
-			properties[JarProperty.OFFSET_BOOT_SIZE].setInt(0);
+			properties[JarProperty.SIZE_BOOT_INIT].setInt(0);
 			properties[JarProperty.MEMHANDLEID_START_POOL].setInt(0);
 			properties[JarProperty.RCDX_START_CLASS].setInt(0);
 		}

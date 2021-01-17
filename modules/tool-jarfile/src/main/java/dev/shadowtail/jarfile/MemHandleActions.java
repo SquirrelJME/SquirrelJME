@@ -191,7 +191,11 @@ public final class MemHandleActions
 			
 			// There is big endian data, so we can emit it
 			this._hasBigData = true;
-		} 
+		}
+		
+		// Reference count of the handle goes up
+		if (__oVal instanceof MemHandle)
+			((MemHandle)__oVal)._refCount++;
 	}
 	
 	/**

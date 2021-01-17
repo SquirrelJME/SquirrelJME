@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @since 2020/11/28
  */
-public abstract class MemHandle
+public final class MemHandle
 {
 	/** The handle count. */
 	private final AtomicInteger _count =
@@ -34,5 +34,16 @@ public abstract class MemHandle
 		if (__up)
 			return this._count.incrementAndGet();
 		return this._count.decrementAndGet();
+	}
+	
+	/**
+	 * Sets the explicit memory handle count.
+	 * 
+	 * @param __count The count to set to.
+	 * @since 2021/01/17
+	 */
+	public final void setCount(int __count)
+	{
+		this._count.set(__count);
 	}
 }
