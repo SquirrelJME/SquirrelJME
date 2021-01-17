@@ -328,12 +328,19 @@ public final class ChunkWriter
 			for (__FuturePoint__ point : section._futures)
 			{
 				// Determine the value to write
-				int value = point.value.get(); 
+				ChunkFuture pointVal = point.value;
+				long value = ((pointVal instanceof ChunkFutureLong) ?
+					((ChunkFutureLong)pointVal).getLong() :
+					(pointVal.get() & 0xFFFFFFFFL)); 
 				
 				// Perform the actual rewrite
 				int pa = point.address;
 				switch (point.type)
 				{
+					case BYTE:
+						data[pa] = (byte)(value);
+						break;
+				
 					case SHORT:
 						data[pa] = (byte)(value >>> 8);
 						data[pa + 1] = (byte)(value);
@@ -344,6 +351,17 @@ public final class ChunkWriter
 						data[pa + 1] = (byte)(value >>> 16);
 						data[pa + 2] = (byte)(value >>> 8);
 						data[pa + 3] = (byte)(value);
+						break;
+					
+					case LONG:
+						data[pa] = (byte)(value >>> 56);
+						data[pa + 1] = (byte)(value >>> 48);
+						data[pa + 2] = (byte)(value >>> 40);
+						data[pa + 3] = (byte)(value >>> 32);
+						data[pa + 4] = (byte)(value >>> 24);
+						data[pa + 5] = (byte)(value >>> 16);
+						data[pa + 6] = (byte)(value >>> 8);
+						data[pa + 7] = (byte)(value);
 						break;
 				}
 			}

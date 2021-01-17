@@ -10,39 +10,18 @@
 package net.multiphasicapps.io;
 
 /**
- * The type of data to write in.
+ * A future value that constants a long value.
  *
- * @since 2019/08/17
+ * @since 2021/01/17
  */
-public enum ChunkDataType
+public interface ChunkFutureLong
+	extends ChunkFuture
 {
-	/** Byte. */
-	BYTE(1),
-	
-	/** Short. */
-	SHORT(2),
-	
-	/** Integer. */
-	INTEGER(4),
-	
-	/** Long. */
-	LONG(8),
-	
-	/* End. */
-	;
-	
-	/** The number of bytes used for the data type. */
-	public final int numBytes;
-	
 	/**
-	 * Initializes the data type information.
+	 * Obtains the value from this future.
 	 * 
-	 * @param __numBytes The number of bytes to use.
-	 * @since 2020/12/04
+	 * @return The value of this future.
+	 * @since 2021/01/17
 	 */
-	ChunkDataType(int __numBytes)
-	{
-		this.numBytes = __numBytes;
-	}
+	long getLong();
 }
-

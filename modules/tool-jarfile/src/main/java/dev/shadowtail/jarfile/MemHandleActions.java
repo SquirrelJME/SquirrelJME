@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.io.ChunkFuture;
@@ -27,8 +28,22 @@ public final class MemHandleActions
 	final List<Object> _iStore =
 		new ArrayList<>();
 	
+	/** The type written for the storage. */
+	final List<MemoryType> _iType =
+		new ArrayList<>();
+	
+	/** The address written to. */
+	final List<Integer> _iAddr =
+		new ArrayList<>();
+	
 	/** The index value mapping. */
 	final short[] _iMap;
+	
+	/** Constant data area, big endian bytes are stored here. */
+	final byte[] _dataBig;
+	
+	/** Is there big data? */
+	boolean _hasBigData;
 	
 	/**
 	 * Initializes the memory handle actions.
@@ -45,9 +60,12 @@ public final class MemHandleActions
 		
 		this.byteCount = __byteSize;
 		this._iMap = new short[__byteSize];
+		this._dataBig = new byte[__byteSize];
 		
 		// The first value is always null as it is a null reference!
 		this._iStore.add(null);
+		this._iAddr.add(null);
+		this._iType.add(null);
 	}
 	
 	/**
@@ -129,7 +147,8 @@ public final class MemHandleActions
 			throw new IllegalArgumentException("ALGN " + __off);
 		
 		// {@squirreljme.error BC07 Invalid object specified. (The object)}
-		if (!((__oVal instanceof Integer) || (__oVal instanceof MemHandle) ||
+		if (!(MemHandleActions.isConstant(__oVal) ||
+			(__oVal instanceof MemHandle) ||
 			(__oVal instanceof ChunkFuture)))
 			throw new ClassCastException("BC07 " + __oVal);
 		
@@ -152,8 +171,85 @@ public final class MemHandleActions
 		// Value is stored here
 		iStore.add(nextId, __oVal);
 		
+		// Used for quicker referencing
+		this._iType.add(nextId, __type);
+		this._iAddr.add(nextId, __off);
+		
 		// Store value here
 		for (int i = 0, n = __type.byteCount; i < n; i++)
-			iMap[__off + i] = (short)nextId; 
+			iMap[__off + i] = (short)nextId;
+		
+		// Store into the constant data area if this is constant.
+		if (MemHandleActions.isConstant(__oVal))
+		{
+			long value = MemHandleActions.dataValue(__oVal);
+			
+			// Store in as big endian
+			byte[] dataBig = this._dataBig;
+			for (int i = 0, n = __type.byteCount; i < n; i++)
+				dataBig[__off + i] = (byte)(value >>> (((n - 1) - i) * 8));
+			
+			// There is big endian data, so we can emit it
+			this._hasBigData = true;
+		} 
+	}
+	
+	/**
+	 * Returns the data value for the given object, to be stored in the
+	 * constant data.
+	 * 
+	 * @param __oVal The value to get the value for.
+	 * @return The data value of the given object.
+	 * @throws IllegalArgumentException If the value is not constant.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/17
+	 */
+	public static long dataValue(Object __oVal)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__oVal == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BC0l The input object is not constant.
+		// (The object value)}
+		if (!MemHandleActions.isConstant(__oVal))
+			throw new IllegalArgumentException("BC0l " + __oVal);
+		
+		if (__oVal instanceof Byte)
+			return (Byte)__oVal & 0xFF;
+		else if (__oVal instanceof Short)
+			return (Short)__oVal & 0xFFFF;
+		else if (__oVal instanceof Integer)
+			return (Integer)__oVal & 0xFFFFFFFFL;
+		else if (__oVal instanceof Long)
+			return (Long)__oVal;
+		else if (__oVal instanceof Float)
+			return Float.floatToRawIntBits((Float)__oVal) & 0xFFFFFFFFL;
+		else if (__oVal instanceof Double)
+			return Double.doubleToRawLongBits((Double)__oVal);
+		
+		throw Debugging.oops(__oVal);
+	}
+	
+	/**
+	 * Checks if this data is constant or not.
+	 * 
+	 * @param __oVal The value to check.
+	 * @return If this is constant or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/17
+	 */
+	public static boolean isConstant(Object __oVal)
+		throws NullPointerException
+	{
+		if (__oVal == null)
+			throw new NullPointerException("NARG");
+		
+		return (__oVal instanceof Byte) ||
+			(__oVal instanceof Short) ||
+			(__oVal instanceof Integer) ||
+			(__oVal instanceof Long) ||
+			(__oVal instanceof Float) ||
+			(__oVal instanceof Double);
 	}
 }

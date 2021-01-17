@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkSection;
 
 /**
@@ -191,25 +192,81 @@ public final class MemHandles
 			MemHandleActions actions = memActions.optional(handle);
 			if (actions != null)
 			{
+				// If there is no big endian constant data, then just
+				// initialize with all zeroes
+				boolean hasBigData = actions._hasBigData;
+				if (!hasBigData)
+					__outData.writeByte(0);
+				
+				// Otherwise write all the constant data
+				else
+				{
+					__outData.writeByte(1);
+					__outData.write(actions._dataBig);
+				}
+				
 				// Internal short storage
 				List<Object> iStore = actions._iStore;
-				short[] iMap = actions._iMap;
+				List<Integer> iAddr = actions._iAddr;
+				List<MemoryType> iType = actions._iType;
 				
-				// Go through the mapping table to find entries to record
-				for (int i = 0, n = iMap.length; i < n; i++)
+				// Write all the address information and potential swapping
+				// if any...
+				for (int i = 1, n = iStore.size(); i < n; i++)
 				{
-					throw Debugging.todo();
+					// Get what we are writing
+					Object store = iStore.get(i);
+					int addr = iAddr.get(i);
+					MemoryType type = iType.get(i);
+					boolean isConst = MemHandleActions.isConstant(store);
+					
+					// Indicate flipping via negative data
+					if (isConst)
+						__outData.writeByte(-type.byteCount);
+					
+					// Is a late constant
+					else if (store instanceof ChunkFuture)
+						__outData.writeByte(type.byteCount);
+					
+					// Is a memory handle
+					else if (store instanceof MemHandle)
+						__outData.writeByte(type.byteCount |
+							BootstrapConstants.ACTION_MEMHANDLE_FLAG);
+					
+					// Should not occur
+					else
+						throw Debugging.oops(store);
+					
+					// Address of this position
+					__outData.writeUnsignedShortChecked(addr);
+					
+					// Non-const data (positive) follows
+					if (!isConst)
+					{
+						// A later future value
+						if (store instanceof ChunkFuture)
+							__outData.writeFuture(type.toChunkDataType(),
+								(ChunkFuture)store);
+						
+						// Memory handle reference
+						else if (store instanceof MemHandle)
+							__outData.writeInt(((MemHandle)store).id);
+						
+						// Should not occur
+						else
+							throw Debugging.oops(store);
+					}
 				}
 			}
 			
 			// End of action sequence and guard
 			__outData.writeByte(0);
-			__outData.writeInt(0xE3F4C2B1);
+			__outData.writeInt(BootstrapConstants.ACTION_SEQ_GUARD);
 		}
 		
 		// End of sequence and guard
 		__outData.writeInt(0);
-		__outData.writeInt(0xFEFFEFFF);
+		__outData.writeInt(BootstrapConstants.MEMORY_SEQ_GUARD);
 	}
 	
 	/**

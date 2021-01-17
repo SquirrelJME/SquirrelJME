@@ -11,6 +11,7 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.xlate.DataType;
+import net.multiphasicapps.io.ChunkDataType;
 
 /**
  * The memory type used.
@@ -50,6 +51,26 @@ public enum MemoryType
 	{
 		this.byteCount = __size;
 		this.lastOffset = __size - 1;
+	}
+	
+	/**
+	 * Returns the chunk data type used for this data.
+	 * 
+	 * @return The chunk data type used.
+	 * @since 2021/01/17
+	 */
+	protected ChunkDataType toChunkDataType()
+	{
+		switch (this)
+		{
+			case BYTE:		return ChunkDataType.BYTE;
+			case SHORT:		return ChunkDataType.SHORT;
+			case INTEGER:	return ChunkDataType.INTEGER;
+			case LONG:		return ChunkDataType.LONG;
+			
+			default:
+				throw Debugging.oops(this);
+		}
 	}
 	
 	/**

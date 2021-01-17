@@ -27,4 +27,16 @@ public interface BootstrapConstants
 	/** Mask for the ID. */
 	int HANDLE_ID_MASK =
 		0b0000_0000__1111_1111___1111_1111__1111_1111;
+	
+	/** Guard for action sequences. */
+	int ACTION_SEQ_GUARD =
+		0xE3F4C2B1;
+	
+	/** Guard for memory sequences. */
+	int MEMORY_SEQ_GUARD =
+		0xFEFFEFFF;
+	
+	/** Flag for memory handle actions. */
+	byte ACTION_MEMHANDLE_FLAG = 
+		0x40;
 }
