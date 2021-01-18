@@ -368,7 +368,7 @@ public final class ExecutionSlice
 	 * @since 2019/10/27
 	 */
 	public static final ExecutionSlice of(CallTraceElement __cte,
-		NativeCPU.Frame __nf, int __op, int[] __args, int __argslen,
+		CPUFrame __nf, int __op, int[] __args, int __argslen,
 		int[] __reglist)
 		throws NullPointerException
 	{

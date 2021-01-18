@@ -90,7 +90,7 @@ public final class NativeCPU
 	protected final int vcpuid;
 	
 	/** Stack frames. */
-	private final LinkedList<Frame> _frames =
+	private final LinkedList<CPUFrame> _frames =
 		new LinkedList<>();
 	
 	/** System call error states for this CPU. */
@@ -140,18 +140,18 @@ public final class NativeCPU
 	 * @return The newly created frame.
 	 * @since 2019/04/21
 	 */
-	public final Frame enterFrame(int __pc, int... __args)
+	public final CPUFrame enterFrame(int __pc, int... __args)
 	{
 		// Debug this
 		Debugging.debugNote("SC::enterFrame(%#08x, %s)",
 			__pc, IntegerArrayList.asList(__args));
 		
 		// Old frame, to source globals from
-		LinkedList<Frame> frames = this._frames;
-		Frame lastframe = frames.peekLast();
+		LinkedList<CPUFrame> frames = this._frames;
+		CPUFrame lastframe = frames.peekLast();
 		
 		// Setup new frame
-		Frame rv = new Frame();
+		CPUFrame rv = new CPUFrame();
 		rv._pc = __pc;
 		rv._entrypc = __pc;
 		rv._lastpc = __pc;
@@ -221,7 +221,7 @@ public final class NativeCPU
 			if (NativeCPU.ENABLE_DEBUG)
 			{
 				// Each frame has its own slices
-				for (Frame l : this._frames)
+				for (CPUFrame l : this._frames)
 				{
 					// Traces for this frame
 					System.err.print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -303,7 +303,7 @@ public final class NativeCPU
 		ProfiledThread profiler = this.profiler;
 		
 		// Frame specific info
-		Frame nowframe = null;
+		CPUFrame nowframe = null;
 		int[] lr = null;
 		int pc = -1;
 		
@@ -318,7 +318,7 @@ public final class NativeCPU
 		int pointcounter = 0;
 		
 		// Execution is effectively an infinite loop
-		LinkedList<Frame> frames = this._frames;
+		LinkedList<CPUFrame> frames = this._frames;
 		for (int frameat = frames.size(), lastframe = -1; frameat >= __fl;
 			frameat = frames.size())
 		{
@@ -839,7 +839,7 @@ public final class NativeCPU
 				case NativeInstructionType.RETURN:
 					{
 						// Go up frame
-						Frame was = frames.removeLast(),
+						CPUFrame was = frames.removeLast(),
 							now = frames.peekLast();
 						
 						// {@squirreljme.error AE0m Return from the main frame
@@ -946,7 +946,7 @@ public final class NativeCPU
 						// Handle system call as is from the supervisor
 						// IPC Exception load/store is not included
 						// IPC Calls are always virtualized even in supervisor.
-						Frame was = frames.getLast();
+						CPUFrame was = frames.getLast();
 						if ((was._taskid == 0 ||
 							syscallid == SystemCallIndex.EXCEPTION_LOAD ||
 							syscallid == SystemCallIndex.EXCEPTION_STORE) &&
@@ -984,7 +984,7 @@ public final class NativeCPU
 						{
 							// Enter the frame
 							int[] svp = this._supervisorproperties;
-							Frame f = this.enterFrame(
+							CPUFrame f = this.enterFrame(
 								svp[SupervisorPropertyIndex.
 									TASK_SYSCALL_METHOD_HANDLER]);
 							
@@ -1053,7 +1053,7 @@ public final class NativeCPU
 	 */
 	public final CallTraceElement[] trace()
 	{
-		LinkedList<Frame> frames = this._frames;
+		LinkedList<CPUFrame> frames = this._frames;
 		
 		// Need to store all the frames
 		int numframes = frames.size();
@@ -1074,7 +1074,7 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/22
 	 */
-	public final CallTraceElement trace(Frame __f)
+	public final CallTraceElement trace(CPUFrame __f)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -1100,10 +1100,10 @@ public final class NativeCPU
 	 */
 	public final CallTraceElement traceTop()
 	{
-		LinkedList<Frame> frames = this._frames;
+		LinkedList<CPUFrame> frames = this._frames;
 		
 		// Only look at the top most frame
-		Frame top = frames.peekLast();
+		CPUFrame top = frames.peekLast();
 		if (top == null)
 			return new CallTraceElement();
 		return this.trace(top);
@@ -1120,7 +1120,7 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	private final void __debugEntry(Frame __f, int __pcl, int __pmn, int __pmt,
+	private final void __debugEntry(CPUFrame __f, int __pcl, int __pmn, int __pmt,
 		int __psf)
 		throws NullPointerException
 	{
@@ -1175,7 +1175,7 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/30
 	 */
-	private final void __debugExit(Frame __f)
+	private final void __debugExit(CPUFrame __f)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -1205,7 +1205,7 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	private final void __debugPoint(Frame __f, int __sln, int __jop, int __jpc)
+	private final void __debugPoint(CPUFrame __f, int __sln, int __jop, int __jpc)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -1347,9 +1347,9 @@ public final class NativeCPU
 				{
 					// Locate frame
 					int fr = __args[0];
-					LinkedList<Frame> frames = this._frames;
+					LinkedList<CPUFrame> frames = this._frames;
 					int numframes = frames.size();
-					Frame frame = ((fr < 0 || fr >= numframes) ? null :
+					CPUFrame frame = ((fr < 0 || fr >= numframes) ? null :
 						frames.get((numframes - 1) - fr));
 					
 					// Depends on the ID
@@ -1469,8 +1469,8 @@ public final class NativeCPU
 				// Gets the frame task ID
 			case SystemCallIndex.FRAME_TASK_ID_GET:
 				{
-					LinkedList<Frame> frames = this._frames;
-					Frame frame = frames.getLast();
+					LinkedList<CPUFrame> frames = this._frames;
+					CPUFrame frame = frames.getLast();
 					
 					// Is fine
 					rv = frame._taskid;
@@ -1481,8 +1481,8 @@ public final class NativeCPU
 				// Sets the frame task ID
 			case SystemCallIndex.FRAME_TASK_ID_SET:
 				{
-					LinkedList<Frame> frames = this._frames;
-					Frame frame = frames.getLast();
+					LinkedList<CPUFrame> frames = this._frames;
+					CPUFrame frame = frames.getLast();
 					
 					// Set
 					frame._taskid = __args[0];
@@ -1715,73 +1715,5 @@ public final class NativeCPU
 		return rv;
 	}
 	
-	/**
-	 * This represents a single frame in the execution stack.
-	 *
-	 * @since 2019/04/21
-	 */
-	public static final class Frame
-	{
-		/** Execution slices. */
-		final Deque<ExecutionSlice> _execslices;
-		
-		/** Registers for this frame. */
-		final int[] _registers =
-			new int[NativeCPU.MAX_REGISTERS];
-		
-		/** The entry PC address. */
-		int _entrypc;
-		
-		/** The PC address for this frame. */
-		volatile int _pc;
-		
-		/** Last executed address. */
-		int _lastpc;
-		
-		/** The executing class. */
-		String _inclass;
-		
-		/** Executing class name pointer. */
-		int _inclassp;
-		
-		/** The executing method name. */
-		String _inmethodname;
-		
-		/** Executing method name pointer. */
-		int _inmethodnamep;
-		
-		/** The executing method type. */
-		String _inmethodtype;
-		
-		/** Executing method type pointer. */
-		int _inmethodtypep;
-		
-		/** Source file. */
-		String _insourcefile;
-		
-		/** Source file pointer. */
-		int _insourcefilep;
-		
-		/** The current line. */
-		int _inline;
-		
-		/** The current Java operation. */
-		int _injop;
-		
-		/** The current Java address. */
-		int _injpc;
-		
-		/** The current task ID. */
-		int _taskid;
-		
-		/**
-		 * Potential initialization.
-		 */
-		{
-			this._execslices = (NativeCPU.ENABLE_DEBUG ?
-				new LinkedList<ExecutionSlice>() :
-				(Deque<ExecutionSlice>)null);
-		}
-	}
 }
 

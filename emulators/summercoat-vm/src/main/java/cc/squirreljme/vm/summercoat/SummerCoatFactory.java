@@ -385,7 +385,7 @@ public class SummerCoatFactory
 		
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps);
-		NativeCPU.Frame iframe = cpu.enterFrame(startAddress);
+		CPUFrame iframe = cpu.enterFrame(startAddress);
 		
 		// Which memory handle contains the pool?
 		iframe._registers[NativeCode.POOL_REGISTER] = virtHandles.get(
