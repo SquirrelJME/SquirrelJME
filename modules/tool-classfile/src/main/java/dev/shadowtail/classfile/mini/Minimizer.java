@@ -210,6 +210,7 @@ public final class Minimizer
 		}
 		
 		// Write static and instance method counts
+		ChunkSection[] methodChunks = new ChunkSection[2];
 		for (int i = 0; i < 2; i++)
 		{
 			int base = (i == 0 ?
@@ -220,6 +221,7 @@ public final class Minimizer
 			// Generate section
 			ChunkSection subsection =
 				output.addSection(tm.getBytes(localPool), 4);
+			methodChunks[i] = subsection;
 			
 			properties[base + StaticClassProperty.BASEDX_INT_X_METHOD_COUNT]
 				.setInt(tm._count);
@@ -238,7 +240,8 @@ public final class Minimizer
 			properties[StaticClassProperty.OFFSET_BOOT_METHOD].setInt(-1);
 		else
 			properties[StaticClassProperty.OFFSET_BOOT_METHOD].set(
-				methods[0]._codeChunks.get(bootMethodId).futureAddress());
+				methods[0]._codeChunks.get(bootMethodId).futureAddress(),
+				methodChunks[0].futureAddress());
 		
 		// Generate a UUID and write it
 		long uuid = Minimizer.generateUUID();

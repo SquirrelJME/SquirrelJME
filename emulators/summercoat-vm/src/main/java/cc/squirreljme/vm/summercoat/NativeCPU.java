@@ -51,7 +51,7 @@ public final class NativeCPU
 	 * Should SummerCoat print lots of debugging information?}
 	 */
 	public static final boolean ENABLE_DEBUG =
-		Boolean.getBoolean("cc.squirreljme.summercoat.debug");
+		true || Boolean.getBoolean("cc.squirreljme.summercoat.debug");
 	
 	/** Maximum amount of CPU registers. */
 	public static final int MAX_REGISTERS =
@@ -513,8 +513,7 @@ public final class NativeCPU
 						profiler.exitFrame();
 					}
 					
-					// {@squirreljme.error AE04 CPU breakpoint hit.}
-					throw new VMException("AE04");
+					throw new VMException("Breakpoint Hit!");
 				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
@@ -1129,12 +1128,12 @@ public final class NativeCPU
 			throw new NullPointerException("NARG");
 		
 		// Get the pool address
-		int pooladdr = __f._registers[NativeCode.POOL_REGISTER];
+		int poolAddr = __f._registers[NativeCode.POOL_REGISTER];
 		
-		int icl = this.memory.memReadInt(pooladdr + (__pcl * 4)),
-			imn = this.memory.memReadInt(pooladdr + (__pmn * 4)),
-			imt = this.memory.memReadInt(pooladdr + (__pmt * 4)),
-			isf = this.memory.memReadInt(pooladdr + (__psf * 4));
+		int icl = this.__loadDebugInt(poolAddr + (__pcl * 4)),
+			imn = this.__loadDebugInt(poolAddr + (__pmn * 4)),
+			imt = this.__loadDebugInt(poolAddr + (__pmt * 4)),
+			isf = this.__loadDebugInt(poolAddr + (__psf * 4));
 		
 		// Store in state
 		__f._inclassp = icl;
@@ -1218,6 +1217,26 @@ public final class NativeCPU
 	}
 	
 	/**
+	 * Attempts to load the given integer, without failing.
+	 * 
+	 * @param __addr The address to read from.
+	 * @return The read value or {@code __addr}.
+	 * @since 2021/01/17
+	 */
+	private int __loadDebugInt(int __addr)
+	{
+		WritableMemory memory = this.memory;
+		try
+		{
+			return memory.memReadInt(__addr);
+		}
+		catch (VMMemoryAccessException e)
+		{
+			return __addr;
+		}
+	}
+	
+	/**
 	 * Loads a UTF string from the given memory address.
 	 *
 	 * @param __addr The address to read from.
@@ -1228,19 +1247,24 @@ public final class NativeCPU
 	{
 		// Read length to figure out how long the string is
 		WritableMemory memory = this.memory;
-		int strlen = memory.memReadShort(__addr) & 0xFFFF;
-		
-		// Decode string data
-		try (DataInputStream dis = new DataInputStream(
-			new ReadableMemoryInputStream(memory, __addr, strlen + 2)))
+		int strlen = -1;
+		try
 		{
-			return dis.readUTF();
+			strlen = memory.memReadShort(__addr) & 0xFFFF;
+			
+			// Decode string data
+			try (DataInputStream dis = new DataInputStream(
+				new ReadableMemoryInputStream(memory, __addr,
+					strlen + 2)))
+			{
+				return dis.readUTF();
+			}
 		}
 		
 		// Could not read string, use some other string form
-		catch (IOException e)
+		catch (IOException|VMMemoryAccessException e)
 		{
-			return String.format("??? @%08x (len=%d)", __addr, strlen);
+			return String.format("@%08x/%d???", __addr, strlen);
 		}
 	}
 	

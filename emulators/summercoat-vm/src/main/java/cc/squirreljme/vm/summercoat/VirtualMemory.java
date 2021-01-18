@@ -74,8 +74,8 @@ public final class VirtualMemory
 		}
 		
 		// Unmapped address
-		throw new VMException(String.format("Unmapped Address %#010x",
-			__addr));
+		throw new VMMemoryAccessException(String.format(
+			"Unmapped Address %#010x", __addr));
 	}
 	
 	/**
@@ -125,7 +125,8 @@ public final class VirtualMemory
 		
 		// {@squirreljme.error AE0j Invalid write to unmapped or non-writable
 		// memory! (The address; The value to write)}
-		throw new VMException(String.format("AE0j %08x %d", __addr, __v));
+		throw new VMMemoryAccessException(
+			String.format("AE0j %08x %d", __addr, __v));
 	}
 }
 

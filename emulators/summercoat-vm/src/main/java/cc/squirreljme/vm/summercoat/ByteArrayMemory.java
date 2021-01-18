@@ -81,7 +81,7 @@ public final class ByteArrayMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size)
-			throw new VMException("Invalid Address: " + __addr);
+			throw new VMMemoryAccessException("Invalid Address: " + __addr);
 		
 		return this._bytes[this.boff + __addr] & 0xFF;
 	}
@@ -131,7 +131,7 @@ public final class ByteArrayMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 3)
-			throw new VMException("Invalid Address: " + __addr);
+			throw new VMMemoryAccessException("Invalid Address: " + __addr);
 		
 		byte[] bytes = this._bytes;
 		int rp = this.boff + __addr;
@@ -150,7 +150,7 @@ public final class ByteArrayMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 1)
-			throw new VMException("Invalid Address: " + __addr);
+			throw new VMMemoryAccessException("Invalid Address: " + __addr);
 		
 		byte[] bytes = this._bytes;
 		int rp = this.boff + __addr;

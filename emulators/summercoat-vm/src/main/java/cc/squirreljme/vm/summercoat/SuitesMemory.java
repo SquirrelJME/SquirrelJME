@@ -101,7 +101,8 @@ public final class SuitesMemory
 		// {@squirreljme.error AE0q Suite space has exceeded size limit of
 		// 2GiB. (The current size; The amount of bytes over)}
 		if (off < 0)
-			throw new VMException("AE0q " + (((long)off) & 0xFFFFFFFFL) + " " +
+			throw new VMMemoryAccessException("AE0q " +
+				(((long)off) & 0xFFFFFFFFL) + " " +
 				(off - 0x7FFFFFFF));
 		
 		// Store all the various suite memories
@@ -161,7 +162,7 @@ public final class SuitesMemory
 			
 		// Negative address accessed
 		if (__addr < 0)
-			throw new VMException(String.format(
+			throw new VMMemoryAccessException(String.format(
 				"Negative address byte read: %#08x", __addr));
 		
 		// Reading from the config table?
@@ -175,7 +176,7 @@ public final class SuitesMemory
 		// Fail if illegal memory is read, this should never happen
 		SuiteMemory[] suiteMem = this._suitemem;
 		if (si >= suiteMem.length)
-			throw new VMException(String.format(
+			throw new VMMemoryAccessException(String.format(
 				"Invalid byte read: %#08x (library: %d of %d)",
 				__addr, si, suiteMem.length));
 		

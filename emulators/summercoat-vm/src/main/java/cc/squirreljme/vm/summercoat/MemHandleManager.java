@@ -155,7 +155,7 @@ public final class MemHandleManager
 	{
 		MemHandle rv = this._handles.get(__id);
 		if (rv == null)
-			throw new VMException("No handle for 0x" +
+			throw new VMMemoryAccessException("No handle for 0x" +
 				Integer.toUnsignedString(__id, 16));
 		
 		return rv;

@@ -51,7 +51,7 @@ public final class RawMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size)
-			throw new VMException("Invalid Address: " + __addr);
+			throw new VMMemoryAccessException("Invalid Address: " + __addr);
 		
 		return (this.bytes[__addr] & 0xFF);
 	}
@@ -65,7 +65,7 @@ public final class RawMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 3)
-			throw new VMException("Invalid Address: " + __addr);
+			throw new VMMemoryAccessException("Invalid Address: " + __addr);
 		
 		byte[] bytes = this.bytes;
 		return ((bytes[__addr++] & 0xFF) << 24) |
@@ -83,7 +83,7 @@ public final class RawMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 1)
-			throw new VMException("Invalid Address: " + __addr);
+			throw new VMMemoryAccessException("Invalid Address: " + __addr);
 		
 		byte[] bytes = this.bytes;
 		return (((bytes[__addr++] & 0xFF) << 8) |

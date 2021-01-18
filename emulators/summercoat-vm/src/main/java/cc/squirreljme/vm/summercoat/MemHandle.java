@@ -94,7 +94,7 @@ public class MemHandle
 	public int memReadByte(int __addr)
 	{
 		if (__addr < 0 || __addr >= this.rawSize)
-			throw new VMException("Invalid memReadByte: " + __addr);
+			throw new VMMemoryAccessException("Invalid memReadByte: " + __addr);
 		
 		return this._bytes[__addr] & 0xFF;
 	}
@@ -127,7 +127,7 @@ public class MemHandle
 	public void memWriteByte(int __addr, int __v)
 	{
 		if (__addr < 0 || __addr >= this.rawSize)
-			throw new VMException("Invalid memWriteByte: " + __addr);
+			throw new VMMemoryAccessException("Invalid memWriteByte: " + __addr);
 		
 		this._bytes[__addr] = (byte)__v;
 	}
@@ -149,7 +149,7 @@ public class MemHandle
 		int size = this.size;
 		int endAddr = __addr + __l;
 		if (__addr < 0 || endAddr > size)
-			throw new VMException("Invalid memWriteByte: " + __addr);
+			throw new VMMemoryAccessException("Invalid memWriteByte: " + __addr);
 		
 		// Split off to the special region, if there is one?
 		int rawSize = this.rawSize;
@@ -185,7 +185,7 @@ public class MemHandle
 	protected void specialWriteBytes(int __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new VMException("Invalid specialWriteBytes: " + __addr);
+		throw new VMMemoryAccessException("Invalid specialWriteBytes: " + __addr);
 	}
 	
 	/**

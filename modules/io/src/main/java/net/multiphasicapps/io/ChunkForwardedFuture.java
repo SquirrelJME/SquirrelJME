@@ -20,6 +20,9 @@ public final class ChunkForwardedFuture
 	/** The future to get the value from. */
 	private volatile ChunkFuture _future;
 	
+	/** An offset, which may be a future. */
+	private volatile ChunkFuture _offset;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/11/29
@@ -34,7 +37,9 @@ public final class ChunkForwardedFuture
 			if (future == null)
 				throw new IllegalStateException("BD05");
 			
-			return future.get();
+			// Future with optional offset applied?
+			ChunkFuture offset = this._offset;
+			return future.get() + (offset == null ? 0 : offset.get());
 		}
 	}
 	
@@ -62,12 +67,41 @@ public final class ChunkForwardedFuture
 	public void set(ChunkFuture __future)
 		throws NullPointerException
 	{
+		this.set(__future, null);
+	}
+	
+	/**
+	 * Sets the future to read a value from.
+	 * 
+	 * @param __future The future to set.
+	 * @param __off Offset for the future.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/17
+	 */
+	public void set(ChunkFuture __future, int __off)
+		throws NullPointerException
+	{
+		this.set(__future, new ChunkFutureInteger(__off));
+	}
+	
+	/**
+	 * Sets the future to read a value from.
+	 * 
+	 * @param __future The future to set.
+	 * @param __off Optional offset for the future.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/17
+	 */
+	public void set(ChunkFuture __future, ChunkFuture __off)
+		throws NullPointerException
+	{
 		if (__future == null)
 			throw new NullPointerException("NARG");
 		
 		synchronized (this)
 		{
 			this._future = __future;
+			this._offset = __off;
 		}
 	}
 	
@@ -82,7 +116,7 @@ public final class ChunkForwardedFuture
 	{
 		ChunkFutureInteger future = new ChunkFutureInteger(__value);
 		
-		this.set(future);
+		this.set(future, null);
 		
 		return future;
 	}

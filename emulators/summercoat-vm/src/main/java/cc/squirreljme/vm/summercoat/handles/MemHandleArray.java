@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat.handles;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.MemHandle;
+import cc.squirreljme.vm.summercoat.VMMemoryAccessException;
 
 /**
  * A memory handle that is an array.
@@ -69,12 +70,14 @@ public abstract class MemHandleArray
 		int relAddr = __addr - super.rawSize;
 		int cellSize = this.cellSize;
 		if ((relAddr % cellSize) != 0)
-			throw new VMException(String.format("Invalid cell read %d @ %#x",
+			throw new VMMemoryAccessException(String.format(
+				"Invalid cell read %d @ %#x",
 				cellSize, relAddr));
 		
 		// Are we not reading full cells?
 		if ((__l % cellSize) != 0)
-			throw new VMException(String.format("Invalid cell read %d / %d",
+			throw new VMMemoryAccessException(String.format(
+				"Invalid cell read %d / %d",
 				cellSize, __l));
 		
 		// Determine the cell we are in
