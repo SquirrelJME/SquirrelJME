@@ -82,6 +82,18 @@ public final class Debugging
 	}
 	
 	/**
+	 * Emits a notice
+	 *
+	 * @param __fmt The format.
+	 * @param __args The arguments to the string.
+	 * @since 2021/01/18
+	 */
+	public static void notice(String __fmt, Object... __args)
+	{
+		Debugging.__format('\0', '\0', __fmt, __args);
+	}
+	
+	/**
 	 * Emits an oops error.
 	 *
 	 * @return The generated error.
@@ -327,9 +339,12 @@ public final class Debugging
 			// Do not re-enter this loop
 			Debugging._noLoop = true;
 			
-			// Print header marker
-			Debugging.__print(__cha, __chb);
-			Debugging.__print(':', ' ');
+			// Print header marker, but only if it is used
+			if (__cha != '\0' && __chb != '\0')
+			{
+				Debugging.__print(__cha, __chb);
+				Debugging.__print(':', ' ');
+			}
 			
 			// The specifier to print along with the field index
 			boolean specifier = false,
