@@ -327,7 +327,7 @@ public final class JarMinimizer
 			ChunkSection bootstrap = out.addSection(
 				ChunkWriter.VARIABLE_SIZE, 4);
 			int[] startPoolHandleId = new int[1];
-			bootState.boot(decPool, bootstrap, startPoolHandleId);
+			bootState.boot(decPool, lpd, bootstrap, startPoolHandleId);
 			
 			// Use the properties of the bootstrap which will be read on
 			// virtual machine initialization

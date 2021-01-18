@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.io.ChunkDataType;
 import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkSection;
 
@@ -256,6 +257,11 @@ public final class MemHandles
 						__outData.writeByte(
 							BootstrapConstants.ACTION_MEMHANDLE);
 					
+					// Is a BootJAR based pointer
+					else if (store instanceof BootJarPointer)
+						__outData.writeByte(
+							BootstrapConstants.ACTION_BOOTJARP);
+					
 					// Should not occur
 					else
 						throw Debugging.oops(store);
@@ -276,6 +282,16 @@ public final class MemHandles
 						{
 							MemHandle ref = (MemHandle)store;
 							__outData.writeInt(ref.id);
+						}
+						
+						// Boot JAR Pointer
+						else if (store instanceof BootJarPointer)
+						{
+							// The values here are always a future since the
+							// positioning may be dynamic!
+							BootJarPointer bjp = (BootJarPointer)store;
+							__outData.writeFuture(ChunkDataType.INTEGER,
+								bjp.value);
 						}
 						
 						// Should not occur

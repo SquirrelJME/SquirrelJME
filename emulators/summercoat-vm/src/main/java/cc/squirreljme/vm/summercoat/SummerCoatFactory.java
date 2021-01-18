@@ -304,6 +304,16 @@ public class SummerCoatFactory
 							
 							handle.memWriteHandle(addr, target);
 							break;
+							
+							// Boot Jar Pointer
+						case BootstrapConstants.ACTION_BOOTJARP:
+							// Read the desired base offset
+							int baseOff = dis.readInt();
+							
+							// Write where it should belong
+							handle.memWriteInt(addr,
+								romBase + bootJarOff + baseOff);
+							break;
 						
 						default:
 							throw new VMException("Invalid type: " + type);
@@ -388,8 +398,8 @@ public class SummerCoatFactory
 		CPUFrame iframe = cpu.enterFrame(startAddress);
 		
 		// Which memory handle contains the pool?
-		iframe._registers[NativeCode.POOL_REGISTER] = virtHandles.get(
-			bootJarHeader.get(JarProperty.MEMHANDLEID_START_POOL)).id;
+		iframe.set(NativeCode.POOL_REGISTER, virtHandles.get(
+			bootJarHeader.get(JarProperty.MEMHANDLEID_START_POOL)).id);
 		
 		// Setup virtual machine with initial thread
 		return new SummerCoatVirtualMachine(cpu);

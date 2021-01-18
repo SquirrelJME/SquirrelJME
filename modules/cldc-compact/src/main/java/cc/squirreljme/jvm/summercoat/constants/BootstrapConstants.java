@@ -43,4 +43,8 @@ public interface BootstrapConstants
 	/** Flag for memory handle actions. */
 	byte ACTION_MEMHANDLE = 
 		0x40;
+	
+	/** Boot Jar Pointer action. */
+	byte ACTION_BOOTJARP =
+		0x20;
 }

@@ -149,7 +149,8 @@ public final class MemHandleActions
 		// {@squirreljme.error BC07 Invalid object specified. (The object)}
 		if (!(MemHandleActions.isConstant(__oVal) ||
 			(__oVal instanceof MemHandle) ||
-			(__oVal instanceof ChunkFuture)))
+			(__oVal instanceof ChunkFuture) ||
+			(__oVal instanceof BootJarPointer)))
 			throw new ClassCastException("BC07 " + __oVal);
 		
 		// Check for storage ID overflow

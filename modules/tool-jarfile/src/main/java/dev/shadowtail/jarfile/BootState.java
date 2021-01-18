@@ -35,6 +35,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.PrimitiveType;
+import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkSection;
 
 /**
@@ -98,6 +99,9 @@ public final class BootState
 	/** Base array size. */
 	int _baseArraySize =
 		-1;
+	
+	/** The pool chunk. */
+	private ChunkSection _poolChunk;
 	
 	/**
 	 * Adds the specified class to be loaded and handled later.
@@ -179,22 +183,25 @@ public final class BootState
 	 * Performs the boot process for the system.
 	 * 
 	 * @param __pool The pool to use for loading.
+	 * @param __lpd The local dual pool section.
 	 * @param __outData The output data for the bootstrap.
 	 * @param __startPoolHandleId The target handle ID for the pool.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/16
 	 */
-	public void boot(DualClassRuntimePool __pool, ChunkSection __outData,
+	public void boot(DualClassRuntimePool __pool, ChunkSection __lpd,
+		ChunkSection __outData,
 		int[] __startPoolHandleId)
 		throws IOException, NullPointerException
 	{
-		if (__pool == null || __outData == null ||
+		if (__pool == null || __lpd == null || __outData == null ||
 			__startPoolHandleId == null)
 			throw new NullPointerException("NARG");
 		
 		// Set the boot pool because we need everything that is inside
 		this._pool = __pool;
+		this._poolChunk = __lpd;
 		
 		// Recursively load the boot class and any dependent class
 		ClassState boot = this.loadClass(this._bootClass);
@@ -422,7 +429,23 @@ public final class BootState
 		
 		// Set and initialize all of the entries within the pool
 		for (int i = 0; i < rtPoolSz; i++)
-			pool.set(i, this.__loadPool(rtPool.byIndex(i)));
+		{
+			Object pv = this.__loadPool(rtPool, rtPool.byIndex(i));
+			
+			// Depends on the type of value returned
+			if (pv instanceof Integer)
+				pool.set(i, (int)pv);
+			else if (pv instanceof MemHandle)
+				pool.set(i, (MemHandle)pv);
+			else if (pv instanceof ChunkFuture)
+				pool.set(i, (ChunkFuture)pv);
+			else if (pv instanceof BootJarPointer)
+				pool.set(i, (BootJarPointer)pv);
+			
+			// Do not know what to do with this
+			else
+				throw Debugging.oops(pv);
+		}
 		
 		// The component class, if this is an array
 		if (__cl.isArray())
@@ -797,21 +820,46 @@ public final class BootState
 	
 	/**
 	 * Loads the specified pool entry into memory and returns the handle.
-	 * 
+	 *
+	 * @param __clPool The class runtime pool;
 	 * @param __entry The entry to load.
-	 * @return The memory handle for the entry data.
+	 * @return The loaded pool value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
-	private MemHandle __loadPool(BasicPoolEntry __entry)
+	private Object __loadPool(BasicPool __clPool, BasicPoolEntry __entry)
 		throws NullPointerException
 	{
-		if (__entry == null)
+		if (__clPool == null || __entry == null)
 			throw new NullPointerException("NARG");
+		
+		// Needed pool information
+		DualClassRuntimePool dualPool = this._pool;
+		BasicPool staticDualPool = dualPool.classPool();
+		ChunkSection poolChunk = this._poolChunk;
+		
+		// Determine where the pool is located
+		int poolOff = poolChunk.futureAddress().get();
+		
+		// Debugging
+		Debugging.debugNote("Load pool entry: %s", __entry);
+		
+		// Depends on the type used
+		switch (__entry.type())
+		{
+				// A noted string for debugging purposes, this directly points
+				// to the ROM for String data
+			case NOTED_STRING:
+				BasicPoolEntry poolStr =
+					staticDualPool.byIndex(__entry.part(0));
+				
+				// These point to STRINGs that prefix with [hash$16 len$16]
+				return new BootJarPointer(poolOff + poolStr.offset + 4);
+		}
 		
 		if (false)
 			throw Debugging.todo();
-		Debugging.todoNote("Load pool entry: %s", __entry);
-		return this._memHandles.allocObject(0);
+		Debugging.todoNote("Handle pool entry: %s", __entry);
+		return 0;//this._memHandles.allocObject(0);
 	}
 }

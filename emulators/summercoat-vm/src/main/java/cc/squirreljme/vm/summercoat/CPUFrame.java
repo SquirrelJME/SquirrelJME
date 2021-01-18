@@ -9,6 +9,12 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import dev.shadowtail.classfile.nncc.NativeCode;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -19,11 +25,14 @@ import java.util.LinkedList;
  */
 public final class CPUFrame
 {
+	/** The memory handle manager, for easy handle access. */
+	private final Reference<MemHandleManager> _handleManager;
+	
 	/** Execution slices. */
 	final Deque<ExecutionSlice> _execslices;
 	
 	/** Registers for this frame. */
-	final int[] _registers =
+	private final int[] _registers =
 		new int[NativeCPU.MAX_REGISTERS];
 	
 	/** The entry PC address. */
@@ -78,5 +87,115 @@ public final class CPUFrame
 		this._execslices = (NativeCPU.ENABLE_DEBUG ?
 			new LinkedList<ExecutionSlice>() :
 			(Deque<ExecutionSlice>)null);
+	}
+	
+	/**
+	 * Initializes the frame.
+	 * 
+	 * @param __man The manager used to obtain handles.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/18
+	 */
+	public CPUFrame(MemHandleManager __man)
+		throws NullPointerException
+	{
+		if (__man == null)
+			throw new NullPointerException("NARG");
+		
+		this._handleManager = new WeakReference<>(__man);
+	}
+	
+	/**
+	 * Returns the value of the given register.
+	 * 
+	 * @param __r The register to read from.
+	 * @return The value of the given register.
+	 * @since 2021/01/18
+	 */
+	public int get(int __r)
+	{
+		return this._registers[__r];
+	}
+	
+	/**
+	 * Returns a handle for the given register.
+	 * 
+	 * @param __r The register to read from.
+	 * @return The handle value.
+	 * @since 2021/01/18
+	 */
+	public MemHandle getHandle(int __r)
+	{
+		int val = this._registers[__r];
+		return (val == 0 ? null : this.__handleManager().get(val));
+	}
+	
+	/**
+	 * Returns all of the registers.
+	 * 
+	 * @return The registers.
+	 * @since 2021/01/18
+	 */
+	@Deprecated
+	public int[] getRegisters()
+	{
+		return this._registers;
+	}
+	
+	/**
+	 * Reads a value from the pool.
+	 * 
+	 * @param __dx The index to read.
+	 * @return The value of the index. 
+	 * @throws VMException If this is not a constant pool or the index is out
+	 * of the constant pool bounds.
+	 * @since 2021/01/18
+	 */
+	public int pool(int __dx)
+		throws VMException
+	{
+		// This must be a pool handle
+		MemHandle poolHandle = this.getHandle(NativeCode.POOL_REGISTER);
+		if (poolHandle == null || poolHandle.kind != MemHandleKind.POOL)
+			throw new VMException("Not a pool handle: " + poolHandle);
+		
+		// Ensure it is in the pool
+		if (__dx < 0 || __dx >= (poolHandle.size / 4))
+			throw new VMException("Out of bounds pool read: " + __dx);
+		
+		// Return the value of the entry
+		int rv = poolHandle.memReadInt(__dx * 4);
+		
+		// Debug
+		Debugging.debugNote("pool[%d] = %d (0x%08x)", __dx, rv, rv);
+		
+		return rv;
+	}
+	
+	/**
+	 * Sets the value of the given register.
+	 * 
+	 * @param __r The register to set.
+	 * @param __v The value to set.
+	 * @since 2021/01/18
+	 */
+	public final void set(int __r, int __v)
+	{
+		this._registers[__r] = __v;
+	}
+	
+	/**
+	 * Returns the memory handle manager.
+	 * 
+	 * @return The handle manager.
+	 * @since 2021/01/18
+	 */
+	private MemHandleManager __handleManager()
+	{
+		MemHandleManager rv = this._handleManager.get();
+		if (rv == null)
+			throw new IllegalStateException("Handle manager was GCed.");
+		
+		return rv;
 	}
 }

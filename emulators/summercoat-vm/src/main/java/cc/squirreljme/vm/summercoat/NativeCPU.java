@@ -151,7 +151,7 @@ public final class NativeCPU
 		CPUFrame lastframe = frames.peekLast();
 		
 		// Setup new frame
-		CPUFrame rv = new CPUFrame();
+		CPUFrame rv = new CPUFrame(this.state.memHandles);
 		rv._pc = __pc;
 		rv._entrypc = __pc;
 		rv._lastpc = __pc;
@@ -160,11 +160,11 @@ public final class NativeCPU
 		frames.addLast(rv);
 		
 		// Seed initial registers, if valid
-		int[] dest = rv._registers;
+		int[] dest = rv.getRegisters();
 		if (lastframe != null)
 		{
 			// Copy globals
-			int[] src = lastframe._registers;
+			int[] src = lastframe.getRegisters();
 			for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE; i++)
 				dest[i] = src[i];
 			
@@ -336,7 +336,7 @@ public final class NativeCPU
 					return;
 				
 				// Load stuff needed for execution
-				lr = nowframe._registers;
+				lr = nowframe.getRegisters();
 				pc = nowframe._pc;
 				
 				// Used to auto-detect frame change
@@ -848,10 +848,10 @@ public final class NativeCPU
 						if (now == null)
 							throw new VMException(String.format(
 								"AE0m [%d, %d] @%08x",
-								was._registers[NativeCode.RETURN_REGISTER],
-								was._registers[NativeCode.RETURN_REGISTER + 1],
-								was._registers[
-									NativeCode.EXCEPTION_REGISTER]));
+								was.get(NativeCode.RETURN_REGISTER),
+								was.get(NativeCode.RETURN_REGISTER + 1),
+								was.get(
+									NativeCode.EXCEPTION_REGISTER)));
 						
 						// Capture the execution slices of this popped frame
 						Deque<Deque<ExecutionSlice>> sopf = this._sopf;
@@ -868,8 +868,8 @@ public final class NativeCPU
 						// We are going back onto a frame so copy all
 						// the globals which were set since they are meant to
 						// be global!
-						int[] wr = was._registers,
-							nr = now._registers;
+						int[] wr = was.getRegisters(),
+							nr = now.getRegisters();
 						
 						// Copy globals
 						for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE;
@@ -992,29 +992,29 @@ public final class NativeCPU
 							f._taskid = 0;
 							
 							// Set required registers
-							f._registers[NativeCode.POOL_REGISTER] =
+							f.set(NativeCode.POOL_REGISTER,
 								svp[SupervisorPropertyIndex.
-									TASK_SYSCALL_METHOD_POOL_POINTER];
-							f._registers[NativeCode.STATIC_FIELD_REGISTER] =
+									TASK_SYSCALL_METHOD_POOL_POINTER]);
+							f.set(NativeCode.STATIC_FIELD_REGISTER,
 								svp[SupervisorPropertyIndex.
-									TASK_SYSCALL_STATIC_FIELD_POINTER];
+									TASK_SYSCALL_STATIC_FIELD_POINTER]);
 							
 							// Setup call: taskid + oldsfp + sysid + 8 syscall
-							f._registers[
-								NativeCode.ARGUMENT_REGISTER_BASE + 0] =
-								was._taskid;
-							f._registers[
-								NativeCode.ARGUMENT_REGISTER_BASE + 1] =
-								was._registers[
-									NativeCode.STATIC_FIELD_REGISTER];
-							f._registers[
-								NativeCode.ARGUMENT_REGISTER_BASE + 2] =
-								syscallid;
+							f.set(
+								NativeCode.ARGUMENT_REGISTER_BASE + 0,
+								was._taskid);
+							f.set(
+								NativeCode.ARGUMENT_REGISTER_BASE + 1,
+								was.get(
+									NativeCode.STATIC_FIELD_REGISTER));
+							f.set(
+								NativeCode.ARGUMENT_REGISTER_BASE + 2,
+								syscallid);
 							
 							// Forward system call arguments
 							for (int x = 0, xn = sargs.length; x < xn; x++)
-								f._registers[NativeCode.ARGUMENT_REGISTER_BASE
-									+ 3 + x] = sargs[x];
+								f.set(NativeCode.ARGUMENT_REGISTER_BASE
+									+ 3 + x, sargs[x]);
 							
 							// Setup for frame enter
 							reload = true;
@@ -1120,20 +1120,20 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	private final void __debugEntry(CPUFrame __f, int __pcl, int __pmn, int __pmt,
-		int __psf)
+	private void __debugEntry(CPUFrame __f, int __pcl, int __pmn,
+		int __pmt, int __psf)
 		throws NullPointerException
 	{
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
 		// Get the pool address
-		int poolAddr = __f._registers[NativeCode.POOL_REGISTER];
+		int poolAddr = __f.get(NativeCode.POOL_REGISTER);
 		
-		int icl = this.__loadDebugInt(poolAddr + (__pcl * 4)),
-			imn = this.__loadDebugInt(poolAddr + (__pmn * 4)),
-			imt = this.__loadDebugInt(poolAddr + (__pmt * 4)),
-			isf = this.__loadDebugInt(poolAddr + (__psf * 4));
+		int icl = __f.pool(__pcl),
+			imn = __f.pool(__pmn),
+			imt = __f.pool(__pmt),
+			isf = __f.pool(__psf);
 		
 		// Store in state
 		__f._inclassp = icl;

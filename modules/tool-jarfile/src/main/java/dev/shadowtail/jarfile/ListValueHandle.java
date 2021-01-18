@@ -134,4 +134,26 @@ public class ListValueHandle
 		this.memActions.write(this,
 			MemoryType.INTEGER, __i * 4, __future);
 	}
+	
+	/**
+	 * Sets the entry at the given index.
+	 * 
+	 * @param __i The index to set.
+	 * @param __bjp The Boot Jar Pointer to set it to.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/10
+	 */
+	public void set(int __i, BootJarPointer __bjp)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__bjp == null)
+			throw new NullPointerException("NARG");
+		
+		if (__i < 0 || __i >= this.count)
+			throw new IndexOutOfBoundsException("IOOB " + __i);
+		
+		this.memActions.write(this,
+			MemoryType.INTEGER, __i * 4, __bjp);
+	}
 }

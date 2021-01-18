@@ -375,8 +375,7 @@ public final class ExecutionSlice
 		if (__nf == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		return new ExecutionSlice(__cte,
-			__nf._registers,
+		return new ExecutionSlice(__cte, __nf.getRegisters(),
 			__op,
 			__args,
 			__argslen,
