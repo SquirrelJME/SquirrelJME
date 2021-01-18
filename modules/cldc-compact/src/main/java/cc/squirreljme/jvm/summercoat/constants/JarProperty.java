@@ -50,7 +50,7 @@ public interface JarProperty
 	
 	/**
 	  * The class with the start method
-	  * ({@link StaticClassProperty#INT_BOOT_METHOD_INDEX}.
+	  * ({@link StaticClassProperty#INDEX_BOOT_METHOD}.
 	  */
 	byte RCDX_START_CLASS =
 		8;

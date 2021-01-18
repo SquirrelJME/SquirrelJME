@@ -230,15 +230,15 @@ public final class Minimizer
 		}
 		
 		// The entry point for the Virtual Machine Bootstrap
-		int bootMethodId = methods[1].findMethodIndex("vmEntry");
-		properties[StaticClassProperty.INT_BOOT_METHOD_INDEX].setInt(
+		int bootMethodId = methods[0].findMethodIndex("vmEntry");
+		properties[StaticClassProperty.INDEX_BOOT_METHOD].setInt(
 			bootMethodId);
 		
 		if (bootMethodId < 0)
-			properties[StaticClassProperty.OFFSET_BOOT_METHOD].setInt(0);
+			properties[StaticClassProperty.OFFSET_BOOT_METHOD].setInt(-1);
 		else
 			properties[StaticClassProperty.OFFSET_BOOT_METHOD].set(
-				methods[1]._codeChunks.get(bootMethodId).futureAddress());
+				methods[0]._codeChunks.get(bootMethodId).futureAddress());
 		
 		// Generate a UUID and write it
 		long uuid = Minimizer.generateUUID();
@@ -280,6 +280,10 @@ public final class Minimizer
 		for (int i = 0; i < StaticClassProperty.NUM_STATIC_PROPERTIES; i++)
 			if (!properties[i].isSet())
 				throw Debugging.oops(i);
+		
+		// Class ID, for reference
+		ChunkSection hiddenName = output.addSection();
+		hiddenName.writeUTF(input.thisName().toString()); 
 		
 		// Write end magic number, which is at the end of the file. This is
 		// to make sure stuff is properly read.

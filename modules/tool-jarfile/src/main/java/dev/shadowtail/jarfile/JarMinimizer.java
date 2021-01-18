@@ -211,7 +211,10 @@ public final class JarMinimizer
 			if (isManifest)
 				properties[JarProperty.RCDX_MANIFEST].setInt(i);
 			if (isBootClass)
+			{
 				properties[JarProperty.RCDX_START_CLASS].setInt(i);
+				bootClassDx = i;
+			}
 			
 			// Flags for this entry
 			tocFill[JarTocProperty.INT_FLAGS].setInt((isClass ?
@@ -237,7 +240,6 @@ public final class JarMinimizer
 					// later processing
 					if (isBoot)
 					{
-						bootClassDx = i;
 						bootState.addClass(
 							new ClassName(rc.substring(0, rc.length() - 6)),
 							rcData, isBootClass);

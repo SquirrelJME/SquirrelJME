@@ -24,7 +24,7 @@ public interface StaticClassProperty
 		0;
 	
 	/** The index of the method which is the bootstrap entry point. */
-	byte INT_BOOT_METHOD_INDEX =
+	byte INDEX_BOOT_METHOD =
 		1;
 	
 	/**

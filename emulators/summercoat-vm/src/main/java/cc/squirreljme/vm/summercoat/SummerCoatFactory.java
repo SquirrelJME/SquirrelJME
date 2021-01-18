@@ -336,24 +336,46 @@ public class SummerCoatFactory
 		
 		// Determine the entry class and the entry method address
 		int bootClassDx = bootJarHeader.get(JarProperty.RCDX_START_CLASS);
-		int bootClassOff = bootJarOff + bootJarToc.get(bootClassDx,
-			JarTocProperty.OFFSET_DATA);
+		int bootClassOff = bootJarOff +
+			bootJarToc.get(bootClassDx, JarTocProperty.OFFSET_DATA);
 		try (InputStream classIn = new ReadableMemoryInputStream(romMemory,
 			bootClassOff,
 			bootJarToc.get(bootClassDx, JarTocProperty.SIZE_DATA)))
 		{
+			try (InputStream copy = new ReadableMemoryInputStream(romMemory,
+				bootClassOff,
+				bootJarToc.get(bootClassDx, JarTocProperty.SIZE_DATA)))
+			{
+				for (;;)
+				{
+					int data = copy.read();
+					if (data < 0)
+						break;
+					System.err.print(
+						data < ' ' || data >= 0x7F ? ' ' : (char)data);
+				}
+				System.err.println();
+			}
+			
 			// Read the pack header
 			MinimizedClassHeader bootClassHeader =
 				MinimizedClassHeader.decode(classIn);
 			
 			// Determine the start address
-			startAddress = romBase + bootClassOff + bootClassHeader.get(
+			int bootMethodOff = bootClassHeader.get(
 				StaticClassProperty.OFFSET_BOOT_METHOD);
+			startAddress = romBase + bootClassOff + bootMethodOff;
 			
 			// Debug
+			Debugging.debugNote("BootJar RC Count: %d",
+				bootJarHeader.get(JarProperty.COUNT_TOC));
+			Debugging.debugNote("Boot Class Dx: %d", bootClassDx);
 			Debugging.debugNote("ROM Base: %#010x", romBase);
 			Debugging.debugNote("BootJar Off: %#010x", bootJarOff);
 			Debugging.debugNote("BootClass Off: %#010x", bootClassOff);
+			Debugging.debugNote("BootMethod Dx: %d",
+				bootClassHeader.get(StaticClassProperty.INDEX_BOOT_METHOD));
+			Debugging.debugNote("BootMethod Off: %#010x", bootMethodOff);
 			Debugging.debugNote("Start Address: %#010x", startAddress);
 		}
 		catch (IOException e)
