@@ -9,8 +9,10 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -19,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2020/11/28
  */
 public class MemHandle
+	extends AbstractWritableMemory
 {
 	/** The identifier of the handle. */
 	protected final int id;
@@ -36,7 +39,7 @@ public class MemHandle
 	private final AtomicInteger _count =
 		new AtomicInteger();
 	
-	/** The handle data. */
+	/** The raw handle byte data. */
 	private final byte[] _bytes;
 	
 	/**
@@ -81,6 +84,108 @@ public class MemHandle
 		if (__up)
 			return this._count.incrementAndGet();
 		return this._count.decrementAndGet();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public int memReadByte(int __addr)
+	{
+		if (__addr < 0 || __addr >= this.rawSize)
+			throw new VMException("Invalid memReadByte: " + __addr);
+		
+		return this._bytes[__addr] & 0xFF;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public final int memRegionOffset()
+	{
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public final int memRegionSize()
+	{
+		return this.size;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public void memWriteByte(int __addr, int __v)
+	{
+		if (__addr < 0 || __addr >= this.rawSize)
+			throw new VMException("Invalid memWriteByte: " + __addr);
+		
+		this._bytes[__addr] = (byte)__v;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public void memWriteBytes(int __addr, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Out of bounds?
+		int size = this.size;
+		int endAddr = __addr + __l;
+		if (__addr < 0 || endAddr > size)
+			throw new VMException("Invalid memWriteByte: " + __addr);
+		
+		// Split off to the special region, if there is one?
+		int rawSize = this.rawSize;
+		if (endAddr > rawSize)
+		{
+			// Write special region
+			int diff = Math.max(0, rawSize - __addr);
+			this.specialWriteBytes(Math.max(__addr, rawSize),
+				__b, __o + diff, __l - diff);
+			
+			// Write normal area, do not write past the raw area
+			super.memWriteBytes(__addr,
+				__b, __o, Math.min(__l, rawSize - __addr));
+		}
+		
+		// Use normal non-special writing
+		else
+			super.memWriteBytes(__addr, __b, __o, __l);
+	}
+	
+	/**
+	 * Special byte writing methods, used for arrays.
+	 * 
+	 * @param __addr The address to write to.
+	 * @param __b The data to write.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/17
+	 */
+	protected void specialWriteBytes(int __addr, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		throw new VMException("Invalid specialWriteBytes: " + __addr);
 	}
 	
 	/**

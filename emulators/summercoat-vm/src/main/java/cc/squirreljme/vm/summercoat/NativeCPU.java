@@ -143,7 +143,7 @@ public final class NativeCPU
 	public final Frame enterFrame(int __pc, int... __args)
 	{
 		// Debug this
-		Debugging.debugNote("SC::enterFrame(%08x, %s)",
+		Debugging.debugNote("SC::enterFrame(%#08x, %s)",
 			__pc, IntegerArrayList.asList(__args));
 		
 		// Old frame, to source globals from

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a class which handles reading of memory by using pure integers
  * instead of forcing all implementations to implement short and byte
@@ -38,12 +40,39 @@ public abstract class AbstractReadableMemory
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public MemHandleReference memReadHandle(int __addr)
+	{
+		return new MemHandleReference(this.memReadInt(__addr));
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */
 	@Override
 	public int memReadInt(int __addr)
 	{
 		return (this.memReadByte(__addr++) << 24) |
+			(this.memReadByte(__addr++) << 16) |
+			(this.memReadByte(__addr++) << 8) |
+			this.memReadByte(__addr);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public long memReadLong(int __addr)
+	{
+		return ((long)this.memReadByte(__addr++) << 56) |
+			((long)this.memReadByte(__addr++) << 48) |
+			((long)this.memReadByte(__addr++) << 40) |
+			((long)this.memReadByte(__addr++) << 32) |
+			((long)this.memReadByte(__addr++) << 24) |
 			(this.memReadByte(__addr++) << 16) |
 			(this.memReadByte(__addr++) << 8) |
 			this.memReadByte(__addr);

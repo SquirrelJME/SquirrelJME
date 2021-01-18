@@ -12,7 +12,7 @@ package cc.squirreljme.vm.summercoat.handles;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 
 /**
- * Not Described.
+ * Integer array.
  *
  * @since 2021/01/17
  */
@@ -40,5 +40,19 @@ public class MemHandleArrayInteger
 			__base, 4, __array.length);
 		
 		this.values = __array;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public void memWriteInt(int __addr, int __v)
+	{
+		int relBase = __addr - super.rawSize;
+		if (relBase < 0)
+			super.memWriteInt(__addr, __v);
+		else
+			this.values[relBase / super.cellSize] = __v;
 	}
 }

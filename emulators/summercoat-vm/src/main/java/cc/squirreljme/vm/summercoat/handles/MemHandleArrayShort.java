@@ -41,4 +41,18 @@ public class MemHandleArrayShort
 		
 		this.values = __array;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public void memWriteShort(int __addr, int __v)
+	{
+		int relBase = __addr - super.rawSize;
+		if (relBase < 0)
+			super.memWriteShort(__addr, __v);
+		else
+			this.values[relBase / super.cellSize] = (short)__v;
+	}
 }

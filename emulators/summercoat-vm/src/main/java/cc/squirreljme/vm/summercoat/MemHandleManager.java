@@ -200,7 +200,8 @@ public final class MemHandleManager
 		else if (__array instanceof double[])
 			rv = new MemHandleArrayDouble(id, __base, (double[])__array);
 		else if (__array instanceof MemHandle[])
-			rv = new MemHandleArrayMemHandle(id, __base, (MemHandle[])__array);
+			rv = new MemHandleArrayMemHandle(this, id, __base,
+				(MemHandle[])__array);
 		
 		// Do not know how to wrap this
 		else

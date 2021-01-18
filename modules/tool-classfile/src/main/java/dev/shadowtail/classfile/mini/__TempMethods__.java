@@ -33,6 +33,10 @@ final class __TempMethods__
 	final List<MinimizedMethod> _methods =
 		new ArrayList<>();
 	
+	/** Written chunks. */
+	final List<ChunkSection> _codeChunks =
+		new ArrayList<>(); 
+	
 	/** The number of methods that are available. */
 	int _count;
 	
@@ -118,6 +122,9 @@ final class __TempMethods__
 					// Write all of the code here
 					codesection.write(rawcode);
 				}
+				
+				// Write where the code is
+				this._codeChunks.add(codesection);
 				
 				// Flags, name, and type
 				toc.writeInt(current.flags);

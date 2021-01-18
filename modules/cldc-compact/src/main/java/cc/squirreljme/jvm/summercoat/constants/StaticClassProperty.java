@@ -154,9 +154,13 @@ public interface StaticClassProperty
 	byte SIZE_RUNTIME_POOL =
 		32;
 	
+	/** The offset to the boot class. */
+	byte OFFSET_BOOT_METHOD =
+		33;
+	
 	/** The number of static properties. */
 	byte NUM_STATIC_PROPERTIES =
-		33;
+		34;
 	
 	/** Static field base index. */
 	byte BASEDX_STATIC_FIELD =

@@ -185,10 +185,6 @@ public final class Minimizer
 		__TempFields__[] fields = this.__doFields();
 		__TempMethods__[] methods = this.__doMethods();
 		
-		// The entry point for the Virtual Machine Bootstrap
-		properties[StaticClassProperty.INT_BOOT_METHOD_INDEX].setInt(
-			methods[1].findMethodIndex("vmEntry"));
-		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)
 		{
@@ -232,6 +228,17 @@ public final class Minimizer
 			properties[base + StaticClassProperty.BASEDX_SIZE_X_METHOD_DATA]
 				.set(subsection.futureSize());
 		}
+		
+		// The entry point for the Virtual Machine Bootstrap
+		int bootMethodId = methods[1].findMethodIndex("vmEntry");
+		properties[StaticClassProperty.INT_BOOT_METHOD_INDEX].setInt(
+			bootMethodId);
+		
+		if (bootMethodId < 0)
+			properties[StaticClassProperty.OFFSET_BOOT_METHOD].setInt(0);
+		else
+			properties[StaticClassProperty.OFFSET_BOOT_METHOD].set(
+				methods[1]._codeChunks.get(bootMethodId).futureAddress());
 		
 		// Generate a UUID and write it
 		long uuid = Minimizer.generateUUID();

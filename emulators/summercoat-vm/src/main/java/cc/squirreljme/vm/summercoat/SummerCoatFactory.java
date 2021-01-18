@@ -18,11 +18,15 @@ import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
+import cc.squirreljme.jvm.summercoat.constants.JarTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
+import dev.shadowtail.classfile.mini.MinimizedClassHeader;
+import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.jarfile.TableOfContents;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -150,15 +154,15 @@ public class SummerCoatFactory
 		// Load the bootstrap JAR header
 		int bootRamOff = bootJarOff + bootJarHeader.getBootoffset(),
 			bootRamLen = bootJarHeader.getBootsize();
+			
+		// BootRAM memory handle IDs to 
+		Map<Integer, MemHandle> virtHandles = new HashMap<>();
 		
 		// Load the boot RAM
 		Debugging.debugNote("Loading BootRAM!");
 		try (DataInputStream dis = new DataInputStream(
 			new ReadableMemoryInputStream(romMemory, bootRamOff, bootRamLen)))
 		{
-			// BootRAM memory handle IDs to 
-			Map<Integer, MemHandle> virtHandles = new HashMap<>();
-			
 			// Base array size, needed for array allocation
 			int arrayBase = bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY);
 			
@@ -239,11 +243,72 @@ public class SummerCoatFactory
 					dis.readFully(bigData);
 					
 					// Write it into the memory handle completely
-					throw Debugging.todo();
+					handle.memWriteBytes(0,
+						bigData, 0, bigData.length);
 				}
 				
-				if (true)
-					throw Debugging.todo();
+				// Read in all the handle actions
+				for (;;)
+				{
+					// Read the next action
+					int type = dis.readByte();
+					if (type == 0)
+						break;
+					
+					// Read the address it occurs at
+					int addr = dis.readUnsignedShort();
+					
+					Debugging.debugNote("%#10x: %#04x @ %#010x",
+						handleId, type, addr);
+					
+					// Determine what is being written to the memory
+					switch (type)
+					{
+							// Ignore Byte swaps
+						case -1:
+						case -2:
+						case -4:
+						case -8:
+							continue;
+						
+							// Byte
+						case 1:
+							handle.memWriteByte(addr, dis.readByte());
+							break;
+							
+							// Short
+						case 2:
+							handle.memWriteShort(addr, dis.readShort());
+							break;
+							
+							// Integer
+						case 4:
+							handle.memWriteInt(addr, dis.readInt());
+							break;
+							
+							// Long
+						case 8:
+							handle.memWriteLong(addr, dis.readLong());
+							break;
+						
+							// Memory handle
+						case BootstrapConstants.ACTION_MEMHANDLE:
+							// Read the desired handle
+							int wantId = dis.readInt();
+							
+							// Get the actual handle
+							MemHandle target = virtHandles.get(handleId);
+							if (target == null)
+								throw new VMException(
+									"Invalid handle: " + wantId);
+							
+							handle.memWriteHandle(addr, target);
+							break;
+						
+						default:
+							throw new VMException("Invalid type: " + type);
+					}
+				}
 				
 				// Ensure the guard is valid
 				int actGuard = dis.readInt();
@@ -266,19 +331,46 @@ public class SummerCoatFactory
 			throw new VMException("AE0h", e);
 		}
 		
-		throw Debugging.todo("Boot CPU!");
-		/*
+		// The starting address
+		int startAddress;
+		
+		// Determine the entry class and the entry method address
+		int bootClassDx = bootJarHeader.get(JarProperty.RCDX_START_CLASS);
+		int bootClassOff = bootJarOff + bootJarToc.get(bootClassDx,
+			JarTocProperty.OFFSET_DATA);
+		try (InputStream classIn = new ReadableMemoryInputStream(romMemory,
+			bootClassOff,
+			bootJarToc.get(bootClassDx, JarTocProperty.SIZE_DATA)))
+		{
+			// Read the pack header
+			MinimizedClassHeader bootClassHeader =
+				MinimizedClassHeader.decode(classIn);
+			
+			// Determine the start address
+			startAddress = romBase + bootClassOff + bootClassHeader.get(
+				StaticClassProperty.OFFSET_BOOT_METHOD);
+			
+			// Debug
+			Debugging.debugNote("ROM Base: %#010x", romBase);
+			Debugging.debugNote("BootJar Off: %#010x", bootJarOff);
+			Debugging.debugNote("BootClass Off: %#010x", bootClassOff);
+			Debugging.debugNote("Start Address: %#010x", startAddress);
+		}
+		catch (IOException e)
+		{
+			throw new VMException("Could not read Boot Class Header.", e);
+		}
+		
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps);
-		NativeCPU.Frame iframe = cpu.enterFrame(bootjaroff + bjh
-				.getBootstart());
+		NativeCPU.Frame iframe = cpu.enterFrame(startAddress);
 		
-		// Seed initial frame registers
-		iframe._registers[NativeCode.POOL_REGISTER] =
-			ramAddr + bjh.getBootpool();
+		// Which memory handle contains the pool?
+		iframe._registers[NativeCode.POOL_REGISTER] = virtHandles.get(
+			bootJarHeader.get(JarProperty.MEMHANDLEID_START_POOL)).id;
 		
 		// Setup virtual machine with initial thread
-		return new SummerCoatVirtualMachine(cpu);*/
+		return new SummerCoatVirtualMachine(cpu);
 	}
 	
 	/**

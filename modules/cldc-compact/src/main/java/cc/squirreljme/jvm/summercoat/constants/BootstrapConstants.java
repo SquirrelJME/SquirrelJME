@@ -41,6 +41,6 @@ public interface BootstrapConstants
 		0x8651DE91;
 	
 	/** Flag for memory handle actions. */
-	byte ACTION_MEMHANDLE_FLAG = 
+	byte ACTION_MEMHANDLE = 
 		0x40;
 }

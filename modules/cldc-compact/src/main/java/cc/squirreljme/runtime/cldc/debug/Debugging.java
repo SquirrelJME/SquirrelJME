@@ -334,7 +334,9 @@ public final class Debugging
 			// The specifier to print along with the field index
 			boolean specifier = false,
 				hasArgIndex = false,
-				firstChar = false;
+				firstChar = false,
+				usePrefix = false,
+				zeroPadding = false;
 			int argIndex = 0,
 				baseArg = 0,
 				width = -1,
@@ -349,14 +351,21 @@ public final class Debugging
 				if (specifier)
 				{
 					// Ignore flags
-					if (c == '-' || c == '#' || c == '+' ||
-						c == ' ' || c == ',' || c == '(' ||
-						(firstChar && c == '0'))
+					if (c == '-' || c == '+' ||
+						c == ' ' || c == ',' || c == '(')
 						continue;
 					
 					// Ignore precision
 					else if (c == '.')
 						continue;
+					
+					// Zero padded?
+					else if (firstChar && c == '0')
+						zeroPadding = true;
+					
+					// Prefix flag?
+					else if (c == '#')
+						usePrefix = true;
 					
 					// Could be width or argument index position
 					else if ((c >= '1' && c <= '9') ||
@@ -367,6 +376,14 @@ public final class Debugging
 							if (width < 0)
 								width = 0;
 							width = (width * 10) + (c - '0');
+							
+							// If the width is still zero, then this is the
+							// zero padding flag
+							if (width == 0)
+							{
+								zeroPadding = true;
+								width = -1;
+							}
 						}
 						else
 							argIndex = (argIndex * 10) + (c - '0');
@@ -408,24 +425,52 @@ public final class Debugging
 							Debugging.__print('l', 'l');
 						}
 						
-						// Assume a string
+						// A string printed value
 						else
 						{
-							String string = value.toString();
+							String string;
+							
+							// Hex sequence
+							if (c == 'x' || c == 'X')
+							{
+								string = (usePrefix ? "0x" : "") +
+									Long.toString(((Number)value).longValue(),
+										16);
+								
+								if (c == 'X')
+									string = string.toUpperCase();
+							}
+							
+							// Octal
+							else if (c == 'o')
+								string = Long.toString(
+									((Number)value).longValue(), 8);
+								
+							// Assume string
+							else
+								string = value.toString();
 							
 							// Print left padding?
 							int strLen = string.length(),
 								pad = width - strLen;
 							while ((pad--) > 0)
-								Debugging.__print(' ');
+								if (zeroPadding)
+									Debugging.__print('0');
+								else
+									Debugging.__print(' ');
 							
 							// Print actual string
 							for (int j = 0; j < strLen; j++)
 								Debugging.__print(string.charAt(j));
 						}
 						
-						// Stop
+						// Stop and reset
 						specifier = false;
+						hasArgIndex = false;
+						usePrefix = false;
+						zeroPadding = false;
+						width = -1;
+						argIndex = -1;
 					}
 					
 					// No longer will be the first character

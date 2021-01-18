@@ -41,4 +41,18 @@ public class MemHandleArrayBoolean
 		
 		this.values = __array;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public void memWriteByte(int __addr, int __v)
+	{
+		int relBase = __addr - super.rawSize;
+		if (relBase < 0)
+			super.memWriteByte(__addr, __v);
+		else
+			this.values[relBase / super.cellSize] = (__v != 0);
+	}
 }

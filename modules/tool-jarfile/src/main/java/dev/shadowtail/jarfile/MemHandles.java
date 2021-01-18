@@ -207,9 +207,13 @@ public final class MemHandles
 			// Which handle is this for?
 			__outData.writeInt(handle.id);
 			
-			// Write all of the various actions out
+			// No actions means there is no big data
 			MemHandleActions actions = memActions.optional(handle);
-			if (actions != null)
+			if (actions == null)
+				__outData.writeByte(0);
+			
+			// Write all of the various actions out
+			else
 			{
 				// If there is no big endian constant data, then just
 				// initialize with all zeroes
@@ -249,8 +253,8 @@ public final class MemHandles
 					
 					// Is a memory handle
 					else if (store instanceof MemHandle)
-						__outData.writeByte(type.byteCount |
-							BootstrapConstants.ACTION_MEMHANDLE_FLAG);
+						__outData.writeByte(
+							BootstrapConstants.ACTION_MEMHANDLE);
 					
 					// Should not occur
 					else

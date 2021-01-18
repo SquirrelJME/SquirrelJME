@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.vm.VMException;
+
 /**
  * This is a region of memory which uses a read-only byte array.
  *
@@ -79,7 +81,7 @@ public final class ByteArrayMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size)
-			return -1;
+			throw new VMException("Invalid Address: " + __addr);
 		
 		return this._bytes[this.boff + __addr] & 0xFF;
 	}
@@ -129,7 +131,7 @@ public final class ByteArrayMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 3)
-			return -1;
+			throw new VMException("Invalid Address: " + __addr);
 		
 		byte[] bytes = this._bytes;
 		int rp = this.boff + __addr;
@@ -148,7 +150,7 @@ public final class ByteArrayMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 1)
-			return -1;
+			throw new VMException("Invalid Address: " + __addr);
 		
 		byte[] bytes = this._bytes;
 		int rp = this.boff + __addr;

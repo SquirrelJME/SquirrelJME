@@ -29,7 +29,7 @@ public interface WritableMemory
 	/**
 	 * Writes multiple bytes to memory
 	 *
-	 * @param __a The address to write to.
+	 * @param __addr The address to write to.
 	 * @param __b The input bytes.
 	 * @param __o The offset.
 	 * @param __l The length.
@@ -38,7 +38,25 @@ public interface WritableMemory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	void memWriteBytes(int __a, byte[] __b, int __o, int __l);
+	void memWriteBytes(int __addr, byte[] __b, int __o, int __l);
+	
+	/**
+	 * Writes the memory handle to the address.
+	 * 
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @since 2021/01/17
+	 */
+	void memWriteHandle(int __addr, MemHandleReference __v);
+	
+	/**
+	 * Writes the memory handle to the address.
+	 * 
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @since 2021/01/17
+	 */
+	void memWriteHandle(int __addr, MemHandle __v);
 	
 	/**
 	 * Writes a value to memory.
@@ -48,6 +66,15 @@ public interface WritableMemory
 	 * @since 2019/04/21
 	 */
 	void memWriteInt(int __addr, int __v);
+	
+	/**
+	 * Writes a value to memory.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @since 2021/01/17
+	 */
+	void memWriteLong(int __addr, long __v);
 	
 	/**
 	 * Writes a value to memory.

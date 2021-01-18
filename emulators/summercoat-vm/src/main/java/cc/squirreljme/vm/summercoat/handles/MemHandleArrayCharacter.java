@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat.handles;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Not Described.
@@ -40,5 +41,19 @@ public class MemHandleArrayCharacter
 			__base, 2, __array.length);
 		
 		this.values = __array;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/17
+	 */
+	@Override
+	public void memWriteShort(int __addr, int __v)
+	{
+		int relBase = __addr - super.rawSize;
+		if (relBase < 0)
+			super.memWriteShort(__addr, __v);
+		else
+			this.values[relBase / super.cellSize] = (char)__v;
 	}
 }

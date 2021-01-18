@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.vm.VMException;
+
 /**
  * Raw memory access.
  *
@@ -49,7 +51,7 @@ public final class RawMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size)
-			return -1;
+			throw new VMException("Invalid Address: " + __addr);
 		
 		return (this.bytes[__addr] & 0xFF);
 	}
@@ -63,7 +65,7 @@ public final class RawMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 3)
-			return -1;
+			throw new VMException("Invalid Address: " + __addr);
 		
 		byte[] bytes = this.bytes;
 		return ((bytes[__addr++] & 0xFF) << 24) |
@@ -81,7 +83,7 @@ public final class RawMemory
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 1)
-			return -1;
+			throw new VMException("Invalid Address: " + __addr);
 		
 		byte[] bytes = this.bytes;
 		return (((bytes[__addr++] & 0xFF) << 8) |

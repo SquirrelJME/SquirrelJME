@@ -30,7 +30,7 @@ public interface ReadableMemory
 	/**
 	 * Bulk read of memory bytes.
 	 *
-	 * @param __ad The address to read from.
+	 * @param __addr The address to read from.
 	 * @param __b The output bytes.
 	 * @param __o The offset.
 	 * @param __l The length.
@@ -39,8 +39,17 @@ public interface ReadableMemory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	void memReadBytes(int __ad, byte[] __b, int __o, int __l)
+	void memReadBytes(int __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
+	
+	/**
+	 * Reads the memory handle from the address.
+	 * 
+	 * @param __addr The address to read from.
+	 * @return The memory handle reference.
+	 * @since 2021/01/17
+	 */
+	MemHandleReference memReadHandle(int __addr);
 	
 	/**
 	 * Reads the memory at the specified address.
@@ -50,6 +59,15 @@ public interface ReadableMemory
 	 * @since 2019/04/21
 	 */
 	int memReadInt(int __addr);
+	
+	/**
+	 * Reads the memory at the specified address.
+	 *
+	 * @param __addr The address to read from.
+	 * @return The read value.
+	 * @since 2021/01/17
+	 */
+	long memReadLong(int __addr);
 	
 	/**
 	 * Reads the memory at the specified address.
