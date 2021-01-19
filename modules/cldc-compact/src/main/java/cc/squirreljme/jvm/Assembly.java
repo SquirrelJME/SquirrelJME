@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm;
 
-import cc.squirreljme.jvm.summercoat.SystemCall;
-
 /**
  * This class is used special by the compiler to transform all the various
  * operations into regular instructions rather than method calls.
@@ -22,7 +20,7 @@ import cc.squirreljme.jvm.summercoat.SystemCall;
  *
  * @since 2019/04/20
  */
-@SuppressWarnings("NewMethodNamingConvention")
+@SuppressWarnings({"NewMethodNamingConvention", "OverlyComplexClass"})
 public final class Assembly
 {
 	/**
@@ -115,6 +113,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/01/19
 	 */
+	@Deprecated
 	public static native ClassInfo classInfoOfBoolean();
 	
 	/**
@@ -123,6 +122,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/02/24
 	 */
+	@Deprecated
 	public static native long classInfoOfBooleanPointer();
 	
 	/**
@@ -131,6 +131,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/01/19
 	 */
+	@Deprecated
 	public static native ClassInfo classInfoOfByte();
 	
 	/**
@@ -139,6 +140,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/02/24
 	 */
+	@Deprecated
 	public static native long classInfoOfBytePointer();
 	
 	/**
@@ -147,6 +149,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/01/19
 	 */
+	@Deprecated
 	public static native ClassInfo classInfoOfCharacter();
 	
 	/**
@@ -155,6 +158,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/02/24
 	 */
+	@Deprecated
 	public static native long classInfoOfCharacterPointer();
 	
 	/**
@@ -163,6 +167,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/01/19
 	 */
+	@Deprecated
 	public static native ClassInfo classInfoOfDouble();
 	
 	/**
@@ -171,6 +176,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/02/24
 	 */
+	@Deprecated
 	public static native long classInfoOfDoublePointer();
 	
 	/**
@@ -179,6 +185,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/01/19
 	 */
+	@Deprecated
 	public static native ClassInfo classInfoOfFloat();
 	
 	/**
@@ -187,6 +194,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/02/24
 	 */
+	@Deprecated
 	public static native long classInfoOfFloatPointer();
 	
 	/**
@@ -195,6 +203,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/01/19
 	 */
+	@Deprecated
 	public static native ClassInfo classInfoOfInteger();
 	
 	/**
@@ -203,6 +212,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/02/24
 	 */
+	@Deprecated
 	public static native long classInfoOfIntegerPointer();
 	
 	/**
@@ -211,6 +221,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/01/19
 	 */
+	@Deprecated
 	public static native ClassInfo classInfoOfLong();
 	
 	/**
@@ -219,6 +230,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/02/24
 	 */
+	@Deprecated
 	public static native long classInfoOfLongPointer();
 	
 	/**
@@ -227,6 +239,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/01/19
 	 */
+	@Deprecated
 	public static native ClassInfo classInfoOfShort();
 	
 	/**
@@ -235,6 +248,7 @@ public final class Assembly
 	 * @return The class info pointer.
 	 * @since 2020/02/24
 	 */
+	@Deprecated
 	public static native long classInfoOfShortPointer();
 	
 	/**

@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -2181,7 +2182,7 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
-	 * Invokes an assembly method.
+	 * Invokes an {@link Assembly} method.
 	 *
 	 * @param __name The method name.
 	 * @param __type The method type.
@@ -2199,7 +2200,7 @@ public final class NearNativeByteCodeHandler
 			throw new NullPointerException("NARG");
 		
 		// Code generator
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Force exception cancel for these operations
 		this.state.canexception = false;
@@ -2215,7 +2216,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Atomic compare, get and set
 			case "atomicCompareGetAndSet":
-				codebuilder.add(
+				codeBuilder.add(
 					NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET,
 						__in[0].register,
 						__out.register,
@@ -2226,7 +2227,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Atomic decrement and get
 			case "atomicDecrementAndGet":
-				codebuilder.add(
+				codeBuilder.add(
 					NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET,
 						__out.register,
 						__in[0].register,
@@ -2235,7 +2236,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Atomic increment
 			case "atomicIncrement":
-				codebuilder.add(
+				codeBuilder.add(
 					NativeInstructionType.ATOMIC_INT_INCREMENT,
 						__in[0].register,
 						0);
@@ -2243,7 +2244,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Breakpoint
 			case "breakpoint":
-				codebuilder.add(NativeInstructionType.BREAKPOINT);
+				codeBuilder.add(NativeInstructionType.BREAKPOINT);
 				break;
 				
 				// Load boolean class
@@ -2294,8 +2295,8 @@ public final class NearNativeByteCodeHandler
 					int a = __in[0].register,
 						b = __out.register;
 					
-					codebuilder.addCopy(a, b);
-					codebuilder.addCopy(a + 1, b + 1);
+					codeBuilder.addCopy(a, b);
+					codeBuilder.addCopy(a + 1, b + 1);
 				}
 				break;
 				
@@ -2311,20 +2312,20 @@ public final class NearNativeByteCodeHandler
 			case "floatToRawIntBits":
 			case "intBitsToFloat":
 				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
+					codeBuilder.addCopy(__in[0].register, __out.register);
 				break;
 				
 				// object -> pointer
 			case "objectToPointer":
 			case "objectToPointerWide":
 				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
+					codeBuilder.addCopy(__in[0].register, __out.register);
 				break;
 				
 				// Long unpack high
 			case "longUnpackHigh":
 				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
+					codeBuilder.addCopy(__in[0].register, __out.register);
 				break;
 				
 				// Invoke method (possibly return a value)
@@ -2345,25 +2346,25 @@ public final class NearNativeByteCodeHandler
 					
 					// Before we invoke we need to set the next pool so
 					// execution is correct!
-					codebuilder.addCopy(__in[1].register,
+					codeBuilder.addCopy(__in[1].register,
 						NativeCode.NEXT_POOL_REGISTER);
 					
 					// Invoke pointer with arguments
-					codebuilder.add(NativeInstructionType.INVOKE,
+					codeBuilder.add(NativeInstructionType.INVOKE,
 						__in[0].register, new RegisterList(args));
 					
 					// Copy return value?
 					switch (asmfunc)
 					{
 						case "invokeV":
-							codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+							codeBuilder.addCopy(NativeCode.RETURN_REGISTER,
 									__out.register);
 							break;
 							
 						case "invokeVL":
-							codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+							codeBuilder.addCopy(NativeCode.RETURN_REGISTER,
 									__out.register);
-							codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+							codeBuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
 								__out.register + 1);
 							break;
 					}
@@ -2374,83 +2375,83 @@ public final class NearNativeByteCodeHandler
 			case "doublePack":
 			case "longPack":
 				if (__in[1].register != __out.register + 1)
-					codebuilder.addCopy(__in[1].register, __out.register + 1);
+					codeBuilder.addCopy(__in[1].register, __out.register + 1);
 				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
+					codeBuilder.addCopy(__in[0].register, __out.register);
 				break;
 			
 			// Long unpack low
 			case "longUnpackLow":
 				if (__in[0].register + 1 != __out.register)
-					codebuilder.addCopy(__in[0].register + 1, __out.register);
+					codeBuilder.addCopy(__in[0].register + 1, __out.register);
 				break;
 				
 				// Read byte memory
 			case "memReadByte":
-				codebuilder.addMemoryOffReg(DataType.BYTE,
+				codeBuilder.addMemoryOffReg(DataType.BYTE,
 					true, __out.register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Read int memory
 			case "memReadInt":
-				codebuilder.addMemoryOffReg(DataType.INTEGER,
+				codeBuilder.addMemoryOffReg(DataType.INTEGER,
 					true, __out.register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Read java int memory
 			case "memReadJavaInt":
-				codebuilder.addMemoryOffRegJava(DataType.INTEGER,
+				codeBuilder.addMemoryOffRegJava(DataType.INTEGER,
 					true, __out.register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Read short memory
 			case "memReadJavaShort":
-				codebuilder.addMemoryOffRegJava(DataType.SHORT,
+				codeBuilder.addMemoryOffRegJava(DataType.SHORT,
 					true, __out.register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Read short memory
 			case "memReadShort":
-				codebuilder.addMemoryOffReg(DataType.SHORT,
+				codeBuilder.addMemoryOffReg(DataType.SHORT,
 					true, __out.register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Write byte memory
 			case "memWriteByte":
-				codebuilder.addMemoryOffReg(DataType.BYTE,
+				codeBuilder.addMemoryOffReg(DataType.BYTE,
 					false, __in[2].register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Write int memory
 			case "memWriteInt":
-				codebuilder.addMemoryOffReg(DataType.INTEGER,
+				codeBuilder.addMemoryOffReg(DataType.INTEGER,
 					false, __in[2].register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Write Java int memory
 			case "memWriteJavaInt":
-				codebuilder.addMemoryOffRegJava(DataType.INTEGER,
+				codeBuilder.addMemoryOffRegJava(DataType.INTEGER,
 					false, __in[2].register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Write Java short memory
 			case "memWriteJavaShort":
-				codebuilder.addMemoryOffRegJava(DataType.SHORT,
+				codeBuilder.addMemoryOffRegJava(DataType.SHORT,
 					false, __in[2].register,
 					__in[0].register, __in[1].register);
 				break;
 				
 				// Write short memory
 			case "memWriteShort":
-				codebuilder.addMemoryOffReg(DataType.SHORT,
+				codeBuilder.addMemoryOffReg(DataType.SHORT,
 					false, __in[2].register,
 					__in[0].register, __in[1].register);
 				break;
@@ -2463,7 +2464,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Do the copy
 				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
+					codeBuilder.addCopy(__in[0].register, __out.register);
 				
 				// Clear references
 				this.__refClear();
@@ -2475,7 +2476,7 @@ public final class NearNativeByteCodeHandler
 			case "pointerToClassInfo":
 			case "pointerToClassInfoWide":
 				if (__in[0].register != __out.register)
-					codebuilder.addCopy(__in[0].register, __out.register);
+					codeBuilder.addCopy(__in[0].register, __out.register);
 				
 				// The returned object is electable for reference
 				// counting so we need to count it up otherwise it will
@@ -2499,14 +2500,14 @@ public final class NearNativeByteCodeHandler
 				switch (__type.toString())
 				{
 					case "(II)V":
-						codebuilder.addCopy(__in[0].register,
+						codeBuilder.addCopy(__in[0].register,
 							NativeCode.RETURN_REGISTER);
-						codebuilder.addCopy(__in[1].register,
+						codeBuilder.addCopy(__in[1].register,
 							NativeCode.RETURN_REGISTER + 1);
 						break;
 						
 					case "(I)V":
-						codebuilder.addCopy(__in[0].register,
+						codeBuilder.addCopy(__in[0].register,
 							NativeCode.RETURN_REGISTER);
 						break;
 				}
@@ -2517,62 +2518,62 @@ public final class NearNativeByteCodeHandler
 				
 				// Get the exception register
 			case "specialGetExceptionRegister":
-				codebuilder.addCopy(NativeCode.EXCEPTION_REGISTER,
+				codeBuilder.addCopy(NativeCode.EXCEPTION_REGISTER,
 					__out.register);
 				break;
 				
 				// Gets the pool register
 			case "specialGetPoolRegister":
-				codebuilder.addCopy(NativeCode.POOL_REGISTER,
+				codeBuilder.addCopy(NativeCode.POOL_REGISTER,
 					__out.register);
 				break;
 				
 				// Read return register
 			case "specialGetReturnRegister":
 			case "specialGetReturnHighRegister":
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+				codeBuilder.addCopy(NativeCode.RETURN_REGISTER,
 					__out.register);
 				break;
 				
 				// Read return register (low value)
 			case "specialGetReturnLowRegister":
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
+				codeBuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
 					__out.register);
 				break;
 				
 				// Get static field register
 			case "specialGetStaticFieldRegister":
-				codebuilder.addCopy(NativeCode.STATIC_FIELD_REGISTER,
+				codeBuilder.addCopy(NativeCode.STATIC_FIELD_REGISTER,
 					__out.register);
 				break;
 				
 				// Get thread register
 			case "specialGetThreadRegister":
-				codebuilder.addCopy(NativeCode.THREAD_REGISTER,
+				codeBuilder.addCopy(NativeCode.THREAD_REGISTER,
 					__out.register);
 				break;
 				
 				// Set the exception register
 			case "specialSetExceptionRegister":
-				codebuilder.addCopy(__in[0].register,
+				codeBuilder.addCopy(__in[0].register,
 					NativeCode.EXCEPTION_REGISTER);
 				break;
 				
 				// Set pool register
 			case "specialSetPoolRegister":
-				codebuilder.addCopy(__in[0].register,
+				codeBuilder.addCopy(__in[0].register,
 					NativeCode.POOL_REGISTER);
 				break;
 				
 				// Set static field register
 			case "specialSetStaticFieldRegister":
-				codebuilder.addCopy(__in[0].register,
+				codeBuilder.addCopy(__in[0].register,
 					NativeCode.STATIC_FIELD_REGISTER);
 				break;
 				
 				// Set thread register
 			case "specialSetThreadRegister":
-				codebuilder.addCopy(__in[0].register,
+				codeBuilder.addCopy(__in[0].register,
 					NativeCode.THREAD_REGISTER);
 				break;
 				
