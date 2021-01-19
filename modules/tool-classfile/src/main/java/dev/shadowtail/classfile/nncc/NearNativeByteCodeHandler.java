@@ -1252,51 +1252,20 @@ public final class NearNativeByteCodeHandler
 	 * @since 2019/04/12
 	 */
 	@Override
-	public final void doPoolLoad(Object __v, JavaStackResult.Output __out)
+	public final void doPoolLoadString(String __v,
+		JavaStackResult.Output __out)
 	{
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Loading string value?
-		if (__v instanceof String)
-		{
-			// Need volatiles
-			VolatileRegisterStack volatiles = this.volatiles;
-			
-			// Load the potentially cached string pointer
-			codeBuilder.add(NativeInstructionType.LOAD_POOL,
-				new UsedString((String)__v), __out.register);
-			
-			// Label to jump to if this string is already loaded
-			NativeCodeLabel ispresent = new NativeCodeLabel("strloaded",
-				this._refclunk++);
-			codeBuilder.addIfNonZero(__out.register, ispresent);
-			
-			// Load the noted string
-			int volstrptr = volatiles.getUnmanaged();
-			codeBuilder.add(NativeInstructionType.LOAD_POOL,
-				new NotedString((String)__v), volstrptr);
-				
-			// Call internal string loader
-			this.__invokeStatic(InvokeType.SYSTEM,
-				NearNativeByteCodeHandler.JVMFUNC_CLASS,
-				"jvmLoadString", "(I)Ljava/lang/String;", volstrptr);
-			
-			// Cleanup
-			volatiles.removeUnmanaged(volstrptr);
-			
-			// Store into the pull and copy the result as well
-			codeBuilder.add(NativeInstructionType.STORE_POOL,
-				new UsedString((String)__v), NativeCode.RETURN_REGISTER);
-			codeBuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
-			
-			// String is loaded
-			codeBuilder.label(ispresent);
-		}
+		// Load the string from the pool, it is already a String object here
+		// and we do not need to do anything for it at all. It will be interned
+		// here always.
+		TypedRegister<UsedString> out = TypedRegister.<UsedString>of(
+			UsedString.class, __out.register);
+		codeBuilder.addPoolLoad(new UsedString(__v), out);
 		
-		// Some other value
-		else
-			codeBuilder.add(NativeInstructionType.LOAD_POOL,
-				__v, __out.register);
+		// Count it up so it is not instantly GCed
+		this.__refCount(out.asMemHandle());
 	}
 	
 	/**
@@ -3348,7 +3317,6 @@ public final class NearNativeByteCodeHandler
 	 * exception.
 	 *
 	 * @param __cl The class to create.
-	 * @param __regs Extra registers for exceptions.
 	 * @return The label for that target.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/10
@@ -3667,9 +3635,9 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
-	 * Generates code to reference count the given register.
+	 * Generates code to reference count up the given register.
 	 *
-	 * @param __r The register reference to count.
+	 * @param __r The register reference to count up.
 	 * @since 2019/04/25
 	 */
 	private void __refCount(MemHandleRegister __r)

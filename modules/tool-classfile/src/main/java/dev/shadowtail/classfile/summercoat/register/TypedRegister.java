@@ -41,6 +41,17 @@ public final class TypedRegister<T>
 	}
 	
 	/**
+	 * Returns the register as a memory handle.
+	 * 
+	 * @return This register as a memory handle.
+	 * @since 2021/01/19
+	 */
+	public MemHandleRegister asMemHandle()
+	{
+		return MemHandleRegister.of(this.register);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2020/11/24
 	 */
@@ -73,5 +84,24 @@ public final class TypedRegister<T>
 		
 		return (ld < 0 ? className : className.substring(ld + 1)) +
 			"#" + this.register;
+	}
+	
+	/**
+	 * Creates a wrapped typed register.
+	 * 
+	 * @param <T> The class used.
+	 * @param __cl The class used.
+	 * @param __r The destination register.
+	 * @return The typed registers.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/19
+	 */
+	public static <T> TypedRegister<T> of(Class<T> __cl, int __r)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return new TypedRegister<T>(__cl, __r);
 	}
 }

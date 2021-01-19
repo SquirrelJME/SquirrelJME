@@ -824,11 +824,12 @@ public final class BootState
 	 * @param __clPool The class runtime pool;
 	 * @param __entry The entry to load.
 	 * @return The loaded pool value.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
 	private Object __loadPool(BasicPool __clPool, BasicPoolEntry __entry)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__clPool == null || __entry == null)
 			throw new NullPointerException("NARG");
@@ -853,8 +854,13 @@ public final class BootState
 				BasicPoolEntry poolStr =
 					staticDualPool.byIndex(__entry.part(0));
 				
-				// These point to STRINGs that prefix with [hash$16 len$16]
+				// These point to Strings that prefix with [hash$16 len$16]
 				return new BootJarPointer(poolOff + poolStr.offset + 4);
+			
+				// String used as a constant value, should be pre-loaded and
+				// interned accordingly by the bootstrap.
+			case USED_STRING:
+				return this.loadString(__entry.value.toString());
 		}
 		
 		if (false)

@@ -685,8 +685,7 @@ public final class NativeCPU
 					
 					// Load from constant pool
 				case NativeInstructionType.LOAD_POOL:
-					lr[args[1]] = memory.memReadInt(
-						lr[NativeCode.POOL_REGISTER] + (args[0] * 4));
+					lr[args[1]] = nowframe.pool(args[0]);
 					break;
 					
 					// Integer math

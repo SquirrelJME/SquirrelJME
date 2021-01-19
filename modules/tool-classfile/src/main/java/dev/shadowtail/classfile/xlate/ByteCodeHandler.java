@@ -236,7 +236,7 @@ public interface ByteCodeHandler
 	 * @param __out The output.
 	 * @since 2019/04/12
 	 */
-	void doPoolLoad(Object __v, JavaStackResult.Output __out);
+	void doPoolLoadString(String __v, JavaStackResult.Output __out);
 	
 	/**
 	 * Return of value.
