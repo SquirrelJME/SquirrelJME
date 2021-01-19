@@ -729,8 +729,13 @@ public final class NativeCPU
 						lr[args[2]] = c;
 					}
 					break;
+					
+					// Read/write Memory Handles
+				case NativeInstructionType.MEM_HANDLE_OFF_REG:
+				case NativeInstructionType.MEM_HANDLE_OFF_ICONST:
+					throw Debugging.todo("MemHandle R/W.");
 				
-					// Read off memory
+					// Read/Write raw memory
 				case NativeInstructionType.MEMORY_OFF_REG:
 				case NativeInstructionType.MEMORY_OFF_REG_JAVA:
 				case NativeInstructionType.MEMORY_OFF_ICONST:
