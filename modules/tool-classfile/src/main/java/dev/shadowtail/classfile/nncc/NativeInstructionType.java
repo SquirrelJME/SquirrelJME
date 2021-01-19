@@ -146,15 +146,27 @@ public interface NativeInstructionType
 	/**
 	 * Store to pool, note that at code gen time this is aliased.
 	 * {@code iiiixxxx}.
+	 * 
+	 * @deprecated Pool values should not be written to.
 	 */
+	@Deprecated
 	short STORE_POOL =
 		0xF4;
 	
-	/** Store to integer array. */
+	/**
+	 * Store to integer array.
+	 *
+	 * @deprecated Memory handles should be used. 
+	 */
+	@Deprecated
 	short STORE_TO_INTARRAY =
 		0xF5;
 	
-	/** Get interface I for object. */
+	/**
+	 * Get interface I for object.
+	 *
+	 * @deprecated Should be read from the pool. 
+	 */
 	@Deprecated
 	short INTERFACE_I_FOR_OBJECT =
 		0xF6;
@@ -176,7 +188,7 @@ public interface NativeInstructionType
 	short COPY =
 		0xF8;
 	
-	/** Atomically decrements a memory addres and gets the value. */
+	/** Atomically decrements a memory address and gets the value. */
 	short ATOMIC_INT_DECREMENT_AND_GET =
 		0xF9;
 	
@@ -184,7 +196,7 @@ public interface NativeInstructionType
 	short ATOMIC_INT_INCREMENT =
 		0xFA;
 	
-	/** System call. */
+	/** System call, used for extra functionality. */
 	short SYSTEM_CALL =
 		0xFB;
 	
@@ -195,11 +207,20 @@ public interface NativeInstructionType
 	/**
 	 * Load from pool, note that at code gen time this is aliased.
 	 * {@code iiiixxxx}.
+	 * 
+	 * @deprecated This will eventually become a special Object-esque that
+	 * is completely code dependent.
 	 */
+	@Deprecated
 	short LOAD_POOL =
 		0xFD;
 	
-	/** Load from integer array. */
+	/**
+	 * Load from integer array.
+	 *
+	 * @deprecated Standard MemHandle load should be used. 
+	 */
+	@Deprecated
 	short LOAD_FROM_INTARRAY =
 		0xFE;
 	
