@@ -1254,7 +1254,7 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doPoolLoad(Object __v, JavaStackResult.Output __out)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Loading string value?
 		if (__v instanceof String)
@@ -1263,17 +1263,17 @@ public final class NearNativeByteCodeHandler
 			VolatileRegisterStack volatiles = this.volatiles;
 			
 			// Load the potentially cached string pointer
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
+			codeBuilder.add(NativeInstructionType.LOAD_POOL,
 				new UsedString((String)__v), __out.register);
 			
 			// Label to jump to if this string is already loaded
 			NativeCodeLabel ispresent = new NativeCodeLabel("strloaded",
 				this._refclunk++);
-			codebuilder.addIfNonZero(__out.register, ispresent);
+			codeBuilder.addIfNonZero(__out.register, ispresent);
 			
 			// Load the noted string
 			int volstrptr = volatiles.getUnmanaged();
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
+			codeBuilder.add(NativeInstructionType.LOAD_POOL,
 				new NotedString((String)__v), volstrptr);
 				
 			// Call internal string loader
@@ -1285,17 +1285,17 @@ public final class NearNativeByteCodeHandler
 			volatiles.removeUnmanaged(volstrptr);
 			
 			// Store into the pull and copy the result as well
-			codebuilder.add(NativeInstructionType.STORE_POOL,
+			codeBuilder.add(NativeInstructionType.STORE_POOL,
 				new UsedString((String)__v), NativeCode.RETURN_REGISTER);
-			codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
+			codeBuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
 			
 			// String is loaded
-			codebuilder.label(ispresent);
+			codeBuilder.label(ispresent);
 		}
 		
 		// Some other value
 		else
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
+			codeBuilder.add(NativeInstructionType.LOAD_POOL,
 				__v, __out.register);
 	}
 	
