@@ -297,8 +297,16 @@ public class SummerCoatFactory
 							// Read the desired handle
 							int wantId = dis.readInt();
 							
+							// Invalid security bits
+							if ((handleId &
+								BootstrapConstants.HANDLE_SECURITY_MASK) !=
+								BootstrapConstants.HANDLE_SECURITY_BITS)
+								throw new VMException(
+									"Invalid security bits: 0b" +
+									Integer.toString(wantId, 2));
+							
 							// Get the actual handle
-							MemHandle target = virtHandles.get(handleId);
+							MemHandle target = virtHandles.get(wantId);
 							if (target == null)
 								throw new VMException(
 									"Invalid handle: " + wantId);

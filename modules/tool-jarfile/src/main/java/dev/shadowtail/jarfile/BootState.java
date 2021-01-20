@@ -282,7 +282,7 @@ public final class BootState
 		// Read the class data as fast as possible and store into the map so
 		// we can recursive and recycle classes.
 		MinimizedClassFile classFile = this.readClass(__cl);
-		rv = new ClassState(classFile.thisName(), classFile);
+		rv = new ClassState(__cl, classFile);
 		classStates.put(__cl, rv);
 		
 		// Header information to extract properties from
