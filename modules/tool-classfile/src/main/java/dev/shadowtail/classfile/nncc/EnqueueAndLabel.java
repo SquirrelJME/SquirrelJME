@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.nncc;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This contains an enqueue and a label.
@@ -92,7 +93,15 @@ public final class EnqueueAndLabel
 	@Override
 	public final String toString()
 	{
-		throw Debugging.todo();
+		String rv;
+		
+		Reference<String> ref = this._string;
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"{enqueue=%s, label=%s",
+				this.enqueue, this.label)));
+		
+		return rv;
 	}
 }
 

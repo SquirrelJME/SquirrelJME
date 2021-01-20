@@ -10,6 +10,7 @@
 package dev.shadowtail.classfile.summercoat;
 
 import cc.squirreljme.jvm.summercoat.LogicHandler;
+import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
@@ -22,18 +23,22 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  */
 public enum HelperFunction
 {
-	/** Garbage collect handle. */
+	/** {@link LogicHandler#gcMemHandle(int)}.  */
 	GC_MEM_HANDLE("gcMemHandle", "(I)V"),
 	
-	/** Is this an instance of the class? */
+	/** {@link LogicHandler#isInstance(int, ClassInfoBracket)}.  */
 	IS_INSTANCE("isInstance", "(I" +
 		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;)Z"),
 	
-	/** Initialize class. */
+	/** {@link LogicHandler#initClass(ClassInfoBracket)}.  */
 	INIT_CLASS("initClass", "(Lcc/squirreljme/jvm/" +
 		"summercoat/brackets/ClassInfoBracket;)V"),
 	
-	/** Create new instance of a class. */
+	/** {@link LogicHandler#newArray(ClassInfoBracket, int)}. */
+	NEW_ARRAY("newArray", "(Lcc/squirreljme/jvm/" +
+		"summercoat/brackets/ClassInfoBracket;I)Ljava/lang/Object;"),
+	
+	/** {@link LogicHandler#newInstance(ClassInfoBracket)}. */
 	NEW_INSTANCE("newInstance", "(Lcc/squirreljme/jvm/" +
 		"summercoat/brackets/ClassInfoBracket;)Ljava/lang/Object;"),
 	

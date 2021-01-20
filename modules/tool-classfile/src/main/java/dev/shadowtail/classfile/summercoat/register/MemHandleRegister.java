@@ -27,6 +27,10 @@ public final class MemHandleRegister
 	public static final MemHandleRegister NULL =
 		MemHandleRegister.of(NativeCode.ZERO_REGISTER);
 	
+	/** Exception register. */
+	public static final MemHandleRegister EXCEPTION =
+		MemHandleRegister.of(NativeCode.EXCEPTION_REGISTER);
+	
 	/**
 	 * Initializes the basic register.
 	 *

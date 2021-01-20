@@ -51,7 +51,9 @@ import dev.shadowtail.classfile.xlate.StackJavaType;
 import dev.shadowtail.classfile.xlate.StateOperation;
 import dev.shadowtail.classfile.xlate.StateOperations;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.BinaryName;
@@ -125,9 +127,17 @@ public final class NearNativeByteCodeHandler
 	private final Map<ExceptionHandlerTransition, __EData__> _ehtable =
 		new LinkedHashMap<>();
 	
+	/** Queue for exception handling generation. */
+	private final Deque<__TransitingExceptionHandler__> _ehTableQueue =
+		new LinkedList<>();
+	
 	/** Made exception table. */
 	private final Map<ClassAndLabel, __EData__> _metable =
 		new LinkedHashMap<>();
+	
+	/** Made exception handling queue. */
+	private final Deque<__MakeException__> _meTableQueue =
+		new LinkedList<>();
 	
 	/** The returns which have been performed. */
 	private final List<JavaStackEnqueueList> _returns =
@@ -137,9 +147,17 @@ public final class NearNativeByteCodeHandler
 	private final Map<StateOperationsAndTarget, __EData__> _transits =
 		new LinkedHashMap<>();
 	
+	/** State operation transits. */
+	private final Deque<__StateOpTransit__> _transitQueue =
+		new LinkedList<>();
+	
 	/** Reference clearing and jumping to label. */
 	private final Map<EnqueueAndLabel, __EData__> _refcljumps =
 		new LinkedHashMap<>();
+	
+	/** Reference clear jump list. */
+	private final Deque<__RefClearJump__> _refClearJumpQueue =
+		new LinkedList<>();
 	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
@@ -1212,40 +1230,31 @@ public final class NearNativeByteCodeHandler
 	public final void doNewArray(ClassName __at,
 		JavaStackResult.Input __len, JavaStackResult.Output __out)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Check for negative array size
+		// Check if the array is negative, fail here if so
 		this.__basicCheckNAS(__len.register);
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volclassdx = volatiles.getUnmanaged(),
-			volresult = volatiles.getUnmanaged();
+		try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
+			volatiles.getTyped(ClassInfoPointer.class))
+		{
+			// Load the class information for the register
+			this.__loadClassInfo(__at, classInfo.register);
+			
+			// Call the helper for the method
+			this.__invokeHelper(HelperFunction.NEW_ARRAY,
+				classInfo.register, PlainRegister.of(__len.register));
+			
+			// Copy the result to the output
+			codeBuilder.<MemHandleRegister>addCopy(
+				MemHandleRegister.RETURN,
+				MemHandleRegister.of(__out.register));
+		}
 		
-		// Load the class data for the array type
-		// If not a fixed class index, then rely on the value in the pool
-		this.__loadClassInfo(__at, volclassdx);
-		
-		// Call internal handler, place into temporary for OOM check
-		this.__invokeStatic(InvokeType.SYSTEM,
-			NearNativeByteCodeHandler.JVMFUNC_CLASS, "jvmNewArray",
-			"(II)I", volclassdx, __len.register);
-		codebuilder.addCopy(NativeCode.RETURN_REGISTER, volresult);
-		
-		// No longer needed
-		volatiles.removeUnmanaged(volclassdx);
-		
-		// Check for out of memory
-		this.__basicCheckOOM(volresult);
-		
-		// All the exceptions were checked
+		// Negative array and invocation exceptions were checked.
 		this.state.canexception = false;
-		
-		// Place result in true location
-		codebuilder.addCopy(volresult, __out.register);
-		
-		// Not needed
-		volatiles.removeUnmanaged(volresult);
 	}
 	
 	/**
@@ -1265,8 +1274,10 @@ public final class NearNativeByteCodeHandler
 			UsedString.class, __out.register);
 		codeBuilder.addPoolLoad(new UsedString(__v), out);
 		
-		// Count it up so it is not instantly GCed
-		this.__refCount(out.asMemHandle());
+		// Count it up so it is not instantly GCed, unless it is marked as
+		// not being counted
+		if (!__out.nocounting)
+			this.__refCount(out.asMemHandle());
 	}
 	
 	/**
@@ -1633,148 +1644,180 @@ public final class NearNativeByteCodeHandler
 	public final NativeCode result()
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
-		ByteCodeState state = this.state;
 		List<JavaStackEnqueueList> returns = this._returns;
 		VolatileRegisterStack volatiles = this.volatiles;
 		
-		// Was an exception handler generated?
-		boolean didehfall = false;
+		// Queues for various exception handlers
+		Deque<__TransitingExceptionHandler__> ehQueue = this._ehTableQueue;
+		Deque<__RefClearJump__> refClQueue = this._refClearJumpQueue;
+		Deque<__MakeException__> makeExQueue = this._meTableQueue;
+		Deque<__StateOpTransit__> transitQueue = this._transitQueue;
 		
-		// Generate reference clear jumps
-		Map<EnqueueAndLabel, __EData__> refcljumps = this._refcljumps;
-		for (Map.Entry<EnqueueAndLabel, __EData__> e : refcljumps.entrySet())
+		// Keep generating these late label transitions and otherwise until
+		// they are completely drained out. It is possible some exception
+		// handlers may generated special handling calls, in which case they
+		// can happen while they are being handled.
+		int cycleCount = 0;
+		do
 		{
-			EnqueueAndLabel eql = e.getKey();
-			
-			// Set label target for this one
-			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
-			this.__useEDataDebugPoint(e.getValue(), 256);
-			
-			// Clear references
-			JavaStackEnqueueList enq = eql.enqueue;
-			for (int i = 0, n = enq.size(); i < n; i++)
-				this.__refUncount(enq.get(i));
-			
-			// Then go to the target
-			codebuilder.addGoto(eql.label);
-		}
-		
-		// Generate make exception code
-		Map<ClassAndLabel, __EData__> metable = this._metable;
-		for (Map.Entry<ClassAndLabel, __EData__> e : metable.entrySet())
-		{
-			ClassAndLabel csl = e.getKey();
-			
-			// Set label target for this one
-			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
-			this.__useEDataDebugPoint(e.getValue(), 257);
-			
-			// Allocate class object, make sure it is not done in the exception
-			// register because the method we call may end up just clearing it
-			// and stopping if a make exception is done (because there is an
-			// exception here).
-			int exinst = volatiles.getUnmanaged();
-			this.__invokeNew(csl.classname, exinst);
-			
-			// Initialize the exception
-			this.__invokeInstance(InvokeType.SPECIAL, csl.classname, "<init>",
-				"()V", new RegisterList(exinst));
-			
-			// Copy result into the exception register
-			codebuilder.addCopy(exinst, NativeCode.EXCEPTION_REGISTER);
-			
-			// Done with this
-			volatiles.removeUnmanaged(exinst);
-			
-			// Generate jump to exception handler
-			codebuilder.addGoto(csl.label);
-		}
-		
-		// Generate exception handler tables
-		Map<ExceptionHandlerTransition, __EData__> ehtab = this._ehtable;
-		for (Map.Entry<ExceptionHandlerTransition, __EData__> e :
-			ehtab.entrySet())
-		{
-			ExceptionHandlerTransition ehtran = e.getKey();
-			StateOperations sops = ehtran.handled;
-			JavaStackEnqueueList enq = ehtran.nothandled;
-			ExceptionHandlerTable ehtable = ehtran.table;
-			
-			// Label used for the jump target
-			NativeCodeLabel lab = this.__useEDataAndGetLabel(e.getValue());
-			this.__useEDataDebugPoint(e.getValue(), 258);
-			
-			// If the table is empty, just return
-			if (ehtable.isEmpty())
+			// Extra cycles processed?
+			if (++cycleCount > 1)
 			{
-				// If we never saw a cleanup for this return yet we can
-				// generate one here to be used for later points
-				int rdx = returns.indexOf(enq);
-				if (rdx < 0)
-					codebuilder.label(lab,
-						codebuilder.labelTarget(this.__generateReturn(enq)));
+				// Note the cycle
+				Debugging.debugNote("Generation Cycle: %d", cycleCount);
 				
-				// We can just alias this exception to the return point to
-				// cleanup everything
-				else
-					codebuilder.label(lab,
-						codebuilder.labelTarget("return", rdx));
-				
-				// Generate the next handler
-				continue;
+				// Dump what is remaining in the cycles, for debugging
+				Debugging.debugNote("ehQueue: %s", ehQueue);
+				Debugging.debugNote("refClQueue: %s", refClQueue);
+				Debugging.debugNote("makeExQueue: %s", makeExQueue);
+				Debugging.debugNote("transitQueue: %s", transitQueue);
 			}
 			
-			// Set label target for this one
-			codebuilder.label(lab);
-			
-			// Go through and build the exception handler table
-			for (ExceptionHandler eh : ehtable)
+			// Generate reference clear jumps
+			while (!refClQueue.isEmpty())
 			{
-				// Load the class type for the exception to check against
-				int volehclassdx = volatiles.getUnmanaged();
-				this.__loadClassInfo(eh.type(), volehclassdx);
+				__RefClearJump__ refClearJump = refClQueue.remove();
 				
-				// Call instance handler check
-				this.__invokeStatic(InvokeType.SYSTEM,
-					NearNativeByteCodeHandler.JVMFUNC_CLASS,
-					"jvmIsInstance", "(II)I",
-					NativeCode.EXCEPTION_REGISTER, volehclassdx);
+				EnqueueAndLabel eql = refClearJump._enqueueAndLabel;
+				__EData__ eData = refClearJump._eData;
 				
-				// Cleanup
-				volatiles.removeUnmanaged(volehclassdx);
+				// Set label target for this one
+				codebuilder.label(this.__useEDataAndGetLabel(eData));
+				this.__useEDataDebugPoint(eData, 256);
 				
-				// If the return value is non-zero then it is an instance, in
-				// which case we jump to the handler address.
-				codebuilder.addIfNonZero(NativeCode.RETURN_REGISTER,
-					this.__labelJavaTransition(sops,
-						new InstructionJumpTarget(eh.handlerAddress())));
+				// Clear references
+				JavaStackEnqueueList enq = eql.enqueue;
+				for (int i = 0, n = enq.size(); i < n; i++)
+					this.__refUncount(enq.get(i));
+				
+				// Then go to the target
+				codebuilder.addGoto(eql.label);
 			}
 			
-			// No exception handler is available so, just fall through to the
-			// caller as needed
-			this.__generateReturn(enq);
+			// Generate make exception code
+			while (!makeExQueue.isEmpty())
+			{
+				__MakeException__ makeException = makeExQueue.remove();
+				
+				ClassAndLabel csl = makeException._classAndLabel;
+				__EData__ eData = makeException._eData;
+				
+				// Set label target for this one
+				codebuilder.label(this.__useEDataAndGetLabel(eData));
+				this.__useEDataDebugPoint(eData, 257);
+				
+				// Allocate class object, make sure it is not done in the exception
+				// register because the method we call may end up just clearing it
+				// and stopping if a make exception is done (because there is an
+				// exception here).
+				int exinst = volatiles.getUnmanaged();
+				this.__invokeNew(csl.classname, exinst);
+				
+				// Initialize the exception
+				this.__invokeInstance(InvokeType.SPECIAL, csl.classname, "<init>",
+					"()V", new RegisterList(exinst));
+				
+				// Copy result into the exception register
+				codebuilder.addCopy(exinst, NativeCode.EXCEPTION_REGISTER);
+				
+				// Done with this
+				volatiles.removeUnmanaged(exinst);
+				
+				// Generate jump to exception handler
+				codebuilder.addGoto(csl.label);
+			}
 			
-			// Exception handler was generated
-		}
-		
-		// Generate transition labels
-		Map<StateOperationsAndTarget, __EData__> trs = this._transits;
-		for (Map.Entry<StateOperationsAndTarget, __EData__> e : trs.entrySet())
-		{
-			StateOperationsAndTarget sot = e.getKey();
-			StateOperations ops = sot.operations;
-			InstructionJumpTarget target = sot.target;
+			// Generate exception handler tables
+			while (!ehQueue.isEmpty())
+			{
+				__TransitingExceptionHandler__ transit = ehQueue.remove();
+				
+				ExceptionHandlerTransition ehtran = transit._transition;
+				__EData__ eData = transit._eData;
+				
+				StateOperations sops = ehtran.handled;
+				JavaStackEnqueueList enq = ehtran.nothandled;
+				ExceptionHandlerTable ehtable = ehtran.table;
+				
+				// Label used for the jump target
+				NativeCodeLabel lab = this.__useEDataAndGetLabel(eData);
+				this.__useEDataDebugPoint(eData, 258);
+				
+				// If the table is empty, just return
+				if (ehtable.isEmpty())
+				{
+					// If we never saw a cleanup for this return yet we can
+					// generate one here to be used for later points
+					int rdx = returns.indexOf(enq);
+					if (rdx < 0)
+						codebuilder.label(lab,
+							codebuilder.labelTarget(this.__generateReturn(enq)));
+					
+					// We can just alias this exception to the return point to
+					// cleanup everything
+					else
+						codebuilder.label(lab,
+							codebuilder.labelTarget("return", rdx));
+					
+					// Generate the next handler
+					continue;
+				}
+				
+				// Set label target for this one
+				codebuilder.label(lab);
+				
+				// Go through and build the exception handler table
+				for (ExceptionHandler eh : ehtable)
+				{
+					// Load the class type for the exception to check against
+					int volehclassdx = volatiles.getUnmanaged();
+					this.__loadClassInfo(eh.type(), volehclassdx);
+					
+					// Call instance handler check
+					this.__invokeStatic(InvokeType.SYSTEM,
+						NearNativeByteCodeHandler.JVMFUNC_CLASS,
+						"jvmIsInstance", "(II)I",
+						NativeCode.EXCEPTION_REGISTER, volehclassdx);
+					
+					// Cleanup
+					volatiles.removeUnmanaged(volehclassdx);
+					
+					// If the return value is non-zero then it is an instance, in
+					// which case we jump to the handler address.
+					codebuilder.addIfNonZero(NativeCode.RETURN_REGISTER,
+						this.__labelJavaTransition(sops,
+							new InstructionJumpTarget(eh.handlerAddress())));
+				}
+				
+				// No exception handler is available so, just fall through to the
+				// caller as needed
+				this.__generateReturn(enq);
+			}
 			
-			// Set label target for this one
-			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
-			this.__useEDataDebugPoint(e.getValue(), 259);
-			
-			// Generate operations
-			this.doStateOperations(ops);
-			
-			// Then just jump to the Java target
-			codebuilder.addGoto(new NativeCodeLabel("java", target.target()));
-		}
+			// Generate transition labels
+			while (!transitQueue.isEmpty())
+			{
+				__StateOpTransit__ transit = transitQueue.remove();
+				
+				StateOperationsAndTarget sot = transit._stateOpAndTarget;
+				StateOperations ops = sot.operations;
+				InstructionJumpTarget target = sot.target;
+				
+				__EData__ eData = transit._eData;
+				
+				// Set label target for this one
+				codebuilder.label(this.__useEDataAndGetLabel(eData));
+				this.__useEDataDebugPoint(eData, 259);
+				
+				// Generate operations
+				this.doStateOperations(ops);
+				
+				// Then just jump to the Java target
+				codebuilder.addGoto(new NativeCodeLabel("java",
+					target.target()));
+			}
+		} while (!ehQueue.isEmpty() || !refClQueue.isEmpty() ||
+			!makeExQueue.isEmpty() || !transitQueue.isEmpty());
 		
 		return codebuilder.build();
 	}
@@ -1935,10 +1978,10 @@ public final class NearNativeByteCodeHandler
 	 */
 	private void __basicCheckNAS(int __lr)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Check against less than zero
-		codebuilder.addIfICmp(CompareType.LESS_THAN,
+		codeBuilder.addIfICmp(CompareType.LESS_THAN,
 			__lr, NativeCode.ZERO_REGISTER, this.__labelRefClearJump(
 			this.__labelMakeException(
 				"java/lang/NegativeArraySizeException")));
@@ -2621,6 +2664,10 @@ public final class NearNativeByteCodeHandler
 		// Call the given static method instead
 		this.__invokeStatic(InvokeType.STATIC, HelperFunction.HELPER_CLASS,
 			__func.member.name(), __func.member.type(), new RegisterList(__r));
+		
+		// Check if the invocation generated an exception
+		this.codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
+			this.__labelException());
 	}
 	
 	/**
@@ -2803,9 +2850,11 @@ public final class NearNativeByteCodeHandler
 			// Load class data
 			this.__loadClassInfo(__cl, classInfo.register);
 			
-			// Call allocator, copy to result
+			// Call allocator
 			this.__invokeHelper(HelperFunction.NEW_INSTANCE,
 				classInfo.register);
+			
+			// Handle result
 			codeBuilder.<MemHandleRegister>addCopy(
 				MemHandleRegister.RETURN, __out);
 		}
@@ -3236,6 +3285,10 @@ public final class NearNativeByteCodeHandler
 		rv = this.__eData(new NativeCodeLabel("exception", ehtable.size()));
 		ehtable.put(key, rv);
 		
+		// This exception should be unique, so we need to process it
+		this._ehTableQueue.addLast(
+			new __TransitingExceptionHandler__(key, rv));
+		
 		// Return the created label (where the caller jumps to)
 		return rv.label;
 	}
@@ -3310,6 +3363,9 @@ public final class NearNativeByteCodeHandler
 		rv = this.__eData(new NativeCodeLabel("transit", transits.size()));
 		transits.put(key, rv);
 		
+		// Queue for later
+		this._transitQueue.add(new __StateOpTransit__(key, rv));
+		
 		return rv.label;
 	}
 	
@@ -3344,6 +3400,9 @@ public final class NearNativeByteCodeHandler
 		rv = this.__eData(new NativeCodeLabel("makeexception",
 			metable.size()));
 		metable.put(key, rv);
+		
+		// Add to queue for final processing
+		this._meTableQueue.add(new __MakeException__(key, rv));
 		
 		// Return the created label (where the caller jumps to)
 		return rv.label;
@@ -3404,6 +3463,9 @@ public final class NearNativeByteCodeHandler
 		rv = this.__eData(new NativeCodeLabel("refclear", refcljumps.size()));
 		refcljumps.put(key, rv);
 		
+		// Add to the processing queue for later handling
+		this._refClearJumpQueue.add(new __RefClearJump__(key, rv));
+		
 		// Use the created label
 		return rv.label;
 	}
@@ -3430,6 +3492,7 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/15
 	 */
+	@Deprecated
 	private void __loadClassInfo(ClassName __cl, int __r)
 		throws NullPointerException
 	{

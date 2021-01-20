@@ -77,6 +77,29 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Allocates a new array
+	 * 
+	 * @param __info The class to allocate.
+	 * @param __len The array length.
+	 * @return The allocated object data.
+	 * @throws NegativeArraySizeException If the array is negatively sized.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/29
+	 */
+	public static Object newArray(ClassInfoBracket __info, int __len)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		if (__len < 0)
+			throw new NegativeArraySizeException("" + __len);
+		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Allocates a new instance of the given class.
 	 * 
 	 * @param __info The class to allocate.
