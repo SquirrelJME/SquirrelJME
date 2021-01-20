@@ -175,6 +175,9 @@ public class ClassName
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		if (!(__o instanceof ClassName))
 			return false;
 		

@@ -323,9 +323,10 @@ public final class MemHandles
 		{
 			// Always use the same class of numbers (even/odd)
 			int rv = this._nextId;
-			this._nextId = rv + 2;
+			this._nextId = rv + 1;
 			
-			return BootstrapConstants.HANDLE_SECURITY_BITS | rv;
+			return BootstrapConstants.HANDLE_SECURITY_BITS |
+				(rv & (~BootstrapConstants.HANDLE_SECURITY_MASK));
 		}
 	}
 	

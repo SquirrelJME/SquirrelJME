@@ -135,16 +135,19 @@ public final class NativeCPU
 	/**
 	 * Enters the given frame for the given address.
 	 *
+	 * @param __movePool Move the pool register?
 	 * @param __pc The address of the frame.
+	 * @param __poolPointer The pool pointer to set, if not moving.
 	 * @param __args Arguments to the frame
 	 * @return The newly created frame.
 	 * @since 2019/04/21
 	 */
-	public final CPUFrame enterFrame(int __pc, int... __args)
+	public final CPUFrame enterFrame(boolean __movePool, int __pc,
+		int __poolPointer, int... __args)
 	{
 		// Debug this
-		Debugging.debugNote("SC::enterFrame(%#08x, %s)",
-			__pc, IntegerArrayList.asList(__args));
+		Debugging.debugNote("SC::enterFrame(mP=%s, m/p=%#08x/%#08x, %s)",
+			__movePool, __pc, __poolPointer, IntegerArrayList.asList(__args));
 		
 		// Old frame, to source globals from
 		LinkedList<CPUFrame> frames = this._frames;
@@ -168,9 +171,10 @@ public final class NativeCPU
 			for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE; i++)
 				dest[i] = src[i];
 			
-			// Set the pool register to the next pool register value
-			dest[NativeCode.POOL_REGISTER] =
-				src[NativeCode.NEXT_POOL_REGISTER];
+			// Set the pool register to the next pool register value (classic)
+			if (__movePool)
+				dest[NativeCode.POOL_REGISTER] =
+					src[NativeCode.NEXT_POOL_REGISTER];
 			
 			// Copy task register.
 			rv._taskid = lastframe._taskid;
@@ -180,6 +184,10 @@ public final class NativeCPU
 		for (int i = 0, o = NativeCode.ARGUMENT_REGISTER_BASE,
 			n = __args.length; i < n; i++, o++)
 			dest[o] = __args[i];
+		
+		// The pool pointer is explicitly set (modern)
+		if (!__movePool)
+			dest[NativeCode.POOL_REGISTER] = __poolPointer;
 		
 		// Clear zero
 		dest[0] = 0;
@@ -657,7 +665,26 @@ public final class NativeCPU
 							reglist[i] = lr[reglist[i]];
 						
 						// Enter the frame
-						this.enterFrame(lr[args[0]], reglist);
+						this.enterFrame(true, lr[args[0]], 0, reglist);
+						
+						// Entering some other frame
+						reload = true;
+						
+						// Clear point counter
+						pointcounter = 0;
+					}
+					break;
+					
+					// Invoke with a ExecutionPointer+Pool
+				case NativeInstructionType.INVOKE_POINTER_AND_POOL:
+					{
+						// Load values into the register list
+						for (int i = 0, n = reglist.length; i < n; i++)
+							reglist[i] = lr[reglist[i]];
+						
+						// Enter the frame
+						this.enterFrame(false, lr[args[0]],
+							lr[args[1]], reglist);
 						
 						// Entering some other frame
 						reload = true;
@@ -686,6 +713,10 @@ public final class NativeCPU
 					// Load from constant pool
 				case NativeInstructionType.LOAD_POOL:
 					lr[args[1]] = nowframe.pool(args[0]);
+					
+					// Debug
+					Debugging.debugNote("Pool#%d %d/%#08x -> %d",
+						args[0], lr[args[1]], lr[args[1]], args[1]);
 					break;
 					
 					// Integer math
@@ -988,9 +1019,8 @@ public final class NativeCPU
 						{
 							// Enter the frame
 							int[] svp = this._supervisorproperties;
-							CPUFrame f = this.enterFrame(
-								svp[SupervisorPropertyIndex.
-									TASK_SYSCALL_METHOD_HANDLER]);
+							CPUFrame f = this.enterFrame(true, svp[SupervisorPropertyIndex.
+									TASK_SYSCALL_METHOD_HANDLER], 0);
 							
 							// Set frame's task ID to zero
 							f._taskid = 0;

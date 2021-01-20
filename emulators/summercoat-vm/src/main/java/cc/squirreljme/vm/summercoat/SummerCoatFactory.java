@@ -258,10 +258,8 @@ public class SummerCoatFactory
 					// Read the address it occurs at
 					int addr = dis.readUnsignedShort();
 					
-					Debugging.debugNote("%#10x: %#04x @ %#010x",
-						handleId, type, addr);
-					
 					// Determine what is being written to the memory
+					int readValue = -1;
 					switch (type)
 					{
 							// Ignore Byte swaps
@@ -273,17 +271,20 @@ public class SummerCoatFactory
 						
 							// Byte
 						case 1:
-							handle.memWriteByte(addr, dis.readByte());
+							readValue = dis.readByte();
+							handle.memWriteByte(addr, readValue);
 							break;
 							
 							// Short
 						case 2:
-							handle.memWriteShort(addr, dis.readShort());
+							readValue = dis.readShort();
+							handle.memWriteShort(addr, readValue);
 							break;
 							
 							// Integer
 						case 4:
-							handle.memWriteInt(addr, dis.readInt());
+							readValue = dis.readInt();
+							handle.memWriteInt(addr, readValue);
 							break;
 							
 							// Long
@@ -303,12 +304,14 @@ public class SummerCoatFactory
 									"Invalid handle: " + wantId);
 							
 							handle.memWriteHandle(addr, target);
+							readValue = target.id;
 							break;
 							
 							// Boot Jar Pointer
 						case BootstrapConstants.ACTION_BOOTJARP:
 							// Read the desired base offset
 							int baseOff = dis.readInt();
+							readValue = baseOff;
 							
 							// Write where it should belong
 							handle.memWriteInt(addr,
@@ -318,6 +321,12 @@ public class SummerCoatFactory
 						default:
 							throw new VMException("Invalid type: " + type);
 					}
+					
+					// Debug
+					Debugging.debugNote(
+						"%10x (%#10x t%d): %#04x @ %#010x = %d/%#x",
+						handle.id, handleId, handle.kind, type, addr,
+						readValue, readValue);
 				}
 				
 				// Ensure the guard is valid
@@ -393,13 +402,15 @@ public class SummerCoatFactory
 			throw new VMException("Could not read Boot Class Header.", e);
 		}
 		
+		// Which memory handle contains the pool?
+		int bootPool = bootJarHeader.get(JarProperty.MEMHANDLEID_START_POOL);
+		Debugging.debugNote("bootPool: %d/%#08x (%#08x)",
+			bootPool, bootPool, virtHandles.get(bootPool).id);
+		
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps);
-		CPUFrame iframe = cpu.enterFrame(startAddress);
-		
-		// Which memory handle contains the pool?
-		iframe.set(NativeCode.POOL_REGISTER, virtHandles.get(
-			bootJarHeader.get(JarProperty.MEMHANDLEID_START_POOL)).id);
+		CPUFrame iframe = cpu.enterFrame(false,
+			startAddress, virtHandles.get(bootPool).id);
 		
 		// Setup virtual machine with initial thread
 		return new SummerCoatVirtualMachine(cpu);

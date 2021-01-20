@@ -20,6 +20,7 @@ import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
+import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.IOException;
 import java.io.InputStream;
@@ -428,7 +429,7 @@ public final class BootState
 			this.loadLangClass(__cl));
 		
 		// Set and initialize all of the entries within the pool
-		for (int i = 0; i < rtPoolSz; i++)
+		for (int i = 1; i < rtPoolSz; i++)
 		{
 			Object pv = this.__loadPool(rtPool, rtPool.byIndex(i));
 			
@@ -848,6 +849,11 @@ public final class BootState
 		// Depends on the type used
 		switch (__entry.type())
 		{
+				// Class constant pool reference
+			case CLASS_POOL:
+				return this.loadClass(__entry.<ClassPool>value(
+					ClassPool.class).name)._poolMemHandle;
+				
 				// A noted string for debugging purposes, this directly points
 				// to the ROM for String data
 			case NOTED_STRING:
@@ -866,6 +872,8 @@ public final class BootState
 		if (false)
 			throw Debugging.todo();
 		Debugging.todoNote("Handle pool entry: %s", __entry);
-		return 0;//this._memHandles.allocObject(0);
+		return 0x3E_00_0000 |
+			(__entry.index & 0xFFFF) |
+			(__entry.type().ordinal() << 16);//this._memHandles.allocObject(0);
 	}
 }

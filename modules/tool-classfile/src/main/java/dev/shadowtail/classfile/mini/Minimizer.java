@@ -19,6 +19,7 @@ import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.RegisterList;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.classfile.summercoat.register.Register;
+import dev.shadowtail.classfile.summercoat.register.Volatile;
 import dev.shadowtail.classfile.xlate.DataType;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -576,9 +577,11 @@ public final class Minimizer
 							
 							case VUINT:
 							case VUREG:
-								vm = ((v instanceof Register) ? 
-									((Register)v).register :
-									((Number)v).intValue());
+								vm = ((v instanceof Volatile) ?
+									((Volatile)v).register.register :
+										((v instanceof Register) ? 
+										((Register)v).register :
+										((Number)v).intValue()));
 								break;
 						}
 						

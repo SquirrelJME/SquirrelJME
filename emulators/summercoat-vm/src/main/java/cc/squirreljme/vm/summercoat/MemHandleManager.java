@@ -231,7 +231,7 @@ public final class MemHandleManager
 			int id;
 			do
 			{
-				id = random.nextInt();
+				id = random.nextInt() & 0x3D_7FFFFF;
 			} while (handles.containsKey(id));
 			
 			// Reserve it for future usage

@@ -111,13 +111,18 @@ public final class ClassLoadingAdjustments
 			case "java/util/Set":
 			
 				// SquirrelJME special classes
+			case "todo/DEBUG":
+			case "todo/OOPS":
+			case "todo/TODO":
 			case "cc/squirreljme/jvm/Assembly":
 			case "cc/squirreljme/jvm/ClassInfo":
 			case "cc/squirreljme/jvm/Constants":
+			case "cc/squirreljme/runtime/cldc/debug/Debugging":
 			case "cc/squirreljme/jvm/IPCCallback":
 			case "cc/squirreljme/jvm/IPCException":
 			case "cc/squirreljme/jvm/IPCManager":
 			case "cc/squirreljme/jvm/JVMFunction":
+			case "cc/squirreljme/runtime/cldc/Poking":
 			case "cc/squirreljme/jvm/SoftDouble":
 			case "cc/squirreljme/jvm/SoftFloat":
 			case "cc/squirreljme/jvm/SoftInteger":
@@ -133,8 +138,12 @@ public final class ClassLoadingAdjustments
 			default:
 				// Certain classes within packages must be loaded in order
 				// for the VM to properly work
-				return !__cl.startsWith("cc/squirreljme/jvm/mle/") &&
-					!__cl.startsWith("cc/squirreljme/jvm/summercoat/");
+				return !__cl.startsWith("java/lang/") &&
+					!__cl.startsWith("java/util/") &&
+					!__cl.startsWith("java/io/") &&   
+					!__cl.startsWith("cc/squirreljme/jvm/mle/") &&
+					!__cl.startsWith("cc/squirreljme/jvm/summercoat/") &&
+					!__cl.startsWith("cc/squirreljme/runtime/cldc/");
 		}
 	}
 	

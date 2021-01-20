@@ -431,7 +431,7 @@ public final class NativeCodeBuilder
 		if (__exec == null || __pool == null || __args == null)
 			throw new NullPointerException("NARG");
 			
-		return this.__add(NativeInstructionType.INVOKE_POOL_AND_POINTER,
+		return this.__add(NativeInstructionType.INVOKE_POINTER_AND_POOL,
 			__exec, __pool, __args);
 	}
 	
@@ -1123,6 +1123,11 @@ public final class NativeCodeBuilder
 				case VJUMP:
 					if (!(o instanceof NativeCodeLabel))
 						throw new IllegalArgumentException("JC0s " + rv);
+					break;
+				
+					// Check that this is a valid pool type
+				case VPOOL:
+					MinimizedPoolEntryType.ofClass(o.getClass());
 					break;
 			}
 		}

@@ -123,7 +123,7 @@ public interface NativeInstructionType
 		0xEF;
 	
 	/** Invoke for pool and pointer. */
-	short INVOKE_POOL_AND_POINTER =
+	short INVOKE_POINTER_AND_POOL =
 		0xF0;
 	
 	/** Load execp/poolp from interface VTable. */
@@ -178,7 +178,7 @@ public interface NativeInstructionType
 	 * @deprecated This instruction will use the deprecated
 	 * {@link NativeCode#NEXT_POOL_REGISTER} and copy it to the pool register
 	 * accordingly, use {@link NativeInstructionType#INVOKE_POINTER_ONLY} or
-	 * {@link NativeInstructionType#INVOKE_POOL_AND_POINTER} instead.
+	 * {@link NativeInstructionType#INVOKE_POINTER_AND_POOL} instead.
 	 */
 	@Deprecated
 	short INVOKE =

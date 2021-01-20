@@ -18,7 +18,7 @@ public interface BootstrapConstants
 {
 	/** Security bits for the memory handles. */
 	int HANDLE_SECURITY_BITS =
-		0b1101_1001__0000_0000___0000_0000__0000_0000;
+		0b0101_1001__0000_0000___0000_0000__0000_0000;
 	
 	/** Mask for the security bits. */
 	int HANDLE_SECURITY_MASK =

@@ -190,7 +190,7 @@ public final class NativeInstruction
 		if (this == __o)
 			return true;
 		
-		if (!(this instanceof NativeInstruction))
+		if (!(__o instanceof NativeInstruction))
 			return false;
 		
 		NativeInstruction o = (NativeInstruction)__o;
@@ -320,7 +320,7 @@ public final class NativeInstruction
 			case NativeInstructionType.STORE_TO_INTARRAY:
 			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
 			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
-			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
+			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
 				return 3;
 				
 			case NativeInstructionType.MEM_HANDLE_OFF_REG:
@@ -395,7 +395,7 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG);
 					
 				// [r16, r16, reglist]
-			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
+			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
@@ -632,8 +632,8 @@ public final class NativeInstruction
 			case NativeInstructionType.INVOKE_POINTER_ONLY:
 				return "INVOKE_POINTER_ONLY";
 			
-			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
-				return "INVOKE_POOL_AND_POINTER";
+			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
+				return "INVOKE_POINTER_AND_POOL";
 			
 			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
 				return "MEM_HANDLE_COUNT_DOWN";

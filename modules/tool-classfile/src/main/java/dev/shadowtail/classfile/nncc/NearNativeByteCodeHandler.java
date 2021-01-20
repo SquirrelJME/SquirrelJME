@@ -72,6 +72,7 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.classfile.Pool;
 
 /**
  * This contains the handler for the near native byte code.
@@ -2662,7 +2663,7 @@ public final class NearNativeByteCodeHandler
 			throw new NullPointerException("NARG");
 		
 		// Call the given static method instead
-		this.__invokeStatic(InvokeType.STATIC, HelperFunction.HELPER_CLASS,
+		this.__invokeStatic(InvokeType.SYSTEM, HelperFunction.HELPER_CLASS,
 			__func.member.name(), __func.member.type(), new RegisterList(__r));
 		
 		// Check if the invocation generated an exception
@@ -2940,53 +2941,60 @@ public final class NearNativeByteCodeHandler
 			__args == null)
 			throw new NullPointerException("NARG");
 		
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Need volatile
+		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volsmp = volatiles.getUnmanaged(),
-			volexe = volatiles.getUnmanaged();
-		
-		// Load address of the target method
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod((__it == InvokeType.SYSTEM ? InvokeType.STATIC :
-			__it), new MethodHandle(__cl, __mn, __mt)), volsmp);
-		
-		// Load constant pool of the target class
-		this.__loadClassPool(__cl, NativeCode.NEXT_POOL_REGISTER);
-		
-		// Create a backup of the exception register (system mode)
-		if (__it == InvokeType.SYSTEM)
+		try (Volatile<ExecutablePointer> execPtr =
+				volatiles.getExecutablePointer();
+			Volatile<RuntimePoolPointer> poolHandle =
+				volatiles.getRuntimePoolPointer();
+			Volatile<TypedRegister<MemHandleRegister>> oldEx =
+				volatiles.<MemHandleRegister>getTyped(MemHandleRegister.class))
 		{
-			codebuilder.addCopy(NativeCode.EXCEPTION_REGISTER, volexe);
-			codebuilder.addCopy(NativeCode.ZERO_REGISTER,
-				NativeCode.EXCEPTION_REGISTER);
-		}
-		
-		// Invoke the static pointer
-		codebuilder.add(NativeInstructionType.INVOKE,
-			volsmp, __args);
-		
-		// If the system invoke (which could be from special code) threw an
-		// exception just replace our current exception with that one since
-		// it definitely would be worse!
-		if (__it == InvokeType.SYSTEM)
-		{
-			NativeCodeLabel doublefault = new NativeCodeLabel(
-				"doublefault", this._refclunk++);
-			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
-				doublefault);
+			// Load address of the target method
+			codeBuilder.addPoolLoad(new InvokedMethod(
+				(__it == InvokeType.SYSTEM ? InvokeType.STATIC : __it),
+					new MethodHandle(__cl, __mn, __mt)),
+					new TypedRegister<InvokedMethod>(InvokedMethod.class,
+						execPtr.register.register));
 			
-			// Restore our old exception register
-			codebuilder.addCopy(volexe, NativeCode.EXCEPTION_REGISTER);
+			// Load constant pool of the target class
+			this.__loadClassPool(__cl, poolHandle.register.register);
 			
-			// Target point for double fault
-			codebuilder.label(doublefault);
+			// Create a backup of the exception register (system mode)
+			if (__it == InvokeType.SYSTEM)
+			{
+				codeBuilder.addCopy(MemHandleRegister.EXCEPTION,
+					oldEx.register);
+				codeBuilder.addCopy(MemHandleRegister.NULL,
+					MemHandleRegister.EXCEPTION);
+			}
+			
+			// Invoke the static method
+			codeBuilder.addInvokePoolAndPointer(
+				execPtr.register, poolHandle.register, __args);
+			
+			// If the system invoke (which could be from special code) threw an
+			// exception just replace our current exception with that one since
+			// it definitely would be worse!
+			if (__it == InvokeType.SYSTEM)
+			{
+				// This is just a jump over restoring the old exception one
+				// so that the system one takes priority
+				NativeCodeLabel doubleFault = new NativeCodeLabel(
+					"doubleFault", this._refclunk++);
+				codeBuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
+					doubleFault);
+				
+				// Restore our old exception register
+				codeBuilder.addCopy(execPtr.register,
+					MemHandleRegister.EXCEPTION);
+				
+				// Target point for double fault
+				codeBuilder.label(doubleFault);
+			}
 		}
-		
-		// Not needed
-		volatiles.removeUnmanaged(volexe);
-		volatiles.removeUnmanaged(volsmp);
 	}
 	
 	/**
@@ -3590,21 +3598,22 @@ public final class NearNativeByteCodeHandler
 			throw new NullPointerException("NARG");
 		
 		// Used for loading code
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Load class pool which may already be loaded
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(__cl), __r);
+		// Load pool pointer
+		codeBuilder.<ClassPool>addPoolLoad(new ClassPool(__cl),
+			TypedRegister.<ClassPool>of(ClassPool.class, __r));
 		
 		// Detect classes which are dynamically initialized
 		if (!ClassLoadingAdjustments.isDeferredLoad(
 			this.state.classname.toString(), __cl.toString()))
 			return;
 		
-		// Jump if the pool is already loaded
+		Debugging.todoNote("Add dynamic pool load for %s!", __cl);
+		/*// Jump if the pool is already loaded
 		NativeCodeLabel isloaded = new NativeCodeLabel("piisloaded",
 			this._refclunk++);
-		codebuilder.addIfNonZero(__r, isloaded);
+		codeBuilder.addIfNonZero(__r, isloaded);
 		
 		// Need volatile to get the class info
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -3616,18 +3625,18 @@ public final class NearNativeByteCodeHandler
 		this.__loadClassInfo(__cl, volcinfo);
 		
 		// Load pool pointer from this ClassInfo
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
+		codeBuilder.add(NativeInstructionType.LOAD_POOL,
 			new AccessedField(FieldAccessTime.NORMAL,
 				FieldAccessType.INSTANCE,
 			new FieldReference(
 				new ClassName("cc/squirreljme/jvm/ClassInfo"),
 				new FieldName("pool"),
 				new FieldDescriptor("I"))), volscfo);
-		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+		codeBuilder.addMemoryOffReg(DataType.INTEGER, true,
 			volpoolv, volcinfo, volscfo);
 		
 		// Store it
-		codebuilder.add(NativeInstructionType.STORE_POOL,
+		codeBuilder.add(NativeInstructionType.STORE_POOL,
 			new ClassPool(__cl), volpoolv);
 		
 		// Cleanup
@@ -3636,7 +3645,7 @@ public final class NearNativeByteCodeHandler
 		volatiles.removeUnmanaged(volscfo);
 		
 		// End point is here
-		codebuilder.label(isloaded);
+		codeBuilder.label(isloaded);*/
 	}
 	
 	/**
