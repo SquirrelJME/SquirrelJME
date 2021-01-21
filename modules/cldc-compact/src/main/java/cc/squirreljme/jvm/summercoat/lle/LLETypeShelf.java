@@ -9,9 +9,11 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Provides the shelf for types that exist within the JVM.
@@ -21,13 +23,26 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 public final class LLETypeShelf
 {
 	/**
+	 * Not used.
+	 * 
+	 * @since 2020/06/30
+	 */
+	private LLETypeShelf()
+	{
+	}
+	
+	/**
 	 * Returns the binary name of the given class.
 	 *
 	 * @param __type The type to get the binary name of.
 	 * @return The binary name of this class.
 	 * @since 2020/06/07
 	 */
-	public static native String binaryName(TypeBracket __type);
+	public static String binaryName(TypeBracket __type)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the name of the package the class is within.
@@ -36,7 +51,11 @@ public final class LLETypeShelf
 	 * @return The binary name of the package the class is in.
 	 * @since 2020/06/07
 	 */
-	public static native String binaryPackageName(TypeBracket __type);
+	public static String binaryPackageName(TypeBracket __type)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type that is used within the given class.
@@ -45,7 +64,11 @@ public final class LLETypeShelf
 	 * @return The type of the given class.
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket classToType(Class<?> __cl);
+	public static TypeBracket classToType(Class<?> __cl)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the component type of the class.
@@ -56,8 +79,12 @@ public final class LLETypeShelf
 	 * array type.
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket component(TypeBracket __type)
-		throws MLECallError;
+	public static TypeBracket component(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the root component of this type, this is essentially calling
@@ -68,7 +95,11 @@ public final class LLETypeShelf
 	 * @return The root component of the type.
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket componentRoot(TypeBracket __type);
+	public static TypeBracket componentRoot(TypeBracket __type)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the number of dimensions this type has.
@@ -79,8 +110,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/07/06
 	 */
-	public static native int dimensions(TypeBracket __type)
-		throws MLECallError;
+	public static int dimensions(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets the enumeration values for the given type.
@@ -92,8 +127,12 @@ public final class LLETypeShelf
 	 * @since 2020/06/28
 	 */
 	@SuppressWarnings("rawtypes")
-	public static native Enum[] enumValues(TypeBracket __type)
-		throws MLECallError;
+	public static Enum[] enumValues(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Since types are virtual objects that do not have a true base off
@@ -106,8 +145,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If either are {@code null}.
 	 * @since 2020/06/04
 	 */
-	public static native boolean equals(TypeBracket __a, TypeBracket __b)
-		throws MLECallError;
+	public static boolean equals(TypeBracket __a, TypeBracket __b)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Finds a type by it's name.
@@ -117,7 +160,11 @@ public final class LLETypeShelf
 	 * found.
 	 * @since 2020/06/02
 	 */
-	public static native TypeBracket findType(String __name);
+	public static TypeBracket findType(String __name)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the JAR that the type is within.
@@ -127,7 +174,11 @@ public final class LLETypeShelf
 	 * is not within any JAR.
 	 * @since 2020/06/07
 	 */
-	public static native JarPackageBracket inJar(TypeBracket __type);
+	public static JarPackageBracket inJar(TypeBracket __type)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the interfaces of the type.
@@ -137,8 +188,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If {@code __type} is null. 
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket[] interfaces(TypeBracket __type)
-		throws MLECallError;
+	public static TypeBracket[] interfaces(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns true if this type is an array.
@@ -148,8 +203,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native boolean isArray(TypeBracket __type)
-		throws MLECallError;
+	public static boolean isArray(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if this is an enumeration.
@@ -159,8 +218,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/28
 	 */
-	public static native boolean isEnum(TypeBracket __type)
-		throws MLECallError;
+	public static boolean isEnum(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns true if this type is an interface.
@@ -170,8 +233,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native boolean isInterface(TypeBracket __type)
-		throws MLECallError;
+	public static boolean isInterface(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns true if this is a primitive type.
@@ -181,8 +248,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native boolean isPrimitive(TypeBracket __type)
-		throws MLECallError;
+	public static boolean isPrimitive(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type of the given object.
@@ -191,7 +262,11 @@ public final class LLETypeShelf
 	 * @return The type of the given object.
 	 * @since 2020/06/02
 	 */
-	public static native TypeBracket objectType(Object __o);
+	public static TypeBracket objectType(Object __o)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the run-time name of a type as it would be if
@@ -202,8 +277,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native String runtimeName(TypeBracket __type)
-		throws MLECallError;
+	public static String runtimeName(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the super class of this class.
@@ -213,8 +292,12 @@ public final class LLETypeShelf
 	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket superClass(TypeBracket __type)
-		throws MLECallError;
+	public static TypeBracket superClass(TypeBracket __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type holder for the {@code boolean} primitive type.
@@ -222,7 +305,11 @@ public final class LLETypeShelf
 	 * @return The type for the primitive type.
 	 * @since 2020/05/30
 	 */
-	public static native TypeBracket typeOfBoolean();
+	public static TypeBracket typeOfBoolean()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type holder for the {@code byte} primitive type.
@@ -230,7 +317,11 @@ public final class LLETypeShelf
 	 * @return The type for the primitive type.
 	 * @since 2020/05/30
 	 */
-	public static native TypeBracket typeOfByte();
+	public static TypeBracket typeOfByte()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type holder for the {@code short} primitive type.
@@ -238,7 +329,11 @@ public final class LLETypeShelf
 	 * @return The type for the primitive type.
 	 * @since 2020/05/30
 	 */
-	public static native TypeBracket typeOfShort();
+	public static TypeBracket typeOfShort()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type holder for the {@code char} primitive type.
@@ -246,7 +341,11 @@ public final class LLETypeShelf
 	 * @return The type for the primitive type.
 	 * @since 2020/05/30
 	 */
-	public static native TypeBracket typeOfCharacter();
+	public static TypeBracket typeOfCharacter()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type holder for the {@code int} primitive type.
@@ -254,7 +353,11 @@ public final class LLETypeShelf
 	 * @return The type for the primitive type.
 	 * @since 2020/05/30
 	 */
-	public static native TypeBracket typeOfInteger();
+	public static TypeBracket typeOfInteger()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type holder for the {@code long} primitive type.
@@ -262,7 +365,11 @@ public final class LLETypeShelf
 	 * @return The type for the primitive type.
 	 * @since 2020/05/30
 	 */
-	public static native TypeBracket typeOfLong();
+	public static TypeBracket typeOfLong()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type holder for the {@code float} primitive type.
@@ -270,7 +377,11 @@ public final class LLETypeShelf
 	 * @return The type for the primitive type.
 	 * @since 2020/05/30
 	 */
-	public static native TypeBracket typeOfFloat();
+	public static TypeBracket typeOfFloat()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the type holder for the {@code double} primitive type.
@@ -278,7 +389,11 @@ public final class LLETypeShelf
 	 * @return The type for the primitive type.
 	 * @since 2020/05/30
 	 */
-	public static native TypeBracket typeOfDouble();
+	public static TypeBracket typeOfDouble()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets the class type of the given bracket.
@@ -288,5 +403,9 @@ public final class LLETypeShelf
 	 * @return The class type for the given type.
 	 * @since 2020/05/30
 	 */
-	public static native <T> Class<T> typeToClass(TypeBracket __type);
+	public static <T> Class<T> typeToClass(TypeBracket __type)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

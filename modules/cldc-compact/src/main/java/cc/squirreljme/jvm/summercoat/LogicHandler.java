@@ -45,6 +45,22 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Checks if the given class is initialized.
+	 * 
+	 * @param __info The class info to initialize.
+	 * @return If the class is initialized.
+	 * @since 2021/01/20
+	 */
+	public static boolean isClassInit(ClassInfoBracket __info)
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Initializes the given class.
 	 * 
 	 * @param __info The class info to initialize.

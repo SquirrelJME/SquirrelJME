@@ -9,8 +9,10 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This shelf supports object anything that has to do with objects.
@@ -39,8 +41,12 @@ public final class LLEObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	public static native void arrayCopy(boolean[] __src, int __srcOff,
-		boolean[] __dest, int __destOff, int __len);
+	public static void arrayCopy(boolean[] __src, int __srcOff,
+		boolean[] __dest, int __destOff, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -53,8 +59,12 @@ public final class LLEObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	public static native void arrayCopy(byte[] __src, int __srcOff,
-		byte[] __dest, int __destOff, int __len);
+	public static void arrayCopy(byte[] __src, int __srcOff,
+		byte[] __dest, int __destOff, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -67,8 +77,12 @@ public final class LLEObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	public static native void arrayCopy(short[] __src, int __srcOff,
-		short[] __dest, int __destOff, int __len);
+	public static void arrayCopy(short[] __src, int __srcOff,
+		short[] __dest, int __destOff, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -81,8 +95,12 @@ public final class LLEObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	public static native void arrayCopy(char[] __src, int __srcOff,
-		char[] __dest, int __destOff, int __len);
+	public static void arrayCopy(char[] __src, int __srcOff,
+		char[] __dest, int __destOff, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -95,8 +113,12 @@ public final class LLEObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	public static native void arrayCopy(int[] __src, int __srcOff,
-		int[] __dest, int __destOff, int __len);
+	public static void arrayCopy(int[] __src, int __srcOff,
+		int[] __dest, int __destOff, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -109,8 +131,12 @@ public final class LLEObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	public static native void arrayCopy(long[] __src, int __srcOff,
-		long[] __dest, int __destOff, int __len);
+	public static void arrayCopy(long[] __src, int __srcOff,
+		long[] __dest, int __destOff, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -123,8 +149,12 @@ public final class LLEObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	public static native void arrayCopy(float[] __src, int __srcOff,
-		float[] __dest, int __destOff, int __len);
+	public static void arrayCopy(float[] __src, int __srcOff,
+		float[] __dest, int __destOff, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -137,8 +167,12 @@ public final class LLEObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	public static native void arrayCopy(double[] __src, int __srcOff,
-		double[] __dest, int __destOff, int __len);
+	public static void arrayCopy(double[] __src, int __srcOff,
+		double[] __dest, int __destOff, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the length of the array if this object is an array.
@@ -148,7 +182,11 @@ public final class LLEObjectShelf
 	 * array.
 	 * @since 2020/06/09
 	 */
-	public static native int arrayLength(Object __object);
+	public static int arrayLength(Object __object)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Allocates a new array.
@@ -159,7 +197,11 @@ public final class LLEObjectShelf
 	 * @return The newly allocated array as the given object.
 	 * @since 2020/06/09
 	 */
-	public static native <T> T arrayNew(TypeBracket __type, int __len);
+	public static <T> T arrayNew(TypeBracket __type, int __len)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the given thread holds the lock on the given method.
@@ -169,7 +211,11 @@ public final class LLEObjectShelf
 	 * @return If the given thread holds the lock.
 	 * @since 2020/06/17
 	 */
-	public static native boolean holdsLock(Thread __javaThread, Object __o);
+	public static boolean holdsLock(Thread __javaThread, Object __o)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the identity hashcode of the object.
@@ -178,7 +224,11 @@ public final class LLEObjectShelf
 	 * @return The identity hashcode of the object.
 	 * @since 2020/06/18
 	 */
-	public static native int identityHashCode(Object __o);
+	public static int identityHashCode(Object __o)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a new instance of the given type.
@@ -188,7 +238,11 @@ public final class LLEObjectShelf
 	 * memory left.
 	 * @since 2020/06/17
 	 */
-	public static native Object newInstance(TypeBracket __type);
+	public static Object newInstance(TypeBracket __type)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Notifies the monitors holding onto this object.
@@ -198,7 +252,11 @@ public final class LLEObjectShelf
 	 * @return The {@link MonitorResultType}.
 	 * @since 2020/06/22
 	 */
-	public static native int notify(Object __object, boolean __all);
+	public static int notify(Object __object, boolean __all)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Waits on the given monitor.
@@ -209,5 +267,9 @@ public final class LLEObjectShelf
 	 * @return The {@link MonitorResultType}.
 	 * @since 2020/06/22
 	 */
-	public static native int wait(Object __object, long __ms, int __ns);
+	public static int wait(Object __object, long __ms, int __ns)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

@@ -9,10 +9,12 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This shelf is responsible for accelerated graphics drawing.
@@ -42,8 +44,12 @@ public final class LLEPencilShelf
 	 * then {@code 0} will be returned.
 	 * @since 2020/09/25
 	 */
-	public static native int capabilities(int __pf)
-		throws MLECallError;
+	public static int capabilities(int __pf)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a hardware reference bracket to the native hardware graphics.
@@ -62,8 +68,12 @@ public final class LLEPencilShelf
 	 * @throws MLECallError If the requested graphics are not valid.
 	 * @since 2020/09/25
 	 */
-	public static native PencilBracket hardwareGraphics(int __pf, int __bw,
+	public static PencilBracket hardwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

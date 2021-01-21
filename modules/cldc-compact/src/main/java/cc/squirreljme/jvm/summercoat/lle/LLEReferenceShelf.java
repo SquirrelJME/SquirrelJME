@@ -9,7 +9,9 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This provides the interface for references which are used to weakly refer
@@ -35,7 +37,11 @@ public final class LLEReferenceShelf
 	 * @param __link The link to delete.
 	 * @since 2020/05/30
 	 */
-	public static native void deleteLink(RefLinkBracket __link);
+	public static void deleteLink(RefLinkBracket __link)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the link after the specified one.
@@ -44,7 +50,11 @@ public final class LLEReferenceShelf
 	 * @return The next link or {@code null} if there is none.
 	 * @since 2020/05/30
 	 */
-	public static native RefLinkBracket linkGetNext(RefLinkBracket __link);
+	public static RefLinkBracket linkGetNext(RefLinkBracket __link)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets the object this points to.
@@ -54,7 +64,11 @@ public final class LLEReferenceShelf
 	 * is no pointed object.
 	 * @since 2020/05/30
 	 */
-	public static native Object linkGetObject(RefLinkBracket __link);
+	public static Object linkGetObject(RefLinkBracket __link)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the link before the specified one.
@@ -63,7 +77,11 @@ public final class LLEReferenceShelf
 	 * @return The previous link or {@code null} if there is none.
 	 * @since 2020/05/30
 	 */
-	public static native RefLinkBracket linkGetPrev(RefLinkBracket __link);
+	public static RefLinkBracket linkGetPrev(RefLinkBracket __link)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the link that is after this one
@@ -72,8 +90,12 @@ public final class LLEReferenceShelf
 	 * @param __next The new link to set, may be {@code null} to clear.
 	 * @since 2020/05/30
 	 */
-	public static native void linkSetNext(RefLinkBracket __link,
-		RefLinkBracket __next);
+	public static void linkSetNext(RefLinkBracket __link,
+		RefLinkBracket __next)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the object that this points to.
@@ -82,7 +104,11 @@ public final class LLEReferenceShelf
 	 * @param __v The object to set to, may be {@code null}.
 	 * @since 2020/05/30
 	 */
-	public static native void linkSetObject(RefLinkBracket __link, Object __v);
+	public static void linkSetObject(RefLinkBracket __link, Object __v)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the link that is before this one.
@@ -91,8 +117,12 @@ public final class LLEReferenceShelf
 	 * @param __prev The new link to set, may be {@code null} to clear.
 	 * @since 2020/05/30
 	 */
-	public static native void linkSetPrev(RefLinkBracket __link,
-		RefLinkBracket __prev);
+	public static void linkSetPrev(RefLinkBracket __link,
+		RefLinkBracket __prev)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a new reference link.
@@ -100,7 +130,11 @@ public final class LLEReferenceShelf
 	 * @return The newly created reference link.
 	 * @since 2020/05/30
 	 */
-	public static native RefLinkBracket newLink();
+	public static RefLinkBracket newLink()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets the link of an object.
@@ -109,7 +143,11 @@ public final class LLEReferenceShelf
 	 * @return The link of the object or {@code null} if there is none.
 	 * @since 2020/05/30
 	 */
-	public static native RefLinkBracket objectGet(Object __o);
+	public static RefLinkBracket objectGet(Object __o)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the link of the object.
@@ -118,5 +156,9 @@ public final class LLEReferenceShelf
 	 * @param __link The link to set to it.
 	 * @since 2020/05/30
 	 */
-	public static native void objectSet(Object __o, RefLinkBracket __link);
+	public static void objectSet(Object __o, RefLinkBracket __link)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

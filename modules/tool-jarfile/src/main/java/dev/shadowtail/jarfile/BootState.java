@@ -17,11 +17,14 @@ import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
+import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
+import dev.shadowtail.classfile.pool.InvokeType;
+import dev.shadowtail.classfile.pool.InvokedMethod;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Deque;
@@ -35,6 +38,8 @@ import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldNameAndType;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkSection;
@@ -247,6 +252,8 @@ public final class BootState
 		
 		// Determine the base offset to write to
 		int baseOff = this._baseArraySize;
+		if (baseOff < 0)
+			throw Debugging.oops(baseOff);
 		
 		// Write all the elements to it
 		for (int i = 0, off = baseOff; i < n; i++, off += 2)
@@ -715,14 +722,8 @@ public final class BootState
 					throw Debugging.oops();
 			}
 		
-		// Calculate the base size for arrays
-		int baseArraySize = this._baseArraySize;
-		if (baseArraySize < 0)
-		{
-			baseArraySize = state._classInfoHandle
-				.getInteger(ClassProperty.SIZE_ALLOCATION);
-			this._baseArraySize = baseArraySize;
-		}
+		// Determine the base array size.
+		int baseArraySize = this.__baseArraySize(state);
 		
 		// Allocate memory needed to store the array handle, this includes
 		// room for all of the elements accordingly
@@ -820,6 +821,32 @@ public final class BootState
 	}
 	
 	/**
+	 * Determines the base array size.
+	 * 
+	 * @param __state The state to try from.
+	 * @return The base array size.
+	 * @since 2021/01/20
+	 */
+	private int __baseArraySize(ClassState __state)
+	{
+		// Calculate the base size for arrays
+		int baseArraySize = this._baseArraySize;
+		if (baseArraySize < 0)
+		{
+			// Must be an array.
+			if (!__state.thisName.isArray())
+				throw Debugging.oops(__state.thisName); 
+			
+			// Use the base allocate size for this array.
+			baseArraySize = __state._classInfoHandle
+				.getInteger(ClassProperty.SIZE_ALLOCATION);
+			this._baseArraySize = baseArraySize;
+		}
+		
+		return baseArraySize;
+	}
+	
+	/**
 	 * Loads the specified pool entry into memory and returns the handle.
 	 *
 	 * @param __clPool The class runtime pool;
@@ -853,6 +880,52 @@ public final class BootState
 			case CLASS_POOL:
 				return this.loadClass(__entry.<ClassPool>value(
 					ClassPool.class).name)._poolMemHandle;
+				
+				// A static method that has been invoked
+			case INVOKED_METHOD:
+				InvokedMethod invokedMethod = __entry.<InvokedMethod>value(
+					InvokedMethod.class);
+				
+				// Call of static method, this is a direct method pointer to
+				// the method code
+				if (invokedMethod.type() == InvokeType.STATIC)
+				{
+					MethodHandle handle = invokedMethod.handle;
+					
+					// Load the target class
+					ClassState inClass = this.loadClass(handle.outerClass());
+					
+					// Find the target method
+					// {@squirreljme.error BC0m The specified method does not
+					// exist. (The method)}
+					MinimizedMethod method = inClass.classFile.method(
+						true, handle.nameAndType());
+					if (method == null)
+						throw new InvalidClassFormatException(
+							"BC0m " + handle);
+					
+					// {@squirreljme.error BC0n Pure native method call not
+					// wrapped or processed. (The method)}
+					if (method.flags().isNative())
+					{
+						Debugging.todoNote("Fail on pure native: %s",
+							handle);
+						break;
+						/*throw new InvalidClassFormatException(
+							"BC0n " + handle);*/
+					}
+					
+					// Where is the code located?
+					return new BootJarPointer(
+						inClass.classFile.header.get(
+							StaticClassProperty.OFFSET_STATIC_METHOD_DATA) +
+								method.codeoffset,
+						this._rawChunks.get(handle.outerClass())
+							.futureAddress());
+				}
+				
+				Debugging.todoNote("Handle other: %s", __entry);
+				break;
 				
 				// A noted string for debugging purposes, this directly points
 				// to the ROM for String data

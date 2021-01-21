@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This contains various math functions.
  *
@@ -32,7 +35,11 @@ public final class LLEMathShelf
 	 * @return The raw bits.
 	 * @since 2020/06/18
 	 */
-	public static native long rawDoubleToLong(double __v);
+	public static long rawDoubleToLong(double __v)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Extracts the raw bits of the given value.
@@ -41,7 +48,11 @@ public final class LLEMathShelf
 	 * @return The raw bits.
 	 * @since 2020/06/18
 	 */
-	public static native int rawFloatToInt(float __v);
+	public static int rawFloatToInt(float __v)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Composes the value from the given bits
@@ -50,7 +61,11 @@ public final class LLEMathShelf
 	 * @return The value.
 	 * @since 2020/06/18
 	 */
-	public static native float rawIntToFloat(int __b);
+	public static float rawIntToFloat(int __b)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Composes the value from the given bits
@@ -59,5 +74,9 @@ public final class LLEMathShelf
 	 * @return The value.
 	 * @since 2020/06/18
 	 */
-	public static native double rawLongToDouble(long __b);
+	public static double rawLongToDouble(long __b)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

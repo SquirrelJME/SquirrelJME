@@ -24,6 +24,28 @@ public final class ChunkForwardedFuture
 	private volatile ChunkFuture _offset;
 	
 	/**
+	 * Initializes the future with nothing set.
+	 * 
+	 * @since 2021/01/20
+	 */
+	public ChunkForwardedFuture()
+	{
+	}
+	
+	/**
+	 * Initializes the future with values optionally set.
+	 * 
+	 * @param __future The future value.
+	 * @param __offset The potential offset.
+	 * @since 2021/01/20
+	 */
+	public ChunkForwardedFuture(ChunkFuture __future, ChunkFuture __offset)
+	{
+		this._future = __future;
+		this._offset = __offset;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2020/11/29
 	 */

@@ -9,8 +9,10 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is the shelf used for accessing the debugging features of SquirrelJME
@@ -36,7 +38,11 @@ public final class LLEDebugShelf
 	 * @return The trace that was within the given throwable.
 	 * @since 2020/06/11
 	 */
-	public static native TracePointBracket[] getThrowableTrace(Throwable __t);
+	public static TracePointBracket[] getThrowableTrace(Throwable __t)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Resolves the address from the given point.
@@ -45,7 +51,11 @@ public final class LLEDebugShelf
 	 * @return The address.
 	 * @since 2020/06/16
 	 */
-	public static native long pointAddress(TracePointBracket __point);
+	public static long pointAddress(TracePointBracket __point)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Resolves the class from the given point.
@@ -54,7 +64,11 @@ public final class LLEDebugShelf
 	 * @return The class.
 	 * @since 2020/06/16
 	 */
-	public static native String pointClass(TracePointBracket __point);
+	public static String pointClass(TracePointBracket __point)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Resolves the file from the given point.
@@ -63,7 +77,11 @@ public final class LLEDebugShelf
 	 * @return The file.
 	 * @since 2020/06/16
 	 */
-	public static native String pointFile(TracePointBracket __point);
+	public static String pointFile(TracePointBracket __point)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Resolves the Java address from the given point.
@@ -72,7 +90,11 @@ public final class LLEDebugShelf
 	 * @return The Java address.
 	 * @since 2020/06/16
 	 */
-	public static native int pointJavaAddress(TracePointBracket __point);
+	public static int pointJavaAddress(TracePointBracket __point)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Resolves the Java operation from the given point.
@@ -81,7 +103,11 @@ public final class LLEDebugShelf
 	 * @return The Java operation.
 	 * @since 2020/06/16
 	 */
-	public static native int pointJavaOperation(TracePointBracket __point);
+	public static int pointJavaOperation(TracePointBracket __point)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Resolves the line from the given point.
@@ -90,7 +116,11 @@ public final class LLEDebugShelf
 	 * @return The line.
 	 * @since 2020/06/16
 	 */
-	public static native int pointLine(TracePointBracket __point);
+	public static int pointLine(TracePointBracket __point)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Resolves the method name from the given point.
@@ -99,7 +129,11 @@ public final class LLEDebugShelf
 	 * @return The method name.
 	 * @since 2020/06/16
 	 */
-	public static native String pointMethodName(TracePointBracket __point);
+	public static String pointMethodName(TracePointBracket __point)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Resolves the method type from the given point.
@@ -108,7 +142,11 @@ public final class LLEDebugShelf
 	 * @return The method type.
 	 * @since 2020/06/16
 	 */
-	public static native String pointMethodType(TracePointBracket __point);
+	public static String pointMethodType(TracePointBracket __point)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Traces the entire stack, the top-most trace point in the stack is always
@@ -117,7 +155,11 @@ public final class LLEDebugShelf
 	 * @return The stack trace.
 	 * @since 2020/06/11
 	 */
-	public static native TracePointBracket[] traceStack();
+	public static TracePointBracket[] traceStack()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Starts performing verbose virtual machine outputs for debugging.
@@ -132,7 +174,11 @@ public final class LLEDebugShelf
 	 * @return An integer to be passed to {@link cc.squirreljme.jvm.mle.DebugShelf#verboseStop(int)}.
 	 * @since 2020/07/11
 	 */
-	public static native int verbose(int __flags);
+	public static int verbose(int __flags)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Stops performing verbosity output.
@@ -140,5 +186,9 @@ public final class LLEDebugShelf
 	 * @param __code The previous verbosity state.
 	 * @since 2020/07/11
 	 */
-	public static native void verboseStop(int __code);
+	public static void verboseStop(int __code)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

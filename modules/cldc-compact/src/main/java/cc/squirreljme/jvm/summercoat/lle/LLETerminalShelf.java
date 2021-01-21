@@ -9,11 +9,13 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.SystemCall;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Low-level {@link TerminalShelf}.
@@ -40,8 +42,12 @@ public final class LLETerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/11/22
 	 */
-	public static native int available(int __fd)
-		throws MLECallError;
+	public static int available(int __fd)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Closes the output of the current process.
@@ -51,8 +57,12 @@ public final class LLETerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/07/02
 	 */
-	public static native int close(int __fd)
-		throws MLECallError;
+	public static int close(int __fd)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Flushes the stream.
@@ -62,8 +72,12 @@ public final class LLETerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/12/08
 	 */
-	public static native int flush(int __fd)
-		throws MLECallError;
+	public static int flush(int __fd)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Reads from the given pipe into the output buffer.
@@ -78,8 +92,12 @@ public final class LLETerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
-	public static native int read(int __fd, byte[] __b, int __o, int __l)
-		throws MLECallError;
+	public static int read(int __fd, byte[] __b, int __o, int __l)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Writes the character to the console output.

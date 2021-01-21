@@ -9,8 +9,10 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 
 /**
@@ -26,7 +28,11 @@ public final class LLEJarPackageShelf
 	 * @return The classpath of the current program.
 	 * @since 2020/06/07
 	 */
-	public static native JarPackageBracket[] classPath();
+	public static JarPackageBracket[] classPath()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the given brackets refer to the same JAR.
@@ -37,9 +43,13 @@ public final class LLEJarPackageShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
-	public static native boolean equals(
+	public static boolean equals(
 		JarPackageBracket __a, JarPackageBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the libraries which are available to the virtual machine.
@@ -47,7 +57,11 @@ public final class LLEJarPackageShelf
 	 * @return The libraries that are currently available.
 	 * @since 2020/10/31
 	 */
-	public static native JarPackageBracket[] libraries();
+	public static JarPackageBracket[] libraries()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the path to the given JAR.
@@ -60,8 +74,12 @@ public final class LLEJarPackageShelf
 	 * @throws MLECallError If the JAR is not valid.
 	 * @since 2020/10/31
 	 */
-	public static native String libraryPath(JarPackageBracket __jar)
-		throws MLECallError;
+	public static String libraryPath(JarPackageBracket __jar)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Opens the resource from the input stream.
@@ -74,7 +92,11 @@ public final class LLEJarPackageShelf
 	 * specified.
 	 * @since 2020/06/07
 	 */
-	public static native InputStream openResource(JarPackageBracket __jar,
+	public static InputStream openResource(JarPackageBracket __jar,
 		String __rc)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

@@ -9,9 +9,11 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This shelf handles everything regarding threading and otherwise.
@@ -29,8 +31,12 @@ public final class LLEThreadShelf
 	 * @return The number of alive threads.
 	 * @since 2020/06/17
 	 */
-	public static native int aliveThreadCount(boolean __includeMain,
-		boolean __includeDaemon);
+	public static int aliveThreadCount(boolean __includeMain,
+		boolean __includeDaemon)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a virtual machine thread for the given Java thread.
@@ -40,8 +46,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native VMThreadBracket createVMThread(Thread __javaThread)
-		throws MLECallError;
+	public static VMThreadBracket createVMThread(Thread __javaThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the current Java thread.
@@ -49,7 +59,11 @@ public final class LLEThreadShelf
 	 * @return The current {@link Thread}.
 	 * @since 2020/06/17
 	 */
-	public static native Thread currentJavaThread();
+	public static Thread currentJavaThread()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the exit code for the current process.
@@ -57,7 +71,11 @@ public final class LLEThreadShelf
 	 * @return The exit code for the current process.
 	 * @since 2020/06/17
 	 */
-	public static native int currentExitCode();
+	public static int currentExitCode()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns whether the interrupt flag was raised and clears it.
@@ -67,8 +85,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native boolean javaThreadClearInterrupt(Thread __javaThread)
-		throws MLECallError;
+	public static boolean javaThreadClearInterrupt(Thread __javaThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Marks the thread as being started.
@@ -77,8 +99,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native void javaThreadFlagStarted(Thread __javaThread)
-		throws MLECallError;
+	public static void javaThreadFlagStarted(Thread __javaThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Has this Java thread been started?
@@ -88,8 +114,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native boolean javaThreadIsStarted(Thread __javaThread)
-		throws MLECallError;
+	public static boolean javaThreadIsStarted(Thread __javaThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the runnable for the given Java thread.
@@ -99,8 +129,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native Runnable javaThreadRunnable(Thread __javaThread)
-		throws MLECallError;
+	public static Runnable javaThreadRunnable(Thread __javaThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets if the thread is alive or not.
@@ -111,9 +145,13 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native void javaThreadSetAlive(Thread __javaThread,
+	public static void javaThreadSetAlive(Thread __javaThread,
 		boolean __set)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the thread to be a daemon thread, it cannot be started.
@@ -123,8 +161,12 @@ public final class LLEThreadShelf
 	 * started.
 	 * @since 2020/09/12
 	 */
-	public static native void javaThreadSetDaemon(Thread __javaThread)
-		throws MLECallError;
+	public static void javaThreadSetDaemon(Thread __javaThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Runs the main entry point for the current process and gives it all of
@@ -132,7 +174,11 @@ public final class LLEThreadShelf
 	 *
 	 * @since 2020/06/17
 	 */
-	public static native void runProcessMain();
+	public static void runProcessMain()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the current process exit code.
@@ -140,7 +186,11 @@ public final class LLEThreadShelf
 	 * @param __code The exit code to use.
 	 * @since 2020/06/17
 	 */
-	public static native void setCurrentExitCode(int __code);
+	public static void setCurrentExitCode(int __code)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the trace of the current task so that it can be requested by
@@ -152,9 +202,13 @@ public final class LLEThreadShelf
 	 * {@code __trace} or any element within is {@code null}.
 	 * @since 2020/07/02
 	 */
-	public static native void setTrace(String __message,
+	public static void setTrace(String __message,
 		TracePointBracket[] __trace)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sleeps the current thread for the given amount of time.
@@ -169,8 +223,12 @@ public final class LLEThreadShelf
 	 * out of range.
 	 * @since 2020/06/17
 	 */
-	public static native boolean sleep(int __ms, int __ns)
-		throws MLECallError;
+	public static boolean sleep(int __ms, int __ns)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the Java thread for the VM thread.
@@ -180,8 +238,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __thread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native Thread toJavaThread(VMThreadBracket __vmThread)
-		throws MLECallError;
+	public static Thread toJavaThread(VMThreadBracket __vmThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the virtual machine thread from the given Java thread.
@@ -191,8 +253,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __thread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native VMThreadBracket toVMThread(Thread __thread)
-		throws MLECallError;
+	public static VMThreadBracket toVMThread(Thread __thread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the thread ID for the given thread.
@@ -202,8 +268,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native int vmThreadId(VMThreadBracket __vmThread)
-		throws MLECallError;
+	public static int vmThreadId(VMThreadBracket __vmThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Performs a hardware interrupt on the thread.
@@ -212,8 +282,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native void vmThreadInterrupt(VMThreadBracket __vmThread)
-		throws MLECallError;
+	public static void vmThreadInterrupt(VMThreadBracket __vmThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the given thread is a main thread.
@@ -223,8 +297,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native boolean vmThreadIsMain(VMThreadBracket __vmThread)
-		throws MLECallError;
+	public static boolean vmThreadIsMain(VMThreadBracket __vmThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the thread priority in the same manner as
@@ -241,9 +319,13 @@ public final class LLEThreadShelf
 	 * inclusive.
 	 * @since 2020/06/17
 	 */
-	public static native void vmThreadSetPriority(VMThreadBracket __vmThread,
+	public static void vmThreadSetPriority(VMThreadBracket __vmThread,
 		int __p)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Performs the actual start of the given thread.
@@ -253,8 +335,12 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native boolean vmThreadStart(VMThreadBracket __vmThread)
-		throws MLECallError;
+	public static boolean vmThreadStart(VMThreadBracket __vmThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Waits for the state of threads to be updated, or just times out.
@@ -267,6 +353,10 @@ public final class LLEThreadShelf
 	 * @throws MLECallError If {@code __ms} is negative.
 	 * @since 2020/06/17
 	 */
-	public static native boolean waitForUpdate(int __ms)
-		throws MLECallError;
+	public static boolean waitForUpdate(int __ms)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

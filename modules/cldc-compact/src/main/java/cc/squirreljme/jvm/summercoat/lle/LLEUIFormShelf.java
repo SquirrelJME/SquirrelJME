@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
@@ -20,6 +21,7 @@ import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is the shelf which manages all of the form based user interface that
@@ -52,8 +54,12 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2020/10/03
 	 */
-	public static native void callback(Object __ref, UIDisplayCallback __dc)
-		throws MLECallError;
+	public static void callback(Object __ref, UIDisplayCallback __dc)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * This is used to register the callback which is called with the user
@@ -64,9 +70,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If {@code __form} is {@code null}.
 	 * @since 2020/07/03
 	 */
-	public static native void callback(UIFormBracket __form,
+	public static void callback(UIFormBracket __form,
 		UIFormCallback __callback)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the displays which are attached to the system.
@@ -76,8 +86,12 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If there are no displays.
 	 * @since 2020/07/01
 	 */
-	public static native UIDisplayBracket[] displays()
-		throws MLECallError;
+	public static UIDisplayBracket[] displays()
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the form that is currently being shown on the display.
@@ -87,9 +101,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2020/07/01
 	 */
-	public static native UIFormBracket displayCurrent(
+	public static UIFormBracket displayCurrent(
 		UIDisplayBracket __display)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Show the given form on the display.
@@ -99,9 +117,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError On {@code __display} is {@code null}.
 	 * @since 2020/07/01
 	 */
-	public static native void displayShow(UIDisplayBracket __display,
+	public static void displayShow(UIDisplayBracket __display,
 		UIFormBracket __form)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIDisplayBracket}.
@@ -112,9 +134,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	public static native boolean equals(UIDisplayBracket __a,
+	public static boolean equals(UIDisplayBracket __a,
 		UIDisplayBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIFormBracket}.
@@ -125,9 +151,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	public static native boolean equals(UIFormBracket __a,
+	public static boolean equals(UIFormBracket __a,
 		UIFormBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIItemBracket}.
@@ -138,9 +168,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	public static native boolean equals(UIItemBracket __a,
+	public static boolean equals(UIItemBracket __a,
 		UIItemBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIWidgetBracket}.
@@ -151,9 +185,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/09/20
 	 */
-	public static native boolean equals(UIWidgetBracket __a,
+	public static boolean equals(UIWidgetBracket __a,
 		UIWidgetBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Flushes all of the events and forces them to be processed.
@@ -161,8 +199,12 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If events could not be flushed.
 	 * @since 2020/07/26
 	 */
-	public static native void flushEvents()
-		throws MLECallError;
+	public static void flushEvents()
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Deletes the given form.
@@ -171,8 +213,12 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError On null arguments or the form could not be deleted.
 	 * @since 2020/07/01
 	 */
-	public static native void formDelete(UIFormBracket __form)
-		throws MLECallError;
+	public static void formDelete(UIFormBracket __form)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the item at the given location.
@@ -185,9 +231,13 @@ public final class LLEUIFormShelf
 	 * not valid.
 	 * @since 2020/07/19
 	 */
-	public static native UIItemBracket formItemAtPosition(UIFormBracket __form,
+	public static UIItemBracket formItemAtPosition(UIFormBracket __form,
 		int __pos)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the number of items on the form.
@@ -197,8 +247,12 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If the form is null or not valid.
 	 * @since 2020/07/19
 	 */
-	public static native int formItemCount(UIFormBracket __form)
-		throws MLECallError;
+	public static int formItemCount(UIFormBracket __form)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the position of the item on the given form, or if it is not
@@ -212,9 +266,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If the form and item are null.
 	 * @since 2020/07/18
 	 */
-	public static native int formItemPosition(UIFormBracket __form,
+	public static int formItemPosition(UIFormBracket __form,
 		UIItemBracket __item)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the position of a form's item.
@@ -227,9 +285,13 @@ public final class LLEUIFormShelf
 	 * is not valid.
 	 * @since 2020/07/18
 	 */
-	public static native void formItemPosition(UIFormBracket __form,
+	public static void formItemPosition(UIFormBracket __form,
 		UIItemBracket __item, int __pos)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Removes the item at the given position on the form.
@@ -241,9 +303,13 @@ public final class LLEUIFormShelf
 	 * not valid, or there was no item at the position.
 	 * @since 2020/07/18
 	 */
-	public static native UIItemBracket formItemRemove(UIFormBracket __form,
+	public static UIItemBracket formItemRemove(UIFormBracket __form,
 		int __pos)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a new form.
@@ -252,8 +318,12 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If the form could not be created.
 	 * @since 2020/07/01
 	 */
-	public static native UIFormBracket formNew()
-		throws MLECallError;
+	public static UIFormBracket formNew()
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the injector for forms, which is used for testing purposes.
@@ -262,8 +332,12 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If injecting is not supported.
 	 * @since 2020/07/26
 	 */
-	public static native UIFormCallback injector()
-		throws MLECallError;
+	public static UIFormCallback injector()
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Deletes the specified item.
@@ -274,8 +348,12 @@ public final class LLEUIFormShelf
 	 * active within a form.
 	 * @since 2020/07/18
 	 */
-	public static native void itemDelete(UIItemBracket __item)
-		throws MLECallError;
+	public static void itemDelete(UIItemBracket __item)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a new item.
@@ -286,8 +364,12 @@ public final class LLEUIFormShelf
 	 * not valid.
 	 * @since 2020/07/17
 	 */
-	public static native UIItemBracket itemNew(int __type)
-		throws MLECallError;
+	public static UIItemBracket itemNew(int __type)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns a metric which describes something about the user interface
@@ -301,8 +383,12 @@ public final class LLEUIFormShelf
 	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
 	 * @since 2020/06/30
 	 */
-	public static native int metric(int __metric)
-		throws MLECallError;
+	public static int metric(int __metric)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Calls the given method at a later time.
@@ -312,8 +398,12 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/10/03
 	 */
-	public static native void later(int __displayId, int __serialId)
-		throws MLECallError;
+	public static void later(int __displayId, int __serialId)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the given item property.
@@ -326,9 +416,13 @@ public final class LLEUIFormShelf
 	 * valid or not an integer property.
 	 * @since 2020/09/13
 	 */
-	public static native void widgetProperty(UIWidgetBracket __widget,
+	public static void widgetProperty(UIWidgetBracket __widget,
 		int __intProp, int __sub, int __newValue)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the given item property.
@@ -341,9 +435,13 @@ public final class LLEUIFormShelf
 	 * valid or not a string property.
 	 * @since 2020/09/13
 	 */
-	public static native void widgetProperty(UIWidgetBracket __widget,
+	public static void widgetProperty(UIWidgetBracket __widget,
 		int __strProp, int __sub, String __newValue)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets a property of the given widget.
@@ -355,9 +453,13 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
-	public static native int widgetPropertyInt(UIWidgetBracket __widget,
+	public static int widgetPropertyInt(UIWidgetBracket __widget,
 		int __intProp, int __sub)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets a property of the given widget.
@@ -369,7 +471,11 @@ public final class LLEUIFormShelf
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
-	public static native String widgetPropertyStr(UIWidgetBracket __widget,
+	public static String widgetPropertyStr(UIWidgetBracket __widget,
 		int __strProp, int __sub)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

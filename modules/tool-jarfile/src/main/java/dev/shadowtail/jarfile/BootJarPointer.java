@@ -10,6 +10,7 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import net.multiphasicapps.io.ChunkForwardedFuture;
 import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkFutureInteger;
 
@@ -39,16 +40,43 @@ public final class BootJarPointer
 	 * Initializes the Boot Jar Pointer.
 	 * 
 	 * @param __value The value to set.
+	 * @param __off Optional offset.
+	 * @since 2021/01/20
+	 */
+	public BootJarPointer(int __value, ChunkFuture __off)
+	{
+		this(new ChunkFutureInteger(__value), __off);
+	}
+	
+	/**
+	 * Initializes the Boot Jar Pointer.
+	 * 
+	 * @param __value The value to set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/18
 	 */
 	public BootJarPointer(ChunkFuture __value)
 		throws NullPointerException
 	{
+		this(__value, null);
+	}
+	
+	/**
+	 * Initializes the Boot Jar Pointer.
+	 * 
+	 * @param __value The value to set.
+	 * @param __off Optional offset.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/20
+	 */
+	public BootJarPointer(ChunkFuture __value, ChunkFuture __off)
+		throws NullPointerException
+	{
 		if (__value == null)
 			throw new NullPointerException("NARG");
 		
-		this.value = __value;
+		this.value = (__off == null ? __value :
+			new ChunkForwardedFuture(__value, __off));
 	}
 	
 	/**

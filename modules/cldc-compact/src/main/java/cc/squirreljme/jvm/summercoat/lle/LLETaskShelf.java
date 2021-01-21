@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
@@ -18,6 +19,7 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 
 /**
@@ -42,7 +44,11 @@ public final class LLETaskShelf
 	 * @return The active tasks.
 	 * @since 2020/07/09
 	 */
-	public static native TaskBracket[] active();
+	public static TaskBracket[] active()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the current task.
@@ -50,7 +56,11 @@ public final class LLETaskShelf
 	 * @return The current task.
 	 * @since 2020/07/02
 	 */
-	public static native TaskBracket current();
+	public static TaskBracket current()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two given tasks are the same.
@@ -61,8 +71,13 @@ public final class LLETaskShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
-	public static native boolean equals(TaskBracket __a, TaskBracket __b)
-		throws MLECallError;
+	public static boolean equals(TaskBracket __a, TaskBracket __b)
+		throws MLECallError
+		
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the current exit code of the given task.
@@ -73,8 +88,12 @@ public final class LLETaskShelf
 	 * @throws MLECallError If the task is not valid.
 	 * @since 2020/07/02
 	 */
-	public static native int exitCode(TaskBracket __task)
-		throws MLECallError;
+	public static int exitCode(TaskBracket __task)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets the trace that was set by the program.
@@ -86,9 +105,13 @@ public final class LLETaskShelf
 	 * if {@code __outMessage} is too small.
 	 * @since 2020/07/02
 	 */
-	public static native TracePointBracket[] getTrace(TaskBracket __task,
+	public static TracePointBracket[] getTrace(TaskBracket __task,
 		String[] __outMessage)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * If a task was started with {@link TaskPipeRedirectType#BUFFER} then the
@@ -112,9 +135,13 @@ public final class LLETaskShelf
 	 * are negative or exceed the array bounds.
 	 * @since 2020/07/02
 	 */
-	public static native int read(TaskBracket __task, int __fd,
+	public static int read(TaskBracket __task, int __fd,
 		byte[] __b, int __o, int __l)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Launches another task with the specified class path, main class, and
@@ -141,10 +168,14 @@ public final class LLETaskShelf
 	 * are not valid.
 	 * @since 2020/07/02
 	 */
-	public static native TaskBracket start(
+	public static TaskBracket start(
 		JarPackageBracket[] __classPath, String __mainClass, String[] __args,
 		String[] __sysPropPairs, int __stdOut, int __stdErr)
-		throws MLECallError;
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the status of the given task.
@@ -154,6 +185,10 @@ public final class LLETaskShelf
 	 * @throws MLECallError If the task is not valid.
 	 * @since 2020/07/02
 	 */
-	public static native int status(TaskBracket __task)
-		throws MLECallError;
+	public static int status(TaskBracket __task)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

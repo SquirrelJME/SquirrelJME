@@ -21,6 +21,15 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 public final class TypeShelf
 {
 	/**
+	 * Not used.
+	 * 
+	 * @since 2021/01/20
+	 */
+	private TypeShelf()
+	{
+	}
+	
+	/**
 	 * Returns the binary name of the given class.
 	 *
 	 * @param __type The type to get the binary name of.

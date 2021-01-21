@@ -26,6 +26,10 @@ public enum HelperFunction
 	/** {@link LogicHandler#gcMemHandle(int)}.  */
 	GC_MEM_HANDLE("gcMemHandle", "(I)V"),
 	
+	/** {@link LogicHandler#isClassInit(ClassInfoBracket)}.  */
+	IS_CLASS_INIT("isClassInit", "(Lcc/squirreljme/jvm/" +
+		"summercoat/brackets/ClassInfoBracket;)Z"),
+	
 	/** {@link LogicHandler#isInstance(int, ClassInfoBracket)}.  */
 	IS_INSTANCE("isInstance", "(I" +
 		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;)Z"),

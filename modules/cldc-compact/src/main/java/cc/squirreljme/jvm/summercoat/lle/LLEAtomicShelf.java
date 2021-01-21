@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.summercoat.lle;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This shelf provides helpers for atomic operations.
  *
@@ -31,7 +34,11 @@ public final class LLEAtomicShelf
 	 * @return The locking key if locked, otherwise {@code 0} when busy.
 	 * @since 2020/05/30
 	 */
-	public static native int gcLock();
+	public static int gcLock()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Unlocks the garbage collector provided that the previous locking key
@@ -41,7 +48,11 @@ public final class LLEAtomicShelf
 	 * collector.
 	 * @since 2020/05/30
 	 */
-	public static native void gcUnlock(int __key);
+	public static void gcUnlock(int __key)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * For constant lock spins, this provides a consistent means of counting
@@ -53,7 +64,11 @@ public final class LLEAtomicShelf
 	 * @param __count The number of times the lock has spun.
 	 * @since 2020/05/30
 	 */
-	public static native void spinLock(int __count);
+	public static void spinLock(int __count)
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns a "unique" atomic tick value. The value returned should be
@@ -64,5 +79,9 @@ public final class LLEAtomicShelf
 	 * other than equality.
 	 * @since 2020/05/03
 	 */
-	public static native int tick();
+	public static int tick()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

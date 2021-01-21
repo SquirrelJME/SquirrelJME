@@ -3540,20 +3540,19 @@ public final class NearNativeByteCodeHandler
 		// Check if the class is initialized or not
 		NativeCodeLabel isLoadPt = new NativeCodeLabel("classInfoLoaded",
 			this._refclunk++);
-		try (Volatile<IntValueRegister> isInitBool = volatiles.getIntValue())
+		try (Volatile<IntValueRegister> isInitBool =
+			this.volatiles.getIntValue())
 		{
-			// If the class is already loaded do not try loading
-			this.__invokeSysCallV(SystemCallIndex.CHECK_IF_CLASS_INIT,
-				isInitBool.register, __r);
-			codeBuilder.addIfNonZero(isInitBool.register, isLoadPt);
+			// If the class is already initialized do not try loading
+			this.__invokeHelper(HelperFunction.IS_CLASS_INIT, __r);
+			codeBuilder.addIfNonZero(IntValueRegister.RETURN, isLoadPt);
 			
 			// Otherwise try to initialize the class
-			this.__invokeHelper(HelperFunction.INIT_CLASS,
-				__r);
+			this.__invokeHelper(HelperFunction.INIT_CLASS, __r);
+			
+			// End point is here
+			codeBuilder.label(isLoadPt);
 		}
-		
-		// End point is here
-		codeBuilder.label(isLoadPt);
 	}
 	
 	/**
