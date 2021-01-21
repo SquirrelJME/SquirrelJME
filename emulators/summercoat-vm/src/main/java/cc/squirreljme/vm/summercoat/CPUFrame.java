@@ -164,6 +164,7 @@ public final class CPUFrame
 			throw new VMException("Out of bounds pool read: " + __dx);
 		
 		// Return the value of the entry
+		Debugging.todoNote("Handle base array offset for pools.");
 		int rv = poolHandle.memReadInt(__dx * 4);
 		
 		// Debug
