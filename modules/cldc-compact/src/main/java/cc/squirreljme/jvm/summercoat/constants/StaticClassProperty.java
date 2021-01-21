@@ -163,50 +163,62 @@ public interface StaticClassProperty
 		34;
 	
 	/** Static field base index. */
+	@Deprecated
 	byte BASEDX_STATIC_FIELD =
 		StaticClassProperty.INT_STATIC_FIELD_COUNT;
 	
 	/** Instance field base index. */
+	@Deprecated
 	byte BASEDX_INSTANCE_FIELD =
 		StaticClassProperty.INT_INSTANCE_FIELD_COUNT;
 	
 	/** Static method base index. */
+	@Deprecated
 	byte BASEDX_STATIC_METHOD =
 		StaticClassProperty.INT_STATIC_METHOD_COUNT;
 	
 	/** Instance method base index. */
+	@Deprecated
 	byte BASEDX_INSTANCE_METHOD =
 		StaticClassProperty.INT_INSTANCE_METHOD_COUNT;
 	
 	/** Field count (Base index). */
+	@Deprecated
 	byte BASEDX_INT_X_FIELD_COUNT =
 		0;
 	
 	/** Field bytes (Base index). */
+	@Deprecated
 	byte BASEDX_INT_X_FIELD_BYTES =
 		1;
 	
 	/** Field objects (Base index). */
+	@Deprecated
 	byte BASEDX_INT_X_FIELD_OBJECTS =
 		2;
 	
 	/** Field data offset (Base index). */
+	@Deprecated
 	byte BASEDX_OFFSET_X_FIELD_DATA =
 		3;
 	
 	/** Field data size (Base index). */
+	@Deprecated
 	byte BASEDX_SIZE_X_FIELD_DATA =
 		4;
 		
 	/** Method count (Base index). */
+	@Deprecated
 	byte BASEDX_INT_X_METHOD_COUNT =
 		0;
 	
 	/** Method data offset (Base index). */
+	@Deprecated
 	byte BASEDX_OFFSET_X_METHOD_DATA =
 		1;
 	
 	/** Method data size (Base index). */
+	@Deprecated
 	byte BASEDX_SIZE_X_METHOD_DATA =
 		2;
 }
