@@ -90,7 +90,7 @@ public final class BootState
 	
 	/** Memory handles for the boot state, to be written accordingly. */
 	private final MemHandles _memHandles =
-		new MemHandles(this._memActions);
+		new MemHandles(this._memActions, this);
 	
 	/** Internal strings. */
 	private final Map<String, MemHandle> _internStrings =
@@ -103,7 +103,11 @@ public final class BootState
 	private DualClassRuntimePool _pool;
 	
 	/** Base array size. */
-	int _baseArraySize =
+	private int _baseArraySize =
+		-1;
+	
+	/** Base object size. */
+	private int _baseObjectSize =
 		-1;
 	
 	/** The pool chunk. */
@@ -251,9 +255,7 @@ public final class BootState
 		ChunkMemHandle rv = this.prepareArray(type, n);
 		
 		// Determine the base offset to write to
-		int baseOff = this._baseArraySize;
-		if (baseOff < 0)
-			throw Debugging.oops(baseOff);
+		int baseOff = this.__baseArraySize();
 		
 		// Write all the elements to it
 		for (int i = 0, off = baseOff; i < n; i++, off += 2)
@@ -344,7 +346,7 @@ public final class BootState
 		{
 			classInfo.set(ClassProperty.OFFSETBASE_INSTANCE_FIELDS, 0);
 			classInfo.set(ClassProperty.SIZE_ALLOCATION,
-				header.get(StaticClassProperty.SIZE_INSTANCE_FIELD_DATA));
+				header.get(StaticClassProperty.INT_INSTANCE_FIELD_BYTES));
 			
 			// There is no depth to this class
 			classInfo.set(ClassProperty.INT_CLASSDEPTH, 0);
@@ -382,10 +384,15 @@ public final class BootState
 				.getInteger(ClassProperty.SIZE_ALLOCATION);
 			classInfo.set(ClassProperty.OFFSETBASE_INSTANCE_FIELDS, base);
 			
+			// Debug
+			Debugging.debugNote("offsetBase %s = %d (check %d)",
+				__cl, base, classInfo.getInteger(
+					ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
+			
 			// The allocation size of this class is the combined base and
 			// our storage for fields
 			classInfo.set(ClassProperty.SIZE_ALLOCATION, base +
-				header.get(StaticClassProperty.SIZE_INSTANCE_FIELD_DATA));
+				header.get(StaticClassProperty.INT_INSTANCE_FIELD_BYTES));
 			
 			// This is one deeper than the super class
 			classInfo.set(ClassProperty.INT_CLASSDEPTH,
@@ -594,6 +601,11 @@ public final class BootState
 					int offset = f.offset + at._classInfoHandle.getInteger(
 						ClassProperty.OFFSETBASE_INSTANCE_FIELDS);
 					
+					Debugging.debugNote("[%s/%s] <- offset %d = %d + %d",
+						__nat, at.thisName,
+						offset, f.offset, at._classInfoHandle.getInteger(
+						ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
+					
 					// Set value here
 					return __object.<V>read(__cl, offset,
 						MemoryType.of(__nat.type().dataType()));
@@ -639,6 +651,11 @@ public final class BootState
 					// Where is this field located?
 					int offset = f.offset + at._classInfoHandle.getInteger(
 						ClassProperty.OFFSETBASE_INSTANCE_FIELDS);
+					
+					Debugging.debugNote("[%s/%s] -> offset %d = %d + %d",
+						__nat, at.thisName,
+						offset, f.offset, at._classInfoHandle.getInteger(
+						ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
 					
 					// Set value here
 					__object.write(offset,
@@ -723,13 +740,16 @@ public final class BootState
 			}
 		
 		// Determine the base array size.
-		int baseArraySize = this.__baseArraySize(state);
+		int baseArraySize = this.__baseArraySize();
 		
 		// Allocate memory needed to store the array handle, this includes
 		// room for all of the elements accordingly
 		ChunkMemHandle rv = this._memHandles.alloc(
 			handleKind, baseArraySize +
 				(__len * __cl.componentType().field().dataType().size()));
+		
+		// Debug
+		Debugging.debugNote("array[%d] (sz=%d)", __len, rv.byteSize);
 		
 		// Store the array size as a hint
 		rv._arraySize = __len;
@@ -823,27 +843,67 @@ public final class BootState
 	/**
 	 * Determines the base array size.
 	 * 
-	 * @param __state The state to try from.
 	 * @return The base array size.
 	 * @since 2021/01/20
 	 */
-	private int __baseArraySize(ClassState __state)
+	int __baseArraySize()
 	{
 		// Calculate the base size for arrays
 		int baseArraySize = this._baseArraySize;
 		if (baseArraySize < 0)
-		{
-			// Must be an array.
-			if (!__state.thisName.isArray())
-				throw Debugging.oops(__state.thisName); 
-			
-			// Use the base allocate size for this array.
-			baseArraySize = __state._classInfoHandle
-				.getInteger(ClassProperty.SIZE_ALLOCATION);
-			this._baseArraySize = baseArraySize;
-		}
+			try
+			{
+				// Load array file, to get information on it
+				MinimizedClassFile arrayFile = this.readClass(
+					BootState._OBJECT_CLASS.addDimensions(1));
+				
+				// Is a base object, but also with the array bytes attached
+				baseArraySize = this.__baseObjectSize() +
+					arrayFile.header.get(
+						StaticClassProperty.INT_INSTANCE_FIELD_BYTES);
+				
+				this._baseArraySize = baseArraySize;
+			}
+			catch (IOException e)
+			{
+				// {@squirreljme.error BC0o Could not read class.}
+				throw new InvalidClassFormatException("BC0o", e);
+			}
 		
 		return baseArraySize;
+	}
+	
+	
+	/**
+	 * Determines the base array size.
+	 * 
+	 * @return The base array size.
+	 * @since 2021/01/20
+	 */
+	int __baseObjectSize()
+	{
+		// Calculate the base size for arrays
+		int baseObjectSize = this._baseObjectSize;
+		if (baseObjectSize < 0)
+			try
+			{
+				// Load object to get its size
+				MinimizedClassFile objectFile = this.readClass(
+					BootState._OBJECT_CLASS);
+				
+				// Is just the field size of the class
+				baseObjectSize = objectFile.header.get(
+					StaticClassProperty.INT_INSTANCE_FIELD_BYTES);
+				
+				this._baseObjectSize = baseObjectSize;
+			}
+			catch (IOException e)
+			{
+				// {@squirreljme.error BC0p Could not read class.}
+				throw new InvalidClassFormatException("BC0p", e);
+			}
+		
+		return baseObjectSize;
 	}
 	
 	/**

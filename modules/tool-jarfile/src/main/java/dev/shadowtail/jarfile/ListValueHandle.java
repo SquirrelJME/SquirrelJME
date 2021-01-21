@@ -9,11 +9,13 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.io.ChunkFuture;
 
 /**
- * Represents a plain list value handle.
+ * Represents a plain list value handle, which is the same as an integer
+ * array but is not one.
  *
  * @since 2020/12/21
  */
@@ -23,25 +25,31 @@ public class ListValueHandle
 	/** The number of items in this list. */
 	protected final int count;
 	
+	/** The base size of the list. */
+	protected final int baseSize;
+	
 	/**
 	 * Initializes the base list handle.
 	 *
 	 * @param __id The memory handle ID.
 	 * @param __memActions The memory actions used.
+	 * @param __baseSize The base size of the list.
 	 * @param __count The size of the list.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified or if the count is negative.
 	 * @since 2020/12/21
 	 */
-	ListValueHandle(int __kind, int __id, MemActions __memActions, int __count)
+	ListValueHandle(int __kind, int __id, MemActions __memActions,
+		int __baseSize, int __count)
 		throws IllegalArgumentException
 	{
-		super(__kind, __id, __memActions, 4 * __count);
+		super(__kind, __id, __memActions, __baseSize + (4 * __count));
 		
 		// {@squirreljme.error BC03 Negative list size. (The count}}
 		if (__count < 0)
 			throw new IllegalArgumentException("BC03 " + __count);
 		
+		this.baseSize = __baseSize;
 		this.count = __count;
 	}
 	
@@ -64,7 +72,7 @@ public class ListValueHandle
 		
 		// The value stored may be null
 		Integer rv = this.memActions.<Integer>read(Integer.class,
-			this, MemoryType.INTEGER, __i * 4);
+			this, MemoryType.INTEGER, this.__offset(__i));
 		
 		// {@squirreljme.error BC0e No value was stored in the list.}
 		if (rv == null)
@@ -88,7 +96,7 @@ public class ListValueHandle
 			throw new IndexOutOfBoundsException("IOOB " + __i);
 		
 		this.memActions.write(this,
-			MemoryType.INTEGER, __i * 4, __iVal);
+			MemoryType.INTEGER, this.__offset(__i), __iVal);
 	}
 	
 	/**
@@ -110,7 +118,7 @@ public class ListValueHandle
 			throw new IndexOutOfBoundsException("IOOB " + __i);
 		
 		this.memActions.write(this,
-			MemoryType.INTEGER, __i * 4, __handle);
+			MemoryType.INTEGER, this.__offset(__i), __handle);
 	}
 	
 	/**
@@ -132,7 +140,7 @@ public class ListValueHandle
 			throw new IndexOutOfBoundsException("IOOB " + __i);
 		
 		this.memActions.write(this,
-			MemoryType.INTEGER, __i * 4, __future);
+			MemoryType.INTEGER, this.__offset(__i), __future);
 	}
 	
 	/**
@@ -154,6 +162,18 @@ public class ListValueHandle
 			throw new IndexOutOfBoundsException("IOOB " + __i);
 		
 		this.memActions.write(this,
-			MemoryType.INTEGER, __i * 4, __bjp);
+			MemoryType.INTEGER, this.__offset(__i), __bjp);
+	}
+	
+	/**
+	 * Calculates the offset to the object.
+	 * 
+	 * @param __dx The index to get.
+	 * @return The offset to the value.
+	 * @since 2021/01/20
+	 */
+	private int __offset(int __dx)
+	{
+		return this.baseSize + (__dx * 4);
 	}
 }

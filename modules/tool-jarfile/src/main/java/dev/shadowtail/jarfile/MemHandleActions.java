@@ -142,9 +142,11 @@ public final class MemHandleActions
 		if (__oVal == null || __type == null)
 			throw new NullPointerException("NARG");
 		if (__off < 0 || (__off + __type.lastOffset) >= this.byteCount)
-			throw new IndexOutOfBoundsException("IOOB " + __off);
+			throw new IndexOutOfBoundsException(
+				"IOOB " + __off + " " + this.byteCount);
 		if ((__off % __type.byteCount) != 0)
-			throw new IllegalArgumentException("ALGN " + __off);
+			throw new IllegalArgumentException(
+				"ALGN " + __off + " " + this.byteCount);
 		
 		// {@squirreljme.error BC07 Invalid object specified. (The object)}
 		if (!(MemHandleActions.isConstant(__oVal) ||

@@ -15,6 +15,8 @@ import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.ChunkDataType;
@@ -31,6 +33,9 @@ public final class MemHandles
 	/** Memory actions. */
 	protected final MemActions memActions;
 	
+	/** The boot state used. */
+	protected final Reference<BootState> bootState;
+	
 	/** Memory handles that have been allocated, for later getting. */
 	private final Map<Integer, MemHandle> _handles =
 		new SortedTreeMap<>();
@@ -43,16 +48,18 @@ public final class MemHandles
 	 * Initializes the memory handles.
 	 * 
 	 * @param __memActions The memory actions to use.
+	 * @param __state The boot state.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/22
 	 */
-	public MemHandles(MemActions __memActions)
+	public MemHandles(MemActions __memActions, BootState __state)
 		throws NullPointerException
 	{
-		if (__memActions == null)
+		if (__memActions == null || __state == null)
 			throw new NullPointerException("NARG");
 		
 		this.memActions = __memActions;
+		this.bootState = new WeakReference<>(__state); 
 	}
 	
 	/**
@@ -85,9 +92,14 @@ public final class MemHandles
 	 * @since 2020/12/20
 	 */
 	public ClassInfoHandle allocClassInfo(ClassState __cl)
+		throws NullPointerException
 	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
 		return this.<ClassInfoHandle>__register(
-			new ClassInfoHandle(this.__nextId(), this.memActions, __cl));
+			new ClassInfoHandle(this.__nextId(), this.memActions, __cl,
+				this.__bootState().__baseArraySize()));
 	}
 	
 	/**
@@ -101,7 +113,7 @@ public final class MemHandles
 	{
 		return this.<ClassInfoListHandle>__register(
 			new ClassInfoListHandle(this.__nextId(), this.memActions,
-			__count));
+				this.__bootState().__baseArraySize(), __count));
 	}
 	
 	/**
@@ -165,7 +177,8 @@ public final class MemHandles
 		throws IllegalArgumentException
 	{
 		return this.<PoolHandle>__register(
-			new PoolHandle(this.__nextId(), this.memActions, __count));
+			new PoolHandle(this.__nextId(), this.memActions,
+				this.__bootState().__baseArraySize(), __count));
 	}
 	
 	/**
@@ -176,7 +189,7 @@ public final class MemHandles
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/13
 	 */
-	protected void chunkOut(ChunkSection __outData)
+	public void chunkOut(ChunkSection __outData)
 		throws IOException, NullPointerException
 	{
 		if (__outData == null)
@@ -309,6 +322,23 @@ public final class MemHandles
 		// End of sequence and guard
 		__outData.writeInt(0);
 		__outData.writeInt(BootstrapConstants.MEMORY_SEQ_GUARD);
+	}
+	
+	/**
+	 * Returns the boot state.
+	 * 
+	 * @return The boot state.
+	 * @throws IllegalStateException If the state was garbage collected.
+	 * @since 2021/01/20
+	 */
+	private BootState __bootState()
+		throws IllegalStateException
+	{
+		BootState rv = this.bootState.get();
+		if (rv == null)
+			throw new IllegalStateException("GCGC");
+		
+		return rv;
 	}
 	
 	/**

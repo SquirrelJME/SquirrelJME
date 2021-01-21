@@ -10,7 +10,6 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is a handle which represents a list of properties.
@@ -26,15 +25,16 @@ public abstract class PropertyListHandle
 	 * @param __kind The {@link MemHandleKind}.
 	 * @param __id The memory handle ID.
 	 * @param __memActions The actions to use.
+	 * @param __baseSize The base size of the list.
 	 * @param __count The size of the list.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified or if the count is negative.
 	 * @since 2020/12/20
 	 */
 	PropertyListHandle(int __kind, int __id, MemActions __memActions,
-		int __count)
+		int __baseSize, int __count)
 		throws IllegalArgumentException
 	{
-		super(__kind, __id, __memActions, __count);
+		super(__kind, __id, __memActions, __baseSize, __count);
 	}
 }

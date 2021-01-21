@@ -24,14 +24,17 @@ public class ClassInfoListHandle
 	 *
 	 * @param __id The memory handle ID.
 	 * @param __memActions Memory actions used.
+	 * @param __baseSize The base size of the handle.
 	 * @param __count The number of handles to reference.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified or if the count is negative.
 	 * @since 2020/12/21
 	 */
-	ClassInfoListHandle(int __id, MemActions __memActions, int __count)
+	ClassInfoListHandle(int __id, MemActions __memActions, int __baseSize,
+		int __count)
 		throws IllegalArgumentException
 	{
-		super(MemHandleKind.CLASS_INFO_LIST, __id, __memActions, __count);
+		super(MemHandleKind.CLASS_INFO_LIST, __id, __memActions, __baseSize,
+			__count);
 	}
 }

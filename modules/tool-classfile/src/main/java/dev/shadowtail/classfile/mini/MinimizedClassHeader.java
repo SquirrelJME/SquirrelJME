@@ -113,7 +113,7 @@ public final class MinimizedClassHeader
 	@Deprecated
 	public int getIfbytes()
 	{
-		return this.get(StaticClassProperty.SIZE_INSTANCE_FIELDS);
+		return this.get(StaticClassProperty.INT_INSTANCE_FIELD_BYTES);
 	}
 	
 	/** Instance field count. */

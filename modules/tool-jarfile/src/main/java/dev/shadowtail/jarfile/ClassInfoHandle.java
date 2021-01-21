@@ -31,15 +31,17 @@ public class ClassInfoHandle
 	 * @param __id The memory handle ID.
 	 * @param __memActions The memory actions used.
 	 * @param __cl The class to refer to.
+	 * @param __baseSize The base size of the array.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/20
 	 */
-	ClassInfoHandle(int __id, MemActions __memActions, ClassState __cl)
+	ClassInfoHandle(int __id, MemActions __memActions, ClassState __cl,
+		int __baseSize)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(MemHandleKind.CLASS_INFO, __id, __memActions,
+		super(MemHandleKind.CLASS_INFO, __id, __memActions, __baseSize,
 			ClassProperty.NUM_RUNTIME_PROPERTIES);
 		
 		if (__cl == null)

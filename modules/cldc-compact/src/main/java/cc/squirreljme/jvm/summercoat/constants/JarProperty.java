@@ -75,7 +75,11 @@ public interface JarProperty
 	byte SIZE_BASE_ARRAY =
 		13;
 	
+	/** The base allocation size of objects. */
+	byte SIZE_BASE_OBJECT =
+		14;
+	
 	/** The number of properties in the JAR. */
 	byte NUM_JAR_PROPERTIES =
-		14;
+		15;
 }

@@ -24,15 +24,16 @@ public final class PoolHandle
 	 *
 	 * @param __id The memory handle ID.
 	 * @param __memActions Memory actions used.
+	 * @param __baseSize The base size of the list.
 	 * @parma __count The number of entries in the pool.
 	 * @throws IllegalArgumentException If the memory handle does not have the
 	 * correct security bits specified or if the pool is too small.
 	 * @since 2020/12/19
 	 */
-	PoolHandle(int __id, MemActions __memActions, int __count)
+	PoolHandle(int __id, MemActions __memActions, int __baseSize, int __count)
 		throws IllegalArgumentException
 	{
-		super(MemHandleKind.POOL, __id, __memActions, __count);
+		super(MemHandleKind.POOL, __id, __memActions, __baseSize, __count);
 		
 		// {@squirreljme.error BC05 Pool must have at least one entry.
 		// (The count)}
