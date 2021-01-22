@@ -32,38 +32,39 @@ Badges:
 
  * _Checks and Quality_
    * [![CircleCI](
-     https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg)](
+     https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg?label=CircleCI%20Build)](
      https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
-   * [![Code Climate maintainability](
+   * [![Code Climate Maintainability](
      https://img.shields.io/codeclimate/maintainability-percentage/SquirrelJME/SquirrelJME)](
      https://codeclimate.com/github/SquirrelJME/SquirrelJME)
      [![Code Climate technical debt](
      https://img.shields.io/codeclimate/tech-debt/SquirrelJME/SquirrelJME)](
      https://codeclimate.com/github/SquirrelJME/SquirrelJME)
    * [![Docker Build](
-     https://img.shields.io/docker/cloud/build/xerthesquirrel/squirreljme)](
+     https://img.shields.io/docker/cloud/build/xerthesquirrel/squirreljme.svg?label=Docker%20Container)](
      https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
+   * [![RetroArch Core](
+     https://git.libretro.com/libretro/SquirrelJME/badges/trunk/pipeline.svg?key_text=RetroArch%20Core&key_width=115)](
+     https://git.libretro.org/libretro/SquirrelJME)
  * _Social and Community_
-   * [![Discord](https://img.shields.io/discord/278929900893634560.svg)](
+   * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
      https://discord.gg/9PkMMKt)
-   * [![Liberapay](
-     https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
-     https://liberapay.com/xershadowtail)
    * [![Twitter](
-     https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow)](
+     https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow%20on%20Twitter)](
      https://twitter.com/MultiPhasicApps)
  * _Downloads and Activity_
    * ![Commit Activity](
-     https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
-   * [![Docker](
-     https://img.shields.io/docker/cloud/automated/xerthesquirrel/squirreljme)](
-     https://hub.docker.com/r/xerthesquirrel/squirreljme)
+     https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg?label=Code%20Commits)
    * [![Docker Pulls](
-     https://img.shields.io/docker/pulls/xerthesquirrel/squirreljme)](
+     https://img.shields.io/docker/pulls/xerthesquirrel/squirreljme?label=Docker%20Pulls)](
      https://hub.docker.com/r/xerthesquirrel/squirreljme)
    * [![SourceForge Downloads](
-     https://img.shields.io/sourceforge/dm/squirreljme.svg)](
+     https://img.shields.io/sourceforge/dm/squirreljme.svg?label=SourceForge%20Downloads)](
      https://sourceforge.net/projects/squirreljme/files/)
+ * _Donations_
+   * [![Liberapay](
+     https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay&label=LiberaPay)](
+     https://liberapay.com/xershadowtail)
 
 Information:
 
