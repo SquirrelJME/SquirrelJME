@@ -416,7 +416,8 @@ public class SummerCoatFactory
 			bootPool, bootPool, virtHandles.get(bootPool).id);
 		
 		// Setup virtual execution CPU
-		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps);
+		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps,
+			bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY));
 		CPUFrame iframe = cpu.enterFrame(false,
 			startAddress, virtHandles.get(bootPool).id);
 		

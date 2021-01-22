@@ -89,6 +89,9 @@ public final class NativeCPU
 	/** Virtual CPU id. */
 	protected final int vcpuid;
 	
+	/** The array base. */
+	protected final int arrayBase;
+	
 	/** Stack frames. */
 	private final LinkedList<CPUFrame> _frames =
 		new LinkedList<>();
@@ -113,13 +116,14 @@ public final class NativeCPU
 	 *
 	 * @param __ms The machine state.
 	 * @param __mem The memory space.
-	 * @param __ps The profiler to use.
 	 * @param __vcid Virtual CPU id.
+	 * @param __ps The profiler to use.
+	 * @param __arrayBase The array base size.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
 	public NativeCPU(MachineState __ms, WritableMemory __mem, int __vcid,
-		ProfilerSnapshot __ps)
+		ProfilerSnapshot __ps, int __arrayBase)
 		throws NullPointerException
 	{
 		if (__ms == null || __mem == null)
@@ -130,6 +134,7 @@ public final class NativeCPU
 		this.vcpuid = __vcid;
 		this.profiler = (__ps == null ? null :
 			__ps.measureThread("cpu-" + __vcid));
+		this.arrayBase = __arrayBase;
 	}
 	
 	/**
@@ -154,7 +159,7 @@ public final class NativeCPU
 		CPUFrame lastframe = frames.peekLast();
 		
 		// Setup new frame
-		CPUFrame rv = new CPUFrame(this.state.memHandles);
+		CPUFrame rv = new CPUFrame(this.state.memHandles, this.arrayBase);
 		rv._pc = __pc;
 		rv._entrypc = __pc;
 		rv._lastpc = __pc;

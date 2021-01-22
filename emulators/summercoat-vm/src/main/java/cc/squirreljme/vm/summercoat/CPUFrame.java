@@ -25,6 +25,9 @@ import java.util.LinkedList;
  */
 public final class CPUFrame
 {
+	/** The array base. */
+	protected final int arrayBase;
+	
 	/** The memory handle manager, for easy handle access. */
 	private final Reference<MemHandleManager> _handleManager;
 	
@@ -93,15 +96,17 @@ public final class CPUFrame
 	 * Initializes the frame.
 	 * 
 	 * @param __man The manager used to obtain handles.
+	 * @param __arrayBase The array base.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/18
 	 */
-	public CPUFrame(MemHandleManager __man)
+	public CPUFrame(MemHandleManager __man, int __arrayBase)
 		throws NullPointerException
 	{
 		if (__man == null)
 			throw new NullPointerException("NARG");
 		
+		this.arrayBase = __arrayBase;
 		this._handleManager = new WeakReference<>(__man);
 	}
 	
@@ -160,12 +165,12 @@ public final class CPUFrame
 			throw new VMException("Not a pool handle: " + poolHandle);
 		
 		// Ensure it is in the pool
-		if (__dx < 0 || __dx >= (poolHandle.size / 4))
+		int arrayBase = this.arrayBase;
+		if (__dx < 0 || __dx >= ((poolHandle.size - arrayBase) / 4))
 			throw new VMException("Out of bounds pool read: " + __dx);
 		
 		// Return the value of the entry
-		Debugging.todoNote("Handle base array offset for pools.");
-		int rv = poolHandle.memReadInt(__dx * 4);
+		int rv = poolHandle.memReadInt(arrayBase + (__dx * 4));
 		
 		// Debug
 		Debugging.debugNote("pool[%d] = %d (0x%08x)", __dx, rv, rv);
