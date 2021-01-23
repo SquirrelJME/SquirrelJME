@@ -76,6 +76,10 @@ public final class SystemCallError
 	public static final byte NO_SUCH_CONFIG_KEY =
 		-14;
 	
+	/** Invalid memory handle kind. */
+	public static final byte INVALID_MEMHANDLE_KIND =
+		-15;
+	
 	/**
 	 * Not used.
 	 *

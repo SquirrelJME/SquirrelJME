@@ -72,7 +72,6 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
-import net.multiphasicapps.classfile.Pool;
 
 /**
  * This contains the handler for the near native byte code.
@@ -2424,11 +2423,20 @@ public final class NearNativeByteCodeHandler
 					codeBuilder.addCopy(__in[0].register, __out.register);
 				break;
 			
-			// Long unpack low
+				// Long unpack low
 			case "longUnpackLow":
 				if (__in[0].register + 1 != __out.register)
 					codeBuilder.addCopy(__in[0].register + 1, __out.register);
 				break;
+				
+				// Write to memory handle
+			case "memHandleWriteInt":
+			case "memHandleWriteObject":
+				codeBuilder.addMemHandleAccess(DataType.INTEGER, false,
+					IntValueRegister.of(__in[2].register),
+					MemHandleRegister.of(__in[0].register),
+					IntValueRegister.of(__in[1].register));
+				break; 
 				
 				// Read byte memory
 			case "memReadByte":
@@ -3139,6 +3147,18 @@ public final class NearNativeByteCodeHandler
 			
 			case "errorSet":
 				id = SystemCallIndex.ERROR_SET;
+				break;
+			
+			case "memHandleNew":
+				id = SystemCallIndex.MEM_HANDLE_NEW;
+				break;
+			
+			case "offsetOfArrayLengthField":
+				id = SystemCallIndex.OFFSET_OF_ARRAY_LENGTH_FIELD;
+				break;
+			
+			case "offsetOfObjectTypeField":
+				id = SystemCallIndex.OFFSET_OF_OBJECT_TYPE_FIELD;
 				break;
 			
 			case "pdOfStdErr":

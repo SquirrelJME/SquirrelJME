@@ -156,6 +156,8 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Allocates an object and seeds initial information regarding it.
+	 * 
 	 * @param __info The class information.
 	 * @param __allocSize The allocation size of the object.
 	 * @return The allocated object.

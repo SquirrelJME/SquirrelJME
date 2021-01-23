@@ -469,13 +469,12 @@ public interface SystemCallIndex
 	/**
 	 * Allocates a new memory handle.
 	 * 
-	 * @squirreljme.syscallparam 1 
-	 * @squirreljme.syscallparam 2
-	 * @squirreljme.syscallparam 3 The number of bytes to allocate for.
+	 * @squirreljme.syscallparam 1 The kind of memory handle to allocate.
+	 * @squirreljme.syscallparam 2 The number of bytes to allocate for.
 	 * @squirreljme.syscallreturn The newly allocated memory handle.
 	 * @since 2020/11/29
 	 */
-	byte MEM_HANDLE_NEW_SIZE =
+	byte MEM_HANDLE_NEW =
 		41;
 	
 	/**
@@ -491,12 +490,30 @@ public interface SystemCallIndex
 		42;
 	
 	/**
+	 * Returns the offset to the array length field.
+	 * 
+	 * @squirreljme.syscallreturn The offset to the length field.
+	 * @since 2021/01/23
+	 */
+	byte OFFSET_OF_ARRAY_LENGTH_FIELD =
+		43;
+	
+	/**
+	 * Returns the offset to the type field in objects.
+	 * 
+	 * @squirreljme.syscallreturn The offset to the type field.
+	 * @since 2021/01/23
+	 */
+	byte OFFSET_OF_OBJECT_TYPE_FIELD =
+		44;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		43;
+		45;
 }
 

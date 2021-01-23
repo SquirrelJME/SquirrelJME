@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -1334,6 +1335,7 @@ public final class NativeCPU
 					switch (__args[0])
 					{
 						case SystemCallIndex.BYTE_ORDER_LITTLE:
+						case SystemCallIndex.CLASS_INFO_GET_PROPERTY:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXCEPTION_LOAD:
@@ -1343,6 +1345,7 @@ public final class NativeCPU
 						case SystemCallIndex.FRAME_TASK_ID_SET:
 						case SystemCallIndex.CALL_STACK_HEIGHT:
 						case SystemCallIndex.CALL_STACK_ITEM:
+						case SystemCallIndex.MEM_HANDLE_NEW:
 						case SystemCallIndex.MEM_SET:
 						case SystemCallIndex.PD_OF_STDERR:
 						case SystemCallIndex.PD_OF_STDIN:
@@ -1448,6 +1451,10 @@ public final class NativeCPU
 				}
 				break;
 				
+				// Get property of class information
+			case SystemCallIndex.CLASS_INFO_GET_PROPERTY:
+				throw Debugging.todo();
+				
 				// Get error
 			case SystemCallIndex.ERROR_GET:
 				{
@@ -1529,6 +1536,29 @@ public final class NativeCPU
 					// Is fine
 					rv = 1;
 					err = 0;
+				}
+				break;
+				
+				// Allocates a new memory handle
+			case SystemCallIndex.MEM_HANDLE_NEW:
+				{
+					int kind = __args[0];
+					int size = __args[1];
+					
+					rv = 0;
+					if (kind <= 0 || kind >= MemHandleKind.NUM_KINDS)
+						err = SystemCallError.INVALID_MEMHANDLE_KIND;
+					else if (size < 0)
+						err = SystemCallError.VALUE_OUT_OF_RANGE;
+					else
+					{
+						MemHandle handle = this.state.memHandles.alloc(kind,
+							size);
+						
+						// Just use the ID of the handle
+						rv = handle.id;
+						err = 0;
+					}
 				}
 				break;
 				
