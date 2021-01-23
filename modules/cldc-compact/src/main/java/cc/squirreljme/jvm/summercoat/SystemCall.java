@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 
 /**
  * This is a helper wrapper around system calls.
@@ -66,6 +67,34 @@ public final class SystemCall
 	 * @since 2020/11/29
 	 */
 	public static native int errorSet(int __dx, int __err);
+	
+	/**
+	 * Attempts to allocate a new memory handle of the given kind.
+	 * 
+	 * @param __allocSize The allocation size.
+	 * @param __memHandleKind The {@link MemHandleKind}.
+	 * @return The allocated value or {@code 0} if no memory remains.
+	 * @throws MLECallError If the input arguments are not valid.
+	 * @since 2021/01/23
+	 */
+	public static native int memHandleNew(int __allocSize, int __memHandleKind)
+		throws MLECallError;
+	
+	/**
+	 * Returns the offset of the array length field.
+	 * 
+	 * @return The offset of the array length field.
+	 * @since 2021/01/23
+	 */
+	public static native int offsetOfArrayLengthField();
+	
+	/**
+	 * Returns the offset of the object's type field.
+	 * 
+	 * @return The offset of the object's type field.
+	 * @since 2021/01/23
+	 */
+	public static native int offsetOfObjectTypeField();
 	
 	/**
 	 * Returns the pipe descriptor of standard error.

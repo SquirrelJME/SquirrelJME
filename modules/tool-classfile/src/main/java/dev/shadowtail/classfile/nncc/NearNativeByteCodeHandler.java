@@ -2253,7 +2253,7 @@ public final class NearNativeByteCodeHandler
 		String asmfunc;
 		switch ((asmfunc = __name.toString()))
 		{
-				// Read lenght of array
+				// Read length of array
 			case "arrayLength":
 				this.doArrayLength(__in[0], __out);
 				break;

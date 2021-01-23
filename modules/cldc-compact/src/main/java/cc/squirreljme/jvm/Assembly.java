@@ -40,7 +40,7 @@ public final class Assembly
 	 * an array.
 	 * @since 2020/02/23
 	 */
-	public static native int arrayLength(long __o);
+	public static native int arrayLength(int __o);
 	
 	/**
 	 * Returns the array length of the given object.
@@ -51,24 +51,6 @@ public final class Assembly
 	 * @since 2019/05/24
 	 */
 	public static native int arrayLength(Object __o);
-	
-	/**
-	 * Sets the array length of an array.
-	 *
-	 * @param __o The object to set.
-	 * @param __l The length to set.
-	 * @since 2020/02/23
-	 */
-	public static native void arrayLengthSet(long __o, int __l);
-	
-	/**
-	 * Sets the array length of an array.
-	 *
-	 * @param __o The object to set.
-	 * @param __l The length to set.
-	 * @since 2020/02/23
-	 */
-	public static native void arrayLengthSet(Object __o, int __l);
 	
 	/**
 	 * Atomic comparison and set.
@@ -106,150 +88,6 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native void breakpoint();
-	
-	/**
-	 * Returns the class info pointer of {@code boolean}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/01/19
-	 */
-	@Deprecated
-	public static native ClassInfo classInfoOfBoolean();
-	
-	/**
-	 * Returns the class info pointer of {@code boolean}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/02/24
-	 */
-	@Deprecated
-	public static native long classInfoOfBooleanPointer();
-	
-	/**
-	 * Returns the class info pointer of {@code byte}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/01/19
-	 */
-	@Deprecated
-	public static native ClassInfo classInfoOfByte();
-	
-	/**
-	 * Returns the class info pointer of {@code byte}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/02/24
-	 */
-	@Deprecated
-	public static native long classInfoOfBytePointer();
-	
-	/**
-	 * Returns the class info pointer of {@code char}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/01/19
-	 */
-	@Deprecated
-	public static native ClassInfo classInfoOfCharacter();
-	
-	/**
-	 * Returns the class info pointer of {@code char}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/02/24
-	 */
-	@Deprecated
-	public static native long classInfoOfCharacterPointer();
-	
-	/**
-	 * Returns the class info pointer of {@code double}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/01/19
-	 */
-	@Deprecated
-	public static native ClassInfo classInfoOfDouble();
-	
-	/**
-	 * Returns the class info pointer of {@code double}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/02/24
-	 */
-	@Deprecated
-	public static native long classInfoOfDoublePointer();
-	
-	/**
-	 * Returns the class info pointer of {@code float}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/01/19
-	 */
-	@Deprecated
-	public static native ClassInfo classInfoOfFloat();
-	
-	/**
-	 * Returns the class info pointer of {@code float}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/02/24
-	 */
-	@Deprecated
-	public static native long classInfoOfFloatPointer();
-	
-	/**
-	 * Returns the class info pointer of {@code int}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/01/19
-	 */
-	@Deprecated
-	public static native ClassInfo classInfoOfInteger();
-	
-	/**
-	 * Returns the class info pointer of {@code int}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/02/24
-	 */
-	@Deprecated
-	public static native long classInfoOfIntegerPointer();
-	
-	/**
-	 * Returns the class info pointer of {@code long}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/01/19
-	 */
-	@Deprecated
-	public static native ClassInfo classInfoOfLong();
-	
-	/**
-	 * Returns the class info pointer of {@code long}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/02/24
-	 */
-	@Deprecated
-	public static native long classInfoOfLongPointer();
-	
-	/**
-	 * Returns the class info pointer of {@code short}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/01/19
-	 */
-	@Deprecated
-	public static native ClassInfo classInfoOfShort();
-	
-	/**
-	 * Returns the class info pointer of {@code short}.
-	 *
-	 * @return The class info pointer.
-	 * @since 2020/02/24
-	 */
-	@Deprecated
-	public static native long classInfoOfShortPointer();
 	
 	/**
 	 * Packs the given two integers to a double value.
@@ -320,7 +158,7 @@ public final class Assembly
 	 * @param __pool The pool address to load.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool);
+	public static native void invoke(int __addr, int __pool);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -330,7 +168,7 @@ public final class Assembly
 	 * @param __a Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool, int __a);
+	public static native void invoke(int __addr, int __pool, int __a);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -341,7 +179,7 @@ public final class Assembly
 	 * @param __b Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool, int __a,
+	public static native void invoke(int __addr, int __pool, int __a,
 		int __b);
 	
 	/**
@@ -354,7 +192,7 @@ public final class Assembly
 	 * @param __c Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool, int __a,
+	public static native void invoke(int __addr, int __pool, int __a,
 		int __b, int __c);
 	
 	/**
@@ -368,7 +206,7 @@ public final class Assembly
 	 * @param __d Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool, int __a,
+	public static native void invoke(int __addr, int __pool, int __a,
 		int __b, int __c, int __d);
 	
 	/**
@@ -383,7 +221,7 @@ public final class Assembly
 	 * @param __e Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool, int __a,
+	public static native void invoke(int __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e);
 	
 	/**
@@ -399,7 +237,7 @@ public final class Assembly
 	 * @param __f Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool, int __a,
+	public static native void invoke(int __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f);
 	
 	/**
@@ -416,7 +254,7 @@ public final class Assembly
 	 * @param __g Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool, int __a,
+	public static native void invoke(int __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f, int __g);
 	
 	/**
@@ -434,7 +272,7 @@ public final class Assembly
 	 * @param __h Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(long __addr, long __pool, int __a,
+	public static native void invoke(int __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f, int __g, int __h);
 	
 	/**
@@ -445,7 +283,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool);
+	public static native int invokeV(int __addr, int __pool);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -456,7 +294,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool, int __a);
+	public static native int invokeV(int __addr, int __pool, int __a);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -468,7 +306,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool, int __a,
+	public static native int invokeV(int __addr, int __pool, int __a,
 		int __b);
 	
 	/**
@@ -482,7 +320,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool, int __a,
+	public static native int invokeV(int __addr, int __pool, int __a,
 		int __b, int __c);
 	
 	/**
@@ -497,7 +335,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool, int __a,
+	public static native int invokeV(int __addr, int __pool, int __a,
 		int __b, int __c, int __d);
 	
 	/**
@@ -513,7 +351,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool, int __a,
+	public static native int invokeV(int __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e);
 	
 	/**
@@ -530,7 +368,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool, int __a,
+	public static native int invokeV(int __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f);
 	
 	/**
@@ -548,7 +386,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool, int __a,
+	public static native int invokeV(int __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f, int __g);
 	
 	/**
@@ -567,7 +405,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(long __addr, long __pool, int __a,
+	public static native int invokeV(int __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f, int __g, int __h);
 	
 	/**
@@ -578,7 +416,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool);
+	public static native long invokeVL(int __addr, int __pool);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -589,7 +427,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool, int __a);
+	public static native long invokeVL(int __addr, int __pool, int __a);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -601,7 +439,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool, int __a,
+	public static native long invokeVL(int __addr, int __pool, int __a,
 		int __b);
 	
 	/**
@@ -615,7 +453,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool, int __a,
+	public static native long invokeVL(int __addr, int __pool, int __a,
 		int __b, int __c);
 	
 	/**
@@ -630,7 +468,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool, int __a, 
+	public static native long invokeVL(int __addr, int __pool, int __a, 
 		int __b, int __c, int __d);
 	
 	/**
@@ -646,7 +484,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool, int __a, 
+	public static native long invokeVL(int __addr, int __pool, int __a, 
 		int __b, int __c, int __d, int __e);
 	
 	/**
@@ -663,7 +501,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool, int __a, 
+	public static native long invokeVL(int __addr, int __pool, int __a, 
 		int __b, int __c, int __d, int __e, int __f);
 	
 	/**
@@ -681,7 +519,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool, int __a, 
+	public static native long invokeVL(int __addr, int __pool, int __a, 
 		int __b, int __c, int __d, int __e, int __f, int __g);
 	
 	/**
@@ -700,7 +538,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(long __addr, long __pool, int __a, 
+	public static native long invokeVL(int __addr, int __pool, int __a, 
 		int __b, int __c, int __d, int __e, int __f, int __g, int __h);
 	
 	/**
@@ -739,6 +577,321 @@ public final class Assembly
 	 * @since 2019/06/21
 	 */
 	public static native int longUnpackLow(long __v);
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native int memHandleReadByte(Object __mh, int __off);
+	
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native int memHandleReadByte(int __mh, int __off);
+	
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native double memHandleReadDouble(Object __mh, int __off);
+	
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native double memHandleReadDouble(int __mh, int __off);
+		
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native float memHandleReadFloat(Object __mh, int __off);
+		
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native float memHandleReadFloat(int __mh, int __off);
+		
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native int memHandleReadInt(Object __mh, int __off);
+		
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native int memHandleReadInt(int __mh, int __off);
+		
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native long memHandleReadLong(Object __mh, int __off);
+	
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native long memHandleReadLong(int __mh, int __off);
+	
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native Object memHandleReadObject(Object __mh, int __off);
+		
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native Object memHandleReadObject(int __mh, int __off);
+		
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native int memHandleReadShort(Object __mh, int __off);
+		
+	/**
+	 * Reads the given value from the memory handle.
+	 *
+	 * @param __mh The handle to read from.
+	 * @param __off The offset into the handle.
+	 * @return The value that was read.
+	 * @since 2021/01/23
+	 */
+	public static native int memHandleReadShort(int __mh, int __off);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteByte(Object __mh, int __off,
+		int __v);
+
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteByte(int __mh, int __off,
+		int __v);
+	
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteCharacter(Object __mh, int __off,
+		char __v);
+	
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteCharacter(int __mh, int __off,
+		char __v);
+	
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteDouble(Object __mh, int __off,
+		double __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteDouble(int __mh, int __off,
+		double __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteFloat(Object __mh, int __off,
+		float __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteFloat(int __mh, int __off,
+		float __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteInt(Object __mh, int __off,
+		int __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteInt(int __mh, int __off,
+		int __v);
+	
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteLong(Object __mh, int __off,
+		long __v);
+	
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteLong(int __mh, int __off,
+		long __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteObject(Object __mh, int __off,
+		Object __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteObject(int __mh, int __off,
+		Object __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteShort(Object __mh, int __off,
+		int __v);
+		
+	/**
+	 * Writes the given value to the memory handle.
+	 *
+	 * @param __mh The handle to write to.
+	 * @param __off The offset into the handle.
+	 * @param __v The value to write.
+	 * @since 2021/01/23
+	 */
+	public static native void memHandleWriteShort(int __mh, int __off,
+		int __v);
 	
 	/**
 	 * Reads byte from address.
@@ -1129,94 +1282,6 @@ public final class Assembly
 	public static native void monitorOwnerSetAtomic(Object __p, Thread __t);
 	
 	/**
-	 * Gets the ClassInfo of an object.
-	 *
-	 * @param __o The object to read from.
-	 * @return The resulting class info.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2020/02/23
-	 */
-	@Deprecated
-	public static native ClassInfo objectGetClassInfo(long __o);
-	
-	/**
-	 * Gets the ClassInfo of an object.
-	 *
-	 * @param __o The object to read from.
-	 * @return The resulting class info.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2020/02/23
-	 */
-	@Deprecated
-	public static native ClassInfo objectGetClassInfo(Object __o);
-	
-	/**
-	 * Gets the ClassInfo of an object.
-	 *
-	 * @param __o The object to read from.
-	 * @return The resulting class info.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2020/02/23
-	 */
-	@Deprecated
-	public static native long objectGetClassInfoPointer(long __o);
-	
-	/**
-	 * Gets the ClassInfo of an object.
-	 *
-	 * @param __o The object to read from.
-	 * @return The resulting class info.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2020/02/23
-	 */
-	@Deprecated
-	public static native long objectGetClassInfoPointer(Object __o);
-	
-	/**
-	 * Sets the ClassInfo of an object.
-	 *
-	 * @param __o The object to set the class of.
-	 * @param __v The class info to set.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2020/02/23
-	 */
-	@Deprecated
-	public static native void objectSetClassInfo(long __o, long __v);
-	
-	/**
-	 * Sets the ClassInfo of an object.
-	 *
-	 * @param __o The object to set the class of.
-	 * @param __v The class info to set.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2020/02/23
-	 */
-	@Deprecated
-	public static native void objectSetClassInfo(Object __o, long __v);
-	
-	/**
-	 * Sets the ClassInfo of an object.
-	 *
-	 * @param __o The object to set the class of.
-	 * @param __v The class info to set.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2020/02/23
-	 */
-	@Deprecated
-	public static native void objectSetClassInfo(long __o, ClassInfo __v);
-	
-	/**
-	 * Sets the ClassInfo of an object.
-	 *
-	 * @param __o The object to set the class of.
-	 * @param __v The class info to set.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2020/02/23
-	 */
-	@Deprecated
-	public static native void objectSetClassInfo(Object __o, ClassInfo __v);
-	
-	/**
 	 * Used to convert an object to a pointer.
 	 *
 	 * @param __o The object.
@@ -1224,17 +1289,6 @@ public final class Assembly
 	 * @since 2020/11/29
 	 */
 	public static native int objectToPointer(Object __o);
-	
-	/**
-	 * Used to convert an object to a pointer.
-	 *
-	 * @param __o The object.
-	 * @return The pointer of the object.
-	 * @deprecated Wide pointers are going away.
-	 * @since 2019/04/21
-	 */
-	@Deprecated
-	public static native long objectToPointerWide(Object __o);
 	
 	/**
 	 * Used to convert an object to a pointer, do use reference queing for it
@@ -1248,19 +1302,6 @@ public final class Assembly
 	public static native int objectToPointerRefQueue(Object __o);
 	
 	/**
-	 * Used to convert an object to a pointer, do use reference queing for it
-	 * so that if the object is a candidate for reference counting it will
-	 * be uncounted.
-	 *
-	 * @param __o The object.
-	 * @return The pointer of the object.
-	 * @deprecated Wide pointers are going away.
-	 * @since 2019/04/21
-	 */
-	@Deprecated
-	public static native long objectToPointerRefQueueWide(Object __o);
-	
-	/**
 	 * Used to convert a pointer to an object.
 	 *
 	 * @param __p The pointer.
@@ -1270,68 +1311,24 @@ public final class Assembly
 	public static native Object pointerToObject(int __p);
 	
 	/**
-	 * Used to convert a pointer to an object.
-	 *
-	 * @param __p The pointer.
-	 * @return The object of the pointer.
-	 * @deprecated Wide pointers are going away.
-	 * @since 2019/04/21
-	 */
-	@Deprecated
-	public static native Object pointerToObject(long __p);
-	
-	/**
-	 * Used to convert a pointer to a class info type.
-	 *
-	 * @param __p The pointer.
-	 * @return The object of the pointer.
-	 * @deprecated {@link ClassInfo} is going away.
-	 * @since 2019/04/21
-	 */
-	@Deprecated
-	public static native ClassInfo pointerToClassInfo(long __p);
-	
-	/**
 	 * Loads a value from the constant pool at the given index.
 	 *
 	 * @param __p The memory address of the pool to access.
 	 * @param __i The index to load.
-	 * @return The read value, this may be truncated to 32-bits on 32-bit
-	 * systems.
+	 * @return The read value.
 	 * @since 2020/02/24
 	 */
-	public static native long poolLoad(long __p, int __i);
+	public static native int poolLoad(int __p, int __i);
 	
 	/**
 	 * Loads a value from the constant pool at the given index.
 	 *
 	 * @param __p The object representation of the pool to access.
 	 * @param __i The index to load.
-	 * @return The read value, this may be truncated to 32-bits on 32-bit
-	 * systems
+	 * @return The read value.
 	 * @since 2020/02/24
 	 */
-	public static native long poolLoad(Object __p, int __i);
-	
-	/**
-	 * Writes a value to the constant pool of a class.
-	 * 
-	 * @param __p The address of the constant pool.
-	 * @param __i The index to write.
-	 * @param __v The value to write, note that on 32-bit .
-	 * @since 2019/02/24
-	 */
-	public static native void poolStore(long __p, int __i, long __v);
-	
-	/**
-	 * Writes a value to the constant pool of a class.
-	 * 
-	 * @param __p The object representation of the pool to access.
-	 * @param __i The index to write.
-	 * @param __v The value to write, note that on 32-bit .
-	 * @since 2019/02/24
-	 */
-	public static native void poolStore(Object __p, int __i, long __v);
+	public static native int poolLoad(Object __p, int __i);
 	
 	/**
 	 * Perform reference counting logic on object.
@@ -1434,30 +1431,6 @@ public final class Assembly
 	public static native void returnFrameLong(long __v);
 	
 	/**
-	 * Returns the size of base arrays.
-	 * 
-	 * @return The base array size.
-	 * @since 2020/02/24
-	 */
-	public static native int sizeOfBaseArray();
-	
-	/**
-	 * Returns the size of base objects.
-	 * 
-	 * @return The base object size.
-	 * @since 2020/02/24
-	 */
-	public static native int sizeOfBaseObject();
-	
-	/**
-	 * Returns the size of pointers and object references.
-	 * 
-	 * @return The pointer size.
-	 * @since 2020/02/24
-	 */
-	public static native int sizeOfPointer();
-	
-	/**
 	 * Returns the exception register.
 	 *
 	 * @return The exception register.
@@ -1516,14 +1489,6 @@ public final class Assembly
 	public static native long specialGetReturnRegisterLong();
 	
 	/**
-	 * Reads the value of the static field register.
-	 *
-	 * @return The value of the static field register.
-	 * @since 2019/04/22
-	 */
-	public static native long specialGetStaticFieldRegister();
-	
-	/**
 	 * Returns the register representing the current thread.
 	 *
 	 * @return The current thread register.
@@ -1570,14 +1535,6 @@ public final class Assembly
 	 * @since 2020/02/24
 	 */
 	public static native void specialSetPoolRegister(Object __v);
-	
-	/**
-	 * Sets the value of the static field register.
-	 *
-	 * @param __v The new value of the static field register.
-	 * @since 2019/04/22
-	 */
-	public static native void specialSetStaticFieldRegister(long __v);
 	
 	/**
 	 * Sets the current thread pointer.

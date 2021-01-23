@@ -100,10 +100,12 @@ public final class LogicHandler
 	 * @return The allocated object data.
 	 * @throws NegativeArraySizeException If the array is negatively sized.
 	 * @throws NullPointerException On null arguments.
+	 * @throws OutOfMemoryError If there is no memory remaining.
 	 * @since 2020/11/29
 	 */
 	public static Object newArray(ClassInfoBracket __info, int __len)
-		throws NegativeArraySizeException, NullPointerException
+		throws NegativeArraySizeException, NullPointerException,
+			OutOfMemoryError
 	{
 		if (__info == null)
 			throw new NullPointerException("NARG");
@@ -111,8 +113,21 @@ public final class LogicHandler
 		if (__len < 0)
 			throw new NegativeArraySizeException("" + __len);
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// Determine how large the object needs to be
+		int allocBase = SystemCall.classInfoGetProperty(__info,
+			ClassProperty.SIZE_ALLOCATION);
+		int allocSize = allocBase +
+			(__len * SystemCall.classInfoGetProperty(__info,
+				ClassProperty.INT_COMPONENT_CELL_SIZE));
+		
+		// Allocate the object
+		Object rv = LogicHandler.__allocObject(__info, allocSize);
+		
+		// Set the length of the array
+		Assembly.memHandleWriteInt(rv, SystemCall.offsetOfArrayLengthField(),
+			__len);
+		
+		return rv;
 	}
 	
 	/**
@@ -121,10 +136,11 @@ public final class LogicHandler
 	 * @param __info The class to allocate.
 	 * @return The allocated object data.
 	 * @throws NullPointerException On null arguments.
+	 * @throws OutOfMemoryError If there is no memory remaining.
 	 * @since 2020/11/29
 	 */
 	public static Object newInstance(ClassInfoBracket __info)
-		throws NullPointerException
+		throws NullPointerException, OutOfMemoryError
 	{
 		if (__info == null)
 			throw new NullPointerException("NARG");
@@ -137,5 +153,45 @@ public final class LogicHandler
 		
 		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * @param __info The class information.
+	 * @param __allocSize The allocation size of the object.
+	 * @return The allocated object.
+	 * @throws NullPointerException On null arguments.
+	 * @throws OutOfMemoryError If not enough memory is available.
+	 * @since 2021/01/23
+	 */
+	private static Object __allocObject(ClassInfoBracket __info,
+		int __allocSize)
+		throws NullPointerException, OutOfMemoryError
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		// This represents the kind of handle that gets allocated
+		int memHandleKind = SystemCall.classInfoGetProperty(__info,
+			ClassProperty.INT_MEMHANDLE_KIND);
+		
+		// Attempt to allocate a handle
+		int rv = SystemCall.memHandleNew(__allocSize, memHandleKind);
+		if (rv == 0)
+		{
+			// Attempt garbage collection
+			System.gc();
+			
+			// Try again, but fail if it still fails
+			rv = SystemCall.memHandleNew(__allocSize, memHandleKind);
+			if (rv == 0)
+				throw new OutOfMemoryError();
+		}
+		
+		// Set the object type information
+		Assembly.memHandleWriteObject(rv, SystemCall.offsetOfObjectTypeField(),
+			__info);
+		
+		// Convert to represented object before returning.
+		return Assembly.pointerToObject(rv);
 	}
 }

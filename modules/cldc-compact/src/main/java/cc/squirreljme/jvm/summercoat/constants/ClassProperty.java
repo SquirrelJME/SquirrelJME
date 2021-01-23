@@ -89,7 +89,15 @@ public interface ClassProperty
 	byte INT_ARRAY_VTABLEPOOL =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 17;
 	
+	/** The cell size for array components, if this is an array. */
+	byte INT_COMPONENT_CELL_SIZE =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 18;
+	
+	/** The allocation kind for the memory handle. */
+	byte INT_MEMHANDLE_KIND =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
+	
 	/** The number of properties available. */
 	byte NUM_RUNTIME_PROPERTIES =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 18;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
 }
