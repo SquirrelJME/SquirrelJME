@@ -512,6 +512,9 @@ public final class NativeCPU
 					if (doprint)
 						el.print();
 				}
+				
+				// Print current operation
+				Debugging.debugNote("@#> %s", this.traceTop());
 			}
 			
 			// By default the next instruction is the address after all
@@ -523,16 +526,23 @@ public final class NativeCPU
 			{
 					// CPU Breakpoint
 				case NativeInstructionType.BREAKPOINT:
+				case NativeInstructionType.BREAKPOINT_MARKED:
+					// Marker for the breakpoint
+					String mark = (op == NativeInstructionType.BREAKPOINT ?
+						"Un" : Integer.toString(args[0], 16)
+							.toUpperCase() + "h");
+				
 					// If profiling, immediately enter the frame to signal
 					// a break point then exit it
 					if (profiler != null)
 					{
-						profiler.enterFrame("<breakpoint>",
-							"<breakpoint>", "<breakpoint>");
+						String bit = "<breakpoint?" + mark + ">";
+						profiler.enterFrame(bit, bit, bit);
 						profiler.exitFrame();
 					}
 					
-					throw new VMException("Breakpoint Hit!");
+					throw new VMException(String.format(
+						"Breakpoint Hit (%s)!", mark));
 				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
@@ -852,8 +862,18 @@ public final class NativeCPU
 								lr[args[2]]),
 							addr = base + offs;
 						
-						// Loads
+						// Not currently valid!
 						DataType dt = DataType.of(op & 0b0111);
+						if (true)
+							throw new VMException(String.format(
+								"Invalid MemAccess: %s " +
+									"@%#08x (%#08x + %d): %s %s",
+								(load ? "LOAD" : "STORE"),
+								addr, base, offs,
+								NativeInstruction.mnemonic(op),
+								this.traceTop()));
+						
+						// Loads
 						if (load)
 						{
 							// Load value

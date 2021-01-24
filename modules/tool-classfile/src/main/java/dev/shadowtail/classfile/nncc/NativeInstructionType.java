@@ -109,6 +109,12 @@ public interface NativeInstructionType
 	/** Debug single point in method. */
 	short DEBUG_POINT =
 		0xEA;
+		
+	/**
+	 * Breakpoint that is marked.
+	 */
+	short BREAKPOINT_MARKED =
+		0xEB;
 	
 	/** Count memory handle down. */
 	short MEM_HANDLE_COUNT_DOWN =
@@ -225,8 +231,7 @@ public interface NativeInstructionType
 		0xFE;
 	
 	/**
-	 * Compare and exchange. 
-	 * {@code iiiixxxx}.
+	 * Breakpoint.
 	 */
 	short BREAKPOINT =
 		0xFF;

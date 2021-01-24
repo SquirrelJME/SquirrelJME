@@ -294,6 +294,7 @@ public final class NativeInstruction
 				return 0;
 				
 			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
+			case NativeInstructionType.BREAKPOINT_MARKED:
 				return 1;
 			
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
@@ -360,6 +361,11 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_EXIT:
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
+				
+				// [i16]
+			case NativeInstructionType.BREAKPOINT_MARKED:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT);
 				
 				// [r16]
 			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
@@ -605,6 +611,8 @@ public final class NativeInstruction
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 				return "ATOMIC_INT_INCREMENT";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
+			case NativeInstructionType.BREAKPOINT_MARKED:
+				return "BREAKPOINT_MARKED";
 			case NativeInstructionType.COPY:			return "COPY";
 			case NativeInstructionType.DEBUG_ENTRY:		return "DEBUG_ENTRY";
 			case NativeInstructionType.DEBUG_EXIT:		return "DEBUG_EXIT";

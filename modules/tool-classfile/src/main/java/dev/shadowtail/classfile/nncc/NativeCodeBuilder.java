@@ -97,6 +97,18 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds a marked breakpoint.
+	 * 
+	 * @param __mark The marker to use.
+	 * @return The generated instruction.
+	 * @since 2021/01/24
+	 */
+	public final NativeInstruction addBreakpoint(int __mark)
+	{
+		return this.add(NativeInstructionType.BREAKPOINT_MARKED, __mark);
+	}
+	
+	/**
 	 * Adds a copy from one register to another.
 	 *
 	 * @param __from The source.

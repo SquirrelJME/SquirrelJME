@@ -112,7 +112,11 @@ public enum SystemCallHandler
 				throw new VMSystemCallException(
 					SystemCallError.VALUE_OUT_OF_RANGE);
 			
-			return __cpu.state.memHandles.alloc(kind, size).id;
+			// Allocate handle and count up so it is not instantly GCed
+			MemHandle handle = __cpu.state.memHandles.alloc(kind, size);
+			handle.count(true);
+			 
+			return handle.id;
 		}
 	},
 	

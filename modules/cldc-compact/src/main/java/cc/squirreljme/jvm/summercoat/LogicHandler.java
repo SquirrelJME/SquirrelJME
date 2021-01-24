@@ -176,8 +176,8 @@ public final class LogicHandler
 		if (allocSize <= 0)
 			throw new MLECallError("ZZ4j");
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// Allocate the object
+		return LogicHandler.__allocObject(__info, allocSize);
 	}
 	
 	/**

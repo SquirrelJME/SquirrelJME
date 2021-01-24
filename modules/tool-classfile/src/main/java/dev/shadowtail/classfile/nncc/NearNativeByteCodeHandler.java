@@ -220,6 +220,7 @@ public final class NearNativeByteCodeHandler
 		this.state.canexception = false;
 		
 		// Read length
+		codebuilder.addBreakpoint(0x7D01);
 		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
 			__len.register,
 			__in.register, Constants.ARRAY_LENGTH_OFFSET);
@@ -241,6 +242,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Push references
 		this.__refPush();
+		
+		// TODO
+		codebuilder.addBreakpoint(0x7D02);
 		
 		// Cannot be null
 		this.__basicCheckNPE(__in.register);
@@ -311,6 +315,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Push references
 		this.__refPush();
+		
+		// TODO
+		codebuilder.addBreakpoint(0x7D03);
 		
 		// Cannot be null
 		this.__basicCheckNPE(__in.register);
@@ -587,6 +594,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Push references
 		this.__refPush();
+		
+		// TODO
+		codebuilder.addBreakpoint(0x7D04);
 		
 		// The instance register
 		int ireg = __i.register;
@@ -1246,22 +1256,11 @@ public final class NearNativeByteCodeHandler
 			// Call the helper for the method
 			this.__invokeHelper(HelperFunction.NEW_ARRAY,
 				classInfo.register, PlainRegister.of(__len.register));
-				
-			// Debug Nop
-			codeBuilder.addNop();
-			codeBuilder.addNop();
-			codeBuilder.add(NativeInstructionType.BREAKPOINT);
 			
 			// Copy the result to the output
 			codeBuilder.<MemHandleRegister>addCopy(
 				MemHandleRegister.RETURN,
 				MemHandleRegister.of(__out.register));
-			
-			// Debug Nop
-			codeBuilder.addNop();
-			codeBuilder.addNop();
-			codeBuilder.addNop();
-			codeBuilder.add(NativeInstructionType.BREAKPOINT);
 		}
 		
 		// Negative array and invocation exceptions were checked.
@@ -1447,6 +1446,9 @@ public final class NearNativeByteCodeHandler
 
 		// Push references
 		this.__refPush();
+		
+		// TODO
+		codebuilder.addBreakpoint(0x7D05);
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -1866,6 +1868,7 @@ public final class NearNativeByteCodeHandler
 		int volarraylen = volatiles.getUnmanaged();
 		
 		// Read length of array
+		codebuilder.addBreakpoint(0x7D06);
 		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
 			volarraylen,
 			__ir, Constants.ARRAY_LENGTH_OFFSET);
@@ -2296,9 +2299,9 @@ public final class NearNativeByteCodeHandler
 						0);
 				break;
 				
-				// Breakpoint
+				// Breakpoint (with current line)
 			case "breakpoint":
-				codeBuilder.add(NativeInstructionType.BREAKPOINT);
+				codeBuilder.addBreakpoint(this.state.line & 0x7FFF);
 				break;
 				
 				// Load boolean class
@@ -2752,6 +2755,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Special invocation?
 		boolean isspecial = (__it == InvokeType.SPECIAL);
+		
+		// TODO
+		codebuilder.addBreakpoint(0x7D07);
 		
 		// Performing a special invoke which has some modified rules
 		if (isspecial)
