@@ -49,6 +49,9 @@ public final class CallTraceElement
 	/** The task ID. */
 	protected final int taskId;
 	
+	/** The native instruction type. */
+	protected final int nativeOp;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
@@ -138,6 +141,28 @@ public final class CallTraceElement
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line, int __jbc, int __jpc, int __tid)
 	{
+		this(__cl, __mn, __md, __addr, __file, __line, __jbc, __jpc, __tid,
+			-1);
+	}
+	
+	/**
+	 * Initializes a call trace element.
+	 *
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __md The method descriptor.
+	 * @param __addr The address the method executes at.
+	 * @param __file The file.
+	 * @param __line The line in the file.
+	 * @param __jbc The Java byte code instruction used.
+	 * @param __jpc The Java PC address.
+	 * @param __tid The task ID.
+	 * @param __nOp The native operation.
+	 * @since 2021/01/24
+	 */
+	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
+		String __file, int __line, int __jbc, int __jpc, int __tid, int __nOp)
+	{
 		this.className = __cl;
 		this.methodName = __mn;
 		this.methodType = __md;
@@ -147,6 +172,7 @@ public final class CallTraceElement
 		this.byteCodeOp = __jbc;
 		this.byteCodeAddr = __jpc;
 		this.taskId = __tid;
+		this.nativeOp = __nOp;
 	}
 	
 	/**
@@ -219,7 +245,8 @@ public final class CallTraceElement
 			this.line == o.line &&
 			this.byteCodeOp == o.byteCodeOp &&
 			this.byteCodeAddr == o.byteCodeAddr &&
-			this.taskId == o.taskId;
+			this.taskId == o.taskId && 
+			this.nativeOp == o.nativeOp;
 	}
 	
 	/**
@@ -252,7 +279,8 @@ public final class CallTraceElement
 				~this.line +
 				~this.byteCodeOp +
 				~this.byteCodeAddr +
-				~this.taskId);
+				~this.taskId +
+				~this.nativeOp);
 		}
 		return rv;
 	}
@@ -291,6 +319,17 @@ public final class CallTraceElement
 	}
 	
 	/**
+	 * Returns the native operation.
+	 * 
+	 * @return The native operation.
+	 * @since 2021/01/24
+	 */
+	public final int nativeOp()
+	{
+		return this.nativeOp;
+	}
+	
+	/**
 	 * Formats the call trace element but having it only represent the method
 	 * point without the class information.
 	 *
@@ -311,7 +350,8 @@ public final class CallTraceElement
 			int line = this.line;
 			int jInst = this.byteCodeOp & 0xFF;
 			int jAddr = this.byteCodeAddr;
-			int taskid = this.taskId;
+			int taskId = this.taskId;
+			int nativeOp = this.nativeOp;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -328,10 +368,10 @@ public final class CallTraceElement
 			}
 			
 			// Task ID?
-			if (taskid != 0)
+			if (taskId != 0)
 			{
 				sb.append(" T");
-				sb.append(taskid);
+				sb.append(taskId);
 			}
 			
 			// Execution address
@@ -351,6 +391,16 @@ public final class CallTraceElement
 				// Otherwise use an index
 				else
 					sb.append(address);
+			}
+			
+			// Is there a native operation?
+			if (nativeOp >= 0)
+			{
+				sb.append(" ^");
+				sb.append(Integer.toString(nativeOp, 16).toUpperCase());
+				sb.append("h/");
+				sb.append(Integer.toString(nativeOp, 2).toUpperCase());
+				sb.append('b');
 			}
 			
 			// File, Line, and/or Java instruction/address
@@ -457,6 +507,7 @@ public final class CallTraceElement
 			int jbcinst = this.byteCodeOp & 0xFF;
 			int jbcaddr = this.byteCodeAddr;
 			int taskid = this.taskId;
+			int nativeOp = this.nativeOp;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -494,6 +545,16 @@ public final class CallTraceElement
 				// Otherwise use an index
 				else
 					sb.append(address);
+			}
+			
+			// Is there a native operation?
+			if (nativeOp >= 0)
+			{
+				sb.append(" ^");
+				sb.append(Integer.toString(nativeOp, 16).toUpperCase());
+				sb.append("h/");
+				sb.append(Integer.toString(nativeOp, 2).toUpperCase());
+				sb.append('b');
 			}
 			
 			// File, Line, and/or Java instruction/address

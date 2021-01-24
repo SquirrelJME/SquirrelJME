@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -148,8 +149,8 @@ public final class LogicHandler
 		Object rv = LogicHandler.__allocObject(__info, allocSize);
 		
 		// Set the length of the array
-		Assembly.memHandleWriteInt(rv, SystemCall.offsetOfArrayLengthField(),
-			__len);
+		Assembly.memHandleWriteInt(rv, LogicHandler.staticVmAttribute(
+			StaticVmAttribute.OFFSETOF_ARRAY_LENGTH_FIELD), __len);
 		
 		return rv;
 	}
@@ -180,6 +181,26 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Returns the static virtual machine metric.
+	 * 
+	 * @param __metric The {@link StaticVmAttribute} to get.
+	 * @return The value of the metric.
+	 * @throws IllegalArgumentException If the metric is not valid.
+	 * @since 2021/01/24
+	 */
+	public static int staticVmAttribute(int __metric)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error ZZ4n Invalid Vm Metric, (Metric Id)}
+		if (__metric <= 0 || __metric >= StaticVmAttribute.NUM_METRICS)
+			throw new IllegalArgumentException("ZZ4n " + __metric);
+		
+		int arrayBase = SystemCall.arrayAllocationBase();
+		return Assembly.memHandleReadInt(SystemCall.staticVmAttributes(),
+			arrayBase + (__metric * 4));
+	}
+	
+	/**
 	 * Allocates an object and seeds initial information regarding it.
 	 * 
 	 * @param __info The class information.
@@ -201,21 +222,21 @@ public final class LogicHandler
 			ClassProperty.INT_MEMHANDLE_KIND);
 		
 		// Attempt to allocate a handle
-		int rv = SystemCall.memHandleNew(__allocSize, memHandleKind);
+		int rv = SystemCall.memHandleNew(memHandleKind, __allocSize);
 		if (rv == 0)
 		{
 			// Attempt garbage collection
 			System.gc();
 			
 			// Try again, but fail if it still fails
-			rv = SystemCall.memHandleNew(__allocSize, memHandleKind);
+			rv = SystemCall.memHandleNew(memHandleKind, __allocSize);
 			if (rv == 0)
 				throw new OutOfMemoryError();
 		}
 		
 		// Set the object type information
-		Assembly.memHandleWriteObject(rv, SystemCall.offsetOfObjectTypeField(),
-			__info);
+		Assembly.memHandleWriteObject(rv, LogicHandler.staticVmAttribute(
+			StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD), __info);
 		
 		// Convert to represented object before returning.
 		return Assembly.pointerToObject(rv);

@@ -154,6 +154,22 @@ public final class MemHandles
 	}
 	
 	/**
+	 * Allocates a list handle.
+	 * 
+	 * @param __count The number of entries to place in.
+	 * @return The allocated handle.
+	 * @throws IllegalArgumentException If size is zero or negative.
+	 * @since 2021/01/24
+	 */
+	public PropertyListHandle allocList(int __kind, int __count)
+		throws IllegalArgumentException
+	{
+		return this.<PropertyListHandle>__register(
+			new PropertyListHandle(__kind, this.__nextId(), this.memActions,
+				this.__bootState().__baseArraySize(), __count));
+	}
+	
+	/**
 	 * Allocates the object data.
 	 * 
 	 * @param __sz The number of bytes to allocate.

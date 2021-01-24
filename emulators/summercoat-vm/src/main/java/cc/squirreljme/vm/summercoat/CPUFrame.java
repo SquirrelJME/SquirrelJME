@@ -38,6 +38,9 @@ public final class CPUFrame
 	private final int[] _registers =
 		new int[NativeCPU.MAX_REGISTERS];
 	
+	/** The last native operation. */
+	int _lastNativeOp;
+	
 	/** The entry PC address. */
 	int _entrypc;
 	

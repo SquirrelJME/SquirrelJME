@@ -11,8 +11,8 @@ package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.config.ConfigRomType;
+import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
-import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 
 /**
  * This contains the index of system calls.
@@ -480,31 +480,25 @@ public interface SystemCallIndex
 		41;
 	
 	/**
-	 * Returns the offset to the array length field.
-	 * 
-	 * @squirreljme.syscallreturn The offset to the length field.
-	 * @since 2021/01/23
-	 */
-	byte OFFSET_OF_ARRAY_LENGTH_FIELD =
-		42;
-	
-	/**
-	 * Returns the offset to the type field in objects.
-	 * 
-	 * @squirreljme.syscallreturn The offset to the type field.
-	 * @since 2021/01/23
-	 */
-	byte OFFSET_OF_OBJECT_TYPE_FIELD =
-		43;
-	
-	/**
-	 * Returns the allocation base of arrays.
+	 * Returns the allocation base of arrays, this is needed to read properties
+	 * from the pool and otherwise.
 	 * 
 	 * @squirreljme.syscallreturn The allocation base of arrays.
 	 * @since 2021/01/24
 	 */
 	byte ARRAY_ALLOCATION_BASE =
-		44;
+		42;
+	
+	/**
+	 * Returns the static virtual machine metrics via
+	 * {@link SystemCall#staticVmAttributes()}.
+	 * 
+	 * @squirreljme.syscallreturn The static virtual machine attributes
+	 * structure.
+	 * @since 2021/01/24
+	 */
+	byte STATIC_VM_ATTRIBUTES =
+		43;
 	
 	/**
 	 * The number of system calls that are defined in this run-time.
@@ -513,6 +507,6 @@ public interface SystemCallIndex
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		45;
+		44;
 }
 

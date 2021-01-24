@@ -84,7 +84,11 @@ public interface MemHandleKind
 	byte OBJECT_ARRAY =
 		16;
 	
+	/** Static virtual Machine Attributes. */
+	byte STATIC_VM_ATTRIBUTES =
+		17;
+	
 	/** The number of kinds used. */
 	byte NUM_KINDS =
-		17;
+		18;
 }

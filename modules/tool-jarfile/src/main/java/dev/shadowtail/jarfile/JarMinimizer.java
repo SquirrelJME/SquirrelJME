@@ -327,7 +327,9 @@ public final class JarMinimizer
 			ChunkSection bootstrap = out.addSection(
 				ChunkWriter.VARIABLE_SIZE, 4);
 			int[] startPoolHandleId = new int[1];
-			bootState.boot(decPool, lpd, bootstrap, startPoolHandleId);
+			int[] vmAttribHandleId = new int[1];
+			bootState.boot(decPool, lpd, bootstrap, startPoolHandleId,
+				vmAttribHandleId);
 			
 			// Use the properties of the bootstrap which will be read on
 			// virtual machine initialization
@@ -339,10 +341,10 @@ public final class JarMinimizer
 				.setInt(startPoolHandleId[0]);
 			properties[JarProperty.RCDX_START_CLASS]
 				.setInt(bootClassDx);
+			properties[JarProperty.MEMHANDLEID_VM_ATTRIBUTES]
+				.setInt(vmAttribHandleId[0]);
 			
 			// Base array size
-			properties[JarProperty.SIZE_BASE_OBJECT]
-				.setInt(bootState.__baseObjectSize());
 			properties[JarProperty.SIZE_BASE_ARRAY]
 				.setInt(bootState.__baseArraySize());
 		}
@@ -355,9 +357,9 @@ public final class JarMinimizer
 			properties[JarProperty.SIZE_BOOT_INIT].setInt(0);
 			properties[JarProperty.MEMHANDLEID_START_POOL].setInt(0);
 			properties[JarProperty.RCDX_START_CLASS].setInt(0);
+			properties[JarProperty.MEMHANDLEID_VM_ATTRIBUTES].setInt(0);
 			
 			// No known array base size
-			properties[JarProperty.SIZE_BASE_OBJECT].setInt(0);
 			properties[JarProperty.SIZE_BASE_ARRAY].setInt(0);
 		}
 		

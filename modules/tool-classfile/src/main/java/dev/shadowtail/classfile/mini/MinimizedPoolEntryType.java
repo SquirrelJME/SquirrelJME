@@ -78,11 +78,7 @@ public enum MinimizedPoolEntryType
 	
 	/**
 	 * Class information.
-	 *
-	 * @deprecated Class info pointers will be going away as it will be
-	 * managed and obtainable by the outer-VM layer.
 	 */
-	@Deprecated
 	CLASS_INFO_POINTER(true, ClassInfoPointer.class),
 	
 	/** A string which has been noted for debug purposes. */

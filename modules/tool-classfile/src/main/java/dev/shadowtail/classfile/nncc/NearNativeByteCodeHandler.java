@@ -3164,14 +3164,6 @@ public final class NearNativeByteCodeHandler
 				id = SystemCallIndex.MEM_HANDLE_NEW;
 				break;
 			
-			case "offsetOfArrayLengthField":
-				id = SystemCallIndex.OFFSET_OF_ARRAY_LENGTH_FIELD;
-				break;
-			
-			case "offsetOfObjectTypeField":
-				id = SystemCallIndex.OFFSET_OF_OBJECT_TYPE_FIELD;
-				break;
-			
 			case "pdOfStdErr":
 				id = SystemCallIndex.PD_OF_STDERR;
 				break;
@@ -3186,6 +3178,10 @@ public final class NearNativeByteCodeHandler
 			
 			case "pdWriteByte":
 				id = SystemCallIndex.PD_WRITE_BYTE;
+				break;
+			
+			case "staticVmAttributes":
+				id = SystemCallIndex.STATIC_VM_ATTRIBUTES;
 				break;
 				
 				// {@squirreljme.error JC4r The specified system call method

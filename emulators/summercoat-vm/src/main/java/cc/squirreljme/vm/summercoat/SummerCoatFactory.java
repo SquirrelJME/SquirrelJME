@@ -26,7 +26,6 @@ import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
-import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.jarfile.TableOfContents;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -415,9 +414,14 @@ public class SummerCoatFactory
 		Debugging.debugNote("bootPool: %d/%#08x (%#08x)",
 			bootPool, bootPool, virtHandles.get(bootPool).id);
 		
+		// Where are the static attributes?
+		int staticAttrib = bootJarHeader.get(
+			JarProperty.MEMHANDLEID_VM_ATTRIBUTES);
+		
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps,
-			bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY));
+			bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY),
+			virtHandles.get(staticAttrib));
 		CPUFrame iframe = cpu.enterFrame(false,
 			startAddress, virtHandles.get(bootPool).id);
 		

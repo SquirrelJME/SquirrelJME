@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import net.multiphasicapps.classfile.ClassName;
 
@@ -50,5 +51,15 @@ public final class ClassState
 		
 		this.thisName = __thisName;
 		this.classFile = __classFile;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/24
+	 */
+	@Override
+	public String toString()
+	{
+		return "ClassState:" + this.thisName;
 	}
 }

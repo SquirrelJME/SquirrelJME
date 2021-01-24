@@ -75,8 +75,8 @@ public interface JarProperty
 	byte SIZE_BASE_ARRAY =
 		13;
 	
-	/** The base allocation size of objects. */
-	byte SIZE_BASE_OBJECT =
+	/** Attributes for the virtual machine. */
+	byte MEMHANDLEID_VM_ATTRIBUTES =
 		14;
 	
 	/** The number of properties in the JAR. */

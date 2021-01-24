@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
  *
  * @since 2020/12/20
  */
-public abstract class PropertyListHandle
+public class PropertyListHandle
 	extends ListValueHandle
 {
 	/**

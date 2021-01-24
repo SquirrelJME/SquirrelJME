@@ -127,7 +127,9 @@ public class MemHandle
 	public void memWriteByte(int __addr, int __v)
 	{
 		if (__addr < 0 || __addr >= this.rawSize)
-			throw new VMMemoryAccessException("Invalid memWriteByte: " + __addr);
+			throw new VMMemoryAccessException(String.format(
+				"Invalid memWriteByte: @%#08x (sz: %d)",
+				__addr, this.rawSize));
 		
 		this._bytes[__addr] = (byte)__v;
 	}

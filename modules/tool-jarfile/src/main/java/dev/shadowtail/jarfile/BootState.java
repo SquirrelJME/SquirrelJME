@@ -12,6 +12,7 @@ package dev.shadowtail.jarfile;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
@@ -21,6 +22,7 @@ import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
+import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.InvokeType;
@@ -33,6 +35,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
@@ -196,13 +199,14 @@ public final class BootState
 	 * @param __lpd The local dual pool section.
 	 * @param __outData The output data for the bootstrap.
 	 * @param __startPoolHandleId The target handle ID for the pool.
+	 * @param __vmAttribHandleId The target handle for the VM attributes.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/16
 	 */
 	public void boot(DualClassRuntimePool __pool, ChunkSection __lpd,
-		ChunkSection __outData,
-		int[] __startPoolHandleId)
+		ChunkSection __outData, int[] __startPoolHandleId,
+		int[] __vmAttribHandleId)
 		throws IOException, NullPointerException
 	{
 		if (__pool == null || __lpd == null || __outData == null ||
@@ -226,6 +230,7 @@ public final class BootState
 		
 		// Determine the starting memory handle ID
 		__startPoolHandleId[0] = boot._poolMemHandle.id;
+		__vmAttribHandleId[0] = this.__buildVmAttributes().id;
 		
 		// Write the memory handles (and actions) into boot memory
 		this._memHandles.chunkOut(__outData);
@@ -262,6 +267,21 @@ public final class BootState
 			rv.write(off, MemoryType.SHORT, (int)__v[i]);
 		
 		return rv;
+	}
+	
+	/**
+	 * Loads the specified class.
+	 * 
+	 * @param __cl The class to load.
+	 * @return The class state for the class.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	public final ClassState loadClass(String __cl)
+		throws IOException, NullPointerException
+	{
+		return this.loadClass(new ClassName(__cl));
 	}
 	
 	/**
@@ -363,6 +383,10 @@ public final class BootState
 			classInfo.set(ClassProperty.INT_CLASSDEPTH, 0);
 		}
 		
+		// Determine the kind of memory handle used
+		classInfo.set(ClassProperty.INT_MEMHANDLE_KIND,
+			this.__handleKind(__cl));
+		
 		// Is there a super class for this class?
 		ClassState superClassState = (superClass == null ? null :
 			this.loadClass(superClass));
@@ -378,10 +402,24 @@ public final class BootState
 		// is handled.
 		if (!isThisObject && !__cl.isPrimitive())
 		{
+			// This is one deeper than the super class
+			try
+			{
+				classInfo.set(ClassProperty.INT_CLASSDEPTH,
+					this.__classDepth(rv));
+			}
+			catch (IllegalStateException ignored)
+			{
+				// Has already been set
+			}
+			
+			// Debug super class
+			Debugging.debugNote("SuperClass: %s (from %s)",
+				superClassState.thisName, __cl);
+			
 			// The base of the class is the allocation size of the super
 			// class
-			int base = superClassState._classInfoHandle
-				.getInteger(ClassProperty.SIZE_ALLOCATION);
+			int base = this.__allocSize(superClassState);
 			classInfo.set(ClassProperty.OFFSETBASE_INSTANCE_FIELDS, base);
 			
 			// Debug
@@ -391,13 +429,20 @@ public final class BootState
 			
 			// The allocation size of this class is the combined base and
 			// our storage for fields
-			classInfo.set(ClassProperty.SIZE_ALLOCATION, base +
-				header.get(StaticClassProperty.INT_INSTANCE_FIELD_BYTES));
-			
-			// This is one deeper than the super class
-			classInfo.set(ClassProperty.INT_CLASSDEPTH,
-				superClassState._classInfoHandle
-					.getInteger(ClassProperty.INT_CLASSDEPTH) + 1);
+			int calcSize = base +
+				header.get(StaticClassProperty.INT_INSTANCE_FIELD_BYTES);
+			try
+			{
+				classInfo.set(ClassProperty.SIZE_ALLOCATION, calcSize);
+			}
+			catch (IllegalStateException ignored)
+			{
+				// Verify that the value is properly determined
+				int val = classInfo.getInteger(ClassProperty.SIZE_ALLOCATION);
+				if (calcSize != val)
+					throw Debugging.oops("Wrong calc size?",
+						calcSize, val);
+			}
 		}
 		
 		// Fill in any interfaces the class implements
@@ -699,45 +744,7 @@ public final class BootState
 		ClassState state = this.loadClass(__cl);
 		
 		// Determine the memory handle kind used
-		int handleKind;
-		PrimitiveType pType = __cl.componentType().primitiveType();
-		if (pType == null)
-			handleKind = MemHandleKind.OBJECT_ARRAY;
-		else
-			switch (pType)
-			{
-				case BOOLEAN:
-				case BYTE:
-					handleKind = MemHandleKind.BYTE_ARRAY;
-					break;
-				
-				case CHARACTER:
-					handleKind = MemHandleKind.CHARACTER_ARRAY;
-					break;
-					
-				case DOUBLE:
-					handleKind = MemHandleKind.DOUBLE_ARRAY;
-					break;
-					
-				case FLOAT:
-					handleKind = MemHandleKind.FLOAT_ARRAY;
-					break;
-					
-				case INTEGER:
-					handleKind = MemHandleKind.INTEGER_ARRAY;
-					break;
-					
-				case LONG:
-					handleKind = MemHandleKind.LONG_ARRAY;
-					break;
-					
-				case SHORT:
-					handleKind = MemHandleKind.SHORT_ARRAY;
-					break;
-					
-				default:
-					throw Debugging.oops();
-			}
+		int handleKind = this.__handleKind(__cl);
 		
 		// Determine the base array size.
 		int baseArraySize = this.__baseArraySize();
@@ -841,6 +848,53 @@ public final class BootState
 	}
 	
 	/**
+	 * Returns the allocation size of the class.
+	 * 
+	 * @param __class The class.
+	 * @return The allocation size.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	private int __allocSize(ClassState __class)
+		throws IOException, NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		ClassInfoHandle classInfo = __class._classInfoHandle;
+		
+		// See if it is available
+		try
+		{
+			return classInfo.getInteger(ClassProperty.SIZE_ALLOCATION);
+		}
+		
+		// Needs to be calculated
+		catch (NoSuchElementException ignored)
+		{
+			Deque<ClassState> superChain = this.__classChain(__class);
+			
+			// Handle what is in the queue to determine our allocation size
+			int allocSize = 0;
+			while (!superChain.isEmpty())
+			{
+				ClassState at = superChain.removeFirst();
+				
+				// The allocation size is what is going up
+				allocSize += at.classFile.header.get(
+					StaticClassProperty.INT_INSTANCE_FIELD_BYTES);
+			}
+			
+			// Set it accordingly
+			classInfo.set(ClassProperty.SIZE_ALLOCATION, allocSize);
+			
+			// Use that one
+			return allocSize;
+		}
+	}
+	
+	/**
 	 * Determines the base array size.
 	 * 
 	 * @return The base array size.
@@ -872,7 +926,6 @@ public final class BootState
 		
 		return baseArraySize;
 	}
-	
 	
 	/**
 	 * Determines the base array size.
@@ -907,6 +960,159 @@ public final class BootState
 	}
 	
 	/**
+	 * Creates the {@link StaticVmAttribute} mapping.
+	 * 
+	 * @return The memory handle for attributes.
+	 * @throws IOException On read errors.
+	 * @since 2021/01/24
+	 */
+	private MemHandle __buildVmAttributes()
+		throws IOException
+	{
+		PropertyListHandle rv = this._memHandles.allocList(
+			MemHandleKind.STATIC_VM_ATTRIBUTES, StaticVmAttribute.NUM_METRICS);
+		
+		// The base size of object
+		int objectBase = this.loadClass("java/lang/Object")
+			._classInfoHandle.getInteger(ClassProperty.SIZE_ALLOCATION);
+		
+		rv.set(StaticVmAttribute.SIZE_OBJECT,
+			objectBase);
+		rv.set(StaticVmAttribute.OFFSETOF_ARRAY_LENGTH_FIELD,
+			objectBase + this.loadClass("[I").classFile
+				.field(false, BootState._ARRAY_LENGTH).offset);
+		rv.set(StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD,
+			this.loadClass("java/lang/Object").classFile
+				.field(false, BootState._OBJECT_CLASS_INFO).offset);
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the class chain.
+	 * 
+	 * @param __class The class to get the chain of.
+	 * @return The class queue chain.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	private Deque<ClassState> __classChain(ClassState __class)
+		throws IOException, NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		// Load the class chain
+		Deque<ClassState> superChain = new LinkedList<>();
+		for (ClassState at = __class; at != null; at = at._superClass)
+		{
+			// Process into the queue
+			superChain.addFirst(at);
+			
+			// If this is not the object class, and our super class is not
+			// yet known then fill it in
+			if (!at.thisName.isObject() && at._superClass == null)
+			{
+				// This should be created but it might not have reached
+				// the initialization point, due to cyclic super class
+				// loading.
+				at._superClass = this.loadClass(at.classFile.superName());
+			}
+		}
+		
+		return superChain;
+	}
+	
+	/**
+	 * Returns the class depth for a given class.
+	 * 
+	 * @param __class The class to get the depth of.
+	 * @return The class depth.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	private int __classDepth(ClassState __class)
+		throws IOException, NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		ClassInfoHandle classInfo = __class._classInfoHandle;
+		
+		// See if it is available
+		try
+		{
+			return classInfo.getInteger(ClassProperty.INT_CLASSDEPTH);
+		}
+		
+		// Needs to be calculated
+		catch (NoSuchElementException ignored)
+		{
+			// Load the class chain
+			Deque<ClassState> superChain = this.__classChain(__class);
+			
+			// The depth is just the size of the class chain minus one, since
+			// Object is depth zero
+			int depth = superChain.size() - 1;
+			
+			// Set it accordingly
+			classInfo.set(ClassProperty.INT_CLASSDEPTH, depth);
+			
+			// Use that one
+			return depth;
+		}
+	}
+	
+	/**
+	 * Returns the kind of handle used for the class.
+	 * 
+	 * @param __cl The class to get.
+	 * @return The handle kind of the class.
+	 * @since 2021/01/24
+	 */
+	private int __handleKind(ClassName __cl)
+	{
+		// If not an array is just an object instance
+		if (!__cl.isArray())
+			return MemHandleKind.OBJECT_INSTANCE;
+		
+		// Otherwise it is an array type
+		PrimitiveType pType = __cl.componentType().primitiveType();
+		if (pType == null)
+			return MemHandleKind.OBJECT_ARRAY;
+			
+		switch (pType)
+		{
+			case BOOLEAN:
+			case BYTE:
+				return MemHandleKind.BYTE_ARRAY;
+			
+			case CHARACTER:
+				return MemHandleKind.CHARACTER_ARRAY;
+				
+			case DOUBLE:
+				return MemHandleKind.DOUBLE_ARRAY;
+				
+			case FLOAT:
+				return MemHandleKind.FLOAT_ARRAY;
+				
+			case INTEGER:
+				return MemHandleKind.INTEGER_ARRAY;
+				
+			case LONG:
+				return MemHandleKind.LONG_ARRAY;
+				
+			case SHORT:
+				return MemHandleKind.SHORT_ARRAY;
+				
+			default:
+				throw Debugging.oops(__cl);
+		}
+	}
+	
+	/**
 	 * Loads the specified pool entry into memory and returns the handle.
 	 *
 	 * @param __clPool The class runtime pool;
@@ -936,6 +1142,11 @@ public final class BootState
 		// Depends on the type used
 		switch (__entry.type())
 		{
+				// Class information
+			case CLASS_INFO_POINTER:
+				return this.loadClass(__entry.<ClassInfoPointer>value(
+					ClassInfoPointer.class).name)._classInfoHandle;
+			
 				// Class constant pool reference
 			case CLASS_POOL:
 				return this.loadClass(__entry.<ClassPool>value(

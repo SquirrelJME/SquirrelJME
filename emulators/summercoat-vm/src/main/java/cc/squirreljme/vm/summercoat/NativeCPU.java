@@ -12,12 +12,10 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMException;
-import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -32,7 +30,6 @@ import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -93,12 +90,15 @@ public final class NativeCPU
 	/** The array base. */
 	protected final int arrayBase;
 	
+	/** Virtual machine attributes handle. */
+	protected final MemHandle vmAttribHandle;
+	
 	/** Stack frames. */
 	private final LinkedList<CPUFrame> _frames =
 		new LinkedList<>();
 	
 	/** System call error states for this CPU. */
-	private final int[] _syscallerrors =
+	final int[] _sysCallErrors =
 		new int[SystemCallIndex.NUM_SYSCALLS];
 	
 	/** Super visor properties. */
@@ -120,14 +120,15 @@ public final class NativeCPU
 	 * @param __vcid Virtual CPU id.
 	 * @param __ps The profiler to use.
 	 * @param __arrayBase The array base size.
+	 * @param __vmAttrHandle Virtual machine attributes handle.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
 	public NativeCPU(MachineState __ms, WritableMemory __mem, int __vcid,
-		ProfilerSnapshot __ps, int __arrayBase)
+		ProfilerSnapshot __ps, int __arrayBase, MemHandle __vmAttrHandle)
 		throws NullPointerException
 	{
-		if (__ms == null || __mem == null)
+		if (__ms == null || __mem == null || __vmAttrHandle == null)
 			throw new NullPointerException("NARG");
 		
 		this.state = __ms;
@@ -136,6 +137,7 @@ public final class NativeCPU
 		this.profiler = (__ps == null ? null :
 			__ps.measureThread("cpu-" + __vcid));
 		this.arrayBase = __arrayBase;
+		this.vmAttribHandle = __vmAttrHandle;
 	}
 	
 	/**
@@ -380,6 +382,9 @@ public final class NativeCPU
 			// Read operation
 			nowframe._lastpc = pc;
 			int op = icache[bpc] & 0xFF;
+			
+			// Set the last native operation used
+			nowframe._lastNativeOp = op;
 			
 			// Reset all input arguments
 			Arrays.fill(args, 0);
@@ -770,7 +775,62 @@ public final class NativeCPU
 					// Read/write Memory Handles
 				case NativeInstructionType.MEM_HANDLE_OFF_REG:
 				case NativeInstructionType.MEM_HANDLE_OFF_ICONST:
-					throw Debugging.todo("MemHandle R/W.");
+					{
+						// Is this a load operation?
+						boolean load = ((op & 0b1000) != 0);
+						
+						// The handle to read from
+						MemHandle handle =
+							this.state.memHandles.get(lr[args[1]]);
+						int off = lr[args[2]];
+						
+						// Potential load/store value
+						int read = 0;
+						int write = lr[args[0]];
+						
+						// Depends on the type
+						DataType dt = DataType.of(op & 0b0111);
+						switch (dt)
+						{
+							case BYTE:
+								if (load)
+									read = (byte)handle.memReadByte(off);
+								else
+									handle.memWriteByte(off, write);
+								break;
+							
+							case CHARACTER:
+								if (load)
+									read = handle.memReadShort(off) & 0xFFF;
+								else
+									handle.memWriteShort(off, write);
+								break;
+							
+							case SHORT:
+								if (load)
+									read = (short)handle.memReadShort(off);
+								else
+									handle.memWriteShort(off, write);
+								break;
+								
+							case OBJECT:
+							case INTEGER:
+							case FLOAT:
+								if (load)
+									read = handle.memReadInt(off);
+								else
+									handle.memWriteInt(off, write);
+								break;
+							
+							default:
+								throw Debugging.oops(dt);
+						}
+						
+						// Store in value
+						if (load)
+							lr[args[0]] = read;
+					}
+					break;
 				
 					// Read/Write raw memory
 				case NativeInstructionType.MEMORY_OFF_REG:
@@ -941,10 +1001,14 @@ public final class NativeCPU
 						pointcounter = 0;
 						
 						// Debug
-						/*if (ENABLE_DEBUG)
-							System.err.printf(
-								"<<<< %08x <<<<<<<<<<<<<<<<<<<<<<%n",
-								(now != null ? now._pc : 0));*/
+						if (now != null && ENABLE_DEBUG)
+							Debugging.debugNote(
+								"<<<< Return: %08x: " +
+									"[%#08x:%08x ex:%#08x] <<<<<<<<<<<<<<%n",
+								now._pc,
+								now.get(NativeCode.RETURN_REGISTER + 1),
+								now.get(NativeCode.RETURN_REGISTER),
+								now.get(NativeCode.EXCEPTION_REGISTER));
 					}
 					break;
 					
@@ -1129,7 +1193,8 @@ public final class NativeCPU
 			__f._inline,
 			__f._injop,
 			__f._injpc,
-			__f._taskid);
+			__f._taskid,
+			__f._lastNativeOp);
 	}
 	
 	/**
@@ -1316,11 +1381,60 @@ public final class NativeCPU
 	 * @return The result.
 	 * @since 2019/05/23
 	 */
-	private final long __sysCall(short __si, int... __args)
+	private long __sysCall(short __si, int... __args)
 	{
 		// Error state for the last call of this type
-		int[] errors = this._syscallerrors;
+		int[] errors = this._sysCallErrors;
 		
+		// Determine the error handling index of the call
+		SystemCallHandler handler = SystemCallHandler.of(__si);
+		int errorDx = (handler == null ? SystemCallIndex.QUERY_INDEX : __si);
+		
+		// The system call result
+		long rv;
+		int err;
+		
+		// Not a valid system call?
+		if (handler == null)
+		{
+			rv = 0;
+			err = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
+			
+			if (true)
+				throw Debugging.oops(__si);
+		}
+		
+		// Use normal handling
+		else
+		{
+			try
+			{
+				rv = handler.handle(this, __args);
+				err = 0;
+			}
+			catch (VMSystemCallException e)
+			{
+				e.printStackTrace();
+				
+				rv = 0;
+				err = e.error;
+			}
+		}
+		
+		// Set error state as needed
+		synchronized (this)
+		{
+			errors[__si] = err;
+		}
+		
+		// Debug result
+		Debugging.debugNote("SC::sysCall(%d, %s) -> %d (err: %d)",
+			__si, IntegerArrayList.asList(__args),
+			rv, err);
+		
+		// Use returning value
+		return rv;
+		/*
 		// Return value with error value, to set if any
 		long rv;
 		int err;
@@ -1783,8 +1897,6 @@ public final class NativeCPU
 			rv, err);
 		
 		// Use returning value
-		return rv;
+		return rv;*/
 	}
-	
 }
-
