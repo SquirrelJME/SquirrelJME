@@ -1246,11 +1246,22 @@ public final class NearNativeByteCodeHandler
 			// Call the helper for the method
 			this.__invokeHelper(HelperFunction.NEW_ARRAY,
 				classInfo.register, PlainRegister.of(__len.register));
+				
+			// Debug Nop
+			codeBuilder.addNop();
+			codeBuilder.addNop();
+			codeBuilder.add(NativeInstructionType.BREAKPOINT);
 			
 			// Copy the result to the output
 			codeBuilder.<MemHandleRegister>addCopy(
 				MemHandleRegister.RETURN,
 				MemHandleRegister.of(__out.register));
+			
+			// Debug Nop
+			codeBuilder.addNop();
+			codeBuilder.addNop();
+			codeBuilder.addNop();
+			codeBuilder.add(NativeInstructionType.BREAKPOINT);
 		}
 		
 		// Negative array and invocation exceptions were checked.
@@ -3007,7 +3018,7 @@ public final class NearNativeByteCodeHandler
 					doubleFault);
 				
 				// Restore our old exception register
-				codeBuilder.addCopy(execPtr.register,
+				codeBuilder.addCopy(oldEx.register,
 					MemHandleRegister.EXCEPTION);
 				
 				// Target point for double fault

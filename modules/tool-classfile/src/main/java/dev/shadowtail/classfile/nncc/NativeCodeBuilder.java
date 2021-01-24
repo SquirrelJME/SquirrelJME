@@ -797,6 +797,18 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds no operation.
+	 * 
+	 * @return The generated instruction.
+	 * @since 2021/01/24
+	 */
+	public NativeInstruction addNop()
+	{
+		return this.addMathReg(StackJavaType.INTEGER, MathType.ADD,
+			0, 0, 0);
+	}
+	
+	/**
 	 * Loads from the constant pool.
 	 * 
 	 * @param <P> The pool type.
