@@ -33,19 +33,13 @@ public final class SystemCall
 	}
 	
 	/**
-	 * {@link SystemCallIndex#CLASS_INFO_GET_PROPERTY}: Returns the value of
-	 * the given class property.
+	 * {@link SystemCallIndex#ARRAY_ALLOCATION_BASE}: Returns the allocation
+	 * base of arrays.
 	 * 
-	 * @param __info The information to get.
-	 * @param __id The {@link ClassProperty}.
-	 * @return The value of the given property.
-	 * @throws MLECallError If {@code __info} is {@code null} or is not a
-	 * valid class.
-	 * @since 2020/11/29
+	 * @return The allocation base for arrays.
+	 * @since 2021/01/24
 	 */
-	public static native int classInfoGetProperty(ClassInfoBracket __info,
-		int __id)
-		throws MLECallError;
+	public static native int arrayAllocationBase();
 	
 	/**
 	 * {@link SystemCallIndex#ERROR_GET}: Gets the error code of the given

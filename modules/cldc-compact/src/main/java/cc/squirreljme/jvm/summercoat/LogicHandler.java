@@ -33,6 +33,30 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Returns the value of the given class property.
+	 * 
+	 * @param __info The information to get.
+	 * @param __p The {@link ClassProperty}.
+	 * @return The value of the given property.
+	 * @throws MLECallError If {@code __info} is {@code null} or is not a
+	 * valid class.
+	 * @since 2020/11/29
+	 */
+	public static int classInfoGetProperty(ClassInfoBracket __info, int __p)
+		throws MLECallError
+	{
+		if (__info == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ4m Invalid class property. (The property)}
+		if (__p <= 0 || __p >= ClassProperty.NUM_RUNTIME_PROPERTIES)
+			throw new MLECallError("ZZ4m " + __p);
+		
+		int arrayBase = SystemCall.arrayAllocationBase();
+		return Assembly.memHandleReadInt(__info, arrayBase + (__p * 4));
+	}
+	
+	/**
 	 * Garbage collects the given handle.
 	 * 
 	 * @param __p The pointer to clear.
@@ -114,10 +138,10 @@ public final class LogicHandler
 			throw new NegativeArraySizeException("" + __len);
 		
 		// Determine how large the object needs to be
-		int allocBase = SystemCall.classInfoGetProperty(__info,
+		int allocBase = LogicHandler.classInfoGetProperty(__info,
 			ClassProperty.SIZE_ALLOCATION);
 		int allocSize = allocBase +
-			(__len * SystemCall.classInfoGetProperty(__info,
+			(__len * LogicHandler.classInfoGetProperty(__info,
 				ClassProperty.INT_COMPONENT_CELL_SIZE));
 		
 		// Allocate the object
@@ -146,7 +170,7 @@ public final class LogicHandler
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error ZZ4j Class has no allocated size?}
-		int allocSize = SystemCall.classInfoGetProperty(__info,
+		int allocSize = LogicHandler.classInfoGetProperty(__info,
 			ClassProperty.SIZE_ALLOCATION);
 		if (allocSize <= 0)
 			throw new MLECallError("ZZ4j");
@@ -173,7 +197,7 @@ public final class LogicHandler
 			throw new NullPointerException("NARG");
 		
 		// This represents the kind of handle that gets allocated
-		int memHandleKind = SystemCall.classInfoGetProperty(__info,
+		int memHandleKind = LogicHandler.classInfoGetProperty(__info,
 			ClassProperty.INT_MEMHANDLE_KIND);
 		
 		// Attempt to allocate a handle

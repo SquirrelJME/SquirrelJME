@@ -461,8 +461,10 @@ public interface SystemCallIndex
 	 * 
 	 * @squirreljme.syscallparam 1 A {@link ClassInfoBracket}.
 	 * @squirreljme.syscallreturn If a class is initialized or not.
+	 * @deprecated This should be implemented by the internal SummerCoat code.
 	 * @since 2020/11/28
 	 */
+	@Deprecated
 	byte CHECK_IF_CLASS_INIT =
 		40;
 	
@@ -478,25 +480,13 @@ public interface SystemCallIndex
 		41;
 	
 	/**
-	 * Returns the size of the given class information.
-	 * 
-	 * @squirreljme.syscallparam 1 The {@link ClassInfoBracket}.
-	 * @squirreljme.syscallparam 2 A {@link ClassProperty}.
-	 * @squirreljme.syscallreturn The size of the handle or a negative value
-	 * if this is not valid.
-	 * @since 2020/11/29
-	 */
-	byte CLASS_INFO_GET_PROPERTY =
-		42;
-	
-	/**
 	 * Returns the offset to the array length field.
 	 * 
 	 * @squirreljme.syscallreturn The offset to the length field.
 	 * @since 2021/01/23
 	 */
 	byte OFFSET_OF_ARRAY_LENGTH_FIELD =
-		43;
+		42;
 	
 	/**
 	 * Returns the offset to the type field in objects.
@@ -505,6 +495,15 @@ public interface SystemCallIndex
 	 * @since 2021/01/23
 	 */
 	byte OFFSET_OF_OBJECT_TYPE_FIELD =
+		43;
+	
+	/**
+	 * Returns the allocation base of arrays.
+	 * 
+	 * @squirreljme.syscallreturn The allocation base of arrays.
+	 * @since 2021/01/24
+	 */
+	byte ARRAY_ALLOCATION_BASE =
 		44;
 	
 	/**

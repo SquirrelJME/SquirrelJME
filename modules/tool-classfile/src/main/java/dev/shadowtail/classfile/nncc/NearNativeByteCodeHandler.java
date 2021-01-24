@@ -2429,7 +2429,18 @@ public final class NearNativeByteCodeHandler
 					codeBuilder.addCopy(__in[0].register + 1, __out.register);
 				break;
 				
+				// Read from memory handle
+			case "memHandleReadFloat":
+			case "memHandleReadInt":
+			case "memHandleReadObject":
+				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
+					IntValueRegister.of(__out.register),
+					MemHandleRegister.of(__in[0].register),
+					IntValueRegister.of(__in[1].register));
+				break; 
+				
 				// Write to memory handle
+			case "memHandleWriteFloat":
 			case "memHandleWriteInt":
 			case "memHandleWriteObject":
 				codeBuilder.addMemHandleAccess(DataType.INTEGER, false,
@@ -3137,8 +3148,8 @@ public final class NearNativeByteCodeHandler
 		int id;
 		switch (__r.memberName().toString())
 		{
-			case "classInfoGetProperty":
-				id = SystemCallIndex.CLASS_INFO_GET_PROPERTY;
+			case "arrayAllocationBase":
+				id = SystemCallIndex.ARRAY_ALLOCATION_BASE;
 				break;
 			
 			case "errorGet":

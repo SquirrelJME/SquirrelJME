@@ -1334,8 +1334,8 @@ public final class NativeCPU
 					err = 0;
 					switch (__args[0])
 					{
+						case SystemCallIndex.ARRAY_ALLOCATION_BASE:
 						case SystemCallIndex.BYTE_ORDER_LITTLE:
-						case SystemCallIndex.CLASS_INFO_GET_PROPERTY:
 						case SystemCallIndex.ERROR_GET:
 						case SystemCallIndex.ERROR_SET:
 						case SystemCallIndex.EXCEPTION_LOAD:
@@ -1368,6 +1368,12 @@ public final class NativeCPU
 							break;
 					}
 				}
+				break;
+				
+				// Allocation base for arrays
+			case SystemCallIndex.ARRAY_ALLOCATION_BASE:
+				rv = this.arrayBase;
+				err = 0;
 				break;
 				
 				// Is this little endian?
@@ -1450,10 +1456,6 @@ public final class NativeCPU
 					}
 				}
 				break;
-				
-				// Get property of class information
-			case SystemCallIndex.CLASS_INFO_GET_PROPERTY:
-				throw Debugging.todo();
 				
 				// Get error
 			case SystemCallIndex.ERROR_GET:
