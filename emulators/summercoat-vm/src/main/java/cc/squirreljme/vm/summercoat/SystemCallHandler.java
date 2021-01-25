@@ -90,6 +90,33 @@ public enum SystemCallHandler
 		}
 	},
 	
+	/** {@link SystemCallIndex#MEM_HANDLE_IN_BOUNDS}. */
+	MEM_HANDLE_IN_BOUNDS(SystemCallIndex.MEM_HANDLE_IN_BOUNDS)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/24
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			MemHandle handle = __cpu.state.memHandles.get(__args[0]);
+			int off = __args[1];
+			int len = __args[2];
+			
+			// Debug
+			Debugging.debugNote("MEM_HANDLE_IN_BOUNDS(%s, %d, %d) in %d",
+				handle, off, len, handle.size);
+			
+			// Check if in bounds
+			int size = handle.size;
+			if (off < 0 || len < 0 || off + len > size)
+				return 0;
+			return 1;
+		}
+	},
+	
 	/** {@link SystemCallIndex#MEM_HANDLE_NEW}. */
 	MEM_HANDLE_NEW(SystemCallIndex.MEM_HANDLE_NEW)
 	{

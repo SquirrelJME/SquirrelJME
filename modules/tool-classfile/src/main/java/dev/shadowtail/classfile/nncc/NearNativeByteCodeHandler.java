@@ -1906,7 +1906,7 @@ public final class NearNativeByteCodeHandler
 				offset.register, arrayBase.register, offset.register);
 			
 			// Check that it is in range of the memory handle
-			this.__invokeSysCallV(SystemCallIndex.MEMHANDLE_IN_BOUNDS,
+			this.__invokeSysCallV(SystemCallIndex.MEM_HANDLE_IN_BOUNDS,
 				arrayBase.register,
 				__array, offset.register, cellSize.register);
 			

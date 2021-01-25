@@ -509,7 +509,7 @@ public interface SystemCallIndex
 	 * @squirreljme.syscallreturn Zero if not in bounds, non-zero if in bounds.
 	 * @since 2021/01/24
 	 */
-	byte MEMHANDLE_IN_BOUNDS =
+	byte MEM_HANDLE_IN_BOUNDS =
 		44;
 	
 	/**

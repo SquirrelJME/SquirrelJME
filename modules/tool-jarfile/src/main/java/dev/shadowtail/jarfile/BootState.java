@@ -27,6 +27,7 @@ import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.xlate.DataType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Deque;
@@ -386,6 +387,11 @@ public final class BootState
 		// Determine the kind of memory handle used
 		classInfo.set(ClassProperty.INT_MEMHANDLE_KIND,
 			this.__handleKind(__cl));
+		
+		// The cell size, if an array
+		if (__cl.isArray())
+			classInfo.set(ClassProperty.INT_COMPONENT_CELL_SIZE,
+				DataType.of(__cl.componentType().field()).size());
 		
 		// Is there a super class for this class?
 		ClassState superClassState = (superClass == null ? null :
