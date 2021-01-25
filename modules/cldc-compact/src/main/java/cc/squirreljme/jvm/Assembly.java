@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
+
 /**
  * This class is used special by the compiler to transform all the various
  * operations into regular instructions rather than method calls.
@@ -1300,6 +1302,22 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native int objectToPointerRefQueue(Object __o);
+	
+	/**
+	 * Generates a ping, similar to a breakpoint but not fatal.
+	 * 
+	 * @since 2021/01/24
+	 */
+	public static native void ping();
+	
+	/**
+	 * Converts a pointer to {@link ClassInfoBracket}.
+	 *
+	 * @param __p The pointer.
+	 * @return The object of the pointer.
+	 * @since 2021/01/24
+	 */
+	public static native ClassInfoBracket pointerToClassInfo(int __p);
 	
 	/**
 	 * Used to convert a pointer to an object.

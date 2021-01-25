@@ -524,6 +524,17 @@ public final class NativeCPU
 			// Handle the operation
 			switch (encoding)
 			{
+					// CPU Ping
+				case NativeInstructionType.PING:
+					CallTraceUtils.printStackTrace(System.err,
+						String.format("PING! %04Xh: %s",
+							args[0],
+							(args[1] == 0 ? "" :
+								this.__loadUtfString(nowframe.pool(args[1])))),
+						this.trace(),
+						null, null, 0);
+					break;
+					
 					// CPU Breakpoint
 				case NativeInstructionType.BREAKPOINT:
 				case NativeInstructionType.BREAKPOINT_MARKED:

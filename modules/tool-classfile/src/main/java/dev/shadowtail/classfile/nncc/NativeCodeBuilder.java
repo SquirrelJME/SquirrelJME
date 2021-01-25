@@ -870,6 +870,20 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds a marked ping
+	 * 
+	 * @param __mark The marker to use.
+	 * @param __text Optional marking text.
+	 * @return The generated instruction.
+	 * @since 2021/01/24
+	 */
+	public final NativeInstruction addPing(int __mark, String __text)
+	{
+		return this.add(NativeInstructionType.PING, __mark,
+			new NotedString((__text == null ? "" : __text)));
+	}
+	
+	/**
 	 * Loads from the constant pool.
 	 * 
 	 * @param <P> The pool type.

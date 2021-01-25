@@ -298,6 +298,7 @@ public final class NativeInstruction
 			
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.BREAKPOINT_MARKED:
+			case NativeInstructionType.PING:
 			case NativeInstructionType.COPY:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
@@ -369,6 +370,7 @@ public final class NativeInstruction
 				
 				// [i16, p16]
 			case NativeInstructionType.BREAKPOINT_MARKED:
+			case NativeInstructionType.PING:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VPOOL);
@@ -614,6 +616,7 @@ public final class NativeInstruction
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
 			case NativeInstructionType.BREAKPOINT_MARKED:
 				return "BREAKPOINT_MARKED";
+			case NativeInstructionType.PING:			return "PING";
 			case NativeInstructionType.COPY:			return "COPY";
 			case NativeInstructionType.DEBUG_ENTRY:		return "DEBUG_ENTRY";
 			case NativeInstructionType.DEBUG_EXIT:		return "DEBUG_EXIT";

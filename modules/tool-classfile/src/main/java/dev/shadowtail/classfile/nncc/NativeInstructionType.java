@@ -116,6 +116,10 @@ public interface NativeInstructionType
 	short BREAKPOINT_MARKED =
 		0xEB;
 	
+	/** Ping. */
+	short PING =
+		0xEC;
+	
 	/** Count memory handle down. */
 	short MEM_HANDLE_COUNT_DOWN =
 		0xED;

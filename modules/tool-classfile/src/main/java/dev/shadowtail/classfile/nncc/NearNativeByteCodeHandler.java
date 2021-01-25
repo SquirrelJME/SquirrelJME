@@ -2371,47 +2371,14 @@ public final class NearNativeByteCodeHandler
 				
 				// Breakpoint (with current line)
 			case "breakpoint":
-				codeBuilder.addBreakpoint(this.state.line & 0x7FFF, null);
+				codeBuilder.addBreakpoint(this.state.line & 0x7FFF,
+					null);
 				break;
 				
-				// Load boolean class
-			case "classInfoOfBoolean":
-				this.__loadClassInfo("boolean", __out.register);
-				break;
-				
-				// Load byte class
-			case "classInfoOfByte":
-				this.__loadClassInfo("byte", __out.register);
-				break;
-				
-				// Load short class
-			case "classInfoOfShort":
-				this.__loadClassInfo("short", __out.register);
-				break;
-				
-				// Load character class
-			case "classInfoOfCharacter":
-				this.__loadClassInfo("char", __out.register);
-				break;
-				
-				// Load int class
-			case "classInfoOfInteger":
-				this.__loadClassInfo("int", __out.register);
-				break;
-				
-				// Load float class
-			case "classInfoOfFloat":
-				this.__loadClassInfo("float", __out.register);
-				break;
-				
-				// Load long class
-			case "classInfoOfLong":
-				this.__loadClassInfo("long", __out.register);
-				break;
-				
-				// Load double class
-			case "classInfoOfDouble":
-				this.__loadClassInfo("double", __out.register);
+				// Ping (with current line)
+			case "ping":
+				codeBuilder.addPing(this.state.line & 0x7FFF,
+					null);
 				break;
 				
 				// Long/Double bits
@@ -2619,9 +2586,7 @@ public final class NearNativeByteCodeHandler
 			
 				// pointer -> object (and variants)
 			case "pointerToObject":
-			case "pointerToObjectWide":
 			case "pointerToClassInfo":
-			case "pointerToClassInfoWide":
 				if (__in[0].register != __out.register)
 					codeBuilder.addCopy(__in[0].register, __out.register);
 				

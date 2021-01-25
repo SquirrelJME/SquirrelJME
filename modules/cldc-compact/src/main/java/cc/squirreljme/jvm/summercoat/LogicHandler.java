@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.struct.ClassInfoStruct;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -51,9 +52,36 @@ public final class LogicHandler
 		// Storing null values is always okay
 		if (__value == null)
 			return true;
+		
+		// Determine the component type of the array
+		ClassInfoBracket arrayType = LogicHandler.objectClassInfo(__array);
+		ClassInfoBracket compType = Assembly.pointerToClassInfo(
+			LogicHandler.classInfoGetProperty(arrayType,
+				ClassProperty.CLASSINFO_COMPONENTCLASS));
+		
+		// Check down the class tree for a matching class
+		ClassInfoBracket valueType = LogicHandler.objectClassInfo(__value);
+		for (ClassInfoBracket at = valueType; at != null;)
+		{
+			// Is a match of this type
+			if (compType == at)
+				return true;
 			
-		Assembly.breakpoint();
-		throw Debugging.todo();
+			// TODO: Check interfaces
+			Assembly.ping();
+			
+			// Do we need to go down still?
+			int superP = LogicHandler.classInfoGetProperty(arrayType,
+				ClassProperty.CLASSINFO_SUPER);
+			if (superP == 0)
+				break;
+			
+			// Go to the super class
+			at = Assembly.pointerToClassInfo(superP);
+		}
+		
+		// Not a match
+		return false;
 	}
 	
 	/**
@@ -218,6 +246,26 @@ public final class LogicHandler
 		
 		// Allocate the object
 		return LogicHandler.__allocObject(__info, allocSize);
+	}
+	
+	/**
+	 * Returns the class information on the object, its type.
+	 * 
+	 * @param __o The object.
+	 * @return The class information for the object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	public static ClassInfoBracket objectClassInfo(Object __o)
+		throws NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+			
+		// Directly read the type
+		return Assembly.pointerToClassInfo(
+			Assembly.memHandleReadInt(__o, LogicHandler.staticVmAttribute(
+				StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD)));
 	}
 	
 	/**
