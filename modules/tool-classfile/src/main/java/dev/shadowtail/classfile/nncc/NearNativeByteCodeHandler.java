@@ -238,74 +238,48 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __array, JavaStackResult.Input __dx,
 		JavaStackResult.Output __val)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// The variables used
+		MemHandleRegister array = MemHandleRegister.of(__array.register);
 		
 		// Push references
 		this.__refPush();
 		
-		// TODO
-		codebuilder.addBreakpoint(0x7D02, null);
-		
-		// Clear references
-		this.__refClear();
-		
-		/*
 		// Cannot be null
-		this.__basicCheckNPE(__in.register);
+		this.__basicCheckNPE(array);
 		
 		// Must be an array
-		if (!__in.isArray())
-			this.__basicCheckIsArray(__in.register);
+		if (!__array.isArray())
+			this.__basicCheckIsArray(array);
 		
-		// Check array bounds
-		this.__basicCheckArrayBound(__in.register, __dx.register, __dt,
-			__outOffset);
-		
-		// We already checked the only valid exceptions, so do not perform
-		// later handling!
-		this.state.canexception = false;
-		
-		// Grab some volatiles
+		// Volatiles are needed
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volaip = volatiles.getUnmanaged();
-		
-		// Determine array index position
-		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
-			__dx.register, __dt.size(), volaip);
-		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-			volaip, Constants.ARRAY_BASE_SIZE, volaip);
-		
-		// Use helper function
-		if (__dt.isWide())
+		try (Volatile<IntValueRegister> offset = volatiles.getIntValue())
 		{
-			// Read memory
-			this.__invokeStatic(InvokeType.SYSTEM,
-				NearNativeByteCodeHandler.JVMFUNC_CLASS,
-				"jvmMemReadLong", "(II)J",
-				__in.register, volaip);
+			// Check array bounds, we use the offset calculated from this
+			// to access the memory handle
+			this.__basicCheckArrayBound(__array.register, __dx.register, __dt,
+				offset.register);
 			
-			// Copy return value
-			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-				__v.register);
-			codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
-				__v.register + 1);
+			// Any object being stored gets reference counted
+			boolean isObject = __dt == DataType.OBJECT;
+			if (isObject)
+				this.__refCount(MemHandleRegister.of(__val.register));
+			
+			// Load value
+			if (__dt.isWide())
+				codeBuilder.addMemHandleAccess(__dt, true,
+					WideRegister.of(__val.register, __val.register + 1),
+					array, offset.register);
+			else
+				codeBuilder.addMemHandleAccess(__dt, true,
+					IntValueRegister.of(__val.register),
+					array, offset.register);
 		}
-		
-		// Use native read
-		else
-			codebuilder.addMemoryOffReg(__dt, true,
-				__v.register, __in.register, volaip);
-		
-		// Not used anymore
-		volatiles.removeUnmanaged(volaip);
-		
-		// If reading an object reference count up!
-		if (__dt == DataType.OBJECT)
-			this.__refCount(__v.register);
 		
 		// Clear references
 		this.__refClear();
-		 */
 	}
 	
 	/**
