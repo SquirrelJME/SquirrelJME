@@ -249,8 +249,7 @@ public final class NativeCodeBuilder
 		if (__ir == null || __jump == null)
 			throw new NullPointerException("NARG");
 		
-		return this.addIfICmp(CompareType.NOT_EQUALS, __ir.asIntValue(),
-			MemHandleRegister.NULL.asIntValue(), __jump);
+		return this.addIfZero(__ir.asIntValue(), __jump);
 	}
 	
 	/**
