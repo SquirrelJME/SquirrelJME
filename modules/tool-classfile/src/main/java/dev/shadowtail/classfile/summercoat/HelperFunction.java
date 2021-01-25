@@ -27,6 +27,10 @@ public enum HelperFunction
 	CHECK_ARRAY_STORE("checkArrayStore",
 		"(Ljava/lang/Object;Ljava/lang/Object;)Z"),
 	
+	/** {@link LogicHandler#classInfoGetProperty(ClassInfoBracket, int)}. */
+	CLASS_INFO_GET_PROPERTY("classInfoGetProperty",
+		"(Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;I)I"),
+	
 	/** {@link LogicHandler#gcMemHandle(int)}.  */
 	GC_MEM_HANDLE("gcMemHandle", "(I)V"),
 	

@@ -56,7 +56,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 9;
 	
 	/** Memory handle base for static fields. */
-	byte MEMHANDLEBASE_STATIC_FIELDS =
+	byte MEMHANDLE_STATIC_FIELDS =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 10;
 	
 	/** The pointer to the class name (in {@link Class#getName()} form). */

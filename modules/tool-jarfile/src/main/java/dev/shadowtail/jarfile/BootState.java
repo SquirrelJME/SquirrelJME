@@ -20,6 +20,7 @@ import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.mini.Minimizer;
+import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
@@ -42,6 +43,7 @@ import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldNameAndType;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -341,9 +343,10 @@ public final class BootState
 		classInfo.set(ClassProperty.POOLHANDLE_POOL, pool);
 		
 		// The class static fields have to go somewhere
-		MemHandle staticFieldData = memHandles.allocFields(header.get(
-			StaticClassProperty.SIZE_STATIC_FIELD_DATA));
-		classInfo.set(ClassProperty.MEMHANDLEBASE_STATIC_FIELDS,
+		MemHandle staticFieldData = memHandles.allocFields(
+			this.__baseArraySize() + header.get(
+				StaticClassProperty.SIZE_STATIC_FIELD_DATA));
+		classInfo.set(ClassProperty.MEMHANDLE_STATIC_FIELDS,
 			staticFieldData);
 		
 		// Store the pointer to where the Class ROM exists in memory, but this
@@ -668,7 +671,7 @@ public final class BootState
 			start.thisName, __nat));
 	}
 	
-	/**
+	/**`
 	 * Sets the given field for the object instance.
 	 * 
 	 * @param __object The object to set.
@@ -1145,9 +1148,52 @@ public final class BootState
 		// Debugging
 		Debugging.debugNote("Load pool entry: %s", __entry);
 		
+		// TODO: Remove fail value
+		int failValue = 0x3E_00_0000 |
+			(__entry.index & 0xFFFF) |
+			(__entry.type().ordinal() << 16);
+		
 		// Depends on the type used
 		switch (__entry.type())
 		{
+				// Accessed field
+			case ACCESSED_FIELD:
+				{
+					AccessedField access = __entry.<AccessedField>value(
+						AccessedField.class);
+					FieldReference ref = access.field;
+					
+					// Is this static?
+					boolean isStatic = access.type.isStatic();
+					
+					// We can refer to fields that are in a super class by
+					// using the subclass class.
+					// ex: ArrayList.modCount -> AbstractList.modCount
+					for (ClassState at = this.loadClass(ref.className());
+						at != null; at = at._superClass)
+					{
+						// Determine the source field
+						MinimizedField minField = at.classFile.field(
+							isStatic, ref.memberNameAndType());
+						if (minField == null)
+							continue;
+						
+						// Static is the direct offset with the array base
+						if (isStatic)
+							return this.__baseArraySize() + minField.offset;
+						
+						// Whereas instance is based on the class base
+						return at._classInfoHandle.getInteger(
+							ClassProperty.OFFSETBASE_INSTANCE_FIELDS) +
+							minField.offset;
+					}
+						
+					// {@squirreljme.error BC0q Could not resolve field
+					// access entry. (The entry)}
+					throw new InvalidClassFormatException(
+						"BC0q " + __entry);
+				}
+			
 				// Class information
 			case CLASS_INFO_POINTER:
 				return this.loadClass(__entry.<ClassInfoPointer>value(
@@ -1222,8 +1268,6 @@ public final class BootState
 		if (false)
 			throw Debugging.todo();
 		Debugging.todoNote("Handle pool entry: %s", __entry);
-		return 0x3E_00_0000 |
-			(__entry.index & 0xFFFF) |
-			(__entry.type().ordinal() << 16);//this._memHandles.allocObject(0);
+		return failValue;
 	}
 }

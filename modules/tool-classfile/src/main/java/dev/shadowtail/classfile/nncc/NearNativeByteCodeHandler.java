@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
@@ -1339,55 +1340,41 @@ public final class NearNativeByteCodeHandler
 	public final void doStaticGet(FieldReference __fr,
 		JavaStackResult.Output __v)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		
-		// Ignore thrown exceptions because field access is checked at link
-		// time
-		this.state.canexception = false;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Push references
 		this.__refPush();
 		
+		// Which field is being accessed?
+		AccessedField fieldAccess = this.__fieldAccess(
+			FieldAccessType.STATIC, __fr, true);
+		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volsfo = volatiles.getUnmanaged();
-		
-		// Read static offset
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.STATIC, __fr, true),
-			volsfo);
-		
-		// The datatype used
-		DataType dt = DataType.of(__fr.memberType().primitiveType());
-		
-		// Use helper function?
-		if (dt.isWide())
+		try (Volatile<MemHandleRegister> staticStore = 
+				volatiles.getMemHandle();
+			Volatile<IntValueRegister> offset = 
+				volatiles.getIntValue())
 		{
-			// Read memory
-			this.__invokeStatic(InvokeType.SYSTEM,
-				NearNativeByteCodeHandler.JVMFUNC_CLASS,
-				"jvmMemReadLong", "(II)J",
-				NativeCode.STATIC_FIELD_REGISTER, volsfo);
+			// Determine where we are writing
+			this.__doStaticAccess(__fr, fieldAccess, staticStore, offset);
 			
-			// Copy return value
-			codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-				__v.register);
-			codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
-				__v.register + 1);
+			// Perform the read
+			DataType dataType = DataType.of(__fr.memberType());
+			if (dataType.isWide())
+				codeBuilder.addMemHandleAccess(dataType,
+					true, WideRegister.of(
+						__v.register, __v.register + 1),
+					staticStore.register, offset.register);
+			else
+				codeBuilder.addMemHandleAccess(dataType,
+					true, IntValueRegister.of(__v.register),
+					staticStore.register, offset.register);
+			
+			// If this is an object, we must count up!
+			if (dataType == DataType.OBJECT)
+				this.__refCount(MemHandleRegister.of(__v.register));
 		}
-		
-		// Read from memory
-		else
-			codebuilder.addMemoryOffReg(
-				dt, true,
-				__v.register, NativeCode.STATIC_FIELD_REGISTER, volsfo);
-		
-		// Count it up?
-		if (__fr.memberType().isObject())
-			this.__refCount(__v.register);
-		
-		// Not needed
-		volatiles.removeUnmanaged(volsfo);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -1401,77 +1388,55 @@ public final class NearNativeByteCodeHandler
 	public final void doStaticPut(FieldReference __fr,
 		JavaStackResult.Input __v)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Ignore thrown exceptions because field access is checked at link
-		// time
-		this.state.canexception = false;
-
 		// Push references
 		this.__refPush();
 		
-		// TODO
-		codebuilder.addBreakpoint(0x7D05, null);
+		// Which field is being accessed?
+		AccessedField fieldAccess = this.__fieldAccess(
+			FieldAccessType.STATIC, __fr, true);
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volsfo = volatiles.getUnmanaged();
-		
-		// Read field offset
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.STATIC, __fr, false),
-			volsfo);
-		
-		// Data type used
-		DataType dt = DataType.of(__fr.memberType().primitiveType());
-		
-		// If we are storing an object, we need to uncount the value already
-		// in this field
-		int voltemp = -1;
-		boolean isobject;
-		if ((isobject = __fr.memberType().isObject()))
+		try (Volatile<MemHandleRegister> staticStore = 
+				volatiles.getMemHandle();
+			Volatile<IntValueRegister> offset = volatiles.getIntValue();
+			Volatile<MemHandleRegister> old = volatiles.getMemHandle())
 		{
-			// Count our own reference up
-			this.__refCount(__v.register);
+			// Determine where we are writing
+			this.__doStaticAccess(__fr, fieldAccess, staticStore, offset);
 			
-			// Read the value of the field for later clear
-			voltemp = volatiles.getUnmanaged();
-			codebuilder.addMemoryOffReg(
-				dt, true,
-				voltemp, NativeCode.STATIC_FIELD_REGISTER, volsfo);
-		}
-		
-		// Use helper function?
-		if (dt.isWide())
-		{
-			// Write memory
-			this.__invokeStatic(InvokeType.SYSTEM,
-				NearNativeByteCodeHandler.JVMFUNC_CLASS,
-				"jvmMemWriteLong", "(IIII)V",
-				NativeCode.STATIC_FIELD_REGISTER, volsfo,
-				__v.register, __v.register + 1);
-		}
-		
-		// Write to memory
-		else
-			codebuilder.addMemoryOffReg(
-				dt, false,
-				__v.register, NativeCode.STATIC_FIELD_REGISTER, volsfo);
-		
-		// If we wrote an object, uncount the old destination after it
-		// has been overwritten
-		if (isobject)
-		{
-			// Uncount
-			this.__refUncount(voltemp);
+			// If we are storing an object, we need to handle reference
+			// counts for these
+			DataType dataType = DataType.of(__fr.memberType());
+			if (dataType == DataType.OBJECT)
+			{
+				// Read the old object
+				codeBuilder.addMemHandleAccess(dataType,
+					false, old.register.asIntValue(),
+					staticStore.register, offset.register);
+				
+				// Count up the value we are storing
+				this.__refCount(MemHandleRegister.of(__v.register));
+			}
 			
-			// Not needed
-			volatiles.removeUnmanaged(voltemp);
+			// Perform the write
+			if (dataType.isWide())
+				codeBuilder.addMemHandleAccess(dataType,
+					false, WideRegister.of(
+						__v.register, __v.register + 1),
+					staticStore.register, offset.register);
+			else
+				codeBuilder.addMemHandleAccess(dataType,
+					false, IntValueRegister.of(__v.register),
+					staticStore.register, offset.register);
+			
+			// We read the old value to count it down
+			if (dataType == DataType.OBJECT)
+				this.__refUncount(old.register);
 		}
-		
-		// Not needed
-		volatiles.removeUnmanaged(volsfo);
-		
+			
 		// Clear references as needed
 		this.__refClear();
 	}
@@ -2088,6 +2053,56 @@ public final class NearNativeByteCodeHandler
 		// Just a plain zero check
 		codebuilder.addIfZero(__ir, this.__labelRefClearJump(
 			this.__labelMakeException("java/lang/OutOfMemoryError")));
+	}
+	
+	/**
+	 * Accesses a static field.
+	 * 
+	 * @param __fr The field reference.
+	 * @param __fieldAccess The accessor for the pool.
+	 * @param __staticStore The output static storage area.
+	 * @param __offset The output offset to the field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	private void __doStaticAccess(FieldReference __fr,
+		AccessedField __fieldAccess,
+		Volatile<MemHandleRegister> __staticStore,
+		Volatile<IntValueRegister> __offset)
+		throws NullPointerException
+	{
+		if (__fr == null || __fieldAccess == null || __staticStore == null ||
+			__offset == null)
+			throw new NullPointerException("NARG");
+		
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// Will need storage to get classes
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
+			volatiles.getTyped(ClassInfoPointer.class))
+		{
+			// Load the class information, since it has the static storage
+			// area of the field... we also might need to initialize the
+			// class if it has not been initialized
+			this.__loadClassInfo(__fr.className(), classInfo.register);
+			
+			// Get the static field storage for the class
+			codeBuilder.addIntegerConst(
+				ClassProperty.MEMHANDLE_STATIC_FIELDS,
+				__staticStore.register.asIntValue());
+			this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+				classInfo.register, __staticStore.register);
+			
+			// Use this as the base
+			codeBuilder.addCopy(IntValueRegister.RETURN,
+				__staticStore.register);
+		}
+		
+		// Load the offset to the field
+		codeBuilder.addPoolLoad(__fieldAccess,
+			TypedRegister.of(AccessedField.class,
+				__offset.register.register));
 	}
 	
 	/**
