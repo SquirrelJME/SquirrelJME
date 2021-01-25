@@ -346,9 +346,12 @@ public final class NearNativeByteCodeHandler
 			boolean isObject = __dt == DataType.OBJECT;
 			if (isObject)
 			{
-				// Check if the array type is compatible
-				this.__basicCheckArrayStore(array,
-					MemHandleRegister.of(__val.register));
+				// Check if the array type is compatible, if we know the
+				// types right now we can skip this check
+				if (!__array.isArray() || !__val.type.className().equals(
+					__array.type.className().componentType()))
+					this.__basicCheckArrayStore(array,
+						MemHandleRegister.of(__val.register));
 				
 				// Read the old value which may be uncounted
 				codeBuilder.addMemHandleAccess(__dt, true,
