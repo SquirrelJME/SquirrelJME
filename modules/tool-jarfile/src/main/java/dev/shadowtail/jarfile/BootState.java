@@ -59,7 +59,7 @@ public final class BootState
 {
 	/** The length of an array. */
 	private static final FieldNameAndType _ARRAY_LENGTH =
-		new FieldNameAndType("_length", "I");
+		new FieldNameAndType("length", "I");
 	
 	/** The object class. */
 	private static final ClassName _OBJECT_CLASS =

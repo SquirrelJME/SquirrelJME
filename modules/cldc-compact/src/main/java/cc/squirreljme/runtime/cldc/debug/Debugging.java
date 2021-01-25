@@ -90,7 +90,7 @@ public final class Debugging
 	 */
 	public static void notice(String __fmt, Object... __args)
 	{
-		Debugging.__format('\0', '\0', __fmt, __args);
+		Debugging.__format('n', 'T', __fmt, __args);
 	}
 	
 	/**

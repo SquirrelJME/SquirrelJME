@@ -35,6 +35,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldFlag;
 import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
@@ -348,9 +349,9 @@ public final class Minimizer
 		// If an array, add the length of the array
 		else if (isarray)
 		{
-			// (array length) Synthetic + Transient + Final
-			sorted.add(0, new Field(new FieldFlags(0x1090),
-				new FieldName("_length"),
+			// (array length) Public + Synthetic + Transient + Final
+			sorted.add(0, new Field(new FieldFlags(0x1091),
+				new FieldName("length"),
 				FieldDescriptor.INTEGER, null, null));
 		}
 		

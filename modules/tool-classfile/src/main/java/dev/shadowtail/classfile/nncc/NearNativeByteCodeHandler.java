@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.ClassLoadingAdjustments;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
@@ -204,27 +205,35 @@ public final class NearNativeByteCodeHandler
 	public final void doArrayLength(JavaStackResult.Input __in,
 		JavaStackResult.Output __len)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Push references
 		this.__refPush();
 		
+		// The array used
+		MemHandleRegister array = MemHandleRegister.of(__in.register);
+		
 		// Cannot be null
-		this.__basicCheckNPE(__in.register);
+		this.__basicCheckNPE(array);
 		
 		// Must be an array
 		if (!__in.isArray())
-			this.__basicCheckIsArray(__in.register);
+			this.__basicCheckIsArray(array);
 		
-		// We already checked the only valid exceptions, so do not perform
-		// later handling!
-		this.state.canexception = false;
-		
-		// Read length
-		codebuilder.addBreakpoint(0x7D01, null);
-		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
-			__len.register,
-			__in.register, Constants.ARRAY_LENGTH_OFFSET);
+		// Need volatiles to access the field
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (Volatile<IntValueRegister> off = volatiles.getIntValue())
+		{
+			// Determine where the array length is located
+			codeBuilder.addIntegerConst(
+				StaticVmAttribute.OFFSETOF_ARRAY_LENGTH_FIELD, off.register);
+			this.__invokeHelper(HelperFunction.STATIC_VM_ATTRIBUTE,
+				off.register);
+			
+			// Read the value
+			codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
+				IntValueRegister.of(__len.register), array, off.register);
+		}
 		
 		// Clear references
 		this.__refClear();

@@ -176,7 +176,8 @@ public final class CPUFrame
 		int rv = poolHandle.memReadInt(arrayBase + (__dx * 4));
 		
 		// Debug
-		Debugging.debugNote("pool[%d] = %d (0x%08x)", __dx, rv, rv);
+		if (NativeCPU.ENABLE_DEBUG)
+			Debugging.debugNote("pool[%d] = %d (0x%08x)", __dx, rv, rv);
 		
 		return rv;
 	}

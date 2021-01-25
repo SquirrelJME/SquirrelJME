@@ -11,8 +11,12 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,6 +148,65 @@ public enum SystemCallHandler
 			handle.count(true);
 			 
 			return handle.id;
+		}
+	},
+	
+	/** {@link SystemCallIndex#PD_OF_STDERR}. */
+	PD_OF_STDERR(SystemCallIndex.PD_OF_STDERR)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/24
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			return StandardPipeType.STDERR;
+		}
+	},
+	
+	/** {@link SystemCallIndex#PD_WRITE_BYTE}. */
+	PD_WRITE_BYTE(SystemCallIndex.PD_WRITE_BYTE)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/24
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			int pd = __args[0];
+			int val = __args[1];
+		
+			// Determine where we are writing to
+			PrintStream target;
+			switch (pd)
+			{
+				case StandardPipeType.STDOUT:
+					target = System.out;
+					break;
+					
+				case StandardPipeType.STDERR:
+					target = System.err;
+					break;
+				
+				default:
+					throw new VMSystemCallException(
+						SystemCallError.PIPE_DESCRIPTOR_INVALID);
+			}
+			
+			// Try to write
+			target.write(val);
+			
+			// Did we fail the write?
+			if (target.checkError())
+				throw new VMSystemCallException(
+					SystemCallError.PIPE_DESCRIPTOR_BAD_WRITE);
+			
+			// Write okay
+			return 1;
 		}
 	},
 	

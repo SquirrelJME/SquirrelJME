@@ -269,23 +269,23 @@ public final class LogicHandler
 	}
 	
 	/**
-	 * Returns the static virtual machine metric.
+	 * Returns the static virtual machine attribute.
 	 * 
-	 * @param __metric The {@link StaticVmAttribute} to get.
+	 * @param __attr The {@link StaticVmAttribute} to get.
 	 * @return The value of the metric.
 	 * @throws IllegalArgumentException If the metric is not valid.
 	 * @since 2021/01/24
 	 */
-	public static int staticVmAttribute(int __metric)
+	public static int staticVmAttribute(int __attr)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ4n Invalid Vm Metric, (Metric Id)}
-		if (__metric <= 0 || __metric >= StaticVmAttribute.NUM_METRICS)
-			throw new IllegalArgumentException("ZZ4n " + __metric);
+		if (__attr <= 0 || __attr >= StaticVmAttribute.NUM_METRICS)
+			throw new IllegalArgumentException("ZZ4n " + __attr);
 		
 		int arrayBase = SystemCall.arrayAllocationBase();
 		return Assembly.memHandleReadInt(SystemCall.staticVmAttributes(),
-			arrayBase + (__metric * 4));
+			arrayBase + (__attr * 4));
 	}
 	
 	/**

@@ -154,8 +154,11 @@ public final class NativeCPU
 		int __poolPointer, int... __args)
 	{
 		// Debug this
-		Debugging.debugNote("SC::enterFrame(mP=%s, m/p=%#08x/%#08x, %s)",
-			__movePool, __pc, __poolPointer, IntegerArrayList.asList(__args));
+		if (NativeCPU.ENABLE_DEBUG)
+			Debugging.debugNote(
+				"SC::enterFrame(mP=%s, m/p=%#08x/%#08x, %s)",
+				__movePool, __pc, __poolPointer,
+				IntegerArrayList.asList(__args));
 		
 		// Old frame, to source globals from
 		LinkedList<CPUFrame> frames = this._frames;
@@ -753,8 +756,9 @@ public final class NativeCPU
 					lr[args[1]] = nowframe.pool(args[0]);
 					
 					// Debug
-					Debugging.debugNote("Pool#%d %d/%#08x -> %d",
-						args[0], lr[args[1]], lr[args[1]], args[1]);
+					if (NativeCPU.ENABLE_DEBUG)
+						Debugging.debugNote("Pool#%d %d/%#08x -> %d",
+							args[0], lr[args[1]], lr[args[1]], args[1]);
 					break;
 					
 					// Integer math
@@ -1304,10 +1308,11 @@ public final class NativeCPU
 				(smt == null ? "<AType>" : smt));
 		
 		// Debug this
-		Debugging.debugNote("SC::enterFrame!(%s:%s %s)",
-			(scl == null ? "<AClass>" : scl),
-			(smn == null ? "<AMethod>" : smn),
-			(smt == null ? "<AType>" : smt));
+		if (NativeCPU.ENABLE_DEBUG)
+			Debugging.debugNote("SC::enterFrame!(%s:%s %s)",
+				(scl == null ? "<AClass>" : scl),
+				(smn == null ? "<AMethod>" : smn),
+				(smt == null ? "<AType>" : smt));
 	}
 	
 	/**
@@ -1465,9 +1470,10 @@ public final class NativeCPU
 		}
 		
 		// Debug result
-		Debugging.debugNote("SC::sysCall(%d, %s) -> %d (err: %d)",
-			__si, IntegerArrayList.asList(__args),
-			rv, err);
+		if (NativeCPU.ENABLE_DEBUG)
+			Debugging.debugNote("SC::sysCall(%d, %s) -> %d (err: %d)",
+				__si, IntegerArrayList.asList(__args),
+				rv, err);
 		
 		// Use returning value
 		return rv;
