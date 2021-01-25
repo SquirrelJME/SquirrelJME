@@ -220,7 +220,7 @@ public final class NearNativeByteCodeHandler
 		this.state.canexception = false;
 		
 		// Read length
-		codebuilder.addBreakpoint(0x7D01);
+		codebuilder.addBreakpoint(0x7D01, null);
 		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
 			__len.register,
 			__in.register, Constants.ARRAY_LENGTH_OFFSET);
@@ -244,7 +244,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// TODO
-		codebuilder.addBreakpoint(0x7D02);
+		codebuilder.addBreakpoint(0x7D02, null);
 		
 		// Clear references
 		this.__refClear();
@@ -585,7 +585,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// TODO
-		codebuilder.addBreakpoint(0x7D04);
+		codebuilder.addBreakpoint(0x7D04, null);
 		
 		// The instance register
 		int ireg = __i.register;
@@ -1437,7 +1437,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// TODO
-		codebuilder.addBreakpoint(0x7D05);
+		codebuilder.addBreakpoint(0x7D05, null);
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -2371,7 +2371,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Breakpoint (with current line)
 			case "breakpoint":
-				codeBuilder.addBreakpoint(this.state.line & 0x7FFF);
+				codeBuilder.addBreakpoint(this.state.line & 0x7FFF, null);
 				break;
 				
 				// Load boolean class
@@ -2827,10 +2827,8 @@ public final class NearNativeByteCodeHandler
 		boolean isSpecial = (__it == InvokeType.SPECIAL);
 		
 		// TODO
-		if (isSpecial)
-			codebuilder.addBreakpoint(0x7D09);
-		else
-			codebuilder.addBreakpoint(0x7D07);
+		codebuilder.addBreakpoint((isSpecial ? 0x7D09 : 0x7D07),
+			String.format("%s!%s:%s::%s %s", __it, __cl, __mn, __mt, __args));
 		
 		// Performing a special invoke which has some modified rules
 		if (isSpecial)

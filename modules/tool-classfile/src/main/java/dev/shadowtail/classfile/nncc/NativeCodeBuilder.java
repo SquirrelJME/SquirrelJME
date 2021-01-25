@@ -13,6 +13,7 @@ package dev.shadowtail.classfile.nncc;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
 import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
@@ -100,12 +101,14 @@ public final class NativeCodeBuilder
 	 * Adds a marked breakpoint.
 	 * 
 	 * @param __mark The marker to use.
+	 * @param __text Optional marking text.
 	 * @return The generated instruction.
 	 * @since 2021/01/24
 	 */
-	public final NativeInstruction addBreakpoint(int __mark)
+	public final NativeInstruction addBreakpoint(int __mark, String __text)
 	{
-		return this.add(NativeInstructionType.BREAKPOINT_MARKED, __mark);
+		return this.add(NativeInstructionType.BREAKPOINT_MARKED, __mark,
+			new NotedString((__text == null ? "" : __text)));
 	}
 	
 	/**

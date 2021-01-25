@@ -294,10 +294,10 @@ public final class NativeInstruction
 				return 0;
 				
 			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
-			case NativeInstructionType.BREAKPOINT_MARKED:
 				return 1;
 			
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
+			case NativeInstructionType.BREAKPOINT_MARKED:
 			case NativeInstructionType.COPY:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
@@ -362,15 +362,16 @@ public final class NativeInstruction
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
 				
-				// [i16]
-			case NativeInstructionType.BREAKPOINT_MARKED:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT);
-				
 				// [r16]
 			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG);
+				
+				// [i16, p16]
+			case NativeInstructionType.BREAKPOINT_MARKED:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VPOOL);
 				
 				// [r16, reglist]
 			case NativeInstructionType.SYSTEM_CALL:

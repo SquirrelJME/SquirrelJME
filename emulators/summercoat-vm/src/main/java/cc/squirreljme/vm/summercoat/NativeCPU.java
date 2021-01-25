@@ -541,8 +541,14 @@ public final class NativeCPU
 						profiler.exitFrame();
 					}
 					
+					// Is there a stored note?
+					int noteId = (op == NativeInstructionType
+						.BREAKPOINT_MARKED ? args[1] : 0);
+					String note = (noteId == 0 ? "" :
+						this.__loadUtfString(nowframe.pool(noteId)));
+					
 					throw new VMException(String.format(
-						"Breakpoint Hit (%s)!", mark));
+						"Breakpoint Hit (%s: %s)!", mark, note));
 				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
