@@ -34,6 +34,29 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Checks if the array can store the given value.
+	 * 
+	 * @param __array The array.
+	 * @param __value The value to check.
+	 * @return If the value can be stored in the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	public static boolean checkArrayStore(Object __array, Object __value)
+		throws NullPointerException
+	{
+		if (__array == null)
+			throw new NullPointerException("NARG");
+		
+		// Storing null values is always okay
+		if (__value == null)
+			return true;
+			
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Returns the value of the given class property.
 	 * 
 	 * @param __info The information to get.
@@ -65,6 +88,23 @@ public final class LogicHandler
 	 */
 	public static void gcMemHandle(int __p)
 	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Checks if this object is an array.
+	 * 
+	 * @param __object The object to check.
+	 * @return If this object is an array.
+	 * @since 2021/01/24
+	 */
+	public static boolean isArray(Object __object)
+	{
+		// Null is never an array
+		if (__object == null)
+			return false;
+		
 		Assembly.breakpoint();
 		throw Debugging.todo();
 	}

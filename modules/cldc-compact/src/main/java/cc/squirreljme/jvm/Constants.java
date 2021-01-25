@@ -14,6 +14,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/05/26
  */
+@Deprecated
 public interface Constants
 {
 	/**
@@ -80,38 +81,47 @@ public interface Constants
 		20;
 	
 	/** Constant pool cell size. */
+	@Deprecated
 	byte POOL_CELL_SIZE =
 		4;
 	
 	/** Bad magic number. */
+	@Deprecated
 	int BAD_MAGIC =
 		0xE7E5E7E4;
 	
 	/** Class info flag: Is array type? */
+	@Deprecated
 	short CIF_IS_ARRAY =
 		0x0001;
 	
 	/** Class info flag: Is array of objects? */
+	@Deprecated
 	short CIF_IS_ARRAY_OF_OBJECTS =
 		0x0002;
 	
 	/** Is this a primitive type? */
+	@Deprecated
 	short CIF_IS_PRIMITIVE =
 		0x0004;
 	
 	/** Offset for the configuration key. */
+	@Deprecated
 	byte CONFIG_KEY_OFFSET =
 		0;
 	
 	/** Offset for the configuration size. */
+	@Deprecated
 	byte CONFIG_SIZE_OFFSET =
 		2;
 	
 	/** Size of the header for configuration items. */
+	@Deprecated
 	byte CONFIG_HEADER_SIZE =
 		4;
 	
 	/** The thread ID for out-of-bound IPC events. */
+	@Deprecated
 	int OOB_IPC_THREAD =
 		0xFFFFFFFF;
 }

@@ -293,8 +293,11 @@ public final class NativeCodeBuilder
 	 * @param __a The register to check.
 	 * @param __jt The target of the jump.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link NativeCodeBuilder#
+	 * addIfZero(IntValueRegister, NativeCodeLabel)}. 
 	 * @since 2019/04/10
 	 */
+	@Deprecated
 	public final NativeInstruction addIfZero(int __a, NativeCodeLabel __jt)
 		throws NullPointerException
 	{
@@ -303,6 +306,26 @@ public final class NativeCodeBuilder
 		
 		return this.addIfICmp(CompareType.EQUALS, __a,
 			NativeCode.ZERO_REGISTER, __jt);
+	}
+	
+	/**
+	 * Adds a jump if the given register is zero. No reference clears are
+	 * performed by this call.
+	 *
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	public final NativeInstruction addIfZero(IntValueRegister __a,
+		NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addIfICmp(CompareType.EQUALS, __a,
+			IntValueRegister.ZERO, __jt);
 	}
 	
 	/**
@@ -498,10 +521,34 @@ public final class NativeCodeBuilder
 	 * @param __c The result.
 	 * @return The resulting register.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link NativeCodeBuilder#addMathReg(StackJavaType,
+	 * MathType, IntValueRegister, IntValueRegister, IntValueRegister)}. 
 	 * @since 2019/04/08
 	 */
+	@Deprecated
 	public final NativeInstruction addMathReg(StackJavaType __jt,
 		MathType __mf, int __a, int __b, int __c)
+		throws NullPointerException
+	{
+		return this.addMathReg(__jt, __mf, IntValueRegister.of(__a),
+			IntValueRegister.of(__b), IntValueRegister.of(__c));
+	}
+	
+	/**
+	 * Adds a math via register operation.
+	 *
+	 * @param __jt The Java type.
+	 * @param __mf The math function.
+	 * @param __a Register A.
+	 * @param __b Register B.
+	 * @param __c The result.
+	 * @return The resulting register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	public final NativeInstruction addMathReg(StackJavaType __jt,
+		MathType __mf, IntValueRegister __a, IntValueRegister __b,
+		IntValueRegister __c)
 		throws NullPointerException
 	{
 		if (__jt == null || __mf == null)

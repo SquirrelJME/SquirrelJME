@@ -235,8 +235,8 @@ public final class NearNativeByteCodeHandler
 	 */
 	@Override
 	public final void doArrayLoad(DataType __dt,
-		JavaStackResult.Input __in, JavaStackResult.Input __dx,
-		JavaStackResult.Output __v)
+		JavaStackResult.Input __array, JavaStackResult.Input __dx,
+		JavaStackResult.Output __val)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
@@ -246,6 +246,10 @@ public final class NearNativeByteCodeHandler
 		// TODO
 		codebuilder.addBreakpoint(0x7D02);
 		
+		// Clear references
+		this.__refClear();
+		
+		/*
 		// Cannot be null
 		this.__basicCheckNPE(__in.register);
 		
@@ -254,7 +258,8 @@ public final class NearNativeByteCodeHandler
 			this.__basicCheckIsArray(__in.register);
 		
 		// Check array bounds
-		this.__basicCheckArrayBound(__in.register, __dx.register);
+		this.__basicCheckArrayBound(__in.register, __dx.register, __dt,
+			__outOffset);
 		
 		// We already checked the only valid exceptions, so do not perform
 		// later handling!
@@ -300,6 +305,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Clear references
 		this.__refClear();
+		 */
 	}
 	
 	/**
@@ -308,85 +314,65 @@ public final class NearNativeByteCodeHandler
 	 */
 	@Override
 	public final void doArrayStore(DataType __dt,
-		JavaStackResult.Input __in, JavaStackResult.Input __dx,
-		JavaStackResult.Input __v)
+		JavaStackResult.Input __array, JavaStackResult.Input __dx,
+		JavaStackResult.Input __val)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// The variables used
+		MemHandleRegister array = MemHandleRegister.of(__array.register);
 		
 		// Push references
 		this.__refPush();
 		
-		// TODO
-		codebuilder.addBreakpoint(0x7D03);
-		
 		// Cannot be null
-		this.__basicCheckNPE(__in.register);
+		this.__basicCheckNPE(array);
 		
 		// Must be an array
-		if (!__in.isArray())
-			this.__basicCheckIsArray(__in.register);
+		if (!__array.isArray())
+			this.__basicCheckIsArray(array);
 		
-		// Check array bounds
-		this.__basicCheckArrayBound(__in.register, __dx.register);
-		
-		// Grab some volatiles
+		// Volatiles are needed
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volaip = volatiles.getUnmanaged();
-		
-		// Determine array index position
-		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
-			__dx.register, __dt.size(), volaip);
-		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-			volaip, Constants.ARRAY_BASE_SIZE, volaip);
-		
-		// If we are storing an object....
-		int voltemp = -1;
-		boolean isobject;
-		if ((isobject = __v.type.isObject()))
+		try (Volatile<IntValueRegister> offset = volatiles.getIntValue();
+			Volatile<MemHandleRegister> oldObj = volatiles.getMemHandle())
 		{
-			// Check if the array type is compatible
-			this.__basicCheckArrayStore(__in.register, __v.register);
+			// Check array bounds, we use the offset calculated from this
+			// to access the memory handle
+			this.__basicCheckArrayBound(__array.register, __dx.register, __dt,
+				offset.register);
 			
-			// Count the object being stored
-			this.__refCount(__v.register);
+			// Objects need to be reference count checked
+			boolean isObject = __dt == DataType.OBJECT;
+			if (isObject)
+			{
+				// Check if the array type is compatible
+				this.__basicCheckArrayStore(array,
+					MemHandleRegister.of(__val.register));
+				
+				// Read the old value which may be uncounted
+				codeBuilder.addMemHandleAccess(__dt, true,
+					IntValueRegister.of(oldObj.register.register),
+					array, offset.register);
+				
+				// Count the object being stored
+				this.__refCount(MemHandleRegister.of(__val.register));
+			}
 			
-			// Read existing object so it can be uncounted later
-			voltemp = volatiles.getUnmanaged();
-			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-				voltemp, __in.register, volaip);
-		}
-		
-		// We already checked the only valid exceptions, so do not perform
-		// later handling!
-		this.state.canexception = false;
-		
-		// Use helper function
-		if (__dt.isWide())
-		{
-			// Write memory
-			this.__invokeStatic(InvokeType.STATIC,
-				NearNativeByteCodeHandler.JVMFUNC_CLASS,
-				"jvmMemWriteLong", "(IIII)V",
-				__in.register, volaip, __v.register, __v.register + 1);
-		}
-		
-		// Store value
-		else
-			codebuilder.addMemoryOffReg(__dt, false,
-				__v.register, __in.register, volaip);
-		
-		// Reference uncount old value
-		if (isobject)
-		{
-			// Uncount old
-			this.__refUncount(voltemp);
+			// Store value
+			if (__dt.isWide())
+				codeBuilder.addMemHandleAccess(__dt, false,
+					WideRegister.of(__val.register, __val.register + 1),
+					array, offset.register);
+			else
+				codeBuilder.addMemHandleAccess(__dt, false,
+					IntValueRegister.of(__val.register),
+					array, offset.register);
 			
-			// Not needed
-			volatiles.removeUnmanaged(voltemp);
+			// Uncount the old value so that it gets GCed
+			if (isObject)
+				this.__refUncount(oldObj.register);
 		}
-		
-		// No longer used
-		volatiles.removeUnmanaged(volaip);
 		
 		// Clear references
 		this.__refClear();
@@ -1631,11 +1617,6 @@ public final class NearNativeByteCodeHandler
 			}
 		}
 		
-		// Debug single instruction point
-		codebuilder.add(NativeInstructionType.DEBUG_POINT,
-			state.line & 0x7FFF, state.instruction.operation() & 0xFF,
-			state.instruction.address() & 0x7FFF);
-		
 		// Check if there are operations that need to be performed to make
 		// sure the stack state is morphed into correctly
 		StateOperations poison = state.stackpoison.get(addr);
@@ -1646,6 +1627,12 @@ public final class NearNativeByteCodeHandler
 		// potential flushing because it is assumed that the current state
 		// is always valid even after a flush
 		codebuilder.label("java", addr);
+		
+		// Debug single instruction point, place after the Java label so
+		// that it is always set regardless of program flow
+		codebuilder.add(NativeInstructionType.DEBUG_POINT,
+			state.line & 0x7FFF, state.instruction.operation() & 0xFF,
+			state.instruction.address() & 0x7FFF);
 	}
 	
 	/**
@@ -1850,56 +1837,123 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @param __ir The instance register.
 	 * @param __dxr The index register.
+	 * @param __dt The data type used.
+	 * @param __outOffset The output offset.
+	 * @deprecated Use {@link
+	 * NearNativeByteCodeHandler#__basicCheckArrayBound(MemHandleRegister,
+	 * IntValueRegister, DataType, IntValueRegister)}
 	 * @since 2019/04/27
 	 */
-	private void __basicCheckArrayBound(int __ir, int __dxr)
+	@Deprecated
+	private void __basicCheckArrayBound(int __ir, int __dxr, DataType __dt,
+		IntValueRegister __outOffset)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		this.__basicCheckArrayBound(MemHandleRegister.of(__ir),
+			IntValueRegister.of(__dxr), __dt, __outOffset);
+	}
+	
+	/**
+	 * Checks if an array access is within bounds.
+	 *
+	 * @param __array The instance register.
+	 * @param __dx The index register.
+	 * @param __dt The data type used.
+	 * @param __outOffset The output offset.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/27
+	 */
+	private void __basicCheckArrayBound(MemHandleRegister __array,
+		IntValueRegister __dx, DataType __dt, IntValueRegister __outOffset)
+		throws NullPointerException
+	{
+		if (__array == null || __dx == null || __dt == null ||
+			__outOffset == null)
+			throw new NullPointerException("NARG");
 		
-		// This label is shared across many conditions
-		NativeCodeLabel lab = this.__labelMakeException(
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// In the event the array is negative, this is thrown
+		NativeCodeLabel failAIOOB = this.__labelMakeException(
 			"java/lang/ArrayIndexOutOfBoundsException");
 		
-		// If the index is negative then it is out of bounds
-		codebuilder.addIfICmp(CompareType.LESS_THAN, __dxr, 0, lab);
+		// Out of bounds if the index is less than zero
+		codeBuilder.addIfICmp(CompareType.LESS_THAN,
+			__dx, IntValueRegister.ZERO, failAIOOB);
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volarraylen = volatiles.getUnmanaged();
-		
-		// Read length of array
-		codebuilder.addBreakpoint(0x7D06);
-		codebuilder.addMemoryOffConst(DataType.INTEGER, true,
-			volarraylen,
-			__ir, Constants.ARRAY_LENGTH_OFFSET);
-		
-		// If the index is greater or equal to the length then the access
-		// is invalid
-		codebuilder.addIfICmp(CompareType.GREATER_THAN_OR_EQUALS,
-			__dxr, volarraylen, lab);
-		
-		// No longer needed
-		volatiles.removeUnmanaged(volarraylen);
+		try (Volatile<IntValueRegister> arrayBase = volatiles.getIntValue();
+			Volatile<IntValueRegister> cellSize = volatiles.getIntValue();
+			Volatile<IntValueRegister> offset = volatiles.getIntValue())
+		{
+			// We need to know the base for array types, there is a system
+			// call for this
+			this.__invokeSysCallV(SystemCallIndex.ARRAY_ALLOCATION_BASE,
+				arrayBase.register);
+			
+			// Cell size of indexes
+			codeBuilder.addIntegerConst(__dt.size(), cellSize.register);
+			
+			// Calculate the base before the offset
+			codeBuilder.addMathReg(StackJavaType.INTEGER, MathType.MUL,
+				__dx, cellSize.register, offset.register);
+			
+			// Calculate the true offset used
+			codeBuilder.addMathReg(StackJavaType.INTEGER, MathType.ADD,
+				offset.register, arrayBase.register, offset.register);
+			
+			// Check that it is in range of the memory handle
+			this.__invokeSysCallV(SystemCallIndex.MEMHANDLE_IN_BOUNDS,
+				arrayBase.register,
+				__array, offset.register, cellSize.register);
+			
+			// If not in bounds, this fails
+			codeBuilder.addIfZero(arrayBase.register, failAIOOB);
+			
+			// Before we go away, copy the calculated offset to the output
+			// so we do not need to recalculate it again
+			codeBuilder.addCopy(offset.register, __outOffset);
+		}
 	}
 	
 	/**
 	 * Checks if the target array can store this value.
 	 *
-	 * @param __ir The instance register.
-	 * @param __vr The value register.
+	 * @param __array The instance register.
+	 * @param __value The value register.
+	 * @deprecated Use {@link NearNativeByteCodeHandler#
+	 * __basicCheckArrayStore(MemHandleRegister, MemHandleRegister)}. 
 	 * @since 2019/04/27
 	 */
-	private void __basicCheckArrayStore(int __ir, int __vr)
+	@Deprecated
+	private void __basicCheckArrayStore(int __array, int __value)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		this.__basicCheckArrayStore(MemHandleRegister.of(__array),
+			MemHandleRegister.of(__value));
+	}
+	
+	/**
+	 * Checks if the target array can store this value.
+	 *
+	 * @param __array The instance register.
+	 * @param __val The value register.
+	 * @since 2019/04/27
+	 */
+	private void __basicCheckArrayStore(MemHandleRegister __array,
+		MemHandleRegister __val)
+		throws NullPointerException
+	{
+		if (__array == null || __val == null)
+			throw new NullPointerException("NARG");
+		
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Call helper class
-		this.__invokeStatic(InvokeType.SYSTEM,
-			NearNativeByteCodeHandler.JVMFUNC_CLASS,
-			"jvmCanArrayStore", "(II)I", __ir, __vr);
+		this.__invokeHelper(HelperFunction.CHECK_ARRAY_STORE,
+			__array, __val);
 		
 		// Was it invalid?
-		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
+		codeBuilder.addIfZero(IntValueRegister.RETURN,
 			this.__labelMakeException("java/lang/ArrayStoreException"));
 	}
 	
@@ -1968,18 +2022,31 @@ public final class NearNativeByteCodeHandler
 	/**
 	 * Checks that the given object is an array.
 	 *
-	 * @param __ir The type to check.
+	 * @param __object The type to check.
+	 * @deprecated Use {@link NearNativeByteCodeHandler#
+	 * __basicCheckIsArray(MemHandleRegister)}. 
 	 * @since 2019/04/27
 	 */
-	private void __basicCheckIsArray(int __ir)
+	@Deprecated
+	private void __basicCheckIsArray(int __object)
+	{
+		this.__basicCheckIsArray(MemHandleRegister.of(__object));
+	}
+	
+	/**
+	 * Checks that the given object is an array.
+	 *
+	 * @param __object The object to check.
+	 * @since 2021/01/24
+	 */
+	private void __basicCheckIsArray(MemHandleRegister __object)
+		throws NullPointerException
 	{
 		// Call internal helper
-		this.__invokeStatic(InvokeType.SYSTEM,
-			NearNativeByteCodeHandler.JVMFUNC_CLASS, "jvmIsArray",
-			"(I)I", __ir);
+		this.__invokeHelper(HelperFunction.IS_ARRAY, __object);
 		
 		// If this is not an array, throw a class cast exception
-		this.codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
+		this.codebuilder.addIfZero(IntValueRegister.RETURN,
 			this.__labelRefClearJump(this.__labelMakeException(
 			"java/lang/ClassCastException")));
 	}
@@ -2754,13 +2821,16 @@ public final class NearNativeByteCodeHandler
 			volptable = volatiles.getUnmanaged();
 		
 		// Special invocation?
-		boolean isspecial = (__it == InvokeType.SPECIAL);
+		boolean isSpecial = (__it == InvokeType.SPECIAL);
 		
 		// TODO
-		codebuilder.addBreakpoint(0x7D07);
+		if (isSpecial)
+			codebuilder.addBreakpoint(0x7D09);
+		else
+			codebuilder.addBreakpoint(0x7D07);
 		
 		// Performing a special invoke which has some modified rules
-		if (isspecial)
+		if (isSpecial)
 		{
 			// Are we calling a constructor?
 			boolean wantcons = __mn.isInstanceInitializer();

@@ -501,12 +501,24 @@ public interface SystemCallIndex
 		43;
 	
 	/**
+	 * Check if the given range sequence is in range for a memory handle.
+	 * 
+	 * @squirreljme.syscallparam 1 The memory handle.
+	 * @squirreljme.syscallparam 2 The offset into the handle.
+	 * @squirreljme.syscallparam 3 The number of bytes to check.
+	 * @squirreljme.syscallreturn Zero if not in bounds, non-zero if in bounds.
+	 * @since 2021/01/24
+	 */
+	byte MEMHANDLE_IN_BOUNDS =
+		44;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		44;
+		45;
 }
 

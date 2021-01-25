@@ -23,12 +23,19 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  */
 public enum HelperFunction
 {
+	/** {@link LogicHandler#checkArrayStore(Object, Object)}. */
+	CHECK_ARRAY_STORE("checkArrayStore",
+		"(Ljava/lang/Object;Ljava/lang/Object;)Z"),
+	
 	/** {@link LogicHandler#gcMemHandle(int)}.  */
 	GC_MEM_HANDLE("gcMemHandle", "(I)V"),
 	
 	/** {@link LogicHandler#isClassInit(ClassInfoBracket)}.  */
 	IS_CLASS_INIT("isClassInit", "(Lcc/squirreljme/jvm/" +
 		"summercoat/brackets/ClassInfoBracket;)Z"),
+	
+	/** {@link LogicHandler#isArray(Object)}. */
+	IS_ARRAY("isArray", "(Ljava/lang/Object;)Z"),
 	
 	/** {@link LogicHandler#isInstance(int, ClassInfoBracket)}.  */
 	IS_INSTANCE("isInstance", "(I" +

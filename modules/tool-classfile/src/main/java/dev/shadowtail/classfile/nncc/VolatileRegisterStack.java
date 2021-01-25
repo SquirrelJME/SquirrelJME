@@ -13,6 +13,7 @@ import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
 import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
 import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
 import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
+import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
 import dev.shadowtail.classfile.summercoat.register.TypedRegister;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
@@ -100,6 +101,18 @@ public final class VolatileRegisterStack
 	{
 		return new Volatile<>(this,
 			new InterfaceVTIndex(this.getUnmanaged()));
+	}
+	
+	/**
+	 * Returns a memory handle register.
+	 * 
+	 * @return The memory handle register.
+	 * @since 2021/01/24
+	 */
+	protected Volatile<MemHandleRegister> getMemHandle()
+	{
+		return new Volatile<>(this,
+			new MemHandleRegister(this.getUnmanaged()));
 	}
 	
 	/**
