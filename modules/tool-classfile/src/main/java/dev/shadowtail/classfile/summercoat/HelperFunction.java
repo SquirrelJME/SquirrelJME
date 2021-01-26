@@ -57,6 +57,10 @@ public enum HelperFunction
 	NEW_INSTANCE("newInstance", "(Lcc/squirreljme/jvm/" +
 		"summercoat/brackets/ClassInfoBracket;)Ljava/lang/Object;"),
 	
+	/** {@link LogicHandler#objectClassInfo(Object)}. */
+	OBJECT_CLASS_INFO("objectClassInfo", "(Ljava/lang/Object;)" +
+		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;"),
+	
 	/** {@link LogicHandler#staticVmAttribute(int)}. */ 
 	STATIC_VM_ATTRIBUTE("staticVmAttribute", "(I)I"),
 	

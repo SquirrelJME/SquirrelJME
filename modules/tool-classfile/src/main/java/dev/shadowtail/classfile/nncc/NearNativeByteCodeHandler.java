@@ -11,7 +11,6 @@ package dev.shadowtail.classfile.nncc;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.ClassLoadingAdjustments;
-import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
@@ -2777,111 +2776,127 @@ public final class NearNativeByteCodeHandler
 			__args == null)
 			throw new NullPointerException("NARG");
 		
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		
-		// Need volatiles to work with
-		VolatileRegisterStack volatiles = this.volatiles;
-		int volclassid = volatiles.getUnmanaged(),
-			volvtable = volatiles.getUnmanaged(),
-			methodptr = volatiles.getUnmanaged(),
-			volptable = volatiles.getUnmanaged();
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Special invocation?
 		boolean isSpecial = (__it == InvokeType.SPECIAL);
 		
-		// TODO
-		codebuilder.addBreakpoint((isSpecial ? 0x7D09 : 0x7D07),
-			String.format("%s!%s:%s::%s %s", __it, __cl, __mn, __mt, __args));
+		// The instance handle, used for any instance relative invocations
+		MemHandleRegister instance = MemHandleRegister.of(__args.get(0));
 		
-		// Performing a special invoke which has some modified rules
-		if (isSpecial)
+		// Need volatiles to work with
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (Volatile<TypedRegister<ClassInfoPointer>> targetClass =
+				volatiles.getTyped(ClassInfoPointer.class);
+			Volatile<IntValueRegister> methodIndex =
+				volatiles.getIntValue())
 		{
-			// Are we calling a constructor?
-			boolean wantcons = __mn.isInstanceInitializer();
-			
-			// Is the target in this same class?
-			boolean sameclass = __cl.equals(this.state.classname);
-			
 			// Use the exactly specified method if:
+			//  * It is a special invocation
 			//  * It is an initializer, we want to call that exact one
 			//  * The target class is the same class of the current class
 			//    being processed (private method)
-			if (wantcons || sameclass)
-				this.__loadClassInfo(__cl, volclassid);
+			boolean exactSpecial = __mn.isInstanceInitializer() ||
+				__cl.equals(this.state.classname);
+			if (isSpecial && exactSpecial)
+				this.__loadClassInfo(__cl, targetClass.register);
 			
-			// Otherwise, we will be calling a super method so we need to load
-			// the super class of our current class
+			// Load the current class of the instance
 			else
 			{
-				// Read the super class of our current class
-				int volscfo = volatiles.getUnmanaged();
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new AccessedField(FieldAccessTime.NORMAL,
-						FieldAccessType.INSTANCE,
-					new FieldReference(
-						new ClassName("cc/squirreljme/jvm/ClassInfo"),
-						new FieldName("superclass"),
-						new FieldDescriptor(
-							"Lcc/squirreljme/jvm/ClassInfo;"))),
-					volvtable);
-				codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-					volclassid, volclassid, volscfo);
+				// Load ClassInfo for the instance
+				this.__invokeHelper(HelperFunction.OBJECT_CLASS_INFO,
+					instance);
 				
-				// Cleanup
-				volatiles.removeUnmanaged(volscfo);
+				// Move this over
+				codeBuilder.addCopy(MemHandleRegister.RETURN,
+					targetClass.register);
 			}
-		}
-		
-		// Otherwise, we will purely act on the class of the instance type
-		else
-			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-				volclassid, __args.get(0), Constants.OBJECT_CLASS_OFFSET);
-		
-		// Load the VTable (from the class we obtained above)
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new AccessedField(FieldAccessTime.NORMAL,
-				FieldAccessType.INSTANCE,
-			new FieldReference(
-				new ClassName("cc/squirreljme/jvm/ClassInfo"),
-				new FieldName("vtablevirtual"),
-				new FieldDescriptor("[I"))),
-			volvtable);
-		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-			volvtable, volclassid, volvtable);
-		
-		// Load the pool table which is mapped with the vtable
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new AccessedField(FieldAccessTime.NORMAL,
-				FieldAccessType.INSTANCE,
-			new FieldReference(
-				new ClassName("cc/squirreljme/jvm/ClassInfo"),
-				new FieldName("vtablepool"),
-				new FieldDescriptor("[I"))),
-			volptable);
-		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-			volptable, volclassid, volptable);
-		
-		// Method index
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new VirtualMethodIndex(__cl, __mn, __mt), methodptr);
 			
-		// Load from the pool table
-		codebuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
-			NativeCode.NEXT_POOL_REGISTER, volptable, methodptr);
-		
-		// Load method pointer (from integer based array)
-		codebuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
-			methodptr, volvtable, methodptr);
-		
-		// Invoke the method pointer
-		codebuilder.add(NativeInstructionType.INVOKE,
-			methodptr, __args);
-		
-		// Cleanup volatiles
-		volatiles.removeUnmanaged(volclassid);
-		volatiles.removeUnmanaged(volvtable);
-		volatiles.removeUnmanaged(methodptr);
-		volatiles.removeUnmanaged(volptable);
+			// Otherwise, we will be calling a super method so we need to
+			// load the super class of our current class. We would then be
+			// using its VTable accordingly
+			if (isSpecial && !exactSpecial)
+				try (Volatile<IntValueRegister> superProp =
+					volatiles.getIntValue())
+				{
+					// Get the super class of the instance
+					codeBuilder.addIntegerConst(ClassProperty.CLASSINFO_SUPER,
+						superProp.register);
+					this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+						targetClass.register, superProp.register);
+					
+					// Move over
+					codeBuilder.addCopy(MemHandleRegister.RETURN,
+						targetClass.register);
+				}
+			
+			// Get the VTable
+			if (true)
+				throw Debugging.todo();
+			
+			// Get the method index
+			if (true)
+				throw Debugging.todo();
+			
+			// Need room for the method and pool references
+			try (Volatile<ExecutablePointer> methodAddr =
+					volatiles.getExecutablePointer();
+				Volatile<MemHandleRegister> poolRef =
+					volatiles.getMemHandle())
+			{
+				if (true)
+					throw Debugging.todo();
+			}
+			
+			if (true)
+				throw Debugging.todo();
+			/*
+			// Load the VTable (from the class we obtained above)
+			codeBuilder.add(NativeInstructionType.LOAD_POOL,
+				new AccessedField(FieldAccessTime.NORMAL,
+					FieldAccessType.INSTANCE,
+				new FieldReference(
+					new ClassName("cc/squirreljme/jvm/ClassInfo"),
+					new FieldName("vtablevirtual"),
+					new FieldDescriptor("[I"))),
+				volvtable);
+			codeBuilder.addMemoryOffReg(DataType.INTEGER, true,
+				volvtable, targetClass, volvtable);
+			
+			// Load the pool table which is mapped with the vtable
+			codeBuilder.add(NativeInstructionType.LOAD_POOL,
+				new AccessedField(FieldAccessTime.NORMAL,
+					FieldAccessType.INSTANCE,
+				new FieldReference(
+					new ClassName("cc/squirreljme/jvm/ClassInfo"),
+					new FieldName("vtablepool"),
+					new FieldDescriptor("[I"))),
+				volptable);
+			codeBuilder.addMemoryOffReg(DataType.INTEGER, true,
+				volptable, targetClass, volptable);
+			
+			// Method index
+			codeBuilder.add(NativeInstructionType.LOAD_POOL,
+				new VirtualMethodIndex(__cl, __mn, __mt), methodptr);
+				
+			// Load from the pool table
+			codeBuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
+				NativeCode.NEXT_POOL_REGISTER, volptable, methodptr);
+			
+			// Load method pointer (from integer based array)
+			codeBuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
+				methodptr, volvtable, methodptr);
+			
+			// Invoke the method pointer
+			codeBuilder.add(NativeInstructionType.INVOKE,
+				methodptr, __args);
+			
+			// Cleanup volatiles
+			volatiles.removeUnmanaged(volvtable);
+			volatiles.removeUnmanaged(methodptr);
+			volatiles.removeUnmanaged(volptable);*/
+		}
 	}
 	
 	/**
@@ -3576,6 +3591,8 @@ public final class NearNativeByteCodeHandler
 	 * @param __cl The class to load.
 	 * @param __r The output register.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link NearNativeByteCodeHandler#
+	 * __loadClassInfo(ClassName, TypedRegister)}. 
 	 * @since 2019/12/15
 	 */
 	@Deprecated

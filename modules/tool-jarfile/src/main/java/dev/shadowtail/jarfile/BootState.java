@@ -46,6 +46,7 @@ import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodHandle;
+import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkSection;
@@ -60,6 +61,10 @@ public final class BootState
 	/** The length of an array. */
 	private static final FieldNameAndType _ARRAY_LENGTH =
 		new FieldNameAndType("length", "I");
+	
+	/** The default constructor. */
+	private static final MethodNameAndType _DEFAULT_CONSTRUCTOR =
+		new MethodNameAndType("<init>", "()V");
 	
 	/** The object class. */
 	private static final ClassName _OBJECT_CLASS =
@@ -343,7 +348,7 @@ public final class BootState
 		classInfo.set(ClassProperty.POOLHANDLE_POOL, pool);
 		
 		// The class static fields have to go somewhere
-		MemHandle staticFieldData = memHandles.allocFields(
+		ChunkMemHandle staticFieldData = memHandles.allocFields(
 			this.__baseArraySize() + header.get(
 				StaticClassProperty.SIZE_STATIC_FIELD_DATA));
 		classInfo.set(ClassProperty.MEMHANDLE_STATIC_FIELDS,
@@ -467,9 +472,60 @@ public final class BootState
 			this.loadString(__cl.toRuntimeString()));
 		
 		// Store in constant values for fields
+		int staticFieldBase = this.__baseArraySize();
 		for (MinimizedField staticField : classFile.fields(true))
 		{
-			Debugging.todoNote("Static field.");
+			// Ignore field if there are no constant values
+			Object constVal = staticField.value;
+			if (constVal == null)
+				continue;
+			
+			// Depends on the type being written
+			int offset = staticFieldBase + staticField.offset;
+			switch (staticField.datatype)
+			{
+				case BYTE:
+					staticFieldData.write(offset, MemoryType.BYTE,
+						((Number)constVal).byteValue());
+					break;
+					
+				case SHORT:
+				case CHARACTER:
+					staticFieldData.write(offset, MemoryType.SHORT,
+						((Number)constVal).shortValue());
+					break;
+					
+				case INTEGER:
+					staticFieldData.write(offset, MemoryType.INTEGER,
+						((Number)constVal).intValue());
+					break;
+					
+				case LONG:
+					staticFieldData.write(offset, MemoryType.LONG,
+						((Number)constVal).longValue());
+					break;
+					
+				case FLOAT:
+					staticFieldData.write(offset, MemoryType.INTEGER,
+						Float.floatToRawIntBits((Float)constVal));
+					break;
+					
+				case DOUBLE:
+					staticFieldData.write(offset, MemoryType.LONG,
+						Double.doubleToRawLongBits((Double)constVal));
+					break;
+					
+				case OBJECT:
+					if (constVal instanceof String)
+					{
+						staticFieldData.write(offset, MemoryType.INTEGER,
+							this.loadString((String)constVal));
+						break;
+					}
+				
+				default:
+					throw Debugging.oops(staticField);
+			}
 		}
 		
 		// Determine the VTable for all non-interface instance methods
@@ -521,10 +577,13 @@ public final class BootState
 			classInfo.set(ClassProperty.CLASSINFO_COMPONENTCLASS,
 				this.loadClass(__cl.componentType())._classInfoHandle);
 		
-		// Determine the function pointer to the default new instance
-		if (true)
-			Debugging.todoNote("FuncPtr New");
-		// FUNCPTR_DEFAULT_NEW
+		// Determine the function pointer to the default new instance, this
+		// is needed for Class.newInstance(). This may be null.
+		MinimizedMethod defConst = classFile.method(false,
+			BootState._DEFAULT_CONSTRUCTOR);
+		if (defConst != null)
+			classInfo.set(ClassProperty.FUNCPTR_DEFAULT_NEW,
+				this.__calcMethodCodeAddr(rv, false, defConst));
 		
 		// Loading the class is complete!
 		return rv;
@@ -1239,12 +1298,8 @@ public final class BootState
 					}
 					
 					// Where is the code located?
-					return new BootJarPointer(
-						inClass.classFile.header.get(
-							StaticClassProperty.OFFSET_STATIC_METHOD_DATA) +
-								method.codeoffset,
-						this._rawChunks.get(handle.outerClass())
-							.futureAddress());
+					return this.__calcMethodCodeAddr(inClass, true,
+						method);
 				}
 				
 				Debugging.todoNote("Handle other: %s", __entry);
@@ -1269,5 +1324,30 @@ public final class BootState
 			throw Debugging.todo();
 		Debugging.todoNote("Handle pool entry: %s", __entry);
 		return failValue;
+	}
+	
+	/**
+	 * Calculates the method code address.
+	 * 
+	 * @param __inClass The class this is in.
+	 * @param __static Is this a static method?
+	 * @param __method The method to get.
+	 * @return The pointer to the method code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/10/29
+	 */
+	private BootJarPointer __calcMethodCodeAddr(ClassState __inClass,
+		boolean __static, MinimizedMethod __method)
+		throws NullPointerException
+	{
+		if (__inClass == null || __method == null)
+			throw new NullPointerException("NARG");
+		
+		int base = __inClass.classFile.header.get(__static ?
+			StaticClassProperty.OFFSET_STATIC_METHOD_DATA :
+			StaticClassProperty.OFFSET_INSTANCE_METHOD_DATA); 
+		
+		return new BootJarPointer(base + __method.codeoffset,
+			this._rawChunks.get(__inClass.thisName).futureAddress());
 	}
 }
