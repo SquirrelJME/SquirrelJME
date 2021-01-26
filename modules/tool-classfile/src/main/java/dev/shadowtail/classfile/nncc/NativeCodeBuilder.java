@@ -482,10 +482,33 @@ public final class NativeCodeBuilder
 	 * @param __c The result.
 	 * @return The resulting register.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link NativeCodeBuilder#addMathConst(StackJavaType,
+	 * MathType, IntValueRegister, Number, IntValueRegister)}. 
 	 * @since 2019/04/08
 	 */
+	@Deprecated
 	public final NativeInstruction addMathConst(StackJavaType __jt,
 		MathType __mf, int __a, Number __b, int __c)
+		throws NullPointerException
+	{
+		return this.addMathConst(__jt, __mf,
+			IntValueRegister.of(__a), __b, IntValueRegister.of(__c));
+	}
+	
+	/**
+	 * Adds a math via constant operation.
+	 *
+	 * @param __jt The Java type.
+	 * @param __mf The math function.
+	 * @param __a Register A.
+	 * @param __b Constant B.
+	 * @param __c The result.
+	 * @return The resulting register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/26
+	 */
+	public final NativeInstruction addMathConst(StackJavaType __jt,
+		MathType __mf, IntValueRegister __a, Number __b, IntValueRegister __c)
 		throws NullPointerException
 	{
 		if (__jt == null || __mf == null || __b == null)

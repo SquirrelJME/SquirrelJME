@@ -2788,8 +2788,12 @@ public final class NearNativeByteCodeHandler
 		VolatileRegisterStack volatiles = this.volatiles;
 		try (Volatile<TypedRegister<ClassInfoPointer>> targetClass =
 				volatiles.getTyped(ClassInfoPointer.class);
-			Volatile<IntValueRegister> methodIndex =
-				volatiles.getIntValue())
+			Volatile<MemHandleRegister> vTable =
+				volatiles.getMemHandle();
+			Volatile<IntValueRegister> vTableProp =
+				volatiles.getIntValue();
+			Volatile<TypedRegister<VirtualMethodIndex>> methodIndex =
+				volatiles.getTyped(VirtualMethodIndex.class))
 		{
 			// Use the exactly specified method if:
 			//  * It is a special invocation
@@ -2831,26 +2835,48 @@ public final class NearNativeByteCodeHandler
 						targetClass.register);
 				}
 			
-			// Get the VTable
-			if (true)
-				throw Debugging.todo();
+			// Get the VTable for the class
+			codeBuilder.addIntegerConst(ClassProperty.MEMHANDLE_VTABLE,
+				vTableProp.register);
+			this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+				targetClass.register, vTableProp.register);
+			
+			// Move over
+			codeBuilder.addCopy(MemHandleRegister.RETURN,
+				vTable.register);
 			
 			// Get the method index
-			if (true)
-				throw Debugging.todo();
+			codeBuilder.addPoolLoad(new VirtualMethodIndex(__cl, __mn, __mt),
+				methodIndex.register);
 			
 			// Need room for the method and pool references
 			try (Volatile<ExecutablePointer> methodAddr =
 					volatiles.getExecutablePointer();
-				Volatile<MemHandleRegister> poolRef =
-					volatiles.getMemHandle())
+				Volatile<RuntimePoolPointer> poolRef =
+					volatiles.getRuntimePoolPointer())
 			{
-				if (true)
-					throw Debugging.todo();
+				// Load the method pointer
+				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
+					methodAddr.register.asIntValue(),
+					vTable.register, methodIndex.register.asIntValue());
+				
+				// The pool pointer will be in the next position, so add to
+				// get there
+				codeBuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
+					methodIndex.register.asIntValue(),
+					DataType.INTEGER.size(),
+					methodIndex.register.asIntValue());
+				
+				// Load the pool pointer
+				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
+					poolRef.register.asIntValue(),
+					vTable.register, methodIndex.register.asIntValue());
+				
+				// Invoke the method
+				codeBuilder.addInvokePoolAndPointer(
+					methodAddr.register, poolRef.register, __args);
 			}
 			
-			if (true)
-				throw Debugging.todo();
 			/*
 			// Load the VTable (from the class we obtained above)
 			codeBuilder.add(NativeInstructionType.LOAD_POOL,

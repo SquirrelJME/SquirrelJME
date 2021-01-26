@@ -97,7 +97,11 @@ public interface ClassProperty
 	byte INT_MEMHANDLE_KIND =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
 	
+	/** The VTable of the class. */
+	byte MEMHANDLE_VTABLE =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
+	
 	/** The number of properties available. */
 	byte NUM_RUNTIME_PROPERTIES =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
 }
