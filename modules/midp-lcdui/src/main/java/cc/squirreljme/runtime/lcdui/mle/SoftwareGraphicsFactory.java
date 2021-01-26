@@ -46,6 +46,7 @@ public final class SoftwareGraphicsFactory
 	 * @param __sy Starting surface Y coordinate.
 	 * @param __sw Surface width.
 	 * @param __sh Surface height.
+	 * @return A software graphics implementation.
 	 * @throws IllegalArgumentException If the pixel format is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25

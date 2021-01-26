@@ -122,6 +122,7 @@ public interface ByteCodeHandler
 	/**
 	 * Compares two values and then possibly jumps.
 	 *
+	 * @param __ct The type of comparison to make.
 	 * @param __a The first value.
 	 * @param __b The second value.
 	 * @param __ijt The jump target.

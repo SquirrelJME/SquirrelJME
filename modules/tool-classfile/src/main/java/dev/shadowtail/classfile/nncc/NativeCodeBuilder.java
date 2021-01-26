@@ -295,8 +295,8 @@ public final class NativeCodeBuilder
 	 * @param __a The register to check.
 	 * @param __jt The target of the jump.
 	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link NativeCodeBuilder#
-	 * addIfZero(IntValueRegister, NativeCodeLabel)}. 
+	 * @deprecated Use {@link NativeCodeBuilder#addIfZero(
+	 * IntValueRegister, NativeCodeLabel)}. 
 	 * @since 2019/04/10
 	 */
 	@Deprecated
