@@ -2789,11 +2789,7 @@ public final class NearNativeByteCodeHandler
 		try (Volatile<TypedRegister<ClassInfoPointer>> targetClass =
 				volatiles.getTyped(ClassInfoPointer.class);
 			Volatile<MemHandleRegister> vTable =
-				volatiles.getMemHandle();
-			Volatile<IntValueRegister> vTableProp =
-				volatiles.getIntValue();
-			Volatile<TypedRegister<VirtualMethodIndex>> methodIndex =
-				volatiles.getTyped(VirtualMethodIndex.class))
+				volatiles.getMemHandle())
 		{
 			// Use the exactly specified method if:
 			//  * It is a special invocation
@@ -2836,25 +2832,32 @@ public final class NearNativeByteCodeHandler
 				}
 			
 			// Get the VTable for the class
-			codeBuilder.addIntegerConst(ClassProperty.MEMHANDLE_VTABLE,
-				vTableProp.register);
-			this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
-				targetClass.register, vTableProp.register);
-			
-			// Move over
-			codeBuilder.addCopy(MemHandleRegister.RETURN,
-				vTable.register);
-			
-			// Get the method index
-			codeBuilder.addPoolLoad(new VirtualMethodIndex(__cl, __mn, __mt),
-				methodIndex.register);
+			try (Volatile<IntValueRegister> vTableProp =
+					volatiles.getIntValue())
+			{
+				codeBuilder.addIntegerConst(ClassProperty.MEMHANDLE_VTABLE,
+					vTableProp.register);
+				this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+					targetClass.register, vTableProp.register);
+					
+				// Move over
+				codeBuilder.addCopy(MemHandleRegister.RETURN,
+					vTable.register);
+			}
 			
 			// Need room for the method and pool references
 			try (Volatile<ExecutablePointer> methodAddr =
 					volatiles.getExecutablePointer();
 				Volatile<RuntimePoolPointer> poolRef =
-					volatiles.getRuntimePoolPointer())
+					volatiles.getRuntimePoolPointer();
+				Volatile<TypedRegister<VirtualMethodIndex>> methodIndex =
+					volatiles.getTyped(VirtualMethodIndex.class))
 			{
+				// Get the method index
+				codeBuilder.addPoolLoad(
+					new VirtualMethodIndex(__cl, __mn, __mt),
+					methodIndex.register);
+				
 				// Load the method pointer
 				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
 					methodAddr.register.asIntValue(),
