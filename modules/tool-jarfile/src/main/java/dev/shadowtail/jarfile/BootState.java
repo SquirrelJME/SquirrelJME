@@ -31,11 +31,14 @@ import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.xlate.DataType;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -45,6 +48,7 @@ import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -529,8 +533,8 @@ public final class BootState
 		}
 		
 		// Determine the VTable for all non-interface instance methods
-		if (true)
-			Debugging.todoNote("Virtual VTable");
+		classInfo.set(ClassProperty.MEMHANDLE_VTABLE,
+			this.__calcVTable(rv));
 		
 		// Determine all of the interfaces that this class possibly implements.
 		// This will be used by instance checks and eventual interface VTable
@@ -540,13 +544,13 @@ public final class BootState
 			memHandles.allocClassInfos(
 				this.loadClasses(allInterfaces.toArray())));
 		
-		// Pre-build all of the interface VTables for every interface that
-		// this class implements, a class gets a VTable for all interfaces
+		// Pre-build all of the interface ITables for every interface that
+		// this class implements, a class gets a ITables for all interfaces
 		// and inherited interfaces it implements.
-		// ex: ArrayList gets VTables for Cloneable, Collection<E>, List<E>,
+		// ex: ArrayList gets ITables for Cloneable, Collection<E>, List<E>,
 		// RandomAccess
 		if (true)
-			Debugging.todoNote("Interface VTables");
+			Debugging.todoNote("Interface ITables");
 		
 		// Load the information for the Class<?> instance
 		classInfo.set(ClassProperty.MEMHANDLE_LANGCLASS_INSTANCE,
@@ -1057,7 +1061,7 @@ public final class BootState
 	}
 	
 	/**
-	 * Returns the class chain.
+	 * Returns the class chain, the uppermost class is first in the chain.
 	 * 
 	 * @param __class The class to get the chain of.
 	 * @return The class queue chain.
@@ -1065,14 +1069,14 @@ public final class BootState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/24
 	 */
-	private Deque<ClassState> __classChain(ClassState __class)
+	private LinkedList<ClassState> __classChain(ClassState __class)
 		throws IOException, NullPointerException
 	{
 		if (__class == null)
 			throw new NullPointerException("NARG");
 		
 		// Load the class chain
-		Deque<ClassState> superChain = new LinkedList<>();
+		LinkedList<ClassState> superChain = new LinkedList<>();
 		for (ClassState at = __class; at != null; at = at._superClass)
 		{
 			// Process into the queue
@@ -1349,5 +1353,72 @@ public final class BootState
 		
 		return new BootJarPointer(base + __method.codeoffset,
 			this._rawChunks.get(__inClass.thisName).futureAddress());
+	}
+	
+	/**
+	 * Calculates the VTable for the given class, a VTable contains all of
+	 * the method references and such.
+	 * 
+	 * @param __class The class to calculate for.
+	 * @return The calculated and initialized VTable for a class.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/26
+	 */
+	private MemHandle __calcVTable(ClassState __class)
+		throws IOException, NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		// State for the current class
+		List<VTableMethod> methodInfo = new ArrayList<>();
+		
+		// We need the class chain to build the method table and to determine
+		// which classes and such to lookup within 
+		LinkedList<ClassState> classChain = this.__classChain(__class);
+		for (ListIterator<ClassState> chainLink = classChain.listIterator();
+			chainLink.hasNext();)
+		{
+			// Process all methods within this class
+			ClassState at = chainLink.next();
+			for (MinimizedMethod method : at.classFile.methods(false))
+			{
+				VTableMethod vMethod;
+				MethodFlags flags = method.flags();
+				
+				// Private methods just point to themselves
+				boolean isInit = method.name.isAnyInitializer();
+				if (flags.isPrivate())
+					vMethod = new VTableMethod(
+						this.__calcMethodCodeAddr(at, false, method),
+						at._poolMemHandle);
+				
+				// Start from the highest class and look down for a matching
+				// method
+				else
+					throw Debugging.todo();
+				
+				// Register the method
+				methodInfo.add(vMethod);
+			}
+		}
+		
+		// Allocate VTable information
+		int numMethods = methodInfo.size();
+		ListValueHandle vTable = this._memHandles.allocList(
+			MemHandleKind.VIRTUAL_VTABLE, numMethods * 2);
+		
+		// Build VTable information into an actual VTable
+		for (int i = 0, o = 0; i < numMethods; i++, o += 2)
+		{
+			VTableMethod method = methodInfo.get(i);
+			
+			vTable.set(o, method.execAddr);
+			vTable.set(o + 1, method.poolHandle);
+		} 
+		
+		// Use this handle
+		return vTable;
 	}
 }
