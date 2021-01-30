@@ -9,8 +9,9 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
 
 /**
@@ -34,6 +35,12 @@ public final class ClassState
 	
 	/** The super class. */
 	ClassState _superClass;
+	
+	/** The class chain. */
+	List<ClassState> _classChain;
+	
+	/** Method binds. */
+	List<MethodBinder> _methodBinds;
 	
 	/**
 	 * Initializes the base empty class state.

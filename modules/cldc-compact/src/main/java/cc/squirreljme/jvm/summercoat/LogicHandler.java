@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
-import cc.squirreljme.jvm.summercoat.struct.ClassInfoStruct;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -266,6 +265,20 @@ public final class LogicHandler
 		return Assembly.pointerToClassInfo(
 			Assembly.memHandleReadInt(__o, LogicHandler.staticVmAttribute(
 				StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD)));
+	}
+	
+	/**
+	 * This is the method that is called for all native and abstract methods
+	 * within the virtual machine so that every method leads somewhere.
+	 * 
+	 * @throws PureVirtualMethodCallError Always.
+	 * @since 2021/01/30
+	 */
+	public static void pureVirtualCall()
+		throws PureVirtualMethodCallError
+	{
+		// {@squirreljme.error ZZ40 Pure virtual method call.}
+		throw new PureVirtualMethodCallError("ZZ4o");
 	}
 	
 	/**
