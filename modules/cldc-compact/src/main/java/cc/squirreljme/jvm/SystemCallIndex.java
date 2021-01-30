@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.config.ConfigRomType;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
+import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 
 /**
  * This contains the index of system calls.
@@ -441,6 +442,7 @@ public interface SystemCallIndex
 	 * @see ConfigRomKey
 	 * @since 2020/05/03
 	 */
+	@Deprecated
 	byte CONFIG_GET_VALUE =
 		38;
 	
@@ -453,6 +455,7 @@ public interface SystemCallIndex
 	 * {@link ConfigRomType}.
 	 * @since 2020/05/03
 	 */
+	@Deprecated
 	byte CONFIG_GET_TYPE =
 		39;
 	
@@ -513,12 +516,21 @@ public interface SystemCallIndex
 		44;
 	
 	/**
+	 * Return the operating system SquirrelJME is running on.
+	 * 
+	 * @squirreljme.syscallreturn The {@link OperatingSystemType}.
+	 * @since 2021/01/30
+	 */
+	byte OPERATING_SYSTEM =
+		45;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		45;
+		46;
 }
 

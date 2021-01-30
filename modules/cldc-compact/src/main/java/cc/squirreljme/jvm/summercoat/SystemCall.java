@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.struct.StaticVmAttributesStruct;
+import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 
 /**
  * This is a helper wrapper around system calls.
@@ -73,6 +74,15 @@ public final class SystemCall
 	 */
 	public static native int memHandleNew(int __memHandleKind, int __allocSize)
 		throws MLECallError;
+	
+	/**
+	 * {@link SystemCallIndex#OPERATING_SYSTEM}: Returns the operating system
+	 * SquirrelJME is running on.
+	 * 
+	 * @return The {@link OperatingSystemType}.
+	 * @since 2021/01/30
+	 */
+	public static native int operatingSystem();
 	
 	/**
 	 * Returns the pipe descriptor of standard error.

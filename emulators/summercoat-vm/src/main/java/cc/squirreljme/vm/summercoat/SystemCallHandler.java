@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -110,8 +111,13 @@ public enum SystemCallHandler
 			int len = __args[2];
 			
 			// Debug
-			Debugging.debugNote("MEM_HANDLE_IN_BOUNDS(%s, %d, %d) in %d",
-				handle, off, len, handle.size);
+			if (NativeCPU.ENABLE_DEBUG)
+			{
+				String handleStr = handle.toString();
+				Debugging.debugNote(
+					"MEM_HANDLE_IN_BOUNDS(%s, %d, %d) in %d",
+					handleStr, off, len, handle.size);
+			}
 			
 			// Check if in bounds
 			int size = handle.size;
@@ -148,6 +154,32 @@ public enum SystemCallHandler
 			handle.count(true);
 			 
 			return handle.id;
+		}
+	},
+	
+	/** {@link SystemCallIndex#OPERATING_SYSTEM}. */
+	OPERATING_SYSTEM(SystemCallIndex.OPERATING_SYSTEM)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/30
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			String systemOs = System.getProperty("os.name").toLowerCase();
+			
+			if (systemOs.contains("windows"))
+				return OperatingSystemType.WINDOWS_UNKNOWN;
+			else if (systemOs.contains("linux"))
+				return OperatingSystemType.LINUX;
+			else if (systemOs.contains("solaris"))
+				return OperatingSystemType.SOLARIS;
+			else if (systemOs.contains("mac os"))
+				return OperatingSystemType.MAC_OS_X;
+			
+			return OperatingSystemType.UNKNOWN;
 		}
 	},
 	

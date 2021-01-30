@@ -17,7 +17,10 @@ import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.summercoat.SystemCall;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 
 /**
  * Run-time shelf which contains system information.
@@ -93,8 +96,22 @@ public final class LLERuntimeShelf
 	 */
 	public static int lineEnding()
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		switch (SystemCall.operatingSystem())
+		{
+			case OperatingSystemType.MAC_OS_CLASSIC:
+				return LineEndingType.CR;
+			
+			case OperatingSystemType.MS_DOS:
+			case OperatingSystemType.WINDOWS_9X:
+			case OperatingSystemType.WINDOWS_CE:
+			case OperatingSystemType.WINDOWS_NT:
+			case OperatingSystemType.WINDOWS_WIN16:
+			case OperatingSystemType.WINDOWS_UNKNOWN:
+				return LineEndingType.CRLF;
+			
+			default:
+				return LineEndingType.LF;
+		}
 	}
 	
 	/**

@@ -230,6 +230,9 @@ public final class NearNativeByteCodeHandler
 			this.__invokeHelper(HelperFunction.STATIC_VM_ATTRIBUTE,
 				off.register);
 			
+			// Read the offset
+			codeBuilder.addCopy(IntValueRegister.RETURN, off.register);
+			
 			// Read the value
 			codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
 				IntValueRegister.of(__len.register), array, off.register);
@@ -3177,6 +3180,10 @@ public final class NearNativeByteCodeHandler
 			
 			case "memHandleNew":
 				id = SystemCallIndex.MEM_HANDLE_NEW;
+				break;
+			
+			case "operatingSystem":
+				id = SystemCallIndex.OPERATING_SYSTEM;
 				break;
 			
 			case "pdOfStdErr":

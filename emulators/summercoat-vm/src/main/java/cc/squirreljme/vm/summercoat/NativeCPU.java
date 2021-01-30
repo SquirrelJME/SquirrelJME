@@ -49,7 +49,7 @@ public final class NativeCPU
 	 * Should SummerCoat print lots of debugging information?}
 	 */
 	public static final boolean ENABLE_DEBUG =
-		true || Boolean.getBoolean("cc.squirreljme.summercoat.debug");
+		false || Boolean.getBoolean("cc.squirreljme.summercoat.debug");
 	
 	/** Maximum amount of CPU registers. */
 	public static final int MAX_REGISTERS =
@@ -529,13 +529,15 @@ public final class NativeCPU
 			{
 					// CPU Ping
 				case NativeInstructionType.PING:
-					CallTraceUtils.printStackTrace(System.err,
-						String.format("PING! %04Xh: %s",
-							args[0],
-							(args[1] == 0 ? "" :
+					if (NativeCPU.ENABLE_DEBUG)
+					{
+						CallTraceUtils.printStackTrace(System.err,
+							String.format("PING! %04Xh: %s",
+								args[0], (args[1] == 0 ? "" :
 								this.__loadUtfString(nowframe.pool(args[1])))),
-						this.trace(),
-						null, null, 0);
+							this.trace(),
+							null, null, 0);
+					}
 					break;
 					
 					// CPU Breakpoint

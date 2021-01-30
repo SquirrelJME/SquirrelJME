@@ -9,10 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
