@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.mini;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
+import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
@@ -70,8 +71,8 @@ public enum MinimizedPoolEntryType
 	/** A plain string that was used. */
 	USED_STRING(true, UsedString.class),
 	
-	/** The index of a method. */
-	VIRTUAL_METHOD_INDEX(true, VirtualMethodIndex.class),
+	/** The invocation table for a given class's invocation kind. */
+	INVOKE_XTABLE(true, InvokeXTable.class),
 	
 	/** An invokable interface class, used for interface binding. */
 	INTERFACE_CLASS(true, InterfaceClassName.class),

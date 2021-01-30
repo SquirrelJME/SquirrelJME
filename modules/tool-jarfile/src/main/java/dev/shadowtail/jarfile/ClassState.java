@@ -9,7 +9,9 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.pool.InvokeType;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
@@ -39,8 +41,11 @@ public final class ClassState
 	/** The class chain. */
 	List<ClassState> _classChain;
 	
-	/** Method binds. */
-	List<MethodBinder> _methodBinds;
+	/** Virtual method binds. */
+	List<MethodBinder> _virtualBinds;
+	
+	/** Static method binds. */
+	List<MethodBinder> _staticBinds;
 	
 	/**
 	 * Initializes the base empty class state.

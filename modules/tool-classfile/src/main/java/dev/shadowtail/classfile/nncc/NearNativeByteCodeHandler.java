@@ -21,6 +21,7 @@ import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
+import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
@@ -2746,8 +2747,10 @@ public final class NearNativeByteCodeHandler
 	 * @param __mt The method type.
 	 * @param __args The arguments to the call.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use constants instead.
 	 * @since 2019/05/24
 	 */
+	@Deprecated
 	private void __invokeInstance(InvokeType __it, ClassName __cl,
 		String __mn, String __mt, RegisterList __args)
 		throws NullPointerException
@@ -2778,18 +2781,21 @@ public final class NearNativeByteCodeHandler
 		
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Special invocation?
+		// Is the invocation special?
 		boolean isSpecial = (__it == InvokeType.SPECIAL);
 		
 		// The instance handle, used for any instance relative invocations
 		MemHandleRegister instance = MemHandleRegister.of(__args.get(0));
 		
+		// For virtual invocations, there is no special logic and we can
+		InvokedMethod invoked = new InvokedMethod(__it, __cl, __mn, __mt);
+		
 		// Need volatiles to work with
 		VolatileRegisterStack volatiles = this.volatiles;
 		try (Volatile<TypedRegister<ClassInfoPointer>> targetClass =
 				volatiles.getTyped(ClassInfoPointer.class);
-			Volatile<MemHandleRegister> vTable =
-				volatiles.getMemHandle())
+			Volatile<TypedRegister<InvokeXTable>> vTable =
+				volatiles.getTyped(InvokeXTable.class))
 		{
 			// Use the exactly specified method if:
 			//  * It is a special invocation
@@ -2845,86 +2851,9 @@ public final class NearNativeByteCodeHandler
 					vTable.register);
 			}
 			
-			// Need room for the method and pool references
-			try (Volatile<ExecutablePointer> methodAddr =
-					volatiles.getExecutablePointer();
-				Volatile<RuntimePoolPointer> poolRef =
-					volatiles.getRuntimePoolPointer();
-				Volatile<TypedRegister<VirtualMethodIndex>> methodIndex =
-					volatiles.getTyped(VirtualMethodIndex.class))
-			{
-				// Get the method index
-				codeBuilder.addPoolLoad(
-					new VirtualMethodIndex(__cl, __mn, __mt),
-					methodIndex.register);
-				
-				// Load the method pointer
-				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
-					methodAddr.register.asIntValue(),
-					vTable.register, methodIndex.register.asIntValue());
-				
-				// The pool pointer will be in the next position, so add to
-				// get there
-				codeBuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-					methodIndex.register.asIntValue(),
-					DataType.INTEGER.size(),
-					methodIndex.register.asIntValue());
-				
-				// Load the pool pointer
-				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
-					poolRef.register.asIntValue(),
-					vTable.register, methodIndex.register.asIntValue());
-				
-				// Invoke the method
-				codeBuilder.addInvokePoolAndPointer(
-					methodAddr.register, poolRef.register, __args);
-			}
-			
-			/*
-			// Load the VTable (from the class we obtained above)
-			codeBuilder.add(NativeInstructionType.LOAD_POOL,
-				new AccessedField(FieldAccessTime.NORMAL,
-					FieldAccessType.INSTANCE,
-				new FieldReference(
-					new ClassName("cc/squirreljme/jvm/ClassInfo"),
-					new FieldName("vtablevirtual"),
-					new FieldDescriptor("[I"))),
-				volvtable);
-			codeBuilder.addMemoryOffReg(DataType.INTEGER, true,
-				volvtable, targetClass, volvtable);
-			
-			// Load the pool table which is mapped with the vtable
-			codeBuilder.add(NativeInstructionType.LOAD_POOL,
-				new AccessedField(FieldAccessTime.NORMAL,
-					FieldAccessType.INSTANCE,
-				new FieldReference(
-					new ClassName("cc/squirreljme/jvm/ClassInfo"),
-					new FieldName("vtablepool"),
-					new FieldDescriptor("[I"))),
-				volptable);
-			codeBuilder.addMemoryOffReg(DataType.INTEGER, true,
-				volptable, targetClass, volptable);
-			
-			// Method index
-			codeBuilder.add(NativeInstructionType.LOAD_POOL,
-				new VirtualMethodIndex(__cl, __mn, __mt), methodptr);
-				
-			// Load from the pool table
-			codeBuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
-				NativeCode.NEXT_POOL_REGISTER, volptable, methodptr);
-			
-			// Load method pointer (from integer based array)
-			codeBuilder.add(NativeInstructionType.LOAD_FROM_INTARRAY,
-				methodptr, volvtable, methodptr);
-			
-			// Invoke the method pointer
-			codeBuilder.add(NativeInstructionType.INVOKE,
-				methodptr, __args);
-			
-			// Cleanup volatiles
-			volatiles.removeUnmanaged(volvtable);
-			volatiles.removeUnmanaged(methodptr);
-			volatiles.removeUnmanaged(volptable);*/
+			// Perform standardized XTable invocation with the XTable we
+			// obtained, since we do not want automatic getting
+			this.__invokeXTable(vTable.register, invoked, __args);
 		}
 	}
 	
@@ -3057,27 +2986,17 @@ public final class NearNativeByteCodeHandler
 		
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
+		// Is this a system static call, where we need to
+		boolean isSystem = (__it == InvokeType.SYSTEM);
+		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		try (Volatile<ExecutablePointer> execPtr =
-				volatiles.getExecutablePointer();
-			Volatile<RuntimePoolPointer> poolHandle =
-				volatiles.getRuntimePoolPointer();
-			Volatile<TypedRegister<MemHandleRegister>> oldEx =
-				volatiles.<MemHandleRegister>getTyped(MemHandleRegister.class))
-		{
-			// Load address of the target method
-			codeBuilder.addPoolLoad(new InvokedMethod(
-				(__it == InvokeType.SYSTEM ? InvokeType.STATIC : __it),
-					new MethodHandle(__cl, __mn, __mt)),
-					new TypedRegister<InvokedMethod>(InvokedMethod.class,
-						execPtr.register.register));
-			
-			// Load constant pool of the target class
-			this.__loadClassPool(__cl, poolHandle.register.register);
-			
+		try (Volatile<TypedRegister<MemHandleRegister>> oldEx = (isSystem ?
+			volatiles.<MemHandleRegister>getTyped(MemHandleRegister.class) :
+			null))
+		{			
 			// Create a backup of the exception register (system mode)
-			if (__it == InvokeType.SYSTEM)
+			if (isSystem)
 			{
 				codeBuilder.addCopy(MemHandleRegister.EXCEPTION,
 					oldEx.register);
@@ -3085,14 +3004,15 @@ public final class NearNativeByteCodeHandler
 					MemHandleRegister.EXCEPTION);
 			}
 			
-			// Invoke the static method
-			codeBuilder.addInvokePoolAndPointer(
-				execPtr.register, poolHandle.register, __args);
+			// Invoke using the standard XTable method, if this is a system
+			// invocation force it to be static
+			this.__invokeXTable(new InvokedMethod((isSystem ?
+				InvokeType.STATIC : __it), __cl, __mn, __mt), __args);
 			
 			// If the system invoke (which could be from special code) threw an
 			// exception just replace our current exception with that one since
 			// it definitely would be worse!
-			if (__it == InvokeType.SYSTEM)
+			if (isSystem)
 			{
 				// This is just a jump over restoring the old exception one
 				// so that the system one takes priority
@@ -3369,6 +3289,93 @@ public final class NearNativeByteCodeHandler
 			
 			// Copy return value
 			codeBuilder.addCopy(IntValueRegister.RETURN, __rv);
+		}
+	}
+	
+	/**
+	 * Invoke a method from it's XTable.
+	 * 
+	 * @param __method The method to invoke.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/30
+	 */
+	private void __invokeXTable(InvokedMethod __method, RegisterList __args)
+		throws NullPointerException
+	{
+		if (__method == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// Get the VTable for the target method
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (Volatile<TypedRegister<InvokeXTable>> xTable =
+			volatiles.getTyped(InvokeXTable.class))
+		{
+			// Determine and load the appropriate XTable
+			codeBuilder.addPoolLoad(new InvokeXTable(__method.type,
+				__method.handle.outerClass()), xTable.register);
+			
+			// Forward to the other method, which has the known XTable
+			this.__invokeXTable(xTable.register, __method, __args);
+		}
+	}
+	
+	/**
+	 * Invoke a method from it's XTable, which was pre-determined.
+	 * 
+	 * @param __xTable The XTable this is being invoked with.
+	 * @param __method The method to invoke.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/30
+	 */
+	private void __invokeXTable(TypedRegister<InvokeXTable> __xTable,
+		InvokedMethod __method, RegisterList __args)
+		throws NullPointerException
+	{
+		if (__xTable == null || __method == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// Need room for the method and pool references
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (Volatile<ExecutablePointer> methodAddr =
+				volatiles.getExecutablePointer();
+			Volatile<RuntimePoolPointer> poolRef =
+				volatiles.getRuntimePoolPointer())
+		{
+			// Read the method and pool address accordingly
+			try (Volatile<TypedRegister<InvokedMethod>> methodIndex =
+				volatiles.getTyped(InvokedMethod.class))
+			{
+				// Load the index to read from
+				codeBuilder.addPoolLoad(__method,
+					methodIndex.register);
+					
+				// Load the method pointer
+				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
+					methodAddr.register.asIntValue(),
+					__xTable.asMemHandle(), methodIndex.register.asIntValue());
+				
+				// The pool pointer will be in the next position, so add to
+				// get there
+				codeBuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
+					methodIndex.register.asIntValue(),
+					DataType.INTEGER.size(),
+					methodIndex.register.asIntValue());
+				
+				// Load the pool pointer
+				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
+					poolRef.register.asIntValue(),
+					__xTable.asMemHandle(), methodIndex.register.asIntValue());
+			}
+			
+			// Invoke the method
+			codeBuilder.addInvokePoolAndPointer(
+				methodAddr.register, poolRef.register, __args);
 		}
 	}
 	

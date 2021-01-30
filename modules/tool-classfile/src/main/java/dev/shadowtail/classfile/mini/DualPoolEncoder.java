@@ -21,6 +21,7 @@ import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
+import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.UsedString;
@@ -174,7 +175,7 @@ public final class DualPoolEncoder
 					case DOUBLE:
 					case INVOKED_METHOD:
 					case METHOD_DESCRIPTOR:
-					case VIRTUAL_METHOD_INDEX:
+					case INVOKE_XTABLE:
 					case NOTED_STRING:
 					case USED_STRING:
 					case INTERFACE_CLASS:
@@ -285,14 +286,11 @@ public final class DualPoolEncoder
 								break;
 								
 								// Method index in vtable
-							case VIRTUAL_METHOD_INDEX:
-								value = new VirtualMethodIndex(
+							case INVOKE_XTABLE:
+								value = new InvokeXTable(
+									InvokeType.of(parts[0]),
 									classpool.<ClassName>byIndex(
-										ClassName.class, parts[1]),
-									classpool.<String>byIndex(
-										String.class, parts[2]),
-									classpool.<MethodDescriptor>byIndex(
-										MethodDescriptor.class, parts[3]));
+										ClassName.class, parts[1]));
 								break;
 								
 								// Noted string
@@ -645,7 +643,7 @@ public final class DualPoolEncoder
 			case LONG:
 			case INVOKED_METHOD:
 			case METHOD_DESCRIPTOR:
-			case VIRTUAL_METHOD_INDEX:
+			case INVOKE_XTABLE:
 			case NOTED_STRING:
 			case USED_STRING:
 			case INTERFACE_CLASS:

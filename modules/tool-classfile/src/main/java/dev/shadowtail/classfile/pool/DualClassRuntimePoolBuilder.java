@@ -119,13 +119,12 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(mh.descriptor()).index);
 				
 				// The index of a method
-			case VIRTUAL_METHOD_INDEX:
-				VirtualMethodIndex v = (VirtualMethodIndex)__v;
+			case INVOKE_XTABLE:
+				InvokeXTable xv = (InvokeXTable)__v;
+				
 				return runpool.add(__v,
-					0x7FFF,
-					this.addStatic(v.inClass).index,
-					this.addStatic(v.name.toString()).index,
-					this.addStatic(v.type).index);
+					xv.invokeType.ordinal(),
+					this.addStatic(xv.targetClass).index);
 				
 				// The name of an interface class
 			case INTERFACE_CLASS:

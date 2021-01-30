@@ -82,6 +82,34 @@ public class ListValueHandle
 	}
 	
 	/**
+	 * Returns the memory handle at the given index.
+	 * 
+	 * @param __i The index to get.
+	 * @return The value at the given index.
+	 * @throws IllegalStateException If this is not of the given type.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws NoSuchElementException If no value was written.
+	 * @since 2021/01/30
+	 */
+	public MemHandle getMemHandle(int __i)
+		throws IllegalStateException, IndexOutOfBoundsException,
+			NoSuchElementException
+	{
+		if (__i < 0 || __i >= this.count)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// The value stored may be null
+		MemHandle rv = this.memActions.<MemHandle>read(MemHandle.class,
+			this, MemoryType.INTEGER, this.__offset(__i));
+		
+		// {@squirreljme.error BC0t No value was stored in the list.}
+		if (rv == null)
+			throw new NoSuchElementException("BC0t");
+		
+		return rv;
+	}
+	
+	/**
 	 * Sets the entry at the given index.
 	 * 
 	 * @param __i The index to set.

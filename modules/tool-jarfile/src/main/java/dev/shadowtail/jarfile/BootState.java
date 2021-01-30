@@ -27,6 +27,7 @@ import dev.shadowtail.classfile.pool.ClassInfoPointer;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.InvokeType;
+import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.xlate.DataType;
 import java.io.IOException;
@@ -441,7 +442,7 @@ public final class BootState
 			// The base of the class is the allocation size of the super
 			// class
 			int base = this.__allocSize(superClassState);
-			classInfo.set(ClassProperty.OFFSETBASE_INSTANCE_FIELDS, base);
+			this.__classInstanceFieldBase(rv);
 			
 			// Debug
 			Debugging.debugNote("offsetBase %s = %d (check %d)",
@@ -535,9 +536,9 @@ public final class BootState
 			}
 		}
 		
-		// Determine the VTable for all non-interface instance methods
-		classInfo.set(ClassProperty.MEMHANDLE_VTABLE,
-			this.__calcVTable(rv));
+		// Determine the VTable+STable for all virtual+static methods
+		this.__getXTable(rv, InvokeType.VIRTUAL);
+		this.__getXTable(rv, InvokeType.STATIC);
 		
 		// Determine all of the interfaces that this class possibly implements.
 		// This will be used by instance checks and eventual interface VTable
@@ -1065,6 +1066,200 @@ public final class BootState
 	}
 	
 	/**
+	 * Calculates the method code address.
+	 * 
+	 * @param __inClass The class this is in.
+	 * @param __static Is this a static method?
+	 * @param __method The method to get.
+	 * @return The pointer to the method code.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/10/29
+	 */
+	private BootJarPointer __calcMethodCodeAddr(ClassState __inClass,
+		boolean __static, MinimizedMethod __method)
+		throws IOException, NullPointerException
+	{
+		if (__inClass == null || __method == null)
+			throw new NullPointerException("NARG");
+		
+		int base = __inClass.classFile.header.get(__static ?
+			StaticClassProperty.OFFSET_STATIC_METHOD_DATA :
+			StaticClassProperty.OFFSET_INSTANCE_METHOD_DATA);
+		
+		// If this is targetting an array or primitive type, just perform
+		// lookups on Object instead since it will not be really possible
+		// to execute methods otherwise.
+		if (__inClass.thisName.isArray() || __inClass.thisName.isPrimitive())
+			return this.__calcMethodCodeAddr(this.loadClass(
+				BootState._OBJECT_CLASS), __static, __method);
+		
+		return new BootJarPointer(base + __method.codeoffset,
+			this._rawChunks.get(__inClass.thisName).futureAddress());
+	}
+	
+	/**
+	 * Calculates the static class call table for a given class.
+	 * 
+	 * @param __for The class to calculate for.
+	 * @return The calculated STable.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/30
+	 */
+	private ListValueHandle __calcSTable(ClassState __for)
+		throws IOException, NullPointerException
+	{
+		if (__for == null)
+			throw new NullPointerException("NARG");
+			
+		// Get class information and otherwise
+		List<MethodBinder> binds = this.__classBindsStatic(__for);
+		
+		// The static table is a one to one mapping
+		List<VTableMethod> methodInfo = new ArrayList<>(binds.size());
+		for (MethodBinder bind : binds)
+		{
+			// Native and abstract methods are purely virtual 
+			if (bind.isNative() || bind.isAbstract())
+				methodInfo.add(this.__pureVirtualBind().vTable);
+			
+			// Map 1:1 otherwise
+			else
+				methodInfo.add(bind.vTable);
+		}
+		
+		// Build VTable
+		return this.__vtMethodsToHandle(methodInfo);
+	}
+	
+	/**
+	 * Calculates the VTable for the given class, a VTable contains all of
+	 * the method references and such. Note that constructors are counted as
+	 * virtual calls as well, since you can call a super-class constructor but
+	 * still call the correct constructor.
+	 * 
+	 * @param __class The class to calculate for.
+	 * @return The calculated and initialized VTable for a class.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/26
+	 */
+	private ListValueHandle __calcVTable(ClassState __class)
+		throws IOException, NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		// Get class information and otherwise
+		List<MethodBinder> binds = this.__classBindsVirtual(__class);
+		
+		// State for the current class, we know how big the table is going to
+		// be due to all of the binds
+		List<VTableMethod> methodInfo = new ArrayList<>(binds.size());
+		
+		// Go through all the bindings and determine the methods to use
+		for (MethodBinder bind : binds)
+		{
+			MethodBinder target;
+			
+			// If this is an interface, then all methods are pure virtual
+			if (__class.classFile.flags().isInterface())
+				target = this.__pureVirtualBind();
+			
+			// Private methods refer to the same method
+			else if (bind.isPrivate())
+				target = bind;
+			
+			// Otherwise search through everything in backwards order
+			else
+			{
+				// State for method lookup
+				MethodBinder found = null;
+				ClassState lastClass = null;
+				boolean atOurClass = false;
+				
+				// Search for the given method
+				for (ListIterator<MethodBinder> looky =
+					binds.listIterator(binds.size()); looky.hasPrevious();)
+				{
+					MethodBinder look = looky.previous();
+					
+					// Have we switched classes?
+					if (look.inClass != lastClass)
+					{
+						lastClass = look.inClass;
+						
+						// If this is the class we are coming from to calculate
+						// the base of, we can only lookup methods that
+						// either replace or are from the same class
+						if (lastClass == bind.inClass)
+							atOurClass = true;
+						
+						// If we were at our class, but are not anymore then
+						// stop because we do not want to go further up
+						else if (atOurClass)
+							break;
+					}
+					
+					// Is a method of a different name and/or type, ignore
+					if (!bind.method.nameAndType()
+						.equals(look.method.nameAndType()))
+						continue;
+					
+					// Debug
+					Debugging.debugNote("Try? %s:%s -> %s:%s (%s)",
+						bind.inClass, bind.method.nameAndType(),
+						look.inClass, look.method.nameAndType(),
+						look.method.flags());
+					
+					// Ignore private methods and package private methods if
+					// we are not in the same package for the class we are
+					// looking at.
+					if (look.isPrivate() ||
+						(look.isPackagePrivate() && !look.inSamePackage))
+						continue;
+					
+					// Otherwise, we have found our method
+					found = look;
+					break;
+				}
+				
+				// If the method and class are abstract, or this is a native
+				// method then we cannot possibly call the code for it. This
+				// becomes a pure virtual call, which will fail. Or we found
+				// a native or abstract method.
+				if ((found == null && ((bind.isAbstract() &&
+						bind.isClassAbstract()) || bind.isNative())) || 
+					(found != null &&
+						(found.isNative() || found.isAbstract())))
+					found = this.__pureVirtualBind();
+					
+				// {@squirreljme.error BC0r Could not find a method to link to.
+				// (The class and method; The flags)}
+				else if (found == null)
+					throw new InvalidClassFormatException(String.format(
+						"BC0r %s:%s (%s)", bind.inClass, bind.method,
+							bind.method.flags()));
+					
+				// Use this
+				target = found;
+			}
+			
+			// Debug
+			Debugging.debugNote("Mapped %s:%s -> %s:%s",
+				bind.inClass, bind.method.nameAndType(),
+				target.inClass, target.method.nameAndType());
+			
+			// Use target for the given method
+			methodInfo.add(target.vTable);
+		}
+		
+		// Build VTable
+		return this.__vtMethodsToHandle(methodInfo);
+	}
+	
+	/**
 	 * Returns the class chain, the uppermost class is first in the chain.
 	 * 
 	 * @param __class The class to get the chain of.
@@ -1147,6 +1342,224 @@ public final class BootState
 			
 			// Use that one
 			return depth;
+		}
+	}
+	
+	/**
+	 * Calculates the static method binds for this class, this for the most
+	 * part refers to static methods or static methods in a super-class.
+	 * 
+	 * @param __for The class for static calls.
+	 * @return The bound static methods for the class.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/30
+	 */
+	private List<MethodBinder> __classBindsStatic(ClassState __for)
+		throws IOException, NullPointerException
+	{
+		if (__for == null)
+			throw new NullPointerException("NARG");
+		
+		// Was this already calculated? Recycle it
+		List<MethodBinder> rv = __for._staticBinds;
+		if (rv != null)
+			return rv;
+		
+		// Get the class chain
+		List<ClassState> chain = this.__classChain(__for);
+		
+		// Setup resultant list
+		rv = new ArrayList<>(chain.size());
+		__for._staticBinds = UnmodifiableList.<MethodBinder>of(rv);
+		
+		// Process every class, each name and type can be replaced!
+		for (ClassState at : chain)
+		{
+			// If the class has no pool it has not been loaded yet, so attempt
+			// to load it
+			if (at._poolMemHandle == null)
+				this.loadClass(at.thisName);
+			
+			// Load in methods
+			for (MinimizedMethod method : at.classFile.methods(true))
+			{
+				// Will we be replacing a method with the same name and type?
+				int found = -1;
+				for (int i = 0, n = rv.size(); i < n; i++)
+					if (method.nameAndType().equals(
+						rv.get(i).method.nameAndType()))
+					{
+						found = i;
+						break;
+					}
+				
+				// Calculate the method bind
+				MethodBinder bind = new MethodBinder(at, method,
+					new VTableMethod(this.__calcMethodCodeAddr(at,
+						true, method), at._poolMemHandle),
+					__for.thisName.isInSamePackage(at.thisName));
+				
+				// Adding a fresh new bind?
+				if (found < 0)
+					rv.add(bind);
+				
+				// Replacing an existing one, from a lower method point?
+				else
+					rv.set(found, bind);
+			}
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Calculates the method binds for the class, this refers to all methods
+	 * linearly in the entire sequence for processing.
+	 * 
+	 * @param __for The class doing the resolution for, this is used for package
+	 * checks.
+	 * @return The bound methods for the class.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/30
+	 */
+	private List<MethodBinder> __classBindsVirtual(ClassState __for)
+		throws IOException, NullPointerException
+	{
+		if (__for == null)
+			throw new NullPointerException("NARG");
+		
+		// Was this already calculated? Recycle it
+		List<MethodBinder> rv = __for._virtualBinds;
+		if (rv != null)
+			return rv;
+		
+		// Get the class chain
+		List<ClassState> chain = this.__classChain(__for);
+		
+		// Setup resultant list
+		rv = new ArrayList<>(chain.size());
+		__for._virtualBinds = UnmodifiableList.<MethodBinder>of(rv);
+		
+		// Process every class
+		for (ClassState at : chain)
+		{
+			// If the class has no pool it has not been loaded yet, so attempt
+			// to load it
+			if (at._poolMemHandle == null)
+				this.loadClass(at.thisName);
+			
+			for (MinimizedMethod method : at.classFile.methods(false))
+				rv.add(new MethodBinder(at, method, new VTableMethod(
+					this.__calcMethodCodeAddr(at, false, method),
+						at._poolMemHandle),
+					__for.thisName.isInSamePackage(at.thisName)));
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the class instance base of the given class.
+	 * 
+	 * @param __cl The class to get the base from. 
+	 * @return The instance field base of the class.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/30
+	 */
+	private int __classInstanceFieldBase(ClassState __cl)
+		throws IOException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// For the object/primitive class this is always zero.
+		if (__cl.thisName.isObject() || __cl.thisName.isPrimitive())
+			return 0;
+		
+		// Get the cached value
+		try
+		{
+			return __cl._classInfoHandle
+				.getInteger(ClassProperty.OFFSETBASE_INSTANCE_FIELDS);
+		}
+		catch (NoSuchElementException ignored)
+		{
+			// The field base is just the super class allocation size
+			int base = this.__allocSize(__cl._superClass);
+			__cl._classInfoHandle.set(ClassProperty.OFFSETBASE_INSTANCE_FIELDS,
+				base);
+			
+			return base;
+		}
+	}
+	
+	/**
+	 * Gets the XTable for the given class.
+	 * 
+	 * @param __for The class to get for.
+	 * @param __type The type of VTable to use.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @return The calculated handle.
+	 * @since 2021/01/30
+	 */
+	private ListValueHandle __getXTable(ClassState __for, InvokeType __type)
+		throws IOException, NullPointerException
+	{
+		if (__for == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		// Which property is this?
+		int prop;
+		switch (__type)
+		{
+			case VIRTUAL:
+			case SPECIAL:
+				prop = ClassProperty.MEMHANDLE_VTABLE;
+				break;
+			
+			case STATIC:
+				prop = ClassProperty.MEMHANDLE_STABLE;
+				break;
+			
+			default:
+				throw Debugging.oops(__type);
+		}
+		
+		// Was it already set?
+		try
+		{
+			return (ListValueHandle)__for._classInfoHandle.getMemHandle(prop);
+		}
+		
+		// It is missing, so it needs calculation
+		catch (NoSuchElementException ignored)
+		{
+			// Calculate the appropriate table
+			ListValueHandle handle;
+			switch (__type)
+			{
+				case VIRTUAL:
+				case SPECIAL:
+					handle = this.__calcVTable(__for);
+					break;
+				
+				case STATIC:
+					handle = this.__calcSTable(__for);
+					break;
+				
+				default:
+					throw Debugging.oops(__type);
+			}
+			
+			// Set it
+			__for._classInfoHandle.set(prop, handle);
+			
+			// Use the handle
+			return handle;
 		}
 	}
 	
@@ -1259,8 +1672,7 @@ public final class BootState
 							return this.__baseArraySize() + minField.offset;
 						
 						// Whereas instance is based on the class base
-						return at._classInfoHandle.getInteger(
-							ClassProperty.OFFSETBASE_INSTANCE_FIELDS) +
+						return this.__classInstanceFieldBase(at) +
 							minField.offset;
 					}
 						
@@ -1285,46 +1697,33 @@ public final class BootState
 				InvokedMethod invokedMethod = __entry.<InvokedMethod>value(
 					InvokedMethod.class);
 				
-				// Load the target class
+				// Load the target class details
 				MethodHandle handle = invokedMethod.handle;
 				ClassState inClass = this.loadClass(handle.outerClass());
 				
-				// Call of static method, this is a direct method pointer to
-				// the method code
-				if (invokedMethod.type() == InvokeType.STATIC)
+				// Load the correct binding table for the given invocation
+				List<MethodBinder> binds;
+				switch (invokedMethod.type())
 				{
-					// TODO: Fix static invocations, need both exec+pool!
-					Debugging.todoNote("Fix Static Links: Exec+Pool!!");
+					case VIRTUAL:
+					case SPECIAL:
+						binds = this.__classBindsVirtual(inClass);
+						break;
+						
+					case STATIC:
+						binds = this.__classBindsStatic(inClass);
+						break;
+						
+					case INTERFACE:
+						Debugging.todoNote("Invoke: %s", __entry);
+						return failValue;
 					
-					// Find the target method
-					// {@squirreljme.error BC0m The specified method does not
-					// exist. (The method)}
-					MinimizedMethod method = inClass.classFile.method(
-						true, handle.nameAndType());
-					if (method == null)
-						throw new InvalidClassFormatException(
-							"BC0m " + handle);
-					
-					// {@squirreljme.error BC0n Pure native method call not
-					// wrapped or processed. (The method)}
-					if (method.flags().isNative())
-						return this.__pureVirtualBind().vTable.execAddr;
-					
-					// Where is the code located?
-					return this.__calcMethodCodeAddr(inClass, true,
-						method);
+					default:
+						throw Debugging.oops(__entry);
 				}
 				
-				// Interfaces?
-				else if (invokedMethod.type() == InvokeType.INTERFACE)
-				{
-					// TODO: Handle interfaces
-					Debugging.todoNote("Interface? %s", __entry);
-					break;
-				}
-				
-				// Otherwise find the linear method index position
-				List<MethodBinder> binds = this.__classBinds(inClass);
+				// Find the linear index for the given bind, which method
+				// are we calling here?
 				for (int i = 0, n = binds.size(); i < n; i++)
 				{
 					MethodBinder bind = binds.get(i);
@@ -1334,7 +1733,7 @@ public final class BootState
 						.equals(handle.nameAndType()))
 						continue;
 					
-					// Return the offset into the Method VTable
+					// Return the offset into the XTable
 					return this.__baseArraySize() + ((i * 4) * 2);
 				}
 				
@@ -1342,6 +1741,28 @@ public final class BootState
 				// (The method to link)}
 				throw new InvalidClassFormatException(String.format(
 					"BC0s %s", __entry));
+				
+				// Get the XTable for a given class
+			case INVOKE_XTABLE:
+				InvokeXTable invokeXTable = __entry.<InvokeXTable>value(
+					InvokeXTable.class);
+				
+				ClassState inXClass = this.loadClass(invokeXTable.targetClass);
+				switch (invokeXTable.invokeType)
+				{
+					case VIRTUAL:
+					case SPECIAL:
+					case STATIC:
+						return this.__getXTable(inXClass,
+							invokeXTable.invokeType);
+					
+					case INTERFACE:
+						Debugging.todoNote("XTable: %s", __entry);
+						return failValue;
+					
+					default:
+						throw Debugging.oops(__entry);
+				}
 				
 				// A noted string for debugging purposes, this directly points
 				// to the ROM for String data
@@ -1362,179 +1783,6 @@ public final class BootState
 			throw Debugging.todo();
 		Debugging.todoNote("Handle pool entry: %s", __entry);
 		return failValue;
-	}
-	
-	/**
-	 * Calculates the method code address.
-	 * 
-	 * @param __inClass The class this is in.
-	 * @param __static Is this a static method?
-	 * @param __method The method to get.
-	 * @return The pointer to the method code.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/10/29
-	 */
-	private BootJarPointer __calcMethodCodeAddr(ClassState __inClass,
-		boolean __static, MinimizedMethod __method)
-		throws IOException, NullPointerException
-	{
-		if (__inClass == null || __method == null)
-			throw new NullPointerException("NARG");
-		
-		int base = __inClass.classFile.header.get(__static ?
-			StaticClassProperty.OFFSET_STATIC_METHOD_DATA :
-			StaticClassProperty.OFFSET_INSTANCE_METHOD_DATA);
-		
-		// If this is targetting an array or primitive type, just perform
-		// lookups on Object instead since it will not be really possible
-		// to execute methods otherwise.
-		if (__inClass.thisName.isArray() || __inClass.thisName.isPrimitive())
-			return this.__calcMethodCodeAddr(this.loadClass(
-				BootState._OBJECT_CLASS), __static, __method);
-		
-		return new BootJarPointer(base + __method.codeoffset,
-			this._rawChunks.get(__inClass.thisName).futureAddress());
-	}
-	
-	/**
-	 * Calculates the VTable for the given class, a VTable contains all of
-	 * the method references and such. Note that constructors are counted as
-	 * virtual calls as well, since you can call a super-class constructor but
-	 * still call the correct constructor.
-	 * 
-	 * @param __class The class to calculate for.
-	 * @return The calculated and initialized VTable for a class.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/01/26
-	 */
-	private MemHandle __calcVTable(ClassState __class)
-		throws IOException, NullPointerException
-	{
-		if (__class == null)
-			throw new NullPointerException("NARG");
-		
-		// Get class information and otherwise
-		List<MethodBinder> binds = this.__classBinds(__class);
-		
-		// State for the current class, we know how big the table is going to
-		// be due to all of the binds
-		List<VTableMethod> methodInfo = new ArrayList<>(binds.size());
-		
-		// Go through all the bindings and determine the methods to use
-		for (MethodBinder bind : binds)
-		{
-			MethodBinder target;
-			
-			// If this is an interface, then all methods are pure virtual
-			if (__class.classFile.flags().isInterface())
-				target = this.__pureVirtualBind();
-			
-			// Private methods refer to the same method
-			else if (bind.isPrivate())
-				target = bind;
-			
-			// Otherwise search through everything in backwards order
-			else
-			{
-				// State for method lookup
-				MethodBinder found = null;
-				ClassState lastClass = null;
-				boolean atOurClass = false;
-				
-				// Search for the given method
-				for (ListIterator<MethodBinder> looky =
-					binds.listIterator(binds.size()); looky.hasPrevious();)
-				{
-					MethodBinder look = looky.previous();
-					
-					// Have we switched classes?
-					if (look.inClass != lastClass)
-					{
-						lastClass = look.inClass;
-						
-						// If this is the class we are coming from to calculate
-						// the base of, we can only lookup methods that
-						// either replace or are from the same class
-						if (lastClass == bind.inClass)
-							atOurClass = true;
-						
-						// If we were at our class, but are not anymore then
-						// stop because we do not want to go further up
-						else if (atOurClass)
-							break;
-					}
-					
-					// Is a method of a different name and/or type, ignore
-					if (!bind.method.nameAndType()
-						.equals(look.method.nameAndType()))
-						continue;
-					
-					// Debug
-					Debugging.debugNote("Try? %s:%s -> %s:%s (%s)",
-						bind.inClass, bind.method.nameAndType(),
-						look.inClass, look.method.nameAndType(),
-						look.method.flags());
-					
-					// Ignore private methods and package private methods if
-					// we are not in the same package for the class we are
-					// looking at.
-					if (look.isPrivate() ||
-						(look.isPackagePrivate() && !look.inSamePackage))
-						continue;
-					
-					// Otherwise, we have found our method
-					found = look;
-					break;
-				}
-				
-				// If the method and class are abstract, or this is a native
-				// method then we cannot possibly call the code for it. This
-				// becomes a pure virtual call, which will fail. Or we found
-				// a native or abstract method.
-				if ((found == null && ((bind.isAbstract() &&
-						bind.isClassAbstract()) || bind.isNative())) || 
-					(found != null &&
-						(found.isNative() || found.isAbstract())))
-					found = this.__pureVirtualBind();
-					
-				// {@squirreljme.error BC0r Could not find a method to link to.
-				// (The class and method; The flags)}
-				else if (found == null)
-					throw new InvalidClassFormatException(String.format(
-						"BC0r %s:%s (%s)", bind.inClass, bind.method,
-							bind.method.flags()));
-					
-				// Use this
-				target = found;
-			}
-			
-			// Debug
-			Debugging.debugNote("Mapped %s:%s -> %s:%s",
-				bind.inClass, bind.method.nameAndType(),
-				target.inClass, target.method.nameAndType());
-			
-			// Use target for the given method
-			methodInfo.add(target.vTable);
-		}
-		
-		// Allocate VTable information
-		int numMethods = methodInfo.size();
-		ListValueHandle vTable = this._memHandles.allocList(
-			MemHandleKind.VIRTUAL_VTABLE, numMethods * 2);
-		
-		// Build VTable information into an actual VTable
-		for (int i = 0, o = 0; i < numMethods; i++, o += 2)
-		{
-			VTableMethod method = methodInfo.get(i);
-			
-			vTable.set(o, method.execAddr);
-			vTable.set(o + 1, method.poolHandle);
-		} 
-		
-		// Use this handle
-		return vTable;
 	}
 	
 	/**
@@ -1570,49 +1818,33 @@ public final class BootState
 	}
 	
 	/**
-	 * Calculates the method binds for the class, this refers to all methods
-	 * linearly in the entire sequence for processing.
+	 * Creates a VTable handle from the given handles.
 	 * 
-	 * @param __for The class doing the resolution for, this is used for package
-	 * checks.
-	 * @return The bound methods for the class.
-	 * @throws IOException On read errors.
+	 * @param __methodInfo Method information to convert.
+	 * @return The allocation handles.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/30
 	 */
-	private List<MethodBinder> __classBinds(ClassState __for)
-		throws IOException, NullPointerException
+	private ListValueHandle __vtMethodsToHandle(
+		List<VTableMethod> __methodInfo)
+		throws NullPointerException
 	{
-		if (__for == null)
+		if (__methodInfo == null)
 			throw new NullPointerException("NARG");
 		
-		// Was this already calculated? Recycle it
-		List<MethodBinder> rv = __for._methodBinds;
-		if (rv != null)
-			return rv;
+		int numMethods = __methodInfo.size();
+		ListValueHandle vTable = this._memHandles.allocList(
+			MemHandleKind.VIRTUAL_VTABLE, numMethods * 2);
 		
-		// Get the class chain
-		List<ClassState> chain = this.__classChain(__for);
-		
-		// Setup resultant list
-		rv = new ArrayList<>(chain.size());
-		__for._methodBinds = UnmodifiableList.<MethodBinder>of(rv);
-		
-		// Process every class
-		for (ClassState at : chain)
+		// Build VTable information into an actual VTable
+		for (int i = 0, o = 0; i < numMethods; i++, o += 2)
 		{
-			// If the class has no pool it has not been loaded yet, so attempt
-			// to load it
-			if (at._poolMemHandle == null)
-				this.loadClass(at.thisName);
+			VTableMethod method = __methodInfo.get(i);
 			
-			for (MinimizedMethod method : at.classFile.methods(false))
-				rv.add(new MethodBinder(at, method, new VTableMethod(
-					this.__calcMethodCodeAddr(at, false, method),
-						at._poolMemHandle),
-					__for.thisName.isInSamePackage(at.thisName)));
+			vTable.set(o, method.execAddr);
+			vTable.set(o + 1, method.poolHandle);
 		}
 		
-		return rv;
+		return vTable;
 	}
 }

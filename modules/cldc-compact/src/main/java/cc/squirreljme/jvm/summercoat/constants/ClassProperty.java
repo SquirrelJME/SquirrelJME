@@ -95,7 +95,11 @@ public interface ClassProperty
 	byte MEMHANDLE_ITABLE =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
 	
+	/** The static invocation table. */
+	byte MEMHANDLE_STABLE =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
+	
 	/** The number of properties available. */
 	byte NUM_RUNTIME_PROPERTIES =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
 }
