@@ -19,7 +19,6 @@ import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
-import todo.OOPS;
 
 /**
  * This class contains all of the static methods which are for writing debug
