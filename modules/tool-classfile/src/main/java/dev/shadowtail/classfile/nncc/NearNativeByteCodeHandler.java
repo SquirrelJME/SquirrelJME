@@ -564,85 +564,67 @@ public final class NearNativeByteCodeHandler
 	public final void doFieldPut(FieldReference __fr,
 		JavaStackResult.Input __i, JavaStackResult.Input __v)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Push references
 		this.__refPush();
 		
-		// TODO
-		codebuilder.addBreakpoint(0x7D04, null);
-		
-		// The instance register
-		int ireg = __i.register;
+		// The instance
+		MemHandleRegister instance = MemHandleRegister.of(__i.register);
+		IntValueRegister value = IntValueRegister.of(__v.register);
 		
 		// Cannot be null
-		this.__basicCheckNPE(ireg);
+		this.__basicCheckNPE(instance);
 		
 		// Must be the given class
 		if (!__i.isCompatible(__fr.className()))
-			this.__basicCheckCCE(ireg, __i.type, __fr.className());
+			this.__basicCheckCCE(instance, __i.type, __fr.className());
 			
-		// We already checked the only valid exceptions, so do not perform
-		// later handling!
-		this.state.canexception = false;
+		// If an object, this will need to be uncounted
+		boolean isObject = __fr.memberType().isObject();
 		
-		// Get volatiles
+		// We need volatile storage
 		VolatileRegisterStack volatiles = this.volatiles;
-		int volfioff = volatiles.getUnmanaged();
-		
-		// Read field offset
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, false),
-			volfioff);
-		
-		// Data type used
-		DataType dt = DataType.of(__fr.memberType().primitiveType());
-		
-		// If we are storing an object, we need to uncount the value already
-		// in this field
-		int voltemp = -1;
-		boolean isobject;
-		if ((isobject = __fr.memberType().isObject()))
+		try (Volatile<TypedRegister<AccessedField>> fieldOff =
+				volatiles.getTyped(AccessedField.class);
+			Volatile<MemHandleRegister> old =
+				(isObject ? volatiles.getMemHandle() : null))
 		{
-			// Count our own reference up
-			this.__refCount(__v.register);
+			// Read field offset
+			codeBuilder.addPoolLoad(this.__fieldAccess(
+				FieldAccessType.INSTANCE, __fr, false),
+				fieldOff.register);
 			
-			// Read the value of the field for later clear
-			voltemp = volatiles.getUnmanaged();
-			codebuilder.addMemoryOffReg(
-				dt, true,
-				voltemp, ireg, volfioff);
-		}
-		
-		// Use helper function?
-		if (dt.isWide())
-		{
-			// Write memory
-			this.__invokeStatic(InvokeType.SYSTEM,
-				NearNativeByteCodeHandler.JVMFUNC_CLASS,
-				"jvmMemWriteLong", "(IIII)V",
-				ireg, volfioff, __v.register, __v.register + 1);
-		}
-		
-		// Write to memory
-		else
-			codebuilder.addMemoryOffReg(
-				dt, false,
-				__v.register, ireg, volfioff);
-		
-		// If we stored an object, reference count the field after it has
-		// been written to
-		if (isobject)
-		{
-			// Uncount
-			this.__refUncount(voltemp);
+			// Data type used
+			DataType dt = DataType.of(__fr.memberType().primitiveType());
 			
-			// Not needed
-			volatiles.removeUnmanaged(voltemp);
+			// If we are storing an object, we need to uncount the value
+			// already in this field
+			if (isObject)
+			{
+				// Count our own reference up
+				this.__refCount(instance);
+				
+				// Read the value of the field for later uncount
+				codeBuilder.addMemHandleAccess(dt, true,
+					old.register.asIntValue(), instance,
+					fieldOff.register.asIntValue());
+			}
+			
+			// Wide access?
+			if (dt.isWide())
+				codeBuilder.addMemHandleAccess(dt, false,
+					WideRegister.of(value.register, value.register + 1),
+					instance, fieldOff.register.asIntValue());
+			else
+				codeBuilder.addMemHandleAccess(dt, false,
+					value, instance, fieldOff.register.asIntValue());
+			
+			// If we stored an object, reference count the field after it has
+			// been written to
+			if (isObject)
+				this.__refUncount(old.register);
 		}
-		
-		// No longer used
-		volatiles.removeUnmanaged(volfioff);
 			
 		// Clear references as needed
 		this.__refClear();
