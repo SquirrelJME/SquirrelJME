@@ -12,7 +12,7 @@ package dev.shadowtail.classfile.nncc;
 
 import java.util.Iterator;
 import net.multiphasicapps.classfile.ByteCode;
-import net.multiphasicapps.collections.UnmodifiableIterator;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 
 /**
  * This is similar to {@link ByteCode} except that it instead of using a

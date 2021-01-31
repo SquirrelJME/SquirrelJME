@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.collections.UnmodifiableIterator;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 
 /**
  * This represents a every exception that exists within a method.

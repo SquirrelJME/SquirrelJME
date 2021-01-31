@@ -13,7 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.multiphasicapps.collections.UnmodifiableIterator;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 
 /**
  * This class is used to store and contain the basic constant pool which

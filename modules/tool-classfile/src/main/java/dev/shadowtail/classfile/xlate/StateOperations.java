@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import net.multiphasicapps.collections.UnmodifiableIterator;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 
 /**
  * This represents multiple state operations.

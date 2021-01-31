@@ -10,7 +10,7 @@
 
 package cc.squirreljme.jvm.suite;
 
-import net.multiphasicapps.strings.StringUtils;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 
 /**
  * This represents the vendor of a midlet suite.

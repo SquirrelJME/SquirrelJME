@@ -8,52 +8,37 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package cc.squirreljme.runtime.cldc.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * This is an iterator where elements cannot be removed and where it iterates
- * over an array.
+ * This creates an unmodifiable iterator over an existing iterator.
  *
  * @param <T> The type to use.
  * @since 2018/05/13
  */
-public final class UnmodifiableArrayIterator<T>
+public final class UnmodifiableIterator<T>
 	implements Iterator<T>
 {
-	/** The element limit. */
-	protected final int limit;
-	
-	/** The source elements, cleared when empty. */
-	private T[] _source;
-	
-	/** The current element. */
-	private int _at;
+	/** The source iterator. */
+	protected final Iterator<T> source;
 	
 	/**
 	 * Initializes the iterator.
 	 *
-	 * @param __a The input array.
-	 * @param __o The offset into the array.
-	 * @param __l The number of elements to read.
-	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
-	 * negative or exceed the array bounds.
+	 * @param __it The source iterator.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	UnmodifiableArrayIterator(T[] __a, int __o, int __l)
-		throws ArrayIndexOutOfBoundsException, NullPointerException
+	UnmodifiableIterator(Iterator<T> __it)
+		throws NullPointerException
 	{
-		if (__a == null)
+		if (__it == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
-			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		this.limit = __o + __l;
-		this._source = __a;
-		this._at = __o;
+		this.source = __it;
 	}
 	
 	/**
@@ -62,8 +47,8 @@ public final class UnmodifiableArrayIterator<T>
 	 */
 	@Override
 	public final boolean hasNext()
-	{	
-		return (this._at < this.limit);
+	{
+		return this.source.hasNext();
 	}
 	
 	/**
@@ -74,16 +59,7 @@ public final class UnmodifiableArrayIterator<T>
 	public final T next()
 		throws NoSuchElementException
 	{
-		// Is at the end?
-		int at = this._at;
-		if (at >= this.limit)
-		{
-			this._source = null;
-			throw new NoSuchElementException("NSEE");
-		}
-		
-		this._at = at + 1;
-		return this._source[at];
+		return this.source.next();
 	}
 	
 	/**
@@ -96,6 +72,42 @@ public final class UnmodifiableArrayIterator<T>
 		throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException("RORO");
+	}
+	
+	/**
+	 * Wraps the given iterable.
+	 *
+	 * @param <T> The iterator type.
+	 * @param __i The iterable to wrap.
+	 * @return The wrapped iterator.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/13
+	 */
+	public static <T> Iterator<T> of(Iterable<T> __i)
+		throws NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		return new UnmodifiableIterator<T>(__i.iterator());
+	}
+	
+	/**
+	 * Wraps the given iterator.
+	 *
+	 * @param <T> The iterator type.
+	 * @param __i The iterator to wrap.
+	 * @return The wrapped iterator.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/13
+	 */
+	public static <T> Iterator<T> of(Iterator<T> __i)
+		throws NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		return new UnmodifiableIterator<T>(__i);
 	}
 	
 	/**

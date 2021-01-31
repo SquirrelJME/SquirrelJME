@@ -15,7 +15,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Map;
-import net.multiphasicapps.collections.UnmodifiableIterator;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**

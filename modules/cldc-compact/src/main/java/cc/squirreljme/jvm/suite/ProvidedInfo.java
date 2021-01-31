@@ -10,16 +10,16 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.multiphasicapps.collections.EmptySet;
-import net.multiphasicapps.collections.UnmodifiableSet;
-import net.multiphasicapps.strings.StringUtils;
-import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 
 /**
  * This contains all of the information for dependencies which are provided
@@ -28,9 +28,10 @@ import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
  * @since 2017/11/30
  */
 public final class ProvidedInfo
+	implements Iterable<MarkedProvided>
 {
 	/** Provided fields. */
-	protected final Set<MarkedProvided> provided;
+	private final MarkedProvided[] _provided;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -43,8 +44,15 @@ public final class ProvidedInfo
 	 */
 	public ProvidedInfo(MarkedProvided... __provs)
 	{
-		this((__provs == null ? EmptySet.<MarkedProvided>empty() :
-			Arrays.<MarkedProvided>asList(__provs)));
+		// Defensive copy
+		__provs = (__provs == null ? new MarkedProvided[0] : __provs.clone());
+		
+		// Check for nulls
+		for (MarkedProvided o : __provs)
+			if (o == null)
+				throw new NullPointerException("NARG");
+		
+		this._provided = __provs;
 	}
 	
 	/**
@@ -57,16 +65,8 @@ public final class ProvidedInfo
 	public ProvidedInfo(Collection<MarkedProvided> __provs)
 		throws NullPointerException
 	{
-		if (__provs == null)
-			throw new NullPointerException("NARG");
-		
-		Set<MarkedProvided> provided = new LinkedHashSet<>();
-		for (MarkedProvided p : __provs)
-			if (p == null)
-				throw new NullPointerException("NARG");
-			else
-				provided.add(p);
-		this.provided = UnmodifiableSet.<MarkedProvided>of(provided);
+		this(__provs.<MarkedProvided>toArray(
+			new MarkedProvided[__provs.size()]));
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public final class ProvidedInfo
 		if (!(__o instanceof ProvidedInfo))
 			return false;
 		
-		return this.provided.equals(((ProvidedInfo)__o).provided);
+		return Arrays.equals(this._provided, ((ProvidedInfo)__o)._provided);
 	}
 	
 	/**
@@ -92,18 +92,17 @@ public final class ProvidedInfo
 	@Override
 	public final int hashCode()
 	{
-		return this.provided.hashCode();
+		return this._provided.hashCode();
 	}
 	
 	/**
-	 * Returns the provided.
-	 *
-	 * @return The provided.
-	 * @since 2017/12/31
+	 * {@inheritDoc}
+	 * @since 2021/01/31
 	 */
-	public final Set<MarkedProvided> provided()
+	@Override
+	public Iterator<MarkedProvided> iterator()
 	{
-		return this.provided;
+		return UnmodifiableIterator.of(this._provided);
 	}
 	
 	/**
@@ -118,7 +117,7 @@ public final class ProvidedInfo
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>(
-				(rv = this.provided.toString()));
+				(rv = Arrays.asList(this._provided).toString()));
 		
 		return rv;
 	}
@@ -133,7 +132,7 @@ public final class ProvidedInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/20
 	 */
-	public static final ProvidedInfo of(SuiteInfo __info)
+	public static ProvidedInfo of(SuiteInfo __info)
 		throws InvalidSuiteException, NullPointerException
 	{
 		if (__info == null)
