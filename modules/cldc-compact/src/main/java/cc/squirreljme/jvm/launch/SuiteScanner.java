@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -20,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This is a scanner which can read all of the application groups that are

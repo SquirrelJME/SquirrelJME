@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tool.manifest;
+package cc.squirreljme.jvm.manifest;
 
 import java.io.BufferedReader;
 import java.io.IOException;

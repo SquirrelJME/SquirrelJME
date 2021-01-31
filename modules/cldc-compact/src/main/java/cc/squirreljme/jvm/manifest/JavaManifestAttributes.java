@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tool.manifest;
+package cc.squirreljme.jvm.manifest;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
