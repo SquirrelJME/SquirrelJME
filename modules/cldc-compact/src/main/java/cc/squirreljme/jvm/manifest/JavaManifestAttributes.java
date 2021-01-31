@@ -12,10 +12,9 @@ package cc.squirreljme.jvm.manifest;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.collections.EmptyMap;
-import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This contains the attributes for a single section within the manifest file.
@@ -28,7 +27,7 @@ public final class JavaManifestAttributes
 	extends AbstractMap<JavaManifestKey, String>
 {
 	/** The key value pairs. */
-	protected final Map<JavaManifestKey, String> pairs;
+	private final Map<JavaManifestKey, String> _pairs;
 	
 	/**
 	 * Initializes empty manifest attributes.
@@ -37,7 +36,7 @@ public final class JavaManifestAttributes
 	 */
 	JavaManifestAttributes()
 	{
-		this.pairs = EmptyMap.<JavaManifestKey, String>empty();
+		this._pairs = new HashMap<>();
 	}
 	
 	/**
@@ -55,8 +54,7 @@ public final class JavaManifestAttributes
 			throw new NullPointerException("NARG");
 		
 		// Copy
-		this.pairs = UnmodifiableMap.<JavaManifestKey, String>of(
-			new HashMap<>(__from));
+		this._pairs = new LinkedHashMap<>(__from);
 	}
 	
 	/**
@@ -66,7 +64,7 @@ public final class JavaManifestAttributes
 	@Override
 	public boolean containsKey(Object __o)
 	{
-		return this.pairs.containsKey(__o);
+		return this._pairs.containsKey(__o);
 	}
 	
 	/**
@@ -100,7 +98,7 @@ public final class JavaManifestAttributes
 	@Override
 	public Set<Map.Entry<JavaManifestKey, String>> entrySet()
 	{
-		return this.pairs.entrySet();
+		return this._pairs.entrySet();
 	}
 	
 	/**
@@ -110,7 +108,7 @@ public final class JavaManifestAttributes
 	@Override
 	public String get(Object __o)
 	{
-		return this.pairs.get(__o);
+		return this._pairs.get(__o);
 	}
 	
 	/**
@@ -199,7 +197,7 @@ public final class JavaManifestAttributes
 	@Override
 	public int size()
 	{
-		return this.pairs.size();
+		return this._pairs.size();
 	}
 }
 
