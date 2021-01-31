@@ -39,7 +39,6 @@ dependencies
 	api project(":modules:cldc-compact")
 	api project(":modules:io")
 	api project(":modules:meep-midlet")
-	api project(":modules:tool-manifest-reader")
 	api project(":modules:tool-manifest-writer")
 	api project(":modules:collections")
 }
