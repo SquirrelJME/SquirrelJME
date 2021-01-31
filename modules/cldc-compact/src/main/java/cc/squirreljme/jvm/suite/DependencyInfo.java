@@ -124,7 +124,7 @@ public final class DependencyInfo
 		// matching ones
 		Set<MarkedDependency> depends = new LinkedHashSet<>(this._depends),
 			matched = new LinkedHashSet<>();
-		for (MarkedProvided p : __prov.provided())
+		for (MarkedProvided p : __prov)
 		{
 			for (Iterator<MarkedDependency> it = depends.iterator();
 				it.hasNext();)

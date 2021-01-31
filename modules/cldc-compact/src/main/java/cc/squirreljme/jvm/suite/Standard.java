@@ -10,10 +10,10 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.strings.StringUtils;
 
 /**
  * This represents a standard which is provided by an API.
