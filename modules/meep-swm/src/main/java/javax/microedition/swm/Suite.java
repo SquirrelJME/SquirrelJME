@@ -11,9 +11,9 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
-import cc.squirreljme.runtime.swm.DependencyInfo;
-import cc.squirreljme.runtime.swm.MatchResult;
-import cc.squirreljme.runtime.swm.SuiteInfo;
+import cc.squirreljme.jvm.suite.DependencyInfo;
+import cc.squirreljme.jvm.suite.MatchResult;
+import cc.squirreljme.jvm.suite.SuiteInfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm;
+package cc.squirreljme.jvm.suite;
 
 /**
  * This represents the type of the dependency that is to be included.

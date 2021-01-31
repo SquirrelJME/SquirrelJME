@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm;
+package cc.squirreljme.jvm.suite;
 
 import net.multiphasicapps.strings.StringUtils;
 

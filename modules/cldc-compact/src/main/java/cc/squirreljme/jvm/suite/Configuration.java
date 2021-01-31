@@ -8,19 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm;
+package cc.squirreljme.jvm.suite;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+import net.multiphasicapps.strings.StringUtils;
 
 /**
- * This represents a profile that may be implemented, such as MIDP.
+ * This represents a configuration such as CLDC which specifies which base
+ * classes are available. Configurations may optionally be "compact" in which
+ * they are a lighter version.
  *
  * @since 2016/12/14
  */
-public final class Profile
-	implements Comparable<Profile>, MarkedDependency, MarkedProvided
+public final class Configuration
+	implements Comparable<Configuration>, MarkedDependency, MarkedProvided
 {
 	/** Name. */
 	protected final APIName name;
@@ -28,56 +31,60 @@ public final class Profile
 	/** Version. */
 	protected final SuiteVersion version;
 	
+	/** Is this configuration compact? */
+	protected final boolean compact;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
 	/**
-	 * Initializes the profile using the given API name and version.
+	 * Initializes the configuration using the given API name and version.
 	 *
 	 * @param __n The name to use.
-	 * @param __v The version of the suite, this is optional.
-	 * @throws NullPointerException If no name was specified.
+	 * @param __v The version of the suite.
+	 * @param __c If {@code true} then the configuration is compact.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public Profile(APIName __n, SuiteVersion __v)
+	public Configuration(APIName __n, SuiteVersion __v, boolean __c)
 		throws NullPointerException
 	{
-		if (__n == null)
+		if (__n == null || __v == null)
 			throw new NullPointerException("NARG");
 		
+		// Set
 		this.name = __n;
 		this.version = __v;
+		this.compact = __c;
 	}
 	
 	/**
-	 * Initializes the profile by parsing the given string.
+	 * Initializes the configuration by parsing the given string.
 	 *
 	 * @param __n The string to parse.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public Profile(String __n)
+	public Configuration(String __n)
 		throws NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// No version specified
-		int n = __n.length(),
-			dx = __n.lastIndexOf('-');
-		char c;
-		if (dx < 0 || dx + 1 >= n || (c = __n.charAt(dx + 1)) < '0' || c > '9')
-		{
-			this.name = new APIName(__n);
-			this.version = null;
-		}
+		// {@squirreljme.error DG02 Expected two or three fields for the
+		// configuration. (The input string)}
+		String[] fields = StringUtils.fieldSplit('-', __n);
+		int fn = fields.length;
+		if (fn != 2 && fn != 3)
+			throw new InvalidSuiteException(String.format("AR02 %s", __n));
 		
-		// There is a version
-		else
-		{
-			this.name = new APIName(__n.substring(0, dx));
-			this.version = new SuiteVersion(__n.substring(dx + 1));
-		}
+		// Potentially compact?
+		this.compact = (fn > 2 &&
+			0 == fields[2].compareToIgnoreCase("compact"));
+		
+		// Parse name and version
+		this.name = new APIName(fields[0]);
+		this.version = new SuiteVersion(fields[1]);
 	}
 	
 	/**
@@ -85,18 +92,21 @@ public final class Profile
 	 * @since 2017/11/30
 	 */
 	@Override
-	public int compareTo(Profile __o)
+	public int compareTo(Configuration __o)
 	{
 		int rv = this.name.compareTo(__o.name);
 		if (rv != 0)
 			return rv;
 		
-		SuiteVersion a = this.version,
-			b = __o.version;
-		if ((a == null) != (b == null))
-			return (a == null ? -1 : 1);
-		else if (a != null)
-			return a.compareTo(b);
+		rv = this.version.compareTo(__o.version);
+		if (rv != 0)
+			return rv;
+		
+		// Compact is before non-compact
+		boolean a = this.compact,
+			b = __o.compact;
+		if (a != b)
+			return (a ? -1 : 1);
 		return 0;
 	}
 	
@@ -110,12 +120,13 @@ public final class Profile
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof Profile))
+		if (!(__o instanceof Configuration))
 			return false;
 		
-		Profile o = (Profile)__o;
+		Configuration o = (Configuration)__o;
 		return this.name.equals(o.name) &&
-			Objects.equals(this.version, o.version);
+			this.version.equals(o.version) &&
+			this.compact == o.compact;
 	}
 	
 	/**
@@ -126,7 +137,8 @@ public final class Profile
 	public int hashCode()
 	{
 		return this.name.hashCode() ^
-			Objects.hashCode(this.version);
+			Objects.hashCode(this.version) ^
+			(this.compact ? 0xFFFFFFFF : 0);
 	}
 	
 	/**
@@ -160,21 +172,21 @@ public final class Profile
 	@Override
 	public String toString()
 	{
-		
 		Reference<String> ref = this._string;
 		String rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = "Profile " +
-				this.name + ":" + this.version));
+			this._string = new WeakReference<>((rv = "Configuration " +
+				this.name + ":" + this.version +
+				(this.compact ? "-compact" : "")));
 		
 		return rv;
 	}
 	
 	/**
-	 * Returns the version of this profile.
+	 * Returns the version of this configuration.
 	 *
-	 * @return The profile version.
+	 * @return The configuration version.
 	 * @since 2017/12/05
 	 */
 	public SuiteVersion version()

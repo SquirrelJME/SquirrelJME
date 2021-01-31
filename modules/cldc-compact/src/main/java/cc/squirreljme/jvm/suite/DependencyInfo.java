@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm;
+package cc.squirreljme.jvm.suite;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -17,9 +17,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.multiphasicapps.collections.EmptySet;
-import net.multiphasicapps.collections.UnmodifiableSet;
-import net.multiphasicapps.strings.StringUtils;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 
 /**
@@ -31,7 +28,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 public final class DependencyInfo
 {
 	/** The dependencies. */
-	protected final Set<MarkedDependency> depends;
+	private final Set<MarkedDependency> _depends;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -44,8 +41,8 @@ public final class DependencyInfo
 	 */
 	public DependencyInfo(MarkedDependency... __deps)
 	{
-		this((__deps == null ? EmptySet.<MarkedDependency>empty() :
-			Arrays.<MarkedDependency>asList(__deps)));
+		this(Arrays.<MarkedDependency>asList((__deps == null ?
+			new MarkedDependency[0] : __deps)));
 	}
 	
 	/**
@@ -67,18 +64,7 @@ public final class DependencyInfo
 				throw new NullPointerException("NARG");
 			else
 				depends.add(d);
-		this.depends = UnmodifiableSet.<MarkedDependency>of(depends);
-	}
-	
-	/**
-	 * Returns the dependency set.
-	 *
-	 * @return The dependency set.
-	 * @since 2017/12/31
-	 */
-	public Set<MarkedDependency> dependencies()
-	{
-		return this.depends;
+		this._depends = depends;
 	}
 	
 	/**
@@ -94,7 +80,7 @@ public final class DependencyInfo
 		if (!(__o instanceof DependencyInfo))
 			return false;
 		
-		return this.depends.equals(((DependencyInfo)__o).depends);
+		return this._depends.equals(((DependencyInfo)__o)._depends);
 	}
 	
 	/**
@@ -104,7 +90,7 @@ public final class DependencyInfo
 	@Override
 	public final int hashCode()
 	{
-		return this.depends.hashCode();
+		return this._depends.hashCode();
 	}
 	
 	/**
@@ -115,7 +101,7 @@ public final class DependencyInfo
 	 */
 	public final boolean isEmpty()
 	{
-		return this.depends.isEmpty();
+		return this._depends.isEmpty();
 	}
 	
 	/**
@@ -135,7 +121,7 @@ public final class DependencyInfo
 		
 		// Remove matching dependencies from the input while keeping the
 		// matching ones
-		Set<MarkedDependency> depends = new LinkedHashSet<>(this.depends),
+		Set<MarkedDependency> depends = new LinkedHashSet<>(this._depends),
 			matched = new LinkedHashSet<>();
 		for (MarkedProvided p : __prov.provided())
 		{
@@ -166,7 +152,7 @@ public final class DependencyInfo
 	public final DependencyInfo noOptionals()
 	{
 		// Ignore if there are no dependencies
-		Set<MarkedDependency> depends = this.depends;
+		Set<MarkedDependency> depends = this._depends;
 		if (depends.isEmpty())
 			return this;
 		
@@ -194,7 +180,7 @@ public final class DependencyInfo
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = "Dependencies:" +
-				this.depends));
+				this._depends));
 		
 		return rv;
 	}

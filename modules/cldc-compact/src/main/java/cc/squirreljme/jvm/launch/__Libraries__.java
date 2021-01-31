@@ -10,9 +10,9 @@
 package cc.squirreljme.jvm.launch;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.swm.DependencyInfo;
-import cc.squirreljme.runtime.swm.MatchResult;
-import cc.squirreljme.runtime.swm.SuiteInfo;
+import cc.squirreljme.jvm.suite.DependencyInfo;
+import cc.squirreljme.jvm.suite.MatchResult;
+import cc.squirreljme.jvm.suite.SuiteInfo;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;

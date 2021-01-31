@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.swm;
 
+import cc.squirreljme.jvm.suite.MarkedProvided;
+import cc.squirreljme.jvm.suite.SuiteIdentifier;
+import cc.squirreljme.jvm.suite.SuiteType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
