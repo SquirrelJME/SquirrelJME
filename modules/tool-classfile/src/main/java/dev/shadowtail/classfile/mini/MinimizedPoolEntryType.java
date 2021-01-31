@@ -16,6 +16,7 @@ import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
+import dev.shadowtail.classfile.pool.QuickCastCheck;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
@@ -77,13 +78,14 @@ public enum MinimizedPoolEntryType
 	/** An invokable interface class, used for interface binding. */
 	INTERFACE_CLASS(true, InterfaceClassName.class),
 	
-	/**
-	 * Class information.
-	 */
+	/** Class information. */
 	CLASS_INFO_POINTER(true, ClassInfoPointer.class),
 	
 	/** A string which has been noted for debug purposes. */
 	NOTED_STRING(true, NotedString.class),
+	
+	/** Check for quick casting, to avoid doing an involved instance check. */
+	QUICK_CAST_CHECK(true, QuickCastCheck.class),
 	
 	/* End. */
 	;

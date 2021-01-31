@@ -29,6 +29,7 @@ import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
+import dev.shadowtail.classfile.pool.QuickCastCheck;
 import dev.shadowtail.classfile.xlate.DataType;
 import java.io.IOException;
 import java.io.InputStream;
@@ -172,6 +173,12 @@ public final class BootState
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		// Was this already calculated?
+		ClassState wantState = this.loadClass(__cl);
+		ClassNames rv = wantState._allInterfaces;
+		if (rv != null)
+			return rv;
+		
 		// All types that are interfaces
 		Set<ClassName> result = new SortedTreeSet<>();
 		
@@ -205,7 +212,11 @@ public final class BootState
 				queue.add(parent);
 		}
 		
-		return new ClassNames(result);
+		// Store result for future usage
+		rv = new ClassNames(result);
+		wantState._allInterfaces = rv;
+		
+		return rv;
 	}
 	
 	/**
@@ -371,7 +382,7 @@ public final class BootState
 		// Need to determine if we are Object or our super class is Object
 		// that way there can be shortcuts on resolution
 		ClassName superClass = classFile.superName();
-		boolean isThisObject = classFile.thisName().isObject();
+		boolean isThisObject = classFile.thisName().isObjectClass();
 		
 		// This should never happen, hopefully!
 		if (!__cl.isPrimitive() && !isThisObject && superClass == null)
@@ -1291,7 +1302,7 @@ public final class BootState
 			
 			// If this is not the object/primitive class, and our super class
 			// is not yet known then fill it in
-			if ((!at.thisName.isObject() && !at.thisName.isPrimitive()) &&
+			if ((!at.thisName.isObjectClass() && !at.thisName.isPrimitive()) &&
 				at._superClass == null)
 			{
 				// This should be created but it might not have reached
@@ -1476,7 +1487,7 @@ public final class BootState
 			throw new NullPointerException("NARG");
 		
 		// For the object/primitive class this is always zero.
-		if (__cl.thisName.isObject() || __cl.thisName.isPrimitive())
+		if (__cl.thisName.isObjectClass() || __cl.thisName.isPrimitive())
 			return 0;
 		
 		// Get the cached value
@@ -1772,6 +1783,27 @@ public final class BootState
 				
 				// These point to Strings that prefix with [hash$16 len$16]
 				return new BootJarPointer(poolOff + poolStr.offset + 4);
+			
+				// Quickly check whether or not an object can be casted from
+				// one type to another, if the types are well known!
+			case QUICK_CAST_CHECK:
+				QuickCastCheck quickCast = __entry.<QuickCastCheck>value(
+					QuickCastCheck.class);
+				
+				// Allocate whether this is possible or not
+				ListValueHandle quickCastState = this._memHandles.allocList(
+					MemHandleKind.QUICK_CAST_CHECK, 1);
+				
+				// Calculate if this is compatible or not
+				quickCastState.set(0, this.loadClass(quickCast.from)
+					.isAssignableFrom(this,
+						this.loadClass(quickCast.to)));
+				
+				// Debug
+				Debugging.debugNote("Casting?: %s -> %d",
+					quickCast, quickCastState.getInteger(0));
+				
+				return quickCastState;
 			
 				// String used as a constant value, should be pre-loaded and
 				// interned accordingly by the bootstrap.

@@ -131,11 +131,17 @@ public final class DualClassRuntimePoolBuilder
 				InterfaceClassName icn = (InterfaceClassName)__v;
 				return runpool.add(__v,
 					this.addStatic(icn.name).index);
-				
+			
+				// Quick class casting check
+			case QUICK_CAST_CHECK:
+				QuickCastCheck qcc = (QuickCastCheck)__v;
+				return runpool.add(__v,
+					this.addStatic(qcc.from).index,
+					this.addStatic(qcc.to).index);
+			
 				// A string that is noted for its value (debugging)
+				// Or a string that is used
 			case NOTED_STRING:
-				
-				// A string that is used
 			case USED_STRING:
 				return runpool.add(__v,
 					this.addStatic(__v.toString()).index);

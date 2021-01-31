@@ -88,7 +88,11 @@ public interface MemHandleKind
 	byte STATIC_VM_ATTRIBUTES =
 		17;
 	
+	/** Quick cast information. */
+	byte QUICK_CAST_CHECK =
+		18;
+	
 	/** The number of kinds used. */
 	byte NUM_KINDS =
-		18;
+		19;
 }

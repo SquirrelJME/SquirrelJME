@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.config.ConfigRomType;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
+import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 
 /**
@@ -518,10 +519,11 @@ public interface SystemCallIndex
 	/**
 	 * Return the operating system SquirrelJME is running on.
 	 * 
-	 * @squirreljme.syscallreturn The {@link OperatingSystemType}.
+	 * @squirreljme.syscallparam 1 The {@link RuntimeVmAttribute}.
+	 * @squirreljme.syscallreturn The value of the attribute.
 	 * @since 2021/01/30
 	 */
-	byte OPERATING_SYSTEM =
+	byte RUNTIME_VM_ATTRIBUTE =
 		45;
 	
 	/**

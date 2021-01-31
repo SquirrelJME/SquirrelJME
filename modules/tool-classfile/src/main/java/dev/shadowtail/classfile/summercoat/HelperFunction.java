@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.summercoat;
 
 import cc.squirreljme.jvm.summercoat.LogicHandler;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
+import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
@@ -41,9 +42,13 @@ public enum HelperFunction
 	/** {@link LogicHandler#isArray(Object)}. */
 	IS_ARRAY("isArray", "(Ljava/lang/Object;)Z"),
 	
-	/** {@link LogicHandler#isInstance(int, ClassInfoBracket)}.  */
+	/**
+	  * {@link LogicHandler#isInstance(int, ClassInfoBracket,
+	  * QuickCastCheckBracket)}.
+	  */
 	IS_INSTANCE("isInstance", "(I" +
-		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;)Z"),
+		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;" +
+		"Lcc/squirreljme/jvm/summercoat/brackets/QuickCastCheckBracket;)Z"),
 	
 	/** {@link LogicHandler#initClass(ClassInfoBracket)}.  */
 	INIT_CLASS("initClass", "(Lcc/squirreljme/jvm/" +

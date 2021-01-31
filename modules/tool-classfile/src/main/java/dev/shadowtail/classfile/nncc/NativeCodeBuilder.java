@@ -196,6 +196,26 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds a jump if the given register is negative, that is less than
+	 * zero.
+	 *
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/31
+	 */
+	public final NativeInstruction addIfNegative(IntValueRegister __a,
+		NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addIfICmp(CompareType.LESS_THAN, __a,
+			IntValueRegister.ZERO, __jt);
+	}
+	
+	/**
 	 * Adds a jump if the given register is not zero. No reference clears are
 	 * performed by this call.
 	 *
@@ -270,7 +290,8 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
-	 * Adds a jump if the given register is positive.
+	 * Adds a jump if the given register is positive, that is greater than
+	 * zero.
 	 *
 	 * @param __a The register to check.
 	 * @param __jt The target of the jump.

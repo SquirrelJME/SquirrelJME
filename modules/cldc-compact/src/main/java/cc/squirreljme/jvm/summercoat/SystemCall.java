@@ -13,8 +13,8 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 import cc.squirreljme.jvm.summercoat.struct.StaticVmAttributesStruct;
-import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 
 /**
  * This is a helper wrapper around system calls.
@@ -76,13 +76,14 @@ public final class SystemCall
 		throws MLECallError;
 	
 	/**
-	 * {@link SystemCallIndex#OPERATING_SYSTEM}: Returns the operating system
-	 * SquirrelJME is running on.
+	 * {@link SystemCallIndex#RUNTIME_VM_ATTRIBUTE}: Returns an attribute
+	 * about the virtual machine.
 	 * 
-	 * @return The {@link OperatingSystemType}.
+	 * @param __attr The {@link RuntimeVmAttribute} to obtain.
+	 * @return The attribute value.
 	 * @since 2021/01/30
 	 */
-	public static native int operatingSystem();
+	public static native int runtimeVmAttribute(int __attr);
 	
 	/**
 	 * Returns the pipe descriptor of standard error.

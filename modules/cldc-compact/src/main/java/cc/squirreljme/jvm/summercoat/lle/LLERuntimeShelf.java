@@ -18,7 +18,7 @@ import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.SystemCall;
-import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 
@@ -96,7 +96,8 @@ public final class LLERuntimeShelf
 	 */
 	public static int lineEnding()
 	{
-		switch (SystemCall.operatingSystem())
+		switch (SystemCall.runtimeVmAttribute(
+			RuntimeVmAttribute.OPERATING_SYSTEM))
 		{
 			case OperatingSystemType.MAC_OS_CLASSIC:
 				return LineEndingType.CR;

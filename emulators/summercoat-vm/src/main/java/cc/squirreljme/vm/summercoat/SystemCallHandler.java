@@ -13,10 +13,9 @@ import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,8 +156,8 @@ public enum SystemCallHandler
 		}
 	},
 	
-	/** {@link SystemCallIndex#OPERATING_SYSTEM}. */
-	OPERATING_SYSTEM(SystemCallIndex.OPERATING_SYSTEM)
+	/** {@link SystemCallIndex#RUNTIME_VM_ATTRIBUTE}. */
+	RUNTIME_VM_ATTRIBUTE(SystemCallIndex.RUNTIME_VM_ATTRIBUTE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -168,18 +167,32 @@ public enum SystemCallHandler
 		public long handle(NativeCPU __cpu, int... __args)
 			throws VMSystemCallException
 		{
-			String systemOs = System.getProperty("os.name").toLowerCase();
-			
-			if (systemOs.contains("windows"))
-				return OperatingSystemType.WINDOWS_UNKNOWN;
-			else if (systemOs.contains("linux"))
-				return OperatingSystemType.LINUX;
-			else if (systemOs.contains("solaris"))
-				return OperatingSystemType.SOLARIS;
-			else if (systemOs.contains("mac os"))
-				return OperatingSystemType.MAC_OS_X;
-			
-			return OperatingSystemType.UNKNOWN;
+			switch (__args[0])
+			{
+					// The address of the system ROM
+				case RuntimeVmAttribute.ROM_ADDRESS:
+					return __cpu.state.romBase;
+				
+					// The current operating system
+				case RuntimeVmAttribute.OPERATING_SYSTEM:
+					String systemOs = System.getProperty("os.name")
+						.toLowerCase();
+					
+					if (systemOs.contains("windows"))
+						return OperatingSystemType.WINDOWS_UNKNOWN;
+					else if (systemOs.contains("linux"))
+						return OperatingSystemType.LINUX;
+					else if (systemOs.contains("solaris"))
+						return OperatingSystemType.SOLARIS;
+					else if (systemOs.contains("mac os"))
+						return OperatingSystemType.MAC_OS_X;
+					
+					return OperatingSystemType.UNKNOWN;
+				
+					// Unknown
+				default:
+					return 0;
+			}
 		}
 	},
 	

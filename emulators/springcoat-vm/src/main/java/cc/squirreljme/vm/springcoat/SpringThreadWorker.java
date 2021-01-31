@@ -3381,7 +3381,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private final void __vmInvokeSpecial(Instruction __i, SpringThread __t,
+	private void __vmInvokeSpecial(Instruction __i, SpringThread __t,
 		SpringThread.Frame __f)
 		throws NullPointerException
 	{
@@ -3392,8 +3392,8 @@ public final class SpringThreadWorker
 			0, MethodReference.class);
 		
 		// Resolve the method reference
-		SpringClass refclass = this.loadClass(ref.className());
-		SpringMethod refmethod = refclass.lookupMethod(false,
+		SpringClass refClass = this.loadClass(ref.className());
+		SpringMethod refmethod = refClass.lookupMethod(false,
 			ref.memberNameAndType());
 		
 		// {@squirreljme.error BK34 Could not access the target
@@ -3421,8 +3421,8 @@ public final class SpringThreadWorker
 			throw new SpringNullPointerException("BK35");
 		
 		// These modify the action to be performed
-		boolean insame = (currentclass == refclass),
-			insuper = currentclass.isSuperClass(refclass),
+		boolean insame = (currentclass == refClass),
+			insuper = currentclass.isSuperClass(refClass),
 			isinit = refmethod.name().isInstanceInitializer(),
 			isprivate = refmethod.flags().isPrivate();
 		

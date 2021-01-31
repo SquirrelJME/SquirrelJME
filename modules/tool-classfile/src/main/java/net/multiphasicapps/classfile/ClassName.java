@@ -158,7 +158,7 @@ public class ClassName
 	/**
 	 * Returns the number of array dimensions that are used.
 	 *
-	 * @return The array dimensions.
+	 * @return The array dimensions, will return {@code 0} if not an array.
 	 * @since 2018/09/28
 	 */
 	public final int dimensions()
@@ -277,7 +277,7 @@ public class ClassName
 	 * @return If this is the object class.
 	 * @since 2020/12/21
 	 */
-	public boolean isObject()
+	public boolean isObjectClass()
 	{
 		return this.toString().equals("java/lang/Object");
 	}
@@ -321,6 +321,30 @@ public class ClassName
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Returns the root component type of this class name, that is this class
+	 * with all of the dimensions taken away.
+	 *
+	 * @return The component type.
+	 * @throws IllegalStateException If this is not an array.
+	 * @since 2021/01/31
+	 */
+	public final ClassName rootComponentType()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error JC4w This class is not an array, cannot get
+		// the root component type. (The name of this class)}
+		if (!this.isArray())
+			throw new IllegalStateException(String.format("JC4w %s", this));
+		
+		// Keep going down until we are at the root.
+		ClassName rv;
+		for (rv = this; rv.isArray();)
+			rv = rv.componentType();
+		
+		return rv;
 	}
 	
 	/**

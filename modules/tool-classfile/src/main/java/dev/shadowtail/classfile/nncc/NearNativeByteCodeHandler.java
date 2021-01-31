@@ -25,8 +25,8 @@ import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
+import dev.shadowtail.classfile.pool.QuickCastCheck;
 import dev.shadowtail.classfile.pool.UsedString;
-import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.summercoat.HelperFunction;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
@@ -64,8 +64,6 @@ import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
-import net.multiphasicapps.classfile.FieldDescriptor;
-import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.JavaType;
@@ -387,7 +385,7 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addIfZero(__v.register, nullskip);
 		
 		// Add cast check
-		this.__basicCheckCCE(__v.register, __cl);
+		this.__basicCheckCCE(__v.register, __v.type, __cl);
 		
 		// Null jump goes here
 		codebuilder.label(nullskip);
@@ -517,7 +515,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Must be the given class
 		if (!__i.isCompatible(__fr.className()))
-			this.__basicCheckCCE(instance, __fr.className());
+			this.__basicCheckCCE(instance, __i.type, __fr.className());
 		
 		// We already checked the only valid exceptions, so do not perform
 		// later handling!
@@ -582,7 +580,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Must be the given class
 		if (!__i.isCompatible(__fr.className()))
-			this.__basicCheckCCE(ireg, __fr.className());
+			this.__basicCheckCCE(ireg, __i.type, __fr.className());
 			
 		// We already checked the only valid exceptions, so do not perform
 		// later handling!
@@ -785,15 +783,17 @@ public final class NearNativeByteCodeHandler
 		// Interface, special, or virtual
 		else
 		{
-			@Deprecated int instReg = __in[0].register;
+			JavaStackResult.Input object = __in[0];
+			@Deprecated int instReg = object.register;
 			PlainRegister objectReg = new PlainRegister(instReg);
 			
 			// Check that the object is of the given class type and is not null
 			this.__basicCheckNPE(instReg);
 			
 			// Check types if this is not compatible
-			if (!__in[0].isCompatible(__r.handle().outerClass()))
-				this.__basicCheckCCE(instReg, __r.handle().outerClass());
+			if (!object.isCompatible(__r.handle().outerClass()))
+				this.__basicCheckCCE(instReg, object.type,
+					__r.handle().outerClass());
 			
 			// Invoking interface method
 			if (__t == InvokeType.INTERFACE)
@@ -1915,49 +1915,126 @@ public final class NearNativeByteCodeHandler
 	 * Basic check if the instance is of the given class.
 	 *
 	 * @param __ir The register to check.
-	 * @param __cl The class to check.
+	 * @param __jType The type used on instance.
+	 * @param __cl The class that this will be cast to.
 	 * @deprecated Use the type-safe
 	 * {@link #__basicCheckNPE(MemHandleRegister)} instead. 
 	 * @since 2019/04/22
 	 */
 	@Deprecated
-	private void __basicCheckCCE(int __ir, ClassName __cl)
+	private void __basicCheckCCE(int __ir, JavaType __jType, ClassName __cl)
 		throws NullPointerException
 	{
-		this.__basicCheckCCE(MemHandleRegister.of(__ir), __cl);
+		this.__basicCheckCCE(MemHandleRegister.of(__ir), __jType, __cl);
 	}
 	
 	/**
 	 * Basic check if the instance is of the given class.
 	 *
 	 * @param __ir The register to check.
-	 * @param __cl The class to check.
+	 * @param __jType The type used on instance.
+	 * @param __cl The class that this will be cast to.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __jType}.
 	 * @since 2020/11/28
 	 */
-	private void __basicCheckCCE(MemHandleRegister __ir, ClassName __cl)
+	private void __basicCheckCCE(MemHandleRegister __ir, JavaType __jType,
+		ClassName __cl)
 		throws NullPointerException
 	{
 		if (__ir == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
-		// Need volatiles
-		try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
-			this.volatiles.getTyped(ClassInfoPointer.class))
+		// If the target class is object, just do nothing because it is
+		// pointless to check casts to object.
+		// Additionally if the two types are the same, do nothing
+		if (__cl.isObjectClass() || __cl.equals(__jType.className()))
+			return;
+			
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// Debug
+		Debugging.debugNote("QuickCheck: %s ?= %s", __jType, __cl);
+		
+		// Jumping point if we are quick compatible
+		NativeCodeLabel isQuickCompatJump = null;
+		
+		// If we are quick compatible, then we avoid the instance check.
+		// However if we are coming from Object, we need to check everything
+		// so it would be rather pointless to use quick cast checks when it
+		// will always fail
+		boolean possibleQuick = (__jType.className() != null &&
+			!__jType.className().isObjectClass());
+		if (possibleQuick)
+			isQuickCompatJump = new NativeCodeLabel(
+				"isQuickCompat", this._refclunk++);
+		
+		// Perform a cached quick cast check
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (Volatile<TypedRegister<QuickCastCheck>> quickCast =
+			 (possibleQuick ? volatiles.getTyped(QuickCastCheck.class) : null))
 		{
-			// Load desired target class type
-			this.__loadClassInfo(__cl, classInfo.register);
+			// If quick casting is possible, then
+			if (possibleQuick)
+				try (Volatile<IntValueRegister> arrayBase =
+						volatiles.getIntValue();
+					Volatile<IntValueRegister> quickVal =
+						volatiles.getIntValue())
+				{
+					// Get the base for the array, since we will be reading a
+					// value from the quick cast object.
+					this.__invokeSysCallV(
+						SystemCallIndex.ARRAY_ALLOCATION_BASE,
+						arrayBase.register);
+						
+					// Get the existing quick cast cache
+					codeBuilder.addPoolLoad(new QuickCastCheck(
+						__jType.className(), __cl), quickCast.register);
+					
+					// Read the value stored here
+					codeBuilder.addMemHandleAccess(DataType.INTEGER,
+						true, quickVal.register,
+						quickCast.register.asMemHandle(), arrayBase.register);
+					
+					// If we are quick compatible, we can jump over the actual
+					// instance check and not even bother casting at all
+					codeBuilder.addIfPositive(quickVal.register,
+						isQuickCompatJump);
+					
+					// We calculated this already and it is known that this
+					// will always fail!
+					codeBuilder.addIfNegative(quickVal.register,
+						this.__labelRefClearJump(this.__labelMakeException(
+							"java/lang/ClassCastException")));
+				}
 			
-			// Call helper class
-			this.__invokeHelper(HelperFunction.IS_INSTANCE,
-				__ir, classInfo.register);
-			
-			// If the resulting method call returns zero then it is not an
-			// instance of the given class. The return register is checked
-			// because the value of that method will be placed there.
-			this.codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
-				this.__labelRefClearJump(this.__labelMakeException(
-				"java/lang/ClassCastException")));
+			// Perform the actual instance checking logic
+			try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
+				volatiles.getTyped(ClassInfoPointer.class))
+			{
+				// Load desired target class type
+				this.__loadClassInfo(__cl, classInfo.register);
+				
+				// Call helper class, forward the quick cast check since we
+				// can store a new value in it to skip this future check if
+				// it is known. If we cannot quick cast, then we just pass
+				// a null reference.
+				this.__invokeHelper(HelperFunction.IS_INSTANCE,
+					__ir, classInfo.register, (possibleQuick ?
+					quickCast.register : IntValueRegister.ZERO));
+				
+				// If the resulting method call returns zero then it is not an
+				// instance of the given class. The return register is checked
+				// because the value of that method will be placed there.
+				codeBuilder.addIfZero(NativeCode.RETURN_REGISTER,
+					this.__labelRefClearJump(this.__labelMakeException(
+						"java/lang/ClassCastException")));
+			}
 		}
+		
+		// If quick compatibility was a success.
+		if (possibleQuick)
+			codeBuilder.label(isQuickCompatJump);
 	}
 	
 	/**
@@ -3182,10 +3259,6 @@ public final class NearNativeByteCodeHandler
 				id = SystemCallIndex.MEM_HANDLE_NEW;
 				break;
 			
-			case "operatingSystem":
-				id = SystemCallIndex.OPERATING_SYSTEM;
-				break;
-			
 			case "pdOfStdErr":
 				id = SystemCallIndex.PD_OF_STDERR;
 				break;
@@ -3200,6 +3273,10 @@ public final class NearNativeByteCodeHandler
 			
 			case "pdWriteByte":
 				id = SystemCallIndex.PD_WRITE_BYTE;
+				break;
+			
+			case "runtimeVmAttribute":
+				id = SystemCallIndex.RUNTIME_VM_ATTRIBUTE;
 				break;
 			
 			case "staticVmAttributes":

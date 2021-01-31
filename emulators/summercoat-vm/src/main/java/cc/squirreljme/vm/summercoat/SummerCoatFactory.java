@@ -96,12 +96,12 @@ public class SummerCoatFactory
 		// Virtual memory which provides access to many parts of memory
 		VirtualMemory vMem = new VirtualMemory();
 		
-		// Setup non-cpu VM state
-		MachineState ms = new MachineState(vMem, __ps);
-		MemHandleManager memHandles = ms.memHandles;
-		
 		// The ROM always starts here
 		int romBase = SummerCoatFactory.SUITE_BASE_ADDR;
+		
+		// Setup non-cpu VM state
+		MachineState ms = new MachineState(vMem, __ps, romBase);
+		MemHandleManager memHandles = ms.memHandles;
 		
 		// Load ROM file or generate dynamically for loaded classes
 		ReadableMemory romMemory = this.__loadRom(romBase, __sm, __sysProps);

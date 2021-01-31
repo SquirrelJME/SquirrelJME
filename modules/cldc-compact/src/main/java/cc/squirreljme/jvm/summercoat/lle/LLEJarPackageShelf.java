@@ -12,6 +12,8 @@ package cc.squirreljme.jvm.summercoat.lle;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.summercoat.SystemCall;
+import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 
@@ -59,6 +61,13 @@ public final class LLEJarPackageShelf
 	 */
 	public static JarPackageBracket[] libraries()
 	{
+		// Where is the ROM located?
+		int romAddr = SystemCall.runtimeVmAttribute(
+			RuntimeVmAttribute.ROM_ADDRESS);
+		
+		// Debug
+		Debugging.debugNote("ROM is at %#08x", romAddr);
+		
 		Assembly.breakpoint();
 		throw Debugging.todo();
 	}

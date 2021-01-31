@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.summercoat;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
+import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -172,10 +173,14 @@ public final class LogicHandler
 	 * 
 	 * @param __o The object to check.
 	 * @param __info The class information to check.
+	 * @param __quickCast State to store whether or not
 	 * @return If this is an instance of the given class.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __quickCast}.
 	 * @since 2020/11/28
 	 */
-	public static boolean isInstance(int __o, ClassInfoBracket __info)
+	public static boolean isInstance(int __o, ClassInfoBracket __info,
+		QuickCastCheckBracket __quickCast)
 	{
 		if (__info == null)
 			throw new NullPointerException("NARG");

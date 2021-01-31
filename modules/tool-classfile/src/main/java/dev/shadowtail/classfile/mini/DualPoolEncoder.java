@@ -24,6 +24,7 @@ import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
+import dev.shadowtail.classfile.pool.QuickCastCheck;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
@@ -179,6 +180,7 @@ public final class DualPoolEncoder
 					case NOTED_STRING:
 					case USED_STRING:
 					case INTERFACE_CLASS:
+					case QUICK_CAST_CHECK:
 						// Read parts
 						if (iswide)
 							for (int p = 0; p < numparts; p++)
@@ -298,6 +300,15 @@ public final class DualPoolEncoder
 								value = new NotedString(
 									classpool.byIndex(parts[0]).
 									<String>value(String.class));
+								break;
+								
+								// Quick case
+							case QUICK_CAST_CHECK:
+								value = new QuickCastCheck(
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[0]),
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[1]));
 								break;
 								
 								// Used string
@@ -645,6 +656,7 @@ public final class DualPoolEncoder
 			case METHOD_DESCRIPTOR:
 			case INVOKE_XTABLE:
 			case NOTED_STRING:
+			case QUICK_CAST_CHECK:
 			case USED_STRING:
 			case INTERFACE_CLASS:
 				if (__wide)

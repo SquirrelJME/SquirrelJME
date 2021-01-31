@@ -248,10 +248,11 @@ public final class Class<T>
 	/**
 	 * Checks if the given class can be assigned to this one, the check is
 	 * in the same order as {code instanceOf Object} that is
-	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}.
+	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
+	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
 	 *
 	 * @param __cl The other class type.
-	 * @return If the otehr class can be assigned to this one.
+	 * @return If the other class can be assigned to this one.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/27
 	 */

@@ -12,8 +12,10 @@ package cc.squirreljme.jvm.boot.lib;
 /**
  * Constants used when parsing the constant pool and such.
  *
+ * @deprecated Do not use.
  * @since 2019/10/13
  */
+@Deprecated
 public interface ClassPoolConstants
 {
 	/** Offset to the tag type. */
