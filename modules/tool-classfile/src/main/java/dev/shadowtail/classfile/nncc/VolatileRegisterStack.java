@@ -11,8 +11,6 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
 import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
-import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
-import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
 import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
 import dev.shadowtail.classfile.summercoat.register.TypedRegister;
@@ -77,30 +75,6 @@ public final class VolatileRegisterStack
 	{
 		return new Volatile<>(this,
 			new IntValueRegister(this.getUnmanaged()));
-	}
-	
-	/**
-	 * Returns a volatile to represent this as an interface of an object.
-	 * 
-	 * @return Interface of object register.
-	 * @since 2020/11/24
-	 */
-	public Volatile<InterfaceOfObject> getInterfaceOfObject()
-	{
-		return new Volatile<>(this,
-			new InterfaceOfObject(this.getUnmanaged()));
-	}
-	
-	/**
-	 * Returns a register to store an interface virtual table index.
-	 * 
-	 * @return Volatile to store an interface vtable index.
-	 * @since 2020/11/24
-	 */
-	public Volatile<InterfaceVTIndex> getInterfaceVTIndex()
-	{
-		return new Volatile<>(this,
-			new InterfaceVTIndex(this.getUnmanaged()));
 	}
 	
 	/**

@@ -28,11 +28,8 @@ import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.QuickCastCheck;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.summercoat.HelperFunction;
-import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
 import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
-import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
-import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
 import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.PlainRegister;
 import dev.shadowtail.classfile.summercoat.register.Register;
@@ -779,92 +776,13 @@ public final class NearNativeByteCodeHandler
 			
 			// Invoking interface method
 			if (__t == InvokeType.INTERFACE)
-			{
-				// Setup temporarily used registers
-				try (Volatile<InterfaceOfObject> iOfO =
-						volatiles.getInterfaceOfObject();
-					Volatile<InterfaceVTIndex> iVti =
-						volatiles.getInterfaceVTIndex();
-					Volatile<ExecutablePointer> epp =
-						volatiles.getExecutablePointer();
-					Volatile<RuntimePoolPointer> rpp =
-						volatiles.getRuntimePoolPointer())
-				{
-					// Lookup the interface for a given object, we need this
-					// to know which actual class implements the interface so
-					// we can load the pool and call into the class
-					// This creates a Interface+object.class relationship
-					codebuilder.addInterfaceForObject(
-						new InterfaceClassName(mh.outerClass()),
-						objectReg, iOfO.register);
-					
-					// The interface method index in the interface table needs
-					// to be known in order to know where to grab our pool
-					// and method pointers
-					codebuilder.addInterfaceVTIndexLookup(
-						new InvokedMethod(InvokeType.INTERFACE, mh),
-						iOfO.register, iVti.register);
-					
-					// Load both the pool and target pointer to the method to
-					// invoke
-					codebuilder.addInterfaceVTLoad(
-						iOfO.register, iVti.register,
-						epp.register, rpp.register);
-						
-					// Invoke the given pointer and pool index
-					codebuilder.addInterfaceVTLoad(
-						iOfO.register, iVti.register,
-						epp.register, rpp.register);
-					
-					// Invoke the interface, return values and exceptions are
-					// handled later on
-					codebuilder.addInvokePoolAndPointer(
-						epp.register, rpp.register, reglist);
-				}
-				
-				// TODO: Old-code, delete this when verified
-				/*if (true)
-					throw Debugging.todo();
-				
-				// Load the interface we are looking in
-				int voliclass = volatiles.getUnmanaged();
-				this.__loadClassInfo(__r.handle().outerClass(), voliclass);
-				
-				// Load the method index of the volatile method in question
-				int volimethdx = volatiles.getUnmanaged();
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new VirtualMethodIndex(__r.handle().outerClass(),
-						__r.handle().name(), __r.handle().descriptor()),
-					volimethdx);
-				
-				// Use helper method to find the method pointer to invoke
-				// for this interface (hi=pool, lo=pointer)
-				this.__invokeStatic(InvokeType.SYSTEM,
-					NearNativeByteCodeHandler.JVMFUNC_CLASS,
-					"jvmInterfacePointer", "(III)J",
-					instReg, voliclass, volimethdx);
-				
-				// We need to extract the pool pointer of the class we
-				// are calling in so that nothing is horribly incorrect
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
-					NativeCode.NEXT_POOL_REGISTER);
-				
-				// Invoke the pointer that this method returned
-				codebuilder.add(NativeInstructionType.INVOKE,
-					NativeCode.RETURN_REGISTER, reglist);
-				
-				// Cleanup
-				volatiles.removeUnmanaged(voliclass);
-				volatiles.removeUnmanaged(volimethdx);*/
-			}
+				this.__invokeInterface(mh.outerClass(), mh.name(),
+					mh.descriptor(), reglist);
 			
-			// Special or virtual
+			// Special or virtual method
 			else
-			{
-				// Invoke instance method
 				this.__invokeInstance(__t, mh.outerClass(), mh.name(),
 					mh.descriptor(), reglist);
-			}
 		}
 		
 		// Check if exception occurred, before copying the return value!
@@ -2917,6 +2835,28 @@ public final class NearNativeByteCodeHandler
 			// obtained, since we do not want automatic getting
 			this.__invokeXTable(vTable.register, invoked, __args);
 		}
+	}
+	
+	/**
+	 * Invokes an interface method from a given instance.
+	 *
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/31
+	 */
+	private void __invokeInterface(ClassName __cl, MethodName __mn,
+		MethodDescriptor __mt, RegisterList __args)
+		throws NullPointerException
+	{
+		if (__cl == null || __mn == null || __mt == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		codeBuilder.addBreakpoint(0x7E0C, "Invoke interface.");
 	}
 	
 	/**

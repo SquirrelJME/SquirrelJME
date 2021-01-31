@@ -12,13 +12,9 @@ package dev.shadowtail.classfile.nncc;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
-import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
-import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
 import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
-import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
-import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
 import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.PlainRegister;
 import dev.shadowtail.classfile.summercoat.register.Register;
