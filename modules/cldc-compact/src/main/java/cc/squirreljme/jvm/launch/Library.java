@@ -10,10 +10,9 @@
 package cc.squirreljme.jvm.launch;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.swm.DependencyInfo;
-import cc.squirreljme.runtime.swm.ProvidedInfo;
-import cc.squirreljme.runtime.swm.SuiteInfo;
+import cc.squirreljme.jvm.suite.DependencyInfo;
+import cc.squirreljme.jvm.suite.ProvidedInfo;
+import cc.squirreljme.jvm.suite.SuiteInfo;
 
 /**
  * This represents a library that can be used as a dependency, this includes

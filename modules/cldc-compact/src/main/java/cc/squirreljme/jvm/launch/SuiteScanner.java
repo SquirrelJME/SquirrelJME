@@ -106,13 +106,13 @@ public final class SuiteScanner
 			switch (info.type())
 			{
 				// Handle library
-				case SuiteType.LIBLET:
-				case SuiteType.SQUIRRELJME_API:
+				case LIBLET:
+				case SQUIRRELJME_API:
 					libs.__register(info, jar);
 					break;
 				
 				// Handle application
-				case SuiteType.MIDLET:
+				case MIDLET:
 					// Setup application information for all possible entry
 					// points
 					for (EntryPoint e : new EntryPoints(man))

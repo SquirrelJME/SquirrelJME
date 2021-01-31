@@ -10,11 +10,11 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import  cc.squirreljme.runtime.cldc.util.NaturalComparator;
-import net.multiphasicapps.strings.StringUtils;
 
 /**
  * This represents a dependency that a LIBlet or MIDlet may depend on.

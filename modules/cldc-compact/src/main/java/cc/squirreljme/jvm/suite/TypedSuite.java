@@ -8,11 +8,8 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm;
+package cc.squirreljme.jvm.suite;
 
-import cc.squirreljme.jvm.suite.MarkedProvided;
-import cc.squirreljme.jvm.suite.SuiteIdentifier;
-import cc.squirreljme.jvm.suite.SuiteType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
