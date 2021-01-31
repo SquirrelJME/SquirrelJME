@@ -302,7 +302,13 @@ public class ClassName
 	 */
 	public final PrimitiveType primitiveType()
 	{
-		switch (this.binary.toString())
+		// If not a binary name but a field, then it can never be a primitive
+		// type
+		BinaryName binary = this.binary;
+		if (binary == null)
+			return null;
+		
+		switch (binary.toString())
 		{
 			case "boolean":		return PrimitiveType.BOOLEAN;
 			case "byte":		return PrimitiveType.BYTE;

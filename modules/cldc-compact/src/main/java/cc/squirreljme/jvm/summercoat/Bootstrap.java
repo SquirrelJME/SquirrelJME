@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.launch.AvailableSuites;
+import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -35,6 +37,11 @@ public final class Bootstrap
 		Debugging.notice("E-Mail : xerthesquirrel@gmail.com");
 		Debugging.notice("Website: https://squirreljme.cc/");
 		Debugging.notice("Donate!: https://patreon.com/SquirrelJME");
+		Debugging.notice("");
+		
+		// Perform a scan for every suite, we need to find the launcher!
+		Debugging.notice("Performing initial suite scan...");
+		AvailableSuites suites = SuiteScanner.scanSuites(null);
 		
 		Assembly.breakpoint();
 		throw Debugging.todo();
