@@ -20,6 +20,5 @@ dependencies
 {
 	api project(":modules:cldc-compact")
 
-	api project(":modules:strings")
 	api project(":modules:collections")
 }
