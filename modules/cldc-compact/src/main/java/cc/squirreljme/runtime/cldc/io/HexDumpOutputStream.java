@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io;
+package cc.squirreljme.runtime.cldc.io;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -184,7 +184,7 @@ public class HexDumpOutputStream
 	}
 	
 	/**
-	 * Prints a hexdumpped line.
+	 * Prints a hexadecimal dumped line.
 	 *
 	 * @throws IOException If it could not be written.
 	 * @since 2016/08/12
@@ -261,7 +261,7 @@ public class HexDumpOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/021
 	 */
-	public static final boolean dump(PrintStream __dump, InputStream __in)
+	public static boolean dump(PrintStream __dump, InputStream __in)
 		throws NullPointerException
 	{
 		if (__dump == null || __in == null)
@@ -301,7 +301,7 @@ public class HexDumpOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/26
 	 */
-	public static final boolean dump(PrintStream __dump, byte[] __b)
+	public static boolean dump(PrintStream __dump, byte[] __b)
 		throws NullPointerException
 	{
 		if (__dump == null || __b == null)
@@ -323,7 +323,7 @@ public class HexDumpOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/26
 	 */
-	public static final boolean dump(PrintStream __dump, byte[] __b, int __o,
+	public static boolean dump(PrintStream __dump, byte[] __b, int __o,
 		int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{

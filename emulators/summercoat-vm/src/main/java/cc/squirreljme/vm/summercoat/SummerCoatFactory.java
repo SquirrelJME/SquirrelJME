@@ -24,6 +24,7 @@ import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
@@ -117,7 +118,9 @@ public class SummerCoatFactory
 		// The index of the JAR we are booting into
 		int bootDx = packHeader.get(PackProperty.INDEX_BOOT_JAR);
 		
-		Debugging.debugNote("PackToc: %s%n", packToc);
+		// Debug
+		if (NativeCPU.ENABLE_DEBUG)
+			Debugging.debugNote("PackToc: %s%n", packToc);
 		
 		// Load the boot JAR information
 		MinimizedJarHeader bootJarHeader;
@@ -157,8 +160,11 @@ public class SummerCoatFactory
 		// BootRAM memory handle IDs to 
 		Map<Integer, MemHandle> virtHandles = new HashMap<>();
 		
+		// Debug
+		if (NativeCPU.ENABLE_DEBUG)
+			Debugging.debugNote("Loading BootRAM!");
+		
 		// Load the boot RAM
-		Debugging.debugNote("Loading BootRAM!");
 		try (DataInputStream dis = new DataInputStream(
 			new ReadableMemoryInputStream(romMemory, bootRamOff, bootRamLen)))
 		{
@@ -330,10 +336,11 @@ public class SummerCoatFactory
 					}
 					
 					// Debug
-					Debugging.debugNote(
-						"%10x (%#10x t%d): %#04x @ %#010x = %d/%#x",
-						handle.id, handleId, handle.kind, type, addr,
-						readValue, readValue);
+					if (NativeCPU.ENABLE_DEBUG)
+						Debugging.debugNote(
+							"%10x (%#10x t%d): %#04x @ %#010x = %d/%#x",
+							handle.id, handleId, handle.kind, type, addr,
+							readValue, readValue);
 				}
 				
 				// Ensure the guard is valid
@@ -368,20 +375,14 @@ public class SummerCoatFactory
 			bootClassOff,
 			bootJarToc.get(bootClassDx, JarTocProperty.SIZE_DATA)))
 		{
-			try (InputStream copy = new ReadableMemoryInputStream(romMemory,
-				bootClassOff,
-				bootJarToc.get(bootClassDx, JarTocProperty.SIZE_DATA)))
-			{
-				for (;;)
+			// Dump the boot class?
+			if (NativeCPU.ENABLE_DEBUG)
+				try (InputStream copy = new ReadableMemoryInputStream(
+					romMemory, bootClassOff, bootJarToc.get(bootClassDx,
+					JarTocProperty.SIZE_DATA)))
 				{
-					int data = copy.read();
-					if (data < 0)
-						break;
-					System.err.print(
-						data < ' ' || data >= 0x7F ? ' ' : (char)data);
+					HexDumpOutputStream.dump(System.err, copy);
 				}
-				System.err.println();
-			}
 			
 			// Read the pack header
 			MinimizedClassHeader bootClassHeader =
@@ -393,16 +394,22 @@ public class SummerCoatFactory
 			startAddress = romBase + bootClassOff + bootMethodOff;
 			
 			// Debug
-			Debugging.debugNote("BootJar RC Count: %d",
-				bootJarHeader.get(JarProperty.COUNT_TOC));
-			Debugging.debugNote("Boot Class Dx: %d", bootClassDx);
-			Debugging.debugNote("ROM Base: %#010x", romBase);
-			Debugging.debugNote("BootJar Off: %#010x", bootJarOff);
-			Debugging.debugNote("BootClass Off: %#010x", bootClassOff);
-			Debugging.debugNote("BootMethod Dx: %d",
-				bootClassHeader.get(StaticClassProperty.INDEX_BOOT_METHOD));
-			Debugging.debugNote("BootMethod Off: %#010x", bootMethodOff);
-			Debugging.debugNote("Start Address: %#010x", startAddress);
+			if (NativeCPU.ENABLE_DEBUG)
+			{
+				Debugging.debugNote("BootJar RC Count: %d",
+					bootJarHeader.get(JarProperty.COUNT_TOC));
+				Debugging.debugNote("Boot Class Dx: %d", bootClassDx);
+				Debugging.debugNote("ROM Base: %#010x", romBase);
+				Debugging.debugNote("BootJar Off: %#010x", bootJarOff);
+				Debugging.debugNote("BootClass Off: %#010x",
+					bootClassOff);
+				Debugging.debugNote("BootMethod Dx: %d",
+					bootClassHeader.get(StaticClassProperty.INDEX_BOOT_METHOD));
+				Debugging.debugNote("BootMethod Off: %#010x",
+					bootMethodOff);
+				Debugging.debugNote("Start Address: %#010x",
+					startAddress);
+			}
 		}
 		catch (IOException e)
 		{
@@ -411,8 +418,11 @@ public class SummerCoatFactory
 		
 		// Which memory handle contains the pool?
 		int bootPool = bootJarHeader.get(JarProperty.MEMHANDLEID_START_POOL);
-		Debugging.debugNote("bootPool: %d/%#08x (%#08x)",
-			bootPool, bootPool, virtHandles.get(bootPool).id);
+		
+		// Debug
+		if (NativeCPU.ENABLE_DEBUG)
+			Debugging.debugNote("bootPool: %d/%#08x (%#08x)",
+				bootPool, bootPool, virtHandles.get(bootPool).id);
 		
 		// Where are the static attributes?
 		int staticAttrib = bootJarHeader.get(
@@ -462,7 +472,8 @@ public class SummerCoatFactory
 		if (romFile != null)
 		{
 			// Debug
-			Debugging.debugNote("Using ROM %s", romFile);
+			if (NativeCPU.ENABLE_DEBUG)
+				Debugging.debugNote("Using ROM %s", romFile);
 			
 			// Resultant ROM memory
 			ByteArrayMemory romMemory;

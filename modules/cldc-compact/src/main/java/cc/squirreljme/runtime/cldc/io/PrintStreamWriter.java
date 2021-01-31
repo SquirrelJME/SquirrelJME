@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io;
+package cc.squirreljme.runtime.cldc.io;
 
 import java.io.Closeable;
 import java.io.IOException;

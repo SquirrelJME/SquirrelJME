@@ -49,7 +49,7 @@ public final class NativeCPU
 	 * Should SummerCoat print lots of debugging information?}
 	 */
 	public static final boolean ENABLE_DEBUG =
-		false || Boolean.getBoolean("cc.squirreljme.summercoat.debug");
+		Boolean.getBoolean("cc.squirreljme.summercoat.debug");
 	
 	/** Maximum amount of CPU registers. */
 	public static final int MAX_REGISTERS =
