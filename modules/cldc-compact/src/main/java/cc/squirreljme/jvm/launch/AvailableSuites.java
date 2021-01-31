@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm.launch;
+package cc.squirreljme.jvm.launch;
 
 /**
  * This contains the list of suites and libraries.

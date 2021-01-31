@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm.launch;
+package cc.squirreljme.jvm.launch;
 
 /**
  * This is a listener which specifies when a suite has been scanned in.

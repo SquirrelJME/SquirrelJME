@@ -15,4 +15,4 @@
  * @since 2020/12/28
  */
 
-package cc.squirreljme.runtime.swm.launch;
+package cc.squirreljme.jvm.launch;

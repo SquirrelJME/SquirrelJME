@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm.launch;
+package cc.squirreljme.jvm.launch;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.swm.DependencyInfo;

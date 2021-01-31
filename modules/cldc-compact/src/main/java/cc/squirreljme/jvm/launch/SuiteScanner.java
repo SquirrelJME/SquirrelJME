@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm.launch;
+package cc.squirreljme.jvm.launch;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
@@ -105,13 +105,13 @@ public final class SuiteScanner
 			switch (info.type())
 			{
 				// Handle library
-				case LIBLET:
-				case SQUIRRELJME_API:
+				case SuiteType.LIBLET:
+				case SuiteType.SQUIRRELJME_API:
 					libs.__register(info, jar);
 					break;
 				
 				// Handle application
-				case MIDLET:
+				case SuiteType.MIDLET:
 					// Setup application information for all possible entry
 					// points
 					for (EntryPoint e : new EntryPoints(man))
