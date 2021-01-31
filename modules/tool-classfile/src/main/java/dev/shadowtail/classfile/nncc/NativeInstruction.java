@@ -320,8 +320,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 			case NativeInstructionType.STORE_TO_INTARRAY:
-			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
-			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
 			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
 				return 3;
 				
@@ -332,7 +330,6 @@ public final class NativeInstruction
 				return 3;
 				
 			case NativeInstructionType.DEBUG_ENTRY:
-			case NativeInstructionType.INTERFACE_VT_LOAD:
 				return 4;
 			
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
@@ -409,14 +406,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
-					
-				// [p16, r16, r16]
-			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
-			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
-				return ArgumentFormat.of(
-					ArgumentFormat.VPOOL,
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG);
 					
 				// [p16, p16, p16, p16]
 			case NativeInstructionType.DEBUG_ENTRY:
@@ -505,14 +494,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG,
 					ArgumentFormat.INT32,
 					ArgumentFormat.VJUMP);
-			
-				// [r16, r16, r16, r16]
-			case NativeInstructionType.INTERFACE_VT_LOAD:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG);
 			
 			// [r16 (check), r16 (get), r16 (set), r16 (addr), u16 (off)]
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
@@ -631,15 +612,6 @@ public final class NativeInstruction
 			case NativeInstructionType.STORE_TO_INTARRAY:
 				return "STORE_TO_INTARRAY";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
-		
-			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
-				return "INTERFACE_I_FOR_OBJECT";
-			
-			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
-				return "INTERFACE_VT_DX_LOOKUP";
-			
-			case NativeInstructionType.INTERFACE_VT_LOAD:
-				return "INTERFACE_VT_LOAD";
 			
 			case NativeInstructionType.INVOKE_POINTER_ONLY:
 				return "INVOKE_POINTER_ONLY";

@@ -136,16 +136,6 @@ public interface NativeInstructionType
 	short INVOKE_POINTER_AND_POOL =
 		0xF0;
 	
-	/** Load execp/poolp from interface VTable. */
-	@Deprecated
-	short INTERFACE_VT_LOAD =
-		0xF1;
-	
-	/** Lookup VTable Index for Interface. */
-	@Deprecated
-	short INTERFACE_VT_DX_LOOKUP =
-		0xF2;
-	
 	/**
 	 * Return. 
 	 * {@code iiiixxxx, return}.
@@ -171,15 +161,6 @@ public interface NativeInstructionType
 	@Deprecated
 	short STORE_TO_INTARRAY =
 		0xF5;
-	
-	/**
-	 * Get interface I for object.
-	 *
-	 * @deprecated Should be read from the pool. 
-	 */
-	@Deprecated
-	short INTERFACE_I_FOR_OBJECT =
-		0xF6;
 	
 	/**
 	 * Invoke. 
