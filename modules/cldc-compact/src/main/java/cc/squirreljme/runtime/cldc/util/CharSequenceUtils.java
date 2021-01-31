@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.strings;
+package cc.squirreljme.runtime.cldc.util;
 
 import java.util.Arrays;
 import net.multiphasicapps.collections.IntegerList;
@@ -40,7 +40,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public static final CharSequence[] fieldSplit(char __delim,
+	public static CharSequence[] fieldSplit(char __delim,
 		CharSequence __s)
 		throws NullPointerException
 	{
@@ -70,7 +70,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public static final int firstIndex(char __c, CharSequence __s)
+	public static int firstIndex(char __c, CharSequence __s)
 		throws NullPointerException
 	{
 		if (__s == null)
@@ -92,7 +92,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public static final int firstIndex(char[] __c, CharSequence __s)
+	public static int firstIndex(char[] __c, CharSequence __s)
 		throws NullPointerException
 	{
 		if (__c == null || __s == null)
@@ -116,7 +116,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public static final int firstIndex(String __c, CharSequence __s)
+	public static int firstIndex(String __c, CharSequence __s)
 		throws NullPointerException
 	{
 		if (__c == null || __s == null)
@@ -136,7 +136,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public static final int firstIndexSorted(char[] __c, CharSequence __s)
+	public static int firstIndexSorted(char[] __c, CharSequence __s)
 		throws NullPointerException
 	{
 		if (__c == null || __s == null)
@@ -167,7 +167,7 @@ public final class CharSequenceUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	public static final int[] multipleIndexOf(char __c, CharSequence __s)
+	public static int[] multipleIndexOf(char __c, CharSequence __s)
 		throws NullPointerException
 	{
 		if (__s == null)
@@ -176,7 +176,7 @@ public final class CharSequenceUtils
 		IntegerList list = new IntegerList();
 		
 		// Find every character index
-		for (int i = 0, n = __s.length(), lastdx = 0; i < n; i++)
+		for (int i = 0, n = __s.length(); i < n; i++)
 		{
 			char c = __s.charAt(i);
 			

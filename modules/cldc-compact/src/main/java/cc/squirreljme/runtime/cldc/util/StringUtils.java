@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.strings;
+package cc.squirreljme.runtime.cldc.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
