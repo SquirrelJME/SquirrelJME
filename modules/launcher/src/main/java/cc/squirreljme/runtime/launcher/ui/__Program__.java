@@ -12,7 +12,7 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.swm.EntryPoint;
+import cc.squirreljme.jvm.suite.EntryPoint;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Image;
