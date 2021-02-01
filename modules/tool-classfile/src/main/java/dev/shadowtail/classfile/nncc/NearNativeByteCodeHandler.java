@@ -65,7 +65,6 @@ import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.MethodDescriptor;
-import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
 
@@ -682,9 +681,6 @@ public final class NearNativeByteCodeHandler
 		// Target class
 		ClassName targetClass = __r.handle().outerClass();
 		
-		// What is being called?
-		InvokedMethod invokedMethod = new InvokedMethod(__t, __r.handle());
-		
 		// Remap method to LLE implementation of classes?
 		if (NearNativeByteCodeHandler.MLE_SHELF_PACKAGE
 			.equals(targetClass.inPackage()) &&
@@ -721,6 +717,9 @@ public final class NearNativeByteCodeHandler
 			// Do nothing else
 			return;
 		}
+		
+		// What is being called?
+		InvokedMethod invokedMethod = new InvokedMethod(__t, __r.handle());
 		
 		// Code generator
 		NativeCodeBuilder codeBuilder = this.codebuilder;
