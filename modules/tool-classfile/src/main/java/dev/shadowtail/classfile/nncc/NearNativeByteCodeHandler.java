@@ -3104,13 +3104,19 @@ public final class NearNativeByteCodeHandler
 		if (__instance == null || __cl == null || __result == null)
 			throw new NullPointerException("NARG");
 		
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
 		// If the target class is object, just do nothing because it is
 		// pointless to check casts to object.
 		// Additionally if the two types are the same, do nothing
 		if (__cl.isObjectClass() || __cl.equals(__jType.className()))
-			return;
+		{
+			// Whatever is calling this is wanting a result, so we give one
+			codeBuilder.addIntegerConst(1, __result);
 			
-		NativeCodeBuilder codeBuilder = this.codebuilder;
+			// We do not need to generate anymore code however
+			return;
+		}
 		
 		// Jumping point if we are quick compatible
 		NativeCodeLabel didQuickCompat = null;
