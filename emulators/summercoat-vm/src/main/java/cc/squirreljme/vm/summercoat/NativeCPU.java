@@ -49,7 +49,7 @@ public final class NativeCPU
 	 * Should SummerCoat print lots of debugging information?}
 	 */
 	public static final boolean ENABLE_DEBUG =
-		Boolean.getBoolean("cc.squirreljme.summercoat.debug");
+		true || Boolean.getBoolean("cc.squirreljme.summercoat.debug");
 	
 	/** Maximum amount of CPU registers. */
 	public static final int MAX_REGISTERS =
@@ -70,6 +70,10 @@ public final class NativeCPU
 	/** The maximum number of popped slices to store. */
 	public static final int MAX_POPPED_SLICE_STORE =
 		8;
+	
+	/** Limit the number of frames that can be entered. */
+	private static final int _FRAME_LIMIT = 
+		64;
 	
 	/** Threshhold for too many debug points */
 	private static final int _POINT_THRESHOLD =
@@ -162,6 +166,11 @@ public final class NativeCPU
 		
 		// Old frame, to source globals from
 		LinkedList<CPUFrame> frames = this._frames;
+		
+		// Do not go too deep
+		if (frames.size() >= NativeCPU._FRAME_LIMIT)
+			throw new VMException("Frame limit reached.");
+		
 		CPUFrame lastframe = frames.peekLast();
 		
 		// Setup new frame
