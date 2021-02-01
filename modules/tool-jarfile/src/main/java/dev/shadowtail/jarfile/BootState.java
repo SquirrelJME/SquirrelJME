@@ -1767,6 +1767,10 @@ public final class BootState
 						return this.__getXTable(inXClass,
 							invokeXTable.invokeType);
 					
+					case SYSTEM:
+						return this.__getXTable(inXClass,
+							InvokeType.STATIC);
+					
 					case INTERFACE:
 						Debugging.todoNote("XTable: %s", __entry);
 						return failValue;

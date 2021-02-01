@@ -17,7 +17,6 @@ import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
-import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
@@ -370,22 +369,25 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doCheckCast(ClassName __cl, JavaStackResult.Input __v)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Push reference
 		this.__refPush();
 		
+		// The instance to check
+		MemHandleRegister instance = MemHandleRegister.of(__v.register);
+		
 		// If the value to be checked is null then we do not thrown an
 		// exception, we just skip
-		NativeCodeLabel nullskip = new NativeCodeLabel("checkcastnull",
+		NativeCodeLabel nullSkip = new NativeCodeLabel("checkCastNull",
 			this._refclunk++);
-		codebuilder.addIfZero(__v.register, nullskip);
+		codeBuilder.addIfNull(instance, nullSkip);
 		
 		// Add cast check
-		this.__basicCheckCCE(__v.register, __v.type, __cl);
+		this.__basicCheckCCE(instance, __v.type, __cl);
 		
 		// Null jump goes here
-		codebuilder.label(nullskip);
+		codeBuilder.label(nullSkip);
 		
 		// We already checked the only valid exceptions, so do not perform
 		// later handling!
@@ -418,7 +420,7 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __a, StackJavaType __bs,
 		JavaStackResult.Output __b)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Doing just a copy
 		if (__as == __bs)
@@ -428,11 +430,11 @@ public final class NearNativeByteCodeHandler
 			
 			if (__as.isWide())
 			{
-				codebuilder.addCopy(a, b);
-				codebuilder.addCopy(a + 1, b + 1);
+				codeBuilder.addCopy(a, b);
+				codeBuilder.addCopy(a + 1, b + 1);
 			}
 			else
-				codebuilder.addCopy(a, b);
+				codeBuilder.addCopy(a, b);
 		}
 		
 		// Otherwise a conversion
@@ -443,24 +445,25 @@ public final class NearNativeByteCodeHandler
 			
 			// Invoke converter method (which might be wide)
 			if (__as.isWide())
-				this.__invokeStatic(InvokeType.SYSTEM, smc,
-					"to" + __bs.boxedType(), "(II)" + __bs.signature(),
+				this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM, smc,
+					"to" + __bs.boxedType(),
+					"(II)" + __bs.signature()),
 					__a.register, __a.register + 1);
 			else
-				this.__invokeStatic(InvokeType.SYSTEM, smc,
-					"to" + __bs.boxedType(), "(I)" + __bs.signature(),
-					__a.register);
+				this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM, smc,
+					"to" + __bs.boxedType(),
+					"(I)" + __bs.signature()), __a.register);
 			
 			// Read out return value
 			int a = NativeCode.RETURN_REGISTER,
 				b = __b.register;
 			if (__bs.isWide())
 			{
-				codebuilder.addCopy(a, b);
-				codebuilder.addCopy(a + 1, b + 1);
+				codeBuilder.addCopy(a, b);
+				codeBuilder.addCopy(a + 1, b + 1);
 			}
 			else
-				codebuilder.addCopy(a, b);
+				codeBuilder.addCopy(a, b);
 		}
 	}
 	
@@ -657,23 +660,12 @@ public final class NearNativeByteCodeHandler
 		// Push reference
 		this.__refPush();
 		
-		// Need volatiles
-		VolatileRegisterStack volatiles = this.volatiles;
-		int volwantcldx = volatiles.getUnmanaged();
+		// Perform the common instance check
+		this.__isInstance(MemHandleRegister.of(__v.register), __v.type, __cl,
+			IntValueRegister.of(__o.register));
 		
-		// Load desired class index type
-		this.__loadClassInfo(__cl, volwantcldx);
-		
-		// Invoke helper method
-		this.__invokeStatic(InvokeType.SYSTEM,
-			NearNativeByteCodeHandler.JVMFUNC_CLASS,
-			"jvmIsInstance", "(II)I", __v.register, volwantcldx);
-		
-		// Use result
-		this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
-		
-		// No longer needed
-		volatiles.removeUnmanaged(volwantcldx);
+		// This cannot cause exceptions
+		this.state.canexception = false;
 		
 		// Clear references in the event it was overwritten
 		this.__refClear();
@@ -689,6 +681,9 @@ public final class NearNativeByteCodeHandler
 	{
 		// Target class
 		ClassName targetClass = __r.handle().outerClass();
+		
+		// What is being called?
+		InvokedMethod invokedMethod = new InvokedMethod(__t, __r.handle());
 		
 		// Remap method to LLE implementation of classes?
 		if (NearNativeByteCodeHandler.MLE_SHELF_PACKAGE
@@ -728,68 +723,62 @@ public final class NearNativeByteCodeHandler
 		}
 		
 		// Code generator
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		VolatileRegisterStack volatiles = this.volatiles;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Push references
 		this.__refPush();
 		
 		// Fill in call arguments
-		List<Integer> callargs = new ArrayList<>(__in.length * 2);
+		List<Integer> callArgs = new ArrayList<>(__in.length * 2);
 		for (int i = 0, n = __in.length; i < n; i++)
 		{
 			// Add the input register
 			JavaStackResult.Input in = __in[i];
-			callargs.add(in.register);
+			callArgs.add(in.register);
 			
 			// But also if it is wide, we need to pass the other one or
 			// else the value will be clipped
 			if (in.type.isWide())
-				callargs.add(in.register + 1);
+				callArgs.add(in.register + 1);
 		}
 		
 		// Actual arguments to the call
-		RegisterList reglist = new RegisterList(callargs);
+		RegisterList regList = new RegisterList(callArgs);
 		
 		// If invoking static method, use our helper method
-		MethodHandle mh = __r.handle();
 		if (__t == InvokeType.STATIC)
 		{
-			this.__invokeStatic(__t, mh.outerClass(), mh.name(),
-				mh.descriptor(), reglist);
+			this.__invokeStatic(invokedMethod, regList);
 		}
 		
 		// Interface, special, or virtual
 		else
 		{
 			JavaStackResult.Input object = __in[0];
-			@Deprecated int instReg = object.register;
-			PlainRegister objectReg = new PlainRegister(instReg);
+			MemHandleRegister instance = MemHandleRegister.of(object.register);
 			
 			// Check that the object is of the given class type and is not null
-			this.__basicCheckNPE(instReg);
+			this.__basicCheckNPE(instance);
 			
 			// Check types if this is not compatible
 			if (!object.isCompatible(__r.handle().outerClass()))
-				this.__basicCheckCCE(instReg, object.type,
+				this.__basicCheckCCE(instance, object.type,
 					__r.handle().outerClass());
 			
 			// Invoking interface method
 			if (__t == InvokeType.INTERFACE)
-				this.__invokeInterface(mh.outerClass(), mh.name(),
-					mh.descriptor(), reglist);
+				this.__invokeInterface(invokedMethod, regList);
 			
 			// Special or virtual method
 			else
-				this.__invokeInstance(__t, mh.outerClass(), mh.name(),
-					mh.descriptor(), reglist);
+				this.__invokeInstance(invokedMethod, regList);
 		}
 		
 		// Check if exception occurred, before copying the return value!
 		if (this.state.canexception)
 		{
 			// Exception check
-			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
+			codeBuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
 				this.__labelException());
 			
 			// We did the exception handling, so do not handle later
@@ -803,8 +792,8 @@ public final class NearNativeByteCodeHandler
 				b = __out.register;
 			
 			if (__out.type.isWide())
-				codebuilder.addCopy(a + 1, b + 1);
-			codebuilder.addCopy(a, b);
+				codeBuilder.addCopy(a + 1, b + 1);
+			codeBuilder.addCopy(a, b);
 		}
 		
 		// Clear references
@@ -844,7 +833,7 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __a, JavaStackResult.Input __b,
 		JavaStackResult.Output __c)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Integer math is supported natively
 		if (__dt == StackJavaType.INTEGER)
@@ -864,7 +853,7 @@ public final class NearNativeByteCodeHandler
 			}
 			
 			// Add math operation
-			codebuilder.addMathReg(__dt, __mt, __a.register, __b.register,
+			codeBuilder.addMathReg(__dt, __mt, __a.register, __b.register,
 				__c.register);
 		}
 		
@@ -926,17 +915,17 @@ public final class NearNativeByteCodeHandler
 			}
 			
 			// Perform the call
-			this.__invokeStatic(InvokeType.SYSTEM, smc.toString(),
-				func, type, args);
+			this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM,
+				smc.toString(), func, type), args);
 			
 			// Read out return value
 			if (iswide)
 			{
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER, ch);
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, cl);
+				codeBuilder.addCopy(NativeCode.RETURN_REGISTER, ch);
+				codeBuilder.addCopy(NativeCode.RETURN_REGISTER + 1, cl);
 			}
 			else
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER, ch);
+				codeBuilder.addCopy(NativeCode.RETURN_REGISTER, ch);
 		}
 	}
 	
@@ -1067,9 +1056,10 @@ public final class NearNativeByteCodeHandler
 			rl.add(__dims[i].register);
 		
 		// Invoke array utility
-		this.__invokeStatic(InvokeType.SYSTEM,
-			"cc/squirreljme/runtime/cldc/lang/ArrayUtils", "multiANewArray",
-			"(Ljava/lang/Class;I" + sb + ")Ljava/lang/Object;",
+		this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM,
+			"cc/squirreljme/runtime/cldc/lang/ArrayUtils",
+			"multiANewArray",
+			"(Ljava/lang/Class;I" + sb + ")Ljava/lang/Object;"),
 			new RegisterList(rl));
 		
 		// Use this result
@@ -1568,8 +1558,9 @@ public final class NearNativeByteCodeHandler
 				this.__invokeNew(csl.classname, exinst);
 				
 				// Initialize the exception
-				this.__invokeInstance(InvokeType.SPECIAL, csl.classname, "<init>",
-					"()V", new RegisterList(exinst));
+				this.__invokeInstance(new InvokedMethod(InvokeType.SPECIAL,
+					csl.classname, "<init>", "()V"),
+					new RegisterList(exinst));
 				
 				// Copy result into the exception register
 				codebuilder.addCopy(exinst, NativeCode.EXCEPTION_REGISTER);
@@ -1622,26 +1613,22 @@ public final class NearNativeByteCodeHandler
 				
 				// Go through and build the exception handler table
 				for (ExceptionHandler eh : ehtable)
-				{
-					// Load the class type for the exception to check against
-					int volehclassdx = volatiles.getUnmanaged();
-					this.__loadClassInfo(eh.type(), volehclassdx);
-					
-					// Call instance handler check
-					this.__invokeStatic(InvokeType.SYSTEM,
-						NearNativeByteCodeHandler.JVMFUNC_CLASS,
-						"jvmIsInstance", "(II)I",
-						NativeCode.EXCEPTION_REGISTER, volehclassdx);
-					
-					// Cleanup
-					volatiles.removeUnmanaged(volehclassdx);
-					
-					// If the return value is non-zero then it is an instance, in
-					// which case we jump to the handler address.
-					codebuilder.addIfNonZero(NativeCode.RETURN_REGISTER,
-						this.__labelJavaTransition(sops,
-							new InstructionJumpTarget(eh.handlerAddress())));
-				}
+					try (Volatile<IntValueRegister> isInstance =
+						volatiles.getIntValue())
+					{
+						// Do common instance check, assume that thrown
+						// exceptions extend Throwable
+						this.__isInstance(MemHandleRegister.EXCEPTION,
+							JavaType.THROWABLE, eh.type(),
+							isInstance.register);
+						
+						// If the return value is non-zero then it is an instance, in
+						// which case we jump to the handler address.
+						codebuilder.addIfNonZero(isInstance.register,
+							this.__labelJavaTransition(sops,
+								new InstructionJumpTarget(
+									eh.handlerAddress())));
+					}
 				
 				// No exception handler is available so, just fall through to the
 				// caller as needed
@@ -1831,110 +1818,36 @@ public final class NearNativeByteCodeHandler
 	/**
 	 * Basic check if the instance is of the given class.
 	 *
-	 * @param __ir The register to check.
+	 * @param __instance The register to check.
 	 * @param __jType The type used on instance.
 	 * @param __cl The class that this will be cast to.
 	 * @throws NullPointerException On null arguments, except for
 	 * {@code __jType}.
 	 * @since 2020/11/28
 	 */
-	private void __basicCheckCCE(MemHandleRegister __ir, JavaType __jType,
-		ClassName __cl)
+	private void __basicCheckCCE(MemHandleRegister __instance,
+		JavaType __jType, ClassName __cl)
 		throws NullPointerException
 	{
-		if (__ir == null || __cl == null)
+		if (__instance == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
-		// If the target class is object, just do nothing because it is
-		// pointless to check casts to object.
-		// Additionally if the two types are the same, do nothing
-		if (__cl.isObjectClass() || __cl.equals(__jType.className()))
-			return;
-			
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// Debug
-		Debugging.debugNote("QuickCheck: %s ?= %s", __jType, __cl);
-		
-		// Jumping point if we are quick compatible
-		NativeCodeLabel isQuickCompatJump = null;
-		
-		// If we are quick compatible, then we avoid the instance check.
-		// However if we are coming from Object, we need to check everything
-		// so it would be rather pointless to use quick cast checks when it
-		// will always fail
-		boolean possibleQuick = (__jType.className() != null &&
-			!__jType.className().isObjectClass());
-		if (possibleQuick)
-			isQuickCompatJump = new NativeCodeLabel(
-				"isQuickCompat", this._refclunk++);
-		
-		// Perform a cached quick cast check
+		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		try (Volatile<TypedRegister<QuickCastCheck>> quickCast =
-			 (possibleQuick ? volatiles.getTyped(QuickCastCheck.class) : null))
+		try (Volatile<IntValueRegister> result = volatiles.getIntValue())
 		{
-			// If quick casting is possible, then
-			if (possibleQuick)
-				try (Volatile<IntValueRegister> arrayBase =
-						volatiles.getIntValue();
-					Volatile<IntValueRegister> quickVal =
-						volatiles.getIntValue())
-				{
-					// Get the base for the array, since we will be reading a
-					// value from the quick cast object.
-					this.__invokeSysCallV(
-						SystemCallIndex.ARRAY_ALLOCATION_BASE,
-						arrayBase.register);
-						
-					// Get the existing quick cast cache
-					codeBuilder.addPoolLoad(new QuickCastCheck(
-						__jType.className(), __cl), quickCast.register);
-					
-					// Read the value stored here
-					codeBuilder.addMemHandleAccess(DataType.INTEGER,
-						true, quickVal.register,
-						quickCast.register.asMemHandle(), arrayBase.register);
-					
-					// If we are quick compatible, we can jump over the actual
-					// instance check and not even bother casting at all
-					codeBuilder.addIfPositive(quickVal.register,
-						isQuickCompatJump);
-					
-					// We calculated this already and it is known that this
-					// will always fail!
-					codeBuilder.addIfNegative(quickVal.register,
-						this.__labelRefClearJump(this.__labelMakeException(
-							"java/lang/ClassCastException")));
-				}
+			// Perform the calculation and store it into the given result
+			this.__isInstance(__instance, __jType, __cl, result.register);
 			
-			// Perform the actual instance checking logic
-			try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
-				volatiles.getTyped(ClassInfoPointer.class))
-			{
-				// Load desired target class type
-				this.__loadClassInfo(__cl, classInfo.register);
-				
-				// Call helper class, forward the quick cast check since we
-				// can store a new value in it to skip this future check if
-				// it is known. If we cannot quick cast, then we just pass
-				// a null reference.
-				this.__invokeHelper(HelperFunction.IS_INSTANCE,
-					__ir, classInfo.register, (possibleQuick ?
-					quickCast.register : IntValueRegister.ZERO));
-				
-				// If the resulting method call returns zero then it is not an
-				// instance of the given class. The return register is checked
-				// because the value of that method will be placed there.
-				codeBuilder.addIfZero(NativeCode.RETURN_REGISTER,
-					this.__labelRefClearJump(this.__labelMakeException(
-						"java/lang/ClassCastException")));
-			}
+			// If the resulting method call returns zero then it is not an
+			// instance of the given class. The return register is checked
+			// because the value of that method will be placed there.
+			codeBuilder.addIfZero(result.register,
+				this.__labelRefClearJump(this.__labelMakeException(
+					"java/lang/ClassCastException")));
 		}
-		
-		// If quick compatibility was a success.
-		if (possibleQuick)
-			codeBuilder.label(isQuickCompatJump);
 	}
 	
 	/**
@@ -2666,28 +2579,6 @@ public final class NearNativeByteCodeHandler
 				codeBuilder.addCopy(__in[0].register,
 					NativeCode.THREAD_REGISTER);
 				break;
-				
-				// System calls
-			case "sysCall":
-			case "sysCallV":
-				this.__invokeSysCall(false, false, __out, __in);
-				break;
-				
-				// System calls (long return value)
-			case "sysCallVL":
-				this.__invokeSysCall(false, true, __out, __in);
-				break;
-				
-				// Pure system calls
-			case "sysCallP":
-			case "sysCallPV":
-				this.__invokeSysCall(true, false, __out, __in);
-				break;
-				
-				// Pure system calls (long return value)
-			case "sysCallPVL":
-				this.__invokeSysCall(true, true, __out, __in);
-				break;
 			
 			default:
 				throw Debugging.oops(asmfunc);
@@ -2709,8 +2600,9 @@ public final class NearNativeByteCodeHandler
 			throw new NullPointerException("NARG");
 		
 		// Call the given static method instead
-		this.__invokeStatic(InvokeType.SYSTEM, HelperFunction.HELPER_CLASS,
-			__func.member.name(), __func.member.type(), new RegisterList(__r));
+		this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM,
+			HelperFunction.HELPER_CLASS, __func.member.name(),
+			__func.member.type()), new RegisterList(__r));
 		
 		// Check if the invocation generated an exception
 		this.codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
@@ -2721,54 +2613,24 @@ public final class NearNativeByteCodeHandler
 	 * Invokes instance method, doing the needed pool loading and all the
 	 * complicated stuff in a simple point of code.
 	 *
-	 * @param __it The invocation type.
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @param __mt The method type.
-	 * @param __args The arguments to the call.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use constants instead.
-	 * @since 2019/05/24
-	 */
-	@Deprecated
-	private void __invokeInstance(InvokeType __it, ClassName __cl,
-		String __mn, String __mt, RegisterList __args)
-		throws NullPointerException
-	{
-		this.__invokeInstance(__it, __cl, new MethodName(__mn),
-			new MethodDescriptor(__mt), __args);
-	}
-	
-	/**
-	 * Invokes instance method, doing the needed pool loading and all the
-	 * complicated stuff in a simple point of code.
-	 *
-	 * @param __it The invocation type.
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @param __mt The method type.
+	 * @param __invoked The method being invoked.
 	 * @param __args The arguments to the call.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private void __invokeInstance(InvokeType __it, ClassName __cl,
-		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
+	private void __invokeInstance(InvokedMethod __invoked, RegisterList __args)
 		throws NullPointerException
 	{
-		if (__it == null || __cl == null || __mn == null || __mt == null ||
-			__args == null)
+		if (__invoked == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Is the invocation special?
-		boolean isSpecial = (__it == InvokeType.SPECIAL);
+		boolean isSpecial = (__invoked.type == InvokeType.SPECIAL);
 		
 		// The instance handle, used for any instance relative invocations
 		MemHandleRegister instance = MemHandleRegister.of(__args.get(0));
-		
-		// For virtual invocations, there is no special logic and we can
-		InvokedMethod invoked = new InvokedMethod(__it, __cl, __mn, __mt);
 		
 		// Need volatiles to work with
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -2782,10 +2644,12 @@ public final class NearNativeByteCodeHandler
 			//  * It is an initializer, we want to call that exact one
 			//  * The target class is the same class of the current class
 			//    being processed (private method)
-			boolean exactSpecial = __mn.isInstanceInitializer() ||
-				__cl.equals(this.state.classname);
+			boolean exactSpecial = __invoked.handle.name()
+				.isInstanceInitializer() ||
+				__invoked.handle.outerClass().equals(this.state.classname);
 			if (isSpecial && exactSpecial)
-				this.__loadClassInfo(__cl, targetClass.register);
+				this.__loadClassInfo(__invoked.handle.outerClass(),
+					targetClass.register);
 			
 			// Load the current class of the instance
 			else
@@ -2833,30 +2697,29 @@ public final class NearNativeByteCodeHandler
 			
 			// Perform standardized XTable invocation with the XTable we
 			// obtained, since we do not want automatic getting
-			this.__invokeXTable(vTable.register, invoked, __args);
+			this.__invokeXTable(vTable.register, __invoked, __args);
 		}
 	}
 	
 	/**
 	 * Invokes an interface method from a given instance.
 	 *
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @param __mt The method type.
+	 * @param __invokedMethod The method being invoked.
 	 * @param __args The arguments to the call.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/31
 	 */
-	private void __invokeInterface(ClassName __cl, MethodName __mn,
-		MethodDescriptor __mt, RegisterList __args)
+	private void __invokeInterface(InvokedMethod __invokedMethod,
+		RegisterList __args)
 		throws NullPointerException
 	{
-		if (__cl == null || __mn == null || __mt == null || __args == null)
+		if (__invokedMethod == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		codeBuilder.addBreakpoint(0x7E0C, "Invoke interface.");
+		codeBuilder.addBreakpoint(0x7E0C,
+			"Invoke interface:" + __invokedMethod);
 	}
 	
 	/**
@@ -2910,86 +2773,38 @@ public final class NearNativeByteCodeHandler
 	 * Invokes static method, doing the needed pool loading and all the
 	 * complicated stuff in a simple point of code.
 	 *
-	 * @param __it The invocation type.
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @param __mt The method type.
+	 * @param __invoked The method being invoked.
 	 * @param __args The arguments to the call.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private void __invokeStatic(InvokeType __it, String __cl,
-		String __mn, String __mt, int... __args)
+	private void __invokeStatic(InvokedMethod __invoked, int... __args)
 		throws NullPointerException
 	{
-		this.__invokeStatic(__it, new ClassName(__cl), new MethodName(__mn),
-			new MethodDescriptor(__mt), new RegisterList(__args));
+		this.__invokeStatic(__invoked, new RegisterList(__args));
 	}
 	
 	/**
 	 * Invokes static method, doing the needed pool loading and all the
 	 * complicated stuff in a simple point of code.
 	 *
-	 * @param __it The invocation type.
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @param __mt The method type.
+	 * @param __invoked The method being invoked.
 	 * @param __args The arguments to the call.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
-	private void __invokeStatic(InvokeType __it, String __cl,
-		String __mn, String __mt, RegisterList __args)
+	private void __invokeStatic(InvokedMethod __invoked, RegisterList __args)
 		throws NullPointerException
 	{
-		this.__invokeStatic(__it, new ClassName(__cl), new MethodName(__mn),
-			new MethodDescriptor(__mt), __args);
-	}
-	
-	/**
-	 * Invokes static method, doing the needed pool loading and all the
-	 * complicated stuff in a simple point of code.
-	 *
-	 * @param __it The invocation type.
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @param __mt The method type.
-	 * @param __args The arguments to the call.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/24
-	 */
-	private void __invokeStatic(InvokeType __it, ClassName __cl,
-		String __mn, String __mt, int... __args)
-		throws NullPointerException
-	{
-		this.__invokeStatic(__it, __cl, new MethodName(__mn),
-			new MethodDescriptor(__mt), new RegisterList(__args));
-	}
-	
-	/**
-	 * Invokes static method, doing the needed pool loading and all the
-	 * complicated stuff in a simple point of code.
-	 *
-	 * @param __it The invocation type.
-	 * @param __cl The class name.
-	 * @param __mn The method name.
-	 * @param __mt The method type.
-	 * @param __args The arguments to the call.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/24
-	 */
-	private void __invokeStatic(InvokeType __it, ClassName __cl,
-		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
-		throws NullPointerException
-	{
-		if (__it == null || __cl == null || __mn == null || __mt == null ||
-			__args == null)
+		if (__invoked == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Is this a system static call, where we need to
-		boolean isSystem = (__it == InvokeType.SYSTEM);
+		boolean isSystem = (__invoked.type == InvokeType.SYSTEM);
+		if (isSystem)
+			__invoked = new InvokedMethod(InvokeType.STATIC, __invoked.handle);
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
@@ -3008,8 +2823,7 @@ public final class NearNativeByteCodeHandler
 			
 			// Invoke using the standard XTable method, if this is a system
 			// invocation force it to be static
-			this.__invokeXTable(new InvokedMethod((isSystem ?
-				InvokeType.STATIC : __it), __cl, __mn, __mt), __args);
+			this.__invokeXTable(__invoked, __args);
 			
 			// If the system invoke (which could be from special code) threw an
 			// exception just replace our current exception with that one since
@@ -3029,118 +2843,6 @@ public final class NearNativeByteCodeHandler
 				
 				// Target point for double fault
 				codeBuilder.label(doubleFault);
-			}
-		}
-	}
-	
-	/**
-	 * Invokes a system call, which can either be pure or unpure.
-	 *
-	 * @param __pure Is the system call pure?
-	 * @param __long Is this a long system call?
-	 * @param __out The return register, may be set.
-	 * @param __in The input system call arguments.
-	 * @since 2109/05/27
-	 */
-	private void __invokeSysCall(boolean __pure, boolean __long,
-		JavaStackResult.Output __out, JavaStackResult.Input... __in)
-	{
-		// Invoked methods can thrown an exception, so do
-		// checks! Otherwise the behavior we expect might not
-		// happen
-		this.state.canexception = true;
-		
-		// Invoke of pure system call?
-		if (__pure)
-		{
-			// Build the register List
-			List<Integer> args = new ArrayList<>();
-			int n = __in.length;
-			for (int i = 1; i < n; i++)
-				args.add(__in[i].register);
-			
-			// Perform the pure call
-			this.codebuilder.add(NativeInstructionType.SYSTEM_CALL,
-				__in[0].register, new RegisterList(args));
-			
-			// Need to store the return value of this call
-			VolatileRegisterStack volatiles = this.volatiles;
-			int rvlo = volatiles.getUnmanaged(),
-				rvhi = volatiles.getUnmanaged();
-			
-			// Defensive copy of return value
-			if (__out != null)
-			{
-				// Low
-				this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, rvlo);
-				
-				// High
-				if (__long)
-					this.codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1, rvhi);
-			}
-			
-			// Load the system call index for IPC exception store
-			int ipcesid = volatiles.getUnmanaged();
-			this.codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-				NativeCode.ZERO_REGISTER, SystemCallIndex.EXCEPTION_STORE,
-				ipcesid);
-			
-			// Perform system call to clear and read exception
-			this.codebuilder.add(NativeInstructionType.SYSTEM_CALL,
-				ipcesid, new RegisterList(NativeCode.ZERO_REGISTER));
-			
-			// Quickly copy out exception value
-			int eval = volatiles.getUnmanaged();
-			this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, eval);
-			
-			// If this value is set, then we fail
-			this.codebuilder.addIfNonZero(eval,
-				this.__labelMakeException("cc/squirreljme/jvm/IPCException"));
-			
-			// Copy out the moved out return values
-			if (__out != null)
-			{
-				// Low value
-				this.codebuilder.addCopy(rvlo, __out.register);
-				
-				// Possible high value
-				if (__long)
-					this.codebuilder.addCopy(rvhi, __out.register + 1);
-			}
-			
-			// No longer needed
-			volatiles.removeUnmanaged(eval);
-			volatiles.removeUnmanaged(ipcesid);
-			volatiles.removeUnmanaged(rvhi);
-			volatiles.removeUnmanaged(rvlo);
-		}
-		
-		// Unpure system call (possibly adapted by our own handler)
-		else
-		{
-			// Since this is a standard invocation, we just pass all the
-			// input arguments as is
-			int n = __in.length;
-			int[] args = new int[n];
-			for (int i = 0; i < n; i++)
-				args[i] = __in[i].register;
-			
-			// Perform the unpure call into the JVM helper
-			this.__invokeStatic(InvokeType.SYSTEM,
-				NearNativeByteCodeHandler.JVMFUNC_CLASS,
-				"jvmSystemCall", "(SIIIIIIII)J", args);
-				
-			// Copy return value
-			if (__out != null)
-			{
-				// Low value
-				this.codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-					__out.register);
-				
-				// Possible high value
-				if (__long)
-					this.codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
-						__out.register + 1);
 			}
 		}
 	}
@@ -3383,6 +3085,126 @@ public final class NearNativeByteCodeHandler
 			codeBuilder.addInvokePoolAndPointer(
 				methodAddr.register, poolRef.register, __args);
 		}
+	}
+	
+	/**
+	 * Basic check if the instance is of the given class.
+	 *
+	 * @param __instance The register to check.
+	 * @param __jType The type used on instance.
+	 * @param __cl The class that this will be cast to.
+	 * @param __result The result if this is an instance or not.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __jType}.
+	 * @since 2021/01/31
+	 */
+	private void __isInstance(MemHandleRegister __instance, JavaType __jType,
+		ClassName __cl, IntValueRegister __result)
+		throws NullPointerException
+	{
+		if (__instance == null || __cl == null || __result == null)
+			throw new NullPointerException("NARG");
+		
+		// If the target class is object, just do nothing because it is
+		// pointless to check casts to object.
+		// Additionally if the two types are the same, do nothing
+		if (__cl.isObjectClass() || __cl.equals(__jType.className()))
+			return;
+			
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// Jumping point if we are quick compatible
+		NativeCodeLabel didQuickCompat = null;
+		
+		// If we are quick compatible, then we avoid the instance check.
+		// However if we are coming from Object, we need to check everything
+		// so it would be rather pointless to use quick cast checks when it
+		// will always fail
+		boolean possibleQuick = (__jType.className() != null &&
+			!__jType.className().isObjectClass());
+		if (possibleQuick)
+			didQuickCompat = new NativeCodeLabel(
+				"isQuickCompat", this._refclunk++);
+		
+		// Perform a cached quick cast check
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (Volatile<TypedRegister<QuickCastCheck>> quickCast =
+			 (possibleQuick ? volatiles.getTyped(QuickCastCheck.class) : null))
+		{
+			// If quick casting is possible, then
+			if (possibleQuick)
+				try (Volatile<IntValueRegister> arrayBase =
+						volatiles.getIntValue();
+					Volatile<IntValueRegister> quickVal =
+						volatiles.getIntValue())
+				{
+					// Get the base for the array, since we will be reading a
+					// value from the quick cast object.
+					this.__invokeSysCallV(
+						SystemCallIndex.ARRAY_ALLOCATION_BASE,
+						arrayBase.register);
+						
+					// Get the existing quick cast cache
+					codeBuilder.addPoolLoad(new QuickCastCheck(
+						__jType.className(), __cl), quickCast.register);
+					
+					// Read the value stored here
+					codeBuilder.addMemHandleAccess(DataType.INTEGER,
+						true, quickVal.register,
+						quickCast.register.asMemHandle(), arrayBase.register);
+					
+					// If the value is zero (not cached), then an instance
+					// check will be performed
+					NativeCodeLabel doInstanceCheck = new NativeCodeLabel(
+						"doInstanceCheck", this._refclunk++);
+					codeBuilder.addIfZero(quickVal.register, doInstanceCheck);
+					
+					// Store zero into the result register, if this is
+					// positive then it will change
+					codeBuilder.addIntegerConst(0, __result);
+					
+					// We calculated this already and it is known that this
+					// will always fail!
+					codeBuilder.addIfNegative(quickVal.register,
+						didQuickCompat);
+					
+					// If we are not negative then we are positive, so the
+					// check was successful
+					codeBuilder.addIntegerConst(1, __result);
+					
+					// We calculated the quick compatibility, unless the
+					// cache returned zero for unknown
+					codeBuilder.addGoto(didQuickCompat);
+					
+					// Will be doing a normal instance check, this only
+					// happens if no value was ever cached or it is unknown
+					codeBuilder.label(doInstanceCheck);
+				}
+			
+			// Perform the actual instance checking logic
+			try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
+				volatiles.getTyped(ClassInfoPointer.class))
+			{
+				// Load desired target class type
+				this.__loadClassInfo(__cl, classInfo.register);
+				
+				// Call helper class, forward the quick cast check since we
+				// can store a new value in it to skip this future check if
+				// it is known. If we cannot quick cast, then we just pass
+				// a null reference.
+				this.__invokeHelper(HelperFunction.IS_INSTANCE,
+					__instance, classInfo.register, (possibleQuick ?
+					quickCast.register : IntValueRegister.ZERO));
+				
+				// Store the result into the output
+				codeBuilder.addCopy(IntValueRegister.RETURN, __result);
+			}
+		}
+		
+		// If quick compatibility was performed, skip the method based
+		// instance check
+		if (possibleQuick)
+			codeBuilder.label(didQuickCompat);
 	}
 	
 	/**
@@ -3697,10 +3519,15 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @param __cl The class to load.
 	 * @param __r The register to place it in.
+	 * @deprecated Do not use.
 	 * @since 2019/04/26
 	 */
+	@Deprecated
 	private void __loadClassObject(ClassName __cl, int __r)
 	{
+		this.codebuilder.addBreakpoint(0x7E0D,
+			"load Class<?>: " + __cl);
+		/*
 		VolatileRegisterStack volatiles = this.volatiles;
 		
 		// Load the class info for the class
@@ -3708,7 +3535,7 @@ public final class NearNativeByteCodeHandler
 		this.__loadClassInfo(__cl, volcdvt);
 		
 		// Call internal class object loader
-		this.__invokeStatic(InvokeType.SYSTEM,
+		this.__invokeStatic(__invoked, InvokeType.SYSTEM,
 			NearNativeByteCodeHandler.JVMFUNC_CLASS,
 			"jvmLoadClass", "(I)Ljava/lang/Class;", volcdvt);
 		
@@ -3716,72 +3543,7 @@ public final class NearNativeByteCodeHandler
 		volatiles.removeUnmanaged(volcdvt);
 		
 		// Copy return value to the output register
-		this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);
-	}
-	
-	/**
-	 * Loads the constant pool for the given class.
-	 *
-	 * @param __cl The class pool to load.
-	 * @param __r The output register.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/12/15
-	 */
-	private void __loadClassPool(ClassName __cl, int __r)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Used for loading code
-		NativeCodeBuilder codeBuilder = this.codebuilder;
-		
-		// Load pool pointer
-		codeBuilder.<ClassPool>addPoolLoad(new ClassPool(__cl),
-			TypedRegister.<ClassPool>of(ClassPool.class, __r));
-		
-		// Detect classes which are dynamically initialized
-		if (!ClassLoadingAdjustments.isDeferredLoad(
-			this.state.classname.toString(), __cl.toString()))
-			return;
-		
-		Debugging.todoNote("Add dynamic pool load for %s!", __cl);
-		/*// Jump if the pool is already loaded
-		NativeCodeLabel isloaded = new NativeCodeLabel("piisloaded",
-			this._refclunk++);
-		codeBuilder.addIfNonZero(__r, isloaded);
-		
-		// Need volatile to get the class info
-		VolatileRegisterStack volatiles = this.volatiles;
-		int volcinfo = volatiles.getUnmanaged(),
-			volpoolv = volatiles.getUnmanaged(),
-			volscfo = volatiles.getUnmanaged();
-		
-		// Load the ClassInfo for the class we want
-		this.__loadClassInfo(__cl, volcinfo);
-		
-		// Load pool pointer from this ClassInfo
-		codeBuilder.add(NativeInstructionType.LOAD_POOL,
-			new AccessedField(FieldAccessTime.NORMAL,
-				FieldAccessType.INSTANCE,
-			new FieldReference(
-				new ClassName("cc/squirreljme/jvm/ClassInfo"),
-				new FieldName("pool"),
-				new FieldDescriptor("I"))), volscfo);
-		codeBuilder.addMemoryOffReg(DataType.INTEGER, true,
-			volpoolv, volcinfo, volscfo);
-		
-		// Store it
-		codeBuilder.add(NativeInstructionType.STORE_POOL,
-			new ClassPool(__cl), volpoolv);
-		
-		// Cleanup
-		volatiles.removeUnmanaged(volcinfo);
-		volatiles.removeUnmanaged(volpoolv);
-		volatiles.removeUnmanaged(volscfo);
-		
-		// End point is here
-		codeBuilder.label(isloaded);*/
+		this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);*/
 	}
 	
 	/**
@@ -3793,10 +3555,12 @@ public final class NearNativeByteCodeHandler
 	 */
 	private void __monitor(boolean __enter, int __r)
 	{
-		// Call helper method
-		this.__invokeStatic(InvokeType.SYSTEM,
+		this.codebuilder.addBreakpoint(0x7E0A,
+			"Monitor " + __enter);
+		/*// Call helper method
+		this.__invokeStatic(__invoked, InvokeType.SYSTEM,
 			NearNativeByteCodeHandler.JVMFUNC_CLASS,
-			(__enter ? "jvmMonitorEnter" : "jvmMonitorExit"), "(I)V", __r);
+			(__enter ? "jvmMonitorEnter" : "jvmMonitorExit"), "(I)V", __r);*/
 	}
 	
 	/**
@@ -3816,7 +3580,6 @@ public final class NearNativeByteCodeHandler
 		
 		// Un-count all of them accordingly
 		VolatileRegisterStack volatiles = this.volatiles;
-		NativeCodeBuilder codebuilder = this.codebuilder;
 		for (int i = 0, n = lastenqueue.size(); i < n; i++)
 		{
 			// Get the volatile to clear
