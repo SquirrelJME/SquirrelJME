@@ -15,7 +15,7 @@ of code execution.
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
- * Copyright (C) 2013-2020 Stephanie Gawroriski
+ * Copyright (C) 2013-2021 Stephanie Gawroriski
    <xer@multiphasicapps.net>
  * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2020
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
@@ -126,8 +126,10 @@ Information:
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
+   * [Reddit](https://reddit.com/r/SquirrelJME)
  * Front facing social media:
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
+   * [Twitter](https://twitter.com/MultiPhasicApps)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
