@@ -15,6 +15,7 @@ import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolBuilder;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
@@ -181,6 +182,7 @@ public final class DualPoolEncoder
 					case USED_STRING:
 					case INTERFACE_CLASS:
 					case QUICK_CAST_CHECK:
+					case CLASS_NAME_HASH:
 						// Read parts
 						if (iswide)
 							for (int p = 0; p < numparts; p++)
@@ -323,6 +325,13 @@ public final class DualPoolEncoder
 								value = new InterfaceClassName(
 									classpool.<ClassName>byIndex(
 										ClassName.class, parts[0]));
+								break;
+								
+								// Class Name Hash
+							case CLASS_NAME_HASH:
+								value = new ClassNameHash(
+									classpool.<ClassName>byIndex(
+										ClassName.class, parts[2]));
 								break;
 								
 								// Unknown
@@ -659,6 +668,7 @@ public final class DualPoolEncoder
 			case QUICK_CAST_CHECK:
 			case USED_STRING:
 			case INTERFACE_CLASS:
+			case CLASS_NAME_HASH:
 				if (__wide)
 					for (int i = 0, n = __p.length; i < n; i++)
 						dos.writeShortChecked(__p[i]);

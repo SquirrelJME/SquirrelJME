@@ -24,6 +24,7 @@ import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.InvokeType;
@@ -1813,6 +1814,13 @@ public final class BootState
 				// interned accordingly by the bootstrap.
 			case USED_STRING:
 				return this.loadString(__entry.value.toString());
+			
+				// The hash of the class, which is simple to calculate
+			case CLASS_NAME_HASH:
+				ClassNameHash classNameHash = __entry.<ClassNameHash>value(
+					ClassNameHash.class);
+				
+				return classNameHash.hashCode();
 		}
 		
 		if (false)

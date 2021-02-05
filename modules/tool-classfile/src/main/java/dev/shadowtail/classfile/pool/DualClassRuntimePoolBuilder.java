@@ -138,6 +138,14 @@ public final class DualClassRuntimePoolBuilder
 				return runpool.add(__v,
 					this.addStatic(qcc.from).index,
 					this.addStatic(qcc.to).index);
+				
+				// Class Name Hash
+			case CLASS_NAME_HASH:
+				ClassNameHash cnh = (ClassNameHash)__v;
+				return runpool.add(__v,
+					cnh.hashCode() >>> 16,
+					cnh.hashCode() & 0xFFFF,
+					this.addStatic(cnh.className).index);
 			
 				// A string that is noted for its value (debugging)
 				// Or a string that is used

@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
@@ -86,6 +87,9 @@ public enum MinimizedPoolEntryType
 	
 	/** Check for quick casting, to avoid doing an involved instance check. */
 	QUICK_CAST_CHECK(true, QuickCastCheck.class),
+	
+	/** The hash code for a class. */
+	CLASS_NAME_HASH(true, ClassNameHash.class),
 	
 	/* End. */
 	;

@@ -92,7 +92,11 @@ public interface MemHandleKind
 	byte QUICK_CAST_CHECK =
 		18;
 	
+	/** Interface I2XTable. */
+	byte I2X_TABLE =
+		19;
+	
 	/** The number of kinds used. */
 	byte NUM_KINDS =
-		19;
+		20;
 }

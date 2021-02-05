@@ -92,14 +92,18 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 18;
 	
 	/** The interface tables that are available for a class. */
-	byte MEMHANDLE_ITABLE =
+	byte MEMHANDLE_I2XTABLE =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
 	
 	/** The static invocation table. */
 	byte MEMHANDLE_STABLE =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
 	
+	/** The mask potential for the I2X Table. */
+	byte MASK_I2XTABLE =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
+	
 	/** The number of properties available. */
 	byte NUM_RUNTIME_PROPERTIES =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
 }

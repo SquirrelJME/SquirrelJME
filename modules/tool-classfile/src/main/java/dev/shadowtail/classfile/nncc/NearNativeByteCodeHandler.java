@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
 import dev.shadowtail.classfile.pool.InvokeType;
@@ -2723,71 +2724,121 @@ public final class NearNativeByteCodeHandler
 		
 		// Volatile registers are used for temporaries
 		VolatileRegisterStack volatiles = this.volatiles;
-		if (true)
+		try (Volatile<MemHandleRegister> classInfo =
+				volatiles.getMemHandle();
+			Volatile<MemHandleRegister> itxTable =
+				volatiles.getMemHandle();
+			Volatile<TypedRegister<InvokeXTable>> xTable =
+				volatiles.getTyped(InvokeXTable.class))
 		{
 			// Load the class information from the given instance
-			if (true)
-				throw Debugging.todo();
+			this.__invokeHelper(HelperFunction.OBJECT_CLASS_INFO, instance);
+			codeBuilder.addCopy(MemHandleRegister.RETURN, classInfo.register);
 			
 			// Obtain the I2XTable, which is used to quickly map to a hashed
 			// index and if that fails it will linearly scan for the interface.
-			if (true)
-				throw Debugging.todo();
+			try (Volatile<IntValueRegister> itxProp = volatiles.getIntValue())
+			{
+				// Need the constant for the table
+				codeBuilder.addIntegerConst(ClassProperty.MEMHANDLE_I2XTABLE,
+					itxProp.register);
+				
+				// Load the I2X Table for the class
+				this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+					classInfo.register, itxProp.register);
+				codeBuilder.addCopy(MemHandleRegister.RETURN,
+					itxTable.register);
+			}
 			
 			// This is jumped to when we have our XTable and we do not need
 			// to perform a linear scan for the right interface
 			NativeCodeLabel noScan = new NativeCodeLabel("noScan",
 				this._refclunk++);
 			
-			// Perform hash based lookup
-			if (true)
+			// The mask is used for table scan and lookup quickly
+			try (Volatile<IntValueRegister> mask =
+					volatiles.getIntValue();
+				Volatile<IntValueRegister> arrayBase =
+					volatiles.getIntValue())
 			{
-				// Load the I2XTable base potential mask from the class
-				// information, this will be used to determine if we can
-				// quickly index an interface table via a hashcode. This must
-				// _always_ be a power of two minus one!
-				if (true)
-					throw Debugging.todo();
+				// Load the array based, used for all searches and lookups
+				this.__invokeSysCallV(SystemCallIndex.ARRAY_ALLOCATION_BASE,
+					arrayBase.register);
+					
+				// Perform hash based lookup
+				try (Volatile<IntValueRegister> tableSpot =
+						volatiles.getIntValue(); 
+					Volatile<TypedRegister<ClassNameHash>> nameHash =
+						volatiles.getTyped(ClassNameHash.class))
+				{
+					// Load the I2XTable base potential mask from the class
+					// information, this will be used to determine if we can
+					// quickly index an interface table via a hashcode. This
+					// must _always_ be a power of two minus one!
+					codeBuilder.addIntegerConst(ClassProperty.MASK_I2XTABLE,
+						mask.register);
+					
+					// Load the mask
+					this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+						classInfo.register, mask.register);
+					codeBuilder.addCopy(IntValueRegister.RETURN,
+						mask.register);
+					
+					// Obtain the interface class target hash from the constant
+					// pool, although many different classes will
+					codeBuilder.addPoolLoad(new ClassNameHash(
+						__invokedMethod.outerClass()), nameHash.register);
+					
+					// AND the hash with the I2XTable base potential mask, this
+					// will give us the index into the table
+					codeBuilder.addMathReg(StackJavaType.INTEGER, 
+						MathType.AND,
+						nameHash.register.asIntValue(), mask.register, 
+						tableSpot.register);
+					
+					// Read the value here, which will be a pointer to a XTable
+					// or a special value indicating collision where a linear
+					// scan is required.
+					try (Volatile<IntValueRegister> trueOffset =
+							volatiles.getIntValue())
+					{
+						// Determine where in the offset to actually read from
+						codeBuilder.addMathConst(StackJavaType.INTEGER,
+							MathType.MUL, tableSpot.register, 8,
+							trueOffset.register);
+						codeBuilder.addMathReg(StackJavaType.INTEGER,
+							MathType.ADD,
+							trueOffset.register, arrayBase.register,
+							trueOffset.register);
+						
+						// Read the value here
+						codeBuilder.addMemHandleAccess(DataType.INTEGER,
+							true, xTable.register.asIntValue(),
+							itxTable.register, tableSpot.register);
+					}
+					
+					// Zero indicates collision and a scan has to be performed.
+					codeBuilder.addIfNonZero(xTable.register.asIntValue(),
+						noScan);
+				}
 				
-				// Obtain the interface class target hash from the constant
-				// pool, although many different classes will
-				if (true)
-					throw Debugging.todo();
-				
-				// AND the hash with the I2XTable base potential mask, this
-				// will give us the index into the table
-				if (true)
-					throw Debugging.todo();
-				
-				// Read the value here, which will be a pointer to a XTable or
-				// a special value indicating collision where a linear scan is
-				// required.
-				if (true)
-					throw Debugging.todo();
-				
-				// If this is the special value then that means there is a
-				// collision or otherwise and we have to perform a linear scan.
-				if (true)
-					throw Debugging.todo();
-			}
-			
-			// Performing linear scan (slower)
-			if (true)
-			{
 				// Load the class information for the target class to call
 				// into, we need this to map values
-				if (true)
+				codeBuilder.addBreakpoint(0x7CAA, "Interface");
+				if (false)
 					throw Debugging.todo();
 				
 				// Start from the I2XTable base potential mask + 1 so that we
 				// are at the very end of the base potential table
-				if (true)
+				codeBuilder.addBreakpoint(0x7CAB, "Interface");
+				if (false)
 					throw Debugging.todo();
 				
 				// Scan through the I2XTable and find the class that matches
 				// the one we want to execute for, we should get an XTable
 				// from this
-				if (true)
+				codeBuilder.addBreakpoint(0x7CAC, "Interface");
+				if (false)
 					throw Debugging.todo();
 			}
 			
@@ -2796,8 +2847,7 @@ public final class NearNativeByteCodeHandler
 			
 			// Once we have the XTable, we can perform an XTable invoke like
 			// how other static and virtual methods are invoked.
-			if (true)
-				throw Debugging.todo();
+			this.__invokeXTable(xTable.register, __invokedMethod, __args);
 		}
 	}
 	
