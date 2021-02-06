@@ -2754,6 +2754,8 @@ public final class NearNativeByteCodeHandler
 			// to perform a linear scan for the right interface
 			NativeCodeLabel noScan = new NativeCodeLabel("noScan",
 				this._refclunk++);
+			NativeCodeLabel linearScan = new NativeCodeLabel("linearScan",
+				this._refclunk++);
 			
 			// The mask is used for table scan and lookup quickly
 			try (Volatile<IntValueRegister> mask =
@@ -2799,7 +2801,9 @@ public final class NearNativeByteCodeHandler
 					// Read the value here, which will be a pointer to a XTable
 					// or a special value indicating collision where a linear
 					// scan is required.
-					try (Volatile<IntValueRegister> trueOffset =
+					try (Volatile<MemHandleRegister> checkCl =
+							volatiles.getMemHandle();
+						Volatile<IntValueRegister> trueOffset =
 							volatiles.getIntValue())
 					{
 						// Determine where in the offset to actually read from
@@ -2813,14 +2817,31 @@ public final class NearNativeByteCodeHandler
 						
 						// Read the value here
 						codeBuilder.addMemHandleAccess(DataType.INTEGER,
+							true, checkCl.register.asIntValue(),
+							itxTable.register, trueOffset.register);
+						
+						// Zero indicates collision and a scan has to be
+						// performed.
+						codeBuilder.addIfZero(checkCl.register.asIntValue(),
+							linearScan);
+						
+						// The XTable is just one entry off!
+						codeBuilder.addMathConst(StackJavaType.INTEGER,
+							MathType.ADD, trueOffset.register, 4,
+							trueOffset.register);
+							
+						// Read in the XTable
+						codeBuilder.addMemHandleAccess(DataType.INTEGER,
 							true, xTable.register.asIntValue(),
-							itxTable.register, tableSpot.register);
+							itxTable.register, trueOffset.register);
+						
+						// Perform the actual jump, do not scan!
+						codeBuilder.addGoto(noScan);
 					}
-					
-					// Zero indicates collision and a scan has to be performed.
-					codeBuilder.addIfNonZero(xTable.register.asIntValue(),
-						noScan);
 				}
+				
+				// Linear scan is happening
+				codeBuilder.label(linearScan);
 				
 				// Load the class information for the target class to call
 				// into, we need this to map values

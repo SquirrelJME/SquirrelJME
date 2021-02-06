@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
@@ -116,6 +117,9 @@ public final class BootState
 		
 	/** The name of the boot class. */
 	private ClassName _bootClass;
+	
+	/** An empty I2X Table, to save space. */
+	private ListValueHandle _emptyI2XTable;
 	
 	/** The pool references to use for booting. */
 	private DualClassRuntimePool _pool;
@@ -262,6 +266,136 @@ public final class BootState
 		
 		// Write the memory handles (and actions) into boot memory
 		this._memHandles.chunkOut(__outData);
+	}
+	
+	/**
+	 * Loads interface tables for the given class.
+	 * 
+	 * @param __cl The class to load for.
+	 * @param __potentialMask The potential mask output.
+	 * @return The loaded interface tables.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/06
+	 */
+	public ListValueHandle interfaceTables(ClassName __cl,
+		int[] __potentialMask)
+		throws IOException, NullPointerException
+	{
+		if (__cl == null || __potentialMask == null)
+			throw new NullPointerException("NARG");
+		
+		// Get all the interfaces for direct mapping and usage
+		ClassNames classNames = this.allInterfaces(__cl);
+		
+		// If there are no interfaces there is no point to make the table,
+		// although make it a table that always collides
+		if (classNames.size() == 0)
+		{
+			__potentialMask[0] = 0;
+			return this.__emptyI2XTable();
+		}
+		
+		// Table size must be a power of two! This is for masking!
+		int tableSize = __bestI2XTableSize(classNames);
+		
+		// The list is twice the size of interfaces because it has
+		// ClassInfo _and_ XTable
+		List<Object> working = new ArrayList<>(tableSize * 2);
+		for (int i = 0, n = tableSize * 2; i < n; i++)
+			working.add(null);
+		
+		// This is the mapping of taken slots, used for collision detection
+		byte[] taken = new byte[tableSize];
+		
+		// This is the base potential mask, which is used to quickly find
+		// an entry or otherwise.
+		int mask = tableSize - 1;
+		__potentialMask[0] = mask;
+		
+		// Go through all the class names and build a table for them
+		for (ClassName className : classNames)
+		{
+			// Determine the spot in the table this is at
+			int tableSpot = (new ClassNameHash(className)).hashCode() & mask;
+			int realSpot = tableSpot * 2;
+			
+			// Debug
+			Debugging.debugNote("InterfaceSpot: %s [%s] %s -> #%d of %d",
+				(taken[tableSpot] != 0 ? "BOOP " : ""), __cl,
+				className, tableSpot, tableSize);
+			
+			// This spot is taken in the table, so it overflows!
+			if (taken[tableSpot] != 0)
+			{
+				// Get what is currently here, since it needs to be moved to
+				// the table end
+				Object classInfo = working.get(realSpot);
+				Object xTable = working.get(realSpot + 1);
+				
+				// This was never shoved over to the end yet
+				if (taken[tableSpot] == 1)
+				{
+					// Debug
+					Debugging.debugNote(
+						"InterfaceSpot Collide: [%s] %s -> #%d of %d",
+						__cl, className, tableSpot, tableSize);
+					
+					// Move the old stuff over
+					working.add(classInfo);
+					working.add(xTable);
+					
+					// Erase the stuff here, this is for overflow
+					working.set(realSpot, 0);
+					working.set(realSpot + 1, 0);
+				}
+				
+				// Load our own stuff
+				classInfo = this.loadClass(className)._classInfoHandle;
+				xTable = 0xCA00_0000 | tableSpot;
+				
+				// Add our information to the end
+				working.add(classInfo);
+				working.add(xTable);
+				
+				// Increase the take count here
+				taken[tableSpot]++;
+				
+				// Do not perform normal processing
+				continue;
+			}
+			
+			// Load the target class info
+			Object classInfo = this.loadClass(className)._classInfoHandle;
+			Object xTable = 0xCB00_0000 | tableSpot;
+			
+			// Set our own data
+			working.set(realSpot, classInfo);
+			working.set(realSpot + 1, xTable);
+			
+			// This spot is now taken
+			taken[tableSpot]++;
+		}
+		
+		// Map the result, since we need overflows!
+		ListValueHandle result = this._memHandles.allocList(
+			MemHandleKind.I2X_TABLE, working.size());
+		for (int i = 0, y = working.size(); i < y; i++)
+		{
+			Object value = working.get(i);
+			
+			// Nothing was stored here, so would be a collision
+			if (value == null)
+				continue;
+			
+			// Either an int (erased) or memory handle
+			if (value instanceof Integer)
+				result.set(i, (Integer)value);
+			else
+				result.set(i, (MemHandle)value);
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -565,8 +699,16 @@ public final class BootState
 		// and inherited interfaces it implements.
 		// ex: ArrayList gets ITables for Cloneable, Collection<E>, List<E>,
 		// RandomAccess
-		if (true)
-			Debugging.todoNote("Interface ITables");
+		// But only if we are not an interface, because it is pointless
+		// otherwise because no object will ever be the direct interface class
+		if (!classFile.flags().isInterface())
+		{
+			int[] potentialMask = new int[1];
+			ListValueHandle iTables =
+				this.interfaceTables(__cl, potentialMask);
+			classInfo.set(ClassProperty.MEMHANDLE_I2XTABLE, iTables);
+			classInfo.set(ClassProperty.MASK_I2XTABLE, potentialMask[0]);
+		}
 		
 		// Load the information for the Class<?> instance
 		classInfo.set(ClassProperty.MEMHANDLE_LANGCLASS_INSTANCE,
@@ -1509,6 +1651,24 @@ public final class BootState
 	}
 	
 	/**
+	 * Returns an empty I2X Table.
+	 * 
+	 * @return An empty I2X Table.
+	 * @since 2021/02/06
+	 */
+	private ListValueHandle __emptyI2XTable()
+	{
+		ListValueHandle rv = this._emptyI2XTable;
+		if (rv != null)
+			return rv;
+		
+		// Setup blank table
+		rv = this._memHandles.allocList(MemHandleKind.I2X_TABLE, 2);
+		this._emptyI2XTable = rv;
+		return rv;
+	}
+	
+	/**
 	 * Gets the XTable for the given class.
 	 * 
 	 * @param __for The class to get for.
@@ -1890,5 +2050,74 @@ public final class BootState
 		}
 		
 		return vTable;
+	}
+	
+	/**
+	 * Determines the best I2XTable size with the least collisions.
+	 * 
+	 * @param __classNames The class names to check.
+	 * @return The best I2X Table size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/06
+	 */
+	private static int __bestI2XTableSize(ClassNames __classNames)
+		throws NullPointerException
+	{
+		if (__classNames == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine the sizes to try
+		int baseSize = Integer.highestOneBit(__classNames.size() << 1);
+		
+		// Use the current size
+		Map<Integer, Integer> sizes = new SortedTreeMap<>();
+		sizes.put(baseSize, 0);
+		
+		// Use a bunch of fixed sizes, to get them all a try, but not too
+		// large
+		for (int i = 1; i <= 32; i <<= 1)
+			sizes.put(i, 0);
+		
+		// Half size but not zero
+		if ((baseSize >> 1) > 0)
+			sizes.put((baseSize >> 1), 0);
+		if ((baseSize << 1) < 64)
+			sizes.put((baseSize << 1), 0);
+		
+		// Calculate for each size
+		for (Map.Entry<Integer, Integer> at : sizes.entrySet())
+		{
+			// Calculate collisions for everything
+			int size = at.getKey();
+			int mask = size - 1;
+			
+			// Calculate for names
+			boolean[] taken = new boolean[size];
+			for (ClassName className : __classNames)
+			{
+				// Determine the spot in the table this is at
+				int spot = (new ClassNameHash(className)).hashCode() & mask;
+				
+				// Spot was already taken, it counts as a collision
+				if (taken[spot])
+					at.setValue(at.getValue() + 1);
+				
+				// Spot is taken now
+				else
+					taken[spot] = true;
+			}
+		}
+		
+		// Find the lowest entry
+		Map.Entry<Integer, Integer> lowest = null;
+		for (Map.Entry<Integer, Integer> at : sizes.entrySet())
+			if (lowest == null || at.getValue() < lowest.getValue())
+				lowest = at;
+		
+		// Debug
+		Debugging.debugNote("__bestI2XTableSize: %s -> %d",
+			sizes, lowest.getKey());
+		
+		return lowest.getKey();
 	}
 }

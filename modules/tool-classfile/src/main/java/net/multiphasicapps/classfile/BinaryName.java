@@ -14,7 +14,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * This represents a binary name which consists of a class which is
@@ -33,6 +35,9 @@ public final class BinaryName
 	
 	/** The package this is in. */
 	private Reference<BinaryName> _package;
+	
+	/** The hash code. */
+	private int _hashCode;
 	
 	/**
 	 * Initializes the binary name.
@@ -150,9 +155,14 @@ public final class BinaryName
 	@Override
 	public int hashCode()
 	{
-		int rv = 0;
-		for (ClassIdentifier i : this._identifiers)
-			rv ^= i.hashCode();
+		int rv = this._hashCode;
+		if (rv != 0)
+			return rv;
+		
+		// Calculate the hash, do a bunch of operations on it to try to
+		// prevent potential collisions
+		this._hashCode = (rv = ((Arrays.asList(this._identifiers).hashCode()
+			/* - this._identifiers.length) ^ this.toString().hashCode(*/)));
 		return rv;
 	}
 	

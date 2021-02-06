@@ -9,7 +9,6 @@
 
 package dev.shadowtail.classfile.pool;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
 
 /**
