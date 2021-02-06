@@ -107,4 +107,15 @@ public final class MethodBinder
 	{
 		return this.method.flags().isPrivate();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/06
+	 */
+	@Override
+	public final String toString()
+	{
+		return String.format("MB[%s:%s]=%s", this.inClass.thisName,
+			this.method.nameAndType(), this.vTable);
+	}
 }

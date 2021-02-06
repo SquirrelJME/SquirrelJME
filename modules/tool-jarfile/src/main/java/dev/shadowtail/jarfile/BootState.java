@@ -40,6 +40,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -297,7 +298,7 @@ public final class BootState
 		}
 		
 		// Table size must be a power of two! This is for masking!
-		int tableSize = __bestI2XTableSize(classNames);
+		int tableSize = BootState.__bestI2XTableSize(classNames);
 		
 		// The list is twice the size of interfaces because it has
 		// ClassInfo _and_ XTable
@@ -325,13 +326,17 @@ public final class BootState
 				(taken[tableSpot] != 0 ? "BOOP " : ""), __cl,
 				className, tableSpot, tableSize);
 			
+			// Load the target class info
+			Object classInfo = this.loadClass(className)._classInfoHandle;
+			Object xTable = this.__buildInterfaceXTable(__cl, className);
+			
 			// This spot is taken in the table, so it overflows!
 			if (taken[tableSpot] != 0)
 			{
 				// Get what is currently here, since it needs to be moved to
 				// the table end
-				Object classInfo = working.get(realSpot);
-				Object xTable = working.get(realSpot + 1);
+				Object oldClassInfo = working.get(realSpot);
+				Object oldXTable = working.get(realSpot + 1);
 				
 				// This was never shoved over to the end yet
 				if (taken[tableSpot] == 1)
@@ -342,17 +347,13 @@ public final class BootState
 						__cl, className, tableSpot, tableSize);
 					
 					// Move the old stuff over
-					working.add(classInfo);
-					working.add(xTable);
+					working.add(oldClassInfo);
+					working.add(oldXTable);
 					
 					// Erase the stuff here, this is for overflow
 					working.set(realSpot, 0);
 					working.set(realSpot + 1, 0);
 				}
-				
-				// Load our own stuff
-				classInfo = this.loadClass(className)._classInfoHandle;
-				xTable = 0xCA00_0000 | tableSpot;
 				
 				// Add our information to the end
 				working.add(classInfo);
@@ -364,10 +365,6 @@ public final class BootState
 				// Do not perform normal processing
 				continue;
 			}
-			
-			// Load the target class info
-			Object classInfo = this.loadClass(className)._classInfoHandle;
-			Object xTable = 0xCB00_0000 | tableSpot;
 			
 			// Set our own data
 			working.set(realSpot, classInfo);
@@ -1191,6 +1188,62 @@ public final class BootState
 	}
 	
 	/**
+	 * Builds an interface XTable for the given class.
+	 * 
+	 * @param __target The target class.
+	 * @param __interface The interface this is calling for.
+	 * @return The XTable for calling into the given class.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/06
+	 */
+	private ListValueHandle __buildInterfaceXTable(ClassName __target,
+		ClassName __interface)
+		throws IOException, NullPointerException
+	{
+		if (__target == null || __interface == null)
+			throw new NullPointerException("NARG");
+		
+		// The methods this will bind into when called.
+		List<MethodBinder> targetBinds = this.__classBindsVirtual(
+			this.loadClass(__target));
+		
+		// Interface binds are a hybrid between virtual classes and
+		// interfaces, they will all map into here accordingly
+		List<MethodBinder> interfaceBinds = this.__classBindsInterface(
+			this.loadClass(__interface));
+		int numBinds = interfaceBinds.size();
+		
+		// Go through all of the binds and link them in accordingly
+		List<VTableMethod> result = new ArrayList<>(numBinds);
+		for (int i = 0; i < numBinds; i++)
+		{
+			// We want a match for this one
+			MethodBinder want = interfaceBinds.get(i);
+			
+			MethodBinder got = null;
+			for (int j = targetBinds.size() - 1; j >= 0; j--)
+				if (want.method.nameAndType().equals(
+					targetBinds.get(j).method.nameAndType()))
+				{
+					got = targetBinds.get(j);
+					break;
+				}
+			
+			// {@squirreljme.error BC0n Could not find the method for the
+			// given class. (The target class; The interface this is for;
+			// The wanted method)}
+			if (got == null)
+				throw new InvalidClassFormatException(String.format(
+					"BC0n %s %s %s", __target, __interface, want));
+			
+			result.add(i, got.vTable);
+		}
+		
+		return this.__vtMethodsToHandle(result);
+	}
+	
+	/**
 	 * Creates the {@link StaticVmAttribute} mapping.
 	 * 
 	 * @return The memory handle for attributes.
@@ -1414,89 +1467,63 @@ public final class BootState
 	}
 	
 	/**
-	 * Returns the class chain, the uppermost class is first in the chain.
+	 * Loads the interface binds for classes.
 	 * 
-	 * @param __class The class to get the chain of.
-	 * @return The class queue chain.
-	 * @throws IOException On read errors.
+	 * @param __for The class to get the interface binds from.
+	 * @return The class binds for interfaces.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2021/01/24
+	 * @since 2021/02/06
 	 */
-	private List<ClassState> __classChain(ClassState __class)
+	private List<MethodBinder> __classBindsInterface(ClassState __for)
 		throws IOException, NullPointerException
 	{
-		if (__class == null)
+		if (__for == null)
 			throw new NullPointerException("NARG");
 		
-		// Already calculated?
-		List<ClassState> rv = __class._classChain;
+		// Was this already calculated? Recycle it
+		List<MethodBinder> rv = __for._interfaceBinds;
 		if (rv != null)
 			return rv;
 		
-		// Store new cache
-		rv = new LinkedList<>();
-		__class._classChain = UnmodifiableList.<ClassState>of(rv);
+		// Determine all of the method name and types for the interface since
+		// these do not map to classes, but rather those for interfaces
+		Set<MethodNameAndType> methods = new LinkedHashSet<>();
+		for (ClassName className : this.allInterfaces(__for.thisName))
+			for (MinimizedMethod method : this.loadClass(className)
+				.classFile.methods(false))
+				methods.add(method.nameAndType());
 		
-		// Load the class chain
-		for (ClassState at = __class; at != null; at = at._superClass)
+		// Discover methods to bind to
+		rv = new ArrayList<>(methods.size());
+		List<MethodBinder> virtuals = this.__classBindsVirtual(__for);
+		for (MethodNameAndType method : methods)
 		{
-			// Process into the queue
-			rv.add(0, at);
-			
-			// If this is not the object/primitive class, and our super class
-			// is not yet known then fill it in
-			if ((!at.thisName.isObjectClass() && !at.thisName.isPrimitive()) &&
-				at._superClass == null)
+			// Locate the binder for the given method?
+			MethodBinder binder = null;
+			for (int i = virtuals.size() - 1; i >= 0; i--)
 			{
-				// This should be created but it might not have reached
-				// the initialization point, due to cyclic super class
-				// loading.
-				at._superClass = this.loadClass(at.classFile.superName());
+				// Find the method to map to
+				MethodBinder virtual = virtuals.get(i);
+				if (!virtual.method.flags().isPrivate() &&
+					method.equals(virtual.method.nameAndType()))
+				{
+					binder = virtual;
+					break;
+				}
 			}
+			
+			// {@squirreljme.error BC0u Could not find a method for an
+			// interface. (This class; The method; Within methods)}
+			if (binder == null)
+				throw new InvalidClassFormatException(String.format(
+					"BC0u %s %s %s", __for.thisName, method, virtuals));
+			
+			rv.add(binder);
 		}
 		
+		// Cache and use this
+		__for._interfaceBinds = rv;
 		return rv;
-	}
-	
-	/**
-	 * Returns the class depth for a given class.
-	 * 
-	 * @param __class The class to get the depth of.
-	 * @return The class depth.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/01/24
-	 */
-	private int __classDepth(ClassState __class)
-		throws IOException, NullPointerException
-	{
-		if (__class == null)
-			throw new NullPointerException("NARG");
-		
-		ClassInfoHandle classInfo = __class._classInfoHandle;
-		
-		// See if it is available
-		try
-		{
-			return classInfo.getInteger(ClassProperty.INT_CLASSDEPTH);
-		}
-		
-		// Needs to be calculated
-		catch (NoSuchElementException ignored)
-		{
-			// Load the class chain
-			List<ClassState> superChain = this.__classChain(__class);
-			
-			// The depth is just the size of the class chain minus one, since
-			// Object is depth zero
-			int depth = superChain.size() - 1;
-			
-			// Set it accordingly
-			classInfo.set(ClassProperty.INT_CLASSDEPTH, depth);
-			
-			// Use that one
-			return depth;
-		}
 	}
 	
 	/**
@@ -1604,6 +1631,7 @@ public final class BootState
 			if (at._poolMemHandle == null)
 				this.loadClass(at.thisName);
 			
+			// Calculate where methods are bound to
 			for (MinimizedMethod method : at.classFile.methods(false))
 				rv.add(new MethodBinder(at, method, new VTableMethod(
 					this.__calcMethodCodeAddr(at, false, method),
@@ -1612,6 +1640,92 @@ public final class BootState
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the class chain, the uppermost class is first in the chain.
+	 * 
+	 * @param __class The class to get the chain of.
+	 * @return The class queue chain.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	private List<ClassState> __classChain(ClassState __class)
+		throws IOException, NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		// Already calculated?
+		List<ClassState> rv = __class._classChain;
+		if (rv != null)
+			return rv;
+		
+		// Store new cache
+		rv = new LinkedList<>();
+		__class._classChain = UnmodifiableList.<ClassState>of(rv);
+		
+		// Load the class chain
+		for (ClassState at = __class; at != null; at = at._superClass)
+		{
+			// Process into the queue
+			rv.add(0, at);
+			
+			// If this is not the object/primitive class, and our super class
+			// is not yet known then fill it in
+			if ((!at.thisName.isObjectClass() && !at.thisName.isPrimitive()) &&
+				at._superClass == null)
+			{
+				// This should be created but it might not have reached
+				// the initialization point, due to cyclic super class
+				// loading.
+				at._superClass = this.loadClass(at.classFile.superName());
+			}
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the class depth for a given class.
+	 * 
+	 * @param __class The class to get the depth of.
+	 * @return The class depth.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/24
+	 */
+	private int __classDepth(ClassState __class)
+		throws IOException, NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		ClassInfoHandle classInfo = __class._classInfoHandle;
+		
+		// See if it is available
+		try
+		{
+			return classInfo.getInteger(ClassProperty.INT_CLASSDEPTH);
+		}
+		
+		// Needs to be calculated
+		catch (NoSuchElementException ignored)
+		{
+			// Load the class chain
+			List<ClassState> superChain = this.__classChain(__class);
+			
+			// The depth is just the size of the class chain minus one, since
+			// Object is depth zero
+			int depth = superChain.size() - 1;
+			
+			// Set it accordingly
+			classInfo.set(ClassProperty.INT_CLASSDEPTH, depth);
+			
+			// Use that one
+			return depth;
+		}
 	}
 	
 	/**
@@ -1887,8 +2001,8 @@ public final class BootState
 						break;
 						
 					case INTERFACE:
-						Debugging.todoNote("Invoke: %s", __entry);
-						return failValue;
+						binds = this.__classBindsInterface(inClass);
+						break;
 					
 					default:
 						throw Debugging.oops(__entry);
@@ -1910,9 +2024,9 @@ public final class BootState
 				}
 				
 				// {@squirreljme.error BC0s Could not link the given method.
-				// (The method to link)}
+				// (The method to link; The binding table)}
 				throw new InvalidClassFormatException(String.format(
-					"BC0s %s", __entry));
+					"BC0s %s %s", __entry, binds));
 				
 				// Get the XTable for a given class
 			case INVOKE_XTABLE:
@@ -1933,8 +2047,10 @@ public final class BootState
 							InvokeType.STATIC);
 					
 					case INTERFACE:
-						Debugging.todoNote("XTable: %s", __entry);
-						return failValue;
+						// {@squirreljme.error BC0m Cannot get the XTable
+						// for an interface. (The entry)}
+						throw new InvalidClassFormatException(
+							"BC0m " + __entry);
 					
 					default:
 						throw Debugging.oops(__entry);

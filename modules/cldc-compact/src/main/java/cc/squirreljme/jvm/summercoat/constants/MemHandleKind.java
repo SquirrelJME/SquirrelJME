@@ -96,7 +96,11 @@ public interface MemHandleKind
 	byte I2X_TABLE =
 		19;
 	
+	/** Interface XTable. */
+	byte INTERFACE_XTABLE =
+		20;
+	
 	/** The number of kinds used. */
 	byte NUM_KINDS =
-		20;
+		21;
 }

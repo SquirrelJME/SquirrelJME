@@ -50,6 +50,9 @@ public final class ClassState
 	/** Static method binds. */
 	List<MethodBinder> _staticBinds;
 	
+	/** Interface method binds. */
+	List<MethodBinder> _interfaceBinds;
+	
 	/**
 	 * Initializes the base empty class state.
 	 * 
