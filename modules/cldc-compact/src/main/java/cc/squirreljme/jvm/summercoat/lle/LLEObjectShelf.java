@@ -12,6 +12,10 @@ package cc.squirreljme.jvm.summercoat.lle;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.summercoat.LogicHandler;
+import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -28,6 +32,43 @@ public final class LLEObjectShelf
 	 */
 	private LLEObjectShelf()
 	{
+	}
+	
+	/**
+	 * Checks if the given object can be stored in the specified array.
+	 * 
+	 * @param __array The array to check.
+	 * @param __value The value to check
+	 * @return If the value can be stored in the given array.
+	 * @throws MLECallError If given type is not an array or {@code __array}
+	 * is {@code null}.
+	 * @since 2021/02/07
+	 */
+	public static boolean arrayCheckStore(Object __array, Object __value)
+		throws MLECallError
+	{
+		if (__array == null)
+			throw new MLECallError("NARG");
+		
+		// Storing null is always valid
+		if (__value == null)
+			return true;
+		
+		// Get the type that the array is
+		int arrayType = LLETypeShelf.objectType(
+			Assembly.objectToPointer(__array));
+		
+		// {@squirreljme.error ZZ4o Object is not an array.}
+		if (LogicHandler.typeGetProperty(arrayType,
+			StaticClassProperty.NUM_DIMENSIONS) <= 0)
+			throw new MLECallError("ZZ4o");
+		
+		// The component type of the array must be compatible with the
+		// target type
+		int targetType = LLETypeShelf.objectType(
+			Assembly.objectToPointer(__value));
+		return LLETypeShelf.isAssignableFrom(LogicHandler.typeGetProperty(
+			arrayType, ClassProperty.TYPEBRACKET_COMPONENT), targetType);
 	}
 	
 	/**
@@ -228,6 +269,46 @@ public final class LLEObjectShelf
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Checks if this object is an instance of the given type.
+	 * 
+	 * @param __o The object to check.
+	 * @param __type The type it may be.
+	 * @return If this object is an instance of the given type.
+	 * @throws MLECallError If {@code __type} is null.
+	 * @since 2021/02/07
+	 */
+	public static boolean isInstance(int __o, int __type)
+		throws MLECallError
+	{
+		if (__type == 0)
+			throw new MLECallError("NARG");
+		
+		// Null objects are never an instance of anything
+		if (__o == 0)
+			return false;
+		
+		// Perform assignment check
+		return LLETypeShelf.isAssignableFrom(LLETypeShelf.objectType(__o),
+			__type);
+	}
+	
+	/**
+	 * Checks if this object is an instance of the given type.
+	 * 
+	 * @param __o The object to check.
+	 * @param __type The type it may be.
+	 * @return If this object is an instance of the given type.
+	 * @throws MLECallError If {@code __type} is null.
+	 * @since 2021/02/07
+	 */
+	public static boolean isInstance(Object __o, TypeBracket __type)
+		throws MLECallError
+	{
+		return LLEObjectShelf.isInstance(Assembly.objectToPointer(__o),
+			Assembly.objectToPointer(__type));
 	}
 	
 	/**

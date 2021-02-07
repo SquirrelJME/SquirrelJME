@@ -167,14 +167,14 @@ public final class TypeShelf
 	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
 	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
 	 * 
-	 * @param __source The basis class
-	 * @param __target The target class which is checked for assignment.
+	 * @param __this The basis class
+	 * @param __other The target class which is checked for assignment.
 	 * @return If the given 
 	 * @throws MLECallError On null arguments.
 	 * @since 2021/02/07
 	 */
-	public static native boolean isAssignableFrom(TypeBracket __source,
-		TypeBracket __target)
+	public static native boolean isAssignableFrom(TypeBracket __this,
+		TypeBracket __other)
 		throws MLECallError;
 	
 	/**

@@ -12,11 +12,8 @@ package cc.squirreljme.jvm.summercoat;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
-import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
-import cc.squirreljme.jvm.summercoat.lle.LLETypeShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -37,56 +34,6 @@ public final class LogicHandler
 	}
 	
 	/**
-	 * Checks if the array can store the given value.
-	 * 
-	 * @param __array The array.
-	 * @param __value The value to check.
-	 * @return If the value can be stored in the array.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/01/24
-	 */
-	public static boolean checkArrayStore(Object __array, Object __value)
-		throws NullPointerException
-	{
-		if (__array == null)
-			throw new NullPointerException("NARG");
-		
-		// Storing null values is always okay
-		if (__value == null)
-			return true;
-		
-		// Determine the component type of the array
-		TypeBracket arrayType = LLETypeShelf.objectType(__array);
-		TypeBracket compType = Assembly.pointerToTypeBracket(
-			LogicHandler.typeBracketGetProperty(arrayType,
-				ClassProperty.TYPEBRACKET_COMPONENT));
-		
-		// Check down the class tree for a matching class
-		TypeBracket valueType = LLETypeShelf.objectType(__value);
-		for (TypeBracket at = valueType; at != null;)
-		{
-			// Is a match of this type
-			if (compType == at)
-				return true;
-			
-			// TODO: Check interfaces
-			Assembly.ping();
-			
-			// Do we need to go down still?
-			int superP = LogicHandler.typeBracketGetProperty(arrayType,
-				ClassProperty.TYPEBRACKET_SUPER);
-			if (superP == 0)
-				break;
-			
-			// Go to the super class
-			at = Assembly.pointerToTypeBracket(superP);
-		}
-		
-		// Not a match
-		return false;
-	}
-	
-	/**
 	 * Returns the value of the given class property.
 	 * 
 	 * @param __info The information to get.
@@ -96,7 +43,7 @@ public final class LogicHandler
 	 * valid class.
 	 * @since 2021/02/07
 	 */
-	public static int typeBracketGetProperty(int __info, int __p)
+	public static int typeGetProperty(int __info, int __p)
 		throws MLECallError
 	{
 		if (__info == 0)
@@ -119,7 +66,7 @@ public final class LogicHandler
 	 * valid class.
 	 * @since 2020/11/29
 	 */
-	public static int typeBracketGetProperty(TypeBracket __info, int __p)
+	public static int typeGetProperty(TypeBracket __info, int __p)
 		throws MLECallError
 	{
 		if (__info == null)
@@ -194,103 +141,6 @@ public final class LogicHandler
 		
 		Assembly.breakpoint();
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * Performs the same logic as {@link Class#isAssignableFrom(Class)}, 
-	 * checks if the given class can be assigned to this one. The check is
-	 * in the same order as {@code instanceof Object} that is
-	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
-	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
-	 * 
-	 * @param __source The object to check.
-	 * @param __target The target class to check.
-	 * @param __quickCast State to store whether or not
-	 * @return If this is an instance of the given class.
-	 * @throws MLECallError On null arguments, except for
-	 * {@code __quickCast}.
-	 * @since 2020/11/28
-	 */
-	public static boolean isAssignableFrom(int __source, int __target,
-		@SuppressWarnings("unused") QuickCastCheckBracket __quickCast)
-		throws MLECallError
-	{
-		if (__source == 0 || __target == 0)
-			throw new MLECallError("NARG");
-		
-		// Casting from one type to an array class?
-		int ourDims = LogicHandler.typeBracketGetProperty(__source,
-			StaticClassProperty.NUM_DIMENSIONS);
-		int targetDims = LogicHandler.typeBracketGetProperty(__target,
-			StaticClassProperty.NUM_DIMENSIONS);
-		if (ourDims > 0 || targetDims > 0)
-		{
-			// Dimensional mismatch, this will generally not be compatible
-			if (ourDims != targetDims)
-			{
-				// Are we casting from Foo[][]... to Object[]... or Object...?
-				// We can lose dimensions but we cannot gain them
-				if (0 != LogicHandler.typeBracketGetProperty(__target,
-					StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT))
-					return targetDims < ourDims;
-				
-				// Not compatible
-				return false;
-			}
-			
-			// Since we are doing arrays, any array that has a compatible
-			// root component can be casted into. So this adjusts the logic
-			// accordingly
-			return LogicHandler.isAssignableFrom(
-				LogicHandler.typeBracketGetProperty(__source,
-					ClassProperty.TYPEBRACKET_ROOT_COMPONENT),
-				LogicHandler.typeBracketGetProperty(__target,
-					ClassProperty.TYPEBRACKET_ROOT_COMPONENT),
-				null);
-		}
-			
-		// Check current and super classes for the class information
-		for (int at = __source; at != 0;
-			at = LogicHandler.typeBracketGetProperty(__source,
-				ClassProperty.TYPEBRACKET_SUPER))
-			if (at == __target)
-				return true;
-		
-		// If not yet found, try all of the interfaces
-		int allInts = LogicHandler.typeBracketGetProperty(__source,
-			ClassProperty.TYPEBRACKET_ALL_INTERFACECLASSES);
-		for (int i = 0, n = LogicHandler.listLength(allInts); i < n; i++)
-			if (LogicHandler.listRead(allInts, i) == __target)
-				return true;
-		
-		// Is not an instance
-		return false;
-	}
-	
-	/**
-	 * Checks if this is an instance of the given class.
-	 * 
-	 * @param __o The object to check.
-	 * @param __target The target class to check.
-	 * @param __quickCast State to store whether or not
-	 * @return If this is an instance of the given class.
-	 * @throws MLECallError On null arguments, except for
-	 * {@code __quickCast}.
-	 * @since 2020/11/28
-	 */
-	public static boolean isInstance(int __o, int __target,
-		@SuppressWarnings("unused") QuickCastCheckBracket __quickCast)
-		throws MLECallError
-	{
-		if (__target == 0)
-			throw new MLECallError("NARG");
-		
-		// Null objects are never an instance of anything
-		if (__o == 0)
-			return false;
-		
-		// Perform assignment check
-		return LogicHandler.isAssignableFrom(LLETypeShelf.objectType(__o), __target, __quickCast);
 	}
 	
 	/**
@@ -401,10 +251,10 @@ public final class LogicHandler
 			throw new NegativeArraySizeException("" + __len);
 		
 		// Determine how large the object needs to be
-		int allocBase = LogicHandler.typeBracketGetProperty(__info,
+		int allocBase = LogicHandler.typeGetProperty(__info,
 			ClassProperty.SIZE_ALLOCATION);
 		int allocSize = allocBase +
-			(__len * LogicHandler.typeBracketGetProperty(__info,
+			(__len * LogicHandler.typeGetProperty(__info,
 				ClassProperty.INT_COMPONENT_CELL_SIZE));
 		
 		// Allocate the object
@@ -433,7 +283,7 @@ public final class LogicHandler
 			throw new MLECallError("NARG");
 		
 		// {@squirreljme.error ZZ4j Class has no allocated size?}
-		int allocSize = LogicHandler.typeBracketGetProperty(__info,
+		int allocSize = LogicHandler.typeGetProperty(__info,
 			ClassProperty.SIZE_ALLOCATION);
 		if (allocSize <= 0)
 			throw new MLECallError("ZZ4j");
@@ -492,7 +342,7 @@ public final class LogicHandler
 			throw new NullPointerException("NARG");
 		
 		// This represents the kind of handle that gets allocated
-		int memHandleKind = LogicHandler.typeBracketGetProperty(__info,
+		int memHandleKind = LogicHandler.typeGetProperty(__info,
 			ClassProperty.INT_MEMHANDLE_KIND);
 		
 		// Attempt to allocate a handle

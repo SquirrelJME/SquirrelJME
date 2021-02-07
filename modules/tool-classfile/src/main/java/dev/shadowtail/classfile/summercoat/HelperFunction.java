@@ -9,9 +9,11 @@
 
 package dev.shadowtail.classfile.summercoat;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.summercoat.LogicHandler;
 import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
+import cc.squirreljme.jvm.summercoat.lle.LLEObjectShelf;
 import cc.squirreljme.jvm.summercoat.lle.LLETypeShelf;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -25,15 +27,16 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  */
 public enum HelperFunction
 {
-	/** {@link LogicHandler#checkArrayStore(Object, Object)}. */
-	CHECK_ARRAY_STORE("cc/squirreljme/jvm/summercoat/LogicHandler",
-		"checkArrayStore",
+	/** {@link LLEObjectShelf#arrayCheckStore(Object, Object)}. */
+	ARRAY_CHECK_STORE(
+		"cc/squirreljme/jvm/summercoat/lle/LLEObjectShelf",
+		"arrayCheckStore",
 		"(Ljava/lang/Object;Ljava/lang/Object;)Z"),
 	
-	/** {@link LogicHandler#typeBracketGetProperty(int, int)}. */
-	TYPE_BRACKET_GET_PROPERTY(
+	/** {@link LogicHandler#typeGetProperty(int, int)}. */
+	TYPE_GET_PROPERTY(
 		"cc/squirreljme/jvm/summercoat/LogicHandler",
-		"typeBracketGetProperty",
+		"typeGetProperty",
 		"(II)I"),
 	
 	/** {@link LogicHandler#gcMemHandle(int)}.  */
@@ -48,14 +51,9 @@ public enum HelperFunction
 	IS_ARRAY("cc/squirreljme/jvm/summercoat/LogicHandler",
 		"isArray", "(Ljava/lang/Object;)Z"),
 	
-	/**
-	  * {@link LogicHandler#isInstance(int, int,
-	  * QuickCastCheckBracket)}.
-	  */
-	IS_INSTANCE("cc/squirreljme/jvm/summercoat/LogicHandler",
-		"isInstance", "(I" +
-		"I"/*"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"*/ +
-		"Lcc/squirreljme/jvm/summercoat/brackets/QuickCastCheckBracket;)Z"),
+	/** {@link LLEObjectShelf#isInstance(int, int)}. */
+	IS_INSTANCE("cc/squirreljme/jvm/summercoat/lle/LLEObjectShelf",
+		"isInstance", "(II)Z"),
 	
 	/** {@link LogicHandler#initClass(TypeBracket)}.  */
 	INIT_CLASS("cc/squirreljme/jvm/summercoat/LogicHandler",

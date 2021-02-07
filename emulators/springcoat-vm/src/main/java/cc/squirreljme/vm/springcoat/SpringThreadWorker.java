@@ -819,7 +819,11 @@ public final class SpringThreadWorker
 		// Wrap the exception if there is one
 		Object rv = blank.tossedException();
 		if (rv != null)
-			rv = new MethodInvokeException((SpringObject)rv);
+			rv = new MethodInvokeException(String.format(
+				"Exception in %s %s:%s(%s)",
+				(__static ? "static" : "instance"), __cl, __nat,
+				Arrays.asList(__args)), (SpringObject)rv,
+				thread.getStackTrace());
 		
 		// Read return value from the blank frame
 		else if (__nat.type().hasReturnValue())
@@ -3089,14 +3093,33 @@ public final class SpringThreadWorker
 								Integer.class);
 						
 						// Call method within the class library since it is
-						// easier, becuse this is one super complex
+						// easier, because this is one super complex
 						// instruction
-						frame.pushToStack(
-							this.invokeMethod(true, new ClassName(
-							"cc/squirreljme/runtime/cldc/lang/ArrayUtils"),
+						Object rv = this.invokeMethod(true,
+							new ClassName(
+								"cc/squirreljme/runtime/cldc/lang" +
+								 "/ArrayUtils"),
 							new MethodNameAndType("multiANewArray",
 								"(Ljava/lang/Class;I[I)Ljava/lang/Object;"),
-							this.asVMObject(ccl), 0, this.asVMObject(pops)));
+							this.asVMObject(ccl), 0,
+							this.asVMObject(pops));
+						
+						// Did this call fail?
+						if (rv instanceof MethodInvokeException)
+						{
+							// Emit the exception
+							((MethodInvokeException)rv).printStackTrace();
+							((MethodInvokeException)rv).printVmTrace(
+								System.err);
+							
+							// Toss it, due to the failure
+							frame.tossException(
+								((MethodInvokeException)rv).exception);
+						}
+						
+						// Otherwise push the result to the stack
+						else
+							frame.pushToStack(rv);
 						
 						// Exception to be handled?
 						if (this.__checkException())

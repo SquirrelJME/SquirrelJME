@@ -11,8 +11,12 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
+import java.util.Arrays;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import sun.security.ssl.Debug;
 
 /**
  * Functions for {@link MLEObject}.
@@ -22,6 +26,53 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 public enum MLEObject
 	implements MLEFunction
 {
+	/** {@link ObjectShelf#arrayCheckStore(Object, Object)}. */
+	ARRAY_CHECK_STORE("arrayCheckStore:(Ljava/lang/Object;" +
+		"Ljava/lang/Object;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/07
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (__args[0] == null || __args[0] == SpringNullObject.NULL)
+				throw new SpringMLECallError("Null object.");
+			
+			// Object requested is not valid?
+			if (!(__args[0] instanceof SpringObject))
+				throw new SpringMLECallError(String.format(
+					"Object not valid? %s (%s)", __args[0],
+					__args[0].getClass()));
+				
+			SpringObject array = (SpringObject)__args[0];
+			
+			// Get the type that the array is
+			SpringClass arrayType = array.type();
+			if (arrayType.dimensions() <= 0)
+				throw new SpringMLECallError("Object not an array? " +
+					array);
+			
+			// Storing null is always valid
+			if (__args[1] == null || __args[1] == SpringNullObject.NULL)
+				return true;
+			
+			// Must be an object
+			if (!(__args[1] instanceof SpringObject))
+				throw new SpringMLECallError(
+					String.format("Value is not an object? %s [for array %s]",
+					__args[1], array));
+			
+			SpringObject value = (SpringObject)__args[1];
+			
+			// The component type of the array must be compatible with the
+			// target type
+			SpringClass targetType = value.type();
+			return arrayType.componentType().isAssignableFrom(targetType);
+		}
+	}, 
+	
 	/** {@link ObjectShelf#arrayCopy(boolean[], int, boolean[], int, int)}. */
 	ARRAY_COPY_BOOLEAN("arrayCopy:([ZI[ZII)V")
 	{
@@ -243,6 +294,21 @@ public enum MLEObject
 		{
 			SpringObject object = (SpringObject)__args[0];
 			return System.identityHashCode(MLEType.__notNullObject(object));
+		}
+	},
+	
+	/** {@link ObjectShelf#isInstance(Object, TypeBracket)}. */
+	IS_INSTANCE("isInstance:(Ljava/lang/Object;Lcc/squirreljme/" +
+		"jvm/mle/brackets/TypeBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/07
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			throw Debugging.todo();
 		}
 	},
 	

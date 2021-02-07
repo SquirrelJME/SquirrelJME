@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
@@ -377,23 +378,22 @@ public final class SpringClass
 		}
 		
 		// Need to cast from one array type to another
-		int thisdims = this.dimensions(),
-			otherdims = __o.dimensions();
-		if (thisdims > 0)
+		int thisDims = this.dimensions();
+		int otherDims = __o.dimensions();
+		if (thisDims > 0 || otherDims > 0)
 		{
 			// If this is an array and the other type is an array with the same
 			// number of dimensions, then compare the base type so that say
 			// Number[] is assignable from Integer[].
-			if (otherdims == thisdims)
-				if (this.__rootType().isAssignableFrom(__o.__rootType()))
-					return true;
+			if (otherDims == thisDims)
+				return this.__rootType().isAssignableFrom(__o.__rootType());
 			
 			// We can cast down to Object array types if there are less
 			// dimensions ([[[[Integer -> [Object)
-			if (this.__rootType().isObjectClass() && thisdims < otherdims)
-				return true;
+			return this.__rootType().isObjectClass() && thisDims < otherDims;
 		}
 		
+		// Not compatible
 		return false;
 	}
 	
@@ -782,7 +782,7 @@ public final class SpringClass
 	 * @return The root type of this type.
 	 * @since 2018/09/27
 	 */
-	private final SpringClass __rootType()
+	private SpringClass __rootType()
 	{
 		SpringClass rv = this;
 		for (SpringClass r = this; r != null; r = r.component)

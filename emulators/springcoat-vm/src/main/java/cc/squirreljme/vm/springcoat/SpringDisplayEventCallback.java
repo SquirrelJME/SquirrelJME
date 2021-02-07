@@ -202,12 +202,12 @@ public final class SpringDisplayEventCallback
 			}
 		}
 		
-		// The VM is exiting from the method, we cannot propogate the method
+		// The VM is exiting from the method, we cannot propagate the method
 		// up we could just do nothing, just cancel what has happened.
 		catch (SpringMachineExitException e)
 		{
 			// Debug it
-			todo.DEBUG.note("VM in exit state, canceling display function.");
+			todo.DEBUG.note("VM in exit state, canceling function.");
 			
 			return null;
 		}

@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
  * This shelf supports object anything that has to do with objects.
@@ -27,6 +28,19 @@ public final class ObjectShelf
 	private ObjectShelf()
 	{
 	}
+	
+	/**
+	 * Checks if the given object can be stored in the specified array.
+	 * 
+	 * @param __array The array to check.
+	 * @param __val The value to check
+	 * @return If the value can be stored in the given array.
+	 * @throws MLECallError If given type is not an array or {@code __array}
+	 * is {@code null}.
+	 * @since 2021/02/07
+	 */
+	public static native boolean arrayCheckStore(Object __array, Object __val)
+		throws MLECallError;
 	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
@@ -179,6 +193,18 @@ public final class ObjectShelf
 	 * @since 2020/06/18
 	 */
 	public static native int identityHashCode(Object __o);
+	
+	/**
+	 * Checks if this object is an instance of the given type.
+	 * 
+	 * @param __o The object to check.
+	 * @param __type The type it may be.
+	 * @return If this object is an instance of the given type.
+	 * @throws MLECallError If {@code __type} is null.
+	 * @since 2021/02/07
+	 */
+	public static native boolean isInstance(Object __o, TypeBracket __type)
+		throws MLECallError;
 	
 	/**
 	 * Creates a new instance of the given type.

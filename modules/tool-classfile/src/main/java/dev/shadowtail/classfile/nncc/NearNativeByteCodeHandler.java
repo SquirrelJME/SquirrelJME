@@ -1790,7 +1790,7 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Call helper class
-		this.__invokeHelper(HelperFunction.CHECK_ARRAY_STORE,
+		this.__invokeHelper(HelperFunction.ARRAY_CHECK_STORE,
 			__array, __val);
 		
 		// Was it invalid?
@@ -1993,7 +1993,7 @@ public final class NearNativeByteCodeHandler
 			codeBuilder.addIntegerConst(
 				ClassProperty.MEMHANDLE_STATIC_FIELDS,
 				__staticStore.register.asIntValue());
-			this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
+			this.__invokeHelper(HelperFunction.TYPE_GET_PROPERTY,
 				classInfo.register, __staticStore.register);
 			
 			// Use this as the base
@@ -2673,7 +2673,7 @@ public final class NearNativeByteCodeHandler
 					// Get the super class of the instance
 					codeBuilder.addIntegerConst(ClassProperty.TYPEBRACKET_SUPER,
 						superProp.register);
-					this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
+					this.__invokeHelper(HelperFunction.TYPE_GET_PROPERTY,
 						targetClass.register, superProp.register);
 					
 					// Move over
@@ -2687,7 +2687,7 @@ public final class NearNativeByteCodeHandler
 			{
 				codeBuilder.addIntegerConst(ClassProperty.MEMHANDLE_VTABLE,
 					vTableProp.register);
-				this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
+				this.__invokeHelper(HelperFunction.TYPE_GET_PROPERTY,
 					targetClass.register, vTableProp.register);
 					
 				// Move over
@@ -2744,7 +2744,7 @@ public final class NearNativeByteCodeHandler
 					itxProp.register);
 				
 				// Load the I2X Table for the class
-				this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
+				this.__invokeHelper(HelperFunction.TYPE_GET_PROPERTY,
 					classInfo.register, itxProp.register);
 				codeBuilder.addCopy(MemHandleRegister.RETURN,
 					itxTable.register);
@@ -2781,7 +2781,7 @@ public final class NearNativeByteCodeHandler
 						mask.register);
 					
 					// Load the mask
-					this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
+					this.__invokeHelper(HelperFunction.TYPE_GET_PROPERTY,
 						classInfo.register, mask.register);
 					codeBuilder.addCopy(IntValueRegister.RETURN,
 						mask.register);
@@ -3344,13 +3344,10 @@ public final class NearNativeByteCodeHandler
 				// Load desired target class type
 				this.__loadClassInfo(__cl, classInfo.register);
 				
-				// Call helper class, forward the quick cast check since we
-				// can store a new value in it to skip this future check if
-				// it is known. If we cannot quick cast, then we just pass
-				// a null reference.
+				// Call helper class, this will check. Since this will always
+				// be a runtime check, we cannot pass the quick check
 				this.__invokeHelper(HelperFunction.IS_INSTANCE,
-					__instance, classInfo.register, (possibleQuick ?
-					quickCast.register : IntValueRegister.ZERO));
+					__instance, classInfo.register);
 				
 				// Store the result into the output
 				codeBuilder.addCopy(IntValueRegister.RETURN, __result);

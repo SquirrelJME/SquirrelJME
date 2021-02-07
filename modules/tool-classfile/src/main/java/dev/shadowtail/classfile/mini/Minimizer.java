@@ -168,9 +168,12 @@ public final class Minimizer
 		
 		// Is the root component object? Used for casting from any array
 		// to Object[]... or Object
-		properties[StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT].setInt(
-			((input.thisName().isArray() ? input.thisName().rootComponentType()
-				.isObjectClass() : input.thisName().isObjectClass())) ? 1 : 0);
+		if (input.thisName().isArray())
+			properties[StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT].setInt(
+				input.thisName().rootComponentType().isObjectClass() ? 1 : 0);
+		else
+			properties[StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT].setInt(
+				input.thisName().isObjectClass() ? 1 : 0);
 		
 		// name, superclass, and interfaces
 		properties[StaticClassProperty.SPOOL_THIS_CLASS_NAME].setInt(
