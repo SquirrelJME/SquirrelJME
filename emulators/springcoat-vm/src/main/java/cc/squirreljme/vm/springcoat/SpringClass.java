@@ -11,7 +11,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.Constants;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;

@@ -130,8 +130,8 @@ public final class SystemCall
 	/**
 	 * Returns the static virtual machine attributes structure.
 	 * 
-	 * @return The static virtual machine attributes.
+	 * @return A {@link StaticVmAttributesStruct}.
 	 * @since 2021/01/24
 	 */
-	public static native StaticVmAttributesStruct staticVmAttributes();
+	public static native int staticVmAttributes();
 }
