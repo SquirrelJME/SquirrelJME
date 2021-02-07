@@ -164,9 +164,6 @@ public class VMTestTaskAction
 				VMHelpers.SINGLE_TEST_RUNNER, sysProps, classPath, classPath,
 				testName);
 			
-			// Command line for execution
-			System.err.printf("Command Line: %s%n", execSpec.getCommandLine());
-			
 			// Where will the results be read from?
 			Path xmlResult = resultDir.resolve(
 				VMHelpers.testResultXmlName(testName));
