@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -57,7 +58,7 @@ public final class LogicHandler
 		ClassInfoBracket arrayType = LogicHandler.objectClassInfo(__array);
 		ClassInfoBracket compType = Assembly.pointerToClassInfo(
 			LogicHandler.classInfoGetProperty(arrayType,
-				ClassProperty.CLASSINFO_COMPONENTCLASS));
+				ClassProperty.CLASSINFO_COMPONENT));
 		
 		// Check down the class tree for a matching class
 		ClassInfoBracket valueType = LogicHandler.objectClassInfo(__value);
@@ -92,6 +93,29 @@ public final class LogicHandler
 	 * @return The value of the given property.
 	 * @throws MLECallError If {@code __info} is {@code null} or is not a
 	 * valid class.
+	 * @since 2021/02/07
+	 */
+	public static int classInfoGetProperty(int __info, int __p)
+		throws MLECallError
+	{
+		if (__info == 0)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ4m Invalid class property. (The property)}
+		if (__p <= 0 || __p >= ClassProperty.NUM_RUNTIME_PROPERTIES)
+			throw new MLECallError("ZZ4m " + __p);
+		
+		return LogicHandler.listRead(__info, __p);
+	}
+	
+	/**
+	 * Returns the value of the given class property.
+	 * 
+	 * @param __info The information to get.
+	 * @param __p The {@link ClassProperty}.
+	 * @return The value of the given property.
+	 * @throws MLECallError If {@code __info} is {@code null} or is not a
+	 * valid class.
 	 * @since 2020/11/29
 	 */
 	public static int classInfoGetProperty(ClassInfoBracket __info, int __p)
@@ -104,8 +128,7 @@ public final class LogicHandler
 		if (__p <= 0 || __p >= ClassProperty.NUM_RUNTIME_PROPERTIES)
 			throw new MLECallError("ZZ4m " + __p);
 		
-		int arrayBase = SystemCall.arrayAllocationBase();
-		return Assembly.memHandleReadInt(__info, arrayBase + (__p * 4));
+		return LogicHandler.listRead(__info, __p);
 	}
 	
 	/**
@@ -159,36 +182,201 @@ public final class LogicHandler
 	 * Initializes the given class.
 	 * 
 	 * @param __info The class info to initialize.
+	 * @throws MLECallError If the class is {@code null}.
 	 * @since 2020/11/28
 	 */
 	public static void initClass(ClassInfoBracket __info)
+		throws MLECallError
 	{
 		if (__info == null)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
 		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
 	/**
-	 * Checks if this is an instance of the given class.
+	 * Performs the same logic as {@link Class#isAssignableFrom(Class)}, 
+	 * checks if the given class can be assigned to this one. The check is
+	 * in the same order as {@code instanceof Object} that is
+	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
+	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
 	 * 
-	 * @param __o The object to check.
-	 * @param __info The class information to check.
+	 * @param __source The object to check.
+	 * @param __target The target class to check.
 	 * @param __quickCast State to store whether or not
 	 * @return If this is an instance of the given class.
-	 * @throws NullPointerException On null arguments, except for
+	 * @throws MLECallError On null arguments, except for
 	 * {@code __quickCast}.
 	 * @since 2020/11/28
 	 */
-	public static boolean isInstance(int __o, ClassInfoBracket __info,
-		QuickCastCheckBracket __quickCast)
+	public static boolean isAssignableFrom(int __source, int __target,
+		@SuppressWarnings("unused") QuickCastCheckBracket __quickCast)
+		throws MLECallError
 	{
-		if (__info == null)
-			throw new NullPointerException("NARG");
+		if (__source == 0 || __target == 0)
+			throw new MLECallError("NARG");
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// Casting from one type to an array class?
+		int ourDims = LogicHandler.classInfoGetProperty(__source,
+			StaticClassProperty.NUM_DIMENSIONS);
+		int targetDims = LogicHandler.classInfoGetProperty(__target,
+			StaticClassProperty.NUM_DIMENSIONS);
+		if (ourDims > 0 || targetDims > 0)
+		{
+			// Dimensional mismatch, this will generally not be compatible
+			if (ourDims != targetDims)
+			{
+				// Are we casting from Foo[][]... to Object[]... or Object...?
+				// We can lose dimensions but we cannot gain them
+				if (0 != LogicHandler.classInfoGetProperty(__target,
+					StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT))
+					return targetDims < ourDims;
+				
+				// Not compatible
+				return false;
+			}
+			
+			// Since we are doing arrays, any array that has a compatible
+			// root component can be casted into. So this adjusts the logic
+			// accordingly
+			return LogicHandler.isAssignableFrom(
+				LogicHandler.classInfoGetProperty(__source,
+					ClassProperty.CLASSINFO_ROOT_COMPONENT),
+				LogicHandler.classInfoGetProperty(__target,
+					ClassProperty.CLASSINFO_ROOT_COMPONENT),
+				null);
+		}
+			
+		// Check current and super classes for the class information
+		for (int at = __source; at != 0;
+			at = LogicHandler.classInfoGetProperty(__source,
+				ClassProperty.CLASSINFO_SUPER))
+			if (at == __target)
+				return true;
+		
+		// If not yet found, try all of the interfaces
+		int allInts = LogicHandler.classInfoGetProperty(__source,
+			ClassProperty.CLASSINFOS_ALL_INTERFACECLASSES);
+		for (int i = 0, n = LogicHandler.listLength(allInts); i < n; i++)
+			if (LogicHandler.listRead(allInts, i) == __target)
+				return true;
+		
+		// Is not an instance
+		return false;
+	}
+	
+	/**
+	 * Checks if this is an instance of the given class.
+	 * 
+	 * @param __o The object to check.
+	 * @param __target The target class to check.
+	 * @param __quickCast State to store whether or not
+	 * @return If this is an instance of the given class.
+	 * @throws MLECallError On null arguments, except for
+	 * {@code __quickCast}.
+	 * @since 2020/11/28
+	 */
+	public static boolean isInstance(int __o, int __target,
+		@SuppressWarnings("unused") QuickCastCheckBracket __quickCast)
+		throws MLECallError
+	{
+		if (__target == 0)
+			throw new MLECallError("NARG");
+		
+		// Null objects are never an instance of anything
+		if (__o == 0)
+			return false;
+		
+		// Perform assignment check
+		return LogicHandler.isAssignableFrom(
+			LogicHandler.objectClassInfoInt(__o), __target, __quickCast);
+	}
+	
+	/**
+	 * Returns the length of the given list memory handle.
+	 * 
+	 * @param __o The list based memory handle to get the length of.
+	 * @return The length of the list.
+	 * @throws MLECallError On null arguments.
+	 * @since 2021/02/07
+	 */
+	public static int listLength(int __o)
+		throws MLECallError
+	{
+		if (__o == 0)
+			throw new MLECallError("NARG");
+			
+		return Assembly.memHandleReadInt(__o, LogicHandler.staticVmAttribute(
+			StaticVmAttribute.OFFSETOF_ARRAY_LENGTH_FIELD));
+	}
+	
+	/**
+	 * Reads from the given list based handle.
+	 * 
+	 * @param __o The handle to read from.
+	 * @param __dx The index to read from.
+	 * @return The value of the given index.
+	 * @throws MLECallError If the handle is {@code null}.
+	 * @since 2021/02/07
+	 */
+	public static int listRead(int __o, int __dx)
+		throws MLECallError
+	{
+		if (__o == 0)
+			throw new MLECallError("NARG");
+		
+		int arrayBase = SystemCall.arrayAllocationBase();
+		return Assembly.memHandleReadInt(__o, arrayBase + (__dx * 4));
+	}
+	
+	/**
+	 * Reads from the given list based handle.
+	 * 
+	 * @param __o The handle to read from.
+	 * @param __dx The index to read from.
+	 * @return The value of the given index.
+	 * @throws MLECallError If the handle is {@code null}.
+	 * @since 2021/02/07
+	 */
+	public static int listRead(Object __o, int __dx)
+		throws MLECallError
+	{
+		return LogicHandler.listRead(Assembly.objectToPointer(__o), __dx);
+	}
+	
+	/**
+	 * Reads from the given list based handle.
+	 * 
+	 * @param __o The handle to write to.
+	 * @param __dx The index to write to.
+	 * @param __v The value to write.
+	 * @throws MLECallError If the handle is {@code null}.
+	 * @since 2021/02/07
+	 */
+	public static void listWrite(int __o, int __dx, int __v)
+		throws MLECallError
+	{
+		if (__o == 0)
+			throw new MLECallError("NARG");
+		
+		int arrayBase = SystemCall.arrayAllocationBase();
+		Assembly.memHandleWriteInt(__o, arrayBase + (__dx * 4), __v);
+	}
+	
+	/**
+	 * Reads from the given list based handle.
+	 * 
+	 * @param __o The handle to write to.
+	 * @param __dx The index to write to.
+	 * @param __v The value to write.
+	 * @throws MLECallError If the handle is {@code null}.
+	 * @since 2021/02/07
+	 */
+	public static void listWrite(Object __o, int __dx, int __v)
+		throws MLECallError
+	{
+		LogicHandler.listWrite(Assembly.objectToPointer(__o), __dx, __v);
 	}
 	
 	/**
@@ -198,16 +386,16 @@ public final class LogicHandler
 	 * @param __len The array length.
 	 * @return The allocated object data.
 	 * @throws NegativeArraySizeException If the array is negatively sized.
-	 * @throws NullPointerException On null arguments.
+	 * @throws MLECallError On null arguments.
 	 * @throws OutOfMemoryError If there is no memory remaining.
 	 * @since 2020/11/29
 	 */
 	public static Object newArray(ClassInfoBracket __info, int __len)
-		throws NegativeArraySizeException, NullPointerException,
+		throws NegativeArraySizeException, MLECallError,
 			OutOfMemoryError
 	{
 		if (__info == null)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
 		if (__len < 0)
 			throw new NegativeArraySizeException("" + __len);
@@ -234,15 +422,15 @@ public final class LogicHandler
 	 * 
 	 * @param __info The class to allocate.
 	 * @return The allocated object data.
-	 * @throws NullPointerException On null arguments.
+	 * @throws MLECallError On null arguments.
 	 * @throws OutOfMemoryError If there is no memory remaining.
 	 * @since 2020/11/29
 	 */
 	public static Object newInstance(ClassInfoBracket __info)
-		throws NullPointerException, OutOfMemoryError
+		throws MLECallError, OutOfMemoryError
 	{
 		if (__info == null)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
 		// {@squirreljme.error ZZ4j Class has no allocated size?}
 		int allocSize = LogicHandler.classInfoGetProperty(__info,
@@ -260,18 +448,61 @@ public final class LogicHandler
 	 * @param __o The object.
 	 * @return The class information for the object.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/07
+	 */
+	public static ClassInfoBracket objectClassInfo(int __o)
+		throws NullPointerException
+	{
+		return Assembly.pointerToClassInfo(
+			LogicHandler.objectClassInfoInt(__o));
+	}
+	
+	/**
+	 * Returns the class information on the object, its type.
+	 * 
+	 * @param __o The object.
+	 * @return The class information for the object.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/24
 	 */
 	public static ClassInfoBracket objectClassInfo(Object __o)
 		throws NullPointerException
 	{
-		if (__o == null)
+		return LogicHandler.objectClassInfo(Assembly.objectToPointer(__o));
+	}
+	
+	/**
+	 * Returns the class information on the object, its type.
+	 * 
+	 * @param __o The object.
+	 * @return The class information for the object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/07
+	 */
+	public static int objectClassInfoInt(Object __o)
+		throws NullPointerException
+	{
+		return LogicHandler.objectClassInfoInt(
+			Assembly.objectToPointer(__o));
+	}
+	
+	/**
+	 * Returns the class information on the object, its type.
+	 * 
+	 * @param __o The object.
+	 * @return The class information for the object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/07
+	 */
+	public static int objectClassInfoInt(int __o)
+		throws NullPointerException
+	{
+		if (__o == 0)
 			throw new NullPointerException("NARG");
 			
 		// Directly read the type
-		return Assembly.pointerToClassInfo(
-			Assembly.memHandleReadInt(__o, LogicHandler.staticVmAttribute(
-				StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD)));
+		return Assembly.memHandleReadInt(__o, LogicHandler.staticVmAttribute(
+			StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD));
 	}
 	
 	/**
@@ -303,9 +534,7 @@ public final class LogicHandler
 		if (__attr <= 0 || __attr >= StaticVmAttribute.NUM_METRICS)
 			throw new IllegalArgumentException("ZZ4n " + __attr);
 		
-		int arrayBase = SystemCall.arrayAllocationBase();
-		return Assembly.memHandleReadInt(SystemCall.staticVmAttributes(),
-			arrayBase + (__attr * 4));
+		return LogicHandler.listRead(SystemCall.staticVmAttributes(), __attr);
 	}
 	
 	/**

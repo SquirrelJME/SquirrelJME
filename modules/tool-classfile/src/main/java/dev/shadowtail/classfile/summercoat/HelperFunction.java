@@ -43,11 +43,11 @@ public enum HelperFunction
 	IS_ARRAY("isArray", "(Ljava/lang/Object;)Z"),
 	
 	/**
-	  * {@link LogicHandler#isInstance(int, ClassInfoBracket,
+	  * {@link LogicHandler#isInstance(int, int,
 	  * QuickCastCheckBracket)}.
 	  */
 	IS_INSTANCE("isInstance", "(I" +
-		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;" +
+		"I"/*"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;"*/ +
 		"Lcc/squirreljme/jvm/summercoat/brackets/QuickCastCheckBracket;)Z"),
 	
 	/** {@link LogicHandler#initClass(ClassInfoBracket)}.  */
@@ -62,8 +62,13 @@ public enum HelperFunction
 	NEW_INSTANCE("newInstance", "(Lcc/squirreljme/jvm/" +
 		"summercoat/brackets/ClassInfoBracket;)Ljava/lang/Object;"),
 	
+	/** {@link LogicHandler#objectClassInfo(int)}. */
+	OBJECT_CLASS_INFO("objectClassInfo", "(I)" +
+		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;"),
+	
 	/** {@link LogicHandler#objectClassInfo(Object)}. */
-	OBJECT_CLASS_INFO("objectClassInfo", "(Ljava/lang/Object;)" +
+	OBJECT_CLASS_INFO_OBJECT("objectClassInfo",
+		"(Ljava/lang/Object;)" +
 		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;"),
 	
 	/** {@link LogicHandler#staticVmAttribute(int)}. */ 

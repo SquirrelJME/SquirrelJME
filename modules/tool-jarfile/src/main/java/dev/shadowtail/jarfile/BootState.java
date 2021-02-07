@@ -736,8 +736,15 @@ public final class BootState
 		
 		// The component class, if this is an array
 		if (__cl.isArray())
-			classInfo.set(ClassProperty.CLASSINFO_COMPONENTCLASS,
+		{
+			// The component
+			classInfo.set(ClassProperty.CLASSINFO_COMPONENT,
 				this.loadClass(__cl.componentType())._classInfoHandle);
+			
+			// The root component, used for type checking
+			classInfo.set(ClassProperty.CLASSINFO_ROOT_COMPONENT,
+				this.loadClass(__cl.rootComponentType())._classInfoHandle);
+		}
 		
 		// Determine the function pointer to the default new instance, this
 		// is needed for Class.newInstance(). This may be null.

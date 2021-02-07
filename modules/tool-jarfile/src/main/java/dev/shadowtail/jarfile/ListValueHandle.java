@@ -51,6 +51,10 @@ public class ListValueHandle
 		
 		this.baseSize = __baseSize;
 		this.count = __count;
+		
+		// Store the length here
+		this.memActions.write(this,
+			MemoryType.INTEGER, this.__offset(-1), __count);
 	}
 	
 	/**

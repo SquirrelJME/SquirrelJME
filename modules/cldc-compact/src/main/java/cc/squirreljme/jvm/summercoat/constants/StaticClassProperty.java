@@ -158,9 +158,17 @@ public interface StaticClassProperty
 	byte OFFSET_BOOT_METHOD =
 		33;
 	
+	/** The number of dimensions used. */
+	byte NUM_DIMENSIONS =
+		34;
+	
+	/** Is the component type the {@link Object} or one of its arrays? */
+	byte BOOLEAN_ROOT_IS_OBJECT =
+		35;
+	
 	/** The number of static properties. */
 	byte NUM_STATIC_PROPERTIES =
-		34;
+		36;
 	
 	/** Static field base index. */
 	@Deprecated

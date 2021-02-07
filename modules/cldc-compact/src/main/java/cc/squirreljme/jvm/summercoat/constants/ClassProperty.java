@@ -40,7 +40,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 5;
 	
 	/** The component class. */
-	byte CLASSINFO_COMPONENTCLASS =
+	byte CLASSINFO_COMPONENT =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 6;
 	
 	/** Pointer to a {@link Class} instance. */
@@ -103,7 +103,11 @@ public interface ClassProperty
 	byte MASK_I2XTABLE =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
 	
+	/** The root component class information. */
+	byte CLASSINFO_ROOT_COMPONENT =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
+	
 	/** The number of properties available. */
 	byte NUM_RUNTIME_PROPERTIES =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 23;
 }

@@ -162,6 +162,16 @@ public final class Minimizer
 		properties[StaticClassProperty.INT_CLASS_FLAGS].setInt(
 			input.flags().toJavaBits());
 		
+		// Dimensions, used for array checks
+		properties[StaticClassProperty.NUM_DIMENSIONS].setInt(
+			input.thisName().dimensions());
+		
+		// Is the root component object? Used for casting from any array
+		// to Object[]... or Object
+		properties[StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT].setInt(
+			((input.thisName().isArray() ? input.thisName().rootComponentType()
+				.isObjectClass() : input.thisName().isObjectClass())) ? 1 : 0);
+		
 		// name, superclass, and interfaces
 		properties[StaticClassProperty.SPOOL_THIS_CLASS_NAME].setInt(
 			localPool.add(false, input.thisName()).index);
