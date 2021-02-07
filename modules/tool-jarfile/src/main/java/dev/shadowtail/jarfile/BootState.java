@@ -1237,6 +1237,7 @@ public final class BootState
 				throw new InvalidClassFormatException(String.format(
 					"BC0n %s %s %s", __target, __interface, want));
 			
+			// Store into the table
 			result.add(i, got.vTable);
 		}
 		
