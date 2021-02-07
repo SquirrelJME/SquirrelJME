@@ -15,9 +15,11 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 /**
  * Bracket for class information.
  *
+ * @deprecated Use {@link TypeBracket}.
  * @since 2020/11/28
  */
 @GhostObject
+@Deprecated
 public interface ClassInfoBracket
 	extends TypeBracket
 {

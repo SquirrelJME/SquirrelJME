@@ -15,8 +15,10 @@ import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 /**
  * Structure for storing information for a given class.
  *
+ * @deprecated Use {@link TypeBracket}.
  * @since 2021/01/20
  */
+@Deprecated
 public class ClassInfoStruct
 	implements ClassInfoBracket, TypeBracket
 {

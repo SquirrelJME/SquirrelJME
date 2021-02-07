@@ -9,10 +9,11 @@
 
 package dev.shadowtail.classfile.pool;
 
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import net.multiphasicapps.classfile.ClassName;
 
 /**
- * This represents a pointer to the specified class.
+ * This represents a pointer to the {@link TypeBracket} of a given class.
  *
  * @since 2019/09/07
  */
