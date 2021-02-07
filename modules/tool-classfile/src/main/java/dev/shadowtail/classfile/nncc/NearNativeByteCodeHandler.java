@@ -331,8 +331,8 @@ public final class NearNativeByteCodeHandler
 				// types right now we can skip this check
 				if (!__array.isArray() || !__val.type.className().equals(
 					__array.type.className().componentType()))
-					this.__basicCheckArrayStore(array,
-						MemHandleRegister.of(__val.register));
+					this.__basicCheckArrayStore(__array.type, array,
+						__val.type, MemHandleRegister.of(__val.register));
 				
 				// Read the old value which may be uncounted
 				codeBuilder.addMemHandleAccess(__dt, true,
@@ -1760,28 +1760,15 @@ public final class NearNativeByteCodeHandler
 	/**
 	 * Checks if the target array can store this value.
 	 *
+	 * @param __arrayType The array type.
 	 * @param __array The instance register.
-	 * @param __value The value register.
-	 * @deprecated Use {@link NearNativeByteCodeHandler#
-	 * __basicCheckArrayStore(MemHandleRegister, MemHandleRegister)}. 
-	 * @since 2019/04/27
-	 */
-	@Deprecated
-	private void __basicCheckArrayStore(int __array, int __value)
-	{
-		this.__basicCheckArrayStore(MemHandleRegister.of(__array),
-			MemHandleRegister.of(__value));
-	}
-	
-	/**
-	 * Checks if the target array can store this value.
-	 *
-	 * @param __array The instance register.
+	 * @param __valType The value type.
 	 * @param __val The value register.
 	 * @since 2019/04/27
 	 */
-	private void __basicCheckArrayStore(MemHandleRegister __array,
-		MemHandleRegister __val)
+	private void __basicCheckArrayStore(
+		JavaType __arrayType, MemHandleRegister __array,
+		JavaType __valType, MemHandleRegister __val)
 		throws NullPointerException
 	{
 		if (__array == null || __val == null)

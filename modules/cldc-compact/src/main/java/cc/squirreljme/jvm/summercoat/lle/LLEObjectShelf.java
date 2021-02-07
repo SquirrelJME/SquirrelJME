@@ -44,31 +44,48 @@ public final class LLEObjectShelf
 	 * is {@code null}.
 	 * @since 2021/02/07
 	 */
-	public static boolean arrayCheckStore(Object __array, Object __value)
+	public static boolean arrayCheckStore(int __array, int __value)
 		throws MLECallError
 	{
-		if (__array == null)
+		if (__array == 0)
 			throw new MLECallError("NARG");
 		
-		// Storing null is always valid
-		if (__value == null)
-			return true;
-		
 		// Get the type that the array is
-		int arrayType = LLETypeShelf.objectType(
-			Assembly.objectToPointer(__array));
+		int arrayType = LLETypeShelf.objectType(__array);
 		
 		// {@squirreljme.error ZZ4o Object is not an array.}
 		if (LogicHandler.typeGetProperty(arrayType,
 			StaticClassProperty.NUM_DIMENSIONS) <= 0)
 			throw new MLECallError("ZZ4o");
 		
+		// Storing null is always valid
+		if (__value == 0)
+			return true;
+		
 		// The component type of the array must be compatible with the
 		// target type
-		int targetType = LLETypeShelf.objectType(
+		int targetType = LLETypeShelf.objectType(__value);
+		return LLETypeShelf.isAssignableFrom(targetType,
+			LogicHandler.typeGetProperty(arrayType,
+				ClassProperty.TYPEBRACKET_COMPONENT));
+	}
+	
+	/**
+	 * Checks if the given object can be stored in the specified array.
+	 * 
+	 * @param __array The array to check.
+	 * @param __value The value to check
+	 * @return If the value can be stored in the given array.
+	 * @throws MLECallError If given type is not an array or {@code __array}
+	 * is {@code null}.
+	 * @since 2021/02/07
+	 */
+	public static boolean arrayCheckStore(Object __array, Object __value)
+		throws MLECallError
+	{
+		return LLEObjectShelf.arrayCheckStore(
+			Assembly.objectToPointer(__array),
 			Assembly.objectToPointer(__value));
-		return LLETypeShelf.isAssignableFrom(LogicHandler.typeGetProperty(
-			arrayType, ClassProperty.TYPEBRACKET_COMPONENT), targetType);
 	}
 	
 	/**

@@ -27,11 +27,11 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  */
 public enum HelperFunction
 {
-	/** {@link LLEObjectShelf#arrayCheckStore(Object, Object)}. */
+	/** {@link LLEObjectShelf#arrayCheckStore(int, int)}. */
 	ARRAY_CHECK_STORE(
 		"cc/squirreljme/jvm/summercoat/lle/LLEObjectShelf",
 		"arrayCheckStore",
-		"(Ljava/lang/Object;Ljava/lang/Object;)Z"),
+		"(II)Z"),
 	
 	/** {@link LogicHandler#typeGetProperty(int, int)}. */
 	TYPE_GET_PROPERTY(

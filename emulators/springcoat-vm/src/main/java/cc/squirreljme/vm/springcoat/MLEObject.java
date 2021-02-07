@@ -69,7 +69,7 @@ public enum MLEObject
 			// The component type of the array must be compatible with the
 			// target type
 			SpringClass targetType = value.type();
-			return arrayType.componentType().isAssignableFrom(targetType);
+			return targetType.isAssignableFrom(arrayType.componentType());
 		}
 	}, 
 	

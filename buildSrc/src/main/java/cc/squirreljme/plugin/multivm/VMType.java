@@ -68,9 +68,9 @@ public enum VMType
 		 */
 		@Override
 		public void spawnJvmArguments(Task __task,
-			JavaExecSpecFiller __execSpec, String __mainClass,
-			Map<String, String> __sysProps, Path[] __libPath,
-			Path[] __classPath, String... __args)
+			JavaExecSpecFiller __execSpec,
+			String __mainClass, Map<String, String> __sysProps,
+			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			if (__task == null || __execSpec == null || __mainClass == null ||
@@ -517,16 +517,6 @@ public enum VMType
 			__args == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup copy of the system properties
-		Map<String, String> sysProps = new LinkedHashMap<>(__sysProps);
-		
-		// Debugging for SummerCoat? This goes to the outer virtual machine
-		// layer
-		String debugSummerCoat = System.getProperty(
-			"cc.squirreljme.summercoat.debug");
-		if (debugSummerCoat != null)
-			sysProps.put("cc.squirreljme.summercoat.debug", debugSummerCoat);
-		
 		// Determine the class-path for the emulator
 		List<Path> vmClassPath = new ArrayList<>();
 		for (File file : VMHelpers.projectRuntimeClasspath(
@@ -588,7 +578,7 @@ public enum VMType
 		// VM here instead. System properties are passed through so that the
 		// holding VM and the sub-VM share the same properties.
 		VMType.HOSTED.spawnJvmArguments(__task, __execSpec,
-			"cc.squirreljme.emulator.vm.VMFactory", sysProps,
+			"cc.squirreljme.emulator.vm.VMFactory", __sysProps,
 			__libPath, classPath,
 			vmArgs.<String>toArray(new String[vmArgs.size()]));
 	}
