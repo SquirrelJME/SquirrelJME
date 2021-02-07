@@ -17,6 +17,7 @@ import dev.shadowtail.classfile.summercoat.register.TypedRegister;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
 import java.util.ArrayList;
 import java.util.Collection;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
  * This is a stack which is used to manage which volatile registers are used.
@@ -138,9 +139,10 @@ public final class VolatileRegisterStack
 			at++;
 		
 		// {@squirreljme.error JC4l Exceeded maximum permitted registers.
-		// (The base register)}
+		// (The base register; The current count)}
 		if (at >= NativeCode.MAX_REGISTERS)
-			throw new IllegalStateException("JC4l " + this.base);
+			throw new InvalidClassFormatException(
+				String.format("JC4l %d %d", this.base, at));
 		
 		// Record it
 		used.add(at);

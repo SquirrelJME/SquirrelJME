@@ -65,9 +65,10 @@ public final class LLEObjectShelf
 		// The component type of the array must be compatible with the
 		// target type
 		int targetType = LLETypeShelf.objectType(__value);
-		return LLETypeShelf.isAssignableFrom(targetType,
+		return LLETypeShelf.isAssignableFrom(
 			LogicHandler.typeGetProperty(arrayType,
-				ClassProperty.TYPEBRACKET_COMPONENT));
+				ClassProperty.TYPEBRACKET_COMPONENT),
+			targetType);
 	}
 	
 	/**

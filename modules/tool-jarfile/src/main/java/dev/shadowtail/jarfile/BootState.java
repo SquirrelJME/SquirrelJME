@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
+import dev.shadowtail.classfile.ClassFileDebug;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
@@ -323,9 +324,11 @@ public final class BootState
 			int realSpot = tableSpot * 2;
 			
 			// Debug
-			Debugging.debugNote("InterfaceSpot: %s [%s] %s -> #%d of %d",
-				(taken[tableSpot] != 0 ? "BOOP " : ""), __cl,
-				className, tableSpot, tableSize);
+			if (ClassFileDebug.ENABLE_DEBUG)
+				Debugging.debugNote(
+					"InterfaceSpot: %s [%s] %s -> #%d of %d",
+					(taken[tableSpot] != 0 ? "BOOP " : ""), __cl,
+					className, tableSpot, tableSize);
 			
 			// Load the target class info
 			Object classInfo = this.loadClass(className)._classInfoHandle;
@@ -343,9 +346,10 @@ public final class BootState
 				if (taken[tableSpot] == 1)
 				{
 					// Debug
-					Debugging.debugNote(
-						"InterfaceSpot Collide: [%s] %s -> #%d of %d",
-						__cl, className, tableSpot, tableSize);
+					if (ClassFileDebug.ENABLE_DEBUG)
+						Debugging.debugNote(
+							"InterfaceSpot Collide: [%s] %s -> #%d of %d",
+							__cl, className, tableSpot, tableSize);
 					
 					// Move the old stuff over
 					working.add(oldClassInfo);
@@ -466,7 +470,8 @@ public final class BootState
 			return rv;
 		
 		// Debug
-		Debugging.debugNote("Loading %s...", __cl);
+		if (ClassFileDebug.ENABLE_DEBUG)
+			Debugging.debugNote("Loading %s...", __cl);
 		
 		// Read the class data as fast as possible and store into the map so
 		// we can recursive and recycle classes.
@@ -580,8 +585,9 @@ public final class BootState
 			}
 			
 			// Debug super class
-			Debugging.debugNote("SuperClass: %s (from %s)",
-				superClassState.thisName, __cl);
+			if (ClassFileDebug.ENABLE_DEBUG)
+				Debugging.debugNote("SuperClass: %s (from %s)",
+					superClassState.thisName, __cl);
 			
 			// The base of the class is the allocation size of the super
 			// class
@@ -589,9 +595,10 @@ public final class BootState
 			this.__classInstanceFieldBase(rv);
 			
 			// Debug
-			Debugging.debugNote("offsetBase %s = %d (check %d)",
-				__cl, base, classInfo.getInteger(
-					ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
+			if (ClassFileDebug.ENABLE_DEBUG)
+				Debugging.debugNote("offsetBase %s = %d (check %d)",
+					__cl, base, classInfo.getInteger(
+						ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
 			
 			// The allocation size of this class is the combined base and
 			// our storage for fields
@@ -883,10 +890,12 @@ public final class BootState
 					int offset = f.offset + at._classInfoHandle.getInteger(
 						ClassProperty.OFFSETBASE_INSTANCE_FIELDS);
 					
-					Debugging.debugNote("[%s/%s] <- offset %d = %d + %d",
-						__nat, at.thisName,
-						offset, f.offset, at._classInfoHandle.getInteger(
-						ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
+					if (ClassFileDebug.ENABLE_DEBUG)
+						Debugging.debugNote(
+							"[%s/%s] <- offset %d = %d + %d",
+							__nat, at.thisName,
+							offset, f.offset, at._classInfoHandle.getInteger(
+							ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
 					
 					// Set value here
 					return __object.<V>read(__cl, offset,
@@ -934,10 +943,12 @@ public final class BootState
 					int offset = f.offset + at._classInfoHandle.getInteger(
 						ClassProperty.OFFSETBASE_INSTANCE_FIELDS);
 					
-					Debugging.debugNote("[%s/%s] -> offset %d = %d + %d",
-						__nat, at.thisName,
-						offset, f.offset, at._classInfoHandle.getInteger(
-						ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
+					if (ClassFileDebug.ENABLE_DEBUG)
+						Debugging.debugNote(
+							"[%s/%s] -> offset %d = %d + %d",
+							__nat, at.thisName,
+							offset, f.offset, at._classInfoHandle.getInteger(
+							ClassProperty.OFFSETBASE_INSTANCE_FIELDS));
 					
 					// Set value here
 					__object.write(offset,
@@ -993,7 +1004,8 @@ public final class BootState
 				(__len * __cl.componentType().field().dataType().size()));
 		
 		// Debug
-		Debugging.debugNote("array[%d] (sz=%d)", __len, rv.byteSize);
+		if (ClassFileDebug.ENABLE_DEBUG)
+			Debugging.debugNote("array[%d] (sz=%d)", __len, rv.byteSize);
 		
 		// Store the array size as a hint
 		rv._arraySize = __len;
@@ -1076,7 +1088,8 @@ public final class BootState
 				rv = MinimizedClassFile.decode(in, this._pool);
 				
 				// Debug
-				Debugging.debugNote("Read %s...", rv.thisName());
+				if (ClassFileDebug.ENABLE_DEBUG)
+					Debugging.debugNote("Read %s...", rv.thisName());
 			}
 		
 		// Cache it and use it
@@ -1427,10 +1440,11 @@ public final class BootState
 						continue;
 					
 					// Debug
-					Debugging.debugNote("Try? %s:%s -> %s:%s (%s)",
-						bind.inClass, bind.method.nameAndType(),
-						look.inClass, look.method.nameAndType(),
-						look.method.flags());
+					if (ClassFileDebug.ENABLE_DEBUG)
+						Debugging.debugNote("Try? %s:%s -> %s:%s (%s)",
+							bind.inClass, bind.method.nameAndType(),
+							look.inClass, look.method.nameAndType(),
+							look.method.flags());
 					
 					// Ignore private methods and package private methods if
 					// we are not in the same package for the class we are
@@ -1466,9 +1480,10 @@ public final class BootState
 			}
 			
 			// Debug
-			Debugging.debugNote("Mapped %s:%s -> %s:%s",
-				bind.inClass, bind.method.nameAndType(),
-				target.inClass, target.method.nameAndType());
+			if (ClassFileDebug.ENABLE_DEBUG)
+				Debugging.debugNote("Mapped %s:%s -> %s:%s",
+					bind.inClass, bind.method.nameAndType(),
+					target.inClass, target.method.nameAndType());
 			
 			// Use target for the given method
 			methodInfo.add(target.vTable);
@@ -1908,14 +1923,6 @@ public final class BootState
 		// Determine where the pool is located
 		int poolOff = poolChunk.futureAddress().get();
 		
-		// Debugging
-		Debugging.debugNote("Load pool entry: %s", __entry);
-		
-		// TODO: Remove fail value
-		int failValue = 0x3E_00_0000 |
-			(__entry.index & 0xFFFF) |
-			(__entry.type().ordinal() << 16);
-		
 		// Depends on the type used
 		switch (__entry.type())
 		{
@@ -2085,8 +2092,9 @@ public final class BootState
 						this.loadClass(quickCast.to)));
 				
 				// Debug
-				Debugging.debugNote("Casting?: %s -> %d",
-					quickCast, quickCastState.getInteger(0));
+				if (ClassFileDebug.ENABLE_DEBUG)
+					Debugging.debugNote("Casting?: %s -> %d",
+						quickCast, quickCastState.getInteger(0));
 				
 				return quickCastState;
 			
@@ -2104,9 +2112,13 @@ public final class BootState
 		}
 		
 		if (false)
-			throw Debugging.todo();
-		Debugging.todoNote("Handle pool entry: %s", __entry);
-		return failValue;
+			throw Debugging.todo(__entry);
+		
+		// TODO: Remove fail value
+		Debugging.debugNote("Load pool entry: %s", __entry);
+		return 0x3E_00_0000 |
+			(__entry.index & 0xFFFF) |
+			(__entry.type().ordinal() << 16);
 	}
 	
 	/**
@@ -2235,8 +2247,9 @@ public final class BootState
 				lowest = at;
 		
 		// Debug
-		Debugging.debugNote("__bestI2XTableSize: %s -> %d",
-			sizes, lowest.getKey());
+		if (ClassFileDebug.ENABLE_DEBUG)
+			Debugging.debugNote("__bestI2XTableSize: %s -> %d",
+				sizes, lowest.getKey());
 		
 		return lowest.getKey();
 	}
