@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.lle.LLETypeShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -55,13 +56,13 @@ public final class LogicHandler
 			return true;
 		
 		// Determine the component type of the array
-		TypeBracket arrayType = LogicHandler.objectTypeBracket(__array);
+		TypeBracket arrayType = LLETypeShelf.objectType(__array);
 		TypeBracket compType = Assembly.pointerToTypeBracket(
 			LogicHandler.typeBracketGetProperty(arrayType,
 				ClassProperty.TYPEBRACKET_COMPONENT));
 		
 		// Check down the class tree for a matching class
-		TypeBracket valueType = LogicHandler.objectTypeBracket(__value);
+		TypeBracket valueType = LLETypeShelf.objectType(__value);
 		for (TypeBracket at = valueType; at != null;)
 		{
 			// Is a match of this type
@@ -289,8 +290,7 @@ public final class LogicHandler
 			return false;
 		
 		// Perform assignment check
-		return LogicHandler.isAssignableFrom(
-			LogicHandler.objectTypeBracketInt(__o), __target, __quickCast);
+		return LogicHandler.isAssignableFrom(LLETypeShelf.objectType(__o), __target, __quickCast);
 	}
 	
 	/**
@@ -440,69 +440,6 @@ public final class LogicHandler
 		
 		// Allocate the object
 		return LogicHandler.__allocObject(__info, allocSize);
-	}
-	
-	/**
-	 * Returns the class information on the object, its type.
-	 * 
-	 * @param __o The object.
-	 * @return The class information for the object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/02/07
-	 */
-	public static TypeBracket objectTypeBracket(int __o)
-		throws NullPointerException
-	{
-		return Assembly.pointerToTypeBracket(
-			LogicHandler.objectTypeBracketInt(__o));
-	}
-	
-	/**
-	 * Returns the class information on the object, its type.
-	 * 
-	 * @param __o The object.
-	 * @return The class information for the object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/01/24
-	 */
-	public static TypeBracket objectTypeBracket(Object __o)
-		throws NullPointerException
-	{
-		return LogicHandler.objectTypeBracket(Assembly.objectToPointer(__o));
-	}
-	
-	/**
-	 * Returns the class information on the object, its type.
-	 * 
-	 * @param __o The object.
-	 * @return The class information for the object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/02/07
-	 */
-	public static int objectTypeBracketInt(Object __o)
-		throws NullPointerException
-	{
-		return LogicHandler.objectTypeBracketInt(
-			Assembly.objectToPointer(__o));
-	}
-	
-	/**
-	 * Returns the class information on the object, its type.
-	 * 
-	 * @param __o The object.
-	 * @return The class information for the object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/02/07
-	 */
-	public static int objectTypeBracketInt(int __o)
-		throws NullPointerException
-	{
-		if (__o == 0)
-			throw new NullPointerException("NARG");
-			
-		// Directly read the type
-		return Assembly.memHandleReadInt(__o, LogicHandler.staticVmAttribute(
-			StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD));
 	}
 	
 	/**

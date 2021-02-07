@@ -14,6 +14,8 @@ import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.summercoat.LogicHandler;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -319,12 +321,31 @@ public final class LLETypeShelf
 	 *
 	 * @param __o The object to get the type of.
 	 * @return The type of the given object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/06/02
+	 */
+	public static int objectType(int __o)
+	{
+		if (__o == 0)
+			throw new NullPointerException("NARG");
+			
+		// Directly read the type
+		return Assembly.memHandleReadInt(__o, LogicHandler.staticVmAttribute(
+			StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD));
+	}
+	
+	/**
+	 * Returns the type of the given object.
+	 *
+	 * @param __o The object to get the type of.
+	 * @return The type of the given object.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/02
 	 */
 	public static TypeBracket objectType(Object __o)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		return Assembly.pointerToTypeBracket(LLETypeShelf.objectType(
+			Assembly.objectToPointer(__o)));
 	}
 	
 	/**

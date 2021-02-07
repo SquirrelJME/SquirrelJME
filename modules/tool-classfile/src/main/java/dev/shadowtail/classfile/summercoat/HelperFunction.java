@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.summercoat;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.summercoat.LogicHandler;
 import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
+import cc.squirreljme.jvm.summercoat.lle.LLETypeShelf;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
@@ -71,17 +72,10 @@ public enum HelperFunction
 		"newInstance", "(Lcc/squirreljme/jvm/mle/" +
 		"brackets/TypeBracket;)Ljava/lang/Object;"),
 	
-	/** {@link LogicHandler#objectTypeBracket(int)}. */
-	OBJECT_TYPE_BRACKET("cc/squirreljme/jvm/summercoat/LogicHandler",
-		"objectTypeBracket", "(I)" +
-		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"),
-	
-	/** {@link LogicHandler#objectTypeBracket(Object)}. */
-	OBJECT_TYPE_BRACKET_OBJECT(
-		"cc/squirreljme/jvm/summercoat/LogicHandler",
-		"objectTypeBracket",
-		"(Ljava/lang/Object;)" +
-		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"),
+	/** {@link LLETypeShelf#objectType(int)}. */
+	OBJECT_TYPE_BRACKET(
+		"cc/squirreljme/jvm/summercoat/lle/LLETypeShelf",
+		"objectType", "(I)I"),
 	
 	/** {@link LogicHandler#staticVmAttribute(int)}. */ 
 	STATIC_VM_ATTRIBUTE("cc/squirreljme/jvm/summercoat/LogicHandler",
