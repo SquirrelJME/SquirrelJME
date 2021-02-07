@@ -2601,7 +2601,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Call the given static method instead
 		this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM,
-			HelperFunction.HELPER_CLASS, __func.member.name(),
+			__func.inClass, __func.member.name(),
 			__func.member.type()), new RegisterList(__r));
 		
 		// Check if the invocation generated an exception

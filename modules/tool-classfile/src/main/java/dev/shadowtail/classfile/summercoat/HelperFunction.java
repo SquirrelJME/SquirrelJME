@@ -25,60 +25,73 @@ import net.multiphasicapps.classfile.MethodNameAndType;
 public enum HelperFunction
 {
 	/** {@link LogicHandler#checkArrayStore(Object, Object)}. */
-	CHECK_ARRAY_STORE("checkArrayStore",
+	CHECK_ARRAY_STORE("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"checkArrayStore",
 		"(Ljava/lang/Object;Ljava/lang/Object;)Z"),
 	
 	/** {@link LogicHandler#typeBracketGetProperty(int, int)}. */
-	TYPE_BRACKET_GET_PROPERTY("typeBracketGetProperty",
+	TYPE_BRACKET_GET_PROPERTY(
+		"cc/squirreljme/jvm/summercoat/LogicHandler",
+		"typeBracketGetProperty",
 		"(II)I"),
 	
 	/** {@link LogicHandler#gcMemHandle(int)}.  */
-	GC_MEM_HANDLE("gcMemHandle", "(I)V"),
+	GC_MEM_HANDLE("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"gcMemHandle", "(I)V"),
 	
 	/** {@link LogicHandler#isClassInit(int)}.  */
-	IS_CLASS_INIT("isClassInit", "(I)Z"),
+	IS_CLASS_INIT("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"isClassInit", "(I)Z"),
 	
 	/** {@link LogicHandler#isArray(Object)}. */
-	IS_ARRAY("isArray", "(Ljava/lang/Object;)Z"),
+	IS_ARRAY("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"isArray", "(Ljava/lang/Object;)Z"),
 	
 	/**
 	  * {@link LogicHandler#isInstance(int, int,
 	  * QuickCastCheckBracket)}.
 	  */
-	IS_INSTANCE("isInstance", "(I" +
+	IS_INSTANCE("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"isInstance", "(I" +
 		"I"/*"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"*/ +
 		"Lcc/squirreljme/jvm/summercoat/brackets/QuickCastCheckBracket;)Z"),
 	
 	/** {@link LogicHandler#initClass(TypeBracket)}.  */
-	INIT_CLASS("initClass", "(Lcc/squirreljme/jvm/mle/" +
+	INIT_CLASS("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"initClass", "(Lcc/squirreljme/jvm/mle/" +
 		"brackets/TypeBracket;)V"),
 	
 	/** {@link LogicHandler#newArray(TypeBracket, int)}. */
-	NEW_ARRAY("newArray", "(Lcc/squirreljme/jvm/mle/brackets" +
+	NEW_ARRAY("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"newArray", "(Lcc/squirreljme/jvm/mle/brackets" +
 		"/TypeBracket;I)Ljava/lang/Object;"),
 	
 	/** {@link LogicHandler#newInstance(TypeBracket)}. */
-	NEW_INSTANCE("newInstance", "(Lcc/squirreljme/jvm/mle/" +
+	NEW_INSTANCE("cc/squirreljme/jvm/summercoat/LogicHandler", 
+		"newInstance", "(Lcc/squirreljme/jvm/mle/" +
 		"brackets/TypeBracket;)Ljava/lang/Object;"),
 	
 	/** {@link LogicHandler#objectTypeBracket(int)}. */
-	OBJECT_TYPE_BRACKET("objectTypeBracket", "(I)" +
+	OBJECT_TYPE_BRACKET("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"objectTypeBracket", "(I)" +
 		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"),
 	
 	/** {@link LogicHandler#objectTypeBracket(Object)}. */
-	OBJECT_TYPE_BRACKET_OBJECT("objectTypeBracket",
+	OBJECT_TYPE_BRACKET_OBJECT(
+		"cc/squirreljme/jvm/summercoat/LogicHandler",
+		"objectTypeBracket",
 		"(Ljava/lang/Object;)" +
 		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"),
 	
 	/** {@link LogicHandler#staticVmAttribute(int)}. */ 
-	STATIC_VM_ATTRIBUTE("staticVmAttribute", "(I)I"),
+	STATIC_VM_ATTRIBUTE("cc/squirreljme/jvm/summercoat/LogicHandler",
+		"staticVmAttribute", "(I)I"),
 	
 	/** End. */
 	;
 	
-	/** The helper class to use. */
-	public static final ClassName HELPER_CLASS =
-		new ClassName("cc/squirreljme/jvm/summercoat/LogicHandler");
+	/** The class to call in. */
+	public final ClassName inClass;
 	
 	/** The member to reference. */
 	public final MethodNameAndType member;
@@ -91,12 +104,13 @@ public enum HelperFunction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/28
 	 */
-	HelperFunction(String __name, String __type)
+	HelperFunction(String __class, String __name, String __type)
 		throws NullPointerException
 	{
-		if (__name == null || __type == null)
+		if (__class == null || __name == null || __type == null)
 			throw new NullPointerException("NARG");
-			
+		
+		this.inClass = new ClassName(__class);
 		this.member = new MethodNameAndType(new MethodName(__name),
 			new MethodDescriptor(__type));
 	}
