@@ -161,6 +161,23 @@ public final class TypeShelf
 		throws MLECallError;
 	
 	/**
+	 * Performs the same logic as {@link Class#isAssignableFrom(Class)}, 
+	 * checks if the given class can be assigned to this one. The check is
+	 * in the same order as {@code instanceof Object} that is
+	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
+	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
+	 * 
+	 * @param __source The basis class
+	 * @param __target The target class which is checked for assignment.
+	 * @return If the given 
+	 * @throws MLECallError On null arguments.
+	 * @since 2021/02/07
+	 */
+	public static native boolean isAssignableFrom(TypeBracket __source,
+		TypeBracket __target)
+		throws MLECallError;
+	
+	/**
 	 * Checks if this is an enumeration.
 	 * 
 	 * @param __type The type to check.
