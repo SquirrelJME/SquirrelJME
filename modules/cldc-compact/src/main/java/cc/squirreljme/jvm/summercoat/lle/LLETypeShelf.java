@@ -234,6 +234,20 @@ public final class LLETypeShelf
 	{
 		if (__this == 0 || __other == 0)
 			throw new MLECallError("NARG");
+			
+		// Check current and super classes for the class information
+		for (int at = __this; at != 0;
+			at = LogicHandler.typeGetProperty(at,
+				ClassProperty.TYPEBRACKET_SUPER))
+			if (at == __other)
+				return true;
+		
+		// If not yet found, try all of the interfaces
+		int allInts = LogicHandler.typeGetProperty(__this,
+			ClassProperty.TYPEBRACKET_ALL_INTERFACECLASSES);
+		for (int i = 0, n = LogicHandler.listLength(allInts); i < n; i++)
+			if (LogicHandler.listRead(allInts, i) == __other)
+				return true;
 		
 		// Casting from one type to an array class?
 		int ourDims = LogicHandler.typeGetProperty(__this,
@@ -242,7 +256,6 @@ public final class LLETypeShelf
 			StaticClassProperty.NUM_DIMENSIONS);
 		if (ourDims > 0 || otherDims > 0)
 		{
-			
 			// Since we are doing arrays, any array that has a compatible
 			// root component can be casted into. So this adjusts the logic
 			// accordingly
@@ -259,20 +272,6 @@ public final class LLETypeShelf
 				StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT)) &&
 				ourDims < otherDims;
 		}
-			
-		// Check current and super classes for the class information
-		for (int at = __this; at != 0;
-			at = LogicHandler.typeGetProperty(__this,
-				ClassProperty.TYPEBRACKET_SUPER))
-			if (at == __other)
-				return true;
-		
-		// If not yet found, try all of the interfaces
-		int allInts = LogicHandler.typeGetProperty(__this,
-			ClassProperty.TYPEBRACKET_ALL_INTERFACECLASSES);
-		for (int i = 0, n = LogicHandler.listLength(allInts); i < n; i++)
-			if (LogicHandler.listRead(allInts, i) == __other)
-				return true;
 		
 		// Is not an instance
 		return false;
