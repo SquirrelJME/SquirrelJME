@@ -10,7 +10,7 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.pool.AccessedField;
-import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.TypeBracketPointer;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.InvokeXTable;
@@ -79,7 +79,7 @@ public enum MinimizedPoolEntryType
 	INTERFACE_CLASS(true, InterfaceClassName.class),
 	
 	/** Class information. */
-	CLASS_INFO_POINTER(true, ClassInfoPointer.class),
+	TYPE_BRACKET_POINTER(true, TypeBracketPointer.class),
 	
 	/** A string which has been noted for debug purposes. */
 	NOTED_STRING(true, NotedString.class),

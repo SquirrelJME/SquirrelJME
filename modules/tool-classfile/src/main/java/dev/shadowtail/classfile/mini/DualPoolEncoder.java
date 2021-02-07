@@ -14,7 +14,7 @@ import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolBuilder;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
-import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.TypeBracketPointer;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
@@ -27,7 +27,6 @@ import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.QuickCastCheck;
 import dev.shadowtail.classfile.pool.UsedString;
-import dev.shadowtail.classfile.pool.VirtualMethodIndex;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -167,7 +166,7 @@ public final class DualPoolEncoder
 						// Everything else just consists of parts which are
 						// either values to other indexes or an ordinal
 					case ACCESSED_FIELD:
-					case CLASS_INFO_POINTER:
+					case TYPE_BRACKET_POINTER:
 					case CLASS_NAME:
 					case CLASS_NAMES:
 					case CLASS_POOL:
@@ -264,8 +263,8 @@ public final class DualPoolEncoder
 								break;
 							
 								// Class information point
-							case CLASS_INFO_POINTER:
-								value = new ClassInfoPointer(
+							case TYPE_BRACKET_POINTER:
+								value = new TypeBracketPointer(
 									classpool.byIndex(parts[0]).
 									<ClassName>value(ClassName.class));
 								break;
@@ -653,7 +652,7 @@ public final class DualPoolEncoder
 				// Everything else just consists of parts which are
 				// either values to other indexes or an ordinal
 			case ACCESSED_FIELD:
-			case CLASS_INFO_POINTER:
+			case TYPE_BRACKET_POINTER:
 			case CLASS_NAME:
 			case CLASS_NAMES:
 			case CLASS_POOL:

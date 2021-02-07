@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm;
 
-import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 
 /**
  * This class is used special by the compiler to transform all the various
@@ -1311,13 +1311,13 @@ public final class Assembly
 	public static native void ping();
 	
 	/**
-	 * Converts a pointer to {@link ClassInfoBracket}.
+	 * Converts a pointer to {@link TypeBracket}.
 	 *
 	 * @param __p The pointer.
 	 * @return The object of the pointer.
 	 * @since 2021/01/24
 	 */
-	public static native ClassInfoBracket pointerToClassInfo(int __p);
+	public static native TypeBracket pointerToTypeBracket(int __p);
 	
 	/**
 	 * Used to convert a pointer to an object.

@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.AccessedField;
-import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.TypeBracketPointer;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
@@ -1113,8 +1113,8 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles
 		VolatileRegisterStack volatiles = this.volatiles;
-		try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
-			volatiles.getTyped(ClassInfoPointer.class))
+		try (Volatile<TypedRegister<TypeBracketPointer>> classInfo =
+			volatiles.getTyped(TypeBracketPointer.class))
 		{
 			// Load the class information for the register
 			this.__loadClassInfo(__at, classInfo.register);
@@ -1981,8 +1981,8 @@ public final class NearNativeByteCodeHandler
 		
 		// Will need storage to get classes
 		VolatileRegisterStack volatiles = this.volatiles;
-		try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
-			volatiles.getTyped(ClassInfoPointer.class))
+		try (Volatile<TypedRegister<TypeBracketPointer>> classInfo =
+			volatiles.getTyped(TypeBracketPointer.class))
 		{
 			// Load the class information, since it has the static storage
 			// area of the field... we also might need to initialize the
@@ -1993,7 +1993,7 @@ public final class NearNativeByteCodeHandler
 			codeBuilder.addIntegerConst(
 				ClassProperty.MEMHANDLE_STATIC_FIELDS,
 				__staticStore.register.asIntValue());
-			this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+			this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
 				classInfo.register, __staticStore.register);
 			
 			// Use this as the base
@@ -2477,7 +2477,7 @@ public final class NearNativeByteCodeHandler
 			
 				// pointer -> object (and variants)
 			case "pointerToObject":
-			case "pointerToClassInfo":
+			case "pointerToTypeBracket":
 				if (__in[0].register != __out.register)
 					codeBuilder.addCopy(__in[0].register, __out.register);
 				
@@ -2634,9 +2634,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Need volatiles to work with
 		VolatileRegisterStack volatiles = this.volatiles;
-		try (Volatile<TypedRegister<ClassInfoPointer>> targetClass =
-				volatiles.getTyped(ClassInfoPointer.class);
-			Volatile<TypedRegister<InvokeXTable>> vTable =
+		try (Volatile<TypedRegister<TypeBracketPointer>> targetClass =
+				volatiles.getTyped(TypeBracketPointer.class);
+			 Volatile<TypedRegister<InvokeXTable>> vTable =
 				volatiles.getTyped(InvokeXTable.class))
 		{
 			// Use the exactly specified method if:
@@ -2655,7 +2655,7 @@ public final class NearNativeByteCodeHandler
 			else
 			{
 				// Load ClassInfo for the instance
-				this.__invokeHelper(HelperFunction.OBJECT_CLASS_INFO,
+				this.__invokeHelper(HelperFunction.OBJECT_TYPE_BRACKET,
 					instance);
 				
 				// Move this over
@@ -2671,9 +2671,9 @@ public final class NearNativeByteCodeHandler
 					volatiles.getIntValue())
 				{
 					// Get the super class of the instance
-					codeBuilder.addIntegerConst(ClassProperty.CLASSINFO_SUPER,
+					codeBuilder.addIntegerConst(ClassProperty.TYPEBRACKET_SUPER,
 						superProp.register);
-					this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+					this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
 						targetClass.register, superProp.register);
 					
 					// Move over
@@ -2687,7 +2687,7 @@ public final class NearNativeByteCodeHandler
 			{
 				codeBuilder.addIntegerConst(ClassProperty.MEMHANDLE_VTABLE,
 					vTableProp.register);
-				this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+				this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
 					targetClass.register, vTableProp.register);
 					
 				// Move over
@@ -2732,7 +2732,7 @@ public final class NearNativeByteCodeHandler
 				volatiles.getTyped(InvokeXTable.class))
 		{
 			// Load the class information from the given instance
-			this.__invokeHelper(HelperFunction.OBJECT_CLASS_INFO, instance);
+			this.__invokeHelper(HelperFunction.OBJECT_TYPE_BRACKET, instance);
 			codeBuilder.addCopy(MemHandleRegister.RETURN, classInfo.register);
 			
 			// Obtain the I2XTable, which is used to quickly map to a hashed
@@ -2744,7 +2744,7 @@ public final class NearNativeByteCodeHandler
 					itxProp.register);
 				
 				// Load the I2X Table for the class
-				this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+				this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
 					classInfo.register, itxProp.register);
 				codeBuilder.addCopy(MemHandleRegister.RETURN,
 					itxTable.register);
@@ -2781,7 +2781,7 @@ public final class NearNativeByteCodeHandler
 						mask.register);
 					
 					// Load the mask
-					this.__invokeHelper(HelperFunction.CLASS_INFO_GET_PROPERTY,
+					this.__invokeHelper(HelperFunction.TYPE_BRACKET_GET_PROPERTY,
 						classInfo.register, mask.register);
 					codeBuilder.addCopy(IntValueRegister.RETURN,
 						mask.register);
@@ -2903,8 +2903,8 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// We need a volatile for the class to allocate!
-		try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
-			this.volatiles.getTyped(ClassInfoPointer.class))
+		try (Volatile<TypedRegister<TypeBracketPointer>> classInfo =
+			this.volatiles.getTyped(TypeBracketPointer.class))
 		{
 			// Load class data
 			this.__loadClassInfo(__cl, classInfo.register);
@@ -3338,8 +3338,8 @@ public final class NearNativeByteCodeHandler
 				}
 			
 			// Perform the actual instance checking logic
-			try (Volatile<TypedRegister<ClassInfoPointer>> classInfo =
-				volatiles.getTyped(ClassInfoPointer.class))
+			try (Volatile<TypedRegister<TypeBracketPointer>> classInfo =
+				volatiles.getTyped(TypeBracketPointer.class))
 			{
 				// Load desired target class type
 				this.__loadClassInfo(__cl, classInfo.register);
@@ -3619,8 +3619,8 @@ public final class NearNativeByteCodeHandler
 	private void __loadClassInfo(ClassName __cl, int __r)
 		throws NullPointerException
 	{
-		this.__loadClassInfo(__cl, new TypedRegister<ClassInfoPointer>(
-			ClassInfoPointer.class, __r));
+		this.__loadClassInfo(__cl, new TypedRegister<TypeBracketPointer>(
+			TypeBracketPointer.class, __r));
 	}
 	
 	/**
@@ -3632,7 +3632,7 @@ public final class NearNativeByteCodeHandler
 	 * @since 2020/11/28
 	 */
 	private void __loadClassInfo(ClassName __cl,
-		TypedRegister<ClassInfoPointer> __r)
+		TypedRegister<TypeBracketPointer> __r)
 		throws NullPointerException
 	{
 		if (__cl == null || __r == null)
@@ -3642,8 +3642,8 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Load cached pool entry
-		codeBuilder.<ClassInfoPointer>addPoolLoad(
-			new ClassInfoPointer(__cl), __r);
+		codeBuilder.<TypeBracketPointer>addPoolLoad(
+			new TypeBracketPointer(__cl), __r);
 		
 		// There are classes that must always exist within the VM in an
 		// always loaded state, otherwise there can be a very bad infinite

@@ -17,19 +17,19 @@ import net.multiphasicapps.classfile.ClassName;
  *
  * @since 2019/09/07
  */
-public final class ClassInfoPointer
+public final class TypeBracketPointer
 {
 	/** The class name to load for. */
 	public final ClassName name;
 	
 	/**
-	 * Initializes the class information pointer.
+	 * Initializes the pointer.
 	 *
 	 * @param __cl The class name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/09/07
 	 */
-	public ClassInfoPointer(ClassName __cl)
+	public TypeBracketPointer(ClassName __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -48,10 +48,10 @@ public final class ClassInfoPointer
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof ClassInfoPointer))
+		if (!(__o instanceof TypeBracketPointer))
 			return false;
 		
-		return this.name.equals(((ClassInfoPointer)__o).name);
+		return this.name.equals(((TypeBracketPointer)__o).name);
 	}
 	
 	/**

@@ -1106,8 +1106,7 @@ public final class NativeCPU
 						CPUFrame was = frames.getLast();
 						if ((was._taskid == 0 ||
 							syscallid == SystemCallIndex.EXCEPTION_LOAD ||
-							syscallid == SystemCallIndex.EXCEPTION_STORE) &&
-							syscallid != SystemCallIndex.IPC_CALL)
+							syscallid == SystemCallIndex.EXCEPTION_STORE))
 						{
 							// If profiling, profile the handling of the
 							// system call in a sub-frame

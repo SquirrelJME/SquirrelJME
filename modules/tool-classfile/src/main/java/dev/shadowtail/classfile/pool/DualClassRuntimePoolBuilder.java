@@ -98,9 +98,9 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(fr.memberType().className()).index);
 			
 				// Class information pointer
-			case CLASS_INFO_POINTER:
+			case TYPE_BRACKET_POINTER:
 				return runpool.add(__v,
-					this.addStatic(((ClassInfoPointer)__v).name).index);
+					this.addStatic(((TypeBracketPointer)__v).name).index);
 						
 				// The constant pool of another (or current) class
 			case CLASS_POOL:

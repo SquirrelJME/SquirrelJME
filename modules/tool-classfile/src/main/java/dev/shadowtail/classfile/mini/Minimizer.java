@@ -59,7 +59,7 @@ public final class Minimizer
 	/** The type for class information. */
 	public static final FieldDescriptor CLASS_INFO_FIELD_DESC =
 		new FieldDescriptor(
-		"Lcc/squirreljme/jvm/summercoat/brackets/ClassInfoBracket;");
+		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;");
 	
 	/** The descriptor for the thread type. */
 	public static final FieldDescriptor THREAD_FIELD_DESC =

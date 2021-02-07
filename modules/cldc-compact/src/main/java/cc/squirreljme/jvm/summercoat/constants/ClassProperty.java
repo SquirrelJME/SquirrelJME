@@ -9,8 +9,10 @@
 
 package cc.squirreljme.jvm.summercoat.constants;
 
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+
 /**
- * This contains properties of class info.
+ * This contains properties of class info for {@link TypeBracket}.
  * 
  * Static properties are declared in {@link StaticClassProperty}.
  *
@@ -32,15 +34,15 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 3;
 	
 	/** The super class data. */
-	byte CLASSINFO_SUPER =
+	byte TYPEBRACKET_SUPER =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 4;
 	
 	/** Interfaces. */
-	byte CLASSINFOS_INTERFACECLASSES =
+	byte TYPEBRACKETS_INTERFACE_CLASSES =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 5;
 	
 	/** The component class. */
-	byte CLASSINFO_COMPONENT =
+	byte TYPEBRACKET_COMPONENT =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 6;
 	
 	/** Pointer to a {@link Class} instance. */
@@ -64,7 +66,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 11;
 	
 	/** All interfaces that are implemented by this class. */
-	byte CLASSINFOS_ALL_INTERFACECLASSES =
+	byte TYPEBRACKET_ALL_INTERFACECLASSES =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 12;
 		
 	/** The JAR that this class is within. */
@@ -104,7 +106,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
 	
 	/** The root component class information. */
-	byte CLASSINFO_ROOT_COMPONENT =
+	byte TYPEBRACKET_ROOT_COMPONENT =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
 	
 	/** The number of properties available. */

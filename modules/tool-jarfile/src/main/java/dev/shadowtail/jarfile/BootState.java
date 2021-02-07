@@ -24,7 +24,7 @@ import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.BasicPoolEntry;
-import dev.shadowtail.classfile.pool.ClassInfoPointer;
+import dev.shadowtail.classfile.pool.TypeBracketPointer;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
@@ -557,7 +557,7 @@ public final class BootState
 		ClassState superClassState = (superClass == null ? null :
 			this.loadClass(superClass));
 		if (superClass != null)
-			classInfo.set(ClassProperty.CLASSINFO_SUPER,
+			classInfo.set(ClassProperty.TYPEBRACKET_SUPER,
 				superClassState._classInfoHandle);
 		
 		// Store for later
@@ -613,7 +613,7 @@ public final class BootState
 		
 		// Fill in any interfaces the class implements
 		ClassNames interfaces = classFile.interfaceNames();
-		classInfo.set(ClassProperty.CLASSINFOS_INTERFACECLASSES,
+		classInfo.set(ClassProperty.TYPEBRACKETS_INTERFACE_CLASSES,
 			memHandles.allocClassInfos(
 				this.loadClasses(interfaces.toArray())));
 		
@@ -688,7 +688,7 @@ public final class BootState
 		// This will be used by instance checks and eventual interface VTable
 		// lookup
 		ClassNames allInterfaces = this.allInterfaces(__cl);
-		classInfo.set(ClassProperty.CLASSINFOS_ALL_INTERFACECLASSES, 
+		classInfo.set(ClassProperty.TYPEBRACKET_ALL_INTERFACECLASSES, 
 			memHandles.allocClassInfos(
 				this.loadClasses(allInterfaces.toArray())));
 		
@@ -738,11 +738,11 @@ public final class BootState
 		if (__cl.isArray())
 		{
 			// The component
-			classInfo.set(ClassProperty.CLASSINFO_COMPONENT,
+			classInfo.set(ClassProperty.TYPEBRACKET_COMPONENT,
 				this.loadClass(__cl.componentType())._classInfoHandle);
 			
 			// The root component, used for type checking
-			classInfo.set(ClassProperty.CLASSINFO_ROOT_COMPONENT,
+			classInfo.set(ClassProperty.TYPEBRACKET_ROOT_COMPONENT,
 				this.loadClass(__cl.rootComponentType())._classInfoHandle);
 		}
 		
@@ -1957,9 +1957,9 @@ public final class BootState
 				}
 			
 				// Class information
-			case CLASS_INFO_POINTER:
-				return this.loadClass(__entry.<ClassInfoPointer>value(
-					ClassInfoPointer.class).name)._classInfoHandle;
+			case TYPE_BRACKET_POINTER:
+				return this.loadClass(__entry.<TypeBracketPointer>value(
+					TypeBracketPointer.class).name)._classInfoHandle;
 			
 				// Class constant pool reference
 			case CLASS_POOL:

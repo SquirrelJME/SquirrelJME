@@ -10,8 +10,8 @@
 package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.summercoat.brackets.ClassInfoBracket;
 import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
@@ -55,14 +55,14 @@ public final class LogicHandler
 			return true;
 		
 		// Determine the component type of the array
-		ClassInfoBracket arrayType = LogicHandler.objectClassInfo(__array);
-		ClassInfoBracket compType = Assembly.pointerToClassInfo(
-			LogicHandler.classInfoGetProperty(arrayType,
-				ClassProperty.CLASSINFO_COMPONENT));
+		TypeBracket arrayType = LogicHandler.objectTypeBracket(__array);
+		TypeBracket compType = Assembly.pointerToTypeBracket(
+			LogicHandler.typeBracketGetProperty(arrayType,
+				ClassProperty.TYPEBRACKET_COMPONENT));
 		
 		// Check down the class tree for a matching class
-		ClassInfoBracket valueType = LogicHandler.objectClassInfo(__value);
-		for (ClassInfoBracket at = valueType; at != null;)
+		TypeBracket valueType = LogicHandler.objectTypeBracket(__value);
+		for (TypeBracket at = valueType; at != null;)
 		{
 			// Is a match of this type
 			if (compType == at)
@@ -72,13 +72,13 @@ public final class LogicHandler
 			Assembly.ping();
 			
 			// Do we need to go down still?
-			int superP = LogicHandler.classInfoGetProperty(arrayType,
-				ClassProperty.CLASSINFO_SUPER);
+			int superP = LogicHandler.typeBracketGetProperty(arrayType,
+				ClassProperty.TYPEBRACKET_SUPER);
 			if (superP == 0)
 				break;
 			
 			// Go to the super class
-			at = Assembly.pointerToClassInfo(superP);
+			at = Assembly.pointerToTypeBracket(superP);
 		}
 		
 		// Not a match
@@ -95,7 +95,7 @@ public final class LogicHandler
 	 * valid class.
 	 * @since 2021/02/07
 	 */
-	public static int classInfoGetProperty(int __info, int __p)
+	public static int typeBracketGetProperty(int __info, int __p)
 		throws MLECallError
 	{
 		if (__info == 0)
@@ -118,7 +118,7 @@ public final class LogicHandler
 	 * valid class.
 	 * @since 2020/11/29
 	 */
-	public static int classInfoGetProperty(ClassInfoBracket __info, int __p)
+	public static int typeBracketGetProperty(TypeBracket __info, int __p)
 		throws MLECallError
 	{
 		if (__info == null)
@@ -169,9 +169,9 @@ public final class LogicHandler
 	 * @return If the class is initialized.
 	 * @since 2021/01/20
 	 */
-	public static boolean isClassInit(ClassInfoBracket __info)
+	public static boolean isClassInit(int __info)
 	{
-		if (__info == null)
+		if (__info == 0)
 			throw new NullPointerException("NARG");
 		
 		Assembly.breakpoint();
@@ -185,7 +185,7 @@ public final class LogicHandler
 	 * @throws MLECallError If the class is {@code null}.
 	 * @since 2020/11/28
 	 */
-	public static void initClass(ClassInfoBracket __info)
+	public static void initClass(TypeBracket __info)
 		throws MLECallError
 	{
 		if (__info == null)
@@ -218,9 +218,9 @@ public final class LogicHandler
 			throw new MLECallError("NARG");
 		
 		// Casting from one type to an array class?
-		int ourDims = LogicHandler.classInfoGetProperty(__source,
+		int ourDims = LogicHandler.typeBracketGetProperty(__source,
 			StaticClassProperty.NUM_DIMENSIONS);
-		int targetDims = LogicHandler.classInfoGetProperty(__target,
+		int targetDims = LogicHandler.typeBracketGetProperty(__target,
 			StaticClassProperty.NUM_DIMENSIONS);
 		if (ourDims > 0 || targetDims > 0)
 		{
@@ -229,7 +229,7 @@ public final class LogicHandler
 			{
 				// Are we casting from Foo[][]... to Object[]... or Object...?
 				// We can lose dimensions but we cannot gain them
-				if (0 != LogicHandler.classInfoGetProperty(__target,
+				if (0 != LogicHandler.typeBracketGetProperty(__target,
 					StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT))
 					return targetDims < ourDims;
 				
@@ -241,23 +241,23 @@ public final class LogicHandler
 			// root component can be casted into. So this adjusts the logic
 			// accordingly
 			return LogicHandler.isAssignableFrom(
-				LogicHandler.classInfoGetProperty(__source,
-					ClassProperty.CLASSINFO_ROOT_COMPONENT),
-				LogicHandler.classInfoGetProperty(__target,
-					ClassProperty.CLASSINFO_ROOT_COMPONENT),
+				LogicHandler.typeBracketGetProperty(__source,
+					ClassProperty.TYPEBRACKET_ROOT_COMPONENT),
+				LogicHandler.typeBracketGetProperty(__target,
+					ClassProperty.TYPEBRACKET_ROOT_COMPONENT),
 				null);
 		}
 			
 		// Check current and super classes for the class information
 		for (int at = __source; at != 0;
-			at = LogicHandler.classInfoGetProperty(__source,
-				ClassProperty.CLASSINFO_SUPER))
+			at = LogicHandler.typeBracketGetProperty(__source,
+				ClassProperty.TYPEBRACKET_SUPER))
 			if (at == __target)
 				return true;
 		
 		// If not yet found, try all of the interfaces
-		int allInts = LogicHandler.classInfoGetProperty(__source,
-			ClassProperty.CLASSINFOS_ALL_INTERFACECLASSES);
+		int allInts = LogicHandler.typeBracketGetProperty(__source,
+			ClassProperty.TYPEBRACKET_ALL_INTERFACECLASSES);
 		for (int i = 0, n = LogicHandler.listLength(allInts); i < n; i++)
 			if (LogicHandler.listRead(allInts, i) == __target)
 				return true;
@@ -290,7 +290,7 @@ public final class LogicHandler
 		
 		// Perform assignment check
 		return LogicHandler.isAssignableFrom(
-			LogicHandler.objectClassInfoInt(__o), __target, __quickCast);
+			LogicHandler.objectTypeBracketInt(__o), __target, __quickCast);
 	}
 	
 	/**
@@ -390,7 +390,7 @@ public final class LogicHandler
 	 * @throws OutOfMemoryError If there is no memory remaining.
 	 * @since 2020/11/29
 	 */
-	public static Object newArray(ClassInfoBracket __info, int __len)
+	public static Object newArray(TypeBracket __info, int __len)
 		throws NegativeArraySizeException, MLECallError,
 			OutOfMemoryError
 	{
@@ -401,10 +401,10 @@ public final class LogicHandler
 			throw new NegativeArraySizeException("" + __len);
 		
 		// Determine how large the object needs to be
-		int allocBase = LogicHandler.classInfoGetProperty(__info,
+		int allocBase = LogicHandler.typeBracketGetProperty(__info,
 			ClassProperty.SIZE_ALLOCATION);
 		int allocSize = allocBase +
-			(__len * LogicHandler.classInfoGetProperty(__info,
+			(__len * LogicHandler.typeBracketGetProperty(__info,
 				ClassProperty.INT_COMPONENT_CELL_SIZE));
 		
 		// Allocate the object
@@ -426,14 +426,14 @@ public final class LogicHandler
 	 * @throws OutOfMemoryError If there is no memory remaining.
 	 * @since 2020/11/29
 	 */
-	public static Object newInstance(ClassInfoBracket __info)
+	public static Object newInstance(TypeBracket __info)
 		throws MLECallError, OutOfMemoryError
 	{
 		if (__info == null)
 			throw new MLECallError("NARG");
 		
 		// {@squirreljme.error ZZ4j Class has no allocated size?}
-		int allocSize = LogicHandler.classInfoGetProperty(__info,
+		int allocSize = LogicHandler.typeBracketGetProperty(__info,
 			ClassProperty.SIZE_ALLOCATION);
 		if (allocSize <= 0)
 			throw new MLECallError("ZZ4j");
@@ -450,11 +450,11 @@ public final class LogicHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/07
 	 */
-	public static ClassInfoBracket objectClassInfo(int __o)
+	public static TypeBracket objectTypeBracket(int __o)
 		throws NullPointerException
 	{
-		return Assembly.pointerToClassInfo(
-			LogicHandler.objectClassInfoInt(__o));
+		return Assembly.pointerToTypeBracket(
+			LogicHandler.objectTypeBracketInt(__o));
 	}
 	
 	/**
@@ -465,10 +465,10 @@ public final class LogicHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/24
 	 */
-	public static ClassInfoBracket objectClassInfo(Object __o)
+	public static TypeBracket objectTypeBracket(Object __o)
 		throws NullPointerException
 	{
-		return LogicHandler.objectClassInfo(Assembly.objectToPointer(__o));
+		return LogicHandler.objectTypeBracket(Assembly.objectToPointer(__o));
 	}
 	
 	/**
@@ -479,10 +479,10 @@ public final class LogicHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/07
 	 */
-	public static int objectClassInfoInt(Object __o)
+	public static int objectTypeBracketInt(Object __o)
 		throws NullPointerException
 	{
-		return LogicHandler.objectClassInfoInt(
+		return LogicHandler.objectTypeBracketInt(
 			Assembly.objectToPointer(__o));
 	}
 	
@@ -494,7 +494,7 @@ public final class LogicHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/07
 	 */
-	public static int objectClassInfoInt(int __o)
+	public static int objectTypeBracketInt(int __o)
 		throws NullPointerException
 	{
 		if (__o == 0)
@@ -547,7 +547,7 @@ public final class LogicHandler
 	 * @throws OutOfMemoryError If not enough memory is available.
 	 * @since 2021/01/23
 	 */
-	private static Object __allocObject(ClassInfoBracket __info,
+	private static Object __allocObject(TypeBracket __info,
 		int __allocSize)
 		throws NullPointerException, OutOfMemoryError
 	{
@@ -555,7 +555,7 @@ public final class LogicHandler
 			throw new NullPointerException("NARG");
 		
 		// This represents the kind of handle that gets allocated
-		int memHandleKind = LogicHandler.classInfoGetProperty(__info,
+		int memHandleKind = LogicHandler.typeBracketGetProperty(__info,
 			ClassProperty.INT_MEMHANDLE_KIND);
 		
 		// Attempt to allocate a handle
