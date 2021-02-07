@@ -236,10 +236,10 @@ public final class LLETypeShelf
 			throw new MLECallError("NARG");
 			
 		// Check current and super classes for the class information
-		for (int at = __this; at != 0;
+		for (int at = __other; at != 0;
 			at = LogicHandler.typeGetProperty(at,
 				ClassProperty.TYPEBRACKET_SUPER))
-			if (at == __other)
+			if (at == __this)
 				return true;
 		
 		// If not yet found, try all of the interfaces
