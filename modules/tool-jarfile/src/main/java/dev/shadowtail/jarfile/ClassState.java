@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This contains the state of a single class.
@@ -50,8 +51,8 @@ public final class ClassState
 	/** Static method binds. */
 	List<MethodBinder> _staticBinds;
 	
-	/** Interface method binds. */
-	List<MethodBinder> _interfaceBinds;
+	/** Interface methods. */
+	List<MethodNameAndType> _interfaceMethods;
 	
 	/**
 	 * Initializes the base empty class state.

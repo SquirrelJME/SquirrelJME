@@ -36,6 +36,7 @@ import dev.shadowtail.classfile.xlate.DataType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -698,7 +699,9 @@ public final class BootState
 		// RandomAccess
 		// But only if we are not an interface, because it is pointless
 		// otherwise because no object will ever be the direct interface class
-		if (!classFile.flags().isInterface())
+		// Abstract classes will never be initialized.
+		if (!classFile.flags().isInterface() &&
+			!classFile.flags().isAbstract())
 		{
 			int[] potentialMask = new int[1];
 			ListValueHandle iTables =
@@ -1210,7 +1213,7 @@ public final class BootState
 		
 		// Interface binds are a hybrid between virtual classes and
 		// interfaces, they will all map into here accordingly
-		List<MethodBinder> interfaceBinds = this.__classBindsInterface(
+		List<MethodNameAndType> interfaceBinds = this.__classMethodsInterface(
 			this.loadClass(__interface));
 		int numBinds = interfaceBinds.size();
 		
@@ -1219,12 +1222,11 @@ public final class BootState
 		for (int i = 0; i < numBinds; i++)
 		{
 			// We want a match for this one
-			MethodBinder want = interfaceBinds.get(i);
+			MethodNameAndType want = interfaceBinds.get(i);
 			
 			MethodBinder got = null;
 			for (int j = targetBinds.size() - 1; j >= 0; j--)
-				if (want.method.nameAndType().equals(
-					targetBinds.get(j).method.nameAndType()))
+				if (want.equals(targetBinds.get(j).method.nameAndType()))
 				{
 					got = targetBinds.get(j);
 					break;
@@ -1232,10 +1234,12 @@ public final class BootState
 			
 			// {@squirreljme.error BC0n Could not find the method for the
 			// given class. (The target class; The interface this is for;
-			// The wanted method)}
+			// The wanted method; The interface methods to look for;
+			// The target binds that are available)}
 			if (got == null)
 				throw new InvalidClassFormatException(String.format(
-					"BC0n %s %s %s", __target, __interface, want));
+					"BC0n %s %s %s IB=%s TB=%s", __target, __interface, want,
+					interfaceBinds, targetBinds));
 			
 			// Store into the table
 			result.add(i, got.vTable);
@@ -1475,14 +1479,14 @@ public final class BootState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/06
 	 */
-	private List<MethodBinder> __classBindsInterface(ClassState __for)
+	private List<MethodNameAndType> __classMethodsInterface(ClassState __for)
 		throws IOException, NullPointerException
 	{
 		if (__for == null)
 			throw new NullPointerException("NARG");
 		
 		// Was this already calculated? Recycle it
-		List<MethodBinder> rv = __for._interfaceBinds;
+		List<MethodNameAndType> rv = __for._interfaceMethods;
 		if (rv != null)
 			return rv;
 		
@@ -1494,36 +1498,12 @@ public final class BootState
 				.classFile.methods(false))
 				methods.add(method.nameAndType());
 		
-		// Discover methods to bind to
-		rv = new ArrayList<>(methods.size());
-		List<MethodBinder> virtuals = this.__classBindsVirtual(__for);
-		for (MethodNameAndType method : methods)
-		{
-			// Locate the binder for the given method?
-			MethodBinder binder = null;
-			for (int i = virtuals.size() - 1; i >= 0; i--)
-			{
-				// Find the method to map to
-				MethodBinder virtual = virtuals.get(i);
-				if (!virtual.method.flags().isPrivate() &&
-					method.equals(virtual.method.nameAndType()))
-				{
-					binder = virtual;
-					break;
-				}
-			}
-			
-			// {@squirreljme.error BC0u Could not find a method for an
-			// interface. (This class; The method; Within methods)}
-			if (binder == null)
-				throw new InvalidClassFormatException(String.format(
-					"BC0u %s %s %s", __for.thisName, method, virtuals));
-			
-			rv.add(binder);
-		}
+		// Build result from this
+		rv = Arrays.asList(methods.toArray(
+			new MethodNameAndType[methods.size()]));
 		
 		// Cache and use this
-		__for._interfaceBinds = rv;
+		__for._interfaceMethods = rv;
 		return rv;
 	}
 	
@@ -1988,6 +1968,26 @@ public final class BootState
 				MethodHandle handle = invokedMethod.handle;
 				ClassState inClass = this.loadClass(handle.outerClass());
 				
+				// If this is an interface, there are no actual binds they
+				// are just referred to be index only
+				if (invokedMethod.type() == InvokeType.INTERFACE)
+				{
+					// Get all the methods for the interface
+					List<MethodNameAndType> methods =
+						this.__classMethodsInterface(inClass);
+					
+					// Find the index for the method
+					for (int i = 0, n = methods.size(); i < n; i++)
+						if (handle.nameAndType().equals(methods.get(i)))
+							return this.__baseArraySize() + ((i * 4) * 2);
+					
+					// {@squirreljme.error BC0v Could not find an interface
+					// index for the given method. (The entry; The methods
+					// available)}
+					throw new InvalidClassFormatException(String.format(
+						"BC0v %s %s", __entry, methods));
+				}
+				
 				// Load the correct binding table for the given invocation
 				List<MethodBinder> binds;
 				switch (invokedMethod.type())
@@ -1999,10 +1999,6 @@ public final class BootState
 						
 					case STATIC:
 						binds = this.__classBindsStatic(inClass);
-						break;
-						
-					case INTERFACE:
-						binds = this.__classBindsInterface(inClass);
 						break;
 					
 					default:

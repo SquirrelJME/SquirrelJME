@@ -106,6 +106,6 @@ public final class BootJarPointer
 	@Override
 	public String toString()
 	{
-		throw Debugging.todo();
+		return String.format("BootJarPointer[%d]", this.value.get());
 	}
 }
