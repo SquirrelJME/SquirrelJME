@@ -310,7 +310,7 @@ public final class LLEObjectShelf
 		
 		// Perform assignment check
 		return LLETypeShelf.isAssignableFrom(
-			LLETypeShelf.objectType(__o), __type);
+			__type, LLETypeShelf.objectType(__o));
 	}
 	
 	/**

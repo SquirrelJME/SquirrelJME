@@ -10,7 +10,9 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.QuickCastCheckType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.pool.QuickCastCheck;
 import java.io.IOException;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
@@ -75,7 +77,7 @@ public final class ClassState
 	/**
 	 * Checks if the given class can be assigned to this one, the check is
 	 * in the same order as {code instanceOf Object} that is
-	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
+	 * {@code b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b)}
 	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
 	 * 
 	 * This has the same logic as {@link Class#isAssignableFrom(Class)}. 
@@ -92,6 +94,38 @@ public final class ClassState
 	{
 		if (__state == null || __b == null)
 			throw new NullPointerException("NARG");
+		
+		if (true)
+			return QuickCastCheckType.UNKNOWN;
+		
+		// Any conversion from object is unknown
+		if (__b.thisName.isObjectClass())
+			return QuickCastCheckType.UNKNOWN;
+		
+		// Anything to object is valid
+		if (this.thisName.isObjectClass())
+			return QuickCastCheckType.COMPATIBLE;
+		
+		// Find matching other class
+		for (ClassState at = __b; at != null; at = at._superClass)
+		{
+			// If the super class is missing, try to load it
+			if (at._superClass == null)
+				__state.loadClass(at.thisName);
+			
+			// Is this a match?
+			if (this == at)
+				return QuickCastCheckType.COMPATIBLE;
+		}
+		
+		return QuickCastCheckType.UNKNOWN;
+		
+		/*
+		// Check all interfaces now
+		for (
+		
+		if (true)
+			throw Debugging.todo();
 		
 		// Is the same exact class or casting to object?
 		if (this == __b || __b.thisName.isObjectClass())
@@ -132,9 +166,9 @@ public final class ClassState
 			if (at._superClass == null)
 				__state.loadClass(at.thisName);
 			
-			// Is this a match?
-			if (__b == at)
-				return QuickCastCheckType.COMPATIBLE; 
+			// Is this a potential match?
+			if (this == at)
+				return QuickCastCheckType.COMPATIBLE;
 		}
 		
 		// If the other class is an interface, check to see if one of our
@@ -159,13 +193,13 @@ public final class ClassState
 			if (at._superClass == null)
 				__state.loadClass(at.thisName);
 			
-			// Is this a potential match?
-			if (this == at)
+			// Is this a match?
+			if (__b == at)
 				return QuickCastCheckType.UNKNOWN; 
 		}
 		
 		// Not compatible
-		return QuickCastCheckType.NOT_COMPATIBLE;
+		return QuickCastCheckType.NOT_COMPATIBLE;*/
 	}
 	
 	/**

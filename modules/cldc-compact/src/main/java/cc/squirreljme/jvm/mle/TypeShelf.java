@@ -164,7 +164,7 @@ public final class TypeShelf
 	 * Performs the same logic as {@link Class#isAssignableFrom(Class)}, 
 	 * checks if the given class can be assigned to this one. The check is
 	 * in the same order as {@code instanceof Object} that is
-	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
+	 * {@code b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b)}
 	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
 	 * 
 	 * @param __this The basis class

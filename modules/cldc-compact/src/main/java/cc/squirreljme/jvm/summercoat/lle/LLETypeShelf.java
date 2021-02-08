@@ -220,7 +220,7 @@ public final class LLETypeShelf
 	 * Performs the same logic as {@link Class#isAssignableFrom(Class)}, 
 	 * checks if the given class can be assigned to this one. The check is
 	 * in the same order as {@code instanceof Object} that is
-	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
+	 * {@code b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b)}
 	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
 	 * 
 	 * @param __this The basis class
@@ -243,10 +243,10 @@ public final class LLETypeShelf
 				return true;
 		
 		// If not yet found, try all of the interfaces
-		int allInts = LogicHandler.typeGetProperty(__this,
+		int allInts = LogicHandler.typeGetProperty(__other,
 			ClassProperty.TYPEBRACKET_ALL_INTERFACECLASSES);
 		for (int i = 0, n = LogicHandler.listLength(allInts); i < n; i++)
-			if (LogicHandler.listRead(allInts, i) == __other)
+			if (LogicHandler.listRead(allInts, i) == __this)
 				return true;
 		
 		// Casting from one type to an array class?
@@ -281,7 +281,7 @@ public final class LLETypeShelf
 	 * Performs the same logic as {@link Class#isAssignableFrom(Class)}, 
 	 * checks if the given class can be assigned to this one. The check is
 	 * in the same order as {@code instanceof Object} that is
-	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}
+	 * {@code b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b)}
 	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
 	 * 
 	 * @param __this The basis class
