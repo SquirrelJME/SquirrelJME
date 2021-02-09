@@ -10,6 +10,8 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -18,8 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import cc.squirreljme.jvm.manifest.JavaManifest;
-import cc.squirreljme.jvm.manifest.JavaManifestKey;
 
 public abstract class MIDlet
 {

@@ -9,7 +9,6 @@
 
 package dev.shadowtail.classfile.nncc;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

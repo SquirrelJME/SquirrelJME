@@ -10,10 +10,12 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
+import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.MatchResult;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -23,8 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import net.multiphasicapps.collections.EmptyIterator;
-import cc.squirreljme.jvm.manifest.JavaManifest;
-import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 
 /**
  * This represents an application suite.

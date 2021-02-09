@@ -10,9 +10,9 @@
 package cc.squirreljme.jvm.boot;
 
 import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.JVMFunction;
+import cc.squirreljme.jvm.config.ConfigRomKey;
 
 /**
  * This is a helper class used to read the configuration.

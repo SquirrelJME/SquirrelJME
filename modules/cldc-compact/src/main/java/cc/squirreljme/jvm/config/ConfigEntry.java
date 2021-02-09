@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.config;
 
-import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.NoSuchElementException;
 

@@ -35,7 +35,6 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldDescriptor;
-import net.multiphasicapps.classfile.FieldFlag;
 import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.InstructionJumpTarget;

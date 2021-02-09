@@ -9,8 +9,6 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * This class is used to provide simple writing for types other than integers
  * into memory.

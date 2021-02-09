@@ -10,11 +10,8 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class contains information about the host memory environment along

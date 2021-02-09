@@ -9,7 +9,6 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.io.ChunkFuture;
 

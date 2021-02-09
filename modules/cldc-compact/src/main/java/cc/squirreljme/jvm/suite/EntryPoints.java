@@ -10,12 +10,12 @@
 
 package cc.squirreljme.jvm.suite;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.List;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This parses the entry points which are available for usage.

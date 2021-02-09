@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.summercoat.handles;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.MemHandle;
 import cc.squirreljme.vm.summercoat.MemHandleManager;
 import cc.squirreljme.vm.summercoat.MemHandleReference;

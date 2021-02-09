@@ -9,8 +9,6 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * This is a class which handles reading of memory by using pure integers
  * instead of forcing all implementations to implement short and byte

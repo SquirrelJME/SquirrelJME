@@ -9,11 +9,11 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
-import cc.squirreljme.emulator.vm.VMException;
-import cc.squirreljme.emulator.vm.VMSuiteManager;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

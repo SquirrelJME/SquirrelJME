@@ -10,6 +10,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,7 +19,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 
 /**
  * This contains the information which specifies all of the dependencies which

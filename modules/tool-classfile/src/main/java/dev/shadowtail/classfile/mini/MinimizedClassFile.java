@@ -11,7 +11,6 @@
 package dev.shadowtail.classfile.mini;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

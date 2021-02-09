@@ -9,7 +9,6 @@
 
 package lang;
 
-import cc.squirreljme.jvm.mle.ObjectShelf;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**

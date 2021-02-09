@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
 
 /**

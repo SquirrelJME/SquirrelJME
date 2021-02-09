@@ -11,7 +11,6 @@ package cc.squirreljme.jvm.aot.summercoat;
 
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.InMemoryClassLibrary;
 import dev.shadowtail.jarfile.JarMinimizer;
 import java.io.ByteArrayOutputStream;

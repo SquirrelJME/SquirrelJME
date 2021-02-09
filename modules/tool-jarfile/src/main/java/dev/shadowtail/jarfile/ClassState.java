@@ -10,9 +10,7 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.QuickCastCheckType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
-import dev.shadowtail.classfile.pool.QuickCastCheck;
 import java.io.IOException;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassName;

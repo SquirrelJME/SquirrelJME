@@ -15,16 +15,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.jar.JarInputStream;
 import net.multiphasicapps.zip.blockreader.FileChannelBlockAccessor;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
-import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
-import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This is an emulation of {@link JarPackageBracket} so that it can access

@@ -11,12 +11,9 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
-import java.util.Arrays;
 import net.multiphasicapps.classfile.MethodDescriptor;
-import sun.security.ssl.Debug;
 
 /**
  * Functions for {@link MLEObject}.

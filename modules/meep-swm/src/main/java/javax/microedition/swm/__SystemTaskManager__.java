@@ -10,14 +10,11 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.swm.ExtendedTaskManager;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 

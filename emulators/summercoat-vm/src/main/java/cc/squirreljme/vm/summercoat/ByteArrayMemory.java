@@ -9,8 +9,6 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.emulator.vm.VMException;
-
 /**
  * This is a region of memory which uses a read-only byte array.
  *

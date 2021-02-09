@@ -1,6 +1,5 @@
 package squirreljme.summercoat;
 
-import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import net.multiphasicapps.tac.TestRunnable;

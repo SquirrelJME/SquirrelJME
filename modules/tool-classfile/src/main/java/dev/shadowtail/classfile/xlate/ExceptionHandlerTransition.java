@@ -9,7 +9,6 @@
 
 package dev.shadowtail.classfile.xlate;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;

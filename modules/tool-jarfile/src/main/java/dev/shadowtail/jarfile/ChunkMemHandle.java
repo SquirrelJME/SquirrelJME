@@ -10,7 +10,6 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * A memory handle that represents a chunk.

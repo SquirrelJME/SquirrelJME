@@ -10,11 +10,11 @@
 
 package cc.squirreljme.jvm.suite;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This represents the type of suite that a suite may be.

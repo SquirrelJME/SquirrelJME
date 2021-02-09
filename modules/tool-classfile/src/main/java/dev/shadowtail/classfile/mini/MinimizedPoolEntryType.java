@@ -10,7 +10,6 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.pool.AccessedField;
-import dev.shadowtail.classfile.pool.TypeBracketPointer;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.InvokeXTable;
@@ -18,6 +17,7 @@ import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
 import dev.shadowtail.classfile.pool.NullPoolEntry;
 import dev.shadowtail.classfile.pool.QuickCastCheck;
+import dev.shadowtail.classfile.pool.TypeBracketPointer;
 import dev.shadowtail.classfile.pool.UsedString;
 import dev.shadowtail.classfile.summercoat.pool.InterfaceClassName;
 import net.multiphasicapps.classfile.ClassName;

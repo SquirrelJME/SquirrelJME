@@ -9,10 +9,8 @@
 
 package dev.shadowtail.classfile.summercoat;
 
-import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.summercoat.LogicHandler;
-import cc.squirreljme.jvm.summercoat.brackets.QuickCastCheckBracket;
 import cc.squirreljme.jvm.summercoat.lle.LLEObjectShelf;
 import cc.squirreljme.jvm.summercoat.lle.LLETypeShelf;
 import net.multiphasicapps.classfile.ClassName;

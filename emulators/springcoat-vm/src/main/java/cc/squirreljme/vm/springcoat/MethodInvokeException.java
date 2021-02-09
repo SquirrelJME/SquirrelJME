@@ -11,9 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 
 /**
  * This wraps an exception that was thrown within an invoked method.
