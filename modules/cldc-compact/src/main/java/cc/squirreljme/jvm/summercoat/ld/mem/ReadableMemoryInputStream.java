@@ -286,7 +286,7 @@ public final class ReadableMemoryInputStream
 	 * {@inheritDoc}
 	 * @since 2021/02/09
 	 */
-	@Override
+	@SuppressWarnings("override")
 	public String readLine()
 		throws IOException
 	{
