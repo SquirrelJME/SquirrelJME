@@ -9,6 +9,9 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
+
 /**
  * This is a region of memory which uses a read-only byte array.
  *

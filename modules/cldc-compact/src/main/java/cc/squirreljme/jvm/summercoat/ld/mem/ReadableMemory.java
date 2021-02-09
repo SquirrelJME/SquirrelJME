@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.summercoat;
+package cc.squirreljme.jvm.summercoat.ld.mem;
 
 /**
  * This interface is used to represent anything which provides memory which

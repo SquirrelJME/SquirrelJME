@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.summercoat;
+package cc.squirreljme.jvm.summercoat.ld.mem;
 
 /**
  * This class is used to provide simple writing for types other than integers
@@ -41,16 +41,6 @@ public abstract class AbstractWritableMemory
 	 */
 	@Override
 	public void memWriteHandle(int __addr, MemHandleReference __v)
-	{
-		this.memWriteInt(__addr, (__v == null ? 0 : __v.id));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/01/17
-	 */
-	@Override
-	public void memWriteHandle(int __addr, MemHandle __v)
 	{
 		this.memWriteInt(__addr, (__v == null ? 0 : __v.id));
 	}

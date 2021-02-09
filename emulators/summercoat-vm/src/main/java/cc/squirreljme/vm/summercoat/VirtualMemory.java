@@ -9,6 +9,10 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.summercoat.ld.mem.AbstractWritableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.Memory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import java.util.ArrayList;
 import java.util.List;
 

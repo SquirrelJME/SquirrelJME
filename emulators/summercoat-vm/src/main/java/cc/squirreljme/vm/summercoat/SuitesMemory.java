@@ -10,6 +10,8 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.vm.PreAddressedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.packfile.PackMinimizer;
@@ -26,7 +28,6 @@ import java.util.Map;
  */
 public final class SuitesMemory
 	extends AbstractReadableMemory
-	implements ReadableMemory
 {
 	/** Size of the ROM header, the maximum permitted. */
 	public static final int ROM_HEADER_SIZE =

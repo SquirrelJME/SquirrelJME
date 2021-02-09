@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.summercoat;
+package cc.squirreljme.jvm.summercoat.ld.mem;
 
 /**
  * This represents the starting region of memory.

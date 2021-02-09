@@ -11,6 +11,8 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.jvm.summercoat.ld.mem.AbstractWritableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemHandleReference;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -168,6 +170,17 @@ public class MemHandle
 		// Use normal non-special writing
 		else
 			super.memWriteBytes(__addr, __b, __o, __l);
+	}
+	
+	/**
+	 * Returns the memory handle reference.
+	 * 
+	 * @return The reference to the memory handle.
+	 * @since 2021/02/09
+	 */
+	public MemHandleReference reference()
+	{
+		return new MemHandleReference(this.id);
 	}
 	
 	/**

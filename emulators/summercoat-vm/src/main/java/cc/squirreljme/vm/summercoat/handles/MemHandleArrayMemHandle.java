@@ -10,10 +10,10 @@
 package cc.squirreljme.vm.summercoat.handles;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemHandleReference;
 import cc.squirreljme.vm.summercoat.MemHandle;
 import cc.squirreljme.vm.summercoat.MemHandleManager;
-import cc.squirreljme.vm.summercoat.MemHandleReference;
-import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
 /**
@@ -27,33 +27,33 @@ public class MemHandleArrayMemHandle
 	/** The array values. */
 	protected final MemHandle[] values;
 	
-	/** The manager to lookup handles. */
-	protected final Reference<MemHandleManager> manager;
+	/** The manager for memory handles. */
+	private final WeakReference<MemHandleManager> _memHandleManager;
 	
 	/**
 	 * Initializes a new handle.
 	 *
-	 * @param __man The manager for memory handles.
 	 * @param __id The identifier for this handle.
 	 * @param __base The base array size.
+	 * @param __memHandleManager The manager used for memory handles.
 	 * @param __array The array used.
 	 * @throws IllegalArgumentException If the kind is not valid or the
 	 * requested size is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/17
 	 */
-	public MemHandleArrayMemHandle(MemHandleManager __man, int __id,
-		int __base, MemHandle... __array)
+	public MemHandleArrayMemHandle(int __id, int __base,
+		MemHandleManager __memHandleManager, MemHandle... __array)
 		throws IllegalArgumentException, NullPointerException
 	{
 		super(__id, MemHandleKind.OBJECT_ARRAY,
 			__base, 4, __array.length);
-			
-		if (__man == null)
+		
+		if (__memHandleManager == null)
 			throw new NullPointerException("NARG");
 		
-		this.manager = new WeakReference<>(__man);
 		this.values = __array;
+		this._memHandleManager = new WeakReference<>(__memHandleManager); 
 	}
 	
 	/**
@@ -63,39 +63,29 @@ public class MemHandleArrayMemHandle
 	@Override
 	public void memWriteHandle(int __addr, MemHandleReference __v)
 	{
-		this.memWriteHandle(__addr, this.__lookup(__v));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/01/17
-	 */
-	@Override
-	public void memWriteHandle(int __addr, MemHandle __v)
-	{
 		int relBase = __addr - super.rawSize;
 		if (relBase < 0)
 			super.memWriteHandle(__addr, __v);
 		else
-			this.values[relBase / super.cellSize] = __v;
+			this.values[relBase / super.cellSize] = this.__manager()
+				.get(__v.id);
 	}
 	
 	/**
-	 * Looks up the given handle.
+	 * Returns the handle manager.
 	 * 
-	 * @param __v The handle to lookup.
-	 * @return The handle for the given value.
-	 * @since 2021/01/17
+	 * @return The handle manager.
+	 * @throws IllegalStateException If the manager was GCed.
+	 * @since 2021/02/09
 	 */
-	private MemHandle __lookup(MemHandleReference __v)
+	private MemHandleManager __manager()
+		throws IllegalStateException
 	{
-		if (__v == null)
-			return null;
+		// This is pointless if it cannot access the manager
+		MemHandleManager rv = this._memHandleManager.get();
+		if (rv == null)
+			throw new IllegalStateException("Handle manager was GCed.");
 		
-		MemHandleManager manager = this.manager.get();
-		if (manager == null)
-			throw new IllegalStateException("Manager was GCed.");
-		
-		return manager.get(__v.id);
+		return rv;
 	}
 }

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.summercoat.ld.mem.AbstractWritableMemory;
+
 /**
  * Raw memory access.
  *

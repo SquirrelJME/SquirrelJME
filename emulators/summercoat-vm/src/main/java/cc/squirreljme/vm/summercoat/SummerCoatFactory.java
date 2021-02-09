@@ -23,6 +23,8 @@ import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -316,7 +318,7 @@ public class SummerCoatFactory
 								throw new VMException(
 									"Invalid handle: " + wantId);
 							
-							handle.memWriteHandle(addr, target);
+							handle.memWriteHandle(addr, target.reference());
 							readValue = target.id;
 							break;
 							

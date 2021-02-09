@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 
 /**
  * This contains the machine state.

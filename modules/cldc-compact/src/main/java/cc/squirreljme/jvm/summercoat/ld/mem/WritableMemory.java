@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.summercoat;
+package cc.squirreljme.jvm.summercoat.ld.mem;
 
 /**
  * This is used to provide an interface for reading memory.
@@ -48,15 +48,6 @@ public interface WritableMemory
 	 * @since 2021/01/17
 	 */
 	void memWriteHandle(int __addr, MemHandleReference __v);
-	
-	/**
-	 * Writes the memory handle to the address.
-	 * 
-	 * @param __addr The address to write to.
-	 * @param __v The value to write.
-	 * @since 2021/01/17
-	 */
-	void memWriteHandle(int __addr, MemHandle __v);
 	
 	/**
 	 * Writes a value to memory.
