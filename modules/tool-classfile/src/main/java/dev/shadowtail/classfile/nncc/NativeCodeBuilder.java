@@ -250,6 +250,25 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Jumps if a memory handle is not {@code null}.
+	 * 
+	 * @param __ir The register to check.
+	 * @param __jump The target to jump to if null.
+	 * @return The generated instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/09
+	 */
+	public NativeInstruction addIfNotNull(MemHandleRegister __ir,
+		NativeCodeLabel __jump)
+		throws NullPointerException
+	{
+		if (__ir == null || __jump == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addIfNonZero(__ir.asIntValue(), __jump);
+	}
+	
+	/**
 	 * Jumps if a memory handle is {@code null}.
 	 * 
 	 * @param __ir The register to check.
