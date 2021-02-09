@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
+import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 
@@ -24,6 +25,12 @@ import java.io.InputStream;
  */
 public final class LLEJarPackageShelf
 {
+	/** The Pack ROM, cached. */
+	private static volatile PackRom _packRom;
+	
+	/** The libraries which are available, cached. */
+	private static volatile JarPackageBracket[] _libraries;
+	
 	/**
 	 * Returns the classpath of the current program.
 	 *
@@ -61,15 +68,17 @@ public final class LLEJarPackageShelf
 	 */
 	public static JarPackageBracket[] libraries()
 	{
-		// Where is the ROM located?
-		int romAddr = SystemCall.runtimeVmAttribute(
-			RuntimeVmAttribute.ROM_ADDRESS);
+		// Restore from the cache
+		JarPackageBracket[] rv = LLEJarPackageShelf._libraries;
+		if (rv != null)
+			return rv.clone();
 		
-		// Debug
-		Debugging.debugNote("ROM is at %#08x", romAddr);
+		// Load the available libraries
+		rv = LLEJarPackageShelf.__packRom().libraries();
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// Cache for later and use this
+		LLEJarPackageShelf._libraries = rv;
+		return rv.clone();
 	}
 	
 	/**
@@ -107,5 +116,29 @@ public final class LLEJarPackageShelf
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the cached pack ROM or initializes a new one if needed.
+	 * 
+	 * @return The pack ROM.
+	 * @since 2021/02/09
+	 */
+	private static PackRom __packRom()
+	{
+		// Has this been cached already?
+		PackRom rv = LLEJarPackageShelf._packRom;
+		if (rv != null)
+			return rv;
+		
+		// Where is the ROM located?
+		int romAddr = SystemCall.runtimeVmAttribute(
+			RuntimeVmAttribute.ROM_ADDRESS);
+		
+		// Debug
+		Debugging.debugNote("ROM is at %#08x", romAddr);
+		
+		// Create a new manager
+		return new PackRom(romAddr);
 	}
 }
