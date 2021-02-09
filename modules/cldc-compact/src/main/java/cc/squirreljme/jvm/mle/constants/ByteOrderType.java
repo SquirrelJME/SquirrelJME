@@ -7,34 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.summercoat.constants;
-
-import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
+package cc.squirreljme.jvm.mle.constants;
 
 /**
- * Virtual machine attributes available at run-time.
+ * Specifies the byte order that is used.
  *
- * @since 2021/01/31
+ * @since 2021/02/09
  */
-public interface RuntimeVmAttribute
+public interface ByteOrderType
 {
-	/** Unknown. */
-	byte UNKNOWN =
+	/** Big endian. */
+	byte BIG_ENDIAN =
 		0;
-	
-	/** The {@link OperatingSystemType} this is running on. */
-	byte OPERATING_SYSTEM =
+		
+	/** Little endian. */
+	byte LITTLE_ENDIAN =
 		1;
-	
-	/** The address where the ROM is located. */
-	byte ROM_ADDRESS =
-		2;
-	
-	/** The byte order of the system. */
-	byte BYTE_ORDER =
-		3;
-	
-	/** The number of attributes. */
-	byte NUM_RUNTIME_ATTRIBUTES =
-		4;
 }

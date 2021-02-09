@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.summercoat.lle;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
@@ -36,6 +37,17 @@ public final class LLERuntimeShelf
 	 */
 	private LLERuntimeShelf()
 	{
+	}
+	
+	/**
+	 * Returns the byte order of the system.
+	 * 
+	 * @return The {@link ByteOrderType} of the system.
+	 * @since 2021/02/09
+	 */
+	public static int byteOrder()
+	{
+		return SystemCall.runtimeVmAttribute(RuntimeVmAttribute.BYTE_ORDER);
 	}
 	
 	/**

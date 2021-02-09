@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.summercoat.ld.mem;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.DataInput;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -18,21 +21,25 @@ import java.io.InputStream;
  */
 public final class ReadableMemoryInputStream
 	extends InputStream
+	implements DataInput
 {
-	/** The input memory. */
-	protected final ReadableMemory memory;
-	
 	/** The base read address. */
 	protected final int address;
 	
+	/** Is this being read as little endian? */
+	protected final boolean isLittle;
+	
 	/** The number of bytes that can be read. */
 	protected final int length;
+	
+	/** The input memory. */
+	protected final ReadableMemory memory;
 	
 	/** The current read offset. */
 	private int _at;
 	
 	/**
-	 * Initializes the input read memory.
+	 * Initializes the input read memory, the byte order is big endian.
 	 * 
 	 * @param __mem The memory to read from.
 	 * @throws NullPointerException On null arguments.
@@ -44,11 +51,28 @@ public final class ReadableMemoryInputStream
 		// The address is zero and not __mem.memRegionOffset() because this
 		// address is relative to the piece of memory and not the address
 		// of that memory
-		this(__mem, 0, __mem.memRegionSize());
+		this(__mem, 0, __mem.memRegionSize(), false);
 	}
 	
 	/**
-	 * Initializes the stream.
+	 * Initializes the input read memory, the byte order is big endian.
+	 * 
+	 * @param __mem The memory to read from.
+	 * @param __isLittle Write as little endian?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/09
+	 */
+	public ReadableMemoryInputStream(ReadableMemory __mem, boolean __isLittle)
+		throws NullPointerException
+	{
+		// The address is zero and not __mem.memRegionOffset() because this
+		// address is relative to the piece of memory and not the address
+		// of that memory
+		this(__mem, 0, __mem.memRegionSize(), __isLittle);
+	}
+	
+	/**
+	 * Initializes the stream, the byte order is big endian.
 	 *
 	 * @param __mem The memory.
 	 * @param __ad The start address.
@@ -59,12 +83,30 @@ public final class ReadableMemoryInputStream
 	public ReadableMemoryInputStream(ReadableMemory __mem, int __ad, int __ln)
 		throws NullPointerException
 	{
+		this(__mem, __ad, __ln, false);
+	}
+	
+	/**
+	 * Initializes the stream.
+	 *
+	 * @param __mem The memory.
+	 * @param __ad The start address.
+	 * @param __ln The length.
+	 * @param __isLittle Write as little endian?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/09
+	 */
+	public ReadableMemoryInputStream(ReadableMemory __mem, int __ad, int __ln,
+		boolean __isLittle)
+		throws NullPointerException
+	{
 		if (__mem == null)
 			throw new NullPointerException("NARG");
 		
 		this.memory = __mem;
 		this.address = __ad;
 		this.length = __ln;
+		this.isLittle = __isLittle;
 	}
 	
 	/**
@@ -128,9 +170,9 @@ public final class ReadableMemoryInputStream
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Used to check bounds
-		int at = this._at,
-			length = this.length,
-			address = this.address;
+		int at = this._at;
+		int length = this.length;
+		int address = this.address;
 		
 		// Read in all bytes
 		ReadableMemory memory = this.memory;
@@ -150,6 +192,171 @@ public final class ReadableMemoryInputStream
 		// Count
 		this._at = at + __l;
 		return __l;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public boolean readBoolean()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public byte readByte()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public char readChar()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public double readDouble()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public float readFloat()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public void readFully(byte[] __b)
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public void readFully(byte[] __b, int __o, int __l)
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public int readInt()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public String readLine()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public long readLong()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public short readShort()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public String readUTF()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public int readUnsignedByte()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public int readUnsignedShort()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/09
+	 */
+	@Override
+	public int skipBytes(int __n)
+		throws IOException
+	{
+		throw Debugging.todo();
 	}
 }
 
