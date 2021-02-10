@@ -2814,20 +2814,23 @@ public final class NearNativeByteCodeHandler
 		
 		// Load the class information for the target class to call
 		// into, we need this to map values
-		codeBuilder.addBreakpoint(0x7CAA, "Interface");
+		codeBuilder.addBreakpoint(0x7CAA,
+			"Interface " + __outerClass);
 		if (false)
 			throw Debugging.todo();
 		
 		// Start from the I2XTable base potential mask + 1 so that we
 		// are at the very end of the base potential table
-		codeBuilder.addBreakpoint(0x7CAB, "Interface");
+		codeBuilder.addBreakpoint(0x7CAB,
+			"Interface " + __outerClass);
 		if (false)
 			throw Debugging.todo();
 		
 		// Scan through the I2XTable and find the class that matches
 		// the one we want to execute for, we should get an XTable
 		// from this
-		codeBuilder.addBreakpoint(0x7CAC, "Interface");
+		codeBuilder.addBreakpoint(0x7CAC,
+			"Interface " + __outerClass);
 		if (false)
 			throw Debugging.todo();
 	}
