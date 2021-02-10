@@ -14,17 +14,21 @@ package cc.squirreljme.jvm.config;
  *
  * @since 2020/04/09
  */
+@Deprecated
 public interface MicroeditionConfig
 {
 	/** Unknown. */
+	@Deprecated
 	byte UNKNOWN =
 		0;
 	
 	/** CLDC Compact. */
+	@Deprecated
 	byte CLDC_8_COMPACT =
 		1;
 	
 	/** CLDC Full. */
+	@Deprecated
 	byte CLDC_8_FULL =
 		2;
 }

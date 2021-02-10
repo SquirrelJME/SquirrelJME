@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/05/25
  */
+@Deprecated
 public final class Bootstrap
 {
 	/**
@@ -24,6 +25,7 @@ public final class Bootstrap
 	 *
 	 * @since 2019/05/25
 	 */
+	@Deprecated
 	private Bootstrap()
 	{
 	}
@@ -39,6 +41,7 @@ public final class Bootstrap
 	 * @param __confsize The configuration memory size.
 	 * @since 2019/05/25
 	 */
+	@Deprecated
 	@SuppressWarnings("unused")
 	static final void __start(int __rambase, int __ramsize,
 		int __rombase, int __romsize, int __confbase, int __confsize)

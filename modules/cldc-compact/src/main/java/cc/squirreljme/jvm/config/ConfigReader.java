@@ -19,10 +19,12 @@ import java.util.NoSuchElementException;
  * @see ConfigWriter
  * @since 2019/06/22
  */
+@Deprecated
 public final class ConfigReader
 	implements Iterable<ConfigEntry>
 {
 	/** Supplier for input streams. */
+	@Deprecated
 	protected final InputStreamSupplier streamSupplier;
 	
 	/**
@@ -32,6 +34,7 @@ public final class ConfigReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/03
 	 */
+	@Deprecated
 	public ConfigReader(InputStreamSupplier __stream)
 		throws NullPointerException
 	{
@@ -50,6 +53,7 @@ public final class ConfigReader
 	 * configuration.
 	 * @since 2020/05/12
 	 */
+	@Deprecated
 	public final ConfigEntry getByKey(int __key)
 		throws NoSuchElementException
 	{
@@ -72,6 +76,7 @@ public final class ConfigReader
 	 * @throws NoSuchElementException If no such key exists.
 	 * @since 2020/05/12
 	 */
+	@Deprecated
 	public final String[] getStrings(int __key)
 		throws IllegalArgumentException, NoSuchElementException
 	{
@@ -83,6 +88,7 @@ public final class ConfigReader
 	 * @since 2020/04/03
 	 */
 	@Override
+	@Deprecated
 	public final Iterator<ConfigEntry> iterator()
 	{
 		throw Debugging.todo();
@@ -96,6 +102,7 @@ public final class ConfigReader
 	 * @throws NoSuchElementException If no such key exists.
 	 * @since 2020/05/03
 	 */
+	@Deprecated
 	public final long rawValue(int __key)
 		throws NoSuchElementException
 	{
@@ -108,6 +115,7 @@ public final class ConfigReader
 	 * @return The number of configuration items.
 	 * @since 2002/04/03
 	 */
+	@Deprecated
 	public final int size()
 	{
 		int count = 0;
@@ -126,6 +134,7 @@ public final class ConfigReader
 	 * @throws NoSuchElementException If no such key exists.
 	 * @since 2020/05/03
 	 */
+	@Deprecated
 	public final int type(int __key)
 		throws NoSuchElementException
 	{

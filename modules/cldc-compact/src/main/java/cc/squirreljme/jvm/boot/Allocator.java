@@ -17,61 +17,76 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/05/26
  */
+@Deprecated
 @SuppressWarnings("FeatureEnvy")
 public final class Allocator
 {
 	/** Chunk is an object. */
+	@Deprecated
 	public static final byte CHUNK_BIT_IS_OBJECT =
 		0x01;
 	
 	/** Constant pool. */
+	@Deprecated
 	public static final byte CHUNK_BIT_IS_POOL =
 		0x02;
 	
 	/** Tag value bits mask. */
+	@Deprecated
 	public static final int CHUNK_BITS_VALUE_MASK =
 		0x0F;
 	
 	/** Shift for the chunk tag. */
+	@Deprecated
 	public static final byte CHUNK_TAG_SHIFT =
 		24;
 	
 	/** Memory free tag (all bits set). */
+	@Deprecated
 	public static final int CHUNK_TAG_FREE =
 		0xFF000000;
 	
 	/** Chunk tag mask. */
+	@Deprecated
 	public static final int CHUNK_TAG_MASK =
 		0xFF000000;
 	
 	/** The chunk size mask. */
+	@Deprecated
 	public static final int CHUNK_SIZE_MASK =
 		0x00FFFFFF;
 	
 	/** Chunk size limit, lower than the cap to allow for chunk area. */
+	@Deprecated
 	public static final int CHUNK_SIZE_LIMIT =
 		16777200;
 	
 	/** Memory chunk size offset. */
+	@Deprecated
 	public static final byte CHUNK_SIZE_OFFSET =
 		0;
 	
 	/** Next chunk address. */
+	@Deprecated
 	public static final byte CHUNK_NEXT_OFFSET =
 		4;
 	
 	/** The length of chunks. */
+	@Deprecated
 	public static final byte CHUNK_LENGTH =
 		8;
 	
 	/** Extra size to add that must be hit before a chunk is split. */
+	@Deprecated
 	public static final byte SPLIT_REQUIREMENT =
 		16;
 	
 	/** The base RAM address. */
+	@Deprecated
 	private static volatile int _rambase;
 	
 	/** The locking pointer address. */
+	@Deprecated
 	private static volatile int _lockptr;
 	
 	/**
@@ -79,6 +94,7 @@ public final class Allocator
 	 *
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	private Allocator()
 	{
 	}
@@ -92,6 +108,7 @@ public final class Allocator
 	 * not enough memory remaining.
 	 * @since 2019/10/19
 	 */
+	@Deprecated
 	public static final int allocate(int __tag, int __sz)
 	{
 		// Determine the special locking key to use, never let this be zero!
@@ -136,6 +153,7 @@ public final class Allocator
 	 * not enough memory remaining.
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	public static final int allocateWithoutLock(int __tag, int __sz)
 	{
 		// The number of desired bytes
@@ -172,6 +190,7 @@ public final class Allocator
 	 * @param __p The pointer to free.
 	 * @since 2019/10/19
 	 */
+	@Deprecated
 	public static final void free(int __p)
 	{
 		// Determine the special locking key to use, never let this be zero!
@@ -214,6 +233,7 @@ public final class Allocator
 	 * @param __p The pointer to free.
 	 * @since 2019/05/27
 	 */
+	@Deprecated
 	public static final void freeWithoutLock(int __p)
 	{
 		throw Debugging.todo();
@@ -299,6 +319,7 @@ public final class Allocator
 	 * @return The allocation pointer.
 	 * @since 2019/06/21
 	 */
+	@Deprecated
 	private static final int __claim(int __tag, int __want, int __seeker,
 		int __csz, int __cnx)
 	{
@@ -364,6 +385,7 @@ public final class Allocator
 	 * @return The locking key.
 	 * @since 2019/11/22
 	 */
+	@Deprecated
 	static final int __giveLockKey()
 	{
 		Assembly.breakpoint();
@@ -385,6 +407,7 @@ public final class Allocator
 	 * @param __ramsize The amount of RAM available.
 	 * @since 2019/05/26
 	 */
+	@Deprecated
 	static final void __initRamLinks(int __rambase, int __ramsize)
 	{
 		// Loops through all blocks

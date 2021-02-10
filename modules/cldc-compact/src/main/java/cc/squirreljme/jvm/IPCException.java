@@ -14,10 +14,12 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/12/28
  */
+@Deprecated
 public class IPCException
 	extends RuntimeException
 {
 	/** The class name note pointer. */
+	@Deprecated
 	protected final int classnotepointer;
 	
 	/**
@@ -25,6 +27,7 @@ public class IPCException
 	 *
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public IPCException()
 	{
 		this.classnotepointer = 0;
@@ -36,6 +39,7 @@ public class IPCException
 	 * @param __cnp The class note pointer which was used.
 	 * @since 2019/12/28
 	 */
+	@Deprecated
 	public IPCException(int __cnp)
 	{
 		this.classnotepointer = __cnp;

@@ -14,6 +14,7 @@ package cc.squirreljme.jvm.boot;
  *
  * @since 2019/10/06
  */
+@Deprecated
 public final class Globals
 {
 }

@@ -13,4 +13,5 @@
  *
  * @since 2020/05/25
  */
+@Deprecated
 package cc.squirreljme.jvm.config;

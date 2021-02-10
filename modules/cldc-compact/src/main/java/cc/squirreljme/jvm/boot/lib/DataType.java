@@ -14,37 +14,46 @@ package cc.squirreljme.jvm.boot.lib;
  *
  * @since 2019/10/12
  */
+@Deprecated
 public interface DataType
 {
 	/** Object. */
+	@Deprecated
 	byte OBJECT =
 		0;
 	
 	/** Byte. */
+	@Deprecated
 	byte BYTE =
 		1;
 	
 	/** Short. */
+	@Deprecated
 	byte SHORT =
 		2;
 	
 	/** Character. */
+	@Deprecated
 	byte CHARACTER =
 		3;
 	
 	/** Integer. */
+	@Deprecated
 	byte INTEGER =
 		4;
 	
 	/** Float. */
+	@Deprecated
 	byte FLOAT =
 		5;
 	
 	/** Long. */
+	@Deprecated
 	byte LONG =
 		6;
 	
 	/** Double. */
+	@Deprecated
 	byte DOUBLE =
 		7;
 }

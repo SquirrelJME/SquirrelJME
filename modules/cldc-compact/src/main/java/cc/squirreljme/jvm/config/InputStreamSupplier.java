@@ -16,6 +16,7 @@ import java.io.InputStream;
  *
  * @since 2020/05/25
  */
+@Deprecated
 public interface InputStreamSupplier
 {
 	/**
@@ -24,5 +25,6 @@ public interface InputStreamSupplier
 	 * @return An input stream for configuration reading.
 	 * @since 2020/05/25
 	 */
+	@Deprecated
 	InputStream get();
 }

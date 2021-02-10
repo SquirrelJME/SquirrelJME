@@ -14,5 +14,6 @@
  * @since 2019/09/22
  */
 
+@Deprecated
 package cc.squirreljme.jvm.boot.lib;
 

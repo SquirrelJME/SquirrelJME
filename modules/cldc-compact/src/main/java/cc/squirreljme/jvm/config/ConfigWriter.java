@@ -32,22 +32,27 @@ import java.io.OutputStream;
  *
  * @since 2020/04/11
  */
+@Deprecated
 public final class ConfigWriter
 {
 	/** The size of the end marker in bytes. */
+	@Deprecated
 	private static final int _END_MARKER_SIZE =
 		4;
 	
 	/** The maximum size of entries. */
+	@Deprecated
 	private static final int _MAX_ENTRY_SIZE =
 		65535;
 	
 	/** The stream of bytes to write the config to. */
 	@SuppressWarnings("resource")
+	@Deprecated
 	protected final ByteArrayOutputStream out =
 		new ByteArrayOutputStream(1024);
 	
 	/** Is this little endian? */
+	@Deprecated
 	protected final boolean littleEndian;
 	
 	/**
@@ -56,6 +61,7 @@ public final class ConfigWriter
 	 * @param __littleEndian Is this little endian?
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	public ConfigWriter(boolean __littleEndian)
 	{
 		this.littleEndian = __littleEndian;
@@ -67,6 +73,7 @@ public final class ConfigWriter
 	 * @return The byte count size of the configuration.
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	public int byteCount()
 	{
 		// The end marker is written when toByteArray() is called, so we
@@ -80,6 +87,7 @@ public final class ConfigWriter
 	 * @return The byte array containing the configuration data.
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	public final byte[] toByteArray()
 	{
 		try (ByteArrayOutputStream rv = new ByteArrayOutputStream(
@@ -105,6 +113,7 @@ public final class ConfigWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/12
 	 */
+	@Deprecated
 	private void writeTo(OutputStream __dest)
 		throws IOException, NullPointerException
 	{
@@ -129,6 +138,7 @@ public final class ConfigWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/12
 	 */
+	@Deprecated
 	public final void write(int __type, int __key, byte... __b)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -173,6 +183,7 @@ public final class ConfigWriter
 	 * @param __v The value.
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	public final void writeBoolean(int __id, boolean __v)
 	{
 		this.write(ConfigRomType.BOOLEAN, __id,
@@ -188,6 +199,7 @@ public final class ConfigWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	public final void writeKeyValuePair(int __id, String __k, String __v)
 		throws NullPointerException
 	{
@@ -218,6 +230,7 @@ public final class ConfigWriter
 	 * @param __v The value.
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	@SuppressWarnings("MagicNumber")
 	public final void writeInteger(int __id, int __v)
 	{
@@ -235,6 +248,7 @@ public final class ConfigWriter
 	 * @param __v The value.
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	@SuppressWarnings("MagicNumber")
 	public final void writeLong(int __id, long __v)
 	{
@@ -257,6 +271,7 @@ public final class ConfigWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	public final void writeUtf(int __id, String __v)
 		throws NullPointerException
 	{
@@ -287,6 +302,7 @@ public final class ConfigWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/11
 	 */
+	@Deprecated
 	public final void writeUtfList(int __id, String... __v)
 		throws NullPointerException
 	{

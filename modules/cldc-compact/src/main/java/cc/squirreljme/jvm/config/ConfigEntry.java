@@ -17,12 +17,15 @@ import java.util.NoSuchElementException;
  *
  * @since 2020/04/03
  */
+@Deprecated
 public final class ConfigEntry
 {
 	/** The type of entry this is. */
+	@Deprecated
 	protected final int type;
 	
 	/** The raw value pointer. */
+	@Deprecated
 	protected final long rawValue;
 	
 	/**
@@ -32,6 +35,7 @@ public final class ConfigEntry
 	 * @param __rawValue The raw pointer value.
 	 * @since 2020/05/12
 	 */
+	@Deprecated
 	public ConfigEntry(int __type, long __rawValue)
 	{
 		this.type = __type;
@@ -43,6 +47,7 @@ public final class ConfigEntry
 	 * @since 2020/04/03
 	 */
 	@Override
+	@Deprecated
 	public boolean equals(Object __o)
 	{
 		throw Debugging.todo();
@@ -56,6 +61,7 @@ public final class ConfigEntry
 	 * that is a integer.
 	 * @since 2020/05/12
 	 */
+	@Deprecated
 	public final int getInteger()
 		throws IllegalArgumentException
 	{
@@ -74,6 +80,7 @@ public final class ConfigEntry
 	 * that is compatible with a string array.
 	 * @since 2020/05/12
 	 */
+	@Deprecated
 	public final String[] getStrings()
 		throws IllegalArgumentException
 	{
@@ -89,6 +96,7 @@ public final class ConfigEntry
 	 * @since 2020/04/03
 	 */
 	@Override
+	@Deprecated
 	public int hashCode()
 	{
 		throw Debugging.todo();
@@ -100,6 +108,7 @@ public final class ConfigEntry
 	 * @return The key that is used for this entry.
 	 * @since 2020/05/12
 	 */
+	@Deprecated
 	public final int key()
 	{
 		throw Debugging.todo();
@@ -111,6 +120,7 @@ public final class ConfigEntry
 	 * @return The raw value.
 	 * @since 2020/05/03
 	 */
+	@Deprecated
 	public final long rawValue()
 	{
 		throw Debugging.todo();
@@ -121,6 +131,7 @@ public final class ConfigEntry
 	 * @since 2020/04/03
 	 */
 	@Override
+	@Deprecated
 	public String toString()
 	{
 		throw Debugging.todo();
@@ -133,6 +144,7 @@ public final class ConfigEntry
 	 * @throws NoSuchElementException If no such key exists.
 	 * @since 2020/05/12
 	 */
+	@Deprecated
 	public final int type()
 	{
 		throw Debugging.todo();

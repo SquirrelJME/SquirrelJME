@@ -16,13 +16,16 @@ import cc.squirreljme.jvm.Assembly;
  *
  * @since 2019/09/22
  */
+@Deprecated
 public final class MemoryBlob
 	extends BinaryBlob
 {
 	/** The base address. */
+	@Deprecated
 	protected final int base;
 	
 	/** The size. */
+	@Deprecated
 	protected final int size;
 	
 	/**
@@ -33,6 +36,7 @@ public final class MemoryBlob
 	 * @throws IllegalArgumentException If the size is negative.
 	 * @since 2019/09/22
 	 */
+	@Deprecated
 	public MemoryBlob(int __base, int __size)
 		throws IllegalArgumentException
 	{
@@ -50,6 +54,7 @@ public final class MemoryBlob
 	 * @return The base address of this blob.
 	 * @since 2019/12/01
 	 */
+	@Deprecated
 	public final int baseAddress()
 	{
 		return this.base;
@@ -60,6 +65,7 @@ public final class MemoryBlob
 	 * @since 2019/12/01
 	 */
 	@Override
+	@Deprecated
 	public final boolean equals(Object __o)
 	{
 		if (this == __o)
@@ -78,6 +84,7 @@ public final class MemoryBlob
 	 * @since 2019/12/01
 	 */
 	@Override
+	@Deprecated
 	public final int hashCode()
 	{
 		return this.base ^ (-this.size);
@@ -88,6 +95,7 @@ public final class MemoryBlob
 	 * @since 2019/09/22
 	 */
 	@Override
+	@Deprecated
 	public byte readByte(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -103,6 +111,7 @@ public final class MemoryBlob
 	 * @since 2019/11/24
 	 */
 	@Override
+	@Deprecated
 	public void readBytes(int __i, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -124,6 +133,7 @@ public final class MemoryBlob
 	 * @since 2019/11/17
 	 */
 	@Override
+	@Deprecated
 	public int readJavaInt(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -139,6 +149,7 @@ public final class MemoryBlob
 	 * @since 2019/11/17
 	 */
 	@Override
+	@Deprecated
 	public short readJavaShort(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -154,6 +165,7 @@ public final class MemoryBlob
 	 * @since 2019/11/17
 	 */
 	@Override
+	@Deprecated
 	public int readJavaUnsignedShort(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -168,6 +180,7 @@ public final class MemoryBlob
 	 * {@inheritDoc}
 	 * @since 2019/11/17
 	 */
+	@Deprecated
 	@Override
 	public int size()
 	{
@@ -178,6 +191,7 @@ public final class MemoryBlob
 	 * {@inheritDoc}
 	 * @since 2019/11/17
 	 */
+	@Deprecated
 	@Override
 	public BinaryBlob subSection(int __base, int __len)
 		throws IndexOutOfBoundsException

@@ -14,6 +14,7 @@ package cc.squirreljme.jvm.boot;
  *
  * @since 2020/03/01
  */
+@Deprecated
 public class BootstrapMachineError
 	extends VirtualMachineError
 {
@@ -22,6 +23,7 @@ public class BootstrapMachineError
 	 *
 	 * @since 2020/03/01
 	 */
+	@Deprecated
 	public BootstrapMachineError()
 	{
 	}
@@ -32,6 +34,7 @@ public class BootstrapMachineError
 	 * @param __m The message.
 	 * @since 2020/03/01
 	 */
+	@Deprecated
 	public BootstrapMachineError(String __m)
 	{
 		super(__m);

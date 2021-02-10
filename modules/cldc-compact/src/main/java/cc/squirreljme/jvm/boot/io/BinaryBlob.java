@@ -17,6 +17,7 @@ package cc.squirreljme.jvm.boot.io;
  *
  * @since 2019/09/22
  */
+@Deprecated
 public abstract class BinaryBlob
 {
 	/**
@@ -27,6 +28,7 @@ public abstract class BinaryBlob
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2019/09/22
 	 */
+	@Deprecated
 	public abstract byte readByte(int __o);
 	
 	/**
@@ -35,6 +37,7 @@ public abstract class BinaryBlob
 	 * @return The size of this blob.
 	 * @since 2019/11/17
 	 */
+	@Deprecated
 	public abstract int size();
 	
 	/**
@@ -49,6 +52,7 @@ public abstract class BinaryBlob
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/11/24
 	 */
+	@Deprecated
 	public void readBytes(int __i, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -69,6 +73,7 @@ public abstract class BinaryBlob
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2019/09/22
 	 */
+	@Deprecated
 	public int readJavaInt(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -86,6 +91,7 @@ public abstract class BinaryBlob
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2019/11/17
 	 */
+	@Deprecated
 	public short readJavaShort(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -101,6 +107,7 @@ public abstract class BinaryBlob
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2019/11/17
 	 */
+	@Deprecated
 	public int readJavaUnsignedShort(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -115,6 +122,7 @@ public abstract class BinaryBlob
 	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
 	 * @since 2019/09/22
 	 */
+	@Deprecated
 	public int readUnsignedByte(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -129,6 +137,7 @@ public abstract class BinaryBlob
 	 * @throws IndexOutOfBoundsException If the string is outside of bounds.
 	 * @since 2019/09/24
 	 */
+	@Deprecated
 	public final String readUTF(int __o)
 		throws IndexOutOfBoundsException
 	{
@@ -157,6 +166,7 @@ public abstract class BinaryBlob
 	 * or exceed the bounds of this blob.
 	 * @since 2019/11/17
 	 */
+	@Deprecated
 	public BinaryBlob subSection(int __base, int __len)
 		throws IndexOutOfBoundsException
 	{

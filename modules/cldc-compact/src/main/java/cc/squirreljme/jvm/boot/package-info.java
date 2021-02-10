@@ -7,4 +7,5 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+@Deprecated
 package cc.squirreljme.jvm.boot;
