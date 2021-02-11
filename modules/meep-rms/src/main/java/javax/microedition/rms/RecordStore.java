@@ -85,7 +85,8 @@ public class RecordStore
 		VinylRecord vr;
 		try
 		{
-			String vclass = Debugging.<String>todoObject();
+			Debugging.todoNote("Implement storage backed RMS.");
+			String vclass = null;//Debugging.<String>todoObject();
 			vr = (vclass == null ? new TemporaryVinylRecord() :
 				(VinylRecord)Class.forName(vclass).newInstance());
 		}
