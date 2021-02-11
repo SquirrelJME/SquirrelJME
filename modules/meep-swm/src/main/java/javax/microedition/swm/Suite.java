@@ -15,7 +15,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.MatchResult;
 import cc.squirreljme.jvm.suite.SuiteInfo;
-import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -516,7 +516,7 @@ public class Suite
 		
 		// Could exist, hopefully it does
 		else
-			try (InputStream in = ResourceInputStream.open(this._name,
+			try (InputStream in = Debugging.<InputStream>todoObject(
 				"META-INF/MANIFEST.MF"))
 			{
 				// Will keep trying to open resources, so just prevent

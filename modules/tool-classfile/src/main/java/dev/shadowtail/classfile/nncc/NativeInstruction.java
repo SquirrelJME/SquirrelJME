@@ -302,7 +302,6 @@ public final class NativeInstruction
 			case NativeInstructionType.COPY:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
-			case NativeInstructionType.STORE_POOL:
 			case NativeInstructionType.SYSTEM_CALL:
 			case NativeInstructionType.INVOKE_POINTER_ONLY:
 			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
@@ -312,14 +311,12 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_POINT:
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFEQ_CONST:
-			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_CONST_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
-			case NativeInstructionType.STORE_TO_INTARRAY:
 			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
 				return 3;
 				
@@ -395,7 +392,6 @@ public final class NativeInstruction
 				
 				// [p16, r16]
 			case NativeInstructionType.LOAD_POOL:
-			case NativeInstructionType.STORE_POOL:
 				return ArgumentFormat.of(
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VUREG);
@@ -430,11 +426,9 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT);
 				
 				// [r16, r16, r16]
-			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
-			case NativeInstructionType.STORE_TO_INTARRAY:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
@@ -605,12 +599,7 @@ public final class NativeInstruction
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
-			case NativeInstructionType.LOAD_FROM_INTARRAY:
-				return "LOAD_FROM_INTARRAY";
 			case NativeInstructionType.RETURN:			return "RETURN";
-			case NativeInstructionType.STORE_POOL:		return "STORE_POOL";
-			case NativeInstructionType.STORE_TO_INTARRAY:
-				return "STORE_TO_INTARRAY";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
 			
 			case NativeInstructionType.INVOKE_POINTER_ONLY:

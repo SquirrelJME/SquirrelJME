@@ -144,25 +144,6 @@ public interface NativeInstructionType
 		0xF3;
 	
 	/**
-	 * Store to pool, note that at code gen time this is aliased.
-	 * {@code iiiixxxx}.
-	 * 
-	 * @deprecated Pool values should not be written to.
-	 */
-	@Deprecated
-	short STORE_POOL =
-		0xF4;
-	
-	/**
-	 * Store to integer array.
-	 *
-	 * @deprecated Memory handles should be used. 
-	 */
-	@Deprecated
-	short STORE_TO_INTARRAY =
-		0xF5;
-	
-	/**
 	 * Invoke. 
 	 * {@code iiiixxxx}.
 	 * 
@@ -205,15 +186,6 @@ public interface NativeInstructionType
 	@Deprecated
 	short LOAD_POOL =
 		0xFD;
-	
-	/**
-	 * Load from integer array.
-	 *
-	 * @deprecated Standard MemHandle load should be used. 
-	 */
-	@Deprecated
-	short LOAD_FROM_INTARRAY =
-		0xFE;
 	
 	/**
 	 * Breakpoint.

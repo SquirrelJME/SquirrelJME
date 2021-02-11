@@ -129,13 +129,11 @@ public final class ClassLoadingAdjustments
 			case "todo/OOPS":
 			case "todo/TODO":
 			case "cc/squirreljme/jvm/Assembly":
-			case "cc/squirreljme/jvm/ClassInfo":
 			case "cc/squirreljme/jvm/Constants":
 			case "cc/squirreljme/runtime/cldc/debug/Debugging":
 			case "cc/squirreljme/jvm/IPCCallback":
 			case "cc/squirreljme/jvm/IPCException":
 			case "cc/squirreljme/jvm/IPCManager":
-			case "cc/squirreljme/jvm/JVMFunction":
 			case "cc/squirreljme/runtime/cldc/Poking":
 			case "cc/squirreljme/jvm/SoftDouble":
 			case "cc/squirreljme/jvm/SoftFloat":

@@ -12,7 +12,6 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMException;
-import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -748,22 +747,6 @@ public final class NativeCPU
 					}
 					break;
 					
-					// Load value from int array
-				case NativeInstructionType.LOAD_FROM_INTARRAY:
-					{
-						// Get arguments
-						int addr = lr[args[1]],
-							indx = lr[args[2]],
-							rout = args[0];
-						
-						// Calculate array index offset
-						int ioff = Constants.ARRAY_BASE_SIZE + (indx * 4);
-						
-						// Read value
-						lr[rout] = memory.memReadInt(addr + ioff);
-					}
-					break;
-					
 					// Load from constant pool
 				case NativeInstructionType.LOAD_POOL:
 					lr[args[1]] = nowframe.pool(args[0]);
@@ -1063,28 +1046,6 @@ public final class NativeCPU
 								now.get(NativeCode.RETURN_REGISTER + 1),
 								now.get(NativeCode.RETURN_REGISTER),
 								now.get(NativeCode.EXCEPTION_REGISTER));
-					}
-					break;
-					
-					// Store to constant pool
-				case NativeInstructionType.STORE_POOL:
-					memory.memWriteInt(lr[NativeCode.POOL_REGISTER] +
-						(args[0] * 4), lr[args[1]]);
-					break;
-					
-					// Store value into integer array
-				case NativeInstructionType.STORE_TO_INTARRAY:
-					{
-						// Get arguments
-						int addr = lr[args[1]],
-							indx = lr[args[2]],
-							rinn = args[0];
-						
-						// Calculate array index offset
-						int ioff = Constants.ARRAY_BASE_SIZE + (indx * 4);
-						
-						// Read value
-						memory.memWriteInt(addr + ioff, lr[rinn]);
 					}
 					break;
 				

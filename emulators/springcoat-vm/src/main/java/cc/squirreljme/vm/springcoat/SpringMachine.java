@@ -15,7 +15,6 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
@@ -45,6 +44,10 @@ import net.multiphasicapps.classfile.MethodNameAndType;
 public final class SpringMachine
 	implements Runnable, VirtualMachine
 {
+	/** Exit code indicating bad task things. */
+	public static final int EXIT_CODE_FATAL_EXCEPTION =
+		123;
+	
 	/** The class which contains the thread starting point. */
 	private static final ClassName _START_CLASS =
 		new ClassName("java/lang/__Start__");
@@ -627,7 +630,7 @@ public final class SpringMachine
 			if (e instanceof Error)
 				throw (Error)e;
 			
-			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
+			return SpringMachine.EXIT_CODE_FATAL_EXCEPTION;
 		}
 	}
 	

@@ -85,11 +85,6 @@ public final class NearNativeByteCodeHandler
 	public static final BinaryName LLE_SHELF_PACKAGE =
 		new BinaryName("cc/squirreljme/jvm/summercoat/lle");
 	
-	/** The jvm functions class. */
-	@Deprecated
-	public static final ClassName JVMFUNC_CLASS =
-		new ClassName("cc/squirreljme/jvm/JVMFunction");
-	
 	/** State of the byte code. */
 	public final ByteCodeState state =
 		new ByteCodeState();

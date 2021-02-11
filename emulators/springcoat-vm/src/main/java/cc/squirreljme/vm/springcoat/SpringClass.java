@@ -10,7 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
@@ -64,9 +63,6 @@ public final class SpringClass
 	
 	/** The JAR this class is in. */
 	protected final VMClassLibrary inJar;
-	
-	/** The virtualized size of instances for this class. */
-	protected final int instancesize;
 	
 	/** Interface classes. */
 	private final SpringClass[] _interfaceclasses;
@@ -150,11 +146,6 @@ public final class SpringClass
 		int superfieldcount = (__super == null ? 0 :
 			__super.instancefieldcount);
 		int instancefieldcount = superfieldcount;
-		
-		// Calculate the instance size
-		this.instancesize = (__super == null ? Constants.OBJECT_BASE_SIZE :
-			(name.dimensions() > 0 ? Constants.ARRAY_BASE_SIZE :
-			__super.instancesize + (instancefieldcount * 4)));
 		
 		// Initialize all of the fields as needed
 		Map<FieldNameAndType, SpringField> fields = this._fields;
