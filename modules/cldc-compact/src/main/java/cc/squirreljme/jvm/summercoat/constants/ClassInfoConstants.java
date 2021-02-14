@@ -47,5 +47,4 @@ public interface ClassInfoConstants
 	/** Magic number for the pack file. */
 	int PACK_MAGIC_NUMBER =
 		0x58455223;
-	
 }

@@ -2,9 +2,11 @@
   <dictionary name="xer">
     <words>
       <w>accel</w>
+      <w>aload</w>
       <w>anycoat</w>
       <w>backlight</w>
       <w>baos</w>
+      <w>bipush</w>
       <w>bitfield</w>
       <w>bootram</w>
       <w>cldc</w>
@@ -22,7 +24,11 @@
       <w>fprintf</w>
       <w>gawroriski</w>
       <w>idleitem</w>
+      <w>invokeinterface</w>
+      <w>invokenonvirtual</w>
+      <w>invokespecial</w>
       <w>ioob</w>
+      <w>ireturn</w>
       <w>itable</w>
       <w>jarray</w>
       <w>javase</w>
