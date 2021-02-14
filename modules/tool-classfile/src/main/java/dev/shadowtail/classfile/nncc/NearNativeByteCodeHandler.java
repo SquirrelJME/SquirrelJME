@@ -2375,77 +2375,78 @@ public final class NearNativeByteCodeHandler
 				
 				// Read byte memory
 			case "memReadByte":
-				codeBuilder.addMemoryOffReg(DataType.BYTE,
-					true, __out.register,
-					__in[0].register, __in[1].register);
+				codeBuilder.addMemoryAccess(DataType.BYTE, true,
+					IntValueRegister.of(__out.register),
+					WideRegister.of(__in[0].register, __in[0].register + 1),
+					IntValueRegister.of(__in[1].register));
+				break;
+				
+				// Read short memory
+			case "memReadCharacter":
+			case "memReadShort":
+				codeBuilder.addMemoryAccess(DataType.SHORT, true,
+					IntValueRegister.of(__out.register),
+					WideRegister.of(__in[0].register, __in[0].register + 1),
+					IntValueRegister.of(__in[1].register));
 				break;
 				
 				// Read int memory
+			case "memReadFloat":
 			case "memReadInt":
-				codeBuilder.addMemoryOffReg(DataType.INTEGER,
-					true, __out.register,
-					__in[0].register, __in[1].register);
+			case "memReadObject":
+				codeBuilder.addMemoryAccess(DataType.INTEGER, true,
+					IntValueRegister.of(__out.register),
+					WideRegister.of(__in[0].register, __in[0].register + 1),
+					IntValueRegister.of(__in[1].register));
 				break;
 				
-				// Read java int memory
-			case "memReadJavaInt":
-				codeBuilder.addMemoryOffRegJava(DataType.INTEGER,
-					true, __out.register,
-					__in[0].register, __in[1].register);
-				break;
-				
-				// Read short memory
-			case "memReadJavaShort":
-				codeBuilder.addMemoryOffRegJava(DataType.SHORT,
-					true, __out.register,
-					__in[0].register, __in[1].register);
-				break;
-				
-				// Read short memory
-			case "memReadShort":
-				codeBuilder.addMemoryOffReg(DataType.SHORT,
-					true, __out.register,
-					__in[0].register, __in[1].register);
+				// Read long memory
+			case "memReadDouble":
+			case "memReadLong":
+				codeBuilder.addMemoryAccess(DataType.LONG, true,
+					WideRegister.of(__out.register, __out.register + 1),
+					WideRegister.of(__in[0].register, __in[0].register + 1),
+					IntValueRegister.of(__in[1].register));
 				break;
 				
 				// Write byte memory
 			case "memWriteByte":
-				codeBuilder.addMemoryOffReg(DataType.BYTE,
-					false, __in[2].register,
-					__in[0].register, __in[1].register);
-				break;
-				
-				// Write int memory
-			case "memWriteInt":
-				codeBuilder.addMemoryOffReg(DataType.INTEGER,
-					false, __in[2].register,
-					__in[0].register, __in[1].register);
-				break;
-				
-				// Write Java int memory
-			case "memWriteJavaInt":
-				codeBuilder.addMemoryOffRegJava(DataType.INTEGER,
-					false, __in[2].register,
-					__in[0].register, __in[1].register);
-				break;
-				
-				// Write Java short memory
-			case "memWriteJavaShort":
-				codeBuilder.addMemoryOffRegJava(DataType.SHORT,
-					false, __in[2].register,
-					__in[0].register, __in[1].register);
+				codeBuilder.addMemoryAccess(DataType.BYTE, false,
+					IntValueRegister.of(__in[2].register),
+					WideRegister.of(__in[0].register, __in[0].register + 1),
+					IntValueRegister.of(__in[1].register));
 				break;
 				
 				// Write short memory
+			case "memWriteCharacter":
 			case "memWriteShort":
-				codeBuilder.addMemoryOffReg(DataType.SHORT,
-					false, __in[2].register,
-					__in[0].register, __in[1].register);
+				codeBuilder.addMemoryAccess(DataType.SHORT, false,
+					IntValueRegister.of(__in[2].register),
+					WideRegister.of(__in[0].register, __in[0].register + 1),
+					IntValueRegister.of(__in[1].register));
+				break;
+				
+				// Write int memory
+			case "memWriteFloat":
+			case "memWriteInt":
+			case "memWriteObject":
+				codeBuilder.addMemoryAccess(DataType.INTEGER, false,
+					IntValueRegister.of(__in[2].register),
+					WideRegister.of(__in[0].register, __in[0].register + 1),
+					IntValueRegister.of(__in[1].register));
+				break;
+				
+				// Write long memory
+			case "memWriteDouble":
+			case "memWriteLong":
+				codeBuilder.addMemoryAccess(DataType.LONG, false,
+					WideRegister.of(__in[2].register, __in[2].register + 1),
+					WideRegister.of(__in[0].register, __in[0].register + 1),
+					IntValueRegister.of(__in[1].register));
 				break;
 			
 			// object -> pointer, with ref clear
 			case "objectToPointerRefQueue":
-			case "objectToPointerRefQueueWide":
 				// Push references
 				this.__refPush();
 				

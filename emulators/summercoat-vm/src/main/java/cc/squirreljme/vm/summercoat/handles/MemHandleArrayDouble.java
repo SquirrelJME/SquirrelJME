@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat.handles;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Double array.
@@ -44,16 +45,27 @@ public class MemHandleArrayDouble
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/02/14
+	 */
+	@Override
+	public long memReadLong(long __addr)
+	{
+		if (super.checkBase(__addr))
+			return super.memReadLong(__addr);
+		
+		return Double.doubleToRawLongBits(this.values[super.calcCell(__addr)]);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteLong(int __addr, long __v)
+	public void memWriteLong(long __addr, long __v)
 	{
-		int relBase = __addr - super.rawSize;
-		if (relBase < 0)
+		if (super.checkBase(__addr))
 			super.memWriteLong(__addr, __v);
 		else
-			this.values[relBase / super.cellSize] =
-				Double.longBitsToDouble(__v);
+			this.values[super.calcCell(__addr)] = Double.longBitsToDouble(__v);
 	}
 }

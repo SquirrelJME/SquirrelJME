@@ -139,6 +139,6 @@ public final class LLEJarPackageShelf
 		Debugging.debugNote("ROM is at %#08x", romAddr);
 		
 		// Create a new manager
-		return new PackRom(romAddr);
+		return PackRom.load(romAddr);
 	}
 }

@@ -69,7 +69,7 @@ public abstract class AbstractReadableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public void memReadBytes(int __addr, byte[] __b, int __o, int __l)
+	public void memReadBytes(long __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__b == null)
@@ -86,7 +86,7 @@ public abstract class AbstractReadableMemory
 	 * @since 2021/01/17
 	 */
 	@Override
-	public MemHandleReference memReadHandle(int __addr)
+	public MemHandleReference memReadHandle(long __addr)
 	{
 		return new MemHandleReference(this.memReadInt(__addr));
 	}
@@ -96,7 +96,7 @@ public abstract class AbstractReadableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadInt(int __addr)
+	public int memReadInt(long __addr)
 	{
 		switch (this.byteOrder)
 		{
@@ -122,7 +122,7 @@ public abstract class AbstractReadableMemory
 	 * @since 2021/01/17
 	 */
 	@Override
-	public long memReadLong(int __addr)
+	public long memReadLong(long __addr)
 	{
 		switch (this.byteOrder)
 		{
@@ -156,7 +156,7 @@ public abstract class AbstractReadableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadShort(int __addr)
+	public int memReadShort(long __addr)
 	{
 		switch (this.byteOrder)
 		{

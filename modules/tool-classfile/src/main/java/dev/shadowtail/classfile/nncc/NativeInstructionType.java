@@ -39,13 +39,6 @@ public interface NativeInstructionType
 		0x20;
 	
 	/**
-	 * Memory access to big endian Java format, offset is in register.
-	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
-	 */
-	short MEMORY_OFF_REG_JAVA =
-		0x30;
-	
-	/**
 	 * Memory access to a memory handle (register).
 	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
 	 */
@@ -65,13 +58,6 @@ public interface NativeInstructionType
 	 */
 	short MEMORY_OFF_ICONST =
 		0xA0;
-	
-	/**
-	 * Memory access to big endian Java format, offset is a constant.
-	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
-	 */
-	short MEMORY_OFF_ICONST_JAVA =
-		0xB0;
 	
 	/**
 	 * Memory access to a memory handle (constant value).

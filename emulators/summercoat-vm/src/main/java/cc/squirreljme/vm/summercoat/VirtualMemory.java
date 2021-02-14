@@ -62,13 +62,13 @@ public final class VirtualMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public final int memReadByte(int __addr)
+	public final int memReadByte(long __addr)
 	{
 		// Find memory to read from
 		Memory[] cache = this._cache;
 		for (Memory c : cache)
 		{
-			int cbase = c.memRegionOffset(),
+			long cbase = c.memRegionOffset(),
 				csize = c.memRegionSize(),
 				vaddr = __addr - cbase;
 			
@@ -88,17 +88,18 @@ public final class VirtualMemory
 	@Override
 	public int memRegionOffset()
 	{
-		return 0x00000000;
+		return 0;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public final int memRegionSize()
+	public final long memRegionSize()
 	{
-		return 0x7FFFFFFF;
+		return Memory.MAX_32BIT;
 	}
 	
 	/**
@@ -106,13 +107,13 @@ public final class VirtualMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public final void memWriteByte(int __addr, int __v)
+	public final void memWriteByte(long __addr, int __v)
 	{
 		// Find memory to write to
 		Memory[] cache = this._cache;
 		for (Memory c : cache)
 		{
-			int cbase = c.memRegionOffset(),
+			long cbase = c.memRegionOffset(),
 				csize = c.memRegionSize(),
 				vaddr = __addr - cbase;
 			

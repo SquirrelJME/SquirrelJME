@@ -44,30 +44,28 @@ public class MemHandleArrayCharacter
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/01/17
+	 * @since 2021/01/30
 	 */
 	@Override
-	public void memWriteShort(int __addr, int __v)
+	public int memReadShort(long __addr)
 	{
-		int relBase = __addr - super.rawSize;
-		if (relBase < 0)
-			super.memWriteShort(__addr, __v);
-		else
-			this.values[relBase / super.cellSize] = (char)__v;
+		if (super.checkBase(__addr))
+			return super.memReadShort(__addr);
+		
+		return (short)this.values[super.calcCell(__addr)];
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/01/30
+	 * @since 2021/01/17
 	 */
 	@Override
-	public int memReadShort(int __addr)
+	public void memWriteShort(long __addr, int __v)
 	{
-		int relBase = __addr - super.rawSize;
-		if (relBase < 0)
-			return super.memReadShort(__addr);
+		if (super.checkBase(__addr))
+			super.memWriteShort(__addr, __v);
 		else
-			return (short)this.values[relBase / super.cellSize];
+			this.values[super.calcCell(__addr)] = (char)__v;
 	}
 	
 	/**

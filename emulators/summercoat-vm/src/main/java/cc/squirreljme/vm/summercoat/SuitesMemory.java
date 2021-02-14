@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.vm.PreAddressedClassLibrary;
@@ -69,7 +70,8 @@ public final class SuitesMemory
 	public SuitesMemory(int __off, VMSuiteManager __sm)
 		throws NullPointerException
 	{
-		super(__byteOrder);
+		super(ByteOrderType.BIG_ENDIAN);
+		
 		if (__sm == null)
 			throw new NullPointerException("NARG");
 		
@@ -155,7 +157,7 @@ public final class SuitesMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadByte(int __addr)
+	public int memReadByte(long __addr)
 	{
 		// ROM memory was not initialized, so it is invalid
 		if (!this._didInit)
@@ -171,7 +173,7 @@ public final class SuitesMemory
 			return this._headerRom.memReadByte(__addr);
 		
 		// Determine the suite index we are wanting to look in memory
-		int si = (__addr - SuitesMemory.ROM_HEADER_SIZE) /
+		int si = (int)(__addr - SuitesMemory.ROM_HEADER_SIZE) /
 			SuitesMemory.SUITE_CHUNK_SIZE;
 		
 		// Fail if illegal memory is read, this should never happen
@@ -198,9 +200,10 @@ public final class SuitesMemory
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public final int memRegionSize()
+	public final long memRegionSize()
 	{
 		return this.size;
 	}
@@ -246,7 +249,7 @@ public final class SuitesMemory
 		{
 			SuiteMemory from = suiteMem[i];
 			pre[i] = new PreAddressedClassLibrary(from.memRegionOffset(),
-				from.memRegionSize(), from.libName);
+				(int)from.memRegionSize(), from.libName);
 		}
 		
 		// Write the virtual header

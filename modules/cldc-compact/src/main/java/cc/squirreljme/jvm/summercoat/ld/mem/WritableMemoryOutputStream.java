@@ -29,10 +29,10 @@ public final class WritableMemoryOutputStream
 	implements DataOutput, MemoryStream
 {
 	/** The base write address. */
-	protected final int address;
+	protected final long address;
 	
 	/** The number of bytes that can be written. */
-	protected final int length;
+	protected final long length;
 	
 	/** The output memory. */
 	protected final WritableMemory memory;
@@ -57,28 +57,33 @@ public final class WritableMemoryOutputStream
 	 * Initializes the stream, the byte order is big endian.
 	 *
 	 * @param __mem The memory.
-	 * @param __ad The start address.
-	 * @param __ln The length.
+	 * @param __addr The start address.
+	 * @param __len The length.
+	 * @throws IllegalArgumentException If the length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/14
 	 */
-	public WritableMemoryOutputStream(WritableMemory __mem, int __ad, int __ln)
-		throws NullPointerException
+	public WritableMemoryOutputStream(WritableMemory __mem,
+		long __addr, long __len)
+		throws IllegalArgumentException, NullPointerException
 	{
 		if (__mem == null)
 			throw new NullPointerException("NARG");
+		if (__len < 0)
+			throw new IllegalArgumentException("NEGV");
 		
 		this.memory = __mem;
-		this.address = __ad;
-		this.length = __ln;
+		this.address = __addr;
+		this.length = __len;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/02/04
+	 * @return
 	 */
 	@Override
-	public int address()
+	public long address()
 	{
 		return this.address + this._at;
 	}
@@ -159,9 +164,9 @@ public final class WritableMemoryOutputStream
 		this.__check(1);
 		
 		// Do not write past the bounds
-		int left = this.length - at;
+		long left = this.length - at;
 		if (__l > left)
-			__l = left;
+			__l = (int)left;
 		
 		// Write to memory
 		this.memory.memWriteBytes(this.address + at, __b, __o, __l);
@@ -300,7 +305,7 @@ public final class WritableMemoryOutputStream
 	 * @throws EOFException If the end of file is reached.
 	 * @since 2021/02/14
 	 */
-	private int __check(int __len)
+	private long __check(int __len)
 		throws IllegalArgumentException, EOFException
 	{
 		if (__len <= 0)

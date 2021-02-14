@@ -29,10 +29,10 @@ public final class ReadableMemoryInputStream
 	implements DataInput, MemoryStream
 {
 	/** The base read address. */
-	protected final int address;
+	protected final long address;
 	
 	/** The number of bytes that can be read. */
-	protected final int length;
+	protected final long length;
 	
 	/** The input memory. */
 	protected final ReadableMemory memory;
@@ -60,28 +60,33 @@ public final class ReadableMemoryInputStream
 	 * Initializes the stream, the byte order is big endian.
 	 *
 	 * @param __mem The memory.
-	 * @param __ad The start address.
-	 * @param __ln The length.
+	 * @param __addr The start address.
+	 * @param __len The length.
+	 * @throws IllegalArgumentException If the length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public ReadableMemoryInputStream(ReadableMemory __mem, int __ad, int __ln)
-		throws NullPointerException
+	public ReadableMemoryInputStream(ReadableMemory __mem,
+		long __addr, long __len)
+		throws IllegalArgumentException, NullPointerException
 	{
 		if (__mem == null)
 			throw new NullPointerException("NARG");
+		if (__len < 0)
+			throw new IllegalArgumentException("NEGV");
 		
 		this.memory = __mem;
-		this.address = __ad;
-		this.length = __ln;
+		this.address = __addr;
+		this.length = __len;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/02/04
+	 * @return
 	 */
 	@Override
-	public int address()
+	public long address()
 	{
 		return this.address + this._at;
 	}
@@ -93,7 +98,7 @@ public final class ReadableMemoryInputStream
 	@Override
 	public final int available()
 	{
-		return this.length - this._at;
+		return (int)Math.max(Integer.MAX_VALUE, this.length - this._at);
 	}
 	
 	/**
@@ -149,8 +154,8 @@ public final class ReadableMemoryInputStream
 		
 		// Used to check bounds
 		int at = this._at;
-		int length = this.length;
-		int address = this.address;
+		long length = this.length;
+		long address = this.address;
 		
 		// Read in all bytes
 		ReadableMemory memory = this.memory;
@@ -363,7 +368,7 @@ public final class ReadableMemoryInputStream
 	 * @throws EOFException If the end of file is reached.
 	 * @since 2021/02/14
 	 */
-	private int __check(int __len)
+	private long __check(int __len)
 		throws IllegalArgumentException, EOFException
 	{
 		if (__len <= 0)

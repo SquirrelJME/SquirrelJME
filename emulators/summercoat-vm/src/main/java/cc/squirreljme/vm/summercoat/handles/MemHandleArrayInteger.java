@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat.handles;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Integer array.
@@ -44,15 +45,27 @@ public class MemHandleArrayInteger
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/02/14
+	 */
+	@Override
+	public int memReadInt(long __addr)
+	{
+		if (super.checkBase(__addr))
+			return super.memReadInt(__addr);
+		
+		return this.values[super.calcCell(__addr)];
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteInt(int __addr, int __v)
+	public void memWriteInt(long __addr, int __v)
 	{
-		int relBase = __addr - super.rawSize;
-		if (relBase < 0)
+		if (super.checkBase(__addr))
 			super.memWriteInt(__addr, __v);
 		else
-			this.values[relBase / super.cellSize] = __v;
+			this.values[super.calcCell(__addr)] = __v;
 	}
 }

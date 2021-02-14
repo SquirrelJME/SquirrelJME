@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat.handles;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Memory handle for a byte array.
@@ -44,15 +45,27 @@ public class MemHandleArrayByte
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/02/14
+	 */
+	@Override
+	public int memReadByte(long __addr)
+	{
+		if (super.checkBase(__addr))
+			return super.memReadByte(__addr);
+		
+		return this.values[super.calcCell(__addr)];
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteByte(int __addr, int __v)
+	public void memWriteByte(long __addr, int __v)
 	{
-		int relBase = __addr - super.rawSize;
-		if (relBase < 0)
+		if (super.checkBase(__addr))
 			super.memWriteByte(__addr, __v);
 		else
-			this.values[relBase / super.cellSize] = (byte)__v;
+			this.values[super.calcCell(__addr)] = (byte)__v;
 	}
 }

@@ -11,9 +11,9 @@ package cc.squirreljme.vm.summercoat.handles;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.ld.mem.MemHandleReference;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.MemHandle;
 import cc.squirreljme.vm.summercoat.MemHandleManager;
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
 /**
@@ -58,17 +58,30 @@ public class MemHandleArrayMemHandle
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/02/14
+	 */
+	@Override
+	public MemHandleReference memReadHandle(long __addr)
+	{
+		if (super.checkBase(__addr))
+			return super.memReadHandle(__addr);
+		
+		MemHandle rv = this.values[super.calcCell(__addr)];
+		return (rv == null ? null : rv.reference());
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteHandle(int __addr, MemHandleReference __v)
+	public void memWriteHandle(long __addr, MemHandleReference __v)
 	{
-		int relBase = __addr - super.rawSize;
-		if (relBase < 0)
+		if (super.checkBase(__addr))
 			super.memWriteHandle(__addr, __v);
 		else
-			this.values[relBase / super.cellSize] = this.__manager()
-				.get(__v.id);
+			this.values[super.calcCell(__addr)] = (__v == null || __v.id == 0 ?
+				null : this.__manager().get(__v.id));
 	}
 	
 	/**

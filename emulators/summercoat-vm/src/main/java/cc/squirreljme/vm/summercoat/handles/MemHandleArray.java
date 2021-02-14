@@ -54,9 +54,70 @@ public abstract class MemHandleArray
 	}
 	
 	/**
+	 * Calculates the index cell for the array access.
+	 * 
+	 * @param __addr The address to read for.
+	 * @return The index of the entry.
+	 * @throws VMMemoryAccessException If the cell would be invalid.
+	 * @since 2021/02/14
+	 */
+	protected final int calcCell(long __addr)
+		throws VMMemoryAccessException
+	{
+		// Make sure the index is valid
+		long relBase = __addr - super.rawSize;
+		if (relBase < 0)
+			throw new VMMemoryAccessException("Cannot be an index: " + __addr);
+		
+		// To properly access the array it must be within bounds!
+		int cellSize = this.cellSize;
+		if ((relBase % cellSize) != 0)
+			throw new VMMemoryAccessException(
+				String.format("Unaligned cell access: %d (%d)",
+					relBase, __addr));
+		
+		// Determine the base cell, to check against
+		long cell = relBase / cellSize;
+		if (cell < 0 || cell > Integer.MAX_VALUE)
+			throw new VMMemoryAccessException(
+				String.format("Invalid cell access: %d (%d, %d)",
+					cell, relBase, __addr));
+		
+		// The index is here just as usual
+		return (int)(relBase / cellSize);
+	}
+	
+	/**
+	 * Determines if this is in the base area before the array data, this will
+	 * fail on invalid accesses.
+	 * 
+	 * @param __addr The address to check.
+	 * @return if this is writing into the lower base of the handle.
+	 * @throws VMMemoryAccessException If the memory access is not valid.
+	 * @since 2021/02/14
+	 */
+	protected final boolean checkBase(long __addr)
+		throws VMMemoryAccessException
+	{
+		int cellSize = this.cellSize;
+		if (__addr < 0 || (__addr + cellSize) > Integer.MAX_VALUE)
+			throw new VMMemoryAccessException(String.format(
+				"Invalid memory access: %d", __addr)); 
+		
+		// would this read into part of the array?
+		int rawSize = this.rawSize;
+		if (__addr < rawSize && __addr + cellSize > rawSize)
+			throw new VMMemoryAccessException(String.format(
+				"Invalid memory access: %d", __addr));
+		
+		return __addr < rawSize;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/01/17
 	 */
+	@SuppressWarnings("MagicNumber")
 	@Override
 	protected void specialWriteBytes(int __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException

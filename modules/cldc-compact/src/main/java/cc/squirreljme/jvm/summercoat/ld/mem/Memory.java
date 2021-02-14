@@ -16,6 +16,14 @@ package cc.squirreljme.jvm.summercoat.ld.mem;
  */
 public interface Memory
 {
+	/** Maximum 32-bit memory. */
+	long MAX_32BIT =
+		0xFFFF_FFFFL;
+	
+	/** Maximum 64-bit memory. */
+	long MAX_64BIT =
+		0xFFFF_FFFF__FFFF_FFFFL;
+	
 	/**
 	 * The starting region of this memory.
 	 *
@@ -30,6 +38,6 @@ public interface Memory
 	 * @return The memory region length.
 	 * @since 2019/04/21
 	 */
-	int memRegionSize();
+	long memRegionSize();
 }
 

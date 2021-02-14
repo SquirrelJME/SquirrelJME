@@ -906,6 +906,36 @@ public final class Assembly
 	public static native int memReadByte(long __p, int __o);
 	
 	/**
+	 * Reads character from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2021/02/14
+	 */
+	public static native char memReadCharacter(long __p, int __o);
+	
+	/**
+	 * Reads double from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2021/02/14
+	 */
+	public static native double memReadDouble(long __p, int __o);
+	
+	/**
+	 * Reads float from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2021/02/14
+	 */
+	public static native float memReadFloat(long __p, int __o);
+	
+	/**
 	 * Reads integer from address.
 	 *
 	 * @param __p The pointer.
@@ -916,44 +946,24 @@ public final class Assembly
 	public static native int memReadInt(long __p, int __o);
 	
 	/**
-	 * Reads big endian Java integer from address.
-	 *
-	 * @param __p The pointer.
-	 * @param __o The offset.
-	 * @return The result of the read.
-	 * @since 2019/05/29
-	 */
-	public static native int memReadJavaInt(long __p, int __o);
-	
-	/**
-	 * Reads big endian Java long from address.
-	 *
-	 * @param __p The pointer.
-	 * @param __o The offset.
-	 * @return The result of the read.
-	 * @since 2020/02/24
-	 */
-	public static native long memReadJavaLong(long __p, int __o);
-	
-	/**
-	 * Reads big endian Java short from address.
-	 *
-	 * @param __p The pointer.
-	 * @param __o The offset.
-	 * @return The result of the read.
-	 * @since 2019/05/29
-	 */
-	public static native int memReadJavaShort(long __p, int __o);
-	
-	/**
-	 * Reads pointer from address.
+	 * Reads long from address.
 	 *
 	 * @param __p The pointer.
 	 * @param __o The offset.
 	 * @return The result of the read.
 	 * @since 2019/04/22
 	 */
-	public static native long memReadPointer(long __p, int __o);
+	public static native long memReadLong(long __p, int __o);
+	
+	/**
+	 * Reads object from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2021/02/14
+	 */
+	public static native Object memReadObject(long __p, int __o);
 	
 	/**
 	 * Reads short from address.
@@ -976,6 +986,26 @@ public final class Assembly
 	public static native void memWriteByte(long __p, int __o, int __v);
 	
 	/**
+	 * Writes double to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2020/02/14
+	 */
+	public static native void memWriteDouble(long __p, int __o, double __v);
+	
+	/**
+	 * Writes float to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2020/02/14
+	 */
+	public static native void memWriteFloat(long __p, int __o, double __v);
+	
+	/**
 	 * Writes integer to address.
 	 *
 	 * @param __p The pointer.
@@ -986,44 +1016,24 @@ public final class Assembly
 	public static native void memWriteInt(long __p, int __o, int __v);
 	
 	/**
-	 * Writes big endian Java integer to address.
-	 *
-	 * @param __p The pointer.
-	 * @param __o The offset.
-	 * @param __v The value to write.
-	 * @since 2019/05/29
-	 */
-	public static native void memWriteJavaInt(long __p, int __o, int __v);
-	
-	/**
-	 * Writes big endian Java long to address.
+	 * Writes long to address.
 	 *
 	 * @param __p The pointer.
 	 * @param __o The offset.
 	 * @param __v The value to write.
 	 * @since 2020/02/24
 	 */
-	public static native void memWriteJavaLong(long __p, int __o, long __v);
+	public static native void memWriteLong(long __p, int __o, long __v);
 	
 	/**
-	 * Writes big endian Java short to address.
+	 * Writes object to address.
 	 *
 	 * @param __p The pointer.
 	 * @param __o The offset.
 	 * @param __v The value to write.
-	 * @since 2019/05/29
+	 * @since 2020/02/14
 	 */
-	public static native void memWriteJavaShort(long __p, int __o, int __v);
-	
-	/**
-	 * Writes a pointer to address.
-	 *
-	 * @param __p The pointer.
-	 * @param __o The offset.
-	 * @param __v The value to write.
-	 * @since 2020/02/24
-	 */
-	public static native void memWritePointer(long __p, int __o, long __v);
+	public static native void memWriteObject(long __p, int __o, Object __v);
 	
 	/**
 	 * Writes short to address.

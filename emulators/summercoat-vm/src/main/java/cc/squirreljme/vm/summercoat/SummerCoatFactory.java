@@ -108,7 +108,6 @@ public class SummerCoatFactory
 		// Load ROM file or generate dynamically for loaded classes
 		ReadableMemory romMemory = this.__loadRom(romBase, __sm, __sysProps);
 		vMem.mapRegion(romMemory);
-		int romSize = romMemory.memRegionSize();
 		
 		// Read in the appropriate ROM header
 		TableOfContents<MinimizedPackHeader>[] packTocOut =
@@ -151,9 +150,8 @@ public class SummerCoatFactory
 		}
 		
 		// Initialize RAM
-		int ramSize = SummerCoatFactory.DEFAULT_RAM_SIZE,
-			ramAddr = SummerCoatFactory.RAM_START_ADDRESS;
-		vMem.mapRegion(new RawMemory(ramAddr, ramSize));
+		vMem.mapRegion(new ByteArrayMemory(SummerCoatFactory.RAM_START_ADDRESS,
+			new byte[SummerCoatFactory.DEFAULT_RAM_SIZE], true));
 		
 		// Load the bootstrap JAR header
 		int bootRamOff = bootJarOff + bootJarHeader.getBootoffset(),

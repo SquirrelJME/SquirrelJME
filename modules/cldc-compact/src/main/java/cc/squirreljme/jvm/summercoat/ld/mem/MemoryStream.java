@@ -22,7 +22,7 @@ public interface MemoryStream
 	 * @return The address the stream is located at.
 	 * @since 2021/02/14
 	 */
-	int address();
+	long address();
 	
 	/**
 	 * Returns the address the stream is located at relative to the start of

@@ -25,7 +25,7 @@ public interface ReadableMemory
 	 * @return The read value.
 	 * @since 2019/04/21
 	 */
-	int memReadByte(int __addr);
+	int memReadByte(long __addr);
 	
 	/**
 	 * Bulk read of memory bytes.
@@ -39,7 +39,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	void memReadBytes(int __addr, byte[] __b, int __o, int __l)
+	void memReadBytes(long __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
@@ -49,7 +49,7 @@ public interface ReadableMemory
 	 * @return The memory handle reference.
 	 * @since 2021/01/17
 	 */
-	MemHandleReference memReadHandle(int __addr);
+	MemHandleReference memReadHandle(long __addr);
 	
 	/**
 	 * Reads the memory at the specified address.
@@ -58,7 +58,7 @@ public interface ReadableMemory
 	 * @return The read value.
 	 * @since 2019/04/21
 	 */
-	int memReadInt(int __addr);
+	int memReadInt(long __addr);
 	
 	/**
 	 * Reads the memory at the specified address.
@@ -67,7 +67,7 @@ public interface ReadableMemory
 	 * @return The read value.
 	 * @since 2021/01/17
 	 */
-	long memReadLong(int __addr);
+	long memReadLong(long __addr);
 	
 	/**
 	 * Reads the memory at the specified address.
@@ -76,6 +76,6 @@ public interface ReadableMemory
 	 * @return The read value.
 	 * @since 2019/04/21
 	 */
-	int memReadShort(int __addr);
+	int memReadShort(long __addr);
 }
 

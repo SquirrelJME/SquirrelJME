@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat.handles;
 
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Not Described.
@@ -44,15 +45,27 @@ public class MemHandleArrayShort
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/01/30
+	 */
+	@Override
+	public int memReadShort(long __addr)
+	{
+		if (super.checkBase(__addr))
+			return super.memReadShort(__addr);
+		
+		return this.values[super.calcCell(__addr)];
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteShort(int __addr, int __v)
+	public void memWriteShort(long __addr, int __v)
 	{
-		int relBase = __addr - super.rawSize;
-		if (relBase < 0)
+		if (super.checkBase(__addr))
 			super.memWriteShort(__addr, __v);
 		else
-			this.values[relBase / super.cellSize] = (short)__v;
+			this.values[super.calcCell(__addr)] = (short)__v;
 	}
 }

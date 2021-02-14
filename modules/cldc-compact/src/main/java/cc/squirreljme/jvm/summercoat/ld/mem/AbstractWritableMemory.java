@@ -50,7 +50,7 @@ public abstract class AbstractWritableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public void memWriteBytes(int __addr, byte[] __b, int __o, int __l)
+	public void memWriteBytes(long __addr, byte[] __b, int __o, int __l)
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
@@ -66,7 +66,7 @@ public abstract class AbstractWritableMemory
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteHandle(int __addr, MemHandleReference __v)
+	public void memWriteHandle(long __addr, MemHandleReference __v)
 	{
 		this.memWriteInt(__addr, (__v == null ? 0 : __v.id));
 	}
@@ -76,7 +76,7 @@ public abstract class AbstractWritableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public void memWriteInt(int __addr, int __v)
+	public void memWriteInt(long __addr, int __v)
 	{
 		switch (this.byteOrder)
 		{
@@ -97,7 +97,7 @@ public abstract class AbstractWritableMemory
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteLong(int __addr, long __v)
+	public void memWriteLong(long __addr, long __v)
 	{
 		switch (this.byteOrder)
 		{
@@ -122,7 +122,7 @@ public abstract class AbstractWritableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public void memWriteShort(int __addr, int __v)
+	public void memWriteShort(long __addr, int __v)
 	{
 		switch (this.byteOrder)
 		{

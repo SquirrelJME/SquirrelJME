@@ -747,51 +747,53 @@ public final class NativeCodeBuilder
 	 * @param __load Is this a load operation?
 	 * @param __v The value to store.
 	 * @param __p The pointer.
-	 * @param __o The offset.
+	 * @param __off The offset.
 	 * @return The generated instruction.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/12
 	 */
-	public final NativeInstruction addMemoryOffConst(DataType __dt,
-		boolean __load, int __v, int __p, int __o)
+	public final NativeInstruction addMemoryAccess(DataType __dt,
+		boolean __load, IntValueRegister __v, WideRegister __p, int __off)
 		throws NullPointerException
 	{
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC0v Cannot access wide memory.}
+		// {@squirreljme.error JC0v Must use wide version of this.}
 		if (__dt.isWide())
 			throw new IllegalArgumentException("JC0v");
 		
 		return this.__add(NativeInstructionType.MEMORY_OFF_ICONST |
-			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
+			(__load ? 0b1000 : 0) | __dt.ordinal(),
+			__v, __p.low, __p.high, __off);
 	}
 	
 	/**
-	 * Adds memory offset by constant, using Java format.
+	 * Adds memory offset by constant.
 	 *
 	 * @param __dt The data type used.
 	 * @param __load Is this a load operation?
 	 * @param __v The value to store.
 	 * @param __p The pointer.
-	 * @param __o The offset.
+	 * @param __off The offset.
 	 * @return The generated instruction.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/29
+	 * @since 2021/02/14
 	 */
-	public final NativeInstruction addMemoryOffConstJava(DataType __dt,
-		boolean __load, int __v, int __p, int __o)
+	public final NativeInstruction addMemoryAccess(DataType __dt,
+		boolean __load, WideRegister __v, WideRegister __p, int __off)
 		throws NullPointerException
 	{
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC0w Cannot access wide memory.}
-		if (__dt.isWide())
-			throw new IllegalArgumentException("JC0w");
+		// {@squirreljme.error JC0y Must use narrow version of this.}
+		if (!__dt.isWide())
+			throw new IllegalArgumentException("JC0y");
 		
-		return this.__add(NativeInstructionType.MEMORY_OFF_ICONST_JAVA |
-			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
+		return this.__add(NativeInstructionType.MEMORY_OFF_ICONST |
+			(__load ? 0b1000 : 0) | __dt.ordinal(),
+			__v.low, __v.high, __p.low, __p.high, __off);
 	}
 	
 	/**
@@ -801,53 +803,57 @@ public final class NativeCodeBuilder
 	 * @param __load Is this a load operation?
 	 * @param __v The value to load/store.
 	 * @param __p The pointer.
-	 * @param __o The offset.
+	 * @param __off The offset.
 	 * @return The generated instruction.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/12
 	 */
-	public final NativeInstruction addMemoryOffReg(DataType __dt,
-		boolean __load, int __v, int __p, int __o)
+	public final NativeInstruction addMemoryAccess(DataType __dt,
+		boolean __load, IntValueRegister __v, WideRegister __p,
+		IntValueRegister __off)
 		throws NullPointerException
 	{
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC0x Cannot access wide memory.}
+		// {@squirreljme.error JC0x Must use wide version of this method.}
 		if (__dt.isWide())
 			throw new IllegalArgumentException("JC0x");
 		
 		// Generate
 		return this.__add(NativeInstructionType.MEMORY_OFF_REG |
-			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
+			(__load ? 0b1000 : 0) | __dt.ordinal(),
+			__v, __p.low, __p.high, __off);
 	}
 	
 	/**
-	 * Adds memory offset by register, using Java format.
+	 * Adds memory offset by register.
 	 *
 	 * @param __dt The data type used.
 	 * @param __load Is this a load operation?
-	 * @param __v The value to store.
+	 * @param __v The value to load/store.
 	 * @param __p The pointer.
-	 * @param __o The offset.
+	 * @param __off The offset.
 	 * @return The generated instruction.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/29
+	 * @since 2021/02/14
 	 */
-	public final NativeInstruction addMemoryOffRegJava(DataType __dt,
-		boolean __load, int __v, int __p, int __o)
+	public final NativeInstruction addMemoryAccess(DataType __dt,
+		boolean __load, WideRegister __v, WideRegister __p,
+		IntValueRegister __off)
 		throws NullPointerException
 	{
 		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC0y Cannot access wide memory.}
-		if (__dt.isWide())
-			throw new IllegalArgumentException("JC0y");
+		// {@squirreljme.error JC0w Must use narrow version of this method.}
+		if (!__dt.isWide())
+			throw new IllegalArgumentException("JC0w");
 		
 		// Generate
-		return this.__add(NativeInstructionType.MEMORY_OFF_REG_JAVA |
-			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
+		return this.__add(NativeInstructionType.MEMORY_OFF_REG |
+			(__load ? 0b1000 : 0) | __dt.ordinal(),
+			__v.low, __p.high, __p.low, __p.high, __off);
 	}
 	
 	/**

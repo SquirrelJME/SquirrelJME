@@ -861,23 +861,17 @@ public final class NativeCPU
 				
 					// Read/Write raw memory
 				case NativeInstructionType.MEMORY_OFF_REG:
-				case NativeInstructionType.MEMORY_OFF_REG_JAVA:
 				case NativeInstructionType.MEMORY_OFF_ICONST:
-				case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
 					{
-						// Is this Java?
-						boolean isjava = (encoding == NativeInstructionType.
-							MEMORY_OFF_REG_JAVA || encoding ==
-							NativeInstructionType.MEMORY_OFF_ICONST_JAVA);
-						
 						// Is this a load operation?
 						boolean load = ((op & 0b1000) != 0);
 						
 						// The address to load from/store to
-						int base = lr[args[1]],
-							offs = (((op & 0x80) != 0) ? args[2] :
-								lr[args[2]]),
-							addr = base + offs;
+						long base = (lr[args[1]] & 0xFFFFFFFFL) |
+							(((long)lr[args[2]]) << 32L);
+						int offs = (((op & 0x80) != 0) ? args[2] :
+							lr[args[2]]);
+						long addr = base + offs;
 						
 						// Not currently valid!
 						DataType dt = DataType.of(op & 0b0111);
@@ -913,6 +907,13 @@ public final class NativeCPU
 								case INTEGER:
 								case FLOAT:
 									v = memory.memReadInt(addr);
+									break;
+								
+								case LONG:
+								case DOUBLE:
+									if (true)
+										throw Debugging.todo();
+									v = (int)memory.memReadLong(addr);
 									break;
 									
 									// Unknown

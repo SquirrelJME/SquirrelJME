@@ -91,12 +91,12 @@ public class MemHandle
 	 * @since 2021/01/17
 	 */
 	@Override
-	public int memReadByte(int __addr)
+	public int memReadByte(long __addr)
 	{
 		if (__addr < 0 || __addr >= this.rawSize)
 			throw new VMMemoryAccessException("Invalid memReadByte: " + __addr);
 		
-		return this._bytes[__addr] & 0xFF;
+		return this._bytes[(int)__addr] & 0xFF;
 	}
 	
 	/**
@@ -112,9 +112,10 @@ public class MemHandle
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/01/17
+	 * @return
 	 */
 	@Override
-	public final int memRegionSize()
+	public final long memRegionSize()
 	{
 		return this.size;
 	}
@@ -124,14 +125,14 @@ public class MemHandle
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteByte(int __addr, int __v)
+	public void memWriteByte(long __addr, int __v)
 	{
 		if (__addr < 0 || __addr >= this.rawSize)
 			throw new VMMemoryAccessException(String.format(
 				"Invalid memWriteByte: @%#08x (sz: %d)",
 				__addr, this.rawSize));
 		
-		this._bytes[__addr] = (byte)__v;
+		this._bytes[(int)__addr] = (byte)__v;
 	}
 	
 	/**
@@ -139,7 +140,7 @@ public class MemHandle
 	 * @since 2021/01/17
 	 */
 	@Override
-	public void memWriteBytes(int __addr, byte[] __b, int __o, int __l)
+	public void memWriteBytes(long __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__b == null)
@@ -149,22 +150,24 @@ public class MemHandle
 		
 		// Out of bounds?
 		int size = this.size;
-		int endAddr = __addr + __l;
-		if (__addr < 0 || endAddr > size)
-			throw new VMMemoryAccessException("Invalid memWriteByte: " + __addr);
+		long longEndAddr = __addr + __l;
+		if (__addr < 0 || longEndAddr > size)
+			throw new VMMemoryAccessException(
+				"Invalid memWriteByte: " + __addr);
+		int endAddr = (int)longEndAddr;
 		
 		// Split off to the special region, if there is one?
 		int rawSize = this.rawSize;
 		if (endAddr > rawSize)
 		{
 			// Write special region
-			int diff = Math.max(0, rawSize - __addr);
-			this.specialWriteBytes(Math.max(__addr, rawSize),
+			int diff = (int)Math.max(0, rawSize - __addr);
+			this.specialWriteBytes((int)Math.max(__addr, rawSize),
 				__b, __o + diff, __l - diff);
 			
 			// Write normal area, do not write past the raw area
 			super.memWriteBytes(__addr,
-				__b, __o, Math.min(__l, rawSize - __addr));
+				__b, __o, (int)Math.min(__l, rawSize - __addr));
 		}
 		
 		// Use normal non-special writing
@@ -198,7 +201,8 @@ public class MemHandle
 	protected void specialWriteBytes(int __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new VMMemoryAccessException("Invalid specialWriteBytes: " + __addr);
+		throw new VMMemoryAccessException(
+			"Invalid specialWriteBytes: " + __addr);
 	}
 	
 	/**

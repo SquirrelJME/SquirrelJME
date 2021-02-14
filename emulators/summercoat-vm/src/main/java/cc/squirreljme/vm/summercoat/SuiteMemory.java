@@ -11,6 +11,7 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
@@ -60,7 +61,8 @@ public final class SuiteMemory
 	public SuiteMemory(int __off, VMSuiteManager __sm, String __ln)
 		throws NullPointerException
 	{
-		super(__byteOrder);
+		super(ByteOrderType.BIG_ENDIAN);
+		
 		if (__sm == null || __ln == null)
 			throw new NullPointerException("NARG");
 		
@@ -74,7 +76,7 @@ public final class SuiteMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadByte(int __addr)
+	public int memReadByte(long __addr)
 	{
 		// Initialize?
 		if (!this._didinit)
@@ -96,7 +98,7 @@ public final class SuiteMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public void memReadBytes(int __addr, byte[] __b, int __o, int __l)
+	public void memReadBytes(long __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Initialize?
@@ -119,7 +121,7 @@ public final class SuiteMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadInt(int __addr)
+	public int memReadInt(long __addr)
 	{
 		// Initialize?
 		if (!this._didinit)
@@ -141,7 +143,7 @@ public final class SuiteMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadShort(int __addr)
+	public int memReadShort(long __addr)
 	{
 		// Initialize?
 		if (!this._didinit)
@@ -171,9 +173,10 @@ public final class SuiteMemory
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public final int memRegionSize()
+	public final long memRegionSize()
 	{
 		return SuitesMemory.SUITE_CHUNK_SIZE;
 	}
