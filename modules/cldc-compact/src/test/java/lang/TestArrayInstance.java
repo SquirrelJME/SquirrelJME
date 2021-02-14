@@ -23,7 +23,7 @@ public class TestArrayInstance
 	 * {@inheritDoc}
 	 * @since 2021/02/07
 	 */
-	@SuppressWarnings("ConstantConditions")
+	@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 	@Override
 	public void test()
 		throws Throwable
