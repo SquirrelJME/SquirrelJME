@@ -11,11 +11,16 @@ package cc.squirreljme.jvm.summercoat.ld.mem;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInput;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * This is an input stream which can read from readable memory.
+ * 
+ * For anything from {@link DataInput} the proper type based methods are used,
+ * as such if there is a specific byte order that is used it will be
+ * derived from this.
  *
  * @since 2019/04/21
  */
@@ -25,9 +30,6 @@ public final class ReadableMemoryInputStream
 {
 	/** The base read address. */
 	protected final int address;
-	
-	/** Is this being read as little endian? */
-	protected final boolean isLittle;
 	
 	/** The number of bytes that can be read. */
 	protected final int length;
@@ -51,24 +53,7 @@ public final class ReadableMemoryInputStream
 		// The address is zero and not __mem.memRegionOffset() because this
 		// address is relative to the piece of memory and not the address
 		// of that memory
-		this(__mem, 0, __mem.memRegionSize(), false);
-	}
-	
-	/**
-	 * Initializes the input read memory, the byte order is big endian.
-	 * 
-	 * @param __mem The memory to read from.
-	 * @param __isLittle Write as little endian?
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/12/09
-	 */
-	public ReadableMemoryInputStream(ReadableMemory __mem, boolean __isLittle)
-		throws NullPointerException
-	{
-		// The address is zero and not __mem.memRegionOffset() because this
-		// address is relative to the piece of memory and not the address
-		// of that memory
-		this(__mem, 0, __mem.memRegionSize(), __isLittle);
+		this(__mem, 0, __mem.memRegionSize());
 	}
 	
 	/**
@@ -83,30 +68,12 @@ public final class ReadableMemoryInputStream
 	public ReadableMemoryInputStream(ReadableMemory __mem, int __ad, int __ln)
 		throws NullPointerException
 	{
-		this(__mem, __ad, __ln, false);
-	}
-	
-	/**
-	 * Initializes the stream.
-	 *
-	 * @param __mem The memory.
-	 * @param __ad The start address.
-	 * @param __ln The length.
-	 * @param __isLittle Write as little endian?
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/09
-	 */
-	public ReadableMemoryInputStream(ReadableMemory __mem, int __ad, int __ln,
-		boolean __isLittle)
-		throws NullPointerException
-	{
 		if (__mem == null)
 			throw new NullPointerException("NARG");
 		
 		this.memory = __mem;
 		this.address = __ad;
 		this.length = __ln;
-		this.isLittle = __isLittle;
 	}
 	
 	/**
@@ -142,6 +109,7 @@ public final class ReadableMemoryInputStream
 	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */
+	@SuppressWarnings("MagicNumber")
 	@Override
 	public final int read()
 	{
@@ -212,7 +180,7 @@ public final class ReadableMemoryInputStream
 	public boolean readBoolean()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return this.readByte() != 0;
 	}
 	
 	/**
@@ -223,7 +191,7 @@ public final class ReadableMemoryInputStream
 	public byte readByte()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return (byte)this.memory.memReadByte(this.__check(1));
 	}
 	
 	/**
@@ -234,7 +202,7 @@ public final class ReadableMemoryInputStream
 	public char readChar()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return (char)this.readShort();
 	}
 	
 	/**
@@ -245,7 +213,7 @@ public final class ReadableMemoryInputStream
 	public double readDouble()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return Double.longBitsToDouble(this.readLong());
 	}
 	
 	/**
@@ -256,7 +224,7 @@ public final class ReadableMemoryInputStream
 	public float readFloat()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return Float.intBitsToFloat(this.readInt());
 	}
 	
 	/**
@@ -289,18 +257,23 @@ public final class ReadableMemoryInputStream
 	public int readInt()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return this.memory.memReadInt(this.__check(4));
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * This method is not in CLDC, do not use!
+	 * 
+	 * @deprecated Not in CLDC, do not use!
 	 * @since 2021/02/09
 	 */
-	@SuppressWarnings("override")
+	@Deprecated
+	@SuppressWarnings({"override", "ConstantConditions"})
 	public String readLine()
 		throws IOException
 	{
-		throw Debugging.todo();
+		if (false)
+			throw new IOException();
+		throw Debugging.oops();
 	}
 	
 	/**
@@ -311,7 +284,7 @@ public final class ReadableMemoryInputStream
 	public long readLong()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return this.memory.memReadLong(this.__check(8));
 	}
 	
 	/**
@@ -322,7 +295,7 @@ public final class ReadableMemoryInputStream
 	public short readShort()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return (short)this.memory.memReadShort(this.__check(2));
 	}
 	
 	/**
@@ -340,22 +313,24 @@ public final class ReadableMemoryInputStream
 	 * {@inheritDoc}
 	 * @since 2021/02/09
 	 */
+	@SuppressWarnings("MagicNumber")
 	@Override
 	public int readUnsignedByte()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return this.readByte() & 0xFF;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/02/09
 	 */
+	@SuppressWarnings("MagicNumber")
 	@Override
 	public int readUnsignedShort()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return this.readShort() & 0xFFFF;
 	}
 	
 	/**
@@ -377,6 +352,31 @@ public final class ReadableMemoryInputStream
 		throws IOException
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Checks for a read which would overflow.
+	 * 
+	 * @param __len The number of bytes to check on read.
+	 * @return The address to read from.
+	 * @throws IllegalArgumentException If the length is zero or negative.
+	 * @throws EOFException If the end of file is reached.
+	 * @since 2021/02/14
+	 */
+	private int __check(int __len)
+		throws IllegalArgumentException, EOFException
+	{
+		if (__len <= 0)
+			throw new IllegalArgumentException("INEG");
+		
+		// {@squirreljme.error ZZ3z Reached end of memory stream.
+		// (The position; The length of the stream; The length checked)}
+		int at = this._at;
+		if (at + (__len - 1) > this.length)
+			throw new EOFException(String.format("ZZ3z %d %d %d",
+				at, this.length, __len));
+		
+		return this.address + at;
 	}
 }
 

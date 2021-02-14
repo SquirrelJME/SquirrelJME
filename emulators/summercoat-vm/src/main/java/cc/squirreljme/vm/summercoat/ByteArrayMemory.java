@@ -62,6 +62,7 @@ public final class ByteArrayMemory
 	public ByteArrayMemory(int __mo, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
+		super(__byteOrder);
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)

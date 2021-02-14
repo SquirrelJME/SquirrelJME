@@ -69,6 +69,7 @@ public final class SuitesMemory
 	public SuitesMemory(int __off, VMSuiteManager __sm)
 		throws NullPointerException
 	{
+		super(__byteOrder);
 		if (__sm == null)
 			throw new NullPointerException("NARG");
 		

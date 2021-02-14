@@ -17,6 +17,10 @@ import java.io.OutputStream;
 
 /**
  * This is an output stream which can directly write to memory areas.
+ * 
+ * For anything from {@link DataOutput} the proper type based methods are used,
+ * as such if there is a specific byte order that is used it will be
+ * derived from this.
  *
  * @since 2019/06/14
  */
@@ -26,9 +30,6 @@ public final class WritableMemoryOutputStream
 {
 	/** The base write address. */
 	protected final int address;
-	
-	/** Is this being read as little endian? */
-	protected final boolean isLittle;
 	
 	/** The number of bytes that can be written. */
 	protected final int length;
@@ -56,20 +57,6 @@ public final class WritableMemoryOutputStream
 	 * Initializes the stream, the byte order is big endian.
 	 *
 	 * @param __mem The memory.
-	 * @param __isLittle Write as little endian?
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/09
-	 */
-	public WritableMemoryOutputStream(WritableMemory __mem, boolean __isLittle)
-		throws NullPointerException
-	{
-		this(__mem, 0, __mem.memRegionSize(), __isLittle);
-	}
-	
-	/**
-	 * Initializes the stream, the byte order is big endian.
-	 *
-	 * @param __mem The memory.
 	 * @param __ad The start address.
 	 * @param __ln The length.
 	 * @throws NullPointerException On null arguments.
@@ -78,30 +65,12 @@ public final class WritableMemoryOutputStream
 	public WritableMemoryOutputStream(WritableMemory __mem, int __ad, int __ln)
 		throws NullPointerException
 	{
-		this(__mem, __ad, __ln, false);
-	}
-	
-	/**
-	 * Initializes the stream.
-	 *
-	 * @param __mem The memory.
-	 * @param __ad The start address.
-	 * @param __ln The length.
-	 * @param __isLittle Write as little endian?
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/09
-	 */
-	public WritableMemoryOutputStream(WritableMemory __mem, int __ad, int __ln,
-		boolean __isLittle)
-		throws NullPointerException
-	{
 		if (__mem == null)
 			throw new NullPointerException("NARG");
 		
 		this.memory = __mem;
 		this.address = __ad;
 		this.length = __ln;
-		this.isLittle = __isLittle;
 	}
 	
 	/**
@@ -152,10 +121,9 @@ public final class WritableMemoryOutputStream
 	public final void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error AE0k Reached end of memory.}
+		// Check for end of memory
 		int at = this._at;
-		if (at >= this.length)
-			throw new EOFException("AE0k");
+		this.__check(1);
 		
 		// Write
 		this.memory.memWriteByte(this.address + at, __b);
@@ -186,16 +154,12 @@ public final class WritableMemoryOutputStream
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Needed to check bounds.
-		int memLen = this.length;
+		// Check for end of memory
 		int at = this._at;
-		int left = memLen - at;
-		
-		// {@squirreljme.error AE0l Reached end of memory.}
-		if (left <= 0)
-			throw new EOFException("AE0l");
+		this.__check(1);
 		
 		// Do not write past the bounds
+		int left = this.length - at;
 		if (__l > left)
 			__l = left;
 		
@@ -214,7 +178,7 @@ public final class WritableMemoryOutputStream
 	public void writeBoolean(boolean __v)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.writeByte((__v ? 1 : 0));
 	}
 	
 	/**
@@ -225,7 +189,7 @@ public final class WritableMemoryOutputStream
 	public void writeByte(int __v)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.memory.memWriteByte(this.__check(1), __v);
 	}
 	
 	/**
@@ -247,7 +211,7 @@ public final class WritableMemoryOutputStream
 	public void writeChar(int __v)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.writeShort((short)__v);
 	}
 	
 	/**
@@ -269,7 +233,7 @@ public final class WritableMemoryOutputStream
 	public void writeDouble(double __v)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.writeLong(Double.doubleToRawLongBits(__v));
 	}
 	
 	/**
@@ -280,7 +244,7 @@ public final class WritableMemoryOutputStream
 	public void writeFloat(float __v)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.writeInt(Float.floatToRawIntBits(__v));
 	}
 	
 	/**
@@ -291,7 +255,7 @@ public final class WritableMemoryOutputStream
 	public void writeInt(int __v)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.memory.memWriteInt(this.__check(4), __v);
 	}
 	
 	/**
@@ -302,7 +266,7 @@ public final class WritableMemoryOutputStream
 	public void writeLong(long __v)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.memory.memWriteLong(this.__check(8), __v);
 	}
 	
 	/**
@@ -313,7 +277,7 @@ public final class WritableMemoryOutputStream
 	public void writeShort(int __v)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.memory.memWriteShort(this.__check(2), __v);
 	}
 	
 	/**
@@ -325,6 +289,31 @@ public final class WritableMemoryOutputStream
 		throws IOException
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Checks for a write which would overflow.
+	 * 
+	 * @param __len The number of bytes to check on write.
+	 * @return The address to read from.
+	 * @throws IllegalArgumentException If the length is zero or negative.
+	 * @throws EOFException If the end of file is reached.
+	 * @since 2021/02/14
+	 */
+	private int __check(int __len)
+		throws IllegalArgumentException, EOFException
+	{
+		if (__len <= 0)
+			throw new IllegalArgumentException("INEG");
+		
+		// {@squirreljme.error ZZ41 Reached end of memory stream.
+		// (The position; The length of the stream; The length checked)}
+		int at = this._at;
+		if (at + (__len - 1) > this.length)
+			throw new EOFException(String.format("ZZ41 %d %d %d",
+				at, this.length, __len));
+		
+		return this.address + at;
 	}
 }
 

@@ -25,6 +25,7 @@
       <w>fprintf</w>
       <w>gawroriski</w>
       <w>idleitem</w>
+      <w>ineg</w>
       <w>invokeinterface</w>
       <w>invokenonvirtual</w>
       <w>invokespecial</w>

@@ -9,16 +9,42 @@
 
 package cc.squirreljme.jvm.summercoat.ld.mem;
 
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class is used to provide simple writing for types other than integers
  * into memory.
  *
  * @since 2019/04/21
  */
+@SuppressWarnings("MagicNumber")
 public abstract class AbstractWritableMemory
 	extends AbstractReadableMemory
 	implements WritableMemory
 {
+	/**
+	 * Uses big endian for the memory.
+	 * 
+	 * @since 2021/02/14
+	 */
+	public AbstractWritableMemory()
+	{
+	}
+	
+	/**
+	 * Uses the specific byte order for the memory.
+	 * 
+	 * @param __byteOrder The {@link ByteOrderType} used.
+	 * @throws IllegalArgumentException If the byte order is not valid.
+	 * @since 2021/02/14
+	 */
+	public AbstractWritableMemory(int __byteOrder)
+		throws IllegalArgumentException
+	{
+		super(__byteOrder);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
@@ -52,10 +78,18 @@ public abstract class AbstractWritableMemory
 	@Override
 	public void memWriteInt(int __addr, int __v)
 	{
-		this.memWriteByte(__addr++, __v >>> 24);
-		this.memWriteByte(__addr++, __v >>> 16);
-		this.memWriteByte(__addr++, __v >>> 8);
-		this.memWriteByte(__addr++, __v);
+		switch (this.byteOrder)
+		{
+			case ByteOrderType.BIG_ENDIAN:
+				this.memWriteByte(__addr++, __v >>> 24);
+				this.memWriteByte(__addr++, __v >>> 16);
+				this.memWriteByte(__addr++, __v >>> 8);
+				this.memWriteByte(__addr, __v);
+				break;
+			
+			default:
+				throw Debugging.oops();
+		}
 	}
 	
 	/**
@@ -65,14 +99,22 @@ public abstract class AbstractWritableMemory
 	@Override
 	public void memWriteLong(int __addr, long __v)
 	{
-		this.memWriteByte(__addr++, (byte)(__v >>> 56));
-		this.memWriteByte(__addr++, (byte)(__v >>> 48));
-		this.memWriteByte(__addr++, (byte)(__v >>> 40));
-		this.memWriteByte(__addr++, (byte)(__v >>> 32));
-		this.memWriteByte(__addr++, (byte)(__v >>> 24));
-		this.memWriteByte(__addr++, (byte)(__v >>> 16));
-		this.memWriteByte(__addr++, (byte)(__v >>> 8));
-		this.memWriteByte(__addr++, (byte)(__v));
+		switch (this.byteOrder)
+		{
+			case ByteOrderType.BIG_ENDIAN:
+				this.memWriteByte(__addr++, (byte)(__v >>> 56));
+				this.memWriteByte(__addr++, (byte)(__v >>> 48));
+				this.memWriteByte(__addr++, (byte)(__v >>> 40));
+				this.memWriteByte(__addr++, (byte)(__v >>> 32));
+				this.memWriteByte(__addr++, (byte)(__v >>> 24));
+				this.memWriteByte(__addr++, (byte)(__v >>> 16));
+				this.memWriteByte(__addr++, (byte)(__v >>> 8));
+				this.memWriteByte(__addr, (byte)(__v));
+				break;
+			
+			default:
+				throw Debugging.oops();
+		}
 	}
 	
 	/**
@@ -82,8 +124,16 @@ public abstract class AbstractWritableMemory
 	@Override
 	public void memWriteShort(int __addr, int __v)
 	{
-		this.memWriteByte(__addr++, __v >>> 8);
-		this.memWriteByte(__addr++, __v);
+		switch (this.byteOrder)
+		{
+			case ByteOrderType.BIG_ENDIAN:
+				this.memWriteByte(__addr++, __v >>> 8);
+				this.memWriteByte(__addr, __v);
+				break;
+			
+			default:
+				throw Debugging.oops();
+		}
 	}
 }
 

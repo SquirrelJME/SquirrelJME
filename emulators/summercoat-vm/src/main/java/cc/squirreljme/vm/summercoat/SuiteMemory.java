@@ -60,6 +60,7 @@ public final class SuiteMemory
 	public SuiteMemory(int __off, VMSuiteManager __sm, String __ln)
 		throws NullPointerException
 	{
+		super(__byteOrder);
 		if (__sm == null || __ln == null)
 			throw new NullPointerException("NARG");
 		

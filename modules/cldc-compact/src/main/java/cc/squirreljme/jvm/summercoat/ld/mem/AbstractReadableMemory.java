@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.summercoat.ld.mem;
 
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a class which handles reading of memory by using pure integers
  * instead of forcing all implementations to implement short and byte
@@ -16,9 +19,51 @@ package cc.squirreljme.jvm.summercoat.ld.mem;
  *
  * @since 2019/04/21
  */
+@SuppressWarnings("MagicNumber")
 public abstract class AbstractReadableMemory
-	implements ReadableMemory
+	implements HasByteOrder, ReadableMemory
 {
+	/** The byte order of this memory. */
+	protected final int byteOrder;
+	
+	/**
+	 * Uses big endian for the memory.
+	 * 
+	 * @since 2021/02/14
+	 */
+	public AbstractReadableMemory()
+	{
+		this(ByteOrderType.BIG_ENDIAN);
+	}
+	
+	/**
+	 * Uses the specific byte order for the memory.
+	 * 
+	 * @param __byteOrder The {@link ByteOrderType} used.
+	 * @throws IllegalArgumentException If the byte order is not valid.
+	 * @since 2021/02/14
+	 */
+	public AbstractReadableMemory(int __byteOrder)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error ZZ3u Invalid byte order.}
+		if (__byteOrder != ByteOrderType.BIG_ENDIAN &&
+			__byteOrder != ByteOrderType.LITTLE_ENDIAN)
+			throw new IllegalArgumentException("ZZ3u " + __byteOrder);
+		
+		this.byteOrder = __byteOrder;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/14
+	 */
+	@Override
+	public final int byteOrder()
+	{
+		return this.byteOrder;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
@@ -53,10 +98,23 @@ public abstract class AbstractReadableMemory
 	@Override
 	public int memReadInt(int __addr)
 	{
-		return (this.memReadByte(__addr++) << 24) |
-			(this.memReadByte(__addr++) << 16) |
-			(this.memReadByte(__addr++) << 8) |
-			this.memReadByte(__addr);
+		switch (this.byteOrder)
+		{
+			case ByteOrderType.BIG_ENDIAN:
+				return (this.memReadByte(__addr++) << 24) |
+					(this.memReadByte(__addr++) << 16) |
+					(this.memReadByte(__addr++) << 8) |
+					this.memReadByte(__addr);
+					
+			case ByteOrderType.LITTLE_ENDIAN:
+				return (this.memReadByte(__addr++)) |
+					(this.memReadByte(__addr++) << 8) |
+					(this.memReadByte(__addr++) << 16) |
+					this.memReadByte(__addr) << 24;
+			
+			default:
+				throw Debugging.oops();
+		}
 	}
 	
 	/**
@@ -66,14 +124,31 @@ public abstract class AbstractReadableMemory
 	@Override
 	public long memReadLong(int __addr)
 	{
-		return ((long)this.memReadByte(__addr++) << 56) |
-			((long)this.memReadByte(__addr++) << 48) |
-			((long)this.memReadByte(__addr++) << 40) |
-			((long)this.memReadByte(__addr++) << 32) |
-			((long)this.memReadByte(__addr++) << 24) |
-			(this.memReadByte(__addr++) << 16) |
-			(this.memReadByte(__addr++) << 8) |
-			this.memReadByte(__addr);
+		switch (this.byteOrder)
+		{
+			case ByteOrderType.BIG_ENDIAN:
+				return ((long)this.memReadByte(__addr++) << 56) |
+					((long)this.memReadByte(__addr++) << 48) |
+					((long)this.memReadByte(__addr++) << 40) |
+					((long)this.memReadByte(__addr++) << 32) |
+					((long)this.memReadByte(__addr++) << 24) |
+					(this.memReadByte(__addr++) << 16) |
+					(this.memReadByte(__addr++) << 8) |
+					this.memReadByte(__addr);
+			
+			case ByteOrderType.LITTLE_ENDIAN:
+				return (this.memReadByte(__addr++)) |
+					(this.memReadByte(__addr++) << 8) |
+					(this.memReadByte(__addr++) << 16) |
+					(this.memReadByte(__addr++) << 24) |
+					((long)this.memReadByte(__addr++) << 32) |
+					((long)this.memReadByte(__addr++) << 40) |
+					((long)this.memReadByte(__addr++) << 48) |
+					(long)this.memReadByte(__addr) << 56;
+			
+			default:
+				throw Debugging.oops();
+		}
 	}
 	
 	/**
@@ -83,7 +158,18 @@ public abstract class AbstractReadableMemory
 	@Override
 	public int memReadShort(int __addr)
 	{
-		return (this.memReadByte(__addr++) << 8) |
-			this.memReadByte(__addr);
+		switch (this.byteOrder)
+		{
+			case ByteOrderType.BIG_ENDIAN:
+				return (this.memReadByte(__addr++) << 8) |
+					this.memReadByte(__addr);
+					
+			case ByteOrderType.LITTLE_ENDIAN:
+				return (this.memReadByte(__addr++)) |
+					this.memReadByte(__addr) << 8;
+			
+			default:
+				throw Debugging.oops();
+		}
 	}
 }
