@@ -21,7 +21,7 @@ import java.io.InputStream;
  */
 public final class ReadableMemoryInputStream
 	extends InputStream
-	implements DataInput
+	implements DataInput, MemoryStream
 {
 	/** The base read address. */
 	protected final int address;
@@ -107,6 +107,16 @@ public final class ReadableMemoryInputStream
 		this.address = __ad;
 		this.length = __ln;
 		this.isLittle = __isLittle;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/04
+	 */
+	@Override
+	public int address()
+	{
+		return this.address + this._at;
 	}
 	
 	/**
@@ -346,6 +356,16 @@ public final class ReadableMemoryInputStream
 		throws IOException
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/04
+	 */
+	@Override
+	public int offset()
+	{
+		return this._at;
 	}
 	
 	/**

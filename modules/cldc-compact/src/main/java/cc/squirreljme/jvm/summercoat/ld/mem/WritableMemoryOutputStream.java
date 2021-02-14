@@ -22,7 +22,7 @@ import java.io.OutputStream;
  */
 public final class WritableMemoryOutputStream
 	extends OutputStream
-	implements DataOutput
+	implements DataOutput, MemoryStream
 {
 	/** The base write address. */
 	protected final int address;
@@ -102,6 +102,26 @@ public final class WritableMemoryOutputStream
 		this.address = __ad;
 		this.length = __ln;
 		this.isLittle = __isLittle;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/04
+	 */
+	@Override
+	public int address()
+	{
+		return this.address + this._at;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/04
+	 */
+	@Override
+	public int offset()
+	{
+		return this._at;
 	}
 	
 	/**
