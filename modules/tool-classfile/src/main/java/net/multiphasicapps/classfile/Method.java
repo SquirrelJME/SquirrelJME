@@ -240,10 +240,11 @@ public final class Method
 	 * Returns the code of this method in a register based format that is
 	 * more efficient than pure Java byte code.
 	 *
+	 * @param __sourceFile The source file used for translation.
 	 * @return The code of this method in a register based format.
 	 * @since 2019/03/09
 	 */
-	public final NativeCode nativeCode()
+	public final NativeCode nativeCode(String __sourceFile)
 	{
 		// Abstract and native methods have no code
 		if (!this.hascode)
@@ -261,7 +262,7 @@ public final class Method
 			try
 			{
 				NearNativeByteCodeHandler nnbc =
-					new NearNativeByteCodeHandler(bc);
+					new NearNativeByteCodeHandler(bc, __sourceFile);
 				new ByteCodeProcessor(bc, nnbc).process();
 				
 				// Cache the result of it

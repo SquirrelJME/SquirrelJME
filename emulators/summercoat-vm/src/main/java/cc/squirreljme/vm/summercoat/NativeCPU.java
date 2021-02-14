@@ -56,14 +56,6 @@ public final class NativeCPU
 	public static final int MAX_REGISTERS =
 		64;
 	
-	/** The size of the method cache. */
-	public static final int METHOD_CACHE =
-		2048;
-	
-	/** Spill over protection for the cache. */
-	public static final int METHOD_CACHE_SPILL =
-		1024;
-	
 	/** The number of execution slices to store. */
 	public static final int MAX_EXECUTION_SLICES =
 		32;
@@ -97,6 +89,10 @@ public final class NativeCPU
 	
 	/** Virtual machine attributes handle. */
 	protected final MemHandle vmAttribHandle;
+	
+	/** The cache for the CPU. */
+	protected final CPUCache cache =
+		new CPUCache();
 	
 	/** Stack frames. */
 	private final LinkedList<CPUFrame> _frames =
@@ -326,6 +322,9 @@ public final class NativeCPU
 	 */
 	public final void runWithoutCatch(int __fl)
 	{
+		// Cache used for increased speed
+		CPUCache cache = this.cache;
+		
 		// Read the CPU stuff
 		final WritableMemory memory = this.memory;
 		boolean reload = true;
@@ -337,11 +336,12 @@ public final class NativeCPU
 		int pc = -1;
 		
 		// Per operation handling
-		final int[] args = new int[6];
+		int[] argRaw = cache.argRawCache;
+		int[] argVal = cache.argValCache;
 		
 		// Method cache to reduce tons of method reads
-		final byte[] icache = new byte[NativeCPU.METHOD_CACHE];
-		int lasticache = -(NativeCPU.METHOD_CACHE_SPILL + 1);
+		byte[] iCache = cache.iCache;
+		int lasticache = -(CPUCache.METHOD_CACHE_SPILL + 1);
 		
 		// Debug point counter
 		int pointcounter = 0;
@@ -380,9 +380,9 @@ public final class NativeCPU
 			// the method calls to read single bytes of memory is a bit so, so
 			// this should hopefully improve performance slightly.
 			int pcdiff = pc - lasticache;
-			if (pcdiff < 0 || pcdiff >= NativeCPU.METHOD_CACHE_SPILL)
+			if (pcdiff < 0 || pcdiff >= CPUCache.METHOD_CACHE_SPILL)
 			{
-				memory.memReadBytes(pc, icache, 0, NativeCPU.METHOD_CACHE);
+				memory.memReadBytes(pc, iCache, 0, CPUCache.ICACHE_SIZE);
 				lasticache = pc;
 			}
 			
@@ -394,13 +394,14 @@ public final class NativeCPU
 			
 			// Read operation
 			nowframe._lastpc = pc;
-			int op = icache[bpc] & 0xFF;
+			int op = iCache[bpc] & 0xFF;
 			
 			// Set the last native operation used
 			nowframe._lastNativeOp = op;
 			
 			// Reset all input arguments
-			Arrays.fill(args, 0);
+			Arrays.fill(argRaw, 0);
+			Arrays.fill(argVal, 0);
 			
 			// Register list, just one is used everywhere
 			int[] reglist = null;
@@ -418,32 +419,46 @@ public final class NativeCPU
 					case VJUMP:
 						{
 							// Long value?
-							int base = (icache[rargp++] & 0xFF);
+							int base = (iCache[rargp++] & 0xFF);
 							if ((base & 0x80) != 0)
 							{
 								base = ((base & 0x7F) << 8);
-								base |= (icache[rargp++] & 0xFF);
+								base |= (iCache[rargp++] & 0xFF);
 							}
 							
 							// Set
 							if (af[i] == ArgumentFormat.VJUMP)
-								args[i] = (short)(base |
+								argRaw[i] = (short)(base |
 									((base & 0x4000) << 1));
 							else
-								args[i] = base;
+								argRaw[i] = base;
 							
-							// {@squirreljme.error AE03 Reference to register
-							// which is out of range of maximum number of
-							// registers. (The operation; The register index;
-							// The argument formats; The decoded arguments)}
-							if (af[i] == ArgumentFormat.VUREG &&
-								(base < 0 || base >= NativeCode.MAX_REGISTERS))
-								throw new VMException(String.format(
-									"AE03 %s %d %s %s",
-									NativeInstruction.mnemonic(op), base,
-									Arrays.asList(af),
-									IntegerArrayList.asList(args)
-										.subList(0, af.length)));
+							// Special handling and checks for registers
+							if (af[i] == ArgumentFormat.VUREG)
+							{
+								// {@squirreljme.error AE03 Reference to
+								// register which is out of range of maximum
+								// number of registers. (The operation;
+								// The register index; The argument formats;
+								// The decoded arguments)}
+								if (base >= NativeCode.MAX_REGISTERS)
+									throw new VMException(String.format(
+										"AE03 %s %d %s %s",
+										NativeInstruction.mnemonic(op), base,
+										Arrays.asList(af),
+										IntegerArrayList.asList(argRaw)
+											.subList(0, af.length)));
+								
+								// Preload the argument value
+								int r = argRaw[i];
+								argVal[i] = (r == NativeCode.ZERO_REGISTER ?
+									0 : lr[r]);
+							}
+							
+							// Otherwise the value used is the same as the
+							// actual argument
+							else
+								argVal[i] = argRaw[i];
 						}
 						break;
 					
@@ -451,18 +466,18 @@ public final class NativeCPU
 					case REGLIST:
 						{
 							// Wide
-							int count = (icache[rargp++] & 0xFF);
+							int count = (iCache[rargp++] & 0xFF);
 							if ((count & 0x80) != 0)
 							{
 								count = ((count & 0x7F) << 8) |
-									(icache[rargp++] & 0xFF);
+									(iCache[rargp++] & 0xFF);
 								
 								// Read values
 								reglist = new int[count];
 								for (int r = 0; r < count; r++)
 									reglist[r] =
-										((icache[rargp++] & 0xFF) << 8) |
-										(icache[rargp++] & 0xFF);
+										((iCache[rargp++] & 0xFF) << 8) |
+										(iCache[rargp++] & 0xFF);
 							}
 							// Narrow
 							else
@@ -471,7 +486,7 @@ public final class NativeCPU
 								
 								// Read values
 								for (int r = 0; r < count; r++)
-									reglist[r] = (icache[rargp++] & 0xFF);
+									reglist[r] = (iCache[rargp++] & 0xFF);
 							}
 						}
 						break;
@@ -479,10 +494,13 @@ public final class NativeCPU
 						// 32-bit integer/float
 					case INT32:
 					case FLOAT32:
-						args[i] = ((icache[rargp++] & 0xFF) << 24) |
-							((icache[rargp++] & 0xFF) << 16) |
-							((icache[rargp++] & 0xFF) << 8) |
-							((icache[rargp++] & 0xFF));
+						argRaw[i] = ((iCache[rargp++] & 0xFF) << 24) |
+							((iCache[rargp++] & 0xFF) << 16) |
+							((iCache[rargp++] & 0xFF) << 8) |
+							((iCache[rargp++] & 0xFF));
+						
+						// These share the same value!
+						argVal[i] = argRaw[i];
 						break;
 					
 					default:
@@ -501,7 +519,7 @@ public final class NativeCPU
 			{
 				// Get slice for this instruction
 				ExecutionSlice el = ExecutionSlice.of(this.trace(nowframe),
-					nowframe, op, args, af.length, reglist);
+					nowframe, op, argRaw, af.length, reglist);
 				
 				// Add to previous instructions, do not exceed slice limits
 				Deque<ExecutionSlice> execslices = nowframe._execslices;
@@ -534,6 +552,20 @@ public final class NativeCPU
 			// arguments have been read
 			int nextpc = lasticache + rargp;
 			
+			// Use the new and cleaner instruction handler
+			if (InstructionHandler.isValid(op))
+			{
+				// Store state needed for this to execute
+				cache.nowFrame = nowframe;
+				
+				// Handle the instruction
+				InstructionHandler.handle(op, this);
+				
+				// Set next PC address
+				pc = nextpc;
+				continue;
+			}
+			
 			// Handle the operation
 			switch (encoding)
 			{
@@ -543,43 +575,17 @@ public final class NativeCPU
 					{
 						CallTraceUtils.printStackTrace(System.err,
 							String.format("PING! %04Xh: %s",
-								args[0], (args[1] == 0 ? "" :
-								this.__loadUtfString(nowframe.pool(args[1])))),
+								argRaw[0], (argRaw[1] == 0 ? "" :
+								this.__loadUtfString(nowframe.pool(argRaw[1])))),
 							this.trace(),
 							null, null, 0);
 					}
 					break;
-					
-					// CPU Breakpoint
-				case NativeInstructionType.BREAKPOINT:
-				case NativeInstructionType.BREAKPOINT_MARKED:
-					// Marker for the breakpoint
-					String mark = (op == NativeInstructionType.BREAKPOINT ?
-						"Un" : Integer.toString(args[0], 16)
-							.toUpperCase() + "h");
-				
-					// If profiling, immediately enter the frame to signal
-					// a break point then exit it
-					if (profiler != null)
-					{
-						String bit = "<breakpoint?" + mark + ">";
-						profiler.enterFrame(bit, bit, bit);
-						profiler.exitFrame();
-					}
-					
-					// Is there a stored note?
-					int noteId = (op == NativeInstructionType
-						.BREAKPOINT_MARKED ? args[1] : 0);
-					String note = (noteId == 0 ? "" :
-						this.__loadUtfString(nowframe.pool(noteId)));
-					
-					throw new VMException(String.format(
-						"Breakpoint Hit (%s: %s)!", mark, note));
 				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
-					this.__debugEntry(nowframe, args[0], args[1], args[2],
-						args[3]);
+					this.__debugEntry(nowframe, argRaw[0], argRaw[1], argRaw[2],
+						argRaw[3]);
 					break;
 					
 					// Debug exit of method
@@ -589,7 +595,7 @@ public final class NativeCPU
 					
 					// Debug point in method.
 				case NativeInstructionType.DEBUG_POINT:
-					this.__debugPoint(nowframe, args[0], args[1], args[2]);
+					this.__debugPoint(nowframe, argRaw[0], argRaw[1], argRaw[2]);
 					break;
 					
 					// Atomic compare, get, and set
@@ -597,10 +603,10 @@ public final class NativeCPU
 					synchronized (memory)
 					{
 						// Read parameters
-						int check = lr[args[0]],
-							set = lr[args[2]],
-							addr = lr[args[3]],
-							off = args[4];
+						int check = lr[argRaw[0]],
+							set = lr[argRaw[2]],
+							addr = lr[argRaw[3]],
+							off = argRaw[4];
 						
 						// Read value here
 						int read = memory.memReadInt(addr + off);
@@ -610,7 +616,7 @@ public final class NativeCPU
 							memory.memWriteInt(addr + off, set);
 						
 						// Set the read value before check
-						lr[args[1]] = read;
+						lr[argRaw[1]] = read;
 						
 						// Debug
 						/*if (ENABLE_DEBUG)
@@ -624,8 +630,8 @@ public final class NativeCPU
 					synchronized (memory)
 					{
 						// The address to load from/store to
-						int addr = lr[args[1]],
-							off = args[2];
+						int addr = lr[argRaw[1]],
+							off = argRaw[2];
 						
 						// Read, increment, and store
 						int newval;
@@ -633,7 +639,7 @@ public final class NativeCPU
 							(newval = memory.memReadInt(addr + off) - 1));
 						
 						// Store the value after the decrement
-						lr[args[0]] = newval;
+						lr[argRaw[0]] = newval;
 					}
 					break;
 					
@@ -642,8 +648,8 @@ public final class NativeCPU
 					synchronized (memory)
 					{
 						// The address to load from/store to
-						int addr = lr[args[0]],
-							off = args[1];
+						int addr = lr[argRaw[0]],
+							off = argRaw[1];
 						
 						// Read, increment, and store
 						int oldv;
@@ -659,15 +665,15 @@ public final class NativeCPU
 				
 					// Copy
 				case NativeInstructionType.COPY:
-					lr[args[1]] = lr[args[0]];
+					lr[argRaw[1]] = lr[argRaw[0]];
 					break;
 					
 					// Compare integers and possibly jump
 				case NativeInstructionType.IF_ICMP:
 					{
 						// Parts
-						int a = lr[args[0]],
-							b = lr[args[1]];
+						int a = lr[argRaw[0]],
+							b = lr[argRaw[1]];
 						
 						// Compare
 						boolean branch;
@@ -697,7 +703,7 @@ public final class NativeCPU
 						
 						// Branching?
 						if (branch)
-							nextpc = pc + args[2];
+							nextpc = pc + argRaw[2];
 					}
 					break;
 					
@@ -705,8 +711,8 @@ public final class NativeCPU
 				case NativeInstructionType.IFEQ_CONST:
 					{
 						// Branching? Remember that jumps are relative
-						if (lr[args[0]] == args[1])
-							nextpc = pc + args[2];
+						if (lr[argRaw[0]] == argRaw[1])
+							nextpc = pc + argRaw[2];
 					}
 					break;
 					
@@ -718,7 +724,7 @@ public final class NativeCPU
 							reglist[i] = lr[reglist[i]];
 						
 						// Enter the frame
-						this.enterFrame(true, lr[args[0]], 0, reglist);
+						this.enterFrame(true, lr[argRaw[0]], 0, reglist);
 						
 						// Entering some other frame
 						reload = true;
@@ -736,8 +742,8 @@ public final class NativeCPU
 							reglist[i] = lr[reglist[i]];
 						
 						// Enter the frame
-						this.enterFrame(false, lr[args[0]],
-							lr[args[1]], reglist);
+						this.enterFrame(false, lr[argRaw[0]],
+							lr[argRaw[1]], reglist);
 						
 						// Entering some other frame
 						reload = true;
@@ -749,12 +755,12 @@ public final class NativeCPU
 					
 					// Load from constant pool
 				case NativeInstructionType.LOAD_POOL:
-					lr[args[1]] = nowframe.pool(args[0]);
+					lr[argRaw[1]] = nowframe.pool(argRaw[0]);
 					
 					// Debug
 					if (NativeCPU.ENABLE_DEBUG)
 						Debugging.debugNote("Pool#%d %d/%#08x -> %d",
-							args[0], lr[args[1]], lr[args[1]], args[1]);
+							argRaw[0], lr[argRaw[1]], lr[argRaw[1]], argRaw[1]);
 					break;
 					
 					// Integer math
@@ -762,8 +768,8 @@ public final class NativeCPU
 				case NativeInstructionType.MATH_REG_INT:
 					{
 						// Parts
-						int a = lr[args[0]],
-							b = (((op & 0x80) != 0) ? args[1] : lr[args[1]]),
+						int a = lr[argRaw[0]],
+							b = (((op & 0x80) != 0) ? argRaw[1] : lr[argRaw[1]]),
 							c;
 						
 						// Operation to execute
@@ -795,7 +801,7 @@ public final class NativeCPU
 						}
 						
 						// Set result
-						lr[args[2]] = c;
+						lr[argRaw[2]] = c;
 					}
 					break;
 					
@@ -808,12 +814,12 @@ public final class NativeCPU
 						
 						// The handle to read from
 						MemHandle handle =
-							this.state.memHandles.get(lr[args[1]]);
-						int off = lr[args[2]];
+							this.state.memHandles.get(lr[argRaw[1]]);
+						int off = lr[argRaw[2]];
 						
 						// Potential load/store value
 						int read = 0;
-						int write = lr[args[0]];
+						int write = lr[argRaw[0]];
 						
 						// Depends on the type
 						DataType dt = DataType.of(op & 0b0111);
@@ -855,7 +861,7 @@ public final class NativeCPU
 						
 						// Store in value
 						if (load)
-							lr[args[0]] = read;
+							lr[argRaw[0]] = read;
 					}
 					break;
 				
@@ -867,10 +873,10 @@ public final class NativeCPU
 						boolean load = ((op & 0b1000) != 0);
 						
 						// The address to load from/store to
-						long base = (lr[args[1]] & 0xFFFFFFFFL) |
-							(((long)lr[args[2]]) << 32L);
-						int offs = (((op & 0x80) != 0) ? args[2] :
-							lr[args[2]]);
+						long base = (lr[argRaw[1]] & 0xFFFFFFFFL) |
+							(((long)lr[argRaw[2]]) << 32L);
+						int offs = (((op & 0x80) != 0) ? argRaw[2] :
+							lr[argRaw[2]]);
 						long addr = base + offs;
 						
 						// Not currently valid!
@@ -922,7 +928,7 @@ public final class NativeCPU
 							}
 							
 							// Set value
-							lr[args[0]] = v;
+							lr[argRaw[0]] = v;
 							
 							// Debug
 							/*if (ENABLE_DEBUG)
@@ -936,7 +942,7 @@ public final class NativeCPU
 						else
 						{
 							// Value to store
-							int v = lr[args[0]];
+							int v = lr[argRaw[0]];
 							
 							// Store
 							switch (dt)
@@ -1062,7 +1068,7 @@ public final class NativeCPU
 							sargs[i] = lr[reglist[i]];
 						
 						// Get the system call ID
-						short syscallid = (short)lr[args[0]];
+						short syscallid = (short)lr[argRaw[0]];
 						
 						// Handle system call as is from the supervisor
 						// IPC Exception load/store is not included
@@ -1144,12 +1150,12 @@ public final class NativeCPU
 					
 					// Count reference up
 				case NativeInstructionType.MEM_HANDLE_COUNT_UP:
-					this.state.memHandles.get(lr[args[0]]).count(true);
+					this.state.memHandles.get(lr[argRaw[0]]).count(true);
 					break;
 				
 					// Count reference down
 				case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
-					lr[args[1]] = this.state.memHandles.get(lr[args[0]])
+					lr[argRaw[1]] = this.state.memHandles.get(lr[argRaw[0]])
 						.count(false);
 					break;
 					
@@ -1364,7 +1370,7 @@ public final class NativeCPU
 	 * @return The resulting string.
 	 * @since 2019/05/15
 	 */
-	private final String __loadUtfString(int __addr)
+	final String __loadUtfString(int __addr)
 	{
 		// Read length to figure out how long the string is
 		WritableMemory memory = this.memory;

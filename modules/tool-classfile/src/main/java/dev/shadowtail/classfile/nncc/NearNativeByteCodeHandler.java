@@ -150,6 +150,9 @@ public final class NearNativeByteCodeHandler
 	private final Deque<__RefClearJump__> _refClearJumpQueue =
 		new LinkedList<>();
 	
+	/** The source file used for this class. */
+	protected final String sourceFile;
+	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
 	
@@ -160,10 +163,11 @@ public final class NearNativeByteCodeHandler
 	 * Initializes the byte code handler.
 	 *
 	 * @param __bc The byte code.
+	 * @param __sourceFile The source file used for this method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/11
 	 */
-	public NearNativeByteCodeHandler(ByteCode __bc)
+	public NearNativeByteCodeHandler(ByteCode __bc, String __sourceFile)
 		throws NullPointerException
 	{
 		if (__bc == null)
@@ -174,6 +178,7 @@ public final class NearNativeByteCodeHandler
 			FieldAccessTime.NORMAL);
 		this.issynchronized = __bc.isSynchronized();
 		this.isinstance = __bc.isInstance();
+		this.sourceFile = __sourceFile;
 		
 		// Determine monitor target register and the volatile base
 		int volbase = NativeCode.ARGUMENT_REGISTER_BASE + 2 +
@@ -2245,13 +2250,23 @@ public final class NearNativeByteCodeHandler
 				// Breakpoint (with current line)
 			case "breakpoint":
 				codeBuilder.addBreakpoint(this.state.line & 0x7FFF,
-					null);
+					String.format("%s:%s %s(%s:%d)",
+						this.state.methodname,
+						this.state.methodtype,
+						this.state.classname.toRuntimeString(),
+						this.sourceFile,
+						this.state.line));
 				break;
 				
 				// Ping (with current line)
 			case "ping":
 				codeBuilder.addPing(this.state.line & 0x7FFF,
-					null);
+					String.format("%s:%s %s(%s:%d)",
+						this.state.methodname,
+						this.state.methodtype,
+						this.state.classname.toRuntimeString(),
+						this.sourceFile,
+						this.state.line));
 				break;
 				
 				// Long/Double bits

@@ -454,7 +454,7 @@ public final class Minimizer
 			{
 				// The minified classes use register code since it is easier
 				// to handle by the VM
-				NativeCode rc = m.nativeCode();
+				NativeCode rc = m.nativeCode(input.sourceFile());
 				
 				// Encode data to bytes
 				try
