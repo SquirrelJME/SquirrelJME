@@ -21,6 +21,22 @@ public interface NonStandardKey
 	byte UNKNOWN =
 		0;
 	
+	/** The up arrow key. */
+	int KEY_UP =
+		-1;
+	
+	/** Down arrow key. */
+	int KEY_DOWN =
+		-2;
+	
+	/** Left arrow key. */
+	int KEY_LEFT =
+		-3;
+	
+	/** Right arrow key. */
+	int KEY_RIGHT =
+		-4;
+	
 	/** Game Up. */
 	byte VGAME_UP =
 		-9;
@@ -121,11 +137,36 @@ public interface NonStandardKey
 	byte INSERT =
 		-33;
 	
-	/** F24. */
-	byte F24 =
+	/** Game Virtual Left Command. */
+	byte VGAME_COMMAND_LEFT =
+		-34;
+	
+	/** Game Virtual Right Command. */
+	byte VGAME_COMMAND_RIGHT =
 		-35;
 	
+	/** Game virtual Center Command. */
+	byte VGAME_COMMAND_CENTER =
+		-36;
+	
+	/** F24. */
+	byte F24 =
+		-37;
+	
 	/** F1. */
-	byte F1 = NonStandardKey.F24 - 24;
+	byte F1 =
+		NonStandardKey.F24 - 24;
+	
+	/** F2. */
+	byte F2 =
+		NonStandardKey.F1 + 1;
+	
+	/** F3. */
+	byte F3 =
+		NonStandardKey.F1 + 2;
+	
+	/** F13. */
+	byte F13 =
+		NonStandardKey.F1 + 12;
 }
 

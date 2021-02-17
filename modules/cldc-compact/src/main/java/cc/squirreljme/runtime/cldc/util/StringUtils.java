@@ -200,21 +200,26 @@ public final class StringUtils
 	 * of the fields which are contained within. Extra whitespace within
 	 * fields are not trimmed.
 	 *
-	 * @param __delim The delimeter to split fields by.
+	 * @param __delim The delimiter to split fields by.
 	 * @param __s The string to split.
 	 * @return An array containing all of the fields.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public static final String[] fieldSplit(char __delim, String __s)
+	public static String[] fieldSplit(char __delim, String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
 		CharSequence[] xrv = CharSequenceUtils.fieldSplit(__delim, __s);
-		return Arrays.<String, CharSequence>copyOf(xrv, xrv.length,
-			String[].class);
+		
+		int n = xrv.length;
+		String[] rv = new String[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = xrv[i].toString();
+		
+		return rv;
 	}
 	
 	/**
