@@ -163,6 +163,27 @@ public class HandleKeyEvents
 			__keyChar == KeyEvent.VK_KP_RIGHT)
 			return NonStandardKey.KEY_RIGHT;
 		
+		// Treat numbers and number pad as the same
+		if (__keyCode >= KeyEvent.VK_0 && __keyCode <= KeyEvent.VK_9)
+			return '0' + (__keyCode - KeyEvent.VK_0);
+		else if (__keyCode >= KeyEvent.VK_NUMPAD0 &&
+			__keyCode <= KeyEvent.VK_NUMPAD9)
+			return '0' + (__keyCode - KeyEvent.VK_NUMPAD0);
+		
+		// Other keys on the number pad
+		if (__keyCode == KeyEvent.VK_ASTERISK ||
+			__keyCode == KeyEvent.VK_MULTIPLY)
+			return NonStandardKey.KEY_STAR;
+		else if (__keyCode == KeyEvent.VK_NUMBER_SIGN ||
+			__keyCode == KeyEvent.VK_DIVIDE)
+			return NonStandardKey.KEY_POUND;
+		else if (__keyCode == KeyEvent.VK_ADD)
+			return NonStandardKey.VGAME_COMMAND_LEFT;
+		else if (__keyChar == KeyEvent.VK_SUBTRACT)
+			return NonStandardKey.VGAME_COMMAND_RIGHT;
+		else if (__keyChar == KeyEvent.VK_DECIMAL)
+			return NonStandardKey.VGAME_COMMAND_CENTER;
+		
 		// Use a character based key if this is one
 		if (__keyChar != KeyEvent.CHAR_UNDEFINED)
 			return __keyChar;
@@ -170,13 +191,6 @@ public class HandleKeyEvents
 		// In the event there is no ASCII
 		if (__keyCode >= KeyEvent.VK_A && __keyCode <= KeyEvent.VK_Z)
 			return 'A' + (__keyCode - KeyEvent.VK_A);
-		
-		// Treat numbers and number pad as the same
-		if (__keyCode >= KeyEvent.VK_0 && __keyCode <= KeyEvent.VK_9)
-			return '0' + (__keyCode - KeyEvent.VK_0);
-		else if (__keyCode >= KeyEvent.VK_NUMPAD0 &&
-			__keyCode <= KeyEvent.VK_NUMPAD9)
-			return '0' + (__keyCode - KeyEvent.VK_NUMPAD0);
 		
 		// Not a known key
 		return NonStandardKey.UNKNOWN;

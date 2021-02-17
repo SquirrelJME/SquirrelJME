@@ -17,6 +17,14 @@ package cc.squirreljme.jvm.mle.constants;
  */
 public interface NonStandardKey
 {
+	/** Star key. */
+	int KEY_STAR =
+		42;
+	
+	/** Pound key. */
+	int KEY_POUND =
+		35;
+	
 	/** Unknown, zero is the invalid index so always make it known. */
 	byte UNKNOWN =
 		0;
