@@ -11,6 +11,7 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
@@ -170,8 +171,13 @@ public enum SystemCallHandler
 			switch (__args[0])
 			{
 					// The address of the system ROM
-				case RuntimeVmAttribute.ROM_ADDRESS:
+				case RuntimeVmAttribute.ROM_ADDRESS_LOW:
 					return __cpu.state.romBase;
+					
+					// SummerCoat is purely a 32-bit system so there is no
+					// high address for the ROM.
+				case RuntimeVmAttribute.ROM_ADDRESS_HIGH:
+					return 0;
 				
 					// The current operating system
 				case RuntimeVmAttribute.OPERATING_SYSTEM:
@@ -188,6 +194,10 @@ public enum SystemCallHandler
 						return OperatingSystemType.MAC_OS_X;
 					
 					return OperatingSystemType.UNKNOWN;
+					
+					// The memory profile of the system
+				case RuntimeVmAttribute.MEMORY_PROFILE:
+					return MemoryProfileType.NORMAL;
 				
 					// Unknown
 				default:

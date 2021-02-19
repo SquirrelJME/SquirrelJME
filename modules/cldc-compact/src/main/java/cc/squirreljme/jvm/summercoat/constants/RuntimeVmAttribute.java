@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.summercoat.constants;
 
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 
 /**
@@ -26,15 +28,23 @@ public interface RuntimeVmAttribute
 	byte OPERATING_SYSTEM =
 		1;
 	
-	/** The address where the ROM is located. */
-	byte ROM_ADDRESS =
+	/** The address where the ROM is located, low word. */
+	byte ROM_ADDRESS_LOW =
 		2;
 	
-	/** The byte order of the system. */
-	byte BYTE_ORDER =
+	/** The address where the ROM is located, high word. */
+	byte ROM_ADDRESS_HIGH =
 		3;
+	
+	/** The {@link ByteOrderType} of the system. */
+	byte BYTE_ORDER =
+		4;
+	
+	/** The {@link MemoryProfileType} to use. */
+	byte MEMORY_PROFILE =
+		5;
 	
 	/** The number of attributes. */
 	byte NUM_RUNTIME_ATTRIBUTES =
-		4;
+		6;
 }

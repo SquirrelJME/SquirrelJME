@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
@@ -92,6 +93,15 @@ public final class RuntimeShelf
 	 * @since 2020/06/11
 	 */
 	public static native int locale();
+	
+	/**
+	 * The memory profile of the system, should it go out of its way to
+	 * conserve extra memory at a performance cost?
+	 * 
+	 * @return The {@link MemoryProfileType} of the system.
+	 * @since 2021/02/19
+	 */
+	public static native int memoryProfile();
 	
 	/**
 	 * Returns the number of monotonic nanoseconds that have elapsed.

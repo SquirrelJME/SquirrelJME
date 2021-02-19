@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.summercoat.ld.pack;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.ld.mem.RealMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -23,7 +24,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class PackRom
 {
 	/** The base address of the ROM. */
-	protected final int baseAddr;
+	protected final long baseAddr;
 	
 	/**
 	 * Initializes the pack ROM manager.
@@ -31,7 +32,7 @@ public final class PackRom
 	 * @param __memAddr The memory address where the Pack ROM is located.
 	 * @since 2021/02/09
 	 */
-	private PackRom(int __memAddr)
+	private PackRom(long __memAddr)
 	{
 		this.baseAddr = __memAddr;
 	}
@@ -55,10 +56,12 @@ public final class PackRom
 	 * @return The pack ROM of the given address.
 	 * @since 2021/02/14
 	 */
-	public static PackRom load(int __memAddr)
+	public static PackRom load(long __memAddr)
 	{
-		new RealMemory(ByteOrderType.BIG_ENDIAN);
+		Debugging.debugNote("Max Pack: %d", ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE);
 		
-		return new PackRom(__memAddr));
+		new RealMemory(__memAddr, ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE, ByteOrderType.BIG_ENDIAN);
+		
+		return new PackRom(__memAddr);
 	}
 }

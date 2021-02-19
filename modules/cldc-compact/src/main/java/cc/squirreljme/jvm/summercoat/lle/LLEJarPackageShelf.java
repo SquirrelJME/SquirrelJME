@@ -132,8 +132,9 @@ public final class LLEJarPackageShelf
 			return rv;
 		
 		// Where is the ROM located?
-		int romAddr = SystemCall.runtimeVmAttribute(
-			RuntimeVmAttribute.ROM_ADDRESS);
+		long romAddr = Assembly.longPack(
+			SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDRESS_HIGH),
+			SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDRESS_LOW));
 		
 		// Debug
 		Debugging.debugNote("ROM is at %#08x", romAddr);

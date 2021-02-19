@@ -40,6 +40,10 @@ public interface ClassInfoConstants
 	int JAR_MAXIMUM_HEADER_SIZE =
 		8 + (JarProperty.NUM_JAR_PROPERTIES * 4);
 	
+	/** The maximum size of a Pack header. */
+	int PACK_MAXIMUM_HEADER_SIZE =
+		8 + (PackProperty.NUM_PACK_PROPERTIES * 4);
+	
 	/** Magic number for the JAR. */
 	int JAR_MAGIC_NUMBER =
 		0x00456570;

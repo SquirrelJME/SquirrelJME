@@ -26,31 +26,6 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  */
 public final class MinimizedPackHeader
 {
-	/** The size of the header without the magic number. */
-	@Deprecated
-	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		52;
-	
-	/** The size of the header with the magic number. */
-	@Deprecated
-	public static final int HEADER_SIZE_WITH_MAGIC =
-		56;
-	
-	/** The offset to the BootJAR offset (which has BootRAM), with magic. */
-	@Deprecated
-	public static final int OFFSET_OF_BOOTJAROFFSET =
-		16;
-	
-	/** The offset to the BootJAR size, with magic. */
-	@Deprecated
-	public static final int OFFSET_OF_BOOTJARSIZE =
-		20;
-	
-	/** Size of individual table of contents entry. */
-	@Deprecated
-	public static final int TOC_ENTRY_SIZE =
-		20;
-	
 	/** The format version of the JAR. */
 	protected final short formatVersion;
 	

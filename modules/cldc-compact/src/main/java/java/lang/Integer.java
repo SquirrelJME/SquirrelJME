@@ -10,7 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -186,6 +188,11 @@ public final class Integer
 	@Override
 	public String toString()
 	{
+		// Normal memory profile?
+		if (RuntimeShelf.memoryProfile() >= MemoryProfileType.NORMAL)
+			return Integer.toString(this._value, 10);
+		
+		// Try to reduce memory by caching this
 		Reference<String> ref = this._string;
 		String rv;
 		

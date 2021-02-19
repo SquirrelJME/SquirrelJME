@@ -724,7 +724,7 @@ public final class BootState
 		// Set and initialize all of the entries within the pool
 		for (int i = 1; i < rtPoolSz; i++)
 		{
-			Object pv = this.__loadPool(rtPool, rtPool.byIndex(i));
+			Object pv = this.__loadPool(rv, rtPool, rtPool.byIndex(i));
 			
 			// Depends on the type of value returned
 			if (pv instanceof Integer)
@@ -1627,8 +1627,12 @@ public final class BootState
 		__for._virtualBinds = UnmodifiableList.<MethodBinder>of(rv);
 		
 		// Process every class
+		Set<MethodNameAndType> declaredMethods = new LinkedHashSet<>();
 		for (ClassState at : chain)
 		{
+			// Is this class abstract ?
+			boolean isAtAbstract = at.classFile.flags().isAbstract();
+			
 			// If the class has no pool it has not been loaded yet, so attempt
 			// to load it
 			if (at._poolMemHandle == null)
@@ -1636,10 +1640,50 @@ public final class BootState
 			
 			// Calculate where methods are bound to
 			for (MinimizedMethod method : at.classFile.methods(false))
-				rv.add(new MethodBinder(at, method, new VTableMethod(
+			{
+				// Setup and register the bind
+				MethodBinder bind = new MethodBinder(at, method,
+					new VTableMethod(
 					this.__calcMethodCodeAddr(at, false, method),
 						at._poolMemHandle),
-					__for.thisName.isInSamePackage(at.thisName)));
+					__for.thisName.isInSamePackage(at.thisName));
+				rv.add(bind);
+				
+				// Used to handle interfaces later, if they are missing
+				if (isAtAbstract)
+					declaredMethods.add(method.nameAndType());
+			}
+			
+			// No further processing is needed for abstract methods
+			if (!isAtAbstract)
+				continue;
+				
+			// Map in interfaces for this method accordingly if abstract, since
+			// we will need to fill these in
+			for (ClassName iFaceName : at.classFile.interfaceNames())
+			{
+				// Handle all methods within the interface if they have not
+				// yet been declared
+				ClassState iFaceState = this.loadClass(iFaceName);
+				for (MinimizedMethod iMethod : iFaceState.classFile
+					.methods(false))
+					if (!declaredMethods.contains(iMethod.nameAndType()))
+					{
+						// Debug
+						Debugging.debugNote("iMethod: %s:%s",
+							iFaceName, iMethod.nameAndType());
+						
+						// Create a pure virtual bind, but do not use
+						// the pure virtual name and type, but only
+						// the actual link
+						rv.add(new MethodBinder(at, iMethod,
+							this.__pureVirtualBind().vTable,
+							__for.thisName.isInSamePackage(at.thisName)));
+						
+						// Is now declared so skip later processing
+						declaredMethods.add(iMethod.nameAndType());
+					}
+			}
 		}
 		
 		return rv;
@@ -1902,6 +1946,7 @@ public final class BootState
 	/**
 	 * Loads the specified pool entry into memory and returns the handle.
 	 *
+	 * @param __rv The class state this is for.
 	 * @param __clPool The class runtime pool;
 	 * @param __entry The entry to load.
 	 * @return The loaded pool value.
@@ -1909,7 +1954,8 @@ public final class BootState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
-	private Object __loadPool(BasicPool __clPool, BasicPoolEntry __entry)
+	private Object __loadPool(ClassState __rv, BasicPool __clPool,
+		BasicPoolEntry __entry)
 		throws IOException, NullPointerException
 	{
 		if (__clPool == null || __entry == null)
@@ -2035,9 +2081,9 @@ public final class BootState
 				}
 				
 				// {@squirreljme.error BC0s Could not link the given method.
-				// (The method to link; The binding table)}
+				// (The source class; The method to link; The binding table)}
 				throw new InvalidClassFormatException(String.format(
-					"BC0s %s %s", __entry, binds));
+					"BC0s %s %s %s", __rv.thisName, __entry, binds));
 				
 				// Get the XTable for a given class
 			case INVOKE_XTABLE:

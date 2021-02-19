@@ -31,6 +31,7 @@
       <w>invokeinterface</w>
       <w>invokenonvirtual</w>
       <w>invokespecial</w>
+      <w>invokevirtual</w>
       <w>ioob</w>
       <w>ireturn</w>
       <w>itable</w>

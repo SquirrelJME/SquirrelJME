@@ -811,48 +811,72 @@ public final class NativeCPU
 					{
 						// Is this a load operation?
 						boolean load = ((op & 0b1000) != 0);
+						DataType dt = DataType.of(op & 0b0111);
+						
+						// Is this a long access?
+						boolean isWide = dt.isWide();
 						
 						// The handle to read from
-						MemHandle handle =
-							this.state.memHandles.get(lr[argRaw[1]]);
-						int off = lr[argRaw[2]];
+						MemHandle handle = this.state.memHandles.get(
+							lr[argRaw[(isWide ? 2 : 1)]]);
+						int off = lr[argRaw[(isWide ? 3 : 2)]];
 						
 						// Potential load/store value
-						int read = 0;
-						int write = lr[argRaw[0]];
+						int readLo = 0;
+						int writeLo = lr[argRaw[0]];
+						
+						// Potential load/store value
+						int readHi = 0;
+						int writeHi = lr[argRaw[1]];
 						
 						// Depends on the type
-						DataType dt = DataType.of(op & 0b0111);
 						switch (dt)
 						{
 							case BYTE:
 								if (load)
-									read = (byte)handle.memReadByte(off);
+									readLo = (byte)handle.memReadByte(off);
 								else
-									handle.memWriteByte(off, write);
+									handle.memWriteByte(off, writeLo);
 								break;
 							
 							case CHARACTER:
 								if (load)
-									read = handle.memReadShort(off) & 0xFFF;
+									readLo = handle.memReadShort(off) & 0xFFF;
 								else
-									handle.memWriteShort(off, write);
+									handle.memWriteShort(off, writeLo);
 								break;
 							
 							case SHORT:
 								if (load)
-									read = (short)handle.memReadShort(off);
+									readLo = (short)handle.memReadShort(off);
 								else
-									handle.memWriteShort(off, write);
+									handle.memWriteShort(off, writeLo);
 								break;
 								
 							case OBJECT:
 							case INTEGER:
 							case FLOAT:
 								if (load)
-									read = handle.memReadInt(off);
+									readLo = handle.memReadInt(off);
 								else
-									handle.memWriteInt(off, write);
+									handle.memWriteInt(off, writeLo);
+								break;
+							
+							case LONG:
+							case DOUBLE:
+								if (load)
+								{
+									long v = handle.memReadLong(off);
+									
+									readLo = (int)v;
+									readHi = (int)(v >>> 32);
+								}
+								else
+								{
+									handle.memWriteLong(off,
+										((long)writeHi << 32) |
+										(writeLo & 0xFFFFFFFFL));
+								}
 								break;
 							
 							default:
@@ -861,7 +885,11 @@ public final class NativeCPU
 						
 						// Store in value
 						if (load)
-							lr[argRaw[0]] = read;
+						{
+							lr[argRaw[0]] = readLo;
+							if (isWide)
+								lr[argRaw[1]] = readHi;
+						}
 					}
 					break;
 				

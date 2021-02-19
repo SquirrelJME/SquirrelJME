@@ -10,9 +10,9 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.mle.MathShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.jvm.summercoat.lle.LLEMathShelf;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -137,6 +137,11 @@ public final class Long
 	@Override
 	public String toString()
 	{
+		// Normal memory profile?
+		if (RuntimeShelf.memoryProfile() >= MemoryProfileType.NORMAL)
+			return Long.toString(this._value, 10);
+		
+		// Try to reduce memory usage
 		Reference<String> ref = this._string;
 		String rv;
 		
@@ -458,6 +463,7 @@ public final class Long
 	 * @return The boxed value.
 	 * @since 2018/09/23
 	 */
+	@SuppressWarnings("UnnecessaryBoxing")
 	@ImplementationNote("This is not cached.")
 	public static Long valueOf(long __v)
 	{

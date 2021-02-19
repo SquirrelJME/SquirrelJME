@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
@@ -146,6 +147,21 @@ public enum MLERuntime
 				default:
 					return BuiltInLocaleType.UNSPECIFIED;
 			}
+		}
+	},
+	
+	/** {@link RuntimeShelf#memoryProfile()}. */
+	MEMORY_PROFILE("memoryProfile:()I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// No memory concerns
+			return MemoryProfileType.NORMAL;
 		}
 	},
 	
