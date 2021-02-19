@@ -151,9 +151,17 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
-	public static short reverseBytes(short __a)
+	/**
+	 * Reverses the given bytes.
+	 * 
+	 * @param __i The value to reverse.
+	 * @return The reversed value.
+	 * @since 2021/02/18
+	 */
+	public static short reverseBytes(short __i)
 	{
-		throw new todo.TODO();
+		// 0xBBAA -> 0xAABB
+		return (short)((__i >>> 8) | (__i << 8));
 	}
 	
 	/**

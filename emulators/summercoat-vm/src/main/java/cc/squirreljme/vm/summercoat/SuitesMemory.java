@@ -190,9 +190,10 @@ public final class SuitesMemory
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public int memRegionOffset()
+	public long memRegionOffset()
 	{
 		return this.offset;
 	}
@@ -248,7 +249,7 @@ public final class SuitesMemory
 		for (int i = 0; i < numSuites; i++)
 		{
 			SuiteMemory from = suiteMem[i];
-			pre[i] = new PreAddressedClassLibrary(from.memRegionOffset(),
+			pre[i] = new PreAddressedClassLibrary((int)from.memRegionOffset(),
 				(int)from.memRegionSize(), from.libName);
 		}
 		

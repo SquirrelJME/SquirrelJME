@@ -163,9 +163,10 @@ public final class SuiteMemory
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public int memRegionOffset()
+	public long memRegionOffset()
 	{
 		return this.offset;
 	}

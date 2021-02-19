@@ -10,7 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.summercoat.lle.LLEMathShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -275,9 +277,25 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
-	public static long reverseBytes(long __a)
+	/**
+	 * Reverses the given bytes.
+	 * 
+	 * @param __i The integer to reverse.
+	 * @return The reversed bytes.
+	 * @since 2021/02/18
+	 */
+	public static long reverseBytes(long __i)
 	{
-		throw new todo.TODO();
+		// 0xAABBCCDD_EEFFGGHH -> 0xBBAADDCC_FFEEHHGG
+		__i = (((__i & 0xFF00FF00_FF00FF00L) >>> 8) |
+			((__i & 0x00FF00FF_00FF00FFL) << 8));
+			
+		// 0xAABBCCDD_EEFFGGHH -> 0xDDCCBBAA_HHGGFFEE
+		__i = (((__i & 0xFFFF0000_FFF0000L) >>> 8) |
+			((__i & 0x0000FFFF_0000FFFFL) << 8));
+		
+		// 0xDDCCBBAA_HHGGFFEE -> 0xHHGGFFEE_DDCCBBAA
+		return (__i >>> 32) | (__i << 32);
 	}
 	
 	public static long rotateLeft(long __a, int __b)

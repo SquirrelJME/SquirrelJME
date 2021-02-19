@@ -10,28 +10,56 @@
 package cc.squirreljme.jvm.summercoat.ld.mem;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.lle.LLERuntimeShelf;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Access to real memory within the system, this should access the entire
- * address space that is available to the system.
+ * Access to real memory within the system, this can access a region of memory.
  *
  * @since 2021/02/14
  */
 public final class RealMemory
 	extends AbstractWritableMemory
 {
+	/** The native byte order. */
+	private static final int _NATIVE_ORDER =
+		RuntimeShelf.byteOrder();
+	
+	/** The base address. */
+	private final long baseAddr;
+	
+	/** The length. */
+	private final int length;
+	
 	/**
 	 * Initializes the real memory accessor.
 	 * 
+	 * @param __baseAddr The base address.
+	 * @param __len The number of bytes to access.
 	 * @since 2021/02/14
 	 */
-	public RealMemory()
+	public RealMemory(long __baseAddr, int __len)
 	{
 		// Use the byte order of the system so it matches properly for
 		// read/write operations
-		super(LLERuntimeShelf.byteOrder());
+		this(__baseAddr, __len, LLERuntimeShelf.byteOrder());
+	}
+	
+	/**
+	 * Initializes the real memory accessor.
+	 * 
+	 * @param __baseAddr The base address.
+	 * @param __len The number of bytes to access.
+	 * @param __byteOrder The {@link ByteOrderType} to use for access.
+	 * @since 2021/02/14
+	 */
+	public RealMemory(long __baseAddr, int __len, int __byteOrder)
+	{
+		super(__byteOrder);
+		
+		this.baseAddr = __baseAddr;
+		this.length = __len;
 	}
 	
 	/**
@@ -42,18 +70,8 @@ public final class RealMemory
 	@Override
 	public int memReadByte(long __addr)
 	{
-		return Assembly.memReadByte(__addr, 0) & 0xFF;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/02/14
-	 */
-	@Override
-	public void memReadBytes(long __addr, byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, NullPointerException
-	{
-		throw Debugging.todo();
+		return Assembly.memReadByte(
+			this.__check(__addr, 1), 0) & 0xFF;
 	}
 	
 	/**
@@ -63,7 +81,7 @@ public final class RealMemory
 	@Override
 	public MemHandleReference memReadHandle(long __addr)
 	{
-		int rv = Assembly.memReadInt(__addr, 0);
+		int rv = this.memReadInt(__addr);
 		return (rv == 0 ? null : new MemHandleReference(rv));
 	}
 	
@@ -74,7 +92,8 @@ public final class RealMemory
 	@Override
 	public int memReadInt(long __addr)
 	{
-		return Assembly.memReadInt(__addr, 0);
+		return this.__valueInt(
+			Assembly.memReadInt(this.__check(__addr, 4), 0));
 	}
 	
 	/**
@@ -84,7 +103,8 @@ public final class RealMemory
 	@Override
 	public long memReadLong(long __addr)
 	{
-		return Assembly.memReadLong(__addr, 0);
+		return this.__valueLong(
+			Assembly.memReadLong(this.__check(__addr, 8), 0));
 	}
 	
 	/**
@@ -95,18 +115,19 @@ public final class RealMemory
 	@Override
 	public int memReadShort(long __addr)
 	{
-		return Assembly.memReadShort(__addr, 0) & 0xFFFF;
+		return this.__valueShort((short)Assembly.memReadShort(
+			this.__check(__addr, 2), 0)) & 0xFFFF;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/02/14
+	 * @return
 	 */
 	@Override
-	public int memRegionOffset()
+	public long memRegionOffset()
 	{
-		// Always starts at zero
-		return 0;
+		return this.baseAddr;
 	}
 	
 	/**
@@ -116,8 +137,7 @@ public final class RealMemory
 	@Override
 	public long memRegionSize()
 	{
-		// This can address all of 64-bit memory!
-		return Memory.MAX_64BIT;
+		return this.length;
 	}
 	
 	/**
@@ -127,17 +147,7 @@ public final class RealMemory
 	@Override
 	public void memWriteByte(long __addr, int __v)
 	{
-		Assembly.memWriteByte(__addr, 0, __v);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/02/14
-	 */
-	@Override
-	public void memWriteBytes(long __addr, byte[] __b, int __o, int __l)
-	{
-		throw Debugging.todo();
+		Assembly.memWriteByte(this.__check(__addr, 1), 0, __v);
 	}
 	
 	/**
@@ -147,7 +157,7 @@ public final class RealMemory
 	@Override
 	public void memWriteHandle(long __addr, MemHandleReference __v)
 	{
-		Assembly.memWriteInt(__addr, 0, (__v == null ? 0 : __v.id));
+		this.memWriteInt(__addr, (__v == null ? 0 : __v.id));
 	}
 	
 	/**
@@ -157,7 +167,8 @@ public final class RealMemory
 	@Override
 	public void memWriteInt(long __addr, int __v)
 	{
-		Assembly.memWriteInt(__addr, 0, __v);
+		Assembly.memWriteInt(this.__check(__addr, 4), 0,
+			this.__valueInt(__v));
 	}
 	
 	/**
@@ -167,7 +178,8 @@ public final class RealMemory
 	@Override
 	public void memWriteLong(long __addr, long __v)
 	{
-		Assembly.memWriteLong(__addr, 0, __v);
+		Assembly.memWriteLong(this.__check(__addr, 8), 0,
+			this.__valueLong(__v));
 	}
 	
 	/**
@@ -177,6 +189,72 @@ public final class RealMemory
 	@Override
 	public void memWriteShort(long __addr, int __v)
 	{
-		Assembly.memWriteShort(__addr, 0, __v);
+		Assembly.memWriteShort(this.__check(__addr, 2), 0,
+			this.__valueShort((short)__v));
+	}
+	
+	/**
+	 * Checks the address to determine if it is valid.
+	 * 
+	 * @param __addr The address used.
+	 * @param __width The width used.
+	 * @return The actual address to read from.
+	 * @throws IllegalArgumentException If the width is zero or negative.
+	 * @throws MemoryAccessException If the memory could not be read.
+	 * @since 2021/02/18
+	 */
+	private long __check(long __addr, int __width)
+	{
+		// The width cannot be negative!
+		if (__width <= 0)
+			throw new IllegalArgumentException("INEG");
+		
+		// Out of bounds access?
+		if (__addr < 0 || (__addr + __width) > this.length)
+			throw new MemoryAccessException(__addr);
+		
+		return this.baseAddr + __addr;
+	}
+	
+	/**
+	 * Returns the value correctly byte swapped.
+	 * 
+	 * @param __v The value to normalize.
+	 * @return The normalized value.
+	 * @since 2021/02/18
+	 */
+	private int __valueInt(int __v)
+	{
+		if (this.byteOrder != RealMemory._NATIVE_ORDER)
+			return Integer.reverseBytes(__v);
+		return __v;
+	}
+	
+	/**
+	 * Returns the value correctly byte swapped.
+	 * 
+	 * @param __v The value to normalize.
+	 * @return The normalized value.
+	 * @since 2021/02/18
+	 */
+	private long __valueLong(long __v)
+	{
+		if (this.byteOrder != RealMemory._NATIVE_ORDER)
+			return Long.reverseBytes(__v);
+		return __v;
+	}
+	
+	/**
+	 * Returns the value correctly byte swapped.
+	 * 
+	 * @param __v The value to normalize.
+	 * @return The normalized value.
+	 * @since 2021/02/18
+	 */
+	private short __valueShort(short __v)
+	{
+		if (this.byteOrder != RealMemory._NATIVE_ORDER)
+			return Short.reverseBytes(__v);
+		return __v;
 	}
 }

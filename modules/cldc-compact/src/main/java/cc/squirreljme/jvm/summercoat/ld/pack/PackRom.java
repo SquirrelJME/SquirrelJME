@@ -11,7 +11,8 @@ package cc.squirreljme.jvm.summercoat.ld.pack;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.summercoat.ld.mem.RealMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -56,6 +57,8 @@ public final class PackRom
 	 */
 	public static PackRom load(int __memAddr)
 	{
-		return new PackRom(__memAddr);
+		new RealMemory(ByteOrderType.BIG_ENDIAN);
+		
+		return new PackRom(__memAddr));
 	}
 }

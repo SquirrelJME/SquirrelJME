@@ -10,34 +10,33 @@
 package cc.squirreljme.jvm.summercoat.ld.mem;
 
 /**
- * This represents the starting region of memory.
+ * This is thrown when there is an error accessing memory.
  *
- * @since 2019/04/21
+ * @since 2021/02/18
  */
-public interface Memory
+public class MemoryAccessException
+	extends RuntimeException
 {
-	/** Maximum 32-bit memory. */
-	long MAX_32BIT =
-		0xFFFF_FFFFL;
-	
-	/** Maximum 64-bit memory. */
-	long MAX_64BIT =
-		0xFFFF_FFFF__FFFF_FFFFL;
+	/**
+	 * Initializes the exception.
+	 * 
+	 * @param __addr The address.
+	 * @since 2021/02/18
+	 */
+	public MemoryAccessException(long __addr)
+	{
+		super(Long.toString(__addr, 16));
+	}
 	
 	/**
-	 * The starting region of this memory.
-	 *
-	 * @return The starting region of this memory.
-	 * @since 2019/04/21
+	 * Initializes the exception.
+	 * 
+	 * @param __addr The address.
+	 * @param __c The cause.
+	 * @since 2021/02/18
 	 */
-	long memRegionOffset();
-	
-	/**
-	 * The length of this memory region.
-	 *
-	 * @return The memory region length.
-	 * @since 2019/04/21
-	 */
-	long memRegionSize();
+	public MemoryAccessException(long __addr, Throwable __c)
+	{
+		super(Long.toString(__addr, 16), __c);
+	}
 }
-

@@ -102,9 +102,10 @@ public class MemHandle
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/01/17
+	 * @return
 	 */
 	@Override
-	public final int memRegionOffset()
+	public final long memRegionOffset()
 	{
 		return 0;
 	}

@@ -68,9 +68,9 @@ public final class VirtualMemory
 		Memory[] cache = this._cache;
 		for (Memory c : cache)
 		{
-			long cbase = c.memRegionOffset(),
-				csize = c.memRegionSize(),
-				vaddr = __addr - cbase;
+			long cbase = c.memRegionOffset();
+			long csize = c.memRegionSize();
+			long vaddr = __addr - cbase;
 			
 			if (vaddr >= 0 && vaddr < csize)
 				return ((ReadableMemory)c).memReadByte(vaddr);
@@ -84,9 +84,10 @@ public final class VirtualMemory
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public int memRegionOffset()
+	public long memRegionOffset()
 	{
 		return 0;
 	}
