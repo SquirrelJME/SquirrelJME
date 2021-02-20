@@ -127,6 +127,33 @@ public enum SystemCallHandler
 		}
 	},
 	
+	/** {@link SystemCallIndex#MEM_HANDLE_MOVE}. */
+	MEM_HANDLE_MOVE(SystemCallIndex.MEM_HANDLE_MOVE)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/19
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			// Get all the details for the system call
+			MemHandle src = __cpu.state.memHandles.get(__args[0]);
+			int srcOff = __args[1];
+			MemHandle dest = __cpu.state.memHandles.get(__args[2]);
+			int destOff = __args[3];
+			int length = __args[4];
+			
+			// Copy all the data around
+			for (int i = 0; i < length; i++)
+				dest.memWriteByte(destOff + i,
+					src.memReadByte(srcOff + i));
+			
+			return 0;
+		}
+	},
+	
 	/** {@link SystemCallIndex#MEM_HANDLE_NEW}. */
 	MEM_HANDLE_NEW(SystemCallIndex.MEM_HANDLE_NEW)
 	{
@@ -171,13 +198,13 @@ public enum SystemCallHandler
 			switch (__args[0])
 			{
 					// The address of the system ROM
-				case RuntimeVmAttribute.ROM_ADDRESS_LOW:
+				case RuntimeVmAttribute.ROM_ADDR_LOW:
 					return __cpu.state.romBase;
 					
 					// SummerCoat is purely a 32-bit system so there is no
 					// high address for the ROM.
-				case RuntimeVmAttribute.ROM_ADDRESS_HIGH:
-					return 0;
+				case RuntimeVmAttribute.ROM_ADDR_HIGH:
+					return 0x12345678;
 				
 					// The current operating system
 				case RuntimeVmAttribute.OPERATING_SYSTEM:

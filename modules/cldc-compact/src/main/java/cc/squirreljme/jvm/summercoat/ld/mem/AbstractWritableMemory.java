@@ -135,5 +135,30 @@ public abstract class AbstractWritableMemory
 				throw Debugging.oops();
 		}
 	}
+	
+	/**
+	 * Opens an output stream for this memory stream.
+	 * 
+	 * @return The output stream.
+	 * @since 2021/02/19
+	 */
+	public final WritableMemoryOutputStream outputStream()
+	{
+		return new WritableMemoryOutputStream(this);
+	}
+	
+	/**
+	 * Opens an output stream for this memory stream.
+	 * 
+	 * @param __addr The address to read from.
+	 * @param __len The length to use.
+	 * @return The output stream.
+	 * @since 2021/02/19
+	 */
+	public final WritableMemoryOutputStream outputStream(long __addr,
+		long __len)
+	{
+		return new WritableMemoryOutputStream(this, __addr, __len);
+	}
 }
 

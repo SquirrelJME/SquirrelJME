@@ -65,6 +65,30 @@ public abstract class AbstractReadableMemory
 	}
 	
 	/**
+	 * Opens an input stream for this memory stream.
+	 * 
+	 * @return The input stream.
+	 * @since 2021/02/19
+	 */
+	public final ReadableMemoryInputStream inputStream()
+	{
+		return new ReadableMemoryInputStream(this);
+	}
+	
+	/**
+	 * Opens an input stream for this memory stream.
+	 * 
+	 * @param __addr The address to read from.
+	 * @param __len The length to use.
+	 * @return The input stream.
+	 * @since 2021/02/19
+	 */
+	public final ReadableMemoryInputStream inputStream(long __addr, long __len)
+	{
+		return new ReadableMemoryInputStream(this, __addr, __len);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */

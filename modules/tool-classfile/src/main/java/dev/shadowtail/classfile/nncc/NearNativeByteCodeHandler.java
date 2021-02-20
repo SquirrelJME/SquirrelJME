@@ -428,13 +428,9 @@ public final class NearNativeByteCodeHandler
 			int a = __a.register,
 				b = __b.register;
 			
+			codeBuilder.addCopy(a, b);
 			if (__as.isWide())
-			{
-				codeBuilder.addCopy(a, b);
 				codeBuilder.addCopy(a + 1, b + 1);
-			}
-			else
-				codeBuilder.addCopy(a, b);
 		}
 		
 		// Otherwise a conversion
@@ -457,13 +453,10 @@ public final class NearNativeByteCodeHandler
 			// Read out return value
 			int a = NativeCode.RETURN_REGISTER,
 				b = __b.register;
+			
+			codeBuilder.addCopy(a, b);
 			if (__bs.isWide())
-			{
-				codeBuilder.addCopy(a, b);
 				codeBuilder.addCopy(a + 1, b + 1);
-			}
-			else
-				codeBuilder.addCopy(a, b);
 		}
 	}
 	
@@ -480,13 +473,10 @@ public final class NearNativeByteCodeHandler
 		
 		// Perform the copy, make sure to correctly handle wide copies!
 		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		codebuilder.addCopy(__in.register, __out.register);
 		if (__in.type.isWide())
-		{
-			codebuilder.addCopy(__in.register, __out.register);
 			codebuilder.addCopy(__in.register + 1, __out.register + 1);
-		}
-		else
-			codebuilder.addCopy(__in.register, __out.register);
 		
 		// Clear references in the event it was overwritten
 		this.__refClear();
@@ -2304,12 +2294,6 @@ public final class NearNativeByteCodeHandler
 					codeBuilder.addCopy(__in[0].register, __out.register);
 				break;
 				
-				// Long unpack high
-			case "longUnpackHigh":
-				if (__in[0].register != __out.register)
-					codeBuilder.addCopy(__in[0].register, __out.register);
-				break;
-				
 				// Invoke method (possibly return a value)
 			case "invoke":
 			case "invokeV":
@@ -2353,19 +2337,25 @@ public final class NearNativeByteCodeHandler
 				}
 				break;
 				
-				// Double/Long pack
+				// Double/Long pack, low + high
 			case "doublePack":
 			case "longPack":
-				if (__in[1].register != __out.register + 1)
-					codeBuilder.addCopy(__in[1].register, __out.register + 1);
 				if (__in[0].register != __out.register)
 					codeBuilder.addCopy(__in[0].register, __out.register);
+				if (__in[1].register != __out.register + 1)
+					codeBuilder.addCopy(__in[1].register, __out.register + 1);
+				break;
+				
+				// Long unpack high
+			case "longUnpackHigh":
+				if (__in[0].register + 1 != __out.register)
+					codeBuilder.addCopy(__in[0].register + 1, __out.register);
 				break;
 			
 				// Long unpack low
 			case "longUnpackLow":
-				if (__in[0].register + 1 != __out.register)
-					codeBuilder.addCopy(__in[0].register + 1, __out.register);
+				if (__in[0].register != __out.register)
+					codeBuilder.addCopy(__in[0].register, __out.register);
 				break;
 				
 				// Read from memory handle
@@ -3102,6 +3092,10 @@ public final class NearNativeByteCodeHandler
 			
 			case "memHandleNew":
 				id = SystemCallIndex.MEM_HANDLE_NEW;
+				break;
+			
+			case "memHandleMove":
+				id = SystemCallIndex.MEM_HANDLE_MOVE;
 				break;
 			
 			case "pdOfStdErr":

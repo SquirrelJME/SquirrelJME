@@ -28,14 +28,14 @@ public final class SoftLong
 	/**
 	 * Adds two values.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long add(int __ah, int __al, int __bh, int __bl)
+	public static long add(int __al, int __ah, int __bl, int __bh)
 	{
 		// Add the higher/lower parts
 		int ch = __ah + __bh,
@@ -47,35 +47,35 @@ public final class SoftLong
 			ch++;
 		
 		// Return result
-		return Assembly.longPack(ch, cl);
+		return Assembly.longPack(cl, ch);
 	}
 	
 	/**
 	 * Ands two values.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long and(int __ah, int __al, int __bh, int __bl)
+	public static long and(int __al, int __ah, int __bl, int __bh)
 	{
-		return Assembly.longPack(__ah & __bh, __al & __bl);
+		return Assembly.longPack(__al & __bl, __ah & __bh);
 	}
 	
 	/**
 	 * Compares two values.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static int cmp(int __ah, int __al, int __bh, int __bl)
+	public static int cmp(int __al, int __ah, int __bl, int __bh)
 	{
 		// Compare high values firsts
 		if (__ah < __bh)
@@ -96,34 +96,34 @@ public final class SoftLong
 	/**
 	 * Divides two values.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long div(int __ah, int __al, int __bh, int __bl)
+	public static long div(int __al, int __ah, int __bl, int __bh)
 	{
 		// Dividing by zero?
 		if (__bh == 0 && __bl == 0)
 			throw new ArithmeticException();
 		
-		return SoftLong.__div(false, Assembly.longPack(__ah, __al),
-			Assembly.longPack(__bh, __bl));
+		return SoftLong.__div(false, Assembly.longPack(__al, __ah),
+			Assembly.longPack(__bl, __bh));
 	}
 	
 	/**
 	 * Multiplies two values.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long mul(int __ah, int __al, int __bh, int __bl)
+	public static long mul(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -132,12 +132,12 @@ public final class SoftLong
 	/**
 	 * Negates a value.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
+	 * @param __ah A high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long neg(int __ah, int __al)
+	public static long neg(int __al, int __ah)
 	{
 		// Negate and check for overflow
 		int nh = (~__ah),
@@ -146,128 +146,128 @@ public final class SoftLong
 			nh++;
 		
 		// Return result
-		return Assembly.longPack(nh, nl);
+		return Assembly.longPack(nl, nh);
 	}
 	
 	/**
 	 * Ors a value.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long or(int __ah, int __al, int __bh, int __bl)
+	public static long or(int __al, int __ah, int __bl, int __bh)
 	{
-		return Assembly.longPack(__ah | __bh, __al | __bl);
+		return Assembly.longPack(__al | __bl, __ah | __bh);
 	}
 	
 	/**
 	 * Remainders a value.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long rem(int __ah, int __al, int __bh, int __bl)
+	public static long rem(int __al, int __ah, int __bl, int __bh)
 	{
 		// Dividing by zero?
 		if (__bh == 0 && __bl == 0)
 			throw new ArithmeticException();
 		
-		return SoftLong.__div(true, Assembly.longPack(__ah, __al),
-			Assembly.longPack(__bh, __bl));
+		return SoftLong.__div(true, Assembly.longPack(__al, __ah),
+			Assembly.longPack(__bl, __bh));
 	}
 	
 	/**
 	 * Shifts value left by bits.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
+	 * @param __ah A high.
 	 * @param __s Shift amount.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long shl(int __ah, int __al, int __s)
+	public static long shl(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
 		__s &= 0x3F;
 		
 		// Doing nothing?
 		if (__s == 0)
-			return Assembly.longPack(__ah, __al);
+			return Assembly.longPack(__al, __ah);
 		
 		// Shifting all the low bits to the high bits
 		else if (__s >= 32)
-			return Assembly.longPack(__al << (__s - 32), 0);
+			return Assembly.longPack(0, __al << (__s - 32));
 		
 		// Merge of bits (shift in range of 1-31)
 		else
-			return Assembly.longPack((__ah << __s) | (__al >>> (32 - __s)),
-				(__al << __s));
+			return Assembly.longPack((__al << __s),
+				(__ah << __s) | (__al >>> (32 - __s)));
 	}
 	
 	/**
 	 * Shifts value right by bits.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
+	 * @param __ah A high.
 	 * @param __s Shift amount.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long shr(int __ah, int __al, int __s)
+	public static long shr(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
 		__s &= 0x3F;
 		
 		// Doing nothing?
 		if (__s == 0)
-			return Assembly.longPack(__ah, __al);
+			return Assembly.longPack(__al, __ah);
 		
 		// Shifting all the high bits low
 		else if (__s >= 32)
-			return Assembly.longPack((__ah & 0x80000000) >> 31,
-				__ah >> (__s - 32));
+			return Assembly.longPack(__ah >> (__s - 32),
+				(__ah & 0x80000000) >> 31);
 		
 		// Merge of bits (shift in range of 1-31)
 		else
-			return Assembly.longPack((__ah >> __s),
-				(__ah << (32 - __s)) | (__al >>> __s));
+			return Assembly.longPack((__ah << (32 - __s)) | (__al >>> __s),
+				(__ah >> __s));
 	}
 	
 	/**
 	 * Subtracts values.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long sub(int __ah, int __al, int __bh, int __bl)
+	public static long sub(int __al, int __ah, int __bl, int __bh)
 	{
 		// The same as add, but the second operand is negated
-		long nb = SoftLong.neg(__bh, __bl);
-		return SoftLong.add(__ah, __al,
-			Assembly.longUnpackHigh(nb), Assembly.longUnpackLow(nb));
+		long nb = SoftLong.neg(__bl, __bh);
+		return SoftLong.add(__al, __ah, Assembly.longUnpackLow(nb),
+			Assembly.longUnpackHigh(nb));
 	}
 	
 	/**
 	 * Converts to double.
 	 *
-	 * @param __ah High value.
 	 * @param __al Low value.
+	 * @param __ah High value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static double toDouble(int __ah, int __al)
+	public static double toDouble(int __al, int __ah)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -276,12 +276,12 @@ public final class SoftLong
 	/**
 	 * Converts to float.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
+	 * @param __ah A high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static float toFloat(int __ah, int __al)
+	public static float toFloat(int __al, int __ah)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -290,12 +290,12 @@ public final class SoftLong
 	/**
 	 * Converts to integer.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
+	 * @param __ah A high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static int toInteger(int __ah, int __al)
+	public static int toInteger(int __al, int __ah)
 	{
 		// Just return the low order bits
 		return __al;
@@ -304,44 +304,44 @@ public final class SoftLong
 	/**
 	 * Shifts value bits right unsigned.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
+	 * @param __ah A high.
 	 * @param __s Shift amount.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long ushr(int __ah, int __al, int __s)
+	public static long ushr(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
 		__s &= 0x3F;
 		
 		// Doing nothing?
 		if (__s == 0)
-			return Assembly.longPack(__ah, __al);
+			return Assembly.longPack(__al, __ah);
 		
 		// Shifting all the high bits low
 		else if (__s >= 32)
-			return Assembly.longPack(0, __ah >>> (__s - 32));
+			return Assembly.longPack(__ah >>> (__s - 32), 0);
 		
 		// Merge of bits (shift in range of 1-31)
 		else
-			return Assembly.longPack((__ah >>> __s),
-				(__ah << (32 - __s)) | (__al >>> __s));
+			return Assembly.longPack((__ah << (32 - __s)) | (__al >>> __s),
+				(__ah >>> __s));
 	}
 	
 	/**
 	 * Xors two values.
 	 *
-	 * @param __ah A high.
 	 * @param __al A low.
-	 * @param __bh B high.
+	 * @param __ah A high.
 	 * @param __bl B low.
+	 * @param __bh B high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long xor(int __ah, int __al, int __bh, int __bl)
+	public static long xor(int __al, int __ah, int __bl, int __bh)
 	{
-		return Assembly.longPack(__ah ^ __bh, __al ^ __bl);
+		return Assembly.longPack(__al ^ __bl, __ah ^ __bh);
 	}
 	
 	/**

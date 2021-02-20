@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.LogicHandler;
+import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -157,8 +158,15 @@ public final class LLEObjectShelf
 	public static void arrayCopy(char[] __src, int __srcOff,
 		char[] __dest, int __destOff, int __len)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// Debug
+		Debugging.print('<', '\n');
+		
+		int arrayBase = SystemCall.arrayAllocationBase();
+		SystemCall.memHandleMove(__src, arrayBase + (2 * __srcOff),
+			__dest, arrayBase + (2 * __destOff), (2 * __len));
+			
+		// Debug
+		Debugging.print('>', '\n');
 	}
 	
 	/**

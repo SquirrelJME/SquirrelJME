@@ -555,12 +555,12 @@ public final class Assembly
 	/**
 	 * Packs the given two integers to a long value.
 	 *
-	 * @param __hi The high value.
 	 * @param __lo The low value.
+	 * @param __hi The high value.
 	 * @return The long value.
 	 * @since 2019/06/21
 	 */
-	public static native long longPack(int __hi, int __lo);
+	public static native long longPack(int __lo, int __hi);
 	
 	/**
 	 * Unpack high value from long.

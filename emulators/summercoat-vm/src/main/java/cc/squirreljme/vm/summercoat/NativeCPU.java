@@ -899,16 +899,21 @@ public final class NativeCPU
 					{
 						// Is this a load operation?
 						boolean load = ((op & 0b1000) != 0);
+						DataType dt = DataType.of(op & 0b0111);
+						
+						// Is this a long access?
+						boolean isWide = dt.isWide();
 						
 						// The address to load from/store to
-						long base = (lr[argRaw[1]] & 0xFFFFFFFFL) |
-							(((long)lr[argRaw[2]]) << 32L);
-						int offs = (((op & 0x80) != 0) ? argRaw[2] :
-							lr[argRaw[2]]);
+						// Wide: Vl,0 Vh,1 Pl,2 Ph,3 O,4
+						// Narr: V,0       Pl,1 Ph,2 O,3
+						long base = (lr[argRaw[(isWide ? 2 : 1)]] & 0xFFFFFFFFL) |
+							(((long)lr[argRaw[(isWide ? 3 : 2)]]) << 32L);
+						int offs = (((op & 0x80) != 0) ? argRaw[(isWide ? 4 : 3)] :
+							lr[argRaw[(isWide ? 4 : 3)]]);
 						long addr = base + offs;
 						
 						// Not currently valid!
-						DataType dt = DataType.of(op & 0b0111);
 						if (true)
 							throw new VMException(String.format(
 								"Invalid MemAccess: %s " +

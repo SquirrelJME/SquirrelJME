@@ -13,8 +13,12 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.jvm.summercoat.ld.mem.RealMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 
 /**
  * This class is used to access the pack ROM.
@@ -58,10 +62,24 @@ public final class PackRom
 	 */
 	public static PackRom load(long __memAddr)
 	{
-		Debugging.debugNote("Max Pack: %d", ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE);
+		// Parse the header for the pack file
+		AbstractReadableMemory headerMem = new RealMemory(__memAddr,
+			ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE,
+			ByteOrderType.BIG_ENDIAN);
+		try (ReadableMemoryInputStream in = headerMem.inputStream())
+		{
+			// {@squirreljme.error ZZ43 Invalid ROM header.}
+			if (ClassInfoConstants.PACK_MAGIC_NUMBER != in.readInt())
+				throw new RuntimeException("ZZ43");
+			
+			Assembly.breakpoint();
+			throw Debugging.todo();
+		}
 		
-		new RealMemory(__memAddr, ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE, ByteOrderType.BIG_ENDIAN);
-		
-		return new PackRom(__memAddr);
+		// {@squirreljme.error ZZ42 The ROM is corrupted.}
+		catch (IOException __e)
+		{
+			throw new RuntimeException("ZZ42", __e); 
+		}
 	}
 }

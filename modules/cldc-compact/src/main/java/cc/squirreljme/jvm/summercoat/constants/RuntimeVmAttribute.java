@@ -29,11 +29,11 @@ public interface RuntimeVmAttribute
 		1;
 	
 	/** The address where the ROM is located, low word. */
-	byte ROM_ADDRESS_LOW =
+	byte ROM_ADDR_LOW =
 		2;
 	
 	/** The address where the ROM is located, high word. */
-	byte ROM_ADDRESS_HIGH =
+	byte ROM_ADDR_HIGH =
 		3;
 	
 	/** The {@link ByteOrderType} of the system. */

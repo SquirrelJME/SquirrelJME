@@ -149,14 +149,15 @@ public interface SystemCallIndex
 		11;
 	
 	/**
-	 * The API Level of the VM, this has been deprecated since the current
-	 * SquirrelJME API specified in these system calls better handles various
-	 * features.
+	 * Copies bytes from one memory handle to another.
 	 *
-	 * @squirreljme.syscallreturn The API level of the virtual machine.
+	 * @squirreljme.syscallparam 0 The source memory handle.
+	 * @squirreljme.syscallparam 1 The source offset.
+	 * @squirreljme.syscallparam 2 The destination memory handle.
+	 * @squirreljme.syscallparam 3 The destination offset.
+	 * @squirreljme.syscallparam 4 The number of bytes to copy.
 	 */
-	@Deprecated
-	byte API_LEVEL =
+	byte MEM_HANDLE_MOVE =
 		12;
 	
 	/**

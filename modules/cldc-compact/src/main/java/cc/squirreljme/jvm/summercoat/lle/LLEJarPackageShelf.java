@@ -133,11 +133,17 @@ public final class LLEJarPackageShelf
 		
 		// Where is the ROM located?
 		long romAddr = Assembly.longPack(
-			SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDRESS_HIGH),
-			SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDRESS_LOW));
+			SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDR_LOW),
+			SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDR_HIGH));
 		
 		// Debug
 		Debugging.debugNote("ROM is at %#08x", romAddr);
+		
+		Debugging.debugNote("rAddrLo %#08x", SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDR_LOW));
+		Debugging.debugNote("rAddrHi %#08x", SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDR_HIGH));
+		Debugging.debugNote("(int) %#08x", (int)romAddr);
+		Debugging.debugNote("longUnpackLow %#08x", Assembly.longUnpackLow(romAddr));
+		Debugging.debugNote("longUnpackHigh %#08x", Assembly.longUnpackHigh(romAddr));
 		
 		// Create a new manager
 		return PackRom.load(romAddr);

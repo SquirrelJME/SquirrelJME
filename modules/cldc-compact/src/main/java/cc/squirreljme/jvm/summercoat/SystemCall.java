@@ -63,6 +63,32 @@ public final class SystemCall
 	public static native int errorSet(int __dx, int __err);
 	
 	/**
+	 * Moves data within a memory handle.
+	 * 
+	 * @param __src The source memory handle.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination memory handle.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of bytes to copy.
+	 * @since 2021/02/19
+	 */
+	public static native void memHandleMove(int __src, int __srcOff,
+		int __dest, int __destOff, int __len);
+	
+	/**
+	 * Moves data within a memory handle.
+	 * 
+	 * @param __src The source memory handle.
+	 * @param __srcOff The source offset.
+	 * @param __dest The destination memory handle.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of bytes to copy.
+	 * @since 2021/02/19
+	 */
+	public static native void memHandleMove(Object __src, int __srcOff,
+		Object __dest, int __destOff, int __len);
+	
+	/**
 	 * {@link SystemCallIndex#MEM_HANDLE_NEW}: Attempts to allocate a new
 	 * memory handle of the given kind.
 	 * 
