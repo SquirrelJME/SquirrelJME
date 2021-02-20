@@ -10,7 +10,9 @@
 package cc.squirreljme.jvm.summercoat.lle;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
@@ -135,6 +137,9 @@ public final class LLEJarPackageShelf
 		long romAddr = Assembly.longPack(
 			SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDR_LOW),
 			SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ROM_ADDR_HIGH));
+		
+		// Verbosity on methods
+		DebugShelf.verbose(VerboseDebugFlag.METHOD_ENTRY);
 		
 		// Debug
 		Debugging.debugNote("ROM is at %#08x", romAddr);

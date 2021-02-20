@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.summercoat.lle;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
+import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -171,13 +172,13 @@ public final class LLEDebugShelf
 	 * to happen.
 	 * 
 	 * @param __flags The {@link VerboseDebugFlag}.
-	 * @return An integer to be passed to {@link cc.squirreljme.jvm.mle.DebugShelf#verboseStop(int)}.
+	 * @return An integer to be passed to
+	 * {@link cc.squirreljme.jvm.mle.DebugShelf#verboseStop(int)}.
 	 * @since 2020/07/11
 	 */
 	public static int verbose(int __flags)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		return SystemCall.verbose(-1, __flags, 0);
 	}
 	
 	/**
@@ -188,7 +189,6 @@ public final class LLEDebugShelf
 	 */
 	public static void verboseStop(int __code)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		SystemCall.verbose(-1, 0, __code);
 	}
 }

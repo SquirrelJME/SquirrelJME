@@ -147,7 +147,7 @@ public final class Long
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>(
-				(rv = Long.toString(this._value)));
+				(rv = Long.toString(this._value, 10)));
 		
 		return rv;
 	}

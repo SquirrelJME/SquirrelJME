@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 
@@ -412,12 +413,25 @@ public interface SystemCallIndex
 		36;
 	
 	/**
+	 * Enables or disables selective verbosity.
+	 * 
+	 * @squirreljme.syscallparam 1 The starting point on the stack trace,
+	 * should be zero or a negative number.
+	 * @squirreljme.syscallparam 2 The {@link VerboseDebugFlag} to use.
+	 * @squirreljme.syscallparam 3 The code, which can be used to stop.
+	 * @squirreljme.syscallreturn The code to pass later to stop the verbosity.
+	 * @since 2021/02/20
+	 */
+	byte VERBOSE =
+		37;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		37;
+		38;
 }
 

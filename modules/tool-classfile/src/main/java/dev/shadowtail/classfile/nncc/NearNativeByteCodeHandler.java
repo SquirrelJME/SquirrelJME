@@ -3121,6 +3121,10 @@ public final class NearNativeByteCodeHandler
 			case "staticVmAttributes":
 				id = SystemCallIndex.STATIC_VM_ATTRIBUTES;
 				break;
+			
+			case "verbose":
+				id = SystemCallIndex.VERBOSE;
+				break;
 				
 				// {@squirreljme.error JC4r The specified system call method
 				// is not known. (The method)}

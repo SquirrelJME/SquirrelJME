@@ -131,7 +131,7 @@ public class SoftDouble
 	 */
 	public static double or(int __al, int __ah, int __bl, int __bh)
 	{
-		return Assembly.doublePack(__ah | __bh, __al | __bl);
+		return Assembly.doublePack(__al | __bl, __ah | __bh);
 	}
 	
 	/**

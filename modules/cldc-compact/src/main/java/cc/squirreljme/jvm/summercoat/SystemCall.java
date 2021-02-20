@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
@@ -160,4 +161,16 @@ public final class SystemCall
 	 * @since 2021/01/24
 	 */
 	public static native int staticVmAttributes();
+	
+	/**
+	 * Enables and/or disables selective verbosity.
+	 * 
+	 * @param __start The starting point on the stack trace, should be zero
+	 * or a negative number.
+	 * @param __flags The {@link VerboseDebugFlag} to use.
+	 * @param __code The code, which can be used to stop.
+	 * @return The code to pass later to stop the verbosity.
+	 * @since 2021/02/20
+	 */
+	public static native int verbose(int __start, int __flags, int __code);
 }

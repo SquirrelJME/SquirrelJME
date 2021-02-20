@@ -158,15 +158,9 @@ public final class LLEObjectShelf
 	public static void arrayCopy(char[] __src, int __srcOff,
 		char[] __dest, int __destOff, int __len)
 	{
-		// Debug
-		Debugging.print('<', '\n');
-		
 		int arrayBase = SystemCall.arrayAllocationBase();
 		SystemCall.memHandleMove(__src, arrayBase + (2 * __srcOff),
 			__dest, arrayBase + (2 * __destOff), (2 * __len));
-			
-		// Debug
-		Debugging.print('>', '\n');
 	}
 	
 	/**

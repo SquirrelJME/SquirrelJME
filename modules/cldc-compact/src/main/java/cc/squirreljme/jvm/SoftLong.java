@@ -14,6 +14,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/05/24
  */
+@SuppressWarnings("MagicNumber")
 public final class SoftLong
 {
 	/**
@@ -109,8 +110,7 @@ public final class SoftLong
 		if (__bh == 0 && __bl == 0)
 			throw new ArithmeticException();
 		
-		return SoftLong.__div(false, Assembly.longPack(__al, __ah),
-			Assembly.longPack(__bl, __bh));
+		return SoftLong.__div(false, __al, __ah, __bl, __bh);
 	}
 	
 	/**
@@ -180,8 +180,7 @@ public final class SoftLong
 		if (__bh == 0 && __bl == 0)
 			throw new ArithmeticException();
 		
-		return SoftLong.__div(true, Assembly.longPack(__al, __ah),
-			Assembly.longPack(__bl, __bh));
+		return SoftLong.__div(true, __al, __ah, __bl, __bh);
 	}
 	
 	/**
@@ -207,9 +206,8 @@ public final class SoftLong
 			return Assembly.longPack(0, __al << (__s - 32));
 		
 		// Merge of bits (shift in range of 1-31)
-		else
-			return Assembly.longPack((__al << __s),
-				(__ah << __s) | (__al >>> (32 - __s)));
+		return Assembly.longPack((__al << __s),
+			(__ah << __s) | (__al >>> (32 - __s)));
 	}
 	
 	/**
@@ -236,9 +234,8 @@ public final class SoftLong
 				(__ah & 0x80000000) >> 31);
 		
 		// Merge of bits (shift in range of 1-31)
-		else
-			return Assembly.longPack((__ah << (32 - __s)) | (__al >>> __s),
-				(__ah >> __s));
+		return Assembly.longPack((__ah << (32 - __s)) | (__al >>> __s),
+			(__ah >> __s));
 	}
 	
 	/**
@@ -254,9 +251,23 @@ public final class SoftLong
 	public static long sub(int __al, int __ah, int __bl, int __bh)
 	{
 		// The same as add, but the second operand is negated
-		long nb = SoftLong.neg(__bl, __bh);
-		return SoftLong.add(__al, __ah, Assembly.longUnpackLow(nb),
-			Assembly.longUnpackHigh(nb));
+		// Negate and check for overflow
+		__bh = (~__bh);
+		__bl = (~__bl + 1);
+		if (__bl == 0)
+			__bh++;
+		
+		// Add the higher/lower parts
+		int ch = __ah + __bh;
+		int cl = __al + __bl;
+		
+		// If the low addition carried a bit over, then set that bit in the
+		// high part
+		if ((cl + 0x80000000) < (__al + 0x80000000))
+			ch++;
+		
+		// Return result
+		return Assembly.longPack(cl, ch);
 	}
 	
 	/**
@@ -324,9 +335,8 @@ public final class SoftLong
 			return Assembly.longPack(__ah >>> (__s - 32), 0);
 		
 		// Merge of bits (shift in range of 1-31)
-		else
-			return Assembly.longPack((__ah << (32 - __s)) | (__al >>> __s),
-				(__ah >>> __s));
+		return Assembly.longPack((__ah << (32 - __s)) | (__al >>> __s),
+			(__ah >>> __s));
 	}
 	
 	/**
@@ -347,13 +357,16 @@ public final class SoftLong
 	/**
 	 * Divides and remainders two values.
 	 *
-	 * @param __dorem Return the remainder?
-	 * @param __num The numerator.
-	 * @param __den The denominator.
+	 * @param __doRem Return the remainder?
+	 * @param __nl The numerator, low.
+	 * @param __nh The numerator, high.
+	 * @param __dl The denominator, low.
+	 * @param __dh The denominator, high.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	private static long __div(boolean __dorem, long __num, long __den)
+	private static long __div(boolean __doRem, int __nl, int __nh,
+		int __dl, int __dh)
 	{
 		// Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29)
 		// if D == 0 then throw DivisionByZeroException end
@@ -368,41 +381,102 @@ public final class SoftLong
 		//     Q(i) := 1
 		//   end
 		// end
-		long inquot = 0, inrem = 0;
-		boolean isneg;
+		// long qx = 0, rx = 0;
+		
+		// High and low resultant values
+		int ql = 0;
+		int qh = 0;
+		int rl = 0;
+		int rh = 0;
 		
 		// Disallow division by zero
-		if (__den == 0)
+		if (__dl == 0)
 			return 0;
 		
-		// Negative?
-		isneg = ((__num < 0 && __den >= 0) || (__num >= 0 && __den < 0));
+		// Results in a negative? Only results in such if either side is
+		// a negative value
+		boolean negNum = ((__nh & 0x8000_0000) != 0);
+		boolean negDem = ((__dh & 0x8000_0000) != 0);
+		boolean isNeg = (negNum != negDem);
 		
-		// Force Positive
-		__num = (__num < 0 ? -__num : __num);
-		__den = (__den < 0 ? -__den : __den);
+		// Make the numerator positive, if negative
+		if (negNum)
+		{
+			// Negate and check for overflow
+			__nh = (~__nh);
+			__nl = (~__nl + 1);
+			if (__nl == 0)
+				__nh++;
+		}
+		
+		// Make the denominator positive, if negative
+		if (negDem)
+		{
+			// Negate and check for overflow
+			__dh = (~__dh);
+			__dl = (~__dl + 1);
+			if (__dl == 0)
+				__dh++;
+		}
 		
 		// Perform Math
 		for (int i = 63; i >= 0; i--)
 		{
-			inrem <<= 1;
-			inrem &= 0xFFFFFFFFFFFFFFFEL;
-			inrem |= ((__num >>> i) & 1L);
+			// rx <<= 1;
+			// rx &= 0xFFFFFFFFFFFFFFFEL;
+			rh <<= 1;
+			rh |= (rl >>> 31);
+			rl <<= 1;
 			
-			// Unsigned comparison
-			if ((inrem + Long.MIN_VALUE) >= (__den + Long.MIN_VALUE))
+			// rx |= ((__nx >>> i) & 1L); ... only take the lowest bit!
+			if (i >= 32)
+				rl |= ((__nh >>> (i - 32)) & 0x1);
+			else
+				rl |= ((__nl >>> i) & 0x1);
+			
+			// Unsigned comparison (shift by 0x8000_0000__0000_0000L)
+			// if ((rx + Long.MIN_VALUE) >= (__dx + Long.MIN_VALUE))
+			if (SoftLong.cmp(rl, rh + Integer.MIN_VALUE,
+				__dl, __dh + Integer.MIN_VALUE) >= 0)
 			{
-				inrem -= __den;
-				inquot |= (1L << i);
+				// rx -= __dx;
+				int bl = __dl;
+				int bh = __dh;
+				
+				// The same as add, but the second operand is negated
+				// Negate and check for overflow
+				bh = (~bh);
+				bl = (~bl + 1);
+				if (bl == 0)
+					bh++;
+				
+				// Add the higher/lower parts
+				int ch = rh + bh;
+				int cl = rl + bl;
+				
+				// If the low addition carried a bit over, then set that bit in
+				// the high part
+				if ((cl + 0x80000000) < (rl + 0x80000000))
+					ch++;
+				
+				// Use result
+				rh = ch;
+				rl = cl;
+				
+				// qx |= (1L << i);
+				if (i >= 32)
+					qh |= (1 << (i - 32));
+				else
+					ql |= (1 << i);
 			}
 		}
 		
-		// Make Negative
-		if (isneg)
-			inquot = -inquot;
+		// Return the remainder if needed
+		if (__doRem)
+			return Assembly.longPack(rl, rh);
 		
-		// Return
-		return (__dorem ? inrem : inquot);
+		// Return, normalize negative if needed
+		return (isNeg ? SoftLong.neg(ql, qh) : Assembly.longPack(ql, qh));
 	}
 }
 

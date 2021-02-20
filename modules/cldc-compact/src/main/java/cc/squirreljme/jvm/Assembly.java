@@ -94,12 +94,12 @@ public final class Assembly
 	/**
 	 * Packs the given two integers to a double value.
 	 *
-	 * @param __hi The high value.
 	 * @param __lo The low value.
+	 * @param __hi The high value.
 	 * @return The double value.
 	 * @since 2019/06/21
 	 */
-	public static native double doublePack(int __hi, int __lo);
+	public static native double doublePack(int __lo, int __hi);
 	
 	/**
 	 * Double to raw long bits.

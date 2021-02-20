@@ -310,6 +310,23 @@ public enum SystemCallHandler
 		}
 	},
 	
+	/** {@link SystemCallIndex#VERBOSE}. */
+	VERBOSE(SystemCallIndex.VERBOSE)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/20
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			// TODO: Implement this verbosity.
+			Debugging.todoNote("Implement VERBOSE.");
+			return 0;
+		}
+	},
+	
 	/** {@link SystemCallIndex#STATIC_VM_ATTRIBUTES}. */
 	STATIC_VM_ATTRIBUTES(SystemCallIndex.STATIC_VM_ATTRIBUTES)
 	{
