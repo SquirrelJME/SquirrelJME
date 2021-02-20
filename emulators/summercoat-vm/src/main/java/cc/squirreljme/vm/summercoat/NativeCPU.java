@@ -913,16 +913,6 @@ public final class NativeCPU
 							lr[argRaw[(isWide ? 4 : 3)]]);
 						long addr = base + offs;
 						
-						// Not currently valid!
-						if (true)
-							throw new VMException(String.format(
-								"Invalid MemAccess: %s " +
-									"@%#08x (%#08x + %d): %s %s",
-								(load ? "LOAD" : "STORE"),
-								addr, base, offs,
-								NativeInstruction.mnemonic(op),
-								this.traceTop()));
-						
 						// Loads
 						if (load)
 						{
@@ -950,9 +940,10 @@ public final class NativeCPU
 								
 								case LONG:
 								case DOUBLE:
-									if (true)
-										throw Debugging.todo();
-									v = (int)memory.memReadLong(addr);
+									long lv = memory.memReadLong(addr);
+									
+									lr[argRaw[0]] = v = (int)lv;
+									lr[argRaw[1]] = (int)(lv >>> 32);
 									break;
 									
 									// Unknown
@@ -997,7 +988,14 @@ public final class NativeCPU
 								case FLOAT:
 									memory.memWriteInt(addr, v);
 									break;
-									
+								
+								case LONG:
+								case DOUBLE:
+									memory.memWriteLong(addr,
+									(lr[argRaw[0]] & 0xFFFFFFFFL) |
+										(((long)lr[argRaw[1]]) << 32));
+									break;
+								
 									// Unknown
 								default:
 									throw new todo.OOPS(dt.name());

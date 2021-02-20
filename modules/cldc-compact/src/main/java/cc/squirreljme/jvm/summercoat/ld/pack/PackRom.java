@@ -68,9 +68,13 @@ public final class PackRom
 			ByteOrderType.BIG_ENDIAN);
 		try (ReadableMemoryInputStream in = headerMem.inputStream())
 		{
-			// {@squirreljme.error ZZ43 Invalid ROM header.}
-			if (ClassInfoConstants.PACK_MAGIC_NUMBER != in.readInt())
-				throw new RuntimeException("ZZ43");
+			// {@squirreljme.error ZZ43 Invalid ROM header. (Magic number)}
+			int romMagic = in.readInt();
+			if (ClassInfoConstants.PACK_MAGIC_NUMBER != romMagic)
+				throw new RuntimeException("ZZ43 " + romMagic);
+			
+			// Debug
+			Debugging.debugNote("ROM Magic: 0x%08x", romMagic);
 			
 			Assembly.breakpoint();
 			throw Debugging.todo();

@@ -204,7 +204,7 @@ public enum SystemCallHandler
 					// SummerCoat is purely a 32-bit system so there is no
 					// high address for the ROM.
 				case RuntimeVmAttribute.ROM_ADDR_HIGH:
-					return 0x12345678;
+					return 0x0;
 				
 					// The current operating system
 				case RuntimeVmAttribute.OPERATING_SYSTEM:
