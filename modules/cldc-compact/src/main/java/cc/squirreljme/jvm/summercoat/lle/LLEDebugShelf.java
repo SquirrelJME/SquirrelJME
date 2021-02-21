@@ -158,8 +158,9 @@ public final class LLEDebugShelf
 	 */
 	public static TracePointBracket[] traceStack()
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// TODO: Implement tracing of the stack.
+		Debugging.todoNote("TODO: implement traceStack()");
+		return new TracePointBracket[0];
 	}
 	
 	/**

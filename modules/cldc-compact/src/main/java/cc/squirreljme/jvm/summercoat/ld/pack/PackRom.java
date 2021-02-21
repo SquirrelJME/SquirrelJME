@@ -13,8 +13,8 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
-import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.jvm.summercoat.ld.mem.RealMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -72,9 +72,30 @@ public final class PackRom
 			int romMagic = in.readInt();
 			if (ClassInfoConstants.PACK_MAGIC_NUMBER != romMagic)
 				throw new RuntimeException("ZZ43 " + romMagic);
+				
+			// Read the format version
+			int formatVersion = in.readUnsignedShort();
 			
 			// Debug
-			Debugging.debugNote("ROM Magic: 0x%08x", romMagic);
+			Debugging.debugNote("formatVersion: %d", formatVersion);
+			
+			// {@squirreljme.error ZZ44 Cannot decode pack file because the
+			// version identifier is not known. (The format version of the pack
+			// file)}
+			if (formatVersion != ClassInfoConstants.CLASS_VERSION_20201129)
+				throw new RuntimeException("ZZ44 " + formatVersion);
+			
+			// Read in all the data
+			int numProperties = Math.min(in.readUnsignedShort(),
+				PackProperty.NUM_PACK_PROPERTIES);
+			int[] properties = new int[numProperties];
+			for (int i = 0; i < numProperties; i++)
+				properties[i] = in.readInt();
+			
+			// Debug
+			for (int i = 0; i < numProperties; i++)
+				Debugging.debugNote("Prop %2d: 0x%08x",
+					i, properties[i]);
 			
 			Assembly.breakpoint();
 			throw Debugging.todo();

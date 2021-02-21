@@ -113,6 +113,9 @@ public class PackMinimizer
 			header.writeFuture(ChunkDataType.INTEGER, future);
 		}
 		
+		// The size of the entire pack file
+		properties[PackProperty.ROM_SIZE].set(out.futureSize());
+		
 		// This value is currently meaningless so for now it is always zero
 		properties[PackProperty.INT_PACK_VERSION_ID].setInt(0);
 		

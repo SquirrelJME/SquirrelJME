@@ -196,7 +196,7 @@ public final class ReadableMemoryInputStream
 	public byte readByte()
 		throws IOException
 	{
-		return (byte)this.memory.memReadByte(this.__check(1));
+		return (byte)this.memory.memReadByte(this.__checkIncr(1));
 	}
 	
 	/**
@@ -262,7 +262,7 @@ public final class ReadableMemoryInputStream
 	public int readInt()
 		throws IOException
 	{
-		return this.memory.memReadInt(this.__check(4));
+		return this.memory.memReadInt(this.__checkIncr(4));
 	}
 	
 	/**
@@ -289,7 +289,7 @@ public final class ReadableMemoryInputStream
 	public long readLong()
 		throws IOException
 	{
-		return this.memory.memReadLong(this.__check(8));
+		return this.memory.memReadLong(this.__checkIncr(8));
 	}
 	
 	/**
@@ -300,7 +300,7 @@ public final class ReadableMemoryInputStream
 	public short readShort()
 		throws IOException
 	{
-		return (short)this.memory.memReadShort(this.__check(2));
+		return (short)this.memory.memReadShort(this.__checkIncr(2));
 	}
 	
 	/**
@@ -360,7 +360,8 @@ public final class ReadableMemoryInputStream
 	}
 	
 	/**
-	 * Checks for a read which would overflow.
+	 * Checks for a read which would overflow and if it is successful will
+	 * increment accordingly for the next address.
 	 * 
 	 * @param __len The number of bytes to check on read.
 	 * @return The address to read from.
@@ -368,7 +369,7 @@ public final class ReadableMemoryInputStream
 	 * @throws EOFException If the end of file is reached.
 	 * @since 2021/02/14
 	 */
-	private long __check(int __len)
+	private long __checkIncr(int __len)
 		throws IllegalArgumentException, EOFException
 	{
 		if (__len <= 0)
@@ -381,6 +382,8 @@ public final class ReadableMemoryInputStream
 			throw new EOFException(String.format("ZZ3z %d %d %d",
 				at, this.length, __len));
 		
+		// Increment and use the old address
+		this._at = at + __len;
 		return this.address + at;
 	}
 }

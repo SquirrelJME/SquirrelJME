@@ -11,13 +11,17 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.vm.PreAddressedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
+import dev.shadowtail.packfile.MinimizedPackHeader;
 import dev.shadowtail.packfile.PackMinimizer;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -256,11 +260,28 @@ public final class SuitesMemory
 		// Write the virtual header
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
-			PackMinimizer.minimize(baos, bootLib.libName, pre); 
+			// Perform initial minimization
+			PackMinimizer.minimize(baos, bootLib.libName, pre);
+			byte[] romData = baos.toByteArray();
+			
+			// Replace a property within the header
+			try (InputStream in = new ByteArrayInputStream(romData))
+			{
+				// Decode and change the header property
+				MinimizedPackHeader header = MinimizedPackHeader.decode(in);
+				MinimizedPackHeader newHeader =
+					header.change(PackProperty.ROM_SIZE, this.size);
+				
+				// Encode a new header
+				byte[] newBytes = newHeader.toByteArray();
+				
+				// Replace existing header
+				System.arraycopy(newBytes, 0,
+					romData, 0, newBytes.length);
+			}
 			
 			// Store ROM virtual header
-			this._headerRom = new ByteArrayMemory(this.offset,
-				baos.toByteArray());
+			this._headerRom = new ByteArrayMemory(this.offset, romData);
 		}
 		
 		// Failed to write the virtual header, so fail

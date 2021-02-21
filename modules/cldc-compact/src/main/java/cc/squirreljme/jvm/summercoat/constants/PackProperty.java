@@ -44,7 +44,11 @@ public interface PackProperty
 	byte TIME_DATE_LOW =
 		6;
 	
+	/** The size of the entire ROM. */
+	byte ROM_SIZE =
+		7;
+	
 	/** The number of pack properties. */
 	byte NUM_PACK_PROPERTIES =
-		7;
+		8;
 }

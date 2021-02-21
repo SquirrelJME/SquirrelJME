@@ -10,11 +10,13 @@
 package dev.shadowtail.packfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
@@ -33,7 +35,7 @@ public final class MinimizedPackHeader
 	private final int[] _properties;
 	
 	/**
-	 * Initializes the JAR header.
+	 * Initializes the Pack header.
 	 * 
 	 * @param __fV The format version of the JAR header.
 	 * @param __properties The properties for the JAR.
@@ -44,7 +46,32 @@ public final class MinimizedPackHeader
 	{
 		this.formatVersion = __fV;
 		this._properties = Arrays.copyOf(__properties,
-			JarProperty.NUM_JAR_PROPERTIES);
+			PackProperty.NUM_PACK_PROPERTIES);
+	}
+	
+	/**
+	 * Changes a property of the pack header and returns a new one.
+	 * 
+	 * @param __property The property to change.
+	 * @param __val The new value.
+	 * @return A new header with the changed property.
+	 * @throws IllegalArgumentException If the property is not valid.
+	 * @since 2021/02/21
+	 */
+	public final MinimizedPackHeader change(int __property, int __val)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BI02 Invalid Pack property. (The property)}
+		if (__property < 0 ||
+			__property >= PackProperty.NUM_PACK_PROPERTIES)
+			throw new IllegalArgumentException("BI02 " + __property);
+		
+		// Build new properties
+		int[] newProperties = this._properties.clone();
+		newProperties[__property] = __val;
+		
+		// Create a new one that is changed
+		return new MinimizedPackHeader(this.formatVersion, newProperties);
 	}
 	
 	/**
@@ -64,6 +91,63 @@ public final class MinimizedPackHeader
 			throw new IllegalArgumentException("BI03 " + __property);
 		
 		return this._properties[__property];
+	}
+	
+	/**
+	 * Returns this header as a byte array.
+	 * 
+	 * @return The byte array of the given header.
+	 * @since 2021/02/21
+	 */
+	public final byte[] toByteArray()
+	{
+		// Where does it go?
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+			ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE))
+		{
+			// Use standard writing
+			this.writeTo(baos);
+			
+			return baos.toByteArray();
+		}
+		
+		// {@squirreljme.error BI06 Could not write the pack header.}
+		catch (IOException __e)
+		{
+			throw new RuntimeException("Bi06", __e);
+		}
+	}
+	
+	/**
+	 * Writes the header to the given output.
+	 * 
+	 * @param __out The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/21
+	 */
+	@SuppressWarnings("resource")
+	public final void writeTo(OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		// We need to write specific data
+		DataOutputStream out = new DataOutputStream(__out);
+		int[] properties = this._properties;
+		
+		// Write header
+		out.writeInt(ClassInfoConstants.PACK_MAGIC_NUMBER);
+		out.writeShort(ClassInfoConstants.CLASS_VERSION_20201129);
+		
+		// Write property count
+		int n = properties.length;
+		out.writeShort(n);
+		
+		// Write all the various properties
+		for (int i = 0; i < n; i++)
+			out.writeInt(properties[i]);
 	}
 	
 	/**
