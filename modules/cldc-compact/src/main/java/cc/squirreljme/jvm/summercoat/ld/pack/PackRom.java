@@ -30,15 +30,23 @@ public final class PackRom
 	/** The base address of the ROM. */
 	protected final long baseAddr;
 	
+	/** Properties for the ROM. */
+	private final int[] _properties;
+	
+	/** Libraries which are already available. */
+	private JarPackageBracket[] _libraries;
+	
 	/**
 	 * Initializes the pack ROM manager.
 	 * 
 	 * @param __memAddr The memory address where the Pack ROM is located.
+	 * @param __properties Properties for the ROM.
 	 * @since 2021/02/09
 	 */
-	private PackRom(long __memAddr)
+	private PackRom(long __memAddr, int[] __properties)
 	{
 		this.baseAddr = __memAddr;
+		this._properties = __properties;
 	}
 	
 	/**
@@ -49,6 +57,11 @@ public final class PackRom
 	 */
 	public final JarPackageBracket[] libraries()
 	{
+		// Return pre-existing set if it is done already
+		JarPackageBracket[] rv = this._libraries;
+		if (rv != null)
+			return rv.clone();
+		
 		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
@@ -76,9 +89,6 @@ public final class PackRom
 			// Read the format version
 			int formatVersion = in.readUnsignedShort();
 			
-			// Debug
-			Debugging.debugNote("formatVersion: %d", formatVersion);
-			
 			// {@squirreljme.error ZZ44 Cannot decode pack file because the
 			// version identifier is not known. (The format version of the pack
 			// file)}
@@ -92,13 +102,8 @@ public final class PackRom
 			for (int i = 0; i < numProperties; i++)
 				properties[i] = in.readInt();
 			
-			// Debug
-			for (int i = 0; i < numProperties; i++)
-				Debugging.debugNote("Prop %2d: 0x%08x",
-					i, properties[i]);
-			
-			Assembly.breakpoint();
-			throw Debugging.todo();
+			// Build the final PackROM
+			return new PackRom(__memAddr, properties);
 		}
 		
 		// {@squirreljme.error ZZ42 The ROM is corrupted.}

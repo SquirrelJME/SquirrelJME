@@ -249,6 +249,7 @@ public final class NearNativeByteCodeHandler
 		
 		// The variables used
 		MemHandleRegister array = MemHandleRegister.of(__array.register);
+		IntValueRegister index = IntValueRegister.of(__dx.register);
 		
 		// Push references
 		this.__refPush();
@@ -266,7 +267,7 @@ public final class NearNativeByteCodeHandler
 		{
 			// Check array bounds, we use the offset calculated from this
 			// to access the memory handle
-			this.__basicCheckArrayBound(__array.register, __dx.register, __dt,
+			this.__basicCheckArrayBound(array, index, __dt,
 				offset.register);
 			
 			// Any object being stored gets reference counted
@@ -302,6 +303,7 @@ public final class NearNativeByteCodeHandler
 		
 		// The variables used
 		MemHandleRegister array = MemHandleRegister.of(__array.register);
+		IntValueRegister index = IntValueRegister.of(__dx.register);
 		
 		// Push references
 		this.__refPush();
@@ -320,7 +322,7 @@ public final class NearNativeByteCodeHandler
 		{
 			// Check array bounds, we use the offset calculated from this
 			// to access the memory handle
-			this.__basicCheckArrayBound(__array.register, __dx.register, __dt,
+			this.__basicCheckArrayBound(array, index, __dt,
 				offset.register);
 			
 			// Objects need to be reference count checked
