@@ -69,7 +69,7 @@ public class VMLibraryTask
 		// The output depends on the task and its source set
 		this.getOutputs().file(this.outputPath());
 		this.getOutputs().upToDateWhen(
-			new VMLibraryTaskUpToDate(this, this.vmType));
+			new VMLibraryTaskUpToDate(this.vmType));
 		
 		// Performs the action of the task
 		this.doLast(new VMLibraryTaskAction(__sourceSet, __vmType));

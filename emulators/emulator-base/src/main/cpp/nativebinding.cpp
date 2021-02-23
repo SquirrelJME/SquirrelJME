@@ -15,6 +15,12 @@
 #include "cc_squirreljme_jvm_Assembly.h"
 #include "squirreljme.h"
 
+JNIEXPORT jlong JNICALL longPack(JNIEnv* env, jclass classy, jint al, jint ah)
+{
+	return (((jlong)al) & UINT64_C(0xFFFFFFFF)) |
+		((((jlong)ah) & UINT64_C(0xFFFFFFFF)) << UINT64_C(32));
+}
+
 // Method handler for special functions
 JNIEXPORT void JNICALL restrictedFunction(JNIEnv* env, jclass classy);
 
@@ -62,7 +68,7 @@ static const JNINativeMethod assemblyMethods[] =
 	{"invokeVL", "(IIIIIIIII)J", (void*)restrictedFunction},
 	{"invokeVL", "(IIIIIIIIII)J", (void*)restrictedFunction},
 	{"longBitsToDouble", "(J)D", (void*)restrictedFunction},
-	{"longPack", "(II)J", (void*)restrictedFunction},
+	{"longPack", "(II)J", (void*)longPack},
 	{"longUnpackHigh", "(J)I", (void*)restrictedFunction},
 	{"longUnpackLow", "(J)I", (void*)restrictedFunction},
 	{"memReadByte", "(JI)I", (void*)restrictedFunction},

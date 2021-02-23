@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Software math operations on 64-bit integer types.
  *
@@ -140,13 +142,13 @@ public final class SoftLong
 	public static long neg(int __al, int __ah)
 	{
 		// Negate and check for overflow
-		int nh = (~__ah),
-			nl = (~__al + 1);
-		if (nl == 0)
-			nh++;
+		__ah = (~__ah);
+		__al = (~__al + 1);
+		if (__al == 0)
+			__ah++;
 		
 		// Return result
-		return Assembly.longPack(nl, nh);
+		return Assembly.longPack(__al, __ah);
 	}
 	
 	/**
@@ -436,17 +438,18 @@ public final class SoftLong
 			
 			// Unsigned comparison (shift by 0x8000_0000__0000_0000L)
 			// if ((rx + Long.MIN_VALUE) >= (__dx + Long.MIN_VALUE))
-			if (SoftLong.cmp(rl, rh + Integer.MIN_VALUE,
-				__dl, __dh + Integer.MIN_VALUE) >= 0)
+			/*if (SoftLong.cmp(rl, rh + Integer.MIN_VALUE,
+				__dl, __dh + Integer.MIN_VALUE) >= 0)*/
+			int cmp = (rh + Integer.MIN_VALUE) - (__dh + Integer.MIN_VALUE);
+			if (cmp >= 0 &&
+				(cmp > 0 ||	// Is just a bigger number overall? 
+				rl + Integer.MIN_VALUE >= __dl + Integer.MIN_VALUE))
 			{
 				// rx -= __dx;
-				int bl = __dl;
-				int bh = __dh;
-				
 				// The same as add, but the second operand is negated
 				// Negate and check for overflow
-				bh = (~bh);
-				bl = (~bl + 1);
+				int bh = (~__dh);
+				int bl = (~__dl + 1);
 				if (bl == 0)
 					bh++;
 				
@@ -471,9 +474,11 @@ public final class SoftLong
 			}
 		}
 		
-		// Return the remainder if needed
+		// Return the remainder if needed, note the remainder is negative only
+		// if the numerator is negative
 		if (__doRem)
-			return Assembly.longPack(rl, rh);
+			return (negNum ? SoftLong.neg(rl, rh) :
+				Assembly.longPack(rl, rh));
 		
 		// Return, normalize negative if needed
 		return (isNeg ? SoftLong.neg(ql, qh) : Assembly.longPack(ql, qh));
