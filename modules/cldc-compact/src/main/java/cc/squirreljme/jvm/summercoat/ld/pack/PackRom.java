@@ -36,6 +36,9 @@ public final class PackRom
 	/** Libraries which are already available. */
 	private JarPackageBracket[] _libraries;
 	
+	/** The table of contents for this ROM. */
+	private TableOfContents _toc;
+	
 	/**
 	 * Initializes the pack ROM manager.
 	 * 
@@ -64,6 +67,23 @@ public final class PackRom
 		
 		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the table of contents.
+	 * 
+	 * @return The table of contents.
+	 * @since 2021/02/22
+	 */
+	private TableOfContents __toc()
+	{
+		TableOfContents rv = this._toc;
+		if (rv != null)
+			return rv;
+		
+		// Setup new table of contents
+		this._toc = (rv = new TableOfContents());
+		return rv;
 	}
 	
 	/**
