@@ -421,8 +421,14 @@ public final class SoftLong
 				__dh++;
 		}
 		
+		// __dl and __dh for unsigned compare
+		int dlUnsigned = __dl + Integer.MIN_VALUE;
+		int dhUnsigned = __dh + Integer.MIN_VALUE;
+		
 		// Perform Math
-		for (int i = 63; i >= 0; i--)
+		for (int i = 63, hMask = 0xFFFF_FFFF, lMask = 0;
+			i >= 0;
+			i--, hMask >>>= 1, lMask = ((lMask >> 1) | 0x8000_0000))
 		{
 			// rx <<= 1;
 			// rx &= 0xFFFFFFFFFFFFFFFEL;
@@ -431,19 +437,24 @@ public final class SoftLong
 			rl <<= 1;
 			
 			// rx |= ((__nx >>> i) & 1L); ... only take the lowest bit!
-			if (i >= 32)
-				rl |= ((__nh >>> (i - 32)) & 0x1);
-			else
-				rl |= ((__nl >>> i) & 0x1);
+			// branching:
+			// ! if (i >= 32)
+			// !     rl |= ((__nh >>> (i - 32)) & 0x1);
+			// ! else
+			// !     rl |= ((__nl >>> i) & 0x1);
+			// faster using masking:
+			// ! rl |= (((__nh & hMask) >>> i) & 0x1);
+			// ! rl |= (((__nl & lMask) >>> i) & 0x1);
+			rl |= ((((__nh & hMask) | (__nl & lMask)) >>> i) & 0x1);
 			
 			// Unsigned comparison (shift by 0x8000_0000__0000_0000L)
 			// if ((rx + Long.MIN_VALUE) >= (__dx + Long.MIN_VALUE))
 			/*if (SoftLong.cmp(rl, rh + Integer.MIN_VALUE,
 				__dl, __dh + Integer.MIN_VALUE) >= 0)*/
-			int cmp = (rh + Integer.MIN_VALUE) - (__dh + Integer.MIN_VALUE);
+			int cmp = (rh + Integer.MIN_VALUE) - dhUnsigned;
 			if (cmp >= 0 &&
 				(cmp > 0 ||	// Is just a bigger number overall? 
-				rl + Integer.MIN_VALUE >= __dl + Integer.MIN_VALUE))
+				rl + Integer.MIN_VALUE >= dlUnsigned))
 			{
 				// rx -= __dx;
 				// The same as add, but the second operand is negated
