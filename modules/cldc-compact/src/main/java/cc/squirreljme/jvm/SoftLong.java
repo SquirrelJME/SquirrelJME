@@ -465,16 +465,15 @@ public final class SoftLong
 					bh++;
 				
 				// Add the higher/lower parts
-				int ch = rh + bh;
+				rh = rh + bh;
 				int cl = rl + bl;
 				
 				// If the low addition carried a bit over, then set that bit in
 				// the high part
 				if ((cl + 0x80000000) < (rl + 0x80000000))
-					ch++;
+					rh++;
 				
 				// Use result
-				rh = ch;
 				rl = cl;
 				
 				// qx |= (1L << i);
