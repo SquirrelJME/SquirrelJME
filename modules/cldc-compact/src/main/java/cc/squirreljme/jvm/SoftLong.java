@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Software math operations on 64-bit integer types.
  *
