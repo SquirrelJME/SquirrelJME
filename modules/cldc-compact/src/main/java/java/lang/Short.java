@@ -92,22 +92,34 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/25
+	 */
 	@Override
 	public int intValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/25
+	 */
 	@Override
 	public long longValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/25
+	 */
 	@Override
 	public short shortValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	/**
@@ -202,17 +214,6 @@ public final class Short
 	public static Short valueOf(short __v)
 	{
 		return new Short(__v);
-	}
-	
-	/**
-	 * The {@link #TYPE} field is magically initialized by the virtual machine.
-	 *
-	 * @return {@link #TYPE}.
-	 * @since 2016/06/16
-	 */
-	private static Class<Short> __getType()
-	{
-		return Short.TYPE;
 	}
 }
 
