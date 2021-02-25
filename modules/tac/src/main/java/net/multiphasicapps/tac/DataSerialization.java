@@ -12,8 +12,8 @@ package net.multiphasicapps.tac;
 
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
-import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
-import cc.squirreljme.runtime.cldc.util.IntegerArray;
+import cc.squirreljme.runtime.cldc.util.CharacterArrayList;
+import cc.squirreljme.runtime.cldc.util.CollectionUtils;
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import cc.squirreljme.runtime.cldc.util.LongArrayList;
 import cc.squirreljme.runtime.cldc.util.ShortArrayList;
@@ -297,27 +297,42 @@ public final class DataSerialization
 		else if ((__o instanceof byte[]) || (__o instanceof Byte[]) ||
 			(__o instanceof short[]) || (__o instanceof Short[]) ||
 			(__o instanceof int[]) || (__o instanceof Integer[]) ||
-			(__o instanceof long[]) || (__o instanceof Long[]))
+			(__o instanceof long[]) || (__o instanceof Long[]) ||
+			(__o instanceof char[]) || (__o instanceof Character[]))
 		{
 			// Which wrapper and key is used?
 			List<? extends Number> list;
 			String key;
 			
+			// Boxed character array (since not a number)
+			if (__o instanceof Character[])
+			{
+				key = "char*";
+				list = CollectionUtils.asIntegerList(
+					Arrays.asList((Character[])__o));
+			}
+			
 			// Determine how these values are accessed
-			if (__o instanceof Number[])
+			else if (__o instanceof Number[])
 			{
 				// These are all the same!
 				list = Arrays.asList((Number[])__o);
 				
 				// The key varies
 				if (__o instanceof Byte[])
-					key = "byte";
+					key = "byte*";
 				else if (__o instanceof Short[])
-					key = "short";
+					key = "short*";
 				else if (__o instanceof Integer[])
-					key = "int";
+					key = "int*";
 				else
-					key = "long";
+					key = "long*";
+			}
+			else if (__o instanceof char[])
+			{
+				key = "char";
+				list = CollectionUtils.asIntegerList(
+					new CharacterArrayList((char[])__o));
 			}
 			else if (__o instanceof byte[])
 			{
@@ -349,7 +364,9 @@ public final class DataSerialization
 			{
 				if (i > 0)
 					sb.append(",");
-				sb.append(list.get(i).longValue());
+				
+				Number val = list.get(i);
+				sb.append((val == null ? "null" : val.longValue()));
 			}
 			
 			return sb.toString();

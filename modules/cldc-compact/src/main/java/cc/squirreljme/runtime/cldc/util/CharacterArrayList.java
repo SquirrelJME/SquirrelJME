@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
