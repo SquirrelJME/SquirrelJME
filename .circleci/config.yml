@@ -477,6 +477,31 @@ jobs:
             - '*/build/*'
             - '*/*/build/*'
 
+  # Constructs the Built-In ROM used for RatufaCoat
+  construct_builtInSummerCoatRom:
+    executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Built-In SummerCoat ROM for RatufaCoat
+          command: ./gradlew :romSummerCoatRatufaCoat --console plain --continue --parallel
+      - store_artifacts:
+        path: 'ratufacoat/build/builtin.c'
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+            - 'ratufacoat/build/builtin.c'
+
 workflows:
   version: 2
   tests:
@@ -546,6 +571,11 @@ workflows:
       - construct_romTestSummerCoat:
           requires:
             - construct_libTestSummerCoat
+
+      # The Built-In C File
+      - construct_builtInSummerCoatRom:
+          requires:
+            - construct_romSummerCoat
 
       ############################## RATUFACOAT ##############################
 #      - ratufacoat_build_linux:

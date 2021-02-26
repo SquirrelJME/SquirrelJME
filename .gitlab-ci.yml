@@ -13,7 +13,6 @@
 
 # Stages for building
 stages:
-  - squirreljme-rom
   - build-prepare
   - build-shared
   - build-static
@@ -29,21 +28,13 @@ stages:
 
 # SquirrelJME Support (Shared)
 .squirreljme-support-shared:
-  needs:
-    - pipeline: ${CI_PIPELINE_ID}
-      job: summercoat-built-in
-      artifacts: true
+  before_script:
+    - "true"
 
 # SquirrelJME Support (Static)
 .squirreljme-support-static:
-  needs:
-    - pipeline: ${CI_PIPELINE_ID}
-      job: summercoat-built-in
-      artifacts: true
-    - project: libretro/RetroArch
-      job: ${STATIC_RETROARCH_JOB_NAME}
-      ref: ${STATIC_RETROARCH_BRANCH}
-      artifacts: true
+  before_script:
+    - "true"
 
 # Inclusion templates, required for the build to work
 include:
@@ -124,26 +115,26 @@ include:
 ##############################################################################
 
 ########################### SUMMERCOAT BUILT-IN ROM ##########################
-summercoat-built-in:
-  image: openjdk:8-jdk
-  stage: squirreljme-rom
-  artifacts:
-    paths:
-      - "ratufacoat/build/builtin.c"
-    expire_in: 10 min
-  script:
-    # Debugging
-    - "echo \"CI_PIPELINE_ID: $CI_PIPELINE_ID\""
-    - "echo \"CI_JOB_NAME: $CI_JOB_NAME\""
-    - "echo \"CI_COMMIT_SHA: $CI_COMMIT_SHA\""
-    - "echo \"CI_JOB_ID: $CI_JOB_ID\""
-
-    # We need a compile to generate the native code used to compile ROMs
-    - apt-get update
-    - apt-get --no-install-recommends -y install build-essential gcc g++
-
-    # Then perform the ROM generation
-    - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
+#summercoat-built-in:
+#  image: openjdk:8-jdk
+#  stage: squirreljme-rom
+#  artifacts:
+#    paths:
+#      - "ratufacoat/build/builtin.c"
+#    expire_in: 10 min
+#  script:
+#    # Debugging
+#    - "echo \"CI_PIPELINE_ID: $CI_PIPELINE_ID\""
+#    - "echo \"CI_JOB_NAME: $CI_JOB_NAME\""
+#    - "echo \"CI_COMMIT_SHA: $CI_COMMIT_SHA\""
+#    - "echo \"CI_JOB_ID: $CI_JOB_ID\""
+#
+#    # We need a compile to generate the native code used to compile ROMs
+#    - apt-get update
+#    - apt-get --no-install-recommends -y install build-essential gcc g++
+#
+#    # Then perform the ROM generation
+#    - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
 
 ################################### DESKTOPS #################################
 # Linux 32-bit
