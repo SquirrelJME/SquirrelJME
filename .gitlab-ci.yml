@@ -124,48 +124,36 @@ summercoat-built-in:
 ################################### DESKTOPS #################################
 # Linux 32-bit
 libretro-build-linux-i686:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-linux-i686-make-default
     - .core-defs
 
 # Linux 64-bit
 libretro-build-linux-x64:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-linux-x64-make-default
     - .core-defs
 
 # MacOS 64-bit
 libretro-build-osx-x64:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-osx-x64-make-default
     - .core-defs
 
 # MacOS ARM 64-bit
 libretro-build-osx-arm64:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-osx-arm64-make-default
     - .core-defs
 
 # Windows 32-bit
 libretro-build-windows-i686:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-windows-i686-mingw-make-default
     - .core-defs
 
 # Windows 64-bit
 libretro-build-windows-x64:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-windows-x64-mingw-make-default
     - .core-defs
@@ -173,40 +161,30 @@ libretro-build-windows-x64:
 ################################### CELLULAR #################################
 # Android ARMv7a
 android-armeabi-v7a:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-android-jni-armeabi-v7a
     - .core-defs
 
 # Android ARMv8a
 android-arm64-v8a:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-android-jni-arm64-v8a
     - .core-defs
 
 # Android 64-bit x86
 android-x86_64:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-android-jni-x86_64
     - .core-defs
 
 # Android 32-bit x86
 android-x86:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-android-jni-x86
     - .core-defs
 
 # iOS 9
 libretro-build-ios-9:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-ios9-make-default
     - .core-defs
@@ -214,64 +192,48 @@ libretro-build-ios-9:
 ################################### CONSOLES #################################
 # Dingux (GCW Zero)
 libretro-build-dingux:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-dingux-mips32-make-default
     - .core-defs
 
 # Nintendo 3DS
 libretro-build-ctr:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-ctr-static-retroarch-master
     - .core-defs
 
 # Nintendo GameCube
 libretro-build-ngc:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-ngc-static-retroarch-master
     - .core-defs
 
 # Nintendo Switch
 libretro-build-libnx-aarch64:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-libnx-static-retroarch-master
     - .core-defs
 
 # Nintendo Wii
 libretro-build-wii:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-wii-static-retroarch-master
     - .core-defs
 
 # Nintendo Wii U
 libretro-build-wiiu:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-wiiu-static-retroarch-master
     - .core-defs
 
 # PlayStation 2
 libretro-build-ps2:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-ps2-static-retroarch-master
     - .core-defs
 
 # PlayStation Vita
 libretro-build-vita:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-vita-static-retroarch-master
     - .core-defs
