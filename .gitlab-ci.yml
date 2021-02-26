@@ -113,6 +113,10 @@ summercoat-built-in:
       - "ratufacoat/build/builtin.c"
     expire_in: 10 min
   script:
+    # We need a compile to generate the native code used to compile ROMs
+    - sudo apt-get --no-install-recommends -y install gcc g++
+
+    # Then perform the ROM generation
     - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
 
 ################################### DESKTOPS #################################
