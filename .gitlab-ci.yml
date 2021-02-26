@@ -27,6 +27,12 @@ stages:
     MAKEFILE: makefilelibretro
     SQUIRRELJME_HAS_BUILTIN: 1
 
+# SquirrelJME Support
+.squirreljme-support:
+  needs:
+    - job: summercoat-built-in
+      artifacts: true
+
 # Inclusion templates, required for the build to work
 include:
   ################################## DESKTOPS ################################
@@ -127,36 +133,42 @@ libretro-build-linux-i686:
   extends:
     - .libretro-linux-i686-make-default
     - .core-defs
+    - .squirreljme-support
 
 # Linux 64-bit
 libretro-build-linux-x64:
   extends:
     - .libretro-linux-x64-make-default
     - .core-defs
+    - .squirreljme-support
 
 # MacOS 64-bit
 libretro-build-osx-x64:
   extends:
     - .libretro-osx-x64-make-default
     - .core-defs
+    - .squirreljme-support
 
 # MacOS ARM 64-bit
 libretro-build-osx-arm64:
   extends:
     - .libretro-osx-arm64-make-default
     - .core-defs
+    - .squirreljme-support
 
 # Windows 32-bit
 libretro-build-windows-i686:
   extends:
     - .libretro-windows-i686-mingw-make-default
     - .core-defs
+    - .squirreljme-support
 
 # Windows 64-bit
 libretro-build-windows-x64:
   extends:
     - .libretro-windows-x64-mingw-make-default
     - .core-defs
+    - .squirreljme-support
 
 ################################### CELLULAR #################################
 # Android ARMv7a
@@ -164,30 +176,35 @@ android-armeabi-v7a:
   extends:
     - .libretro-android-jni-armeabi-v7a
     - .core-defs
+    - .squirreljme-support
 
 # Android ARMv8a
 android-arm64-v8a:
   extends:
     - .libretro-android-jni-arm64-v8a
     - .core-defs
+    - .squirreljme-support
 
 # Android 64-bit x86
 android-x86_64:
   extends:
     - .libretro-android-jni-x86_64
     - .core-defs
+    - .squirreljme-support
 
 # Android 32-bit x86
 android-x86:
   extends:
     - .libretro-android-jni-x86
     - .core-defs
+    - .squirreljme-support
 
 # iOS 9
 libretro-build-ios-9:
   extends:
     - .libretro-ios9-make-default
     - .core-defs
+    - .squirreljme-support
 
 ################################### CONSOLES #################################
 # Dingux (GCW Zero)
@@ -195,48 +212,56 @@ libretro-build-dingux:
   extends:
     - .libretro-dingux-mips32-make-default
     - .core-defs
+    - .squirreljme-support
 
 # Nintendo 3DS
 libretro-build-ctr:
   extends:
     - .libretro-ctr-static-retroarch-master
     - .core-defs
+    - .squirreljme-support
 
 # Nintendo GameCube
 libretro-build-ngc:
   extends:
     - .libretro-ngc-static-retroarch-master
     - .core-defs
+    - .squirreljme-support
 
 # Nintendo Switch
 libretro-build-libnx-aarch64:
   extends:
     - .libretro-libnx-static-retroarch-master
     - .core-defs
+    - .squirreljme-support
 
 # Nintendo Wii
 libretro-build-wii:
   extends:
     - .libretro-wii-static-retroarch-master
     - .core-defs
+    - .squirreljme-support
 
 # Nintendo Wii U
 libretro-build-wiiu:
   extends:
     - .libretro-wiiu-static-retroarch-master
     - .core-defs
+    - .squirreljme-support
 
 # PlayStation 2
 libretro-build-ps2:
   extends:
     - .libretro-ps2-static-retroarch-master
     - .core-defs
+    - .squirreljme-support
 
 # PlayStation Vita
 libretro-build-vita:
   extends:
     - .libretro-vita-static-retroarch-master
     - .core-defs
+    - .squirreljme-support
 
 #################################### MISC ##################################
 # Emscripten
@@ -244,3 +269,4 @@ libretro-build-emscripten:
   extends:
     - .libretro-emscripten-static-retroarch-master
     - .core-defs
+    - .squirreljme-support
