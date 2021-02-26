@@ -378,13 +378,17 @@ void retro_init(void)
 	var.key = "squirreljme_use_external_rom";
 	
 	/* If it is not disabled then it is enabled */
+	useBuiltInRom = 0;
 	if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
 		if (var.value != NULL)
-			useBuiltInRom = strcmp("disabled", var.value);
+			useBuiltInRom = !!strcmp("disabled", var.value);
 	
 	/* Use the built-in ROM for these. */
-	sjme_retroarch_basicrom = (void*)sjme_builtInRomData;
-	romsize = sjme_builtInRomSize;
+	if (useBuiltInRom)
+	{
+		sjme_retroarch_basicrom = (void*)sjme_builtInRomData;
+		romsize = sjme_builtInRomSize;
+	}
 #endif
 	
 	/* Load the SummerCoat ROM using RetroArch VFS rather than letting */
