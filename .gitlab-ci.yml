@@ -19,6 +19,8 @@ stages:
 
 # Core definitions
 .core-defs:
+  dependencies:
+    - build-prepare
   variables:
     CORENAME: squirreljme
     JNI_PATH: ratufacoat/libretro/
