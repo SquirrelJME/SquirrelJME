@@ -26,12 +26,22 @@ stages:
     MAKEFILE: makefilelibretro
     SQUIRRELJME_HAS_BUILTIN: 1
 
-# SquirrelJME Support
-.squirreljme-support:
+# SquirrelJME Support (Shared)
+.squirreljme-support-shared:
   needs:
-    - job: summercoat-built-in
-      project: libretro/SquirrelJME
-      ref: $CI_COMMIT_BRANCH
+    - pipeline: $CI_PIPELINE_ID
+      job: summercoat-built-in
+      artifacts: true
+
+# SquirrelJME Support (Static)
+.squirreljme-support-static:
+  needs:
+    - pipeline: $CI_PIPELINE_ID
+      job: summercoat-built-in
+      artifacts: true
+    - project: libretro/RetroArch
+      job: ${STATIC_RETROARCH_JOB_NAME}
+      ref: ${STATIC_RETROARCH_BRANCH}
       artifacts: true
 
 # Inclusion templates, required for the build to work
@@ -134,42 +144,42 @@ libretro-build-linux-i686:
   extends:
     - .libretro-linux-i686-make-default
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # Linux 64-bit
 libretro-build-linux-x64:
   extends:
     - .libretro-linux-x64-make-default
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # MacOS 64-bit
 libretro-build-osx-x64:
   extends:
     - .libretro-osx-x64-make-default
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # MacOS ARM 64-bit
 libretro-build-osx-arm64:
   extends:
     - .libretro-osx-arm64-make-default
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # Windows 32-bit
 libretro-build-windows-i686:
   extends:
     - .libretro-windows-i686-mingw-make-default
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # Windows 64-bit
 libretro-build-windows-x64:
   extends:
     - .libretro-windows-x64-mingw-make-default
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 ################################### CELLULAR #################################
 # Android ARMv7a
@@ -177,35 +187,35 @@ android-armeabi-v7a:
   extends:
     - .libretro-android-jni-armeabi-v7a
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # Android ARMv8a
 android-arm64-v8a:
   extends:
     - .libretro-android-jni-arm64-v8a
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # Android 64-bit x86
 android-x86_64:
   extends:
     - .libretro-android-jni-x86_64
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # Android 32-bit x86
 android-x86:
   extends:
     - .libretro-android-jni-x86
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # iOS 9
 libretro-build-ios-9:
   extends:
     - .libretro-ios9-make-default
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 ################################### CONSOLES #################################
 # Dingux (GCW Zero)
@@ -213,56 +223,56 @@ libretro-build-dingux:
   extends:
     - .libretro-dingux-mips32-make-default
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-shared
 
 # Nintendo 3DS
 libretro-build-ctr:
   extends:
     - .libretro-ctr-static-retroarch-master
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-static
 
 # Nintendo GameCube
 libretro-build-ngc:
   extends:
     - .libretro-ngc-static-retroarch-master
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-static
 
 # Nintendo Switch
 libretro-build-libnx-aarch64:
   extends:
     - .libretro-libnx-static-retroarch-master
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-static
 
 # Nintendo Wii
 libretro-build-wii:
   extends:
     - .libretro-wii-static-retroarch-master
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-static
 
 # Nintendo Wii U
 libretro-build-wiiu:
   extends:
     - .libretro-wiiu-static-retroarch-master
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-static
 
 # PlayStation 2
 libretro-build-ps2:
   extends:
     - .libretro-ps2-static-retroarch-master
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-static
 
 # PlayStation Vita
 libretro-build-vita:
   extends:
     - .libretro-vita-static-retroarch-master
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-static
 
 #################################### MISC ##################################
 # Emscripten
@@ -270,4 +280,4 @@ libretro-build-emscripten:
   extends:
     - .libretro-emscripten-static-retroarch-master
     - .core-defs
-    - .squirreljme-support
+    - .squirreljme-support-static
